@@ -18,7 +18,7 @@ import { I18nContext } from '../../../i18n/I18nProvider';
 import { useBacktestRunCoreData } from '../hooks/useBacktestRunCoreData';
 import BacktestRunHeaderSection from './BacktestRunHeaderSection';
 import { getAxiosMessage } from '@/lib/getAxiosMessage';
-import { getBacktestRunDetailsCopy } from './backtestRunDetails.copy';
+import { getBacktestRunDetailsCopy, type BacktestRunDetailsCopy } from './backtestRunDetails.copy';
 import { normalizeSymbol } from '@/lib/symbols';
 
 const pnlClass = (value: number | null) => {
@@ -36,12 +36,12 @@ const runStatusBadgeClass = (status: BacktestRun['status']) => {
   return 'badge-outline';
 };
 
-const runStatusLabel = (status: BacktestRun['status'], locale: 'en' | 'pl' | 'pt') => {
-  if (status === 'COMPLETED') return locale === 'en' ? 'Completed' : locale === 'pt' ? 'Concluido' : 'Zakonczony';
-  if (status === 'RUNNING') return locale === 'en' ? 'Running' : locale === 'pt' ? 'Em execucao' : 'W toku';
-  if (status === 'PENDING') return locale === 'en' ? 'Pending' : locale === 'pt' ? 'Pendente' : 'Oczekuje';
-  if (status === 'FAILED') return locale === 'en' ? 'Failed' : locale === 'pt' ? 'Falhou' : 'Niepowodzenie';
-  if (status === 'CANCELED') return locale === 'en' ? 'Canceled' : locale === 'pt' ? 'Cancelado' : 'Anulowany';
+const runStatusLabel = (status: BacktestRun['status'], copy: BacktestRunDetailsCopy) => {
+  if (status === 'COMPLETED') return copy.statusCompleted;
+  if (status === 'RUNNING') return copy.statusRunning;
+  if (status === 'PENDING') return copy.statusPending;
+  if (status === 'FAILED') return copy.statusFailed;
+  if (status === 'CANCELED') return copy.statusCanceled;
   return status;
 };
 
@@ -116,12 +116,11 @@ const formatHoldDuration = (minutes: number) => {
 
 const getExitReasonLabel = (
   reason: 'SIGNAL_EXIT' | 'FINAL_CANDLE' | 'LIQUIDATION',
-  locale: 'en' | 'pl' | 'pt',
+  copy: BacktestRunDetailsCopy,
 ) => {
-  if (reason === 'SIGNAL_EXIT') return locale === 'en' ? 'Signal' : locale === 'pt' ? 'Sinal' : 'Sygnal';
-  if (reason === 'FINAL_CANDLE')
-    return locale === 'en' ? 'Final candle' : locale === 'pt' ? 'Vela final' : 'Ostatnia swieca';
-  return locale === 'en' ? 'Liquidation' : locale === 'pt' ? 'Liquidacao' : 'Likwidacja';
+  if (reason === 'SIGNAL_EXIT') return copy.exitReasonSignal;
+  if (reason === 'FINAL_CANDLE') return copy.exitReasonFinalCandle;
+  return copy.exitReasonLiquidation;
 };
 
 const filterTradesByTimelineWindow = (items: BacktestTrade[], timeline: BacktestTimeline) => {
@@ -1671,7 +1670,7 @@ export default function BacktestRunDetails({ runId }: BacktestRunDetailsProps) {
         runName={run.name}
         runPreviewLabel={copy.runPreview}
         runStatusClassName={runStatusBadgeClass(run.status)}
-        runStatusLabel={runStatusLabel(run.status, locale)}
+        runStatusLabel={runStatusLabel(run.status, copy)}
         marketGroupLabelText={copy.marketGroup}
         marketGroupValue={marketGroupLabel}
         strategyLabelText={copy.strategy}
@@ -2151,7 +2150,7 @@ export default function BacktestRunDetails({ runId }: BacktestRunDetailsProps) {
                                     : 'badge-ghost'
                               }`}
                             >
-                              {getExitReasonLabel(row.trade.exitReason ?? 'SIGNAL_EXIT', locale)}
+                              {getExitReasonLabel(row.trade.exitReason ?? 'SIGNAL_EXIT', copy)}
                             </span>
                           </td>
                           <td className={pnlClass(row.trade.pnl)}>{formatCurrency(row.trade.pnl)}</td>

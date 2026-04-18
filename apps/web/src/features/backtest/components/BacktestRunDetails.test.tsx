@@ -1,5 +1,5 @@
 import { act, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import BacktestRunDetails from "./BacktestRunDetails";
 
 const {
@@ -34,6 +34,11 @@ vi.mock("../../markets/services/markets.service", () => ({
 }));
 
 describe("BacktestRunDetails loading UX", () => {
+  beforeEach(() => {
+    window.localStorage.setItem("cryptosparrow-locale", "pl");
+    window.history.pushState({}, "", "/dashboard/backtests/list");
+  });
+
   it("renders skeleton composition while run details are loading", () => {
     getBacktestRunMock.mockReturnValue(new Promise(() => undefined));
     getBacktestRunReportMock.mockResolvedValue(null);
@@ -67,8 +72,10 @@ describe("BacktestRunDetails loading UX", () => {
 
     render(<BacktestRunDetails runId="missing_run" />);
 
-    expect(await screen.findByText("Nie znaleziono runa")).toBeInTheDocument();
-    expect(screen.queryByText("Nie udalo sie pobrac szczegolow backtestu")).not.toBeInTheDocument();
+    expect(await screen.findByText(/Nie znaleziono runa|Run not found/i)).toBeInTheDocument();
+    expect(
+      screen.queryByText(/Nie udalo sie pobrac szczegolow backtestu|Failed to load backtest details/i)
+    ).not.toBeInTheDocument();
   });
 
   it("keeps bootstrap loading without flashing hard error on transient fetch failure", async () => {

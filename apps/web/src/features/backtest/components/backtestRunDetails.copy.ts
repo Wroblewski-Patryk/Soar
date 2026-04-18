@@ -6,6 +6,11 @@ export type BacktestRunDetailsCopy = {
   notFoundTitle: string;
   notFoundDescription: string;
   statusInProgress: string;
+  statusCompleted: string;
+  statusRunning: string;
+  statusPending: string;
+  statusFailed: string;
+  statusCanceled: string;
   runPreview: string;
   marketGroup: string;
   strategy: string;
@@ -97,6 +102,9 @@ export type BacktestRunDetailsCopy = {
   colPnlMargin: string;
   colFee: string;
   colExitReason: string;
+  exitReasonSignal: string;
+  exitReasonFinalCandle: string;
+  exitReasonLiquidation: string;
   colPnl: string;
   colCumPnl: string;
   dash: string;
@@ -111,6 +119,11 @@ const EN_COPY: BacktestRunDetailsCopy = {
   notFoundTitle: 'Run not found',
   notFoundDescription: 'Selected run does not exist or you do not have access.',
   statusInProgress: 'in progress',
+  statusCompleted: 'Completed',
+  statusRunning: 'Running',
+  statusPending: 'Pending',
+  statusFailed: 'Failed',
+  statusCanceled: 'Canceled',
   runPreview: 'Backtest run preview',
   marketGroup: 'Market group:',
   strategy: 'Strategy:',
@@ -202,6 +215,9 @@ const EN_COPY: BacktestRunDetailsCopy = {
   colPnlMargin: 'PnL % (margin)',
   colFee: 'Fee',
   colExitReason: 'Exit reason',
+  exitReasonSignal: 'Signal',
+  exitReasonFinalCandle: 'Final candle',
+  exitReasonLiquidation: 'Liquidation',
   colPnl: 'PnL',
   colCumPnl: 'Cumulative PnL',
   dash: '-',
@@ -216,6 +232,11 @@ const PL_COPY: BacktestRunDetailsCopy = {
   notFoundTitle: 'Nie znaleziono runa',
   notFoundDescription: 'Wybrany run nie istnieje albo nie masz do niego dostepu.',
   statusInProgress: 'w toku',
+  statusCompleted: 'Zakonczony',
+  statusRunning: 'W toku',
+  statusPending: 'Oczekuje',
+  statusFailed: 'Niepowodzenie',
+  statusCanceled: 'Anulowany',
   runPreview: 'Podglad uruchomienia backtestu',
   marketGroup: 'Grupa rynkow:',
   strategy: 'Strategia:',
@@ -307,6 +328,9 @@ const PL_COPY: BacktestRunDetailsCopy = {
   colPnlMargin: 'PnL % (margin)',
   colFee: 'Prowizja',
   colExitReason: 'Powod wyjscia',
+  exitReasonSignal: 'Sygnal',
+  exitReasonFinalCandle: 'Ostatnia swieca',
+  exitReasonLiquidation: 'Likwidacja',
   colPnl: 'PnL',
   colCumPnl: 'Skumulowany PnL',
   dash: '-',
@@ -331,6 +355,14 @@ const PT_COPY: BacktestRunDetailsCopy = {
   runTotalValue: 'Total da execucao',
   noTradesTitle: 'Sem trades',
   noTradesDescription: 'Nao existem trades para esta execucao.',
+  statusCompleted: 'Concluido',
+  statusRunning: 'Em execucao',
+  statusPending: 'Pendente',
+  statusFailed: 'Falhou',
+  statusCanceled: 'Cancelado',
+  exitReasonSignal: 'Sinal',
+  exitReasonFinalCandle: 'Vela final',
+  exitReasonLiquidation: 'Liquidacao',
 };
 
 export const getBacktestRunDetailsCopy = (locale: 'en' | 'pl' | 'pt'): BacktestRunDetailsCopy =>
