@@ -20,8 +20,8 @@ Last updated: 2026-04-18
   and IA changes.
 - 2026-04-17: Portuguese rollout is locked to `pt-PT`; `pt-BR` is not part of
   the current localization wave.
-- 2026-04-18: active execution focus moved to `UXR-F` dashboard form-system
-  unification after closing `L10NQ-D`.
+- 2026-04-18: active execution focus moved to `PLNC-A` planning-catalog
+  reconciliation after closing `BRS` and `UXR-G`.
 
 ## Technical Baseline
 - Backend: Node.js 20+, Express API, Prisma, TypeScript
@@ -99,26 +99,28 @@ Last updated: 2026-04-18
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: execute `BRS` selected-bot runtime scope remediation
-  wave (`BRS-C` next) after closing `BRS-A` and `BRS-B` implementation groups.
+- Main active objective: execute `PLNC-A` planning-catalog reconciliation
+  (`PLNC-01..PLNC-04`) with canonical queue/status alignment.
 - Top blockers:
-  - remaining selected-bot runtime contract drift is now concentrated in
-    web regression, consumer-adapter verification, and closure evidence tasks
-    (`BRS-09..BRS-12`).
+  - planning documents still need explicit implemented/queued/superseded
+    classification and canonical queue linkage to avoid future execution drift.
 - Success criteria for this phase:
-  - `BRS-C` closes with dashboard switch regression coverage and final
-    API+WEB closure evidence.
-  - selected-bot dashboard runtime payload cannot expand symbols outside
-    canonical active selected-bot scope.
+  - `PLNC-A` closes with a clear planning-catalog map and synchronized status
+    across queue/context docs.
+  - no stale READY/BACKLOG entries for already closed waves (`BRS`, `UXR-G`).
   - canonical queue files and task board stay aligned after each group closure.
   - no regressions in auth, runtime, operator clarity, or deploy confidence.
-- Next queued follow-up after `BRS-C` + `UXR-G`:
-  - planning-catalog reconciliation (`PLNC`),
+- Next queued follow-up after `PLNC-A`:
   - architecture maintainability remediation (`ARC`),
   - lifecycle parity closure (`POS-36..42`),
   - production verification closure (`OPV`).
 
 ## Recent Progress
+- 2026-04-18: closed `UXR-G` (`UXR-G-01..UXR-G-06`) end-to-end: manual-order
+  section is now a peer block below wallet, wallet summary row order is
+  `Allocation -> Delta -> Portfolio`, free-funds/in-positions split is `50/50`,
+  and focused closure checks passed (`web dashboard-home tests`, `web typecheck`,
+  `web build`).
 - 2026-04-18: completed planning-catalog coverage audit and queued post-active
   execution waves (`PLNC`, `ARC`, `POS`, `OPV`) via
   `docs/planning/planning-catalog-coverage-follow-up-plan-2026-04-18.md`,

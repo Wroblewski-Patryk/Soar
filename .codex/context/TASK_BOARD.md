@@ -17,62 +17,32 @@ Last updated: 2026-04-18
 
 ## READY
 
-- [ ] BRS-09 Add web regression for dashboard switch scenario A(1 symbol) vs B(4 symbols)
-  - Status: READY
-  - Group: Dashboard Runtime Scope Remediation (`BRS-C`)
-  - Owner: QA/Test
-  - Depends on: BRS-08
-  - Priority: P1
-
-## BACKLOG
-
-- [ ] BRS-10 Adapt dashboard runtime consumer only if API payload contract changed
-  - Status: BACKLOG
-  - Group: Dashboard Runtime Scope Remediation (`BRS-C`)
-  - Owner: Frontend Builder
-  - Depends on: BRS-09
-  - Priority: P1
-- [ ] BRS-11 Run focused API+WEB runtime scope regression pack + typechecks
-  - Status: BACKLOG
-  - Group: Dashboard Runtime Scope Remediation (`BRS-C`)
-  - Owner: QA/Test
-  - Depends on: BRS-10
-  - Priority: P1
-- [ ] BRS-12 Publish BRS closure artifacts and sync canonical queues
-  - Status: BACKLOG
-  - Group: Dashboard Runtime Scope Remediation (`BRS-C`)
-  - Owner: Product Docs
-  - Depends on: BRS-11
-  - Priority: P1
-- [ ] UXR-G-02 Move dashboard manual-order section below wallet as same-level sidebar section
-  - Status: BACKLOG
-  - Group: Dashboard Wallet + Manual Order Layout Polish (`UXR-G-A`)
-  - Owner: Frontend Builder
-  - Depends on: BRS-12
-  - Priority: P2
-- [ ] UXR-G-03 Restyle wallet portfolio row and move delta directly under allocation
-  - Status: BACKLOG
-  - Group: Dashboard Wallet + Manual Order Layout Polish (`UXR-G-A`)
-  - Owner: Frontend Builder
-  - Depends on: UXR-G-02
-  - Priority: P2
-- [ ] UXR-G-04 Enforce 50/50 width split for free-funds and in-positions wallet KPI rows
-  - Status: BACKLOG
-  - Group: Dashboard Wallet + Manual Order Layout Polish (`UXR-G-B`)
-  - Owner: Frontend Builder
-  - Depends on: UXR-G-03
-  - Priority: P2
-- [ ] UXR-G-05 Add focused dashboard-home regression coverage for manual-order placement and wallet KPI ordering/layout
-  - Status: BACKLOG
-  - Group: Dashboard Wallet + Manual Order Layout Polish (`UXR-G-B`)
-  - Owner: QA/Test
-  - Depends on: UXR-G-04
-  - Priority: P2
 - [ ] PLNC-01 Classify planning catalog coverage and map active plans to canonical queue ownership
-  - Status: BACKLOG
+  - Status: READY
   - Group: Planning Catalog Reconciliation (`PLNC-A`)
   - Owner: Product Docs
   - Depends on: UXR-G-06
+  - Priority: P2
+
+## BACKLOG
+
+- [ ] PLNC-02 Update stale status lines in completed planning docs and classify superseded plans
+  - Status: BACKLOG
+  - Group: Planning Catalog Reconciliation (`PLNC-A`)
+  - Owner: Product Docs
+  - Depends on: PLNC-01
+  - Priority: P2
+- [ ] PLNC-03 Add canonical queue linkage in active non-closed planning docs
+  - Status: BACKLOG
+  - Group: Planning Catalog Reconciliation (`PLNC-A`)
+  - Owner: Product Docs
+  - Depends on: PLNC-02
+  - Priority: P2
+- [ ] PLNC-04 Publish planning-catalog closure sync in task/project context docs
+  - Status: BACKLOG
+  - Group: Planning Catalog Reconciliation (`PLNC-A`)
+  - Owner: Product Docs
+  - Depends on: PLNC-03
   - Priority: P2
 - [ ] ARC-01 Freeze architecture maintainability remediation boundaries and extraction guardrails
   - Status: BACKLOG
@@ -107,6 +77,13 @@ Last updated: 2026-04-18
 
 ## DONE
 
+- [x] UXR-G-06 Run focused dashboard-home closure checks and sync canonical queue/context docs
+- [x] UXR-G-05 Add focused dashboard-home regression coverage for manual-order placement and wallet KPI ordering/layout
+- [x] UXR-G-04 Enforce 50/50 width split for free-funds and in-positions wallet KPI rows
+- [x] UXR-G-03 Restyle wallet portfolio row and move delta directly under allocation
+- [x] UXR-G-02 Move dashboard manual-order section below wallet as same-level sidebar section
+- [x] UXR-G-01 Freeze dashboard wallet/manual-order layout contract in canonical docs
+- [x] BRS-C closed implementation scope (`BRS-09..BRS-12`): web switch regression + runtime-consumer compatibility check + closure evidence sync
 - [x] Planning catalog coverage queued: `PLNC`, `ARC`, `POS`, `OPV` waves added as post-`BRS`/`UXR-G` execution backlog
 - [x] ARCH-AUDIT-2026-04-18 publish maintainability/monolith audit report for planner handoff
 - [x] BRS-B closed implementation scope (`BRS-05..BRS-08`): canonical update-path fix + precedence unification

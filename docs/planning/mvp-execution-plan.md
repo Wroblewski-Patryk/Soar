@@ -1949,15 +1949,20 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-18: Closed `BRS-C` implementation wave (`BRS-09..BRS-12`) end-to-end (`web regression + compatibility check + focused QA + docs closure`).
 
 ## Phase UXR-G - Dashboard Wallet + Manual Order Layout Polish (Queued 2026-04-18)
-- [ ] `UXR-G-01 docs(contract): freeze dashboard wallet/manual-order layout and row-order contract`
-- [ ] `UXR-G-02 refactor(web-dashboard-sidebar): place manual-order section below wallet as peer section`
-- [ ] `UXR-G-03 refactor(web-wallet-kpi): simplify portfolio row style and move delta directly under allocation`
-- [ ] `UXR-G-04 refactor(web-wallet-kpi-layout): enforce 50/50 width for free-funds and in-positions rows`
-- [ ] `UXR-G-05 test(web-dashboard-home): lock manual-order placement and wallet KPI order/layout regressions`
-- [ ] `UXR-G-06 qa(web-closure): run focused dashboard-home pack + typecheck/build and sync queue notes`
+- [x] `UXR-G-01 docs(contract): freeze dashboard wallet/manual-order layout and row-order contract`
+- [x] `UXR-G-02 refactor(web-dashboard-sidebar): place manual-order section below wallet as peer section`
+- [x] `UXR-G-03 refactor(web-wallet-kpi): simplify portfolio row style and move delta directly under allocation`
+- [x] `UXR-G-04 refactor(web-wallet-kpi-layout): enforce 50/50 width for free-funds and in-positions rows`
+- [x] `UXR-G-05 test(web-dashboard-home): lock manual-order placement and wallet KPI order/layout regressions`
+- [x] `UXR-G-06 qa(web-closure): run focused dashboard-home pack + typecheck/build and sync queue notes`
 
 ### Progress Log (Phase UXR-G - Dashboard Wallet + Manual Order Layout Polish)
 - 2026-04-18: Queued non-blocking UI-polish wave in `docs/planning/uxr-g-dashboard-wallet-manual-order-layout-plan-2026-04-18.md` with grouped batches `UXR-G-A..UXR-G-B`; scope is strictly dashboard runtime sidebar layout ergonomics (manual-order placement, wallet KPI row style/order, and 50/50 KPI split), without changing manual-order backend behavior.
+- 2026-04-18: Completed `UXR-G-01` by freezing layout/order acceptance contract in `docs/planning/open-decisions.md` and `docs/modules/web-dashboard-home.md`.
+- 2026-04-18: Completed `UXR-G-02` by moving manual-order panel to a peer sidebar section directly below wallet in `RuntimeSidebarSection.tsx` while preserving submit/payload behavior.
+- 2026-04-18: Completed `UXR-G-03..UXR-G-04` by reordering wallet summary rows to `Allocation -> Delta -> Portfolio`, simplifying portfolio to plain summary-row style, and enforcing `grid-cols-2` equal split for `Free funds` and `In positions`.
+- 2026-04-18: Completed `UXR-G-05` by locking placement/order/layout regressions in `HomeLiveWidgets.test.tsx` (wallet->manual-order section order, allocation->delta->portfolio order, and split-row contract assertions).
+- 2026-04-18: Completed `UXR-G-06` closure checks and queue sync. Validation: `pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets.test.tsx` => `16/16 PASS`; `pnpm --filter web run typecheck` => `PASS`; `pnpm --filter web run build` => `PASS`.
 
 ## Phase PLNC - Planning Catalog Reconciliation and Coverage Sync (Queued 2026-04-18)
 - [ ] `PLNC-01 docs(audit-map): classify planning docs as implemented/queued/external-blocked/superseded`

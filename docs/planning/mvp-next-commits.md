@@ -7,11 +7,11 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `UXR-G-01 docs(contract): freeze dashboard wallet/manual-order layout and row-order contract`
-## NEXT
 - [ ] `PLNC-01 docs(audit-map): classify planning docs as implemented/queued/external-blocked/superseded`
+## NEXT
 - [ ] `ARC-01 docs(contract): freeze ARC decomposition boundaries and no-drift guardrails`
 - [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
+- [ ] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
 ## PIPELINE
 - [ ] `PLNC-01 docs(audit-map): classify planning docs as implemented/queued/external-blocked/superseded`
 - [ ] `ARC-01 docs(contract): freeze ARC decomposition boundaries and no-drift guardrails`
@@ -21,8 +21,8 @@ Operational queue for one-task execution runs.
 - [x] `BRS-A (commits BRS-01..BRS-04): decision closure + strict selected-bot scope foundation`
 - [x] `BRS-B (commits BRS-05..BRS-08): canonical update-path fix + strategy precedence unification`
 - [x] `BRS-C (commits BRS-09..BRS-12): dashboard switch regression + QA closure`
-- [ ] `UXR-G-A (commits UXR-G-01..UXR-G-03): dashboard wallet/manual-order hierarchy + summary-row contract`
-- [ ] `UXR-G-B (commits UXR-G-04..UXR-G-06): 50/50 wallet KPI split + regression closure`
+- [x] `UXR-G-A (commits UXR-G-01..UXR-G-03): dashboard wallet/manual-order hierarchy + summary-row contract`
+- [x] `UXR-G-B (commits UXR-G-04..UXR-G-06): 50/50 wallet KPI split + regression closure`
 - [ ] `PLNC-A (commits PLNC-01..PLNC-04): planning catalog reconciliation + status sync + canonical linkage`
 - [ ] `ARC-A (commits ARC-01..ARC-05): runtime critical-path decomposition foundations`
 - [ ] `ARC-B (commits ARC-06..ARC-10): bots runtime CQRS/read-model decomposition + aggregate monitoring contract`
@@ -59,6 +59,10 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `UXR-G-B group closure (UXR-G-04..UXR-G-06)`
+  - 2026-04-18: Closed dashboard wallet/manual-order ergonomics wave Stage B by enforcing 50/50 free-funds vs in-positions layout, adding focused sidebar regression assertions in `HomeLiveWidgets.test.tsx`, and running closure checks: `pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets.test.tsx` => `16/16 PASS`, `pnpm --filter web run typecheck` => `PASS`, `pnpm --filter web run build` => `PASS`.
+- [x] `UXR-G-A group closure (UXR-G-01..UXR-G-03)`
+  - 2026-04-18: Closed Stage A by freezing wallet/manual-order layout contract in docs, moving manual-order panel below wallet as a peer sidebar section, and aligning wallet summary-row order/style (`Allocation -> Delta -> Portfolio`).
 - [x] `Planning catalog coverage audit queued (post-BRS/UXR-G follow-up waves)`
   - 2026-04-18: Reviewed `docs/planning` coverage against canonical queue/execution context and queued post-active waves in `docs/planning/planning-catalog-coverage-follow-up-plan-2026-04-18.md` for (a) planning status drift reconciliation (`PLNC`), (b) architecture maintainability remediation (`ARC`), (c) position lifecycle parity (`POS-36..42`), and (d) production verification closure (`OPV`) with explicit ordering after `BRS` and `UXR-G`.
 - [x] `UXR-G planning queued (dashboard wallet/manual-order layout polish)`
