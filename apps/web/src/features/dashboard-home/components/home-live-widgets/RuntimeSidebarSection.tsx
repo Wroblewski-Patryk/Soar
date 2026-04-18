@@ -124,16 +124,7 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
           ? props.formatAmountWithUnit(selectedWallet.liveAllocationValue ?? 0)
           : "-"
       : "-";
-  const walletKpis = [
-    {
-      key: "portfolio",
-      label: props.text.portfolio,
-      value: walletTotal != null ? props.formatAmountWithUnit(walletTotal) : "-",
-      toneClass: "text-base-content",
-      rowClassName: "border-base-300/45",
-      percent: null as string | null,
-      testId: "wallet-kpi-portfolio",
-    },
+  const walletSplitKpis = [
     {
       key: "free",
       label: props.text.freeFunds,
@@ -363,7 +354,7 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
           </div>
         </section>
 
-        <section className={panelFrameClassName}>
+        <section className={panelFrameClassName} data-testid="wallet-section">
           <div className={`${panelBodyClassName} text-xs`}>
             <div className="space-y-1.5">
               <p className="flex items-center justify-between gap-2">
@@ -378,29 +369,36 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
                 <span className="font-semibold">{selectedWalletMode ?? "-"}</span>
               </p>
               {selectedWalletMode === "LIVE" ? (
-                <p className="flex items-center justify-between gap-2">
+                <p className="flex items-center justify-between gap-2" data-testid="wallet-kpi-allocation-row">
                   <span className="opacity-65">{props.text.walletAllocation}</span>
                   <span className="font-semibold">{walletAllocationLabel}</span>
                 </p>
               ) : null}
-              <div
-                className="space-y-1.5 pt-1"
-                data-testid="wallet-kpi-row"
-              >
-                {walletKpis.map((kpi) => (
+              <p className="flex items-center justify-between gap-2" data-testid="wallet-kpi-delta-row">
+                <span className="opacity-65">{props.text.deltaFromStart}</span>
+                <span className={`font-semibold ${selectedNet >= 0 ? "text-success" : "text-error"}`}>
+                  {walletBaseline != null && walletBaseline > 0
+                    ? `${props.formatPercent((selectedNet / walletBaseline) * 100)} | ${props.formatAmountWithUnit(selectedNet)}`
+                    : "-"}
+                </span>
+              </p>
+              <p className="flex items-center justify-between gap-2" data-testid="wallet-kpi-portfolio">
+                <span className="opacity-65">{props.text.portfolio}</span>
+                <span className="font-semibold">{walletTotal != null ? props.formatAmountWithUnit(walletTotal) : "-"}</span>
+              </p>
+              <div className="grid grid-cols-2 gap-2 pt-1" data-testid="wallet-kpi-row">
+                {walletSplitKpis.map((kpi) => (
                   <p
                     key={kpi.key}
-                    className={`flex items-center justify-between gap-2 rounded-box border bg-base-100/35 px-2 py-1.5 ${kpi.rowClassName}`}
+                    className={`w-full rounded-box border bg-base-100/35 px-2 py-1.5 ${kpi.rowClassName}`}
                     data-testid={kpi.testId}
                   >
-                    <span className="text-[10px] uppercase tracking-wide opacity-65">
+                    <span className="block text-[10px] uppercase tracking-wide opacity-65">
                       {kpi.label}
                     </span>
-                    <span className="text-right">
-                      <span className="block text-xs font-semibold">{kpi.value}</span>
-                      <span className={`block text-[11px] font-semibold ${kpi.toneClass}`}>
-                        {kpi.percent ?? "-"}
-                      </span>
+                    <span className={`mt-0.5 block text-xs font-semibold ${kpi.toneClass}`}>{kpi.value}</span>
+                    <span className={`block text-[11px] font-semibold ${kpi.toneClass}`}>
+                      {kpi.percent ?? "-"}
                     </span>
                   </p>
                 ))}
@@ -419,19 +417,11 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
                   </div>
                 ) : null}
               </div>
-              <p className="flex items-center justify-between gap-2">
-                <span className="opacity-65">{props.text.deltaFromStart}</span>
-                <span className={`font-semibold ${selectedNet >= 0 ? "text-success" : "text-error"}`}>
-                  {walletBaseline != null && walletBaseline > 0
-                    ? `${props.formatPercent((selectedNet / walletBaseline) * 100)} | ${props.formatAmountWithUnit(selectedNet)}`
-                    : "-"}
-                </span>
-              </p>
             </div>
           </div>
         </section>
 
-        <section className={panelFrameClassName}>
+        <section className={panelFrameClassName} data-testid="manual-order-section">
           <div className={`${panelBodyClassName} text-xs`}>
             <section
               className="rounded-box border border-base-300/45 bg-base-100/60 p-2.5"
