@@ -361,9 +361,22 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
     }
   }
 
-  if (requestedMarketGroupId) {
-    const resolvedGroup = await resolveCreateMarketGroupToSymbolGroup(userId, requestedMarketGroupId);
-    if (!resolvedGroup) throw botErrors.symbolGroupNotFound();
+  const requestedStrategy =
+    requestedStrategyId && strategyIdUpdateRequested
+      ? await getOwnedStrategy(userId, requestedStrategyId)
+      : null;
+  if (requestedStrategyId && strategyIdUpdateRequested && !requestedStrategy) {
+    throw botErrors.botStrategyNotFound();
+  }
+
+  const requestedSymbolGroup = requestedMarketGroupId
+    ? await resolveCreateMarketGroupToSymbolGroup(userId, requestedMarketGroupId)
+    : null;
+  if (requestedMarketGroupId && !requestedSymbolGroup) {
+    throw botErrors.symbolGroupNotFound();
+  }
+
+  if (requestedSymbolGroup) {
     if (
       !isWalletContextCompatibleWithMarketUniverse({
         wallet: {
@@ -372,9 +385,9 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
           baseCurrency: targetBaseCurrency,
         },
         marketUniverse: {
-          exchange: resolvedGroup.marketUniverse.exchange,
-          marketType: resolvedGroup.marketUniverse.marketType,
-          baseCurrency: resolvedGroup.marketUniverse.baseCurrency,
+          exchange: requestedSymbolGroup.marketUniverse.exchange,
+          marketType: requestedSymbolGroup.marketUniverse.marketType,
+          baseCurrency: requestedSymbolGroup.marketUniverse.baseCurrency,
         },
       })
     ) {
@@ -394,10 +407,8 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
     if (targetStrategyId) {
       let targetSymbolGroupId: string | null = null;
 
-      if (requestedMarketGroupId) {
-        const resolvedGroup = await resolveCreateMarketGroupToSymbolGroup(userId, requestedMarketGroupId);
-        if (!resolvedGroup) throw botErrors.symbolGroupNotFound();
-        targetSymbolGroupId = resolvedGroup.id;
+      if (requestedSymbolGroup) {
+        targetSymbolGroupId = requestedSymbolGroup.id;
       } else {
         const primaryGroup = await prisma.botMarketGroup.findFirst({
           where: {
@@ -435,33 +446,166 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
     walletId: _ignoredWalletId,
     ...botData
   } = data;
-  const updated = await prisma.bot.update({
-    where: { id: existing.id },
-    data: {
-      ...botData,
-      mode: nextMode,
-      walletId: targetWallet?.id ?? existing.walletId ?? null,
-      paperStartBalance: targetPaperStartBalance,
-      exchange: targetExchange,
-      marketType: targetMarketType,
-      apiKeyId: resolvedApiKeyId,
-      liveOptIn: nextLiveOptIn,
-      consentTextVersion: nextConsentTextVersion,
-    },
-    include: {
-      botStrategies: {
-        select: {
-          strategyId: true,
-          isEnabled: true,
+  const updated = await prisma.$transaction(async (tx) => {
+    const updatedBot = await tx.bot.update({
+      where: { id: existing.id },
+      data: {
+        ...botData,
+        mode: nextMode,
+        walletId: targetWallet?.id ?? existing.walletId ?? null,
+        paperStartBalance: targetPaperStartBalance,
+        exchange: targetExchange,
+        marketType: targetMarketType,
+        apiKeyId: resolvedApiKeyId,
+        liveOptIn: nextLiveOptIn,
+        consentTextVersion: nextConsentTextVersion,
+      },
+      include: {
+        botStrategies: {
+          select: {
+            strategyId: true,
+            isEnabled: true,
+          },
+        },
+        marketGroupStrategyLinks: {
+          select: {
+            strategyId: true,
+            isEnabled: true,
+          },
         },
       },
-      marketGroupStrategyLinks: {
-        select: {
-          strategyId: true,
-          isEnabled: true,
+    });
+
+    const shouldSyncCanonicalMapping =
+      requestedSymbolGroup !== null ||
+      (strategyIdUpdateRequested && typeof requestedStrategyId === 'string' && requestedStrategyId.length > 0);
+    if (shouldSyncCanonicalMapping) {
+      const orderedGroups = await tx.botMarketGroup.findMany({
+        where: {
+          userId,
+          botId: existing.id,
         },
-      },
-    },
+        orderBy: [{ executionOrder: 'asc' }, { createdAt: 'asc' }],
+        select: {
+          id: true,
+          symbolGroupId: true,
+          executionOrder: true,
+          maxOpenPositions: true,
+          isEnabled: true,
+          lifecycleStatus: true,
+        },
+      });
+      const primaryGroup = orderedGroups.find((group) => group.isEnabled) ?? orderedGroups[0] ?? null;
+
+      let targetGroup = primaryGroup;
+      if (requestedSymbolGroup) {
+        const existingTargetGroup =
+          orderedGroups.find((group) => group.symbolGroupId === requestedSymbolGroup.id) ?? null;
+        if (existingTargetGroup) {
+          targetGroup = existingTargetGroup;
+        } else if (primaryGroup) {
+          targetGroup = await tx.botMarketGroup.update({
+            where: { id: primaryGroup.id },
+            data: {
+              symbolGroupId: requestedSymbolGroup.id,
+              lifecycleStatus: 'ACTIVE',
+              isEnabled: true,
+            },
+            select: {
+              id: true,
+              symbolGroupId: true,
+              executionOrder: true,
+              maxOpenPositions: true,
+              isEnabled: true,
+              lifecycleStatus: true,
+            },
+          });
+        } else {
+          targetGroup = await tx.botMarketGroup.create({
+            data: {
+              userId,
+              botId: existing.id,
+              symbolGroupId: requestedSymbolGroup.id,
+              lifecycleStatus: 'ACTIVE',
+              executionOrder: 100,
+              maxOpenPositions: updatedBot.maxOpenPositions,
+              isEnabled: true,
+            },
+            select: {
+              id: true,
+              symbolGroupId: true,
+              executionOrder: true,
+              maxOpenPositions: true,
+              isEnabled: true,
+              lifecycleStatus: true,
+            },
+          });
+        }
+      }
+
+      if (targetGroup && (!targetGroup.isEnabled || targetGroup.lifecycleStatus !== 'ACTIVE')) {
+        await tx.botMarketGroup.update({
+          where: { id: targetGroup.id },
+          data: {
+            isEnabled: true,
+            lifecycleStatus: 'ACTIVE',
+          },
+        });
+      }
+
+      const targetCanonicalStrategyId =
+        typeof requestedStrategyId === 'string' && requestedStrategyId.length > 0
+          ? requestedStrategyId
+          : null;
+
+      if (targetGroup && targetCanonicalStrategyId) {
+        await tx.marketGroupStrategyLink.updateMany({
+          where: {
+            botId: existing.id,
+            botMarketGroupId: targetGroup.id,
+            strategyId: { not: targetCanonicalStrategyId },
+          },
+          data: {
+            isEnabled: false,
+          },
+        });
+
+        const existingTargetLink = await tx.marketGroupStrategyLink.findFirst({
+          where: {
+            botId: existing.id,
+            botMarketGroupId: targetGroup.id,
+            strategyId: targetCanonicalStrategyId,
+          },
+          select: {
+            id: true,
+          },
+        });
+        if (existingTargetLink) {
+          await tx.marketGroupStrategyLink.update({
+            where: { id: existingTargetLink.id },
+            data: {
+              isEnabled: true,
+              priority: 100,
+              weight: 1,
+            },
+          });
+        } else {
+          await tx.marketGroupStrategyLink.create({
+            data: {
+              userId,
+              botId: existing.id,
+              botMarketGroupId: targetGroup.id,
+              strategyId: targetCanonicalStrategyId,
+              priority: 100,
+              weight: 1,
+              isEnabled: true,
+            },
+          });
+        }
+      }
+    }
+
+    return updatedBot;
   });
 
   if (strategyIdUpdateRequested) {

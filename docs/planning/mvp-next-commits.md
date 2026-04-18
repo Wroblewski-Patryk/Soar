@@ -7,23 +7,16 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [x] `BRS-01 docs(decision): close dashboard runtime selected-bot scope policy (ACTIVE-only canonical + PAUSED exclusion default)`
-- [x] `BRS-02 test(api-red): add failing regression for symbol leakage across canonical/legacy/session/event scope`
-- [x] `BRS-03 fix(api-runtime-repository): narrow runtime read filters to ACTIVE canonical groups/links only`
-- [x] `BRS-04 fix(api-runtime-symbol-scope): stop symbol expansion beyond canonical selected-bot scope`
-- [ ] `BRS-05 test(api-red-update-contract): add failing regression for PUT /dashboard/bots/:id canonical update drift`
-## NEXT
-- [ ] `BRS-06 fix(api-update-contract): make PUT /dashboard/bots/:id update canonical group+strategy mapping transactionally`
-- [ ] `BRS-07 fix(api-strategy-precedence): enforce canonical-first symbol->strategy assignment`
-- [ ] `BRS-08 test(api-regression): lock strict selected-bot scope + canonical strategy precedence`
 - [ ] `BRS-09 test(web-regression): lock dashboard switch scenario A(1 symbol) vs B(4 symbols)`
-## PIPELINE
+## NEXT
 - [ ] `BRS-10 refactor(web-runtime-contract): adapt dashboard runtime consumer only if API payload contract changes`
 - [ ] `BRS-11 qa(regression-pack): run focused API+WEB runtime scope regression pack`
 - [ ] `BRS-12 docs(closure): publish evidence and sync canonical queue/execution statuses`
+## PIPELINE
+- [ ] `UXR-G-01 docs(contract): freeze dashboard wallet/manual-order layout and row-order contract`
 ## GROUP QUEUE
 - [x] `BRS-A (commits BRS-01..BRS-04): decision closure + strict selected-bot scope foundation`
-- [ ] `BRS-B (commits BRS-05..BRS-08): canonical update-path fix + strategy precedence unification`
+- [x] `BRS-B (commits BRS-05..BRS-08): canonical update-path fix + strategy precedence unification`
 - [ ] `BRS-C (commits BRS-09..BRS-12): dashboard switch regression + QA closure`
 - [ ] `UXR-G-A (commits UXR-G-01..UXR-G-03): dashboard wallet/manual-order hierarchy + summary-row contract`
 - [ ] `UXR-G-B (commits UXR-G-04..UXR-G-06): 50/50 wallet KPI split + regression closure`
@@ -66,6 +59,16 @@ Operational queue for one-task execution runs.
   - 2026-04-18: Hardened `listBotRuntimeSessionSymbolStats` symbol resolution to canonical active scope only (plus explicit `query.symbol` behavior), removing session/event fallback expansion path (`botsRuntimeRead.service.ts`).
 - [x] `BRS-A group closure (BRS-01..BRS-04)`
   - 2026-04-18: Stage A implementation completed end-to-end (`decision + regression + repository scope narrowing + service scope hardening`). Validation: `pnpm --filter api run typecheck` => `PASS`, `pnpm run quality:guardrails` => `PASS`; targeted e2e execution is currently blocked in this environment because Docker Engine/`localhost:5432` is unavailable.
+- [x] `BRS-05 test(api-red-update-contract): add failing regression for PUT /dashboard/bots/:id canonical update drift`
+  - 2026-04-18: Added canonical update-path regression in `apps/api/src/modules/bots/bots.runtime-scope.e2e.test.ts` (`updates canonical runtime graph mapping when strategyId and marketGroupId are changed via PUT`) asserting runtime-graph canonical group+strategy mapping after update.
+- [x] `BRS-06 fix(api-update-contract): make PUT /dashboard/bots/:id update canonical group+strategy mapping transactionally`
+  - 2026-04-18: Updated `updateBot` in `apps/api/src/modules/bots/botsCommand.service.ts` to synchronize canonical `botMarketGroup + marketGroupStrategyLink` mapping in the same transaction as bot metadata updates (strategy/market-group update path), while keeping legacy helper as compatibility mirror.
+- [x] `BRS-07 fix(api-strategy-precedence): enforce canonical-first symbol->strategy assignment`
+  - 2026-04-18: Enforced canonical-first symbol strategy projection in `apps/api/src/modules/bots/runtimeSymbolStatsEnrichment.service.ts` by applying canonical market-group strategy links before legacy `botStrategy` fallback.
+- [x] `BRS-08 test(api-regression): lock strict selected-bot scope + canonical strategy precedence`
+  - 2026-04-18: Added strict scope + precedence regression in `apps/api/src/modules/bots/bots.runtime-scope.e2e.test.ts` (`keeps strict selected-bot scope and resolves strategy context from canonical links before legacy fallback`) validating: no foreign symbols from session/event fallback, no paused-group leakage, canonical strategy context shown for selected bot symbols.
+- [x] `BRS-B group closure (BRS-05..BRS-08)`
+  - 2026-04-18: Stage B implementation completed end-to-end (`update-contract regression + transactional canonical update path + canonical-first runtime precedence + closure regression pack`). Validation: `pnpm --filter api run typecheck` => `PASS`; `pnpm run quality:guardrails` => `PASS`; `pnpm --filter api test -- src/modules/bots/bots.runtime-scope.e2e.test.ts` => `3/3 PASS`.
 - [x] `BRS planning queued (dashboard selected-bot runtime scope remediation)`
   - 2026-04-18: Published runtime scope remediation wave in `docs/planning/dashboard-selected-bot-runtime-scope-remediation-plan-2026-04-18.md` (`BRS-01..BRS-12`) covering strict selected-bot API scope, canonical-first strategy precedence, `PUT /dashboard/bots/:id` canonical update drift fix, and dashboard bot-switch regressions (`A=1 symbol`, `B=4 symbols`); promoted `BRS-01..BRS-05` to `NOW`.
 - [x] `QH-TSC-01 chore(web-verify-script): add canonical sequential build+typecheck script for web`

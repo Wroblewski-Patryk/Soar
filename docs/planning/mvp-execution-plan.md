@@ -1921,10 +1921,10 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - [x] `BRS-02 test(api-red): add failing regression for symbol leakage across canonical/legacy/session/event paths`
 - [x] `BRS-03 fix(api-runtime-repository): narrow runtime read filters to ACTIVE canonical groups/links only`
 - [x] `BRS-04 fix(api-runtime-symbol-scope): prevent symbol expansion beyond canonical selected-bot scope`
-- [ ] `BRS-05 test(api-red-update-contract): add failing regression for PUT /dashboard/bots/:id canonical update drift`
-- [ ] `BRS-06 fix(api-update-contract): make PUT /dashboard/bots/:id update canonical market-group strategy mapping transactionally`
-- [ ] `BRS-07 fix(api-strategy-precedence): enforce canonical-first symbol->strategy assignment and compatibility fallback only`
-- [ ] `BRS-08 test(api-regression): lock strict selected-bot symbol scope + canonical strategy precedence`
+- [x] `BRS-05 test(api-red-update-contract): add failing regression for PUT /dashboard/bots/:id canonical update drift`
+- [x] `BRS-06 fix(api-update-contract): make PUT /dashboard/bots/:id update canonical market-group strategy mapping transactionally`
+- [x] `BRS-07 fix(api-strategy-precedence): enforce canonical-first symbol->strategy assignment and compatibility fallback only`
+- [x] `BRS-08 test(api-regression): lock strict selected-bot symbol scope + canonical strategy precedence`
 - [ ] `BRS-09 test(web-regression): lock dashboard switch scenario A(1 symbol) vs B(4 symbols) for signals/context cards`
 - [ ] `BRS-10 refactor(web-runtime-contract): adapt dashboard runtime consumer only if API payload shape changes`
 - [ ] `BRS-11 qa(regression-pack): run focused API+WEB runtime scope pack + typechecks`
@@ -1937,6 +1937,11 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-18: Completed `BRS-03` by narrowing runtime-read canonical filters from `ACTIVE|PAUSED` to `ACTIVE` in `apps/api/src/modules/bots/botsRuntimeRead.repository.ts` and `apps/api/src/modules/bots/runtimeStrategyDisplayBySymbol.service.ts` so paused groups do not contribute to default dashboard runtime scope.
 - 2026-04-18: Completed `BRS-04` by hardening `apps/api/src/modules/bots/botsRuntimeRead.service.ts` symbol derivation: default symbol set now originates from canonical active scope only, session/event rows can enrich canonical symbols but cannot expand symbol set, and explicit `query.symbol` behavior is preserved.
 - 2026-04-18: Closed `BRS-A` implementation wave (`BRS-01..BRS-04`) and advanced queue focus to `BRS-B`; validation completed for available local gates (`pnpm --filter api run typecheck` PASS, `pnpm run quality:guardrails` PASS). Focused e2e run is environment-blocked in this session because Docker Engine and local `postgres:5432` are unavailable.
+- 2026-04-18: Completed `BRS-05` by adding canonical update regression in `apps/api/src/modules/bots/bots.runtime-scope.e2e.test.ts` (`updates canonical runtime graph mapping when strategyId and marketGroupId are changed via PUT`) to lock runtime-graph canonical mapping after `PUT /dashboard/bots/:id`.
+- 2026-04-18: Completed `BRS-06` by making `updateBot` canonical-path aware in `apps/api/src/modules/bots/botsCommand.service.ts`: bot metadata update and canonical group+strategy mapping sync now execute in one transaction; legacy mapping remains compatibility-only mirror.
+- 2026-04-18: Completed `BRS-07` by enforcing canonical-first runtime strategy assignment in `apps/api/src/modules/bots/runtimeSymbolStatsEnrichment.service.ts` (canonical links populate symbol strategy context before legacy fallback).
+- 2026-04-18: Completed `BRS-08` by adding closure regression `keeps strict selected-bot scope and resolves strategy context from canonical links before legacy fallback` in `apps/api/src/modules/bots/bots.runtime-scope.e2e.test.ts` (strict symbol scope + paused exclusion + canonical strategy context visibility).
+- 2026-04-18: Closed `BRS-B` implementation wave (`BRS-05..BRS-08`) and advanced queue focus to `BRS-C`. Validation: `pnpm --filter api run typecheck` => `PASS`; `pnpm run quality:guardrails` => `PASS`; `pnpm --filter api test -- src/modules/bots/bots.runtime-scope.e2e.test.ts` => `3/3 PASS`.
 
 ## Phase UXR-G - Dashboard Wallet + Manual Order Layout Polish (Queued 2026-04-18)
 - [ ] `UXR-G-01 docs(contract): freeze dashboard wallet/manual-order layout and row-order contract`

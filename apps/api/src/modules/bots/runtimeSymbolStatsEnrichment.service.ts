@@ -27,11 +27,11 @@ export const buildConfiguredStrategyBySymbol = (params: {
     }
   };
 
-  for (const configuredBotStrategy of params.configuredBotStrategies) {
-    assignStrategy(configuredBotStrategy);
-  }
   for (const configuredLink of params.configuredMarketGroupStrategyLinks) {
     assignStrategy(configuredLink);
+  }
+  for (const configuredBotStrategy of params.configuredBotStrategies) {
+    assignStrategy(configuredBotStrategy);
   }
 
   if (configuredStrategyBySymbol.size === 0 && params.strategiesById.size > 0) {
