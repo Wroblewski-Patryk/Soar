@@ -1,6 +1,6 @@
 # Wallet Module Implementation Plan (WLT) - 2026-04-07
 
-Status: active, Phase A docs contracts completed (2026-04-16).
+Status: closed (2026-04-17, historical implementation reference).
 
 ## Objective
 Add a first-class `Wallet` module (CRUD + dashboard navigation) and make wallet context the source of truth for bot execution mode and capital budgeting.

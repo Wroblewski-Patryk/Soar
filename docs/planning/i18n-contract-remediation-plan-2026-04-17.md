@@ -1,6 +1,6 @@
 # i18n Contract Remediation Plan (2026-04-17)
 
-Status: planned  
+Status: closed (L10NQ-A..L10NQ-D completed 2026-04-18)  
 Execution mode: tiny-commit only (one task per commit)
 
 ## Goal
@@ -140,4 +140,3 @@ Execution mode: tiny-commit only (one task per commit)
 3. Language switcher labels are sourced from i18n keys, not static hardcoded labels.
 4. PT (`pt-PT`) path contains real Portuguese copy for core dashboard/backtest surfaces.
 5. Localization policy and QA docs are updated to English-only with explicit `pt-PT` contract.
-

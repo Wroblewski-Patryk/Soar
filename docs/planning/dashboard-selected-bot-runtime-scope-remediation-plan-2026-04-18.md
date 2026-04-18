@@ -1,6 +1,6 @@
 # Dashboard Selected-Bot Runtime Scope Remediation Plan (2026-04-18)
 
-Status: queued-for-execution  
+Status: closed (BRS-A..BRS-C completed 2026-04-18)  
 Execution mode: tiny-commit only (exactly one task per commit)  
 Primary audience: implementation agent
 

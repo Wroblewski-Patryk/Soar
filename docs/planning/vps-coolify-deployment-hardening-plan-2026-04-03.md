@@ -1,6 +1,6 @@
 # VPS / Coolify Deployment Hardening Plan (2026-04-03)
 
-Status: in progress  
+Status: execution-complete (DPL-21..32 closed; OPV follow-up queued)  
 Owner: Ops + Backend + Frontend  
 Scope: production deployment path for CryptoSparrow on VPS with Coolify, plus non-Coolify fallback.
 

@@ -1,6 +1,6 @@
 # Dashboard Runtime Bot Selector Parity Fix Plan (2026-04-18)
 
-Status: queued-hotfix-after-current-wave  
+Status: closed (DBSEL-A completed 2026-04-18)  
 Execution mode: tiny-commit only (exactly one task per commit)  
 Primary audience: implementation agent
 

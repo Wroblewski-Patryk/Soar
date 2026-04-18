@@ -1,6 +1,6 @@
 # CPU/DB Optimization Commit Plan (2026-04-06)
 
-Status: ready for execution  
+Status: closed (2026-04-16, historical reference)  
 Owner: API + Web + Ops  
 Scope: runtime CPU hot path, DB pressure, dashboard polling pressure, worker scalability.
 

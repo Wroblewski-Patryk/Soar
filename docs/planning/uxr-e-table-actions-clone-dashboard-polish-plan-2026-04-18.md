@@ -1,6 +1,6 @@
 # UXR-E Table Actions + Clone + Dashboard Polish Plan (2026-04-18)
 
-Status: queued-after-current-phase  
+Status: closed (UXR-E-A..UXR-E-C completed 2026-04-18)  
 Execution mode: tiny-commit only (exactly one task per commit)  
 Primary audience: implementation agent
 

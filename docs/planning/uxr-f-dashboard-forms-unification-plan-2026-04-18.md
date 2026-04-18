@@ -1,6 +1,6 @@
 # UXR-F Dashboard Create/Edit Forms UX/UI Unification Plan (2026-04-18)
 
-Status: queued-after-active-waves  
+Status: closed (UXR-F-A..UXR-F-D completed 2026-04-18)  
 Execution mode: tiny-commit only (exactly one task per commit)  
 Primary audience: implementation agent
 

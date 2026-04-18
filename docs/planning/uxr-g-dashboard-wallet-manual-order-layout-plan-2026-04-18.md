@@ -1,6 +1,6 @@
 # UXR-G Dashboard Wallet + Manual Order Layout Plan (2026-04-18)
 
-Status: queued-after-current-phase  
+Status: closed (UXR-G-A..UXR-G-B completed 2026-04-18)  
 Execution mode: tiny-commit only (one task per commit)  
 Primary audience: execution agent
 

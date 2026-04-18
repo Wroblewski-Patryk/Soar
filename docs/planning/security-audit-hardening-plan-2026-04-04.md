@@ -1,6 +1,6 @@
 # Security Audit + Hardening Plan (2026-04-04)
 
-Status: planned  
+Status: closed (2026-04-17, historical reference)  
 Owner: Backend + Web + Ops  
 Scope: full security review of `apps/api` + `apps/web`, dependency posture, and planning coverage.
 
