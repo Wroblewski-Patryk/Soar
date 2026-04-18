@@ -888,6 +888,7 @@ describe("HomeLiveWidgets", () => {
 
     renderSubject();
     expect(await screen.findByTestId("manual-order-panel")).toBeInTheDocument();
+    expect(screen.getByTestId("wallet-section").compareDocumentPosition(screen.getByTestId("manual-order-section")) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 
     const symbolSelect = await screen.findByLabelText(/Symbol/i);
     fireEvent.change(symbolSelect, { target: { value: "BTCUSDT" } });
@@ -1660,17 +1661,24 @@ describe("HomeLiveWidgets", () => {
     await waitFor(() => {
       const walletKpiRow = screen.getByTestId("wallet-kpi-row");
       expect(walletKpiRow).toBeInTheDocument();
-      expect(walletKpiRow.className).not.toMatch(/grid-cols/i);
+      expect(walletKpiRow.className).toMatch(/grid-cols-2/i);
 
-      const portfolioCard = screen.getByTestId("wallet-kpi-portfolio");
+      const allocationRow = screen.getByTestId("wallet-kpi-allocation-row");
+      const deltaRow = screen.getByTestId("wallet-kpi-delta-row");
+      const portfolioRow = screen.getByTestId("wallet-kpi-portfolio");
       const freeFundsCard = screen.getByTestId("wallet-kpi-free-funds");
       const inPositionsCard = screen.getByTestId("wallet-kpi-in-positions");
 
-      expect(within(portfolioCard).getByText(/Portfel|Portfolio/i)).toBeInTheDocument();
+      expect(allocationRow.compareDocumentPosition(deltaRow) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      expect(deltaRow.compareDocumentPosition(portfolioRow) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      expect(portfolioRow.className).not.toMatch(/rounded-box|border/i);
+      expect(within(portfolioRow).getByText(/Portfel|Portfolio/i)).toBeInTheDocument();
       expect(within(freeFundsCard).getByText(/Wolne srodki|Free funds/i)).toBeInTheDocument();
       expect(within(inPositionsCard).getByText(/W pozycjach|In positions/i)).toBeInTheDocument();
 
-      expect(within(portfolioCard).getByText(/200/)).toBeInTheDocument();
+      expect(freeFundsCard.className).toMatch(/w-full/i);
+      expect(inPositionsCard.className).toMatch(/w-full/i);
+      expect(within(portfolioRow).getByText(/200/)).toBeInTheDocument();
       expect(within(freeFundsCard).getByText(/194/)).toBeInTheDocument();
       expect(within(inPositionsCard).getByText(/5/)).toBeInTheDocument();
     });
