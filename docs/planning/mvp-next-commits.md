@@ -7,13 +7,13 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `ARC-06 refactor(api-bots-read): split session/symbol-stats read models from botsRuntimeRead.service`
-## NEXT
 - [ ] `ARC-07 refactor(api-bots-read): split trades/positions read models and repositories`
+## NEXT
+- [ ] `ARC-08 refactor(api-bots-command): move close-position command path out of read service`
 - [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
 ## PIPELINE
-- [ ] `ARC-06 refactor(api-bots-read): split session/symbol-stats read models from botsRuntimeRead.service`
 - [ ] `ARC-07 refactor(api-bots-read): split trades/positions read models and repositories`
+- [ ] `ARC-08 refactor(api-bots-command): move close-position command path out of read service`
 - [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
 - [ ] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
 ## GROUP QUEUE
@@ -58,6 +58,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `ARC-06 refactor(api-bots-read): split session/symbol-stats read models from botsRuntimeRead.service`
+  - 2026-04-19: Extracted session list/detail ownership into `runtimeSessionRead.service.ts` and symbol-stats read-model assembly into `runtimeSessionSymbolStatsRead.service.ts`; `botsRuntimeRead.service.ts` now keeps only trades/positions/close flows plus re-exports for session/symbol-stats APIs. Validation: `pnpm --filter api run typecheck` => `PASS`; `pnpm --filter api run test -- src/modules/bots/bots.runtime-scope.e2e.test.ts --run` => `3/3 PASS`; `pnpm run quality:guardrails` => `PASS`.
 - [x] `ARC-D group closure (ARC-14..ARC-18)`
   - 2026-04-19: Closed ARC-D end-to-end by extracting dashboard-home view-model/route contract seams, moving bots monitoring aggregation into a dedicated service, splitting DataTable column-visibility state helpers, removing BacktestRunDetails locale-branch literals, and adding focused seam-regression tests. Validation: `pnpm --filter web run typecheck` => `PASS`; focused ARC-D regression pack => `37/37 PASS`.
 - [x] `ARC-18 test(web-ux-regression): lock decomposed container behavior and loading/stream states`

@@ -17,11 +17,11 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] ARC-06 Split bots runtime read service session/symbol-stats slices from monolith read flow
+- [ ] ARC-07 Split bots runtime read service trades/positions slices from monolith read flow
   - Status: READY
   - Group: Architecture Maintainability Remediation (`ARC-B`)
   - Owner: Backend Builder
-  - Depends on: ARC-05
+  - Depends on: ARC-06
   - Priority: P2
 
 ## BACKLOG
@@ -53,6 +53,7 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] ARC-06 Split bots runtime read service session/symbol-stats slices from monolith read flow
 - [x] ARC-D closed implementation scope (`ARC-14..ARC-18`): web container slimming + DataTable split + i18n literal cleanup + regression lock
 - [x] ARC-18 Add focused web regression locks for extracted ARC-D seams
 - [x] ARC-17 Remove BacktestRunDetails inline locale-branch labels

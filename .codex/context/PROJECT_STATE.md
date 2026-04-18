@@ -114,6 +114,11 @@ Last updated: 2026-04-19
   - production verification closure (`OPV`).
 
 ## Recent Progress
+- 2026-04-19: Completed `ARC-06` by extracting bots runtime session list/detail
+  ownership into `runtimeSessionRead.service.ts` and symbol-stats read-model
+  ownership into `runtimeSessionSymbolStatsRead.service.ts`, reducing
+  `botsRuntimeRead.service.ts` to trades/positions/close responsibilities for
+  the next ARC-B decomposition step.
 - 2026-04-19: closed `ARC-D` (`ARC-14..ARC-18`) end-to-end: extracted
   `HomeLiveWidgets` onboarding/view-model seams, moved bots monitoring
   aggregation into dedicated service ownership, split DataTable

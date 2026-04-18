@@ -1983,7 +1983,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - [x] `ARC-03 refactor(api-runtime): extract supervisor/watchdog from runtimeSignalLoop`
 - [x] `ARC-04 refactor(api-runtime): extract final-candle decision execution application service`
 - [x] `ARC-05 test(api-runtime): split and lock runtime regression by extracted seams`
-- [ ] `ARC-06 refactor(api-bots-read): split session/symbol-stats read models from botsRuntimeRead.service`
+- [x] `ARC-06 refactor(api-bots-read): split session/symbol-stats read models from botsRuntimeRead.service`
 - [ ] `ARC-07 refactor(api-bots-read): split trades/positions read models and repositories`
 - [ ] `ARC-08 refactor(api-bots-command): move close-position command path out of read service`
 - [ ] `ARC-09 feat(api-monitoring): add aggregate monitoring read endpoint for web consumers`
@@ -2006,6 +2006,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-19: Completed `ARC-03` by extracting runtime watchdog/stall/auto-restart orchestration from `runtimeSignalLoop.service.ts` into `runtimeSignalLoopSupervisor.ts` with callback-based integration and unchanged runtime regression outcomes.
 - 2026-04-19: Completed `ARC-04` by extracting final-candle runtime decision orchestration into `runtimeFinalCandleDecision.service.ts` and reducing `runtimeSignalLoop` responsibility to ingestion/routing/delegation seams.
 - 2026-04-19: Completed `ARC-05` by adding seam-owned regression suites (`runtimeSignalLoopSupervisor.test.ts`, `runtimeFinalCandleDecision.service.test.ts`) and locking null-direction no-trade coverage for extracted final-candle runtime path.
+- 2026-04-19: Completed `ARC-06` by extracting `listBotRuntimeSessions` and `getBotRuntimeSession` into `runtimeSessionRead.service.ts`, plus `listBotRuntimeSessionSymbolStats` into `runtimeSessionSymbolStatsRead.service.ts`; `botsRuntimeRead.service.ts` now delegates session/symbol-stats ownership to dedicated read services.
 - 2026-04-19: Completed `ARC-14` by extracting dashboard-home onboarding route/step contract and runtime-selection view-model ownership from `HomeLiveWidgets.tsx` into `runtimeOnboardingConfig.tsx` and `useRuntimeSelectionViewModel.ts`.
 - 2026-04-19: Completed `ARC-15` by moving bots monitoring aggregate payload composition into dedicated service ownership (`botsMonitoringAggregate.service.ts`) and reducing controller hook responsibilities.
 - 2026-04-19: Completed `ARC-16` by extracting DataTable column-visibility state ownership into `useDataTableColumnVisibilityState.ts` and rewiring `DataTable.tsx` to consume the extracted state helper.
