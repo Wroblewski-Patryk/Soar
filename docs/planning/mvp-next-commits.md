@@ -7,13 +7,12 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `BRS-09 test(web-regression): lock dashboard switch scenario A(1 symbol) vs B(4 symbols)`
-## NEXT
-- [ ] `BRS-10 refactor(web-runtime-contract): adapt dashboard runtime consumer only if API payload contract changes`
-- [ ] `BRS-11 qa(regression-pack): run focused API+WEB runtime scope regression pack`
-- [ ] `BRS-12 docs(closure): publish evidence and sync canonical queue/execution statuses`
-## PIPELINE
 - [ ] `UXR-G-01 docs(contract): freeze dashboard wallet/manual-order layout and row-order contract`
+## NEXT
+- [ ] `PLNC-01 docs(audit-map): classify planning docs as implemented/queued/external-blocked/superseded`
+- [ ] `ARC-01 docs(contract): freeze ARC decomposition boundaries and no-drift guardrails`
+- [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
+## PIPELINE
 - [ ] `PLNC-01 docs(audit-map): classify planning docs as implemented/queued/external-blocked/superseded`
 - [ ] `ARC-01 docs(contract): freeze ARC decomposition boundaries and no-drift guardrails`
 - [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
@@ -21,7 +20,7 @@ Operational queue for one-task execution runs.
 ## GROUP QUEUE
 - [x] `BRS-A (commits BRS-01..BRS-04): decision closure + strict selected-bot scope foundation`
 - [x] `BRS-B (commits BRS-05..BRS-08): canonical update-path fix + strategy precedence unification`
-- [ ] `BRS-C (commits BRS-09..BRS-12): dashboard switch regression + QA closure`
+- [x] `BRS-C (commits BRS-09..BRS-12): dashboard switch regression + QA closure`
 - [ ] `UXR-G-A (commits UXR-G-01..UXR-G-03): dashboard wallet/manual-order hierarchy + summary-row contract`
 - [ ] `UXR-G-B (commits UXR-G-04..UXR-G-06): 50/50 wallet KPI split + regression closure`
 - [ ] `PLNC-A (commits PLNC-01..PLNC-04): planning catalog reconciliation + status sync + canonical linkage`
@@ -84,6 +83,16 @@ Operational queue for one-task execution runs.
   - 2026-04-18: Added strict scope + precedence regression in `apps/api/src/modules/bots/bots.runtime-scope.e2e.test.ts` (`keeps strict selected-bot scope and resolves strategy context from canonical links before legacy fallback`) validating: no foreign symbols from session/event fallback, no paused-group leakage, canonical strategy context shown for selected bot symbols.
 - [x] `BRS-B group closure (BRS-05..BRS-08)`
   - 2026-04-18: Stage B implementation completed end-to-end (`update-contract regression + transactional canonical update path + canonical-first runtime precedence + closure regression pack`). Validation: `pnpm --filter api run typecheck` => `PASS`; `pnpm run quality:guardrails` => `PASS`; `pnpm --filter api test -- src/modules/bots/bots.runtime-scope.e2e.test.ts` => `3/3 PASS`.
+- [x] `BRS-09 test(web-regression): lock dashboard switch scenario A(1 symbol) vs B(4 symbols)`
+  - 2026-04-18: Added dashboard regression `keeps signal and context cards scoped when switching selected bot from A(1) to B(4)` in `apps/web/src/features/dashboard-home/components/HomeLiveWidgets.test.tsx`, asserting A-symbol/context eviction and B-scope rendering (`4` symbols + signal rail pager visibility) after selector switch.
+- [x] `BRS-10 refactor(web-runtime-contract): adapt dashboard runtime consumer only if API payload contract changes`
+  - 2026-04-18: Verified current API payload shape remains compatible with web runtime consumer; no adapter/refactor changes required in `useHomeLiveWidgetsController.ts`.
+- [x] `BRS-11 qa(regression-pack): run focused API+WEB runtime scope regression pack`
+  - 2026-04-18: Validation PASS pack completed: `pnpm --filter api test -- src/modules/bots/bots.runtime-scope.e2e.test.ts` => `3/3 PASS`; `pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets.test.tsx` => `16/16 PASS`; `pnpm --filter api run typecheck` => `PASS`; `pnpm --filter web run typecheck` => `PASS`.
+- [x] `BRS-12 docs(closure): publish remediation evidence and sync canonical queue/execution statuses`
+  - 2026-04-18: Synced `BRS-09..BRS-12` completion in canonical queue + execution plan and advanced `NOW` focus beyond `BRS-C`.
+- [x] `BRS-C group closure (BRS-09..BRS-12)`
+  - 2026-04-18: Stage C completed end-to-end (`web switch regression + contract compatibility verification + focused QA + docs sync`) and group marked done.
 - [x] `BRS planning queued (dashboard selected-bot runtime scope remediation)`
   - 2026-04-18: Published runtime scope remediation wave in `docs/planning/dashboard-selected-bot-runtime-scope-remediation-plan-2026-04-18.md` (`BRS-01..BRS-12`) covering strict selected-bot API scope, canonical-first strategy precedence, `PUT /dashboard/bots/:id` canonical update drift fix, and dashboard bot-switch regressions (`A=1 symbol`, `B=4 symbols`); promoted `BRS-01..BRS-05` to `NOW`.
 - [x] `QH-TSC-01 chore(web-verify-script): add canonical sequential build+typecheck script for web`

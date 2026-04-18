@@ -1925,10 +1925,10 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - [x] `BRS-06 fix(api-update-contract): make PUT /dashboard/bots/:id update canonical market-group strategy mapping transactionally`
 - [x] `BRS-07 fix(api-strategy-precedence): enforce canonical-first symbol->strategy assignment and compatibility fallback only`
 - [x] `BRS-08 test(api-regression): lock strict selected-bot symbol scope + canonical strategy precedence`
-- [ ] `BRS-09 test(web-regression): lock dashboard switch scenario A(1 symbol) vs B(4 symbols) for signals/context cards`
-- [ ] `BRS-10 refactor(web-runtime-contract): adapt dashboard runtime consumer only if API payload shape changes`
-- [ ] `BRS-11 qa(regression-pack): run focused API+WEB runtime scope pack + typechecks`
-- [ ] `BRS-12 docs(closure): publish remediation evidence and sync canonical queue/execution statuses`
+- [x] `BRS-09 test(web-regression): lock dashboard switch scenario A(1 symbol) vs B(4 symbols) for signals/context cards`
+- [x] `BRS-10 refactor(web-runtime-contract): adapt dashboard runtime consumer only if API payload shape changes`
+- [x] `BRS-11 qa(regression-pack): run focused API+WEB runtime scope pack + typechecks`
+- [x] `BRS-12 docs(closure): publish remediation evidence and sync canonical queue/execution statuses`
 
 ### Progress Log (Phase BRS - Dashboard Selected-Bot Runtime Scope Remediation)
 - 2026-04-18: Completed `BRS-01` by closing pending decision in `open-decisions`: selected-bot runtime `signals/markets` scope is strict canonical by default (`ACTIVE + isEnabled` only), `PAUSED` groups are excluded by default, session/event fallback cannot expand symbols beyond canonical selected-bot scope, and legacy mapping is compatibility fallback only (cannot override canonical strategy context). Synced contract notes in `docs/modules/api-bots.md` and `docs/modules/web-dashboard-home.md`.
@@ -1942,6 +1942,11 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-18: Completed `BRS-07` by enforcing canonical-first runtime strategy assignment in `apps/api/src/modules/bots/runtimeSymbolStatsEnrichment.service.ts` (canonical links populate symbol strategy context before legacy fallback).
 - 2026-04-18: Completed `BRS-08` by adding closure regression `keeps strict selected-bot scope and resolves strategy context from canonical links before legacy fallback` in `apps/api/src/modules/bots/bots.runtime-scope.e2e.test.ts` (strict symbol scope + paused exclusion + canonical strategy context visibility).
 - 2026-04-18: Closed `BRS-B` implementation wave (`BRS-05..BRS-08`) and advanced queue focus to `BRS-C`. Validation: `pnpm --filter api run typecheck` => `PASS`; `pnpm run quality:guardrails` => `PASS`; `pnpm --filter api test -- src/modules/bots/bots.runtime-scope.e2e.test.ts` => `3/3 PASS`.
+- 2026-04-18: Completed `BRS-09` by adding web regression `keeps signal and context cards scoped when switching selected bot from A(1) to B(4)` in `apps/web/src/features/dashboard-home/components/HomeLiveWidgets.test.tsx`; test locks selector switch behavior, A-context eviction, B-scope symbol rendering, and rail control visibility for larger symbol sets.
+- 2026-04-18: Completed `BRS-10` with compatibility verification only: current API runtime payload shape is unchanged for web consumer contracts, so no refactor in `useHomeLiveWidgetsController.ts` was required.
+- 2026-04-18: Completed `BRS-11` focused regression/typecheck pack. Validation: `pnpm --filter api test -- src/modules/bots/bots.runtime-scope.e2e.test.ts` => `3/3 PASS`; `pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets.test.tsx` => `16/16 PASS`; `pnpm --filter api run typecheck` => `PASS`; `pnpm --filter web run typecheck` => `PASS`.
+- 2026-04-18: Completed `BRS-12` by syncing canonical queue and execution statuses for `BRS-09..BRS-12` and advancing execution focus past `BRS-C`.
+- 2026-04-18: Closed `BRS-C` implementation wave (`BRS-09..BRS-12`) end-to-end (`web regression + compatibility check + focused QA + docs closure`).
 
 ## Phase UXR-G - Dashboard Wallet + Manual Order Layout Polish (Queued 2026-04-18)
 - [ ] `UXR-G-01 docs(contract): freeze dashboard wallet/manual-order layout and row-order contract`

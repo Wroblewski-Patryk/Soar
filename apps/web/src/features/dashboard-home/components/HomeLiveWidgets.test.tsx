@@ -1053,6 +1053,282 @@ describe("HomeLiveWidgets", () => {
     expect(openPositionsTab.compareDocumentPosition(signalsAnchor) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
+  it("keeps signal and context cards scoped when switching selected bot from A(1) to B(4)", async () => {
+    listBotsMock.mockResolvedValue([
+      {
+        id: "bot-scope-a",
+        name: "A Scope Bot",
+        mode: "PAPER",
+        paperStartBalance: 10000,
+        marketType: "FUTURES",
+        positionMode: "ONE_WAY",
+        strategyId: "str-scope-a",
+        isActive: true,
+        liveOptIn: false,
+        maxOpenPositions: 2,
+      },
+      {
+        id: "bot-scope-b",
+        name: "B Scope Bot",
+        mode: "PAPER",
+        paperStartBalance: 10000,
+        marketType: "FUTURES",
+        positionMode: "ONE_WAY",
+        strategyId: "str-scope-b",
+        isActive: true,
+        liveOptIn: false,
+        maxOpenPositions: 2,
+      },
+    ]);
+
+    listBotRuntimeSessionsMock.mockImplementation(async (botId: string) => {
+      if (botId === "bot-scope-a") {
+        return [
+          {
+            id: "session-scope-a",
+            botId,
+            mode: "PAPER",
+            status: "RUNNING",
+            startedAt: "2026-03-31T10:00:00.000Z",
+            finishedAt: null,
+            lastHeartbeatAt: "2026-03-31T10:05:00.000Z",
+            stopReason: null,
+            errorMessage: null,
+            createdAt: "2026-03-31T10:00:00.000Z",
+            updatedAt: "2026-03-31T10:05:00.000Z",
+            durationMs: 300000,
+            eventsCount: 1,
+            symbolsTracked: 1,
+            summary: {
+              totalSignals: 1,
+              dcaCount: 0,
+              closedTrades: 0,
+              realizedPnl: 0,
+            },
+          },
+        ];
+      }
+      return [
+        {
+          id: "session-scope-b",
+          botId,
+          mode: "PAPER",
+          status: "RUNNING",
+          startedAt: "2026-03-31T10:00:00.000Z",
+          finishedAt: null,
+          lastHeartbeatAt: "2026-03-31T10:05:00.000Z",
+          stopReason: null,
+          errorMessage: null,
+          createdAt: "2026-03-31T10:00:00.000Z",
+          updatedAt: "2026-03-31T10:05:00.000Z",
+          durationMs: 300000,
+          eventsCount: 4,
+          symbolsTracked: 4,
+          summary: {
+            totalSignals: 4,
+            dcaCount: 0,
+            closedTrades: 0,
+            realizedPnl: 0,
+          },
+        },
+      ];
+    });
+
+    listBotRuntimeSessionSymbolStatsMock.mockImplementation(async (botId: string, sessionId: string) => {
+      if (botId === "bot-scope-a") {
+        return {
+          sessionId,
+          items: [
+            {
+              id: "stat-scope-a-1",
+              userId: "u-scope",
+              botId,
+              sessionId,
+              symbol: "ADAUSDT",
+              totalSignals: 1,
+              longEntries: 1,
+              shortEntries: 0,
+              exits: 0,
+              dcaCount: 0,
+              closedTrades: 0,
+              winningTrades: 0,
+              losingTrades: 0,
+              realizedPnl: 0,
+              grossProfit: 0,
+              grossLoss: 0,
+              feesPaid: 0,
+              openPositionCount: 0,
+              openPositionQty: 0,
+              unrealizedPnl: 0,
+              lastPrice: 1.01,
+              lastSignalAt: "2026-03-31T10:05:00.000Z",
+              lastSignalDirection: "LONG",
+              lastSignalDecisionAt: "2026-03-31T10:05:00.000Z",
+              lastSignalConditionLines: [
+                {
+                  scope: "LONG",
+                  left: "A_CTX_FAST",
+                  operator: ">",
+                  right: "A_CTX_SLOW",
+                  value: "ACTIVE",
+                },
+              ],
+              lastTradeAt: null,
+              snapshotAt: "2026-03-31T10:05:00.000Z",
+              createdAt: "2026-03-31T10:05:00.000Z",
+              updatedAt: "2026-03-31T10:05:00.000Z",
+            },
+          ],
+          summary: {
+            totalSignals: 1,
+            longEntries: 1,
+            shortEntries: 0,
+            exits: 0,
+            dcaCount: 0,
+            closedTrades: 0,
+            winningTrades: 0,
+            losingTrades: 0,
+            realizedPnl: 0,
+            unrealizedPnl: 0,
+            totalPnl: 0,
+            grossProfit: 0,
+            grossLoss: 0,
+            feesPaid: 0,
+          },
+        };
+      }
+
+      const symbols = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "XRPUSDT"];
+      return {
+        sessionId,
+        items: symbols.map((symbol, index) => ({
+          id: `stat-scope-b-${index + 1}`,
+          userId: "u-scope",
+          botId,
+          sessionId,
+          symbol,
+          totalSignals: 1,
+          longEntries: index % 2 === 0 ? 1 : 0,
+          shortEntries: index % 2 === 1 ? 1 : 0,
+          exits: 0,
+          dcaCount: 0,
+          closedTrades: 0,
+          winningTrades: 0,
+          losingTrades: 0,
+          realizedPnl: 0,
+          grossProfit: 0,
+          grossLoss: 0,
+          feesPaid: 0,
+          openPositionCount: 0,
+          openPositionQty: 0,
+          unrealizedPnl: 0,
+          lastPrice: 100 + index,
+          lastSignalAt: "2026-03-31T10:05:00.000Z",
+          lastSignalDirection: index % 2 === 0 ? "LONG" : "SHORT",
+          lastSignalDecisionAt: "2026-03-31T10:05:00.000Z",
+          lastSignalConditionLines: [
+            {
+              scope: index % 2 === 0 ? "LONG" : "SHORT",
+              left: `B_CTX_${index + 1}`,
+              operator: ">",
+              right: `B_REF_${index + 1}`,
+              value: "ACTIVE",
+            },
+          ],
+          lastTradeAt: null,
+          snapshotAt: "2026-03-31T10:05:00.000Z",
+          createdAt: "2026-03-31T10:05:00.000Z",
+          updatedAt: "2026-03-31T10:05:00.000Z",
+        })),
+        summary: {
+          totalSignals: 4,
+          longEntries: 2,
+          shortEntries: 2,
+          exits: 0,
+          dcaCount: 0,
+          closedTrades: 0,
+          winningTrades: 0,
+          losingTrades: 0,
+          realizedPnl: 0,
+          unrealizedPnl: 0,
+          totalPnl: 0,
+          grossProfit: 0,
+          grossLoss: 0,
+          feesPaid: 0,
+        },
+      };
+    });
+
+    listBotRuntimeSessionPositionsMock.mockImplementation(async (_botId: string, sessionId: string) => ({
+      sessionId,
+      total: 0,
+      openCount: 0,
+      closedCount: 0,
+      openOrdersCount: 0,
+      showDynamicStopColumns: false,
+      window: {
+        startedAt: "2026-03-31T10:00:00.000Z",
+        finishedAt: "2026-03-31T10:05:00.000Z",
+      },
+      summary: {
+        realizedPnl: 0,
+        unrealizedPnl: 0,
+        feesPaid: 0,
+      },
+      openOrders: [],
+      openItems: [],
+      historyItems: [],
+    }));
+
+    listBotRuntimeSessionTradesMock.mockImplementation(async (_botId: string, sessionId: string) => ({
+      sessionId,
+      total: 0,
+      meta: {
+        page: 1,
+        pageSize: 25,
+        total: 0,
+        totalPages: 0,
+        hasPrev: false,
+        hasNext: false,
+      },
+      window: {
+        startedAt: "2026-03-31T10:00:00.000Z",
+        finishedAt: "2026-03-31T10:05:00.000Z",
+      },
+      items: [],
+    }));
+
+    renderSubject();
+
+    let selector: HTMLSelectElement;
+    await waitFor(() => {
+      const selectorLabel = screen.getByText(/Wybrany bot|Selected bot/i).closest("label");
+      expect(selectorLabel).not.toBeNull();
+      selector = within(selectorLabel as HTMLLabelElement).getByRole("combobox") as HTMLSelectElement;
+      expect(selector.value).toBe("bot-scope-a");
+      expect(screen.getAllByText("ADAUSDT").length).toBeGreaterThan(0);
+      expect(screen.getByText("A_CTX_FAST")).toBeInTheDocument();
+      expect(screen.queryAllByText("SOLUSDT")).toHaveLength(0);
+      expect(screen.queryByRole("button", { name: /Wstecz|Prev/i })).toBeNull();
+      expect(screen.queryByRole("button", { name: /Dalej|Next/i })).toBeNull();
+    });
+
+    fireEvent.change(selector!, { target: { value: "bot-scope-b" } });
+
+    await waitFor(() => {
+      expect(selector!.value).toBe("bot-scope-b");
+      expect(screen.queryAllByText("ADAUSDT")).toHaveLength(0);
+      expect(screen.queryByText("A_CTX_FAST")).not.toBeInTheDocument();
+      expect(screen.getAllByText("BTCUSDT").length).toBeGreaterThan(0);
+      expect(screen.getAllByText("ETHUSDT").length).toBeGreaterThan(0);
+      expect(screen.getAllByText("SOLUSDT").length).toBeGreaterThan(0);
+      expect(screen.getAllByText("XRPUSDT").length).toBeGreaterThan(0);
+      expect(screen.getByText("B_CTX_1")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /Wstecz|Prev/i })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /Dalej|Next/i })).toBeInTheDocument();
+    });
+  });
+
   it("renders LIVE wallet metrics from runtime capital snapshot in sidebar widget", async () => {
     listBotsMock.mockResolvedValue([
       {
