@@ -17,11 +17,11 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] ARC-07 Split bots runtime read service trades/positions slices from monolith read flow
+- [ ] ARC-11 Extract shared indicator projection/evaluation kernel for runtime and backtests
   - Status: READY
-  - Group: Architecture Maintainability Remediation (`ARC-B`)
+  - Group: Architecture Maintainability Remediation (`ARC-C`)
   - Owner: Backend Builder
-  - Depends on: ARC-06
+  - Depends on: ARC-B
   - Priority: P2
 
 ## BACKLOG
@@ -53,6 +53,11 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] ARC-B closed implementation scope (`ARC-06..ARC-10`): bots runtime CQRS decomposition + aggregate monitoring contract
+- [x] ARC-10 Lock API+WEB aggregate monitoring contract and fallback behavior
+- [x] ARC-09 Add API aggregate monitoring endpoint for web consumers
+- [x] ARC-08 Move runtime close-position command path into command service ownership
+- [x] ARC-07 Split bots runtime read service trades/positions slices from monolith read flow
 - [x] ARC-06 Split bots runtime read service session/symbol-stats slices from monolith read flow
 - [x] ARC-D closed implementation scope (`ARC-14..ARC-18`): web container slimming + DataTable split + i18n literal cleanup + regression lock
 - [x] ARC-18 Add focused web regression locks for extracted ARC-D seams

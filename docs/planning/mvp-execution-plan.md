@@ -1984,10 +1984,10 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - [x] `ARC-04 refactor(api-runtime): extract final-candle decision execution application service`
 - [x] `ARC-05 test(api-runtime): split and lock runtime regression by extracted seams`
 - [x] `ARC-06 refactor(api-bots-read): split session/symbol-stats read models from botsRuntimeRead.service`
-- [ ] `ARC-07 refactor(api-bots-read): split trades/positions read models and repositories`
-- [ ] `ARC-08 refactor(api-bots-command): move close-position command path out of read service`
-- [ ] `ARC-09 feat(api-monitoring): add aggregate monitoring read endpoint for web consumers`
-- [ ] `ARC-10 test(api+web-monitoring): lock aggregate read-model contract and fallback behavior`
+- [x] `ARC-07 refactor(api-bots-read): split trades/positions read models and repositories`
+- [x] `ARC-08 refactor(api-bots-command): move close-position command path out of read service`
+- [x] `ARC-09 feat(api-monitoring): add aggregate monitoring read endpoint for web consumers`
+- [x] `ARC-10 test(api+web-monitoring): lock aggregate read-model contract and fallback behavior`
 - [ ] `ARC-11 feat(api-domain-kernel): extract shared indicator projection/evaluation kernel for runtime+backtests`
 - [ ] `ARC-12 refactor(api-backtests): reduce backtests.service to facade over dedicated services`
 - [ ] `ARC-13 test(api-parity): regression lock for shared kernel parity (runtime vs backtest)`
@@ -2012,6 +2012,10 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-19: Completed `ARC-16` by extracting DataTable column-visibility state ownership into `useDataTableColumnVisibilityState.ts` and rewiring `DataTable.tsx` to consume the extracted state helper.
 - 2026-04-19: Completed `ARC-17` by replacing BacktestRunDetails inline locale-branch labels with namespace-driven copy fields and locale-agnostic regression assertions.
 - 2026-04-19: Completed `ARC-18` by adding seam-focused web regression locks (`runtimeOnboardingConfig.test.tsx`, `botsMonitoringAggregate.service.test.ts`, `useDataTableColumnVisibilityState.test.ts`) and rerunning ARC-D focused closure checks (`pnpm --filter web run typecheck` + focused test pack `37/37 PASS`).
+- 2026-04-19: Completed `ARC-07` by extracting runtime trades/positions read ownership into dedicated services/repositories (`runtimeSessionTradesRead*`, `runtimeSessionPositionsRead*`) and reducing `botsRuntimeRead.service.ts` to export-only read seams.
+- 2026-04-19: Completed `ARC-08` by moving runtime close-position command orchestration to dedicated command ownership (`runtimeSessionPositionCommand.service.ts`) and re-exporting it via `botsCommand.service.ts`.
+- 2026-04-19: Completed `ARC-09` by introducing backend aggregate monitoring read model endpoint `GET /dashboard/bots/:id/runtime-monitoring/aggregate` with status/symbol/session-limit query contract.
+- 2026-04-19: Completed `ARC-10` by locking aggregate monitoring contract and API-fallback behavior with focused packs: `pnpm --filter api run test -- src/modules/bots/bots.monitoring-aggregate.e2e.test.ts --run` => `2/2 PASS`; `pnpm --filter web run test -- src/features/bots/services/botsMonitoringAggregate.service.test.ts --run` => `3/3 PASS`; plus `pnpm --filter api run typecheck`, `pnpm --filter web run typecheck`, `pnpm --filter api run build`, `pnpm run web:verify:build-typecheck`, `pnpm run quality:guardrails` => `PASS`.
 
 ## Phase POS - Position Lifecycle Parity Closure (Queued 2026-04-18)
 - [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`

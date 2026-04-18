@@ -5,8 +5,8 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/bots`
 - Owner: backend/trading-domain
-- Last updated: 2026-04-17
-- Related planning task: `UXR-01`
+- Last updated: 2026-04-19
+- Related planning task: `ARC-09`
 
 ## 1. Purpose and Scope
 - Owns bot command + runtime read APIs:
@@ -33,6 +33,7 @@ Out of scope:
   - `CreateBotDto`, `UpdateBotDto`, market-group/strategy link DTOs.
 - Runtime read contracts:
   - sessions, symbol stats, positions, trades, runtime graph.
+  - aggregate monitoring payload (`sessionDetail + symbolStats + positions + trades`).
 - Assistant contracts:
   - get/upsert config, subagent slot operations, dry-run decision trace.
 - Key invariants:
@@ -55,6 +56,7 @@ Out of scope:
 - Representative routes:
   - `GET/POST/PUT/DELETE /dashboard/bots`
   - `GET /dashboard/bots/:id/runtime-graph`
+  - `GET /dashboard/bots/:id/runtime-monitoring/aggregate`
   - `GET /dashboard/bots/:id/runtime-sessions*`
   - `GET/POST/PUT/DELETE /dashboard/bots/:id/market-groups*`
   - `GET/PUT /dashboard/bots/:id/assistant-config`

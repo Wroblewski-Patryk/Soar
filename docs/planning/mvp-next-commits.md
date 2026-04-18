@@ -7,13 +7,14 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `ARC-07 refactor(api-bots-read): split trades/positions read models and repositories`
+- [ ] `ARC-11 feat(api-domain-kernel): extract shared indicator projection/evaluation kernel for runtime+backtests`
 ## NEXT
-- [ ] `ARC-08 refactor(api-bots-command): move close-position command path out of read service`
-- [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
+- [ ] `ARC-12 refactor(api-backtests): reduce backtests.service to facade over dedicated services`
+- [ ] `ARC-13 test(api-parity): regression lock for shared kernel parity (runtime vs backtest)`
 ## PIPELINE
-- [ ] `ARC-07 refactor(api-bots-read): split trades/positions read models and repositories`
-- [ ] `ARC-08 refactor(api-bots-command): move close-position command path out of read service`
+- [ ] `ARC-11 feat(api-domain-kernel): extract shared indicator projection/evaluation kernel for runtime+backtests`
+- [ ] `ARC-12 refactor(api-backtests): reduce backtests.service to facade over dedicated services`
+- [ ] `ARC-13 test(api-parity): regression lock for shared kernel parity (runtime vs backtest)`
 - [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
 - [ ] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
 ## GROUP QUEUE
@@ -24,7 +25,7 @@ Operational queue for one-task execution runs.
 - [x] `UXR-G-B (commits UXR-G-04..UXR-G-06): 50/50 wallet KPI split + regression closure`
 - [x] `PLNC-A (commits PLNC-01..PLNC-04): planning catalog reconciliation + status sync + canonical linkage`
 - [x] `ARC-A (commits ARC-01..ARC-05): runtime critical-path decomposition foundations`
-- [ ] `ARC-B (commits ARC-06..ARC-10): bots runtime CQRS/read-model decomposition + aggregate monitoring contract`
+- [x] `ARC-B (commits ARC-06..ARC-10): bots runtime CQRS/read-model decomposition + aggregate monitoring contract`
 - [ ] `ARC-C (commits ARC-11..ARC-13): shared runtime/backtest indicator kernel + backtest facade alignment`
 - [x] `ARC-D (commits ARC-14..ARC-18): web container slimming + DataTable split + remaining i18n literal cleanup`
 - [ ] `ARC-E (commits ARC-19..ARC-20): guardrail tightening + architecture closure evidence`
@@ -58,6 +59,16 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `ARC-B group closure (ARC-06..ARC-10)`
+  - 2026-04-19: Closed ARC-B end-to-end by extracting runtime trades/positions read seams, moving runtime close-position into command service ownership, introducing backend aggregate monitoring endpoint (`GET /dashboard/bots/:id/runtime-monitoring/aggregate`), and switching web monitoring aggregate loading to API-first with client fallback.
+- [x] `ARC-10 test(api+web-monitoring): lock aggregate read-model contract and fallback behavior`
+  - 2026-04-19: Added focused API e2e coverage for aggregate monitoring endpoint (`bots.monitoring-aggregate.e2e.test.ts`) and web fallback/API-first contract tests in `botsMonitoringAggregate.service.test.ts`.
+- [x] `ARC-09 feat(api-monitoring): add aggregate monitoring read endpoint for web consumers`
+  - 2026-04-19: Added API aggregate read service (`runtimeMonitoringAggregateRead.service.ts`) and route/controller wiring for `GET /dashboard/bots/:id/runtime-monitoring/aggregate` with status/symbol/session-limit query support.
+- [x] `ARC-08 refactor(api-bots-command): move close-position command path out of read service`
+  - 2026-04-19: Moved runtime close-position orchestration from `botsRuntimeRead.service.ts` into dedicated command ownership (`runtimeSessionPositionCommand.service.ts`) and re-exported through `botsCommand.service.ts`.
+- [x] `ARC-07 refactor(api-bots-read): split trades/positions read models and repositories`
+  - 2026-04-19: Extracted runtime trades and positions read ownership into dedicated read repositories/services (`runtimeSessionTradesRead*`, `runtimeSessionPositionsRead*`) and reduced `botsRuntimeRead.service.ts` to API seam exports.
 - [x] `ARC-06 refactor(api-bots-read): split session/symbol-stats read models from botsRuntimeRead.service`
   - 2026-04-19: Extracted session list/detail ownership into `runtimeSessionRead.service.ts` and symbol-stats read-model assembly into `runtimeSessionSymbolStatsRead.service.ts`; `botsRuntimeRead.service.ts` now keeps only trades/positions/close flows plus re-exports for session/symbol-stats APIs. Validation: `pnpm --filter api run typecheck` => `PASS`; `pnpm --filter api run test -- src/modules/bots/bots.runtime-scope.e2e.test.ts --run` => `3/3 PASS`; `pnpm run quality:guardrails` => `PASS`.
 - [x] `ARC-D group closure (ARC-14..ARC-18)`

@@ -20,8 +20,8 @@ Last updated: 2026-04-19
   and IA changes.
 - 2026-04-17: Portuguese rollout is locked to `pt-PT`; `pt-BR` is not part of
   the current localization wave.
-- 2026-04-19: active execution focus moved to `ARC-B` after closing `ARC-A`
-  runtime decomposition foundations.
+- 2026-04-19: active execution focus moved to `ARC-C` after closing `ARC-B`
+  bots-runtime CQRS decomposition.
 
 ## Technical Baseline
 - Backend: Node.js 20+, Express API, Prisma, TypeScript
@@ -99,21 +99,40 @@ Last updated: 2026-04-19
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: execute `ARC-B` bots-runtime read-model
-  decomposition (`ARC-06..ARC-10`).
+- Main active objective: execute `ARC-C` shared runtime/backtest indicator
+  kernel and backtests facade decomposition (`ARC-11..ARC-13`).
 - Top blockers:
-  - `botsRuntimeRead.service.ts` still carries mixed read concerns
-    (session/symbol-stats/trades/positions) that slow safe iteration.
+  - runtime and backtest indicator evaluation paths still duplicate kernel logic
+    across `runtimeSignalLoop` and `backtests.service`.
 - Success criteria for this phase:
-  - `ARC-B` closes with split read seams and aggregate monitoring contract.
+  - `ARC-C` closes with shared indicator projection/evaluation kernel and
+    parity-locked runtime/backtest contracts.
   - canonical queue and context docs stay synchronized after each ARC batch.
   - no regressions in runtime safety, deploy confidence, or dashboard contracts.
-- Next queued follow-up after `ARC-B`:
-  - `ARC-C..ARC-E`,
+- Next queued follow-up after `ARC-C`:
+  - `ARC-D..ARC-E`,
   - lifecycle parity closure (`POS-36..42`),
   - production verification closure (`OPV`).
 
 ## Recent Progress
+- 2026-04-19: closed `ARC-B` (`ARC-06..ARC-10`) end-to-end by extracting
+  runtime trades/positions read seams, moving runtime close-position command
+  ownership into command service boundaries, introducing API aggregate
+  monitoring endpoint (`GET /dashboard/bots/:id/runtime-monitoring/aggregate`),
+  and switching web aggregate monitoring to API-first with deterministic client
+  fallback.
+- 2026-04-19: completed `ARC-10` API+WEB monitoring contract lock with focused
+  tests (`bots.monitoring-aggregate.e2e.test.ts`, `botsMonitoringAggregate.service.test.ts`)
+  and deployment-facing validation pack (`api build`, `web build+typecheck`,
+  `quality:guardrails`).
+- 2026-04-19: completed `ARC-09` by implementing backend aggregate monitoring
+  read-model service (`runtimeMonitoringAggregateRead.service.ts`) and
+  controller/route exposure for web consumers.
+- 2026-04-19: completed `ARC-08` by extracting runtime close-position command
+  orchestration from read service into `runtimeSessionPositionCommand.service.ts`.
+- 2026-04-19: completed `ARC-07` by extracting runtime trades/positions read
+  ownership into dedicated repositories/services
+  (`runtimeSessionTradesRead*`, `runtimeSessionPositionsRead*`).
 - 2026-04-19: Completed `ARC-06` by extracting bots runtime session list/detail
   ownership into `runtimeSessionRead.service.ts` and symbol-stats read-model
   ownership into `runtimeSessionSymbolStatsRead.service.ts`, reducing
