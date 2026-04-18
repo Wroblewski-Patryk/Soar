@@ -1953,3 +1953,58 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 
 ### Progress Log (Phase UXR-G - Dashboard Wallet + Manual Order Layout Polish)
 - 2026-04-18: Queued non-blocking UI-polish wave in `docs/planning/uxr-g-dashboard-wallet-manual-order-layout-plan-2026-04-18.md` with grouped batches `UXR-G-A..UXR-G-B`; scope is strictly dashboard runtime sidebar layout ergonomics (manual-order placement, wallet KPI row style/order, and 50/50 KPI split), without changing manual-order backend behavior.
+
+## Phase PLNC - Planning Catalog Reconciliation and Coverage Sync (Queued 2026-04-18)
+- [ ] `PLNC-01 docs(audit-map): classify planning docs as implemented/queued/external-blocked/superseded`
+- [ ] `PLNC-02 docs(status-sync): update stale status lines in completed planning files`
+- [ ] `PLNC-03 docs(queue-link): add canonical queue linkage in active non-closed plans`
+- [ ] `PLNC-04 docs(sync): publish planning-catalog closure note in PROJECT_STATE/TASK_BOARD`
+
+### Progress Log (Phase PLNC - Planning Catalog Reconciliation and Coverage Sync)
+- 2026-04-18: Queued planning-catalog reconciliation wave in `docs/planning/planning-catalog-coverage-follow-up-plan-2026-04-18.md` after scanning `docs/planning` coverage against canonical queue files; wave purpose is to close status drift and remove orphan active plans before deeper refactor waves.
+
+## Phase ARC - Architecture Maintainability Remediation (Queued 2026-04-18)
+- [ ] `ARC-01 docs(contract): freeze ARC decomposition boundaries and no-drift guardrails`
+- [ ] `ARC-02 refactor(api-runtime): extract typed runtime/live-ordering config from runtime services`
+- [ ] `ARC-03 refactor(api-runtime): extract supervisor/watchdog from runtimeSignalLoop`
+- [ ] `ARC-04 refactor(api-runtime): extract final-candle decision execution application service`
+- [ ] `ARC-05 test(api-runtime): split and lock runtime regression by extracted seams`
+- [ ] `ARC-06 refactor(api-bots-read): split session/symbol-stats read models from botsRuntimeRead.service`
+- [ ] `ARC-07 refactor(api-bots-read): split trades/positions read models and repositories`
+- [ ] `ARC-08 refactor(api-bots-command): move close-position command path out of read service`
+- [ ] `ARC-09 feat(api-monitoring): add aggregate monitoring read endpoint for web consumers`
+- [ ] `ARC-10 test(api+web-monitoring): lock aggregate read-model contract and fallback behavior`
+- [ ] `ARC-11 feat(api-domain-kernel): extract shared indicator projection/evaluation kernel for runtime+backtests`
+- [ ] `ARC-12 refactor(api-backtests): reduce backtests.service to facade over dedicated services`
+- [ ] `ARC-13 test(api-parity): regression lock for shared kernel parity (runtime vs backtest)`
+- [ ] `ARC-14 refactor(web-dashboard-home): split HomeLiveWidgets into view-model hooks + route contract config`
+- [ ] `ARC-15 refactor(web-bots-monitoring): move client-side aggregation to API aggregate consumer`
+- [ ] `ARC-16 refactor(web-datatable): split DataTable internals into state hooks/primitives`
+- [ ] `ARC-17 fix(web-i18n): remove remaining BacktestRunDetails inline locale-branch labels`
+- [ ] `ARC-18 test(web-ux-regression): lock decomposed container behavior and loading/stream states`
+- [ ] `ARC-19 chore(guardrails): tighten production hotspot budgets after refactor waves`
+- [ ] `ARC-20 docs(architecture-closure): publish maintainability delta and residual-risk snapshot`
+
+### Progress Log (Phase ARC - Architecture Maintainability Remediation)
+- 2026-04-18: Queued ARC wave from `docs/planning/architecture-maintainability-audit-2026-04-18.md` to address runtime/bots/backtest/dashboard maintainability hotspots with explicit decomposition and guardrail-closure path after active queue completion.
+
+## Phase POS - Position Lifecycle Parity Closure (Queued 2026-04-18)
+- [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
+- [ ] `POS-37 fix(runtime): align runtime automation mode/context with bot/position and manual-management guard`
+- [ ] `POS-38 feat(runtime-capital): add shared paper/live capital context with affordability parity`
+- [ ] `POS-39 refactor(runtime-dca): execute DCA through execution adapter parity path`
+- [ ] `POS-40 refactor(backtest): unify lifecycle adapter and retire duplicate close semantics`
+- [ ] `POS-41 test(parity): add golden parity fixtures across backtest/paper/live`
+- [ ] `POS-42 qa(manual): publish Binance side-by-side operator verification script and triage`
+
+### Progress Log (Phase POS - Position Lifecycle Parity Closure)
+- 2026-04-18: Queued unresolved `POS-36..POS-42` lifecycle parity tasks from `docs/planning/position-lifecycle-parity-remediation-plan-2026-03-29.md` because they remain outside active canonical queue coverage and are required for deterministic cross-mode lifecycle behavior.
+
+## Phase OPV - Production Verification and Exit-Gate Follow-up (Queued 2026-04-18)
+- [ ] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
+- [ ] `OPV-02 qa(prod-live-takeover): verify takeover endpoint and private ops probes on production target`
+- [ ] `OPV-03 ops(gates-refresh): refresh RC external-gate status/sign-off artifacts with new production evidence`
+- [ ] `OPV-04 docs(closure): sync LBT/V1 stability plan statuses and residual external blockers`
+
+### Progress Log (Phase OPV - Production Verification and Exit-Gate Follow-up)
+- 2026-04-18: Queued production follow-up closure from live-takeover/V1 plans (`LBT`, `V1` stability/release, `DPL` rehearsal note) so remaining target-environment verification and formal gate evidence are explicitly owned after code-focused waves.

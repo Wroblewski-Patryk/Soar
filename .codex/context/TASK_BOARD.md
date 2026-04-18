@@ -17,20 +17,32 @@ Last updated: 2026-04-18
 
 ## READY
 
-- [ ] BRS-05 Add failing regression for PUT bot canonical update drift
+- [ ] BRS-09 Add web regression for dashboard switch scenario A(1 symbol) vs B(4 symbols)
   - Status: READY
-  - Group: Dashboard Runtime Scope Remediation (`BRS-B`)
+  - Group: Dashboard Runtime Scope Remediation (`BRS-C`)
   - Owner: QA/Test
-  - Depends on: BRS-04
+  - Depends on: BRS-08
   - Priority: P1
 
 ## BACKLOG
 
-- [ ] BRS-06 Make PUT /dashboard/bots/:id update canonical group+strategy mapping transactionally
+- [ ] BRS-10 Adapt dashboard runtime consumer only if API payload contract changed
   - Status: BACKLOG
-  - Group: Dashboard Runtime Scope Remediation (`BRS-B`)
-  - Owner: Backend Builder
-  - Depends on: BRS-05
+  - Group: Dashboard Runtime Scope Remediation (`BRS-C`)
+  - Owner: Frontend Builder
+  - Depends on: BRS-09
+  - Priority: P1
+- [ ] BRS-11 Run focused API+WEB runtime scope regression pack + typechecks
+  - Status: BACKLOG
+  - Group: Dashboard Runtime Scope Remediation (`BRS-C`)
+  - Owner: QA/Test
+  - Depends on: BRS-10
+  - Priority: P1
+- [ ] BRS-12 Publish BRS closure artifacts and sync canonical queues
+  - Status: BACKLOG
+  - Group: Dashboard Runtime Scope Remediation (`BRS-C`)
+  - Owner: Product Docs
+  - Depends on: BRS-11
   - Priority: P1
 - [ ] UXR-G-02 Move dashboard manual-order section below wallet as same-level sidebar section
   - Status: BACKLOG
@@ -56,6 +68,30 @@ Last updated: 2026-04-18
   - Owner: QA/Test
   - Depends on: UXR-G-04
   - Priority: P2
+- [ ] PLNC-01 Classify planning catalog coverage and map active plans to canonical queue ownership
+  - Status: BACKLOG
+  - Group: Planning Catalog Reconciliation (`PLNC-A`)
+  - Owner: Product Docs
+  - Depends on: UXR-G-06
+  - Priority: P2
+- [ ] ARC-01 Freeze architecture maintainability remediation boundaries and extraction guardrails
+  - Status: BACKLOG
+  - Group: Architecture Maintainability Remediation (`ARC-A`)
+  - Owner: Product Docs
+  - Depends on: PLNC-03
+  - Priority: P2
+- [ ] POS-36 Remove strategy-exit close bypass from backtest/replay/runtime lifecycle flow
+  - Status: BACKLOG
+  - Group: Position Lifecycle Parity Closure (`POS-A`)
+  - Owner: Backend Builder
+  - Depends on: ARC-20
+  - Priority: P2
+- [ ] OPV-01 Execute Dockerfile-first stage/prod rehearsal and capture deployment evidence
+  - Status: BACKLOG
+  - Group: Production Verification Follow-up (`OPV-A`)
+  - Owner: Ops/Release
+  - Depends on: POS-42
+  - Priority: P3
 
 ## IN_PROGRESS
 
@@ -71,6 +107,13 @@ Last updated: 2026-04-18
 
 ## DONE
 
+- [x] Planning catalog coverage queued: `PLNC`, `ARC`, `POS`, `OPV` waves added as post-`BRS`/`UXR-G` execution backlog
+- [x] ARCH-AUDIT-2026-04-18 publish maintainability/monolith audit report for planner handoff
+- [x] BRS-B closed implementation scope (`BRS-05..BRS-08`): canonical update-path fix + precedence unification
+- [x] BRS-08 Add closure regression for strict selected-bot scope + canonical strategy precedence
+- [x] BRS-07 Enforce canonical-first strategy assignment in runtime symbol projection
+- [x] BRS-06 Make PUT /dashboard/bots/:id update canonical group+strategy mapping transactionally
+- [x] BRS-05 Add failing regression for PUT bot canonical update drift
 - [x] UXR-G planning queued: `UXR-G-01..UXR-G-06` dashboard wallet/manual-order layout polish wave added as post-BRS queue with tiny-commit execution doc
 - [x] BRS-A closed implementation scope (`BRS-01..BRS-04`): selected-bot runtime scope foundation (decision + regression + repository/service hardening)
 - [x] BRS-04 Prevent runtime symbol expansion beyond canonical selected-bot scope

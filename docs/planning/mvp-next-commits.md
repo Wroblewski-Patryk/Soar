@@ -14,12 +14,25 @@ Operational queue for one-task execution runs.
 - [ ] `BRS-12 docs(closure): publish evidence and sync canonical queue/execution statuses`
 ## PIPELINE
 - [ ] `UXR-G-01 docs(contract): freeze dashboard wallet/manual-order layout and row-order contract`
+- [ ] `PLNC-01 docs(audit-map): classify planning docs as implemented/queued/external-blocked/superseded`
+- [ ] `ARC-01 docs(contract): freeze ARC decomposition boundaries and no-drift guardrails`
+- [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
+- [ ] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
 ## GROUP QUEUE
 - [x] `BRS-A (commits BRS-01..BRS-04): decision closure + strict selected-bot scope foundation`
 - [x] `BRS-B (commits BRS-05..BRS-08): canonical update-path fix + strategy precedence unification`
 - [ ] `BRS-C (commits BRS-09..BRS-12): dashboard switch regression + QA closure`
 - [ ] `UXR-G-A (commits UXR-G-01..UXR-G-03): dashboard wallet/manual-order hierarchy + summary-row contract`
 - [ ] `UXR-G-B (commits UXR-G-04..UXR-G-06): 50/50 wallet KPI split + regression closure`
+- [ ] `PLNC-A (commits PLNC-01..PLNC-04): planning catalog reconciliation + status sync + canonical linkage`
+- [ ] `ARC-A (commits ARC-01..ARC-05): runtime critical-path decomposition foundations`
+- [ ] `ARC-B (commits ARC-06..ARC-10): bots runtime CQRS/read-model decomposition + aggregate monitoring contract`
+- [ ] `ARC-C (commits ARC-11..ARC-13): shared runtime/backtest indicator kernel + backtest facade alignment`
+- [ ] `ARC-D (commits ARC-14..ARC-18): web container slimming + DataTable split + remaining i18n literal cleanup`
+- [ ] `ARC-E (commits ARC-19..ARC-20): guardrail tightening + architecture closure evidence`
+- [ ] `POS-A (commits POS-36..POS-38): lifecycle contract parity foundations across backtest/paper/live`
+- [ ] `POS-B (commits POS-39..POS-42): runtime DCA execution parity + golden fixtures + operator QA`
+- [ ] `OPV-A (commits OPV-01..OPV-04): production rehearsal + live-takeover verification + exit-gate closure`
 - [x] `L10NQ-D-A (commits 01-05): inventory + guardrail hardening + auth/admin migration`
 - [x] `L10NQ-D-B (commits 06-10): reports/markets/backtests/bots/home copy migration`
 - [x] `L10NQ-D-C (commits 11-18): shared foundation localization + parity/smoke/closure`
@@ -47,6 +60,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `Planning catalog coverage audit queued (post-BRS/UXR-G follow-up waves)`
+  - 2026-04-18: Reviewed `docs/planning` coverage against canonical queue/execution context and queued post-active waves in `docs/planning/planning-catalog-coverage-follow-up-plan-2026-04-18.md` for (a) planning status drift reconciliation (`PLNC`), (b) architecture maintainability remediation (`ARC`), (c) position lifecycle parity (`POS-36..42`), and (d) production verification closure (`OPV`) with explicit ordering after `BRS` and `UXR-G`.
 - [x] `UXR-G planning queued (dashboard wallet/manual-order layout polish)`
   - 2026-04-18: Published queued wave in `docs/planning/uxr-g-dashboard-wallet-manual-order-layout-plan-2026-04-18.md` with `UXR-G-01..UXR-G-06` (manual-order section placement under wallet context, wallet KPI row style/order polish, 50/50 free-funds/in-positions layout, and focused dashboard-home regression/closure checks) and linked grouped batches `UXR-G-A..UXR-G-B` in canonical queue.
 - [x] `BRS-01 docs(decision): close dashboard runtime selected-bot scope policy (ACTIVE-only canonical + PAUSED exclusion default)`

@@ -100,21 +100,30 @@ Last updated: 2026-04-18
 
 ## Current Focus
 - Main active objective: execute `BRS` selected-bot runtime scope remediation
-  wave (`BRS-B` next) after closing `BRS-A` implementation foundation.
+  wave (`BRS-C` next) after closing `BRS-A` and `BRS-B` implementation groups.
 - Top blockers:
-  - local API e2e validation is currently environment-blocked in this session
-    because Docker Engine (and therefore local `postgres:5432`) is unavailable.
   - remaining selected-bot runtime contract drift is now concentrated in
-    canonical update-path and precedence tasks (`BRS-05..BRS-08`).
+    web regression, consumer-adapter verification, and closure evidence tasks
+    (`BRS-09..BRS-12`).
 - Success criteria for this phase:
-  - `BRS-B` closes with canonical update-path fix and canonical-first strategy
-    precedence.
+  - `BRS-C` closes with dashboard switch regression coverage and final
+    API+WEB closure evidence.
   - selected-bot dashboard runtime payload cannot expand symbols outside
     canonical active selected-bot scope.
   - canonical queue files and task board stay aligned after each group closure.
   - no regressions in auth, runtime, operator clarity, or deploy confidence.
+- Next queued follow-up after `BRS-C` + `UXR-G`:
+  - planning-catalog reconciliation (`PLNC`),
+  - architecture maintainability remediation (`ARC`),
+  - lifecycle parity closure (`POS-36..42`),
+  - production verification closure (`OPV`).
 
 ## Recent Progress
+- 2026-04-18: completed planning-catalog coverage audit and queued post-active
+  execution waves (`PLNC`, `ARC`, `POS`, `OPV`) via
+  `docs/planning/planning-catalog-coverage-follow-up-plan-2026-04-18.md`,
+  keeping active `BRS` queue unchanged.
+- 2026-04-18: published maintainability audit report for planner handoff in `docs/planning/architecture-maintainability-audit-2026-04-18.md`, refreshing monolith/hardcode hotspots, weak guardrails, and planner-ready refactor slices without changing the active `BRS` execution queue.
 - 2026-04-17: closed `BTMM-C`, `L10NQ-A`, `L10NQ-B`, `L10NQ-C`, `UXR-D`,
   `DOCSYNC-A`, and `A11Y-A` waves with evidence-backed validation.
 - 2026-04-18: closed `L10NQ-D-B` (`L10NQ-D-06..10`) and published follow-up
@@ -148,6 +157,16 @@ Last updated: 2026-04-18
   layers (`botsRuntimeRead.repository.ts`, `runtimeStrategyDisplayBySymbol.service.ts`,
   `botsRuntimeRead.service.ts`); local available validations PASS
   (`api typecheck`, `quality:guardrails`).
+- 2026-04-18: completed `BRS-B` implementation (`BRS-05..BRS-08`) by adding a
+  canonical update-path regression, implementing transactional canonical
+  `PUT /dashboard/bots/:id` mapping sync in `botsCommand.service.ts`,
+  enforcing canonical-first strategy precedence in
+  `runtimeSymbolStatsEnrichment.service.ts`, and publishing dedicated
+  scope-regression tests in `bots.runtime-scope.e2e.test.ts`.
+  Validation: `pnpm --filter api run typecheck` PASS,
+  `pnpm run quality:guardrails` PASS,
+  `pnpm --filter api test -- src/modules/bots/bots.runtime-scope.e2e.test.ts`
+  => `3/3 PASS`.
 - 2026-04-18: queued post-`BRS` `UXR-G` dashboard runtime sidebar layout wave
   (manual-order section below wallet as peer block, wallet summary row order
   polish, and 50/50 free-funds/in-positions split) in
