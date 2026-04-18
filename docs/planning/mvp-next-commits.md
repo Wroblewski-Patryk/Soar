@@ -26,7 +26,7 @@ Operational queue for one-task execution runs.
 - [x] `ARC-A (commits ARC-01..ARC-05): runtime critical-path decomposition foundations`
 - [ ] `ARC-B (commits ARC-06..ARC-10): bots runtime CQRS/read-model decomposition + aggregate monitoring contract`
 - [ ] `ARC-C (commits ARC-11..ARC-13): shared runtime/backtest indicator kernel + backtest facade alignment`
-- [ ] `ARC-D (commits ARC-14..ARC-18): web container slimming + DataTable split + remaining i18n literal cleanup`
+- [x] `ARC-D (commits ARC-14..ARC-18): web container slimming + DataTable split + remaining i18n literal cleanup`
 - [ ] `ARC-E (commits ARC-19..ARC-20): guardrail tightening + architecture closure evidence`
 - [ ] `POS-A (commits POS-36..POS-38): lifecycle contract parity foundations across backtest/paper/live`
 - [ ] `POS-B (commits POS-39..POS-42): runtime DCA execution parity + golden fixtures + operator QA`
@@ -58,6 +58,18 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `ARC-D group closure (ARC-14..ARC-18)`
+  - 2026-04-19: Closed ARC-D end-to-end by extracting dashboard-home view-model/route contract seams, moving bots monitoring aggregation into a dedicated service, splitting DataTable column-visibility state helpers, removing BacktestRunDetails locale-branch literals, and adding focused seam-regression tests. Validation: `pnpm --filter web run typecheck` => `PASS`; focused ARC-D regression pack => `37/37 PASS`.
+- [x] `ARC-18 test(web-ux-regression): lock decomposed container behavior and loading/stream states`
+  - 2026-04-19: Added focused seam tests for extracted ARC-D contracts: `runtimeOnboardingConfig.test.tsx`, `botsMonitoringAggregate.service.test.ts`, `useDataTableColumnVisibilityState.test.ts`.
+- [x] `ARC-17 fix(web-i18n): remove remaining BacktestRunDetails inline locale-branch labels`
+  - 2026-04-19: Replaced inline locale ternaries in `BacktestRunDetails` with namespace-driven copy contract labels and aligned tests to locale-agnostic assertions.
+- [x] `ARC-16 refactor(web-datatable): split DataTable internals into state hooks/primitives`
+  - 2026-04-19: Extracted DataTable column visibility ownership into `useDataTableColumnVisibilityState.ts` and rewired `DataTable.tsx` to use the dedicated helper.
+- [x] `ARC-15 refactor(web-bots-monitoring): move client-side aggregation to API aggregate consumer`
+  - 2026-04-19: Moved bots monitoring aggregate payload assembly into `botsMonitoringAggregate.service.ts` and reduced `useBotsMonitoringController` responsibility to orchestration.
+- [x] `ARC-14 refactor(web-dashboard-home): split HomeLiveWidgets into view-model hooks + route contract config`
+  - 2026-04-19: Extracted onboarding route/step contract and runtime selection view-model from `HomeLiveWidgets.tsx` into dedicated modules.
 - [x] `ARC-05 test(api-runtime): split and lock runtime regression by extracted seams`
   - 2026-04-19: Added seam-owned regression tests (`runtimeSignalLoopSupervisor.test.ts`, `runtimeFinalCandleDecision.service.test.ts`) and fixed null-direction test fixture drift so final-candle no-trade path remains locked under extracted runtime services.
 - [x] `ARC-04 refactor(api-runtime): extract final-candle decision execution application service`

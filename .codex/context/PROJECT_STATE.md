@@ -114,6 +114,16 @@ Last updated: 2026-04-19
   - production verification closure (`OPV`).
 
 ## Recent Progress
+- 2026-04-19: closed `ARC-D` (`ARC-14..ARC-18`) end-to-end: extracted
+  `HomeLiveWidgets` onboarding/view-model seams, moved bots monitoring
+  aggregation into dedicated service ownership, split DataTable
+  column-visibility helper ownership, removed `BacktestRunDetails` locale
+  branch literals, and added seam-focused regression locks.
+- 2026-04-19: completed `ARC-18` regression closure pack with new focused tests
+  (`runtimeOnboardingConfig.test.tsx`,
+  `botsMonitoringAggregate.service.test.ts`,
+  `useDataTableColumnVisibilityState.test.ts`) and validation
+  (`pnpm --filter web run typecheck` + focused ARC-D pack => `37/37 PASS`).
 - 2026-04-19: Completed `ARC-05` by splitting runtime regression ownership into
   seam-scoped suites (`runtimeSignalLoopSupervisor.test.ts`,
   `runtimeFinalCandleDecision.service.test.ts`) and locking the final-candle

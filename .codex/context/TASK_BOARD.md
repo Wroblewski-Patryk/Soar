@@ -53,6 +53,12 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] ARC-D closed implementation scope (`ARC-14..ARC-18`): web container slimming + DataTable split + i18n literal cleanup + regression lock
+- [x] ARC-18 Add focused web regression locks for extracted ARC-D seams
+- [x] ARC-17 Remove BacktestRunDetails inline locale-branch labels
+- [x] ARC-16 Split DataTable column-visibility state ownership into dedicated helper
+- [x] ARC-15 Move bots monitoring aggregate payload assembly into dedicated service
+- [x] ARC-14 Split HomeLiveWidgets onboarding/view-model ownership into dedicated modules
 - [x] ARC-A closed implementation scope (`ARC-01..ARC-05`): runtime critical-path decomposition foundations
 - [x] ARC-05 Split and lock runtime regression tests by extracted seams
 - [x] ARC-04 Extract final-candle decision execution application service from runtimeSignalLoop

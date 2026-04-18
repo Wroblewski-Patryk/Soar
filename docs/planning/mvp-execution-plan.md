@@ -1991,11 +1991,11 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - [ ] `ARC-11 feat(api-domain-kernel): extract shared indicator projection/evaluation kernel for runtime+backtests`
 - [ ] `ARC-12 refactor(api-backtests): reduce backtests.service to facade over dedicated services`
 - [ ] `ARC-13 test(api-parity): regression lock for shared kernel parity (runtime vs backtest)`
-- [ ] `ARC-14 refactor(web-dashboard-home): split HomeLiveWidgets into view-model hooks + route contract config`
-- [ ] `ARC-15 refactor(web-bots-monitoring): move client-side aggregation to API aggregate consumer`
-- [ ] `ARC-16 refactor(web-datatable): split DataTable internals into state hooks/primitives`
-- [ ] `ARC-17 fix(web-i18n): remove remaining BacktestRunDetails inline locale-branch labels`
-- [ ] `ARC-18 test(web-ux-regression): lock decomposed container behavior and loading/stream states`
+- [x] `ARC-14 refactor(web-dashboard-home): split HomeLiveWidgets into view-model hooks + route contract config`
+- [x] `ARC-15 refactor(web-bots-monitoring): move client-side aggregation to API aggregate consumer`
+- [x] `ARC-16 refactor(web-datatable): split DataTable internals into state hooks/primitives`
+- [x] `ARC-17 fix(web-i18n): remove remaining BacktestRunDetails inline locale-branch labels`
+- [x] `ARC-18 test(web-ux-regression): lock decomposed container behavior and loading/stream states`
 - [ ] `ARC-19 chore(guardrails): tighten production hotspot budgets after refactor waves`
 - [ ] `ARC-20 docs(architecture-closure): publish maintainability delta and residual-risk snapshot`
 
@@ -2006,6 +2006,11 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-19: Completed `ARC-03` by extracting runtime watchdog/stall/auto-restart orchestration from `runtimeSignalLoop.service.ts` into `runtimeSignalLoopSupervisor.ts` with callback-based integration and unchanged runtime regression outcomes.
 - 2026-04-19: Completed `ARC-04` by extracting final-candle runtime decision orchestration into `runtimeFinalCandleDecision.service.ts` and reducing `runtimeSignalLoop` responsibility to ingestion/routing/delegation seams.
 - 2026-04-19: Completed `ARC-05` by adding seam-owned regression suites (`runtimeSignalLoopSupervisor.test.ts`, `runtimeFinalCandleDecision.service.test.ts`) and locking null-direction no-trade coverage for extracted final-candle runtime path.
+- 2026-04-19: Completed `ARC-14` by extracting dashboard-home onboarding route/step contract and runtime-selection view-model ownership from `HomeLiveWidgets.tsx` into `runtimeOnboardingConfig.tsx` and `useRuntimeSelectionViewModel.ts`.
+- 2026-04-19: Completed `ARC-15` by moving bots monitoring aggregate payload composition into dedicated service ownership (`botsMonitoringAggregate.service.ts`) and reducing controller hook responsibilities.
+- 2026-04-19: Completed `ARC-16` by extracting DataTable column-visibility state ownership into `useDataTableColumnVisibilityState.ts` and rewiring `DataTable.tsx` to consume the extracted state helper.
+- 2026-04-19: Completed `ARC-17` by replacing BacktestRunDetails inline locale-branch labels with namespace-driven copy fields and locale-agnostic regression assertions.
+- 2026-04-19: Completed `ARC-18` by adding seam-focused web regression locks (`runtimeOnboardingConfig.test.tsx`, `botsMonitoringAggregate.service.test.ts`, `useDataTableColumnVisibilityState.test.ts`) and rerunning ARC-D focused closure checks (`pnpm --filter web run typecheck` + focused test pack `37/37 PASS`).
 
 ## Phase POS - Position Lifecycle Parity Closure (Queued 2026-04-18)
 - [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
