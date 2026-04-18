@@ -17,11 +17,11 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] ARC-01 Freeze architecture maintainability remediation boundaries and extraction guardrails
+- [ ] ARC-02 Extract typed runtime/live-ordering config from runtime services
   - Status: READY
   - Group: Architecture Maintainability Remediation (`ARC-A`)
-  - Owner: Product Docs
-  - Depends on: PLNC-03
+  - Owner: Backend Builder
+  - Depends on: ARC-01
   - Priority: P2
 
 ## BACKLOG
@@ -53,6 +53,7 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] ARC-01 Freeze architecture maintainability remediation boundaries and extraction guardrails
 - [x] PLNC-A closed implementation scope (`PLNC-01..PLNC-04`): planning catalog classification + status/header sync + canonical linkage + queue/context closure sync
 - [x] PLNC-04 Publish planning-catalog closure sync in task/project context docs
 - [x] PLNC-03 Add canonical queue linkage in active non-closed planning docs

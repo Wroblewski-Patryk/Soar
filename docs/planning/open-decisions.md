@@ -771,6 +771,26 @@ This file tracks intentionally unresolved architecture choices so implementation
   - `docs/planning/uxr-g-dashboard-wallet-manual-order-layout-plan-2026-04-18.md`
   - `docs/modules/web-dashboard-home.md`
 
+## Runtime Critical-Path Decomposition Boundaries (ARC)
+- Decision state: resolved on 2026-04-19.
+- Decision:
+  - `ARC-A..ARC-E` is refactor-only maintainability work with strict scope lock.
+  - `ARC-A` is limited to:
+    - typed runtime/live-ordering config extraction,
+    - supervisor/watchdog extraction from `runtimeSignalLoop`,
+    - final-candle decision execution application-service extraction,
+    - regression split aligned to extracted seams.
+- Locked behavior:
+  - no runtime strategy-semantic drift,
+  - no runtime endpoint contract drift,
+  - no fail-open relaxation in pre-trade/exchange/wallet/dedupe guards,
+  - one ARC task per tiny commit with canonical queue synchronization.
+- Canonical references:
+  - `docs/architecture/runtime-critical-path-decomposition-contract.md`
+  - `docs/planning/architecture-maintainability-audit-2026-04-18.md`
+  - `docs/planning/mvp-next-commits.md`
+  - `docs/planning/mvp-execution-plan.md`
+
 ## Table Action Semantics and Clone Naming Contract
 - Decision state: resolved on 2026-04-18.
 - Decision:

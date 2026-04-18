@@ -114,6 +114,10 @@ Last updated: 2026-04-19
   - production verification closure (`OPV`).
 
 ## Recent Progress
+- 2026-04-19: Completed `ARC-01` by freezing runtime maintainability
+  decomposition boundaries and anti-drift guardrails in
+  `docs/architecture/runtime-critical-path-decomposition-contract.md` and
+  linking the decision in `open-decisions` before code extraction starts.
 - 2026-04-19: closed `PLNC-A` (`PLNC-01..PLNC-04`) by publishing deterministic
   planning classification index (`implemented/queued/external-blocked/superseded`),
   syncing stale planning status headers, adding canonical queue linkage in

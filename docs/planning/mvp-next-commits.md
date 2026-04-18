@@ -7,12 +7,12 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `ARC-01 docs(contract): freeze ARC decomposition boundaries and no-drift guardrails`
+- [ ] `ARC-02 refactor(api-runtime): extract typed runtime/live-ordering config from runtime services`
 ## NEXT
 - [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
 - [ ] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
 ## PIPELINE
-- [ ] `ARC-01 docs(contract): freeze ARC decomposition boundaries and no-drift guardrails`
+- [ ] `ARC-02 refactor(api-runtime): extract typed runtime/live-ordering config from runtime services`
 - [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
 - [ ] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
 ## GROUP QUEUE
@@ -57,6 +57,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `ARC-01 docs(contract): freeze ARC decomposition boundaries and no-drift guardrails`
+  - 2026-04-19: Published canonical ARC decomposition/no-drift contract in `docs/architecture/runtime-critical-path-decomposition-contract.md` and linked resolved decision in `open-decisions`.
 - [x] `PLNC-A group closure (PLNC-01..PLNC-04)`
   - 2026-04-19: Closed planning-catalog reconciliation wave by publishing deterministic plan-classification index (`planning-catalog-index-2026-04-19.md`), syncing stale status headers in completed waves, adding canonical queue ownership linkage in non-closed planning docs, and syncing canonical queue/context files (`mvp-next-commits`, `mvp-execution-plan`, `TASK_BOARD`, `PROJECT_STATE`).
 - [x] `UXR-G-B group closure (UXR-G-04..UXR-G-06)`

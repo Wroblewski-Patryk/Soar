@@ -1978,7 +1978,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-19: Completed `PLNC-04` by synchronizing closure state in canonical queue/context files (`mvp-next-commits`, `mvp-execution-plan`, `TASK_BOARD`, `PROJECT_STATE`) and advancing focus to `ARC-01`.
 
 ## Phase ARC - Architecture Maintainability Remediation (Queued 2026-04-18)
-- [ ] `ARC-01 docs(contract): freeze ARC decomposition boundaries and no-drift guardrails`
+- [x] `ARC-01 docs(contract): freeze ARC decomposition boundaries and no-drift guardrails`
 - [ ] `ARC-02 refactor(api-runtime): extract typed runtime/live-ordering config from runtime services`
 - [ ] `ARC-03 refactor(api-runtime): extract supervisor/watchdog from runtimeSignalLoop`
 - [ ] `ARC-04 refactor(api-runtime): extract final-candle decision execution application service`
@@ -2001,6 +2001,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 
 ### Progress Log (Phase ARC - Architecture Maintainability Remediation)
 - 2026-04-18: Queued ARC wave from `docs/planning/architecture-maintainability-audit-2026-04-18.md` to address runtime/bots/backtest/dashboard maintainability hotspots with explicit decomposition and guardrail-closure path after active queue completion.
+- 2026-04-19: Completed `ARC-01` by freezing ARC decomposition boundaries and anti-drift guardrails in `docs/architecture/runtime-critical-path-decomposition-contract.md`, and linking the resolved decision in `open-decisions` before code extraction starts.
 
 ## Phase POS - Position Lifecycle Parity Closure (Queued 2026-04-18)
 - [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
