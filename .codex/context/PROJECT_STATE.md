@@ -114,6 +114,9 @@ Last updated: 2026-04-19
   - production verification closure (`OPV`).
 
 ## Recent Progress
+- 2026-04-19: Completed `ARC-04` by extracting the final-candle runtime
+  decision/execution flow into `runtimeFinalCandleDecision.service.ts` and
+  reducing `runtimeSignalLoop` to routing/delegation ownership.
 - 2026-04-19: Completed `ARC-03` by extracting runtime supervisor/watchdog
   orchestration into `runtimeSignalLoopSupervisor.ts` and rewiring
   `runtimeSignalLoop` to callback-based supervisor ownership while preserving

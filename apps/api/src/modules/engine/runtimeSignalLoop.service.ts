@@ -51,6 +51,7 @@ import {
   createRuntimeSignal,
 } from './runtimeSignalLoopDefaults';
 import { RuntimeSignalLoopSupervisor } from './runtimeSignalLoopSupervisor';
+import { processRuntimeFinalCandleDecision } from './runtimeFinalCandleDecision.service';
 
 export {
   deriveRuntimeGroupMaxOpenPositions,
@@ -695,7 +696,32 @@ export class RuntimeSignalLoop {
     if (!event.isFinal) return;
     await this.marketDataGateway.ingestCandleEvent(event);
     await this.processPositionAutomationFallbackFromCandle(event);
-    await this.handleFinalCandleDecision(event);
+    await processRuntimeFinalCandleDecision(event, {
+      nowMs: () => this.deps.nowMs(),
+      minDirectionalScore: runtimeSignalLoopConfig.minDirectionalScore,
+      runtimeSignalQuantity: runtimeSignalLoopConfig.signalQuantity,
+      signalDecisionDedupeRetentionMs: runtimeSignalLoopConfig.signalDecisionDedupeRetentionMs,
+      processedDecisionWindows: this.processedDecisionWindows,
+      listActiveBotsFromTopologyCacheWithMetrics: () => this.listActiveBotsFromTopologyCacheWithMetrics(),
+      closeInactiveRuntimeSessions: async (activeBotIds) => {
+        await this.deps.closeInactiveRuntimeSessions?.(activeBotIds);
+      },
+      listRuntimeManagedExternalPositions: () => this.deps.listRuntimeManagedExternalPositions(),
+      resolveRuntimeRoutesForEvent: (candle, topology) => this.resolveRuntimeRoutesForEvent(candle, topology),
+      ensureRuntimeSession: async (params) => this.deps.ensureRuntimeSession?.(params),
+      recordRuntimeEvent: async (params) => {
+        await this.deps.recordRuntimeEvent?.(params as any);
+      },
+      upsertRuntimeSymbolStat: async (params) => {
+        await this.deps.upsertRuntimeSymbolStat?.(params as any);
+      },
+      countOpenPositionsForBotAndSymbols: (params) => this.deps.countOpenPositionsForBotAndSymbols(params),
+      analyzePreTradeFn: (params) => this.deps.analyzePreTradeFn(params),
+      createSignal: (params) => this.deps.createSignal(params),
+      validateExchangeOrderFn: async (input) => this.deps.validateExchangeOrderFn?.(input),
+      evaluateStrategy: (input) => this.evaluateStrategy(input),
+      orchestrateFn: async (params) => this.deps.orchestrateFn(params as any),
+    });
   }
 
   getRecentCloses(input: {
@@ -705,422 +731,6 @@ export class RuntimeSignalLoop {
     limit?: number;
   }) {
     return this.marketDataGateway.getRecentCloses(input);
-  }
-
-  private strategyMatchesCandleInterval(strategyInterval: string | null | undefined, candleInterval: string) {
-    if (!strategyInterval) return true;
-    return normalizeInterval(strategyInterval) === normalizeInterval(candleInterval);
-  }
-
-  private candleConfidence(event: StreamCandleEvent) {
-    if (!Number.isFinite(event.open) || event.open === 0) return 0;
-    const percentMove = Math.abs((event.close - event.open) / event.open);
-    return Math.max(0, Math.min(1, percentMove));
-  }
-
-  private buildDecisionWindowKey(input: {
-    botId: string;
-    groupId: string;
-    symbol: string;
-    interval: string;
-    openTime: number;
-    closeTime: number;
-  }) {
-    return [
-      input.botId,
-      input.groupId,
-      normalizeSymbol(input.symbol),
-      normalizeInterval(input.interval),
-      String(input.openTime),
-      String(input.closeTime),
-    ].join('|');
-  }
-
-  private pruneDecisionWindowDedup(now: number) {
-    if (
-      !Number.isFinite(runtimeSignalLoopConfig.signalDecisionDedupeRetentionMs) ||
-      runtimeSignalLoopConfig.signalDecisionDedupeRetentionMs <= 0
-    ) {
-      return;
-    }
-    for (const [key, processedAt] of this.processedDecisionWindows.entries()) {
-      if (now - processedAt > runtimeSignalLoopConfig.signalDecisionDedupeRetentionMs) {
-        this.processedDecisionWindows.delete(key);
-      }
-    }
-  }
-
-  private async handleFinalCandleDecision(event: StreamCandleEvent) {
-    const bots = await this.listActiveBotsFromTopologyCacheWithMetrics();
-    await this.deps.closeInactiveRuntimeSessions?.(bots.map((bot) => bot.id));
-    const managedExternalSymbolKeys = new Set<string>();
-    try {
-      const managedExternalPositions = await this.deps.listRuntimeManagedExternalPositions();
-      for (const position of managedExternalPositions) {
-        const normalizedSymbol = normalizeSymbol(position.symbol);
-        if (!normalizedSymbol) continue;
-        managedExternalSymbolKeys.add(`${position.userId}:${normalizedSymbol}`);
-      }
-    } catch (error) {
-      console.error('RuntimeSignalLoop managed external positions lookup failed:', error);
-      metricsStore.recordRuntimeExecutionError('runtime_external_positions_lookup_failure');
-    }
-    const runtimeRoutes = this.resolveRuntimeRoutesForEvent(event, bots);
-    runtimeMetricsService.recordEligibleGroupsCount(runtimeRoutes.length);
-    const runtimeSessionByBotId = new Map<string, string | undefined>();
-
-    await Promise.all(
-      runtimeRoutes.map(async ({ bot, group }) => {
-        if (!runtimeSessionByBotId.has(bot.id)) {
-          const ensuredSessionId = await this.deps.ensureRuntimeSession?.({
-            userId: bot.userId,
-            botId: bot.id,
-            mode: bot.mode,
-          });
-          runtimeSessionByBotId.set(bot.id, ensuredSessionId);
-        }
-        const sessionId = runtimeSessionByBotId.get(bot.id);
-
-        const groupEvalStartedAt = this.deps.nowMs();
-        const strategyAnalysisById: Record<
-          string,
-          { conditionLines: RuntimeSignalConditionLine[]; indicatorSummary: string | null }
-        > = {};
-        const strategyVotes: StrategyVote[] = group.strategies
-          .filter((strategy) =>
-            this.strategyMatchesCandleInterval(strategy.strategyInterval, event.interval)
-          )
-          .map((strategy) => {
-            const evaluation = this.evaluateStrategy({
-              marketType: bot.marketType,
-              symbol: event.symbol,
-              strategy,
-              decisionOpenTime: event.openTime,
-            });
-            strategyAnalysisById[strategy.strategyId] = {
-              conditionLines: evaluation.conditionLines,
-              indicatorSummary: evaluation.indicatorSummary,
-            };
-            const direction = evaluation.direction;
-            if (!direction) return null;
-            return {
-              strategyId: strategy.strategyId,
-              direction,
-              priority: strategy.priority,
-              weight: strategy.weight,
-            } satisfies StrategyVote;
-          })
-          .filter((vote): vote is StrategyVote => Boolean(vote));
-
-            const merged = mergeRuntimeStrategyVotes({
-              strategies: group.strategies,
-              votes: strategyVotes,
-              minDirectionalScore: runtimeSignalLoopConfig.minDirectionalScore,
-            });
-            const direction = merged.direction;
-            if (!direction) {
-              await this.deps.recordRuntimeEvent?.({
-                userId: bot.userId,
-                botId: bot.id,
-                mode: bot.mode,
-                sessionId,
-                eventType: 'SIGNAL_DECISION',
-                level: 'DEBUG',
-                symbol: event.symbol,
-                botMarketGroupId: group.id,
-                message: 'No trade decision after strategy merge',
-                payload: {
-                  merge: merged.metadata,
-                  analysis: {
-                    byStrategy: strategyAnalysisById,
-                  },
-                },
-                eventAt: new Date(event.eventTime),
-              });
-              metricsStore.recordRuntimeMergeOutcome('NO_TRADE');
-              metricsStore.recordRuntimeGroupEvaluation(this.deps.nowMs() - groupEvalStartedAt);
-              return;
-            }
-
-            const now = this.deps.nowMs();
-            this.pruneDecisionWindowDedup(now);
-            const decisionWindowKey = this.buildDecisionWindowKey({
-              botId: bot.id,
-              groupId: group.id,
-              symbol: event.symbol,
-              interval: event.interval,
-              openTime: event.openTime,
-              closeTime: event.closeTime,
-            });
-            if (this.processedDecisionWindows.has(decisionWindowKey)) {
-              metricsStore.recordRuntimeGroupEvaluation(this.deps.nowMs() - groupEvalStartedAt);
-              return;
-            }
-            this.processedDecisionWindows.set(decisionWindowKey, now);
-
-            if (direction === 'LONG' || direction === 'SHORT') {
-              const managedExternalKey = `${bot.userId}:${normalizeSymbol(event.symbol)}`;
-              if (managedExternalSymbolKeys.has(managedExternalKey)) {
-                await this.deps.recordRuntimeEvent?.({
-                  userId: bot.userId,
-                  botId: bot.id,
-                  mode: bot.mode,
-                  sessionId,
-                  eventType: 'PRETRADE_BLOCKED',
-                  level: 'WARN',
-                  symbol: event.symbol,
-                  botMarketGroupId: group.id,
-                  strategyId: merged.strategyId,
-                  signalDirection: direction,
-                  message: 'Signal blocked due to managed external position on symbol',
-                  payload: {
-                    reason: 'EXTERNAL_POSITION_ALREADY_OPEN',
-                  },
-                  eventAt: new Date(event.eventTime),
-                });
-                metricsStore.recordRuntimeMergeOutcome('NO_TRADE');
-                metricsStore.recordRuntimeGroupEvaluation(this.deps.nowMs() - groupEvalStartedAt);
-                return;
-              }
-
-              const openPositionsInGroup = await this.deps.countOpenPositionsForBotAndSymbols({
-                userId: bot.userId,
-                botId: bot.id,
-                symbols: group.symbols,
-              });
-              if (openPositionsInGroup >= group.maxOpenPositions) {
-                return;
-              }
-
-              const preTradeDecision = await this.deps.analyzePreTradeFn({
-                userId: bot.userId,
-                botId: bot.id,
-                symbol: event.symbol,
-                mode: bot.mode,
-                marketType: event.marketType,
-              });
-              if (!preTradeDecision.allowed) {
-                await this.deps.recordRuntimeEvent?.({
-                  userId: bot.userId,
-                  botId: bot.id,
-                  mode: bot.mode,
-                  sessionId,
-                  eventType: 'PRETRADE_BLOCKED',
-                  level: 'WARN',
-                  symbol: event.symbol,
-                  botMarketGroupId: group.id,
-                  strategyId: merged.strategyId,
-                  signalDirection: direction,
-                  message: 'Pre-trade guard blocked execution',
-                  payload: {
-                    reasons: preTradeDecision.reasons,
-                    metrics: preTradeDecision.metrics,
-                  },
-                  eventAt: new Date(event.eventTime),
-                });
-                metricsStore.recordRuntimeMergeOutcome('NO_TRADE');
-                metricsStore.recordRuntimeGroupEvaluation(this.deps.nowMs() - groupEvalStartedAt);
-                return;
-              }
-            }
-
-            const strategyExitTraceOnly = direction === 'EXIT';
-            const signalEventAt = new Date(event.eventTime);
-            await this.deps.createSignal({
-              userId: bot.userId,
-              botId: bot.id,
-              strategyId: merged.strategyId,
-              symbol: event.symbol,
-              direction,
-              confidence: this.candleConfidence(event),
-              payload: {
-                source: 'market_stream.candle_final',
-                botMarketGroupId: group.id,
-                symbolGroupId: group.symbolGroupId,
-                strategyDriven: true,
-                strategyInterval: event.interval,
-                merge: merged.metadata,
-                strategyExitTraceOnly,
-                groupRisk: {
-                  maxOpenPositions: group.maxOpenPositions,
-                },
-                eventTime: event.eventTime,
-                candle: {
-                  interval: event.interval,
-                  openTime: event.openTime,
-                  closeTime: event.closeTime,
-                  open: event.open,
-                  high: event.high,
-                  low: event.low,
-                  close: event.close,
-                  volume: event.volume,
-                },
-              },
-            });
-            await this.deps.recordRuntimeEvent?.({
-              userId: bot.userId,
-              botId: bot.id,
-              mode: bot.mode,
-              sessionId,
-              eventType: 'SIGNAL_DECISION',
-              level: 'INFO',
-              symbol: event.symbol,
-              botMarketGroupId: group.id,
-              strategyId: merged.strategyId,
-              signalDirection: direction,
-              message: strategyExitTraceOnly
-                ? 'Strategy EXIT signal recorded (trace-only)'
-                : 'Strategy signal accepted for execution',
-              payload: {
-                merge: merged.metadata,
-                strategyExitTraceOnly,
-                analysis: {
-                  byStrategy: strategyAnalysisById,
-                },
-              },
-              eventAt: signalEventAt,
-            });
-            await this.deps.upsertRuntimeSymbolStat?.({
-              userId: bot.userId,
-              botId: bot.id,
-              mode: bot.mode,
-              sessionId,
-              symbol: event.symbol,
-              increments: {
-                totalSignals: 1,
-                ...(direction === 'LONG'
-                  ? { longEntries: 1 }
-                  : direction === 'SHORT'
-                    ? { shortEntries: 1 }
-                    : { exits: 1 }),
-              },
-              lastPrice: event.close,
-              lastSignalAt: signalEventAt,
-            });
-
-            if (strategyExitTraceOnly) {
-              metricsStore.recordRuntimeMergeOutcome('NO_TRADE');
-              metricsStore.recordRuntimeGroupEvaluation(this.deps.nowMs() - groupEvalStartedAt);
-              return;
-            }
-
-            const selectedStrategy = group.strategies.find((strategy) => strategy.strategyId === merged.strategyId);
-            const referenceBalance = await resolveRuntimeReferenceBalance({
-              userId: bot.userId,
-              botId: bot.id,
-              walletId: bot.walletId,
-              mode: bot.mode,
-              exchange: bot.exchange,
-              marketType: bot.marketType,
-              paperStartBalance: bot.paperStartBalance,
-              nowMs: this.deps.nowMs(),
-            });
-            const orderQuantity = resolveRuntimeOrderQuantity({
-              strategy: selectedStrategy,
-              price: event.close,
-              marketType: bot.marketType,
-              referenceBalance,
-              runtimeSignalQuantity: runtimeSignalLoopConfig.signalQuantity,
-            });
-            const leverage = Math.max(1, selectedStrategy?.strategyLeverage ?? 1);
-            if (bot.mode === 'LIVE') {
-              const exchangeOrderValidation = await this.deps.validateExchangeOrderFn?.({
-                exchange: bot.exchange,
-                marketType: bot.marketType,
-                symbol: event.symbol,
-                quantity: orderQuantity,
-                price: event.close,
-              });
-
-              if (exchangeOrderValidation && !exchangeOrderValidation.allowed) {
-                await this.deps.recordRuntimeEvent?.({
-                  userId: bot.userId,
-                  botId: bot.id,
-                  mode: bot.mode,
-                  sessionId,
-                  eventType: 'PRETRADE_BLOCKED',
-                  level: 'WARN',
-                  symbol: event.symbol,
-                  strategyId: merged.strategyId,
-                  signalDirection: direction,
-                  message: `Signal blocked for ${event.symbol} due to exchange order constraints`,
-                  payload: {
-                    reason: 'EXCHANGE_MIN_ORDER_CONSTRAINT',
-                    constraintReason: exchangeOrderValidation.reason,
-                    quantity: orderQuantity,
-                    markPrice: event.close,
-                    leverage,
-                    exchange: bot.exchange,
-                    marketType: bot.marketType,
-                    details: exchangeOrderValidation.details,
-                  },
-                  eventAt: signalEventAt,
-                });
-                metricsStore.recordRuntimeMergeOutcome('NO_TRADE');
-                metricsStore.recordRuntimeGroupEvaluation(this.deps.nowMs() - groupEvalStartedAt);
-                return;
-              }
-            }
-
-            const insufficientWalletFunds = await resolveRuntimeWalletFundsExhausted({
-              userId: bot.userId,
-              botId: bot.id,
-              walletId: bot.walletId,
-              mode: bot.mode,
-              exchange: bot.exchange,
-              marketType: bot.marketType,
-              paperStartBalance: bot.paperStartBalance,
-              markPrice: event.close,
-              addedQuantity: orderQuantity,
-              leverage,
-              nowMs: this.deps.nowMs(),
-            });
-            if (insufficientWalletFunds) {
-              await this.deps.recordRuntimeEvent?.({
-                userId: bot.userId,
-                botId: bot.id,
-                mode: bot.mode,
-                sessionId,
-                eventType: 'PRETRADE_BLOCKED',
-                level: 'WARN',
-                symbol: event.symbol,
-                strategyId: merged.strategyId,
-                signalDirection: direction,
-                message: `Signal blocked for ${event.symbol} due to insufficient wallet budget`,
-                payload: {
-                  reason: 'WALLET_INSUFFICIENT_FUNDS',
-                  quantity: orderQuantity,
-                  markPrice: event.close,
-                  leverage,
-                },
-                eventAt: signalEventAt,
-              });
-              metricsStore.recordRuntimeMergeOutcome('NO_TRADE');
-              metricsStore.recordRuntimeGroupEvaluation(this.deps.nowMs() - groupEvalStartedAt);
-              return;
-            }
-
-            await this.deps.orchestrateFn({
-              userId: bot.userId,
-              botId: bot.id,
-              walletId: bot.walletId ?? undefined,
-              botMarketGroupId: group.id,
-              runtimeSessionId: sessionId,
-              symbol: event.symbol,
-              direction,
-              strategyId: merged.strategyId,
-              strategyLeverage: leverage,
-              strategyInterval: event.interval,
-              quantity: orderQuantity,
-              markPrice: event.close,
-              mode: bot.mode,
-              candleOpenTime: event.openTime,
-              candleCloseTime: event.closeTime,
-            });
-        metricsStore.recordRuntimeMergeOutcome(direction);
-        metricsStore.recordRuntimeGroupEvaluation(this.deps.nowMs() - groupEvalStartedAt);
-      })
-    );
   }
 
   private evaluateStrategy(input: {

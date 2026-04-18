@@ -7,12 +7,12 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `ARC-04 refactor(api-runtime): extract final-candle decision execution application service`
+- [ ] `ARC-05 test(api-runtime): split and lock runtime regression by extracted seams`
 ## NEXT
 - [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
 - [ ] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
 ## PIPELINE
-- [ ] `ARC-04 refactor(api-runtime): extract final-candle decision execution application service`
+- [ ] `ARC-05 test(api-runtime): split and lock runtime regression by extracted seams`
 - [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
 - [ ] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
 ## GROUP QUEUE
@@ -57,6 +57,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `ARC-04 refactor(api-runtime): extract final-candle decision execution application service`
+  - 2026-04-19: Extracted final-candle decision/execution flow into `runtimeFinalCandleDecision.service.ts` and converted `runtimeSignalLoop` to delegate the runtime decision path through the extracted application service.
 - [x] `ARC-03 refactor(api-runtime): extract supervisor/watchdog from runtimeSignalLoop`
   - 2026-04-19: Extracted watchdog/stall/auto-restart ownership into `runtimeSignalLoopSupervisor.ts` and rewired `runtimeSignalLoop` to supervisor callbacks while preserving existing runtime behavior and tests.
 - [x] `ARC-02 refactor(api-runtime): extract typed runtime/live-ordering config from runtime services`

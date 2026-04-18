@@ -17,11 +17,11 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] ARC-04 Extract final-candle decision execution application service from runtimeSignalLoop
+- [ ] ARC-05 Split and lock runtime regression tests by extracted seams
   - Status: READY
   - Group: Architecture Maintainability Remediation (`ARC-A`)
   - Owner: Backend Builder
-  - Depends on: ARC-03
+  - Depends on: ARC-04
   - Priority: P2
 
 ## BACKLOG
@@ -53,6 +53,7 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] ARC-04 Extract final-candle decision execution application service from runtimeSignalLoop
 - [x] ARC-03 Extract runtime supervisor/watchdog from runtimeSignalLoop
 - [x] ARC-02 Extract typed runtime/live-ordering config from runtime services
 - [x] ARC-01 Freeze architecture maintainability remediation boundaries and extraction guardrails
