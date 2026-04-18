@@ -60,7 +60,6 @@ import {
   getRuntimeSymbolLiveRows,
   getRuntimeSymbolStatsBaseData,
   listMarketCandleCloses,
-  listRuntimeFallbackSymbolsFromEvents,
   listStrategiesByIds,
 } from './botsRuntimeRead.repository';
 
@@ -169,25 +168,8 @@ export const listBotRuntimeSessionSymbolStats = async (
   ]);
   const configuredSymbols = normalizeSymbols(
     [...configuredMarketGroupSymbols.flat(), ...configuredBotStrategySymbols.flat()]
-  );
-  let symbols = (
-    normalizedSymbol
-      ? [normalizedSymbol]
-      : normalizeSymbols([...configuredSymbols, ...items.map((item) => item.symbol)])
   ).slice(0, query.limit);
-  if (!normalizedSymbol && symbols.length === 0) {
-    const fallbackEventRows = await listRuntimeFallbackSymbolsFromEvents({
-      userId,
-      botId,
-      sessionId,
-      limit: Math.max(50, query.limit * 10),
-    });
-    symbols = normalizeSymbols(
-      fallbackEventRows
-        .map((row) => row.symbol)
-        .filter((symbol): symbol is string => typeof symbol === 'string' && symbol.trim().length > 0)
-    ).slice(0, query.limit);
-  }
+  const symbols = normalizedSymbol ? [normalizedSymbol] : configuredSymbols;
   const [openPositions, latestTradeBySymbolRows, latestSignalEvents] = symbols.length
     ? await getRuntimeSymbolLiveRows({
         userId,

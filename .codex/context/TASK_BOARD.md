@@ -17,32 +17,20 @@ Last updated: 2026-04-18
 
 ## READY
 
-- [ ] BRS-02 Add failing API regression for selected-bot symbol leakage across canonical/legacy/session/event paths
+- [ ] BRS-05 Add failing regression for PUT bot canonical update drift
   - Status: READY
-  - Group: Dashboard Runtime Scope Remediation (`BRS-A`)
+  - Group: Dashboard Runtime Scope Remediation (`BRS-B`)
   - Owner: QA/Test
-  - Depends on: BRS-01
+  - Depends on: BRS-04
   - Priority: P1
 
 ## BACKLOG
 
-- [ ] BRS-03 Narrow runtime read filters to `ACTIVE` canonical groups/links only
-  - Status: BACKLOG
-  - Group: Dashboard Runtime Scope Remediation (`BRS-A`)
-  - Owner: Backend Builder
-  - Depends on: BRS-02
-  - Priority: P1
-- [ ] BRS-04 Prevent runtime symbol expansion beyond canonical selected-bot scope
-  - Status: BACKLOG
-  - Group: Dashboard Runtime Scope Remediation (`BRS-A`)
-  - Owner: Backend Builder
-  - Depends on: BRS-03
-  - Priority: P1
-- [ ] BRS-05 Add failing regression for PUT bot canonical update drift
+- [ ] BRS-06 Make PUT /dashboard/bots/:id update canonical group+strategy mapping transactionally
   - Status: BACKLOG
   - Group: Dashboard Runtime Scope Remediation (`BRS-B`)
-  - Owner: QA/Test
-  - Depends on: BRS-04
+  - Owner: Backend Builder
+  - Depends on: BRS-05
   - Priority: P1
 
 ## IN_PROGRESS
@@ -59,6 +47,10 @@ Last updated: 2026-04-18
 
 ## DONE
 
+- [x] BRS-A closed implementation scope (`BRS-01..BRS-04`): selected-bot runtime scope foundation (decision + regression + repository/service hardening)
+- [x] BRS-04 Prevent runtime symbol expansion beyond canonical selected-bot scope
+- [x] BRS-03 Narrow runtime read filters to `ACTIVE` canonical groups/links only
+- [x] BRS-02 Add failing API regression for selected-bot symbol leakage across canonical/legacy/session/event paths
 - [x] BRS planning queued: `BRS-01..BRS-12` selected-bot runtime scope remediation wave published and promoted to NOW/NEXT/PIPELINE in canonical queue
 - [x] BRS-01 Close selected-bot runtime scope policy (`ACTIVE` canonical only, `PAUSED` exclusion default)
 - [x] QH-TSC-01 Add canonical web verification script (`build -> typecheck`) and document it for closure packs

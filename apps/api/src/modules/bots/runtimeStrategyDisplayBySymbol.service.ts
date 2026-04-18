@@ -22,6 +22,8 @@ export const resolveBotAdvancedCloseMode = async (userId: string, botId: string)
         botMarketGroup: {
           botId,
           userId,
+          isEnabled: true,
+          lifecycleStatus: 'ACTIVE',
         },
       },
       select: {
@@ -71,9 +73,7 @@ export const resolveBotDcaPlanBySymbol = async (userId: string, botId: string, s
           botId,
           userId,
           isEnabled: true,
-          lifecycleStatus: {
-            in: ['ACTIVE', 'PAUSED'],
-          },
+          lifecycleStatus: 'ACTIVE',
         },
       },
       orderBy: [{ priority: 'asc' }, { createdAt: 'asc' }],
@@ -172,9 +172,7 @@ export const resolveBotTrailingStopLevelsBySymbol = async (
           botId,
           userId,
           isEnabled: true,
-          lifecycleStatus: {
-            in: ['ACTIVE', 'PAUSED'],
-          },
+          lifecycleStatus: 'ACTIVE',
         },
       },
       orderBy: [{ priority: 'asc' }, { createdAt: 'asc' }],
@@ -274,9 +272,7 @@ export const resolveBotTrailingTakeProfitLevelsBySymbol = async (
           botId,
           userId,
           isEnabled: true,
-          lifecycleStatus: {
-            in: ['ACTIVE', 'PAUSED'],
-          },
+          lifecycleStatus: 'ACTIVE',
         },
       },
       orderBy: [{ priority: 'asc' }, { createdAt: 'asc' }],

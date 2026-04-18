@@ -100,14 +100,15 @@ Last updated: 2026-04-18
 
 ## Current Focus
 - Main active objective: execute `BRS` selected-bot runtime scope remediation
-  wave (`BRS-A` first), starting from strict selected-bot decision closure and
-  regression-first API fixes.
+  wave (`BRS-B` next) after closing `BRS-A` implementation foundation.
 - Top blockers:
-  - selected-bot runtime API scope is still too broad in implementation (symbol
-    leakage and canonical/legacy precedence drift) until `BRS-02..BRS-08`
-    closes.
+  - local API e2e validation is currently environment-blocked in this session
+    because Docker Engine (and therefore local `postgres:5432`) is unavailable.
+  - remaining selected-bot runtime contract drift is now concentrated in
+    canonical update-path and precedence tasks (`BRS-05..BRS-08`).
 - Success criteria for this phase:
-  - `BRS-A` closes with decision + failing regression + strict scope fixes.
+  - `BRS-B` closes with canonical update-path fix and canonical-first strategy
+    precedence.
   - selected-bot dashboard runtime payload cannot expand symbols outside
     canonical active selected-bot scope.
   - canonical queue files and task board stay aligned after each group closure.
@@ -141,6 +142,12 @@ Last updated: 2026-04-18
   and closed `BRS-01` decision gate: selected-bot runtime symbol scope is
   strict canonical by default (`ACTIVE + isEnabled` only, `PAUSED` excluded),
   with no symbol expansion from fallback paths.
+- 2026-04-18: completed `BRS-A` implementation (`BRS-02..BRS-04`) by adding a
+  dedicated selected-bot scope regression in bots API e2e suite and hardening
+  runtime symbol scope to canonical `ACTIVE` groups only in repository/service
+  layers (`botsRuntimeRead.repository.ts`, `runtimeStrategyDisplayBySymbol.service.ts`,
+  `botsRuntimeRead.service.ts`); local available validations PASS
+  (`api typecheck`, `quality:guardrails`).
 - 2026-04-18: refreshed the repo-specific agent workflow so the canonical queue,
   validation contract, deployment contract, and learning journal are aligned.
 

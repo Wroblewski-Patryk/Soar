@@ -1918,9 +1918,9 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 
 ## Phase BRS - Dashboard Selected-Bot Runtime Scope Remediation (Queued 2026-04-18)
 - [x] `BRS-01 docs(decision): close dashboard runtime selected-bot scope policy (ACTIVE-only canonical + PAUSED default exclusion)`
-- [ ] `BRS-02 test(api-red): add failing regression for symbol leakage across canonical/legacy/session/event paths`
-- [ ] `BRS-03 fix(api-runtime-repository): narrow runtime read filters to ACTIVE canonical groups/links only`
-- [ ] `BRS-04 fix(api-runtime-symbol-scope): prevent symbol expansion beyond canonical selected-bot scope`
+- [x] `BRS-02 test(api-red): add failing regression for symbol leakage across canonical/legacy/session/event paths`
+- [x] `BRS-03 fix(api-runtime-repository): narrow runtime read filters to ACTIVE canonical groups/links only`
+- [x] `BRS-04 fix(api-runtime-symbol-scope): prevent symbol expansion beyond canonical selected-bot scope`
 - [ ] `BRS-05 test(api-red-update-contract): add failing regression for PUT /dashboard/bots/:id canonical update drift`
 - [ ] `BRS-06 fix(api-update-contract): make PUT /dashboard/bots/:id update canonical market-group strategy mapping transactionally`
 - [ ] `BRS-07 fix(api-strategy-precedence): enforce canonical-first symbol->strategy assignment and compatibility fallback only`
@@ -1933,3 +1933,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 ### Progress Log (Phase BRS - Dashboard Selected-Bot Runtime Scope Remediation)
 - 2026-04-18: Completed `BRS-01` by closing pending decision in `open-decisions`: selected-bot runtime `signals/markets` scope is strict canonical by default (`ACTIVE + isEnabled` only), `PAUSED` groups are excluded by default, session/event fallback cannot expand symbols beyond canonical selected-bot scope, and legacy mapping is compatibility fallback only (cannot override canonical strategy context). Synced contract notes in `docs/modules/api-bots.md` and `docs/modules/web-dashboard-home.md`.
 - 2026-04-18: Queued new runtime-data-contract remediation wave in `docs/planning/dashboard-selected-bot-runtime-scope-remediation-plan-2026-04-18.md` with grouped execution batches `BRS-A..BRS-C`; wave targets strict selected-bot symbol scope in runtime API, canonical-first strategy context, and canonical update-path consistency for `PUT /dashboard/bots/:id`.
+- 2026-04-18: Completed `BRS-02` by adding API regression `keeps runtime symbol-stats strictly within selected bot canonical ACTIVE scope` in `apps/api/src/modules/bots/bots.e2e.test.ts`; scenario reproduces leakage vectors (`A=1 active symbol`, `B=4 symbols`, paused-group + foreign session stat/event rows) and locks expected selected-bot output to canonical active symbol set.
+- 2026-04-18: Completed `BRS-03` by narrowing runtime-read canonical filters from `ACTIVE|PAUSED` to `ACTIVE` in `apps/api/src/modules/bots/botsRuntimeRead.repository.ts` and `apps/api/src/modules/bots/runtimeStrategyDisplayBySymbol.service.ts` so paused groups do not contribute to default dashboard runtime scope.
+- 2026-04-18: Completed `BRS-04` by hardening `apps/api/src/modules/bots/botsRuntimeRead.service.ts` symbol derivation: default symbol set now originates from canonical active scope only, session/event rows can enrich canonical symbols but cannot expand symbol set, and explicit `query.symbol` behavior is preserved.
+- 2026-04-18: Closed `BRS-A` implementation wave (`BRS-01..BRS-04`) and advanced queue focus to `BRS-B`; validation completed for available local gates (`pnpm --filter api run typecheck` PASS, `pnpm run quality:guardrails` PASS). Focused e2e run is environment-blocked in this session because Docker Engine and local `postgres:5432` are unavailable.

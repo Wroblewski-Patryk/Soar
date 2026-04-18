@@ -1914,6 +1914,116 @@ describe('Bots module contract', () => {
     expect(symbols).toHaveLength(3);
   });
 
+  it('keeps runtime symbol-stats strictly within selected bot canonical ACTIVE scope', async () => {
+    const ownerEmail = 'bot-runtime-selected-scope-only@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
+
+    const strategyAId = await createStrategy(owner, 'Runtime Selected Scope Strategy A');
+    const strategyBId = await createStrategy(owner, 'Runtime Selected Scope Strategy B');
+
+    const botAActiveGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    await prisma.symbolGroup.update({
+      where: { id: botAActiveGroupId },
+      data: { symbols: ['BTCUSDT'] },
+    });
+    const botAPausedGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    await prisma.symbolGroup.update({
+      where: { id: botAPausedGroupId },
+      data: { symbols: ['ETHUSDT'] },
+    });
+    const botBGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    await prisma.symbolGroup.update({
+      where: { id: botBGroupId },
+      data: { symbols: ['ETHUSDT', 'SOLUSDT', 'XRPUSDT', 'BNBUSDT'] },
+    });
+
+    const botARes = await owner.post('/dashboard/bots').send(
+      createPayload({
+        strategyId: strategyAId,
+        marketGroupId: botAActiveGroupId,
+      })
+    );
+    expect(botARes.status).toBe(201);
+    const botAId = botARes.body.id as string;
+
+    const botBRes = await owner.post('/dashboard/bots').send(
+      createPayload({
+        strategyId: strategyBId,
+        marketGroupId: botBGroupId,
+      })
+    );
+    expect(botBRes.status).toBe(201);
+
+    await prisma.botMarketGroup.create({
+      data: {
+        userId: ownerUser.id,
+        botId: botAId,
+        symbolGroupId: botAPausedGroupId,
+        lifecycleStatus: 'PAUSED',
+        executionOrder: 2,
+        isEnabled: true,
+      },
+    });
+
+    const sessionA = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId: botAId,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-05T10:00:00.000Z'),
+      },
+    });
+
+    await prisma.botRuntimeSymbolStat.createMany({
+      data: [
+        {
+          userId: ownerUser.id,
+          botId: botAId,
+          sessionId: sessionA.id,
+          symbol: 'BTCUSDT',
+          totalSignals: 1,
+          longEntries: 1,
+          realizedPnl: 5,
+          snapshotAt: new Date('2026-04-05T10:03:00.000Z'),
+        },
+        {
+          userId: ownerUser.id,
+          botId: botAId,
+          sessionId: sessionA.id,
+          symbol: 'SOLUSDT',
+          totalSignals: 1,
+          shortEntries: 1,
+          realizedPnl: -3,
+          snapshotAt: new Date('2026-04-05T10:04:00.000Z'),
+        },
+      ],
+    });
+    await prisma.botRuntimeEvent.create({
+      data: {
+        userId: ownerUser.id,
+        botId: botAId,
+        sessionId: sessionA.id,
+        eventType: 'SIGNAL_DECISION',
+        level: 'INFO',
+        symbol: 'XRPUSDT',
+        signalDirection: 'LONG',
+        eventAt: new Date('2026-04-05T10:05:00.000Z'),
+      },
+    });
+
+    const statsRes = await owner.get(`/dashboard/bots/${botAId}/runtime-sessions/${sessionA.id}/symbol-stats`);
+    expect(statsRes.status).toBe(200);
+    const symbols = statsRes.body.items.map((item: { symbol: string }) => item.symbol);
+
+    expect(symbols).toEqual(['BTCUSDT']);
+    expect(symbols).not.toContain('ETHUSDT');
+    expect(symbols).not.toContain('SOLUSDT');
+    expect(symbols).not.toContain('XRPUSDT');
+    expect(symbols).not.toContain('BNBUSDT');
+  });
+
   it('maps DCA ladder levels for basic repeated, advanced, and legacy strategy configs', async () => {
     const ownerEmail = 'bot-runtime-dca-ladder-owner@example.com';
     const owner = await registerAndLogin(ownerEmail);

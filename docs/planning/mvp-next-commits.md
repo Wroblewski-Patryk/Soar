@@ -8,9 +8,9 @@ Operational queue for one-task execution runs.
 
 ## NOW
 - [x] `BRS-01 docs(decision): close dashboard runtime selected-bot scope policy (ACTIVE-only canonical + PAUSED exclusion default)`
-- [ ] `BRS-02 test(api-red): add failing regression for symbol leakage across canonical/legacy/session/event scope`
-- [ ] `BRS-03 fix(api-runtime-repository): narrow runtime read filters to ACTIVE canonical groups/links only`
-- [ ] `BRS-04 fix(api-runtime-symbol-scope): stop symbol expansion beyond canonical selected-bot scope`
+- [x] `BRS-02 test(api-red): add failing regression for symbol leakage across canonical/legacy/session/event scope`
+- [x] `BRS-03 fix(api-runtime-repository): narrow runtime read filters to ACTIVE canonical groups/links only`
+- [x] `BRS-04 fix(api-runtime-symbol-scope): stop symbol expansion beyond canonical selected-bot scope`
 - [ ] `BRS-05 test(api-red-update-contract): add failing regression for PUT /dashboard/bots/:id canonical update drift`
 ## NEXT
 - [ ] `BRS-06 fix(api-update-contract): make PUT /dashboard/bots/:id update canonical group+strategy mapping transactionally`
@@ -22,7 +22,7 @@ Operational queue for one-task execution runs.
 - [ ] `BRS-11 qa(regression-pack): run focused API+WEB runtime scope regression pack`
 - [ ] `BRS-12 docs(closure): publish evidence and sync canonical queue/execution statuses`
 ## GROUP QUEUE
-- [ ] `BRS-A (commits BRS-01..BRS-04): decision closure + strict selected-bot scope foundation`
+- [x] `BRS-A (commits BRS-01..BRS-04): decision closure + strict selected-bot scope foundation`
 - [ ] `BRS-B (commits BRS-05..BRS-08): canonical update-path fix + strategy precedence unification`
 - [ ] `BRS-C (commits BRS-09..BRS-12): dashboard switch regression + QA closure`
 - [x] `L10NQ-D-A (commits 01-05): inventory + guardrail hardening + auth/admin migration`
@@ -54,6 +54,14 @@ Operational queue for one-task execution runs.
 ## DONE
 - [x] `BRS-01 docs(decision): close dashboard runtime selected-bot scope policy (ACTIVE-only canonical + PAUSED exclusion default)`
   - 2026-04-18: Closed pending selected-bot runtime scope decision in `open-decisions` with strict canonical policy: default dashboard `signals/markets` scope is `ACTIVE + isEnabled` canonical groups/links only; `PAUSED` groups are excluded by default; session/event fallback can enrich canonical symbols only (no symbol expansion); legacy mapping is compatibility fallback only and cannot override canonical strategy context. Synced module contracts in `docs/modules/api-bots.md` and `docs/modules/web-dashboard-home.md`.
+- [x] `BRS-02 test(api-red): add failing regression for symbol leakage across canonical/legacy/session/event scope`
+  - 2026-04-18: Added focused API regression in `apps/api/src/modules/bots/bots.e2e.test.ts` (`keeps runtime symbol-stats strictly within selected bot canonical ACTIVE scope`) covering `A=1 active symbol`, `B=4 symbols`, paused-group contamination, and foreign session-stat/event symbols; expected contract is strict `['BTCUSDT']` only for selected bot.
+- [x] `BRS-03 fix(api-runtime-repository): narrow runtime read filters to ACTIVE canonical groups/links only`
+  - 2026-04-18: Updated runtime repository and strategy-display canonical queries to exclude `PAUSED` groups from default runtime read scope (`botsRuntimeRead.repository.ts`, `runtimeStrategyDisplayBySymbol.service.ts`) while keeping ownership and `isEnabled` filters intact.
+- [x] `BRS-04 fix(api-runtime-symbol-scope): stop symbol expansion beyond canonical selected-bot scope`
+  - 2026-04-18: Hardened `listBotRuntimeSessionSymbolStats` symbol resolution to canonical active scope only (plus explicit `query.symbol` behavior), removing session/event fallback expansion path (`botsRuntimeRead.service.ts`).
+- [x] `BRS-A group closure (BRS-01..BRS-04)`
+  - 2026-04-18: Stage A implementation completed end-to-end (`decision + regression + repository scope narrowing + service scope hardening`). Validation: `pnpm --filter api run typecheck` => `PASS`, `pnpm run quality:guardrails` => `PASS`; targeted e2e execution is currently blocked in this environment because Docker Engine/`localhost:5432` is unavailable.
 - [x] `BRS planning queued (dashboard selected-bot runtime scope remediation)`
   - 2026-04-18: Published runtime scope remediation wave in `docs/planning/dashboard-selected-bot-runtime-scope-remediation-plan-2026-04-18.md` (`BRS-01..BRS-12`) covering strict selected-bot API scope, canonical-first strategy precedence, `PUT /dashboard/bots/:id` canonical update drift fix, and dashboard bot-switch regressions (`A=1 symbol`, `B=4 symbols`); promoted `BRS-01..BRS-05` to `NOW`.
 - [x] `QH-TSC-01 chore(web-verify-script): add canonical sequential build+typecheck script for web`

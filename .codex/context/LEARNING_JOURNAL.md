@@ -198,3 +198,20 @@ if ($LASTEXITCODE -eq 0) { pnpm --filter web run typecheck }
 - Avoid: treating `spawn EPERM` as application-code failure or closing a QA task before retrying with escalation.
 - Evidence:
   - Observed on 2026-04-18 during `UXR-E-12` closure pack; non-escalated `next/vitest` failed with `spawn EPERM`, escalated reruns passed (`next build` PASS, focused Vitest pack `30/30` PASS).
+
+### 2026-04-18 - API e2e requires active Docker Engine / local Postgres
+- Context: running focused API e2e regression for bots runtime scope (`BRS-A`) in local Codex desktop environment.
+- Symptom: e2e run fails at setup (`prisma.log.deleteMany`) with `Can't reach database server at localhost:5432`; `docker compose up -d postgres` also fails with missing `dockerDesktopLinuxEngine` pipe.
+- Root cause: Docker Desktop engine is not running/available in the session, so local Postgres container cannot be started.
+- Guardrail: before DB-backed API e2e runs, verify Docker engine availability and `localhost:5432` reachability; if unavailable, mark validation as environment-blocked and run non-DB gates (`typecheck`, guardrails) until DB runtime is restored.
+- Preferred pattern:
+```powershell
+docker --version
+docker compose version
+docker compose up -d postgres
+pnpm --filter api run typecheck
+pnpm run quality:guardrails
+```
+- Avoid: repeatedly rerunning DB-backed e2e tests before engine health is restored.
+- Evidence:
+  - Observed on 2026-04-18 during `BRS-02..BRS-04` validation (`bots.e2e.test.ts` targeted run).
