@@ -2,3 +2,4 @@ export { getBotRuntimeSession, listBotRuntimeSessions } from './runtimeSessionRe
 export { listBotRuntimeSessionSymbolStats } from './runtimeSessionSymbolStatsRead.service';
 export { listBotRuntimeSessionTrades } from './runtimeSessionTradesRead.service';
 export { listBotRuntimeSessionPositions } from './runtimeSessionPositionsRead.service';
+export { getBotRuntimeMonitoringAggregate } from './runtimeMonitoringAggregateRead.service';

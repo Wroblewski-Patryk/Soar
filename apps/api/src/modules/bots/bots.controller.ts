@@ -11,6 +11,7 @@ import {
   AttachMarketGroupStrategySchema,
   CloseBotRuntimePositionSchema,
   CreateBotMarketGroupSchema,
+  GetBotRuntimeMonitoringAggregateQuerySchema,
   ListBotRuntimePositionsQuerySchema,
   CreateBotSchema,
   ListBotRuntimeSymbolStatsQuerySchema,
@@ -190,6 +191,21 @@ export const getBotRuntimeSession = async (req: Request, res: Response) => {
   if (!session) return sendError(res, 404, 'Not found');
 
   return res.json(session);
+};
+
+export const getBotRuntimeMonitoringAggregate = async (req: Request, res: Response) => {
+  const userId = req.user?.id;
+  if (!userId) return sendError(res, 401, 'Unauthorized');
+
+  try {
+    const query = GetBotRuntimeMonitoringAggregateQuerySchema.parse(req.query);
+    const { id } = req.params;
+    const aggregate = await botsService.getBotRuntimeMonitoringAggregate(userId, id, query);
+    if (!aggregate) return sendError(res, 404, 'Not found');
+    return res.json(aggregate);
+  } catch (error) {
+    return handleBotError(res, error);
+  }
 };
 
 export const listBotRuntimeSessionSymbolStats = async (req: Request, res: Response) => {
