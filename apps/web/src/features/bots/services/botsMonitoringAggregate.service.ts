@@ -1,6 +1,7 @@
 import { normalizeSymbol } from "@/lib/symbols";
 import { toTimestamp } from "@/lib/time";
 import {
+  getBotRuntimeMonitoringAggregate,
   listBotRuntimeSessionPositions,
   listBotRuntimeSessionSymbolStats,
   listBotRuntimeSessionTrades,
@@ -31,6 +32,7 @@ export type BotMonitoringAggregateData = {
 type LoadBotMonitoringAggregateArgs = {
   botId: string;
   sessions: BotRuntimeSessionListItem[];
+  status?: "ALL" | BotRuntimeSessionStatus;
   symbol?: string;
   perSessionLimit?: number;
 };
@@ -282,11 +284,31 @@ export const aggregateBotMonitoringPayload = (
 export const loadBotMonitoringAggregate = async ({
   botId,
   sessions,
+  status,
   symbol,
   perSessionLimit = 200,
 }: LoadBotMonitoringAggregateArgs): Promise<BotMonitoringAggregateData> => {
   const scopedSessions = sessions.slice(0, 20);
   const normalizedSymbol = symbol ? normalizeSymbol(symbol) : undefined;
+  if (scopedSessions.length === 0) {
+    return aggregateBotMonitoringPayload({
+      sessions: [],
+      symbolResponses: [],
+      positionResponses: [],
+      tradeResponses: [],
+    });
+  }
+
+  try {
+    return await getBotRuntimeMonitoringAggregate(botId, {
+      status: status && status !== "ALL" ? status : undefined,
+      symbol: normalizedSymbol || undefined,
+      sessionsLimit: scopedSessions.length,
+      perSessionLimit,
+    });
+  } catch {
+    // Fallback keeps monitoring available when API aggregate endpoint is unavailable.
+  }
 
   const payloads = await Promise.all(
     scopedSessions.map(async (session) => {

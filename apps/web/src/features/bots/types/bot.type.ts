@@ -366,6 +366,13 @@ export type BotRuntimeClosePositionResponse = {
   positionId?: string;
 };
 
+export type BotRuntimeMonitoringAggregateResponse = {
+  sessionDetail: BotRuntimeSessionDetail;
+  symbolStats: BotRuntimeSymbolStatsResponse;
+  positions: BotRuntimePositionsResponse;
+  trades: BotRuntimeTradesResponse;
+};
+
 export type CreateBotInput = {
   name: string;
   walletId: string;

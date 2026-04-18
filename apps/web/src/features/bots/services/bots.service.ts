@@ -11,6 +11,7 @@ import {
   BotRuntimeSymbolStatsResponse,
   BotRuntimePositionsResponse,
   BotRuntimeClosePositionResponse,
+  BotRuntimeMonitoringAggregateResponse,
   BotRuntimeTradesResponse,
   BotSubagentConfig,
   CreateBotInput,
@@ -112,6 +113,22 @@ export const listBotRuntimeSessionPositions = async (
 ): Promise<BotRuntimePositionsResponse> => {
   const res = await api.get<BotRuntimePositionsResponse>(
     `/dashboard/bots/${botId}/runtime-sessions/${sessionId}/positions`,
+    { params }
+  );
+  return res.data;
+};
+
+export const getBotRuntimeMonitoringAggregate = async (
+  botId: string,
+  params?: {
+    status?: BotRuntimeSessionStatus;
+    symbol?: string;
+    sessionsLimit?: number;
+    perSessionLimit?: number;
+  }
+): Promise<BotRuntimeMonitoringAggregateResponse> => {
+  const res = await api.get<BotRuntimeMonitoringAggregateResponse>(
+    `/dashboard/bots/${botId}/runtime-monitoring/aggregate`,
     { params }
   );
   return res.data;

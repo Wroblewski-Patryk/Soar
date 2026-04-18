@@ -202,6 +202,7 @@ export const useBotsMonitoringController = ({
     async (
       botId: string,
       sessions: BotRuntimeSessionListItem[],
+      statusFilter: "ALL" | BotRuntimeSessionStatus,
       symbolFilter: string,
       options?: { silent?: boolean }
     ) => {
@@ -227,6 +228,7 @@ export const useBotsMonitoringController = ({
         const aggregate = await loadBotMonitoringAggregate({
           botId,
           sessions: scopedSessions,
+          status: statusFilter,
           symbol: normalizedSymbol || undefined,
           perSessionLimit: 200,
         });
@@ -264,7 +266,13 @@ export const useBotsMonitoringController = ({
       const sessions = await loadMonitorSessions(monitorBotId, monitorStatus, options);
       if (sessions == null) return;
       if (monitorViewMode === "aggregate") {
-        await loadMonitorAggregateData(monitorBotId, sessions, monitorAppliedSymbolFilter, options);
+        await loadMonitorAggregateData(
+          monitorBotId,
+          sessions,
+          monitorStatus,
+          monitorAppliedSymbolFilter,
+          options
+        );
         return;
       }
       const effectiveSessionId = monitorSessionId || sessions[0]?.id;
