@@ -114,6 +114,10 @@ Last updated: 2026-04-19
   - production verification closure (`OPV`).
 
 ## Recent Progress
+- 2026-04-19: Completed `ARC-03` by extracting runtime supervisor/watchdog
+  orchestration into `runtimeSignalLoopSupervisor.ts` and rewiring
+  `runtimeSignalLoop` to callback-based supervisor ownership while preserving
+  runtime-loop regression behavior.
 - 2026-04-19: Completed `ARC-02` by extracting typed runtime execution config
   into `apps/api/src/config/runtimeExecution.ts` and wiring
   `runtimeSignalLoop`/`orders.service` to centralized config parsing with
