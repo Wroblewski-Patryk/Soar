@@ -25,11 +25,12 @@ describe("useDataTableColumnVisibilityState helpers", () => {
 
   it("merges incoming state onto visible-by-default schema", () => {
     const defaults = buildDefaultColumnVisibility(["symbol", "pnl", "side"]);
-    const merged = mergeColumnVisibilityState(defaults, {
+    const incoming = {
       pnl: false,
       side: true,
       foreign: false,
-    } as any);
+    } as Record<string, boolean>;
+    const merged = mergeColumnVisibilityState(defaults, incoming);
 
     expect(merged).toEqual({
       symbol: true,

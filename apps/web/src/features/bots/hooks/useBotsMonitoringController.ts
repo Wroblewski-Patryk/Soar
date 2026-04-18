@@ -5,7 +5,6 @@ import { TranslationKey } from "../../../i18n/translations";
 import { createMarketStreamEventSource } from "../../../lib/marketStream";
 import { getAxiosMessage } from '@/lib/getAxiosMessage';
 import { normalizeSymbol } from "@/lib/symbols";
-import { toTimestamp } from "@/lib/time";
 import {
   getBotRuntimeSession,
   listBotRuntimeSessionPositions,

@@ -1,11 +1,33 @@
 import { describe, expect, it } from "vitest";
 import { aggregateBotMonitoringPayload } from "./botsMonitoringAggregate.service";
+import type {
+  BotRuntimePositionsResponse,
+  BotRuntimeSessionListItem,
+  BotRuntimeSymbolStatsResponse,
+  BotRuntimeTradesResponse,
+} from "../types/bot.type";
+
+const asSession = (
+  value: unknown
+): BotRuntimeSessionListItem => value as BotRuntimeSessionListItem;
+
+const asSymbolResponse = (
+  value: unknown
+): BotRuntimeSymbolStatsResponse => value as BotRuntimeSymbolStatsResponse;
+
+const asPositionsResponse = (
+  value: unknown
+): BotRuntimePositionsResponse => value as BotRuntimePositionsResponse;
+
+const asTradesResponse = (
+  value: unknown
+): BotRuntimeTradesResponse => value as BotRuntimeTradesResponse;
 
 describe("aggregateBotMonitoringPayload", () => {
   it("aggregates sessions, symbol stats, positions and trades into deterministic aggregate payload", () => {
     const result = aggregateBotMonitoringPayload({
       sessions: [
-        {
+        asSession({
           id: "s1",
           botId: "bot-1",
           mode: "PAPER",
@@ -15,8 +37,8 @@ describe("aggregateBotMonitoringPayload", () => {
           lastHeartbeatAt: "2026-04-19T10:01:00.000Z",
           durationMs: 1000,
           eventsCount: 3,
-        } as any,
-        {
+        }),
+        asSession({
           id: "s2",
           botId: "bot-1",
           mode: "PAPER",
@@ -26,10 +48,10 @@ describe("aggregateBotMonitoringPayload", () => {
           lastHeartbeatAt: "2026-04-19T09:59:00.000Z",
           durationMs: 2000,
           eventsCount: 2,
-        } as any,
+        }),
       ],
       symbolResponses: [
-        {
+        asSymbolResponse({
           sessionId: "s1",
           items: [
             {
@@ -59,9 +81,8 @@ describe("aggregateBotMonitoringPayload", () => {
               snapshotAt: "2026-04-19T10:00:30.000Z",
             },
           ],
-          summary: {} as any,
-        } as any,
-        {
+        }),
+        asSymbolResponse({
           sessionId: "s2",
           items: [
             {
@@ -91,17 +112,15 @@ describe("aggregateBotMonitoringPayload", () => {
               snapshotAt: "2026-04-19T09:58:30.000Z",
             },
           ],
-          summary: {} as any,
-        } as any,
+        }),
       ],
       positionResponses: [
-        {
+        asPositionsResponse({
           sessionId: "s1",
           total: 1,
           openCount: 1,
           closedCount: 0,
           openOrdersCount: 1,
-          summary: {},
           window: {
             startedAt: "2026-04-19T10:00:00.000Z",
             finishedAt: "2026-04-19T10:01:00.000Z",
@@ -109,14 +128,13 @@ describe("aggregateBotMonitoringPayload", () => {
           openOrders: [{ id: "o1", createdAt: "2026-04-19T10:00:05.000Z" }],
           openItems: [{ id: "p1", openedAt: "2026-04-19T10:00:00.000Z", unrealizedPnl: 3, feesPaid: 1 }],
           historyItems: [],
-        } as any,
-        {
+        }),
+        asPositionsResponse({
           sessionId: "s2",
           total: 1,
           openCount: 0,
           closedCount: 1,
           openOrdersCount: 0,
-          summary: {},
           window: {
             startedAt: "2026-04-19T09:50:00.000Z",
             finishedAt: "2026-04-19T09:59:00.000Z",
@@ -124,29 +142,27 @@ describe("aggregateBotMonitoringPayload", () => {
           openOrders: [],
           openItems: [],
           historyItems: [{ id: "p2", closedAt: "2026-04-19T09:58:00.000Z", realizedPnl: -5, feesPaid: 0.5 }],
-        } as any,
+        }),
       ],
       tradeResponses: [
-        {
+        asTradesResponse({
           sessionId: "s1",
           total: 1,
           window: {
             startedAt: "2026-04-19T10:00:00.000Z",
             finishedAt: "2026-04-19T10:01:00.000Z",
           },
-          meta: {} as any,
           items: [{ id: "t1", executedAt: "2026-04-19T10:00:20.000Z", realizedPnl: 12, fee: 1 }],
-        } as any,
-        {
+        }),
+        asTradesResponse({
           sessionId: "s2",
           total: 1,
           window: {
             startedAt: "2026-04-19T09:50:00.000Z",
             finishedAt: "2026-04-19T09:59:00.000Z",
           },
-          meta: {} as any,
           items: [{ id: "t2", executedAt: "2026-04-19T09:58:20.000Z", realizedPnl: -5, fee: 0.5 }],
-        } as any,
+        }),
       ],
     });
 
