@@ -7,13 +7,11 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `PLNC-01 docs(audit-map): classify planning docs as implemented/queued/external-blocked/superseded`
-## NEXT
 - [ ] `ARC-01 docs(contract): freeze ARC decomposition boundaries and no-drift guardrails`
+## NEXT
 - [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
 - [ ] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
 ## PIPELINE
-- [ ] `PLNC-01 docs(audit-map): classify planning docs as implemented/queued/external-blocked/superseded`
 - [ ] `ARC-01 docs(contract): freeze ARC decomposition boundaries and no-drift guardrails`
 - [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
 - [ ] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
@@ -23,7 +21,7 @@ Operational queue for one-task execution runs.
 - [x] `BRS-C (commits BRS-09..BRS-12): dashboard switch regression + QA closure`
 - [x] `UXR-G-A (commits UXR-G-01..UXR-G-03): dashboard wallet/manual-order hierarchy + summary-row contract`
 - [x] `UXR-G-B (commits UXR-G-04..UXR-G-06): 50/50 wallet KPI split + regression closure`
-- [ ] `PLNC-A (commits PLNC-01..PLNC-04): planning catalog reconciliation + status sync + canonical linkage`
+- [x] `PLNC-A (commits PLNC-01..PLNC-04): planning catalog reconciliation + status sync + canonical linkage`
 - [ ] `ARC-A (commits ARC-01..ARC-05): runtime critical-path decomposition foundations`
 - [ ] `ARC-B (commits ARC-06..ARC-10): bots runtime CQRS/read-model decomposition + aggregate monitoring contract`
 - [ ] `ARC-C (commits ARC-11..ARC-13): shared runtime/backtest indicator kernel + backtest facade alignment`
@@ -59,6 +57,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `PLNC-A group closure (PLNC-01..PLNC-04)`
+  - 2026-04-19: Closed planning-catalog reconciliation wave by publishing deterministic plan-classification index (`planning-catalog-index-2026-04-19.md`), syncing stale status headers in completed waves, adding canonical queue ownership linkage in non-closed planning docs, and syncing canonical queue/context files (`mvp-next-commits`, `mvp-execution-plan`, `TASK_BOARD`, `PROJECT_STATE`).
 - [x] `UXR-G-B group closure (UXR-G-04..UXR-G-06)`
   - 2026-04-18: Closed dashboard wallet/manual-order ergonomics wave Stage B by enforcing 50/50 free-funds vs in-positions layout, adding focused sidebar regression assertions in `HomeLiveWidgets.test.tsx`, and running closure checks: `pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets.test.tsx` => `16/16 PASS`, `pnpm --filter web run typecheck` => `PASS`, `pnpm --filter web run build` => `PASS`.
 - [x] `UXR-G-A group closure (UXR-G-01..UXR-G-03)`

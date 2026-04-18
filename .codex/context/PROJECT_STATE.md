@@ -1,6 +1,6 @@
 # PROJECT_STATE
 
-Last updated: 2026-04-18
+Last updated: 2026-04-19
 
 ## Product Snapshot
 - Name: CryptoSparrow / Soar
@@ -20,8 +20,8 @@ Last updated: 2026-04-18
   and IA changes.
 - 2026-04-17: Portuguese rollout is locked to `pt-PT`; `pt-BR` is not part of
   the current localization wave.
-- 2026-04-18: active execution focus moved to `PLNC-A` planning-catalog
-  reconciliation after closing `BRS` and `UXR-G`.
+- 2026-04-19: active execution focus moved to `ARC-A` after closing `PLNC-A`
+  planning-catalog reconciliation.
 
 ## Technical Baseline
 - Backend: Node.js 20+, Express API, Prisma, TypeScript
@@ -99,23 +99,26 @@ Last updated: 2026-04-18
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: execute `PLNC-A` planning-catalog reconciliation
-  (`PLNC-01..PLNC-04`) with canonical queue/status alignment.
+- Main active objective: execute `ARC-A` architecture maintainability
+  remediation foundations (`ARC-01..ARC-05`).
 - Top blockers:
-  - planning documents still need explicit implemented/queued/superseded
-    classification and canonical queue linkage to avoid future execution drift.
+  - architecture hotspot decomposition still needs guardrail-frozen scope and
+    extraction sequencing before implementation work starts.
 - Success criteria for this phase:
-  - `PLNC-A` closes with a clear planning-catalog map and synchronized status
-    across queue/context docs.
-  - no stale READY/BACKLOG entries for already closed waves (`BRS`, `UXR-G`).
-  - canonical queue files and task board stay aligned after each group closure.
-  - no regressions in auth, runtime, operator clarity, or deploy confidence.
-- Next queued follow-up after `PLNC-A`:
-  - architecture maintainability remediation (`ARC`),
+  - `ARC-A` closes with explicit extraction boundaries and regression ownership.
+  - canonical queue and context docs stay synchronized after each ARC batch.
+  - no regressions in runtime safety, deploy confidence, or dashboard contracts.
+- Next queued follow-up after `ARC-A`:
+  - `ARC-B..ARC-E`,
   - lifecycle parity closure (`POS-36..42`),
   - production verification closure (`OPV`).
 
 ## Recent Progress
+- 2026-04-19: closed `PLNC-A` (`PLNC-01..PLNC-04`) by publishing deterministic
+  planning classification index (`implemented/queued/external-blocked/superseded`),
+  syncing stale planning status headers, adding canonical queue linkage in
+  non-closed plans, and synchronizing closure state across canonical queue and
+  context docs.
 - 2026-04-18: closed `UXR-G` (`UXR-G-01..UXR-G-06`) end-to-end: manual-order
   section is now a peer block below wallet, wallet summary row order is
   `Allocation -> Delta -> Portfolio`, free-funds/in-positions split is `50/50`,

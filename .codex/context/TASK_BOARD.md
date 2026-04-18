@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-04-18
+Last updated: 2026-04-19
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -17,39 +17,15 @@ Last updated: 2026-04-18
 
 ## READY
 
-- [ ] PLNC-01 Classify planning catalog coverage and map active plans to canonical queue ownership
-  - Status: READY
-  - Group: Planning Catalog Reconciliation (`PLNC-A`)
-  - Owner: Product Docs
-  - Depends on: UXR-G-06
-  - Priority: P2
-
-## BACKLOG
-
-- [ ] PLNC-02 Update stale status lines in completed planning docs and classify superseded plans
-  - Status: BACKLOG
-  - Group: Planning Catalog Reconciliation (`PLNC-A`)
-  - Owner: Product Docs
-  - Depends on: PLNC-01
-  - Priority: P2
-- [ ] PLNC-03 Add canonical queue linkage in active non-closed planning docs
-  - Status: BACKLOG
-  - Group: Planning Catalog Reconciliation (`PLNC-A`)
-  - Owner: Product Docs
-  - Depends on: PLNC-02
-  - Priority: P2
-- [ ] PLNC-04 Publish planning-catalog closure sync in task/project context docs
-  - Status: BACKLOG
-  - Group: Planning Catalog Reconciliation (`PLNC-A`)
-  - Owner: Product Docs
-  - Depends on: PLNC-03
-  - Priority: P2
 - [ ] ARC-01 Freeze architecture maintainability remediation boundaries and extraction guardrails
-  - Status: BACKLOG
+  - Status: READY
   - Group: Architecture Maintainability Remediation (`ARC-A`)
   - Owner: Product Docs
   - Depends on: PLNC-03
   - Priority: P2
+
+## BACKLOG
+
 - [ ] POS-36 Remove strategy-exit close bypass from backtest/replay/runtime lifecycle flow
   - Status: BACKLOG
   - Group: Position Lifecycle Parity Closure (`POS-A`)
@@ -77,6 +53,11 @@ Last updated: 2026-04-18
 
 ## DONE
 
+- [x] PLNC-A closed implementation scope (`PLNC-01..PLNC-04`): planning catalog classification + status/header sync + canonical linkage + queue/context closure sync
+- [x] PLNC-04 Publish planning-catalog closure sync in task/project context docs
+- [x] PLNC-03 Add canonical queue linkage in active non-closed planning docs
+- [x] PLNC-02 Update stale status lines in completed planning docs and classify superseded plans
+- [x] PLNC-01 Classify planning catalog coverage and map active plans to canonical queue ownership
 - [x] UXR-G-06 Run focused dashboard-home closure checks and sync canonical queue/context docs
 - [x] UXR-G-05 Add focused dashboard-home regression coverage for manual-order placement and wallet KPI ordering/layout
 - [x] UXR-G-04 Enforce 50/50 width split for free-funds and in-positions wallet KPI rows

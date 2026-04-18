@@ -1965,13 +1965,17 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-18: Completed `UXR-G-06` closure checks and queue sync. Validation: `pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets.test.tsx` => `16/16 PASS`; `pnpm --filter web run typecheck` => `PASS`; `pnpm --filter web run build` => `PASS`.
 
 ## Phase PLNC - Planning Catalog Reconciliation and Coverage Sync (Queued 2026-04-18)
-- [ ] `PLNC-01 docs(audit-map): classify planning docs as implemented/queued/external-blocked/superseded`
-- [ ] `PLNC-02 docs(status-sync): update stale status lines in completed planning files`
-- [ ] `PLNC-03 docs(queue-link): add canonical queue linkage in active non-closed plans`
-- [ ] `PLNC-04 docs(sync): publish planning-catalog closure note in PROJECT_STATE/TASK_BOARD`
+- [x] `PLNC-01 docs(audit-map): classify planning docs as implemented/queued/external-blocked/superseded`
+- [x] `PLNC-02 docs(status-sync): update stale status lines in completed planning files`
+- [x] `PLNC-03 docs(queue-link): add canonical queue linkage in active non-closed plans`
+- [x] `PLNC-04 docs(sync): publish planning-catalog closure note in PROJECT_STATE/TASK_BOARD`
 
 ### Progress Log (Phase PLNC - Planning Catalog Reconciliation and Coverage Sync)
 - 2026-04-18: Queued planning-catalog reconciliation wave in `docs/planning/planning-catalog-coverage-follow-up-plan-2026-04-18.md` after scanning `docs/planning` coverage against canonical queue files; wave purpose is to close status drift and remove orphan active plans before deeper refactor waves.
+- 2026-04-19: Completed `PLNC-01` by adding deterministic planning classification index in `docs/planning/planning-catalog-index-2026-04-19.md` with explicit `implemented/queued/external-blocked/superseded` ownership mapping.
+- 2026-04-19: Completed `PLNC-02` by syncing stale status headers in completed planning waves (`CPDB`, `SEC`, `DPL`, `WLT`, `L10NQ`, `DBSEL`, `BRS`, `UXR-E/F/G`).
+- 2026-04-19: Completed `PLNC-03` by adding canonical queue linkage sections in non-closed planning docs (`planning-catalog follow-up`, `ARC audit`, `POS parity`, `LBT`, `V1 release/stability`, `V1 Binance alignment`) and clarifying deferred ownership for subscription rollout plan.
+- 2026-04-19: Completed `PLNC-04` by synchronizing closure state in canonical queue/context files (`mvp-next-commits`, `mvp-execution-plan`, `TASK_BOARD`, `PROJECT_STATE`) and advancing focus to `ARC-01`.
 
 ## Phase ARC - Architecture Maintainability Remediation (Queued 2026-04-18)
 - [ ] `ARC-01 docs(contract): freeze ARC decomposition boundaries and no-drift guardrails`
