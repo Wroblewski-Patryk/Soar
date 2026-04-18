@@ -4,15 +4,14 @@ import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from '
 import { LuArrowDown, LuArrowUp, LuArrowUpDown, LuColumns3, LuSearch, LuSlidersHorizontal } from 'react-icons/lu';
 import {
   getLocalStorageJsonItem,
-  setLocalStorageItem,
   setLocalStorageJsonItem,
 } from '../../lib/storage';
-import {
-  readTableColumnVisibilityPreference,
-  saveTableColumnVisibilityPreference,
-} from '@/features/profile/services/profileBasicCache';
 import { useOptionalI18n } from '@/i18n/useOptionalI18n';
 import InlinePager from './InlinePager';
+import {
+  mergeColumnVisibilityState,
+  useDataTableColumnVisibilityState,
+} from './data-table/useDataTableColumnVisibilityState';
 
 export type DataTableColumn<T> = {
   key: string;
@@ -91,45 +90,6 @@ const compareValues = (a: string | number | null | undefined, b: string | number
   return String(a).localeCompare(String(b));
 };
 
-type TableColumnVisibilityState = Record<string, boolean>;
-
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value != null && !Array.isArray(value);
-
-const normalizeColumnVisibilityState = (
-  raw: unknown,
-  columns: string[]
-): TableColumnVisibilityState | null => {
-  if (!isRecord(raw)) return null;
-  const knownKeys = new Set(columns);
-  const normalized: TableColumnVisibilityState = {};
-  let hasKnownKey = false;
-
-  for (const [key, value] of Object.entries(raw)) {
-    if (!knownKeys.has(key) || typeof value !== 'boolean') continue;
-    normalized[key] = value;
-    hasKnownKey = true;
-  }
-
-  return hasKnownKey ? normalized : null;
-};
-
-const buildDefaultColumnVisibility = (columns: string[]): TableColumnVisibilityState =>
-  Object.fromEntries(columns.map((key) => [key, true]));
-
-const mergeColumnVisibilityState = (
-  defaults: TableColumnVisibilityState,
-  incoming: TableColumnVisibilityState | null
-) => {
-  if (!incoming) return defaults;
-  const next = { ...defaults };
-  for (const [key, value] of Object.entries(incoming)) {
-    if (!(key in next)) continue;
-    next[key] = value;
-  }
-  return next;
-};
-
 export default function DataTable<T>({
   rows,
   columns,
@@ -204,10 +164,7 @@ export default function DataTable<T>({
   const [internalPageSize, setInternalPageSize] = useState(resolvedDefaultPageSize);
   const [pageInputValue, setPageInputValue] = useState('1');
   const [advancedOpen, setAdvancedOpen] = useState(advancedDefaultOpen);
-  const [columnVisibilityState, setColumnVisibilityState] = useState<TableColumnVisibilityState>({});
-  const [columnVisibilityReady, setColumnVisibilityReady] = useState(false);
   const [columnsDropdownOpen, setColumnsDropdownOpen] = useState(false);
-  const lastSerializedColumnVisibilityRef = useRef('');
   const columnsDropdownRef = useRef<HTMLDivElement | null>(null);
 
   const isQueryControlled = query != null;
@@ -250,20 +207,15 @@ export default function DataTable<T>({
     });
     return copy;
   }, [activeSortDirection, activeSortKey, columns, filteredRows, manualSorting]);
-
-  const columnKeys = useMemo(() => columns.map((column) => column.key), [columns]);
-  const columnKeysSignature = useMemo(() => columnKeys.join('|'), [columnKeys]);
-  const defaultColumnVisibility = useMemo(
-    () => buildDefaultColumnVisibility(columnKeys),
-    [columnKeys]
-  );
-  const resolvedColumnVisibility = useMemo(() => {
-    if (!effectiveColumnVisibilityEnabled) return defaultColumnVisibility;
-    return mergeColumnVisibilityState(
-      defaultColumnVisibility,
-      normalizeColumnVisibilityState(columnVisibilityState, columnKeys)
-    );
-  }, [columnKeys, columnVisibilityState, defaultColumnVisibility, effectiveColumnVisibilityEnabled]);
+  const {
+    defaultColumnVisibility,
+    resolvedColumnVisibility,
+    setColumnVisibilityState,
+  } = useDataTableColumnVisibilityState({
+    columns,
+    enabled: effectiveColumnVisibilityEnabled,
+    preferenceKey: columnVisibilityPreferenceKey,
+  });
   const visibleColumns = useMemo(() => {
     const next = columns.filter((column) => resolvedColumnVisibility[column.key] !== false);
     return next.length > 0 ? next : columns;
@@ -387,89 +339,6 @@ export default function DataTable<T>({
       sortDirection: internalSortDirection,
     });
   }, [internalSortDirection, internalSortKey, manualSorting, persistSortKey]);
-
-  useEffect(() => {
-    if (!effectiveColumnVisibilityEnabled || !columnVisibilityPreferenceKey) {
-      setColumnVisibilityState(defaultColumnVisibility);
-      setColumnVisibilityReady(true);
-      return;
-    }
-
-    let cancelled = false;
-    setColumnVisibilityReady(false);
-
-    const localStorageKey = `datatable.columns.${columnVisibilityPreferenceKey}`;
-    const parsedLocalPayload = normalizeColumnVisibilityState(
-      getLocalStorageJsonItem(localStorageKey),
-      columnKeys
-    );
-
-    const localResolved = mergeColumnVisibilityState(defaultColumnVisibility, parsedLocalPayload);
-    setColumnVisibilityState(localResolved);
-    lastSerializedColumnVisibilityRef.current = JSON.stringify(localResolved);
-
-    const hydrateFromProfile = async () => {
-      try {
-        const remoteRaw = await readTableColumnVisibilityPreference(columnVisibilityPreferenceKey);
-        const remoteParsed = normalizeColumnVisibilityState(remoteRaw, columnKeys);
-        if (!remoteParsed || cancelled) return;
-
-        const remoteResolved = mergeColumnVisibilityState(defaultColumnVisibility, remoteParsed);
-        setColumnVisibilityState(remoteResolved);
-        lastSerializedColumnVisibilityRef.current = JSON.stringify(remoteResolved);
-
-        setLocalStorageJsonItem(localStorageKey, remoteResolved);
-      } catch {
-        // Ignore profile preference hydration failures.
-      }
-    };
-
-    void hydrateFromProfile().finally(() => {
-      if (cancelled) return;
-      setColumnVisibilityReady(true);
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [
-    columnKeys,
-    columnKeysSignature,
-    effectiveColumnVisibilityEnabled,
-    columnVisibilityPreferenceKey,
-    defaultColumnVisibility,
-  ]);
-
-  useEffect(() => {
-    if (!effectiveColumnVisibilityEnabled || !columnVisibilityPreferenceKey || !columnVisibilityReady) return;
-
-    const serialized = JSON.stringify(resolvedColumnVisibility);
-    if (serialized === lastSerializedColumnVisibilityRef.current) return;
-
-    const localStorageKey = `datatable.columns.${columnVisibilityPreferenceKey}`;
-    setLocalStorageItem(localStorageKey, serialized);
-
-    const timeout = window.setTimeout(async () => {
-      try {
-        await saveTableColumnVisibilityPreference(
-          columnVisibilityPreferenceKey,
-          resolvedColumnVisibility
-        );
-        lastSerializedColumnVisibilityRef.current = serialized;
-      } catch {
-        // Ignore profile preference sync failures.
-      }
-    }, 250);
-
-    return () => {
-      window.clearTimeout(timeout);
-    };
-  }, [
-    effectiveColumnVisibilityEnabled,
-    columnVisibilityPreferenceKey,
-    columnVisibilityReady,
-    resolvedColumnVisibility,
-  ]);
 
   useEffect(() => {
     const handlePointerDown = (event: MouseEvent | TouchEvent) => {
