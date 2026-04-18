@@ -7,22 +7,24 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [x] `L10NQ-D-06 refactor(reports-localization): migrate reports page + performance view to dashboard-reports namespace`
-- [x] `L10NQ-D-07 refactor(markets-localization): migrate MarketUniverseForm/SearchableMultiSelect copy and remove pl fallback`
-- [x] `L10NQ-D-08 refactor(backtests-fallback-removal): remove pl fallback drift and explicit pt copy in backtests surfaces`
-- [x] `L10NQ-D-09 refactor(bots-page-copy): localize bot create/edit/assistant/preview page labels and remaining bot copy`
-- [x] `L10NQ-D-10 refactor(dashboard-home-copy): localize TP/SL/Notes/manual-order literals in HomeLiveWidgets`
+- [ ] `BRS-01 docs(decision): close dashboard runtime selected-bot scope policy (ACTIVE-only canonical + PAUSED exclusion default)`
+- [ ] `BRS-02 test(api-red): add failing regression for symbol leakage across canonical/legacy/session/event scope`
+- [ ] `BRS-03 fix(api-runtime-repository): narrow runtime read filters to ACTIVE canonical groups/links only`
+- [ ] `BRS-04 fix(api-runtime-symbol-scope): stop symbol expansion beyond canonical selected-bot scope`
+- [ ] `BRS-05 test(api-red-update-contract): add failing regression for PUT /dashboard/bots/:id canonical update drift`
 ## NEXT
-- [x] `L10NQ-D-11 refactor(global-offline-risk-copy): localize offline page and risk notice footer`
-- [x] `L10NQ-D-12 refactor(shared-foundation-aria): localize shared aria/title strings in modal/table/loading/layout primitives`
-- [x] `L10NQ-D-13 refactor(shared-footer-labels): align footer/public shell labels to translation keys`
-- [x] `L10NQ-D-14 refactor(low-score-module-cleanup): clear residual route-reachable literals in profile/wallet components`
-- [x] `L10NQ-D-15 cleanup(non-route-legacy-copy): align legacy BacktestsList + strategy presets localization contract`
+- [ ] `BRS-06 fix(api-update-contract): make PUT /dashboard/bots/:id update canonical group+strategy mapping transactionally`
+- [ ] `BRS-07 fix(api-strategy-precedence): enforce canonical-first symbol->strategy assignment`
+- [ ] `BRS-08 test(api-regression): lock strict selected-bot scope + canonical strategy precedence`
+- [ ] `BRS-09 test(web-regression): lock dashboard switch scenario A(1 symbol) vs B(4 symbols)`
 ## PIPELINE
-- [x] `L10NQ-D-16 test(namespace-parity-expanded): enforce en/pl/pt parity for all new namespace keys`
-- [x] `L10NQ-D-17 test(route-locale-smoke): add route-level locale smoke tests for highest-impact routes`
-- [x] `L10NQ-D-18 qa(final-pack-and-closure): run full i18n regression/build pack and publish closure evidence`
+- [ ] `BRS-10 refactor(web-runtime-contract): adapt dashboard runtime consumer only if API payload contract changes`
+- [ ] `BRS-11 qa(regression-pack): run focused API+WEB runtime scope regression pack`
+- [ ] `BRS-12 docs(closure): publish evidence and sync canonical queue/execution statuses`
 ## GROUP QUEUE
+- [ ] `BRS-A (commits BRS-01..BRS-04): decision closure + strict selected-bot scope foundation`
+- [ ] `BRS-B (commits BRS-05..BRS-08): canonical update-path fix + strategy precedence unification`
+- [ ] `BRS-C (commits BRS-09..BRS-12): dashboard switch regression + QA closure`
 - [x] `L10NQ-D-A (commits 01-05): inventory + guardrail hardening + auth/admin migration`
 - [x] `L10NQ-D-B (commits 06-10): reports/markets/backtests/bots/home copy migration`
 - [x] `L10NQ-D-C (commits 11-18): shared foundation localization + parity/smoke/closure`
@@ -50,6 +52,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `BRS planning queued (dashboard selected-bot runtime scope remediation)`
+  - 2026-04-18: Published runtime scope remediation wave in `docs/planning/dashboard-selected-bot-runtime-scope-remediation-plan-2026-04-18.md` (`BRS-01..BRS-12`) covering strict selected-bot API scope, canonical-first strategy precedence, `PUT /dashboard/bots/:id` canonical update drift fix, and dashboard bot-switch regressions (`A=1 symbol`, `B=4 symbols`); promoted `BRS-01..BRS-05` to `NOW`.
 - [x] `QH-TSC-01 chore(web-verify-script): add canonical sequential build+typecheck script for web`
   - 2026-04-18: Added deterministic web verification script chain (`apps/web: verify:build-typecheck`, root shortcut `web:verify:build-typecheck`) to avoid `.next/types` race-prone manual command ordering. Validation: `pnpm run web:verify:build-typecheck` => `PASS`.
 - [x] `QH-LINT-02 chore(web-hook-deps-cleanup): resolve remaining exhaustive-deps warnings in backtests/wallets tables`
