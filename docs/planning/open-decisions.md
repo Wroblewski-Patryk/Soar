@@ -754,6 +754,23 @@ This file tracks intentionally unresolved architecture choices so implementation
   - `docs/modules/api-bots.md`
   - `docs/modules/web-dashboard-home.md`
 
+## Dashboard Runtime Sidebar Wallet and Manual-Order Layout Contract
+- Decision state: resolved on 2026-04-18.
+- Decision:
+  - in dashboard runtime sidebar, wallet and manual-order must be rendered as separate peer sections.
+  - manual-order section must be placed directly below wallet section.
+  - manual-order submit behavior and backend payload contract are unchanged by this layout wave.
+- Locked behavior:
+  - wallet summary order in runtime sidebar:
+    - `allocation` first (when wallet mode is `LIVE`),
+    - `delta from start` directly below `allocation`,
+    - then remaining wallet summary content.
+  - `portfolio` row uses simple inline summary-row style (no card-like visual treatment).
+  - `free funds` and `in positions` are emphasized as a fixed equal split (`50/50`) in one two-column row.
+- Canonical references:
+  - `docs/planning/uxr-g-dashboard-wallet-manual-order-layout-plan-2026-04-18.md`
+  - `docs/modules/web-dashboard-home.md`
+
 ## Table Action Semantics and Clone Naming Contract
 - Decision state: resolved on 2026-04-18.
 - Decision:

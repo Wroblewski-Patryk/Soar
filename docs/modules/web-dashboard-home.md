@@ -5,8 +5,8 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/dashboard-home`
 - Owner: frontend/runtime-observability
-- Last updated: 2026-04-17
-- Related planning task: `UXR-01`
+- Last updated: 2026-04-18
+- Related planning task: `UXR-G-01`
 
 ## 1. Purpose and Scope
 - Implements dashboard control-center home view (`/dashboard`) for runtime monitoring.
@@ -125,3 +125,16 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
   - they cannot expand symbol set beyond canonical selected-bot active scope.
 - Legacy symbol->strategy context is compatibility fallback only when canonical mapping is unavailable:
   - legacy fallback cannot override canonical strategy context when canonical mapping exists.
+
+## 14. Runtime Sidebar Wallet/Manual-Order Layout Contract (`UXR-G`)
+- Section hierarchy:
+  - wallet section and manual-order section are separate peer sections.
+  - manual-order section is rendered directly below wallet.
+  - manual-order behavior is unchanged (same command path and payload semantics).
+- Wallet summary order:
+  - `allocation` first when wallet is `LIVE`,
+  - `delta from start` directly below `allocation`,
+  - then remaining summary entries.
+- Wallet KPI style and split:
+  - `portfolio` is rendered as simple inline summary row (no card-like treatment),
+  - `free funds` and `in positions` are rendered as equal `50/50` columns in one row.
