@@ -7,12 +7,12 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `ARC-02 refactor(api-runtime): extract typed runtime/live-ordering config from runtime services`
+- [ ] `ARC-03 refactor(api-runtime): extract supervisor/watchdog from runtimeSignalLoop`
 ## NEXT
 - [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
 - [ ] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
 ## PIPELINE
-- [ ] `ARC-02 refactor(api-runtime): extract typed runtime/live-ordering config from runtime services`
+- [ ] `ARC-03 refactor(api-runtime): extract supervisor/watchdog from runtimeSignalLoop`
 - [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
 - [ ] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
 ## GROUP QUEUE
@@ -57,6 +57,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `ARC-02 refactor(api-runtime): extract typed runtime/live-ordering config from runtime services`
+  - 2026-04-19: Added typed runtime execution config module (`apps/api/src/config/runtimeExecution.ts`) and moved env parsing out of `runtimeSignalLoop.service.ts` and `orders.service.ts`; added config regression tests in `runtimeExecution.test.ts`.
 - [x] `ARC-01 docs(contract): freeze ARC decomposition boundaries and no-drift guardrails`
   - 2026-04-19: Published canonical ARC decomposition/no-drift contract in `docs/architecture/runtime-critical-path-decomposition-contract.md` and linked resolved decision in `open-decisions`.
 - [x] `PLNC-A group closure (PLNC-01..PLNC-04)`

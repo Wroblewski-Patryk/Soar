@@ -114,6 +114,10 @@ Last updated: 2026-04-19
   - production verification closure (`OPV`).
 
 ## Recent Progress
+- 2026-04-19: Completed `ARC-02` by extracting typed runtime execution config
+  into `apps/api/src/config/runtimeExecution.ts` and wiring
+  `runtimeSignalLoop`/`orders.service` to centralized config parsing with
+  dedicated config tests (`runtimeExecution.test.ts`).
 - 2026-04-19: Completed `ARC-01` by freezing runtime maintainability
   decomposition boundaries and anti-drift guardrails in
   `docs/architecture/runtime-critical-path-decomposition-contract.md` and

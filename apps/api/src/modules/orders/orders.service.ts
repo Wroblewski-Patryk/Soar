@@ -5,7 +5,7 @@ import { decrypt } from '../../utils/crypto';
 import { CcxtFuturesConnector } from '../exchange/ccxtFuturesConnector.service';
 import { createLiveOrderAdapter } from '../exchange/liveOrderAdapter.service';
 import { CcxtFuturesOrderFill } from '../exchange/ccxtFuturesConnector.types';
-import { parsePositiveInt } from '../../lib/env';
+import { liveOrderingConfig } from '../../config/runtimeExecution';
 import { isAppErrorLike } from '../../lib/errors';
 import { orderErrors } from './orders.errors';
 
@@ -92,41 +92,6 @@ type CachedExposure = {
 const symbolRulesCache = new Map<string, CachedRules>();
 const symbolExposureCache = new Map<string, CachedExposure>();
 const liveMarginLeverageConvergenceCache = new Map<string, { expiresAtMs: number }>();
-
-const parseBoolean = (raw: string | undefined, fallback: boolean) => {
-  if (typeof raw !== 'string') return fallback;
-  const normalized = raw.trim().toLowerCase();
-  if (normalized === 'true') return true;
-  if (normalized === 'false') return false;
-  return fallback;
-};
-
-const parseMarginMode = (raw: string | undefined): 'cross' | 'isolated' | null => {
-  if (typeof raw !== 'string') return null;
-  const normalized = raw.trim().toLowerCase();
-  if (normalized === 'cross' || normalized === 'crossed') return 'cross';
-  if (normalized === 'isolated' || normalized === 'isolate') return 'isolated';
-  return null;
-};
-
-const RULES_CACHE_TTL_MS = parsePositiveInt(process.env.LIVE_PRETRADE_RULES_CACHE_TTL_MS, 5 * 60_000);
-const EXPOSURE_CACHE_TTL_MS = parsePositiveInt(
-  process.env.LIVE_PRETRADE_EXPOSURE_CACHE_TTL_MS,
-  5_000
-);
-const LIVE_CONVERGENCE_CACHE_TTL_MS = parsePositiveInt(
-  process.env.LIVE_PRETRADE_MARGIN_LEVERAGE_CACHE_TTL_MS,
-  6 * 60 * 60_000
-);
-const LIVE_CONVERGENCE_ENABLED = parseBoolean(
-  process.env.LIVE_PRETRADE_MARGIN_LEVERAGE_CONVERGENCE_ENABLED,
-  true
-);
-const LIVE_CONVERGENCE_STRICT = parseBoolean(
-  process.env.LIVE_PRETRADE_MARGIN_LEVERAGE_CONVERGENCE_STRICT,
-  false
-);
-const LIVE_TARGET_MARGIN_MODE = parseMarginMode(process.env.LIVE_PRETRADE_MARGIN_MODE);
 
 const getRulesCacheKey = (params: {
   exchange: Exchange;
@@ -272,7 +237,7 @@ const getSymbolTradingRulesCached = async (params: {
 
   const rules = await params.connector.getSymbolTradingRules(params.symbol);
   symbolRulesCache.set(cacheKey, {
-    expiresAtMs: nowMs + RULES_CACHE_TTL_MS,
+    expiresAtMs: nowMs + liveOrderingConfig.rulesCacheTtlMs,
     rules,
   });
   return rules;
@@ -295,7 +260,7 @@ const hasOpenExposureCached = async (params: {
 
   const hasOpenPosition = await params.connector.hasOpenPosition(params.symbol);
   symbolExposureCache.set(cacheKey, {
-    expiresAtMs: nowMs + EXPOSURE_CACHE_TTL_MS,
+    expiresAtMs: nowMs + liveOrderingConfig.exposureCacheTtlMs,
     hasOpenPosition,
   });
   return hasOpenPosition;
@@ -329,14 +294,14 @@ const convergeLiveMarginAndLeverageIfNeeded = async (params: {
   symbol: string;
   targetLeverage: number | null;
 }) => {
-  if (!LIVE_CONVERGENCE_ENABLED) return;
-  if (params.targetLeverage == null && LIVE_TARGET_MARGIN_MODE == null) return;
+  if (!liveOrderingConfig.convergenceEnabled) return;
+  if (params.targetLeverage == null && liveOrderingConfig.targetMarginMode == null) return;
 
   const cacheKey = getLiveConvergenceCacheKey({
     apiKeyId: params.apiKeyId,
     symbol: params.symbol,
     leverage: params.targetLeverage,
-    marginMode: LIVE_TARGET_MARGIN_MODE,
+    marginMode: liveOrderingConfig.targetMarginMode,
   });
   const nowMs = Date.now();
   const cached = liveMarginLeverageConvergenceCache.get(cacheKey);
@@ -348,13 +313,13 @@ const convergeLiveMarginAndLeverageIfNeeded = async (params: {
     await params.connector.convergeFuturesLeverageAndMargin({
       symbol: params.symbol,
       leverage: params.targetLeverage,
-      marginMode: LIVE_TARGET_MARGIN_MODE,
+      marginMode: liveOrderingConfig.targetMarginMode,
     });
     liveMarginLeverageConvergenceCache.set(cacheKey, {
-      expiresAtMs: nowMs + LIVE_CONVERGENCE_CACHE_TTL_MS,
+      expiresAtMs: nowMs + liveOrderingConfig.convergenceCacheTtlMs,
     });
   } catch (error) {
-    if (LIVE_CONVERGENCE_STRICT) {
+    if (liveOrderingConfig.convergenceStrict) {
       throw orderErrors.livePretradeMarginLeverageConvergenceFailed();
     }
     const message = error instanceof Error ? error.message : 'unknown_error';

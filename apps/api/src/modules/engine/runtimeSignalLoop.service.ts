@@ -1,6 +1,7 @@
 import { SignalDirection } from '@prisma/client';
 import { metricsStore } from '../../observability/metrics';
 import { normalizeSymbol } from '../../lib/symbols';
+import { runtimeSignalLoopConfig } from '../../config/runtimeExecution';
 import {
   MarketStreamEvent,
   StreamCandleEvent,
@@ -166,47 +167,6 @@ type RuntimeSignalLoopDeps = {
   invalidateRuntimeTopologyCache?: () => void;
 };
 
-const runtimeSignalQuantity = Number.parseFloat(process.env.RUNTIME_SIGNAL_QUANTITY ?? '0.01');
-const runtimeSignalDecisionDedupeRetentionMs = Number.parseInt(
-  process.env.RUNTIME_SIGNAL_DEDUPE_RETENTION_MS ?? '21600000',
-  10
-);
-const minDirectionalScore = Number.parseFloat(process.env.RUNTIME_SIGNAL_MIN_DIRECTIONAL_SCORE ?? '1');
-const tickerFreshnessFallbackMs = Math.max(
-  30_000,
-  Number.parseInt(process.env.RUNTIME_SIGNAL_TICKER_FRESHNESS_MS ?? '90000', 10)
-);
-const runtimeSessionWatchdogIntervalMs = Math.max(
-  5_000,
-  Number.parseInt(process.env.RUNTIME_SESSION_WATCHDOG_INTERVAL_MS ?? '15000', 10)
-);
-const runtimeStallDetectorEnabled = process.env.RUNTIME_STALL_DETECTOR_ENABLED !== 'false';
-const runtimeStallNoEventMs = Math.max(
-  60_000,
-  Number.parseInt(process.env.RUNTIME_STALL_NO_EVENT_MS ?? '300000', 10)
-);
-const runtimeStallNoHeartbeatMs = Math.max(
-  runtimeSessionWatchdogIntervalMs * 2,
-  Number.parseInt(process.env.RUNTIME_STALL_NO_HEARTBEAT_MS ?? '60000', 10)
-);
-const runtimeAutoRestartEnabled = process.env.RUNTIME_AUTO_RESTART_ENABLED !== 'false';
-const runtimeAutoRestartCooldownMs = Math.max(
-  5_000,
-  Number.parseInt(process.env.RUNTIME_AUTO_RESTART_COOLDOWN_MS ?? '30000', 10)
-);
-const runtimeAutoRestartMaxAttempts = Math.max(
-  1,
-  Number.parseInt(process.env.RUNTIME_AUTO_RESTART_MAX_ATTEMPTS ?? '5', 10)
-);
-const runtimeAutoRestartWindowMs = Math.max(
-  runtimeAutoRestartCooldownMs,
-  Number.parseInt(process.env.RUNTIME_AUTO_RESTART_WINDOW_MS ?? '300000', 10)
-);
-const runtimeSeriesQueueMaxPending = Math.max(
-  1,
-  Number.parseInt(process.env.RUNTIME_SIGNAL_SERIES_QUEUE_MAX_PENDING ?? '64', 10)
-);
-
 const defaultDeps: RuntimeSignalLoopDeps = {
   subscribe: subscribeMarketStreamEvents,
   listActiveBots: listActiveRuntimeBots,
@@ -349,7 +309,12 @@ export class RuntimeSignalLoop {
 
   private startSessionWatchdog() {
     if (this.sessionWatchdogTimer) return;
-    if (!Number.isFinite(runtimeSessionWatchdogIntervalMs) || runtimeSessionWatchdogIntervalMs <= 0) return;
+    if (
+      !Number.isFinite(runtimeSignalLoopConfig.sessionWatchdogIntervalMs) ||
+      runtimeSignalLoopConfig.sessionWatchdogIntervalMs <= 0
+    ) {
+      return;
+    }
 
     this.sessionWatchdogTimer = setInterval(() => {
       void (async () => {
@@ -365,7 +330,7 @@ export class RuntimeSignalLoop {
         }
         await this.detectRuntimeStall(now, activeBots.map((bot) => bot.id));
       })();
-    }, runtimeSessionWatchdogIntervalMs);
+    }, runtimeSignalLoopConfig.sessionWatchdogIntervalMs);
     this.sessionWatchdogTimer.unref?.();
   }
 
@@ -439,7 +404,7 @@ export class RuntimeSignalLoop {
     if (Number.isFinite(this.deps.seriesQueueMaxPending as number)) {
       return Math.max(1, Math.floor(this.deps.seriesQueueMaxPending as number));
     }
-    return runtimeSeriesQueueMaxPending;
+    return runtimeSignalLoopConfig.seriesQueueMaxPending;
   }
 
   private clearRuntimeSeriesEventQueues() {
@@ -684,21 +649,21 @@ export class RuntimeSignalLoop {
 
   private isStallDetectorEnabled() {
     if (typeof this.deps.stallDetectorEnabled === 'boolean') return this.deps.stallDetectorEnabled;
-    return runtimeStallDetectorEnabled;
+    return runtimeSignalLoopConfig.stallDetectorEnabled;
   }
 
   private resolveStallNoEventMs() {
     if (Number.isFinite(this.deps.stallNoEventMs as number)) {
       return Math.max(10_000, this.deps.stallNoEventMs as number);
     }
-    return runtimeStallNoEventMs;
+    return runtimeSignalLoopConfig.stallNoEventMs;
   }
 
   private resolveStallNoHeartbeatMs() {
     if (Number.isFinite(this.deps.stallNoHeartbeatMs as number)) {
       return Math.max(10_000, this.deps.stallNoHeartbeatMs as number);
     }
-    return runtimeStallNoHeartbeatMs;
+    return runtimeSignalLoopConfig.stallNoHeartbeatMs;
   }
 
   private clearAutoRestartState() {
@@ -711,21 +676,21 @@ export class RuntimeSignalLoop {
 
   private resolveAutoRestartEnabled() {
     if (typeof this.deps.autoRestartEnabled === 'boolean') return this.deps.autoRestartEnabled;
-    return runtimeAutoRestartEnabled;
+    return runtimeSignalLoopConfig.autoRestartEnabled;
   }
 
   private resolveAutoRestartCooldownMs() {
     if (Number.isFinite(this.deps.autoRestartCooldownMs as number)) {
       return Math.max(1_000, this.deps.autoRestartCooldownMs as number);
     }
-    return runtimeAutoRestartCooldownMs;
+    return runtimeSignalLoopConfig.autoRestartCooldownMs;
   }
 
   private resolveAutoRestartMaxAttempts() {
     if (Number.isFinite(this.deps.autoRestartMaxAttempts as number)) {
       return Math.max(1, Math.floor(this.deps.autoRestartMaxAttempts as number));
     }
-    return runtimeAutoRestartMaxAttempts;
+    return runtimeSignalLoopConfig.autoRestartMaxAttempts;
   }
 
   private resolveAutoRestartWindowMs() {
@@ -733,7 +698,7 @@ export class RuntimeSignalLoop {
     if (Number.isFinite(this.deps.autoRestartWindowMs as number)) {
       return Math.max(minWindow, this.deps.autoRestartWindowMs as number);
     }
-    return Math.max(minWindow, runtimeAutoRestartWindowMs);
+    return Math.max(minWindow, runtimeSignalLoopConfig.autoRestartWindowMs);
   }
 
   private pruneAutoRestartAttempts(now: number) {
@@ -849,11 +814,14 @@ export class RuntimeSignalLoop {
   }
 
   private pruneDecisionWindowDedup(now: number) {
-    if (!Number.isFinite(runtimeSignalDecisionDedupeRetentionMs) || runtimeSignalDecisionDedupeRetentionMs <= 0) {
+    if (
+      !Number.isFinite(runtimeSignalLoopConfig.signalDecisionDedupeRetentionMs) ||
+      runtimeSignalLoopConfig.signalDecisionDedupeRetentionMs <= 0
+    ) {
       return;
     }
     for (const [key, processedAt] of this.processedDecisionWindows.entries()) {
-      if (now - processedAt > runtimeSignalDecisionDedupeRetentionMs) {
+      if (now - processedAt > runtimeSignalLoopConfig.signalDecisionDedupeRetentionMs) {
         this.processedDecisionWindows.delete(key);
       }
     }
@@ -924,7 +892,7 @@ export class RuntimeSignalLoop {
             const merged = mergeRuntimeStrategyVotes({
               strategies: group.strategies,
               votes: strategyVotes,
-              minDirectionalScore,
+              minDirectionalScore: runtimeSignalLoopConfig.minDirectionalScore,
             });
             const direction = merged.direction;
             if (!direction) {
@@ -1129,7 +1097,7 @@ export class RuntimeSignalLoop {
               price: event.close,
               marketType: bot.marketType,
               referenceBalance,
-              runtimeSignalQuantity,
+              runtimeSignalQuantity: runtimeSignalLoopConfig.signalQuantity,
             });
             const leverage = Math.max(1, selectedStrategy?.strategyLeverage ?? 1);
             if (bot.mode === 'LIVE') {
@@ -1253,7 +1221,7 @@ export class RuntimeSignalLoop {
     });
     const tickerIsFresh =
       latestTicker &&
-      Math.abs(event.eventTime - latestTicker.eventTime) <= tickerFreshnessFallbackMs;
+      Math.abs(event.eventTime - latestTicker.eventTime) <= runtimeSignalLoopConfig.tickerFreshnessFallbackMs;
     if (tickerIsFresh) return;
     await this.deps.processPositionAutomation({
       type: 'ticker',
