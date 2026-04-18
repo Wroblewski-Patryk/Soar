@@ -116,3 +116,12 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
   - clone flow copies only editable create-contract fields; runtime/history/system identifiers are never cloned.
 - Operator continuity note:
   - cloned wallets/markets/strategies are expected to appear immediately in list context so they can be attached to bot/runtime workflows without manual page reload.
+
+## 13. Selected-Bot Runtime Symbol Scope Contract (`BRS-01`)
+- Dashboard runtime `signals/markets` scope for selected bot is strict and canonical by default:
+  - only `ACTIVE + isEnabled` canonical group/link scope contributes symbols and strategy context.
+  - `PAUSED` bot market-groups are excluded from default dashboard runtime scope.
+- Session stats and runtime-event fallback paths may enrich canonical selected-bot symbols only:
+  - they cannot expand symbol set beyond canonical selected-bot active scope.
+- Legacy symbol->strategy context is compatibility fallback only when canonical mapping is unavailable:
+  - legacy fallback cannot override canonical strategy context when canonical mapping exists.

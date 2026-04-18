@@ -17,11 +17,33 @@ Last updated: 2026-04-18
 
 ## READY
 
-- [ ] (none)
+- [ ] BRS-02 Add failing API regression for selected-bot symbol leakage across canonical/legacy/session/event paths
+  - Status: READY
+  - Group: Dashboard Runtime Scope Remediation (`BRS-A`)
+  - Owner: QA/Test
+  - Depends on: BRS-01
+  - Priority: P1
 
 ## BACKLOG
 
-- [ ] (none)
+- [ ] BRS-03 Narrow runtime read filters to `ACTIVE` canonical groups/links only
+  - Status: BACKLOG
+  - Group: Dashboard Runtime Scope Remediation (`BRS-A`)
+  - Owner: Backend Builder
+  - Depends on: BRS-02
+  - Priority: P1
+- [ ] BRS-04 Prevent runtime symbol expansion beyond canonical selected-bot scope
+  - Status: BACKLOG
+  - Group: Dashboard Runtime Scope Remediation (`BRS-A`)
+  - Owner: Backend Builder
+  - Depends on: BRS-03
+  - Priority: P1
+- [ ] BRS-05 Add failing regression for PUT bot canonical update drift
+  - Status: BACKLOG
+  - Group: Dashboard Runtime Scope Remediation (`BRS-B`)
+  - Owner: QA/Test
+  - Depends on: BRS-04
+  - Priority: P1
 
 ## IN_PROGRESS
 
@@ -37,6 +59,8 @@ Last updated: 2026-04-18
 
 ## DONE
 
+- [x] BRS planning queued: `BRS-01..BRS-12` selected-bot runtime scope remediation wave published and promoted to NOW/NEXT/PIPELINE in canonical queue
+- [x] BRS-01 Close selected-bot runtime scope policy (`ACTIVE` canonical only, `PAUSED` exclusion default)
 - [x] QH-TSC-01 Add canonical web verification script (`build -> typecheck`) and document it for closure packs
 - [x] QH-LINT-02 Resolve remaining `react-hooks/exhaustive-deps` warnings in backtests/wallets table components
 - [x] QH-LINT-01 Remove `no-unused-vars` warning noise in web build-critical dashboard/bots files

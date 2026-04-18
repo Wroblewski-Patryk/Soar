@@ -7,7 +7,7 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `BRS-01 docs(decision): close dashboard runtime selected-bot scope policy (ACTIVE-only canonical + PAUSED exclusion default)`
+- [x] `BRS-01 docs(decision): close dashboard runtime selected-bot scope policy (ACTIVE-only canonical + PAUSED exclusion default)`
 - [ ] `BRS-02 test(api-red): add failing regression for symbol leakage across canonical/legacy/session/event scope`
 - [ ] `BRS-03 fix(api-runtime-repository): narrow runtime read filters to ACTIVE canonical groups/links only`
 - [ ] `BRS-04 fix(api-runtime-symbol-scope): stop symbol expansion beyond canonical selected-bot scope`
@@ -52,6 +52,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `BRS-01 docs(decision): close dashboard runtime selected-bot scope policy (ACTIVE-only canonical + PAUSED exclusion default)`
+  - 2026-04-18: Closed pending selected-bot runtime scope decision in `open-decisions` with strict canonical policy: default dashboard `signals/markets` scope is `ACTIVE + isEnabled` canonical groups/links only; `PAUSED` groups are excluded by default; session/event fallback can enrich canonical symbols only (no symbol expansion); legacy mapping is compatibility fallback only and cannot override canonical strategy context. Synced module contracts in `docs/modules/api-bots.md` and `docs/modules/web-dashboard-home.md`.
 - [x] `BRS planning queued (dashboard selected-bot runtime scope remediation)`
   - 2026-04-18: Published runtime scope remediation wave in `docs/planning/dashboard-selected-bot-runtime-scope-remediation-plan-2026-04-18.md` (`BRS-01..BRS-12`) covering strict selected-bot API scope, canonical-first strategy precedence, `PUT /dashboard/bots/:id` canonical update drift fix, and dashboard bot-switch regressions (`A=1 symbol`, `B=4 symbols`); promoted `BRS-01..BRS-05` to `NOW`.
 - [x] `QH-TSC-01 chore(web-verify-script): add canonical sequential build+typecheck script for web`

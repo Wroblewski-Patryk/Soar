@@ -99,15 +99,17 @@ Last updated: 2026-04-18
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: maintain `UXR-F` closure state with evidence-backed
-  queue continuity and deploy-safe verification discipline while selecting the
-  next planned execution wave.
+- Main active objective: execute `BRS` selected-bot runtime scope remediation
+  wave (`BRS-A` first), starting from strict selected-bot decision closure and
+  regression-first API fixes.
 - Top blockers:
-  - next implementation wave selection still needs explicit promotion in
-    canonical planning queue after closure of `UXR-F` and `QH-*` technical debt
-    slices.
+  - selected-bot runtime API scope is still too broad in implementation (symbol
+    leakage and canonical/legacy precedence drift) until `BRS-02..BRS-08`
+    closes.
 - Success criteria for this phase:
-  - `UXR-F-D` closure evidence (`tests + typecheck + build`) remains green.
+  - `BRS-A` closes with decision + failing regression + strict scope fixes.
+  - selected-bot dashboard runtime payload cannot expand symbols outside
+    canonical active selected-bot scope.
   - canonical queue files and task board stay aligned after each group closure.
   - no regressions in auth, runtime, operator clarity, or deploy confidence.
 
@@ -135,6 +137,10 @@ Last updated: 2026-04-18
 - 2026-04-18: completed `QH-TSC-01` by adding canonical sequential web
   verification command (`pnpm run web:verify:build-typecheck`) and documenting
   it for closure packs to avoid manual command-order drift.
+- 2026-04-18: activated `BRS` wave from canonical planning queue (`BRS-01..12`)
+  and closed `BRS-01` decision gate: selected-bot runtime symbol scope is
+  strict canonical by default (`ACTIVE + isEnabled` only, `PAUSED` excluded),
+  with no symbol expansion from fallback paths.
 - 2026-04-18: refreshed the repo-specific agent workflow so the canonical queue,
   validation contract, deployment contract, and learning journal are aligned.
 

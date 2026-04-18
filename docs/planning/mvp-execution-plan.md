@@ -1917,7 +1917,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-18: Completed `QH-TSC-01` by adding `apps/web` script `verify:build-typecheck` (`build && typecheck`) and root shortcut `web:verify:build-typecheck`, then documenting it in `docs/engineering/testing.md` as canonical web closure command. Validation: `pnpm run web:verify:build-typecheck` => `PASS`.
 
 ## Phase BRS - Dashboard Selected-Bot Runtime Scope Remediation (Queued 2026-04-18)
-- [ ] `BRS-01 docs(decision): close dashboard runtime selected-bot scope policy (ACTIVE-only canonical + PAUSED default exclusion)`
+- [x] `BRS-01 docs(decision): close dashboard runtime selected-bot scope policy (ACTIVE-only canonical + PAUSED default exclusion)`
 - [ ] `BRS-02 test(api-red): add failing regression for symbol leakage across canonical/legacy/session/event paths`
 - [ ] `BRS-03 fix(api-runtime-repository): narrow runtime read filters to ACTIVE canonical groups/links only`
 - [ ] `BRS-04 fix(api-runtime-symbol-scope): prevent symbol expansion beyond canonical selected-bot scope`
@@ -1931,4 +1931,5 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - [ ] `BRS-12 docs(closure): publish remediation evidence and sync canonical queue/execution statuses`
 
 ### Progress Log (Phase BRS - Dashboard Selected-Bot Runtime Scope Remediation)
+- 2026-04-18: Completed `BRS-01` by closing pending decision in `open-decisions`: selected-bot runtime `signals/markets` scope is strict canonical by default (`ACTIVE + isEnabled` only), `PAUSED` groups are excluded by default, session/event fallback cannot expand symbols beyond canonical selected-bot scope, and legacy mapping is compatibility fallback only (cannot override canonical strategy context). Synced contract notes in `docs/modules/api-bots.md` and `docs/modules/web-dashboard-home.md`.
 - 2026-04-18: Queued new runtime-data-contract remediation wave in `docs/planning/dashboard-selected-bot-runtime-scope-remediation-plan-2026-04-18.md` with grouped execution batches `BRS-A..BRS-C`; wave targets strict selected-bot symbol scope in runtime API, canonical-first strategy context, and canonical update-path consistency for `PUT /dashboard/bots/:id`.

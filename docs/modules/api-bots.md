@@ -104,3 +104,14 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
   - tab is always visible in LIVE and PAPER contexts,
   - rows are bot/wallet-scoped `BOT_MANAGED` open-order states (`PENDING`, `OPEN`, `PARTIALLY_FILLED`),
   - empty list is valid runtime state (tab must stay visible).
+
+## 11. Selected-Bot Runtime Symbol Scope Contract (`BRS-01`)
+- Runtime symbol scope for dashboard selected bot is strict and canonical by default:
+  - only `ACTIVE + isEnabled` canonical `botMarketGroup + marketGroupStrategyLink` scope contributes symbols and strategy context.
+  - `PAUSED` market-groups are excluded from default runtime read symbol scope used by dashboard `signals/markets`.
+- Scope enrichment boundaries:
+  - session stats and runtime-event fallback can enrich canonical selected-bot symbols only.
+  - fallback paths cannot add symbols outside canonical selected-bot active scope.
+- Strategy context precedence:
+  - canonical mapping is authoritative.
+  - legacy mapping is compatibility fallback only when canonical mapping is missing for selected bot/symbol, and cannot override canonical mapping.

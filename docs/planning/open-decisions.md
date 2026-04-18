@@ -742,19 +742,17 @@ This file tracks intentionally unresolved architecture choices so implementation
   - `docs/modules/web-dashboard-home.md`
 
 ## Dashboard Runtime Symbol Scope Strictness (Selected Bot)
-- Decision state: pending as of 2026-04-18 (to close in `BRS-01`).
-- Decision to close:
-  - whether `PAUSED` bot market-groups may contribute symbols/strategy context to dashboard runtime `signals/markets` for selected bot.
-- Current behavior (observed in code):
-  - runtime-read scope includes `lifecycleStatus in ['ACTIVE', 'PAUSED']`,
-  - symbol scope can expand beyond canonical selected-bot groups via legacy/session/event fallback paths.
-- Recommended default for closure:
-  - dashboard runtime scope should be strict and selected-bot canonical:
-    - only `ACTIVE + isEnabled` canonical group/link scope contributes by default,
-    - no symbol expansion from session stats/event fallback beyond canonical scope,
-    - legacy mapping is compatibility fallback only and cannot override canonical strategy context.
-- Canonical reference:
+- Decision state: resolved on 2026-04-18.
+- Decision:
+  - dashboard runtime symbol scope for selected bot is strict and canonical by default.
+  - `PAUSED` bot market-groups do not contribute symbols or strategy context to default dashboard runtime `signals/markets`.
+  - only `ACTIVE + isEnabled` canonical `botMarketGroup + marketGroupStrategyLink` scope contributes by default.
+  - session stats and runtime-event fallback may enrich canonical symbols only, but cannot expand symbols outside selected-bot canonical active scope.
+  - legacy mapping remains compatibility fallback only when canonical mapping is unavailable for selected bot/symbol, and cannot override canonical strategy context.
+- Canonical references:
   - `docs/planning/dashboard-selected-bot-runtime-scope-remediation-plan-2026-04-18.md`
+  - `docs/modules/api-bots.md`
+  - `docs/modules/web-dashboard-home.md`
 
 ## Table Action Semantics and Clone Naming Contract
 - Decision state: resolved on 2026-04-18.
