@@ -1937,3 +1937,14 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-18: Completed `BRS-03` by narrowing runtime-read canonical filters from `ACTIVE|PAUSED` to `ACTIVE` in `apps/api/src/modules/bots/botsRuntimeRead.repository.ts` and `apps/api/src/modules/bots/runtimeStrategyDisplayBySymbol.service.ts` so paused groups do not contribute to default dashboard runtime scope.
 - 2026-04-18: Completed `BRS-04` by hardening `apps/api/src/modules/bots/botsRuntimeRead.service.ts` symbol derivation: default symbol set now originates from canonical active scope only, session/event rows can enrich canonical symbols but cannot expand symbol set, and explicit `query.symbol` behavior is preserved.
 - 2026-04-18: Closed `BRS-A` implementation wave (`BRS-01..BRS-04`) and advanced queue focus to `BRS-B`; validation completed for available local gates (`pnpm --filter api run typecheck` PASS, `pnpm run quality:guardrails` PASS). Focused e2e run is environment-blocked in this session because Docker Engine and local `postgres:5432` are unavailable.
+
+## Phase UXR-G - Dashboard Wallet + Manual Order Layout Polish (Queued 2026-04-18)
+- [ ] `UXR-G-01 docs(contract): freeze dashboard wallet/manual-order layout and row-order contract`
+- [ ] `UXR-G-02 refactor(web-dashboard-sidebar): place manual-order section below wallet as peer section`
+- [ ] `UXR-G-03 refactor(web-wallet-kpi): simplify portfolio row style and move delta directly under allocation`
+- [ ] `UXR-G-04 refactor(web-wallet-kpi-layout): enforce 50/50 width for free-funds and in-positions rows`
+- [ ] `UXR-G-05 test(web-dashboard-home): lock manual-order placement and wallet KPI order/layout regressions`
+- [ ] `UXR-G-06 qa(web-closure): run focused dashboard-home pack + typecheck/build and sync queue notes`
+
+### Progress Log (Phase UXR-G - Dashboard Wallet + Manual Order Layout Polish)
+- 2026-04-18: Queued non-blocking UI-polish wave in `docs/planning/uxr-g-dashboard-wallet-manual-order-layout-plan-2026-04-18.md` with grouped batches `UXR-G-A..UXR-G-B`; scope is strictly dashboard runtime sidebar layout ergonomics (manual-order placement, wallet KPI row style/order, and 50/50 KPI split), without changing manual-order backend behavior.

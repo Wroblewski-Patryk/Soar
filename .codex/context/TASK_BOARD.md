@@ -32,6 +32,30 @@ Last updated: 2026-04-18
   - Owner: Backend Builder
   - Depends on: BRS-05
   - Priority: P1
+- [ ] UXR-G-02 Move dashboard manual-order section below wallet as same-level sidebar section
+  - Status: BACKLOG
+  - Group: Dashboard Wallet + Manual Order Layout Polish (`UXR-G-A`)
+  - Owner: Frontend Builder
+  - Depends on: BRS-12
+  - Priority: P2
+- [ ] UXR-G-03 Restyle wallet portfolio row and move delta directly under allocation
+  - Status: BACKLOG
+  - Group: Dashboard Wallet + Manual Order Layout Polish (`UXR-G-A`)
+  - Owner: Frontend Builder
+  - Depends on: UXR-G-02
+  - Priority: P2
+- [ ] UXR-G-04 Enforce 50/50 width split for free-funds and in-positions wallet KPI rows
+  - Status: BACKLOG
+  - Group: Dashboard Wallet + Manual Order Layout Polish (`UXR-G-B`)
+  - Owner: Frontend Builder
+  - Depends on: UXR-G-03
+  - Priority: P2
+- [ ] UXR-G-05 Add focused dashboard-home regression coverage for manual-order placement and wallet KPI ordering/layout
+  - Status: BACKLOG
+  - Group: Dashboard Wallet + Manual Order Layout Polish (`UXR-G-B`)
+  - Owner: QA/Test
+  - Depends on: UXR-G-04
+  - Priority: P2
 
 ## IN_PROGRESS
 
@@ -47,6 +71,7 @@ Last updated: 2026-04-18
 
 ## DONE
 
+- [x] UXR-G planning queued: `UXR-G-01..UXR-G-06` dashboard wallet/manual-order layout polish wave added as post-BRS queue with tiny-commit execution doc
 - [x] BRS-A closed implementation scope (`BRS-01..BRS-04`): selected-bot runtime scope foundation (decision + regression + repository/service hardening)
 - [x] BRS-04 Prevent runtime symbol expansion beyond canonical selected-bot scope
 - [x] BRS-03 Narrow runtime read filters to `ACTIVE` canonical groups/links only

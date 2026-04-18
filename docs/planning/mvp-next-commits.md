@@ -25,6 +25,8 @@ Operational queue for one-task execution runs.
 - [x] `BRS-A (commits BRS-01..BRS-04): decision closure + strict selected-bot scope foundation`
 - [ ] `BRS-B (commits BRS-05..BRS-08): canonical update-path fix + strategy precedence unification`
 - [ ] `BRS-C (commits BRS-09..BRS-12): dashboard switch regression + QA closure`
+- [ ] `UXR-G-A (commits UXR-G-01..UXR-G-03): dashboard wallet/manual-order hierarchy + summary-row contract`
+- [ ] `UXR-G-B (commits UXR-G-04..UXR-G-06): 50/50 wallet KPI split + regression closure`
 - [x] `L10NQ-D-A (commits 01-05): inventory + guardrail hardening + auth/admin migration`
 - [x] `L10NQ-D-B (commits 06-10): reports/markets/backtests/bots/home copy migration`
 - [x] `L10NQ-D-C (commits 11-18): shared foundation localization + parity/smoke/closure`
@@ -52,6 +54,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `UXR-G planning queued (dashboard wallet/manual-order layout polish)`
+  - 2026-04-18: Published queued wave in `docs/planning/uxr-g-dashboard-wallet-manual-order-layout-plan-2026-04-18.md` with `UXR-G-01..UXR-G-06` (manual-order section placement under wallet context, wallet KPI row style/order polish, 50/50 free-funds/in-positions layout, and focused dashboard-home regression/closure checks) and linked grouped batches `UXR-G-A..UXR-G-B` in canonical queue.
 - [x] `BRS-01 docs(decision): close dashboard runtime selected-bot scope policy (ACTIVE-only canonical + PAUSED exclusion default)`
   - 2026-04-18: Closed pending selected-bot runtime scope decision in `open-decisions` with strict canonical policy: default dashboard `signals/markets` scope is `ACTIVE + isEnabled` canonical groups/links only; `PAUSED` groups are excluded by default; session/event fallback can enrich canonical symbols only (no symbol expansion); legacy mapping is compatibility fallback only and cannot override canonical strategy context. Synced module contracts in `docs/modules/api-bots.md` and `docs/modules/web-dashboard-home.md`.
 - [x] `BRS-02 test(api-red): add failing regression for symbol leakage across canonical/legacy/session/event scope`

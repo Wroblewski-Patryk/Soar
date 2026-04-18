@@ -148,6 +148,10 @@ Last updated: 2026-04-18
   layers (`botsRuntimeRead.repository.ts`, `runtimeStrategyDisplayBySymbol.service.ts`,
   `botsRuntimeRead.service.ts`); local available validations PASS
   (`api typecheck`, `quality:guardrails`).
+- 2026-04-18: queued post-`BRS` `UXR-G` dashboard runtime sidebar layout wave
+  (manual-order section below wallet as peer block, wallet summary row order
+  polish, and 50/50 free-funds/in-positions split) in
+  `docs/planning/uxr-g-dashboard-wallet-manual-order-layout-plan-2026-04-18.md`.
 - 2026-04-18: refreshed the repo-specific agent workflow so the canonical queue,
   validation contract, deployment contract, and learning journal are aligned.
 
