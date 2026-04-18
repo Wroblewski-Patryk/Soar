@@ -20,8 +20,8 @@ Last updated: 2026-04-19
   and IA changes.
 - 2026-04-17: Portuguese rollout is locked to `pt-PT`; `pt-BR` is not part of
   the current localization wave.
-- 2026-04-19: active execution focus moved to `ARC-A` after closing `PLNC-A`
-  planning-catalog reconciliation.
+- 2026-04-19: active execution focus moved to `ARC-B` after closing `ARC-A`
+  runtime decomposition foundations.
 
 ## Technical Baseline
 - Backend: Node.js 20+, Express API, Prisma, TypeScript
@@ -99,21 +99,27 @@ Last updated: 2026-04-19
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: execute `ARC-A` architecture maintainability
-  remediation foundations (`ARC-01..ARC-05`).
+- Main active objective: execute `ARC-B` bots-runtime read-model
+  decomposition (`ARC-06..ARC-10`).
 - Top blockers:
-  - architecture hotspot decomposition still needs guardrail-frozen scope and
-    extraction sequencing before implementation work starts.
+  - `botsRuntimeRead.service.ts` still carries mixed read concerns
+    (session/symbol-stats/trades/positions) that slow safe iteration.
 - Success criteria for this phase:
-  - `ARC-A` closes with explicit extraction boundaries and regression ownership.
+  - `ARC-B` closes with split read seams and aggregate monitoring contract.
   - canonical queue and context docs stay synchronized after each ARC batch.
   - no regressions in runtime safety, deploy confidence, or dashboard contracts.
-- Next queued follow-up after `ARC-A`:
-  - `ARC-B..ARC-E`,
+- Next queued follow-up after `ARC-B`:
+  - `ARC-C..ARC-E`,
   - lifecycle parity closure (`POS-36..42`),
   - production verification closure (`OPV`).
 
 ## Recent Progress
+- 2026-04-19: Completed `ARC-05` by splitting runtime regression ownership into
+  seam-scoped suites (`runtimeSignalLoopSupervisor.test.ts`,
+  `runtimeFinalCandleDecision.service.test.ts`) and locking the final-candle
+  no-trade path with corrected null-direction fixture behavior.
+- 2026-04-19: closed `ARC-A` (`ARC-01..ARC-05`) end-to-end and advanced
+  canonical queue/context focus to `ARC-B`.
 - 2026-04-19: Completed `ARC-04` by extracting the final-candle runtime
   decision/execution flow into `runtimeFinalCandleDecision.service.ts` and
   reducing `runtimeSignalLoop` to routing/delegation ownership.

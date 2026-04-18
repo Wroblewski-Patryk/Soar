@@ -17,11 +17,11 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] ARC-05 Split and lock runtime regression tests by extracted seams
+- [ ] ARC-06 Split bots runtime read service session/symbol-stats slices from monolith read flow
   - Status: READY
-  - Group: Architecture Maintainability Remediation (`ARC-A`)
+  - Group: Architecture Maintainability Remediation (`ARC-B`)
   - Owner: Backend Builder
-  - Depends on: ARC-04
+  - Depends on: ARC-05
   - Priority: P2
 
 ## BACKLOG
@@ -53,6 +53,8 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] ARC-A closed implementation scope (`ARC-01..ARC-05`): runtime critical-path decomposition foundations
+- [x] ARC-05 Split and lock runtime regression tests by extracted seams
 - [x] ARC-04 Extract final-candle decision execution application service from runtimeSignalLoop
 - [x] ARC-03 Extract runtime supervisor/watchdog from runtimeSignalLoop
 - [x] ARC-02 Extract typed runtime/live-ordering config from runtime services

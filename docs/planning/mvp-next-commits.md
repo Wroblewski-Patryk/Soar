@@ -7,12 +7,13 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `ARC-05 test(api-runtime): split and lock runtime regression by extracted seams`
+- [ ] `ARC-06 refactor(api-bots-read): split session/symbol-stats read models from botsRuntimeRead.service`
 ## NEXT
+- [ ] `ARC-07 refactor(api-bots-read): split trades/positions read models and repositories`
 - [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
-- [ ] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
 ## PIPELINE
-- [ ] `ARC-05 test(api-runtime): split and lock runtime regression by extracted seams`
+- [ ] `ARC-06 refactor(api-bots-read): split session/symbol-stats read models from botsRuntimeRead.service`
+- [ ] `ARC-07 refactor(api-bots-read): split trades/positions read models and repositories`
 - [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
 - [ ] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
 ## GROUP QUEUE
@@ -22,7 +23,7 @@ Operational queue for one-task execution runs.
 - [x] `UXR-G-A (commits UXR-G-01..UXR-G-03): dashboard wallet/manual-order hierarchy + summary-row contract`
 - [x] `UXR-G-B (commits UXR-G-04..UXR-G-06): 50/50 wallet KPI split + regression closure`
 - [x] `PLNC-A (commits PLNC-01..PLNC-04): planning catalog reconciliation + status sync + canonical linkage`
-- [ ] `ARC-A (commits ARC-01..ARC-05): runtime critical-path decomposition foundations`
+- [x] `ARC-A (commits ARC-01..ARC-05): runtime critical-path decomposition foundations`
 - [ ] `ARC-B (commits ARC-06..ARC-10): bots runtime CQRS/read-model decomposition + aggregate monitoring contract`
 - [ ] `ARC-C (commits ARC-11..ARC-13): shared runtime/backtest indicator kernel + backtest facade alignment`
 - [ ] `ARC-D (commits ARC-14..ARC-18): web container slimming + DataTable split + remaining i18n literal cleanup`
@@ -57,6 +58,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `ARC-05 test(api-runtime): split and lock runtime regression by extracted seams`
+  - 2026-04-19: Added seam-owned regression tests (`runtimeSignalLoopSupervisor.test.ts`, `runtimeFinalCandleDecision.service.test.ts`) and fixed null-direction test fixture drift so final-candle no-trade path remains locked under extracted runtime services.
 - [x] `ARC-04 refactor(api-runtime): extract final-candle decision execution application service`
   - 2026-04-19: Extracted final-candle decision/execution flow into `runtimeFinalCandleDecision.service.ts` and converted `runtimeSignalLoop` to delegate the runtime decision path through the extracted application service.
 - [x] `ARC-03 refactor(api-runtime): extract supervisor/watchdog from runtimeSignalLoop`
