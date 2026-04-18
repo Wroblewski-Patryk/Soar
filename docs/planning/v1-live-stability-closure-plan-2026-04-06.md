@@ -2,6 +2,11 @@
 
 Status: active planning baseline for final V1 closure.
 
+## Canonical Queue Linkage
+- Canonical queue owner for remaining non-code closure: `docs/planning/mvp-next-commits.md` (`OPV-A`).
+- Canonical phase owner: `docs/planning/mvp-execution-plan.md` (`OPV-01..OPV-04`).
+- Remaining execution scope is production evidence refresh and release gate closure.
+
 ## Context
 - Post-change validation showed one reproducible backtest replay regression:
   - `apps/api/src/modules/backtests/backtestReplayCore.test.ts`

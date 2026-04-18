@@ -2,6 +2,11 @@
 
 Status: active closure plan for V1 trading correctness.
 
+## Canonical Queue Linkage
+- Canonical queue owner for remaining closure evidence: `docs/planning/mvp-next-commits.md` (`OPV-A`).
+- Canonical phase owner: `docs/planning/mvp-execution-plan.md` (`OPV-01..OPV-04`).
+- Implementation tasks in this file are complete; remaining scope is production validation/sign-off synchronization.
+
 ## Goal
 - V1 target: user adds Binance API key, bot can safely manage exchange positions according to selected management mode, and backtest behavior stays aligned with runtime decision semantics.
 

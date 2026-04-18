@@ -2,6 +2,11 @@
 
 Status: execution-complete (follow-up production rollout verification required)
 
+## Canonical Queue Linkage
+- Canonical queue owner: `docs/planning/mvp-next-commits.md` (`OPV-A`).
+- Canonical phase owner: `docs/planning/mvp-execution-plan.md` (`OPV-01..OPV-04`).
+- Remaining scope owner: production verification only (no new feature wave in this document).
+
 ## Execution Progress (2026-04-11)
 - Completed:
   - `LBT-02` ownership persistence for `EXCHANGE_SYNC` (`botId`/`walletId`) with deterministic resolver.

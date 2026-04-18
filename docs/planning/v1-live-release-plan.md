@@ -7,6 +7,11 @@ Goal: move from MVP to a production-grade public release (V1.0) with reliable li
 - New requirements: update product/architecture/security docs first, then this plan.
 - Keep tiny commits and explicit progress notes.
 
+## Canonical Queue Linkage
+- Canonical queue owner for non-closed V1 release gates: `docs/planning/mvp-next-commits.md` (`OPV-A`).
+- Canonical phase owner: `docs/planning/mvp-execution-plan.md` (`OPV-01..OPV-04`).
+- Runtime/product implementation waves are already closed; remaining work here is release evidence and production sign-off synchronization.
+
 ## Current Status (2026-03-21)
 - Implementation track is largely complete across Phases A-F.
 - Remaining work is production-environment exit validation (SLO observation window + external release gates/sign-offs).

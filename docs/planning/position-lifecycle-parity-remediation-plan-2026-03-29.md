@@ -2,6 +2,11 @@
 
 Status: planned (post-audit), not yet implemented.
 
+## Canonical Queue Linkage
+- Canonical queue owner: `docs/planning/mvp-next-commits.md` (`POS-A`, `POS-B`).
+- Canonical phase owner: `docs/planning/mvp-execution-plan.md` (`POS-36..POS-42`).
+- Execution order contract: start only after `ARC-20` closure in canonical queue.
+
 ## Goal
 
 Make position lifecycle behavior deterministic and equivalent across:

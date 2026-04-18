@@ -1,6 +1,10 @@
 # Subscription + Entitlements Rollout Plan (2026-04-06)
 
-Status: active implementation plan for collaborator-ready account limits and future billing integration.
+Status: deferred-post-v1 (superseded in active canonical queue; retained for future billing track).
+
+## Canonical Queue Linkage
+- Current canonical queue (`docs/planning/mvp-next-commits.md`) has no active `SUBS-*` ownership.
+- This plan is intentionally out of current MVP/V1 closure queue and remains a post-V1 backlog reference.
 
 ## Goal
 - Introduce first-class subscription model with three tiers:

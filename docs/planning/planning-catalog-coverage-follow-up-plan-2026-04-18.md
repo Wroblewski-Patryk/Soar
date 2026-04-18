@@ -4,6 +4,15 @@ Status: queued-after-active-waves
 Execution mode: tiny-commit only (one task per commit)  
 Primary audience: planner + execution agent
 
+## Canonical Queue Linkage
+- Canonical execution queue: `docs/planning/mvp-next-commits.md`.
+- Canonical phase tracker: `docs/planning/mvp-execution-plan.md` (`PLNC`, `ARC`, `POS`, `OPV` sections).
+- Current execution ownership:
+  - `PLNC-01..PLNC-04` -> `PLNC-A`
+  - `ARC-01..ARC-20` -> `ARC-A..ARC-E`
+  - `POS-36..POS-42` -> `POS-A..POS-B`
+  - `OPV-01..OPV-04` -> `OPV-A`
+
 ## Objective
 - Reconcile `docs/planning` so every meaningful plan is either:
   - implemented and explicitly closed,

@@ -29,6 +29,7 @@ Canonical queue source: `docs/planning/mvp-next-commits.md`
 | `docs/planning/uxr-e-table-actions-clone-dashboard-polish-plan-2026-04-18.md` | `implemented` | closed (`UXR-E-A..UXR-E-C`) | UXR-E wave completed and closed. |
 | `docs/planning/uxr-f-dashboard-forms-unification-plan-2026-04-18.md` | `implemented` | closed (`UXR-F-A..UXR-F-D`) | Forms unification wave completed and closed. |
 | `docs/planning/uxr-g-dashboard-wallet-manual-order-layout-plan-2026-04-18.md` | `implemented` | closed (`UXR-G-A..UXR-G-B`) | Wallet/manual-order layout wave completed and closed. |
+| `docs/planning/v1-binance-live-backtest-alignment-plan-2026-04-06.md` | `external-blocked` | `OPV-A` | Code-scope closure completed; remaining ownership is production evidence/sign-off refresh. |
 | `docs/planning/v1-live-release-plan.md` | `external-blocked` | `OPV-A` | Remaining closure is production release evidence/sign-off, not code-scope implementation. |
 | `docs/planning/v1-live-stability-closure-plan-2026-04-06.md` | `external-blocked` | `OPV-A` | Functional fixes completed; final state still depends on production gate evidence refresh. |
 | `docs/planning/vps-coolify-deployment-hardening-plan-2026-04-03.md` | `implemented` | closed (`DPL-*`) + `OPV-A` follow-up | Deployment hardening implementation completed; stage/prod rehearsal evidence moved to OPV queue. |

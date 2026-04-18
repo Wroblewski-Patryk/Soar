@@ -8,6 +8,11 @@ Current active queue: `docs/planning/mvp-next-commits.md` (`BRS` remains the act
 - Focus on practical refactor targets: oversized modules, mixed responsibilities, hardcoded fallbacks, duplicated domain kernels, and weak architectural guardrails.
 - Keep this report planning-oriented. It does not activate a new execution queue by itself.
 
+## Canonical Queue Linkage
+- Canonical queue owner: `docs/planning/mvp-next-commits.md` (`ARC-A..ARC-E`).
+- Canonical phase owner: `docs/planning/mvp-execution-plan.md` (`ARC-01..ARC-20`).
+- Activation rule: execute only through queued `ARC-*` items after `PLNC-A` closure.
+
 ## Method
 - Reviewed current canonical project context and queue files before code inspection.
 - Scanned `apps/api/src`, `apps/web/src`, `libs`, and `scripts/repoGuardrails.mjs`.
