@@ -37,6 +37,7 @@ export {
   upsertBotAssistantConfig,
   upsertBotSubagentConfig,
 } from './botAssistant.service';
+export { closeBotRuntimeSessionPosition } from './runtimeSessionPositionCommand.service';
 
 export class BotModeSwitchBlockedError extends Error {
   constructor(public readonly openPaperPositions: number) {
