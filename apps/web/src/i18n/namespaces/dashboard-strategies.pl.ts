@@ -1,4 +1,4 @@
-﻿export const dashboardStrategiesPl = {
+export const dashboardStrategiesPl = {
   title: "Strategie",
   listLabel: "Lista",
   createLabel: "Tworzenie",
@@ -55,6 +55,7 @@
       directionShort: "Short",
     },
     close: {
+      mode: "Tryb",
       modeBasic: "Podstawowe (TP/SL)",
       modeAdvanced: "Zaawansowane (TTP/TSL)",
       basicTitle: "Podstawowe ustawienia zamkniecia",

@@ -53,4 +53,17 @@ describe('StrategyForm', () => {
       expect(onSubmit).toHaveBeenCalledTimes(1);
     });
   });
+
+  it('preserves tabs flow and renders close/additional sections after tab switches', () => {
+    window.localStorage.setItem('cryptosparrow-locale', 'pl');
+    window.history.pushState({}, '', '/dashboard/strategies/create');
+    renderWithI18n();
+
+    fireEvent.click(screen.getByRole('tab', { name: 'Warunki zamkniecia' }));
+    expect(screen.getByText('Podstawowe ustawienia zamkniecia')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('tab', { name: 'Dodatkowe ustawienia' }));
+    expect(screen.getByText('Pozycje')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'DCA' })).toBeInTheDocument();
+  });
 });

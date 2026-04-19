@@ -125,6 +125,12 @@ Last updated: 2026-04-19
   - then execute `UXR-J-A..C` for shared table-consistency closure.
 
 ## Recent Progress
+- 2026-04-19: completed `UXR-I-09` by preserving strategies tab flow and
+  normalizing `close`/`additional` tab internals to shared `ui/forms`
+  primitives (`FormSectionCard`, `FormGrid`, `RadioGroupField`, `NumberField`,
+  `ToggleField`, `CompoundField`), while keeping strategy domain logic
+  unchanged and adding focused tab-flow regression coverage in
+  `StrategyForm.test.tsx`.
 - 2026-04-19: hardened OPS/Gate tooling for production private-route auth by
   adding layered auth support (basic auth and custom header pass-through) to
   `ops:slo:collect`, `ops:rc:gates:*` pipeline wrapper, deploy smoke, runtime

@@ -1,4 +1,4 @@
-﻿export const dashboardStrategiesEn = {
+export const dashboardStrategiesEn = {
   title: "Strategies",
   listLabel: "List",
   createLabel: "Create",
@@ -55,6 +55,7 @@
       directionShort: "Short",
     },
     close: {
+      mode: "Mode",
       modeBasic: "Basic (TP/SL)",
       modeAdvanced: "Advanced (TTP/TSL)",
       basicTitle: "Basic close settings",

@@ -1,6 +1,14 @@
 import { useMemo } from "react";
 import { LuTrash2 } from "react-icons/lu";
 import { useI18n } from "@/i18n/I18nProvider";
+import {
+  CompoundField,
+  FormGrid,
+  FormSectionCard,
+  NumberField,
+  RadioGroupField,
+  ToggleField,
+} from "@/ui/forms";
 import { AdditionalProps, DcaLevel, TimeUnit } from "../../types/StrategyForm.type";
 import {
   numericInputProps,
@@ -33,6 +41,15 @@ export function Additional({ data, setData }: AdditionalProps) {
     removeLevel: t("dashboard.strategies.form.additional.removeLevel"),
     addLevel: t("dashboard.strategies.form.additional.addLevel"),
   }), [t]);
+  const timeUnitOptions = useMemo(
+    () => [
+      { value: "min", label: copy.unitMin },
+      { value: "h", label: copy.unitHour },
+      { value: "d", label: copy.unitDay },
+      { value: "w", label: copy.unitWeek },
+    ],
+    [copy.unitDay, copy.unitHour, copy.unitMin, copy.unitWeek]
+  );
 
   const patch = (changes: Partial<typeof data>) => setData((prev) => ({ ...prev, ...changes }));
 
@@ -71,174 +88,150 @@ export function Additional({ data, setData }: AdditionalProps) {
   const primaryLevel = getPrimaryDcaLevel(data.dcaLevels);
 
   return (
-    <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
-      <div className="card bg-base-200">
-        <div className="card-body space-y-6">
-          <div>
-            <div className="mb-2 font-semibold">{copy.positions}</div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div className="form-control gap-2">
-                <label className="label p-0 font-semibold">{copy.maxCount}</label>
-                <input
-                  type="number"
-                  min={1}
-                  inputMode={integerInputProps.inputMode}
-                  step={integerInputProps.step}
-                  className="input input-bordered w-full"
-                  value={data.maxPositions}
-                  onChange={(event) => {
-                    const parsed = readNumericInputValue(event.target.value, strategyNumericContracts.integer);
-                    if (parsed == null) return;
-                    patch({ maxPositions: parsed });
-                  }}
-                />
-              </div>
-              <div className="form-control gap-2">
-                <label className="label p-0 font-semibold">{copy.lifetime}</label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="number"
-                    min={1}
-                    inputMode={integerInputProps.inputMode}
-                    step={integerInputProps.step}
-                    className="input input-bordered w-24"
-                    value={data.positionLifetime}
-                    onChange={(event) => {
-                      const parsed = readNumericInputValue(event.target.value, strategyNumericContracts.integer);
-                      if (parsed == null) return;
-                      patch({ positionLifetime: parsed });
-                    }}
-                  />
-                  <select
-                    className="select select-bordered"
-                    value={data.positionUnit}
-                    onChange={(event) => patch({ positionUnit: event.target.value as TimeUnit })}
-                  >
-                    <option value="min">{copy.unitMin}</option>
-                    <option value="h">{copy.unitHour}</option>
-                    <option value="d">{copy.unitDay}</option>
-                    <option value="w">{copy.unitWeek}</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
+    <FormGrid columns={2}>
+      <FormSectionCard title={copy.positions}>
+        <div className="space-y-6">
+          <FormGrid columns={2}>
+            <NumberField
+              id="strategy-additional-max-positions"
+              label={copy.maxCount}
+              min={1}
+              value={data.maxPositions}
+              inputMode={integerInputProps.inputMode}
+              step={Number(integerInputProps.step)}
+              onChange={(value) => {
+                const parsed = readNumericInputValue(value, strategyNumericContracts.integer);
+                if (parsed == null) return;
+                patch({ maxPositions: parsed });
+              }}
+            />
+            <CompoundField label={copy.lifetime} columns={2}>
+              <input
+                id="strategy-additional-position-lifetime"
+                type="number"
+                min={1}
+                inputMode={integerInputProps.inputMode}
+                step={integerInputProps.step}
+                className="input input-bordered w-full"
+                value={data.positionLifetime}
+                onChange={(event) => {
+                  const parsed = readNumericInputValue(event.target.value, strategyNumericContracts.integer);
+                  if (parsed == null) return;
+                  patch({ positionLifetime: parsed });
+                }}
+              />
+              <select
+                id="strategy-additional-position-unit"
+                className="select select-bordered w-full"
+                value={data.positionUnit}
+                onChange={(event) => patch({ positionUnit: event.target.value as TimeUnit })}
+              >
+                {timeUnitOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </CompoundField>
+          </FormGrid>
 
-          <div>
-            <div className="mb-2 font-semibold">{copy.orders}</div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div className="form-control gap-2">
-                <label className="label p-0 font-semibold">{copy.maxCount}</label>
+          <div className="border-t border-base-300/60 pt-6">
+            <h4 className="mb-3 text-sm font-semibold text-base-content/80">{copy.orders}</h4>
+            <FormGrid columns={2}>
+              <NumberField
+                id="strategy-additional-max-orders"
+                label={copy.maxCount}
+                min={1}
+                value={data.maxOrders}
+                inputMode={integerInputProps.inputMode}
+                step={Number(integerInputProps.step)}
+                onChange={(value) => {
+                  const parsed = readNumericInputValue(value, strategyNumericContracts.integer);
+                  if (parsed == null) return;
+                  patch({ maxOrders: parsed });
+                }}
+              />
+              <CompoundField label={copy.lifetime} columns={2}>
                 <input
+                  id="strategy-additional-order-lifetime"
                   type="number"
                   min={1}
                   inputMode={integerInputProps.inputMode}
                   step={integerInputProps.step}
                   className="input input-bordered w-full"
-                  value={data.maxOrders}
+                  value={data.orderLifetime}
                   onChange={(event) => {
                     const parsed = readNumericInputValue(event.target.value, strategyNumericContracts.integer);
                     if (parsed == null) return;
-                    patch({ maxOrders: parsed });
+                    patch({ orderLifetime: parsed });
                   }}
                 />
-              </div>
-              <div className="form-control gap-2">
-                <label className="label p-0 font-semibold">{copy.lifetime}</label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="number"
-                    min={1}
-                    inputMode={integerInputProps.inputMode}
-                    step={integerInputProps.step}
-                    className="input input-bordered w-24"
-                    value={data.orderLifetime}
-                    onChange={(event) => {
-                      const parsed = readNumericInputValue(event.target.value, strategyNumericContracts.integer);
-                      if (parsed == null) return;
-                      patch({ orderLifetime: parsed });
-                    }}
-                  />
-                  <select
-                    className="select select-bordered"
-                    value={data.orderUnit}
-                    onChange={(event) => patch({ orderUnit: event.target.value as TimeUnit })}
-                  >
-                    <option value="min">{copy.unitMin}</option>
-                    <option value="h">{copy.unitHour}</option>
-                    <option value="d">{copy.unitDay}</option>
-                    <option value="w">{copy.unitWeek}</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+                <select
+                  id="strategy-additional-order-unit"
+                  className="select select-bordered w-full"
+                  value={data.orderUnit}
+                  onChange={(event) => patch({ orderUnit: event.target.value as TimeUnit })}
+                >
+                  {timeUnitOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </CompoundField>
+            </FormGrid>
           </div>
         </div>
-      </div>
+      </FormSectionCard>
 
-      <div className="card bg-base-200">
-        <div className="card-body space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="text-lg font-semibold">{copy.dca}</div>
-            <label className="cursor-pointer">
-              <input
-                type="checkbox"
-                className="toggle toggle-primary"
-                checked={data.dcaEnabled}
-                onChange={(event) => patch({ dcaEnabled: event.target.checked })}
-              />
-            </label>
-          </div>
+      <FormSectionCard title={copy.dca}>
+        <div className="space-y-4">
+          <ToggleField
+            id="strategy-dca-enabled"
+            label={copy.dca}
+            checked={data.dcaEnabled}
+            onChange={(next) => patch({ dcaEnabled: next })}
+          />
 
           {data.dcaEnabled ? (
             <>
-              <div className="flex flex-wrap gap-6">
-                <label className="inline-flex cursor-pointer items-center gap-2">
-                  <input
-                    type="radio"
-                    className="radio radio-primary"
-                    name="dcaMode"
-                    checked={data.dcaMode === "basic"}
-                    onChange={() =>
-                      setData((prev) => ({
-                        ...prev,
-                        dcaMode: "basic",
-                        dcaTimes: Math.max(1, prev.dcaTimes || prev.dcaLevels.length || 1),
-                      }))
-                    }
-                  />
-                  <span>{copy.basic}</span>
-                </label>
-                <label className="inline-flex cursor-pointer items-center gap-2">
-                  <input
-                    type="radio"
-                    className="radio radio-primary"
-                    name="dcaMode"
-                    checked={data.dcaMode === "advanced"}
-                    onChange={() =>
-                      setData((prev) => ({
-                        ...prev,
-                        dcaMode: "advanced",
-                        dcaTimes: prev.dcaLevels.length,
-                      }))
-                    }
-                  />
-                  <span>{copy.advanced}</span>
-                </label>
-              </div>
+              <RadioGroupField
+                id="strategy-dca-mode"
+                label={copy.dca}
+                value={data.dcaMode}
+                options={[
+                  { value: "basic", label: copy.basic },
+                  { value: "advanced", label: copy.advanced },
+                ]}
+                onChange={(next) => {
+                  if (next === "basic") {
+                    setData((prev) => ({
+                      ...prev,
+                      dcaMode: "basic",
+                      dcaTimes: Math.max(1, prev.dcaTimes || prev.dcaLevels.length || 1),
+                    }));
+                    return;
+                  }
+                  setData((prev) => ({
+                    ...prev,
+                    dcaMode: "advanced",
+                    dcaTimes: prev.dcaLevels.length,
+                  }));
+                }}
+              />
 
               {data.dcaMode === "basic" ? (
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                  <div className="form-control gap-2">
-                    <label className="label p-0 font-semibold">{copy.times}</label>
-                    <div className="flex items-center gap-2">
+                <FormGrid columns={2}>
+                  <CompoundField label={copy.times} columns={1}>
+                    <div className="space-y-3">
                       <input
+                        id="strategy-dca-times-input"
                         type="number"
                         min={1}
                         max={10}
                         step={1}
                         inputMode={integerInputProps.inputMode}
-                        className="input input-bordered w-20 text-center"
+                        className="input input-bordered w-full"
                         value={data.dcaTimes}
                         onChange={(event) => {
                           const parsed = readNumericInputValue(event.target.value, strategyNumericContracts.integer);
@@ -247,11 +240,12 @@ export function Additional({ data, setData }: AdditionalProps) {
                         }}
                       />
                       <input
+                        id="strategy-dca-times-range"
                         type="range"
                         min={1}
                         max={10}
                         step={1}
-                        className="range"
+                        className="range range-primary w-full"
                         value={data.dcaTimes}
                         onChange={(event) => {
                           const parsed = readNumericInputValue(event.target.value, strategyNumericContracts.integer);
@@ -260,87 +254,75 @@ export function Additional({ data, setData }: AdditionalProps) {
                         }}
                       />
                     </div>
-                  </div>
+                  </CompoundField>
 
-                  <div className="form-control gap-2">
-                    <label className="label p-0 font-semibold">{copy.triggerLevel}</label>
-                    <input
-                      type="number"
-                      min={-100}
-                      max={100}
-                      step={decimalInputProps.step}
-                      inputMode={decimalInputProps.inputMode}
-                      className="input input-bordered"
-                      value={primaryLevel.percent}
-                      onChange={(event) => {
-                        const parsed = readNumericInputValue(event.target.value, strategyNumericContracts.decimal2);
-                        if (parsed == null) return;
-                        setPrimaryDcaLevel({ percent: parsed });
-                      }}
-                    />
-                  </div>
+                  <NumberField
+                    id="strategy-dca-trigger-level"
+                    label={copy.triggerLevel}
+                    min={-100}
+                    max={100}
+                    step={Number(decimalInputProps.step)}
+                    inputMode={decimalInputProps.inputMode}
+                    value={primaryLevel.percent}
+                    onChange={(value) => {
+                      const parsed = readNumericInputValue(value, strategyNumericContracts.decimal2);
+                      if (parsed == null) return;
+                      setPrimaryDcaLevel({ percent: parsed });
+                    }}
+                  />
 
-                  <div className="form-control gap-2">
-                    <label className="label p-0 font-semibold">{copy.multiplier}</label>
-                    <input
-                      type="number"
-                      min={1}
-                      step={decimalInputProps.step}
-                      inputMode={decimalInputProps.inputMode}
-                      className="input input-bordered"
-                      value={data.dcaMultiplier}
-                      onChange={(event) => {
-                        const parsed = readNumericInputValue(event.target.value, strategyNumericContracts.decimal2);
-                        if (parsed == null) return;
-                        patch({ dcaMultiplier: parsed });
-                        setPrimaryDcaLevel({ multiplier: parsed });
-                      }}
-                    />
-                  </div>
-                </div>
+                  <NumberField
+                    id="strategy-dca-multiplier"
+                    label={copy.multiplier}
+                    min={1}
+                    step={Number(decimalInputProps.step)}
+                    inputMode={decimalInputProps.inputMode}
+                    value={data.dcaMultiplier}
+                    onChange={(value) => {
+                      const parsed = readNumericInputValue(value, strategyNumericContracts.decimal2);
+                      if (parsed == null) return;
+                      patch({ dcaMultiplier: parsed });
+                      setPrimaryDcaLevel({ multiplier: parsed });
+                    }}
+                  />
+                </FormGrid>
               ) : (
                 <>
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     {data.dcaLevels.map((level, idx) => (
-                      <div key={`dca-level-${idx}`} className="grid grid-cols-[1fr_1fr_auto] items-end gap-3">
-                        <div className="form-control gap-2">
-                          <label className="label p-0">{copy.levelPercent}</label>
-                          <input
-                            type="number"
-                            step={decimalInputProps.step}
-                            inputMode={decimalInputProps.inputMode}
-                            className="input input-bordered"
-                            value={level.percent}
-                            onChange={(event) => {
-                              const parsed = readNumericInputValue(event.target.value, strategyNumericContracts.decimal2);
-                              if (parsed == null) return;
-                              updateLevel(idx, "percent", parsed);
-                            }}
-                          />
-                        </div>
-                        <div className="form-control gap-2">
-                          <label className="label p-0">{copy.multiplier}</label>
-                          <input
-                            type="number"
-                            min={1}
-                            step={decimalInputProps.step}
-                            inputMode={decimalInputProps.inputMode}
-                            className="input input-bordered"
-                            value={level.multiplier}
-                            onChange={(event) => {
-                              const parsed = readNumericInputValue(event.target.value, strategyNumericContracts.decimal2);
-                              if (parsed == null) return;
-                              updateLevel(idx, "multiplier", parsed);
-                            }}
-                          />
-                        </div>
+                      <div key={`dca-level-${idx}`} className="grid grid-cols-1 items-end gap-3 sm:grid-cols-[1fr_1fr_auto]">
+                        <NumberField
+                          id={`strategy-dca-level-percent-${idx}`}
+                          label={copy.levelPercent}
+                          step={Number(decimalInputProps.step)}
+                          inputMode={decimalInputProps.inputMode}
+                          value={level.percent}
+                          onChange={(value) => {
+                            const parsed = readNumericInputValue(value, strategyNumericContracts.decimal2);
+                            if (parsed == null) return;
+                            updateLevel(idx, "percent", parsed);
+                          }}
+                        />
+                        <NumberField
+                          id={`strategy-dca-level-multiplier-${idx}`}
+                          label={copy.multiplier}
+                          min={1}
+                          step={Number(decimalInputProps.step)}
+                          inputMode={decimalInputProps.inputMode}
+                          value={level.multiplier}
+                          onChange={(value) => {
+                            const parsed = readNumericInputValue(value, strategyNumericContracts.decimal2);
+                            if (parsed == null) return;
+                            updateLevel(idx, "multiplier", parsed);
+                          }}
+                        />
                         <button
                           type="button"
                           className="btn btn-primary"
                           onClick={() => removeLevel(idx)}
                           title={copy.removeLevel}
                         >
-                          <LuTrash2 className="h-4 w-4" />
+                          <LuTrash2 className="h-4 w-4" aria-hidden />
                         </button>
                       </div>
                     ))}
@@ -353,7 +335,7 @@ export function Additional({ data, setData }: AdditionalProps) {
             </>
           ) : null}
         </div>
-      </div>
-    </div>
+      </FormSectionCard>
+    </FormGrid>
   );
 }

@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { LuTrash2 } from "react-icons/lu";
 import { useI18n } from "@/i18n/I18nProvider";
+import { FormGrid, FormSectionCard, NumberField, RadioGroupField } from "@/ui/forms";
 import { CloseConditions, CloseProps, Threshold } from "../../types/StrategyForm.type";
 import {
   numericInputProps,
@@ -15,6 +16,7 @@ export function Close({ data, setData }: CloseProps) {
   const close = data;
 
   const copy = useMemo(() => ({
+    mode: t("dashboard.strategies.form.close.mode"),
     modeBasic: t("dashboard.strategies.form.close.modeBasic"),
     modeAdvanced: t("dashboard.strategies.form.close.modeAdvanced"),
     basicTitle: t("dashboard.strategies.form.close.basicTitle"),
@@ -58,179 +60,139 @@ export function Close({ data, setData }: CloseProps) {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-wrap gap-6">
-        <label className="flex cursor-pointer items-center gap-2">
-          <input
-            type="radio"
-            name="closeMode"
-            className="radio radio-primary"
-            checked={close.mode === "basic"}
-            onChange={() => setClose({ mode: "basic" })}
-          />
-          <span>{copy.modeBasic}</span>
-        </label>
-        <label className="flex cursor-pointer items-center gap-2">
-          <input
-            type="radio"
-            name="closeMode"
-            className="radio radio-primary"
-            checked={close.mode === "advanced"}
-            onChange={() => setClose({ mode: "advanced" })}
-          />
-          <span>{copy.modeAdvanced}</span>
-        </label>
-      </div>
+    <div className="space-y-6">
+      <RadioGroupField
+        id="strategy-close-mode"
+        label={copy.mode}
+        value={close.mode}
+        options={[
+          { value: "basic", label: copy.modeBasic },
+          { value: "advanced", label: copy.modeAdvanced },
+        ]}
+        onChange={(value) => setClose({ mode: value as "basic" | "advanced" })}
+      />
 
       {close.mode === "basic" && (
-        <div className="card bg-base-200">
-          <div className="card-body">
-            <h4 className="mb-6 text-lg font-semibold">{copy.basicTitle}</h4>
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-              <div className="form-control">
-                <label className="label">{copy.takeProfit}</label>
-                <input
-                  type="number"
-                  inputMode={decimalInputProps.inputMode}
-                  step={decimalInputProps.step}
-                  className="input input-bordered w-full"
-                  value={close.tp}
-                  onChange={(event) => {
-                    const parsed = readNumericInputValue(event.target.value, strategyNumericContracts.decimal2);
-                    if (parsed == null) return;
-                    setClose({ tp: parsed });
-                  }}
-                />
-              </div>
-              <div className="form-control">
-                <label className="label">{copy.stopLoss}</label>
-                <input
-                  type="number"
-                  inputMode={decimalInputProps.inputMode}
-                  step={decimalInputProps.step}
-                  className="input input-bordered w-full"
-                  value={close.sl}
-                  onChange={(event) => {
-                    const parsed = readNumericInputValue(event.target.value, strategyNumericContracts.decimal2);
-                    if (parsed == null) return;
-                    setClose({ sl: parsed });
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+        <FormSectionCard title={copy.basicTitle}>
+          <FormGrid columns={2}>
+            <NumberField
+              id="strategy-close-tp"
+              label={copy.takeProfit}
+              value={close.tp}
+              inputMode={decimalInputProps.inputMode}
+              step={Number(decimalInputProps.step)}
+              onChange={(value) => {
+                const parsed = readNumericInputValue(value, strategyNumericContracts.decimal2);
+                if (parsed == null) return;
+                setClose({ tp: parsed });
+              }}
+            />
+            <NumberField
+              id="strategy-close-sl"
+              label={copy.stopLoss}
+              value={close.sl}
+              inputMode={decimalInputProps.inputMode}
+              step={Number(decimalInputProps.step)}
+              onChange={(value) => {
+                const parsed = readNumericInputValue(value, strategyNumericContracts.decimal2);
+                if (parsed == null) return;
+                setClose({ sl: parsed });
+              }}
+            />
+          </FormGrid>
+        </FormSectionCard>
       )}
 
       {close.mode === "advanced" && (
-        <div className="card bg-base-200">
-          <div className="card-body">
-            <h4 className="mb-6 text-lg font-semibold">{copy.advancedTitle}</h4>
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-              <div>
-                <div className="mb-2 font-semibold">{copy.ttp}</div>
-                <div className="space-y-2">
-                  {close.ttp.map((threshold, idx) => (
-                    <div key={`ttp-${idx}`} className="grid grid-cols-1 items-end gap-2 sm:grid-cols-[1fr_1fr_auto]">
-                      <div>
-                        <label className="label">{copy.percent}</label>
-                        <input
-                          type="number"
-                          inputMode={decimalInputProps.inputMode}
-                          step={decimalInputProps.step}
-                          className="input input-bordered"
-                          value={threshold.percent}
-                          onChange={(event) => {
-                            const parsed = readNumericInputValue(event.target.value, strategyNumericContracts.decimal2);
-                            if (parsed == null) return;
-                            updateThreshold("ttp", idx, "percent", parsed);
-                          }}
-                        />
-                      </div>
-                      <div>
-                        <label className="label">{copy.arm}</label>
-                        <input
-                          type="number"
-                          inputMode={decimalInputProps.inputMode}
-                          step={decimalInputProps.step}
-                          className="input input-bordered"
-                          value={threshold.arm}
-                          onChange={(event) => {
-                            const parsed = readNumericInputValue(event.target.value, strategyNumericContracts.decimal2);
-                            if (parsed == null) return;
-                            updateThreshold("ttp", idx, "arm", parsed);
-                          }}
-                        />
-                      </div>
-                      <button
-                        type="button"
-                        className="btn btn-primary w-full sm:w-auto"
-                        title={copy.removeThreshold}
-                        onClick={() => removeThreshold("ttp", idx)}
-                      >
-                        <LuTrash2 />
-                      </button>
-                    </div>
-                  ))}
+        <FormSectionCard title={copy.advancedTitle}>
+          <FormGrid columns={2}>
+            <div className="space-y-3">
+              <p className="text-sm font-semibold text-base-content/80">{copy.ttp}</p>
+              {close.ttp.map((threshold, idx) => (
+                <div key={`ttp-${idx}`} className="grid grid-cols-1 items-end gap-2 sm:grid-cols-[1fr_1fr_auto]">
+                  <NumberField
+                    id={`strategy-close-ttp-percent-${idx}`}
+                    label={copy.percent}
+                    value={threshold.percent}
+                    inputMode={decimalInputProps.inputMode}
+                    step={Number(decimalInputProps.step)}
+                    onChange={(value) => {
+                      const parsed = readNumericInputValue(value, strategyNumericContracts.decimal2);
+                      if (parsed == null) return;
+                      updateThreshold("ttp", idx, "percent", parsed);
+                    }}
+                  />
+                  <NumberField
+                    id={`strategy-close-ttp-arm-${idx}`}
+                    label={copy.arm}
+                    value={threshold.arm}
+                    inputMode={decimalInputProps.inputMode}
+                    step={Number(decimalInputProps.step)}
+                    onChange={(value) => {
+                      const parsed = readNumericInputValue(value, strategyNumericContracts.decimal2);
+                      if (parsed == null) return;
+                      updateThreshold("ttp", idx, "arm", parsed);
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-primary w-full sm:w-auto"
+                    title={copy.removeThreshold}
+                    onClick={() => removeThreshold("ttp", idx)}
+                  >
+                    <LuTrash2 className="h-4 w-4" aria-hidden />
+                  </button>
                 </div>
-                <button type="button" className="btn btn-outline mt-2" onClick={() => addThreshold("ttp")}>
-                  {copy.addThreshold}
-                </button>
-              </div>
-
-              <div>
-                <div className="mb-2 font-semibold">{copy.tsl}</div>
-                <div className="space-y-2">
-                  {close.tsl.map((threshold, idx) => (
-                    <div key={`tsl-${idx}`} className="grid grid-cols-1 items-end gap-2 sm:grid-cols-[1fr_1fr_auto]">
-                      <div>
-                        <label className="label">{copy.percent}</label>
-                        <input
-                          type="number"
-                          inputMode={decimalInputProps.inputMode}
-                          step={decimalInputProps.step}
-                          className="input input-bordered"
-                          value={threshold.percent}
-                          onChange={(event) => {
-                            const parsed = readNumericInputValue(event.target.value, strategyNumericContracts.decimal2);
-                            if (parsed == null) return;
-                            updateThreshold("tsl", idx, "percent", parsed);
-                          }}
-                        />
-                      </div>
-                      <div>
-                        <label className="label">{copy.arm}</label>
-                        <input
-                          type="number"
-                          inputMode={decimalInputProps.inputMode}
-                          step={decimalInputProps.step}
-                          className="input input-bordered"
-                          value={threshold.arm}
-                          onChange={(event) => {
-                            const parsed = readNumericInputValue(event.target.value, strategyNumericContracts.decimal2);
-                            if (parsed == null) return;
-                            updateThreshold("tsl", idx, "arm", parsed);
-                          }}
-                        />
-                      </div>
-                      <button
-                        type="button"
-                        className="btn btn-primary w-full sm:w-auto"
-                        title={copy.removeThreshold}
-                        onClick={() => removeThreshold("tsl", idx)}
-                      >
-                        <LuTrash2 />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-                <button type="button" className="btn btn-outline mt-2" onClick={() => addThreshold("tsl")}>
-                  {copy.addThreshold}
-                </button>
-              </div>
+              ))}
+              <button type="button" className="btn btn-outline mt-2" onClick={() => addThreshold("ttp")}>
+                {copy.addThreshold}
+              </button>
             </div>
-          </div>
-        </div>
+
+            <div className="space-y-3">
+              <p className="text-sm font-semibold text-base-content/80">{copy.tsl}</p>
+              {close.tsl.map((threshold, idx) => (
+                <div key={`tsl-${idx}`} className="grid grid-cols-1 items-end gap-2 sm:grid-cols-[1fr_1fr_auto]">
+                  <NumberField
+                    id={`strategy-close-tsl-percent-${idx}`}
+                    label={copy.percent}
+                    value={threshold.percent}
+                    inputMode={decimalInputProps.inputMode}
+                    step={Number(decimalInputProps.step)}
+                    onChange={(value) => {
+                      const parsed = readNumericInputValue(value, strategyNumericContracts.decimal2);
+                      if (parsed == null) return;
+                      updateThreshold("tsl", idx, "percent", parsed);
+                    }}
+                  />
+                  <NumberField
+                    id={`strategy-close-tsl-arm-${idx}`}
+                    label={copy.arm}
+                    value={threshold.arm}
+                    inputMode={decimalInputProps.inputMode}
+                    step={Number(decimalInputProps.step)}
+                    onChange={(value) => {
+                      const parsed = readNumericInputValue(value, strategyNumericContracts.decimal2);
+                      if (parsed == null) return;
+                      updateThreshold("tsl", idx, "arm", parsed);
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-primary w-full sm:w-auto"
+                    title={copy.removeThreshold}
+                    onClick={() => removeThreshold("tsl", idx)}
+                  >
+                    <LuTrash2 className="h-4 w-4" aria-hidden />
+                  </button>
+                </div>
+              ))}
+              <button type="button" className="btn btn-outline mt-2" onClick={() => addThreshold("tsl")}>
+                {copy.addThreshold}
+              </button>
+            </div>
+          </FormGrid>
+        </FormSectionCard>
       )}
     </div>
   );

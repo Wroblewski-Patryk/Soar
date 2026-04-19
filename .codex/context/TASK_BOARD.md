@@ -17,7 +17,7 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] UXR-I-09 Preserve strategies tabs while normalizing section internals to shared primitives
+- [ ] UXR-I-10 Reduce bots-form layout density and align controls to shared form system
   - Status: READY
   - Group: Dashboard Forms Consistency Refresh (`UXR-I-C`)
   - Owner: Frontend Builder
@@ -53,6 +53,8 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] UXR-I-09 Preserve strategies tabs while normalizing section internals to shared primitives
+  - 2026-04-19: Preserved strategies tab flow and normalized `close`/`additional` tab internals to shared `ui/forms` primitives (section cards, radio groups, number/toggle/compound fields) with focused tab-switch regression coverage in `StrategyForm.test.tsx`.
 - [x] UXR-I-08 Finalize backtests-form decoupling from feature-local controls and summary ergonomics
   - 2026-04-19: Aligned backtests create form shell to shared `FormPageShell` + section-card structure by removing feature-local outer container wrappers while preserving run-config/simulation payload behavior and focused backtests-form tests.
 - [x] UXR-I-07 Enforce markets-form sectioned IA and remove residual local generic controls

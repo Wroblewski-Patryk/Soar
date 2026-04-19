@@ -2060,7 +2060,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - [x] `UXR-I-06 refactor(web-wallets-form): close residual layout/control parity gaps using ui/forms primitives`
 - [x] `UXR-I-07 refactor(web-markets-form): enforce sectioned IA and remove any residual local generic controls`
 - [x] `UXR-I-08 refactor(web-backtests-form): finalize decoupling from feature-local controls and align summary ergonomics`
-- [ ] `UXR-I-09 refactor(web-strategies-form): preserve tabs while normalizing section internals to shared primitives`
+- [x] `UXR-I-09 refactor(web-strategies-form): preserve tabs while normalizing section internals to shared primitives`
 - [ ] `UXR-I-10 refactor(web-bots-form): reduce layout density and align controls to shared form system`
 - [ ] `UXR-I-11 feat(web-form-ux): standardize first-error focus/scroll + summary/inline sync across scoped forms`
 - [ ] `UXR-I-12 feat(web-form-mobile): apply sticky mobile action bar contract to long dashboard forms`
@@ -2077,6 +2077,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-19: Completed `UXR-I-06` by migrating wallet residual controls to shared form primitives (`RadioGroupField` for mode, `SelectField` for base currency, `NumberField` + `SelectField` for LIVE allocation) and updating focused wallet regression assertions.
 - 2026-04-19: Completed `UXR-I-07` by reworking `MarketUniverseForm` to shared sectioned IA (`FormSectionCard` + `FormGrid`) and removing local section layout wrappers while preserving market-catalog filter behavior.
 - 2026-04-19: Completed `UXR-I-08` by replacing `BacktestCreateForm` feature-local outer shell with shared `FormPageShell` and preserving run-config/simulation section contracts plus focused form regression coverage.
+- 2026-04-19: Completed `UXR-I-09` by preserving strategy tab flow and migrating `close`/`additional` tab internals to shared `ui/forms` primitives (section cards, radio groups, number/toggle/compound fields) without domain-logic changes; added focused tab-flow regression coverage in `StrategyForm.test.tsx`.
 
 ## Phase UXR-J - Dashboard Tables Consistency Refresh (Queued 2026-04-19)
 - [ ] `UXR-J-01 docs(contract): freeze dashboard table action-color and columns-dropdown behavior contract`

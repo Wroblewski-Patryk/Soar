@@ -1,4 +1,4 @@
-﻿export const dashboardStrategiesPt = {
+export const dashboardStrategiesPt = {
   title: "Estrategias",
   listLabel: "Lista",
   createLabel: "Criar",
@@ -55,6 +55,7 @@
       directionShort: "Short",
     },
     close: {
+      mode: "Modo",
       modeBasic: "Basico (TP/SL)",
       modeAdvanced: "Avancado (TTP/TSL)",
       basicTitle: "Definicoes basicas de saida",
