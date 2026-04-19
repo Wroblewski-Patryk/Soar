@@ -17,11 +17,39 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] (none)
+- [ ] UXR-I-01 Freeze dashboard forms consistency refresh boundaries after UXR-F
+  - Status: READY
+  - Group: Dashboard Forms Consistency Refresh (`UXR-I-A`)
+  - Owner: Planner + Frontend Builder
+  - Depends on: none
+  - Priority: P2
 
 ## BACKLOG
 
-- [ ] (none)
+- [ ] UXR-I-02 Publish residual forms consistency gap map per route/module
+  - Status: BACKLOG
+  - Group: Dashboard Forms Consistency Refresh (`UXR-I-A`)
+  - Owner: Frontend Builder
+  - Depends on: UXR-I-01
+  - Priority: P2
+- [ ] UXR-I-03 Normalize shared ui/forms primitive API surface for refresh migration
+  - Status: BACKLOG
+  - Group: Dashboard Forms Consistency Refresh (`UXR-I-A`)
+  - Owner: Frontend Builder
+  - Depends on: UXR-I-02
+  - Priority: P2
+- [ ] UXR-J-01 Freeze dashboard table action-color and columns-dropdown behavior contract
+  - Status: BACKLOG
+  - Group: Dashboard Tables Consistency Refresh (`UXR-J-A`)
+  - Owner: Planner + Frontend Builder
+  - Depends on: UXR-I-14
+  - Priority: P2
+- [ ] UXR-J-02 Add dedicated module action tone mapping and dropdown/trigger shared behavior updates
+  - Status: BACKLOG
+  - Group: Dashboard Tables Consistency Refresh (`UXR-J-A`)
+  - Owner: Frontend Builder
+  - Depends on: UXR-J-01
+  - Priority: P2
 
 ## IN_PROGRESS
 
@@ -37,6 +65,8 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] UXR-J planning queued: `UXR-J-01..UXR-J-08` dashboard tables consistency refresh wave activated from planner brief
+- [x] UXR-I planning queued: `UXR-I-01..UXR-I-14` dashboard forms consistency refresh wave activated from planner brief
 - [x] OPV-05 Gate-aware RC status follow-ups
   - 2026-04-19: Updated RC gate status generator to emit only unresolved manual follow-ups per current gate state (`Gate1..Gate4`) and stop listing already-closed evidence steps as required.
 - [x] POS-B group closure (`POS-39..POS-42`)

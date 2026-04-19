@@ -7,11 +7,30 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `none (awaiting next planned group)`
+- [ ] `UXR-I-01 docs(contract): freeze dashboard forms consistency refresh boundaries after UXR-F`
 ## NEXT
-- [ ] `none`
+- [ ] `UXR-I-02 audit(web-forms): publish residual consistency gap map per route/module`
+- [ ] `UXR-I-03 chore(web-ui-forms): normalize shared form primitive API surface for refresh migration`
+- [ ] `UXR-I-04 test(guardrails): lock no-cross-feature generic controls and no-hardcoded-wrapper-copy regressions`
 ## PIPELINE
-- [ ] `none`
+- [ ] `UXR-I-05 refactor(web-wrappers): unify create/edit wrappers i18n+breadcrumb+save-action contract`
+- [ ] `UXR-I-06 refactor(web-wallets-form): close residual layout/control parity gaps using ui/forms primitives`
+- [ ] `UXR-I-07 refactor(web-markets-form): enforce sectioned IA and remove any residual local generic controls`
+- [ ] `UXR-I-08 refactor(web-backtests-form): finalize decoupling from feature-local controls and align summary ergonomics`
+- [ ] `UXR-I-09 refactor(web-strategies-form): preserve tabs while normalizing section internals to shared primitives`
+- [ ] `UXR-I-10 refactor(web-bots-form): reduce layout density and align controls to shared form system`
+- [ ] `UXR-I-11 feat(web-form-ux): standardize first-error focus/scroll + summary/inline sync across scoped forms`
+- [ ] `UXR-I-12 feat(web-form-mobile): apply sticky mobile action bar contract to long dashboard forms`
+- [ ] `UXR-I-13 test(web-forms-regression): run/update focused suites for wrapper+i18n+form-consistency contracts`
+- [ ] `UXR-I-14 qa(web-forms-closure): run build/typecheck/guardrails and sync canonical queue/context`
+- [ ] `UXR-J-01 docs(contract): freeze dashboard table action-color and columns-dropdown behavior contract`
+- [ ] `UXR-J-02 refactor(ui-table-actions): add dedicated module action tone and remap clone/runtime/preview presets`
+- [ ] `UXR-J-03 refactor(ui-datatable-dropdown): keep columns dropdown open on checkbox toggles`
+- [ ] `UXR-J-04 refactor(ui-datatable-trigger): enforce icon-only columns trigger globally with a11y label`
+- [ ] `UXR-J-05 test(ui-datatable): add regression tests for dropdown persistence and icon-only trigger contract`
+- [ ] `UXR-J-06 test(ui-table-actions): add preset tone regression tests for clone/runtime/preview mapping`
+- [ ] `UXR-J-07 test(web-tables-focused): align bots/backtests/profile/runtime table suites to shared table behavior`
+- [ ] `UXR-J-08 qa(web-table-closure): run focused suite + typecheck/build and sync queue/context`
 ## GROUP QUEUE
 - [x] `BRS-A (commits BRS-01..BRS-04): decision closure + strict selected-bot scope foundation`
 - [x] `BRS-B (commits BRS-05..BRS-08): canonical update-path fix + strategy precedence unification`
@@ -21,6 +40,13 @@ Operational queue for one-task execution runs.
 - [x] `UXR-H-A (commits UXR-H-01..UXR-H-03): manual-order advanced contract + backend context/rules foundation`
 - [x] `UXR-H-B (commits UXR-H-04..UXR-H-07): dashboard manual-order state+UI expansion + container cleanup`
 - [x] `UXR-H-C (commits UXR-H-08..UXR-H-10): i18n parity + focused regression + closure sync`
+- [ ] `UXR-I-A (commits UXR-I-01..UXR-I-04): refresh contract + gap inventory + shared guardrails`
+- [ ] `UXR-I-B (commits UXR-I-05..UXR-I-08): wrapper parity + wallets/markets/backtests residual migration`
+- [ ] `UXR-I-C (commits UXR-I-09..UXR-I-12): strategies/bots consistency closure + standardized form UX`
+- [ ] `UXR-I-D (commits UXR-I-13..UXR-I-14): focused regression + closure sync`
+- [ ] `UXR-J-A (commits UXR-J-01..UXR-J-04): table action/dropdown/trigger shared contract refresh`
+- [ ] `UXR-J-B (commits UXR-J-05..UXR-J-07): focused regression alignment across shared and consuming tables`
+- [ ] `UXR-J-C (commit UXR-J-08): closure checks + canonical sync`
 - [x] `PLNC-A (commits PLNC-01..PLNC-04): planning catalog reconciliation + status sync + canonical linkage`
 - [x] `ARC-A (commits ARC-01..ARC-05): runtime critical-path decomposition foundations`
 - [x] `ARC-B (commits ARC-06..ARC-10): bots runtime CQRS/read-model decomposition + aggregate monitoring contract`
@@ -57,6 +83,10 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `UXR-J planning queued (dashboard tables consistency refresh after UXR-I)`
+  - 2026-04-19: Activated tables planner brief into canonical queue via `docs/planning/uxr-j-dashboard-tables-consistency-refresh-plan-2026-04-19.md` with grouped batches (`UXR-J-A..UXR-J-C`) covering global action-tone semantics (`clone/runtime/preview`), columns dropdown persistence behavior, icon-only columns trigger contract, focused table-regression alignment, and closure checks.
+- [x] `UXR-I planning queued (dashboard forms consistency refresh after UXR-F closure)`
+  - 2026-04-19: Activated planner brief into canonical execution queue via `docs/planning/uxr-i-dashboard-forms-consistency-refresh-plan-2026-04-19.md` with grouped tiny-commit batches (`UXR-I-A..UXR-I-D`) covering residual wrapper/i18n consistency, `ui/forms` contract refresh, per-module parity closure (wallets/markets/backtests/strategies/bots), standardized validation/submission ergonomics, and closure checks.
 - [x] `OPV-05 fix(ops-gates): make RC status manual follow-ups gate-aware instead of static`
   - 2026-04-19: Updated `scripts/buildRcExternalGateStatus.mjs` to render manual follow-ups dynamically from current gate state (`Gate1..Gate4`) so closed gates are not re-listed as required action; validated by generating status output from latest SLO window artifact.
 - [x] `POS-B group closure (POS-39..POS-42)`

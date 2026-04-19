@@ -22,6 +22,10 @@ Last updated: 2026-04-19
   the current localization wave.
 - 2026-04-19: dashboard manual-order advanced UX wave (`UXR-H`) is closed
   end-to-end and execution focus moved to deployment-readiness follow-up.
+- 2026-04-19: dashboard forms consistency refresh is reopened as `UXR-I`
+  planner-approved wave (post-`UXR-F` residual parity closure).
+- 2026-04-19: dashboard tables consistency refresh is queued as `UXR-J`
+  planner-approved wave (post-`UXR-I` table-system parity closure).
 
 ## Technical Baseline
 - Backend: Node.js 20+, Express API, Prisma, TypeScript
@@ -99,24 +103,40 @@ Last updated: 2026-04-19
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: keep canonical queue synchronized after closing
-  `POS-A` and `POS-B`, then pick the next planned delivery wave.
+- Main active objective: execute `UXR-I` dashboard forms consistency refresh
+  wave (`UXR-I-01..UXR-I-14`) from canonical queue with tiny-commit delivery.
 - Top blockers:
   - Gate 2 remains open for V1 RC external gates because private-route VPS
     worker/alerts probes still require admin-auth execution context.
   - stage rehearsal endpoint verification is blocked by missing stage Soar DNS
     records (`stage-api.soar.luckysparrow.ch`, `stage-soar.luckysparrow.ch`).
 - Success criteria for this phase:
-  - next executable queue group is explicitly identified with no stale reopened
-    tasks from already-implemented waves.
+  - residual create/edit forms consistency gaps are closed across wrappers and
+    scoped dashboard modules (`wallets`, `markets`, `backtests`, `strategies`,
+    `bots`).
+  - next executable queue group remains explicit with no stale reopened tasks
+    from already-implemented waves.
   - production verification artifacts remain synchronized with explicit external
     blocker accounting (`Gate2 OPEN`, stage DNS pending).
   - canonical queue and context docs stay synchronized after each ARC batch.
   - no regressions in runtime safety, deploy confidence, or dashboard contracts.
 - Next queued follow-up:
-  - select the next planned wave after POS queue reconciliation.
+  - run `UXR-I-A` then continue to `UXR-I-B..D`,
+  - then execute `UXR-J-A..C` for shared table-consistency closure.
 
 ## Recent Progress
+- 2026-04-19: activated planner brief
+  `dashboard-tables-consistency-planner-brief-2026-04-19.md` into canonical
+  queued wave `UXR-J` via
+  `docs/planning/uxr-j-dashboard-tables-consistency-refresh-plan-2026-04-19.md`,
+  including grouped execution batches (`UXR-J-A..UXR-J-C`) and queue/context
+  synchronization.
+- 2026-04-19: activated planner brief
+  `dashboard-forms-consistency-planner-brief-2026-04-19.md` into canonical
+  queued wave `UXR-I` via
+  `docs/planning/uxr-i-dashboard-forms-consistency-refresh-plan-2026-04-19.md`,
+  including grouped execution batches (`UXR-I-A..UXR-I-D`) and queue/context
+  synchronization.
 - 2026-04-19: completed `OPV-05` by making RC external-gates status manual
   follow-ups gate-aware in `scripts/buildRcExternalGateStatus.mjs`; generated
   status now lists only unresolved actions (`Gate2/Gate4` in current snapshot)

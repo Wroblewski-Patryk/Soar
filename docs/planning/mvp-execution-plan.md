@@ -2050,3 +2050,35 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-19: Completed `OPV-03` by collecting fresh production SLO evidence (`_artifacts-slo-window-2026-04-19T01-35-51-340Z.json`), rebuilding 7d/30d rolling reports, refreshing RC status/checklist/sign-off artifacts, rerunning post-signoff status sync, and publishing diagnostics in `docs/operations/opv-03-rc-gates-refresh-2026-04-19.md`. Current external gate snapshot: `G1=PASS`, `G2=OPEN`, `G3=PASS`, `G4=OPEN`; RC status `BLOCKED`.
 - 2026-04-19: Completed `OPV-04` by synchronizing canonical queue/context and LBT/V1 planning docs to the refreshed OPV evidence and residual blockers (`docs/operations/opv-04-closure-sync-2026-04-19.md`).
 - 2026-04-19: Completed `OPV-05` by updating `scripts/buildRcExternalGateStatus.mjs` so `Manual Follow-ups` are generated from current gate state (`Gate1..Gate4`) instead of static all-gates reminders; validation run confirmed focused follow-up output (`Gate2`, `Gate4`) from latest window artifact.
+
+## Phase UXR-I - Dashboard Forms Consistency Refresh (Queued 2026-04-19)
+- [ ] `UXR-I-01 docs(contract): freeze dashboard forms consistency refresh boundaries after UXR-F`
+- [ ] `UXR-I-02 audit(web-forms): publish residual consistency gap map per route/module`
+- [ ] `UXR-I-03 chore(web-ui-forms): normalize shared form primitive API surface for refresh migration`
+- [ ] `UXR-I-04 test(guardrails): lock no-cross-feature generic controls and no-hardcoded-wrapper-copy regressions`
+- [ ] `UXR-I-05 refactor(web-wrappers): unify create/edit wrappers i18n+breadcrumb+save-action contract`
+- [ ] `UXR-I-06 refactor(web-wallets-form): close residual layout/control parity gaps using ui/forms primitives`
+- [ ] `UXR-I-07 refactor(web-markets-form): enforce sectioned IA and remove any residual local generic controls`
+- [ ] `UXR-I-08 refactor(web-backtests-form): finalize decoupling from feature-local controls and align summary ergonomics`
+- [ ] `UXR-I-09 refactor(web-strategies-form): preserve tabs while normalizing section internals to shared primitives`
+- [ ] `UXR-I-10 refactor(web-bots-form): reduce layout density and align controls to shared form system`
+- [ ] `UXR-I-11 feat(web-form-ux): standardize first-error focus/scroll + summary/inline sync across scoped forms`
+- [ ] `UXR-I-12 feat(web-form-mobile): apply sticky mobile action bar contract to long dashboard forms`
+- [ ] `UXR-I-13 test(web-forms-regression): run/update focused suites for wrapper+i18n+form-consistency contracts`
+- [ ] `UXR-I-14 qa(web-forms-closure): run build/typecheck/guardrails and sync canonical queue/context`
+
+### Progress Log (Phase UXR-I - Dashboard Forms Consistency Refresh)
+- 2026-04-19: Activated planner input `docs/planning/dashboard-forms-consistency-planner-brief-2026-04-19.md` into canonical execution wave `docs/planning/uxr-i-dashboard-forms-consistency-refresh-plan-2026-04-19.md` with grouped batches `UXR-I-A..UXR-I-D` and strict tiny-commit sequencing.
+
+## Phase UXR-J - Dashboard Tables Consistency Refresh (Queued 2026-04-19)
+- [ ] `UXR-J-01 docs(contract): freeze dashboard table action-color and columns-dropdown behavior contract`
+- [ ] `UXR-J-02 refactor(ui-table-actions): add dedicated module action tone and remap clone/runtime/preview presets`
+- [ ] `UXR-J-03 refactor(ui-datatable-dropdown): keep columns dropdown open on checkbox toggles`
+- [ ] `UXR-J-04 refactor(ui-datatable-trigger): enforce icon-only columns trigger globally with a11y label`
+- [ ] `UXR-J-05 test(ui-datatable): add regression tests for dropdown persistence and icon-only trigger contract`
+- [ ] `UXR-J-06 test(ui-table-actions): add preset tone regression tests for clone/runtime/preview mapping`
+- [ ] `UXR-J-07 test(web-tables-focused): align bots/backtests/profile/runtime table suites to shared table behavior`
+- [ ] `UXR-J-08 qa(web-table-closure): run focused suite + typecheck/build and sync queue/context`
+
+### Progress Log (Phase UXR-J - Dashboard Tables Consistency Refresh)
+- 2026-04-19: Activated planner input `docs/planning/dashboard-tables-consistency-planner-brief-2026-04-19.md` into canonical execution wave `docs/planning/uxr-j-dashboard-tables-consistency-refresh-plan-2026-04-19.md` with grouped batches `UXR-J-A..UXR-J-C` and strict tiny-commit sequencing after `UXR-I` closure.
