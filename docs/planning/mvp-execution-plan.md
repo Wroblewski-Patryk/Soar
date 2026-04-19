@@ -2088,14 +2088,20 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 ## Phase UXR-J - Dashboard Tables Consistency Refresh (Queued 2026-04-19)
 - [x] `UXR-J-01 docs(contract): freeze dashboard table action-color and columns-dropdown behavior contract`
 - [x] `UXR-J-02 refactor(ui-table-actions): add dedicated module action tone and remap clone/runtime/preview presets`
-- [ ] `UXR-J-03 refactor(ui-datatable-dropdown): keep columns dropdown open on checkbox toggles`
-- [ ] `UXR-J-04 refactor(ui-datatable-trigger): enforce icon-only columns trigger globally with a11y label`
-- [ ] `UXR-J-05 test(ui-datatable): add regression tests for dropdown persistence and icon-only trigger contract`
-- [ ] `UXR-J-06 test(ui-table-actions): add preset tone regression tests for clone/runtime/preview mapping`
-- [ ] `UXR-J-07 test(web-tables-focused): align bots/backtests/profile/runtime table suites to shared table behavior`
-- [ ] `UXR-J-08 qa(web-table-closure): run focused suite + typecheck/build and sync queue/context`
+- [x] `UXR-J-03 refactor(ui-datatable-dropdown): keep columns dropdown open on checkbox toggles`
+- [x] `UXR-J-04 refactor(ui-datatable-trigger): enforce icon-only columns trigger globally with a11y label`
+- [x] `UXR-J-05 test(ui-datatable): add regression tests for dropdown persistence and icon-only trigger contract`
+- [x] `UXR-J-06 test(ui-table-actions): add preset tone regression tests for clone/runtime/preview mapping`
+- [x] `UXR-J-07 test(web-tables-focused): align bots/backtests/profile/runtime table suites to shared table behavior`
+- [x] `UXR-J-08 qa(web-table-closure): run focused suite + typecheck/build and sync queue/context`
 
 ### Progress Log (Phase UXR-J - Dashboard Tables Consistency Refresh)
 - 2026-04-19: Activated planner input `docs/planning/dashboard-tables-consistency-planner-brief-2026-04-19.md` into canonical execution wave `docs/planning/uxr-j-dashboard-tables-consistency-refresh-plan-2026-04-19.md` with grouped batches `UXR-J-A..UXR-J-C` and strict tiny-commit sequencing after `UXR-I` closure.
 - 2026-04-19: Completed `UXR-J-01` by freezing shared table-system behavior contract in canonical docs (`open-decisions`, `web-dashboard-home`, `web-bots`), including explicit action-tone mapping (`clone` distinct from system actions; `runtime` + `preview` same module tone), columns-dropdown persistence rules, and icon-only columns trigger accessibility requirements.
 - 2026-04-19: Completed `UXR-J-02` by introducing dedicated `module` action tone in shared `TableUi` and remapping `runtime` + `preview` presets to the same module tone while keeping `clone` neutral and distinct from system action tones.
+- 2026-04-19: Completed `UXR-J-03` by removing checkbox-toggle auto-close behavior from the shared DataTable columns visibility dropdown, preserving close-only paths through trigger toggle, outside click, and `Escape`.
+- 2026-04-19: Completed `UXR-J-04` by enforcing icon-only columns trigger as the shared DataTable default (`settingsControlsIconOnly=true`) while preserving a11y naming (`aria-label` + `sr-only`).
+- 2026-04-19: Completed `UXR-J-05` by adding DataTable interaction regressions for columns dropdown persistence on checkbox toggles, close behavior (`trigger`, outside click, `Escape`), and icon-only trigger class contract.
+- 2026-04-19: Completed `UXR-J-06` by adding `TableUi.test.tsx` preset mapping regressions that lock `clone=neutral` and `runtime/preview=module` tone semantics.
+- 2026-04-19: Completed `UXR-J-07` by aligning focused consuming-table suites (`BotsListTable`, `BacktestsRunsTable`) with shared module-tone action contract (`runtime/preview` assertions updated to `text-accent`).
+- 2026-04-19: Completed `UXR-J-08` closure pack with focused table regression suite (`DataTable`, `bots`, `backtests`, `profile`, `logs`, `home-live-widgets`) => `25/25 PASS`, plus `pnpm --filter web run typecheck` => `PASS` and `pnpm --filter web run build` => `PASS`; canonical queue/context synchronized and `UXR-J-A..C` closed.

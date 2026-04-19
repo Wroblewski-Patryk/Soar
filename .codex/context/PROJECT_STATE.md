@@ -103,15 +103,15 @@ Last updated: 2026-04-19
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: execute `UXR-J` dashboard tables consistency refresh
-  wave (`UXR-J-01..UXR-J-08`) from canonical queue with tiny-commit delivery.
+- Main active objective: post-`UXR-J` queue handoff and next-wave planning
+  refill after closing dashboard tables consistency refresh end-to-end.
 - Top blockers:
   - none in OPV scope; final RC external-gates snapshot is closed
     (`G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`) from run
     `2026-04-19T15:13:58.943Z`.
 - Success criteria for this phase:
-  - shared table action/dropdown/trigger behavior is standardized across
-    dashboard modules with explicit contract and focused regressions.
+  - shared table action/dropdown/trigger behavior remains locked through
+    focused shared+consuming regression coverage after `UXR-J` closure.
   - next executable queue group remains explicit with no stale reopened tasks
     from already-implemented waves.
   - production verification artifacts remain synchronized with the final
@@ -119,10 +119,16 @@ Last updated: 2026-04-19
   - canonical queue and context docs stay synchronized after each ARC batch.
   - no regressions in runtime safety, deploy confidence, or dashboard contracts.
 - Next queued follow-up:
-  - run `UXR-J-03`,
-  - then continue through `UXR-J-A..C` for table-consistency closure.
+  - derive and promote the next executable tiny task from canonical planning
+    sources (`mvp-next-commits`, `mvp-execution-plan`).
 
 ## Recent Progress
+- 2026-04-19: closed `UXR-J` (`UXR-J-03..UXR-J-08`) end-to-end by removing
+  columns-dropdown auto-close on checkbox toggles, enforcing icon-only columns
+  trigger default with preserved a11y labels, adding shared DataTable/TableUi
+  regression locks, aligning consuming table assertions in bots/backtests, and
+  completing closure validation pack (`25/25 PASS`, `web typecheck PASS`,
+  `web build PASS`) with canonical queue/context synchronization.
 - 2026-04-19: RC external-gates and release-candidate closure were finalized
   from VPS private-route production pipeline evidence: stage domains are live
   (`stage.soar.luckysparrow.ch`, `stage-api.soar.luckysparrow.ch`), all RC

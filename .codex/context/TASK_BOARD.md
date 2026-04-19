@@ -17,21 +17,11 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] UXR-J-03 Keep columns dropdown open on checkbox toggles in shared DataTable
-  - Status: READY
-  - Group: Dashboard Tables Consistency Refresh (`UXR-J-A`)
-  - Owner: Frontend Builder
-  - Depends on: none
-  - Priority: P2
+- [ ] (none)
 
 ## BACKLOG
 
-- [ ] UXR-J-04 Enforce icon-only columns trigger globally with accessible label contract
-  - Status: BACKLOG
-  - Group: Dashboard Tables Consistency Refresh (`UXR-J-A`)
-  - Owner: Frontend Builder
-  - Depends on: UXR-J-03
-  - Priority: P2
+- [ ] (none)
 
 ## IN_PROGRESS
 
@@ -47,6 +37,24 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] UXR-J-C group closure (`UXR-J-08`)
+  - 2026-04-19: Closure pack PASS (`DataTable + bots/backtests/profile/logs/home focused suite: 25/25`, `web typecheck`, `web build`) and canonical queue/context synchronized.
+- [x] UXR-J-B group closure (`UXR-J-05..UXR-J-07`)
+  - 2026-04-19: Locked shared table regression coverage (`DataTable`, `TableUi`) and aligned consuming table suites (`bots`, `backtests`) to module-tone contract (`runtime/preview` => `text-accent`).
+- [x] UXR-J-A group closure (`UXR-J-03..UXR-J-04`)
+  - 2026-04-19: Kept columns dropdown open on checkbox toggles and enforced icon-only columns trigger as global default with preserved accessible naming (`aria-label` + `sr-only`).
+- [x] UXR-J-08 Run web table closure checks (focused suite + typecheck + build) and sync canonical queue/context
+  - 2026-04-19: `pnpm --filter web run test -- src/ui/components/DataTable.test.tsx src/features/bots/components/BotsListTable.test.tsx src/features/backtest/components/BacktestsRunsTable.test.tsx src/features/profile/components/ApiKeysList.test.tsx src/features/logs/components/AuditTrailView.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.test.tsx --run` => `25/25 PASS`; `pnpm --filter web run typecheck` => `PASS`; `pnpm --filter web run build` => `PASS`.
+- [x] UXR-J-07 Align focused web table suites to shared action-tone and dropdown/trigger behavior contract
+  - 2026-04-19: Updated focused assertions in `BotsListTable.test.tsx` and `BacktestsRunsTable.test.tsx` to the canonical module tone (`text-accent`) for `runtime/preview` presets.
+- [x] UXR-J-06 Add shared table-action preset tone regression coverage
+  - 2026-04-19: Added `TableUi.test.tsx` regression locks for `clone=neutral` and `runtime/preview=module` mapping.
+- [x] UXR-J-05 Add DataTable regression coverage for columns dropdown persistence and icon-only trigger contract
+  - 2026-04-19: Added interaction tests in `DataTable.test.tsx` for checkbox-toggle persistence and close-only via trigger/outside click/Escape, plus icon-only trigger class contract.
+- [x] UXR-J-04 Enforce icon-only columns trigger globally with accessible label contract
+  - 2026-04-19: Set `DataTable` default `settingsControlsIconOnly=true` while preserving accessible label exposure.
+- [x] UXR-J-03 Keep columns dropdown open on checkbox toggles in shared DataTable
+  - 2026-04-19: Removed checkbox-toggle auto-close path from `DataTable` column visibility menu.
 - [x] UXR-J-02 Add dedicated module action tone mapping and dropdown/trigger shared behavior updates
   - 2026-04-19: Added shared `module` action tone in `TableUi` and remapped `runtime` + `preview` presets to the same module tone while preserving `clone` neutral and distinct from system actions (`edit`/`delete`).
 - [x] UXR-J-01 Freeze dashboard table action-color and columns-dropdown behavior contract

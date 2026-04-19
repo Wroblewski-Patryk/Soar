@@ -1,6 +1,6 @@
 # UXR-J Dashboard Tables Consistency Refresh Plan (2026-04-19)
 
-Status: queued (planner-approved refresh wave)  
+Status: closed (2026-04-19, all tasks `UXR-J-01..UXR-J-08` completed)  
 Execution mode: tiny-commit only (exactly one task per commit)  
 Primary audience: execution agent
 

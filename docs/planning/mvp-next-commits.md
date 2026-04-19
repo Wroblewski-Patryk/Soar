@@ -7,14 +7,11 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `UXR-J-03 refactor(ui-datatable-dropdown): keep columns dropdown open on checkbox toggles`
+- [x] `none`
 ## NEXT
-- [ ] `UXR-J-04 refactor(ui-datatable-trigger): enforce icon-only columns trigger globally with a11y label`
+- [x] `none`
 ## PIPELINE
-- [ ] `UXR-J-05 test(ui-datatable): add regression tests for dropdown persistence and icon-only trigger contract`
-- [ ] `UXR-J-06 test(ui-table-actions): add preset tone regression tests for clone/runtime/preview mapping`
-- [ ] `UXR-J-07 test(web-tables-focused): align bots/backtests/profile/runtime table suites to shared table behavior`
-- [ ] `UXR-J-08 qa(web-table-closure): run focused suite + typecheck/build and sync queue/context`
+- [x] `none`
 ## GROUP QUEUE
 - [x] `BRS-A (commits BRS-01..BRS-04): decision closure + strict selected-bot scope foundation`
 - [x] `BRS-B (commits BRS-05..BRS-08): canonical update-path fix + strategy precedence unification`
@@ -28,9 +25,9 @@ Operational queue for one-task execution runs.
 - [x] `UXR-I-B (commits UXR-I-05..UXR-I-08): wrapper parity + wallets/markets/backtests residual migration`
 - [x] `UXR-I-C (commits UXR-I-09..UXR-I-12): strategies/bots consistency closure + standardized form UX`
 - [x] `UXR-I-D (commits UXR-I-13..UXR-I-14): focused regression + closure sync`
-- [ ] `UXR-J-A (commits UXR-J-01..UXR-J-04): table action/dropdown/trigger shared contract refresh`
-- [ ] `UXR-J-B (commits UXR-J-05..UXR-J-07): focused regression alignment across shared and consuming tables`
-- [ ] `UXR-J-C (commit UXR-J-08): closure checks + canonical sync`
+- [x] `UXR-J-A (commits UXR-J-01..UXR-J-04): table action/dropdown/trigger shared contract refresh`
+- [x] `UXR-J-B (commits UXR-J-05..UXR-J-07): focused regression alignment across shared and consuming tables`
+- [x] `UXR-J-C (commit UXR-J-08): closure checks + canonical sync`
 - [x] `PLNC-A (commits PLNC-01..PLNC-04): planning catalog reconciliation + status sync + canonical linkage`
 - [x] `ARC-A (commits ARC-01..ARC-05): runtime critical-path decomposition foundations`
 - [x] `ARC-B (commits ARC-06..ARC-10): bots runtime CQRS/read-model decomposition + aggregate monitoring contract`
@@ -67,6 +64,18 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `UXR-J-08 qa(web-table-closure): run focused suite + typecheck/build and sync queue/context`
+  - 2026-04-19: Closure checks PASS with focused table suite (`25/25`) plus `pnpm --filter web run typecheck` and `pnpm --filter web run build`; canonical queue/context synchronized and `UXR-J` group closed end-to-end.
+- [x] `UXR-J-07 test(web-tables-focused): align bots/backtests/profile/runtime table suites to shared table behavior`
+  - 2026-04-19: Updated focused consuming table assertions to match shared module-tone contract (`runtime/preview` action presets use `text-accent`) in `BotsListTable.test.tsx` and `BacktestsRunsTable.test.tsx`.
+- [x] `UXR-J-06 test(ui-table-actions): add preset tone regression tests for clone/runtime/preview mapping`
+  - 2026-04-19: Added `TableUi.test.tsx` regression locks for canonical preset mapping (`clone=neutral`, `runtime/preview=module`).
+- [x] `UXR-J-05 test(ui-datatable): add regression tests for dropdown persistence and icon-only trigger contract`
+  - 2026-04-19: Extended `DataTable.test.tsx` with interaction regressions for columns dropdown persistence on checkbox toggles, close behavior (`trigger`, outside click, `Escape`), and icon-only trigger class contract.
+- [x] `UXR-J-04 refactor(ui-datatable-trigger): enforce icon-only columns trigger globally with a11y label`
+  - 2026-04-19: Enforced icon-only columns trigger as default by setting `settingsControlsIconOnly=true` in shared `DataTable`; accessible naming remains preserved via `aria-label` and `sr-only`.
+- [x] `UXR-J-03 refactor(ui-datatable-dropdown): keep columns dropdown open on checkbox toggles`
+  - 2026-04-19: Removed checkbox-toggle auto-close branch from shared `DataTable` columns visibility menu.
 - [x] `UXR-J-02 refactor(ui-table-actions): add dedicated module action tone and remap clone/runtime/preview presets`
   - 2026-04-19: Added dedicated `module` action tone preset in shared `TableUi` and remapped `runtime` + `preview` actions to the same module tone while preserving `clone` as neutral (distinct from system `edit`/`delete` semantics).
 - [x] `UXR-J-01 docs(contract): freeze dashboard table action-color and columns-dropdown behavior contract`
