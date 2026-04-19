@@ -383,7 +383,7 @@ export default function BotCreateEditForm({
             description={t('dashboard.bots.create.sectionSetupDescription')}
             className='bg-base-100/80'
           >
-            <FormGrid columns={3}>
+            <FormGrid columns={2}>
               <TextField
                 id='bot-name'
                 label={t('dashboard.bots.create.nameLabel')}
@@ -401,23 +401,17 @@ export default function BotCreateEditForm({
                 onChange={(value) => setForm((prev) => ({ ...prev, walletId: value }))}
                 error={showValidation ? fieldErrors.walletId : undefined}
               />
+            </FormGrid>
+          </FormSectionCard>
 
-              <SelectField
-                id='bot-strategy'
-                label={t('dashboard.bots.create.strategyLabel')}
-                value={form.strategyId}
-                options={strategyOptions}
-                onChange={(value) => setForm((prev) => ({ ...prev, strategyId: value }))}
-                error={showValidation ? fieldErrors.strategyId : undefined}
-              />
-
+          <FormSectionCard title={t('dashboard.bots.create.sectionMarket')}>
+            <FormGrid columns={2}>
               <SelectField
                 id='bot-market-group'
                 label={t('dashboard.bots.create.marketGroupLabel')}
                 value={form.marketGroupId}
                 options={marketGroupOptions}
                 onChange={(value) => setForm((prev) => ({ ...prev, marketGroupId: value }))}
-                className='xl:col-span-2'
                 error={showValidation ? fieldErrors.marketGroupId : undefined}
               />
 
@@ -430,7 +424,7 @@ export default function BotCreateEditForm({
               />
             </FormGrid>
 
-            <FormGrid columns={2} className='mt-1'>
+            <FormGrid columns={2}>
               {selectedMode === 'LIVE' ? (
                 <ToggleField
                   id='bot-live-opt-in'
@@ -476,15 +470,28 @@ export default function BotCreateEditForm({
             {!walletContextMatches ? (
               <FormAlert variant='warning'>{t('dashboard.bots.create.walletContextMismatchAlert')}</FormAlert>
             ) : null}
+          </FormSectionCard>
 
-            {selectedStrategy ? (
-              <div className='rounded-md border border-base-300/60 bg-base-100/70 px-3 py-2 text-xs opacity-80'>
-                <span className='font-semibold'>{t('dashboard.bots.create.strategyLabel')}:</span>{' '}
-                {selectedStrategy.interval.toUpperCase()} | {t('dashboard.bots.create.leverageLabel')}: x
-                {selectedStrategy.leverage} | {t('dashboard.bots.create.maxOpenLabel')}:{' '}
-                {deriveStrategyMaxOpenPositions(selectedStrategy)}
-              </div>
-            ) : null}
+          <FormSectionCard title={t('dashboard.bots.create.sectionStrategy')}>
+            <FormGrid columns={2}>
+              <SelectField
+                id='bot-strategy'
+                label={t('dashboard.bots.create.strategyLabel')}
+                value={form.strategyId}
+                options={strategyOptions}
+                onChange={(value) => setForm((prev) => ({ ...prev, strategyId: value }))}
+                error={showValidation ? fieldErrors.strategyId : undefined}
+              />
+
+              {selectedStrategy ? (
+                <div className='rounded-md border border-base-300/60 bg-base-100/70 px-3 py-2 text-xs opacity-80'>
+                  <span className='font-semibold'>{t('dashboard.bots.create.strategyLabel')}:</span>{' '}
+                  {selectedStrategy.interval.toUpperCase()} | {t('dashboard.bots.create.leverageLabel')}: x
+                  {selectedStrategy.leverage} | {t('dashboard.bots.create.maxOpenLabel')}:{' '}
+                  {deriveStrategyMaxOpenPositions(selectedStrategy)}
+                </div>
+              ) : null}
+            </FormGrid>
           </FormSectionCard>
         </fieldset>
       </form>

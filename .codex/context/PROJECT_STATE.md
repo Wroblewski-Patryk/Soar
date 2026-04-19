@@ -121,10 +121,15 @@ Last updated: 2026-04-19
   - canonical queue and context docs stay synchronized after each ARC batch.
   - no regressions in runtime safety, deploy confidence, or dashboard contracts.
 - Next queued follow-up:
-  - run `UXR-I-A` then continue to `UXR-I-B..D`,
+  - run `UXR-I-11` then continue to `UXR-I-12..UXR-I-14`,
   - then execute `UXR-J-A..C` for shared table-consistency closure.
 
 ## Recent Progress
+- 2026-04-19: completed `UXR-I-10` by refactoring `BotCreateEditForm` from a
+  dense single-card layout into clearer two-column section cards (`setup`,
+  `market`, `strategy`) with shared `ui/forms` primitives, preserving domain
+  safeguards (`wallet context match`, exchange capability, LIVE API-key gate,
+  live confirmation) and updating focused bots-form regression assertions.
 - 2026-04-19: completed `UXR-I-09` by preserving strategies tab flow and
   normalizing `close`/`additional` tab internals to shared `ui/forms`
   primitives (`FormSectionCard`, `FormGrid`, `RadioGroupField`, `NumberField`,

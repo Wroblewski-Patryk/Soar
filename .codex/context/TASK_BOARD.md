@@ -17,7 +17,7 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] UXR-I-10 Reduce bots-form layout density and align controls to shared form system
+- [ ] UXR-I-11 Standardize first-error focus/scroll + summary and inline validation sync across scoped forms
   - Status: READY
   - Group: Dashboard Forms Consistency Refresh (`UXR-I-C`)
   - Owner: Frontend Builder
@@ -53,6 +53,8 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] UXR-I-10 Reduce bots-form layout density and align controls to shared form system
+  - 2026-04-19: Refactored `BotCreateEditForm` into clearer two-column section cards (`setup`, `market`, `strategy`) using shared `ui/forms` primitives while preserving existing domain safeguards (`wallet context match`, `exchange capability`, `LIVE API key`, `live confirm`) and updated focused bots-form regression expectations.
 - [x] UXR-I-09 Preserve strategies tabs while normalizing section internals to shared primitives
   - 2026-04-19: Preserved strategies tab flow and normalized `close`/`additional` tab internals to shared `ui/forms` primitives (section cards, radio groups, number/toggle/compound fields) with focused tab-switch regression coverage in `StrategyForm.test.tsx`.
 - [x] UXR-I-08 Finalize backtests-form decoupling from feature-local controls and summary ergonomics

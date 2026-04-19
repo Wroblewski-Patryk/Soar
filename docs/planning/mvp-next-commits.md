@@ -7,11 +7,10 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `UXR-I-10 refactor(web-bots-form): reduce layout density and align controls to shared form system`
-## NEXT
 - [ ] `UXR-I-11 feat(web-form-ux): standardize first-error focus/scroll + summary/inline sync across scoped forms`
-## PIPELINE
+## NEXT
 - [ ] `UXR-I-12 feat(web-form-mobile): apply sticky mobile action bar contract to long dashboard forms`
+## PIPELINE
 - [ ] `UXR-I-13 test(web-forms-regression): run/update focused suites for wrapper+i18n+form-consistency contracts`
 - [ ] `UXR-I-14 qa(web-forms-closure): run build/typecheck/guardrails and sync canonical queue/context`
 - [ ] `UXR-J-01 docs(contract): freeze dashboard table action-color and columns-dropdown behavior contract`
@@ -74,6 +73,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `UXR-I-10 refactor(web-bots-form): reduce layout density and align controls to shared form system`
+  - 2026-04-19: Refactored `BotCreateEditForm` dense single-card layout into clearer two-column `setup`/`market`/`strategy` sections using shared `ui/forms` primitives only, while preserving existing runtime safety toggles and domain validation/submit logic; updated focused bots-form regression expectations.
 - [x] `UXR-I-09 refactor(web-strategies-form): preserve tabs while normalizing section internals to shared primitives`
   - 2026-04-19: Preserved strategy tabs flow and normalized `close`/`additional` tab internals to shared `ui/forms` primitives (`FormSectionCard`, `FormGrid`, `RadioGroupField`, `NumberField`, `ToggleField`, `CompoundField`) while keeping strategy-domain logic unchanged; added focused tab-flow regression in `StrategyForm.test.tsx`.
 - [x] `UXR-I-08 refactor(web-backtests-form): finalize decoupling from feature-local controls and align summary ergonomics`

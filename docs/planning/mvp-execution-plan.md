@@ -2061,7 +2061,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - [x] `UXR-I-07 refactor(web-markets-form): enforce sectioned IA and remove any residual local generic controls`
 - [x] `UXR-I-08 refactor(web-backtests-form): finalize decoupling from feature-local controls and align summary ergonomics`
 - [x] `UXR-I-09 refactor(web-strategies-form): preserve tabs while normalizing section internals to shared primitives`
-- [ ] `UXR-I-10 refactor(web-bots-form): reduce layout density and align controls to shared form system`
+- [x] `UXR-I-10 refactor(web-bots-form): reduce layout density and align controls to shared form system`
 - [ ] `UXR-I-11 feat(web-form-ux): standardize first-error focus/scroll + summary/inline sync across scoped forms`
 - [ ] `UXR-I-12 feat(web-form-mobile): apply sticky mobile action bar contract to long dashboard forms`
 - [ ] `UXR-I-13 test(web-forms-regression): run/update focused suites for wrapper+i18n+form-consistency contracts`
@@ -2078,6 +2078,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-19: Completed `UXR-I-07` by reworking `MarketUniverseForm` to shared sectioned IA (`FormSectionCard` + `FormGrid`) and removing local section layout wrappers while preserving market-catalog filter behavior.
 - 2026-04-19: Completed `UXR-I-08` by replacing `BacktestCreateForm` feature-local outer shell with shared `FormPageShell` and preserving run-config/simulation section contracts plus focused form regression coverage.
 - 2026-04-19: Completed `UXR-I-09` by preserving strategy tab flow and migrating `close`/`additional` tab internals to shared `ui/forms` primitives (section cards, radio groups, number/toggle/compound fields) without domain-logic changes; added focused tab-flow regression coverage in `StrategyForm.test.tsx`.
+- 2026-04-19: Completed `UXR-I-10` by refactoring `BotCreateEditForm` from a dense single-card layout into clearer two-column `setup`/`market`/`strategy` section cards using shared `ui/forms` primitives only; preserved wallet-context/runtime safety guards and updated focused bots-form regression assertions.
 
 ## Phase UXR-J - Dashboard Tables Consistency Refresh (Queued 2026-04-19)
 - [ ] `UXR-J-01 docs(contract): freeze dashboard table action-color and columns-dropdown behavior contract`
