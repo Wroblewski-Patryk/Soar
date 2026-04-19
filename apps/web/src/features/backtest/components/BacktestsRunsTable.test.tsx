@@ -44,7 +44,7 @@ describe("BacktestsRunsTable", () => {
     const deleteButton = screen.getByRole("button", { name: /usun|delete/i });
 
     expect(previewLink).toHaveAttribute("href", "/dashboard/backtests/bt-1");
-    expect(previewLink.className).toContain("text-base-content/75");
+    expect(previewLink.className).toContain("text-accent");
     expect(deleteButton.className).toContain("text-error");
   });
 });

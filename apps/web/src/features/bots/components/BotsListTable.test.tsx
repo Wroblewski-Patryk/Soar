@@ -64,7 +64,7 @@ describe("BotsListTable", () => {
 
     expect(runtimeLink).toHaveAttribute("href", "/dashboard/bots/bot-1/preview");
     expect(editLink).toHaveAttribute("href", "/dashboard/bots/bot-1/edit");
-    expect(runtimeLink.className).toContain("text-info");
+    expect(runtimeLink.className).toContain("text-accent");
     expect(editLink.className).toContain("text-info");
     expect(screen.queryByRole("link", { name: /asystent/i })).not.toBeInTheDocument();
   });
