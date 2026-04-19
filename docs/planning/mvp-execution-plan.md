@@ -2194,6 +2194,21 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-20: Closed `MURC-08..MURC-11` by aligning web empty-result/union semantics and synchronizing canonical docs (`open-decisions`, `trading-logic`, module deep-dives) to one formula.
 - 2026-04-20: Closed `MURC-12` validation pack with PASS for `pnpm --filter api run test -- --run`, `pnpm --filter web run test -- --run`, `pnpm --filter api run typecheck`, `pnpm --filter web run typecheck`, and `pnpm run quality:guardrails`; resolved bots e2e size-guardrail overflow by extracting market-universe parity scenarios into `bots.market-universe-contract.e2e.test.ts`.
 
+## Phase DAWR - Dashboard Aggregate Wallet and Strategy Regression (Queued 2026-04-20)
+- [ ] `DAWR-01 docs(contract): freeze aggregate wallet-summary field parity and strategy sidebar edge behavior`
+- [ ] `DAWR-02 test(api-red): add aggregate regression for LIVE wallet capital fields in positions.summary`
+- [ ] `DAWR-03 fix(api-aggregate): include referenceBalance/freeCash parity fields in aggregate positions summary`
+- [ ] `DAWR-04 test(web-red): add LIVE wallet regression for aggregate-success path without session fallback masking`
+- [ ] `DAWR-05 fix(web-wallet-kpi): align runtime selection wallet summary mapping to aggregate capital fields`
+- [ ] `DAWR-06 test(web-edge): lock strategy sidebar behavior for selected bot strategyId null/mismatch`
+- [ ] `DAWR-07 fix(web-sidebar): tighten strategy card source precedence and fallback behavior in edge cases`
+- [ ] `DAWR-08 docs(ops): add strategy-drift diagnostic/repair run step for dashboard regression triage`
+- [ ] `DAWR-09 docs(sync): align execution-plan status with canonical queue/board for closed waves`
+- [ ] `DAWR-10 qa(closure): run focused regression pack and sync canonical queue/context`
+
+### Progress Log (Phase DAWR - Dashboard Aggregate Wallet and Strategy Regression)
+- 2026-04-20: Queued `DAWR` from post-MURC analyst report to fix aggregate LIVE wallet KPI regression (`referenceBalance/freeCash` missing in aggregate summary), lock strategy sidebar null/mismatch edge behavior, and synchronize planning status drift across canonical files. Published executor-ready plan in `docs/planning/dashboard-aggregate-wallet-strategy-regression-plan-2026-04-20.md`.
+
 ## Phase DASHR - Dashboard Runtime Data Parity Recovery (Queued 2026-04-19)
 - [ ] `DASHR-01 docs(contract): freeze dashboard runtime parity contract for positions/orders/history/signals/selected-bot section`
 - [ ] `DASHR-02 test(web-red): add failing coverage for orders-tab table rendering and selected-bot strategy refresh`

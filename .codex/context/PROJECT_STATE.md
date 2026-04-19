@@ -110,21 +110,31 @@ Last updated: 2026-04-20
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: wait for the next queued execution wave after `MURC`
-  closure sync.
+- Main active objective: execute `DAWR-A` to fix aggregate LIVE wallet KPI
+  regression and lock strategy-sidebar edge behavior after `MURC` closure.
 - Top blockers:
   - none in OPV scope; final RC external-gates snapshot is closed
     (`G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`) from run
     `2026-04-19T15:13:58.943Z`.
 - Success criteria for this phase:
-  - keep canonical queue/context synchronized before starting a new wave.
-  - preserve scope-locked tiny commits and closure-pack discipline.
-  - keep `MURC` parity evidence as baseline for future universe-related changes.
+  - aggregate selected-bot `positions.summary` provides wallet-capital fields
+    required by LIVE KPI (`referenceBalance`, `freeCash`).
+  - dashboard LIVE wallet KPI renders from aggregate-success payload without
+    masked session fallback behavior.
+  - strategy sidebar behavior for `strategyId` null/mismatch edge is
+    deterministic and regression-locked.
+  - canonical planning status remains synchronized across queue/context files.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - pick the next `READY` item from canonical queue files.
+  - execute `DAWR-01` from canonical `NOW` queue.
+  - complete `DAWR-A` (`DAWR-02`, `DAWR-03`) before web edge cases.
 
 ## Recent Progress
+- 2026-04-20: queued dashboard aggregate wallet/strategy regression wave
+  (`DAWR-01..DAWR-10`) from post-MURC analyzer report and published
+  executor-ready plan
+  `docs/planning/dashboard-aggregate-wallet-strategy-regression-plan-2026-04-20.md`;
+  queue promoted to active `NOW/NEXT/PIPELINE`.
 - 2026-04-20: closed full `MURC` wave (`MURC-01..MURC-12`) end-to-end by
   introducing shared API symbol resolver contract
   (`final = unique(filter_result U whitelist) - blacklist`) and wiring markets

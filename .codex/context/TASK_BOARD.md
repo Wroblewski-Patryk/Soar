@@ -17,11 +17,19 @@ Last updated: 2026-04-20
 
 ## READY
 
-- [ ] (none)
+- [ ] DAWR-01 Freeze aggregate wallet-summary field parity and strategy sidebar edge behavior contract
+- [ ] DAWR-02 Add API regression for aggregate LIVE wallet capital fields in positions summary
+- [ ] DAWR-03 Include `referenceBalance/freeCash` parity fields in aggregate positions summary projection
 
 ## BACKLOG
 
-- [ ] (none)
+- [ ] DAWR-04 Add web regression for LIVE wallet aggregate-success path without hidden session fallback masking
+- [ ] DAWR-05 Align dashboard wallet KPI mapping to aggregate capital fields
+- [ ] DAWR-06 Lock strategy sidebar regression for selected bot `strategyId` null/mismatch edge
+- [ ] DAWR-07 Tighten strategy sidebar fallback precedence behavior for edge cases
+- [ ] DAWR-08 Add ops drift audit/repair step for dashboard triage (`GET/POST /dashboard/bots/strategy-drift`)
+- [ ] DAWR-09 Synchronize execution-plan status drift vs canonical queue/board
+- [ ] DAWR-10 Run focused closure validation pack and sync canonical queue/context
 
 ## IN_PROGRESS
 
@@ -37,6 +45,8 @@ Last updated: 2026-04-20
 
 ## DONE
 
+- [x] DAWR planning queued (`DAWR-01..DAWR-10`)
+  - 2026-04-20: Added `docs/planning/dashboard-aggregate-wallet-strategy-regression-plan-2026-04-20.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) to fix aggregate LIVE wallet KPI contract drift, strategy sidebar null/mismatch edge behavior, and planning-status synchronization.
 - [x] MURC group closure (`MURC-01..MURC-12`)
   - 2026-04-20: Closed market-universe symbol contract parity end-to-end by freezing canonical formula (`final = unique(filter_result U whitelist) - blacklist`) in open decisions + module docs, unifying API consumers (markets sync, bot auto-group, runtime, backtests, manual-order context) on shared resolver path, aligning web preview/validation to allow valid empty sets, adding parity regressions (including runtime/backtest/manual-context and web empty-preview submit), splitting oversized bots e2e coverage into dedicated `bots.market-universe-contract.e2e.ts` to satisfy repository size guardrails, and completing closure validation pack (`api full tests`, `web full tests`, `api/web typecheck`, `quality:guardrails`).
 - [x] SOPR-C group closure (`SOPR-09..SOPR-12`)

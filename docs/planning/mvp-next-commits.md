@@ -7,12 +7,22 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [x] `none`
+- [ ] `DAWR-01 docs(contract): freeze aggregate wallet-summary field parity and strategy sidebar edge behavior`
 ## NEXT
-- [x] `none`
+- [ ] `DAWR-02 test(api-red): add aggregate regression for LIVE wallet capital fields in positions.summary`
+- [ ] `DAWR-03 fix(api-aggregate): include referenceBalance/freeCash parity fields in aggregate positions summary`
 ## PIPELINE
-- [x] `none`
+- [ ] `DAWR-04 test(web-red): add LIVE wallet regression for aggregate-success path without session fallback masking`
+- [ ] `DAWR-05 fix(web-wallet-kpi): align runtime selection wallet summary mapping to aggregate capital fields`
+- [ ] `DAWR-06 test(web-edge): lock strategy sidebar behavior for selected bot strategyId null/mismatch`
+- [ ] `DAWR-07 fix(web-sidebar): tighten strategy card source precedence and fallback behavior in edge cases`
+- [ ] `DAWR-08 docs(ops): add strategy-drift diagnostic/repair run step for dashboard regression triage`
+- [ ] `DAWR-09 docs(sync): align execution-plan status with canonical queue/board for closed waves`
+- [ ] `DAWR-10 qa(closure): run focused regression pack and sync canonical queue/context`
 ## GROUP QUEUE
+- [ ] `DAWR-A (commits DAWR-01..DAWR-03): contract freeze + aggregate API regression/fix`
+- [ ] `DAWR-B (commits DAWR-04..DAWR-07): web wallet + strategy edge-case regressions/fixes`
+- [ ] `DAWR-C (commits DAWR-08..DAWR-10): ops docs + planning sync + closure`
 - [x] `DAGG-A (commits DAGG-01..DAGG-04): contract freeze + dashboard aggregate data-source migration`
 - [x] `DAGG-B (commits DAGG-05..DAGG-08): history positions parity + aggregate API contract hardening`
 - [x] `DAGG-C (commits DAGG-09..DAGG-10): parity regression closure + canonical sync`
@@ -79,6 +89,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `DAWR planning queued (dashboard aggregate wallet KPI + strategy sidebar regression fix wave)`
+  - 2026-04-20: Added `docs/planning/dashboard-aggregate-wallet-strategy-regression-plan-2026-04-20.md` and queued `DAWR-A..DAWR-C` to fix aggregate LIVE wallet summary parity (`referenceBalance/freeCash`), lock strategy null/mismatch edge behavior, and synchronize planning status drift.
 - [x] `MURC-12 qa(closure): run focused contract validation pack and sync canonical queue/context`
   - 2026-04-20: Closure pack PASS:
     - `pnpm --filter api run test -- --run`
