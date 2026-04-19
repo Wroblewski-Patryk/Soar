@@ -121,10 +121,14 @@ Last updated: 2026-04-19
   - canonical queue and context docs stay synchronized after each ARC batch.
   - no regressions in runtime safety, deploy confidence, or dashboard contracts.
 - Next queued follow-up:
-  - run `UXR-I-12` then continue to `UXR-I-13..UXR-I-14`,
+  - run `UXR-I-13` then continue to `UXR-I-14`,
   - then execute `UXR-J-A..C` for shared table-consistency closure.
 
 ## Recent Progress
+- 2026-04-19: completed `UXR-I-12` by applying shared
+  `FormMobileActionBar` contract to remaining long dashboard form wrappers
+  (`strategies` create/edit and `backtests` create), and aligning page-title
+  save actions to desktop-only visibility to keep one sticky mobile save path.
 - 2026-04-19: completed `UXR-I-11` by introducing shared
   `ui/forms/validationFeedback` helpers (`toValidationSummaryErrors`,
   `focusFirstInvalidField`) and migrating scoped forms (`wallets`, `markets`,

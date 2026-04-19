@@ -7,11 +7,10 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `UXR-I-12 feat(web-form-mobile): apply sticky mobile action bar contract to long dashboard forms`
-## NEXT
 - [ ] `UXR-I-13 test(web-forms-regression): run/update focused suites for wrapper+i18n+form-consistency contracts`
-## PIPELINE
+## NEXT
 - [ ] `UXR-I-14 qa(web-forms-closure): run build/typecheck/guardrails and sync canonical queue/context`
+## PIPELINE
 - [ ] `UXR-J-01 docs(contract): freeze dashboard table action-color and columns-dropdown behavior contract`
 - [ ] `UXR-J-02 refactor(ui-table-actions): add dedicated module action tone and remap clone/runtime/preview presets`
 - [ ] `UXR-J-03 refactor(ui-datatable-dropdown): keep columns dropdown open on checkbox toggles`
@@ -72,6 +71,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `UXR-I-12 feat(web-form-mobile): apply sticky mobile action bar contract to long dashboard forms`
+  - 2026-04-19: Applied shared `FormMobileActionBar` contract to remaining long dashboard form wrappers (`strategies` create/edit, `backtests` create) and aligned page-title save action visibility to desktop-only (`hidden md:inline-flex`) for consistent mobile reachability.
 - [x] `UXR-I-11 feat(web-form-ux): standardize first-error focus/scroll + summary/inline sync across scoped forms`
   - 2026-04-19: Added shared `ui/forms` validation-feedback helper (`toValidationSummaryErrors`, `focusFirstInvalidField`) and migrated scoped forms (`wallets`, `markets`, `backtests`, `strategies`, `bots`) to the common focus/scroll + summary pipeline; aligned wallet summary block with explicit title for parity.
 - [x] `UXR-I-10 refactor(web-bots-form): reduce layout density and align controls to shared form system`

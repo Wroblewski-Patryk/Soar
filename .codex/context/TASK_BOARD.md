@@ -17,9 +17,9 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] UXR-I-12 Apply sticky mobile action bar contract to long dashboard forms
+- [ ] UXR-I-13 Run and align focused web-forms regression suite for wrapper, i18n, and consistency contracts
   - Status: READY
-  - Group: Dashboard Forms Consistency Refresh (`UXR-I-C`)
+  - Group: Dashboard Forms Consistency Refresh (`UXR-I-D`)
   - Owner: Frontend Builder
   - Depends on: none
   - Priority: P2
@@ -53,6 +53,8 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] UXR-I-12 Apply sticky mobile action bar contract to long dashboard forms
+  - 2026-04-19: Added shared `FormMobileActionBar` to remaining long-form wrappers (`strategies` create/edit, `backtests` create) and made page-header save actions desktop-only (`hidden md:inline-flex`) to keep one consistent mobile action entrypoint.
 - [x] UXR-I-11 Standardize first-error focus/scroll + summary and inline validation sync across scoped forms
   - 2026-04-19: Added shared validation-feedback helper in `ui/forms` and switched scoped forms (`wallets`, `markets`, `backtests`, `strategies`, `bots`) to one focus-first-invalid + summary error pipeline; wallet form now renders titled validation summary for parity.
 - [x] UXR-I-10 Reduce bots-form layout density and align controls to shared form system

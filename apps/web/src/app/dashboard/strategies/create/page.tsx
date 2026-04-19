@@ -11,6 +11,7 @@ import { runAsyncWithState } from '@/lib/async';
 import { resolveUiErrorMessage } from '@/lib/errorResolver';
 import { LuListChecks, LuPlus, LuSave } from 'react-icons/lu';
 import { useI18n } from '@/i18n/I18nProvider';
+import { FormMobileActionBar } from '@/ui/forms';
 
 const STRATEGY_FORM_ID = 'strategy-form-create';
 
@@ -52,7 +53,7 @@ export default function StrategiesCreatePage() {
           <button
             type='submit'
             form={STRATEGY_FORM_ID}
-            className={PAGE_TITLE_ACTION_SAVE_CLASS}
+            className={`${PAGE_TITLE_ACTION_SAVE_CLASS} hidden md:inline-flex`}
             disabled={submitting}
           >
             <LuSave className='h-4 w-4' />
@@ -62,6 +63,12 @@ export default function StrategiesCreatePage() {
       />
 
       <StrategiesForm formId={STRATEGY_FORM_ID} onSubmit={handleCreate} submitting={submitting} />
+      <FormMobileActionBar>
+        <button type='submit' form={STRATEGY_FORM_ID} className='btn btn-primary w-full' disabled={submitting}>
+          <LuSave className='h-4 w-4' />
+          {submitting ? savingLabel : saveLabel}
+        </button>
+      </FormMobileActionBar>
     </section>
   );
 }

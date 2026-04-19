@@ -13,6 +13,7 @@ import { resolveUiErrorMessage } from '@/lib/errorResolver';
 import { ErrorState, LoadingState } from '@/ui/components/ViewState';
 import { LuListChecks, LuPencilLine, LuSave } from 'react-icons/lu';
 import { useI18n } from '@/i18n/I18nProvider';
+import { FormMobileActionBar } from '@/ui/forms';
 
 const STRATEGY_USED_BY_ACTIVE_BOT_ERROR = 'strategy is used by active bot and cannot be edited';
 const STRATEGY_FORM_ID = 'strategy-form-edit';
@@ -92,7 +93,7 @@ export default function StrategiesEditPage() {
           <button
             type='submit'
             form={STRATEGY_FORM_ID}
-            className={PAGE_TITLE_ACTION_SAVE_CLASS}
+            className={`${PAGE_TITLE_ACTION_SAVE_CLASS} hidden md:inline-flex`}
             disabled={submitting}
           >
             <LuSave className='h-4 w-4' />
@@ -113,6 +114,17 @@ export default function StrategiesEditPage() {
       {!loading && !error && initial ? (
         <StrategiesForm formId={STRATEGY_FORM_ID} initial={initial} onSubmit={handleUpdate} submitting={submitting} />
       ) : null}
+      <FormMobileActionBar>
+        <button
+          type='submit'
+          form={STRATEGY_FORM_ID}
+          className='btn btn-primary w-full'
+          disabled={submitting || loading}
+        >
+          <LuSave className='h-4 w-4' />
+          {submitting ? copy.saving : copy.save}
+        </button>
+      </FormMobileActionBar>
     </section>
   );
 }
