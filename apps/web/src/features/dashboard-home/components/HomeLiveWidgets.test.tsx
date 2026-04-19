@@ -1159,6 +1159,8 @@ describe("HomeLiveWidgets", () => {
       expect(selectorLabel).not.toBeNull();
       selector = within(selectorLabel as HTMLLabelElement).getByRole("combobox") as HTMLSelectElement;
       expect(selector.value).toBe("bot-strategy-a");
+      expect(screen.getByText("A symbols")).toBeInTheDocument();
+      expect(screen.queryByText("B symbols")).not.toBeInTheDocument();
       expect(screen.getByText("Alpha Strategy")).toBeInTheDocument();
       expect(screen.queryByText("Shared stale strategy")).not.toBeInTheDocument();
     });
@@ -1167,6 +1169,8 @@ describe("HomeLiveWidgets", () => {
 
     await waitFor(() => {
       expect(selector!.value).toBe("bot-strategy-b");
+      expect(screen.getByText("B symbols")).toBeInTheDocument();
+      expect(screen.queryByText("A symbols")).not.toBeInTheDocument();
       expect(screen.getByText("Beta Strategy")).toBeInTheDocument();
       expect(screen.queryByText("Alpha Strategy")).not.toBeInTheDocument();
       expect(screen.queryByText("Shared stale strategy")).not.toBeInTheDocument();
