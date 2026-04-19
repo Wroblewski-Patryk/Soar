@@ -38,6 +38,18 @@ Last updated: 2026-04-19
 - [ ] SBSC-06 Lock dashboard sidebar strategy/market switch parity regression (two bots, different strategies)
 - [ ] SBSC-07 Run focused sidebar parity api+web validation pack
 - [ ] SBSC-08 Publish closure sync for sidebar strategy parity phase
+- [ ] SOPR-01 Lock consolidated source-of-truth and parity contract for signals/open flows after DAGG+SBSC
+- [ ] SOPR-02 Add API regression for neutral/no-recent-signal condition-line fallback contamination
+- [ ] SOPR-03 Harden symbol->strategy fallback and expose explicit source tags in symbol stats read model
+- [ ] SOPR-04 Lock web regression for selected-bot signal cards against cross-bot strategy leakage
+- [ ] SOPR-05 Add selected-bot parity regression for /dashboard vs /dashboard/bots/:id/preview (signals/positions/history)
+- [ ] SOPR-06 Align dashboard-home signal/positions/history derivation to aggregate selected-bot contract
+- [ ] SOPR-07 Lock runtime no-open diagnostics visibility for blocked/ignored outcomes
+- [ ] SOPR-08 Publish parity matrix evidence for selected-bot home vs preview signals/positions/history
+- [ ] SOPR-09 Close manual-order semantics decision gate (order-only vs orchestrator lifecycle)
+- [ ] SOPR-10 Add contract regressions for chosen manual-order semantic path
+- [ ] SOPR-11 Implement manual-order semantic path with audit-safe diagnostics and fail-closed guardrails
+- [ ] SOPR-12 Run focused closure validation pack and sync canonical queue/context
 
 ## IN_PROGRESS
 
@@ -52,6 +64,9 @@ Last updated: 2026-04-19
 - [ ] (none)
 
 ## DONE
+
+- [x] SOPR planning queued (`SOPR-01..SOPR-12`)
+  - 2026-04-19: Added `docs/planning/signals-open-runtime-parity-plan-2026-04-19.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) as post-`DAGG`/`SBSC` follow-up for selected-bot signal context parity, dashboard-vs-preview parity, runtime no-open diagnostics clarity, and manual-order lifecycle semantics closure.
 
 - [x] SBSC planning queued (`SBSC-01..SBSC-08`)
   - 2026-04-19: Added `docs/planning/dashboard-sidebar-strategy-contract-plan-2026-04-19.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) as post-`DAGG` follow-up for selected-bot sidebar strategy source-of-truth parity.

@@ -27,6 +27,18 @@ Operational queue for one-task execution runs.
 - [ ] `SBSC-06 test(web-regression): lock sidebar strategy/market switch parity for two bots with different strategies`
 - [ ] `SBSC-07 qa(focused-pack): run api+web sidebar parity regressions and typechecks`
 - [ ] `SBSC-08 docs(closure): publish sidebar strategy contract closure and sync queue/context`
+- [ ] `SOPR-01 docs(contract): lock consolidated source-of-truth and parity contract for signals/open flows after DAGG+SBSC`
+- [ ] `SOPR-02 test(api-red): add regression for neutral/no-recent-signal condition-line fallback contamination`
+- [ ] `SOPR-03 fix(api-signal-context): harden symbol->strategy fallback and expose explicit source tags`
+- [ ] `SOPR-04 test(web-red): lock selected-bot signal cards against cross-bot strategy leakage`
+- [ ] `SOPR-05 test(parity-red): add selected-bot parity regression for /dashboard vs /dashboard/bots/:id/preview`
+- [ ] `SOPR-06 fix(web-parity): align dashboard-home signal/positions/history derivation to aggregate selected-bot contract`
+- [ ] `SOPR-07 test(api-runtime): lock no-open diagnostics visibility for blocked/ignored outcomes`
+- [ ] `SOPR-08 docs(parity-evidence): publish parity matrix evidence for signals/positions/history between home and preview`
+- [ ] `SOPR-09 docs(decision-gate): close manual-order semantics decision (order-only vs orchestrator lifecycle)`
+- [ ] `SOPR-10 test(red-manual-order): add contract tests for chosen manual-order semantic path`
+- [ ] `SOPR-11 feat/fix(manual-order-path): implement selected manual-order semantic path with audit-safe diagnostics`
+- [ ] `SOPR-12 qa(closure): run full focused validation pack and sync canonical queue/context`
 ## GROUP QUEUE
 - [ ] `DAGG-A (commits DAGG-01..DAGG-04): contract freeze + dashboard aggregate data-source migration`
 - [ ] `DAGG-B (commits DAGG-05..DAGG-08): history positions parity + aggregate API contract hardening`
@@ -34,6 +46,9 @@ Operational queue for one-task execution runs.
 - [ ] `SBSC-A (commits SBSC-01..SBSC-03): decision freeze + API projection mismatch regression + canonical-first mapper fix`
 - [ ] `SBSC-B (commits SBSC-04..SBSC-06): drift detection/repair path + sidebar switch regression locks`
 - [ ] `SBSC-C (commits SBSC-07..SBSC-08): closure validation + canonical sync`
+- [ ] `SOPR-A (commits SOPR-01..SOPR-04): source-of-truth closure + signal-context hardening`
+- [ ] `SOPR-B (commits SOPR-05..SOPR-08): dashboard/preview parity closure for signals/positions/history`
+- [ ] `SOPR-C (commits SOPR-09..SOPR-12): manual-order lifecycle decision + implementation + closure`
 - [x] `DASHR-A (commits DASHR-01..DASHR-04): dashboard tab/view parity + selected-bot section consistency`
 - [x] `DASHR-B (commits DASHR-05..DASHR-08): selected-bot runtime data parity for positions/history/signals scope`
 - [x] `DASHR-C (commits DASHR-09..DASHR-11): signal->order execution diagnostics + closure`
@@ -88,6 +103,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `SOPR planning queued (signals + open-runtime parity remediation after DAGG/SBSC)`
+  - 2026-04-19: Added `docs/planning/signals-open-runtime-parity-plan-2026-04-19.md` and queued `SOPR-A..SOPR-C` in pipeline/group queue to close selected-bot signal context drift, dashboard-vs-preview parity gaps, runtime no-open diagnostics visibility, and manual-order lifecycle semantics.
 - [x] `SBSC planning queued (sidebar selected-bot strategy source-of-truth and projection parity)`
   - 2026-04-19: Added `docs/planning/dashboard-sidebar-strategy-contract-plan-2026-04-19.md` and queued `SBSC-A..SBSC-C` in pipeline/group queue as post-`DAGG` follow-up to eliminate listBots vs runtime-graph strategy drift in dashboard sidebar.
 - [x] `DAGG planning queued (dashboard aggregate selected-bot view parity for positions/orders/history)`

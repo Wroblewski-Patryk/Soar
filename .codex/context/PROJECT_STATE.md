@@ -121,10 +121,15 @@ Last updated: 2026-04-19
   - focused validation remains green for touched modules before each commit.
   - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - start `DAGG-01` from canonical `NOW` queue; execute `SBSC` as next
-    post-`DAGG` sidebar strategy parity wave.
+  - start `DAGG-01` from canonical `NOW` queue; execute `SBSC` next for
+    strategy source-of-truth parity, then run queued `SOPR` wave for
+    selected-bot signals/open-runtime parity closure.
 
 ## Recent Progress
+- 2026-04-19: queued signals/open-runtime parity wave (`SOPR-01..SOPR-12`)
+  from analyst findings and published executor-ready plan
+  `docs/planning/signals-open-runtime-parity-plan-2026-04-19.md`; queue is
+  dependency-locked behind `DAGG` then `SBSC`.
 - 2026-04-19: queued sidebar strategy source-of-truth parity wave
   (`SBSC-01..SBSC-08`) from production/API analysis (`listBots.strategyId`
   projection drift vs `runtime-graph` primary strategy) and published executor

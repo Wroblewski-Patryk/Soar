@@ -2134,6 +2134,23 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 ### Progress Log (Phase SBSC - Dashboard Sidebar Strategy Source-of-Truth Parity)
 - 2026-04-19: Queued sidebar strategy parity wave from production/API analysis showing `listBots.strategyId` vs `runtime-graph` strategy drift; published executor-ready plan in `docs/planning/dashboard-sidebar-strategy-contract-plan-2026-04-19.md` with canonical-first projection contract and drift regression/repair path.
 
+## Phase SOPR - Signals and Open Runtime Parity (Queued 2026-04-19)
+- [ ] `SOPR-01 docs(contract): lock consolidated source-of-truth and parity contract for signals/open flows after DAGG+SBSC`
+- [ ] `SOPR-02 test(api-red): add regression for neutral/no-recent-signal condition-line fallback contamination`
+- [ ] `SOPR-03 fix(api-signal-context): harden symbol->strategy fallback and expose explicit source tags`
+- [ ] `SOPR-04 test(web-red): lock selected-bot signal cards against cross-bot strategy leakage`
+- [ ] `SOPR-05 test(parity-red): add selected-bot parity regression for /dashboard vs /dashboard/bots/:id/preview`
+- [ ] `SOPR-06 fix(web-parity): align dashboard-home signal/positions/history derivation to aggregate selected-bot contract`
+- [ ] `SOPR-07 test(api-runtime): lock no-open diagnostics visibility for blocked/ignored outcomes`
+- [ ] `SOPR-08 docs(parity-evidence): publish parity matrix evidence for signals/positions/history between home and preview`
+- [ ] `SOPR-09 docs(decision-gate): close manual-order semantics decision (order-only vs orchestrator lifecycle)`
+- [ ] `SOPR-10 test(red-manual-order): add contract tests for chosen manual-order semantic path`
+- [ ] `SOPR-11 feat/fix(manual-order-path): implement selected manual-order semantic path with audit-safe diagnostics`
+- [ ] `SOPR-12 qa(closure): run full focused validation pack and sync canonical queue/context`
+
+### Progress Log (Phase SOPR - Signals and Open Runtime Parity)
+- 2026-04-19: Queued `SOPR` implementation wave from analyst report covering selected-bot signal context drift, dashboard-vs-preview parity divergence, runtime no-open diagnostics consistency, and manual-order lifecycle semantics; published executor-ready plan in `docs/planning/signals-open-runtime-parity-plan-2026-04-19.md` with strict dependency on `DAGG` then `SBSC`.
+
 ## Phase DASHR - Dashboard Runtime Data Parity Recovery (Queued 2026-04-19)
 - [ ] `DASHR-01 docs(contract): freeze dashboard runtime parity contract for positions/orders/history/signals/selected-bot section`
 - [ ] `DASHR-02 test(web-red): add failing coverage for orders-tab table rendering and selected-bot strategy refresh`
