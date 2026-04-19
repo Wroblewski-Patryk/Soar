@@ -17,7 +17,7 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] UXR-I-13 Run and align focused web-forms regression suite for wrapper, i18n, and consistency contracts
+- [ ] UXR-I-14 Run web forms closure checks (typecheck, build, guardrails) and sync canonical queue/context
   - Status: READY
   - Group: Dashboard Forms Consistency Refresh (`UXR-I-D`)
   - Owner: Frontend Builder
@@ -53,6 +53,8 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] UXR-I-13 Run and align focused web-forms regression suite for wrapper, i18n, and consistency contracts
+  - 2026-04-19: Focused UXR-I suite PASS (`33/33`) for wallets/markets/backtests/bots form modules, wallet/bot create-edit wrappers, and i18n translation/namespace registry contracts.
 - [x] UXR-I-12 Apply sticky mobile action bar contract to long dashboard forms
   - 2026-04-19: Added shared `FormMobileActionBar` to remaining long-form wrappers (`strategies` create/edit, `backtests` create) and made page-header save actions desktop-only (`hidden md:inline-flex`) to keep one consistent mobile action entrypoint.
 - [x] UXR-I-11 Standardize first-error focus/scroll + summary and inline validation sync across scoped forms

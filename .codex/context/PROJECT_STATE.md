@@ -121,10 +121,14 @@ Last updated: 2026-04-19
   - canonical queue and context docs stay synchronized after each ARC batch.
   - no regressions in runtime safety, deploy confidence, or dashboard contracts.
 - Next queued follow-up:
-  - run `UXR-I-13` then continue to `UXR-I-14`,
+  - run `UXR-I-14`,
   - then execute `UXR-J-A..C` for shared table-consistency closure.
 
 ## Recent Progress
+- 2026-04-19: completed `UXR-I-13` by running focused regression suite for
+  dashboard forms consistency wave (`33/33 PASS`) across wallets/markets/
+  backtests/bots form modules, wallet and bot create/edit wrappers, and i18n
+  namespace/translation registry checks.
 - 2026-04-19: completed `UXR-I-12` by applying shared
   `FormMobileActionBar` contract to remaining long dashboard form wrappers
   (`strategies` create/edit and `backtests` create), and aligning page-title
