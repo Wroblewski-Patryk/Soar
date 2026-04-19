@@ -82,6 +82,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `PLNC-B (commit PLNC-05): reconcile stale DASHR checklist status drift in mvp-execution-plan`
+  - 2026-04-20: Synced stale `DASHR-01..DASHR-11` unchecked block in `docs/planning/mvp-execution-plan.md` with canonical closure state already captured in `TASK_BOARD` and this queue; DASHR phase now marked closed with closure log entries.
 - [x] `DAWR-A (commits DAWR-01..DAWR-03): contract freeze + aggregate API regression/fix`
   - 2026-04-20: Closed Stage A by freezing aggregate wallet-summary + sidebar null/mismatch edge contract in canonical docs (`open-decisions`, `api-bots`, `web-dashboard-home`), adding aggregate API regression locks for `positions.summary.referenceBalance/freeCash` (non-empty + empty aggregate), and extending aggregate projection to expose parity fields from latest session capital context (`null` on unresolved). Validation:
     - `pnpm --filter api run test -- --run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`

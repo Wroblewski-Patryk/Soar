@@ -2211,18 +2211,21 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-20: Closed `DAWR-01..DAWR-03` by freezing aggregate wallet-summary + sidebar null/mismatch edge contract in canonical docs, adding aggregate API regression locks for `positions.summary.referenceBalance/freeCash` (non-empty + empty aggregate), and extending aggregate projection with parity fields from latest session capital context (`null` for unresolved empty state). Validation PASS: `pnpm --filter api run test -- --run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter api run build`.
 - 2026-04-20: Closed `DAWR-04..DAWR-10` by adding web regression locks for aggregate-success LIVE wallet behavior and sidebar `strategyId` null/mismatch edge precedence, tightening sidebar fallback behavior, documenting strategy-drift audit/repair ops step, and synchronizing canonical queue/context status. Closure pack PASS: `pnpm --filter api run test -- --run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`, `pnpm --filter web run test -- --run src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.aggregate-wallet.test.tsx src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx`, `pnpm --filter api run typecheck`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
 
-## Phase DASHR - Dashboard Runtime Data Parity Recovery (Queued 2026-04-19)
-- [ ] `DASHR-01 docs(contract): freeze dashboard runtime parity contract for positions/orders/history/signals/selected-bot section`
-- [ ] `DASHR-02 test(web-red): add failing coverage for orders-tab table rendering and selected-bot strategy refresh`
-- [ ] `DASHR-03 fix(web-orders-tab): replace open-orders placeholder with DataTable + deterministic empty state`
-- [ ] `DASHR-04 fix(web-selected-bot-panel): ensure strategy context refresh and apply requested spacing/layout order`
-- [ ] `DASHR-05 test(api+web-red): reproduce positions/history mismatch between runtime module and dashboard selected snapshot`
-- [ ] `DASHR-06 fix(api+web-runtime-parity): align selected session/snapshot mapping for positions and history tabs`
-- [ ] `DASHR-07 test(api-red-signals-scope): lock selected-bot-only markets/strategy context in signals payload`
-- [ ] `DASHR-08 fix(api-signals-scope): enforce selected-bot symbol and strategy context parity for dashboard signals`
-- [ ] `DASHR-09 test(api-red-signal-execution): add regression for condition-met but no-order/no-position outcome`
-- [ ] `DASHR-10 fix(api-runtime-execution): restore signal->order->position flow or emit explicit blocked diagnostics`
-- [ ] `DASHR-11 qa(closure): run focused dashboard runtime parity pack and sync canonical queue/context`
+## Phase DASHR - Dashboard Runtime Data Parity Recovery (Closed 2026-04-19)
+- [x] `DASHR-01 docs(contract): freeze dashboard runtime parity contract for positions/orders/history/signals/selected-bot section`
+- [x] `DASHR-02 test(web-red): add failing coverage for orders-tab table rendering and selected-bot strategy refresh`
+- [x] `DASHR-03 fix(web-orders-tab): replace open-orders placeholder with DataTable + deterministic empty state`
+- [x] `DASHR-04 fix(web-selected-bot-panel): ensure strategy context refresh and apply requested spacing/layout order`
+- [x] `DASHR-05 test(api+web-red): reproduce positions/history mismatch between runtime module and dashboard selected snapshot`
+- [x] `DASHR-06 fix(api+web-runtime-parity): align selected session/snapshot mapping for positions and history tabs`
+- [x] `DASHR-07 test(api-red-signals-scope): lock selected-bot-only markets/strategy context in signals payload`
+- [x] `DASHR-08 fix(api-signals-scope): enforce selected-bot symbol and strategy context parity for dashboard signals`
+- [x] `DASHR-09 test(api-red-signal-execution): add regression for condition-met but no-order/no-position outcome`
+- [x] `DASHR-10 fix(api-runtime-execution): restore signal->order->position flow or emit explicit blocked diagnostics`
+- [x] `DASHR-11 qa(closure): run focused dashboard runtime parity pack and sync canonical queue/context`
 
 ### Progress Log (Phase DASHR - Dashboard Runtime Data Parity Recovery)
 - 2026-04-19: Queued dedicated runtime parity recovery wave from latest operator report (`positions/orders/history/signals/selected-bot inconsistencies`) and published implementation contract in `docs/planning/dashboard-runtime-data-parity-recovery-plan-2026-04-19.md`, with strict scope lock to requested dashboard runtime fixes only.
+- 2026-04-19: Closed `DASHR-A` (`DASHR-01..DASHR-04`) with web parity evidence: orders tab DataTable replacement, deterministic selected-bot strategy refresh, and selected-bot section layout/spacing lock (`KPI -> selector -> market/strategy`, `mt-6`).
+- 2026-04-19: Closed `DASHR-B` (`DASHR-05..DASHR-08`) by restoring selected-session positions/history parity and selected-bot-only signals scope across canonical ACTIVE+enabled links.
+- 2026-04-19: Closed `DASHR-C` (`DASHR-09..DASHR-11`) by adding explicit runtime blocked-path diagnostics (`PRETRADE_BLOCKED`) and completing focused closure pack (`api bots/orders/runtime tests`, `web HomeLiveWidgets`, `api/web typecheck`, `web build`, `quality:guardrails`).

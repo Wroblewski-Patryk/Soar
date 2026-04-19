@@ -37,6 +37,8 @@ Last updated: 2026-04-20
 
 ## DONE
 
+- [x] PLNC-B planning parity sync (`PLNC-05`)
+  - 2026-04-20: Reconciled stale `DASHR-01..DASHR-11` unchecked checklist drift in `docs/planning/mvp-execution-plan.md` with canonical closure state already recorded in `mvp-next-commits` and `TASK_BOARD`; phase is now explicitly marked closed with completion log.
 - [x] DAWR-A group closure (`DAWR-01..DAWR-03`)
   - 2026-04-20: Closed Stage A end-to-end by freezing aggregate wallet-summary + strategy sidebar null/mismatch edge contract (`open-decisions`, `api-bots`, `web-dashboard-home`), adding API aggregate regression locks for `positions.summary.referenceBalance/freeCash`, and extending aggregate projection with parity fields (latest capital context, explicit `null` on unresolved in empty aggregate). Validation PASS: `bots.monitoring-aggregate.e2e`, `api typecheck`, `api build`.
 - [x] DAWR-B group closure (`DAWR-04..DAWR-07`)

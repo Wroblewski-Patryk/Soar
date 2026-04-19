@@ -374,3 +374,21 @@ await prisma.user.deleteMany();
 - Avoid: adding large fixture-heavy regressions directly into near-limit dashboard test monoliths.
 - Evidence:
   - 2026-04-20 DAWR closure: moved aggregate-success LIVE wallet regression from `HomeLiveWidgets.test.tsx` to `HomeLiveWidgets.aggregate-wallet.test.tsx`; guardrails PASS afterward.
+
+### 2026-04-20 - Canonical planning closure must be mirrored in `mvp-execution-plan`
+- Context: checking "what is planned next" after `DASHR` was already closed in queue/context docs.
+- Symptom: `mvp-next-commits` and `TASK_BOARD` showed `DASHR` closed, but `mvp-execution-plan` still had `DASHR-01..DASHR-11` unchecked, causing false "pending group" signals.
+- Root cause: closure sync missed one canonical planning file update in a previous wave.
+- Guardrail: every group closure must include a same-turn parity pass across all four canonical files: `mvp-next-commits`, `mvp-execution-plan`, `TASK_BOARD`, `PROJECT_STATE`.
+- Preferred pattern:
+```text
+After closing a wave:
+1) Mark tasks done in queue (`mvp-next-commits`).
+2) Mirror checkbox/phase status in `mvp-execution-plan`.
+3) Sync `TASK_BOARD` done state.
+4) Add `PROJECT_STATE` progress note.
+5) Run `pnpm run quality:guardrails`.
+```
+- Avoid: leaving any canonical planning file with stale unchecked tasks for already-closed waves.
+- Evidence:
+  - 2026-04-20: `DASHR-01..DASHR-11` remained unchecked only in `mvp-execution-plan.md` until parity-sync fix.

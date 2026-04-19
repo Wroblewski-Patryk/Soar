@@ -110,8 +110,8 @@ Last updated: 2026-04-20
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: keep canonical queue synchronized and move to the next
-  planner-approved execution wave after full `DAWR` closure.
+- Main active objective: keep canonical queue synchronized and stay ready for
+  the next planner-approved execution wave.
 - Top blockers:
   - none in OPV scope; final RC external-gates snapshot is closed
     (`G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`) from run
@@ -121,9 +121,14 @@ Last updated: 2026-04-20
   - canonical planning status remains synchronized across queue/context files.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - take next planner-approved queue slice after `DAWR` closure.
+  - take next planner-approved queue slice after planning-sync closure.
 
 ## Recent Progress
+- 2026-04-20: closed planning parity sync `PLNC-05` by reconciling stale
+  unchecked `DASHR-01..DASHR-11` entries in
+  `docs/planning/mvp-execution-plan.md` with already-closed canonical queue
+  state (`mvp-next-commits`, `TASK_BOARD`); `DASHR` phase is now explicitly
+  marked closed with completion log entries.
 - 2026-04-20: closed `DAWR-B` and `DAWR-C` (`DAWR-04..DAWR-10`) end-to-end by
   adding aggregate-success LIVE wallet regression lock in
   `HomeLiveWidgets.aggregate-wallet.test.tsx`, adding dedicated sidebar `strategyId`
