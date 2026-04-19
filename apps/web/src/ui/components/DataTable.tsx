@@ -144,7 +144,7 @@ export default function DataTable<T>({
   columnVisibilityEnabled = true,
   columnVisibilityPreferenceKey,
   settingsGroupVisible = true,
-  settingsControlsIconOnly = false,
+  settingsControlsIconOnly = true,
   advancedMode = false,
 }: DataTableProps<T>) {
   const { t } = useOptionalI18n();
