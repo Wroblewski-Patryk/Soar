@@ -543,7 +543,6 @@ export default function DataTable<T>({
                                         ...mergeColumnVisibilityState(defaultColumnVisibility, prev),
                                         [column.key]: nextVisible,
                                       }));
-                                      setColumnsDropdownOpen(false);
                                     }}
                                   />
                                   <span className='label-text text-xs'>{column.label}</span>
