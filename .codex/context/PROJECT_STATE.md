@@ -106,17 +106,16 @@ Last updated: 2026-04-19
 - Main active objective: execute `UXR-J` dashboard tables consistency refresh
   wave (`UXR-J-01..UXR-J-08`) from canonical queue with tiny-commit delivery.
 - Top blockers:
-  - Gate 2 remains open for V1 RC external gates because private-route VPS
-    worker/alerts probes still require admin-auth execution context.
-  - stage rehearsal endpoint verification is blocked by missing stage Soar DNS
-    records (`stage-api.soar.luckysparrow.ch`, `stage-soar.luckysparrow.ch`).
+  - none in OPV scope; final RC external-gates snapshot is closed
+    (`G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`) from run
+    `2026-04-19T15:13:58.943Z`.
 - Success criteria for this phase:
   - shared table action/dropdown/trigger behavior is standardized across
     dashboard modules with explicit contract and focused regressions.
   - next executable queue group remains explicit with no stale reopened tasks
     from already-implemented waves.
-  - production verification artifacts remain synchronized with explicit external
-    blocker accounting (`Gate2 OPEN`, stage DNS pending).
+  - production verification artifacts remain synchronized with the final
+    external-gates closure snapshot (`G1..G4 = PASS`).
   - canonical queue and context docs stay synchronized after each ARC batch.
   - no regressions in runtime safety, deploy confidence, or dashboard contracts.
 - Next queued follow-up:
@@ -124,6 +123,11 @@ Last updated: 2026-04-19
   - then continue through `UXR-J-A..C` for table-consistency closure.
 
 ## Recent Progress
+- 2026-04-19: RC external-gates and release-candidate closure were finalized
+  from VPS private-route production pipeline evidence: stage domains are live
+  (`stage.soar.luckysparrow.ch`, `stage-api.soar.luckysparrow.ch`), all RC
+  gate checks passed, and final snapshot is `G1=PASS`, `G2=PASS`, `G3=PASS`,
+  `G4=PASS` (`2026-04-19T15:13:58.943Z`).
 - 2026-04-19: completed `UXR-J-02` by adding dedicated `module` action tone
   in shared `TableUi` and remapping `runtime` plus `preview` presets to the
   same module tone while preserving `clone` as neutral (distinct from system
@@ -226,13 +230,15 @@ Last updated: 2026-04-19
   `docs/operations/pos-ab-closure-2026-04-19.md`.
 - 2026-04-19: completed `OPV-04` by synchronizing OPV closure state across
   canonical queue/context and LBT/V1 planning docs, publishing
-  `docs/operations/opv-04-closure-sync-2026-04-19.md` with explicit residual
-  blockers (Gate 2 private-route verification, stage DNS missing).
+  `docs/operations/opv-04-closure-sync-2026-04-19.md`; residual blockers from
+  that sync were later resolved in the final RC closure run
+  (`2026-04-19T15:13:58.943Z`).
 - 2026-04-19: completed `OPV-03` by collecting fresh production SLO evidence,
   rebuilding rolling window reports, refreshing RC gate/checklist/sign-off
   artifacts, and publishing closure evidence in
-  `docs/operations/opv-03-rc-gates-refresh-2026-04-19.md`; current RC snapshot
-  is `G1=PASS`, `G2=OPEN`, `G3=PASS`, `G4=OPEN` with RC status `BLOCKED`.
+  `docs/operations/opv-03-rc-gates-refresh-2026-04-19.md`; the interim
+  `G2/G4 OPEN` snapshot is superseded by final RC closure
+  (`G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`).
 - 2026-04-19: completed `OPV-02` by verifying production takeover route
   availability (protected `401 Missing token` response, no `404`) and capturing
   OPS probe evidence in `docs/operations/opv-02-prod-live-takeover-2026-04-19.md`;
@@ -241,8 +247,9 @@ Last updated: 2026-04-19
   for `api`, `web`, and all worker images (`PASS`) and capturing deployment
   evidence in `docs/operations/opv-01-vps-rehearsal-2026-04-19.md` plus
   `_artifacts-opv-01-*` JSON/logs; production smoke on
-  `api.soar.luckysparrow.ch` + `soar.luckysparrow.ch` passed, while stage
-  rehearsal is blocked by missing stage Soar DNS records.
+  `api.soar.luckysparrow.ch` + `soar.luckysparrow.ch` passed; stage smoke is
+  now also confirmed on `stage-api.soar.luckysparrow.ch` and
+  `stage.soar.luckysparrow.ch`.
 - 2026-04-19: closed `UXR-H` (`UXR-H-02..UXR-H-10`) end-to-end by delivering
   API manual-order context read contract + regression locks, web context/state
   integration, advanced runtime sidebar manual-order UX (`price`, market-fill,

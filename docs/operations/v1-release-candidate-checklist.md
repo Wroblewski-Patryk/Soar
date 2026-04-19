@@ -43,7 +43,7 @@
   - `/workers/ready`.
 - [x] Runtime freshness gate healthy:
   - `/workers/runtime-freshness`.
-- [ ] Queue lag metrics reviewed and within baseline.
+- [x] Queue lag metrics reviewed and within baseline.
 - [x] Incident contacts and escalation chain confirmed.
 
 ### Mandatory Post-Deploy Validation Sequence (Runtime + Cache + Stream)
@@ -94,11 +94,8 @@
 - [x] RC owner assigned with rollback authority.
 - Sign-off record template: `docs/operations/v1-rc-signoff-record.md`.
 
-## Outstanding External Gates (2026-03-21)
-- Backup snapshot + restore-path validation on target release environment.
-- Queue-lag baseline review from live telemetry window (`/metrics` + worker lag gauges).
-- Incident contacts/escalation chain confirmation for release shift.
-- Formal sign-offs (Engineering/Product/Operations) and RC owner assignment.
+## Outstanding External Gates (2026-04-19)
+- none; final snapshot is `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS` (run completed `2026-04-19T15:13:58.943Z`).
 - Execution guide: `docs/operations/v1-rc-external-gates-runbook.md`.
 - SLO definitions and metric mapping: `docs/operations/v1-slo-catalog.md`.
 - Binance live bot-control verification checklist: `docs/operations/binance-live-ops-verification-checklist-2026-04-06.md`.

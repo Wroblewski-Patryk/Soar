@@ -309,3 +309,19 @@ lockfile=true
 - Avoid: relying on per-command `--config.lockfile=true` overrides as the only protection in deployment pipelines.
 - Evidence:
   - 2026-04-19 operator report: `pnpm install --frozen-lockfile` failed, while `pnpm install --frozen-lockfile --config.lockfile=true` passed.
+
+### 2026-04-19 - External RC result must trigger immediate canonical docs sync
+- Context: OPV/RC evidence is sometimes produced by a separate VPS operator/agent run and then pasted back into this thread.
+- Symptom: canonical queue/context/docs can keep stale `OPEN/BLOCKED` gate text after final RC pass, causing drift and repeated "what is still blocked?" confusion.
+- Root cause: external evidence update arrived after local doc updates, but no immediate mandatory resync step was executed.
+- Guardrail: when external run evidence is received, perform a same-turn canonical sync of `PROJECT_STATE`, `TASK_BOARD`, `mvp-next-commits`, `mvp-execution-plan`, and current RC docs (`v1-rc-external-gates-status`, `v1-rc-signoff-record`, checklist if needed) before continuing feature work.
+- Preferred pattern:
+```text
+1) Treat external evidence payload as latest source-of-truth.
+2) Update canonical queue/context + RC operation docs in one tiny docs commit.
+3) Run guardrails.
+4) Continue normal execution queue only after sync commit is merged/pushed.
+```
+- Avoid: leaving known stale gate state (`G2/G4 OPEN`) in canonical docs after receiving final PASS evidence.
+- Evidence:
+  - 2026-04-19 handoff where final RC snapshot was `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS` but local canonical docs still reflected an earlier `OPEN/BLOCKED` snapshot until synced.

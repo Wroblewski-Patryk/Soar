@@ -88,15 +88,15 @@ Last updated: 2026-04-19
 - [x] POS-A group closure (`POS-36..POS-38`)
   - 2026-04-19: Closed queue drift by confirming implementation-complete state and syncing canonical queue/context after focused verification (`runtimePositionAutomation`, `runtimeCapitalContext`, `backtestReplayCore`, `lifecycleCloseParity`).
 - [x] OPV-A group closure (`OPV-01..OPV-04`)
-  - 2026-04-19: Executed production verification wave end-to-end with rehearsal, takeover verification, RC gate refresh, and closure sync. Final release state remains externally blocked on Gate 2 private-route OPS validation and missing stage DNS records.
+  - 2026-04-19: Executed production verification wave end-to-end with rehearsal, takeover verification, RC gate refresh, and closure sync. Final external-gate snapshot is fully closed: `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS` (`2026-04-19T15:13:58.943Z`).
 - [x] OPV-04 Sync LBT/V1 planning statuses and residual external blockers
-  - 2026-04-19: Synced closure state across canonical queue/context and linked updated OPV evidence (`opv-02`, `opv-03`) in planning docs; residual blockers explicitly tracked in `docs/operations/opv-04-closure-sync-2026-04-19.md`.
+  - 2026-04-19: Synced closure state across canonical queue/context and linked updated OPV evidence (`opv-02`, `opv-03`) in planning docs; interim blockers from this sync were closed in the final RC pass run.
 - [x] OPV-03 Refresh RC external-gates/sign-off artifacts with fresh production evidence
   - 2026-04-19: Collected new production SLO observation, rebuilt 7d/30d windows, refreshed RC gate status/checklist/sign-off artifacts, then reran final status sync + diagnostics (`_artifacts-opv-03-rc-evidence-final-sync-2026-04-19T01-43-32-327Z.json`).
 - [x] OPV-02 Verify takeover endpoint and private ops probes on production target
   - 2026-04-19: Production takeover API routes now return `401 Missing token` (protected route present, no `404`), while private OPS probes remain blocked without VPS private-route admin auth; evidence captured in `docs/operations/opv-02-prod-live-takeover-2026-04-19.md` and `_artifacts-opv-02-*`.
 - [x] OPV-01 Execute Dockerfile-first stage/prod rehearsal and capture deployment evidence
-  - 2026-04-19: Dockerfile-first rehearsal passed for `api`, `web`, and all worker images; production smoke (`api.soar.luckysparrow.ch` + `soar.luckysparrow.ch`) passed for `/health`, `/ready`, and web root. Stage rehearsal is externally blocked because stage Soar DNS records are missing; evidence captured in `docs/operations/opv-01-vps-rehearsal-2026-04-19.md` and `_artifacts-opv-01-*`.
+  - 2026-04-19: Dockerfile-first rehearsal passed for `api`, `web`, and all worker images; production smoke (`api.soar.luckysparrow.ch` + `soar.luckysparrow.ch`) passed for `/health`, `/ready`, and web root. Stage smoke is now also confirmed on `stage-api.soar.luckysparrow.ch` and `stage.soar.luckysparrow.ch`; evidence captured in `docs/operations/opv-01-vps-rehearsal-2026-04-19.md` and follow-up RC artifacts.
 - [x] UXR-H group closure (`UXR-H-02..UXR-H-10`)
   - 2026-04-19: Closed dashboard manual-order advanced UX wave end-to-end by delivering API manual-order context endpoint + regression locks, wiring typed web context/state integration, adding price input + market-price fill + qty slider + side-aware summary + single-layer container layout, completing EN/PL/PT i18n parity, and running focused closure pack (`api tests`, `web tests`, `api/web typecheck`, `api/web build`, `quality:guardrails`).
 - [x] UXR-H-02 Add API manual-order context endpoint for symbol constraints, price reference, and bot execution metadata
