@@ -54,6 +54,72 @@ describe('Bots runtime scope remediation contract', () => {
     ).toBe(true);
   });
 
+  it('keeps list/get strategyId aligned with runtime-graph primary strategy when legacy link diverges', async () => {
+    const email = 'bots-list-runtime-graph-strategy-parity@example.com';
+    const agent = await registerAndLogin(email);
+    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email } });
+
+    const canonicalStrategyId = await createStrategy(agent, 'Canonical Primary Strategy');
+    const legacyStrategyId = await createStrategy(agent, 'Legacy Diverged Strategy');
+    const marketGroupId = await createMarketGroup(email, 'FUTURES');
+
+    const createRes = await agent.post('/dashboard/bots').send(
+      createPayload({
+        strategyId: canonicalStrategyId,
+        marketGroupId,
+      })
+    );
+    expect(createRes.status).toBe(201);
+    const botId = createRes.body.id as string;
+
+    await prisma.botStrategy.create({
+      data: {
+        botId,
+        strategyId: legacyStrategyId,
+        symbolGroupId: marketGroupId,
+        isEnabled: true,
+      },
+    });
+
+    const listRes = await agent.get('/dashboard/bots');
+    expect(listRes.status).toBe(200);
+    const listed = (listRes.body as Array<{ id: string; strategyId: string | null }>).find(
+      (item) => item.id === botId
+    );
+    expect(listed).toBeTruthy();
+
+    const getRes = await agent.get(`/dashboard/bots/${botId}`);
+    expect(getRes.status).toBe(200);
+
+    const graphRes = await agent.get(`/dashboard/bots/${botId}/runtime-graph`);
+    expect(graphRes.status).toBe(200);
+    const primaryGroup = (graphRes.body.marketGroups as Array<{
+      isEnabled: boolean;
+      lifecycleStatus: string;
+      executionOrder: number;
+      strategies: Array<{ strategyId: string; isEnabled: boolean; priority: number }>;
+    }>)
+      .filter((group) => group.isEnabled && group.lifecycleStatus === 'ACTIVE')
+      .sort((left, right) => left.executionOrder - right.executionOrder)[0];
+    expect(primaryGroup).toBeTruthy();
+
+    const primaryStrategy = [...(primaryGroup?.strategies ?? [])]
+      .sort((left, right) => left.priority - right.priority)[0];
+    expect(primaryStrategy).toBeTruthy();
+    expect(primaryStrategy?.strategyId).toBe(canonicalStrategyId);
+
+    expect(listed?.strategyId).toBe(primaryStrategy?.strategyId);
+    expect(getRes.body.strategyId).toBe(primaryStrategy?.strategyId);
+    expect(getRes.body.strategyId).not.toBe(legacyStrategyId);
+    expect(listed?.strategyId).not.toBe(legacyStrategyId);
+
+    const persistedLegacy = await prisma.botStrategy.findFirst({
+      where: { botId, strategyId: legacyStrategyId, bot: { userId: ownerUser.id } },
+      select: { id: true },
+    });
+    expect(persistedLegacy).toBeTruthy();
+  });
+
   it('keeps runtime symbol-stats strictly within selected bot canonical ACTIVE scope', async () => {
     const ownerEmail = 'bot-runtime-selected-scope-only@example.com';
     const owner = await registerAndLogin(ownerEmail);
