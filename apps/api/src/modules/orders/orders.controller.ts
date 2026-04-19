@@ -1,7 +1,13 @@
 import { Request, Response } from 'express';
 import { sendError } from '../../utils/apiError';
 import { mapErrorToHttpResponse } from '../../lib/httpErrorMapper';
-import { CancelOrderSchema, CloseOrderSchema, ListOrdersQuerySchema, OpenOrderSchema } from './orders.types';
+import {
+  CancelOrderSchema,
+  CloseOrderSchema,
+  ListOrdersQuerySchema,
+  ManualOrderContextQuerySchema,
+  OpenOrderSchema,
+} from './orders.types';
 import * as ordersService from './orders.service';
 import { ORDER_ERROR_CODES } from './orders.errors';
 
@@ -73,6 +79,20 @@ export const getOrder = async (req: Request, res: Response) => {
   if (!order) return sendError(res, 404, 'Not found');
 
   return res.json(order);
+};
+
+export const getManualOrderContext = async (req: Request, res: Response) => {
+  const userId = req.user?.id;
+  if (!userId) return sendError(res, 401, 'Unauthorized');
+
+  try {
+    const query = ManualOrderContextQuerySchema.parse(req.query);
+    const context = await ordersService.getManualOrderContext(userId, query);
+    if (!context) return sendError(res, 404, 'Not found');
+    return res.json(context);
+  } catch (error) {
+    return handleOrderError(res, error);
+  }
 };
 
 export const openOrder = async (req: Request, res: Response) => {

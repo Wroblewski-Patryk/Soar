@@ -25,6 +25,13 @@ export const OpenOrderSchema = z.object({
   riskAck: z.boolean().default(false),
 });
 
+export const ManualOrderContextQuerySchema = z.object({
+  botId: z.string().uuid(),
+  symbol: z.string().trim().min(1),
+  side: z.enum(['BUY', 'SELL']).default('BUY'),
+  quantity: z.coerce.number().positive().optional(),
+});
+
 export const CancelOrderSchema = z.object({
   riskAck: z.boolean().default(false),
 });
@@ -34,5 +41,6 @@ export const CloseOrderSchema = z.object({
 });
 
 export type OpenOrderDto = z.infer<typeof OpenOrderSchema>;
+export type ManualOrderContextQuery = z.infer<typeof ManualOrderContextQuerySchema>;
 export type CancelOrderDto = z.infer<typeof CancelOrderSchema>;
 export type CloseOrderDto = z.infer<typeof CloseOrderSchema>;

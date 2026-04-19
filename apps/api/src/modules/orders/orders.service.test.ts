@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { prisma } from '../../prisma/client';
-import { openOrder, resolveLiveExecutionApiKey } from './orders.service';
+import { getManualOrderContext, openOrder, resolveLiveExecutionApiKey } from './orders.service';
 
 const cleanupDb = async () => {
   await prisma.log.deleteMany();
@@ -306,6 +306,306 @@ describe('openOrder live execution contract', () => {
     } finally {
       process.env.NODE_ENV = previousNodeEnv;
     }
+  });
+});
+
+describe('getManualOrderContext', () => {
+  beforeEach(async () => {
+    await cleanupDb();
+  });
+
+  it('falls back to MARKET order type when strategy config orderType is unresolved', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-manual-context-fallback@example.com', password: 'hashed' },
+    });
+    const strategy = await prisma.strategy.create({
+      data: {
+        userId: user.id,
+        name: 'Fallback strategy',
+        description: null,
+        interval: '5m',
+        leverage: 7,
+        walletRisk: 2,
+        config: {
+          additional: {
+            marginMode: 'ISOLATED',
+            orderType: 'UNKNOWN',
+          },
+        },
+      },
+    });
+    const universe = await prisma.marketUniverse.create({
+      data: {
+        userId: user.id,
+        name: 'Manual context universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: ['BTCUSDT'],
+        blacklist: [],
+      },
+    });
+    const symbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: user.id,
+        marketUniverseId: universe.id,
+        name: 'Manual context group',
+        symbols: ['BTCUSDT'],
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'Manual context bot',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+      },
+    });
+    const botGroup = await prisma.botMarketGroup.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        symbolGroupId: symbolGroup.id,
+        lifecycleStatus: 'ACTIVE',
+        executionOrder: 1,
+        maxOpenPositions: 2,
+        isEnabled: true,
+      },
+    });
+    await prisma.marketGroupStrategyLink.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        botMarketGroupId: botGroup.id,
+        strategyId: strategy.id,
+        priority: 1,
+        weight: 1,
+        isEnabled: true,
+      },
+    });
+
+    const context = await getManualOrderContext(
+      user.id,
+      {
+        botId: bot.id,
+        symbol: 'BTCUSDT',
+        side: 'BUY',
+      },
+      {
+        createPublicConnector: () => ({
+          getSymbolTradingRules: async () => ({
+            minAmount: 0.001,
+            minNotional: 100,
+            amountPrecision: 0.001,
+          }),
+          fetchMarkPrice: async () => 25_000,
+          disconnect: async () => undefined,
+        }),
+      }
+    );
+
+    expect(context).not.toBeNull();
+    expect(context?.orderType).toBe('MARKET');
+    expect(context?.marginMode).toBe('ISOLATED');
+    expect(context?.leverage).toBe(7);
+  });
+
+  it('derives min executable quantity from minAmount/minNotional and precision', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-manual-context-minqty@example.com', password: 'hashed' },
+    });
+    const strategy = await prisma.strategy.create({
+      data: {
+        userId: user.id,
+        name: 'Min qty strategy',
+        description: null,
+        interval: '15m',
+        leverage: 5,
+        walletRisk: 1,
+        config: {
+          additional: {
+            marginMode: 'CROSSED',
+            orderType: 'LIMIT',
+          },
+        },
+      },
+    });
+    const universe = await prisma.marketUniverse.create({
+      data: {
+        userId: user.id,
+        name: 'Min qty universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: ['ETHUSDT'],
+        blacklist: [],
+      },
+    });
+    const symbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: user.id,
+        marketUniverseId: universe.id,
+        name: 'Min qty group',
+        symbols: ['ETHUSDT'],
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'Min qty bot',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'mvp-v1',
+      },
+    });
+    const botGroup = await prisma.botMarketGroup.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        symbolGroupId: symbolGroup.id,
+        lifecycleStatus: 'ACTIVE',
+        executionOrder: 1,
+        maxOpenPositions: 3,
+        isEnabled: true,
+      },
+    });
+    await prisma.marketGroupStrategyLink.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        botMarketGroupId: botGroup.id,
+        strategyId: strategy.id,
+        priority: 1,
+        weight: 1,
+        isEnabled: true,
+      },
+    });
+
+    const context = await getManualOrderContext(
+      user.id,
+      {
+        botId: bot.id,
+        symbol: 'ETHUSDT',
+        side: 'BUY',
+      },
+      {
+        createPublicConnector: () => ({
+          getSymbolTradingRules: async () => ({
+            minAmount: 0.0031,
+            minNotional: 100,
+            amountPrecision: 0.001,
+          }),
+          fetchMarkPrice: async () => 27_000,
+          disconnect: async () => undefined,
+        }),
+      }
+    );
+
+    expect(context).not.toBeNull();
+    expect(context?.orderType).toBe('LIMIT');
+    expect(context?.quantityConstraints.minExecutableQty).toBe(0.004);
+  });
+
+  it('returns stable response when rules and mark price cannot be fetched', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-manual-context-degraded@example.com', password: 'hashed' },
+    });
+    const strategy = await prisma.strategy.create({
+      data: {
+        userId: user.id,
+        name: 'Degraded strategy',
+        description: null,
+        interval: '5m',
+        leverage: 3,
+        walletRisk: 1,
+        config: { additional: { marginMode: 'CROSSED', orderType: 'MARKET' } },
+      },
+    });
+    const universe = await prisma.marketUniverse.create({
+      data: {
+        userId: user.id,
+        name: 'Degraded universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: ['SOLUSDT'],
+        blacklist: [],
+      },
+    });
+    const symbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: user.id,
+        marketUniverseId: universe.id,
+        name: 'Degraded group',
+        symbols: ['SOLUSDT'],
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'Degraded bot',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+      },
+    });
+    const botGroup = await prisma.botMarketGroup.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        symbolGroupId: symbolGroup.id,
+        lifecycleStatus: 'ACTIVE',
+        executionOrder: 1,
+        maxOpenPositions: 2,
+        isEnabled: true,
+      },
+    });
+    await prisma.marketGroupStrategyLink.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        botMarketGroupId: botGroup.id,
+        strategyId: strategy.id,
+        priority: 1,
+        weight: 1,
+        isEnabled: true,
+      },
+    });
+
+    const context = await getManualOrderContext(
+      user.id,
+      {
+        botId: bot.id,
+        symbol: 'SOLUSDT',
+        side: 'SELL',
+      },
+      {
+        createPublicConnector: () => ({
+          getSymbolTradingRules: async () => {
+            throw new Error('rules unavailable');
+          },
+          fetchMarkPrice: async () => {
+            throw new Error('price unavailable');
+          },
+          disconnect: async () => undefined,
+        }),
+      }
+    );
+
+    expect(context).not.toBeNull();
+    expect(context?.priceReference.markPrice).toBeNull();
+    expect(context?.quantityConstraints.minAmount).toBeNull();
+    expect(context?.quantityConstraints.minNotional).toBeNull();
+    expect(context?.quantityConstraints.minExecutableQty).toBeNull();
   });
 });
 

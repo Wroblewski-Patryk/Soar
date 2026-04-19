@@ -1,6 +1,12 @@
 import { Exchange, Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/client';
-import { CancelOrderDto, CloseOrderDto, ListOrdersQuery, OpenOrderDto } from './orders.types';
+import {
+  CancelOrderDto,
+  CloseOrderDto,
+  ListOrdersQuery,
+  ManualOrderContextQuery,
+  OpenOrderDto,
+} from './orders.types';
 import { decrypt } from '../../utils/crypto';
 import { CcxtFuturesConnector } from '../exchange/ccxtFuturesConnector.service';
 import { createLiveOrderAdapter } from '../exchange/liveOrderAdapter.service';
@@ -8,6 +14,7 @@ import { CcxtFuturesOrderFill } from '../exchange/ccxtFuturesConnector.types';
 import { liveOrderingConfig } from '../../config/runtimeExecution';
 import { isAppErrorLike } from '../../lib/errors';
 import { orderErrors } from './orders.errors';
+import { normalizeSymbols, resolveUniverseSymbols } from '../../lib/symbols';
 
 export const listOrders = async (userId: string, query: ListOrdersQuery) => {
   const skip = (query.page - 1) * query.limit;
@@ -29,6 +36,278 @@ export const getOrder = async (userId: string, id: string) => {
   return prisma.order.findFirst({
     where: { id, userId },
   });
+};
+
+type ManualOrderContextConnector = {
+  getSymbolTradingRules: (symbol: string) => Promise<SymbolTradingRules>;
+  fetchMarkPrice: (symbol: string) => Promise<number>;
+  disconnect: () => Promise<void>;
+};
+
+type ManualOrderContextDeps = {
+  createPublicConnector: (params: {
+    exchange: Exchange;
+    marketType: 'FUTURES' | 'SPOT';
+  }) => ManualOrderContextConnector;
+};
+
+type ResolvedManualOrderStrategyContext = {
+  leverage: number | null;
+  config: Record<string, unknown> | null;
+};
+
+const asRecord = (value: unknown): Record<string, unknown> | null =>
+  value && typeof value === 'object' ? (value as Record<string, unknown>) : null;
+
+const resolveEffectiveSymbolGroupSymbols = (params: {
+  symbols?: string[] | null;
+  marketUniverse?: { whitelist?: string[] | null; blacklist?: string[] | null } | null;
+}) => {
+  const whitelist = params.marketUniverse?.whitelist;
+  const blacklist = params.marketUniverse?.blacklist;
+  if (Array.isArray(whitelist) && Array.isArray(blacklist)) {
+    const resolved = resolveUniverseSymbols(whitelist, blacklist);
+    if (resolved.length > 0) return resolved;
+  }
+  return normalizeSymbols(params.symbols ?? []);
+};
+
+const resolveOrderTypeFromStrategyConfig = (
+  config: Record<string, unknown> | null
+): OpenOrderDto['type'] | null => {
+  const additional = asRecord(config?.additional);
+  const raw = additional?.orderType;
+  if (typeof raw !== 'string') return null;
+
+  const normalized = raw.trim().toUpperCase();
+  if (
+    normalized === 'MARKET' ||
+    normalized === 'LIMIT' ||
+    normalized === 'STOP' ||
+    normalized === 'STOP_LIMIT' ||
+    normalized === 'TAKE_PROFIT' ||
+    normalized === 'TRAILING'
+  ) {
+    return normalized as OpenOrderDto['type'];
+  }
+
+  return null;
+};
+
+const resolveMarginModeFromStrategyConfig = (
+  config: Record<string, unknown> | null,
+  marketType: 'FUTURES' | 'SPOT'
+) => {
+  if (marketType === 'SPOT') return 'NONE' as const;
+
+  const additional = asRecord(config?.additional);
+  const raw = typeof additional?.marginMode === 'string' ? additional.marginMode.trim().toUpperCase() : '';
+  if (raw === 'ISOLATED') return 'ISOLATED' as const;
+  return 'CROSSED' as const;
+};
+
+const resolvePrecisionStep = (amountPrecision: number | null): number | null => {
+  if (!Number.isFinite(amountPrecision as number) || amountPrecision == null) return null;
+  if (amountPrecision >= 1) return 1 / 10 ** Math.trunc(amountPrecision);
+  if (amountPrecision > 0 && amountPrecision < 1) return amountPrecision;
+  return null;
+};
+
+const normalizeAmountUpByPrecision = (value: number, amountPrecision: number | null) => {
+  if (!Number.isFinite(value) || value <= 0) return value;
+  if (amountPrecision == null || !Number.isFinite(amountPrecision)) return value;
+
+  if (amountPrecision >= 1) {
+    const decimals = Math.trunc(amountPrecision);
+    const factor = 10 ** decimals;
+    return Math.ceil((value - 1e-12) * factor) / factor;
+  }
+
+  if (amountPrecision > 0 && amountPrecision < 1) {
+    const step = amountPrecision;
+    const steps = Math.ceil((value - 1e-12) / step);
+    return steps * step;
+  }
+
+  return value;
+};
+
+const normalizeAmountFixed = (value: number, amountPrecision: number | null) => {
+  if (!Number.isFinite(value)) return value;
+  if (amountPrecision == null || !Number.isFinite(amountPrecision)) return value;
+
+  if (amountPrecision >= 1) {
+    const decimals = Math.trunc(amountPrecision);
+    return Number(value.toFixed(decimals));
+  }
+
+  if (amountPrecision > 0 && amountPrecision < 1) {
+    const decimals = Math.max(0, Math.min(12, Math.ceil(-Math.log10(amountPrecision)) + 2));
+    return Number(value.toFixed(decimals));
+  }
+
+  return value;
+};
+
+const computeMinExecutableQuantity = (params: {
+  minAmount: number | null;
+  minNotional: number | null;
+  markPrice: number | null;
+  amountPrecision: number | null;
+}) => {
+  const candidates: number[] = [];
+
+  if (typeof params.minAmount === 'number' && Number.isFinite(params.minAmount) && params.minAmount > 0) {
+    candidates.push(params.minAmount);
+  }
+
+  if (
+    typeof params.minNotional === 'number' &&
+    Number.isFinite(params.minNotional) &&
+    params.minNotional > 0 &&
+    typeof params.markPrice === 'number' &&
+    Number.isFinite(params.markPrice) &&
+    params.markPrice > 0
+  ) {
+    candidates.push(params.minNotional / params.markPrice);
+  }
+
+  if (candidates.length === 0) return null;
+
+  const baseCandidate = Math.max(...candidates);
+  let normalized = normalizeAmountUpByPrecision(baseCandidate, params.amountPrecision);
+
+  if (!Number.isFinite(normalized) || normalized <= 0) return null;
+
+  const step = resolvePrecisionStep(params.amountPrecision);
+  if (
+    step &&
+    typeof params.minNotional === 'number' &&
+    Number.isFinite(params.minNotional) &&
+    params.minNotional > 0 &&
+    typeof params.markPrice === 'number' &&
+    Number.isFinite(params.markPrice) &&
+    params.markPrice > 0
+  ) {
+    const maxIterations = 10_000;
+    let iterations = 0;
+    while (iterations < maxIterations && normalized * params.markPrice + 1e-9 < params.minNotional) {
+      normalized += step;
+      iterations += 1;
+    }
+  }
+
+  return normalizeAmountFixed(normalized, params.amountPrecision);
+};
+
+const resolveManualOrderStrategyContext = async (params: {
+  userId: string;
+  botId: string;
+  symbol: string;
+}): Promise<ResolvedManualOrderStrategyContext | null> => {
+  const normalizedSymbol = params.symbol.toUpperCase();
+
+  const groupLinks = await prisma.botMarketGroup.findMany({
+    where: {
+      userId: params.userId,
+      botId: params.botId,
+      isEnabled: true,
+      lifecycleStatus: 'ACTIVE',
+    },
+    orderBy: [{ executionOrder: 'asc' }, { createdAt: 'asc' }],
+    select: {
+      symbolGroup: {
+        select: {
+          symbols: true,
+          marketUniverse: {
+            select: {
+              whitelist: true,
+              blacklist: true,
+            },
+          },
+        },
+      },
+      strategyLinks: {
+        where: { isEnabled: true },
+        orderBy: [{ priority: 'asc' }, { createdAt: 'asc' }],
+        select: {
+          strategy: {
+            select: {
+              leverage: true,
+              config: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  for (const group of groupLinks) {
+    const symbols = resolveEffectiveSymbolGroupSymbols(group.symbolGroup);
+    if (!symbols.includes(normalizedSymbol)) continue;
+    const selected = group.strategyLinks[0]?.strategy;
+    if (selected) {
+      return {
+        leverage: selected.leverage,
+        config: (selected.config as Record<string, unknown> | null | undefined) ?? null,
+      };
+    }
+  }
+
+  const legacyLinks = await prisma.botStrategy.findMany({
+    where: {
+      botId: params.botId,
+      isEnabled: true,
+      bot: { userId: params.userId },
+    },
+    orderBy: [{ createdAt: 'asc' }],
+    select: {
+      symbolGroup: {
+        select: {
+          symbols: true,
+          marketUniverse: {
+            select: {
+              whitelist: true,
+              blacklist: true,
+            },
+          },
+        },
+      },
+      strategy: {
+        select: {
+          leverage: true,
+          config: true,
+        },
+      },
+    },
+  });
+
+  for (const link of legacyLinks) {
+    const symbols = resolveEffectiveSymbolGroupSymbols(link.symbolGroup);
+    if (!symbols.includes(normalizedSymbol)) continue;
+    return {
+      leverage: link.strategy.leverage,
+      config: (link.strategy.config as Record<string, unknown> | null | undefined) ?? null,
+    };
+  }
+
+  const fallbackCanonical = groupLinks[0]?.strategyLinks[0]?.strategy;
+  if (fallbackCanonical) {
+    return {
+      leverage: fallbackCanonical.leverage,
+      config: (fallbackCanonical.config as Record<string, unknown> | null | undefined) ?? null,
+    };
+  }
+
+  const fallbackLegacy = legacyLinks[0]?.strategy;
+  if (fallbackLegacy) {
+    return {
+      leverage: fallbackLegacy.leverage,
+      config: (fallbackLegacy.config as Record<string, unknown> | null | undefined) ?? null,
+    };
+  }
+
+  return null;
 };
 
 type LiveBotContext = {
@@ -286,6 +565,120 @@ const resolveLiveTargetLeverage = async (params: {
 
   if (!strategy || !Number.isFinite(strategy.leverage)) return null;
   return Math.max(1, Math.floor(strategy.leverage));
+};
+
+const defaultManualOrderContextDeps: ManualOrderContextDeps = {
+  createPublicConnector: ({ exchange, marketType }) =>
+    new CcxtFuturesConnector({
+      exchangeId: exchange.toLowerCase(),
+      marketType: marketType === 'SPOT' ? 'spot' : 'future',
+    }),
+};
+
+export const getManualOrderContext = async (
+  userId: string,
+  query: ManualOrderContextQuery,
+  deps: ManualOrderContextDeps = defaultManualOrderContextDeps
+) => {
+  const bot = await prisma.bot.findFirst({
+    where: { id: query.botId, userId },
+    select: {
+      id: true,
+      mode: true,
+      exchange: true,
+      marketType: true,
+      maxOpenPositions: true,
+    },
+  });
+
+  if (!bot) return null;
+
+  const normalizedSymbol = query.symbol.toUpperCase();
+  const strategyContext = await resolveManualOrderStrategyContext({
+    userId,
+    botId: bot.id,
+    symbol: normalizedSymbol,
+  });
+  const resolvedLeverage =
+    bot.marketType === 'SPOT' ? 1 : Math.max(1, Math.floor(strategyContext?.leverage ?? 1));
+  const resolvedOrderType = resolveOrderTypeFromStrategyConfig(strategyContext?.config ?? null) ?? 'MARKET';
+  const resolvedMarginMode = resolveMarginModeFromStrategyConfig(strategyContext?.config ?? null, bot.marketType);
+
+  let rules: SymbolTradingRules = {
+    minAmount: null,
+    minNotional: null,
+    amountPrecision: null,
+  };
+  let markPrice: number | null = null;
+
+  // E2E should stay deterministic in CI/local without external exchange availability.
+  const shouldSkipExternalFetch =
+    process.env.NODE_ENV === 'test' && deps === defaultManualOrderContextDeps;
+  if (!shouldSkipExternalFetch) {
+    const connector = deps.createPublicConnector({
+      exchange: bot.exchange,
+      marketType: bot.marketType,
+    });
+    try {
+      const [rulesResult, markPriceResult] = await Promise.allSettled([
+        connector.getSymbolTradingRules(normalizedSymbol),
+        connector.fetchMarkPrice(normalizedSymbol),
+      ]);
+
+      if (rulesResult.status === 'fulfilled') {
+        rules = rulesResult.value;
+      }
+      if (markPriceResult.status === 'fulfilled' && Number.isFinite(markPriceResult.value)) {
+        markPrice = markPriceResult.value;
+      }
+    } finally {
+      await connector.disconnect().catch(() => undefined);
+    }
+  }
+
+  const minExecutableQty = computeMinExecutableQuantity({
+    minAmount: rules.minAmount,
+    minNotional: rules.minNotional,
+    markPrice,
+    amountPrecision: rules.amountPrecision,
+  });
+
+  const requestedQuantity =
+    typeof query.quantity === 'number' && Number.isFinite(query.quantity) && query.quantity > 0
+      ? query.quantity
+      : null;
+  const estimatedNotional =
+    requestedQuantity != null && markPrice != null
+      ? normalizeAmountFixed(requestedQuantity * markPrice, rules.amountPrecision)
+      : null;
+  const estimatedMargin =
+    estimatedNotional != null ? estimatedNotional / Math.max(1, resolvedLeverage) : null;
+
+  return {
+    botId: bot.id,
+    symbol: normalizedSymbol,
+    mode: bot.mode,
+    orderType: resolvedOrderType,
+    marginMode: resolvedMarginMode,
+    leverage: resolvedLeverage,
+    priceReference: {
+      markPrice,
+      source: markPrice != null ? 'exchange_mark' : 'unavailable',
+    },
+    quantityConstraints: {
+      minAmount: rules.minAmount,
+      amountPrecision: rules.amountPrecision,
+      minNotional: rules.minNotional,
+      minExecutableQty,
+    },
+    sideAwarePreview: {
+      side: query.side,
+      requestedQuantity,
+      estimatedNotional,
+      estimatedMargin,
+      maxOpenPositions: bot.maxOpenPositions,
+    },
+  };
 };
 
 const convergeLiveMarginAndLeverageIfNeeded = async (params: {
