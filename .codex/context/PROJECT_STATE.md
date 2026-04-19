@@ -125,6 +125,11 @@ Last updated: 2026-04-19
   - then execute `UXR-J-A..C` for shared table-consistency closure.
 
 ## Recent Progress
+- 2026-04-19: completed `UXR-I-01` by freezing post-`UXR-F` dashboard forms
+  consistency refresh boundaries in canonical docs (`open-decisions`,
+  `web-dashboard-home`) with explicit route scope, `ui/forms-only` generic
+  control source, wrapper i18n-copy contract, and standardized
+  validation/submit invariants.
 - 2026-04-19: activated planner brief
   `dashboard-tables-consistency-planner-brief-2026-04-19.md` into canonical
   queued wave `UXR-J` via

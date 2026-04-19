@@ -7,9 +7,8 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `UXR-I-01 docs(contract): freeze dashboard forms consistency refresh boundaries after UXR-F`
-## NEXT
 - [ ] `UXR-I-02 audit(web-forms): publish residual consistency gap map per route/module`
+## NEXT
 - [ ] `UXR-I-03 chore(web-ui-forms): normalize shared form primitive API surface for refresh migration`
 - [ ] `UXR-I-04 test(guardrails): lock no-cross-feature generic controls and no-hardcoded-wrapper-copy regressions`
 ## PIPELINE
@@ -83,6 +82,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `UXR-I-01 docs(contract): freeze dashboard forms consistency refresh boundaries after UXR-F`
+  - 2026-04-19: Locked `UXR-I` refresh boundaries in canonical contracts (`open-decisions`, `web-dashboard-home`) with explicit scoped routes, `ui/forms` generic-control rule, wrapper i18n-only copy contract, and unified validation/submit behavior invariants.
 - [x] `UXR-J planning queued (dashboard tables consistency refresh after UXR-I)`
   - 2026-04-19: Activated tables planner brief into canonical queue via `docs/planning/uxr-j-dashboard-tables-consistency-refresh-plan-2026-04-19.md` with grouped batches (`UXR-J-A..UXR-J-C`) covering global action-tone semantics (`clone/runtime/preview`), columns dropdown persistence behavior, icon-only columns trigger contract, focused table-regression alignment, and closure checks.
 - [x] `UXR-I planning queued (dashboard forms consistency refresh after UXR-F closure)`

@@ -154,3 +154,14 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
 - Guardrails:
   - do not add TP/SL, reduce-only, fee-tier, or TIF controls in this wave,
   - keep sidebar visual language; remove only redundant nested manual-order framing.
+
+## 16. Dashboard Forms Consistency Refresh Linkage (`UXR-I`)
+- Cross-module linkage contract:
+  - dashboard create/edit forms in adjacent modules (`wallets`, `markets`, `strategies`, `backtests`, `bots`) are refreshed under `UXR-I` as one consistency wave after `UXR-F`.
+  - this module remains the dashboard control-center reference for wrapper parity expectations (title/breadcrumb/save-action consistency).
+- Scope lock:
+  - `UXR-I` is residual-gap refresh only; it must not re-open already compliant form areas without explicit gap-map evidence.
+  - no runtime command/path behavior changes are allowed in this linkage track.
+- Canonical references:
+  - `docs/planning/uxr-i-dashboard-forms-consistency-refresh-plan-2026-04-19.md`
+  - `docs/planning/open-decisions.md` (`Dashboard Forms Consistency Refresh (Post-UXR-F)`)

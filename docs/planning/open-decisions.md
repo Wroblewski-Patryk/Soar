@@ -346,6 +346,31 @@ This file tracks intentionally unresolved architecture choices so implementation
 - Canonical reference:
   - `docs/planning/uxr-f-dashboard-forms-unification-plan-2026-04-18.md`
 
+## Dashboard Forms Consistency Refresh (Post-UXR-F)
+- Decision state: resolved on 2026-04-19.
+- Decision:
+  - execute a scoped refresh wave (`UXR-I`) to close residual form-wrapper and interaction consistency gaps left after `UXR-F`.
+  - keep `UXR-F` as baseline and migrate only confirmed residual deltas.
+- Locked behavior:
+  - execution order is strict: `UXR-I-01..UXR-I-14`.
+  - scoped routes:
+    - `/dashboard/wallets/create`, `/dashboard/wallets/[id]/edit`
+    - `/dashboard/markets/create`, `/dashboard/markets/[id]/edit`
+    - `/dashboard/strategies/create`, `/dashboard/strategies/[id]/edit`
+    - `/dashboard/backtests/create`
+    - `/dashboard/bots/create`, `/dashboard/bots/[id]/edit`
+  - all generic form controls must come from `apps/web/src/ui/forms/*` only.
+  - wrapper copy (`title`, `breadcrumb`, save-action labels) is i18n-key driven; no hardcoded wrapper literals or inline locale dictionaries.
+  - validation and submit behavior must remain uniform across scoped forms:
+    - inline errors + top summary,
+    - focus/scroll to first invalid field,
+    - deterministic disabled/loading/submitting states.
+  - long forms may use tabs/sections and sticky mobile save action only where depth warrants it.
+  - scope lock: no domain-logic rewrites unless required by failing tests or runtime-safety contracts.
+- Canonical references:
+  - `docs/planning/uxr-i-dashboard-forms-consistency-refresh-plan-2026-04-19.md`
+  - `docs/planning/dashboard-forms-consistency-planner-brief-2026-04-19.md`
+
 ## Numeric Locale Input Policy (Comma vs Dot)
 - Decision state: resolved on 2026-04-02.
 - Decision:
