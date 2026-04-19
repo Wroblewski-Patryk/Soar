@@ -17,21 +17,15 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] UXR-I-14 Run web forms closure checks (typecheck, build, guardrails) and sync canonical queue/context
+- [ ] UXR-J-01 Freeze dashboard table action-color and columns-dropdown behavior contract
   - Status: READY
-  - Group: Dashboard Forms Consistency Refresh (`UXR-I-D`)
-  - Owner: Frontend Builder
+  - Group: Dashboard Tables Consistency Refresh (`UXR-J-A`)
+  - Owner: Planner + Frontend Builder
   - Depends on: none
   - Priority: P2
 
 ## BACKLOG
 
-- [ ] UXR-J-01 Freeze dashboard table action-color and columns-dropdown behavior contract
-  - Status: BACKLOG
-  - Group: Dashboard Tables Consistency Refresh (`UXR-J-A`)
-  - Owner: Planner + Frontend Builder
-  - Depends on: UXR-I-14
-  - Priority: P2
 - [ ] UXR-J-02 Add dedicated module action tone mapping and dropdown/trigger shared behavior updates
   - Status: BACKLOG
   - Group: Dashboard Tables Consistency Refresh (`UXR-J-A`)
@@ -53,6 +47,8 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] UXR-I-14 Run web forms closure checks (typecheck, build, guardrails) and sync canonical queue/context
+  - 2026-04-19: Closure pack PASS (`web typecheck`, `web build`, `quality:guardrails`) and canonical queue/context docs synchronized; `UXR-I` wave closed end-to-end and queue advanced to `UXR-J-01`.
 - [x] UXR-I-13 Run and align focused web-forms regression suite for wrapper, i18n, and consistency contracts
   - 2026-04-19: Focused UXR-I suite PASS (`33/33`) for wallets/markets/backtests/bots form modules, wallet/bot create-edit wrappers, and i18n translation/namespace registry contracts.
 - [x] UXR-I-12 Apply sticky mobile action bar contract to long dashboard forms

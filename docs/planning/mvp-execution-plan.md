@@ -2065,7 +2065,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - [x] `UXR-I-11 feat(web-form-ux): standardize first-error focus/scroll + summary/inline sync across scoped forms`
 - [x] `UXR-I-12 feat(web-form-mobile): apply sticky mobile action bar contract to long dashboard forms`
 - [x] `UXR-I-13 test(web-forms-regression): run/update focused suites for wrapper+i18n+form-consistency contracts`
-- [ ] `UXR-I-14 qa(web-forms-closure): run build/typecheck/guardrails and sync canonical queue/context`
+- [x] `UXR-I-14 qa(web-forms-closure): run build/typecheck/guardrails and sync canonical queue/context`
 
 ### Progress Log (Phase UXR-I - Dashboard Forms Consistency Refresh)
 - 2026-04-19: Activated planner input `docs/planning/dashboard-forms-consistency-planner-brief-2026-04-19.md` into canonical execution wave `docs/planning/uxr-i-dashboard-forms-consistency-refresh-plan-2026-04-19.md` with grouped batches `UXR-I-A..UXR-I-D` and strict tiny-commit sequencing.
@@ -2082,6 +2082,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-19: Completed `UXR-I-11` by introducing shared `ui/forms` validation-feedback helpers (`toValidationSummaryErrors`, `focusFirstInvalidField`) and migrating scoped forms (`wallets`, `markets`, `backtests`, `strategies`, `bots`) to one first-invalid focus/scroll + summary/inline sync contract; added focused unit regression for helper behavior.
 - 2026-04-19: Completed `UXR-I-12` by applying `FormMobileActionBar` to remaining long dashboard form wrappers (`strategies` create/edit and `backtests` create) and unifying save-action visibility so header actions are desktop-only while mobile save remains sticky/reachable.
 - 2026-04-19: Completed `UXR-I-13` by running focused forms/wrappers/i18n regression pack (`pnpm --filter web run test -- ... --run`) with `33/33 PASS` across wallets, markets, backtests, bots, wrapper pages, and i18n registry/translation contracts.
+- 2026-04-19: Completed `UXR-I-14` closure checks with full required PASS pack (`pnpm --filter web run typecheck`, `pnpm --filter web run build`, `pnpm run quality:guardrails`) and synchronized queue/context handoff to `UXR-J`.
 
 ## Phase UXR-J - Dashboard Tables Consistency Refresh (Queued 2026-04-19)
 - [ ] `UXR-J-01 docs(contract): freeze dashboard table action-color and columns-dropdown behavior contract`

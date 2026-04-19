@@ -7,11 +7,10 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `UXR-I-14 qa(web-forms-closure): run build/typecheck/guardrails and sync canonical queue/context`
-## NEXT
 - [ ] `UXR-J-01 docs(contract): freeze dashboard table action-color and columns-dropdown behavior contract`
-## PIPELINE
+## NEXT
 - [ ] `UXR-J-02 refactor(ui-table-actions): add dedicated module action tone and remap clone/runtime/preview presets`
+## PIPELINE
 - [ ] `UXR-J-03 refactor(ui-datatable-dropdown): keep columns dropdown open on checkbox toggles`
 - [ ] `UXR-J-04 refactor(ui-datatable-trigger): enforce icon-only columns trigger globally with a11y label`
 - [ ] `UXR-J-05 test(ui-datatable): add regression tests for dropdown persistence and icon-only trigger contract`
@@ -29,8 +28,8 @@ Operational queue for one-task execution runs.
 - [x] `UXR-H-C (commits UXR-H-08..UXR-H-10): i18n parity + focused regression + closure sync`
 - [x] `UXR-I-A (commits UXR-I-01..UXR-I-04): refresh contract + gap inventory + shared guardrails`
 - [x] `UXR-I-B (commits UXR-I-05..UXR-I-08): wrapper parity + wallets/markets/backtests residual migration`
-- [ ] `UXR-I-C (commits UXR-I-09..UXR-I-12): strategies/bots consistency closure + standardized form UX`
-- [ ] `UXR-I-D (commits UXR-I-13..UXR-I-14): focused regression + closure sync`
+- [x] `UXR-I-C (commits UXR-I-09..UXR-I-12): strategies/bots consistency closure + standardized form UX`
+- [x] `UXR-I-D (commits UXR-I-13..UXR-I-14): focused regression + closure sync`
 - [ ] `UXR-J-A (commits UXR-J-01..UXR-J-04): table action/dropdown/trigger shared contract refresh`
 - [ ] `UXR-J-B (commits UXR-J-05..UXR-J-07): focused regression alignment across shared and consuming tables`
 - [ ] `UXR-J-C (commit UXR-J-08): closure checks + canonical sync`
@@ -70,6 +69,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `UXR-I-14 qa(web-forms-closure): run build/typecheck/guardrails and sync canonical queue/context`
+  - 2026-04-19: Closure checks PASS (`pnpm --filter web run typecheck`, `pnpm --filter web run build`, `pnpm run quality:guardrails`) and canonical queue/context synchronized; `UXR-I` wave is now fully closed and handoff moved to `UXR-J`.
 - [x] `UXR-I-13 test(web-forms-regression): run/update focused suites for wrapper+i18n+form-consistency contracts`
   - 2026-04-19: Focused UXR-I regression pack PASS (`33/33`) for wallets/markets/backtests/bots forms, wallet/bot create-edit wrappers, and i18n namespace/translation registry tests via canonical command set from UXR-I plan.
 - [x] `UXR-I-12 feat(web-form-mobile): apply sticky mobile action bar contract to long dashboard forms`

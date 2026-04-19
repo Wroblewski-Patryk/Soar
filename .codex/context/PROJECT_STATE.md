@@ -103,17 +103,16 @@ Last updated: 2026-04-19
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: execute `UXR-I` dashboard forms consistency refresh
-  wave (`UXR-I-01..UXR-I-14`) from canonical queue with tiny-commit delivery.
+- Main active objective: execute `UXR-J` dashboard tables consistency refresh
+  wave (`UXR-J-01..UXR-J-08`) from canonical queue with tiny-commit delivery.
 - Top blockers:
   - Gate 2 remains open for V1 RC external gates because private-route VPS
     worker/alerts probes still require admin-auth execution context.
   - stage rehearsal endpoint verification is blocked by missing stage Soar DNS
     records (`stage-api.soar.luckysparrow.ch`, `stage-soar.luckysparrow.ch`).
 - Success criteria for this phase:
-  - residual create/edit forms consistency gaps are closed across wrappers and
-    scoped dashboard modules (`wallets`, `markets`, `backtests`, `strategies`,
-    `bots`).
+  - shared table action/dropdown/trigger behavior is standardized across
+    dashboard modules with explicit contract and focused regressions.
   - next executable queue group remains explicit with no stale reopened tasks
     from already-implemented waves.
   - production verification artifacts remain synchronized with explicit external
@@ -121,10 +120,14 @@ Last updated: 2026-04-19
   - canonical queue and context docs stay synchronized after each ARC batch.
   - no regressions in runtime safety, deploy confidence, or dashboard contracts.
 - Next queued follow-up:
-  - run `UXR-I-14`,
-  - then execute `UXR-J-A..C` for shared table-consistency closure.
+  - run `UXR-J-01`,
+  - then continue through `UXR-J-A..C` for table-consistency closure.
 
 ## Recent Progress
+- 2026-04-19: completed `UXR-I-14` closure by running required PASS pack
+  (`pnpm --filter web run typecheck`, `pnpm --filter web run build`,
+  `pnpm run quality:guardrails`) and synchronizing canonical queue/context;
+  `UXR-I` dashboard forms consistency wave is now fully closed.
 - 2026-04-19: completed `UXR-I-13` by running focused regression suite for
   dashboard forms consistency wave (`33/33 PASS`) across wallets/markets/
   backtests/bots form modules, wallet and bot create/edit wrappers, and i18n
