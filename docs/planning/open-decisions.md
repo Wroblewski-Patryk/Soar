@@ -785,6 +785,25 @@ This file tracks intentionally unresolved architecture choices so implementation
   - `docs/planning/dashboard-runtime-bot-selector-parity-plan-2026-04-18.md`
   - `docs/modules/web-dashboard-home.md`
 
+## Dashboard Selected-Bot Aggregate Runtime Contract (`DAGG`)
+- Decision state: resolved on 2026-04-19.
+- Decision:
+  - `/dashboard` selected-bot runtime tables use aggregate selected-bot scope by default (multi-session).
+  - selected-bot data source for dashboard runtime tables is unified across:
+    - `positions`,
+    - `orders`,
+    - `history`.
+  - hidden divergence between `/dashboard` and `/dashboard/bots/:id/preview` for the same selected bot is not allowed.
+- Locked behavior:
+  - dashboard selected-bot runtime contract prefers aggregate runtime payload over single-session snapshot.
+  - aggregate scope remains strict per selected bot (no cross-bot blending).
+  - if current `RUNNING` session is empty but older sessions contain history, dashboard selected bot must still expose aggregate history data.
+  - bot preview behavior remains unchanged in this wave.
+- Canonical references:
+  - `docs/planning/dashboard-aggregate-selected-bot-view-plan-2026-04-19.md`
+  - `docs/modules/web-dashboard-home.md`
+  - `docs/modules/web-bots.md`
+
 ## Dashboard Runtime Symbol Scope Strictness (Selected Bot)
 - Decision state: resolved on 2026-04-18.
 - Decision:

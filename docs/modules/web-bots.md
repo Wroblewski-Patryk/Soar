@@ -103,3 +103,13 @@ pnpm --filter web test -- src/features/bots/components/BotCreateEditForm.test.ts
     - icon-only trigger default with accessible naming.
 - Scope lock:
   - no bots-only tone overrides unless explicitly required by failing shared-table regressions.
+
+## 11. Preview vs Dashboard Aggregate Parity Linkage (`DAGG`)
+- Monitoring/preview surfaces and dashboard home must stay aligned for selected-bot aggregate visibility.
+- Contract linkage:
+  - `/dashboard/bots/:id/preview` and `/dashboard` selected bot reference the same aggregate runtime scope for:
+    - `positions`,
+    - `orders`,
+    - `history`.
+- Guardrail:
+  - if current `RUNNING` session has no rows but older sessions have runtime history, both surfaces must still expose aggregate history for that bot.

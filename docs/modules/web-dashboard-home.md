@@ -37,6 +37,7 @@ Out of scope:
   - `GET /dashboard/bots`
   - `GET /dashboard/bots/:id/runtime-graph`
   - `GET /dashboard/bots/:id/runtime-sessions`
+  - `GET /dashboard/bots/:id/runtime-monitoring/aggregate`
   - `GET /dashboard/bots/:id/runtime-sessions/:sessionId/symbol-stats`
   - `GET /dashboard/bots/:id/runtime-sessions/:sessionId/positions`
   - `GET /dashboard/bots/:id/runtime-sessions/:sessionId/trades`
@@ -47,7 +48,8 @@ Out of scope:
 ## 4. Runtime Flows
 - Initial load flow:
   1. List bots and build active scope mode-agnostically (`PAPER` + `LIVE`) with deterministic ordering and dashboard cap.
-  2. For selected bots load sessions, runtime graph, symbol stats, and positions.
+  2. For selected bots load sessions + runtime graph and aggregate selected-bot runtime payload (`symbolStats`, `positions`, `orders`, `history`, `trades`).
+  3. Keep fallback path to per-session reads only when aggregate endpoint is unavailable.
   3. Build unified runtime snapshot and summary metrics.
 - Live refresh flow:
   1. Poll runtime snapshots every 5 seconds (silent refresh).
@@ -191,7 +193,7 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
 - Runtime tabs contract:
   - `positions`: selected-bot runtime positions (including takeover rows) remain deterministic and bot-scoped.
   - `orders`: always render DataTable container in `LIVE` and `PAPER`; empty rows use deterministic table empty-state copy.
-  - `history`: selected-bot trade history remains aligned with selected runtime session domain.
+  - `history`: selected-bot history contract is aggregate scoped (selected bot, multi-session), not current-session only.
 - Signals/context contract:
   - `signals` symbols and strategy context are selected-bot scoped only.
   - strategy context in selected-bot panel must refresh immediately after bot switch.
@@ -201,3 +203,14 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
   - section spacing for selector/context rows uses `mt-6` (not `mt-3`).
 - Execution diagnostics contract:
   - when signal condition is met, runtime must either open order/position through canonical path or expose explicit blocked reason for operator diagnostics.
+
+## 19. Selected-Bot Aggregate Runtime Contract (`DAGG`)
+- Dashboard selected-bot runtime data source is aggregate by default:
+  - `positions` tab uses aggregate open positions,
+  - `orders` tab uses aggregate open orders,
+  - `history` tab uses aggregate history scope.
+- Parity rule:
+  - selected bot shown on `/dashboard` must not hide aggregate history that is visible for the same bot in `/dashboard/bots/:id/preview`.
+- Scope lock:
+  - strict selected-bot scope only (no cross-bot blending),
+  - preview behavior unchanged.
