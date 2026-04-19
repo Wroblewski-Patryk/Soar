@@ -17,9 +17,9 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] UXR-I-08 Finalize backtests-form decoupling from feature-local controls and summary ergonomics
+- [ ] UXR-I-09 Preserve strategies tabs while normalizing section internals to shared primitives
   - Status: READY
-  - Group: Dashboard Forms Consistency Refresh (`UXR-I-B`)
+  - Group: Dashboard Forms Consistency Refresh (`UXR-I-C`)
   - Owner: Frontend Builder
   - Depends on: none
   - Priority: P2
@@ -53,6 +53,8 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] UXR-I-08 Finalize backtests-form decoupling from feature-local controls and summary ergonomics
+  - 2026-04-19: Aligned backtests create form shell to shared `FormPageShell` + section-card structure by removing feature-local outer container wrappers while preserving run-config/simulation payload behavior and focused backtests-form tests.
 - [x] UXR-I-07 Enforce markets-form sectioned IA and remove residual local generic controls
   - 2026-04-19: Reworked `MarketUniverseForm` into shared `FormSectionCard` + `FormGrid` IA structure, removing ad-hoc section layout wrappers while preserving catalog/filter behavior and focused market-form regression coverage.
 - [x] UXR-I-06 Close wallets-form residual layout/control parity gaps using ui/forms primitives

@@ -7,11 +7,10 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `UXR-I-08 refactor(web-backtests-form): finalize decoupling from feature-local controls and align summary ergonomics`
-## NEXT
 - [ ] `UXR-I-09 refactor(web-strategies-form): preserve tabs while normalizing section internals to shared primitives`
-## PIPELINE
+## NEXT
 - [ ] `UXR-I-10 refactor(web-bots-form): reduce layout density and align controls to shared form system`
+## PIPELINE
 - [ ] `UXR-I-11 feat(web-form-ux): standardize first-error focus/scroll + summary/inline sync across scoped forms`
 - [ ] `UXR-I-12 feat(web-form-mobile): apply sticky mobile action bar contract to long dashboard forms`
 - [ ] `UXR-I-13 test(web-forms-regression): run/update focused suites for wrapper+i18n+form-consistency contracts`
@@ -34,7 +33,7 @@ Operational queue for one-task execution runs.
 - [x] `UXR-H-B (commits UXR-H-04..UXR-H-07): dashboard manual-order state+UI expansion + container cleanup`
 - [x] `UXR-H-C (commits UXR-H-08..UXR-H-10): i18n parity + focused regression + closure sync`
 - [x] `UXR-I-A (commits UXR-I-01..UXR-I-04): refresh contract + gap inventory + shared guardrails`
-- [ ] `UXR-I-B (commits UXR-I-05..UXR-I-08): wrapper parity + wallets/markets/backtests residual migration`
+- [x] `UXR-I-B (commits UXR-I-05..UXR-I-08): wrapper parity + wallets/markets/backtests residual migration`
 - [ ] `UXR-I-C (commits UXR-I-09..UXR-I-12): strategies/bots consistency closure + standardized form UX`
 - [ ] `UXR-I-D (commits UXR-I-13..UXR-I-14): focused regression + closure sync`
 - [ ] `UXR-J-A (commits UXR-J-01..UXR-J-04): table action/dropdown/trigger shared contract refresh`
@@ -76,6 +75,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `UXR-I-08 refactor(web-backtests-form): finalize decoupling from feature-local controls and align summary ergonomics`
+  - 2026-04-19: Replaced feature-local outer container wrapper in `BacktestCreateForm` with shared `FormPageShell` while preserving section contracts and focused backtests-form test coverage.
 - [x] `UXR-I-07 refactor(web-markets-form): enforce sectioned IA and remove any residual local generic controls`
   - 2026-04-19: Refactored `MarketUniverseForm` to sectioned shared IA (`FormSectionCard` + `FormGrid`) and removed local ad-hoc section wrappers while keeping market-catalog/filter behavior and tests green.
 - [x] `UXR-I-06 refactor(web-wallets-form): close residual layout/control parity gaps using ui/forms primitives`

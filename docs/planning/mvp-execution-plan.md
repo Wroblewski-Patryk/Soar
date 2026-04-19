@@ -2059,7 +2059,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - [x] `UXR-I-05 refactor(web-wrappers): unify create/edit wrappers i18n+breadcrumb+save-action contract`
 - [x] `UXR-I-06 refactor(web-wallets-form): close residual layout/control parity gaps using ui/forms primitives`
 - [x] `UXR-I-07 refactor(web-markets-form): enforce sectioned IA and remove any residual local generic controls`
-- [ ] `UXR-I-08 refactor(web-backtests-form): finalize decoupling from feature-local controls and align summary ergonomics`
+- [x] `UXR-I-08 refactor(web-backtests-form): finalize decoupling from feature-local controls and align summary ergonomics`
 - [ ] `UXR-I-09 refactor(web-strategies-form): preserve tabs while normalizing section internals to shared primitives`
 - [ ] `UXR-I-10 refactor(web-bots-form): reduce layout density and align controls to shared form system`
 - [ ] `UXR-I-11 feat(web-form-ux): standardize first-error focus/scroll + summary/inline sync across scoped forms`
@@ -2076,6 +2076,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-19: Completed `UXR-I-05` by unifying wallet/bot create-edit wrapper save-action contract (desktop + mobile actions now reflect form submitting state with disabled/loading labels) and adding missing localized saving copy in `dashboard-wallets` + `dashboard-bots.page`.
 - 2026-04-19: Completed `UXR-I-06` by migrating wallet residual controls to shared form primitives (`RadioGroupField` for mode, `SelectField` for base currency, `NumberField` + `SelectField` for LIVE allocation) and updating focused wallet regression assertions.
 - 2026-04-19: Completed `UXR-I-07` by reworking `MarketUniverseForm` to shared sectioned IA (`FormSectionCard` + `FormGrid`) and removing local section layout wrappers while preserving market-catalog filter behavior.
+- 2026-04-19: Completed `UXR-I-08` by replacing `BacktestCreateForm` feature-local outer shell with shared `FormPageShell` and preserving run-config/simulation section contracts plus focused form regression coverage.
 
 ## Phase UXR-J - Dashboard Tables Consistency Refresh (Queued 2026-04-19)
 - [ ] `UXR-J-01 docs(contract): freeze dashboard table action-color and columns-dropdown behavior contract`

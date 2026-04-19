@@ -9,7 +9,16 @@ import { listMarketUniverses } from '../../markets/services/markets.service';
 import { MarketUniverse } from '../../markets/types/marketUniverse.type';
 import { useI18n } from '../../../i18n/I18nProvider';
 import { hasFormText, normalizeFormText, resolveFormErrorMessage } from '@/lib/forms';
-import { FormGrid, FormSectionCard, FormValidationSummary, NumberField, SelectField, TextField, TextareaField } from '@/ui/forms';
+import {
+  FormGrid,
+  FormPageShell,
+  FormSectionCard,
+  FormValidationSummary,
+  NumberField,
+  SelectField,
+  TextField,
+  TextareaField,
+} from '@/ui/forms';
 
 type BacktestCreateFormProps = {
   formId?: string;
@@ -301,15 +310,7 @@ export default function BacktestCreateForm({ formId = 'backtest-form', submittin
         <FormValidationSummary title={copy.validationSummaryTitle} errors={validationSummaryErrors} />
       ) : null}
       <fieldset disabled={submitting} className='space-y-4'>
-      <div className='rounded-box border border-base-300/60 bg-base-100/80 p-4 md:p-5 space-y-5'>
-        <div className='flex flex-wrap items-start gap-3'>
-          <div className='space-y-1'>
-            <h2 className='text-2xl'>{copy.title}</h2>
-            <p className='text-sm opacity-70'>{copy.subtitle}</p>
-          </div>
-        </div>
-
-        <div className='space-y-4'>
+        <FormPageShell title={copy.title} description={copy.subtitle}>
           <FormSectionCard title={copy.sectionRunConfig}>
             <FormGrid columns={2}>
               <TextField
@@ -411,8 +412,7 @@ export default function BacktestCreateForm({ formId = 'backtest-form', submittin
               />
             </FormGrid>
           </FormSectionCard>
-        </div>
-      </div>
+        </FormPageShell>
       </fieldset>
     </form>
   );
