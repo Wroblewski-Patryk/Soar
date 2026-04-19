@@ -17,8 +17,10 @@ import { getAxiosMessage } from "@/lib/getAxiosMessage";
 import {
   BotRuntimePositionItem,
   BotRuntimeTrade,
+  DashboardManualOrderContext,
 } from "../../../features/bots/types/bot.type";
 import {
+  getDashboardManualOrderContext,
   getBotRuntimeGraph,
   listBots,
   openDashboardManualOrder,
@@ -223,6 +225,11 @@ const parsePositiveQuantityInput = (value: string): number | "invalid" => {
   return parsed;
 };
 
+const formatQuantityForInput = (value: number) => {
+  if (!Number.isFinite(value) || value <= 0) return "";
+  return Number(value.toFixed(8)).toString();
+};
+
 type TradeActionValue = "OPEN" | "DCA" | "CLOSE" | "UNKNOWN";
 type TradeActionReasonValue =
   | "SIGNAL_ENTRY"
@@ -333,7 +340,11 @@ export default function HomeLiveWidgets() {
   const [isSavingPositionEdit, setIsSavingPositionEdit] = useState(false);
   const [manualOrderSymbol, setManualOrderSymbol] = useState("");
   const [manualOrderSide, setManualOrderSide] = useState<ManualOrderSide>("BUY");
+  const [manualOrderPrice, setManualOrderPrice] = useState("");
   const [manualOrderQuantity, setManualOrderQuantity] = useState("");
+  const [manualOrderSliderPercent, setManualOrderSliderPercent] = useState(0);
+  const [manualOrderContext, setManualOrderContext] = useState<DashboardManualOrderContext | null>(null);
+  const [manualOrderContextLoading, setManualOrderContextLoading] = useState(false);
   const [isSubmittingManualOrder, setIsSubmittingManualOrder] = useState(false);
   const runtimeOnboardingSteps = useMemo(() => buildRuntimeOnboardingSteps(t), [t]);
   const runtimeNoActiveBotsOnboardingSteps = useMemo(
@@ -477,6 +488,9 @@ export default function HomeLiveWidgets() {
   const manualOrderErrorLabel = t("dashboard.home.runtime.manualOrderError");
   const manualOrderInvalidSymbolLabel = t("dashboard.home.runtime.manualOrderSymbolRequired");
   const manualOrderInvalidQuantityLabel = t("dashboard.home.runtime.manualOrderQuantityRequired");
+  const manualOrderInvalidPriceLabel = t("dashboard.home.runtime.manualOrderPriceInvalid");
+  const manualOrderRequiredPriceLabel = t("dashboard.home.runtime.manualOrderPriceRequired");
+  const manualOrderMinQuantityLabel = t("dashboard.home.runtime.manualOrderMinQtyValidation");
   const editPositionButtonLabel = t("dashboard.home.runtime.editPositionButton");
   const editPositionModalTitle = t("dashboard.home.runtime.editPositionTitle");
   const editPositionModalDescription = t("dashboard.home.runtime.editPositionDescription");
@@ -556,6 +570,185 @@ export default function HomeLiveWidgets() {
     }
   }, [manualOrderSymbol, manualOrderSymbolOptions]);
 
+  useEffect(() => {
+    const symbol = normalizeSymbol(manualOrderSymbol);
+    const selectedBotId = selected?.bot.id;
+    if (!selectedBotId || !symbol) {
+      setManualOrderContext(null);
+      setManualOrderContextLoading(false);
+      return;
+    }
+
+    let canceled = false;
+    setManualOrderContextLoading(true);
+
+    void getDashboardManualOrderContext({
+      botId: selectedBotId,
+      symbol,
+      side: manualOrderSide,
+    })
+      .then((context) => {
+        if (canceled) return;
+        setManualOrderContext(context);
+      })
+      .catch(() => {
+        if (canceled) return;
+        setManualOrderContext(null);
+      })
+      .finally(() => {
+        if (canceled) return;
+        setManualOrderContextLoading(false);
+      });
+
+    return () => {
+      canceled = true;
+    };
+  }, [manualOrderSide, manualOrderSymbol, selected?.bot.id]);
+
+  const manualOrderLiveReferencePrice = useMemo(() => {
+    const symbolKey = normalizeSymbol(manualOrderSymbol);
+    if (!symbolKey) return null;
+
+    const contextPrice = manualOrderContext?.priceReference.markPrice;
+    if (typeof contextPrice === "number" && Number.isFinite(contextPrice) && contextPrice > 0) {
+      return contextPrice;
+    }
+
+    const symbolItem = selectedData?.symbols.find((item) => normalizeSymbol(item.symbol) === symbolKey);
+    if (typeof symbolItem?.liveLastPrice === "number" && Number.isFinite(symbolItem.liveLastPrice) && symbolItem.liveLastPrice > 0) {
+      return symbolItem.liveLastPrice;
+    }
+
+    const openPositionItem = selectedData?.open.find((item) => normalizeSymbol(item.symbol) === symbolKey);
+    if (typeof openPositionItem?.liveMarkPrice === "number" && Number.isFinite(openPositionItem.liveMarkPrice) && openPositionItem.liveMarkPrice > 0) {
+      return openPositionItem.liveMarkPrice;
+    }
+
+    if (typeof openPositionItem?.entryPrice === "number" && Number.isFinite(openPositionItem.entryPrice) && openPositionItem.entryPrice > 0) {
+      return openPositionItem.entryPrice;
+    }
+
+    return null;
+  }, [manualOrderContext?.priceReference.markPrice, manualOrderSymbol, selectedData?.open, selectedData?.symbols]);
+
+  const resolvedManualOrderType = manualOrderContext?.orderType ?? "MARKET";
+  const manualOrderTypeRequiresPrice =
+    resolvedManualOrderType === "LIMIT" ||
+    resolvedManualOrderType === "STOP" ||
+    resolvedManualOrderType === "STOP_LIMIT" ||
+    resolvedManualOrderType === "TAKE_PROFIT";
+  const manualOrderMinExecutableQty = manualOrderContext?.quantityConstraints.minExecutableQty ?? null;
+
+  const manualOrderLeverageForEstimate = useMemo(() => {
+    if (manualOrderContext?.leverage && Number.isFinite(manualOrderContext.leverage) && manualOrderContext.leverage > 0) {
+      return manualOrderContext.leverage;
+    }
+    return selected?.bot.marketType === "SPOT" ? 1 : null;
+  }, [manualOrderContext?.leverage, selected?.bot.marketType]);
+
+  const manualOrderSliderMaxQuantity = useMemo(() => {
+    if (manualOrderLiveReferencePrice == null || manualOrderLiveReferencePrice <= 0) {
+      return manualOrderMinExecutableQty;
+    }
+    const freeCash = selectedData?.free;
+    if (freeCash == null || !Number.isFinite(freeCash) || freeCash <= 0) {
+      return manualOrderMinExecutableQty;
+    }
+
+    const leverage = manualOrderLeverageForEstimate ?? 1;
+    const rawMax =
+      selected?.bot.marketType === "SPOT"
+        ? freeCash / manualOrderLiveReferencePrice
+        : (freeCash * Math.max(1, leverage)) / manualOrderLiveReferencePrice;
+    if (!Number.isFinite(rawMax) || rawMax <= 0) return manualOrderMinExecutableQty;
+
+    if (manualOrderMinExecutableQty != null) {
+      return Math.max(manualOrderMinExecutableQty, rawMax);
+    }
+    return rawMax;
+  }, [
+    manualOrderLeverageForEstimate,
+    manualOrderLiveReferencePrice,
+    manualOrderMinExecutableQty,
+    selected?.bot.marketType,
+    selectedData?.free,
+  ]);
+
+  useEffect(() => {
+    if (manualOrderMinExecutableQty == null || !Number.isFinite(manualOrderMinExecutableQty) || manualOrderMinExecutableQty <= 0) {
+      return;
+    }
+
+    setManualOrderQuantity((current) => {
+      const parsed = Number(current);
+      if (!Number.isFinite(parsed) || parsed <= 0 || parsed < manualOrderMinExecutableQty) {
+        return formatQuantityForInput(manualOrderMinExecutableQty);
+      }
+      return current;
+    });
+  }, [manualOrderMinExecutableQty]);
+
+  useEffect(() => {
+    const minQty = manualOrderMinExecutableQty ?? 0;
+    const maxQty = manualOrderSliderMaxQuantity ?? minQty;
+    if (maxQty <= 0 || maxQty < minQty) return;
+
+    const parsed = Number(manualOrderQuantity);
+    if (!Number.isFinite(parsed) || parsed < minQty) {
+      setManualOrderSliderPercent(0);
+      return;
+    }
+
+    if (maxQty === minQty) {
+      setManualOrderSliderPercent(100);
+      return;
+    }
+
+    const derived = ((parsed - minQty) / (maxQty - minQty)) * 100;
+    if (!Number.isFinite(derived)) return;
+    const clamped = Math.max(0, Math.min(100, derived));
+    setManualOrderSliderPercent(clamped);
+  }, [manualOrderMinExecutableQty, manualOrderQuantity, manualOrderSliderMaxQuantity]);
+
+  const handleManualOrderSliderChange = useCallback((nextPercent: number) => {
+    const clampedPercent = Math.max(0, Math.min(100, nextPercent));
+    setManualOrderSliderPercent(clampedPercent);
+
+    const minQty = manualOrderMinExecutableQty ?? 0;
+    const maxQty = manualOrderSliderMaxQuantity ?? minQty;
+    if (!Number.isFinite(maxQty) || maxQty <= 0) return;
+
+    const targetQuantity =
+      maxQty <= minQty
+        ? minQty
+        : minQty + ((maxQty - minQty) * clampedPercent) / 100;
+    setManualOrderQuantity(formatQuantityForInput(targetQuantity));
+  }, [manualOrderMinExecutableQty, manualOrderSliderMaxQuantity]);
+
+  const fillManualOrderPriceFromReference = useCallback(() => {
+    if (manualOrderLiveReferencePrice == null || !Number.isFinite(manualOrderLiveReferencePrice) || manualOrderLiveReferencePrice <= 0) {
+      return;
+    }
+    setManualOrderPrice(formatQuantityForInput(manualOrderLiveReferencePrice));
+  }, [manualOrderLiveReferencePrice]);
+
+  const manualOrderQuantityValue = useMemo(() => {
+    const parsed = Number(manualOrderQuantity);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+  }, [manualOrderQuantity]);
+
+  const manualOrderNotionalEstimate = useMemo(() => {
+    if (manualOrderQuantityValue == null || manualOrderLiveReferencePrice == null) return null;
+    return manualOrderQuantityValue * manualOrderLiveReferencePrice;
+  }, [manualOrderLiveReferencePrice, manualOrderQuantityValue]);
+
+  const manualOrderMarginEstimate = useMemo(() => {
+    if (manualOrderNotionalEstimate == null || manualOrderLeverageForEstimate == null || manualOrderLeverageForEstimate <= 0) {
+      return null;
+    }
+    return manualOrderNotionalEstimate / manualOrderLeverageForEstimate;
+  }, [manualOrderLeverageForEstimate, manualOrderNotionalEstimate]);
+
   const handleSubmitManualOrder = useCallback(async () => {
     if (!selected) return;
     const symbol = normalizeSymbol(manualOrderSymbol);
@@ -568,6 +761,24 @@ export default function HomeLiveWidgets() {
       toast.error(manualOrderInvalidQuantityLabel);
       return;
     }
+    if (manualOrderMinExecutableQty != null && quantity < manualOrderMinExecutableQty) {
+      toast.error(
+        interpolateTemplate(manualOrderMinQuantityLabel, {
+          value: formatQuantityForInput(manualOrderMinExecutableQty),
+        })
+      );
+      return;
+    }
+
+    const parsedPrice = parseOptionalPositivePriceInput(manualOrderPrice);
+    if (parsedPrice === "invalid") {
+      toast.error(manualOrderInvalidPriceLabel);
+      return;
+    }
+    if (manualOrderTypeRequiresPrice && parsedPrice == null) {
+      toast.error(manualOrderRequiredPriceLabel);
+      return;
+    }
 
     setIsSubmittingManualOrder(true);
     try {
@@ -577,8 +788,9 @@ export default function HomeLiveWidgets() {
         strategyId: selected.bot.strategyId ?? undefined,
         symbol,
         side: manualOrderSide,
-        type: "MARKET",
+        type: resolvedManualOrderType,
         quantity,
+        price: manualOrderTypeRequiresPrice && typeof parsedPrice === "number" ? parsedPrice : undefined,
         mode: selected.bot.mode,
         riskAck: selected.bot.mode === "LIVE" ? true : undefined,
       });
@@ -593,12 +805,19 @@ export default function HomeLiveWidgets() {
   }, [
     load,
     manualOrderInvalidQuantityLabel,
+    manualOrderInvalidPriceLabel,
+    manualOrderMinExecutableQty,
+    manualOrderMinQuantityLabel,
+    manualOrderPrice,
+    manualOrderRequiredPriceLabel,
     manualOrderInvalidSymbolLabel,
     manualOrderQuantity,
     manualOrderSide,
     manualOrderSymbol,
     manualOrderErrorLabel,
     manualOrderSuccessLabel,
+    manualOrderTypeRequiresPrice,
+    resolvedManualOrderType,
     selected,
   ]);
 
@@ -1088,25 +1307,51 @@ export default function HomeLiveWidgets() {
             title: manualOrderPanelTitle,
             symbolLabel: t("dashboard.home.runtime.symbol"),
             sideLabel: t("dashboard.home.runtime.side"),
+            orderTypeLabel: t("dashboard.home.runtime.manualOrderOrderTypeLabel"),
+            marginModeLabel: t("dashboard.home.runtime.manualOrderMarginModeLabel"),
+            leverageLabel: t("dashboard.home.runtime.manualOrderLeverageLabel"),
             quantityLabel: t("dashboard.home.runtime.qty"),
-            notionalEstimateLabel: t("dashboard.home.runtime.manualOrderNotionalEstimate"),
-            marginEstimateLabel: t("dashboard.home.runtime.manualOrderMarginEstimate"),
             priceLabel: t("dashboard.home.runtime.price"),
+            fillPriceLabel: t("dashboard.home.runtime.manualOrderUseMarketPrice"),
+            minQtyLabel: t("dashboard.home.runtime.manualOrderMinQtyLabel"),
+            sliderLabel: t("dashboard.home.runtime.manualOrderSliderLabel"),
+            sliderMinLabel: t("dashboard.home.runtime.manualOrderSliderMinLabel"),
+            sliderMaxLabel: t("dashboard.home.runtime.manualOrderSliderMaxLabel"),
+            summaryBuyLabel: t("dashboard.home.runtime.manualOrderSummaryBuy"),
+            summarySellLabel: t("dashboard.home.runtime.manualOrderSummarySell"),
+            summaryEstimateLabel: t("dashboard.home.runtime.manualOrderSummaryEstimate"),
+            summaryMaxLabel: t("dashboard.home.runtime.manualOrderSummaryMax"),
             openLabel: manualOrderOpenLabel,
             openingLabel: manualOrderSubmittingLabel,
             buyLabel: t("dashboard.home.runtime.manualOrderBuyLabel"),
             sellLabel: t("dashboard.home.runtime.manualOrderSellLabel"),
+            contextLoadingLabel: t("dashboard.home.runtime.manualOrderContextLoading"),
+            contextUnavailableLabel: t("dashboard.home.runtime.manualOrderContextUnavailable"),
             noSymbolsLabel: t("dashboard.home.runtime.noSignalData"),
             botContext: selected ? `${selected.bot.name} | ${selected.bot.mode}` : "-",
             symbolOptions: manualOrderSymbolOptions,
             symbol: manualOrderSymbol,
             side: manualOrderSide,
+            orderType: resolvedManualOrderType,
+            marginMode: manualOrderContext?.marginMode ?? (selected?.bot.marketType === "SPOT" ? "NONE" : "CROSSED"),
+            leverage: manualOrderLeverageForEstimate,
+            minExecutableQty: manualOrderMinExecutableQty,
+            maxExecutableQty: manualOrderSliderMaxQuantity ?? null,
+            liveReferencePrice: manualOrderLiveReferencePrice,
             quantity: manualOrderQuantity,
+            price: manualOrderPrice,
+            sliderPercent: manualOrderSliderPercent,
+            estimatedNotional: manualOrderNotionalEstimate,
+            estimatedMargin: manualOrderMarginEstimate,
+            isContextLoading: manualOrderContextLoading,
             isSubmitting: isSubmittingManualOrder,
             isActionDisabled: !selectedRuntimeCapabilityAvailable || manualOrderSymbolOptions.length === 0,
             onSymbolChange: setManualOrderSymbol,
             onSideChange: setManualOrderSide,
+            onPriceChange: setManualOrderPrice,
+            onFillPrice: fillManualOrderPriceFromReference,
             onQuantityChange: setManualOrderQuantity,
+            onSliderChange: handleManualOrderSliderChange,
             onSubmit: () => void handleSubmitManualOrder(),
           }}
           text={{

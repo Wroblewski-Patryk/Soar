@@ -12,6 +12,7 @@ const listBotRuntimeSessionPositionsMock = vi.hoisted(() => vi.fn());
 const listBotRuntimeSessionTradesMock = vi.hoisted(() => vi.fn());
 const closeBotRuntimeSessionPositionMock = vi.hoisted(() => vi.fn());
 const openDashboardManualOrderMock = vi.hoisted(() => vi.fn());
+const getDashboardManualOrderContextMock = vi.hoisted(() => vi.fn());
 const updatePositionManualParamsMock = vi.hoisted(() => vi.fn());
 const lookupCoinIconsMock = vi.hoisted(() => vi.fn());
 
@@ -24,6 +25,7 @@ vi.mock("../../../features/bots/services/bots.service", () => ({
   listBotRuntimeSessionTrades: listBotRuntimeSessionTradesMock,
   closeBotRuntimeSessionPosition: closeBotRuntimeSessionPositionMock,
   openDashboardManualOrder: openDashboardManualOrderMock,
+  getDashboardManualOrderContext: getDashboardManualOrderContextMock,
 }));
 
 vi.mock("../../../features/icons/services/icons.service", () => ({
@@ -52,6 +54,34 @@ describe("HomeLiveWidgets", () => {
       id: "order-default",
       status: "OPEN",
     });
+    getDashboardManualOrderContextMock.mockReset();
+    getDashboardManualOrderContextMock.mockImplementation(
+      async (params: { botId: string; symbol: string; side?: "BUY" | "SELL"; quantity?: number }) => ({
+        botId: params.botId,
+        symbol: params.symbol.toUpperCase(),
+        mode: "PAPER",
+        orderType: "MARKET",
+        marginMode: "CROSSED",
+        leverage: 10,
+        priceReference: {
+          markPrice: 68000,
+          source: "exchange_mark",
+        },
+        quantityConstraints: {
+          minAmount: 0.001,
+          amountPrecision: 0.001,
+          minNotional: 50,
+          minExecutableQty: 0.001,
+        },
+        sideAwarePreview: {
+          side: params.side ?? "BUY",
+          requestedQuantity: params.quantity ?? null,
+          estimatedNotional: params.quantity ? params.quantity * 68000 : null,
+          estimatedMargin: params.quantity ? (params.quantity * 68000) / 10 : null,
+          maxOpenPositions: 2,
+        },
+      })
+    );
     updatePositionManualParamsMock.mockReset();
     updatePositionManualParamsMock.mockResolvedValue({
       id: "position-default",
@@ -893,11 +923,13 @@ describe("HomeLiveWidgets", () => {
     const symbolSelect = await screen.findByLabelText(/Symbol/i);
     fireEvent.change(symbolSelect, { target: { value: "BTCUSDT" } });
     fireEvent.click(screen.getByRole("button", { name: /sprzedaj|sell/i }));
-    fireEvent.change(screen.getByLabelText(/Qty|Ilosc/i), { target: { value: "0.25" } });
-    expect(screen.getByTestId("manual-order-price")).toHaveTextContent(/68[\s\u00a0,.]*000/i);
-    expect(screen.getByTestId("manual-order-notional-estimate")).toHaveTextContent(/17[\s\u00a0,.]*000/i);
-    expect(screen.getByTestId("manual-order-margin-estimate")).toHaveTextContent(/1[\s\u00a0,.]*700/i);
-    expect(screen.getByTestId("manual-order-leverage")).toHaveTextContent("10x");
+    fireEvent.change(screen.getByTestId("manual-order-quantity-input"), { target: { value: "0.25" } });
+    await waitFor(() => {
+      expect(screen.getByTestId("manual-order-order-type")).toHaveTextContent("MARKET");
+      expect(screen.getByTestId("manual-order-margin-mode")).toHaveTextContent("CROSSED");
+      expect(screen.getByTestId("manual-order-leverage")).toHaveTextContent("10x");
+      expect(screen.getByTestId("manual-order-summary-line")).toHaveTextContent(/17[\s\u00a0,.]*000/i);
+    });
     fireEvent.click(screen.getByRole("button", { name: /Otworz zlecenie reczne|Open manual order/i }));
 
     await waitFor(() => {

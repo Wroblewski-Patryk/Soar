@@ -13,6 +13,8 @@ import {
   BotRuntimeClosePositionResponse,
   BotRuntimeMonitoringAggregateResponse,
   BotRuntimeTradesResponse,
+  DashboardManualOrderContext,
+  DashboardManualOrderType,
   BotSubagentConfig,
   CreateBotInput,
   TradeMarket,
@@ -153,8 +155,9 @@ export const openDashboardManualOrder = async (payload: {
   strategyId?: string;
   symbol: string;
   side: "BUY" | "SELL";
-  type: "MARKET";
+  type: DashboardManualOrderType;
   quantity: number;
+  price?: number;
   mode: "PAPER" | "LIVE";
   riskAck?: boolean;
 }): Promise<{ id: string; status: string }> => {
@@ -162,6 +165,16 @@ export const openDashboardManualOrder = async (payload: {
     ...payload,
     riskAck: payload.mode === "LIVE" ? (payload.riskAck ?? true) : undefined,
   });
+  return res.data;
+};
+
+export const getDashboardManualOrderContext = async (params: {
+  botId: string;
+  symbol: string;
+  side?: "BUY" | "SELL";
+  quantity?: number;
+}): Promise<DashboardManualOrderContext> => {
+  const res = await api.get<DashboardManualOrderContext>("/dashboard/orders/manual-context", { params });
   return res.data;
 };
 

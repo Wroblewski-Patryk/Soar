@@ -100,6 +100,40 @@ export type BotRuntimeGraph = {
   }>;
 };
 
+export type DashboardManualOrderType =
+  | "MARKET"
+  | "LIMIT"
+  | "STOP"
+  | "STOP_LIMIT"
+  | "TAKE_PROFIT"
+  | "TRAILING";
+
+export type DashboardManualOrderContext = {
+  botId: string;
+  symbol: string;
+  mode: BotMode;
+  orderType: DashboardManualOrderType;
+  marginMode: "CROSSED" | "ISOLATED" | "NONE";
+  leverage: number;
+  priceReference: {
+    markPrice: number | null;
+    source: "exchange_mark" | "unavailable";
+  };
+  quantityConstraints: {
+    minAmount: number | null;
+    amountPrecision: number | null;
+    minNotional: number | null;
+    minExecutableQty: number | null;
+  };
+  sideAwarePreview: {
+    side: "BUY" | "SELL";
+    requestedQuantity: number | null;
+    estimatedNotional: number | null;
+    estimatedMargin: number | null;
+    maxOpenPositions: number | null;
+  };
+};
+
 export type BotRuntimeSessionStatus = "RUNNING" | "COMPLETED" | "FAILED" | "CANCELED";
 
 export type BotRuntimeSessionListItem = {

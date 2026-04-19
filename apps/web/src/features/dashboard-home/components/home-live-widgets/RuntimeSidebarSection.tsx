@@ -23,25 +23,51 @@ type RuntimeSidebarSectionProps = {
     title: string;
     symbolLabel: string;
     sideLabel: string;
+    orderTypeLabel: string;
+    marginModeLabel: string;
+    leverageLabel: string;
     quantityLabel: string;
-    notionalEstimateLabel: string;
-    marginEstimateLabel: string;
     priceLabel: string;
+    fillPriceLabel: string;
+    minQtyLabel: string;
+    sliderLabel: string;
+    sliderMinLabel: string;
+    sliderMaxLabel: string;
+    summaryBuyLabel: string;
+    summarySellLabel: string;
+    summaryEstimateLabel: string;
+    summaryMaxLabel: string;
     openLabel: string;
     openingLabel: string;
     buyLabel: string;
     sellLabel: string;
+    contextLoadingLabel: string;
+    contextUnavailableLabel: string;
     noSymbolsLabel: string;
     botContext: string;
     symbolOptions: string[];
     symbol: string;
     side: "BUY" | "SELL";
+    orderType: "MARKET" | "LIMIT" | "STOP" | "STOP_LIMIT" | "TAKE_PROFIT" | "TRAILING";
+    marginMode: "CROSSED" | "ISOLATED" | "NONE";
+    leverage: number | null;
+    minExecutableQty: number | null;
+    maxExecutableQty: number | null;
+    liveReferencePrice: number | null;
     quantity: string;
+    price: string;
+    sliderPercent: number;
+    estimatedNotional: number | null;
+    estimatedMargin: number | null;
+    isContextLoading: boolean;
     isSubmitting: boolean;
     isActionDisabled: boolean;
     onSymbolChange: (symbol: string) => void;
     onSideChange: (side: "BUY" | "SELL") => void;
+    onPriceChange: (price: string) => void;
+    onFillPrice: () => void;
     onQuantityChange: (quantity: string) => void;
+    onSliderChange: (nextPercent: number) => void;
     onSubmit: () => void;
   };
   text: {
@@ -198,39 +224,10 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
     if (selectedStrategyLeverageValue != null) return `${selectedStrategyLeverageValue}x`;
     return "-";
   })();
-  const manualOrderSymbolKey = normalizeSymbol(props.manualOrder.symbol);
-  const manualOrderLivePrice = (() => {
-    if (!manualOrderSymbolKey) return null;
-    const symbolItem = props.selectedData?.symbols.find((item) => normalizeSymbol(item.symbol) === manualOrderSymbolKey);
-    if (typeof symbolItem?.liveLastPrice === "number" && Number.isFinite(symbolItem.liveLastPrice) && symbolItem.liveLastPrice > 0) {
-      return symbolItem.liveLastPrice;
-    }
-    const openPositionItem = props.selectedData?.open.find((item) => normalizeSymbol(item.symbol) === manualOrderSymbolKey);
-    if (typeof openPositionItem?.liveMarkPrice === "number" && Number.isFinite(openPositionItem.liveMarkPrice) && openPositionItem.liveMarkPrice > 0) {
-      return openPositionItem.liveMarkPrice;
-    }
-    if (typeof openPositionItem?.entryPrice === "number" && Number.isFinite(openPositionItem.entryPrice) && openPositionItem.entryPrice > 0) {
-      return openPositionItem.entryPrice;
-    }
-    return null;
-  })();
-  const manualOrderQuantityValue = (() => {
-    const parsed = Number(props.manualOrder.quantity);
-    return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
-  })();
-  const manualOrderLeverageForEstimate =
-    selectedStrategyLeverageValue ??
-    (props.selected?.bot.marketType === "SPOT" ? 1 : null);
-  const manualOrderNotionalEstimate =
-    manualOrderQuantityValue != null && manualOrderLivePrice != null
-      ? manualOrderQuantityValue * manualOrderLivePrice
-      : null;
-  const manualOrderMarginEstimate =
-    manualOrderNotionalEstimate != null &&
-      manualOrderLeverageForEstimate != null &&
-      manualOrderLeverageForEstimate > 0
-      ? manualOrderNotionalEstimate / manualOrderLeverageForEstimate
-      : null;
+  const manualOrderSummaryLabel =
+    props.manualOrder.side === "BUY"
+      ? props.manualOrder.summaryBuyLabel
+      : props.manualOrder.summarySellLabel;
   const selectedBaseCurrency = (() => {
     const fromWallet = selectedWallet?.baseCurrency;
     if (fromWallet) return fromWallet.toUpperCase();
@@ -423,10 +420,7 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
 
         <section className={panelFrameClassName} data-testid="manual-order-section">
           <div className={`${panelBodyClassName} text-xs`}>
-            <section
-              className="rounded-box border border-base-300/45 bg-base-100/60 p-2.5"
-              data-testid="manual-order-panel"
-            >
+            <div data-testid="manual-order-panel">
               <div className="mb-2 flex items-center justify-between gap-2">
                 <p className="text-[11px] font-semibold uppercase tracking-wide opacity-70">
                   {props.manualOrder.title}
@@ -484,48 +478,100 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
                   </div>
                 </div>
                 <label className="form-control gap-1">
+                  <span className="label-text text-xs">{props.manualOrder.priceLabel}</span>
+                  <div className="flex gap-1">
+                    <input
+                      type="number"
+                      inputMode="decimal"
+                      min="0"
+                      step="0.000001"
+                      className="input input-bordered input-sm flex-1"
+                      value={props.manualOrder.price}
+                      disabled={props.manualOrder.isSubmitting}
+                      onChange={(event) => props.manualOrder.onPriceChange(event.target.value)}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-outline btn-sm"
+                      disabled={props.manualOrder.isSubmitting || props.manualOrder.liveReferencePrice == null}
+                      onClick={props.manualOrder.onFillPrice}
+                    >
+                      {props.manualOrder.fillPriceLabel}
+                    </button>
+                  </div>
+                </label>
+                <label className="form-control gap-1">
                   <span className="label-text text-xs">{props.manualOrder.quantityLabel}</span>
                   <input
                     type="number"
                     inputMode="decimal"
-                    min="0"
+                    min={props.manualOrder.minExecutableQty ?? 0}
                     step="0.000001"
                     className="input input-bordered input-sm"
+                    data-testid="manual-order-quantity-input"
                     value={props.manualOrder.quantity}
                     disabled={props.manualOrder.isSubmitting}
                     onChange={(event) => props.manualOrder.onQuantityChange(event.target.value)}
                   />
+                  <span className="text-[10px] opacity-70">
+                    {props.manualOrder.minQtyLabel}: {props.manualOrder.minExecutableQty != null ? props.formatNumber(props.manualOrder.minExecutableQty, { maximumFractionDigits: 8 }) : "-"}
+                  </span>
                 </label>
-                <div
-                  className="rounded-box border border-base-300/45 bg-base-100/55 p-2 text-[11px]"
-                  data-testid="manual-order-estimates"
-                >
+                <label className="form-control gap-1">
+                  <span className="label-text text-xs">{props.manualOrder.sliderLabel}</span>
+                  <input
+                    type="range"
+                    min={0}
+                    max={100}
+                    value={props.manualOrder.sliderPercent}
+                    onChange={(event) => props.manualOrder.onSliderChange(Number(event.target.value))}
+                    className="range range-xs"
+                    data-testid="manual-order-quantity-slider"
+                    disabled={props.manualOrder.isSubmitting || props.manualOrder.maxExecutableQty == null}
+                  />
+                  <span className="flex items-center justify-between text-[10px] opacity-70">
+                    <span>{props.manualOrder.sliderMinLabel}</span>
+                    <span>{props.manualOrder.sliderMaxLabel}</span>
+                  </span>
+                </label>
+                <div className="rounded-box border border-base-300/45 bg-base-100/55 p-2 text-[11px]">
                   <p className="flex items-center justify-between gap-2">
-                    <span className="opacity-65">{props.manualOrder.notionalEstimateLabel}</span>
-                    <span className="font-semibold" data-testid="manual-order-notional-estimate">
-                      {manualOrderNotionalEstimate != null ? props.formatAmountWithUnit(manualOrderNotionalEstimate) : "-"}
+                    <span className="opacity-65">{props.manualOrder.orderTypeLabel}</span>
+                    <span className="font-semibold" data-testid="manual-order-order-type">
+                      {props.manualOrder.orderType}
                     </span>
                   </p>
                   <p className="mt-1 flex items-center justify-between gap-2">
-                    <span className="opacity-65">{props.manualOrder.marginEstimateLabel}</span>
-                    <span className="font-semibold" data-testid="manual-order-margin-estimate">
-                      {manualOrderMarginEstimate != null ? props.formatAmountWithUnit(manualOrderMarginEstimate) : "-"}
+                    <span className="opacity-65">{props.manualOrder.marginModeLabel}</span>
+                    <span className="font-semibold" data-testid="manual-order-margin-mode">
+                      {props.manualOrder.marginMode}
                     </span>
                   </p>
-                  <p className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] opacity-70">
-                    <span>
-                      {props.manualOrder.priceLabel}:{" "}
-                      <span data-testid="manual-order-price">
-                        {manualOrderLivePrice != null ? props.formatAmountWithUnit(manualOrderLivePrice) : "-"}
-                      </span>
-                    </span>
-                    <span>
-                      {props.text.leverage}:{" "}
-                      <span data-testid="manual-order-leverage">
-                        {manualOrderLeverageForEstimate != null ? `${manualOrderLeverageForEstimate}x` : "-"}
-                      </span>
+                  <p className="mt-1 flex items-center justify-between gap-2">
+                    <span className="opacity-65">{props.manualOrder.leverageLabel}</span>
+                    <span className="font-semibold" data-testid="manual-order-leverage">
+                      {props.manualOrder.leverage != null ? `${props.manualOrder.leverage}x` : "-"}
                     </span>
                   </p>
+                  <p className="mt-1.5 text-[10px] opacity-70" data-testid="manual-order-summary-line">
+                    {manualOrderSummaryLabel}: {props.manualOrder.summaryEstimateLabel}{" "}
+                    <span className="font-semibold">
+                      {props.manualOrder.estimatedNotional != null ? props.formatAmountWithUnit(props.manualOrder.estimatedNotional) : "-"}
+                    </span>{" "}
+                    | {props.manualOrder.summaryMaxLabel}{" "}
+                    <span className="font-semibold">
+                      {props.manualOrder.maxExecutableQty != null ? props.formatNumber(props.manualOrder.maxExecutableQty, { maximumFractionDigits: 8 }) : "-"}
+                    </span>
+                  </p>
+                  {props.manualOrder.isContextLoading ? (
+                    <p className="mt-1 text-[10px] opacity-60" data-testid="manual-order-context-state">
+                      {props.manualOrder.contextLoadingLabel}
+                    </p>
+                  ) : props.manualOrder.liveReferencePrice == null ? (
+                    <p className="mt-1 text-[10px] opacity-60" data-testid="manual-order-context-state">
+                      {props.manualOrder.contextUnavailableLabel}
+                    </p>
+                  ) : null}
                 </div>
                 <button
                   type="button"
@@ -539,7 +585,7 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
                   {props.manualOrder.isSubmitting ? props.manualOrder.openingLabel : props.manualOrder.openLabel}
                 </button>
               </div>
-            </section>
+            </div>
           </div>
         </section>
 
