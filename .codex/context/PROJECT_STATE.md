@@ -110,11 +110,18 @@ Last updated: 2026-04-19
   - canonical queue and context docs stay synchronized after each ARC batch.
   - no regressions in runtime safety, deploy confidence, or dashboard contracts.
 - Next queued follow-up after `ARC-C`:
-  - `ARC-D..ARC-E`,
+  - `ARC-E`,
   - lifecycle parity closure (`POS-36..42`),
-  - production verification closure (`OPV`).
+  - production verification closure (`OPV`),
+  - dashboard manual-order advanced UX wave (`UXR-H-01..UXR-H-10`).
 
 ## Recent Progress
+- 2026-04-19: queued `UXR-H` manual-order advanced UX execution wave in
+  `docs/planning/uxr-h-dashboard-manual-order-advanced-plan-2026-04-19.md`
+  with grouped tiny-commit batches (`UXR-H-A..UXR-H-C`) covering price input
+  and market-price quick fill, minimum executable quantity constraints, slider
+  row ergonomics, bot-context order metadata, side-aware cost/max summary, and
+  focused closure validation requirements.
 - 2026-04-19: closed `ARC-B` (`ARC-06..ARC-10`) end-to-end by extracting
   runtime trades/positions read seams, moving runtime close-position command
   ownership into command service boundaries, introducing API aggregate

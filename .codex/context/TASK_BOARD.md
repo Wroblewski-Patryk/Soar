@@ -26,6 +26,18 @@ Last updated: 2026-04-19
 
 ## BACKLOG
 
+- [ ] UXR-H-01 Freeze dashboard manual-order advanced input/context contract before implementation
+  - Status: BACKLOG
+  - Group: Dashboard Manual Order Advanced UX (`UXR-H-A`)
+  - Owner: Frontend Builder + Backend Builder
+  - Depends on: ARC-E
+  - Priority: P2
+- [ ] UXR-H-02 Add API manual-order context endpoint for symbol constraints, price reference, and bot execution metadata
+  - Status: BACKLOG
+  - Group: Dashboard Manual Order Advanced UX (`UXR-H-A`)
+  - Owner: Backend Builder
+  - Depends on: UXR-H-01
+  - Priority: P2
 - [ ] POS-36 Remove strategy-exit close bypass from backtest/replay/runtime lifecycle flow
   - Status: BACKLOG
   - Group: Position Lifecycle Parity Closure (`POS-A`)
@@ -54,6 +66,7 @@ Last updated: 2026-04-19
 ## DONE
 
 - [x] ARC-B closed implementation scope (`ARC-06..ARC-10`): bots runtime CQRS decomposition + aggregate monitoring contract
+- [x] UXR-H planning queued: `UXR-H-01..UXR-H-10` dashboard manual-order advanced UX wave with price input, current-price fill, qty min-constraints, slider row, bot-context order metadata, and focused closure pack
 - [x] ARC-10 Lock API+WEB aggregate monitoring contract and fallback behavior
 - [x] ARC-09 Add API aggregate monitoring endpoint for web consumers
 - [x] ARC-08 Move runtime close-position command path into command service ownership

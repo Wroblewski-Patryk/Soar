@@ -17,12 +17,18 @@ Operational queue for one-task execution runs.
 - [ ] `ARC-13 test(api-parity): regression lock for shared kernel parity (runtime vs backtest)`
 - [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
 - [ ] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
+- [ ] `UXR-H-01 docs(contract): freeze dashboard manual-order advanced input/context contract`
+- [ ] `UXR-H-02 feat(api-orders): add manual-order context read endpoint for price/rules/min-qty preview`
+- [ ] `UXR-H-06 feat(web-dashboard-manual-order): add price input, qty slider, side-aware summary, and remove double-container layering`
 ## GROUP QUEUE
 - [x] `BRS-A (commits BRS-01..BRS-04): decision closure + strict selected-bot scope foundation`
 - [x] `BRS-B (commits BRS-05..BRS-08): canonical update-path fix + strategy precedence unification`
 - [x] `BRS-C (commits BRS-09..BRS-12): dashboard switch regression + QA closure`
 - [x] `UXR-G-A (commits UXR-G-01..UXR-G-03): dashboard wallet/manual-order hierarchy + summary-row contract`
 - [x] `UXR-G-B (commits UXR-G-04..UXR-G-06): 50/50 wallet KPI split + regression closure`
+- [ ] `UXR-H-A (commits UXR-H-01..UXR-H-03): manual-order advanced contract + backend context/rules foundation`
+- [ ] `UXR-H-B (commits UXR-H-04..UXR-H-07): dashboard manual-order state+UI expansion + container cleanup`
+- [ ] `UXR-H-C (commits UXR-H-08..UXR-H-10): i18n parity + focused regression + closure sync`
 - [x] `PLNC-A (commits PLNC-01..PLNC-04): planning catalog reconciliation + status sync + canonical linkage`
 - [x] `ARC-A (commits ARC-01..ARC-05): runtime critical-path decomposition foundations`
 - [x] `ARC-B (commits ARC-06..ARC-10): bots runtime CQRS/read-model decomposition + aggregate monitoring contract`
@@ -59,6 +65,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `UXR-H planning queued (dashboard manual-order advanced inputs and context expansion)`
+  - 2026-04-19: Published execution-ready tiny-commit wave in `docs/planning/uxr-h-dashboard-manual-order-advanced-plan-2026-04-19.md` (`UXR-H-01..UXR-H-10`) covering price input + market-price fill, qty minimum-executable constraints, qty slider row, bot-context order meta (`order type/margin mode/leverage`), side-aware cost/max summary, and manual-order container simplification while preserving existing submit behavior.
 - [x] `ARC-B group closure (ARC-06..ARC-10)`
   - 2026-04-19: Closed ARC-B end-to-end by extracting runtime trades/positions read seams, moving runtime close-position into command service ownership, introducing backend aggregate monitoring endpoint (`GET /dashboard/bots/:id/runtime-monitoring/aggregate`), and switching web monitoring aggregate loading to API-first with client fallback.
 - [x] `ARC-10 test(api+web-monitoring): lock aggregate read-model contract and fallback behavior`
