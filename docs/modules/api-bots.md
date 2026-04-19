@@ -74,6 +74,9 @@ Out of scope:
 - Runtime session/event/symbol stat telemetry integrated with engine services.
 - Read models include stale/fallback handling for runtime market context.
 - Extensive e2e coverage across create/update/runtime/entitlement scenarios.
+- Drift triage/repair operation path for dashboard parity incidents:
+  - audit: `GET /dashboard/bots/strategy-drift`
+  - repair: `POST /dashboard/bots/strategy-drift/repair` (idempotent, ownership-scoped)
 
 ## 8. Test Coverage and Evidence
 - Primary tests:

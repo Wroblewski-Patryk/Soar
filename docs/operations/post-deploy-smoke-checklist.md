@@ -43,6 +43,9 @@ Quickly confirm that the deployed revision is operational for critical user flow
 - active bot list endpoint responds,
 - selected runtime view loads open positions/history/signal section,
 - no `NO_SESSION` false-negative when bot is active.
+- strategy drift triage:
+  - `GET /dashboard/bots/strategy-drift` returns deterministic drift audit output.
+  - if drift rows are present, run `POST /dashboard/bots/strategy-drift/repair` once and re-check drift output is cleared (or capture residual blockers with evidence).
 
 ### 6) Workers and queue baseline
 - workers health/readiness is green,

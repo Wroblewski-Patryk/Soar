@@ -359,3 +359,18 @@ await prisma.user.deleteMany();
 - Avoid: appending several long scenarios into a file already close to guardrail threshold.
 - Evidence:
   - 2026-04-20 MURC closure: moved market-universe parity scenarios from `bots.e2e.test.ts` into `bots.market-universe-contract.e2e.test.ts`; guardrails PASS afterward.
+
+### 2026-04-20 - Web dashboard regressions must use split test files near budget limit
+- Context: closing DAWR web regression wave for dashboard wallet/sidebar.
+- Symptom: `pnpm run quality:guardrails` failed on web side with `HomeLiveWidgets.test.tsx` over size budget (`99474` > `95000`).
+- Root cause: appending one more long integration scenario to an already near-limit dashboard widget test file.
+- Guardrail: when `HomeLiveWidgets.test.tsx` (or similar high-traffic UI test files) is close to budget, place new scenario families in dedicated sibling files (for example `HomeLiveWidgets.aggregate-wallet.test.tsx`) instead of extending the monolith.
+- Preferred pattern:
+```text
+1) Keep legacy wide integration suite stable.
+2) Add new scenario contract in a focused sibling test file.
+3) Run targeted web tests + guardrails before commit.
+```
+- Avoid: adding large fixture-heavy regressions directly into near-limit dashboard test monoliths.
+- Evidence:
+  - 2026-04-20 DAWR closure: moved aggregate-success LIVE wallet regression from `HomeLiveWidgets.test.tsx` to `HomeLiveWidgets.aggregate-wallet.test.tsx`; guardrails PASS afterward.

@@ -7,19 +7,15 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `DAWR-04 test(web-red): add LIVE wallet regression for aggregate-success path without session fallback masking`
+- [x] `(none)`
 ## NEXT
-- [ ] `DAWR-05 fix(web-wallet-kpi): align runtime selection wallet summary mapping to aggregate capital fields`
-- [ ] `DAWR-06 test(web-edge): lock strategy sidebar behavior for selected bot strategyId null/mismatch`
+- [x] `(none)`
 ## PIPELINE
-- [ ] `DAWR-07 fix(web-sidebar): tighten strategy card source precedence and fallback behavior in edge cases`
-- [ ] `DAWR-08 docs(ops): add strategy-drift diagnostic/repair run step for dashboard regression triage`
-- [ ] `DAWR-09 docs(sync): align execution-plan status with canonical queue/board for closed waves`
-- [ ] `DAWR-10 qa(closure): run focused regression pack and sync canonical queue/context`
+- [x] `(none)`
 ## GROUP QUEUE
 - [x] `DAWR-A (commits DAWR-01..DAWR-03): contract freeze + aggregate API regression/fix`
-- [ ] `DAWR-B (commits DAWR-04..DAWR-07): web wallet + strategy edge-case regressions/fixes`
-- [ ] `DAWR-C (commits DAWR-08..DAWR-10): ops docs + planning sync + closure`
+- [x] `DAWR-B (commits DAWR-04..DAWR-07): web wallet + strategy edge-case regressions/fixes`
+- [x] `DAWR-C (commits DAWR-08..DAWR-10): ops docs + planning sync + closure`
 - [x] `DAGG-A (commits DAGG-01..DAGG-04): contract freeze + dashboard aggregate data-source migration`
 - [x] `DAGG-B (commits DAGG-05..DAGG-08): history positions parity + aggregate API contract hardening`
 - [x] `DAGG-C (commits DAGG-09..DAGG-10): parity regression closure + canonical sync`
@@ -91,6 +87,15 @@ Operational queue for one-task execution runs.
     - `pnpm --filter api run test -- --run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`
     - `pnpm --filter api run typecheck`
     - `pnpm --filter api run build`
+- [x] `DAWR-B (commits DAWR-04..DAWR-07): web wallet + strategy edge-case regressions/fixes`
+  - 2026-04-20: Closed Stage B by adding aggregate-success wallet regression coverage (`HomeLiveWidgets.aggregate-wallet.test.tsx`), adding dedicated sidebar edge tests for `strategyId` null/mismatch (`RuntimeSidebarSection.test.tsx`), and tightening sidebar fallback precedence so canonical runtime topology remains first source for market+strategy context.
+- [x] `DAWR-C (commits DAWR-08..DAWR-10): ops docs + planning sync + closure`
+  - 2026-04-20: Documented strategy-drift audit/repair triage in ops/module docs, synchronized canonical queue/context/execution files, and completed closure validation pack:
+    - `pnpm --filter api run test -- --run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`
+    - `pnpm --filter web run test -- --run src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.aggregate-wallet.test.tsx src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx`
+    - `pnpm --filter api run typecheck`
+    - `pnpm --filter web run typecheck`
+    - `pnpm run quality:guardrails`
 - [x] `DAWR planning queued (dashboard aggregate wallet KPI + strategy sidebar regression fix wave)`
   - 2026-04-20: Added `docs/planning/dashboard-aggregate-wallet-strategy-regression-plan-2026-04-20.md` and queued `DAWR-A..DAWR-C` to fix aggregate LIVE wallet summary parity (`referenceBalance/freeCash`), lock strategy null/mismatch edge behavior, and synchronize planning status drift.
 - [x] `MURC-12 qa(closure): run focused contract validation pack and sync canonical queue/context`

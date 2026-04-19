@@ -1,6 +1,6 @@
 # Dashboard Aggregate Wallet and Strategy Regression Plan (2026-04-20)
 
-Status: in-progress (`DAWR-A` closed, `DAWR-B` next)  
+Status: completed (`DAWR-A..DAWR-C` closed on 2026-04-20)  
 Execution mode: tiny-commit only (exactly one task per commit)  
 Primary audience: execution agent
 
@@ -77,8 +77,7 @@ Primary audience: execution agent
 - Scope:
   - Add failing web regression that proves LIVE wallet KPI must read aggregate fields when aggregate succeeds.
 - Likely files:
-  - `apps/web/src/features/dashboard-home/components/HomeLiveWidgets.test.tsx`
-  - `apps/web/src/features/dashboard-home/components/HomeLiveWidgets.aggregate-history.test.tsx`
+  - `apps/web/src/features/dashboard-home/components/HomeLiveWidgets.aggregate-wallet.test.tsx`
 - Done when:
   - Test catches masked fallback-to-session behavior for LIVE wallet KPI.
 
@@ -99,7 +98,6 @@ Primary audience: execution agent
   - Add explicit regression covering strategy edge path and expected fallback source.
 - Likely files:
   - `apps/web/src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx`
-  - `apps/web/src/features/dashboard-home/components/HomeLiveWidgets.test.tsx`
 - Done when:
   - Strategy card behavior is regression-locked for null/mismatch scenarios.
 
@@ -140,7 +138,7 @@ Primary audience: execution agent
 `qa(closure): run focused regression pack and sync canonical queue/context`
 - Required commands:
   - `pnpm --filter api run test -- --run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`
-  - `pnpm --filter web run test -- --run src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx`
+  - `pnpm --filter web run test -- --run src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.aggregate-wallet.test.tsx src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx`
   - `pnpm --filter api run typecheck`
   - `pnpm --filter web run typecheck`
   - `pnpm run quality:guardrails`
@@ -170,3 +168,12 @@ Primary audience: execution agent
 3. Strategy sidebar updates deterministically for selected bot, including null/mismatch strategy edge.
 4. Strategy drift audit/repair path is operationally documented.
 5. Canonical planning files are status-synchronized.
+
+## Closure Evidence
+- 2026-04-20: Closed `DAWR-04..DAWR-07` by tightening LIVE wallet aggregate-success fallback behavior in `RuntimeSidebarSection`, adding aggregate-success regression lock in `HomeLiveWidgets.aggregate-wallet.test.tsx`, and adding dedicated sidebar edge tests in `RuntimeSidebarSection.test.tsx` for `strategyId` null/mismatch + canonical precedence.
+- 2026-04-20: Closed `DAWR-08..DAWR-10` by documenting strategy-drift triage in ops/module docs, synchronizing canonical queue/context/execution files, and running closure validation pack:
+  - `pnpm --filter api run test -- --run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`
+  - `pnpm --filter web run test -- --run src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.aggregate-wallet.test.tsx src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx`
+  - `pnpm --filter api run typecheck`
+  - `pnpm --filter web run typecheck`
+  - `pnpm run quality:guardrails`

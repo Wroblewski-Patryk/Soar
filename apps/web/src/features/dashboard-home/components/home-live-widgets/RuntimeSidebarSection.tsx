@@ -126,13 +126,16 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
       ? selectedWallet.liveAllocationValue ?? null
       : null;
   const walletBaseline = paperStartBalance ?? liveFixedAllocation;
-  const walletTotal =
+  const runtimeWalletTotal =
     props.selectedData?.equity ??
-    (props.selectedData?.free != null ? Math.max(0, props.selectedData.free + selectedUsedMargin) : null) ??
-    (walletBaseline != null ? Math.max(0, walletBaseline + selectedNet) : null);
+    (props.selectedData?.free != null ? Math.max(0, props.selectedData.free + selectedUsedMargin) : null);
+  const walletTotal =
+    selectedWalletMode === "LIVE"
+      ? runtimeWalletTotal
+      : runtimeWalletTotal ?? (walletBaseline != null ? Math.max(0, walletBaseline + selectedNet) : null);
   const walletFree =
     props.selectedData?.free ??
-    (walletTotal != null ? Math.max(0, walletTotal - selectedUsedMargin) : null);
+    (selectedWalletMode !== "LIVE" && walletTotal != null ? Math.max(0, walletTotal - selectedUsedMargin) : null);
   const canCalculatePortfolioSplit = walletTotal != null && walletFree != null;
   const walletDenominator = canCalculatePortfolioSplit
     ? Math.max(walletTotal, walletFree + selectedUsedMargin, 1)
@@ -194,53 +197,103 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
   const groupStrategyLinks = sortedGraphGroups.flatMap((group) =>
     (group.strategies ?? []).map((strategy) => ({ group, strategy }))
   );
-  const sortedGroupStrategies = [...(primaryGroup?.strategies ?? [])].sort((left, right) => {
+  const sortedPrimaryGroupStrategies = [...(primaryGroup?.strategies ?? [])].sort((left, right) => {
     if (left.priority !== right.priority) return left.priority - right.priority;
     return right.weight - left.weight;
   });
-  const selectedStrategySource =
-    groupStrategyLinks.find(
-      ({ strategy }) => Boolean(strategy.isEnabled) && preferredStrategyId != null && strategy.strategyId === preferredStrategyId
-    ) ??
-    groupStrategyLinks.find(
-      ({ strategy }) => preferredStrategyId != null && strategy.strategyId === preferredStrategyId
-    ) ??
-    (primaryGroup
-      ? {
-        group: primaryGroup,
-        strategy:
-          sortedGroupStrategies.find((item) => item.isEnabled) ??
-          sortedGroupStrategies[0] ??
-          null,
-      }
-      : null);
   const fallbackLegacyStrategy = runtimeGraph?.legacyBotStrategies[0] ?? null;
   const fallbackLegacyByPreferredId =
     runtimeGraph?.legacyBotStrategies.find(
       (item) => preferredStrategyId != null && item.strategyId === preferredStrategyId
     ) ?? null;
-  const selectedMarketGroupName =
-    selectedStrategySource?.group?.symbolGroup?.name ??
-    primaryGroup?.symbolGroup?.name ??
-    fallbackLegacyByPreferredId?.symbolGroup?.name ??
-    fallbackLegacyStrategy?.symbolGroup?.name ??
-    "-";
+  const canonicalPreferredEnabled =
+    groupStrategyLinks.find(
+      ({ strategy }) => preferredStrategyId != null && strategy.isEnabled && strategy.strategyId === preferredStrategyId
+    ) ?? null;
+  const canonicalPreferredAny =
+    groupStrategyLinks.find(
+      ({ strategy }) => preferredStrategyId != null && strategy.strategyId === preferredStrategyId
+    ) ?? null;
+  const canonicalPrimaryEnabled = sortedPrimaryGroupStrategies.find((item) => item.isEnabled) ?? null;
+  const canonicalPrimaryAny = sortedPrimaryGroupStrategies[0] ?? null;
+  const readStrategyLeverage = (strategy: unknown): number | null => {
+    if (!strategy || typeof strategy !== "object") return null;
+    const raw = (strategy as { leverage?: unknown }).leverage;
+    return typeof raw === "number" && Number.isFinite(raw) ? raw : null;
+  };
+  const selectedStrategyContext = (() => {
+    if (canonicalPreferredEnabled) {
+      return {
+        marketGroupName: canonicalPreferredEnabled.group.symbolGroup?.name ?? null,
+        strategyName: canonicalPreferredEnabled.strategy.strategy?.name ?? null,
+        strategyInterval: canonicalPreferredEnabled.strategy.strategy?.interval ?? null,
+        strategyLeverage: readStrategyLeverage(canonicalPreferredEnabled.strategy.strategy),
+      };
+    }
+    if (canonicalPreferredAny) {
+      return {
+        marketGroupName: canonicalPreferredAny.group.symbolGroup?.name ?? null,
+        strategyName: canonicalPreferredAny.strategy.strategy?.name ?? null,
+        strategyInterval: canonicalPreferredAny.strategy.strategy?.interval ?? null,
+        strategyLeverage: readStrategyLeverage(canonicalPreferredAny.strategy.strategy),
+      };
+    }
+    if (primaryGroup && canonicalPrimaryEnabled) {
+      return {
+        marketGroupName: primaryGroup.symbolGroup?.name ?? null,
+        strategyName: canonicalPrimaryEnabled.strategy?.name ?? null,
+        strategyInterval: canonicalPrimaryEnabled.strategy?.interval ?? null,
+        strategyLeverage: readStrategyLeverage(canonicalPrimaryEnabled.strategy),
+      };
+    }
+    if (primaryGroup && canonicalPrimaryAny) {
+      return {
+        marketGroupName: primaryGroup.symbolGroup?.name ?? null,
+        strategyName: canonicalPrimaryAny.strategy?.name ?? null,
+        strategyInterval: canonicalPrimaryAny.strategy?.interval ?? null,
+        strategyLeverage: readStrategyLeverage(canonicalPrimaryAny.strategy),
+      };
+    }
+    if (fallbackLegacyByPreferredId) {
+      return {
+        marketGroupName: fallbackLegacyByPreferredId.symbolGroup?.name ?? null,
+        strategyName: fallbackLegacyByPreferredId.strategy?.name ?? null,
+        strategyInterval: fallbackLegacyByPreferredId.strategy?.interval ?? null,
+        strategyLeverage: readStrategyLeverage(fallbackLegacyByPreferredId.strategy),
+      };
+    }
+    if (fallbackLegacyStrategy) {
+      return {
+        marketGroupName: fallbackLegacyStrategy.symbolGroup?.name ?? null,
+        strategyName: fallbackLegacyStrategy.strategy?.name ?? null,
+        strategyInterval: fallbackLegacyStrategy.strategy?.interval ?? null,
+        strategyLeverage: readStrategyLeverage(fallbackLegacyStrategy.strategy),
+      };
+    }
+    if (primaryGroup) {
+      return {
+        marketGroupName: primaryGroup.symbolGroup?.name ?? null,
+        strategyName: null,
+        strategyInterval: null,
+        strategyLeverage: null,
+      };
+    }
+    return {
+      marketGroupName: null,
+      strategyName: null,
+      strategyInterval: null,
+      strategyLeverage: null,
+    };
+  })();
+  const selectedMarketGroupName = selectedStrategyContext.marketGroupName ?? "-";
   const displayMarketGroupName =
     selectedMarketGroupName === "-"
       ? selectedMarketGroupName
       : selectedMarketGroupName.replace(/\s+group$/i, "");
-  const selectedStrategyName =
-    selectedStrategySource?.strategy?.strategy?.name ??
-    fallbackLegacyByPreferredId?.strategy?.name ??
-    fallbackLegacyStrategy?.strategy?.name ??
-    "-";
-  const selectedStrategyInterval =
-    selectedStrategySource?.strategy?.strategy?.interval ??
-    fallbackLegacyByPreferredId?.strategy?.interval ??
-    fallbackLegacyStrategy?.strategy?.interval ??
-    "-";
+  const selectedStrategyName = selectedStrategyContext.strategyName ?? "-";
+  const selectedStrategyInterval = selectedStrategyContext.strategyInterval ?? "-";
   const selectedStrategyLeverageValue = (() => {
-    const fromRuntimeGraph = (selectedStrategySource?.strategy?.strategy as { leverage?: unknown } | undefined)?.leverage;
+    const fromRuntimeGraph = selectedStrategyContext.strategyLeverage;
     if (typeof fromRuntimeGraph === "number" && Number.isFinite(fromRuntimeGraph) && fromRuntimeGraph > 0) {
       return fromRuntimeGraph;
     }

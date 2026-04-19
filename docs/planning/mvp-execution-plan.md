@@ -2198,17 +2198,18 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - [x] `DAWR-01 docs(contract): freeze aggregate wallet-summary field parity and strategy sidebar edge behavior`
 - [x] `DAWR-02 test(api-red): add aggregate regression for LIVE wallet capital fields in positions.summary`
 - [x] `DAWR-03 fix(api-aggregate): include referenceBalance/freeCash parity fields in aggregate positions summary`
-- [ ] `DAWR-04 test(web-red): add LIVE wallet regression for aggregate-success path without session fallback masking`
-- [ ] `DAWR-05 fix(web-wallet-kpi): align runtime selection wallet summary mapping to aggregate capital fields`
-- [ ] `DAWR-06 test(web-edge): lock strategy sidebar behavior for selected bot strategyId null/mismatch`
-- [ ] `DAWR-07 fix(web-sidebar): tighten strategy card source precedence and fallback behavior in edge cases`
-- [ ] `DAWR-08 docs(ops): add strategy-drift diagnostic/repair run step for dashboard regression triage`
-- [ ] `DAWR-09 docs(sync): align execution-plan status with canonical queue/board for closed waves`
-- [ ] `DAWR-10 qa(closure): run focused regression pack and sync canonical queue/context`
+- [x] `DAWR-04 test(web-red): add LIVE wallet regression for aggregate-success path without session fallback masking`
+- [x] `DAWR-05 fix(web-wallet-kpi): align runtime selection wallet summary mapping to aggregate capital fields`
+- [x] `DAWR-06 test(web-edge): lock strategy sidebar behavior for selected bot strategyId null/mismatch`
+- [x] `DAWR-07 fix(web-sidebar): tighten strategy card source precedence and fallback behavior in edge cases`
+- [x] `DAWR-08 docs(ops): add strategy-drift diagnostic/repair run step for dashboard regression triage`
+- [x] `DAWR-09 docs(sync): align execution-plan status with canonical queue/board for closed waves`
+- [x] `DAWR-10 qa(closure): run focused regression pack and sync canonical queue/context`
 
 ### Progress Log (Phase DAWR - Dashboard Aggregate Wallet and Strategy Regression)
 - 2026-04-20: Queued `DAWR` from post-MURC analyst report to fix aggregate LIVE wallet KPI regression (`referenceBalance/freeCash` missing in aggregate summary), lock strategy sidebar null/mismatch edge behavior, and synchronize planning status drift across canonical files. Published executor-ready plan in `docs/planning/dashboard-aggregate-wallet-strategy-regression-plan-2026-04-20.md`.
 - 2026-04-20: Closed `DAWR-01..DAWR-03` by freezing aggregate wallet-summary + sidebar null/mismatch edge contract in canonical docs, adding aggregate API regression locks for `positions.summary.referenceBalance/freeCash` (non-empty + empty aggregate), and extending aggregate projection with parity fields from latest session capital context (`null` for unresolved empty state). Validation PASS: `pnpm --filter api run test -- --run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter api run build`.
+- 2026-04-20: Closed `DAWR-04..DAWR-10` by adding web regression locks for aggregate-success LIVE wallet behavior and sidebar `strategyId` null/mismatch edge precedence, tightening sidebar fallback behavior, documenting strategy-drift audit/repair ops step, and synchronizing canonical queue/context status. Closure pack PASS: `pnpm --filter api run test -- --run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`, `pnpm --filter web run test -- --run src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.aggregate-wallet.test.tsx src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx`, `pnpm --filter api run typecheck`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
 
 ## Phase DASHR - Dashboard Runtime Data Parity Recovery (Queued 2026-04-19)
 - [ ] `DASHR-01 docs(contract): freeze dashboard runtime parity contract for positions/orders/history/signals/selected-bot section`

@@ -17,16 +17,11 @@ Last updated: 2026-04-20
 
 ## READY
 
-- [ ] DAWR-04 Add web regression for LIVE wallet aggregate-success path without hidden session fallback masking
-- [ ] DAWR-05 Align dashboard wallet KPI mapping to aggregate capital fields
-- [ ] DAWR-06 Lock strategy sidebar regression for selected bot `strategyId` null/mismatch edge
+- [x] (none)
 
 ## BACKLOG
 
-- [ ] DAWR-07 Tighten strategy sidebar fallback precedence behavior for edge cases
-- [ ] DAWR-08 Add ops drift audit/repair step for dashboard triage (`GET/POST /dashboard/bots/strategy-drift`)
-- [ ] DAWR-09 Synchronize execution-plan status drift vs canonical queue/board
-- [ ] DAWR-10 Run focused closure validation pack and sync canonical queue/context
+- [x] (none)
 
 ## IN_PROGRESS
 
@@ -44,6 +39,10 @@ Last updated: 2026-04-20
 
 - [x] DAWR-A group closure (`DAWR-01..DAWR-03`)
   - 2026-04-20: Closed Stage A end-to-end by freezing aggregate wallet-summary + strategy sidebar null/mismatch edge contract (`open-decisions`, `api-bots`, `web-dashboard-home`), adding API aggregate regression locks for `positions.summary.referenceBalance/freeCash`, and extending aggregate projection with parity fields (latest capital context, explicit `null` on unresolved in empty aggregate). Validation PASS: `bots.monitoring-aggregate.e2e`, `api typecheck`, `api build`.
+- [x] DAWR-B group closure (`DAWR-04..DAWR-07`)
+  - 2026-04-20: Closed Stage B end-to-end by adding aggregate-success LIVE wallet regression coverage in `HomeLiveWidgets.aggregate-wallet`, adding dedicated sidebar edge tests for `strategyId` null/mismatch in `RuntimeSidebarSection`, and tightening sidebar precedence so canonical runtime topology remains first source when canonical mapping exists.
+- [x] DAWR-C group closure (`DAWR-08..DAWR-10`)
+  - 2026-04-20: Closed Stage C by documenting strategy-drift audit/repair triage in ops + module docs, synchronizing planning queue/status files, and completing closure validation pack (`api aggregate e2e`, `web HomeLiveWidgets + HomeLiveWidgets.aggregate-wallet + RuntimeSidebarSection tests`, `api/web typecheck`, `quality:guardrails`).
 - [x] DAWR planning queued (`DAWR-01..DAWR-10`)
   - 2026-04-20: Added `docs/planning/dashboard-aggregate-wallet-strategy-regression-plan-2026-04-20.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) to fix aggregate LIVE wallet KPI contract drift, strategy sidebar null/mismatch edge behavior, and planning-status synchronization.
 - [x] MURC group closure (`MURC-01..MURC-12`)
