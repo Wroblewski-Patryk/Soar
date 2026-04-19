@@ -17,7 +17,17 @@ import { listWallets } from '@/features/wallets/services/wallets.service';
 import { Wallet } from '@/features/wallets/types/wallet.type';
 import { getAxiosMessage } from '@/lib/getAxiosMessage';
 import { normalizeSymbol } from '@/lib/symbols';
-import { FormAlert, FormGrid, FormSectionCard, FormValidationSummary, SelectField, TextField, ToggleField } from '@/ui/forms';
+import {
+  focusFirstInvalidField,
+  FormAlert,
+  FormGrid,
+  FormSectionCard,
+  FormValidationSummary,
+  SelectField,
+  TextField,
+  ToggleField,
+  toValidationSummaryErrors,
+} from '@/ui/forms';
 import {
   createBot,
   getBot,
@@ -234,28 +244,18 @@ export default function BotCreateEditForm({
   }, [form.marketGroupId, form.name, form.strategyId, form.walletId, t]);
   const hasValidationErrors = Object.keys(fieldErrors).length > 0;
   const validationSummaryErrors = useMemo(
-    () => Object.values(fieldErrors).filter((value): value is string => Boolean(value)),
+    () => toValidationSummaryErrors(fieldErrors),
     [fieldErrors]
   );
-  const focusFirstInvalidField = useCallback(() => {
-    const firstKey = (Object.keys(fieldErrors) as Array<keyof BotFormState>)[0];
-    if (!firstKey) return;
-    const fieldIdByKey: Record<keyof BotFormState, string> = {
+  const focusFirstInvalidControl = useCallback(() => {
+    focusFirstInvalidField(fieldErrors, {
       name: 'bot-name',
       walletId: 'bot-wallet',
       strategyId: 'bot-strategy',
       marketGroupId: 'bot-market-group',
       isActive: 'bot-active',
       liveOptIn: 'bot-live-opt-in',
-    };
-    const target = document.getElementById(fieldIdByKey[firstKey]);
-    if (!target) return;
-    if (typeof target.focus === 'function') {
-      target.focus();
-    }
-    if (typeof target.scrollIntoView === 'function') {
-      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+    });
   }, [fieldErrors]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -263,7 +263,7 @@ export default function BotCreateEditForm({
     setShowValidation(true);
     if (hasValidationErrors) {
       toast.error(t('dashboard.bots.create.description'));
-      focusFirstInvalidField();
+      focusFirstInvalidControl();
       return;
     }
     if (!walletContextMatches) {

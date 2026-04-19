@@ -5,7 +5,7 @@ import { LuCog, LuDoorClosed, LuDoorOpen, LuPencilLine } from "react-icons/lu";
 import { useI18n } from "@/i18n/I18nProvider";
 import Tabs from "@/ui/components/Tabs";
 import { TAB_CONTENT_FRAME_CLASS, TAB_CONTENT_INNER_CLASS } from "@/ui/components/tabContentFrame";
-import { FormPageShell, FormSectionCard, FormValidationSummary } from "@/ui/forms";
+import { focusFirstInvalidField, FormPageShell, FormSectionCard, FormValidationSummary, toValidationSummaryErrors } from "@/ui/forms";
 import { useStrategyForm } from "../hooks/useStrategyForm";
 import { StrategyFormProps } from "../types/StrategyForm.type";
 import { Additional } from "./StrategyFormSections/Additional";
@@ -68,24 +68,14 @@ export default function StrategyForm({
   }, [copy.intervalRequiredValidation, copy.nameRequiredValidation, form.interval, form.name]);
   const hasValidationErrors = Object.keys(fieldErrors).length > 0;
   const validationSummaryErrors = useMemo(
-    () => Object.values(fieldErrors).filter((error): error is string => Boolean(error)),
+    () => toValidationSummaryErrors(fieldErrors),
     [fieldErrors]
   );
-  const focusFirstInvalidField = useCallback(() => {
-    const firstField = (Object.keys(fieldErrors) as Array<keyof typeof fieldErrors>)[0];
-    if (!firstField) return;
-    const targetIdByField: Record<keyof typeof fieldErrors, string> = {
+  const focusFirstInvalidControl = useCallback(() => {
+    focusFirstInvalidField(fieldErrors, {
       name: "strategy-name",
       interval: "strategy-interval",
-    };
-    const target = document.getElementById(targetIdByField[firstField]);
-    if (!target) return;
-    if (typeof target.focus === "function") {
-      target.focus();
-    }
-    if (typeof target.scrollIntoView === "function") {
-      target.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
+    });
   }, [fieldErrors]);
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -95,7 +85,7 @@ export default function StrategyForm({
     if (hasValidationErrors) {
       setCurrentStep("basic");
       requestAnimationFrame(() => {
-        focusFirstInvalidField();
+        focusFirstInvalidControl();
       });
       return;
     }

@@ -1,7 +1,16 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { FormField, FormGrid, FormSectionCard, FormValidationSummary, SelectField, TextField } from '@/ui/forms';
+import {
+  focusFirstInvalidField,
+  FormField,
+  FormGrid,
+  FormSectionCard,
+  FormValidationSummary,
+  SelectField,
+  TextField,
+  toValidationSummaryErrors,
+} from '@/ui/forms';
 import SearchableMultiSelect, { MultiSelectOption } from './SearchableMultiSelect';
 import { fetchMarketCatalog } from '../services/markets.service';
 import { CreateMarketUniverseInput, MarketCatalogEntry, MarketUniverse } from '../types/marketUniverse.type';
@@ -320,24 +329,14 @@ export default function MarketUniverseForm({
   ]);
   const hasValidationErrors = Object.keys(fieldErrors).length > 0;
   const validationSummaryErrors = useMemo(
-    () => Object.values(fieldErrors).filter((error): error is string => Boolean(error)),
+    () => toValidationSummaryErrors(fieldErrors),
     [fieldErrors]
   );
-  const focusFirstInvalidField = useCallback(() => {
-    const firstField = (Object.keys(fieldErrors) as Array<keyof typeof fieldErrors>)[0];
-    if (!firstField) return;
-    const targetIdByField: Record<keyof typeof fieldErrors, string> = {
+  const focusFirstInvalidControl = useCallback(() => {
+    focusFirstInvalidField(fieldErrors, {
       name: 'market-universe-name',
       symbols: 'market-universe-preview-search',
-    };
-    const target = document.getElementById(targetIdByField[firstField]);
-    if (!target) return;
-    if (typeof target.focus === 'function') {
-      target.focus();
-    }
-    if (typeof target.scrollIntoView === 'function') {
-      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+    });
   }, [fieldErrors]);
   const exchangeOptions = useMemo(
     () => EXCHANGES.map((item) => ({ value: item, label: item })),
@@ -399,7 +398,7 @@ export default function MarketUniverseForm({
     if (submitting) return;
     setShowValidation(true);
     if (!canSubmit || hasValidationErrors) {
-      focusFirstInvalidField();
+      focusFirstInvalidControl();
       return;
     }
 

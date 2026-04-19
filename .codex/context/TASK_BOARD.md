@@ -17,7 +17,7 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] UXR-I-11 Standardize first-error focus/scroll + summary and inline validation sync across scoped forms
+- [ ] UXR-I-12 Apply sticky mobile action bar contract to long dashboard forms
   - Status: READY
   - Group: Dashboard Forms Consistency Refresh (`UXR-I-C`)
   - Owner: Frontend Builder
@@ -53,6 +53,8 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] UXR-I-11 Standardize first-error focus/scroll + summary and inline validation sync across scoped forms
+  - 2026-04-19: Added shared validation-feedback helper in `ui/forms` and switched scoped forms (`wallets`, `markets`, `backtests`, `strategies`, `bots`) to one focus-first-invalid + summary error pipeline; wallet form now renders titled validation summary for parity.
 - [x] UXR-I-10 Reduce bots-form layout density and align controls to shared form system
   - 2026-04-19: Refactored `BotCreateEditForm` into clearer two-column section cards (`setup`, `market`, `strategy`) using shared `ui/forms` primitives while preserving existing domain safeguards (`wallet context match`, `exchange capability`, `LIVE API key`, `live confirm`) and updated focused bots-form regression expectations.
 - [x] UXR-I-09 Preserve strategies tabs while normalizing section internals to shared primitives

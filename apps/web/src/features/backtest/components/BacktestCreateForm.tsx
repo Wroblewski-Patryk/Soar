@@ -18,6 +18,8 @@ import {
   SelectField,
   TextField,
   TextareaField,
+  focusFirstInvalidField,
+  toValidationSummaryErrors,
 } from '@/ui/forms';
 
 type BacktestCreateFormProps = {
@@ -229,27 +231,17 @@ export default function BacktestCreateForm({ formId = 'backtest-form', submittin
   ]);
   const hasValidationErrors = Object.keys(fieldErrors).length > 0;
   const validationSummaryErrors = useMemo(
-    () => Object.values(fieldErrors).filter((error): error is string => Boolean(error)),
+    () => toValidationSummaryErrors(fieldErrors),
     [fieldErrors]
   );
-  const focusFirstInvalidField = useCallback(() => {
-    const firstField = (Object.keys(fieldErrors) as Array<keyof typeof fieldErrors>)[0];
-    if (!firstField) return;
-    const targetIdByField: Record<keyof typeof fieldErrors, string> = {
+  const focusFirstInvalidControl = useCallback(() => {
+    focusFirstInvalidField(fieldErrors, {
       runName: 'backtest-run-name',
       strategyId: 'backtest-strategy-id',
       marketUniverseId: 'backtest-market-universe-id',
       maxCandles: 'backtest-max-candles',
       initialBalance: 'backtest-initial-balance',
-    };
-    const target = document.getElementById(targetIdByField[firstField]);
-    if (!target) return;
-    if (typeof target.focus === 'function') {
-      target.focus();
-    }
-    if (typeof target.scrollIntoView === 'function') {
-      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+    });
   }, [fieldErrors]);
   const strategyOptions = useMemo(
     () =>
@@ -287,7 +279,7 @@ export default function BacktestCreateForm({ formId = 'backtest-form', submittin
     if (submitting) return;
     setShowValidation(true);
     if (!canSubmit || hasValidationErrors || !selectedStrategy) {
-      focusFirstInvalidField();
+      focusFirstInvalidControl();
       return;
     }
 

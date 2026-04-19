@@ -121,10 +121,16 @@ Last updated: 2026-04-19
   - canonical queue and context docs stay synchronized after each ARC batch.
   - no regressions in runtime safety, deploy confidence, or dashboard contracts.
 - Next queued follow-up:
-  - run `UXR-I-11` then continue to `UXR-I-12..UXR-I-14`,
+  - run `UXR-I-12` then continue to `UXR-I-13..UXR-I-14`,
   - then execute `UXR-J-A..C` for shared table-consistency closure.
 
 ## Recent Progress
+- 2026-04-19: completed `UXR-I-11` by introducing shared
+  `ui/forms/validationFeedback` helpers (`toValidationSummaryErrors`,
+  `focusFirstInvalidField`) and migrating scoped forms (`wallets`, `markets`,
+  `backtests`, `strategies`, `bots`) to one first-invalid focus/scroll and
+  validation summary/inline sync contract; added focused helper unit
+  regression coverage.
 - 2026-04-19: completed `UXR-I-10` by refactoring `BotCreateEditForm` from a
   dense single-card layout into clearer two-column section cards (`setup`,
   `market`, `strategy`) with shared `ui/forms` primitives, preserving domain

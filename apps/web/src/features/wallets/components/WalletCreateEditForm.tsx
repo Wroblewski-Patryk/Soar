@@ -23,6 +23,7 @@ import type { ApiKey } from '@/features/profile/types/apiKey.type';
 import { ErrorState, LoadingState } from '@/ui/components/ViewState';
 import {
   FormAlert,
+  focusFirstInvalidField,
   FormGrid,
   RadioGroupField,
   FormSectionCard,
@@ -30,6 +31,7 @@ import {
   NumberField,
   SelectField,
   TextField,
+  toValidationSummaryErrors,
 } from '@/ui/forms';
 import {
   hasFormText,
@@ -223,6 +225,7 @@ export default function WalletCreateEditForm({
           previewFetch: 'Fetch preview',
           previewFetching: 'Fetching...',
           previewUnavailable: 'Preview is available only for LIVE mode with selected API key.',
+          validationSummaryTitle: 'Please fix highlighted wallet fields before saving.',
           validationName: 'Wallet name is required.',
           validationBaseCurrency: 'Base currency is required.',
           validationApiKey: 'API key is required for LIVE mode.',
@@ -275,6 +278,7 @@ export default function WalletCreateEditForm({
           previewFetch: 'Pobierz podglad',
           previewFetching: 'Pobieranie...',
           previewUnavailable: 'Podglad dostepny tylko dla LIVE z wybranym kluczem API.',
+          validationSummaryTitle: 'Popraw zaznaczone pola portfela przed zapisem.',
           validationName: 'Podaj nazwe portfela.',
           validationBaseCurrency: 'Podaj walute bazowa.',
           validationApiKey: 'W LIVE musisz wybrac klucz API.',
@@ -327,6 +331,7 @@ export default function WalletCreateEditForm({
           previewFetch: 'Obter pre-visualizacao',
           previewFetching: 'A obter...',
           previewUnavailable: 'Pre-visualizacao disponivel apenas em LIVE com chave API selecionada.',
+          validationSummaryTitle: 'Corrige os campos da carteira assinalados antes de guardar.',
           validationName: 'Nome da carteira e obrigatorio.',
           validationBaseCurrency: 'Moeda base e obrigatoria.',
           validationApiKey: 'A chave API e obrigatoria no modo LIVE.',
@@ -584,11 +589,11 @@ export default function WalletCreateEditForm({
 
   const hasValidationErrors = Object.keys(fieldErrors).length > 0;
   const validationSummaryErrors = useMemo(
-    () => Object.values(fieldErrors).filter((value): value is string => Boolean(value)),
+    () => toValidationSummaryErrors(fieldErrors),
     [fieldErrors]
   );
-  const focusFirstInvalidField = useCallback(() => {
-    const fieldIdByKey: Record<keyof WalletFormState, string> = {
+  const focusFirstInvalidControl = useCallback(() => {
+    focusFirstInvalidField(fieldErrors, {
       name: 'wallet-name',
       mode: 'wallet-mode-PAPER',
       exchange: 'wallet-exchange',
@@ -598,22 +603,7 @@ export default function WalletCreateEditForm({
       liveAllocationMode: 'wallet-live-allocation-mode',
       liveAllocationValue: 'wallet-live-allocation-value',
       apiKeyId: 'wallet-api-key',
-    };
-
-    const firstKey = (Object.keys(fieldErrors) as Array<keyof WalletFormState>)[0];
-    if (!firstKey) return;
-
-    const targetId = fieldIdByKey[firstKey];
-    if (!targetId) return;
-    const target = document.getElementById(targetId);
-    if (!target) return;
-
-    if (typeof target.focus === 'function') {
-      target.focus();
-    }
-    if (typeof target.scrollIntoView === 'function') {
-      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+    });
   }, [fieldErrors]);
   const selectedApiKey = useMemo(
     () => compatibleApiKeys.find((item) => item.id === form.apiKeyId) ?? null,
@@ -679,7 +669,7 @@ export default function WalletCreateEditForm({
 
     if (!canSaveMode || hasValidationErrors) {
       toast.error(copy.saveValidation);
-      focusFirstInvalidField();
+      focusFirstInvalidControl();
       return;
     }
 
@@ -729,7 +719,9 @@ export default function WalletCreateEditForm({
   return (
     <form id={formId} onSubmit={handleSubmit} className='grid gap-4 xl:grid-cols-[minmax(0,1fr)_20rem]'>
       <div className='space-y-4'>
-        {showValidation && hasValidationErrors ? <FormValidationSummary errors={validationSummaryErrors} /> : null}
+        {showValidation && hasValidationErrors ? (
+          <FormValidationSummary title={copy.validationSummaryTitle} errors={validationSummaryErrors} />
+        ) : null}
 
         <FormSectionCard title={copy.sectionBasics}>
           <FormGrid columns={2}>
