@@ -17,19 +17,11 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] DAGG-01 Freeze /dashboard aggregate selected-bot runtime contract (positions/orders/history)
-- [ ] DAGG-02 Add failing web regression for selected-bot aggregate parity when RUNNING session is empty
-- [ ] DAGG-03 Switch dashboard selected-bot runtime loading to aggregate endpoint
+- [ ] DAGG-09 Add /dashboard vs /preview selected-bot parity regression scenario
+- [ ] DAGG-10 Run focused aggregate parity closure pack and sync canonical queue/context
 
 ## BACKLOG
 
-- [ ] DAGG-04 Align dashboard runtime view-model/table derivation to aggregate payload
-- [ ] DAGG-05 Add aggregate closed-positions table in dashboard history tab
-- [ ] DAGG-06 Lock dashboard history positions/trades parity and selected-bot switch behavior
-- [ ] DAGG-07 Add aggregate API regression for positions/orders/history counts across mixed session statuses
-- [ ] DAGG-08 Harden aggregate API determinism for dashboard table contract
-- [ ] DAGG-09 Add /dashboard vs /preview selected-bot parity regression scenario
-- [ ] DAGG-10 Run focused aggregate parity closure pack and sync canonical queue/context
 - [ ] SBSC-01 Freeze sidebar strategy source-of-truth and projection parity rules
 - [ ] SBSC-02 Add API regression for listBots.strategyId vs runtime-graph primary strategy mismatch
 - [ ] SBSC-03 Make listBots/getBot strategy projection canonical-first and runtime-graph compatible
@@ -65,6 +57,26 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] DAGG-B group closure (`DAGG-05..DAGG-08`)
+  - 2026-04-19: Closed aggregate history/API hardening scope end-to-end by adding closed-positions history table in dashboard history tab, locking selected-bot history re-scope regressions in `HomeLiveWidgets`, adding mixed-session aggregate API regression, and hardening aggregate deterministic ordering with timestamp+id tie-break semantics.
+- [x] DAGG-A group closure (`DAGG-01..DAGG-04`)
+  - 2026-04-19: Closed aggregate selected-bot source migration by enforcing aggregate-first dashboard runtime loading (with fallback), aligning runtime view-model derivation to aggregate payload (`positions/orders/trades`), and locking RUNNING-empty-session history parity regression.
+- [x] DAGG-08 Harden aggregate API determinism for dashboard table contract
+  - 2026-04-19: Added deterministic timestamp+id tie-break ordering for aggregate `openItems`, `historyItems`, `openOrders`, and `trades.items` in `runtimeMonitoringAggregateRead.service.ts`.
+- [x] DAGG-07 Add aggregate API regression for positions/orders/history counts across mixed session statuses
+  - 2026-04-19: Added focused e2e coverage (`bots.monitoring-aggregate.e2e.test.ts`) for mixed-session aggregate contract (`RUNNING` empty + older `COMPLETED` history) including deterministic history/trade order assertions across repeated calls.
+- [x] DAGG-06 Lock dashboard history positions/trades parity and selected-bot switch behavior
+  - 2026-04-19: Added `HomeLiveWidgets` regressions for aggregate history positions/trades visibility and immediate selected-bot re-scope in history tab.
+- [x] DAGG-05 Add aggregate closed-positions table in dashboard history tab
+  - 2026-04-19: Added dedicated closed-positions DataTable to dashboard history tab with deterministic empty-state and persistent sort/column preferences.
+- [x] DAGG-04 Align dashboard runtime view-model/table derivation to aggregate payload
+  - 2026-04-19: Runtime selection view-model now derives session-sensitive trade/KPI state from aggregate session domain (`selected.trades.sessionId` + `actionSessionId`) without dropping valid aggregate rows.
+- [x] DAGG-03 Switch dashboard selected-bot runtime loading to aggregate endpoint
+  - 2026-04-19: Dashboard controller now loads selected-bot aggregate runtime payload by default and applies deterministic local trade query derivation for table filters/sort/pagination.
+- [x] DAGG-02 Add failing web regression for selected-bot aggregate parity when RUNNING session is empty
+  - 2026-04-19: Added web regression proving aggregate history remains visible when current `RUNNING` session is empty and older session contains closed history.
+- [x] DAGG-01 Freeze /dashboard aggregate selected-bot runtime contract (positions/orders/history)
+  - 2026-04-19: Contract linkage is frozen in canonical docs (`open-decisions`, `web-dashboard-home`, `web-bots`) and enforced by implementation evidence from `DAGG-A`.
 - [x] SOPR planning queued (`SOPR-01..SOPR-12`)
   - 2026-04-19: Added `docs/planning/signals-open-runtime-parity-plan-2026-04-19.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) as post-`DAGG`/`SBSC` follow-up for selected-bot signal context parity, dashboard-vs-preview parity, runtime no-open diagnostics clarity, and manual-order lifecycle semantics closure.
 

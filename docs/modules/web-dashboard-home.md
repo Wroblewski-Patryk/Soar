@@ -208,9 +208,13 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
 - Dashboard selected-bot runtime data source is aggregate by default:
   - `positions` tab uses aggregate open positions,
   - `orders` tab uses aggregate open orders,
-  - `history` tab uses aggregate history scope.
+  - `history` tab uses aggregate history scope with two deterministic tables:
+    closed positions and trade history.
 - Parity rule:
   - selected bot shown on `/dashboard` must not hide aggregate history that is visible for the same bot in `/dashboard/bots/:id/preview`.
+- Switch behavior rule:
+  - changing selected bot must immediately re-scope both history tables
+    (`closed positions` + `trades`) to the new selected-bot aggregate payload.
 - Scope lock:
   - strict selected-bot scope only (no cross-bot blending),
   - preview behavior unchanged.

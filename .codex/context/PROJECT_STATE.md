@@ -115,17 +115,23 @@ Last updated: 2026-04-19
     (`G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`) from run
     `2026-04-19T15:13:58.943Z`.
 - Success criteria for this phase:
-  - dashboard selected bot tables use aggregate scope deterministically.
-  - no discrepancy remains where preview shows closed history positions but
-    dashboard has no equivalent history surface.
+  - `DAGG-C` closure: explicit `/dashboard` vs `/dashboard/bots/:id/preview`
+    aggregate-history parity regression and focused closure pack.
+  - dashboard selected bot tables remain aggregate-scoped and deterministic
+    after closure validation.
   - focused validation remains green for touched modules before each commit.
   - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - start `DAGG-01` from canonical `NOW` queue; execute `SBSC` next for
-    strategy source-of-truth parity, then run queued `SOPR` wave for
-    selected-bot signals/open-runtime parity closure.
+  - execute `DAGG-09` and `DAGG-10` from canonical `NOW` queue.
+  - after `DAGG-C` closure, move to `SBSC` strategy source-of-truth parity,
+    then queued `SOPR` selected-bot signals/open-runtime parity closure.
 
 ## Recent Progress
+- 2026-04-19: closed `DAGG-A` and `DAGG-B` (`DAGG-01..DAGG-08`) by enforcing
+  aggregate-first selected-bot dashboard runtime loading, aligning runtime
+  view-model derivation to aggregate payload, adding dashboard history
+  closed-positions table with selected-bot re-scope regressions, and hardening
+  aggregate API determinism with mixed-session e2e coverage.
 - 2026-04-19: queued signals/open-runtime parity wave (`SOPR-01..SOPR-12`)
   from analyst findings and published executor-ready plan
   `docs/planning/signals-open-runtime-parity-plan-2026-04-19.md`; queue is

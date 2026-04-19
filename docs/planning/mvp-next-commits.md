@@ -7,21 +7,13 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `DAGG-01 docs(contract): freeze /dashboard aggregate selected-bot runtime contract (positions/orders/history)`
-- [ ] `DAGG-02 test(web-red): add failing regression for selected-bot aggregate parity when RUNNING session is empty`
-- [ ] `DAGG-03 feat(web-controller): switch dashboard selected-bot runtime loading to aggregate endpoint`
-## NEXT
-- [ ] `DAGG-04 refactor(web-runtime-viewmodel): align positions/orders/trades derivation to aggregate payload`
-- [ ] `DAGG-05 feat(web-history-tab): add aggregate closed-positions table in dashboard history tab`
-- [ ] `DAGG-06 test(web-history-parity): lock dashboard history positions/trades parity and selected-bot switch behavior`
-## PIPELINE
-- [ ] `DAGG-07 test(api-aggregate-red): add regression for aggregate positions/orders/history counts across mixed session statuses`
-- [ ] `DAGG-08 fix(api-aggregate-contract): harden aggregate response determinism for dashboard tables`
 - [ ] `DAGG-09 test(e2e/web-parity): add scenario asserting /dashboard and /preview parity for selected bot aggregate history`
 - [ ] `DAGG-10 qa(closure): run focused aggregate parity pack and sync canonical queue/context`
+## NEXT
 - [ ] `SBSC-01 docs(contract): freeze sidebar strategy source-of-truth and projection parity rules`
 - [ ] `SBSC-02 test(api-red): add regression for listBots.strategyId vs runtime-graph primary strategy mismatch`
 - [ ] `SBSC-03 fix(api-projection): make listBots/getBot strategy projection canonical-first and runtime-graph compatible`
+## PIPELINE
 - [ ] `SBSC-04 feat(api-audit): add deterministic drift audit for bots with legacy/canonical strategy divergence`
 - [ ] `SBSC-05 fix(api-drift-repair): add safe reconciliation path to align legacy linkage with canonical strategy when requested`
 - [ ] `SBSC-06 test(web-regression): lock sidebar strategy/market switch parity for two bots with different strategies`
@@ -40,8 +32,8 @@ Operational queue for one-task execution runs.
 - [ ] `SOPR-11 feat/fix(manual-order-path): implement selected manual-order semantic path with audit-safe diagnostics`
 - [ ] `SOPR-12 qa(closure): run full focused validation pack and sync canonical queue/context`
 ## GROUP QUEUE
-- [ ] `DAGG-A (commits DAGG-01..DAGG-04): contract freeze + dashboard aggregate data-source migration`
-- [ ] `DAGG-B (commits DAGG-05..DAGG-08): history positions parity + aggregate API contract hardening`
+- [x] `DAGG-A (commits DAGG-01..DAGG-04): contract freeze + dashboard aggregate data-source migration`
+- [x] `DAGG-B (commits DAGG-05..DAGG-08): history positions parity + aggregate API contract hardening`
 - [ ] `DAGG-C (commits DAGG-09..DAGG-10): parity regression closure + canonical sync`
 - [ ] `SBSC-A (commits SBSC-01..SBSC-03): decision freeze + API projection mismatch regression + canonical-first mapper fix`
 - [ ] `SBSC-B (commits SBSC-04..SBSC-06): drift detection/repair path + sidebar switch regression locks`
@@ -103,6 +95,10 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `DAGG-B (commits DAGG-05..DAGG-08): history positions parity + aggregate API contract hardening`
+  - 2026-04-19: Closed by adding dashboard history closed-positions table + selected-bot re-scope web regressions and by hardening aggregate API deterministic ordering with mixed-session contract regression coverage.
+- [x] `DAGG-A (commits DAGG-01..DAGG-04): contract freeze + dashboard aggregate data-source migration`
+  - 2026-04-19: Closed by enforcing aggregate-first selected-bot runtime loading, aligning dashboard runtime view-model to aggregate payload, and locking RUNNING-empty-session aggregate history parity regression under the frozen contract docs.
 - [x] `SOPR planning queued (signals + open-runtime parity remediation after DAGG/SBSC)`
   - 2026-04-19: Added `docs/planning/signals-open-runtime-parity-plan-2026-04-19.md` and queued `SOPR-A..SOPR-C` in pipeline/group queue to close selected-bot signal context drift, dashboard-vs-preview parity gaps, runtime no-open diagnostics visibility, and manual-order lifecycle semantics.
 - [x] `SBSC planning queued (sidebar selected-bot strategy source-of-truth and projection parity)`
