@@ -1,6 +1,6 @@
 # UXR-H Dashboard Manual Order Advanced UX Plan (2026-04-19)
 
-Status: queued (awaiting active ARC wave completion)  
+Status: in progress (`UXR-H-01` completed on 2026-04-19; `UXR-H-02` next)  
 Execution mode: tiny-commit only (exactly one task per commit)  
 Primary audience: execution agent
 
@@ -59,6 +59,9 @@ Primary audience: execution agent
   - `docs/modules/api-orders.md`
 - Done when:
   - implementation has one unambiguous contract for data source and UX behavior.
+ - 2026-04-19 closure evidence:
+   - contract frozen in `docs/planning/open-decisions.md`,
+   - module contracts synchronized in `docs/modules/web-dashboard-home.md` and `docs/modules/api-orders.md`.
 
 ### UXR-H-02
 `feat(api-orders): add manual-order context read endpoint for price/rules/min-qty preview`

@@ -99,24 +99,26 @@ Last updated: 2026-04-19
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: execute `POS-A` lifecycle parity contract closure
-  foundations (`POS-37..POS-38`).
+- Main active objective: execute `UXR-H-A` manual-order advanced foundation
+  (`UXR-H-02..UXR-H-03`) after contract-freeze closure.
 - Top blockers:
-  - runtime automation mode/context and management-mode ownership still need
-    strict parity hardening (`POS-37`).
-  - dynamic runtime capital context parity (`dcaFundsExhausted` path) remains
-    open for paper/live closure (`POS-38`).
+  - manual-order context read endpoint is not yet available as one API
+    source-of-truth for price/rules/min-executable quantity (`UXR-H-02`).
 - Success criteria for this phase:
-  - `POS-A` closes with deterministic lifecycle-open/close parity contracts
-    across backtest and runtime execution paths.
+  - dashboard manual-order advanced wave has frozen docs contract +
+    API context endpoint + regression locks (`UXR-H-01..UXR-H-03`).
   - canonical queue and context docs stay synchronized after each ARC batch.
   - no regressions in runtime safety, deploy confidence, or dashboard contracts.
-- Next queued follow-up after `POS-A`:
-  - lifecycle parity completion (`POS-B`, `POS-39..42`),
-  - production verification closure (`OPV`),
-  - dashboard manual-order advanced UX wave (`UXR-H-01..UXR-H-10`).
+- Next queued follow-up after `UXR-H-A`:
+  - dashboard manual-order UI/state rollout (`UXR-H-B`, `UXR-H-04..07`),
+  - i18n/regression/closure sync (`UXR-H-C`, `UXR-H-08..10`),
+  - lifecycle parity continuation (`POS-A` remaining `POS-37..POS-38`).
 
 ## Recent Progress
+- 2026-04-19: completed `UXR-H-01` by freezing dashboard manual-order advanced
+  input/context contract across canonical decisions and module docs, including
+  explicit unresolved `orderType -> MARKET` fallback and scope lock against
+  TP/SL/reduce-only/TIF additions in this wave.
 - 2026-04-19: completed `POS-36` by enforcing EXIT trace-only behavior in
   replay/interleaved backtest decision flow (`strategy_exit_trace_only`
   mismatch diagnostic), preserving lifecycle/final-candle close authority, and

@@ -7,13 +7,13 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `UXR-H-01 docs(contract): freeze dashboard manual-order advanced input/context contract`
-## NEXT
 - [ ] `UXR-H-02 feat(api-orders): add manual-order context read endpoint for price/rules/min-qty preview`
+## NEXT
+- [ ] `UXR-H-03 test(api-orders): lock manual-order context constraints and fallback behavior`
 ## PIPELINE
 - [ ] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
-- [ ] `UXR-H-01 docs(contract): freeze dashboard manual-order advanced input/context contract`
 - [ ] `UXR-H-02 feat(api-orders): add manual-order context read endpoint for price/rules/min-qty preview`
+- [ ] `UXR-H-03 test(api-orders): lock manual-order context constraints and fallback behavior`
 - [ ] `UXR-H-06 feat(web-dashboard-manual-order): add price input, qty slider, side-aware summary, and remove double-container layering`
 ## GROUP QUEUE
 - [x] `BRS-A (commits BRS-01..BRS-04): decision closure + strict selected-bot scope foundation`
@@ -60,6 +60,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `UXR-H-01 docs(contract): freeze dashboard manual-order advanced input/context contract`
+  - 2026-04-19: Frozen manual-order advanced behavior/data-source contract in canonical decisions and module docs, including `price` placement/fill rule, `qty` min+slider guidance contract, side-aware summary contract, and explicit unresolved `orderType -> MARKET` fallback. Synced wave plan status to in-progress with `UXR-H-02` next. Validation: `pnpm run quality:guardrails` => `PASS`.
 - [x] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
   - 2026-04-19: Enforced EXIT trace-only parity semantics in backtest replay/interleaved simulation flows by mapping direct `EXIT -> close` core decisions to diagnostics-only mismatch (`strategy_exit_trace_only`) while preserving lifecycle/final-candle as sole close authority; added runtime final-candle regression lock for EXIT trace-only path (`orchestrateFn` skip + signal payload marker). Validation: `pnpm --filter api run test -- src/modules/backtests/backtestReplayCore.test.ts src/modules/backtests/backtests.contract-remediation.test.ts src/modules/engine/runtimeFinalCandleDecision.service.test.ts --run` => `35/35 PASS`; `pnpm --filter api run test -- src/modules/backtests/backtests.e2e.test.ts --run` => `10/10 PASS`; `pnpm --filter api run typecheck` => `PASS`; `pnpm --filter api run build` => `PASS`; `docker build -f apps/api/Dockerfile.worker.backtest .` => `PASS`; `pnpm run quality:guardrails` => `PASS`.
 - [x] `ARC-E group closure (ARC-19..ARC-20)`

@@ -5,8 +5,8 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/dashboard-home`
 - Owner: frontend/runtime-observability
-- Last updated: 2026-04-18
-- Related planning task: `UXR-G-01`
+- Last updated: 2026-04-19
+- Related planning task: `UXR-H-01`
 
 ## 1. Purpose and Scope
 - Implements dashboard control-center home view (`/dashboard`) for runtime monitoring.
@@ -138,3 +138,19 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
 - Wallet KPI style and split:
   - `portfolio` is rendered as simple inline summary row (no card-like treatment),
   - `free funds` and `in positions` are rendered as equal `50/50` columns in one row.
+
+## 15. Manual-Order Advanced Contract (`UXR-H-01`)
+- Scope lock:
+  - this contract freezes manual-order behavior before API/web implementation (`UXR-H-02+`).
+  - no change to command authority (`POST /dashboard/orders/open` remains canonical write path).
+- UI behavior:
+  - render `price` input between `side` and `qty`,
+  - provide one action to fill current market reference price,
+  - keep `qty` input editable, with dedicated slider row writing computed values into the same input,
+  - render one side-aware summary row/card instead of split cost/max rows.
+- Context display:
+  - show `orderType`, `marginMode`, and `leverage` from selected bot context payload,
+  - when `orderType` cannot be resolved from bot context, show explicit fallback `MARKET`.
+- Guardrails:
+  - do not add TP/SL, reduce-only, fee-tier, or TIF controls in this wave,
+  - keep sidebar visual language; remove only redundant nested manual-order framing.

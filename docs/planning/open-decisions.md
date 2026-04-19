@@ -771,6 +771,25 @@ This file tracks intentionally unresolved architecture choices so implementation
   - `docs/planning/uxr-g-dashboard-wallet-manual-order-layout-plan-2026-04-18.md`
   - `docs/modules/web-dashboard-home.md`
 
+## Dashboard Manual-Order Advanced Input and Context Contract
+- Decision state: resolved on 2026-04-19.
+- Scope: dashboard runtime sidebar manual-order flow (`UXR-H` wave).
+- Decision:
+  - existing write path stays canonical: `POST /dashboard/orders/open` with unchanged risk-ack and command semantics.
+  - UI adds advanced input/context only; it must not introduce TP/SL, reduce-only, fee-tier, or TIF controls in this wave.
+  - `price` field is always visible between `side` and `qty`.
+  - one explicit quick action fills current market reference price into `price`.
+  - `qty` remains editable input and receives guidance/prefill from API context constraints (`minAmount`, precision step, `minNotional`, `minExecutableQty`).
+  - `qty` slider is rendered in a dedicated row and writes derived quantity back to editable input.
+  - displayed `orderType`, `marginMode`, and `leverage` come from selected bot context payload.
+  - unresolved `orderType` must fail closed to explicit visible fallback: `MARKET`.
+  - manual-order summary is one side-aware line/card (replace split cost/max presentation).
+  - visual language stays aligned with current sidebar style; remove redundant nested/double framing only.
+- Canonical references:
+  - `docs/planning/uxr-h-dashboard-manual-order-advanced-plan-2026-04-19.md`
+  - `docs/modules/web-dashboard-home.md`
+  - `docs/modules/api-orders.md`
+
 ## Runtime Critical-Path Decomposition Boundaries (ARC)
 - Decision state: resolved on 2026-04-19.
 - Decision:

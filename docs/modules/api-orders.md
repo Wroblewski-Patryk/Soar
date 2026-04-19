@@ -5,8 +5,8 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/orders`
 - Owner: backend/trading-domain
-- Last updated: 2026-04-12
-- Related planning task: `DCP-06`
+- Last updated: 2026-04-19
+- Related planning task: `UXR-H-01`
 
 ## 1. Purpose and Scope
 - Owns order read + command API:
@@ -76,3 +76,21 @@ pnpm --filter api test -- src/modules/orders/orders.service.test.ts src/modules/
 ## 9. Open Issues and Follow-Ups
 - Continue typed-error migration to replace message-based branching.
 - Review cache invalidation strategy under high-frequency LIVE execution load.
+
+## 10. Manual-Order Context Contract Freeze (`UXR-H-01`)
+- Contract purpose:
+  - provide one API source-of-truth payload for dashboard manual-order context and min-executable quantity guidance.
+- Write-path invariants:
+  - `POST /dashboard/orders/open` remains canonical write command for manual orders,
+  - risk-ack and existing pretrade/exchange guards remain unchanged.
+- Frozen read contract target (`UXR-H-02` implementation scope):
+  - selected `botId + symbol` context endpoint returns:
+    - resolved `orderType` (explicit fallback `MARKET` when unresolved),
+    - resolved `marginMode`,
+    - resolved `leverage`,
+    - current market reference price,
+    - quantity constraints (`minAmount`, precision step, `minNotional`, `minExecutableQty`),
+    - optional side-aware summary primitives for web rendering.
+- Guardrails:
+  - context endpoint is read-only and does not place/modify orders,
+  - web must render API constraints, not duplicate exchange-rule formulas independently.
