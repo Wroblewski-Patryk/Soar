@@ -2041,6 +2041,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - [x] `OPV-02 qa(prod-live-takeover): verify takeover endpoint and private ops probes on production target`
 - [x] `OPV-03 ops(gates-refresh): refresh RC external-gate status/sign-off artifacts with new production evidence`
 - [x] `OPV-04 docs(closure): sync LBT/V1 stability plan statuses and residual external blockers`
+- [x] `OPV-05 fix(ops-gates): make RC status manual follow-ups gate-aware`
 
 ### Progress Log (Phase OPV - Production Verification and Exit-Gate Follow-up)
 - 2026-04-18: Queued production follow-up closure from live-takeover/V1 plans (`LBT`, `V1` stability/release, `DPL` rehearsal note) so remaining target-environment verification and formal gate evidence are explicitly owned after code-focused waves.
@@ -2048,3 +2049,4 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-19: Completed `OPV-02` by executing production takeover verification probes and publishing artifact pack (`docs/operations/opv-02-prod-live-takeover-2026-04-19.md`, `_artifacts-opv-02-*`). Takeover route rollout is confirmed on production (`401 Missing token` means protected route exists; no `404`), while private OPS Gate 3 checks remain blocked in this execution context without VPS private-route admin auth.
 - 2026-04-19: Completed `OPV-03` by collecting fresh production SLO evidence (`_artifacts-slo-window-2026-04-19T01-35-51-340Z.json`), rebuilding 7d/30d rolling reports, refreshing RC status/checklist/sign-off artifacts, rerunning post-signoff status sync, and publishing diagnostics in `docs/operations/opv-03-rc-gates-refresh-2026-04-19.md`. Current external gate snapshot: `G1=PASS`, `G2=OPEN`, `G3=PASS`, `G4=OPEN`; RC status `BLOCKED`.
 - 2026-04-19: Completed `OPV-04` by synchronizing canonical queue/context and LBT/V1 planning docs to the refreshed OPV evidence and residual blockers (`docs/operations/opv-04-closure-sync-2026-04-19.md`).
+- 2026-04-19: Completed `OPV-05` by updating `scripts/buildRcExternalGateStatus.mjs` so `Manual Follow-ups` are generated from current gate state (`Gate1..Gate4`) instead of static all-gates reminders; validation run confirmed focused follow-up output (`Gate2`, `Gate4`) from latest window artifact.

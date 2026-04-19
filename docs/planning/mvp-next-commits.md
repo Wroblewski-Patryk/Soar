@@ -57,6 +57,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `OPV-05 fix(ops-gates): make RC status manual follow-ups gate-aware instead of static`
+  - 2026-04-19: Updated `scripts/buildRcExternalGateStatus.mjs` to render manual follow-ups dynamically from current gate state (`Gate1..Gate4`) so closed gates are not re-listed as required action; validated by generating status output from latest SLO window artifact.
 - [x] `POS-B group closure (POS-39..POS-42)`
   - 2026-04-19: Confirmed implementation-complete state and closed queue drift using focused parity/runtime verification (`50/50 PASS`) plus canonical sync; evidence in `docs/operations/pos-ab-closure-2026-04-19.md`.
 - [x] `POS-A group closure (POS-36..POS-38)`

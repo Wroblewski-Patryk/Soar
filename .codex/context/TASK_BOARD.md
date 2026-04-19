@@ -37,6 +37,8 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] OPV-05 Gate-aware RC status follow-ups
+  - 2026-04-19: Updated RC gate status generator to emit only unresolved manual follow-ups per current gate state (`Gate1..Gate4`) and stop listing already-closed evidence steps as required.
 - [x] POS-B group closure (`POS-39..POS-42`)
   - 2026-04-19: Closed queue drift by confirming existing implementation and running focused runtime/parity verification pack (`50/50 PASS`); evidence in `docs/operations/pos-ab-closure-2026-04-19.md`.
 - [x] POS-A group closure (`POS-36..POS-38`)

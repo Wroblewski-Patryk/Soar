@@ -117,6 +117,10 @@ Last updated: 2026-04-19
   - select the next planned wave after POS queue reconciliation.
 
 ## Recent Progress
+- 2026-04-19: completed `OPV-05` by making RC external-gates status manual
+  follow-ups gate-aware in `scripts/buildRcExternalGateStatus.mjs`; generated
+  status now lists only unresolved actions (`Gate2/Gate4` in current snapshot)
+  instead of static all-gates reminders.
 - 2026-04-19: closed `POS-A` and `POS-B` queue drift by verifying
   implementation-complete lifecycle parity scope with focused runtime/parity
   tests (`50/50 PASS`) and publishing closure evidence in

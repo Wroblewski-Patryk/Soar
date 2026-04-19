@@ -182,6 +182,52 @@ const gate2StatusLabel = (queueLagPass, productionEvidence, environmentLabel) =>
   const env = environmentLabel || 'unknown';
   return `LOCAL_PASS (${env} evidence; production pending)`;
 };
+const renderManualFollowUps = (items) => {
+  if (!Array.isArray(items) || items.length === 0) {
+    return '1. No pending manual follow-ups. Keep `v1-release-candidate-checklist.md` synchronized with current gate snapshot.';
+  }
+  return items.map((item, index) => `${index + 1}. ${item}`).join('\n');
+};
+const buildManualFollowUps = ({
+  gate1EvidenceComplete,
+  gate2QueueLagPass,
+  gate2ProductionEvidence,
+  gate3EvidenceComplete,
+  gate4Approved,
+}) => {
+  const items = [];
+
+  if (!gate1EvidenceComplete) {
+    items.push(
+      'Fill backup/restore evidence in `docs/operations/v1-rc-external-gates-runbook.md` for Gate 1.'
+    );
+  }
+
+  if (!gate2QueueLagPass) {
+    items.push(
+      'Complete Gate 2 queue-lag baseline review from fresh SLO artifacts and regenerate `v1-rc-external-gates-status.md`.'
+    );
+  } else if (!gate2ProductionEvidence) {
+    items.push(
+      'Re-run Gate 2 from production/private-route context so status can move from `LOCAL_PASS` to `PASS`.'
+    );
+  }
+
+  if (!gate3EvidenceComplete) {
+    items.push(
+      'Fill incident contacts/escalation evidence in `docs/operations/v1-rc-external-gates-runbook.md` for Gate 3.'
+    );
+  }
+
+  if (!gate4Approved) {
+    items.push('Complete sign-offs in `docs/operations/v1-rc-signoff-record.md` for Gate 4.');
+  }
+
+  items.push(
+    'Reflect current gate states in `docs/operations/v1-release-candidate-checklist.md` after updating evidence/sign-offs.'
+  );
+  return items;
+};
 
 const buildGateRowsFromObservation = (summary, environment) => {
   const objectives = Array.isArray(summary?.evaluation?.objectives)
@@ -325,6 +371,13 @@ const renderReport = ({
     evaluation.details.environment
   );
   const gate1Label = gate1Runbook.evidenceComplete ? 'PASS' : backupGate.label;
+  const manualFollowUps = buildManualFollowUps({
+    gate1EvidenceComplete: gate1Runbook.evidenceComplete,
+    gate2QueueLagPass: evaluation.queueLagPass,
+    gate2ProductionEvidence: evaluation.productionEvidence,
+    gate3EvidenceComplete: gate3Runbook.evidenceComplete,
+    gate4Approved: gate4Signoff.approved,
+  });
   const output = `# V1 RC External Gates Status
 
 Generated at (UTC): ${generatedAt}
@@ -380,10 +433,7 @@ Observation window:
   )}
 
 ## Manual Follow-ups (Required)
-1. Fill backup/restore evidence in \`docs/operations/v1-rc-external-gates-runbook.md\`.
-2. Fill on-call/escalation confirmation in runbook.
-3. Complete sign-offs in \`docs/operations/v1-rc-signoff-record.md\`.
-4. Reflect final gate states in \`docs/operations/v1-release-candidate-checklist.md\`.
+${renderManualFollowUps(manualFollowUps)}
 `;
   return output;
 };
@@ -396,6 +446,13 @@ const renderTemplateOnly = (backupGate, gate1Runbook, gate3Runbook, gate4Signoff
   const runbookRel = path.relative(process.cwd(), gate3Runbook.runbookPath);
   const signoffRel = path.relative(process.cwd(), gate4Signoff.signoffPath);
   const gate1Label = gate1Runbook.evidenceComplete ? 'PASS' : backupGate.label;
+  const manualFollowUps = buildManualFollowUps({
+    gate1EvidenceComplete: gate1Runbook.evidenceComplete,
+    gate2QueueLagPass: false,
+    gate2ProductionEvidence: false,
+    gate3EvidenceComplete: gate3Runbook.evidenceComplete,
+    gate4Approved: gate4Signoff.approved,
+  });
   return `# V1 RC External Gates Status
 
 Generated at (UTC): ${generatedAt}
@@ -430,10 +487,7 @@ Source artifact: not provided (template-only mode)
    - \`pnpm run ops:rc:gates:status\`
 
 ## Manual Follow-ups (Required)
-1. Fill backup/restore evidence in \`docs/operations/v1-rc-external-gates-runbook.md\`.
-2. Fill on-call/escalation confirmation in runbook.
-3. Complete sign-offs in \`docs/operations/v1-rc-signoff-record.md\`.
-4. Reflect final gate states in \`docs/operations/v1-release-candidate-checklist.md\`.
+${renderManualFollowUps(manualFollowUps)}
 `;
 };
 

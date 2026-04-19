@@ -264,3 +264,18 @@ pnpm run ops:rc:gates:status
 - Avoid: reopening historical tasks into `NOW` without an explicit regression/new-scope reason.
 - Evidence:
   - Observed on 2026-04-19 while reconciling `POS-A/POS-B` (`POS-37..POS-42`) queue state.
+
+### 2026-04-19 - Gate status follow-ups must be state-derived, not static
+- Context: RC external-gates status output used by operators during release closure.
+- Symptom: generated status report always listed all manual follow-ups, including already-completed Gate 1/3 evidence.
+- Root cause: follow-up section was hardcoded and not derived from current gate state.
+- Guardrail: status/report scripts must generate operator follow-ups from computed gate outcomes to avoid stale or misleading required actions.
+- Preferred pattern:
+```text
+1) Compute gate states.
+2) Build follow-up list only for unresolved gates.
+3) Always append checklist-sync reminder as the final step.
+```
+- Avoid: static "required actions" sections that ignore already-closed gates.
+- Evidence:
+  - Observed and fixed on 2026-04-19 in `scripts/buildRcExternalGateStatus.mjs` (`OPV-05`).
