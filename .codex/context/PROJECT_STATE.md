@@ -122,11 +122,16 @@ Last updated: 2026-04-19
   - focused validation remains green for touched modules before each commit.
   - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - execute `DAGG-09` and `DAGG-10` from canonical `NOW` queue.
+  - execute `DAGG-10` from canonical `NOW` queue.
   - after `DAGG-C` closure, move to `SBSC` strategy source-of-truth parity,
     then queued `SOPR` selected-bot signals/open-runtime parity closure.
 
 ## Recent Progress
+- 2026-04-19: completed `DAGG-09` by adding explicit cross-route web parity
+  regression (`HomeLiveWidgets.preview-parity.test.tsx`) that validates
+  selected-bot aggregate history/trade consistency between `/dashboard`
+  (`HomeLiveWidgets`) and `/dashboard/bots/:id/preview` (`BotsManagement`
+  monitoring route), including no cross-bot leakage assertions.
 - 2026-04-19: closed `DAGG-A` and `DAGG-B` (`DAGG-01..DAGG-08`) by enforcing
   aggregate-first selected-bot dashboard runtime loading, aligning runtime
   view-model derivation to aggregate payload, adding dashboard history

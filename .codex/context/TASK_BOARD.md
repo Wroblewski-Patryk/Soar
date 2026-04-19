@@ -17,7 +17,6 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] DAGG-09 Add /dashboard vs /preview selected-bot parity regression scenario
 - [ ] DAGG-10 Run focused aggregate parity closure pack and sync canonical queue/context
 
 ## BACKLOG
@@ -57,6 +56,8 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] DAGG-09 Add /dashboard vs /preview selected-bot parity regression scenario
+  - 2026-04-19: Added cross-route web regression in `HomeLiveWidgets.preview-parity.test.tsx` that renders `/dashboard` (`HomeLiveWidgets`) and `/dashboard/bots/:id/preview` (`BotsManagement` locked to monitoring) on shared runtime mocks, proving selected-bot aggregate history/trade parity and no cross-bot leakage in both views.
 - [x] DAGG-B group closure (`DAGG-05..DAGG-08`)
   - 2026-04-19: Closed aggregate history/API hardening scope end-to-end by adding closed-positions history table in dashboard history tab, locking selected-bot history re-scope regressions in `HomeLiveWidgets`, adding mixed-session aggregate API regression, and hardening aggregate deterministic ordering with timestamp+id tie-break semantics.
 - [x] DAGG-A group closure (`DAGG-01..DAGG-04`)

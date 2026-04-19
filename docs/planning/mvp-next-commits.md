@@ -7,7 +7,6 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `DAGG-09 test(e2e/web-parity): add scenario asserting /dashboard and /preview parity for selected bot aggregate history`
 - [ ] `DAGG-10 qa(closure): run focused aggregate parity pack and sync canonical queue/context`
 ## NEXT
 - [ ] `SBSC-01 docs(contract): freeze sidebar strategy source-of-truth and projection parity rules`
@@ -95,6 +94,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `DAGG-09 test(e2e/web-parity): add scenario asserting /dashboard and /preview parity for selected bot aggregate history`
+  - 2026-04-19: Added `HomeLiveWidgets.preview-parity.test.tsx` to lock selected-bot aggregate history/trade parity between `/dashboard` and `/dashboard/bots/:id/preview` and verify no cross-bot leakage in either route context.
 - [x] `DAGG-B (commits DAGG-05..DAGG-08): history positions parity + aggregate API contract hardening`
   - 2026-04-19: Closed by adding dashboard history closed-positions table + selected-bot re-scope web regressions and by hardening aggregate API deterministic ordering with mixed-session contract regression coverage.
 - [x] `DAGG-A (commits DAGG-01..DAGG-04): contract freeze + dashboard aggregate data-source migration`
