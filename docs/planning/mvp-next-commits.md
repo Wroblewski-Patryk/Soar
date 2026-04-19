@@ -7,9 +7,8 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `UXR-I-02 audit(web-forms): publish residual consistency gap map per route/module`
-## NEXT
 - [ ] `UXR-I-03 chore(web-ui-forms): normalize shared form primitive API surface for refresh migration`
+## NEXT
 - [ ] `UXR-I-04 test(guardrails): lock no-cross-feature generic controls and no-hardcoded-wrapper-copy regressions`
 ## PIPELINE
 - [ ] `UXR-I-05 refactor(web-wrappers): unify create/edit wrappers i18n+breadcrumb+save-action contract`
@@ -82,6 +81,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `UXR-I-02 audit(web-forms): publish residual consistency gap map per route/module`
+  - 2026-04-19: Published residual route/module gap map in `docs/operations/uxr-i-forms-gap-map-2026-04-19.md` with JSON artifact `_artifacts-uxr-i-forms-gap-map-2026-04-19.json` to lock deterministic migration targets for `UXR-I-03..UXR-I-13`.
 - [x] `UXR-I-01 docs(contract): freeze dashboard forms consistency refresh boundaries after UXR-F`
   - 2026-04-19: Locked `UXR-I` refresh boundaries in canonical contracts (`open-decisions`, `web-dashboard-home`) with explicit scoped routes, `ui/forms` generic-control rule, wrapper i18n-only copy contract, and unified validation/submit behavior invariants.
 - [x] `UXR-J planning queued (dashboard tables consistency refresh after UXR-I)`

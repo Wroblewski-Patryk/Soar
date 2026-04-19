@@ -125,6 +125,11 @@ Last updated: 2026-04-19
   - then execute `UXR-J-A..C` for shared table-consistency closure.
 
 ## Recent Progress
+- 2026-04-19: completed `UXR-I-02` by publishing residual route/module
+  forms-consistency gap inventory with markdown + JSON artifacts
+  (`uxr-i-forms-gap-map-2026-04-19.md`,
+  `_artifacts-uxr-i-forms-gap-map-2026-04-19.json`) to lock deterministic
+  migration scope for `UXR-I` execution.
 - 2026-04-19: completed `UXR-I-01` by freezing post-`UXR-F` dashboard forms
   consistency refresh boundaries in canonical docs (`open-decisions`,
   `web-dashboard-home`) with explicit route scope, `ui/forms-only` generic

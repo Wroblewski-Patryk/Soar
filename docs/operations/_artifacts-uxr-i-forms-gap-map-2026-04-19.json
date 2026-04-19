@@ -1,0 +1,91 @@
+{
+  "artifact": "uxr-i-forms-gap-map",
+  "generatedAt": "2026-04-19T00:00:00Z",
+  "scope": {
+    "wave": "UXR-I",
+    "routes": [
+      "/dashboard/wallets/create",
+      "/dashboard/wallets/[id]/edit",
+      "/dashboard/markets/create",
+      "/dashboard/markets/[id]/edit",
+      "/dashboard/strategies/create",
+      "/dashboard/strategies/[id]/edit",
+      "/dashboard/backtests/create",
+      "/dashboard/bots/create",
+      "/dashboard/bots/[id]/edit"
+    ]
+  },
+  "summary": {
+    "wrapperHardcodedCopyMatches": 0,
+    "crossFeatureGenericControlImports": 0,
+    "wrapperCoverageGaps": [
+      "markets create/edit page tests",
+      "strategies create/edit page tests",
+      "backtests create page tests",
+      "guardrails monitored route set missing most UXR-I wrappers"
+    ]
+  },
+  "gaps": [
+    {
+      "id": "wrapper-save-action-parity",
+      "severity": "medium",
+      "status": "open",
+      "description": "Wrapper-level save action disabled/submitting behavior is inconsistent across modules.",
+      "targets": [
+        "apps/web/src/app/dashboard/wallets/_components/WalletFormPageContent.tsx",
+        "apps/web/src/app/dashboard/bots/_components/BotFormPageContent.tsx",
+        "apps/web/src/app/dashboard/strategies/create/page.tsx",
+        "apps/web/src/app/dashboard/strategies/[id]/edit/page.tsx",
+        "apps/web/src/app/dashboard/backtests/create/page.tsx"
+      ],
+      "plannedTask": "UXR-I-05"
+    },
+    {
+      "id": "mobile-sticky-action-parity",
+      "severity": "medium",
+      "status": "open",
+      "description": "Not all long-form wrappers expose a sticky mobile action bar.",
+      "targets": [
+        "apps/web/src/app/dashboard/strategies/create/page.tsx",
+        "apps/web/src/app/dashboard/strategies/[id]/edit/page.tsx",
+        "apps/web/src/app/dashboard/backtests/create/page.tsx"
+      ],
+      "plannedTask": "UXR-I-12"
+    },
+    {
+      "id": "markets-section-ia-consistency",
+      "severity": "medium",
+      "status": "open",
+      "description": "Markets form still relies on mixed local grid blocks instead of fully standardized section-card IA.",
+      "targets": [
+        "apps/web/src/features/markets/components/MarketUniverseForm.tsx"
+      ],
+      "plannedTask": "UXR-I-07"
+    },
+    {
+      "id": "bots-layout-density",
+      "severity": "medium",
+      "status": "open",
+      "description": "Bots form top section remains dense (`columns=3`) relative to target readability contract.",
+      "targets": [
+        "apps/web/src/features/bots/components/BotCreateEditForm.tsx"
+      ],
+      "plannedTask": "UXR-I-10"
+    },
+    {
+      "id": "wrapper-copy-regression-guard",
+      "severity": "low",
+      "status": "open",
+      "description": "Guardrail monitored route list does not yet cover the full UXR-I wrapper scope.",
+      "targets": [
+        "apps/web/src/i18n/guardrails.test.ts"
+      ],
+      "plannedTask": "UXR-I-04"
+    }
+  ],
+  "alreadyAligned": [
+    "All audited forms consume shared generic controls via '@/ui/forms'.",
+    "Audited wrappers use i18n keys for titles/breadcrumbs/actions (no hardcoded wrapper literals detected).",
+    "First-invalid focus/scroll plus validation summary is present across audited form components."
+  ]
+}

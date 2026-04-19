@@ -17,7 +17,7 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] UXR-I-02 Publish residual forms consistency gap map per route/module
+- [ ] UXR-I-03 Normalize shared ui/forms primitive API surface for refresh migration
   - Status: READY
   - Group: Dashboard Forms Consistency Refresh (`UXR-I-A`)
   - Owner: Frontend Builder
@@ -26,12 +26,6 @@ Last updated: 2026-04-19
 
 ## BACKLOG
 
-- [ ] UXR-I-03 Normalize shared ui/forms primitive API surface for refresh migration
-  - Status: BACKLOG
-  - Group: Dashboard Forms Consistency Refresh (`UXR-I-A`)
-  - Owner: Frontend Builder
-  - Depends on: UXR-I-02
-  - Priority: P2
 - [ ] UXR-J-01 Freeze dashboard table action-color and columns-dropdown behavior contract
   - Status: BACKLOG
   - Group: Dashboard Tables Consistency Refresh (`UXR-J-A`)
@@ -59,6 +53,8 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] UXR-I-02 Publish residual forms consistency gap map per route/module
+  - 2026-04-19: Published deterministic route/module gap inventory in `docs/operations/uxr-i-forms-gap-map-2026-04-19.md` with machine-readable artifact `_artifacts-uxr-i-forms-gap-map-2026-04-19.json`.
 - [x] UXR-I-01 Freeze dashboard forms consistency refresh boundaries after UXR-F
   - 2026-04-19: Locked canonical UXR-I scope/behavior boundaries in `open-decisions` and module linkage docs (`web-dashboard-home`) before refresh migration tasks.
 - [x] UXR-J planning queued: `UXR-J-01..UXR-J-08` dashboard tables consistency refresh wave activated from planner brief

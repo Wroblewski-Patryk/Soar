@@ -2053,7 +2053,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 
 ## Phase UXR-I - Dashboard Forms Consistency Refresh (Queued 2026-04-19)
 - [x] `UXR-I-01 docs(contract): freeze dashboard forms consistency refresh boundaries after UXR-F`
-- [ ] `UXR-I-02 audit(web-forms): publish residual consistency gap map per route/module`
+- [x] `UXR-I-02 audit(web-forms): publish residual consistency gap map per route/module`
 - [ ] `UXR-I-03 chore(web-ui-forms): normalize shared form primitive API surface for refresh migration`
 - [ ] `UXR-I-04 test(guardrails): lock no-cross-feature generic controls and no-hardcoded-wrapper-copy regressions`
 - [ ] `UXR-I-05 refactor(web-wrappers): unify create/edit wrappers i18n+breadcrumb+save-action contract`
@@ -2070,6 +2070,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 ### Progress Log (Phase UXR-I - Dashboard Forms Consistency Refresh)
 - 2026-04-19: Activated planner input `docs/planning/dashboard-forms-consistency-planner-brief-2026-04-19.md` into canonical execution wave `docs/planning/uxr-i-dashboard-forms-consistency-refresh-plan-2026-04-19.md` with grouped batches `UXR-I-A..UXR-I-D` and strict tiny-commit sequencing.
 - 2026-04-19: Completed `UXR-I-01` by freezing post-`UXR-F` refresh boundaries in canonical decisions (`open-decisions`) and module linkage docs (`web-dashboard-home`) with explicit route scope, `ui/forms-only` source rule, wrapper i18n contract, and validation/submit behavior invariants.
+- 2026-04-19: Completed `UXR-I-02` by publishing route/module residual gap inventory in `docs/operations/uxr-i-forms-gap-map-2026-04-19.md` with machine-readable companion artifact `docs/operations/_artifacts-uxr-i-forms-gap-map-2026-04-19.json` (wrapper parity, mobile action parity, layout-density, and guardrail-coverage deltas mapped to `UXR-I-03..UXR-I-13` tasks).
 
 ## Phase UXR-J - Dashboard Tables Consistency Refresh (Queued 2026-04-19)
 - [ ] `UXR-J-01 docs(contract): freeze dashboard table action-color and columns-dropdown behavior contract`
