@@ -82,19 +82,19 @@ export const listBotRuntimeSessionTrades = async (
     },
   };
 
-  const carryOverPositionIds =
-    session.status === 'RUNNING' && !query.from && !query.to
-      ? await listRuntimeTradeCarryOverPositionIds({
-          userId,
-          ...(botScopedTradeWhere as Prisma.PositionWhereInput),
-          managementMode: 'BOT_MANAGED',
-          ...(normalizedSymbol ? { symbol: normalizedSymbol } : {}),
-          openedAt: {
-            lte: windowEnd,
-          },
-          OR: [{ closedAt: null }, { closedAt: { gte: session.startedAt } }],
-        })
-      : [];
+  const shouldIncludeCarryOverPositions = !query.from && !query.to;
+  const carryOverPositionIds = shouldIncludeCarryOverPositions
+    ? await listRuntimeTradeCarryOverPositionIds({
+        userId,
+        ...(botScopedTradeWhere as Prisma.PositionWhereInput),
+        managementMode: 'BOT_MANAGED',
+        ...(normalizedSymbol ? { symbol: normalizedSymbol } : {}),
+        openedAt: {
+          lte: windowEnd,
+        },
+        OR: [{ closedAt: null }, { closedAt: { gte: session.startedAt } }],
+      })
+    : [];
 
   const where: Prisma.TradeWhereInput = {
     userId,
@@ -103,7 +103,19 @@ export const listBotRuntimeSessionTrades = async (
     ...(normalizedSide ? { side: normalizedSide } : {}),
     OR:
       carryOverPositionIds.length > 0
-        ? [windowClause, { positionId: { in: carryOverPositionIds } }]
+        ? [
+            windowClause,
+            {
+              AND: [
+                { positionId: { in: carryOverPositionIds } },
+                {
+                  executedAt: {
+                    lte: rangeEnd,
+                  },
+                },
+              ],
+            },
+          ]
         : [windowClause],
   };
 

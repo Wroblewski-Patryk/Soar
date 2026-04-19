@@ -79,6 +79,50 @@ type RuntimeFinalCandleDecisionContext = {
   orchestrateFn: (params: Record<string, unknown>) => Promise<unknown>;
 };
 
+type RuntimeOrchestrationResult =
+  | {
+      status: 'opened';
+      orderId: string;
+      positionId: string;
+    }
+  | {
+      status: 'closed';
+      orderId: string;
+      positionId: string;
+    }
+  | {
+      status: 'ignored';
+      reason:
+        | 'no_open_position'
+        | 'no_flip_with_open_position'
+        | 'already_open_same_side'
+        | 'manual_managed_symbol'
+        | 'dedupe_inflight'
+        | 'dedupe_reused';
+    };
+
+type RuntimeOrchestrationIgnoredReason = Extract<RuntimeOrchestrationResult, { status: 'ignored' }>['reason'];
+
+const asRuntimeOrchestrationResult = (value: unknown): RuntimeOrchestrationResult | null => {
+  if (!value || typeof value !== 'object') return null;
+  const parsed = value as Partial<RuntimeOrchestrationResult>;
+  if (parsed.status === 'opened' || parsed.status === 'closed') {
+    if (typeof parsed.orderId !== 'string' || typeof parsed.positionId !== 'string') return null;
+    return {
+      status: parsed.status,
+      orderId: parsed.orderId,
+      positionId: parsed.positionId,
+    };
+  }
+  if (parsed.status === 'ignored' && typeof parsed.reason === 'string') {
+    return {
+      status: 'ignored',
+      reason: parsed.reason as RuntimeOrchestrationIgnoredReason,
+    };
+  }
+  return null;
+};
+
 const strategyMatchesCandleInterval = (strategyInterval: string | null | undefined, candleInterval: string) => {
   if (!strategyInterval) return true;
   return normalizeInterval(strategyInterval) === normalizeInterval(candleInterval);
@@ -477,7 +521,7 @@ export const processRuntimeFinalCandleDecision = async (
         return;
       }
 
-      await context.orchestrateFn({
+      const orchestrationResultRaw = await context.orchestrateFn({
         userId: bot.userId,
         botId: bot.id,
         walletId: bot.walletId ?? undefined,
@@ -494,6 +538,27 @@ export const processRuntimeFinalCandleDecision = async (
         candleOpenTime: event.openTime,
         candleCloseTime: event.closeTime,
       });
+      const orchestrationResult = asRuntimeOrchestrationResult(orchestrationResultRaw);
+      if (orchestrationResult?.status === 'ignored') {
+        await context.recordRuntimeEvent?.({
+          userId: bot.userId,
+          botId: bot.id,
+          mode: bot.mode,
+          sessionId,
+          eventType: 'PRETRADE_BLOCKED',
+          level: 'WARN',
+          symbol: event.symbol,
+          botMarketGroupId: group.id,
+          strategyId: merged.strategyId,
+          signalDirection: direction,
+          message: 'Signal execution blocked by runtime orchestration guardrails',
+          payload: {
+            reason: orchestrationResult.reason,
+            merge: merged.metadata,
+          },
+          eventAt: signalEventAt,
+        });
+      }
       metricsStore.recordRuntimeMergeOutcome(direction);
       metricsStore.recordRuntimeGroupEvaluation(context.nowMs() - groupEvalStartedAt);
     })

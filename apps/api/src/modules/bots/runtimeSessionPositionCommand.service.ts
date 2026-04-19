@@ -121,7 +121,7 @@ export const closeBotRuntimeSessionPosition = async (
   const directlyOwnedByBot = position.botId === botId;
   let externallyOwnedByBot = false;
   if (!directlyOwnedByBot && !position.botId && position.origin === 'EXCHANGE_SYNC') {
-    const externalOwnerBySymbol = await resolveExternalPositionOwnerBySymbol(userId);
+    const externalOwnerBySymbol = await resolveExternalPositionOwnerBySymbol(userId, botContext.mode);
     externallyOwnedByBot = externalOwnerBySymbol.get(position.symbol)?.botId === botId;
   }
   if (!directlyOwnedByBot && !externallyOwnedByBot) {

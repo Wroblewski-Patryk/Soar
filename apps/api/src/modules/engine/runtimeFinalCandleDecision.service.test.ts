@@ -58,12 +58,22 @@ const baseEvent = {
   isFinal: true as const,
 };
 
-const createContext = (options?: { direction: 'LONG' | 'SHORT' | 'EXIT' | null }) => {
+const createContext = (options?: {
+  direction: 'LONG' | 'SHORT' | 'EXIT' | null;
+  orchestrationResult?:
+    | { status: 'opened'; orderId: string; positionId: string }
+    | { status: 'ignored'; reason: 'already_open_same_side' | 'dedupe_inflight' };
+}) => {
   const direction = options?.direction === undefined ? 'LONG' : options.direction;
+  const orchestrationResult = options?.orchestrationResult ?? {
+    status: 'opened' as const,
+    orderId: 'o1',
+    positionId: 'p1',
+  };
   const bot = structuredClone(baseBot);
   const group = bot.marketGroups[0];
   const createSignal = vi.fn(async () => undefined);
-  const orchestrateFn = vi.fn(async () => ({ status: 'opened', orderId: 'o1', positionId: 'p1' }));
+  const orchestrateFn = vi.fn(async () => orchestrationResult);
   const recordRuntimeEvent = vi.fn(async () => undefined);
 
   return {
@@ -154,6 +164,30 @@ describe('runtimeFinalCandleDecision.service', () => {
           strategyExitTraceOnly: true,
         }),
       }),
+    );
+  });
+
+  it('records explicit PRETRADE_BLOCKED diagnostics when orchestration returns ignored result', async () => {
+    const { context, orchestrateFn, recordRuntimeEvent } = createContext({
+      direction: 'LONG',
+      orchestrationResult: {
+        status: 'ignored',
+        reason: 'already_open_same_side',
+      },
+    });
+
+    await processRuntimeFinalCandleDecision(baseEvent, context as any);
+
+    expect(orchestrateFn).toHaveBeenCalledTimes(1);
+    expect(recordRuntimeEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: 'PRETRADE_BLOCKED',
+        level: 'WARN',
+        message: 'Signal execution blocked by runtime orchestration guardrails',
+        payload: expect.objectContaining({
+          reason: 'already_open_same_side',
+        }),
+      })
     );
   });
 });

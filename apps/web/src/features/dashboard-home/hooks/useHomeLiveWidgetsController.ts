@@ -451,7 +451,9 @@ export const useHomeLiveWidgetsController = ({
         if (to) query.to = to;
 
         const trades = await listBotRuntimeSessionTrades(selected.bot.id, selected.session.id, query);
-        if (!cancelled) setSelectedTrades(trades);
+        if (!cancelled) {
+          setSelectedTrades(trades.sessionId === selected.session.id ? trades : null);
+        }
       } catch {
         if (!cancelled) setSelectedTrades(null);
       } finally {

@@ -1166,6 +1166,109 @@ describe("HomeLiveWidgets", () => {
     });
   });
 
+  it("ignores runtime history rows when trades payload sessionId does not match selected session snapshot", async () => {
+    getDashboardManualOrderContextMock.mockResolvedValue({
+      botId: "bot-history-session-guard",
+      symbol: "BTCUSDT",
+      mode: "PAPER",
+      orderType: "MARKET",
+      marginMode: "CROSSED",
+      leverage: 10,
+      priceReference: { markPrice: 68000, source: "exchange_mark" },
+      quantityConstraints: { minExecutableQty: 0.001 },
+      sideAwarePreview: { side: "BUY", maxOpenPositions: 2 },
+    });
+    listBotsMock.mockResolvedValue([
+      {
+        id: "bot-history-session-guard",
+        name: "History Session Guard Bot",
+        mode: "PAPER",
+        paperStartBalance: 10000,
+        marketType: "FUTURES",
+        positionMode: "ONE_WAY",
+        strategyId: "str-history-session-guard",
+        isActive: true,
+        liveOptIn: false,
+        maxOpenPositions: 2,
+      },
+    ]);
+    listBotRuntimeSessionsMock.mockResolvedValue([
+      {
+        id: "session-history-current",
+        botId: "bot-history-session-guard",
+        mode: "PAPER",
+        status: "RUNNING",
+        startedAt: "2026-03-31T10:00:00.000Z",
+        finishedAt: null,
+        lastHeartbeatAt: "2026-03-31T10:05:00.000Z",
+        createdAt: "2026-03-31T10:00:00.000Z",
+        updatedAt: "2026-03-31T10:05:00.000Z",
+        durationMs: 300000,
+        eventsCount: 1,
+        symbolsTracked: 1,
+        summary: { totalSignals: 1, dcaCount: 0, closedTrades: 0, realizedPnl: 0 },
+      },
+    ]);
+    listBotRuntimeSessionSymbolStatsMock.mockResolvedValue({
+      sessionId: "session-history-current",
+      items: [{ id: "stat-1", symbol: "BTCUSDT", lastSignalDirection: "LONG" }],
+      summary: {
+        totalSignals: 1,
+        longEntries: 1,
+        shortEntries: 0,
+        exits: 0,
+        dcaCount: 0,
+        closedTrades: 0,
+        winningTrades: 0,
+        losingTrades: 0,
+        realizedPnl: 0,
+        unrealizedPnl: 0,
+        totalPnl: 0,
+        grossProfit: 0,
+        grossLoss: 0,
+        feesPaid: 0,
+      },
+    });
+    listBotRuntimeSessionPositionsMock.mockResolvedValue({
+      sessionId: "session-history-current",
+      total: 0,
+      openCount: 0,
+      closedCount: 0,
+      openOrdersCount: 0,
+      showDynamicStopColumns: false,
+      window: {
+        startedAt: "2026-03-31T10:00:00.000Z",
+        finishedAt: "2026-03-31T10:05:00.000Z",
+      },
+      summary: { realizedPnl: 0, unrealizedPnl: 0, feesPaid: 0 },
+      openOrders: [],
+      openItems: [],
+      historyItems: [],
+    });
+    listBotRuntimeSessionTradesMock.mockResolvedValue({
+      sessionId: "session-history-legacy",
+      total: 1,
+      meta: { page: 1, pageSize: 25, total: 1, totalPages: 1, hasPrev: false, hasNext: false },
+      window: {
+        startedAt: "2026-03-31T09:00:00.000Z",
+        finishedAt: "2026-03-31T09:30:00.000Z",
+      },
+      items: [{ id: "trade-history-legacy-1", symbol: "LEGACYUSDT" }],
+    });
+
+    renderSubject();
+
+    const tradeHistoryTab = await screen.findByRole("tab", { name: /Historia|History/i });
+    fireEvent.click(tradeHistoryTab);
+
+    await waitFor(() => {
+      expect(screen.queryByText("LEGACYUSDT")).not.toBeInTheDocument();
+      expect(
+        screen.getByText(/Brak historii transakcji|No trade history|Sem historico de trades/i)
+      ).toBeInTheDocument();
+    });
+  });
+
   it("opens manual dashboard order through shared order endpoint contract", async () => {
     listBotsMock.mockResolvedValue([
       {

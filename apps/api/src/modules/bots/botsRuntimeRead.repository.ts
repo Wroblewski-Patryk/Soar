@@ -71,6 +71,15 @@ export const getRuntimeSymbolStatsBaseData = async (params: {
           bot: {
             userId: params.userId,
           },
+          symbolGroup: {
+            botMarketGroups: {
+              some: {
+                botId: params.botId,
+                isEnabled: true,
+                lifecycleStatus: 'ACTIVE',
+              },
+            },
+          },
         },
         select: {
           strategyId: true,

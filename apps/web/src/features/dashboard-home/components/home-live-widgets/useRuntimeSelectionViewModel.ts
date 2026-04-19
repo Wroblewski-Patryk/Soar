@@ -155,7 +155,10 @@ export const useRuntimeSelectionViewModel = ({
     const equity = selected.bot.mode === "LIVE" ? (liveReferenceBalance ?? equityFromFreeAndUsedMargin) : paperEquity;
     const free = liveFreeCash ?? (equity != null ? Math.max(0, equity - usedMargin) : null);
     const exposurePct = equity && equity > 0 ? (usedMargin / equity) * 100 : null;
-    const trades = selectedTrades?.items ?? [];
+    const trades =
+      selected.session?.id && selectedTrades?.sessionId === selected.session.id
+        ? selectedTrades.items
+        : [];
 
     return {
       session,

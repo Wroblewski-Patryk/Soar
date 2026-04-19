@@ -26,8 +26,10 @@ Last updated: 2026-04-19
   planner-approved wave (post-`UXR-F` residual parity closure).
 - 2026-04-19: dashboard tables consistency refresh is queued as `UXR-J`
   planner-approved wave (post-`UXR-I` table-system parity closure).
-- 2026-04-19: dashboard runtime parity recovery Stage A (`DASHR-A`) is closed
-  end-to-end; active execution focus moved to Stage B (`DASHR-05..DASHR-08`).
+- 2026-04-19: dashboard runtime parity recovery wave (`DASHR-A..DASHR-C`) is
+  closed end-to-end (`DASHR-01..DASHR-11`) with selected-bot
+  positions/history/signals parity restored and explicit signal-blocked
+  diagnostics in runtime execution path.
 
 ## Technical Baseline
 - Backend: Node.js 20+, Express API, Prisma, TypeScript
@@ -105,26 +107,29 @@ Last updated: 2026-04-19
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: execute queued dashboard runtime data parity recovery
-  wave (`DASHR`) for reported `/dashboard` regressions in
-  `positions/orders/history/signals/selected-bot` behavior.
+- Main active objective: keep queue execution moving from the next canonical
+  `READY` slice after `DASHR` closure, while preserving deploy-safe validation
+  discipline (focused tests, typecheck, build/guardrails where relevant).
 - Top blockers:
   - none in OPV scope; final RC external-gates snapshot is closed
     (`G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`) from run
     `2026-04-19T15:13:58.943Z`.
 - Success criteria for this phase:
-  - `orders` tab renders a deterministic table (including empty-state parity).
-  - dashboard `positions/history` align with selected-bot runtime/session data.
-  - dashboard `signals` markets and strategy context remain selected-bot scoped.
-  - signal condition execution path is deterministic (`open` or explicit blocked
-    diagnostics).
-  - selected-bot section spacing/layout and strategy refresh behavior match
-    requested contract.
+  - no open `DASHR` tasks remain in canonical queue/context.
+  - focused validation remains green for touched modules before each commit.
+  - next execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - start `DASHR-01` from canonical queue and proceed tiny-commit sequence
-    without widening scope.
+  - pull next unchecked task from canonical `NOW` queue.
 
 ## Recent Progress
+- 2026-04-19: closed `DASHR-B` and `DASHR-C` end-to-end (`DASHR-05..DASHR-11`)
+  by delivering selected-session history parity guards (api+web), strict
+  selected-bot signal-scope regressions/fixes, explicit runtime
+  `PRETRADE_BLOCKED` diagnostics for ignored condition-met flow, and full
+  focused closure validation (`bots.e2e`, `bots.runtime-scope.e2e`,
+  `runtimeSignalDecisionEngine`, `orders.service`, `runtime-history-parity`,
+  `runtimeFinalCandleDecision`, `HomeLiveWidgets`, api/web typecheck, web
+  build, guardrails).
 - 2026-04-19: queued dashboard runtime data parity recovery wave (`DASHR-01..11`)
   from new operator report and published executor-ready plan
   `docs/planning/dashboard-runtime-data-parity-recovery-plan-2026-04-19.md`;

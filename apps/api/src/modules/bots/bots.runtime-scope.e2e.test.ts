@@ -164,6 +164,93 @@ describe('Bots runtime scope remediation contract', () => {
     expect(symbols).not.toContain('BNBUSDT');
   });
 
+  it('excludes paused legacy botStrategy symbol groups from selected-bot symbol-stats scope', async () => {
+    const ownerEmail = 'bot-runtime-paused-legacy-strategy-scope@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
+
+    const activeStrategyName = 'Runtime Active Scope Strategy';
+    const pausedStrategyName = 'Runtime Paused Legacy Scope Strategy';
+    const activeStrategyId = await createStrategy(owner, activeStrategyName);
+    const pausedStrategyId = await createStrategy(owner, pausedStrategyName);
+
+    const activeGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    await prisma.symbolGroup.update({
+      where: { id: activeGroupId },
+      data: { symbols: ['BTCUSDT'] },
+    });
+    const pausedGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    await prisma.symbolGroup.update({
+      where: { id: pausedGroupId },
+      data: { symbols: ['ETHUSDT'] },
+    });
+
+    const botRes = await owner.post('/dashboard/bots').send(
+      createPayload({
+        strategyId: activeStrategyId,
+        marketGroupId: activeGroupId,
+      })
+    );
+    expect(botRes.status).toBe(201);
+    const botId = botRes.body.id as string;
+
+    await prisma.botMarketGroup.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        symbolGroupId: pausedGroupId,
+        lifecycleStatus: 'PAUSED',
+        executionOrder: 2,
+        isEnabled: true,
+      },
+    });
+
+    await prisma.botStrategy.create({
+      data: {
+        botId,
+        strategyId: pausedStrategyId,
+        symbolGroupId: pausedGroupId,
+        isEnabled: true,
+      },
+    });
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-05T12:00:00.000Z'),
+      },
+    });
+
+    await prisma.botRuntimeSymbolStat.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        sessionId: session.id,
+        symbol: 'BTCUSDT',
+        totalSignals: 1,
+        longEntries: 1,
+        realizedPnl: 6,
+        snapshotAt: new Date('2026-04-05T12:03:00.000Z'),
+      },
+    });
+
+    const statsRes = await owner.get(`/dashboard/bots/${botId}/runtime-sessions/${session.id}/symbol-stats`);
+    expect(statsRes.status).toBe(200);
+    const symbols = (statsRes.body.items as Array<{ symbol: string }>).map((item) => item.symbol);
+    expect(symbols).toEqual(['BTCUSDT']);
+    expect(symbols).not.toContain('ETHUSDT');
+
+    const btc = (statsRes.body.items as Array<{ symbol: string; lastSignalStrategyName: string | null }>).find(
+      (item) => item.symbol === 'BTCUSDT'
+    );
+    expect(btc).toBeTruthy();
+    expect(btc?.lastSignalStrategyName).toBe(activeStrategyName);
+    expect(btc?.lastSignalStrategyName).not.toBe(pausedStrategyName);
+  });
+
   it('keeps strict selected-bot scope and resolves strategy context from canonical links before legacy fallback', async () => {
     const ownerEmail = 'bot-runtime-canonical-strategy-precedence@example.com';
     const owner = await registerAndLogin(ownerEmail);

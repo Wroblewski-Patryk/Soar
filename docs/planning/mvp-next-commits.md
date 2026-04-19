@@ -7,19 +7,19 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `DASHR-05 test(api+web-red): reproduce positions/history mismatch between runtime module and dashboard selected snapshot`
-- [ ] `DASHR-06 fix(api+web-runtime-parity): align selected session/snapshot mapping for positions and history tabs`
-- [ ] `DASHR-07 test(api-red-signals-scope): lock selected-bot-only markets/strategy context in signals payload`
+- [x] `DASHR-05 test(api+web-red): reproduce positions/history mismatch between runtime module and dashboard selected snapshot`
+- [x] `DASHR-06 fix(api+web-runtime-parity): align selected session/snapshot mapping for positions and history tabs`
+- [x] `DASHR-07 test(api-red-signals-scope): lock selected-bot-only markets/strategy context in signals payload`
 ## NEXT
-- [ ] `DASHR-08 fix(api-signals-scope): enforce selected-bot symbol and strategy context parity for dashboard signals`
-- [ ] `DASHR-09 test(api-red-signal-execution): add regression for condition-met but no-order/no-position outcome`
-- [ ] `DASHR-10 fix(api-runtime-execution): restore signal->order->position flow or emit explicit blocked diagnostics`
+- [x] `DASHR-08 fix(api-signals-scope): enforce selected-bot symbol and strategy context parity for dashboard signals`
+- [x] `DASHR-09 test(api-red-signal-execution): add regression for condition-met but no-order/no-position outcome`
+- [x] `DASHR-10 fix(api-runtime-execution): restore signal->order->position flow or emit explicit blocked diagnostics`
 ## PIPELINE
-- [ ] `DASHR-11 qa(closure): run focused dashboard runtime parity pack and sync canonical queue/context`
+- [x] `DASHR-11 qa(closure): run focused dashboard runtime parity pack and sync canonical queue/context`
 ## GROUP QUEUE
 - [x] `DASHR-A (commits DASHR-01..DASHR-04): dashboard tab/view parity + selected-bot section consistency`
-- [ ] `DASHR-B (commits DASHR-05..DASHR-08): selected-bot runtime data parity for positions/history/signals scope`
-- [ ] `DASHR-C (commits DASHR-09..DASHR-11): signal->order execution diagnostics + closure`
+- [x] `DASHR-B (commits DASHR-05..DASHR-08): selected-bot runtime data parity for positions/history/signals scope`
+- [x] `DASHR-C (commits DASHR-09..DASHR-11): signal->order execution diagnostics + closure`
 - [x] `BRS-A (commits BRS-01..BRS-04): decision closure + strict selected-bot scope foundation`
 - [x] `BRS-B (commits BRS-05..BRS-08): canonical update-path fix + strategy precedence unification`
 - [x] `BRS-C (commits BRS-09..BRS-12): dashboard switch regression + QA closure`
@@ -71,6 +71,24 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `DASHR-C (commits DASHR-09..DASHR-11): signal->order execution diagnostics + closure`
+  - 2026-04-19: Closed end-to-end with explicit runtime blocked-path diagnostics (`PRETRADE_BLOCKED`) and focused closure pack PASS (`api bots/orders/runtime tests`, `web HomeLiveWidgets`, `api/web typecheck`, `web build`, `quality:guardrails`).
+- [x] `DASHR-B (commits DASHR-05..DASHR-08): selected-bot runtime data parity for positions/history/signals scope`
+  - 2026-04-19: Closed by locking carry-over history parity, selected-session mismatch guard on web history payloads, and selected-bot-only signals strategy scope (legacy `botStrategy` constrained to ACTIVE+enabled canonical links).
+- [x] `DASHR-11 qa(closure): run focused dashboard runtime parity pack and sync canonical queue/context`
+  - 2026-04-19: Focused DASHR closure checks passed and queue/context artifacts synchronized.
+- [x] `DASHR-10 fix(api-runtime-execution): restore signal->order->position flow or emit explicit blocked diagnostics`
+  - 2026-04-19: Runtime final-candle flow now records explicit blocked diagnostics for ignored orchestration outcomes.
+- [x] `DASHR-09 test(api-red-signal-execution): add regression for condition-met but no-order/no-position outcome`
+  - 2026-04-19: Added regression lock for condition-met ignored execution outcomes and blocked diagnostic persistence.
+- [x] `DASHR-08 fix(api-signals-scope): enforce selected-bot symbol and strategy context parity for dashboard signals`
+  - 2026-04-19: Restricted legacy strategy enrichment to selected-bot ACTIVE+enabled canonical group scope.
+- [x] `DASHR-07 test(api-red-signals-scope): lock selected-bot-only markets/strategy context in signals payload`
+  - 2026-04-19: Added regression excluding paused legacy symbol-group leakage from selected-bot symbol-stats payload.
+- [x] `DASHR-06 fix(api+web-runtime-parity): align selected session/snapshot mapping for positions and history tabs`
+  - 2026-04-19: Aligned default history mapping across API/web and prevented mismatched session payload rows from rendering in selected snapshot.
+- [x] `DASHR-05 test(api+web-red): reproduce positions/history mismatch between runtime module and dashboard selected snapshot`
+  - 2026-04-19: Added focused API+web parity regressions for carry-over history visibility and selected-session payload mismatch.
 - [x] `DASHR-A (commits DASHR-01..DASHR-04): dashboard tab/view parity + selected-bot section consistency`
   - 2026-04-19: Stage A DoD closed end-to-end: `orders` tab now renders canonical `DataTable` (including deterministic empty-state copy), selected-bot strategy context refresh follows selected bot deterministically, and selected-bot panel layout/spacing order is enforced (`KPI -> selector -> market/strategy`, `mt-6`).
 - [x] `DASHR-04 fix(web-selected-bot-panel): ensure strategy context refresh and apply requested spacing/layout order`

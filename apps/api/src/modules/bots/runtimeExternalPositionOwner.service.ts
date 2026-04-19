@@ -9,15 +9,24 @@ export type ExternalSymbolOwner = {
 };
 
 export const resolveExternalPositionOwnerBySymbol = async (
-  userId: string
+  userId: string,
+  mode: 'LIVE' | 'PAPER' = 'LIVE'
 ): Promise<Map<string, ExternalSymbolOwner>> => {
+  const baseBotWhere =
+    mode === 'LIVE'
+      ? {
+          userId,
+          mode: 'LIVE' as const,
+          isActive: true,
+          liveOptIn: true,
+        }
+      : {
+          userId,
+          mode: 'PAPER' as const,
+        };
+
   const bots = await prisma.bot.findMany({
-    where: {
-      userId,
-      mode: 'LIVE',
-      isActive: true,
-      liveOptIn: true,
-    },
+    where: baseBotWhere,
     select: {
       id: true,
       walletId: true,
@@ -182,12 +191,7 @@ export const resolveExternalPositionOwnerBySymbol = async (
   }
 
   const fallbackBots = await prisma.bot.findMany({
-    where: {
-      userId,
-      mode: 'LIVE',
-      isActive: true,
-      liveOptIn: true,
-    },
+    where: baseBotWhere,
     select: {
       id: true,
       walletId: true,

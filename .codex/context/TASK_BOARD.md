@@ -17,16 +17,11 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] DASHR-05 Reproduce positions/history mismatch between runtime module and dashboard selected snapshot (api+web red tests)
-- [ ] DASHR-06 Align selected session/snapshot mapping for dashboard positions and history tabs
-- [ ] DASHR-07 Lock selected-bot-only signals markets/strategy scope with regression tests
+- [ ] (none)
 
 ## BACKLOG
 
-- [ ] DASHR-08 Enforce selected-bot scope in runtime symbol/strategy enrichment consumed by dashboard signals
-- [ ] DASHR-09 Reproduce condition-met but no-order/no-position execution gap with runtime/order regressions
-- [ ] DASHR-10 Restore signal->order->position path or explicit blocked diagnostics
-- [ ] DASHR-11 Run focused closure pack and sync canonical queue/context
+- [ ] (none)
 
 ## IN_PROGRESS
 
@@ -42,6 +37,24 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] DASHR-C group closure (`DASHR-09..DASHR-11`)
+  - 2026-04-19: Closed signal execution diagnostics path and `DASHR` closure pack end-to-end; runtime now emits explicit `PRETRADE_BLOCKED` event for ignored orchestration outcomes and closure validation passed (`bots.e2e`, `bots.runtime-scope.e2e`, `runtimeSignalDecisionEngine`, `orders.service`, `runtime-history-parity`, `runtimeFinalCandleDecision`, `HomeLiveWidgets`, api/web typecheck, web build, guardrails).
+- [x] DASHR-B group closure (`DASHR-05..DASHR-08`)
+  - 2026-04-19: Closed positions/history/signals selected-bot parity by preserving carry-over history rows for default window, guarding web history against mismatched `sessionId`, and locking legacy signals enrichment to canonical ACTIVE+enabled selected-bot market-group scope.
+- [x] DASHR-11 Run focused closure pack and sync canonical queue/context
+  - 2026-04-19: Focused `DASHR` closure pack PASS and canonical queue/context synchronized.
+- [x] DASHR-10 Restore signal->order->position path or explicit blocked diagnostics
+  - 2026-04-19: Added explicit blocked-path runtime diagnostics (`PRETRADE_BLOCKED`) for ignored orchestration outcomes to keep condition-met flow fail-closed and observable.
+- [x] DASHR-09 Reproduce condition-met but no-order/no-position execution gap with runtime/order regressions
+  - 2026-04-19: Added runtime final-candle regression lock for condition-met ignored outcomes and explicit blocked-reason event persistence.
+- [x] DASHR-08 Enforce selected-bot scope in runtime symbol/strategy enrichment consumed by dashboard signals
+  - 2026-04-19: Tightened legacy `botStrategy` enrichment so selected-bot signal strategy context is sourced only from symbol groups linked to ACTIVE+enabled canonical bot market-groups.
+- [x] DASHR-07 Lock selected-bot-only signals markets/strategy scope with regression tests
+  - 2026-04-19: Added API e2e regression lock excluding paused legacy `botStrategy` symbol-groups from selected-bot symbol-stats payload.
+- [x] DASHR-06 Align selected session/snapshot mapping for dashboard positions and history tabs
+  - 2026-04-19: Fixed API/web runtime mapping so completed-session carry-over history remains visible in default dashboard window and mismatched trades payload `sessionId` cannot leak rows into selected session snapshot.
+- [x] DASHR-05 Reproduce positions/history mismatch between runtime module and dashboard selected snapshot (api+web red tests)
+  - 2026-04-19: Added focused API+web regressions for carry-over history parity and selected-session mismatch guard behavior.
 - [x] DASHR-A group closure (`DASHR-01..DASHR-04`)
   - 2026-04-19: Stage A closed with web parity evidence: orders tab now uses DataTable with deterministic empty state, selected-bot strategy context refresh is deterministic on bot switch, and selected-bot section layout order/spacing is locked (`KPI -> selector -> market/strategy`, `mt-6`).
 - [x] DASHR-04 Fix selected-bot strategy refresh and apply requested selected-bot section spacing/layout order

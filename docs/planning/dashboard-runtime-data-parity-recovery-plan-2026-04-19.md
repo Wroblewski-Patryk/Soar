@@ -1,8 +1,17 @@
 # Dashboard Runtime Data Parity Recovery Plan (2026-04-19)
 
-Status: ready-for-implementation  
+Status: completed (2026-04-19)  
 Execution mode: tiny-commit only (exactly one task per commit)  
 Primary audience: implementation agent
+
+## Closure Evidence (2026-04-19)
+- `pnpm --filter api run test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bots.runtime-scope.e2e.test.ts src/modules/engine/runtimeSignalDecisionEngine.test.ts src/modules/orders/orders.service.test.ts --run` -> PASS
+- `pnpm --filter api run test -- src/modules/bots/bots.runtime-history-parity.e2e.test.ts src/modules/engine/runtimeFinalCandleDecision.service.test.ts --run` -> PASS
+- `pnpm --filter web run test -- src/features/dashboard-home/components/HomeLiveWidgets.test.tsx --run` -> PASS
+- `pnpm --filter api run typecheck` -> PASS
+- `pnpm --filter web run typecheck` -> PASS
+- `pnpm --filter web run build` -> PASS
+- `pnpm run quality:guardrails` -> PASS
 
 ## Source Request (condensed)
 - `/dashboard` runtime tabs are inconsistent:

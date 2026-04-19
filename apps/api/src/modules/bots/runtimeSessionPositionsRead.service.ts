@@ -79,7 +79,7 @@ export const listBotRuntimeSessionPositions = async (
     botContext.mode === 'LIVE' && botContext.walletId
       ? { botId, walletId: botContext.walletId }
       : { botId };
-  const externalOwnerBySymbol = await resolveExternalPositionOwnerBySymbol(userId);
+  const externalOwnerBySymbol = await resolveExternalPositionOwnerBySymbol(userId, botContext.mode);
   const ownedExternalSymbols = [...externalOwnerBySymbol.entries()]
     .filter(([, owner]) => owner.botId === botId)
     .map(([symbol]) => symbol);
