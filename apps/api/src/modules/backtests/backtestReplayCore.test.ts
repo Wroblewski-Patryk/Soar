@@ -36,6 +36,34 @@ describe('simulateTradesForSymbolReplay', () => {
     expect(result.eventCounts.ENTRY).toBeGreaterThanOrEqual(1);
   });
 
+  it('treats EXIT decisions as trace-only and does not close before lifecycle/final-candle authority', () => {
+    const candles = [
+      candle(0, 100),
+      candle(1, 102), // LONG open
+      candle(2, 102.05), // strategy EXIT (no-match)
+      candle(3, 102.06), // strategy EXIT (no-match)
+    ];
+
+    const result = simulateTradesForSymbolReplay({
+      symbol: 'BTCUSDT',
+      candles,
+      marketType: 'FUTURES',
+      leverage: 2,
+      marginMode: 'CROSSED',
+    });
+
+    const exitTrace = result.decisionTrace.filter(
+      (entry) => entry.signal === 'EXIT' && entry.trigger === 'THRESHOLD',
+    );
+    expect(exitTrace.length).toBeGreaterThan(0);
+    expect(
+      exitTrace.some((entry) => entry.mismatchReason === 'strategy_exit_trace_only'),
+    ).toBe(true);
+    expect(
+      result.events.some((event) => event.type === 'EXIT' && event.candleIndex < candles.length - 1),
+    ).toBe(false);
+  });
+
   it('does not create overlapping trade intervals for one symbol', () => {
     const candles = [
       candle(0, 100),

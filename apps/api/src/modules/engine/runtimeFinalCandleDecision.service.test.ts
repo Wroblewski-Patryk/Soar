@@ -129,4 +129,31 @@ describe('runtimeFinalCandleDecision.service', () => {
     expect(createSignal).toHaveBeenCalledTimes(1);
     expect(orchestrateFn).toHaveBeenCalledTimes(1);
   });
+
+  it('records EXIT as trace-only and skips orchestration execution', async () => {
+    const { context, createSignal, orchestrateFn, recordRuntimeEvent } = createContext({
+      direction: 'EXIT',
+    });
+
+    await processRuntimeFinalCandleDecision(baseEvent, context as any);
+
+    expect(createSignal).toHaveBeenCalledWith(
+      expect.objectContaining({
+        direction: 'EXIT',
+        payload: expect.objectContaining({
+          strategyExitTraceOnly: true,
+        }),
+      }),
+    );
+    expect(orchestrateFn).not.toHaveBeenCalled();
+    expect(recordRuntimeEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: 'SIGNAL_DECISION',
+        message: 'Strategy EXIT signal recorded (trace-only)',
+        payload: expect.objectContaining({
+          strategyExitTraceOnly: true,
+        }),
+      }),
+    );
+  });
 });

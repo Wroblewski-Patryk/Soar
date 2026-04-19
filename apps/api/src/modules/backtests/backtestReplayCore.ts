@@ -70,6 +70,7 @@ export type ReplayParityDecisionTrace = {
     | 'no_flip_with_open_position'
     | 'already_open_same_side'
     | 'manual_managed_symbol'
+    | 'strategy_exit_trace_only'
     | null;
 };
 
@@ -473,7 +474,7 @@ export const simulateTradesForSymbolReplay = (input: {
           })
         : null
       : toSignalDirection(current, previous, config);
-    const decision: ReturnType<typeof decideExecutionAction> | null = direction
+    const rawDecision: ReturnType<typeof decideExecutionAction> | null = direction
       ? decideExecutionAction(
           direction,
           openPosition
@@ -485,6 +486,13 @@ export const simulateTradesForSymbolReplay = (input: {
             : null
         )
       : null;
+    const decision:
+      | ReturnType<typeof decideExecutionAction>
+      | { kind: 'ignore'; reason: 'strategy_exit_trace_only' }
+      | null =
+      direction === 'EXIT' && rawDecision?.kind === 'close'
+        ? { kind: 'ignore', reason: 'strategy_exit_trace_only' }
+        : rawDecision;
 
     if (direction && decision) {
       const traceSide: PositionSide | null =

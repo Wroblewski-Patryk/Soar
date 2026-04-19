@@ -100,10 +100,12 @@ Last updated: 2026-04-19
 
 ## Current Focus
 - Main active objective: execute `POS-A` lifecycle parity contract closure
-  foundations (`POS-36..POS-38`).
+  foundations (`POS-37..POS-38`).
 - Top blockers:
-  - strategy-exit close semantics still diverge between replay/backtest/runtime
-    lifecycle paths (`POS-36`).
+  - runtime automation mode/context and management-mode ownership still need
+    strict parity hardening (`POS-37`).
+  - dynamic runtime capital context parity (`dcaFundsExhausted` path) remains
+    open for paper/live closure (`POS-38`).
 - Success criteria for this phase:
   - `POS-A` closes with deterministic lifecycle-open/close parity contracts
     across backtest and runtime execution paths.
@@ -115,6 +117,10 @@ Last updated: 2026-04-19
   - dashboard manual-order advanced UX wave (`UXR-H-01..UXR-H-10`).
 
 ## Recent Progress
+- 2026-04-19: completed `POS-36` by enforcing EXIT trace-only behavior in
+  replay/interleaved backtest decision flow (`strategy_exit_trace_only`
+  mismatch diagnostic), preserving lifecycle/final-candle close authority, and
+  adding focused runtime final-candle EXIT trace-only regression lock.
 - 2026-04-19: closed `ARC-E` (`ARC-19..ARC-20`) by tightening repository
   guardrails (source byte budgets + production line budgets) and publishing
   architecture maintainability closure snapshot in

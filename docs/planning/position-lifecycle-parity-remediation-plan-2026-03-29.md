@@ -1,6 +1,6 @@
 # Position Lifecycle Parity Remediation Plan (2026-03-29)
 
-Status: planned (post-audit), not yet implemented.
+Status: in progress (post-audit); POS-36 completed on 2026-04-19, POS-37..POS-42 pending.
 
 ## Canonical Queue Linkage
 - Canonical queue owner: `docs/planning/mvp-next-commits.md` (`POS-A`, `POS-B`).
@@ -70,6 +70,7 @@ using one lifecycle contract (same decision order, same close reasons, same even
 - Remove `shouldSignalExit` close branches from backtest/replay close decision.
 - Keep strategy `EXIT` in decision trace only.
 - Ensure close reasons come from lifecycle engine (`TP/TTP/SL/TRAILING/LIQUIDATION`).
+ - 2026-04-19: Implemented by enforcing EXIT trace-only decision mapping in replay/interleaved backtest flows and adding runtime final-candle EXIT trace-only regression lock.
 
 ### POS-37
 `fix(runtime): align runtime automation mode/context with bot/position and manual-management guard`

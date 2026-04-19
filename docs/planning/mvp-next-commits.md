@@ -7,12 +7,10 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
-## NEXT
 - [ ] `UXR-H-01 docs(contract): freeze dashboard manual-order advanced input/context contract`
+## NEXT
 - [ ] `UXR-H-02 feat(api-orders): add manual-order context read endpoint for price/rules/min-qty preview`
 ## PIPELINE
-- [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
 - [ ] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
 - [ ] `UXR-H-01 docs(contract): freeze dashboard manual-order advanced input/context contract`
 - [ ] `UXR-H-02 feat(api-orders): add manual-order context read endpoint for price/rules/min-qty preview`
@@ -62,6 +60,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
+  - 2026-04-19: Enforced EXIT trace-only parity semantics in backtest replay/interleaved simulation flows by mapping direct `EXIT -> close` core decisions to diagnostics-only mismatch (`strategy_exit_trace_only`) while preserving lifecycle/final-candle as sole close authority; added runtime final-candle regression lock for EXIT trace-only path (`orchestrateFn` skip + signal payload marker). Validation: `pnpm --filter api run test -- src/modules/backtests/backtestReplayCore.test.ts src/modules/backtests/backtests.contract-remediation.test.ts src/modules/engine/runtimeFinalCandleDecision.service.test.ts --run` => `35/35 PASS`; `pnpm --filter api run test -- src/modules/backtests/backtests.e2e.test.ts --run` => `10/10 PASS`; `pnpm --filter api run typecheck` => `PASS`; `pnpm --filter api run build` => `PASS`; `docker build -f apps/api/Dockerfile.worker.backtest .` => `PASS`; `pnpm run quality:guardrails` => `PASS`.
 - [x] `ARC-E group closure (ARC-19..ARC-20)`
   - 2026-04-19: Closed ARC-E by tightening repository guardrails with stricter source-file byte budgets (`api 88_000`, `web 95_000`) plus production-only line budgets (`api 1_700`, `web 2_200`), and publishing architecture maintainability closure/residual-risk snapshot in `docs/architecture/architecture-maintainability-closure-2026-04-19.md`. Validation: `pnpm run quality:guardrails` => `PASS`.
 - [x] `ARC-20 docs(architecture-closure): publish maintainability delta and residual-risk snapshot`

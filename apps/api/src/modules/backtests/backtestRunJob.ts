@@ -66,6 +66,7 @@ type SimulationTrace = {
     | 'no_flip_with_open_position'
     | 'already_open_same_side'
     | 'manual_managed_symbol'
+    | 'strategy_exit_trace_only'
     | null;
 };
 
@@ -317,7 +318,8 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
           | 'no_open_position'
           | 'no_flip_with_open_position'
           | 'already_open_same_side'
-          | 'manual_managed_symbol';
+          | 'manual_managed_symbol'
+          | 'strategy_exit_trace_only';
       }>;
       fundingPoints: number;
       openInterestPoints: number;
@@ -455,7 +457,8 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
                   | 'no_open_position'
                   | 'no_flip_with_open_position'
                   | 'already_open_same_side'
-                  | 'manual_managed_symbol',
+                  | 'manual_managed_symbol'
+                  | 'strategy_exit_trace_only',
               })),
             fundingPoints: supplemental.fundingRates.length,
             openInterestPoints: supplemental.openInterest.length,

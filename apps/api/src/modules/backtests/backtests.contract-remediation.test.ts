@@ -75,6 +75,30 @@ describe('backtest parity remediation contracts', () => {
     expect(isolatedNetPnl).not.toBe(portfolioNetPnl);
   });
 
+  it('keeps EXIT trace-only in interleaved portfolio simulation', () => {
+    const symbol = 'BTCUSDT';
+    const candles = makeCandles([100, 102, 102.05, 102.06]);
+
+    const simulation = simulateInterleavedPortfolio({
+      symbols: [symbol],
+      candlesBySymbol: new Map([[symbol, candles]]),
+      marketType: 'FUTURES',
+      leverage: 2,
+      marginMode: 'CROSSED',
+      walletRiskPercent: 100,
+      initialBalance: 1_000,
+    });
+
+    const perSymbol = simulation.perSymbol[symbol];
+    const exitTrace = perSymbol.decisionTrace.filter(
+      (entry) => entry.signal === 'EXIT' && entry.trigger === 'THRESHOLD',
+    );
+    expect(exitTrace.length).toBeGreaterThan(0);
+    expect(
+      perSymbol.events.some((event) => event.type === 'EXIT' && event.candleIndex < candles.length - 1),
+    ).toBe(false);
+  });
+
   it('defaults timeline replay context to isolated and keeps portfolio mode explicit', () => {
     const targetSymbol = 'BTCUSDT';
     const runSymbols = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT'];

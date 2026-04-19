@@ -242,7 +242,7 @@ export const simulateInterleavedPortfolio = (input: {
         return null;
       })();
     const open = openPositions.get(symbol);
-    const decision = direction
+    const rawDecision = direction
       ? decideExecutionAction(
           direction,
           open
@@ -250,6 +250,13 @@ export const simulateInterleavedPortfolio = (input: {
             : null,
         )
       : null;
+    const decision:
+      | ReturnType<typeof decideExecutionAction>
+      | { kind: 'ignore'; reason: 'strategy_exit_trace_only' }
+      | null =
+      direction === 'EXIT' && rawDecision?.kind === 'close'
+        ? { kind: 'ignore', reason: 'strategy_exit_trace_only' }
+        : rawDecision;
 
     if (direction && decision) {
       const traceSide: PositionSide | null =

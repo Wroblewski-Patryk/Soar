@@ -790,7 +790,7 @@ describe('Backtests runs contract', () => {
           entry.mismatchSamples.every(
             (sample) =>
               sample.trigger !== 'THRESHOLD' &&
-              ['no_open_position', 'no_flip_with_open_position', 'already_open_same_side', 'manual_managed_symbol'].includes(
+              ['no_open_position', 'no_flip_with_open_position', 'already_open_same_side', 'manual_managed_symbol', 'strategy_exit_trace_only'].includes(
                 sample.mismatchReason,
               ),
           ),

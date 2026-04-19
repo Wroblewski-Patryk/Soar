@@ -17,12 +17,6 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] POS-36 Remove strategy-exit close bypass from backtest/replay/runtime lifecycle flow
-  - Status: READY
-  - Group: Position Lifecycle Parity Closure (`POS-A`)
-  - Owner: Backend Builder
-  - Depends on: ARC-20
-  - Priority: P2
 - [ ] UXR-H-01 Freeze dashboard manual-order advanced input/context contract before implementation
   - Status: READY
   - Group: Dashboard Manual Order Advanced UX (`UXR-H-A`)
@@ -59,6 +53,8 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] POS-36 Remove strategy-exit close bypass from backtest/replay/runtime lifecycle flow
+  - 2026-04-19: Closed by enforcing EXIT trace-only behavior in backtest replay/interleaved flows (`strategy_exit_trace_only` diagnostic reason) and locking runtime final-candle EXIT trace-only execution skip contract with focused regression tests.
 - [x] ARC-E closed implementation scope (`ARC-19..ARC-20`): guardrail tightening + architecture closure evidence
 - [x] ARC-C closed implementation scope (`ARC-11..ARC-13`): shared runtime/backtest indicator kernel + backtest facade alignment
 - [x] ARC-20 Publish architecture maintainability delta and residual-risk closure snapshot
