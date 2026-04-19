@@ -120,10 +120,14 @@ Last updated: 2026-04-19
   - canonical queue and context docs stay synchronized after each ARC batch.
   - no regressions in runtime safety, deploy confidence, or dashboard contracts.
 - Next queued follow-up:
-  - run `UXR-J-02`,
+  - run `UXR-J-03`,
   - then continue through `UXR-J-A..C` for table-consistency closure.
 
 ## Recent Progress
+- 2026-04-19: completed `UXR-J-02` by adding dedicated `module` action tone
+  in shared `TableUi` and remapping `runtime` plus `preview` presets to the
+  same module tone while preserving `clone` as neutral (distinct from system
+  `edit`/`delete` tones).
 - 2026-04-19: completed `UXR-J-01` by freezing shared table-system consistency
   contract across canonical docs (`open-decisions`, `web-dashboard-home`,
   `web-bots`) with explicit action-tone semantics, columns dropdown persistence

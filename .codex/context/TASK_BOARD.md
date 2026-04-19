@@ -17,7 +17,7 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] UXR-J-02 Add dedicated module action tone mapping and dropdown/trigger shared behavior updates
+- [ ] UXR-J-03 Keep columns dropdown open on checkbox toggles in shared DataTable
   - Status: READY
   - Group: Dashboard Tables Consistency Refresh (`UXR-J-A`)
   - Owner: Frontend Builder
@@ -26,11 +26,11 @@ Last updated: 2026-04-19
 
 ## BACKLOG
 
-- [ ] UXR-J-03 Keep columns dropdown open on checkbox toggles in shared DataTable
+- [ ] UXR-J-04 Enforce icon-only columns trigger globally with accessible label contract
   - Status: BACKLOG
   - Group: Dashboard Tables Consistency Refresh (`UXR-J-A`)
   - Owner: Frontend Builder
-  - Depends on: UXR-J-02
+  - Depends on: UXR-J-03
   - Priority: P2
 
 ## IN_PROGRESS
@@ -47,6 +47,8 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] UXR-J-02 Add dedicated module action tone mapping and dropdown/trigger shared behavior updates
+  - 2026-04-19: Added shared `module` action tone in `TableUi` and remapped `runtime` + `preview` presets to the same module tone while preserving `clone` neutral and distinct from system actions (`edit`/`delete`).
 - [x] UXR-J-01 Freeze dashboard table action-color and columns-dropdown behavior contract
   - 2026-04-19: Frozen shared table-system refresh contract in canonical docs (`open-decisions`, `web-dashboard-home`, `web-bots`) with explicit action-tone matrix updates (`clone` distinct from system actions; `runtime` + `preview` same module tone), columns-dropdown persistence behavior, and icon-only columns trigger accessibility rules.
 - [x] UXR-I-14 Run web forms closure checks (typecheck, build, guardrails) and sync canonical queue/context

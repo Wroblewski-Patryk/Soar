@@ -7,11 +7,10 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `UXR-J-02 refactor(ui-table-actions): add dedicated module action tone and remap clone/runtime/preview presets`
-## NEXT
 - [ ] `UXR-J-03 refactor(ui-datatable-dropdown): keep columns dropdown open on checkbox toggles`
-## PIPELINE
+## NEXT
 - [ ] `UXR-J-04 refactor(ui-datatable-trigger): enforce icon-only columns trigger globally with a11y label`
+## PIPELINE
 - [ ] `UXR-J-05 test(ui-datatable): add regression tests for dropdown persistence and icon-only trigger contract`
 - [ ] `UXR-J-06 test(ui-table-actions): add preset tone regression tests for clone/runtime/preview mapping`
 - [ ] `UXR-J-07 test(web-tables-focused): align bots/backtests/profile/runtime table suites to shared table behavior`
@@ -68,6 +67,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `UXR-J-02 refactor(ui-table-actions): add dedicated module action tone and remap clone/runtime/preview presets`
+  - 2026-04-19: Added dedicated `module` action tone preset in shared `TableUi` and remapped `runtime` + `preview` actions to the same module tone while preserving `clone` as neutral (distinct from system `edit`/`delete` semantics).
 - [x] `UXR-J-01 docs(contract): freeze dashboard table action-color and columns-dropdown behavior contract`
   - 2026-04-19: Frozen `UXR-J` shared table consistency contract in canonical docs (`open-decisions`, `web-dashboard-home`, `web-bots`) with explicit action-tone semantics (`clone` distinct; `runtime` + `preview` shared module tone), columns-dropdown persistence rules, and icon-only columns trigger accessibility contract.
 - [x] `UXR-I-14 qa(web-forms-closure): run build/typecheck/guardrails and sync canonical queue/context`

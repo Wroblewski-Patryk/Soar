@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { type ReactNode } from 'react';
 import { LuActivity, LuCopy, LuEye, LuListTree, LuPencilLine, LuTrash2 } from 'react-icons/lu';
 
-type ActionTone = 'neutral' | 'info' | 'danger';
+type ActionTone = 'neutral' | 'info' | 'module' | 'danger';
 type BadgeTone = 'neutral' | 'info' | 'success' | 'warning' | 'danger';
 export type TableActionPreset = 'edit' | 'delete' | 'clone' | 'preview' | 'runtime' | 'details';
 
@@ -13,6 +13,8 @@ const actionClassByTone: Record<ActionTone, string> = {
     'btn btn-square btn-xs h-7 min-h-7 w-7 border border-base-300 bg-base-100/60 text-base-content/75 transition-colors duration-150 hover:border-base-content/35 hover:bg-base-100 hover:text-base-content',
   info:
     'btn btn-square btn-xs h-7 min-h-7 w-7 border border-info/45 bg-info/10 text-info transition-colors duration-150 hover:border-info/70 hover:bg-info/20',
+  module:
+    'btn btn-square btn-xs h-7 min-h-7 w-7 border border-accent/45 bg-accent/10 text-accent transition-colors duration-150 hover:border-accent/70 hover:bg-accent/20',
   danger:
     'btn btn-square btn-xs h-7 min-h-7 w-7 border border-error/45 bg-error/10 text-error transition-colors duration-150 hover:border-error/70 hover:bg-error/20',
 };
@@ -44,11 +46,11 @@ const actionPresetConfig: Record<TableActionPreset, ActionPresetConfig> = {
     icon: <LuCopy className='h-3.5 w-3.5' />,
   },
   preview: {
-    tone: 'neutral',
+    tone: 'module',
     icon: <LuEye className='h-3.5 w-3.5' />,
   },
   runtime: {
-    tone: 'info',
+    tone: 'module',
     icon: <LuActivity className='h-3.5 w-3.5' />,
   },
   details: {
