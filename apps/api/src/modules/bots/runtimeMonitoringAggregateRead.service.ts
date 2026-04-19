@@ -30,6 +30,17 @@ const uniqueById = <T extends { id: string }>(items: T[]) => {
   return [...map.values()];
 };
 
+const compareTimestampDescThenIdAsc = (
+  leftTs: number,
+  rightTs: number,
+  leftId: string,
+  rightId: string
+) => {
+  const byTimestamp = rightTs - leftTs;
+  if (byTimestamp !== 0) return byTimestamp;
+  return leftId.localeCompare(rightId);
+};
+
 const buildEmptyAggregatePayload = (params: {
   botId: string;
   status: RuntimeSessionListItem['status'] | undefined;
@@ -324,14 +335,31 @@ export const getBotRuntimeMonitoringAggregate = async (
 
   const positionResponses = completePayloadRows.map((row) => row.positions);
   const openItems = uniqueById(positionResponses.flatMap((response) => response.openItems)).sort(
-    (left, right) => toTimestamp(right.openedAt) - toTimestamp(left.openedAt)
+    (left, right) =>
+      compareTimestampDescThenIdAsc(
+        toTimestamp(left.openedAt),
+        toTimestamp(right.openedAt),
+        left.id,
+        right.id
+      )
   );
   const historyItems = uniqueById(positionResponses.flatMap((response) => response.historyItems)).sort(
-    (left, right) => toTimestamp(right.closedAt) - toTimestamp(left.closedAt)
+    (left, right) =>
+      compareTimestampDescThenIdAsc(
+        toTimestamp(left.closedAt),
+        toTimestamp(right.closedAt),
+        left.id,
+        right.id
+      )
   );
   const openOrders = uniqueById(positionResponses.flatMap((response) => response.openOrders)).sort(
     (left, right) =>
-      toTimestamp(right.submittedAt ?? right.createdAt) - toTimestamp(left.submittedAt ?? left.createdAt)
+      compareTimestampDescThenIdAsc(
+        toTimestamp(left.submittedAt ?? left.createdAt),
+        toTimestamp(right.submittedAt ?? right.createdAt),
+        left.id,
+        right.id
+      )
   );
   const positionsSummary = {
     realizedPnl: historyItems.reduce((acc, item) => acc + item.realizedPnl, 0),
@@ -340,7 +368,13 @@ export const getBotRuntimeMonitoringAggregate = async (
   };
 
   const tradeItems = uniqueById(completePayloadRows.flatMap((row) => row.trades.items)).sort(
-    (left, right) => toTimestamp(right.executedAt) - toTimestamp(left.executedAt)
+    (left, right) =>
+      compareTimestampDescThenIdAsc(
+        toTimestamp(left.executedAt),
+        toTimestamp(right.executedAt),
+        left.id,
+        right.id
+      )
   );
   const windowFinishedAt = finishedAt ?? new Date();
   const pageSize = tradeItems.length || 1;

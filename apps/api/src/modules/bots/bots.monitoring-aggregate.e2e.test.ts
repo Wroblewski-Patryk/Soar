@@ -224,4 +224,198 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     expect(aggregateRes.body.positions.total).toBe(0);
     expect(aggregateRes.body.trades.total).toBe(0);
   });
+
+  it('keeps aggregate positions/orders/history deterministic when running session is empty', async () => {
+    const ownerEmail = 'bots-monitoring-aggregate-mixed-sessions@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+
+    const strategyId = await createStrategy(owner, 'Monitoring Aggregate Mixed Sessions Strategy');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    const createRes = await owner.post('/dashboard/bots').send(
+      createPayload({
+        strategyId,
+        marketGroupId,
+      })
+    );
+    expect(createRes.status).toBe(201);
+    const botId = createRes.body.id as string;
+
+    const ownerUser = await prisma.user.findUniqueOrThrow({
+      where: { email: ownerEmail },
+      select: { id: true },
+    });
+
+    const completedSession = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'COMPLETED',
+        startedAt: new Date('2026-04-19T09:00:00.000Z'),
+        finishedAt: new Date('2026-04-19T09:20:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-19T09:20:00.000Z'),
+      },
+    });
+    await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-19T10:00:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-19T10:05:00.000Z'),
+      },
+    });
+
+    await prisma.botRuntimeSymbolStat.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        sessionId: completedSession.id,
+        symbol: 'BTCUSDT',
+        totalSignals: 2,
+        longEntries: 1,
+        shortEntries: 1,
+        exits: 1,
+        dcaCount: 0,
+        closedTrades: 2,
+        winningTrades: 1,
+        losingTrades: 1,
+        realizedPnl: 8,
+        grossProfit: 12,
+        grossLoss: 4,
+        feesPaid: 1.3,
+        openPositionCount: 0,
+        openPositionQty: 0,
+        snapshotAt: new Date('2026-04-19T09:19:00.000Z'),
+      },
+    });
+
+    await prisma.position.createMany({
+      data: [
+        {
+          id: 'position-z',
+          userId: ownerUser.id,
+          botId,
+          strategyId,
+          symbol: 'BTCUSDT',
+          side: 'LONG',
+          status: 'CLOSED',
+          entryPrice: 60000,
+          quantity: 0.01,
+          leverage: 1,
+          openedAt: new Date('2026-04-19T09:01:00.000Z'),
+          closedAt: new Date('2026-04-19T09:12:00.000Z'),
+          managementMode: 'BOT_MANAGED',
+          realizedPnl: 5,
+        },
+        {
+          id: 'position-a',
+          userId: ownerUser.id,
+          botId,
+          strategyId,
+          symbol: 'BTCUSDT',
+          side: 'LONG',
+          status: 'CLOSED',
+          entryPrice: 60100,
+          quantity: 0.01,
+          leverage: 1,
+          openedAt: new Date('2026-04-19T09:02:00.000Z'),
+          closedAt: new Date('2026-04-19T09:12:00.000Z'),
+          managementMode: 'BOT_MANAGED',
+          realizedPnl: 3,
+        },
+      ],
+    });
+
+    await prisma.order.create({
+      data: {
+        id: 'order-open-only',
+        userId: ownerUser.id,
+        botId,
+        strategyId,
+        symbol: 'BTCUSDT',
+        side: 'BUY',
+        type: 'LIMIT',
+        status: 'OPEN',
+        quantity: 0.02,
+        price: 59000,
+        submittedAt: new Date('2026-04-19T09:05:00.000Z'),
+        managementMode: 'BOT_MANAGED',
+      },
+    });
+
+    await prisma.trade.createMany({
+      data: [
+        {
+          id: 'trade-z',
+          userId: ownerUser.id,
+          botId,
+          strategyId,
+          positionId: 'position-z',
+          symbol: 'BTCUSDT',
+          side: 'SELL',
+          lifecycleAction: 'CLOSE',
+          price: 60500,
+          quantity: 0.01,
+          fee: 0.7,
+          realizedPnl: 5,
+          executedAt: new Date('2026-04-19T09:12:00.000Z'),
+          createdAt: new Date('2026-04-19T09:12:00.000Z'),
+          managementMode: 'BOT_MANAGED',
+        },
+        {
+          id: 'trade-a',
+          userId: ownerUser.id,
+          botId,
+          strategyId,
+          positionId: 'position-a',
+          symbol: 'BTCUSDT',
+          side: 'SELL',
+          lifecycleAction: 'CLOSE',
+          price: 60400,
+          quantity: 0.01,
+          fee: 0.6,
+          realizedPnl: 3,
+          executedAt: new Date('2026-04-19T09:12:00.000Z'),
+          createdAt: new Date('2026-04-19T09:12:00.000Z'),
+          managementMode: 'BOT_MANAGED',
+        },
+      ],
+    });
+
+    const firstAggregate = await owner.get(`/dashboard/bots/${botId}/runtime-monitoring/aggregate`);
+    expect(firstAggregate.status).toBe(200);
+    expect(firstAggregate.body.sessionDetail.metadata).toEqual(
+      expect.objectContaining({
+        aggregate: true,
+        sessionsCount: 2,
+      })
+    );
+    expect(firstAggregate.body.symbolStats.summary.totalSignals).toBe(2);
+    expect(firstAggregate.body.positions.openCount).toBe(0);
+    expect(firstAggregate.body.positions.closedCount).toBe(2);
+    expect(firstAggregate.body.positions.openOrdersCount).toBe(1);
+    expect(firstAggregate.body.positions.openOrders.map((item: { id: string }) => item.id)).toEqual([
+      'order-open-only',
+    ]);
+    expect(firstAggregate.body.positions.historyItems.map((item: { id: string }) => item.id)).toEqual([
+      'position-a',
+      'position-z',
+    ]);
+    expect(firstAggregate.body.trades.total).toBe(2);
+    expect(firstAggregate.body.trades.items.map((item: { id: string }) => item.id)).toEqual([
+      'trade-a',
+      'trade-z',
+    ]);
+
+    const secondAggregate = await owner.get(`/dashboard/bots/${botId}/runtime-monitoring/aggregate`);
+    expect(secondAggregate.status).toBe(200);
+    expect(secondAggregate.body.positions.historyItems.map((item: { id: string }) => item.id)).toEqual(
+      firstAggregate.body.positions.historyItems.map((item: { id: string }) => item.id)
+    );
+    expect(secondAggregate.body.trades.items.map((item: { id: string }) => item.id)).toEqual(
+      firstAggregate.body.trades.items.map((item: { id: string }) => item.id)
+    );
+  });
 });
