@@ -117,7 +117,7 @@ export const dashboardHomeEn = {
     "slTtp": "TTP",
     "slTsl": "TSL",
     "noOpenPositions": "No open positions.",
-    "openOrdersPlaceholder": "Open orders tab is prepared and will be filled in upcoming runtime updates.",
+    "openOrdersPlaceholder": "No open orders.",
     "tradesHistoryTitlePaper": "History",
     "tradesHistoryTitleLive": "History",
     "filterSymbol": "Symbol",

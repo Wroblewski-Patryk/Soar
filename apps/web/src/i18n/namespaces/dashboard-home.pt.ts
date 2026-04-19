@@ -117,7 +117,7 @@ export const dashboardHomePt = {
     "slTtp": "TTP",
     "slTsl": "TSL",
     "noOpenPositions": "No open positions.",
-    "openOrdersPlaceholder": "O separador de ordens abertas esta preparado e sera preenchido nas proximas atualizacoes de runtime.",
+    "openOrdersPlaceholder": "Sem ordens abertas.",
     "tradesHistoryTitlePaper": "Historico",
     "tradesHistoryTitleLive": "Historico",
     "filterSymbol": "Simbolo",

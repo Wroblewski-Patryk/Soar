@@ -57,6 +57,7 @@ import { useCloseRuntimePositionAction } from "../hooks/useCloseRuntimePositionA
 import { useHomeLiveWidgetsController } from "../hooks/useHomeLiveWidgetsController";
 import type {
   OpenPositionWithLive,
+  OpenOrdersTableColumn,
   RuntimeDataTab,
   RuntimeTabItem,
 } from "./home-live-widgets/types";
@@ -68,6 +69,8 @@ const CARD_ASIDE = "rounded-box bg-base-100/85 h-fit xl:sticky xl:top-4";
 const RUNTIME_DATA_STALE_WARNING_AFTER_MS = 20_000;
 const DASHBOARD_OPEN_POSITIONS_SORT_STORAGE_KEY = "dashboard.home.openPositions.sort.v1";
 const DASHBOARD_OPEN_POSITIONS_COLUMNS_STORAGE_KEY = "dashboard.home.openPositions.columns.v1";
+const DASHBOARD_OPEN_ORDERS_SORT_STORAGE_KEY = "dashboard.home.openOrders.sort.v1";
+const DASHBOARD_OPEN_ORDERS_COLUMNS_STORAGE_KEY = "dashboard.home.openOrders.columns.v1";
 const DASHBOARD_TRADE_HISTORY_COLUMNS_STORAGE_KEY = "dashboard.home.tradeHistory.columns.v1";
 const TRADE_PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
 const OPEN_POSITIONS_PAGE_SIZE_OPTIONS = [10, 25, 50] as const;
@@ -990,6 +993,73 @@ export default function HomeLiveWidgets() {
     withRuntimeUnit,
   ]);
 
+  const openOrdersColumns = useMemo<OpenOrdersTableColumn[]>(
+    () => [
+      {
+        key: "submittedAt",
+        label: t("dashboard.home.runtime.time"),
+        sortable: true,
+        accessor: (row) => row.submittedAt ?? row.createdAt,
+        render: (row) => formatDateTimeWithSeconds(row.submittedAt ?? row.createdAt),
+      },
+      {
+        key: "symbol",
+        label: t("dashboard.home.runtime.symbol"),
+        sortable: true,
+        accessor: (row) => row.symbol,
+        render: (row) => {
+          const icon = resolveRuntimeIcon(row.symbol);
+          return (
+            <AssetSymbol
+              symbol={row.symbol}
+              iconUrl={icon?.iconUrl ?? null}
+              loading={runtimeIconsLoading && !icon}
+              hasError={Boolean(runtimeIconsError)}
+              className="font-medium"
+            />
+          );
+        },
+      },
+      {
+        key: "side",
+        label: t("dashboard.home.runtime.side"),
+        sortable: true,
+        accessor: (row) => row.side,
+        render: (row) => <DirectionPill value={row.side === "BUY" ? "BUY" : "SELL"} />,
+      },
+      {
+        key: "status",
+        label: t("dashboard.home.runtime.status"),
+        sortable: true,
+        accessor: (row) => row.status,
+        render: (row) => <span className="font-semibold">{row.status ?? "-"}</span>,
+      },
+      {
+        key: "quantity",
+        label: t("dashboard.home.runtime.qty"),
+        sortable: true,
+        accessor: (row) => row.quantity,
+        render: (row) => formatNumber(row.quantity, { maximumFractionDigits: 6 }),
+      },
+      {
+        key: "price",
+        label: t("dashboard.home.runtime.price"),
+        sortable: true,
+        accessor: (row) => row.price ?? null,
+        render: (row) =>
+          row.price == null ? "-" : formatNumber(row.price, { minimumFractionDigits: 2, maximumFractionDigits: 6 }),
+      },
+    ],
+    [
+      formatDateTimeWithSeconds,
+      formatNumber,
+      resolveRuntimeIcon,
+      runtimeIconsError,
+      runtimeIconsLoading,
+      t,
+    ]
+  );
+
   const tradesColumns = useMemo<DataTableColumn<BotRuntimeTrade>[]>(() => [
     {
       key: "executedAt",
@@ -1215,7 +1285,11 @@ export default function HomeLiveWidgets() {
                 previousLabel={t("dashboard.home.runtime.previous")}
                 nextLabel={t("dashboard.home.runtime.next")}
                 noOpenPositionsLabel={t("dashboard.home.runtime.noOpenPositions")}
-                openOrdersPlaceholderLabel={t("dashboard.home.runtime.openOrdersPlaceholder")}
+                openOrdersRows={selected?.positions?.openOrders ?? []}
+                openOrdersColumns={openOrdersColumns}
+                openOrdersSortStorageKey={DASHBOARD_OPEN_ORDERS_SORT_STORAGE_KEY}
+                openOrdersColumnVisibilityKey={DASHBOARD_OPEN_ORDERS_COLUMNS_STORAGE_KEY}
+                noOpenOrdersLabel={t("dashboard.home.runtime.openOrdersPlaceholder")}
                 tradesLoading={selectedTradesLoading}
                 loadingLabel={t("dashboard.home.loadWidgets")}
                 tradesRows={selectedData?.trades ?? []}

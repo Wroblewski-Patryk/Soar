@@ -95,57 +95,59 @@ describe("HomeLiveWidgets", () => {
     window.localStorage.setItem("cryptosparrow-locale", "pl");
     window.history.pushState({}, "", "/dashboard");
     lookupCoinIconsMock.mockResolvedValue(new Map());
-    getBotRuntimeGraphMock.mockImplementation(async (botId: string) => ({
-      bot: {
-        id: botId,
-        userId: "u-1",
-        name: "Runtime bot",
-        mode: "PAPER",
-        marketType: "FUTURES",
-        positionMode: "ONE_WAY",
-        isActive: true,
-        liveOptIn: false,
-        maxOpenPositions: 3,
-        createdAt: "2026-03-31T10:00:00.000Z",
-        updatedAt: "2026-03-31T10:00:00.000Z",
-      },
-      marketGroups: [
-        {
-          id: "group-link-1",
-          botId,
-          symbolGroupId: "group-1",
-          lifecycleStatus: "ACTIVE",
-          executionOrder: 1,
-          isEnabled: true,
+    if (!getBotRuntimeGraphMock.getMockImplementation()) {
+      getBotRuntimeGraphMock.mockImplementation(async (botId: string) => ({
+        bot: {
+          id: botId,
+          userId: "u-1",
+          name: "Runtime bot",
+          mode: "PAPER",
+          marketType: "FUTURES",
+          positionMode: "ONE_WAY",
+          isActive: true,
+          liveOptIn: false,
+          maxOpenPositions: 3,
           createdAt: "2026-03-31T10:00:00.000Z",
           updatedAt: "2026-03-31T10:00:00.000Z",
-          symbolGroup: {
-            id: "group-1",
-            name: "Ulubione",
-            symbols: ["BTCUSDT", "ETHUSDT"],
-            marketUniverseId: "mu-1",
-          },
-          strategies: [
-            {
-              id: "group-strategy-1",
-              strategyId: "str-1",
-              priority: 1,
-              weight: 1,
-              isEnabled: true,
-              createdAt: "2026-03-31T10:00:00.000Z",
-              updatedAt: "2026-03-31T10:00:00.000Z",
-              strategy: {
-                id: "str-1",
-                name: "Test RSI",
-                interval: "5m",
-                leverage: 10,
-              },
-            },
-          ],
         },
-      ],
-      legacyBotStrategies: [],
-    }));
+        marketGroups: [
+          {
+            id: "group-link-1",
+            botId,
+            symbolGroupId: "group-1",
+            lifecycleStatus: "ACTIVE",
+            executionOrder: 1,
+            isEnabled: true,
+            createdAt: "2026-03-31T10:00:00.000Z",
+            updatedAt: "2026-03-31T10:00:00.000Z",
+            symbolGroup: {
+              id: "group-1",
+              name: "Ulubione",
+              symbols: ["BTCUSDT", "ETHUSDT"],
+              marketUniverseId: "mu-1",
+            },
+            strategies: [
+              {
+                id: "group-strategy-1",
+                strategyId: "str-1",
+                priority: 1,
+                weight: 1,
+                isEnabled: true,
+                createdAt: "2026-03-31T10:00:00.000Z",
+                updatedAt: "2026-03-31T10:00:00.000Z",
+                strategy: {
+                  id: "str-1",
+                  name: "Test RSI",
+                  interval: "5m",
+                  leverage: 10,
+                },
+              },
+            ],
+          },
+        ],
+        legacyBotStrategies: [],
+      }));
+    }
     return render(
       <I18nProvider>
         <HomeLiveWidgets />
@@ -212,7 +214,14 @@ describe("HomeLiveWidgets", () => {
       items: [],
     });
 
-    renderSubject();
+    window.localStorage.setItem("cryptosparrow-locale", "pl");
+    window.history.pushState({}, "", "/dashboard");
+    lookupCoinIconsMock.mockResolvedValue(new Map());
+    render(
+      <I18nProvider>
+        <HomeLiveWidgets />
+      </I18nProvider>
+    );
 
     await waitFor(() => {
       expect(screen.getByText("Brak botow do podsumowania dashboardu")).toBeInTheDocument();
@@ -785,6 +794,376 @@ describe("HomeLiveWidgets", () => {
     fireEvent.click(screen.getByRole("tab", { name: /Historia|History/i }));
     expect(screen.queryByRole("columnheader", { name: /^Fee$/i })).not.toBeInTheDocument();
     expect(screen.queryByRole("columnheader", { name: /^Origin$/i })).not.toBeInTheDocument();
+  });
+
+  it("renders orders tab as a table with deterministic empty state", async () => {
+    listBotsMock.mockResolvedValue([
+      {
+        id: "bot-orders-empty",
+        name: "Orders Empty Bot",
+        mode: "PAPER",
+        paperStartBalance: 10000,
+        marketType: "FUTURES",
+        positionMode: "ONE_WAY",
+        strategyId: "str-orders-empty",
+        isActive: true,
+        liveOptIn: false,
+        maxOpenPositions: 2,
+      },
+    ]);
+
+    listBotRuntimeSessionsMock.mockResolvedValue([
+      {
+        id: "session-orders-empty",
+        botId: "bot-orders-empty",
+        mode: "PAPER",
+        status: "RUNNING",
+        startedAt: "2026-03-31T10:00:00.000Z",
+        finishedAt: null,
+        lastHeartbeatAt: "2026-03-31T10:05:00.000Z",
+        stopReason: null,
+        errorMessage: null,
+        createdAt: "2026-03-31T10:00:00.000Z",
+        updatedAt: "2026-03-31T10:05:00.000Z",
+        durationMs: 300000,
+        eventsCount: 1,
+        symbolsTracked: 1,
+        summary: {
+          totalSignals: 1,
+          dcaCount: 0,
+          closedTrades: 0,
+          realizedPnl: 0,
+        },
+      },
+    ]);
+
+    listBotRuntimeSessionSymbolStatsMock.mockResolvedValue({
+      sessionId: "session-orders-empty",
+      items: [],
+      summary: {
+        totalSignals: 0,
+        longEntries: 0,
+        shortEntries: 0,
+        exits: 0,
+        dcaCount: 0,
+        closedTrades: 0,
+        winningTrades: 0,
+        losingTrades: 0,
+        realizedPnl: 0,
+        unrealizedPnl: 0,
+        totalPnl: 0,
+        grossProfit: 0,
+        grossLoss: 0,
+        feesPaid: 0,
+      },
+    });
+
+    listBotRuntimeSessionPositionsMock.mockResolvedValue({
+      sessionId: "session-orders-empty",
+      total: 0,
+      openCount: 0,
+      closedCount: 0,
+      openOrdersCount: 0,
+      showDynamicStopColumns: false,
+      window: {
+        startedAt: "2026-03-31T10:00:00.000Z",
+        finishedAt: "2026-03-31T10:05:00.000Z",
+      },
+      summary: {
+        realizedPnl: 0,
+        unrealizedPnl: 0,
+        feesPaid: 0,
+      },
+      openOrders: [],
+      openItems: [],
+      historyItems: [],
+    });
+
+    listBotRuntimeSessionTradesMock.mockResolvedValue({
+      sessionId: "session-orders-empty",
+      total: 0,
+      meta: {
+        page: 1,
+        pageSize: 25,
+        total: 0,
+        totalPages: 0,
+        hasPrev: false,
+        hasNext: false,
+      },
+      window: {
+        startedAt: "2026-03-31T10:00:00.000Z",
+        finishedAt: "2026-03-31T10:05:00.000Z",
+      },
+      items: [],
+    });
+
+    renderSubject();
+
+    const ordersTab = await screen.findByRole("tab", { name: /Zlecenia|Orders/i });
+    fireEvent.click(ordersTab);
+
+    expect(screen.getByRole("table")).toBeInTheDocument();
+    expect(screen.getByRole("columnheader", { name: /Symbol/i })).toBeInTheDocument();
+    expect(screen.getByRole("columnheader", { name: /Side/i })).toBeInTheDocument();
+    expect(screen.getByText(/Brak otwartych zlecen|No open orders/i)).toBeInTheDocument();
+    expect(screen.queryByText(/zakladka otwartych zlecen|Open orders tab is prepared/i)).not.toBeInTheDocument();
+  });
+
+  it("refreshes strategy context when switching selected bot", async () => {
+    getDashboardManualOrderContextMock.mockResolvedValue({
+      botId: "bot-strategy-a",
+      symbol: "BTCUSDT",
+      mode: "PAPER",
+      orderType: "MARKET",
+      marginMode: "CROSSED",
+      leverage: 10,
+      priceReference: {
+        markPrice: 68000,
+        source: "exchange_mark",
+      },
+      quantityConstraints: {
+        minAmount: 0.001,
+        amountPrecision: 0.001,
+        minNotional: 50,
+        minExecutableQty: 0.001,
+      },
+      sideAwarePreview: {
+        side: "BUY",
+        requestedQuantity: null,
+        estimatedNotional: null,
+        estimatedMargin: null,
+        maxOpenPositions: 2,
+      },
+    });
+
+    listBotsMock.mockResolvedValue([
+      {
+        id: "bot-strategy-a",
+        name: "Strategy Bot A",
+        mode: "PAPER",
+        paperStartBalance: 10000,
+        marketType: "FUTURES",
+        positionMode: "ONE_WAY",
+        strategyId: "str-a",
+        isActive: true,
+        liveOptIn: false,
+        maxOpenPositions: 2,
+      },
+      {
+        id: "bot-strategy-b",
+        name: "Strategy Bot B",
+        mode: "PAPER",
+        paperStartBalance: 10000,
+        marketType: "FUTURES",
+        positionMode: "ONE_WAY",
+        strategyId: "str-b",
+        isActive: true,
+        liveOptIn: false,
+        maxOpenPositions: 2,
+      },
+    ]);
+
+    getBotRuntimeGraphMock.mockImplementation(async (botId: string) => ({
+      bot: {
+        id: botId,
+        userId: "u-1",
+        name: botId === "bot-strategy-a" ? "Strategy Bot A" : "Strategy Bot B",
+        mode: "PAPER",
+        marketType: "FUTURES",
+        positionMode: "ONE_WAY",
+        isActive: true,
+        liveOptIn: false,
+        maxOpenPositions: 2,
+        createdAt: "2026-03-31T10:00:00.000Z",
+        updatedAt: "2026-03-31T10:00:00.000Z",
+      },
+      marketGroups: [
+        {
+          id: `group-${botId}`,
+          botId,
+          symbolGroupId: `symbols-${botId}`,
+          lifecycleStatus: "ACTIVE",
+          executionOrder: 1,
+          isEnabled: true,
+          createdAt: "2026-03-31T10:00:00.000Z",
+          updatedAt: "2026-03-31T10:00:00.000Z",
+          symbolGroup: {
+            id: `symbols-${botId}`,
+            name: botId === "bot-strategy-a" ? "A symbols" : "B symbols",
+            symbols: ["BTCUSDT"],
+            marketUniverseId: "mu-1",
+          },
+          strategies: [
+            {
+              id: `strategy-shared-${botId}`,
+              strategyId: "str-shared",
+              priority: 1,
+              weight: 1,
+              isEnabled: true,
+              createdAt: "2026-03-31T10:00:00.000Z",
+              updatedAt: "2026-03-31T10:00:00.000Z",
+              strategy: {
+                id: "str-shared",
+                name: "Shared stale strategy",
+                interval: "5m",
+              },
+            },
+            {
+              id: `strategy-active-${botId}`,
+              strategyId: botId === "bot-strategy-a" ? "str-a" : "str-b",
+              priority: 2,
+              weight: 1,
+              isEnabled: true,
+              createdAt: "2026-03-31T10:00:00.000Z",
+              updatedAt: "2026-03-31T10:00:00.000Z",
+              strategy: {
+                id: botId === "bot-strategy-a" ? "str-a" : "str-b",
+                name: botId === "bot-strategy-a" ? "Alpha Strategy" : "Beta Strategy",
+                interval: "15m",
+              },
+            },
+          ],
+        },
+      ],
+      legacyBotStrategies: [],
+    }));
+
+    listBotRuntimeSessionsMock.mockImplementation(async (botId: string) => [
+      {
+        id: `session-${botId}`,
+        botId,
+        mode: "PAPER",
+        status: "RUNNING",
+        startedAt: "2026-03-31T10:00:00.000Z",
+        finishedAt: null,
+        lastHeartbeatAt: "2026-03-31T10:05:00.000Z",
+        stopReason: null,
+        errorMessage: null,
+        createdAt: "2026-03-31T10:00:00.000Z",
+        updatedAt: "2026-03-31T10:05:00.000Z",
+        durationMs: 300000,
+        eventsCount: 1,
+        symbolsTracked: 1,
+        summary: {
+          totalSignals: 1,
+          dcaCount: 0,
+          closedTrades: 0,
+          realizedPnl: 0,
+        },
+      },
+    ]);
+
+    listBotRuntimeSessionSymbolStatsMock.mockImplementation(async (_botId: string, sessionId: string) => ({
+      sessionId,
+      items: [
+        {
+          id: `stat-${sessionId}`,
+          userId: "u-1",
+          botId: _botId,
+          sessionId,
+          symbol: "BTCUSDT",
+          totalSignals: 1,
+          longEntries: 1,
+          shortEntries: 0,
+          exits: 0,
+          dcaCount: 0,
+          closedTrades: 0,
+          winningTrades: 0,
+          losingTrades: 0,
+          realizedPnl: 0,
+          grossProfit: 0,
+          grossLoss: 0,
+          feesPaid: 0,
+          openPositionCount: 0,
+          openPositionQty: 0,
+          unrealizedPnl: 0,
+          lastPrice: 68000,
+          lastSignalAt: "2026-03-31T10:05:00.000Z",
+          lastSignalDirection: "LONG",
+          lastSignalDecisionAt: "2026-03-31T10:05:00.000Z",
+          lastTradeAt: null,
+          snapshotAt: "2026-03-31T10:05:00.000Z",
+          createdAt: "2026-03-31T10:05:00.000Z",
+          updatedAt: "2026-03-31T10:05:00.000Z",
+        },
+      ],
+      summary: {
+        totalSignals: 1,
+        longEntries: 1,
+        shortEntries: 0,
+        exits: 0,
+        dcaCount: 0,
+        closedTrades: 0,
+        winningTrades: 0,
+        losingTrades: 0,
+        realizedPnl: 0,
+        unrealizedPnl: 0,
+        totalPnl: 0,
+        grossProfit: 0,
+        grossLoss: 0,
+        feesPaid: 0,
+      },
+    }));
+
+    listBotRuntimeSessionPositionsMock.mockImplementation(async (_botId: string, sessionId: string) => ({
+      sessionId,
+      total: 0,
+      openCount: 0,
+      closedCount: 0,
+      openOrdersCount: 0,
+      showDynamicStopColumns: false,
+      window: {
+        startedAt: "2026-03-31T10:00:00.000Z",
+        finishedAt: "2026-03-31T10:05:00.000Z",
+      },
+      summary: {
+        realizedPnl: 0,
+        unrealizedPnl: 0,
+        feesPaid: 0,
+      },
+      openOrders: [],
+      openItems: [],
+      historyItems: [],
+    }));
+
+    listBotRuntimeSessionTradesMock.mockImplementation(async (_botId: string, sessionId: string) => ({
+      sessionId,
+      total: 0,
+      meta: {
+        page: 1,
+        pageSize: 25,
+        total: 0,
+        totalPages: 0,
+        hasPrev: false,
+        hasNext: false,
+      },
+      window: {
+        startedAt: "2026-03-31T10:00:00.000Z",
+        finishedAt: "2026-03-31T10:05:00.000Z",
+      },
+      items: [],
+    }));
+
+    renderSubject();
+
+    let selector: HTMLSelectElement;
+    await waitFor(() => {
+      const selectorLabel = screen.getByText(/Wybrany bot|Selected bot/i).closest("label");
+      expect(selectorLabel).not.toBeNull();
+      selector = within(selectorLabel as HTMLLabelElement).getByRole("combobox") as HTMLSelectElement;
+      expect(selector.value).toBe("bot-strategy-a");
+      expect(screen.getByText("Alpha Strategy")).toBeInTheDocument();
+      expect(screen.queryByText("Shared stale strategy")).not.toBeInTheDocument();
+    });
+
+    fireEvent.change(selector!, { target: { value: "bot-strategy-b" } });
+
+    await waitFor(() => {
+      expect(selector!.value).toBe("bot-strategy-b");
+      expect(screen.getByText("Beta Strategy")).toBeInTheDocument();
+      expect(screen.queryByText("Alpha Strategy")).not.toBeInTheDocument();
+      expect(screen.queryByText("Shared stale strategy")).not.toBeInTheDocument();
+    });
   });
 
   it("opens manual dashboard order through shared order endpoint contract", async () => {

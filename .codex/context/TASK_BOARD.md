@@ -17,15 +17,12 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] DASHR-02 Add failing web regression for orders-tab table rendering and selected-bot strategy refresh
-- [ ] DASHR-03 Replace dashboard orders placeholder with DataTable + deterministic empty state
-- [ ] DASHR-04 Fix selected-bot strategy refresh and apply requested selected-bot section spacing/layout order
-
-## BACKLOG
-
 - [ ] DASHR-05 Reproduce positions/history mismatch between runtime module and dashboard selected snapshot (api+web red tests)
 - [ ] DASHR-06 Align selected session/snapshot mapping for dashboard positions and history tabs
 - [ ] DASHR-07 Lock selected-bot-only signals markets/strategy scope with regression tests
+
+## BACKLOG
+
 - [ ] DASHR-08 Enforce selected-bot scope in runtime symbol/strategy enrichment consumed by dashboard signals
 - [ ] DASHR-09 Reproduce condition-met but no-order/no-position execution gap with runtime/order regressions
 - [ ] DASHR-10 Restore signal->order->position path or explicit blocked diagnostics
@@ -45,6 +42,14 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] DASHR-A group closure (`DASHR-01..DASHR-04`)
+  - 2026-04-19: Stage A closed with web parity evidence: orders tab now uses DataTable with deterministic empty state, selected-bot strategy context refresh is deterministic on bot switch, and selected-bot section layout order/spacing is locked (`KPI -> selector -> market/strategy`, `mt-6`).
+- [x] DASHR-04 Fix selected-bot strategy refresh and apply requested selected-bot section spacing/layout order
+  - 2026-04-19: Sidebar strategy context now prefers selected bot `strategyId` from runtime graph links (with legacy fallback), selector row moved below KPI row, and requested `mt-6` spacing applied to selector and context cards.
+- [x] DASHR-03 Replace dashboard orders placeholder with DataTable + deterministic empty state
+  - 2026-04-19: Replaced open-orders placeholder panel with shared DataTable contract (sorting, pagination, column-visibility preferences) and deterministic empty-state copy.
+- [x] DASHR-02 Add failing web regression for orders-tab table rendering and selected-bot strategy refresh
+  - 2026-04-19: Added focused dashboard regressions in `HomeLiveWidgets.test.tsx` for orders-table rendering and selected-bot strategy-context switching (`Alpha/Beta`) and stabilized helper default runtime-graph mock to avoid overriding per-test custom graphs.
 - [x] DASHR-01 Freeze dashboard runtime parity contract for positions/orders/history/signals/selected-bot section
   - 2026-04-19: Frozen `DASHR` contract in canonical docs (`open-decisions`, `web-dashboard-home`) with strict selected-bot scope for `signals/strategy`, table-first `orders` tab contract (including deterministic empty state), `positions/history` selected-session parity expectation, and selected-bot panel layout order (`KPI -> selector -> market/strategy`) plus `mt-6` spacing lock.
 - [x] DASHR planning queued (`DASHR-01..DASHR-11`)

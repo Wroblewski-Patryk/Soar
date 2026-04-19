@@ -7,21 +7,17 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [x] `DASHR-01 docs(contract): freeze dashboard runtime parity contract for positions/orders/history/signals/selected-bot section`
-- [ ] `DASHR-02 test(web-red): add failing coverage for orders-tab table rendering and selected-bot strategy refresh`
-- [ ] `DASHR-03 fix(web-orders-tab): replace open-orders placeholder with DataTable + deterministic empty state`
-- [ ] `DASHR-04 fix(web-selected-bot-panel): ensure strategy context refresh and apply requested spacing/layout order`
-## NEXT
 - [ ] `DASHR-05 test(api+web-red): reproduce positions/history mismatch between runtime module and dashboard selected snapshot`
 - [ ] `DASHR-06 fix(api+web-runtime-parity): align selected session/snapshot mapping for positions and history tabs`
 - [ ] `DASHR-07 test(api-red-signals-scope): lock selected-bot-only markets/strategy context in signals payload`
-## PIPELINE
+## NEXT
 - [ ] `DASHR-08 fix(api-signals-scope): enforce selected-bot symbol and strategy context parity for dashboard signals`
 - [ ] `DASHR-09 test(api-red-signal-execution): add regression for condition-met but no-order/no-position outcome`
 - [ ] `DASHR-10 fix(api-runtime-execution): restore signal->order->position flow or emit explicit blocked diagnostics`
+## PIPELINE
 - [ ] `DASHR-11 qa(closure): run focused dashboard runtime parity pack and sync canonical queue/context`
 ## GROUP QUEUE
-- [ ] `DASHR-A (commits DASHR-01..DASHR-04): dashboard tab/view parity + selected-bot section consistency`
+- [x] `DASHR-A (commits DASHR-01..DASHR-04): dashboard tab/view parity + selected-bot section consistency`
 - [ ] `DASHR-B (commits DASHR-05..DASHR-08): selected-bot runtime data parity for positions/history/signals scope`
 - [ ] `DASHR-C (commits DASHR-09..DASHR-11): signal->order execution diagnostics + closure`
 - [x] `BRS-A (commits BRS-01..BRS-04): decision closure + strict selected-bot scope foundation`
@@ -75,6 +71,14 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `DASHR-A (commits DASHR-01..DASHR-04): dashboard tab/view parity + selected-bot section consistency`
+  - 2026-04-19: Stage A DoD closed end-to-end: `orders` tab now renders canonical `DataTable` (including deterministic empty-state copy), selected-bot strategy context refresh follows selected bot deterministically, and selected-bot panel layout/spacing order is enforced (`KPI -> selector -> market/strategy`, `mt-6`).
+- [x] `DASHR-04 fix(web-selected-bot-panel): ensure strategy context refresh and apply requested spacing/layout order`
+  - 2026-04-19: Updated selected-bot sidebar strategy resolution to prefer selected bot `strategyId` from runtime graph links (with legacy fallback), moved selector row between KPI and market/strategy cards, and applied requested `mt-6` spacing.
+- [x] `DASHR-03 fix(web-orders-tab): replace open-orders placeholder with DataTable + deterministic empty state`
+  - 2026-04-19: Replaced `OPEN_ORDERS` placeholder block with shared `DataTable` rendering (sorting, pagination, column visibility) and wired deterministic empty-state text (`No open orders.` / localized equivalents).
+- [x] `DASHR-02 test(web-red): add failing coverage for orders-tab table rendering and selected-bot strategy refresh`
+  - 2026-04-19: Added focused regressions in `HomeLiveWidgets.test.tsx` for `orders` tab table contract and selected-bot strategy refresh (`Alpha/Beta` switch context) and fixed test helper default-runtime-graph mocking so per-test graph overrides remain effective.
 - [x] `DASHR-01 docs(contract): freeze dashboard runtime parity contract for positions/orders/history/signals/selected-bot section`
   - 2026-04-19: Locked `DASHR` parity contract in canonical docs (`open-decisions`, `web-dashboard-home`) with explicit tab behavior (`positions/orders/history`), selected-bot scoped signals/strategy rules, signal execution diagnostics requirement, and selected-bot panel layout/spacing order (`KPI -> selector -> market/strategy`, `mt-6` spacing).
 - [x] `DASHR planning queued (dashboard runtime parity recovery for positions/orders/history/signals/selected-bot section)`

@@ -26,6 +26,8 @@ Last updated: 2026-04-19
   planner-approved wave (post-`UXR-F` residual parity closure).
 - 2026-04-19: dashboard tables consistency refresh is queued as `UXR-J`
   planner-approved wave (post-`UXR-I` table-system parity closure).
+- 2026-04-19: dashboard runtime parity recovery Stage A (`DASHR-A`) is closed
+  end-to-end; active execution focus moved to Stage B (`DASHR-05..DASHR-08`).
 
 ## Technical Baseline
 - Backend: Node.js 20+, Express API, Prisma, TypeScript

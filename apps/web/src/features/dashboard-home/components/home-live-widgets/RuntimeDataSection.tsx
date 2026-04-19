@@ -4,6 +4,7 @@ import { SkeletonTableRows } from "../../../../ui/components/loading";
 import { TAB_CONTENT_FRAME_CLASS, TAB_CONTENT_INNER_CLASS } from "../../../../ui/components/tabContentFrame";
 import type {
   OpenPositionWithLive,
+  OpenOrdersTableColumn,
   OpenPositionsTableColumn,
   RuntimeDataTab,
   RuntimeTabItem,
@@ -16,6 +17,7 @@ import type {
   RuntimeTradeMeta,
 } from "./types";
 import type { BotRuntimeTrade } from "../../../../features/bots/types/bot.type";
+import type { BotRuntimeOpenOrderItem } from "../../../../features/bots/types/bot.type";
 
 type RuntimeDataSectionProps = {
   runtimeDataTab: RuntimeDataTab;
@@ -30,7 +32,11 @@ type RuntimeDataSectionProps = {
   previousLabel: string;
   nextLabel: string;
   noOpenPositionsLabel: string;
-  openOrdersPlaceholderLabel: string;
+  openOrdersRows: BotRuntimeOpenOrderItem[];
+  openOrdersColumns: OpenOrdersTableColumn[];
+  openOrdersSortStorageKey: string;
+  openOrdersColumnVisibilityKey: string;
+  noOpenOrdersLabel: string;
   tradesLoading: boolean;
   loadingLabel: string;
   tradesRows: BotRuntimeTrade[];
@@ -105,10 +111,28 @@ export default function RuntimeDataSection(props: RuntimeDataSectionProps) {
 
       {props.runtimeDataTab === "OPEN_ORDERS" ? (
         <section className={TAB_CONTENT_FRAME_CLASS}>
-          <div className={`${TAB_CONTENT_INNER_CLASS} p-3`}>
-            <div className="rounded-box border border-dashed border-base-300/60 bg-base-100/40 px-4 py-6 text-center text-sm opacity-75">
-              {props.openOrdersPlaceholderLabel}
-            </div>
+          <div className={TAB_CONTENT_INNER_CLASS}>
+            <DataTable
+              compact
+              framed={false}
+              rows={props.openOrdersRows}
+              columns={props.openOrdersColumns}
+              getRowId={(row) => row.id}
+              defaultSortKey="submittedAt"
+              defaultSortDirection="desc"
+              persistSortKey={props.openOrdersSortStorageKey}
+              columnVisibilityEnabled
+              columnVisibilityPreferenceKey={props.openOrdersColumnVisibilityKey}
+              showSearch={false}
+              paginationEnabled
+              pageSizeOptions={[...props.openPositionsPageSizeOptions]}
+              defaultPageSize={props.openPositionsPageSizeOptions[0]}
+              rowsPerPageLabel={props.rowsPerPageLabel}
+              previousLabel={props.previousLabel}
+              nextLabel={props.nextLabel}
+              emptyText={props.noOpenOrdersLabel}
+              paginationClassName="p-3"
+            />
           </div>
         </section>
       ) : null}

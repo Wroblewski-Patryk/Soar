@@ -2,6 +2,7 @@ import type { DataTableColumn } from "../../../../ui/components/DataTable";
 import type { ReactNode } from "react";
 import type {
   Bot,
+  BotRuntimeOpenOrderItem,
   BotRuntimeGraph,
   BotRuntimePositionItem,
   BotRuntimePositionsResponse,
@@ -103,4 +104,5 @@ export type RuntimeTabItem = {
 };
 
 export type OpenPositionsTableColumn = DataTableColumn<OpenPositionWithLive>;
+export type OpenOrdersTableColumn = DataTableColumn<BotRuntimeOpenOrderItem>;
 export type TradesTableColumn = DataTableColumn<BotRuntimeTrade>;

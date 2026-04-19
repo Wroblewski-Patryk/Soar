@@ -189,14 +189,39 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
     (left, right) => left.executionOrder - right.executionOrder
   );
   const primaryGroup = sortedGraphGroups.find((group) => group.isEnabled) ?? sortedGraphGroups[0] ?? null;
+  const preferredStrategyId = props.selected?.bot.strategyId ?? null;
+  const groupStrategyLinks = sortedGraphGroups.flatMap((group) =>
+    (group.strategies ?? []).map((strategy) => ({ group, strategy }))
+  );
   const sortedGroupStrategies = [...(primaryGroup?.strategies ?? [])].sort((left, right) => {
     if (left.priority !== right.priority) return left.priority - right.priority;
     return right.weight - left.weight;
   });
-  const primaryStrategyFromGroup = sortedGroupStrategies.find((item) => item.isEnabled) ?? sortedGroupStrategies[0] ?? null;
+  const selectedStrategySource =
+    groupStrategyLinks.find(
+      ({ strategy }) => Boolean(strategy.isEnabled) && preferredStrategyId != null && strategy.strategyId === preferredStrategyId
+    ) ??
+    groupStrategyLinks.find(
+      ({ strategy }) => preferredStrategyId != null && strategy.strategyId === preferredStrategyId
+    ) ??
+    (primaryGroup
+      ? {
+        group: primaryGroup,
+        strategy:
+          sortedGroupStrategies.find((item) => item.isEnabled) ??
+          sortedGroupStrategies[0] ??
+          null,
+      }
+      : null);
   const fallbackLegacyStrategy = runtimeGraph?.legacyBotStrategies[0] ?? null;
+  const fallbackLegacyByPreferredId =
+    runtimeGraph?.legacyBotStrategies.find(
+      (item) => preferredStrategyId != null && item.strategyId === preferredStrategyId
+    ) ?? null;
   const selectedMarketGroupName =
+    selectedStrategySource?.group?.symbolGroup?.name ??
     primaryGroup?.symbolGroup?.name ??
+    fallbackLegacyByPreferredId?.symbolGroup?.name ??
     fallbackLegacyStrategy?.symbolGroup?.name ??
     "-";
   const displayMarketGroupName =
@@ -204,15 +229,17 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
       ? selectedMarketGroupName
       : selectedMarketGroupName.replace(/\s+group$/i, "");
   const selectedStrategyName =
-    primaryStrategyFromGroup?.strategy?.name ??
+    selectedStrategySource?.strategy?.strategy?.name ??
+    fallbackLegacyByPreferredId?.strategy?.name ??
     fallbackLegacyStrategy?.strategy?.name ??
     "-";
   const selectedStrategyInterval =
-    primaryStrategyFromGroup?.strategy?.interval ??
+    selectedStrategySource?.strategy?.strategy?.interval ??
+    fallbackLegacyByPreferredId?.strategy?.interval ??
     fallbackLegacyStrategy?.strategy?.interval ??
     "-";
   const selectedStrategyLeverageValue = (() => {
-    const fromRuntimeGraph = (primaryStrategyFromGroup?.strategy as { leverage?: unknown } | undefined)?.leverage;
+    const fromRuntimeGraph = (selectedStrategySource?.strategy?.strategy as { leverage?: unknown } | undefined)?.leverage;
     if (typeof fromRuntimeGraph === "number" && Number.isFinite(fromRuntimeGraph) && fromRuntimeGraph > 0) {
       return fromRuntimeGraph;
     }
@@ -248,32 +275,6 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
       <div className="space-y-6">
         <section className={panelFrameClassName}>
           <div className={panelBodyClassName}>
-            <label className="flex items-center justify-between gap-3">
-              <span className="inline-flex shrink-0 items-center gap-1.5 text-xs font-medium tracking-wide opacity-60">
-                <LuBot className="h-3.5 w-3.5" aria-hidden />
-                {props.text.selectedBot}
-              </span>
-              <select
-                className="select select-xs select-bordered h-8 min-h-8 w-44 max-w-[65%] bg-base-100/65"
-                value={props.selected?.bot.id ?? ""}
-                onChange={(event) => props.onSelectedBotIdChange(event.target.value)}
-              >
-                {props.snapshots.map((item) => (
-                  <option key={item.bot.id} value={item.bot.id}>
-                    {item.bot.name} ({item.bot.mode} · {item.bot.wallet?.name ?? "no-wallet"})
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            {!props.selectedRuntimeCapabilityAvailable ? (
-              <div className="mt-2 flex items-center gap-2">
-                <span className="badge badge-xs badge-warning badge-outline">
-                  {props.placeholderBadgeLabel}
-                </span>
-              </div>
-            ) : null}
-
             <div className="mt-3 grid grid-cols-3 divide-x divide-base-300/40 text-xs">
               <div className="px-1.5 text-center">
                 <p className="inline-flex items-center justify-center opacity-70">
@@ -302,7 +303,33 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
               </div>
             </div>
 
-            <div className="mt-3 grid grid-cols-2 gap-2 text-[11px]">
+            <label className="mt-6 flex items-center justify-between gap-3">
+              <span className="inline-flex shrink-0 items-center gap-1.5 text-xs font-medium tracking-wide opacity-60">
+                <LuBot className="h-3.5 w-3.5" aria-hidden />
+                {props.text.selectedBot}
+              </span>
+              <select
+                className="select select-xs select-bordered h-8 min-h-8 w-44 max-w-[65%] bg-base-100/65"
+                value={props.selected?.bot.id ?? ""}
+                onChange={(event) => props.onSelectedBotIdChange(event.target.value)}
+              >
+                {props.snapshots.map((item) => (
+                  <option key={item.bot.id} value={item.bot.id}>
+                    {item.bot.name} ({item.bot.mode} · {item.bot.wallet?.name ?? "no-wallet"})
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            {!props.selectedRuntimeCapabilityAvailable ? (
+              <div className="mt-2 flex items-center gap-2">
+                <span className="badge badge-xs badge-warning badge-outline">
+                  {props.placeholderBadgeLabel}
+                </span>
+              </div>
+            ) : null}
+
+            <div className="mt-6 grid grid-cols-2 gap-2 text-[11px]">
               <div className="rounded-box border border-base-300/45 bg-base-100/60 px-2.5 py-2.5">
                 <p className="inline-flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-wide opacity-65">
                   <LuChartCandlestick className="h-3.5 w-3.5" aria-hidden />

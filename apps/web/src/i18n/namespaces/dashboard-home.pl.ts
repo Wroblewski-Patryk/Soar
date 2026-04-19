@@ -117,7 +117,7 @@ export const dashboardHomePl = {
     "slTtp": "TTP",
     "slTsl": "TSL",
     "noOpenPositions": "Brak otwartych pozycji.",
-    "openOrdersPlaceholder": "Zakladka otwartych zlecen jest gotowa i bedzie uzupelniona w kolejnych aktualizacjach runtime.",
+    "openOrdersPlaceholder": "Brak otwartych zlecen.",
     "tradesHistoryTitlePaper": "Historia",
     "tradesHistoryTitleLive": "Historia",
     "filterSymbol": "Symbol",
