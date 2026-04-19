@@ -23,8 +23,8 @@ import type { ApiKey } from '@/features/profile/types/apiKey.type';
 import { ErrorState, LoadingState } from '@/ui/components/ViewState';
 import {
   FormAlert,
-  FormField,
   FormGrid,
+  RadioGroupField,
   FormSectionCard,
   FormValidationSummary,
   NumberField,
@@ -499,6 +499,13 @@ export default function WalletCreateEditForm({
     ],
     [form.baseCurrency]
   );
+  const modeOptions = useMemo(
+    () => [
+      { value: 'PAPER', label: copy.modePaper },
+      { value: 'LIVE', label: copy.modeLive },
+    ],
+    [copy.modeLive, copy.modePaper]
+  );
   const apiKeyOptions = useMemo(
     () => [
       { value: '', label: copy.notSelected },
@@ -583,7 +590,7 @@ export default function WalletCreateEditForm({
   const focusFirstInvalidField = useCallback(() => {
     const fieldIdByKey: Record<keyof WalletFormState, string> = {
       name: 'wallet-name',
-      mode: 'wallet-mode-paper',
+      mode: 'wallet-mode-PAPER',
       exchange: 'wallet-exchange',
       marketType: 'wallet-market-type',
       baseCurrency: 'wallet-base-currency',
@@ -734,32 +741,15 @@ export default function WalletCreateEditForm({
               error={showValidation ? fieldErrors.name : undefined}
             />
 
-            <FormField
+            <RadioGroupField
+              id='wallet-mode'
               label={copy.mode}
               hint={form.mode === 'LIVE' ? copy.modeLiveHint : copy.modePaperHint}
               className='md:col-span-2'
-            >
-              <div className='join'>
-                <button
-                  id='wallet-mode-paper'
-                  type='button'
-                  className={`btn join-item ${form.mode === 'PAPER' ? 'btn-primary' : 'btn-outline'}`}
-                  onClick={() => setMode('PAPER')}
-                  aria-pressed={form.mode === 'PAPER'}
-                >
-                  {copy.modePaper}
-                </button>
-                <button
-                  id='wallet-mode-live'
-                  type='button'
-                  className={`btn join-item ${form.mode === 'LIVE' ? 'btn-primary' : 'btn-outline'}`}
-                  onClick={() => setMode('LIVE')}
-                  aria-pressed={form.mode === 'LIVE'}
-                >
-                  {copy.modeLive}
-                </button>
-              </div>
-            </FormField>
+              value={form.mode}
+              options={modeOptions}
+              onChange={(value) => setMode(value as WalletMode)}
+            />
 
             <SelectField
               id='wallet-exchange'
@@ -778,27 +768,17 @@ export default function WalletCreateEditForm({
               disabled={walletMetadataLoading}
             />
 
-            <FormField
+            <SelectField
+              id='wallet-base-currency'
               label={copy.baseCurrency}
-              htmlFor='wallet-base-currency'
+              value={form.baseCurrency}
+              options={baseCurrencyOptions}
+              onChange={(value) => setForm((prev) => ({ ...prev, baseCurrency: normalizeFormSymbol(value) }))}
+              disabled={walletMetadataLoading}
               error={showValidation ? fieldErrors.baseCurrency : undefined}
-            >
-              <select
-                id='wallet-base-currency'
-                className='select select-bordered w-full'
-                value={form.baseCurrency}
-                onChange={(event) => setForm((prev) => ({ ...prev, baseCurrency: normalizeFormSymbol(event.target.value) }))}
-                disabled={walletMetadataLoading}
-              >
-                {baseCurrencyOptions.map((currency) => (
-                  <option key={currency.value} value={currency.value}>
-                    {currency.label}
-                  </option>
-                ))}
-              </select>
-              {walletMetadataLoading ? <span className='mt-1 text-xs opacity-70'>{copy.baseCurrencyLoading}</span> : null}
-              {walletMetadataError ? <span className='mt-1 text-xs text-warning'>{walletMetadataError}</span> : null}
-            </FormField>
+              hint={walletMetadataLoading ? copy.baseCurrencyLoading : undefined}
+            />
+            {walletMetadataError ? <p className='text-xs text-warning md:col-span-2'>{walletMetadataError}</p> : null}
           </FormGrid>
         </FormSectionCard>
 
@@ -820,40 +800,23 @@ export default function WalletCreateEditForm({
         {form.mode === 'LIVE' ? (
           <FormSectionCard title={copy.sectionLive}>
             <FormGrid columns={2}>
-              <FormField
-                label={copy.liveAllocation}
-                htmlFor='wallet-live-allocation-value'
-                className='md:col-span-2'
+              <NumberField
+                id='wallet-live-allocation-value'
+                label={copy.liveAllocationValue}
+                value={form.liveAllocationValue}
+                onChange={(value) => setForm((prev) => ({ ...prev, liveAllocationValue: Number(value) || 0 }))}
+                min={0.01}
+                step={0.01}
                 error={showValidation ? fieldErrors.liveAllocationValue : undefined}
-              >
-                <div className='join'>
-                  <input
-                    id='wallet-live-allocation-value'
-                    type='number'
-                    min={0.01}
-                    step={0.01}
-                    className='input input-bordered join-item w-full'
-                    value={form.liveAllocationValue}
-                    onChange={(event) =>
-                      setForm((prev) => ({ ...prev, liveAllocationValue: Number(event.target.value) || 0 }))
-                    }
-                  />
-                  <select
-                    id='wallet-live-allocation-mode'
-                    className='select select-bordered join-item w-40'
-                    value={form.liveAllocationMode}
-                    onChange={(event) =>
-                      setForm((prev) => ({ ...prev, liveAllocationMode: event.target.value as WalletAllocationMode }))
-                    }
-                  >
-                    {liveAllocationModeOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </FormField>
+              />
+
+              <SelectField
+                id='wallet-live-allocation-mode'
+                label={copy.liveAllocationMode}
+                value={form.liveAllocationMode}
+                options={liveAllocationModeOptions}
+                onChange={(value) => setForm((prev) => ({ ...prev, liveAllocationMode: value as WalletAllocationMode }))}
+              />
 
               <SelectField
                 id='wallet-api-key'

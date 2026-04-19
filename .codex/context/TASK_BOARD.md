@@ -17,7 +17,7 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] UXR-I-06 Close wallets-form residual layout/control parity gaps using ui/forms primitives
+- [ ] UXR-I-07 Enforce markets-form sectioned IA and remove residual local generic controls
   - Status: READY
   - Group: Dashboard Forms Consistency Refresh (`UXR-I-B`)
   - Owner: Frontend Builder
@@ -53,6 +53,8 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] UXR-I-06 Close wallets-form residual layout/control parity gaps using ui/forms primitives
+  - 2026-04-19: Standardized wallet form controls to shared `ui/forms` primitives for mode/base-currency/live-allocation sections (`RadioGroupField`, `SelectField`, `NumberField`) and updated focused wallet regression tests to the new control contract.
 - [x] UXR-I-05 Unify create/edit wrappers i18n, breadcrumb, and save-action contract
   - 2026-04-19: Unified wrapper save-action behavior in wallet/bot create-edit shells by wiring form-level `submitting` status to desktop+mobile actions (`disabled` + saving label) and adding missing localized saving labels (`dashboard-wallets`, `dashboard-bots.page`).
 - [x] UXR-I-04 Lock guardrails for no-cross-feature generic controls and no-hardcoded-wrapper-copy regressions

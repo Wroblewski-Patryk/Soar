@@ -2057,7 +2057,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - [x] `UXR-I-03 chore(web-ui-forms): normalize shared form primitive API surface for refresh migration`
 - [x] `UXR-I-04 test(guardrails): lock no-cross-feature generic controls and no-hardcoded-wrapper-copy regressions`
 - [x] `UXR-I-05 refactor(web-wrappers): unify create/edit wrappers i18n+breadcrumb+save-action contract`
-- [ ] `UXR-I-06 refactor(web-wallets-form): close residual layout/control parity gaps using ui/forms primitives`
+- [x] `UXR-I-06 refactor(web-wallets-form): close residual layout/control parity gaps using ui/forms primitives`
 - [ ] `UXR-I-07 refactor(web-markets-form): enforce sectioned IA and remove any residual local generic controls`
 - [ ] `UXR-I-08 refactor(web-backtests-form): finalize decoupling from feature-local controls and align summary ergonomics`
 - [ ] `UXR-I-09 refactor(web-strategies-form): preserve tabs while normalizing section internals to shared primitives`
@@ -2074,6 +2074,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-19: Completed `UXR-I-03` by normalizing shared `ui/forms` public API surface for refresh migration (exported primitive prop/types in `FormAlert`, `FormField`, `FormGrid`, `FormFields`, `FormMobileActionBar`, `FormPageShell`, `FormSectionCard`, `FormValidationSummary`) without behavior drift.
 - 2026-04-19: Completed `UXR-I-04` by expanding i18n guardrails to full `UXR-I` wrapper scope and hardening repository guardrails so `FieldControls` imports are allowed only within same feature ownership, preventing generic-control and wrapper-copy drift regressions.
 - 2026-04-19: Completed `UXR-I-05` by unifying wallet/bot create-edit wrapper save-action contract (desktop + mobile actions now reflect form submitting state with disabled/loading labels) and adding missing localized saving copy in `dashboard-wallets` + `dashboard-bots.page`.
+- 2026-04-19: Completed `UXR-I-06` by migrating wallet residual controls to shared form primitives (`RadioGroupField` for mode, `SelectField` for base currency, `NumberField` + `SelectField` for LIVE allocation) and updating focused wallet regression assertions.
 
 ## Phase UXR-J - Dashboard Tables Consistency Refresh (Queued 2026-04-19)
 - [ ] `UXR-J-01 docs(contract): freeze dashboard table action-color and columns-dropdown behavior contract`

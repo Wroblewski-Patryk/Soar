@@ -102,7 +102,7 @@ describe('WalletCreateEditForm', () => {
       expect(fetchApiKeysMock).toHaveBeenCalled();
     });
 
-    fireEvent.click(screen.getByRole('button', { name: 'LIVE' }));
+    fireEvent.click(screen.getByRole('radio', { name: 'LIVE' }));
 
     await waitFor(() => {
       expect(previewWalletBalanceMock).toHaveBeenCalledWith(
@@ -168,18 +168,18 @@ describe('WalletCreateEditForm', () => {
     });
 
     expect(screen.getByLabelText('Kwota startowa paper')).toBeInTheDocument();
-    expect(screen.queryByLabelText('Alokacja LIVE')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Wartosc limitu LIVE')).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: 'LIVE' }));
+    fireEvent.click(screen.getByRole('radio', { name: 'LIVE' }));
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Alokacja LIVE')).toBeInTheDocument();
+      expect(screen.getByLabelText('Wartosc limitu LIVE')).toBeInTheDocument();
     });
     expect(screen.queryByLabelText('Kwota startowa paper')).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: 'PAPER' }));
+    fireEvent.click(screen.getByRole('radio', { name: 'PAPER' }));
     expect(screen.getByLabelText('Kwota startowa paper')).toBeInTheDocument();
-    expect(screen.queryByLabelText('Alokacja LIVE')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Wartosc limitu LIVE')).not.toBeInTheDocument();
 
     fireEvent.change(screen.getByLabelText('Nazwa'), {
       target: { value: 'Paper Wallet' },

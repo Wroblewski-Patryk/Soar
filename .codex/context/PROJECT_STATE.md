@@ -125,6 +125,10 @@ Last updated: 2026-04-19
   - then execute `UXR-J-A..C` for shared table-consistency closure.
 
 ## Recent Progress
+- 2026-04-19: completed `UXR-I-06` by closing wallets-form residual control
+  parity with shared primitives (`RadioGroupField`, `SelectField`,
+  `NumberField`) and refreshing focused wallet regression assertions for the
+  updated LIVE/PAPER control semantics.
 - 2026-04-19: completed `UXR-I-05` by unifying wallet/bot create-edit wrapper
   save-action behavior: desktop and mobile save buttons now mirror form
   `submitting` state (`disabled` + loading label), backed by newly localized
