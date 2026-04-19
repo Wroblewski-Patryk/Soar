@@ -2131,18 +2131,25 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
   - `pnpm --filter web run build`
   - `pnpm run quality:guardrails`
 
-## Phase SBSC - Dashboard Sidebar Strategy Source-of-Truth Parity (Queued 2026-04-19)
-- [ ] `SBSC-01 docs(contract): freeze sidebar strategy source-of-truth and projection parity rules`
-- [ ] `SBSC-02 test(api-red): add regression for listBots.strategyId vs runtime-graph primary strategy mismatch`
-- [ ] `SBSC-03 fix(api-projection): make listBots/getBot strategy projection canonical-first and runtime-graph compatible`
-- [ ] `SBSC-04 feat(api-audit): add deterministic drift audit for bots with legacy/canonical strategy divergence`
-- [ ] `SBSC-05 fix(api-drift-repair): add safe reconciliation path to align legacy linkage with canonical strategy when requested`
-- [ ] `SBSC-06 test(web-regression): lock sidebar strategy/market switch parity for two bots with different strategies`
-- [ ] `SBSC-07 qa(focused-pack): run api+web sidebar parity regressions and typechecks`
-- [ ] `SBSC-08 docs(closure): publish sidebar strategy contract closure and sync queue/context`
+## Phase SBSC - Dashboard Sidebar Strategy Source-of-Truth Parity (Closed 2026-04-19)
+- [x] `SBSC-01 docs(contract): freeze sidebar strategy source-of-truth and projection parity rules`
+- [x] `SBSC-02 test(api-red): add regression for listBots.strategyId vs runtime-graph primary strategy mismatch`
+- [x] `SBSC-03 fix(api-projection): make listBots/getBot strategy projection canonical-first and runtime-graph compatible`
+- [x] `SBSC-04 feat(api-audit): add deterministic drift audit for bots with legacy/canonical strategy divergence`
+- [x] `SBSC-05 fix(api-drift-repair): add safe reconciliation path to align legacy linkage with canonical strategy when requested`
+- [x] `SBSC-06 test(web-regression): lock sidebar strategy/market switch parity for two bots with different strategies`
+- [x] `SBSC-07 qa(focused-pack): run api+web sidebar parity regressions and typechecks`
+- [x] `SBSC-08 docs(closure): publish sidebar strategy contract closure and sync queue/context`
 
 ### Progress Log (Phase SBSC - Dashboard Sidebar Strategy Source-of-Truth Parity)
 - 2026-04-19: Queued sidebar strategy parity wave from production/API analysis showing `listBots.strategyId` vs `runtime-graph` strategy drift; published executor-ready plan in `docs/planning/dashboard-sidebar-strategy-contract-plan-2026-04-19.md` with canonical-first projection contract and drift regression/repair path.
+- 2026-04-19: Closed `SBSC-A` (`SBSC-01..SBSC-03`) by freezing contract docs and fixing bot projection precedence so `listBots/getBot strategyId` is canonical-first and runtime-graph compatible, with parity regression lock in `bots.runtime-scope.e2e.test.ts`.
+- 2026-04-19: Closed `SBSC-B` (`SBSC-04..SBSC-06`) by adding deterministic drift diagnostics + safe idempotent repair endpoints for legacy/canonical divergence and extending web sidebar switch regression to lock `Market + Strategy` parity.
+- 2026-04-19: Closed `SBSC-C` (`SBSC-07..SBSC-08`) with focused validation pack PASS:
+  - `pnpm --filter api run test -- src/modules/bots/bots.runtime-scope.e2e.test.ts src/modules/bots/bots.e2e.test.ts --run`
+  - `pnpm --filter web run test -- src/features/dashboard-home/components/HomeLiveWidgets.test.tsx --run`
+  - `pnpm --filter api run typecheck`
+  - `pnpm --filter web run typecheck`
 
 ## Phase SOPR - Signals and Open Runtime Parity (Queued 2026-04-19)
 - [ ] `SOPR-01 docs(contract): lock consolidated source-of-truth and parity contract for signals/open flows after DAGG+SBSC`

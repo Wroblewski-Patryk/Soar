@@ -58,6 +58,8 @@ Out of scope:
   - `GET /dashboard/bots/:id/runtime-graph`
   - `GET /dashboard/bots/:id/runtime-monitoring/aggregate`
   - `GET /dashboard/bots/:id/runtime-sessions*`
+  - `GET /dashboard/bots/strategy-drift`
+  - `POST /dashboard/bots/strategy-drift/repair`
   - `GET/POST/PUT/DELETE /dashboard/bots/:id/market-groups*`
   - `GET/PUT /dashboard/bots/:id/assistant-config`
   - `POST /dashboard/bots/:id/assistant-config/dry-run`

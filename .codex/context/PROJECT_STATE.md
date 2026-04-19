@@ -107,25 +107,32 @@ Last updated: 2026-04-19
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: execute `SBSC-A` to lock sidebar
-  strategy source-of-truth parity after `DAGG` closure.
+- Main active objective: execute `SOPR-A` for selected-bot signal/open runtime
+  parity closure after `SBSC` completion.
 - Top blockers:
   - none in OPV scope; final RC external-gates snapshot is closed
     (`G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`) from run
     `2026-04-19T15:13:58.943Z`.
 - Success criteria for this phase:
-  - sidebar strategy projection is canonical-first and deterministic between
-    `listBots/getBot` and runtime graph.
-  - strict regression locks prevent strategy drift in selected-bot sidebar
-    context.
+  - selected-bot signal/condition context is deterministic and parity-locked
+    between home and preview/runtime surfaces.
+  - no fallback contamination between bots in signal/open runtime cards.
   - focused validation remains green for touched modules before each commit.
   - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - execute `SBSC-01` from canonical `NOW` queue.
-  - continue `SBSC-A` (`SBSC-02`, `SBSC-03`) before moving to queued `SOPR`
-    selected-bot signals/open-runtime parity closure.
+  - execute `SOPR-01` from canonical `NOW` queue.
+  - continue `SOPR-A` (`SOPR-02`, `SOPR-03`) before web/parity tasks
+    (`SOPR-04+`).
 
 ## Recent Progress
+- 2026-04-19: closed full `SBSC` wave (`SBSC-01..SBSC-08`) end-to-end by
+  freezing sidebar strategy source-of-truth contract, adding list/get vs
+  runtime-graph parity regressions, making bot strategy projection
+  canonical-first, adding deterministic drift audit + safe idempotent repair
+  endpoints, extending web switch regression for `Market + Strategy` parity,
+  and completing focused closure validation pack (`api bots.e2e +
+  bots.runtime-scope.e2e`, `web HomeLiveWidgets`, `api/web typecheck`) with
+  canonical queue/context synchronization.
 - 2026-04-19: closed `DAGG-C` (`DAGG-09..DAGG-10`) end-to-end by adding
   explicit cross-route selected-bot parity regression
   (`HomeLiveWidgets.preview-parity.test.tsx`) and completing focused closure

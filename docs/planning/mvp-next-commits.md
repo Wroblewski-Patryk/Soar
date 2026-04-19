@@ -7,19 +7,11 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `SBSC-01 docs(contract): freeze sidebar strategy source-of-truth and projection parity rules`
-## NEXT
-- [ ] `SBSC-02 test(api-red): add regression for listBots.strategyId vs runtime-graph primary strategy mismatch`
-- [ ] `SBSC-03 fix(api-projection): make listBots/getBot strategy projection canonical-first and runtime-graph compatible`
-## PIPELINE
-- [ ] `SBSC-04 feat(api-audit): add deterministic drift audit for bots with legacy/canonical strategy divergence`
-- [ ] `SBSC-05 fix(api-drift-repair): add safe reconciliation path to align legacy linkage with canonical strategy when requested`
-- [ ] `SBSC-06 test(web-regression): lock sidebar strategy/market switch parity for two bots with different strategies`
-- [ ] `SBSC-07 qa(focused-pack): run api+web sidebar parity regressions and typechecks`
-- [ ] `SBSC-08 docs(closure): publish sidebar strategy contract closure and sync queue/context`
 - [ ] `SOPR-01 docs(contract): lock consolidated source-of-truth and parity contract for signals/open flows after DAGG+SBSC`
+## NEXT
 - [ ] `SOPR-02 test(api-red): add regression for neutral/no-recent-signal condition-line fallback contamination`
 - [ ] `SOPR-03 fix(api-signal-context): harden symbol->strategy fallback and expose explicit source tags`
+## PIPELINE
 - [ ] `SOPR-04 test(web-red): lock selected-bot signal cards against cross-bot strategy leakage`
 - [ ] `SOPR-05 test(parity-red): add selected-bot parity regression for /dashboard vs /dashboard/bots/:id/preview`
 - [ ] `SOPR-06 fix(web-parity): align dashboard-home signal/positions/history derivation to aggregate selected-bot contract`
@@ -33,9 +25,9 @@ Operational queue for one-task execution runs.
 - [x] `DAGG-A (commits DAGG-01..DAGG-04): contract freeze + dashboard aggregate data-source migration`
 - [x] `DAGG-B (commits DAGG-05..DAGG-08): history positions parity + aggregate API contract hardening`
 - [x] `DAGG-C (commits DAGG-09..DAGG-10): parity regression closure + canonical sync`
-- [ ] `SBSC-A (commits SBSC-01..SBSC-03): decision freeze + API projection mismatch regression + canonical-first mapper fix`
-- [ ] `SBSC-B (commits SBSC-04..SBSC-06): drift detection/repair path + sidebar switch regression locks`
-- [ ] `SBSC-C (commits SBSC-07..SBSC-08): closure validation + canonical sync`
+- [x] `SBSC-A (commits SBSC-01..SBSC-03): decision freeze + API projection mismatch regression + canonical-first mapper fix`
+- [x] `SBSC-B (commits SBSC-04..SBSC-06): drift detection/repair path + sidebar switch regression locks`
+- [x] `SBSC-C (commits SBSC-07..SBSC-08): closure validation + canonical sync`
 - [ ] `SOPR-A (commits SOPR-01..SOPR-04): source-of-truth closure + signal-context hardening`
 - [ ] `SOPR-B (commits SOPR-05..SOPR-08): dashboard/preview parity closure for signals/positions/history`
 - [ ] `SOPR-C (commits SOPR-09..SOPR-12): manual-order lifecycle decision + implementation + closure`
@@ -93,6 +85,14 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `SBSC-08 docs(closure): publish sidebar strategy contract closure and sync queue/context`
+  - 2026-04-19: Closed SBSC wave with canonical queue/context sync (`mvp-next-commits`, `mvp-execution-plan`, `TASK_BOARD`, `PROJECT_STATE`) and promoted `SOPR-01` to `NOW`.
+- [x] `SBSC-C (commits SBSC-07..SBSC-08): closure validation + canonical sync`
+  - 2026-04-19: Focused SBSC closure pack PASS (`api bots.e2e + bots.runtime-scope.e2e`, `web HomeLiveWidgets`, `api/web typecheck`) and canonical queue synchronized.
+- [x] `SBSC-B (commits SBSC-04..SBSC-06): drift detection/repair path + sidebar switch regression locks`
+  - 2026-04-19: Added deterministic strategy-drift diagnostics (`GET /dashboard/bots/strategy-drift`) + idempotent repair path (`POST /dashboard/bots/strategy-drift/repair`) with API e2e coverage and web sidebar market+strategy switch regression lock.
+- [x] `SBSC-A (commits SBSC-01..SBSC-03): decision freeze + API projection mismatch regression + canonical-first mapper fix`
+  - 2026-04-19: Locked sidebar strategy source-of-truth contract and fixed list/get projection precedence to canonical runtime links first, with explicit API regression proving list/get vs runtime-graph parity.
 - [x] `DAGG-10 qa(closure): run focused aggregate parity pack and sync canonical queue/context`
   - 2026-04-19: Focused closure pack PASS:
     - `pnpm --filter api run test -- --run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`

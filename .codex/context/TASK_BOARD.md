@@ -17,20 +17,12 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] SBSC-01 Freeze sidebar strategy source-of-truth and projection parity rules
-- [ ] SBSC-02 Add API regression for listBots.strategyId vs runtime-graph primary strategy mismatch
-- [ ] SBSC-03 Make listBots/getBot strategy projection canonical-first and runtime-graph compatible
-
-## BACKLOG
-
-- [ ] SBSC-04 Add deterministic drift audit for bots with legacy/canonical strategy divergence
-- [ ] SBSC-05 Add safe drift-repair path aligning legacy linkage with canonical strategy
-- [ ] SBSC-06 Lock dashboard sidebar strategy/market switch parity regression (two bots, different strategies)
-- [ ] SBSC-07 Run focused sidebar parity api+web validation pack
-- [ ] SBSC-08 Publish closure sync for sidebar strategy parity phase
 - [ ] SOPR-01 Lock consolidated source-of-truth and parity contract for signals/open flows after DAGG+SBSC
 - [ ] SOPR-02 Add API regression for neutral/no-recent-signal condition-line fallback contamination
 - [ ] SOPR-03 Harden symbol->strategy fallback and expose explicit source tags in symbol stats read model
+
+## BACKLOG
+
 - [ ] SOPR-04 Lock web regression for selected-bot signal cards against cross-bot strategy leakage
 - [ ] SOPR-05 Add selected-bot parity regression for /dashboard vs /dashboard/bots/:id/preview (signals/positions/history)
 - [ ] SOPR-06 Align dashboard-home signal/positions/history derivation to aggregate selected-bot contract
@@ -55,6 +47,32 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] SBSC-C group closure (`SBSC-07..SBSC-08`)
+  - 2026-04-19: Focused SBSC closure pack PASS (`bots.runtime-scope.e2e`, `bots.e2e`, `HomeLiveWidgets`, `api/web typecheck`) and canonical queue/context synchronized; `SOPR-01` promoted to active queue.
+- [x] SBSC-B group closure (`SBSC-04..SBSC-06`)
+  - 2026-04-19: Added deterministic API drift diagnostics (`GET /dashboard/bots/strategy-drift`) plus idempotent safe repair path (`POST /dashboard/bots/strategy-drift/repair`) and locked sidebar `Market + Strategy` switch parity in web regression.
+- [x] SBSC-A group closure (`SBSC-01..SBSC-03`)
+  - 2026-04-19: Locked source-of-truth contract and fixed list/get projection precedence to canonical runtime links first, with explicit API parity regression for list/get vs runtime-graph strategy alignment.
+- [x] SBSC-08 Publish closure sync for sidebar strategy parity phase
+  - 2026-04-19: Synced `mvp-next-commits`, `mvp-execution-plan`, `TASK_BOARD`, and `PROJECT_STATE` with SBSC closure evidence.
+- [x] SBSC-07 Run focused sidebar parity api+web validation pack
+  - 2026-04-19: PASS:
+    - `pnpm --filter api run test -- src/modules/bots/bots.runtime-scope.e2e.test.ts src/modules/bots/bots.e2e.test.ts --run`
+    - `pnpm --filter web run test -- src/features/dashboard-home/components/HomeLiveWidgets.test.tsx --run`
+    - `pnpm --filter api run typecheck`
+    - `pnpm --filter web run typecheck`
+- [x] SBSC-06 Lock dashboard sidebar strategy/market switch parity regression (two bots, different strategies)
+  - 2026-04-19: Extended `HomeLiveWidgets` switch regression assertions to lock simultaneous `Market` and `Strategy` context update on selected-bot change.
+- [x] SBSC-05 Add safe drift-repair path aligning legacy linkage with canonical strategy
+  - 2026-04-19: Added user-scoped idempotent reconciliation endpoint (`POST /dashboard/bots/strategy-drift/repair`) with API e2e coverage.
+- [x] SBSC-04 Add deterministic drift audit for bots with legacy/canonical strategy divergence
+  - 2026-04-19: Added deterministic audit endpoint (`GET /dashboard/bots/strategy-drift`) with projection/canonical/legacy divergence flags and API e2e coverage.
+- [x] SBSC-03 Make listBots/getBot strategy projection canonical-first and runtime-graph compatible
+  - 2026-04-19: `mapBotResponse` and bot read projection now resolve strategy from canonical active+enabled market-group links first; legacy used only as fallback.
+- [x] SBSC-02 Add API regression for listBots.strategyId vs runtime-graph primary strategy mismatch
+  - 2026-04-19: Added API e2e regression in `bots.runtime-scope.e2e.test.ts` that reproduces legacy/canonical divergence and asserts list/get parity with runtime-graph primary strategy.
+- [x] SBSC-01 Freeze sidebar strategy source-of-truth and projection parity rules
+  - 2026-04-19: Frozen contract in canonical docs (`open-decisions`, `web-dashboard-home`, `api-bots`).
 - [x] DAGG-C group closure (`DAGG-09..DAGG-10`)
   - 2026-04-19: Closed preview-vs-dashboard aggregate parity by adding cross-route selected-bot parity regression and completing focused closure pack (`api aggregate e2e`, `web aggregate parity tests`, `api/web typecheck`, `web build`, `quality:guardrails`) with canonical queue/context sync.
 - [x] DAGG-10 Run focused aggregate parity closure pack and sync canonical queue/context
