@@ -185,6 +185,44 @@ describe('Markets module contract', () => {
     expect(refreshedGroup?.symbols).toEqual(['BTCUSDT', 'SOLUSDT']);
   });
 
+  it('syncs linked symbol groups to empty set when filter is disabled and whitelist is empty', async () => {
+    const agent = await registerAndLogin('markets-sync-empty-contract@example.com');
+
+    const createRes = await agent.post('/dashboard/markets/universes').send(createPayload());
+    expect(createRes.status).toBe(201);
+    const universeId = createRes.body.id as string;
+    const createdUniverse = await prisma.marketUniverse.findUnique({
+      where: { id: universeId },
+      select: { userId: true },
+    });
+    expect(createdUniverse?.userId).toBeTruthy();
+    const userId = createdUniverse!.userId;
+
+    const symbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId,
+        marketUniverseId: universeId,
+        name: 'Synced group empty contract',
+        symbols: ['BTCUSDT', 'ETHUSDT'],
+      },
+    });
+
+    const updateRes = await agent.put(`/dashboard/markets/universes/${universeId}`).send({
+      filterRules: {
+        minQuoteVolumeEnabled: false,
+      },
+      whitelist: [],
+      blacklist: [],
+    });
+    expect(updateRes.status).toBe(200);
+
+    const refreshedGroup = await prisma.symbolGroup.findUnique({
+      where: { id: symbolGroup.id },
+      select: { symbols: true },
+    });
+    expect(refreshedGroup?.symbols).toEqual([]);
+  });
+
   it('returns public market catalog filtered by base currency and market type', async () => {
     const agent = await registerAndLogin('markets-catalog@example.com');
 

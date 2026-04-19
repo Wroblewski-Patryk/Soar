@@ -11,10 +11,10 @@ import { decrypt } from '../../utils/crypto';
 import { CcxtFuturesConnector } from '../exchange/ccxtFuturesConnector.service';
 import { createLiveOrderAdapter } from '../exchange/liveOrderAdapter.service';
 import { CcxtFuturesOrderFill } from '../exchange/ccxtFuturesConnector.types';
+import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from '../bots/runtimeSymbolCatalogResolver.service';
 import { liveOrderingConfig } from '../../config/runtimeExecution';
 import { isAppErrorLike } from '../../lib/errors';
 import { orderErrors } from './orders.errors';
-import { normalizeSymbols, resolveUniverseSymbols } from '../../lib/symbols';
 
 export const listOrders = async (userId: string, query: ListOrdersQuery) => {
   const skip = (query.page - 1) * query.limit;
@@ -58,19 +58,6 @@ type ResolvedManualOrderStrategyContext = {
 
 const asRecord = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === 'object' ? (value as Record<string, unknown>) : null;
-
-const resolveEffectiveSymbolGroupSymbols = (params: {
-  symbols?: string[] | null;
-  marketUniverse?: { whitelist?: string[] | null; blacklist?: string[] | null } | null;
-}) => {
-  const whitelist = params.marketUniverse?.whitelist;
-  const blacklist = params.marketUniverse?.blacklist;
-  if (Array.isArray(whitelist) && Array.isArray(blacklist)) {
-    const resolved = resolveUniverseSymbols(whitelist, blacklist);
-    if (resolved.length > 0) return resolved;
-  }
-  return normalizeSymbols(params.symbols ?? []);
-};
 
 const resolveOrderTypeFromStrategyConfig = (
   config: Record<string, unknown> | null
@@ -206,6 +193,7 @@ const resolveManualOrderStrategyContext = async (params: {
   symbol: string;
 }): Promise<ResolvedManualOrderStrategyContext | null> => {
   const normalizedSymbol = params.symbol.toUpperCase();
+  const catalogSymbolsCache = new Map<string, string[]>();
 
   const groupLinks = await prisma.botMarketGroup.findMany({
     where: {
@@ -221,6 +209,10 @@ const resolveManualOrderStrategyContext = async (params: {
           symbols: true,
           marketUniverse: {
             select: {
+              exchange: true,
+              marketType: true,
+              baseCurrency: true,
+              filterRules: true,
               whitelist: true,
               blacklist: true,
             },
@@ -243,7 +235,10 @@ const resolveManualOrderStrategyContext = async (params: {
   });
 
   for (const group of groupLinks) {
-    const symbols = resolveEffectiveSymbolGroupSymbols(group.symbolGroup);
+    const symbols = await resolveEffectiveSymbolGroupSymbolsWithCatalog(
+      group.symbolGroup,
+      catalogSymbolsCache
+    );
     if (!symbols.includes(normalizedSymbol)) continue;
     const selected = group.strategyLinks[0]?.strategy;
     if (selected) {
@@ -267,6 +262,10 @@ const resolveManualOrderStrategyContext = async (params: {
           symbols: true,
           marketUniverse: {
             select: {
+              exchange: true,
+              marketType: true,
+              baseCurrency: true,
+              filterRules: true,
               whitelist: true,
               blacklist: true,
             },
@@ -283,7 +282,10 @@ const resolveManualOrderStrategyContext = async (params: {
   });
 
   for (const link of legacyLinks) {
-    const symbols = resolveEffectiveSymbolGroupSymbols(link.symbolGroup);
+    const symbols = await resolveEffectiveSymbolGroupSymbolsWithCatalog(
+      link.symbolGroup,
+      catalogSymbolsCache
+    );
     if (!symbols.includes(normalizedSymbol)) continue;
     return {
       leverage: link.strategy.leverage,

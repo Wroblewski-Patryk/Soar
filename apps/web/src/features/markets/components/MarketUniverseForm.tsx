@@ -291,11 +291,11 @@ export default function MarketUniverseForm({
   const previewSymbols = useMemo(
     () =>
       composeMarketUniverseSymbols({
-        catalogSymbols: availableSymbols,
+        catalogSymbols: minQuoteVolumeEnabled ? availableSymbols : [],
         whitelistSymbols,
         blacklistSymbols,
       }),
-    [availableSymbols, blacklistSymbols, whitelistSymbols]
+    [availableSymbols, blacklistSymbols, minQuoteVolumeEnabled, whitelistSymbols]
   );
 
   const previewFiltered = useMemo(() => {
@@ -305,28 +305,16 @@ export default function MarketUniverseForm({
   }, [previewQuery, previewSymbols]);
 
   const canSubmit = useMemo(
-    () =>
-      hasFormText(name) &&
-      !submitting &&
-      (previewSymbols.length > 0 || !exchangeSupportsMarketCatalog),
-    [exchangeSupportsMarketCatalog, name, previewSymbols.length, submitting]
+    () => hasFormText(name) && !submitting,
+    [name, submitting]
   );
   const fieldErrors = useMemo(() => {
-    const errors: { name?: string; symbols?: string } = {};
+    const errors: { name?: string } = {};
     if (!hasFormText(name)) {
       errors.name = labels.groupNameError;
     }
-    if (exchangeSupportsMarketCatalog && previewSymbols.length === 0) {
-      errors.symbols = labels.symbolsRequiredValidation;
-    }
     return errors;
-  }, [
-    exchangeSupportsMarketCatalog,
-    labels.groupNameError,
-    labels.symbolsRequiredValidation,
-    name,
-    previewSymbols.length,
-  ]);
+  }, [labels.groupNameError, name]);
   const hasValidationErrors = Object.keys(fieldErrors).length > 0;
   const validationSummaryErrors = useMemo(
     () => toValidationSummaryErrors(fieldErrors),
@@ -335,7 +323,6 @@ export default function MarketUniverseForm({
   const focusFirstInvalidControl = useCallback(() => {
     focusFirstInvalidField(fieldErrors, {
       name: 'market-universe-name',
-      symbols: 'market-universe-preview-search',
     });
   }, [fieldErrors]);
   const exchangeOptions = useMemo(
@@ -423,7 +410,8 @@ export default function MarketUniverseForm({
 
   const sliderStep = Math.max(1, Math.floor(maxQuoteVolume / 200));
   const hasNameError = showValidation && Boolean(fieldErrors.name);
-  const hasSymbolsError = showValidation && Boolean(fieldErrors.symbols);
+  const showPreviewEmptyNotice =
+    exchangeSupportsMarketCatalog && previewSymbols.length === 0;
 
   return (
     <form id={formId} onSubmit={handleSubmit} className='space-y-4'>
@@ -593,7 +581,7 @@ export default function MarketUniverseForm({
           actions={<span className='text-sm opacity-70'>{labels.marketsCount}: {previewSymbols.length}</span>}
           className='bg-base-100/85'
         >
-          {hasSymbolsError ? (
+          {showPreviewEmptyNotice ? (
             <div className='alert alert-warning mt-1 py-2 text-sm'>
               {labels.previewEmptyWarning}
             </div>

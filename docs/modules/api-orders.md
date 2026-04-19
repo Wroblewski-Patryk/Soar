@@ -5,8 +5,8 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/orders`
 - Owner: backend/trading-domain
-- Last updated: 2026-04-19
-- Related planning task: `UXR-H-01`
+- Last updated: 2026-04-20
+- Related planning task: `MURC-10`
 
 ## 1. Purpose and Scope
 - Owns order read + command API:
@@ -110,3 +110,12 @@ pnpm --filter api test -- src/modules/orders/orders.service.test.ts src/modules/
 - Guardrails:
   - no silent semantic remap from order command path to orchestrator lifecycle path.
   - any future lifecycle-authority change must be decision-locked and test-covered before rollout.
+
+## 12. Manual-Order Strategy Context Symbol Contract (`MURC`)
+- Manual-order context strategy matching that depends on market-universe-backed symbols must use the shared formula:
+  - `final = unique(filter_result U whitelist) - blacklist`.
+- Edge rules:
+  - if filter is disabled and whitelist is empty, symbol set is empty,
+  - blacklist-only configuration cannot introduce symbols.
+- Parity requirement:
+  - manual-order symbol matching remains consistent with bots runtime and backtests for the same universe input.

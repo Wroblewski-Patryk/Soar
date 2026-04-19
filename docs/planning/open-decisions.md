@@ -728,6 +728,29 @@ This file tracks intentionally unresolved architecture choices so implementation
   - `docs/planning/backtest-multi-market-parity-remediation-plan-2026-04-17.md`
   - `docs/modules/api-backtests.md`
 
+## Market-Universe Symbol Composition Contract (`MURC`)
+- Decision state: resolved on 2026-04-20.
+- Decision:
+  - freeze one canonical formula across markets sync, runtime, backtests, manual-order context, and web preview:
+    - `final = unique(filter_result U whitelist) - blacklist`.
+  - `filter_result` is produced only when `minQuoteVolumeEnabled=true`.
+  - `filter off + empty whitelist` must resolve to empty symbol set.
+  - blacklist-only input must not add symbols.
+  - implicit all-symbol fallback for filter-off path is explicitly deprecated.
+- Parity requirement:
+  - identical market-universe input must resolve to identical symbol set in:
+    - bots runtime scope,
+    - backtest `seedConfig.symbols`,
+    - manual-order strategy context,
+    - web markets preview.
+- Canonical references:
+  - `docs/planning/market-universe-symbol-contract-parity-plan-2026-04-19.md`
+  - `docs/modules/api-markets.md`
+  - `docs/modules/api-bots.md`
+  - `docs/modules/api-backtests.md`
+  - `docs/modules/api-orders.md`
+  - `docs/modules/web-markets.md`
+
 ## Accessibility Scope
 - Decision state: resolved on 2026-04-17.
 - Decision:

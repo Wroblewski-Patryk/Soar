@@ -1,5 +1,5 @@
 import { prisma } from '../../prisma/client';
-import { normalizeSymbols } from './runtimeSymbolUniverse.service';
+import { resolveMarketUniverseContractSymbolsFromCatalog } from '../markets/marketCatalogSymbolResolver.service';
 import { botErrors } from './bots.errors';
 
 type OwnedStrategy = {
@@ -33,6 +33,10 @@ const getOwnedMarketUniverse = async (userId: string, marketUniverseId: string) 
     select: {
       id: true,
       name: true,
+      exchange: true,
+      marketType: true,
+      baseCurrency: true,
+      filterRules: true,
       whitelist: true,
       blacklist: true,
     },
@@ -95,9 +99,17 @@ export const resolveCreateMarketGroupToSymbolGroup = async (
   });
   if (existingSymbolGroup) return existingSymbolGroup;
 
-  const normalizedWhitelist = normalizeSymbols(marketUniverse.whitelist);
-  const blacklistSet = new Set(normalizeSymbols(marketUniverse.blacklist));
-  const resolvedSymbols = normalizedWhitelist.filter((symbol) => !blacklistSet.has(symbol));
+  const resolvedSymbols = await resolveMarketUniverseContractSymbolsFromCatalog(
+    {
+      exchange: marketUniverse.exchange,
+      marketType: marketUniverse.marketType,
+      baseCurrency: marketUniverse.baseCurrency,
+      filterRules: marketUniverse.filterRules,
+      whitelist: marketUniverse.whitelist,
+      blacklist: marketUniverse.blacklist,
+    },
+    new Map<string, string[]>()
+  );
 
   return prisma.symbolGroup.create({
     data: {

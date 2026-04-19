@@ -1,5 +1,8 @@
 import { Exchange } from '@prisma/client';
-import { resolveCatalogSymbolsForUniverse } from '../markets/marketCatalogSymbolResolver.service';
+import {
+  resolveMarketUniverseContractSymbolsFromCatalog,
+  resolveMinQuoteVolumeFilter,
+} from '../markets/marketCatalogSymbolResolver.service';
 import {
   resolveEffectiveSymbolGroupSymbols,
 } from './runtimeSymbolUniverse.service';
@@ -19,21 +22,25 @@ export const resolveEffectiveSymbolGroupSymbolsWithCatalog = async (
   cache: Map<string, string[]>
 ) => {
   const directSymbols = resolveEffectiveSymbolGroupSymbols(params);
-  if (directSymbols.length > 0) return directSymbols;
-
   const universe = params.marketUniverse;
-  if (!universe?.exchange || !universe.marketType || !universe.baseCurrency) {
-    return [];
+  if (universe?.exchange && universe.marketType && universe.baseCurrency) {
+    const volumeFilter = resolveMinQuoteVolumeFilter(universe.filterRules);
+    if (!volumeFilter.enabled) {
+      return directSymbols;
+    }
+
+    return resolveMarketUniverseContractSymbolsFromCatalog(
+      {
+        exchange: universe.exchange,
+        marketType: universe.marketType,
+        baseCurrency: universe.baseCurrency,
+        filterRules: universe.filterRules,
+        whitelist: universe.whitelist ?? [],
+        blacklist: universe.blacklist ?? [],
+      },
+      cache
+    );
   }
 
-  return resolveCatalogSymbolsForUniverse(
-    {
-      exchange: universe.exchange,
-      marketType: universe.marketType,
-      baseCurrency: universe.baseCurrency,
-      filterRules: universe.filterRules,
-      blacklist: universe.blacklist ?? [],
-    },
-    cache
-  );
+  return directSymbols;
 };

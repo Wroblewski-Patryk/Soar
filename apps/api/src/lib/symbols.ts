@@ -29,11 +29,28 @@ export const normalizeSymbols = (symbols: ReadonlyArray<NormalizationInput>) =>
 export const normalizeBaseCurrencies = (baseCurrencies: ReadonlyArray<NormalizationInput>) =>
   dedupeSorted(baseCurrencies.map((item) => normalizeUpperToken(item)));
 
+export type ResolveMarketUniverseSymbolsParams = {
+  filterResultSymbols?: ReadonlyArray<NormalizationInput> | null;
+  whitelist?: ReadonlyArray<NormalizationInput> | null;
+  blacklist?: ReadonlyArray<NormalizationInput> | null;
+};
+
+export const resolveMarketUniverseSymbols = (
+  params: ResolveMarketUniverseSymbolsParams
+) => {
+  const include = normalizeSymbols([
+    ...(params.filterResultSymbols ?? []),
+    ...(params.whitelist ?? []),
+  ]);
+  const blacklistSet = new Set(normalizeSymbols(params.blacklist ?? []));
+  return include.filter((symbol) => !blacklistSet.has(symbol));
+};
+
 export const resolveUniverseSymbols = (
   whitelist: ReadonlyArray<NormalizationInput>,
   blacklist: ReadonlyArray<NormalizationInput>
-) => {
-  const normalizedWhitelist = normalizeSymbols(whitelist);
-  const blacklistSet = new Set(normalizeSymbols(blacklist));
-  return normalizedWhitelist.filter((symbol) => !blacklistSet.has(symbol));
-};
+) =>
+  resolveMarketUniverseSymbols({
+    whitelist,
+    blacklist,
+  });

@@ -5,8 +5,8 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/backtests`
 - Owner: backend/trading-domain
-- Last updated: 2026-04-17
-- Related planning task: `DCP-06`
+- Last updated: 2026-04-20
+- Related planning task: `MURC-10`
 
 ## 1. Purpose and Scope
 - Owns backtest run lifecycle and read APIs:
@@ -39,13 +39,16 @@ Out of scope:
 ## 4. Runtime Flows
 - Run creation:
   1. Validate owned strategy + market universe.
-  2. Resolve and persist one candle-window contract per run:
+  2. Resolve run symbol seed via shared market-universe contract:
+     - `final = unique(filter_result U whitelist) - blacklist`,
+     - fail closed when final symbol set is empty.
+  3. Resolve and persist one candle-window contract per run:
      - `requestedMaxCandles` (nullable request input),
      - `effectiveMaxCandles` (single adapted value reused everywhere),
      - compatibility `maxCandles` mirror.
-  3. Build run record and queue job payload.
-  4. Execute replay with indicator/derivative series and fill model.
-  5. Persist trades and report summary; update run status.
+  4. Build run record and queue job payload.
+  5. Execute replay with indicator/derivative series and fill model.
+  6. Persist trades and report summary; update run status.
 - Timeline/report reads:
   - resolve owned run and emit scoped timeline/report projections.
   - terminal runs (`COMPLETED/FAILED/CANCELED`) anchor timeline by `finishedAt` (not stale `liveProgress.currentCandleTime`).
@@ -90,3 +93,10 @@ pnpm --filter api test -- src/modules/backtests/backtests.e2e.test.ts src/module
 ## 9. Open Issues and Follow-Ups
 - Continue parity hardening between backtest and runtime decision paths.
 - Consider additional queue observability SLIs for heavy multi-symbol workloads.
+
+## 10. Market-Universe Symbol Contract Parity (`MURC`)
+- `seedConfig.symbols` must always reflect the shared market-universe composition formula.
+- No whitelist override path is allowed; whitelist is unioned with filter output and then blacklist is subtracted.
+- Backtest symbol resolution must stay parity-compatible with:
+  - bots runtime symbol scope,
+  - manual-order strategy-context symbol matching.

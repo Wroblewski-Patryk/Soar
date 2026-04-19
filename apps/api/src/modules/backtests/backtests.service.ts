@@ -1,6 +1,6 @@
 import { Exchange, Prisma } from '@prisma/client';
-import { getMarketCatalog } from '../markets/markets.service';
 import { normalizeSymbol, normalizeSymbols } from '../../lib/symbols';
+import { resolveMarketUniverseContractSymbolsFromCatalog } from '../markets/marketCatalogSymbolResolver.service';
 import {
   parseStrategySignalRules,
   type StrategySignalDerivativesSeries,
@@ -490,30 +490,20 @@ const resolveSymbolsForRun = async (userId: string, data: CreateBacktestRunDto):
   const universe = await findOwnedMarketUniverseById(userId, data.marketUniverseId);
 
   if (!universe) return null;
-
-  const catalog = await getMarketCatalog(universe.baseCurrency, universe.marketType, universe.exchange);
-  const rules = ((universe.filterRules ?? {}) as { minQuoteVolumeEnabled?: boolean; minQuoteVolume24h?: number }) ?? {};
-  const minVolume = typeof rules.minQuoteVolume24h === 'number' ? rules.minQuoteVolume24h : 0;
-  const minVolumeEnabled = Boolean(rules.minQuoteVolumeEnabled);
-
-  const availableByRules = catalog.markets
-    .filter((market) => (minVolumeEnabled ? market.quoteVolume24h >= minVolume : true))
-    .map((market) => market.symbol);
-
-  const availableSet = new Set(availableByRules);
-  const include = universe.whitelist.length > 0
-    ? universe.whitelist.filter((symbol) => availableSet.has(symbol))
-    : availableByRules;
-  const blacklist = new Set(normalizeSymbols(universe.blacklist));
-
-  const resolved = normalizeSymbols(include).filter((symbol) => !blacklist.has(symbol));
-  const fallbackSymbol = normalizeSymbol(data.symbol);
-  if (resolved.length === 0 && fallbackSymbol) {
-    resolved.push(fallbackSymbol);
-  }
+  const resolved = await resolveMarketUniverseContractSymbolsFromCatalog(
+    {
+      exchange: universe.exchange,
+      marketType: universe.marketType as 'FUTURES' | 'SPOT',
+      baseCurrency: universe.baseCurrency,
+      filterRules: universe.filterRules,
+      whitelist: universe.whitelist,
+      blacklist: universe.blacklist,
+    },
+    new Map<string, string[]>()
+  );
 
   return {
-    symbols: normalizeSymbols(resolved),
+    symbols: resolved,
     exchange: universe.exchange,
     marketType: universe.marketType as MarketType,
     baseCurrency: universe.baseCurrency,

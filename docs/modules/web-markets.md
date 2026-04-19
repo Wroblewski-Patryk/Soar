@@ -5,12 +5,13 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/markets`
 - Owner: frontend/market-universe
-- Last updated: 2026-04-12
-- Related planning task: `DCP-09`
+- Last updated: 2026-04-20
+- Related planning task: `MURC-09`
 
 ## 1. Purpose and Scope
 - Owns market-universe authoring used by bots and backtests.
-- Provides CRUD screens and symbol selection tools for whitelist/blacklist driven groups.
+- Provides CRUD screens and symbol selection tools aligned to canonical contract:
+  - `final = unique(filter_result U whitelist) - blacklist`.
 
 Out of scope:
 - Strategy rule authoring and bot lifecycle management.
@@ -33,6 +34,10 @@ Out of scope:
 - Form contracts:
   - `CreateMarketUniverseInput`
   - market symbol include/exclude and auto-exclude controls
+  - preview parity rules:
+    - `filter_result` exists only when `minQuoteVolumeEnabled=true`,
+    - `filter off + empty whitelist` is valid and previews empty result,
+    - blacklist always subtracts from final preview set.
 
 ## 4. Runtime Flows
 - List flow:
@@ -41,9 +46,10 @@ Out of scope:
   3. Surface empty state with path to create first universe.
 - Create/edit flow:
   1. Resolve market catalog candidates.
-  2. Build whitelist/blacklist payload.
-  3. Submit and navigate back to edit/list flow.
-  4. Handle active-bot edit lock errors with explicit messaging.
+  2. Compose preview using the canonical symbol contract.
+  3. Build whitelist/blacklist payload.
+  4. Submit and navigate back to edit/list flow.
+  5. Handle active-bot edit lock errors with explicit messaging.
 
 ## 5. UI Integration
 - Main components:
@@ -71,5 +77,4 @@ pnpm --filter web test -- src/features/markets/components/MarketUniverseForm.tes
 
 ## 9. Open Issues and Follow-Ups
 - Expand table-level regressions for filtering/sorting behavior.
-- Consider server-driven pagination for large universe lists.
-
+- Keep preview/validation behavior parity-locked with API resolver changes.

@@ -5,8 +5,8 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/bots`
 - Owner: backend/trading-domain
-- Last updated: 2026-04-19
-- Related planning task: `ARC-09`
+- Last updated: 2026-04-20
+- Related planning task: `MURC-07`
 
 ## 1. Purpose and Scope
 - Owns bot command + runtime read APIs:
@@ -47,6 +47,7 @@ Out of scope:
   2. Derive mode/exchange/marketType/apiKey from wallet context.
   3. Validate consent + activation policy.
   4. Persist bot + canonical market-group/strategy-link state.
+  5. For market-universe-backed auto-groups, resolve symbols using shared contract.
 - Runtime read:
   - aggregate session telemetry, symbol stats, position/trade enrichment, fallback market data.
 - Assistant dry-run:
@@ -146,3 +147,13 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
   - API payloads consumed by `/dashboard` and `/dashboard/bots/:id/preview` for the same selected bot must remain parity-compatible for `signals`, `positions`, and `history`.
 - Runtime diagnostics contract:
   - no-open blocked/ignored outcomes remain explicit and queryable in operational payload/log flows.
+
+## 14. Market-Universe Symbol Contract Parity (`MURC`)
+- Selected-bot runtime symbol scope that comes from market-universe-backed groups must use one shared formula:
+  - `final = unique(filter_result U whitelist) - blacklist`.
+- Edge rules:
+  - `filter_result` exists only when `minQuoteVolumeEnabled=true`,
+  - `filter off + empty whitelist` resolves to empty set,
+  - blacklist-only input does not introduce symbols.
+- Contract parity requirement:
+  - runtime symbol scope, bot auto-created symbol-group snapshots, and cross-module consumers must stay parity-compatible for identical universe input.

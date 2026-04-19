@@ -1,6 +1,6 @@
 # PROJECT_STATE
 
-Last updated: 2026-04-19
+Last updated: 2026-04-20
 
 ## Product Snapshot
 - Name: CryptoSparrow / Soar
@@ -30,6 +30,9 @@ Last updated: 2026-04-19
   closed end-to-end (`DASHR-01..DASHR-11`) with selected-bot
   positions/history/signals parity restored and explicit signal-blocked
   diagnostics in runtime execution path.
+- 2026-04-20: market-universe symbol-contract parity wave (`MURC-01..MURC-12`)
+  is closed end-to-end with one canonical resolver contract across markets
+  sync, runtime, backtests, manual-order context, and web preview/validation.
 
 ## Technical Baseline
 - Backend: Node.js 20+, Express API, Prisma, TypeScript
@@ -107,27 +110,30 @@ Last updated: 2026-04-19
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: execute `MURC-A` for canonical market-universe symbol
-  contract closure after full `SOPR` completion.
+- Main active objective: wait for the next queued execution wave after `MURC`
+  closure sync.
 - Top blockers:
   - none in OPV scope; final RC external-gates snapshot is closed
     (`G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`) from run
     `2026-04-19T15:13:58.943Z`.
 - Success criteria for this phase:
-  - one canonical symbol-composition formula is enforced across markets sync,
-    runtime, backtests, and manual-order context.
-  - resolver behavior for filter/whitelist/blacklist combinations is
-    deterministic and parity-locked across API/web consumers.
-  - focused validation remains green for touched modules before each commit.
+  - keep canonical queue/context synchronized before starting a new wave.
+  - preserve scope-locked tiny commits and closure-pack discipline.
+  - keep `MURC` parity evidence as baseline for future universe-related changes.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - execute `MURC-01` from canonical `NOW` queue.
-  - continue `MURC-02..MURC-03` as `NEXT` before integration/web closure
-    tasks (`MURC-04+`).
-  - keep `SOPR` closure artifacts as baseline reference for selected-bot
-    signal/open parity contracts.
+  - pick the next `READY` item from canonical queue files.
 
 ## Recent Progress
+- 2026-04-20: closed full `MURC` wave (`MURC-01..MURC-12`) end-to-end by
+  introducing shared API symbol resolver contract
+  (`final = unique(filter_result U whitelist) - blacklist`) and wiring markets
+  sync, bot auto-group creation, runtime, backtests, and manual-order context
+  to one parity path; aligned web markets preview/validation to accept valid
+  empty sets and added regressions (API + web + cross-module parity smoke);
+  completed closure pack (`pnpm --filter api run test -- --run`,
+  `pnpm --filter web run test -- --run`, `pnpm --filter api run typecheck`,
+  `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`).
 - 2026-04-19: closed full `SOPR` wave (`SOPR-01..SOPR-12`) end-to-end by
   hardening selected-bot signal context source tags, locking
   `/dashboard` vs `/dashboard/bots/:id/preview` parity regressions for

@@ -344,3 +344,18 @@ await prisma.user.deleteMany();
 - Evidence:
   - 2026-04-19 full API suite failures in `auth.e2e.test.ts` and `profile/basic.e2e.test.ts` before cleanup-order fix.
   - Full rerun PASS after applying the same cleanup guardrail to `auth`, `profile/basic`, `preTrade`, `marketStream.routes`, and `positions-live-status` suites.
+
+### 2026-04-20 - Guardrails enforce per-file test-size budgets
+- Context: closing MURC wave with added e2e scenarios in `apps/api/src/modules/bots/bots.e2e.test.ts`.
+- Symptom: `pnpm run quality:guardrails` failed with `Source file size budget exceeded` (`bots.e2e.test.ts: 91131 bytes`, budget `88000`).
+- Root cause: adding multiple new contract tests to an already large e2e file breached repository per-file size budget.
+- Guardrail: when adding new e2e coverage to near-budget files, move new scenarios into a dedicated sibling test file instead of growing existing monolith tests.
+- Preferred pattern:
+```text
+1) Keep legacy large suite stable.
+2) Add new scenario family in `*.e2e.test.ts` sibling file with shared helpers.
+3) Rerun guardrails before final commit.
+```
+- Avoid: appending several long scenarios into a file already close to guardrail threshold.
+- Evidence:
+  - 2026-04-20 MURC closure: moved market-universe parity scenarios from `bots.e2e.test.ts` into `bots.market-universe-contract.e2e.test.ts`; guardrails PASS afterward.

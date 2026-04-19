@@ -1,6 +1,10 @@
 import { Exchange as PrismaExchange } from '@prisma/client';
 import { prisma } from '../../prisma/client';
-import { normalizeSymbol, normalizeSymbols, resolveUniverseSymbols } from '../../lib/symbols';
+import {
+  normalizeSymbol,
+  normalizeSymbols,
+  resolveMarketUniverseSymbols,
+} from '../../lib/symbols';
 import { assertExchangeCapability } from '../exchange/exchangeCapabilities';
 import { CreateMarketUniverseDto, UpdateMarketUniverseDto } from './markets.types';
 import { marketErrors } from './markets.errors';
@@ -225,16 +229,6 @@ const resolveMinQuoteVolumeFilter = (filterRules: unknown) => {
   return { enabled, min };
 };
 
-const composeUniverseSymbols = (params: {
-  catalogSymbols: string[];
-  whitelist: string[];
-  blacklist: string[];
-}) => {
-  const include = normalizeSymbols([...params.catalogSymbols, ...params.whitelist]);
-  const blacklistSet = new Set(normalizeSymbols(params.blacklist));
-  return include.filter((symbol) => !blacklistSet.has(symbol));
-};
-
 const resolveEffectiveUniverseSymbolsForSync = async (params: {
   exchange: Exchange;
   marketType: 'FUTURES' | 'SPOT';
@@ -243,23 +237,31 @@ const resolveEffectiveUniverseSymbolsForSync = async (params: {
   whitelist: string[];
   blacklist: string[];
 }) => {
-  const fallbackSymbols = resolveUniverseSymbols(params.whitelist, params.blacklist);
+  const volumeFilter = resolveMinQuoteVolumeFilter(params.filterRules);
+  const fallbackSymbols = resolveMarketUniverseSymbols({
+    filterResultSymbols: [],
+    whitelist: params.whitelist,
+    blacklist: params.blacklist,
+  });
+  if (!volumeFilter.enabled) {
+    return fallbackSymbols;
+  }
+
   try {
     const catalog = await getMarketCatalog(
       params.baseCurrency,
       params.marketType,
       params.exchange
     );
-    const volumeFilter = resolveMinQuoteVolumeFilter(params.filterRules);
-    const catalogSymbols = normalizeSymbols(
+    const filterResultSymbols = normalizeSymbols(
       catalog.markets
         .filter((market) =>
-          volumeFilter.enabled ? (market.quoteVolume24h ?? 0) >= volumeFilter.min : true
+          (market.quoteVolume24h ?? 0) >= volumeFilter.min
         )
         .map((market) => market.symbol)
     );
-    return composeUniverseSymbols({
-      catalogSymbols,
+    return resolveMarketUniverseSymbols({
+      filterResultSymbols,
       whitelist: params.whitelist,
       blacklist: params.blacklist,
     });

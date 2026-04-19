@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-04-19
+Last updated: 2026-04-20
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -17,21 +17,11 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] MURC-01 Freeze canonical market-universe symbol composition contract
-- [ ] MURC-02 Add API resolver matrix regressions for filter/whitelist/blacklist combinations
+- [ ] (none)
 
 ## BACKLOG
 
-- [ ] MURC-03 Implement single-source market-universe symbol resolver
-- [ ] MURC-04 Wire markets sync and bot auto-symbol-group creation to shared resolver
-- [ ] MURC-05 Add backtest/runtime/manual-order regressions for symbol-set parity
-- [ ] MURC-06 Adopt shared resolver in backtests runtime and manual-order context paths
-- [ ] MURC-07 Lock API integration parity for identical universe input across modules
-- [ ] MURC-08 Add web regressions for empty-result and union semantics in markets form preview
-- [ ] MURC-09 Align markets form preview/validation with shared contract (no layout redesign)
-- [ ] MURC-10 Add focused e2e smoke for bots/backtests/manual-order symbol parity
-- [ ] MURC-11 Sync trading/module docs to finalized symbol contract
-- [ ] MURC-12 Run focused closure pack and sync canonical queue/context
+- [ ] (none)
 
 ## IN_PROGRESS
 
@@ -47,6 +37,8 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] MURC group closure (`MURC-01..MURC-12`)
+  - 2026-04-20: Closed market-universe symbol contract parity end-to-end by freezing canonical formula (`final = unique(filter_result U whitelist) - blacklist`) in open decisions + module docs, unifying API consumers (markets sync, bot auto-group, runtime, backtests, manual-order context) on shared resolver path, aligning web preview/validation to allow valid empty sets, adding parity regressions (including runtime/backtest/manual-context and web empty-preview submit), splitting oversized bots e2e coverage into dedicated `bots.market-universe-contract.e2e.ts` to satisfy repository size guardrails, and completing closure validation pack (`api full tests`, `web full tests`, `api/web typecheck`, `quality:guardrails`).
 - [x] SOPR-C group closure (`SOPR-09..SOPR-12`)
   - 2026-04-19: Closed manual-order semantics as explicit `order-only` contract with audit-safe metadata, shipped contract regressions (`orders.service.test.ts`, `orders-positions.e2e.test.ts`), completed closure validation pack (`api/web full tests`, `typecheck`, `lint`, `build`, `guardrails`, `route-reachable i18n audit`), and synchronized canonical queue/context to move focus to `MURC`.
 - [x] SOPR-B group closure (`SOPR-05..SOPR-08`)

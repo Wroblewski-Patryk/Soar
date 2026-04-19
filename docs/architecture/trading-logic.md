@@ -45,7 +45,10 @@
 - The universe can be filtered by rules (for example volume thresholds).
 - Users can create named symbol groups from the filtered universe.
 - Users can whitelist or blacklist symbols.
-- Market groups can be built from all symbols, explicit whitelist, or filtered rules.
+- Canonical symbol composition formula is: `final = unique(filter_result U whitelist) - blacklist`.
+- `filter_result` exists only when the min-quote-volume filter is enabled.
+- If filter is disabled and whitelist is empty, result is empty (no implicit all-symbol fallback).
+- Blacklist-only input does not add symbols by itself.
 - Stable-to-stable pairs (for example USDT/USDC) should be auto-excluded by default.
 - Manual overrides must always be possible for exclusions and inclusions.
 - Each bot can trade multiple symbols and multiple strategies mapped to symbol groups.

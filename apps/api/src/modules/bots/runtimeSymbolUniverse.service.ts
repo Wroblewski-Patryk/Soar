@@ -1,5 +1,6 @@
 import {
   normalizeSymbols,
+  resolveMarketUniverseSymbols,
   resolveUniverseSymbols,
 } from '../../lib/symbols';
 
@@ -12,9 +13,13 @@ export const resolveEffectiveSymbolGroupSymbols = (params: {
   const whitelist = params.marketUniverse?.whitelist;
   const blacklist = params.marketUniverse?.blacklist;
   if (Array.isArray(whitelist) && Array.isArray(blacklist)) {
-    const universeSymbols = resolveUniverseSymbols(whitelist, blacklist);
-    if (universeSymbols.length > 0) {
-      return universeSymbols;
+    const resolvedFromUniverse = resolveMarketUniverseSymbols({
+      filterResultSymbols: [],
+      whitelist,
+      blacklist,
+    });
+    if (resolvedFromUniverse.length > 0) {
+      return resolvedFromUniverse;
     }
   }
   return normalizeSymbols(params.symbols ?? []);

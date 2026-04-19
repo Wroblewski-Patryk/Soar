@@ -686,6 +686,99 @@ describe('Backtests runs contract', () => {
     expect(liveOrderRes.body.symbol).toBe(symbol);
   });
 
+  it('resolves backtest seed symbols from (volume-filtered catalog U whitelist) - blacklist', async () => {
+    const ownerEmail = 'backtests-symbol-contract-union@example.com';
+    const agent = await registerAndLogin(ownerEmail);
+
+    const strategyRes = await agent.post('/dashboard/strategies').send({
+      name: 'Backtest symbol contract strategy',
+      interval: '5m',
+      leverage: 2,
+      walletRisk: 1,
+      config: {
+        open: { indicatorsLong: [], indicatorsShort: [] },
+        close: { mode: 'basic', tp: 2, sl: 1 },
+      },
+    });
+    expect(strategyRes.status).toBe(201);
+    const strategyId = strategyRes.body.id as string;
+
+    const universeRes = await agent.post('/dashboard/markets/universes').send({
+      name: 'Backtest symbol contract universe',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      filterRules: {
+        minQuoteVolumeEnabled: true,
+        minQuoteVolume24h: 2_000_000_000,
+      },
+      whitelist: ['XRPUSDT'],
+      blacklist: ['ETHUSDT'],
+      autoExcludeRules: {},
+    });
+    expect(universeRes.status).toBe(201);
+    const marketUniverseId = universeRes.body.id as string;
+
+    const runRes = await agent.post('/dashboard/backtests/runs').send({
+      name: 'Backtest symbol contract run',
+      timeframe: '5m',
+      strategyId,
+      marketUniverseId,
+      seedConfig: {
+        initialBalance: 1_000,
+      },
+    });
+    expect(runRes.status).toBe(201);
+    const runId = runRes.body.id as string;
+
+    const runDetailRes = await agent.get(`/dashboard/backtests/runs/${runId}`);
+    expect(runDetailRes.status).toBe(200);
+    expect(runDetailRes.body.seedConfig.symbols).toEqual(['BTCUSDT', 'XRPUSDT']);
+  });
+
+  it('fails closed for backtest run when market-universe contract resolves empty symbols', async () => {
+    const ownerEmail = 'backtests-symbol-contract-empty@example.com';
+    const agent = await registerAndLogin(ownerEmail);
+
+    const strategyRes = await agent.post('/dashboard/strategies').send({
+      name: 'Backtest empty universe strategy',
+      interval: '5m',
+      leverage: 2,
+      walletRisk: 1,
+      config: {
+        open: { indicatorsLong: [], indicatorsShort: [] },
+        close: { mode: 'basic', tp: 2, sl: 1 },
+      },
+    });
+    expect(strategyRes.status).toBe(201);
+    const strategyId = strategyRes.body.id as string;
+
+    const universeRes = await agent.post('/dashboard/markets/universes').send({
+      name: 'Backtest empty universe',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      filterRules: {
+        minQuoteVolumeEnabled: false,
+      },
+      whitelist: [],
+      blacklist: [],
+      autoExcludeRules: {},
+    });
+    expect(universeRes.status).toBe(201);
+
+    const runRes = await agent.post('/dashboard/backtests/runs').send({
+      name: 'Backtest empty universe run',
+      timeframe: '5m',
+      strategyId,
+      marketUniverseId: universeRes.body.id,
+      symbol: 'BTCUSDT',
+      seedConfig: {
+        initialBalance: 1_000,
+      },
+    });
+    expect(runRes.status).toBe(404);
+    expect(runRes.body.error.message).toBe('Strategy or market universe not found');
+  });
+
   it('keeps strategy + 3-symbol market-group backtest trace aligned with paper decision contract', async () => {
     const ownerEmail = 'backtests-parity-3symbols@example.com';
     const agent = await registerAndLogin(ownerEmail);

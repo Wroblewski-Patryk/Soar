@@ -2173,22 +2173,26 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-19: Closed `SOPR-09..SOPR-11` by finalizing manual-order semantics as explicit `order-only` path and adding audit-safe metadata + contract regressions (`orders.service.test.ts`, `orders-positions.e2e.test.ts`).
 - 2026-04-19: Closed `SOPR-12` validation pack with PASS for `api/web full tests`, `api/web typecheck`, `lint`, `build`, `quality:guardrails`, and `i18n:audit:route-reachable:web`; queue promoted to `MURC`.
 
-## Phase MURC - Market Universe Symbol Contract Parity (Queued 2026-04-19)
-- [ ] `MURC-01 docs(contract): freeze canonical market-universe symbol composition contract`
-- [ ] `MURC-02 test(api-red): add shared resolver matrix for filter/whitelist/blacklist combinations`
-- [ ] `MURC-03 feat(api-shared-resolver): implement single-source symbol resolver for market-universe contract`
-- [ ] `MURC-04 refactor(api-markets): wire market sync and bot auto-symbol-group creation to shared resolver`
-- [ ] `MURC-05 test(api-red): add backtest/runtime/manual-order regressions for symbol-set parity`
-- [ ] `MURC-06 refactor(api-consumers): adopt shared resolver in backtests runtime and manual-order context flows`
-- [ ] `MURC-07 test(api-integration): lock cross-module parity for identical universe input`
-- [ ] `MURC-08 test(web-red): add markets-form regressions for empty-result and union semantics`
-- [ ] `MURC-09 fix(web-markets): align preview and validation with shared contract without UI redesign`
-- [ ] `MURC-10 test(e2e-smoke): add focused parity smoke for bots/backtests/manual-order under one universe`
-- [ ] `MURC-11 docs(sync): update trading logic and module docs to finalized contract`
-- [ ] `MURC-12 qa(closure): run focused contract validation pack and sync canonical queue/context`
+## Phase MURC - Market Universe Symbol Contract Parity (Closed 2026-04-20)
+- [x] `MURC-01 docs(contract): freeze canonical market-universe symbol composition contract`
+- [x] `MURC-02 test(api-red): add shared resolver matrix for filter/whitelist/blacklist combinations`
+- [x] `MURC-03 feat(api-shared-resolver): implement single-source symbol resolver for market-universe contract`
+- [x] `MURC-04 refactor(api-markets): wire market sync and bot auto-symbol-group creation to shared resolver`
+- [x] `MURC-05 test(api-red): add backtest/runtime/manual-order regressions for symbol-set parity`
+- [x] `MURC-06 refactor(api-consumers): adopt shared resolver in backtests runtime and manual-order context flows`
+- [x] `MURC-07 test(api-integration): lock cross-module parity for identical universe input`
+- [x] `MURC-08 test(web-red): add markets-form regressions for empty-result and union semantics`
+- [x] `MURC-09 fix(web-markets): align preview and validation with shared contract without UI redesign`
+- [x] `MURC-10 test(e2e-smoke): add focused parity smoke for bots/backtests/manual-order under one universe`
+- [x] `MURC-11 docs(sync): update trading logic and module docs to finalized contract`
+- [x] `MURC-12 qa(closure): run focused contract validation pack and sync canonical queue/context`
 
 ### Progress Log (Phase MURC - Market Universe Symbol Contract Parity)
 - 2026-04-19: Queued `MURC` from analyzer report to unify symbol composition under one canonical formula `final = unique(filter_result U whitelist) - blacklist` across markets sync, bot runtime, backtests, manual-order context, and web preview/validation. Published executor-ready plan in `docs/planning/market-universe-symbol-contract-parity-plan-2026-04-19.md`; wave is intentionally queued after active `SOPR`.
+- 2026-04-20: Closed `MURC-01..MURC-04` by implementing shared symbol resolver contract and wiring markets sync + bot auto-created groups to the same formula path.
+- 2026-04-20: Closed `MURC-05..MURC-07` by adding cross-module parity regressions and unifying runtime/backtest/manual-order symbol resolution behavior for identical universe input.
+- 2026-04-20: Closed `MURC-08..MURC-11` by aligning web empty-result/union semantics and synchronizing canonical docs (`open-decisions`, `trading-logic`, module deep-dives) to one formula.
+- 2026-04-20: Closed `MURC-12` validation pack with PASS for `pnpm --filter api run test -- --run`, `pnpm --filter web run test -- --run`, `pnpm --filter api run typecheck`, `pnpm --filter web run typecheck`, and `pnpm run quality:guardrails`; resolved bots e2e size-guardrail overflow by extracting market-universe parity scenarios into `bots.market-universe-contract.e2e.test.ts`.
 
 ## Phase DASHR - Dashboard Runtime Data Parity Recovery (Queued 2026-04-19)
 - [ ] `DASHR-01 docs(contract): freeze dashboard runtime parity contract for positions/orders/history/signals/selected-bot section`

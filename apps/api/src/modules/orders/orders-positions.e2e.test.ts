@@ -271,6 +271,160 @@ describe('Orders and positions read contract', () => {
     expect(forbiddenContextRes.body.error.message).toBe('Not found');
   });
 
+  it('resolves manual-order strategy context from market-universe contract when symbol-group snapshot is empty', async () => {
+    const ownerAgent = await registerAndLogin('manual-context-universe-contract-owner@example.com');
+    const ownerId = await getUserId('manual-context-universe-contract-owner@example.com');
+
+    const strategyFromUniverse = await prisma.strategy.create({
+      data: {
+        userId: ownerId,
+        name: 'Manual Context Universe Strategy',
+        interval: '5m',
+        leverage: 9,
+        walletRisk: 1.5,
+        config: {
+          additional: {
+            marginMode: 'ISOLATED',
+            orderType: 'MARKET',
+          },
+        },
+      },
+    });
+
+    const strategyFallback = await prisma.strategy.create({
+      data: {
+        userId: ownerId,
+        name: 'Manual Context Fallback Strategy',
+        interval: '5m',
+        leverage: 3,
+        walletRisk: 1,
+        config: {
+          additional: {
+            marginMode: 'CROSSED',
+            orderType: 'LIMIT',
+          },
+        },
+      },
+    });
+
+    const contractUniverse = await prisma.marketUniverse.create({
+      data: {
+        userId: ownerId,
+        name: 'Manual context contract universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        filterRules: {
+          minQuoteVolumeEnabled: true,
+          minQuoteVolume24h: 2_000_000_000,
+        },
+        whitelist: ['XRPUSDT'],
+        blacklist: ['ETHUSDT'],
+      },
+    });
+
+    const fallbackUniverse = await prisma.marketUniverse.create({
+      data: {
+        userId: ownerId,
+        name: 'Manual context fallback universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: ['BTCUSDT'],
+        blacklist: [],
+      },
+    });
+
+    const contractSymbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: ownerId,
+        marketUniverseId: contractUniverse.id,
+        name: 'Manual context contract symbols',
+        symbols: [],
+      },
+    });
+
+    const fallbackSymbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: ownerId,
+        marketUniverseId: fallbackUniverse.id,
+        name: 'Manual context fallback symbols',
+        symbols: ['BTCUSDT'],
+      },
+    });
+
+    const bot = await prisma.bot.create({
+      data: {
+        userId: ownerId,
+        name: 'Manual context contract bot',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+      },
+    });
+
+    const contractBotGroup = await prisma.botMarketGroup.create({
+      data: {
+        userId: ownerId,
+        botId: bot.id,
+        symbolGroupId: contractSymbolGroup.id,
+        lifecycleStatus: 'ACTIVE',
+        executionOrder: 1,
+        maxOpenPositions: 4,
+        isEnabled: true,
+      },
+    });
+
+    const fallbackBotGroup = await prisma.botMarketGroup.create({
+      data: {
+        userId: ownerId,
+        botId: bot.id,
+        symbolGroupId: fallbackSymbolGroup.id,
+        lifecycleStatus: 'ACTIVE',
+        executionOrder: 2,
+        maxOpenPositions: 4,
+        isEnabled: true,
+      },
+    });
+
+    await prisma.marketGroupStrategyLink.createMany({
+      data: [
+        {
+          userId: ownerId,
+          botId: bot.id,
+          botMarketGroupId: contractBotGroup.id,
+          strategyId: strategyFromUniverse.id,
+          priority: 1,
+          weight: 1,
+          isEnabled: true,
+        },
+        {
+          userId: ownerId,
+          botId: bot.id,
+          botMarketGroupId: fallbackBotGroup.id,
+          strategyId: strategyFallback.id,
+          priority: 1,
+          weight: 1,
+          isEnabled: true,
+        },
+      ],
+    });
+
+    const contextRes = await ownerAgent.get('/dashboard/orders/manual-context').query({
+      botId: bot.id,
+      symbol: 'BTCUSDT',
+      side: 'BUY',
+    });
+
+    expect(contextRes.status).toBe(200);
+    expect(contextRes.body.symbol).toBe('BTCUSDT');
+    expect(contextRes.body.leverage).toBe(9);
+    expect(contextRes.body.orderType).toBe('MARKET');
+    expect(contextRes.body.marginMode).toBe('ISOLATED');
+  });
+
   it('keeps manual open endpoint on explicit order-only path without direct position creation', async () => {
     const ownerAgent = await registerAndLogin('manual-order-order-only-owner@example.com');
     const ownerId = await getUserId('manual-order-order-only-owner@example.com');

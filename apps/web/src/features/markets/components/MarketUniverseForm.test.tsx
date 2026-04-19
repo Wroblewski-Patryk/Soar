@@ -146,6 +146,70 @@ describe('MarketUniverseForm', () => {
     });
   });
 
+  it('keeps preview empty and still allows submit when filter is off and whitelist is empty', async () => {
+    fetchCatalogMock.mockResolvedValue({
+      source: 'BINANCE_PUBLIC',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      baseCurrencies: ['USDT'],
+      totalAvailable: 2,
+      totalForBaseCurrency: 2,
+      markets: [
+        {
+          symbol: 'BTCUSDT',
+          displaySymbol: 'BTC/USDT',
+          baseAsset: 'BTC',
+          quoteAsset: 'USDT',
+          quoteVolume24h: 2000,
+          lastPrice: 68000,
+        },
+        {
+          symbol: 'ETHUSDT',
+          displaySymbol: 'ETH/USDT',
+          baseAsset: 'ETH',
+          quoteAsset: 'USDT',
+          quoteVolume24h: 1800,
+          lastPrice: 3600,
+        },
+      ],
+    });
+
+    const onSubmit = vi.fn().mockResolvedValue(undefined);
+    const { container } = renderWithI18n({
+      mode: 'create',
+      submitting: false,
+      onSubmit,
+    });
+
+    await waitFor(() => {
+      expect(fetchCatalogMock).toHaveBeenCalled();
+    });
+
+    expect(screen.getByText('Liczba rynkow: 0')).toBeInTheDocument();
+    expect(
+      screen.getByText('Brak symboli po filtrach. Dodaj whitelist albo zmien filtry.')
+    ).toBeInTheDocument();
+
+    fireEvent.change(screen.getByPlaceholderText('Top Futures'), {
+      target: { value: 'Empty Contract Universe' },
+    });
+
+    const form = container.querySelector('form');
+    expect(form).not.toBeNull();
+    fireEvent.submit(form as HTMLFormElement);
+
+    await waitFor(() => {
+      expect(onSubmit).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Empty Contract Universe',
+          filterRules: { minQuoteVolumeEnabled: false },
+          whitelist: [],
+          blacklist: [],
+        })
+      );
+    });
+  });
+
   it('keeps initial whitelist/blacklist selections visible in edit mode before user changes context', async () => {
     fetchCatalogMock.mockResolvedValue({
       source: 'BINANCE_PUBLIC',

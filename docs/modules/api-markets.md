@@ -5,12 +5,13 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/markets`
 - Owner: backend/trading-domain
-- Last updated: 2026-04-12
-- Related planning task: `DCP-06`
+- Last updated: 2026-04-20
+- Related planning task: `MURC-12`
 
 ## 1. Purpose and Scope
 - Owns market universe CRUD and exchange market catalog read APIs.
-- Resolves effective symbol sets from whitelist/blacklist model.
+- Resolves effective symbol sets using one canonical composition contract:
+  - `final = unique(filter_result U whitelist) - blacklist`.
 - Ensures market universes cannot be mutated while tied to active bot execution paths.
 
 Out of scope:
@@ -29,6 +30,11 @@ Out of scope:
 - Universe contracts:
   - `CreateMarketUniverseDto`
   - `UpdateMarketUniverseDto`
+- Canonical symbol-composition edge rules:
+  - `filter_result` exists only when `minQuoteVolumeEnabled=true`.
+  - `filter off + empty whitelist` => empty result.
+  - blacklist-only input does not add symbols.
+  - blacklist always subtracts from the final set.
 - Catalog contract includes:
   - `exchange`, `marketType`, `baseCurrency`, `baseCurrencies`, `markets[]`.
 - Guardrails:
@@ -44,7 +50,7 @@ Out of scope:
   1. Validate ownership.
   2. Ensure not used by active bot.
   3. Persist universe.
-  4. Sync dependent symbol-group symbols if list filters changed.
+  4. Sync dependent symbol-group symbols through the shared contract resolver.
 
 ## 5. API and UI Integration
 - Routes:
@@ -73,5 +79,5 @@ pnpm --filter api test -- src/modules/markets/markets.e2e.test.ts
 ```
 
 ## 9. Open Issues and Follow-Ups
-- Continue consolidating symbol/base-currency normalization via shared primitives.
+- Keep all new market-universe consumers on the shared resolver path to avoid contract drift.
 - Evaluate stronger metadata telemetry for catalog source freshness.

@@ -1,5 +1,9 @@
 import { Exchange } from '@prisma/client';
-import { normalizeBaseCurrency, normalizeSymbols } from '../../lib/symbols';
+import {
+  normalizeBaseCurrency,
+  normalizeSymbols,
+  resolveMarketUniverseSymbols,
+} from '../../lib/symbols';
 import { getMarketCatalog } from './markets.service';
 
 export const resolveMinQuoteVolumeFilter = (filterRules: unknown) => {
@@ -28,16 +32,16 @@ export const resolveCatalogSymbolsForUniverse = async (
   cache: Map<string, string[]>
 ) => {
   const volumeFilter = resolveMinQuoteVolumeFilter(universe.filterRules);
+  const blacklistSet = new Set(normalizeSymbols(universe.blacklist));
   const cacheKey = [
     universe.exchange,
     universe.marketType,
     normalizeBaseCurrency(universe.baseCurrency),
     volumeFilter.enabled ? '1' : '0',
     volumeFilter.min.toString(),
-    normalizeSymbols(universe.blacklist).join(','),
   ].join('|');
   const cached = cache.get(cacheKey);
-  if (cached) return cached;
+  if (cached) return cached.filter((symbol) => !blacklistSet.has(symbol));
 
   try {
     const catalog = await getMarketCatalog(
@@ -45,18 +49,50 @@ export const resolveCatalogSymbolsForUniverse = async (
       universe.marketType,
       universe.exchange
     );
-    const blacklistSet = new Set(normalizeSymbols(universe.blacklist));
-    const symbols = normalizeSymbols(
+    const filteredCatalogSymbols = normalizeSymbols(
       catalog.markets
         .filter((market) =>
           volumeFilter.enabled ? (market.quoteVolume24h ?? 0) >= volumeFilter.min : true
         )
         .map((market) => market.symbol)
-    ).filter((symbol) => !blacklistSet.has(symbol));
-    cache.set(cacheKey, symbols);
-    return symbols;
+    );
+    cache.set(cacheKey, filteredCatalogSymbols);
+
+    return filteredCatalogSymbols.filter((symbol) => !blacklistSet.has(symbol));
   } catch {
     cache.set(cacheKey, []);
     return [];
   }
+};
+
+export const resolveMarketUniverseContractSymbolsFromCatalog = async (
+  universe: {
+    exchange: Exchange;
+    marketType: 'FUTURES' | 'SPOT';
+    baseCurrency: string;
+    filterRules: unknown;
+    whitelist: string[];
+    blacklist: string[];
+  },
+  cache: Map<string, string[]>
+) => {
+  const volumeFilter = resolveMinQuoteVolumeFilter(universe.filterRules);
+  const filterResultSymbols = volumeFilter.enabled
+    ? await resolveCatalogSymbolsForUniverse(
+        {
+          exchange: universe.exchange,
+          marketType: universe.marketType,
+          baseCurrency: universe.baseCurrency,
+          filterRules: universe.filterRules,
+          blacklist: [],
+        },
+        cache
+      )
+    : [];
+
+  return resolveMarketUniverseSymbols({
+    filterResultSymbols,
+    whitelist: universe.whitelist,
+    blacklist: universe.blacklist,
+  });
 };

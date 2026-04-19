@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   normalizeBaseCurrencies,
   normalizeBaseCurrency,
+  resolveMarketUniverseSymbols,
   normalizeSymbol,
   normalizeSymbolStrict,
   normalizeSymbols,
@@ -47,6 +48,56 @@ describe('symbols normalization helpers', () => {
     ]);
   });
 
+  it('resolves contract symbols from filter_result only when whitelist is empty', () => {
+    expect(
+      resolveMarketUniverseSymbols({
+        filterResultSymbols: [' btcusdt ', 'ETHUSDT', 'ethusdt', 'SOLUSDT'],
+        whitelist: [],
+        blacklist: [],
+      })
+    ).toEqual(['BTCUSDT', 'ETHUSDT', 'SOLUSDT']);
+  });
+
+  it('resolves contract symbols from whitelist only when filter_result is empty', () => {
+    expect(
+      resolveMarketUniverseSymbols({
+        filterResultSymbols: [],
+        whitelist: [' xrpusdt ', 'BTCUSDT', 'ethusdt', 'ETHUSDT'],
+        blacklist: [],
+      })
+    ).toEqual(['BTCUSDT', 'ETHUSDT', 'XRPUSDT']);
+  });
+
+  it('resolves contract symbols from unique(filter_result U whitelist) - blacklist', () => {
+    expect(
+      resolveMarketUniverseSymbols({
+        filterResultSymbols: ['BTCUSDT', 'ETHUSDT'],
+        whitelist: ['solusdt', 'ETHUSDT'],
+        blacklist: ['ETHUSDT'],
+      })
+    ).toEqual(['BTCUSDT', 'SOLUSDT']);
+  });
+
+  it('keeps blacklist-only contract result empty', () => {
+    expect(
+      resolveMarketUniverseSymbols({
+        filterResultSymbols: [],
+        whitelist: [],
+        blacklist: ['BTCUSDT'],
+      })
+    ).toEqual([]);
+  });
+
+  it('keeps none-selected contract result empty', () => {
+    expect(
+      resolveMarketUniverseSymbols({
+        filterResultSymbols: [],
+        whitelist: [],
+        blacklist: [],
+      })
+    ).toEqual([]);
+  });
+
   it('is idempotent for normalized values across helpers', () => {
     expect(normalizeSymbol(normalizeSymbol(' btc/usdt '))).toBe('BTC/USDT');
     expect(normalizeSymbolStrict(normalizeSymbolStrict(' eth-usdt '))).toBe('ETHUSDT');
@@ -70,6 +121,26 @@ describe('symbols normalization helpers', () => {
 
     resolveUniverseSymbols(whitelist, blacklist);
 
+    expect(whitelist).toEqual(whitelistBefore);
+    expect(blacklist).toEqual(blacklistBefore);
+  });
+
+  it('does not mutate filter/whitelist/blacklist arrays when resolving market-universe symbols', () => {
+    const filterResultSymbols = [' btcusdt ', 'ETHUSDT'];
+    const whitelist = ['SOLUSDT'];
+    const blacklist = ['ETHUSDT'];
+
+    const filterBefore = [...filterResultSymbols];
+    const whitelistBefore = [...whitelist];
+    const blacklistBefore = [...blacklist];
+
+    resolveMarketUniverseSymbols({
+      filterResultSymbols,
+      whitelist,
+      blacklist,
+    });
+
+    expect(filterResultSymbols).toEqual(filterBefore);
     expect(whitelist).toEqual(whitelistBefore);
     expect(blacklist).toEqual(blacklistBefore);
   });

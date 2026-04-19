@@ -7,20 +7,11 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `MURC-01 docs(contract): freeze canonical market-universe symbol composition contract`
+- [x] `none`
 ## NEXT
-- [ ] `MURC-02 test(api-red): add shared resolver matrix for filter/whitelist/blacklist combinations`
-- [ ] `MURC-03 feat(api-shared-resolver): implement single-source symbol resolver for market-universe contract`
+- [x] `none`
 ## PIPELINE
-- [ ] `MURC-04 refactor(api-markets): wire market sync and bot auto-symbol-group creation to shared resolver`
-- [ ] `MURC-05 test(api-red): add backtest/runtime/manual-order regressions for symbol-set parity`
-- [ ] `MURC-06 refactor(api-consumers): adopt shared resolver in backtests runtime and manual-order context flows`
-- [ ] `MURC-07 test(api-integration): lock cross-module parity for identical universe input`
-- [ ] `MURC-08 test(web-red): add markets-form regressions for empty-result and union semantics`
-- [ ] `MURC-09 fix(web-markets): align preview and validation with shared contract without UI redesign`
-- [ ] `MURC-10 test(e2e-smoke): add focused parity smoke for bots/backtests/manual-order under one universe`
-- [ ] `MURC-11 docs(sync): update trading logic and module docs to finalized contract`
-- [ ] `MURC-12 qa(closure): run focused contract validation pack and sync canonical queue/context`
+- [x] `none`
 ## GROUP QUEUE
 - [x] `DAGG-A (commits DAGG-01..DAGG-04): contract freeze + dashboard aggregate data-source migration`
 - [x] `DAGG-B (commits DAGG-05..DAGG-08): history positions parity + aggregate API contract hardening`
@@ -31,9 +22,9 @@ Operational queue for one-task execution runs.
 - [x] `SOPR-A (commits SOPR-01..SOPR-04): source-of-truth closure + signal-context hardening`
 - [x] `SOPR-B (commits SOPR-05..SOPR-08): dashboard/preview parity closure for signals/positions/history`
 - [x] `SOPR-C (commits SOPR-09..SOPR-12): manual-order lifecycle decision + implementation + closure`
-- [ ] `MURC-A (commits MURC-01..MURC-04): contract freeze + shared resolver + market sync/auto-group adoption`
-- [ ] `MURC-B (commits MURC-05..MURC-07): backtest/runtime/manual-order adoption + integration parity`
-- [ ] `MURC-C (commits MURC-08..MURC-12): web alignment + e2e smoke + docs sync + closure`
+- [x] `MURC-A (commits MURC-01..MURC-04): contract freeze + shared resolver + market sync/auto-group adoption`
+- [x] `MURC-B (commits MURC-05..MURC-07): backtest/runtime/manual-order adoption + integration parity`
+- [x] `MURC-C (commits MURC-08..MURC-12): web alignment + e2e smoke + docs sync + closure`
 - [x] `DASHR-A (commits DASHR-01..DASHR-04): dashboard tab/view parity + selected-bot section consistency`
 - [x] `DASHR-B (commits DASHR-05..DASHR-08): selected-bot runtime data parity for positions/history/signals scope`
 - [x] `DASHR-C (commits DASHR-09..DASHR-11): signal->order execution diagnostics + closure`
@@ -88,6 +79,20 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `MURC-12 qa(closure): run focused contract validation pack and sync canonical queue/context`
+  - 2026-04-20: Closure pack PASS:
+    - `pnpm --filter api run test -- --run`
+    - `pnpm --filter web run test -- --run`
+    - `pnpm --filter api run typecheck`
+    - `pnpm --filter web run typecheck`
+    - `pnpm run quality:guardrails`
+  - 2026-04-20: Resolved guardrail size overflow by moving market-universe parity scenarios from `bots.e2e.test.ts` into dedicated `bots.market-universe-contract.e2e.test.ts`.
+- [x] `MURC-C (commits MURC-08..MURC-12): web alignment + e2e smoke + docs sync + closure`
+  - 2026-04-20: Added empty-preview submit regression in `MarketUniverseForm`, aligned validation to allow valid empty symbol result, synced trading/module/open-decisions docs, and closed parity smoke with full closure validation.
+- [x] `MURC-B (commits MURC-05..MURC-07): backtest/runtime/manual-order adoption + integration parity`
+  - 2026-04-20: Locked cross-module parity for identical market-universe input across runtime symbol stats, backtest `seedConfig.symbols`, and manual-order context.
+- [x] `MURC-A (commits MURC-01..MURC-04): contract freeze + shared resolver + market sync/auto-group adoption`
+  - 2026-04-20: Introduced shared market-universe resolver contract in API (`final = unique(filter_result U whitelist) - blacklist`) and wired markets sync plus bot auto-created symbol-group paths to canonical semantics.
 - [x] `SOPR-12 qa(closure): run full focused validation pack and sync canonical queue/context`
   - 2026-04-19: Closure pack PASS:
     - `pnpm --filter api run test -- --run`

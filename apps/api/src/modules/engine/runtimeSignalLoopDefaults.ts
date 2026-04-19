@@ -8,8 +8,8 @@ import {
   listActiveRuntimeBotsRaw,
   listRuntimeManagedExternalPositionsRaw,
 } from './runtimeSignalLoop.repository';
-import { normalizeSymbols, resolveUniverseSymbols } from '../../lib/symbols';
-import { resolveCatalogSymbolsForUniverse } from '../markets/marketCatalogSymbolResolver.service';
+import { normalizeSymbols } from '../../lib/symbols';
+import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from '../bots/runtimeSymbolCatalogResolver.service';
 
 export type ActiveBotStrategy = {
   strategyId: string;
@@ -99,34 +99,10 @@ export const listActiveRuntimeBots = async (): Promise<ActiveBot[]> => {
           weight: link.weight,
         }));
 
-        const symbolGroupSymbols = normalizeSymbols(group.symbolGroup.symbols ?? []);
-        const universeSymbols = group.symbolGroup.marketUniverse
-          ? resolveUniverseSymbols(
-              group.symbolGroup.marketUniverse.whitelist ?? [],
-              group.symbolGroup.marketUniverse.blacklist ?? []
-            )
-          : [];
-        const catalogFallbackSymbols =
-          group.symbolGroup.marketUniverse &&
-          symbolGroupSymbols.length === 0 &&
-          universeSymbols.length === 0
-            ? await resolveCatalogSymbolsForUniverse(
-                {
-                  exchange: group.symbolGroup.marketUniverse.exchange,
-                  marketType: group.symbolGroup.marketUniverse.marketType,
-                  baseCurrency: group.symbolGroup.marketUniverse.baseCurrency,
-                  filterRules: group.symbolGroup.marketUniverse.filterRules,
-                  blacklist: group.symbolGroup.marketUniverse.blacklist ?? [],
-                },
-                catalogSymbolsCache
-              )
-            : [];
-        const symbols =
-          universeSymbols.length > 0
-            ? universeSymbols
-            : symbolGroupSymbols.length > 0
-              ? symbolGroupSymbols
-              : catalogFallbackSymbols;
+        const symbols = await resolveEffectiveSymbolGroupSymbolsWithCatalog(
+          group.symbolGroup,
+          catalogSymbolsCache
+        );
 
         marketGroupsFromNewModel.push({
           id: group.id,
