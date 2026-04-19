@@ -19,12 +19,23 @@ const botWithStrategyInclude = Prisma.validator<Prisma.BotInclude>()({
     select: {
       strategyId: true,
       isEnabled: true,
+      createdAt: true,
     },
   },
   marketGroupStrategyLinks: {
     select: {
       strategyId: true,
       isEnabled: true,
+      priority: true,
+      createdAt: true,
+      botMarketGroup: {
+        select: {
+          isEnabled: true,
+          lifecycleStatus: true,
+          executionOrder: true,
+          createdAt: true,
+        },
+      },
     },
   },
 });

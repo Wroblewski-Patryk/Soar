@@ -466,12 +466,23 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
           select: {
             strategyId: true,
             isEnabled: true,
+            createdAt: true,
           },
         },
         marketGroupStrategyLinks: {
           select: {
             strategyId: true,
             isEnabled: true,
+            priority: true,
+            createdAt: true,
+            botMarketGroup: {
+              select: {
+                isEnabled: true,
+                lifecycleStatus: true,
+                executionOrder: true,
+                createdAt: true,
+              },
+            },
           },
         },
       },
