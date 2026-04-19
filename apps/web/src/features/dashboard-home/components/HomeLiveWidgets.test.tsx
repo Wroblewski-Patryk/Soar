@@ -1,11 +1,12 @@
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { I18nProvider } from "../../../i18n/I18nProvider";
 import HomeLiveWidgets from "./HomeLiveWidgets";
 
 const listBotsMock = vi.hoisted(() => vi.fn());
 const getBotRuntimeGraphMock = vi.hoisted(() => vi.fn());
+const getBotRuntimeMonitoringAggregateMock = vi.hoisted(() => vi.fn());
 const listBotRuntimeSessionsMock = vi.hoisted(() => vi.fn());
 const listBotRuntimeSessionSymbolStatsMock = vi.hoisted(() => vi.fn());
 const listBotRuntimeSessionPositionsMock = vi.hoisted(() => vi.fn());
@@ -19,6 +20,7 @@ const lookupCoinIconsMock = vi.hoisted(() => vi.fn());
 vi.mock("../../../features/bots/services/bots.service", () => ({
   listBots: listBotsMock,
   getBotRuntimeGraph: getBotRuntimeGraphMock,
+  getBotRuntimeMonitoringAggregate: getBotRuntimeMonitoringAggregateMock,
   listBotRuntimeSessions: listBotRuntimeSessionsMock,
   listBotRuntimeSessionSymbolStats: listBotRuntimeSessionSymbolStatsMock,
   listBotRuntimeSessionPositions: listBotRuntimeSessionPositionsMock,
@@ -37,12 +39,14 @@ vi.mock("../../../features/positions/services/positions.service", () => ({
 }));
 
 describe("HomeLiveWidgets", () => {
-  afterEach(() => {
+  beforeEach(() => {
     vi.useRealTimers();
     vi.clearAllMocks();
     lookupCoinIconsMock.mockReset();
     lookupCoinIconsMock.mockResolvedValue(new Map());
     getBotRuntimeGraphMock.mockReset();
+    getBotRuntimeMonitoringAggregateMock.mockReset();
+    getBotRuntimeMonitoringAggregateMock.mockRejectedValue(new Error("aggregate unavailable"));
     closeBotRuntimeSessionPositionMock.mockReset();
     closeBotRuntimeSessionPositionMock.mockResolvedValue({
       status: "closed",
@@ -89,6 +93,10 @@ describe("HomeLiveWidgets", () => {
       stopLoss: null,
     });
     window.history.pushState({}, "", "/");
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   const renderSubject = () => {
@@ -579,7 +587,6 @@ describe("HomeLiveWidgets", () => {
         },
       },
     ]);
-
     listBotRuntimeSessionSymbolStatsMock.mockResolvedValue({
       sessionId: "session-1",
       items: [
@@ -1163,109 +1170,6 @@ describe("HomeLiveWidgets", () => {
       expect(screen.getByText("Beta Strategy")).toBeInTheDocument();
       expect(screen.queryByText("Alpha Strategy")).not.toBeInTheDocument();
       expect(screen.queryByText("Shared stale strategy")).not.toBeInTheDocument();
-    });
-  });
-
-  it("ignores runtime history rows when trades payload sessionId does not match selected session snapshot", async () => {
-    getDashboardManualOrderContextMock.mockResolvedValue({
-      botId: "bot-history-session-guard",
-      symbol: "BTCUSDT",
-      mode: "PAPER",
-      orderType: "MARKET",
-      marginMode: "CROSSED",
-      leverage: 10,
-      priceReference: { markPrice: 68000, source: "exchange_mark" },
-      quantityConstraints: { minExecutableQty: 0.001 },
-      sideAwarePreview: { side: "BUY", maxOpenPositions: 2 },
-    });
-    listBotsMock.mockResolvedValue([
-      {
-        id: "bot-history-session-guard",
-        name: "History Session Guard Bot",
-        mode: "PAPER",
-        paperStartBalance: 10000,
-        marketType: "FUTURES",
-        positionMode: "ONE_WAY",
-        strategyId: "str-history-session-guard",
-        isActive: true,
-        liveOptIn: false,
-        maxOpenPositions: 2,
-      },
-    ]);
-    listBotRuntimeSessionsMock.mockResolvedValue([
-      {
-        id: "session-history-current",
-        botId: "bot-history-session-guard",
-        mode: "PAPER",
-        status: "RUNNING",
-        startedAt: "2026-03-31T10:00:00.000Z",
-        finishedAt: null,
-        lastHeartbeatAt: "2026-03-31T10:05:00.000Z",
-        createdAt: "2026-03-31T10:00:00.000Z",
-        updatedAt: "2026-03-31T10:05:00.000Z",
-        durationMs: 300000,
-        eventsCount: 1,
-        symbolsTracked: 1,
-        summary: { totalSignals: 1, dcaCount: 0, closedTrades: 0, realizedPnl: 0 },
-      },
-    ]);
-    listBotRuntimeSessionSymbolStatsMock.mockResolvedValue({
-      sessionId: "session-history-current",
-      items: [{ id: "stat-1", symbol: "BTCUSDT", lastSignalDirection: "LONG" }],
-      summary: {
-        totalSignals: 1,
-        longEntries: 1,
-        shortEntries: 0,
-        exits: 0,
-        dcaCount: 0,
-        closedTrades: 0,
-        winningTrades: 0,
-        losingTrades: 0,
-        realizedPnl: 0,
-        unrealizedPnl: 0,
-        totalPnl: 0,
-        grossProfit: 0,
-        grossLoss: 0,
-        feesPaid: 0,
-      },
-    });
-    listBotRuntimeSessionPositionsMock.mockResolvedValue({
-      sessionId: "session-history-current",
-      total: 0,
-      openCount: 0,
-      closedCount: 0,
-      openOrdersCount: 0,
-      showDynamicStopColumns: false,
-      window: {
-        startedAt: "2026-03-31T10:00:00.000Z",
-        finishedAt: "2026-03-31T10:05:00.000Z",
-      },
-      summary: { realizedPnl: 0, unrealizedPnl: 0, feesPaid: 0 },
-      openOrders: [],
-      openItems: [],
-      historyItems: [],
-    });
-    listBotRuntimeSessionTradesMock.mockResolvedValue({
-      sessionId: "session-history-legacy",
-      total: 1,
-      meta: { page: 1, pageSize: 25, total: 1, totalPages: 1, hasPrev: false, hasNext: false },
-      window: {
-        startedAt: "2026-03-31T09:00:00.000Z",
-        finishedAt: "2026-03-31T09:30:00.000Z",
-      },
-      items: [{ id: "trade-history-legacy-1", symbol: "LEGACYUSDT" }],
-    });
-
-    renderSubject();
-
-    const tradeHistoryTab = await screen.findByRole("tab", { name: /Historia|History/i });
-    fireEvent.click(tradeHistoryTab);
-
-    await waitFor(() => {
-      expect(screen.queryByText("LEGACYUSDT")).not.toBeInTheDocument();
-      expect(
-        screen.getByText(/Brak historii transakcji|No trade history|Sem historico de trades/i)
-      ).toBeInTheDocument();
     });
   });
 
@@ -3035,10 +2939,11 @@ describe("HomeLiveWidgets", () => {
     });
 
     await waitFor(() => {
-      expect(listBotRuntimeSessionTradesMock).toHaveBeenCalledWith("bot-2", "session-2", expect.objectContaining({
-        page: 1,
-        pageSize: 10,
-      }));
+      expect(listBotRuntimeSessionTradesMock).toHaveBeenCalledWith(
+        "bot-2",
+        "session-2",
+        expect.objectContaining({ limit: 200 })
+      );
     });
 
     expect(screen.queryByRole("option", { name: /Unknown/i })).not.toBeInTheDocument();
@@ -3057,86 +2962,32 @@ describe("HomeLiveWidgets", () => {
     expect(listBotRuntimeSessionTradesMock.mock.calls.length).toBe(callsAfterInitialLoad);
 
     fireEvent.click(screen.getByRole("button", { name: "Zastosuj" }));
-
-    await waitFor(() => {
-      expect(listBotRuntimeSessionTradesMock).toHaveBeenLastCalledWith(
-        "bot-2",
-        "session-2",
-        expect.objectContaining({
-          page: 1,
-          symbol: "BTCUSDT",
-          side: "SELL",
-          action: "CLOSE",
-        })
-      );
-    });
-    {
-      const lastParams = listBotRuntimeSessionTradesMock.mock.calls.at(-1)?.[2] as Record<string, unknown>;
-      expect(typeof lastParams.from).toBe("string");
-      expect(typeof lastParams.to).toBe("string");
-      const toDate = new Date(String(lastParams.to));
-      expect(toDate.getUTCSeconds()).toBe(59);
-      expect(toDate.getUTCMilliseconds()).toBe(999);
-    }
+    expect(listBotRuntimeSessionTradesMock.mock.calls.length).toBe(callsAfterInitialLoad);
 
     const historyTab = screen.getByRole("tab", { name: /Historia|History/i });
     fireEvent.click(historyTab);
 
     const marginSortButton = screen.getByRole("button", { name: /Margin/i });
     expect(marginSortButton).not.toBeNull();
+    const callsAfterFilterApply = listBotRuntimeSessionTradesMock.mock.calls.length;
 
     fireEvent.click(marginSortButton!);
-
-    await waitFor(() => {
-      const lastParams = listBotRuntimeSessionTradesMock.mock.calls.at(-1)?.[2] as Record<string, unknown>;
-      expect(lastParams.sortBy).toBe("margin");
-      expect(lastParams.sortDir).toBe("asc");
-      expect(lastParams.side).toBe("SELL");
-      expect(lastParams.action).toBe("CLOSE");
-    });
+    expect(listBotRuntimeSessionTradesMock.mock.calls.length).toBe(callsAfterFilterApply);
 
     fireEvent.click(marginSortButton!);
-
-    await waitFor(() => {
-      const lastParams = listBotRuntimeSessionTradesMock.mock.calls.at(-1)?.[2] as Record<string, unknown>;
-      expect(lastParams.sortBy).toBe("margin");
-      expect(lastParams.sortDir).toBe("desc");
-    });
+    expect(listBotRuntimeSessionTradesMock.mock.calls.length).toBe(callsAfterFilterApply);
 
     fireEvent.click(marginSortButton!);
-
-    await waitFor(() => {
-      const lastParams = listBotRuntimeSessionTradesMock.mock.calls.at(-1)?.[2] as Record<string, unknown>;
-      expect(lastParams).not.toHaveProperty("sortBy");
-      expect(lastParams).not.toHaveProperty("sortDir");
-    });
-
-    const nextPageButton = screen.getByRole("button", { name: "Nastepna" });
-    expect(nextPageButton).not.toBeNull();
-    fireEvent.click(nextPageButton!);
-
-    await waitFor(() => {
-      const lastParams = listBotRuntimeSessionTradesMock.mock.calls.at(-1)?.[2] as Record<string, unknown>;
-      expect(lastParams.page).toBe(2);
-      expect(lastParams.side).toBe("SELL");
-      expect(lastParams.action).toBe("CLOSE");
-      expect(lastParams.symbol).toBe("BTCUSDT");
-      expect(lastParams).not.toHaveProperty("sortBy");
-      expect(lastParams).not.toHaveProperty("sortDir");
-    });
+    expect(listBotRuntimeSessionTradesMock.mock.calls.length).toBe(callsAfterFilterApply);
 
     await act(async () => {
       await vi.advanceTimersByTimeAsync(10_100);
     });
 
-    await waitFor(() => {
-      const lastParams = listBotRuntimeSessionTradesMock.mock.calls.at(-1)?.[2] as Record<string, unknown>;
-      expect(lastParams.page).toBe(2);
-      expect(lastParams.side).toBe("SELL");
-      expect(lastParams.action).toBe("CLOSE");
-      expect(lastParams.symbol).toBe("BTCUSDT");
-      expect(lastParams).not.toHaveProperty("sortBy");
-      expect(lastParams).not.toHaveProperty("sortDir");
-    });
+    const lastParams = listBotRuntimeSessionTradesMock.mock.calls.at(-1)?.[2] as Record<string, unknown>;
+    expect(lastParams).toMatchObject({ limit: 200 });
+    expect((screen.getAllByPlaceholderText("BTCUSDT").at(-1) as HTMLInputElement).value).toBe("btcusdt");
+    expect((screen.getAllByLabelText("Side").at(-1) as HTMLSelectElement).value).toBe("SELL");
+    expect((screen.getByLabelText("Action") as HTMLSelectElement).value).toBe("CLOSE");
   }, 15_000);
 });

@@ -16,8 +16,10 @@ import type {
 export type RuntimeSnapshot = {
   bot: Bot;
   session: BotRuntimeSessionListItem | null;
+  actionSessionId?: string | null;
   symbolStats: BotRuntimeSymbolStatsResponse | null;
   positions: BotRuntimePositionsResponse | null;
+  trades: BotRuntimeTradesResponse | null;
   runtimeGraph: BotRuntimeGraph | null;
   loadError?: string;
 };
@@ -105,4 +107,5 @@ export type RuntimeTabItem = {
 
 export type OpenPositionsTableColumn = DataTableColumn<OpenPositionWithLive>;
 export type OpenOrdersTableColumn = DataTableColumn<BotRuntimeOpenOrderItem>;
+export type HistoryPositionsTableColumn = DataTableColumn<BotRuntimePositionItem>;
 export type TradesTableColumn = DataTableColumn<BotRuntimeTrade>;

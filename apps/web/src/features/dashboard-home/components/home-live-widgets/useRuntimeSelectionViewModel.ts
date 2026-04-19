@@ -96,7 +96,7 @@ export const useRuntimeSelectionViewModel = ({
         stickyFavorableMoveByPosition,
       }),
       runtimeBotId: selected.bot.id,
-      runtimeSessionId: selected.session?.id ?? null,
+      runtimeSessionId: selected.actionSessionId ?? selected.session?.id ?? null,
     }));
     const openQtyBySymbol = new Map<string, number>();
     const openUnrealizedBySymbol = new Map<string, number>();
@@ -155,8 +155,9 @@ export const useRuntimeSelectionViewModel = ({
     const equity = selected.bot.mode === "LIVE" ? (liveReferenceBalance ?? equityFromFreeAndUsedMargin) : paperEquity;
     const free = liveFreeCash ?? (equity != null ? Math.max(0, equity - usedMargin) : null);
     const exposurePct = equity && equity > 0 ? (usedMargin / equity) * 100 : null;
+    const runtimeTradesSessionId = selected.trades?.sessionId ?? selected.session?.id ?? null;
     const trades =
-      selected.session?.id && selectedTrades?.sessionId === selected.session.id
+      runtimeTradesSessionId && selectedTrades?.sessionId === runtimeTradesSessionId
         ? selectedTrades.items
         : [];
 

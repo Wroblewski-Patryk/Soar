@@ -22,11 +22,12 @@ import {
 import {
   getDashboardManualOrderContext,
   getBotRuntimeGraph,
+  getBotRuntimeMonitoringAggregate,
   listBots,
-  openDashboardManualOrder,
   listBotRuntimeSessionPositions,
   listBotRuntimeSessionSymbolStats,
   listBotRuntimeSessionTrades,
+  openDashboardManualOrder,
   listBotRuntimeSessions,
 } from "../../../features/bots/services/bots.service";
 import { supportsExchangeCapability } from "../../../features/exchanges/exchangeCapabilities";
@@ -56,6 +57,7 @@ import { useRuntimeSelectionViewModel } from "./home-live-widgets/useRuntimeSele
 import { useCloseRuntimePositionAction } from "../hooks/useCloseRuntimePositionAction";
 import { useHomeLiveWidgetsController } from "../hooks/useHomeLiveWidgetsController";
 import type {
+  HistoryPositionsTableColumn,
   OpenPositionWithLive,
   OpenOrdersTableColumn,
   RuntimeDataTab,
@@ -71,6 +73,8 @@ const DASHBOARD_OPEN_POSITIONS_SORT_STORAGE_KEY = "dashboard.home.openPositions.
 const DASHBOARD_OPEN_POSITIONS_COLUMNS_STORAGE_KEY = "dashboard.home.openPositions.columns.v1";
 const DASHBOARD_OPEN_ORDERS_SORT_STORAGE_KEY = "dashboard.home.openOrders.sort.v1";
 const DASHBOARD_OPEN_ORDERS_COLUMNS_STORAGE_KEY = "dashboard.home.openOrders.columns.v1";
+const DASHBOARD_HISTORY_POSITIONS_SORT_STORAGE_KEY = "dashboard.home.historyPositions.sort.v1";
+const DASHBOARD_HISTORY_POSITIONS_COLUMNS_STORAGE_KEY = "dashboard.home.historyPositions.columns.v1";
 const DASHBOARD_TRADE_HISTORY_COLUMNS_STORAGE_KEY = "dashboard.home.tradeHistory.columns.v1";
 const TRADE_PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
 const OPEN_POSITIONS_PAGE_SIZE_OPTIONS = [10, 25, 50] as const;
@@ -332,6 +336,7 @@ export default function HomeLiveWidgets() {
   } = useHomeLiveWidgetsController({
     createMarketStreamEventSource,
     getBotRuntimeGraph,
+    getBotRuntimeMonitoringAggregate,
     listBotRuntimeSessionPositions,
     listBotRuntimeSessionSymbolStats,
     listBotRuntimeSessionTrades,
@@ -831,7 +836,7 @@ export default function HomeLiveWidgets() {
     closePositionSuccessLabel,
     onClosed: () => load({ silent: true }),
     selectedBotId: selected?.bot.id,
-    selectedSessionId: selected?.session?.id,
+    selectedSessionId: selected?.actionSessionId ?? selected?.session?.id,
   });
 
   const openPositionsColumns = useMemo<DataTableColumn<OpenPositionWithLive>[]>(() => {
@@ -1057,6 +1062,86 @@ export default function HomeLiveWidgets() {
       runtimeIconsError,
       runtimeIconsLoading,
       t,
+    ]
+  );
+
+  const historyPositionsColumns = useMemo<HistoryPositionsTableColumn[]>(
+    () => [
+      {
+        key: "closedAt",
+        label: t("dashboard.home.runtime.time"),
+        sortable: true,
+        accessor: (row) => row.closedAt ?? row.openedAt,
+        render: (row) => formatDateTime(row.closedAt ?? row.openedAt),
+      },
+      {
+        key: "symbol",
+        label: t("dashboard.home.runtime.symbol"),
+        sortable: true,
+        accessor: (row) => row.symbol,
+        render: (row) => {
+          const icon = resolveRuntimeIcon(row.symbol);
+          return (
+            <AssetSymbol
+              symbol={row.symbol}
+              iconUrl={icon?.iconUrl ?? null}
+              loading={runtimeIconsLoading && !icon}
+              hasError={Boolean(runtimeIconsError)}
+              className="font-medium"
+            />
+          );
+        },
+      },
+      {
+        key: "side",
+        label: t("dashboard.home.runtime.side"),
+        sortable: true,
+        accessor: (row) => row.side,
+        render: (row) => <DirectionPill value={row.side} />,
+      },
+      {
+        key: "qty",
+        label: t("dashboard.home.runtime.qty"),
+        sortable: true,
+        accessor: (row) => row.quantity,
+        render: (row) => formatNumber(row.quantity, { maximumFractionDigits: 6 }),
+      },
+      {
+        key: "entryPrice",
+        label: t("dashboard.bots.monitoring.table.entry"),
+        sortable: true,
+        accessor: (row) => row.entryPrice,
+        render: (row) => formatNumber(row.entryPrice, { minimumFractionDigits: 2, maximumFractionDigits: 6 }),
+      },
+      {
+        key: "exitPrice",
+        label: t("dashboard.bots.monitoring.table.exit"),
+        sortable: true,
+        accessor: (row) => row.exitPrice ?? null,
+        render: (row) =>
+          row.exitPrice == null ? "-" : formatNumber(row.exitPrice, { minimumFractionDigits: 2, maximumFractionDigits: 6 }),
+      },
+      {
+        key: "realizedPnl",
+        label: withRuntimeUnit(t("dashboard.home.runtime.realizedPnl")),
+        sortable: true,
+        accessor: (row) => row.realizedPnl,
+        render: (row) => (
+          <span className={row.realizedPnl >= 0 ? "text-success" : "text-error"}>
+            {formatRuntimeAmount(row.realizedPnl)}
+          </span>
+        ),
+      },
+    ],
+    [
+      formatDateTime,
+      formatNumber,
+      formatRuntimeAmount,
+      resolveRuntimeIcon,
+      runtimeIconsError,
+      runtimeIconsLoading,
+      t,
+      withRuntimeUnit,
     ]
   );
 
@@ -1292,6 +1377,13 @@ export default function HomeLiveWidgets() {
                 noOpenOrdersLabel={t("dashboard.home.runtime.openOrdersPlaceholder")}
                 tradesLoading={selectedTradesLoading}
                 loadingLabel={t("dashboard.home.loadWidgets")}
+                historyRows={selected?.positions?.historyItems ?? []}
+                historyColumns={historyPositionsColumns}
+                historyPositionsSortStorageKey={DASHBOARD_HISTORY_POSITIONS_SORT_STORAGE_KEY}
+                historyPositionsColumnVisibilityKey={DASHBOARD_HISTORY_POSITIONS_COLUMNS_STORAGE_KEY}
+                historyPositionsTitle={t("dashboard.bots.monitoring.sections.historyPositionsTitle")}
+                historyTradesTitle={t("dashboard.bots.monitoring.sections.historyTradesTitle")}
+                noHistoryPositionsLabel={t("dashboard.bots.monitoring.emptyClosedPositions")}
                 tradesRows={selectedData?.trades ?? []}
                 tradesColumns={tradesColumns}
                 tradeDraftFilters={tradeDraftFilters}
