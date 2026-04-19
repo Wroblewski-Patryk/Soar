@@ -125,6 +125,10 @@ Last updated: 2026-04-19
   - then execute `UXR-J-A..C` for shared table-consistency closure.
 
 ## Recent Progress
+- 2026-04-19: completed `UXR-I-05` by unifying wallet/bot create-edit wrapper
+  save-action behavior: desktop and mobile save buttons now mirror form
+  `submitting` state (`disabled` + loading label), backed by newly localized
+  `saving` keys in `dashboard-wallets` and `dashboard-bots.page`.
 - 2026-04-19: completed `UXR-I-04` by expanding `i18n/guardrails.test.ts`
   coverage to full `UXR-I` wrapper route/component scope and tightening
   `scripts/repoGuardrails.mjs` so `FieldControls` imports are blocked outside

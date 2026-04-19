@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { LuPencilLine, LuPlus, LuSave, LuWallet } from 'react-icons/lu';
 
 import { useI18n } from '@/i18n/I18nProvider';
@@ -18,6 +19,9 @@ type WalletFormPageContentProps = {
 export default function WalletFormPageContent({ mode, editId }: WalletFormPageContentProps) {
   const { t } = useI18n();
   const isEditMode = mode === 'edit';
+  const [submitting, setSubmitting] = useState(false);
+  const saveLabel = t('dashboard.wallets.saveLabel');
+  const savingLabel = t('dashboard.wallets.savingLabel');
 
   return (
     <section className='w-full space-y-4'>
@@ -33,18 +37,27 @@ export default function WalletFormPageContent({ mode, editId }: WalletFormPageCo
           },
         ]}
         actions={
-          <button type='submit' form={WALLET_FORM_ID} className={`${PAGE_TITLE_ACTION_SAVE_CLASS} hidden md:inline-flex`}>
+          <button
+            type='submit'
+            form={WALLET_FORM_ID}
+            className={`${PAGE_TITLE_ACTION_SAVE_CLASS} hidden md:inline-flex`}
+            disabled={submitting}
+          >
             <LuSave className='h-4 w-4' />
-            {t('dashboard.wallets.saveLabel')}
+            {submitting ? savingLabel : saveLabel}
           </button>
         }
       />
 
-      <WalletCreateEditForm formId={WALLET_FORM_ID} editId={isEditMode ? editId ?? null : null} />
+      <WalletCreateEditForm
+        formId={WALLET_FORM_ID}
+        editId={isEditMode ? editId ?? null : null}
+        onSubmittingChange={setSubmitting}
+      />
       <FormMobileActionBar>
-        <button type='submit' form={WALLET_FORM_ID} className='btn btn-primary w-full'>
+        <button type='submit' form={WALLET_FORM_ID} className='btn btn-primary w-full' disabled={submitting}>
           <LuSave className='h-4 w-4' />
-          {t('dashboard.wallets.saveLabel')}
+          {submitting ? savingLabel : saveLabel}
         </button>
       </FormMobileActionBar>
     </section>

@@ -7,6 +7,7 @@ export const dashboardBotsPt = {
     "breadcrumbAssistant": "Assistente",
     "breadcrumbPreview": "Preview",
     "saveAction": "Guardar",
+    "savingAction": "A guardar...",
     "alertPrefix": "Modulo",
     "alertMiddle": "e usado para operacoes de runtime. A visao global da aplicacao e o contexto de conta estao em",
     "alertSuffix": "."

@@ -65,6 +65,7 @@ type WalletFormState = {
 type WalletCreateEditFormProps = {
   editId?: string | null;
   formId?: string;
+  onSubmittingChange?: (submitting: boolean) => void;
 };
 
 type WalletMarketType = WalletFormState['marketType'];
@@ -146,7 +147,11 @@ const formatAmount = (value: number, currency: string) =>
     maximumFractionDigits: 2,
   }).format(value) + ` ${normalizeSymbol(currency)}`;
 
-export default function WalletCreateEditForm({ editId = null, formId = 'wallet-form' }: WalletCreateEditFormProps) {
+export default function WalletCreateEditForm({
+  editId = null,
+  formId = 'wallet-form',
+  onSubmittingChange,
+}: WalletCreateEditFormProps) {
   const { locale } = useI18n();
   const router = useRouter();
   const isEditMode = Boolean(editId);
@@ -167,6 +172,10 @@ export default function WalletCreateEditForm({ editId = null, formId = 'wallet-f
   const [previewLoading, setPreviewLoading] = useState(false);
   const [previewError, setPreviewError] = useState<string | null>(null);
   const [preview, setPreview] = useState<WalletBalancePreview | null>(null);
+
+  useEffect(() => {
+    onSubmittingChange?.(submitting);
+  }, [onSubmittingChange, submitting]);
 
   const copy = useMemo(
     () =>
@@ -658,6 +667,7 @@ export default function WalletCreateEditForm({ editId = null, formId = 'wallet-f
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (submitting) return;
     setShowValidation(true);
 
     if (!canSaveMode || hasValidationErrors) {

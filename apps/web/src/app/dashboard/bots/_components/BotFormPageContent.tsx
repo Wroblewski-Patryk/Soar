@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { LuBot, LuPencilLine, LuPlus, LuSave } from 'react-icons/lu';
 
 import BotCreateEditForm from '@/features/bots/components/BotCreateEditForm';
@@ -16,6 +17,9 @@ export default function BotFormPageContent({ mode, editId }: BotFormPageContentP
   const { t } = useI18n();
   const isEditMode = mode === 'edit';
   const formId = isEditMode ? 'bot-form-edit' : 'bot-form-create';
+  const [submitting, setSubmitting] = useState(false);
+  const saveActionLabel = t('dashboard.bots.page.saveAction');
+  const savingActionLabel = t('dashboard.bots.page.savingAction');
 
   return (
     <section className='w-full space-y-4'>
@@ -31,18 +35,23 @@ export default function BotFormPageContent({ mode, editId }: BotFormPageContentP
           },
         ]}
         actions={
-          <button type='submit' form={formId} className={`${PAGE_TITLE_ACTION_SAVE_CLASS} hidden md:inline-flex`}>
+          <button
+            type='submit'
+            form={formId}
+            className={`${PAGE_TITLE_ACTION_SAVE_CLASS} hidden md:inline-flex`}
+            disabled={submitting}
+          >
             <LuSave className='h-4 w-4' />
-            {t('dashboard.bots.page.saveAction')}
+            {submitting ? savingActionLabel : saveActionLabel}
           </button>
         }
       />
 
-      <BotCreateEditForm formId={formId} editId={isEditMode ? editId ?? null : null} />
+      <BotCreateEditForm formId={formId} editId={isEditMode ? editId ?? null : null} onSubmittingChange={setSubmitting} />
       <FormMobileActionBar>
-        <button type='submit' form={formId} className='btn btn-primary w-full'>
+        <button type='submit' form={formId} className='btn btn-primary w-full' disabled={submitting}>
           <LuSave className='h-4 w-4' />
-          {t('dashboard.bots.page.saveAction')}
+          {submitting ? savingActionLabel : saveActionLabel}
         </button>
       </FormMobileActionBar>
     </section>

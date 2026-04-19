@@ -7,11 +7,10 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `UXR-I-05 refactor(web-wrappers): unify create/edit wrappers i18n+breadcrumb+save-action contract`
-## NEXT
 - [ ] `UXR-I-06 refactor(web-wallets-form): close residual layout/control parity gaps using ui/forms primitives`
-## PIPELINE
+## NEXT
 - [ ] `UXR-I-07 refactor(web-markets-form): enforce sectioned IA and remove any residual local generic controls`
+## PIPELINE
 - [ ] `UXR-I-08 refactor(web-backtests-form): finalize decoupling from feature-local controls and align summary ergonomics`
 - [ ] `UXR-I-09 refactor(web-strategies-form): preserve tabs while normalizing section internals to shared primitives`
 - [ ] `UXR-I-10 refactor(web-bots-form): reduce layout density and align controls to shared form system`
@@ -79,6 +78,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `UXR-I-05 refactor(web-wrappers): unify create/edit wrappers i18n+breadcrumb+save-action contract`
+  - 2026-04-19: Unified wallet/bot wrapper save-action contract by wiring form-level submitting state into desktop/mobile actions (`disabled` + saving label) and adding missing localized saving labels in `dashboard-wallets` and `dashboard-bots.page`.
 - [x] `UXR-I-04 test(guardrails): lock no-cross-feature generic controls and no-hardcoded-wrapper-copy regressions`
   - 2026-04-19: Expanded `i18n/guardrails.test.ts` coverage to full `UXR-I` wrapper route set and hardened `scripts/repoGuardrails.mjs` to block `FieldControls` imports outside same-feature ownership (or from non-feature files), keeping shared controls anchored to `apps/web/src/ui/forms/*`.
 - [x] `UXR-I-03 chore(web-ui-forms): normalize shared form primitive API surface for refresh migration`

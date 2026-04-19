@@ -7,6 +7,7 @@ export const dashboardBotsEn = {
     "breadcrumbAssistant": "Assistant",
     "breadcrumbPreview": "Preview",
     "saveAction": "Save",
+    "savingAction": "Saving...",
     "alertPrefix": "Module",
     "alertMiddle": "is used for runtime operations. Global app overview and account context are available in",
     "alertSuffix": "."

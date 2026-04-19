@@ -4,4 +4,5 @@
   createLabel: "Criar",
   editLabel: "Editar",
   saveLabel: "Guardar",
+  savingLabel: "A guardar...",
 } as const;

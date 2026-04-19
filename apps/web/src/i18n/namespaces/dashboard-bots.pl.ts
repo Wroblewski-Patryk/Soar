@@ -7,6 +7,7 @@ export const dashboardBotsPl = {
     "breadcrumbAssistant": "Asystent",
     "breadcrumbPreview": "Podglad",
     "saveAction": "Zapisz",
+    "savingAction": "Zapisywanie...",
     "alertPrefix": "Modul",
     "alertMiddle": "sluzy do operacji runtime. Globalny podglad aplikacji i przekroj konta masz w",
     "alertSuffix": "."

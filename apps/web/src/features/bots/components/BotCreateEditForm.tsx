@@ -67,9 +67,14 @@ const buildDefaultForm = (params: {
 type BotCreateEditFormProps = {
   editId?: string | null;
   formId?: string;
+  onSubmittingChange?: (submitting: boolean) => void;
 };
 
-export default function BotCreateEditForm({ editId = null, formId = 'bot-form' }: BotCreateEditFormProps) {
+export default function BotCreateEditForm({
+  editId = null,
+  formId = 'bot-form',
+  onSubmittingChange,
+}: BotCreateEditFormProps) {
   const { t } = useI18n();
   const router = useRouter();
   const { confirm, confirmModal } = useAsyncConfirm();
@@ -90,6 +95,10 @@ export default function BotCreateEditForm({ editId = null, formId = 'bot-form' }
     isActive: true,
     liveOptIn: false,
   });
+
+  useEffect(() => {
+    onSubmittingChange?.(submitting);
+  }, [onSubmittingChange, submitting]);
 
   const loadFormData = useCallback(async () => {
     setLoading(true);
