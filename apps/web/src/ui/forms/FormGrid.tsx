@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-type FormGridProps = {
+export type FormGridProps = {
   columns?: 1 | 2 | 3;
   className?: string;
   children: ReactNode;
@@ -16,4 +16,3 @@ export function FormGrid({ columns = 2, className, children }: FormGridProps) {
   const rootClassName = ['grid gap-3', GRID_COLUMNS_CLASS[columns], className].filter(Boolean).join(' ');
   return <div className={rootClassName}>{children}</div>;
 }
-

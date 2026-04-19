@@ -2,7 +2,7 @@ import { type InputHTMLAttributes, type ReactNode, type TextareaHTMLAttributes }
 import { FormField } from './FormField';
 import { FormGrid } from './FormGrid';
 
-type BaseFieldProps = {
+export type BaseFieldProps = {
   id: string;
   label: string;
   hint?: string;
@@ -12,7 +12,7 @@ type BaseFieldProps = {
   className?: string;
 };
 
-type Option = {
+export type Option = {
   value: string;
   label: string;
   disabled?: boolean;
@@ -25,7 +25,7 @@ const buildAriaDescribedBy = (id: string, hint: string | undefined, error: strin
   return ids.length > 0 ? ids.join(' ') : undefined;
 };
 
-type TextFieldProps = BaseFieldProps & {
+export type TextFieldProps = BaseFieldProps & {
   value: string;
   onChange: (next: string) => void;
   placeholder?: string;
@@ -79,7 +79,7 @@ export function TextField({
   );
 }
 
-type NumberFieldProps = BaseFieldProps & {
+export type NumberFieldProps = BaseFieldProps & {
   value: string | number;
   onChange: (next: string) => void;
   min?: number;
@@ -137,7 +137,7 @@ export function NumberField({
   );
 }
 
-type SelectFieldProps = BaseFieldProps & {
+export type SelectFieldProps = BaseFieldProps & {
   value: string;
   onChange: (next: string) => void;
   options: Option[];
@@ -194,7 +194,7 @@ export function SelectField({
   );
 }
 
-type TextareaFieldProps = BaseFieldProps & {
+export type TextareaFieldProps = BaseFieldProps & {
   value: string;
   onChange: (next: string) => void;
   rows?: number;
@@ -245,7 +245,7 @@ export function TextareaField({
   );
 }
 
-type ToggleFieldProps = Omit<BaseFieldProps, 'label'> & {
+export type ToggleFieldProps = Omit<BaseFieldProps, 'label'> & {
   label: string;
   checked: boolean;
   onChange: (next: boolean) => void;
@@ -293,7 +293,7 @@ export function ToggleField({
   );
 }
 
-type RadioGroupFieldProps = BaseFieldProps & {
+export type RadioGroupFieldProps = BaseFieldProps & {
   value: string;
   onChange: (next: string) => void;
   options: Option[];
@@ -346,7 +346,7 @@ export function RadioGroupField({
   );
 }
 
-type RangeFieldProps = BaseFieldProps & {
+export type RangeFieldProps = BaseFieldProps & {
   value: number;
   onChange: (next: number) => void;
   min: number;
@@ -403,7 +403,7 @@ export function RangeField({
   );
 }
 
-type CompoundFieldProps = {
+export type CompoundFieldProps = {
   label: string;
   hint?: string;
   error?: string;
@@ -430,4 +430,3 @@ export function CompoundField({
     </FormField>
   );
 }
-

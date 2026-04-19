@@ -125,6 +125,11 @@ Last updated: 2026-04-19
   - then execute `UXR-J-A..C` for shared table-consistency closure.
 
 ## Recent Progress
+- 2026-04-19: completed `UXR-I-03` by normalizing shared `ui/forms` primitive
+  API surface for migration safety (exported prop/type contracts in
+  `FormAlert`, `FormField`, `FormFields`, `FormGrid`, `FormMobileActionBar`,
+  `FormPageShell`, `FormSectionCard`, `FormValidationSummary`) without
+  changing rendering/runtime behavior.
 - 2026-04-19: completed `UXR-I-02` by publishing residual route/module
   forms-consistency gap inventory with markdown + JSON artifacts
   (`uxr-i-forms-gap-map-2026-04-19.md`,

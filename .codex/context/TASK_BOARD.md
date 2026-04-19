@@ -17,7 +17,7 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] UXR-I-03 Normalize shared ui/forms primitive API surface for refresh migration
+- [ ] UXR-I-04 Lock guardrails for no-cross-feature generic controls and no-hardcoded-wrapper-copy regressions
   - Status: READY
   - Group: Dashboard Forms Consistency Refresh (`UXR-I-A`)
   - Owner: Frontend Builder
@@ -26,6 +26,12 @@ Last updated: 2026-04-19
 
 ## BACKLOG
 
+- [ ] UXR-I-05 Unify create/edit wrappers i18n, breadcrumb, and save-action contract
+  - Status: BACKLOG
+  - Group: Dashboard Forms Consistency Refresh (`UXR-I-B`)
+  - Owner: Frontend Builder
+  - Depends on: UXR-I-04
+  - Priority: P2
 - [ ] UXR-J-01 Freeze dashboard table action-color and columns-dropdown behavior contract
   - Status: BACKLOG
   - Group: Dashboard Tables Consistency Refresh (`UXR-J-A`)
@@ -53,6 +59,8 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] UXR-I-03 Normalize shared ui/forms primitive API surface for refresh migration
+  - 2026-04-19: Normalized `ui/forms` API surface by exporting shared primitive prop/type contracts to stabilize downstream wrapper/form migration usage without behavior changes.
 - [x] UXR-I-02 Publish residual forms consistency gap map per route/module
   - 2026-04-19: Published deterministic route/module gap inventory in `docs/operations/uxr-i-forms-gap-map-2026-04-19.md` with machine-readable artifact `_artifacts-uxr-i-forms-gap-map-2026-04-19.json`.
 - [x] UXR-I-01 Freeze dashboard forms consistency refresh boundaries after UXR-F

@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-type FormFieldProps = {
+export type FormFieldProps = {
   label: string;
   htmlFor?: string;
   hint?: string;

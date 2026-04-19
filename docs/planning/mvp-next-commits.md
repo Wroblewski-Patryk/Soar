@@ -7,11 +7,10 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `UXR-I-03 chore(web-ui-forms): normalize shared form primitive API surface for refresh migration`
-## NEXT
 - [ ] `UXR-I-04 test(guardrails): lock no-cross-feature generic controls and no-hardcoded-wrapper-copy regressions`
-## PIPELINE
+## NEXT
 - [ ] `UXR-I-05 refactor(web-wrappers): unify create/edit wrappers i18n+breadcrumb+save-action contract`
+## PIPELINE
 - [ ] `UXR-I-06 refactor(web-wallets-form): close residual layout/control parity gaps using ui/forms primitives`
 - [ ] `UXR-I-07 refactor(web-markets-form): enforce sectioned IA and remove any residual local generic controls`
 - [ ] `UXR-I-08 refactor(web-backtests-form): finalize decoupling from feature-local controls and align summary ergonomics`
@@ -81,6 +80,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `UXR-I-03 chore(web-ui-forms): normalize shared form primitive API surface for refresh migration`
+  - 2026-04-19: Exported shared primitive prop/type contracts across `apps/web/src/ui/forms/*` to stabilize migration API usage without rendering or behavior drift.
 - [x] `UXR-I-02 audit(web-forms): publish residual consistency gap map per route/module`
   - 2026-04-19: Published residual route/module gap map in `docs/operations/uxr-i-forms-gap-map-2026-04-19.md` with JSON artifact `_artifacts-uxr-i-forms-gap-map-2026-04-19.json` to lock deterministic migration targets for `UXR-I-03..UXR-I-13`.
 - [x] `UXR-I-01 docs(contract): freeze dashboard forms consistency refresh boundaries after UXR-F`

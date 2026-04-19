@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-type FormPageShellProps = {
+export type FormPageShellProps = {
   title: string;
   description?: string;
   headerActions?: ReactNode;
@@ -26,4 +26,3 @@ export function FormPageShell({ title, description, headerActions, className, ch
     </div>
   );
 }
-

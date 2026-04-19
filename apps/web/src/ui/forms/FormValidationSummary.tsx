@@ -1,4 +1,4 @@
-type FormValidationSummaryProps = {
+export type FormValidationSummaryProps = {
   title?: string;
   errors: string[];
   className?: string;
@@ -26,4 +26,3 @@ export function FormValidationSummary({
     </div>
   );
 }
-

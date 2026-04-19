@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-type FormMobileActionBarProps = {
+export type FormMobileActionBarProps = {
   children: ReactNode;
   className?: string;
   contentClassName?: string;
@@ -36,4 +36,3 @@ export function FormMobileActionBar({
     </>
   );
 }
-

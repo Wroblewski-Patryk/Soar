@@ -1,8 +1,8 @@
 import { type ReactNode } from 'react';
 
-type FormAlertVariant = 'info' | 'success' | 'warning' | 'error';
+export type FormAlertVariant = 'info' | 'success' | 'warning' | 'error';
 
-type FormAlertProps = {
+export type FormAlertProps = {
   variant?: FormAlertVariant;
   title?: string;
   children?: ReactNode;
@@ -30,4 +30,3 @@ export function FormAlert({ variant = 'info', title, children, className }: Form
     </div>
   );
 }
-
