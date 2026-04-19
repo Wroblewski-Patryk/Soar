@@ -218,3 +218,11 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
 - Scope lock:
   - strict selected-bot scope only (no cross-bot blending),
   - preview behavior unchanged.
+
+## 20. Sidebar Strategy Source-of-Truth Contract (`SBSC`)
+- Sidebar `Market` and `Strategy` cards use runtime topology (`runtime-graph`) as canonical context source.
+- Strategy context for selected bot is resolved from canonical active+enabled market-group strategy links first.
+- Compatibility fallback (`legacyBotStrategies`) is allowed only when canonical mapping for selected bot is unavailable.
+- Cross-projection parity requirement:
+  - `GET /dashboard/bots` `strategyId` must stay compatible with runtime-graph primary strategy for the same bot.
+  - selected-bot switch must not show `Market` from canonical context and `Strategy` from a conflicting legacy projection.

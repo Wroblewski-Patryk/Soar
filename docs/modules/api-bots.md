@@ -117,3 +117,12 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
 - Strategy context precedence:
   - canonical mapping is authoritative.
   - legacy mapping is compatibility fallback only when canonical mapping is missing for selected bot/symbol, and cannot override canonical mapping.
+
+## 12. Sidebar Strategy Projection Parity Contract (`SBSC`)
+- `listBots` and `getBot` strategy projection (`strategyId`) must stay compatible with runtime graph primary strategy for the same bot.
+- Strategy projection precedence for dashboard-facing read model:
+  - canonical active+enabled `marketGroupStrategyLinks` first,
+  - legacy `botStrategies` as compatibility fallback only.
+- Drift policy:
+  - legacy link state may exist for backward compatibility, but it cannot override canonical runtime topology in dashboard strategy contexts.
+  - module should expose deterministic diagnostics/repair path for legacy-canonical divergence to support operations closure.

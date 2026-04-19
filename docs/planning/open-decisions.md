@@ -804,6 +804,23 @@ This file tracks intentionally unresolved architecture choices so implementation
   - `docs/modules/web-dashboard-home.md`
   - `docs/modules/web-bots.md`
 
+## Dashboard Sidebar Strategy Source-of-Truth Contract (`SBSC`)
+- Decision state: resolved on 2026-04-19.
+- Decision:
+  - sidebar `Market + Strategy` cards in `/dashboard` use runtime topology as canonical source-of-truth.
+  - canonical strategy source is the primary active+enabled `marketGroupStrategyLink` from runtime graph.
+  - `GET /dashboard/bots` and `GET /dashboard/bots/:id` strategy projection (`strategyId`) must remain runtime-graph compatible for the same bot.
+- Locked behavior:
+  - projection precedence for bot strategy read model is:
+    - canonical `marketGroupStrategyLinks` from active+enabled groups first,
+    - legacy `botStrategies` only as compatibility fallback when canonical mapping is unavailable.
+  - legacy `botStrategies` must not override canonical runtime strategy context in dashboard sidebar contexts.
+  - dashboard sidebar `Market` and `Strategy` cards must not resolve from conflicting projections after selected-bot switch.
+- Canonical references:
+  - `docs/planning/dashboard-sidebar-strategy-contract-plan-2026-04-19.md`
+  - `docs/modules/api-bots.md`
+  - `docs/modules/web-dashboard-home.md`
+
 ## Dashboard Runtime Symbol Scope Strictness (Selected Bot)
 - Decision state: resolved on 2026-04-18.
 - Decision:
