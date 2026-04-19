@@ -1,6 +1,6 @@
 # UXR-H Dashboard Manual Order Advanced UX Plan (2026-04-19)
 
-Status: in progress (`UXR-H-01` completed on 2026-04-19; `UXR-H-02` next)  
+Status: completed (`UXR-H-01..UXR-H-10` closed on 2026-04-19)  
 Execution mode: tiny-commit only (exactly one task per commit)  
 Primary audience: execution agent
 
@@ -45,6 +45,20 @@ Primary audience: execution agent
 1. `UXR-H-A (commits UXR-H-01..UXR-H-03): contract freeze + API context endpoint + backend regression locks`
 2. `UXR-H-B (commits UXR-H-04..UXR-H-07): web state/data integration + manual-order UI expansion + container cleanup`
 3. `UXR-H-C (commits UXR-H-08..UXR-H-10): i18n polish + focused regression pack + closure sync`
+
+## Closure Evidence (2026-04-19)
+- Delivered API context endpoint contract (`GET /dashboard/orders/manual-context`) with ownership guard + deterministic fallback behavior.
+- Added API regression locks for fallback order type, min executable quantity derivation, and degraded exchange data handling.
+- Shipped web manual-order advanced UI/state: context fetch, price input + market fill, qty min/slider flow, side-aware summary, and single-layer panel layout.
+- Completed EN/PL/PT copy parity for new manual-order labels, hints, and validations.
+- Validation pack:
+  - `pnpm --filter api run test -- src/modules/orders/orders.service.test.ts src/modules/orders/orders-positions.e2e.test.ts --run`
+  - `pnpm --filter web run test -- src/features/dashboard-home/components/HomeLiveWidgets.test.tsx --run`
+  - `pnpm --filter api run typecheck`
+  - `pnpm --filter web run typecheck`
+  - `pnpm --filter api run build`
+  - `pnpm --filter web run build`
+  - `pnpm run quality:guardrails`
 
 ## Tiny-Commit Queue
 

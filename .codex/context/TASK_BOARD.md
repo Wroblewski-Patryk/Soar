@@ -17,21 +17,16 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] UXR-H-02 Add API manual-order context endpoint for symbol constraints, price reference, and bot execution metadata
-  - Status: READY
-  - Group: Dashboard Manual Order Advanced UX (`UXR-H-A`)
-  - Owner: Backend Builder
-  - Depends on: UXR-H-01
-  - Priority: P2
-
-## BACKLOG
-
 - [ ] OPV-01 Execute Dockerfile-first stage/prod rehearsal and capture deployment evidence
-  - Status: BACKLOG
+  - Status: READY
   - Group: Production Verification Follow-up (`OPV-A`)
   - Owner: Ops/Release
   - Depends on: POS-42
   - Priority: P3
+
+## BACKLOG
+
+- [ ] (none)
 
 ## IN_PROGRESS
 
@@ -47,6 +42,14 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] UXR-H group closure (`UXR-H-02..UXR-H-10`)
+  - 2026-04-19: Closed dashboard manual-order advanced UX wave end-to-end by delivering API manual-order context endpoint + regression locks, wiring typed web context/state integration, adding price input + market-price fill + qty slider + side-aware summary + single-layer container layout, completing EN/PL/PT i18n parity, and running focused closure pack (`api tests`, `web tests`, `api/web typecheck`, `api/web build`, `quality:guardrails`).
+- [x] UXR-H-02 Add API manual-order context endpoint for symbol constraints, price reference, and bot execution metadata
+  - 2026-04-19: Added `GET /dashboard/orders/manual-context` with ownership validation and canonical response contract (`orderType`, `marginMode`, `leverage`, reference price, qty constraints, side-aware preview) including explicit `orderType -> MARKET` fallback behavior.
+- [x] UXR-H-03 Lock API regression coverage for manual-order context fallback and constraints
+  - 2026-04-19: Added focused service + e2e coverage for fallback order type, min-executable quantity derivation, degraded exchange fetch stability, and route ownership isolation.
+- [x] UXR-H-04..UXR-H-09 Web dashboard manual-order advanced state/UI/i18n/test rollout
+  - 2026-04-19: Added typed manual-order context client and web contracts, wired context-aware controller state (`price`, `slider`, `min qty`, derived estimates), implemented runtime sidebar UI expansion + container simplification, localized new copy in `dashboard-home` EN/PL/PT, and updated dashboard-home regression tests for advanced interactions.
 - [x] UXR-H-01 Freeze dashboard manual-order advanced input/context contract before implementation
   - 2026-04-19: Contract frozen in canonical docs (`open-decisions`, `web-dashboard-home`, `api-orders`) with explicit `orderType` fallback (`MARKET`) and scope lock for advanced manual-order UX.
 - [x] POS-36 Remove strategy-exit close bypass from backtest/replay/runtime lifecycle flow

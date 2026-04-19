@@ -20,8 +20,8 @@ Last updated: 2026-04-19
   and IA changes.
 - 2026-04-17: Portuguese rollout is locked to `pt-PT`; `pt-BR` is not part of
   the current localization wave.
-- 2026-04-19: active execution focus moved to `POS-A` after closing `ARC-C`
-  and `ARC-E` architecture maintainability remediation waves.
+- 2026-04-19: dashboard manual-order advanced UX wave (`UXR-H`) is closed
+  end-to-end and execution focus moved to deployment-readiness follow-up.
 
 ## Technical Baseline
 - Backend: Node.js 20+, Express API, Prisma, TypeScript
@@ -99,22 +99,27 @@ Last updated: 2026-04-19
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: execute `UXR-H-A` manual-order advanced foundation
-  (`UXR-H-02..UXR-H-03`) after contract-freeze closure.
+- Main active objective: execute `OPV-01` Dockerfile-first stage/prod
+  rehearsal and capture deployment evidence for release confidence.
 - Top blockers:
-  - manual-order context read endpoint is not yet available as one API
-    source-of-truth for price/rules/min-executable quantity (`UXR-H-02`).
+  - production rehearsal depends on full lifecycle parity closure (`POS-42`)
+    and currently remains in follow-up queue.
 - Success criteria for this phase:
-  - dashboard manual-order advanced wave has frozen docs contract +
-    API context endpoint + regression locks (`UXR-H-01..UXR-H-03`).
+  - production rehearsal evidence is captured with explicit stage/prod
+    Dockerfile-first deployment path checks (`OPV-01`).
   - canonical queue and context docs stay synchronized after each ARC batch.
   - no regressions in runtime safety, deploy confidence, or dashboard contracts.
-- Next queued follow-up after `UXR-H-A`:
-  - dashboard manual-order UI/state rollout (`UXR-H-B`, `UXR-H-04..07`),
-  - i18n/regression/closure sync (`UXR-H-C`, `UXR-H-08..10`),
-  - lifecycle parity continuation (`POS-A` remaining `POS-37..POS-38`).
+- Next queued follow-up:
+  - lifecycle parity continuation (`POS-A` remaining `POS-37..POS-38`),
+  - production verification closure wave (`OPV-A`, `OPV-01..OPV-04`).
 
 ## Recent Progress
+- 2026-04-19: closed `UXR-H` (`UXR-H-02..UXR-H-10`) end-to-end by delivering
+  API manual-order context read contract + regression locks, web context/state
+  integration, advanced runtime sidebar manual-order UX (`price`, market-fill,
+  qty slider, side-aware summary, single-layer panel), EN/PL/PT i18n parity,
+  and focused closure validation pack (`api/web tests`, `api/web typecheck`,
+  `api/web build`, `quality:guardrails`).
 - 2026-04-19: completed `UXR-H-01` by freezing dashboard manual-order advanced
   input/context contract across canonical decisions and module docs, including
   explicit unresolved `orderType -> MARKET` fallback and scope lock against

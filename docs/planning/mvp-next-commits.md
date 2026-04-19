@@ -7,23 +7,20 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `UXR-H-02 feat(api-orders): add manual-order context read endpoint for price/rules/min-qty preview`
-## NEXT
-- [ ] `UXR-H-03 test(api-orders): lock manual-order context constraints and fallback behavior`
-## PIPELINE
 - [ ] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
-- [ ] `UXR-H-02 feat(api-orders): add manual-order context read endpoint for price/rules/min-qty preview`
-- [ ] `UXR-H-03 test(api-orders): lock manual-order context constraints and fallback behavior`
-- [ ] `UXR-H-06 feat(web-dashboard-manual-order): add price input, qty slider, side-aware summary, and remove double-container layering`
+## NEXT
+- [ ] `POS-A (commits POS-36..POS-38): lifecycle contract parity foundations across backtest/paper/live`
+## PIPELINE
+- [ ] `OPV-A (commits OPV-01..OPV-04): production rehearsal + live-takeover verification + exit-gate closure`
 ## GROUP QUEUE
 - [x] `BRS-A (commits BRS-01..BRS-04): decision closure + strict selected-bot scope foundation`
 - [x] `BRS-B (commits BRS-05..BRS-08): canonical update-path fix + strategy precedence unification`
 - [x] `BRS-C (commits BRS-09..BRS-12): dashboard switch regression + QA closure`
 - [x] `UXR-G-A (commits UXR-G-01..UXR-G-03): dashboard wallet/manual-order hierarchy + summary-row contract`
 - [x] `UXR-G-B (commits UXR-G-04..UXR-G-06): 50/50 wallet KPI split + regression closure`
-- [ ] `UXR-H-A (commits UXR-H-01..UXR-H-03): manual-order advanced contract + backend context/rules foundation`
-- [ ] `UXR-H-B (commits UXR-H-04..UXR-H-07): dashboard manual-order state+UI expansion + container cleanup`
-- [ ] `UXR-H-C (commits UXR-H-08..UXR-H-10): i18n parity + focused regression + closure sync`
+- [x] `UXR-H-A (commits UXR-H-01..UXR-H-03): manual-order advanced contract + backend context/rules foundation`
+- [x] `UXR-H-B (commits UXR-H-04..UXR-H-07): dashboard manual-order state+UI expansion + container cleanup`
+- [x] `UXR-H-C (commits UXR-H-08..UXR-H-10): i18n parity + focused regression + closure sync`
 - [x] `PLNC-A (commits PLNC-01..PLNC-04): planning catalog reconciliation + status sync + canonical linkage`
 - [x] `ARC-A (commits ARC-01..ARC-05): runtime critical-path decomposition foundations`
 - [x] `ARC-B (commits ARC-06..ARC-10): bots runtime CQRS/read-model decomposition + aggregate monitoring contract`
@@ -62,6 +59,16 @@ Operational queue for one-task execution runs.
 ## DONE
 - [x] `UXR-H-01 docs(contract): freeze dashboard manual-order advanced input/context contract`
   - 2026-04-19: Frozen manual-order advanced behavior/data-source contract in canonical decisions and module docs, including `price` placement/fill rule, `qty` min+slider guidance contract, side-aware summary contract, and explicit unresolved `orderType -> MARKET` fallback. Synced wave plan status to in-progress with `UXR-H-02` next. Validation: `pnpm run quality:guardrails` => `PASS`.
+- [x] `UXR-H-02 feat(api-orders): add manual-order context read endpoint for price/rules/min-qty preview`
+  - 2026-04-19: Added `GET /dashboard/orders/manual-context` with ownership guard, canonical manual-order context payload, resolved `orderType/marginMode/leverage`, reference price fallback behavior, and executable quantity constraints (`minAmount`, `amountPrecision`, `minNotional`, `minExecutableQty`).
+- [x] `UXR-H-03 test(api-orders): lock manual-order context constraints and fallback behavior`
+  - 2026-04-19: Added focused service/e2e coverage for unresolved `orderType -> MARKET` fallback, min executable quantity derivation, degraded exchange fetch stability, and ownership isolation on manual-context route.
+- [x] `UXR-H-04..UXR-H-09 web+i18n+test rollout for dashboard manual-order advanced UX`
+  - 2026-04-19: Added typed web manual-order context client/contracts, wired dashboard manual-order context+price+slider state model, shipped runtime sidebar advanced manual-order UI (`price`, market fill, qty slider row, context rows, side-aware summary, single-layer panel), localized added copy in EN/PL/PT, and updated `HomeLiveWidgets` regression coverage for the new interaction contract.
+- [x] `UXR-H-10 qa(web+api-closure): focused manual-order regression pack + queue/context sync`
+  - 2026-04-19: Validation pack PASS: `pnpm --filter api run test -- src/modules/orders/orders.service.test.ts src/modules/orders/orders-positions.e2e.test.ts --run`, `pnpm --filter web run test -- src/features/dashboard-home/components/HomeLiveWidgets.test.tsx --run`, `pnpm --filter api run typecheck`, `pnpm --filter web run typecheck`, `pnpm --filter api run build`, `pnpm --filter web run build`, `pnpm run quality:guardrails`.
+- [x] `UXR-H group closure (UXR-H-A..UXR-H-C)`
+  - 2026-04-19: Closed complete dashboard manual-order advanced UX wave (`UXR-H-01..UXR-H-10`) with API contract, web/UI rollout, i18n parity, focused regressions, and canonical context synchronization.
 - [x] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
   - 2026-04-19: Enforced EXIT trace-only parity semantics in backtest replay/interleaved simulation flows by mapping direct `EXIT -> close` core decisions to diagnostics-only mismatch (`strategy_exit_trace_only`) while preserving lifecycle/final-candle as sole close authority; added runtime final-candle regression lock for EXIT trace-only path (`orchestrateFn` skip + signal payload marker). Validation: `pnpm --filter api run test -- src/modules/backtests/backtestReplayCore.test.ts src/modules/backtests/backtests.contract-remediation.test.ts src/modules/engine/runtimeFinalCandleDecision.service.test.ts --run` => `35/35 PASS`; `pnpm --filter api run test -- src/modules/backtests/backtests.e2e.test.ts --run` => `10/10 PASS`; `pnpm --filter api run typecheck` => `PASS`; `pnpm --filter api run build` => `PASS`; `docker build -f apps/api/Dockerfile.worker.backtest .` => `PASS`; `pnpm run quality:guardrails` => `PASS`.
 - [x] `ARC-E group closure (ARC-19..ARC-20)`
