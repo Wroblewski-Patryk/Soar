@@ -7,9 +7,8 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `DAGG-10 qa(closure): run focused aggregate parity pack and sync canonical queue/context`
-## NEXT
 - [ ] `SBSC-01 docs(contract): freeze sidebar strategy source-of-truth and projection parity rules`
+## NEXT
 - [ ] `SBSC-02 test(api-red): add regression for listBots.strategyId vs runtime-graph primary strategy mismatch`
 - [ ] `SBSC-03 fix(api-projection): make listBots/getBot strategy projection canonical-first and runtime-graph compatible`
 ## PIPELINE
@@ -33,7 +32,7 @@ Operational queue for one-task execution runs.
 ## GROUP QUEUE
 - [x] `DAGG-A (commits DAGG-01..DAGG-04): contract freeze + dashboard aggregate data-source migration`
 - [x] `DAGG-B (commits DAGG-05..DAGG-08): history positions parity + aggregate API contract hardening`
-- [ ] `DAGG-C (commits DAGG-09..DAGG-10): parity regression closure + canonical sync`
+- [x] `DAGG-C (commits DAGG-09..DAGG-10): parity regression closure + canonical sync`
 - [ ] `SBSC-A (commits SBSC-01..SBSC-03): decision freeze + API projection mismatch regression + canonical-first mapper fix`
 - [ ] `SBSC-B (commits SBSC-04..SBSC-06): drift detection/repair path + sidebar switch regression locks`
 - [ ] `SBSC-C (commits SBSC-07..SBSC-08): closure validation + canonical sync`
@@ -94,6 +93,16 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `DAGG-10 qa(closure): run focused aggregate parity pack and sync canonical queue/context`
+  - 2026-04-19: Focused closure pack PASS:
+    - `pnpm --filter api run test -- --run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`
+    - `pnpm --filter web run test -- --run src/features/dashboard-home/components/HomeLiveWidgets.aggregate-history.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx`
+    - `pnpm --filter api run typecheck`
+    - `pnpm --filter web run typecheck`
+    - `pnpm --filter web run build`
+    - `pnpm run quality:guardrails`
+- [x] `DAGG-C (commits DAGG-09..DAGG-10): parity regression closure + canonical sync`
+  - 2026-04-19: Group closed with explicit `/dashboard` vs `/dashboard/bots/:id/preview` selected-bot aggregate-history parity regression and green focused validation pack.
 - [x] `DAGG-09 test(e2e/web-parity): add scenario asserting /dashboard and /preview parity for selected bot aggregate history`
   - 2026-04-19: Added `HomeLiveWidgets.preview-parity.test.tsx` to lock selected-bot aggregate history/trade parity between `/dashboard` and `/dashboard/bots/:id/preview` and verify no cross-bot leakage in either route context.
 - [x] `DAGG-B (commits DAGG-05..DAGG-08): history positions parity + aggregate API contract hardening`

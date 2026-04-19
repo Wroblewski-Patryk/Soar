@@ -17,13 +17,12 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] DAGG-10 Run focused aggregate parity closure pack and sync canonical queue/context
-
-## BACKLOG
-
 - [ ] SBSC-01 Freeze sidebar strategy source-of-truth and projection parity rules
 - [ ] SBSC-02 Add API regression for listBots.strategyId vs runtime-graph primary strategy mismatch
 - [ ] SBSC-03 Make listBots/getBot strategy projection canonical-first and runtime-graph compatible
+
+## BACKLOG
+
 - [ ] SBSC-04 Add deterministic drift audit for bots with legacy/canonical strategy divergence
 - [ ] SBSC-05 Add safe drift-repair path aligning legacy linkage with canonical strategy
 - [ ] SBSC-06 Lock dashboard sidebar strategy/market switch parity regression (two bots, different strategies)
@@ -56,6 +55,16 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] DAGG-C group closure (`DAGG-09..DAGG-10`)
+  - 2026-04-19: Closed preview-vs-dashboard aggregate parity by adding cross-route selected-bot parity regression and completing focused closure pack (`api aggregate e2e`, `web aggregate parity tests`, `api/web typecheck`, `web build`, `quality:guardrails`) with canonical queue/context sync.
+- [x] DAGG-10 Run focused aggregate parity closure pack and sync canonical queue/context
+  - 2026-04-19: Focused `DAGG` closure pack PASS:
+    - `pnpm --filter api run test -- --run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`
+    - `pnpm --filter web run test -- --run src/features/dashboard-home/components/HomeLiveWidgets.aggregate-history.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx`
+    - `pnpm --filter api run typecheck`
+    - `pnpm --filter web run typecheck`
+    - `pnpm --filter web run build`
+    - `pnpm run quality:guardrails`
 - [x] DAGG-09 Add /dashboard vs /preview selected-bot parity regression scenario
   - 2026-04-19: Added cross-route web regression in `HomeLiveWidgets.preview-parity.test.tsx` that renders `/dashboard` (`HomeLiveWidgets`) and `/dashboard/bots/:id/preview` (`BotsManagement` locked to monitoring) on shared runtime mocks, proving selected-bot aggregate history/trade parity and no cross-bot leakage in both views.
 - [x] DAGG-B group closure (`DAGG-05..DAGG-08`)

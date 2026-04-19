@@ -107,26 +107,30 @@ Last updated: 2026-04-19
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: execute the new `DAGG` wave to enforce dashboard
-  aggregate selected-bot data contract (`positions/orders/history`) and close
-  preview-vs-dashboard history divergence.
+- Main active objective: execute `SBSC-A` to lock sidebar
+  strategy source-of-truth parity after `DAGG` closure.
 - Top blockers:
   - none in OPV scope; final RC external-gates snapshot is closed
     (`G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`) from run
     `2026-04-19T15:13:58.943Z`.
 - Success criteria for this phase:
-  - `DAGG-C` closure: explicit `/dashboard` vs `/dashboard/bots/:id/preview`
-    aggregate-history parity regression and focused closure pack.
-  - dashboard selected bot tables remain aggregate-scoped and deterministic
-    after closure validation.
+  - sidebar strategy projection is canonical-first and deterministic between
+    `listBots/getBot` and runtime graph.
+  - strict regression locks prevent strategy drift in selected-bot sidebar
+    context.
   - focused validation remains green for touched modules before each commit.
   - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - execute `DAGG-10` from canonical `NOW` queue.
-  - after `DAGG-C` closure, move to `SBSC` strategy source-of-truth parity,
-    then queued `SOPR` selected-bot signals/open-runtime parity closure.
+  - execute `SBSC-01` from canonical `NOW` queue.
+  - continue `SBSC-A` (`SBSC-02`, `SBSC-03`) before moving to queued `SOPR`
+    selected-bot signals/open-runtime parity closure.
 
 ## Recent Progress
+- 2026-04-19: closed `DAGG-C` (`DAGG-09..DAGG-10`) end-to-end by adding
+  explicit cross-route selected-bot parity regression
+  (`HomeLiveWidgets.preview-parity.test.tsx`) and completing focused closure
+  validation pack (`api aggregate e2e`, `web aggregate parity tests`,
+  `api/web typecheck`, `web build`, `quality:guardrails`).
 - 2026-04-19: completed `DAGG-09` by adding explicit cross-route web parity
   regression (`HomeLiveWidgets.preview-parity.test.tsx`) that validates
   selected-bot aggregate history/trade consistency between `/dashboard`

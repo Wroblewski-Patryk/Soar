@@ -2115,13 +2115,21 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - [x] `DAGG-06 test(web-history-parity): lock dashboard history positions/trades parity and selected-bot switch behavior`
 - [x] `DAGG-07 test(api-aggregate-red): add regression for aggregate positions/orders/history counts across mixed session statuses`
 - [x] `DAGG-08 fix(api-aggregate-contract): harden aggregate response determinism for dashboard tables`
-- [ ] `DAGG-09 test(e2e/web-parity): add scenario asserting /dashboard and /preview parity for selected bot aggregate history`
-- [ ] `DAGG-10 qa(closure): run focused aggregate parity pack and sync canonical queue/context`
+- [x] `DAGG-09 test(e2e/web-parity): add scenario asserting /dashboard and /preview parity for selected bot aggregate history`
+- [x] `DAGG-10 qa(closure): run focused aggregate parity pack and sync canonical queue/context`
 
 ### Progress Log (Phase DAGG - Dashboard Aggregate Selected-Bot View Parity)
 - 2026-04-19: Queued aggregate-view remediation from production discrepancy report (preview shows closed history positions while dashboard selected bot does not) and published executor-ready plan in `docs/planning/dashboard-aggregate-selected-bot-view-plan-2026-04-19.md`; product decision locked: dashboard runtime tables are aggregate-by-selected-bot.
 - 2026-04-19: Closed `DAGG-A` (`DAGG-01..DAGG-04`) by enforcing aggregate-first selected-bot runtime loading in dashboard home, aligning runtime view-model/trade session derivation to aggregate payload (`actionSessionId` + aggregate trade source), and locking RUNNING-empty-session aggregate-history parity regression in `HomeLiveWidgets`.
 - 2026-04-19: Closed `DAGG-B` (`DAGG-05..DAGG-08`) by adding closed-positions history table to dashboard history tab, adding selected-bot history re-scope web regression coverage, and hardening API aggregate determinism with timestamp+id tie-break sorting plus mixed-session aggregate e2e regression (`bots.monitoring-aggregate.e2e.test.ts`).
+- 2026-04-19: Closed `DAGG-09` by adding high-fidelity cross-route web regression in `HomeLiveWidgets.preview-parity.test.tsx`, proving selected-bot aggregate history/trade parity between `/dashboard` and `/dashboard/bots/:id/preview` with no cross-bot leakage.
+- 2026-04-19: Closed `DAGG-10` and stage `DAGG-C` with green focused validation pack:
+  - `pnpm --filter api run test -- --run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`
+  - `pnpm --filter web run test -- --run src/features/dashboard-home/components/HomeLiveWidgets.aggregate-history.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx`
+  - `pnpm --filter api run typecheck`
+  - `pnpm --filter web run typecheck`
+  - `pnpm --filter web run build`
+  - `pnpm run quality:guardrails`
 
 ## Phase SBSC - Dashboard Sidebar Strategy Source-of-Truth Parity (Queued 2026-04-19)
 - [ ] `SBSC-01 docs(contract): freeze sidebar strategy source-of-truth and projection parity rules`
