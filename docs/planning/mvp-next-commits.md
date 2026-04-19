@@ -7,7 +7,7 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `DASHR-01 docs(contract): freeze dashboard runtime parity contract for positions/orders/history/signals/selected-bot section`
+- [x] `DASHR-01 docs(contract): freeze dashboard runtime parity contract for positions/orders/history/signals/selected-bot section`
 - [ ] `DASHR-02 test(web-red): add failing coverage for orders-tab table rendering and selected-bot strategy refresh`
 - [ ] `DASHR-03 fix(web-orders-tab): replace open-orders placeholder with DataTable + deterministic empty state`
 - [ ] `DASHR-04 fix(web-selected-bot-panel): ensure strategy context refresh and apply requested spacing/layout order`
@@ -75,6 +75,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `DASHR-01 docs(contract): freeze dashboard runtime parity contract for positions/orders/history/signals/selected-bot section`
+  - 2026-04-19: Locked `DASHR` parity contract in canonical docs (`open-decisions`, `web-dashboard-home`) with explicit tab behavior (`positions/orders/history`), selected-bot scoped signals/strategy rules, signal execution diagnostics requirement, and selected-bot panel layout/spacing order (`KPI -> selector -> market/strategy`, `mt-6` spacing).
 - [x] `DASHR planning queued (dashboard runtime parity recovery for positions/orders/history/signals/selected-bot section)`
   - 2026-04-19: Added dedicated execution plan `docs/planning/dashboard-runtime-data-parity-recovery-plan-2026-04-19.md` and promoted grouped tiny-commit wave (`DASHR-A..DASHR-C`) into `NOW/NEXT/PIPELINE` for implementation continuity with strict scope lock.
 - [x] `UXR-J-08 qa(web-table-closure): run focused suite + typecheck/build and sync queue/context`

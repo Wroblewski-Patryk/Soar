@@ -186,3 +186,18 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
 - Canonical references:
   - `docs/planning/uxr-j-dashboard-tables-consistency-refresh-plan-2026-04-19.md`
   - `docs/planning/open-decisions.md` (`Dashboard Tables Consistency Refresh (Post-UXR-I)`)
+
+## 18. Dashboard Runtime Parity Recovery Contract (`DASHR`)
+- Runtime tabs contract:
+  - `positions`: selected-bot runtime positions (including takeover rows) remain deterministic and bot-scoped.
+  - `orders`: always render DataTable container in `LIVE` and `PAPER`; empty rows use deterministic table empty-state copy.
+  - `history`: selected-bot trade history remains aligned with selected runtime session domain.
+- Signals/context contract:
+  - `signals` symbols and strategy context are selected-bot scoped only.
+  - strategy context in selected-bot panel must refresh immediately after bot switch.
+- Selected-bot panel layout contract:
+  - KPI/status row remains first.
+  - selected-bot selector row is placed between KPI row and market/strategy context row.
+  - section spacing for selector/context rows uses `mt-6` (not `mt-3`).
+- Execution diagnostics contract:
+  - when signal condition is met, runtime must either open order/position through canonical path or expose explicit blocked reason for operator diagnostics.

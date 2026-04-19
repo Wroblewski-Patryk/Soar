@@ -17,7 +17,6 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] DASHR-01 Freeze dashboard runtime parity contract for positions/orders/history/signals/selected-bot section
 - [ ] DASHR-02 Add failing web regression for orders-tab table rendering and selected-bot strategy refresh
 - [ ] DASHR-03 Replace dashboard orders placeholder with DataTable + deterministic empty state
 - [ ] DASHR-04 Fix selected-bot strategy refresh and apply requested selected-bot section spacing/layout order
@@ -46,6 +45,8 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] DASHR-01 Freeze dashboard runtime parity contract for positions/orders/history/signals/selected-bot section
+  - 2026-04-19: Frozen `DASHR` contract in canonical docs (`open-decisions`, `web-dashboard-home`) with strict selected-bot scope for `signals/strategy`, table-first `orders` tab contract (including deterministic empty state), `positions/history` selected-session parity expectation, and selected-bot panel layout order (`KPI -> selector -> market/strategy`) plus `mt-6` spacing lock.
 - [x] DASHR planning queued (`DASHR-01..DASHR-11`)
   - 2026-04-19: Added `docs/planning/dashboard-runtime-data-parity-recovery-plan-2026-04-19.md` and synchronized canonical queue (`mvp-next-commits` NOW/NEXT/PIPELINE) to unblock executor with strict scope lock on reported dashboard runtime issues only.
 

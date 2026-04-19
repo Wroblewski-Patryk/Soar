@@ -371,6 +371,25 @@ This file tracks intentionally unresolved architecture choices so implementation
   - `docs/planning/uxr-i-dashboard-forms-consistency-refresh-plan-2026-04-19.md`
   - `docs/planning/dashboard-forms-consistency-planner-brief-2026-04-19.md`
 
+## Dashboard Runtime Data Parity Recovery (DASHR)
+- Decision state: resolved on 2026-04-19.
+- Scope:
+  - `/dashboard` runtime parity for `positions`, `orders`, `history`, `signals`, and selected-bot context panel behavior.
+- Decision:
+  - selected-bot context (`markets`, `strategy`) must refresh deterministically on bot switch and stay scoped to selected bot.
+  - `orders` tab must always render a table container in both non-empty and empty states (no placeholder-only fallback).
+  - `positions` and `history` tabs must read from the same selected-bot runtime/session domain used by dashboard runtime snapshot.
+  - signal condition outcomes must be deterministic:
+    - either open flow executes (`signal -> order -> position`), or
+    - explicit blocked diagnostics are emitted (fail-closed, observable reason).
+  - selected-bot panel layout contract:
+    - status/KPI row first,
+    - selected-bot selector row between KPI and market/strategy row,
+    - spacing in that section follows `mt-6` where previous contract used `mt-3`.
+- Canonical references:
+  - `docs/planning/dashboard-runtime-data-parity-recovery-plan-2026-04-19.md`
+  - `docs/modules/web-dashboard-home.md`
+
 ## Numeric Locale Input Policy (Comma vs Dot)
 - Decision state: resolved on 2026-04-02.
 - Decision:
