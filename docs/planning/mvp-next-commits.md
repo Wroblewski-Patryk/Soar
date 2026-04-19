@@ -7,16 +7,22 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [x] `DASHR-05 test(api+web-red): reproduce positions/history mismatch between runtime module and dashboard selected snapshot`
-- [x] `DASHR-06 fix(api+web-runtime-parity): align selected session/snapshot mapping for positions and history tabs`
-- [x] `DASHR-07 test(api-red-signals-scope): lock selected-bot-only markets/strategy context in signals payload`
+- [ ] `DAGG-01 docs(contract): freeze /dashboard aggregate selected-bot runtime contract (positions/orders/history)`
+- [ ] `DAGG-02 test(web-red): add failing regression for selected-bot aggregate parity when RUNNING session is empty`
+- [ ] `DAGG-03 feat(web-controller): switch dashboard selected-bot runtime loading to aggregate endpoint`
 ## NEXT
-- [x] `DASHR-08 fix(api-signals-scope): enforce selected-bot symbol and strategy context parity for dashboard signals`
-- [x] `DASHR-09 test(api-red-signal-execution): add regression for condition-met but no-order/no-position outcome`
-- [x] `DASHR-10 fix(api-runtime-execution): restore signal->order->position flow or emit explicit blocked diagnostics`
+- [ ] `DAGG-04 refactor(web-runtime-viewmodel): align positions/orders/trades derivation to aggregate payload`
+- [ ] `DAGG-05 feat(web-history-tab): add aggregate closed-positions table in dashboard history tab`
+- [ ] `DAGG-06 test(web-history-parity): lock dashboard history positions/trades parity and selected-bot switch behavior`
 ## PIPELINE
-- [x] `DASHR-11 qa(closure): run focused dashboard runtime parity pack and sync canonical queue/context`
+- [ ] `DAGG-07 test(api-aggregate-red): add regression for aggregate positions/orders/history counts across mixed session statuses`
+- [ ] `DAGG-08 fix(api-aggregate-contract): harden aggregate response determinism for dashboard tables`
+- [ ] `DAGG-09 test(e2e/web-parity): add scenario asserting /dashboard and /preview parity for selected bot aggregate history`
+- [ ] `DAGG-10 qa(closure): run focused aggregate parity pack and sync canonical queue/context`
 ## GROUP QUEUE
+- [ ] `DAGG-A (commits DAGG-01..DAGG-04): contract freeze + dashboard aggregate data-source migration`
+- [ ] `DAGG-B (commits DAGG-05..DAGG-08): history positions parity + aggregate API contract hardening`
+- [ ] `DAGG-C (commits DAGG-09..DAGG-10): parity regression closure + canonical sync`
 - [x] `DASHR-A (commits DASHR-01..DASHR-04): dashboard tab/view parity + selected-bot section consistency`
 - [x] `DASHR-B (commits DASHR-05..DASHR-08): selected-bot runtime data parity for positions/history/signals scope`
 - [x] `DASHR-C (commits DASHR-09..DASHR-11): signal->order execution diagnostics + closure`
@@ -71,6 +77,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `DAGG planning queued (dashboard aggregate selected-bot view parity for positions/orders/history)`
+  - 2026-04-19: Added `docs/planning/dashboard-aggregate-selected-bot-view-plan-2026-04-19.md` and promoted execution groups `DAGG-A..DAGG-C` into `NOW/NEXT/PIPELINE`, locking product decision that dashboard tables use selected-bot aggregate scope.
 - [x] `DASHR-C (commits DASHR-09..DASHR-11): signal->order execution diagnostics + closure`
   - 2026-04-19: Closed end-to-end with explicit runtime blocked-path diagnostics (`PRETRADE_BLOCKED`) and focused closure pack PASS (`api bots/orders/runtime tests`, `web HomeLiveWidgets`, `api/web typecheck`, `web build`, `quality:guardrails`).
 - [x] `DASHR-B (commits DASHR-05..DASHR-08): selected-bot runtime data parity for positions/history/signals scope`

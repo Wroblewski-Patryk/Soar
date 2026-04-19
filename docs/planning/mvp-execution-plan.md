@@ -2106,6 +2106,21 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-19: Completed `UXR-J-07` by aligning focused consuming-table suites (`BotsListTable`, `BacktestsRunsTable`) with shared module-tone action contract (`runtime/preview` assertions updated to `text-accent`).
 - 2026-04-19: Completed `UXR-J-08` closure pack with focused table regression suite (`DataTable`, `bots`, `backtests`, `profile`, `logs`, `home-live-widgets`) => `25/25 PASS`, plus `pnpm --filter web run typecheck` => `PASS` and `pnpm --filter web run build` => `PASS`; canonical queue/context synchronized and `UXR-J-A..C` closed.
 
+## Phase DAGG - Dashboard Aggregate Selected-Bot View Parity (Queued 2026-04-19)
+- [ ] `DAGG-01 docs(contract): freeze /dashboard aggregate selected-bot runtime contract (positions/orders/history)`
+- [ ] `DAGG-02 test(web-red): add failing regression for selected-bot aggregate parity when RUNNING session is empty`
+- [ ] `DAGG-03 feat(web-controller): switch dashboard selected-bot runtime loading to aggregate endpoint`
+- [ ] `DAGG-04 refactor(web-runtime-viewmodel): align positions/orders/trades derivation to aggregate payload`
+- [ ] `DAGG-05 feat(web-history-tab): add aggregate closed-positions table in dashboard history tab`
+- [ ] `DAGG-06 test(web-history-parity): lock dashboard history positions/trades parity and selected-bot switch behavior`
+- [ ] `DAGG-07 test(api-aggregate-red): add regression for aggregate positions/orders/history counts across mixed session statuses`
+- [ ] `DAGG-08 fix(api-aggregate-contract): harden aggregate response determinism for dashboard tables`
+- [ ] `DAGG-09 test(e2e/web-parity): add scenario asserting /dashboard and /preview parity for selected bot aggregate history`
+- [ ] `DAGG-10 qa(closure): run focused aggregate parity pack and sync canonical queue/context`
+
+### Progress Log (Phase DAGG - Dashboard Aggregate Selected-Bot View Parity)
+- 2026-04-19: Queued aggregate-view remediation from production discrepancy report (preview shows closed history positions while dashboard selected bot does not) and published executor-ready plan in `docs/planning/dashboard-aggregate-selected-bot-view-plan-2026-04-19.md`; product decision locked: dashboard runtime tables are aggregate-by-selected-bot.
+
 ## Phase DASHR - Dashboard Runtime Data Parity Recovery (Queued 2026-04-19)
 - [ ] `DASHR-01 docs(contract): freeze dashboard runtime parity contract for positions/orders/history/signals/selected-bot section`
 - [ ] `DASHR-02 test(web-red): add failing coverage for orders-tab table rendering and selected-bot strategy refresh`

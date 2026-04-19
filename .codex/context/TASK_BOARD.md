@@ -17,11 +17,19 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] (none)
+- [ ] DAGG-01 Freeze /dashboard aggregate selected-bot runtime contract (positions/orders/history)
+- [ ] DAGG-02 Add failing web regression for selected-bot aggregate parity when RUNNING session is empty
+- [ ] DAGG-03 Switch dashboard selected-bot runtime loading to aggregate endpoint
 
 ## BACKLOG
 
-- [ ] (none)
+- [ ] DAGG-04 Align dashboard runtime view-model/table derivation to aggregate payload
+- [ ] DAGG-05 Add aggregate closed-positions table in dashboard history tab
+- [ ] DAGG-06 Lock dashboard history positions/trades parity and selected-bot switch behavior
+- [ ] DAGG-07 Add aggregate API regression for positions/orders/history counts across mixed session statuses
+- [ ] DAGG-08 Harden aggregate API determinism for dashboard table contract
+- [ ] DAGG-09 Add /dashboard vs /preview selected-bot parity regression scenario
+- [ ] DAGG-10 Run focused aggregate parity closure pack and sync canonical queue/context
 
 ## IN_PROGRESS
 
@@ -36,6 +44,9 @@ Last updated: 2026-04-19
 - [ ] (none)
 
 ## DONE
+
+- [x] DAGG planning queued (`DAGG-01..DAGG-10`)
+  - 2026-04-19: Added `docs/planning/dashboard-aggregate-selected-bot-view-plan-2026-04-19.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) to implement aggregate selected-bot contract for dashboard `positions/orders/history`.
 
 - [x] DASHR-C group closure (`DASHR-09..DASHR-11`)
   - 2026-04-19: Closed signal execution diagnostics path and `DASHR` closure pack end-to-end; runtime now emits explicit `PRETRADE_BLOCKED` event for ignored orchestration outcomes and closure validation passed (`bots.e2e`, `bots.runtime-scope.e2e`, `runtimeSignalDecisionEngine`, `orders.service`, `runtime-history-parity`, `runtimeFinalCandleDecision`, `HomeLiveWidgets`, api/web typecheck, web build, guardrails).

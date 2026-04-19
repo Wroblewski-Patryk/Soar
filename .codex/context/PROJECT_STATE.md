@@ -107,21 +107,28 @@ Last updated: 2026-04-19
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: keep queue execution moving from the next canonical
-  `READY` slice after `DASHR` closure, while preserving deploy-safe validation
-  discipline (focused tests, typecheck, build/guardrails where relevant).
+- Main active objective: execute the new `DAGG` wave to enforce dashboard
+  aggregate selected-bot data contract (`positions/orders/history`) and close
+  preview-vs-dashboard history divergence.
 - Top blockers:
   - none in OPV scope; final RC external-gates snapshot is closed
     (`G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`) from run
     `2026-04-19T15:13:58.943Z`.
 - Success criteria for this phase:
-  - no open `DASHR` tasks remain in canonical queue/context.
+  - dashboard selected bot tables use aggregate scope deterministically.
+  - no discrepancy remains where preview shows closed history positions but
+    dashboard has no equivalent history surface.
   - focused validation remains green for touched modules before each commit.
-  - next execution slices remain scope-locked and documentation-synchronized.
+  - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - pull next unchecked task from canonical `NOW` queue.
+  - start `DAGG-01` from canonical `NOW` queue.
 
 ## Recent Progress
+- 2026-04-19: queued `DAGG` aggregate-view parity wave (`DAGG-01..DAGG-10`)
+  from production discrepancy analysis and published executor-ready plan
+  `docs/planning/dashboard-aggregate-selected-bot-view-plan-2026-04-19.md`;
+  canonical queue/context updated to reflect aggregate-by-selected-bot product
+  decision for dashboard tables.
 - 2026-04-19: closed `DASHR-B` and `DASHR-C` end-to-end (`DASHR-05..DASHR-11`)
   by delivering selected-session history parity guards (api+web), strict
   selected-bot signal-scope regressions/fixes, explicit runtime
