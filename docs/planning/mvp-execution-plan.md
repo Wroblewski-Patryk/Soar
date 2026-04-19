@@ -2085,7 +2085,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-19: Completed `UXR-I-14` closure checks with full required PASS pack (`pnpm --filter web run typecheck`, `pnpm --filter web run build`, `pnpm run quality:guardrails`) and synchronized queue/context handoff to `UXR-J`.
 
 ## Phase UXR-J - Dashboard Tables Consistency Refresh (Queued 2026-04-19)
-- [ ] `UXR-J-01 docs(contract): freeze dashboard table action-color and columns-dropdown behavior contract`
+- [x] `UXR-J-01 docs(contract): freeze dashboard table action-color and columns-dropdown behavior contract`
 - [ ] `UXR-J-02 refactor(ui-table-actions): add dedicated module action tone and remap clone/runtime/preview presets`
 - [ ] `UXR-J-03 refactor(ui-datatable-dropdown): keep columns dropdown open on checkbox toggles`
 - [ ] `UXR-J-04 refactor(ui-datatable-trigger): enforce icon-only columns trigger globally with a11y label`
@@ -2096,3 +2096,4 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 
 ### Progress Log (Phase UXR-J - Dashboard Tables Consistency Refresh)
 - 2026-04-19: Activated planner input `docs/planning/dashboard-tables-consistency-planner-brief-2026-04-19.md` into canonical execution wave `docs/planning/uxr-j-dashboard-tables-consistency-refresh-plan-2026-04-19.md` with grouped batches `UXR-J-A..UXR-J-C` and strict tiny-commit sequencing after `UXR-I` closure.
+- 2026-04-19: Completed `UXR-J-01` by freezing shared table-system behavior contract in canonical docs (`open-decisions`, `web-dashboard-home`, `web-bots`), including explicit action-tone mapping (`clone` distinct from system actions; `runtime` + `preview` same module tone), columns-dropdown persistence rules, and icon-only columns trigger accessibility requirements.

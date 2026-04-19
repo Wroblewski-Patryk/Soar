@@ -17,20 +17,20 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] UXR-J-01 Freeze dashboard table action-color and columns-dropdown behavior contract
+- [ ] UXR-J-02 Add dedicated module action tone mapping and dropdown/trigger shared behavior updates
   - Status: READY
   - Group: Dashboard Tables Consistency Refresh (`UXR-J-A`)
-  - Owner: Planner + Frontend Builder
+  - Owner: Frontend Builder
   - Depends on: none
   - Priority: P2
 
 ## BACKLOG
 
-- [ ] UXR-J-02 Add dedicated module action tone mapping and dropdown/trigger shared behavior updates
+- [ ] UXR-J-03 Keep columns dropdown open on checkbox toggles in shared DataTable
   - Status: BACKLOG
   - Group: Dashboard Tables Consistency Refresh (`UXR-J-A`)
   - Owner: Frontend Builder
-  - Depends on: UXR-J-01
+  - Depends on: UXR-J-02
   - Priority: P2
 
 ## IN_PROGRESS
@@ -47,6 +47,8 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] UXR-J-01 Freeze dashboard table action-color and columns-dropdown behavior contract
+  - 2026-04-19: Frozen shared table-system refresh contract in canonical docs (`open-decisions`, `web-dashboard-home`, `web-bots`) with explicit action-tone matrix updates (`clone` distinct from system actions; `runtime` + `preview` same module tone), columns-dropdown persistence behavior, and icon-only columns trigger accessibility rules.
 - [x] UXR-I-14 Run web forms closure checks (typecheck, build, guardrails) and sync canonical queue/context
   - 2026-04-19: Closure pack PASS (`web typecheck`, `web build`, `quality:guardrails`) and canonical queue/context docs synchronized; `UXR-I` wave closed end-to-end and queue advanced to `UXR-J-01`.
 - [x] UXR-I-13 Run and align focused web-forms regression suite for wrapper, i18n, and consistency contracts

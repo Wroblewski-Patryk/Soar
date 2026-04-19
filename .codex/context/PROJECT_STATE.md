@@ -120,10 +120,14 @@ Last updated: 2026-04-19
   - canonical queue and context docs stay synchronized after each ARC batch.
   - no regressions in runtime safety, deploy confidence, or dashboard contracts.
 - Next queued follow-up:
-  - run `UXR-J-01`,
+  - run `UXR-J-02`,
   - then continue through `UXR-J-A..C` for table-consistency closure.
 
 ## Recent Progress
+- 2026-04-19: completed `UXR-J-01` by freezing shared table-system consistency
+  contract across canonical docs (`open-decisions`, `web-dashboard-home`,
+  `web-bots`) with explicit action-tone semantics, columns dropdown persistence
+  behavior, and icon-only columns-trigger accessibility rules.
 - 2026-04-19: completed `UXR-I-14` closure by running required PASS pack
   (`pnpm --filter web run typecheck`, `pnpm --filter web run build`,
   `pnpm run quality:guardrails`) and synchronizing canonical queue/context;

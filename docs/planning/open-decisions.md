@@ -859,6 +859,32 @@ This file tracks intentionally unresolved architecture choices so implementation
   - `docs/planning/uxr-e-table-actions-clone-dashboard-polish-plan-2026-04-18.md`
   - `docs/planning/mvp-execution-plan.md`
 
+## Dashboard Tables Consistency Refresh (Post-UXR-I)
+- Decision state: resolved on 2026-04-19.
+- Decision:
+  - execute scoped refresh wave (`UXR-J`) after `UXR-I` closure to standardize shared table action tones and columns panel behavior.
+  - keep `UXR-E` table action matrix as baseline and apply only explicitly defined refinements in this wave.
+- Locked behavior:
+  - execution order is strict: `UXR-J-01..UXR-J-08`.
+  - action-tone semantics:
+    - `edit`: stable system action tone `info`.
+    - `delete`: stable destructive tone `danger`.
+    - `clone`: non-destructive neutral tone, visually distinct from `edit` and `delete`.
+    - `runtime` and `preview`: one shared dedicated module tone (same preset in this wave).
+    - `details`/expand: neutral tone.
+  - columns dropdown behavior:
+    - toggling a column checkbox must not close the dropdown.
+    - dropdown closes only via trigger toggle, outside click, or `Escape`.
+  - columns trigger visual contract:
+    - icon-only trigger is default across DataTable contexts.
+    - trigger must keep accessible name (`aria-label` and/or `sr-only` text).
+  - scope lock:
+    - global shared component updates first (`TableUi`, `DataTable`), no per-module ad-hoc overrides unless required by failing tests.
+- Canonical references:
+  - `docs/planning/uxr-j-dashboard-tables-consistency-refresh-plan-2026-04-19.md`
+  - `docs/planning/dashboard-tables-consistency-planner-brief-2026-04-19.md`
+  - `docs/planning/mvp-execution-plan.md` (`Phase UXR-J`)
+
 ## Execution and Backtest Parity Policy
 - Decision state: resolved on 2026-03-22.
 - V1 direction:

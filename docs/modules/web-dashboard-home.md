@@ -165,3 +165,24 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
 - Canonical references:
   - `docs/planning/uxr-i-dashboard-forms-consistency-refresh-plan-2026-04-19.md`
   - `docs/planning/open-decisions.md` (`Dashboard Forms Consistency Refresh (Post-UXR-F)`)
+
+## 17. Dashboard Tables Consistency Refresh Linkage (`UXR-J`)
+- Cross-module linkage contract:
+  - dashboard list/table surfaces in adjacent modules (`wallets`, `markets`, `strategies`, `backtests`, `bots`, `profile`, `logs`) are aligned under one shared table-system refresh wave after `UXR-I`.
+  - this module anchors operator-facing expectations for runtime-adjacent table behavior consistency.
+- Shared table behavior contract:
+  - action tone semantics are global-first:
+    - `edit` (`info`) and `delete` (`danger`) remain stable system actions,
+    - `clone` stays neutral and visually distinct from system actions,
+    - `runtime` and `preview` share one dedicated module tone.
+  - columns dropdown persistence:
+    - checkbox toggles do not dismiss dropdown,
+    - close path is limited to trigger toggle, outside click, and `Escape`.
+  - columns trigger default:
+    - icon-only trigger across DataTable contexts with preserved accessible naming.
+- Scope lock:
+  - updates must start in shared `TableUi`/`DataTable` contracts before any module-level adjustment.
+  - no runtime command/path behavior changes are allowed in this linkage track.
+- Canonical references:
+  - `docs/planning/uxr-j-dashboard-tables-consistency-refresh-plan-2026-04-19.md`
+  - `docs/planning/open-decisions.md` (`Dashboard Tables Consistency Refresh (Post-UXR-I)`)

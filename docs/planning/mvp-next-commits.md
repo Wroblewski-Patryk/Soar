@@ -7,11 +7,10 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `UXR-J-01 docs(contract): freeze dashboard table action-color and columns-dropdown behavior contract`
-## NEXT
 - [ ] `UXR-J-02 refactor(ui-table-actions): add dedicated module action tone and remap clone/runtime/preview presets`
-## PIPELINE
+## NEXT
 - [ ] `UXR-J-03 refactor(ui-datatable-dropdown): keep columns dropdown open on checkbox toggles`
+## PIPELINE
 - [ ] `UXR-J-04 refactor(ui-datatable-trigger): enforce icon-only columns trigger globally with a11y label`
 - [ ] `UXR-J-05 test(ui-datatable): add regression tests for dropdown persistence and icon-only trigger contract`
 - [ ] `UXR-J-06 test(ui-table-actions): add preset tone regression tests for clone/runtime/preview mapping`
@@ -69,6 +68,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `UXR-J-01 docs(contract): freeze dashboard table action-color and columns-dropdown behavior contract`
+  - 2026-04-19: Frozen `UXR-J` shared table consistency contract in canonical docs (`open-decisions`, `web-dashboard-home`, `web-bots`) with explicit action-tone semantics (`clone` distinct; `runtime` + `preview` shared module tone), columns-dropdown persistence rules, and icon-only columns trigger accessibility contract.
 - [x] `UXR-I-14 qa(web-forms-closure): run build/typecheck/guardrails and sync canonical queue/context`
   - 2026-04-19: Closure checks PASS (`pnpm --filter web run typecheck`, `pnpm --filter web run build`, `pnpm run quality:guardrails`) and canonical queue/context synchronized; `UXR-I` wave is now fully closed and handoff moved to `UXR-J`.
 - [x] `UXR-I-13 test(web-forms-regression): run/update focused suites for wrapper+i18n+form-consistency contracts`

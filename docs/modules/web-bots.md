@@ -89,3 +89,17 @@ pnpm --filter web test -- src/features/bots/components/BotCreateEditForm.test.ts
 - Continue decomposition of large monitoring container into smaller domain units.
 - Replace remaining confirm-dialog browser primitives with app-level modal pattern.
 
+## 10. Shared Table Contract Linkage (`UXR-J`)
+- Bots list and runtime-adjacent tables consume shared table-system contracts from `ui/components/TableUi.tsx` and `ui/components/DataTable.tsx`.
+- For `UXR-J` wave, bots module follows global table behavior:
+  - action-tone semantics:
+    - `edit` remains system `info`,
+    - `delete` remains system `danger`,
+    - `clone` remains neutral and distinct from system actions,
+    - `runtime` and `preview` use one dedicated module tone preset.
+  - columns dropdown persistence:
+    - column checkbox toggles must not close dropdown.
+  - columns trigger contract:
+    - icon-only trigger default with accessible naming.
+- Scope lock:
+  - no bots-only tone overrides unless explicitly required by failing shared-table regressions.
