@@ -7,12 +7,23 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [x] `none`
+- [ ] `DASHR-01 docs(contract): freeze dashboard runtime parity contract for positions/orders/history/signals/selected-bot section`
+- [ ] `DASHR-02 test(web-red): add failing coverage for orders-tab table rendering and selected-bot strategy refresh`
+- [ ] `DASHR-03 fix(web-orders-tab): replace open-orders placeholder with DataTable + deterministic empty state`
+- [ ] `DASHR-04 fix(web-selected-bot-panel): ensure strategy context refresh and apply requested spacing/layout order`
 ## NEXT
-- [x] `none`
+- [ ] `DASHR-05 test(api+web-red): reproduce positions/history mismatch between runtime module and dashboard selected snapshot`
+- [ ] `DASHR-06 fix(api+web-runtime-parity): align selected session/snapshot mapping for positions and history tabs`
+- [ ] `DASHR-07 test(api-red-signals-scope): lock selected-bot-only markets/strategy context in signals payload`
 ## PIPELINE
-- [x] `none`
+- [ ] `DASHR-08 fix(api-signals-scope): enforce selected-bot symbol and strategy context parity for dashboard signals`
+- [ ] `DASHR-09 test(api-red-signal-execution): add regression for condition-met but no-order/no-position outcome`
+- [ ] `DASHR-10 fix(api-runtime-execution): restore signal->order->position flow or emit explicit blocked diagnostics`
+- [ ] `DASHR-11 qa(closure): run focused dashboard runtime parity pack and sync canonical queue/context`
 ## GROUP QUEUE
+- [ ] `DASHR-A (commits DASHR-01..DASHR-04): dashboard tab/view parity + selected-bot section consistency`
+- [ ] `DASHR-B (commits DASHR-05..DASHR-08): selected-bot runtime data parity for positions/history/signals scope`
+- [ ] `DASHR-C (commits DASHR-09..DASHR-11): signal->order execution diagnostics + closure`
 - [x] `BRS-A (commits BRS-01..BRS-04): decision closure + strict selected-bot scope foundation`
 - [x] `BRS-B (commits BRS-05..BRS-08): canonical update-path fix + strategy precedence unification`
 - [x] `BRS-C (commits BRS-09..BRS-12): dashboard switch regression + QA closure`
@@ -64,6 +75,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `DASHR planning queued (dashboard runtime parity recovery for positions/orders/history/signals/selected-bot section)`
+  - 2026-04-19: Added dedicated execution plan `docs/planning/dashboard-runtime-data-parity-recovery-plan-2026-04-19.md` and promoted grouped tiny-commit wave (`DASHR-A..DASHR-C`) into `NOW/NEXT/PIPELINE` for implementation continuity with strict scope lock.
 - [x] `UXR-J-08 qa(web-table-closure): run focused suite + typecheck/build and sync queue/context`
   - 2026-04-19: Closure checks PASS with focused table suite (`25/25`) plus `pnpm --filter web run typecheck` and `pnpm --filter web run build`; canonical queue/context synchronized and `UXR-J` group closed end-to-end.
 - [x] `UXR-J-07 test(web-tables-focused): align bots/backtests/profile/runtime table suites to shared table behavior`

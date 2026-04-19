@@ -17,11 +17,20 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] (none)
+- [ ] DASHR-01 Freeze dashboard runtime parity contract for positions/orders/history/signals/selected-bot section
+- [ ] DASHR-02 Add failing web regression for orders-tab table rendering and selected-bot strategy refresh
+- [ ] DASHR-03 Replace dashboard orders placeholder with DataTable + deterministic empty state
+- [ ] DASHR-04 Fix selected-bot strategy refresh and apply requested selected-bot section spacing/layout order
 
 ## BACKLOG
 
-- [ ] (none)
+- [ ] DASHR-05 Reproduce positions/history mismatch between runtime module and dashboard selected snapshot (api+web red tests)
+- [ ] DASHR-06 Align selected session/snapshot mapping for dashboard positions and history tabs
+- [ ] DASHR-07 Lock selected-bot-only signals markets/strategy scope with regression tests
+- [ ] DASHR-08 Enforce selected-bot scope in runtime symbol/strategy enrichment consumed by dashboard signals
+- [ ] DASHR-09 Reproduce condition-met but no-order/no-position execution gap with runtime/order regressions
+- [ ] DASHR-10 Restore signal->order->position path or explicit blocked diagnostics
+- [ ] DASHR-11 Run focused closure pack and sync canonical queue/context
 
 ## IN_PROGRESS
 
@@ -36,6 +45,9 @@ Last updated: 2026-04-19
 - [ ] (none)
 
 ## DONE
+
+- [x] DASHR planning queued (`DASHR-01..DASHR-11`)
+  - 2026-04-19: Added `docs/planning/dashboard-runtime-data-parity-recovery-plan-2026-04-19.md` and synchronized canonical queue (`mvp-next-commits` NOW/NEXT/PIPELINE) to unblock executor with strict scope lock on reported dashboard runtime issues only.
 
 - [x] UXR-J-C group closure (`UXR-J-08`)
   - 2026-04-19: Closure pack PASS (`DataTable + bots/backtests/profile/logs/home focused suite: 25/25`, `web typecheck`, `web build`) and canonical queue/context synchronized.

@@ -103,26 +103,31 @@ Last updated: 2026-04-19
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: post-`UXR-J` queue handoff and next-wave planning
-  refill after closing dashboard tables consistency refresh end-to-end.
+- Main active objective: execute queued dashboard runtime data parity recovery
+  wave (`DASHR`) for reported `/dashboard` regressions in
+  `positions/orders/history/signals/selected-bot` behavior.
 - Top blockers:
   - none in OPV scope; final RC external-gates snapshot is closed
     (`G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`) from run
     `2026-04-19T15:13:58.943Z`.
 - Success criteria for this phase:
-  - shared table action/dropdown/trigger behavior remains locked through
-    focused shared+consuming regression coverage after `UXR-J` closure.
-  - next executable queue group remains explicit with no stale reopened tasks
-    from already-implemented waves.
-  - production verification artifacts remain synchronized with the final
-    external-gates closure snapshot (`G1..G4 = PASS`).
-  - canonical queue and context docs stay synchronized after each ARC batch.
-  - no regressions in runtime safety, deploy confidence, or dashboard contracts.
+  - `orders` tab renders a deterministic table (including empty-state parity).
+  - dashboard `positions/history` align with selected-bot runtime/session data.
+  - dashboard `signals` markets and strategy context remain selected-bot scoped.
+  - signal condition execution path is deterministic (`open` or explicit blocked
+    diagnostics).
+  - selected-bot section spacing/layout and strategy refresh behavior match
+    requested contract.
 - Next queued follow-up:
-  - derive and promote the next executable tiny task from canonical planning
-    sources (`mvp-next-commits`, `mvp-execution-plan`).
+  - start `DASHR-01` from canonical queue and proceed tiny-commit sequence
+    without widening scope.
 
 ## Recent Progress
+- 2026-04-19: queued dashboard runtime data parity recovery wave (`DASHR-01..11`)
+  from new operator report and published executor-ready plan
+  `docs/planning/dashboard-runtime-data-parity-recovery-plan-2026-04-19.md`;
+  synchronized `mvp-next-commits`, `mvp-execution-plan`, and `TASK_BOARD`
+  with strict scope lock for `/dashboard` runtime fixes only.
 - 2026-04-19: closed `UXR-J` (`UXR-J-03..UXR-J-08`) end-to-end by removing
   columns-dropdown auto-close on checkbox toggles, enforcing icon-only columns
   trigger default with preserved a11y labels, adding shared DataTable/TableUi
