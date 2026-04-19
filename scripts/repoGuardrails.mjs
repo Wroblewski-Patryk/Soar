@@ -12,6 +12,7 @@ const FORBIDDEN_LOCKFILES = new Set([
 ]);
 
 const SOURCE_FILE_RE = /^apps\/(?:web|api)\/src\/.+\.(?:ts|tsx|js|jsx)$/;
+const WEB_SOURCE_FILE_RE = /^apps\/web\/src\/.+\.(?:ts|tsx|js|jsx)$/;
 const WEB_FEATURE_SOURCE_FILE_RE = /^apps\/web\/src\/features\/([^/]+)\/.+\.(?:ts|tsx|js|jsx)$/;
 const WEB_FEATURE_FIELD_CONTROLS_RE =
   /^apps\/web\/src\/features\/([^/]+)\/components\/FieldControls\.(?:ts|tsx|js|jsx)$/;
@@ -230,12 +231,13 @@ const resolveWebImportSpecifier = (fromFilePath, specifier) => {
 
 const validateWebFormImportBoundaries = (trackedFiles) => {
   const violations = [];
-  const webFeatureFiles = trackedFiles.filter((filePath) => WEB_FEATURE_SOURCE_FILE_RE.test(filePath));
+  const webSourceFiles = trackedFiles.filter(
+    (filePath) => WEB_SOURCE_FILE_RE.test(filePath) && !TEST_SOURCE_FILE_RE.test(filePath)
+  );
 
-  for (const sourceFilePath of webFeatureFiles) {
+  for (const sourceFilePath of webSourceFiles) {
     const sourceMatch = WEB_FEATURE_SOURCE_FILE_RE.exec(sourceFilePath);
-    if (!sourceMatch) continue;
-    const sourceFeature = sourceMatch[1];
+    const sourceFeature = sourceMatch ? sourceMatch[1] : null;
 
     const absolutePath = path.join(ROOT_DIR, sourceFilePath);
     const sourceText = fs.readFileSync(absolutePath, "utf8");
@@ -250,7 +252,7 @@ const validateWebFormImportBoundaries = (trackedFiles) => {
       if (!targetMatch) continue;
 
       const targetFeature = targetMatch[1];
-      if (targetFeature === sourceFeature) continue;
+      if (sourceFeature && targetFeature === sourceFeature) continue;
 
       violations.push({
         sourceFilePath,
@@ -268,7 +270,7 @@ const validateWebFormImportBoundaries = (trackedFiles) => {
     `Web form import boundary violated (cross-feature generic FieldControls import detected):\n${violations
       .map(
         ({ sourceFilePath, sourceFeature, targetFeature, specifier, resolvedImport }) =>
-          `  - ${sourceFilePath} (${sourceFeature}) imports ${specifier} -> ${resolvedImport} (${targetFeature})`
+          `  - ${sourceFilePath} (${sourceFeature ?? "non-feature"}) imports ${specifier} -> ${resolvedImport} (${targetFeature})`
       )
       .join("\n")}\nUse shared controls from apps/web/src/ui/forms/* instead.`,
   ];

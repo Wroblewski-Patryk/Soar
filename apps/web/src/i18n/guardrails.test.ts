@@ -27,7 +27,21 @@ const MONITORED_ROUTE_FILES = [
   "features/admin/layout/AdminLayoutShell.tsx",
 ];
 
-const LOCAL_COPY_PATTERN = /const\s+\w*copy\w*\s*=|const\s+\w+\s*=\s*{[\s\S]*?\b(?:en|pl|pt)\s*:/i;
+const UXR_I_WRAPPER_FILES = [
+  "app/dashboard/wallets/create/page.tsx",
+  "app/dashboard/wallets/[id]/edit/page.tsx",
+  "app/dashboard/wallets/_components/WalletFormPageContent.tsx",
+  "app/dashboard/markets/create/page.tsx",
+  "app/dashboard/markets/[id]/edit/page.tsx",
+  "app/dashboard/strategies/create/page.tsx",
+  "app/dashboard/strategies/[id]/edit/page.tsx",
+  "app/dashboard/backtests/create/page.tsx",
+  "app/dashboard/bots/create/page.tsx",
+  "app/dashboard/bots/[id]/edit/page.tsx",
+  "app/dashboard/bots/_components/BotFormPageContent.tsx",
+];
+
+const LOCAL_COPY_PATTERN = /const\s+\w+\s*=\s*{[\s\S]*?\b(?:en|pl|pt)\s*:/i;
 const FALLBACK_PL_PATTERN = /(?:\?\?|\|\|)\s*['"]pl['"]/;
 const HARD_CODED_ATTRIBUTE_PATTERN =
   /\b(?:title|placeholder|aria-label|aria-placeholder)\s*=\s*['"][^'"{][^'"]*['"]/g;
@@ -56,7 +70,7 @@ const scanSource = (source: string): GuardrailScanResult => ({
 
 const scanFiles = (relativePaths: string[]) => {
   const root = resolveWebSrc();
-  return relativePaths.map((relativePath) => {
+  return Array.from(new Set(relativePaths)).map((relativePath) => {
     const absolutePath = join(root, relativePath);
     const source = readFileSync(absolutePath, "utf8");
     return {
@@ -67,8 +81,10 @@ const scanFiles = (relativePaths: string[]) => {
 };
 
 describe("i18n guardrails", () => {
+  const monitoredFiles = [...MONITORED_ROUTE_FILES, ...UXR_I_WRAPPER_FILES];
+
   it("blocks route-reachable local copy dictionary regressions", () => {
-    const offenders = scanFiles(MONITORED_ROUTE_FILES)
+    const offenders = scanFiles(monitoredFiles)
       .filter((entry) => entry.localCopy)
       .map((entry) => entry.relativePath);
 
@@ -76,7 +92,7 @@ describe("i18n guardrails", () => {
   });
 
   it("blocks route-reachable locale fallback drift to pl", () => {
-    const offenders = scanFiles(MONITORED_ROUTE_FILES)
+    const offenders = scanFiles(monitoredFiles)
       .filter((entry) => entry.fallbackPl)
       .map((entry) => entry.relativePath);
 
@@ -84,7 +100,7 @@ describe("i18n guardrails", () => {
   });
 
   it("blocks hardcoded UI literals in monitored attribute/toast contexts", () => {
-    const offenders = scanFiles(MONITORED_ROUTE_FILES)
+    const offenders = scanFiles(monitoredFiles)
       .filter((entry) => entry.hardcodedUiMatches.length > 0)
       .map((entry) => `${entry.relativePath}\n  - ${entry.hardcodedUiMatches.join("\n  - ")}`);
 

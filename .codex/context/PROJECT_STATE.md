@@ -125,6 +125,11 @@ Last updated: 2026-04-19
   - then execute `UXR-J-A..C` for shared table-consistency closure.
 
 ## Recent Progress
+- 2026-04-19: completed `UXR-I-04` by expanding `i18n/guardrails.test.ts`
+  coverage to full `UXR-I` wrapper route/component scope and tightening
+  `scripts/repoGuardrails.mjs` so `FieldControls` imports are blocked outside
+  same-feature ownership (or any non-feature file), preserving `ui/forms` as
+  the canonical generic-control layer.
 - 2026-04-19: completed `UXR-I-03` by normalizing shared `ui/forms` primitive
   API surface for migration safety (exported prop/type contracts in
   `FormAlert`, `FormField`, `FormFields`, `FormGrid`, `FormMobileActionBar`,

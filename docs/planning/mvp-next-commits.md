@@ -7,11 +7,10 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `UXR-I-04 test(guardrails): lock no-cross-feature generic controls and no-hardcoded-wrapper-copy regressions`
-## NEXT
 - [ ] `UXR-I-05 refactor(web-wrappers): unify create/edit wrappers i18n+breadcrumb+save-action contract`
-## PIPELINE
+## NEXT
 - [ ] `UXR-I-06 refactor(web-wallets-form): close residual layout/control parity gaps using ui/forms primitives`
+## PIPELINE
 - [ ] `UXR-I-07 refactor(web-markets-form): enforce sectioned IA and remove any residual local generic controls`
 - [ ] `UXR-I-08 refactor(web-backtests-form): finalize decoupling from feature-local controls and align summary ergonomics`
 - [ ] `UXR-I-09 refactor(web-strategies-form): preserve tabs while normalizing section internals to shared primitives`
@@ -37,7 +36,7 @@ Operational queue for one-task execution runs.
 - [x] `UXR-H-A (commits UXR-H-01..UXR-H-03): manual-order advanced contract + backend context/rules foundation`
 - [x] `UXR-H-B (commits UXR-H-04..UXR-H-07): dashboard manual-order state+UI expansion + container cleanup`
 - [x] `UXR-H-C (commits UXR-H-08..UXR-H-10): i18n parity + focused regression + closure sync`
-- [ ] `UXR-I-A (commits UXR-I-01..UXR-I-04): refresh contract + gap inventory + shared guardrails`
+- [x] `UXR-I-A (commits UXR-I-01..UXR-I-04): refresh contract + gap inventory + shared guardrails`
 - [ ] `UXR-I-B (commits UXR-I-05..UXR-I-08): wrapper parity + wallets/markets/backtests residual migration`
 - [ ] `UXR-I-C (commits UXR-I-09..UXR-I-12): strategies/bots consistency closure + standardized form UX`
 - [ ] `UXR-I-D (commits UXR-I-13..UXR-I-14): focused regression + closure sync`
@@ -80,6 +79,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `UXR-I-04 test(guardrails): lock no-cross-feature generic controls and no-hardcoded-wrapper-copy regressions`
+  - 2026-04-19: Expanded `i18n/guardrails.test.ts` coverage to full `UXR-I` wrapper route set and hardened `scripts/repoGuardrails.mjs` to block `FieldControls` imports outside same-feature ownership (or from non-feature files), keeping shared controls anchored to `apps/web/src/ui/forms/*`.
 - [x] `UXR-I-03 chore(web-ui-forms): normalize shared form primitive API surface for refresh migration`
   - 2026-04-19: Exported shared primitive prop/type contracts across `apps/web/src/ui/forms/*` to stabilize migration API usage without rendering or behavior drift.
 - [x] `UXR-I-02 audit(web-forms): publish residual consistency gap map per route/module`
