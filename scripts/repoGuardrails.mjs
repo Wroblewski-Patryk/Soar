@@ -15,10 +15,16 @@ const SOURCE_FILE_RE = /^apps\/(?:web|api)\/src\/.+\.(?:ts|tsx|js|jsx)$/;
 const WEB_FEATURE_SOURCE_FILE_RE = /^apps\/web\/src\/features\/([^/]+)\/.+\.(?:ts|tsx|js|jsx)$/;
 const WEB_FEATURE_FIELD_CONTROLS_RE =
   /^apps\/web\/src\/features\/([^/]+)\/components\/FieldControls\.(?:ts|tsx|js|jsx)$/;
+const TEST_SOURCE_FILE_RE = /(?:^|\/)[^/]+\.(?:test|spec)\.(?:ts|tsx|js|jsx)$/;
 const DEFAULT_MAX_FILE_BYTES = 90_000;
 const SOURCE_FILE_BUDGET_RULES = [
-  { match: /^apps\/api\/src\//, budget: 90_000 },
-  { match: /^apps\/web\/src\//, budget: 105_000 },
+  { match: /^apps\/api\/src\//, budget: 88_000 },
+  { match: /^apps\/web\/src\//, budget: 95_000 },
+];
+const DEFAULT_MAX_FILE_LINES = 2_200;
+const SOURCE_FILE_LINE_BUDGET_RULES = [
+  { match: /^apps\/api\/src\//, budget: 1_700 },
+  { match: /^apps\/web\/src\//, budget: 2_200 },
 ];
 
 const IGNORED_DIRS = new Set([
@@ -38,6 +44,13 @@ const resolveSourceFileBudget = (filePath) => {
     if (rule.match.test(filePath)) return rule.budget;
   }
   return DEFAULT_MAX_FILE_BYTES;
+};
+
+const resolveSourceFileLineBudget = (filePath) => {
+  for (const rule of SOURCE_FILE_LINE_BUDGET_RULES) {
+    if (rule.match.test(filePath)) return rule.budget;
+  }
+  return DEFAULT_MAX_FILE_LINES;
 };
 
 const readTrackedFiles = () => {
@@ -123,6 +136,40 @@ const validateSourceFileBudgets = (trackedFiles) => {
       .map(
         ({ filePath, size, budget }) =>
           `  - ${filePath}: ${size} bytes (budget ${budget} bytes)`
+      )
+      .join("\n")}`,
+  ];
+};
+
+const validateSourceFileLineBudgets = (trackedFiles) => {
+  const oversize = [];
+  for (const filePath of trackedFiles) {
+    if (!SOURCE_FILE_RE.test(filePath)) continue;
+    if (TEST_SOURCE_FILE_RE.test(filePath)) continue;
+    const absolute = path.join(ROOT_DIR, filePath);
+    let content;
+    try {
+      content = fs.readFileSync(absolute, "utf8");
+    } catch {
+      continue;
+    }
+    const lineCount = content.split(/\r?\n/).length;
+    const budget = resolveSourceFileLineBudget(filePath);
+    if (lineCount > budget) {
+      oversize.push({
+        filePath,
+        lineCount,
+        budget,
+      });
+    }
+  }
+
+  if (oversize.length === 0) return [];
+  return [
+    `Source file line budget exceeded:\n${oversize
+      .map(
+        ({ filePath, lineCount, budget }) =>
+          `  - ${filePath}: ${lineCount} lines (budget ${budget} lines)`
       )
       .join("\n")}`,
   ];
@@ -232,6 +279,7 @@ const run = () => {
   const errors = [
     ...validateLockfilePolicy(trackedFiles),
     ...validateSourceFileBudgets(trackedFiles),
+    ...validateSourceFileLineBudgets(trackedFiles),
     ...validateWebFormImportBoundaries(trackedFiles),
   ];
 
@@ -247,6 +295,9 @@ const run = () => {
   console.log(`- Lockfile policy: OK (${EXPECTED_LOCKFILE} only)`);
   console.log(
     `- Source file budget: OK (api ${SOURCE_FILE_BUDGET_RULES[0].budget} bytes, web ${SOURCE_FILE_BUDGET_RULES[1].budget} bytes)`
+  );
+  console.log(
+    `- Source file line budget: OK (api ${SOURCE_FILE_LINE_BUDGET_RULES[0].budget} lines, web ${SOURCE_FILE_LINE_BUDGET_RULES[1].budget} lines)`
   );
 };
 

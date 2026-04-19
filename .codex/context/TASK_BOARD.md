@@ -17,32 +17,26 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] ARC-11 Extract shared indicator projection/evaluation kernel for runtime and backtests
+- [ ] POS-36 Remove strategy-exit close bypass from backtest/replay/runtime lifecycle flow
   - Status: READY
-  - Group: Architecture Maintainability Remediation (`ARC-C`)
+  - Group: Position Lifecycle Parity Closure (`POS-A`)
   - Owner: Backend Builder
-  - Depends on: ARC-B
+  - Depends on: ARC-20
   - Priority: P2
-
-## BACKLOG
-
 - [ ] UXR-H-01 Freeze dashboard manual-order advanced input/context contract before implementation
-  - Status: BACKLOG
+  - Status: READY
   - Group: Dashboard Manual Order Advanced UX (`UXR-H-A`)
   - Owner: Frontend Builder + Backend Builder
   - Depends on: ARC-E
   - Priority: P2
+
+## BACKLOG
+
 - [ ] UXR-H-02 Add API manual-order context endpoint for symbol constraints, price reference, and bot execution metadata
   - Status: BACKLOG
   - Group: Dashboard Manual Order Advanced UX (`UXR-H-A`)
   - Owner: Backend Builder
   - Depends on: UXR-H-01
-  - Priority: P2
-- [ ] POS-36 Remove strategy-exit close bypass from backtest/replay/runtime lifecycle flow
-  - Status: BACKLOG
-  - Group: Position Lifecycle Parity Closure (`POS-A`)
-  - Owner: Backend Builder
-  - Depends on: ARC-20
   - Priority: P2
 - [ ] OPV-01 Execute Dockerfile-first stage/prod rehearsal and capture deployment evidence
   - Status: BACKLOG
@@ -65,6 +59,13 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] ARC-E closed implementation scope (`ARC-19..ARC-20`): guardrail tightening + architecture closure evidence
+- [x] ARC-C closed implementation scope (`ARC-11..ARC-13`): shared runtime/backtest indicator kernel + backtest facade alignment
+- [x] ARC-20 Publish architecture maintainability delta and residual-risk closure snapshot
+- [x] ARC-19 Tighten production maintainability guardrails (byte + line budgets)
+- [x] ARC-13 Add shared-kernel parity regression lock between runtime and backtest indicator projections
+- [x] ARC-12 Reduce backtests service to facade by extracting dedicated simulation service ownership
+- [x] ARC-11 Extract shared indicator projection/evaluation kernel for runtime and backtests
 - [x] ARC-B closed implementation scope (`ARC-06..ARC-10`): bots runtime CQRS decomposition + aggregate monitoring contract
 - [x] UXR-H planning queued: `UXR-H-01..UXR-H-10` dashboard manual-order advanced UX wave with price input, current-price fill, qty min-constraints, slider row, bot-context order metadata, and focused closure pack
 - [x] ARC-10 Lock API+WEB aggregate monitoring contract and fallback behavior

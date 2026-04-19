@@ -7,14 +7,11 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `ARC-11 feat(api-domain-kernel): extract shared indicator projection/evaluation kernel for runtime+backtests`
+- [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
 ## NEXT
-- [ ] `ARC-12 refactor(api-backtests): reduce backtests.service to facade over dedicated services`
-- [ ] `ARC-13 test(api-parity): regression lock for shared kernel parity (runtime vs backtest)`
+- [ ] `UXR-H-01 docs(contract): freeze dashboard manual-order advanced input/context contract`
+- [ ] `UXR-H-02 feat(api-orders): add manual-order context read endpoint for price/rules/min-qty preview`
 ## PIPELINE
-- [ ] `ARC-11 feat(api-domain-kernel): extract shared indicator projection/evaluation kernel for runtime+backtests`
-- [ ] `ARC-12 refactor(api-backtests): reduce backtests.service to facade over dedicated services`
-- [ ] `ARC-13 test(api-parity): regression lock for shared kernel parity (runtime vs backtest)`
 - [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
 - [ ] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
 - [ ] `UXR-H-01 docs(contract): freeze dashboard manual-order advanced input/context contract`
@@ -32,9 +29,9 @@ Operational queue for one-task execution runs.
 - [x] `PLNC-A (commits PLNC-01..PLNC-04): planning catalog reconciliation + status sync + canonical linkage`
 - [x] `ARC-A (commits ARC-01..ARC-05): runtime critical-path decomposition foundations`
 - [x] `ARC-B (commits ARC-06..ARC-10): bots runtime CQRS/read-model decomposition + aggregate monitoring contract`
-- [ ] `ARC-C (commits ARC-11..ARC-13): shared runtime/backtest indicator kernel + backtest facade alignment`
+- [x] `ARC-C (commits ARC-11..ARC-13): shared runtime/backtest indicator kernel + backtest facade alignment`
 - [x] `ARC-D (commits ARC-14..ARC-18): web container slimming + DataTable split + remaining i18n literal cleanup`
-- [ ] `ARC-E (commits ARC-19..ARC-20): guardrail tightening + architecture closure evidence`
+- [x] `ARC-E (commits ARC-19..ARC-20): guardrail tightening + architecture closure evidence`
 - [ ] `POS-A (commits POS-36..POS-38): lifecycle contract parity foundations across backtest/paper/live`
 - [ ] `POS-B (commits POS-39..POS-42): runtime DCA execution parity + golden fixtures + operator QA`
 - [ ] `OPV-A (commits OPV-01..OPV-04): production rehearsal + live-takeover verification + exit-gate closure`
@@ -65,6 +62,20 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `ARC-E group closure (ARC-19..ARC-20)`
+  - 2026-04-19: Closed ARC-E by tightening repository guardrails with stricter source-file byte budgets (`api 88_000`, `web 95_000`) plus production-only line budgets (`api 1_700`, `web 2_200`), and publishing architecture maintainability closure/residual-risk snapshot in `docs/architecture/architecture-maintainability-closure-2026-04-19.md`. Validation: `pnpm run quality:guardrails` => `PASS`.
+- [x] `ARC-20 docs(architecture-closure): publish maintainability delta and residual-risk snapshot`
+  - 2026-04-19: Published ARC closure report with refreshed hotspot metrics, delta versus 2026-04-18 baseline, and explicit residual-risk register in `docs/architecture/architecture-maintainability-closure-2026-04-19.md`.
+- [x] `ARC-19 chore(guardrails): tighten production hotspot budgets after refactor waves`
+  - 2026-04-19: Updated `scripts/repoGuardrails.mjs` with stricter source-file byte budgets and new production-only line-budget guardrail check, keeping current repository state green.
+- [x] `ARC-C group closure (ARC-11..ARC-13)`
+  - 2026-04-19: Closed ARC-C by introducing shared indicator kernel ownership (`strategyIndicatorKernel.ts`), rewiring runtime decision evaluation and backtest indicator projection to the shared kernel, extracting interleaved portfolio simulation into `backtestPortfolioSimulation.service.ts`, and adding runtime-vs-backtest parity regression locks (`backtestRuntimeKernelParity.test.ts`). Validation: `pnpm --filter api run typecheck` => `PASS`; focused ARC-C pack => `57/57 PASS`; `pnpm --filter api run build` => `PASS`.
+- [x] `ARC-13 test(api-parity): regression lock for shared kernel parity (runtime vs backtest)`
+  - 2026-04-19: Added focused parity regression suite `backtestRuntimeKernelParity.test.ts` covering EMA/MACD/RSI and derivative channels (funding z-score, open-interest delta, order-book depth ratio).
+- [x] `ARC-12 refactor(api-backtests): reduce backtests.service to facade over dedicated services`
+  - 2026-04-19: Reduced `backtests.service.ts` responsibility by extracting interleaved portfolio simulation ownership into `backtestPortfolioSimulation.service.ts` and keeping service-level orchestration/facade exports stable.
+- [x] `ARC-11 feat(api-domain-kernel): extract shared indicator projection/evaluation kernel for runtime+backtests`
+  - 2026-04-19: Added shared indicator resolver kernel (`strategyIndicatorKernel.ts`), rewired `strategySignalEvaluator` and `runtimeSignalDecisionEngine` to use the shared resolver, and migrated backtest indicator series projection to the same kernel path.
 - [x] `UXR-H planning queued (dashboard manual-order advanced inputs and context expansion)`
   - 2026-04-19: Published execution-ready tiny-commit wave in `docs/planning/uxr-h-dashboard-manual-order-advanced-plan-2026-04-19.md` (`UXR-H-01..UXR-H-10`) covering price input + market-price fill, qty minimum-executable constraints, qty slider row, bot-context order meta (`order type/margin mode/leverage`), side-aware cost/max summary, and manual-order container simplification while preserving existing submit behavior.
 - [x] `ARC-B group closure (ARC-06..ARC-10)`

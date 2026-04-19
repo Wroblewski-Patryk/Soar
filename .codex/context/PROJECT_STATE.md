@@ -20,8 +20,8 @@ Last updated: 2026-04-19
   and IA changes.
 - 2026-04-17: Portuguese rollout is locked to `pt-PT`; `pt-BR` is not part of
   the current localization wave.
-- 2026-04-19: active execution focus moved to `ARC-C` after closing `ARC-B`
-  bots-runtime CQRS decomposition.
+- 2026-04-19: active execution focus moved to `POS-A` after closing `ARC-C`
+  and `ARC-E` architecture maintainability remediation waves.
 
 ## Technical Baseline
 - Backend: Node.js 20+, Express API, Prisma, TypeScript
@@ -99,23 +99,32 @@ Last updated: 2026-04-19
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: execute `ARC-C` shared runtime/backtest indicator
-  kernel and backtests facade decomposition (`ARC-11..ARC-13`).
+- Main active objective: execute `POS-A` lifecycle parity contract closure
+  foundations (`POS-36..POS-38`).
 - Top blockers:
-  - runtime and backtest indicator evaluation paths still duplicate kernel logic
-    across `runtimeSignalLoop` and `backtests.service`.
+  - strategy-exit close semantics still diverge between replay/backtest/runtime
+    lifecycle paths (`POS-36`).
 - Success criteria for this phase:
-  - `ARC-C` closes with shared indicator projection/evaluation kernel and
-    parity-locked runtime/backtest contracts.
+  - `POS-A` closes with deterministic lifecycle-open/close parity contracts
+    across backtest and runtime execution paths.
   - canonical queue and context docs stay synchronized after each ARC batch.
   - no regressions in runtime safety, deploy confidence, or dashboard contracts.
-- Next queued follow-up after `ARC-C`:
-  - `ARC-E`,
-  - lifecycle parity closure (`POS-36..42`),
+- Next queued follow-up after `POS-A`:
+  - lifecycle parity completion (`POS-B`, `POS-39..42`),
   - production verification closure (`OPV`),
   - dashboard manual-order advanced UX wave (`UXR-H-01..UXR-H-10`).
 
 ## Recent Progress
+- 2026-04-19: closed `ARC-E` (`ARC-19..ARC-20`) by tightening repository
+  guardrails (source byte budgets + production line budgets) and publishing
+  architecture maintainability closure snapshot in
+  `docs/architecture/architecture-maintainability-closure-2026-04-19.md`.
+- 2026-04-19: closed `ARC-C` (`ARC-11..ARC-13`) by introducing shared
+  indicator kernel ownership (`strategyIndicatorKernel.ts`), rewiring runtime
+  and backtest indicator projection/evaluation to the shared kernel path,
+  extracting interleaved portfolio simulation ownership into
+  `backtestPortfolioSimulation.service.ts`, and adding runtime-vs-backtest
+  parity regression lock (`backtestRuntimeKernelParity.test.ts`).
 - 2026-04-19: queued `UXR-H` manual-order advanced UX execution wave in
   `docs/planning/uxr-h-dashboard-manual-order-advanced-plan-2026-04-19.md`
   with grouped tiny-commit batches (`UXR-H-A..UXR-H-C`) covering price input
