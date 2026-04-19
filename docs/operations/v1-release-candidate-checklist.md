@@ -43,7 +43,7 @@
   - `/workers/ready`.
 - [x] Runtime freshness gate healthy:
   - `/workers/runtime-freshness`.
-- [x] Queue lag metrics reviewed and within baseline.
+- [ ] Queue lag metrics reviewed and within baseline.
 - [x] Incident contacts and escalation chain confirmed.
 
 ### Mandatory Post-Deploy Validation Sequence (Runtime + Cache + Stream)

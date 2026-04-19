@@ -1,0 +1,126 @@
+{
+  "generatedAt": "2026-04-19T01:36:24.775Z",
+  "window": {
+    "days": 7,
+    "startUtc": "2026-04-12T01:36:24.775Z",
+    "endUtc": "2026-04-19T01:36:24.775Z"
+  },
+  "source": {
+    "inputDir": "docs\\operations",
+    "artifactsTotal": 3,
+    "artifactsInWindow": 1,
+    "environmentSummary": {
+      "production": 1
+    },
+    "includesProductionEvidence": true
+  },
+  "aggregates": {
+    "probes": {
+      "healthAvgPct": 100,
+      "readyAvgPct": 100,
+      "workersHealthAvgPct": 0,
+      "workersReadyAvgPct": 0
+    },
+    "api": {
+      "errorRatioAvgPct": null
+    },
+    "queueLagExecution": {
+      "p95Avg": null,
+      "p95Max": null,
+      "maxAvg": null,
+      "maxPeak": null
+    },
+    "liveOrderPath": {
+      "failureRatioAvgPct": null
+    }
+  },
+  "thresholds": {
+    "queueLagP95Threshold": 10,
+    "queueLagMaxThreshold": 20
+  },
+  "objectiveStatusSummary": [
+    {
+      "id": "SLO-1A",
+      "label": "/health availability",
+      "pass": 1,
+      "fail": 0,
+      "noData": 0,
+      "total": 1,
+      "latestStatus": "PASS"
+    },
+    {
+      "id": "SLO-1B",
+      "label": "/ready availability",
+      "pass": 1,
+      "fail": 0,
+      "noData": 0,
+      "total": 1,
+      "latestStatus": "PASS"
+    },
+    {
+      "id": "SLO-2",
+      "label": "API 5xx ratio",
+      "pass": 0,
+      "fail": 0,
+      "noData": 1,
+      "total": 1,
+      "latestStatus": "NO_DATA"
+    },
+    {
+      "id": "SLO-3",
+      "label": "API average duration",
+      "pass": 0,
+      "fail": 0,
+      "noData": 1,
+      "total": 1,
+      "latestStatus": "NO_DATA"
+    },
+    {
+      "id": "SLO-4A",
+      "label": "/workers/health availability",
+      "pass": 0,
+      "fail": 1,
+      "noData": 0,
+      "total": 1,
+      "latestStatus": "FAIL"
+    },
+    {
+      "id": "SLO-4B",
+      "label": "/workers/ready availability",
+      "pass": 0,
+      "fail": 1,
+      "noData": 0,
+      "total": 1,
+      "latestStatus": "FAIL"
+    },
+    {
+      "id": "SLO-5",
+      "label": "Execution queue lag compliance",
+      "pass": 0,
+      "fail": 0,
+      "noData": 1,
+      "total": 1,
+      "latestStatus": "NO_DATA"
+    },
+    {
+      "id": "SLO-6",
+      "label": "Live order failure ratio",
+      "pass": 0,
+      "fail": 0,
+      "noData": 1,
+      "total": 1,
+      "latestStatus": "NO_DATA"
+    }
+  ],
+  "queueLagBreaches": [],
+  "artifactRefs": [
+    {
+      "file": "_artifacts-slo-window-2026-04-19T01-35-51-340Z.json",
+      "environment": "production",
+      "startedAt": "2026-04-19T01:35:05.346Z",
+      "endedAt": "2026-04-19T01:35:51.338Z",
+      "queueLagP95": null,
+      "queueLagMax": null
+    }
+  ]
+}

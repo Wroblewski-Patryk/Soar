@@ -17,12 +17,12 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] OPV-02 Verify takeover endpoint and private ops probes on production target
+- [ ] POS-37 Align runtime automation mode/context with bot/position and manual-management guard
   - Status: READY
-  - Group: Production Verification Follow-up (`OPV-A`)
-  - Owner: Ops/Release
-  - Depends on: OPV-01
-  - Priority: P3
+  - Group: Position Lifecycle Parity (`POS-A`)
+  - Owner: Backend Builder
+  - Depends on: POS-36
+  - Priority: P2
 
 ## BACKLOG
 
@@ -42,6 +42,14 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] OPV-A group closure (`OPV-01..OPV-04`)
+  - 2026-04-19: Executed production verification wave end-to-end with rehearsal, takeover verification, RC gate refresh, and closure sync. Final release state remains externally blocked on Gate 2 private-route OPS validation and missing stage DNS records.
+- [x] OPV-04 Sync LBT/V1 planning statuses and residual external blockers
+  - 2026-04-19: Synced closure state across canonical queue/context and linked updated OPV evidence (`opv-02`, `opv-03`) in planning docs; residual blockers explicitly tracked in `docs/operations/opv-04-closure-sync-2026-04-19.md`.
+- [x] OPV-03 Refresh RC external-gates/sign-off artifacts with fresh production evidence
+  - 2026-04-19: Collected new production SLO observation, rebuilt 7d/30d windows, refreshed RC gate status/checklist/sign-off artifacts, then reran final status sync + diagnostics (`_artifacts-opv-03-rc-evidence-final-sync-2026-04-19T01-43-32-327Z.json`).
+- [x] OPV-02 Verify takeover endpoint and private ops probes on production target
+  - 2026-04-19: Production takeover API routes now return `401 Missing token` (protected route present, no `404`), while private OPS probes remain blocked without VPS private-route admin auth; evidence captured in `docs/operations/opv-02-prod-live-takeover-2026-04-19.md` and `_artifacts-opv-02-*`.
 - [x] OPV-01 Execute Dockerfile-first stage/prod rehearsal and capture deployment evidence
   - 2026-04-19: Dockerfile-first rehearsal passed for `api`, `web`, and all worker images; production smoke (`api.soar.luckysparrow.ch` + `soar.luckysparrow.ch`) passed for `/health`, `/ready`, and web root. Stage rehearsal is externally blocked because stage Soar DNS records are missing; evidence captured in `docs/operations/opv-01-vps-rehearsal-2026-04-19.md` and `_artifacts-opv-01-*`.
 - [x] UXR-H group closure (`UXR-H-02..UXR-H-10`)

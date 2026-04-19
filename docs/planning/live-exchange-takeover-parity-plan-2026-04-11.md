@@ -1,6 +1,6 @@
 # Live Exchange Takeover Parity Plan (2026-04-11)
 
-Status: execution-complete (follow-up production rollout verification required)
+Status: execution-complete (OPV follow-up executed; external OPS private-route gate still open)
 
 ## Canonical Queue Linkage
 - Canonical queue owner: `docs/planning/mvp-next-commits.md` (`OPV-A`).
@@ -26,9 +26,10 @@ Status: execution-complete (follow-up production rollout verification required)
   - none.
 - Remaining:
   - none.
-- Follow-up blockers observed during evidence run:
-  - public-route OPS probes return `403` by policy (`/workers/*`, `/alerts`) and require private-route verification on VPS.
-  - production target currently returns `404` for `/dashboard/positions/takeover-status`, indicating required API revision still needs rollout/verification on target.
+- Follow-up blockers observed during OPV refresh (2026-04-19):
+  - production takeover routes now return `401 Missing token` (route deployed, auth required), not `404`.
+  - private OPS probes (`/workers/*`, `/workers/runtime-freshness`, `/alerts`) still require VPS private-route execution with admin auth; public-path verification remains insufficient for Gate 3 closure.
+  - evidence references: `docs/operations/opv-02-prod-live-takeover-2026-04-19.md`, `docs/operations/opv-03-rc-gates-refresh-2026-04-19.md`.
 
 ## Goal
 - Make LIVE bot behavior parity-complete with the legacy bot for exchange-connected trading:

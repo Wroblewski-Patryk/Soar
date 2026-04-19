@@ -12,9 +12,9 @@ Goal: move from MVP to a production-grade public release (V1.0) with reliable li
 - Canonical phase owner: `docs/planning/mvp-execution-plan.md` (`OPV-01..OPV-04`).
 - Runtime/product implementation waves are already closed; remaining work here is release evidence and production sign-off synchronization.
 
-## Current Status (2026-03-21)
+## Current Status (2026-04-19)
 - Implementation track is largely complete across Phases A-F.
-- Remaining work is production-environment exit validation (SLO observation window + external release gates/sign-offs).
+- Remaining work is production-environment exit validation on private OPS route; latest refreshed gate snapshot is `G1=PASS`, `G2=OPEN`, `G3=PASS`, `G4=PASS`.
 - Scope note (2026-03-22): unresolved admin+billing implementation items are explicitly moved to post-MVP/V1.1; V1 focuses on runtime/live-trading integrity and truthful release evidence.
 
 ## V1.0 Definition
@@ -190,6 +190,7 @@ Objective: deliver deterministic runtime parity across `BACKTEST`, `PAPER`, and 
 | dashboard runtime-card staleness or reconnect churn | disable `WEB_RUNTIME_SSE_PREFERRED_ENABLED` |
 
 ## Progress Log
+- 2026-04-19: Executed OPV production refresh evidence pack (`OPV-02..OPV-03`) and synchronized RC artifacts (`v1-rc-external-gates-status.md`, `v1-rc-signoff-record.md`, `v1-release-candidate-checklist.md`) with fresh SLO observation + rolling window reports (`v1-slo-observation-2026-04-19T01-35-51-340Z.md`, `v1-slo-window-report-7d-2026-04-19T01-36-24-775Z.md`, `v1-slo-window-report-30d-2026-04-19T01-36-25-355Z.md`); Gate 2 remains `OPEN` pending VPS private-route/admin-auth worker probe closure.
 - 2026-04-17: Closed lingering `Worker Split Timing` open decision in canonical governance (`docs/planning/open-decisions.md`) by locking `PROD` mandatory API/worker split-process policy and explicit `STAGE/DEV` split trigger thresholds (execution queue lag, API p95 + lag coupling, restart burst) with deployment/SLO/incident runbook references.
 - 2026-04-16: Added `CPDB-22` runbook guardrails in V1 live plan with staged CPU/DB flag enable sequence (stage -> canary -> full) and explicit rollback matrix for runtime CPU/DB and dashboard refresh regressions.
 - 2026-04-10: Closed V1 external production gates end-to-end: collected 30-minute production SLO window from VPS/private ops network path (`docs/operations/_artifacts-slo-window-2026-04-10T17-09-26-532Z.json`, `docs/operations/v1-slo-observation-2026-04-10T17-09-26-532Z.md`), completed Gate1/Gate3 runbook evidence, finalized RC sign-off record, and reached strict production evidence check PASS (`G1/G2/G3/G4 = PASS`).

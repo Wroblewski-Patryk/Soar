@@ -232,3 +232,19 @@ node scripts/deploySmokeCheck.mjs --no-workers
 - Avoid: assuming older domain contracts in smoke/release docs remain valid after brand/domain migration.
 - Evidence:
   - 2026-04-19 `OPV-01` evidence pack: production smoke PASS on Soar domains, stage smoke blocked due missing stage DNS records for `stage-soar`/`stage-api.soar`.
+
+### 2026-04-19 - RC gate status can appear stale without fresh window-report rebuild
+- Context: refreshing OPV production release evidence (`OPV-03`) after collecting a new SLO observation artifact.
+- Symptom: `ops:rc:gates:status` still showed old `PASS` state until rolling window reports were regenerated.
+- Root cause: gate-status builder prefers latest `v1-slo-window-report-*.json` over raw `_artifacts-slo-window-*.json`; if only raw SLO is new, status can be computed from an older window report.
+- Guardrail: after `ops:slo:collect`, always regenerate window reports (`7d`, `30d`) before running `ops:rc:gates:status`, or explicitly pass `--input` to the intended fresh artifact.
+- Preferred pattern:
+```powershell
+pnpm run ops:slo:collect -- --base-url https://api.soar.luckysparrow.ch --environment production
+pnpm run ops:slo:window-report -- --window-days 7
+pnpm run ops:slo:window-report -- --window-days 30
+pnpm run ops:rc:gates:status
+```
+- Avoid: treating the first post-collect gate snapshot as final when window reports were not rebuilt.
+- Evidence:
+  - Observed on 2026-04-19 during OPV-03 refresh. Fresh window rebuild changed snapshot from stale `PASS` to current `Gate 2 = OPEN` and `RC status = BLOCKED`.

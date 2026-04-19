@@ -99,21 +99,37 @@ Last updated: 2026-04-19
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: execute `OPV-02` production takeover endpoint/private
-  OPS probe verification after `OPV-01` rehearsal evidence capture.
+- Main active objective: advance lifecycle parity queue (`POS-A`) after
+  completing `OPV-A` production verification follow-up.
 - Top blockers:
+  - Gate 2 remains open for V1 RC external gates because private-route VPS
+    worker/alerts probes still require admin-auth execution context.
   - stage rehearsal endpoint verification is blocked by missing stage Soar DNS
     records (`stage-api.soar.luckysparrow.ch`, `stage-soar.luckysparrow.ch`).
 - Success criteria for this phase:
-  - production verification phase closes `OPV-02..OPV-04` with refreshed gate
-    status/sign-off and explicit external blocker accounting.
+  - POS-A continuation (`POS-37..POS-38`) lands with parity-safe validation
+    evidence.
+  - production verification artifacts remain synchronized with explicit external
+    blocker accounting (`Gate2 OPEN`, stage DNS pending).
   - canonical queue and context docs stay synchronized after each ARC batch.
   - no regressions in runtime safety, deploy confidence, or dashboard contracts.
 - Next queued follow-up:
-  - lifecycle parity continuation (`POS-A` remaining `POS-37..POS-38`),
-  - production verification closure wave (`OPV-A`, `OPV-01..OPV-04`).
+  - lifecycle parity continuation (`POS-A` remaining `POS-37..POS-38`).
 
 ## Recent Progress
+- 2026-04-19: completed `OPV-04` by synchronizing OPV closure state across
+  canonical queue/context and LBT/V1 planning docs, publishing
+  `docs/operations/opv-04-closure-sync-2026-04-19.md` with explicit residual
+  blockers (Gate 2 private-route verification, stage DNS missing).
+- 2026-04-19: completed `OPV-03` by collecting fresh production SLO evidence,
+  rebuilding rolling window reports, refreshing RC gate/checklist/sign-off
+  artifacts, and publishing closure evidence in
+  `docs/operations/opv-03-rc-gates-refresh-2026-04-19.md`; current RC snapshot
+  is `G1=PASS`, `G2=OPEN`, `G3=PASS`, `G4=OPEN` with RC status `BLOCKED`.
+- 2026-04-19: completed `OPV-02` by verifying production takeover route
+  availability (protected `401 Missing token` response, no `404`) and capturing
+  OPS probe evidence in `docs/operations/opv-02-prod-live-takeover-2026-04-19.md`;
+  private-route admin-auth validation remains required for Gate 3 closure.
 - 2026-04-19: completed `OPV-01` by running Dockerfile-first rehearsal builds
   for `api`, `web`, and all worker images (`PASS`) and capturing deployment
   evidence in `docs/operations/opv-01-vps-rehearsal-2026-04-19.md` plus

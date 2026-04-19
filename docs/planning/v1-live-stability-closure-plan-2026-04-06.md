@@ -1,6 +1,6 @@
 # V1 Live Stability Closure Plan (2026-04-06)
 
-Status: active planning baseline for final V1 closure.
+Status: active closure baseline (OPV evidence refreshed on 2026-04-19; Gate 2 remains open).
 
 ## Canonical Queue Linkage
 - Canonical queue owner for remaining non-code closure: `docs/planning/mvp-next-commits.md` (`OPV-A`).
@@ -13,7 +13,7 @@ Status: active planning baseline for final V1 closure.
   - failing scenario: `emits trailing-take-profit event when arm and pullback thresholds are hit`
   - symptom: `eventCounts.TTP = 0` in expected TTP scenario.
 - Runtime/live positions confidence pack remains green in focused suites.
-- Remaining formal V1 exit gate still requires production evidence/sign-offs.
+- Remaining formal V1 exit gate still requires private-route OPS verification for production worker endpoints.
 
 ## Objective
 - Finish V1 with production-ready confidence for:
@@ -58,4 +58,4 @@ Status: active planning baseline for final V1 closure.
 - Backtest and runtime/positions confidence packs green.
 - V1 external gates updated with fresh production evidence.
 - Formal release sign-off artifacts updated and complete.
-- Remaining blocker outside repository code/docs scope: target-environment evidence and formal approver names/timestamps are still required to move gate statuses from OPEN to PASS.
+- Remaining blocker outside repository code/docs scope: VPS private-route/admin-auth execution is still required to move Gate 2 from `OPEN` to `PASS` (`/workers/*`, `/workers/runtime-freshness`, `/alerts`).

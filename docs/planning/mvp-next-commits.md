@@ -7,11 +7,10 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `OPV-02 qa(prod-live-takeover): verify takeover endpoint and private ops probes on production target`
+- [ ] `POS-37 fix(runtime): align runtime automation mode/context with bot/position and manual-management guard`
 ## NEXT
-- [ ] `OPV-03 ops(gates-refresh): refresh RC external-gate status/sign-off artifacts with new production evidence`
+- [ ] `POS-38 feat(runtime-capital): add shared paper/live capital context with affordability parity`
 ## PIPELINE
-- [ ] `OPV-A (commits OPV-01..OPV-04): production rehearsal + live-takeover verification + exit-gate closure`
 - [ ] `POS-A (commits POS-36..POS-38): lifecycle contract parity foundations across backtest/paper/live`
 ## GROUP QUEUE
 - [x] `BRS-A (commits BRS-01..BRS-04): decision closure + strict selected-bot scope foundation`
@@ -30,7 +29,7 @@ Operational queue for one-task execution runs.
 - [x] `ARC-E (commits ARC-19..ARC-20): guardrail tightening + architecture closure evidence`
 - [ ] `POS-A (commits POS-36..POS-38): lifecycle contract parity foundations across backtest/paper/live`
 - [ ] `POS-B (commits POS-39..POS-42): runtime DCA execution parity + golden fixtures + operator QA`
-- [ ] `OPV-A (commits OPV-01..OPV-04): production rehearsal + live-takeover verification + exit-gate closure`
+- [x] `OPV-A (commits OPV-01..OPV-04): production rehearsal + live-takeover verification + exit-gate closure`
 - [x] `L10NQ-D-A (commits 01-05): inventory + guardrail hardening + auth/admin migration`
 - [x] `L10NQ-D-B (commits 06-10): reports/markets/backtests/bots/home copy migration`
 - [x] `L10NQ-D-C (commits 11-18): shared foundation localization + parity/smoke/closure`
@@ -58,6 +57,12 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `OPV-04 docs(closure): sync LBT/V1 stability plan statuses and residual external blockers`
+  - 2026-04-19: Synced OPV closure state across canonical queue/context and linked LBT/V1 planning docs to latest evidence (`opv-02`, `opv-03`, RC gate/sign-off artifacts). Remaining external blockers are explicitly documented: Gate 3 private-route OPS validation and missing stage DNS records.
+- [x] `OPV-03 ops(gates-refresh): refresh RC external-gate status/sign-off artifacts with new production evidence`
+  - 2026-04-19: Collected fresh production SLO observation (`_artifacts-slo-window-2026-04-19T01-35-51-340Z.json`), rebuilt rolling windows (`7d/30d`), refreshed `v1-rc-external-gates-status.md`, synced RC checklist, rebuilt sign-off record, and reran final status/evidence sync (`_artifacts-opv-03-rc-evidence-final-sync-2026-04-19T01-43-32-327Z.json`). Current snapshot: `G1=PASS`, `G2=OPEN`, `G3=PASS`, `G4=OPEN`; RC decision remains `BLOCKED` until Gate 2 closes.
+- [x] `OPV-02 qa(prod-live-takeover): verify takeover endpoint and private ops probes on production target`
+  - 2026-04-19: Verified production takeover endpoint rollout with public auth-required responses (`401 Missing token`, route present, no `404`) and captured OPS probe evidence. Public worker/rollback probes remain blocked without private-route admin auth (`/workers/*`, `/workers/runtime-freshness`, `/alerts`), recorded in `docs/operations/opv-02-prod-live-takeover-2026-04-19.md`.
 - [x] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
   - 2026-04-19: Executed Dockerfile-first rehearsal for `api`, `web`, and all four worker images (`PASS` for each build target) and captured evidence pack in `docs/operations/opv-01-vps-rehearsal-2026-04-19.md` plus JSON/log artifacts. Production smoke (`api.soar.luckysparrow.ch`, `soar.luckysparrow.ch`) passed for `/health`, `/ready`, and web root. Stage rehearsal remained externally blocked due missing stage DNS records (`stage-api.soar.luckysparrow.ch`, `stage-soar.luckysparrow.ch`).
 - [x] `UXR-H-01 docs(contract): freeze dashboard manual-order advanced input/context contract`

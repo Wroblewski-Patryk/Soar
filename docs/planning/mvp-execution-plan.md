@@ -2023,7 +2023,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-19: Completed `ARC-20` by publishing maintainability delta and residual-risk snapshot in `docs/architecture/architecture-maintainability-closure-2026-04-19.md`.
 
 ## Phase POS - Position Lifecycle Parity Closure (Queued 2026-04-18)
-- [ ] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
+- [x] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
 - [ ] `POS-37 fix(runtime): align runtime automation mode/context with bot/position and manual-management guard`
 - [ ] `POS-38 feat(runtime-capital): add shared paper/live capital context with affordability parity`
 - [ ] `POS-39 refactor(runtime-dca): execute DCA through execution adapter parity path`
@@ -2033,13 +2033,17 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 
 ### Progress Log (Phase POS - Position Lifecycle Parity Closure)
 - 2026-04-18: Queued unresolved `POS-36..POS-42` lifecycle parity tasks from `docs/planning/position-lifecycle-parity-remediation-plan-2026-03-29.md` because they remain outside active canonical queue coverage and are required for deterministic cross-mode lifecycle behavior.
+- 2026-04-19: Completed `POS-36` by removing strategy-exit close bypass from backtest/replay/runtime close path and locking EXIT trace-only parity semantics with focused regression evidence.
 
 ## Phase OPV - Production Verification and Exit-Gate Follow-up (Queued 2026-04-18)
 - [x] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
-- [ ] `OPV-02 qa(prod-live-takeover): verify takeover endpoint and private ops probes on production target`
-- [ ] `OPV-03 ops(gates-refresh): refresh RC external-gate status/sign-off artifacts with new production evidence`
-- [ ] `OPV-04 docs(closure): sync LBT/V1 stability plan statuses and residual external blockers`
+- [x] `OPV-02 qa(prod-live-takeover): verify takeover endpoint and private ops probes on production target`
+- [x] `OPV-03 ops(gates-refresh): refresh RC external-gate status/sign-off artifacts with new production evidence`
+- [x] `OPV-04 docs(closure): sync LBT/V1 stability plan statuses and residual external blockers`
 
 ### Progress Log (Phase OPV - Production Verification and Exit-Gate Follow-up)
 - 2026-04-18: Queued production follow-up closure from live-takeover/V1 plans (`LBT`, `V1` stability/release, `DPL` rehearsal note) so remaining target-environment verification and formal gate evidence are explicitly owned after code-focused waves.
 - 2026-04-19: Completed `OPV-01` by executing Dockerfile-first image rehearsal (`api`, `web`, `workers-market-data`, `workers-market-stream`, `workers-backtest`, `workers-execution`) and publishing evidence in `docs/operations/opv-01-vps-rehearsal-2026-04-19.md` with machine-readable artifacts. Production smoke on `api.soar.luckysparrow.ch` and `soar.luckysparrow.ch` passed; stage rehearsal is blocked by missing stage DNS records for Soar stage domains.
+- 2026-04-19: Completed `OPV-02` by executing production takeover verification probes and publishing artifact pack (`docs/operations/opv-02-prod-live-takeover-2026-04-19.md`, `_artifacts-opv-02-*`). Takeover route rollout is confirmed on production (`401 Missing token` means protected route exists; no `404`), while private OPS Gate 3 checks remain blocked in this execution context without VPS private-route admin auth.
+- 2026-04-19: Completed `OPV-03` by collecting fresh production SLO evidence (`_artifacts-slo-window-2026-04-19T01-35-51-340Z.json`), rebuilding 7d/30d rolling reports, refreshing RC status/checklist/sign-off artifacts, rerunning post-signoff status sync, and publishing diagnostics in `docs/operations/opv-03-rc-gates-refresh-2026-04-19.md`. Current external gate snapshot: `G1=PASS`, `G2=OPEN`, `G3=PASS`, `G4=OPEN`; RC status `BLOCKED`.
+- 2026-04-19: Completed `OPV-04` by synchronizing canonical queue/context and LBT/V1 planning docs to the refreshed OPV evidence and residual blockers (`docs/operations/opv-04-closure-sync-2026-04-19.md`).
