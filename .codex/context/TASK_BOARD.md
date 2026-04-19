@@ -30,6 +30,14 @@ Last updated: 2026-04-19
 - [ ] DAGG-08 Harden aggregate API determinism for dashboard table contract
 - [ ] DAGG-09 Add /dashboard vs /preview selected-bot parity regression scenario
 - [ ] DAGG-10 Run focused aggregate parity closure pack and sync canonical queue/context
+- [ ] SBSC-01 Freeze sidebar strategy source-of-truth and projection parity rules
+- [ ] SBSC-02 Add API regression for listBots.strategyId vs runtime-graph primary strategy mismatch
+- [ ] SBSC-03 Make listBots/getBot strategy projection canonical-first and runtime-graph compatible
+- [ ] SBSC-04 Add deterministic drift audit for bots with legacy/canonical strategy divergence
+- [ ] SBSC-05 Add safe drift-repair path aligning legacy linkage with canonical strategy
+- [ ] SBSC-06 Lock dashboard sidebar strategy/market switch parity regression (two bots, different strategies)
+- [ ] SBSC-07 Run focused sidebar parity api+web validation pack
+- [ ] SBSC-08 Publish closure sync for sidebar strategy parity phase
 
 ## IN_PROGRESS
 
@@ -44,6 +52,9 @@ Last updated: 2026-04-19
 - [ ] (none)
 
 ## DONE
+
+- [x] SBSC planning queued (`SBSC-01..SBSC-08`)
+  - 2026-04-19: Added `docs/planning/dashboard-sidebar-strategy-contract-plan-2026-04-19.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) as post-`DAGG` follow-up for selected-bot sidebar strategy source-of-truth parity.
 
 - [x] DAGG planning queued (`DAGG-01..DAGG-10`)
   - 2026-04-19: Added `docs/planning/dashboard-aggregate-selected-bot-view-plan-2026-04-19.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) to implement aggregate selected-bot contract for dashboard `positions/orders/history`.

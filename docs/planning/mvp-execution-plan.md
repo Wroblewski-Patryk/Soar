@@ -2121,6 +2121,19 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 ### Progress Log (Phase DAGG - Dashboard Aggregate Selected-Bot View Parity)
 - 2026-04-19: Queued aggregate-view remediation from production discrepancy report (preview shows closed history positions while dashboard selected bot does not) and published executor-ready plan in `docs/planning/dashboard-aggregate-selected-bot-view-plan-2026-04-19.md`; product decision locked: dashboard runtime tables are aggregate-by-selected-bot.
 
+## Phase SBSC - Dashboard Sidebar Strategy Source-of-Truth Parity (Queued 2026-04-19)
+- [ ] `SBSC-01 docs(contract): freeze sidebar strategy source-of-truth and projection parity rules`
+- [ ] `SBSC-02 test(api-red): add regression for listBots.strategyId vs runtime-graph primary strategy mismatch`
+- [ ] `SBSC-03 fix(api-projection): make listBots/getBot strategy projection canonical-first and runtime-graph compatible`
+- [ ] `SBSC-04 feat(api-audit): add deterministic drift audit for bots with legacy/canonical strategy divergence`
+- [ ] `SBSC-05 fix(api-drift-repair): add safe reconciliation path to align legacy linkage with canonical strategy when requested`
+- [ ] `SBSC-06 test(web-regression): lock sidebar strategy/market switch parity for two bots with different strategies`
+- [ ] `SBSC-07 qa(focused-pack): run api+web sidebar parity regressions and typechecks`
+- [ ] `SBSC-08 docs(closure): publish sidebar strategy contract closure and sync queue/context`
+
+### Progress Log (Phase SBSC - Dashboard Sidebar Strategy Source-of-Truth Parity)
+- 2026-04-19: Queued sidebar strategy parity wave from production/API analysis showing `listBots.strategyId` vs `runtime-graph` strategy drift; published executor-ready plan in `docs/planning/dashboard-sidebar-strategy-contract-plan-2026-04-19.md` with canonical-first projection contract and drift regression/repair path.
+
 ## Phase DASHR - Dashboard Runtime Data Parity Recovery (Queued 2026-04-19)
 - [ ] `DASHR-01 docs(contract): freeze dashboard runtime parity contract for positions/orders/history/signals/selected-bot section`
 - [ ] `DASHR-02 test(web-red): add failing coverage for orders-tab table rendering and selected-bot strategy refresh`

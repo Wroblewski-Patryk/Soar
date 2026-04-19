@@ -121,9 +121,14 @@ Last updated: 2026-04-19
   - focused validation remains green for touched modules before each commit.
   - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - start `DAGG-01` from canonical `NOW` queue.
+  - start `DAGG-01` from canonical `NOW` queue; execute `SBSC` as next
+    post-`DAGG` sidebar strategy parity wave.
 
 ## Recent Progress
+- 2026-04-19: queued sidebar strategy source-of-truth parity wave
+  (`SBSC-01..SBSC-08`) from production/API analysis (`listBots.strategyId`
+  projection drift vs `runtime-graph` primary strategy) and published executor
+  plan `docs/planning/dashboard-sidebar-strategy-contract-plan-2026-04-19.md`.
 - 2026-04-19: queued `DAGG` aggregate-view parity wave (`DAGG-01..DAGG-10`)
   from production discrepancy analysis and published executor-ready plan
   `docs/planning/dashboard-aggregate-selected-bot-view-plan-2026-04-19.md`;

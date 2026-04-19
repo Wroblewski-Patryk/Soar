@@ -19,10 +19,21 @@ Operational queue for one-task execution runs.
 - [ ] `DAGG-08 fix(api-aggregate-contract): harden aggregate response determinism for dashboard tables`
 - [ ] `DAGG-09 test(e2e/web-parity): add scenario asserting /dashboard and /preview parity for selected bot aggregate history`
 - [ ] `DAGG-10 qa(closure): run focused aggregate parity pack and sync canonical queue/context`
+- [ ] `SBSC-01 docs(contract): freeze sidebar strategy source-of-truth and projection parity rules`
+- [ ] `SBSC-02 test(api-red): add regression for listBots.strategyId vs runtime-graph primary strategy mismatch`
+- [ ] `SBSC-03 fix(api-projection): make listBots/getBot strategy projection canonical-first and runtime-graph compatible`
+- [ ] `SBSC-04 feat(api-audit): add deterministic drift audit for bots with legacy/canonical strategy divergence`
+- [ ] `SBSC-05 fix(api-drift-repair): add safe reconciliation path to align legacy linkage with canonical strategy when requested`
+- [ ] `SBSC-06 test(web-regression): lock sidebar strategy/market switch parity for two bots with different strategies`
+- [ ] `SBSC-07 qa(focused-pack): run api+web sidebar parity regressions and typechecks`
+- [ ] `SBSC-08 docs(closure): publish sidebar strategy contract closure and sync queue/context`
 ## GROUP QUEUE
 - [ ] `DAGG-A (commits DAGG-01..DAGG-04): contract freeze + dashboard aggregate data-source migration`
 - [ ] `DAGG-B (commits DAGG-05..DAGG-08): history positions parity + aggregate API contract hardening`
 - [ ] `DAGG-C (commits DAGG-09..DAGG-10): parity regression closure + canonical sync`
+- [ ] `SBSC-A (commits SBSC-01..SBSC-03): decision freeze + API projection mismatch regression + canonical-first mapper fix`
+- [ ] `SBSC-B (commits SBSC-04..SBSC-06): drift detection/repair path + sidebar switch regression locks`
+- [ ] `SBSC-C (commits SBSC-07..SBSC-08): closure validation + canonical sync`
 - [x] `DASHR-A (commits DASHR-01..DASHR-04): dashboard tab/view parity + selected-bot section consistency`
 - [x] `DASHR-B (commits DASHR-05..DASHR-08): selected-bot runtime data parity for positions/history/signals scope`
 - [x] `DASHR-C (commits DASHR-09..DASHR-11): signal->order execution diagnostics + closure`
@@ -77,6 +88,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `SBSC planning queued (sidebar selected-bot strategy source-of-truth and projection parity)`
+  - 2026-04-19: Added `docs/planning/dashboard-sidebar-strategy-contract-plan-2026-04-19.md` and queued `SBSC-A..SBSC-C` in pipeline/group queue as post-`DAGG` follow-up to eliminate listBots vs runtime-graph strategy drift in dashboard sidebar.
 - [x] `DAGG planning queued (dashboard aggregate selected-bot view parity for positions/orders/history)`
   - 2026-04-19: Added `docs/planning/dashboard-aggregate-selected-bot-view-plan-2026-04-19.md` and promoted execution groups `DAGG-A..DAGG-C` into `NOW/NEXT/PIPELINE`, locking product decision that dashboard tables use selected-bot aggregate scope.
 - [x] `DASHR-C (commits DASHR-09..DASHR-11): signal->order execution diagnostics + closure`
