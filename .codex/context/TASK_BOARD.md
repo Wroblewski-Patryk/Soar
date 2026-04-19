@@ -17,12 +17,7 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] POS-37 Align runtime automation mode/context with bot/position and manual-management guard
-  - Status: READY
-  - Group: Position Lifecycle Parity (`POS-A`)
-  - Owner: Backend Builder
-  - Depends on: POS-36
-  - Priority: P2
+- [ ] (none)
 
 ## BACKLOG
 
@@ -42,6 +37,10 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] POS-B group closure (`POS-39..POS-42`)
+  - 2026-04-19: Closed queue drift by confirming existing implementation and running focused runtime/parity verification pack (`50/50 PASS`); evidence in `docs/operations/pos-ab-closure-2026-04-19.md`.
+- [x] POS-A group closure (`POS-36..POS-38`)
+  - 2026-04-19: Closed queue drift by confirming implementation-complete state and syncing canonical queue/context after focused verification (`runtimePositionAutomation`, `runtimeCapitalContext`, `backtestReplayCore`, `lifecycleCloseParity`).
 - [x] OPV-A group closure (`OPV-01..OPV-04`)
   - 2026-04-19: Executed production verification wave end-to-end with rehearsal, takeover verification, RC gate refresh, and closure sync. Final release state remains externally blocked on Gate 2 private-route OPS validation and missing stage DNS records.
 - [x] OPV-04 Sync LBT/V1 planning statuses and residual external blockers

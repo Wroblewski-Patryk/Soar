@@ -99,24 +99,28 @@ Last updated: 2026-04-19
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: advance lifecycle parity queue (`POS-A`) after
-  completing `OPV-A` production verification follow-up.
+- Main active objective: keep canonical queue synchronized after closing
+  `POS-A` and `POS-B`, then pick the next planned delivery wave.
 - Top blockers:
   - Gate 2 remains open for V1 RC external gates because private-route VPS
     worker/alerts probes still require admin-auth execution context.
   - stage rehearsal endpoint verification is blocked by missing stage Soar DNS
     records (`stage-api.soar.luckysparrow.ch`, `stage-soar.luckysparrow.ch`).
 - Success criteria for this phase:
-  - POS-A continuation (`POS-37..POS-38`) lands with parity-safe validation
-    evidence.
+  - next executable queue group is explicitly identified with no stale reopened
+    tasks from already-implemented waves.
   - production verification artifacts remain synchronized with explicit external
     blocker accounting (`Gate2 OPEN`, stage DNS pending).
   - canonical queue and context docs stay synchronized after each ARC batch.
   - no regressions in runtime safety, deploy confidence, or dashboard contracts.
 - Next queued follow-up:
-  - lifecycle parity continuation (`POS-A` remaining `POS-37..POS-38`).
+  - select the next planned wave after POS queue reconciliation.
 
 ## Recent Progress
+- 2026-04-19: closed `POS-A` and `POS-B` queue drift by verifying
+  implementation-complete lifecycle parity scope with focused runtime/parity
+  tests (`50/50 PASS`) and publishing closure evidence in
+  `docs/operations/pos-ab-closure-2026-04-19.md`.
 - 2026-04-19: completed `OPV-04` by synchronizing OPV closure state across
   canonical queue/context and LBT/V1 planning docs, publishing
   `docs/operations/opv-04-closure-sync-2026-04-19.md` with explicit residual

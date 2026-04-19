@@ -7,11 +7,11 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `POS-37 fix(runtime): align runtime automation mode/context with bot/position and manual-management guard`
+- [ ] `none (awaiting next planned group)`
 ## NEXT
-- [ ] `POS-38 feat(runtime-capital): add shared paper/live capital context with affordability parity`
+- [ ] `none`
 ## PIPELINE
-- [ ] `POS-A (commits POS-36..POS-38): lifecycle contract parity foundations across backtest/paper/live`
+- [ ] `none`
 ## GROUP QUEUE
 - [x] `BRS-A (commits BRS-01..BRS-04): decision closure + strict selected-bot scope foundation`
 - [x] `BRS-B (commits BRS-05..BRS-08): canonical update-path fix + strategy precedence unification`
@@ -27,8 +27,8 @@ Operational queue for one-task execution runs.
 - [x] `ARC-C (commits ARC-11..ARC-13): shared runtime/backtest indicator kernel + backtest facade alignment`
 - [x] `ARC-D (commits ARC-14..ARC-18): web container slimming + DataTable split + remaining i18n literal cleanup`
 - [x] `ARC-E (commits ARC-19..ARC-20): guardrail tightening + architecture closure evidence`
-- [ ] `POS-A (commits POS-36..POS-38): lifecycle contract parity foundations across backtest/paper/live`
-- [ ] `POS-B (commits POS-39..POS-42): runtime DCA execution parity + golden fixtures + operator QA`
+- [x] `POS-A (commits POS-36..POS-38): lifecycle contract parity foundations across backtest/paper/live`
+- [x] `POS-B (commits POS-39..POS-42): runtime DCA execution parity + golden fixtures + operator QA`
 - [x] `OPV-A (commits OPV-01..OPV-04): production rehearsal + live-takeover verification + exit-gate closure`
 - [x] `L10NQ-D-A (commits 01-05): inventory + guardrail hardening + auth/admin migration`
 - [x] `L10NQ-D-B (commits 06-10): reports/markets/backtests/bots/home copy migration`
@@ -57,6 +57,10 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `POS-B group closure (POS-39..POS-42)`
+  - 2026-04-19: Confirmed implementation-complete state and closed queue drift using focused parity/runtime verification (`50/50 PASS`) plus canonical sync; evidence in `docs/operations/pos-ab-closure-2026-04-19.md`.
+- [x] `POS-A group closure (POS-36..POS-38)`
+  - 2026-04-19: Confirmed implementation-complete state and closed queue drift with focused regression verification (`runtimePositionAutomation`, `runtimeCapitalContext`, `backtestReplayCore`, `lifecycleCloseParity`); evidence in `docs/operations/pos-ab-closure-2026-04-19.md`.
 - [x] `OPV-04 docs(closure): sync LBT/V1 stability plan statuses and residual external blockers`
   - 2026-04-19: Synced OPV closure state across canonical queue/context and linked LBT/V1 planning docs to latest evidence (`opv-02`, `opv-03`, RC gate/sign-off artifacts). Remaining external blockers are explicitly documented: Gate 3 private-route OPS validation and missing stage DNS records.
 - [x] `OPV-03 ops(gates-refresh): refresh RC external-gate status/sign-off artifacts with new production evidence`

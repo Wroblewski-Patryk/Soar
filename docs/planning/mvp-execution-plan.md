@@ -2024,16 +2024,17 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 
 ## Phase POS - Position Lifecycle Parity Closure (Queued 2026-04-18)
 - [x] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
-- [ ] `POS-37 fix(runtime): align runtime automation mode/context with bot/position and manual-management guard`
-- [ ] `POS-38 feat(runtime-capital): add shared paper/live capital context with affordability parity`
-- [ ] `POS-39 refactor(runtime-dca): execute DCA through execution adapter parity path`
-- [ ] `POS-40 refactor(backtest): unify lifecycle adapter and retire duplicate close semantics`
-- [ ] `POS-41 test(parity): add golden parity fixtures across backtest/paper/live`
-- [ ] `POS-42 qa(manual): publish Binance side-by-side operator verification script and triage`
+- [x] `POS-37 fix(runtime): align runtime automation mode/context with bot/position and manual-management guard`
+- [x] `POS-38 feat(runtime-capital): add shared paper/live capital context with affordability parity`
+- [x] `POS-39 refactor(runtime-dca): execute DCA through execution adapter parity path`
+- [x] `POS-40 refactor(backtest): unify lifecycle adapter and retire duplicate close semantics`
+- [x] `POS-41 test(parity): add golden parity fixtures across backtest/paper/live`
+- [x] `POS-42 qa(manual): publish Binance side-by-side operator verification script and triage`
 
 ### Progress Log (Phase POS - Position Lifecycle Parity Closure)
 - 2026-04-18: Queued unresolved `POS-36..POS-42` lifecycle parity tasks from `docs/planning/position-lifecycle-parity-remediation-plan-2026-03-29.md` because they remain outside active canonical queue coverage and are required for deterministic cross-mode lifecycle behavior.
 - 2026-04-19: Completed `POS-36` by removing strategy-exit close bypass from backtest/replay/runtime close path and locking EXIT trace-only parity semantics with focused regression evidence.
+- 2026-04-19: Closed `POS-37..POS-42` queue drift by reconciling against existing implementation-complete history (Phase 17 entries) and running focused parity/runtime verification pack (`50/50 PASS` across `runtimePositionAutomation`, `runtimeCapitalContext`, `lifecycleCloseParity`, `backtestReplayCore`, `backtests.contract-remediation`); closure evidence in `docs/operations/pos-ab-closure-2026-04-19.md`.
 
 ## Phase OPV - Production Verification and Exit-Gate Follow-up (Queued 2026-04-18)
 - [x] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`

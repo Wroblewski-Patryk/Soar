@@ -248,3 +248,19 @@ pnpm run ops:rc:gates:status
 - Avoid: treating the first post-collect gate snapshot as final when window reports were not rebuilt.
 - Evidence:
   - Observed on 2026-04-19 during OPV-03 refresh. Fresh window rebuild changed snapshot from stale `PASS` to current `Gate 2 = OPEN` and `RC status = BLOCKED`.
+
+### 2026-04-19 - Queue drift from duplicated historical phase tasks
+- Context: active queue reopened `POS-37..POS-42` even though the same tasks were already marked completed in earlier canonical phase history.
+- Symptom: executor receives already-delivered tasks as READY/NOW, causing repeated planning cycles and unnecessary token/work spend.
+- Root cause: queue section (`NOW/NEXT` and late `Phase POS` block) was not reconciled against earlier completed phase log entries before activation.
+- Guardrail: before activating or executing a queued task, cross-check task IDs against prior completed phase sections in `mvp-execution-plan.md`; if completed, close as queue-drift with verification evidence instead of re-implementing.
+- Preferred pattern:
+```text
+1) Detect duplicate task IDs across plan phases.
+2) Validate behavior with focused tests for the duplicated scope.
+3) Publish closure evidence (verification + references).
+4) Sync queue/board/state so duplicated tasks are marked closed.
+```
+- Avoid: reopening historical tasks into `NOW` without an explicit regression/new-scope reason.
+- Evidence:
+  - Observed on 2026-04-19 while reconciling `POS-A/POS-B` (`POS-37..POS-42`) queue state.
