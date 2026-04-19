@@ -18,7 +18,9 @@ import {
   ListBotRuntimeTradesQuerySchema,
   ListBotRuntimeSessionsQuerySchema,
   ListBotsQuerySchema,
+  ListBotStrategyDriftQuerySchema,
   ReorderMarketGroupStrategiesSchema,
+  RepairBotStrategyDriftSchema,
   UpsertBotAssistantConfigSchema,
   UpsertBotSubagentConfigSchema,
   UpdateMarketGroupStrategySchema,
@@ -140,6 +142,32 @@ export const listBots = async (req: Request, res: Response) => {
     const query = ListBotsQuerySchema.parse(req.query);
     const bots = await botsService.listBots(userId, query);
     return res.json(bots);
+  } catch (error) {
+    return handleBotError(res, error);
+  }
+};
+
+export const listBotStrategyProjectionDrift = async (req: Request, res: Response) => {
+  const userId = req.user?.id;
+  if (!userId) return sendError(res, 401, 'Unauthorized');
+
+  try {
+    const query = ListBotStrategyDriftQuerySchema.parse(req.query);
+    const result = await botsService.listBotStrategyProjectionDrift(userId, query);
+    return res.json(result);
+  } catch (error) {
+    return handleBotError(res, error);
+  }
+};
+
+export const repairBotStrategyProjectionDrift = async (req: Request, res: Response) => {
+  const userId = req.user?.id;
+  if (!userId) return sendError(res, 401, 'Unauthorized');
+
+  try {
+    const payload = RepairBotStrategyDriftSchema.parse(req.body ?? {});
+    const result = await botsService.repairBotStrategyProjectionDrift(userId, payload);
+    return res.status(200).json(result);
   } catch (error) {
     return handleBotError(res, error);
   }

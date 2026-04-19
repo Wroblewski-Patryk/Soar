@@ -33,6 +33,12 @@ export const UpdateBotSchema = CreateBotSchema.partial().extend({
 export const ListBotsQuerySchema = z.object({
   marketType: TradeMarketSchema.optional(),
 });
+export const ListBotStrategyDriftQuerySchema = z.object({
+  botId: z.string().trim().min(1).optional(),
+});
+export const RepairBotStrategyDriftSchema = z.object({
+  botId: z.string().trim().min(1).optional(),
+});
 
 export const CreateBotMarketGroupSchema = z.object({
   symbolGroupId: z.string().trim().min(1),
@@ -151,6 +157,8 @@ export const CloseBotRuntimePositionSchema = z.object({
 export type CreateBotDto = z.infer<typeof CreateBotSchema>;
 export type UpdateBotDto = z.infer<typeof UpdateBotSchema>;
 export type ListBotsQueryDto = z.infer<typeof ListBotsQuerySchema>;
+export type ListBotStrategyDriftQueryDto = z.infer<typeof ListBotStrategyDriftQuerySchema>;
+export type RepairBotStrategyDriftDto = z.infer<typeof RepairBotStrategyDriftSchema>;
 export type CreateBotMarketGroupDto = z.infer<typeof CreateBotMarketGroupSchema>;
 export type UpdateBotMarketGroupDto = z.infer<typeof UpdateBotMarketGroupSchema>;
 export type AttachMarketGroupStrategyDto = z.infer<typeof AttachMarketGroupStrategySchema>;

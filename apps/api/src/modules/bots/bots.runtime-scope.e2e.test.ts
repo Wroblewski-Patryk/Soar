@@ -120,6 +120,120 @@ describe('Bots runtime scope remediation contract', () => {
     expect(persistedLegacy).toBeTruthy();
   });
 
+  it('exposes deterministic strategy-drift audit for legacy/canonical divergence', async () => {
+    const email = 'bots-strategy-drift-audit@example.com';
+    const agent = await registerAndLogin(email);
+
+    const canonicalStrategyId = await createStrategy(agent, 'Drift Canonical Strategy');
+    const legacyStrategyId = await createStrategy(agent, 'Drift Legacy Strategy');
+    const marketGroupId = await createMarketGroup(email, 'FUTURES');
+
+    const createRes = await agent.post('/dashboard/bots').send(
+      createPayload({
+        strategyId: canonicalStrategyId,
+        marketGroupId,
+      })
+    );
+    expect(createRes.status).toBe(201);
+    const botId = createRes.body.id as string;
+
+    await prisma.botStrategy.create({
+      data: {
+        botId,
+        strategyId: legacyStrategyId,
+        symbolGroupId: marketGroupId,
+        isEnabled: true,
+      },
+    });
+
+    const auditRes = await agent.get('/dashboard/bots/strategy-drift');
+    expect(auditRes.status).toBe(200);
+    expect(auditRes.body.totalBots).toBe(1);
+    expect(auditRes.body.driftedBots).toBe(1);
+    expect(Array.isArray(auditRes.body.items)).toBe(true);
+
+    const driftItem = (
+      auditRes.body.items as Array<{
+        botId: string;
+        projectedStrategyId: string | null;
+        canonicalPrimaryStrategyId: string | null;
+        legacyEnabledStrategyId: string | null;
+        hasProjectionDrift: boolean;
+        hasLegacyCanonicalDivergence: boolean;
+        repairable: boolean;
+      }>
+    )[0];
+    expect(driftItem.botId).toBe(botId);
+    expect(driftItem.canonicalPrimaryStrategyId).toBe(canonicalStrategyId);
+    expect(driftItem.legacyEnabledStrategyId).toBe(legacyStrategyId);
+    expect(driftItem.projectedStrategyId).toBe(canonicalStrategyId);
+    expect(driftItem.hasProjectionDrift).toBe(false);
+    expect(driftItem.hasLegacyCanonicalDivergence).toBe(true);
+    expect(driftItem.repairable).toBe(true);
+  });
+
+  it('repairs legacy strategy linkage to canonical primary strategy with idempotent behavior', async () => {
+    const email = 'bots-strategy-drift-repair@example.com';
+    const agent = await registerAndLogin(email);
+
+    const canonicalStrategyId = await createStrategy(agent, 'Repair Canonical Strategy');
+    const legacyStrategyId = await createStrategy(agent, 'Repair Legacy Strategy');
+    const marketGroupId = await createMarketGroup(email, 'FUTURES');
+
+    const createRes = await agent.post('/dashboard/bots').send(
+      createPayload({
+        strategyId: canonicalStrategyId,
+        marketGroupId,
+      })
+    );
+    expect(createRes.status).toBe(201);
+    const botId = createRes.body.id as string;
+
+    await prisma.botStrategy.create({
+      data: {
+        botId,
+        strategyId: legacyStrategyId,
+        symbolGroupId: marketGroupId,
+        isEnabled: true,
+      },
+    });
+
+    const repairRes = await agent.post('/dashboard/bots/strategy-drift/repair').send({ botId });
+    expect(repairRes.status).toBe(200);
+    expect(repairRes.body.requestedBotId).toBe(botId);
+    expect(repairRes.body.scannedDriftedBots).toBe(1);
+    expect(repairRes.body.repairedBots).toBe(1);
+    expect(repairRes.body.skippedBots).toBe(0);
+
+    const legacyRowsAfterRepair = await prisma.botStrategy.findMany({
+      where: { botId },
+      select: {
+        strategyId: true,
+        symbolGroupId: true,
+        isEnabled: true,
+      },
+    });
+    expect(legacyRowsAfterRepair).toHaveLength(1);
+    expect(legacyRowsAfterRepair[0].strategyId).toBe(canonicalStrategyId);
+    expect(legacyRowsAfterRepair[0].symbolGroupId).toBe(marketGroupId);
+    expect(legacyRowsAfterRepair[0].isEnabled).toBe(true);
+
+    const secondRepairRes = await agent.post('/dashboard/bots/strategy-drift/repair').send({ botId });
+    expect(secondRepairRes.status).toBe(200);
+    expect(secondRepairRes.body.scannedDriftedBots).toBe(0);
+    expect(secondRepairRes.body.repairedBots).toBe(0);
+
+    const legacyRowsAfterSecondRepair = await prisma.botStrategy.findMany({
+      where: { botId },
+      select: {
+        strategyId: true,
+        symbolGroupId: true,
+        isEnabled: true,
+      },
+    });
+    expect(legacyRowsAfterSecondRepair).toEqual(legacyRowsAfterRepair);
+  });
+
   it('keeps runtime symbol-stats strictly within selected bot canonical ACTIVE scope', async () => {
     const ownerEmail = 'bot-runtime-selected-scope-only@example.com';
     const owner = await registerAndLogin(ownerEmail);

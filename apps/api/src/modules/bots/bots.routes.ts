@@ -22,6 +22,8 @@ import {
   listBotRuntimeSessionTrades,
   listMarketGroupStrategies,
   listBots,
+  listBotStrategyProjectionDrift,
+  repairBotStrategyProjectionDrift,
   runAssistantDryRun,
   reorderMarketGroupStrategies,
   upsertBotAssistantConfig,
@@ -36,6 +38,8 @@ const tradingReadLimiter = createRateLimiter({ windowMs: 60_000, max: 120 });
 const tradingWriteLimiter = createRateLimiter({ windowMs: 60_000, max: 40 });
 
 botsRouter.get('/', tradingReadLimiter, listBots);
+botsRouter.get('/strategy-drift', tradingReadLimiter, listBotStrategyProjectionDrift);
+botsRouter.post('/strategy-drift/repair', tradingWriteLimiter, repairBotStrategyProjectionDrift);
 botsRouter.get('/:id', tradingReadLimiter, getBot);
 botsRouter.get('/:id/runtime-graph', tradingReadLimiter, getBotRuntimeGraph);
 botsRouter.get('/:id/runtime-monitoring/aggregate', tradingReadLimiter, getBotRuntimeMonitoringAggregate);
