@@ -125,6 +125,10 @@ Last updated: 2026-04-19
   - then execute `UXR-J-A..C` for shared table-consistency closure.
 
 ## Recent Progress
+- 2026-04-19: completed `UXR-I-07` by migrating `MarketUniverseForm` from
+  local ad-hoc section wrappers to shared sectioned IA (`FormSectionCard` +
+  `FormGrid`), keeping catalog/filter behavior intact and validating via
+  focused market-form tests.
 - 2026-04-19: completed `UXR-I-06` by closing wallets-form residual control
   parity with shared primitives (`RadioGroupField`, `SelectField`,
   `NumberField`) and refreshing focused wallet regression assertions for the

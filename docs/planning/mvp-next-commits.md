@@ -7,11 +7,10 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `UXR-I-07 refactor(web-markets-form): enforce sectioned IA and remove any residual local generic controls`
-## NEXT
 - [ ] `UXR-I-08 refactor(web-backtests-form): finalize decoupling from feature-local controls and align summary ergonomics`
-## PIPELINE
+## NEXT
 - [ ] `UXR-I-09 refactor(web-strategies-form): preserve tabs while normalizing section internals to shared primitives`
+## PIPELINE
 - [ ] `UXR-I-10 refactor(web-bots-form): reduce layout density and align controls to shared form system`
 - [ ] `UXR-I-11 feat(web-form-ux): standardize first-error focus/scroll + summary/inline sync across scoped forms`
 - [ ] `UXR-I-12 feat(web-form-mobile): apply sticky mobile action bar contract to long dashboard forms`
@@ -77,6 +76,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `UXR-I-07 refactor(web-markets-form): enforce sectioned IA and remove any residual local generic controls`
+  - 2026-04-19: Refactored `MarketUniverseForm` to sectioned shared IA (`FormSectionCard` + `FormGrid`) and removed local ad-hoc section wrappers while keeping market-catalog/filter behavior and tests green.
 - [x] `UXR-I-06 refactor(web-wallets-form): close residual layout/control parity gaps using ui/forms primitives`
   - 2026-04-19: Standardized wallet mode/base-currency/live-allocation controls to `ui/forms` primitives and aligned focused wallet regression coverage with the new control semantics.
 - [x] `UXR-I-05 refactor(web-wrappers): unify create/edit wrappers i18n+breadcrumb+save-action contract`

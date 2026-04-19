@@ -1,8 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { LuCheck, LuFilter, LuList } from 'react-icons/lu';
-import { FormField, FormValidationSummary, SelectField, TextField } from '@/ui/forms';
+import { FormField, FormGrid, FormSectionCard, FormValidationSummary, SelectField, TextField } from '@/ui/forms';
 import SearchableMultiSelect, { MultiSelectOption } from './SearchableMultiSelect';
 import { fetchMarketCatalog } from '../services/markets.service';
 import { CreateMarketUniverseInput, MarketCatalogEntry, MarketUniverse } from '../types/marketUniverse.type';
@@ -433,17 +432,12 @@ export default function MarketUniverseForm({
         <FormValidationSummary title={labels.validationSummaryTitle} errors={validationSummaryErrors} />
       ) : null}
       <fieldset disabled={submitting} className='space-y-4'>
-      <section className='rounded-box border border-base-300/60 bg-base-100/85 p-4'>
-        <div className='mb-3 flex items-center gap-2'>
-          <LuFilter className='h-4 w-4 text-primary' aria-hidden />
-          <h2 className='text-base font-semibold'>{labels.sectionTitle}</h2>
-          <span className='badge badge-ghost badge-sm'>
-            {mode === 'edit' ? labels.modeEdit : labels.modeCreate}
-          </span>
-        </div>
-
-        <div className='grid gap-3 md:grid-cols-4'>
-          <div className='md:col-span-2'>
+        <FormSectionCard
+          title={labels.sectionTitle}
+          actions={<span className='badge badge-ghost badge-sm'>{mode === 'edit' ? labels.modeEdit : labels.modeCreate}</span>}
+          className='bg-base-100/85'
+        >
+          <FormGrid columns={2}>
             <TextField
               id='market-universe-name'
               label={labels.groupName}
@@ -451,193 +445,185 @@ export default function MarketUniverseForm({
               value={name}
               onChange={setName}
               error={hasNameError ? labels.groupNameError : undefined}
+              className='md:col-span-2'
+            />
+            <SelectField
+              id='market-universe-exchange'
+              label={labels.exchange}
+              value={exchange}
+              options={exchangeOptions}
+              onChange={(next) => void handleExchangeChange(next)}
+              disabled={catalogLoading}
+            />
+            <SelectField
+              id='market-universe-market-type'
+              label={labels.marketType}
+              value={marketType}
+              options={marketTypeOptions}
+              onChange={(next) => void handleMarketTypeChange(next)}
+              disabled={catalogLoading}
+            />
+            <SelectField
+              id='market-universe-base-currency'
+              label={labels.baseCurrency}
+              value={baseCurrency}
+              options={baseCurrencyOptions}
+              onChange={(next) => void handleBaseCurrencyChange(next)}
+              disabled={catalogLoading || baseCurrencies.length === 0}
+            />
+          </FormGrid>
+
+          {!exchangeSupportsMarketCatalog ? (
+            <div className='alert alert-warning mt-3 text-sm'>
+              <div className='space-y-1'>
+                <span className='badge badge-xs badge-warning badge-outline'>{labels.placeholderBadge}</span>
+                <span>{labels.placeholderDescription}</span>
+              </div>
+            </div>
+          ) : null}
+
+          <div className='mt-4 rounded-xl border border-base-300 bg-base-200 p-3'>
+            <FormGrid columns={2}>
+              <FormField label={labels.volumeFilterLabel}>
+                <div className='space-y-2'>
+                  <label className='label cursor-pointer justify-start gap-3 p-0'>
+                    <input
+                      type='checkbox'
+                      className='toggle toggle-primary toggle-sm'
+                      checked={minQuoteVolumeEnabled}
+                      onChange={(event) => setMinQuoteVolumeEnabled(event.target.checked)}
+                    />
+                    <span className='label-text'>
+                      {minQuoteVolumeEnabled ? labels.volumeFilterEnabled : labels.volumeFilterDisabled}
+                    </span>
+                  </label>
+                  <input
+                    type='range'
+                    min={0}
+                    max={maxQuoteVolume}
+                    step={sliderStep}
+                    className='range range-primary range-sm'
+                    value={minQuoteVolume}
+                    onChange={(event) => setMinQuoteVolume(Number.parseInt(event.target.value, 10) || 0)}
+                    disabled={!minQuoteVolumeEnabled}
+                  />
+                </div>
+              </FormField>
+              <div className='rounded-box border border-base-300 bg-base-100 px-3 py-2 text-sm'>
+                <p>
+                  {labels.minVolume}:{' '}
+                  <span className='font-mono'>
+                    {minQuoteVolumeEnabled
+                      ? formatVolumeLabel(minQuoteVolume, labels.volumeLabelTemplate)
+                      : labels.volumeFilterOff}
+                  </span>
+                </p>
+                <p>
+                  {labels.maxVolume}:{' '}
+                  <span className='font-mono'>{formatVolumeLabel(maxQuoteVolume, labels.volumeLabelTemplate)}</span>
+                </p>
+                <p className='opacity-70'>{labels.availableAfterFilter}: {marketOptions.length}</p>
+              </div>
+            </FormGrid>
+          </div>
+        </FormSectionCard>
+
+        <FormSectionCard
+          title={labels.symbolSelectionTitle}
+          actions={
+            <div className='flex gap-2'>
+              <button
+                type='button'
+                className='btn btn-xs btn-outline'
+                onClick={selectAllFromBaseCurrency}
+                disabled={availableSymbols.length === 0}
+              >
+                {labels.selectAll}
+              </button>
+              <button type='button' className='btn btn-xs btn-outline' onClick={clearAllSelections}>
+                {labels.clearAll}
+              </button>
+            </div>
+          }
+          className='bg-base-100/85'
+        >
+          <div className='mb-3 flex flex-wrap gap-2 text-xs'>
+            <span className='badge badge-outline'>{labels.whitelistCount}: {whitelistSymbols.length}</span>
+            <span className='badge badge-outline'>{labels.blacklistCount}: {blacklistSymbols.length}</span>
+            <span className='badge badge-primary badge-outline'>{labels.resultCount}: {previewSymbols.length}</span>
+          </div>
+
+          <FormGrid columns={2}>
+            <SearchableMultiSelect
+              label={labels.whitelistLabel}
+              options={selectionOptions}
+              selectedValues={whitelistSymbols}
+              onChange={setWhitelistSymbols}
+              emptyText={labels.whitelistEmpty}
+              selectedSummaryLabel={labels.multiSelectSummaryLabel}
+              selectedCountLabel={labels.multiSelectSelectedCount}
+              placeholderLabel={labels.multiSelectPlaceholder}
+              searchPlaceholder={labels.multiSelectSearch}
+              selectFilteredLabel={labels.multiSelectSelectFiltered}
+              clearLabel={labels.multiSelectClear}
+              maxListHeightClassName='max-h-80'
+            />
+            <SearchableMultiSelect
+              label={labels.blacklistLabel}
+              options={selectionOptions}
+              selectedValues={blacklistSymbols}
+              onChange={setBlacklistSymbols}
+              emptyText={labels.blacklistEmpty}
+              selectedSummaryLabel={labels.multiSelectSummaryLabel}
+              selectedCountLabel={labels.multiSelectSelectedCount}
+              placeholderLabel={labels.multiSelectPlaceholder}
+              searchPlaceholder={labels.multiSelectSearch}
+              selectFilteredLabel={labels.multiSelectSelectFiltered}
+              clearLabel={labels.multiSelectClear}
+              maxListHeightClassName='max-h-80'
+            />
+          </FormGrid>
+
+          {catalogLoading ? <p className='mt-3 text-sm opacity-70'>{labels.catalogLoading}</p> : null}
+          {!catalogLoading && catalogError ? <p className='mt-3 text-sm text-error'>{catalogError}</p> : null}
+        </FormSectionCard>
+
+        <FormSectionCard
+          title={labels.previewTitle}
+          description={labels.previewHint}
+          actions={<span className='text-sm opacity-70'>{labels.marketsCount}: {previewSymbols.length}</span>}
+          className='bg-base-100/85'
+        >
+          {hasSymbolsError ? (
+            <div className='alert alert-warning mt-1 py-2 text-sm'>
+              {labels.previewEmptyWarning}
+            </div>
+          ) : null}
+
+          <div className='mt-3'>
+            <input
+              id='market-universe-preview-search'
+              className='input input-bordered input-sm w-full'
+              placeholder={labels.previewSearchPlaceholder}
+              value={previewQuery}
+              onChange={(event) => setPreviewQuery(event.target.value)}
             />
           </div>
-          <SelectField
-            id='market-universe-exchange'
-            label={labels.exchange}
-            value={exchange}
-            options={exchangeOptions}
-            onChange={(next) => void handleExchangeChange(next)}
-            disabled={catalogLoading}
-          />
-          <SelectField
-            id='market-universe-market-type'
-            label={labels.marketType}
-            value={marketType}
-            options={marketTypeOptions}
-            onChange={(next) => void handleMarketTypeChange(next)}
-            disabled={catalogLoading}
-          />
-          <SelectField
-            id='market-universe-base-currency'
-            label={labels.baseCurrency}
-            value={baseCurrency}
-            options={baseCurrencyOptions}
-            onChange={(next) => void handleBaseCurrencyChange(next)}
-            disabled={catalogLoading || baseCurrencies.length === 0}
-          />
-        </div>
 
-        {!exchangeSupportsMarketCatalog ? (
-          <div className='alert alert-warning mt-3 text-sm'>
-            <div className='space-y-1'>
-              <span className='badge badge-xs badge-warning badge-outline'>{labels.placeholderBadge}</span>
-              <span>{labels.placeholderDescription}</span>
-            </div>
-          </div>
-        ) : null}
-
-        <div className='mt-4 rounded-xl border border-base-300 bg-base-200 p-3'>
-          <div className='grid gap-3 lg:grid-cols-2'>
-            <FormField label={labels.volumeFilterLabel}>
-              <div className='space-y-2'>
-                <label className='label cursor-pointer justify-start gap-3 p-0'>
-                  <input
-                    type='checkbox'
-                    className='toggle toggle-primary toggle-sm'
-                    checked={minQuoteVolumeEnabled}
-                    onChange={(event) => setMinQuoteVolumeEnabled(event.target.checked)}
-                  />
-                  <span className='label-text'>
-                    {minQuoteVolumeEnabled ? labels.volumeFilterEnabled : labels.volumeFilterDisabled}
+          <div className='mt-3 max-h-72 overflow-y-auto overflow-x-hidden rounded-box border border-base-300 bg-base-200 p-2'>
+            {previewFiltered.length === 0 ? (
+              <p className='text-sm opacity-70'>{labels.previewNoMarkets}</p>
+            ) : (
+              <div className='flex flex-wrap gap-2'>
+                {previewFiltered.map((symbol) => (
+                  <span key={symbol} className='badge badge-outline font-mono'>
+                    {symbol}
                   </span>
-                </label>
-                <input
-                  type='range'
-                  min={0}
-                  max={maxQuoteVolume}
-                  step={sliderStep}
-                  className='range range-primary range-sm'
-                  value={minQuoteVolume}
-                  onChange={(event) => setMinQuoteVolume(Number.parseInt(event.target.value, 10) || 0)}
-                  disabled={!minQuoteVolumeEnabled}
-                />
+                ))}
               </div>
-            </FormField>
-            <div className='rounded-box border border-base-300 bg-base-100 px-3 py-2 text-sm'>
-              <p>
-                {labels.minVolume}:{' '}
-                <span className='font-mono'>
-                  {minQuoteVolumeEnabled
-                    ? formatVolumeLabel(minQuoteVolume, labels.volumeLabelTemplate)
-                    : labels.volumeFilterOff}
-                </span>
-              </p>
-              <p>
-                {labels.maxVolume}:{' '}
-                <span className='font-mono'>{formatVolumeLabel(maxQuoteVolume, labels.volumeLabelTemplate)}</span>
-              </p>
-              <p className='opacity-70'>{labels.availableAfterFilter}: {marketOptions.length}</p>
-            </div>
+            )}
           </div>
-        </div>
-      </section>
-
-      <section className='rounded-box border border-base-300/60 bg-base-100/85 p-4'>
-        <div className='mb-3 flex items-center justify-between gap-2'>
-          <p className='flex items-center gap-2 text-base font-semibold'>
-            <LuList className='h-4 w-4 text-primary' aria-hidden />
-            {labels.symbolSelectionTitle}
-          </p>
-          <div className='flex gap-2'>
-            <button
-              type='button'
-              className='btn btn-xs btn-outline'
-              onClick={selectAllFromBaseCurrency}
-              disabled={availableSymbols.length === 0}
-            >
-              {labels.selectAll}
-            </button>
-            <button type='button' className='btn btn-xs btn-outline' onClick={clearAllSelections}>
-              {labels.clearAll}
-            </button>
-          </div>
-        </div>
-
-        <div className='mb-3 flex flex-wrap gap-2 text-xs'>
-          <span className='badge badge-outline'>{labels.whitelistCount}: {whitelistSymbols.length}</span>
-          <span className='badge badge-outline'>{labels.blacklistCount}: {blacklistSymbols.length}</span>
-          <span className='badge badge-primary badge-outline'>{labels.resultCount}: {previewSymbols.length}</span>
-        </div>
-
-        <div className='grid gap-3 xl:grid-cols-2'>
-          <SearchableMultiSelect
-            label={labels.whitelistLabel}
-            options={selectionOptions}
-            selectedValues={whitelistSymbols}
-            onChange={setWhitelistSymbols}
-            emptyText={labels.whitelistEmpty}
-            selectedSummaryLabel={labels.multiSelectSummaryLabel}
-            selectedCountLabel={labels.multiSelectSelectedCount}
-            placeholderLabel={labels.multiSelectPlaceholder}
-            searchPlaceholder={labels.multiSelectSearch}
-            selectFilteredLabel={labels.multiSelectSelectFiltered}
-            clearLabel={labels.multiSelectClear}
-            maxListHeightClassName='max-h-80'
-          />
-          <SearchableMultiSelect
-            label={labels.blacklistLabel}
-            options={selectionOptions}
-            selectedValues={blacklistSymbols}
-            onChange={setBlacklistSymbols}
-            emptyText={labels.blacklistEmpty}
-            selectedSummaryLabel={labels.multiSelectSummaryLabel}
-            selectedCountLabel={labels.multiSelectSelectedCount}
-            placeholderLabel={labels.multiSelectPlaceholder}
-            searchPlaceholder={labels.multiSelectSearch}
-            selectFilteredLabel={labels.multiSelectSelectFiltered}
-            clearLabel={labels.multiSelectClear}
-            maxListHeightClassName='max-h-80'
-          />
-        </div>
-
-        {catalogLoading ? <p className='mt-3 text-sm opacity-70'>{labels.catalogLoading}</p> : null}
-        {!catalogLoading && catalogError ? <p className='mt-3 text-sm text-error'>{catalogError}</p> : null}
-      </section>
-
-      <section className='rounded-box border border-base-300/60 bg-base-100/85 p-4'>
-        <div className='mb-2 flex items-center justify-between gap-2'>
-          <p className='flex items-center gap-2 text-base font-semibold'>
-            <LuCheck className='h-4 w-4 text-primary' aria-hidden />
-            {labels.previewTitle}
-          </p>
-          <span className='text-sm opacity-70'>{labels.marketsCount}: {previewSymbols.length}</span>
-        </div>
-        <p className='text-xs opacity-70'>
-          {labels.previewHint}
-        </p>
-
-        {hasSymbolsError ? (
-          <div className='alert alert-warning mt-3 py-2 text-sm'>
-            {labels.previewEmptyWarning}
-          </div>
-        ) : null}
-
-        <div className='mt-3'>
-          <input
-            id='market-universe-preview-search'
-            className='input input-bordered input-sm w-full'
-            placeholder={labels.previewSearchPlaceholder}
-            value={previewQuery}
-            onChange={(event) => setPreviewQuery(event.target.value)}
-          />
-        </div>
-
-        <div className='mt-3 max-h-72 overflow-y-auto overflow-x-hidden rounded-box border border-base-300 bg-base-200 p-2'>
-          {previewFiltered.length === 0 ? (
-            <p className='text-sm opacity-70'>{labels.previewNoMarkets}</p>
-          ) : (
-            <div className='flex flex-wrap gap-2'>
-              {previewFiltered.map((symbol) => (
-                <span key={symbol} className='badge badge-outline font-mono'>
-                  {symbol}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
+        </FormSectionCard>
       </fieldset>
     </form>
   );
