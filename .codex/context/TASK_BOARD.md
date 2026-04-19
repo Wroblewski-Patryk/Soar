@@ -32,6 +32,18 @@ Last updated: 2026-04-19
 - [ ] SOPR-10 Add contract regressions for chosen manual-order semantic path
 - [ ] SOPR-11 Implement manual-order semantic path with audit-safe diagnostics and fail-closed guardrails
 - [ ] SOPR-12 Run focused closure validation pack and sync canonical queue/context
+- [ ] MURC-01 Freeze canonical market-universe symbol composition contract
+- [ ] MURC-02 Add API resolver matrix regressions for filter/whitelist/blacklist combinations
+- [ ] MURC-03 Implement single-source market-universe symbol resolver
+- [ ] MURC-04 Wire markets sync and bot auto-symbol-group creation to shared resolver
+- [ ] MURC-05 Add backtest/runtime/manual-order regressions for symbol-set parity
+- [ ] MURC-06 Adopt shared resolver in backtests runtime and manual-order context paths
+- [ ] MURC-07 Lock API integration parity for identical universe input across modules
+- [ ] MURC-08 Add web regressions for empty-result and union semantics in markets form preview
+- [ ] MURC-09 Align markets form preview/validation with shared contract (no layout redesign)
+- [ ] MURC-10 Add focused e2e smoke for bots/backtests/manual-order symbol parity
+- [ ] MURC-11 Sync trading/module docs to finalized symbol contract
+- [ ] MURC-12 Run focused closure pack and sync canonical queue/context
 
 ## IN_PROGRESS
 
@@ -47,6 +59,8 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] MURC planning queued (`MURC-01..MURC-12`)
+  - 2026-04-19: Added `docs/planning/market-universe-symbol-contract-parity-plan-2026-04-19.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) as post-`SOPR` follow-up to fix symbol-composition drift across markets sync, runtime, backtests, manual-order context, and web preview/validation.
 - [x] SBSC-C group closure (`SBSC-07..SBSC-08`)
   - 2026-04-19: Focused SBSC closure pack PASS (`bots.runtime-scope.e2e`, `bots.e2e`, `HomeLiveWidgets`, `api/web typecheck`) and canonical queue/context synchronized; `SOPR-01` promoted to active queue.
 - [x] SBSC-B group closure (`SBSC-04..SBSC-06`)

@@ -21,6 +21,18 @@ Operational queue for one-task execution runs.
 - [ ] `SOPR-10 test(red-manual-order): add contract tests for chosen manual-order semantic path`
 - [ ] `SOPR-11 feat/fix(manual-order-path): implement selected manual-order semantic path with audit-safe diagnostics`
 - [ ] `SOPR-12 qa(closure): run full focused validation pack and sync canonical queue/context`
+- [ ] `MURC-01 docs(contract): freeze canonical market-universe symbol composition contract`
+- [ ] `MURC-02 test(api-red): add shared resolver matrix for filter/whitelist/blacklist combinations`
+- [ ] `MURC-03 feat(api-shared-resolver): implement single-source symbol resolver for market-universe contract`
+- [ ] `MURC-04 refactor(api-markets): wire market sync and bot auto-symbol-group creation to shared resolver`
+- [ ] `MURC-05 test(api-red): add backtest/runtime/manual-order regressions for symbol-set parity`
+- [ ] `MURC-06 refactor(api-consumers): adopt shared resolver in backtests runtime and manual-order context flows`
+- [ ] `MURC-07 test(api-integration): lock cross-module parity for identical universe input`
+- [ ] `MURC-08 test(web-red): add markets-form regressions for empty-result and union semantics`
+- [ ] `MURC-09 fix(web-markets): align preview and validation with shared contract without UI redesign`
+- [ ] `MURC-10 test(e2e-smoke): add focused parity smoke for bots/backtests/manual-order under one universe`
+- [ ] `MURC-11 docs(sync): update trading logic and module docs to finalized contract`
+- [ ] `MURC-12 qa(closure): run focused contract validation pack and sync canonical queue/context`
 ## GROUP QUEUE
 - [x] `DAGG-A (commits DAGG-01..DAGG-04): contract freeze + dashboard aggregate data-source migration`
 - [x] `DAGG-B (commits DAGG-05..DAGG-08): history positions parity + aggregate API contract hardening`
@@ -31,6 +43,9 @@ Operational queue for one-task execution runs.
 - [ ] `SOPR-A (commits SOPR-01..SOPR-04): source-of-truth closure + signal-context hardening`
 - [ ] `SOPR-B (commits SOPR-05..SOPR-08): dashboard/preview parity closure for signals/positions/history`
 - [ ] `SOPR-C (commits SOPR-09..SOPR-12): manual-order lifecycle decision + implementation + closure`
+- [ ] `MURC-A (commits MURC-01..MURC-04): contract freeze + shared resolver + market sync/auto-group adoption`
+- [ ] `MURC-B (commits MURC-05..MURC-07): backtest/runtime/manual-order adoption + integration parity`
+- [ ] `MURC-C (commits MURC-08..MURC-12): web alignment + e2e smoke + docs sync + closure`
 - [x] `DASHR-A (commits DASHR-01..DASHR-04): dashboard tab/view parity + selected-bot section consistency`
 - [x] `DASHR-B (commits DASHR-05..DASHR-08): selected-bot runtime data parity for positions/history/signals scope`
 - [x] `DASHR-C (commits DASHR-09..DASHR-11): signal->order execution diagnostics + closure`
@@ -85,6 +100,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `MURC planning queued (market-universe symbol contract parity across API/web/runtime/backtests/orders)`
+  - 2026-04-19: Added `docs/planning/market-universe-symbol-contract-parity-plan-2026-04-19.md` and queued `MURC-A..MURC-C` after `SOPR` to unify symbol composition contract (`final = unique(filter_result U whitelist) - blacklist`) across markets sync, bots runtime, backtests, manual-order context, and markets-form preview/validation.
 - [x] `SBSC-08 docs(closure): publish sidebar strategy contract closure and sync queue/context`
   - 2026-04-19: Closed SBSC wave with canonical queue/context sync (`mvp-next-commits`, `mvp-execution-plan`, `TASK_BOARD`, `PROJECT_STATE`) and promoted `SOPR-01` to `NOW`.
 - [x] `SBSC-C (commits SBSC-07..SBSC-08): closure validation + canonical sync`

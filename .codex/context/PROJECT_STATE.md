@@ -123,8 +123,15 @@ Last updated: 2026-04-19
   - execute `SOPR-01` from canonical `NOW` queue.
   - continue `SOPR-A` (`SOPR-02`, `SOPR-03`) before web/parity tasks
     (`SOPR-04+`).
+  - after `SOPR`, execute queued `MURC` wave for market-universe symbol
+    contract parity across markets sync/runtime/backtests/orders/web preview.
 
 ## Recent Progress
+- 2026-04-19: queued market-universe symbol-contract parity wave
+  (`MURC-01..MURC-12`) from analyzer report and published executor-ready plan
+  `docs/planning/market-universe-symbol-contract-parity-plan-2026-04-19.md`;
+  queue is intentionally placed after active `SOPR` to avoid disrupting
+  current execution.
 - 2026-04-19: closed full `SBSC` wave (`SBSC-01..SBSC-08`) end-to-end by
   freezing sidebar strategy source-of-truth contract, adding list/get vs
   runtime-graph parity regressions, making bot strategy projection
