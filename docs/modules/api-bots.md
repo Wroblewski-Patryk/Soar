@@ -130,10 +130,22 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
   - legacy link state may exist for backward compatibility, but it cannot override canonical runtime topology in dashboard strategy contexts.
   - module should expose deterministic diagnostics/repair path for legacy-canonical divergence to support operations closure.
 
-## 13. Signals + Open Runtime Parity Contract (`SOPR`)
+## 13. Aggregate Wallet Summary and Sidebar Edge Contract (`DAWR`)
+- Aggregate read contract (`GET /dashboard/bots/:id/runtime-monitoring/aggregate`) must expose wallet-capital parity fields in `positions.summary`:
+  - `referenceBalance`,
+  - `freeCash`.
+- Capital parity rules:
+  - when aggregate source can resolve capital context, `referenceBalance/freeCash` are finite non-negative values.
+  - when capital context cannot be resolved, aggregate keeps explicit `null` fields instead of omitting keys.
+- Sidebar edge linkage:
+  - selected-bot strategy context remains runtime-topology-first even when projected `strategyId` is null/mismatched.
+  - compatibility fallback cannot override canonical runtime topology when canonical mapping exists.
+
+## 14. Signals + Open Runtime Parity Contract (`SOPR`)
 - Consolidated prerequisites:
   - `DAGG` selected-bot aggregate runtime-table contract.
   - `SBSC` selected-bot strategy projection + sidebar parity contract.
+  - `DAWR` aggregate wallet-summary parity and sidebar null/mismatch edge contract.
 - Selected-bot signal context contract:
   - symbol stats and signal context are selected-bot scoped only.
   - strategy context precedence:
@@ -148,7 +160,7 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
 - Runtime diagnostics contract:
   - no-open blocked/ignored outcomes remain explicit and queryable in operational payload/log flows.
 
-## 14. Market-Universe Symbol Contract Parity (`MURC`)
+## 15. Market-Universe Symbol Contract Parity (`MURC`)
 - Selected-bot runtime symbol scope that comes from market-universe-backed groups must use one shared formula:
   - `final = unique(filter_result U whitelist) - blacklist`.
 - Edge rules:

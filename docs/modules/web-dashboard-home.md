@@ -227,9 +227,23 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
   - `GET /dashboard/bots` `strategyId` must stay compatible with runtime-graph primary strategy for the same bot.
   - selected-bot switch must not show `Market` from canonical context and `Strategy` from a conflicting legacy projection.
 
-## 21. Signals + Open Runtime Parity Contract (`SOPR`)
+## 21. Aggregate Wallet KPI and Sidebar Edge Contract (`DAWR`)
+- Aggregate-success source-of-truth:
+  - when `GET /dashboard/bots/:id/runtime-monitoring/aggregate` succeeds, LIVE wallet KPI capital values are derived from aggregate `positions.summary`.
+  - required aggregate parity fields:
+    - `referenceBalance`,
+    - `freeCash`.
+- Capital fallback contract:
+  - aggregate payload must keep `referenceBalance/freeCash` keys in `positions.summary`;
+    unresolved values stay explicit `null`.
+  - session-level fallback is allowed only for true aggregate failure path, not for aggregate-success masking.
+- Sidebar edge behavior:
+  - selected-bot strategy card remains runtime-topology-first for `strategyId` `null`/mismatch cases.
+  - compatibility fallback cannot replace canonical resolved strategy context when canonical mapping exists.
+
+## 22. Signals + Open Runtime Parity Contract (`SOPR`)
 - Consolidated baseline:
-  - `DAGG` aggregate selected-bot runtime-table contract and `SBSC` sidebar strategy contract are prerequisites.
+  - `DAGG` aggregate selected-bot runtime-table contract, `SBSC` sidebar strategy contract, and `DAWR` aggregate wallet/edge contract are prerequisites.
 - Selected-bot signal context contract:
   - signal cards are selected-bot scoped only and must not reuse cross-bot fallback context.
   - condition-line strategy context prefers latest signal strategy when available; configured strategy fallback is allowed only for missing latest-signal strategy context.

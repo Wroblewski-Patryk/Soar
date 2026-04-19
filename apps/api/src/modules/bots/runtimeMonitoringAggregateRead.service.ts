@@ -20,6 +20,11 @@ const toDate = (value: Date | string | null | undefined): Date | null => {
 
 const toTimestamp = (value: Date | string | null | undefined): number => toDate(value)?.getTime() ?? 0;
 
+const readFiniteNumber = (value: unknown): number | null => {
+  if (typeof value !== 'number' || !Number.isFinite(value)) return null;
+  return value;
+};
+
 const uniqueById = <T extends { id: string }>(items: T[]) => {
   const map = new Map<string, T>();
   for (const item of items) {
@@ -120,6 +125,8 @@ const buildEmptyAggregatePayload = (params: {
         realizedPnl: 0,
         unrealizedPnl: 0,
         feesPaid: 0,
+        referenceBalance: null,
+        freeCash: null,
       },
       openOrders: [] as RuntimePositionsResponse['openOrders'],
       openItems: [] as RuntimePositionsResponse['openItems'],
@@ -398,10 +405,48 @@ export const getBotRuntimeMonitoringAggregate = async (
         right.id
       )
   );
+  const sortedBySessionFreshness = [...completePayloadRows].sort((left, right) =>
+    compareTimestampDescThenIdAsc(
+      Math.max(
+        toTimestamp(left.session.lastHeartbeatAt),
+        toTimestamp(left.session.finishedAt),
+        toTimestamp(left.session.startedAt)
+      ),
+      Math.max(
+        toTimestamp(right.session.lastHeartbeatAt),
+        toTimestamp(right.session.finishedAt),
+        toTimestamp(right.session.startedAt)
+      ),
+      left.session.id,
+      right.session.id
+    )
+  );
+  const latestCapitalSummary = sortedBySessionFreshness
+    .map((row) => row.positions.summary)
+    .find((summary) => {
+      const referenceBalance = readFiniteNumber(summary.referenceBalance);
+      const freeCash = readFiniteNumber(summary.freeCash);
+      return referenceBalance != null || freeCash != null;
+    });
+  const usedMargin = openItems.reduce((sum, position) => {
+    const leverage = Math.max(1, position.leverage || 1);
+    return sum + position.entryNotional / leverage;
+  }, 0);
+  const latestReferenceBalance = readFiniteNumber(latestCapitalSummary?.referenceBalance);
+  const latestFreeCash = readFiniteNumber(latestCapitalSummary?.freeCash);
+  const referenceBalance = latestReferenceBalance != null ? Math.max(0, latestReferenceBalance) : null;
+  const freeCash =
+    latestFreeCash != null
+      ? Math.max(0, latestFreeCash)
+      : referenceBalance != null
+        ? Math.max(0, referenceBalance - Math.max(0, usedMargin))
+        : null;
   const positionsSummary = {
     realizedPnl: historyItems.reduce((acc, item) => acc + item.realizedPnl, 0),
     unrealizedPnl: openItems.reduce((acc, item) => acc + (item.unrealizedPnl ?? 0), 0),
     feesPaid: [...openItems, ...historyItems].reduce((acc, item) => acc + item.feesPaid, 0),
+    referenceBalance,
+    freeCash,
   };
 
   const tradeItems = uniqueById(completePayloadRows.flatMap((row) => row.trades.items)).sort(

@@ -17,15 +17,12 @@ Last updated: 2026-04-20
 
 ## READY
 
-- [ ] DAWR-01 Freeze aggregate wallet-summary field parity and strategy sidebar edge behavior contract
-- [ ] DAWR-02 Add API regression for aggregate LIVE wallet capital fields in positions summary
-- [ ] DAWR-03 Include `referenceBalance/freeCash` parity fields in aggregate positions summary projection
-
-## BACKLOG
-
 - [ ] DAWR-04 Add web regression for LIVE wallet aggregate-success path without hidden session fallback masking
 - [ ] DAWR-05 Align dashboard wallet KPI mapping to aggregate capital fields
 - [ ] DAWR-06 Lock strategy sidebar regression for selected bot `strategyId` null/mismatch edge
+
+## BACKLOG
+
 - [ ] DAWR-07 Tighten strategy sidebar fallback precedence behavior for edge cases
 - [ ] DAWR-08 Add ops drift audit/repair step for dashboard triage (`GET/POST /dashboard/bots/strategy-drift`)
 - [ ] DAWR-09 Synchronize execution-plan status drift vs canonical queue/board
@@ -45,6 +42,8 @@ Last updated: 2026-04-20
 
 ## DONE
 
+- [x] DAWR-A group closure (`DAWR-01..DAWR-03`)
+  - 2026-04-20: Closed Stage A end-to-end by freezing aggregate wallet-summary + strategy sidebar null/mismatch edge contract (`open-decisions`, `api-bots`, `web-dashboard-home`), adding API aggregate regression locks for `positions.summary.referenceBalance/freeCash`, and extending aggregate projection with parity fields (latest capital context, explicit `null` on unresolved in empty aggregate). Validation PASS: `bots.monitoring-aggregate.e2e`, `api typecheck`, `api build`.
 - [x] DAWR planning queued (`DAWR-01..DAWR-10`)
   - 2026-04-20: Added `docs/planning/dashboard-aggregate-wallet-strategy-regression-plan-2026-04-20.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) to fix aggregate LIVE wallet KPI contract drift, strategy sidebar null/mismatch edge behavior, and planning-status synchronization.
 - [x] MURC group closure (`MURC-01..MURC-12`)

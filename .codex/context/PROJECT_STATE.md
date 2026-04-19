@@ -110,8 +110,9 @@ Last updated: 2026-04-20
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: execute `DAWR-A` to fix aggregate LIVE wallet KPI
-  regression and lock strategy-sidebar edge behavior after `MURC` closure.
+- Main active objective: execute `DAWR-B` to lock dashboard LIVE wallet
+  aggregate-success parity and strategy-sidebar null/mismatch edge regressions
+  after `DAWR-A` closure.
 - Top blockers:
   - none in OPV scope; final RC external-gates snapshot is closed
     (`G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`) from run
@@ -126,10 +127,17 @@ Last updated: 2026-04-20
   - canonical planning status remains synchronized across queue/context files.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - execute `DAWR-01` from canonical `NOW` queue.
-  - complete `DAWR-A` (`DAWR-02`, `DAWR-03`) before web edge cases.
+  - execute `DAWR-04` from canonical `NOW` queue.
+  - complete `DAWR-B` (`DAWR-05`, `DAWR-06`, `DAWR-07`) before ops/docs sync.
 
 ## Recent Progress
+- 2026-04-20: closed `DAWR-A` (`DAWR-01..DAWR-03`) by freezing aggregate
+  wallet-summary/sidebar edge contract in canonical docs, adding aggregate API
+  regression coverage for `positions.summary.referenceBalance/freeCash`, and
+  extending aggregate projection with parity fields from latest session capital
+  context (`null` in unresolved empty aggregate path); validation PASS:
+  `pnpm --filter api run test -- --run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`,
+  `pnpm --filter api run typecheck`, `pnpm --filter api run build`.
 - 2026-04-20: queued dashboard aggregate wallet/strategy regression wave
   (`DAWR-01..DAWR-10`) from post-MURC analyzer report and published
   executor-ready plan

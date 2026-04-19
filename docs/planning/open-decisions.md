@@ -844,6 +844,25 @@ This file tracks intentionally unresolved architecture choices so implementation
   - `docs/modules/api-bots.md`
   - `docs/modules/web-dashboard-home.md`
 
+## Dashboard Aggregate Wallet Summary and Sidebar Edge Contract (`DAWR`)
+- Decision state: resolved on 2026-04-20.
+- Decision:
+  - selected-bot aggregate payload (`GET /dashboard/bots/:id/runtime-monitoring/aggregate`) must expose LIVE wallet-capital parity fields in `positions.summary`:
+    - `referenceBalance`,
+    - `freeCash`.
+  - dashboard LIVE wallet KPI must source capital values from aggregate payload when aggregate request succeeds.
+  - selected-bot sidebar strategy behavior must stay deterministic when selected bot `strategyId` is `null` or mismatched:
+    - canonical runtime topology remains first source,
+    - compatibility fallback is allowed only when canonical mapping cannot resolve strategy context.
+- Locked behavior:
+  - aggregate `positions.summary` carries `referenceBalance/freeCash` parity in both non-empty and empty aggregate responses (`null` for unresolved capital context).
+  - aggregate-success path must not silently mask missing capital fields by falling back to session payloads.
+  - strategy sidebar must not show stale/conflicting strategy context after selected-bot switch in null/mismatch edge paths.
+- Canonical references:
+  - `docs/planning/dashboard-aggregate-wallet-strategy-regression-plan-2026-04-20.md`
+  - `docs/modules/api-bots.md`
+  - `docs/modules/web-dashboard-home.md`
+
 ## Signals + Open Runtime Parity Contract (`SOPR`)
 - Decision state: resolved on 2026-04-19.
 - Prerequisite baseline:

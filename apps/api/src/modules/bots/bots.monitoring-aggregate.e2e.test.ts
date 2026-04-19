@@ -186,6 +186,14 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     expect(aggregateRes.body.symbolStats.summary.totalSignals).toBe(3);
     expect(typeof aggregateRes.body.positions.openCount).toBe('number');
     expect(Array.isArray(aggregateRes.body.positions.openItems)).toBe(true);
+    expect(aggregateRes.body.positions.summary).toEqual(
+      expect.objectContaining({
+        referenceBalance: expect.any(Number),
+        freeCash: expect.any(Number),
+      })
+    );
+    expect(aggregateRes.body.positions.summary.referenceBalance).toBeGreaterThan(0);
+    expect(aggregateRes.body.positions.summary.freeCash).toBeGreaterThanOrEqual(0);
     expect(typeof aggregateRes.body.trades.total).toBe('number');
     expect(Array.isArray(aggregateRes.body.trades.items)).toBe(true);
     expect(
@@ -218,6 +226,12 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
       expect.objectContaining({
         aggregate: true,
         sessionsCount: 0,
+      })
+    );
+    expect(aggregateRes.body.positions.summary).toEqual(
+      expect.objectContaining({
+        referenceBalance: null,
+        freeCash: null,
       })
     );
     expect(aggregateRes.body.symbolStats.items).toHaveLength(0);

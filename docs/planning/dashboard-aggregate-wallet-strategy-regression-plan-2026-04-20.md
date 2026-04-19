@@ -1,6 +1,6 @@
 # Dashboard Aggregate Wallet and Strategy Regression Plan (2026-04-20)
 
-Status: ready-for-implementation  
+Status: in-progress (`DAWR-A` closed, `DAWR-B` next)  
 Execution mode: tiny-commit only (exactly one task per commit)  
 Primary audience: execution agent
 
