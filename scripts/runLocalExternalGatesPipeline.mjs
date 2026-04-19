@@ -3,6 +3,10 @@
 import { spawnSync } from 'node:child_process';
 import { readdir } from 'node:fs/promises';
 import path from 'node:path';
+import {
+  buildOpsRequestHeaders,
+  resolveOpsAuthLayerOptions,
+} from './buildOpsRequestHeaders.mjs';
 import { resolveOpsAuthToken } from './resolveOpsAuthToken.mjs';
 
 const ALLOWED_ENVIRONMENTS = new Set(['local', 'stage', 'production']);
@@ -29,6 +33,10 @@ const parseArgs = () => {
     authToken: process.env.SLO_AUTH_TOKEN ?? '',
     authEmail: process.env.SLO_AUTH_EMAIL ?? '',
     authPassword: process.env.SLO_AUTH_PASSWORD ?? '',
+    opsAuthHeaderName: process.env.SLO_OPS_AUTH_HEADER_NAME ?? '',
+    opsAuthHeaderValue: process.env.SLO_OPS_AUTH_HEADER_VALUE ?? '',
+    opsBasicUser: process.env.SLO_OPS_BASIC_USER ?? '',
+    opsBasicPassword: process.env.SLO_OPS_BASIC_PASSWORD ?? '',
     environment: normalizeEnvironment(process.env.SLO_ENVIRONMENT ?? 'local'),
     dbProfile: normalizeDbProfile(process.env.RC_GATES_DB_PROFILE ?? 'local'),
     allowLocalProductionEvidence: false,
@@ -56,6 +64,16 @@ const parseArgs = () => {
     if (arg === '--auth-token') options.authToken = args[index + 1] ?? options.authToken;
     if (arg === '--auth-email') options.authEmail = args[index + 1] ?? options.authEmail;
     if (arg === '--auth-password') options.authPassword = args[index + 1] ?? options.authPassword;
+    if (arg === '--ops-auth-header-name') {
+      options.opsAuthHeaderName = args[index + 1] ?? options.opsAuthHeaderName;
+    }
+    if (arg === '--ops-auth-header-value') {
+      options.opsAuthHeaderValue = args[index + 1] ?? options.opsAuthHeaderValue;
+    }
+    if (arg === '--ops-basic-user') options.opsBasicUser = args[index + 1] ?? options.opsBasicUser;
+    if (arg === '--ops-basic-password') {
+      options.opsBasicPassword = args[index + 1] ?? options.opsBasicPassword;
+    }
     if (arg === '--environment') options.environment = normalizeEnvironment(args[index + 1] ?? options.environment);
     if (arg === '--db-profile') options.dbProfile = normalizeDbProfile(args[index + 1] ?? options.dbProfile);
     if (arg === '--allow-local-production-evidence') options.allowLocalProductionEvidence = true;
@@ -141,14 +159,12 @@ const buildStatusWithOfflineFallback = async (allowOffline) => {
   }
 };
 
-const canReachApi = async (baseUrl, authToken) => {
+const canReachApi = async (baseUrl, authToken, authLayer) => {
   try {
-    const headers = authToken
-      ? {
-          Authorization: `Bearer ${authToken}`,
-          Cookie: `token=${encodeURIComponent(authToken)}`,
-        }
-      : {};
+    const headers = buildOpsRequestHeaders({
+      token: authToken,
+      ...authLayer,
+    });
     const res = await fetch(`${baseUrl}/health`, { headers });
     return res.ok;
   } catch {
@@ -160,10 +176,16 @@ const main = () => {
   const options = parseArgs();
   if (options.help) {
     console.log(
-      'Usage: node scripts/runLocalExternalGatesPipeline.mjs [--base-url <url>] [--duration-minutes <n>] [--interval-seconds <n>] [--auth-token <token>] [--auth-email <email>] [--auth-password <password>] [--environment <local|stage|production>] [--db-profile <local|stage|prod>] [--allow-local-production-evidence] [--skip-db-check] [--skip-slo-collect] [--skip-window-report] [--skip-checklist-sync] [--skip-evidence-check] [--strict-evidence-check] [--require-production-gate2] [--evidence-output <file>] [--window-days <csv>] [--allow-offline]'
+      'Usage: node scripts/runLocalExternalGatesPipeline.mjs [--base-url <url>] [--duration-minutes <n>] [--interval-seconds <n>] [--auth-token <token>] [--auth-email <email>] [--auth-password <password>] [--ops-basic-user <user>] [--ops-basic-password <password>] [--ops-auth-header-name <name>] [--ops-auth-header-value <value>] [--environment <local|stage|production>] [--db-profile <local|stage|prod>] [--allow-local-production-evidence] [--skip-db-check] [--skip-slo-collect] [--skip-window-report] [--skip-checklist-sync] [--skip-evidence-check] [--strict-evidence-check] [--require-production-gate2] [--evidence-output <file>] [--window-days <csv>] [--allow-offline]'
     );
     process.exit(0);
   }
+  const authLayer = resolveOpsAuthLayerOptions({
+    opsAuthHeaderName: options.opsAuthHeaderName,
+    opsAuthHeaderValue: options.opsAuthHeaderValue,
+    opsBasicUser: options.opsBasicUser,
+    opsBasicPassword: options.opsBasicPassword,
+  });
 
   Promise.resolve()
     .then(async () => {
@@ -174,6 +196,7 @@ const main = () => {
           authToken: resolvedAuthToken,
           authEmail: options.authEmail,
           authPassword: options.authPassword,
+          ...authLayer,
           contextLabel: 'ops:rc:gates:local-pipeline',
         });
         resolvedAuthToken = resolvedAuth.token;
@@ -190,7 +213,7 @@ const main = () => {
       }
 
       if (!options.skipSloCollect) {
-        const reachable = await canReachApi(options.baseUrl, resolvedAuthToken);
+        const reachable = await canReachApi(options.baseUrl, resolvedAuthToken, authLayer);
         if (!reachable) {
           if (!options.allowOffline) {
             throw new Error(
@@ -248,6 +271,16 @@ const main = () => {
         }
         run('SLO observation collector', 'pnpm', sloArgs, {
           ...(resolvedAuthToken ? { SLO_AUTH_TOKEN: resolvedAuthToken } : {}),
+          ...(authLayer.opsBasicUser ? { SLO_OPS_BASIC_USER: authLayer.opsBasicUser } : {}),
+          ...(authLayer.opsBasicPassword
+            ? { SLO_OPS_BASIC_PASSWORD: authLayer.opsBasicPassword }
+            : {}),
+          ...(authLayer.opsAuthHeaderName
+            ? { SLO_OPS_AUTH_HEADER_NAME: authLayer.opsAuthHeaderName }
+            : {}),
+          ...(authLayer.opsAuthHeaderValue
+            ? { SLO_OPS_AUTH_HEADER_VALUE: authLayer.opsAuthHeaderValue }
+            : {}),
         });
 
         if (!options.skipWindowReport) {

@@ -1,4 +1,8 @@
 import process from 'node:process';
+import {
+  buildOpsRequestHeaders,
+  resolveOpsAuthLayerOptions,
+} from './buildOpsRequestHeaders.mjs';
 import { resolveOpsAuthToken } from './resolveOpsAuthToken.mjs';
 
 const rawArgs = process.argv.slice(2);
@@ -13,7 +17,7 @@ const readArgValue = (flag) => {
 if (args.has('--help') || args.has('-h')) {
   process.stdout.write(
     [
-      'Usage: node scripts/deploySmokeCheck.mjs [--no-workers]',
+      'Usage: node scripts/deploySmokeCheck.mjs [--no-workers] [--auth-token <token>] [--auth-email <email>] [--auth-password <password>] [--ops-basic-user <user>] [--ops-basic-password <password>] [--ops-auth-header-name <name>] [--ops-auth-header-value <value>]',
       '',
       'Env:',
       '  SMOKE_API_BASE_URL       (default: http://localhost:3001)',
@@ -22,6 +26,10 @@ if (args.has('--help') || args.has('-h')) {
       '  SMOKE_AUTH_TOKEN         (optional bearer token for protected OPS endpoints)',
       '  SMOKE_AUTH_EMAIL         (optional admin email used to auto-login and obtain token)',
       '  SMOKE_AUTH_PASSWORD      (optional admin password used to auto-login and obtain token)',
+      '  SMOKE_OPS_BASIC_USER     (optional private OPS basic-auth username)',
+      '  SMOKE_OPS_BASIC_PASSWORD (optional private OPS basic-auth password)',
+      '  SMOKE_OPS_AUTH_HEADER_NAME  (optional extra private OPS header name)',
+      '  SMOKE_OPS_AUTH_HEADER_VALUE (optional extra private OPS header value)',
       '  SMOKE_REQUIRE_WORKERS    (default: true)',
     ].join('\n') + '\n',
   );
@@ -37,21 +45,36 @@ const authPasswordArg = readArgValue('--auth-password');
 const configuredAuthToken = (authTokenArg || process.env.SMOKE_AUTH_TOKEN || '').trim();
 const configuredAuthEmail = (authEmailArg || process.env.SMOKE_AUTH_EMAIL || '').trim();
 const configuredAuthPassword = (authPasswordArg || process.env.SMOKE_AUTH_PASSWORD || '').trim();
+const configuredOpsBasicUser = (readArgValue('--ops-basic-user') || process.env.SMOKE_OPS_BASIC_USER || '').trim();
+const configuredOpsBasicPassword = (
+  readArgValue('--ops-basic-password') || process.env.SMOKE_OPS_BASIC_PASSWORD || ''
+).trim();
+const configuredOpsAuthHeaderName = (
+  readArgValue('--ops-auth-header-name') || process.env.SMOKE_OPS_AUTH_HEADER_NAME || ''
+).trim();
+const configuredOpsAuthHeaderValue = (
+  readArgValue('--ops-auth-header-value') || process.env.SMOKE_OPS_AUTH_HEADER_VALUE || ''
+).trim();
 const requireWorkers =
   !args.has('--no-workers') && String(process.env.SMOKE_REQUIRE_WORKERS || 'true').toLowerCase() !== 'false';
+const authLayer = resolveOpsAuthLayerOptions({
+  opsAuthHeaderName: configuredOpsAuthHeaderName,
+  opsAuthHeaderValue: configuredOpsAuthHeaderValue,
+  opsBasicUser: configuredOpsBasicUser,
+  opsBasicPassword: configuredOpsBasicPassword,
+});
 const resolvedAuth = await resolveOpsAuthToken({
   baseUrl: apiBase,
   authToken: configuredAuthToken,
   authEmail: configuredAuthEmail,
   authPassword: configuredAuthPassword,
+  ...authLayer,
   contextLabel: 'ops:deploy:smoke',
 });
-const authHeaders = resolvedAuth.token
-  ? {
-      Authorization: `Bearer ${resolvedAuth.token}`,
-      Cookie: `token=${encodeURIComponent(resolvedAuth.token)}`,
-    }
-  : undefined;
+const authHeaders = buildOpsRequestHeaders({
+  token: resolvedAuth.token,
+  ...authLayer,
+});
 
 const checks = [
   { name: 'API /health', url: `${apiBase}/health`, method: 'GET', headers: authHeaders },

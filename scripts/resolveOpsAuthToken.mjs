@@ -1,3 +1,8 @@
+import {
+  buildOpsRequestHeaders,
+  resolveOpsAuthLayerOptions,
+} from './buildOpsRequestHeaders.mjs';
+
 const normalizeBaseUrl = (value) => String(value ?? '').trim().replace(/\/+$/, '');
 
 const readSetCookieHeaders = (headers) => {
@@ -46,8 +51,18 @@ export const resolveOpsAuthToken = async ({
   authToken = '',
   authEmail = '',
   authPassword = '',
+  opsAuthHeaderName = '',
+  opsAuthHeaderValue = '',
+  opsBasicUser = '',
+  opsBasicPassword = '',
   contextLabel = 'ops-auth',
 }) => {
+  const authLayer = resolveOpsAuthLayerOptions({
+    opsAuthHeaderName,
+    opsAuthHeaderValue,
+    opsBasicUser,
+    opsBasicPassword,
+  });
   const existingToken = String(authToken ?? '').trim();
   if (existingToken.length > 0) {
     return {
@@ -71,6 +86,9 @@ export const resolveOpsAuthToken = async ({
     method: 'POST',
     headers: {
       'content-type': 'application/json',
+      ...buildOpsRequestHeaders({
+        ...authLayer,
+      }),
     },
     body: JSON.stringify({
       email,

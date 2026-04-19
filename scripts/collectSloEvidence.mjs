@@ -2,6 +2,10 @@
 
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import {
+  buildOpsRequestHeaders,
+  resolveOpsAuthLayerOptions,
+} from './buildOpsRequestHeaders.mjs';
 import { resolveOpsAuthToken } from './resolveOpsAuthToken.mjs';
 
 const TARGET_PROFILES = {
@@ -61,6 +65,10 @@ const parseArgs = () => {
     authToken: process.env.SLO_AUTH_TOKEN ?? '',
     authEmail: process.env.SLO_AUTH_EMAIL ?? '',
     authPassword: process.env.SLO_AUTH_PASSWORD ?? '',
+    opsAuthHeaderName: process.env.SLO_OPS_AUTH_HEADER_NAME ?? '',
+    opsAuthHeaderValue: process.env.SLO_OPS_AUTH_HEADER_VALUE ?? '',
+    opsBasicUser: process.env.SLO_OPS_BASIC_USER ?? '',
+    opsBasicPassword: process.env.SLO_OPS_BASIC_PASSWORD ?? '',
     environment: normalizeEnvironment(process.env.SLO_ENVIRONMENT ?? 'local'),
     targetProfile: normalizeTargetProfile(process.env.SLO_TARGET_PROFILE ?? 'V1'),
     apiAvailabilityPct: parseOptionalNumber(process.env.SLO_API_AVAILABILITY_PCT),
@@ -88,6 +96,16 @@ const parseArgs = () => {
     if (arg === '--auth-token') options.authToken = args[index + 1] ?? options.authToken;
     if (arg === '--auth-email') options.authEmail = args[index + 1] ?? options.authEmail;
     if (arg === '--auth-password') options.authPassword = args[index + 1] ?? options.authPassword;
+    if (arg === '--ops-auth-header-name') {
+      options.opsAuthHeaderName = args[index + 1] ?? options.opsAuthHeaderName;
+    }
+    if (arg === '--ops-auth-header-value') {
+      options.opsAuthHeaderValue = args[index + 1] ?? options.opsAuthHeaderValue;
+    }
+    if (arg === '--ops-basic-user') options.opsBasicUser = args[index + 1] ?? options.opsBasicUser;
+    if (arg === '--ops-basic-password') {
+      options.opsBasicPassword = args[index + 1] ?? options.opsBasicPassword;
+    }
     if (arg === '--environment') options.environment = normalizeEnvironment(args[index + 1] ?? options.environment);
     if (arg === '--target-profile') options.targetProfile = normalizeTargetProfile(args[index + 1] ?? options.targetProfile);
     if (arg === '--api-availability-pct') options.apiAvailabilityPct = parseOptionalNumber(args[index + 1]);
@@ -207,15 +225,13 @@ const evaluateObjective = ({ id, label, comparator, threshold, observed, unit = 
   };
 };
 
-const requestJson = async (baseUrl, endpoint, token) => {
+const requestJson = async (baseUrl, endpoint, token, authLayer) => {
   const startedAt = Date.now();
   try {
-    const authHeaders = token
-      ? {
-          Authorization: `Bearer ${token}`,
-          Cookie: `token=${encodeURIComponent(token)}`,
-        }
-      : {};
+    const authHeaders = buildOpsRequestHeaders({
+      token,
+      ...authLayer,
+    });
     const response = await fetch(`${baseUrl}${endpoint}`, { headers: authHeaders });
     const durationMs = Date.now() - startedAt;
     const text = await response.text();
@@ -480,7 +496,7 @@ const main = async () => {
   const options = parseArgs();
   if (options.help) {
     console.log(
-      'Usage: node scripts/collectSloEvidence.mjs [--base-url <url>] [--duration-minutes <n>] [--interval-seconds <n>] [--auth-token <token>] [--auth-email <email>] [--auth-password <password>] [--environment <local|stage|production>] [--target-profile <MVP|V1>] [--api-availability-pct <n>] [--worker-availability-pct <n>] [--api-5xx-ratio-pct <n>] [--api-avg-duration-ms <n>] [--queue-lag-exec-threshold <n>] [--queue-lag-exec-compliance-pct <n>] [--live-order-failure-ratio-pct <n>] [--allow-local-production-evidence]'
+      'Usage: node scripts/collectSloEvidence.mjs [--base-url <url>] [--duration-minutes <n>] [--interval-seconds <n>] [--auth-token <token>] [--auth-email <email>] [--auth-password <password>] [--ops-basic-user <user>] [--ops-basic-password <password>] [--ops-auth-header-name <name>] [--ops-auth-header-value <value>] [--environment <local|stage|production>] [--target-profile <MVP|V1>] [--api-availability-pct <n>] [--worker-availability-pct <n>] [--api-5xx-ratio-pct <n>] [--api-avg-duration-ms <n>] [--queue-lag-exec-threshold <n>] [--queue-lag-exec-compliance-pct <n>] [--live-order-failure-ratio-pct <n>] [--allow-local-production-evidence]'
     );
     process.exit(0);
   }
@@ -508,12 +524,19 @@ const main = async () => {
       throw new Error(`${key} must be a positive number`);
     }
   }
+  const authLayer = resolveOpsAuthLayerOptions({
+    opsAuthHeaderName: options.opsAuthHeaderName,
+    opsAuthHeaderValue: options.opsAuthHeaderValue,
+    opsBasicUser: options.opsBasicUser,
+    opsBasicPassword: options.opsBasicPassword,
+  });
 
   const resolvedAuth = await resolveOpsAuthToken({
     baseUrl: options.baseUrl,
     authToken: options.authToken,
     authEmail: options.authEmail,
     authPassword: options.authPassword,
+    ...authLayer,
     contextLabel: 'ops:slo:collect',
   });
   options.authToken = resolvedAuth.token;
@@ -529,7 +552,7 @@ const main = async () => {
   while (Date.now() <= deadline) {
     const sample = {};
     for (const endpoint of endpoints) {
-      sample[endpoint] = await requestJson(options.baseUrl, endpoint, options.authToken);
+      sample[endpoint] = await requestJson(options.baseUrl, endpoint, options.authToken, authLayer);
     }
     samples.push(sample);
     if (Date.now() + intervalMs > deadline) break;
@@ -559,6 +582,8 @@ const main = async () => {
           durationMinutes: options.durationMinutes,
           intervalSeconds: options.intervalSeconds,
           authTokenProvided: Boolean(options.authToken),
+          opsBasicAuthConfigured: Boolean(authLayer.opsBasicUser),
+          opsCustomHeaderConfigured: Boolean(authLayer.opsAuthHeaderName),
           environment: options.environment,
           allowLocalProductionEvidence: options.allowLocalProductionEvidence,
           targetProfile: options.targetProfile,

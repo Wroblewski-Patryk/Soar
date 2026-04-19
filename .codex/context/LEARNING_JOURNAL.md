@@ -279,3 +279,33 @@ pnpm run ops:rc:gates:status
 - Avoid: static "required actions" sections that ignore already-closed gates.
 - Evidence:
   - Observed and fixed on 2026-04-19 in `scripts/buildRcExternalGateStatus.mjs` (`OPV-05`).
+
+### 2026-04-19 - Private OPS auth layer can mask Gate2 probes as 401
+- Context: production RC Gate2 pipeline against protected OPS endpoints (`/workers/*`, `/alerts`, `/metrics`).
+- Symptom: stage smoke passes but Gate2 remains `OPEN`; probes return `401` and queue/5xx metrics become `n/a` even with valid app token flow.
+- Root cause: production path can require layered auth (for example gateway basic auth or custom header) in addition to API session auth; scripts sent only bearer/cookie token.
+- Guardrail: when running OPS/Gate pipelines on private routes, support and pass the additional auth layer together with app token auth.
+- Preferred pattern:
+```text
+pnpm run ops:rc:gates:prod-pipeline -- --base-url https://<target-api> --auth-token <ADMIN_JWT> --ops-basic-user <user> --ops-basic-password <pass>
+# or
+pnpm run ops:rc:gates:prod-pipeline -- --base-url https://<target-api> --auth-token <ADMIN_JWT> --ops-auth-header-name <header> --ops-auth-header-value <value>
+```
+- Avoid: assuming `--auth-token` (or auto-login) alone is sufficient for all production OPS endpoints.
+- Evidence:
+  - 2026-04-19 report: stage `PASS`, prod Gate2 `FAIL/OPEN`, `/workers/*` + `/alerts` + `/metrics` returned `401`.
+
+### 2026-04-19 - Enforce pnpm lockfile in repo config for frozen-lockfile builds
+- Context: Coolify/CI Docker install step uses `pnpm install --frozen-lockfile`.
+- Symptom: install can fail unless command is forced with `--config.lockfile=true`.
+- Root cause: repository `.npmrc` lacked explicit pnpm `lockfile=true` safeguard in environments with config drift.
+- Guardrail: keep `lockfile=true` in repository `.npmrc` so frozen-lockfile behavior is deterministic across local/CI/Coolify.
+- Preferred pattern:
+```text
+.npmrc:
+package-lock=false
+lockfile=true
+```
+- Avoid: relying on per-command `--config.lockfile=true` overrides as the only protection in deployment pipelines.
+- Evidence:
+  - 2026-04-19 operator report: `pnpm install --frozen-lockfile` failed, while `pnpm install --frozen-lockfile --config.lockfile=true` passed.

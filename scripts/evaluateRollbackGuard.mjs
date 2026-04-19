@@ -1,4 +1,8 @@
 #!/usr/bin/env node
+import {
+  buildOpsRequestHeaders,
+  resolveOpsAuthLayerOptions,
+} from './buildOpsRequestHeaders.mjs';
 import { resolveOpsAuthToken } from './resolveOpsAuthToken.mjs';
 
 const parseArgs = () => {
@@ -8,6 +12,10 @@ const parseArgs = () => {
     authToken: process.env.ROLLBACK_GUARD_AUTH_TOKEN ?? '',
     authEmail: process.env.ROLLBACK_GUARD_AUTH_EMAIL ?? '',
     authPassword: process.env.ROLLBACK_GUARD_AUTH_PASSWORD ?? '',
+    opsAuthHeaderName: process.env.ROLLBACK_GUARD_OPS_AUTH_HEADER_NAME ?? '',
+    opsAuthHeaderValue: process.env.ROLLBACK_GUARD_OPS_AUTH_HEADER_VALUE ?? '',
+    opsBasicUser: process.env.ROLLBACK_GUARD_OPS_BASIC_USER ?? '',
+    opsBasicPassword: process.env.ROLLBACK_GUARD_OPS_BASIC_PASSWORD ?? '',
     timeoutMs: Number.parseInt(process.env.ROLLBACK_GUARD_TIMEOUT_MS ?? '10000', 10),
   };
 
@@ -21,6 +29,16 @@ const parseArgs = () => {
     if (arg === '--auth-token') options.authToken = args[index + 1] ?? options.authToken;
     if (arg === '--auth-email') options.authEmail = args[index + 1] ?? options.authEmail;
     if (arg === '--auth-password') options.authPassword = args[index + 1] ?? options.authPassword;
+    if (arg === '--ops-auth-header-name') {
+      options.opsAuthHeaderName = args[index + 1] ?? options.opsAuthHeaderName;
+    }
+    if (arg === '--ops-auth-header-value') {
+      options.opsAuthHeaderValue = args[index + 1] ?? options.opsAuthHeaderValue;
+    }
+    if (arg === '--ops-basic-user') options.opsBasicUser = args[index + 1] ?? options.opsBasicUser;
+    if (arg === '--ops-basic-password') {
+      options.opsBasicPassword = args[index + 1] ?? options.opsBasicPassword;
+    }
     if (arg === '--timeout-ms') {
       options.timeoutMs = Number.parseInt(args[index + 1] ?? String(options.timeoutMs), 10);
     }
@@ -31,7 +49,7 @@ const parseArgs = () => {
 
 const printUsage = () => {
   console.log(
-    'Usage: node scripts/evaluateRollbackGuard.mjs [--base-url <url>] [--auth-token <token>] [--auth-email <email>] [--auth-password <password>] [--timeout-ms <ms>]'
+    'Usage: node scripts/evaluateRollbackGuard.mjs [--base-url <url>] [--auth-token <token>] [--auth-email <email>] [--auth-password <password>] [--ops-basic-user <user>] [--ops-basic-password <password>] [--ops-auth-header-name <name>] [--ops-auth-header-value <value>] [--timeout-ms <ms>]'
   );
 };
 
@@ -65,19 +83,24 @@ const main = async () => {
 
   const baseUrl = options.baseUrl.replace(/\/+$/, '');
   const timeoutMs = Number.isFinite(options.timeoutMs) && options.timeoutMs > 0 ? options.timeoutMs : 10000;
+  const authLayer = resolveOpsAuthLayerOptions({
+    opsAuthHeaderName: options.opsAuthHeaderName,
+    opsAuthHeaderValue: options.opsAuthHeaderValue,
+    opsBasicUser: options.opsBasicUser,
+    opsBasicPassword: options.opsBasicPassword,
+  });
   const resolvedAuth = await resolveOpsAuthToken({
     baseUrl,
     authToken: options.authToken,
     authEmail: options.authEmail,
     authPassword: options.authPassword,
+    ...authLayer,
     contextLabel: 'ops:deploy:rollback-guard',
   });
-  const headers = resolvedAuth.token
-    ? {
-        Authorization: `Bearer ${resolvedAuth.token}`,
-        Cookie: `token=${encodeURIComponent(resolvedAuth.token)}`,
-      }
-    : {};
+  const headers = buildOpsRequestHeaders({
+    token: resolvedAuth.token,
+    ...authLayer,
+  });
 
   const decision = {
     checkedAt: new Date().toISOString(),

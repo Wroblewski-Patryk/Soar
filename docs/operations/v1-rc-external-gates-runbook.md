@@ -8,6 +8,9 @@ Before final closure run, set/verify:
   - target API base URL (`https://<target-api>`)
   - admin session token for protected metrics/readiness endpoints (`--auth-token <token>`)
   - or admin credentials for automatic token fetch (`--auth-email <email> --auth-password <password>`)
+  - when production is behind additional private OPS auth layer:
+    - optional basic auth pass-through: `--ops-basic-user <user> --ops-basic-password <password>`
+    - optional custom header pass-through: `--ops-auth-header-name <name> --ops-auth-header-value <value>`
 - Production DB restore-check profile vars:
   - `PROD_DB_CHECK_CONTAINER`
   - `PROD_DB_CHECK_USER`
@@ -18,6 +21,9 @@ Recommended one-command production closure pipeline:
 - `pnpm run ops:rc:gates:prod-pipeline -- --base-url https://<target-api> --auth-token <ADMIN_JWT> --duration-minutes 30 --interval-seconds 30`
 - equivalent auto-login variant:
   - `pnpm run ops:rc:gates:prod-pipeline -- --base-url https://<target-api> --auth-email <admin-email> --auth-password <admin-password> --duration-minutes 30 --interval-seconds 30`
+- private OPS layer variant (stack with token or auto-login):
+  - `pnpm run ops:rc:gates:prod-pipeline -- --base-url https://<target-api> --auth-token <ADMIN_JWT> --ops-basic-user <ops-user> --ops-basic-password <ops-pass> --duration-minutes 30 --interval-seconds 30`
+  - `pnpm run ops:rc:gates:prod-pipeline -- --base-url https://<target-api> --auth-token <ADMIN_JWT> --ops-auth-header-name <header> --ops-auth-header-value <value> --duration-minutes 30 --interval-seconds 30`
 - this command enforces:
   - `environment=production`,
   - `db-profile=prod`,
@@ -63,6 +69,9 @@ Profile env contract:
      - `pnpm run ops:slo:collect -- --base-url https://<target-api> --duration-minutes 30 --interval-seconds 30 --auth-token <ADMIN_JWT> --environment production`
      - auto-login variant:
        - `pnpm run ops:slo:collect -- --base-url https://<target-api> --duration-minutes 30 --interval-seconds 30 --auth-email <admin-email> --auth-password <admin-password> --environment production`
+     - private OPS layer variants:
+       - `pnpm run ops:slo:collect -- --base-url https://<target-api> --duration-minutes 30 --interval-seconds 30 --auth-token <ADMIN_JWT> --ops-basic-user <ops-user> --ops-basic-password <ops-pass> --environment production`
+       - `pnpm run ops:slo:collect -- --base-url https://<target-api> --duration-minutes 30 --interval-seconds 30 --auth-token <ADMIN_JWT> --ops-auth-header-name <header> --ops-auth-header-value <value> --environment production`
    - Guardrail:
      - `--environment production` is blocked for `localhost`/private hosts unless explicit dry-run override is provided (`--allow-local-production-evidence`).
    - Build rolling SLO window summary (for 7d/30d review cadence):

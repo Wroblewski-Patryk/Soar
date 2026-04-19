@@ -125,6 +125,13 @@ Last updated: 2026-04-19
   - then execute `UXR-J-A..C` for shared table-consistency closure.
 
 ## Recent Progress
+- 2026-04-19: hardened OPS/Gate tooling for production private-route auth by
+  adding layered auth support (basic auth and custom header pass-through) to
+  `ops:slo:collect`, `ops:rc:gates:*` pipeline wrapper, deploy smoke, runtime
+  freshness check, and rollback guard scripts; updated RC external gates
+  runbook with the new command variants. Added repository-level `lockfile=true`
+  in `.npmrc` to keep `pnpm install --frozen-lockfile` deterministic in
+  Coolify/CI environments.
 - 2026-04-19: completed `UXR-I-08` by aligning `BacktestCreateForm` to the
   shared `FormPageShell` contract and removing feature-local outer shell
   wrappers while keeping payload behavior and focused backtests-form tests
