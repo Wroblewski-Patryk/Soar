@@ -1,0 +1,51 @@
+{
+  "wave": "SOPR",
+  "generatedAt": "2026-04-19T19:45:00Z",
+  "status": "PASS",
+  "matrix": [
+    {
+      "id": "SOPR-SIGNALS-SCOPE",
+      "area": "signals",
+      "contract": "selected-bot signal context is scope-locked; no cross-bot fallback leakage",
+      "evidence": [
+        "apps/api/src/modules/bots/bots.runtime-scope.e2e.test.ts",
+        "apps/web/src/features/dashboard-home/components/HomeLiveWidgets.test.tsx"
+      ],
+      "result": "PASS"
+    },
+    {
+      "id": "SOPR-HOME-PREVIEW-PARITY",
+      "area": "signals/positions/history parity",
+      "contract": "/dashboard and /dashboard/bots/:id/preview stay parity-aligned for selected bot",
+      "evidence": [
+        "apps/web/src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx"
+      ],
+      "result": "PASS"
+    },
+    {
+      "id": "SOPR-NO-OPEN-DIAGNOSTICS",
+      "area": "runtime diagnostics",
+      "contract": "blocked/ignored no-open outcomes remain explicitly visible operationally",
+      "evidence": [
+        "apps/api/src/modules/engine/runtimeFinalCandleDecision.service.test.ts",
+        "apps/api/src/modules/bots/bots.runtime-history-parity.e2e.test.ts"
+      ],
+      "result": "PASS"
+    },
+    {
+      "id": "SOPR-MANUAL-ORDER-SEMANTICS",
+      "area": "manual-order path",
+      "contract": "manual order is explicit order-only path with audit-safe diagnostics",
+      "evidence": [
+        "apps/api/src/modules/orders/orders.service.test.ts",
+        "apps/api/src/modules/orders/orders-positions.e2e.test.ts",
+        "apps/web/src/features/dashboard-home/components/HomeLiveWidgets.test.tsx"
+      ],
+      "result": "PASS"
+    }
+  ],
+  "notes": [
+    "SOPR manual-order decision locked to order-only path.",
+    "Signal context source tags are exposed as latest_signal/configured_fallback/unresolved."
+  ]
+}

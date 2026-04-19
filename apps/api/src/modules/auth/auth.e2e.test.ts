@@ -20,6 +20,7 @@ describe('POST /auth/register', () => {
     await prisma.botAssistantConfig.deleteMany();
     await prisma.marketGroupStrategyLink.deleteMany();
     await prisma.botMarketGroup.deleteMany();
+    await prisma.runtimeExecutionDedupe.deleteMany();
     await prisma.botRuntimeEvent.deleteMany();
     await prisma.botRuntimeSymbolStat.deleteMany();
     await prisma.botRuntimeSession.deleteMany();

@@ -57,6 +57,24 @@ describe('openOrder live execution contract', () => {
       expect(executeLiveOrder).not.toHaveBeenCalled();
       expect(order.status).toBe('FILLED');
       expect(order.exchangeOrderId).toBeNull();
+      const auditLog = await prisma.log.findFirst({
+        where: {
+          userId: user.id,
+          action: 'order.opened',
+          entityType: 'ORDER',
+          entityId: order.id,
+        },
+        orderBy: { occurredAt: 'desc' },
+      });
+      expect(auditLog).not.toBeNull();
+      const metadata = (auditLog?.metadata ?? {}) as {
+        semanticPath?: string;
+        positionLifecycleAuthority?: string;
+        opensPositionDirectly?: boolean;
+      };
+      expect(metadata.semanticPath).toBe('order_only');
+      expect(metadata.positionLifecycleAuthority).toBe('runtime_or_fill_sync');
+      expect(metadata.opensPositionDirectly).toBe(false);
     } finally {
       process.env.NODE_ENV = previousNodeEnv;
     }

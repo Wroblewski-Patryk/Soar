@@ -256,6 +256,7 @@ export const getBotRuntimeMonitoringAggregate = async (
       );
       const currentTradeTs = toTimestamp(item.lastTradeAt);
       const existingTradeTs = toTimestamp(existing.lastTradeAt);
+      const shouldUseCurrentSignalContext = currentSignalTs >= existingSignalTs;
 
       symbolMap.set(item.symbol, {
         ...existing,
@@ -274,16 +275,52 @@ export const getBotRuntimeMonitoringAggregate = async (
         openPositionCount: existing.openPositionCount + item.openPositionCount,
         openPositionQty: existing.openPositionQty + item.openPositionQty,
         unrealizedPnl: (existing.unrealizedPnl ?? 0) + (item.unrealizedPnl ?? 0),
-        lastPrice: currentSignalTs >= existingSignalTs ? item.lastPrice : existing.lastPrice,
-        lastSignalAt: currentSignalTs >= existingSignalTs ? item.lastSignalAt : existing.lastSignalAt,
+        lastPrice: shouldUseCurrentSignalContext ? item.lastPrice : existing.lastPrice,
+        lastSignalAt: shouldUseCurrentSignalContext ? item.lastSignalAt : existing.lastSignalAt,
         lastSignalDirection:
-          currentSignalTs >= existingSignalTs
+          shouldUseCurrentSignalContext
             ? item.lastSignalDirection
             : existing.lastSignalDirection,
         lastSignalDecisionAt:
-          currentSignalTs >= existingSignalTs
+          shouldUseCurrentSignalContext
             ? item.lastSignalDecisionAt
             : existing.lastSignalDecisionAt,
+        lastSignalMessage:
+          shouldUseCurrentSignalContext
+            ? item.lastSignalMessage
+            : existing.lastSignalMessage,
+        lastSignalReason:
+          shouldUseCurrentSignalContext
+            ? item.lastSignalReason
+            : existing.lastSignalReason,
+        lastSignalStrategyId:
+          shouldUseCurrentSignalContext
+            ? item.lastSignalStrategyId
+            : existing.lastSignalStrategyId,
+        lastSignalStrategyName:
+          shouldUseCurrentSignalContext
+            ? item.lastSignalStrategyName
+            : existing.lastSignalStrategyName,
+        lastSignalContextSource:
+          shouldUseCurrentSignalContext
+            ? item.lastSignalContextSource
+            : existing.lastSignalContextSource,
+        lastSignalConditionSummary:
+          shouldUseCurrentSignalContext
+            ? item.lastSignalConditionSummary
+            : existing.lastSignalConditionSummary,
+        lastSignalIndicatorSummary:
+          shouldUseCurrentSignalContext
+            ? item.lastSignalIndicatorSummary
+            : existing.lastSignalIndicatorSummary,
+        lastSignalConditionLines:
+          shouldUseCurrentSignalContext
+            ? item.lastSignalConditionLines
+            : existing.lastSignalConditionLines,
+        lastSignalScoreSummary:
+          shouldUseCurrentSignalContext
+            ? item.lastSignalScoreSummary
+            : existing.lastSignalScoreSummary,
         lastTradeAt: currentTradeTs >= existingTradeTs ? item.lastTradeAt : existing.lastTradeAt,
         snapshotAt:
           toTimestamp(item.snapshotAt) >= toTimestamp(existing.snapshotAt)

@@ -233,11 +233,12 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
 - Selected-bot signal context contract:
   - signal cards are selected-bot scoped only and must not reuse cross-bot fallback context.
   - condition-line strategy context prefers latest signal strategy when available; configured strategy fallback is allowed only for missing latest-signal strategy context.
-  - signal rows/cards must expose deterministic source tagging from API read model (`latest_signal` vs configured fallback family) for operator clarity.
+  - signal rows/cards must expose deterministic source tagging from API read model (`latest_signal`, `configured_fallback`, `unresolved`) for operator clarity.
 - Cross-route parity contract:
   - for the same selected bot, `/dashboard` and `/dashboard/bots/:id/preview` must stay parity-aligned for `signals`, `positions`, and `history`.
 - Runtime diagnostics contract:
   - no-open blocked/ignored outcomes must remain explicitly visible in operational flows (no ambiguous silent no-op behavior).
-- Manual-order semantic baseline:
+- Manual-order semantics closure (`SOPR-09`):
+  - chosen path is explicit `order-only`.
   - dashboard manual order remains on `POST /dashboard/orders/open` command semantics.
-  - it is not treated as runtime-orchestrator-equivalent lifecycle authority until explicit decision closure (`SOPR-09`).
+  - UI must keep operator-facing semantic clarity (order-only hint + success copy) and must not imply immediate runtime lifecycle authority.

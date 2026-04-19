@@ -970,6 +970,9 @@ export const openOrder = async (
     action: 'order.opened',
     level: 'INFO',
     metadata: {
+      semanticPath: 'order_only',
+      positionLifecycleAuthority: 'runtime_or_fill_sync',
+      opensPositionDirectly: false,
       mode: payload.mode,
       riskAck: payload.riskAck,
       type: payload.type,

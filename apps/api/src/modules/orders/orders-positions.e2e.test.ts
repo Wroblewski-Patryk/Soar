@@ -271,6 +271,48 @@ describe('Orders and positions read contract', () => {
     expect(forbiddenContextRes.body.error.message).toBe('Not found');
   });
 
+  it('keeps manual open endpoint on explicit order-only path without direct position creation', async () => {
+    const ownerAgent = await registerAndLogin('manual-order-order-only-owner@example.com');
+    const ownerId = await getUserId('manual-order-order-only-owner@example.com');
+
+    const openRes = await ownerAgent.post('/dashboard/orders/open').send({
+      symbol: 'BTCUSDT',
+      side: 'BUY',
+      type: 'MARKET',
+      quantity: 0.05,
+      mode: 'PAPER',
+      riskAck: false,
+    });
+
+    expect(openRes.status).toBe(201);
+    expect(openRes.body.symbol).toBe('BTCUSDT');
+    expect(openRes.body.status).toBe('FILLED');
+
+    const positionsCount = await prisma.position.count({
+      where: { userId: ownerId },
+    });
+    expect(positionsCount).toBe(0);
+
+    const auditLog = await prisma.log.findFirst({
+      where: {
+        userId: ownerId,
+        action: 'order.opened',
+        entityType: 'ORDER',
+        entityId: openRes.body.id as string,
+      },
+      orderBy: { occurredAt: 'desc' },
+    });
+    expect(auditLog).not.toBeNull();
+    const metadata = (auditLog?.metadata ?? {}) as {
+      semanticPath?: string;
+      positionLifecycleAuthority?: string;
+      opensPositionDirectly?: boolean;
+    };
+    expect(metadata.semanticPath).toBe('order_only');
+    expect(metadata.positionLifecycleAuthority).toBe('runtime_or_fill_sync');
+    expect(metadata.opensPositionDirectly).toBe(false);
+  });
+
   it('supports open/cancel/close write endpoints with LIVE risk guards', async () => {
     const ownerAgent = await registerAndLogin('orders-write-owner@example.com');
     const ownerId = await getUserId('orders-write-owner@example.com');

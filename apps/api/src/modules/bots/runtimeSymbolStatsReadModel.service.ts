@@ -44,6 +44,8 @@ type RuntimeSymbolSignal = {
   >;
 };
 
+export type RuntimeSignalContextSource = 'latest_signal' | 'configured_fallback' | 'unresolved';
+
 type RuntimeStrategyProjection = {
   name: string;
   interval: string;
@@ -94,6 +96,12 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
     const lastPrice = params.lastPriceBySymbol.get(symbol) ?? null;
     const fallbackStrategyId = params.configuredStrategyBySymbol.get(symbol) ?? null;
     const signalStrategyId = latestSignal?.strategyId ?? fallbackStrategyId;
+    const signalContextSource: RuntimeSignalContextSource =
+      latestSignal?.strategyId != null
+        ? 'latest_signal'
+        : fallbackStrategyId != null
+          ? 'configured_fallback'
+          : 'unresolved';
     const signalStrategy =
       signalStrategyId != null ? params.strategiesById.get(signalStrategyId) ?? null : null;
     const signalSeriesKey =
@@ -158,6 +166,7 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
       lastSignalReason: latestSignal?.mergeReason ?? null,
       lastSignalStrategyId: latestSignal?.strategyId ?? null,
       lastSignalStrategyName: signalStrategy?.name ?? null,
+      lastSignalContextSource: signalContextSource,
       lastSignalConditionSummary: signalConditionSummary,
       lastSignalIndicatorSummary: useComputedSignalValues
         ? signalIndicatorSummary

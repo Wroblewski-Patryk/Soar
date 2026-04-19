@@ -18,6 +18,10 @@ type RuntimeSignalsSectionProps = {
   signalsLabel: string;
   marketsCount: number;
   actionableSignalsCount: number;
+  contextSourceLabel: string;
+  contextSourceValueLatestSignal: string;
+  contextSourceValueConfiguredFallback: string;
+  contextSourceValueUnresolved: string;
   renderSymbolLabel?: (symbol: string) => ReactNode;
 };
 
@@ -111,6 +115,12 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
             const longActive = signalDirection === "LONG";
             const shortActive = signalDirection === "SHORT";
             const isNeutral = !longActive && !shortActive;
+            const sourceLabel =
+              signal.lastSignalContextSource === "latest_signal"
+                ? props.contextSourceValueLatestSignal
+                : signal.lastSignalContextSource === "configured_fallback"
+                  ? props.contextSourceValueConfiguredFallback
+                  : props.contextSourceValueUnresolved;
 
             return (
               <article
@@ -123,6 +133,9 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
                       {props.renderSymbolLabel ? props.renderSymbolLabel(signal.symbol) : signal.symbol}
                     </p>
                   </div>
+                  <p className="mt-1 text-[10px] opacity-65" data-testid={`signal-source-${signal.symbol}`}>
+                    {props.contextSourceLabel}: <span className="font-semibold">{sourceLabel}</span>
+                  </p>
                   <div className="mt-2.5 grid grid-cols-2 gap-2.5 text-[11px] leading-4">
                     <div
                       className={`space-y-1.5 rounded-box transition-opacity duration-150 ${

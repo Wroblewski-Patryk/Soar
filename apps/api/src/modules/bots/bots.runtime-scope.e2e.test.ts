@@ -423,12 +423,19 @@ describe('Bots runtime scope remediation contract', () => {
     expect(symbols).toEqual(['BTCUSDT']);
     expect(symbols).not.toContain('ETHUSDT');
 
-    const btc = (statsRes.body.items as Array<{ symbol: string; lastSignalStrategyName: string | null }>).find(
+    const btc = (
+      statsRes.body.items as Array<{
+        symbol: string;
+        lastSignalStrategyName: string | null;
+        lastSignalContextSource?: string | null;
+      }>
+    ).find(
       (item) => item.symbol === 'BTCUSDT'
     );
     expect(btc).toBeTruthy();
     expect(btc?.lastSignalStrategyName).toBe(activeStrategyName);
     expect(btc?.lastSignalStrategyName).not.toBe(pausedStrategyName);
+    expect(btc?.lastSignalContextSource).toBe('configured_fallback');
   });
 
   it('keeps strict selected-bot scope and resolves strategy context from canonical links before legacy fallback', async () => {
@@ -549,11 +556,94 @@ describe('Bots runtime scope remediation contract', () => {
     expect(symbols).not.toContain('XRPUSDT');
     expect(symbols).not.toContain('BNBUSDT');
 
-    const btc = (statsRes.body.items as Array<{ symbol: string; lastSignalStrategyName: string | null }>).find(
+    const btc = (
+      statsRes.body.items as Array<{
+        symbol: string;
+        lastSignalStrategyName: string | null;
+        lastSignalContextSource?: string | null;
+      }>
+    ).find(
       (item) => item.symbol === 'BTCUSDT'
     );
     expect(btc).toBeTruthy();
     expect(btc?.lastSignalStrategyName).toBe(canonicalStrategyName);
     expect(btc?.lastSignalStrategyName).not.toBe(legacyStrategyName);
+    expect(btc?.lastSignalContextSource).toBe('configured_fallback');
+  });
+
+  it('marks symbol strategy context source as latest_signal when latest event carries explicit strategyId', async () => {
+    const ownerEmail = 'bot-runtime-latest-signal-context-source@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
+
+    const fallbackStrategyId = await createStrategy(owner, 'Runtime Fallback Strategy');
+    const latestSignalStrategyId = await createStrategy(owner, 'Runtime Latest Signal Strategy');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    await prisma.symbolGroup.update({
+      where: { id: marketGroupId },
+      data: { symbols: ['BTCUSDT'] },
+    });
+
+    const botRes = await owner.post('/dashboard/bots').send(
+      createPayload({
+        strategyId: fallbackStrategyId,
+        marketGroupId,
+      })
+    );
+    expect(botRes.status).toBe(201);
+    const botId = botRes.body.id as string;
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-06T09:00:00.000Z'),
+      },
+    });
+
+    await prisma.botRuntimeSymbolStat.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        sessionId: session.id,
+        symbol: 'BTCUSDT',
+        totalSignals: 2,
+        longEntries: 1,
+        shortEntries: 1,
+        snapshotAt: new Date('2026-04-06T09:04:00.000Z'),
+      },
+    });
+
+    await prisma.botRuntimeEvent.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        sessionId: session.id,
+        eventType: 'SIGNAL_DECISION',
+        level: 'INFO',
+        symbol: 'BTCUSDT',
+        signalDirection: 'LONG',
+        strategyId: latestSignalStrategyId,
+        eventAt: new Date('2026-04-06T09:05:00.000Z'),
+      },
+    });
+
+    const statsRes = await owner.get(`/dashboard/bots/${botId}/runtime-sessions/${session.id}/symbol-stats`);
+    expect(statsRes.status).toBe(200);
+
+    const btc = (
+      statsRes.body.items as Array<{
+        symbol: string;
+        lastSignalStrategyId?: string | null;
+        lastSignalStrategyName?: string | null;
+        lastSignalContextSource?: string | null;
+      }>
+    ).find((item) => item.symbol === 'BTCUSDT');
+    expect(btc).toBeTruthy();
+    expect(btc?.lastSignalStrategyId).toBe(latestSignalStrategyId);
+    expect(btc?.lastSignalStrategyName).toBe('Runtime Latest Signal Strategy');
+    expect(btc?.lastSignalContextSource).toBe('latest_signal');
   });
 });

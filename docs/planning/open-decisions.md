@@ -835,10 +835,11 @@ This file tracks intentionally unresolved architecture choices so implementation
   - fallback source must be explicitly tagged in read models consumed by operator surfaces.
 - Runtime no-open diagnostics contract:
   - blocked/ignored no-open outcomes must remain explicit and operationally visible (no ambiguous silent no-op path).
-- Manual-order semantic baseline before SOPR decision gate closure:
-  - `POST /dashboard/orders/open` remains canonical manual order command path.
-  - it must not be implicitly treated as runtime-orchestrator-equivalent lifecycle authority until explicit decision closure (`SOPR-09`).
-  - operator-facing flows must preserve explicit semantics and diagnostics for this distinction.
+- Manual-order semantics decision closure (`SOPR-09`):
+  - chosen path: `order-only`.
+  - `POST /dashboard/orders/open` remains canonical manual-order command path and is not runtime-orchestrator-equivalent lifecycle authority.
+  - position lifecycle updates remain downstream of fill/runtime synchronization paths.
+  - operator-facing flows must render explicit order-only semantics and audit-safe diagnostics.
 - Canonical references:
   - `docs/planning/signals-open-runtime-parity-plan-2026-04-19.md`
   - `docs/modules/web-dashboard-home.md`

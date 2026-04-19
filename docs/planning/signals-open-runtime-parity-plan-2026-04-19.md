@@ -1,6 +1,6 @@
 # Signals + Open Runtime Parity Plan (2026-04-19)
 
-Status: ready-for-implementation  
+Status: closed (2026-04-19)  
 Execution mode: tiny-commit only (exactly one task per commit)  
 Primary audience: implementation agent
 
@@ -43,6 +43,11 @@ Primary audience: implementation agent
 1. `SOPR-A (commits SOPR-01..SOPR-04): source-of-truth closure + signal-context hardening`
 2. `SOPR-B (commits SOPR-05..SOPR-08): dashboard/preview parity closure for signals/positions/history`
 3. `SOPR-C (commits SOPR-09..SOPR-12): manual-order lifecycle decision + implementation + closure`
+
+## Closure Snapshot (2026-04-19)
+1. `SOPR-A`: closed with deterministic source tags and selected-bot scope locks in API+web regressions.
+2. `SOPR-B`: closed with home-vs-preview parity regressions and published SOPR parity matrix evidence.
+3. `SOPR-C`: closed with explicit manual-order `order-only` semantics, audit-safe metadata, contract tests, and full closure validation pack pass.
 
 ---
 

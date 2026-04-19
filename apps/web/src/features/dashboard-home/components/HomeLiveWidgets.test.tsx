@@ -1308,6 +1308,7 @@ describe("HomeLiveWidgets", () => {
 
     renderSubject();
     expect(await screen.findByTestId("manual-order-panel")).toBeInTheDocument();
+    expect(screen.getByTestId("manual-order-semantics-hint")).toHaveTextContent(/tylko zlecenie|order-only/i);
     expect(screen.getByTestId("wallet-section").compareDocumentPosition(screen.getByTestId("manual-order-section")) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 
     const symbolSelect = await screen.findByLabelText(/Symbol/i);
@@ -1587,6 +1588,7 @@ describe("HomeLiveWidgets", () => {
               lastSignalAt: "2026-03-31T10:05:00.000Z",
               lastSignalDirection: "LONG",
               lastSignalDecisionAt: "2026-03-31T10:05:00.000Z",
+              lastSignalContextSource: "configured_fallback",
               lastSignalConditionLines: [
                 {
                   scope: "LONG",
@@ -1649,6 +1651,7 @@ describe("HomeLiveWidgets", () => {
           lastSignalAt: "2026-03-31T10:05:00.000Z",
           lastSignalDirection: index % 2 === 0 ? "LONG" : "SHORT",
           lastSignalDecisionAt: "2026-03-31T10:05:00.000Z",
+          lastSignalContextSource: index % 2 === 0 ? "latest_signal" : "configured_fallback",
           lastSignalConditionLines: [
             {
               scope: index % 2 === 0 ? "LONG" : "SHORT",
@@ -1731,6 +1734,7 @@ describe("HomeLiveWidgets", () => {
       expect(selector.value).toBe("bot-scope-a");
       expect(screen.getAllByText("ADAUSDT").length).toBeGreaterThan(0);
       expect(screen.getByText("A_CTX_FAST")).toBeInTheDocument();
+      expect(screen.getByTestId("signal-source-ADAUSDT")).toHaveTextContent(/Fallback konfiguracji/i);
       expect(screen.queryAllByText("SOLUSDT")).toHaveLength(0);
       expect(screen.queryByRole("button", { name: /Wstecz|Prev/i })).toBeNull();
       expect(screen.queryByRole("button", { name: /Dalej|Next/i })).toBeNull();
@@ -1747,6 +1751,8 @@ describe("HomeLiveWidgets", () => {
       expect(screen.getAllByText("SOLUSDT").length).toBeGreaterThan(0);
       expect(screen.getAllByText("XRPUSDT").length).toBeGreaterThan(0);
       expect(screen.getByText("B_CTX_1")).toBeInTheDocument();
+      expect(screen.getByTestId("signal-source-BTCUSDT")).toHaveTextContent(/Ostatni sygnal/i);
+      expect(screen.queryByTestId("signal-source-ADAUSDT")).not.toBeInTheDocument();
       expect(screen.getByRole("button", { name: /Wstecz|Prev/i })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: /Dalej|Next/i })).toBeInTheDocument();
     });

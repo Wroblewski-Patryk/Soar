@@ -43,6 +43,7 @@ type RuntimeSidebarSectionProps = {
     sellLabel: string;
     contextLoadingLabel: string;
     contextUnavailableLabel: string;
+    semanticsHintLabel: string;
     noSymbolsLabel: string;
     botContext: string;
     symbolOptions: string[];
@@ -599,6 +600,9 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
                       {props.manualOrder.contextUnavailableLabel}
                     </p>
                   ) : null}
+                  <p className="mt-1 text-[10px] opacity-60" data-testid="manual-order-semantics-hint">
+                    {props.manualOrder.semanticsHintLabel}
+                  </p>
                 </div>
                 <button
                   type="button"

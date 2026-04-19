@@ -34,15 +34,6 @@ export const buildConfiguredStrategyBySymbol = (params: {
     assignStrategy(configuredBotStrategy);
   }
 
-  if (configuredStrategyBySymbol.size === 0 && params.strategiesById.size > 0) {
-    const [fallbackStrategyId] = [...params.strategiesById.keys()];
-    for (const symbol of params.symbols) {
-      if (!configuredStrategyBySymbol.has(symbol)) {
-        configuredStrategyBySymbol.set(symbol, fallbackStrategyId);
-      }
-    }
-  }
-
   return configuredStrategyBySymbol;
 };
 

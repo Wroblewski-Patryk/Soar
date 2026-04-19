@@ -28,6 +28,10 @@ describe('Cross-module data isolation contract', () => {
     await prisma.order.deleteMany();
     await prisma.position.deleteMany();
     await prisma.signal.deleteMany();
+    await prisma.runtimeExecutionDedupe.deleteMany();
+    await prisma.botRuntimeSymbolStat.deleteMany();
+    await prisma.botRuntimeEvent.deleteMany();
+    await prisma.botRuntimeSession.deleteMany();
     await prisma.botStrategy.deleteMany();
     await prisma.botSubagentConfig.deleteMany();
     await prisma.botAssistantConfig.deleteMany();
@@ -36,6 +40,7 @@ describe('Cross-module data isolation contract', () => {
     await prisma.bot.deleteMany();
     await prisma.symbolGroup.deleteMany();
     await prisma.marketUniverse.deleteMany();
+    await prisma.wallet.deleteMany();
     await prisma.strategy.deleteMany();
     await prisma.apiKey.deleteMany();
     await prisma.user.deleteMany();
@@ -103,9 +108,33 @@ describe('Cross-module data isolation contract', () => {
     });
     expect(otherStrategyRes.status).toBe(201);
 
+    const ownerWallet = await prisma.wallet.create({
+      data: {
+        userId: ownerId,
+        name: 'Owner Isolation Wallet',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        paperInitialBalance: 10000,
+      },
+    });
+    const otherWallet = await prisma.wallet.create({
+      data: {
+        userId: otherId,
+        name: 'Other Isolation Wallet',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        paperInitialBalance: 10000,
+      },
+    });
+
     const ownerBotRes = await ownerAgent.post('/dashboard/bots').send({
       name: 'Owner Bot',
       mode: 'PAPER',
+      walletId: ownerWallet.id,
       strategyId: ownerStrategyRes.body.id,
       marketGroupId: ownerSymbolGroup.id,
       isActive: false,
@@ -116,6 +145,7 @@ describe('Cross-module data isolation contract', () => {
     const otherBotRes = await otherAgent.post('/dashboard/bots').send({
       name: 'Other Bot',
       mode: 'PAPER',
+      walletId: otherWallet.id,
       strategyId: otherStrategyRes.body.id,
       marketGroupId: otherSymbolGroup.id,
       isActive: false,

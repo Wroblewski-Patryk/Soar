@@ -71,7 +71,7 @@ describe("Dashboard core routes accessibility smoke", () => {
 
     expect(screen.getByRole("navigation", { name: "Breadcrumb navigation" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1, name: "Bots" })).toBeInTheDocument();
-    const createButton = screen.getByRole("button", { name: "Create" });
+    const createButton = screen.getByRole("button", { name: /^Create/i });
     const descriptionId = createButton.getAttribute("aria-describedby");
     expect(descriptionId).toBeTruthy();
     const descriptionText = descriptionId ? document.getElementById(descriptionId)?.textContent : "";
@@ -92,7 +92,7 @@ describe("Dashboard core routes accessibility smoke", () => {
     expect(screen.getByRole("navigation", { name: "Breadcrumb navigation" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1, name: "Wallets" })).toBeInTheDocument();
     expect(screen.getByText("No wallets")).toBeInTheDocument();
-    const createButton = screen.getByRole("button", { name: "Create" });
+    const createButton = screen.getByRole("button", { name: /^Create/i });
     const descriptionId = createButton.getAttribute("aria-describedby");
     expect(descriptionId).toBeTruthy();
     const descriptionText = descriptionId ? document.getElementById(descriptionId)?.textContent : "";

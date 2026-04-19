@@ -95,12 +95,18 @@ pnpm --filter api test -- src/modules/orders/orders.service.test.ts src/modules/
   - context endpoint is read-only and does not place/modify orders,
   - web must render API constraints, not duplicate exchange-rule formulas independently.
 
-## 11. Manual-Order Semantic Baseline in Signals/Open Parity Wave (`SOPR`)
-- Contract baseline:
-  - `POST /dashboard/orders/open` remains canonical manual-order command path.
-  - this route is not implicitly treated as runtime-orchestrator-equivalent position lifecycle authority until explicit decision-gate closure (`SOPR-09`).
-- Operator clarity contract:
-  - API/UI flows must preserve explicit manual-order semantics and diagnostics, especially when position lifecycle outcomes differ from runtime orchestrator paths.
+## 11. Manual-Order Semantics Contract (`SOPR-C`)
+- Decision closure (`SOPR-09`):
+  - chosen path is `order-only`.
+  - `POST /dashboard/orders/open` is canonical command path and does not directly claim runtime-orchestrator lifecycle authority.
+- Behavioral contract:
+  - open command places/persists order intent under existing mode/risk guardrails.
+  - position lifecycle visibility remains downstream of fill/runtime synchronization paths.
+- Audit-safe diagnostics:
+  - order-open audit metadata must include explicit semantic markers:
+    - `semanticPath = order_only`
+    - `positionLifecycleAuthority = runtime_or_fill_sync`
+    - `opensPositionDirectly = false`
 - Guardrails:
-  - no silent semantic remap from order-command path to orchestrator lifecycle path.
-  - any future lifecycle-authority change must be decision-locked and test-covered in the dedicated SOPR decision/implementation tasks.
+  - no silent semantic remap from order command path to orchestrator lifecycle path.
+  - any future lifecycle-authority change must be decision-locked and test-covered before rollout.

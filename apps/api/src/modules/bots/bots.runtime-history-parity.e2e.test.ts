@@ -87,5 +87,57 @@ describe('Bots runtime history parity contract', () => {
       )
     ).toBe(true);
   });
-});
 
+  it('keeps PRETRADE_BLOCKED diagnostics visible in runtime session event counters', async () => {
+    const ownerEmail = 'bot-runtime-pretrade-blocked-diagnostics@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
+
+    const strategyId = await createStrategy(owner, 'Pretrade Diagnostics');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    const botRes = await owner.post('/dashboard/bots').send(createPayload({ strategyId, marketGroupId }));
+    expect(botRes.status).toBe(201);
+    const botId = botRes.body.id as string;
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-10T06:00:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-10T06:01:00.000Z'),
+      },
+      select: { id: true },
+    });
+
+    await prisma.botRuntimeEvent.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        sessionId: session.id,
+        eventType: 'PRETRADE_BLOCKED',
+        level: 'WARN',
+        symbol: 'BTCUSDT',
+        message: 'Signal execution blocked by runtime orchestration guardrails',
+        payload: {
+          reason: 'already_open_same_side',
+          direction: 'LONG',
+        },
+        eventAt: new Date('2026-04-10T06:01:00.000Z'),
+      },
+    });
+
+    const listRes = await owner.get(`/dashboard/bots/${botId}/runtime-sessions`);
+    expect(listRes.status).toBe(200);
+    expect(Array.isArray(listRes.body)).toBe(true);
+    expect(listRes.body).toHaveLength(1);
+    expect(listRes.body[0].id).toBe(session.id);
+    expect(listRes.body[0].eventsCount).toBe(1);
+
+    const detailRes = await owner.get(`/dashboard/bots/${botId}/runtime-sessions/${session.id}`);
+    expect(detailRes.status).toBe(200);
+    expect(detailRes.body.id).toBe(session.id);
+    expect(detailRes.body.eventsCount).toBe(1);
+  });
+});

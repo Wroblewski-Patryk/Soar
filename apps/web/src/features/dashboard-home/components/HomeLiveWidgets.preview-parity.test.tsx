@@ -109,7 +109,23 @@ const buildAggregatePayload = (botId: string, historySymbol: string, tradeSymbol
   },
   symbolStats: {
     sessionId: "AGGREGATE",
-    items: [{ id: `stat-${botId}`, symbol: "BTCUSDT", lastSignalDirection: "LONG" }],
+    items: [
+      {
+        id: `stat-${botId}`,
+        symbol: "BTCUSDT",
+        lastSignalDirection: "LONG",
+        lastSignalContextSource: botId === "bot-a" ? "configured_fallback" : "latest_signal",
+        lastSignalConditionLines: [
+          {
+            scope: "LONG",
+            left: botId === "bot-a" ? "ALPHA_CTX_FAST" : "BETA_CTX_FAST",
+            value: "ACTIVE",
+            operator: ">",
+            right: botId === "bot-a" ? "ALPHA_CTX_SLOW" : "BETA_CTX_SLOW",
+          },
+        ],
+      },
+    ],
     summary: {
       totalSignals: 2,
       longEntries: 1,
@@ -405,8 +421,11 @@ describe("Selected bot aggregate parity: /dashboard vs /dashboard/bots/:id/previ
 
     expect(await screen.findByText("BETAHISTUSDT")).toBeInTheDocument();
     expect(await screen.findByText("BETATRADEUSDT")).toBeInTheDocument();
+    expect(screen.getByText("BETA_CTX_FAST")).toBeInTheDocument();
+    expect(screen.getByTestId("signal-source-BTCUSDT")).toHaveTextContent(/Ostatni sygnal|Latest signal/i);
     expect(screen.queryByText("ALPHAHISTUSDT")).not.toBeInTheDocument();
     expect(screen.queryByText("ALPHATRADEUSDT")).not.toBeInTheDocument();
+    expect(screen.queryByText("ALPHA_CTX_FAST")).not.toBeInTheDocument();
 
     home.unmount();
 

@@ -19,6 +19,10 @@ describe("Positions exchange snapshot API", () => {
     await prisma.order.deleteMany();
     await prisma.position.deleteMany();
     await prisma.signal.deleteMany();
+    await prisma.runtimeExecutionDedupe.deleteMany();
+    await prisma.botRuntimeSymbolStat.deleteMany();
+    await prisma.botRuntimeEvent.deleteMany();
+    await prisma.botRuntimeSession.deleteMany();
     await prisma.backtestTrade.deleteMany();
     await prisma.backtestReport.deleteMany();
     await prisma.backtestRun.deleteMany();

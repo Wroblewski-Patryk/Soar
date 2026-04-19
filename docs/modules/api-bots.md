@@ -138,7 +138,10 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
   - strategy context precedence:
     - latest runtime signal strategy context first when present,
     - canonical configured strategy fallback only when latest signal context is missing.
-  - read model must expose explicit strategy-context source tag to avoid hidden fallback ambiguity.
+  - read model must expose explicit strategy-context source tag to avoid hidden fallback ambiguity:
+    - `latest_signal`,
+    - `configured_fallback`,
+    - `unresolved`.
 - Cross-surface parity contract:
   - API payloads consumed by `/dashboard` and `/dashboard/bots/:id/preview` for the same selected bot must remain parity-compatible for `signals`, `positions`, and `history`.
 - Runtime diagnostics contract:

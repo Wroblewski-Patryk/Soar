@@ -3,6 +3,7 @@ import {
   OrderFlowGateway,
   PositionFlowGateway,
   RuntimeExecutionEventGateway,
+  RuntimeExecutionDedupeGateway,
   RuntimeExecutionMode,
   RuntimeSignalDirection,
   RuntimeTradeGateway,
@@ -147,7 +148,16 @@ const createInMemoryGateways = (mode: RuntimeExecutionMode) => {
     createTrade: async () => undefined,
   };
 
-  return { orderGateway, positionGateway, eventGateway, tradeGateway };
+  const dedupeGateway: RuntimeExecutionDedupeGateway = {
+    acquire: async (input) => ({
+      outcome: 'execute',
+      dedupeKey: input.dedupeKey,
+    }),
+    markSucceeded: async () => undefined,
+    markFailed: async () => undefined,
+  };
+
+  return { orderGateway, positionGateway, eventGateway, tradeGateway, dedupeGateway };
 };
 
 const runScenario = async (
@@ -170,7 +180,8 @@ const runScenario = async (
       gateways.orderGateway,
       gateways.positionGateway,
       gateways.eventGateway,
-      gateways.tradeGateway
+      gateways.tradeGateway,
+      gateways.dedupeGateway
     );
 
     outcomes.push(

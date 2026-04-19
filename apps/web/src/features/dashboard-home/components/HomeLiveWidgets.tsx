@@ -1430,6 +1430,10 @@ export default function HomeLiveWidgets() {
                 signalsLabel={t("dashboard.home.runtime.signals")}
                 marketsCount={signalHeaderStats.marketsCount}
                 actionableSignalsCount={signalHeaderStats.actionableSignalsCount}
+                contextSourceLabel={t("dashboard.home.runtime.signalContextSource")}
+                contextSourceValueLatestSignal={t("dashboard.home.runtime.signalContextSourceLatestSignal")}
+                contextSourceValueConfiguredFallback={t("dashboard.home.runtime.signalContextSourceConfiguredFallback")}
+                contextSourceValueUnresolved={t("dashboard.home.runtime.signalContextSourceUnresolved")}
                 renderSymbolLabel={renderRuntimeSymbol}
               />
               {runtimeDataIsStale ? (
@@ -1493,6 +1497,7 @@ export default function HomeLiveWidgets() {
             sellLabel: t("dashboard.home.runtime.manualOrderSellLabel"),
             contextLoadingLabel: t("dashboard.home.runtime.manualOrderContextLoading"),
             contextUnavailableLabel: t("dashboard.home.runtime.manualOrderContextUnavailable"),
+            semanticsHintLabel: t("dashboard.home.runtime.manualOrderSemanticsHint"),
             noSymbolsLabel: t("dashboard.home.runtime.noSignalData"),
             botContext: selected ? `${selected.bot.name} | ${selected.bot.mode}` : "-",
             symbolOptions: manualOrderSymbolOptions,
