@@ -215,3 +215,20 @@ pnpm run quality:guardrails
 - Avoid: repeatedly rerunning DB-backed e2e tests before engine health is restored.
 - Evidence:
   - Observed on 2026-04-18 during `BRS-02..BRS-04` validation (`bots.e2e.test.ts` targeted run).
+
+### 2026-04-19 - Domain drift in ops smoke targets after brand-domain switch
+- Context: running `OPV-01` stage/prod deployment rehearsal and smoke checks.
+- Symptom: smoke checks fail with `fetch failed` when targeting legacy domains (`cryptosparrow.luckysparrow.ch`, `api.cryptosparrow.luckysparrow.ch`), while current production Soar domains pass.
+- Root cause: operations docs/context still referenced legacy hostnames after deployment traffic/domain switched to `soar.luckysparrow.ch` + `api.soar.luckysparrow.ch`.
+- Guardrail: before rehearsal/smoke, resolve DNS for target domains and prefer canonical active production domains from latest evidence docs; if DNS is missing, record explicit external blocker instead of retry loops.
+- Preferred pattern:
+```powershell
+Resolve-DnsName api.soar.luckysparrow.ch
+Resolve-DnsName soar.luckysparrow.ch
+$env:SMOKE_API_BASE_URL='https://api.soar.luckysparrow.ch'
+$env:SMOKE_WEB_BASE_URL='https://soar.luckysparrow.ch'
+node scripts/deploySmokeCheck.mjs --no-workers
+```
+- Avoid: assuming older domain contracts in smoke/release docs remain valid after brand/domain migration.
+- Evidence:
+  - 2026-04-19 `OPV-01` evidence pack: production smoke PASS on Soar domains, stage smoke blocked due missing stage DNS records for `stage-soar`/`stage-api.soar`.

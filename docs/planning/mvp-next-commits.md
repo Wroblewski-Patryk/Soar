@@ -7,11 +7,12 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
+- [ ] `OPV-02 qa(prod-live-takeover): verify takeover endpoint and private ops probes on production target`
 ## NEXT
-- [ ] `POS-A (commits POS-36..POS-38): lifecycle contract parity foundations across backtest/paper/live`
+- [ ] `OPV-03 ops(gates-refresh): refresh RC external-gate status/sign-off artifacts with new production evidence`
 ## PIPELINE
 - [ ] `OPV-A (commits OPV-01..OPV-04): production rehearsal + live-takeover verification + exit-gate closure`
+- [ ] `POS-A (commits POS-36..POS-38): lifecycle contract parity foundations across backtest/paper/live`
 ## GROUP QUEUE
 - [x] `BRS-A (commits BRS-01..BRS-04): decision closure + strict selected-bot scope foundation`
 - [x] `BRS-B (commits BRS-05..BRS-08): canonical update-path fix + strategy precedence unification`
@@ -57,6 +58,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
+  - 2026-04-19: Executed Dockerfile-first rehearsal for `api`, `web`, and all four worker images (`PASS` for each build target) and captured evidence pack in `docs/operations/opv-01-vps-rehearsal-2026-04-19.md` plus JSON/log artifacts. Production smoke (`api.soar.luckysparrow.ch`, `soar.luckysparrow.ch`) passed for `/health`, `/ready`, and web root. Stage rehearsal remained externally blocked due missing stage DNS records (`stage-api.soar.luckysparrow.ch`, `stage-soar.luckysparrow.ch`).
 - [x] `UXR-H-01 docs(contract): freeze dashboard manual-order advanced input/context contract`
   - 2026-04-19: Frozen manual-order advanced behavior/data-source contract in canonical decisions and module docs, including `price` placement/fill rule, `qty` min+slider guidance contract, side-aware summary contract, and explicit unresolved `orderType -> MARKET` fallback. Synced wave plan status to in-progress with `UXR-H-02` next. Validation: `pnpm run quality:guardrails` => `PASS`.
 - [x] `UXR-H-02 feat(api-orders): add manual-order context read endpoint for price/rules/min-qty preview`

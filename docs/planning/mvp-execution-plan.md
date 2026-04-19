@@ -2035,10 +2035,11 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-18: Queued unresolved `POS-36..POS-42` lifecycle parity tasks from `docs/planning/position-lifecycle-parity-remediation-plan-2026-03-29.md` because they remain outside active canonical queue coverage and are required for deterministic cross-mode lifecycle behavior.
 
 ## Phase OPV - Production Verification and Exit-Gate Follow-up (Queued 2026-04-18)
-- [ ] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
+- [x] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
 - [ ] `OPV-02 qa(prod-live-takeover): verify takeover endpoint and private ops probes on production target`
 - [ ] `OPV-03 ops(gates-refresh): refresh RC external-gate status/sign-off artifacts with new production evidence`
 - [ ] `OPV-04 docs(closure): sync LBT/V1 stability plan statuses and residual external blockers`
 
 ### Progress Log (Phase OPV - Production Verification and Exit-Gate Follow-up)
 - 2026-04-18: Queued production follow-up closure from live-takeover/V1 plans (`LBT`, `V1` stability/release, `DPL` rehearsal note) so remaining target-environment verification and formal gate evidence are explicitly owned after code-focused waves.
+- 2026-04-19: Completed `OPV-01` by executing Dockerfile-first image rehearsal (`api`, `web`, `workers-market-data`, `workers-market-stream`, `workers-backtest`, `workers-execution`) and publishing evidence in `docs/operations/opv-01-vps-rehearsal-2026-04-19.md` with machine-readable artifacts. Production smoke on `api.soar.luckysparrow.ch` and `soar.luckysparrow.ch` passed; stage rehearsal is blocked by missing stage DNS records for Soar stage domains.

@@ -1,0 +1,50 @@
+﻿{
+    "generatedAt":  "2026-04-19T01:24:16.4533728Z",
+    "rehearsal":  "OPV-01 Dockerfile-first stage/prod preflight",
+    "commit":  "151d6742e5d09aebccc849b0c2f76ca0541df09e",
+    "results":  [
+                    {
+                        "name":  "api",
+                        "dockerfile":  "apps/api/Dockerfile",
+                        "tag":  "cryptosparrow-api:opv01-2026-04-19T03-21-03",
+                        "status":  "PASS",
+                        "exitCode":  0
+                    },
+                    {
+                        "name":  "web",
+                        "dockerfile":  "apps/web/Dockerfile",
+                        "tag":  "cryptosparrow-web:opv01-2026-04-19T03-21-03",
+                        "status":  "PASS",
+                        "exitCode":  0
+                    },
+                    {
+                        "name":  "worker-market-data",
+                        "dockerfile":  "apps/api/Dockerfile.worker.market-data",
+                        "tag":  "cryptosparrow-worker-market-data:opv01-2026-04-19T03-21-03",
+                        "status":  "PASS",
+                        "exitCode":  0
+                    },
+                    {
+                        "name":  "worker-market-stream",
+                        "dockerfile":  "apps/api/Dockerfile.worker.market-stream",
+                        "tag":  "cryptosparrow-worker-market-stream:opv01-2026-04-19T03-21-03",
+                        "status":  "PASS",
+                        "exitCode":  0
+                    },
+                    {
+                        "name":  "worker-backtest",
+                        "dockerfile":  "apps/api/Dockerfile.worker.backtest",
+                        "tag":  "cryptosparrow-worker-backtest:opv01-2026-04-19T03-21-03",
+                        "status":  "PASS",
+                        "exitCode":  0
+                    },
+                    {
+                        "name":  "worker-execution",
+                        "dockerfile":  "apps/api/Dockerfile.worker.execution",
+                        "tag":  "cryptosparrow-worker-execution:opv01-2026-04-19T03-21-03",
+                        "status":  "PASS",
+                        "exitCode":  0
+                    }
+                ],
+    "logPath":  "docs\\operations\\_artifacts-opv-01-docker-rehearsal-2026-04-19T03-21-03.log"
+}

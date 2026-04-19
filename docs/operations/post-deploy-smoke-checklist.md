@@ -4,10 +4,10 @@ Date: 2026-04-03
 Scope: Manual + scripted smoke checks after deployment on target domains.
 
 ## Target Domains
-- Web: `https://cryptosparrow.luckysparrow.ch`
-- API: `https://api.cryptosparrow.luckysparrow.ch`
+- Web: `https://soar.luckysparrow.ch`
+- API: `https://api.soar.luckysparrow.ch`
 
-For STAGE use corresponding stage domains.
+For STAGE use corresponding stage domains (`stage-soar` / `stage-api.soar`) when provisioned.
 
 ## Purpose
 Quickly confirm that the deployed revision is operational for critical user flows before declaring rollout healthy.

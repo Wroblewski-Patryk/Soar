@@ -91,22 +91,22 @@ Last updated: 2026-04-19
 - Public URLs / ports:
   - local web `http://localhost:3002`
   - local api `http://localhost:3001`
-  - production web `https://cryptosparrow.luckysparrow.ch`
-  - production api `https://api.cryptosparrow.luckysparrow.ch`
+  - production web `https://soar.luckysparrow.ch`
+  - production api `https://api.soar.luckysparrow.ch`
 - Backup / restore expectation: follow the backup verification and restore-drill
   runbooks and evidence pack process under `docs/operations/`
 - Rollback trigger and method: stage-gate or post-deploy failure triggers
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: execute `OPV-01` Dockerfile-first stage/prod
-  rehearsal and capture deployment evidence for release confidence.
+- Main active objective: execute `OPV-02` production takeover endpoint/private
+  OPS probe verification after `OPV-01` rehearsal evidence capture.
 - Top blockers:
-  - production rehearsal depends on full lifecycle parity closure (`POS-42`)
-    and currently remains in follow-up queue.
+  - stage rehearsal endpoint verification is blocked by missing stage Soar DNS
+    records (`stage-api.soar.luckysparrow.ch`, `stage-soar.luckysparrow.ch`).
 - Success criteria for this phase:
-  - production rehearsal evidence is captured with explicit stage/prod
-    Dockerfile-first deployment path checks (`OPV-01`).
+  - production verification phase closes `OPV-02..OPV-04` with refreshed gate
+    status/sign-off and explicit external blocker accounting.
   - canonical queue and context docs stay synchronized after each ARC batch.
   - no regressions in runtime safety, deploy confidence, or dashboard contracts.
 - Next queued follow-up:
@@ -114,6 +114,12 @@ Last updated: 2026-04-19
   - production verification closure wave (`OPV-A`, `OPV-01..OPV-04`).
 
 ## Recent Progress
+- 2026-04-19: completed `OPV-01` by running Dockerfile-first rehearsal builds
+  for `api`, `web`, and all worker images (`PASS`) and capturing deployment
+  evidence in `docs/operations/opv-01-vps-rehearsal-2026-04-19.md` plus
+  `_artifacts-opv-01-*` JSON/logs; production smoke on
+  `api.soar.luckysparrow.ch` + `soar.luckysparrow.ch` passed, while stage
+  rehearsal is blocked by missing stage Soar DNS records.
 - 2026-04-19: closed `UXR-H` (`UXR-H-02..UXR-H-10`) end-to-end by delivering
   API manual-order context read contract + regression locks, web context/state
   integration, advanced runtime sidebar manual-order UX (`price`, market-fill,

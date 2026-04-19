@@ -26,12 +26,12 @@ Do not run workers inside API process in VPS deployment.
 ## Domain Routing Contract
 
 Production:
-- Web: `cryptosparrow.luckysparrow.ch`
-- API: `api.cryptosparrow.luckysparrow.ch`
+- Web: `soar.luckysparrow.ch`
+- API: `api.soar.luckysparrow.ch`
 
 Stage (recommended pattern):
-- Web: `stage-cryptosparrow.luckysparrow.ch`
-- API: `stage-api.cryptosparrow.luckysparrow.ch`
+- Web: `stage-soar.luckysparrow.ch`
+- API: `stage-api.soar.luckysparrow.ch`
 
 ## Prerequisites
 

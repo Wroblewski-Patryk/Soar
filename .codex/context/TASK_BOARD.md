@@ -17,11 +17,11 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] OPV-01 Execute Dockerfile-first stage/prod rehearsal and capture deployment evidence
+- [ ] OPV-02 Verify takeover endpoint and private ops probes on production target
   - Status: READY
   - Group: Production Verification Follow-up (`OPV-A`)
   - Owner: Ops/Release
-  - Depends on: POS-42
+  - Depends on: OPV-01
   - Priority: P3
 
 ## BACKLOG
@@ -42,6 +42,8 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] OPV-01 Execute Dockerfile-first stage/prod rehearsal and capture deployment evidence
+  - 2026-04-19: Dockerfile-first rehearsal passed for `api`, `web`, and all worker images; production smoke (`api.soar.luckysparrow.ch` + `soar.luckysparrow.ch`) passed for `/health`, `/ready`, and web root. Stage rehearsal is externally blocked because stage Soar DNS records are missing; evidence captured in `docs/operations/opv-01-vps-rehearsal-2026-04-19.md` and `_artifacts-opv-01-*`.
 - [x] UXR-H group closure (`UXR-H-02..UXR-H-10`)
   - 2026-04-19: Closed dashboard manual-order advanced UX wave end-to-end by delivering API manual-order context endpoint + regression locks, wiring typed web context/state integration, adding price input + market-price fill + qty slider + side-aware summary + single-layer container layout, completing EN/PL/PT i18n parity, and running focused closure pack (`api tests`, `web tests`, `api/web typecheck`, `api/web build`, `quality:guardrails`).
 - [x] UXR-H-02 Add API manual-order context endpoint for symbol constraints, price reference, and bot execution metadata
