@@ -17,7 +17,6 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] SOPR-01 Lock consolidated source-of-truth and parity contract for signals/open flows after DAGG+SBSC
 - [ ] SOPR-02 Add API regression for neutral/no-recent-signal condition-line fallback contamination
 - [ ] SOPR-03 Harden symbol->strategy fallback and expose explicit source tags in symbol stats read model
 
@@ -59,6 +58,8 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] SOPR-01 Lock consolidated source-of-truth and parity contract for signals/open flows after DAGG+SBSC
+  - 2026-04-19: Published consolidated selected-bot signals/open-runtime parity contract in canonical docs (`open-decisions`, `web-dashboard-home`, `api-bots`, `api-orders`) with explicit prerequisite baseline (`DAGG`, `SBSC`), signal-context precedence, runtime no-open diagnostics visibility, and manual-order semantic baseline before `SOPR-09`.
 - [x] MURC planning queued (`MURC-01..MURC-12`)
   - 2026-04-19: Added `docs/planning/market-universe-symbol-contract-parity-plan-2026-04-19.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) as post-`SOPR` follow-up to fix symbol-composition drift across markets sync, runtime, backtests, manual-order context, and web preview/validation.
 - [x] SBSC-C group closure (`SBSC-07..SBSC-08`)

@@ -128,3 +128,18 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
 - Drift policy:
   - legacy link state may exist for backward compatibility, but it cannot override canonical runtime topology in dashboard strategy contexts.
   - module should expose deterministic diagnostics/repair path for legacy-canonical divergence to support operations closure.
+
+## 13. Signals + Open Runtime Parity Contract (`SOPR`)
+- Consolidated prerequisites:
+  - `DAGG` selected-bot aggregate runtime-table contract.
+  - `SBSC` selected-bot strategy projection + sidebar parity contract.
+- Selected-bot signal context contract:
+  - symbol stats and signal context are selected-bot scoped only.
+  - strategy context precedence:
+    - latest runtime signal strategy context first when present,
+    - canonical configured strategy fallback only when latest signal context is missing.
+  - read model must expose explicit strategy-context source tag to avoid hidden fallback ambiguity.
+- Cross-surface parity contract:
+  - API payloads consumed by `/dashboard` and `/dashboard/bots/:id/preview` for the same selected bot must remain parity-compatible for `signals`, `positions`, and `history`.
+- Runtime diagnostics contract:
+  - no-open blocked/ignored outcomes remain explicit and queryable in operational payload/log flows.

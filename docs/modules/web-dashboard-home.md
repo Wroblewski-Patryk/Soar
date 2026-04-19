@@ -226,3 +226,18 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
 - Cross-projection parity requirement:
   - `GET /dashboard/bots` `strategyId` must stay compatible with runtime-graph primary strategy for the same bot.
   - selected-bot switch must not show `Market` from canonical context and `Strategy` from a conflicting legacy projection.
+
+## 21. Signals + Open Runtime Parity Contract (`SOPR`)
+- Consolidated baseline:
+  - `DAGG` aggregate selected-bot runtime-table contract and `SBSC` sidebar strategy contract are prerequisites.
+- Selected-bot signal context contract:
+  - signal cards are selected-bot scoped only and must not reuse cross-bot fallback context.
+  - condition-line strategy context prefers latest signal strategy when available; configured strategy fallback is allowed only for missing latest-signal strategy context.
+  - signal rows/cards must expose deterministic source tagging from API read model (`latest_signal` vs configured fallback family) for operator clarity.
+- Cross-route parity contract:
+  - for the same selected bot, `/dashboard` and `/dashboard/bots/:id/preview` must stay parity-aligned for `signals`, `positions`, and `history`.
+- Runtime diagnostics contract:
+  - no-open blocked/ignored outcomes must remain explicitly visible in operational flows (no ambiguous silent no-op behavior).
+- Manual-order semantic baseline:
+  - dashboard manual order remains on `POST /dashboard/orders/open` command semantics.
+  - it is not treated as runtime-orchestrator-equivalent lifecycle authority until explicit decision closure (`SOPR-09`).

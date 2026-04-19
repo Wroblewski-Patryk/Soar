@@ -2152,7 +2152,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
   - `pnpm --filter web run typecheck`
 
 ## Phase SOPR - Signals and Open Runtime Parity (Queued 2026-04-19)
-- [ ] `SOPR-01 docs(contract): lock consolidated source-of-truth and parity contract for signals/open flows after DAGG+SBSC`
+- [x] `SOPR-01 docs(contract): lock consolidated source-of-truth and parity contract for signals/open flows after DAGG+SBSC`
 - [ ] `SOPR-02 test(api-red): add regression for neutral/no-recent-signal condition-line fallback contamination`
 - [ ] `SOPR-03 fix(api-signal-context): harden symbol->strategy fallback and expose explicit source tags`
 - [ ] `SOPR-04 test(web-red): lock selected-bot signal cards against cross-bot strategy leakage`
@@ -2167,6 +2167,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 
 ### Progress Log (Phase SOPR - Signals and Open Runtime Parity)
 - 2026-04-19: Queued `SOPR` implementation wave from analyst report covering selected-bot signal context drift, dashboard-vs-preview parity divergence, runtime no-open diagnostics consistency, and manual-order lifecycle semantics; published executor-ready plan in `docs/planning/signals-open-runtime-parity-plan-2026-04-19.md` with strict dependency on `DAGG` then `SBSC`.
+- 2026-04-19: Closed `SOPR-01` by publishing one consolidated selected-bot signals/open-runtime source-of-truth contract in canonical docs (`open-decisions`, `web-dashboard-home`, `api-bots`, `api-orders`) with explicit precedence, parity, and diagnostics expectations.
 
 ## Phase MURC - Market Universe Symbol Contract Parity (Queued 2026-04-19)
 - [ ] `MURC-01 docs(contract): freeze canonical market-universe symbol composition contract`

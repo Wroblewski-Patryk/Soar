@@ -120,13 +120,19 @@ Last updated: 2026-04-19
   - focused validation remains green for touched modules before each commit.
   - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - execute `SOPR-01` from canonical `NOW` queue.
-  - continue `SOPR-A` (`SOPR-02`, `SOPR-03`) before web/parity tasks
+  - execute `SOPR-02` from canonical `NOW` queue.
+  - continue `SOPR-A` (`SOPR-03`) before web/parity tasks
     (`SOPR-04+`).
   - after `SOPR`, execute queued `MURC` wave for market-universe symbol
     contract parity across markets sync/runtime/backtests/orders/web preview.
 
 ## Recent Progress
+- 2026-04-19: closed `SOPR-01` by publishing consolidated selected-bot
+  signals/open-runtime parity contract across canonical docs
+  (`open-decisions`, `web-dashboard-home`, `api-bots`, `api-orders`), locking
+  `DAGG`+`SBSC` prerequisites, latest-signal-first strategy precedence with
+  explicit source-tag fallback semantics, no-open diagnostics visibility, and
+  manual-order semantic baseline before `SOPR-09`.
 - 2026-04-19: queued market-universe symbol-contract parity wave
   (`MURC-01..MURC-12`) from analyzer report and published executor-ready plan
   `docs/planning/market-universe-symbol-contract-parity-plan-2026-04-19.md`;

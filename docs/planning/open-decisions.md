@@ -821,6 +821,30 @@ This file tracks intentionally unresolved architecture choices so implementation
   - `docs/modules/api-bots.md`
   - `docs/modules/web-dashboard-home.md`
 
+## Signals + Open Runtime Parity Contract (`SOPR`)
+- Decision state: resolved on 2026-04-19.
+- Prerequisite baseline:
+  - `DAGG` remains canonical selected-bot aggregate runtime-table baseline.
+  - `SBSC` remains canonical sidebar market/strategy source-of-truth baseline.
+- Consolidated selected-bot parity decision:
+  - selected-bot signals context (`markets`, strategy condition lines, strategy label) must be selected-bot scoped only and must not leak cross-bot fallback context.
+  - for the same selected bot, `/dashboard` and `/dashboard/bots/:id/preview` must stay parity-aligned for `signals`, `positions`, and `history`.
+- Signal strategy-context precedence:
+  - latest signal strategy context is first source-of-truth when present (`runtime event` signal strategy),
+  - canonical configured strategy for selected bot/symbol is deterministic fallback only when latest-signal strategy is missing,
+  - fallback source must be explicitly tagged in read models consumed by operator surfaces.
+- Runtime no-open diagnostics contract:
+  - blocked/ignored no-open outcomes must remain explicit and operationally visible (no ambiguous silent no-op path).
+- Manual-order semantic baseline before SOPR decision gate closure:
+  - `POST /dashboard/orders/open` remains canonical manual order command path.
+  - it must not be implicitly treated as runtime-orchestrator-equivalent lifecycle authority until explicit decision closure (`SOPR-09`).
+  - operator-facing flows must preserve explicit semantics and diagnostics for this distinction.
+- Canonical references:
+  - `docs/planning/signals-open-runtime-parity-plan-2026-04-19.md`
+  - `docs/modules/web-dashboard-home.md`
+  - `docs/modules/api-bots.md`
+  - `docs/modules/api-orders.md`
+
 ## Dashboard Runtime Symbol Scope Strictness (Selected Bot)
 - Decision state: resolved on 2026-04-18.
 - Decision:

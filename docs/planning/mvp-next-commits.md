@@ -7,12 +7,11 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `SOPR-01 docs(contract): lock consolidated source-of-truth and parity contract for signals/open flows after DAGG+SBSC`
-## NEXT
 - [ ] `SOPR-02 test(api-red): add regression for neutral/no-recent-signal condition-line fallback contamination`
+## NEXT
 - [ ] `SOPR-03 fix(api-signal-context): harden symbol->strategy fallback and expose explicit source tags`
-## PIPELINE
 - [ ] `SOPR-04 test(web-red): lock selected-bot signal cards against cross-bot strategy leakage`
+## PIPELINE
 - [ ] `SOPR-05 test(parity-red): add selected-bot parity regression for /dashboard vs /dashboard/bots/:id/preview`
 - [ ] `SOPR-06 fix(web-parity): align dashboard-home signal/positions/history derivation to aggregate selected-bot contract`
 - [ ] `SOPR-07 test(api-runtime): lock no-open diagnostics visibility for blocked/ignored outcomes`
@@ -100,6 +99,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `SOPR-01 docs(contract): lock consolidated source-of-truth and parity contract for signals/open flows after DAGG+SBSC`
+  - 2026-04-19: Published consolidated selected-bot signals/open-runtime parity contract in canonical docs (`open-decisions`, `web-dashboard-home`, `api-bots`, `api-orders`) with explicit prerequisites (`DAGG`, `SBSC`), signal-context precedence, no-open diagnostics expectations, and manual-order semantic baseline before decision-gate closure.
 - [x] `MURC planning queued (market-universe symbol contract parity across API/web/runtime/backtests/orders)`
   - 2026-04-19: Added `docs/planning/market-universe-symbol-contract-parity-plan-2026-04-19.md` and queued `MURC-A..MURC-C` after `SOPR` to unify symbol composition contract (`final = unique(filter_result U whitelist) - blacklist`) across markets sync, bots runtime, backtests, manual-order context, and markets-form preview/validation.
 - [x] `SBSC-08 docs(closure): publish sidebar strategy contract closure and sync queue/context`
