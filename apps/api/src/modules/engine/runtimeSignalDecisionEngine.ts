@@ -2,29 +2,9 @@ import {
   evaluateStrategySignalAtIndex,
   parseStrategySignalRules,
 } from './strategySignalEvaluator';
-import {
-  computeAdxSeriesFromCandles,
-  computeAtrSeriesFromCandles,
-  computeBollingerSeriesFromCloses,
-  computeCciSeriesFromCandles,
-  computeDonchianSeriesFromCandles,
-  clampPeriod,
-  computeEmaSeriesFromCloses,
-  computeMacdSeriesFromCloses,
-  computeMomentumSeriesFromCloses,
-  computeRollingZScoreSeriesFromNullableValues,
-  computeRocSeriesFromCloses,
-  computeRsiSeriesFromCloses,
-  computeSmaSeriesFromNullableValues,
-  computeSmaSeriesFromCloses,
-  computeStochasticSeriesFromCandles,
-  computeStochRsiSeriesFromCloses,
-} from './sharedIndicatorSeries';
-import {
-  CandlePatternParams,
-  computeCandlePatternSeries,
-  resolveCandlePatternName,
-} from './sharedCandlePatternSeries';
+import { clampPeriod } from './sharedIndicatorSeries';
+import { resolveCandlePatternName } from './sharedCandlePatternSeries';
+import { resolveStrategyIndicatorSeries } from './strategyIndicatorKernel';
 import {
   RuntimeSignalConditionLine,
   StrategyEvaluation,
@@ -120,7 +100,10 @@ export class RuntimeSignalDecisionEngine {
 
       return latestIndex;
     })();
+    const opens = candles.map((candle) => candle.open);
     const closes = candles.map((candle) => candle.close);
+    const highs = candles.map((candle) => candle.high);
+    const lows = candles.map((candle) => candle.low);
     const fundingRateSeries = this.deps.resolveFundingRateSeriesForCandles(
       marketType,
       symbol,
@@ -136,316 +119,100 @@ export class RuntimeSignalDecisionEngine {
       symbol,
       candles,
     );
+    const derivatives =
+      fundingRateSeries || openInterestSeries || orderBookSeries
+        ? {
+            ...(fundingRateSeries ? { fundingRate: fundingRateSeries } : {}),
+            ...(openInterestSeries ? { openInterest: openInterestSeries } : {}),
+            ...(orderBookSeries
+              ? {
+                  orderBookImbalance: orderBookSeries.orderBookImbalance,
+                  orderBookSpreadBps: orderBookSeries.orderBookSpreadBps,
+                  orderBookDepthRatio: orderBookSeries.orderBookDepthRatio,
+                }
+              : {}),
+          }
+        : undefined;
     const indicatorCache = new Map<string, Array<number | null>>();
     const direction = evaluateStrategySignalAtIndex(
       signalRules,
       candles,
       decisionIndex,
       indicatorCache,
-      fundingRateSeries || openInterestSeries || orderBookSeries
-        ? {
-            derivatives: {
-              ...(fundingRateSeries ? { fundingRate: fundingRateSeries } : {}),
-              ...(openInterestSeries ? { openInterest: openInterestSeries } : {}),
-              ...(orderBookSeries
-                ? {
-                    orderBookImbalance: orderBookSeries.orderBookImbalance,
-                    orderBookSpreadBps: orderBookSeries.orderBookSpreadBps,
-                    orderBookDepthRatio: orderBookSeries.orderBookDepthRatio,
-                  }
-                : {}),
-            },
-          }
-        : undefined,
+      derivatives ? { derivatives } : undefined,
     );
+    const emptySeries = Array.from({ length: candles.length }, () => null);
+    const resolveIndicator = (indicatorName: string, indicatorParams: Record<string, unknown>) =>
+      resolveStrategyIndicatorSeries({
+        indicatorName,
+        indicatorParams,
+        opens,
+        closes,
+        highs,
+        lows,
+        cache: indicatorCache,
+        derivatives,
+      });
+    const withFallback = (series: Array<number | null> | null) => series ?? emptySeries;
 
-    const ensureEma = (period: number) => {
-      const key = `EMA_${period}`;
-      if (!indicatorCache.has(key)) {
-        indicatorCache.set(key, computeEmaSeriesFromCloses(closes, period));
-      }
-      return indicatorCache.get(key)!;
-    };
-    const ensureRsi = (period: number) => {
-      const key = `RSI_${period}`;
-      if (!indicatorCache.has(key)) {
-        indicatorCache.set(key, computeRsiSeriesFromCloses(closes, period));
-      }
-      return indicatorCache.get(key)!;
-    };
-    const ensureSma = (period: number) => {
-      const key = `SMA_${period}`;
-      if (!indicatorCache.has(key)) {
-        indicatorCache.set(key, computeSmaSeriesFromCloses(closes, period));
-      }
-      return indicatorCache.get(key)!;
-    };
-    const ensureMomentum = (period: number) => {
-      const key = `MOMENTUM_${period}`;
-      if (!indicatorCache.has(key)) {
-        indicatorCache.set(key, computeMomentumSeriesFromCloses(closes, period));
-      }
-      return indicatorCache.get(key)!;
-    };
-    const ensureFundingRate = () => {
-      const key = 'FUNDING_RATE_RAW';
-      if (!indicatorCache.has(key)) {
-        const normalized = candles.map((_, index) => {
-          const value = fundingRateSeries?.[index];
-          return typeof value === 'number' && Number.isFinite(value) ? value : null;
-        });
-        indicatorCache.set(key, normalized);
-      }
-      return indicatorCache.get(key)!;
-    };
-    const ensureFundingRateZScore = (period: number) => {
-      const key = `FUNDING_RATE_ZSCORE_${period}`;
-      if (!indicatorCache.has(key)) {
-        indicatorCache.set(
-          key,
-          computeRollingZScoreSeriesFromNullableValues(ensureFundingRate(), period),
-        );
-      }
-      return indicatorCache.get(key)!;
-    };
-    const ensureOpenInterest = () => {
-      const key = 'OPEN_INTEREST_RAW';
-      if (!indicatorCache.has(key)) {
-        const normalized = candles.map((_, index) => {
-          const value = openInterestSeries?.[index];
-          return typeof value === 'number' && Number.isFinite(value) ? value : null;
-        });
-        indicatorCache.set(key, normalized);
-      }
-      return indicatorCache.get(key)!;
-    };
-    const ensureOpenInterestDelta = () => {
-      const key = 'OPEN_INTEREST_DELTA';
-      if (!indicatorCache.has(key)) {
-        const delta = ensureOpenInterest().map((value, index, source) => {
-          if (index === 0 || typeof value !== 'number') return null;
-          const previous = source[index - 1];
-          if (typeof previous !== 'number') return null;
-          return value - previous;
-        });
-        indicatorCache.set(key, delta);
-      }
-      return indicatorCache.get(key)!;
-    };
-    const ensureOpenInterestMa = (period: number) => {
-      const key = `OPEN_INTEREST_MA_${period}`;
-      if (!indicatorCache.has(key)) {
-        indicatorCache.set(
-          key,
-          computeSmaSeriesFromNullableValues(ensureOpenInterest(), period),
-        );
-      }
-      return indicatorCache.get(key)!;
-    };
-    const ensureOpenInterestZScore = (period: number) => {
-      const key = `OPEN_INTEREST_ZSCORE_${period}`;
-      if (!indicatorCache.has(key)) {
-        indicatorCache.set(
-          key,
-          computeRollingZScoreSeriesFromNullableValues(ensureOpenInterest(), period),
-        );
-      }
-      return indicatorCache.get(key)!;
-    };
-    const ensureOrderBookImbalance = () => {
-      const key = 'ORDER_BOOK_IMBALANCE';
-      if (!indicatorCache.has(key)) {
-        const normalized = candles.map((_, index) => {
-          const value = orderBookSeries?.orderBookImbalance[index];
-          return typeof value === 'number' && Number.isFinite(value) ? value : null;
-        });
-        indicatorCache.set(key, normalized);
-      }
-      return indicatorCache.get(key)!;
-    };
-    const ensureOrderBookSpreadBps = () => {
-      const key = 'ORDER_BOOK_SPREAD_BPS';
-      if (!indicatorCache.has(key)) {
-        const normalized = candles.map((_, index) => {
-          const value = orderBookSeries?.orderBookSpreadBps[index];
-          return typeof value === 'number' && Number.isFinite(value) ? value : null;
-        });
-        indicatorCache.set(key, normalized);
-      }
-      return indicatorCache.get(key)!;
-    };
-    const ensureOrderBookDepthRatio = () => {
-      const key = 'ORDER_BOOK_DEPTH_RATIO';
-      if (!indicatorCache.has(key)) {
-        const normalized = candles.map((_, index) => {
-          const value = orderBookSeries?.orderBookDepthRatio[index];
-          return typeof value === 'number' && Number.isFinite(value) ? value : null;
-        });
-        indicatorCache.set(key, normalized);
-      }
-      return indicatorCache.get(key)!;
-    };
-    const ensureRoc = (period: number) => {
-      const key = `ROC_${period}`;
-      if (!indicatorCache.has(key)) {
-        indicatorCache.set(key, computeRocSeriesFromCloses(closes, period));
-      }
-      return indicatorCache.get(key)!;
-    };
-    const ensureAtr = (period: number) => {
-      const key = `ATR_${period}`;
-      if (!indicatorCache.has(key)) {
-        const highs = candles.map((candle) => candle.high);
-        const lows = candles.map((candle) => candle.low);
-        indicatorCache.set(key, computeAtrSeriesFromCandles(highs, lows, closes, period));
-      }
-      return indicatorCache.get(key)!;
-    };
-    const ensureCci = (period: number) => {
-      const key = `CCI_${period}`;
-      if (!indicatorCache.has(key)) {
-        const highs = candles.map((candle) => candle.high);
-        const lows = candles.map((candle) => candle.low);
-        indicatorCache.set(key, computeCciSeriesFromCandles(highs, lows, closes, period));
-      }
-      return indicatorCache.get(key)!;
-    };
-    const ensureAdx = (period: number) => {
-      const baseKey = `ADX_${period}`;
-      const adxKey = `${baseKey}_ADX`;
-      const plusKey = `${baseKey}_DI_PLUS`;
-      const minusKey = `${baseKey}_DI_MINUS`;
-      if (!indicatorCache.has(adxKey) || !indicatorCache.has(plusKey) || !indicatorCache.has(minusKey)) {
-        const highs = candles.map((candle) => candle.high);
-        const lows = candles.map((candle) => candle.low);
-        const adx = computeAdxSeriesFromCandles(highs, lows, closes, period);
-        indicatorCache.set(adxKey, adx.adx);
-        indicatorCache.set(plusKey, adx.plusDi);
-        indicatorCache.set(minusKey, adx.minusDi);
-      }
-      return {
-        adx: indicatorCache.get(adxKey)!,
-        plusDi: indicatorCache.get(plusKey)!,
-        minusDi: indicatorCache.get(minusKey)!,
-      };
-    };
-    const ensureStochastic = (period: number, smoothK: number, smoothD: number) => {
-      const baseKey = `STOCHASTIC_${period}_${smoothK}_${smoothD}`;
-      const kKey = `${baseKey}_K`;
-      const dKey = `${baseKey}_D`;
-      if (!indicatorCache.has(kKey) || !indicatorCache.has(dKey)) {
-        const highs = candles.map((candle) => candle.high);
-        const lows = candles.map((candle) => candle.low);
-        const stochastic = computeStochasticSeriesFromCandles(highs, lows, closes, period, smoothK, smoothD);
-        indicatorCache.set(kKey, stochastic.k);
-        indicatorCache.set(dKey, stochastic.d);
-      }
-      return {
-        k: indicatorCache.get(kKey)!,
-        d: indicatorCache.get(dKey)!,
-      };
-    };
-    const ensureMacd = (fast: number, slow: number, signal: number) => {
-      const baseKey = `MACD_${fast}_${slow}_${signal}`;
-      const lineKey = `${baseKey}_LINE`;
-      const signalKey = `${baseKey}_SIGNAL`;
-      const histogramKey = `${baseKey}_HISTOGRAM`;
-
-      if (!indicatorCache.has(lineKey) || !indicatorCache.has(signalKey) || !indicatorCache.has(histogramKey)) {
-        const macd = computeMacdSeriesFromCloses(closes, fast, slow, signal);
-        indicatorCache.set(lineKey, macd.line);
-        indicatorCache.set(signalKey, macd.signal);
-        indicatorCache.set(histogramKey, macd.histogram);
-      }
-
-      return {
-        line: indicatorCache.get(lineKey)!,
-        signal: indicatorCache.get(signalKey)!,
-        histogram: indicatorCache.get(histogramKey)!,
-      };
-    };
-    const ensureStochRsi = (period: number, stochPeriod: number, smoothK: number, smoothD: number) => {
-      const baseKey = `STOCHRSI_${period}_${stochPeriod}_${smoothK}_${smoothD}`;
-      const kKey = `${baseKey}_K`;
-      const dKey = `${baseKey}_D`;
-
-      if (!indicatorCache.has(kKey) || !indicatorCache.has(dKey)) {
-        const stochRsi = computeStochRsiSeriesFromCloses(closes, period, stochPeriod, smoothK, smoothD);
-        indicatorCache.set(kKey, stochRsi.k);
-        indicatorCache.set(dKey, stochRsi.d);
-      }
-
-      return {
-        k: indicatorCache.get(kKey)!,
-        d: indicatorCache.get(dKey)!,
-      };
-    };
-    const ensureBollinger = (period: number, stdDev: number) => {
-      const baseKey = `BOLLINGER_${period}_${stdDev}`;
-      const upperKey = `${baseKey}_UPPER`;
-      const middleKey = `${baseKey}_MIDDLE`;
-      const lowerKey = `${baseKey}_LOWER`;
-      const bandwidthKey = `${baseKey}_BANDWIDTH`;
-      const percentBKey = `${baseKey}_PERCENT_B`;
-
-      if (
-        !indicatorCache.has(upperKey) ||
-        !indicatorCache.has(middleKey) ||
-        !indicatorCache.has(lowerKey) ||
-        !indicatorCache.has(bandwidthKey) ||
-        !indicatorCache.has(percentBKey)
-      ) {
-        const bollinger = computeBollingerSeriesFromCloses(closes, period, stdDev);
-        indicatorCache.set(upperKey, bollinger.upper);
-        indicatorCache.set(middleKey, bollinger.middle);
-        indicatorCache.set(lowerKey, bollinger.lower);
-        indicatorCache.set(bandwidthKey, bollinger.bandwidth);
-        indicatorCache.set(percentBKey, bollinger.percentB);
-      }
-
-      return {
-        upper: indicatorCache.get(upperKey)!,
-        middle: indicatorCache.get(middleKey)!,
-        lower: indicatorCache.get(lowerKey)!,
-        bandwidth: indicatorCache.get(bandwidthKey)!,
-        percentB: indicatorCache.get(percentBKey)!,
-      };
-    };
-    const ensureDonchian = (period: number) => {
-      const baseKey = `DONCHIAN_${period}`;
-      const upperKey = `${baseKey}_UPPER`;
-      const middleKey = `${baseKey}_MIDDLE`;
-      const lowerKey = `${baseKey}_LOWER`;
-      if (!indicatorCache.has(upperKey) || !indicatorCache.has(middleKey) || !indicatorCache.has(lowerKey)) {
-        const highs = candles.map((candle) => candle.high);
-        const lows = candles.map((candle) => candle.low);
-        const donchian = computeDonchianSeriesFromCandles(highs, lows, period);
-        indicatorCache.set(upperKey, donchian.upper);
-        indicatorCache.set(middleKey, donchian.middle);
-        indicatorCache.set(lowerKey, donchian.lower);
-      }
-      return {
-        upper: indicatorCache.get(upperKey)!,
-        middle: indicatorCache.get(middleKey)!,
-        lower: indicatorCache.get(lowerKey)!,
-      };
-    };
+    const ensureEma = (period: number) => withFallback(resolveIndicator('EMA', { period }));
+    const ensureRsi = (period: number) => withFallback(resolveIndicator('RSI', { period }));
+    const ensureSma = (period: number) => withFallback(resolveIndicator('SMA', { period }));
+    const ensureMomentum = (period: number) => withFallback(resolveIndicator('MOMENTUM', { period }));
+    const ensureFundingRate = () => withFallback(resolveIndicator('FUNDING_RATE', {}));
+    const ensureFundingRateZScore = (period: number) =>
+      withFallback(resolveIndicator('FUNDING_RATE_ZSCORE', { zScorePeriod: period }));
+    const ensureOpenInterest = () => withFallback(resolveIndicator('OPEN_INTEREST', {}));
+    const ensureOpenInterestDelta = () => withFallback(resolveIndicator('OPEN_INTEREST_DELTA', {}));
+    const ensureOpenInterestMa = (period: number) =>
+      withFallback(resolveIndicator('OPEN_INTEREST_MA', { period }));
+    const ensureOpenInterestZScore = (period: number) =>
+      withFallback(resolveIndicator('OPEN_INTEREST_ZSCORE', { zScorePeriod: period }));
+    const ensureOrderBookImbalance = () => withFallback(resolveIndicator('ORDER_BOOK_IMBALANCE', {}));
+    const ensureOrderBookSpreadBps = () => withFallback(resolveIndicator('ORDER_BOOK_SPREAD_BPS', {}));
+    const ensureOrderBookDepthRatio = () => withFallback(resolveIndicator('ORDER_BOOK_DEPTH_RATIO', {}));
+    const ensureRoc = (period: number) => withFallback(resolveIndicator('ROC', { period }));
+    const ensureAtr = (period: number) => withFallback(resolveIndicator('ATR', { period }));
+    const ensureCci = (period: number) => withFallback(resolveIndicator('CCI', { period }));
+    const ensureAdx = (period: number) => ({
+      adx: withFallback(resolveIndicator('ADX', { period })),
+      plusDi: withFallback(resolveIndicator('DI_PLUS', { period })),
+      minusDi: withFallback(resolveIndicator('DI_MINUS', { period })),
+    });
+    const ensureStochastic = (period: number, smoothK: number, smoothD: number) => ({
+      k: withFallback(resolveIndicator('STOCHASTIC', { period, smoothK, smoothD })),
+      d: withFallback(resolveIndicator('STOCHASTIC_D', { period, smoothK, smoothD })),
+    });
+    const ensureMacd = (fast: number, slow: number, signal: number) => ({
+      line: withFallback(resolveIndicator('MACD', { fast, slow, signal })),
+      signal: withFallback(resolveIndicator('MACD_SIGNAL', { fast, slow, signal })),
+      histogram: withFallback(resolveIndicator('MACD_HIST', { fast, slow, signal })),
+    });
+    const ensureStochRsi = (
+      period: number,
+      stochPeriod: number,
+      smoothK: number,
+      smoothD: number,
+    ) => ({
+      k: withFallback(resolveIndicator('STOCHRSI', { period, stochPeriod, smoothK, smoothD })),
+      d: withFallback(resolveIndicator('STOCHRSI_D', { period, stochPeriod, smoothK, smoothD })),
+    });
+    const ensureBollinger = (period: number, stdDev: number) => ({
+      upper: withFallback(resolveIndicator('BOLLINGER_UPPER', { period, stdDev })),
+      middle: withFallback(resolveIndicator('BOLLINGER_MIDDLE', { period, stdDev })),
+      lower: withFallback(resolveIndicator('BOLLINGER_LOWER', { period, stdDev })),
+      bandwidth: withFallback(resolveIndicator('BOLLINGER_BANDWIDTH', { period, stdDev })),
+      percentB: withFallback(resolveIndicator('BOLLINGER_PERCENT_B', { period, stdDev })),
+    });
+    const ensureDonchian = (period: number) => ({
+      upper: withFallback(resolveIndicator('DONCHIAN_UPPER', { period })),
+      middle: withFallback(resolveIndicator('DONCHIAN_MIDDLE', { period })),
+      lower: withFallback(resolveIndicator('DONCHIAN_LOWER', { period })),
+    });
     const ensurePattern = (patternName: string, rawParams: Record<string, unknown>) => {
       const pattern = resolveCandlePatternName(patternName);
       if (!pattern) return null;
-      const patternParams = resolvePatternParams(rawParams);
-      const key = `PATTERN_${pattern}_${JSON.stringify(patternParams)}`;
-      if (!indicatorCache.has(key)) {
-        const patternCandles = candles.map((candle) => ({
-          open: candle.open,
-          high: candle.high,
-          low: candle.low,
-          close: candle.close,
-        }));
-        const values = computeCandlePatternSeries(patternCandles, pattern, patternParams).map((value) => (value ? 1 : 0));
-        indicatorCache.set(key, values);
-      }
-      return indicatorCache.get(key) ?? null;
+      return withFallback(resolveIndicator(pattern, rawParams));
     };
 
     const conditionLines: RuntimeSignalConditionLine[] = [];
