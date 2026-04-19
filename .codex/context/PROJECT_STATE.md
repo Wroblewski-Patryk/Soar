@@ -107,26 +107,39 @@ Last updated: 2026-04-19
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: execute `SOPR-A` for selected-bot signal/open runtime
-  parity closure after `SBSC` completion.
+- Main active objective: execute `MURC-A` for canonical market-universe symbol
+  contract closure after full `SOPR` completion.
 - Top blockers:
   - none in OPV scope; final RC external-gates snapshot is closed
     (`G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`) from run
     `2026-04-19T15:13:58.943Z`.
 - Success criteria for this phase:
-  - selected-bot signal/condition context is deterministic and parity-locked
-    between home and preview/runtime surfaces.
-  - no fallback contamination between bots in signal/open runtime cards.
+  - one canonical symbol-composition formula is enforced across markets sync,
+    runtime, backtests, and manual-order context.
+  - resolver behavior for filter/whitelist/blacklist combinations is
+    deterministic and parity-locked across API/web consumers.
   - focused validation remains green for touched modules before each commit.
-  - execution slices remain scope-locked and documentation-synchronized.
+- execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - execute `SOPR-02` from canonical `NOW` queue.
-  - continue `SOPR-A` (`SOPR-03`) before web/parity tasks
-    (`SOPR-04+`).
-  - after `SOPR`, execute queued `MURC` wave for market-universe symbol
-    contract parity across markets sync/runtime/backtests/orders/web preview.
+  - execute `MURC-01` from canonical `NOW` queue.
+  - continue `MURC-02..MURC-03` as `NEXT` before integration/web closure
+    tasks (`MURC-04+`).
+  - keep `SOPR` closure artifacts as baseline reference for selected-bot
+    signal/open parity contracts.
 
 ## Recent Progress
+- 2026-04-19: closed full `SOPR` wave (`SOPR-01..SOPR-12`) end-to-end by
+  hardening selected-bot signal context source tags, locking
+  `/dashboard` vs `/dashboard/bots/:id/preview` parity regressions for
+  signals/positions/history, publishing SOPR parity evidence matrix, closing
+  manual-order semantics as explicit `order-only` contract with audit-safe
+  metadata, and completing closure validation pack (`api/web full tests`,
+  `typecheck`, `lint`, `build`, `guardrails`, `route-reachable i18n audit`).
+- 2026-04-19: hardened API e2e teardown stability for full-suite execution by
+  adding deterministic cleanup order for `runtimeExecutionDedupe` and
+  `botRuntime*` tables in affected suites (`auth`, `profile/basic`,
+  `preTrade`, `market-stream`, `positions-live-status`) after recurring FK
+  teardown collisions.
 - 2026-04-19: closed `SOPR-01` by publishing consolidated selected-bot
   signals/open-runtime parity contract across canonical docs
   (`open-decisions`, `web-dashboard-home`, `api-bots`, `api-orders`), locking

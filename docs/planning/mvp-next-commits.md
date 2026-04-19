@@ -7,22 +7,11 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `SOPR-02 test(api-red): add regression for neutral/no-recent-signal condition-line fallback contamination`
-## NEXT
-- [ ] `SOPR-03 fix(api-signal-context): harden symbol->strategy fallback and expose explicit source tags`
-- [ ] `SOPR-04 test(web-red): lock selected-bot signal cards against cross-bot strategy leakage`
-## PIPELINE
-- [ ] `SOPR-05 test(parity-red): add selected-bot parity regression for /dashboard vs /dashboard/bots/:id/preview`
-- [ ] `SOPR-06 fix(web-parity): align dashboard-home signal/positions/history derivation to aggregate selected-bot contract`
-- [ ] `SOPR-07 test(api-runtime): lock no-open diagnostics visibility for blocked/ignored outcomes`
-- [ ] `SOPR-08 docs(parity-evidence): publish parity matrix evidence for signals/positions/history between home and preview`
-- [ ] `SOPR-09 docs(decision-gate): close manual-order semantics decision (order-only vs orchestrator lifecycle)`
-- [ ] `SOPR-10 test(red-manual-order): add contract tests for chosen manual-order semantic path`
-- [ ] `SOPR-11 feat/fix(manual-order-path): implement selected manual-order semantic path with audit-safe diagnostics`
-- [ ] `SOPR-12 qa(closure): run full focused validation pack and sync canonical queue/context`
 - [ ] `MURC-01 docs(contract): freeze canonical market-universe symbol composition contract`
+## NEXT
 - [ ] `MURC-02 test(api-red): add shared resolver matrix for filter/whitelist/blacklist combinations`
 - [ ] `MURC-03 feat(api-shared-resolver): implement single-source symbol resolver for market-universe contract`
+## PIPELINE
 - [ ] `MURC-04 refactor(api-markets): wire market sync and bot auto-symbol-group creation to shared resolver`
 - [ ] `MURC-05 test(api-red): add backtest/runtime/manual-order regressions for symbol-set parity`
 - [ ] `MURC-06 refactor(api-consumers): adopt shared resolver in backtests runtime and manual-order context flows`
@@ -39,9 +28,9 @@ Operational queue for one-task execution runs.
 - [x] `SBSC-A (commits SBSC-01..SBSC-03): decision freeze + API projection mismatch regression + canonical-first mapper fix`
 - [x] `SBSC-B (commits SBSC-04..SBSC-06): drift detection/repair path + sidebar switch regression locks`
 - [x] `SBSC-C (commits SBSC-07..SBSC-08): closure validation + canonical sync`
-- [ ] `SOPR-A (commits SOPR-01..SOPR-04): source-of-truth closure + signal-context hardening`
-- [ ] `SOPR-B (commits SOPR-05..SOPR-08): dashboard/preview parity closure for signals/positions/history`
-- [ ] `SOPR-C (commits SOPR-09..SOPR-12): manual-order lifecycle decision + implementation + closure`
+- [x] `SOPR-A (commits SOPR-01..SOPR-04): source-of-truth closure + signal-context hardening`
+- [x] `SOPR-B (commits SOPR-05..SOPR-08): dashboard/preview parity closure for signals/positions/history`
+- [x] `SOPR-C (commits SOPR-09..SOPR-12): manual-order lifecycle decision + implementation + closure`
 - [ ] `MURC-A (commits MURC-01..MURC-04): contract freeze + shared resolver + market sync/auto-group adoption`
 - [ ] `MURC-B (commits MURC-05..MURC-07): backtest/runtime/manual-order adoption + integration parity`
 - [ ] `MURC-C (commits MURC-08..MURC-12): web alignment + e2e smoke + docs sync + closure`
@@ -99,6 +88,23 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `SOPR-12 qa(closure): run full focused validation pack and sync canonical queue/context`
+  - 2026-04-19: Closure pack PASS:
+    - `pnpm --filter api run test -- --run`
+    - `pnpm --filter web run test -- --run`
+    - `pnpm --filter api run typecheck`
+    - `pnpm --filter web run typecheck`
+    - `pnpm run build`
+    - `pnpm run lint`
+    - `pnpm run quality:guardrails`
+    - `pnpm i18n:audit:route-reachable:web`
+  - 2026-04-19: Added FK-safe cleanup guardrails in API e2e suites (`auth`, `profile/basic`, `preTrade`, `market-stream`, `positions-live-status`) to keep full-suite teardown deterministic after `runtimeExecutionDedupe` and `botRuntime*` expansions.
+- [x] `SOPR-C (commits SOPR-09..SOPR-12): manual-order decision/contract/implementation closure`
+  - 2026-04-19: Closed manual-order semantic decision as explicit `order-only` path with audit metadata (`semanticPath`, `positionLifecycleAuthority`, `opensPositionDirectly=false`) and API contract regressions (`orders.service.test.ts`, `orders-positions.e2e.test.ts`).
+- [x] `SOPR-B (commits SOPR-05..SOPR-08): selected-bot home/preview parity closure`
+  - 2026-04-19: Closed selected-bot parity path with cross-route web regression (`HomeLiveWidgets.preview-parity.test.tsx`), runtime blocked-diagnostics visibility lock (`bots.runtime-history-parity.e2e.test.ts`), and published evidence pack (`docs/operations/sopr-parity-matrix-2026-04-19.md` + artifact JSON).
+- [x] `SOPR-A (commits SOPR-01..SOPR-04): signal-context source-of-truth hardening`
+  - 2026-04-19: Closed fallback contamination hardening by removing global strategy fallback, exposing deterministic source tags (`latest_signal | configured_fallback | unresolved`), and locking selected-bot signal-card scope regressions in API+web suites.
 - [x] `SOPR-01 docs(contract): lock consolidated source-of-truth and parity contract for signals/open flows after DAGG+SBSC`
   - 2026-04-19: Published consolidated selected-bot signals/open-runtime parity contract in canonical docs (`open-decisions`, `web-dashboard-home`, `api-bots`, `api-orders`) with explicit prerequisites (`DAGG`, `SBSC`), signal-context precedence, no-open diagnostics expectations, and manual-order semantic baseline before decision-gate closure.
 - [x] `MURC planning queued (market-universe symbol contract parity across API/web/runtime/backtests/orders)`

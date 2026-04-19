@@ -17,22 +17,11 @@ Last updated: 2026-04-19
 
 ## READY
 
-- [ ] SOPR-02 Add API regression for neutral/no-recent-signal condition-line fallback contamination
-- [ ] SOPR-03 Harden symbol->strategy fallback and expose explicit source tags in symbol stats read model
+- [ ] MURC-01 Freeze canonical market-universe symbol composition contract
+- [ ] MURC-02 Add API resolver matrix regressions for filter/whitelist/blacklist combinations
 
 ## BACKLOG
 
-- [ ] SOPR-04 Lock web regression for selected-bot signal cards against cross-bot strategy leakage
-- [ ] SOPR-05 Add selected-bot parity regression for /dashboard vs /dashboard/bots/:id/preview (signals/positions/history)
-- [ ] SOPR-06 Align dashboard-home signal/positions/history derivation to aggregate selected-bot contract
-- [ ] SOPR-07 Lock runtime no-open diagnostics visibility for blocked/ignored outcomes
-- [ ] SOPR-08 Publish parity matrix evidence for selected-bot home vs preview signals/positions/history
-- [ ] SOPR-09 Close manual-order semantics decision gate (order-only vs orchestrator lifecycle)
-- [ ] SOPR-10 Add contract regressions for chosen manual-order semantic path
-- [ ] SOPR-11 Implement manual-order semantic path with audit-safe diagnostics and fail-closed guardrails
-- [ ] SOPR-12 Run focused closure validation pack and sync canonical queue/context
-- [ ] MURC-01 Freeze canonical market-universe symbol composition contract
-- [ ] MURC-02 Add API resolver matrix regressions for filter/whitelist/blacklist combinations
 - [ ] MURC-03 Implement single-source market-universe symbol resolver
 - [ ] MURC-04 Wire markets sync and bot auto-symbol-group creation to shared resolver
 - [ ] MURC-05 Add backtest/runtime/manual-order regressions for symbol-set parity
@@ -58,6 +47,12 @@ Last updated: 2026-04-19
 
 ## DONE
 
+- [x] SOPR-C group closure (`SOPR-09..SOPR-12`)
+  - 2026-04-19: Closed manual-order semantics as explicit `order-only` contract with audit-safe metadata, shipped contract regressions (`orders.service.test.ts`, `orders-positions.e2e.test.ts`), completed closure validation pack (`api/web full tests`, `typecheck`, `lint`, `build`, `guardrails`, `route-reachable i18n audit`), and synchronized canonical queue/context to move focus to `MURC`.
+- [x] SOPR-B group closure (`SOPR-05..SOPR-08`)
+  - 2026-04-19: Locked selected-bot `/dashboard` vs `/dashboard/bots/:id/preview` parity via dedicated web regression, ensured runtime blocked-diagnostics visibility in API parity tests, and published parity evidence matrix artifacts under `docs/operations/`.
+- [x] SOPR-A group closure (`SOPR-01..SOPR-04`)
+  - 2026-04-19: Hardened signal-context source-of-truth by removing cross-bot global fallback, exposing explicit source tags (`latest_signal`, `configured_fallback`, `unresolved`), and locking selected-bot signal-card scope regressions in API+web suites.
 - [x] SOPR-01 Lock consolidated source-of-truth and parity contract for signals/open flows after DAGG+SBSC
   - 2026-04-19: Published consolidated selected-bot signals/open-runtime parity contract in canonical docs (`open-decisions`, `web-dashboard-home`, `api-bots`, `api-orders`) with explicit prerequisite baseline (`DAGG`, `SBSC`), signal-context precedence, runtime no-open diagnostics visibility, and manual-order semantic baseline before `SOPR-09`.
 - [x] MURC planning queued (`MURC-01..MURC-12`)

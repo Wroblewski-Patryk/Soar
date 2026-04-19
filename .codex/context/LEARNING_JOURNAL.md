@@ -325,3 +325,22 @@ lockfile=true
 - Avoid: leaving known stale gate state (`G2/G4 OPEN`) in canonical docs after receiving final PASS evidence.
 - Evidence:
   - 2026-04-19 handoff where final RC snapshot was `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS` but local canonical docs still reflected an earlier `OPEN/BLOCKED` snapshot until synced.
+
+### 2026-04-19 - API e2e cleanup order must include runtime dedupe/session tables
+- Context: running full `pnpm --filter api run test -- --run` after SOPR closure.
+- Symptom: suites passing in isolation failed in full run with FK teardown errors (`RuntimeExecutionDedupe_userId_fkey`, `BotRuntimeSession_botId_fkey`).
+- Root cause: several e2e `beforeEach` cleanups deleted `user`/`bot` rows before cleaning `runtimeExecutionDedupe` and `botRuntime*` tables.
+- Guardrail: in API e2e teardown, always delete `runtimeExecutionDedupe`, `botRuntimeEvent`, `botRuntimeSymbolStat`, and `botRuntimeSession` before `bot.deleteMany()`/`user.deleteMany()`.
+- Preferred pattern:
+```powershell
+await prisma.runtimeExecutionDedupe.deleteMany();
+await prisma.botRuntimeEvent.deleteMany();
+await prisma.botRuntimeSymbolStat.deleteMany();
+await prisma.botRuntimeSession.deleteMany();
+await prisma.bot.deleteMany();
+await prisma.user.deleteMany();
+```
+- Avoid: deleting `bot` or `user` first in suites that can inherit runtime artifacts from other files.
+- Evidence:
+  - 2026-04-19 full API suite failures in `auth.e2e.test.ts` and `profile/basic.e2e.test.ts` before cleanup-order fix.
+  - Full rerun PASS after applying the same cleanup guardrail to `auth`, `profile/basic`, `preTrade`, `marketStream.routes`, and `positions-live-status` suites.
