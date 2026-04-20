@@ -114,21 +114,29 @@ Last updated: 2026-04-20
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: execute `OOSC` wave with strict scope lock
-  (Open Orders `Source` column + origin plumbing + active-only contract).
+- Main active objective: post-`OOSC` queue idle state (all `OOSC-01..OOSC-08`
+  closed); waiting for next canonical `NOW` task.
 - Top blockers:
   - none in OPV scope; final RC external-gates snapshot is closed
     (`G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`) from run
     `2026-04-19T15:13:58.943Z`.
 - Success criteria for this phase:
-  - `OOSC-01..OOSC-03` are closed with canonical contract + API origin parity.
-  - Open Orders active-only status contract remains unchanged.
+  - `OOSC-01..OOSC-08` are closed with contract/API/web/i18n/docs parity.
+  - Open Orders active-only status contract remains unchanged
+    (`PENDING`, `OPEN`, `PARTIALLY_FILLED`).
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - execute `OOSC-02..OOSC-08` from
-    `docs/planning/dashboard-open-orders-source-column-plan-2026-04-20.md`.
+  - await next queued `NOW` item in `docs/planning/mvp-next-commits.md`
+    (currently `none`).
 
 ## Recent Progress
+- 2026-04-20: closed full `OOSC` wave (`OOSC-01..OOSC-08`) by shipping API
+  origin plumbing (`origin=USER` write path + runtime open-order origin
+  projection), dashboard Open Orders `Source` column with `Manual/Bot/Imported`
+  mapping + `en/pl/pt` i18n coverage, and closure validation
+  (`orders-positions.e2e`, `bots.monitoring-aggregate.e2e`,
+  `HomeLiveWidgets.test`, `HomeLiveWidgets.open-orders-source.test`,
+  `api/web typecheck`, `quality:guardrails`).
 - 2026-04-20: closed `OOSC-01` by freezing canonical Open Orders `Source`
   mapping (`USER/BOT/EXCHANGE_SYNC/BACKTEST` -> `Manual/Bot/Imported`),
   explicit manual-order write-origin requirement (`origin=USER`), and unchanged

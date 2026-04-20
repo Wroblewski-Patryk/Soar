@@ -265,6 +265,12 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
   - `BACKTEST -> Imported` (defensive fallback).
 - Data dependency:
   - dashboard Open Orders rows require API `origin` field in runtime open-orders payload.
+- UI implementation note (2026-04-20):
+  - Open Orders table renders localized `Source` column labels from dashboard namespace keys:
+    - `source`,
+    - `sourceManual`,
+    - `sourceBot`,
+    - `sourceImported`.
 - Active-only visibility remains unchanged:
   - `PENDING`,
   - `OPEN`,

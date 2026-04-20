@@ -1,6 +1,6 @@
 # Dashboard Open Orders Source Column Plan (2026-04-20)
 
-Status: in progress (`OOSC-01` closed; executor-ready for `OOSC-02`)  
+Status: closed (all `OOSC-01..OOSC-08` completed on 2026-04-20)  
 Execution mode: tiny-commit only (exactly one task per commit)  
 Primary audience: execution agent
 
@@ -49,6 +49,16 @@ Primary audience: execution agent
   - `docs/planning/open-decisions.md`
   - `docs/modules/api-orders.md`
   - `docs/modules/web-dashboard-home.md`
+- 2026-04-20: Closed `OOSC-02` + `OOSC-03` by adding API regressions and shipping API fix:
+  - manual dashboard open-order persists explicit `origin=USER`,
+  - runtime open-orders projection includes per-row `origin` for both runtime positions and aggregate paths.
+- 2026-04-20: Closed `OOSC-04` + `OOSC-05` + `OOSC-06` by adding Open Orders `Source` column in dashboard UI, mapping labels (`Manual/Bot/Imported`), and localizing source keys in `en/pl/pt`.
+- 2026-04-20: Closed `OOSC-07` + `OOSC-08` with docs/context synchronization and focused closure pack:
+  - `pnpm --filter api run test -- --run src/modules/orders/orders-positions.e2e.test.ts src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`
+  - `pnpm --filter web run test -- --run src/features/dashboard-home/components/HomeLiveWidgets.test.tsx`
+  - `pnpm --filter api run typecheck`
+  - `pnpm --filter web run typecheck`
+  - `pnpm run quality:guardrails`
 
 ---
 
@@ -97,7 +107,7 @@ Primary audience: execution agent
   - Add failing web regression for new `Source` column in Open Orders table.
   - Assert mapping `USER/BOT/EXCHANGE_SYNC -> Manual/Bot/Imported`.
 - Likely files:
-  - `apps/web/src/features/dashboard-home/components/HomeLiveWidgets.test.tsx`
+  - `apps/web/src/features/dashboard-home/components/HomeLiveWidgets.open-orders-source.test.tsx`
 - Done when:
   - Test fails until source column + mapping exists.
 
@@ -141,7 +151,7 @@ Primary audience: execution agent
 `qa(closure): run focused open-orders source-column pack and finalize queue/context`
 - Required commands:
   - `pnpm --filter api run test -- --run src/modules/orders/orders-positions.e2e.test.ts src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`
-  - `pnpm --filter web run test -- --run src/features/dashboard-home/components/HomeLiveWidgets.test.tsx`
+  - `pnpm --filter web run test -- --run src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.open-orders-source.test.tsx`
   - `pnpm --filter api run typecheck`
   - `pnpm --filter web run typecheck`
   - `pnpm run quality:guardrails`

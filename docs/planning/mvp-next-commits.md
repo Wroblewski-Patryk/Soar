@@ -7,15 +7,15 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `OOSC-02 test(api-red): add regressions for manual-order origin=USER and runtime open-orders origin projection`
+- [ ] `none`
 ## NEXT
-- [ ] `OOSC-03 fix(api): persist manual-order origin as USER and expose origin in open-orders runtime payload`
+- [ ] `none`
 ## PIPELINE
-- [ ] `OOSC-04 test(web-red): add dashboard open-orders source-column regression with label mapping`
+- [ ] `none`
 ## GROUP QUEUE
-- [ ] `OOSC-A (commits OOSC-01..OOSC-03): contract freeze + API origin/source plumbing`
-- [ ] `OOSC-B (commits OOSC-04..OOSC-06): web source column + mapping + regressions`
-- [ ] `OOSC-C (commits OOSC-07..OOSC-08): docs sync + closure validation`
+- [x] `OOSC-A (commits OOSC-01..OOSC-03): contract freeze + API origin/source plumbing`
+- [x] `OOSC-B (commits OOSC-04..OOSC-06): web source column + mapping + regressions`
+- [x] `OOSC-C (commits OOSC-07..OOSC-08): docs sync + closure validation`
 - [x] `DAWR-A (commits DAWR-01..DAWR-03): contract freeze + aggregate API regression/fix`
 - [x] `DAWR-B (commits DAWR-04..DAWR-07): web wallet + strategy edge-case regressions/fixes`
 - [x] `DAWR-C (commits DAWR-08..DAWR-10): ops docs + planning sync + closure`
@@ -85,6 +85,12 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `OOSC-C (commits OOSC-07..OOSC-08): docs sync + closure validation`
+  - 2026-04-20: Synchronized OOSC rollout state in planning/context docs and completed focused closure validation pack (`api e2e pair`, `web HomeLiveWidgets + HomeLiveWidgets.open-orders-source tests`, `api/web typecheck`, `quality:guardrails`).
+- [x] `OOSC-B (commits OOSC-04..OOSC-06): web source column + mapping + regressions`
+  - 2026-04-20: Added Open Orders `Source` column in dashboard table, mapped source labels (`USER/BOT/EXCHANGE_SYNC|BACKTEST -> Manual/Bot/Imported`), localized i18n keys (`en/pl/pt`), and locked UI behavior in `HomeLiveWidgets` regression suite.
+- [x] `OOSC-A (commits OOSC-01..OOSC-03): contract freeze + API origin/source plumbing`
+  - 2026-04-20: Added API regressions and implementation for explicit manual-order persistence (`origin=USER`) and runtime open-orders origin projection in positions/aggregate payloads while preserving active-only status scope.
 - [x] `OOSC-01 docs(contract): freeze dashboard open-orders source-column and active-only status contract`
   - 2026-04-20: Frozen canonical `Source` mapping (`USER/BOT/EXCHANGE_SYNC/BACKTEST` -> `Manual/Bot/Imported`), explicit manual-order write-origin requirement (`origin=USER`), and unchanged active-only Open Orders statuses (`PENDING`, `OPEN`, `PARTIALLY_FILLED`) in `open-decisions`, `api-orders`, and `web-dashboard-home` docs.
 - [x] `OOSC planning queued (open-orders source column + active-only contract lock)`

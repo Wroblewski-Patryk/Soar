@@ -2232,14 +2232,17 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 
 ## Phase OOSC - Dashboard Open Orders Source Column (Queued 2026-04-20)
 - [x] `OOSC-01 docs(contract): freeze dashboard open-orders source-column and active-only status contract`
-- [ ] `OOSC-02 test(api-red): add regressions for manual-order origin=USER and runtime open-orders origin projection`
-- [ ] `OOSC-03 fix(api): persist manual-order origin as USER and expose origin in open-orders runtime payload`
-- [ ] `OOSC-04 test(web-red): add dashboard open-orders source-column regression with label mapping`
-- [ ] `OOSC-05 fix(web-dashboard): add open-orders source column and render mapped labels`
-- [ ] `OOSC-06 feat(i18n): add open-orders source-column labels in dashboard namespaces (en/pl/pt)`
-- [ ] `OOSC-07 docs(sync): update module docs and planner artifacts after source-column rollout`
-- [ ] `OOSC-08 qa(closure): run focused open-orders source-column pack and finalize queue/context`
+- [x] `OOSC-02 test(api-red): add regressions for manual-order origin=USER and runtime open-orders origin projection`
+- [x] `OOSC-03 fix(api): persist manual-order origin as USER and expose origin in open-orders runtime payload`
+- [x] `OOSC-04 test(web-red): add dashboard open-orders source-column regression with label mapping`
+- [x] `OOSC-05 fix(web-dashboard): add open-orders source column and render mapped labels`
+- [x] `OOSC-06 feat(i18n): add open-orders source-column labels in dashboard namespaces (en/pl/pt)`
+- [x] `OOSC-07 docs(sync): update module docs and planner artifacts after source-column rollout`
+- [x] `OOSC-08 qa(closure): run focused open-orders source-column pack and finalize queue/context`
 
 ### Progress Log (Phase OOSC - Dashboard Open Orders Source Column)
 - 2026-04-20: Queued `OOSC` wave and published executor-ready plan `docs/planning/dashboard-open-orders-source-column-plan-2026-04-20.md` with strict scope lock: Open Orders `Source` column mapping, explicit manual-order `origin=USER`, and unchanged active-only statuses (`PENDING`, `OPEN`, `PARTIALLY_FILLED`).
 - 2026-04-20: Closed `OOSC-01` by freezing canonical contract in `open-decisions`, `api-orders`, and `web-dashboard-home`.
+- 2026-04-20: Closed `OOSC-A` (`OOSC-01..OOSC-03`) by adding API regressions and implementation for explicit manual-order write origin (`origin=USER`) plus runtime open-orders origin projection.
+- 2026-04-20: Closed `OOSC-B` (`OOSC-04..OOSC-06`) by shipping dashboard Open Orders `Source` column mapping (`Manual/Bot/Imported`) and `en/pl/pt` localization coverage with web regression lock.
+- 2026-04-20: Closed `OOSC-C` (`OOSC-07..OOSC-08`) with docs/context synchronization and focused closure pack PASS (`orders-positions.e2e`, `bots.monitoring-aggregate.e2e`, `HomeLiveWidgets.test`, `HomeLiveWidgets.open-orders-source.test`, `api/web typecheck`, `quality:guardrails`).

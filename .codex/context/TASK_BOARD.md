@@ -17,16 +17,11 @@ Last updated: 2026-04-20
 
 ## READY
 
-- [ ] OOSC-02 test(api-red): add regressions for manual-order origin=USER and runtime open-orders origin projection
+- [ ] (none)
 
 ## BACKLOG
 
-- [ ] OOSC-03 fix(api): persist manual-order origin as USER and expose origin in open-orders runtime payload
-- [ ] OOSC-04 test(web-red): add dashboard open-orders source-column regression with label mapping
-- [ ] OOSC-05 fix(web-dashboard): add open-orders source column and render mapped labels
-- [ ] OOSC-06 feat(i18n): add open-orders source-column labels in dashboard namespaces (en/pl/pt)
-- [ ] OOSC-07 docs(sync): update module docs and planner artifacts after source-column rollout
-- [ ] OOSC-08 qa(closure): run focused open-orders source-column pack and finalize queue/context
+- [ ] (none)
 
 ## IN_PROGRESS
 
@@ -42,6 +37,12 @@ Last updated: 2026-04-20
 
 ## DONE
 
+- [x] OOSC-C group closure (`OOSC-07..OOSC-08`)
+  - 2026-04-20: Synchronized OOSC rollout state across planning/context docs and completed focused closure validation (`orders-positions.e2e`, `bots.monitoring-aggregate.e2e`, `HomeLiveWidgets.test`, `HomeLiveWidgets.open-orders-source.test`, `api/web typecheck`, `quality:guardrails`).
+- [x] OOSC-B group closure (`OOSC-04..OOSC-06`)
+  - 2026-04-20: Added dashboard Open Orders `Source` column with deterministic mapping (`USER/BOT/EXCHANGE_SYNC|BACKTEST -> Manual/Bot/Imported`), shipped i18n keys for `en/pl/pt`, and locked web regression coverage in `HomeLiveWidgets.test.tsx`.
+- [x] OOSC-A group closure (`OOSC-01..OOSC-03`)
+  - 2026-04-20: Closed contract + API origin plumbing by adding regressions and implementation for explicit manual-order persistence (`origin=USER`) and runtime open-orders origin projection in both session and aggregate responses.
 - [x] OOSC-01 docs(contract): freeze dashboard open-orders source-column and active-only status contract
   - 2026-04-20: Frozen canonical Open Orders `Source` mapping (`USER/BOT/EXCHANGE_SYNC/BACKTEST` -> `Manual/Bot/Imported`), locked explicit manual-order write-origin requirement (`origin=USER`), and confirmed unchanged active-only Open Orders status scope (`PENDING`, `OPEN`, `PARTIALLY_FILLED`) in `open-decisions`, `api-orders`, and `web-dashboard-home`.
 - [x] OOSC planning queued (open-orders source column + active-only status contract)

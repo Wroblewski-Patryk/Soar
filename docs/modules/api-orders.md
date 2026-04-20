@@ -130,6 +130,9 @@ pnpm --filter api test -- src/modules/orders/orders.service.test.ts src/modules/
   - manual dashboard open-order command (`POST /dashboard/orders/open`) remains `order-only` and persists explicit `origin=USER`.
 - Read-side contract:
   - runtime open-orders payload consumed by dashboard includes per-row `origin`.
+- Implementation note (2026-04-20):
+  - manual open-order write path (`orders.service.openOrder`) persists explicit `origin=USER`,
+  - runtime open-orders read projection includes `origin` for both session and aggregate monitoring responses.
 - Active-only guardrail (unchanged):
   - Open Orders response scope remains limited to:
     - `PENDING`,
