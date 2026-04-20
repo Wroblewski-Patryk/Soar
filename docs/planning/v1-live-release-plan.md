@@ -8,13 +8,13 @@ Goal: move from MVP to a production-grade public release (V1.0) with reliable li
 - Keep tiny commits and explicit progress notes.
 
 ## Canonical Queue Linkage
-- Canonical queue owner for non-closed V1 release gates: `docs/planning/mvp-next-commits.md` (`OPV-A`).
+- Canonical queue owner for final V1 closure wave: `docs/planning/mvp-next-commits.md` (`OPV-A`, closed).
 - Canonical phase owner: `docs/planning/mvp-execution-plan.md` (`OPV-01..OPV-04`).
-- Runtime/product implementation waves are already closed; remaining work here is release evidence and production sign-off synchronization.
+- Runtime/product implementation waves and production sign-off synchronization are closed.
 
-## Current Status (2026-04-19)
-- Implementation track is largely complete across Phases A-F.
-- Remaining work is production-environment exit validation on private OPS route; latest refreshed gate snapshot is `G1=PASS`, `G2=OPEN`, `G3=PASS`, `G4=PASS`.
+## Current Status (2026-04-20)
+- Implementation and evidence track are complete across Phases A-F.
+- Final production exit-gate snapshot is `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS` (closure run: `2026-04-19T15:13:58.943Z`).
 - Scope note (2026-03-22): unresolved admin+billing implementation items are explicitly moved to post-MVP/V1.1; V1 focuses on runtime/live-trading integrity and truthful release evidence.
 
 ## V1.0 Definition

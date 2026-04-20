@@ -407,3 +407,22 @@ After closing a wave:
 - Avoid: assuming test-only edits are excluded from production build lint gates.
 - Evidence:
   - 2026-04-20 Coolify log: `HomeLiveWidgets.aggregate-wallet.test.tsx` and `RuntimeSidebarSection.test.tsx` failed build on `no-explicit-any`; local web build PASS after replacing casts.
+
+### 2026-04-20 - Queue-idle mode still requires stale-status sweep before "nothing planned"
+- Context: canonical queue reports `NOW/NEXT/PIPELINE = none` after major wave closures.
+- Symptom: executor says there is no planned work, but several planning docs still show `queued`/`ready-for-implementation` for already-closed waves.
+- Root cause: closure sync updated queue/context, but not all plan-level status headers and phase headings.
+- Guardrail: when queue is idle, run a planning status sweep before confirming "nothing planned":
+  - `docs/planning/*` status headers,
+  - `mvp-execution-plan` phase headings,
+  - `planning-catalog-index` classification rows.
+- Preferred pattern:
+```text
+1) Confirm canonical queue idle.
+2) Sweep and sync stale `queued/ready` statuses for closed waves.
+3) Mirror closure in `TASK_BOARD` and `PROJECT_STATE`.
+4) Re-run guardrails.
+```
+- Avoid: treating queue idle as fully synchronized planning state without a stale-status pass.
+- Evidence:
+  - 2026-04-20 PLNC-C parity sweep: stale headers found in `UXR-I`, `DAGG`, `SBSC`, `UXR`, `POS`, `PLNC`, and V1/LBT planning docs while canonical queue was already closed.

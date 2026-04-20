@@ -1,6 +1,6 @@
 # Dashboard + Modules UX/Runtime Fix Wave Plan (2026-04-15)
 
-Status: ready-for-implementation
+Status: completed (`UXR-A..UXR-D` closed on 2026-04-17)
 Execution mode: tiny-commit only (exactly one task per commit)
 Primary audience: implementation agent
 

@@ -1,6 +1,6 @@
 # Position Lifecycle Parity Remediation Plan (2026-03-29)
 
-Status: in progress (post-audit); POS-36 completed on 2026-04-19, POS-37..POS-42 pending.
+Status: closed (POS-36..POS-42 reconciled and validated on 2026-04-19).
 
 ## Canonical Queue Linkage
 - Canonical queue owner: `docs/planning/mvp-next-commits.md` (`POS-A`, `POS-B`).

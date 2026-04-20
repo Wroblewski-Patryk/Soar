@@ -37,6 +37,8 @@ Last updated: 2026-04-20
 
 ## DONE
 
+- [x] PLNC-C planning parity closure (`PLNC-06..PLNC-08`)
+  - 2026-04-20: Closed stale planning-status sweep by syncing closed-wave statuses (`UXR-I`, `DAGG`, `SBSC`, `UXR`, `POS`, `PLNC`, `V1/LBT`), updating `mvp-execution-plan` phase headers to closed (`PLNC`, `ARC`, `POS`, `OPV`, `UXR-I`, `UXR-J`), and reconciling `planning-catalog-index` classifications with canonical closure state.
 - [x] OOSC-C group closure (`OOSC-07..OOSC-08`)
   - 2026-04-20: Synchronized OOSC rollout state across planning/context docs and completed focused closure validation (`orders-positions.e2e`, `bots.monitoring-aggregate.e2e`, `HomeLiveWidgets.test`, `HomeLiveWidgets.open-orders-source.test`, `api/web typecheck`, `quality:guardrails`).
 - [x] OOSC-B group closure (`OOSC-04..OOSC-06`)

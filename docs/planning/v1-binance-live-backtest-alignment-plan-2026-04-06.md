@@ -1,11 +1,15 @@
 # V1 Binance Live + Backtest Alignment Plan (2026-04-06)
 
-Status: active closure plan for V1 trading correctness.
+Status: closed (V1B + OPV closure finalized on 2026-04-19).
 
 ## Canonical Queue Linkage
-- Canonical queue owner for remaining closure evidence: `docs/planning/mvp-next-commits.md` (`OPV-A`).
+- Canonical queue owner for final closure evidence: `docs/planning/mvp-next-commits.md` (`OPV-A`, closed).
 - Canonical phase owner: `docs/planning/mvp-execution-plan.md` (`OPV-01..OPV-04`).
-- Implementation tasks in this file are complete; remaining scope is production validation/sign-off synchronization.
+- Implementation and production sign-off synchronization for this scope are complete.
+
+## Closure Note (2026-04-19)
+- Final OPV closure run finished with `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`.
+- "Confirmed gap" and "Risk summary" sections below are preserved as historical plan-entry context from pre-closure state.
 
 ## Goal
 - V1 target: user adds Binance API key, bot can safely manage exchange positions according to selected management mode, and backtest behavior stays aligned with runtime decision semantics.

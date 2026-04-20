@@ -1,11 +1,11 @@
 # V1 Live Stability Closure Plan (2026-04-06)
 
-Status: active closure baseline (OPV evidence refreshed on 2026-04-19; Gate 2 remains open).
+Status: closed (OPV closure finalized on 2026-04-19; final gates `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`).
 
 ## Canonical Queue Linkage
-- Canonical queue owner for remaining non-code closure: `docs/planning/mvp-next-commits.md` (`OPV-A`).
+- Canonical queue owner for final non-code closure wave: `docs/planning/mvp-next-commits.md` (`OPV-A`, closed).
 - Canonical phase owner: `docs/planning/mvp-execution-plan.md` (`OPV-01..OPV-04`).
-- Remaining execution scope is production evidence refresh and release gate closure.
+- Remaining execution scope: none (historical closure evidence reference only).
 
 ## Context
 - Post-change validation showed one reproducible backtest replay regression:
@@ -13,7 +13,7 @@ Status: active closure baseline (OPV evidence refreshed on 2026-04-19; Gate 2 re
   - failing scenario: `emits trailing-take-profit event when arm and pullback thresholds are hit`
   - symptom: `eventCounts.TTP = 0` in expected TTP scenario.
 - Runtime/live positions confidence pack remains green in focused suites.
-- Remaining formal V1 exit gate still requires private-route OPS verification for production worker endpoints.
+- Final private-route production verification run resolved previously open worker-gate blockers (`Gate 2`, `Gate 4`).
 
 ## Objective
 - Finish V1 with production-ready confidence for:
@@ -58,4 +58,4 @@ Status: active closure baseline (OPV evidence refreshed on 2026-04-19; Gate 2 re
 - Backtest and runtime/positions confidence packs green.
 - V1 external gates updated with fresh production evidence.
 - Formal release sign-off artifacts updated and complete.
-- Remaining blocker outside repository code/docs scope: VPS private-route/admin-auth execution is still required to move Gate 2 from `OPEN` to `PASS` (`/workers/*`, `/workers/runtime-freshness`, `/alerts`).
+- Final blocker status: resolved in OPV closure run (`2026-04-19T15:13:58.943Z`) with `Gate 2` and `Gate 4` promoted to `PASS`.

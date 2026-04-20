@@ -1964,11 +1964,12 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-18: Completed `UXR-G-05` by locking placement/order/layout regressions in `HomeLiveWidgets.test.tsx` (wallet->manual-order section order, allocation->delta->portfolio order, and split-row contract assertions).
 - 2026-04-18: Completed `UXR-G-06` closure checks and queue sync. Validation: `pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets.test.tsx` => `16/16 PASS`; `pnpm --filter web run typecheck` => `PASS`; `pnpm --filter web run build` => `PASS`.
 
-## Phase PLNC - Planning Catalog Reconciliation and Coverage Sync (Queued 2026-04-18)
+## Phase PLNC - Planning Catalog Reconciliation and Coverage Sync (Closed 2026-04-20)
 - [x] `PLNC-01 docs(audit-map): classify planning docs as implemented/queued/external-blocked/superseded`
 - [x] `PLNC-02 docs(status-sync): update stale status lines in completed planning files`
 - [x] `PLNC-03 docs(queue-link): add canonical queue linkage in active non-closed plans`
 - [x] `PLNC-04 docs(sync): publish planning-catalog closure note in PROJECT_STATE/TASK_BOARD`
+- [x] `PLNC-05 docs(status-sync): reconcile stale DASHR checklist status drift in this execution plan`
 
 ### Progress Log (Phase PLNC - Planning Catalog Reconciliation and Coverage Sync)
 - 2026-04-18: Queued planning-catalog reconciliation wave in `docs/planning/planning-catalog-coverage-follow-up-plan-2026-04-18.md` after scanning `docs/planning` coverage against canonical queue files; wave purpose is to close status drift and remove orphan active plans before deeper refactor waves.
@@ -1976,8 +1977,9 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-19: Completed `PLNC-02` by syncing stale status headers in completed planning waves (`CPDB`, `SEC`, `DPL`, `WLT`, `L10NQ`, `DBSEL`, `BRS`, `UXR-E/F/G`).
 - 2026-04-19: Completed `PLNC-03` by adding canonical queue linkage sections in non-closed planning docs (`planning-catalog follow-up`, `ARC audit`, `POS parity`, `LBT`, `V1 release/stability`, `V1 Binance alignment`) and clarifying deferred ownership for subscription rollout plan.
 - 2026-04-19: Completed `PLNC-04` by synchronizing closure state in canonical queue/context files (`mvp-next-commits`, `mvp-execution-plan`, `TASK_BOARD`, `PROJECT_STATE`) and advancing focus to `ARC-01`.
+- 2026-04-20: Completed `PLNC-05` by reconciling stale `DASHR-01..DASHR-11` unchecked drift in this file with canonical closure state already recorded in queue/context files.
 
-## Phase ARC - Architecture Maintainability Remediation (Queued 2026-04-18)
+## Phase ARC - Architecture Maintainability Remediation (Closed 2026-04-19)
 - [x] `ARC-01 docs(contract): freeze ARC decomposition boundaries and no-drift guardrails`
 - [x] `ARC-02 refactor(api-runtime): extract typed runtime/live-ordering config from runtime services`
 - [x] `ARC-03 refactor(api-runtime): extract supervisor/watchdog from runtimeSignalLoop`
@@ -2022,7 +2024,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-19: Completed `ARC-19` by tightening repository guardrails in `scripts/repoGuardrails.mjs` (api/web source byte budgets reduced; production-only source line budgets introduced) while keeping the repo green.
 - 2026-04-19: Completed `ARC-20` by publishing maintainability delta and residual-risk snapshot in `docs/architecture/architecture-maintainability-closure-2026-04-19.md`.
 
-## Phase POS - Position Lifecycle Parity Closure (Queued 2026-04-18)
+## Phase POS - Position Lifecycle Parity Closure (Closed 2026-04-19)
 - [x] `POS-36 fix(contract): remove strategy-exit close bypass from backtest/replay and runtime close flow`
 - [x] `POS-37 fix(runtime): align runtime automation mode/context with bot/position and manual-management guard`
 - [x] `POS-38 feat(runtime-capital): add shared paper/live capital context with affordability parity`
@@ -2036,7 +2038,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-19: Completed `POS-36` by removing strategy-exit close bypass from backtest/replay/runtime close path and locking EXIT trace-only parity semantics with focused regression evidence.
 - 2026-04-19: Closed `POS-37..POS-42` queue drift by reconciling against existing implementation-complete history (Phase 17 entries) and running focused parity/runtime verification pack (`50/50 PASS` across `runtimePositionAutomation`, `runtimeCapitalContext`, `lifecycleCloseParity`, `backtestReplayCore`, `backtests.contract-remediation`); closure evidence in `docs/operations/pos-ab-closure-2026-04-19.md`.
 
-## Phase OPV - Production Verification and Exit-Gate Follow-up (Queued 2026-04-18)
+## Phase OPV - Production Verification and Exit-Gate Follow-up (Closed 2026-04-19)
 - [x] `OPV-01 qa(vps-rehearsal): execute Dockerfile-first stage/prod rehearsal and capture evidence`
 - [x] `OPV-02 qa(prod-live-takeover): verify takeover endpoint and private ops probes on production target`
 - [x] `OPV-03 ops(gates-refresh): refresh RC external-gate status/sign-off artifacts with new production evidence`
@@ -2052,7 +2054,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-19: Completed `OPV-05` by updating `scripts/buildRcExternalGateStatus.mjs` so `Manual Follow-ups` are generated from current gate state (`Gate1..Gate4`) instead of static all-gates reminders; validation run confirmed focused follow-up output (`Gate2`, `Gate4`) from latest window artifact.
 - 2026-04-19: Final RC closure run completed with snapshot `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS` at `2026-04-19T15:13:58.943Z` after private-route production pipeline validation and final sign-off/checklist/evidence refresh.
 
-## Phase UXR-I - Dashboard Forms Consistency Refresh (Queued 2026-04-19)
+## Phase UXR-I - Dashboard Forms Consistency Refresh (Closed 2026-04-19)
 - [x] `UXR-I-01 docs(contract): freeze dashboard forms consistency refresh boundaries after UXR-F`
 - [x] `UXR-I-02 audit(web-forms): publish residual consistency gap map per route/module`
 - [x] `UXR-I-03 chore(web-ui-forms): normalize shared form primitive API surface for refresh migration`
@@ -2085,7 +2087,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-19: Completed `UXR-I-13` by running focused forms/wrappers/i18n regression pack (`pnpm --filter web run test -- ... --run`) with `33/33 PASS` across wallets, markets, backtests, bots, wrapper pages, and i18n registry/translation contracts.
 - 2026-04-19: Completed `UXR-I-14` closure checks with full required PASS pack (`pnpm --filter web run typecheck`, `pnpm --filter web run build`, `pnpm run quality:guardrails`) and synchronized queue/context handoff to `UXR-J`.
 
-## Phase UXR-J - Dashboard Tables Consistency Refresh (Queued 2026-04-19)
+## Phase UXR-J - Dashboard Tables Consistency Refresh (Closed 2026-04-19)
 - [x] `UXR-J-01 docs(contract): freeze dashboard table action-color and columns-dropdown behavior contract`
 - [x] `UXR-J-02 refactor(ui-table-actions): add dedicated module action tone and remap clone/runtime/preview presets`
 - [x] `UXR-J-03 refactor(ui-datatable-dropdown): keep columns dropdown open on checkbox toggles`

@@ -1,8 +1,15 @@
 # Planning Catalog Coverage Follow-up Plan (2026-04-18)
 
-Status: queued-after-active-waves  
+Status: closed (PLNC/ARC/POS/OPV follow-up synchronized on 2026-04-20)  
 Execution mode: tiny-commit only (one task per commit)  
 Primary audience: planner + execution agent
+
+## Closure Note (2026-04-20)
+- This follow-up wave is fully closed in canonical execution:
+  - `PLNC-A` + `PLNC-B`
+  - `ARC-A..ARC-E`
+  - `POS-A..POS-B`
+  - `OPV-A`
 
 ## Canonical Queue Linkage
 - Canonical execution queue: `docs/planning/mvp-next-commits.md`.

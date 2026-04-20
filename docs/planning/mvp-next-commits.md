@@ -50,6 +50,7 @@ Operational queue for one-task execution runs.
 - [x] `UXR-J-B (commits UXR-J-05..UXR-J-07): focused regression alignment across shared and consuming tables`
 - [x] `UXR-J-C (commit UXR-J-08): closure checks + canonical sync`
 - [x] `PLNC-A (commits PLNC-01..PLNC-04): planning catalog reconciliation + status sync + canonical linkage`
+- [x] `PLNC-C (commits PLNC-06..PLNC-08): stale planning-status/header parity sweep + canonical queue/context sync`
 - [x] `ARC-A (commits ARC-01..ARC-05): runtime critical-path decomposition foundations`
 - [x] `ARC-B (commits ARC-06..ARC-10): bots runtime CQRS/read-model decomposition + aggregate monitoring contract`
 - [x] `ARC-C (commits ARC-11..ARC-13): shared runtime/backtest indicator kernel + backtest facade alignment`
@@ -85,6 +86,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `PLNC-C (commits PLNC-06..PLNC-08): stale planning-status/header parity sweep + canonical queue/context sync`
+  - 2026-04-20: Closed post-queue-idle planning parity sweep by synchronizing stale closed-wave statuses in planning plans (`UXR-I`, `DAGG`, `SBSC`, `UXR`, `POS`, `PLNC`, `V1/LBT`) plus canonical phase headers in `mvp-execution-plan` (`PLNC`, `ARC`, `POS`, `OPV`, `UXR-I`, `UXR-J`) and catalog classification map (`planning-catalog-index`) to current closure reality.
 - [x] `OOSC-C (commits OOSC-07..OOSC-08): docs sync + closure validation`
   - 2026-04-20: Synchronized OOSC rollout state in planning/context docs and completed focused closure validation pack (`api e2e pair`, `web HomeLiveWidgets + HomeLiveWidgets.open-orders-source tests`, `api/web typecheck`, `quality:guardrails`).
 - [x] `OOSC-B (commits OOSC-04..OOSC-06): web source column + mapping + regressions`

@@ -24,8 +24,9 @@ Last updated: 2026-04-20
   end-to-end and execution focus moved to deployment-readiness follow-up.
 - 2026-04-19: dashboard forms consistency refresh is reopened as `UXR-I`
   planner-approved wave (post-`UXR-F` residual parity closure).
-- 2026-04-19: dashboard tables consistency refresh is queued as `UXR-J`
-  planner-approved wave (post-`UXR-I` table-system parity closure).
+- 2026-04-19: dashboard tables consistency refresh (`UXR-J`) is closed
+  end-to-end (`UXR-J-01..UXR-J-08`) with shared table-action/dropdown contract
+  parity restored.
 - 2026-04-19: dashboard runtime parity recovery wave (`DASHR-A..DASHR-C`) is
   closed end-to-end (`DASHR-01..DASHR-11`) with selected-bot
   positions/history/signals parity restored and explicit signal-blocked
@@ -34,9 +35,9 @@ Last updated: 2026-04-20
   is closed end-to-end with one canonical resolver contract across markets
   sync, runtime, backtests, manual-order context, and web preview/validation.
 - 2026-04-20: dashboard Open Orders source-column wave (`OOSC-01..OOSC-08`)
-  is queued to add `Source` labels (`Manual/Bot/Imported`), lock manual-order
-  write origin as `USER`, and preserve active-only order visibility in
-  `/dashboard` Open Orders.
+  is closed end-to-end with `Source` labels (`Manual/Bot/Imported`), explicit
+  manual-order write origin (`USER`), and unchanged active-only order
+  visibility in `/dashboard` Open Orders.
 
 ## Technical Baseline
 - Backend: Node.js 20+, Express API, Prisma, TypeScript
@@ -114,14 +115,17 @@ Last updated: 2026-04-20
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: post-`OOSC` queue idle state (all `OOSC-01..OOSC-08`
-  closed); waiting for next canonical `NOW` task.
+- Main active objective: queue-idle maintenance with planning parity fully
+  synchronized after latest closure waves (`OOSC`, `PLNC/ARC/POS/OPV`, `UXR`).
 - Top blockers:
   - none in OPV scope; final RC external-gates snapshot is closed
     (`G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`) from run
     `2026-04-19T15:13:58.943Z`.
 - Success criteria for this phase:
-  - `OOSC-01..OOSC-08` are closed with contract/API/web/i18n/docs parity.
+  - Canonical queue remains intentionally idle (`NOW/NEXT/PIPELINE = none`)
+    until a new approved wave is queued.
+  - Planning docs do not report stale `queued/ready` state for already closed
+    waves.
   - Open Orders active-only status contract remains unchanged
     (`PENDING`, `OPEN`, `PARTIALLY_FILLED`).
 - execution slices remain scope-locked and documentation-synchronized.
@@ -130,6 +134,11 @@ Last updated: 2026-04-20
     (currently `none`).
 
 ## Recent Progress
+- 2026-04-20: closed `PLNC-C` planning parity sweep (`PLNC-06..PLNC-08`) by
+  synchronizing stale closed-wave statuses across planning plans (`UXR-I`,
+  `DAGG`, `SBSC`, `UXR`, `POS`, `PLNC`, `V1/LBT`), aligning
+  `mvp-execution-plan` phase headers to closed state, and updating
+  `planning-catalog-index` classifications to current canonical closure.
 - 2026-04-20: closed full `OOSC` wave (`OOSC-01..OOSC-08`) by shipping API
   origin plumbing (`origin=USER` write path + runtime open-order origin
   projection), dashboard Open Orders `Source` column with `Manual/Bot/Imported`

@@ -1,6 +1,6 @@
 # Dashboard Aggregate Selected-Bot View Plan (2026-04-19)
 
-Status: ready-for-implementation  
+Status: completed (`DAGG-A..DAGG-C` closed on 2026-04-19)  
 Execution mode: tiny-commit only (exactly one task per commit)  
 Primary audience: implementation agent
 

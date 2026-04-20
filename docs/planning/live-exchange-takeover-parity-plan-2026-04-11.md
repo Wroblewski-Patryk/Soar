@@ -1,11 +1,11 @@
 # Live Exchange Takeover Parity Plan (2026-04-11)
 
-Status: execution-complete (OPV follow-up executed; external OPS private-route gate still open)
+Status: closed (OPV closure finalized on 2026-04-19; final RC snapshot `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`)
 
 ## Canonical Queue Linkage
 - Canonical queue owner: `docs/planning/mvp-next-commits.md` (`OPV-A`).
 - Canonical phase owner: `docs/planning/mvp-execution-plan.md` (`OPV-01..OPV-04`).
-- Remaining scope owner: production verification only (no new feature wave in this document).
+- Remaining scope owner: none (historical implementation/evidence reference only).
 
 ## Execution Progress (2026-04-11)
 - Completed:
@@ -26,10 +26,10 @@ Status: execution-complete (OPV follow-up executed; external OPS private-route g
   - none.
 - Remaining:
   - none.
-- Follow-up blockers observed during OPV refresh (2026-04-19):
-  - production takeover routes now return `401 Missing token` (route deployed, auth required), not `404`.
-  - private OPS probes (`/workers/*`, `/workers/runtime-freshness`, `/alerts`) still require VPS private-route execution with admin auth; public-path verification remains insufficient for Gate 3 closure.
-  - evidence references: `docs/operations/opv-02-prod-live-takeover-2026-04-19.md`, `docs/operations/opv-03-rc-gates-refresh-2026-04-19.md`.
+- Follow-up blockers from early OPV refresh (resolved in final OPV closure run on 2026-04-19):
+  - production takeover route rollout was confirmed (`401 Missing token` indicates protected route is deployed; no `404` regression).
+  - private OPS probes were finalized via VPS private-route/admin-auth path in the final closure pass (`G1..G4 = PASS`).
+  - evidence references: `docs/operations/opv-02-prod-live-takeover-2026-04-19.md`, `docs/operations/opv-03-rc-gates-refresh-2026-04-19.md`, `docs/operations/v1-rc-external-gates-status.md`.
 
 ## Goal
 - Make LIVE bot behavior parity-complete with the legacy bot for exchange-connected trading:
