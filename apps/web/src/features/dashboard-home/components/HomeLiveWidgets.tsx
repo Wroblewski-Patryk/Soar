@@ -998,6 +998,15 @@ export default function HomeLiveWidgets() {
     withRuntimeUnit,
   ]);
 
+  const resolveOpenOrderSourceLabel = useCallback(
+    (origin: string | null | undefined) => {
+      if (origin === "USER") return t("dashboard.home.runtime.sourceManual");
+      if (origin === "BOT") return t("dashboard.home.runtime.sourceBot");
+      return t("dashboard.home.runtime.sourceImported");
+    },
+    [t]
+  );
+
   const openOrdersColumns = useMemo<OpenOrdersTableColumn[]>(
     () => [
       {
@@ -1024,6 +1033,13 @@ export default function HomeLiveWidgets() {
             />
           );
         },
+      },
+      {
+        key: "source",
+        label: t("dashboard.home.runtime.source"),
+        sortable: true,
+        accessor: (row) => row.origin ?? "EXCHANGE_SYNC",
+        render: (row) => <span className="font-semibold">{resolveOpenOrderSourceLabel(row.origin)}</span>,
       },
       {
         key: "side",
@@ -1059,6 +1075,7 @@ export default function HomeLiveWidgets() {
       formatDateTimeWithSeconds,
       formatNumber,
       resolveRuntimeIcon,
+      resolveOpenOrderSourceLabel,
       runtimeIconsError,
       runtimeIconsLoading,
       t,
