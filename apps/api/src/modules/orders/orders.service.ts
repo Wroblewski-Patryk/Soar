@@ -922,6 +922,7 @@ export const openOrder = async (
       botId: payload.botId,
       walletId: payload.walletId,
       strategyId: payload.strategyId,
+      origin: 'USER',
       symbol: payload.symbol.toUpperCase(),
       side: payload.side,
       type: payload.type,

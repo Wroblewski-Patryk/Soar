@@ -53,6 +53,7 @@ export const listRuntimeOpenOrders = async (params: {
     take: params.limit,
     select: {
       id: true,
+      origin: true,
       symbol: true,
       side: true,
       type: true,

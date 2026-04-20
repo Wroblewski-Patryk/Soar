@@ -410,9 +410,12 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     expect(firstAggregate.body.positions.openCount).toBe(0);
     expect(firstAggregate.body.positions.closedCount).toBe(2);
     expect(firstAggregate.body.positions.openOrdersCount).toBe(1);
-    expect(firstAggregate.body.positions.openOrders.map((item: { id: string }) => item.id)).toEqual([
-      'order-open-only',
-    ]);
+    expect(
+      firstAggregate.body.positions.openOrders.map((item: { id: string; origin?: string }) => ({
+        id: item.id,
+        origin: item.origin,
+      }))
+    ).toEqual([{ id: 'order-open-only', origin: 'BOT' }]);
     expect(firstAggregate.body.positions.historyItems.map((item: { id: string }) => item.id)).toEqual([
       'position-a',
       'position-z',

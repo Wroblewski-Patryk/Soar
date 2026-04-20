@@ -441,6 +441,11 @@ describe('Orders and positions read contract', () => {
     expect(openRes.status).toBe(201);
     expect(openRes.body.symbol).toBe('BTCUSDT');
     expect(openRes.body.status).toBe('FILLED');
+    const persistedManualOrder = await prisma.order.findUniqueOrThrow({
+      where: { id: openRes.body.id as string },
+      select: { origin: true },
+    });
+    expect(persistedManualOrder.origin).toBe('USER');
 
     const positionsCount = await prisma.position.count({
       where: { userId: ownerId },
@@ -1041,6 +1046,10 @@ describe('Orders and positions read contract', () => {
     expect(
       positionsRes.body.openOrders.some((item: { id: string }) => item.id === carryoverOrder.id)
     ).toBe(true);
+    const projectedOrder = positionsRes.body.openOrders.find(
+      (item: { id: string; origin?: string }) => item.id === carryoverOrder.id
+    );
+    expect(projectedOrder?.origin).toBe('EXCHANGE_SYNC');
   });
 
   it('keeps PAPER open orders visible in runtime view when order was created before current session start', async () => {
@@ -1108,6 +1117,10 @@ describe('Orders and positions read contract', () => {
     expect(
       positionsRes.body.openOrders.some((item: { id: string }) => item.id === carryoverOrder.id)
     ).toBe(true);
+    const projectedOrder = positionsRes.body.openOrders.find(
+      (item: { id: string; origin?: string }) => item.id === carryoverOrder.id
+    );
+    expect(projectedOrder?.origin).toBe('BOT');
   });
 
 });
