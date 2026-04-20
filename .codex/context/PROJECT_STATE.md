@@ -33,6 +33,10 @@ Last updated: 2026-04-20
 - 2026-04-20: market-universe symbol-contract parity wave (`MURC-01..MURC-12`)
   is closed end-to-end with one canonical resolver contract across markets
   sync, runtime, backtests, manual-order context, and web preview/validation.
+- 2026-04-20: dashboard Open Orders source-column wave (`OOSC-01..OOSC-08`)
+  is queued to add `Source` labels (`Manual/Bot/Imported`), lock manual-order
+  write origin as `USER`, and preserve active-only order visibility in
+  `/dashboard` Open Orders.
 
 ## Technical Baseline
 - Backend: Node.js 20+, Express API, Prisma, TypeScript
@@ -110,20 +114,30 @@ Last updated: 2026-04-20
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: keep canonical queue synchronized and stay ready for
-  the next planner-approved execution wave.
+- Main active objective: execute `OOSC` wave with strict scope lock
+  (Open Orders `Source` column + origin plumbing + active-only contract).
 - Top blockers:
   - none in OPV scope; final RC external-gates snapshot is closed
     (`G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`) from run
     `2026-04-19T15:13:58.943Z`.
 - Success criteria for this phase:
-  - `DAWR-A..DAWR-C` remain closed with regression and ops-doc evidence.
-  - canonical planning status remains synchronized across queue/context files.
+  - `OOSC-01..OOSC-03` are closed with canonical contract + API origin parity.
+  - Open Orders active-only status contract remains unchanged.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - take next planner-approved queue slice after planning-sync closure.
+  - execute `OOSC-02..OOSC-08` from
+    `docs/planning/dashboard-open-orders-source-column-plan-2026-04-20.md`.
 
 ## Recent Progress
+- 2026-04-20: closed `OOSC-01` by freezing canonical Open Orders `Source`
+  mapping (`USER/BOT/EXCHANGE_SYNC/BACKTEST` -> `Manual/Bot/Imported`),
+  explicit manual-order write-origin requirement (`origin=USER`), and unchanged
+  active-only status scope (`PENDING`, `OPEN`, `PARTIALLY_FILLED`) in
+  `open-decisions`, `api-orders`, and `web-dashboard-home`.
+- 2026-04-20: queued executor-ready dashboard Open Orders source-column wave
+  (`OOSC-01..OOSC-08`) and published plan
+  `docs/planning/dashboard-open-orders-source-column-plan-2026-04-20.md`;
+  canonical queue/context updated in `mvp-next-commits` and `TASK_BOARD`.
 - 2026-04-20: implemented wallet-scoped external-position takeover contract for
   LIVE bots by adding `Wallet.manageExternalPositions` (with migration backfill
   from legacy `ApiKey.manageExternalPositions`), updating runtime exchange

@@ -17,11 +17,16 @@ Last updated: 2026-04-20
 
 ## READY
 
-- [x] (none)
+- [ ] OOSC-02 test(api-red): add regressions for manual-order origin=USER and runtime open-orders origin projection
 
 ## BACKLOG
 
-- [x] (none)
+- [ ] OOSC-03 fix(api): persist manual-order origin as USER and expose origin in open-orders runtime payload
+- [ ] OOSC-04 test(web-red): add dashboard open-orders source-column regression with label mapping
+- [ ] OOSC-05 fix(web-dashboard): add open-orders source column and render mapped labels
+- [ ] OOSC-06 feat(i18n): add open-orders source-column labels in dashboard namespaces (en/pl/pt)
+- [ ] OOSC-07 docs(sync): update module docs and planner artifacts after source-column rollout
+- [ ] OOSC-08 qa(closure): run focused open-orders source-column pack and finalize queue/context
 
 ## IN_PROGRESS
 
@@ -37,6 +42,10 @@ Last updated: 2026-04-20
 
 ## DONE
 
+- [x] OOSC-01 docs(contract): freeze dashboard open-orders source-column and active-only status contract
+  - 2026-04-20: Frozen canonical Open Orders `Source` mapping (`USER/BOT/EXCHANGE_SYNC/BACKTEST` -> `Manual/Bot/Imported`), locked explicit manual-order write-origin requirement (`origin=USER`), and confirmed unchanged active-only Open Orders status scope (`PENDING`, `OPEN`, `PARTIALLY_FILLED`) in `open-decisions`, `api-orders`, and `web-dashboard-home`.
+- [x] OOSC planning queued (open-orders source column + active-only status contract)
+  - 2026-04-20: Added `docs/planning/dashboard-open-orders-source-column-plan-2026-04-20.md` and queued `OOSC-01..OOSC-08` for executor delivery. Scope is locked to dashboard Open Orders `Source` column (`Manual/Bot/Imported`), explicit manual-order write origin (`USER`), and preserving active-only order visibility (`PENDING`, `OPEN`, `PARTIALLY_FILLED`) with no new orders-history table.
 - [x] EXTM-01 wallet-scoped external position takeover contract
   - 2026-04-20: Added `Wallet.manageExternalPositions` as the bot-facing takeover switch (with DB backfill from legacy API-key takeover flag), wired runtime reconciliation ownership to wallet-scoped takeover intent first (legacy API-key fallback preserved), and extended wallet create/edit web UX + tests so external exchange positions can be explicitly managed per LIVE wallet context.
 - [x] DEPFIX-01 web deploy lint hotfix

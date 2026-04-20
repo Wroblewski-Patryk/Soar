@@ -863,6 +863,28 @@ This file tracks intentionally unresolved architecture choices so implementation
   - `docs/modules/api-bots.md`
   - `docs/modules/web-dashboard-home.md`
 
+## Dashboard Open Orders Source Column and Active-Only Contract (`OOSC`)
+- Decision state: resolved on 2026-04-20.
+- Decision:
+  - dashboard Open Orders table gets explicit `Source` column with stable label mapping:
+    - `USER -> Manual`,
+    - `BOT -> Bot`,
+    - `EXCHANGE_SYNC -> Imported`,
+    - `BACKTEST -> Imported` (defensive fallback).
+  - Open Orders stays active-only; no history-status expansion in this wave.
+  - manual dashboard open-order command (`POST /dashboard/orders/open`) remains `order-only` and must persist explicit `origin=USER`.
+- Locked behavior:
+  - active-only status set for Open Orders remains unchanged:
+    - `PENDING`,
+    - `OPEN`,
+    - `PARTIALLY_FILLED`.
+  - runtime open-orders payload used by dashboard includes per-row `origin` so web can render `Source`.
+  - this wave does not introduce a new orders-history table in dashboard.
+- Canonical references:
+  - `docs/planning/dashboard-open-orders-source-column-plan-2026-04-20.md`
+  - `docs/modules/api-orders.md`
+  - `docs/modules/web-dashboard-home.md`
+
 ## Signals + Open Runtime Parity Contract (`SOPR`)
 - Decision state: resolved on 2026-04-19.
 - Prerequisite baseline:

@@ -256,3 +256,19 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
   - chosen path is explicit `order-only`.
   - dashboard manual order remains on `POST /dashboard/orders/open` command semantics.
   - UI must keep operator-facing semantic clarity (order-only hint + success copy) and must not imply immediate runtime lifecycle authority.
+
+## 23. Open Orders Source Column and Active-Only Contract (`OOSC`)
+- Open Orders table includes `Source` column with deterministic mapping:
+  - `USER -> Manual`,
+  - `BOT -> Bot`,
+  - `EXCHANGE_SYNC -> Imported`,
+  - `BACKTEST -> Imported` (defensive fallback).
+- Data dependency:
+  - dashboard Open Orders rows require API `origin` field in runtime open-orders payload.
+- Active-only visibility remains unchanged:
+  - `PENDING`,
+  - `OPEN`,
+  - `PARTIALLY_FILLED`.
+- Scope lock:
+  - no new orders-history table in `/dashboard` for this wave.
+  - manual-order command semantics remain `order-only` (`POST /dashboard/orders/open`).

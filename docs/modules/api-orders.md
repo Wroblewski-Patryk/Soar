@@ -119,3 +119,21 @@ pnpm --filter api test -- src/modules/orders/orders.service.test.ts src/modules/
   - blacklist-only configuration cannot introduce symbols.
 - Parity requirement:
   - manual-order symbol matching remains consistent with bots runtime and backtests for the same universe input.
+
+## 13. Open Orders Source and Active-Only Contract (`OOSC`)
+- Source-label contract for dashboard Open Orders rows:
+  - `USER -> Manual`,
+  - `BOT -> Bot`,
+  - `EXCHANGE_SYNC -> Imported`,
+  - `BACKTEST -> Imported` (defensive fallback).
+- Write-side contract:
+  - manual dashboard open-order command (`POST /dashboard/orders/open`) remains `order-only` and persists explicit `origin=USER`.
+- Read-side contract:
+  - runtime open-orders payload consumed by dashboard includes per-row `origin`.
+- Active-only guardrail (unchanged):
+  - Open Orders response scope remains limited to:
+    - `PENDING`,
+    - `OPEN`,
+    - `PARTIALLY_FILLED`.
+- Scope lock:
+  - no new orders-history table in this wave.

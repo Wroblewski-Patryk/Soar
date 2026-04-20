@@ -2229,3 +2229,17 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-19: Closed `DASHR-A` (`DASHR-01..DASHR-04`) with web parity evidence: orders tab DataTable replacement, deterministic selected-bot strategy refresh, and selected-bot section layout/spacing lock (`KPI -> selector -> market/strategy`, `mt-6`).
 - 2026-04-19: Closed `DASHR-B` (`DASHR-05..DASHR-08`) by restoring selected-session positions/history parity and selected-bot-only signals scope across canonical ACTIVE+enabled links.
 - 2026-04-19: Closed `DASHR-C` (`DASHR-09..DASHR-11`) by adding explicit runtime blocked-path diagnostics (`PRETRADE_BLOCKED`) and completing focused closure pack (`api bots/orders/runtime tests`, `web HomeLiveWidgets`, `api/web typecheck`, `web build`, `quality:guardrails`).
+
+## Phase OOSC - Dashboard Open Orders Source Column (Queued 2026-04-20)
+- [x] `OOSC-01 docs(contract): freeze dashboard open-orders source-column and active-only status contract`
+- [ ] `OOSC-02 test(api-red): add regressions for manual-order origin=USER and runtime open-orders origin projection`
+- [ ] `OOSC-03 fix(api): persist manual-order origin as USER and expose origin in open-orders runtime payload`
+- [ ] `OOSC-04 test(web-red): add dashboard open-orders source-column regression with label mapping`
+- [ ] `OOSC-05 fix(web-dashboard): add open-orders source column and render mapped labels`
+- [ ] `OOSC-06 feat(i18n): add open-orders source-column labels in dashboard namespaces (en/pl/pt)`
+- [ ] `OOSC-07 docs(sync): update module docs and planner artifacts after source-column rollout`
+- [ ] `OOSC-08 qa(closure): run focused open-orders source-column pack and finalize queue/context`
+
+### Progress Log (Phase OOSC - Dashboard Open Orders Source Column)
+- 2026-04-20: Queued `OOSC` wave and published executor-ready plan `docs/planning/dashboard-open-orders-source-column-plan-2026-04-20.md` with strict scope lock: Open Orders `Source` column mapping, explicit manual-order `origin=USER`, and unchanged active-only statuses (`PENDING`, `OPEN`, `PARTIALLY_FILLED`).
+- 2026-04-20: Closed `OOSC-01` by freezing canonical contract in `open-decisions`, `api-orders`, and `web-dashboard-home`.
