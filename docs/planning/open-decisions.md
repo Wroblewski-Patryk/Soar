@@ -728,6 +728,34 @@ This file tracks intentionally unresolved architecture choices so implementation
   - `docs/planning/backtest-multi-market-parity-remediation-plan-2026-04-17.md`
   - `docs/modules/api-backtests.md`
 
+## Backtests List/Create Explicit Time-Window Contract (`BTCF`)
+- Decision state: resolved on 2026-04-20.
+- Decision:
+  - backtests list table contract is frozen to exact columns:
+    - `Strategy`
+    - `Markets`
+    - `Init balance`
+    - `Status`
+    - `Start`
+    - `Actions`
+  - backtest create contract must expose explicit range fields:
+    - `startAt`
+    - `endAt`
+  - time-range boundary policy:
+    - `endAt` cannot exceed current allowed boundary (`now` / last closed candle boundary).
+  - candles slider bounds are frozen to:
+    - min `250`
+    - max `10000`
+  - run execution contract for new runs:
+    - use explicit user-selected range (`startAt/endAt`),
+    - no implicit now-backward fallback path as primary execution contract.
+  - compatibility contract:
+    - historical runs without new range fields remain readable and stable in list/details surfaces.
+- Canonical references:
+  - `docs/planning/backtests-list-create-time-window-remediation-plan-2026-04-20.md`
+  - `docs/modules/web-backtest.md`
+  - `docs/modules/api-backtests.md`
+
 ## Market-Universe Symbol Composition Contract (`MURC`)
 - Decision state: resolved on 2026-04-20.
 - Decision:

@@ -35,6 +35,17 @@ Out of scope:
   - run summary state, trades table, report aggregates, timeline payload.
 - Internal parity contracts:
   - replay event types and decision trace structures.
+- BTCF list/create contract freeze (2026-04-20):
+  - list payload must support canonical web table columns:
+    - `Strategy`, `Markets`, `Init balance`, `Status`, `Start`, `Actions`
+  - create/run payload must support explicit time-window fields:
+    - `startAt`, `endAt`
+  - candles range contract:
+    - requested bounds min `250`, max `10000`
+  - execution contract for new runs:
+    - run job/gateway use explicit `startAt/endAt` range as primary source (no implicit now-backward fallback).
+  - compatibility contract:
+    - legacy runs without explicit range fields remain readable in run list/details/report flows.
 
 ## 4. Runtime Flows
 - Run creation:
@@ -93,6 +104,7 @@ pnpm --filter api test -- src/modules/backtests/backtests.e2e.test.ts src/module
 ## 9. Open Issues and Follow-Ups
 - Continue parity hardening between backtest and runtime decision paths.
 - Consider additional queue observability SLIs for heavy multi-symbol workloads.
+- Deliver `BTCF-02..BTCF-09` to fully align API list/create/runtime-range behavior with frozen BTCF contract.
 
 ## 10. Market-Universe Symbol Contract Parity (`MURC`)
 - `seedConfig.symbols` must always reflect the shared market-universe composition formula.

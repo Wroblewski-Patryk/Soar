@@ -7,12 +7,11 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `BTCF-01 docs(contract): freeze backtests list columns and explicit time-window create contract`
-## NEXT
 - [ ] `BTCF-02 test(api-red): add list contract regression for strategy/markets/initBalance enrich fields`
+## NEXT
 - [ ] `BTCF-03 feat(api-list-enrich): expose strategy/markets/initBalance fields for backtests list rows`
-## PIPELINE
 - [ ] `BTCF-04 fix(web-list): replace Symbol/Interval columns with Strategy/Markets/Init balance`
+## PIPELINE
 - [ ] `BTCF-05 test(web-red): add create-form regressions for start/end fields, slider bounds, and 3-column md layout`
 - [ ] `BTCF-06 feat(web-create): add startAt/endAt fields + deterministic sync rules + min 250 candles`
 - [ ] `BTCF-07 refactor(web-create-layout): switch create form md+ structure to 3 columns with independent strategy/market contexts`
@@ -98,6 +97,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `BTCF-01 docs(contract): freeze backtests list columns and explicit time-window create contract`
+  - 2026-04-20: Frozen canonical backtests list/create contract in `open-decisions` and backtests module docs (`web-backtest`, `api-backtests`): list columns locked to `Strategy/Markets/Init balance/Status/Start/Actions`, create explicit range contract locked (`startAt/endAt`), slider bounds frozen (`250..10000`), and backward compatibility for legacy runs explicitly required.
 - [x] `BTCF planning queued (backtests list/create explicit time-window remediation wave)`
   - 2026-04-20: Added `docs/planning/backtests-list-create-time-window-remediation-plan-2026-04-20.md` and queued `BTCF-A..BTCF-C` for backtests list column contract (`Strategy/Markets/Init balance`) plus create-form explicit `startAt/endAt` flow, slider bounds `250..10000`, backend range execution parity, i18n sync, and closure validations.
 - [x] `PLNC-C (commits PLNC-06..PLNC-08): stale planning-status/header parity sweep + canonical queue/context sync`

@@ -2250,7 +2250,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-20: Closed `OOSC-C` (`OOSC-07..OOSC-08`) with docs/context synchronization and focused closure pack PASS (`orders-positions.e2e`, `bots.monitoring-aggregate.e2e`, `HomeLiveWidgets.test`, `HomeLiveWidgets.open-orders-source.test`, `api/web typecheck`, `quality:guardrails`).
 
 ## Phase BTCF - Backtests List/Create Time-Window Remediation (Queued 2026-04-20)
-- [ ] `BTCF-01 docs(contract): freeze backtests list columns and explicit time-window create contract`
+- [x] `BTCF-01 docs(contract): freeze backtests list columns and explicit time-window create contract`
 - [ ] `BTCF-02 test(api-red): add list contract regression for strategy/markets/initBalance enrich fields`
 - [ ] `BTCF-03 feat(api-list-enrich): expose strategy/markets/initBalance fields for backtests list rows`
 - [ ] `BTCF-04 fix(web-list): replace Symbol/Interval columns with Strategy/Markets/Init balance`
@@ -2265,3 +2265,4 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 
 ### Progress Log (Phase BTCF - Backtests List/Create Time-Window Remediation)
 - 2026-04-20: Queued `BTCF` from backtests analysis report to deliver requested list-column contract (`Strategy`, `Markets`, `Init balance`, `Status`, `Start`, `Actions`), create-form md 3-column context UX, explicit `startAt/endAt` run window with slider bounds `250..10000`, backend range execution parity in job/gateway, and backward compatibility for existing historical runs. Published executor-ready plan in `docs/planning/backtests-list-create-time-window-remediation-plan-2026-04-20.md`.
+- 2026-04-20: Completed `BTCF-01` by freezing canonical backtests list/create contract in `open-decisions` plus module docs (`web-backtest`, `api-backtests`) with explicit list column set, range field semantics (`startAt/endAt`), slider bounds (`250..10000`), and legacy run compatibility requirement.

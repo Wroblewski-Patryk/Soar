@@ -5,7 +5,7 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/backtest`
 - Owner: frontend/trading-analysis
-- Last updated: 2026-04-12
+- Last updated: 2026-04-20
 - Related planning task: `DCP-09`
 
 ## 1. Purpose and Scope
@@ -38,6 +38,17 @@ Out of scope:
 - UI contracts:
   - deterministic staged loading for details pages
   - failed-symbol/timeline error visibility without hard crash
+- BTCF list/create contract freeze (2026-04-20):
+  - list columns are canonical and fixed:
+    - `Strategy`, `Markets`, `Init balance`, `Status`, `Start`, `Actions`
+  - create form range contract:
+    - explicit `startAt` and `endAt`
+    - `endAt` limited by current allowed boundary (`now` / last closed candle)
+  - candles slider bounds:
+    - min `250`
+    - max `10000`
+  - compatibility:
+    - historical runs without explicit range fields must remain readable in list/details views.
 
 ## 4. Runtime Flows
 - Create flow:
@@ -85,4 +96,4 @@ pnpm --filter web test -- src/features/backtest/components/BacktestCreateForm.te
 ## 9. Open Issues and Follow-Ups
 - Continue splitting large detail view logic as timeline features grow.
 - Consider server-side pagination controls in list view for larger run volumes.
-
+- Execute `BTCF-A..BTCF-C` implementation tasks to align current UI behavior with frozen list/create contract.

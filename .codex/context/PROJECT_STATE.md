@@ -131,10 +131,16 @@ Last updated: 2026-04-20
   - planning/docs/status remain synchronized across canonical files.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - execute `BTCF-01` from canonical `NOW` queue.
-  - continue `BTCF-A` (`BTCF-02`, `BTCF-03`) before form/backend range tasks.
+  - execute `BTCF-02` from canonical `NOW` queue.
+  - continue `BTCF-A` (`BTCF-03`, `BTCF-04`) before form/backend range tasks.
 
 ## Recent Progress
+- 2026-04-20: completed `BTCF-01` by freezing canonical backtests
+  list/create contract in `open-decisions` and module docs
+  (`web-backtest`, `api-backtests`) with exact list columns
+  (`Strategy`, `Markets`, `Init balance`, `Status`, `Start`, `Actions`),
+  explicit `startAt/endAt` range semantics, slider bounds (`250..10000`), and
+  backward compatibility requirement for historical runs.
 - 2026-04-20: queued backtests list/create time-window remediation wave
   (`BTCF-01..BTCF-12`) from module analysis and published executor-ready plan
   `docs/planning/backtests-list-create-time-window-remediation-plan-2026-04-20.md`;

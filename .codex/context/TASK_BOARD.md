@@ -17,7 +17,6 @@ Last updated: 2026-04-20
 
 ## READY
 
-- [ ] BTCF-01 Freeze backtests list columns and explicit time-window create contract
 - [ ] BTCF-02 Add API list-contract regression for strategy/markets/initBalance enrich fields
 - [ ] BTCF-03 Expose strategy/markets/initBalance fields in backtests list API payload
 
@@ -47,6 +46,8 @@ Last updated: 2026-04-20
 
 ## DONE
 
+- [x] BTCF-01 docs(contract): freeze backtests list columns and explicit time-window create contract
+  - 2026-04-20: Locked canonical backtests list/create contract in `open-decisions` and module docs (`web-backtest`, `api-backtests`) with exact list-column set (`Strategy`, `Markets`, `Init balance`, `Status`, `Start`, `Actions`), explicit create range fields (`startAt/endAt`), slider bounds (`250..10000`), and legacy run compatibility requirement.
 - [x] BTCF planning queued (`BTCF-01..BTCF-12`)
   - 2026-04-20: Added `docs/planning/backtests-list-create-time-window-remediation-plan-2026-04-20.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) for backtests list contract update, create-form 3-column time-window UX, backend explicit range execution path, i18n sync, and closure validations.
 - [x] PLNC-C planning parity closure (`PLNC-06..PLNC-08`)
