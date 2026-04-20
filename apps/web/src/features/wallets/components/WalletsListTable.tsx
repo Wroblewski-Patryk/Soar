@@ -2,7 +2,6 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { LuChevronDown, LuChevronUp } from 'react-icons/lu';
 import { useI18n } from '@/i18n/I18nProvider';
 import { createWallet, deleteWallet } from '../services/wallets.service';
 import { Wallet } from '../types/wallet.type';
@@ -24,7 +23,6 @@ export default function WalletsListTable({ rows, onDeleted, onCloned }: WalletsL
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [cloningId, setCloningId] = useState<string | null>(null);
   const [pendingDeleteWallet, setPendingDeleteWallet] = useState<Wallet | null>(null);
-  const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
 
   const copy = useMemo(
     () =>
@@ -51,9 +49,6 @@ export default function WalletsListTable({ rows, onDeleted, onCloned }: WalletsL
           liveFixed: '{value} (fixed)',
           searchPlaceholder: 'Filter wallets...',
           emptyText: 'No wallets.',
-          details: 'Details',
-          hideDetails: 'Hide details',
-          allocationMode: 'Allocation mode',
           apiKey: 'API key',
           apiKeyConnected: 'Connected',
           apiKeyMissing: 'Not connected',
@@ -82,9 +77,6 @@ export default function WalletsListTable({ rows, onDeleted, onCloned }: WalletsL
           liveFixed: '{value} (fixed)',
           searchPlaceholder: 'Filtruj portfele...',
           emptyText: 'Brak portfeli.',
-          details: 'Szczegoly',
-          hideDetails: 'Ukryj szczegoly',
-          allocationMode: 'Tryb alokacji',
           apiKey: 'Klucz API',
           apiKeyConnected: 'Podlaczony',
           apiKeyMissing: 'Brak',
@@ -113,9 +105,6 @@ export default function WalletsListTable({ rows, onDeleted, onCloned }: WalletsL
           liveFixed: '{value} (fixo)',
           searchPlaceholder: 'Filtrar carteiras...',
           emptyText: 'Sem carteiras.',
-          details: 'Detalhes',
-          hideDetails: 'Ocultar detalhes',
-          allocationMode: 'Modo de alocacao',
           apiKey: 'Chave API',
           apiKeyConnected: 'Ligada',
           apiKeyMissing: 'Nao ligada',
@@ -224,28 +213,23 @@ export default function WalletsListTable({ rows, onDeleted, onCloned }: WalletsL
         accessor: (row) => formatAllocation(row),
       },
       {
+        key: 'apiKey',
+        label: copy.apiKey,
+        sortable: true,
+        accessor: (row) => (row.apiKeyId ? copy.apiKeyConnected : copy.apiKeyMissing),
+        render: (row) => (
+          <TableToneBadge
+            label={row.apiKeyId ? copy.apiKeyConnected : copy.apiKeyMissing}
+            tone={row.apiKeyId ? 'success' : 'neutral'}
+          />
+        ),
+      },
+      {
         key: 'actions',
         label: copy.actions,
         className: 'w-56 text-right',
         render: (row) => (
           <div className='flex items-center justify-end gap-2'>
-            <TablePresetButtonAction
-              preset='details'
-              label={expandedRows[row.id] ? copy.hideDetails : copy.details}
-              icon={
-                expandedRows[row.id] ? (
-                  <LuChevronUp className='h-3.5 w-3.5' />
-                ) : (
-                  <LuChevronDown className='h-3.5 w-3.5' />
-                )
-              }
-              onClick={() =>
-                setExpandedRows((prev) => ({
-                  ...prev,
-                  [row.id]: !prev[row.id],
-                }))
-              }
-            />
             <TablePresetLinkAction
               preset='edit'
               href={dashboardRoutes.wallets.edit(row.id)}
@@ -270,20 +254,20 @@ export default function WalletsListTable({ rows, onDeleted, onCloned }: WalletsL
     [
       copy.actions,
       copy.allocation,
+      copy.apiKey,
+      copy.apiKeyConnected,
+      copy.apiKeyMissing,
       copy.baseCurrency,
       copy.delete,
       copy.deleting,
-      copy.details,
       copy.edit,
       copy.exchange,
-      copy.hideDetails,
       copy.clone,
       copy.marketType,
       copy.mode,
       copy.name,
       cloningId,
       deletingId,
-      expandedRows,
       formatAllocation,
       handleClone,
     ]
@@ -311,39 +295,6 @@ export default function WalletsListTable({ rows, onDeleted, onCloned }: WalletsL
         advancedMode
         columnsToggleLabel={copy.columns}
         columnVisibilityPreferenceKey='wallets.list'
-        isRowExpanded={(row) => Boolean(expandedRows[row.id])}
-        renderExpandedRow={(row) => (
-          <div className='rounded-box border border-base-300 bg-base-200/60 p-3'>
-            <div className='grid gap-2 text-xs md:grid-cols-3'>
-              <p>
-                <span className='opacity-70'>{copy.mode}: </span>
-                <span className='font-medium'>{row.mode}</span>
-              </p>
-              <p>
-                <span className='opacity-70'>{copy.marketType}: </span>
-                <span className='font-medium'>{row.marketType}</span>
-              </p>
-              <p>
-                <span className='opacity-70'>{copy.allocationMode}: </span>
-                <span className='font-medium'>{row.liveAllocationMode ?? copy.paperLabel}</span>
-              </p>
-              <p>
-                <span className='opacity-70'>{copy.allocation}: </span>
-                <span className='font-medium'>{formatAllocation(row)}</span>
-              </p>
-              <p>
-                <span className='opacity-70'>{copy.baseCurrency}: </span>
-                <span className='font-medium'>{row.baseCurrency}</span>
-              </p>
-              <p>
-                <span className='opacity-70'>{copy.apiKey}: </span>
-                <span className='font-medium'>
-                  {row.apiKeyId ? copy.apiKeyConnected : copy.apiKeyMissing}
-                </span>
-              </p>
-            </div>
-          </div>
-        )}
       />
 
       <ConfirmModal

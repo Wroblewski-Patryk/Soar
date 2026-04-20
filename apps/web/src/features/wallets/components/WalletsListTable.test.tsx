@@ -1,43 +1,59 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import WalletsListTable from "./WalletsListTable";
-import { I18nProvider } from "@/i18n/I18nProvider";
+import WalletsListTable from './WalletsListTable';
+import { I18nProvider } from '@/i18n/I18nProvider';
+import type { Wallet } from '../types/wallet.type';
 
 const deleteWalletMock = vi.hoisted(() => vi.fn());
 const createWalletMock = vi.hoisted(() => vi.fn());
 
-vi.mock("../services/wallets.service", () => ({
+vi.mock('../services/wallets.service', () => ({
   deleteWallet: deleteWalletMock,
   createWallet: createWalletMock,
 }));
 
-describe("WalletsListTable", () => {
+describe('WalletsListTable', () => {
   afterEach(() => {
     vi.clearAllMocks();
     window.localStorage.clear();
   });
 
-  const renderTable = (onDeleted = vi.fn(), onCloned = vi.fn()) => {
-    window.localStorage.setItem("cryptosparrow-locale", "en");
+  const walletRows: Wallet[] = [
+    {
+      id: 'wallet-1',
+      name: 'Main wallet',
+      mode: 'LIVE',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      paperInitialBalance: 0,
+      liveAllocationMode: 'PERCENT',
+      liveAllocationValue: 25,
+      apiKeyId: 'key-1',
+      manageExternalPositions: true,
+    },
+    {
+      id: 'wallet-2',
+      name: 'Paper wallet',
+      mode: 'PAPER',
+      exchange: 'BINANCE',
+      marketType: 'SPOT',
+      baseCurrency: 'USDT',
+      paperInitialBalance: 10_000,
+      liveAllocationMode: null,
+      liveAllocationValue: null,
+      apiKeyId: null,
+      manageExternalPositions: false,
+    },
+  ];
+
+  const renderTable = (onDeleted = vi.fn(), onCloned = vi.fn(), rows: Wallet[] = walletRows) => {
+    window.localStorage.setItem('cryptosparrow-locale', 'en');
     render(
       <I18nProvider>
         <WalletsListTable
-          rows={[
-            {
-              id: "wallet-1",
-              name: "Main wallet",
-              mode: "LIVE",
-              exchange: "BINANCE",
-              marketType: "FUTURES",
-              baseCurrency: "USDT",
-              paperInitialBalance: 0,
-              liveAllocationMode: "PERCENT",
-              liveAllocationValue: 25,
-              apiKeyId: "key-1",
-              manageExternalPositions: true,
-            },
-          ]}
+          rows={rows}
           onDeleted={onDeleted}
           onCloned={onCloned}
         />
@@ -47,52 +63,57 @@ describe("WalletsListTable", () => {
     return { onDeleted, onCloned };
   };
 
-  it("shows expandable wallet details row", () => {
+  it('shows inline API key column and removes Details action/row contract', () => {
     renderTable();
 
-    fireEvent.click(screen.getByRole("button", { name: "Details" }));
+    expect(screen.getByRole('columnheader', { name: 'API key' })).toBeInTheDocument();
+    expect(screen.getByText('Connected')).toBeInTheDocument();
+    expect(screen.getByText('Not connected')).toBeInTheDocument();
 
-    expect(screen.getByText("Allocation mode:")).toBeInTheDocument();
-    expect(screen.getByText("API key:")).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Details' })).not.toBeInTheDocument();
+    expect(screen.queryByText('Allocation mode:')).not.toBeInTheDocument();
   });
 
-  it("clones wallet using create contract payload and appends clone-marked name", async () => {
+  it('clones wallet using create contract payload and appends clone-marked name', async () => {
     const onCloned = vi.fn();
     createWalletMock.mockResolvedValue({
-      id: "wallet-clone-1",
-      name: "Main wallet (clone)",
-      mode: "LIVE",
-      exchange: "BINANCE",
-      marketType: "FUTURES",
-      baseCurrency: "USDT",
+      id: 'wallet-clone-1',
+      name: 'Main wallet (clone)',
+      mode: 'LIVE',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
       paperInitialBalance: 0,
-      liveAllocationMode: "PERCENT",
+      liveAllocationMode: 'PERCENT',
       liveAllocationValue: 25,
-      apiKeyId: "key-1",
+      apiKeyId: 'key-1',
       manageExternalPositions: true,
     });
 
     renderTable(vi.fn(), onCloned);
 
-    fireEvent.click(screen.getByRole("button", { name: "Clone" }));
+    const mainWalletRow = screen.getByText('Main wallet').closest('tr');
+    expect(mainWalletRow).not.toBeNull();
+    const cloneButton = mainWalletRow?.querySelector('button[aria-label="Clone"]');
+    expect(cloneButton).not.toBeNull();
+    fireEvent.click(cloneButton as HTMLButtonElement);
 
     await waitFor(() => {
       expect(createWalletMock).toHaveBeenCalledWith({
-        name: "Main wallet (clone)",
-        mode: "LIVE",
-        exchange: "BINANCE",
-        marketType: "FUTURES",
-        baseCurrency: "USDT",
+        name: 'Main wallet (clone)',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
         paperInitialBalance: 0,
-        liveAllocationMode: "PERCENT",
+        liveAllocationMode: 'PERCENT',
         liveAllocationValue: 25,
-        apiKeyId: "key-1",
+        apiKeyId: 'key-1',
         manageExternalPositions: true,
       });
       expect(onCloned).toHaveBeenCalledWith(
-        expect.objectContaining({ id: "wallet-clone-1", name: "Main wallet (clone)" })
+        expect.objectContaining({ id: 'wallet-clone-1', name: 'Main wallet (clone)' })
       );
     });
   });
-
 });
