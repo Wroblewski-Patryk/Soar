@@ -37,6 +37,15 @@ Last updated: 2026-04-21
 
 ## DONE
 
+- [x] DOCARC-01 canonical architecture documentation restructure
+  - 2026-04-21: Rebuilt `docs/architecture/` into a numbered canonical set for
+    Soar behavior and runtime invariants, moved non-canonical
+    closure/remediation files to `docs/architecture/archive/`, converted old
+    overview files to compatibility stubs, normalized docs indexes to the new
+    reading order, reduced `docs/planning/open-decisions.md` to
+    unresolved-only usage, and added agent-facing documentation governance
+    workflow rules in `.agents` and `.codex` so architecture truth is no
+    longer split across planning, modules, and legacy architecture notes.
 - [x] UOLF-HF-01 fill-price integrity hotfix (`UOLF` regression closure)
   - 2026-04-21: Closed regression where `MARKET` lifecycle could open positions with zero entry by hardening order-fill-position transition to require positive resolved fill price, propagating runtime `markPrice` into order-open command payloads (`open/close/DCA`), adding dashboard manual-order MARKET price fallback to reference price, and locking coverage with focused API/web regressions plus deploy gates (`api/web typecheck`, `api/web build`, `quality:guardrails`).
 - [x] PLNC-D planning parity sync (`PLNC-09`)

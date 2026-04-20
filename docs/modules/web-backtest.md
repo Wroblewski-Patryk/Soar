@@ -8,6 +8,12 @@
 - Last updated: 2026-04-20
 - Related planning task: `BTCF-11`
 
+## Canonical Architecture Linkage
+Canonical backtest and parity rules live in:
+- `docs/architecture/05_strategy-signal-and-decision-flow.md`
+- `docs/architecture/07_modes-parity-and-data.md`
+- `docs/architecture/08_operator-surfaces-and-routing.md`
+
 ## 1. Purpose and Scope
 - Implements backtest execution UX:
   - run creation

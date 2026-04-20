@@ -1,121 +1,14 @@
-﻿# Trading Logic
+# Trading Logic (Compatibility Stub)
 
-## Current State
-- Strategy and market/bot configuration layers are available.
-- Orders include read and write-side lifecycle actions (`open`/`cancel`/`close`) with risk guards.
-- Exchange connector services and runtime execution orchestrator are available with smoke-tested signal -> order -> position flow.
-- Dashboard has a live market bar UI ready for SSE market stream events.
-- Server-owned SSE fan-out is wired and runtime signal automation is active in worker execution flow.
-- Runtime management covers SL/TP/trailing/DCA automation and periodic market/position scan re-evaluation.
+This file is retained for compatibility with older references.
 
-## Strategy Builder Requirements (MVP)
-- Rule-based builder (list of conditions).
-- Visual editor (drag-and-drop) for composing rules.
-- Indicators: must support a wide set of standard indicators.
-- Logic: AND/OR groups and comparisons.
-- Multi-timeframe: strategy can reference multiple timeframes.
-- Multiple entry and exit rules.
-- Risk controls: TP, SL, trailing, leverage, position sizing rules.
-- Strategy presets (trend, mean reversion, breakout, etc.).
-- Export-ready JSON structure (versioning planned after MVP).
+The canonical trading architecture now lives in:
+- [05 Strategy, Signal, and Decision Flow](./05_strategy-signal-and-decision-flow.md)
+- [06 Execution Lifecycle](./06_execution-lifecycle.md)
+- [07 Modes, Parity, and Data](./07_modes-parity-and-data.md)
 
-## Strategy Builder (Planned)
-- Node-based builder (graph style) as an advanced mode.
-- Nested condition groups beyond simple AND/OR lists.
-
-## Order Types (MVP)
-- Market
-- Limit
-- Stop
-- Stop-limit
-- Take-profit
-- Trailing
-
-## Position Sizing (MVP)
-- Fixed amount.
-- Percentage of balance.
-- Risk-based sizing (per trade).
-
-## Leverage Strategy (Recommendation)
-- Set leverage per strategy (default) for clarity and safety.
-- Allow per-position override later if needed.
-
-## Market Universe and Symbols
-- Bots operate on a market universe built from a base currency (for example USDT).
-- The universe can be filtered by rules (for example volume thresholds).
-- Users can create named symbol groups from the filtered universe.
-- Users can whitelist or blacklist symbols.
-- Canonical symbol composition formula is: `final = unique(filter_result U whitelist) - blacklist`.
-- `filter_result` exists only when the min-quote-volume filter is enabled.
-- If filter is disabled and whitelist is empty, result is empty (no implicit all-symbol fallback).
-- Blacklist-only input does not add symbols by itself.
-- Stable-to-stable pairs (for example USDT/USDC) should be auto-excluded by default.
-- Manual overrides must always be possible for exclusions and inclusions.
-- Each bot can trade multiple symbols and multiple strategies mapped to symbol groups.
-- Binding model: BotStrategy binds one strategy to one symbol group for a given bot; multiple bindings per bot are supported.
-
-## Position Rules
-- At most one open position per symbol at a time.
-- Total concurrent positions are capped by a user-defined max.
-- Each position belongs to a specific strategy.
-- No flip on symbol while position is open (opposite side may open only after close).
-
-## Risk Management (MVP)
-- Max open positions (per user or per bot).
-- TP and SL defined by the strategy that opens the position.
-- Trailing stop: percentage or fixed levels.
-- DCA: add to position on positive or negative conditions.
-- DCA-first guard: if DCA levels are still pending and affordable, do not close by TTP/TSL/SL yet.
-- DCA affordability exception: when next DCA is not affordable, TTP/TSL/SL may execute for protection.
-
-## Risk Management (Planned)
-- Trailing based on volatility or ATR.
-
-## Data Sources
-- MVP live path target: WebSocket stream for live prices/candles.
-- MVP historical/fallback path: REST OHLCV ingestion.
-- Planned: order book, funding, open interest.
-
-## Target Flow
-1. Fetch market data and build OHLCV candles.
-2. Compute indicators per strategy interval.
-3. Evaluate strategy rules and produce signals.
-4. Run pre-trade analysis before opening a position.
-5. Execute orders with configured risk parameters.
-6. Track and update positions with TP, SL, trailing, and DCA logic.
-7. Log all decisions and outcomes for audit.
-
-## Execution Modes
-- Backtest. Historical simulation with trade list and chart overlays.
-- Paper. Live data and simulated execution with fees and slippage.
-- Live. Real exchange execution via API.
-- Local-only. Self-hosted execution for a single owner.
-- Backtest, paper, and live must use one shared lifecycle decision algorithm (same order and reasons), with only data/execution adapters differing.
-
-## Re-entry Rules
-- New positions open only after a fresh signal and analysis pass.
-
-## Backtesting Rules (MVP)
-- Must include fees, slippage, and funding.
-- Must calculate profit, loss, drawdown, and trade-level PnL.
-- Must produce a summary report from the same data that powers live stats.
-- New run creation uses explicit selected time window (`startAt/endAt`) as the
-  primary candle-range source; legacy runs without range fields remain readable
-  through fallback timeline anchoring.
-- Timeline data for charting is exposed in chunks (cursor + chunk size) so UI can stream large symbol sets without blocking.
-- Backtest chart overlays are built from:
-  - candle series (OHLCV),
-  - strategy indicators (price panel + oscillator panel),
-  - position lifecycle events (ENTRY/EXIT in MVP, DCA/TP/SL planned).
-- Event parity rule: markers/counters must come from lifecycle events generated by the shared engine, never from UI-only heuristics.
-
-## Lifecycle Order Contract
-- Canonical sequence per position cycle:
-  1. DCA
-  2. Close phase by mode:
-     - basic: TP -> SL
-     - advanced: TTP -> TSL
-  3. Liquidation/account-floor protections
-- Full parity matrix:
-  - [Position Lifecycle Parity Matrix](/C:/Personal/Projekty/Aplikacje/CryptoSparrow/docs/architecture/position-lifecycle-parity-matrix.md)
-  - [Legacy CryptoBot Positions Deep Analysis](/C:/Personal/Projekty/Aplikacje/CryptoSparrow/docs/architecture/legacy-cryptobot-positions-analysis.md)
+Supporting detail remains in:
+- `indicator-registry-parity-contract.md`
+- `runtime-signal-merge-contract.md`
+- `runtime-execution-idempotency-contract.md`
+- `position-lifecycle-parity-matrix.md`

@@ -8,6 +8,13 @@
 - Last updated: 2026-04-12
 - Related planning task: `DCP-09`
 
+## Canonical Architecture Linkage
+Canonical bot topology and operator-surface rules live in:
+- `docs/architecture/03_domain-model.md`
+- `docs/architecture/04_runtime-contexts.md`
+- `docs/architecture/08_operator-surfaces-and-routing.md`
+- `docs/architecture/11_assistant-runtime.md`
+
 ## 1. Purpose and Scope
 - Owns bot UI lifecycle and runtime operator surfaces:
   - list and delete bots

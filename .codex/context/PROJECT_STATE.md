@@ -12,6 +12,10 @@ Last updated: 2026-04-21
   polish on top of live-runtime safety
 
 ## Product Decisions (Confirmed)
+- 2026-04-21: `docs/architecture/` is the canonical source of truth for how
+  Soar works; resolved architecture decisions no longer live in
+  `docs/planning/open-decisions.md`, and module deep-dives are implementation
+  companions rather than primary behavior specs.
 - 2026-04-02: Coolify on VPS with explicit stage and prod split remains the
   default deployment topology.
 - 2026-04-03: phased brand migration from `CryptoSparrow` to `Soar` is real,
@@ -140,6 +144,18 @@ Last updated: 2026-04-21
   - activate the next READY item from `docs/planning/mvp-next-commits.md`.
 
 ## Recent Progress
+- 2026-04-21: rebuilt the architecture documentation set into a numbered
+  canonical reading order under `docs/architecture/`
+  (`01_overview-and-principles` through
+  `12_documentation-governance`), converted `system-architecture`,
+  `database`, `trading-logic`, and `tech-stack` into compatibility stubs,
+  normalized docs indexes to the new structure, slimmed
+  `docs/planning/open-decisions.md` to unresolved-only usage, aligned product
+  tier terminology to the canonical `FREE/ADVANCED/PROFESSIONAL` catalog, and
+  archived non-canonical architecture closure/remediation snapshots under
+  `docs/architecture/archive/`; agent-facing documentation workflow rules were
+  also added under `.agents/workflows/documentation-governance.md` and wired
+  into `.codex/agents/*` plus `.agents/prompts/product-docs.md`.
 - 2026-04-21: closed `UOLF-HF-01` hotfix by enforcing positive fill-price
   integrity in order-fill-position lifecycle (no `entryPrice=0` position-open
   path), propagating runtime `markPrice` through MARKET open commands

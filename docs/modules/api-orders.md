@@ -8,6 +8,12 @@
 - Last updated: 2026-04-20
 - Related planning task: `UOLF-01`
 
+## Canonical Architecture Linkage
+Canonical order and lifecycle rules live in:
+- `docs/architecture/04_runtime-contexts.md`
+- `docs/architecture/06_execution-lifecycle.md`
+- `docs/architecture/10_safety-entitlements-and-risk.md`
+
 ## 1. Purpose and Scope
 - Owns order read + command API:
   - list/get orders

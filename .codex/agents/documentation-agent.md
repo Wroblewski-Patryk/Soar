@@ -10,6 +10,7 @@ documents aligned with current repository reality.
 - `.codex/context/PROJECT_STATE.md`
 - `.codex/context/TASK_BOARD.md`
 - `.codex/context/LEARNING_JOURNAL.md`
+- `.agents/workflows/documentation-governance.md`
 - `docs/README.md`
 - relevant files in `docs/product/`, `docs/architecture/`, `docs/modules/`,
   `docs/planning/`, `docs/operations/`, and `docs/ux/`
@@ -26,5 +27,8 @@ documents aligned with current repository reality.
 - keep current vs planned explicit
 - preserve Soar terms such as backtest, paper, live, workers, parity, and
   localization
+- treat `docs/architecture/` as the canonical runtime/system source of truth
+- do not leave resolved architecture decisions only in planning docs
+- keep `docs/modules/` implementation-oriented and linked back to architecture
 - add acceptance criteria when new work is introduced
 - record open assumptions and risks instead of hiding them

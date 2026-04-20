@@ -8,6 +8,12 @@
 - Last updated: 2026-04-20
 - Related planning task: `MURC-12`
 
+## Canonical Architecture Linkage
+Canonical market-scope and context rules live in:
+- `docs/architecture/03_domain-model.md`
+- `docs/architecture/04_runtime-contexts.md`
+- `docs/architecture/05_strategy-signal-and-decision-flow.md`
+
 ## 1. Purpose and Scope
 - Owns market universe CRUD and exchange market catalog read APIs.
 - Resolves effective symbol sets using one canonical composition contract:

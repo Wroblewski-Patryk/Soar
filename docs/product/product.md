@@ -29,14 +29,14 @@ Primary target is advanced users who already understand trading concepts and can
 - Interval options are tiered by subscription plan so faster cadences are available in higher plans.
 - One global V1 interval catalog shared by cadence and indicator/timeframe selectors: `1m`, `5m`, `15m`, `30m`, `1h`, `4h`, `8h`, `12h`, `1d`, `1w`, `1M` (minimum allowed value is `1m`).
 - V1 baseline cadence by plan:
-  - `free`: market `5m`, positions `5m`.
-  - `simple`: market `1h`, positions `1h`.
-  - `advanced`: market `1m`, positions `1m`.
-- `free` can choose only low-load options: `5m` (default) or `15m`.
+  - `FREE`: market `5m`, positions `5m`.
+  - `ADVANCED`: market `1h`, positions `1h`.
+  - `PROFESSIONAL`: market `1m`, positions `1m`.
+- `FREE` can choose only low-load options: `5m` (default) or `15m`.
 - Cadence picker shows the same interval list for all plans, with unavailable options visible as disabled.
-- In `free`, enabled options are exactly `5m` and `15m`; faster values remain visible but disabled.
-- `simple` enabled options: `1m`, `5m`, `15m`, `30m`, `1h`.
-- `advanced` enabled options: full global interval catalog.
+- In `FREE`, enabled options are exactly `5m` and `15m`; faster values remain visible but disabled.
+- `ADVANCED` enabled options: `1m`, `5m`, `15m`, `30m`, `1h`.
+- `PROFESSIONAL` enabled options: full global interval catalog.
 - Baseline values can be tuned from post-MVP admin controls based on observed production load.
 
 ## Current Scope (Implemented)
@@ -76,11 +76,11 @@ Primary target is advanced users who already understand trading concepts and can
 - Internationalization: EN default + PL in MVP.
 
 ## Runtime Ownership Model (V1)
-- `Bot` is the explicit runtime unit (mode, lifecycle, exchange/account execution context).
+- `Bot` is the explicit runtime unit (lifecycle, wallet-owned execution context, runtime topology).
 - A bot can run multiple strategies.
-- A bot can be attached to multiple symbol groups through BotStrategy bindings.
-- A symbol group can host multiple strategy bindings for the same bot (distinct BotStrategy rows).
-- BotStrategy is the explicit runtime execution scope (`bot + symbol group + strategy`).
+- A bot can be attached to multiple market groups through `BotMarketGroup`.
+- Each market group can host multiple strategy bindings through `MarketGroupStrategyLink`.
+- `MarketGroupStrategyLink` is the explicit strategy attachment unit inside runtime topology.
 - No per-bot strategy cap is enforced in V1.
 - A user can run multiple bots.
 - Bot-count entitlement is defined by subscription plan.
@@ -90,7 +90,7 @@ Primary target is advanced users who already understand trading concepts and can
 ## AI Assistant Ownership Model (Planned)
 - A user can create and operate multiple AI assistants.
 - Each assistant has independent mandate, risk profile, and activation scope.
-- Assistant scope can target selected bots, symbol groups, or BotStrategy bindings.
+- Assistant scope can target selected bots, bot market-groups, or strategy-link bindings.
 
 ## Frontend and Admin Surfaces (Post-MVP / V1.1 Planned)
 - Scope note: `admin` and `billing` surfaces below are planning-only and are not part of current V1 implementation closure.
@@ -102,19 +102,19 @@ Primary target is advanced users who already understand trading concepts and can
 - At bot cap, `Create bot` remains visible but disabled, with tooltip/helper copy and one-plan `Upgrade to ...` CTA.
 
 ## Launch Subscription Presets (Post-MVP / V1.1 Planned Defaults)
-- `free`: 1 bot, PAPER only, max 1 strategy per bot, backtest range limited to last 30 days, max 1 concurrent backtest.
-- `free`: seed limits `LIVE=0`, `PAPER=1`; both pools are independently configurable from admin panel.
-- `free`: no LIVE access and no time-limited LIVE trial in V1.
-- `simple`: seed limits `LIVE=1`, `PAPER=1`; both pools are independently configurable from admin panel (LIVE seed slot is not converted to extra PAPER in seed model), max 3 concurrent backtests.
-- `advanced`: seed limits `LIVE=3`, `PAPER=3`; both pools are independently configurable from admin panel (all 3 seed LIVE can run concurrently, subject to consent and safety limits), max 10 concurrent backtests.
+- `FREE`: 1 bot, PAPER only, max 1 strategy per bot, backtest range limited to last 30 days, max 1 concurrent backtest.
+- `FREE`: seed limits `LIVE=0`, `PAPER=1`; both pools are independently configurable from admin panel.
+- `FREE`: no LIVE access and no time-limited LIVE trial in V1.
+- `ADVANCED`: seed limits `LIVE=3`, `PAPER=3`; both pools are independently configurable from admin panel, max 3 concurrent backtests.
+- `PROFESSIONAL`: seed limits `LIVE=10`, `PAPER=10`; both pools are independently configurable from admin panel, max 10 concurrent backtests.
 - Presets are editable from admin panel and are not hardcoded forever.
 
 ## History Export Policy (Post-MVP / V1.1 Planned)
 - CSV export is available for active and `PAST_DUE` accounts.
 - Plan-based max export range:
-  - `free`: last 3 months.
-  - `simple`: last 6 months.
-  - `advanced`: last 12 months.
+  - `FREE`: last 3 months.
+  - `ADVANCED`: last 6 months.
+  - `PROFESSIONAL`: last 12 months.
 - Export throttling: max 1 CSV export per user per 10 minutes by default.
 - Cooldown is configurable from admin controls based on average generation time and platform load.
 
@@ -182,7 +182,7 @@ Primary target is advanced users who already understand trading concepts and can
 - Expiry notification timing: emit one central notification at T+1 minute after subscription expiry.
 - In `PAST_DUE`, user still has dashboard access for history and settings; blocked scope is limited to paid runtime execution features.
 - Disabled LIVE controls include short contextual helper copy with resume hint, instead of repeating full subscription warning blocks.
-- Locked feature CTA uses a consistent pattern with exactly one explicit entitlement target: the nearest higher plan that unlocks the feature (for example: `Upgrade to: Simple`, or `Upgrade to: Advanced` when needed).
+- Locked feature CTA uses a consistent pattern with exactly one explicit entitlement target: the nearest higher plan that unlocks the feature (for example: `Upgrade to: Advanced`, or `Upgrade to: Professional` when needed).
 
 ## MVP Strategy Schema (Frozen)
 - Strategy payload uses sections: `entry`, `exit`, `risk`, `filters`, `timeframes`.

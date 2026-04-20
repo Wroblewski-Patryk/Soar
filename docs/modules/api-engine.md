@@ -8,6 +8,13 @@
 - Last updated: 2026-04-12
 - Related planning task: `DCP-05`
 
+## Canonical Architecture Linkage
+Canonical behavior and invariants live in `docs/architecture/`, especially:
+- `05_strategy-signal-and-decision-flow.md`
+- `06_execution-lifecycle.md`
+- `07_modes-parity-and-data.md`
+- `11_assistant-runtime.md`
+
 ## 1. Purpose and Scope
 - Implements runtime trading decision and execution core for `PAPER` and `LIVE`.
 - Owns signal loop orchestration, pre-trade risk checks, execution routing, position automation, and assistant orchestration contracts.

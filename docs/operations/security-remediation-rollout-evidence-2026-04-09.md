@@ -36,8 +36,8 @@ Observed summary:
 - Missing evidence fields: `16`
 
 References:
-- [v1-rc-external-gates-status.md](/C:/Personal/Projekty/Aplikacje/CryptoSparrow/docs/operations/v1-rc-external-gates-status.md)
-- [\_artifacts-rc-evidence-check-latest.json](/C:/Personal/Projekty/Aplikacje/CryptoSparrow/docs/operations/_artifacts-rc-evidence-check-latest.json)
+- [v1-rc-external-gates-status.md](./v1-rc-external-gates-status.md)
+- [\_artifacts-rc-evidence-check-latest.json](./_artifacts-rc-evidence-check-latest.json)
 
 Decision:
 - STAGE promotion remains `HOLD` until external evidence gaps are closed.
@@ -58,10 +58,10 @@ pnpm run ops:db:restore-drill:local
 ```
 
 Artifacts generated:
-- [v1-db-restore-check-2026-04-09T02-11-15-223Z.md](/C:/Personal/Projekty/Aplikacje/CryptoSparrow/docs/operations/v1-db-restore-check-2026-04-09T02-11-15-223Z.md)
-- [\_artifacts-db-restore-check-2026-04-09T02-11-15-223Z.txt](/C:/Personal/Projekty/Aplikacje/CryptoSparrow/docs/operations/_artifacts-db-restore-check-2026-04-09T02-11-15-223Z.txt)
-- [v1-restore-drill-local-2026-04-09T02-11-17-898Z.md](/C:/Personal/Projekty/Aplikacje/CryptoSparrow/docs/operations/v1-restore-drill-local-2026-04-09T02-11-17-898Z.md)
-- [\_artifacts-restore-drill-local-2026-04-09T02-11-17-898Z.json](/C:/Personal/Projekty/Aplikacje/CryptoSparrow/docs/operations/_artifacts-restore-drill-local-2026-04-09T02-11-17-898Z.json)
+- [v1-db-restore-check-2026-04-09T02-11-15-223Z.md](./v1-db-restore-check-2026-04-09T02-11-15-223Z.md)
+- [\_artifacts-db-restore-check-2026-04-09T02-11-15-223Z.txt](./_artifacts-db-restore-check-2026-04-09T02-11-15-223Z.txt)
+- [v1-restore-drill-local-2026-04-09T02-11-17-898Z.md](./v1-restore-drill-local-2026-04-09T02-11-17-898Z.md)
+- [\_artifacts-restore-drill-local-2026-04-09T02-11-17-898Z.json](./_artifacts-restore-drill-local-2026-04-09T02-11-17-898Z.json)
 
 Result:
 - Local rollback/restore drill: PASS.

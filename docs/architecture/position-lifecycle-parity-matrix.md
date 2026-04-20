@@ -10,7 +10,7 @@ This matrix defines lifecycle behavior that must be identical across:
 - `LIVE`
 
 Reference deep-dive:
-- [Legacy CryptoBot Positions Module - Deep Analysis](/C:/Personal/Projekty/Aplikacje/CryptoSparrow/docs/architecture/legacy-cryptobot-positions-analysis.md)
+- [Legacy CryptoBot Positions Module - Deep Analysis](./legacy-cryptobot-positions-analysis.md)
 
 ---
 

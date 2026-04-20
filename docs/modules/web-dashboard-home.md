@@ -8,6 +8,12 @@
 - Last updated: 2026-04-20
 - Related planning task: `UOLF-01`
 
+## Canonical Architecture Linkage
+Canonical surface and routing rules live in:
+- `docs/architecture/04_runtime-contexts.md`
+- `docs/architecture/08_operator-surfaces-and-routing.md`
+- `docs/architecture/09_integrations-deployment-and-runtime-services.md`
+
 ## 1. Purpose and Scope
 - Implements dashboard control-center home view (`/dashboard`) for runtime monitoring.
 - Provides:

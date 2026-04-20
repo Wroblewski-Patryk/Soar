@@ -8,6 +8,13 @@
 - Last updated: 2026-04-20
 - Related planning task: `UOLF-01`
 
+## Canonical Architecture Linkage
+Canonical runtime topology and ownership rules live in:
+- `docs/architecture/03_domain-model.md`
+- `docs/architecture/04_runtime-contexts.md`
+- `docs/architecture/06_execution-lifecycle.md`
+- `docs/architecture/08_operator-surfaces-and-routing.md`
+
 ## 1. Purpose and Scope
 - Owns bot command + runtime read APIs:
   - bot lifecycle CRUD

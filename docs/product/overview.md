@@ -1,28 +1,23 @@
-# CryptoSparrow Documentation Overview
+# CryptoSparrow / Soar Documentation Overview
 
-This documentation is the technical product compass for CryptoSparrow. It describes what exists today, what is planned, and how the pieces connect.
-Language policy: documentation stays in English.
+This documentation set is the project operating manual for humans and coding agents.
+
+Language policy: repository documentation stays in English.
 
 ## How to Use This Doc Set
 - Start here to understand scope and navigation.
-- Use `autonomous-agent-vision.md` first for long-range product direction ("north star").
-- Use `product.md` for goals and non-goals.
-- Use `architecture.md`, `modules.md`, and `database.md` to implement features.
-- Use `trading-logic.md` and `ai.md` for the future engine.
-- Use `security-and-risk.md` as a hard guardrail.
-- Use `ui-ux-foundation.md` for global UX, dashboard assumptions, and cross-module UI consistency.
-- Keep `roadmap.md` in sync with what we are actively building.
-- Use `mvp-execution-plan.md` as the MVP master checklist.
-- Use `v1-live-release-plan.md` as the official V1.0 launch path.
-- Use `mvp-next-commits.md` as the active short queue.
-- Use `project-delivery-plan.md` for end-to-end stage mapping (MVP -> V1.0).
-- Use `audit-remediation-2026-03-16.md` for the current high-priority remediation gate.
-- Use `agent-setup-blueprint.md` to coordinate role-based agents.
+- Use `autonomous-agent-vision.md` for the long-range product direction.
+- Use `product.md` for product goals, non-goals, scope, and user-facing rules.
+- Use `docs/architecture/README.md` and the numbered architecture files for the canonical system behavior.
+- Use `docs/modules/` when you need implementation ownership, code-path mapping, and test entrypoints.
+- Use `docs/operations/` for deployment, smoke checks, rollback, and runtime operations.
+- Use `docs/planning/mvp-execution-plan.md` and `docs/planning/mvp-next-commits.md` for active execution sequencing only.
 
 ## Definition of Done for Documentation
-- Feature is described in purpose, UX flow, API surface, and data storage.
-- "Current" vs "Planned" is explicitly stated.
-- Files use UTF-8 encoding and avoid mixed/mojibake characters.
-- Risks and security implications are noted.
-- Open architectural questions are tracked in `open-decisions.md`.
-- Changes remain aligned with `autonomous-agent-vision.md` and do not promise guaranteed returns.
+- feature behavior is recorded in the correct folder,
+- architecture invariants live in `docs/architecture/`,
+- implementation ownership lives in `docs/modules/`,
+- plans do not remain the only place where accepted behavior is described,
+- current vs planned scope is explicit,
+- risks and safety implications are noted,
+- unresolved decisions are tracked in `docs/planning/open-decisions.md`.

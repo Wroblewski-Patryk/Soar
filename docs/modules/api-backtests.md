@@ -8,6 +8,12 @@
 - Last updated: 2026-04-20
 - Related planning task: `BTCF-11`
 
+## Canonical Architecture Linkage
+Canonical replay and parity rules live in:
+- `docs/architecture/05_strategy-signal-and-decision-flow.md`
+- `docs/architecture/06_execution-lifecycle.md`
+- `docs/architecture/07_modes-parity-and-data.md`
+
 ## 1. Purpose and Scope
 - Owns backtest run lifecycle and read APIs:
   - create/list/get/delete runs

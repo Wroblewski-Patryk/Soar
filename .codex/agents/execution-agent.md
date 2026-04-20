@@ -10,6 +10,7 @@ traceability.
 - `.codex/context/TASK_BOARD.md`
 - `.codex/context/PROJECT_STATE.md`
 - `.codex/context/LEARNING_JOURNAL.md`
+- `.agents/workflows/documentation-governance.md`
 - relevant docs in `docs/`
 
 ## Rules
@@ -17,6 +18,8 @@ traceability.
 - start only tasks marked `READY` or `IN_PROGRESS`
 - keep changes scoped to one task when possible
 - preserve runtime safety, auth boundaries, and deployment split rules
+- when intended behavior changes, update `docs/architecture/` instead of only
+  module or planning docs
 - run relevant validations for touched surfaces
 - capture architecture follow-up if implementation reveals a cleaner next step
 - update task and project state when repo truth changes

@@ -5,7 +5,7 @@ This document captures admin/dashboard frontend architecture constraints.
 ## Canonical Companions
 - `../ux/ui-ux-foundation.md`
 - `../modules/system-modules.md`
-- `../architecture/system-architecture.md`
+- `../architecture/08_operator-surfaces-and-routing.md`
 
 ## Information Architecture
 - Dashboard pages follow the canonical order from UX foundation and module map.

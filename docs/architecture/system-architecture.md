@@ -1,105 +1,14 @@
-# Architecture
+# System Architecture (Compatibility Stub)
 
-## Current Architecture
-- Monorepo with `apps/api` and `apps/web`.
-- Server is an Express API with Prisma + PostgreSQL.
-- Client is a Next.js App Router frontend.
+This file is retained for compatibility with older links.
 
-## Target Architecture (Incremental)
-1. User configures a strategy in the UI.
-2. Strategy is stored as JSON + risk parameters.
-3. Market data pipeline computes indicators.
-4. Signal engine evaluates conditions and emits signals.
-5. Execution layer places orders and manages positions.
-6. Logs record every decision for audit and debugging.
+The canonical architecture set now lives in the numbered files in this folder.
 
-## North-Star Architecture (Agentic Target)
-Reference: `docs/product/autonomous-agent-vision.md`
+Start here instead:
+1. [01 Overview and Principles](./01_overview-and-principles.md)
+2. [02 System Topology](./02_system-topology.md)
+3. [03 Domain Model](./03_domain-model.md)
+4. [04 Runtime Contexts](./04_runtime-contexts.md)
+5. [09 Integrations, Deployment, and Runtime Services](./09_integrations-deployment-and-runtime-services.md)
 
-Long-range target is a layered agent system:
-- Data layer: market and contextual data ingestion.
-- Analysis layer: indicators, features, regime recognition.
-- Strategy layer: reusable strategy families and templates.
-- Decision layer: meta-agent action selection under constraints.
-- Risk layer: hard guardrails and exposure controls.
-- Learning layer: outcome attribution and policy improvement loop.
-
-Design rule:
-- keep current modules extraction-ready so this layered model can evolve without breaking runtime safety.
-
-## Execution Modes
-- Backtest. Historical simulation using the same logic as live.
-- Paper. Live data, simulated execution with fees and slippage.
-- Live. Real execution through exchange API.
-- Local-only. Optional self-hosted execution for a single owner.
-
-Parity rule:
-- Backtest and Paper should converge toward the same shared execution core as Live (mode-specific adapters only).
-
-## Platform Strategy
-- Web app is primary (desktop, tablet, mobile responsive).
-- PWA is preferred for mobile in MVP.
-- Native mobile can be evaluated later if needed.
-- MVP target is feature parity across responsive web and PWA views.
-
-## Internationalization (i18n)
-- Default language: EN.
-- MVP adds PL support.
-- More languages after MVP.
-- One active locale per session.
-- UI texts are translated; user-generated content is not translated.
-
-## Key Boundaries
-- Client: UX, configuration, dashboards.
-- API: REST endpoints for command/query flows + SSE for server-to-client live stream fan-out.
-- Engine: trading pipeline, queues, and execution.
-
-## Runtime Topology (V1)
-- Runtime hierarchy: `User -> Bots -> BotStrategy bindings -> execution events`.
-- Symbol groups are reusable market scopes attached through BotStrategy bindings.
-- User scope supports many bots; bot scope supports many market-group bindings and many strategy bindings.
-
-## Current Runtime Reality (As of 2026-03-21)
-- Dashboard widgets are populated via REST reads (orders/positions snapshots).
-- Dashboard includes live market bar UI wired for SSE consumption and stream-health signaling.
-- Exchange connector and live-order adapter exist at service level.
-- Binance Futures/Spot WebSocket ingest worker exists with normalized events.
-- Server-owned SSE fan-out is active via `/dashboard/market-stream/events`.
-- Runtime signal automation is active in worker flow (stream ticker -> signal -> order -> position).
-- Runtime position management automation (SL/TP/trailing/DCA) runs with periodic scan support.
-
-## Market Data Transport Strategy
-- MVP target: exchange prices and live candles via WebSocket streams.
-- REST should be fallback and historical fetch path, not primary live ticker source.
-- Client should consume server-owned stream fan-out (SSE or WebSocket gateway), not direct exchange sockets from browser.
-
-## Scalability Approach
-- Modular monolith: clear module boundaries inside one codebase.
-- Module contracts should stay extraction-ready (domain boundaries, async-friendly interfaces) for future microservice split.
-- Multi-tenant from day one (many users on one cluster).
-- Background workers separated from API when load grows.
-
-## Recommended Process Separation (When Needed)
-- API server.
-- Market data workers.
-- Backtest workers.
-- Order execution workers.
-
-## Planned Scaling
-- Queue-based workers for market processing and position checks.
-- Stateless API servers with shared database and cache.
-- Rate limiting per user and per exchange API key.
-
-## Data Retention and Caching
-- OHLCV stored in full resolution for 90 days.
-- Longer-term aggregates stored at 1D resolution for at least 1 year.
-- Redis used for caching and queues in MVP.
-
-## Process Model (MVP)
-- Start as a single service.
-- Add separate worker processes for market data and backtests when load increases.
-
-## Runtime and Availability
-- Backend is expected to run 24/7 for paper/live bot execution.
-- Deployments should minimize downtime and preserve running bot state.
-
+Use this stub only as a redirect, not as the source of truth.

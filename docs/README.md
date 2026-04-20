@@ -1,52 +1,46 @@
-﻿# Documentation Index
+# Documentation Index
 
-This folder contains canonical project documentation grouped by domain.
+This folder contains canonical project documentation grouped by responsibility.
 
 ## Structure
-- `architecture/` system architecture, data model, technical stack, runtime logic.
-- `engineering/` development workflow and testing practices.
-- `planning/` execution plans, roadmap, delivery sequencing, open decisions.
-- `product/` vision, scope, glossary, known limits, AI direction.
-- `operations/` runbooks, checklists, release operations, user/operator guides.
-- `security/` risk model, key lifecycle, ownership and consent controls.
-- `ux/` UX foundation, design system, accessibility and localization QA.
-- `governance/` team rules, repository policies, agent coordination.
-- `adr/` architecture decision records.
-- `modules/` module map and module deep dives.
+- `architecture/`: canonical description of how Soar works
+- `engineering/`: local development and testing workflow
+- `planning/`: active queue, execution plans, and unresolved decisions
+- `product/`: mission, scope, glossary, limits, and product intent
+- `operations/`: runbooks, smoke checks, deployment, rollback, and evidence
+- `security/`: security and risk policy
+- `ux/`: design-system and UX implementation guidance
+- `governance/`: repository rules and agent workflow policies
+- `adr/`: architecture decision records when decisions need standalone history
+- `modules/`: implementation-oriented deep-dives mapped to code ownership
 
 ## Recommended Reading Order
 1. `product/autonomous-agent-vision.md`
 2. `product/overview.md`
 3. `product/product.md`
-4. `architecture/system-architecture.md`
-5. `architecture/database.md`
-6. `architecture/runtime-signal-merge-contract.md`
-7. `architecture/assistant-runtime-contract.md`
-8. `architecture/position-lifecycle-parity-matrix.md`
-9. `architecture/legacy-cryptobot-positions-analysis.md`
-10. `modules/system-modules.md`
-11. `modules/module-deep-dive-template.md`
-12. `modules/module-doc-status-index.md`
-13. `planning/mvp-execution-plan.md`
-14. `planning/mvp-next-commits.md`
-15. `planning/documentation-knowledge-hardening-plan-2026-04-12.md`
-16. `modules/documentation-coverage-audit-2026-04-12.md`
-17. `planning/architecture-monolith-remediation-plan-2026-04-09.md`
-18. `planning/v1-live-release-plan.md`
-19. `planning/full-commit-roadmap.md`
-20. `planning/repo-migration-plan.md`
-21. `planning/mobile-parity-contract.md`
+4. `architecture/README.md`
+5. `architecture/01_overview-and-principles.md`
+6. `architecture/02_system-topology.md`
+7. `architecture/03_domain-model.md`
+8. `architecture/04_runtime-contexts.md`
+9. `architecture/05_strategy-signal-and-decision-flow.md`
+10. `architecture/06_execution-lifecycle.md`
+11. `architecture/07_modes-parity-and-data.md`
+12. `architecture/08_operator-surfaces-and-routing.md`
+13. `architecture/09_integrations-deployment-and-runtime-services.md`
+14. `architecture/10_safety-entitlements-and-risk.md`
+15. `architecture/11_assistant-runtime.md`
+16. `architecture/12_documentation-governance.md`
+17. `modules/system-modules.md`
+18. `planning/mvp-execution-plan.md`
+19. `planning/mvp-next-commits.md`
+20. `planning/open-decisions.md`
 
-## Governance and Source of Truth
-- Repository structure policy: `governance/repository-structure-policy.md`
-- Working agreements: `governance/working-agreements.md`
-- Agent setup: `governance/agent-setup-blueprint.md`
+## Source-of-Truth Rule
+- Architecture truth belongs in `docs/architecture/`.
+- Module deep-dives explain implementation and code ownership, not canonical behavior.
+- Planning files describe change sequencing and unresolved work, not the long-term runtime truth.
 
 ## Notes
 - Root directory stays minimal. Domain documentation belongs under `docs/` categories.
-- Historical assumptions and decisions are preserved in migrated files and planning artifacts.
-
-## New Deployment Docs (Soar Hardening)
-- `operations/soar-production-hardening-2026-04-03.md`
-- `operations/deployment-template-local-stage-production.md`
-- `operations/agent-deployment-skill-template.md`
+- Historical assumptions and rollout evidence should stay in planning and operations artifacts, not in the canonical architecture set.

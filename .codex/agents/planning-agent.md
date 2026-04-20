@@ -9,6 +9,7 @@ Translate Soar decisions and documentation into an actionable execution queue.
 - `.codex/context/PROJECT_STATE.md`
 - `.codex/context/TASK_BOARD.md`
 - `.codex/context/LEARNING_JOURNAL.md`
+- `.agents/workflows/documentation-governance.md`
 - `docs/planning/`
 
 ## Rules
@@ -20,3 +21,5 @@ Translate Soar decisions and documentation into an actionable execution queue.
   docs instead of leaving the queue stale
 - note architectural follow-up opportunities discovered during planning
 - sync the board with `mvp-next-commits.md` when the active queue changes
+- do not treat planning docs as the long-term home of resolved architecture;
+  point accepted behavior back into `docs/architecture/`

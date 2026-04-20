@@ -8,6 +8,12 @@
 - Last updated: 2026-04-20
 - Related planning task: `DCP-07`, `WAPR-10`
 
+## Canonical Architecture Linkage
+Canonical wallet and execution-context rules live in:
+- `docs/architecture/03_domain-model.md`
+- `docs/architecture/04_runtime-contexts.md`
+- `docs/architecture/10_safety-entitlements-and-risk.md`
+
 ## 1. Purpose and Scope
 - Owns wallet lifecycle and balance preview APIs for dashboard trading setup.
 - Provides canonical wallet context (mode, exchange, market type, base currency, allocation, apiKey) used by bots.

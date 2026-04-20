@@ -4,9 +4,9 @@ This file connects execution across all planning documents.
 
 ## Source Documents
 - Product scope: `docs/product/product.md`
-- Architecture and modules: `docs/architecture/system-architecture.md`, `docs/modules/system-modules.md`
-- Data model: `docs/architecture/database.md`
-- Trading behavior: `docs/architecture/trading-logic.md`
+- Architecture and modules: `docs/architecture/README.md`, `docs/modules/system-modules.md`
+- Data model: `docs/architecture/03_domain-model.md`, `docs/architecture/07_modes-parity-and-data.md`
+- Trading behavior: `docs/architecture/05_strategy-signal-and-decision-flow.md`, `docs/architecture/06_execution-lifecycle.md`
 - Safety and quality: `docs/security/security-and-risk.md`, `docs/engineering/testing.md`
 - MVP execution: `docs/planning/mvp-execution-plan.md`
 - V1.0 release: `docs/planning/v1-live-release-plan.md`

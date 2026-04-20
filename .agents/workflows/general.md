@@ -33,6 +33,8 @@ description: Workspace rules for CryptoSparrow / Soar
 - Keep links repository-relative and avoid sibling-repository references.
 - Treat docs parity as a real done-state requirement for module, route, and IA
   changes.
+- Follow `.agents/workflows/documentation-governance.md` for architecture
+  source-of-truth placement and decision promotion rules.
 
 ## UI/UX Rules
 - Follow `docs/ux/dashboard-design-system.md` and

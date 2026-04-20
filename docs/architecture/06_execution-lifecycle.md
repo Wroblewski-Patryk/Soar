@@ -1,0 +1,83 @@
+# 06 Execution Lifecycle
+
+## Purpose
+Define how accepted decisions become orders, fills, positions, and lifecycle outcomes.
+
+## Canonical Lifecycle
+The canonical lifecycle for both manual and runtime entries is:
+
+```text
+entry intent -> order created -> order status evolves -> fill confirmed -> position opened or updated
+```
+
+Manual and bot-originated entries share this lifecycle. They do not use separate truth models.
+
+## Order and Position Separation
+- `Order` is the submitted intent and execution container.
+- `Position` is downstream lifecycle state created or updated through fill authority.
+- manual order commands do not open positions directly
+
+## Fill Authority
+### LIVE
+- exchange fills and exchange sync are the authority for position-open visibility
+
+### PAPER
+- internal paper execution and fill simulation are the authority
+
+## Runtime Side Effects
+All runtime side-effecting commands must be idempotent for:
+- `OPEN`
+- `DCA`
+- `CLOSE`
+- `CANCEL`
+
+Replayed commands must resolve to reuse or no-op, not duplicate side effects.
+
+## Close Authority
+Direct strategy `EXIT` may exist as analytical context, but close behavior follows the lifecycle manager contract.
+
+Canonical close authority is lifecycle-based:
+- `TP`
+- `TTP`
+- `SL`
+- `TSL`
+- `LIQUIDATION`
+- account-floor protection
+
+## DCA-First Rule
+Per-position evaluation order is:
+1. `DCA`
+2. close phase:
+   - basic mode: `TP -> SL`
+   - advanced mode: `TTP -> TSL`
+3. liquidation and floor protection
+
+If a DCA level is still valid and affordable, the runtime must not bypass it by guessing a different close path.
+
+## Fee Contract
+- LIVE fee truth comes from exchange fills and trades when available
+- temporary estimated fees may exist only as traceable placeholders
+
+## Example State Progression
+```text
+LONG accepted
+-> order submitted
+-> waiting_for_fill
+-> filled
+-> position_opened
+-> lifecycle management
+-> position_closed
+```
+
+## Non-Goals
+- UI-specific copy or color semantics
+- exchange-specific connector details
+
+## Supporting References
+- `runtime-execution-idempotency-contract.md`
+- `live-fee-reconciliation-contract.md`
+- `position-lifecycle-parity-matrix.md`
+
+## Related Files
+- [05 Strategy, Signal, and Decision Flow](./05_strategy-signal-and-decision-flow.md)
+- [07 Modes, Parity, and Data](./07_modes-parity-and-data.md)

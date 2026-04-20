@@ -1,0 +1,101 @@
+# 05 Strategy, Signal, and Decision Flow
+
+## Purpose
+Define how Soar turns market inputs into deterministic trading decisions.
+
+## Canonical Inputs
+- OHLCV candles
+- optional derivatives context where supported
+- strategy schema
+- market-universe symbol scope
+- runtime wallet and bot context
+- open-position and risk state
+
+## Strategy Schema
+The MVP strategy schema is structured around:
+- `entry`
+- `exit`
+- `risk`
+- `filters`
+- `timeframes`
+
+Nested recursive rule trees are out of the current baseline.
+
+## Market-Universe Resolution
+The canonical symbol formula is:
+
+```text
+final = unique(filter_result U whitelist) - blacklist
+```
+
+Edge rules:
+- `filter_result` exists only when the volume filter is enabled
+- filter off plus empty whitelist resolves to an empty set
+- blacklist-only input does not create symbols
+
+## Indicator Contract
+One indicator registry must drive:
+- builder availability
+- runtime evaluator availability
+- backtest evaluator availability
+- timeline overlay availability
+
+If an indicator is not implemented end-to-end, it must not silently behave like a supported rule.
+
+## Evaluation Unit
+The canonical evaluation unit is:
+
+```text
+(botId, marketGroupId, symbol, intervalWindow)
+```
+
+## Signal Output Domain
+- `LONG`
+- `SHORT`
+- `EXIT`
+- `NO_TRADE`
+
+`NO_TRADE` is a valid and often preferred outcome.
+
+## Signal Merge
+When several strategies attached to the same runtime partition emit outputs for the same symbol/window:
+1. apply hard guardrails first
+2. apply `EXIT` priority rules
+3. apply weighted directional merge
+4. resolve ties or weak consensus as `NO_TRADE`
+
+Runtime must never guess randomly.
+
+## Guardrails Before Merge
+- kill switch
+- incompatible manual or external ownership state
+- no-flip rule while a position is open
+- risk-cap breaches
+
+## Example Decision Envelope
+```json
+{
+  "symbol": "BTCUSDT",
+  "window": "2026-04-21T10:00:00Z/2026-04-21T10:04:59Z",
+  "strategyOutputs": [
+    { "strategyLinkId": "a", "proposal": "LONG", "weight": 1.0, "priority": 100 },
+    { "strategyLinkId": "b", "proposal": "NO_TRADE", "weight": 1.0, "priority": 100 }
+  ],
+  "guardrails": [],
+  "finalProposal": "LONG"
+}
+```
+
+## Out of Scope
+- order submission mechanics
+- fill processing
+- UI rendering of diagnostics
+
+## Supporting References
+- `strategy-evaluation-parity-contract.md`
+- `indicator-registry-parity-contract.md`
+- `runtime-signal-merge-contract.md`
+
+## Related Files
+- [06 Execution Lifecycle](./06_execution-lifecycle.md)
+- [07 Modes, Parity, and Data](./07_modes-parity-and-data.md)
