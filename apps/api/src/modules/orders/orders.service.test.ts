@@ -50,6 +50,7 @@ describe('openOrder live execution contract', () => {
           side: 'BUY',
           type: 'MARKET',
           quantity: 0.1,
+          price: 43_000,
           mode: 'PAPER',
           riskAck: false,
         },
@@ -65,6 +66,7 @@ describe('openOrder live execution contract', () => {
       });
       expect(openedPosition).not.toBeNull();
       expect(openedPosition?.origin).toBe('USER');
+      expect(openedPosition?.entryPrice).toBe(43_000);
       const auditLog = await prisma.log.findFirst({
         where: {
           userId: user.id,
@@ -85,6 +87,55 @@ describe('openOrder live execution contract', () => {
       expect(metadata.lifecycleContract).toBe('order->fill->position');
       expect(metadata.modeSource).toBe('request');
       expect(metadata.waitingForFill).toBe(false);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it('keeps MARKET order submitted when fill price cannot be resolved', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-paper-waiting-fill@example.com', password: 'hashed' },
+    });
+    const executeLiveOrder = vi.fn();
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+
+    try {
+      const order = await openOrder(
+        user.id,
+        {
+          symbol: 'BTCUSDT',
+          side: 'BUY',
+          type: 'MARKET',
+          quantity: 0.1,
+          mode: 'PAPER',
+          riskAck: false,
+        },
+        { executeLiveOrder }
+      );
+
+      expect(executeLiveOrder).not.toHaveBeenCalled();
+      expect(order.status).toBe('OPEN');
+      expect(order.positionId).toBeNull();
+      const openedPosition = await prisma.position.findFirst({
+        where: { userId: user.id },
+      });
+      expect(openedPosition).toBeNull();
+      const auditLog = await prisma.log.findFirst({
+        where: {
+          userId: user.id,
+          action: 'order.opened',
+          entityType: 'ORDER',
+          entityId: order.id,
+        },
+        orderBy: { occurredAt: 'desc' },
+      });
+      const metadata = (auditLog?.metadata ?? {}) as {
+        waitingForFill?: boolean;
+        fillPriceResolved?: boolean;
+      };
+      expect(metadata.waitingForFill).toBe(true);
+      expect(metadata.fillPriceResolved).toBe(false);
     } finally {
       process.env.NODE_ENV = previousNodeEnv;
     }

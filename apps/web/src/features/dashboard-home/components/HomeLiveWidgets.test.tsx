@@ -1332,6 +1332,7 @@ describe("HomeLiveWidgets", () => {
         side: "SELL",
         type: "MARKET",
         quantity: 0.25,
+        price: 68000,
         riskAck: true,
       });
     });

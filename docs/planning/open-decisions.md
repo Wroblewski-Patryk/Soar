@@ -954,6 +954,10 @@ This file tracks intentionally unresolved architecture choices so implementation
     - open command creates paper order first,
     - paper fill authority updates order status,
     - position opens only through downstream fill-handling path.
+  - fill-price integrity is mandatory for position-open transition:
+    - position must not open when positive fill price is unresolved,
+    - unresolved fill price keeps order in lifecycle waiting state (`OPEN`/`waiting for fill`) until fill price is available.
+  - runtime and dashboard manual `MARKET` command paths must propagate a positive price reference (`markPrice`/reference price) into order-open payload whenever explicit `price` is not typed by the operator.
   - manual open path and runtime signal open path must converge to one lifecycle authority for order creation/fill progression.
   - selected-bot scoping is strict for write and read paths (`bot`, `wallet`, `mode`, `strategy`, `orders`, `positions`, imported exchange rows).
   - imported exchange ownership remains wallet-takeover scoped:
@@ -962,6 +966,7 @@ This file tracks intentionally unresolved architecture choices so implementation
   - operator-facing semantics must communicate lifecycle truth (`submitted`, `waiting for fill`, `filled`, `position opened`, `imported`, `blocked`) and must not rely on `order-only` hinting.
 - Canonical references:
   - `docs/planning/unified-order-lifecycle-and-exchange-sync-plan-2026-04-20.md`
+  - `docs/planning/uolf-fill-price-integrity-hotfix-plan-2026-04-21.md`
   - `docs/modules/api-orders.md`
   - `docs/modules/api-bots.md`
   - `docs/modules/web-dashboard-home.md`

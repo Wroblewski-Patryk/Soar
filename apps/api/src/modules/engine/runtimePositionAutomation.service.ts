@@ -315,6 +315,7 @@ const defaultDeps: RuntimePositionAutomationDeps = {
         side: orderSide,
         type: 'MARKET',
         quantity: dcaQuantity,
+        price: input.markPrice,
         mode: input.mode,
         riskAck: true,
       });

@@ -22,6 +22,21 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-21 - UOLF fill-price integrity must be fail-closed
+- Context: unified `order -> fill -> position` flow for runtime and dashboard manual opens.
+- Symptom: runtime/dashboard tables showed broken position metrics because some opened positions had `entryPrice=0`.
+- Root cause: MARKET lifecycle could persist `FILLED` order and open position without a resolved positive fill price.
+- Guardrail: position-open transition must require positive fill price; unresolved fill price must stay in waiting lifecycle state (no synthetic zero-entry fallback).
+- Preferred pattern:
+```text
+1) Propagate runtime markPrice/reference price into MARKET open-order payloads.
+2) In fill lifecycle, open position only when fill price is positive and resolved.
+3) Lock regressions with focused API+web tests and run deploy-critical build gates.
+```
+- Avoid: implicit fallback from unresolved fill price to `entryPrice=0`.
+- Evidence:
+  - 2026-04-21 `UOLF-HF-01` hotfix + focused validation pack (`orders.service`, `executionOrchestrator`, `orders-positions`, `HomeLiveWidgets`, `api/web build`, `quality:guardrails`).
+
 ### 2026-04-12 - PowerShell command chaining compatibility
 - Context: running multi-step commands in Windows shell workflows.
 - Symptom: command chains using `&&` fail in environments pinned to Windows PowerShell 5.1.

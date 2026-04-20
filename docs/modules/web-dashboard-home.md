@@ -150,6 +150,7 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
   - provide one action to fill current market reference price,
   - keep `qty` input editable, with dedicated slider row writing computed values into the same input,
   - render one side-aware summary row/card instead of split cost/max rows.
+  - manual `MARKET` submit should send positive `price` value from explicit input or from current reference-price fallback when input is empty.
 - Context display:
   - show `orderType`, `marginMode`, and `leverage` from selected bot context payload,
   - when `orderType` cannot be resolved from bot context, show explicit fallback `MARKET`.
@@ -261,6 +262,7 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
     - `position opened`,
     - `imported from exchange`,
     - `blocked reason`.
+  - unresolved fill price must remain fail-closed in waiting state (`waiting for fill`), not as opened position with synthetic zero-entry metrics.
 
 ## 23. Open Orders Source Column and Active-Only Contract (`OOSC`)
 - Open Orders table includes `Source` column with deterministic mapping:

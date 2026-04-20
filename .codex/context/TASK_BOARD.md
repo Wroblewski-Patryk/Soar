@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-04-20
+Last updated: 2026-04-21
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -37,6 +37,8 @@ Last updated: 2026-04-20
 
 ## DONE
 
+- [x] UOLF-HF-01 fill-price integrity hotfix (`UOLF` regression closure)
+  - 2026-04-21: Closed regression where `MARKET` lifecycle could open positions with zero entry by hardening order-fill-position transition to require positive resolved fill price, propagating runtime `markPrice` into order-open command payloads (`open/close/DCA`), adding dashboard manual-order MARKET price fallback to reference price, and locking coverage with focused API/web regressions plus deploy gates (`api/web typecheck`, `api/web build`, `quality:guardrails`).
 - [x] PLNC-D planning parity sync (`PLNC-09`)
   - 2026-04-20: Synchronized stale `mvp-execution-plan` closure drift by marking `DAWR`, `OOSC`, `BTCF`, and `UOLF` phase headers as `Closed` and aligning `UOLF-02..UOLF-15` checklist status with canonical closure already recorded in queue/context artifacts.
 - [x] WAPR group closure (`WAPR-02..WAPR-10`)

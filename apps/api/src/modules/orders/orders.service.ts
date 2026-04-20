@@ -931,6 +931,9 @@ const defaultOpenOrderDeps: OpenOrderDeps = {
   executeLiveOrder: executeLiveOrderOnExchange,
 };
 
+const isPositiveFiniteNumber = (value: unknown): value is number =>
+  typeof value === 'number' && Number.isFinite(value) && value > 0;
+
 const writeOrderAudit = async (params: {
   userId: string;
   orderId: string;
@@ -1013,9 +1016,13 @@ export const applyOrderFillLifecycle = async (params: ApplyOrderFillLifecycleInp
     const fillStatus: OrderStatus = targetQuantity >= existingOrder.quantity ? 'FILLED' : 'PARTIALLY_FILLED';
     const filledAt = params.filledAt ?? new Date();
     const fillPrice =
-      typeof params.fillPrice === 'number' && Number.isFinite(params.fillPrice) && params.fillPrice > 0
+      isPositiveFiniteNumber(params.fillPrice)
         ? params.fillPrice
-        : existingOrder.averageFillPrice ?? existingOrder.price ?? null;
+        : isPositiveFiniteNumber(existingOrder.averageFillPrice)
+          ? existingOrder.averageFillPrice
+          : isPositiveFiniteNumber(existingOrder.price)
+            ? existingOrder.price
+            : null;
 
     const updatedOrder = await tx.order.update({
       where: { id: existingOrder.id },
@@ -1029,6 +1036,13 @@ export const applyOrderFillLifecycle = async (params: ApplyOrderFillLifecycleInp
     });
 
     if (fillStatus !== 'FILLED') {
+      return {
+        order: updatedOrder,
+        positionId: updatedOrder.positionId ?? null,
+      };
+    }
+
+    if (!isPositiveFiniteNumber(fillPrice)) {
       return {
         order: updatedOrder,
         positionId: updatedOrder.positionId ?? null,
@@ -1057,10 +1071,7 @@ export const applyOrderFillLifecycle = async (params: ApplyOrderFillLifecycleInp
         symbol: updatedOrder.symbol,
         side: resolvePositionSideFromOrderSide(updatedOrder.side),
         status: 'OPEN',
-        entryPrice:
-          typeof fillPrice === 'number' && Number.isFinite(fillPrice) && fillPrice > 0
-            ? fillPrice
-            : 0,
+        entryPrice: fillPrice,
         quantity: Math.max(0, targetQuantity),
         leverage,
         origin: updatedOrder.origin,
@@ -1127,6 +1138,19 @@ export const openOrder = async (
     fills = Array.isArray(liveResult.fills) ? liveResult.fills : [];
   }
 
+  const filledQuantityFromExchange =
+    fills.length > 0
+      ? fills.reduce((sum, fill) => {
+          const quantity = Number(fill.quantity);
+          return Number.isFinite(quantity) ? sum + Math.max(0, quantity) : sum;
+        }, 0)
+      : null;
+  const fillPriceFromExchange =
+    fills.find((fill) => Number.isFinite(fill.price) && fill.price > 0)?.price ??
+    (isPositiveFiniteNumber(canonicalPayload.price) ? canonicalPayload.price : null);
+  const shouldApplyImmediateFillLifecycle = status === 'FILLED' && isPositiveFiniteNumber(fillPriceFromExchange);
+  const persistedStatus: 'OPEN' | 'FILLED' = shouldApplyImmediateFillLifecycle ? 'FILLED' : 'OPEN';
+
   const order = await prisma.order.create({
     data: {
       userId,
@@ -1138,9 +1162,9 @@ export const openOrder = async (
       symbol: canonicalPayload.symbol.toUpperCase(),
       side: canonicalPayload.side,
       type: canonicalPayload.type,
-      status,
+      status: persistedStatus,
       quantity: canonicalPayload.quantity,
-      filledQuantity: status === 'FILLED' ? canonicalPayload.quantity : 0,
+      filledQuantity: persistedStatus === 'FILLED' ? canonicalPayload.quantity : 0,
       price: canonicalPayload.price,
       fee,
       feeSource,
@@ -1150,22 +1174,12 @@ export const openOrder = async (
       exchangeOrderId,
       exchangeTradeId,
       submittedAt: now,
-      filledAt: status === 'FILLED' ? now : null,
+      filledAt: persistedStatus === 'FILLED' ? now : null,
     },
   });
 
-  const filledQuantityFromExchange =
-    fills.length > 0
-      ? fills.reduce((sum, fill) => {
-          const quantity = Number(fill.quantity);
-          return Number.isFinite(quantity) ? sum + Math.max(0, quantity) : sum;
-        }, 0)
-      : null;
-  const fillPriceFromExchange =
-    fills.find((fill) => Number.isFinite(fill.price) && fill.price > 0)?.price ?? canonicalPayload.price ?? null;
-
   const lifecycleResult =
-    order.status === 'FILLED'
+    shouldApplyImmediateFillLifecycle
       ? await applyOrderFillLifecycle({
           userId,
           orderId: order.id,
@@ -1217,6 +1231,7 @@ export const openOrder = async (
       exchangeOrderId: orderAfterLifecycle.exchangeOrderId,
       positionId: orderAfterLifecycle.positionId,
       waitingForFill: orderAfterLifecycle.status !== 'FILLED' || !orderAfterLifecycle.positionId,
+      fillPriceResolved: isPositiveFiniteNumber(fillPriceFromExchange),
     },
   });
 

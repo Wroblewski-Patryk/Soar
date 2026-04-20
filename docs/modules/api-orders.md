@@ -108,10 +108,13 @@ pnpm --filter api test -- src/modules/orders/orders.service.test.ts src/modules/
 - Fill-authority invariants:
   - `LIVE`: exchange fill/sync evidence is authority for position-open visibility.
   - `PAPER`: paper fill adapter/engine is authority for position-open visibility.
+  - position-open transition requires a resolved positive fill price.
+  - unresolved fill price keeps order in waiting lifecycle state (no synthetic `entryPrice=0` position creation).
 - Context and scope invariants:
   - selected-bot context is strict for mode/wallet/strategy attribution.
   - when `botId` is provided, server-side canonical bot context is authoritative for order lifecycle ownership.
   - manual and runtime opens converge to one lifecycle authority (no divergent write semantics).
+  - runtime/open orchestration forwards `markPrice` into `POST /dashboard/orders/open` MARKET payload to preserve fill-price integrity.
 - Operator diagnostics contract:
   - API/web must support explicit lifecycle state communication:
     - submitted,

@@ -435,6 +435,7 @@ describe('Orders and positions read contract', () => {
       side: 'BUY',
       type: 'MARKET',
       quantity: 0.05,
+      price: 61_000,
       mode: 'PAPER',
       riskAck: false,
     });

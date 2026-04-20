@@ -177,6 +177,7 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
 - Lifecycle scope invariants:
   - manual dashboard opens and runtime signal opens must resolve canonical selected-bot context (`bot`, `wallet`, `mode`, `strategy`) before order lifecycle writes.
   - lifecycle ownership target is one order->fill->position path shared by manual and runtime entries.
+  - runtime signal execution must pass `markPrice` into MARKET order-open command payload so fill-price resolution does not degrade to zero-entry lifecycle artifacts.
 - Selected-bot read/write strictness:
   - selected-bot runtime responses for orders/positions/history remain strictly bot-scoped.
   - cross-bot and cross-mode leakage is fail-closed.

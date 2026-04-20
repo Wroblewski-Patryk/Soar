@@ -787,6 +787,14 @@ export default function HomeLiveWidgets() {
       toast.error(manualOrderRequiredPriceLabel);
       return;
     }
+    const fallbackMarketPrice =
+      !manualOrderTypeRequiresPrice &&
+      manualOrderLiveReferencePrice != null &&
+      Number.isFinite(manualOrderLiveReferencePrice) &&
+      manualOrderLiveReferencePrice > 0
+        ? manualOrderLiveReferencePrice
+        : undefined;
+    const effectiveManualOrderPrice = typeof parsedPrice === "number" ? parsedPrice : fallbackMarketPrice;
 
     setIsSubmittingManualOrder(true);
     try {
@@ -796,7 +804,7 @@ export default function HomeLiveWidgets() {
         side: manualOrderSide,
         type: resolvedManualOrderType,
         quantity,
-        price: manualOrderTypeRequiresPrice && typeof parsedPrice === "number" ? parsedPrice : undefined,
+        price: effectiveManualOrderPrice,
         riskAck: true,
       });
       toast.success(manualOrderSuccessLabel);
@@ -820,6 +828,7 @@ export default function HomeLiveWidgets() {
     manualOrderSide,
     manualOrderSymbol,
     manualOrderErrorLabel,
+    manualOrderLiveReferencePrice,
     manualOrderSuccessLabel,
     manualOrderTypeRequiresPrice,
     resolvedManualOrderType,

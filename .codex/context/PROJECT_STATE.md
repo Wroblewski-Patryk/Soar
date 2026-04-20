@@ -1,6 +1,6 @@
 # PROJECT_STATE
 
-Last updated: 2026-04-20
+Last updated: 2026-04-21
 
 ## Product Snapshot
 - Name: CryptoSparrow / Soar
@@ -48,6 +48,9 @@ Last updated: 2026-04-20
   `manual-order order-only` target for future implementation, while keeping
   strict selected-bot scope and wallet-scoped exchange takeover as canonical
   safety constraints.
+- 2026-04-21: fill-price integrity is mandatory for `UOLF` transition to
+  `position opened`; unresolved fill price must remain in waiting lifecycle
+  state (no zero-entry synthetic position fallback).
 
 ## Technical Baseline
 - Backend: Node.js 20+, Express API, Prisma, TypeScript
@@ -137,6 +140,13 @@ Last updated: 2026-04-20
   - activate the next READY item from `docs/planning/mvp-next-commits.md`.
 
 ## Recent Progress
+- 2026-04-21: closed `UOLF-HF-01` hotfix by enforcing positive fill-price
+  integrity in order-fill-position lifecycle (no `entryPrice=0` position-open
+  path), propagating runtime `markPrice` through MARKET open commands
+  (`executionOrchestrator`, `runtimePositionAutomation`), adding dashboard
+  manual-order MARKET price fallback to reference price, and validating with
+  focused API/web tests + deploy gates (`api/web typecheck`, `api/web build`,
+  `quality:guardrails`).
 - 2026-04-20: completed `PLNC-D` parity sync by reconciling stale closed-wave
   drift in `docs/planning/mvp-execution-plan.md`; phases `DAWR`, `OOSC`,
   `BTCF`, and `UOLF` are now explicitly marked `Closed`, and

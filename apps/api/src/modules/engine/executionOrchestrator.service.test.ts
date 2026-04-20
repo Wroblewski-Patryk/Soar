@@ -153,7 +153,7 @@ describe('orchestrateRuntimeSignal', () => {
     });
     expect(orderGateway.openOrder).toHaveBeenCalledWith(
       'u1',
-      expect.objectContaining({ side: 'BUY', type: 'MARKET', riskAck: true })
+      expect.objectContaining({ side: 'BUY', type: 'MARKET', riskAck: true, price: 43000 })
     );
     expect(positionGateway.getOpenPositionBySymbol).toHaveBeenCalledWith({
       userId: 'u1',
@@ -488,6 +488,7 @@ describe('orchestrateRuntimeSignal', () => {
       expect.objectContaining({
         side: 'SELL',
         quantity: 0.2,
+        price: 43000,
         mode: 'LIVE',
         walletId: 'wallet-open',
       })

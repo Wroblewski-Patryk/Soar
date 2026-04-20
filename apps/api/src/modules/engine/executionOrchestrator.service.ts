@@ -59,6 +59,7 @@ export interface OrderFlowGateway {
     side: 'BUY' | 'SELL';
     type: 'MARKET';
     quantity: number;
+    price?: number;
     mode: RuntimeExecutionMode;
     riskAck: boolean;
   }): Promise<Order>;
@@ -535,6 +536,7 @@ export const orchestrateRuntimeSignal = async (
       side: decision.orderSide,
       type: 'MARKET',
       quantity: openPosition.quantity,
+      price: input.markPrice,
       mode: input.mode,
       riskAck: true,
     });
@@ -734,6 +736,7 @@ export const orchestrateRuntimeSignal = async (
     side: decision.orderSide,
     type: 'MARKET',
     quantity: input.quantity,
+    price: input.markPrice,
     mode: input.mode,
     riskAck: true,
   });
