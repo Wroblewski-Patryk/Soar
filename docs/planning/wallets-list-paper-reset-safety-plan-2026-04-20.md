@@ -1,6 +1,6 @@
 # Wallets List API-Key Status and Paper Reset Safety Plan (2026-04-20)
 
-Status: queued  
+Status: closed (2026-04-20)  
 Execution mode: tiny-commit only (exactly one task per commit)  
 Primary audience: execution agent
 
@@ -69,6 +69,25 @@ Primary audience: execution agent
 1. `WAPR-A (commits WAPR-01..WAPR-04): contract freeze + wallet-list regression + reset red tests`
 2. `WAPR-B (commits WAPR-05..WAPR-08): API reset command + reset-aware capital baseline + web action`
 3. `WAPR-C (commits WAPR-09..WAPR-10): docs sync + closure validation`
+
+## Execution Result (2026-04-20)
+- Stage `WAPR-A` completed:
+  - contract freeze in canonical docs,
+  - wallets list regression for inline `API key` status and no `Details` row,
+  - API red regressions for reset safety and reset-aware baseline.
+- Stage `WAPR-B` completed:
+  - dedicated fail-closed `POST /dashboard/wallets/:id/reset-paper`,
+  - wallet checkpoint baseline (`paperResetAt`) with non-destructive reset semantics,
+  - reset-aware runtime paper capital path,
+  - paper-wallet edit reset action with deterministic UX states.
+- Stage `WAPR-C` completed:
+  - wallet module docs and canonical queue/context synchronized,
+  - closure validation pack PASS:
+    - `pnpm --filter api run test -- --run src/modules/wallets/wallets.e2e.test.ts`
+    - `pnpm --filter web run test -- --run src/features/wallets/components/WalletsListTable.test.tsx src/features/wallets/components/WalletCreateEditForm.test.tsx`
+    - `pnpm --filter api run typecheck`
+    - `pnpm --filter web run typecheck`
+    - `pnpm run quality:guardrails`
 
 ---
 

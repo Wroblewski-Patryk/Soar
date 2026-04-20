@@ -6,7 +6,7 @@
 - Source path: `apps/web/src/features/wallets`
 - Owner: frontend/trading-setup
 - Last updated: 2026-04-20
-- Related planning task: `DCP-09`, `WAPR-01`
+- Related planning task: `DCP-09`, `WAPR-10`
 
 ## 1. Purpose and Scope
 - Owns wallet management UI for trading context setup.
@@ -84,5 +84,4 @@ pnpm --filter web test -- src/features/wallets/components/WalletsListTable.test.
 ```
 
 ## 9. Open Issues and Follow-Ups
-- Execute `WAPR-02`, `WAPR-03`, `WAPR-07`, and `WAPR-08` to lock list/reset behavior with focused regressions and implementation.
 - Expand supported exchange-specific preview behavior as connectors mature.

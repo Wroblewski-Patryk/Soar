@@ -37,6 +37,8 @@ Last updated: 2026-04-20
 
 ## DONE
 
+- [x] WAPR group closure (`WAPR-02..WAPR-10`)
+  - 2026-04-20: Closed wallets list + paper reset wave end-to-end by shipping row-only wallets table (`no Details`) with inline deterministic `API key` status (`Connected/Not connected`), dedicated fail-closed `POST /dashboard/wallets/:id/reset-paper`, reset-aware paper-capital baseline using wallet checkpoint (`paperResetAt`), paper-only reset action in wallet edit flow with deterministic UX states, and closure pack PASS (`api wallets.e2e`, `web wallets tests`, `api/web typecheck`, `quality:guardrails`).
 - [x] WAPR-01 docs(contract): freeze wallets list api-key column and paper-reset safety contract
   - 2026-04-20: Frozen canonical `WAPR` contract in `open-decisions` and wallet module docs (`api-wallets`, `web-wallets`) with explicit list-table scope (`no Details`, inline `API key` column between `Allocation` and `Actions`, deterministic `Connected/Not connected` mapping) and dedicated fail-closed non-destructive paper-reset command baseline (`POST /dashboard/wallets/:id/reset-paper`, reset-checkpoint capital semantics).
 - [x] UOLF group closure (`UOLF-02..UOLF-15`)

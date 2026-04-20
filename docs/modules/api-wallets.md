@@ -6,7 +6,7 @@
 - Source path: `apps/api/src/modules/wallets`
 - Owner: backend/trading-domain
 - Last updated: 2026-04-20
-- Related planning task: `DCP-07`, `WAPR-01`
+- Related planning task: `DCP-07`, `WAPR-10`
 
 ## 1. Purpose and Scope
 - Owns wallet lifecycle and balance preview APIs for dashboard trading setup.
@@ -37,10 +37,10 @@ Out of scope:
   - LIVE wallet requires compatible API key from same exchange.
   - mode/exchange must be supported by capability map.
   - wallet cannot be deleted when linked bot exists.
-- WAPR contract lock (pre-implementation baseline):
+- WAPR contract lock (implemented):
   - list payload remains source for table inline API key status mapping (`apiKeyId` presence).
   - dedicated paper reset command is canonical contract (`POST /dashboard/wallets/:id/reset-paper`), separate from generic wallet update.
-  - paper reset is non-destructive and reset-baseline aware (`paperResetAt` or equivalent checkpoint contract).
+  - paper reset is non-destructive and reset-baseline aware via wallet checkpoint (`paperResetAt`).
   - reset guards are fail-closed (`PAPER`-only, owned wallet only, blocked when open paper positions or active paper open orders exist).
 
 ## 4. Runtime Flows
@@ -58,10 +58,10 @@ Out of scope:
   2. Decrypt credentials and fetch exchange balance snapshot.
   3. Compute reference balance using allocation mode/value.
   4. Return preview payload with source and fetched timestamp.
-- Paper reset flow (contract-locked for WAPR wave):
+- Paper reset flow:
   1. Validate wallet ownership and `PAPER` mode.
   2. Verify no open paper positions and no active paper open orders.
-  3. Persist reset checkpoint for paper capital baseline (`paperResetAt` or equivalent), without deleting history rows.
+  3. Persist reset checkpoint for paper capital baseline (`paperResetAt`), without deleting history rows.
   4. Return deterministic success payload for caller refresh.
 
 ## 5. API and UI Integration
@@ -73,7 +73,7 @@ Out of scope:
   - `POST /dashboard/wallets`
   - `PUT /dashboard/wallets/:id`
   - `DELETE /dashboard/wallets/:id`
-  - `POST /dashboard/wallets/:id/reset-paper` (canonical WAPR contract route; implementation queued in `WAPR-B`)
+  - `POST /dashboard/wallets/:id/reset-paper`
 - Rate limits:
   - read: 120/min
   - write: 40/min
@@ -104,4 +104,3 @@ pnpm --filter api test -- src/modules/wallets/wallets.e2e.test.ts
 ## 9. Open Issues and Follow-Ups
 - Expand preview support beyond Binance as exchange adapters mature.
 - Add explicit audit log entries for wallet create/update/delete events.
-- Execute `WAPR-04..WAPR-06` to lock reset command behavior and reset-aware capital baseline in API tests/implementation.

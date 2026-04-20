@@ -426,3 +426,18 @@ After closing a wave:
 - Avoid: treating queue idle as fully synchronized planning state without a stale-status pass.
 - Evidence:
   - 2026-04-20 PLNC-C parity sweep: stale headers found in `UXR-I`, `DAGG`, `SBSC`, `UXR`, `POS`, `PLNC`, and V1/LBT planning docs while canonical queue was already closed.
+
+### 2026-04-20 - Prisma Windows engine lock can break `prisma generate` with `EPERM`
+- Context: local API setup/validation on Windows before DB-backed wallet e2e runs.
+- Symptom: `prisma generate` fails with `EPERM: operation not permitted, rename ... query_engine-windows.dll.node`.
+- Root cause: stale Node processes hold file locks on Prisma engine binaries in `node_modules/.prisma/client`.
+- Guardrail: if Prisma reports `EPERM` on engine rename, clear stale Node processes first, then rerun `prisma generate` before migrations/tests.
+- Preferred pattern:
+```powershell
+Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force
+pnpm --filter api exec prisma generate
+pnpm --filter api exec prisma migrate deploy
+```
+- Avoid: repeated `prisma generate` retries without releasing locked Node processes.
+- Evidence:
+  - Observed on 2026-04-20 during WAPR closure validation setup; after stopping stale Node processes, `prisma generate` and follow-up wallet API e2e passed.

@@ -34,6 +34,10 @@ Last updated: 2026-04-20
 - 2026-04-20: market-universe symbol-contract parity wave (`MURC-01..MURC-12`)
   is closed end-to-end with one canonical resolver contract across markets
   sync, runtime, backtests, manual-order context, and web preview/validation.
+- 2026-04-20: wallets list api-key status and paper reset safety wave
+  (`WAPR-01..WAPR-10`) is closed end-to-end with row-only wallets list
+  contract (`no Details`), deterministic inline API key state, and fail-closed
+  non-destructive paper reset semantics (`paperResetAt` checkpoint baseline).
 - 2026-04-20: dashboard Open Orders source-column wave (`OOSC-01..OOSC-08`)
   is closed end-to-end with `Source` labels (`Manual/Bot/Imported`), explicit
   manual-order write origin (`USER`), and unchanged active-only order
@@ -121,23 +125,28 @@ Last updated: 2026-04-20
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: execute `WAPR` wave for wallets list api-key visibility
-  and safe `PAPER` wallet reset workflow.
+- Main active objective: preserve release stability and execute the next queued
+  wave from canonical planning docs after `WAPR` closure.
 - Top blockers:
-  - wallet list currently lacks explicit api-key connection-state column in
-    canonical contract.
-  - dedicated non-destructive `PAPER` reset flow (with reset-aware capital
-    baseline) still requires end-to-end closure.
+  - no active blockers recorded for `WAPR`; closure validations are green.
 - Success criteria for this phase:
-  - wallets list exposes deterministic `API key` status column (`Connected` /
-    `Not connected`) without `Details` column regressions.
-  - `PAPER` reset endpoint/UI flow is fail-closed, non-destructive, and keeps
-    reset-aware baseline semantics consistent with runtime and reports.
+  - keep queue/context/docs synchronized after each closed wave,
+  - keep deploy/build gates green on `main` for the next activation slice.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - `WAPR-02 test(web-red): add wallets list regression for api-key column and no-details contract`.
+  - activate the next READY item from `docs/planning/mvp-next-commits.md`.
 
 ## Recent Progress
+- 2026-04-20: closed full `WAPR` wave (`WAPR-02..WAPR-10`) by implementing
+  row-only wallets list UI (`no Details`) with deterministic inline `API key`
+  state (`Connected`/`Not connected`), dedicated fail-closed
+  `POST /dashboard/wallets/:id/reset-paper`, reset-aware paper-capital
+  baseline via wallet checkpoint (`paperResetAt`), and paper-only wallet-edit
+  reset action with deterministic loading/error/success UX; closure pack PASS
+  (`pnpm --filter api run test -- --run src/modules/wallets/wallets.e2e.test.ts`,
+  `pnpm --filter web run test -- --run src/features/wallets/components/WalletsListTable.test.tsx src/features/wallets/components/WalletCreateEditForm.test.tsx`,
+  `pnpm --filter api run typecheck`, `pnpm --filter web run typecheck`,
+  `pnpm run quality:guardrails`).
 - 2026-04-20: completed `WAPR-01` by freezing canonical wallet-list + paper-reset safety contract in `open-decisions` and wallet module docs (`api-wallets`, `web-wallets`): list now has explicit `no Details` + inline `API key` column order/mapping contract, and paper reset is locked as dedicated fail-closed non-destructive command baseline (`POST /dashboard/wallets/:id/reset-paper`) with reset-checkpoint capital semantics.
 - 2026-04-20: closed `UOLF` wave (`UOLF-02..UOLF-15`) end-to-end by shipping
   selected-bot manual-order scope regressions, canonical bot-context authority

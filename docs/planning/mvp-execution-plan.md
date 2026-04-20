@@ -2291,18 +2291,20 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-20: Queued `UOLF` from clarified product target and published executor-ready plan `docs/planning/unified-order-lifecycle-and-exchange-sync-plan-2026-04-20.md` with strict scope lock: one canonical lifecycle (`order -> fill -> position`) for manual and runtime opens, strict selected-bot scope, wallet-scoped exchange takeover ownership, and Binance parity requirements.
 - 2026-04-20: Completed `UOLF-01` by freezing canonical contract in `open-decisions` plus module docs (`api-orders`, `api-bots`, `web-dashboard-home`), explicitly superseding historical `SOPR-C order-only` wording before implementation tasks.
 
-## Phase WAPR - Wallets List API-Key Status and Paper Reset Safety (Queued 2026-04-20)
+## Phase WAPR - Wallets List API-Key Status and Paper Reset Safety (Closed 2026-04-20)
 - [x] `WAPR-01 docs(contract): freeze wallets list api-key column and paper-reset safety contract`
-- [ ] `WAPR-02 test(web-red): add wallets list regression for api-key column and no-details contract`
-- [ ] `WAPR-03 fix(web-list): remove details row and add api-key status column in wallets table`
-- [ ] `WAPR-04 test(api-red): add paper-reset safety and baseline regressions`
-- [ ] `WAPR-05 fix(api-wallets): add dedicated reset-paper command and domain errors`
-- [ ] `WAPR-06 fix(api-capital): make paper runtime capital snapshot reset-aware`
-- [ ] `WAPR-07 test(web-red): add paper-wallet reset action visibility and submit regressions`
-- [ ] `WAPR-08 fix(web-form): add reset paper wallet action to wallet edit form`
-- [ ] `WAPR-09 docs(sync): update wallet module docs and canonical queue/context after rollout`
-- [ ] `WAPR-10 qa(closure): run focused wallets list + paper-reset validation pack and finalize queue/context`
+- [x] `WAPR-02 test(web-red): add wallets list regression for api-key column and no-details contract`
+- [x] `WAPR-03 fix(web-list): remove details row and add api-key status column in wallets table`
+- [x] `WAPR-04 test(api-red): add paper-reset safety and baseline regressions`
+- [x] `WAPR-05 fix(api-wallets): add dedicated reset-paper command and domain errors`
+- [x] `WAPR-06 fix(api-capital): make paper runtime capital snapshot reset-aware`
+- [x] `WAPR-07 test(web-red): add paper-wallet reset action visibility and submit regressions`
+- [x] `WAPR-08 fix(web-form): add reset paper wallet action to wallet edit form`
+- [x] `WAPR-09 docs(sync): update wallet module docs and canonical queue/context after rollout`
+- [x] `WAPR-10 qa(closure): run focused wallets list + paper-reset validation pack and finalize queue/context`
 
 ### Progress Log (Phase WAPR - Wallets List API-Key Status and Paper Reset Safety)
 - 2026-04-20: Completed `WAPR-01` by freezing canonical `WAPR` contract across `open-decisions` plus wallet module docs (`api-wallets`, `web-wallets`): list contract now explicitly locks `no Details` + inline `API key` status column order/mapping, and paper-reset contract is locked as dedicated fail-closed non-destructive command with reset-checkpoint baseline semantics.
 - 2026-04-20: Queued `WAPR` from wallet-module analysis and published executor-ready plan `docs/planning/wallets-list-paper-reset-safety-plan-2026-04-20.md` with strict scope lock: remove duplicate wallet-list `Details` rows, add inline `API key` connected-state column, and implement dedicated non-destructive `PAPER` wallet reset via reset-aware capital baseline rather than naive `paperInitialBalance` edit-only behavior.
+- 2026-04-20: Closed `WAPR-02..WAPR-08` end-to-end by removing wallet-list `Details` expansion, adding deterministic inline `API key` column mapping (`Connected/Not connected`), shipping dedicated fail-closed `POST /dashboard/wallets/:id/reset-paper`, introducing wallet-level reset checkpoint (`paperResetAt`), making runtime paper-capital baseline reset-aware, and exposing paper-only reset action in wallet edit form with deterministic loading/error/success UX states.
+- 2026-04-20: Completed `WAPR-09..WAPR-10` by synchronizing wallet module and canonical queue/context docs and passing focused closure pack (`api wallets.e2e`, `web wallets tests`, `api/web typecheck`, `quality:guardrails`).
