@@ -1,12 +1,16 @@
 import { render, screen } from "@testing-library/react";
+import type { ComponentProps } from "react";
 import { describe, expect, it, vi } from "vitest";
 import RuntimeSidebarSection from "./home-live-widgets/RuntimeSidebarSection";
+import type { RuntimeSnapshot } from "./home-live-widgets/types";
 
 const formatNumber = (value: number, options?: Intl.NumberFormatOptions) =>
   new Intl.NumberFormat("pl-PL", options).format(value);
 const formatAmountWithUnit = (value: number) => `${formatNumber(value, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USDT`;
 
-const createProps = (overrides?: Record<string, unknown>) => {
+type RuntimeSidebarSectionProps = ComponentProps<typeof RuntimeSidebarSection>;
+
+const createProps = (overrides?: Partial<RuntimeSidebarSectionProps>): RuntimeSidebarSectionProps => {
   const selected = {
     bot: {
       id: "bot-sidebar",
@@ -108,7 +112,7 @@ const createProps = (overrides?: Record<string, unknown>) => {
         },
       ],
     },
-  } as any;
+  } as unknown as RuntimeSnapshot;
 
   const baseProps = {
     asideClassName: "w-full",
@@ -265,11 +269,15 @@ describe("RuntimeSidebarSection strategy edge behavior", () => {
 
   it("keeps canonical strategy context when selected bot strategyId is null and legacy fallback exists", () => {
     const base = createProps();
+    const selectedSnapshot = base.selected;
+    if (!selectedSnapshot) {
+      throw new Error("Expected selected snapshot in test fixture");
+    }
     const props = createProps({
       selected: {
-        ...(base.selected as Record<string, unknown>),
+        ...selectedSnapshot,
         bot: {
-          ...((base.selected as any).bot ?? {}),
+          ...selectedSnapshot.bot,
           strategyId: null,
         },
       },

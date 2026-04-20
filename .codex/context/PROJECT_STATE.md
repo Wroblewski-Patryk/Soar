@@ -124,6 +124,11 @@ Last updated: 2026-04-20
   - take next planner-approved queue slice after planning-sync closure.
 
 ## Recent Progress
+- 2026-04-20: fixed production deploy blocker for web image build by removing
+  explicit-`any` lint violations in dashboard regression tests
+  (`HomeLiveWidgets.aggregate-wallet.test.tsx`,
+  `RuntimeSidebarSection.test.tsx`); local `pnpm --filter web run build` is
+  PASS after fix.
 - 2026-04-20: closed planning parity sync `PLNC-05` by reconciling stale
   unchecked `DASHR-01..DASHR-11` entries in
   `docs/planning/mvp-execution-plan.md` with already-closed canonical queue

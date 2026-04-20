@@ -1,6 +1,7 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import type { BotRuntimeMonitoringAggregateResponse } from "../../../features/bots/types/bot.type";
 import { I18nProvider } from "../../../i18n/I18nProvider";
 import HomeLiveWidgets from "./HomeLiveWidgets";
 
@@ -253,7 +254,7 @@ describe("HomeLiveWidgets aggregate wallet contract", () => {
         },
         items: [],
       },
-    } as any);
+    } as unknown as BotRuntimeMonitoringAggregateResponse);
 
     listBotRuntimeSessionSymbolStatsMock.mockRejectedValue(new Error("session symbol stats fallback should not run"));
     listBotRuntimeSessionPositionsMock.mockRejectedValue(new Error("session positions fallback should not run"));

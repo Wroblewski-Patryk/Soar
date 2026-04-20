@@ -37,6 +37,8 @@ Last updated: 2026-04-20
 
 ## DONE
 
+- [x] DEPFIX-01 web deploy lint hotfix
+  - 2026-04-20: Unblocked Coolify web build for commit `b345a009` by removing `@typescript-eslint/no-explicit-any` violations in new dashboard regression tests (`HomeLiveWidgets.aggregate-wallet.test.tsx`, `RuntimeSidebarSection.test.tsx`) with no behavior changes.
 - [x] PLNC-B planning parity sync (`PLNC-05`)
   - 2026-04-20: Reconciled stale `DASHR-01..DASHR-11` unchecked checklist drift in `docs/planning/mvp-execution-plan.md` with canonical closure state already recorded in `mvp-next-commits` and `TASK_BOARD`; phase is now explicitly marked closed with completion log.
 - [x] DAWR-A group closure (`DAWR-01..DAWR-03`)

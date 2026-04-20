@@ -392,3 +392,18 @@ After closing a wave:
 - Avoid: leaving any canonical planning file with stale unchecked tasks for already-closed waves.
 - Evidence:
   - 2026-04-20: `DASHR-01..DASHR-11` remained unchecked only in `mvp-execution-plan.md` until parity-sync fix.
+
+### 2026-04-20 - Web deploy gate requires `next build` even for test-only web changes
+- Context: Coolify production deploy for commit `b345a009` failed after docs/planning sync because recent web test files still contained lint-invalid `any` casts.
+- Symptom: Docker build failed at `pnpm --filter web build` with `@typescript-eslint/no-explicit-any` in test files.
+- Root cause: local closure pack for prior wave did not include rerun at the exact commit being deployed; test-only web changes still participate in Next.js lint/type gate during build.
+- Guardrail: if any file under `apps/web/**` changed (including `*.test.tsx`), run local `pnpm --filter web run build` before push/deploy.
+- Preferred pattern:
+```text
+1) Edit web files.
+2) Run `pnpm --filter web run build`.
+3) Only then commit/push for deploy.
+```
+- Avoid: assuming test-only edits are excluded from production build lint gates.
+- Evidence:
+  - 2026-04-20 Coolify log: `HomeLiveWidgets.aggregate-wallet.test.tsx` and `RuntimeSidebarSection.test.tsx` failed build on `no-explicit-any`; local web build PASS after replacing casts.
