@@ -5,8 +5,8 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/wallets`
 - Owner: backend/trading-domain
-- Last updated: 2026-04-12
-- Related planning task: `DCP-07`
+- Last updated: 2026-04-20
+- Related planning task: `DCP-07`, `WAPR-01`
 
 ## 1. Purpose and Scope
 - Owns wallet lifecycle and balance preview APIs for dashboard trading setup.
@@ -37,6 +37,11 @@ Out of scope:
   - LIVE wallet requires compatible API key from same exchange.
   - mode/exchange must be supported by capability map.
   - wallet cannot be deleted when linked bot exists.
+- WAPR contract lock (pre-implementation baseline):
+  - list payload remains source for table inline API key status mapping (`apiKeyId` presence).
+  - dedicated paper reset command is canonical contract (`POST /dashboard/wallets/:id/reset-paper`), separate from generic wallet update.
+  - paper reset is non-destructive and reset-baseline aware (`paperResetAt` or equivalent checkpoint contract).
+  - reset guards are fail-closed (`PAPER`-only, owned wallet only, blocked when open paper positions or active paper open orders exist).
 
 ## 4. Runtime Flows
 - Create/update wallet flow:
@@ -53,6 +58,11 @@ Out of scope:
   2. Decrypt credentials and fetch exchange balance snapshot.
   3. Compute reference balance using allocation mode/value.
   4. Return preview payload with source and fetched timestamp.
+- Paper reset flow (contract-locked for WAPR wave):
+  1. Validate wallet ownership and `PAPER` mode.
+  2. Verify no open paper positions and no active paper open orders.
+  3. Persist reset checkpoint for paper capital baseline (`paperResetAt` or equivalent), without deleting history rows.
+  4. Return deterministic success payload for caller refresh.
 
 ## 5. API and UI Integration
 - Representative routes:
@@ -63,6 +73,7 @@ Out of scope:
   - `POST /dashboard/wallets`
   - `PUT /dashboard/wallets/:id`
   - `DELETE /dashboard/wallets/:id`
+  - `POST /dashboard/wallets/:id/reset-paper` (canonical WAPR contract route; implementation queued in `WAPR-B`)
 - Rate limits:
   - read: 120/min
   - write: 40/min
@@ -73,6 +84,9 @@ Out of scope:
 - Strong input validation for LIVE mode and allocation fields.
 - LIVE preview requires owned encrypted API key and exchange match.
 - Delete protection prevents orphan bot references and unsafe teardown.
+- Paper reset contract is explicitly fail-closed and mode-bound:
+  - no reset for `LIVE`,
+  - no reset when paper execution scope is still open (`positions`/`orders`).
 
 ## 7. Observability and Operations
 - Preview path updates `apiKey.lastUsed` for operational traceability.
@@ -81,6 +95,7 @@ Out of scope:
 ## 8. Test Coverage and Evidence
 - Primary tests:
   - `wallets.e2e.test.ts`
+  - `runtimeCapitalContext.service.test.ts` (capital-baseline parity scope)
 - Suggested validation command:
 ```powershell
 pnpm --filter api test -- src/modules/wallets/wallets.e2e.test.ts
@@ -89,4 +104,4 @@ pnpm --filter api test -- src/modules/wallets/wallets.e2e.test.ts
 ## 9. Open Issues and Follow-Ups
 - Expand preview support beyond Binance as exchange adapters mature.
 - Add explicit audit log entries for wallet create/update/delete events.
-
+- Execute `WAPR-04..WAPR-06` to lock reset command behavior and reset-aware capital baseline in API tests/implementation.

@@ -2292,7 +2292,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-20: Completed `UOLF-01` by freezing canonical contract in `open-decisions` plus module docs (`api-orders`, `api-bots`, `web-dashboard-home`), explicitly superseding historical `SOPR-C order-only` wording before implementation tasks.
 
 ## Phase WAPR - Wallets List API-Key Status and Paper Reset Safety (Queued 2026-04-20)
-- [ ] `WAPR-01 docs(contract): freeze wallets list api-key column and paper-reset safety contract`
+- [x] `WAPR-01 docs(contract): freeze wallets list api-key column and paper-reset safety contract`
 - [ ] `WAPR-02 test(web-red): add wallets list regression for api-key column and no-details contract`
 - [ ] `WAPR-03 fix(web-list): remove details row and add api-key status column in wallets table`
 - [ ] `WAPR-04 test(api-red): add paper-reset safety and baseline regressions`
@@ -2304,4 +2304,5 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - [ ] `WAPR-10 qa(closure): run focused wallets list + paper-reset validation pack and finalize queue/context`
 
 ### Progress Log (Phase WAPR - Wallets List API-Key Status and Paper Reset Safety)
+- 2026-04-20: Completed `WAPR-01` by freezing canonical `WAPR` contract across `open-decisions` plus wallet module docs (`api-wallets`, `web-wallets`): list contract now explicitly locks `no Details` + inline `API key` status column order/mapping, and paper-reset contract is locked as dedicated fail-closed non-destructive command with reset-checkpoint baseline semantics.
 - 2026-04-20: Queued `WAPR` from wallet-module analysis and published executor-ready plan `docs/planning/wallets-list-paper-reset-safety-plan-2026-04-20.md` with strict scope lock: remove duplicate wallet-list `Details` rows, add inline `API key` connected-state column, and implement dedicated non-destructive `PAPER` wallet reset via reset-aware capital baseline rather than naive `paperInitialBalance` edit-only behavior.

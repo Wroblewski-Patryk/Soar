@@ -317,6 +317,30 @@ This file tracks intentionally unresolved architecture choices so implementation
   - `docs/architecture/wallet-source-of-truth-contract.md`
   - `docs/planning/wallet-module-implementation-plan-2026-04-07.md`
 
+## Wallets List API-Key Status and Paper Reset Safety Contract (`WAPR`)
+- Decision state: resolved on 2026-04-20.
+- Decision:
+  - `/dashboard/wallets/list` uses one row-only table contract (no expandable `Details` rows).
+  - wallet list includes inline `API key` column between `Allocation` and `Actions`.
+  - `API key` mapping is deterministic from wallet row payload:
+    - `apiKeyId` present -> `Connected`,
+    - `apiKeyId` missing -> `Not connected`.
+  - paper reset is a dedicated wallet command (not a generic update side effect).
+  - reset is non-destructive: historical orders/positions/trades stay stored for audit/history.
+- Locked behavior:
+  - canonical reset command route is `POST /dashboard/wallets/:id/reset-paper`.
+  - reset is fail-closed:
+    - allowed only for owned `PAPER` wallets,
+    - rejected when paper open positions exist,
+    - rejected when active paper open orders exist.
+  - reset baseline must restore usable paper capital from configured paper balance contract without deleting history:
+    - implementation should use a wallet-level reset checkpoint (`paperResetAt` or equivalent),
+    - pre-reset realized lifecycle must not deplete post-reset affordability baseline.
+- Canonical references:
+  - `docs/planning/wallets-list-paper-reset-safety-plan-2026-04-20.md`
+  - `docs/modules/api-wallets.md`
+  - `docs/modules/web-wallets.md`
+
 ## Dashboard Create/Edit Forms UX/UI Unification Contract
 - Decision state: resolved on 2026-04-18.
 - Decision:

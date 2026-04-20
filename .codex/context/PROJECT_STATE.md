@@ -135,9 +135,10 @@ Last updated: 2026-04-20
     reset-aware baseline semantics consistent with runtime and reports.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - `WAPR-01 docs(contract): freeze wallets list api-key column and paper-reset safety contract`.
+  - `WAPR-02 test(web-red): add wallets list regression for api-key column and no-details contract`.
 
 ## Recent Progress
+- 2026-04-20: completed `WAPR-01` by freezing canonical wallet-list + paper-reset safety contract in `open-decisions` and wallet module docs (`api-wallets`, `web-wallets`): list now has explicit `no Details` + inline `API key` column order/mapping contract, and paper reset is locked as dedicated fail-closed non-destructive command baseline (`POST /dashboard/wallets/:id/reset-paper`) with reset-checkpoint capital semantics.
 - 2026-04-20: closed `UOLF` wave (`UOLF-02..UOLF-15`) end-to-end by shipping
   selected-bot manual-order scope regressions, canonical bot-context authority
   for order-open, shared order-fill-position lifecycle handling across

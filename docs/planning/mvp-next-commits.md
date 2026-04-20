@@ -7,9 +7,9 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `WAPR-01 docs(contract): freeze wallets list api-key column and paper-reset safety contract`
-## NEXT
 - [ ] `WAPR-02 test(web-red): add wallets list regression for api-key column and no-details contract`
+## NEXT
+- [ ] `WAPR-03 fix(web-list): remove details row and add api-key status column in wallets table`
 ## PIPELINE
 - [ ] (none)
 ## GROUP QUEUE
@@ -98,6 +98,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `WAPR-01 docs(contract): freeze wallets list api-key column and paper-reset safety contract`
+  - 2026-04-20: Frozen canonical `WAPR` contract in `open-decisions` and wallet module docs (`api-wallets`, `web-wallets`) with explicit list-table scope (`no Details`, inline `API key` column between `Allocation` and `Actions`, deterministic `Connected/Not connected` mapping) and dedicated fail-closed non-destructive paper-reset command baseline (`POST /dashboard/wallets/:id/reset-paper`, reset-checkpoint semantics).
 - [x] `WAPR planning queued (wallets list api-key status + paper reset safety)`
   - 2026-04-20: Added `docs/planning/wallets-list-paper-reset-safety-plan-2026-04-20.md` and queued `WAPR-01..WAPR-10` for wallet-list simplification (`remove Details`, add inline `API key` status column) plus non-destructive `PAPER` wallet reset with reset-aware capital baseline, fail-closed guards, focused API/web regressions, and closure validation.
 - [x] `UOLF-01 docs(contract): supersede manual-order order-only contract with unified order-fill-position lifecycle`
