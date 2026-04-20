@@ -1,6 +1,6 @@
 # Backtests List/Create Time-Window Remediation Plan (2026-04-20)
 
-Status: in progress (`BTCF-01` completed on 2026-04-20)  
+Status: completed (`BTCF-01..BTCF-12` closed on 2026-04-20)  
 Execution mode: tiny-commit only (exactly one task per commit)  
 Primary audience: execution agent
 

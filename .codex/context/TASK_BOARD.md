@@ -17,20 +17,11 @@ Last updated: 2026-04-20
 
 ## READY
 
-- [ ] BTCF-02 Add API list-contract regression for strategy/markets/initBalance enrich fields
-- [ ] BTCF-03 Expose strategy/markets/initBalance fields in backtests list API payload
+- [ ] (none)
 
 ## BACKLOG
 
-- [ ] BTCF-04 Replace backtests list columns Symbol/Interval with Strategy/Markets/Init balance
-- [ ] BTCF-05 Add create-form regressions for start/end fields, slider bounds, and md 3-column layout
-- [ ] BTCF-06 Add startAt/endAt to create form with deterministic sync + min 250 candles
-- [ ] BTCF-07 Refactor create-form md layout to 3 columns with independent strategy/market contexts
-- [ ] BTCF-08 Add API regressions for explicit startAt/endAt run semantics in DTO/job flow
-- [ ] BTCF-09 Extend API run flow/repository/job/gateway to persist and use explicit startAt/endAt
-- [ ] BTCF-10 Add i18n keys for new backtests columns, date-range fields, and validation copy
-- [ ] BTCF-11 Sync backtests docs for list contract and explicit time-window execution semantics
-- [ ] BTCF-12 Run focused closure pack and synchronize canonical queue/context
+- [ ] (none)
 
 ## IN_PROGRESS
 
@@ -50,6 +41,12 @@ Last updated: 2026-04-20
   - 2026-04-20: Locked canonical backtests list/create contract in `open-decisions` and module docs (`web-backtest`, `api-backtests`) with exact list-column set (`Strategy`, `Markets`, `Init balance`, `Status`, `Start`, `Actions`), explicit create range fields (`startAt/endAt`), slider bounds (`250..10000`), and legacy run compatibility requirement.
 - [x] BTCF planning queued (`BTCF-01..BTCF-12`)
   - 2026-04-20: Added `docs/planning/backtests-list-create-time-window-remediation-plan-2026-04-20.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) for backtests list contract update, create-form 3-column time-window UX, backend explicit range execution path, i18n sync, and closure validations.
+- [x] BTCF-A group closure (`BTCF-01..BTCF-04`)
+  - 2026-04-20: Closed list-contract wave by adding API regression for enriched list rows (`strategyName`, `markets`, `initialBalance`), implementing list payload enrich on API, and switching web runs table to canonical columns (`Strategy`, `Markets`, `Init balance`, `Status`, `Start`, `Actions`) with focused API+web test coverage.
+- [x] BTCF-B group closure (`BTCF-05..BTCF-09`)
+  - 2026-04-20: Closed create/runtime-range wave by adding create-form regressions for `startAt/endAt` + md 3-column layout + `250..10000` bounds, implementing deterministic range/candle sync in web create form, extending API create DTO validation and persisted seed contract with explicit range fields, and wiring backtest job/gateway/timeline read path to use configured `startAt/endAt` boundaries while preserving legacy-run fallback compatibility.
+- [x] BTCF-C group closure (`BTCF-10..BTCF-12`)
+  - 2026-04-20: Closed i18n/docs/qa wave by completing `en/pl/pt` copy parity for new list/create keys, synchronizing `web-backtest` + `api-backtests` + `trading-logic` docs to explicit range semantics, and passing closure pack (`backtests api/web tests`, `api/web typecheck`, `api/web build`, `quality:guardrails`, `i18n:audit:route-reachable:web`).
 - [x] PLNC-C planning parity closure (`PLNC-06..PLNC-08`)
   - 2026-04-20: Closed stale planning-status sweep by syncing closed-wave statuses (`UXR-I`, `DAGG`, `SBSC`, `UXR`, `POS`, `PLNC`, `V1/LBT`), updating `mvp-execution-plan` phase headers to closed (`PLNC`, `ARC`, `POS`, `OPV`, `UXR-I`, `UXR-J`), and reconciling `planning-catalog-index` classifications with canonical closure state.
 - [x] OOSC-C group closure (`OOSC-07..OOSC-08`)

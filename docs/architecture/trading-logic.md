@@ -99,6 +99,9 @@
 - Must include fees, slippage, and funding.
 - Must calculate profit, loss, drawdown, and trade-level PnL.
 - Must produce a summary report from the same data that powers live stats.
+- New run creation uses explicit selected time window (`startAt/endAt`) as the
+  primary candle-range source; legacy runs without range fields remain readable
+  through fallback timeline anchoring.
 - Timeline data for charting is exposed in chunks (cursor + chunk size) so UI can stream large symbol sets without blocking.
 - Backtest chart overlays are built from:
   - candle series (OHLCV),

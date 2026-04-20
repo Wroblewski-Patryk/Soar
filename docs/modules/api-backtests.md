@@ -6,7 +6,7 @@
 - Source path: `apps/api/src/modules/backtests`
 - Owner: backend/trading-domain
 - Last updated: 2026-04-20
-- Related planning task: `MURC-10`
+- Related planning task: `BTCF-11`
 
 ## 1. Purpose and Scope
 - Owns backtest run lifecycle and read APIs:
@@ -56,13 +56,16 @@ Out of scope:
   3. Resolve and persist one candle-window contract per run:
      - `requestedMaxCandles` (nullable request input),
      - `effectiveMaxCandles` (single adapted value reused everywhere),
-     - compatibility `maxCandles` mirror.
+     - compatibility `maxCandles` mirror,
+     - explicit range boundaries in seed (`startAt`, `endAt`, `rangeSource`).
   4. Build run record and queue job payload.
   5. Execute replay with indicator/derivative series and fill model.
   6. Persist trades and report summary; update run status.
 - Timeline/report reads:
   - resolve owned run and emit scoped timeline/report projections.
-  - terminal runs (`COMPLETED/FAILED/CANCELED`) anchor timeline by `finishedAt` (not stale `liveProgress.currentCandleTime`).
+  - timeline fetch prefers configured seed boundary `endAt`; when missing
+    (legacy runs), terminal runs anchor by `finishedAt` (not stale
+    `liveProgress.currentCandleTime`).
   - timeline replay context supports:
     - `isolated` (default): requested symbol only,
     - `portfolio`: full run-symbol context.
@@ -104,7 +107,7 @@ pnpm --filter api test -- src/modules/backtests/backtests.e2e.test.ts src/module
 ## 9. Open Issues and Follow-Ups
 - Continue parity hardening between backtest and runtime decision paths.
 - Consider additional queue observability SLIs for heavy multi-symbol workloads.
-- Deliver `BTCF-02..BTCF-09` to fully align API list/create/runtime-range behavior with frozen BTCF contract.
+- No active BTCF follow-up remains in this module after `BTCF` closure.
 
 ## 10. Market-Universe Symbol Contract Parity (`MURC`)
 - `seedConfig.symbols` must always reflect the shared market-universe composition formula.

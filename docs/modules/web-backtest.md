@@ -6,7 +6,7 @@
 - Source path: `apps/web/src/features/backtest`
 - Owner: frontend/trading-analysis
 - Last updated: 2026-04-20
-- Related planning task: `DCP-09`
+- Related planning task: `BTCF-11`
 
 ## 1. Purpose and Scope
 - Implements backtest execution UX:
@@ -96,4 +96,4 @@ pnpm --filter web test -- src/features/backtest/components/BacktestCreateForm.te
 ## 9. Open Issues and Follow-Ups
 - Continue splitting large detail view logic as timeline features grow.
 - Consider server-side pagination controls in list view for larger run volumes.
-- Execute `BTCF-A..BTCF-C` implementation tasks to align current UI behavior with frozen list/create contract.
+- No active BTCF follow-up remains in this module after `BTCF` closure.

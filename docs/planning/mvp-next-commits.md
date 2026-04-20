@@ -7,23 +7,15 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `BTCF-02 test(api-red): add list contract regression for strategy/markets/initBalance enrich fields`
+- [ ] `none`
 ## NEXT
-- [ ] `BTCF-03 feat(api-list-enrich): expose strategy/markets/initBalance fields for backtests list rows`
-- [ ] `BTCF-04 fix(web-list): replace Symbol/Interval columns with Strategy/Markets/Init balance`
+- [ ] `none`
 ## PIPELINE
-- [ ] `BTCF-05 test(web-red): add create-form regressions for start/end fields, slider bounds, and 3-column md layout`
-- [ ] `BTCF-06 feat(web-create): add startAt/endAt fields + deterministic sync rules + min 250 candles`
-- [ ] `BTCF-07 refactor(web-create-layout): switch create form md+ structure to 3 columns with independent strategy/market contexts`
-- [ ] `BTCF-08 test(api-red): add run DTO/job range regressions for explicit startAt/endAt semantics`
-- [ ] `BTCF-09 fix(api-range-flow): extend DTO/repository/job/gateway to persist and use explicit startAt/endAt`
-- [ ] `BTCF-10 feat(i18n): add backtests list/create keys for new columns, labels, and validation messages`
-- [ ] `BTCF-11 docs(sync): update backtests module/logic docs for list contract and explicit time-window execution`
-- [ ] `BTCF-12 qa(closure): run focused backtests remediation pack and sync canonical queue/context`
+- [ ] `none`
 ## GROUP QUEUE
-- [ ] `BTCF-A (commits BTCF-01..BTCF-04): contract freeze + list API enrich + list UI parity`
-- [ ] `BTCF-B (commits BTCF-05..BTCF-09): create range/validation/layout + backend explicit-range execution`
-- [ ] `BTCF-C (commits BTCF-10..BTCF-12): i18n/docs sync + closure validation + compatibility lock`
+- [x] `BTCF-A (commits BTCF-01..BTCF-04): contract freeze + list API enrich + list UI parity`
+- [x] `BTCF-B (commits BTCF-05..BTCF-09): create range/validation/layout + backend explicit-range execution`
+- [x] `BTCF-C (commits BTCF-10..BTCF-12): i18n/docs sync + closure validation + compatibility lock`
 - [x] `OOSC-A (commits OOSC-01..OOSC-03): contract freeze + API origin/source plumbing`
 - [x] `OOSC-B (commits OOSC-04..OOSC-06): web source column + mapping + regressions`
 - [x] `OOSC-C (commits OOSC-07..OOSC-08): docs sync + closure validation`
@@ -101,6 +93,12 @@ Operational queue for one-task execution runs.
   - 2026-04-20: Frozen canonical backtests list/create contract in `open-decisions` and backtests module docs (`web-backtest`, `api-backtests`): list columns locked to `Strategy/Markets/Init balance/Status/Start/Actions`, create explicit range contract locked (`startAt/endAt`), slider bounds frozen (`250..10000`), and backward compatibility for legacy runs explicitly required.
 - [x] `BTCF planning queued (backtests list/create explicit time-window remediation wave)`
   - 2026-04-20: Added `docs/planning/backtests-list-create-time-window-remediation-plan-2026-04-20.md` and queued `BTCF-A..BTCF-C` for backtests list column contract (`Strategy/Markets/Init balance`) plus create-form explicit `startAt/endAt` flow, slider bounds `250..10000`, backend range execution parity, i18n sync, and closure validations.
+- [x] `BTCF-02..BTCF-04 list-contract remediation closure`
+  - 2026-04-20: Added API list-contract regression for `strategyName/markets/initialBalance`, implemented list payload enrich in repository/service projection, and switched web runs table to canonical columns (`Strategy`, `Markets`, `Init balance`, `Status`, `Start`, `Actions`) with focused API+web regression coverage.
+- [x] `BTCF-05..BTCF-09 create/runtime explicit-range closure`
+  - 2026-04-20: Added create-form regressions for explicit `startAt/endAt`, slider bounds (`250..10000`), and md 3-column layout; implemented deterministic sync rules (`range` edits derive `maxCandles`, `maxCandles` edits derive range), extended API DTO validation and run creation seed contract with explicit range persistence, and wired job/gateway/timeline read paths to use configured range boundaries (`startAt/endAt`) with legacy-run compatibility fallback.
+- [x] `BTCF-10..BTCF-12 i18n/docs/closure sync`
+  - 2026-04-20: Completed locale key coverage for new backtests list/create copy (`en/pl/pt`), synchronized module/architecture docs to explicit range execution semantics, executed focused closure pack (`api/web backtests tests`, `api/web typecheck`, `api/web build`, `quality:guardrails`, `i18n:audit:route-reachable:web`), and synced canonical queue/context state for BTCF wave closure.
 - [x] `PLNC-C (commits PLNC-06..PLNC-08): stale planning-status/header parity sweep + canonical queue/context sync`
   - 2026-04-20: Closed post-queue-idle planning parity sweep by synchronizing stale closed-wave statuses in planning plans (`UXR-I`, `DAGG`, `SBSC`, `UXR`, `POS`, `PLNC`, `V1/LBT`) plus canonical phase headers in `mvp-execution-plan` (`PLNC`, `ARC`, `POS`, `OPV`, `UXR-I`, `UXR-J`) and catalog classification map (`planning-catalog-index`) to current closure reality.
 - [x] `OOSC-C (commits OOSC-07..OOSC-08): docs sync + closure validation`

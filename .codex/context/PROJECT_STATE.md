@@ -115,26 +115,33 @@ Last updated: 2026-04-20
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: execute `BTCF-A` for backtests list/create
-  time-window remediation after recent queue-idle parity closure.
+- Main active objective: `BTCF` wave is closed end-to-end; await next
+  canonical `READY` task after queue sync.
 - Top blockers:
   - none in OPV scope; final RC external-gates snapshot is closed
     (`G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`) from run
     `2026-04-19T15:13:58.943Z`.
 - Success criteria for this phase:
-  - `/dashboard/backtests/list` contract is queued for required columns
+  - `/dashboard/backtests/list` uses canonical columns
     (`Strategy`, `Markets`, `Init balance`, `Status`, `Start`, `Actions`).
-  - create form remediation queue covers explicit `startAt/endAt` range and
-    slider bounds `250..10000` with deterministic sync rules.
-  - backend execution queue covers explicit range flow persistence and
-    job/gateway parity (no implicit now-backward fallback in requested path).
+  - create form supports explicit `startAt/endAt` with deterministic sync and
+    slider bounds `250..10000`.
+  - backend execution path persists and uses explicit range boundaries
+    (`startAt/endAt`) with legacy-run compatibility fallback.
   - planning/docs/status remain synchronized across canonical files.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - execute `BTCF-02` from canonical `NOW` queue.
-  - continue `BTCF-A` (`BTCF-03`, `BTCF-04`) before form/backend range tasks.
+  - none in canonical BTCF queue (wave closed).
 
 ## Recent Progress
+- 2026-04-20: closed full `BTCF` wave (`BTCF-02..BTCF-12`) end-to-end by
+  delivering API list enrich contract (`strategyName`, `markets`,
+  `initialBalance`), canonical web runs table columns, create-form explicit
+  range controls with deterministic sync + slider bounds `250..10000`, API
+  DTO + service/job/gateway explicit range flow (`startAt/endAt`) with
+  backward-compatible fallback for legacy runs, docs/i18n parity sync, and
+  closure validation pack (`api/web backtests tests`, `api/web typecheck`,
+  `api/web build`, `quality:guardrails`, `i18n:audit:route-reachable:web`).
 - 2026-04-20: completed `BTCF-01` by freezing canonical backtests
   list/create contract in `open-decisions` and module docs
   (`web-backtest`, `api-backtests`) with exact list columns
