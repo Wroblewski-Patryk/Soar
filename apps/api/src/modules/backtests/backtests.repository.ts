@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/client';
+import { normalizeSymbols } from '../../lib/symbols';
 import { ListBacktestRunsQuery, ListBacktestTradesQuery } from './backtests.types';
 
 export const updateBacktestRunById = (runId: string, data: Prisma.BacktestRunUpdateInput) =>
@@ -58,15 +59,93 @@ export const findOwnedMarketUniverseById = (userId: string, marketUniverseId: st
     },
   });
 
-export const listOwnedBacktestRuns = (userId: string, query: ListBacktestRunsQuery) =>
-  prisma.backtestRun.findMany({
+type BacktestRunListBase = Prisma.BacktestRunGetPayload<{
+  select: {
+    id: true;
+    userId: true;
+    strategyId: true;
+    name: true;
+    symbol: true;
+    timeframe: true;
+    startedAt: true;
+    finishedAt: true;
+    status: true;
+    seedConfig: true;
+    notes: true;
+    createdAt: true;
+    updatedAt: true;
+    strategy: {
+      select: {
+        name: true;
+      };
+    };
+  };
+}>;
+
+export type BacktestRunListItem = Omit<BacktestRunListBase, 'strategy'> & {
+  strategyName: string | null;
+  markets: string[];
+  initialBalance: number;
+};
+
+const normalizeSeed = (seed: unknown): Record<string, unknown> =>
+  seed && typeof seed === 'object' ? (seed as Record<string, unknown>) : {};
+
+const resolveRunMarkets = (seedConfig: unknown, fallbackSymbol: string): string[] => {
+  const seed = normalizeSeed(seedConfig);
+  if (Array.isArray(seed.symbols) && seed.symbols.length > 0) {
+    return normalizeSymbols(seed.symbols.map((symbol) => String(symbol)));
+  }
+  return normalizeSymbols([fallbackSymbol]);
+};
+
+const resolveInitialBalance = (seedConfig: unknown): number => {
+  const seed = normalizeSeed(seedConfig);
+  const initialBalanceRaw = Number(seed.initialBalance);
+  if (Number.isFinite(initialBalanceRaw)) return initialBalanceRaw;
+  return 10_000;
+};
+
+export const listOwnedBacktestRuns = async (
+  userId: string,
+  query: ListBacktestRunsQuery,
+): Promise<BacktestRunListItem[]> => {
+  const rows = await prisma.backtestRun.findMany({
     where: {
       userId,
       ...(query.status ? { status: query.status } : {}),
     },
+    select: {
+      id: true,
+      userId: true,
+      strategyId: true,
+      name: true,
+      symbol: true,
+      timeframe: true,
+      startedAt: true,
+      finishedAt: true,
+      status: true,
+      seedConfig: true,
+      notes: true,
+      createdAt: true,
+      updatedAt: true,
+      strategy: {
+        select: {
+          name: true,
+        },
+      },
+    },
     orderBy: { createdAt: 'desc' },
     take: query.limit,
   });
+
+  return rows.map(({ strategy, ...row }) => ({
+    ...row,
+    strategyName: strategy?.name ?? null,
+    markets: resolveRunMarkets(row.seedConfig, row.symbol),
+    initialBalance: resolveInitialBalance(row.seedConfig),
+  }));
+};
 
 export const findOwnedBacktestRun = (userId: string, runId: string) =>
   prisma.backtestRun.findFirst({

@@ -26,6 +26,9 @@ describe("BacktestsRunsTable", () => {
             {
               id: "bt-1",
               strategyId: "str-1",
+              strategyName: "EMA Pulse",
+              markets: ["BTCUSDT", "ETHUSDT"],
+              initialBalance: 2500,
               name: "Run #1",
               symbol: "BTCUSDT",
               timeframe: "5m",
@@ -39,6 +42,13 @@ describe("BacktestsRunsTable", () => {
         />
       </I18nProvider>
     );
+
+    expect(screen.getByText(/strategia|strategy/i)).toBeInTheDocument();
+    expect(screen.getByText(/rynki|markets/i)).toBeInTheDocument();
+    expect(screen.getByText(/balans startowy|init balance/i)).toBeInTheDocument();
+    expect(screen.getByText("EMA Pulse")).toBeInTheDocument();
+    expect(screen.getByText("BTCUSDT, ETHUSDT")).toBeInTheDocument();
+    expect(screen.getByText(/2(\s| )?500/)).toBeInTheDocument();
 
     const previewLink = screen.getByRole("link", { name: /podglad run #1|preview run #1/i });
     const deleteButton = screen.getByRole("button", { name: /usun|delete/i });

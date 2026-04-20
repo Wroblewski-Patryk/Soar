@@ -208,6 +208,45 @@ describe('Backtests runs contract', () => {
     expect(reportRes.body.totalTrades).toBeGreaterThanOrEqual(2);
   });
 
+  it('returns enriched list fields for strategy, markets, and initial balance', async () => {
+    const ownerEmail = 'backtests-list-enrich@example.com';
+    const agent = await registerAndLogin(ownerEmail);
+    const strategyName = 'List enrich strategy';
+
+    const strategyRes = await agent.post('/dashboard/strategies').send({
+      name: strategyName,
+      interval: '1h',
+      leverage: 2,
+      walletRisk: 1,
+      config: {
+        open: { logic: 'AND', rules: [] },
+        close: { logic: 'OR', rules: [] },
+      },
+    });
+    expect(strategyRes.status).toBe(201);
+    const strategyId = strategyRes.body.id as string;
+
+    const createRes = await agent.post('/dashboard/backtests/runs').send({
+      name: 'List enrich run',
+      symbol: 'ethusdt',
+      timeframe: '1h',
+      strategyId,
+      seedConfig: { initialBalance: 4321 },
+    });
+    expect(createRes.status).toBe(201);
+    const runId = createRes.body.id as string;
+
+    const listRes = await agent.get('/dashboard/backtests/runs');
+    expect(listRes.status).toBe(200);
+    const createdRun = (listRes.body as Array<Record<string, unknown>>).find(
+      (row) => row.id === runId,
+    );
+    expect(createdRun).toBeDefined();
+    expect(createdRun?.strategyName).toBe(strategyName);
+    expect(createdRun?.markets).toEqual(['ETHUSDT']);
+    expect(createdRun?.initialBalance).toBe(4321);
+  });
+
   it('supports delete run flow for owner', async () => {
     const ownerEmail = 'backtests-delete-owner@example.com';
     const agent = await registerAndLogin(ownerEmail);

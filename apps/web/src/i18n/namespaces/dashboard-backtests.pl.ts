@@ -48,9 +48,9 @@ export const dashboardBacktestsPl = {
     emptyDescription: "Utworz pierwszy run, aby przejrzec wyniki.",
   },
   runsTable: {
-    colName: "Nazwa",
-    colSymbol: "Symbol",
-    colTimeframe: "Interwal",
+    colStrategy: "Strategia",
+    colMarkets: "Rynki",
+    colInitBalance: "Balans startowy",
     colStatus: "Status",
     colStart: "Start",
     colActions: "Akcje",

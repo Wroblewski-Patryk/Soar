@@ -3,6 +3,9 @@ export type BacktestStatus = "PENDING" | "RUNNING" | "COMPLETED" | "FAILED" | "C
 export type BacktestRun = {
   id: string;
   strategyId: string | null;
+  strategyName?: string | null;
+  markets?: string[];
+  initialBalance?: number;
   name: string;
   symbol: string;
   timeframe: string;

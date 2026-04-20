@@ -25,15 +25,22 @@ const statusBadgeTone = (status: BacktestStatus): 'success' | 'danger' | 'info' 
 };
 
 export default function BacktestsRunsTable({ rows, onDeleted }: BacktestsRunsTableProps) {
-  const { formatDateTime } = useLocaleFormatting();
+  const { formatDateTime, formatNumber } = useLocaleFormatting();
   const { t } = useI18n();
+  const resolveCopy = useCallback(
+    (key: string, fallback: string) => {
+      const translated = t(key);
+      return translated === key ? fallback : translated;
+    },
+    [t]
+  );
   const [selectedDeleteRun, setSelectedDeleteRun] = useState<BacktestRun | null>(null);
   const [deleting, setDeleting] = useState(false);
   const copy = useMemo(
     () => ({
-      colName: t('dashboard.backtests.runsTable.colName'),
-      colSymbol: t('dashboard.backtests.runsTable.colSymbol'),
-      colTimeframe: t('dashboard.backtests.runsTable.colTimeframe'),
+      colStrategy: resolveCopy('dashboard.backtests.runsTable.colStrategy', 'Strategy'),
+      colMarkets: resolveCopy('dashboard.backtests.runsTable.colMarkets', 'Markets'),
+      colInitBalance: resolveCopy('dashboard.backtests.runsTable.colInitBalance', 'Init balance'),
       colStatus: t('dashboard.backtests.runsTable.colStatus'),
       colStart: t('dashboard.backtests.runsTable.colStart'),
       colActions: t('dashboard.backtests.runsTable.colActions'),
@@ -51,7 +58,7 @@ export default function BacktestsRunsTable({ rows, onDeleted }: BacktestsRunsTab
       statusFailed: t('dashboard.backtests.runsTable.statusFailed'),
       statusCanceled: t('dashboard.backtests.runsTable.statusCanceled'),
     }),
-    [t]
+    [resolveCopy, t]
   );
   const getStatusLabel = useCallback(
     (status: BacktestStatus) => {
@@ -90,23 +97,39 @@ export default function BacktestsRunsTable({ rows, onDeleted }: BacktestsRunsTab
   const columns = useMemo<DataTableColumn<BacktestRun>[]>(
     () => [
       {
-        key: 'name',
-        label: copy.colName,
+        key: 'strategyName',
+        label: copy.colStrategy,
         sortable: true,
-        accessor: (row) => row.name,
+        accessor: (row) => row.strategyName ?? row.strategyId ?? '-',
         className: 'font-medium',
       },
       {
-        key: 'symbol',
-        label: copy.colSymbol,
+        key: 'markets',
+        label: copy.colMarkets,
         sortable: true,
-        accessor: (row) => row.symbol,
+        accessor: (row) => (row.markets && row.markets.length > 0 ? row.markets.join(', ') : row.symbol),
       },
       {
-        key: 'timeframe',
-        label: copy.colTimeframe,
+        key: 'initialBalance',
+        label: copy.colInitBalance,
         sortable: true,
-        accessor: (row) => row.timeframe,
+        accessor: (row) => {
+          if (typeof row.initialBalance === 'number' && Number.isFinite(row.initialBalance)) {
+            return row.initialBalance;
+          }
+          const initialBalanceCandidate = Number((row.seedConfig as { initialBalance?: unknown } | null)?.initialBalance);
+          return Number.isFinite(initialBalanceCandidate) ? initialBalanceCandidate : 10_000;
+        },
+        render: (row) => {
+          const initialBalanceCandidate = Number((row.seedConfig as { initialBalance?: unknown } | null)?.initialBalance);
+          const resolvedInitialBalance =
+            typeof row.initialBalance === 'number' && Number.isFinite(row.initialBalance)
+              ? row.initialBalance
+              : Number.isFinite(initialBalanceCandidate)
+                ? initialBalanceCandidate
+                : 10_000;
+          return formatNumber(resolvedInitialBalance, { maximumFractionDigits: 2 });
+        },
       },
       {
         key: 'status',
@@ -144,14 +167,15 @@ export default function BacktestsRunsTable({ rows, onDeleted }: BacktestsRunsTab
     ],
     [
       copy.colActions,
-      copy.colName,
+      copy.colInitBalance,
+      copy.colMarkets,
       copy.colStart,
       copy.colStatus,
-      copy.colSymbol,
-      copy.colTimeframe,
+      copy.colStrategy,
       copy.delete,
       copy.preview,
       formatDateTime,
+      formatNumber,
       getStatusLabel,
     ]
   );
@@ -166,10 +190,15 @@ export default function BacktestsRunsTable({ rows, onDeleted }: BacktestsRunsTab
         filterPlaceholder={copy.filterPlaceholder}
         filterFn={(row, query) => {
           const normalized = normalizeUppercaseToken(query);
+          const marketsValue = Array.isArray(row.markets) && row.markets.length > 0 ? row.markets.join(' ') : row.symbol;
+          const initialBalanceValue =
+            typeof row.initialBalance === 'number'
+              ? String(row.initialBalance)
+              : String((row.seedConfig as { initialBalance?: unknown } | null)?.initialBalance ?? '');
           return (
-            normalizeUppercaseToken(row.name).includes(normalized) ||
-            normalizeUppercaseToken(row.symbol).includes(normalized) ||
-            normalizeUppercaseToken(row.timeframe).includes(normalized) ||
+            normalizeUppercaseToken(row.strategyName ?? row.strategyId ?? row.name).includes(normalized) ||
+            normalizeUppercaseToken(marketsValue).includes(normalized) ||
+            normalizeUppercaseToken(initialBalanceValue).includes(normalized) ||
             normalizeUppercaseToken(row.status).includes(normalized)
           );
         }}
