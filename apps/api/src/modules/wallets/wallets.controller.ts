@@ -23,6 +23,15 @@ const handleWalletError = (res: Response, error: unknown) => {
   if (mapped.code === WALLET_ERROR_CODES.liveApiKeyExchangeMismatch) {
     return sendError(res, 400, 'apiKeyId exchange must match wallet exchange', mapped.details);
   }
+  if (mapped.code === WALLET_ERROR_CODES.paperResetPaperOnly) {
+    return sendError(res, 409, 'paper reset is allowed only for PAPER wallets', mapped.details);
+  }
+  if (mapped.code === WALLET_ERROR_CODES.paperResetOpenPositions) {
+    return sendError(res, 409, 'paper reset is blocked while open positions exist', mapped.details);
+  }
+  if (mapped.code === WALLET_ERROR_CODES.paperResetOpenOrders) {
+    return sendError(res, 409, 'paper reset is blocked while active open orders exist', mapped.details);
+  }
   if (mapped.code === WALLET_ERROR_CODES.inUseCannotDelete) {
     return sendError(res, 409, 'wallet is used by at least one bot and cannot be deleted', mapped.details);
   }
@@ -113,6 +122,20 @@ export const deleteWallet = async (req: Request, res: Response) => {
     const deleted = await walletsService.deleteWallet(userId, id);
     if (!deleted) return sendError(res, 404, 'Not found');
     return res.status(204).end();
+  } catch (error) {
+    return handleWalletError(res, error);
+  }
+};
+
+export const resetPaperWallet = async (req: Request, res: Response) => {
+  const userId = req.user?.id;
+  if (!userId) return sendError(res, 401, 'Unauthorized');
+
+  try {
+    const { id } = req.params;
+    const updated = await walletsService.resetPaperWallet(userId, id);
+    if (!updated) return sendError(res, 404, 'Not found');
+    return res.status(200).json(updated);
   } catch (error) {
     return handleWalletError(res, error);
   }

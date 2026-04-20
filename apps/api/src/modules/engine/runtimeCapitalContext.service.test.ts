@@ -70,6 +70,7 @@ describe('runtimeCapitalContext', () => {
           id: 'wallet-paper',
           mode: 'PAPER',
           paperInitialBalance: 4_000,
+          paperResetAt: null,
           liveAllocationMode: null,
           liveAllocationValue: null,
           baseCurrency: 'USDT',
@@ -103,6 +104,7 @@ describe('runtimeCapitalContext', () => {
           id: 'wallet-live',
           mode: 'LIVE',
           paperInitialBalance: 0,
+          paperResetAt: null,
           liveAllocationMode: 'PERCENT',
           liveAllocationValue: 25,
           baseCurrency: 'USDT',
@@ -136,6 +138,46 @@ describe('runtimeCapitalContext', () => {
     );
 
     expect(reference).toBe(0);
+  });
+
+  it('uses paper reset checkpoint to ignore pre-reset realized pnl in paper capital snapshot', async () => {
+    const checkpoint = new Date('2026-04-20T12:00:00.000Z');
+    const sumClosedBotManagedRealizedPnl = vi.fn(
+      async ({ realizedSince }: { realizedSince?: Date | null }) => {
+        if (realizedSince) return -120;
+        return -800;
+      }
+    );
+
+    const snapshot = await resolvePaperRuntimeCapitalSnapshot(
+      {
+        userId: 'u-reset',
+        botId: 'b-reset',
+        walletId: 'wallet-reset',
+        paperStartBalance: 2_000,
+      },
+      buildDeps({
+        getWalletContext: async () => ({
+          id: 'wallet-reset',
+          mode: 'PAPER',
+          paperInitialBalance: 1_000,
+          paperResetAt: checkpoint,
+          liveAllocationMode: null,
+          liveAllocationValue: null,
+          baseCurrency: 'USDT',
+          exchange: 'BINANCE',
+          apiKey: null,
+        }),
+        sumClosedBotManagedRealizedPnl,
+      })
+    );
+
+    expect(snapshot.referenceBalance).toBe(880);
+    expect(sumClosedBotManagedRealizedPnl).toHaveBeenCalledWith(
+      expect.objectContaining({
+        realizedSince: checkpoint,
+      })
+    );
   });
 
   it('marks DCA as unaffordable when required margin is above free paper cash', async () => {
@@ -211,6 +253,7 @@ describe('runtimeCapitalContext', () => {
           id: 'wallet-shared',
           mode: 'PAPER',
           paperInitialBalance: 1_000,
+          paperResetAt: null,
           liveAllocationMode: null,
           liveAllocationValue: null,
           baseCurrency: 'USDT',

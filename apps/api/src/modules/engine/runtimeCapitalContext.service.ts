@@ -17,6 +17,7 @@ type RuntimeCapitalContextDeps = {
     id: string;
     mode: BotMode;
     paperInitialBalance: number;
+    paperResetAt: Date | null;
     liveAllocationMode: WalletAllocationMode | null;
     liveAllocationValue: number | null;
     baseCurrency: string;
@@ -37,6 +38,7 @@ type RuntimeCapitalContextDeps = {
     userId: string;
     botId?: string | null;
     walletId?: string | null;
+    realizedSince?: Date | null;
   }) => Promise<number>;
   getLiveApiKeyContext: (input: {
     userId: string;
@@ -72,6 +74,7 @@ const defaultDeps: RuntimeCapitalContextDeps = {
         id: true,
         mode: true,
         paperInitialBalance: true,
+        paperResetAt: true,
         liveAllocationMode: true,
         liveAllocationValue: true,
         baseCurrency: true,
@@ -111,13 +114,30 @@ const defaultDeps: RuntimeCapitalContextDeps = {
         leverage: true,
       },
     }),
-  sumClosedBotManagedRealizedPnl: async ({ userId, botId, walletId }) => {
+  sumClosedBotManagedRealizedPnl: async ({ userId, botId, walletId, realizedSince }) => {
     const aggregate = await prisma.position.aggregate({
       where: {
         userId,
         status: { not: PositionStatus.OPEN },
         managementMode: PositionManagementMode.BOT_MANAGED,
         realizedPnl: { not: null },
+        ...(realizedSince
+          ? {
+              OR: [
+                {
+                  closedAt: {
+                    gte: realizedSince,
+                  },
+                },
+                {
+                  closedAt: null,
+                  updatedAt: {
+                    gte: realizedSince,
+                  },
+                },
+              ],
+            }
+          : {}),
         ...(walletId ? { walletId } : botId ? { botId } : { botId: null }),
       },
       _sum: {
@@ -247,6 +267,7 @@ export const resolvePaperRuntimeCapitalSnapshot = async (
           botId: input.botId,
           fallback: input.paperStartBalance,
         });
+  const realizedSince = wallet?.paperResetAt ?? null;
 
   const [openPositions, realizedPnl] = await Promise.all([
     deps.listOpenBotManagedPositions({
@@ -258,6 +279,7 @@ export const resolvePaperRuntimeCapitalSnapshot = async (
       userId: input.userId,
       botId: input.botId,
       walletId: input.walletId,
+      realizedSince,
     }),
   ]);
 

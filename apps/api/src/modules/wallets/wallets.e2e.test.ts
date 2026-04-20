@@ -13,6 +13,15 @@ const registerAndLogin = async (email: string) => {
   return agent;
 };
 
+const resolveUserIdByEmail = async (email: string) => {
+  const user = await prisma.user.findUnique({
+    where: { email },
+    select: { id: true },
+  });
+  expect(user?.id).toBeTruthy();
+  return user!.id;
+};
+
 describe('Wallets balance preview contract', () => {
   beforeEach(async () => {
     delete process.env.WALLET_PREVIEW_TEST_ACCOUNT_BALANCE;
@@ -174,5 +183,190 @@ describe('Wallets balance preview contract', () => {
       exchange: 'OKX',
       capability: 'LIVE_EXECUTION',
     });
+  });
+
+  it('rejects unauthenticated paper reset command', async () => {
+    const res = await request(app).post('/dashboard/wallets/wallet-id/reset-paper');
+
+    expect(res.status).toBe(401);
+    expect(res.body.error.message).toBe('Missing token');
+  });
+
+  it('rejects paper reset for LIVE wallet', async () => {
+    const email = 'wallet-reset-live-owner@example.com';
+    const agent = await registerAndLogin(email);
+    const userId = await resolveUserIdByEmail(email);
+
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId,
+        name: 'Live wallet',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        paperInitialBalance: 10_000,
+      },
+    });
+
+    const resetRes = await agent.post(`/dashboard/wallets/${wallet.id}/reset-paper`);
+
+    expect(resetRes.status).toBe(409);
+    expect(resetRes.body.error.message).toBe('paper reset is allowed only for PAPER wallets');
+  });
+
+  it('rejects paper reset when open positions exist in wallet scope', async () => {
+    const email = 'wallet-reset-open-position-owner@example.com';
+    const agent = await registerAndLogin(email);
+    const userId = await resolveUserIdByEmail(email);
+
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId,
+        name: 'Paper wallet',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        paperInitialBalance: 10_000,
+      },
+    });
+
+    await prisma.position.create({
+      data: {
+        userId,
+        walletId: wallet.id,
+        symbol: 'BTCUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 100,
+        quantity: 1,
+        leverage: 1,
+      },
+    });
+
+    const resetRes = await agent.post(`/dashboard/wallets/${wallet.id}/reset-paper`);
+
+    expect(resetRes.status).toBe(409);
+    expect(resetRes.body.error.message).toBe('paper reset is blocked while open positions exist');
+  });
+
+  it('rejects paper reset when active open orders exist in wallet scope', async () => {
+    const email = 'wallet-reset-open-order-owner@example.com';
+    const agent = await registerAndLogin(email);
+    const userId = await resolveUserIdByEmail(email);
+
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId,
+        name: 'Paper wallet',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        paperInitialBalance: 10_000,
+      },
+    });
+
+    await prisma.order.create({
+      data: {
+        userId,
+        walletId: wallet.id,
+        symbol: 'BTCUSDT',
+        side: 'BUY',
+        type: 'LIMIT',
+        status: 'OPEN',
+        quantity: 1,
+        price: 100,
+      },
+    });
+
+    const resetRes = await agent.post(`/dashboard/wallets/${wallet.id}/reset-paper`);
+
+    expect(resetRes.status).toBe(409);
+    expect(resetRes.body.error.message).toBe('paper reset is blocked while active open orders exist');
+  });
+
+  it('sets paper reset checkpoint and keeps historical lifecycle rows', async () => {
+    const email = 'wallet-reset-history-owner@example.com';
+    const agent = await registerAndLogin(email);
+    const userId = await resolveUserIdByEmail(email);
+
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId,
+        name: 'Paper wallet',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        paperInitialBalance: 10_000,
+      },
+    });
+
+    const position = await prisma.position.create({
+      data: {
+        userId,
+        walletId: wallet.id,
+        symbol: 'BTCUSDT',
+        side: 'LONG',
+        status: 'CLOSED',
+        entryPrice: 100,
+        quantity: 1,
+        leverage: 1,
+        realizedPnl: -50,
+        openedAt: new Date('2026-04-19T10:00:00.000Z'),
+        closedAt: new Date('2026-04-19T11:00:00.000Z'),
+      },
+    });
+
+    const order = await prisma.order.create({
+      data: {
+        userId,
+        walletId: wallet.id,
+        positionId: position.id,
+        symbol: 'BTCUSDT',
+        side: 'BUY',
+        type: 'MARKET',
+        status: 'FILLED',
+        quantity: 1,
+        filledQuantity: 1,
+      },
+    });
+
+    await prisma.trade.create({
+      data: {
+        userId,
+        walletId: wallet.id,
+        positionId: position.id,
+        orderId: order.id,
+        symbol: 'BTCUSDT',
+        side: 'BUY',
+        price: 100,
+        quantity: 1,
+        lifecycleAction: 'OPEN',
+      },
+    });
+
+    const resetRes = await agent.post(`/dashboard/wallets/${wallet.id}/reset-paper`);
+
+    expect(resetRes.status).toBe(200);
+    expect(resetRes.body.id).toBe(wallet.id);
+    expect(typeof resetRes.body.paperResetAt).toBe('string');
+
+    const [positionsCount, ordersCount, tradesCount, refreshedWallet] = await Promise.all([
+      prisma.position.count({ where: { userId, walletId: wallet.id } }),
+      prisma.order.count({ where: { userId, walletId: wallet.id } }),
+      prisma.trade.count({ where: { userId, walletId: wallet.id } }),
+      prisma.wallet.findUnique({
+        where: { id: wallet.id },
+        select: { paperResetAt: true },
+      }),
+    ]);
+
+    expect(positionsCount).toBe(1);
+    expect(ordersCount).toBe(1);
+    expect(tradesCount).toBe(1);
+    expect(refreshedWallet?.paperResetAt).not.toBeNull();
   });
 });

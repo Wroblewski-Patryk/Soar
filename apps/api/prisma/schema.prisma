@@ -673,6 +673,7 @@ model Wallet {
   marketType         TradeMarket @default(FUTURES)
   baseCurrency       String      @default("USDT")
   paperInitialBalance Float      @default(10000)
+  paperResetAt       DateTime?
   liveAllocationMode WalletAllocationMode?
   liveAllocationValue Float?
   apiKeyId           String?

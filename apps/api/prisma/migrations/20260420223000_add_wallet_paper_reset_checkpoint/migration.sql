@@ -1,0 +1,2 @@
+ALTER TABLE "Wallet"
+ADD COLUMN "paperResetAt" TIMESTAMP(3);

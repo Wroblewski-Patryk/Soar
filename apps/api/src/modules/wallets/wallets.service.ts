@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { OrderStatus, PositionStatus, Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import {
   assertExchangeCapability,
@@ -365,6 +365,66 @@ export const deleteWallet = async (userId: string, id: string) => {
   }
 
   return true;
+};
+
+const ACTIVE_OPEN_ORDER_STATUSES: OrderStatus[] = [
+  OrderStatus.PENDING,
+  OrderStatus.OPEN,
+  OrderStatus.PARTIALLY_FILLED,
+];
+
+export const resetPaperWallet = async (userId: string, id: string) => {
+  const existing = await getWallet(userId, id);
+  if (!existing) return null;
+
+  if (existing.mode !== 'PAPER') {
+    throw walletErrors.paperResetPaperOnly({
+      walletId: existing.id,
+      mode: existing.mode,
+    });
+  }
+
+  const now = new Date();
+
+  return prisma.$transaction(async (tx) => {
+    const [openPositionsCount, openOrdersCount] = await Promise.all([
+      tx.position.count({
+        where: {
+          userId,
+          walletId: existing.id,
+          status: PositionStatus.OPEN,
+        },
+      }),
+      tx.order.count({
+        where: {
+          userId,
+          walletId: existing.id,
+          status: { in: ACTIVE_OPEN_ORDER_STATUSES },
+        },
+      }),
+    ]);
+
+    if (openPositionsCount > 0) {
+      throw walletErrors.paperResetOpenPositions({
+        walletId: existing.id,
+        openPositionsCount,
+      });
+    }
+
+    if (openOrdersCount > 0) {
+      throw walletErrors.paperResetOpenOrders({
+        walletId: existing.id,
+        openOrdersCount,
+      });
+    }
+
+    return tx.wallet.update({
+      where: { id: existing.id },
+      data: {
+        paperResetAt: now,
+      },
+    });
+  });
 };
 
 export const getOwnedWalletForBotContext = async (params: {

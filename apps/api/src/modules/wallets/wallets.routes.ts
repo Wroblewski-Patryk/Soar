@@ -7,6 +7,7 @@ import {
   listWalletMetadata,
   listWallets,
   previewBalance,
+  resetPaperWallet,
   updateWallet,
 } from './wallets.controller';
 
@@ -21,6 +22,7 @@ walletsRouter.post('/preview-balance', walletPreviewLimiter, previewBalance);
 walletsRouter.get('/:id', walletReadLimiter, getWallet);
 walletsRouter.post('/', walletWriteLimiter, createWallet);
 walletsRouter.put('/:id', walletWriteLimiter, updateWallet);
+walletsRouter.post('/:id/reset-paper', walletWriteLimiter, resetPaperWallet);
 walletsRouter.delete('/:id', walletWriteLimiter, deleteWallet);
 
 export default walletsRouter;
