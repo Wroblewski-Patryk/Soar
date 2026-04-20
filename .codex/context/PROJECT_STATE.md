@@ -38,6 +38,12 @@ Last updated: 2026-04-20
   is closed end-to-end with `Source` labels (`Manual/Bot/Imported`), explicit
   manual-order write origin (`USER`), and unchanged active-only order
   visibility in `/dashboard` Open Orders.
+- 2026-04-20: product target for manual and bot entries is clarified for the
+  next execution wave: exchange-native unified lifecycle
+  (`order -> fill -> position`) supersedes the previously locked
+  `manual-order order-only` target for future implementation, while keeping
+  strict selected-bot scope and wallet-scoped exchange takeover as canonical
+  safety constraints.
 
 ## Technical Baseline
 - Backend: Node.js 20+, Express API, Prisma, TypeScript
@@ -115,25 +121,37 @@ Last updated: 2026-04-20
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: `BTCF` wave is closed end-to-end; await next
-  canonical `READY` task after queue sync.
+- Main active objective: queue `UOLF` wave for unified manual/bot order
+  lifecycle parity before further live-money rollout.
 - Top blockers:
-  - none in OPV scope; final RC external-gates snapshot is closed
-    (`G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`) from run
-    `2026-04-19T15:13:58.943Z`.
+  - current code/docs still carry superseded `manual-order order-only`
+    semantics from `SOPR-C`.
+  - runtime/manual/live pretrade rule parity is not yet fully aligned for
+    Binance quantity-step enforcement.
+  - exchange-imported positions/open orders need stronger regression locks for
+    wallet-owned selected-bot visibility.
 - Success criteria for this phase:
-  - `/dashboard/backtests/list` uses canonical columns
-    (`Strategy`, `Markets`, `Init balance`, `Status`, `Start`, `Actions`).
-  - create form supports explicit `startAt/endAt` with deterministic sync and
-    slider bounds `250..10000`.
-  - backend execution path persists and uses explicit range boundaries
-    (`startAt/endAt`) with legacy-run compatibility fallback.
-  - planning/docs/status remain synchronized across canonical files.
+  - one canonical lifecycle is implemented for manual and bot entries:
+    `order -> fill -> position`.
+  - `LIVE` submit path never creates position directly; position opens only
+    after exchange fill/sync evidence.
+  - `PAPER` mirrors the same lifecycle through internal paper fill authority.
+  - selected-bot scope remains strict for orders, positions, and imported
+    exchange state.
+  - Binance minQty / step / minNotional checks are parity-aligned across
+    runtime, manual, and final live pretrade.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - none in canonical BTCF queue (wave closed).
+  - `UOLF-01 docs(contract): supersede manual-order order-only contract with unified order-fill-position lifecycle`.
 
 ## Recent Progress
+- 2026-04-20: queued unified order lifecycle and exchange-sync parity wave
+  (`UOLF-01..UOLF-15`) and published executor-ready plan
+  `docs/planning/unified-order-lifecycle-and-exchange-sync-plan-2026-04-20.md`;
+  queue promotes the clarified product target that manual dashboard orders and
+  bot runtime signals must both follow one exchange-native lifecycle
+  (`order -> fill -> position`), with `LIVE` fill authority delegated to the
+  exchange and `PAPER` fill authority delegated to internal paper execution.
 - 2026-04-20: closed full `BTCF` wave (`BTCF-02..BTCF-12`) end-to-end by
   delivering API list enrich contract (`strategyName`, `markets`,
   `initialBalance`), canonical web runs table columns, create-form explicit

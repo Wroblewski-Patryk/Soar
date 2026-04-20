@@ -17,7 +17,8 @@ Last updated: 2026-04-20
 
 ## READY
 
-- [ ] (none)
+- [ ] UOLF-01 docs(contract): supersede manual-order order-only contract with unified order-fill-position lifecycle
+  - Freeze the new canonical contract for `manual + bot -> order -> fill -> position`, strict selected-bot scope, and wallet-scoped exchange takeover before implementation.
 
 ## BACKLOG
 
@@ -37,6 +38,8 @@ Last updated: 2026-04-20
 
 ## DONE
 
+- [x] UOLF planning queued (unified order lifecycle + exchange-sync parity)
+  - 2026-04-20: Added `docs/planning/unified-order-lifecycle-and-exchange-sync-plan-2026-04-20.md` and queued `UOLF-01..UOLF-15` to replace the superseded `order-only` target with one exchange-native lifecycle (`order -> fill -> position`) across manual and bot entries, tighten selected-bot context, align Binance adapter/pretrade rules, restore external exchange import parity for wallet-owned bots, and require a focused real-money safety pack before closure.
 - [x] BTCF-01 docs(contract): freeze backtests list columns and explicit time-window create contract
   - 2026-04-20: Locked canonical backtests list/create contract in `open-decisions` and module docs (`web-backtest`, `api-backtests`) with exact list-column set (`Strategy`, `Markets`, `Init balance`, `Status`, `Start`, `Actions`), explicit create range fields (`startAt/endAt`), slider bounds (`250..10000`), and legacy run compatibility requirement.
 - [x] BTCF planning queued (`BTCF-01..BTCF-12`)

@@ -7,12 +7,20 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `none`
+- [ ] `UOLF-01 docs(contract): supersede manual-order order-only contract with unified order-fill-position lifecycle`
 ## NEXT
-- [ ] `none`
+- [ ] `UOLF-02 test(api-red): add selected-bot scoping regressions for manual-order writes and reads`
+- [ ] `UOLF-03 test(api-red): lock unified lifecycle semantics for manual and runtime opens in paper/live`
 ## PIPELINE
-- [ ] `none`
+- [ ] `UOLF-04 test(api-red): add reconciliation regressions for imported external positions and open orders`
+- [ ] `UOLF-05 fix(api-context): derive canonical mode wallet and strategy from bot-bound context on open-order command`
+- [ ] `UOLF-06 refactor(api-lifecycle): introduce shared order lifecycle authority and fill-handler entrypoint`
 ## GROUP QUEUE
+- [x] `UOLF planning queued (unified order lifecycle + exchange-sync parity for manual and bot opens)`
+- [ ] `UOLF-A (commits UOLF-01..UOLF-04): contract freeze + failing lifecycle/scope regressions`
+- [ ] `UOLF-B (commits UOLF-05..UOLF-09): backend unified lifecycle authority + paper/live parity`
+- [ ] `UOLF-C (commits UOLF-10..UOLF-13): exchange import/reconciliation + dashboard operator parity`
+- [ ] `UOLF-D (commits UOLF-14..UOLF-15): docs sync + live-safety closure validation`
 - [x] `BTCF-A (commits BTCF-01..BTCF-04): contract freeze + list API enrich + list UI parity`
 - [x] `BTCF-B (commits BTCF-05..BTCF-09): create range/validation/layout + backend explicit-range execution`
 - [x] `BTCF-C (commits BTCF-10..BTCF-12): i18n/docs sync + closure validation + compatibility lock`
