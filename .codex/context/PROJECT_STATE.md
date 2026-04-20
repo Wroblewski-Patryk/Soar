@@ -115,25 +115,30 @@ Last updated: 2026-04-20
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: queue-idle maintenance with planning parity fully
-  synchronized after latest closure waves (`OOSC`, `PLNC/ARC/POS/OPV`, `UXR`).
+- Main active objective: execute `BTCF-A` for backtests list/create
+  time-window remediation after recent queue-idle parity closure.
 - Top blockers:
   - none in OPV scope; final RC external-gates snapshot is closed
     (`G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`) from run
     `2026-04-19T15:13:58.943Z`.
 - Success criteria for this phase:
-  - Canonical queue remains intentionally idle (`NOW/NEXT/PIPELINE = none`)
-    until a new approved wave is queued.
-  - Planning docs do not report stale `queued/ready` state for already closed
-    waves.
-  - Open Orders active-only status contract remains unchanged
-    (`PENDING`, `OPEN`, `PARTIALLY_FILLED`).
+  - `/dashboard/backtests/list` contract is queued for required columns
+    (`Strategy`, `Markets`, `Init balance`, `Status`, `Start`, `Actions`).
+  - create form remediation queue covers explicit `startAt/endAt` range and
+    slider bounds `250..10000` with deterministic sync rules.
+  - backend execution queue covers explicit range flow persistence and
+    job/gateway parity (no implicit now-backward fallback in requested path).
+  - planning/docs/status remain synchronized across canonical files.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - await next queued `NOW` item in `docs/planning/mvp-next-commits.md`
-    (currently `none`).
+  - execute `BTCF-01` from canonical `NOW` queue.
+  - continue `BTCF-A` (`BTCF-02`, `BTCF-03`) before form/backend range tasks.
 
 ## Recent Progress
+- 2026-04-20: queued backtests list/create time-window remediation wave
+  (`BTCF-01..BTCF-12`) from module analysis and published executor-ready plan
+  `docs/planning/backtests-list-create-time-window-remediation-plan-2026-04-20.md`;
+  queue promoted to active `NOW/NEXT/PIPELINE`.
 - 2026-04-20: closed `PLNC-C` planning parity sweep (`PLNC-06..PLNC-08`) by
   synchronizing stale closed-wave statuses across planning plans (`UXR-I`,
   `DAGG`, `SBSC`, `UXR`, `POS`, `PLNC`, `V1/LBT`), aligning

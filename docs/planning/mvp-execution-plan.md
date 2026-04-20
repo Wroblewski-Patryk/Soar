@@ -2248,3 +2248,20 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-20: Closed `OOSC-A` (`OOSC-01..OOSC-03`) by adding API regressions and implementation for explicit manual-order write origin (`origin=USER`) plus runtime open-orders origin projection.
 - 2026-04-20: Closed `OOSC-B` (`OOSC-04..OOSC-06`) by shipping dashboard Open Orders `Source` column mapping (`Manual/Bot/Imported`) and `en/pl/pt` localization coverage with web regression lock.
 - 2026-04-20: Closed `OOSC-C` (`OOSC-07..OOSC-08`) with docs/context synchronization and focused closure pack PASS (`orders-positions.e2e`, `bots.monitoring-aggregate.e2e`, `HomeLiveWidgets.test`, `HomeLiveWidgets.open-orders-source.test`, `api/web typecheck`, `quality:guardrails`).
+
+## Phase BTCF - Backtests List/Create Time-Window Remediation (Queued 2026-04-20)
+- [ ] `BTCF-01 docs(contract): freeze backtests list columns and explicit time-window create contract`
+- [ ] `BTCF-02 test(api-red): add list contract regression for strategy/markets/initBalance enrich fields`
+- [ ] `BTCF-03 feat(api-list-enrich): expose strategy/markets/initBalance fields for backtests list rows`
+- [ ] `BTCF-04 fix(web-list): replace Symbol/Interval columns with Strategy/Markets/Init balance`
+- [ ] `BTCF-05 test(web-red): add create-form regressions for start/end fields, slider bounds, and 3-column md layout`
+- [ ] `BTCF-06 feat(web-create): add startAt/endAt fields + deterministic sync rules + min 250 candles`
+- [ ] `BTCF-07 refactor(web-create-layout): switch create form md+ structure to 3 columns with independent strategy/market contexts`
+- [ ] `BTCF-08 test(api-red): add run DTO/job range regressions for explicit startAt/endAt semantics`
+- [ ] `BTCF-09 fix(api-range-flow): extend DTO/repository/job/gateway to persist and use explicit startAt/endAt`
+- [ ] `BTCF-10 feat(i18n): add backtests list/create keys for new columns, labels, and validation messages`
+- [ ] `BTCF-11 docs(sync): update backtests module/logic docs for list contract and explicit time-window execution`
+- [ ] `BTCF-12 qa(closure): run focused backtests remediation pack and sync canonical queue/context`
+
+### Progress Log (Phase BTCF - Backtests List/Create Time-Window Remediation)
+- 2026-04-20: Queued `BTCF` from backtests analysis report to deliver requested list-column contract (`Strategy`, `Markets`, `Init balance`, `Status`, `Start`, `Actions`), create-form md 3-column context UX, explicit `startAt/endAt` run window with slider bounds `250..10000`, backend range execution parity in job/gateway, and backward compatibility for existing historical runs. Published executor-ready plan in `docs/planning/backtests-list-create-time-window-remediation-plan-2026-04-20.md`.

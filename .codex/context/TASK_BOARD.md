@@ -17,11 +17,21 @@ Last updated: 2026-04-20
 
 ## READY
 
-- [ ] (none)
+- [ ] BTCF-01 Freeze backtests list columns and explicit time-window create contract
+- [ ] BTCF-02 Add API list-contract regression for strategy/markets/initBalance enrich fields
+- [ ] BTCF-03 Expose strategy/markets/initBalance fields in backtests list API payload
 
 ## BACKLOG
 
-- [ ] (none)
+- [ ] BTCF-04 Replace backtests list columns Symbol/Interval with Strategy/Markets/Init balance
+- [ ] BTCF-05 Add create-form regressions for start/end fields, slider bounds, and md 3-column layout
+- [ ] BTCF-06 Add startAt/endAt to create form with deterministic sync + min 250 candles
+- [ ] BTCF-07 Refactor create-form md layout to 3 columns with independent strategy/market contexts
+- [ ] BTCF-08 Add API regressions for explicit startAt/endAt run semantics in DTO/job flow
+- [ ] BTCF-09 Extend API run flow/repository/job/gateway to persist and use explicit startAt/endAt
+- [ ] BTCF-10 Add i18n keys for new backtests columns, date-range fields, and validation copy
+- [ ] BTCF-11 Sync backtests docs for list contract and explicit time-window execution semantics
+- [ ] BTCF-12 Run focused closure pack and synchronize canonical queue/context
 
 ## IN_PROGRESS
 
@@ -37,6 +47,8 @@ Last updated: 2026-04-20
 
 ## DONE
 
+- [x] BTCF planning queued (`BTCF-01..BTCF-12`)
+  - 2026-04-20: Added `docs/planning/backtests-list-create-time-window-remediation-plan-2026-04-20.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) for backtests list contract update, create-form 3-column time-window UX, backend explicit range execution path, i18n sync, and closure validations.
 - [x] PLNC-C planning parity closure (`PLNC-06..PLNC-08`)
   - 2026-04-20: Closed stale planning-status sweep by syncing closed-wave statuses (`UXR-I`, `DAGG`, `SBSC`, `UXR`, `POS`, `PLNC`, `V1/LBT`), updating `mvp-execution-plan` phase headers to closed (`PLNC`, `ARC`, `POS`, `OPV`, `UXR-I`, `UXR-J`), and reconciling `planning-catalog-index` classifications with canonical closure state.
 - [x] OOSC-C group closure (`OOSC-07..OOSC-08`)
