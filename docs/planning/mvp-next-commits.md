@@ -63,6 +63,7 @@ Operational queue for one-task execution runs.
 - [x] `UXR-J-C (commit UXR-J-08): closure checks + canonical sync`
 - [x] `PLNC-A (commits PLNC-01..PLNC-04): planning catalog reconciliation + status sync + canonical linkage`
 - [x] `PLNC-C (commits PLNC-06..PLNC-08): stale planning-status/header parity sweep + canonical queue/context sync`
+- [x] `PLNC-D (commit PLNC-09): mvp-execution phase-status parity sync for closed waves`
 - [x] `ARC-A (commits ARC-01..ARC-05): runtime critical-path decomposition foundations`
 - [x] `ARC-B (commits ARC-06..ARC-10): bots runtime CQRS/read-model decomposition + aggregate monitoring contract`
 - [x] `ARC-C (commits ARC-11..ARC-13): shared runtime/backtest indicator kernel + backtest facade alignment`
@@ -98,6 +99,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `PLNC-D (commit PLNC-09): mvp-execution phase-status parity sync for closed waves`
+  - 2026-04-20: Synchronized stale closure drift in `mvp-execution-plan` by marking `DAWR`, `OOSC`, `BTCF`, and `UOLF` phases as `Closed` and mirroring `UOLF-02..UOLF-15` checkbox status to canonical closure already captured in `TASK_BOARD` and `PROJECT_STATE`.
 - [x] `WAPR-01 docs(contract): freeze wallets list api-key column and paper-reset safety contract`
   - 2026-04-20: Frozen canonical `WAPR` contract in `open-decisions` and wallet module docs (`api-wallets`, `web-wallets`) with explicit list-table scope (`no Details`, inline `API key` column between `Allocation` and `Actions`, deterministic `Connected/Not connected` mapping) and dedicated fail-closed non-destructive paper-reset command baseline (`POST /dashboard/wallets/:id/reset-paper`, reset-checkpoint semantics).
 - [x] `WAPR planning queued (wallets list api-key status + paper reset safety)`

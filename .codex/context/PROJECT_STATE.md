@@ -137,6 +137,11 @@ Last updated: 2026-04-20
   - activate the next READY item from `docs/planning/mvp-next-commits.md`.
 
 ## Recent Progress
+- 2026-04-20: completed `PLNC-D` parity sync by reconciling stale closed-wave
+  drift in `docs/planning/mvp-execution-plan.md`; phases `DAWR`, `OOSC`,
+  `BTCF`, and `UOLF` are now explicitly marked `Closed`, and
+  `UOLF-02..UOLF-15` checkboxes are aligned with canonical closure state
+  already present in queue/context docs.
 - 2026-04-20: closed full `WAPR` wave (`WAPR-02..WAPR-10`) by implementing
   row-only wallets list UI (`no Details`) with deterministic inline `API key`
   state (`Connected`/`Not connected`), dedicated fail-closed

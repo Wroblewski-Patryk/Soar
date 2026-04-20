@@ -37,6 +37,8 @@ Last updated: 2026-04-20
 
 ## DONE
 
+- [x] PLNC-D planning parity sync (`PLNC-09`)
+  - 2026-04-20: Synchronized stale `mvp-execution-plan` closure drift by marking `DAWR`, `OOSC`, `BTCF`, and `UOLF` phase headers as `Closed` and aligning `UOLF-02..UOLF-15` checklist status with canonical closure already recorded in queue/context artifacts.
 - [x] WAPR group closure (`WAPR-02..WAPR-10`)
   - 2026-04-20: Closed wallets list + paper reset wave end-to-end by shipping row-only wallets table (`no Details`) with inline deterministic `API key` status (`Connected/Not connected`), dedicated fail-closed `POST /dashboard/wallets/:id/reset-paper`, reset-aware paper-capital baseline using wallet checkpoint (`paperResetAt`), paper-only reset action in wallet edit flow with deterministic UX states, and closure pack PASS (`api wallets.e2e`, `web wallets tests`, `api/web typecheck`, `quality:guardrails`).
 - [x] WAPR-01 docs(contract): freeze wallets list api-key column and paper-reset safety contract

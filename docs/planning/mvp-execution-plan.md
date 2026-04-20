@@ -2196,7 +2196,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-20: Closed `MURC-08..MURC-11` by aligning web empty-result/union semantics and synchronizing canonical docs (`open-decisions`, `trading-logic`, module deep-dives) to one formula.
 - 2026-04-20: Closed `MURC-12` validation pack with PASS for `pnpm --filter api run test -- --run`, `pnpm --filter web run test -- --run`, `pnpm --filter api run typecheck`, `pnpm --filter web run typecheck`, and `pnpm run quality:guardrails`; resolved bots e2e size-guardrail overflow by extracting market-universe parity scenarios into `bots.market-universe-contract.e2e.test.ts`.
 
-## Phase DAWR - Dashboard Aggregate Wallet and Strategy Regression (Queued 2026-04-20)
+## Phase DAWR - Dashboard Aggregate Wallet and Strategy Regression (Closed 2026-04-20)
 - [x] `DAWR-01 docs(contract): freeze aggregate wallet-summary field parity and strategy sidebar edge behavior`
 - [x] `DAWR-02 test(api-red): add aggregate regression for LIVE wallet capital fields in positions.summary`
 - [x] `DAWR-03 fix(api-aggregate): include referenceBalance/freeCash parity fields in aggregate positions summary`
@@ -2232,7 +2232,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-19: Closed `DASHR-B` (`DASHR-05..DASHR-08`) by restoring selected-session positions/history parity and selected-bot-only signals scope across canonical ACTIVE+enabled links.
 - 2026-04-19: Closed `DASHR-C` (`DASHR-09..DASHR-11`) by adding explicit runtime blocked-path diagnostics (`PRETRADE_BLOCKED`) and completing focused closure pack (`api bots/orders/runtime tests`, `web HomeLiveWidgets`, `api/web typecheck`, `web build`, `quality:guardrails`).
 
-## Phase OOSC - Dashboard Open Orders Source Column (Queued 2026-04-20)
+## Phase OOSC - Dashboard Open Orders Source Column (Closed 2026-04-20)
 - [x] `OOSC-01 docs(contract): freeze dashboard open-orders source-column and active-only status contract`
 - [x] `OOSC-02 test(api-red): add regressions for manual-order origin=USER and runtime open-orders origin projection`
 - [x] `OOSC-03 fix(api): persist manual-order origin as USER and expose origin in open-orders runtime payload`
@@ -2249,7 +2249,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-20: Closed `OOSC-B` (`OOSC-04..OOSC-06`) by shipping dashboard Open Orders `Source` column mapping (`Manual/Bot/Imported`) and `en/pl/pt` localization coverage with web regression lock.
 - 2026-04-20: Closed `OOSC-C` (`OOSC-07..OOSC-08`) with docs/context synchronization and focused closure pack PASS (`orders-positions.e2e`, `bots.monitoring-aggregate.e2e`, `HomeLiveWidgets.test`, `HomeLiveWidgets.open-orders-source.test`, `api/web typecheck`, `quality:guardrails`).
 
-## Phase BTCF - Backtests List/Create Time-Window Remediation (Queued 2026-04-20)
+## Phase BTCF - Backtests List/Create Time-Window Remediation (Closed 2026-04-20)
 - [x] `BTCF-01 docs(contract): freeze backtests list columns and explicit time-window create contract`
 - [x] `BTCF-02 test(api-red): add list contract regression for strategy/markets/initBalance enrich fields`
 - [x] `BTCF-03 feat(api-list-enrich): expose strategy/markets/initBalance fields for backtests list rows`
@@ -2270,26 +2270,28 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-20: Closed `BTCF-B` (`BTCF-05..BTCF-09`) by adding create-form range/layout regressions, implementing deterministic range/candles sync (`250..10000`), and wiring API create/job/gateway/timeline flows to explicit `startAt/endAt` boundaries with legacy fallback compatibility.
 - 2026-04-20: Closed `BTCF-C` (`BTCF-10..BTCF-12`) by completing `en/pl/pt` copy parity, syncing module/architecture docs to explicit range semantics, and running closure validations (`backtests tests`, `api/web typecheck`, `build`, `quality:guardrails`, `i18n:audit:route-reachable:web`).
 
-## Phase UOLF - Unified Order Lifecycle and Exchange Sync (Queued 2026-04-20)
+## Phase UOLF - Unified Order Lifecycle and Exchange Sync (Closed 2026-04-20)
 - [x] `UOLF-01 docs(contract): supersede manual-order order-only contract with unified order-fill-position lifecycle`
-- [ ] `UOLF-02 test(api-red): add selected-bot scoping regressions for manual-order writes and reads`
-- [ ] `UOLF-03 test(api-red): lock unified lifecycle semantics for manual and runtime opens in paper/live`
-- [ ] `UOLF-04 test(api-red): add reconciliation regressions for imported external positions and open orders`
-- [ ] `UOLF-05 fix(api-context): derive canonical mode wallet and strategy from bot-bound context on open-order command`
-- [ ] `UOLF-06 refactor(api-lifecycle): introduce shared order lifecycle authority and fill-handler entrypoint`
-- [ ] `UOLF-07 feat(api-paper): route paper fills through adapter-backed order-status transition path`
-- [ ] `UOLF-08 fix(api-live): ensure live runtime/manual opens create exchange order only and defer position authority to fill/sync`
-- [ ] `UOLF-09 fix(api-rules): unify Binance quantity-step minQty and minNotional validation across runtime manual and pretrade`
-- [ ] `UOLF-10 fix(api-reconciliation): import external open positions and open orders into canonical owning bot wallet scope`
-- [ ] `UOLF-11 test(web-red): add dashboard regressions for selected-bot order/position lifecycle and imported exchange visibility`
-- [ ] `UOLF-12 fix(web-dashboard): align manual-order UX and runtime tables to unified lifecycle semantics`
-- [ ] `UOLF-13 feat(web-dashboard): expose deterministic manual-order constraint hints and humanized live pretrade diagnostics`
-- [ ] `UOLF-14 docs(sync): update module and ops docs after unified lifecycle rollout`
-- [ ] `UOLF-15 qa(closure): run unified lifecycle and exchange-sync safety pack and sync canonical queue/context`
+- [x] `UOLF-02 test(api-red): add selected-bot scoping regressions for manual-order writes and reads`
+- [x] `UOLF-03 test(api-red): lock unified lifecycle semantics for manual and runtime opens in paper/live`
+- [x] `UOLF-04 test(api-red): add reconciliation regressions for imported external positions and open orders`
+- [x] `UOLF-05 fix(api-context): derive canonical mode wallet and strategy from bot-bound context on open-order command`
+- [x] `UOLF-06 refactor(api-lifecycle): introduce shared order lifecycle authority and fill-handler entrypoint`
+- [x] `UOLF-07 feat(api-paper): route paper fills through adapter-backed order-status transition path`
+- [x] `UOLF-08 fix(api-live): ensure live runtime/manual opens create exchange order only and defer position authority to fill/sync`
+- [x] `UOLF-09 fix(api-rules): unify Binance quantity-step minQty and minNotional validation across runtime manual and pretrade`
+- [x] `UOLF-10 fix(api-reconciliation): import external open positions and open orders into canonical owning bot wallet scope`
+- [x] `UOLF-11 test(web-red): add dashboard regressions for selected-bot order/position lifecycle and imported exchange visibility`
+- [x] `UOLF-12 fix(web-dashboard): align manual-order UX and runtime tables to unified lifecycle semantics`
+- [x] `UOLF-13 feat(web-dashboard): expose deterministic manual-order constraint hints and humanized live pretrade diagnostics`
+- [x] `UOLF-14 docs(sync): update module and ops docs after unified lifecycle rollout`
+- [x] `UOLF-15 qa(closure): run unified lifecycle and exchange-sync safety pack and sync canonical queue/context`
 
 ### Progress Log (Phase UOLF - Unified Order Lifecycle and Exchange Sync)
 - 2026-04-20: Queued `UOLF` from clarified product target and published executor-ready plan `docs/planning/unified-order-lifecycle-and-exchange-sync-plan-2026-04-20.md` with strict scope lock: one canonical lifecycle (`order -> fill -> position`) for manual and runtime opens, strict selected-bot scope, wallet-scoped exchange takeover ownership, and Binance parity requirements.
 - 2026-04-20: Completed `UOLF-01` by freezing canonical contract in `open-decisions` plus module docs (`api-orders`, `api-bots`, `web-dashboard-home`), explicitly superseding historical `SOPR-C order-only` wording before implementation tasks.
+- 2026-04-20: Closed `UOLF-02..UOLF-13` implementation wave by shipping selected-bot scope guards, unified `order -> fill -> position` lifecycle authority for manual/runtime paths, live/paper parity safeguards, and dashboard/operator parity adjustments.
+- 2026-04-20: Completed `UOLF-14..UOLF-15` by synchronizing docs/ops artifacts and passing closure validation pack (`api UOLF matrix`, `HomeLiveWidgets + preview parity`, `api/web typecheck`, `build`, `quality:guardrails`, `test:go-live:smoke`).
 
 ## Phase WAPR - Wallets List API-Key Status and Paper Reset Safety (Closed 2026-04-20)
 - [x] `WAPR-01 docs(contract): freeze wallets list api-key column and paper-reset safety contract`
