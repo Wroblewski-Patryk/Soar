@@ -208,6 +208,33 @@ describe('Backtests runs contract', () => {
     expect(reportRes.body.totalTrades).toBeGreaterThanOrEqual(2);
   });
 
+  it('persists explicit startAt/endAt range on create and rejects partial range payload', async () => {
+    const ownerEmail = 'backtests-range-create@example.com';
+    const agent = await registerAndLogin(ownerEmail);
+    const explicitStartAt = '2026-01-01T00:00:00.000Z';
+    const explicitEndAt = '2026-01-15T00:00:00.000Z';
+
+    const createRes = await agent.post('/dashboard/backtests/runs').send({
+      ...createPayload(),
+      startAt: explicitStartAt,
+      endAt: explicitEndAt,
+    });
+    expect(createRes.status).toBe(201);
+    const runId = createRes.body.id as string;
+
+    const getRes = await agent.get(`/dashboard/backtests/runs/${runId}`);
+    expect(getRes.status).toBe(200);
+    expect(getRes.body.seedConfig.startAt).toBe(explicitStartAt);
+    expect(getRes.body.seedConfig.endAt).toBe(explicitEndAt);
+    expect(getRes.body.seedConfig.rangeSource).toBe('explicit');
+
+    const partialRangeRes = await agent.post('/dashboard/backtests/runs').send({
+      ...createPayload(),
+      startAt: explicitStartAt,
+    });
+    expect(partialRangeRes.status).toBe(400);
+  });
+
   it('returns enriched list fields for strategy, markets, and initial balance', async () => {
     const ownerEmail = 'backtests-list-enrich@example.com';
     const agent = await registerAndLogin(ownerEmail);

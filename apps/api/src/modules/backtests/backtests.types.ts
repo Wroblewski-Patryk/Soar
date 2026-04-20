@@ -10,12 +10,23 @@ const QueryBooleanSchema = z.preprocess((value) => {
   return value;
 }, z.boolean());
 
+const DateTimeSchema = z.preprocess((value) => {
+  if (value instanceof Date) return value;
+  if (typeof value === 'string') {
+    const parsed = new Date(value);
+    if (!Number.isNaN(parsed.getTime())) return parsed;
+  }
+  return value;
+}, z.date());
+
 export const CreateBacktestRunSchema = z.object({
   name: z.string().trim().min(1),
   symbol: z.string().trim().min(1).optional(),
   timeframe: z.string().trim().min(1),
   strategyId: z.string().trim().min(1).optional(),
   marketUniverseId: z.string().uuid().optional(),
+  startAt: DateTimeSchema.optional(),
+  endAt: DateTimeSchema.optional(),
   seedConfig: z.any().optional(),
   notes: z.string().trim().optional(),
 }).superRefine((value, ctx) => {
@@ -24,6 +35,20 @@ export const CreateBacktestRunSchema = z.object({
       code: z.ZodIssueCode.custom,
       message: 'Provide symbol or marketUniverseId',
       path: ['symbol'],
+    });
+  }
+  if ((value.startAt && !value.endAt) || (!value.startAt && value.endAt)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Provide both startAt and endAt',
+      path: ['startAt'],
+    });
+  }
+  if (value.startAt && value.endAt && value.startAt.getTime() >= value.endAt.getTime()) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'startAt must be earlier than endAt',
+      path: ['startAt'],
     });
   }
 });

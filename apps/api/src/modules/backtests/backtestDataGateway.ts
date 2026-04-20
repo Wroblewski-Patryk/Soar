@@ -141,10 +141,11 @@ const cacheKeyForCandles = (
   marketType: BacktestMarketType,
   maxCandles: number,
   endTimeMs?: number,
+  startTimeMs?: number,
 ) =>
   `${marketType}:${symbol}:${normalizeTimeframe(timeframe)}:${maxCandles}:${
     Number.isFinite(endTimeMs) ? Math.floor(endTimeMs as number) : 'latest'
-  }`;
+  }:${Number.isFinite(startTimeMs) ? Math.floor(startTimeMs as number) : 'auto'}`;
 
 const cacheKeyForSupplemental = (
   symbol: string,
@@ -152,10 +153,11 @@ const cacheKeyForSupplemental = (
   marketType: BacktestMarketType,
   maxCandles: number,
   endTimeMs?: number,
+  startTimeMs?: number,
 ) =>
   `supp:${marketType}:${symbol}:${normalizeTimeframe(timeframe)}:${maxCandles}:${
     Number.isFinite(endTimeMs) ? Math.floor(endTimeMs as number) : 'latest'
-  }`;
+  }:${Number.isFinite(startTimeMs) ? Math.floor(startTimeMs as number) : 'auto'}`;
 
 const pruneGatewayCache = () => {
   const now = Date.now();
@@ -180,9 +182,10 @@ export const fetchKlines = async (
   marketType: BacktestMarketType,
   maxCandles: number,
   endTimeMs?: number,
+  startTimeMs?: number,
 ): Promise<BacktestKlineCandle[]> => {
   pruneGatewayCache();
-  const key = cacheKeyForCandles(symbol, timeframe, marketType, maxCandles, endTimeMs);
+  const key = cacheKeyForCandles(symbol, timeframe, marketType, maxCandles, endTimeMs, startTimeMs);
   const cached = candleCache.get(key);
   if (cached && Date.now() - cached.cachedAt <= CANDLE_CACHE_TTL_MS) {
     return cached.candles;
@@ -191,7 +194,13 @@ export const fetchKlines = async (
   const normalizedTimeframe = normalizeTimeframe(timeframe);
   const endTime = Number.isFinite(endTimeMs) ? Math.floor(endTimeMs as number) : Date.now();
   const sourceWindowMs = computeSourceWindowMs(timeframe, maxCandles);
-  const startTimeByRange = endTime - sourceWindowMs;
+  const startTimeByRange = Number.isFinite(startTimeMs)
+    ? Math.floor(startTimeMs as number)
+    : endTime - sourceWindowMs;
+  if (startTimeByRange >= endTime) {
+    candleCache.set(key, { cachedAt: Date.now(), candles: [] });
+    return [];
+  }
   const dbDelegate = useDbCandleCache ? getDbCandleDelegate() : undefined;
   if (dbDelegate) {
     try {
@@ -327,13 +336,14 @@ export const fetchSupplementalSeries = async (
   marketType: BacktestMarketType,
   maxCandles: number,
   endTimeMs?: number,
+  startTimeMs?: number,
 ): Promise<BacktestSupplementalSeries> => {
   if (marketType !== 'FUTURES') {
     return { fundingRates: [], openInterest: [], orderBook: [] };
   }
 
   pruneGatewayCache();
-  const key = cacheKeyForSupplemental(symbol, timeframe, marketType, maxCandles, endTimeMs);
+  const key = cacheKeyForSupplemental(symbol, timeframe, marketType, maxCandles, endTimeMs, startTimeMs);
   const cached = supplementalCache.get(key);
   if (cached && Date.now() - cached.cachedAt <= CANDLE_CACHE_TTL_MS) {
     return cached.data;
@@ -341,7 +351,14 @@ export const fetchSupplementalSeries = async (
 
   const endTime = Number.isFinite(endTimeMs) ? Math.floor(endTimeMs as number) : Date.now();
   const sourceWindowMs = computeSourceWindowMs(timeframe, maxCandles);
-  const startTime = endTime - sourceWindowMs;
+  const startTime = Number.isFinite(startTimeMs)
+    ? Math.floor(startTimeMs as number)
+    : endTime - sourceWindowMs;
+  if (startTime >= endTime) {
+    const empty = { fundingRates: [], openInterest: [], orderBook: [] };
+    supplementalCache.set(key, { cachedAt: Date.now(), data: empty });
+    return empty;
+  }
   const limit = clamp(maxCandles, 50, 1000);
 
   const fundingQuery = new URLSearchParams({

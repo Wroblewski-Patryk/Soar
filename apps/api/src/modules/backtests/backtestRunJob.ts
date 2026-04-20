@@ -130,6 +130,7 @@ type BacktestRunJobDeps = {
     marketType: BacktestMarketType,
     maxCandles: number,
     endTimeMs?: number,
+    startTimeMs?: number,
   ) => Promise<BacktestKlineCandle[]>;
   fetchSupplementalSeries: (
     symbol: string,
@@ -137,6 +138,7 @@ type BacktestRunJobDeps = {
     marketType: BacktestMarketType,
     maxCandles: number,
     endTimeMs?: number,
+    startTimeMs?: number,
   ) => Promise<BacktestSupplementalSeries>;
   simulateInterleavedPortfolio: (input: {
     symbols: string[];
@@ -197,6 +199,12 @@ const resolveEffectiveMaxCandlesPerSymbol = (input: {
   );
 };
 
+const parseSeedTimeMs = (value: unknown) => {
+  if (typeof value !== 'string') return undefined;
+  const parsed = Date.parse(value);
+  return Number.isFinite(parsed) ? parsed : undefined;
+};
+
 const updateRunProgress = async (
   deps: BacktestRunJobDeps,
   runId: string,
@@ -238,6 +246,16 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
       symbolCount: symbols.length,
       computeAdaptiveMaxCandles: deps.computeAdaptiveMaxCandles,
     });
+    const configuredRangeStartTimeMs = parseSeedTimeMs(seed.startAt);
+    const configuredRangeEndTimeMs = parseSeedTimeMs(seed.endAt);
+    const fetchStartTimeMs =
+      typeof configuredRangeStartTimeMs === 'number' &&
+      typeof configuredRangeEndTimeMs === 'number' &&
+      configuredRangeStartTimeMs < configuredRangeEndTimeMs
+        ? configuredRangeStartTimeMs
+        : undefined;
+    const fetchEndTimeMs =
+      typeof configuredRangeEndTimeMs === 'number' ? configuredRangeEndTimeMs : undefined;
 
     const progress: ProgressState = {
       marketType,
@@ -343,6 +361,8 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
             run.timeframe,
             marketType,
             maxCandlesPerSymbol + indicatorWarmupCandles,
+            fetchEndTimeMs,
+            fetchStartTimeMs,
           );
           if (candles.length === 0) {
             throw new Error('NO_CANDLES_AVAILABLE_FOR_SYMBOL');
@@ -352,6 +372,8 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
             run.timeframe,
             marketType,
             maxCandlesPerSymbol + indicatorWarmupCandles,
+            fetchEndTimeMs,
+            fetchStartTimeMs,
           );
           candlesBySymbol.set(symbol, candles);
           supplementalBySymbol.set(symbol, supplemental);

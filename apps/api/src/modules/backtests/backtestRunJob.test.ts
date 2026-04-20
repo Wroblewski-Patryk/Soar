@@ -194,4 +194,91 @@ describe('createBacktestRunJob', () => {
     expect(fetchCalls[0]?.[3]).toBe(400);
     expect(computeAdaptiveMaxCandles).not.toHaveBeenCalled();
   });
+
+  it('forwards explicit seed range boundaries to candle and supplemental fetch calls', async () => {
+    const startAt = '2026-01-01T00:00:00.000Z';
+    const endAt = '2026-01-15T00:00:00.000Z';
+    const fetchKlines = vi.fn(async () => [
+      {
+        openTime: 0,
+        closeTime: 59_000,
+        open: 100,
+        high: 101,
+        low: 99,
+        close: 100,
+        volume: 1_000,
+      },
+      {
+        openTime: 60_000,
+        closeTime: 119_000,
+        open: 100,
+        high: 102,
+        low: 99,
+        close: 101,
+        volume: 1_200,
+      },
+    ]);
+    const fetchSupplementalSeries = vi.fn(async () => ({
+      fundingRates: [],
+      openInterest: [],
+      orderBook: [],
+    }));
+
+    const runJob = createBacktestRunJob({
+      findBacktestRunById: vi.fn(async () => ({
+        id: 'run-3',
+        userId: 'user-1',
+        symbol: 'BTCUSDT',
+        timeframe: '1m',
+        strategyId: null,
+        seedConfig: {
+          symbols: ['BTCUSDT'],
+          marketType: 'FUTURES',
+          leverage: 2,
+          marginMode: 'CROSSED',
+          initialBalance: 10_000,
+          requestedMaxCandles: 400,
+          effectiveMaxCandles: 400,
+          maxCandles: 400,
+          startAt,
+          endAt,
+          rangeSource: 'explicit',
+        },
+      })),
+      safeUpdateRun: vi.fn(async () => true),
+      uniqueSorted: (values) => [...new Set(values)].sort(),
+      computeAdaptiveMaxCandles: vi.fn(() => 120),
+      resolveIndicatorWarmupCandles: () => 0,
+      normalizeWalletRiskPercent: () => 1,
+      parseStrategySignalRules: () => null,
+      findOwnedStrategySignalConfig: vi.fn(async () => null),
+      fetchKlines,
+      fetchSupplementalSeries,
+      simulateInterleavedPortfolio: vi.fn(
+        () =>
+          ({
+            perSymbol: {},
+            finalBalance: 10_000,
+          }) as any,
+      ),
+      createBacktestTrades: vi.fn(async () => undefined),
+      countWinningBacktestTrades: vi.fn(async () => 0),
+      countLosingBacktestTrades: vi.fn(async () => 0),
+      upsertBacktestReportForRun: vi.fn(async () => undefined),
+      computeSourceWindowMs: () => 14 * 24 * 60 * 60 * 1000,
+      maxDrawdownFromPnlSeries: () => 0,
+    });
+
+    await runJob('run-3');
+
+    expect(fetchKlines).toHaveBeenCalled();
+    const fetchKlinesCall = (fetchKlines as any).mock.calls[0] as Array<unknown>;
+    expect(fetchKlinesCall[4]).toBe(Date.parse(endAt));
+    expect(fetchKlinesCall[5]).toBe(Date.parse(startAt));
+
+    expect(fetchSupplementalSeries).toHaveBeenCalled();
+    const fetchSupplementalCall = (fetchSupplementalSeries as any).mock.calls[0] as Array<unknown>;
+    expect(fetchSupplementalCall[4]).toBe(Date.parse(endAt));
+    expect(fetchSupplementalCall[5]).toBe(Date.parse(startAt));
+  });
 });

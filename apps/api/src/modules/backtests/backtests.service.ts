@@ -69,6 +69,8 @@ type ReplayContext = 'isolated' | 'portfolio';
 
 const TWO_WEEKS_MS = 14 * 24 * 60 * 60 * 1000;
 
+export class BacktestRunValidationError extends Error {}
+
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
 const inferBaseCurrencyFromSymbol = (symbol: string): string =>
@@ -79,6 +81,45 @@ const computeSourceWindowMs = (timeframe: string, maxCandles: number) => {
   const requestedWindowMs = intervalMs * Math.max(1, maxCandles);
   const bufferedWindowMs = Math.ceil(requestedWindowMs * 1.15);
   return Math.max(TWO_WEEKS_MS, bufferedWindowMs);
+};
+
+const resolveBoundedRangeEndMs = (timeframe: string, endCandidateMs: number) => {
+  const intervalMs = getTimeframeIntervalMs(timeframe);
+  const boundaryMs = Math.floor(Date.now() / intervalMs) * intervalMs;
+  return Math.min(endCandidateMs, boundaryMs);
+};
+
+const resolveBacktestRangeWindow = (input: {
+  timeframe: string;
+  startAt?: Date;
+  endAt?: Date;
+  requestedMaxCandles?: number;
+}) => {
+  const intervalMs = getTimeframeIntervalMs(input.timeframe);
+
+  if (input.startAt && input.endAt) {
+    const boundedEndMs = resolveBoundedRangeEndMs(input.timeframe, input.endAt.getTime());
+    const startMs = input.startAt.getTime();
+    if (startMs >= boundedEndMs) {
+      throw new BacktestRunValidationError('Invalid backtest range: startAt must be earlier than endAt boundary');
+    }
+    return {
+      startAt: new Date(startMs),
+      endAt: new Date(boundedEndMs),
+      source: 'explicit' as const,
+    };
+  }
+
+  const boundedEndMs = resolveBoundedRangeEndMs(input.timeframe, Date.now());
+  const fallbackCandles = Math.max(
+    1,
+    Number.isFinite(input.requestedMaxCandles) ? Math.floor(input.requestedMaxCandles as number) : getDefaultCandlesForTimeframe(input.timeframe),
+  );
+  return {
+    startAt: new Date(boundedEndMs - intervalMs * fallbackCandles),
+    endAt: new Date(boundedEndMs),
+    source: 'derived' as const,
+  };
 };
 
 const computeAdaptiveMaxCandles = (timeframe: string, symbolCount: number, requested?: number) => {
@@ -127,7 +168,14 @@ export const resolveTimelineEndTimeMs = (input: {
   runStatus: string;
   finishedAt: Date | null;
   liveProgressCurrentCandleTime?: string | null;
+  configuredRangeEndTime?: string | null;
 }) => {
+  const configuredRangeEndRaw =
+    typeof input.configuredRangeEndTime === 'string'
+      ? Date.parse(input.configuredRangeEndTime)
+      : Number.NaN;
+  if (Number.isFinite(configuredRangeEndRaw)) return configuredRangeEndRaw;
+
   const terminalStatuses = new Set(['COMPLETED', 'FAILED', 'CANCELED']);
   if (terminalStatuses.has(input.runStatus) && input.finishedAt) {
     return input.finishedAt.getTime();
@@ -545,6 +593,12 @@ export const createRun = async (userId: string, data: CreateBacktestRunDto) => {
   if (!resolved || resolved.symbols.length === 0) return null;
 
   const requestedMaxCandles = resolveRequestedMaxCandles(data.seedConfig);
+  const rangeWindow = resolveBacktestRangeWindow({
+    timeframe: data.timeframe,
+    startAt: data.startAt,
+    endAt: data.endAt,
+    requestedMaxCandles,
+  });
   const effectiveMaxCandles = computeAdaptiveMaxCandles(
     data.timeframe,
     resolved.symbols.length,
@@ -572,6 +626,9 @@ export const createRun = async (userId: string, data: CreateBacktestRunDto) => {
       marketUniverseId: resolved.marketUniverseId,
       leverage: resolved.marketType === 'SPOT' ? 1 : (strategyDefaults?.leverage ?? 1),
       marginMode: resolved.marketType === 'SPOT' ? 'NONE' : (strategyDefaults?.marginMode ?? 'CROSSED'),
+      startAt: rangeWindow.startAt.toISOString(),
+      endAt: rangeWindow.endAt.toISOString(),
+      rangeSource: rangeWindow.source,
       requestedMaxCandles: requestedMaxCandles ?? null,
       effectiveMaxCandles,
       // Backward compatibility for older readers expecting this field.
@@ -645,11 +702,22 @@ export const getRunTimeline = async (
   const liveProgress = (seed.liveProgress ?? {}) as {
     currentCandleTime?: string | null;
   };
+  const configuredRangeStartRaw =
+    typeof seed.startAt === 'string' ? Date.parse(seed.startAt) : Number.NaN;
+  const configuredRangeEndRaw =
+    typeof seed.endAt === 'string' ? Date.parse(seed.endAt) : Number.NaN;
   const timelineEndTimeMs = resolveTimelineEndTimeMs({
     runStatus: run.status,
     finishedAt: run.finishedAt,
     liveProgressCurrentCandleTime: liveProgress.currentCandleTime,
+    configuredRangeEndTime: typeof seed.endAt === 'string' ? seed.endAt : null,
   });
+  const timelineStartTimeMs =
+    Number.isFinite(configuredRangeStartRaw) &&
+    Number.isFinite(configuredRangeEndRaw) &&
+    configuredRangeStartRaw < configuredRangeEndRaw
+      ? configuredRangeStartRaw
+      : undefined;
   const candlesBySymbol = new Map<string, KlineCandle[]>();
   const supplementalBySymbol = new Map<string, SupplementalSeries>();
   for (const replaySymbol of replaySymbols) {
@@ -661,6 +729,7 @@ export const getRunTimeline = async (
         marketType,
         maxCandles + indicatorWarmupCandles,
         timelineEndTimeMs,
+        timelineStartTimeMs,
       ),
     );
     supplementalBySymbol.set(
@@ -671,6 +740,7 @@ export const getRunTimeline = async (
         marketType,
         maxCandles + indicatorWarmupCandles,
         timelineEndTimeMs,
+        timelineStartTimeMs,
       ),
     );
   }

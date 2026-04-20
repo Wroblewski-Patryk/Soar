@@ -47,6 +47,9 @@ export const createBacktestRun = async (req: Request, res: Response) => {
     if (error instanceof ExchangeNotImplementedError) {
       return sendError(res, error.status, error.message, error.toDetails());
     }
+    if (error instanceof backtestsService.BacktestRunValidationError) {
+      return sendError(res, 400, error.message);
+    }
     return sendValidationError(res, error);
   }
 };

@@ -165,6 +165,21 @@ describe('backtest parity remediation contracts', () => {
     }
   });
 
+  it('prefers configured range end over runtime finished/progress anchors', () => {
+    const configuredEnd = '2026-01-15T00:00:00.000Z';
+    const finishedAt = new Date('2026-04-17T12:45:00.000Z');
+    const staleLiveProgress = '2026-04-17T10:15:00.000Z';
+
+    expect(
+      resolveTimelineEndTimeMs({
+        runStatus: 'COMPLETED',
+        finishedAt,
+        liveProgressCurrentCandleTime: staleLiveProgress,
+        configuredRangeEndTime: configuredEnd,
+      }),
+    ).toBe(new Date(configuredEnd).getTime());
+  });
+
   it('resolves one effective maxCandles value from seed without re-adaptation', () => {
     expect(
       resolveEffectiveMaxCandlesFromSeed({
