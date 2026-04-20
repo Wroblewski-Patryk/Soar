@@ -5,8 +5,8 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/dashboard-home`
 - Owner: frontend/runtime-observability
-- Last updated: 2026-04-19
-- Related planning task: `UXR-H-01`
+- Last updated: 2026-04-20
+- Related planning task: `UOLF-01`
 
 ## 1. Purpose and Scope
 - Implements dashboard control-center home view (`/dashboard`) for runtime monitoring.
@@ -252,10 +252,15 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
   - for the same selected bot, `/dashboard` and `/dashboard/bots/:id/preview` must stay parity-aligned for `signals`, `positions`, and `history`.
 - Runtime diagnostics contract:
   - no-open blocked/ignored outcomes must remain explicitly visible in operational flows (no ambiguous silent no-op behavior).
-- Manual-order semantics closure (`SOPR-09`):
-  - chosen path is explicit `order-only`.
-  - dashboard manual order remains on `POST /dashboard/orders/open` command semantics.
-  - UI must keep operator-facing semantic clarity (order-only hint + success copy) and must not imply immediate runtime lifecycle authority.
+- Unified manual-order lifecycle note (`UOLF` supersession):
+  - `SOPR-09` `order-only` wording is superseded by unified lifecycle contract.
+  - dashboard manual order stays on `POST /dashboard/orders/open`, but operator-facing states must reflect lifecycle truth:
+    - `order submitted`,
+    - `waiting for fill`,
+    - `filled`,
+    - `position opened`,
+    - `imported from exchange`,
+    - `blocked reason`.
 
 ## 23. Open Orders Source Column and Active-Only Contract (`OOSC`)
 - Open Orders table includes `Source` column with deterministic mapping:
@@ -277,4 +282,4 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
   - `PARTIALLY_FILLED`.
 - Scope lock:
   - no new orders-history table in `/dashboard` for this wave.
-  - manual-order command semantics remain `order-only` (`POST /dashboard/orders/open`).
+  - manual-order command path stays `POST /dashboard/orders/open` with explicit `origin=USER`; lifecycle semantics follow unified `UOLF` contract.

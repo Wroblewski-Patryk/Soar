@@ -900,7 +900,8 @@ This file tracks intentionally unresolved architecture choices so implementation
     - `EXCHANGE_SYNC -> Imported`,
     - `BACKTEST -> Imported` (defensive fallback).
   - Open Orders stays active-only; no history-status expansion in this wave.
-  - manual dashboard open-order command (`POST /dashboard/orders/open`) remains `order-only` and must persist explicit `origin=USER`.
+  - manual dashboard open-order command (`POST /dashboard/orders/open`) remains the canonical manual entry command and must persist explicit `origin=USER`.
+  - order lifecycle semantics for manual and runtime opens are governed by unified `UOLF` lifecycle contract (supersedes `order-only` wording).
 - Locked behavior:
   - active-only status set for Open Orders remains unchanged:
     - `PENDING`,
@@ -911,6 +912,34 @@ This file tracks intentionally unresolved architecture choices so implementation
 - Canonical references:
   - `docs/planning/dashboard-open-orders-source-column-plan-2026-04-20.md`
   - `docs/modules/api-orders.md`
+  - `docs/modules/web-dashboard-home.md`
+
+## Unified Manual and Bot Order Lifecycle + Exchange Sync Contract (`UOLF`)
+- Decision state: resolved on 2026-04-20.
+- Scope:
+  - supersedes `SOPR-C` `order-only` semantics for canonical product contract.
+  - freezes one lifecycle for manual dashboard entries and runtime bot entries.
+- Decision:
+  - one canonical lifecycle is mandatory:
+    - `entry intent -> order created -> order status evolves -> fill confirmed -> position opened/updated`.
+  - `LIVE`:
+    - open command creates/submits exchange order under strict selected-bot context,
+    - no direct position open is allowed from submit path,
+    - position appears only from exchange fill confirmation or synchronized exchange evidence.
+  - `PAPER`:
+    - open command creates paper order first,
+    - paper fill authority updates order status,
+    - position opens only through downstream fill-handling path.
+  - manual open path and runtime signal open path must converge to one lifecycle authority for order creation/fill progression.
+  - selected-bot scoping is strict for write and read paths (`bot`, `wallet`, `mode`, `strategy`, `orders`, `positions`, imported exchange rows).
+  - imported exchange ownership remains wallet-takeover scoped:
+    - enabled takeover imports external open positions/open orders only for owning compatible bot-wallet context,
+    - ambiguous ownership remains fail-closed.
+  - operator-facing semantics must communicate lifecycle truth (`submitted`, `waiting for fill`, `filled`, `position opened`, `imported`, `blocked`) and must not rely on `order-only` hinting.
+- Canonical references:
+  - `docs/planning/unified-order-lifecycle-and-exchange-sync-plan-2026-04-20.md`
+  - `docs/modules/api-orders.md`
+  - `docs/modules/api-bots.md`
   - `docs/modules/web-dashboard-home.md`
 
 ## Signals + Open Runtime Parity Contract (`SOPR`)
@@ -927,11 +956,8 @@ This file tracks intentionally unresolved architecture choices so implementation
   - fallback source must be explicitly tagged in read models consumed by operator surfaces.
 - Runtime no-open diagnostics contract:
   - blocked/ignored no-open outcomes must remain explicit and operationally visible (no ambiguous silent no-op path).
-- Manual-order semantics decision closure (`SOPR-09`):
-  - chosen path: `order-only`.
-  - `POST /dashboard/orders/open` remains canonical manual-order command path and is not runtime-orchestrator-equivalent lifecycle authority.
-  - position lifecycle updates remain downstream of fill/runtime synchronization paths.
-  - operator-facing flows must render explicit order-only semantics and audit-safe diagnostics.
+- Historical note:
+  - `SOPR-09` manual-order `order-only` closure is superseded by `UOLF` contract as of 2026-04-20.
 - Canonical references:
   - `docs/planning/signals-open-runtime-parity-plan-2026-04-19.md`
   - `docs/modules/web-dashboard-home.md`

@@ -6,7 +6,7 @@
 - Source path: `apps/api/src/modules/bots`
 - Owner: backend/trading-domain
 - Last updated: 2026-04-20
-- Related planning task: `MURC-07`
+- Related planning task: `UOLF-01`
 
 ## 1. Purpose and Scope
 - Owns bot command + runtime read APIs:
@@ -172,3 +172,16 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
   - blacklist-only input does not introduce symbols.
 - Contract parity requirement:
   - runtime symbol scope, bot auto-created symbol-group snapshots, and cross-module consumers must stay parity-compatible for identical universe input.
+
+## 16. Unified Order Lifecycle Scope and Exchange Takeover Contract (`UOLF-01`)
+- Lifecycle scope invariants:
+  - manual dashboard opens and runtime signal opens must resolve canonical selected-bot context (`bot`, `wallet`, `mode`, `strategy`) before order lifecycle writes.
+  - lifecycle ownership target is one order->fill->position path shared by manual and runtime entries.
+- Selected-bot read/write strictness:
+  - selected-bot runtime responses for orders/positions/history remain strictly bot-scoped.
+  - cross-bot and cross-mode leakage is fail-closed.
+- Imported exchange ownership contract:
+  - external open positions/open orders are visible in selected-bot runtime only when wallet takeover is enabled for the owning compatible bot-wallet context.
+  - ambiguous ownership remains non-actionable and fail-closed.
+- Safety linkage:
+  - this contract keeps `SBSC` and `DAWR` selected-bot context parity requirements unchanged while replacing old `order-only` semantics with unified lifecycle target contract.

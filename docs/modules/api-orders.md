@@ -6,7 +6,7 @@
 - Source path: `apps/api/src/modules/orders`
 - Owner: backend/trading-domain
 - Last updated: 2026-04-20
-- Related planning task: `MURC-10`
+- Related planning task: `UOLF-01`
 
 ## 1. Purpose and Scope
 - Owns order read + command API:
@@ -95,21 +95,34 @@ pnpm --filter api test -- src/modules/orders/orders.service.test.ts src/modules/
   - context endpoint is read-only and does not place/modify orders,
   - web must render API constraints, not duplicate exchange-rule formulas independently.
 
-## 11. Manual-Order Semantics Contract (`SOPR-C`)
-- Decision closure (`SOPR-09`):
-  - chosen path is `order-only`.
-  - `POST /dashboard/orders/open` is canonical command path and does not directly claim runtime-orchestrator lifecycle authority.
-- Behavioral contract:
-  - open command places/persists order intent under existing mode/risk guardrails.
-  - position lifecycle visibility remains downstream of fill/runtime synchronization paths.
-- Audit-safe diagnostics:
-  - order-open audit metadata must include explicit semantic markers:
-    - `semanticPath = order_only`
-    - `positionLifecycleAuthority = runtime_or_fill_sync`
-    - `opensPositionDirectly = false`
+## 11. Unified Manual and Bot Order Lifecycle Contract (`UOLF-01`)
+- Contract status:
+  - supersedes `SOPR-C` `order-only` semantics as canonical target contract.
+  - implementation rollout is tracked in `UOLF-02..UOLF-15`.
+- Canonical lifecycle:
+  - `entry intent -> order created -> order status evolves -> fill confirmed -> position opened/updated`.
+- Command-path invariants:
+  - `POST /dashboard/orders/open` remains canonical manual-entry write path.
+  - command path must not open positions directly.
+  - position lifecycle authority is downstream fill handling only.
+- Fill-authority invariants:
+  - `LIVE`: exchange fill/sync evidence is authority for position-open visibility.
+  - `PAPER`: paper fill adapter/engine is authority for position-open visibility.
+- Context and scope invariants:
+  - selected-bot context is strict for mode/wallet/strategy attribution.
+  - when `botId` is provided, server-side canonical bot context is authoritative for order lifecycle ownership.
+  - manual and runtime opens converge to one lifecycle authority (no divergent write semantics).
+- Operator diagnostics contract:
+  - API/web must support explicit lifecycle state communication:
+    - submitted,
+    - waiting_for_fill,
+    - filled,
+    - position_opened,
+    - imported_from_exchange,
+    - blocked.
 - Guardrails:
-  - no silent semantic remap from order command path to orchestrator lifecycle path.
-  - any future lifecycle-authority change must be decision-locked and test-covered before rollout.
+  - no cross-bot or cross-mode leakage in write/read paths.
+  - no return to `order-only` operator semantics in canonical docs after this contract freeze.
 
 ## 12. Manual-Order Strategy Context Symbol Contract (`MURC`)
 - Manual-order context strategy matching that depends on market-universe-backed symbols must use the shared formula:
@@ -127,7 +140,7 @@ pnpm --filter api test -- src/modules/orders/orders.service.test.ts src/modules/
   - `EXCHANGE_SYNC -> Imported`,
   - `BACKTEST -> Imported` (defensive fallback).
 - Write-side contract:
-  - manual dashboard open-order command (`POST /dashboard/orders/open`) remains `order-only` and persists explicit `origin=USER`.
+  - manual dashboard open-order command (`POST /dashboard/orders/open`) persists explicit `origin=USER` and follows unified `UOLF` lifecycle semantics.
 - Read-side contract:
   - runtime open-orders payload consumed by dashboard includes per-row `origin`.
 - Implementation note (2026-04-20):

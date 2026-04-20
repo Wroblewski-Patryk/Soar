@@ -124,8 +124,8 @@ Last updated: 2026-04-20
 - Main active objective: queue `UOLF` wave for unified manual/bot order
   lifecycle parity before further live-money rollout.
 - Top blockers:
-  - current code/docs still carry superseded `manual-order order-only`
-    semantics from `SOPR-C`.
+  - runtime paths still require implementation migration from historical
+    `SOPR-C order-only` behavior to unified `UOLF` lifecycle authority.
   - runtime/manual/live pretrade rule parity is not yet fully aligned for
     Binance quantity-step enforcement.
   - exchange-imported positions/open orders need stronger regression locks for
@@ -142,9 +142,15 @@ Last updated: 2026-04-20
     runtime, manual, and final live pretrade.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - `UOLF-01 docs(contract): supersede manual-order order-only contract with unified order-fill-position lifecycle`.
+  - `UOLF-02 test(api-red): add selected-bot scoping regressions for manual-order writes and reads`.
 
 ## Recent Progress
+- 2026-04-20: completed `UOLF-01` by freezing unified lifecycle contract in
+  canonical docs (`open-decisions`, `api-orders`, `api-bots`,
+  `web-dashboard-home`), superseding `SOPR-C order-only` wording with one
+  target lifecycle (`order -> fill -> position`) for manual and runtime
+  entries, strict selected-bot scope, and wallet-scoped exchange takeover
+  ownership expectations before implementation steps.
 - 2026-04-20: queued unified order lifecycle and exchange-sync parity wave
   (`UOLF-01..UOLF-15`) and published executor-ready plan
   `docs/planning/unified-order-lifecycle-and-exchange-sync-plan-2026-04-20.md`;

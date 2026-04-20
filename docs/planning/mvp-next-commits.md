@@ -7,12 +7,11 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `UOLF-01 docs(contract): supersede manual-order order-only contract with unified order-fill-position lifecycle`
-## NEXT
 - [ ] `UOLF-02 test(api-red): add selected-bot scoping regressions for manual-order writes and reads`
+## NEXT
 - [ ] `UOLF-03 test(api-red): lock unified lifecycle semantics for manual and runtime opens in paper/live`
-## PIPELINE
 - [ ] `UOLF-04 test(api-red): add reconciliation regressions for imported external positions and open orders`
+## PIPELINE
 - [ ] `UOLF-05 fix(api-context): derive canonical mode wallet and strategy from bot-bound context on open-order command`
 - [ ] `UOLF-06 refactor(api-lifecycle): introduce shared order lifecycle authority and fill-handler entrypoint`
 ## GROUP QUEUE
@@ -97,6 +96,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `UOLF-01 docs(contract): supersede manual-order order-only contract with unified order-fill-position lifecycle`
+  - 2026-04-20: Frozen canonical `UOLF` contract in `open-decisions` and module docs (`api-orders`, `api-bots`, `web-dashboard-home`) by superseding historical `SOPR-C order-only` wording with one lifecycle (`order -> fill -> position`) for manual and runtime entries, strict selected-bot scope, and wallet-scoped exchange takeover ownership expectations.
 - [x] `BTCF-01 docs(contract): freeze backtests list columns and explicit time-window create contract`
   - 2026-04-20: Frozen canonical backtests list/create contract in `open-decisions` and backtests module docs (`web-backtest`, `api-backtests`): list columns locked to `Strategy/Markets/Init balance/Status/Start/Actions`, create explicit range contract locked (`startAt/endAt`), slider bounds frozen (`250..10000`), and backward compatibility for legacy runs explicitly required.
 - [x] `BTCF planning queued (backtests list/create explicit time-window remediation wave)`
