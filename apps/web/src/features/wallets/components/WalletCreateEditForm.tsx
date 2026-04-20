@@ -31,6 +31,7 @@ import {
   NumberField,
   SelectField,
   TextField,
+  ToggleField,
   toValidationSummaryErrors,
 } from '@/ui/forms';
 import {
@@ -62,6 +63,7 @@ type WalletFormState = {
   liveAllocationMode: WalletAllocationMode;
   liveAllocationValue: number;
   apiKeyId: string;
+  manageExternalPositions: boolean;
 };
 
 type WalletCreateEditFormProps = {
@@ -99,6 +101,7 @@ const buildDefaultForm = (): WalletFormState => ({
   liveAllocationMode: 'PERCENT',
   liveAllocationValue: 100,
   apiKeyId: '',
+  manageExternalPositions: false,
 });
 
 const mapWalletToForm = (wallet: Wallet): WalletFormState => ({
@@ -111,6 +114,7 @@ const mapWalletToForm = (wallet: Wallet): WalletFormState => ({
   liveAllocationMode: wallet.liveAllocationMode ?? 'PERCENT',
   liveAllocationValue: wallet.liveAllocationValue ?? 100,
   apiKeyId: wallet.apiKeyId ?? '',
+  manageExternalPositions: wallet.manageExternalPositions ?? false,
 });
 
 const toPayload = (form: WalletFormState): CreateWalletInput => {
@@ -127,6 +131,7 @@ const toPayload = (form: WalletFormState): CreateWalletInput => {
       liveAllocationMode: null,
       liveAllocationValue: null,
       apiKeyId: null,
+      manageExternalPositions: false,
     };
   }
 
@@ -140,6 +145,7 @@ const toPayload = (form: WalletFormState): CreateWalletInput => {
     liveAllocationMode: form.liveAllocationMode,
     liveAllocationValue: form.liveAllocationValue,
     apiKeyId: form.apiKeyId || null,
+    manageExternalPositions: form.manageExternalPositions,
   };
 };
 
@@ -204,6 +210,10 @@ export default function WalletCreateEditForm({
           liveAllocationMode: 'LIVE allocation mode',
           liveAllocationValue: 'LIVE allocation value',
           liveAllocation: 'LIVE allocation',
+          manageExternalPositions: 'Manage external exchange positions',
+          manageExternalPositionsHint:
+            'When enabled, active LIVE bot on this wallet can take over and manage positions opened directly on exchange.',
+          manageExternalPositionsSummary: 'External takeover',
           apiKey: 'API key',
           selectedKey: 'Selected key',
           notSelected: 'Not selected',
@@ -234,6 +244,8 @@ export default function WalletCreateEditForm({
           modePaperHint: 'PAPER mode shows simulation-only fields.',
           modeLiveHint: 'LIVE mode shows exchange execution fields only.',
           hiddenSubmit: 'Submit wallet form',
+          enabled: 'Enabled',
+          disabled: 'Disabled',
         },
         pl: {
           loading: 'Ladowanie formularza...',
@@ -257,6 +269,10 @@ export default function WalletCreateEditForm({
           liveAllocationMode: 'Tryb limitu LIVE',
           liveAllocationValue: 'Wartosc limitu LIVE',
           liveAllocation: 'Alokacja LIVE',
+          manageExternalPositions: 'Przejmuj pozycje otwarte poza aplikacja',
+          manageExternalPositionsHint:
+            'Po wlaczeniu aktywny bot LIVE na tym portfelu moze przejac i zarzadzac pozycjami otwartymi bezposrednio na gieldzie.',
+          manageExternalPositionsSummary: 'Przejecie zewnetrznych pozycji',
           apiKey: 'Klucz API',
           selectedKey: 'Wybrany klucz',
           notSelected: 'Nie wybrano',
@@ -287,6 +303,8 @@ export default function WalletCreateEditForm({
           modePaperHint: 'W PAPER pokazujemy tylko pola symulacyjne.',
           modeLiveHint: 'W LIVE pokazujemy tylko pola wykonania gieldowego.',
           hiddenSubmit: 'Zapisz formularz portfela',
+          enabled: 'Wlaczone',
+          disabled: 'Wylaczone',
         },
         pt: {
           loading: 'A carregar formulario...',
@@ -310,6 +328,10 @@ export default function WalletCreateEditForm({
           liveAllocationMode: 'Modo de alocacao LIVE',
           liveAllocationValue: 'Valor de alocacao LIVE',
           liveAllocation: 'Alocacao LIVE',
+          manageExternalPositions: 'Gerir posicoes externas da corretora',
+          manageExternalPositionsHint:
+            'Quando ativo, o bot LIVE ativo desta carteira pode assumir e gerir posicoes abertas diretamente na corretora.',
+          manageExternalPositionsSummary: 'Assuncao externa',
           apiKey: 'Chave API',
           selectedKey: 'Chave selecionada',
           notSelected: 'Nao selecionado',
@@ -340,6 +362,8 @@ export default function WalletCreateEditForm({
           modePaperHint: 'No modo PAPER mostramos apenas campos de simulacao.',
           modeLiveHint: 'No modo LIVE mostramos apenas campos de execucao da corretora.',
           hiddenSubmit: 'Submeter formulario da carteira',
+          enabled: 'Ativado',
+          disabled: 'Desativado',
         },
       } as const)[locale],
     [locale]
@@ -532,6 +556,7 @@ export default function WalletCreateEditForm({
           liveAllocationMode: 'PERCENT',
           liveAllocationValue: 100,
           apiKeyId: '',
+          manageExternalPositions: false,
         };
       }
       return {
@@ -545,8 +570,8 @@ export default function WalletCreateEditForm({
 
   useEffect(() => {
     if (form.mode !== 'LIVE') {
-      if (form.apiKeyId) {
-        setForm((prev) => ({ ...prev, apiKeyId: '' }));
+      if (form.apiKeyId || form.manageExternalPositions) {
+        setForm((prev) => ({ ...prev, apiKeyId: '', manageExternalPositions: false }));
       }
       setPreview(null);
       setPreviewError(null);
@@ -603,6 +628,7 @@ export default function WalletCreateEditForm({
       liveAllocationMode: 'wallet-live-allocation-mode',
       liveAllocationValue: 'wallet-live-allocation-value',
       apiKeyId: 'wallet-api-key',
+      manageExternalPositions: 'wallet-manage-external-positions',
     });
   }, [fieldErrors]);
   const selectedApiKey = useMemo(
@@ -824,6 +850,15 @@ export default function WalletCreateEditForm({
                 error={showValidation ? fieldErrors.apiKeyId : undefined}
               />
               {compatibleApiKeys.length === 0 ? <p className='text-xs text-warning md:col-span-2'>{copy.noApiKeys}</p> : null}
+
+              <ToggleField
+                id='wallet-manage-external-positions'
+                className='md:col-span-2'
+                label={copy.manageExternalPositions}
+                hint={copy.manageExternalPositionsHint}
+                checked={form.manageExternalPositions}
+                onChange={(checked) => setForm((prev) => ({ ...prev, manageExternalPositions: checked }))}
+              />
             </FormGrid>
           </FormSectionCard>
         ) : null}
@@ -864,6 +899,12 @@ export default function WalletCreateEditForm({
                 <p className='flex items-center justify-between gap-2'>
                   <span className='opacity-65'>{copy.selectedKey}</span>
                   <span className='max-w-[11rem] truncate text-right font-semibold'>{selectedApiKey?.label ?? copy.notSelected}</span>
+                </p>
+                <p className='flex items-center justify-between gap-2'>
+                  <span className='opacity-65'>{copy.manageExternalPositionsSummary}</span>
+                  <span className='font-semibold'>
+                    {form.manageExternalPositions ? copy.enabled : copy.disabled}
+                  </span>
                 </p>
               </>
             ) : null}

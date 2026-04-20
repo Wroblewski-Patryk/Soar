@@ -196,6 +196,60 @@ describe('WalletCreateEditForm', () => {
           liveAllocationMode: null,
           liveAllocationValue: null,
           apiKeyId: null,
+          manageExternalPositions: false,
+        })
+      );
+    });
+  });
+
+  it('submits LIVE wallet with external takeover toggle enabled', async () => {
+    fetchApiKeysMock.mockResolvedValue([
+      {
+        id: 'key-1',
+        label: 'Main Binance Key',
+        exchange: 'BINANCE',
+      },
+    ]);
+    previewWalletBalanceMock.mockResolvedValue({
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      accountBalance: 100,
+      freeBalance: 98.5,
+      referenceBalance: 100,
+      allocationApplied: null,
+      fetchedAt: '2026-04-10T12:00:00.000Z',
+      source: 'BINANCE',
+    });
+    createWalletMock.mockResolvedValue({
+      id: 'wallet-live',
+    });
+
+    const { container } = render(<WalletCreateEditForm />);
+
+    await waitFor(() => {
+      expect(fetchApiKeysMock).toHaveBeenCalled();
+    });
+
+    fireEvent.change(screen.getByLabelText('Nazwa'), {
+      target: { value: 'Live Wallet' },
+    });
+
+    fireEvent.click(screen.getByRole('radio', { name: 'LIVE' }));
+
+    const takeoverToggle = await screen.findByLabelText('Przejmuj pozycje otwarte poza aplikacja');
+    fireEvent.click(takeoverToggle);
+
+    const form = container.querySelector('form');
+    expect(form).not.toBeNull();
+    fireEvent.submit(form as HTMLFormElement);
+
+    await waitFor(() => {
+      expect(createWalletMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          mode: 'LIVE',
+          apiKeyId: 'key-1',
+          manageExternalPositions: true,
         })
       );
     });

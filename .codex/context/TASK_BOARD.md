@@ -37,6 +37,8 @@ Last updated: 2026-04-20
 
 ## DONE
 
+- [x] EXTM-01 wallet-scoped external position takeover contract
+  - 2026-04-20: Added `Wallet.manageExternalPositions` as the bot-facing takeover switch (with DB backfill from legacy API-key takeover flag), wired runtime reconciliation ownership to wallet-scoped takeover intent first (legacy API-key fallback preserved), and extended wallet create/edit web UX + tests so external exchange positions can be explicitly managed per LIVE wallet context.
 - [x] DEPFIX-01 web deploy lint hotfix
   - 2026-04-20: Unblocked Coolify web build for commit `b345a009` by removing `@typescript-eslint/no-explicit-any` violations in new dashboard regression tests (`HomeLiveWidgets.aggregate-wallet.test.tsx`, `RuntimeSidebarSection.test.tsx`) with no behavior changes.
 - [x] PLNC-B planning parity sync (`PLNC-05`)

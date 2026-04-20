@@ -55,6 +55,7 @@ type ReconcileDeps = {
     status: 'OWNED' | 'UNOWNED' | 'AMBIGUOUS';
     botId: string | null;
     walletId: string | null;
+    takeoverEnabled: boolean;
   }>;
   fetchPositionsForApiKey: (
     apiKey: SyncedApiKey
@@ -201,11 +202,63 @@ const defaultDeps: ReconcileDeps = {
     });
   },
   resolveOwnershipForApiKey: async ({ userId, apiKeyId, manageExternalPositions }) => {
+    const walletManagedCandidates = await prisma.bot.findMany({
+      where: {
+        userId,
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        isActive: true,
+        liveOptIn: true,
+        wallet: {
+          is: {
+            mode: 'LIVE',
+            apiKeyId,
+            manageExternalPositions: true,
+          },
+        },
+      },
+      select: {
+        id: true,
+        walletId: true,
+        createdAt: true,
+      },
+      orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+    });
+
+    if (walletManagedCandidates.length === 1) {
+      const owner = walletManagedCandidates[0];
+      if (!owner.walletId) {
+        return {
+          status: 'UNOWNED' as const,
+          botId: null,
+          walletId: null,
+          takeoverEnabled: true,
+        };
+      }
+      return {
+        status: 'OWNED' as const,
+        botId: owner.id,
+        walletId: owner.walletId,
+        takeoverEnabled: true,
+      };
+    }
+
+    if (walletManagedCandidates.length > 1) {
+      return {
+        status: 'AMBIGUOUS' as const,
+        botId: null,
+        walletId: null,
+        takeoverEnabled: true,
+      };
+    }
+
     if (!manageExternalPositions) {
       return {
         status: 'UNOWNED' as const,
         botId: null,
         walletId: null,
+        takeoverEnabled: false,
       };
     }
 
@@ -234,12 +287,14 @@ const defaultDeps: ReconcileDeps = {
           status: 'UNOWNED' as const,
           botId: null,
           walletId: null,
+          takeoverEnabled: true,
         };
       }
       return {
         status: 'OWNED' as const,
         botId: owner.id,
         walletId: owner.walletId,
+        takeoverEnabled: true,
       };
     }
 
@@ -248,6 +303,7 @@ const defaultDeps: ReconcileDeps = {
         status: 'UNOWNED' as const,
         botId: null,
         walletId: null,
+        takeoverEnabled: true,
       };
     }
 
@@ -255,6 +311,7 @@ const defaultDeps: ReconcileDeps = {
       status: 'AMBIGUOUS' as const,
       botId: null,
       walletId: null,
+      takeoverEnabled: true,
     };
   },
   fetchPositionsForApiKey: async (apiKey) =>
@@ -427,11 +484,11 @@ export const reconcileExternalPositionsFromExchange = async (
         apiKeyId: apiKey.id,
         manageExternalPositions: apiKey.manageExternalPositions,
       });
-      const managedByBot = apiKey.manageExternalPositions && ownership.status === 'OWNED';
+      const managedByBot = ownership.status === 'OWNED';
       const managementMode = managedByBot ? 'BOT_MANAGED' : 'MANUAL_MANAGED';
-      const syncState = managedByBot || !apiKey.manageExternalPositions ? 'IN_SYNC' : 'DRIFT';
+      const syncState = managedByBot || !ownership.takeoverEnabled ? 'IN_SYNC' : 'DRIFT';
 
-      if (apiKey.manageExternalPositions && ownership.status !== 'OWNED') {
+      if (ownership.takeoverEnabled && ownership.status !== 'OWNED') {
         console.warn(
           `[LivePositionReconciliation] apiKey=${apiKey.id} user=${apiKey.userId} unresolved_takeover_owner=${ownership.status}`
         );

@@ -124,6 +124,13 @@ Last updated: 2026-04-20
   - take next planner-approved queue slice after planning-sync closure.
 
 ## Recent Progress
+- 2026-04-20: implemented wallet-scoped external-position takeover contract for
+  LIVE bots by adding `Wallet.manageExternalPositions` (with migration backfill
+  from legacy `ApiKey.manageExternalPositions`), updating runtime exchange
+  reconciliation to resolve takeover ownership from wallet-bound bot context
+  first (legacy fallback preserved), and extending wallet web form/contracts so
+  operators can enable takeover where API key + execution context actually
+  lives.
 - 2026-04-20: fixed production deploy blocker for web image build by removing
   explicit-`any` lint violations in dashboard regression tests
   (`HomeLiveWidgets.aggregate-wallet.test.tsx`,

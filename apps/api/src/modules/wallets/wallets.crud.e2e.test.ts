@@ -81,8 +81,36 @@ describe('Wallet CRUD and ownership contract', () => {
       baseCurrency: 'USDT',
       paperInitialBalance: 12500,
       apiKeyId: null,
+      manageExternalPositions: false,
       liveAllocationMode: null,
       liveAllocationValue: null,
+    });
+  });
+
+  it('persists external takeover flag on LIVE wallet', async () => {
+    const agent = await registerAndLogin('wallet-crud-live-manage@example.com');
+    const apiKeyId = await createApiKey(agent, {
+      label: 'binance-live-manage',
+      exchange: 'BINANCE',
+    });
+
+    const response = await agent.post('/dashboard/wallets').send({
+      name: 'Live managed wallet',
+      mode: 'LIVE',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      apiKeyId,
+      liveAllocationMode: 'PERCENT',
+      liveAllocationValue: 50,
+      manageExternalPositions: true,
+    });
+
+    expect(response.status).toBe(201);
+    expect(response.body).toMatchObject({
+      mode: 'LIVE',
+      apiKeyId,
+      manageExternalPositions: true,
     });
   });
 

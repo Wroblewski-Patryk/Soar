@@ -81,6 +81,7 @@ describe('Positions takeover status API', () => {
         liveAllocationMode: 'PERCENT',
         liveAllocationValue: 100,
         apiKeyId: keyOwned,
+        manageExternalPositions: true,
       },
       select: { id: true },
     });
@@ -97,6 +98,7 @@ describe('Positions takeover status API', () => {
         liveAllocationMode: 'PERCENT',
         liveAllocationValue: 100,
         apiKeyId: keyAmbiguous,
+        manageExternalPositions: true,
       },
       select: { id: true },
     });
@@ -113,6 +115,7 @@ describe('Positions takeover status API', () => {
         liveAllocationMode: 'PERCENT',
         liveAllocationValue: 100,
         apiKeyId: keyAmbiguous,
+        manageExternalPositions: true,
       },
       select: { id: true },
     });
@@ -293,6 +296,7 @@ describe('Positions takeover status API', () => {
         liveAllocationMode: 'PERCENT',
         liveAllocationValue: 100,
         apiKeyId: keyOwned,
+        manageExternalPositions: true,
       },
       select: { id: true },
     });
@@ -324,6 +328,7 @@ describe('Positions takeover status API', () => {
         liveAllocationMode: 'PERCENT',
         liveAllocationValue: 100,
         apiKeyId: keyAmbiguous,
+        manageExternalPositions: true,
       },
       select: { id: true },
     });
@@ -339,6 +344,7 @@ describe('Positions takeover status API', () => {
         liveAllocationMode: 'PERCENT',
         liveAllocationValue: 100,
         apiKeyId: keyAmbiguous,
+        manageExternalPositions: true,
       },
       select: { id: true },
     });
@@ -469,6 +475,7 @@ describe('Positions takeover status API', () => {
         liveAllocationMode: 'PERCENT',
         liveAllocationValue: 100,
         apiKeyId,
+        manageExternalPositions: true,
       },
       select: { id: true },
     });

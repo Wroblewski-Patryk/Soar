@@ -56,6 +56,7 @@ describe('reconcileExternalPositionsFromExchange', () => {
         status: 'OWNED' as const,
         botId: 'bot-live-1',
         walletId: 'wallet-live-1',
+        takeoverEnabled: true,
       })),
       fetchPositionsForApiKey: vi.fn(async () => ({
         positions: [
@@ -118,6 +119,7 @@ describe('reconcileExternalPositionsFromExchange', () => {
         status: 'UNOWNED' as const,
         botId: null,
         walletId: null,
+        takeoverEnabled: false,
       })),
       fetchPositionsForApiKey: vi.fn(async () => ({
         positions: [
@@ -176,12 +178,13 @@ describe('reconcileExternalPositionsFromExchange', () => {
       ]),
       resolveOwnershipForApiKey: vi.fn(async ({ apiKeyId }: { apiKeyId: string }) => {
         if (apiKeyId === 'key-failing') {
-          return { status: 'UNOWNED' as const, botId: null, walletId: null };
+          return { status: 'UNOWNED' as const, botId: null, walletId: null, takeoverEnabled: true };
         }
         return {
           status: 'OWNED' as const,
           botId: 'bot-live-2',
           walletId: 'wallet-live-2',
+          takeoverEnabled: true,
         };
       }),
       fetchPositionsForApiKey: vi.fn(async (apiKey) => {
@@ -252,6 +255,7 @@ describe('reconcileExternalPositionsFromExchange', () => {
         status: 'AMBIGUOUS' as const,
         botId: null,
         walletId: null,
+        takeoverEnabled: true,
       })),
       fetchPositionsForApiKey: vi.fn(async () => ({
         positions: [
@@ -307,6 +311,7 @@ describe('reconcileExternalPositionsFromExchange', () => {
         status: 'OWNED' as const,
         botId: 'bot-owned-1',
         walletId: 'wallet-owned-1',
+        takeoverEnabled: true,
       })),
       fetchPositionsForApiKey: vi.fn(async () => ({
         positions: [],

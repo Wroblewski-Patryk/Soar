@@ -33,6 +33,7 @@ const normalizeWalletInput = (payload: CreateWalletDto | UpdateWalletDto) => {
       liveAllocationMode: null,
       liveAllocationValue: null,
       apiKeyId: null,
+      manageExternalPositions: false,
     };
   }
 
@@ -269,6 +270,7 @@ export const createWallet = async (userId: string, payload: CreateWalletDto) => 
       liveAllocationMode: normalized.liveAllocationMode ?? null,
       liveAllocationValue: normalized.liveAllocationValue ?? null,
       apiKeyId: normalized.apiKeyId ?? null,
+      manageExternalPositions: normalized.mode === 'LIVE' ? normalized.manageExternalPositions ?? false : false,
     },
   });
 };
@@ -332,6 +334,7 @@ export const updateWallet = async (userId: string, id: string, payload: UpdateWa
       liveAllocationMode: nextData.liveAllocationMode ?? null,
       liveAllocationValue: nextData.liveAllocationValue ?? null,
       apiKeyId: nextData.apiKeyId ?? null,
+      manageExternalPositions: nextMode === 'LIVE' ? nextData.manageExternalPositions ?? false : false,
     },
   });
 };
@@ -383,6 +386,7 @@ export const getOwnedWalletForBotContext = async (params: {
       liveAllocationMode: true,
       liveAllocationValue: true,
       apiKeyId: true,
+      manageExternalPositions: true,
     },
   });
 

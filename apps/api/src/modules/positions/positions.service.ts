@@ -612,6 +612,12 @@ export const rebindExternalTakeoverOwnership = async (
         liveOptIn: true,
         walletId: { not: null },
         apiKeyId: { not: null },
+        wallet: {
+          is: {
+            mode: 'LIVE',
+            manageExternalPositions: true,
+          },
+        },
       },
       select: {
         id: true,
@@ -751,6 +757,12 @@ export const listExternalTakeoverStatuses = async (
             isActive: true,
             liveOptIn: true,
             walletId: { not: null },
+            wallet: {
+              is: {
+                mode: 'LIVE',
+                manageExternalPositions: true,
+              },
+            },
           },
           select: {
             apiKeyId: true,
