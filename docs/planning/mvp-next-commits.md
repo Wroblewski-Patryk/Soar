@@ -14,12 +14,18 @@ Operational queue for one-task execution runs.
 ## PIPELINE
 - [ ] `UOLF-05 fix(api-context): derive canonical mode wallet and strategy from bot-bound context on open-order command`
 - [ ] `UOLF-06 refactor(api-lifecycle): introduce shared order lifecycle authority and fill-handler entrypoint`
+- [ ] `WAPR-01 docs(contract): freeze wallets list api-key column and paper-reset safety contract`
+- [ ] `WAPR-02 test(web-red): add wallets list regression for api-key column and no-details contract`
 ## GROUP QUEUE
 - [x] `UOLF planning queued (unified order lifecycle + exchange-sync parity for manual and bot opens)`
 - [ ] `UOLF-A (commits UOLF-01..UOLF-04): contract freeze + failing lifecycle/scope regressions`
 - [ ] `UOLF-B (commits UOLF-05..UOLF-09): backend unified lifecycle authority + paper/live parity`
 - [ ] `UOLF-C (commits UOLF-10..UOLF-13): exchange import/reconciliation + dashboard operator parity`
 - [ ] `UOLF-D (commits UOLF-14..UOLF-15): docs sync + live-safety closure validation`
+- [x] `WAPR planning queued (wallets list api-key status + paper reset safety)`
+- [ ] `WAPR-A (commits WAPR-01..WAPR-04): contract freeze + wallet-list regression + reset red tests`
+- [ ] `WAPR-B (commits WAPR-05..WAPR-08): API reset command + reset-aware capital baseline + web action`
+- [ ] `WAPR-C (commits WAPR-09..WAPR-10): docs sync + closure validation`
 - [x] `BTCF-A (commits BTCF-01..BTCF-04): contract freeze + list API enrich + list UI parity`
 - [x] `BTCF-B (commits BTCF-05..BTCF-09): create range/validation/layout + backend explicit-range execution`
 - [x] `BTCF-C (commits BTCF-10..BTCF-12): i18n/docs sync + closure validation + compatibility lock`
@@ -96,6 +102,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `WAPR planning queued (wallets list api-key status + paper reset safety)`
+  - 2026-04-20: Added `docs/planning/wallets-list-paper-reset-safety-plan-2026-04-20.md` and queued `WAPR-01..WAPR-10` for wallet-list simplification (`remove Details`, add inline `API key` status column) plus non-destructive `PAPER` wallet reset with reset-aware capital baseline, fail-closed guards, focused API/web regressions, and closure validation.
 - [x] `UOLF-01 docs(contract): supersede manual-order order-only contract with unified order-fill-position lifecycle`
   - 2026-04-20: Frozen canonical `UOLF` contract in `open-decisions` and module docs (`api-orders`, `api-bots`, `web-dashboard-home`) by superseding historical `SOPR-C order-only` wording with one lifecycle (`order -> fill -> position`) for manual and runtime entries, strict selected-bot scope, and wallet-scoped exchange takeover ownership expectations.
 - [x] `BTCF-01 docs(contract): freeze backtests list columns and explicit time-window create contract`

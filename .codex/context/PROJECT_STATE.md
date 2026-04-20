@@ -143,8 +143,16 @@ Last updated: 2026-04-20
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
   - `UOLF-02 test(api-red): add selected-bot scoping regressions for manual-order writes and reads`.
+  - `WAPR-01 docs(contract): freeze wallets list api-key column and paper-reset safety contract`.
 
 ## Recent Progress
+- 2026-04-20: queued wallets list + paper reset safety wave (`WAPR-01..WAPR-10`)
+  and published executor-ready plan
+  `docs/planning/wallets-list-paper-reset-safety-plan-2026-04-20.md`; queue
+  adds wallet-list simplification (`remove Details`, inline `API key`
+  connected-state column) plus dedicated non-destructive `PAPER` wallet reset
+  with reset-aware capital baseline, fail-closed guards, and focused API/web
+  validation requirements.
 - 2026-04-20: completed `UOLF-01` by freezing unified lifecycle contract in
   canonical docs (`open-decisions`, `api-orders`, `api-bots`,
   `web-dashboard-home`), superseding `SOPR-C order-only` wording with one

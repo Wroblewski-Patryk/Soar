@@ -2290,3 +2290,18 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 ### Progress Log (Phase UOLF - Unified Order Lifecycle and Exchange Sync)
 - 2026-04-20: Queued `UOLF` from clarified product target and published executor-ready plan `docs/planning/unified-order-lifecycle-and-exchange-sync-plan-2026-04-20.md` with strict scope lock: one canonical lifecycle (`order -> fill -> position`) for manual and runtime opens, strict selected-bot scope, wallet-scoped exchange takeover ownership, and Binance parity requirements.
 - 2026-04-20: Completed `UOLF-01` by freezing canonical contract in `open-decisions` plus module docs (`api-orders`, `api-bots`, `web-dashboard-home`), explicitly superseding historical `SOPR-C order-only` wording before implementation tasks.
+
+## Phase WAPR - Wallets List API-Key Status and Paper Reset Safety (Queued 2026-04-20)
+- [ ] `WAPR-01 docs(contract): freeze wallets list api-key column and paper-reset safety contract`
+- [ ] `WAPR-02 test(web-red): add wallets list regression for api-key column and no-details contract`
+- [ ] `WAPR-03 fix(web-list): remove details row and add api-key status column in wallets table`
+- [ ] `WAPR-04 test(api-red): add paper-reset safety and baseline regressions`
+- [ ] `WAPR-05 fix(api-wallets): add dedicated reset-paper command and domain errors`
+- [ ] `WAPR-06 fix(api-capital): make paper runtime capital snapshot reset-aware`
+- [ ] `WAPR-07 test(web-red): add paper-wallet reset action visibility and submit regressions`
+- [ ] `WAPR-08 fix(web-form): add reset paper wallet action to wallet edit form`
+- [ ] `WAPR-09 docs(sync): update wallet module docs and canonical queue/context after rollout`
+- [ ] `WAPR-10 qa(closure): run focused wallets list + paper-reset validation pack and finalize queue/context`
+
+### Progress Log (Phase WAPR - Wallets List API-Key Status and Paper Reset Safety)
+- 2026-04-20: Queued `WAPR` from wallet-module analysis and published executor-ready plan `docs/planning/wallets-list-paper-reset-safety-plan-2026-04-20.md` with strict scope lock: remove duplicate wallet-list `Details` rows, add inline `API key` connected-state column, and implement dedicated non-destructive `PAPER` wallet reset via reset-aware capital baseline rather than naive `paperInitialBalance` edit-only behavior.
