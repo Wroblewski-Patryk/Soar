@@ -1308,7 +1308,9 @@ describe("HomeLiveWidgets", () => {
 
     renderSubject();
     expect(await screen.findByTestId("manual-order-panel")).toBeInTheDocument();
-    expect(screen.getByTestId("manual-order-semantics-hint")).toHaveTextContent(/tylko zlecenie|order-only/i);
+    expect(screen.getByTestId("manual-order-semantics-hint")).toHaveTextContent(
+      /jednolitego cyklu|unified lifecycle/i
+    );
     expect(screen.getByTestId("wallet-section").compareDocumentPosition(screen.getByTestId("manual-order-section")) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 
     const symbolSelect = await screen.findByLabelText(/Symbol/i);
@@ -1326,14 +1328,11 @@ describe("HomeLiveWidgets", () => {
     await waitFor(() => {
       expect(openDashboardManualOrderMock).toHaveBeenCalledWith({
         botId: "bot-manual-order",
-        walletId: "wallet-manual-order",
-        strategyId: "str-manual-order",
         symbol: "BTCUSDT",
         side: "SELL",
         type: "MARKET",
         quantity: 0.25,
-        mode: "PAPER",
-        riskAck: undefined,
+        riskAck: true,
       });
     });
   });

@@ -86,6 +86,10 @@ type RuntimeOrchestrationResult =
       positionId: string;
     }
   | {
+      status: 'submitted';
+      orderId: string;
+    }
+  | {
       status: 'closed';
       orderId: string;
       positionId: string;
@@ -106,6 +110,13 @@ type RuntimeOrchestrationIgnoredReason = Extract<RuntimeOrchestrationResult, { s
 const asRuntimeOrchestrationResult = (value: unknown): RuntimeOrchestrationResult | null => {
   if (!value || typeof value !== 'object') return null;
   const parsed = value as Partial<RuntimeOrchestrationResult>;
+  if (parsed.status === 'submitted') {
+    if (typeof parsed.orderId !== 'string') return null;
+    return {
+      status: 'submitted',
+      orderId: parsed.orderId,
+    };
+  }
   if (parsed.status === 'opened' || parsed.status === 'closed') {
     if (typeof parsed.orderId !== 'string' || typeof parsed.positionId !== 'string') return null;
     return {

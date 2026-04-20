@@ -792,15 +792,12 @@ export default function HomeLiveWidgets() {
     try {
       await openDashboardManualOrder({
         botId: selected.bot.id,
-        walletId: selected.bot.walletId ?? undefined,
-        strategyId: selected.bot.strategyId ?? undefined,
         symbol,
         side: manualOrderSide,
         type: resolvedManualOrderType,
         quantity,
         price: manualOrderTypeRequiresPrice && typeof parsedPrice === "number" ? parsedPrice : undefined,
-        mode: selected.bot.mode,
-        riskAck: selected.bot.mode === "LIVE" ? true : undefined,
+        riskAck: true,
       });
       toast.success(manualOrderSuccessLabel);
       setManualOrderQuantity("");
@@ -1007,6 +1004,23 @@ export default function HomeLiveWidgets() {
     [t]
   );
 
+  const resolveOpenOrderStatusLabel = useCallback(
+    (status: string | null | undefined) => {
+      const normalized = status?.trim().toUpperCase();
+      if (normalized === "PENDING" || normalized === "OPEN") {
+        return t("dashboard.home.runtime.openOrderStatusWaitingFill");
+      }
+      if (normalized === "PARTIALLY_FILLED") {
+        return t("dashboard.home.runtime.openOrderStatusPartiallyFilled");
+      }
+      if (normalized === "FILLED") {
+        return t("dashboard.home.runtime.openOrderStatusFilled");
+      }
+      return status ?? "-";
+    },
+    [t]
+  );
+
   const openOrdersColumns = useMemo<OpenOrdersTableColumn[]>(
     () => [
       {
@@ -1053,7 +1067,7 @@ export default function HomeLiveWidgets() {
         label: t("dashboard.home.runtime.status"),
         sortable: true,
         accessor: (row) => row.status,
-        render: (row) => <span className="font-semibold">{row.status ?? "-"}</span>,
+        render: (row) => <span className="font-semibold">{resolveOpenOrderStatusLabel(row.status)}</span>,
       },
       {
         key: "quantity",
@@ -1075,6 +1089,7 @@ export default function HomeLiveWidgets() {
       formatDateTimeWithSeconds,
       formatNumber,
       resolveRuntimeIcon,
+      resolveOpenOrderStatusLabel,
       resolveOpenOrderSourceLabel,
       runtimeIconsError,
       runtimeIconsLoading,

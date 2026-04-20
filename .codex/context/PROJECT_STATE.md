@@ -121,31 +121,30 @@ Last updated: 2026-04-20
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: queue `UOLF` wave for unified manual/bot order
-  lifecycle parity before further live-money rollout.
+- Main active objective: execute `WAPR` wave for wallets list api-key visibility
+  and safe `PAPER` wallet reset workflow.
 - Top blockers:
-  - runtime paths still require implementation migration from historical
-    `SOPR-C order-only` behavior to unified `UOLF` lifecycle authority.
-  - runtime/manual/live pretrade rule parity is not yet fully aligned for
-    Binance quantity-step enforcement.
-  - exchange-imported positions/open orders need stronger regression locks for
-    wallet-owned selected-bot visibility.
+  - wallet list currently lacks explicit api-key connection-state column in
+    canonical contract.
+  - dedicated non-destructive `PAPER` reset flow (with reset-aware capital
+    baseline) still requires end-to-end closure.
 - Success criteria for this phase:
-  - one canonical lifecycle is implemented for manual and bot entries:
-    `order -> fill -> position`.
-  - `LIVE` submit path never creates position directly; position opens only
-    after exchange fill/sync evidence.
-  - `PAPER` mirrors the same lifecycle through internal paper fill authority.
-  - selected-bot scope remains strict for orders, positions, and imported
-    exchange state.
-  - Binance minQty / step / minNotional checks are parity-aligned across
-    runtime, manual, and final live pretrade.
+  - wallets list exposes deterministic `API key` status column (`Connected` /
+    `Not connected`) without `Details` column regressions.
+  - `PAPER` reset endpoint/UI flow is fail-closed, non-destructive, and keeps
+    reset-aware baseline semantics consistent with runtime and reports.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - `UOLF-02 test(api-red): add selected-bot scoping regressions for manual-order writes and reads`.
   - `WAPR-01 docs(contract): freeze wallets list api-key column and paper-reset safety contract`.
 
 ## Recent Progress
+- 2026-04-20: closed `UOLF` wave (`UOLF-02..UOLF-15`) end-to-end by shipping
+  selected-bot manual-order scope regressions, canonical bot-context authority
+  for order-open, shared order-fill-position lifecycle handling across
+  runtime/manual paths, waiting-fill runtime semantics, dashboard lifecycle copy
+  parity, and passing closure pack (`api UOLF matrix`, `HomeLiveWidgets +
+  preview parity`, `api/web typecheck`, `build`, `quality:guardrails`,
+  `test:go-live:smoke`).
 - 2026-04-20: queued wallets list + paper reset safety wave (`WAPR-01..WAPR-10`)
   and published executor-ready plan
   `docs/planning/wallets-list-paper-reset-safety-plan-2026-04-20.md`; queue

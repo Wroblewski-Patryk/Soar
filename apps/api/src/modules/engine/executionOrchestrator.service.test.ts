@@ -25,8 +25,9 @@ const createOrderGateway = (): OrderFlowGateway => ({
     submittedAt: new Date(),
     filledAt: new Date(),
     botId: null,
+    walletId: null,
     strategyId: null,
-    positionId: null,
+    positionId: 'position-1',
     price: null,
     stopPrice: null,
     averageFillPrice: null,
@@ -161,8 +162,8 @@ describe('orchestrateRuntimeSignal', () => {
       botId: undefined,
       walletId: undefined,
     });
-    expect(positionGateway.createPosition).toHaveBeenCalled();
-    expect(orderGateway.linkOrderToPosition).toHaveBeenCalledWith('order-1', 'position-1');
+    expect(positionGateway.createPosition).not.toHaveBeenCalled();
+    expect(orderGateway.linkOrderToPosition).not.toHaveBeenCalled();
     expect(strategyLookupSpy).not.toHaveBeenCalled();
     expect(tradeGateway.createTrade).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -175,6 +176,72 @@ describe('orchestrateRuntimeSignal', () => {
       expect.objectContaining({
         status: 'opened',
         symbol: 'BTCUSDT',
+      })
+    );
+  });
+
+  it('returns submitted when order is open and waiting for fill confirmation', async () => {
+    const orderGateway = createOrderGateway();
+    (orderGateway.openOrder as ReturnType<typeof vi.fn>).mockResolvedValue({
+      id: 'order-live-pending-1',
+      userId: 'u1',
+      symbol: 'BTCUSDT',
+      side: 'BUY',
+      type: 'MARKET',
+      status: 'OPEN',
+      quantity: 0.1,
+      filledQuantity: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      submittedAt: new Date(),
+      filledAt: null,
+      botId: 'bot-live-1',
+      walletId: 'wallet-live-1',
+      strategyId: 'strategy-live-1',
+      positionId: null,
+      price: null,
+      stopPrice: null,
+      averageFillPrice: null,
+      fee: null,
+      feeSource: 'ESTIMATED',
+      feePending: true,
+      feeCurrency: null,
+      effectiveFeeRate: null,
+      exchangeOrderId: 'exchange-order-1',
+      exchangeTradeId: null,
+      canceledAt: null,
+    });
+    const positionGateway = createPositionGateway();
+    const eventGateway = createEventGateway();
+    const tradeGateway = createTradeGateway();
+
+    const result = await orchestrateRuntimeSignal(
+      {
+        userId: 'u1',
+        botId: 'bot-live-1',
+        symbol: 'BTCUSDT',
+        direction: 'LONG',
+        quantity: 0.1,
+        markPrice: 43000,
+        mode: 'LIVE',
+      },
+      orderGateway,
+      positionGateway,
+      eventGateway,
+      tradeGateway
+    );
+
+    expect(result).toEqual({
+      status: 'submitted',
+      orderId: 'order-live-pending-1',
+    });
+    expect(positionGateway.createPosition).not.toHaveBeenCalled();
+    expect(tradeGateway.createTrade).not.toHaveBeenCalled();
+    expect(eventGateway.writeEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: 'submitted',
+        reason: 'waiting_fill',
+        orderId: 'order-live-pending-1',
       })
     );
   });
@@ -217,6 +284,48 @@ describe('orchestrateRuntimeSignal', () => {
       status: 'opened',
       orderId: 'order-existing',
       positionId: 'position-existing',
+    });
+    expect(orderGateway.openOrder).not.toHaveBeenCalled();
+    expect(positionGateway.createPosition).not.toHaveBeenCalled();
+    expect(tradeGateway.createTrade).not.toHaveBeenCalled();
+  });
+
+  it('returns submitted when OPEN dedupe reuses order without linked position', async () => {
+    const orderGateway = createOrderGateway();
+    const positionGateway = createPositionGateway();
+    const eventGateway = createEventGateway();
+    const tradeGateway = createTradeGateway();
+    const dedupeGateway = createDedupeGateway();
+    (dedupeGateway.acquire as ReturnType<typeof vi.fn>).mockResolvedValue({
+      outcome: 'reused',
+      dedupeKey: 'v1|OPEN|...',
+      orderId: 'order-existing-open-only',
+    });
+
+    const result = await orchestrateRuntimeSignal(
+      {
+        userId: 'u1',
+        botId: 'bot-1',
+        botMarketGroupId: 'group-1',
+        symbol: 'BTCUSDT',
+        direction: 'LONG',
+        strategyInterval: '1m',
+        candleOpenTime: 1_000,
+        candleCloseTime: 59_000,
+        quantity: 0.1,
+        markPrice: 43000,
+        mode: 'LIVE',
+      },
+      orderGateway,
+      positionGateway,
+      eventGateway,
+      tradeGateway,
+      dedupeGateway
+    );
+
+    expect(result).toEqual({
+      status: 'submitted',
+      orderId: 'order-existing-open-only',
     });
     expect(orderGateway.openOrder).not.toHaveBeenCalled();
     expect(positionGateway.createPosition).not.toHaveBeenCalled();

@@ -7,21 +7,17 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `UOLF-02 test(api-red): add selected-bot scoping regressions for manual-order writes and reads`
-## NEXT
-- [ ] `UOLF-03 test(api-red): lock unified lifecycle semantics for manual and runtime opens in paper/live`
-- [ ] `UOLF-04 test(api-red): add reconciliation regressions for imported external positions and open orders`
-## PIPELINE
-- [ ] `UOLF-05 fix(api-context): derive canonical mode wallet and strategy from bot-bound context on open-order command`
-- [ ] `UOLF-06 refactor(api-lifecycle): introduce shared order lifecycle authority and fill-handler entrypoint`
 - [ ] `WAPR-01 docs(contract): freeze wallets list api-key column and paper-reset safety contract`
+## NEXT
 - [ ] `WAPR-02 test(web-red): add wallets list regression for api-key column and no-details contract`
+## PIPELINE
+- [ ] (none)
 ## GROUP QUEUE
 - [x] `UOLF planning queued (unified order lifecycle + exchange-sync parity for manual and bot opens)`
-- [ ] `UOLF-A (commits UOLF-01..UOLF-04): contract freeze + failing lifecycle/scope regressions`
-- [ ] `UOLF-B (commits UOLF-05..UOLF-09): backend unified lifecycle authority + paper/live parity`
-- [ ] `UOLF-C (commits UOLF-10..UOLF-13): exchange import/reconciliation + dashboard operator parity`
-- [ ] `UOLF-D (commits UOLF-14..UOLF-15): docs sync + live-safety closure validation`
+- [x] `UOLF-A (commits UOLF-01..UOLF-04): contract freeze + failing lifecycle/scope regressions`
+- [x] `UOLF-B (commits UOLF-05..UOLF-09): backend unified lifecycle authority + paper/live parity`
+- [x] `UOLF-C (commits UOLF-10..UOLF-13): exchange import/reconciliation + dashboard operator parity`
+- [x] `UOLF-D (commits UOLF-14..UOLF-15): docs sync + live-safety closure validation`
 - [x] `WAPR planning queued (wallets list api-key status + paper reset safety)`
 - [ ] `WAPR-A (commits WAPR-01..WAPR-04): contract freeze + wallet-list regression + reset red tests`
 - [ ] `WAPR-B (commits WAPR-05..WAPR-08): API reset command + reset-aware capital baseline + web action`
@@ -106,6 +102,8 @@ Operational queue for one-task execution runs.
   - 2026-04-20: Added `docs/planning/wallets-list-paper-reset-safety-plan-2026-04-20.md` and queued `WAPR-01..WAPR-10` for wallet-list simplification (`remove Details`, add inline `API key` status column) plus non-destructive `PAPER` wallet reset with reset-aware capital baseline, fail-closed guards, focused API/web regressions, and closure validation.
 - [x] `UOLF-01 docs(contract): supersede manual-order order-only contract with unified order-fill-position lifecycle`
   - 2026-04-20: Frozen canonical `UOLF` contract in `open-decisions` and module docs (`api-orders`, `api-bots`, `web-dashboard-home`) by superseding historical `SOPR-C order-only` wording with one lifecycle (`order -> fill -> position`) for manual and runtime entries, strict selected-bot scope, and wallet-scoped exchange takeover ownership expectations.
+- [x] `UOLF group closure (UOLF-02..UOLF-15)`
+  - 2026-04-20: Closed UOLF implementation and validation wave end-to-end: selected-bot manual-order write/read regressions, canonical bot-context derivation on order open, shared order-fill-position lifecycle authority for runtime/manual flows, waiting-for-fill runtime semantics (`submitted`), selected-bot scope locks for `PAPER/LIVE`, dashboard lifecycle copy/status alignment, and closure pack PASS (`api UOLF matrix`, `HomeLiveWidgets + preview parity`, `api/web typecheck`, `build`, `quality:guardrails`, `test:go-live:smoke`).
 - [x] `BTCF-01 docs(contract): freeze backtests list columns and explicit time-window create contract`
   - 2026-04-20: Frozen canonical backtests list/create contract in `open-decisions` and backtests module docs (`web-backtest`, `api-backtests`): list columns locked to `Strategy/Markets/Init balance/Status/Start/Actions`, create explicit range contract locked (`startAt/endAt`), slider bounds frozen (`250..10000`), and backward compatibility for legacy runs explicitly required.
 - [x] `BTCF planning queued (backtests list/create explicit time-window remediation wave)`

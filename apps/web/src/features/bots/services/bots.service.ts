@@ -150,21 +150,15 @@ export const closeBotRuntimeSessionPosition = async (
 };
 
 export const openDashboardManualOrder = async (payload: {
-  botId?: string;
-  walletId?: string;
-  strategyId?: string;
+  botId: string;
   symbol: string;
   side: "BUY" | "SELL";
   type: DashboardManualOrderType;
   quantity: number;
   price?: number;
-  mode: "PAPER" | "LIVE";
   riskAck?: boolean;
 }): Promise<{ id: string; status: string }> => {
-  const res = await api.post<{ id: string; status: string }>("/dashboard/orders/open", {
-    ...payload,
-    riskAck: payload.mode === "LIVE" ? (payload.riskAck ?? true) : undefined,
-  });
+  const res = await api.post<{ id: string; status: string }>("/dashboard/orders/open", payload);
   return res.data;
 };
 

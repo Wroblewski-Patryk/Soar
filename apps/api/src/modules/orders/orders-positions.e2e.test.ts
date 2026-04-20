@@ -41,6 +41,7 @@ describe('Orders and positions read contract', () => {
     await prisma.symbolGroup.deleteMany();
     await prisma.marketUniverse.deleteMany();
     await prisma.strategy.deleteMany();
+    await prisma.wallet.deleteMany();
     await prisma.apiKey.deleteMany();
     await prisma.user.deleteMany();
   });
@@ -425,7 +426,7 @@ describe('Orders and positions read contract', () => {
     expect(contextRes.body.marginMode).toBe('ISOLATED');
   });
 
-  it('keeps manual open endpoint on explicit order-only path without direct position creation', async () => {
+  it('routes manual open through unified fill lifecycle and creates position only after fill', async () => {
     const ownerAgent = await registerAndLogin('manual-order-order-only-owner@example.com');
     const ownerId = await getUserId('manual-order-order-only-owner@example.com');
 
@@ -447,10 +448,11 @@ describe('Orders and positions read contract', () => {
     });
     expect(persistedManualOrder.origin).toBe('USER');
 
-    const positionsCount = await prisma.position.count({
-      where: { userId: ownerId },
+    const openedPosition = await prisma.position.findFirst({
+      where: { userId: ownerId, id: openRes.body.positionId as string },
     });
-    expect(positionsCount).toBe(0);
+    expect(openedPosition).not.toBeNull();
+    expect(openedPosition?.origin).toBe('USER');
 
     const auditLog = await prisma.log.findFirst({
       where: {
@@ -464,12 +466,211 @@ describe('Orders and positions read contract', () => {
     expect(auditLog).not.toBeNull();
     const metadata = (auditLog?.metadata ?? {}) as {
       semanticPath?: string;
-      positionLifecycleAuthority?: string;
-      opensPositionDirectly?: boolean;
+      lifecycleContract?: string;
+      waitingForFill?: boolean;
     };
-    expect(metadata.semanticPath).toBe('order_only');
-    expect(metadata.positionLifecycleAuthority).toBe('runtime_or_fill_sync');
-    expect(metadata.opensPositionDirectly).toBe(false);
+    expect(metadata.semanticPath).toBe('unified_order_fill_position');
+    expect(metadata.lifecycleContract).toBe('order->fill->position');
+    expect(metadata.waitingForFill).toBe(false);
+  });
+
+  it('keeps manual-order write/read scope deterministic per selected bot context', async () => {
+    const ownerAgent = await registerAndLogin('manual-order-selected-bot-scope@example.com');
+    const ownerId = await getUserId('manual-order-selected-bot-scope@example.com');
+
+    const liveStrategy = await prisma.strategy.create({
+      data: {
+        userId: ownerId,
+        name: 'Scoped live strategy',
+        interval: '1m',
+        leverage: 5,
+        walletRisk: 1,
+        config: { additional: {} },
+      },
+    });
+    const paperStrategy = await prisma.strategy.create({
+      data: {
+        userId: ownerId,
+        name: 'Scoped paper strategy',
+        interval: '5m',
+        leverage: 3,
+        walletRisk: 1,
+        config: { additional: {} },
+      },
+    });
+    const liveWallet = await prisma.wallet.create({
+      data: {
+        userId: ownerId,
+        name: 'Scoped live wallet',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const paperWallet = await prisma.wallet.create({
+      data: {
+        userId: ownerId,
+        name: 'Scoped paper wallet',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const scopeUniverse = await prisma.marketUniverse.create({
+      data: {
+        userId: ownerId,
+        name: 'Scoped order universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: ['BTCUSDT'],
+        blacklist: [],
+      },
+    });
+    const scopeSymbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: ownerId,
+        marketUniverseId: scopeUniverse.id,
+        name: 'Scoped order symbols',
+        symbols: ['BTCUSDT'],
+      },
+    });
+    const liveBot = await prisma.bot.create({
+      data: {
+        userId: ownerId,
+        name: 'Scoped live bot',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'mvp-v1',
+        walletId: liveWallet.id,
+      },
+    });
+    const paperBot = await prisma.bot.create({
+      data: {
+        userId: ownerId,
+        name: 'Scoped paper bot',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        walletId: paperWallet.id,
+      },
+    });
+    const liveBotGroup = await prisma.botMarketGroup.create({
+      data: {
+        userId: ownerId,
+        botId: liveBot.id,
+        symbolGroupId: scopeSymbolGroup.id,
+        lifecycleStatus: 'ACTIVE',
+        executionOrder: 1,
+        isEnabled: true,
+      },
+    });
+    const paperBotGroup = await prisma.botMarketGroup.create({
+      data: {
+        userId: ownerId,
+        botId: paperBot.id,
+        symbolGroupId: scopeSymbolGroup.id,
+        lifecycleStatus: 'ACTIVE',
+        executionOrder: 1,
+        isEnabled: true,
+      },
+    });
+    await prisma.marketGroupStrategyLink.createMany({
+      data: [
+        {
+          userId: ownerId,
+          botId: liveBot.id,
+          botMarketGroupId: liveBotGroup.id,
+          strategyId: liveStrategy.id,
+          priority: 1,
+          weight: 1,
+          isEnabled: true,
+        },
+        {
+          userId: ownerId,
+          botId: paperBot.id,
+          botMarketGroupId: paperBotGroup.id,
+          strategyId: paperStrategy.id,
+          priority: 1,
+          weight: 1,
+          isEnabled: true,
+        },
+      ],
+    });
+
+    const openRes = await ownerAgent.post('/dashboard/orders/open').send({
+      botId: liveBot.id,
+      walletId: paperWallet.id,
+      strategyId: paperStrategy.id,
+      symbol: 'BTCUSDT',
+      side: 'BUY',
+      type: 'LIMIT',
+      quantity: 0.25,
+      price: 61000,
+      mode: 'PAPER',
+      riskAck: true,
+    });
+    expect(openRes.status).toBe(201);
+    expect(openRes.body.status).toBe('OPEN');
+
+    const persistedOrder = await prisma.order.findUniqueOrThrow({
+      where: { id: openRes.body.id as string },
+      select: {
+        botId: true,
+        walletId: true,
+        strategyId: true,
+      },
+    });
+    expect(persistedOrder.botId).toBe(liveBot.id);
+    expect(persistedOrder.walletId).toBe(liveWallet.id);
+    expect(persistedOrder.strategyId).toBe(liveStrategy.id);
+    expect(persistedOrder.walletId).not.toBe(paperWallet.id);
+    expect(persistedOrder.strategyId).not.toBe(paperStrategy.id);
+
+    const liveSession = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerId,
+        botId: liveBot.id,
+        mode: 'LIVE',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-20T12:00:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-20T12:00:10.000Z'),
+      },
+    });
+    const paperSession = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerId,
+        botId: paperBot.id,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-20T12:01:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-20T12:01:10.000Z'),
+      },
+    });
+
+    const liveScopeRes = await ownerAgent.get(
+      `/dashboard/bots/${liveBot.id}/runtime-sessions/${liveSession.id}/positions`
+    );
+    expect(liveScopeRes.status).toBe(200);
+    expect(
+      liveScopeRes.body.openOrders.some((item: { id: string }) => item.id === openRes.body.id)
+    ).toBe(true);
+
+    const paperScopeRes = await ownerAgent.get(
+      `/dashboard/bots/${paperBot.id}/runtime-sessions/${paperSession.id}/positions`
+    );
+    expect(paperScopeRes.status).toBe(200);
+    expect(
+      paperScopeRes.body.openOrders.some((item: { id: string }) => item.id === openRes.body.id)
+    ).toBe(false);
   });
 
   it('supports open/cancel/close write endpoints with LIVE risk guards', async () => {

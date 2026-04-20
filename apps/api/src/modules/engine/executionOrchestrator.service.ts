@@ -36,6 +36,7 @@ export type RuntimeSignalInput = {
 
 type OrchestrationResult =
   | { status: 'opened'; orderId: string; positionId: string }
+  | { status: 'submitted'; orderId: string }
   | { status: 'closed'; orderId: string; positionId: string }
   | {
       status: 'ignored';
@@ -53,6 +54,7 @@ export interface OrderFlowGateway {
     botId?: string;
     walletId?: string;
     strategyId?: string;
+    positionId?: string;
     symbol: string;
     side: 'BUY' | 'SELL';
     type: 'MARKET';
@@ -137,7 +139,7 @@ export interface RuntimeExecutionEventGateway {
     direction: RuntimeSignalDirection;
     mode: RuntimeExecutionMode;
     runtimeSessionId?: string;
-    status: 'ignored' | 'opened' | 'closed';
+    status: 'ignored' | 'submitted' | 'opened' | 'closed';
     reason?: string;
     orderId?: string;
     positionId?: string;
@@ -528,6 +530,7 @@ export const orchestrateRuntimeSignal = async (
       botId: input.botId,
       walletId: openPosition.walletId ?? input.walletId,
       strategyId: input.strategyId,
+      positionId: openPosition.id,
       symbol: input.symbol,
       side: decision.orderSide,
       type: 'MARKET',
@@ -712,6 +715,12 @@ export const orchestrateRuntimeSignal = async (
           positionId: openDedupe.positionId,
         };
       }
+      if (openDedupe.orderId) {
+        return {
+          status: 'submitted',
+          orderId: openDedupe.orderId,
+        };
+      }
       return { status: 'ignored', reason: 'dedupe_reused' };
     }
   }
@@ -729,32 +738,44 @@ export const orchestrateRuntimeSignal = async (
     riskAck: true,
   });
 
-  const strategyLeverage = Math.max(1, input.strategyLeverage ?? 1);
-
-  const position = await positionGateway.createPosition({
-    userId: input.userId,
-    botId: input.botId,
-    walletId: input.walletId,
-    strategyId: input.strategyId,
-    symbol: input.symbol,
-    side: decision.positionSide as PositionSide,
-    status: 'OPEN',
-    entryPrice: input.markPrice,
-    quantity: input.quantity,
-    leverage: Math.max(1, strategyLeverage),
-  });
-
-  await orderGateway.linkOrderToPosition(openOrder.id, position.id);
   const openEventAt = new Date();
+  const hasOpenedPosition = Boolean(openOrder.positionId);
+  if (!hasOpenedPosition) {
+    await runtimeEventGateway.writeEvent({
+      userId: input.userId,
+      botId: input.botId,
+      strategyId: input.strategyId,
+      symbol: input.symbol,
+      direction: input.direction,
+      mode: input.mode,
+      runtimeSessionId: input.runtimeSessionId,
+      status: 'submitted',
+      orderId: openOrder.id,
+      reason: 'waiting_fill',
+      lastPrice: input.markPrice,
+      eventAt: openEventAt,
+    });
+    if (openDedupeKey) {
+      await dedupeGateway.markSucceeded({
+        dedupeKey: openDedupeKey,
+        orderId: openOrder.id,
+      });
+    }
+    return {
+      status: 'submitted',
+      orderId: openOrder.id,
+    };
+  }
+
   const estimatedOpenFee = computeTradeFee(input.markPrice, input.quantity, feeRate);
   const openFee = input.mode === 'LIVE' ? (openOrder.fee ?? estimatedOpenFee) : estimatedOpenFee;
   await runtimeTradeGateway.createTrade({
     userId: input.userId,
     botId: input.botId,
-    walletId: input.walletId,
-    strategyId: input.strategyId,
+    walletId: openOrder.walletId ?? input.walletId,
+    strategyId: openOrder.strategyId ?? input.strategyId,
     orderId: openOrder.id,
-    positionId: position.id,
+    positionId: openOrder.positionId!,
     symbol: input.symbol,
     side: decision.orderSide,
     price: input.markPrice,
@@ -792,8 +813,8 @@ export const orchestrateRuntimeSignal = async (
     runtimeSessionId: input.runtimeSessionId,
     status: 'opened',
     orderId: openOrder.id,
-    positionId: position.id,
-    positionQty: input.quantity,
+    positionId: openOrder.positionId!,
+    positionQty: openOrder.filledQuantity > 0 ? openOrder.filledQuantity : input.quantity,
     lastPrice: input.markPrice,
     eventAt: openEventAt,
   });
@@ -801,7 +822,7 @@ export const orchestrateRuntimeSignal = async (
     await dedupeGateway.markSucceeded({
       dedupeKey: openDedupeKey,
       orderId: openOrder.id,
-      positionId: position.id,
+      positionId: openOrder.positionId!,
     });
   }
   invalidatePreTradeOpenPositionCountCache({
@@ -812,7 +833,7 @@ export const orchestrateRuntimeSignal = async (
   return {
     status: 'opened',
     orderId: openOrder.id,
-    positionId: position.id,
+    positionId: openOrder.positionId!,
   };
   } catch (error) {
     if (openDedupeKey) {

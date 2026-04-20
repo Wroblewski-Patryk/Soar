@@ -1,4 +1,4 @@
-import { Exchange, Prisma } from '@prisma/client';
+import { Exchange, OrderStatus, PositionSide, Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import {
   CancelOrderDto,
@@ -12,9 +12,14 @@ import { CcxtFuturesConnector } from '../exchange/ccxtFuturesConnector.service';
 import { createLiveOrderAdapter } from '../exchange/liveOrderAdapter.service';
 import { CcxtFuturesOrderFill } from '../exchange/ccxtFuturesConnector.types';
 import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from '../bots/runtimeSymbolCatalogResolver.service';
+import { mapBotResponse } from '../bots/botResponseMapper.service';
 import { liveOrderingConfig } from '../../config/runtimeExecution';
 import { isAppErrorLike } from '../../lib/errors';
 import { orderErrors } from './orders.errors';
+
+type OpenOrderInput = OpenOrderDto & {
+  positionId?: string | null;
+};
 
 export const listOrders = async (userId: string, query: ListOrdersQuery) => {
   const skip = (query.page - 1) * query.limit;
@@ -320,6 +325,20 @@ type LiveBotContext = {
   apiKeyId: string | null;
 };
 
+type CanonicalOrderBotContext = {
+  id: string;
+  mode: 'PAPER' | 'LIVE';
+  exchange: Exchange;
+  marketType: 'FUTURES' | 'SPOT';
+  positionMode: 'ONE_WAY' | 'HEDGE';
+  apiKeyId: string | null;
+  walletId: string | null;
+  strategyId: string | null;
+  liveOptIn: boolean;
+  isActive: boolean;
+  consentTextVersion: string | null;
+};
+
 type LiveExecutionResult = {
   exchangeOrderId: string | null;
   status: 'OPEN' | 'FILLED';
@@ -336,7 +355,7 @@ type OpenOrderDeps = {
   executeLiveOrder: (params: {
     userId: string;
     bot: LiveBotContext;
-    payload: OpenOrderDto;
+    payload: OpenOrderInput;
   }) => Promise<LiveExecutionResult>;
 };
 
@@ -410,16 +429,12 @@ const normalizeAmountByPrecision = (value: number, precision: number | null) => 
 const approxGreaterThan = (left: number, right: number, eps = 1e-12) => left - right > eps;
 const approxLessThan = (left: number, right: number, eps = 1e-12) => right - left > eps;
 
-const ensureLiveOrderAllowed = async (
-  userId: string,
-  payload: OpenOrderDto
-): Promise<LiveBotContext | null> => {
-  if (payload.mode !== 'LIVE') return null;
-  if (!payload.riskAck) {
-    throw orderErrors.liveRiskAckRequired();
-  }
+const resolveCanonicalBotContext = async (userId: string, payload: OpenOrderInput) => {
   if (!payload.botId) {
-    throw orderErrors.liveBotRequired();
+    return {
+      payload,
+      botContext: null as CanonicalOrderBotContext | null,
+    };
   }
 
   const bot = await prisma.bot.findFirst({
@@ -431,23 +446,88 @@ const ensureLiveOrderAllowed = async (
       marketType: true,
       positionMode: true,
       apiKeyId: true,
+      walletId: true,
       liveOptIn: true,
       isActive: true,
       consentTextVersion: true,
+      botStrategies: {
+        select: {
+          strategyId: true,
+          isEnabled: true,
+          createdAt: true,
+        },
+      },
+      marketGroupStrategyLinks: {
+        select: {
+          strategyId: true,
+          isEnabled: true,
+          priority: true,
+          createdAt: true,
+          botMarketGroup: {
+            select: {
+              isEnabled: true,
+              lifecycleStatus: true,
+              executionOrder: true,
+              createdAt: true,
+            },
+          },
+        },
+      },
     },
   });
+  if (!bot) {
+    throw orderErrors.botContextNotFound();
+  }
 
-  if (!bot) throw orderErrors.liveBotNotFound();
-  if (bot.mode !== 'LIVE') throw orderErrors.liveBotModeRequired();
-  if (!bot.liveOptIn || !bot.consentTextVersion) throw orderErrors.liveBotOptInRequired();
-  if (!bot.isActive) throw orderErrors.liveBotActiveRequired();
-
-  return {
+  const botWithCanonicalStrategy = mapBotResponse(bot);
+  const resolvedStrategyId = botWithCanonicalStrategy.strategyId ?? null;
+  const botContext: CanonicalOrderBotContext = {
     id: bot.id,
+    mode: bot.mode,
     exchange: bot.exchange,
     marketType: bot.marketType,
     positionMode: bot.positionMode,
     apiKeyId: bot.apiKeyId,
+    walletId: bot.walletId,
+    strategyId: resolvedStrategyId,
+    liveOptIn: bot.liveOptIn,
+    isActive: bot.isActive,
+    consentTextVersion: bot.consentTextVersion,
+  };
+
+  return {
+    payload: {
+      ...payload,
+      botId: botContext.id,
+      mode: botContext.mode,
+      walletId: botContext.walletId ?? undefined,
+      strategyId: botContext.strategyId ?? undefined,
+    } as OpenOrderInput,
+    botContext,
+  };
+};
+
+const ensureLiveOrderAllowed = (
+  payload: OpenOrderInput,
+  botContext: CanonicalOrderBotContext | null
+): LiveBotContext | null => {
+  if (payload.mode !== 'LIVE') return null;
+  if (!payload.riskAck) {
+    throw orderErrors.liveRiskAckRequired();
+  }
+  if (!payload.botId || !botContext) {
+    throw orderErrors.liveBotRequired();
+  }
+  if (botContext.mode !== 'LIVE') throw orderErrors.liveBotModeRequired();
+  if (!botContext.liveOptIn || !botContext.consentTextVersion) throw orderErrors.liveBotOptInRequired();
+  if (!botContext.isActive) throw orderErrors.liveBotActiveRequired();
+
+  return {
+    id: botContext.id,
+    exchange: botContext.exchange,
+    marketType: botContext.marketType,
+    positionMode: botContext.positionMode,
+    apiKeyId: botContext.apiKeyId,
   };
 };
 
@@ -550,7 +630,7 @@ const hasOpenExposureCached = async (params: {
 const resolveLiveTargetLeverage = async (params: {
   userId: string;
   marketType: 'FUTURES' | 'SPOT';
-  payload: OpenOrderDto;
+  payload: OpenOrderInput;
 }): Promise<number | null> => {
   if (params.marketType !== 'FUTURES') return null;
   if (!params.payload.strategyId) return null;
@@ -729,7 +809,7 @@ const enforceLivePretradeGuards = async (params: {
   apiKeyId: string;
   exchange: Exchange;
   marketType: 'FUTURES' | 'SPOT';
-  payload: OpenOrderDto;
+  payload: OpenOrderInput;
 }) => {
   const normalizedSymbol = params.payload.symbol.toUpperCase();
   const quantity = Number(params.payload.quantity);
@@ -877,32 +957,163 @@ const writeOrderAudit = async (params: {
   }
 };
 
+type ApplyOrderFillLifecycleInput = {
+  userId: string;
+  orderId: string;
+  fillPrice: number | null;
+  fillQuantity: number | null;
+  filledAt?: Date;
+  leverage?: number | null;
+};
+
+const resolveOrderPositionLeverage = async (params: {
+  userId: string;
+  strategyId: string | null;
+  fallbackLeverage?: number | null;
+}) => {
+  if (typeof params.fallbackLeverage === 'number' && Number.isFinite(params.fallbackLeverage)) {
+    return Math.max(1, Math.floor(params.fallbackLeverage));
+  }
+  if (!params.strategyId) return 1;
+
+  const strategy = await prisma.strategy.findFirst({
+    where: {
+      id: params.strategyId,
+      userId: params.userId,
+    },
+    select: {
+      leverage: true,
+    },
+  });
+  if (!strategy || !Number.isFinite(strategy.leverage)) return 1;
+  return Math.max(1, Math.floor(strategy.leverage));
+};
+
+const resolvePositionSideFromOrderSide = (side: 'BUY' | 'SELL'): PositionSide =>
+  side === 'BUY' ? 'LONG' : 'SHORT';
+
+export const applyOrderFillLifecycle = async (params: ApplyOrderFillLifecycleInput) => {
+  return prisma.$transaction(async (tx) => {
+    const existingOrder = await tx.order.findFirst({
+      where: {
+        id: params.orderId,
+        userId: params.userId,
+      },
+    });
+    if (!existingOrder) return null;
+
+    const targetQuantityRaw =
+      typeof params.fillQuantity === 'number' && Number.isFinite(params.fillQuantity)
+        ? params.fillQuantity
+        : existingOrder.quantity;
+    const targetQuantity = Math.max(
+      0,
+      Math.min(existingOrder.quantity, Math.max(existingOrder.filledQuantity, targetQuantityRaw))
+    );
+    const fillStatus: OrderStatus = targetQuantity >= existingOrder.quantity ? 'FILLED' : 'PARTIALLY_FILLED';
+    const filledAt = params.filledAt ?? new Date();
+    const fillPrice =
+      typeof params.fillPrice === 'number' && Number.isFinite(params.fillPrice) && params.fillPrice > 0
+        ? params.fillPrice
+        : existingOrder.averageFillPrice ?? existingOrder.price ?? null;
+
+    const updatedOrder = await tx.order.update({
+      where: { id: existingOrder.id },
+      data: {
+        status: fillStatus,
+        filledQuantity: targetQuantity,
+        filledAt,
+        averageFillPrice: fillPrice,
+        feePending: false,
+      },
+    });
+
+    if (fillStatus !== 'FILLED') {
+      return {
+        order: updatedOrder,
+        positionId: updatedOrder.positionId ?? null,
+      };
+    }
+
+    if (updatedOrder.positionId) {
+      return {
+        order: updatedOrder,
+        positionId: updatedOrder.positionId,
+      };
+    }
+
+    const leverage = await resolveOrderPositionLeverage({
+      userId: params.userId,
+      strategyId: updatedOrder.strategyId,
+      fallbackLeverage: params.leverage,
+    });
+
+    const createdPosition = await tx.position.create({
+      data: {
+        userId: updatedOrder.userId,
+        botId: updatedOrder.botId,
+        walletId: updatedOrder.walletId,
+        strategyId: updatedOrder.strategyId,
+        symbol: updatedOrder.symbol,
+        side: resolvePositionSideFromOrderSide(updatedOrder.side),
+        status: 'OPEN',
+        entryPrice:
+          typeof fillPrice === 'number' && Number.isFinite(fillPrice) && fillPrice > 0
+            ? fillPrice
+            : 0,
+        quantity: Math.max(0, targetQuantity),
+        leverage,
+        origin: updatedOrder.origin,
+        managementMode: updatedOrder.managementMode,
+        syncState: 'IN_SYNC',
+        openedAt: filledAt,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    const orderWithPosition = await tx.order.update({
+      where: { id: updatedOrder.id },
+      data: {
+        positionId: createdPosition.id,
+      },
+    });
+
+    return {
+      order: orderWithPosition,
+      positionId: createdPosition.id,
+    };
+  });
+};
+
 export const openOrder = async (
   userId: string,
-  payload: OpenOrderDto,
+  payload: OpenOrderInput,
   deps: OpenOrderDeps = defaultOpenOrderDeps
 ) => {
-  const liveBot = await ensureLiveOrderAllowed(userId, payload);
+  const { payload: canonicalPayload, botContext } = await resolveCanonicalBotContext(userId, payload);
+  const liveBot = ensureLiveOrderAllowed(canonicalPayload, botContext);
 
   const now = new Date();
   let exchangeOrderId: string | null = null;
   let exchangeTradeId: string | null = null;
-  let status: 'OPEN' | 'FILLED' = payload.type === 'MARKET' ? 'FILLED' : 'OPEN';
+  let status: 'OPEN' | 'FILLED' = canonicalPayload.type === 'MARKET' ? 'FILLED' : 'OPEN';
   let fee: number | null = null;
   let feeSource: 'ESTIMATED' | 'EXCHANGE_FILL' = 'ESTIMATED';
-  let feePending = payload.mode === 'LIVE';
+  let feePending = canonicalPayload.mode === 'LIVE';
   let feeCurrency: string | null = null;
   let effectiveFeeRate: number | null = null;
   let fills: CcxtFuturesOrderFill[] = [];
 
-  if (payload.mode === 'LIVE' && process.env.NODE_ENV !== 'test') {
+  if (canonicalPayload.mode === 'LIVE' && process.env.NODE_ENV !== 'test') {
     if (!liveBot) {
       throw orderErrors.liveBotNotFound();
     }
     const liveResult = await deps.executeLiveOrder({
       userId,
       bot: liveBot,
-      payload,
+      payload: canonicalPayload,
     });
     exchangeOrderId = liveResult.exchangeOrderId;
     status = liveResult.status;
@@ -919,17 +1130,18 @@ export const openOrder = async (
   const order = await prisma.order.create({
     data: {
       userId,
-      botId: payload.botId,
-      walletId: payload.walletId,
-      strategyId: payload.strategyId,
+      botId: canonicalPayload.botId,
+      walletId: canonicalPayload.walletId,
+      strategyId: canonicalPayload.strategyId,
+      positionId: canonicalPayload.positionId ?? null,
       origin: 'USER',
-      symbol: payload.symbol.toUpperCase(),
-      side: payload.side,
-      type: payload.type,
+      symbol: canonicalPayload.symbol.toUpperCase(),
+      side: canonicalPayload.side,
+      type: canonicalPayload.type,
       status,
-      quantity: payload.quantity,
-      filledQuantity: status === 'FILLED' ? payload.quantity : 0,
-      price: payload.price,
+      quantity: canonicalPayload.quantity,
+      filledQuantity: status === 'FILLED' ? canonicalPayload.quantity : 0,
+      price: canonicalPayload.price,
       fee,
       feeSource,
       feePending,
@@ -942,17 +1154,39 @@ export const openOrder = async (
     },
   });
 
-  if (payload.mode === 'LIVE' && fills.length > 0) {
+  const filledQuantityFromExchange =
+    fills.length > 0
+      ? fills.reduce((sum, fill) => {
+          const quantity = Number(fill.quantity);
+          return Number.isFinite(quantity) ? sum + Math.max(0, quantity) : sum;
+        }, 0)
+      : null;
+  const fillPriceFromExchange =
+    fills.find((fill) => Number.isFinite(fill.price) && fill.price > 0)?.price ?? canonicalPayload.price ?? null;
+
+  const lifecycleResult =
+    order.status === 'FILLED'
+      ? await applyOrderFillLifecycle({
+          userId,
+          orderId: order.id,
+          fillPrice: fillPriceFromExchange,
+          fillQuantity: filledQuantityFromExchange ?? canonicalPayload.quantity,
+          filledAt: now,
+        })
+      : null;
+  const orderAfterLifecycle = lifecycleResult?.order ?? order;
+
+  if (canonicalPayload.mode === 'LIVE' && fills.length > 0) {
     await prisma.orderFill.createMany({
       data: fills.map((fill) => ({
         userId,
-        botId: payload.botId ?? null,
-        strategyId: payload.strategyId ?? null,
+        botId: canonicalPayload.botId ?? null,
+        strategyId: canonicalPayload.strategyId ?? null,
         orderId: order.id,
         tradeId: null,
-        positionId: null,
+        positionId: orderAfterLifecycle.positionId ?? null,
         symbol: fill.symbol,
-        side: payload.side,
+        side: canonicalPayload.side,
         exchangeTradeId:
           fill.exchangeTradeId ?? `${exchangeOrderId ?? order.id}-${fill.executedAt?.toISOString() ?? 'na'}`,
         price: fill.price,
@@ -973,18 +1207,20 @@ export const openOrder = async (
     action: 'order.opened',
     level: 'INFO',
     metadata: {
-      semanticPath: 'order_only',
-      positionLifecycleAuthority: 'runtime_or_fill_sync',
-      opensPositionDirectly: false,
-      mode: payload.mode,
-      riskAck: payload.riskAck,
-      type: payload.type,
-      status: order.status,
-      exchangeOrderId: order.exchangeOrderId,
+      semanticPath: 'unified_order_fill_position',
+      lifecycleContract: 'order->fill->position',
+      mode: canonicalPayload.mode,
+      modeSource: canonicalPayload.botId ? 'bot_context' : 'request',
+      riskAck: canonicalPayload.riskAck,
+      type: canonicalPayload.type,
+      status: orderAfterLifecycle.status,
+      exchangeOrderId: orderAfterLifecycle.exchangeOrderId,
+      positionId: orderAfterLifecycle.positionId,
+      waitingForFill: orderAfterLifecycle.status !== 'FILLED' || !orderAfterLifecycle.positionId,
     },
   });
 
-  return order;
+  return orderAfterLifecycle;
 };
 
 export const cancelOrder = async (userId: string, id: string, payload: CancelOrderDto) => {

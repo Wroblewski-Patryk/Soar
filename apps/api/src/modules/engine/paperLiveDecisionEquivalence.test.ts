@@ -21,7 +21,10 @@ type MemoryPosition = {
   status: 'OPEN' | 'CLOSED';
 };
 
-const createInMemoryGateways = (mode: RuntimeExecutionMode) => {
+const createInMemoryGateways = (
+  mode: RuntimeExecutionMode,
+  liveOrderStatus: 'OPEN' | 'FILLED' = mode === 'LIVE' ? 'OPEN' : 'FILLED'
+) => {
   const positions: MemoryPosition[] = [];
   let orderCounter = 0;
   let positionCounter = 0;
@@ -29,6 +32,22 @@ const createInMemoryGateways = (mode: RuntimeExecutionMode) => {
   const orderGateway: OrderFlowGateway = {
     openOrder: async (_userId, input) => {
       orderCounter += 1;
+      const orderStatus = mode === 'LIVE' ? liveOrderStatus : 'FILLED';
+      const shouldCreateSyntheticPosition = orderStatus === 'FILLED' && !input.positionId;
+      let createdPositionId: string | null = input.positionId ?? null;
+      if (shouldCreateSyntheticPosition) {
+        positionCounter += 1;
+        createdPositionId = `position-${mode}-${positionCounter}`;
+        positions.push({
+          id: createdPositionId,
+          userId: 'u1',
+          symbol: input.symbol,
+          side: input.side === 'BUY' ? 'LONG' : 'SHORT',
+          quantity: input.quantity,
+          managementMode: 'BOT_MANAGED',
+          status: 'OPEN',
+        });
+      }
       return {
         id: `order-${mode}-${orderCounter}`,
         userId: 'u1',
@@ -38,17 +57,17 @@ const createInMemoryGateways = (mode: RuntimeExecutionMode) => {
         symbol: input.symbol,
         side: input.side,
         type: input.type,
-        status: mode === 'LIVE' ? 'OPEN' : 'FILLED',
+        status: orderStatus,
         quantity: input.quantity,
-        filledQuantity: mode === 'LIVE' ? 0 : input.quantity,
+        filledQuantity: orderStatus === 'FILLED' ? input.quantity : 0,
         createdAt: new Date(),
         updatedAt: new Date(),
         submittedAt: new Date(),
-        filledAt: mode === 'LIVE' ? null : new Date(),
+        filledAt: orderStatus === 'FILLED' ? new Date() : null,
         botId: input.botId ?? null,
         walletId: input.walletId ?? null,
         strategyId: input.strategyId ?? null,
-        positionId: null,
+        positionId: createdPositionId,
         price: null,
         stopPrice: null,
         averageFillPrice: null,
@@ -162,9 +181,10 @@ const createInMemoryGateways = (mode: RuntimeExecutionMode) => {
 
 const runScenario = async (
   mode: RuntimeExecutionMode,
-  steps: RuntimeSignalDirection[] = ['LONG', 'SHORT', 'EXIT']
+  steps: RuntimeSignalDirection[] = ['LONG', 'SHORT', 'EXIT'],
+  liveOrderStatus: 'OPEN' | 'FILLED' = 'OPEN'
 ) => {
-  const gateways = createInMemoryGateways(mode);
+  const gateways = createInMemoryGateways(mode, liveOrderStatus);
   const outcomes: Array<{ status: string; reason?: string }> = [];
 
   for (const direction of steps) {
@@ -237,15 +257,19 @@ const runBacktestDecisionScenario = (steps: RuntimeSignalDirection[]) => {
 };
 
 describe('paper/live decision equivalence', () => {
-  it('keeps identical decision outcomes for same signal sequence', async () => {
+  it('keeps LIVE open decisions in waiting-fill state until fill is confirmed', async () => {
     const paperOutcomes = await runScenario('PAPER');
-    const liveOutcomes = await runScenario('LIVE');
+    const liveOutcomes = await runScenario('LIVE', ['LONG', 'SHORT', 'EXIT'], 'OPEN');
 
-    expect(paperOutcomes).toEqual(liveOutcomes);
     expect(paperOutcomes).toEqual([
       { status: 'opened' },
       { status: 'ignored', reason: 'no_flip_with_open_position' },
       { status: 'closed' },
+    ]);
+    expect(liveOutcomes).toEqual([
+      { status: 'submitted' },
+      { status: 'submitted' },
+      { status: 'ignored', reason: 'no_open_position' },
     ]);
   });
 

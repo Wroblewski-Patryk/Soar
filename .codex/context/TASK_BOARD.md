@@ -17,8 +17,7 @@ Last updated: 2026-04-20
 
 ## READY
 
-- [ ] UOLF-02 test(api-red): add selected-bot scoping regressions for manual-order writes and reads
-  - Add failing API regressions proving strict selected-bot scope for manual-order write/read paths, including `PAPER` vs `LIVE` bot separation with different wallet/strategy contexts.
+- [ ] (none)
 
 ## BACKLOG
 
@@ -38,6 +37,8 @@ Last updated: 2026-04-20
 
 ## DONE
 
+- [x] UOLF group closure (`UOLF-02..UOLF-15`)
+  - 2026-04-20: Closed unified order lifecycle wave end-to-end by locking selected-bot manual-order scope regressions, enforcing canonical bot context on order open, introducing shared order-fill-position lifecycle handling (`order -> fill -> position`) for manual/runtime paths, adding runtime `submitted/waiting_fill` semantics, aligning dashboard copy/statuses, and completing closure validation pack (`api UOLF test matrix`, `HomeLiveWidgets + preview parity`, `api/web typecheck`, `build`, `quality:guardrails`, `test:go-live:smoke`).
 - [x] WAPR planning queued (wallets list api-key status + paper reset safety)
   - 2026-04-20: Added `docs/planning/wallets-list-paper-reset-safety-plan-2026-04-20.md` and queued `WAPR-01..WAPR-10` for wallet-list simplification (`remove Details`, add inline `API key` status column) plus dedicated non-destructive `PAPER` wallet reset with reset-aware capital baseline, fail-closed guards, focused API/web regressions, and closure validation.
 - [x] UOLF-01 docs(contract): supersede manual-order order-only contract with unified order-fill-position lifecycle

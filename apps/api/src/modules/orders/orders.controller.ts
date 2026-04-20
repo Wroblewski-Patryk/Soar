@@ -14,6 +14,9 @@ import { ORDER_ERROR_CODES } from './orders.errors';
 const handleOrderError = (res: Response, error: unknown) => {
   const mapped = mapErrorToHttpResponse(error);
 
+  if (mapped.code === ORDER_ERROR_CODES.botContextNotFound) {
+    return sendError(res, 404, 'Bot context not found', mapped.details);
+  }
   if (mapped.code === ORDER_ERROR_CODES.liveRiskAckRequired) {
     return sendError(res, 400, 'riskAck is required for LIVE order open', mapped.details);
   }

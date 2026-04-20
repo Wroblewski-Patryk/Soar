@@ -14,6 +14,7 @@ const cleanupDb = async () => {
   await prisma.botRuntimeSymbolStat.deleteMany();
   await prisma.botRuntimeEvent.deleteMany();
   await prisma.botRuntimeSession.deleteMany();
+  await prisma.runtimeExecutionDedupe.deleteMany();
   await prisma.botStrategy.deleteMany();
   await prisma.botSubagentConfig.deleteMany();
   await prisma.botAssistantConfig.deleteMany();
@@ -23,6 +24,7 @@ const cleanupDb = async () => {
   await prisma.symbolGroup.deleteMany();
   await prisma.marketUniverse.deleteMany();
   await prisma.strategy.deleteMany();
+  await prisma.wallet.deleteMany();
   await prisma.apiKey.deleteMany();
   await prisma.user.deleteMany();
 };
@@ -57,6 +59,12 @@ describe('openOrder live execution contract', () => {
       expect(executeLiveOrder).not.toHaveBeenCalled();
       expect(order.status).toBe('FILLED');
       expect(order.exchangeOrderId).toBeNull();
+      expect(order.positionId).toBeTruthy();
+      const openedPosition = await prisma.position.findUnique({
+        where: { id: order.positionId ?? '' },
+      });
+      expect(openedPosition).not.toBeNull();
+      expect(openedPosition?.origin).toBe('USER');
       const auditLog = await prisma.log.findFirst({
         where: {
           userId: user.id,
@@ -69,12 +77,158 @@ describe('openOrder live execution contract', () => {
       expect(auditLog).not.toBeNull();
       const metadata = (auditLog?.metadata ?? {}) as {
         semanticPath?: string;
-        positionLifecycleAuthority?: string;
-        opensPositionDirectly?: boolean;
+        lifecycleContract?: string;
+        modeSource?: string;
+        waitingForFill?: boolean;
       };
-      expect(metadata.semanticPath).toBe('order_only');
-      expect(metadata.positionLifecycleAuthority).toBe('runtime_or_fill_sync');
-      expect(metadata.opensPositionDirectly).toBe(false);
+      expect(metadata.semanticPath).toBe('unified_order_fill_position');
+      expect(metadata.lifecycleContract).toBe('order->fill->position');
+      expect(metadata.modeSource).toBe('request');
+      expect(metadata.waitingForFill).toBe(false);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it('derives mode, wallet and strategy from canonical bot context when botId is provided', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-canonical-context@example.com', password: 'hashed' },
+    });
+    const strategyCanonical = await prisma.strategy.create({
+      data: {
+        userId: user.id,
+        name: 'Canonical strategy',
+        interval: '1m',
+        leverage: 5,
+        walletRisk: 1,
+        config: { additional: {} },
+      },
+    });
+    const strategySpoofed = await prisma.strategy.create({
+      data: {
+        userId: user.id,
+        name: 'Spoofed strategy',
+        interval: '5m',
+        leverage: 3,
+        walletRisk: 1,
+        config: { additional: {} },
+      },
+    });
+    const liveWallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'Live wallet',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const spoofedWallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'Spoofed wallet',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const universe = await prisma.marketUniverse.create({
+      data: {
+        userId: user.id,
+        name: 'Canonical market universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: ['BTCUSDT'],
+        blacklist: [],
+      },
+    });
+    const group = await prisma.symbolGroup.create({
+      data: {
+        userId: user.id,
+        marketUniverseId: universe.id,
+        name: 'Canonical symbol group',
+        symbols: ['BTCUSDT'],
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'Canonical live bot',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'mvp-v1',
+        walletId: liveWallet.id,
+      },
+    });
+    const botGroup = await prisma.botMarketGroup.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        symbolGroupId: group.id,
+        lifecycleStatus: 'ACTIVE',
+        executionOrder: 1,
+        isEnabled: true,
+      },
+    });
+    await prisma.marketGroupStrategyLink.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        botMarketGroupId: botGroup.id,
+        strategyId: strategyCanonical.id,
+        priority: 1,
+        weight: 1,
+        isEnabled: true,
+      },
+    });
+
+    const executeLiveOrder = vi.fn().mockResolvedValue({
+      exchangeOrderId: 'binance-order-canonical-1',
+      status: 'OPEN' as const,
+    });
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+
+    try {
+      const order = await openOrder(
+        user.id,
+        {
+          botId: bot.id,
+          walletId: spoofedWallet.id,
+          strategyId: strategySpoofed.id,
+          symbol: 'BTCUSDT',
+          side: 'BUY',
+          type: 'LIMIT',
+          quantity: 0.2,
+          price: 60000,
+          mode: 'PAPER',
+          riskAck: true,
+        },
+        { executeLiveOrder }
+      );
+
+      expect(executeLiveOrder).toHaveBeenCalledWith(
+        expect.objectContaining({
+          payload: expect.objectContaining({
+            mode: 'LIVE',
+            walletId: liveWallet.id,
+            strategyId: strategyCanonical.id,
+          }),
+        })
+      );
+      expect(order.walletId).toBe(liveWallet.id);
+      expect(order.strategyId).toBe(strategyCanonical.id);
+      expect(order.walletId).not.toBe(spoofedWallet.id);
+      expect(order.strategyId).not.toBe(strategySpoofed.id);
+      expect(order.status).toBe('OPEN');
+      expect(order.positionId).toBeNull();
     } finally {
       process.env.NODE_ENV = previousNodeEnv;
     }
