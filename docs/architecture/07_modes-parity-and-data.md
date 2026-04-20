@@ -77,9 +77,9 @@ When the same symbol, interval, strategy, and context are replayed:
 - differences must be explainable by approved adapter differences, not by hidden logic drift
 
 ## Supporting References
-- `database.md`
-- `strategy-evaluation-parity-contract.md`
-- `position-lifecycle-parity-matrix.md`
+- `archive/database.md`
+- `reference/strategy-evaluation-parity-contract.md`
+- `reference/position-lifecycle-parity-matrix.md`
 
 ## Related Files
 - [03 Domain Model](./03_domain-model.md)

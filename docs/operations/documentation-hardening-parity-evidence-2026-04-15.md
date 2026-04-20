@@ -19,7 +19,7 @@ Scope:
 ## Interpretation
 - Canonical documentation maps are aligned with active source inventory:
   - `docs/modules/module-doc-status-index.md`
-  - `docs/architecture/dashboard-route-map.md`
+- `docs/architecture/reference/dashboard-route-map.md`
 - No missing or stale module/route entries were detected by parity automation.
 
 ## Wave Closure

@@ -74,9 +74,9 @@ LONG accepted
 - exchange-specific connector details
 
 ## Supporting References
-- `runtime-execution-idempotency-contract.md`
-- `live-fee-reconciliation-contract.md`
-- `position-lifecycle-parity-matrix.md`
+- `reference/runtime-execution-idempotency-contract.md`
+- `reference/live-fee-reconciliation-contract.md`
+- `reference/position-lifecycle-parity-matrix.md`
 
 ## Related Files
 - [05 Strategy, Signal, and Decision Flow](./05_strategy-signal-and-decision-flow.md)

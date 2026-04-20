@@ -144,6 +144,13 @@ Last updated: 2026-04-21
   - activate the next READY item from `docs/planning/mvp-next-commits.md`.
 
 ## Recent Progress
+- 2026-04-21: completed second-pass architecture cleanup by reducing
+  `docs/architecture/` top-level to only the numbered canonical core plus
+  `reference/` and `archive/`, moving active supporting contracts to
+  `docs/architecture/reference/`, moving superseded/compatibility files to
+  `docs/architecture/archive/`, updating repo-wide links and agent canonical
+  doc entrypoints to the new structure, and deleting the local untracked
+  `.tmp/` audit artifact folder.
 - 2026-04-21: rebuilt the architecture documentation set into a numbered
   canonical reading order under `docs/architecture/`
   (`01_overview-and-principles` through
@@ -669,9 +676,10 @@ Last updated: 2026-04-21
 - `docs/README.md`
 - `docs/product/overview.md`
 - `docs/product/product.md`
-- `docs/architecture/system-architecture.md`
-- `docs/architecture/runtime-signal-merge-contract.md`
-- `docs/architecture/assistant-runtime-contract.md`
+- `docs/architecture/README.md`
+- `docs/architecture/01_overview-and-principles.md`
+- `docs/architecture/reference/runtime-signal-merge-contract.md`
+- `docs/architecture/reference/assistant-runtime-contract.md`
 - `docs/modules/system-modules.md`
 - `docs/engineering/local-development.md`
 - `docs/engineering/testing.md`

@@ -65,9 +65,9 @@ Route truth belongs to:
 - detailed UI styling rules
 
 ## Supporting References
-- `dashboard-route-map.md`
-- `app-shell-template-split-contract.md`
-- `dashboard-loading-ux-contract.md`
+- `reference/dashboard-route-map.md`
+- `reference/app-shell-template-split-contract.md`
+- `reference/dashboard-loading-ux-contract.md`
 
 ## Related Files
 - [02 System Topology](./02_system-topology.md)

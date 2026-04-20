@@ -45,6 +45,7 @@ Those belong elsewhere:
 - If a rule matters for runtime safety, source-of-truth ownership, or parity, it must be explicit here.
 
 ## Supporting References
-Detailed supporting contracts remain in this folder for deeper reference, but the numbered files above are canonical summaries.
+- `reference/` contains active supporting contracts for deeper detail.
+- `archive/` contains historical, superseded, and compatibility-only files.
 
-Historical or superseded files should be treated as non-canonical unless they explicitly state otherwise.
+The numbered files above remain the canonical architecture flow.

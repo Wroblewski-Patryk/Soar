@@ -63,6 +63,6 @@ pnpm run docs:parity:check
 ## Canonical References
 - `docs/modules/documentation-coverage-audit-2026-04-12.md`
 - `docs/modules/system-modules.md`
-- `docs/architecture/dashboard-route-map.md`
+- `docs/architecture/reference/dashboard-route-map.md`
 - `docs/planning/mvp-execution-plan.md`
 - `docs/planning/mvp-next-commits.md`

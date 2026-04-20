@@ -66,7 +66,7 @@ Assistant output contains:
 - cross-user memory writes inside synchronous trading execution
 
 ## Supporting Reference
-- `assistant-runtime-contract.md`
+- `reference/assistant-runtime-contract.md`
 
 ## Related Files
 - [05 Strategy, Signal, and Decision Flow](./05_strategy-signal-and-decision-flow.md)

@@ -182,7 +182,7 @@ Primary audience: execution agent
 - Likely files:
   - `docs/modules/web-backtests.md`
   - `docs/modules/api-backtests.md`
-  - `docs/architecture/trading-logic.md`
+- `docs/architecture/05_strategy-signal-and-decision-flow.md`
 - Done when:
   - docs match runtime and UI behavior for list/create range flow.
 

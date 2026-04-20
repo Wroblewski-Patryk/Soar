@@ -55,3 +55,5 @@ Older architecture files may remain as supporting references or compatibility st
 ## Related Files
 - [Architecture README](./README.md)
 - [01 Overview and Principles](./01_overview-and-principles.md)
+- [Reference README](./reference/README.md)
+- [Archive README](./archive/README.md)

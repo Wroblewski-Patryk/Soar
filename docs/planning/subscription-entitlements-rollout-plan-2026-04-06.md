@@ -29,7 +29,7 @@ Status: deferred-post-v1 (superseded in active canonical queue; retained for fut
 - Multi-gateway orchestration in first iteration.
 
 ## Domain Contract (Target)
-- Canonical contract: `docs/architecture/subscription-tier-entitlements-contract.md`.
+- Canonical contract: `docs/architecture/reference/subscription-tier-entitlements-contract.md`.
 - `SubscriptionPlan` catalog entity:
   - slug/code, display name, active flag, sort order.
   - monthly price + currency.

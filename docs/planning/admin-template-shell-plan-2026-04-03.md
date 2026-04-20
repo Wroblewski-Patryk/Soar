@@ -2,7 +2,7 @@
 
 Goal: introduce a dedicated third app shell for `/admin` (separate from `public` and `dashboard`) without impacting current user/runtime flows.
 
-Status update (2026-04-04): `ADM-01` is closed by canonical contract `docs/architecture/app-shell-template-split-contract.md`.
+Status update (2026-04-04): `ADM-01` is closed by canonical contract `docs/architecture/reference/app-shell-template-split-contract.md`.
 
 ## Scope
 - Route group: `apps/web/src/app/admin/*`

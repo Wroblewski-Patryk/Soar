@@ -21,6 +21,6 @@ Scope:
   - `docs/modules/module-doc-status-index.md`
   - `docs/modules/system-modules.md`
 - Refreshed route inventory snapshot metadata:
-  - `docs/architecture/dashboard-route-map.md`
+- `docs/architecture/reference/dashboard-route-map.md`
 - Added sustainment cadence and ownership guardrail:
   - `docs/governance/working-agreements.md`

@@ -37,6 +37,13 @@ Last updated: 2026-04-21
 
 ## DONE
 
+- [x] DOCARC-02 architecture top-level cleanup and temp artifact removal
+  - 2026-04-21: Reduced `docs/architecture/` top-level to the numbered
+    canonical core plus `reference/` and `archive/`, moved active supporting
+    contracts into `reference/`, moved superseded and compatibility-only files
+    into `archive/`, updated repository-wide links and agent entrypoints to
+    the new paths, and removed the untracked local `.tmp/` audit artifact
+    folder.
 - [x] DOCARC-01 canonical architecture documentation restructure
   - 2026-04-21: Rebuilt `docs/architecture/` into a numbered canonical set for
     Soar behavior and runtime invariants, moved non-canonical

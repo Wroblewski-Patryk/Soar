@@ -12,7 +12,7 @@ Purpose: close V1 gate for multi-entity assistant runtime (`user -> bot -> marke
 ## Exit Criteria Checklist (Assistant Runtime)
 - [x] Canonical runtime model and merge contract documented
   - `docs/planning/open-decisions.md`
-  - `docs/architecture/runtime-signal-merge-contract.md`
+- `docs/architecture/reference/runtime-signal-merge-contract.md`
 - [x] Data model supports bot->group->strategy graph and assistant topology
   - `BotMarketGroup`, `MarketGroupStrategyLink`
   - `BotAssistantConfig`, `BotSubagentConfig`

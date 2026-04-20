@@ -186,7 +186,7 @@ Rules:
   - Remove/replace stale wording suggesting implicit all-symbol fallback.
   - Synchronize module docs with one final formula.
 - Likely files:
-  - `docs/architecture/trading-logic.md`
+- `docs/architecture/05_strategy-signal-and-decision-flow.md`
   - `docs/modules/api-markets.md`
   - `docs/modules/web-markets.md`
   - `docs/modules/api-backtests.md`

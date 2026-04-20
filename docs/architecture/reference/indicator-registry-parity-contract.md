@@ -156,6 +156,6 @@ Parity diagnostics must include:
 - No change to order execution idempotency contract.
 
 ## Related Contracts
-- `docs/architecture/strategy-evaluation-parity-contract.md`
-- `docs/architecture/position-lifecycle-parity-matrix.md`
-- `docs/architecture/runtime-execution-idempotency-contract.md`
+- `./strategy-evaluation-parity-contract.md`
+- `./position-lifecycle-parity-matrix.md`
+- `./runtime-execution-idempotency-contract.md`

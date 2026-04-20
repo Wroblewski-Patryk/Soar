@@ -31,7 +31,7 @@
 - Treat documentation parity as release-blocking for structural changes.
 - Any change in `apps/api/src/modules/*` directory inventory must include same-change update of `docs/modules/system-modules.md`.
 - Any change in `apps/web/src/features/*` directory inventory must include same-change update of `docs/modules/system-modules.md`.
-- Any change in route inventory under `apps/web/src/app/**/page.tsx` must include same-change update of `docs/architecture/dashboard-route-map.md`.
+- Any change in route inventory under `apps/web/src/app/**/page.tsx` must include same-change update of `docs/architecture/reference/dashboard-route-map.md`.
 - Any moved/renamed canonical docs file must include same-change update of `docs/README.md`.
 - Delivery queue updates must be reflected in both `docs/planning/mvp-next-commits.md` and `docs/planning/mvp-execution-plan.md` in the same task.
 

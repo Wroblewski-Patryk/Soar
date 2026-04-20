@@ -58,10 +58,10 @@ Entitlements gate:
 - live credential mismatch -> reject
 
 ## Supporting References
-- `subscription-tier-entitlements-contract.md`
-- `wallet-source-of-truth-contract.md`
-- `live-fee-reconciliation-contract.md`
-- `runtime-execution-idempotency-contract.md`
+- `reference/subscription-tier-entitlements-contract.md`
+- `reference/wallet-source-of-truth-contract.md`
+- `reference/live-fee-reconciliation-contract.md`
+- `reference/runtime-execution-idempotency-contract.md`
 
 ## Related Files
 - [04 Runtime Contexts](./04_runtime-contexts.md)

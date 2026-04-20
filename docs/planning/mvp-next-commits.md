@@ -599,7 +599,7 @@ Operational queue for one-task execution runs.
 - [x] `DOCSYNC-03 chore(planning-queue): validate NOW/NEXT refill continuity and align canonical queue`
   - 2026-04-17: Refilled canonical one-task queue to next group by promoting `L10NPT-01..L10NPT-05` into `NOW`, `L10NPT-06..L10NPT-10` into `NEXT`, and `L10NPT-11..L10NPT-12` into `PIPELINE`.
 - [x] `DOCSYNC-02 docs(module-index): refresh module+route inventory snapshots after parity run`
-  - 2026-04-17: Refreshed snapshot metadata in `docs/modules/module-doc-status-index.md`, `docs/modules/system-modules.md`, and `docs/architecture/dashboard-route-map.md` with current date plus latest parity artifact reference.
+- 2026-04-17: Refreshed snapshot metadata in `docs/modules/module-doc-status-index.md`, `docs/modules/system-modules.md`, and `docs/architecture/reference/dashboard-route-map.md` with current date plus latest parity artifact reference.
 - [x] `DOCSYNC-01 ops(docs-parity): run docs parity check and publish fresh evidence artifact`
   - 2026-04-17: Ran `pnpm run docs:parity:check -- --json --output docs/operations/_artifacts-docs-parity-2026-04-16T22-37-19-622Z.json` (`PASS`: `22/22 API`, `15/15 Web`, `37/37 routes`) and published operational summary in `docs/operations/documentation-parity-sustainment-evidence-2026-04-17.md`.
 - [x] `A11Y-A accessibility-full-pass: full dashboard accessibility closure (automated + manual + evidence)`
@@ -747,7 +747,7 @@ Operational queue for one-task execution runs.
 - [x] `DCP-11 tooling(docs-parity): add script to verify module+route inventories against canonical docs`
   - 2026-04-15: Added `scripts/checkDocsParity.mjs` + root command `pnpm run docs:parity:check` to validate API modules, web features, route inventory, source-path parity, and presence of published deep-dive files (`PASS: 22/22 API, 15/15 web, 37/37 routes`).
 - [x] `DCP-10 docs(route-contract): publish canonical route-to-feature-to-api mapping with ownership and guardrails`
-  - 2026-04-15: Reworked `docs/architecture/dashboard-route-map.md` into canonical route-to-feature-to-API contract (dashboard/admin/public inventories, ownership matrix, legacy redirect contract, and documentation/update guardrails).
+- 2026-04-15: Reworked `docs/architecture/reference/dashboard-route-map.md` into canonical route-to-feature-to-API contract (dashboard/admin/public inventories, ownership matrix, legacy redirect contract, and documentation/update guardrails).
 - [x] `DCP-09 docs(web-trading): author deep-dives for bots/backtest/strategies/markets/exchanges/orders/positions/wallets/reports/logs`
   - 2026-04-12: Published `docs/modules/web-bots.md`, `docs/modules/web-backtest.md`, `docs/modules/web-strategies.md`, `docs/modules/web-markets.md`, `docs/modules/web-exchanges.md`, `docs/modules/web-orders.md`, `docs/modules/web-positions.md`, `docs/modules/web-wallets.md`, `docs/modules/web-reports.md`, `docs/modules/web-logs.md`, and `docs/modules/web-icons.md`; updated module coverage index statuses to `Published`.
 - [x] `DCP-08 docs(web-core): author deep-dives for dashboard-home/auth/profile/admin flows`
@@ -1107,7 +1107,7 @@ Operational queue for one-task execution runs.
 - [x] `docs(i18n-backtests): record EN/PL localization coverage for backtest create/list/details flows and QA checks`
 - [x] `MBA-01 audit(domain): mapped current Bot/SymbolGroup/BotStrategy contracts and documented non-breaking migration path (`docs/planning/mba-01-domain-audit-2026-03-22.md`)
 - [x] `MBA-02 docs(decisions): locked canonical runtime hierarchy and assistant topology in `docs/planning/open-decisions.md``
-- [x] `MBA-03 docs(contract): published deterministic merge contract in `docs/architecture/runtime-signal-merge-contract.md` and linked canonical decision entry in `docs/planning/open-decisions.md``
+- [x] `MBA-03 docs(contract): published deterministic merge contract in `docs/architecture/reference/runtime-signal-merge-contract.md` and linked canonical decision entry in `docs/planning/open-decisions.md``
 - [x] `MBA-04 feat(db): added `BotMarketGroup` model (ownership, lifecycleStatus, executionOrder, indexes) in Prisma schema + SQL migration`
 - [x] `MBA-05 feat(db): added `MarketGroupStrategyLink` model (priority, weight, deterministic ordering indexes) in Prisma schema + SQL migration`
 - [x] `MBA-06 feat(db-migration): added idempotent data backfill from `BotStrategy` into `BotMarketGroup` and `MarketGroupStrategyLink` for zero-downtime rollout`
@@ -1118,7 +1118,7 @@ Operational queue for one-task execution runs.
 - [x] `MBA-11 feat(runtime): implemented deterministic multi-strategy merge per market-group (EXIT priority, weighted LONG/SHORT votes, tie/weak-consensus => no-trade) with no-flip preserved by pre-trade guardrails`
 - [x] `MBA-12 feat(risk): added per-market-group `maxOpenPositions` budget in schema/API/runtime and enforced group cap before pre-trade global/bot checks`
 - [x] `MBA-13 test(e2e): added multi-entity e2e contract for one user operating two bots with multiple market-groups and strategy links verified via runtime-graph`
-- [x] `MBA-14 docs(ai-contract): published canonical assistant runtime contract (`docs/architecture/assistant-runtime-contract.md`) with responsibilities, I/O, timeout, determinism, and fail-closed behavior`
+- [x] `MBA-14 docs(ai-contract): published canonical assistant runtime contract (`docs/architecture/reference/assistant-runtime-contract.md`) with responsibilities, I/O, timeout, determinism, and fail-closed behavior`
 - [x] `MBA-15 feat(db): added `BotAssistantConfig` model for bot-scoped main agent mandate/profile/safety configuration`
 - [x] `MBA-16 feat(db): added `BotSubagentConfig` model with unique `(botId, slotIndex)` and assistant safety profile defaults`
 - [x] `MBA-17 feat(api): added assistant config endpoints (`GET/PUT assistant-config`, `PUT/DELETE subagents/:slotIndex`) with slot range 1..4 validation and ownership isolation`

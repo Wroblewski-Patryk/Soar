@@ -138,7 +138,7 @@ pnpm --filter api exec tsx -e "import { prisma } from './src/prisma/client'; imp
 - For production changes: apply in stage first, run checkout smoke, then promote.
 
 ## References
-- Contract: `docs/architecture/subscription-tier-entitlements-contract.md`
+- Contract: `docs/architecture/reference/subscription-tier-entitlements-contract.md`
 - Rollout plan: `docs/planning/subscription-entitlements-rollout-plan-2026-04-06.md`
 - API modules:
   - `apps/api/src/modules/admin/subscriptionPlans/*`

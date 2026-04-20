@@ -59,8 +59,8 @@ Operator surfaces may degrade when stream or polling freshness is lost, but they
 - per-wave rollout sequencing
 
 ## Supporting References
-- `stream-transport-contract.md`
-- `tech-stack.md`
+- `reference/stream-transport-contract.md`
+- `archive/tech-stack.md`
 
 ## Related Files
 - [02 System Topology](./02_system-topology.md)

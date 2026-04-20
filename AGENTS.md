@@ -21,9 +21,10 @@ Read these before starting non-trivial work:
 - `docs/README.md`
 - `docs/product/overview.md`
 - `docs/product/product.md`
-- `docs/architecture/system-architecture.md`
-- `docs/architecture/runtime-signal-merge-contract.md`
-- `docs/architecture/assistant-runtime-contract.md`
+- `docs/architecture/README.md`
+- `docs/architecture/01_overview-and-principles.md`
+- `docs/architecture/reference/runtime-signal-merge-contract.md`
+- `docs/architecture/reference/assistant-runtime-contract.md`
 - `docs/modules/system-modules.md`
 - `docs/engineering/local-development.md`
 - `docs/engineering/testing.md`

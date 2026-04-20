@@ -3,7 +3,7 @@
 ## Goal
 Add stable coin/token icons across dashboard surfaces using CoinGecko as primary source, without coupling UI rendering to exchange-specific icon assets.
 
-Canonical contract: `docs/architecture/coin-icon-source-contract.md`
+Canonical contract: `docs/architecture/reference/coin-icon-source-contract.md`
 
 ## Why Now
 - current UI relies mostly on symbol text only, which slows visual scanning in lists/tables,

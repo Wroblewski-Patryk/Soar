@@ -92,9 +92,9 @@ Runtime must never guess randomly.
 - UI rendering of diagnostics
 
 ## Supporting References
-- `strategy-evaluation-parity-contract.md`
-- `indicator-registry-parity-contract.md`
-- `runtime-signal-merge-contract.md`
+- `reference/strategy-evaluation-parity-contract.md`
+- `reference/indicator-registry-parity-contract.md`
+- `reference/runtime-signal-merge-contract.md`
 
 ## Related Files
 - [06 Execution Lifecycle](./06_execution-lifecycle.md)

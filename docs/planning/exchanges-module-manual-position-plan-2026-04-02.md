@@ -27,7 +27,7 @@ Przebudowac IA i UX modulu `Exchanges`, tak aby:
   2. tabela orderow.
 
 **Pliki**
-- `docs/architecture/dashboard-route-map.md`
+- `docs/architecture/reference/dashboard-route-map.md`
 - `docs/modules/system-modules.md`
 - `docs/planning/open-decisions.md` (jezeli potrzebna adnotacja decyzyjna)
 
@@ -158,4 +158,3 @@ Przebudowac IA i UX modulu `Exchanges`, tak aby:
   - **Mitigacja:** wydzielic wspolny `features/exchanges/*` i stopniowo migrowac.
 - **Ryzyko:** niejasnosc LIVE manual open vs bot context.
   - **Mitigacja (domyslna):** na start LIVE open z wymaganym `riskAck`; jesli backend wymaga `botId`, formularz jawnie go wymusza.
-

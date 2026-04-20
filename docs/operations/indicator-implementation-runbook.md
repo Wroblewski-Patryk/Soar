@@ -7,8 +7,8 @@ Purpose: safe, repeatable process for adding the next indicator/pattern end-to-e
 
 Before coding, confirm all three contracts:
 
-- Registry contract: `docs/architecture/indicator-registry-parity-contract.md`
-- Strategy parity contract: `docs/architecture/strategy-evaluation-parity-contract.md`
+- Registry contract: `docs/architecture/reference/indicator-registry-parity-contract.md`
+- Strategy parity contract: `docs/architecture/reference/strategy-evaluation-parity-contract.md`
 - Active execution queue: `docs/planning/mvp-next-commits.md`
 
 Also classify the new item:

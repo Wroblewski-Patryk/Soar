@@ -261,7 +261,7 @@ CryptoSparrow must keep behavioral intent, not copy implementation defects.
 ## 5. Documentation Binding
 
 The following docs are normative with this analysis:
-- [Position Lifecycle Parity Matrix](./position-lifecycle-parity-matrix.md)
-- [Trading Logic](./trading-logic.md)
+- [Position Lifecycle Parity Matrix](../reference/position-lifecycle-parity-matrix.md)
+- [Trading Logic Stub](./trading-logic.md)
 
 Any lifecycle change must update all three documents in the same PR.

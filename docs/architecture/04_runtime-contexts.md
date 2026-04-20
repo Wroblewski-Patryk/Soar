@@ -84,8 +84,8 @@ Allowed visibility and actionability are derived from:
 - UI presentation details
 
 ## Supporting References
-- `venue-context-source-of-truth-contract.md`
-- `wallet-source-of-truth-contract.md`
+- `reference/venue-context-source-of-truth-contract.md`
+- `reference/wallet-source-of-truth-contract.md`
 
 ## Related Files
 - [03 Domain Model](./03_domain-model.md)

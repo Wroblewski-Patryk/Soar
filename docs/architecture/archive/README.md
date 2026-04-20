@@ -4,6 +4,8 @@ This folder contains historical architecture-adjacent material:
 - closure snapshots,
 - remediation deltas,
 - refactor-wave notes,
-- retired bridge files.
+- retired bridge files,
+- superseded contracts,
+- compatibility stubs kept only for forensic context.
 
 These files are useful as history and forensic context, but they are not the canonical description of how Soar currently works.
