@@ -65,16 +65,54 @@ describe('BacktestCreateForm', () => {
       expect(screen.getByDisplayValue('Trend Pulse')).toBeInTheDocument();
     });
 
-    fireEvent.change(screen.getByPlaceholderText('1200'), { target: { value: '10' } });
-    expect(screen.queryByText('Podaj liczbe z zakresu 100 - 10000.')).not.toBeInTheDocument();
+    fireEvent.change(screen.getByPlaceholderText('1200'), { target: { value: '200' } });
+    expect(screen.queryByText('Podaj liczbe z zakresu 250 - 10000.')).not.toBeInTheDocument();
 
     const form = container.querySelector('form');
     expect(form).not.toBeNull();
     fireEvent.submit(form as HTMLFormElement);
     expect(onSubmit).not.toHaveBeenCalled();
-    expect(screen.getAllByText('Podaj liczbe z zakresu 100 - 10000.').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Podaj liczbe z zakresu 250 - 10000.').length).toBeGreaterThan(0);
     expect(screen.getByTestId('form-validation-summary')).toBeInTheDocument();
     expect(screen.getByLabelText('Maksymalna liczba swiec na rynek (auto-limit)')).toHaveFocus();
+  });
+
+  it('renders explicit start/end range controls and md 3-column layout hooks', async () => {
+    listStrategiesMock.mockResolvedValue([
+      {
+        id: 's-range',
+        name: 'Range Strategy',
+        interval: '1h',
+        leverage: 2,
+        config: { additional: { marginMode: 'CROSSED' } },
+      },
+    ]);
+    listMarketUniversesMock.mockResolvedValue([
+      {
+        id: 'm-range',
+        name: 'Range Universe',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: ['BTCUSDT'],
+        blacklist: [],
+      },
+    ]);
+
+    window.localStorage.setItem('cryptosparrow-locale', 'pl');
+    window.history.pushState({}, '', '/dashboard/backtests/create');
+    renderWithI18n({ submitting: false, onSubmit: vi.fn() });
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Range Strategy')).toBeInTheDocument();
+    });
+
+    expect(screen.getByLabelText(/data startu zakresu/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/data konca zakresu/i)).toBeInTheDocument();
+
+    const runGrid = screen.getByTestId('backtest-create-run-grid');
+    const simulationGrid = screen.getByTestId('backtest-create-simulation-grid');
+    expect(runGrid.className).toContain('md:grid-cols-3');
+    expect(simulationGrid.className).toContain('md:grid-cols-3');
   });
 
   it('submits valid payload with strategy interval and parsed maxCandles', async () => {
@@ -117,7 +155,12 @@ describe('BacktestCreateForm', () => {
 
     const form = container.querySelector('form');
     expect(form).not.toBeNull();
+    fireEvent.change(screen.getByLabelText(/data startu zakresu/i), { target: { value: '2026-01-01T00:00' } });
+    fireEvent.change(screen.getByLabelText(/data konca zakresu/i), { target: { value: '2026-01-15T00:00' } });
     fireEvent.submit(form as HTMLFormElement);
+
+    const expectedStartAtIso = new Date('2026-01-01T00:00').toISOString();
+    const expectedEndAtIso = new Date('2026-01-15T00:00').toISOString();
 
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalledWith({
@@ -125,7 +168,9 @@ describe('BacktestCreateForm', () => {
         timeframe: '15m',
         strategyId: 's2',
         marketUniverseId: 'm2',
-        seedConfig: { maxCandles: 800, initialBalance: 10000 },
+        startAt: expectedStartAtIso,
+        endAt: expectedEndAtIso,
+        seedConfig: { maxCandles: 1344, initialBalance: 10000 },
         notes: undefined,
       });
     });

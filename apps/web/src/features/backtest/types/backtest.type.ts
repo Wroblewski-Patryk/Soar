@@ -57,6 +57,8 @@ export type CreateBacktestRunInput = {
   timeframe: string;
   strategyId?: string;
   marketUniverseId?: string;
+  startAt?: string;
+  endAt?: string;
   seedConfig?: Record<string, unknown>;
   notes?: string;
 };
