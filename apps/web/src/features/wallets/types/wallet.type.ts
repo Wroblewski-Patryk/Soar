@@ -11,6 +11,7 @@ export type Wallet = {
   marketType: 'FUTURES' | 'SPOT';
   baseCurrency: string;
   paperInitialBalance: number;
+  paperResetAt?: string | null;
   liveAllocationMode?: WalletAllocationMode | null;
   liveAllocationValue?: number | null;
   apiKeyId?: string | null;

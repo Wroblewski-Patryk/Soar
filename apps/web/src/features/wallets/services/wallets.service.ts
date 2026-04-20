@@ -37,6 +37,11 @@ export const deleteWallet = async (id: string): Promise<void> => {
   await api.delete(`/dashboard/wallets/${id}`);
 };
 
+export const resetPaperWallet = async (id: string): Promise<Wallet> => {
+  const res = await api.post<Wallet>(`/dashboard/wallets/${id}/reset-paper`);
+  return res.data;
+};
+
 export const previewWalletBalance = async (payload: WalletBalancePreviewInput): Promise<WalletBalancePreview> => {
   const res = await api.post<WalletBalancePreview>('/dashboard/wallets/preview-balance', payload);
   return res.data;

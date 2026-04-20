@@ -9,6 +9,7 @@ const getWalletMock = vi.hoisted(() => vi.fn());
 const updateWalletMock = vi.hoisted(() => vi.fn());
 const previewWalletBalanceMock = vi.hoisted(() => vi.fn());
 const fetchWalletMetadataMock = vi.hoisted(() => vi.fn());
+const resetPaperWalletMock = vi.hoisted(() => vi.fn());
 
 vi.mock('next/navigation', () => ({
   useRouter: () => ({
@@ -41,6 +42,7 @@ vi.mock('../services/wallets.service', () => ({
   updateWallet: updateWalletMock,
   previewWalletBalance: previewWalletBalanceMock,
   fetchWalletMetadata: fetchWalletMetadataMock,
+  resetPaperWallet: resetPaperWalletMock,
 }));
 
 describe('WalletCreateEditForm', () => {
@@ -52,6 +54,18 @@ describe('WalletCreateEditForm', () => {
     updateWalletMock.mockReset();
     previewWalletBalanceMock.mockReset();
     fetchWalletMetadataMock.mockReset();
+    resetPaperWalletMock.mockReset();
+    previewWalletBalanceMock.mockResolvedValue({
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      accountBalance: 100,
+      freeBalance: 98.5,
+      referenceBalance: 100,
+      allocationApplied: null,
+      fetchedAt: '2026-04-10T12:00:00.000Z',
+      source: 'BINANCE',
+    });
     fetchWalletMetadataMock.mockResolvedValue({
       exchange: 'BINANCE',
       marketTypes: ['FUTURES', 'SPOT'],
@@ -303,5 +317,155 @@ describe('WalletCreateEditForm', () => {
     const baseCurrencySelect = screen.getByLabelText('Waluta bazowa');
     const baseCurrencyOptions = Array.from(baseCurrencySelect.querySelectorAll('option')).map((option) => option.value);
     expect(baseCurrencyOptions).toEqual(expect.arrayContaining(['USD', 'USDC']));
+  });
+
+  it('shows reset action only for PAPER wallet edit and hides it for LIVE wallet edit', async () => {
+    fetchApiKeysMock.mockResolvedValue([
+      {
+        id: 'key-1',
+        label: 'Main Binance Key',
+        exchange: 'BINANCE',
+      },
+    ]);
+
+    getWalletMock.mockResolvedValueOnce({
+      id: 'wallet-paper',
+      name: 'Paper Wallet',
+      mode: 'PAPER',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      paperInitialBalance: 10_000,
+      liveAllocationMode: null,
+      liveAllocationValue: null,
+      apiKeyId: null,
+      manageExternalPositions: false,
+      paperResetAt: null,
+    });
+
+    const { rerender } = render(<WalletCreateEditForm editId='wallet-paper' />);
+
+    await waitFor(() => {
+      expect(getWalletMock).toHaveBeenCalledWith('wallet-paper');
+    });
+    expect(screen.getByRole('button', { name: 'Resetuj portfel PAPER' })).toBeInTheDocument();
+
+    getWalletMock.mockResolvedValueOnce({
+      id: 'wallet-live',
+      name: 'Live Wallet',
+      mode: 'LIVE',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      paperInitialBalance: 10_000,
+      liveAllocationMode: 'PERCENT',
+      liveAllocationValue: 25,
+      apiKeyId: 'key-1',
+      manageExternalPositions: false,
+      paperResetAt: null,
+    });
+
+    rerender(<WalletCreateEditForm editId='wallet-live' />);
+
+    await waitFor(() => {
+      expect(getWalletMock).toHaveBeenCalledWith('wallet-live');
+    });
+    expect(screen.queryByRole('button', { name: 'Resetuj portfel PAPER' })).not.toBeInTheDocument();
+  });
+
+  it('handles paper reset action states: confirm, loading and success timestamp', async () => {
+    fetchApiKeysMock.mockResolvedValue([]);
+
+    getWalletMock
+      .mockResolvedValueOnce({
+        id: 'wallet-paper',
+        name: 'Paper Wallet',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        paperInitialBalance: 10_000,
+        liveAllocationMode: null,
+        liveAllocationValue: null,
+        apiKeyId: null,
+        manageExternalPositions: false,
+        paperResetAt: null,
+      })
+      .mockResolvedValueOnce({
+        id: 'wallet-paper',
+        name: 'Paper Wallet',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        paperInitialBalance: 10_000,
+        liveAllocationMode: null,
+        liveAllocationValue: null,
+        apiKeyId: null,
+        manageExternalPositions: false,
+        paperResetAt: '2026-04-20T12:00:00.000Z',
+      });
+
+    let finishReset: (() => void) | undefined;
+    resetPaperWalletMock.mockReturnValueOnce(
+      new Promise<void>((resolve) => {
+        finishReset = () => resolve();
+      })
+    );
+
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    render(<WalletCreateEditForm editId='wallet-paper' />);
+
+    await waitFor(() => {
+      expect(getWalletMock).toHaveBeenCalledWith('wallet-paper');
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Resetuj portfel PAPER' }));
+
+    expect(confirmSpy).toHaveBeenCalled();
+    expect(resetPaperWalletMock).toHaveBeenCalledWith('wallet-paper');
+    expect(screen.getByRole('button', { name: 'Resetowanie...' })).toBeDisabled();
+
+    finishReset?.();
+
+    await waitFor(() => {
+      expect(screen.getByText(/Ostatni reset:/)).toBeInTheDocument();
+    });
+
+    confirmSpy.mockRestore();
+  });
+
+  it('shows reset error text when paper reset request fails', async () => {
+    fetchApiKeysMock.mockResolvedValue([]);
+    getWalletMock.mockResolvedValue({
+      id: 'wallet-paper',
+      name: 'Paper Wallet',
+      mode: 'PAPER',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      paperInitialBalance: 10_000,
+      liveAllocationMode: null,
+      liveAllocationValue: null,
+      apiKeyId: null,
+      manageExternalPositions: false,
+      paperResetAt: null,
+    });
+    resetPaperWalletMock.mockRejectedValue(new Error('reset failed'));
+
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    render(<WalletCreateEditForm editId='wallet-paper' />);
+
+    await waitFor(() => {
+      expect(getWalletMock).toHaveBeenCalledWith('wallet-paper');
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Resetuj portfel PAPER' }));
+
+    await waitFor(() => {
+      expect(screen.getByText('reset failed')).toBeInTheDocument();
+    });
+
+    confirmSpy.mockRestore();
   });
 });

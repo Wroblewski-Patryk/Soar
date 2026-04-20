@@ -43,7 +43,14 @@ import {
 } from '@/lib/forms';
 import { executeWithRetry, isRetriableHttpError, runAsyncWithState } from '@/lib/async';
 import { normalizeSymbol } from '@/lib/symbols';
-import { createWallet, fetchWalletMetadata, getWallet, previewWalletBalance, updateWallet } from '../services/wallets.service';
+import {
+  createWallet,
+  fetchWalletMetadata,
+  getWallet,
+  previewWalletBalance,
+  resetPaperWallet,
+  updateWallet,
+} from '../services/wallets.service';
 import type {
   CreateWalletInput,
   Wallet,
@@ -180,6 +187,9 @@ export default function WalletCreateEditForm({
   const [previewLoading, setPreviewLoading] = useState(false);
   const [previewError, setPreviewError] = useState<string | null>(null);
   const [preview, setPreview] = useState<WalletBalancePreview | null>(null);
+  const [resetting, setResetting] = useState(false);
+  const [resetError, setResetError] = useState<string | null>(null);
+  const [lastResetAt, setLastResetAt] = useState<string | null>(null);
 
   useEffect(() => {
     onSubmittingChange?.(submitting);
@@ -243,6 +253,13 @@ export default function WalletCreateEditForm({
           validationAllocationPercent: 'Percent allocation cannot exceed 100.',
           modePaperHint: 'PAPER mode shows simulation-only fields.',
           modeLiveHint: 'LIVE mode shows exchange execution fields only.',
+          resetPaperAction: 'Reset paper wallet',
+          resetPaperConfirm:
+            'Reset paper wallet capital baseline now? Historical trades and positions will be preserved.',
+          resetPaperLoading: 'Resetting...',
+          resetPaperSuccess: 'Paper wallet reset completed',
+          resetPaperFailed: 'Failed to reset paper wallet',
+          resetPaperLastAt: 'Last reset',
           hiddenSubmit: 'Submit wallet form',
           enabled: 'Enabled',
           disabled: 'Disabled',
@@ -302,6 +319,13 @@ export default function WalletCreateEditForm({
           validationAllocationPercent: 'W trybie procentowym wartosc nie moze przekraczac 100.',
           modePaperHint: 'W PAPER pokazujemy tylko pola symulacyjne.',
           modeLiveHint: 'W LIVE pokazujemy tylko pola wykonania gieldowego.',
+          resetPaperAction: 'Resetuj portfel PAPER',
+          resetPaperConfirm:
+            'Zresetowac teraz kapital portfela PAPER? Historia transakcji i pozycji zostanie zachowana.',
+          resetPaperLoading: 'Resetowanie...',
+          resetPaperSuccess: 'Reset portfela PAPER zakonczony',
+          resetPaperFailed: 'Nie udalo sie zresetowac portfela PAPER',
+          resetPaperLastAt: 'Ostatni reset',
           hiddenSubmit: 'Zapisz formularz portfela',
           enabled: 'Wlaczone',
           disabled: 'Wylaczone',
@@ -361,6 +385,13 @@ export default function WalletCreateEditForm({
           validationAllocationPercent: 'A alocacao percentual nao pode ultrapassar 100.',
           modePaperHint: 'No modo PAPER mostramos apenas campos de simulacao.',
           modeLiveHint: 'No modo LIVE mostramos apenas campos de execucao da corretora.',
+          resetPaperAction: 'Repor carteira PAPER',
+          resetPaperConfirm:
+            'Repor agora a base de capital da carteira PAPER? O historico de posicoes e trades sera preservado.',
+          resetPaperLoading: 'A repor...',
+          resetPaperSuccess: 'Reposicao da carteira PAPER concluida',
+          resetPaperFailed: 'Falha ao repor carteira PAPER',
+          resetPaperLastAt: 'Ultima reposicao',
           hiddenSubmit: 'Submeter formulario da carteira',
           enabled: 'Ativado',
           disabled: 'Desativado',
@@ -387,12 +418,15 @@ export default function WalletCreateEditForm({
             shouldRetry: isRetriableHttpError,
           });
           setForm(mapWalletToForm(wallet));
+          setLastResetAt(wallet.paperResetAt ?? null);
         } else {
           setForm(buildDefaultForm());
+          setLastResetAt(null);
         }
 
         setPreview(null);
         setPreviewError(null);
+        setResetError(null);
         setShowValidation(false);
       });
     } catch (err) {
@@ -566,6 +600,7 @@ export default function WalletCreateEditForm({
     });
     setPreview(null);
     setPreviewError(null);
+    setResetError(null);
   }, []);
 
   useEffect(() => {
@@ -688,6 +723,43 @@ export default function WalletCreateEditForm({
     return preview.referenceBalance;
   }, [form.liveAllocationMode, form.liveAllocationValue, preview]);
 
+  const handleResetPaper = useCallback(async () => {
+    if (!editId || !isEditMode || form.mode !== 'PAPER' || submitting || resetting) return;
+
+    const confirmed = typeof window === 'undefined' ? true : window.confirm(copy.resetPaperConfirm);
+    if (!confirmed) return;
+
+    setResetError(null);
+
+    try {
+      await runAsyncWithState(setResetting, async () => {
+        await executeWithRetry(() => resetPaperWallet(editId), {
+          maxAttempts: 2,
+          retryDelayMs: 250,
+          shouldRetry: isRetriableHttpError,
+        });
+        toast.success(copy.resetPaperSuccess);
+        await loadData();
+      });
+    } catch (err) {
+      const errorMessage = resolveFormErrorMessage(err, copy.resetPaperFailed);
+      setResetError(errorMessage);
+      toast.error(copy.resetPaperFailed, {
+        description: errorMessage,
+      });
+    }
+  }, [
+    copy.resetPaperConfirm,
+    copy.resetPaperFailed,
+    copy.resetPaperSuccess,
+    editId,
+    form.mode,
+    isEditMode,
+    loadData,
+    resetting,
+    submitting,
+  ]);
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (submitting) return;
@@ -801,7 +873,21 @@ export default function WalletCreateEditForm({
         </FormSectionCard>
 
         {form.mode === 'PAPER' ? (
-          <FormSectionCard title={copy.sectionPaper}>
+          <FormSectionCard
+            title={copy.sectionPaper}
+            actions={
+              isEditMode ? (
+                <button
+                  type='button'
+                  className='btn btn-xs btn-outline btn-warning'
+                  onClick={() => void handleResetPaper()}
+                  disabled={resetting || submitting}
+                >
+                  {resetting ? copy.resetPaperLoading : copy.resetPaperAction}
+                </button>
+              ) : undefined
+            }
+          >
             <FormGrid columns={2}>
               <NumberField
                 id='wallet-paper-initial-balance'
@@ -812,6 +898,12 @@ export default function WalletCreateEditForm({
                 step={0.01}
               />
             </FormGrid>
+            {lastResetAt ? (
+              <p className='mt-2 text-xs opacity-70'>
+                {copy.resetPaperLastAt}: {lastResetAt}
+              </p>
+            ) : null}
+            {resetError ? <p className='mt-2 text-xs text-error'>{resetError}</p> : null}
           </FormSectionCard>
         ) : null}
 
