@@ -22,6 +22,22 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-21 - Inventory and guardrails must precede maintainability refactors
+- Context: repository-wide code-quality audit covering hardcoded copy, oversized modules, duplicated helpers, exchange bootstrap ownership, and fallback/default drift.
+- Symptom: codebase already contains multiple local copy dictionaries, several production files near or above 1k lines, repeated shared logic, and scattered fallback behavior; broad cleanup without sequencing would risk regressions in runtime/dashboard flows.
+- Root cause: maintainability debt accumulated through local convenience patterns (`copyByLocale`, repeated async state choreography, helper duplication, file growth) faster than shared guardrails and extraction seams were added.
+- Guardrail: for maintainability waves, always execute `inventory -> contract freeze -> guardrails/tests -> helper extraction -> module decomposition -> closure`; never start with broad rewrites of a large file or module family.
+- Preferred pattern:
+```text
+1) Catalogue concrete offenders with file ownership and target seams.
+2) Add tests/guardrails that block new debt before refactoring old debt.
+3) Extract shared helpers first, then split monoliths behind stable tests.
+4) Treat hardcoded user strings and hidden fallbacks as architecture decisions, not harmless shortcuts.
+```
+- Avoid: "cleanup" commits that mix i18n migration, helper extraction, and large structural refactors in one slice.
+- Evidence:
+  - 2026-04-21 audit found 34 web files with local `copy`/`copyByLocale` dictionaries, multiple oversized production modules (`HomeLiveWidgets`, `BacktestRunDetails`, `orders.service`, `BotsManagement`, `botsCommand.service`), duplicated DCA/runtime formatting logic, and uncatalogued fallback patterns across web/API layers.
+
 ### 2026-04-21 - Backtest report contract is eventually consistent, not immediately readable
 - Context: grouped go-live API smoke with Docker-backed local Postgres after enabling backtest explicit-range flow.
 - Symptom: `test:go-live:api` can fail in the backtests pack because `/dashboard/backtests/runs/:id/report` returns `404`, while the same file passes when rerun standalone.

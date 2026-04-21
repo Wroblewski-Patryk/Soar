@@ -32,6 +32,16 @@ Last updated: 2026-04-21
 - [ ] ARCCON-10 fix(api-backtests): replace transient report-404 ambiguity with explicit pending/degraded contract or stronger readiness guarantee
 - [ ] ARCCON-11 fix(web-i18n): remove /dashboard/bots namespace leakage into dashboard-home keys
 - [ ] ARCCON-12 docs(sync): align architecture/module/ops docs, queue/context, and closure evidence after ARCCON rollout
+- [ ] CQLT-01 docs(contract): freeze maintainability remediation scope, anti-pattern taxonomy, and non-regression rules
+- [ ] CQLT-02 audit(web): inventory component-local copy dictionaries and hardcoded user-facing strings by route/module
+- [ ] CQLT-03 audit(structure): inventory oversized production modules and define extraction seams per file
+- [ ] CQLT-04 audit(api): inventory exchange-bootstrap, fallback/default hotspots, and duplicated helpers across API modules
+- [ ] CQLT-05 docs(decision): freeze extraction order and ownership rules for i18n, shared helpers, adapters, and monolith splits
+- [ ] CQLT-06 test(guardrails-red): block new component-local copy dictionaries in production web modules
+- [ ] CQLT-07 test(guardrails-red): block new raw user-facing hardcoded strings outside canonical i18n/shared exception list
+- [ ] CQLT-08 test(guardrails-red): add oversized-production-file budget audit with allowlist for staged decomposition
+- [ ] CQLT-09 test(guardrails-red): add duplicate shared-helper inventory snapshot for dashboard/bots runtime formatting seams
+- [ ] CQLT-10 docs(guardrails): publish exception policy for approved hardcoded values, legacy bridges, and file-budget allowlist
 
 ## IN_PROGRESS
 
@@ -47,6 +57,8 @@ Last updated: 2026-04-21
 
 ## DONE
 
+- [x] CQLT planning queued (code-quality and maintainability remediation)
+  - 2026-04-21: Added `docs/planning/code-quality-maintainability-remediation-plan-2026-04-21.md` and synchronized canonical queue/context so a future executor can reduce hardcoded copy, oversized modules, duplicated helpers, spread exchange bootstrap ownership, fallback drift, and async controller boilerplate in tiny, regression-safe slices.
 - [x] ARCCON planning queued (architecture conformance remediation)
   - 2026-04-21: Added `docs/planning/architecture-conformance-remediation-plan-2026-04-21.md` and synchronized canonical queue/context so the next safe execution wave can close architecture drift only where code still violates canonical source-of-truth ownership, split-worker runtime-service contracts, async backtest report lifecycle clarity, or route-level i18n ownership.
 - [x] DOCARC-02 architecture top-level cleanup and temp artifact removal

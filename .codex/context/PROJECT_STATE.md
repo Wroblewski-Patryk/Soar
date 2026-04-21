@@ -141,12 +141,22 @@ Last updated: 2026-04-21
 - Success criteria for this phase:
   - keep queue/context/docs synchronized after each closed wave,
   - keep deploy/build gates green on `main` for the next activation slice,
-  - reduce architecture drift without weakening current trading/runtime safety.
+  - reduce architecture drift without weakening current trading/runtime safety,
+  - queue maintainability cleanup only through inventory-first,
+    regression-locked slices.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
   - activate `ARCCON-01` from `docs/planning/mvp-next-commits.md`.
 
 ## Recent Progress
+- 2026-04-21: completed a repository-wide maintainability audit focused on
+  hardcoded copy, oversized production modules, duplicated helpers, fallback
+  drift, spread exchange bootstrap ownership, and recurring async boilerplate;
+  queued `CQLT` (`CQLT-01..CQLT-34`) in
+  `docs/planning/code-quality-maintainability-remediation-plan-2026-04-21.md`
+  so future cleanup starts with inventory + guardrails and only then moves
+  into i18n extraction, shared-helper consolidation, monolith decomposition,
+  and fallback/legacy hardening.
 - 2026-04-21: completed a full architecture-vs-code audit across docs, Prisma
   model, API, workers, and web operator surfaces; queued `ARCCON`
   (`ARCCON-01..ARCCON-12`) in
