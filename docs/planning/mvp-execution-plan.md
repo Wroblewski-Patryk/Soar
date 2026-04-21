@@ -2350,19 +2350,20 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-20: Closed `WAPR-02..WAPR-08` end-to-end by removing wallet-list `Details` expansion, adding deterministic inline `API key` column mapping (`Connected/Not connected`), shipping dedicated fail-closed `POST /dashboard/wallets/:id/reset-paper`, introducing wallet-level reset checkpoint (`paperResetAt`), making runtime paper-capital baseline reset-aware, and exposing paper-only reset action in wallet edit form with deterministic loading/error/success UX states.
 - 2026-04-20: Completed `WAPR-09..WAPR-10` by synchronizing wallet module and canonical queue/context docs and passing focused closure pack (`api wallets.e2e`, `web wallets tests`, `api/web typecheck`, `quality:guardrails`).
 
-## Phase ARCCON - Architecture Conformance and Service Ownership Closure (Queued 2026-04-21)
-- [ ] `ARCCON-01 test(api-red): lock fail-closed manual-order strategy context when selected bot has no symbol-matching strategy`
-- [ ] `ARCCON-02 fix(api-orders): remove hidden first-strategy fallback from manual-order context resolution and keep unresolved state explicit`
-- [ ] `ARCCON-03 test(api-red): lock canonical wallet+market-universe context precedence over duplicated bot venue fields`
-- [ ] `ARCCON-04 refactor(api-bots): validate bot symbol-group binding against canonical wallet and market-universe context, keeping duplicated bot fields compatibility-only`
-- [ ] `ARCCON-05 docs(decision): freeze legacy BotStrategy and duplicated bot venue-field deprecation/migration contract`
-- [ ] `ARCCON-06 test(api+ops-red): expose current backtest and market-data worker ownership drift versus split-worker contract`
-- [ ] `ARCCON-07 refactor(runtime-services): align backtest ownership with explicit worker or explicit inline contract without changing user-facing semantics`
-- [ ] `ARCCON-08 refactor(runtime-services): align market-data worker ownership and local/prod worker startup contracts`
-- [ ] `ARCCON-09 test(api-red): stabilize async backtest report availability contract for owned runs`
-- [ ] `ARCCON-10 fix(api-backtests): replace transient report-404 ambiguity with explicit pending/degraded contract or stronger readiness guarantee`
-- [ ] `ARCCON-11 fix(web-i18n): remove /dashboard/bots namespace leakage into dashboard-home keys`
-- [ ] `ARCCON-12 docs(sync): align architecture/module/ops docs, queue/context, and closure evidence after ARCCON rollout`
+## Phase ARCCON - Architecture Conformance and Service Ownership Closure (Closed 2026-04-21)
+- [x] `ARCCON-01 test(api-red): lock fail-closed manual-order strategy context when selected bot has no symbol-matching strategy`
+- [x] `ARCCON-02 fix(api-orders): remove hidden first-strategy fallback from manual-order context resolution and keep unresolved state explicit`
+- [x] `ARCCON-03 test(api-red): lock canonical wallet+market-universe context precedence over duplicated bot venue fields`
+- [x] `ARCCON-04 refactor(api-bots): validate bot symbol-group binding against canonical wallet and market-universe context, keeping duplicated bot fields compatibility-only`
+- [x] `ARCCON-05 docs(decision): freeze legacy BotStrategy and duplicated bot venue-field deprecation/migration contract`
+- [x] `ARCCON-06 test(api+ops-red): expose current backtest and market-data worker ownership drift versus split-worker contract`
+- [x] `ARCCON-07 refactor(runtime-services): align backtest ownership with explicit worker or explicit inline contract without changing user-facing semantics`
+- [x] `ARCCON-08 refactor(runtime-services): align market-data worker ownership and local/prod worker startup contracts`
+- [x] `ARCCON-09 test(api-red): stabilize async backtest report availability contract for owned runs`
+- [x] `ARCCON-10 fix(api-backtests): replace transient report-404 ambiguity with explicit pending/degraded contract or stronger readiness guarantee`
+- [x] `ARCCON-11 fix(web-i18n): remove /dashboard/bots namespace leakage into dashboard-home keys`
+- [x] `ARCCON-12 docs(sync): align architecture/module/ops docs, queue/context, and closure evidence after ARCCON rollout`
 
 ### Progress Log (Phase ARCCON - Architecture Conformance and Service Ownership Closure)
 - 2026-04-21: Queued `ARCCON` from architecture-vs-code audit and published executor-ready plan in `docs/planning/architecture-conformance-remediation-plan-2026-04-21.md`. Scope is intentionally limited to real architecture drift only: hidden manual-order context fallback, duplicated bot source-of-truth ownership, legacy `BotStrategy` containment, split-worker ownership drift for backtest/market-data, async backtest report contract hardening, and route-level i18n ownership cleanup.
+- 2026-04-21: Closed `ARCCON-01..ARCCON-12` end-to-end with fail-closed manual-order context behavior, canonical wallet/market-universe precedence for bot ownership validation, explicit worker ownership contract for backtest/market-data (`inline|worker`) reflected in `/workers/health|ready`, explicit backtest report `runLifecycle` pending/degraded contract, and `/dashboard/bots` namespace ownership cleanup (`dashboard.bots.confirms.*` in EN/PL/PT). Validation PASS: `pnpm --filter api run test -- --run src/modules/orders/orders.service.test.ts src/modules/orders/orders-positions.e2e.test.ts src/modules/bots/botOwnership.service.test.ts src/router/workers-health-readiness.test.ts src/modules/backtests/backtests.e2e.test.ts`, `pnpm --filter web run test -- --run src/features/bots/components/BotCreateEditForm.test.tsx src/features/bots/components/BotsManagement.test.tsx`, `pnpm --filter api run typecheck`, `pnpm --filter web run typecheck`, `pnpm --filter api run build`, `pnpm --filter web run build`, `pnpm run quality:guardrails`.

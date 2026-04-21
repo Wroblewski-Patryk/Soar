@@ -5,8 +5,8 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/orders`
 - Owner: backend/trading-domain
-- Last updated: 2026-04-20
-- Related planning task: `UOLF-01`
+- Last updated: 2026-04-21
+- Related planning task: `ARCCON-12`
 
 ## Canonical Architecture Linkage
 Canonical order and lifecycle rules live in:
@@ -162,3 +162,15 @@ pnpm --filter api test -- src/modules/orders/orders.service.test.ts src/modules/
     - `PARTIALLY_FILLED`.
 - Scope lock:
   - no new orders-history table in this wave.
+
+## 14. Manual-Order Strategy Context Fail-Closed Contract (`ARCCON`)
+- Symbol-scoped strategy context for manual-order read path must remain
+  fail-closed:
+  - when selected bot has no strategy matching requested symbol, strategy
+    context stays unresolved.
+  - hidden fallback to first canonical/legacy strategy is forbidden.
+- Fallback policy:
+  - explicit unresolved strategy context can still provide safe defaults for
+    operator inputs (`MARKET`, `CROSSED`, `1x`).
+  - compatibility reads from legacy links are allowed only for exact
+    symbol-match resolution, never as non-symbol fallback.

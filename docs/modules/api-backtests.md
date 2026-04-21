@@ -5,8 +5,8 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/backtests`
 - Owner: backend/trading-domain
-- Last updated: 2026-04-20
-- Related planning task: `BTCF-11`
+- Last updated: 2026-04-21
+- Related planning task: `ARCCON-12`
 
 ## Canonical Architecture Linkage
 Canonical replay and parity rules live in:
@@ -121,3 +121,17 @@ pnpm --filter api test -- src/modules/backtests/backtests.e2e.test.ts src/module
 - Backtest symbol resolution must stay parity-compatible with:
   - bots runtime symbol scope,
   - manual-order strategy-context symbol matching.
+
+## 11. Report Lifecycle Contract (`ARCCON`)
+- Owned-run report read (`GET /dashboard/backtests/runs/:id/report`) must not
+  use transient `404` for "run exists but report not ready yet".
+- API contract:
+  - run missing / ownership mismatch -> `404`.
+  - run exists -> `200` with `metrics.runLifecycle` describing lifecycle state.
+- Lifecycle payload requirements:
+  - `state` mirrors run lifecycle (`PENDING`, `RUNNING`, `COMPLETED`,
+    `FAILED`, `CANCELED`),
+  - `reportReady` is explicit boolean,
+  - `degraded=true` only when run is terminal and report assembly is missing or
+    failed,
+  - `reason` present for degraded/pending fallback paths.

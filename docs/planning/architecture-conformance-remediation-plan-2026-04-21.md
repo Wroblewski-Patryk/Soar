@@ -174,3 +174,31 @@
 - this wave is quality- and architecture-driven, not feature-driven
 - acceptance means stronger source-of-truth ownership and safer runtime
   contracts, not visible UI expansion
+
+## Execution Closure (2026-04-21)
+- Status: Closed (`ARCCON-01..ARCCON-12`)
+- Delivered:
+  - `ARCCON-01..02`: manual-order strategy context is fail-closed when no
+    symbol-matching strategy exists (removed first-strategy fallback).
+  - `ARCCON-03..04`: bot ownership validation now uses wallet +
+    market-universe context as canonical authority; duplicated bot venue
+    fields are compatibility-only.
+  - `ARCCON-05`: legacy topology freeze documented in module docs with
+    explicit compatibility-only expectations.
+  - `ARCCON-06..08`: explicit worker ownership contract (`inline|worker`)
+    added and reflected in worker bootstraps plus `/workers/health|ready`.
+  - `ARCCON-09..10`: backtest report API now returns explicit lifecycle
+    contract (`runLifecycle`) instead of transient owned-run report `404`
+    ambiguity.
+  - `ARCCON-11`: `/dashboard/bots` copy no longer leaks through
+    `dashboard.home.*`; route-owned confirms keys used in `en/pl/pt`.
+  - `ARCCON-12`: canonical queue/context/module docs synchronized with closure
+    evidence.
+- Validation evidence:
+  - `pnpm --filter api run test -- --run src/modules/orders/orders.service.test.ts src/modules/orders/orders-positions.e2e.test.ts src/modules/bots/botOwnership.service.test.ts src/router/workers-health-readiness.test.ts src/modules/backtests/backtests.e2e.test.ts`
+  - `pnpm --filter web run test -- --run src/features/bots/components/BotCreateEditForm.test.tsx src/features/bots/components/BotsManagement.test.tsx`
+  - `pnpm --filter api run typecheck`
+  - `pnpm --filter web run typecheck`
+  - `pnpm --filter api run build`
+  - `pnpm --filter web run build`
+  - `pnpm run quality:guardrails`

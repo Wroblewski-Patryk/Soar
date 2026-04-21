@@ -5,8 +5,8 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/bots`
 - Owner: backend/trading-domain
-- Last updated: 2026-04-20
-- Related planning task: `UOLF-01`
+- Last updated: 2026-04-21
+- Related planning task: `ARCCON-12`
 
 ## Canonical Architecture Linkage
 Canonical runtime topology and ownership rules live in:
@@ -193,3 +193,18 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
   - ambiguous ownership remains non-actionable and fail-closed.
 - Safety linkage:
   - this contract keeps `SBSC` and `DAWR` selected-bot context parity requirements unchanged while replacing old `order-only` semantics with unified lifecycle target contract.
+
+## 17. Canonical Wallet + Market-Universe Ownership Contract (`ARCCON`)
+- Canonical context precedence:
+  - wallet (`exchange`, `marketType`, `baseCurrency`) and selected
+    market-universe context are authoritative for bot symbol-group binding.
+  - duplicated bot venue fields remain compatibility-only and cannot override
+    wallet/market-universe authority.
+- Drift behavior:
+  - mismatched wallet vs market-universe context is fail-closed and returns
+    explicit wallet-market-context mismatch contract errors.
+- Legacy topology containment:
+  - `BotStrategy`/duplicated fields may stay readable for historical
+    compatibility.
+  - new validation and runtime ownership decisions must not silently prefer
+    legacy topology over canonical links.

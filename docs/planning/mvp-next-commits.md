@@ -7,26 +7,14 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `ARCCON-01 test(api-red): lock fail-closed manual-order strategy context when selected bot has no symbol-matching strategy`
-- [ ] `ARCCON-02 fix(api-orders): remove hidden first-strategy fallback from manual-order context resolution and keep unresolved state explicit`
-- [ ] `ARCCON-03 test(api-red): lock canonical wallet+market-universe context precedence over duplicated bot venue fields`
-## NEXT
-- [ ] `ARCCON-04 refactor(api-bots): validate bot symbol-group binding against canonical wallet and market-universe context, keeping duplicated bot fields compatibility-only`
-- [ ] `ARCCON-05 docs(decision): freeze legacy BotStrategy and duplicated bot venue-field deprecation/migration contract`
-- [ ] `ARCCON-06 test(api+ops-red): expose current backtest and market-data worker ownership drift versus split-worker contract`
-## PIPELINE
-- [ ] `ARCCON-07 refactor(runtime-services): align backtest ownership with explicit worker or explicit inline contract without changing user-facing semantics`
-- [ ] `ARCCON-08 refactor(runtime-services): align market-data worker ownership and local/prod worker startup contracts`
-- [ ] `ARCCON-09 test(api-red): stabilize async backtest report availability contract for owned runs`
-- [ ] `ARCCON-10 fix(api-backtests): replace transient report-404 ambiguity with explicit pending/degraded contract or stronger readiness guarantee`
-- [ ] `ARCCON-11 fix(web-i18n): remove /dashboard/bots namespace leakage into dashboard-home keys`
-- [ ] `ARCCON-12 docs(sync): align architecture/module/ops docs, queue/context, and closure evidence after ARCCON rollout`
 - [ ] `CQLT-01 docs(contract): freeze maintainability remediation scope, anti-pattern taxonomy, and non-regression rules`
 - [ ] `CQLT-02 audit(web): inventory component-local copy dictionaries and hardcoded user-facing strings by route/module`
 - [ ] `CQLT-03 audit(structure): inventory oversized production modules and define extraction seams per file`
+## NEXT
 - [ ] `CQLT-04 audit(api): inventory exchange-bootstrap, fallback/default hotspots, and duplicated helpers across API modules`
 - [ ] `CQLT-05 docs(decision): freeze extraction order and ownership rules for i18n, shared helpers, adapters, and monolith splits`
 - [ ] `CQLT-06 test(guardrails-red): block new component-local copy dictionaries in production web modules`
+## PIPELINE
 - [ ] `CQLT-07 test(guardrails-red): block new raw user-facing hardcoded strings outside canonical i18n/shared exception list`
 - [ ] `CQLT-08 test(guardrails-red): add oversized-production-file budget audit with allowlist for staged decomposition`
 - [ ] `CQLT-09 test(guardrails-red): add duplicate shared-helper inventory snapshot for dashboard/bots runtime formatting seams`
@@ -65,6 +53,7 @@ Operational queue for one-task execution runs.
 - [x] `CQLT-F (commits CQLT-25..CQLT-29): API monolith and exchange-adapter ownership decomposition`
 - [x] `CQLT-G (commits CQLT-30..CQLT-34): fallback/legacy catalog, closure validation, and coding-rule sync`
 - [x] `ARCCON planning queued (architecture conformance remediation across domain ownership, runtime services, async contracts, and route-level operator surfaces)`
+- [x] `ARCCON group closure (commits ARCCON-01..ARCCON-12): fail-closed context ownership + worker-ownership contract + backtest lifecycle hardening + bot-route i18n ownership sync`
 - [x] `UOLF planning queued (unified order lifecycle + exchange-sync parity for manual and bot opens)`
 - [x] `UOLF-A (commits UOLF-01..UOLF-04): contract freeze + failing lifecycle/scope regressions`
 - [x] `UOLF-B (commits UOLF-05..UOLF-09): backend unified lifecycle authority + paper/live parity`

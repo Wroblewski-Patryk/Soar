@@ -17,24 +17,12 @@ Last updated: 2026-04-21
 
 ## READY
 
-- [ ] ARCCON-01 test(api-red): lock fail-closed manual-order strategy context when selected bot has no symbol-matching strategy
-- [ ] ARCCON-02 fix(api-orders): remove hidden first-strategy fallback from manual-order context resolution and keep unresolved state explicit
-- [ ] ARCCON-03 test(api-red): lock canonical wallet+market-universe context precedence over duplicated bot venue fields
-
-## BACKLOG
-
-- [ ] ARCCON-04 refactor(api-bots): validate bot symbol-group binding against canonical wallet and market-universe context, keeping duplicated bot fields compatibility-only
-- [ ] ARCCON-05 docs(decision): freeze legacy BotStrategy and duplicated bot venue-field deprecation/migration contract
-- [ ] ARCCON-06 test(api+ops-red): expose current backtest and market-data worker ownership drift versus split-worker contract
-- [ ] ARCCON-07 refactor(runtime-services): align backtest ownership with explicit worker or explicit inline contract without changing user-facing semantics
-- [ ] ARCCON-08 refactor(runtime-services): align market-data worker ownership and local/prod worker startup contracts
-- [ ] ARCCON-09 test(api-red): stabilize async backtest report availability contract for owned runs
-- [ ] ARCCON-10 fix(api-backtests): replace transient report-404 ambiguity with explicit pending/degraded contract or stronger readiness guarantee
-- [ ] ARCCON-11 fix(web-i18n): remove /dashboard/bots namespace leakage into dashboard-home keys
-- [ ] ARCCON-12 docs(sync): align architecture/module/ops docs, queue/context, and closure evidence after ARCCON rollout
 - [ ] CQLT-01 docs(contract): freeze maintainability remediation scope, anti-pattern taxonomy, and non-regression rules
 - [ ] CQLT-02 audit(web): inventory component-local copy dictionaries and hardcoded user-facing strings by route/module
 - [ ] CQLT-03 audit(structure): inventory oversized production modules and define extraction seams per file
+
+## BACKLOG
+
 - [ ] CQLT-04 audit(api): inventory exchange-bootstrap, fallback/default hotspots, and duplicated helpers across API modules
 - [ ] CQLT-05 docs(decision): freeze extraction order and ownership rules for i18n, shared helpers, adapters, and monolith splits
 - [ ] CQLT-06 test(guardrails-red): block new component-local copy dictionaries in production web modules
@@ -57,6 +45,8 @@ Last updated: 2026-04-21
 
 ## DONE
 
+- [x] ARCCON group closure (`ARCCON-01..ARCCON-12`)
+  - 2026-04-21: Closed architecture-conformance wave end-to-end by removing hidden manual-order strategy fallback, locking wallet+market-universe canonical precedence in bot ownership checks, formalizing worker ownership contract (`inline|worker`) in bootstrap and `/workers/health|ready`, hardening backtest report lifecycle to explicit `runLifecycle` pending/degraded semantics, and removing `/dashboard/bots` i18n leakage into `dashboard.home.*`. Closure validation PASS: `api focused tests (52/52)`, `web focused bots tests (15/15)`, `api/web typecheck`, `api/web build`, `quality:guardrails`.
 - [x] CQLT planning queued (code-quality and maintainability remediation)
   - 2026-04-21: Added `docs/planning/code-quality-maintainability-remediation-plan-2026-04-21.md` and synchronized canonical queue/context so a future executor can reduce hardcoded copy, oversized modules, duplicated helpers, spread exchange bootstrap ownership, fallback drift, and async controller boilerplate in tiny, regression-safe slices.
 - [x] ARCCON planning queued (architecture conformance remediation)

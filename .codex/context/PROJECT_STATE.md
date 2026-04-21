@@ -133,8 +133,8 @@ Last updated: 2026-04-21
 
 ## Current Focus
 - Main active objective: preserve release stability and execute the queued
-  architecture-conformance follow-up from canonical planning docs after the
-  2026-04-21 architecture-vs-code audit.
+  maintainability hardening follow-up (`CQLT`) from canonical planning docs
+  after closing `ARCCON`.
 - Top blockers:
   - no active blockers recorded; current work is planner-queued and scoped to
     fail-closed architecture drift only.
@@ -146,9 +146,18 @@ Last updated: 2026-04-21
     regression-locked slices.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - activate `ARCCON-01` from `docs/planning/mvp-next-commits.md`.
+  - activate `CQLT-01` from `docs/planning/mvp-next-commits.md`.
 
 ## Recent Progress
+- 2026-04-21: closed `ARCCON` (`ARCCON-01..ARCCON-12`) end-to-end by removing
+  hidden manual-order strategy fallback, enforcing wallet + market-universe
+  precedence over duplicated bot venue fields, formalizing explicit worker
+  ownership mode (`inline|worker`) for backtest/market-data in worker bootstrap
+  and `/workers/health|ready`, hardening backtest report contract to explicit
+  `runLifecycle` pending/degraded semantics, and removing `/dashboard/bots`
+  namespace leakage into `dashboard.home.*`; closure validations PASS
+  (`api focused tests`, `web focused bots tests`, `api/web typecheck`,
+  `api/web build`, `quality:guardrails`).
 - 2026-04-21: completed a repository-wide maintainability audit focused on
   hardcoded copy, oversized production modules, duplicated helpers, fallback
   drift, spread exchange bootstrap ownership, and recurring async boilerplate;

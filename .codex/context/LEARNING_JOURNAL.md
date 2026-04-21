@@ -22,6 +22,21 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-21 - Backtest report placeholder changes e2e assumptions
+- Context: ARCCON backtest lifecycle hardening introduced placeholder report records at run creation and explicit `runLifecycle` status.
+- Symptom: backtests e2e scenarios failed with unique constraint collisions (`backtestRunId`) and brittle lifecycle assertions expecting only `PENDING`.
+- Root cause: tests still assumed no report row exists until job completion and treated immediate post-create lifecycle state as single-value `PENDING`.
+- Guardrail: for backtest-run e2e under placeholder contract, use `upsert` when seeding report rows and assert pre-ready lifecycle as `PENDING | RUNNING` with `reportReady=false`.
+- Preferred pattern:
+```text
+1) Seed report with upsert(where: { backtestRunId }) in tests.
+2) Treat post-create report contract as eventual in-progress state.
+3) Reserve strict terminal assertions for `reportReady=true` paths.
+```
+- Avoid: direct `create` of report rows tied to runs that already initialize placeholder report state.
+- Evidence:
+  - 2026-04-21 ARCCON closure run: focused `backtests.e2e` failed before test adaptation, then passed (`14/14`) after adopting upsert + in-progress lifecycle assertion.
+
 ### 2026-04-21 - Inventory and guardrails must precede maintainability refactors
 - Context: repository-wide code-quality audit covering hardcoded copy, oversized modules, duplicated helpers, exchange bootstrap ownership, and fallback/default drift.
 - Symptom: codebase already contains multiple local copy dictionaries, several production files near or above 1k lines, repeated shared logic, and scattered fallback behavior; broad cleanup without sequencing would risk regressions in runtime/dashboard flows.

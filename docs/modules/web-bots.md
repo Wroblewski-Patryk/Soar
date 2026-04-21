@@ -5,8 +5,8 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/bots`
 - Owner: frontend/trading-runtime
-- Last updated: 2026-04-12
-- Related planning task: `DCP-09`
+- Last updated: 2026-04-21
+- Related planning task: `ARCCON-12`
 
 ## Canonical Architecture Linkage
 Canonical bot topology and operator-surface rules live in:
@@ -120,3 +120,15 @@ pnpm --filter web test -- src/features/bots/components/BotCreateEditForm.test.ts
     - `history`.
 - Guardrail:
   - if current `RUNNING` session has no rows but older sessions have runtime history, both surfaces must still expose aggregate history for that bot.
+
+## 12. Route i18n Ownership Contract (`ARCCON`)
+- `/dashboard/bots` components must use bot-owned namespace keys for local
+  operator controls and confirmation dialogs.
+- Forbidden leakage:
+  - bot route UI must not depend on `dashboard.home.*` keys for bot-owned
+    actions.
+- Confirm-dialog action labels are route-owned under
+  `dashboard.bots.confirms.*`:
+  - `confirmLabel`,
+  - `cancelLabel`,
+  - with EN/PL/PT parity.
