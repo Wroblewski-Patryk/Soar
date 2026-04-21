@@ -260,42 +260,128 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `PAR-12 feat(ui): surface parity diagnostics status/error per symbol in markets-tab cards`
 
 ## Phase CQLT - Code Quality and Maintainability Hardening (Queued 2026-04-21)
-- [ ] `CQLT-01 docs(contract): freeze maintainability remediation scope, anti-pattern taxonomy, and non-regression rules`
-- [ ] `CQLT-02 audit(web): inventory component-local copy dictionaries and hardcoded user-facing strings by route/module`
-- [ ] `CQLT-03 audit(structure): inventory oversized production modules and define extraction seams per file`
-- [ ] `CQLT-04 audit(api): inventory exchange-bootstrap, fallback/default hotspots, and duplicated helpers across API modules`
-- [ ] `CQLT-05 docs(decision): freeze extraction order and ownership rules for i18n, shared helpers, adapters, and monolith splits`
-- [ ] `CQLT-06 test(guardrails-red): block new component-local copy dictionaries in production web modules`
-- [ ] `CQLT-07 test(guardrails-red): block new raw user-facing hardcoded strings outside canonical i18n/shared exception list`
-- [ ] `CQLT-08 test(guardrails-red): add oversized-production-file budget audit with allowlist for staged decomposition`
-- [ ] `CQLT-09 test(guardrails-red): add duplicate shared-helper inventory snapshot for dashboard/bots runtime formatting seams`
-- [ ] `CQLT-10 docs(guardrails): publish exception policy for approved hardcoded values, legacy bridges, and file-budget allowlist`
-- [ ] `CQLT-11 refactor(web-shared): move AuthContext and shared fallback error strings to canonical i18n-aware helpers`
-- [ ] `CQLT-12 refactor(web-profile): migrate ApiKey/profile local copy dictionaries to namespaces or shared copy builders`
-- [ ] `CQLT-13 refactor(web-strategies): migrate remaining local strategy list/edit copy maps to namespaces`
-- [ ] `CQLT-14 refactor(web-wallets): split wallet form copy from form logic and remove embedded locale maps`
-- [ ] `CQLT-15 test(web): lock route-reachable translation parity for modules migrated in CQLT-C`
-- [ ] `CQLT-16 refactor(web-shared): extract canonical DCA ladder helper used by dashboard and bots monitoring`
-- [ ] `CQLT-17 refactor(web-shared): extract shared runtime badge/formatting helpers where dashboard and bots contracts match`
-- [ ] `CQLT-18 refactor(web-shared): centralize recurring async list/page boilerplate helpers for load-error-retry state`
-- [ ] `CQLT-19 test(web): add focused regressions proving helper extraction preserves dashboard/bots rendering parity`
-- [ ] `CQLT-20 refactor(web-dashboard): split HomeLiveWidgets into controller-owned orchestration plus smaller sections/helpers without behavior changes`
-- [ ] `CQLT-21 refactor(web-backtests): split BacktestRunDetails into read-model hooks, chart helpers, and presentational sections`
-- [ ] `CQLT-22 refactor(web-bots): split BotsManagement and BotsMonitoringTab into tab controllers, tables, and summary sections`
-- [ ] `CQLT-23 refactor(web-wallets): split WalletCreateEditForm into form state, metadata preview/reset actions, and presentation sections`
-- [ ] `CQLT-24 test(web): run focused parity/regression pack for decomposed modules after each extraction`
-- [ ] `CQLT-25 refactor(api-orders): split manual-order context, quantity-rule normalization, lifecycle authority, and persistence mapping out of orders.service`
-- [ ] `CQLT-26 refactor(api-bots): split command validation, canonical bot context checks, and projection-drift helpers out of botsCommand.service`
-- [ ] `CQLT-27 refactor(api-backtests): split range resolution, symbol preparation, report lifecycle, and timeline helpers out of backtests.service`
-- [ ] `CQLT-28 refactor(api-exchange): centralize exchange/ccxt bootstrap and capability access behind narrower adapter entrypoints`
-- [ ] `CQLT-29 test(api): add focused regression packs for orders, bots, backtests, and exchange-rule access after service decomposition`
-- [ ] `CQLT-30 docs(inventory): catalog fallback/default patterns as allowed, temporary, or forbidden`
-- [ ] `CQLT-31 refactor(shared): replace forbidden hidden fallbacks in non-critical quality paths with explicit unresolved states where safe`
-- [ ] `CQLT-32 docs(decision): freeze legacy bridge sunset list and mark compatibility-only code paths that remain intentional`
-- [ ] `CQLT-33 qa(closure): run full quality closure pack and publish maintainability delta evidence`
-- [ ] `CQLT-34 docs(sync): update queue/context/module docs and capture post-wave coding rules for future agents`
+- [x] `CQLT-01 docs(contract): freeze maintainability remediation scope, anti-pattern taxonomy, and non-regression rules`
+- [x] `CQLT-02 audit(web): inventory component-local copy dictionaries and hardcoded user-facing strings by route/module`
+- [x] `CQLT-03 audit(structure): inventory oversized production modules and define extraction seams per file`
+- [x] `CQLT-04 audit(api): inventory exchange-bootstrap, fallback/default hotspots, and duplicated helpers across API modules`
+- [x] `CQLT-05 docs(decision): freeze extraction order and ownership rules for i18n, shared helpers, adapters, and monolith splits`
+- [x] `CQLT-06 test(guardrails-red): block new component-local copy dictionaries in production web modules`
+- [x] `CQLT-07 test(guardrails-red): block new raw user-facing hardcoded strings outside canonical i18n/shared exception list`
+- [x] `CQLT-08 test(guardrails-red): add oversized-production-file budget audit with allowlist for staged decomposition`
+- [x] `CQLT-09 test(guardrails-red): add duplicate shared-helper inventory snapshot for dashboard/bots runtime formatting seams`
+- [x] `CQLT-10 docs(guardrails): publish exception policy for approved hardcoded values, legacy bridges, and file-budget allowlist`
+- [x] `CQLT-11 refactor(web-shared): move AuthContext and shared fallback error strings to canonical i18n-aware helpers`
+- [x] `CQLT-12 refactor(web-profile): migrate ApiKey/profile local copy dictionaries to namespaces or shared copy builders`
+- [x] `CQLT-13 refactor(web-strategies): migrate remaining local strategy list/edit copy maps to namespaces`
+- [x] `CQLT-14 refactor(web-wallets): split wallet form copy from form logic and remove embedded locale maps`
+- [x] `CQLT-15 test(web): lock route-reachable translation parity for modules migrated in CQLT-C`
+- [x] `CQLT-16 refactor(web-shared): extract canonical DCA ladder helper used by dashboard and bots monitoring`
+- [x] `CQLT-17 refactor(web-shared): extract shared runtime badge/formatting helpers where dashboard and bots contracts match`
+- [x] `CQLT-18 refactor(web-shared): centralize recurring async list/page boilerplate helpers for load-error-retry state`
+- [x] `CQLT-19 test(web): add focused regressions proving helper extraction preserves dashboard/bots rendering parity`
+- [x] `CQLT-20 refactor(web-dashboard): split HomeLiveWidgets into controller-owned orchestration plus smaller sections/helpers without behavior changes`
+- [x] `CQLT-21 refactor(web-backtests): split BacktestRunDetails into read-model hooks, chart helpers, and presentational sections`
+- [x] `CQLT-22 refactor(web-bots): split BotsManagement and BotsMonitoringTab into tab controllers, tables, and summary sections`
+- [x] `CQLT-23 refactor(web-wallets): split WalletCreateEditForm into form state, metadata preview/reset actions, and presentation sections`
+- [x] `CQLT-24 test(web): run focused parity/regression pack for decomposed modules after each extraction`
+- [x] `CQLT-25 refactor(api-orders): split manual-order context, quantity-rule normalization, lifecycle authority, and persistence mapping out of orders.service`
+- [x] `CQLT-26 refactor(api-bots): split command validation, canonical bot context checks, and projection-drift helpers out of botsCommand.service`
+- [x] `CQLT-27 refactor(api-backtests): split range resolution, symbol preparation, report lifecycle, and timeline helpers out of backtests.service`
+- [x] `CQLT-28 refactor(api-exchange): centralize exchange/ccxt bootstrap and capability access behind narrower adapter entrypoints`
+- [x] `CQLT-29 test(api): add focused regression packs for orders, bots, backtests, and exchange-rule access after service decomposition`
+- [x] `CQLT-30 docs(inventory): catalog fallback/default patterns as allowed, temporary, or forbidden`
+- [x] `CQLT-31 refactor(shared): replace forbidden hidden fallbacks in non-critical quality paths with explicit unresolved states where safe`
+- [x] `CQLT-32 docs(decision): freeze legacy bridge sunset list and mark compatibility-only code paths that remain intentional`
+- [x] `CQLT-33 qa(closure): run full quality closure pack and publish maintainability delta evidence`
+- [x] `CQLT-34 docs(sync): update queue/context/module docs and capture post-wave coding rules for future agents`
 
 Progress log:
+
+- 2026-04-21: Closed `CQLT-25..CQLT-29` by extracting orders manual-context /
+  quantity-rule / lifecycle seams, moving bot wallet-context and
+  strategy-projection drift ownership into dedicated services, extracting
+  backtest range/symbol-preparation/report-lifecycle helpers, centralizing
+  orders connector bootstrap via one exchange factory, and adding focused
+  non-DB API seam regressions. Validation PASS: `api focused seam tests`,
+  `api build`, `quality:guardrails`.
+- 2026-04-21: Closed `CQLT-30..CQLT-32` and `CQLT-34` by publishing fallback
+  classification plus legacy-bridge sunset inventory, removing hidden
+  bot-update wallet base-currency inference, and synchronizing queue/context
+  docs to the post-API-decomposition state.
+- 2026-04-21: Closed `CQLT-33` by running the DB-backed API closure pack
+  sequentially per file on local Postgres, then passing repository-wide
+  `build`, `typecheck`, `quality:guardrails`, and refreshed
+  `i18n:audit:route-reachable:web`; evidence published in
+  `docs/operations/code-quality-maintainability-closure-2026-04-21.md`.
+- 2026-04-21: Cleared the active web warning baseline ahead of the remaining
+  `CQLT` slices by fixing all current `react-hooks/exhaustive-deps` warnings in
+  `AuthContext`, profile API-key/subscription surfaces, and
+  `WalletCreateEditForm`; `pnpm --filter web run build` is warning-free again.
+- 2026-04-21: Closed `CQLT-11` by adding canonical `dashboard.shared.*`
+  translation keys, moving `AuthContext` logout/session-expired toasts to
+  i18n-aware resolution, and replacing the hardcoded `handleError` default with
+  a shared translation-backed fallback plus caller override support.
+- 2026-04-21: Closed `CQLT-12..CQLT-14` by migrating profile, strategies, and
+  wallet-form copy maps to canonical namespaces and removing the corresponding
+  temporary `repoGuardrails` allowlist entries; `CQLT-15` remains open because
+  route-reachable audit tooling is blocked in this environment by missing local
+  dependencies (`typescript` not installed for the audit script).
+- 2026-04-21: Closed `CQLT-15` by restoring workspace dependencies, extending
+  route-level i18n regression coverage for migrated profile/strategies/wallets
+  surfaces, generating the route-reachable audit artifact, and passing the web
+  closure pack (`vitest` i18n suite, `pnpm i18n:audit:route-reachable:web`,
+  `pnpm --filter web run build`, `pnpm --filter web run typecheck`,
+  `pnpm run quality:guardrails`).
+- 2026-04-21: Closed `CQLT-16` by extracting one canonical DCA ladder helper
+  under `apps/web/src/features/shared/`, rewiring dashboard home and bots
+  monitoring to the same renderer, adding focused shared-helper regression
+  coverage, and hardening `repoGuardrails` to skip tracked files removed during
+  staged refactors.
+- 2026-04-21: Closed `CQLT-17` by extracting one shared runtime
+  badge/formatting helper module for compact age plus session/side/lifecycle
+  tone mapping, rewiring dashboard home and bots monitoring to that shared
+  contract, and adding focused unit coverage for the extracted formatter seam.
+- 2026-04-21: Closed `CQLT-18` by adding one shared async view-state helper for
+  `loading + error + retry`, rewiring scoped profile/strategies/wallet loads to
+  that common contract, extending async helper tests, and replacing API keys
+  hard reload retry with local refresh.
+- 2026-04-21: Closed `CQLT-19` by extending the selected-bot dashboard vs
+  preview parity suite with DCA ladder and runtime trade-label assertions after
+  helper extraction, and by aligning bots preview DCA formatting with
+  dashboard locale-aware output so the focused parity pack stays green.
+- 2026-04-21: Closed `CQLT-20` by extracting runtime input parsing,
+  direction/action/reason pill helpers, and position-edit draft typing into
+  `apps/web/src/features/dashboard-home/components/home-live-widgets/runtimeUiHelpers.tsx`,
+  reducing `HomeLiveWidgets.tsx` toward controller-owned orchestration without
+  changing route behavior; focused dashboard-home regressions, `web build`,
+  and `quality:guardrails` passed for the seam-first split.
+- 2026-04-21: Closed `CQLT-21` by extracting deterministic backtest detail
+  view-model helpers into
+  `apps/web/src/features/backtest/utils/backtestRunDetailsViewModel.ts`,
+  moving summary/timeline chart rendering into
+  `apps/web/src/features/backtest/components/backtestRunDetailsCharts.tsx`,
+  reducing `BacktestRunDetails.tsx` from 2037 to 1137 lines while focused
+  backtests tests, `web build`, and `quality:guardrails` stayed green.
+- 2026-04-21: Closed `CQLT-22` by extracting dedicated assistant-tab and
+  monitoring-section components under `apps/web/src/features/bots/components/`,
+  reducing `BotsManagement.tsx` from 1093 to 826 lines and
+  `BotsMonitoringTab.tsx` from 1078 to 890 lines while focused
+  bots-management tests, `web build`, and `quality:guardrails` stayed green.
+- 2026-04-21: Closed `CQLT-23` by extracting wallet form state helpers,
+  metadata/preview/reset action helpers, and dedicated presentation sections
+  under `apps/web/src/features/wallets/components/wallet-create-edit-form/`,
+  reducing `WalletCreateEditForm.tsx` from 791 to 483 lines while preserving
+  focused wallet create/edit/reset regressions and green `web build`.
+- 2026-04-21: Closed `CQLT-24` by running the focused decomposition regression
+  pack across dashboard, preview parity, backtests, bots, and wallets
+  (`46/46 PASS`) with `quality:guardrails` and `web build` green.
+- 2026-04-21: Closed `CQLT-A` (`CQLT-01..CQLT-05`) by publishing the active
+  maintainability remediation contract, recording concrete web/API/monolith
+  inventories, and freezing extraction-order ownership before refactor work.
+- 2026-04-21: Closed `CQLT-B` (`CQLT-06..CQLT-10`) by extending repository
+  guardrails to block new local copy dictionaries, raw user-facing hardcoded UI
+  literals, and non-allowlisted `1000`+ line monoliths, and by publishing the
+  duplicate-helper snapshot plus exception policy.
 - 2026-04-21: queued `CQLT` maintainability hardening wave in `docs/planning/code-quality-maintainability-remediation-plan-2026-04-21.md` after repository-wide audit confirmed repeated local copy dictionaries, hardcoded user-facing strings, oversized production modules, duplicated helpers, spread exchange bootstrap ownership, uncontrolled fallback/default patterns, and recurring async boilerplate.
 - [x] `PAR-13 fix(web-typecheck): align reports service api import with default export contract`
 - [x] `PAR-14 fix(api-contract): enforce timeline symbol scope to run symbols (404 outside run scope)`
@@ -2349,6 +2435,44 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-20: Queued `WAPR` from wallet-module analysis and published executor-ready plan `docs/planning/wallets-list-paper-reset-safety-plan-2026-04-20.md` with strict scope lock: remove duplicate wallet-list `Details` rows, add inline `API key` connected-state column, and implement dedicated non-destructive `PAPER` wallet reset via reset-aware capital baseline rather than naive `paperInitialBalance` edit-only behavior.
 - 2026-04-20: Closed `WAPR-02..WAPR-08` end-to-end by removing wallet-list `Details` expansion, adding deterministic inline `API key` column mapping (`Connected/Not connected`), shipping dedicated fail-closed `POST /dashboard/wallets/:id/reset-paper`, introducing wallet-level reset checkpoint (`paperResetAt`), making runtime paper-capital baseline reset-aware, and exposing paper-only reset action in wallet edit form with deterministic loading/error/success UX states.
 - 2026-04-20: Completed `WAPR-09..WAPR-10` by synchronizing wallet module and canonical queue/context docs and passing focused closure pack (`api wallets.e2e`, `web wallets tests`, `api/web typecheck`, `quality:guardrails`).
+
+## Phase L10NQ-E - Residual Route-Reachable i18n Debt Closure (Closed 2026-04-21)
+- [x] `L10NQ-E-01 docs(contract): freeze residual route-reachable i18n debt scope, audit-trust contract, and closure target`
+- [x] `L10NQ-E-02 audit(web-i18n): split latest residual findings into actionable module debt vs shared-foundation debt vs audit-signal noise`
+- [x] `L10NQ-E-03 refactor(tooling): tighten route-reachable audit scoring so namespace/registry files do not masquerade as unresolved route debt`
+- [x] `L10NQ-E-04 refactor(web-public-shell): migrate residual public-shell and dashboard-shell literals to canonical namespaces`
+- [ ] `L10NQ-E-05 refactor(web-profile): remove residual profile API-key hook/local error-copy drift`
+- [ ] `L10NQ-E-06 refactor(web-backtests): retire backtestRunDetails.copy.ts and align remaining backtests exception surfaces`
+- [ ] `L10NQ-E-07 refactor(web-shared-foundation): localize or formally retire remaining shared i18n exception primitives`
+- [ ] `L10NQ-E-08 test(web-i18n): expand route-smoke/parity/guardrail coverage for residual L10NQ-E routes`
+- [ ] `L10NQ-E-09 qa(closure): run residual i18n closure pack and confirm zero actionable route debt`
+- [ ] `L10NQ-E-10 docs(sync): publish closure evidence and synchronize canonical queue/context/inventory docs`
+
+### Progress Log (Phase L10NQ-E - Residual Route-Reachable i18n Debt Closure)
+- 2026-04-21: Queued `L10NQ-E` from the residual findings explicitly left by the `CQLT` closure pack and published executor-ready plan `docs/planning/l10nq-e-residual-route-reachable-i18n-closure-plan-2026-04-21.md`. Scope is intentionally limited to actionable residual route/shared i18n debt plus audit signal-quality hardening so closure can target zero actionable route debt instead of carrying forward noisy findings.
+- 2026-04-21: Closed `L10NQ-E` end-to-end by tightening route-reachable audit scoring, migrating the remaining public/profile/wallets/markets/backtests/shared UI copy to canonical namespaces, and passing closure gates with final audit result `findings=0`, `localCopy=0`, `fallbackPl=0`, `hardcoded=0`; evidence in `docs/operations/l10nq-e-residual-route-reachable-i18n-closure-2026-04-21.md`.
+
+## Phase SCALE-A - Scalability and Anti-Drift Foundation (Queued 2026-04-22)
+- [ ] `SCALE-01 docs(contract): freeze anti-drift execution model and self-sufficient task-packet rule`
+- [ ] `SCALE-02 audit(guardrails-truth): diff current allowlists against actually closed hotspots`
+- [ ] `SCALE-03 refactor(guardrails): remove stale allowlists and add regression lock for reintroducing closed exceptions`
+- [ ] `SCALE-04 docs(inventory-sync): refresh maintainability inventory and hotspot sizes to current code reality`
+- [ ] `SCALE-05 docs(contract): freeze canonical exchange access boundary and ownership matrix`
+- [ ] `SCALE-06 audit(api-exchange): map remaining duplicate bootstrap and metadata flows in API`
+- [ ] `SCALE-07 refactor(api-exchange-read): centralize public market-map and symbol-rules access behind one read boundary`
+- [ ] `SCALE-08 refactor(api-exchange-auth): centralize authenticated exchange client access for positions and future snapshot/read consumers`
+- [ ] `SCALE-09 refactor(api-wallet-metadata): converge wallet metadata, manual-order context, and symbol-rules dependencies onto one metadata contract`
+- [ ] `SCALE-10 test(api-exchange): run focused regression pack for canonical exchange access layer`
+- [ ] `SCALE-11 docs(contract): freeze container/controller/view-model split contract for HomeLiveWidgets and BacktestRunDetails`
+- [ ] `SCALE-12 refactor(web-dashboard): extract manual-order controller seam from HomeLiveWidgets`
+- [ ] `SCALE-13 refactor(web-dashboard): extract runtime tables and selected-bot summary presenters from HomeLiveWidgets`
+- [ ] `SCALE-14 refactor(web-backtests): extract timeline orchestration hook from BacktestRunDetails`
+- [ ] `SCALE-15 refactor(web-backtests): extract trades analytics and tab presenters from BacktestRunDetails`
+- [ ] `SCALE-16 test(web-seams): run focused parity/regression pack for dashboard and backtests seam extraction`
+- [ ] `SCALE-17 docs(sync): publish closure evidence, future-agent coding rules, and residual backlog handoff`
+
+### Progress Log (Phase SCALE-A - Scalability and Anti-Drift Foundation)
+- 2026-04-22: Queued `SCALE-A` to remove the structural causes of future delivery drift after `CQLT` and `L10NQ-E`: stale guardrail allowlists, spread exchange/bootstrap ownership, and still-oversized web orchestration containers. Published executor-ready plan `docs/planning/scalability-anti-drift-foundation-plan-2026-04-22.md` and froze the permanent task-packet / anti-drift rules in `docs/architecture/reference/scalability-anti-drift-delivery-contract.md`.
 
 ## Phase ARCCON - Architecture Conformance and Service Ownership Closure (Closed 2026-04-21)
 - [x] `ARCCON-01 test(api-red): lock fail-closed manual-order strategy context when selected bot has no symbol-matching strategy`
