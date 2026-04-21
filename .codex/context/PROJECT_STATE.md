@@ -132,18 +132,29 @@ Last updated: 2026-04-21
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: preserve release stability and execute the next queued
-  wave from canonical planning docs after `WAPR` closure.
+- Main active objective: preserve release stability and execute the queued
+  architecture-conformance follow-up from canonical planning docs after the
+  2026-04-21 architecture-vs-code audit.
 - Top blockers:
-  - no active blockers recorded for `WAPR`; closure validations are green.
+  - no active blockers recorded; current work is planner-queued and scoped to
+    fail-closed architecture drift only.
 - Success criteria for this phase:
   - keep queue/context/docs synchronized after each closed wave,
-  - keep deploy/build gates green on `main` for the next activation slice.
+  - keep deploy/build gates green on `main` for the next activation slice,
+  - reduce architecture drift without weakening current trading/runtime safety.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - activate the next READY item from `docs/planning/mvp-next-commits.md`.
+  - activate `ARCCON-01` from `docs/planning/mvp-next-commits.md`.
 
 ## Recent Progress
+- 2026-04-21: completed a full architecture-vs-code audit across docs, Prisma
+  model, API, workers, and web operator surfaces; queued `ARCCON`
+  (`ARCCON-01..ARCCON-12`) in
+  `docs/planning/architecture-conformance-remediation-plan-2026-04-21.md` to
+  close only confirmed drift: hidden manual-order strategy fallback, duplicated
+  bot context ownership, live legacy `BotStrategy` compatibility paths,
+  split-worker ownership mismatch for backtest/market-data, async backtest
+  report contract ambiguity, and `/dashboard/bots` i18n namespace leakage.
 - 2026-04-21: completed second-pass architecture cleanup by reducing
   `docs/architecture/` top-level to only the numbered canonical core plus
   `reference/` and `archive/`, moving active supporting contracts to

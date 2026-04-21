@@ -17,11 +17,21 @@ Last updated: 2026-04-21
 
 ## READY
 
-- [ ] (none)
+- [ ] ARCCON-01 test(api-red): lock fail-closed manual-order strategy context when selected bot has no symbol-matching strategy
+- [ ] ARCCON-02 fix(api-orders): remove hidden first-strategy fallback from manual-order context resolution and keep unresolved state explicit
+- [ ] ARCCON-03 test(api-red): lock canonical wallet+market-universe context precedence over duplicated bot venue fields
 
 ## BACKLOG
 
-- [ ] (none)
+- [ ] ARCCON-04 refactor(api-bots): validate bot symbol-group binding against canonical wallet and market-universe context, keeping duplicated bot fields compatibility-only
+- [ ] ARCCON-05 docs(decision): freeze legacy BotStrategy and duplicated bot venue-field deprecation/migration contract
+- [ ] ARCCON-06 test(api+ops-red): expose current backtest and market-data worker ownership drift versus split-worker contract
+- [ ] ARCCON-07 refactor(runtime-services): align backtest ownership with explicit worker or explicit inline contract without changing user-facing semantics
+- [ ] ARCCON-08 refactor(runtime-services): align market-data worker ownership and local/prod worker startup contracts
+- [ ] ARCCON-09 test(api-red): stabilize async backtest report availability contract for owned runs
+- [ ] ARCCON-10 fix(api-backtests): replace transient report-404 ambiguity with explicit pending/degraded contract or stronger readiness guarantee
+- [ ] ARCCON-11 fix(web-i18n): remove /dashboard/bots namespace leakage into dashboard-home keys
+- [ ] ARCCON-12 docs(sync): align architecture/module/ops docs, queue/context, and closure evidence after ARCCON rollout
 
 ## IN_PROGRESS
 
@@ -37,6 +47,8 @@ Last updated: 2026-04-21
 
 ## DONE
 
+- [x] ARCCON planning queued (architecture conformance remediation)
+  - 2026-04-21: Added `docs/planning/architecture-conformance-remediation-plan-2026-04-21.md` and synchronized canonical queue/context so the next safe execution wave can close architecture drift only where code still violates canonical source-of-truth ownership, split-worker runtime-service contracts, async backtest report lifecycle clarity, or route-level i18n ownership.
 - [x] DOCARC-02 architecture top-level cleanup and temp artifact removal
   - 2026-04-21: Reduced `docs/architecture/` top-level to the numbered
     canonical core plus `reference/` and `archive/`, moved active supporting

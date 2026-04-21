@@ -22,6 +22,21 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-21 - Backtest report contract is eventually consistent, not immediately readable
+- Context: grouped go-live API smoke with Docker-backed local Postgres after enabling backtest explicit-range flow.
+- Symptom: `test:go-live:api` can fail in the backtests pack because `/dashboard/backtests/runs/:id/report` returns `404`, while the same file passes when rerun standalone.
+- Root cause: backtest run creation is synchronous, but report persistence is asynchronous and currently driven by a local in-process queue; the e2e helper waits only a bounded polling window before asserting readiness.
+- Guardrail: when validating backtest report behavior, treat report availability as eventual unless the API contract is explicitly hardened; grouped smoke failures here are more likely lifecycle-contract timing drift than deterministic simulation logic failure.
+- Preferred pattern:
+```text
+1) Distinguish "run exists" from "report ready" in tests and planning.
+2) If API keeps async report generation, expose explicit pending/degraded semantics instead of raw 404 ambiguity.
+3) Do not treat a single grouped-run report 404 as proof of trading-logic regression until standalone reproduction fails too.
+```
+- Avoid: assuming asynchronous report unavailability means symbol/strategy/backtest math drift without checking standalone reproduction and job completion path.
+- Evidence:
+  - 2026-04-21 local audit: grouped `pnpm run test:go-live:api` produced one `404` at `backtests.e2e.test.ts:911`, while rerunning `pnpm --filter api exec vitest run src/modules/backtests/backtests.e2e.test.ts` passed `14/14`.
+
 ### 2026-04-21 - UOLF fill-price integrity must be fail-closed
 - Context: unified `order -> fill -> position` flow for runtime and dashboard manual opens.
 - Symptom: runtime/dashboard tables showed broken position metrics because some opened positions had `entryPrice=0`.

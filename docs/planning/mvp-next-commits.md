@@ -7,12 +7,22 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] (none)
+- [ ] `ARCCON-01 test(api-red): lock fail-closed manual-order strategy context when selected bot has no symbol-matching strategy`
+- [ ] `ARCCON-02 fix(api-orders): remove hidden first-strategy fallback from manual-order context resolution and keep unresolved state explicit`
+- [ ] `ARCCON-03 test(api-red): lock canonical wallet+market-universe context precedence over duplicated bot venue fields`
 ## NEXT
-- [ ] (none)
+- [ ] `ARCCON-04 refactor(api-bots): validate bot symbol-group binding against canonical wallet and market-universe context, keeping duplicated bot fields compatibility-only`
+- [ ] `ARCCON-05 docs(decision): freeze legacy BotStrategy and duplicated bot venue-field deprecation/migration contract`
+- [ ] `ARCCON-06 test(api+ops-red): expose current backtest and market-data worker ownership drift versus split-worker contract`
 ## PIPELINE
-- [ ] (none)
+- [ ] `ARCCON-07 refactor(runtime-services): align backtest ownership with explicit worker or explicit inline contract without changing user-facing semantics`
+- [ ] `ARCCON-08 refactor(runtime-services): align market-data worker ownership and local/prod worker startup contracts`
+- [ ] `ARCCON-09 test(api-red): stabilize async backtest report availability contract for owned runs`
+- [ ] `ARCCON-10 fix(api-backtests): replace transient report-404 ambiguity with explicit pending/degraded contract or stronger readiness guarantee`
+- [ ] `ARCCON-11 fix(web-i18n): remove /dashboard/bots namespace leakage into dashboard-home keys`
+- [ ] `ARCCON-12 docs(sync): align architecture/module/ops docs, queue/context, and closure evidence after ARCCON rollout`
 ## GROUP QUEUE
+- [x] `ARCCON planning queued (architecture conformance remediation across domain ownership, runtime services, async contracts, and route-level operator surfaces)`
 - [x] `UOLF planning queued (unified order lifecycle + exchange-sync parity for manual and bot opens)`
 - [x] `UOLF-A (commits UOLF-01..UOLF-04): contract freeze + failing lifecycle/scope regressions`
 - [x] `UOLF-B (commits UOLF-05..UOLF-09): backend unified lifecycle authority + paper/live parity`
