@@ -61,8 +61,12 @@ const waitForBacktestReport = async (
 ) => {
   for (let attempt = 0; attempt < attempts; attempt += 1) {
     const response = await agent.get(`/dashboard/backtests/runs/${runId}/report`);
-    if (response.status === 200) return response;
-    if (response.status !== 404) return response;
+    if (response.status === 200) {
+      const reportReady = response.body?.metrics?.runLifecycle?.reportReady;
+      if (reportReady === true) return response;
+    } else if (response.status !== 404) {
+      return response;
+    }
     await new Promise((resolve) => setTimeout(resolve, delayMs));
   }
   return agent.get(`/dashboard/backtests/runs/${runId}/report`);
@@ -298,10 +302,18 @@ describe('Backtests runs contract', () => {
         fee: 0,
       },
     });
-    await prisma.backtestReport.create({
-      data: {
+    await prisma.backtestReport.upsert({
+      where: { backtestRunId: runId },
+      create: {
         userId,
         backtestRunId: runId,
+        totalTrades: 1,
+        winningTrades: 1,
+        losingTrades: 0,
+        winRate: 1,
+        netPnl: 1,
+      },
+      update: {
         totalTrades: 1,
         winningTrades: 1,
         losingTrades: 0,
@@ -361,7 +373,7 @@ describe('Backtests runs contract', () => {
     expect(otherCreateWithForeignStrategy.body.error.message).toBe('Strategy or market universe not found');
   });
 
-  it('returns 404 when report does not exist for owned run', async () => {
+  it('returns explicit pending report contract when run exists and processing is not finished', async () => {
     const ownerEmail = 'backtests-owner-3@example.com';
     const agent = await registerAndLogin(ownerEmail);
 
@@ -370,13 +382,11 @@ describe('Backtests runs contract', () => {
     const runId = createRes.body.id as string;
 
     const reportRes = await agent.get(`/dashboard/backtests/runs/${runId}/report`);
-    if (reportRes.status === 404) {
-      expect(reportRes.body.error.message).toBe('Report not found');
-      return;
-    }
-
     expect(reportRes.status).toBe(200);
     expect(reportRes.body.backtestRunId).toBe(runId);
+    expect(['PENDING', 'RUNNING']).toContain(reportRes.body.metrics?.runLifecycle?.state);
+    expect(reportRes.body.metrics?.runLifecycle?.reportReady).toBe(false);
+    expect(reportRes.body.metrics?.runLifecycle?.degraded).toBe(false);
     const metrics = reportRes.body.metrics as {
       parityDiagnostics?: Array<{
         symbol: string;

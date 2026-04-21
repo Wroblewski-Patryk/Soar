@@ -85,7 +85,6 @@ export const getBacktestRunReport = async (req: Request, res: Response) => {
 
   const report = await backtestsService.getRunReport(userId, req.params.id);
   if (typeof report === 'undefined') return sendError(res, 404, 'Not found');
-  if (!report) return sendError(res, 404, 'Report not found');
 
   return res.json(report);
 };

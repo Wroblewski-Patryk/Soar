@@ -12,6 +12,8 @@ export const getOwnedBot = async (userId: string, botId: string) =>
       walletId: true,
       wallet: {
         select: {
+          exchange: true,
+          marketType: true,
           baseCurrency: true,
         },
       },
@@ -53,6 +55,8 @@ export const getOwnedSymbolGroup = async (userId: string, symbolGroupId: string)
     },
   });
 
+const normalizeContextValue = (value: string) => value.trim().toUpperCase();
+
 export const validateSymbolGroupForBot = async (params: {
   userId: string;
   botId: string;
@@ -64,16 +68,37 @@ export const validateSymbolGroupForBot = async (params: {
   const symbolGroup = await getOwnedSymbolGroup(params.userId, params.symbolGroupId);
   if (!symbolGroup) throw botErrors.symbolGroupNotFound();
 
+  if (bot.wallet) {
+    const walletExchange = bot.wallet.exchange;
+    const walletMarketType = bot.wallet.marketType;
+    const walletBaseCurrency = normalizeContextValue(bot.wallet.baseCurrency);
+    const universeExchange = symbolGroup.marketUniverse.exchange;
+    const universeMarketType = symbolGroup.marketUniverse.marketType;
+    const universeBaseCurrency = normalizeContextValue(symbolGroup.marketUniverse.baseCurrency);
+
+    if (
+      walletExchange !== universeExchange ||
+      walletMarketType !== universeMarketType ||
+      walletBaseCurrency !== universeBaseCurrency
+    ) {
+      throw botErrors.walletMarketContextMismatch({
+        walletId: bot.walletId,
+        walletExchange,
+        walletMarketType,
+        walletBaseCurrency,
+        marketUniverseExchange: universeExchange,
+        marketUniverseMarketType: universeMarketType,
+        marketUniverseBaseCurrency: universeBaseCurrency,
+        symbolGroupId: symbolGroup.id,
+      });
+    }
+    return;
+  }
+
   if (symbolGroup.marketUniverse.marketType !== bot.marketType) {
     throw botErrors.botMarketGroupMarketTypeMismatch();
   }
   if (symbolGroup.marketUniverse.exchange !== bot.exchange) {
     throw botErrors.botMarketGroupExchangeMismatch();
-  }
-  if (
-    bot.wallet &&
-    symbolGroup.marketUniverse.baseCurrency.toUpperCase() !== bot.wallet.baseCurrency.toUpperCase()
-  ) {
-    throw botErrors.walletMarketContextMismatch();
   }
 };

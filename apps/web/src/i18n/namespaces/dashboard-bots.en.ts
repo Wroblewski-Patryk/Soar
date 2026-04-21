@@ -125,6 +125,8 @@ export const dashboardBotsEn = {
     "loadAggregateMonitoring": "Failed to load aggregate monitoring data."
   },
   "confirms": {
+    "confirmLabel": "Apply",
+    "cancelLabel": "Cancel",
     "liveCreate": "LIVE confirmation: this bot will be created in LIVE mode. Continue?",
     "liveSave": "LIVE confirmation: saving will enable live trading risk. Continue?",
     "liveDelete": "LIVE confirmation: deleting this bot will stop active trading config. Continue?"

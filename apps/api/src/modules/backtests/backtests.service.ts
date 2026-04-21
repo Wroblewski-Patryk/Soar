@@ -73,6 +73,26 @@ export class BacktestRunValidationError extends Error {}
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
+const asRecord = (value: unknown): Record<string, unknown> | null =>
+  value && typeof value === 'object' ? (value as Record<string, unknown>) : null;
+
+const isTerminalBacktestStatus = (status: string) =>
+  status === 'COMPLETED' || status === 'FAILED' || status === 'CANCELED';
+
+const buildRunLifecyclePayload = (params: {
+  status: string;
+  reportReady: boolean;
+  generatedAt?: string | null;
+  degraded?: boolean;
+  reason?: string;
+}) => ({
+  state: params.status,
+  reportReady: params.reportReady,
+  generatedAt: params.generatedAt ?? null,
+  degraded: params.degraded ?? false,
+  ...(params.reason ? { reason: params.reason } : {}),
+});
+
 const inferBaseCurrencyFromSymbol = (symbol: string): string =>
   (symbol.match(/(USDT|USDC|BUSD|FDUSD|BTC|ETH|EUR|USD)$/)?.[1] ?? 'USDT').toUpperCase();
 
@@ -638,6 +658,44 @@ export const createRun = async (userId: string, data: CreateBacktestRunDto) => {
     notes: data.notes,
     status: 'PENDING',
   });
+  const pendingLifecycle = buildRunLifecyclePayload({
+    status: 'PENDING',
+    reportReady: false,
+    generatedAt: null,
+  });
+  await upsertBacktestReportForRun({
+    backtestRunId: created.id,
+    create: {
+      userId,
+      backtestRunId: created.id,
+      totalTrades: 0,
+      winningTrades: 0,
+      losingTrades: 0,
+      winRate: null,
+      netPnl: null,
+      grossProfit: null,
+      grossLoss: null,
+      maxDrawdown: null,
+      sharpe: null,
+      metrics: {
+        runLifecycle: pendingLifecycle,
+      },
+    },
+    update: {
+      totalTrades: 0,
+      winningTrades: 0,
+      losingTrades: 0,
+      winRate: null,
+      netPnl: null,
+      grossProfit: null,
+      grossLoss: null,
+      maxDrawdown: null,
+      sharpe: null,
+      metrics: {
+        runLifecycle: pendingLifecycle,
+      },
+    },
+  });
 
   backtestRunQueue.enqueue(created.id);
 
@@ -656,12 +714,58 @@ export const listRunTrades = async (
 };
 
 export const getRunReport = async (userId: string, runId: string) => {
-  const run = await findOwnedBacktestRunId(userId, runId);
+  const run = await findOwnedBacktestRun(userId, runId);
   if (!run) return undefined;
 
   const report = await findOwnedBacktestReport(userId, runId);
+  if (!report) {
+    const degraded = isTerminalBacktestStatus(run.status);
+    return {
+      id: `synthetic-${run.id}`,
+      userId: run.userId,
+      backtestRunId: run.id,
+      totalTrades: 0,
+      winningTrades: 0,
+      losingTrades: 0,
+      winRate: null,
+      netPnl: null,
+      grossProfit: null,
+      grossLoss: null,
+      maxDrawdown: null,
+      sharpe: null,
+      metrics: {
+        runLifecycle: buildRunLifecyclePayload({
+          status: run.status,
+          reportReady: false,
+          degraded,
+          reason: degraded ? 'report_missing_after_terminal_run' : 'report_pending',
+        }),
+      },
+      createdAt: run.createdAt,
+      updatedAt: run.updatedAt,
+    };
+  }
 
-  return report ?? null;
+  const reportMetrics = asRecord(report.metrics) ?? {};
+  const reportLifecycle = asRecord(reportMetrics.runLifecycle);
+  const explicitReportReady =
+    typeof reportLifecycle?.reportReady === 'boolean' ? reportLifecycle.reportReady : null;
+  const reportReady = explicitReportReady ?? isTerminalBacktestStatus(run.status);
+  const degraded = !reportReady && isTerminalBacktestStatus(run.status);
+
+  return {
+    ...report,
+    metrics: {
+      ...reportMetrics,
+      runLifecycle: buildRunLifecyclePayload({
+        status: run.status,
+        reportReady,
+        generatedAt: reportReady ? report.updatedAt.toISOString() : null,
+        degraded,
+        reason: degraded ? 'report_missing_after_terminal_run' : undefined,
+      }),
+    },
+  };
 };
 
 export const getRunTimeline = async (

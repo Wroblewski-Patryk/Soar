@@ -530,6 +530,8 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
         14,
         Math.ceil(deps.computeSourceWindowMs(run.timeframe, maxCandlesPerSymbol) / (24 * 60 * 60 * 1000)),
       );
+      const finalRunStatus = progress.failedSymbols.length === symbols.length ? 'FAILED' : 'COMPLETED';
+      const reportGeneratedAt = new Date().toISOString();
 
       await deps.upsertBacktestReportForRun({
         backtestRunId: run.id,
@@ -560,6 +562,12 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
             lifecycleEventCounts,
             initialBalance,
             endBalance: Math.max(0, initialBalance + progress.netPnl),
+            runLifecycle: {
+              state: finalRunStatus,
+              reportReady: true,
+              generatedAt: reportGeneratedAt,
+              degraded: false,
+            },
           },
         },
         update: {
@@ -586,12 +594,18 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
             lifecycleEventCounts,
             initialBalance,
             endBalance: Math.max(0, initialBalance + progress.netPnl),
+            runLifecycle: {
+              state: finalRunStatus,
+              reportReady: true,
+              generatedAt: reportGeneratedAt,
+              degraded: false,
+            },
           },
         },
       });
 
       await deps.safeUpdateRun(run.id, {
-        status: progress.failedSymbols.length === symbols.length ? 'FAILED' : 'COMPLETED',
+        status: finalRunStatus,
         finishedAt: new Date(),
         seedConfig: {
           ...seed,
@@ -604,6 +618,44 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
         },
       });
     } catch (error) {
+      await deps.upsertBacktestReportForRun({
+        backtestRunId: run.id,
+        create: {
+          userId: run.userId,
+          backtestRunId: run.id,
+          totalTrades: progress.totalTrades,
+          winningTrades: 0,
+          losingTrades: 0,
+          winRate: null,
+          netPnl: progress.netPnl,
+          grossProfit: progress.grossProfit,
+          grossLoss: progress.grossLoss,
+          maxDrawdown: progress.maxDrawdown,
+          sharpe: null,
+          metrics: {
+            runLifecycle: {
+              state: 'FAILED',
+              reportReady: false,
+              generatedAt: null,
+              degraded: true,
+              reason: 'run_failed_before_report_assembly',
+            },
+            error: error instanceof Error ? error.message : 'Unknown error',
+          },
+        },
+        update: {
+          metrics: {
+            runLifecycle: {
+              state: 'FAILED',
+              reportReady: false,
+              generatedAt: null,
+              degraded: true,
+              reason: 'run_failed_before_report_assembly',
+            },
+            error: error instanceof Error ? error.message : 'Unknown error',
+          },
+        },
+      });
       await deps.safeUpdateRun(run.id, {
         status: 'FAILED',
         finishedAt: new Date(),

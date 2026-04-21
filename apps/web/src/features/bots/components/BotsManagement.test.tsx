@@ -223,7 +223,7 @@ describe("BotsManagement", () => {
       .getByText("Potwierdzenie LIVE: ten bot bedzie tworzony w trybie LIVE. Kontynuowac?")
       .closest("dialog");
     expect(createConfirmDialog).not.toBeNull();
-    fireEvent.click(within(createConfirmDialog as HTMLElement).getByText("Reset"));
+    fireEvent.click(within(createConfirmDialog as HTMLElement).getByText("Anuluj"));
     await waitFor(() => {
       expect(screen.queryByText("Potwierdzenie LIVE: ten bot bedzie tworzony w trybie LIVE. Kontynuowac?")).not.toBeInTheDocument();
     });
@@ -416,7 +416,7 @@ describe("BotsManagement", () => {
       .getByText("Potwierdzenie LIVE: usuniecie tego bota zatrzyma aktywna konfiguracje tradingowa. Kontynuowac?")
       .closest("dialog");
     expect(deleteConfirmDialog).not.toBeNull();
-    fireEvent.click(within(deleteConfirmDialog as HTMLElement).getByText("Reset"));
+    fireEvent.click(within(deleteConfirmDialog as HTMLElement).getByText("Anuluj"));
     await waitFor(() => {
       expect(screen.queryByText("Potwierdzenie LIVE: usuniecie tego bota zatrzyma aktywna konfiguracje tradingowa. Kontynuowac?")).not.toBeInTheDocument();
     });

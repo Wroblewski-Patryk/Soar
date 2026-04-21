@@ -298,22 +298,6 @@ const resolveManualOrderStrategyContext = async (params: {
     };
   }
 
-  const fallbackCanonical = groupLinks[0]?.strategyLinks[0]?.strategy;
-  if (fallbackCanonical) {
-    return {
-      leverage: fallbackCanonical.leverage,
-      config: (fallbackCanonical.config as Record<string, unknown> | null | undefined) ?? null,
-    };
-  }
-
-  const fallbackLegacy = legacyLinks[0]?.strategy;
-  if (fallbackLegacy) {
-    return {
-      leverage: fallbackLegacy.leverage,
-      config: (fallbackLegacy.config as Record<string, unknown> | null | undefined) ?? null,
-    };
-  }
-
   return null;
 };
 

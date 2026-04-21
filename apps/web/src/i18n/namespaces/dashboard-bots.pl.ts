@@ -125,6 +125,8 @@ export const dashboardBotsPl = {
     "loadAggregateMonitoring": "Nie udalo sie pobrac danych monitoringu zbiorczego."
   },
   "confirms": {
+    "confirmLabel": "Zastosuj",
+    "cancelLabel": "Anuluj",
     "liveCreate": "Potwierdzenie LIVE: ten bot bedzie tworzony w trybie LIVE. Kontynuowac?",
     "liveSave": "Potwierdzenie LIVE: zapis aktywuje ryzyko handlu na zywo. Kontynuowac?",
     "liveDelete": "Potwierdzenie LIVE: usuniecie tego bota zatrzyma aktywna konfiguracje tradingowa. Kontynuowac?"

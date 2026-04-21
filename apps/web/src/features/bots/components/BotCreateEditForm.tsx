@@ -287,8 +287,8 @@ export default function BotCreateEditForm({
       const accepted = await confirm({
         title: t('dashboard.bots.list.columns.liveOptIn'),
         description: message,
-        confirmLabel: t('dashboard.home.runtime.apply'),
-        cancelLabel: t('dashboard.home.runtime.reset'),
+        confirmLabel: t('dashboard.bots.confirms.confirmLabel'),
+        cancelLabel: t('dashboard.bots.confirms.cancelLabel'),
         confirmVariant: 'error',
       });
       if (!accepted) return;

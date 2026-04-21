@@ -125,6 +125,8 @@ export const dashboardBotsPt = {
     "loadAggregateMonitoring": "Falha ao carregar dados agregados de monitorizacao."
   },
   "confirms": {
+    "confirmLabel": "Aplicar",
+    "cancelLabel": "Cancelar",
     "liveCreate": "LIVE confirmation: this bot will be created in LIVE mode. Continue?",
     "liveSave": "LIVE confirmation: saving will enable live trading risk. Continue?",
     "liveDelete": "LIVE confirmation: deleting this bot will stop active trading config. Continue?"

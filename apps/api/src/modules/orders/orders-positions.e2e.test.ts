@@ -426,6 +426,136 @@ describe('Orders and positions read contract', () => {
     expect(contextRes.body.marginMode).toBe('ISOLATED');
   });
 
+  it('keeps manual-order context fail-closed when selected bot has no symbol-matching strategy', async () => {
+    const ownerAgent = await registerAndLogin('manual-context-no-symbol-match-owner@example.com');
+    const ownerId = await getUserId('manual-context-no-symbol-match-owner@example.com');
+
+    const canonicalStrategy = await prisma.strategy.create({
+      data: {
+        userId: ownerId,
+        name: 'Manual Context No Match Canonical',
+        interval: '5m',
+        leverage: 11,
+        walletRisk: 1.2,
+        config: {
+          additional: {
+            marginMode: 'ISOLATED',
+            orderType: 'LIMIT',
+          },
+        },
+      },
+    });
+    const legacyStrategy = await prisma.strategy.create({
+      data: {
+        userId: ownerId,
+        name: 'Manual Context No Match Legacy',
+        interval: '15m',
+        leverage: 6,
+        walletRisk: 1,
+        config: {
+          additional: {
+            marginMode: 'ISOLATED',
+            orderType: 'STOP',
+          },
+        },
+      },
+    });
+
+    const canonicalUniverse = await prisma.marketUniverse.create({
+      data: {
+        userId: ownerId,
+        name: 'Manual context no match canonical universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: ['ETHUSDT'],
+        blacklist: [],
+      },
+    });
+    const legacyUniverse = await prisma.marketUniverse.create({
+      data: {
+        userId: ownerId,
+        name: 'Manual context no match legacy universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: ['SOLUSDT'],
+        blacklist: [],
+      },
+    });
+
+    const canonicalSymbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: ownerId,
+        marketUniverseId: canonicalUniverse.id,
+        name: 'Manual context no match canonical group',
+        symbols: ['ETHUSDT'],
+      },
+    });
+    const legacySymbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: ownerId,
+        marketUniverseId: legacyUniverse.id,
+        name: 'Manual context no match legacy group',
+        symbols: ['SOLUSDT'],
+      },
+    });
+
+    const bot = await prisma.bot.create({
+      data: {
+        userId: ownerId,
+        name: 'Manual context no match bot',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+      },
+    });
+    const botGroup = await prisma.botMarketGroup.create({
+      data: {
+        userId: ownerId,
+        botId: bot.id,
+        symbolGroupId: canonicalSymbolGroup.id,
+        lifecycleStatus: 'ACTIVE',
+        executionOrder: 1,
+        maxOpenPositions: 2,
+        isEnabled: true,
+      },
+    });
+    await prisma.marketGroupStrategyLink.create({
+      data: {
+        userId: ownerId,
+        botId: bot.id,
+        botMarketGroupId: botGroup.id,
+        strategyId: canonicalStrategy.id,
+        priority: 1,
+        weight: 1,
+        isEnabled: true,
+      },
+    });
+    await prisma.botStrategy.create({
+      data: {
+        botId: bot.id,
+        strategyId: legacyStrategy.id,
+        symbolGroupId: legacySymbolGroup.id,
+        isEnabled: true,
+      },
+    });
+
+    const contextRes = await ownerAgent.get('/dashboard/orders/manual-context').query({
+      botId: bot.id,
+      symbol: 'BTCUSDT',
+      side: 'BUY',
+    });
+
+    expect(contextRes.status).toBe(200);
+    expect(contextRes.body.symbol).toBe('BTCUSDT');
+    expect(contextRes.body.orderType).toBe('MARKET');
+    expect(contextRes.body.marginMode).toBe('CROSSED');
+    expect(contextRes.body.leverage).toBe(1);
+  });
+
   it('routes manual open through unified fill lifecycle and creates position only after fill', async () => {
     const ownerAgent = await registerAndLogin('manual-order-order-only-owner@example.com');
     const ownerId = await getUserId('manual-order-order-only-owner@example.com');

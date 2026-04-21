@@ -11,6 +11,7 @@ import { requireOpsNetwork } from '../middleware/requireOpsNetwork';
 import { applyNoStoreHeaders } from '../middleware/noStoreHeaders';
 import { evaluateCriticalSecretsReadiness } from '../config/criticalSecretsReadiness';
 import { buildRuntimeFreshnessSnapshot } from '../observability/runtimeFreshness';
+import { resolveWorkerOwnershipConfig } from '../workers/workerOwnership';
 
 const router = Router();
 
@@ -92,16 +93,19 @@ router.get('/alerts', ...requireOpsAccess, (_req, res) => {
 
 router.get('/workers/health', ...requireOpsAccess, (_req, res) => {
   const mode = process.env.WORKER_MODE?.trim() || 'inline';
+  const ownership = resolveWorkerOwnershipConfig();
   return res.status(200).json({
     status: 'ok',
     service: 'workers',
     mode,
+    ownership,
     timestamp: new Date().toISOString(),
   });
 });
 
 router.get('/workers/ready', ...requireOpsAccess, (_req, res) => {
   const mode = process.env.WORKER_MODE?.trim() || 'inline';
+  const ownership = resolveWorkerOwnershipConfig();
   const marketDataLag = Number.parseInt(process.env.WORKER_MARKET_DATA_QUEUE_LAG ?? '0', 10);
   const backtestLag = Number.parseInt(process.env.WORKER_BACKTEST_QUEUE_LAG ?? '0', 10);
   const executionLag = Number.parseInt(process.env.WORKER_EXECUTION_QUEUE_LAG ?? '0', 10);
@@ -114,21 +118,25 @@ router.get('/workers/ready', ...requireOpsAccess, (_req, res) => {
       status: 'ready',
       service: 'workers',
       mode,
+      ownership,
       details: 'Dedicated workers not required in current mode',
     });
   }
 
-  const missing = [
-    !process.env.WORKER_MARKET_DATA_QUEUE && 'WORKER_MARKET_DATA_QUEUE',
-    !process.env.WORKER_BACKTEST_QUEUE && 'WORKER_BACKTEST_QUEUE',
-    !process.env.WORKER_EXECUTION_QUEUE && 'WORKER_EXECUTION_QUEUE',
-  ].filter(Boolean);
+  const requiredQueues = [
+    ...(ownership.marketData === 'worker' ? ['WORKER_MARKET_DATA_QUEUE'] : []),
+    ...(ownership.backtest === 'worker' ? ['WORKER_BACKTEST_QUEUE'] : []),
+    'WORKER_EXECUTION_QUEUE',
+  ];
+  const missing = requiredQueues.filter((envName) => !process.env[envName]);
 
   if (missing.length > 0) {
     return res.status(503).json({
       status: 'not_ready',
       service: 'workers',
       mode,
+      ownership,
+      requiredQueues,
       missing,
     });
   }
@@ -137,6 +145,8 @@ router.get('/workers/ready', ...requireOpsAccess, (_req, res) => {
     status: 'ready',
     service: 'workers',
     mode,
+    ownership,
+    requiredQueues,
   });
 });
 

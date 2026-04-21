@@ -7,12 +7,16 @@ const originalWorkerMode = process.env.WORKER_MODE;
 const originalMarketQueue = process.env.WORKER_MARKET_DATA_QUEUE;
 const originalBacktestQueue = process.env.WORKER_BACKTEST_QUEUE;
 const originalExecutionQueue = process.env.WORKER_EXECUTION_QUEUE;
+const originalMarketDataOwnership = process.env.WORKER_MARKET_DATA_OWNERSHIP;
+const originalBacktestOwnership = process.env.WORKER_BACKTEST_OWNERSHIP;
 
 afterEach(() => {
   process.env.WORKER_MODE = originalWorkerMode;
   process.env.WORKER_MARKET_DATA_QUEUE = originalMarketQueue;
   process.env.WORKER_BACKTEST_QUEUE = originalBacktestQueue;
   process.env.WORKER_EXECUTION_QUEUE = originalExecutionQueue;
+  process.env.WORKER_MARKET_DATA_OWNERSHIP = originalMarketDataOwnership;
+  process.env.WORKER_BACKTEST_OWNERSHIP = originalBacktestOwnership;
 });
 
 const createAdminAgent = async () => {
@@ -62,9 +66,27 @@ describe('workers health and readiness endpoints', () => {
     expect(res.body.mode).toBe('inline');
   });
 
+  it('returns ready in split mode when backtest and market-data ownership stays inline', async () => {
+    const adminAgent = await createAdminAgent();
+    process.env.WORKER_MODE = 'split';
+    process.env.WORKER_MARKET_DATA_OWNERSHIP = 'inline';
+    process.env.WORKER_BACKTEST_OWNERSHIP = 'inline';
+    process.env.WORKER_MARKET_DATA_QUEUE = '';
+    process.env.WORKER_BACKTEST_QUEUE = '';
+    process.env.WORKER_EXECUTION_QUEUE = 'execution';
+
+    const res = await adminAgent.get('/workers/ready');
+    expect(res.status).toBe(200);
+    expect(res.body.status).toBe('ready');
+    expect(res.body.mode).toBe('split');
+    expect(res.body.requiredQueues).toEqual(['WORKER_EXECUTION_QUEUE']);
+  });
+
   it('returns not_ready in split mode when required queues are missing', async () => {
     const adminAgent = await createAdminAgent();
     process.env.WORKER_MODE = 'split';
+    process.env.WORKER_MARKET_DATA_OWNERSHIP = 'worker';
+    process.env.WORKER_BACKTEST_OWNERSHIP = 'worker';
     process.env.WORKER_MARKET_DATA_QUEUE = '';
     process.env.WORKER_BACKTEST_QUEUE = '';
     process.env.WORKER_EXECUTION_QUEUE = '';
@@ -80,6 +102,8 @@ describe('workers health and readiness endpoints', () => {
   it('returns ready in split mode when queue envs are provided', async () => {
     const adminAgent = await createAdminAgent();
     process.env.WORKER_MODE = 'split';
+    process.env.WORKER_MARKET_DATA_OWNERSHIP = 'worker';
+    process.env.WORKER_BACKTEST_OWNERSHIP = 'worker';
     process.env.WORKER_MARKET_DATA_QUEUE = 'market-data';
     process.env.WORKER_BACKTEST_QUEUE = 'backtests';
     process.env.WORKER_EXECUTION_QUEUE = 'execution';
