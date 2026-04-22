@@ -17,7 +17,8 @@ Last updated: 2026-04-22
 
 ## READY
 
-- [ ] (none)
+- [ ] `V1FACT-A planning queued (V1 production activation through release-gate truth, stage/prod evidence freshness, backup/rollback proof, and final sign-off packaging)`
+  - 2026-04-22: Published `docs/planning/v1-production-activation-and-evidence-plan-2026-04-22.md` and froze activation rules in `docs/architecture/reference/v1-production-activation-contract.md` so the next execution wave can focus on operational truth only: release-gate freshness, stage/prod evidence separation, backup/restore and rollback proof, and final human-reviewable V1 sign-off packaging.
 
 ## BACKLOG
 

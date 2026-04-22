@@ -8,10 +8,10 @@ Last updated: 2026-04-22
   live execution support, operator dashboards, and a path toward assistant or
   agent-driven workflows
 - Commercial model: SaaS-style subscription product with staged entitlements
-- Current phase: production hardening after full `SCALE`, `TRUTH-A`,
-  `XLIFE-A`, `REVIEW-B`, `REVIEW-C`, `RELEASE-HARDEN-A`, and `SAFEV1-A`
-  closure, with `REVIEW-D` newly queued to close the remaining post-closure
-  runtime admission, orphan ownership, and readiness-truth gaps
+- Current phase: production activation planning after full `SCALE`, `TRUTH-A`,
+  `XLIFE-A`, `REVIEW-B`, `REVIEW-C`, `RELEASE-HARDEN-A`, `SAFEV1-A`, and
+  `REVIEW-D` closure, with `V1FACT-A` newly queued to convert hardened runtime
+  state into fresh, operator-reviewable release evidence
 
 ## Product Decisions (Confirmed)
 - 2026-04-21: `docs/architecture/` is the canonical source of truth for how
@@ -63,6 +63,9 @@ Last updated: 2026-04-22
   `API_KEY_ENCRYPTION_KEYS`, while legacy `API_KEY_ENCRYPTION` remains
   compatibility-only for decrypting older payloads and is no longer sufficient
   for readiness or new encryption writes.
+- 2026-04-22: `V1FACT-A` is queued; the next wave is explicitly scoped to V1
+  production activation truth: release-gate freshness, stage/prod evidence
+  separation, backup/restore and rollback proof, and final sign-off packaging.
 - 2026-04-22: `SAFEV1-A1` is closed; exchange reconciliation now refuses to
   create or update open synced positions when canonical entry truth is missing,
   keeping incomplete exchange snapshots out of the local open-position model.
@@ -196,8 +199,8 @@ Last updated: 2026-04-22
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: no active remediation wave is queued; current runtime,
-  ownership, and readiness hardening slices are closed through `REVIEW-D`.
+- Main active objective: queue and execute one explicit V1 production
+  activation wave so hardened code becomes fresh, reviewable release evidence.
 - Top blockers:
   - no active blockers recorded.
 - Success criteria for this phase:
@@ -208,7 +211,7 @@ Last updated: 2026-04-22
     regression-locked slices.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - none queued
+  - `V1FACT-A` (`docs/planning/v1-production-activation-and-evidence-plan-2026-04-22.md`)
 
 ## Recent Progress
 - 2026-04-22: queued `SAFEV1-A` in
@@ -272,6 +275,13 @@ Last updated: 2026-04-22
   `API_KEY_ENCRYPTION` remains decrypt-only compatibility support. Closure
   evidence published in
   `docs/operations/review-d-live-opt-in-and-ownership-safety-closure-2026-04-22.md`.
+- 2026-04-22: queued `V1FACT-A` in
+  `docs/planning/v1-production-activation-and-evidence-plan-2026-04-22.md`
+  and froze the permanent activation rules in
+  `docs/architecture/reference/v1-production-activation-contract.md` so future
+  execution can convert the now-hardened V1 codebase into a fresh,
+  operator-reviewable production activation packet instead of another ad hoc
+  review cycle.
 - 2026-04-22: closed `RELEASE-HARDEN-A` by adding the canonical release gate
   script `scripts/runV1ReleaseGate.mjs`, exposing `pnpm run ops:release:v1:gate`,
   publishing `docs/operations/v1-release-gate-runbook.md`, and aligning V1

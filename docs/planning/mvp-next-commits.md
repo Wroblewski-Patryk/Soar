@@ -7,8 +7,19 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [ ] `V1FACT-01 docs(contract): freeze V1 production activation scope and evidence rules`
+- [ ] `V1FACT-02 audit(ops): inventory current release-gate inputs, artifact freshness, and missing operator evidence`
+- [ ] `V1FACT-03 docs(queue): split V1 activation into stage rehearsal, prod evidence, and sign-off closure groups`
 ## NEXT
+- [ ] `V1FACT-04 test(ops-red): lock release activation against stale or missing evidence inputs`
+- [ ] `V1FACT-05 refactor(ops-gate): make release gate freshness and evidence classification explicit`
+- [ ] `V1FACT-06 chore(ops-stage): script or normalize one canonical stage rehearsal path for V1`
 ## PIPELINE
+- [ ] `V1FACT-07 qa(stage): execute and capture stage rehearsal evidence for web, api, workers, and release gate`
+- [ ] `V1FACT-08 test(ops-red): lock prod activation against incomplete rollback or backup proof`
+- [ ] `V1FACT-09 refactor(ops-proof): make backup/restore and rollback evidence first-class gate inputs`
+- [ ] `V1FACT-10 qa(prod-pack): build final prod activation evidence pack and sign-off summary`
+- [ ] `V1FACT-11 docs(sync): close wave, sync canonical queue/context, and freeze future-agent activation rules`
 - [x] `SAFEV1-10 qa(closure): run focused V1 runtime safety pack and publish closure evidence`
 - [x] `REVIEW-B-07 refactor(api-ops): make exchange snapshots and watchdog scope explicit and deterministic`
 - [x] `REVIEW-B-08 qa(closure): run focused production-readiness pack and publish closure evidence`
@@ -29,6 +40,11 @@ Operational queue for one-task execution runs.
 - [x] `CQLT-32 docs(decision): freeze legacy bridge sunset list and mark compatibility-only code paths that remain intentional`
 - [x] `CQLT-34 docs(sync): update queue/context/module docs and capture post-wave coding rules for future agents`
 ## GROUP QUEUE
+- [ ] `V1FACT-A planning queued (V1 production activation through release-gate truth, stage/prod evidence freshness, backup/rollback proof, and final sign-off packaging)`
+- [ ] `V1FACT-A1 (commits V1FACT-01..V1FACT-03): contract + audit + queue truth`
+- [ ] `V1FACT-A2 (commits V1FACT-04..V1FACT-07): release-gate freshness + stage rehearsal evidence`
+- [ ] `V1FACT-A3 (commits V1FACT-08..V1FACT-09): rollback/backup proof as first-class gate inputs`
+- [ ] `V1FACT-A4 (commits V1FACT-10..V1FACT-11): final activation pack + closure sync`
 - [x] `REVIEW-D planning queued (live opt-in admission truth, orphan bot-position fail-closed safety, canonical takeover rebind, and readiness-truth hardening)`
 - [x] `REVIEW-D1 (commits REVIEW-D-01..REVIEW-D-03): runtime live opt-in admission truth`
 - [x] `REVIEW-D2 (commits REVIEW-D-04..REVIEW-D-05): orphan bot-origin automation fail-closed contract`
