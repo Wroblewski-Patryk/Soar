@@ -269,7 +269,7 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SAFEV1-07 refactor(api-runtime): replace symbol-level ownership heuristics with one deterministic canonical owner contract`
 - [x] `SAFEV1-08 test(api-red): lock explicit degraded-state contract for production rate limiting`
 - [x] `SAFEV1-09 refactor(api-ops): harden rate-limit degradation policy for production-sensitive endpoints`
-- [ ] `SAFEV1-10 qa(closure): run focused V1 runtime safety pack and publish closure evidence`
+- [x] `SAFEV1-10 qa(closure): run focused V1 runtime safety pack and publish closure evidence`
 
 ## Phase CQLT - Code Quality and Maintainability Hardening (Queued 2026-04-21)
 - [x] `CQLT-01 docs(contract): freeze maintainability remediation scope, anti-pattern taxonomy, and non-regression rules`

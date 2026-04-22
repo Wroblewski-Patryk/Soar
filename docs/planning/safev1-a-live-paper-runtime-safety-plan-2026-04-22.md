@@ -1,6 +1,6 @@
 # SAFEV1-A Live/Paper Runtime Safety Plan (2026-04-22)
 
-Status: Active  
+Status: Closed 2026-04-22  
 Wave: `SAFEV1-A`
 
 ## Objective
@@ -321,3 +321,7 @@ Validation:
   while local fallback remains bounded and reconnect attempts retry after
   cooldown. Validation PASS: focused rate-limit test, `api typecheck`,
   `api build`.
+- 2026-04-22: Closed `SAFEV1-A` end-to-end by completing the focused closure
+  pack (`27/27 PASS`), publishing
+  `docs/operations/safev1-a-live-paper-runtime-safety-closure-2026-04-22.md`,
+  and synchronizing canonical queue/context files to the closed state.

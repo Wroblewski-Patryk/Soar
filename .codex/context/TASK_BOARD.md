@@ -17,7 +17,7 @@ Last updated: 2026-04-22
 
 ## READY
 
-- [ ] `SAFEV1-10 qa(closure): run focused V1 runtime safety pack and publish closure evidence`
+- [ ] (none)
 
 ## BACKLOG
 
@@ -39,6 +39,8 @@ Last updated: 2026-04-22
 
 - [x] `SAFEV1-A4 production rate-limit degradation hardening (SAFEV1-08..SAFEV1-09)`
   - 2026-04-22: Closed the fourth `SAFEV1-A` slice by locking prod degraded-mode behavior for rate limiting, adding Redis reconnect cooldown/retry behavior, and making production requests fail closed with explicit `503 + X-RateLimit-Degraded` instead of silently settling into indefinite local-only enforcement. Validation PASS: `pnpm --filter api exec vitest run src/middleware/rateLimit.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter api run build`.
+- [x] `SAFEV1-A group closure (live/paper runtime safety closure for V1)`
+  - 2026-04-22: Closed `SAFEV1-A` end-to-end by completing all four remediation slices plus closure pack, publishing `docs/operations/safev1-a-live-paper-runtime-safety-closure-2026-04-22.md`, and passing the focused validation pack (`27/27 PASS`), `api typecheck`, `api build`, and `quality:guardrails`.
 - [x] `SAFEV1-A3 canonical external ownership resolution (SAFEV1-06..SAFEV1-07)`
   - 2026-04-22: Closed the third `SAFEV1-A` slice by replacing symbol-only external ownership heuristics with an explicit `OWNED/AMBIGUOUS` contract, preferring canonical market-group scope over legacy-only bridges, and making manual runtime close fail closed on ambiguous ownership. Validation PASS: `pnpm --filter api exec vitest run src/modules/bots/runtimeExternalPositionOwner.service.test.ts src/modules/bots/runtimeSessionPositionCommand.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter api run build`.
 - [x] `SAFEV1-A2 fail-closed live capital truth (SAFEV1-04..SAFEV1-05)`
