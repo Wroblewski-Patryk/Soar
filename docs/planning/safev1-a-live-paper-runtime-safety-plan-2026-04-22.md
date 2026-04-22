@@ -315,3 +315,9 @@ Validation:
   outranking legacy-only symbol bridges and manual runtime close staying fail
   closed on ambiguous ownership. Validation PASS: focused ownership/close
   tests, `api typecheck`, `api build`.
+- 2026-04-22: Closed `SAFEV1-08..SAFEV1-09` by adding degraded-state rate-limit
+  regressions and hardening `middleware/rateLimit.ts` so production requests
+  fail closed with explicit degraded-state signaling when Redis is unavailable,
+  while local fallback remains bounded and reconnect attempts retry after
+  cooldown. Validation PASS: focused rate-limit test, `api typecheck`,
+  `api build`.

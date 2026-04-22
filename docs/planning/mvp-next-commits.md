@@ -16,8 +16,8 @@ Operational queue for one-task execution runs.
 - [x] `SAFEV1-06 test(api-red): lock canonical external-position ownership under overlapping symbol coverage`
 ## PIPELINE
 - [x] `SAFEV1-07 refactor(api-runtime): replace symbol-level ownership heuristics with one deterministic canonical owner contract`
-- [ ] `SAFEV1-08 test(api-red): lock explicit degraded-state contract for production rate limiting`
-- [ ] `SAFEV1-09 refactor(api-ops): harden rate-limit degradation policy for production-sensitive endpoints`
+- [x] `SAFEV1-08 test(api-red): lock explicit degraded-state contract for production rate limiting`
+- [x] `SAFEV1-09 refactor(api-ops): harden rate-limit degradation policy for production-sensitive endpoints`
 - [ ] `SAFEV1-10 qa(closure): run focused V1 runtime safety pack and publish closure evidence`
 - [x] `REVIEW-B-07 refactor(api-ops): make exchange snapshots and watchdog scope explicit and deterministic`
 - [x] `REVIEW-B-08 qa(closure): run focused production-readiness pack and publish closure evidence`
@@ -42,7 +42,7 @@ Operational queue for one-task execution runs.
 - [x] `SAFEV1-A1 (commits SAFEV1-01..SAFEV1-03): zero-entry reconciliation truth closure`
 - [x] `SAFEV1-A2 (commits SAFEV1-04..SAFEV1-05): fail-closed live capital truth`
 - [x] `SAFEV1-A3 (commits SAFEV1-06..SAFEV1-07): canonical external ownership resolution`
-- [ ] `SAFEV1-A4 (commits SAFEV1-08..SAFEV1-09): production rate-limit degradation hardening`
+- [x] `SAFEV1-A4 (commits SAFEV1-08..SAFEV1-09): production rate-limit degradation hardening`
 - [ ] `SAFEV1-A5 (commit SAFEV1-10): focused closure validation and evidence sync`
 - [x] `RELEASE-HARDEN-A planning queued (one canonical V1 release gate entrypoint over existing release/smoke/runtime checks)`
 - [x] `RELEASE-HARDEN-A group closure (canonical V1 release gate command + runbook + checklist sync)`

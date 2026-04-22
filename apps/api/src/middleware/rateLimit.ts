@@ -62,13 +62,27 @@ const rateLimitKey = (
 
 type RedisClient = ReturnType<typeof createClient>;
 let redisClientPromise: Promise<RedisClient | null> | null = null;
+let redisClientFailedAtMs: number | null = null;
+const redisReconnectCooldownMs = Math.max(
+  1_000,
+  Number.parseInt(process.env.RATE_LIMIT_REDIS_RECONNECT_COOLDOWN_MS ?? '15000', 10)
+);
 
 const getRedisClient = async () => {
   if (process.env.NODE_ENV === 'test') {
     return null;
   }
 
-  if (!redisClientPromise) {
+  const nowMs = Date.now();
+  if (
+    redisClientFailedAtMs != null &&
+    nowMs - redisClientFailedAtMs < redisReconnectCooldownMs
+  ) {
+    return null;
+  }
+
+  if (!redisClientPromise || redisClientFailedAtMs != null) {
+    redisClientFailedAtMs = null;
     redisClientPromise = (async () => {
       const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
       const client = createClient({ url: redisUrl });
@@ -79,11 +93,22 @@ const getRedisClient = async () => {
 
       await client.connect();
       return client;
-    })().catch(() => null);
+    })().catch(() => {
+      redisClientFailedAtMs = Date.now();
+      return null;
+    });
   }
 
   return redisClientPromise;
 };
+
+const shouldAllowInMemoryFallback = () =>
+  process.env.NODE_ENV !== 'production' ||
+  process.env.RATE_LIMIT_ALLOW_LOCAL_FALLBACK === 'true';
+
+let getRedisClientOverride: (() => Promise<RedisClient | null>) | null = null;
+const resolveRedisClient = () =>
+  getRedisClientOverride ? getRedisClientOverride() : getRedisClient();
 
 export const createRateLimiter = ({ windowMs, max, keyScope = 'user' }: RateLimitOptions) => {
   const buckets = new Map<string, Bucket>();
@@ -96,7 +121,7 @@ export const createRateLimiter = ({ windowMs, max, keyScope = 'user' }: RateLimi
       return next();
     }
 
-    const redis = await getRedisClient();
+    const redis = await resolveRedisClient();
     const key = `rate_limit:${rateLimitKey(req, keyScope)}`;
 
     if (redis) {
@@ -127,10 +152,17 @@ export const createRateLimiter = ({ windowMs, max, keyScope = 'user' }: RateLimi
 
         return next();
       } catch (error) {
-        // Fail open to in-memory limiter if Redis write path is temporarily broken
-        // (for example MISCONF during snapshot failures).
+        if (!shouldAllowInMemoryFallback()) {
+          console.error('Redis rate-limit eval failed, denying request:', error);
+          res.setHeader('X-RateLimit-Degraded', 'redis_unavailable');
+          return sendError(res, 503, 'Rate limit temporarily unavailable');
+        }
+
         console.error('Redis rate-limit eval failed, falling back to in-memory limiter:', error);
       }
+    } else if (!shouldAllowInMemoryFallback()) {
+      res.setHeader('X-RateLimit-Degraded', 'redis_unavailable');
+      return sendError(res, 503, 'Rate limit temporarily unavailable');
     }
 
     // Fallback for local environments when Redis is temporarily unavailable.
@@ -167,4 +199,12 @@ export const createRateLimiter = ({ windowMs, max, keyScope = 'user' }: RateLimi
 
 export const __rateLimitInternals = {
   resolveRateLimitSubject,
+  resetForTests: () => {
+    redisClientPromise = null;
+    redisClientFailedAtMs = null;
+    getRedisClientOverride = null;
+  },
+  setGetRedisClientForTests: (override: (() => Promise<RedisClient | null>) | null) => {
+    getRedisClientOverride = override;
+  },
 };

@@ -55,6 +55,9 @@ Last updated: 2026-04-22
   resolves through an explicit `OWNED/AMBIGUOUS` contract that prioritizes
   canonical market-group scope and keeps overlap fail closed for runtime
   management flows.
+- 2026-04-22: `SAFEV1-A4` is closed; production rate limiting now uses an
+  explicit degraded-state contract with fail-closed `503` behavior when Redis
+  is unavailable, while local/dev fallback remains bounded and intentional.
 - 2026-04-22: full `SCALE` wave (`SCALE-01..SCALE-17`) is closed, including
   exchange-access convergence, web container seam extraction, and closure
   evidence handoff for future agents.
@@ -174,9 +177,9 @@ Last updated: 2026-04-22
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: continue `SAFEV1-A` from explicit production
-  rate-limit degradation hardening after closing reconciliation, live-capital,
-  and external-ownership gaps.
+- Main active objective: finish `SAFEV1-A` with closure validation and evidence
+  sync after closing reconciliation, live-capital, external-ownership, and
+  limiter degradation gaps.
 - Top blockers:
   - no active blockers recorded.
 - Success criteria for this phase:
@@ -213,6 +216,10 @@ Last updated: 2026-04-22
   `OWNED/AMBIGUOUS` ownership truth, prioritizing canonical market-group scope
   over legacy-only symbol bridges, and by making manual runtime close refuse
   ambiguous exchange-synced positions.
+- 2026-04-22: closed `SAFEV1-A4` by hardening `middleware/rateLimit.ts` so
+  production requests fail closed with explicit degraded-state signaling when
+  Redis is unavailable, while local/test fallback remains intentional and
+  reconnect attempts no longer depend on a full process restart.
 - 2026-04-22: closed `RELEASE-HARDEN-A` by adding the canonical release gate
   script `scripts/runV1ReleaseGate.mjs`, exposing `pnpm run ops:release:v1:gate`,
   publishing `docs/operations/v1-release-gate-runbook.md`, and aligning V1
