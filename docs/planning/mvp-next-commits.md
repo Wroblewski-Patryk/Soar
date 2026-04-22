@@ -7,14 +7,15 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [x] `REVIEW-B-01 docs(contract): freeze review-driven runtime/exchange closure scope and non-regression rules`
-- [x] `REVIEW-B-02 test(api-red): lock DCA pending/partial-fill failure modes before refactor`
-- [x] `REVIEW-B-03 refactor(api-runtime): move DCA/add-leg execution onto canonical fill-result lifecycle`
+- [x] `REVIEW-C-01 docs(contract): freeze runtime-state replay and reconciliation truth scope`
+- [x] `REVIEW-C-02 test(api-red): lock canonical runtime-state replay after completed DCA dedupe reuse`
+- [x] `REVIEW-C-03 refactor(api-runtime): derive replayed DCA state from canonical persisted position truth`
 ## NEXT
-- [x] `REVIEW-B-04 test(api-red): lock submitted-order retry semantics after exchange failure/cancel`
-- [x] `REVIEW-B-05 refactor(api-runtime): make submitted dedupe non-terminal until canonical order outcome is known`
-- [x] `REVIEW-B-06 audit(api-ops): inventory exchange snapshot ownership ambiguity and watchdog scope drift`
+- [x] `REVIEW-C-04 test(api-red): lock exchange snapshot error normalization and disappearing-order reconciliation semantics`
+- [x] `REVIEW-C-05 refactor(api-ops): normalize snapshot failures through one explicit exchange-error contract`
+- [x] `REVIEW-C-06 refactor(api-reconciliation): replace synthetic stale-order cancelation with explicit unresolved reconciliation truth`
 ## PIPELINE
+- [x] `REVIEW-C-07 qa(closure): run focused runtime/positions truth pack and publish closure evidence`
 - [x] `REVIEW-B-07 refactor(api-ops): make exchange snapshots and watchdog scope explicit and deterministic`
 - [x] `REVIEW-B-08 qa(closure): run focused production-readiness pack and publish closure evidence`
 - [x] `XLIFE-07 docs(contract): freeze one shared PAPER/LIVE fill adapter boundary`
@@ -34,6 +35,10 @@ Operational queue for one-task execution runs.
 - [x] `CQLT-32 docs(decision): freeze legacy bridge sunset list and mark compatibility-only code paths that remain intentional`
 - [x] `CQLT-34 docs(sync): update queue/context/module docs and capture post-wave coding rules for future agents`
 ## GROUP QUEUE
+- [x] `REVIEW-C planning queued (runtime-state replay truth + snapshot error normalization + reconciliation truth closure)`
+- [x] `REVIEW-C1 (commits REVIEW-C-01..REVIEW-C-03): canonical replay truth after completed DCA dedupe reuse`
+- [x] `REVIEW-C2 (commits REVIEW-C-04..REVIEW-C-06): operator snapshot error truth and disappearing-order reconciliation truth`
+- [x] `REVIEW-C3 (commit REVIEW-C-07): focused closure validation and evidence sync`
 - [x] `REVIEW-B planning queued (post-XLIFE runtime/exchange production-readiness closure)`
 - [x] `REVIEW-B1 (commits REVIEW-B-01..REVIEW-B-03): DCA lifecycle parity and add-leg fill truth`
 - [x] `REVIEW-B2 (commits REVIEW-B-04..REVIEW-B-05): submitted-order retry truth and dedupe non-terminality`

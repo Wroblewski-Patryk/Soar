@@ -297,7 +297,7 @@ describe('reconcileExternalPositionsFromExchange', () => {
 
   it('reconciles open exchange orders for owned BOT_MANAGED takeover lifecycle', async () => {
     const upsertSyncedOpenOrder = vi.fn(async () => undefined);
-    const closeStaleSyncedOrder = vi.fn(async () => undefined);
+    const markStaleSyncedOrderUnresolved = vi.fn(async () => undefined);
 
     const result = await reconcileExternalPositionsFromExchange({
       listSyncedApiKeys: vi.fn(async () => [
@@ -352,7 +352,7 @@ describe('reconcileExternalPositionsFromExchange', () => {
         { id: 'local-open-1', exchangeOrderId: 'ex-open-1' },
         { id: 'local-open-stale-2', exchangeOrderId: 'ex-stale-2' },
       ]),
-      closeStaleSyncedOrder,
+      markStaleSyncedOrderUnresolved,
       now: () => new Date('2026-03-23T01:01:00.000Z'),
     });
 
@@ -372,10 +372,7 @@ describe('reconcileExternalPositionsFromExchange', () => {
         filledQuantity: 0.05,
       })
     );
-    expect(closeStaleSyncedOrder).toHaveBeenCalledTimes(1);
-    expect(closeStaleSyncedOrder).toHaveBeenCalledWith(
-      'local-open-stale-2',
-      new Date('2026-03-23T01:01:00.000Z')
-    );
+    expect(markStaleSyncedOrderUnresolved).toHaveBeenCalledTimes(1);
+    expect(markStaleSyncedOrderUnresolved).toHaveBeenCalledWith('local-open-stale-2');
   });
 });

@@ -6,6 +6,7 @@ import {
   fetchAuthenticatedExchangePositionsRaw,
 } from '../exchange/exchangeAuthenticatedRead.service';
 import {
+  ExchangeAuthenticatedReadUnsupportedError,
   assertAuthenticatedExchangeReadSupport,
   resolveAuthenticatedExchangeReadSource,
   supportsAuthenticatedExchangeRead,
@@ -242,44 +243,44 @@ const normalizeExchangeOpenOrder = (order: Record<string, unknown>): ExchangeOpe
 };
 
 const buildSnapshotForApiKey = async (apiKey: ApiKeyRecordForSnapshot): Promise<ExchangePositionSnapshot> => {
-  if (process.env.NODE_ENV === 'test') {
-    if (process.env.POSITIONS_SNAPSHOT_FORCE_ERROR === '1') {
-      throw new ExchangeSnapshotError('EXCHANGE_FETCH_FAILED', 'Unable to fetch exchange positions snapshot.');
+  try {
+    if (process.env.NODE_ENV === 'test') {
+      if (process.env.POSITIONS_SNAPSHOT_FORCE_ERROR === '1') {
+        throw new Error('exchange_snapshot_forced_error');
+      }
+
+      await prisma.apiKey.update({
+        where: { id: apiKey.id },
+        data: { lastUsed: new Date() },
+      });
+
+      return {
+        source: apiKey.exchange,
+        syncedAt: new Date().toISOString(),
+        positions: [
+          {
+            symbol: 'BTC/USDT:USDT',
+            side: 'long',
+            contracts: 0.01,
+            entryPrice: 50000,
+            markPrice: 50100,
+            unrealizedPnl: 1,
+            leverage: 2,
+            marginMode: 'isolated',
+            liquidationPrice: 42000,
+            timestamp: new Date().toISOString(),
+          },
+        ],
+      };
     }
 
-    await prisma.apiKey.update({
-      where: { id: apiKey.id },
-      data: { lastUsed: new Date() },
+    const rawPositions = await fetchAuthenticatedExchangePositionsRaw({
+      exchange: apiKey.exchange,
+      marketType: 'FUTURES',
+      apiKey: apiKey.apiKey,
+      apiSecret: apiKey.apiSecret,
     });
 
-  return {
-      source: apiKey.exchange,
-      syncedAt: new Date().toISOString(),
-      positions: [
-        {
-          symbol: 'BTC/USDT:USDT',
-          side: 'long',
-          contracts: 0.01,
-          entryPrice: 50000,
-          markPrice: 50100,
-          unrealizedPnl: 1,
-          leverage: 2,
-          marginMode: 'isolated',
-          liquidationPrice: 42000,
-          timestamp: new Date().toISOString(),
-        },
-      ],
-    };
-  }
-
-  const rawPositions = await fetchAuthenticatedExchangePositionsRaw({
-    exchange: apiKey.exchange,
-    marketType: 'FUTURES',
-    apiKey: apiKey.apiKey,
-    apiSecret: apiKey.apiSecret,
-  });
-
-  try {
     await prisma.apiKey.update({
       where: { id: apiKey.id },
       data: { lastUsed: new Date() },
@@ -290,7 +291,9 @@ const buildSnapshotForApiKey = async (apiKey: ApiKeyRecordForSnapshot): Promise<
       syncedAt: new Date().toISOString(),
       positions: rawPositions.map(normalizeExchangePosition),
     };
-  } catch {
+  } catch (error) {
+    if (error instanceof ExchangeAuthenticatedReadUnsupportedError) throw error;
+    if (error instanceof ExchangeSnapshotError) throw error;
     throw new ExchangeSnapshotError('EXCHANGE_FETCH_FAILED', 'Unable to fetch exchange positions snapshot.');
   }
 };

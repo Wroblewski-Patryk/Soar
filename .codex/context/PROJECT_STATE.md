@@ -9,8 +9,8 @@ Last updated: 2026-04-22
   agent-driven workflows
 - Commercial model: SaaS-style subscription product with staged entitlements
 - Current phase: production hardening after full `SCALE`, `TRUTH-A`,
-  `XLIFE-A`, and `REVIEW-B` closure, with no remaining active remediation wave
-  queued from the post-`XLIFE-A` runtime/exchange review
+  `XLIFE-A`, `REVIEW-B`, and `REVIEW-C` closure, with no remaining active
+  runtime/exchange remediation wave currently queued
 
 ## Product Decisions (Confirmed)
 - 2026-04-21: `docs/architecture/` is the canonical source of truth for how
@@ -30,6 +30,11 @@ Last updated: 2026-04-22
   outcome is known, generic exchange snapshots fail closed when ownership is
   ambiguous unless `apiKeyId` is explicit, and watchdog symbol scope is
   limited to explicit Binance-futures contexts.
+- 2026-04-22: `REVIEW-C` is closed; runtime replay now restores completed DCA
+  state from canonical persisted position truth, authenticated exchange
+  snapshot failures normalize through one explicit operator error contract, and
+  live reconciliation no longer synthesizes `CANCELED` when an order simply
+  disappears from the exchange open-orders view.
 - 2026-04-22: full `SCALE` wave (`SCALE-01..SCALE-17`) is closed, including
   exchange-access convergence, web container seam extraction, and closure
   evidence handoff for future agents.
@@ -150,7 +155,7 @@ Last updated: 2026-04-22
 
 ## Current Focus
 - Main active objective: keep the repository in a production-ready, drift-free
-  state after `REVIEW-B` closure and wait for the next explicitly planned
+  state after `REVIEW-C` closure and wait for the next explicitly planned
   follow-up wave instead of reopening runtime/exchange truth debt ad hoc.
 - Top blockers:
   - no active blockers recorded.
@@ -165,6 +170,22 @@ Last updated: 2026-04-22
   - none currently queued in canonical planning files
 
 ## Recent Progress
+- 2026-04-22: closed `REVIEW-C` end-to-end by deriving completed DCA replay
+  state from canonical persisted position truth, normalizing authenticated
+  exchange snapshot failures through one explicit operator error contract, and
+  replacing synthetic stale-order cancelation with explicit unresolved
+  reconciliation truth. Closure evidence published in
+  `docs/operations/review-c-runtime-state-and-reconciliation-closure-2026-04-22.md`.
+- 2026-04-22: completed a new post-`REVIEW-B` runtime/exchange audit and
+  queued `REVIEW-C` in
+  `docs/planning/review-c-runtime-state-and-reconciliation-closure-plan-2026-04-22.md`
+  after confirming three remaining production truth gaps: completed DCA dedupe
+  replay can still restore runtime state from synthetic math, exchange
+  snapshot fetch failures are not guaranteed to normalize through the explicit
+  operator error contract, and live reconciliation still treats disappearance
+  from exchange open-orders as synthetic `CANCELED`. Audit evidence published
+  in
+  `docs/operations/review-c-runtime-state-and-reconciliation-audit-2026-04-22.md`.
 - 2026-04-22: closed `REVIEW-B` end-to-end by moving runtime DCA/add-leg
   execution onto canonical fill-result lifecycle, making submitted dedupe
   non-terminal until linked order truth is known, making generic exchange

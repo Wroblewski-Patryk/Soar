@@ -38,6 +38,10 @@ type RuntimePositionAutomationDeps = {
     symbol: string
   ) => Promise<RuntimeManagedPosition[]>;
   getStrategyConfigById: (strategyId: string) => Promise<Record<string, unknown> | null>;
+  getCanonicalPositionState: (positionId: string) => Promise<{
+    quantity: number;
+    averageEntryPrice: number;
+  } | null>;
   executeDca: (input: {
     userId: string;
     botId?: string | null;
@@ -233,6 +237,21 @@ export const computeDcaPositionUpdate = (input: {
   };
 };
 
+const loadCanonicalPositionExecutionState = async (positionId: string) => {
+  const position = await prisma.position.findUnique({
+    where: { id: positionId },
+    select: {
+      quantity: true,
+      entryPrice: true,
+    },
+  });
+  if (!position) return null;
+  return {
+    quantity: Math.max(0, position.quantity),
+    averageEntryPrice: Math.max(0, position.entryPrice),
+  };
+};
+
 export const executeRuntimeDca = async (input: {
   userId: string;
   botId?: string | null;
@@ -271,7 +290,16 @@ export const executeRuntimeDca = async (input: {
     },
   });
   if (dedupe.outcome === 'reused') {
-    return { feePaid: 0, executed: dedupe.reuseStatus === 'completed' };
+    if (dedupe.reuseStatus !== 'completed') {
+      return { feePaid: 0, executed: false };
+    }
+    const canonicalState = await loadCanonicalPositionExecutionState(input.positionId);
+    return {
+      feePaid: 0,
+      executed: canonicalState != null,
+      nextQuantity: canonicalState?.quantity,
+      nextEntryPrice: canonicalState?.averageEntryPrice,
+    };
   }
   if (dedupe.outcome !== 'execute') {
     return { feePaid: 0, executed: false };
@@ -488,6 +516,7 @@ const defaultDeps: RuntimePositionAutomationDeps = {
     if (!strategy || typeof strategy.config !== 'object' || strategy.config == null) return null;
     return strategy.config as Record<string, unknown>;
   },
+  getCanonicalPositionState: (positionId) => loadCanonicalPositionExecutionState(positionId),
   executeDca: executeRuntimeDca,
   closeByExitSignal: async (input) => {
     const result = await orchestrateRuntimeSignal({
@@ -698,8 +727,23 @@ export const buildPositionManagementInput = (
 
 export class RuntimePositionAutomationService {
   private readonly positionStates = new Map<string, PositionManagementState>();
+  private readonly deps: RuntimePositionAutomationDeps;
 
-  constructor(private readonly deps: RuntimePositionAutomationDeps = defaultDeps) {}
+  constructor(deps: Partial<RuntimePositionAutomationDeps> = defaultDeps) {
+    const baseDeps =
+      deps === defaultDeps
+        ? defaultDeps
+        : {
+            ...defaultDeps,
+            getCanonicalPositionState: async () => null,
+            recordRuntimeEvent: async () => undefined,
+            upsertRuntimeSymbolStat: async () => undefined,
+          };
+    this.deps = {
+      ...baseDeps,
+      ...deps,
+    };
+  }
 
   private cloneState(state: PositionManagementState): PositionManagementState {
     return {
@@ -835,11 +879,22 @@ export class RuntimePositionAutomationService {
           currentEntryPrice: previousState.averageEntryPrice,
         });
         if (dcaResult.executed) {
+          const canonicalState =
+            dcaResult.nextQuantity != null && dcaResult.nextEntryPrice != null
+              ? {
+                  quantity: dcaResult.nextQuantity,
+                  averageEntryPrice: dcaResult.nextEntryPrice,
+                }
+              : await this.deps.getCanonicalPositionState(position.id);
+          if (!canonicalState) {
+            effectiveState = previousStateSnapshot;
+          } else {
           effectiveState = {
             ...result.nextState,
-            quantity: dcaResult.nextQuantity ?? result.nextState.quantity,
-            averageEntryPrice: dcaResult.nextEntryPrice ?? result.nextState.averageEntryPrice,
+            quantity: canonicalState.quantity,
+            averageEntryPrice: canonicalState.averageEntryPrice,
           };
+          }
         } else {
           effectiveState = previousStateSnapshot;
         }

@@ -121,7 +121,7 @@ type ReconcileDeps = {
     botId: string;
     walletId: string;
   }) => Promise<Array<{ id: string; exchangeOrderId: string | null }>>;
-  closeStaleSyncedOrder?: (orderId: string, closedAt: Date) => Promise<void>;
+  markStaleSyncedOrderUnresolved?: (orderId: string) => Promise<void>;
   now: () => Date;
 };
 
@@ -455,13 +455,12 @@ const defaultDeps: ReconcileDeps = {
         exchangeOrderId: true,
       },
     }),
-  closeStaleSyncedOrder: async (orderId, closedAt) => {
+  markStaleSyncedOrderUnresolved: async (orderId) => {
     await prisma.order.update({
       where: { id: orderId },
       data: {
-        status: 'CANCELED',
-        canceledAt: closedAt,
         syncState: 'ORPHAN_LOCAL',
+        canceledAt: null,
       },
     });
   },
@@ -562,7 +561,7 @@ export const reconcileExternalPositionsFromExchange = async (
         deps.fetchOpenOrdersForApiKey &&
         deps.upsertSyncedOpenOrder &&
         deps.listOpenSyncedOrdersForOwner &&
-        deps.closeStaleSyncedOrder
+        deps.markStaleSyncedOrderUnresolved
       ) {
         const openOrders = await deps.fetchOpenOrdersForApiKey(apiKey);
         const seenOpenExchangeOrderIds = new Set<string>();
@@ -613,7 +612,7 @@ export const reconcileExternalPositionsFromExchange = async (
         for (const openSyncedOrder of openSyncedOrders) {
           const exchangeOrderId = openSyncedOrder.exchangeOrderId?.trim();
           if (!exchangeOrderId || seenOpenExchangeOrderIds.has(exchangeOrderId)) continue;
-          await deps.closeStaleSyncedOrder(openSyncedOrder.id, deps.now());
+          await deps.markStaleSyncedOrderUnresolved(openSyncedOrder.id);
         }
       }
     } catch (error) {

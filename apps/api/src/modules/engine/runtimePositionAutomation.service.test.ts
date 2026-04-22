@@ -1,5 +1,10 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { RuntimePositionAutomationService } from './runtimePositionAutomation.service';
+import { runtimePositionStateStore } from './runtimePositionState.store';
+
+afterEach(async () => {
+  await runtimePositionStateStore.deletePositionRuntimeState('pos-replay-1');
+});
 
 describe('RuntimePositionAutomationService', () => {
   it('closes position when take-profit is hit', async () => {
@@ -309,6 +314,74 @@ describe('RuntimePositionAutomationService', () => {
 
     expect(deps.executeDca).toHaveBeenCalledTimes(2);
     expect(deps.closeByExitSignal).not.toHaveBeenCalled();
+  });
+
+  it('restores canonical runtime state when completed DCA replay has no synthetic next-state payload', async () => {
+    process.env.RUNTIME_TRAILING_ENABLED = 'false';
+    process.env.RUNTIME_DCA_ENABLED = 'false';
+
+    await runtimePositionStateStore.setPositionRuntimeState('pos-replay-1', {
+      quantity: 1,
+      averageEntryPrice: 100,
+      currentAdds: 0,
+      trailingAnchorPrice: 100,
+    });
+
+    const deps: any = {
+      listOpenPositionsBySymbol: vi.fn(async () => [
+        {
+          id: 'pos-replay-1',
+          userId: 'user-replay-1',
+          botId: 'bot-replay-1',
+          strategyId: 'strat-replay-1',
+          symbol: 'BTCUSDT',
+          side: 'LONG' as const,
+          entryPrice: 96,
+          quantity: 3,
+          leverage: 5,
+          stopLoss: null,
+          takeProfit: null,
+          managementMode: 'BOT_MANAGED' as const,
+          bot: { mode: 'LIVE' as const },
+        },
+      ]),
+      getStrategyConfigById: vi.fn(async () => ({
+        close: { tp: 99, sl: 99, ttp: [], tsl: [] },
+        additional: {
+          dcaEnabled: true,
+          dcaMode: 'advanced',
+          dcaTimes: 1,
+          dcaLevels: [{ percent: -1, multiplier: 1.5 }],
+        },
+      })),
+      executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
+      getCanonicalPositionState: vi.fn(async () => ({
+        quantity: 3,
+        averageEntryPrice: 96,
+      })),
+      closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
+      resolveDcaFundsExhausted: vi.fn(async () => false),
+      nowMs: vi.fn(() => Date.now()),
+    };
+
+    const service = new RuntimePositionAutomationService(deps);
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'BTCUSDT',
+      eventTime: 6_000,
+      lastPrice: 98.8,
+      priceChangePercent24h: -0.6,
+    });
+
+    expect(deps.executeDca).toHaveBeenCalledTimes(1);
+    expect(deps.getCanonicalPositionState).toHaveBeenCalledWith('pos-replay-1');
+    expect(service.getPositionStateSnapshot('pos-replay-1')).toMatchObject({
+      quantity: 3,
+      averageEntryPrice: 96,
+      currentAdds: 1,
+    });
   });
 
   it('respects close.mode=basic and ignores trailing close config', async () => {

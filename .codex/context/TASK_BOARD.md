@@ -37,6 +37,8 @@ Last updated: 2026-04-22
 
 ## DONE
 
+- [x] `REVIEW-C group closure (runtime-state replay truth + snapshot error normalization + reconciliation truth)`
+  - 2026-04-22: Closed `REVIEW-C-01..REVIEW-C-07` end-to-end by deriving completed DCA replay state from canonical persisted position truth, normalizing authenticated exchange snapshot failures through one explicit operator error contract, replacing synthetic stale-order cancelation with explicit unresolved reconciliation truth, and publishing closure evidence in `docs/operations/review-c-runtime-state-and-reconciliation-closure-2026-04-22.md`. Validation PASS: focused runtime/positions pack, `api typecheck`, `api build`, `quality:guardrails`.
 - [x] `REVIEW-B group closure (runtime/exchange production-readiness closure after XLIFE-A)`
   - 2026-04-22: Closed `REVIEW-B-01..REVIEW-B-08` end-to-end by moving DCA/add-leg execution onto canonical fill-result lifecycle, making submitted dedupe non-terminal until linked order truth is known, making exchange snapshots fail closed when multiple supported API keys exist unless `apiKeyId` is explicit, narrowing watchdog symbol scope to explicit Binance-futures contexts, and publishing closure evidence in `docs/operations/review-b-runtime-exchange-production-closure-2026-04-22.md`. Validation PASS: focused runtime/positions pack, `api typecheck`, `api build`, repo-wide `typecheck`, repo-wide `build`, `quality:guardrails`.
 - [x] `REVIEW-B planning queued (post-XLIFE runtime/exchange production-readiness closure)`
