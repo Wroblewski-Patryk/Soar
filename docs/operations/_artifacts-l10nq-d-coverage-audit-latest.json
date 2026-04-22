@@ -1,0 +1,465 @@
+{
+  "version": "1.0.0",
+  "generatedAtUtc": "2026-04-22T04:03:05.913Z",
+  "rootDir": ".",
+  "scope": {
+    "scannedSourceFiles": 273,
+    "routePages": 37,
+    "routeReachableFiles": 261
+  },
+  "summary": {
+    "filesWithFindings": 0,
+    "filesWithLocalCopy": 0,
+    "filesWithFallbackPl": 0,
+    "filesWithHardcodedUiCandidates": 0,
+    "moduleFindingFiles": 0,
+    "sharedFoundationFindingFiles": 0
+  },
+  "routeFindings": [
+    {
+      "routePage": "apps/web/src/app/(public)/auth/login/page.tsx",
+      "reachableFilesCount": 63,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/(public)/auth/register/page.tsx",
+      "reachableFilesCount": 63,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/(public)/page.tsx",
+      "reachableFilesCount": 54,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/admin/page.tsx",
+      "reachableFilesCount": 53,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/admin/subscriptions/page.tsx",
+      "reachableFilesCount": 56,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/admin/users/page.tsx",
+      "reachableFilesCount": 58,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/backtests/[id]/page.tsx",
+      "reachableFilesCount": 90,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/backtests/create/page.tsx",
+      "reachableFilesCount": 82,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/backtests/list/page.tsx",
+      "reachableFilesCount": 79,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/bots/[id]/assistant/page.tsx",
+      "reachableFilesCount": 97,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/bots/[id]/edit/page.tsx",
+      "reachableFilesCount": 92,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/bots/[id]/page.tsx",
+      "reachableFilesCount": 57,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/bots/[id]/preview/page.tsx",
+      "reachableFilesCount": 97,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/bots/[id]/runtime/page.tsx",
+      "reachableFilesCount": 57,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/bots/assistant/page.tsx",
+      "reachableFilesCount": 57,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/bots/create/page.tsx",
+      "reachableFilesCount": 92,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/bots/new/page.tsx",
+      "reachableFilesCount": 57,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/bots/page.tsx",
+      "reachableFilesCount": 80,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/bots/runtime/page.tsx",
+      "reachableFilesCount": 57,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/exchanges/page.tsx",
+      "reachableFilesCount": 57,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/logs/page.tsx",
+      "reachableFilesCount": 76,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/markets/[id]/edit/page.tsx",
+      "reachableFilesCount": 85,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/markets/create/page.tsx",
+      "reachableFilesCount": 79,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/markets/list/page.tsx",
+      "reachableFilesCount": 83,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/page.tsx",
+      "reachableFilesCount": 106,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/profile/page.tsx",
+      "reachableFilesCount": 97,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/reports/page.tsx",
+      "reachableFilesCount": 71,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/strategies/[id]/edit/page.tsx",
+      "reachableFilesCount": 94,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/strategies/[id]/page.tsx",
+      "reachableFilesCount": 57,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/strategies/create/page.tsx",
+      "reachableFilesCount": 88,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/strategies/list/page.tsx",
+      "reachableFilesCount": 80,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/wallets/[id]/edit/page.tsx",
+      "reachableFilesCount": 89,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/wallets/[id]/page.tsx",
+      "reachableFilesCount": 57,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/wallets/create/page.tsx",
+      "reachableFilesCount": 89,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/wallets/list/page.tsx",
+      "reachableFilesCount": 79,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/dashboard/wallets/page.tsx",
+      "reachableFilesCount": 57,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    },
+    {
+      "routePage": "apps/web/src/app/offline/page.tsx",
+      "reachableFilesCount": 45,
+      "issueFilesCount": 0,
+      "moduleIssueFilesCount": 0,
+      "sharedIssueFilesCount": 0,
+      "score": {
+        "module": 0,
+        "shared": 0
+      },
+      "topModuleFiles": []
+    }
+  ],
+  "fileFindings": []
+}

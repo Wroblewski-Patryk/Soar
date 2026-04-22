@@ -22,6 +22,22 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-21 - Docker CLI availability is not enough for local API closure packs
+- Context: `CQLT-33` API closure attempt on Windows Codex desktop using local Docker-based Postgres/Redis.
+- Symptom: `docker --version` succeeds, but `docker compose up -d postgres redis` fails with `//./pipe/dockerDesktopLinuxEngine` missing; DB-backed API e2e suites still fail against `localhost:5432`.
+- Root cause: Docker Desktop engine is not running or not reachable even though the Docker CLI is installed on the machine.
+- Guardrail: before planning DB-backed API closure or smoke packs, verify both Docker CLI and Docker Desktop engine availability; if engine pipe is missing, record the blocker immediately and avoid treating DB-test failures as app regressions.
+- Preferred pattern:
+```text
+1) Run `docker --version`.
+2) Run a lightweight `docker compose up -d postgres redis` sanity check.
+3) Only then schedule Prisma migrate / DB-backed vitest packs.
+4) If engine is unavailable, fall back to non-DB seam tests + build/guardrails and log the blocker in queue/context docs.
+```
+- Avoid: assuming `docker` command presence means local Postgres can be started for API closure validation.
+- Evidence:
+  - 2026-04-21 `CQLT-33` attempt: `docker compose up -d postgres redis` failed with `open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified`, while API e2e suites continued to fail with `Can't reach database server at localhost:5432`.
+
 ### 2026-04-21 - Backtest report placeholder changes e2e assumptions
 - Context: ARCCON backtest lifecycle hardening introduced placeholder report records at run creation and explicit `runLifecycle` status.
 - Symptom: backtests e2e scenarios failed with unique constraint collisions (`backtestRunId`) and brittle lifecycle assertions expecting only `PENDING`.

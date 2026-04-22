@@ -46,6 +46,10 @@ Those belong elsewhere:
 
 ## Supporting References
 - `reference/` contains active supporting contracts for deeper detail.
+- maintainability and quality remediation invariants live in
+  `reference/maintainability-remediation-contract.md`.
+- canonical exchange-access ownership for API modules lives in
+  `reference/exchange-access-ownership-matrix.md`.
 - `archive/` contains historical, superseded, and compatibility-only files.
 
 The numbered files above remain the canonical architecture flow.

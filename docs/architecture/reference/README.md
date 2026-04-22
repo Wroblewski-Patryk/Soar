@@ -19,6 +19,7 @@ Read order:
 3. only then use the files in this folder as supporting detail
 
 Key active contracts in this folder include:
+- `execution-lifecycle-parity-contract.md`
 - `exchange-access-ownership-matrix.md`
 - `live-safety-and-contract-truth-remediation-contract.md`
 - `maintainability-remediation-contract.md`

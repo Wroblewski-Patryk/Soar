@@ -7,11 +7,20 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [x] `none`
+- [x] `XLIFE-01 docs(contract): freeze one canonical PAPER/LIVE execution lifecycle contract`
+- [x] `XLIFE-02 audit(api-runtime): map current runtime order/fill/position authority and divergence points`
+- [x] `XLIFE-03 test(api-red): add failing regression locks for live close pending/partial lifecycle truth`
 ## NEXT
-- [x] `none`
+- [x] `XLIFE-04 refactor(api-runtime): make close lifecycle fail-closed until canonical close fill is confirmed`
+- [x] `XLIFE-05 test(api-red): lock fill-price and realized-PnL truth for open and close trades`
+- [x] `XLIFE-06 refactor(api-runtime): derive trades and realized PnL from canonical fill results instead of signal markPrice`
 ## PIPELINE
-- [x] `none`
+- [x] `XLIFE-07 docs(contract): freeze one shared PAPER/LIVE fill adapter boundary`
+- [x] `XLIFE-08 refactor(api-shared): converge PAPER and LIVE execution onto one canonical fill-result application path`
+- [x] `XLIFE-09 audit(api-exchange-scope): inventory runtime watchdog, automation, and reconciliation exchange-truth drift`
+- [x] `XLIFE-10 refactor(api-exchange-scope): make watchdog and runtime infrastructure explicit about exchange truth`
+- [x] `XLIFE-11 test(api+e2e): run critical-path regression pack for signal -> order -> fill -> position parity`
+- [x] `XLIFE-12 docs(sync): publish closure evidence and freeze future-agent execution-extension rules`
 - [x] `CQLT-33 qa(closure): run full quality closure pack and publish maintainability delta evidence`
 - [x] `CQLT-25 refactor(api-orders): split manual-order context, quantity-rule normalization, lifecycle authority, and persistence mapping out of orders.service`
 - [x] `CQLT-26 refactor(api-bots): split command validation, canonical bot context checks, and projection-drift helpers out of botsCommand.service`
@@ -23,11 +32,17 @@ Operational queue for one-task execution runs.
 - [x] `CQLT-32 docs(decision): freeze legacy bridge sunset list and mark compatibility-only code paths that remain intentional`
 - [x] `CQLT-34 docs(sync): update queue/context/module docs and capture post-wave coding rules for future agents`
 ## GROUP QUEUE
+- [x] `XLIFE-A planning queued (one canonical PAPER/LIVE execution lifecycle, fill-truth accounting, and explicit exchange-scope runtime contracts)`
+- [x] `XLIFE-A1 (commits XLIFE-01..XLIFE-03): lifecycle contract freeze + before-state audit + red tests`
+- [x] `XLIFE-A2 (commits XLIFE-04..XLIFE-06): close-state truth + fill-price truth + realized-PnL truth`
+- [x] `XLIFE-A3 (commits XLIFE-07..XLIFE-08): one shared PAPER/LIVE fill-application path`
+- [x] `XLIFE-A4 (commits XLIFE-09..XLIFE-10): runtime watchdog and automation exchange-scope truth`
+- [x] `XLIFE-A5 (commits XLIFE-11..XLIFE-12): critical-path closure validation + future-agent rules`
 - [x] `TRUTH-A planning queued (fail-closed LIVE key ownership + exchange contract truth + web guardrail truthfulness)`
-- [ ] `TRUTH-A1 (commits TRUTH-01..TRUTH-04): fail-closed LIVE order credential ownership`
-- [ ] `TRUTH-A2 (commits TRUTH-05..TRUTH-09): explicit authenticated exchange-read support and truthful route contracts`
-- [ ] `TRUTH-A3 (commits TRUTH-10..TRUTH-12): JSX/presenter hardcoded UI guardrail hardening and residual runtime copy closure`
-- [ ] `TRUTH-A4 (commits TRUTH-13..TRUTH-14): focused closure validation, evidence, and future-agent rule freeze`
+- [x] `TRUTH-A1 (commits TRUTH-01..TRUTH-04): fail-closed LIVE order credential ownership`
+- [x] `TRUTH-A2 (commits TRUTH-05..TRUTH-09): explicit authenticated exchange-read support and truthful route contracts`
+- [x] `TRUTH-A3 (commits TRUTH-10..TRUTH-12): JSX/presenter hardcoded UI guardrail hardening and residual runtime copy closure`
+- [x] `TRUTH-A4 (commits TRUTH-13..TRUTH-14): focused closure validation, evidence, and future-agent rule freeze`
 - [x] `SCALE-A planning queued (post-L10NQ anti-drift foundation: truthful guardrails, canonical exchange access, and web container ownership closure)`
 - [x] `SCALE-A (commits SCALE-01..SCALE-05): anti-drift contract + guardrail truthfulness + current-state inventory sync`
 - [x] `SCALE-B (commits SCALE-06..SCALE-10): canonical exchange access boundary and focused API regression lock`

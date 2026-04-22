@@ -11,6 +11,8 @@ This folder contains canonical project documentation grouped by responsibility.
 - `security/`: security and risk policy
 - `ux/`: design-system and UX implementation guidance
 - `governance/`: repository rules and agent workflow policies
+- `governance/code-quality-guardrails.md`: temporary exception policy for
+  maintainability debt that is actively being removed
 - `adr/`: architecture decision records when decisions need standalone history
 - `modules/`: implementation-oriented deep-dives mapped to code ownership
 

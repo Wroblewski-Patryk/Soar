@@ -30,6 +30,8 @@ Updated: 2026-04-17
 - `market-stream` fan-out to clients is server-owned.
 - Runtime execution idempotency and lifecycle parity are implemented through `engine` + `bots` + `exchange` boundaries.
 - Assistant behavior currently lives under bot/runtime orchestration contracts (not a separate top-level module directory yet).
+- Exchange bootstrap/metadata/snapshot ownership is frozen in
+  `docs/architecture/reference/exchange-access-ownership-matrix.md`.
 
 ## Frontend Areas (Current)
 - `public` and `public/auth`. Landing and authentication entrypoints.

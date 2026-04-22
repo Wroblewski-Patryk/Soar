@@ -1,0 +1,40 @@
+{
+  "generatedAt": "2026-04-21",
+  "scope": "CQLT-B duplicate helper inventory snapshot",
+  "seams": [
+    {
+      "id": "web-dca-ladder-formatting",
+      "status": "extracted",
+      "targetTask": "CQLT-16",
+      "files": [
+        "apps/web/src/features/shared/dcaLadderCell.tsx",
+        "apps/web/src/features/dashboard-home/components/HomeLiveWidgets.tsx",
+        "apps/web/src/features/bots/components/BotsManagement.tsx",
+        "apps/web/src/features/bots/components/bots-management/BotsMonitoringTab.tsx"
+      ]
+    },
+    {
+      "id": "web-runtime-badge-formatting",
+      "status": "extracted",
+      "targetTask": "CQLT-17",
+      "files": [
+        "apps/web/src/features/shared/runtimeMonitoringFormatters.ts",
+        "apps/web/src/features/dashboard-home/components/HomeLiveWidgets.tsx",
+        "apps/web/src/features/bots/components/BotsManagement.tsx",
+        "apps/web/src/features/bots/components/bots-management/BotsMonitoringTab.tsx"
+      ]
+    },
+    {
+      "id": "web-async-load-error-retry-state",
+      "status": "extracted",
+      "targetTask": "CQLT-18",
+      "files": [
+        "apps/web/src/lib/async.ts",
+        "apps/web/src/features/profile/hooks/useApiKeys.ts",
+        "apps/web/src/features/profile/hooks/useUser.ts",
+        "apps/web/src/features/strategies/components/StrategiesList.tsx",
+        "apps/web/src/features/wallets/components/WalletCreateEditForm.tsx"
+      ]
+    }
+  ]
+}

@@ -5,14 +5,15 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/backtest`
 - Owner: frontend/trading-analysis
-- Last updated: 2026-04-20
-- Related planning task: `BTCF-11`
+- Last updated: 2026-04-22
+- Related planning task: `SCALE-17`
 
 ## Canonical Architecture Linkage
 Canonical backtest and parity rules live in:
 - `docs/architecture/05_strategy-signal-and-decision-flow.md`
 - `docs/architecture/07_modes-parity-and-data.md`
 - `docs/architecture/08_operator-surfaces-and-routing.md`
+- `docs/architecture/reference/web-container-split-contract.md`
 
 ## 1. Purpose and Scope
 - Implements backtest execution UX:
@@ -74,6 +75,13 @@ Out of scope:
   - `BacktestsListView`
   - `BacktestCreateForm`
   - `BacktestRunDetails`
+- `SCALE-C` seam ownership (2026-04-22):
+  - timeline orchestration hook:
+    `hooks/useBacktestTimelineOrchestration.ts`
+  - trades analytics hook:
+    `hooks/useBacktestTradesAnalytics.ts`
+  - tab presenters (`summary/markets/trades/raw`):
+    `components/BacktestRunDetailsTabPanels.tsx`
 - Additional utilities:
   - timeline indicator overlays
   - pair metrics display
@@ -100,6 +108,9 @@ pnpm --filter web test -- src/features/backtest/components/BacktestCreateForm.te
 ```
 
 ## 9. Open Issues and Follow-Ups
-- Continue splitting large detail view logic as timeline features grow.
+- `SCALE-14..SCALE-16` ownership-closure wave is complete.
+- Future additions to run-details must follow
+  `docs/architecture/reference/web-container-split-contract.md`
+  (hook/view-model/presenter split, no inline re-growth in container).
 - Consider server-side pagination controls in list view for larger run volumes.
 - No active BTCF follow-up remains in this module after `BTCF` closure.

@@ -1,6 +1,6 @@
 # Live Safety and Contract Truth Plan (2026-04-22)
 
-Status: Active
+Status: Closed
 Wave: `TRUTH-A`
 
 ## Objective
@@ -15,6 +15,18 @@ feature work and future agents can extend one honest system:
   see, not only a narrow subset
 
 This wave is intentionally structural. It is not new product scope.
+
+## Closure Summary
+
+Closed on 2026-04-22 with:
+
+- fail-closed LIVE credential ownership for canonical bot/wallet bindings only
+- explicit authenticated exchange-read support contract and truthful `source`
+  derivation
+- broader JSX/presenter guardrails plus shared-ui i18n defaults for base
+  primitives
+- closure evidence in
+  `docs/operations/truth-a-live-safety-and-contract-truth-closure-2026-04-22.md`
 
 ## Why This Wave Exists
 

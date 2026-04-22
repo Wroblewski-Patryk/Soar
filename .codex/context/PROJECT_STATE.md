@@ -8,10 +8,10 @@ Last updated: 2026-04-22
   live execution support, operator dashboards, and a path toward assistant or
   agent-driven workflows
 - Commercial model: SaaS-style subscription product with staged entitlements
-- Current phase: production hardening after full `SCALE` closure, with
-  anti-drift guardrails and ownership seams frozen, and `TRUTH-A` queued as
-  the next structural hardening wave for fail-closed LIVE ownership,
-  exchange-contract truth, and web guardrail truthfulness
+- Current phase: production hardening after full `SCALE`, `TRUTH-A`, and
+  `XLIFE-A` closure, with no active remediation wave currently queued and
+  runtime execution truth now aligned around one canonical
+  `order -> fill -> position` lifecycle for `PAPER` and `LIVE`
 
 ## Product Decisions (Confirmed)
 - 2026-04-21: `docs/architecture/` is the canonical source of truth for how
@@ -22,6 +22,10 @@ Last updated: 2026-04-22
   with explicit scope, files, validation, non-goals, and docs-sync outputs;
   this is now frozen in
   `docs/architecture/reference/scalability-anti-drift-delivery-contract.md`.
+- 2026-04-22: `XLIFE-A` is closed; `PAPER` and `LIVE` now share one canonical
+  execution lifecycle in the touched runtime scope, `LIVE` close is
+  fail-closed until canonical fill truth exists, and runtime accounting uses
+  fill truth over signal `markPrice`.
 - 2026-04-22: full `SCALE` wave (`SCALE-01..SCALE-17`) is closed, including
   exchange-access convergence, web container seam extraction, and closure
   evidence handoff for future agents.
@@ -141,11 +145,9 @@ Last updated: 2026-04-22
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: preserve release stability after full `SCALE` closure
-  by keeping anti-drift guardrails, ownership seams, and canonical docs in
-  sync while preparing the next smallest structural hardening wave
-  (`TRUTH-A`) for fail-closed LIVE execution ownership, truthful authenticated
-  exchange-read contracts, and broader JSX/presenter copy guardrails.
+- Main active objective: keep runtime and planning truth synchronized after
+  `XLIFE-A` closure and only open the next wave through a new explicit review
+  or product objective.
 - Top blockers:
   - no active blockers recorded.
 - Success criteria for this phase:
@@ -156,10 +158,34 @@ Last updated: 2026-04-22
     regression-locked slices.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - `TRUTH-A`: fail-closed LIVE key ownership + exchange contract truth + web
-    guardrail truthfulness
+  - none currently queued
 
 ## Recent Progress
+- 2026-04-22: closed `XLIFE-A` end-to-end by making LIVE close flow
+  fail-closed until canonical fill truth exists, switching runtime trade and
+  realized-PnL persistence to canonical fill price/quantity, persisting
+  runtime-origin orders with `origin=BOT` so bot-opened positions retain bot
+  ownership through the canonical order-fill-position lifecycle, keeping
+  runtime automation alive during submitted close state, and publishing
+  closure evidence in
+  `docs/operations/execution-lifecycle-parity-and-exchange-truth-closure-2026-04-22.md`.
+- 2026-04-22: queued `XLIFE-A` in
+  `docs/planning/execution-lifecycle-parity-and-exchange-truth-plan-2026-04-22.md`
+  and froze the permanent lifecycle rules in
+  `docs/architecture/reference/execution-lifecycle-parity-contract.md` so
+  future execution work is forced through one shared `order -> fill ->
+  position` truth model for `PAPER` and `LIVE`, with explicit prohibition on
+  local close-before-fill and on mark-price-based execution accounting.
+- 2026-04-22: closed `TRUTH-A` end-to-end by removing LIVE order fallback to
+  unrelated recent API keys, requiring canonical bot/wallet-bound key
+  ownership for LIVE execution, adding explicit authenticated exchange-read
+  support truth with fail-closed unsupported operations and truthful `source`
+  derivation, fixing wallet preview double-decrypt drift, hardening
+  runtime/dashboard guardrails to catch JSX prop literals and nullish fallback
+  strings, migrating shared UI defaults (`ConfirmModal`, `DataTable`,
+  `SearchableMultiSelect`) to canonical `public.sharedUi.*` copy, and
+  publishing closure evidence in
+  `docs/operations/truth-a-live-safety-and-contract-truth-closure-2026-04-22.md`.
 - 2026-04-22: queued `TRUTH-A` as the next structural hardening wave after
   `SCALE`, publishing
   `docs/planning/truth-a-live-safety-and-contract-truth-plan-2026-04-22.md`

@@ -37,6 +37,15 @@ Last updated: 2026-04-22
 
 ## DONE
 
+- [x] `XLIFE-A group closure (one canonical PAPER/LIVE execution lifecycle, fill-truth accounting, and explicit runtime exchange-scope truth)`
+  - 2026-04-22: Closed `XLIFE-A` end-to-end by making LIVE close flow fail-closed until canonical fill truth exists, switching runtime trade/PnL persistence to canonical fill price and quantity, persisting runtime-origin orders with `origin=BOT` so bot-opened positions keep ownership truth through the shared order-fill-position lifecycle, keeping runtime automation alive during submitted close state, and publishing closure evidence in `docs/operations/execution-lifecycle-parity-and-exchange-truth-closure-2026-04-22.md`. Validation PASS: focused XLIFE engine/runtime pack, `api typecheck`, `api build`, `quality:guardrails`.
+- [x] `XLIFE-A planning queued (one canonical PAPER/LIVE execution lifecycle, fill-truth accounting, and explicit runtime exchange-scope truth)`
+  - 2026-04-22: Executor-ready wave published in `docs/planning/execution-lifecycle-parity-and-exchange-truth-plan-2026-04-22.md` with one shared lifecycle target for `PAPER` and `LIVE`, explicit fill-truth over `markPrice`, no local close-before-fill rule, and explicit runtime exchange-scope hardening tasks.
+
+- [x] `TRUTH-A execution-plan parity sync`
+  - 2026-04-22: Corrected the remaining planning drift by marking `TRUTH-01..TRUTH-14` closed in `docs/planning/mvp-execution-plan.md` and confirming no residual unchecked tasks remained in canonical planning files.
+- [x] `TRUTH-A group closure (fail-closed LIVE ownership + authenticated read contract truth + web guardrail truthfulness)`
+  - 2026-04-22: Closed `TRUTH-A` end-to-end by removing the forbidden LIVE order fallback to unrelated recent API keys, introducing canonical authenticated exchange-read support truth (`BINANCE` supported, other exchanges explicit fail-closed per operation family), hardening runtime/dashboard copy guardrails to catch JSX prop literals and nullish fallback strings, migrating shared UI defaults (`ConfirmModal`, `DataTable`, `SearchableMultiSelect`) to canonical `public.sharedUi.*` i18n, and publishing closure evidence in `docs/operations/truth-a-live-safety-and-contract-truth-closure-2026-04-22.md`. Validation PASS: focused API tests, focused web guardrails test, `quality:guardrails`, `api build`, `web build`, `typecheck`.
 - [x] `TRUTH-A planning queued (fail-closed LIVE key ownership + exchange contract truth + web guardrail truthfulness)`
   - 2026-04-22: Published executor-ready plan `docs/planning/truth-a-live-safety-and-contract-truth-plan-2026-04-22.md`, froze permanent remediation rules in `docs/architecture/reference/live-safety-and-contract-truth-remediation-contract.md`, and queued detailed follow-up tasks for LIVE key ownership safety, authenticated exchange-read contract truth, and JSX/presenter guardrail hardening.
 

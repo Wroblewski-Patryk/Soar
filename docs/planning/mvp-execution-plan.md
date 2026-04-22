@@ -297,6 +297,14 @@ Rule: fix/cleanup/update first, then feature delivery.
 
 Progress log:
 
+- 2026-04-22: Closed `TRUTH-A` by removing forbidden LIVE key fallback to
+  unrelated recent exchange credentials, introducing explicit authenticated
+  exchange-read support truth with fail-closed unsupported operations,
+  hardening JSX/presenter guardrails to catch real runtime literal leaks, and
+  migrating shared UI defaults (`ConfirmModal`, `DataTable`,
+  `SearchableMultiSelect`) to canonical `public.sharedUi.*` i18n defaults.
+  Validation PASS: focused API tests, focused web guardrail tests,
+  `quality:guardrails`, `api build`, `web build`, `typecheck`.
 - 2026-04-21: Closed `CQLT-25..CQLT-29` by extracting orders manual-context /
   quantity-rule / lifecycle seams, moving bot wallet-context and
   strategy-projection drift ownership into dedicated services, extracting
@@ -2482,24 +2490,43 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-22: Closed `SCALE-16` by running focused seam/parity regression pack across dashboard + backtests extraction surfaces (`HomeLiveWidgets`, preview parity, `BacktestRunDetails`, `useBacktestRunCoreData`, `backtestRunDetailsViewModel`) with `31/31 PASS`; closure gates `pnpm run quality:guardrails`, `pnpm --filter web run build`, and `pnpm --filter web run typecheck` passed.
 - 2026-04-22: Closed `SCALE-17` by publishing closure evidence and future-agent coding rules in `docs/operations/scale-cd-closure-evidence-2026-04-22.md`, updating `web-container-split-contract` and module handoff docs (`web-backtest`, `web-dashboard-home`), and synchronizing canonical queue/context docs for completed `SCALE-C` + `SCALE-D`.
 
-## Phase TRUTH-A - Live Safety and Contract Truth Closure (Queued 2026-04-22)
-- [ ] `TRUTH-01 docs(contract): freeze fail-closed LIVE credential ownership and exchange-truth remediation rules`
-- [ ] `TRUTH-02 audit(api-live-safety): map every LIVE credential resolution path and forbidden fallback`
-- [ ] `TRUTH-03 fix(api-live-safety): remove cross-key fallback and require canonical key parity for LIVE orders`
-- [ ] `TRUTH-04 test(api-live-safety): add regression locks for LIVE key ownership failure modes`
-- [ ] `TRUTH-05 docs(contract): freeze explicit exchange capability matrix for authenticated account reads`
-- [ ] `TRUTH-06 audit(api-auth-reads): inventory every authenticated exchange read consumer versus real exchange support`
-- [ ] `TRUTH-07 refactor(api-auth-read-contract): introduce one canonical authenticated account-read boundary`
-- [ ] `TRUTH-08 fix(api-wallet-preview): make wallet balance preview contract truthful by exchange and source`
-- [ ] `TRUTH-09 fix(api-positions-snapshots): make positions/open-orders snapshot contract truthful by exchange and scope`
-- [ ] `TRUTH-10 audit(web-guardrails): inventory residual JSX/presenter literal debt and current guardrail blind spots`
-- [ ] `TRUTH-11 refactor(web-guardrails): harden hardcoded-UI detection for JSX and presenter literals`
-- [ ] `TRUTH-12 fix(web-runtime-copy): remove remaining runtime/dashboard literal drift behind canonical presenter or i18n ownership`
-- [ ] `TRUTH-13 qa(closure): run focused safety, exchange-truth, and guardrail closure pack`
-- [ ] `TRUTH-14 docs(sync): publish closure evidence and freeze future-agent extension rules`
+## Phase TRUTH-A - Live Safety and Contract Truth Closure (Closed 2026-04-22)
+- [x] `TRUTH-01 docs(contract): freeze fail-closed LIVE credential ownership and exchange-truth remediation rules`
+- [x] `TRUTH-02 audit(api-live-safety): map every LIVE credential resolution path and forbidden fallback`
+- [x] `TRUTH-03 fix(api-live-safety): remove cross-key fallback and require canonical key parity for LIVE orders`
+- [x] `TRUTH-04 test(api-live-safety): add regression locks for LIVE key ownership failure modes`
+- [x] `TRUTH-05 docs(contract): freeze explicit exchange capability matrix for authenticated account reads`
+- [x] `TRUTH-06 audit(api-auth-reads): inventory every authenticated exchange read consumer versus real exchange support`
+- [x] `TRUTH-07 refactor(api-auth-read-contract): introduce one canonical authenticated account-read boundary`
+- [x] `TRUTH-08 fix(api-wallet-preview): make wallet balance preview contract truthful by exchange and source`
+- [x] `TRUTH-09 fix(api-positions-snapshots): make positions/open-orders snapshot contract truthful by exchange and scope`
+- [x] `TRUTH-10 audit(web-guardrails): inventory residual JSX/presenter literal debt and current guardrail blind spots`
+- [x] `TRUTH-11 refactor(web-guardrails): harden hardcoded-UI detection for JSX and presenter literals`
+- [x] `TRUTH-12 fix(web-runtime-copy): remove remaining runtime/dashboard literal drift behind canonical presenter or i18n ownership`
+- [x] `TRUTH-13 qa(closure): run focused safety, exchange-truth, and guardrail closure pack`
+- [x] `TRUTH-14 docs(sync): publish closure evidence and freeze future-agent extension rules`
 
 ### Progress Log (Phase TRUTH-A - Live Safety and Contract Truth Closure)
 - 2026-04-22: Queued `TRUTH-A` from the post-`SCALE` architecture review to close three remaining systemic risks: forbidden LIVE order API-key fallback, generic exchange-read contracts still hiding Binance-only behavior, and JSX/presenter hardcoded UI literals still bypassing current guardrails. Published executor-ready plan `docs/planning/truth-a-live-safety-and-contract-truth-plan-2026-04-22.md` and froze the permanent remediation rules in `docs/architecture/reference/live-safety-and-contract-truth-remediation-contract.md`.
+- 2026-04-22: Closed `TRUTH-A` end-to-end by removing forbidden LIVE key fallback to unrelated recent credentials, freezing explicit authenticated exchange-read support truth (`BINANCE` supported, other exchanges explicit fail-closed per operation family), broadening JSX/presenter hardcoded-literal guardrails, migrating shared UI defaults (`ConfirmModal`, `DataTable`, `SearchableMultiSelect`) to canonical `public.sharedUi.*` i18n, and publishing closure evidence in `docs/operations/truth-a-live-safety-and-contract-truth-closure-2026-04-22.md`. Validation PASS: focused API tests, focused web guardrail tests, `quality:guardrails`, `api build`, `web build`, `typecheck`.
+
+## Phase XLIFE-A - Execution Lifecycle Parity and Exchange Truth (Closed 2026-04-22)
+- [x] `XLIFE-01 docs(contract): freeze one canonical PAPER/LIVE execution lifecycle contract`
+- [x] `XLIFE-02 audit(api-runtime): map current runtime order/fill/position authority and divergence points`
+- [x] `XLIFE-03 test(api-red): add failing regression locks for live close pending/partial lifecycle truth`
+- [x] `XLIFE-04 refactor(api-runtime): make close lifecycle fail-closed until canonical close fill is confirmed`
+- [x] `XLIFE-05 test(api-red): lock fill-price and realized-PnL truth for open and close trades`
+- [x] `XLIFE-06 refactor(api-runtime): derive trades and realized PnL from canonical fill results instead of signal markPrice`
+- [x] `XLIFE-07 docs(contract): freeze one shared PAPER/LIVE fill adapter boundary`
+- [x] `XLIFE-08 refactor(api-shared): converge PAPER and LIVE execution onto one canonical fill-result application path`
+- [x] `XLIFE-09 audit(api-exchange-scope): inventory runtime watchdog, automation, and reconciliation exchange-truth drift`
+- [x] `XLIFE-10 refactor(api-exchange-scope): make watchdog and runtime infrastructure explicit about exchange truth`
+- [x] `XLIFE-11 test(api+e2e): run critical-path regression pack for signal -> order -> fill -> position parity`
+- [x] `XLIFE-12 docs(sync): publish closure evidence and freeze future-agent execution-extension rules`
+
+### Progress Log (Phase XLIFE-A - Execution Lifecycle Parity and Exchange Truth)
+- 2026-04-22: Queued `XLIFE-A` from the post-`TRUTH-A` runtime review after confirming the remaining V1-critical gaps are no longer primarily structural, but execution-truth related: local close-before-fill behavior in `LIVE`, runtime accounting based on signal `markPrice` instead of canonical fill truth, partial duplication or divergence risk between `PAPER` and `LIVE` lifecycle semantics, and hidden Binance-only assumptions in runtime watchdog/automation infrastructure. Published executor-ready plan `docs/planning/execution-lifecycle-parity-and-exchange-truth-plan-2026-04-22.md` and froze the permanent extension rules in `docs/architecture/reference/execution-lifecycle-parity-contract.md`.
+- 2026-04-22: Closed `XLIFE-A` end-to-end by making LIVE close flow fail-closed until canonical fill truth exists, switching runtime trade and realized-PnL persistence to canonical fill price and quantity, persisting runtime-origin orders with `origin=BOT` so bot-opened positions keep ownership truth through canonical order-fill-position lifecycle, keeping runtime automation alive during submitted close state, and publishing closure evidence in `docs/operations/execution-lifecycle-parity-and-exchange-truth-closure-2026-04-22.md`. Validation PASS: focused XLIFE engine/runtime pack, `api typecheck`, `api build`, `quality:guardrails`.
 
 ## Phase ARCCON - Architecture Conformance and Service Ownership Closure (Closed 2026-04-21)
 - [x] `ARCCON-01 test(api-red): lock fail-closed manual-order strategy context when selected bot has no symbol-matching strategy`
