@@ -22,6 +22,22 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-23 - Public auth entry pages must stay dynamic after production auth hotfixes
+- Context: production login follow-up after the API-base fallback fix was already deployed and direct API/browser automation confirmed auth worked on a fresh session.
+- Symptom: a user could still see `Could not confirm session. Please sign in again.` even though `POST /auth/login` and the immediate `GET /auth/me` succeeded in fresh production reproduction.
+- Root cause: public auth entry pages remained eligible for aggressive shared-cache delivery, so stale login shells could continue serving outdated client code after an auth hotfix deploy.
+- Guardrail: `/auth/login` and `/auth/register` must explicitly opt out of static revalidation in the App Router, and the cache contract must be locked with a focused regression test.
+- Preferred pattern:
+```text
+1) Reproduce auth against production with a fresh browser session.
+2) If fresh login works, inspect auth page HTML cache behavior before changing API code.
+3) Mark public auth entry pages as `dynamic = 'force-dynamic'` with `revalidate = 0`.
+4) Add a focused contract test so auth pages cannot silently return to stale-cache mode.
+```
+- Avoid: treating a post-hotfix production auth complaint as automatic proof of backend/session failure before checking whether users are still receiving a cached auth shell.
+- Evidence:
+  - 2026-04-23 production reproduction: `curl` and Playwright both confirmed `POST https://api.soar.luckysparrow.ch/auth/login` -> `GET /auth/me` succeeded with valid cookies, while `curl -I https://soar.luckysparrow.ch/auth/login` still showed aggressive cache headers until the auth page contract was hardened in source.
+
 ### 2026-04-22 - Same-day release-gate evidence must sort by full artifact timestamp, not date bucket only
 - Context: prod activation follow-up after a fresh passing restore-drill artifact was generated later on the same UTC day as an earlier failing restore-drill artifact.
 - Symptom: `ops:release:v1:gate` still selected the older same-day `FAIL` restore proof even though a later `PASS` artifact existed, so the gate stayed `not_ready` until the selector logic was fixed.

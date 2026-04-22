@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-04-22
+Last updated: 2026-04-23
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -37,6 +37,8 @@ Last updated: 2026-04-22
 
 ## DONE
 
+- [x] `PROD-AUTH-HOTFIX prevent stale cached auth shells after deploy`
+  - 2026-04-23: Reproduced production login successfully with direct API calls and browser automation, verified that the remaining drift vector was stale public auth page delivery, then marked `/auth/login` and `/auth/register` as dynamic/non-revalidated and locked the contract with a focused regression test. Validation PASS: `pnpm --filter web exec vitest run src/app/(public)/auth/authPageCacheContract.test.ts`, `pnpm run quality:guardrails`.
 - [x] `V1FACT-FOLLOWUP3 formal sign-off closure`
   - 2026-04-22: Filled engineering/product/operations sign-offs and rollback owner in `docs/operations/v1-rc-signoff-record.md`, fixed the Gate 4 circular approval logic in `scripts/buildRcSignoffRecord.mjs`, and refreshed RC status/checklist to `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`. Validation PASS: `pnpm run ops:rc:signoff:build -- --engineering-name "Patryk Wróblewski" --product-name "Patryk Wróblewski" --operations-name "Patryk Wróblewski" --owner-name "Patryk Wróblewski" --owner-contact "<redacted>"`, `pnpm run ops:rc:gates:status`, `pnpm run ops:rc:checklist:sync`.
 - [x] `V1FACT-FOLLOWUP2 prod restore proof recovery + final non-dry-run gate`

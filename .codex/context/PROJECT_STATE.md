@@ -1,6 +1,6 @@
 # PROJECT_STATE
 
-Last updated: 2026-04-22
+Last updated: 2026-04-23
 
 ## Product Snapshot
 - Name: CryptoSparrow / Soar
@@ -118,6 +118,10 @@ Last updated: 2026-04-22
   execution in the production postgres container
   (`x11cfnz1dd9x0yzccftqzcoe`), and the final non-dry-run prod release gate now
   passes end-to-end with fresh prod evidence.
+- 2026-04-23: production auth follow-up confirmed the current API/browser login
+  flow is healthy on a fresh session, and the remaining recurrence vector is
+  stale cached public auth shells. Login and register pages now opt out of
+  static revalidation so users fetch fresh auth clients after deploys.
 - 2026-04-22: `scripts/runV1ReleaseGate.mjs` now selects the latest same-day
   evidence artifact by full timestamp-bearing filename, preventing older
   same-day restore-drill failures from shadowing newer PASS artifacts.
