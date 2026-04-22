@@ -17,3 +17,10 @@ Read order:
 2. `../01_overview-and-principles.md` through
    `../12_documentation-governance.md`
 3. only then use the files in this folder as supporting detail
+
+Key active contracts in this folder include:
+- `exchange-access-ownership-matrix.md`
+- `live-safety-and-contract-truth-remediation-contract.md`
+- `maintainability-remediation-contract.md`
+- `scalability-anti-drift-delivery-contract.md`
+- `web-container-split-contract.md`

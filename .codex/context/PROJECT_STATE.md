@@ -8,9 +8,10 @@ Last updated: 2026-04-22
   live execution support, operator dashboards, and a path toward assistant or
   agent-driven workflows
 - Commercial model: SaaS-style subscription product with staged entitlements
-- Current phase: production hardening with localization closure complete and a
-  new anti-drift/scalability foundation wave queued to stop future ownership
-  regressions before V2 extension work
+- Current phase: production hardening after full `SCALE` closure, with
+  anti-drift guardrails and ownership seams frozen, and `TRUTH-A` queued as
+  the next structural hardening wave for fail-closed LIVE ownership,
+  exchange-contract truth, and web guardrail truthfulness
 
 ## Product Decisions (Confirmed)
 - 2026-04-21: `docs/architecture/` is the canonical source of truth for how
@@ -21,6 +22,9 @@ Last updated: 2026-04-22
   with explicit scope, files, validation, non-goals, and docs-sync outputs;
   this is now frozen in
   `docs/architecture/reference/scalability-anti-drift-delivery-contract.md`.
+- 2026-04-22: full `SCALE` wave (`SCALE-01..SCALE-17`) is closed, including
+  exchange-access convergence, web container seam extraction, and closure
+  evidence handoff for future agents.
 - 2026-04-02: Coolify on VPS with explicit stage and prod split remains the
   default deployment topology.
 - 2026-04-03: phased brand migration from `CryptoSparrow` to `Soar` is real,
@@ -137,10 +141,11 @@ Last updated: 2026-04-22
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: preserve release stability while closing the remaining
-  structural causes of delivery drift via `SCALE-A`: truthful guardrails,
-  canonical exchange access ownership, and final web container ownership
-  cleanup for the largest dashboard/backtest surfaces.
+- Main active objective: preserve release stability after full `SCALE` closure
+  by keeping anti-drift guardrails, ownership seams, and canonical docs in
+  sync while preparing the next smallest structural hardening wave
+  (`TRUTH-A`) for fail-closed LIVE execution ownership, truthful authenticated
+  exchange-read contracts, and broader JSX/presenter copy guardrails.
 - Top blockers:
   - no active blockers recorded.
 - Success criteria for this phase:
@@ -151,11 +156,64 @@ Last updated: 2026-04-22
     regression-locked slices.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - `SCALE-01..SCALE-05` are the next executable tasks, intentionally focused
-    on anti-drift contract freeze, guardrail truthfulness, current-state
-    inventory sync, and exchange access ownership before deeper refactors land.
+  - `TRUTH-A`: fail-closed LIVE key ownership + exchange contract truth + web
+    guardrail truthfulness
 
 ## Recent Progress
+- 2026-04-22: queued `TRUTH-A` as the next structural hardening wave after
+  `SCALE`, publishing
+  `docs/planning/truth-a-live-safety-and-contract-truth-plan-2026-04-22.md`
+  and freezing permanent remediation rules in
+  `docs/architecture/reference/live-safety-and-contract-truth-remediation-contract.md`
+  so future agents can execute the remaining review findings through one
+  self-sufficient task packet family instead of rediscovering intent from
+  scattered audit notes.
+- 2026-04-22: closed `SCALE-16` + `SCALE-17`, finishing the full `SCALE`
+  group. Executed focused dashboard/backtests seam regression pack
+  (`31/31 PASS`) with `quality:guardrails`, `web build`, and `web typecheck`
+  all green; published closure evidence in
+  `docs/operations/scale-cd-closure-evidence-2026-04-22.md`; synchronized
+  queue/context/planning docs and froze future-agent coding rules in
+  `docs/architecture/reference/web-container-split-contract.md`.
+- 2026-04-22: closed `SCALE-15` by extracting trades analytics from
+  `BacktestRunDetails` into `useBacktestTradesAnalytics` (daily performance,
+  timeline DCA linkage, trades rows, insights) and moving tab rendering
+  ownership into `BacktestRunDetailsTabPanels` for `summary/markets/trades/raw`
+  while keeping the route component as composition-only shell; focused backtest
+  tests + `web typecheck` + `web build` passed.
+- 2026-04-22: closed `SCALE-14` by extracting backtest timeline orchestration
+  (chunk loading, cursor/cached merge, in-flight request locking, and
+  parity-failed symbol handling) into `useBacktestTimelineOrchestration`,
+  leaving `BacktestRunDetails` with tab composition and presenter wiring; `web
+  typecheck`, focused backtest tests, and `web build` passed.
+- 2026-04-22: closed `SCALE-13` by extracting runtime table presenter ownership
+  (`runtimeDataTablePresenters.tsx`) and selected-bot sidebar presenter
+  assembly (`runtimeSidebarPresenters.ts`) out of `HomeLiveWidgets`, keeping
+  the container composition-focused; focused dashboard tests + `web typecheck`
+  + `web build` passed.
+- 2026-04-22: closed `SCALE-11` + `SCALE-12` by freezing one explicit web
+  container split contract in
+  `docs/architecture/reference/web-container-split-contract.md` and extracting
+  manual-order controller ownership from `HomeLiveWidgets` into
+  `useManualOrderController`; focused dashboard tests, `web typecheck`, and
+  `web build` passed.
+- 2026-04-22: closed `SCALE-B` (`SCALE-06..SCALE-10`) by auditing and removing
+  duplicate API exchange/bootstrap paths, introducing canonical exchange
+  boundaries (`exchangePublicRead.service.ts`,
+  `exchangeAuthenticatedRead.service.ts`,
+  `exchangeMetadataContract.service.ts`), rewiring symbol-rules/manual-context,
+  positions snapshots, and wallet metadata/balance preview to those boundaries,
+  and passing focused exchange regression + `api typecheck` + `api build` +
+  `quality:guardrails`; evidence in
+  `docs/operations/scale-b-exchange-access-audit-2026-04-22.md`.
+- 2026-04-22: closed `SCALE-A` (`SCALE-01..SCALE-05`) by finishing
+  guardrail-truth audit and cleanup (`scripts/repoGuardrails.mjs` now keeps
+  only active exceptions), refreshing the maintainability inventory with
+  current hotspot line counts and historical closure notes, and freezing one
+  canonical exchange access ownership matrix in
+  `docs/architecture/reference/exchange-access-ownership-matrix.md` (linked
+  from architecture/module docs). Canonical queue/context is now advanced to
+  `SCALE-06..SCALE-10`.
 - 2026-04-22: queued `SCALE-A` in
   `docs/planning/scalability-anti-drift-foundation-plan-2026-04-22.md` and
   froze the permanent delivery rules in

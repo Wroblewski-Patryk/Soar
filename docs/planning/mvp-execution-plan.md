@@ -2441,38 +2441,65 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - [x] `L10NQ-E-02 audit(web-i18n): split latest residual findings into actionable module debt vs shared-foundation debt vs audit-signal noise`
 - [x] `L10NQ-E-03 refactor(tooling): tighten route-reachable audit scoring so namespace/registry files do not masquerade as unresolved route debt`
 - [x] `L10NQ-E-04 refactor(web-public-shell): migrate residual public-shell and dashboard-shell literals to canonical namespaces`
-- [ ] `L10NQ-E-05 refactor(web-profile): remove residual profile API-key hook/local error-copy drift`
-- [ ] `L10NQ-E-06 refactor(web-backtests): retire backtestRunDetails.copy.ts and align remaining backtests exception surfaces`
-- [ ] `L10NQ-E-07 refactor(web-shared-foundation): localize or formally retire remaining shared i18n exception primitives`
-- [ ] `L10NQ-E-08 test(web-i18n): expand route-smoke/parity/guardrail coverage for residual L10NQ-E routes`
-- [ ] `L10NQ-E-09 qa(closure): run residual i18n closure pack and confirm zero actionable route debt`
-- [ ] `L10NQ-E-10 docs(sync): publish closure evidence and synchronize canonical queue/context/inventory docs`
+- [x] `L10NQ-E-05 refactor(web-profile): remove residual profile API-key hook/local error-copy drift`
+- [x] `L10NQ-E-06 refactor(web-backtests): retire backtestRunDetails.copy.ts and align remaining backtests exception surfaces`
+- [x] `L10NQ-E-07 refactor(web-shared-foundation): localize or formally retire remaining shared i18n exception primitives`
+- [x] `L10NQ-E-08 test(web-i18n): expand route-smoke/parity/guardrail coverage for residual L10NQ-E routes`
+- [x] `L10NQ-E-09 qa(closure): run residual i18n closure pack and confirm zero actionable route debt`
+- [x] `L10NQ-E-10 docs(sync): publish closure evidence and synchronize canonical queue/context/inventory docs`
 
 ### Progress Log (Phase L10NQ-E - Residual Route-Reachable i18n Debt Closure)
 - 2026-04-21: Queued `L10NQ-E` from the residual findings explicitly left by the `CQLT` closure pack and published executor-ready plan `docs/planning/l10nq-e-residual-route-reachable-i18n-closure-plan-2026-04-21.md`. Scope is intentionally limited to actionable residual route/shared i18n debt plus audit signal-quality hardening so closure can target zero actionable route debt instead of carrying forward noisy findings.
 - 2026-04-21: Closed `L10NQ-E` end-to-end by tightening route-reachable audit scoring, migrating the remaining public/profile/wallets/markets/backtests/shared UI copy to canonical namespaces, and passing closure gates with final audit result `findings=0`, `localCopy=0`, `fallbackPl=0`, `hardcoded=0`; evidence in `docs/operations/l10nq-e-residual-route-reachable-i18n-closure-2026-04-21.md`.
 
-## Phase SCALE-A - Scalability and Anti-Drift Foundation (Queued 2026-04-22)
-- [ ] `SCALE-01 docs(contract): freeze anti-drift execution model and self-sufficient task-packet rule`
-- [ ] `SCALE-02 audit(guardrails-truth): diff current allowlists against actually closed hotspots`
-- [ ] `SCALE-03 refactor(guardrails): remove stale allowlists and add regression lock for reintroducing closed exceptions`
-- [ ] `SCALE-04 docs(inventory-sync): refresh maintainability inventory and hotspot sizes to current code reality`
-- [ ] `SCALE-05 docs(contract): freeze canonical exchange access boundary and ownership matrix`
-- [ ] `SCALE-06 audit(api-exchange): map remaining duplicate bootstrap and metadata flows in API`
-- [ ] `SCALE-07 refactor(api-exchange-read): centralize public market-map and symbol-rules access behind one read boundary`
-- [ ] `SCALE-08 refactor(api-exchange-auth): centralize authenticated exchange client access for positions and future snapshot/read consumers`
-- [ ] `SCALE-09 refactor(api-wallet-metadata): converge wallet metadata, manual-order context, and symbol-rules dependencies onto one metadata contract`
-- [ ] `SCALE-10 test(api-exchange): run focused regression pack for canonical exchange access layer`
-- [ ] `SCALE-11 docs(contract): freeze container/controller/view-model split contract for HomeLiveWidgets and BacktestRunDetails`
-- [ ] `SCALE-12 refactor(web-dashboard): extract manual-order controller seam from HomeLiveWidgets`
-- [ ] `SCALE-13 refactor(web-dashboard): extract runtime tables and selected-bot summary presenters from HomeLiveWidgets`
-- [ ] `SCALE-14 refactor(web-backtests): extract timeline orchestration hook from BacktestRunDetails`
-- [ ] `SCALE-15 refactor(web-backtests): extract trades analytics and tab presenters from BacktestRunDetails`
-- [ ] `SCALE-16 test(web-seams): run focused parity/regression pack for dashboard and backtests seam extraction`
-- [ ] `SCALE-17 docs(sync): publish closure evidence, future-agent coding rules, and residual backlog handoff`
+## Phase SCALE-A - Scalability and Anti-Drift Foundation (Closed 2026-04-22)
+- [x] `SCALE-01 docs(contract): freeze anti-drift execution model and self-sufficient task-packet rule`
+- [x] `SCALE-02 audit(guardrails-truth): diff current allowlists against actually closed hotspots`
+- [x] `SCALE-03 refactor(guardrails): remove stale allowlists and add regression lock for reintroducing closed exceptions`
+- [x] `SCALE-04 docs(inventory-sync): refresh maintainability inventory and hotspot sizes to current code reality`
+- [x] `SCALE-05 docs(contract): freeze canonical exchange access boundary and ownership matrix`
+- [x] `SCALE-06 audit(api-exchange): map remaining duplicate bootstrap and metadata flows in API`
+- [x] `SCALE-07 refactor(api-exchange-read): centralize public market-map and symbol-rules access behind one read boundary`
+- [x] `SCALE-08 refactor(api-exchange-auth): centralize authenticated exchange client access for positions and future snapshot/read consumers`
+- [x] `SCALE-09 refactor(api-wallet-metadata): converge wallet metadata, manual-order context, and symbol-rules dependencies onto one metadata contract`
+- [x] `SCALE-10 test(api-exchange): run focused regression pack for canonical exchange access layer`
+- [x] `SCALE-11 docs(contract): freeze container/controller/view-model split contract for HomeLiveWidgets and BacktestRunDetails`
+- [x] `SCALE-12 refactor(web-dashboard): extract manual-order controller seam from HomeLiveWidgets`
+- [x] `SCALE-13 refactor(web-dashboard): extract runtime tables and selected-bot summary presenters from HomeLiveWidgets`
+- [x] `SCALE-14 refactor(web-backtests): extract timeline orchestration hook from BacktestRunDetails`
+- [x] `SCALE-15 refactor(web-backtests): extract trades analytics and tab presenters from BacktestRunDetails`
+- [x] `SCALE-16 test(web-seams): run focused parity/regression pack for dashboard and backtests seam extraction`
+- [x] `SCALE-17 docs(sync): publish closure evidence, future-agent coding rules, and residual backlog handoff`
 
 ### Progress Log (Phase SCALE-A - Scalability and Anti-Drift Foundation)
 - 2026-04-22: Queued `SCALE-A` to remove the structural causes of future delivery drift after `CQLT` and `L10NQ-E`: stale guardrail allowlists, spread exchange/bootstrap ownership, and still-oversized web orchestration containers. Published executor-ready plan `docs/planning/scalability-anti-drift-foundation-plan-2026-04-22.md` and froze the permanent task-packet / anti-drift rules in `docs/architecture/reference/scalability-anti-drift-delivery-contract.md`.
+- 2026-04-22: Closed `SCALE-01..SCALE-05` by auditing all active guardrail allowlists against real regex matches, removing stale local-copy/hardcoded/monolith exceptions, refreshing maintainability inventory metrics to current file sizes, and freezing exchange-access ownership in `docs/architecture/reference/exchange-access-ownership-matrix.md`; execution focus advanced to `SCALE-06..SCALE-10`.
+- 2026-04-22: Closed `SCALE-06..SCALE-10` by publishing duplicate-flow audit evidence in `docs/operations/scale-b-exchange-access-audit-2026-04-22.md`, introducing canonical `exchangePublicRead` + `exchangeAuthenticatedRead` + `exchangeMetadataContract` boundaries, and rewiring symbol rules, manual-order context, positions snapshots, and wallet metadata/balance preview to those boundaries; focused exchange tests plus `api typecheck`, `api build`, and `quality:guardrails` passed.
+- 2026-04-22: Closed `SCALE-11` + `SCALE-12` by freezing the web container split contract in `docs/architecture/reference/web-container-split-contract.md`, adding canonical `useManualOrderController` ownership for dashboard manual-order state/context/submit flow, rewiring `HomeLiveWidgets` to the seam, and passing focused dashboard tests with `web typecheck` + `web build`.
+- 2026-04-22: Closed `SCALE-13` by extracting runtime data-table presenter ownership and selected-bot sidebar presenter assembly into dedicated `home-live-widgets` modules, reducing `HomeLiveWidgets` to section composition over presenter seams while preserving runtime behavior; validation: focused dashboard tests (`20/20 PASS`), `pnpm --filter web run typecheck`, `pnpm --filter web run build`.
+- 2026-04-22: Closed `SCALE-14` by extracting timeline orchestration from `BacktestRunDetails` into `useBacktestTimelineOrchestration` (chunk/cursor progression, cache merge, in-flight locks, parity-failed symbol handling), keeping route component ownership focused on tab composition; validation: `pnpm --filter web run test -- --run src/features/backtest/components/BacktestRunDetails.test.tsx src/features/backtest/hooks/useBacktestRunCoreData.test.tsx`, `pnpm --filter web run typecheck`, `pnpm --filter web run build`.
+- 2026-04-22: Closed `SCALE-15` by extracting trades analytics into `useBacktestTradesAnalytics` and moving tab presenter ownership (`summary`, `markets`, `trades`, `raw`) into `BacktestRunDetailsTabPanels`, leaving `BacktestRunDetails` as route-level composition shell; validation: `pnpm --filter web run test -- --run src/features/backtest/components/BacktestRunDetails.test.tsx src/features/backtest/hooks/useBacktestRunCoreData.test.tsx`, `pnpm --filter web run typecheck`, `pnpm --filter web run build`.
+- 2026-04-22: Closed `SCALE-16` by running focused seam/parity regression pack across dashboard + backtests extraction surfaces (`HomeLiveWidgets`, preview parity, `BacktestRunDetails`, `useBacktestRunCoreData`, `backtestRunDetailsViewModel`) with `31/31 PASS`; closure gates `pnpm run quality:guardrails`, `pnpm --filter web run build`, and `pnpm --filter web run typecheck` passed.
+- 2026-04-22: Closed `SCALE-17` by publishing closure evidence and future-agent coding rules in `docs/operations/scale-cd-closure-evidence-2026-04-22.md`, updating `web-container-split-contract` and module handoff docs (`web-backtest`, `web-dashboard-home`), and synchronizing canonical queue/context docs for completed `SCALE-C` + `SCALE-D`.
+
+## Phase TRUTH-A - Live Safety and Contract Truth Closure (Queued 2026-04-22)
+- [ ] `TRUTH-01 docs(contract): freeze fail-closed LIVE credential ownership and exchange-truth remediation rules`
+- [ ] `TRUTH-02 audit(api-live-safety): map every LIVE credential resolution path and forbidden fallback`
+- [ ] `TRUTH-03 fix(api-live-safety): remove cross-key fallback and require canonical key parity for LIVE orders`
+- [ ] `TRUTH-04 test(api-live-safety): add regression locks for LIVE key ownership failure modes`
+- [ ] `TRUTH-05 docs(contract): freeze explicit exchange capability matrix for authenticated account reads`
+- [ ] `TRUTH-06 audit(api-auth-reads): inventory every authenticated exchange read consumer versus real exchange support`
+- [ ] `TRUTH-07 refactor(api-auth-read-contract): introduce one canonical authenticated account-read boundary`
+- [ ] `TRUTH-08 fix(api-wallet-preview): make wallet balance preview contract truthful by exchange and source`
+- [ ] `TRUTH-09 fix(api-positions-snapshots): make positions/open-orders snapshot contract truthful by exchange and scope`
+- [ ] `TRUTH-10 audit(web-guardrails): inventory residual JSX/presenter literal debt and current guardrail blind spots`
+- [ ] `TRUTH-11 refactor(web-guardrails): harden hardcoded-UI detection for JSX and presenter literals`
+- [ ] `TRUTH-12 fix(web-runtime-copy): remove remaining runtime/dashboard literal drift behind canonical presenter or i18n ownership`
+- [ ] `TRUTH-13 qa(closure): run focused safety, exchange-truth, and guardrail closure pack`
+- [ ] `TRUTH-14 docs(sync): publish closure evidence and freeze future-agent extension rules`
+
+### Progress Log (Phase TRUTH-A - Live Safety and Contract Truth Closure)
+- 2026-04-22: Queued `TRUTH-A` from the post-`SCALE` architecture review to close three remaining systemic risks: forbidden LIVE order API-key fallback, generic exchange-read contracts still hiding Binance-only behavior, and JSX/presenter hardcoded UI literals still bypassing current guardrails. Published executor-ready plan `docs/planning/truth-a-live-safety-and-contract-truth-plan-2026-04-22.md` and froze the permanent remediation rules in `docs/architecture/reference/live-safety-and-contract-truth-remediation-contract.md`.
 
 ## Phase ARCCON - Architecture Conformance and Service Ownership Closure (Closed 2026-04-21)
 - [x] `ARCCON-01 test(api-red): lock fail-closed manual-order strategy context when selected bot has no symbol-matching strategy`

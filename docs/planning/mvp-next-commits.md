@@ -7,25 +7,11 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `SCALE-01 docs(contract): freeze anti-drift execution model and self-sufficient task-packet rule`
-- [ ] `SCALE-02 audit(guardrails-truth): diff current allowlists against actually closed hotspots`
-- [ ] `SCALE-03 refactor(guardrails): remove stale allowlists and add regression lock for reintroducing closed exceptions`
-- [ ] `SCALE-04 docs(inventory-sync): refresh maintainability inventory and hotspot sizes to current code reality`
-- [ ] `SCALE-05 docs(contract): freeze canonical exchange access boundary and ownership matrix`
+- [x] `none`
 ## NEXT
-- [ ] `SCALE-06 audit(api-exchange): map remaining duplicate bootstrap and metadata flows in API`
-- [ ] `SCALE-07 refactor(api-exchange-read): centralize public market-map and symbol-rules access behind one read boundary`
-- [ ] `SCALE-08 refactor(api-exchange-auth): centralize authenticated exchange client access for positions and future snapshot/read consumers`
-- [ ] `SCALE-09 refactor(api-wallet-metadata): converge wallet metadata, manual-order context, and symbol-rules dependencies onto one metadata contract`
-- [ ] `SCALE-10 test(api-exchange): run focused regression pack for canonical exchange access layer`
+- [x] `none`
 ## PIPELINE
-- [ ] `SCALE-11 docs(contract): freeze container/controller/view-model split contract for HomeLiveWidgets and BacktestRunDetails`
-- [ ] `SCALE-12 refactor(web-dashboard): extract manual-order controller seam from HomeLiveWidgets`
-- [ ] `SCALE-13 refactor(web-dashboard): extract runtime tables and selected-bot summary presenters from HomeLiveWidgets`
-- [ ] `SCALE-14 refactor(web-backtests): extract timeline orchestration hook from BacktestRunDetails`
-- [ ] `SCALE-15 refactor(web-backtests): extract trades analytics and tab presenters from BacktestRunDetails`
-- [ ] `SCALE-16 test(web-seams): run focused parity/regression pack for dashboard and backtests seam extraction`
-- [ ] `SCALE-17 docs(sync): publish closure evidence, future-agent coding rules, and residual backlog handoff`
+- [x] `none`
 - [x] `CQLT-33 qa(closure): run full quality closure pack and publish maintainability delta evidence`
 - [x] `CQLT-25 refactor(api-orders): split manual-order context, quantity-rule normalization, lifecycle authority, and persistence mapping out of orders.service`
 - [x] `CQLT-26 refactor(api-bots): split command validation, canonical bot context checks, and projection-drift helpers out of botsCommand.service`
@@ -37,11 +23,16 @@ Operational queue for one-task execution runs.
 - [x] `CQLT-32 docs(decision): freeze legacy bridge sunset list and mark compatibility-only code paths that remain intentional`
 - [x] `CQLT-34 docs(sync): update queue/context/module docs and capture post-wave coding rules for future agents`
 ## GROUP QUEUE
-- [ ] `SCALE-A planning queued (post-L10NQ anti-drift foundation: truthful guardrails, canonical exchange access, and web container ownership closure)`
-- [ ] `SCALE-A (commits SCALE-01..SCALE-05): anti-drift contract + guardrail truthfulness + current-state inventory sync`
-- [ ] `SCALE-B (commits SCALE-06..SCALE-10): canonical exchange access boundary and focused API regression lock`
-- [ ] `SCALE-C (commits SCALE-11..SCALE-16): HomeLiveWidgets and BacktestRunDetails container-ownership closure`
-- [ ] `SCALE-D (commit SCALE-17): closure evidence + future-agent coding rules + canonical sync`
+- [x] `TRUTH-A planning queued (fail-closed LIVE key ownership + exchange contract truth + web guardrail truthfulness)`
+- [ ] `TRUTH-A1 (commits TRUTH-01..TRUTH-04): fail-closed LIVE order credential ownership`
+- [ ] `TRUTH-A2 (commits TRUTH-05..TRUTH-09): explicit authenticated exchange-read support and truthful route contracts`
+- [ ] `TRUTH-A3 (commits TRUTH-10..TRUTH-12): JSX/presenter hardcoded UI guardrail hardening and residual runtime copy closure`
+- [ ] `TRUTH-A4 (commits TRUTH-13..TRUTH-14): focused closure validation, evidence, and future-agent rule freeze`
+- [x] `SCALE-A planning queued (post-L10NQ anti-drift foundation: truthful guardrails, canonical exchange access, and web container ownership closure)`
+- [x] `SCALE-A (commits SCALE-01..SCALE-05): anti-drift contract + guardrail truthfulness + current-state inventory sync`
+- [x] `SCALE-B (commits SCALE-06..SCALE-10): canonical exchange access boundary and focused API regression lock`
+- [x] `SCALE-C (commits SCALE-11..SCALE-16): HomeLiveWidgets and BacktestRunDetails container-ownership closure`
+- [x] `SCALE-D (commit SCALE-17): closure evidence + future-agent coding rules + canonical sync`
 - [x] `L10NQ-E planning queued (residual route-reachable i18n debt closure + audit signal-quality hardening after CQLT closure)`
 - [x] `L10NQ-E group closure (residual route-reachable i18n debt closure + audit signal-quality hardening after CQLT closure)`
 - [x] `CQLT planning queued (code-quality and maintainability remediation across i18n hardcoding, monolith seams, shared-helper duplication, adapter ownership, and fallback discipline)`
@@ -140,6 +131,22 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `TRUTH-A planning queued (fail-closed LIVE key ownership + exchange contract truth + web guardrail truthfulness)`
+  - 2026-04-22: Published `docs/planning/truth-a-live-safety-and-contract-truth-plan-2026-04-22.md`, froze permanent rules in `docs/architecture/reference/live-safety-and-contract-truth-remediation-contract.md`, and activated the new follow-up wave in canonical queue/context so future agents can execute the remaining review findings as self-sufficient task packets instead of reconstructing intent from audit notes.
+- [x] `SCALE-17 docs(sync): publish closure evidence, future-agent coding rules, and residual backlog handoff`
+  - 2026-04-22: Published closure evidence in `docs/operations/scale-cd-closure-evidence-2026-04-22.md`, synchronized queue/context/execution-plan status, and froze future-agent extension rules in `docs/architecture/reference/web-container-split-contract.md` plus module docs handoff.
+- [x] `SCALE-16 test(web-seams): run focused parity/regression pack for dashboard and backtests seam extraction`
+  - 2026-04-22: Ran focused seam/parity pack for `HomeLiveWidgets` + preview parity and `BacktestRunDetails` + extracted backtest seams (`31/31 PASS`), then passed `quality:guardrails`, `web build`, and `web typecheck`.
+- [x] `SCALE-15 refactor(web-backtests): extract trades analytics and tab presenters from BacktestRunDetails`
+  - 2026-04-22: Extracted run trades analytics into `useBacktestTradesAnalytics` and moved summary/markets/trades/raw tab rendering ownership into `BacktestRunDetailsTabPanels`, leaving `BacktestRunDetails` as route-level composition over seams; validation: focused backtest tests, `web typecheck`, `web build` PASS.
+- [x] `SCALE-14 refactor(web-backtests): extract timeline orchestration hook from BacktestRunDetails`
+  - 2026-04-22: Moved timeline chunk-loading/cache/inflight orchestration into `useBacktestTimelineOrchestration`, rewired `BacktestRunDetails` to consume that seam, and passed focused backtest tests + `web typecheck` + `web build`.
+- [x] `SCALE-13 refactor(web-dashboard): extract runtime tables and selected-bot summary presenters from HomeLiveWidgets`
+  - 2026-04-22: Extracted runtime table presenter ownership into `runtimeDataTablePresenters.tsx` and sidebar manual-order/text presenter ownership into `runtimeSidebarPresenters.ts`, rewired `HomeLiveWidgets` to composition-only seams, and passed focused dashboard tests + `web typecheck` + `web build`.
+- [x] `SCALE-11 docs(contract): freeze container/controller/view-model split contract for HomeLiveWidgets and BacktestRunDetails`
+  - 2026-04-22: Added `docs/architecture/reference/web-container-split-contract.md`, linked it from architecture/module docs, and froze container vs controller vs view-model/presenter ownership rules plus pending `SCALE-13..15` seams.
+- [x] `SCALE-12 refactor(web-dashboard): extract manual-order controller seam from HomeLiveWidgets`
+  - 2026-04-22: Added `useManualOrderController` as canonical manual-order state/context/submit seam, rewired `HomeLiveWidgets` to compose it, and passed focused dashboard tests + `web typecheck` + `web build`.
 - [x] `CQLT-33 qa(closure): run full quality closure pack and publish maintainability delta evidence`
   - 2026-04-21: Ran sequential DB-backed API closure suites for `orders`, `backtests`, and `bots`, then passed repository-wide `build`, `typecheck`, `quality:guardrails`, and refreshed `i18n:audit:route-reachable:web`; published maintainability delta evidence in `docs/operations/code-quality-maintainability-closure-2026-04-21.md`.
 - [x] `CQLT-34 docs(sync): update queue/context/module docs and capture post-wave coding rules for future agents`

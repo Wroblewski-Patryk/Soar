@@ -17,26 +17,11 @@ Last updated: 2026-04-22
 
 ## READY
 
-- [ ] `SCALE-01 docs(contract): freeze anti-drift execution model and self-sufficient task-packet rule`
-- [ ] `SCALE-02 audit(guardrails-truth): diff current allowlists against actually closed hotspots`
-- [ ] `SCALE-03 refactor(guardrails): remove stale allowlists and add regression lock for reintroducing closed exceptions`
+- [ ] (none)
 
 ## BACKLOG
 
-- [ ] `SCALE-04 docs(inventory-sync): refresh maintainability inventory and hotspot sizes to current code reality`
-- [ ] `SCALE-05 docs(contract): freeze canonical exchange access boundary and ownership matrix`
-- [ ] `SCALE-06 audit(api-exchange): map remaining duplicate bootstrap and metadata flows in API`
-- [ ] `SCALE-07 refactor(api-exchange-read): centralize public market-map and symbol-rules access behind one read boundary`
-- [ ] `SCALE-08 refactor(api-exchange-auth): centralize authenticated exchange client access for positions and future snapshot/read consumers`
-- [ ] `SCALE-09 refactor(api-wallet-metadata): converge wallet metadata, manual-order context, and symbol-rules dependencies onto one metadata contract`
-- [ ] `SCALE-10 test(api-exchange): run focused regression pack for canonical exchange access layer`
-- [ ] `SCALE-11 docs(contract): freeze container/controller/view-model split contract for HomeLiveWidgets and BacktestRunDetails`
-- [ ] `SCALE-12 refactor(web-dashboard): extract manual-order controller seam from HomeLiveWidgets`
-- [ ] `SCALE-13 refactor(web-dashboard): extract runtime tables and selected-bot summary presenters from HomeLiveWidgets`
-- [ ] `SCALE-14 refactor(web-backtests): extract timeline orchestration hook from BacktestRunDetails`
-- [ ] `SCALE-15 refactor(web-backtests): extract trades analytics and tab presenters from BacktestRunDetails`
-- [ ] `SCALE-16 test(web-seams): run focused parity/regression pack for dashboard and backtests seam extraction`
-- [ ] `SCALE-17 docs(sync): publish closure evidence, future-agent coding rules, and residual backlog handoff`
+- [ ] (none)
 
 ## IN_PROGRESS
 
@@ -52,6 +37,27 @@ Last updated: 2026-04-22
 
 ## DONE
 
+- [x] `TRUTH-A planning queued (fail-closed LIVE key ownership + exchange contract truth + web guardrail truthfulness)`
+  - 2026-04-22: Published executor-ready plan `docs/planning/truth-a-live-safety-and-contract-truth-plan-2026-04-22.md`, froze permanent remediation rules in `docs/architecture/reference/live-safety-and-contract-truth-remediation-contract.md`, and queued detailed follow-up tasks for LIVE key ownership safety, authenticated exchange-read contract truth, and JSX/presenter guardrail hardening.
+
+- [x] `SCALE-17 docs(sync): publish closure evidence, future-agent coding rules, and residual backlog handoff`
+  - 2026-04-22: Published `docs/operations/scale-cd-closure-evidence-2026-04-22.md`, synchronized canonical queue/context/planning status, and froze future-agent extension rules in `web-container-split-contract` plus module handoff docs.
+- [x] `SCALE-16 test(web-seams): run focused parity/regression pack for dashboard and backtests seam extraction`
+  - 2026-04-22: Focused dashboard/backtests seam pack passed (`31/31`) across `HomeLiveWidgets`, preview parity, `BacktestRunDetails`, `useBacktestRunCoreData`, and `backtestRunDetailsViewModel`; `quality:guardrails`, `web build`, and `web typecheck` all PASS.
+- [x] `SCALE-15 refactor(web-backtests): extract trades analytics and tab presenters from BacktestRunDetails`
+  - 2026-04-22: Extracted backtest trades analytics ownership into `useBacktestTradesAnalytics` and moved tab rendering ownership into `BacktestRunDetailsTabPanels` (`summary`, `markets`, `trades`, `raw`), leaving `BacktestRunDetails` as composition shell over seams. Validation: focused backtest tests + `web typecheck` + `web build` PASS.
+- [x] `SCALE-14 refactor(web-backtests): extract timeline orchestration hook from BacktestRunDetails`
+  - 2026-04-22: Extracted timeline chunk-loading, cursor progression, cache merge, in-flight request guard, and parity-failed symbol handling into `useBacktestTimelineOrchestration`; `BacktestRunDetails` now consumes the dedicated seam while preserving behavior. Validation: focused backtest tests + `web typecheck` + `web build` PASS.
+- [x] `SCALE-13 refactor(web-dashboard): extract runtime tables and selected-bot summary presenters from HomeLiveWidgets`
+  - 2026-04-22: Extracted runtime table column ownership from `HomeLiveWidgets` into `runtimeDataTablePresenters.tsx` and moved selected-bot sidebar summary/manual-order presenter assembly into `runtimeSidebarPresenters.ts`, leaving the container as composition-focused orchestration; focused dashboard tests, `web typecheck`, and `web build` passed.
+- [x] `SCALE-12 refactor(web-dashboard): extract manual-order controller seam from HomeLiveWidgets`
+  - 2026-04-22: Added canonical `useManualOrderController` seam for symbol/side/qty/price state, manual-context fetch, slider math, and submit lifecycle; rewired `HomeLiveWidgets` to compose this seam and passed focused dashboard tests plus `web typecheck` + `web build`.
+- [x] `SCALE-11 docs(contract): freeze container/controller/view-model split contract for HomeLiveWidgets and BacktestRunDetails`
+  - 2026-04-22: Added `docs/architecture/reference/web-container-split-contract.md`, linked it from architecture/module docs, and froze explicit ownership boundaries plus remaining extraction targets (`SCALE-13..15`).
+- [x] `SCALE-B group closure (SCALE-06..SCALE-10)`
+  - 2026-04-22: Closed exchange-access convergence wave by publishing the canonical duplicate-flow audit in `docs/operations/scale-b-exchange-access-audit-2026-04-22.md`, adding shared exchange read boundaries (`exchangePublicRead`, `exchangeAuthenticatedRead`, `exchangeMetadataContract`), rewiring symbol rules + manual-order context + positions snapshots + wallet metadata/balance preview to those boundaries, and passing focused exchange regression pack + `api typecheck` + `api build` + `quality:guardrails`.
+- [x] `SCALE-A group closure (SCALE-01..SCALE-05)`
+  - 2026-04-22: Completed anti-drift foundation slice by auditing guardrail allowlists against real pattern matches, removing stale local-copy/hardcoded/monolith exceptions from `scripts/repoGuardrails.mjs`, synchronizing maintainability inventory metrics to current hotspot reality, and freezing canonical exchange access ownership in `docs/architecture/reference/exchange-access-ownership-matrix.md` with links from architecture/module docs.
 - [x] `SCALE-A planning queued (post-L10NQ anti-drift foundation: truthful guardrails, canonical exchange access, and web container ownership closure)`
   - 2026-04-22: Published `docs/planning/scalability-anti-drift-foundation-plan-2026-04-22.md`, froze the permanent anti-drift delivery rules in `docs/architecture/reference/scalability-anti-drift-delivery-contract.md`, and activated `SCALE-01..SCALE-17` in the canonical queue/context so future executors get one self-sufficient task packet per change instead of reconstructing context from multiple files.
 - [x] `L10NQ-E-01..L10NQ-E-10 residual route-reachable i18n closure`
