@@ -22,6 +22,22 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-23 - Optional i18n helpers used above providers must return stable function references
+- Context: production auth follow-up after cached auth pages were fixed, but login still bounced back to `/auth/login` under real browser traffic.
+- Symptom: the web app spammed `/auth/me` from the login chunk until the API rate limiter returned `429`, after which the dashboard session fell back to the login screen.
+- Root cause: `AuthProvider` lives above the route `I18nProvider`, so `useOptionalI18n()` runs in fallback mode there. Its fallback `t` function was recreated on every render, which changed `fetchUser`, retriggered the mount effect, and looped `auth/me`.
+- Guardrail: optional hooks that can run outside their provider must memoize fallback callbacks/objects, especially when downstream effects depend on them.
+- Preferred pattern:
+```text
+1) Treat fallback hook return values as part of render stability, not just correctness.
+2) Wrap fallback callbacks in `useCallback`.
+3) Wrap returned helper objects in `useMemo` when callers may place them in dependency arrays.
+4) Add a rerender identity test for provider-less usage.
+```
+- Avoid: returning a fresh fallback translator/helper function from hooks that are consumed by providers or effects during app bootstrap.
+- Evidence:
+  - 2026-04-23 production Playwright tracing showed 21 rapid `/auth/me` requests from the login page chunk before rate limiting; stabilizing `useOptionalI18n()` removes the changing dependency that retriggered `AuthContext` bootstrap fetches.
+
 ### 2026-04-23 - Public auth entry pages must stay dynamic after production auth hotfixes
 - Context: production login follow-up after the API-base fallback fix was already deployed and direct API/browser automation confirmed auth worked on a fresh session.
 - Symptom: a user could still see `Could not confirm session. Please sign in again.` even though `POST /auth/login` and the immediate `GET /auth/me` succeeded in fresh production reproduction.

@@ -37,6 +37,8 @@ Last updated: 2026-04-23
 
 ## DONE
 
+- [x] `PROD-AUTH-HOTFIX stop providerless i18n fallback from looping auth bootstrap`
+  - 2026-04-23: traced the remaining prod login bounce to repeated `/auth/me` calls from the login chunk, caused by `useOptionalI18n()` returning a fresh fallback translator on every render while `AuthProvider` bootstraps above route i18n providers. Memoized the fallback translator/object and locked the contract with a focused rerender-identity test. Validation PASS: `pnpm --filter web exec vitest run src/i18n/useOptionalI18n.test.tsx src/features/auth/hooks/useLoginForm.test.tsx`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
 - [x] `PROD-AUTH-HOTFIX prevent stale cached auth shells after deploy`
   - 2026-04-23: Reproduced production login successfully with direct API calls and browser automation, verified that the remaining drift vector was stale public auth page delivery, then marked `/auth/login` and `/auth/register` as dynamic/non-revalidated and locked the contract with a focused regression test. Validation PASS: `pnpm --filter web exec vitest run src/app/(public)/auth/authPageCacheContract.test.ts`, `pnpm run quality:guardrails`.
 - [x] `V1FACT-FOLLOWUP3 formal sign-off closure`

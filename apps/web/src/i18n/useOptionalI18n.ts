@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext } from 'react';
+import { useCallback, useContext, useMemo } from 'react';
 import { I18nContext } from './I18nProvider';
 import { DEFAULT_LOCALE, translations, type TranslationKey } from './translations';
 
@@ -18,14 +18,14 @@ const resolveKey = (obj: unknown, path: string): string | undefined => {
 export const useOptionalI18n = () => {
   const context = useContext(I18nContext);
 
-  const t = (key: TranslationKey, fallback?: string) => {
+  const t = useCallback((key: TranslationKey, fallback?: string) => {
     if (context) return context.t(key);
     const defaultValue = resolveKey(translations[DEFAULT_LOCALE], key);
     return defaultValue ?? fallback ?? String(key);
-  };
+  }, [context]);
 
-  return {
+  return useMemo(() => ({
     t,
     hasProvider: Boolean(context),
-  };
+  }), [context, t]);
 };

@@ -122,6 +122,10 @@ Last updated: 2026-04-23
   flow is healthy on a fresh session, and the remaining recurrence vector is
   stale cached public auth shells. Login and register pages now opt out of
   static revalidation so users fetch fresh auth clients after deploys.
+- 2026-04-23: the remaining production login bounce was traced to a web-side
+  `/auth/me` bootstrap loop. `AuthProvider` runs above route i18n providers, so
+  `useOptionalI18n()` now memoizes its fallback translator to keep auth
+  bootstrap dependencies stable and stop rate-limit-triggering session checks.
 - 2026-04-22: `scripts/runV1ReleaseGate.mjs` now selects the latest same-day
   evidence artifact by full timestamp-bearing filename, preventing older
   same-day restore-drill failures from shadowing newer PASS artifacts.
