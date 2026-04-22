@@ -22,6 +22,22 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-22 - Missing NEXT_PUBLIC_API_BASE_URL makes prod web post auth to itself
+- Context: production login incident on `https://soar.luckysparrow.ch` after the app and API were otherwise healthy.
+- Symptom: login from the web UI fails even though `POST https://api.soar.luckysparrow.ch/auth/login` works and returns a valid session cookie; direct `POST https://soar.luckysparrow.ch/auth/login` returns `405 Method Not Allowed`.
+- Root cause: when `NEXT_PUBLIC_API_BASE_URL` is missing from the web deploy, Axios falls back to same-origin requests, so auth and other API calls hit the Next.js web host instead of the API host.
+- Guardrail: web runtime must have a safe fallback for public API base resolution in production/stage domains (`soar -> api`, `stage.soar -> stage-api`) so login and dashboard API calls do not depend on a single fragile public env var.
+- Preferred pattern:
+```text
+1) Resolve API base from NEXT_PUBLIC_API_BASE_URL when present.
+2) If it is missing in the browser, infer canonical API host from the current web hostname.
+3) Keep localhost host-only/relative for local development.
+4) Lock the inference with focused unit tests.
+```
+- Avoid: assuming a missing public API base env only breaks "some requests"; it can silently reroute login to the web app and fail with `405`.
+- Evidence:
+  - 2026-04-22 prod incident reproduction: `POST https://api.soar.luckysparrow.ch/auth/login` with valid credentials returned `200`, while `POST https://soar.luckysparrow.ch/auth/login` returned `405 Method Not Allowed`; web fix added `publicApiBaseUrl` inference and tests.
+
 ### 2026-04-22 - Protected prod OPS endpoints can stay externally blocked even when runtime is healthy
 - Context: V1 production activation rehearsal after stage succeeded and prod deploy on SHA `49ea8e0c` was already live.
 - Symptom: public prod API and web smoke pass, internal prod runtime checks pass from inside the API runtime, but external `/workers/*`, `/workers/runtime-freshness`, and `/alerts` probes remain `403`.

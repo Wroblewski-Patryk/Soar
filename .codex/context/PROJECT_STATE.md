@@ -100,6 +100,11 @@ Last updated: 2026-04-22
 - 2026-04-22: `V1FACT-A` is closed as a delivery wave. Further progress toward
   final V1 activation now depends on operator-owned prod evidence generation
   and named sign-off capture, not on additional planned engineering tasks.
+- 2026-04-22: production web login regression was traced to missing
+  `NEXT_PUBLIC_API_BASE_URL` behavior in the browser. A shared public API base
+  resolver now infers canonical API hosts from Soar domain patterns so
+  production/stage auth and dashboard API calls do not fall back to same-origin
+  `405` requests when the public env is absent.
 - 2026-04-22: `SAFEV1-A1` is closed; exchange reconciliation now refuses to
   create or update open synced positions when canonical entry truth is missing,
   keeping incomplete exchange snapshots out of the local open-position model.

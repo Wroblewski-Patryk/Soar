@@ -1,9 +1,5 @@
 import { normalizeSymbolsUnique } from "./symbols";
-
-const normalizeBaseUrl = (value?: string) => {
-  if (!value) return undefined;
-  return value.replace(/\/+$/, "");
-};
+import { resolvePublicApiBaseUrl } from "./publicApiBaseUrl";
 
 export const buildMarketStreamEventsUrl = (params: {
   symbols: string[];
@@ -15,7 +11,7 @@ export const buildMarketStreamEventsUrl = (params: {
     interval: params.interval,
   });
   const path = `/dashboard/market-stream/events?${query.toString()}`;
-  const base = normalizeBaseUrl(process.env.NEXT_PUBLIC_API_BASE_URL);
+  const base = resolvePublicApiBaseUrl();
   return base ? `${base}${path}` : path;
 };
 
@@ -24,6 +20,6 @@ export const createMarketStreamEventSource = (params: {
   interval: string;
 }) => {
   const url = buildMarketStreamEventsUrl(params);
-  const hasApiBase = Boolean(normalizeBaseUrl(process.env.NEXT_PUBLIC_API_BASE_URL));
+  const hasApiBase = Boolean(resolvePublicApiBaseUrl());
   return hasApiBase ? new EventSource(url, { withCredentials: true }) : new EventSource(url);
 };

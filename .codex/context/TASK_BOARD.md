@@ -37,6 +37,8 @@ Last updated: 2026-04-22
 
 ## DONE
 
+- [x] `PROD-HOTFIX web auth base-url fallback for login/runtime API calls`
+  - 2026-04-22: Closed a production login incident by adding browser-side API base inference for canonical Soar domains (`soar -> api`, `stage.soar -> stage-api`) and reusing the same resolver for auth/API and market-stream calls. Validation PASS: `pnpm --filter web exec vitest run src/lib/publicApiBaseUrl.test.ts`, `pnpm --filter web run build`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
 - [x] `V1FACT-A group closure (evidence-backed activation path published; candidate still blocked on operator-only inputs)`
   - 2026-04-22: Closed `V1FACT-A` as an engineering/doc wave by publishing the final activation packet plus closure record and leaving only explicit operator-owned blockers for prod proof artifacts and named sign-offs.
 - [x] `V1FACT-11 docs(sync): close wave, sync canonical queue/context, and freeze future-agent activation rules`
