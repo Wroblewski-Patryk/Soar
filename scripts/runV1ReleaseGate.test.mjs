@@ -168,3 +168,110 @@ test('evaluateEvidenceReadiness accepts fresh prod rollback and backup proof', a
     await rm(tempRoot, { recursive: true, force: true });
   }
 });
+
+test('evaluateEvidenceReadiness rejects fresh prod restore proof when artifact status is FAIL', async () => {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), 'v1-release-gate-failed-proof-'));
+  const operationsDir = path.join(tempRoot, 'operations');
+  const planningDir = path.join(tempRoot, 'planning');
+  try {
+    await mkdir(operationsDir, { recursive: true });
+    await mkdir(planningDir, { recursive: true });
+    await writeFile(
+      path.join(operationsDir, 'v1-production-activation-evidence-audit-2026-04-22.md'),
+      '# audit\n',
+    );
+    await writeFile(
+      path.join(planningDir, 'v1-production-activation-and-evidence-plan-2026-04-22.md'),
+      '# plan\n',
+    );
+    await writeFile(
+      path.join(operationsDir, 'v1-rc-external-gates-status.md'),
+      'Generated at (UTC): 2026-04-22T15:13:58.943Z\n',
+    );
+    await writeFile(
+      path.join(operationsDir, 'v1-rc-signoff-record.md'),
+      'Date (UTC): `2026-04-22T15:13:58.943Z`\n',
+    );
+    await writeFile(
+      path.join(operationsDir, 'v1-release-candidate-checklist.md'),
+      '### Latest Verification (2026-04-22)\n',
+    );
+    await writeFile(
+      path.join(operationsDir, 'v1-restore-drill-prod-2026-04-22T19-00-00-000Z.md'),
+      '- Generated at (UTC): 2026-04-22T19:00:00.000Z\n- Status: **FAIL**\n',
+    );
+    await writeFile(
+      path.join(operationsDir, 'v1-rollback-proof-prod-2026-04-22T19-05-00-000Z.md'),
+      '- Generated at (UTC): 2026-04-22T19:05:00.000Z\n- Status: **PASS**\n',
+    );
+
+    const result = await evaluateEvidenceReadiness({
+      environment: 'prod',
+      evidenceDir: operationsDir,
+      today: '2026-04-22',
+    });
+
+    assert.equal(result.ready, false);
+    assert.equal(result.evidence.find((row) => row.key === 'backupRestoreDrill')?.state, 'failed');
+    assert.deepEqual(result.blockers, ['backupRestoreDrill:failed']);
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
+});
+
+test('evaluateEvidenceReadiness prefers the latest same-day prod restore proof artifact', async () => {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), 'v1-release-gate-latest-proof-'));
+  const operationsDir = path.join(tempRoot, 'operations');
+  const planningDir = path.join(tempRoot, 'planning');
+  try {
+    await mkdir(operationsDir, { recursive: true });
+    await mkdir(planningDir, { recursive: true });
+    await writeFile(
+      path.join(operationsDir, 'v1-production-activation-evidence-audit-2026-04-22.md'),
+      '# audit\n',
+    );
+    await writeFile(
+      path.join(planningDir, 'v1-production-activation-and-evidence-plan-2026-04-22.md'),
+      '# plan\n',
+    );
+    await writeFile(
+      path.join(operationsDir, 'v1-rc-external-gates-status.md'),
+      'Generated at (UTC): 2026-04-22T15:13:58.943Z\n',
+    );
+    await writeFile(
+      path.join(operationsDir, 'v1-rc-signoff-record.md'),
+      'Date (UTC): `2026-04-22T15:13:58.943Z`\n',
+    );
+    await writeFile(
+      path.join(operationsDir, 'v1-release-candidate-checklist.md'),
+      '### Latest Verification (2026-04-22)\n',
+    );
+    await writeFile(
+      path.join(operationsDir, 'v1-restore-drill-prod-2026-04-22T19-00-00-000Z.md'),
+      '- Generated at (UTC): 2026-04-22T19:00:00.000Z\n- Status: **FAIL**\n',
+    );
+    await writeFile(
+      path.join(operationsDir, 'v1-restore-drill-prod-2026-04-22T22-31-28-000Z.md'),
+      '- Generated at (UTC): 2026-04-22T22:31:28.000Z\n- Status: **PASS**\n',
+    );
+    await writeFile(
+      path.join(operationsDir, 'v1-rollback-proof-prod-2026-04-22T19-05-00-000Z.md'),
+      '- Generated at (UTC): 2026-04-22T19:05:00.000Z\n- Status: **PASS**\n',
+    );
+
+    const result = await evaluateEvidenceReadiness({
+      environment: 'prod',
+      evidenceDir: operationsDir,
+      today: '2026-04-22',
+    });
+
+    assert.equal(result.ready, true);
+    assert.match(
+      result.evidence.find((row) => row.key === 'backupRestoreDrill')?.path ?? '',
+      /v1-restore-drill-prod-2026-04-22T22-31-28-000Z\.md$/,
+    );
+    assert.deepEqual(result.blockers, []);
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
+});

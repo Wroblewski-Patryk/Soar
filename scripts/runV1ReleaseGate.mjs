@@ -43,12 +43,14 @@ const EVIDENCE_FAMILIES = {
     requiredIn: new Set(['prod']),
     matcher: /^v1-restore-drill-prod-(\d{4}-\d{2}-\d{2})T.*\.md$/,
     datePattern: /Generated at \(UTC\):\s*(\d{4}-\d{2}-\d{2})T/i,
+    passPattern: /Status:\s*\*\*PASS\*\*/i,
   },
   rollbackProof: {
     label: 'rollback proof pack',
     requiredIn: new Set(['prod']),
     matcher: /^v1-rollback-proof-prod-(\d{4}-\d{2}-\d{2})T.*\.md$/,
     datePattern: /Generated at \(UTC\):\s*(\d{4}-\d{2}-\d{2})T/i,
+    passPattern: /Status:\s*\*\*PASS\*\*/i,
   },
 };
 
@@ -227,7 +229,9 @@ const findLatestMatchingFile = async (family, evidenceDir) => {
       const match = family.matcher.exec(entry.name);
       if (!match) continue;
       const absolutePath = path.join(searchDir, entry.name);
-      const datedKey = match[1] ?? entry.name;
+      // Use the full filename so same-day artifacts still sort by their
+      // timestamp suffix instead of collapsing to one YYYY-MM-DD bucket.
+      const datedKey = entry.name;
       if (!bestMatch || datedKey > bestMatch.sortKey) {
         bestMatch = {
           absolutePath,
@@ -292,13 +296,24 @@ export const evaluateEvidenceReadiness = async ({ environment, evidenceDir, toda
     }
 
     const freshnessDate = await readFreshnessDate(family, match);
-    const state = freshnessDate === today ? 'fresh' : 'stale';
+    let state = freshnessDate === today ? 'fresh' : 'stale';
+    let reason =
+      state === 'fresh' ? `fresh for ${today}` : `expected ${today}, found ${freshnessDate || 'unknown'}`;
+
+    if (state === 'fresh' && family.passPattern) {
+      const raw = await readFile(match.absolutePath, 'utf8');
+      if (!family.passPattern.test(raw)) {
+        state = 'failed';
+        reason = 'artifact is fresh but does not report PASS';
+      }
+    }
+
     const row = {
       key: familyKey,
       label: family.label,
       state,
       required: true,
-      reason: state === 'fresh' ? `fresh for ${today}` : `expected ${today}, found ${freshnessDate || 'unknown'}`,
+      reason,
       path: match.relativePath,
       date: freshnessDate || null,
     };

@@ -80,7 +80,11 @@ const render = (options, gates) => {
   const hasAllApprovers = Boolean(
     options.engineeringName && options.productName && options.operationsName && options.ownerName
   );
-  const rcStatus = gates.allPass && hasAllApprovers ? 'APPROVED' : 'BLOCKED';
+  // Gate 4 is the formal sign-off itself, so approval depends on Gates 1-3
+  // plus the required approver fields, not on a pre-existing Gate 4 PASS.
+  const prerequisiteGatesPass =
+    gates.statuses.length >= 3 && gates.statuses.slice(0, 3).every((status) => status === 'PASS');
+  const rcStatus = prerequisiteGatesPass && hasAllApprovers ? 'APPROVED' : 'BLOCKED';
 
   return `# V1 RC Sign-Off Record
 
@@ -103,7 +107,7 @@ ${ownerBlock(options.ownerName, options.ownerContact)}
 ## Gate Snapshot at Sign-Off Build
 - Gate statuses found: ${gates.statuses.length}
 - Gate values: ${gates.statuses.length > 0 ? gates.statuses.join(', ') : 'n/a'}
-- All gates pass: ${gates.allPass ? 'yes' : 'no'}
+- Gates 1-3 pass: ${prerequisiteGatesPass ? 'yes' : 'no'}
 
 ## Final Decision
 - RC status: \`${rcStatus}\`

@@ -22,6 +22,38 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-22 - Same-day release-gate evidence must sort by full artifact timestamp, not date bucket only
+- Context: prod activation follow-up after a fresh passing restore-drill artifact was generated later on the same UTC day as an earlier failing restore-drill artifact.
+- Symptom: `ops:release:v1:gate` still selected the older same-day `FAIL` restore proof even though a later `PASS` artifact existed, so the gate stayed `not_ready` until the selector logic was fixed.
+- Root cause: `scripts/runV1ReleaseGate.mjs` compared only the captured `YYYY-MM-DD` portion from filename match groups, collapsing multiple same-day artifacts into one sort bucket and letting directory iteration order decide which file won.
+- Guardrail: when release-gate evidence families can emit multiple artifacts on the same day, select the latest file by the full timestamp-bearing filename, then validate in-file freshness/PASS state.
+- Preferred pattern:
+```text
+1) Filter files by the evidence-family filename matcher.
+2) Sort candidates by the full artifact filename (or explicit full timestamp key).
+3) Pick the newest same-day candidate.
+4) Parse the chosen artifact body for freshness and PASS/FAIL status.
+```
+- Avoid: comparing only the `YYYY-MM-DD` capture group for evidence families that can produce more than one artifact per day.
+- Evidence:
+  - 2026-04-22 prod follow-up: `v1-restore-drill-prod-2026-04-22T22-31-28-000Z.md` was newer and `PASS`, but the gate still picked `v1-restore-drill-prod-2026-04-22T21-08-26-470Z.md` until `scripts/runV1ReleaseGate.mjs` switched to full-filename sorting and `runV1ReleaseGate.test.mjs` locked the same-day selection regression.
+
+### 2026-04-22 - Release-gate proof freshness is not enough without PASS-state validation
+- Context: V1 production activation follow-up after generating a fresh prod rollback proof and a fresh-but-failing prod restore-drill artifact.
+- Symptom: the release gate initially classified the prod restore-drill family as acceptable because a same-day `v1-restore-drill-prod-*.md` file existed, even though the artifact itself reported `Status: **FAIL**`.
+- Root cause: evidence readiness only checked artifact presence and freshness date, not the proof outcome encoded inside the artifact body.
+- Guardrail: release-gate evidence families that represent PASS/FAIL operator proofs must validate both freshness and an explicit in-artifact `PASS` status before counting as ready evidence.
+- Preferred pattern:
+```text
+1) Find the latest required artifact for the evidence family.
+2) Validate freshness against the target day/environment.
+3) Parse the artifact body for an explicit PASS contract.
+4) Mark the family as failed when the artifact is fresh but not PASS.
+```
+- Avoid: treating same-day ops evidence files as valid proof without checking whether the proof itself succeeded.
+- Evidence:
+  - 2026-04-22 prod activation follow-up: `v1-restore-drill-prod-2026-04-22T21-08-26-470Z.md` was fresh but `FAIL` because `PROD_DB_CHECK_CONTAINER`-style envs were missing; `scripts/runV1ReleaseGate.mjs` and `runV1ReleaseGate.test.mjs` were updated so fresh failed proofs now keep the gate `not_ready`.
+
 ### 2026-04-22 - Missing NEXT_PUBLIC_API_BASE_URL makes prod web post auth to itself
 - Context: production login incident on `https://soar.luckysparrow.ch` after the app and API were otherwise healthy.
 - Symptom: login from the web UI fails even though `POST https://api.soar.luckysparrow.ch/auth/login` works and returns a valid session cookie; direct `POST https://soar.luckysparrow.ch/auth/login` returns `405 Method Not Allowed`.

@@ -45,7 +45,7 @@ const refreshOutstandingExternalGates = (rawChecklist, isoDate, gate1, gate2, ga
   rawChecklist
     .replace(/## Outstanding External Gates \(\d{4}-\d{2}-\d{2}\)/, `## Outstanding External Gates (${isoDate})`)
     .replace(
-      /- .*final snapshot is `G1=.*$/m,
+      /- .*snapshot is `G1=.*$/m,
       `- current snapshot is \`G1=${gate1}\`, \`G2=${gate2}\`, \`G3=${gate3}\`, \`G4=${gate4}\` (synced ${isoDate}).`
     );
 
