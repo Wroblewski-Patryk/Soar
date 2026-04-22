@@ -1,5 +1,6 @@
 import { Exchange } from '@prisma/client';
 import { supportsExchangeCapability } from './exchangeCapabilities';
+import { loadExchangePublicMarketMap } from './exchangePublicRead.service';
 
 type TradeMarket = 'FUTURES' | 'SPOT';
 
@@ -26,16 +27,6 @@ type CcxtMarket = {
   };
 };
 type CcxtMarketMap = Record<string, CcxtMarket>;
-
-type CcxtExchangeLikeClient = {
-  loadMarkets: () => Promise<CcxtMarketMap>;
-  close?: () => Promise<void>;
-};
-
-type CcxtModuleLike = {
-  binance: new (config: Record<string, unknown>) => CcxtExchangeLikeClient;
-  binanceusdm: new (config: Record<string, unknown>) => CcxtExchangeLikeClient;
-};
 
 type LoadMarketMapFn = (input: {
   exchange: Exchange;
@@ -147,28 +138,8 @@ const toSymbolRules = (market: CcxtMarket): ExchangeSymbolRules => {
   };
 };
 
-const defaultLoadMarketMap: LoadMarketMapFn = async (input) => {
-  if (input.exchange !== 'BINANCE') {
-    return {};
-  }
-
-  const ccxtModule = (await import('ccxt')) as unknown as CcxtModuleLike;
-  const ExchangeCtor = input.marketType === 'FUTURES' ? ccxtModule.binanceusdm : ccxtModule.binance;
-  const client = new ExchangeCtor({
-    enableRateLimit: true,
-    options: {
-      defaultType: input.marketType === 'FUTURES' ? 'future' : 'spot',
-    },
-  });
-
-  try {
-    return await client.loadMarkets();
-  } finally {
-    if (typeof client.close === 'function') {
-      await client.close().catch(() => undefined);
-    }
-  }
-};
+const defaultLoadMarketMap: LoadMarketMapFn = (input) =>
+  loadExchangePublicMarketMap(input) as Promise<CcxtMarketMap>;
 
 const defaultDeps: ExchangeSymbolRulesDeps = {
   nowMs: () => Date.now(),

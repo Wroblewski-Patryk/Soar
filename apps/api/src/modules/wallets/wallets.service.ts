@@ -2,13 +2,9 @@ import { OrderStatus, PositionStatus, Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import {
   assertExchangeCapability,
-  getExchangeBaseCurrencyFallbacks,
   getExchangeMarketTypeOptions,
-  supportsExchangeCapability,
   type ExchangeMarketType,
 } from '../exchange/exchangeCapabilities';
-import { decrypt } from '../../utils/crypto';
-import { getMarketCatalog } from '../markets/markets.service';
 import {
   CreateWalletDto,
   ListWalletsQueryDto,
@@ -19,6 +15,12 @@ import {
 import { walletErrors } from './wallets.errors';
 import { isAppErrorLike } from '../../lib/errors';
 import { normalizeBaseCurrency } from '../../lib/symbols';
+import { resolveExchangeMetadataByMarketType } from '../exchange/exchangeMetadataContract.service';
+import { fetchAuthenticatedExchangeBalanceRaw } from '../exchange/exchangeAuthenticatedRead.service';
+import {
+  assertAuthenticatedExchangeReadSupport,
+  resolveAuthenticatedExchangeReadSource,
+} from '../exchange/exchangeAuthenticatedReadContract.service';
 
 const normalizeWalletInput = (payload: CreateWalletDto | UpdateWalletDto) => {
   const mode = payload.mode;
@@ -113,111 +115,11 @@ const assertWalletLiveApiKeyCompatibility = async (params: {
   }
 };
 
-type WalletMetadataMarketTypeEntry = {
-  marketType: ExchangeMarketType;
-  baseCurrency: string;
-  baseCurrencies: string[];
-  source: 'MARKET_CATALOG' | 'EXCHANGE_CAPABILITIES';
-};
-
-const resolveWalletMetadataForMarketType = async (params: {
-  exchange: CreateWalletDto['exchange'];
-  marketType: ExchangeMarketType;
-}): Promise<WalletMetadataMarketTypeEntry> => {
-  const fallbackCurrencies = getExchangeBaseCurrencyFallbacks(params.exchange, params.marketType)
-    .map((item) => normalizeBaseCurrency(item))
-    .filter(Boolean);
-  const resolvedFallbackCurrencies =
-    fallbackCurrencies.length > 0 ? [...new Set(fallbackCurrencies)] : ['USDT'];
-  const fallbackBaseCurrency = resolvedFallbackCurrencies[0] ?? 'USDT';
-
-  if (!supportsExchangeCapability(params.exchange, 'MARKET_CATALOG')) {
-    return {
-      marketType: params.marketType,
-      baseCurrency: fallbackBaseCurrency,
-      baseCurrencies: resolvedFallbackCurrencies,
-      source: 'EXCHANGE_CAPABILITIES',
-    };
-  }
-
-  try {
-    const catalog = await getMarketCatalog(undefined, params.marketType, params.exchange);
-    const normalizedCatalogBaseCurrencies = (catalog.baseCurrencies ?? [])
-      .map((item) => normalizeBaseCurrency(item))
-      .filter(Boolean);
-    const baseCurrencies = normalizedCatalogBaseCurrencies.length
-      ? [...new Set(normalizedCatalogBaseCurrencies)]
-      : resolvedFallbackCurrencies;
-    const baseCurrency = baseCurrencies.includes(normalizeBaseCurrency(catalog.baseCurrency))
-      ? normalizeBaseCurrency(catalog.baseCurrency)
-      : (baseCurrencies[0] ?? fallbackBaseCurrency);
-
-    return {
-      marketType: params.marketType,
-      baseCurrency,
-      baseCurrencies,
-      source: 'MARKET_CATALOG',
-    };
-  } catch {
-    return {
-      marketType: params.marketType,
-      baseCurrency: fallbackBaseCurrency,
-      baseCurrencies: resolvedFallbackCurrencies,
-      source: 'EXCHANGE_CAPABILITIES',
-    };
-  }
-};
-
 export const getWalletMetadata = async (query: WalletMetadataQueryDto) => {
-  const marketTypes = getExchangeMarketTypeOptions(query.exchange);
-  const resolvedMarketType =
-    query.marketType && marketTypes.includes(query.marketType)
-      ? query.marketType
-      : (marketTypes[0] ?? 'SPOT');
-
-  const marketTypeEntries = await Promise.all(
-    marketTypes.map((marketType) =>
-      resolveWalletMetadataForMarketType({
-        exchange: query.exchange,
-        marketType,
-      })
-    )
-  );
-
-  const byMarketType = marketTypeEntries.reduce<
-    Record<ExchangeMarketType, WalletMetadataMarketTypeEntry>
-  >(
-    (acc, entry) => {
-      acc[entry.marketType] = entry;
-      return acc;
-    },
-    {
-      FUTURES: {
-        marketType: 'FUTURES',
-        baseCurrency: 'USDT',
-        baseCurrencies: ['USDT'],
-        source: 'EXCHANGE_CAPABILITIES',
-      },
-      SPOT: {
-        marketType: 'SPOT',
-        baseCurrency: 'USDT',
-        baseCurrencies: ['USDT'],
-        source: 'EXCHANGE_CAPABILITIES',
-      },
-    }
-  );
-
-  const selected = byMarketType[resolvedMarketType] ?? byMarketType.SPOT;
-
-  return {
+  return resolveExchangeMetadataByMarketType({
     exchange: query.exchange,
-    marketTypes,
-    marketType: selected.marketType,
-    baseCurrency: selected.baseCurrency,
-    baseCurrencies: selected.baseCurrencies,
-    source: selected.source,
-    byMarketType,
-  };
+    requestedMarketType: query.marketType,
+  });
 };
 
 export const listWallets = async (userId: string, query: ListWalletsQueryDto = {}) =>
@@ -487,7 +389,8 @@ const resolveReferenceBalanceFromAllocation = (params: {
   return params.accountBalance;
 };
 
-const fetchBinanceBalancePreview = async (params: {
+const fetchAuthenticatedBalancePreview = async (params: {
+  exchange: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE';
   apiKey: string;
   apiSecret: string;
   marketType: 'FUTURES' | 'SPOT';
@@ -504,34 +407,17 @@ const fetchBinanceBalancePreview = async (params: {
     };
   }
 
-  const ccxtModule = (await import('ccxt')) as unknown as {
-    binance: new (config: Record<string, unknown>) => {
-      fetchBalance: () => Promise<unknown>;
-      close?: () => Promise<void>;
-    };
-  };
-
-  const client = new ccxtModule.binance({
+  const balancePayload = await fetchAuthenticatedExchangeBalanceRaw({
+    exchange: params.exchange,
+    marketType: params.marketType,
     apiKey: params.apiKey,
-    secret: params.apiSecret,
-    enableRateLimit: true,
-    options: {
-      defaultType: params.marketType === 'FUTURES' ? 'future' : 'spot',
-    },
+    apiSecret: params.apiSecret,
   });
-
-  try {
-    const balancePayload = await client.fetchBalance();
-    return extractBalanceForCurrency(balancePayload, params.baseCurrency);
-  } finally {
-    if (typeof client.close === 'function') {
-      await client.close().catch(() => undefined);
-    }
-  }
+  return extractBalanceForCurrency(balancePayload, params.baseCurrency);
 };
 
 export const previewWalletBalance = async (userId: string, payload: WalletBalancePreviewDto) => {
-  assertExchangeCapability(payload.exchange, 'LIVE_EXECUTION');
+  assertAuthenticatedExchangeReadSupport(payload.exchange, 'BALANCE_PREVIEW');
 
   const apiKey = await prisma.apiKey.findFirst({
     where: {
@@ -550,13 +436,11 @@ export const previewWalletBalance = async (userId: string, payload: WalletBalanc
     throw walletErrors.previewApiKeyNotFound();
   }
 
-  const decodedApiKey = decrypt(apiKey.apiKey);
-  const decodedApiSecret = decrypt(apiKey.apiSecret);
-
   try {
-    const snapshot = await fetchBinanceBalancePreview({
-      apiKey: decodedApiKey,
-      apiSecret: decodedApiSecret,
+    const snapshot = await fetchAuthenticatedBalancePreview({
+      exchange: payload.exchange,
+      apiKey: apiKey.apiKey,
+      apiSecret: apiKey.apiSecret,
       marketType: payload.marketType,
       baseCurrency: normalizeBaseCurrency(payload.baseCurrency),
     });
@@ -591,7 +475,7 @@ export const previewWalletBalance = async (userId: string, payload: WalletBalanc
             }
           : null,
       fetchedAt: new Date().toISOString(),
-      source: 'BINANCE' as const,
+      source: resolveAuthenticatedExchangeReadSource(payload.exchange),
     };
   } catch (error) {
     if (isAppErrorLike(error) && error.code === 'WALLET_PREVIEW_FETCH_FAILED') {

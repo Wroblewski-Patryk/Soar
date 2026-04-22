@@ -124,7 +124,6 @@ describe('runtime crash/retry regression', () => {
   it('does not duplicate OPEN side effect after restart replay', async () => {
     const dedupe = createMemoryDedupeGateway();
     let openOrderCalls = 0;
-    let createPositionCalls = 0;
 
     const createGateways = (): { orderGateway: OrderFlowGateway; positionGateway: PositionFlowGateway } => ({
       orderGateway: {
@@ -149,10 +148,10 @@ describe('runtime crash/retry regression', () => {
             botId: input.botId ?? null,
             walletId: input.walletId ?? null,
             strategyId: input.strategyId ?? null,
-            positionId: null,
-            price: null,
+            positionId: 'open-position-1',
+            price: 42_000,
             stopPrice: null,
-            averageFillPrice: null,
+            averageFillPrice: 42_000,
             fee: null,
             feeSource: 'ESTIMATED',
             feePending: false,
@@ -169,34 +168,8 @@ describe('runtime crash/retry regression', () => {
       },
       positionGateway: {
         getOpenPositionBySymbol: vi.fn(async () => null),
-        createPosition: vi.fn(async (input): Promise<OpenPositionResult> => {
-          createPositionCalls += 1;
-          const position: OpenPositionResult = {
-            id: `open-position-${createPositionCalls}`,
-            userId: input.userId,
-            externalId: null,
-            origin: 'BOT',
-            managementMode: 'BOT_MANAGED',
-            syncState: 'IN_SYNC',
-            symbol: input.symbol,
-            side: input.side,
-            status: 'OPEN',
-            entryPrice: input.entryPrice,
-            quantity: input.quantity,
-            leverage: input.leverage ?? 1,
-            openedAt: new Date(),
-            closedAt: null,
-            realizedPnl: null,
-            unrealizedPnl: null,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            botId: input.botId ?? null,
-            walletId: input.walletId ?? null,
-            strategyId: input.strategyId ?? null,
-            stopLoss: null,
-            takeProfit: null,
-          };
-          return position;
+        createPosition: vi.fn(async (): Promise<OpenPositionResult> => {
+          throw new Error('createPosition should not be called for canonical filled opens');
         }),
         closePosition: vi.fn(async () => undefined),
       },
@@ -261,7 +234,6 @@ describe('runtime crash/retry regression', () => {
       positionId: 'open-position-1',
     });
     expect(openOrderCalls).toBe(1);
-    expect(createPositionCalls).toBe(1);
   });
 
   it('does not duplicate CLOSE side effect after restart replay', async () => {
@@ -404,10 +376,9 @@ describe('runtime crash/retry regression', () => {
     expect(closePositionCalls).toBe(1);
   });
 
-  it('does not duplicate OPEN side effect when restart replays while dedupe record remains PENDING', async () => {
+  it('does not duplicate OPEN submission when restart replays while dedupe record remains PENDING', async () => {
     const dedupe = createCrashPendingDedupeGateway();
     let openOrderCalls = 0;
-    let createPositionCalls = 0;
 
     const orderGateway: OrderFlowGateway = {
       openOrder: vi.fn(async (_userId, input): Promise<OpenOrderResult> => {
@@ -446,41 +417,19 @@ describe('runtime crash/retry regression', () => {
         };
       }),
       closeOrder: vi.fn(async () => null),
-      linkOrderToPosition: vi.fn(async () => {
-        throw new Error('simulated_crash_after_open_side_effect');
-      }),
+      linkOrderToPosition: vi.fn(async () => undefined),
     };
     const positionGateway: PositionFlowGateway = {
       getOpenPositionBySymbol: vi.fn(async () => null),
-      createPosition: vi.fn(async (input): Promise<OpenPositionResult> => {
-        createPositionCalls += 1;
-        return {
-          id: `open-position-pending-${createPositionCalls}`,
-          userId: input.userId,
-          externalId: null,
-          origin: 'BOT',
-          managementMode: 'BOT_MANAGED',
-          syncState: 'IN_SYNC',
-          symbol: input.symbol,
-          side: input.side,
-          status: 'OPEN',
-          entryPrice: input.entryPrice,
-          quantity: input.quantity,
-          leverage: input.leverage ?? 1,
-          openedAt: new Date(),
-          closedAt: null,
-          realizedPnl: null,
-          unrealizedPnl: null,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          botId: input.botId ?? null,
-          walletId: input.walletId ?? null,
-          strategyId: input.strategyId ?? null,
-          stopLoss: null,
-          takeProfit: null,
-        };
+      createPosition: vi.fn(async (): Promise<OpenPositionResult> => {
+        throw new Error('createPosition should not be called for submitted opens');
       }),
       closePosition: vi.fn(async () => undefined),
+    };
+    const crashingEventGateway: RuntimeExecutionEventGateway = {
+      writeEvent: vi.fn(async () => {
+        throw new Error('simulated_crash_after_submit_event');
+      }),
     };
 
     await expect(
@@ -502,11 +451,11 @@ describe('runtime crash/retry regression', () => {
         },
         orderGateway,
         positionGateway,
-        noopEventGateway,
+        crashingEventGateway,
         noopTradeGateway,
         dedupe
       )
-    ).rejects.toThrow('simulated_crash_after_open_side_effect');
+    ).rejects.toThrow('simulated_crash_after_submit_event');
 
     const replayResult = await orchestrateRuntimeSignal(
       {
@@ -536,6 +485,5 @@ describe('runtime crash/retry regression', () => {
       reason: 'dedupe_inflight',
     });
     expect(openOrderCalls).toBe(1);
-    expect(createPositionCalls).toBe(1);
   });
 });

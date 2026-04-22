@@ -1,7 +1,15 @@
-import { Prisma } from '@prisma/client';
+import { Exchange, Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import { ListPositionsQuery, UpdatePositionManualParamsInput } from './positions.types';
-import { decrypt } from '../../utils/crypto';
+import {
+  fetchAuthenticatedExchangeOpenOrdersRaw,
+  fetchAuthenticatedExchangePositionsRaw,
+} from '../exchange/exchangeAuthenticatedRead.service';
+import {
+  assertAuthenticatedExchangeReadSupport,
+  resolveAuthenticatedExchangeReadSource,
+  supportsAuthenticatedExchangeRead,
+} from '../exchange/exchangeAuthenticatedReadContract.service';
 
 export type ExchangePositionSnapshotItem = {
   symbol: string;
@@ -17,7 +25,7 @@ export type ExchangePositionSnapshotItem = {
 };
 
 export type ExchangePositionSnapshot = {
-  source: 'BINANCE';
+  source: Exchange;
   syncedAt: string;
   positions: ExchangePositionSnapshotItem[];
 };
@@ -36,7 +44,7 @@ export type ExchangeOpenOrderSnapshotItem = {
 };
 
 export type ExchangeOpenOrderSnapshot = {
-  source: 'BINANCE';
+  source: Exchange;
   syncedAt: string;
   orders: ExchangeOpenOrderSnapshotItem[];
 };
@@ -96,19 +104,9 @@ type ExchangePositionLike = {
   timestamp?: number;
 };
 
-type BinanceClientLike = {
-  fetchPositions: () => Promise<ExchangePositionLike[]>;
-  fetchOpenOrders?: (
-    symbol?: string,
-    since?: number,
-    limit?: number,
-    params?: Record<string, unknown>
-  ) => Promise<Array<Record<string, unknown>>>;
-  close?: () => Promise<void>;
-};
-
 type ApiKeyRecordForSnapshot = {
   id: string;
+  exchange: Exchange;
   apiKey: string;
   apiSecret: string;
 };
@@ -184,24 +182,6 @@ const validateDirectionalStops = (params: {
   }
 };
 
-const defaultBinanceClientFactory = async (credentials: {
-  apiKey: string;
-  secret: string;
-}): Promise<BinanceClientLike> => {
-  const ccxtModule = (await import('ccxt')) as unknown as {
-    binance: new (config: Record<string, unknown>) => BinanceClientLike;
-  };
-
-  return new ccxtModule.binance({
-    apiKey: credentials.apiKey,
-    secret: credentials.secret,
-    enableRateLimit: true,
-    options: {
-      defaultType: 'future',
-    },
-  });
-};
-
 const normalizeExchangePosition = (position: ExchangePositionLike): ExchangePositionSnapshotItem => ({
   symbol: position.symbol ?? 'UNKNOWN',
   side: position.side ?? null,
@@ -269,8 +249,8 @@ const buildSnapshotForApiKey = async (apiKey: ApiKeyRecordForSnapshot): Promise<
       data: { lastUsed: new Date() },
     });
 
-    return {
-      source: 'BINANCE',
+  return {
+      source: apiKey.exchange,
       syncedAt: new Date().toISOString(),
       positions: [
         {
@@ -289,33 +269,26 @@ const buildSnapshotForApiKey = async (apiKey: ApiKeyRecordForSnapshot): Promise<
     };
   }
 
-  const decryptedKey = decrypt(apiKey.apiKey);
-  const decryptedSecret = decrypt(apiKey.apiSecret);
-
-  const client = await defaultBinanceClientFactory({
-    apiKey: decryptedKey,
-    secret: decryptedSecret,
+  const rawPositions = await fetchAuthenticatedExchangePositionsRaw({
+    exchange: apiKey.exchange,
+    marketType: 'FUTURES',
+    apiKey: apiKey.apiKey,
+    apiSecret: apiKey.apiSecret,
   });
 
   try {
-    const rawPositions = await client.fetchPositions();
-
     await prisma.apiKey.update({
       where: { id: apiKey.id },
       data: { lastUsed: new Date() },
     });
 
     return {
-      source: 'BINANCE',
+      source: resolveAuthenticatedExchangeReadSource(apiKey.exchange),
       syncedAt: new Date().toISOString(),
       positions: rawPositions.map(normalizeExchangePosition),
     };
   } catch {
     throw new ExchangeSnapshotError('EXCHANGE_FETCH_FAILED', 'Unable to fetch exchange positions snapshot.');
-  } finally {
-    if (typeof client.close === 'function') {
-      await client.close();
-    }
   }
 };
 
@@ -329,7 +302,7 @@ const buildOpenOrdersSnapshotForApiKey = async (
     });
 
     return {
-      source: 'BINANCE',
+      source: apiKey.exchange,
       syncedAt: new Date().toISOString(),
       orders: [
         {
@@ -348,24 +321,13 @@ const buildOpenOrdersSnapshotForApiKey = async (
     };
   }
 
-  const decryptedKey = decrypt(apiKey.apiKey);
-  const decryptedSecret = decrypt(apiKey.apiSecret);
-
-  const client = await defaultBinanceClientFactory({
-    apiKey: decryptedKey,
-    secret: decryptedSecret,
-  });
-
   try {
-    if (typeof client.fetchOpenOrders !== 'function') {
-      return {
-        source: 'BINANCE',
-        syncedAt: new Date().toISOString(),
-        orders: [],
-      };
-    }
-
-    const rawOrders = await client.fetchOpenOrders();
+    const rawOrders = await fetchAuthenticatedExchangeOpenOrdersRaw({
+      exchange: apiKey.exchange,
+      marketType: 'FUTURES',
+      apiKey: apiKey.apiKey,
+      apiSecret: apiKey.apiSecret,
+    });
 
     await prisma.apiKey.update({
       where: { id: apiKey.id },
@@ -373,16 +335,12 @@ const buildOpenOrdersSnapshotForApiKey = async (
     });
 
     return {
-      source: 'BINANCE',
+      source: resolveAuthenticatedExchangeReadSource(apiKey.exchange),
       syncedAt: new Date().toISOString(),
       orders: rawOrders.map(normalizeExchangeOpenOrder),
     };
   } catch {
     throw new ExchangeSnapshotError('EXCHANGE_FETCH_FAILED', 'Unable to fetch exchange open orders snapshot.');
-  } finally {
-    if (typeof client.close === 'function') {
-      await client.close();
-    }
   }
 };
 
@@ -518,14 +476,22 @@ export const updatePositionManualParams = async (
 
 export const fetchExchangePositionsSnapshot = async (userId: string): Promise<ExchangePositionSnapshot> => {
   const apiKey = await prisma.apiKey.findFirst({
-    where: { userId, exchange: 'BINANCE' },
+    where: {
+      userId,
+      exchange: {
+        in: (['BINANCE', 'BYBIT', 'OKX', 'KRAKEN', 'COINBASE'] as const).filter((exchange) =>
+          supportsAuthenticatedExchangeRead(exchange, 'POSITIONS_SNAPSHOT')
+        ),
+      },
+    },
     orderBy: { updatedAt: 'desc' },
   });
 
   if (!apiKey) {
-    throw new ExchangeSnapshotError('API_KEY_NOT_FOUND', 'No Binance API key configured.');
+    throw new ExchangeSnapshotError('API_KEY_NOT_FOUND', 'No supported exchange API key configured.');
   }
 
+  assertAuthenticatedExchangeReadSupport(apiKey.exchange, 'POSITIONS_SNAPSHOT');
   return buildSnapshotForApiKey(apiKey);
 };
 
@@ -537,19 +503,20 @@ export const fetchExchangePositionsSnapshotByApiKeyId = async (
     where: {
       id: apiKeyId,
       userId,
-      exchange: 'BINANCE',
     },
     select: {
       id: true,
+      exchange: true,
       apiKey: true,
       apiSecret: true,
     },
   });
 
   if (!apiKey) {
-    throw new ExchangeSnapshotError('API_KEY_NOT_FOUND', 'No Binance API key configured.');
+    throw new ExchangeSnapshotError('API_KEY_NOT_FOUND', 'No supported exchange API key configured.');
   }
 
+  assertAuthenticatedExchangeReadSupport(apiKey.exchange, 'POSITIONS_SNAPSHOT');
   return buildSnapshotForApiKey(apiKey);
 };
 
@@ -561,19 +528,20 @@ export const fetchExchangeOpenOrdersSnapshotByApiKeyId = async (
     where: {
       id: apiKeyId,
       userId,
-      exchange: 'BINANCE',
     },
     select: {
       id: true,
+      exchange: true,
       apiKey: true,
       apiSecret: true,
     },
   });
 
   if (!apiKey) {
-    throw new ExchangeSnapshotError('API_KEY_NOT_FOUND', 'No Binance API key configured.');
+    throw new ExchangeSnapshotError('API_KEY_NOT_FOUND', 'No supported exchange API key configured.');
   }
 
+  assertAuthenticatedExchangeReadSupport(apiKey.exchange, 'OPEN_ORDERS_SNAPSHOT');
   return buildOpenOrdersSnapshotForApiKey(apiKey);
 };
 

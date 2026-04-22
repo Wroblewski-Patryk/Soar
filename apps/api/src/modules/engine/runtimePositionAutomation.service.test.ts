@@ -23,7 +23,7 @@ describe('RuntimePositionAutomationService', () => {
       ]),
       getStrategyConfigById: vi.fn(async () => null),
       executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
-      closeByExitSignal: vi.fn(async () => undefined),
+      closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
       resolveDcaFundsExhausted: vi.fn(async () => false),
       nowMs: vi.fn(() => Date.now()),
     };
@@ -77,7 +77,7 @@ describe('RuntimePositionAutomationService', () => {
       ]),
       getStrategyConfigById: vi.fn(async () => null),
       executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
-      closeByExitSignal: vi.fn(async () => undefined),
+      closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
       resolveDcaFundsExhausted: vi.fn(async () => false),
       nowMs: vi.fn(() => Date.now()),
     };
@@ -122,7 +122,7 @@ describe('RuntimePositionAutomationService', () => {
       ]),
       getStrategyConfigById: vi.fn(async () => null),
       executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
-      closeByExitSignal: vi.fn(async () => undefined),
+      closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
       resolveDcaFundsExhausted: vi.fn(async () => false),
       nowMs: vi.fn(() => Date.now()),
     };
@@ -170,7 +170,7 @@ describe('RuntimePositionAutomationService', () => {
         additional: { dcaEnabled: true, dcaTimes: 2, dcaLevels: [{ percent: -1, multiplier: 1.5 }] },
       })),
       executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
-      closeByExitSignal: vi.fn(async () => undefined),
+      closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
       resolveDcaFundsExhausted: vi.fn(async () => false),
       nowMs: vi.fn(() => Date.now()),
     };
@@ -227,7 +227,7 @@ describe('RuntimePositionAutomationService', () => {
         additional: { dcaEnabled: true, dcaTimes: 2, dcaLevels: [{ percent: -1, multiplier: 1.5 }] },
       })),
       executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
-      closeByExitSignal: vi.fn(async () => undefined),
+      closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
       resolveDcaFundsExhausted: vi.fn(async () => true),
       nowMs: vi.fn(() => Date.now()),
     };
@@ -282,7 +282,7 @@ describe('RuntimePositionAutomationService', () => {
         },
       })),
       executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
-      closeByExitSignal: vi.fn(async () => undefined),
+      closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
       resolveDcaFundsExhausted: vi.fn(async () => false),
       nowMs: vi.fn(() => Date.now()),
     };
@@ -343,7 +343,7 @@ describe('RuntimePositionAutomationService', () => {
         },
       })),
       executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
-      closeByExitSignal: vi.fn(async () => undefined),
+      closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
       resolveDcaFundsExhausted: vi.fn(async () => false),
       nowMs: vi.fn(() => Date.now()),
     };
@@ -403,7 +403,7 @@ describe('RuntimePositionAutomationService', () => {
         },
       })),
       executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
-      closeByExitSignal: vi.fn(async () => undefined),
+      closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
       resolveDcaFundsExhausted: vi.fn(async () => false),
       nowMs: vi.fn(() => Date.now()),
     };
@@ -445,7 +445,7 @@ describe('RuntimePositionAutomationService', () => {
       ]),
       getStrategyConfigById: vi.fn(async () => null),
       executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
-      closeByExitSignal: vi.fn(async () => undefined),
+      closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
       resolveDcaFundsExhausted: vi.fn(async () => false),
       nowMs: vi.fn(() => Date.now()),
     };
@@ -509,6 +509,57 @@ describe('RuntimePositionAutomationService', () => {
     expect(deps.getStrategyConfigById).not.toHaveBeenCalled();
     expect(deps.executeDca).not.toHaveBeenCalled();
     expect(deps.closeByExitSignal).not.toHaveBeenCalled();
+  });
+
+  it('keeps monitoring flow alive when close signal is only submitted', async () => {
+    const closeByExitSignal = vi.fn(async () => ({ status: 'submitted' as const }));
+    const deps: any = {
+      listOpenPositionsBySymbol: vi.fn(async () => [
+        {
+          id: 'pos-9',
+          userId: 'user-9',
+          botId: 'bot-9',
+          strategyId: null,
+          symbol: 'BTCUSDT',
+          side: 'LONG' as const,
+          entryPrice: 60_000,
+          quantity: 0.5,
+          leverage: 5,
+          stopLoss: 58_000,
+          takeProfit: 61_000,
+          managementMode: 'BOT_MANAGED' as const,
+          bot: {
+            mode: 'LIVE' as const,
+            exchange: 'BYBIT' as const,
+            marketType: 'FUTURES' as const,
+            paperStartBalance: 10_000,
+          },
+        },
+      ]),
+      getStrategyConfigById: vi.fn(async () => null),
+      executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
+      closeByExitSignal,
+      resolveDcaFundsExhausted: vi.fn(async () => false),
+      nowMs: vi.fn(() => Date.now()),
+    };
+
+    const service = new RuntimePositionAutomationService(deps);
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BYBIT',
+      marketType: 'FUTURES',
+      symbol: 'BTCUSDT',
+      eventTime: 8_000,
+      lastPrice: 61_500,
+      priceChangePercent24h: 1.6,
+    } as any);
+
+    expect(closeByExitSignal).toHaveBeenCalledWith(
+      expect.objectContaining({
+        symbol: 'BTCUSDT',
+        mode: 'LIVE',
+      })
+    );
   });
 });
 

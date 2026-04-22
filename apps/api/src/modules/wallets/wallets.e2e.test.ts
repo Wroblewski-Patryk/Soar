@@ -179,9 +179,9 @@ describe('Wallets balance preview contract', () => {
 
     expect(previewRes.status).toBe(501);
     expect(previewRes.body.error.details).toEqual({
-      code: 'EXCHANGE_NOT_IMPLEMENTED',
+      code: 'EXCHANGE_AUTHENTICATED_READ_UNSUPPORTED',
       exchange: 'OKX',
-      capability: 'LIVE_EXECUTION',
+      operation: 'BALANCE_PREVIEW',
     });
   });
 

@@ -8,6 +8,7 @@ import {
   UpdatePositionManualParamsSchema,
 } from './positions.types';
 import * as positionsService from './positions.service';
+import { ExchangeAuthenticatedReadUnsupportedError } from '../exchange/exchangeAuthenticatedReadContract.service';
 
 export const listPositions = async (req: Request, res: Response) => {
   const userId = req.user?.id;
@@ -52,6 +53,9 @@ export const getExchangeSnapshot = async (req: Request, res: Response) => {
     const snapshot = await positionsService.fetchExchangePositionsSnapshot(userId);
     return res.json(snapshot);
   } catch (error) {
+    if (error instanceof ExchangeAuthenticatedReadUnsupportedError) {
+      return sendError(res, 501, error.message, error.toDetails());
+    }
     if (error instanceof positionsService.ExchangeSnapshotError) {
       if (error.code === 'API_KEY_NOT_FOUND') {
         return sendError(res, 400, error.message);

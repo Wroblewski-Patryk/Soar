@@ -82,6 +82,7 @@ export interface CcxtExchangeLikeClient {
     limit?: number,
     params?: Record<string, unknown>
   ) => Promise<CcxtOrderLike[]>;
+  fetchBalance?: (params?: Record<string, unknown>) => Promise<unknown>;
   setLeverage?: (
     leverage: number,
     symbol?: string,
@@ -337,6 +338,31 @@ export class CcxtFuturesConnector {
 
     const orders = await client.fetchOpenOrders(input?.symbol);
     return orders.map((order) => this.normalizeOpenOrder(order, input?.symbol ?? order.symbol ?? ''));
+  }
+
+  async fetchPositions(input?: { symbols?: string[] }): Promise<CcxtPositionLike[]> {
+    const client = await this.getOrCreateClient();
+    if (typeof client.fetchPositions !== 'function') {
+      throw new Error('fetchPositions is not supported by this CCXT connector');
+    }
+
+    const positions = await client.fetchPositions(input?.symbols);
+    return Array.isArray(positions) ? positions : [];
+  }
+
+  async fetchBalance(params?: Record<string, unknown>): Promise<unknown> {
+    const client = await this.getOrCreateClient();
+    if (typeof client.fetchBalance !== 'function') {
+      throw new Error('fetchBalance is not supported by this CCXT connector');
+    }
+    return client.fetchBalance(params);
+  }
+
+  async loadMarketsMap(): Promise<Record<string, unknown>> {
+    const client = await this.getOrCreateClient();
+    const marketMap = await client.loadMarkets();
+    if (!marketMap || typeof marketMap !== 'object') return {};
+    return marketMap as Record<string, unknown>;
   }
 
   async convergeFuturesLeverageAndMargin(input: {

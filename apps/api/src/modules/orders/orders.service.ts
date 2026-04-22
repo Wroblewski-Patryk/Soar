@@ -11,14 +11,21 @@ import { decrypt } from '../../utils/crypto';
 import { CcxtFuturesConnector } from '../exchange/ccxtFuturesConnector.service';
 import { createLiveOrderAdapter } from '../exchange/liveOrderAdapter.service';
 import { CcxtFuturesOrderFill } from '../exchange/ccxtFuturesConnector.types';
-import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from '../bots/runtimeSymbolCatalogResolver.service';
+import {
+  createAuthenticatedExchangeConnector,
+  createPublicExchangeConnector,
+} from '../exchange/exchangeConnectorFactory.service';
 import { mapBotResponse } from '../bots/botResponseMapper.service';
 import { liveOrderingConfig } from '../../config/runtimeExecution';
 import { isAppErrorLike } from '../../lib/errors';
 import { orderErrors } from './orders.errors';
+import { getManualOrderContext as getManualOrderContextService, type ManualOrderContextDeps } from './orders.manualContext.service';
+import { applyOrderFillLifecycle } from './orders.lifecycle.service';
+import { enforceLivePretradeGuards } from './orders.quantityRules';
 
 type OpenOrderInput = OpenOrderDto & {
   positionId?: string | null;
+  origin?: 'USER' | 'BOT';
 };
 
 export const listOrders = async (userId: string, query: ListOrdersQuery) => {
@@ -43,270 +50,13 @@ export const getOrder = async (userId: string, id: string) => {
   });
 };
 
-type ManualOrderContextConnector = {
-  getSymbolTradingRules: (symbol: string) => Promise<SymbolTradingRules>;
-  fetchMarkPrice: (symbol: string) => Promise<number>;
-  disconnect: () => Promise<void>;
-};
-
-type ManualOrderContextDeps = {
-  createPublicConnector: (params: {
-    exchange: Exchange;
-    marketType: 'FUTURES' | 'SPOT';
-  }) => ManualOrderContextConnector;
-};
-
-type ResolvedManualOrderStrategyContext = {
-  leverage: number | null;
-  config: Record<string, unknown> | null;
-};
-
-const asRecord = (value: unknown): Record<string, unknown> | null =>
-  value && typeof value === 'object' ? (value as Record<string, unknown>) : null;
-
-const resolveOrderTypeFromStrategyConfig = (
-  config: Record<string, unknown> | null
-): OpenOrderDto['type'] | null => {
-  const additional = asRecord(config?.additional);
-  const raw = additional?.orderType;
-  if (typeof raw !== 'string') return null;
-
-  const normalized = raw.trim().toUpperCase();
-  if (
-    normalized === 'MARKET' ||
-    normalized === 'LIMIT' ||
-    normalized === 'STOP' ||
-    normalized === 'STOP_LIMIT' ||
-    normalized === 'TAKE_PROFIT' ||
-    normalized === 'TRAILING'
-  ) {
-    return normalized as OpenOrderDto['type'];
-  }
-
-  return null;
-};
-
-const resolveMarginModeFromStrategyConfig = (
-  config: Record<string, unknown> | null,
-  marketType: 'FUTURES' | 'SPOT'
-) => {
-  if (marketType === 'SPOT') return 'NONE' as const;
-
-  const additional = asRecord(config?.additional);
-  const raw = typeof additional?.marginMode === 'string' ? additional.marginMode.trim().toUpperCase() : '';
-  if (raw === 'ISOLATED') return 'ISOLATED' as const;
-  return 'CROSSED' as const;
-};
-
-const resolvePrecisionStep = (amountPrecision: number | null): number | null => {
-  if (!Number.isFinite(amountPrecision as number) || amountPrecision == null) return null;
-  if (amountPrecision >= 1) return 1 / 10 ** Math.trunc(amountPrecision);
-  if (amountPrecision > 0 && amountPrecision < 1) return amountPrecision;
-  return null;
-};
-
-const normalizeAmountUpByPrecision = (value: number, amountPrecision: number | null) => {
-  if (!Number.isFinite(value) || value <= 0) return value;
-  if (amountPrecision == null || !Number.isFinite(amountPrecision)) return value;
-
-  if (amountPrecision >= 1) {
-    const decimals = Math.trunc(amountPrecision);
-    const factor = 10 ** decimals;
-    return Math.ceil((value - 1e-12) * factor) / factor;
-  }
-
-  if (amountPrecision > 0 && amountPrecision < 1) {
-    const step = amountPrecision;
-    const steps = Math.ceil((value - 1e-12) / step);
-    return steps * step;
-  }
-
-  return value;
-};
-
-const normalizeAmountFixed = (value: number, amountPrecision: number | null) => {
-  if (!Number.isFinite(value)) return value;
-  if (amountPrecision == null || !Number.isFinite(amountPrecision)) return value;
-
-  if (amountPrecision >= 1) {
-    const decimals = Math.trunc(amountPrecision);
-    return Number(value.toFixed(decimals));
-  }
-
-  if (amountPrecision > 0 && amountPrecision < 1) {
-    const decimals = Math.max(0, Math.min(12, Math.ceil(-Math.log10(amountPrecision)) + 2));
-    return Number(value.toFixed(decimals));
-  }
-
-  return value;
-};
-
-const computeMinExecutableQuantity = (params: {
-  minAmount: number | null;
-  minNotional: number | null;
-  markPrice: number | null;
-  amountPrecision: number | null;
-}) => {
-  const candidates: number[] = [];
-
-  if (typeof params.minAmount === 'number' && Number.isFinite(params.minAmount) && params.minAmount > 0) {
-    candidates.push(params.minAmount);
-  }
-
-  if (
-    typeof params.minNotional === 'number' &&
-    Number.isFinite(params.minNotional) &&
-    params.minNotional > 0 &&
-    typeof params.markPrice === 'number' &&
-    Number.isFinite(params.markPrice) &&
-    params.markPrice > 0
-  ) {
-    candidates.push(params.minNotional / params.markPrice);
-  }
-
-  if (candidates.length === 0) return null;
-
-  const baseCandidate = Math.max(...candidates);
-  let normalized = normalizeAmountUpByPrecision(baseCandidate, params.amountPrecision);
-
-  if (!Number.isFinite(normalized) || normalized <= 0) return null;
-
-  const step = resolvePrecisionStep(params.amountPrecision);
-  if (
-    step &&
-    typeof params.minNotional === 'number' &&
-    Number.isFinite(params.minNotional) &&
-    params.minNotional > 0 &&
-    typeof params.markPrice === 'number' &&
-    Number.isFinite(params.markPrice) &&
-    params.markPrice > 0
-  ) {
-    const maxIterations = 10_000;
-    let iterations = 0;
-    while (iterations < maxIterations && normalized * params.markPrice + 1e-9 < params.minNotional) {
-      normalized += step;
-      iterations += 1;
-    }
-  }
-
-  return normalizeAmountFixed(normalized, params.amountPrecision);
-};
-
-const resolveManualOrderStrategyContext = async (params: {
-  userId: string;
-  botId: string;
-  symbol: string;
-}): Promise<ResolvedManualOrderStrategyContext | null> => {
-  const normalizedSymbol = params.symbol.toUpperCase();
-  const catalogSymbolsCache = new Map<string, string[]>();
-
-  const groupLinks = await prisma.botMarketGroup.findMany({
-    where: {
-      userId: params.userId,
-      botId: params.botId,
-      isEnabled: true,
-      lifecycleStatus: 'ACTIVE',
-    },
-    orderBy: [{ executionOrder: 'asc' }, { createdAt: 'asc' }],
-    select: {
-      symbolGroup: {
-        select: {
-          symbols: true,
-          marketUniverse: {
-            select: {
-              exchange: true,
-              marketType: true,
-              baseCurrency: true,
-              filterRules: true,
-              whitelist: true,
-              blacklist: true,
-            },
-          },
-        },
-      },
-      strategyLinks: {
-        where: { isEnabled: true },
-        orderBy: [{ priority: 'asc' }, { createdAt: 'asc' }],
-        select: {
-          strategy: {
-            select: {
-              leverage: true,
-              config: true,
-            },
-          },
-        },
-      },
-    },
-  });
-
-  for (const group of groupLinks) {
-    const symbols = await resolveEffectiveSymbolGroupSymbolsWithCatalog(
-      group.symbolGroup,
-      catalogSymbolsCache
-    );
-    if (!symbols.includes(normalizedSymbol)) continue;
-    const selected = group.strategyLinks[0]?.strategy;
-    if (selected) {
-      return {
-        leverage: selected.leverage,
-        config: (selected.config as Record<string, unknown> | null | undefined) ?? null,
-      };
-    }
-  }
-
-  const legacyLinks = await prisma.botStrategy.findMany({
-    where: {
-      botId: params.botId,
-      isEnabled: true,
-      bot: { userId: params.userId },
-    },
-    orderBy: [{ createdAt: 'asc' }],
-    select: {
-      symbolGroup: {
-        select: {
-          symbols: true,
-          marketUniverse: {
-            select: {
-              exchange: true,
-              marketType: true,
-              baseCurrency: true,
-              filterRules: true,
-              whitelist: true,
-              blacklist: true,
-            },
-          },
-        },
-      },
-      strategy: {
-        select: {
-          leverage: true,
-          config: true,
-        },
-      },
-    },
-  });
-
-  for (const link of legacyLinks) {
-    const symbols = await resolveEffectiveSymbolGroupSymbolsWithCatalog(
-      link.symbolGroup,
-      catalogSymbolsCache
-    );
-    if (!symbols.includes(normalizedSymbol)) continue;
-    return {
-      leverage: link.strategy.leverage,
-      config: (link.strategy.config as Record<string, unknown> | null | undefined) ?? null,
-    };
-  }
-
-  return null;
-};
-
 type LiveBotContext = {
   id: string;
   exchange: Exchange;
   marketType: 'FUTURES' | 'SPOT';
   positionMode: 'ONE_WAY' | 'HEDGE';
   apiKeyId: string | null;
+  walletId: string | null;
 };
 
 type CanonicalOrderBotContext = {
@@ -357,36 +107,7 @@ const mapLiveOrderStatus = (status: string | undefined, fallbackType: OpenOrderD
   return fallbackType === 'MARKET' ? ('FILLED' as const) : ('OPEN' as const);
 };
 
-type SymbolTradingRules = {
-  minAmount: number | null;
-  minNotional: number | null;
-  amountPrecision: number | null;
-};
-
-type CachedRules = {
-  expiresAtMs: number;
-  rules: SymbolTradingRules;
-};
-
-type CachedExposure = {
-  expiresAtMs: number;
-  hasOpenPosition: boolean;
-};
-
-const symbolRulesCache = new Map<string, CachedRules>();
-const symbolExposureCache = new Map<string, CachedExposure>();
 const liveMarginLeverageConvergenceCache = new Map<string, { expiresAtMs: number }>();
-
-const getRulesCacheKey = (params: {
-  exchange: Exchange;
-  marketType: 'FUTURES' | 'SPOT';
-  symbol: string;
-}) => `${params.exchange}:${params.marketType}:${params.symbol.toUpperCase()}`;
-
-const getExposureCacheKey = (params: {
-  apiKeyId: string;
-  symbol: string;
-}) => `${params.apiKeyId}:${params.symbol.toUpperCase()}`;
 
 const getLiveConvergenceCacheKey = (params: {
   apiKeyId: string;
@@ -395,23 +116,6 @@ const getLiveConvergenceCacheKey = (params: {
   marginMode: 'cross' | 'isolated' | null;
 }) =>
   `${params.apiKeyId}:${params.symbol.toUpperCase()}:${params.leverage ?? 'na'}:${params.marginMode ?? 'na'}`;
-
-const normalizeAmountByPrecision = (value: number, precision: number | null) => {
-  if (!Number.isFinite(value)) return value;
-  if (precision == null || !Number.isFinite(precision)) return value;
-  if (precision >= 1) {
-    const factor = 10 ** Math.trunc(precision);
-    return Math.round(value * factor) / factor;
-  }
-  if (precision > 0 && precision < 1) {
-    const steps = Math.round(value / precision);
-    return steps * precision;
-  }
-  return value;
-};
-
-const approxGreaterThan = (left: number, right: number, eps = 1e-12) => left - right > eps;
-const approxLessThan = (left: number, right: number, eps = 1e-12) => right - left > eps;
 
 const resolveCanonicalBotContext = async (userId: string, payload: OpenOrderInput) => {
   if (!payload.botId) {
@@ -512,6 +216,7 @@ const ensureLiveOrderAllowed = (
     marketType: botContext.marketType,
     positionMode: botContext.positionMode,
     apiKeyId: botContext.apiKeyId,
+    walletId: botContext.walletId,
   };
 };
 
@@ -524,7 +229,7 @@ type LiveExecutionApiKey = {
 
 export const resolveLiveExecutionApiKey = async (params: {
   userId: string;
-  bot: Pick<LiveBotContext, 'exchange' | 'apiKeyId'>;
+  bot: Pick<LiveBotContext, 'exchange' | 'apiKeyId' | 'walletId'>;
 }): Promise<LiveExecutionApiKey> => {
   if (params.bot.apiKeyId) {
     const botBoundApiKey = await prisma.apiKey.findFirst({
@@ -542,73 +247,32 @@ export const resolveLiveExecutionApiKey = async (params: {
     }
   }
 
-  const fallbackApiKey = await prisma.apiKey.findFirst({
-    where: {
-      userId: params.userId,
-      exchange: params.bot.exchange,
-    },
-    orderBy: { updatedAt: 'desc' },
-    select: {
-      id: true,
-      exchange: true,
-      apiKey: true,
-      apiSecret: true,
-    },
-  });
+  if (params.bot.walletId) {
+    const walletBoundApiKey = await prisma.wallet.findFirst({
+      where: {
+        id: params.bot.walletId,
+        userId: params.userId,
+        exchange: params.bot.exchange,
+        apiKeyId: { not: null },
+      },
+      select: {
+        apiKey: {
+          select: {
+            id: true,
+            exchange: true,
+            apiKey: true,
+            apiSecret: true,
+          },
+        },
+      },
+    });
 
-  if (!fallbackApiKey) {
-    throw orderErrors.liveApiKeyRequired();
+    if (walletBoundApiKey?.apiKey && walletBoundApiKey.apiKey.exchange === params.bot.exchange) {
+      return walletBoundApiKey.apiKey;
+    }
   }
 
-  return fallbackApiKey;
-};
-
-const getSymbolTradingRulesCached = async (params: {
-  connector: CcxtFuturesConnector;
-  exchange: Exchange;
-  marketType: 'FUTURES' | 'SPOT';
-  symbol: string;
-}) => {
-  const cacheKey = getRulesCacheKey({
-    exchange: params.exchange,
-    marketType: params.marketType,
-    symbol: params.symbol,
-  });
-  const nowMs = Date.now();
-  const cached = symbolRulesCache.get(cacheKey);
-  if (cached && cached.expiresAtMs > nowMs) {
-    return cached.rules;
-  }
-
-  const rules = await params.connector.getSymbolTradingRules(params.symbol);
-  symbolRulesCache.set(cacheKey, {
-    expiresAtMs: nowMs + liveOrderingConfig.rulesCacheTtlMs,
-    rules,
-  });
-  return rules;
-};
-
-const hasOpenExposureCached = async (params: {
-  connector: CcxtFuturesConnector;
-  apiKeyId: string;
-  symbol: string;
-}) => {
-  const cacheKey = getExposureCacheKey({
-    apiKeyId: params.apiKeyId,
-    symbol: params.symbol,
-  });
-  const nowMs = Date.now();
-  const cached = symbolExposureCache.get(cacheKey);
-  if (cached && cached.expiresAtMs > nowMs) {
-    return cached.hasOpenPosition;
-  }
-
-  const hasOpenPosition = await params.connector.hasOpenPosition(params.symbol);
-  symbolExposureCache.set(cacheKey, {
-    expiresAtMs: nowMs + liveOrderingConfig.exposureCacheTtlMs,
-    hasOpenPosition,
-  });
-  return hasOpenPosition;
+  throw orderErrors.liveApiKeyRequired();
 };
 
 const resolveLiveTargetLeverage = async (params: {
@@ -633,11 +297,11 @@ const resolveLiveTargetLeverage = async (params: {
   return Math.max(1, Math.floor(strategy.leverage));
 };
 
-const defaultManualOrderContextDeps: ManualOrderContextDeps = {
+export const defaultManualOrderContextDeps: ManualOrderContextDeps = {
   createPublicConnector: ({ exchange, marketType }) =>
-    new CcxtFuturesConnector({
-      exchangeId: exchange.toLowerCase(),
-      marketType: marketType === 'SPOT' ? 'spot' : 'future',
+    createPublicExchangeConnector({
+      exchange,
+      marketType,
     }),
 };
 
@@ -646,105 +310,21 @@ export const getManualOrderContext = async (
   query: ManualOrderContextQuery,
   deps: ManualOrderContextDeps = defaultManualOrderContextDeps
 ) => {
-  const bot = await prisma.bot.findFirst({
-    where: { id: query.botId, userId },
-    select: {
-      id: true,
-      mode: true,
-      exchange: true,
-      marketType: true,
-      maxOpenPositions: true,
-    },
-  });
-
-  if (!bot) return null;
-
-  const normalizedSymbol = query.symbol.toUpperCase();
-  const strategyContext = await resolveManualOrderStrategyContext({
-    userId,
-    botId: bot.id,
-    symbol: normalizedSymbol,
-  });
-  const resolvedLeverage =
-    bot.marketType === 'SPOT' ? 1 : Math.max(1, Math.floor(strategyContext?.leverage ?? 1));
-  const resolvedOrderType = resolveOrderTypeFromStrategyConfig(strategyContext?.config ?? null) ?? 'MARKET';
-  const resolvedMarginMode = resolveMarginModeFromStrategyConfig(strategyContext?.config ?? null, bot.marketType);
-
-  let rules: SymbolTradingRules = {
-    minAmount: null,
-    minNotional: null,
-    amountPrecision: null,
-  };
-  let markPrice: number | null = null;
-
-  // E2E should stay deterministic in CI/local without external exchange availability.
-  const shouldSkipExternalFetch =
-    process.env.NODE_ENV === 'test' && deps === defaultManualOrderContextDeps;
-  if (!shouldSkipExternalFetch) {
-    const connector = deps.createPublicConnector({
-      exchange: bot.exchange,
-      marketType: bot.marketType,
+  if (process.env.NODE_ENV === 'test' && deps === defaultManualOrderContextDeps) {
+    return getManualOrderContextService(userId, query, {
+      createPublicConnector: () => ({
+        getSymbolTradingRules: async () => ({
+          minAmount: null,
+          minNotional: null,
+          amountPrecision: null,
+        }),
+        fetchMarkPrice: async () => Number.NaN,
+        disconnect: async () => undefined,
+      }),
     });
-    try {
-      const [rulesResult, markPriceResult] = await Promise.allSettled([
-        connector.getSymbolTradingRules(normalizedSymbol),
-        connector.fetchMarkPrice(normalizedSymbol),
-      ]);
-
-      if (rulesResult.status === 'fulfilled') {
-        rules = rulesResult.value;
-      }
-      if (markPriceResult.status === 'fulfilled' && Number.isFinite(markPriceResult.value)) {
-        markPrice = markPriceResult.value;
-      }
-    } finally {
-      await connector.disconnect().catch(() => undefined);
-    }
   }
 
-  const minExecutableQty = computeMinExecutableQuantity({
-    minAmount: rules.minAmount,
-    minNotional: rules.minNotional,
-    markPrice,
-    amountPrecision: rules.amountPrecision,
-  });
-
-  const requestedQuantity =
-    typeof query.quantity === 'number' && Number.isFinite(query.quantity) && query.quantity > 0
-      ? query.quantity
-      : null;
-  const estimatedNotional =
-    requestedQuantity != null && markPrice != null
-      ? normalizeAmountFixed(requestedQuantity * markPrice, rules.amountPrecision)
-      : null;
-  const estimatedMargin =
-    estimatedNotional != null ? estimatedNotional / Math.max(1, resolvedLeverage) : null;
-
-  return {
-    botId: bot.id,
-    symbol: normalizedSymbol,
-    mode: bot.mode,
-    orderType: resolvedOrderType,
-    marginMode: resolvedMarginMode,
-    leverage: resolvedLeverage,
-    priceReference: {
-      markPrice,
-      source: markPrice != null ? 'exchange_mark' : 'unavailable',
-    },
-    quantityConstraints: {
-      minAmount: rules.minAmount,
-      amountPrecision: rules.amountPrecision,
-      minNotional: rules.minNotional,
-      minExecutableQty,
-    },
-    sideAwarePreview: {
-      side: query.side,
-      requestedQuantity,
-      estimatedNotional,
-      estimatedMargin,
-      maxOpenPositions: bot.maxOpenPositions,
-    },
-  };
+  return getManualOrderContextService(userId, query, deps);
 };
 
 const convergeLiveMarginAndLeverageIfNeeded = async (params: {
@@ -788,73 +368,20 @@ const convergeLiveMarginAndLeverageIfNeeded = async (params: {
   }
 };
 
-const enforceLivePretradeGuards = async (params: {
-  connector: CcxtFuturesConnector;
-  apiKeyId: string;
-  exchange: Exchange;
-  marketType: 'FUTURES' | 'SPOT';
-  payload: OpenOrderInput;
-}) => {
-  const normalizedSymbol = params.payload.symbol.toUpperCase();
-  const quantity = Number(params.payload.quantity);
-  if (!Number.isFinite(quantity) || quantity <= 0) {
-    throw orderErrors.livePretradeInvalidQuantity();
-  }
-
-  const hasExposure = await hasOpenExposureCached({
-    connector: params.connector,
-    apiKeyId: params.apiKeyId,
-    symbol: normalizedSymbol,
-  });
-  if (hasExposure) {
-    throw orderErrors.livePretradeExternalPositionOpen();
-  }
-
-  const rules = await getSymbolTradingRulesCached({
-    connector: params.connector,
-    exchange: params.exchange,
-    marketType: params.marketType,
-    symbol: normalizedSymbol,
-  });
-
-  if (typeof rules.minAmount === 'number' && approxLessThan(quantity, rules.minAmount)) {
-    throw orderErrors.livePretradeAmountBelowMin();
-  }
-
-  const normalizedByPrecision = normalizeAmountByPrecision(quantity, rules.amountPrecision);
-  if (Number.isFinite(normalizedByPrecision) && approxGreaterThan(Math.abs(quantity - normalizedByPrecision), 1e-12)) {
-    throw orderErrors.livePretradeAmountPrecision();
-  }
-
-  if (typeof rules.minNotional === 'number') {
-    let priceForNotional: number | null = null;
-    if (typeof params.payload.price === 'number' && Number.isFinite(params.payload.price)) {
-      priceForNotional = params.payload.price;
-    } else {
-      priceForNotional = await params.connector.fetchMarkPrice(normalizedSymbol).catch(() => null);
-    }
-    if (typeof priceForNotional === 'number' && Number.isFinite(priceForNotional)) {
-      const notional = quantity * priceForNotional;
-      if (approxLessThan(notional, rules.minNotional)) {
-        throw orderErrors.livePretradeNotionalBelowMin();
-      }
-    }
-  }
-};
-
 const executeLiveOrderOnExchange: OpenOrderDeps['executeLiveOrder'] = async (params) => {
   const apiKey = await resolveLiveExecutionApiKey({
     userId: params.userId,
     bot: {
       exchange: params.bot.exchange,
       apiKeyId: params.bot.apiKeyId,
+      walletId: params.bot.walletId,
     },
   });
 
-  const connector = new CcxtFuturesConnector({
-    exchangeId: apiKey.exchange.toLowerCase(),
-    apiKey: decrypt(apiKey.apiKey),
-    secret: decrypt(apiKey.apiSecret),
+  const connector = createAuthenticatedExchangeConnector({
+    exchange: apiKey.exchange,
+    apiKey: apiKey.apiKey,
+    apiSecret: apiKey.apiSecret,
     marketType: params.bot.marketType,
   });
 
@@ -944,144 +471,6 @@ const writeOrderAudit = async (params: {
   }
 };
 
-type ApplyOrderFillLifecycleInput = {
-  userId: string;
-  orderId: string;
-  fillPrice: number | null;
-  fillQuantity: number | null;
-  filledAt?: Date;
-  leverage?: number | null;
-};
-
-const resolveOrderPositionLeverage = async (params: {
-  userId: string;
-  strategyId: string | null;
-  fallbackLeverage?: number | null;
-}) => {
-  if (typeof params.fallbackLeverage === 'number' && Number.isFinite(params.fallbackLeverage)) {
-    return Math.max(1, Math.floor(params.fallbackLeverage));
-  }
-  if (!params.strategyId) return 1;
-
-  const strategy = await prisma.strategy.findFirst({
-    where: {
-      id: params.strategyId,
-      userId: params.userId,
-    },
-    select: {
-      leverage: true,
-    },
-  });
-  if (!strategy || !Number.isFinite(strategy.leverage)) return 1;
-  return Math.max(1, Math.floor(strategy.leverage));
-};
-
-const resolvePositionSideFromOrderSide = (side: 'BUY' | 'SELL'): PositionSide =>
-  side === 'BUY' ? 'LONG' : 'SHORT';
-
-export const applyOrderFillLifecycle = async (params: ApplyOrderFillLifecycleInput) => {
-  return prisma.$transaction(async (tx) => {
-    const existingOrder = await tx.order.findFirst({
-      where: {
-        id: params.orderId,
-        userId: params.userId,
-      },
-    });
-    if (!existingOrder) return null;
-
-    const targetQuantityRaw =
-      typeof params.fillQuantity === 'number' && Number.isFinite(params.fillQuantity)
-        ? params.fillQuantity
-        : existingOrder.quantity;
-    const targetQuantity = Math.max(
-      0,
-      Math.min(existingOrder.quantity, Math.max(existingOrder.filledQuantity, targetQuantityRaw))
-    );
-    const fillStatus: OrderStatus = targetQuantity >= existingOrder.quantity ? 'FILLED' : 'PARTIALLY_FILLED';
-    const filledAt = params.filledAt ?? new Date();
-    const fillPrice =
-      isPositiveFiniteNumber(params.fillPrice)
-        ? params.fillPrice
-        : isPositiveFiniteNumber(existingOrder.averageFillPrice)
-          ? existingOrder.averageFillPrice
-          : isPositiveFiniteNumber(existingOrder.price)
-            ? existingOrder.price
-            : null;
-
-    const updatedOrder = await tx.order.update({
-      where: { id: existingOrder.id },
-      data: {
-        status: fillStatus,
-        filledQuantity: targetQuantity,
-        filledAt,
-        averageFillPrice: fillPrice,
-        feePending: false,
-      },
-    });
-
-    if (fillStatus !== 'FILLED') {
-      return {
-        order: updatedOrder,
-        positionId: updatedOrder.positionId ?? null,
-      };
-    }
-
-    if (!isPositiveFiniteNumber(fillPrice)) {
-      return {
-        order: updatedOrder,
-        positionId: updatedOrder.positionId ?? null,
-      };
-    }
-
-    if (updatedOrder.positionId) {
-      return {
-        order: updatedOrder,
-        positionId: updatedOrder.positionId,
-      };
-    }
-
-    const leverage = await resolveOrderPositionLeverage({
-      userId: params.userId,
-      strategyId: updatedOrder.strategyId,
-      fallbackLeverage: params.leverage,
-    });
-
-    const createdPosition = await tx.position.create({
-      data: {
-        userId: updatedOrder.userId,
-        botId: updatedOrder.botId,
-        walletId: updatedOrder.walletId,
-        strategyId: updatedOrder.strategyId,
-        symbol: updatedOrder.symbol,
-        side: resolvePositionSideFromOrderSide(updatedOrder.side),
-        status: 'OPEN',
-        entryPrice: fillPrice,
-        quantity: Math.max(0, targetQuantity),
-        leverage,
-        origin: updatedOrder.origin,
-        managementMode: updatedOrder.managementMode,
-        syncState: 'IN_SYNC',
-        openedAt: filledAt,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    const orderWithPosition = await tx.order.update({
-      where: { id: updatedOrder.id },
-      data: {
-        positionId: createdPosition.id,
-      },
-    });
-
-    return {
-      order: orderWithPosition,
-      positionId: createdPosition.id,
-    };
-  });
-};
-
 export const openOrder = async (
   userId: string,
   payload: OpenOrderInput,
@@ -1142,7 +531,7 @@ export const openOrder = async (
       walletId: canonicalPayload.walletId,
       strategyId: canonicalPayload.strategyId,
       positionId: canonicalPayload.positionId ?? null,
-      origin: 'USER',
+      origin: canonicalPayload.origin ?? 'USER',
       symbol: canonicalPayload.symbol.toUpperCase(),
       side: canonicalPayload.side,
       type: canonicalPayload.type,

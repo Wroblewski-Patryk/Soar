@@ -433,7 +433,7 @@ describe('orchestrateRuntimeSignal', () => {
       stopLoss: null,
       takeProfit: null,
     });
-    (orderGateway.closeOrder as ReturnType<typeof vi.fn>).mockResolvedValue({
+    (orderGateway.openOrder as ReturnType<typeof vi.fn>).mockResolvedValue({
       id: 'order-1',
       userId: 'u1',
       symbol: 'BTCUSDT',
@@ -447,11 +447,12 @@ describe('orchestrateRuntimeSignal', () => {
       submittedAt: new Date(),
       filledAt: new Date(),
       botId: null,
+      walletId: 'wallet-open',
       strategyId: null,
       positionId: 'position-open',
-      price: null,
+      price: 43000,
       stopPrice: null,
-      averageFillPrice: null,
+      averageFillPrice: 42950,
       fee: null,
       feeSource: 'ESTIMATED',
       feePending: false,
@@ -507,12 +508,174 @@ describe('orchestrateRuntimeSignal', () => {
         positionId: 'position-open',
         side: 'SELL',
         walletId: 'wallet-open',
+        price: 42950,
       })
     );
     expect(eventGateway.writeEvent).toHaveBeenCalledWith(
       expect.objectContaining({
         status: 'closed',
         positionId: 'position-open',
+      })
+    );
+  });
+
+  it('keeps LIVE close in submitted state until exchange fill is confirmed', async () => {
+    const orderGateway = createOrderGateway();
+    const positionGateway = createPositionGateway();
+    const eventGateway = createEventGateway();
+    const tradeGateway = createTradeGateway();
+    const dedupeGateway = createDedupeGateway();
+    (positionGateway.getOpenPositionBySymbol as ReturnType<typeof vi.fn>).mockResolvedValue({
+      id: 'position-open',
+      userId: 'u1',
+      externalId: null,
+      origin: 'BOT',
+      managementMode: 'BOT_MANAGED',
+      syncState: 'IN_SYNC',
+      symbol: 'BTCUSDT',
+      side: 'LONG',
+      status: 'OPEN',
+      entryPrice: 43000,
+      quantity: 0.2,
+      leverage: 1,
+      openedAt: new Date(),
+      closedAt: null,
+      realizedPnl: null,
+      unrealizedPnl: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      botId: null,
+      walletId: 'wallet-open',
+      strategyId: null,
+      stopLoss: null,
+      takeProfit: null,
+    });
+    (orderGateway.openOrder as ReturnType<typeof vi.fn>).mockResolvedValue({
+      id: 'order-close-pending',
+      userId: 'u1',
+      symbol: 'BTCUSDT',
+      side: 'SELL',
+      type: 'MARKET',
+      status: 'OPEN',
+      quantity: 0.2,
+      filledQuantity: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      submittedAt: new Date(),
+      filledAt: null,
+      botId: null,
+      walletId: 'wallet-open',
+      strategyId: null,
+      positionId: 'position-open',
+      price: 43000,
+      stopPrice: null,
+      averageFillPrice: null,
+      fee: null,
+      feeSource: 'ESTIMATED',
+      feePending: true,
+      feeCurrency: null,
+      effectiveFeeRate: null,
+      exchangeOrderId: 'exchange-close-pending',
+      exchangeTradeId: null,
+      canceledAt: null,
+    });
+
+    const result = await orchestrateRuntimeSignal(
+      {
+        userId: 'u1',
+        symbol: 'BTCUSDT',
+        direction: 'EXIT',
+        quantity: 0.1,
+        markPrice: 43000,
+        mode: 'LIVE',
+      },
+      orderGateway,
+      positionGateway,
+      eventGateway,
+      tradeGateway,
+      dedupeGateway
+    );
+
+    expect(result).toEqual({
+      status: 'submitted',
+      orderId: 'order-close-pending',
+    });
+    expect(positionGateway.closePosition).not.toHaveBeenCalled();
+    expect(orderGateway.closeOrder).not.toHaveBeenCalled();
+    expect(tradeGateway.createTrade).not.toHaveBeenCalled();
+    expect(eventGateway.writeEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: 'submitted',
+        reason: 'waiting_fill',
+        orderId: 'order-close-pending',
+        positionId: 'position-open',
+      })
+    );
+    expect(dedupeGateway.markSucceeded).toHaveBeenCalledWith(
+      expect.objectContaining({
+        orderId: 'order-close-pending',
+      })
+    );
+  });
+
+  it('uses canonical fill price for opened trades when lifecycle provides it', async () => {
+    const orderGateway = createOrderGateway();
+    const positionGateway = createPositionGateway();
+    const eventGateway = createEventGateway();
+    const tradeGateway = createTradeGateway();
+    (orderGateway.openOrder as ReturnType<typeof vi.fn>).mockResolvedValue({
+      id: 'order-live-filled-1',
+      userId: 'u1',
+      symbol: 'BTCUSDT',
+      side: 'BUY',
+      type: 'MARKET',
+      status: 'FILLED',
+      quantity: 0.1,
+      filledQuantity: 0.1,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      submittedAt: new Date(),
+      filledAt: new Date(),
+      botId: 'bot-live-1',
+      walletId: 'wallet-live-1',
+      strategyId: 'strategy-live-1',
+      positionId: 'position-live-1',
+      price: 43000,
+      stopPrice: null,
+      averageFillPrice: 43125,
+      fee: 1.25,
+      feeSource: 'EXCHANGE_FILL',
+      feePending: false,
+      feeCurrency: 'USDT',
+      effectiveFeeRate: 0.001,
+      exchangeOrderId: 'exchange-order-1',
+      exchangeTradeId: 'exchange-trade-1',
+      canceledAt: null,
+    });
+
+    await orchestrateRuntimeSignal(
+      {
+        userId: 'u1',
+        symbol: 'BTCUSDT',
+        direction: 'LONG',
+        quantity: 0.1,
+        markPrice: 43000,
+        mode: 'LIVE',
+      },
+      orderGateway,
+      positionGateway,
+      eventGateway,
+      tradeGateway
+    );
+
+    expect(tradeGateway.createTrade).toHaveBeenCalledWith(
+      expect.objectContaining({
+        orderId: 'order-live-filled-1',
+        positionId: 'position-live-1',
+        price: 43125,
+        quantity: 0.1,
+        fee: 1.25,
+        feeSource: 'EXCHANGE_FILL',
       })
     );
   });

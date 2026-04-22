@@ -63,7 +63,7 @@ type RuntimePositionAutomationDeps = {
     mode: 'PAPER' | 'LIVE';
     quantity: number;
     reason?: 'take_profit' | 'trailing_take_profit' | 'stop_loss' | 'trailing_stop';
-  }) => Promise<void>;
+  }) => Promise<{ status: 'submitted' | 'closed' }>;
   resolveDcaFundsExhausted: (input: {
     userId: string;
     botId?: string | null;
@@ -197,7 +197,7 @@ const resolvePositionMarketType = (position: RuntimeManagedPosition): TradeMarke
 };
 
 const resolvePositionExchange = (position: RuntimeManagedPosition): Exchange => {
-  if (position.bot?.exchange === 'BINANCE') return position.bot.exchange;
+  if (position.bot?.exchange) return position.bot.exchange;
   return getRuntimeManualPositionExchange();
 };
 
@@ -439,7 +439,7 @@ const defaultDeps: RuntimePositionAutomationDeps = {
     }
   },
   closeByExitSignal: async (input) => {
-    await orchestrateRuntimeSignal({
+    const result = await orchestrateRuntimeSignal({
       userId: input.userId,
       botId: input.botId,
       walletId: input.walletId ?? undefined,
@@ -450,6 +450,9 @@ const defaultDeps: RuntimePositionAutomationDeps = {
       mode: input.mode,
       reason: input.reason,
     });
+    return {
+      status: result.status === 'closed' ? 'closed' : 'submitted',
+    };
   },
   resolveDcaFundsExhausted: (input) => resolveRuntimeDcaFundsExhausted(input),
   recordRuntimeEvent: (params) => runtimeTelemetryService.recordRuntimeEvent(params),
@@ -817,8 +820,7 @@ export class RuntimePositionAutomationService {
     }
 
     if (result.shouldClose) {
-      await runtimePositionStateStore.deletePositionRuntimeState(position.id);
-      await this.deps.closeByExitSignal({
+      const closeResult = await this.deps.closeByExitSignal({
         userId: position.userId,
         botId: position.botId ?? undefined,
         walletId: position.walletId ?? position.bot?.walletId ?? null,
@@ -828,7 +830,12 @@ export class RuntimePositionAutomationService {
         quantity: result.nextState.quantity,
         reason: result.closeReason,
       });
-      this.positionStates.delete(position.id);
+      if (closeResult.status === 'closed') {
+        await runtimePositionStateStore.deletePositionRuntimeState(position.id);
+        this.positionStates.delete(position.id);
+      } else if (!this.statesEqual(previousStateSnapshot, result.nextState)) {
+        await runtimePositionStateStore.setPositionRuntimeState(position.id, result.nextState);
+      }
       return;
     }
 

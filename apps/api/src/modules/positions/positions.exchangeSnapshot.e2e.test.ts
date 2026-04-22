@@ -51,7 +51,7 @@ describe("Positions exchange snapshot API", () => {
     const res = await agent.get("/dashboard/positions/exchange-snapshot");
 
     expect(res.status).toBe(400);
-    expect(res.body.error.message).toBe("No Binance API key configured.");
+    expect(res.body.error.message).toBe("No supported exchange API key configured.");
   });
 
   it("returns normalized exchange snapshot for authenticated user with key", async () => {

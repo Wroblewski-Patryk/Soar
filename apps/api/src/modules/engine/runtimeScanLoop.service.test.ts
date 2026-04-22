@@ -58,12 +58,14 @@ describe('RuntimeScanLoop', () => {
     expect(deps.processTicker).toHaveBeenCalledTimes(2);
     expect(deps.processTicker).toHaveBeenCalledWith(
       expect.objectContaining({
+        exchange: 'BINANCE',
         symbol: 'BTCUSDT',
         lastPrice: 60300,
       })
     );
     expect(deps.processTicker).toHaveBeenCalledWith(
       expect.objectContaining({
+        exchange: 'BINANCE',
         symbol: 'ETHUSDT',
         lastPrice: 2970,
       })
@@ -92,6 +94,7 @@ describe('RuntimeScanLoop', () => {
     expect(forwardedCall).toBeTruthy();
     const forwarded = (forwardedCall?.[0] ?? {}) as Record<string, unknown>;
     expect(forwarded.type).toBe('ticker');
+    expect(forwarded.exchange).toBe('BINANCE');
     expect(forwarded.symbol).toBe('BTCUSDT');
     expect(forwarded.eventTime).toBe(777_000);
     expect(forwarded).not.toHaveProperty('interval');
