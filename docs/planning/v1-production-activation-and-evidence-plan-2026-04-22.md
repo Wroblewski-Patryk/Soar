@@ -267,6 +267,16 @@ Validation:
 - focused ops evidence pack
 - `pnpm run quality:guardrails`
 
+Execution note (2026-04-22):
+
+- `scripts/runRollbackProofEvidence.mjs` is the canonical rollback-proof wrapper
+  over `ops:deploy:rollback-guard`
+- `pnpm run ops:db:restore-drill:prod` and
+  `pnpm run ops:deploy:rollback-proof:prod` are the canonical prod proof
+  commands
+- `scripts/runV1ReleaseGate.mjs` must classify both proof families as required
+  prod evidence and stay fail-closed when they are stale or missing
+
 ### V1FACT-10 qa(prod-pack): build final prod activation evidence pack and sign-off summary
 
 Reason:
@@ -356,9 +366,24 @@ Validation:
   this environment. Follow-up focus is now `V1FACT-A3`.
 - 2026-04-22: Real authenticated stage rehearsal later became possible after
   switching Coolify to `Root Team`, creating a dedicated stage OPS admin, and
-  allowing the current operator IP for protected endpoints. This exposed a
-  real runtime blocker instead of an auth blocker: `/workers/runtime-freshness`
-  fails in `WORKER_MODE=inline` with no active runtime demand while
-  `/workers/health`, `/workers/ready`, and `/alerts` stay green. `V1FACT-07B`
-  is now inserted before `V1FACT-A3` to fix and relock that contract
-  truthfully.
+  allowing the current operator IP for protected endpoints. That first real
+  run exposed an inline-mode runtime-freshness false negative while
+  `/workers/health`, `/workers/ready`, and `/alerts` stayed green.
+- 2026-04-22: Closed `V1FACT-07B` by aligning inline runtime-freshness truth,
+  deploying SHA `49ea8e0c`, and rerunning authenticated stage rehearsal to
+  PASS with fresh artifacts
+  `docs/operations/v1-release-gate-stage-2026-04-22T19-15-59-493Z.md` and
+  `docs/operations/v1-stage-rehearsal-2026-04-22T19-15-59-493Z.md`. Follow-up
+  focus is now `V1FACT-A3`.
+- 2026-04-22: Closed `V1FACT-08..V1FACT-10` by making prod backup/restore and
+  rollback proof explicit release-gate evidence families, adding canonical
+  rollback-proof commands, refreshing RC status/sign-off/checklist truth for
+  the current day, and publishing the consolidated activation packet in
+  `docs/operations/v1-production-activation-pack-2026-04-22.md`. Residual
+  blockers are now explicit: missing prod restore-drill proof, missing prod
+  rollback-proof pack, open RC Gate 2, and missing named human approvers.
+- 2026-04-22: Closed `V1FACT-11` by publishing
+  `docs/operations/v1-production-activation-closure-2026-04-22.md`, syncing
+  queue/context/project state to `CLOSED_WITH_OPERATOR_BLOCKERS`, and freezing
+  future-agent rules so stage success, public prod smoke, or fresh docs alone
+  can never be treated as final production activation.

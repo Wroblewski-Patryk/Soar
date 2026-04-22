@@ -7,12 +7,9 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `V1FACT-07B fix(api-runtime-freshness): align inline runtime freshness with worker-ready truth and rerun authenticated stage rehearsal`
-- [ ] `V1FACT-08 test(ops-red): lock prod activation against incomplete rollback or backup proof`
-- [ ] `V1FACT-09 refactor(ops-proof): make backup/restore and rollback evidence first-class gate inputs`
+- [ ] `none`
 ## NEXT
-- [ ] `V1FACT-10 qa(prod-pack): build final prod activation evidence pack and sign-off summary`
-- [ ] `V1FACT-11 docs(sync): close wave, sync canonical queue/context, and freeze future-agent activation rules`
+- [ ] `none`
 ## PIPELINE
 - [ ] `none`
 - [x] `SAFEV1-10 qa(closure): run focused V1 runtime safety pack and publish closure evidence`
@@ -35,11 +32,11 @@ Operational queue for one-task execution runs.
 - [x] `CQLT-32 docs(decision): freeze legacy bridge sunset list and mark compatibility-only code paths that remain intentional`
 - [x] `CQLT-34 docs(sync): update queue/context/module docs and capture post-wave coding rules for future agents`
 ## GROUP QUEUE
-- [ ] `V1FACT-A planning queued (V1 production activation through release-gate truth, stage/prod evidence freshness, backup/rollback proof, and final sign-off packaging)`
+- [x] `V1FACT-A planning queued (V1 production activation through release-gate truth, stage/prod evidence freshness, backup/rollback proof, and final sign-off packaging)`
 - [x] `V1FACT-A1 (commits V1FACT-01..V1FACT-03): contract + audit + queue truth`
 - [x] `V1FACT-A2 (commits V1FACT-04..V1FACT-07): release-gate freshness + stage rehearsal evidence`
-- [ ] `V1FACT-A3 (commits V1FACT-08..V1FACT-09): rollback/backup proof as first-class gate inputs`
-- [ ] `V1FACT-A4 (commits V1FACT-10..V1FACT-11): final activation pack + closure sync`
+- [x] `V1FACT-A3 (commits V1FACT-08..V1FACT-09): rollback/backup proof as first-class gate inputs`
+- [x] `V1FACT-A4 (commits V1FACT-10..V1FACT-11): final activation pack + closure sync`
 - [x] `REVIEW-D planning queued (live opt-in admission truth, orphan bot-position fail-closed safety, canonical takeover rebind, and readiness-truth hardening)`
 - [x] `REVIEW-D1 (commits REVIEW-D-01..REVIEW-D-03): runtime live opt-in admission truth`
 - [x] `REVIEW-D2 (commits REVIEW-D-04..REVIEW-D-05): orphan bot-origin automation fail-closed contract`
@@ -176,10 +173,20 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `V1FACT-11 docs(sync): close wave, sync canonical queue/context, and freeze future-agent activation rules`
+  - 2026-04-22: Published [docs/operations/v1-production-activation-closure-2026-04-22.md](/C:/Personal/Projekty/Aplikacje/Soar/docs/operations/v1-production-activation-closure-2026-04-22.md), synchronized queue/context to the final `CLOSED_WITH_OPERATOR_BLOCKERS` state, and froze future-agent rules so nobody can treat stage success, public prod smoke, or fresh docs alone as final production activation.
+- [x] `V1FACT-10 qa(prod-pack): build final prod activation evidence pack and sign-off summary`
+  - 2026-04-22: Published [docs/operations/v1-production-activation-pack-2026-04-22.md](/C:/Personal/Projekty/Aplikacje/Soar/docs/operations/v1-production-activation-pack-2026-04-22.md), refreshed RC status/sign-off/checklist to current-day truth, and narrowed the remaining prod blockers to missing prod restore-drill proof, missing prod rollback-proof pack, open RC Gate 2, and missing named human approvers. Validation PASS: `pnpm run ops:release:v1:gate -- --environment prod --dry-run --skip-local-quality --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch`, `pnpm run ops:rc:gates:status`, `pnpm run ops:rc:signoff:build`, `pnpm run ops:rc:checklist:sync`.
+- [x] `V1FACT-A4 (commits V1FACT-10..V1FACT-11): final activation pack + closure sync`
+  - 2026-04-22: Closed the final `V1FACT-A` slice by publishing both the consolidated activation packet and the final closure record, syncing queue/context/project state, and freezing future-agent rules around prod-only proof artifacts and named human sign-offs.
+- [x] `V1FACT-A group closure (evidence-backed activation path published; candidate still blocked on operator-only inputs)`
+  - 2026-04-22: Closed the planned `V1FACT-A` engineering wave end-to-end. The implementation and documentation path is complete, and the only remaining blockers are operator-owned prod proof artifacts and named human sign-offs captured in `docs/operations/v1-production-activation-closure-2026-04-22.md`.
+- [x] `V1FACT-A3 (commits V1FACT-08..V1FACT-09): rollback/backup proof as first-class gate inputs`
+  - 2026-04-22: Closed the third `V1FACT-A` slice by making `scripts/runV1ReleaseGate.mjs` classify prod backup/restore drill and rollback proof as required evidence families, adding canonical rollback-proof entrypoints (`ops:deploy:rollback-proof*`), and updating activation/runbook docs so stale or missing prod proof remains explicit and fail-closed. Validation PASS: `node --test scripts/runV1ReleaseGate.test.mjs`, `pnpm run ops:deploy:rollback-proof:stage -- --base-url https://stage-api.soar.luckysparrow.ch --auth-email stage-ops-admin@luckysparrow.ch --auth-password \"StageOps26!B3rlin#Gate\" --ops-auth-header-name X-Forwarded-For --ops-auth-header-value 31.10.146.162`, `pnpm run quality:guardrails`.
 - [x] `V1FACT-A2 (commits V1FACT-04..V1FACT-07): release-gate freshness + stage rehearsal evidence`
   - 2026-04-22: Closed the second `V1FACT-A` slice by hardening `scripts/runV1ReleaseGate.mjs` with explicit evidence freshness classification and stage/prod scope truth, fixing target URL passthrough for deploy smoke, adding canonical `ops:release:v1:stage-rehearsal`, and publishing fresh stage artifacts (`v1-release-gate-stage-2026-04-22T17-53-09-987Z.md`, `v1-stage-rehearsal-2026-04-22T17-53-09-987Z.md`) with dry-run blockers kept explicit instead of implied.
-- [ ] `V1FACT-07B fix(api-runtime-freshness): align inline runtime freshness with worker-ready truth and rerun authenticated stage rehearsal`
-  - 2026-04-22: Real authenticated stage rehearsal was unblocked through Coolify `Root Team` access plus dedicated stage OPS admin access, but `/workers/runtime-freshness` exposed an inline-mode false negative (`worker heartbeat timestamp missing`, `market data timestamp missing`) even while `/workers/health`, `/workers/ready`, and `/alerts` were green. Remediation is now the next immediate slice before `V1FACT-A3`.
+- [x] `V1FACT-07B fix(api-runtime-freshness): align inline runtime freshness with worker-ready truth and rerun authenticated stage rehearsal`
+  - 2026-04-22: Closed the inline-runtime truth fix by deploying SHA `49ea8e0c`, rerunning authenticated stage rehearsal successfully, and publishing fresh stage artifacts `v1-release-gate-stage-2026-04-22T19-15-59-493Z.md` and `v1-stage-rehearsal-2026-04-22T19-15-59-493Z.md`.
 - [x] `V1FACT-A1 (commits V1FACT-01..V1FACT-03): contract + audit + queue truth`
   - 2026-04-22: Closed the first `V1FACT-A` slice by freezing the V1 production-activation contract, publishing `docs/operations/v1-production-activation-evidence-audit-2026-04-22.md` with a fresh/stale/missing evidence map, and advancing the canonical queue to release-gate freshness + stage rehearsal work.
 - [x] `REVIEW-D4 (commits REVIEW-D-08..REVIEW-D-10): readiness-truth hardening + closure evidence`

@@ -75,12 +75,31 @@ Last updated: 2026-04-22
   entrypoint with reproducible artifacts, and stage dry-run evidence remains
   fail-closed and explicitly non-production until remote execution proof
   exists.
-- 2026-04-22: real stage rehearsal was later authenticated through Coolify
-  `Root Team` access plus a dedicated stage OPS admin, which exposed a real
-  blocker: `/workers/runtime-freshness` reports `FAIL` in `WORKER_MODE=inline`
+- 2026-04-22: the first authenticated stage rehearsal through Coolify
+  `Root Team` access plus a dedicated stage OPS admin exposed a real blocker:
+  `/workers/runtime-freshness` reported `FAIL` in `WORKER_MODE=inline`
   without active runtime demand even while `/workers/health`, `/workers/ready`,
-  and `/alerts` are green. A focused inline freshness truth fix is now the
-  next prerequisite before `V1FACT-A3` can proceed honestly.
+  and `/alerts` were green.
+- 2026-04-22: `V1FACT-07B` is closed; the inline runtime-freshness contract
+  was aligned with real worker demand, SHA `49ea8e0c` was deployed, and the
+  authenticated stage rehearsal now passes with fresh stage artifacts instead
+  of remaining blocked on a false negative.
+- 2026-04-22: `V1FACT-A3` is closed; prod release readiness now treats
+  backup/restore drill and rollback proof as explicit evidence families in the
+  V1 release gate, with canonical rollback-proof commands and fail-closed
+  classification when either proof is stale or missing.
+- 2026-04-22: `V1FACT-10` is closed; the final prod activation packet now
+  exists in `docs/operations/v1-production-activation-pack-2026-04-22.md`,
+  and the residual blockers are narrowed to four explicit items: missing prod
+  restore-drill proof, missing prod rollback-proof pack, open RC Gate 2, and
+  missing named human approvers / rollback owner in the sign-off record.
+- 2026-04-22: `V1FACT-11` is closed; `V1FACT-A` no longer has active executor
+  tasks. The production-activation architecture is frozen, and the remaining
+  state is `CLOSED_WITH_OPERATOR_BLOCKERS` rather than an open engineering
+  wave.
+- 2026-04-22: `V1FACT-A` is closed as a delivery wave. Further progress toward
+  final V1 activation now depends on operator-owned prod evidence generation
+  and named sign-off capture, not on additional planned engineering tasks.
 - 2026-04-22: `SAFEV1-A1` is closed; exchange reconciliation now refuses to
   create or update open synced positions when canonical entry truth is missing,
   keeping incomplete exchange snapshots out of the local open-position model.

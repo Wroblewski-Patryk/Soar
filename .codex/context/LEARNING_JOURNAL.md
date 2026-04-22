@@ -22,6 +22,22 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-22 - Protected prod OPS endpoints can stay externally blocked even when runtime is healthy
+- Context: V1 production activation rehearsal after stage succeeded and prod deploy on SHA `49ea8e0c` was already live.
+- Symptom: public prod API and web smoke pass, internal prod runtime checks pass from inside the API runtime, but external `/workers/*`, `/workers/runtime-freshness`, and `/alerts` probes remain `403`.
+- Root cause: production protected OPS endpoints are intentionally still behind stricter access than stage/public smoke, so external gate commands cannot be assumed to work from the operator workstation without explicit prod-private auth exposure.
+- Guardrail: treat public prod smoke and internal prod runtime verification as separate evidence classes; if protected prod OPS stays externally blocked, keep prod proof artifacts and sign-off blocked instead of loosening access or pretending the external proof exists.
+- Preferred pattern:
+```text
+1) Verify public prod smoke (`/health`, `/ready`, web root`) separately.
+2) Verify protected runtime probes from an approved internal context when needed.
+3) Keep release-gate/proof artifacts fail-closed until explicit prod proof packs are generated.
+4) Record the remaining blocker as operator-only, not as missing code truth.
+```
+- Avoid: reclassifying internal runtime diagnostics as complete prod activation proof or weakening prod OPS protection only to satisfy a script.
+- Evidence:
+  - 2026-04-22 production deploy on `49ea8e0c`: public smoke PASS, internal `/workers/health`, `/workers/runtime-freshness`, `/alerts` PASS, but external protected OPS endpoints remained `403`, leaving prod proof generation and final activation sign-off still blocked.
+
 ### 2026-04-22 - Coolify project visibility depends on the active team
 - Context: Stage V1 rehearsal work required logging into Coolify and opening the real `Soar` project and `stage` environment.
 - Symptom: direct project URLs returned `404` even though the same admin account could see the project in the browser.

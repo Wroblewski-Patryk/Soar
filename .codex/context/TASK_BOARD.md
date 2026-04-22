@@ -17,12 +17,7 @@ Last updated: 2026-04-22
 
 ## READY
 
-- [ ] `V1FACT-A planning queued (V1 production activation through release-gate truth, stage/prod evidence freshness, backup/rollback proof, and final sign-off packaging)`
-  - 2026-04-22: Published `docs/planning/v1-production-activation-and-evidence-plan-2026-04-22.md` and froze activation rules in `docs/architecture/reference/v1-production-activation-contract.md` so the next execution wave can focus on operational truth only: release-gate freshness, stage/prod evidence separation, backup/restore and rollback proof, and final human-reviewable V1 sign-off packaging.
-- [ ] `V1FACT-07B inline runtime-freshness truth after authenticated stage rehearsal`
-  - 2026-04-22: Real stage rehearsal is now authenticated through Coolify `Root Team` access plus a dedicated stage OPS admin, but `/workers/runtime-freshness` exposed an inline-mode false negative even while `/workers/health`, `/workers/ready`, and `/alerts` were green on stage. The next slice is to align runtime-freshness truth with inline worker-ready semantics and then rerun the stage rehearsal before continuing `V1FACT-A3`.
-- [ ] `V1FACT-A3 rollback/backup proof as first-class gate inputs (V1FACT-08..V1FACT-09)`
-  - 2026-04-22: Next active slice after `V1FACT-A2`. Scope is now to make backup/restore and rollback proof fail-closed gate inputs so production activation cannot silently pass on stale or missing ops evidence.
+- [ ] (none)
 
 ## BACKLOG
 
@@ -42,6 +37,18 @@ Last updated: 2026-04-22
 
 ## DONE
 
+- [x] `V1FACT-A group closure (evidence-backed activation path published; candidate still blocked on operator-only inputs)`
+  - 2026-04-22: Closed `V1FACT-A` as an engineering/doc wave by publishing the final activation packet plus closure record and leaving only explicit operator-owned blockers for prod proof artifacts and named sign-offs.
+- [x] `V1FACT-11 docs(sync): close wave, sync canonical queue/context, and freeze future-agent activation rules`
+  - 2026-04-22: Published `docs/operations/v1-production-activation-closure-2026-04-22.md`, synchronized queue/context to the final `CLOSED_WITH_OPERATOR_BLOCKERS` state, and froze future-agent rules so production activation cannot be inferred from stage success, public prod smoke, or fresh docs alone.
+- [x] `V1FACT-A4 final activation pack + closure sync (V1FACT-10..V1FACT-11)`
+  - 2026-04-22: Closed the final `V1FACT-A` slice by publishing both the consolidated activation packet and the closure record, and by narrowing the remaining production blockers to explicit operator-only inputs.
+- [x] `V1FACT-10 qa(prod-pack): build final prod activation evidence pack and sign-off summary`
+  - 2026-04-22: Published `docs/operations/v1-production-activation-pack-2026-04-22.md`, refreshed RC status/sign-off/checklist truth for the current day, and reduced remaining blockers to missing prod restore-drill proof, missing prod rollback-proof pack, open RC Gate 2, and missing named human approvers.
+- [x] `V1FACT-07B inline runtime-freshness truth after authenticated stage rehearsal`
+  - 2026-04-22: Closed the inline runtime-freshness blocker by aligning `WORKER_MODE=inline` readiness truth with actual worker demand, deploying SHA `49ea8e0c`, and rerunning authenticated stage rehearsal successfully with fresh stage artifacts.
+- [x] `V1FACT-A3 rollback/backup proof as first-class gate inputs (V1FACT-08..V1FACT-09)`
+  - 2026-04-22: Closed the third `V1FACT-A` slice by making prod backup/restore drill and rollback proof explicit release-gate evidence families, exposing canonical rollback-proof commands, and updating activation/runbook docs so stale or missing prod proof remains fail closed.
 - [x] `V1FACT-A2 release-gate freshness + stage rehearsal evidence (V1FACT-04..V1FACT-07)`
   - 2026-04-22: Closed the second `V1FACT-A` slice by making release-gate evidence freshness explicit in `scripts/runV1ReleaseGate.mjs`, adding the canonical stage rehearsal entrypoint `scripts/runV1StageRehearsal.mjs`, fixing deploy-smoke target passthrough for both API and web URLs, and publishing fresh stage dry-run artifacts in `docs/operations/v1-release-gate-stage-2026-04-22T17-53-09-987Z.md` and `docs/operations/v1-stage-rehearsal-2026-04-22T17-53-09-987Z.md` with blockers kept explicit.
 - [x] `V1FACT-A1 contract + audit + queue truth (V1FACT-01..V1FACT-03)`
