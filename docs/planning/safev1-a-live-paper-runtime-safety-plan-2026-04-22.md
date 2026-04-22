@@ -309,3 +309,9 @@ Validation:
   reference balance and DCA affordability no longer resolve through unrelated
   recent user API keys on the same exchange. Validation PASS: focused runtime
   capital test, `api typecheck`, `api build`.
+- 2026-04-22: Closed `SAFEV1-06..SAFEV1-07` by adding focused ownership
+  regressions and hardening `runtimeExternalPositionOwner.service.ts` to
+  return explicit `OWNED/AMBIGUOUS` truth, with canonical market-group scope
+  outranking legacy-only symbol bridges and manual runtime close staying fail
+  closed on ambiguous ownership. Validation PASS: focused ownership/close
+  tests, `api typecheck`, `api build`.

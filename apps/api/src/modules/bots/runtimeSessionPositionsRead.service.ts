@@ -81,7 +81,12 @@ export const listBotRuntimeSessionPositions = async (
       : { botId };
   const externalOwnerBySymbol = await resolveExternalPositionOwnerBySymbol(userId, botContext.mode);
   const ownedExternalSymbols = [...externalOwnerBySymbol.entries()]
-    .filter(([, owner]) => owner.botId === botId)
+    .filter(
+      ([, owner]) =>
+        owner.status === 'OWNED' &&
+        owner.botId === botId &&
+        (!botContext.walletId || owner.walletId === botContext.walletId)
+    )
     .map(([symbol]) => symbol);
   const externalOwnedWhere: Prisma.PositionWhereInput[] =
     ownedExternalSymbols.length > 0

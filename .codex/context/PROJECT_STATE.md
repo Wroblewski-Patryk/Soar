@@ -51,6 +51,10 @@ Last updated: 2026-04-22
   canonical wallet-owned or bot-owned credentials, with missing live
   credential ownership staying fail closed instead of falling back to the
   latest user API key on the same exchange.
+- 2026-04-22: `SAFEV1-A3` is closed; external exchange-position ownership now
+  resolves through an explicit `OWNED/AMBIGUOUS` contract that prioritizes
+  canonical market-group scope and keeps overlap fail closed for runtime
+  management flows.
 - 2026-04-22: full `SCALE` wave (`SCALE-01..SCALE-17`) is closed, including
   exchange-access convergence, web container seam extraction, and closure
   evidence handoff for future agents.
@@ -170,9 +174,9 @@ Last updated: 2026-04-22
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: continue `SAFEV1-A` from canonical external ownership
-  resolution after closing zero-entry reconciliation and live-capital fallback
-  gaps.
+- Main active objective: continue `SAFEV1-A` from explicit production
+  rate-limit degradation hardening after closing reconciliation, live-capital,
+  and external-ownership gaps.
 - Top blockers:
   - no active blockers recorded.
 - Success criteria for this phase:
@@ -204,6 +208,11 @@ Last updated: 2026-04-22
   affordability no longer fall back to unrelated recent user API keys on the
   same exchange, and added regressions for bot-scoped missing-credential
   fail-closed behavior.
+- 2026-04-22: closed `SAFEV1-A3` by hardening
+  `runtimeExternalPositionOwner.service.ts` to return explicit
+  `OWNED/AMBIGUOUS` ownership truth, prioritizing canonical market-group scope
+  over legacy-only symbol bridges, and by making manual runtime close refuse
+  ambiguous exchange-synced positions.
 - 2026-04-22: closed `RELEASE-HARDEN-A` by adding the canonical release gate
   script `scripts/runV1ReleaseGate.mjs`, exposing `pnpm run ops:release:v1:gate`,
   publishing `docs/operations/v1-release-gate-runbook.md`, and aligning V1

@@ -17,13 +17,13 @@ Last updated: 2026-04-22
 
 ## READY
 
-- [ ] `SAFEV1-06 test(api-red): lock canonical external-position ownership under overlapping symbol coverage`
-- [ ] `SAFEV1-07 refactor(api-runtime): replace symbol-level ownership heuristics with one deterministic canonical owner contract`
 - [ ] `SAFEV1-08 test(api-red): lock explicit degraded-state contract for production rate limiting`
+- [ ] `SAFEV1-09 refactor(api-ops): harden rate-limit degradation policy for production-sensitive endpoints`
+- [ ] `SAFEV1-10 qa(closure): run focused V1 runtime safety pack and publish closure evidence`
 
 ## BACKLOG
 
-- [ ] `SAFEV1-09..SAFEV1-10 live/paper runtime safety closure`
+- [ ] (none)
 
 ## IN_PROGRESS
 
@@ -39,6 +39,8 @@ Last updated: 2026-04-22
 
 ## DONE
 
+- [x] `SAFEV1-A3 canonical external ownership resolution (SAFEV1-06..SAFEV1-07)`
+  - 2026-04-22: Closed the third `SAFEV1-A` slice by replacing symbol-only external ownership heuristics with an explicit `OWNED/AMBIGUOUS` contract, preferring canonical market-group scope over legacy-only bridges, and making manual runtime close fail closed on ambiguous ownership. Validation PASS: `pnpm --filter api exec vitest run src/modules/bots/runtimeExternalPositionOwner.service.test.ts src/modules/bots/runtimeSessionPositionCommand.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter api run build`.
 - [x] `SAFEV1-A2 fail-closed live capital truth (SAFEV1-04..SAFEV1-05)`
   - 2026-04-22: Closed the second `SAFEV1-A` slice by adding focused runtime-capital regressions and removing the forbidden live fallback to unrelated recent API keys on the same exchange. Validation PASS: `pnpm --filter api exec vitest run src/modules/engine/runtimeCapitalContext.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter api run build`.
 - [x] `SAFEV1-A1 zero-entry reconciliation truth closure (SAFEV1-01..SAFEV1-03)`

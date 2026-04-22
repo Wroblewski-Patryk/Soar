@@ -1,17 +1,64 @@
 import { prisma } from '../../prisma/client';
-import {
-  resolveEffectiveSymbolGroupSymbols,
-} from './runtimeSymbolUniverse.service';
+import { resolveEffectiveSymbolGroupSymbols } from './runtimeSymbolUniverse.service';
 
-export type ExternalSymbolOwner = {
+export type ExternalPositionOwnership =
+  | {
+      status: 'OWNED';
+      botId: string;
+      walletId: string | null;
+    }
+  | {
+      status: 'AMBIGUOUS';
+      botId: null;
+      walletId: null;
+    };
+
+type Candidate = {
   botId: string;
   walletId: string | null;
+};
+
+const addCandidate = (
+  candidateBySymbol: Map<string, Map<string, Candidate>>,
+  symbol: string,
+  candidate: Candidate
+) => {
+  const byBot = candidateBySymbol.get(symbol) ?? new Map<string, Candidate>();
+  if (!byBot.has(candidate.botId)) {
+    byBot.set(candidate.botId, candidate);
+  }
+  candidateBySymbol.set(symbol, byBot);
+};
+
+const buildOwnershipMap = (
+  candidateBySymbol: Map<string, Map<string, Candidate>>
+): Map<string, ExternalPositionOwnership> => {
+  const ownershipBySymbol = new Map<string, ExternalPositionOwnership>();
+  for (const [symbol, byBot] of candidateBySymbol.entries()) {
+    if (byBot.size === 1) {
+      const owner = [...byBot.values()][0];
+      ownershipBySymbol.set(symbol, {
+        status: 'OWNED',
+        botId: owner.botId,
+        walletId: owner.walletId,
+      });
+      continue;
+    }
+    if (byBot.size > 1) {
+      ownershipBySymbol.set(symbol, {
+        status: 'AMBIGUOUS',
+        botId: null,
+        walletId: null,
+      });
+    }
+  }
+  return ownershipBySymbol;
 };
 
 export const resolveExternalPositionOwnerBySymbol = async (
   userId: string,
   mode: 'LIVE' | 'PAPER' = 'LIVE'
-): Promise<Map<string, ExternalSymbolOwner>> => {
+): Promise<Map<string, ExternalPositionOwnership>> => {
   const baseBotWhere =
     mode === 'LIVE'
       ? {
@@ -30,15 +77,12 @@ export const resolveExternalPositionOwnerBySymbol = async (
     select: {
       id: true,
       walletId: true,
-      isActive: true,
-      createdAt: true,
       botMarketGroups: {
         where: {
           isEnabled: true,
           lifecycleStatus: { in: ['ACTIVE', 'PAUSED'] },
         },
         select: {
-          executionOrder: true,
           symbolGroup: {
             select: {
               symbols: true,
@@ -81,7 +125,6 @@ export const resolveExternalPositionOwnerBySymbol = async (
         select: {
           botMarketGroup: {
             select: {
-              executionOrder: true,
               symbolGroup: {
                 select: {
                   symbols: true,
@@ -102,38 +145,23 @@ export const resolveExternalPositionOwnerBySymbol = async (
         },
       },
     },
-    orderBy: [{ isActive: 'desc' }, { createdAt: 'asc' }],
   });
 
-  const ownerBySymbol = new Map<
-    string,
-    {
-      botId: string;
-      walletId: string | null;
-      isActive: boolean;
-      executionOrder: number;
-      createdAtMs: number;
-    }
-  >();
+  const canonicalCandidatesBySymbol = new Map<string, Map<string, Candidate>>();
+  const legacyCandidatesBySymbol = new Map<string, Map<string, Candidate>>();
 
   for (const bot of bots) {
-    const liveScopedSymbols = new Set<string>();
+    const candidate = {
+      botId: bot.id,
+      walletId: bot.walletId,
+    };
 
     for (const configuredGroup of bot.botMarketGroups) {
       for (const symbol of resolveEffectiveSymbolGroupSymbols({
         symbols: configuredGroup.symbolGroup.symbols,
         marketUniverse: configuredGroup.symbolGroup.marketUniverse,
       })) {
-        liveScopedSymbols.add(symbol);
-      }
-    }
-
-    for (const legacyStrategy of bot.botStrategies) {
-      for (const symbol of resolveEffectiveSymbolGroupSymbols({
-        symbols: legacyStrategy.symbolGroup.symbols,
-        marketUniverse: legacyStrategy.symbolGroup.marketUniverse,
-      })) {
-        liveScopedSymbols.add(symbol);
+        addCandidate(canonicalCandidatesBySymbol, symbol, candidate);
       }
     }
 
@@ -142,134 +170,28 @@ export const resolveExternalPositionOwnerBySymbol = async (
         symbols: configuredLink.botMarketGroup.symbolGroup.symbols,
         marketUniverse: configuredLink.botMarketGroup.symbolGroup.marketUniverse,
       })) {
-        liveScopedSymbols.add(symbol);
+        addCandidate(canonicalCandidatesBySymbol, symbol, candidate);
       }
     }
 
-    const executionOrder = Number.MIN_SAFE_INTEGER;
-    const createdAtMs = bot.createdAt.getTime();
-    for (const symbol of liveScopedSymbols) {
-      const existing = ownerBySymbol.get(symbol);
-      if (!existing) {
-        ownerBySymbol.set(symbol, {
-          botId: bot.id,
-          walletId: bot.walletId,
-          isActive: bot.isActive,
-          executionOrder,
-          createdAtMs,
-        });
-        continue;
-      }
-
-      const preferCandidate =
-        (bot.isActive ? 1 : 0) > (existing.isActive ? 1 : 0) ||
-        ((bot.isActive ? 1 : 0) === (existing.isActive ? 1 : 0) &&
-          (executionOrder < existing.executionOrder ||
-            (executionOrder === existing.executionOrder &&
-              (createdAtMs < existing.createdAtMs ||
-                (createdAtMs === existing.createdAtMs && bot.id.localeCompare(existing.botId) < 0)))));
-
-      if (preferCandidate) {
-        ownerBySymbol.set(symbol, {
-          botId: bot.id,
-          walletId: bot.walletId,
-          isActive: bot.isActive,
-          executionOrder,
-          createdAtMs,
-        });
+    for (const legacyStrategy of bot.botStrategies) {
+      for (const symbol of resolveEffectiveSymbolGroupSymbols({
+        symbols: legacyStrategy.symbolGroup.symbols,
+        marketUniverse: legacyStrategy.symbolGroup.marketUniverse,
+      })) {
+        addCandidate(legacyCandidatesBySymbol, symbol, candidate);
       }
     }
   }
 
-  if (ownerBySymbol.size > 0) {
-    return new Map(
-      [...ownerBySymbol.entries()].map(([symbol, owner]) => [
-        symbol,
-        { botId: owner.botId, walletId: owner.walletId },
-      ])
-    );
-  }
+  const ownershipBySymbol = buildOwnershipMap(canonicalCandidatesBySymbol);
+  const legacyOwnershipBySymbol = buildOwnershipMap(legacyCandidatesBySymbol);
 
-  const fallbackBots = await prisma.bot.findMany({
-    where: baseBotWhere,
-    select: {
-      id: true,
-      walletId: true,
-      isActive: true,
-      createdAt: true,
-      botMarketGroups: {
-        where: {
-          isEnabled: true,
-          lifecycleStatus: { in: ['ACTIVE', 'PAUSED'] },
-        },
-        select: {
-          executionOrder: true,
-          symbolGroup: {
-            select: {
-              symbols: true,
-              marketUniverse: {
-                select: {
-                  whitelist: true,
-                  blacklist: true,
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  });
-
-  for (const bot of fallbackBots) {
-    for (const group of bot.botMarketGroups) {
-      const symbols = resolveEffectiveSymbolGroupSymbols({
-        symbols: group.symbolGroup.symbols,
-        marketUniverse: group.symbolGroup.marketUniverse,
-      });
-      if (symbols.length === 0) continue;
-
-      const executionOrder = Number.isFinite(group.executionOrder)
-        ? group.executionOrder
-        : Number.MAX_SAFE_INTEGER;
-      const createdAtMs = bot.createdAt.getTime();
-      for (const symbol of symbols) {
-        const existing = ownerBySymbol.get(symbol);
-        if (!existing) {
-          ownerBySymbol.set(symbol, {
-            botId: bot.id,
-            walletId: bot.walletId,
-            isActive: bot.isActive,
-            executionOrder,
-            createdAtMs,
-          });
-          continue;
-        }
-
-        const preferCandidate =
-          (bot.isActive ? 1 : 0) > (existing.isActive ? 1 : 0) ||
-          ((bot.isActive ? 1 : 0) === (existing.isActive ? 1 : 0) &&
-            (executionOrder < existing.executionOrder ||
-              (executionOrder === existing.executionOrder &&
-                (createdAtMs < existing.createdAtMs ||
-                  (createdAtMs === existing.createdAtMs && bot.id.localeCompare(existing.botId) < 0)))));
-
-        if (preferCandidate) {
-          ownerBySymbol.set(symbol, {
-            botId: bot.id,
-            walletId: bot.walletId,
-            isActive: bot.isActive,
-            executionOrder,
-            createdAtMs,
-          });
-        }
-      }
+  for (const [symbol, ownership] of legacyOwnershipBySymbol.entries()) {
+    if (!ownershipBySymbol.has(symbol)) {
+      ownershipBySymbol.set(symbol, ownership);
     }
   }
 
-  return new Map(
-    [...ownerBySymbol.entries()].map(([symbol, owner]) => [
-      symbol,
-      { botId: owner.botId, walletId: owner.walletId },
-    ])
-  );
+  return ownershipBySymbol;
 };

@@ -13,9 +13,9 @@ Operational queue for one-task execution runs.
 ## NEXT
 - [x] `SAFEV1-04 test(api-red): lock fail-closed live capital context when canonical wallet/bot credential ownership is missing`
 - [x] `SAFEV1-05 refactor(api-runtime): remove forbidden live capital fallback to unrelated recent API keys`
-- [ ] `SAFEV1-06 test(api-red): lock canonical external-position ownership under overlapping symbol coverage`
+- [x] `SAFEV1-06 test(api-red): lock canonical external-position ownership under overlapping symbol coverage`
 ## PIPELINE
-- [ ] `SAFEV1-07 refactor(api-runtime): replace symbol-level ownership heuristics with one deterministic canonical owner contract`
+- [x] `SAFEV1-07 refactor(api-runtime): replace symbol-level ownership heuristics with one deterministic canonical owner contract`
 - [ ] `SAFEV1-08 test(api-red): lock explicit degraded-state contract for production rate limiting`
 - [ ] `SAFEV1-09 refactor(api-ops): harden rate-limit degradation policy for production-sensitive endpoints`
 - [ ] `SAFEV1-10 qa(closure): run focused V1 runtime safety pack and publish closure evidence`
@@ -41,7 +41,7 @@ Operational queue for one-task execution runs.
 - [x] `SAFEV1-A planning queued (V1 runtime safety closure for zero-entry reconciliation, fail-closed live capital truth, canonical external ownership, and explicit limiter degradation policy)`
 - [x] `SAFEV1-A1 (commits SAFEV1-01..SAFEV1-03): zero-entry reconciliation truth closure`
 - [x] `SAFEV1-A2 (commits SAFEV1-04..SAFEV1-05): fail-closed live capital truth`
-- [ ] `SAFEV1-A3 (commits SAFEV1-06..SAFEV1-07): canonical external ownership resolution`
+- [x] `SAFEV1-A3 (commits SAFEV1-06..SAFEV1-07): canonical external ownership resolution`
 - [ ] `SAFEV1-A4 (commits SAFEV1-08..SAFEV1-09): production rate-limit degradation hardening`
 - [ ] `SAFEV1-A5 (commit SAFEV1-10): focused closure validation and evidence sync`
 - [x] `RELEASE-HARDEN-A planning queued (one canonical V1 release gate entrypoint over existing release/smoke/runtime checks)`

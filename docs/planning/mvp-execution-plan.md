@@ -265,8 +265,8 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SAFEV1-03 refactor(api-reconciliation): make exchange-synced open position creation fail closed on missing canonical entry truth`
 - [x] `SAFEV1-04 test(api-red): lock fail-closed live capital context when canonical wallet/bot credential ownership is missing`
 - [x] `SAFEV1-05 refactor(api-runtime): remove forbidden live capital fallback to unrelated recent API keys`
-- [ ] `SAFEV1-06 test(api-red): lock canonical external-position ownership under overlapping symbol coverage`
-- [ ] `SAFEV1-07 refactor(api-runtime): replace symbol-level ownership heuristics with one deterministic canonical owner contract`
+- [x] `SAFEV1-06 test(api-red): lock canonical external-position ownership under overlapping symbol coverage`
+- [x] `SAFEV1-07 refactor(api-runtime): replace symbol-level ownership heuristics with one deterministic canonical owner contract`
 - [ ] `SAFEV1-08 test(api-red): lock explicit degraded-state contract for production rate limiting`
 - [ ] `SAFEV1-09 refactor(api-ops): harden rate-limit degradation policy for production-sensitive endpoints`
 - [ ] `SAFEV1-10 qa(closure): run focused V1 runtime safety pack and publish closure evidence`
