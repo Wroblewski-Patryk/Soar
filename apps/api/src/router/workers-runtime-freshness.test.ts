@@ -8,6 +8,7 @@ const originalWorkerHeartbeat = process.env.WORKER_LAST_HEARTBEAT_AT;
 const originalMarketDataHeartbeat = process.env.WORKER_LAST_MARKET_DATA_AT;
 const originalSessionThreshold = process.env.RUNTIME_FRESHNESS_MAX_SESSION_HEARTBEAT_MS;
 const originalSignalThreshold = process.env.RUNTIME_FRESHNESS_MAX_SIGNAL_AGE_MS;
+const originalWorkerMode = process.env.WORKER_MODE;
 
 const restoreEnv = (key: string, value: string | undefined) => {
   if (value === undefined) delete process.env[key];
@@ -38,6 +39,7 @@ afterEach(() => {
   restoreEnv('WORKER_LAST_MARKET_DATA_AT', originalMarketDataHeartbeat);
   restoreEnv('RUNTIME_FRESHNESS_MAX_SESSION_HEARTBEAT_MS', originalSessionThreshold);
   restoreEnv('RUNTIME_FRESHNESS_MAX_SIGNAL_AGE_MS', originalSignalThreshold);
+  restoreEnv('WORKER_MODE', originalWorkerMode);
 });
 
 const createAdminAgent = async () => {
@@ -128,5 +130,19 @@ describe('workers runtime freshness endpoint', () => {
     expect(res.body.status).toBe('FAIL');
     expect(res.body.checks.runtimeSessions.status).toBe('FAIL');
     expect(res.body.checks.runtimeSessions.staleSessionIds.length).toBeGreaterThan(0);
+  });
+
+  it('returns PASS in inline mode when there is no active runtime demand yet', async () => {
+    const { agent } = await createAdminAgent();
+    delete process.env.WORKER_LAST_HEARTBEAT_AT;
+    delete process.env.WORKER_LAST_MARKET_DATA_AT;
+    process.env.WORKER_MODE = 'inline';
+
+    const res = await agent.get('/workers/runtime-freshness');
+
+    expect(res.status).toBe(200);
+    expect(res.body.status).toBe('PASS');
+    expect(res.body.checks.workerHeartbeat.status).toBe('SKIP');
+    expect(res.body.checks.marketData.status).toBe('SKIP');
   });
 });

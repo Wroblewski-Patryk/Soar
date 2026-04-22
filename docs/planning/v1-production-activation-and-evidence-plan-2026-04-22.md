@@ -173,6 +173,15 @@ Reason:
 
 - stage needs a fresh evidence pack, not only a documented command
 
+Stage preflight:
+
+- verify canonical domain mapping before execution:
+  - API: `https://stage-api.soar.luckysparrow.ch`
+  - Web: `https://stage.soar.luckysparrow.ch`
+- confirm the candidate SHA is already deployed on stage
+- confirm one working OPS auth path exists (`auth-token`, login, or private-route auth)
+- confirm workers are expected to answer `/workers/health` and `/workers/runtime-freshness`
+
 Acceptance:
 
 - fresh stage evidence is published under `docs/operations/`
@@ -183,6 +192,37 @@ Validation:
 
 - stage rehearsal command(s)
 - `pnpm run ops:release:v1:gate` with appropriate non-prod flags as needed
+
+### V1FACT-07B fix(api-runtime-freshness): align inline runtime freshness with worker-ready truth before stage closure
+
+Reason:
+
+- the first authenticated stage rehearsal proved that auth and protected
+  endpoint access can be established, but it also exposed a false negative in
+  `/workers/runtime-freshness`: `inline` mode with no active runtime demand
+  still fails on missing worker and market-data timestamps even while
+  `/workers/health`, `/workers/ready`, and `/alerts` are green
+
+Primary files:
+
+- `apps/api/src/observability/runtimeFreshness.ts`
+- `apps/api/src/router/workers-runtime-freshness.test.ts`
+- stage rehearsal evidence docs and queue/context files
+
+Acceptance:
+
+- `inline` mode with no active runtime sessions and no market-data demand no
+  longer blocks readiness on missing worker-env timestamps alone
+- the false negative is locked by focused regression coverage
+- authenticated stage rehearsal can be rerun against the corrected contract
+
+Validation:
+
+- `pnpm --filter api exec vitest run src/router/workers-runtime-freshness.test.ts`
+- `pnpm --filter api run typecheck`
+- `pnpm --filter api run build`
+- `pnpm run quality:guardrails`
+- authenticated stage runtime-freshness probe
 
 ### V1FACT-08 test(ops-red): lock prod activation against incomplete rollback or backup proof
 
@@ -272,15 +312,17 @@ Validation:
 5. `V1FACT-05`
 6. `V1FACT-06`
 7. `V1FACT-07`
-8. `V1FACT-08`
-9. `V1FACT-09`
-10. `V1FACT-10`
-11. `V1FACT-11`
+8. `V1FACT-07B`
+9. `V1FACT-08`
+10. `V1FACT-09`
+11. `V1FACT-10`
+12. `V1FACT-11`
 
 ## Grouped Delivery
 
 - `V1FACT-A1` (`V1FACT-01..V1FACT-03`): contract + audit + queue truth
 - `V1FACT-A2` (`V1FACT-04..V1FACT-07`): release-gate freshness + stage rehearsal evidence
+- `V1FACT-A2B` (`V1FACT-07B`): inline runtime-freshness truth after authenticated stage rehearsal
 - `V1FACT-A3` (`V1FACT-08..V1FACT-09`): rollback/backup proof as first-class gate inputs
 - `V1FACT-A4` (`V1FACT-10..V1FACT-11`): final activation pack + closure sync
 
@@ -297,3 +339,26 @@ Validation:
   hardened V1 runtime into an evidence-backed production activation path.
   Scope is intentionally limited to release-gate truth, stage/prod evidence
   freshness, backup/restore and rollback proof, and final sign-off packaging.
+- 2026-04-22: Closed `V1FACT-01..V1FACT-03` by freezing the activation
+  contract, publishing the evidence-freshness audit in
+  `docs/operations/v1-production-activation-evidence-audit-2026-04-22.md`, and
+  splitting the remaining wave into explicit stage-rehearsal, rollback-proof,
+  and final sign-off groups. Follow-up focus is now `V1FACT-A2`.
+- 2026-04-22: Closed `V1FACT-04..V1FACT-07` by hardening
+  `scripts/runV1ReleaseGate.mjs` with explicit evidence freshness
+  classification and stage/prod scope semantics, fixing deploy-smoke target
+  passthrough so API and web URLs stay explicit, adding one canonical stage
+  rehearsal entrypoint in `scripts/runV1StageRehearsal.mjs`, and publishing
+  fresh `2026-04-22` stage rehearsal artifacts
+  (`docs/operations/v1-release-gate-stage-2026-04-22T17-53-09-987Z.md`,
+  `docs/operations/v1-stage-rehearsal-2026-04-22T17-53-09-987Z.md`) with
+  blockers kept explicit because only local dry-run evidence was available in
+  this environment. Follow-up focus is now `V1FACT-A3`.
+- 2026-04-22: Real authenticated stage rehearsal later became possible after
+  switching Coolify to `Root Team`, creating a dedicated stage OPS admin, and
+  allowing the current operator IP for protected endpoints. This exposed a
+  real runtime blocker instead of an auth blocker: `/workers/runtime-freshness`
+  fails in `WORKER_MODE=inline` with no active runtime demand while
+  `/workers/health`, `/workers/ready`, and `/alerts` stay green. `V1FACT-07B`
+  is now inserted before `V1FACT-A3` to fix and relock that contract
+  truthfully.

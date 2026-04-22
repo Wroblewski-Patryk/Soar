@@ -7,19 +7,14 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `V1FACT-01 docs(contract): freeze V1 production activation scope and evidence rules`
-- [ ] `V1FACT-02 audit(ops): inventory current release-gate inputs, artifact freshness, and missing operator evidence`
-- [ ] `V1FACT-03 docs(queue): split V1 activation into stage rehearsal, prod evidence, and sign-off closure groups`
-## NEXT
-- [ ] `V1FACT-04 test(ops-red): lock release activation against stale or missing evidence inputs`
-- [ ] `V1FACT-05 refactor(ops-gate): make release gate freshness and evidence classification explicit`
-- [ ] `V1FACT-06 chore(ops-stage): script or normalize one canonical stage rehearsal path for V1`
-## PIPELINE
-- [ ] `V1FACT-07 qa(stage): execute and capture stage rehearsal evidence for web, api, workers, and release gate`
+- [ ] `V1FACT-07B fix(api-runtime-freshness): align inline runtime freshness with worker-ready truth and rerun authenticated stage rehearsal`
 - [ ] `V1FACT-08 test(ops-red): lock prod activation against incomplete rollback or backup proof`
 - [ ] `V1FACT-09 refactor(ops-proof): make backup/restore and rollback evidence first-class gate inputs`
+## NEXT
 - [ ] `V1FACT-10 qa(prod-pack): build final prod activation evidence pack and sign-off summary`
 - [ ] `V1FACT-11 docs(sync): close wave, sync canonical queue/context, and freeze future-agent activation rules`
+## PIPELINE
+- [ ] `none`
 - [x] `SAFEV1-10 qa(closure): run focused V1 runtime safety pack and publish closure evidence`
 - [x] `REVIEW-B-07 refactor(api-ops): make exchange snapshots and watchdog scope explicit and deterministic`
 - [x] `REVIEW-B-08 qa(closure): run focused production-readiness pack and publish closure evidence`
@@ -41,8 +36,8 @@ Operational queue for one-task execution runs.
 - [x] `CQLT-34 docs(sync): update queue/context/module docs and capture post-wave coding rules for future agents`
 ## GROUP QUEUE
 - [ ] `V1FACT-A planning queued (V1 production activation through release-gate truth, stage/prod evidence freshness, backup/rollback proof, and final sign-off packaging)`
-- [ ] `V1FACT-A1 (commits V1FACT-01..V1FACT-03): contract + audit + queue truth`
-- [ ] `V1FACT-A2 (commits V1FACT-04..V1FACT-07): release-gate freshness + stage rehearsal evidence`
+- [x] `V1FACT-A1 (commits V1FACT-01..V1FACT-03): contract + audit + queue truth`
+- [x] `V1FACT-A2 (commits V1FACT-04..V1FACT-07): release-gate freshness + stage rehearsal evidence`
 - [ ] `V1FACT-A3 (commits V1FACT-08..V1FACT-09): rollback/backup proof as first-class gate inputs`
 - [ ] `V1FACT-A4 (commits V1FACT-10..V1FACT-11): final activation pack + closure sync`
 - [x] `REVIEW-D planning queued (live opt-in admission truth, orphan bot-position fail-closed safety, canonical takeover rebind, and readiness-truth hardening)`
@@ -181,6 +176,12 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `V1FACT-A2 (commits V1FACT-04..V1FACT-07): release-gate freshness + stage rehearsal evidence`
+  - 2026-04-22: Closed the second `V1FACT-A` slice by hardening `scripts/runV1ReleaseGate.mjs` with explicit evidence freshness classification and stage/prod scope truth, fixing target URL passthrough for deploy smoke, adding canonical `ops:release:v1:stage-rehearsal`, and publishing fresh stage artifacts (`v1-release-gate-stage-2026-04-22T17-53-09-987Z.md`, `v1-stage-rehearsal-2026-04-22T17-53-09-987Z.md`) with dry-run blockers kept explicit instead of implied.
+- [ ] `V1FACT-07B fix(api-runtime-freshness): align inline runtime freshness with worker-ready truth and rerun authenticated stage rehearsal`
+  - 2026-04-22: Real authenticated stage rehearsal was unblocked through Coolify `Root Team` access plus dedicated stage OPS admin access, but `/workers/runtime-freshness` exposed an inline-mode false negative (`worker heartbeat timestamp missing`, `market data timestamp missing`) even while `/workers/health`, `/workers/ready`, and `/alerts` were green. Remediation is now the next immediate slice before `V1FACT-A3`.
+- [x] `V1FACT-A1 (commits V1FACT-01..V1FACT-03): contract + audit + queue truth`
+  - 2026-04-22: Closed the first `V1FACT-A` slice by freezing the V1 production-activation contract, publishing `docs/operations/v1-production-activation-evidence-audit-2026-04-22.md` with a fresh/stale/missing evidence map, and advancing the canonical queue to release-gate freshness + stage rehearsal work.
 - [x] `REVIEW-D4 (commits REVIEW-D-08..REVIEW-D-10): readiness-truth hardening + closure evidence`
   - 2026-04-22: Closed the final `REVIEW-D` slice by requiring versioned `API_KEY_ENCRYPTION_KEYS` for readiness and new encryption writes, keeping legacy `API_KEY_ENCRYPTION` as compatibility-only decrypt material, and publishing closure evidence in `docs/operations/review-d-live-opt-in-and-ownership-safety-closure-2026-04-22.md`. Validation PASS: `pnpm --filter api exec vitest run src/modules/engine/runtimeSignalLoopDefaults.test.ts src/modules/engine/runtimePositionAutomation.service.test.ts src/modules/positions/positions.takeover-status.e2e.test.ts src/config/criticalSecretsReadiness.test.ts src/router/health-readiness.test.ts src/utils/crypto.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter api run build`, `pnpm run quality:guardrails`.
 - [x] `REVIEW-D3 (commits REVIEW-D-06..REVIEW-D-07): canonical takeover-rebind ownership truth`

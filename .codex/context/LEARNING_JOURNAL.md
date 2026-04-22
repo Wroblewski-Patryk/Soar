@@ -22,6 +22,22 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-22 - Coolify project visibility depends on the active team
+- Context: Stage V1 rehearsal work required logging into Coolify and opening the real `Soar` project and `stage` environment.
+- Symptom: direct project URLs returned `404` even though the same admin account could see the project in the browser.
+- Root cause: Coolify login landed on `luckysparrow's Team`, while the live `Soar` project and `stage` environment were owned by `Root Team`; project URLs are not resolvable until the session switches to the owning team.
+- Guardrail: when a Coolify project or environment URL returns `404` after successful login, inspect the team selector immediately and retry from the owning team before treating the URL as stale or the account as underprivileged.
+- Preferred pattern:
+```text
+1) Log into Coolify.
+2) Check the active team selector first.
+3) Switch to `Root Team` when opening Soar production/stage project URLs.
+4) Only after team verification debug missing project/environment links.
+```
+- Avoid: assuming project `404` means the link is wrong before checking the active team context.
+- Evidence:
+  - 2026-04-22 Stage access: `project/ogy0ozce7lub39mnwjwb4lwe` returned `404` under `luckysparrow's Team`, then resolved correctly after switching to `Root Team`, revealing `production` and `stage` environments plus the `stage-api` resource.
+
 ### 2026-04-21 - Docker CLI availability is not enough for local API closure packs
 - Context: `CQLT-33` API closure attempt on Windows Codex desktop using local Docker-based Postgres/Redis.
 - Symptom: `docker --version` succeeds, but `docker compose up -d postgres redis` fails with `//./pipe/dockerDesktopLinuxEngine` missing; DB-backed API e2e suites still fail against `localhost:5432`.

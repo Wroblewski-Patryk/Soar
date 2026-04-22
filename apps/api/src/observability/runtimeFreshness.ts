@@ -67,6 +67,7 @@ const computeTimeCheck = (input: {
 export const buildRuntimeFreshnessSnapshot = async (
   nowMs = Date.now()
 ): Promise<RuntimeFreshnessSnapshot> => {
+  const workerMode = process.env.WORKER_MODE?.trim() || 'inline';
   const workerHeartbeatThresholdMs = parsePositiveInt(
     process.env.RUNTIME_FRESHNESS_MAX_WORKER_HEARTBEAT_MS,
     60_000
@@ -125,20 +126,39 @@ export const buildRuntimeFreshnessSnapshot = async (
     parseEnvDate(process.env.WORKER_LAST_HEARTBEAT_AT) ?? latestSessionHeartbeatMs;
   const marketDataLastAtMs =
     marketDataCandidates.length > 0 ? Math.max(...marketDataCandidates) : null;
+  const shouldSkipPassiveInlineFreshness =
+    workerMode !== 'split' &&
+    runningSessions.length === 0 &&
+    workerHeartbeatLastAtMs === null &&
+    marketDataLastAtMs === null;
 
-  const workerHeartbeatCheck = computeTimeCheck({
-    label: 'worker heartbeat',
-    lastAtMs: workerHeartbeatLastAtMs,
-    nowMs,
-    thresholdMs: workerHeartbeatThresholdMs,
-  });
+  const workerHeartbeatCheck = shouldSkipPassiveInlineFreshness
+    ? {
+        status: 'SKIP' as const,
+        thresholdMs: workerHeartbeatThresholdMs,
+        ageMs: null,
+        detail: 'worker heartbeat check skipped in current mode without active runtime demand',
+      }
+    : computeTimeCheck({
+        label: 'worker heartbeat',
+        lastAtMs: workerHeartbeatLastAtMs,
+        nowMs,
+        thresholdMs: workerHeartbeatThresholdMs,
+      });
 
-  const marketDataCheck = computeTimeCheck({
-    label: 'market data',
-    lastAtMs: marketDataLastAtMs,
-    nowMs,
-    thresholdMs: marketDataThresholdMs,
-  });
+  const marketDataCheck = shouldSkipPassiveInlineFreshness
+    ? {
+        status: 'SKIP' as const,
+        thresholdMs: marketDataThresholdMs,
+        ageMs: null,
+        detail: 'market data freshness skipped in current mode without active runtime demand',
+      }
+    : computeTimeCheck({
+        label: 'market data',
+        lastAtMs: marketDataLastAtMs,
+        nowMs,
+        thresholdMs: marketDataThresholdMs,
+      });
 
   const runtimeSignalLagMs = Math.max(0, metricsStore.snapshot().runtime.signalLag.lastMs);
   const runtimeSignalLagCheck: FreshnessCheck = {

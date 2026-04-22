@@ -19,6 +19,10 @@ Last updated: 2026-04-22
 
 - [ ] `V1FACT-A planning queued (V1 production activation through release-gate truth, stage/prod evidence freshness, backup/rollback proof, and final sign-off packaging)`
   - 2026-04-22: Published `docs/planning/v1-production-activation-and-evidence-plan-2026-04-22.md` and froze activation rules in `docs/architecture/reference/v1-production-activation-contract.md` so the next execution wave can focus on operational truth only: release-gate freshness, stage/prod evidence separation, backup/restore and rollback proof, and final human-reviewable V1 sign-off packaging.
+- [ ] `V1FACT-07B inline runtime-freshness truth after authenticated stage rehearsal`
+  - 2026-04-22: Real stage rehearsal is now authenticated through Coolify `Root Team` access plus a dedicated stage OPS admin, but `/workers/runtime-freshness` exposed an inline-mode false negative even while `/workers/health`, `/workers/ready`, and `/alerts` were green on stage. The next slice is to align runtime-freshness truth with inline worker-ready semantics and then rerun the stage rehearsal before continuing `V1FACT-A3`.
+- [ ] `V1FACT-A3 rollback/backup proof as first-class gate inputs (V1FACT-08..V1FACT-09)`
+  - 2026-04-22: Next active slice after `V1FACT-A2`. Scope is now to make backup/restore and rollback proof fail-closed gate inputs so production activation cannot silently pass on stale or missing ops evidence.
 
 ## BACKLOG
 
@@ -37,6 +41,11 @@ Last updated: 2026-04-22
 - [ ] (none)
 
 ## DONE
+
+- [x] `V1FACT-A2 release-gate freshness + stage rehearsal evidence (V1FACT-04..V1FACT-07)`
+  - 2026-04-22: Closed the second `V1FACT-A` slice by making release-gate evidence freshness explicit in `scripts/runV1ReleaseGate.mjs`, adding the canonical stage rehearsal entrypoint `scripts/runV1StageRehearsal.mjs`, fixing deploy-smoke target passthrough for both API and web URLs, and publishing fresh stage dry-run artifacts in `docs/operations/v1-release-gate-stage-2026-04-22T17-53-09-987Z.md` and `docs/operations/v1-stage-rehearsal-2026-04-22T17-53-09-987Z.md` with blockers kept explicit.
+- [x] `V1FACT-A1 contract + audit + queue truth (V1FACT-01..V1FACT-03)`
+  - 2026-04-22: Closed the first `V1FACT-A` slice by freezing the activation contract, auditing current operator evidence freshness in `docs/operations/v1-production-activation-evidence-audit-2026-04-22.md`, and advancing canonical queue/context to the stage-rehearsal + release-gate freshness slice.
 
 - [x] `REVIEW-D1 runtime live opt-in admission truth (REVIEW-D-01..REVIEW-D-03)`
   - 2026-04-22: Closed the first `REVIEW-D` slice by excluding `LIVE` bots without `liveOptIn=true` from runtime signal topology in both repository and defaults-level admission, and by making runtime position automation skip non-opted-in live positions before any strategy lookup, DCA, or close path can run. Validation PASS: `pnpm --filter api exec vitest run src/modules/engine/runtimeSignalLoopDefaults.test.ts src/modules/engine/runtimePositionAutomation.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter api run build`, `pnpm run quality:guardrails`.

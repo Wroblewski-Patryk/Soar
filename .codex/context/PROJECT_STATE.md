@@ -66,6 +66,21 @@ Last updated: 2026-04-22
 - 2026-04-22: `V1FACT-A` is queued; the next wave is explicitly scoped to V1
   production activation truth: release-gate freshness, stage/prod evidence
   separation, backup/restore and rollback proof, and final sign-off packaging.
+- 2026-04-22: `V1FACT-A1` is closed; V1 activation now has one explicit
+  freshness audit over release-gate, smoke, rollback, backup, and sign-off
+  evidence, and the next active slice is stage-rehearsal and release-gate
+  freshness hardening.
+- 2026-04-22: `V1FACT-A2` is closed; V1 release gate now classifies evidence
+  freshness explicitly by environment, stage rehearsal has one canonical
+  entrypoint with reproducible artifacts, and stage dry-run evidence remains
+  fail-closed and explicitly non-production until remote execution proof
+  exists.
+- 2026-04-22: real stage rehearsal was later authenticated through Coolify
+  `Root Team` access plus a dedicated stage OPS admin, which exposed a real
+  blocker: `/workers/runtime-freshness` reports `FAIL` in `WORKER_MODE=inline`
+  without active runtime demand even while `/workers/health`, `/workers/ready`,
+  and `/alerts` are green. A focused inline freshness truth fix is now the
+  next prerequisite before `V1FACT-A3` can proceed honestly.
 - 2026-04-22: `SAFEV1-A1` is closed; exchange reconciliation now refuses to
   create or update open synced positions when canonical entry truth is missing,
   keeping incomplete exchange snapshots out of the local open-position model.
@@ -199,8 +214,10 @@ Last updated: 2026-04-22
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: queue and execute one explicit V1 production
-  activation wave so hardened code becomes fresh, reviewable release evidence.
+- Main active objective: close the inline runtime-freshness false negative
+  revealed by the authenticated stage rehearsal, rerun stage evidence, and
+  only then resume `V1FACT-A3` so rollback and backup proof remain grounded in
+  truthful stage/runtime signals.
 - Top blockers:
   - no active blockers recorded.
 - Success criteria for this phase:
@@ -282,6 +299,19 @@ Last updated: 2026-04-22
   execution can convert the now-hardened V1 codebase into a fresh,
   operator-reviewable production activation packet instead of another ad hoc
   review cycle.
+- 2026-04-22: closed `V1FACT-A1` by publishing
+  `docs/operations/v1-production-activation-evidence-audit-2026-04-22.md`,
+  classifying current activation inputs into fresh/stale/missing buckets, and
+  advancing canonical execution focus to release-gate freshness semantics and
+  fresh stage rehearsal evidence.
+- 2026-04-22: closed `V1FACT-A2` by hardening
+  `scripts/runV1ReleaseGate.mjs` with explicit freshness classification and
+  environment-scoped readiness semantics, adding canonical
+  `ops:release:v1:stage-rehearsal`, fixing deploy smoke to keep API/web target
+  URLs explicit, and publishing fresh stage artifacts
+  (`v1-release-gate-stage-2026-04-22T17-53-09-987Z.md`,
+  `v1-stage-rehearsal-2026-04-22T17-53-09-987Z.md`) with dry-run blockers kept
+  explicit.
 - 2026-04-22: closed `RELEASE-HARDEN-A` by adding the canonical release gate
   script `scripts/runV1ReleaseGate.mjs`, exposing `pnpm run ops:release:v1:gate`,
   publishing `docs/operations/v1-release-gate-runbook.md`, and aligning V1
