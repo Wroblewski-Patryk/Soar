@@ -201,6 +201,7 @@ export type RuntimeExecutionDedupeAcquireResult =
   | {
       outcome: 'reused';
       dedupeKey: string;
+      reuseStatus: 'submitted' | 'completed';
       orderId?: string | null;
       positionId?: string | null;
     }
@@ -212,6 +213,13 @@ export type RuntimeExecutionDedupeAcquireResult =
 type MarkSuccessInput = {
   dedupeKey: string;
   orderId?: string | null;
+  positionId?: string | null;
+  now?: Date;
+};
+
+type MarkSubmittedInput = {
+  dedupeKey: string;
+  orderId: string;
   positionId?: string | null;
   now?: Date;
 };
@@ -264,12 +272,68 @@ export class RuntimeExecutionDedupeService {
       return {
         outcome: 'reused',
         dedupeKey: input.dedupeKey,
+        reuseStatus: 'completed',
         orderId: existing.orderId,
         positionId: existing.positionId,
       };
     }
 
     if (existing.status === 'PENDING') {
+      if (existing.orderId) {
+        const linkedOrder = await prisma.order.findUnique({
+          where: { id: existing.orderId },
+          select: {
+            id: true,
+            status: true,
+            positionId: true,
+          },
+        });
+        if (linkedOrder) {
+          const resolvedPositionId = linkedOrder.positionId ?? existing.positionId;
+          if (linkedOrder.status === 'FILLED') {
+            await prisma.runtimeExecutionDedupe.update({
+              where: { dedupeKey: input.dedupeKey },
+              data: {
+                status: 'SUCCEEDED',
+                lastSeenAt: now,
+                orderId: linkedOrder.id,
+                positionId: resolvedPositionId,
+                errorClass: null,
+              },
+            });
+            return {
+              outcome: 'reused',
+              dedupeKey: input.dedupeKey,
+              reuseStatus: 'completed',
+              orderId: linkedOrder.id,
+              positionId: resolvedPositionId,
+            };
+          }
+
+          if (
+            linkedOrder.status === 'PENDING' ||
+            linkedOrder.status === 'OPEN' ||
+            linkedOrder.status === 'PARTIALLY_FILLED'
+          ) {
+            await prisma.runtimeExecutionDedupe.update({
+              where: { dedupeKey: input.dedupeKey },
+              data: {
+                lastSeenAt: now,
+                orderId: linkedOrder.id,
+                positionId: resolvedPositionId,
+              },
+            });
+            return {
+              outcome: 'reused',
+              dedupeKey: input.dedupeKey,
+              reuseStatus: 'submitted',
+              orderId: linkedOrder.id,
+              positionId: resolvedPositionId,
+            };
+          }
+        }
+      }
+
       const stalePending = now.getTime() - existing.lastSeenAt.getTime() >= pendingStaleMs;
       if (!stalePending) {
         await prisma.runtimeExecutionDedupe.update({
@@ -295,6 +359,7 @@ export class RuntimeExecutionDedupeService {
       return {
         outcome: 'reused',
         dedupeKey: input.dedupeKey,
+        reuseStatus: 'completed',
         orderId: existing.orderId,
         positionId: existing.positionId,
       };
@@ -318,6 +383,20 @@ export class RuntimeExecutionDedupeService {
       },
     });
     return { outcome: 'execute', dedupeKey: input.dedupeKey };
+  }
+
+  async markSubmitted(input: MarkSubmittedInput) {
+    const now = input.now ?? new Date();
+    await prisma.runtimeExecutionDedupe.update({
+      where: { dedupeKey: input.dedupeKey },
+      data: {
+        status: 'PENDING',
+        lastSeenAt: now,
+        orderId: input.orderId,
+        positionId: input.positionId ?? null,
+        errorClass: null,
+      },
+    });
   }
 
   async markSucceeded(input: MarkSuccessInput) {

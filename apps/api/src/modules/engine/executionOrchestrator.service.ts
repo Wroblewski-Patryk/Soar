@@ -192,6 +192,7 @@ export interface RuntimeExecutionDedupeGateway {
     | {
         outcome: 'reused';
         dedupeKey: string;
+        reuseStatus: 'submitted' | 'completed';
         orderId?: string | null;
         positionId?: string | null;
       }
@@ -203,6 +204,12 @@ export interface RuntimeExecutionDedupeGateway {
   markSucceeded(input: {
     dedupeKey: string;
     orderId?: string | null;
+    positionId?: string | null;
+    now?: Date;
+  }): Promise<void>;
+  markSubmitted(input: {
+    dedupeKey: string;
+    orderId: string;
     positionId?: string | null;
     now?: Date;
   }): Promise<void>;
@@ -372,6 +379,7 @@ const defaultRuntimeTradeGateway: RuntimeTradeGateway = {
 
 const defaultRuntimeExecutionDedupeGateway: RuntimeExecutionDedupeGateway = {
   acquire: (input) => runtimeExecutionDedupeService.acquire(input),
+  markSubmitted: (input) => runtimeExecutionDedupeService.markSubmitted(input),
   markSucceeded: (input) => runtimeExecutionDedupeService.markSucceeded(input),
   markFailed: (input) => runtimeExecutionDedupeService.markFailed(input),
 };
@@ -524,7 +532,7 @@ export const orchestrateRuntimeSignal = async (
           positionId: closeDedupe.positionId,
         };
       }
-      if (closeDedupe.orderId) {
+      if (closeDedupe.orderId && closeDedupe.reuseStatus === 'submitted') {
         return {
           status: 'submitted',
           orderId: closeDedupe.orderId,
@@ -566,9 +574,10 @@ export const orchestrateRuntimeSignal = async (
         reason: 'waiting_fill',
         eventAt: closeEventAt,
       });
-      await dedupeGateway.markSucceeded({
+      await dedupeGateway.markSubmitted({
         dedupeKey: closeDedupeKey,
         orderId: closeOrder.id,
+        positionId: openPosition.id,
       });
       return {
         status: 'submitted',
@@ -737,7 +746,7 @@ export const orchestrateRuntimeSignal = async (
           positionId: openDedupe.positionId,
         };
       }
-      if (openDedupe.orderId) {
+      if (openDedupe.orderId && openDedupe.reuseStatus === 'submitted') {
         return {
           status: 'submitted',
           orderId: openDedupe.orderId,
@@ -780,7 +789,7 @@ export const orchestrateRuntimeSignal = async (
       eventAt: openEventAt,
     });
     if (openDedupeKey) {
-      await dedupeGateway.markSucceeded({
+      await dedupeGateway.markSubmitted({
         dedupeKey: openDedupeKey,
         orderId: openOrder.id,
       });

@@ -561,5 +561,114 @@ describe('RuntimePositionAutomationService', () => {
       })
     );
   });
+
+  it('does not advance local DCA state when exchange order is only submitted', async () => {
+    process.env.RUNTIME_TRAILING_ENABLED = 'false';
+    process.env.RUNTIME_DCA_ENABLED = 'false';
+
+    const deps: any = {
+      listOpenPositionsBySymbol: vi.fn(async () => [
+        {
+          id: 'pos-submitted-dca',
+          userId: 'user-dca',
+          botId: 'bot-dca',
+          strategyId: 'strat-dca',
+          symbol: 'SOLUSDT',
+          side: 'LONG' as const,
+          entryPrice: 100,
+          quantity: 1,
+          leverage: 5,
+          stopLoss: null,
+          takeProfit: null,
+          managementMode: 'BOT_MANAGED' as const,
+          bot: { mode: 'LIVE' as const },
+        },
+      ]),
+      getStrategyConfigById: vi.fn(async () => ({
+        close: { tp: 2, sl: 3, ttp: [], tsl: [] },
+        additional: { dcaEnabled: true, dcaTimes: 2, dcaLevels: [{ percent: -1, multiplier: 1.5 }] },
+      })),
+      executeDca: vi.fn(async () => ({ feePaid: 0, executed: false })),
+      closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
+      resolveDcaFundsExhausted: vi.fn(async () => false),
+      nowMs: vi.fn(() => Date.now()),
+    };
+
+    const service = new RuntimePositionAutomationService(deps);
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'SOLUSDT',
+      eventTime: 9_000,
+      lastPrice: 98.8,
+      priceChangePercent24h: -0.6,
+    });
+
+    expect(service.getPositionStateSnapshot('pos-submitted-dca')).toEqual(
+      expect.objectContaining({
+        quantity: 1,
+        averageEntryPrice: 100,
+        currentAdds: 0,
+      })
+    );
+  });
+
+  it('stores executed DCA state using canonical fill-derived quantity and price', async () => {
+    process.env.RUNTIME_TRAILING_ENABLED = 'false';
+    process.env.RUNTIME_DCA_ENABLED = 'false';
+
+    const deps: any = {
+      listOpenPositionsBySymbol: vi.fn(async () => [
+        {
+          id: 'pos-filled-dca',
+          userId: 'user-filled-dca',
+          botId: 'bot-filled-dca',
+          strategyId: 'strat-filled-dca',
+          symbol: 'SOLUSDT',
+          side: 'LONG' as const,
+          entryPrice: 100,
+          quantity: 1,
+          leverage: 5,
+          stopLoss: null,
+          takeProfit: null,
+          managementMode: 'BOT_MANAGED' as const,
+          bot: { mode: 'LIVE' as const },
+        },
+      ]),
+      getStrategyConfigById: vi.fn(async () => ({
+        close: { tp: 2, sl: 3, ttp: [], tsl: [] },
+        additional: { dcaEnabled: true, dcaTimes: 2, dcaLevels: [{ percent: -1, multiplier: 1.5 }] },
+      })),
+      executeDca: vi.fn(async () => ({
+        feePaid: 0.25,
+        executed: true,
+        nextQuantity: 2.5,
+        nextEntryPrice: 99.25,
+      })),
+      closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
+      resolveDcaFundsExhausted: vi.fn(async () => false),
+      nowMs: vi.fn(() => Date.now()),
+    };
+
+    const service = new RuntimePositionAutomationService(deps);
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'SOLUSDT',
+      eventTime: 9_500,
+      lastPrice: 98.8,
+      priceChangePercent24h: -0.6,
+    });
+
+    expect(service.getPositionStateSnapshot('pos-filled-dca')).toEqual(
+      expect.objectContaining({
+        quantity: 2.5,
+        averageEntryPrice: 99.25,
+        currentAdds: 1,
+      })
+    );
+  });
 });
 

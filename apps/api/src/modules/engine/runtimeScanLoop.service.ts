@@ -31,6 +31,47 @@ const parseEnvBoolean = (value: string | undefined, fallback: boolean) => {
   return fallback;
 };
 
+type RuntimeScanPositionContext = {
+  symbol: string;
+  bot?: {
+    exchange: string;
+    marketType: 'FUTURES' | 'SPOT';
+  } | null;
+  wallet?: {
+    exchange: string;
+    marketType: 'FUTURES' | 'SPOT';
+  } | null;
+};
+
+const resolveManualWatchdogScope = () => ({
+  exchange: (process.env.RUNTIME_MANUAL_POSITION_EXCHANGE ?? 'BINANCE').trim().toUpperCase(),
+  marketType: ((process.env.RUNTIME_MANUAL_POSITION_MARKET_TYPE ?? 'FUTURES').trim().toUpperCase() as 'FUTURES' | 'SPOT'),
+});
+
+export const supportsRuntimeWatchdogPositionContext = (context: RuntimeScanPositionContext) => {
+  if (context.bot) {
+    return context.bot.exchange === 'BINANCE' && context.bot.marketType === 'FUTURES';
+  }
+  if (context.wallet) {
+    return context.wallet.exchange === 'BINANCE' && context.wallet.marketType === 'FUTURES';
+  }
+
+  const manualScope = resolveManualWatchdogScope();
+  return manualScope.exchange === 'BINANCE' && manualScope.marketType === 'FUTURES';
+};
+
+export const deriveRuntimeWatchdogSymbols = (contexts: RuntimeScanPositionContext[]) => {
+  const symbols = new Set<string>();
+  for (const context of contexts) {
+    if (!supportsRuntimeWatchdogPositionContext(context)) continue;
+    const normalized = normalizeSymbol(context.symbol);
+    if (normalized.length > 0) {
+      symbols.add(normalized);
+    }
+  }
+  return [...symbols];
+};
+
 const defaultDeps: RuntimeScanDeps = {
   listScanSymbols: async () => {
     const envSymbols = parseEnvSymbols(process.env.RUNTIME_SCAN_SYMBOLS);
@@ -38,10 +79,23 @@ const defaultDeps: RuntimeScanDeps = {
 
     const positions = await prisma.position.findMany({
       where: { status: 'OPEN' },
-      select: { symbol: true },
-      distinct: ['symbol'],
+      select: {
+        symbol: true,
+        bot: {
+          select: {
+            exchange: true,
+            marketType: true,
+          },
+        },
+        wallet: {
+          select: {
+            exchange: true,
+            marketType: true,
+          },
+        },
+      },
     });
-    return positions.map((position) => normalizeSymbol(position.symbol)).filter((symbol) => symbol.length > 0);
+    return deriveRuntimeWatchdogSymbols(positions);
   },
   getTickerSnapshot: async (symbol) => {
     const ticker = getRuntimeTicker(symbol);

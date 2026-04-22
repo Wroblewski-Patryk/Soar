@@ -43,6 +43,7 @@ const createMemoryDedupeGateway = (): RuntimeExecutionDedupeGateway => {
         const reusedResult: DedupeAcquireResult = {
           outcome: 'reused',
           dedupeKey: input.dedupeKey,
+          reuseStatus: 'completed',
           orderId: existing.orderId,
           positionId: existing.positionId,
         };
@@ -53,6 +54,13 @@ const createMemoryDedupeGateway = (): RuntimeExecutionDedupeGateway => {
         dedupeKey: input.dedupeKey,
       };
       return inflightResult;
+    }),
+    markSubmitted: vi.fn(async (input) => {
+      store.set(input.dedupeKey, {
+        status: 'PENDING',
+        orderId: input.orderId,
+        positionId: input.positionId,
+      });
     }),
     markSucceeded: vi.fn(async (input) => {
       store.set(input.dedupeKey, {
@@ -83,6 +91,7 @@ const createCrashPendingDedupeGateway = (): RuntimeExecutionDedupeGateway => {
         return {
           outcome: 'reused',
           dedupeKey: input.dedupeKey,
+          reuseStatus: 'completed',
           orderId: existing.orderId,
           positionId: existing.positionId,
         };
@@ -91,6 +100,13 @@ const createCrashPendingDedupeGateway = (): RuntimeExecutionDedupeGateway => {
         outcome: 'inflight',
         dedupeKey: input.dedupeKey,
       };
+    }),
+    markSubmitted: vi.fn(async (input) => {
+      store.set(input.dedupeKey, {
+        status: 'PENDING',
+        orderId: input.orderId,
+        positionId: input.positionId,
+      });
     }),
     markSucceeded: vi.fn(async (input) => {
       store.set(input.dedupeKey, {

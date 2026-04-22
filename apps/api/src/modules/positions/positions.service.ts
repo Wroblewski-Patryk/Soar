@@ -112,7 +112,10 @@ type ApiKeyRecordForSnapshot = {
 };
 
 export class ExchangeSnapshotError extends Error {
-  constructor(public readonly code: 'API_KEY_NOT_FOUND' | 'EXCHANGE_FETCH_FAILED', message: string) {
+  constructor(
+    public readonly code: 'API_KEY_NOT_FOUND' | 'API_KEY_AMBIGUOUS' | 'EXCHANGE_FETCH_FAILED',
+    message: string
+  ) {
     super(message);
     this.name = 'ExchangeSnapshotError';
   }
@@ -475,7 +478,7 @@ export const updatePositionManualParams = async (
 };
 
 export const fetchExchangePositionsSnapshot = async (userId: string): Promise<ExchangePositionSnapshot> => {
-  const apiKey = await prisma.apiKey.findFirst({
+  const eligibleApiKeys = await prisma.apiKey.findMany({
     where: {
       userId,
       exchange: {
@@ -485,12 +488,25 @@ export const fetchExchangePositionsSnapshot = async (userId: string): Promise<Ex
       },
     },
     orderBy: { updatedAt: 'desc' },
+    select: {
+      id: true,
+      exchange: true,
+      apiKey: true,
+      apiSecret: true,
+    },
   });
 
-  if (!apiKey) {
+  if (eligibleApiKeys.length === 0) {
     throw new ExchangeSnapshotError('API_KEY_NOT_FOUND', 'No supported exchange API key configured.');
   }
+  if (eligibleApiKeys.length > 1) {
+    throw new ExchangeSnapshotError(
+      'API_KEY_AMBIGUOUS',
+      'Multiple supported exchange API keys configured. Specify apiKeyId to fetch a deterministic snapshot.'
+    );
+  }
 
+  const [apiKey] = eligibleApiKeys;
   assertAuthenticatedExchangeReadSupport(apiKey.exchange, 'POSITIONS_SNAPSHOT');
   return buildSnapshotForApiKey(apiKey);
 };

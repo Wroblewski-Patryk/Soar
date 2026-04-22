@@ -2,14 +2,13 @@ import { BotMode, Exchange, Position, PositionSide, Prisma, TradeMarket } from '
 import { prisma } from '../../prisma/client';
 import { StreamTickerEvent } from '../market-stream/binanceStream.types';
 import { orchestrateRuntimeSignal } from './executionOrchestrator.service';
-import { closeOrder as closeOrderLifecycle, openOrder as openOrderLifecycle } from '../orders/orders.service';
+import { openOrder as openOrderLifecycle } from '../orders/orders.service';
 import { evaluatePositionManagement } from './positionManagement.service';
 import { PositionManagementInput, PositionManagementState } from './positionManagement.types';
 import { resolveRuntimeDcaFundsExhausted } from './runtimeCapitalContext.service';
 import { runtimeTelemetryService } from './runtimeTelemetry.service';
 import { runtimePositionStateStore } from './runtimePositionState.store';
 import {
-  buildCancelExecutionDedupeKey,
   buildDcaExecutionDedupeKey,
   runtimeExecutionDedupeService,
 } from './runtimeExecutionDedupe.service';
@@ -51,9 +50,14 @@ type RuntimePositionAutomationDeps = {
     markPrice: number;
     mode: 'PAPER' | 'LIVE';
     addedQuantity: number;
-    nextQuantity: number;
-    nextEntryPrice: number;
-  }) => Promise<{ feePaid: number; executed: boolean }>;
+    currentQuantity: number;
+    currentEntryPrice: number;
+  }) => Promise<{
+    feePaid: number;
+    executed: boolean;
+    nextQuantity?: number;
+    nextEntryPrice?: number;
+  }>;
   closeByExitSignal: (input: {
     userId: string;
     botId?: string;
@@ -173,6 +177,9 @@ const parseFeeRate = (value: string | undefined) => {
   return parsed;
 };
 
+const isPositiveFiniteNumber = (value: unknown): value is number =>
+  typeof value === 'number' && Number.isFinite(value) && value > 0;
+
 const resolveRuntimeTakerFeeRate = (mode: 'PAPER' | 'LIVE') => {
   const modeSpecific = parseFeeRate(
     mode === 'LIVE' ? process.env.RUNTIME_LIVE_TAKER_FEE_RATE : process.env.RUNTIME_PAPER_TAKER_FEE_RATE
@@ -181,6 +188,210 @@ const resolveRuntimeTakerFeeRate = (mode: 'PAPER' | 'LIVE') => {
   const global = parseFeeRate(process.env.RUNTIME_TAKER_FEE_RATE);
   if (global != null) return global;
   return 0.0004;
+};
+
+const resolveExecutedOrderPrice = (
+  input: { averageFillPrice?: number | null; price?: number | null },
+  fallback: number
+) => {
+  if (isPositiveFiniteNumber(input.averageFillPrice)) return input.averageFillPrice;
+  if (isPositiveFiniteNumber(input.price)) return input.price;
+  return fallback;
+};
+
+const resolveExecutedOrderQuantity = (
+  input: { filledQuantity?: number | null; quantity: number },
+  fallback: number
+) => {
+  if (isPositiveFiniteNumber(input.filledQuantity)) {
+    return Math.min(Math.max(0, input.quantity), input.filledQuantity);
+  }
+  return Math.max(0, fallback);
+};
+
+export const computeDcaPositionUpdate = (input: {
+  currentQuantity: number;
+  currentEntryPrice: number;
+  addedQuantity: number;
+  fillPrice: number;
+}) => {
+  const currentQuantity = Math.max(0, input.currentQuantity);
+  const addedQuantity = Math.max(0, input.addedQuantity);
+  const nextQuantity = currentQuantity + addedQuantity;
+  if (!isPositiveFiniteNumber(input.fillPrice) || nextQuantity <= 0) {
+    return {
+      nextQuantity: currentQuantity,
+      nextEntryPrice: input.currentEntryPrice,
+    };
+  }
+
+  const currentNotional = Math.max(0, input.currentEntryPrice) * currentQuantity;
+  const addedNotional = input.fillPrice * addedQuantity;
+  return {
+    nextQuantity,
+    nextEntryPrice: (currentNotional + addedNotional) / nextQuantity,
+  };
+};
+
+export const executeRuntimeDca = async (input: {
+  userId: string;
+  botId?: string | null;
+  walletId?: string | null;
+  strategyId?: string | null;
+  positionId: string;
+  symbol: string;
+  positionSide: PositionSide;
+  dcaLevelIndex: number;
+  markPrice: number;
+  mode: 'PAPER' | 'LIVE';
+  addedQuantity: number;
+  currentQuantity: number;
+  currentEntryPrice: number;
+}) => {
+  const dcaQuantity = Math.max(0, input.addedQuantity);
+  if (dcaQuantity <= 0) return { feePaid: 0, executed: false };
+  const dedupeKey = buildDcaExecutionDedupeKey({
+    userId: input.userId,
+    botId: input.botId,
+    symbol: input.symbol,
+    positionId: input.positionId,
+    dcaLevelIndex: input.dcaLevelIndex,
+    positionSide: input.positionSide,
+  });
+  const dedupe = await runtimeExecutionDedupeService.acquire({
+    dedupeKey,
+    commandType: 'DCA',
+    userId: input.userId,
+    botId: input.botId,
+    symbol: input.symbol,
+    commandFingerprint: {
+      positionId: input.positionId,
+      dcaLevelIndex: input.dcaLevelIndex,
+      positionSide: input.positionSide,
+    },
+  });
+  if (dedupe.outcome === 'reused') {
+    return { feePaid: 0, executed: dedupe.reuseStatus === 'completed' };
+  }
+  if (dedupe.outcome !== 'execute') {
+    return { feePaid: 0, executed: false };
+  }
+
+  const orderSide = input.positionSide === 'LONG' ? 'BUY' : 'SELL';
+  const estimatedFee = input.markPrice * dcaQuantity * resolveRuntimeTakerFeeRate(input.mode);
+  try {
+    const opened = await openOrderLifecycle(input.userId, {
+      botId: input.botId ?? undefined,
+      walletId: input.walletId ?? undefined,
+      strategyId: input.strategyId ?? undefined,
+      positionId: input.positionId,
+      symbol: input.symbol,
+      side: orderSide,
+      type: 'MARKET',
+      quantity: dcaQuantity,
+      price: input.markPrice,
+      mode: input.mode,
+      riskAck: true,
+    });
+
+    if (opened.status !== 'FILLED') {
+      await runtimeExecutionDedupeService.markSubmitted({
+        dedupeKey,
+        orderId: opened.id,
+        positionId: input.positionId,
+      });
+      return { feePaid: 0, executed: false };
+    }
+
+    const executedQuantity = resolveExecutedOrderQuantity(opened, dcaQuantity);
+    const executedPrice = resolveExecutedOrderPrice(opened, input.markPrice);
+    const { nextQuantity, nextEntryPrice } = computeDcaPositionUpdate({
+      currentQuantity: input.currentQuantity,
+      currentEntryPrice: input.currentEntryPrice,
+      addedQuantity: executedQuantity,
+      fillPrice: executedPrice,
+    });
+    const feePaid = input.mode === 'LIVE' ? (opened.fee ?? estimatedFee) : estimatedFee;
+
+    await prisma.$transaction(async (tx) => {
+      await tx.position.update({
+        where: { id: input.positionId },
+        data: {
+          quantity: nextQuantity,
+          entryPrice: nextEntryPrice,
+        },
+      });
+
+      await tx.order.update({
+        where: { id: opened.id },
+        data: { positionId: input.positionId },
+      });
+
+      await tx.trade.create({
+        data: {
+          userId: input.userId,
+          botId: input.botId ?? undefined,
+          walletId: input.walletId ?? undefined,
+          strategyId: input.strategyId ?? undefined,
+          orderId: opened.id,
+          positionId: input.positionId,
+          symbol: input.symbol,
+          side: orderSide,
+          lifecycleAction: 'DCA',
+          price: executedPrice,
+          quantity: executedQuantity,
+          fee: feePaid,
+          feeSource: opened.feeSource,
+          feePending: opened.feePending,
+          feeCurrency: opened.feeCurrency,
+          effectiveFeeRate: opened.effectiveFeeRate,
+          exchangeTradeId: opened.exchangeTradeId,
+          realizedPnl: 0,
+          origin: 'BOT',
+          managementMode: 'BOT_MANAGED',
+        },
+      });
+
+      await tx.log.create({
+        data: {
+          userId: input.userId,
+          botId: input.botId ?? undefined,
+          strategyId: input.strategyId ?? undefined,
+          action: 'runtime.dca',
+          level: 'INFO',
+          source: 'engine.runtimePositionAutomation',
+          message: `Runtime DCA executed for ${input.symbol}`,
+          category: 'runtime',
+          entityType: 'position',
+          entityId: input.positionId,
+          actor: 'runtime',
+          metadata: {
+            symbol: input.symbol,
+            side: input.positionSide,
+            mode: input.mode,
+            orderId: opened.id,
+            addedQuantity: executedQuantity,
+            fillPrice: executedPrice,
+            fee: feePaid,
+            nextQuantity,
+            nextEntryPrice,
+          } as Prisma.InputJsonValue,
+        },
+      });
+    });
+    await runtimeExecutionDedupeService.markSucceeded({
+      dedupeKey,
+      orderId: opened.id,
+      positionId: input.positionId,
+    });
+    return { feePaid, executed: true, nextQuantity, nextEntryPrice };
+  } catch (error) {
+    await runtimeExecutionDedupeService.markFailed({
+      dedupeKey,
+      errorClass: error instanceof Error && error.name ? error.name : 'runtime_dca_error',
+    });
+    throw error;
+  }
 };
 
 const resolvePositionExecutionMode = (position: RuntimeManagedPosition): 'PAPER' | 'LIVE' => {
@@ -277,167 +488,7 @@ const defaultDeps: RuntimePositionAutomationDeps = {
     if (!strategy || typeof strategy.config !== 'object' || strategy.config == null) return null;
     return strategy.config as Record<string, unknown>;
   },
-  executeDca: async (input) => {
-    const dcaQuantity = Math.max(0, input.addedQuantity);
-    if (dcaQuantity <= 0) return { feePaid: 0, executed: false };
-    const dedupeKey = buildDcaExecutionDedupeKey({
-      userId: input.userId,
-      botId: input.botId,
-      symbol: input.symbol,
-      positionId: input.positionId,
-      dcaLevelIndex: input.dcaLevelIndex,
-      positionSide: input.positionSide,
-    });
-    const dedupe = await runtimeExecutionDedupeService.acquire({
-      dedupeKey,
-      commandType: 'DCA',
-      userId: input.userId,
-      botId: input.botId,
-      symbol: input.symbol,
-      commandFingerprint: {
-        positionId: input.positionId,
-        dcaLevelIndex: input.dcaLevelIndex,
-        positionSide: input.positionSide,
-      },
-    });
-    if (dedupe.outcome !== 'execute') {
-      return { feePaid: 0, executed: false };
-    }
-
-    const orderSide = input.positionSide === 'LONG' ? 'BUY' : 'SELL';
-    const estimatedFee = input.markPrice * dcaQuantity * resolveRuntimeTakerFeeRate(input.mode);
-    try {
-      const opened = await openOrderLifecycle(input.userId, {
-        botId: input.botId ?? undefined,
-        walletId: input.walletId ?? undefined,
-        strategyId: input.strategyId ?? undefined,
-        symbol: input.symbol,
-        side: orderSide,
-        type: 'MARKET',
-        quantity: dcaQuantity,
-        price: input.markPrice,
-        mode: input.mode,
-        riskAck: true,
-      });
-
-      let finalizedOrderId = opened.id;
-      if (opened.status === 'OPEN' || opened.status === 'PARTIALLY_FILLED') {
-        const cancelDedupeKey = buildCancelExecutionDedupeKey({
-          userId: input.userId,
-          botId: input.botId,
-          symbol: input.symbol,
-          orderId: opened.id,
-          reasonCode: 'runtime_dca_finalize',
-        });
-        const cancelDedupe = await runtimeExecutionDedupeService.acquire({
-          dedupeKey: cancelDedupeKey,
-          commandType: 'CANCEL',
-          userId: input.userId,
-          botId: input.botId,
-          symbol: input.symbol,
-          commandFingerprint: {
-            orderId: opened.id,
-            reasonCode: 'runtime_dca_finalize',
-          },
-        });
-        if (cancelDedupe.outcome === 'execute') {
-          try {
-            const closed = await closeOrderLifecycle(input.userId, opened.id, { riskAck: true });
-            finalizedOrderId = closed?.id ?? opened.id;
-            await runtimeExecutionDedupeService.markSucceeded({
-              dedupeKey: cancelDedupeKey,
-              orderId: finalizedOrderId,
-              positionId: input.positionId,
-            });
-          } catch (error) {
-            await runtimeExecutionDedupeService.markFailed({
-              dedupeKey: cancelDedupeKey,
-              errorClass: error instanceof Error && error.name ? error.name : 'runtime_cancel_error',
-            });
-            throw error;
-          }
-        }
-      }
-
-      await prisma.$transaction(async (tx) => {
-        await tx.position.update({
-          where: { id: input.positionId },
-          data: {
-            quantity: input.nextQuantity,
-            entryPrice: input.nextEntryPrice,
-          },
-        });
-
-        await tx.order.update({
-          where: { id: finalizedOrderId },
-          data: { positionId: input.positionId },
-        });
-
-        await tx.trade.create({
-          data: {
-            userId: input.userId,
-            botId: input.botId ?? undefined,
-            walletId: input.walletId ?? undefined,
-            strategyId: input.strategyId ?? undefined,
-            orderId: finalizedOrderId,
-            positionId: input.positionId,
-            symbol: input.symbol,
-            side: orderSide,
-            lifecycleAction: 'DCA',
-            price: input.markPrice,
-            quantity: dcaQuantity,
-            fee: input.mode === 'LIVE' ? (opened.fee ?? estimatedFee) : estimatedFee,
-            feeSource: opened.feeSource,
-            feePending: opened.feePending,
-            feeCurrency: opened.feeCurrency,
-            effectiveFeeRate: opened.effectiveFeeRate,
-            exchangeTradeId: opened.exchangeTradeId,
-            realizedPnl: 0,
-            origin: 'BOT',
-            managementMode: 'BOT_MANAGED',
-          },
-        });
-
-        await tx.log.create({
-          data: {
-            userId: input.userId,
-            botId: input.botId ?? undefined,
-            strategyId: input.strategyId ?? undefined,
-            action: 'runtime.dca',
-            level: 'INFO',
-            source: 'engine.runtimePositionAutomation',
-            message: `Runtime DCA executed for ${input.symbol}`,
-            category: 'runtime',
-            entityType: 'position',
-            entityId: input.positionId,
-            actor: 'runtime',
-            metadata: {
-              symbol: input.symbol,
-              side: input.positionSide,
-              mode: input.mode,
-              orderId: finalizedOrderId,
-              addedQuantity: dcaQuantity,
-              fee: input.mode === 'LIVE' ? (opened.fee ?? estimatedFee) : estimatedFee,
-              nextQuantity: input.nextQuantity,
-              nextEntryPrice: input.nextEntryPrice,
-            } as Prisma.InputJsonValue,
-          },
-        });
-      });
-      await runtimeExecutionDedupeService.markSucceeded({
-        dedupeKey,
-        orderId: finalizedOrderId,
-        positionId: input.positionId,
-      });
-      return { feePaid: input.mode === 'LIVE' ? (opened.fee ?? estimatedFee) : estimatedFee, executed: true };
-    } catch (error) {
-      await runtimeExecutionDedupeService.markFailed({
-        dedupeKey,
-        errorClass: error instanceof Error && error.name ? error.name : 'runtime_dca_error',
-      });
-      throw error;
-    }
-  },
+  executeDca: executeRuntimeDca,
   closeByExitSignal: async (input) => {
     const result = await orchestrateRuntimeSignal({
       userId: input.userId,
@@ -761,7 +812,7 @@ export class RuntimePositionAutomationService {
         };
 
     const result = evaluatePositionManagement(managementInput, previousState);
-    this.positionStates.set(position.id, result.nextState);
+    let effectiveState = this.cloneState(result.nextState);
 
     if (result.dcaExecuted) {
       const dcaAddedQuantity = Number.isFinite(result.dcaAddedQuantity)
@@ -780,9 +831,18 @@ export class RuntimePositionAutomationService {
           markPrice: event.lastPrice,
           mode,
           addedQuantity: dcaAddedQuantity,
-          nextQuantity: result.nextState.quantity,
-          nextEntryPrice: result.nextState.averageEntryPrice,
+          currentQuantity: previousState.quantity,
+          currentEntryPrice: previousState.averageEntryPrice,
         });
+        if (dcaResult.executed) {
+          effectiveState = {
+            ...result.nextState,
+            quantity: dcaResult.nextQuantity ?? result.nextState.quantity,
+            averageEntryPrice: dcaResult.nextEntryPrice ?? result.nextState.averageEntryPrice,
+          };
+        } else {
+          effectiveState = previousStateSnapshot;
+        }
         if (position.botId && dcaResult.executed) {
           const eventAt = new Date(event.eventTime);
           await this.deps.recordRuntimeEvent?.({
@@ -797,8 +857,8 @@ export class RuntimePositionAutomationService {
             message: 'Runtime DCA executed',
             payload: {
               addedQuantity: dcaAddedQuantity,
-              nextQuantity: result.nextState.quantity,
-              nextEntryPrice: result.nextState.averageEntryPrice,
+              nextQuantity: effectiveState.quantity,
+              nextEntryPrice: effectiveState.averageEntryPrice,
             },
             eventAt,
           });
@@ -813,11 +873,12 @@ export class RuntimePositionAutomationService {
             },
             lastPrice: event.lastPrice,
             lastTradeAt: eventAt,
-            openPositionQty: result.nextState.quantity,
+            openPositionQty: effectiveState.quantity,
           });
         }
       }
     }
+    this.positionStates.set(position.id, effectiveState);
 
     if (result.shouldClose) {
       const closeResult = await this.deps.closeByExitSignal({
@@ -827,20 +888,20 @@ export class RuntimePositionAutomationService {
         symbol: position.symbol,
         markPrice: event.lastPrice,
         mode,
-        quantity: result.nextState.quantity,
+        quantity: effectiveState.quantity,
         reason: result.closeReason,
       });
       if (closeResult.status === 'closed') {
         await runtimePositionStateStore.deletePositionRuntimeState(position.id);
         this.positionStates.delete(position.id);
-      } else if (!this.statesEqual(previousStateSnapshot, result.nextState)) {
-        await runtimePositionStateStore.setPositionRuntimeState(position.id, result.nextState);
+      } else if (!this.statesEqual(previousStateSnapshot, effectiveState)) {
+        await runtimePositionStateStore.setPositionRuntimeState(position.id, effectiveState);
       }
       return;
     }
 
-    if (!this.statesEqual(previousStateSnapshot, result.nextState)) {
-      await runtimePositionStateStore.setPositionRuntimeState(position.id, result.nextState);
+    if (!this.statesEqual(previousStateSnapshot, effectiveState)) {
+      await runtimePositionStateStore.setPositionRuntimeState(position.id, effectiveState);
     }
   }
 }

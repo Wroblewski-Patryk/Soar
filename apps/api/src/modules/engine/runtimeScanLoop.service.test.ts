@@ -1,7 +1,52 @@
 import { describe, expect, it, vi } from 'vitest';
-import { RuntimeScanLoop, isRuntimeScanWatchdogEnabled } from './runtimeScanLoop.service';
+import {
+  deriveRuntimeWatchdogSymbols,
+  RuntimeScanLoop,
+  isRuntimeScanWatchdogEnabled,
+  supportsRuntimeWatchdogPositionContext,
+} from './runtimeScanLoop.service';
 
 describe('RuntimeScanLoop', () => {
+  it('limits watchdog scope to Binance futures ownership contexts', () => {
+    expect(
+      supportsRuntimeWatchdogPositionContext({
+        symbol: 'BTCUSDT',
+        bot: { exchange: 'BINANCE', marketType: 'FUTURES' },
+      })
+    ).toBe(true);
+    expect(
+      supportsRuntimeWatchdogPositionContext({
+        symbol: 'ETHUSDT',
+        bot: { exchange: 'BYBIT', marketType: 'FUTURES' },
+      })
+    ).toBe(false);
+    expect(
+      supportsRuntimeWatchdogPositionContext({
+        symbol: 'SOLUSDT',
+        wallet: { exchange: 'BINANCE', marketType: 'SPOT' },
+      })
+    ).toBe(false);
+  });
+
+  it('derives unique watchdog symbols only from supported position contexts', () => {
+    expect(
+      deriveRuntimeWatchdogSymbols([
+        {
+          symbol: 'btcusdt',
+          bot: { exchange: 'BINANCE', marketType: 'FUTURES' },
+        },
+        {
+          symbol: 'ETHUSDT',
+          bot: { exchange: 'BYBIT', marketType: 'FUTURES' },
+        },
+        {
+          symbol: 'BTCUSDT',
+          wallet: { exchange: 'BINANCE', marketType: 'FUTURES' },
+        },
+      ])
+    ).toEqual(['BTCUSDT']);
+  });
+
   it('keeps watchdog auto-loop disabled by default', async () => {
     vi.useFakeTimers();
     const deps = {

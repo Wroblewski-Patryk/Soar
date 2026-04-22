@@ -172,6 +172,7 @@ const createInMemoryGateways = (
       outcome: 'execute',
       dedupeKey: input.dedupeKey,
     }),
+    markSubmitted: async () => undefined,
     markSucceeded: async () => undefined,
     markFailed: async () => undefined,
   };

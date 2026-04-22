@@ -50,7 +50,13 @@ export const getExchangeSnapshot = async (req: Request, res: Response) => {
   if (!userId) return sendError(res, 401, 'Unauthorized');
 
   try {
-    const snapshot = await positionsService.fetchExchangePositionsSnapshot(userId);
+    const apiKeyId =
+      typeof req.query.apiKeyId === 'string' && req.query.apiKeyId.trim().length > 0
+        ? req.query.apiKeyId.trim()
+        : null;
+    const snapshot = apiKeyId
+      ? await positionsService.fetchExchangePositionsSnapshotByApiKeyId(userId, apiKeyId)
+      : await positionsService.fetchExchangePositionsSnapshot(userId);
     return res.json(snapshot);
   } catch (error) {
     if (error instanceof ExchangeAuthenticatedReadUnsupportedError) {
@@ -59,6 +65,9 @@ export const getExchangeSnapshot = async (req: Request, res: Response) => {
     if (error instanceof positionsService.ExchangeSnapshotError) {
       if (error.code === 'API_KEY_NOT_FOUND') {
         return sendError(res, 400, error.message);
+      }
+      if (error.code === 'API_KEY_AMBIGUOUS') {
+        return sendError(res, 409, error.message);
       }
       return sendError(res, 502, error.message);
     }

@@ -83,6 +83,7 @@ const createTradeGateway = (): RuntimeTradeGateway => ({
 
 const createDedupeGateway = (): RuntimeExecutionDedupeGateway => ({
   acquire: vi.fn().mockResolvedValue({ outcome: 'execute', dedupeKey: 'dedupe-1' }),
+  markSubmitted: vi.fn().mockResolvedValue(undefined),
   markSucceeded: vi.fn().mockResolvedValue(undefined),
   markFailed: vi.fn().mockResolvedValue(undefined),
 });
@@ -255,6 +256,7 @@ describe('orchestrateRuntimeSignal', () => {
     (dedupeGateway.acquire as ReturnType<typeof vi.fn>).mockResolvedValue({
       outcome: 'reused',
       dedupeKey: 'v1|OPEN|...',
+      reuseStatus: 'completed',
       orderId: 'order-existing',
       positionId: 'position-existing',
     });
@@ -299,6 +301,7 @@ describe('orchestrateRuntimeSignal', () => {
     (dedupeGateway.acquire as ReturnType<typeof vi.fn>).mockResolvedValue({
       outcome: 'reused',
       dedupeKey: 'v1|OPEN|...',
+      reuseStatus: 'submitted',
       orderId: 'order-existing-open-only',
     });
 
@@ -611,9 +614,11 @@ describe('orchestrateRuntimeSignal', () => {
         positionId: 'position-open',
       })
     );
-    expect(dedupeGateway.markSucceeded).toHaveBeenCalledWith(
+    expect(dedupeGateway.markSubmitted).toHaveBeenCalledWith(
       expect.objectContaining({
+        dedupeKey: expect.any(String),
         orderId: 'order-close-pending',
+        positionId: 'position-open',
       })
     );
   });

@@ -82,6 +82,53 @@ describe("Positions exchange snapshot API", () => {
     expect(dbKey.lastUsed).not.toBeNull();
   });
 
+  it("fails closed when multiple supported keys exist without explicit apiKeyId", async () => {
+    const agent = await registerAndLogin("positions-ambiguous@example.com");
+    const firstKeyRes = await agent.post("/dashboard/profile/apiKeys").send({
+      label: "binance-main",
+      exchange: "BINANCE",
+      apiKey: "EXCHANGEKEY11111",
+      apiSecret: "EXCHANGESECRET11111",
+    });
+    const secondKeyRes = await agent.post("/dashboard/profile/apiKeys").send({
+      label: "binance-alt",
+      exchange: "BINANCE",
+      apiKey: "EXCHANGEKEY22222",
+      apiSecret: "EXCHANGESECRET22222",
+    });
+    expect(firstKeyRes.status).toBe(201);
+    expect(secondKeyRes.status).toBe(201);
+
+    const snapshotRes = await agent.get("/dashboard/positions/exchange-snapshot");
+    expect(snapshotRes.status).toBe(409);
+    expect(snapshotRes.body.error.message).toBe(
+      "Multiple supported exchange API keys configured. Specify apiKeyId to fetch a deterministic snapshot."
+    );
+  });
+
+  it("allows deterministic snapshot selection via apiKeyId query", async () => {
+    const agent = await registerAndLogin("positions-explicit-key@example.com");
+    const binanceKeyRes = await agent.post("/dashboard/profile/apiKeys").send({
+      label: "binance-main",
+      exchange: "BINANCE",
+      apiKey: "EXCHANGEKEY33333",
+      apiSecret: "EXCHANGESECRET33333",
+    });
+    const bybitKeyRes = await agent.post("/dashboard/profile/apiKeys").send({
+      label: "binance-alt",
+      exchange: "BINANCE",
+      apiKey: "EXCHANGEKEY44444",
+      apiSecret: "EXCHANGESECRET44444",
+    });
+    expect(binanceKeyRes.status).toBe(201);
+    expect(bybitKeyRes.status).toBe(201);
+
+    const snapshotRes = await agent
+      .get(`/dashboard/positions/exchange-snapshot?apiKeyId=${bybitKeyRes.body.id as string}`);
+    expect(snapshotRes.status).toBe(200);
+    expect(snapshotRes.body.source).toBe("BINANCE");
+  });
+
   it("returns 502 when exchange snapshot fetch fails", async () => {
     const agent = await registerAndLogin("positions-key-error@example.com");
     const createRes = await agent.post("/dashboard/profile/apiKeys").send({
