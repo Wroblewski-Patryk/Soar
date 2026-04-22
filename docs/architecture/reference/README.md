@@ -21,6 +21,7 @@ Read order:
 Key active contracts in this folder include:
 - `execution-lifecycle-parity-contract.md`
 - `exchange-access-ownership-matrix.md`
+- `live-paper-runtime-safety-contract.md`
 - `live-safety-and-contract-truth-remediation-contract.md`
 - `maintainability-remediation-contract.md`
 - `scalability-anti-drift-delivery-contract.md`

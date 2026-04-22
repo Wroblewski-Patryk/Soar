@@ -259,6 +259,18 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `PAR-11 feat(report): include explicit per-symbol processed/failed status and error diagnostics in parity report`
 - [x] `PAR-12 feat(ui): surface parity diagnostics status/error per symbol in markets-tab cards`
 
+## Phase 16 - V1 Runtime Safety Closure (As of 2026-04-22)
+- [ ] `SAFEV1-01 docs(contract): freeze live/paper runtime safety scope for zero-entry, capital truth, ownership, and limiter degradation`
+- [ ] `SAFEV1-02 test(api-red): lock incomplete exchange snapshot handling so reconciliation cannot persist zero-entry open positions`
+- [ ] `SAFEV1-03 refactor(api-reconciliation): make exchange-synced open position creation fail closed on missing canonical entry truth`
+- [ ] `SAFEV1-04 test(api-red): lock fail-closed live capital context when canonical wallet/bot credential ownership is missing`
+- [ ] `SAFEV1-05 refactor(api-runtime): remove forbidden live capital fallback to unrelated recent API keys`
+- [ ] `SAFEV1-06 test(api-red): lock canonical external-position ownership under overlapping symbol coverage`
+- [ ] `SAFEV1-07 refactor(api-runtime): replace symbol-level ownership heuristics with one deterministic canonical owner contract`
+- [ ] `SAFEV1-08 test(api-red): lock explicit degraded-state contract for production rate limiting`
+- [ ] `SAFEV1-09 refactor(api-ops): harden rate-limit degradation policy for production-sensitive endpoints`
+- [ ] `SAFEV1-10 qa(closure): run focused V1 runtime safety pack and publish closure evidence`
+
 ## Phase CQLT - Code Quality and Maintainability Hardening (Queued 2026-04-21)
 - [x] `CQLT-01 docs(contract): freeze maintainability remediation scope, anti-pattern taxonomy, and non-regression rules`
 - [x] `CQLT-02 audit(web): inventory component-local copy dictionaries and hardcoded user-facing strings by route/module`

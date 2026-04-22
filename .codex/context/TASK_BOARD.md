@@ -17,11 +17,13 @@ Last updated: 2026-04-22
 
 ## READY
 
-- [ ] (none)
+- [ ] `SAFEV1-01 docs(contract): freeze live/paper runtime safety scope for zero-entry, capital truth, ownership, and limiter degradation`
+- [ ] `SAFEV1-02 test(api-red): lock incomplete exchange snapshot handling so reconciliation cannot persist zero-entry open positions`
+- [ ] `SAFEV1-03 refactor(api-reconciliation): make exchange-synced open position creation fail closed on missing canonical entry truth`
 
 ## BACKLOG
 
-- [ ] (none)
+- [ ] `SAFEV1-04..SAFEV1-10 live/paper runtime safety closure`
 
 ## IN_PROGRESS
 
@@ -36,6 +38,9 @@ Last updated: 2026-04-22
 - [ ] (none)
 
 ## DONE
+
+- [x] `SAFEV1-A planning queued (V1 runtime safety closure for reconciliation, live capital truth, external ownership, and limiter degradation)`
+  - 2026-04-22: Published `docs/planning/safev1-a-live-paper-runtime-safety-plan-2026-04-22.md`, froze permanent rules in `docs/architecture/reference/live-paper-runtime-safety-contract.md`, published audit evidence in `docs/operations/safev1-a-live-paper-runtime-safety-audit-2026-04-22.md`, and activated the new remediation family in canonical queue/context so future execution can close the remaining V1 runtime safety gaps without reconstructing intent from review notes.
 
 - [x] `RELEASE-HARDEN-A group closure (canonical V1 release gate entrypoint)`
   - 2026-04-22: Closed `RELEASE-HARDEN-A` by adding `scripts/runV1ReleaseGate.mjs`, exposing `pnpm run ops:release:v1:gate`, publishing `docs/operations/v1-release-gate-runbook.md`, and aligning V1 release/smoke docs with the new canonical gate entrypoint. Validation PASS: `pnpm run ops:release:v1:gate -- --dry-run --base-url http://localhost:3001 --skip-go-live-smoke --skip-deploy-smoke --skip-runtime-freshness --skip-rollback-guard`, `pnpm run quality:guardrails`.

@@ -7,15 +7,18 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [x] `REVIEW-C-01 docs(contract): freeze runtime-state replay and reconciliation truth scope`
-- [x] `REVIEW-C-02 test(api-red): lock canonical runtime-state replay after completed DCA dedupe reuse`
-- [x] `REVIEW-C-03 refactor(api-runtime): derive replayed DCA state from canonical persisted position truth`
+- [ ] `SAFEV1-01 docs(contract): freeze live/paper runtime safety scope for zero-entry, capital truth, ownership, and limiter degradation`
+- [ ] `SAFEV1-02 test(api-red): lock incomplete exchange snapshot handling so reconciliation cannot persist zero-entry open positions`
+- [ ] `SAFEV1-03 refactor(api-reconciliation): make exchange-synced open position creation fail closed on missing canonical entry truth`
 ## NEXT
-- [x] `REVIEW-C-04 test(api-red): lock exchange snapshot error normalization and disappearing-order reconciliation semantics`
-- [x] `REVIEW-C-05 refactor(api-ops): normalize snapshot failures through one explicit exchange-error contract`
-- [x] `REVIEW-C-06 refactor(api-reconciliation): replace synthetic stale-order cancelation with explicit unresolved reconciliation truth`
+- [ ] `SAFEV1-04 test(api-red): lock fail-closed live capital context when canonical wallet/bot credential ownership is missing`
+- [ ] `SAFEV1-05 refactor(api-runtime): remove forbidden live capital fallback to unrelated recent API keys`
+- [ ] `SAFEV1-06 test(api-red): lock canonical external-position ownership under overlapping symbol coverage`
 ## PIPELINE
-- [x] `REVIEW-C-07 qa(closure): run focused runtime/positions truth pack and publish closure evidence`
+- [ ] `SAFEV1-07 refactor(api-runtime): replace symbol-level ownership heuristics with one deterministic canonical owner contract`
+- [ ] `SAFEV1-08 test(api-red): lock explicit degraded-state contract for production rate limiting`
+- [ ] `SAFEV1-09 refactor(api-ops): harden rate-limit degradation policy for production-sensitive endpoints`
+- [ ] `SAFEV1-10 qa(closure): run focused V1 runtime safety pack and publish closure evidence`
 - [x] `REVIEW-B-07 refactor(api-ops): make exchange snapshots and watchdog scope explicit and deterministic`
 - [x] `REVIEW-B-08 qa(closure): run focused production-readiness pack and publish closure evidence`
 - [x] `XLIFE-07 docs(contract): freeze one shared PAPER/LIVE fill adapter boundary`
@@ -35,6 +38,12 @@ Operational queue for one-task execution runs.
 - [x] `CQLT-32 docs(decision): freeze legacy bridge sunset list and mark compatibility-only code paths that remain intentional`
 - [x] `CQLT-34 docs(sync): update queue/context/module docs and capture post-wave coding rules for future agents`
 ## GROUP QUEUE
+- [ ] `SAFEV1-A planning queued (V1 runtime safety closure for zero-entry reconciliation, fail-closed live capital truth, canonical external ownership, and explicit limiter degradation policy)`
+- [ ] `SAFEV1-A1 (commits SAFEV1-01..SAFEV1-03): zero-entry reconciliation truth closure`
+- [ ] `SAFEV1-A2 (commits SAFEV1-04..SAFEV1-05): fail-closed live capital truth`
+- [ ] `SAFEV1-A3 (commits SAFEV1-06..SAFEV1-07): canonical external ownership resolution`
+- [ ] `SAFEV1-A4 (commits SAFEV1-08..SAFEV1-09): production rate-limit degradation hardening`
+- [ ] `SAFEV1-A5 (commit SAFEV1-10): focused closure validation and evidence sync`
 - [x] `RELEASE-HARDEN-A planning queued (one canonical V1 release gate entrypoint over existing release/smoke/runtime checks)`
 - [x] `RELEASE-HARDEN-A group closure (canonical V1 release gate command + runbook + checklist sync)`
 - [x] `REVIEW-C planning queued (runtime-state replay truth + snapshot error normalization + reconciliation truth closure)`

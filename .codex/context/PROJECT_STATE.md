@@ -9,8 +9,10 @@ Last updated: 2026-04-22
   agent-driven workflows
 - Commercial model: SaaS-style subscription product with staged entitlements
 - Current phase: production hardening after full `SCALE`, `TRUTH-A`,
-  `XLIFE-A`, `REVIEW-B`, and `REVIEW-C` closure, with no remaining active
-  runtime/exchange remediation wave currently queued
+  `XLIFE-A`, `REVIEW-B`, and `REVIEW-C` closure, with `SAFEV1-A` now queued to
+  close the remaining V1 runtime safety gaps around reconciliation truth,
+  live-capital ownership, external ownership resolution, and limiter
+  degradation policy
 
 ## Product Decisions (Confirmed)
 - 2026-04-21: `docs/architecture/` is the canonical source of truth for how
@@ -38,6 +40,10 @@ Last updated: 2026-04-22
 - 2026-04-22: `RELEASE-HARDEN-A` is closed; V1 release execution now has one
   canonical operator-facing gate entrypoint (`ops:release:v1:gate`) over the
   existing quality, smoke, runtime-freshness, and rollback-guard checks.
+- 2026-04-22: `SAFEV1-A` is queued; the next runtime safety closure wave is
+  explicitly scoped to zero-entry reconciliation hardening, fail-closed live
+  capital truth, deterministic external-position ownership, and production
+  rate-limit degradation policy.
 - 2026-04-22: full `SCALE` wave (`SCALE-01..SCALE-17`) is closed, including
   exchange-access convergence, web container seam extraction, and closure
   evidence handoff for future agents.
@@ -157,9 +163,9 @@ Last updated: 2026-04-22
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: keep the repository in a production-ready, drift-free
-  state after `REVIEW-C` closure and wait for the next explicitly planned
-  follow-up wave instead of reopening runtime/exchange truth debt ad hoc.
+- Main active objective: close `SAFEV1-A` so the remaining V1 runtime safety
+  gaps are removed through one explicit remediation family instead of ad hoc
+  patching.
 - Top blockers:
   - no active blockers recorded.
 - Success criteria for this phase:
@@ -170,9 +176,18 @@ Last updated: 2026-04-22
     regression-locked slices.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - none currently queued in canonical planning files
+  - `SAFEV1-A`: reconciliation entry-truth closure, fail-closed live capital
+    truth, canonical external ownership resolution, and limiter degradation
+    hardening
 
 ## Recent Progress
+- 2026-04-22: queued `SAFEV1-A` in
+  `docs/planning/safev1-a-live-paper-runtime-safety-plan-2026-04-22.md` after
+  a fresh V1 review confirmed four remaining safety gaps: reconciliation can
+  still persist zero-entry open positions, live capital context can still fall
+  back to unrelated recent API keys on the same exchange, external-position
+  ownership is still heuristic under overlapping symbol coverage, and
+  production limiter behavior can silently degrade into local-only mode.
 - 2026-04-22: closed `RELEASE-HARDEN-A` by adding the canonical release gate
   script `scripts/runV1ReleaseGate.mjs`, exposing `pnpm run ops:release:v1:gate`,
   publishing `docs/operations/v1-release-gate-runbook.md`, and aligning V1
