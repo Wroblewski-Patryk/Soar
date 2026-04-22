@@ -80,7 +80,7 @@ Store evidence with release artifacts for audit and postmortem use.
 When running the full V1 release gate, prefer:
 
 ```bash
-pnpm run ops:release:v1:gate -- --base-url https://<target-api> --auth-token <ADMIN_JWT>
+pnpm run ops:release:v1:gate -- --environment prod --base-url https://<target-api> --web-base-url https://<target-web> --auth-token <ADMIN_JWT>
 ```
 
 This wraps local quality/build/go-live gates plus post-deploy smoke,

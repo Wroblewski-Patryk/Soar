@@ -67,6 +67,7 @@
     "ops:rc:gates:refresh:summary:strict": "node scripts/runRcRefreshSummaryStrict.mjs",
     "ops:rc:gates:refresh:summary:strict:prod": "node scripts/runRcRefreshSummaryStrict.mjs --require-production-gate2",
     "ops:release:v1:gate": "node scripts/runV1ReleaseGate.mjs",
+    "ops:release:v1:stage-rehearsal": "node scripts/runV1StageRehearsal.mjs",
     "ops:deploy:smoke": "node scripts/deploySmokeCheck.mjs",
     "ops:deploy:runtime-freshness": "node scripts/checkPostDeployRuntimeFreshness.mjs",
     "ops:deploy:rollback-guard": "node scripts/evaluateRollbackGuard.mjs"

@@ -17,7 +17,7 @@ const readArgValue = (flag) => {
 if (args.has('--help') || args.has('-h')) {
   process.stdout.write(
     [
-      'Usage: node scripts/deploySmokeCheck.mjs [--no-workers] [--auth-token <token>] [--auth-email <email>] [--auth-password <password>] [--ops-basic-user <user>] [--ops-basic-password <password>] [--ops-auth-header-name <name>] [--ops-auth-header-value <value>]',
+      'Usage: node scripts/deploySmokeCheck.mjs [--base-url <url>] [--api-base-url <url>] [--web-base-url <url>] [--no-workers] [--auth-token <token>] [--auth-email <email>] [--auth-password <password>] [--ops-basic-user <user>] [--ops-basic-password <password>] [--ops-auth-header-name <name>] [--ops-auth-header-value <value>]',
       '',
       'Env:',
       '  SMOKE_API_BASE_URL       (default: http://localhost:3001)',
@@ -36,8 +36,16 @@ if (args.has('--help') || args.has('-h')) {
   process.exit(0);
 }
 
-const apiBase = (process.env.SMOKE_API_BASE_URL || 'http://localhost:3001').replace(/\/+$/, '');
-const webBase = (process.env.SMOKE_WEB_BASE_URL || 'http://localhost:3002').replace(/\/+$/, '');
+const apiBase = (
+  readArgValue('--base-url') ||
+  readArgValue('--api-base-url') ||
+  process.env.SMOKE_API_BASE_URL ||
+  'http://localhost:3001'
+).replace(/\/+$/, '');
+const webBase = (readArgValue('--web-base-url') || process.env.SMOKE_WEB_BASE_URL || 'http://localhost:3002').replace(
+  /\/+$/,
+  '',
+);
 const timeoutMs = Number(process.env.SMOKE_TIMEOUT_MS || 8000);
 const authTokenArg = readArgValue('--auth-token');
 const authEmailArg = readArgValue('--auth-email');

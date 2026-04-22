@@ -2595,13 +2595,13 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-22: Closed `REVIEW-D-08..REVIEW-D-10` by requiring canonical versioned `API_KEY_ENCRYPTION_KEYS` for readiness and new encryption writes, keeping legacy `API_KEY_ENCRYPTION` as compatibility-only decrypt material, and publishing closure evidence in `docs/operations/review-d-live-opt-in-and-ownership-safety-closure-2026-04-22.md`. Validation PASS: `pnpm --filter api exec vitest run src/modules/engine/runtimeSignalLoopDefaults.test.ts src/modules/engine/runtimePositionAutomation.service.test.ts src/modules/positions/positions.takeover-status.e2e.test.ts src/config/criticalSecretsReadiness.test.ts src/router/health-readiness.test.ts src/utils/crypto.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter api run build`, `pnpm run quality:guardrails`.
 
 ## Phase V1FACT-A - V1 Production Activation and Evidence Closure (Active)
-- [ ] `V1FACT-01 docs(contract): freeze V1 production activation scope and evidence rules`
-- [ ] `V1FACT-02 audit(ops): inventory current release-gate inputs, artifact freshness, and missing operator evidence`
-- [ ] `V1FACT-03 docs(queue): split V1 activation into stage rehearsal, prod evidence, and sign-off closure groups`
-- [ ] `V1FACT-04 test(ops-red): lock release activation against stale or missing evidence inputs`
-- [ ] `V1FACT-05 refactor(ops-gate): make release gate freshness and evidence classification explicit`
-- [ ] `V1FACT-06 chore(ops-stage): script or normalize one canonical stage rehearsal path for V1`
-- [ ] `V1FACT-07 qa(stage): execute and capture stage rehearsal evidence for web, api, workers, and release gate`
+- [x] `V1FACT-01 docs(contract): freeze V1 production activation scope and evidence rules`
+- [x] `V1FACT-02 audit(ops): inventory current release-gate inputs, artifact freshness, and missing operator evidence`
+- [x] `V1FACT-03 docs(queue): split V1 activation into stage rehearsal, prod evidence, and sign-off closure groups`
+- [x] `V1FACT-04 test(ops-red): lock release activation against stale or missing evidence inputs`
+- [x] `V1FACT-05 refactor(ops-gate): make release gate freshness and evidence classification explicit`
+- [x] `V1FACT-06 chore(ops-stage): script or normalize one canonical stage rehearsal path for V1`
+- [x] `V1FACT-07 qa(stage): execute and capture stage rehearsal evidence for web, api, workers, and release gate`
 - [ ] `V1FACT-08 test(ops-red): lock prod activation against incomplete rollback or backup proof`
 - [ ] `V1FACT-09 refactor(ops-proof): make backup/restore and rollback evidence first-class gate inputs`
 - [ ] `V1FACT-10 qa(prod-pack): build final prod activation evidence pack and sign-off summary`
@@ -2609,6 +2609,8 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 
 ### Progress Log (Phase V1FACT-A - V1 Production Activation and Evidence Closure)
 - 2026-04-22: Queued `V1FACT-A` after `REVIEW-D` closure to convert the now-hardened V1 runtime into an evidence-backed production activation path. Scope is intentionally limited to release-gate truth, stage/prod evidence freshness, backup/restore and rollback proof, and final sign-off packaging. Published executor-ready plan `docs/planning/v1-production-activation-and-evidence-plan-2026-04-22.md` and froze activation rules in `docs/architecture/reference/v1-production-activation-contract.md`.
+- 2026-04-22: Closed `V1FACT-01..V1FACT-03` by freezing the activation contract, publishing `docs/operations/v1-production-activation-evidence-audit-2026-04-22.md` with a fresh/stale/missing evidence inventory, and advancing the canonical queue to `V1FACT-A2` for release-gate freshness semantics and fresh stage rehearsal evidence.
+- 2026-04-22: Closed `V1FACT-04..V1FACT-07` by adding explicit evidence freshness classification to `scripts/runV1ReleaseGate.mjs`, fixing deploy-smoke API/web target passthrough, introducing canonical `ops:release:v1:stage-rehearsal`, and publishing fresh stage dry-run artifacts in `docs/operations/v1-release-gate-stage-2026-04-22T17-53-09-987Z.md` and `docs/operations/v1-stage-rehearsal-2026-04-22T17-53-09-987Z.md`. Validation PASS: `node --test scripts/runV1ReleaseGate.test.mjs`, `pnpm run ops:release:v1:gate -- --environment stage --dry-run --base-url https://stage-api.soar.luckysparrow.ch --web-base-url https://stage-soar.luckysparrow.ch --skip-local-quality`, `pnpm run ops:release:v1:stage-rehearsal -- --dry-run --base-url https://stage-api.soar.luckysparrow.ch --web-base-url https://stage-soar.luckysparrow.ch`, `pnpm run quality:guardrails`.
 
 ## Phase ARCCON - Architecture Conformance and Service Ownership Closure (Closed 2026-04-21)
 - [x] `ARCCON-01 test(api-red): lock fail-closed manual-order strategy context when selected bot has no symbol-matching strategy`

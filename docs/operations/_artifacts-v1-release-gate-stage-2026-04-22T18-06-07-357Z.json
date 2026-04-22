@@ -1,0 +1,78 @@
+{
+  "generatedAt": "2026-04-22T18:06:09.088Z",
+  "environment": "stage",
+  "dryRun": false,
+  "readiness": "not_ready",
+  "baseUrl": "https://stage-api.soar.luckysparrow.ch",
+  "webBaseUrl": "https://stage.soar.luckysparrow.ch",
+  "evidence": [
+    {
+      "key": "activationAudit",
+      "label": "activation evidence audit",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-04-22",
+      "path": "docs\\operations\\v1-production-activation-evidence-audit-2026-04-22.md",
+      "date": "2026-04-22"
+    },
+    {
+      "key": "activationPlan",
+      "label": "activation execution plan",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-04-22",
+      "path": "docs\\planning\\v1-production-activation-and-evidence-plan-2026-04-22.md",
+      "date": "2026-04-22"
+    },
+    {
+      "key": "rcExternalGateStatus",
+      "label": "RC external gates status",
+      "state": "skipped",
+      "required": false,
+      "reason": "not required for stage",
+      "path": null,
+      "date": null
+    },
+    {
+      "key": "rcSignoffRecord",
+      "label": "RC sign-off record",
+      "state": "skipped",
+      "required": false,
+      "reason": "not required for stage",
+      "path": null,
+      "date": null
+    },
+    {
+      "key": "rcChecklist",
+      "label": "RC checklist verification block",
+      "state": "skipped",
+      "required": false,
+      "reason": "not required for stage",
+      "path": null,
+      "date": null
+    }
+  ],
+  "blockers": [
+    "step:post-deploy smoke gate"
+  ],
+  "steps": [
+    {
+      "label": "post-deploy smoke gate",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "ops:deploy:smoke",
+        "--",
+        "--base-url",
+        "https://stage-api.soar.luckysparrow.ch",
+        "--web-base-url",
+        "https://stage.soar.luckysparrow.ch"
+      ],
+      "startedAt": "2026-04-22T18:06:07.448Z",
+      "endedAt": "2026-04-22T18:06:09.088Z",
+      "durationMs": 1640,
+      "status": "failed",
+      "exitCode": 1
+    }
+  ]
+}
