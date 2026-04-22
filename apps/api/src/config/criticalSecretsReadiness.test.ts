@@ -53,7 +53,19 @@ describe('criticalSecretsReadiness', () => {
     }
     const readiness = evaluateCriticalSecretsReadiness();
     expect(readiness.ready).toBe(false);
-    expect(readiness.missing).toEqual(['API_KEY_ENCRYPTION', 'API_KEY_ENCRYPTION_KEYS', 'JWT_SECRET']);
+    expect(readiness.missing).toEqual(['API_KEY_ENCRYPTION_KEYS', 'JWT_SECRET']);
+  });
+
+  it('treats legacy API_KEY_ENCRYPTION as compatibility-only and not release-ready material', () => {
+    process.env.JWT_SECRET = 'jwt-secret-primary';
+    delete process.env.API_KEY_ENCRYPTION_KEYS;
+    delete process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
+    process.env.API_KEY_ENCRYPTION = 'legacy-only-key';
+
+    const readiness = evaluateCriticalSecretsReadiness();
+    expect(readiness.ready).toBe(false);
+    expect(readiness.missing).toEqual(['API_KEY_ENCRYPTION_KEYS']);
+    expect(readiness.issues).toEqual([]);
   });
 
   it('flags expired JWT previous-secret rotation windows', () => {

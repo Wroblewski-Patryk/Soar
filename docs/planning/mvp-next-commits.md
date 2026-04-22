@@ -7,17 +7,8 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [x] `SAFEV1-01 docs(contract): freeze live/paper runtime safety scope for zero-entry, capital truth, ownership, and limiter degradation`
-- [x] `SAFEV1-02 test(api-red): lock incomplete exchange snapshot handling so reconciliation cannot persist zero-entry open positions`
-- [x] `SAFEV1-03 refactor(api-reconciliation): make exchange-synced open position creation fail closed on missing canonical entry truth`
 ## NEXT
-- [x] `SAFEV1-04 test(api-red): lock fail-closed live capital context when canonical wallet/bot credential ownership is missing`
-- [x] `SAFEV1-05 refactor(api-runtime): remove forbidden live capital fallback to unrelated recent API keys`
-- [x] `SAFEV1-06 test(api-red): lock canonical external-position ownership under overlapping symbol coverage`
 ## PIPELINE
-- [x] `SAFEV1-07 refactor(api-runtime): replace symbol-level ownership heuristics with one deterministic canonical owner contract`
-- [x] `SAFEV1-08 test(api-red): lock explicit degraded-state contract for production rate limiting`
-- [x] `SAFEV1-09 refactor(api-ops): harden rate-limit degradation policy for production-sensitive endpoints`
 - [x] `SAFEV1-10 qa(closure): run focused V1 runtime safety pack and publish closure evidence`
 - [x] `REVIEW-B-07 refactor(api-ops): make exchange snapshots and watchdog scope explicit and deterministic`
 - [x] `REVIEW-B-08 qa(closure): run focused production-readiness pack and publish closure evidence`
@@ -38,6 +29,11 @@ Operational queue for one-task execution runs.
 - [x] `CQLT-32 docs(decision): freeze legacy bridge sunset list and mark compatibility-only code paths that remain intentional`
 - [x] `CQLT-34 docs(sync): update queue/context/module docs and capture post-wave coding rules for future agents`
 ## GROUP QUEUE
+- [x] `REVIEW-D planning queued (live opt-in admission truth, orphan bot-position fail-closed safety, canonical takeover rebind, and readiness-truth hardening)`
+- [x] `REVIEW-D1 (commits REVIEW-D-01..REVIEW-D-03): runtime live opt-in admission truth`
+- [x] `REVIEW-D2 (commits REVIEW-D-04..REVIEW-D-05): orphan bot-origin automation fail-closed contract`
+- [x] `REVIEW-D3 (commits REVIEW-D-06..REVIEW-D-07): canonical takeover-rebind ownership truth`
+- [x] `REVIEW-D4 (commits REVIEW-D-08..REVIEW-D-10): readiness-truth hardening + closure evidence`
 - [x] `SAFEV1-A planning queued (V1 runtime safety closure for zero-entry reconciliation, fail-closed live capital truth, canonical external ownership, and explicit limiter degradation policy)`
 - [x] `SAFEV1-A1 (commits SAFEV1-01..SAFEV1-03): zero-entry reconciliation truth closure`
 - [x] `SAFEV1-A2 (commits SAFEV1-04..SAFEV1-05): fail-closed live capital truth`
@@ -169,6 +165,14 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `REVIEW-D4 (commits REVIEW-D-08..REVIEW-D-10): readiness-truth hardening + closure evidence`
+  - 2026-04-22: Closed the final `REVIEW-D` slice by requiring versioned `API_KEY_ENCRYPTION_KEYS` for readiness and new encryption writes, keeping legacy `API_KEY_ENCRYPTION` as compatibility-only decrypt material, and publishing closure evidence in `docs/operations/review-d-live-opt-in-and-ownership-safety-closure-2026-04-22.md`. Validation PASS: `pnpm --filter api exec vitest run src/modules/engine/runtimeSignalLoopDefaults.test.ts src/modules/engine/runtimePositionAutomation.service.test.ts src/modules/positions/positions.takeover-status.e2e.test.ts src/config/criticalSecretsReadiness.test.ts src/router/health-readiness.test.ts src/utils/crypto.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter api run build`, `pnpm run quality:guardrails`.
+- [x] `REVIEW-D3 (commits REVIEW-D-06..REVIEW-D-07): canonical takeover-rebind ownership truth`
+  - 2026-04-22: Closed the third `REVIEW-D` slice by making takeover rebind for orphan `origin='BOT'` positions require explicit ownership proof; without that proof, orphan bot-origin positions now stay unresolved instead of being rebound from the currently eligible LIVE bot set. Validation PASS: `pnpm --filter api exec vitest run src/modules/positions/positions.takeover-status.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter api run build`.
+- [x] `REVIEW-D2 (commits REVIEW-D-04..REVIEW-D-05): orphan bot-origin automation fail-closed contract`
+  - 2026-04-22: Closed the second `REVIEW-D` slice by making runtime automation skip orphan `origin='BOT'` positions before any manual env-default mode, exchange, market, DCA, or close-path fallback can apply. Validation PASS: `pnpm --filter api exec vitest run src/modules/engine/runtimeSignalLoopDefaults.test.ts src/modules/engine/runtimePositionAutomation.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter api run build`.
+- [x] `REVIEW-D1 (commits REVIEW-D-01..REVIEW-D-03): runtime live opt-in admission truth`
+  - 2026-04-22: Closed the first `REVIEW-D` slice by making runtime topology exclude `LIVE` bots without `liveOptIn=true` in both repository and defaults-level admission, and by making runtime automation skip non-opted-in live positions before any strategy or execution path is considered. Validation PASS: `pnpm --filter api exec vitest run src/modules/engine/runtimeSignalLoopDefaults.test.ts src/modules/engine/runtimePositionAutomation.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter api run build`, `pnpm run quality:guardrails`.
 - [x] `TRUTH-A planning queued (fail-closed LIVE key ownership + exchange contract truth + web guardrail truthfulness)`
   - 2026-04-22: Published `docs/planning/truth-a-live-safety-and-contract-truth-plan-2026-04-22.md`, froze permanent rules in `docs/architecture/reference/live-safety-and-contract-truth-remediation-contract.md`, and activated the new follow-up wave in canonical queue/context so future agents can execute the remaining review findings as self-sufficient task packets instead of reconstructing intent from audit notes.
 - [x] `SCALE-17 docs(sync): publish closure evidence, future-agent coding rules, and residual backlog handoff`

@@ -26,3 +26,6 @@ Key active contracts in this folder include:
 - `maintainability-remediation-contract.md`
 - `scalability-anti-drift-delivery-contract.md`
 - `web-container-split-contract.md`
+
+Current active review/remediation wave plans:
+- `../planning/review-d-live-opt-in-and-ownership-safety-plan-2026-04-22.md`

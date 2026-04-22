@@ -9,8 +9,9 @@ Last updated: 2026-04-22
   agent-driven workflows
 - Commercial model: SaaS-style subscription product with staged entitlements
 - Current phase: production hardening after full `SCALE`, `TRUTH-A`,
-  `XLIFE-A`, `REVIEW-B`, `REVIEW-C`, and `SAFEV1-A` closure, with no remaining
-  active runtime safety remediation wave currently queued
+  `XLIFE-A`, `REVIEW-B`, `REVIEW-C`, `RELEASE-HARDEN-A`, and `SAFEV1-A`
+  closure, with `REVIEW-D` newly queued to close the remaining post-closure
+  runtime admission, orphan ownership, and readiness-truth gaps
 
 ## Product Decisions (Confirmed)
 - 2026-04-21: `docs/architecture/` is the canonical source of truth for how
@@ -38,14 +39,30 @@ Last updated: 2026-04-22
 - 2026-04-22: `RELEASE-HARDEN-A` is closed; V1 release execution now has one
   canonical operator-facing gate entrypoint (`ops:release:v1:gate`) over the
   existing quality, smoke, runtime-freshness, and rollback-guard checks.
-- 2026-04-22: `SAFEV1-A` is queued; the next runtime safety closure wave is
-  explicitly scoped to zero-entry reconciliation hardening, fail-closed live
-  capital truth, deterministic external-position ownership, and production
-  rate-limit degradation policy.
 - 2026-04-22: `SAFEV1-A` is closed; reconciliation entry truth, live capital
   truth, external ownership resolution, and rate-limit degraded-mode behavior
   are now covered by explicit fail-closed contracts and focused regression
   locks.
+- 2026-04-22: `REVIEW-D` is queued; the next production-readiness closure wave
+  is explicitly scoped to runtime `liveOptIn` admission truth, fail-closed
+  handling for orphan bot-origin positions, canonical takeover-rebind
+  ownership, and release-readiness truth for API-key encryption material.
+- 2026-04-22: `REVIEW-D1` is closed; runtime signal topology now excludes
+  `LIVE` bots unless `liveOptIn=true`, and runtime automation skips live
+  positions whose owning bot is not opted in, keeping admission truth aligned
+  across topology and execution-side candidate selection.
+- 2026-04-22: `REVIEW-D2` is closed; orphan `origin='BOT'` positions without
+  canonical bot ownership are now skipped before any manual runtime fallback
+  context can apply, so bot-origin orphan state remains explicit and fail
+  closed.
+- 2026-04-22: `REVIEW-D3` is closed; takeover rebind no longer guesses owner
+  for orphan `origin='BOT'` positions from the currently eligible LIVE bot set
+  and instead keeps them unresolved unless explicit canonical ownership proof
+  exists.
+- 2026-04-22: `REVIEW-D4` is closed; release readiness now requires versioned
+  `API_KEY_ENCRYPTION_KEYS`, while legacy `API_KEY_ENCRYPTION` remains
+  compatibility-only for decrypting older payloads and is no longer sufficient
+  for readiness or new encryption writes.
 - 2026-04-22: `SAFEV1-A1` is closed; exchange reconciliation now refuses to
   create or update open synced positions when canonical entry truth is missing,
   keeping incomplete exchange snapshots out of the local open-position model.
@@ -179,9 +196,8 @@ Last updated: 2026-04-22
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: keep the repository in a production-ready, drift-free
-  state after `SAFEV1-A` closure and wait for the next explicitly planned
-  follow-up wave instead of reopening runtime safety debt ad hoc.
+- Main active objective: no active remediation wave is queued; current runtime,
+  ownership, and readiness hardening slices are closed through `REVIEW-D`.
 - Top blockers:
   - no active blockers recorded.
 - Success criteria for this phase:
@@ -192,7 +208,7 @@ Last updated: 2026-04-22
     regression-locked slices.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - none currently queued in canonical planning files
+  - none queued
 
 ## Recent Progress
 - 2026-04-22: queued `SAFEV1-A` in
@@ -224,6 +240,38 @@ Last updated: 2026-04-22
   safety closure pack, publishing
   `docs/operations/safev1-a-live-paper-runtime-safety-closure-2026-04-22.md`,
   and synchronizing queue/context state to the closed wave.
+- 2026-04-22: completed a new post-`SAFEV1-A` production review and queued
+  `REVIEW-D` in
+  `docs/planning/review-d-live-opt-in-and-ownership-safety-plan-2026-04-22.md`
+  after confirming four remaining truth gaps: non-opted-in live bots still
+  enter runtime topology, orphan bot-origin positions can still inherit manual
+  env-default automation context, takeover rebind can still assign orphan
+  bot-origin positions without canonical proof, and readiness still treats
+  legacy API-key encryption fallback as production-ready key material. Audit
+  evidence published in
+  `docs/operations/review-d-live-opt-in-and-ownership-safety-audit-2026-04-22.md`.
+- 2026-04-22: closed `REVIEW-D1` by hardening
+  `runtimeSignalLoop.repository.ts` and `runtimeSignalLoopDefaults.ts` so
+  non-opted-in `LIVE` bots never enter runtime topology, and by hardening
+  `runtimePositionAutomation.service.ts` so live positions owned by
+  non-opted-in bots are skipped before any strategy lookup or execution-side
+  automation is attempted.
+- 2026-04-22: closed `REVIEW-D2` by hardening
+  `runtimePositionAutomation.service.ts` so orphan `origin='BOT'` positions
+  with no canonical `botId` are skipped before any manual env-default
+  mode/exchange/market fallback can apply, and added focused regression
+  coverage for that fail-closed automation path.
+- 2026-04-22: closed `REVIEW-D3` by hardening
+  `positions.service.ts` so takeover rebind no longer assigns orphan
+  `origin='BOT'` positions from the currently eligible LIVE bot set; bot-origin
+  orphan positions now stay unresolved without explicit canonical ownership
+  proof, while exchange-synced api-key-based rebind remains deterministic.
+- 2026-04-22: closed `REVIEW-D4` by hardening
+  `criticalSecretsReadiness.ts` and `crypto.ts` so readiness and new
+  encryption writes require canonical versioned keyring material, while legacy
+  `API_KEY_ENCRYPTION` remains decrypt-only compatibility support. Closure
+  evidence published in
+  `docs/operations/review-d-live-opt-in-and-ownership-safety-closure-2026-04-22.md`.
 - 2026-04-22: closed `RELEASE-HARDEN-A` by adding the canonical release gate
   script `scripts/runV1ReleaseGate.mjs`, exposing `pnpm run ops:release:v1:gate`,
   publishing `docs/operations/v1-release-gate-runbook.md`, and aligning V1

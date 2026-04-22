@@ -37,6 +37,17 @@ Last updated: 2026-04-22
 
 ## DONE
 
+- [x] `REVIEW-D1 runtime live opt-in admission truth (REVIEW-D-01..REVIEW-D-03)`
+  - 2026-04-22: Closed the first `REVIEW-D` slice by excluding `LIVE` bots without `liveOptIn=true` from runtime signal topology in both repository and defaults-level admission, and by making runtime position automation skip non-opted-in live positions before any strategy lookup, DCA, or close path can run. Validation PASS: `pnpm --filter api exec vitest run src/modules/engine/runtimeSignalLoopDefaults.test.ts src/modules/engine/runtimePositionAutomation.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter api run build`, `pnpm run quality:guardrails`.
+- [x] `REVIEW-D2 orphan bot-origin automation fail-closed contract (REVIEW-D-04..REVIEW-D-05)`
+  - 2026-04-22: Closed the second `REVIEW-D` slice by making runtime automation skip orphan `origin='BOT'` positions before any manual env-default mode/exchange/market fallback can apply, keeping BOT-origin orphan state explicit and unresolved. Validation PASS: `pnpm --filter api exec vitest run src/modules/engine/runtimeSignalLoopDefaults.test.ts src/modules/engine/runtimePositionAutomation.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter api run build`.
+- [x] `REVIEW-D3 canonical takeover-rebind ownership truth (REVIEW-D-06..REVIEW-D-07)`
+  - 2026-04-22: Closed the third `REVIEW-D` slice by removing heuristic rebind for orphan `origin='BOT'` positions; takeover rebind now leaves bot-origin orphan state unresolved unless explicit canonical ownership proof exists, while `EXCHANGE_SYNC` api-key-based rebind stays deterministic. Validation PASS: `pnpm --filter api exec vitest run src/modules/positions/positions.takeover-status.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter api run build`.
+- [x] `REVIEW-D4 readiness-truth hardening + closure evidence (REVIEW-D-08..REVIEW-D-10)`
+  - 2026-04-22: Closed the final `REVIEW-D` slice by requiring versioned `API_KEY_ENCRYPTION_KEYS` for readiness and new encryption writes, keeping legacy `API_KEY_ENCRYPTION` as compatibility-only decrypt material, and publishing closure evidence in `docs/operations/review-d-live-opt-in-and-ownership-safety-closure-2026-04-22.md`. Validation PASS: focused `REVIEW-D` pack (`38/38 PASS`), `pnpm --filter api run typecheck`, `pnpm --filter api run build`, `pnpm run quality:guardrails`.
+- [x] `REVIEW-D group closure (live opt-in admission truth, orphan bot-position fail-closed safety, canonical takeover rebind, and readiness-truth hardening)`
+  - 2026-04-22: Closed `REVIEW-D` end-to-end by finishing all four remediation slices and publishing closure evidence in `docs/operations/review-d-live-opt-in-and-ownership-safety-closure-2026-04-22.md`.
+
 - [x] `SAFEV1-A4 production rate-limit degradation hardening (SAFEV1-08..SAFEV1-09)`
   - 2026-04-22: Closed the fourth `SAFEV1-A` slice by locking prod degraded-mode behavior for rate limiting, adding Redis reconnect cooldown/retry behavior, and making production requests fail closed with explicit `503 + X-RateLimit-Degraded` instead of silently settling into indefinite local-only enforcement. Validation PASS: `pnpm --filter api exec vitest run src/middleware/rateLimit.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter api run build`.
 - [x] `SAFEV1-A group closure (live/paper runtime safety closure for V1)`

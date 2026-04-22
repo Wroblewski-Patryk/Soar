@@ -24,18 +24,12 @@ const parseVersionedKeys = () => {
     keys.set(version, sha256Key(material));
   }
 
-  // Backward-compatible default for local/dev environments.
-  if (keys.size === 0 && process.env.API_KEY_ENCRYPTION) {
-    keys.set("v1", sha256Key(process.env.API_KEY_ENCRYPTION));
-  }
-
   return keys;
 };
 
-const keyring = parseVersionedKeys();
-const activeVersion = process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION ?? "v1";
-
 const getActiveKey = () => {
+  const keyring = parseVersionedKeys();
+  const activeVersion = process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION ?? "v1";
   const key = keyring.get(activeVersion);
   if (!key) {
     throw new Error(`Missing active encryption key version: ${activeVersion}`);
@@ -44,6 +38,7 @@ const getActiveKey = () => {
 };
 
 const getKeyForVersion = (version: string) => {
+  const keyring = parseVersionedKeys();
   const key = keyring.get(version);
   if (!key) {
     throw new Error(`Missing encryption key for version: ${version}`);

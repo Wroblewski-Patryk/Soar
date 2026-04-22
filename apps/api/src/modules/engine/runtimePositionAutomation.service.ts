@@ -30,7 +30,16 @@ type RuntimeManagedPosition = Pick<
   | 'managementMode'
   | 'origin'
 > & {
-  bot: { mode: BotMode; marketType: TradeMarket; exchange: Exchange; paperStartBalance: number; walletId: string | null } | null;
+  bot:
+    | {
+        mode: BotMode;
+        marketType: TradeMarket;
+        exchange: Exchange;
+        paperStartBalance: number;
+        walletId: string | null;
+        liveOptIn: boolean;
+      }
+    | null;
 };
 
 type RuntimePositionAutomationDeps = {
@@ -497,16 +506,17 @@ const defaultDeps: RuntimePositionAutomationDeps = {
         takeProfit: true,
         managementMode: true,
         origin: true,
-        bot: {
-          select: {
-            mode: true,
-            marketType: true,
-            exchange: true,
-            paperStartBalance: true,
-            walletId: true,
+          bot: {
+            select: {
+              mode: true,
+              marketType: true,
+              exchange: true,
+              paperStartBalance: true,
+              walletId: true,
+              liveOptIn: true,
+            },
           },
         },
-      },
     }),
   getStrategyConfigById: async (strategyId) => {
     const strategy = await prisma.strategy.findUnique({
@@ -795,6 +805,18 @@ export class RuntimePositionAutomationService {
     if (!position.botId && position.origin === 'EXCHANGE_SYNC') {
       console.warn(
         `[RuntimePositionAutomation] position=${position.id} symbol=${position.symbol} skipped: BOT_MANAGED position without bot ownership`
+      );
+      return;
+    }
+    if (!position.botId && position.origin === 'BOT') {
+      console.warn(
+        `[RuntimePositionAutomation] position=${position.id} symbol=${position.symbol} skipped: BOT-origin position without canonical bot ownership`
+      );
+      return;
+    }
+    if (position.bot?.mode === 'LIVE' && !position.bot.liveOptIn) {
+      console.warn(
+        `[RuntimePositionAutomation] position=${position.id} symbol=${position.symbol} skipped: LIVE bot without live opt-in`
       );
       return;
     }

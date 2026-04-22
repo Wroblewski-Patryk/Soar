@@ -659,9 +659,10 @@ export const rebindExternalTakeoverOwnership = async (
       }
       owners = ownersByApiKeyId.get(apiKeyId) ?? [];
     } else if (position.origin === 'BOT') {
-      owners = eligibleBots
-        .filter((bot): bot is { id: string; walletId: string; apiKeyId: string | null } => Boolean(bot.walletId))
-        .map((bot) => ({ botId: bot.id, walletId: bot.walletId as string }));
+      // BOT-origin orphan positions require explicit canonical owner proof.
+      // Without one, rebind must stay fail-closed instead of guessing from the
+      // currently eligible LIVE bot set.
+      owners = [];
     }
 
     if (owners.length === 0) {

@@ -82,7 +82,9 @@ export const supportsRuntimeSignalLoopExchange = (bot: Pick<ActiveBot, 'exchange
 
 export const listActiveRuntimeBots = async (): Promise<ActiveBot[]> => {
   const bots = await listActiveRuntimeBotsRaw();
-  const activeBots = bots.filter(supportsRuntimeSignalLoopExchange);
+  const activeBots = bots.filter(
+    (bot) => (bot.mode !== 'LIVE' || bot.liveOptIn) && supportsRuntimeSignalLoopExchange(bot)
+  );
   const catalogSymbolsCache = new Map<string, string[]>();
 
   return Promise.all(

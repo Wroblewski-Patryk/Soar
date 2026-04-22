@@ -1,7 +1,10 @@
 import request from 'supertest';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
+
+const originalApiKeyEncryptionKeys = process.env.API_KEY_ENCRYPTION_KEYS;
+const originalApiKeyEncryptionActiveVersion = process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
 
 const registerAndLogin = async (email: string) => {
   const agent = request.agent(app);
@@ -15,6 +18,8 @@ const registerAndLogin = async (email: string) => {
 
 describe('Positions takeover status API', () => {
   beforeEach(async () => {
+    process.env.API_KEY_ENCRYPTION_KEYS = 'v1:test-keyring-material';
+    process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION = 'v1';
     await prisma.log.deleteMany();
     await prisma.backtestReport.deleteMany();
     await prisma.backtestTrade.deleteMany();
@@ -39,6 +44,17 @@ describe('Positions takeover status API', () => {
     await prisma.strategy.deleteMany();
     await prisma.apiKey.deleteMany();
     await prisma.user.deleteMany();
+  });
+
+  afterEach(() => {
+    if (originalApiKeyEncryptionKeys === undefined) delete process.env.API_KEY_ENCRYPTION_KEYS;
+    else process.env.API_KEY_ENCRYPTION_KEYS = originalApiKeyEncryptionKeys;
+
+    if (originalApiKeyEncryptionActiveVersion === undefined) {
+      delete process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
+    } else {
+      process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION = originalApiKeyEncryptionActiveVersion;
+    }
   });
 
   it('rejects unauthenticated access', async () => {
@@ -446,7 +462,7 @@ describe('Positions takeover status API', () => {
     expect(bySymbol.get('ADAUSDT')?.takeoverStatus).toBe('UNOWNED');
   });
 
-  it('rebinds BOT-origin open positions without owner when exactly one LIVE owner exists', async () => {
+  it('keeps BOT-origin orphan positions unresolved without explicit ownership proof', async () => {
     const email = 'positions-bot-origin-rebind@example.com';
     const agent = await registerAndLogin(email);
     const owner = await prisma.user.findUniqueOrThrow({
@@ -516,9 +532,9 @@ describe('Positions takeover status API', () => {
     expect(rebindRes.status).toBe(200);
     expect(rebindRes.body).toMatchObject({
       scanned: 1,
-      rebound: 1,
+      rebound: 0,
       ambiguous: 0,
-      unowned: 0,
+      unowned: 1,
       skippedOwned: 0,
       scannedByOrigin: {
         EXCHANGE_SYNC: 0,
@@ -526,7 +542,7 @@ describe('Positions takeover status API', () => {
       },
       reboundByOrigin: {
         EXCHANGE_SYNC: 0,
-        BOT: 1,
+        BOT: 0,
       },
     });
 
@@ -534,7 +550,7 @@ describe('Positions takeover status API', () => {
       where: { id: position.id },
       select: { botId: true, walletId: true },
     });
-    expect(updatedPosition.botId).toBe(bot.id);
-    expect(updatedPosition.walletId).toBe(wallet.id);
+    expect(updatedPosition.botId).toBeNull();
+    expect(updatedPosition.walletId).toBeNull();
   });
 });

@@ -5,13 +5,14 @@ export const listActiveRuntimeBotsRaw = () =>
   prisma.bot.findMany({
     where: {
       isActive: true,
-      mode: { in: ['PAPER', 'LIVE'] },
+      OR: [{ mode: 'PAPER' }, { mode: 'LIVE', liveOptIn: true }],
     },
     select: {
       id: true,
       userId: true,
       walletId: true,
       mode: true,
+      liveOptIn: true,
       exchange: true,
       paperStartBalance: true,
       marketType: true,

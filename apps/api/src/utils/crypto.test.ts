@@ -17,13 +17,21 @@ describe("crypto utils", () => {
   });
 
   it("encrypts/decrypts with AES-GCM and versioned payload", async () => {
-    process.env.API_KEY_ENCRYPTION = "legacy-fallback-key-material";
+    process.env.API_KEY_ENCRYPTION_KEYS = "v1:primary-key-material";
+    process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION = "v1";
     const { encrypt, decrypt } = await import("./crypto");
 
     const ciphertext = encrypt("secret-value-123");
 
     expect(ciphertext.startsWith("v1:gcm:")).toBe(true);
     expect(decrypt(ciphertext)).toBe("secret-value-123");
+  });
+
+  it("does not allow new encryption writes from legacy-only fallback material", async () => {
+    process.env.API_KEY_ENCRYPTION = "legacy-fallback-key-material";
+    const { encrypt } = await import("./crypto");
+
+    expect(() => encrypt("secret-value-123")).toThrowError(/Missing active encryption key version/);
   });
 
   it("decrypts legacy CBC payload for backward compatibility", async () => {

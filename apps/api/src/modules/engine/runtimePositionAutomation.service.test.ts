@@ -119,6 +119,7 @@ describe('RuntimePositionAutomationService', () => {
           managementMode: 'BOT_MANAGED' as const,
           bot: {
             mode: 'LIVE' as const,
+            liveOptIn: true,
             exchange: 'BYBIT' as const,
             marketType: 'SPOT' as const,
             paperStartBalance: 10_000,
@@ -167,7 +168,7 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: null,
           takeProfit: null,
           managementMode: 'BOT_MANAGED' as const,
-          bot: { mode: 'LIVE' as const },
+          bot: { mode: 'LIVE' as const, liveOptIn: true },
         },
       ]),
       getStrategyConfigById: vi.fn(async () => ({
@@ -342,7 +343,7 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: null,
           takeProfit: null,
           managementMode: 'BOT_MANAGED' as const,
-          bot: { mode: 'LIVE' as const },
+          bot: { mode: 'LIVE' as const, liveOptIn: true },
         },
       ]),
       getStrategyConfigById: vi.fn(async () => ({
@@ -403,7 +404,7 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: null,
           takeProfit: null,
           managementMode: 'BOT_MANAGED' as const,
-          bot: { mode: 'LIVE' as const },
+          bot: { mode: 'LIVE' as const, liveOptIn: true },
         },
       ]),
       getStrategyConfigById: vi.fn(async () => ({
@@ -463,7 +464,7 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: null,
           takeProfit: null,
           managementMode: 'BOT_MANAGED' as const,
-          bot: { mode: 'LIVE' as const },
+          bot: { mode: 'LIVE' as const, liveOptIn: true },
         },
       ]),
       getStrategyConfigById: vi.fn(async () => ({
@@ -558,7 +559,7 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: 0.95,
           takeProfit: 1.05,
           managementMode: 'MANUAL_MANAGED' as const,
-          bot: { mode: 'LIVE' as const },
+          bot: { mode: 'LIVE' as const, liveOptIn: true },
         },
       ]),
       getStrategyConfigById: vi.fn(async () => null),
@@ -584,6 +585,106 @@ describe('RuntimePositionAutomationService', () => {
     expect(deps.closeByExitSignal).not.toHaveBeenCalled();
   });
 
+  it('skips automation for LIVE bot positions when live opt-in is disabled', async () => {
+    const deps: any = {
+      listOpenPositionsBySymbol: vi.fn(async () => [
+        {
+          id: 'pos-live-optout',
+          userId: 'user-live-optout',
+          botId: 'bot-live-optout',
+          strategyId: 'strat-live-optout',
+          symbol: 'BTCUSDT',
+          side: 'LONG' as const,
+          entryPrice: 60_000,
+          quantity: 0.5,
+          leverage: 5,
+          stopLoss: 58_000,
+          takeProfit: 61_000,
+          managementMode: 'BOT_MANAGED' as const,
+          origin: 'BOT' as const,
+          bot: {
+            mode: 'LIVE' as const,
+            liveOptIn: false,
+            exchange: 'BINANCE' as const,
+            marketType: 'FUTURES' as const,
+            paperStartBalance: 10_000,
+            walletId: 'wallet-1',
+          },
+        },
+      ]),
+      getStrategyConfigById: vi.fn(async () => null),
+      executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
+      closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
+      resolveDcaFundsExhausted: vi.fn(async () => false),
+      nowMs: vi.fn(() => Date.now()),
+    };
+
+    const service = new RuntimePositionAutomationService(deps);
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'BTCUSDT',
+      eventTime: 10_000,
+      lastPrice: 61_500,
+      priceChangePercent24h: 1.6,
+    });
+
+    expect(deps.getStrategyConfigById).not.toHaveBeenCalled();
+    expect(deps.resolveDcaFundsExhausted).not.toHaveBeenCalled();
+    expect(deps.executeDca).not.toHaveBeenCalled();
+    expect(deps.closeByExitSignal).not.toHaveBeenCalled();
+  });
+
+  it('skips automation for orphan BOT-origin positions without canonical bot context', async () => {
+    process.env.RUNTIME_MANUAL_POSITION_MODE = 'PAPER';
+    process.env.RUNTIME_MANUAL_POSITION_EXCHANGE = 'BINANCE';
+    process.env.RUNTIME_MANUAL_POSITION_MARKET_TYPE = 'FUTURES';
+
+    const deps: any = {
+      listOpenPositionsBySymbol: vi.fn(async () => [
+        {
+          id: 'pos-orphan-bot-origin',
+          userId: 'user-orphan-bot-origin',
+          botId: null,
+          walletId: null,
+          strategyId: null,
+          symbol: 'ETHUSDT',
+          side: 'LONG' as const,
+          entryPrice: 3000,
+          quantity: 1,
+          leverage: 5,
+          stopLoss: 2900,
+          takeProfit: 3100,
+          managementMode: 'BOT_MANAGED' as const,
+          origin: 'BOT' as const,
+          bot: null,
+        },
+      ]),
+      getStrategyConfigById: vi.fn(async () => null),
+      executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
+      closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
+      resolveDcaFundsExhausted: vi.fn(async () => false),
+      nowMs: vi.fn(() => Date.now()),
+    };
+
+    const service = new RuntimePositionAutomationService(deps);
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'ETHUSDT',
+      eventTime: 11_000,
+      lastPrice: 3110,
+      priceChangePercent24h: 0.7,
+    });
+
+    expect(deps.getStrategyConfigById).not.toHaveBeenCalled();
+    expect(deps.resolveDcaFundsExhausted).not.toHaveBeenCalled();
+    expect(deps.executeDca).not.toHaveBeenCalled();
+    expect(deps.closeByExitSignal).not.toHaveBeenCalled();
+  });
+
   it('keeps monitoring flow alive when close signal is only submitted', async () => {
     const closeByExitSignal = vi.fn(async () => ({ status: 'submitted' as const }));
     const deps: any = {
@@ -603,6 +704,7 @@ describe('RuntimePositionAutomationService', () => {
           managementMode: 'BOT_MANAGED' as const,
           bot: {
             mode: 'LIVE' as const,
+            liveOptIn: true,
             exchange: 'BYBIT' as const,
             marketType: 'FUTURES' as const,
             paperStartBalance: 10_000,
@@ -654,7 +756,7 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: null,
           takeProfit: null,
           managementMode: 'BOT_MANAGED' as const,
-          bot: { mode: 'LIVE' as const },
+          bot: { mode: 'LIVE' as const, liveOptIn: true },
         },
       ]),
       getStrategyConfigById: vi.fn(async () => ({
@@ -706,7 +808,7 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: null,
           takeProfit: null,
           managementMode: 'BOT_MANAGED' as const,
-          bot: { mode: 'LIVE' as const },
+          bot: { mode: 'LIVE' as const, liveOptIn: true },
         },
       ]),
       getStrategyConfigById: vi.fn(async () => ({

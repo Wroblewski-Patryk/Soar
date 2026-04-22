@@ -82,7 +82,6 @@ const evaluateJwtRotationReadiness = (
 
 const evaluateEncryptionReadiness = (issues: ReadinessIssue[], missing: Set<string>) => {
   const keyringRaw = asNonEmpty(process.env.API_KEY_ENCRYPTION_KEYS);
-  const legacyFallback = asNonEmpty(process.env.API_KEY_ENCRYPTION);
   const activeVersion = asNonEmpty(process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION) ?? 'v1';
 
   const { versions, malformed } = parseKeyring(keyringRaw ?? '');
@@ -93,14 +92,12 @@ const evaluateEncryptionReadiness = (issues: ReadinessIssue[], missing: Set<stri
     });
   }
 
-  const hasAnyMaterial = versions.size > 0 || Boolean(legacyFallback);
-  if (!hasAnyMaterial) {
+  if (versions.size === 0) {
     missing.add('API_KEY_ENCRYPTION_KEYS');
-    missing.add('API_KEY_ENCRYPTION');
     return;
   }
 
-  if (versions.size > 0 && !versions.has(activeVersion)) {
+  if (!versions.has(activeVersion)) {
     issues.push({
       key: 'API_KEY_ENCRYPTION_ACTIVE_VERSION',
       reason: `active version "${activeVersion}" not found in API_KEY_ENCRYPTION_KEYS`,

@@ -80,6 +80,19 @@ describe('health and readiness endpoints', () => {
     expect(res.body.service).toBe('api');
   });
 
+  it('returns not_ready when only legacy API-key encryption fallback is configured', async () => {
+    process.env.JWT_SECRET = 'ready-test-secret';
+    delete process.env.API_KEY_ENCRYPTION_KEYS;
+    delete process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
+    process.env.API_KEY_ENCRYPTION = 'legacy-only-key';
+
+    const res = await request(app).get('/ready');
+    expect(res.status).toBe(503);
+    expect(res.body.status).toBe('not_ready');
+    expect(res.body).not.toHaveProperty('missing');
+    expect(res.body).not.toHaveProperty('issues');
+  });
+
   it('returns not_ready with secret rotation issues', async () => {
     process.env.JWT_SECRET = 'ready-test-secret';
     process.env.JWT_SECRET_PREVIOUS = 'old-secret';
