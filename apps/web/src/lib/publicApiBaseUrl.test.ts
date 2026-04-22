@@ -8,7 +8,7 @@ describe('inferApiBaseUrlFromLocation', () => {
         hostname: 'soar.luckysparrow.ch',
         protocol: 'https:',
       }),
-    ).toBe('https://api.luckysparrow.ch');
+    ).toBe('https://api.soar.luckysparrow.ch');
   });
 
   it('infers stage api host from stage web host', () => {

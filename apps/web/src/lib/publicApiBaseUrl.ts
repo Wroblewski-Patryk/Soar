@@ -25,7 +25,7 @@ export const inferApiBaseUrlFromLocation = (locationLike?: LocationLike | null) 
   }
 
   if (labels[0] === 'soar' && labels.length >= 2) {
-    return `${protocol}//api.${labels.slice(1).join('.')}`;
+    return `${protocol}//api.${labels.join('.')}`;
   }
 
   return undefined;
@@ -41,4 +41,3 @@ export const resolvePublicApiBaseUrl = () => {
 
   return inferApiBaseUrlFromLocation(window.location);
 };
-
