@@ -17,13 +17,13 @@ Last updated: 2026-04-22
 
 ## READY
 
-- [ ] `SAFEV1-01 docs(contract): freeze live/paper runtime safety scope for zero-entry, capital truth, ownership, and limiter degradation`
-- [ ] `SAFEV1-02 test(api-red): lock incomplete exchange snapshot handling so reconciliation cannot persist zero-entry open positions`
-- [ ] `SAFEV1-03 refactor(api-reconciliation): make exchange-synced open position creation fail closed on missing canonical entry truth`
+- [ ] `SAFEV1-04 test(api-red): lock fail-closed live capital context when canonical wallet/bot credential ownership is missing`
+- [ ] `SAFEV1-05 refactor(api-runtime): remove forbidden live capital fallback to unrelated recent API keys`
+- [ ] `SAFEV1-06 test(api-red): lock canonical external-position ownership under overlapping symbol coverage`
 
 ## BACKLOG
 
-- [ ] `SAFEV1-04..SAFEV1-10 live/paper runtime safety closure`
+- [ ] `SAFEV1-07..SAFEV1-10 live/paper runtime safety closure`
 
 ## IN_PROGRESS
 
@@ -39,6 +39,8 @@ Last updated: 2026-04-22
 
 ## DONE
 
+- [x] `SAFEV1-A1 zero-entry reconciliation truth closure (SAFEV1-01..SAFEV1-03)`
+  - 2026-04-22: Closed the first `SAFEV1-A` slice by freezing the runtime safety contract and blocking exchange reconciliation from creating or updating open synced positions when canonical entry truth is missing. Validation PASS: `pnpm --filter api exec vitest run src/modules/positions/livePositionReconciliation.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter api run build`.
 - [x] `SAFEV1-A planning queued (V1 runtime safety closure for reconciliation, live capital truth, external ownership, and limiter degradation)`
   - 2026-04-22: Published `docs/planning/safev1-a-live-paper-runtime-safety-plan-2026-04-22.md`, froze permanent rules in `docs/architecture/reference/live-paper-runtime-safety-contract.md`, published audit evidence in `docs/operations/safev1-a-live-paper-runtime-safety-audit-2026-04-22.md`, and activated the new remediation family in canonical queue/context so future execution can close the remaining V1 runtime safety gaps without reconstructing intent from review notes.
 

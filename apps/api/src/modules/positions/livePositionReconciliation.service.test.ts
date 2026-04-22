@@ -295,6 +295,59 @@ describe('reconcileExternalPositionsFromExchange', () => {
     consoleWarnSpy.mockRestore();
   });
 
+  it('skips syncing open positions when canonical entry truth is missing', async () => {
+    const createSyncedPosition = vi.fn(async () => undefined);
+    const updateSyncedPosition = vi.fn(async () => undefined);
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+    const result = await reconcileExternalPositionsFromExchange({
+      listSyncedApiKeys: vi.fn(async () => [
+        {
+          id: 'key-missing-entry',
+          userId: 'user-missing-entry',
+          manageExternalPositions: true,
+        },
+      ]),
+      resolveOwnershipForApiKey: vi.fn(async () => ({
+        status: 'OWNED' as const,
+        botId: 'bot-live-safe',
+        walletId: 'wallet-live-safe',
+        takeoverEnabled: true,
+      })),
+      fetchPositionsForApiKey: vi.fn(async () => ({
+        positions: [
+          {
+            symbol: 'SOL/USDT:USDT',
+            side: 'long',
+            contracts: 2,
+            entryPrice: null,
+            markPrice: null,
+            unrealizedPnl: null,
+            leverage: 4,
+            timestamp: null,
+          },
+        ],
+      })),
+      findOpenSyncedPositionByExternalId: vi.fn(async () => ({ id: 'pos-existing-safe' })),
+      updateSyncedPosition,
+      createSyncedPosition,
+      listOpenSyncedPositionsForApiKey: vi.fn(async () => [
+        { id: 'pos-existing-safe', externalId: 'key-missing-entry:SOLUSDT:LONG' },
+      ]),
+      closeStaleSyncedPosition: vi.fn(async () => undefined),
+      now: () => new Date('2026-03-23T00:30:00.000Z'),
+    });
+
+    expect(result.openPositionsSeen).toBe(1);
+    expect(updateSyncedPosition).not.toHaveBeenCalled();
+    expect(createSyncedPosition).not.toHaveBeenCalled();
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      '[LivePositionReconciliation] apiKey=key-missing-entry user=user-missing-entry symbol=SOLUSDT missing_entry_truth'
+    );
+
+    consoleWarnSpy.mockRestore();
+  });
+
   it('reconciles open exchange orders for owned BOT_MANAGED takeover lifecycle', async () => {
     const upsertSyncedOpenOrder = vi.fn(async () => undefined);
     const markStaleSyncedOrderUnresolved = vi.fn(async () => undefined);

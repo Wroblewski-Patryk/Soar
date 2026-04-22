@@ -44,6 +44,9 @@ Last updated: 2026-04-22
   explicitly scoped to zero-entry reconciliation hardening, fail-closed live
   capital truth, deterministic external-position ownership, and production
   rate-limit degradation policy.
+- 2026-04-22: `SAFEV1-A1` is closed; exchange reconciliation now refuses to
+  create or update open synced positions when canonical entry truth is missing,
+  keeping incomplete exchange snapshots out of the local open-position model.
 - 2026-04-22: full `SCALE` wave (`SCALE-01..SCALE-17`) is closed, including
   exchange-access convergence, web container seam extraction, and closure
   evidence handoff for future agents.
@@ -163,9 +166,8 @@ Last updated: 2026-04-22
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: close `SAFEV1-A` so the remaining V1 runtime safety
-  gaps are removed through one explicit remediation family instead of ad hoc
-  patching.
+- Main active objective: continue `SAFEV1-A` from fail-closed live capital
+  truth after closing the zero-entry reconciliation backdoor.
 - Top blockers:
   - no active blockers recorded.
 - Success criteria for this phase:
@@ -188,6 +190,10 @@ Last updated: 2026-04-22
   back to unrelated recent API keys on the same exchange, external-position
   ownership is still heuristic under overlapping symbol coverage, and
   production limiter behavior can silently degrade into local-only mode.
+- 2026-04-22: closed `SAFEV1-A1` by hardening
+  `livePositionReconciliation.service.ts` so incomplete exchange snapshots no
+  longer create or refresh open synced positions with `entryPrice <= 0`, and
+  added regression coverage for the missing-entry-truth case.
 - 2026-04-22: closed `RELEASE-HARDEN-A` by adding the canonical release gate
   script `scripts/runV1ReleaseGate.mjs`, exposing `pnpm run ops:release:v1:gate`,
   publishing `docs/operations/v1-release-gate-runbook.md`, and aligning V1

@@ -7,9 +7,9 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `SAFEV1-01 docs(contract): freeze live/paper runtime safety scope for zero-entry, capital truth, ownership, and limiter degradation`
-- [ ] `SAFEV1-02 test(api-red): lock incomplete exchange snapshot handling so reconciliation cannot persist zero-entry open positions`
-- [ ] `SAFEV1-03 refactor(api-reconciliation): make exchange-synced open position creation fail closed on missing canonical entry truth`
+- [x] `SAFEV1-01 docs(contract): freeze live/paper runtime safety scope for zero-entry, capital truth, ownership, and limiter degradation`
+- [x] `SAFEV1-02 test(api-red): lock incomplete exchange snapshot handling so reconciliation cannot persist zero-entry open positions`
+- [x] `SAFEV1-03 refactor(api-reconciliation): make exchange-synced open position creation fail closed on missing canonical entry truth`
 ## NEXT
 - [ ] `SAFEV1-04 test(api-red): lock fail-closed live capital context when canonical wallet/bot credential ownership is missing`
 - [ ] `SAFEV1-05 refactor(api-runtime): remove forbidden live capital fallback to unrelated recent API keys`
@@ -38,8 +38,8 @@ Operational queue for one-task execution runs.
 - [x] `CQLT-32 docs(decision): freeze legacy bridge sunset list and mark compatibility-only code paths that remain intentional`
 - [x] `CQLT-34 docs(sync): update queue/context/module docs and capture post-wave coding rules for future agents`
 ## GROUP QUEUE
-- [ ] `SAFEV1-A planning queued (V1 runtime safety closure for zero-entry reconciliation, fail-closed live capital truth, canonical external ownership, and explicit limiter degradation policy)`
-- [ ] `SAFEV1-A1 (commits SAFEV1-01..SAFEV1-03): zero-entry reconciliation truth closure`
+- [x] `SAFEV1-A planning queued (V1 runtime safety closure for zero-entry reconciliation, fail-closed live capital truth, canonical external ownership, and explicit limiter degradation policy)`
+- [x] `SAFEV1-A1 (commits SAFEV1-01..SAFEV1-03): zero-entry reconciliation truth closure`
 - [ ] `SAFEV1-A2 (commits SAFEV1-04..SAFEV1-05): fail-closed live capital truth`
 - [ ] `SAFEV1-A3 (commits SAFEV1-06..SAFEV1-07): canonical external ownership resolution`
 - [ ] `SAFEV1-A4 (commits SAFEV1-08..SAFEV1-09): production rate-limit degradation hardening`

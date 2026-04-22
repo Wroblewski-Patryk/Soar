@@ -299,3 +299,8 @@ Validation:
   `docs/operations/safev1-a-live-paper-runtime-safety-audit-2026-04-22.md`
   and froze the permanent rules in
   `docs/architecture/reference/live-paper-runtime-safety-contract.md`.
+- 2026-04-22: Closed `SAFEV1-01..SAFEV1-03` by adding a focused regression for
+  missing entry truth in exchange reconciliation and hardening
+  `livePositionReconciliation.service.ts` so incomplete snapshots no longer
+  create or update open synced positions with zero entry price. Validation
+  PASS: focused reconciliation test, `api typecheck`, `api build`.

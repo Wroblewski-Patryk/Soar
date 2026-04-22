@@ -186,6 +186,19 @@ const toOpenOrderStatus = (status: string | null): 'OPEN' | 'PARTIALLY_FILLED' |
   return null;
 };
 
+const resolveCanonicalEntryPrice = (
+  position: Pick<ExternalSnapshotPosition, 'entryPrice' | 'markPrice'>
+) => {
+  const entryPrice =
+    typeof position.entryPrice === 'number' && Number.isFinite(position.entryPrice)
+      ? position.entryPrice
+      : typeof position.markPrice === 'number' && Number.isFinite(position.markPrice)
+        ? position.markPrice
+        : null;
+  if (entryPrice == null || entryPrice <= 0) return null;
+  return entryPrice;
+};
+
 const defaultDeps: ReconcileDeps = {
   listSyncedApiKeys: async () => {
     return prisma.apiKey.findMany({
@@ -505,6 +518,13 @@ export const reconcileExternalPositionsFromExchange = async (
         openPositionsSeen += 1;
         const externalId = `${apiKey.id}:${normalizedSymbol}:${side}`;
         seenExternalIds.add(externalId);
+        const canonicalEntryPrice = resolveCanonicalEntryPrice(position);
+        if (canonicalEntryPrice == null) {
+          console.warn(
+            `[LivePositionReconciliation] apiKey=${apiKey.id} user=${apiKey.userId} symbol=${normalizedSymbol} missing_entry_truth`
+          );
+          continue;
+        }
 
         const existing = await deps.findOpenSyncedPositionByExternalId({
           userId: apiKey.userId,
@@ -516,7 +536,7 @@ export const reconcileExternalPositionsFromExchange = async (
             symbol: normalizedSymbol,
             side,
             quantity: size,
-            entryPrice: position.entryPrice ?? position.markPrice ?? 0,
+            entryPrice: canonicalEntryPrice,
             unrealizedPnl: position.unrealizedPnl ?? null,
             leverage: Math.max(1, Math.floor(position.leverage ?? 1)),
             managementMode,
@@ -532,7 +552,7 @@ export const reconcileExternalPositionsFromExchange = async (
             symbol: normalizedSymbol,
             side,
             quantity: size,
-            entryPrice: position.entryPrice ?? position.markPrice ?? 0,
+            entryPrice: canonicalEntryPrice,
             unrealizedPnl: position.unrealizedPnl ?? null,
             leverage: Math.max(1, Math.floor(position.leverage ?? 1)),
             managementMode,
