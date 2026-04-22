@@ -1,0 +1,61 @@
+{
+  "status": "PASS",
+  "profile": "stage",
+  "baseUrl": "https://stage-api.soar.luckysparrow.ch",
+  "startedAt": "2026-04-22T20:13:00.334Z",
+  "endedAt": "2026-04-22T20:13:00.825Z",
+  "command": "node scripts/evaluateRollbackGuard.mjs --base-url https://stage-api.soar.luckysparrow.ch --auth-email stage-ops-admin@luckysparrow.ch --auth-password StageOps26!B3rlin#Gate --ops-auth-header-name X-Forwarded-For --ops-auth-header-value 31.10.146.162",
+  "checks": {
+    "commandExitCodeZero": true,
+    "shouldRollbackFalse": true,
+    "noCriticalReasons": true,
+    "freshnessStatusPass": true,
+    "alertsClear": true
+  },
+  "decision": {
+    "checkedAt": "2026-04-22T20:13:00.689Z",
+    "shouldRollback": false,
+    "reasons": [],
+    "freshness": {
+      "status": "PASS",
+      "checks": {
+        "workerHeartbeat": {
+          "status": "SKIP",
+          "thresholdMs": 60000,
+          "ageMs": null,
+          "detail": "worker heartbeat check skipped in current mode without active runtime demand"
+        },
+        "marketData": {
+          "status": "SKIP",
+          "thresholdMs": 120000,
+          "ageMs": null,
+          "detail": "market data freshness skipped in current mode without active runtime demand"
+        },
+        "runtimeSignalLag": {
+          "status": "PASS",
+          "thresholdMs": 90000,
+          "ageMs": 0,
+          "detail": "runtime signal lag within threshold"
+        },
+        "runtimeSessions": {
+          "status": "PASS",
+          "thresholdMs": 120000,
+          "ageMs": null,
+          "runningCount": 0,
+          "staleSessionIds": [],
+          "detail": "runtime sessions heartbeat healthy"
+        },
+        "latestSignal": {
+          "status": "SKIP",
+          "thresholdMs": 300000,
+          "ageMs": null,
+          "required": false,
+          "detail": "latest signal freshness check disabled for running sessions"
+        }
+      }
+    },
+    "alerts": []
+  },
+  "stdoutPreview": "{\n  \"checkedAt\": \"2026-04-22T20:13:00.689Z\",\n  \"shouldRollback\": false,\n  \"reasons\": [],\n  \"freshness\": {\n    \"status\": \"PASS\",\n    \"checks\": {\n      \"workerHeartbeat\": {\n        \"status\": \"SKIP\",\n        \"thresholdMs\": 60000,\n        \"ageMs\": null,\n        \"detail\": \"worker heartbeat check skipped in current mode without active runtime demand\"\n      },\n      \"marketData\": {\n        \"status\": \"SKIP\",\n        \"thresholdMs\": 120000,\n        \"ageMs\": null,\n        \"detail\": \"market data freshness skipped in current mode without active runtime demand\"\n      },\n      \"runtimeSignalLag\": {\n        \"status\": \"PASS\",\n        \"thresholdMs\": 90000,\n        \"ageMs\": 0,\n        \"detail\": \"runtime signal lag within threshold\"\n      },\n      \"runtimeSessions\": {\n        \"status\": \"PASS\",\n        \"thresholdMs\": 120000,\n        \"ageMs\": null,\n        \"runningCount\": 0,\n        \"staleSessionIds\": [],\n        \"detail\": \"runtime sessions heartbeat healthy\"\n      },\n      \"latestSignal\": {\n        \"status\": \"SKIP\",\n        \"thresholdMs\": 300000,\n        \"ageMs\": null,\n        \"required\": false,\n        \"detail\": \"latest signal freshness check disabled for running sessions\"\n      }\n    }\n  },\n  \"alerts\": []\n}",
+  "stderrPreview": ""
+}

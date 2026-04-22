@@ -1,0 +1,132 @@
+{
+  "generatedAt": "2026-04-22T19:16:02.125Z",
+  "environment": "stage",
+  "dryRun": false,
+  "readiness": "ready",
+  "baseUrl": "https://stage-api.soar.luckysparrow.ch",
+  "webBaseUrl": "https://stage.soar.luckysparrow.ch",
+  "evidence": [
+    {
+      "key": "activationAudit",
+      "label": "activation evidence audit",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-04-22",
+      "path": "docs\\operations\\v1-production-activation-evidence-audit-2026-04-22.md",
+      "date": "2026-04-22"
+    },
+    {
+      "key": "activationPlan",
+      "label": "activation execution plan",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-04-22",
+      "path": "docs\\planning\\v1-production-activation-and-evidence-plan-2026-04-22.md",
+      "date": "2026-04-22"
+    },
+    {
+      "key": "rcExternalGateStatus",
+      "label": "RC external gates status",
+      "state": "skipped",
+      "required": false,
+      "reason": "not required for stage",
+      "path": null,
+      "date": null
+    },
+    {
+      "key": "rcSignoffRecord",
+      "label": "RC sign-off record",
+      "state": "skipped",
+      "required": false,
+      "reason": "not required for stage",
+      "path": null,
+      "date": null
+    },
+    {
+      "key": "rcChecklist",
+      "label": "RC checklist verification block",
+      "state": "skipped",
+      "required": false,
+      "reason": "not required for stage",
+      "path": null,
+      "date": null
+    }
+  ],
+  "blockers": [],
+  "steps": [
+    {
+      "label": "post-deploy smoke gate",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "ops:deploy:smoke",
+        "--",
+        "--base-url",
+        "https://stage-api.soar.luckysparrow.ch",
+        "--auth-email",
+        "stage-ops-admin@luckysparrow.ch",
+        "--auth-password",
+        "StageOps26!B3rlin#Gate",
+        "--ops-auth-header-name",
+        "X-Forwarded-For",
+        "--ops-auth-header-value",
+        "31.10.146.162",
+        "--web-base-url",
+        "https://stage.soar.luckysparrow.ch"
+      ],
+      "startedAt": "2026-04-22T19:15:59.587Z",
+      "endedAt": "2026-04-22T19:16:00.536Z",
+      "durationMs": 949,
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "label": "runtime freshness gate",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "ops:deploy:runtime-freshness",
+        "--",
+        "--base-url",
+        "https://stage-api.soar.luckysparrow.ch",
+        "--auth-email",
+        "stage-ops-admin@luckysparrow.ch",
+        "--auth-password",
+        "StageOps26!B3rlin#Gate",
+        "--ops-auth-header-name",
+        "X-Forwarded-For",
+        "--ops-auth-header-value",
+        "31.10.146.162"
+      ],
+      "startedAt": "2026-04-22T19:16:00.536Z",
+      "endedAt": "2026-04-22T19:16:01.243Z",
+      "durationMs": 706,
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "label": "rollback guard gate",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "ops:deploy:rollback-guard",
+        "--",
+        "--base-url",
+        "https://stage-api.soar.luckysparrow.ch",
+        "--auth-email",
+        "stage-ops-admin@luckysparrow.ch",
+        "--auth-password",
+        "StageOps26!B3rlin#Gate",
+        "--ops-auth-header-name",
+        "X-Forwarded-For",
+        "--ops-auth-header-value",
+        "31.10.146.162"
+      ],
+      "startedAt": "2026-04-22T19:16:01.243Z",
+      "endedAt": "2026-04-22T19:16:02.125Z",
+      "durationMs": 882,
+      "status": "passed",
+      "exitCode": 0
+    }
+  ]
+}

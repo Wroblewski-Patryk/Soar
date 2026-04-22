@@ -39,11 +39,19 @@ production-activatable release candidate.
 
 - release gate output,
 - readiness diagnostics,
-- backup/restore verification,
+- backup/restore drill evidence pack,
 - post-deploy smoke,
 - rollback rehearsal or rollback proof pack,
 - worker/runtime health visibility,
 - sign-off summary.
+
+## Proof Truth Rules
+
+- Production activation must treat backup/restore drill and rollback proof as
+  explicit, dated evidence families, not implied runbook references.
+- A stale or missing prod proof artifact is equivalent to a failed gate.
+- Operator-facing output must link to the exact proof artifact generated for
+  the candidate day.
 
 ## Non-Goals
 
@@ -58,3 +66,6 @@ production-activatable release candidate.
 - Do not collapse stage and prod evidence into one generic success claim.
 - Do not treat legacy compatibility envs or local-only passes as production
   sign-off.
+- Do not treat public prod smoke or internal prod diagnostics as a substitute
+  for fresh prod restore-drill proof, fresh prod rollback proof, and named
+  human sign-offs.

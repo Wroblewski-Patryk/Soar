@@ -13,7 +13,7 @@
   - bots LIVE confirmations,
   - shell/accessibility smoke.
 
-### Latest Verification (2026-03-21)
+### Latest Verification (2026-04-22)
 - `pnpm --filter api build` passed.
 - `pnpm --filter web build` passed.
 - `pnpm --filter api test -- src/modules/auth/auth.e2e.test.ts src/modules/exchange/liveOrderAdapter.service.test.ts src/router/health-readiness.test.ts src/router/workers-health-readiness.test.ts src/router/metrics.test.ts src/router/alerts.test.ts` passed (`6` files, `20` tests).
@@ -44,7 +44,7 @@
   - `/workers/ready`.
 - [x] Runtime freshness gate healthy:
   - `/workers/runtime-freshness`.
-- [x] Queue lag metrics reviewed and within baseline.
+- [ ] Queue lag metrics reviewed and within baseline.
 - [x] Incident contacts and escalation chain confirmed.
 
 ### Mandatory Post-Deploy Validation Sequence (Runtime + Cache + Stream)
@@ -92,14 +92,14 @@
 - [x] Launch evidence pack compiled (`docs/operations/v1-launch-evidence-pack.md`).
 
 ## RC Sign-Off
-- [x] Engineering sign-off.
-- [x] Product sign-off.
-- [x] Operations sign-off.
-- [x] RC owner assigned with rollback authority.
+- [ ] Engineering sign-off.
+- [ ] Product sign-off.
+- [ ] Operations sign-off.
+- [ ] RC owner assigned with rollback authority.
 - Sign-off record template: `docs/operations/v1-rc-signoff-record.md`.
 
-## Outstanding External Gates (2026-04-19)
-- none; final snapshot is `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS` (run completed `2026-04-19T15:13:58.943Z`).
+## Outstanding External Gates (2026-04-22)
+- current snapshot is `G1=PASS`, `G2=OPEN`, `G3=PASS`, `G4=OPEN` (synced 2026-04-22).
 - Execution guide: `docs/operations/v1-rc-external-gates-runbook.md`.
 - SLO definitions and metric mapping: `docs/operations/v1-slo-catalog.md`.
 - Binance live bot-control verification checklist: `docs/operations/binance-live-ops-verification-checklist-2026-04-06.md`.

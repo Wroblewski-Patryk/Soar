@@ -25,6 +25,15 @@ pnpm run ops:release:v1:gate -- --environment prod --base-url https://<target-ap
 6. runtime freshness gate
 7. rollback guard gate
 
+The gate itself is now only one part of prod readiness. Production activation
+also requires fresh proof artifacts for:
+
+- backup/restore drill evidence,
+- rollback proof evidence,
+- RC external-gates status,
+- RC sign-off record,
+- RC checklist freshness.
+
 ## Dry-Run Rehearsal
 
 ```bash
@@ -47,7 +56,8 @@ The gate now evaluates required evidence families before claiming readiness.
 - `local`: evidence is informational only; dry-run stays available as a non-prod signal.
 - `stage`: activation audit and activation plan must be fresh for the current day.
 - `prod`: activation audit, activation plan, RC checklist, RC external-gates
-  status, and RC sign-off record must all be fresh for the current day.
+  status, RC sign-off record, backup/restore drill evidence, and rollback proof
+  pack must all be fresh for the current day.
 
 If any required family is stale or missing, the gate stays `not_ready`.
 
@@ -65,6 +75,30 @@ pnpm run ops:release:v1:stage-rehearsal -- --dry-run --base-url https://stage-ap
 
 Both commands emit release-gate and stage-rehearsal artifacts under
 `docs/operations/`.
+
+## Canonical Backup / Rollback Proof Commands
+
+Prod backup/restore drill evidence:
+
+```bash
+pnpm run ops:db:restore-drill:prod
+```
+
+Stage rollback proof:
+
+```bash
+pnpm run ops:deploy:rollback-proof:stage -- --base-url https://stage-api.soar.luckysparrow.ch --auth-token <ADMIN_JWT>
+```
+
+Prod rollback proof:
+
+```bash
+pnpm run ops:deploy:rollback-proof:prod -- --base-url https://api.soar.luckysparrow.ch --auth-token <ADMIN_JWT>
+```
+
+Each command emits human-reviewable artifacts under `docs/operations/`, and
+prod activation must remain blocked until fresh prod variants exist for the
+current day.
 
 ## Stage Execution Preflight
 
@@ -112,5 +146,6 @@ Environment fallbacks:
 
 - `docs/operations/post-deploy-smoke-checklist.md`
 - `docs/operations/deployment-rollback-playbook.md`
+- `docs/operations/v1-production-activation-evidence-audit-2026-04-22.md`
 - `docs/operations/v1-release-candidate-checklist.md`
 - `docs/operations/v1-rc-external-gates-runbook.md`
