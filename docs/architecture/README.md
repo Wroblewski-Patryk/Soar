@@ -24,18 +24,19 @@ Those belong elsewhere:
 - `docs/product/` for product intent and scope
 
 ## Reading Order
-1. `01_overview-and-principles.md`
-2. `02_system-topology.md`
-3. `03_domain-model.md`
-4. `04_runtime-contexts.md`
-5. `05_strategy-signal-and-decision-flow.md`
-6. `06_execution-lifecycle.md`
-7. `07_modes-parity-and-data.md`
-8. `08_operator-surfaces-and-routing.md`
-9. `09_integrations-deployment-and-runtime-services.md`
-10. `10_safety-entitlements-and-risk.md`
-11. `11_assistant-runtime.md`
-12. `12_documentation-governance.md`
+1. `architecture-source-of-truth.md`
+2. `01_overview-and-principles.md`
+3. `02_system-topology.md`
+4. `03_domain-model.md`
+5. `04_runtime-contexts.md`
+6. `05_strategy-signal-and-decision-flow.md`
+7. `06_execution-lifecycle.md`
+8. `07_modes-parity-and-data.md`
+9. `08_operator-surfaces-and-routing.md`
+10. `09_integrations-deployment-and-runtime-services.md`
+11. `10_safety-entitlements-and-risk.md`
+12. `11_assistant-runtime.md`
+13. `12_documentation-governance.md`
 
 ## Architecture Rules
 - One file = one responsibility.

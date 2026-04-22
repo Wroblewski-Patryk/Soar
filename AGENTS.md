@@ -23,6 +23,7 @@ Read these before starting non-trivial work:
 - `docs/product/product.md`
 - `docs/architecture/README.md`
 - `docs/architecture/01_overview-and-principles.md`
+- `docs/architecture/architecture-source-of-truth.md`
 - `docs/architecture/reference/runtime-signal-merge-contract.md`
 - `docs/architecture/reference/assistant-runtime-contract.md`
 - `docs/modules/system-modules.md`
@@ -43,6 +44,51 @@ Read these before starting non-trivial work:
 
 ## Core Rules
 
+### 1. Architecture Is Source Of Truth
+
+- `docs/architecture/` is the single architecture authority for this repo.
+- Implementation must stay aligned with approved architecture docs.
+- If implementation does not fit architecture, stop and report the mismatch
+  instead of creating a workaround.
+
+### 2. Critical Prohibitions
+
+- Do not create new systems without explicit approval.
+- Do not introduce workaround paths or temporary bypasses.
+- Do not duplicate logic already covered by existing mechanisms.
+- Always reuse existing approved systems first.
+
+### 3. Decision Mode For Mismatches
+
+When architecture and implementation clash:
+
+1. describe the problem
+2. propose 2 to 3 valid options
+3. wait for explicit user decision
+
+### 4. Mandatory Task Structure
+
+Each task must use `.codex/templates/task-template.md`, including:
+
+- `Context`
+- `Goal`
+- `Constraints`
+- `Definition of Done`
+- `Forbidden`
+
+### 5. Mandatory Review And Refactor
+
+After implementation, verify:
+
+- architecture alignment
+- reuse of existing systems
+- no workaround introduced
+- no logic duplication introduced
+
+If any check fails, fix before closure.
+
+### 6. Repository Guardrails
+
 - Project state, task board, learning journal, and canonical docs are the
   source of truth.
 - Keep repository artifacts in English.
@@ -59,8 +105,8 @@ Read these before starting non-trivial work:
 - Scope lock is mandatory:
   - implement only what the user explicitly requested or what is required by
     failing tests, build contracts, or runtime safety for the requested task
-  - do not apply opportunistic UI, copy, or cleanup changes unless they are
-    explicitly requested
+  - do not apply opportunistic UI, copy, or cleanup changes unless explicitly
+    requested
 - Run relevant validation before creating a commit.
 - Do not mark a task done without acceptance-criteria evidence.
 - For auth-sensitive, money-impacting, or live-trading flows, include
@@ -71,10 +117,11 @@ Read these before starting non-trivial work:
   - active canonical queue files
   - background or historical unchecked lists, clearly labeled as non-active
 - Follow the default delivery loop:
-  - plan
+  - check architecture
+  - create task
   - implement
-  - test
-  - review risks and architecture follow-up
+  - review
+  - fix or refactor
   - sync docs and context
   - repeat
 
