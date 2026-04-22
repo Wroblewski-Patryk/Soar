@@ -35,6 +35,8 @@ Operational queue for one-task execution runs.
 - [x] `CQLT-32 docs(decision): freeze legacy bridge sunset list and mark compatibility-only code paths that remain intentional`
 - [x] `CQLT-34 docs(sync): update queue/context/module docs and capture post-wave coding rules for future agents`
 ## GROUP QUEUE
+- [x] `RELEASE-HARDEN-A planning queued (one canonical V1 release gate entrypoint over existing release/smoke/runtime checks)`
+- [x] `RELEASE-HARDEN-A group closure (canonical V1 release gate command + runbook + checklist sync)`
 - [x] `REVIEW-C planning queued (runtime-state replay truth + snapshot error normalization + reconciliation truth closure)`
 - [x] `REVIEW-C1 (commits REVIEW-C-01..REVIEW-C-03): canonical replay truth after completed DCA dedupe reuse`
 - [x] `REVIEW-C2 (commits REVIEW-C-04..REVIEW-C-06): operator snapshot error truth and disappearing-order reconciliation truth`

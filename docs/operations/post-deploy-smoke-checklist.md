@@ -74,3 +74,14 @@ Record for each smoke run:
 - links to logs/screenshots (if failure).
 
 Store evidence with release artifacts for audit and postmortem use.
+
+## Canonical Operator Entry
+
+When running the full V1 release gate, prefer:
+
+```bash
+pnpm run ops:release:v1:gate -- --base-url https://<target-api> --auth-token <ADMIN_JWT>
+```
+
+This wraps local quality/build/go-live gates plus post-deploy smoke,
+runtime freshness, and rollback guard into one deterministic operator flow.

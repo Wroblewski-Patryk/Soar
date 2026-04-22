@@ -35,6 +35,9 @@ Last updated: 2026-04-22
   snapshot failures normalize through one explicit operator error contract, and
   live reconciliation no longer synthesizes `CANCELED` when an order simply
   disappears from the exchange open-orders view.
+- 2026-04-22: `RELEASE-HARDEN-A` is closed; V1 release execution now has one
+  canonical operator-facing gate entrypoint (`ops:release:v1:gate`) over the
+  existing quality, smoke, runtime-freshness, and rollback-guard checks.
 - 2026-04-22: full `SCALE` wave (`SCALE-01..SCALE-17`) is closed, including
   exchange-access convergence, web container seam extraction, and closure
   evidence handoff for future agents.
@@ -170,6 +173,10 @@ Last updated: 2026-04-22
   - none currently queued in canonical planning files
 
 ## Recent Progress
+- 2026-04-22: closed `RELEASE-HARDEN-A` by adding the canonical release gate
+  script `scripts/runV1ReleaseGate.mjs`, exposing `pnpm run ops:release:v1:gate`,
+  publishing `docs/operations/v1-release-gate-runbook.md`, and aligning V1
+  release/smoke docs to the same operator entrypoint.
 - 2026-04-22: closed `REVIEW-C` end-to-end by deriving completed DCA replay
   state from canonical persisted position truth, normalizing authenticated
   exchange snapshot failures through one explicit operator error contract, and

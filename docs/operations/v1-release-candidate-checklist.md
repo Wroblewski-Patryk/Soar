@@ -31,6 +31,7 @@
 - Release docs drafted: `docs/operations/v1-changelog.md`, `docs/operations/v1-migration-notes.md`.
 - Load baseline evidence: `docs/operations/v1-load-baseline-2026-03-21.md` (error rate `0`, p95 `37ms`, p99 `72ms`, threshold gate `PASS`).
 - 2026-03-25 local backup/restore dry-run passed via `pnpm run ops:db:backup-restore:check-local` (artifacts: `docs/operations/_artifacts-db-restore-check-2026-03-25T18-10-26-980Z.txt`, `docs/operations/v1-db-restore-check-2026-03-25T18-10-26-980Z.md`).
+- Canonical release gate runbook: `docs/operations/v1-release-gate-runbook.md`.
 
 ## Runtime and Operations Gates
 - [x] API endpoints healthy:
@@ -62,9 +63,12 @@
    - service worker runtime cache stays static-only (no API/runtime payload caching),
    - stream freshness (`WORKER_LAST_MARKET_DATA_AT`) within threshold and no stale alert.
 6. Gate commands (recommended order):
-   - `pnpm run ops:deploy:smoke`
-   - `pnpm run ops:deploy:runtime-freshness -- --base-url https://<target-api> --auth-token <ADMIN_JWT>`
-   - `pnpm run ops:deploy:rollback-guard -- --base-url https://<target-api> --auth-token <ADMIN_JWT>`
+   - canonical one-command gate:
+     - `pnpm run ops:release:v1:gate -- --base-url https://<target-api> --auth-token <ADMIN_JWT>`
+   - manual equivalent:
+     - `pnpm run ops:deploy:smoke`
+     - `pnpm run ops:deploy:runtime-freshness -- --base-url https://<target-api> --auth-token <ADMIN_JWT>`
+     - `pnpm run ops:deploy:rollback-guard -- --base-url https://<target-api> --auth-token <ADMIN_JWT>`
 7. Binance live-ops verification:
    - execute and fill `docs/operations/binance-live-ops-verification-checklist-2026-04-06.md`
 

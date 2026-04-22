@@ -37,6 +37,8 @@ Last updated: 2026-04-22
 
 ## DONE
 
+- [x] `RELEASE-HARDEN-A group closure (canonical V1 release gate entrypoint)`
+  - 2026-04-22: Closed `RELEASE-HARDEN-A` by adding `scripts/runV1ReleaseGate.mjs`, exposing `pnpm run ops:release:v1:gate`, publishing `docs/operations/v1-release-gate-runbook.md`, and aligning V1 release/smoke docs with the new canonical gate entrypoint. Validation PASS: `pnpm run ops:release:v1:gate -- --dry-run --base-url http://localhost:3001 --skip-go-live-smoke --skip-deploy-smoke --skip-runtime-freshness --skip-rollback-guard`, `pnpm run quality:guardrails`.
 - [x] `REVIEW-C group closure (runtime-state replay truth + snapshot error normalization + reconciliation truth)`
   - 2026-04-22: Closed `REVIEW-C-01..REVIEW-C-07` end-to-end by deriving completed DCA replay state from canonical persisted position truth, normalizing authenticated exchange snapshot failures through one explicit operator error contract, replacing synthetic stale-order cancelation with explicit unresolved reconciliation truth, and publishing closure evidence in `docs/operations/review-c-runtime-state-and-reconciliation-closure-2026-04-22.md`. Validation PASS: focused runtime/positions pack, `api typecheck`, `api build`, `quality:guardrails`.
 - [x] `REVIEW-B group closure (runtime/exchange production-readiness closure after XLIFE-A)`

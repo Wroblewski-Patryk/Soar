@@ -2555,6 +2555,14 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-22: Queued `REVIEW-C` from the post-`REVIEW-B` review after confirming three remaining production-readiness truth gaps: completed DCA dedupe replay can still restore runtime state from synthetic math, authenticated exchange snapshot fetch failures are not guaranteed to normalize through the explicit operator error contract, and live reconciliation still treats disappearance from exchange open-orders as synthetic `CANCELED`. Published audit evidence in `docs/operations/review-c-runtime-state-and-reconciliation-audit-2026-04-22.md` and executor-ready rollout plan in `docs/planning/review-c-runtime-state-and-reconciliation-closure-plan-2026-04-22.md`.
 - 2026-04-22: Closed `REVIEW-C-01..REVIEW-C-07` end-to-end by deriving completed DCA replay state from canonical persisted position truth, normalizing authenticated exchange snapshot failures through one explicit operator error contract, replacing synthetic stale-order cancelation with explicit unresolved reconciliation truth, and publishing closure evidence in `docs/operations/review-c-runtime-state-and-reconciliation-closure-2026-04-22.md`. Validation PASS: focused runtime/positions Vitest pack, `pnpm --filter api run typecheck`, `pnpm --filter api run build`, `pnpm run quality:guardrails`.
 
+## Phase RELEASE-HARDEN-A - Canonical V1 Release Gate Closure (Closed 2026-04-22)
+- [x] `RELEASE-HARDEN-A-01 docs(contract): freeze one canonical V1 release gate entrypoint`
+- [x] `RELEASE-HARDEN-A-02 chore(ops-scripts): add a single orchestration script for V1 release gating`
+- [x] `RELEASE-HARDEN-A-03 docs(sync): align release checklist and smoke docs to the canonical gate`
+
+### Progress Log (Phase RELEASE-HARDEN-A - Canonical V1 Release Gate Closure)
+- 2026-04-22: Closed `RELEASE-HARDEN-A` by adding the canonical release gate script `scripts/runV1ReleaseGate.mjs`, exposing `pnpm run ops:release:v1:gate`, publishing `docs/operations/v1-release-gate-runbook.md`, and aligning V1 release/smoke docs to the same operator entrypoint. Validation PASS: `pnpm run ops:release:v1:gate -- --dry-run --base-url http://localhost:3001 --skip-go-live-smoke --skip-deploy-smoke --skip-runtime-freshness --skip-rollback-guard`, `pnpm run quality:guardrails`.
+
 ## Phase ARCCON - Architecture Conformance and Service Ownership Closure (Closed 2026-04-21)
 - [x] `ARCCON-01 test(api-red): lock fail-closed manual-order strategy context when selected bot has no symbol-matching strategy`
 - [x] `ARCCON-02 fix(api-orders): remove hidden first-strategy fallback from manual-order context resolution and keep unresolved state explicit`
