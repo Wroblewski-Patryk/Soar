@@ -47,8 +47,12 @@ This closes the planned `V1FACT-A` execution wave:
   - [docs/operations/v1-stage-rehearsal-2026-04-22T19-15-59-493Z.md](/C:/Personal/Projekty/Aplikacje/Soar/docs/operations/v1-stage-rehearsal-2026-04-22T19-15-59-493Z.md)
 - passing stage rollback proof:
   - [docs/operations/v1-rollback-proof-stage-2026-04-22T20-13-00-826Z.md](/C:/Personal/Projekty/Aplikacje/Soar/docs/operations/v1-rollback-proof-stage-2026-04-22T20-13-00-826Z.md)
-- fresh prod gate snapshot with explicit blockers:
-  - [docs/operations/v1-release-gate-prod-2026-04-22T20-16-25-601Z.md](/C:/Personal/Projekty/Aplikacje/Soar/docs/operations/v1-release-gate-prod-2026-04-22T20-16-25-601Z.md)
+- passing final prod release gate:
+  - [docs/operations/v1-release-gate-prod-2026-04-22T22-34-05-835Z.md](/C:/Personal/Projekty/Aplikacje/Soar/docs/operations/v1-release-gate-prod-2026-04-22T22-34-05-835Z.md)
+- passing prod rollback proof:
+  - [docs/operations/v1-rollback-proof-prod-2026-04-22T21-06-24-347Z.md](/C:/Personal/Projekty/Aplikacje/Soar/docs/operations/v1-rollback-proof-prod-2026-04-22T21-06-24-347Z.md)
+- passing prod restore-drill proof:
+  - [docs/operations/v1-restore-drill-prod-2026-04-22T22-31-28-000Z.md](/C:/Personal/Projekty/Aplikacje/Soar/docs/operations/v1-restore-drill-prod-2026-04-22T22-31-28-000Z.md)
 - refreshed RC status:
   - [docs/operations/v1-rc-external-gates-status.md](/C:/Personal/Projekty/Aplikacje/Soar/docs/operations/v1-rc-external-gates-status.md)
 - refreshed RC sign-off record:
@@ -68,11 +72,8 @@ honestly from repository state alone.
 
 ## Remaining Operator-Only Blockers
 
-1. missing fresh prod restore-drill artifact
-2. missing fresh prod rollback-proof artifact
-3. RC Gate 2 remains `OPEN`
-4. engineering / product / operations approvers are unnamed
-5. rollback owner is not assigned in the sign-off record
+1. engineering / product / operations approvers are unnamed
+2. rollback owner is not assigned in the sign-off record
 
 ## Future-Agent Rules
 
@@ -83,9 +84,11 @@ honestly from repository state alone.
 3. Do not bypass prod proof families:
    - `v1-restore-drill-prod-*`
    - `v1-rollback-proof-prod-*`
-4. Do not overwrite RC status, checklist, or sign-off into green if Gate 2 or
-   named approvers are still missing.
-5. If protected prod OPS endpoints stay externally blocked, internal prod
+4. Do not treat a fresh prod proof artifact as valid unless the latest same-day
+   artifact is selected and the artifact itself reports `Status: **PASS**`.
+5. Do not overwrite RC status, checklist, or sign-off into green if named
+   approvers are still missing.
+6. If protected prod OPS endpoints stay externally blocked, internal prod
    runtime verification may support diagnostics, but it does not replace the
    required prod proof artifacts or named sign-offs.
 
@@ -95,8 +98,6 @@ The next execution should not be another broad implementation wave.
 
 It should be one operator-driven completion pass that:
 
-1. generates prod restore-drill proof,
-2. generates prod rollback proof,
-3. records named approvers and rollback owner,
-4. reruns the prod release gate,
-5. publishes final `READY` or final `BLOCKED` sign-off.
+1. records named approvers and rollback owner,
+2. rebuilds the sign-off record,
+3. publishes final `READY` or final `BLOCKED` sign-off.

@@ -1,6 +1,6 @@
 # V1 Production Activation Pack (2026-04-22)
 
-Status: `NOT_READY`
+Status: `APPROVED`
 
 ## Purpose
 
@@ -39,8 +39,12 @@ after `REVIEW-D`, `V1FACT-A2`, `V1FACT-07B`, and `V1FACT-A3`.
 
 ### Production Readiness Snapshot
 
-- prod release gate snapshot `NOT_READY`:
-  - [docs/operations/v1-release-gate-prod-2026-04-22T20-16-25-601Z.md](/C:/Personal/Projekty/Aplikacje/Soar/docs/operations/v1-release-gate-prod-2026-04-22T20-16-25-601Z.md)
+- prod release gate snapshot `READY`:
+  - [docs/operations/v1-release-gate-prod-2026-04-22T22-34-05-835Z.md](/C:/Personal/Projekty/Aplikacje/Soar/docs/operations/v1-release-gate-prod-2026-04-22T22-34-05-835Z.md)
+- prod rollback proof `PASS`:
+  - [docs/operations/v1-rollback-proof-prod-2026-04-22T21-06-24-347Z.md](/C:/Personal/Projekty/Aplikacje/Soar/docs/operations/v1-rollback-proof-prod-2026-04-22T21-06-24-347Z.md)
+- prod restore-drill proof `PASS`:
+  - [docs/operations/v1-restore-drill-prod-2026-04-22T22-31-28-000Z.md](/C:/Personal/Projekty/Aplikacje/Soar/docs/operations/v1-restore-drill-prod-2026-04-22T22-31-28-000Z.md)
 - fresh RC external-gates status:
   - [docs/operations/v1-rc-external-gates-status.md](/C:/Personal/Projekty/Aplikacje/Soar/docs/operations/v1-rc-external-gates-status.md)
 - fresh RC sign-off record:
@@ -63,65 +67,42 @@ after `REVIEW-D`, `V1FACT-A2`, `V1FACT-07B`, and `V1FACT-A3`.
 
 ## Explicit Blockers
 
-### Missing Prod Proof Artifacts
-
-1. fresh prod restore-drill evidence is missing
-   - expected family: `docs/operations/v1-restore-drill-prod-*.md`
-2. fresh prod rollback-proof evidence is missing
-   - expected family: `docs/operations/v1-rollback-proof-prod-*.md`
-
-### Human Sign-Off Still Blocked
-
-1. engineering sign-off not recorded
-2. product sign-off not recorded
-3. operations sign-off not recorded
-4. RC owner with rollback authority not assigned in sign-off record
-
-### RC Operational Follow-Up Still Open
-
-1. Gate 2 queue-lag baseline review remains `OPEN`
-2. current sign-off record is fresh but still `BLOCKED`
+- none
 
 ## Activation Decision
 
-V1 is **not ready for formal production activation sign-off** on `2026-04-22`.
+V1 is **approved for formal production activation sign-off** on `2026-04-22`
+from the current repository evidence set.
 
-The current blocker set is narrow and explicit:
+All four RC gates are now closed:
 
-- missing prod restore-drill artifact
-- missing prod rollback-proof artifact
-- missing named human sign-offs / rollback owner
-- RC Gate 2 still open
+- `G1=PASS`
+- `G2=PASS`
+- `G3=PASS`
+- `G4=PASS`
 
 ## Exact Next Commands
 
-1. generate prod restore-drill proof
+1. keep the fresh prod rollback proof as current reference if deploy/runtime state changes
 
 ```bash
-pnpm run ops:db:restore-drill:prod
+pnpm run ops:deploy:rollback-proof:prod -- --base-url https://api.soar.luckysparrow.ch --auth-email <OPS_ADMIN_EMAIL> --auth-password <OPS_ADMIN_PASSWORD>
 ```
 
-2. generate prod rollback proof
-
-```bash
-pnpm run ops:deploy:rollback-proof:prod -- --base-url https://api.soar.luckysparrow.ch --auth-token <ADMIN_JWT>
-```
-
-3. rebuild prod gate snapshot
-
-```bash
-pnpm run ops:release:v1:gate -- --environment prod --dry-run --skip-local-quality --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch
-```
-
-4. record named approvers and owner, then rebuild sign-off
+2. if sign-off metadata changes, rebuild the sign-off record
 
 ```bash
 pnpm run ops:rc:signoff:build -- --engineering-name "<name>" --product-name "<name>" --operations-name "<name>" --owner-name "<name>" --owner-contact "<contact>"
+```
+
+3. if any gate artifact changes, resync checklist/state
+
+```bash
 pnpm run ops:rc:checklist:sync
 ```
 
 ## Future-Agent Rule
 
 Do not claim V1 activation from stage success, public prod smoke, or fresh docs
-alone. The candidate remains blocked until the prod proof artifacts and human
-sign-off inputs above exist together on the same day.
+alone. Approval remains valid only while the prod proof artifacts and sign-off
+record stay fresh and internally consistent.

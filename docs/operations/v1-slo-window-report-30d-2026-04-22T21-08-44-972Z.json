@@ -1,0 +1,150 @@
+{
+  "generatedAt": "2026-04-22T21:08:44.971Z",
+  "window": {
+    "days": 30,
+    "startUtc": "2026-03-23T21:08:44.971Z",
+    "endUtc": "2026-04-22T21:08:44.971Z"
+  },
+  "source": {
+    "inputDir": "docs\\operations",
+    "artifactsTotal": 4,
+    "artifactsInWindow": 4,
+    "environmentSummary": {
+      "production": 4
+    },
+    "includesProductionEvidence": true
+  },
+  "aggregates": {
+    "probes": {
+      "healthAvgPct": 100,
+      "readyAvgPct": 100,
+      "workersHealthAvgPct": 50,
+      "workersReadyAvgPct": 50
+    },
+    "api": {
+      "errorRatioAvgPct": 0
+    },
+    "queueLagExecution": {
+      "p95Avg": 0,
+      "p95Max": 0,
+      "maxAvg": 0,
+      "maxPeak": 0
+    },
+    "liveOrderPath": {
+      "failureRatioAvgPct": null
+    }
+  },
+  "thresholds": {
+    "queueLagP95Threshold": 10,
+    "queueLagMaxThreshold": 20
+  },
+  "objectiveStatusSummary": [
+    {
+      "id": "SLO-1A",
+      "label": "/health availability",
+      "pass": 3,
+      "fail": 0,
+      "noData": 0,
+      "total": 3,
+      "latestStatus": "PASS"
+    },
+    {
+      "id": "SLO-1B",
+      "label": "/ready availability",
+      "pass": 3,
+      "fail": 0,
+      "noData": 0,
+      "total": 3,
+      "latestStatus": "PASS"
+    },
+    {
+      "id": "SLO-2",
+      "label": "API 5xx ratio",
+      "pass": 1,
+      "fail": 0,
+      "noData": 2,
+      "total": 3,
+      "latestStatus": "PASS"
+    },
+    {
+      "id": "SLO-3",
+      "label": "API average duration",
+      "pass": 1,
+      "fail": 0,
+      "noData": 2,
+      "total": 3,
+      "latestStatus": "PASS"
+    },
+    {
+      "id": "SLO-4A",
+      "label": "/workers/health availability",
+      "pass": 1,
+      "fail": 2,
+      "noData": 0,
+      "total": 3,
+      "latestStatus": "PASS"
+    },
+    {
+      "id": "SLO-4B",
+      "label": "/workers/ready availability",
+      "pass": 1,
+      "fail": 2,
+      "noData": 0,
+      "total": 3,
+      "latestStatus": "PASS"
+    },
+    {
+      "id": "SLO-5",
+      "label": "Execution queue lag compliance",
+      "pass": 1,
+      "fail": 0,
+      "noData": 2,
+      "total": 3,
+      "latestStatus": "PASS"
+    },
+    {
+      "id": "SLO-6",
+      "label": "Live order failure ratio",
+      "pass": 0,
+      "fail": 0,
+      "noData": 3,
+      "total": 3,
+      "latestStatus": "NO_DATA"
+    }
+  ],
+  "queueLagBreaches": [],
+  "artifactRefs": [
+    {
+      "file": "_artifacts-slo-window-2026-04-10T15-03-53-379Z.json",
+      "environment": "production",
+      "startedAt": "2026-04-10T15:03:07.417Z",
+      "endedAt": "2026-04-10T15:03:53.378Z",
+      "queueLagP95": null,
+      "queueLagMax": null
+    },
+    {
+      "file": "_artifacts-slo-window-2026-04-10T17-09-26-532Z.json",
+      "environment": "production",
+      "startedAt": "2026-04-10T16:39:54.294537Z",
+      "endedAt": "2026-04-10T17:09:26.532197Z",
+      "queueLagP95": 0,
+      "queueLagMax": 0
+    },
+    {
+      "file": "_artifacts-slo-window-2026-04-19T01-35-51-340Z.json",
+      "environment": "production",
+      "startedAt": "2026-04-19T01:35:05.346Z",
+      "endedAt": "2026-04-19T01:35:51.338Z",
+      "queueLagP95": null,
+      "queueLagMax": null
+    },
+    {
+      "file": "_artifacts-slo-window-2026-04-22T21-07-08-645Z.json",
+      "environment": "production",
+      "startedAt": "2026-04-22T21:06:22.699Z",
+      "endedAt": "2026-04-22T21:07:08.644Z",
+      "queueLagP95": 0,
+      "queueLagMax": 0
+    }
+  ]
+}

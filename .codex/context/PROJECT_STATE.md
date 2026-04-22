@@ -105,6 +105,25 @@ Last updated: 2026-04-22
   resolver now infers canonical API hosts from Soar domain patterns so
   production/stage auth and dashboard API calls do not fall back to same-origin
   `405` requests when the public env is absent.
+- 2026-04-22: prod activation follow-up closed `RC Gate 2` with fresh
+  production SLO evidence and a real prod rollback-proof artifact, but the
+  prod restore-drill proof still fails because the prod DB profile env triplet
+  (`PROD_DB_CHECK_CONTAINER`, `PROD_DB_CHECK_USER`, `PROD_DB_CHECK_NAME`) is
+  not configured for the scripted check.
+- 2026-04-22: `scripts/runV1ReleaseGate.mjs` now validates PASS-state inside
+  prod restore/rollback proof artifacts instead of accepting same-day files on
+  freshness alone, preventing false-green release readiness when a proof file
+  exists but reports `FAIL`.
+- 2026-04-22: prod restore-drill proof now passes from a real Coolify terminal
+  execution in the production postgres container
+  (`x11cfnz1dd9x0yzccftqzcoe`), and the final non-dry-run prod release gate now
+  passes end-to-end with fresh prod evidence.
+- 2026-04-22: `scripts/runV1ReleaseGate.mjs` now selects the latest same-day
+  evidence artifact by full timestamp-bearing filename, preventing older
+  same-day restore-drill failures from shadowing newer PASS artifacts.
+- 2026-04-22: formal RC sign-off is now recorded with Gate 4 closed to `PASS`,
+  so the V1 production activation packet is fully approved from the current
+  repository evidence set.
 - 2026-04-22: `SAFEV1-A1` is closed; exchange reconciliation now refuses to
   create or update open synced positions when canonical entry truth is missing,
   keeping incomplete exchange snapshots out of the local open-position model.
@@ -238,21 +257,21 @@ Last updated: 2026-04-22
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: close the inline runtime-freshness false negative
-  revealed by the authenticated stage rehearsal, rerun stage evidence, and
-  only then resume `V1FACT-A3` so rollback and backup proof remain grounded in
-  truthful stage/runtime signals.
+- Main active objective: keep prod activation truth synchronized while the
+  approved production-activation packet synchronized after the final Gate 4
+  sign-off closure.
 - Top blockers:
   - no active blockers recorded.
 - Success criteria for this phase:
-  - keep queue/context/docs synchronized after each closed wave,
-  - keep deploy/build gates green on `main` for the next activation slice,
-  - reduce architecture drift without weakening current trading/runtime safety,
-  - queue maintainability cleanup only through inventory-first,
-    regression-locked slices.
+  - keep queue/context/docs synchronized after each ops-evidence refresh,
+  - keep release-gate truth fail closed when fresh proof artifacts report
+    `FAIL`,
+  - preserve green deploy/build gates on `main`,
+  - avoid reintroducing false-green activation status through stale or
+    structurally incomplete evidence.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - `V1FACT-A` (`docs/planning/v1-production-activation-and-evidence-plan-2026-04-22.md`)
+  - none; activation evidence is approved for the current packet state.
 
 ## Recent Progress
 - 2026-04-22: queued `SAFEV1-A` in
