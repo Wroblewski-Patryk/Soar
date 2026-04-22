@@ -280,7 +280,7 @@ export const createOpenOrdersColumns = ({
     key: "source",
     label: t("dashboard.home.runtime.source"),
     sortable: true,
-    accessor: (row) => row.origin ?? "EXCHANGE_SYNC",
+    accessor: (row) => row.origin ?? "",
     render: (row) => <span className="font-semibold">{resolveOpenOrderSourceLabel(t, row.origin)}</span>,
   },
   {

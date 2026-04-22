@@ -9,9 +9,9 @@ Last updated: 2026-04-22
   agent-driven workflows
 - Commercial model: SaaS-style subscription product with staged entitlements
 - Current phase: production hardening after full `SCALE`, `TRUTH-A`, and
-  `XLIFE-A` closure, with no active remediation wave currently queued and
-  runtime execution truth now aligned around one canonical
-  `order -> fill -> position` lifecycle for `PAPER` and `LIVE`
+  `XLIFE-A` closure, with `REVIEW-B` now queued to close the remaining
+  post-review production gaps around DCA lifecycle truth, submitted-order
+  retry behavior, operator snapshot ownership, and watchdog scope truth
 
 ## Product Decisions (Confirmed)
 - 2026-04-21: `docs/architecture/` is the canonical source of truth for how
@@ -26,6 +26,12 @@ Last updated: 2026-04-22
   execution lifecycle in the touched runtime scope, `LIVE` close is
   fail-closed until canonical fill truth exists, and runtime accounting uses
   fill truth over signal `markPrice`.
+- 2026-04-22: post-`XLIFE-A` production review found four remaining runtime
+  risks worth a dedicated closure wave: DCA/add-leg lifecycle still mutates
+  local truth before canonical fill confirmation, submitted-order dedupe can
+  become terminal too early, generic exchange snapshot ownership is ambiguous
+  with multiple API keys, and watchdog symbol selection is broader than its
+  explicit Binance-only coverage.
 - 2026-04-22: full `SCALE` wave (`SCALE-01..SCALE-17`) is closed, including
   exchange-access convergence, web container seam extraction, and closure
   evidence handoff for future agents.
@@ -145,9 +151,9 @@ Last updated: 2026-04-22
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: keep runtime and planning truth synchronized after
-  `XLIFE-A` closure and only open the next wave through a new explicit review
-  or product objective.
+- Main active objective: execute `REVIEW-B` so the remaining post-`XLIFE-A`
+  production-readiness gaps are handled through one explicit remediation wave
+  instead of surfacing later as live runtime drift.
 - Top blockers:
   - no active blockers recorded.
 - Success criteria for this phase:
@@ -158,9 +164,18 @@ Last updated: 2026-04-22
     regression-locked slices.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - none currently queued
+  - `REVIEW-B`:
+    DCA lifecycle parity, submitted-order retry truth, deterministic exchange
+    snapshot ownership, and watchdog scope truth
 
 ## Recent Progress
+- 2026-04-22: completed a post-`XLIFE-A` runtime/exchange audit and published
+  `docs/operations/review-b-runtime-exchange-production-audit-2026-04-22.md`,
+  then queued `REVIEW-B` in
+  `docs/planning/review-b-runtime-exchange-production-readiness-plan-2026-04-22.md`
+  to close the remaining risks around DCA canonical fill truth,
+  submitted-dedupe non-terminality, ambiguous exchange snapshot ownership, and
+  watchdog scope drift.
 - 2026-04-22: closed `XLIFE-A` end-to-end by making LIVE close flow
   fail-closed until canonical fill truth exists, switching runtime trade and
   realized-PnL persistence to canonical fill price/quantity, persisting
