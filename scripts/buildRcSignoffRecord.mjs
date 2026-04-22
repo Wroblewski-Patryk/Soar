@@ -40,8 +40,14 @@ const parseArgs = () => {
 };
 
 const parseGateLine = (line) => {
-  const match = line.match(/-\s+Gate\s+\d+\s+\(.+?\):\s+([A-Z_]+)/i);
-  return match?.[1]?.toUpperCase() ?? null;
+  const match = line.match(/^- Gate \d+ \(.+?\):\s+(.+)$/i);
+  const rawValue = match?.[1]?.trim().toUpperCase() ?? '';
+  if (!rawValue) return null;
+  if (rawValue.startsWith('PASS')) return 'PASS';
+  if (rawValue.startsWith('OPEN')) return 'OPEN';
+  if (rawValue.startsWith('BLOCKED')) return 'BLOCKED';
+  if (rawValue.startsWith('LOCAL_PASS')) return 'LOCAL_PASS';
+  return rawValue.split(/\s+/)[0] || null;
 };
 
 const loadGateStatuses = async (statusPath) => {

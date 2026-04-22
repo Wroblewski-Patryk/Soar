@@ -38,6 +38,18 @@ const EVIDENCE_FAMILIES = {
     matcher: /^v1-release-candidate-checklist\.md$/,
     datePattern: /Latest Verification \((\d{4}-\d{2}-\d{2})\)/i,
   },
+  backupRestoreDrill: {
+    label: 'backup/restore drill evidence',
+    requiredIn: new Set(['prod']),
+    matcher: /^v1-restore-drill-prod-(\d{4}-\d{2}-\d{2})T.*\.md$/,
+    datePattern: /Generated at \(UTC\):\s*(\d{4}-\d{2}-\d{2})T/i,
+  },
+  rollbackProof: {
+    label: 'rollback proof pack',
+    requiredIn: new Set(['prod']),
+    matcher: /^v1-rollback-proof-prod-(\d{4}-\d{2}-\d{2})T.*\.md$/,
+    datePattern: /Generated at \(UTC\):\s*(\d{4}-\d{2}-\d{2})T/i,
+  },
 };
 
 const nowStamp = (now = new Date()) => now.toISOString().replace(/[:.]/g, '-');

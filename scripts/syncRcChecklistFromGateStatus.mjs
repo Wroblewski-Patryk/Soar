@@ -38,6 +38,17 @@ const getGateLabel = (rawStatus, gateNumber) => {
   return match?.[1]?.trim().toUpperCase() ?? 'OPEN';
 };
 
+const refreshLatestVerificationDate = (rawChecklist, isoDate) =>
+  rawChecklist.replace(/### Latest Verification \(\d{4}-\d{2}-\d{2}\)/, `### Latest Verification (${isoDate})`);
+
+const refreshOutstandingExternalGates = (rawChecklist, isoDate, gate1, gate2, gate3, gate4) =>
+  rawChecklist
+    .replace(/## Outstanding External Gates \(\d{4}-\d{2}-\d{2}\)/, `## Outstanding External Gates (${isoDate})`)
+    .replace(
+      /- .*final snapshot is `G1=.*$/m,
+      `- current snapshot is \`G1=${gate1}\`, \`G2=${gate2}\`, \`G3=${gate3}\`, \`G4=${gate4}\` (synced ${isoDate}).`
+    );
+
 const extractValueAfterLabel = (raw, label) => {
   const regex = new RegExp(`^\\s*${escapeRegExp(label)}\\s*(.*)$`, 'im');
   const match = raw.match(regex);
@@ -82,9 +93,13 @@ const main = async () => {
   const gate1 = getGateLabel(rawStatus, 1);
   const gate2 = getGateLabel(rawStatus, 2);
   const gate3 = getGateLabel(rawStatus, 3);
+  const gate4 = getGateLabel(rawStatus, 4);
   const signoff = parseSignoff(rawSignoff);
+  const isoDate = new Date().toISOString().slice(0, 10);
 
   let nextChecklist = rawChecklist;
+  nextChecklist = refreshLatestVerificationDate(nextChecklist, isoDate);
+  nextChecklist = refreshOutstandingExternalGates(nextChecklist, isoDate, gate1, gate2, gate3, gate4);
   nextChecklist = setChecklistCheckbox(nextChecklist, 'Queue lag metrics reviewed and within baseline.', gate2 === 'PASS');
   nextChecklist = setChecklistCheckbox(
     nextChecklist,

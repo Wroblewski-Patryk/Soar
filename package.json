@@ -70,7 +70,10 @@
     "ops:release:v1:stage-rehearsal": "node scripts/runV1StageRehearsal.mjs",
     "ops:deploy:smoke": "node scripts/deploySmokeCheck.mjs",
     "ops:deploy:runtime-freshness": "node scripts/checkPostDeployRuntimeFreshness.mjs",
-    "ops:deploy:rollback-guard": "node scripts/evaluateRollbackGuard.mjs"
+    "ops:deploy:rollback-guard": "node scripts/evaluateRollbackGuard.mjs",
+    "ops:deploy:rollback-proof": "node scripts/runRollbackProofEvidence.mjs",
+    "ops:deploy:rollback-proof:stage": "pnpm run ops:deploy:rollback-proof -- --profile stage",
+    "ops:deploy:rollback-proof:prod": "pnpm run ops:deploy:rollback-proof -- --profile prod"
   },
   "keywords": [],
   "author": "",
