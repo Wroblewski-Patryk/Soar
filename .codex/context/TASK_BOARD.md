@@ -17,13 +17,13 @@ Last updated: 2026-04-22
 
 ## READY
 
-- [ ] `SAFEV1-04 test(api-red): lock fail-closed live capital context when canonical wallet/bot credential ownership is missing`
-- [ ] `SAFEV1-05 refactor(api-runtime): remove forbidden live capital fallback to unrelated recent API keys`
 - [ ] `SAFEV1-06 test(api-red): lock canonical external-position ownership under overlapping symbol coverage`
+- [ ] `SAFEV1-07 refactor(api-runtime): replace symbol-level ownership heuristics with one deterministic canonical owner contract`
+- [ ] `SAFEV1-08 test(api-red): lock explicit degraded-state contract for production rate limiting`
 
 ## BACKLOG
 
-- [ ] `SAFEV1-07..SAFEV1-10 live/paper runtime safety closure`
+- [ ] `SAFEV1-09..SAFEV1-10 live/paper runtime safety closure`
 
 ## IN_PROGRESS
 
@@ -39,6 +39,8 @@ Last updated: 2026-04-22
 
 ## DONE
 
+- [x] `SAFEV1-A2 fail-closed live capital truth (SAFEV1-04..SAFEV1-05)`
+  - 2026-04-22: Closed the second `SAFEV1-A` slice by adding focused runtime-capital regressions and removing the forbidden live fallback to unrelated recent API keys on the same exchange. Validation PASS: `pnpm --filter api exec vitest run src/modules/engine/runtimeCapitalContext.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter api run build`.
 - [x] `SAFEV1-A1 zero-entry reconciliation truth closure (SAFEV1-01..SAFEV1-03)`
   - 2026-04-22: Closed the first `SAFEV1-A` slice by freezing the runtime safety contract and blocking exchange reconciliation from creating or updating open synced positions when canonical entry truth is missing. Validation PASS: `pnpm --filter api exec vitest run src/modules/positions/livePositionReconciliation.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter api run build`.
 - [x] `SAFEV1-A planning queued (V1 runtime safety closure for reconciliation, live capital truth, external ownership, and limiter degradation)`

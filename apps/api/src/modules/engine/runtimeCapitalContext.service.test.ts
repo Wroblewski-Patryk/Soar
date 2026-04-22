@@ -140,6 +140,53 @@ describe('runtimeCapitalContext', () => {
     expect(reference).toBe(0);
   });
 
+  it('fails closed for bot-scoped LIVE balance when no canonical api key is attached', async () => {
+    const fetchLiveBalance = vi.fn(async () => 9_999);
+
+    const reference = await resolveRuntimeReferenceBalance(
+      {
+        userId: 'u-live-no-key',
+        botId: 'b-live-no-key',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        paperStartBalance: 0,
+        nowMs: 7_000,
+      },
+      buildDeps({
+        getWalletContext: async () => null,
+        getLiveApiKeyContext: async () => null,
+        fetchLiveBalance,
+      }),
+    );
+
+    expect(reference).toBe(0);
+    expect(fetchLiveBalance).not.toHaveBeenCalled();
+  });
+
+  it('treats LIVE DCA as exhausted when canonical credential ownership is unresolved', async () => {
+    const exhausted = await resolveRuntimeDcaFundsExhausted(
+      {
+        userId: 'u-live-dca-no-key',
+        botId: 'b-live-dca-no-key',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        paperStartBalance: 0,
+        markPrice: 100,
+        addedQuantity: 1,
+        leverage: 1,
+        nowMs: 8_000,
+      },
+      buildDeps({
+        getWalletContext: async () => null,
+        getLiveApiKeyContext: async () => null,
+      }),
+    );
+
+    expect(exhausted).toBe(true);
+  });
+
   it('uses paper reset checkpoint to ignore pre-reset realized pnl in paper capital snapshot', async () => {
     const checkpoint = new Date('2026-04-20T12:00:00.000Z');
     const sumClosedBotManagedRealizedPnl = vi.fn(

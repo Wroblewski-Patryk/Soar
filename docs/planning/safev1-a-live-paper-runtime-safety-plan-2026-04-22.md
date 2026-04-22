@@ -304,3 +304,8 @@ Validation:
   `livePositionReconciliation.service.ts` so incomplete snapshots no longer
   create or update open synced positions with zero entry price. Validation
   PASS: focused reconciliation test, `api typecheck`, `api build`.
+- 2026-04-22: Closed `SAFEV1-04..SAFEV1-05` by adding fail-closed live capital
+  regressions and hardening `runtimeCapitalContext.service.ts` so live
+  reference balance and DCA affordability no longer resolve through unrelated
+  recent user API keys on the same exchange. Validation PASS: focused runtime
+  capital test, `api typecheck`, `api build`.

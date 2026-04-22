@@ -3,9 +3,6 @@ import { prisma } from '../../prisma/client';
 import { decrypt } from '../../utils/crypto';
 import { normalizeBaseCurrency } from '../../lib/symbols';
 
-const runtimeReferenceBalanceFallback = Number.parseFloat(
-  process.env.RUNTIME_REFERENCE_BALANCE_USDT ?? '1000'
-);
 const liveBalanceCacheTtlMs = Number.parseInt(process.env.RUNTIME_LIVE_BALANCE_CACHE_TTL_MS ?? '30000', 10);
 const liveBalanceCache = new Map<string, { value: number; fetchedAt: number }>();
 
@@ -187,17 +184,7 @@ const defaultDeps: RuntimeCapitalContextDeps = {
         };
       }
     }
-
-    const latestByExchange = await prisma.apiKey.findFirst({
-      where: { userId, exchange },
-      orderBy: { updatedAt: 'desc' },
-      select: { apiKey: true, apiSecret: true },
-    });
-    if (!latestByExchange) return null;
-    return {
-      apiKey: decrypt(latestByExchange.apiKey),
-      apiSecret: decrypt(latestByExchange.apiSecret),
-    };
+    return null;
   },
   fetchLiveBalance: async ({ apiKey, apiSecret, marketType, baseCurrency }) => {
     try {
@@ -347,7 +334,7 @@ const resolveLiveRuntimeCapitalSnapshot = async (
     exchange: input.exchange,
   });
 
-  let accountBalance = walletScoped ? 0 : runtimeReferenceBalanceFallback;
+  let accountBalance = 0;
   if (apiKey) {
     const fetched = await deps.fetchLiveBalance({
       apiKey: apiKey.apiKey,
