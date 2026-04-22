@@ -18,14 +18,16 @@ export default function ConfirmModal({
   open,
   title,
   description,
-  confirmLabel = 'Confirm',
-  cancelLabel = 'Cancel',
+  confirmLabel,
+  cancelLabel,
   confirmVariant = 'primary',
   pending = false,
   onConfirm,
   onCancel,
 }: ConfirmModalProps) {
   const { t } = useOptionalI18n();
+  const resolvedConfirmLabel = confirmLabel ?? t('public.sharedUi.confirmLabel');
+  const resolvedCancelLabel = cancelLabel ?? t('public.sharedUi.cancelLabel');
 
   if (!open) return null;
 
@@ -36,7 +38,7 @@ export default function ConfirmModal({
         {description ? <p className='mb-4 text-sm opacity-80'>{description}</p> : null}
         <div className='modal-action'>
           <button type='button' className='btn' onClick={onCancel} disabled={pending}>
-            {cancelLabel}
+            {resolvedCancelLabel}
           </button>
           <button
             type='button'
@@ -44,7 +46,7 @@ export default function ConfirmModal({
             onClick={onConfirm}
             disabled={pending}
           >
-            {pending ? '...' : confirmLabel}
+            {pending ? '...' : resolvedConfirmLabel}
           </button>
         </div>
       </div>

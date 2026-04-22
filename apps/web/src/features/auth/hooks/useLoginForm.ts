@@ -43,7 +43,7 @@ export const useLoginForm = () => {
       });
     } catch (err) {
       const fallbackMessage = t('auth.toasts.login.failedFallback');
-      const message = handleError(err) || fallbackMessage;
+      const message = handleError(err, { fallback: fallbackMessage }) || fallbackMessage;
       setServerError(message);
       toast.error(`${t('auth.toasts.login.failedPrefix')} ${message}`);
     }

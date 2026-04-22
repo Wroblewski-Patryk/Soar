@@ -6,41 +6,8 @@ import { getProfileSubscription } from "../services/subscription.service";
 import { ProfileSubscriptionResponse, SubscriptionCatalogItem } from "../types/subscription.type";
 
 export default function SubscriptionPanel() {
-  const { locale } = useI18n();
-  const copy =
-    locale === "pl"
-      ? {
-          title: "Subskrypcja",
-          loading: "Ladowanie subskrypcji...",
-          loadError: "Nie udalo sie pobrac subskrypcji.",
-          retry: "Sprobuj ponownie",
-          activePlan: "Aktywny plan",
-          monthly: "miesiecznie",
-          free: "Darmowy",
-          maxBots: "Maks. botow",
-          maxBotsPaper: "PAPER",
-          maxBotsLive: "LIVE",
-          maxBacktests: "Rownoleglych backtestow",
-          liveTrading: "Live trading",
-          yes: "Tak",
-          no: "Nie",
-        }
-      : {
-          title: "Subscription",
-          loading: "Loading subscription...",
-          loadError: "Could not load subscription.",
-          retry: "Try again",
-          activePlan: "Active plan",
-          monthly: "monthly",
-          free: "Free",
-          maxBots: "Max bots",
-          maxBotsPaper: "PAPER",
-          maxBotsLive: "LIVE",
-          maxBacktests: "Concurrent backtests",
-          liveTrading: "Live trading",
-          yes: "Yes",
-          no: "No",
-        };
+  const { locale, t } = useI18n();
+  const subscriptionText = useCallback((key: string) => t(`dashboard.subscription.${key}`), [t]);
 
   const [data, setData] = useState<ProfileSubscriptionResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -53,11 +20,11 @@ export default function SubscriptionPanel() {
       const payload = await getProfileSubscription();
       setData(payload);
     } catch {
-      setError(copy.loadError);
+      setError(subscriptionText("loadError"));
     } finally {
       setLoading(false);
     }
-  }, [copy.loadError]);
+  }, [subscriptionText]);
 
   useEffect(() => {
     void loadSubscription();
@@ -70,18 +37,18 @@ export default function SubscriptionPanel() {
   }, [data?.catalog]);
 
   const formatPrice = (item: SubscriptionCatalogItem) => {
-    if (item.priceMonthlyMinor <= 0) return copy.free;
+    if (item.priceMonthlyMinor <= 0) return subscriptionText("free");
 
     const amount = item.priceMonthlyMinor / 100;
     return `${new Intl.NumberFormat(locale, {
       style: "currency",
       currency: item.currency || "USD",
       maximumFractionDigits: 2,
-    }).format(amount)} / ${copy.monthly}`;
+    }).format(amount)} / ${subscriptionText("monthly")}`;
   };
 
   if (loading) {
-    return <p className="text-sm opacity-70">{copy.loading}</p>;
+    return <p className="text-sm opacity-70">{subscriptionText("loading")}</p>;
   }
 
   if (error) {
@@ -89,7 +56,7 @@ export default function SubscriptionPanel() {
       <div className="space-y-3">
         <p className="text-sm text-error">{error}</p>
         <button type="button" className="btn btn-outline btn-sm" onClick={() => void loadSubscription()}>
-          {copy.retry}
+          {subscriptionText("retry")}
         </button>
       </div>
     );
@@ -97,7 +64,7 @@ export default function SubscriptionPanel() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-bold mb-4">{copy.title}</h2>
+      <h2 className="text-lg font-bold mb-4">{subscriptionText("title")}</h2>
 
       <div className="grid gap-3 md:grid-cols-3">
         {sortedCatalog.map((plan) => {
@@ -116,29 +83,29 @@ export default function SubscriptionPanel() {
                   <h3 className="text-sm font-semibold">{plan.displayName}</h3>
                   <p className="text-xs opacity-70">{formatPrice(plan)}</p>
                 </div>
-                {isActive ? <span className="badge badge-success badge-outline badge-sm">{copy.activePlan}</span> : null}
+                {isActive ? <span className="badge badge-success badge-outline badge-sm">{subscriptionText("activePlan")}</span> : null}
               </div>
 
               <div className="mt-3 space-y-1 text-xs">
                 <p className="flex items-center justify-between gap-2">
-                  <span className="opacity-70">{copy.maxBots}</span>
+                  <span className="opacity-70">{subscriptionText("maxBots")}</span>
                   <span className="font-medium">{limits?.maxBotsTotal ?? "-"}</span>
                 </p>
                 <p className="flex items-center justify-between gap-2">
-                  <span className="opacity-70">{copy.maxBotsPaper}</span>
+                  <span className="opacity-70">{subscriptionText("maxBotsPaper")}</span>
                   <span className="font-medium">{limits?.maxBotsByMode?.PAPER ?? "-"}</span>
                 </p>
                 <p className="flex items-center justify-between gap-2">
-                  <span className="opacity-70">{copy.maxBotsLive}</span>
+                  <span className="opacity-70">{subscriptionText("maxBotsLive")}</span>
                   <span className="font-medium">{limits?.maxBotsByMode?.LIVE ?? "-"}</span>
                 </p>
                 <p className="flex items-center justify-between gap-2">
-                  <span className="opacity-70">{copy.maxBacktests}</span>
+                  <span className="opacity-70">{subscriptionText("maxBacktests")}</span>
                   <span className="font-medium">{limits?.maxConcurrentBacktests ?? "-"}</span>
                 </p>
                 <p className="flex items-center justify-between gap-2">
-                  <span className="opacity-70">{copy.liveTrading}</span>
-                  <span className="font-medium">{features?.liveTrading ? copy.yes : copy.no}</span>
+                  <span className="opacity-70">{subscriptionText("liveTrading")}</span>
+                  <span className="font-medium">{features?.liveTrading ? subscriptionText("yes") : subscriptionText("no")}</span>
                 </p>
               </div>
             </article>

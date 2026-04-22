@@ -21,15 +21,20 @@ const SHARED_FOUNDATION_PATTERNS = [
   /[\\/]src[\\/]ui[\\/]components[\\/]/,
 ];
 
-const LOCAL_COPY_PATTERNS = [
-  /const\s+\w*copy\w*\s*=/i,
-  /const\s+\w+\s*=\s*{[\s\S]*?\b(?:en|pl|pt)\s*:/i,
+const AUDIT_EXCLUDED_PATTERNS = [
+  /[\\/]src[\\/]i18n[\\/]/,
 ];
-const FALLBACK_PL_PATTERN = /(?:\?\?|\|\|)\s*['"]pl['"]|locale\s*===\s*['"]pl['"]/;
+
+const LOCAL_COPY_PATTERNS = [
+  /const\s+\w*copy\w*\s*=\s*(?:useMemo\s*\(\s*\(\)\s*=>\s*)?\(\s*{[\s\S]*?\b(?:en|pl|pt)\s*:/i,
+  /const\s+\w*copy\w*\s*=\s*locale\s*===\s*['"]\w+['"]\s*\?[\s\S]*?:[\s\S]*?$/i,
+  /const\s+(?:EN|PL|PT)_COPY\s*=\s*{/m,
+];
+const FALLBACK_PL_PATTERN = /(?:\?\?|\|\|)\s*['"]pl['"]|(?:locale|resolvedLocale|nextLocale)\s*=\s*['"]pl['"]/;
 const HARD_CODED_ATTRIBUTE_PATTERN =
-  /\b(?:title|placeholder|aria-label|aria-placeholder)\s*=\s*['"`][^'"`{][^'"`]*['"`]/g;
+  /\b(?:title|placeholder|aria-label|aria-placeholder)\s*=\s*['"`](?=[^'"`{}]*[A-Za-z])[^'"`{][^'"`]*['"`]/g;
 const HARD_CODED_TOAST_PATTERN =
-  /toast\.(?:success|error|info|warning)\s*\(\s*['"`][^'"`]+['"`]/g;
+  /toast\.(?:success|error|info|warning)\s*\(\s*(?:'[^']+'|"[^"]+"|`[^$`][^`]*`)/g;
 
 const normalize = (value) => value.replace(/\\/g, "/");
 const toRelative = (absolutePath) => normalize(path.relative(ROOT_DIR, absolutePath));
@@ -228,7 +233,9 @@ const analyzeFileSource = (source) => {
   const hasLocalCopy = LOCAL_COPY_PATTERNS.some((pattern) => pattern.test(source));
   const hasFallbackPl = FALLBACK_PL_PATTERN.test(source);
   const attributeMatches = collectPatternMatches(source, HARD_CODED_ATTRIBUTE_PATTERN);
-  const toastMatches = collectPatternMatches(source, HARD_CODED_TOAST_PATTERN);
+  const toastMatches = collectPatternMatches(source, HARD_CODED_TOAST_PATTERN).filter(
+    (match) => !match.sample.includes("${")
+  );
   const hardcodedMatches = [...attributeMatches, ...toastMatches].sort((left, right) => left.line - right.line);
   const hardcodedCount = hardcodedMatches.length;
   const score = hardcodedCount + (hasLocalCopy ? 6 : 0) + (hasFallbackPl ? 5 : 0);
@@ -245,6 +252,11 @@ const analyzeFileSource = (source) => {
 const isSharedFoundationFile = (filePath) => {
   const normalized = normalize(filePath);
   return SHARED_FOUNDATION_PATTERNS.some((pattern) => pattern.test(normalized));
+};
+
+const isAuditExcludedFile = (filePath) => {
+  const normalized = normalize(filePath);
+  return AUDIT_EXCLUDED_PATTERNS.some((pattern) => pattern.test(normalized));
 };
 
 const buildRouteReachability = (routePages, dependencyGraph) => {
@@ -330,6 +342,9 @@ const run = () => {
     .map((filePath) => {
       const source = sourceByFile.get(filePath);
       if (!source) {
+        return null;
+      }
+      if (isAuditExcludedFile(filePath)) {
         return null;
       }
       const analysis = analyzeFileSource(source);

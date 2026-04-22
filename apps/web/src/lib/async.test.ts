@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { executeWithRetry, runAsyncWithState } from './async';
+import { executeWithRetry, runAsyncWithState, runAsyncWithViewState } from './async';
 
 describe('async helpers', () => {
   it('retries operation until success when retry predicate allows it', async () => {
@@ -37,6 +37,37 @@ describe('async helpers', () => {
     const value = await runAsyncWithState(setPending, async () => 'done');
 
     expect(value).toBe('done');
+    expect(pendingStates).toEqual([true, false]);
+  });
+
+  it('clears and resolves error state around async view execution', async () => {
+    const pendingStates: boolean[] = [];
+    const errorStates: Array<string | null> = [];
+
+    await expect(
+      runAsyncWithViewState({
+        setPending: (next) => pendingStates.push(next),
+        setError: (next) => errorStates.push(next),
+        resolveError: () => 'load failed',
+        operation: async () => {
+          throw new Error('boom');
+        },
+      })
+    ).rejects.toThrow('boom');
+
+    expect(pendingStates).toEqual([true, false]);
+    expect(errorStates).toEqual([null, 'load failed']);
+  });
+
+  it('supports view execution without error mapping', async () => {
+    const pendingStates: boolean[] = [];
+
+    const result = await runAsyncWithViewState({
+      setPending: (next) => pendingStates.push(next),
+      operation: async () => 'ok',
+    });
+
+    expect(result).toBe('ok');
     expect(pendingStates).toEqual([true, false]);
   });
 });

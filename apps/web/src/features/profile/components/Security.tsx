@@ -19,56 +19,9 @@ const mapApiError = (error: unknown, fallback: string) => {
 };
 
 export default function SecurityPanel() {
-  const { locale } = useI18n();
+  const { t } = useI18n();
   const router = useRouter();
-  const copy =
-    locale === "pl"
-      ? {
-          mismatch: "Nowe haslo i potwierdzenie musza byc identyczne.",
-          samePassword: "Nowe haslo musi byc inne niz obecne.",
-          passwordChanged: "Haslo zostalo zmienione.",
-          passwordChangeFailed: "Nie udalo sie zmienic hasla.",
-          deletePasswordMissing: "Podaj haslo, aby potwierdzic usuniecie konta.",
-          deleteConfirm: "Ta operacja usunie konto i wszystkie dane. Czy na pewno kontynuowac?",
-          accountDeleted: "Konto zostalo usuniete. Przekierowanie do logowania...",
-          deleteFailed: "Nie udalo sie usunac konta.",
-          passwordSectionTitle: "Zmiana hasla",
-          passwordSectionDescription: "Zmien haslo dostepu do panelu. Minimalna dlugosc: 6 znakow.",
-          currentPassword: "Obecne haslo",
-          newPassword: "Nowe haslo",
-          confirmPassword: "Potwierdz nowe haslo",
-          savePassword: "Zmien haslo",
-          savingPassword: "Zapisywanie...",
-          deleteSectionTitle: "Usuniecie konta",
-          deleteSectionDescription:
-            "Ta operacja jest nieodwracalna i usunie Twoje konto wraz z danymi (boty, strategie, backtesty, logi).",
-          deletePasswordLabel: "Podaj haslo, aby potwierdzic",
-          deleteAction: "Usun konto",
-          deleting: "Usuwanie...",
-        }
-      : {
-          mismatch: "New password and confirmation must match.",
-          samePassword: "New password must be different from current password.",
-          passwordChanged: "Password changed successfully.",
-          passwordChangeFailed: "Could not change password.",
-          deletePasswordMissing: "Provide your password to confirm account deletion.",
-          deleteConfirm: "This operation will remove your account and all data. Continue?",
-          accountDeleted: "Account deleted. Redirecting to login...",
-          deleteFailed: "Could not delete account.",
-          passwordSectionTitle: "Change password",
-          passwordSectionDescription: "Update your panel password. Minimum length: 6 characters.",
-          currentPassword: "Current password",
-          newPassword: "New password",
-          confirmPassword: "Confirm new password",
-          savePassword: "Change password",
-          savingPassword: "Saving...",
-          deleteSectionTitle: "Delete account",
-          deleteSectionDescription:
-            "This operation is irreversible and will remove your account with all data (bots, strategies, backtests, logs).",
-          deletePasswordLabel: "Enter password to confirm",
-          deleteAction: "Delete account",
-          deleting: "Deleting...",
-        };
+  const securityText = (key: string) => t(`dashboard.security.${key}`);
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -96,12 +49,12 @@ export default function SecurityPanel() {
     event.preventDefault();
 
     if (newPassword !== confirmPassword) {
-      toast.error(copy.mismatch);
+      toast.error(securityText("mismatch"));
       return;
     }
 
     if (currentPassword === newPassword) {
-      toast.error(copy.samePassword);
+      toast.error(securityText("samePassword"));
       return;
     }
 
@@ -115,9 +68,9 @@ export default function SecurityPanel() {
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
-      toast.success(copy.passwordChanged);
+      toast.success(securityText("passwordChanged"));
     } catch (error) {
-      toast.error(mapApiError(error, copy.passwordChangeFailed));
+      toast.error(mapApiError(error, securityText("passwordChangeFailed")));
     } finally {
       setIsChangingPassword(false);
     }
@@ -127,10 +80,10 @@ export default function SecurityPanel() {
     setIsDeletingAccount(true);
     try {
       await deleteAccount({ password: deletePassword });
-      toast.success(copy.accountDeleted);
+      toast.success(securityText("accountDeleted"));
       navigateWithFallback(router, { href: "/auth/login", mode: "replace" });
     } catch (error) {
-      toast.error(mapApiError(error, copy.deleteFailed));
+      toast.error(mapApiError(error, securityText("deleteFailed")));
       setIsDeletingAccount(false);
     }
   };
@@ -139,7 +92,7 @@ export default function SecurityPanel() {
     event.preventDefault();
 
     if (!deletePassword.trim()) {
-      toast.error(copy.deletePasswordMissing);
+      toast.error(securityText("deletePasswordMissing"));
       return;
     }
 
@@ -149,12 +102,12 @@ export default function SecurityPanel() {
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <section className="rounded-box border border-base-300 bg-base-100 p-4 h-full">
-        <h2 className="text-lg font-semibold">{copy.passwordSectionTitle}</h2>
-        <p className="mt-1 text-sm opacity-70">{copy.passwordSectionDescription}</p>
+        <h2 className="text-lg font-semibold">{securityText("passwordSectionTitle")}</h2>
+        <p className="mt-1 text-sm opacity-70">{securityText("passwordSectionDescription")}</p>
 
         <form className="mt-4 grid gap-3" onSubmit={handlePasswordChange}>
           <label className="form-control w-full">
-            <span className="label-text mb-1 block">{copy.currentPassword}</span>
+            <span className="label-text mb-1 block">{securityText("currentPassword")}</span>
             <div className="join w-full">
               <input
                 className="input input-bordered join-item w-full"
@@ -173,7 +126,7 @@ export default function SecurityPanel() {
           </label>
 
           <label className="form-control w-full">
-            <span className="label-text mb-1 block">{copy.newPassword}</span>
+            <span className="label-text mb-1 block">{securityText("newPassword")}</span>
             <div className="join w-full">
               <input
                 className="input input-bordered join-item w-full"
@@ -193,7 +146,7 @@ export default function SecurityPanel() {
           </label>
 
           <label className="form-control w-full">
-            <span className="label-text mb-1 block">{copy.confirmPassword}</span>
+            <span className="label-text mb-1 block">{securityText("confirmPassword")}</span>
             <div className="join w-full">
               <input
                 className="input input-bordered join-item w-full"
@@ -214,19 +167,19 @@ export default function SecurityPanel() {
 
           <div>
             <button className="btn btn-primary btn-sm" type="submit" disabled={!canSubmitPasswordChange}>
-              {isChangingPassword ? copy.savingPassword : copy.savePassword}
+              {isChangingPassword ? securityText("savingPassword") : securityText("savePassword")}
             </button>
           </div>
         </form>
       </section>
 
       <section className="rounded-box border border-error/40 bg-error/5 p-4 h-full">
-        <h2 className="text-lg font-semibold text-error">{copy.deleteSectionTitle}</h2>
-        <p className="mt-1 text-sm opacity-80">{copy.deleteSectionDescription}</p>
+        <h2 className="text-lg font-semibold text-error">{securityText("deleteSectionTitle")}</h2>
+        <p className="mt-1 text-sm opacity-80">{securityText("deleteSectionDescription")}</p>
 
         <form className="mt-4 grid gap-3" onSubmit={handleDeleteAccount}>
           <label className="form-control w-full">
-            <span className="label-text mb-1 block">{copy.deletePasswordLabel}</span>
+            <span className="label-text mb-1 block">{securityText("deletePasswordLabel")}</span>
             <div className="join w-full">
               <input
                 className="input input-bordered join-item w-full"
@@ -250,16 +203,16 @@ export default function SecurityPanel() {
               type="submit"
               disabled={isDeletingAccount || deletePassword.trim().length === 0}
             >
-              {isDeletingAccount ? copy.deleting : copy.deleteAction}
+              {isDeletingAccount ? securityText("deleting") : securityText("deleteAction")}
             </button>
           </div>
         </form>
         <ConfirmModal
           open={isDeleteConfirmOpen}
-          title={copy.deleteSectionTitle}
-          description={copy.deleteConfirm}
-          confirmLabel={copy.deleteAction}
-          cancelLabel={locale === "pl" ? "Anuluj" : "Cancel"}
+          title={securityText("deleteSectionTitle")}
+          description={securityText("deleteConfirm")}
+          confirmLabel={securityText("deleteAction")}
+          cancelLabel={securityText("cancel")}
           confirmVariant="error"
           pending={isDeletingAccount}
           onCancel={() => {

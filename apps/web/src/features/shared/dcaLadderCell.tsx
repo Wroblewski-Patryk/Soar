@@ -36,11 +36,14 @@ const resolveDcaExecutedLevels = (params: {
   ];
 };
 
-export const formatDcaLadderCell = (params: {
+export const formatDefaultDcaLevel = (value: number) => `${formatNumber(value, 2)}%`;
+
+export const renderDcaLadderCell = (params: {
   id?: string;
   dcaCount: number;
   dcaExecutedLevels?: number[] | null;
   dcaPlannedLevels?: number[] | null;
+  formatLevel?: (value: number) => string;
 }) => {
   const dcaCount = Number.isFinite(params.dcaCount) ? Math.max(0, Math.trunc(params.dcaCount)) : 0;
   if (dcaCount <= 0) return <span className="text-xs opacity-70">0</span>;
@@ -54,8 +57,9 @@ export const formatDcaLadderCell = (params: {
     );
   }
 
+  const formatLevel = params.formatLevel ?? formatDefaultDcaLevel;
   const ladderPreview = executedLevels
-    .map((level, index) => `${index + 1}:${formatNumber(level, 2)}%`)
+    .map((level, index) => `${index + 1}:${formatLevel(level)}`)
     .join(", ");
 
   return (
@@ -77,7 +81,7 @@ export const formatDcaLadderCell = (params: {
               className="grid grid-cols-[auto_auto] items-center gap-x-1.5 whitespace-nowrap"
             >
               <span className="font-medium opacity-70">{index + 1}</span>
-              <span className="font-semibold">{formatNumber(level, 2)}%</span>
+              <span className="font-semibold">{formatLevel(level)}</span>
             </li>
           ))}
         </ul>

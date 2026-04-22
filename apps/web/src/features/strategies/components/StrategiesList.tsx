@@ -15,9 +15,10 @@ import { TablePresetButtonAction } from "@/ui/components/TableUi";
 import { getAxiosMessage } from '@/lib/getAxiosMessage';
 import { dtoToForm } from "../utils/StrategyForm.map";
 import { buildNextCloneName } from "@/lib/cloneNaming";
+import { runAsyncWithViewState } from "@/lib/async";
 
 export default function StrategiesList() {
-  const { locale } = useI18n();
+  const { t } = useI18n();
   const { formatDate } = useLocaleFormatting();
   const [strategies, setStrategies] = useState<StrategyDto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -27,81 +28,24 @@ export default function StrategiesList() {
   const [cloningId, setCloningId] = useState<string | null>(null);
   const router = useRouter();
 
-  const copy = useMemo(
-    () =>
-      locale === "pl"
-        ? {
-            loadFailedTitle: "Nie udalo sie pobrac listy strategii",
-            strategyDeleted: "Strategia usunieta",
-            deleteFailed: "Blad usuwania strategii",
-            clone: "Klonuj",
-            cloneFailed: "Blad klonowania strategii",
-            strategyCloned: "Strategia sklonowana",
-            colName: "Nazwa",
-            colLeverage: "Dzwignia",
-            colInterval: "Interwal",
-            colCreatedAt: "Data utworzenia",
-            colActions: "Akcje",
-            edit: "Edytuj",
-            remove: "Usun",
-            filterPlaceholder: "Filtruj strategie...",
-            emptyTable: "Brak strategii.",
-            emptyTitle: "Brak strategii",
-            emptyDescription: "Dodaj pierwsza strategie, aby uruchomic backtest i bota.",
-            addAction: "Nowa strategia",
-            retry: "Sprobuj ponownie",
-            confirmTitle: "Potwierdz usuniecie",
-            confirmDescription: 'Czy na pewno chcesz usunac strategie "{name}"?',
-            confirmDescriptionFallback: "Czy na pewno chcesz usunac te strategie?",
-            confirm: "Usun",
-            cancel: "Anuluj",
-          }
-        : {
-            loadFailedTitle: "Could not load strategies list",
-            strategyDeleted: "Strategy deleted",
-            deleteFailed: "Failed to delete strategy",
-            clone: "Clone",
-            cloneFailed: "Failed to clone strategy",
-            strategyCloned: "Strategy cloned",
-            colName: "Name",
-            colLeverage: "Leverage",
-            colInterval: "Interval",
-            colCreatedAt: "Created at",
-            colActions: "Actions",
-            edit: "Edit",
-            remove: "Delete",
-            filterPlaceholder: "Filter strategies...",
-            emptyTable: "No strategies.",
-            emptyTitle: "No strategies",
-            emptyDescription: "Add your first strategy to run backtests and bots.",
-            addAction: "New strategy",
-            retry: "Try again",
-            confirmTitle: "Confirm deletion",
-            confirmDescription: 'Are you sure you want to delete strategy "{name}"?',
-            confirmDescriptionFallback: "Are you sure you want to delete this strategy?",
-            confirm: "Delete",
-            cancel: "Cancel",
-          },
-    [locale]
-  );
+  const listText = useCallback((key: string) => t(`dashboard.strategies.list.${key}`), [t]);
 
   const loadStrategies = useCallback(async () => {
-    setLoading(true);
-    setLoadError(null);
-
     try {
-      const data = await listStrategies();
+      const data = await runAsyncWithViewState({
+        setPending: setLoading,
+        setError: setLoadError,
+        clearErrorValue: null,
+        resolveError: (err) => getAxiosMessage(err) ?? listText("loadFailedTitle"),
+        operation: () => listStrategies(),
+      });
       setStrategies(data);
     } catch (err: unknown) {
-      const message = getAxiosMessage(err) ?? copy.loadFailedTitle;
-      setLoadError(message);
-      toast.error(copy.loadFailedTitle, {
+      toast.error(listText("loadFailedTitle"), {
         description: getAxiosMessage(err),
       });
-    } finally {
-      setLoading(false);
     }
-  }, [copy.loadFailedTitle]);
+  }, [listText]);
 
   useEffect(() => {
     void loadStrategies();
@@ -113,9 +57,9 @@ export default function StrategiesList() {
     try {
       await deleteStrategy(selectedStrategy.id);
       setStrategies((prev) => prev.filter((s) => s.id !== selectedStrategy.id));
-      toast.success(copy.strategyDeleted);
+      toast.success(listText("strategyDeleted"));
     } catch (err: unknown) {
-      toast.error(getAxiosMessage(err) ?? copy.deleteFailed);
+      toast.error(getAxiosMessage(err) ?? listText("deleteFailed"));
     } finally {
       setDeleting(false);
       setSelectedStrategy(null);
@@ -135,28 +79,28 @@ export default function StrategiesList() {
           name: cloneName,
         });
         setStrategies((prev) => [...prev, cloned]);
-        toast.success(copy.strategyCloned);
+        toast.success(listText("strategyCloned"));
       } catch (err: unknown) {
-        toast.error(getAxiosMessage(err) ?? copy.cloneFailed);
+        toast.error(getAxiosMessage(err) ?? listText("cloneFailed"));
       } finally {
         setCloningId(null);
       }
     },
-    [copy.cloneFailed, copy.strategyCloned, strategies]
+    [listText, strategies]
   );
 
   const columns = useMemo<DataTableColumn<StrategyDto>[]>(
     () => [
       {
         key: "name",
-        label: copy.colName,
+        label: listText("colName"),
         sortable: true,
         accessor: (row) => row.name,
         className: "font-medium",
       },
       {
         key: "leverage",
-        label: copy.colLeverage,
+        label: listText("colLeverage"),
         sortable: true,
         accessor: (row) => row.leverage,
         render: (row) => `${row.leverage}x`,
@@ -164,14 +108,14 @@ export default function StrategiesList() {
       },
       {
         key: "interval",
-        label: copy.colInterval,
+        label: listText("colInterval"),
         sortable: true,
         accessor: (row) => row.interval,
         className: "w-32",
       },
       {
         key: "createdAt",
-        label: copy.colCreatedAt,
+        label: listText("colCreatedAt"),
         sortable: true,
         accessor: (row) => row.createdAt ?? "",
         render: (row) => formatDate(row.createdAt),
@@ -179,31 +123,31 @@ export default function StrategiesList() {
       },
       {
         key: "actions",
-        label: copy.colActions,
+        label: listText("colActions"),
         className: "w-40 text-center",
         render: (row) => (
           <div className="flex items-center justify-center gap-2">
             <TablePresetButtonAction
               preset="edit"
-              label={copy.edit}
+              label={listText("edit")}
               onClick={() => router.push(`/dashboard/strategies/${row.id}/edit`)}
             />
             <TablePresetButtonAction
               preset="clone"
-              label={copy.clone}
+              label={listText("clone")}
               onClick={() => void handleClone(row)}
               disabled={cloningId === row.id}
             />
             <TablePresetButtonAction
               preset="delete"
-              label={copy.remove}
+              label={listText("remove")}
               onClick={() => setSelectedStrategy(row)}
             />
           </div>
         ),
       },
     ],
-    [cloningId, copy, formatDate, handleClone, router]
+    [cloningId, formatDate, handleClone, listText, router]
   );
 
   return (
@@ -219,17 +163,17 @@ export default function StrategiesList() {
       )}
       {!loading && loadError && (
         <ErrorState
-          title={copy.loadFailedTitle}
+          title={listText("loadFailedTitle")}
           description={loadError}
-          retryLabel={copy.retry}
+          retryLabel={listText("retry")}
           onRetry={() => void loadStrategies()}
         />
       )}
       {!loading && !loadError && strategies.length === 0 && (
         <EmptyState
-          title={copy.emptyTitle}
-          description={copy.emptyDescription}
-          actionLabel={copy.addAction}
+          title={listText("emptyTitle")}
+          description={listText("emptyDescription")}
+          actionLabel={listText("addAction")}
           onAction={() => router.push("/dashboard/strategies/create")}
         />
       )}
@@ -240,7 +184,7 @@ export default function StrategiesList() {
           rows={strategies}
           columns={columns}
           getRowId={(row) => row.id}
-          filterPlaceholder={copy.filterPlaceholder}
+          filterPlaceholder={listText("filterPlaceholder")}
           filterFn={(row, query) => {
             const normalized = query.trim().toLowerCase();
             return (
@@ -248,7 +192,7 @@ export default function StrategiesList() {
               row.interval.toLowerCase().includes(normalized)
             );
           }}
-          emptyText={copy.emptyTable}
+          emptyText={listText("emptyTable")}
           advancedMode
           columnVisibilityPreferenceKey='strategies.list'
         />
@@ -256,14 +200,14 @@ export default function StrategiesList() {
 
       <ConfirmModal
         open={Boolean(selectedStrategy)}
-        title={copy.confirmTitle}
+        title={listText("confirmTitle")}
         description={
           selectedStrategy
-            ? copy.confirmDescription.replace("{name}", selectedStrategy.name)
-            : copy.confirmDescriptionFallback
+            ? listText("confirmDescription").replace("{name}", selectedStrategy.name)
+            : listText("confirmDescriptionFallback")
         }
-        confirmLabel={copy.confirm}
-        cancelLabel={copy.cancel}
+        confirmLabel={listText("confirm")}
+        cancelLabel={listText("cancel")}
         confirmVariant="error"
         pending={deleting}
         onCancel={() => {

@@ -2,6 +2,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import api from "../lib/api";
 import { toast } from "sonner";
+import { useOptionalI18n } from "@/i18n/useOptionalI18n";
 
 type UserRole = 'USER' | 'ADMIN';
 type User = { email: string; userId: string; role?: UserRole };
@@ -23,6 +24,7 @@ const AuthContext = createContext<{
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const { t } = useOptionalI18n();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const hadAuthenticatedSessionRef = useRef(false);
@@ -58,7 +60,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         (hadAuthenticatedSessionRef.current || sessionExpiredHint);
 
       if (notifyOnUnauthorized && shouldWarnAboutExpiredSession) {
-        toast.warning("Sesja wygasla. Zaloguj sie ponownie.");
+        toast.warning(t("dashboard.shared.sessionExpired"));
         if (sessionExpiredHint && typeof window !== "undefined") {
           const url = new URL(window.location.href);
           url.searchParams.delete("session");
@@ -70,14 +72,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void fetchUser({ notifyOnUnauthorized: false });
   }, [fetchUser]);
 
   const logout = async () => {
-    toast.success("Wylogowano");
+    toast.success(t("dashboard.shared.loggedOut"));
 
     await api.post("/auth/logout");
     setUser(null);

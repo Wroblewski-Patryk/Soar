@@ -10,6 +10,25 @@ const updateWalletMock = vi.hoisted(() => vi.fn());
 const previewWalletBalanceMock = vi.hoisted(() => vi.fn());
 const fetchWalletMetadataMock = vi.hoisted(() => vi.fn());
 const resetPaperWalletMock = vi.hoisted(() => vi.fn());
+const setLocaleMock = vi.hoisted(() => vi.fn());
+const setTimeZonePreferenceMock = vi.hoisted(() => vi.fn());
+const translations = vi.hoisted<Record<string, string>>(() => ({
+  'dashboard.wallets.form.modePaper': 'PAPER',
+  'dashboard.wallets.form.modeLive': 'LIVE',
+  'dashboard.wallets.form.accountBalance': 'Saldo konta',
+  'dashboard.wallets.form.paperInitialBalance': 'Kwota startowa paper',
+  'dashboard.wallets.form.liveAllocationValue': 'Wartosc limitu LIVE',
+  'dashboard.wallets.form.name': 'Nazwa',
+  'dashboard.wallets.form.exchange': 'Gielda',
+  'dashboard.wallets.form.marketType': 'Rynek',
+  'dashboard.wallets.form.baseCurrency': 'Waluta bazowa',
+  'dashboard.wallets.form.resetPaperAction': 'Resetuj portfel PAPER',
+  'dashboard.wallets.form.resetPaperLoading': 'Resetowanie...',
+  'dashboard.wallets.form.resetPaperLastAt': 'Ostatni reset',
+  'dashboard.wallets.form.manageExternalPositions': 'Przejmuj pozycje otwarte poza aplikacja',
+  'dashboard.wallets.form.validationName': 'Podaj nazwe portfela.',
+}));
+const tMock = vi.hoisted(() => (key: string) => translations[key] ?? key);
 
 vi.mock('next/navigation', () => ({
   useRouter: () => ({
@@ -23,11 +42,11 @@ vi.mock('@/i18n/I18nProvider', async (importOriginal) => {
     ...actual,
     useI18n: () => ({
       locale: 'pl' as const,
-      t: (key: string) => key,
+      t: tMock,
       timeZone: 'UTC',
       timeZonePreference: 'auto',
-      setLocale: vi.fn(),
-      setTimeZonePreference: vi.fn(),
+      setLocale: setLocaleMock,
+      setTimeZonePreference: setTimeZonePreferenceMock,
     }),
   };
 });
@@ -46,6 +65,12 @@ vi.mock('../services/wallets.service', () => ({
 }));
 
 describe('WalletCreateEditForm', () => {
+  const waitForFormReady = async () => {
+    await waitFor(() => {
+      expect(screen.getByLabelText('Nazwa')).toBeInTheDocument();
+    });
+  };
+
   beforeEach(() => {
     replaceMock.mockReset();
     fetchApiKeysMock.mockReset();
@@ -115,6 +140,7 @@ describe('WalletCreateEditForm', () => {
     await waitFor(() => {
       expect(fetchApiKeysMock).toHaveBeenCalled();
     });
+    await waitForFormReady();
 
     fireEvent.click(screen.getByRole('radio', { name: 'LIVE' }));
 
@@ -127,7 +153,9 @@ describe('WalletCreateEditForm', () => {
       );
     });
 
-    expect(screen.getByText('Saldo konta')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Saldo konta')).toBeInTheDocument();
+    });
     expect(screen.getAllByText('100.00 USDT').length).toBeGreaterThan(0);
   });
 
@@ -142,6 +170,7 @@ describe('WalletCreateEditForm', () => {
     await waitFor(() => {
       expect(fetchApiKeysMock).toHaveBeenCalled();
     });
+    await waitForFormReady();
 
     const form = container.querySelector('form');
     expect(form).not.toBeNull();
@@ -180,6 +209,7 @@ describe('WalletCreateEditForm', () => {
     await waitFor(() => {
       expect(fetchApiKeysMock).toHaveBeenCalled();
     });
+    await waitForFormReady();
 
     expect(screen.getByLabelText('Kwota startowa paper')).toBeInTheDocument();
     expect(screen.queryByLabelText('Wartosc limitu LIVE')).not.toBeInTheDocument();
@@ -244,6 +274,7 @@ describe('WalletCreateEditForm', () => {
     await waitFor(() => {
       expect(fetchApiKeysMock).toHaveBeenCalled();
     });
+    await waitForFormReady();
 
     fireEvent.change(screen.getByLabelText('Nazwa'), {
       target: { value: 'Live Wallet' },
@@ -299,6 +330,7 @@ describe('WalletCreateEditForm', () => {
     await waitFor(() => {
       expect(fetchApiKeysMock).toHaveBeenCalled();
     });
+    await waitForFormReady();
 
     fireEvent.change(screen.getByLabelText('Gielda'), {
       target: { value: 'COINBASE' },
@@ -348,6 +380,7 @@ describe('WalletCreateEditForm', () => {
     await waitFor(() => {
       expect(getWalletMock).toHaveBeenCalledWith('wallet-paper');
     });
+    await waitForFormReady();
     expect(screen.getByRole('button', { name: 'Resetuj portfel PAPER' })).toBeInTheDocument();
 
     getWalletMock.mockResolvedValueOnce({
@@ -370,6 +403,7 @@ describe('WalletCreateEditForm', () => {
     await waitFor(() => {
       expect(getWalletMock).toHaveBeenCalledWith('wallet-live');
     });
+    await waitForFormReady();
     expect(screen.queryByRole('button', { name: 'Resetuj portfel PAPER' })).not.toBeInTheDocument();
   });
 
@@ -419,6 +453,7 @@ describe('WalletCreateEditForm', () => {
     await waitFor(() => {
       expect(getWalletMock).toHaveBeenCalledWith('wallet-paper');
     });
+    await waitForFormReady();
 
     fireEvent.click(screen.getByRole('button', { name: 'Resetuj portfel PAPER' }));
 
@@ -459,6 +494,7 @@ describe('WalletCreateEditForm', () => {
     await waitFor(() => {
       expect(getWalletMock).toHaveBeenCalledWith('wallet-paper');
     });
+    await waitForFormReady();
 
     fireEvent.click(screen.getByRole('button', { name: 'Resetuj portfel PAPER' }));
 

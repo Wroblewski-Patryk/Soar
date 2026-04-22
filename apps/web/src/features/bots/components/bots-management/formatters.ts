@@ -1,5 +1,11 @@
 import type { TranslationKey } from '@/i18n/translations';
 import type { Bot, BotMode, BotRuntimeSessionStatus } from '../../types/bot.type';
+import {
+  formatAgeCompact,
+  toRuntimeDirectionBadgeClass,
+  toRuntimeSessionStatusBadgeClass,
+  toRuntimeTradeLifecycleBadgeClass,
+} from '../../../shared/runtimeMonitoringFormatters';
 
 export const MONITOR_STALE_WARNING_AFTER_MS = 20_000;
 export const FIELD_WRAPPER_CLASS = 'form-control gap-1';
@@ -42,11 +48,7 @@ export const formatDuration = (ms: number) => {
   return `${hours}h ${minutes}m`;
 };
 
-export const formatAgeCompact = (ms: number) => {
-  if (!Number.isFinite(ms) || ms <= 0) return '0s';
-  if (ms < 60_000) return `${Math.max(1, Math.floor(ms / 1_000))}s`;
-  return formatDuration(ms);
-};
+export { formatAgeCompact };
 
 export const interpolateTemplate = (
   template: string,
@@ -54,23 +56,15 @@ export const interpolateTemplate = (
 ) => template.replace(/\{(\w+)\}/g, (_, token) => String(values[token] ?? ''));
 
 export const toSessionStatusBadgeClass = (status: BotRuntimeSessionStatus) => {
-  if (status === 'RUNNING') return 'badge-info';
-  if (status === 'COMPLETED') return 'badge-success';
-  if (status === 'FAILED') return 'badge-error';
-  return 'badge-warning';
+  return toRuntimeSessionStatusBadgeClass(status);
 };
 
 export const toTradeSideBadgeClass = (side: string) => {
-  if (side === 'BUY' || side === 'LONG') return 'badge-success';
-  if (side === 'SELL' || side === 'SHORT') return 'badge-error';
-  return 'badge-ghost';
+  return toRuntimeDirectionBadgeClass(side);
 };
 
 export const toTradeLifecycleBadgeClass = (value: 'OPEN' | 'DCA' | 'CLOSE' | 'UNKNOWN') => {
-  if (value === 'OPEN') return 'badge-success';
-  if (value === 'DCA') return 'badge-warning';
-  if (value === 'CLOSE') return 'badge-primary';
-  return 'badge-ghost';
+  return toRuntimeTradeLifecycleBadgeClass(value);
 };
 
 export const toTradeLifecycleLabelKey = (value: 'OPEN' | 'DCA' | 'CLOSE' | 'UNKNOWN') => {

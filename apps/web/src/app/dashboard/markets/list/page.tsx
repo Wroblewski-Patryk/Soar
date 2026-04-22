@@ -13,7 +13,7 @@ import { runAsyncWithState } from '@/lib/async';
 import { resolveUiErrorMessage } from '@/lib/errorResolver';
 
 export default function MarketsListPage() {
-  const { locale, t } = useI18n();
+  const { t } = useI18n();
   const router = useRouter();
   const [rows, setRows] = useState<MarketUniverse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -21,41 +21,17 @@ export default function MarketsListPage() {
 
   const copy = useMemo(
     () => ({
-      en: {
-        loadError: 'Could not fetch markets list.',
-        breadcrumbMarkets: 'Markets',
-        breadcrumbList: 'List',
-        addLabel: 'Create',
-        loading: 'Loading markets',
-        errorTitle: 'Could not load markets',
-        retry: 'Try again',
-        emptyTitle: 'No markets',
-        emptyDescription: 'Add your first market set to use it in bots and backtests.',
-      },
-      pl: {
-        loadError: 'Nie udalo sie pobrac listy grup rynkow.',
-        breadcrumbMarkets: 'Rynki',
-        breadcrumbList: 'Lista',
-        addLabel: 'Utworz',
-        loading: 'Ladowanie grup rynkow',
-        errorTitle: 'Nie udalo sie pobrac grup rynkow',
-        retry: 'Sprobuj ponownie',
-        emptyTitle: 'Brak grup rynkow',
-        emptyDescription: 'Dodaj pierwsza grupe, aby wykorzystac ja w botach i backtestach.',
-      },
-      pt: {
-        loadError: 'Nao foi possivel carregar a lista de grupos de mercados.',
-        breadcrumbMarkets: 'Mercados',
-        breadcrumbList: 'Lista',
-        addLabel: 'Criar',
-        loading: 'A carregar grupos de mercados',
-        errorTitle: 'Nao foi possivel carregar grupos de mercados',
-        retry: 'Tentar novamente',
-        emptyTitle: 'Sem grupos de mercados',
-        emptyDescription: 'Adiciona o primeiro grupo para usar em bots e backtests.',
-      },
-    } as const)[locale],
-    [locale]
+      loadError: t('dashboard.markets.listPage.loadError'),
+      breadcrumbMarkets: t('dashboard.markets.title'),
+      breadcrumbList: t('dashboard.markets.listLabel'),
+      addLabel: t('dashboard.markets.createLabel'),
+      loading: t('dashboard.markets.listPage.loading'),
+      errorTitle: t('dashboard.markets.listPage.errorTitle'),
+      retry: t('dashboard.markets.listPage.retry'),
+      emptyTitle: t('dashboard.markets.listPage.emptyTitle'),
+      emptyDescription: t('dashboard.markets.listPage.emptyDescription'),
+    }),
+    [t]
   );
 
   const loadData = useCallback(async () => {

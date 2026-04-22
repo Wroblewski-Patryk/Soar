@@ -234,13 +234,13 @@ export default function BotsListTable() {
       <ConfirmModal
         open={Boolean(selectedDeleteBot)}
         title={t("dashboard.bots.list.delete")}
+        cancelLabel={t("dashboard.bots.confirms.cancelLabel")}
         description={
           selectedDeleteBot
             ? `${t("dashboard.bots.list.delete")} "${selectedDeleteBot.name}"?`
             : t("dashboard.bots.list.delete")
         }
         confirmLabel={t("dashboard.bots.list.delete")}
-        cancelLabel="Anuluj"
         confirmVariant="error"
         pending={deleting}
         onCancel={() => {

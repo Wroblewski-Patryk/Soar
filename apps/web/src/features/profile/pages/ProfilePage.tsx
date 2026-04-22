@@ -15,57 +15,19 @@ import { TAB_CONTENT_FRAME_CLASS, TAB_CONTENT_INNER_CLASS } from "@/ui/component
 type ProfileTabKey = "basic" | "api" | "subscription" | "security";
 
 export default function ProfilePage() {
-  const { locale } = useI18n();
-  const copyByLocale = {
-    en: {
-      title: "My account",
-      breadcrumbDashboard: "Dashboard",
-      breadcrumbCurrent: "My account",
-      breadcrumbAction: "Overview",
-      tabs: {
-        basic: "User profile",
-        api: "Integrations and API keys",
-        subscription: "Subscription",
-        security: "Security",
-      },
-    },
-    pl: {
-      title: "Moje konto",
-      breadcrumbDashboard: "Dashboard",
-      breadcrumbCurrent: "Moje konto",
-      breadcrumbAction: "Przeglad",
-      tabs: {
-        basic: "Profil uzytkownika",
-        api: "Integracje i API keys",
-        subscription: "Subskrypcja",
-        security: "Bezpieczenstwo",
-      },
-    },
-    pt: {
-      title: "Minha conta",
-      breadcrumbDashboard: "Dashboard",
-      breadcrumbCurrent: "Minha conta",
-      breadcrumbAction: "Visao geral",
-      tabs: {
-        basic: "Perfil de utilizador",
-        api: "Integracoes e chaves API",
-        subscription: "Subscricao",
-        security: "Seguranca",
-      },
-    },
-  } as const;
-  const copy = copyByLocale[locale];
+  const { t } = useI18n();
+  const profilePageText = (key: string) => t(`dashboard.profilePage.${key}`);
 
   const tabs: { label: string; key: ProfileTabKey; hash: string; icon: ReactNode }[] = [
-    { label: copy.tabs.basic, key: "basic", hash: "basic", icon: <LuUser className="h-4 w-4" aria-hidden /> },
-    { label: copy.tabs.api, key: "api", hash: "api", icon: <LuKey className="h-4 w-4" aria-hidden /> },
+    { label: profilePageText("tabs.basic"), key: "basic", hash: "basic", icon: <LuUser className="h-4 w-4" aria-hidden /> },
+    { label: profilePageText("tabs.api"), key: "api", hash: "api", icon: <LuKey className="h-4 w-4" aria-hidden /> },
     {
-      label: copy.tabs.subscription,
+      label: profilePageText("tabs.subscription"),
       key: "subscription",
       hash: "subscription",
       icon: <LuSubscript className="h-4 w-4" aria-hidden />,
     },
-    { label: copy.tabs.security, key: "security", hash: "security", icon: <LuSettings className="h-4 w-4" aria-hidden /> },
+    { label: profilePageText("tabs.security"), key: "security", hash: "security", icon: <LuSettings className="h-4 w-4" aria-hidden /> },
   ];
 
   const [activeTab, setActiveTab] = useState<ProfileTabKey>("basic");
@@ -74,12 +36,12 @@ export default function ProfilePage() {
     <section className="w-full">
       <div className="py-1">
         <PageTitle
-          title={copy.title}
+          title={profilePageText("title")}
           icon={<LuUserRound className="h-5 w-5" />}
           breadcrumb={[
-            { label: copy.breadcrumbDashboard, href: "/dashboard" },
-            { label: copy.breadcrumbCurrent, href: "/dashboard/profile" },
-            { label: copy.breadcrumbAction, icon: <LuList className="h-3.5 w-3.5" /> },
+            { label: profilePageText("breadcrumbDashboard"), href: "/dashboard" },
+            { label: profilePageText("breadcrumbCurrent"), href: "/dashboard/profile" },
+            { label: profilePageText("breadcrumbAction"), icon: <LuList className="h-3.5 w-3.5" /> },
           ]}
         />
 

@@ -1,6 +1,7 @@
 import { act, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import BacktestRunDetails from "./BacktestRunDetails";
+import { I18nProvider } from "@/i18n/I18nProvider";
 
 const {
   getBacktestRunMock,
@@ -33,6 +34,13 @@ vi.mock("../../markets/services/markets.service", () => ({
   getMarketUniverse: getMarketUniverseMock,
 }));
 
+const renderWithI18n = (runId: string) =>
+  render(
+    <I18nProvider>
+      <BacktestRunDetails runId={runId} />
+    </I18nProvider>
+  );
+
 describe("BacktestRunDetails loading UX", () => {
   beforeEach(() => {
     window.localStorage.setItem("cryptosparrow-locale", "pl");
@@ -47,11 +55,11 @@ describe("BacktestRunDetails loading UX", () => {
     getStrategyMock.mockResolvedValue(null);
     getMarketUniverseMock.mockResolvedValue(null);
 
-    render(<BacktestRunDetails runId="run_01" />);
+    renderWithI18n("run_01");
 
-    expect(screen.getByLabelText("Loading KPI row")).toBeInTheDocument();
-    expect(screen.getByLabelText("Loading cards")).toBeInTheDocument();
-    expect(screen.getByLabelText("Loading table rows")).toBeInTheDocument();
+    expect(screen.getByLabelText(/Loading KPI row|Ladowanie wiersza KPI/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Loading cards|Ladowanie kart/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Loading table rows|Ladowanie wierszy tabeli/i)).toBeInTheDocument();
   });
 
   it("renders not-found state when run endpoint responds with 404", async () => {
@@ -70,7 +78,7 @@ describe("BacktestRunDetails loading UX", () => {
     getStrategyMock.mockResolvedValue(null);
     getMarketUniverseMock.mockResolvedValue(null);
 
-    render(<BacktestRunDetails runId="missing_run" />);
+    renderWithI18n("missing_run");
 
     expect(await screen.findByText(/Nie znaleziono runa|Run not found/i)).toBeInTheDocument();
     expect(
@@ -109,7 +117,7 @@ describe("BacktestRunDetails loading UX", () => {
     getStrategyMock.mockResolvedValue(null);
     getMarketUniverseMock.mockResolvedValue(null);
 
-    render(<BacktestRunDetails runId="run_retry" />);
+    renderWithI18n("run_retry");
 
     expect(screen.queryByText("Nie udalo sie pobrac szczegolow backtestu")).not.toBeInTheDocument();
 

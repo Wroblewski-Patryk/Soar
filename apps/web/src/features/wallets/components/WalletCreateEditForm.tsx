@@ -3,75 +3,66 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { LuBadgeCheck } from 'react-icons/lu';
 
 import { useI18n } from '@/i18n/I18nProvider';
 import {
   EXCHANGE_OPTIONS,
   supportsExchangeCapability,
-  type ExchangeOption,
 } from '@/features/exchanges/exchangeCapabilities';
-import {
-  DEFAULT_BASE_CURRENCY,
-  DEFAULT_EXCHANGE,
-  DEFAULT_MARKET_TYPE,
-  EXCHANGE_MARKET_TYPES,
-  type ExchangeMarketType,
-} from '@cryptosparrow/shared';
 import { fetchApiKeys } from '@/features/profile/services/apiKeys.service';
 import type { ApiKey } from '@/features/profile/types/apiKey.type';
 import { ErrorState, LoadingState } from '@/ui/components/ViewState';
 import {
   FormAlert,
   focusFirstInvalidField,
-  FormGrid,
-  RadioGroupField,
-  FormSectionCard,
   FormValidationSummary,
-  NumberField,
-  SelectField,
-  TextField,
-  ToggleField,
   toValidationSummaryErrors,
 } from '@/ui/forms';
 import {
-  hasFormText,
-  normalizeFormBaseCurrency,
   normalizeFormSymbol,
-  normalizeFormText,
   resolveFormErrorMessage,
 } from '@/lib/forms';
-import { executeWithRetry, isRetriableHttpError, runAsyncWithState } from '@/lib/async';
-import { normalizeSymbol } from '@/lib/symbols';
+import {
+  executeWithRetry,
+  isRetriableHttpError,
+  runAsyncWithState,
+  runAsyncWithViewState,
+} from '@/lib/async';
 import {
   createWallet,
-  fetchWalletMetadata,
-  getWallet,
-  previewWalletBalance,
-  resetPaperWallet,
   updateWallet,
 } from '../services/wallets.service';
 import type {
   CreateWalletInput,
-  Wallet,
   WalletAllocationMode,
   WalletBalancePreview,
-  WalletMetadata,
-  WalletMode,
 } from '../types/wallet.type';
-
-type WalletFormState = {
-  name: string;
-  mode: WalletMode;
-  exchange: ExchangeOption;
-  marketType: ExchangeMarketType;
-  baseCurrency: string;
-  paperInitialBalance: number;
-  liveAllocationMode: WalletAllocationMode;
-  liveAllocationValue: number;
-  apiKeyId: string;
-  manageExternalPositions: boolean;
-};
+import {
+  loadWalletBalancePreview,
+  loadWalletMetadataCatalog,
+  loadWalletRecord,
+  runPaperWalletReset,
+} from './wallet-create-edit-form/actions';
+import {
+  buildDefaultForm,
+  DEFAULT_MARKET_TYPE_METADATA,
+  DEFAULT_MARKET_TYPE_OPTIONS,
+  getWalletFieldErrors,
+  mapWalletToForm,
+  resolveBaseCurrencyOptions,
+  resolvePreviewReferenceBalance,
+  toPayload,
+  type WalletFormState,
+  type WalletMarketType,
+  type WalletMarketTypeMetadata,
+} from './wallet-create-edit-form/state';
+import {
+  WalletBasicsSection,
+  WalletLiveSection,
+  WalletPaperSection,
+  WalletPreviewSection,
+  WalletSummarySection,
+} from './wallet-create-edit-form/sections';
 
 type WalletCreateEditFormProps = {
   editId?: string | null;
@@ -79,95 +70,12 @@ type WalletCreateEditFormProps = {
   onSubmittingChange?: (submitting: boolean) => void;
 };
 
-type WalletMarketType = WalletFormState['marketType'];
-type WalletMarketTypeMetadata = WalletMetadata['byMarketType'][WalletMarketType];
-
-const DEFAULT_MARKET_TYPE_OPTIONS: WalletMarketType[] = [...EXCHANGE_MARKET_TYPES];
-const DEFAULT_MARKET_TYPE_METADATA: Record<WalletMarketType, WalletMarketTypeMetadata> = {
-  FUTURES: {
-    marketType: 'FUTURES',
-    baseCurrency: DEFAULT_BASE_CURRENCY,
-    baseCurrencies: [DEFAULT_BASE_CURRENCY],
-    source: 'EXCHANGE_CAPABILITIES',
-  },
-  SPOT: {
-    marketType: 'SPOT',
-    baseCurrency: DEFAULT_BASE_CURRENCY,
-    baseCurrencies: [DEFAULT_BASE_CURRENCY],
-    source: 'EXCHANGE_CAPABILITIES',
-  },
-};
-
-const buildDefaultForm = (): WalletFormState => ({
-  name: '',
-  mode: 'PAPER',
-  exchange: DEFAULT_EXCHANGE,
-  marketType: DEFAULT_MARKET_TYPE,
-  baseCurrency: DEFAULT_BASE_CURRENCY,
-  paperInitialBalance: 10_000,
-  liveAllocationMode: 'PERCENT',
-  liveAllocationValue: 100,
-  apiKeyId: '',
-  manageExternalPositions: false,
-});
-
-const mapWalletToForm = (wallet: Wallet): WalletFormState => ({
-  name: wallet.name,
-  mode: wallet.mode,
-  exchange: wallet.exchange,
-  marketType: wallet.marketType,
-  baseCurrency: normalizeFormBaseCurrency(wallet.baseCurrency),
-  paperInitialBalance: wallet.paperInitialBalance,
-  liveAllocationMode: wallet.liveAllocationMode ?? 'PERCENT',
-  liveAllocationValue: wallet.liveAllocationValue ?? 100,
-  apiKeyId: wallet.apiKeyId ?? '',
-  manageExternalPositions: wallet.manageExternalPositions ?? false,
-});
-
-const toPayload = (form: WalletFormState): CreateWalletInput => {
-  const baseCurrency = normalizeFormBaseCurrency(form.baseCurrency);
-
-  if (form.mode === 'PAPER') {
-    return {
-      name: normalizeFormText(form.name),
-      mode: form.mode,
-      exchange: form.exchange,
-      marketType: form.marketType,
-      baseCurrency,
-      paperInitialBalance: form.paperInitialBalance,
-      liveAllocationMode: null,
-      liveAllocationValue: null,
-      apiKeyId: null,
-      manageExternalPositions: false,
-    };
-  }
-
-  return {
-    name: normalizeFormText(form.name),
-    mode: form.mode,
-    exchange: form.exchange,
-    marketType: form.marketType,
-    baseCurrency,
-    paperInitialBalance: form.paperInitialBalance,
-    liveAllocationMode: form.liveAllocationMode,
-    liveAllocationValue: form.liveAllocationValue,
-    apiKeyId: form.apiKeyId || null,
-    manageExternalPositions: form.manageExternalPositions,
-  };
-};
-
-const formatAmount = (value: number, currency: string) =>
-  new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value) + ` ${normalizeSymbol(currency)}`;
-
 export default function WalletCreateEditForm({
   editId = null,
   formId = 'wallet-form',
   onSubmittingChange,
 }: WalletCreateEditFormProps) {
-  const { locale } = useI18n();
+  const { t } = useI18n();
   const router = useRouter();
   const isEditMode = Boolean(editId);
 
@@ -195,244 +103,40 @@ export default function WalletCreateEditForm({
     onSubmittingChange?.(submitting);
   }, [onSubmittingChange, submitting]);
 
-  const copy = useMemo(
-    () =>
-      ({
-        en: {
-          loading: 'Loading form...',
-          loadError: 'Failed to load wallet form.',
-          loadFailedTitle: 'Wallet form load failed',
-          retry: 'Try again',
-          sectionBasics: 'Basics',
-          sectionPaper: 'PAPER settings',
-          sectionLive: 'LIVE settings',
-          sectionSummary: 'Configuration summary',
-          sectionPreview: 'LIVE balance preview',
-          summaryHint: 'Confirm mode, exchange and allocation before saving.',
-          name: 'Name',
-          mode: 'Mode',
-          exchange: 'Exchange',
-          marketType: 'Market type',
-          baseCurrency: 'Base currency',
-          baseCurrencyLoading: 'Loading market metadata...',
-          baseCurrencyCatalogError: 'Could not fetch market/base-currency options.',
-          paperInitialBalance: 'Paper start balance',
-          liveAllocationMode: 'LIVE allocation mode',
-          liveAllocationValue: 'LIVE allocation value',
-          liveAllocation: 'LIVE allocation',
-          manageExternalPositions: 'Manage external exchange positions',
-          manageExternalPositionsHint:
-            'When enabled, active LIVE bot on this wallet can take over and manage positions opened directly on exchange.',
-          manageExternalPositionsSummary: 'External takeover',
-          apiKey: 'API key',
-          selectedKey: 'Selected key',
-          notSelected: 'Not selected',
-          modePaper: 'PAPER',
-          modeLive: 'LIVE',
-          allocPercent: 'PERCENT',
-          allocFixed: 'FIXED',
-          noApiKeys: 'No compatible API keys for selected exchange',
-          liveUnsupported: 'Selected exchange does not support LIVE execution.',
-          paperUnsupported: 'Selected exchange does not support PAPER pricing feed.',
-          saveValidation: 'Fix form errors before saving',
-          saveFailed: 'Failed to save wallet',
-          createFailed: 'Failed to create wallet',
-          created: 'Wallet created',
-          saved: 'Wallet saved',
-          accountBalance: 'Account balance',
-          freeBalance: 'Free balance',
-          referenceBalance: 'Working balance',
-          previewFetch: 'Fetch preview',
-          previewFetching: 'Fetching...',
-          previewUnavailable: 'Preview is available only for LIVE mode with selected API key.',
-          validationSummaryTitle: 'Please fix highlighted wallet fields before saving.',
-          validationName: 'Wallet name is required.',
-          validationBaseCurrency: 'Base currency is required.',
-          validationApiKey: 'API key is required for LIVE mode.',
-          validationAllocationValue: 'Allocation value must be positive in LIVE mode.',
-          validationAllocationPercent: 'Percent allocation cannot exceed 100.',
-          modePaperHint: 'PAPER mode shows simulation-only fields.',
-          modeLiveHint: 'LIVE mode shows exchange execution fields only.',
-          resetPaperAction: 'Reset paper wallet',
-          resetPaperConfirm:
-            'Reset paper wallet capital baseline now? Historical trades and positions will be preserved.',
-          resetPaperLoading: 'Resetting...',
-          resetPaperSuccess: 'Paper wallet reset completed',
-          resetPaperFailed: 'Failed to reset paper wallet',
-          resetPaperLastAt: 'Last reset',
-          hiddenSubmit: 'Submit wallet form',
-          enabled: 'Enabled',
-          disabled: 'Disabled',
-        },
-        pl: {
-          loading: 'Ladowanie formularza...',
-          loadError: 'Nie udalo sie zaladowac formularza portfela.',
-          loadFailedTitle: 'Blad ladowania portfela',
-          retry: 'Sprobuj ponownie',
-          sectionBasics: 'Podstawowe dane',
-          sectionPaper: 'Ustawienia PAPER',
-          sectionLive: 'Ustawienia LIVE',
-          sectionSummary: 'Podsumowanie konfiguracji',
-          sectionPreview: 'Podglad salda LIVE',
-          summaryHint: 'Sprawdz zgodnosc trybu, gieldy i alokacji przed zapisem.',
-          name: 'Nazwa',
-          mode: 'Tryb',
-          exchange: 'Gielda',
-          marketType: 'Rynek',
-          baseCurrency: 'Waluta bazowa',
-          baseCurrencyLoading: 'Ladowanie metadanych rynku...',
-          baseCurrencyCatalogError: 'Nie udalo sie pobrac opcji rynku i waluty bazowej.',
-          paperInitialBalance: 'Kwota startowa paper',
-          liveAllocationMode: 'Tryb limitu LIVE',
-          liveAllocationValue: 'Wartosc limitu LIVE',
-          liveAllocation: 'Alokacja LIVE',
-          manageExternalPositions: 'Przejmuj pozycje otwarte poza aplikacja',
-          manageExternalPositionsHint:
-            'Po wlaczeniu aktywny bot LIVE na tym portfelu moze przejac i zarzadzac pozycjami otwartymi bezposrednio na gieldzie.',
-          manageExternalPositionsSummary: 'Przejecie zewnetrznych pozycji',
-          apiKey: 'Klucz API',
-          selectedKey: 'Wybrany klucz',
-          notSelected: 'Nie wybrano',
-          modePaper: 'PAPER',
-          modeLive: 'LIVE',
-          allocPercent: 'PROCENT',
-          allocFixed: 'KWOTA',
-          noApiKeys: 'Brak kompatybilnych kluczy API dla wybranej gieldy',
-          liveUnsupported: 'Wybrana gielda nie wspiera LIVE execution.',
-          paperUnsupported: 'Wybrana gielda nie wspiera PAPER pricing feed.',
-          saveValidation: 'Popraw formularz przed zapisem',
-          saveFailed: 'Nie udalo sie zapisac portfela',
-          createFailed: 'Nie udalo sie utworzyc portfela',
-          created: 'Portfel utworzony',
-          saved: 'Portfel zapisany',
-          accountBalance: 'Saldo konta',
-          freeBalance: 'Srodki wolne',
-          referenceBalance: 'Saldo robocze',
-          previewFetch: 'Pobierz podglad',
-          previewFetching: 'Pobieranie...',
-          previewUnavailable: 'Podglad dostepny tylko dla LIVE z wybranym kluczem API.',
-          validationSummaryTitle: 'Popraw zaznaczone pola portfela przed zapisem.',
-          validationName: 'Podaj nazwe portfela.',
-          validationBaseCurrency: 'Podaj walute bazowa.',
-          validationApiKey: 'W LIVE musisz wybrac klucz API.',
-          validationAllocationValue: 'W LIVE podaj dodatnia wartosc alokacji.',
-          validationAllocationPercent: 'W trybie procentowym wartosc nie moze przekraczac 100.',
-          modePaperHint: 'W PAPER pokazujemy tylko pola symulacyjne.',
-          modeLiveHint: 'W LIVE pokazujemy tylko pola wykonania gieldowego.',
-          resetPaperAction: 'Resetuj portfel PAPER',
-          resetPaperConfirm:
-            'Zresetowac teraz kapital portfela PAPER? Historia transakcji i pozycji zostanie zachowana.',
-          resetPaperLoading: 'Resetowanie...',
-          resetPaperSuccess: 'Reset portfela PAPER zakonczony',
-          resetPaperFailed: 'Nie udalo sie zresetowac portfela PAPER',
-          resetPaperLastAt: 'Ostatni reset',
-          hiddenSubmit: 'Zapisz formularz portfela',
-          enabled: 'Wlaczone',
-          disabled: 'Wylaczone',
-        },
-        pt: {
-          loading: 'A carregar formulario...',
-          loadError: 'Nao foi possivel carregar o formulario da carteira.',
-          loadFailedTitle: 'Falha ao carregar carteira',
-          retry: 'Tentar novamente',
-          sectionBasics: 'Dados basicos',
-          sectionPaper: 'Definicoes PAPER',
-          sectionLive: 'Definicoes LIVE',
-          sectionSummary: 'Resumo da configuracao',
-          sectionPreview: 'Pre-visualizacao do saldo LIVE',
-          summaryHint: 'Confirma modo, corretora e alocacao antes de guardar.',
-          name: 'Nome',
-          mode: 'Modo',
-          exchange: 'Corretora',
-          marketType: 'Tipo de mercado',
-          baseCurrency: 'Moeda base',
-          baseCurrencyLoading: 'A carregar metadados de mercado...',
-          baseCurrencyCatalogError: 'Nao foi possivel carregar opcoes de mercado/moeda base.',
-          paperInitialBalance: 'Saldo inicial paper',
-          liveAllocationMode: 'Modo de alocacao LIVE',
-          liveAllocationValue: 'Valor de alocacao LIVE',
-          liveAllocation: 'Alocacao LIVE',
-          manageExternalPositions: 'Gerir posicoes externas da corretora',
-          manageExternalPositionsHint:
-            'Quando ativo, o bot LIVE ativo desta carteira pode assumir e gerir posicoes abertas diretamente na corretora.',
-          manageExternalPositionsSummary: 'Assuncao externa',
-          apiKey: 'Chave API',
-          selectedKey: 'Chave selecionada',
-          notSelected: 'Nao selecionado',
-          modePaper: 'PAPER',
-          modeLive: 'LIVE',
-          allocPercent: 'PERCENT',
-          allocFixed: 'FIXED',
-          noApiKeys: 'Sem chaves API compativeis para a corretora selecionada',
-          liveUnsupported: 'A corretora selecionada nao suporta execucao LIVE.',
-          paperUnsupported: 'A corretora selecionada nao suporta feed de preco PAPER.',
-          saveValidation: 'Corrige os erros do formulario antes de guardar',
-          saveFailed: 'Falha ao guardar carteira',
-          createFailed: 'Falha ao criar carteira',
-          created: 'Carteira criada',
-          saved: 'Carteira guardada',
-          accountBalance: 'Saldo da conta',
-          freeBalance: 'Saldo livre',
-          referenceBalance: 'Saldo de referencia',
-          previewFetch: 'Obter pre-visualizacao',
-          previewFetching: 'A obter...',
-          previewUnavailable: 'Pre-visualizacao disponivel apenas em LIVE com chave API selecionada.',
-          validationSummaryTitle: 'Corrige os campos da carteira assinalados antes de guardar.',
-          validationName: 'Nome da carteira e obrigatorio.',
-          validationBaseCurrency: 'Moeda base e obrigatoria.',
-          validationApiKey: 'A chave API e obrigatoria no modo LIVE.',
-          validationAllocationValue: 'O valor de alocacao deve ser positivo no modo LIVE.',
-          validationAllocationPercent: 'A alocacao percentual nao pode ultrapassar 100.',
-          modePaperHint: 'No modo PAPER mostramos apenas campos de simulacao.',
-          modeLiveHint: 'No modo LIVE mostramos apenas campos de execucao da corretora.',
-          resetPaperAction: 'Repor carteira PAPER',
-          resetPaperConfirm:
-            'Repor agora a base de capital da carteira PAPER? O historico de posicoes e trades sera preservado.',
-          resetPaperLoading: 'A repor...',
-          resetPaperSuccess: 'Reposicao da carteira PAPER concluida',
-          resetPaperFailed: 'Falha ao repor carteira PAPER',
-          resetPaperLastAt: 'Ultima reposicao',
-          hiddenSubmit: 'Submeter formulario da carteira',
-          enabled: 'Ativado',
-          disabled: 'Desativado',
-        },
-      } as const)[locale],
-    [locale]
-  );
+  const walletText = useCallback((key: string) => t(`dashboard.wallets.form.${key}`), [t]);
 
   const loadData = useCallback(async () => {
-    setError(null);
     try {
-      await runAsyncWithState(setLoading, async () => {
-        const keys = await executeWithRetry(() => fetchApiKeys(), {
-          maxAttempts: 2,
-          retryDelayMs: 250,
-          shouldRetry: isRetriableHttpError,
-        }).catch(() => [] as ApiKey[]);
-        setApiKeys(keys);
-
-        if (isEditMode && editId) {
-          const wallet = await executeWithRetry(() => getWallet(editId), {
+      await runAsyncWithViewState({
+        setPending: setLoading,
+        setError,
+        clearErrorValue: null,
+        resolveError: (err) => resolveFormErrorMessage(err, walletText('loadError')),
+        operation: async () => {
+          const keys = await executeWithRetry(() => fetchApiKeys(), {
             maxAttempts: 2,
             retryDelayMs: 250,
             shouldRetry: isRetriableHttpError,
-          });
-          setForm(mapWalletToForm(wallet));
-          setLastResetAt(wallet.paperResetAt ?? null);
-        } else {
-          setForm(buildDefaultForm());
-          setLastResetAt(null);
-        }
+          }).catch(() => [] as ApiKey[]);
+          setApiKeys(keys);
 
-        setPreview(null);
-        setPreviewError(null);
-        setResetError(null);
-        setShowValidation(false);
+          if (isEditMode && editId) {
+            const wallet = await loadWalletRecord(editId);
+            setForm(mapWalletToForm(wallet));
+            setLastResetAt(wallet.paperResetAt ?? null);
+          } else {
+            setForm(buildDefaultForm());
+            setLastResetAt(null);
+          }
+
+          setPreview(null);
+          setPreviewError(null);
+          setResetError(null);
+          setShowValidation(false);
+        },
       });
-    } catch (err) {
-      setError(resolveFormErrorMessage(err, copy.loadError));
-    }
-  }, [copy.loadError, editId, isEditMode]);
+    } catch {}
+  }, [editId, isEditMode, walletText]);
 
   useEffect(() => {
     void loadData();
@@ -445,18 +149,9 @@ export default function WalletCreateEditForm({
       setWalletMetadataLoading(true);
       setWalletMetadataError(null);
       try {
-        const metadata = await executeWithRetry(
-          () =>
-            fetchWalletMetadata({
-              exchange: form.exchange,
-            }),
-          {
-            maxAttempts: 2,
-            retryDelayMs: 250,
-            shouldRetry: isRetriableHttpError,
-          }
-        );
+        const metadata = await loadWalletMetadataCatalog(form.exchange);
         if (cancelled) return;
+
         const nextMarketTypes =
           metadata.marketTypes.length > 0 ? metadata.marketTypes : DEFAULT_MARKET_TYPE_OPTIONS;
         const nextMetadataByType: Record<WalletMarketType, WalletMarketTypeMetadata> = {
@@ -473,14 +168,13 @@ export default function WalletCreateEditForm({
             : (metadata.marketType as WalletMarketType);
           const nextMarketMetadata =
             nextMetadataByType[nextMarketType] ?? DEFAULT_MARKET_TYPE_METADATA[nextMarketType];
-          const normalizedOptions = [
-            ...new Set((nextMarketMetadata.baseCurrencies ?? []).map(normalizeSymbol).filter(Boolean)),
-          ];
-          const options = normalizedOptions.length > 0 ? normalizedOptions : [DEFAULT_BASE_CURRENCY];
+          const normalizedOptions = [...new Set((nextMarketMetadata.baseCurrencies ?? []).map(normalizeFormSymbol).filter(Boolean))];
+          const options = normalizedOptions.length > 0 ? normalizedOptions : ['USDT'];
           const defaultBase =
-            normalizeSymbol(nextMarketMetadata.baseCurrency) || options[0] || DEFAULT_BASE_CURRENCY;
-          const normalizedCurrent = normalizeSymbol(prev.baseCurrency);
+            normalizeFormSymbol(nextMarketMetadata.baseCurrency) || options[0] || 'USDT';
+          const normalizedCurrent = normalizeFormSymbol(prev.baseCurrency);
           const nextBase = options.includes(normalizedCurrent) ? normalizedCurrent : defaultBase;
+
           if (
             prev.marketType === nextMarketType &&
             normalizedCurrent === nextBase &&
@@ -488,13 +182,14 @@ export default function WalletCreateEditForm({
           ) {
             return prev;
           }
+
           return { ...prev, marketType: nextMarketType, baseCurrency: nextBase };
         });
       } catch (err) {
         if (cancelled) return;
         setMarketTypeOptions(DEFAULT_MARKET_TYPE_OPTIONS);
         setMarketTypeMetadataByType(DEFAULT_MARKET_TYPE_METADATA);
-        setWalletMetadataError(resolveFormErrorMessage(err, copy.baseCurrencyCatalogError));
+        setWalletMetadataError(resolveFormErrorMessage(err, walletText('baseCurrencyCatalogError')));
       } finally {
         if (!cancelled) {
           setWalletMetadataLoading(false);
@@ -507,7 +202,7 @@ export default function WalletCreateEditForm({
     return () => {
       cancelled = true;
     };
-  }, [copy.baseCurrencyCatalogError, form.exchange]);
+  }, [form.exchange, walletText]);
 
   const activeMarketTypeMetadata = useMemo(
     () => marketTypeMetadataByType[form.marketType] ?? DEFAULT_MARKET_TYPE_METADATA[form.marketType],
@@ -515,34 +210,30 @@ export default function WalletCreateEditForm({
   );
 
   useEffect(() => {
-    const normalizedOptions = [
-      ...new Set((activeMarketTypeMetadata.baseCurrencies ?? []).map(normalizeSymbol).filter(Boolean)),
-    ];
-    const options = normalizedOptions.length > 0 ? normalizedOptions : [DEFAULT_BASE_CURRENCY];
+    const normalizedOptions = [...new Set((activeMarketTypeMetadata.baseCurrencies ?? []).map(normalizeFormSymbol).filter(Boolean))];
+    const options = normalizedOptions.length > 0 ? normalizedOptions : ['USDT'];
     const defaultBase =
-      normalizeSymbol(activeMarketTypeMetadata.baseCurrency) || options[0] || DEFAULT_BASE_CURRENCY;
+      normalizeFormSymbol(activeMarketTypeMetadata.baseCurrency) || options[0] || 'USDT';
 
     setForm((prev) => {
       if (prev.marketType !== form.marketType) return prev;
-      const normalizedCurrent = normalizeSymbol(prev.baseCurrency);
+      const normalizedCurrent = normalizeFormSymbol(prev.baseCurrency);
       const nextBase = options.includes(normalizedCurrent) ? normalizedCurrent : defaultBase;
       if (normalizedCurrent === nextBase && prev.baseCurrency === nextBase) return prev;
       return { ...prev, baseCurrency: nextBase };
     });
   }, [activeMarketTypeMetadata, form.marketType]);
 
-  const resolvedBaseCurrencyOptions = useMemo(() => {
-    const current = normalizeFormSymbol(form.baseCurrency);
-    const options = [
-      ...new Set([...(activeMarketTypeMetadata.baseCurrencies ?? []).map(normalizeSymbol), current].filter(Boolean)),
-    ].sort((a, b) => a.localeCompare(b));
-    return options.length > 0 ? options : [DEFAULT_BASE_CURRENCY];
-  }, [activeMarketTypeMetadata.baseCurrencies, form.baseCurrency]);
+  const resolvedBaseCurrencyOptions = useMemo(
+    () => resolveBaseCurrencyOptions(activeMarketTypeMetadata, form.baseCurrency),
+    [activeMarketTypeMetadata, form.baseCurrency]
+  );
 
   const compatibleApiKeys = useMemo(
     () => apiKeys.filter((item) => item.exchange === form.exchange),
     [apiKeys, form.exchange]
   );
+
   const exchangeOptions = useMemo(
     () => EXCHANGE_OPTIONS.map((exchange) => ({ value: exchange, label: exchange })),
     []
@@ -558,29 +249,29 @@ export default function WalletCreateEditForm({
   const liveAllocationModeOptions = useMemo(
     () => [
       { value: 'PERCENT', label: '%' },
-      { value: 'FIXED', label: normalizeSymbol(form.baseCurrency) || 'USDT' },
+      { value: 'FIXED', label: normalizeFormSymbol(form.baseCurrency) || 'USDT' },
     ],
     [form.baseCurrency]
   );
   const modeOptions = useMemo(
     () => [
-      { value: 'PAPER', label: copy.modePaper },
-      { value: 'LIVE', label: copy.modeLive },
+      { value: 'PAPER', label: walletText('modePaper') },
+      { value: 'LIVE', label: walletText('modeLive') },
     ],
-    [copy.modeLive, copy.modePaper]
+    [walletText]
   );
   const apiKeyOptions = useMemo(
     () => [
-      { value: '', label: copy.notSelected },
+      { value: '', label: walletText('notSelected') },
       ...compatibleApiKeys.map((apiKey) => ({
         value: apiKey.id,
         label: `${apiKey.label} (${apiKey.exchange})`,
       })),
     ],
-    [compatibleApiKeys, copy.notSelected]
+    [compatibleApiKeys, walletText]
   );
 
-  const setMode = useCallback((nextMode: WalletMode) => {
+  const setMode = useCallback((nextMode: WalletFormState['mode']) => {
     setForm((prev) => {
       if (prev.mode === nextMode) return prev;
       if (nextMode === 'PAPER') {
@@ -612,41 +303,22 @@ export default function WalletCreateEditForm({
       setPreviewError(null);
       return;
     }
+
     if (!compatibleApiKeys.find((item) => item.id === form.apiKeyId)) {
       setForm((prev) => ({ ...prev, apiKeyId: compatibleApiKeys[0]?.id ?? '' }));
       setPreview(null);
       setPreviewError(null);
     }
-  }, [compatibleApiKeys, form.apiKeyId, form.mode]);
+  }, [compatibleApiKeys, form.apiKeyId, form.manageExternalPositions, form.mode]);
 
   const canSaveMode = form.mode === 'LIVE'
     ? supportsExchangeCapability(form.exchange, 'LIVE_EXECUTION')
     : supportsExchangeCapability(form.exchange, 'PAPER_PRICING_FEED');
 
-  const fieldErrors = useMemo(() => {
-    const errors: Partial<Record<keyof WalletFormState, string>> = {};
-
-    if (!hasFormText(form.name)) {
-      errors.name = copy.validationName;
-    }
-    if (!normalizeFormSymbol(form.baseCurrency)) {
-      errors.baseCurrency = copy.validationBaseCurrency;
-    }
-
-    if (form.mode === 'LIVE') {
-      if (!form.apiKeyId) {
-        errors.apiKeyId = copy.validationApiKey;
-      }
-      if (!Number.isFinite(form.liveAllocationValue) || form.liveAllocationValue <= 0) {
-        errors.liveAllocationValue = copy.validationAllocationValue;
-      } else if (form.liveAllocationMode === 'PERCENT' && form.liveAllocationValue > 100) {
-        errors.liveAllocationValue = copy.validationAllocationPercent;
-      }
-    }
-
-    return errors;
-  }, [copy.validationAllocationPercent, copy.validationAllocationValue, copy.validationApiKey, copy.validationBaseCurrency, copy.validationName, form]);
-
+  const fieldErrors = useMemo(
+    () => getWalletFieldErrors(form, walletText),
+    [form, walletText]
+  );
   const hasValidationErrors = Object.keys(fieldErrors).length > 0;
   const validationSummaryErrors = useMemo(
     () => toValidationSummaryErrors(fieldErrors),
@@ -666,6 +338,7 @@ export default function WalletCreateEditForm({
       manageExternalPositions: 'wallet-manage-external-positions',
     });
   }, [fieldErrors]);
+
   const selectedApiKey = useMemo(
     () => compatibleApiKeys.find((item) => item.id === form.apiKeyId) ?? null,
     [compatibleApiKeys, form.apiKeyId]
@@ -674,91 +347,50 @@ export default function WalletCreateEditForm({
   const handlePreviewBalance = useCallback(async () => {
     if (form.mode !== 'LIVE' || !form.apiKeyId || !canSaveMode) return;
     setPreviewError(null);
+
     try {
       await runAsyncWithState(setPreviewLoading, async () => {
-        const data = await executeWithRetry(
-          () =>
-            previewWalletBalance({
-              exchange: form.exchange,
-              marketType: form.marketType,
-              baseCurrency: normalizeFormBaseCurrency(form.baseCurrency),
-              apiKeyId: form.apiKeyId,
-            }),
-          {
-            maxAttempts: 2,
-            retryDelayMs: 250,
-            shouldRetry: isRetriableHttpError,
-          }
-        );
+        const data = await loadWalletBalancePreview(form);
         setPreview(data);
       });
     } catch (err) {
       setPreview(null);
-      setPreviewError(resolveFormErrorMessage(err, copy.saveFailed));
+      setPreviewError(resolveFormErrorMessage(err, walletText('saveFailed')));
     }
-  }, [
-    canSaveMode,
-    copy.saveFailed,
-    form.apiKeyId,
-    form.baseCurrency,
-    form.exchange,
-    form.marketType,
-    form.mode,
-  ]);
+  }, [canSaveMode, form, walletText]);
 
   useEffect(() => {
     if (form.mode !== 'LIVE' || !form.apiKeyId || !canSaveMode) return;
     void handlePreviewBalance();
   }, [canSaveMode, form.apiKeyId, form.baseCurrency, form.exchange, form.marketType, form.mode, handlePreviewBalance]);
 
-  const previewReferenceBalance = useMemo(() => {
-    if (!preview) return null;
-    if (form.liveAllocationMode === 'PERCENT') {
-      const percent = Math.max(0, Math.min(100, form.liveAllocationValue || 0));
-      return preview.accountBalance * (percent / 100);
-    }
-    if (form.liveAllocationMode === 'FIXED') {
-      return Math.min(preview.accountBalance, Math.max(0, form.liveAllocationValue || 0));
-    }
-    return preview.referenceBalance;
-  }, [form.liveAllocationMode, form.liveAllocationValue, preview]);
+  const previewReferenceBalance = useMemo(
+    () => resolvePreviewReferenceBalance(form, preview),
+    [form, preview]
+  );
 
   const handleResetPaper = useCallback(async () => {
     if (!editId || !isEditMode || form.mode !== 'PAPER' || submitting || resetting) return;
 
-    const confirmed = typeof window === 'undefined' ? true : window.confirm(copy.resetPaperConfirm);
+    const confirmed = typeof window === 'undefined' ? true : window.confirm(walletText('resetPaperConfirm'));
     if (!confirmed) return;
 
     setResetError(null);
 
     try {
       await runAsyncWithState(setResetting, async () => {
-        await executeWithRetry(() => resetPaperWallet(editId), {
-          maxAttempts: 2,
-          retryDelayMs: 250,
-          shouldRetry: isRetriableHttpError,
-        });
-        toast.success(copy.resetPaperSuccess);
+        await runPaperWalletReset(editId);
+        toast.success(walletText('resetPaperSuccess'));
         await loadData();
       });
     } catch (err) {
-      const errorMessage = resolveFormErrorMessage(err, copy.resetPaperFailed);
+      const errorMessage = resolveFormErrorMessage(err, walletText('resetPaperFailed'));
       setResetError(errorMessage);
-      toast.error(copy.resetPaperFailed, {
+      toast.error(walletText('resetPaperFailed'), {
         description: errorMessage,
       });
     }
-  }, [
-    copy.resetPaperConfirm,
-    copy.resetPaperFailed,
-    copy.resetPaperSuccess,
-    editId,
-    form.mode,
-    isEditMode,
-    loadData,
-    resetting,
-    submitting,
-  ]);
+  }, [editId, form.mode, isEditMode, loadData, resetting, submitting, walletText]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -766,21 +398,21 @@ export default function WalletCreateEditForm({
     setShowValidation(true);
 
     if (!canSaveMode || hasValidationErrors) {
-      toast.error(copy.saveValidation);
+      toast.error(walletText('saveValidation'));
       focusFirstInvalidControl();
       return;
     }
 
     try {
       await runAsyncWithState(setSubmitting, async () => {
-        const payload = toPayload(form);
+        const payload: CreateWalletInput = toPayload(form);
         if (isEditMode && editId) {
           await executeWithRetry(() => updateWallet(editId, payload), {
             maxAttempts: 2,
             retryDelayMs: 250,
             shouldRetry: isRetriableHttpError,
           });
-          toast.success(copy.saved);
+          toast.success(walletText('saved'));
           await loadData();
         } else {
           await executeWithRetry(() => createWallet(payload), {
@@ -788,27 +420,27 @@ export default function WalletCreateEditForm({
             retryDelayMs: 250,
             shouldRetry: isRetriableHttpError,
           });
-          toast.success(copy.created);
+          toast.success(walletText('created'));
           router.replace('/dashboard/wallets/list');
         }
       });
     } catch (err) {
-      toast.error(isEditMode ? copy.saveFailed : copy.createFailed, {
-        description: resolveFormErrorMessage(err, isEditMode ? copy.saveFailed : copy.createFailed),
+      toast.error(isEditMode ? walletText('saveFailed') : walletText('createFailed'), {
+        description: resolveFormErrorMessage(err, isEditMode ? walletText('saveFailed') : walletText('createFailed')),
       });
     }
   };
 
   if (loading) {
-    return <LoadingState title={copy.loading} />;
+    return <LoadingState title={walletText('loading')} />;
   }
 
   if (error) {
     return (
       <ErrorState
-        title={copy.loadFailedTitle}
+        title={walletText('loadFailedTitle')}
         description={error}
-        retryLabel={copy.retry}
+        retryLabel={walletText('retry')}
         onRetry={() => void loadData()}
       />
     );
@@ -818,243 +450,87 @@ export default function WalletCreateEditForm({
     <form id={formId} onSubmit={handleSubmit} className='grid gap-4 xl:grid-cols-[minmax(0,1fr)_20rem]'>
       <div className='space-y-4'>
         {showValidation && hasValidationErrors ? (
-          <FormValidationSummary title={copy.validationSummaryTitle} errors={validationSummaryErrors} />
+          <FormValidationSummary title={walletText('validationSummaryTitle')} errors={validationSummaryErrors} />
         ) : null}
 
-        <FormSectionCard title={copy.sectionBasics}>
-          <FormGrid columns={2}>
-            <TextField
-              id='wallet-name'
-              label={copy.name}
-              value={form.name}
-              onChange={(value) => setForm((prev) => ({ ...prev, name: value }))}
-              error={showValidation ? fieldErrors.name : undefined}
-            />
-
-            <RadioGroupField
-              id='wallet-mode'
-              label={copy.mode}
-              hint={form.mode === 'LIVE' ? copy.modeLiveHint : copy.modePaperHint}
-              className='md:col-span-2'
-              value={form.mode}
-              options={modeOptions}
-              onChange={(value) => setMode(value as WalletMode)}
-            />
-
-            <SelectField
-              id='wallet-exchange'
-              label={copy.exchange}
-              value={form.exchange}
-              options={exchangeOptions}
-              onChange={(value) => setForm((prev) => ({ ...prev, exchange: value as WalletFormState['exchange'] }))}
-            />
-
-            <SelectField
-              id='wallet-market-type'
-              label={copy.marketType}
-              value={form.marketType}
-              options={marketTypeSelectOptions}
-              onChange={(value) => setForm((prev) => ({ ...prev, marketType: value as WalletMarketType }))}
-              disabled={walletMetadataLoading}
-            />
-
-            <SelectField
-              id='wallet-base-currency'
-              label={copy.baseCurrency}
-              value={form.baseCurrency}
-              options={baseCurrencyOptions}
-              onChange={(value) => setForm((prev) => ({ ...prev, baseCurrency: normalizeFormSymbol(value) }))}
-              disabled={walletMetadataLoading}
-              error={showValidation ? fieldErrors.baseCurrency : undefined}
-              hint={walletMetadataLoading ? copy.baseCurrencyLoading : undefined}
-            />
-            {walletMetadataError ? <p className='text-xs text-warning md:col-span-2'>{walletMetadataError}</p> : null}
-          </FormGrid>
-        </FormSectionCard>
+        <WalletBasicsSection
+          walletText={walletText}
+          form={form}
+          modeOptions={modeOptions}
+          exchangeOptions={exchangeOptions}
+          marketTypeOptions={marketTypeSelectOptions}
+          baseCurrencyOptions={baseCurrencyOptions}
+          walletMetadataLoading={walletMetadataLoading}
+          walletMetadataError={walletMetadataError}
+          showValidation={showValidation}
+          fieldErrors={fieldErrors}
+          onNameChange={(value) => setForm((prev) => ({ ...prev, name: value }))}
+          onModeChange={setMode}
+          onExchangeChange={(value) => setForm((prev) => ({ ...prev, exchange: value }))}
+          onMarketTypeChange={(value) => setForm((prev) => ({ ...prev, marketType: value }))}
+          onBaseCurrencyChange={(value) => setForm((prev) => ({ ...prev, baseCurrency: normalizeFormSymbol(value) }))}
+        />
 
         {form.mode === 'PAPER' ? (
-          <FormSectionCard
-            title={copy.sectionPaper}
-            actions={
-              isEditMode ? (
-                <button
-                  type='button'
-                  className='btn btn-xs btn-outline btn-warning'
-                  onClick={() => void handleResetPaper()}
-                  disabled={resetting || submitting}
-                >
-                  {resetting ? copy.resetPaperLoading : copy.resetPaperAction}
-                </button>
-              ) : undefined
-            }
-          >
-            <FormGrid columns={2}>
-              <NumberField
-                id='wallet-paper-initial-balance'
-                label={copy.paperInitialBalance}
-                value={form.paperInitialBalance}
-                onChange={(value) => setForm((prev) => ({ ...prev, paperInitialBalance: Number(value) || 0 }))}
-                min={0}
-                step={0.01}
-              />
-            </FormGrid>
-            {lastResetAt ? (
-              <p className='mt-2 text-xs opacity-70'>
-                {copy.resetPaperLastAt}: {lastResetAt}
-              </p>
-            ) : null}
-            {resetError ? <p className='mt-2 text-xs text-error'>{resetError}</p> : null}
-          </FormSectionCard>
+          <WalletPaperSection
+            walletText={walletText}
+            form={form}
+            isEditMode={isEditMode}
+            resetting={resetting}
+            submitting={submitting}
+            lastResetAt={lastResetAt}
+            resetError={resetError}
+            onPaperInitialBalanceChange={(value) => setForm((prev) => ({ ...prev, paperInitialBalance: value }))}
+            onResetPaper={() => void handleResetPaper()}
+          />
         ) : null}
 
         {form.mode === 'LIVE' ? (
-          <FormSectionCard title={copy.sectionLive}>
-            <FormGrid columns={2}>
-              <NumberField
-                id='wallet-live-allocation-value'
-                label={copy.liveAllocationValue}
-                value={form.liveAllocationValue}
-                onChange={(value) => setForm((prev) => ({ ...prev, liveAllocationValue: Number(value) || 0 }))}
-                min={0.01}
-                step={0.01}
-                error={showValidation ? fieldErrors.liveAllocationValue : undefined}
-              />
-
-              <SelectField
-                id='wallet-live-allocation-mode'
-                label={copy.liveAllocationMode}
-                value={form.liveAllocationMode}
-                options={liveAllocationModeOptions}
-                onChange={(value) => setForm((prev) => ({ ...prev, liveAllocationMode: value as WalletAllocationMode }))}
-              />
-
-              <SelectField
-                id='wallet-api-key'
-                label={copy.apiKey}
-                value={form.apiKeyId}
-                options={apiKeyOptions}
-                className='md:col-span-2'
-                onChange={(value) => {
-                  setForm((prev) => ({ ...prev, apiKeyId: value }));
-                  setPreview(null);
-                  setPreviewError(null);
-                }}
-                error={showValidation ? fieldErrors.apiKeyId : undefined}
-              />
-              {compatibleApiKeys.length === 0 ? <p className='text-xs text-warning md:col-span-2'>{copy.noApiKeys}</p> : null}
-
-              <ToggleField
-                id='wallet-manage-external-positions'
-                className='md:col-span-2'
-                label={copy.manageExternalPositions}
-                hint={copy.manageExternalPositionsHint}
-                checked={form.manageExternalPositions}
-                onChange={(checked) => setForm((prev) => ({ ...prev, manageExternalPositions: checked }))}
-              />
-            </FormGrid>
-          </FormSectionCard>
+          <WalletLiveSection
+            walletText={walletText}
+            form={form}
+            compatibleApiKeys={compatibleApiKeys}
+            liveAllocationModeOptions={liveAllocationModeOptions}
+            apiKeyOptions={apiKeyOptions}
+            showValidation={showValidation}
+            fieldErrors={fieldErrors}
+            onLiveAllocationValueChange={(value) => setForm((prev) => ({ ...prev, liveAllocationValue: value }))}
+            onLiveAllocationModeChange={(value) => setForm((prev) => ({ ...prev, liveAllocationMode: value as WalletAllocationMode }))}
+            onApiKeyChange={(value) => {
+              setForm((prev) => ({ ...prev, apiKeyId: value }));
+              setPreview(null);
+              setPreviewError(null);
+            }}
+            onManageExternalPositionsChange={(checked) => setForm((prev) => ({ ...prev, manageExternalPositions: checked }))}
+          />
         ) : null}
 
         {!canSaveMode ? (
-          <FormAlert variant='warning'>{form.mode === 'LIVE' ? copy.liveUnsupported : copy.paperUnsupported}</FormAlert>
+          <FormAlert variant='warning'>
+            {form.mode === 'LIVE' ? walletText('liveUnsupported') : walletText('paperUnsupported')}
+          </FormAlert>
         ) : null}
       </div>
 
       <aside className='space-y-4'>
-        <FormSectionCard title={copy.sectionSummary} description={copy.summaryHint} className='bg-base-100/85 text-sm'>
-          <div className='space-y-2'>
-            <p className='flex items-center justify-between gap-2'>
-              <span className='opacity-65'>{copy.mode}</span>
-              <span className='font-semibold'>{form.mode}</span>
-            </p>
-            <p className='flex items-center justify-between gap-2'>
-              <span className='opacity-65'>{copy.exchange}</span>
-              <span className='font-semibold'>{form.exchange}</span>
-            </p>
-            <p className='flex items-center justify-between gap-2'>
-              <span className='opacity-65'>{copy.marketType}</span>
-              <span className='font-semibold'>{form.marketType}</span>
-            </p>
-            <p className='flex items-center justify-between gap-2'>
-              <span className='opacity-65'>{copy.baseCurrency}</span>
-              <span className='font-semibold'>{normalizeSymbol(form.baseCurrency) || '-'}</span>
-            </p>
-            {form.mode === 'LIVE' ? (
-              <>
-                <p className='flex items-center justify-between gap-2'>
-                  <span className='opacity-65'>{copy.liveAllocation}</span>
-                  <span className='font-semibold'>
-                    {form.liveAllocationValue || '-'}{' '}
-                    {form.liveAllocationMode === 'PERCENT' ? '%' : normalizeSymbol(form.baseCurrency) || 'USDT'}
-                  </span>
-                </p>
-                <p className='flex items-center justify-between gap-2'>
-                  <span className='opacity-65'>{copy.selectedKey}</span>
-                  <span className='max-w-[11rem] truncate text-right font-semibold'>{selectedApiKey?.label ?? copy.notSelected}</span>
-                </p>
-                <p className='flex items-center justify-between gap-2'>
-                  <span className='opacity-65'>{copy.manageExternalPositionsSummary}</span>
-                  <span className='font-semibold'>
-                    {form.manageExternalPositions ? copy.enabled : copy.disabled}
-                  </span>
-                </p>
-              </>
-            ) : null}
-          </div>
-        </FormSectionCard>
+        <WalletSummarySection walletText={walletText} form={form} selectedApiKey={selectedApiKey} />
 
         {form.mode === 'LIVE' ? (
-          <FormSectionCard
-            title={copy.sectionPreview}
-            className='bg-base-100/85 text-sm'
-            actions={
-              <button
-                type='button'
-                className='btn btn-xs btn-outline'
-                onClick={() => void handlePreviewBalance()}
-                disabled={previewLoading || !form.apiKeyId || !canSaveMode}
-              >
-                {previewLoading ? copy.previewFetching : copy.previewFetch}
-              </button>
-            }
-          >
-            {!form.apiKeyId || !canSaveMode ? <p className='text-xs opacity-70'>{copy.previewUnavailable}</p> : null}
-            {previewError ? <p className='text-xs text-error'>{previewError}</p> : null}
-
-            <div className='space-y-2'>
-              <p className='flex items-center justify-between gap-2'>
-                <span className='opacity-65'>{copy.accountBalance}</span>
-                <span className='font-semibold'>
-                  {preview ? formatAmount(preview.accountBalance, preview.baseCurrency) : '-'}
-                </span>
-              </p>
-              <p className='flex items-center justify-between gap-2'>
-                <span className='opacity-65'>{copy.freeBalance}</span>
-                <span className='font-semibold'>
-                  {preview?.freeBalance != null ? formatAmount(preview.freeBalance, preview.baseCurrency) : '-'}
-                </span>
-              </p>
-              <p className='flex items-center justify-between gap-2'>
-                <span className='opacity-65'>{copy.referenceBalance}</span>
-                <span className='font-semibold text-primary'>
-                  {previewReferenceBalance != null && preview
-                    ? formatAmount(previewReferenceBalance, preview.baseCurrency)
-                    : '-'}
-                </span>
-              </p>
-              {preview ? (
-                <p className='inline-flex items-center gap-1.5 text-xs opacity-70'>
-                  <LuBadgeCheck className='h-3.5 w-3.5' aria-hidden />
-                  {preview.fetchedAt}
-                </p>
-              ) : null}
-            </div>
-          </FormSectionCard>
+          <WalletPreviewSection
+            walletText={walletText}
+            form={form}
+            canSaveMode={canSaveMode}
+            previewLoading={previewLoading}
+            previewError={previewError}
+            preview={preview}
+            previewReferenceBalance={previewReferenceBalance}
+            onPreviewBalance={() => void handlePreviewBalance()}
+          />
         ) : null}
       </aside>
 
       <button type='submit' className='sr-only' disabled={submitting}>
-        {copy.hiddenSubmit}
+        {walletText('hiddenSubmit')}
       </button>
     </form>
   );

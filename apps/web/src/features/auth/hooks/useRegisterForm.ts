@@ -39,7 +39,7 @@ export const useRegisterForm = () => {
         fallbackPrefix: '/auth/register',
       });
     } catch (err) {
-      const message = handleError(err) || t('auth.toasts.register.failedFallback');
+      const message = handleError(err, { fallback: t('auth.toasts.register.failedFallback') });
       toast.error(`${t('auth.toasts.register.failedPrefix')} ${message}`);
     }
   };

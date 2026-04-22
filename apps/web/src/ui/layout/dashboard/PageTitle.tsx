@@ -41,23 +41,10 @@ export function PageTitle({
   variant = "boxed",
   actions,
 }: PageTitleProps) {
-  const { locale, t } = useI18n();
+  const { t } = useI18n();
   const addActionDescriptionId = useId();
-  const copyByLocale = {
-    en: {
-      addDescription: (label: string, sectionTitle: string) => `${label} for ${sectionTitle}`,
-      breadcrumbAria: "Breadcrumb navigation",
-    },
-    pl: {
-      addDescription: (label: string, sectionTitle: string) => `${label} dla sekcji ${sectionTitle}`,
-      breadcrumbAria: "Nawigacja okruszkowa",
-    },
-    pt: {
-      addDescription: (label: string, sectionTitle: string) => `${label} para a secao ${sectionTitle}`,
-      breadcrumbAria: "Navegacao breadcrumb",
-    },
-  } as const;
-  const copy = copyByLocale[locale];
+  const addDescriptionTemplate = t('dashboard.pageTitle.addDescription');
+  const breadcrumbAria = t('dashboard.pageTitle.breadcrumbAria');
 
   const normalizedBreadcrumb =
     breadcrumb.length > 0
@@ -101,8 +88,10 @@ export function PageTitle({
           <span>{addLabel || t("dashboard.common.add")}</span>
         </span>
       </button>
-      <span id={addActionDescriptionId} className="sr-only">
-        {copy.addDescription(addLabel || t("dashboard.common.add"), title)}
+        <span id={addActionDescriptionId} className="sr-only">
+        {addDescriptionTemplate
+          .replace('{label}', addLabel || t("dashboard.common.add"))
+          .replace('{sectionTitle}', title)}
       </span>
     </>
   ) : null;
@@ -113,7 +102,7 @@ export function PageTitle({
     <div className={wrapperClassName}>
       <div className="min-w-0">
         <nav
-          aria-label={copy.breadcrumbAria}
+          aria-label={breadcrumbAria}
           className="breadcrumbs mt-2 max-w-full overflow-x-auto text-sm"
         >
           <ul>

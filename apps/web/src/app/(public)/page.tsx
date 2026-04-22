@@ -14,96 +14,48 @@ import {
 import { useI18n } from '@/i18n/I18nProvider';
 
 export default function PublicPage() {
-  const { locale } = useI18n();
+  const { t } = useI18n();
   const landingActionPrimaryClass =
     'btn btn-sm h-9 min-h-9 border transition-colors duration-150 border-primary/45 bg-primary/10 text-primary hover:border-primary/70 hover:bg-primary/20';
 
-  const copy =
-    locale === "pl"
-      ? {
-          badge: 'Platforma do budowy botow i strategii',
-          heading: 'Automatyzuj trading od pomyslu do egzekucji.',
-          lead:
-            'Soar laczy research, strategy builder, backtesty i runtime bota w jednym flow. Testujesz szybciej, wdrazasz pewniej i kontrolujesz ryzyko na kazdym etapie.',
-          trustA: 'Backtest + runtime w jednym miejscu',
-          trustB: 'Strategie pod spot i futures',
-          trustC: 'Kontrola ryzyka i transparentna historia',
-          sectionFlowTitle: 'Jeden workflow, zero chaosu',
-          sectionFlowLead:
-            'Nie musisz skakac miedzy narzedziami. Soar prowadzi od konfiguracji rynku do monitoringu pozycji.',
-          flow1Title: '1. Zdefiniuj kontekst rynku',
-          flow1Desc: 'Zbuduj listy rynkow, wybierz gielde i typ rynku, przygotuj dane pod strategia.',
-          flow2Title: '2. Zbuduj i przetestuj strategie',
-          flow2Desc: 'Lacz wskazniki, warunki wejscia/wyjscia i sprawdz wyniki na danych historycznych.',
-          flow3Title: '3. Uruchom bota i monitoruj',
-          flow3Desc: 'Przejdz do runtime, sledz sygnaly, wykonania i historie transakcji w jednym panelu.',
-          sectionAudienceTitle: 'Dla kazdego typu tradera',
-          sectionAudienceLead:
-            'Niezaleznie czy scalpujesz, swingujesz czy budujesz system portfelowy, ustawisz styl pracy pod siebie.',
-          audience1Title: 'Momentum',
-          audience1Desc: 'Szybkie sygnaly, szybkie egzekucje, pelna kontrola nad tempem wejsc.',
-          audience2Title: 'Mean Reversion',
-          audience2Desc: 'Warunki oparte o odchylenia i powroty do sredniej, z jasnymi limitami ryzyka.',
-          audience3Title: 'Trend Following',
-          audience3Desc: 'Filtry trendu, trailing i zarzadzanie pozycja pod dluzsze ruchy.',
-          audience4Title: 'Systematic Portfolio',
-          audience4Desc: 'Spojny framework do testowania wielu par i uruchamiania botow na tych samych zasadach.',
-          sectionFeaturesTitle: 'Co dostajesz od razu',
-          feature1Title: 'Strategie i wskazniki',
-          feature1Desc: 'Kreator warunkow, czytelne parametry i konfiguracja bez kodowania.',
-          feature2Title: 'Backtesty z kontekstem',
-          feature2Desc: 'Wyniki, metryki i historia transakcji z naciskiem na zrozumienie zachowania strategii.',
-          feature3Title: 'Runtime i operacje',
-          feature3Desc: 'Podglad aktywnych botow, sygnalow i statusu wykonania w czasie rzeczywistym.',
-          feature4Title: 'Bezpieczenstwo i kontrola',
-          feature4Desc: 'Tryby pracy, limity i jasny podglad decyzji bota.',
-          bottomTitle: 'Zacznij budowac swoj trading stack w Soar',
-          bottomLead:
-            'Skonfiguruj rynek, zbuduj strategie, uruchom bota. Wszystko w jednym miejscu, bez klejenia narzedzi.',
-          bottomCta: 'Utworz konto',
-        }
-      : {
-          badge: 'Trading bot and strategy execution platform',
-          heading: 'Automate trading from idea to execution.',
-          lead:
-            'Soar unifies research, strategy builder, backtests, and live bot runtime in one flow. Test faster, deploy with confidence, and keep risk under control.',
-          trustA: 'Backtest and runtime in one place',
-          trustB: 'Strategies for spot and futures',
-          trustC: 'Risk control and transparent trade history',
-          sectionFlowTitle: 'One workflow, no tool chaos',
-          sectionFlowLead:
-            'No more jumping between tools. Soar takes you from market setup to position monitoring.',
-          flow1Title: '1. Define your market context',
-          flow1Desc: 'Build market sets, choose exchange and market type, prepare clean context for strategy logic.',
-          flow2Title: '2. Build and validate strategy',
-          flow2Desc: 'Combine indicators, entry/exit conditions, and validate behavior on historical data.',
-          flow3Title: '3. Launch bot and monitor runtime',
-          flow3Desc: 'Move to runtime and track signals, executions, and trade history in one panel.',
-          sectionAudienceTitle: 'Designed for every trader type',
-          sectionAudienceLead:
-            'Scalper, swing trader, or systematic builder, you can shape the workflow to match your style.',
-          audience1Title: 'Momentum',
-          audience1Desc: 'Fast signals, fast execution, and full control over entry cadence.',
-          audience2Title: 'Mean Reversion',
-          audience2Desc: 'Deviation-to-mean conditions with clear risk limits and disciplined exits.',
-          audience3Title: 'Trend Following',
-          audience3Desc: 'Trend filters, trailing logic, and position management for larger directional moves.',
-          audience4Title: 'Systematic Portfolio',
-          audience4Desc: 'A consistent framework to test many pairs and run bots under the same rules.',
-          sectionFeaturesTitle: 'What you get immediately',
-          feature1Title: 'Strategy and indicators',
-          feature1Desc: 'Condition builder, readable parameters, and no-code configuration.',
-          feature2Title: 'Context-rich backtests',
-          feature2Desc: 'Results, metrics, and trade timeline focused on understanding strategy behavior.',
-          feature3Title: 'Runtime operations',
-          feature3Desc: 'Clear view of active bots, signals, and execution status in near real time.',
-          feature4Title: 'Safety and control',
-          feature4Desc: 'Operational modes, limits, and transparent visibility into bot decisions.',
-          bottomTitle: 'Build your trading stack in Soar',
-          bottomLead:
-            'Configure markets, build strategy, launch bot. One place, one workflow, no fragmented tooling.',
-          bottomCta: 'Create account',
-        };
+  const copy = {
+    badge: t('public.landing.badge'),
+    heading: t('public.landing.heading'),
+    lead: t('public.landing.lead'),
+    trustA: t('public.landing.trustA'),
+    trustB: t('public.landing.trustB'),
+    trustC: t('public.landing.trustC'),
+    sectionFlowTitle: t('public.landing.sectionFlowTitle'),
+    sectionFlowLead: t('public.landing.sectionFlowLead'),
+    flow1Title: t('public.landing.flow1Title'),
+    flow1Desc: t('public.landing.flow1Desc'),
+    flow2Title: t('public.landing.flow2Title'),
+    flow2Desc: t('public.landing.flow2Desc'),
+    flow3Title: t('public.landing.flow3Title'),
+    flow3Desc: t('public.landing.flow3Desc'),
+    sectionAudienceTitle: t('public.landing.sectionAudienceTitle'),
+    sectionAudienceLead: t('public.landing.sectionAudienceLead'),
+    audience1Title: t('public.landing.audience1Title'),
+    audience1Desc: t('public.landing.audience1Desc'),
+    audience2Title: t('public.landing.audience2Title'),
+    audience2Desc: t('public.landing.audience2Desc'),
+    audience3Title: t('public.landing.audience3Title'),
+    audience3Desc: t('public.landing.audience3Desc'),
+    audience4Title: t('public.landing.audience4Title'),
+    audience4Desc: t('public.landing.audience4Desc'),
+    sectionFeaturesTitle: t('public.landing.sectionFeaturesTitle'),
+    feature1Title: t('public.landing.feature1Title'),
+    feature1Desc: t('public.landing.feature1Desc'),
+    feature2Title: t('public.landing.feature2Title'),
+    feature2Desc: t('public.landing.feature2Desc'),
+    feature3Title: t('public.landing.feature3Title'),
+    feature3Desc: t('public.landing.feature3Desc'),
+    feature4Title: t('public.landing.feature4Title'),
+    feature4Desc: t('public.landing.feature4Desc'),
+    bottomTitle: t('public.landing.bottomTitle'),
+    bottomLead: t('public.landing.bottomLead'),
+    bottomCta: t('public.landing.bottomCta'),
+  } as const;
 
   return (
     <>

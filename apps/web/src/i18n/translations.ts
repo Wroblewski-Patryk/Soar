@@ -43,6 +43,11 @@ type TranslationSchema = {
       polish: string;
       portuguese: string;
     };
+    shared: {
+      genericError: string;
+      sessionExpired: string;
+      loggedOut: string;
+    };
     footer: {
       rights: string;
     };
@@ -304,6 +309,17 @@ export const translations: Record<Locale, TranslationSchema> = {
 
 export const DEFAULT_LOCALE: Locale = "en";
 
+const resolveKey = (obj: unknown, path: string): string | undefined => {
+  const value = path.split(".").reduce<unknown>((acc, chunk) => {
+    if (acc && typeof acc === "object" && chunk in acc) {
+      return (acc as Record<string, unknown>)[chunk];
+    }
+    return undefined;
+  }, obj);
+
+  return typeof value === "string" ? value : undefined;
+};
+
 type NestedTranslationKey<T> = T extends string
   ? never
   : {
@@ -314,3 +330,7 @@ export type TranslationKey =
   | NestedTranslationKey<TranslationSchema>
   | `dashboard.bots.${string}`
   | string;
+
+export const resolveDefaultTranslation = (key: TranslationKey, fallback?: string): string => {
+  return resolveKey(translations[DEFAULT_LOCALE], key) ?? fallback ?? String(key);
+};

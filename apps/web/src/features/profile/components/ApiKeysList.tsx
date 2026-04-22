@@ -11,67 +11,14 @@ import { TableIconButtonAction, TableToneBadge } from "../../../ui/components/Ta
 import type { ApiKey } from "../types/apiKey.type";
 
 export default function ApiKeysList() {
-  const { locale } = useI18n();
+  const { t } = useI18n();
   const { formatDate } = useLocaleFormatting();
-  const { keys, loading, error, handleAdd, handleEdit, handleDelete } = useApiKeys();
-  const copy =
-    locale === "pl"
-      ? {
-          addApiKeyTitle: "Dodaj klucz API",
-          editApiKeyTitle: "Edytuj klucz API",
-          tableLabel: "Nazwa",
-          tableExchange: "Gielda",
-          tableCreatedAt: "Utworzono",
-          tableLastUsed: "Ostatnio uzywany",
-          tableActions: "Akcje",
-          edit: "Edytuj",
-          remove: "Usun",
-          sectionTitle: "Klucze API",
-          addNewKey: "Dodaj nowy klucz",
-          loadingTitle: "Ladowanie kluczy API",
-          loadErrorTitle: "Nie mozna pobrac kluczy API",
-          refresh: "Odswiez",
-          emptyTitle: "Brak kluczy API",
-          emptyDescription: "Dodaj pierwszy klucz, aby polaczyc gielde i uruchomic tryb live.",
-          searchPlaceholder: "Szukaj kluczy API (label, gielda)",
-          emptyFilter: "Brak kluczy API dla wybranego filtra.",
-          close: "zamknij",
-          deleteModalTitle: "Usun klucz API?",
-          deleteModalDescription: "Czy na pewno chcesz usunac ten klucz? Tej operacji nie mozna cofnac.",
-          deleteRisk: "Ryzyko LIVE: usuniecie klucza moze zatrzymac aktywne boty handlujace na zywo.",
-          deleteRiskConfirm: "Rozumiem ryzyko i chce kontynuowac",
-          cancel: "Anuluj",
-        }
-      : {
-          addApiKeyTitle: "Add API key",
-          editApiKeyTitle: "Edit API key",
-          tableLabel: "Name",
-          tableExchange: "Exchange",
-          tableCreatedAt: "Created at",
-          tableLastUsed: "Last used",
-          tableActions: "Actions",
-          edit: "Edit",
-          remove: "Delete",
-          sectionTitle: "API Keys",
-          addNewKey: "Add new key",
-          loadingTitle: "Loading API keys",
-          loadErrorTitle: "Could not load API keys",
-          refresh: "Refresh",
-          emptyTitle: "No API keys",
-          emptyDescription: "Add your first key to connect exchange and run live mode.",
-          searchPlaceholder: "Search API keys (label, exchange)",
-          emptyFilter: "No API keys for selected filter.",
-          close: "close",
-          deleteModalTitle: "Delete API key?",
-          deleteModalDescription: "Are you sure you want to delete this key? This action cannot be undone.",
-          deleteRisk: "LIVE risk: deleting key may stop actively running live bots.",
-          deleteRiskConfirm: "I understand the risk and want to continue",
-          cancel: "Cancel",
-        };
+  const { keys, loading, error, refresh, handleAdd, handleEdit, handleDelete } = useApiKeys();
+  const apiKeysText = useCallback((key: string) => t(`dashboard.apiKeys.${key}`), [t]);
 
   const [showModal, setShowModal] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
-  const [modalTitle, setModalTitle] = useState(copy.addApiKeyTitle);
+  const [modalTitle, setModalTitle] = useState(apiKeysText("addTitle"));
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -79,15 +26,15 @@ export default function ApiKeysList() {
 
   const handleAddKey = useCallback(() => {
     setEditId(null);
-    setModalTitle(copy.addApiKeyTitle);
+    setModalTitle(apiKeysText("addTitle"));
     setShowModal(true);
-  }, [copy.addApiKeyTitle]);
+  }, [apiKeysText]);
 
   const handleEditKey = useCallback((id: string) => {
     setEditId(id);
-    setModalTitle(copy.editApiKeyTitle);
+    setModalTitle(apiKeysText("editTitle"));
     setShowModal(true);
-  }, [copy.editApiKeyTitle]);
+  }, [apiKeysText]);
 
   const handleSave = async (data: ApiKeyFormSavePayload) => {
     if (editId) {
@@ -141,35 +88,35 @@ export default function ApiKeysList() {
     () => [
       {
         key: "label",
-        label: copy.tableLabel,
+        label: apiKeysText("tableLabel"),
         sortable: true,
         accessor: (row) => row.label,
         className: "font-medium",
       },
       {
         key: "exchange",
-        label: copy.tableExchange,
+        label: apiKeysText("tableExchange"),
         sortable: true,
         accessor: (row) => row.exchange,
         render: (row) => <TableToneBadge label={row.exchange} tone="info" />,
       },
       {
         key: "createdAt",
-        label: copy.tableCreatedAt,
+        label: apiKeysText("tableCreatedAt"),
         sortable: true,
         accessor: (row) => row.createdAt,
         render: (row) => formatDate(row.createdAt),
       },
       {
         key: "lastUsed",
-        label: copy.tableLastUsed,
+        label: apiKeysText("tableLastUsed"),
         sortable: true,
         accessor: (row) => row.lastUsed ?? "",
         render: (row) => formatDate(row.lastUsed),
       },
       {
         key: "apiKey",
-        label: "API Key",
+        label: apiKeysText("tableApiKey"),
         sortable: true,
         accessor: (row) => row.apiKey,
         render: (row) => (
@@ -180,18 +127,18 @@ export default function ApiKeysList() {
       },
       {
         key: "actions",
-        label: copy.tableActions,
+        label: apiKeysText("tableActions"),
         className: "text-right",
         render: (row) => (
           <div className="flex items-center justify-end gap-2">
             <TableIconButtonAction
-              label={copy.edit}
+              label={apiKeysText("edit")}
               icon={<LuPencilLine className="h-3.5 w-3.5" />}
               onClick={() => handleEditKey(row.id)}
               tone="info"
             />
             <TableIconButtonAction
-              label={copy.remove}
+              label={apiKeysText("remove")}
               icon={<LuTrash2 className="h-3.5 w-3.5" />}
               onClick={() => handleDeleteKey(row.id)}
               tone="danger"
@@ -201,41 +148,35 @@ export default function ApiKeysList() {
       },
     ],
     [
-      copy.edit,
-      copy.remove,
-      copy.tableActions,
-      copy.tableCreatedAt,
-      copy.tableExchange,
-      copy.tableLabel,
-      copy.tableLastUsed,
       formatDate,
       handleDeleteKey,
       handleEditKey,
+      apiKeysText,
     ]
   );
 
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold">{copy.sectionTitle}</h3>
+        <h3 className="text-lg font-semibold">{apiKeysText("title")}</h3>
         <button className="btn btn-primary btn-sm" onClick={handleAddKey}>
-          {copy.addNewKey}
+          {apiKeysText("addAction")}
         </button>
       </div>
-      {loading && <LoadingState title={copy.loadingTitle} />}
+      {loading && <LoadingState title={apiKeysText("loadingTitle")} />}
       {!loading && error && (
         <ErrorState
-          title={copy.loadErrorTitle}
+          title={apiKeysText("loadErrorTitle")}
           description={error}
-          retryLabel={copy.refresh}
-          onRetry={() => window.location.reload()}
+          retryLabel={apiKeysText("refresh")}
+          onRetry={() => void refresh()}
         />
       )}
       {!loading && !error && keys.length === 0 && (
         <EmptyState
-          title={copy.emptyTitle}
-          description={copy.emptyDescription}
-          actionLabel={copy.addNewKey}
+          title={apiKeysText("emptyTitle")}
+          description={apiKeysText("emptyDescription")}
+          actionLabel={apiKeysText("addAction")}
           onAction={handleAddKey}
         />
       )}
@@ -245,7 +186,7 @@ export default function ApiKeysList() {
           rows={keys}
           columns={columns}
           getRowId={(row) => row.id}
-          filterPlaceholder={copy.searchPlaceholder}
+          filterPlaceholder={apiKeysText("searchPlaceholder")}
           filterFn={(row, query) => {
             const normalized = query.trim().toLowerCase();
             return (
@@ -254,7 +195,7 @@ export default function ApiKeysList() {
               row.apiKey.toLowerCase().includes(normalized)
             );
           }}
-          emptyText={copy.emptyFilter}
+          emptyText={apiKeysText("emptyFilter")}
           paginationEnabled
           defaultPageSize={10}
         />
@@ -272,15 +213,15 @@ export default function ApiKeysList() {
           />
         </div>
         <form method="dialog" className="modal-backdrop" onClick={handleCancel}>
-          <button>{copy.close}</button>
+          <button>{apiKeysText("close")}</button>
         </form>
       </dialog>
 
       <dialog id="deleteApiKeyModal" className={`modal ${showDeleteModal ? "modal-open" : ""}`}>
         <div className="modal-box">
-          <h3 className="font-bold text-lg mb-4 text-error">{copy.deleteModalTitle}</h3>
-          <p className="mb-3">{copy.deleteModalDescription}</p>
-          <p className="mb-4 text-sm text-warning">{copy.deleteRisk}</p>
+          <h3 className="font-bold text-lg mb-4 text-error">{apiKeysText("deleteModalTitle")}</h3>
+          <p className="mb-3">{apiKeysText("deleteModalDescription")}</p>
+          <p className="mb-4 text-sm text-warning">{apiKeysText("deleteRisk")}</p>
           <label className="label cursor-pointer justify-start gap-2 mb-6">
             <input
               type="checkbox"
@@ -288,11 +229,11 @@ export default function ApiKeysList() {
               checked={deleteRiskAccepted}
               onChange={(event) => setDeleteRiskAccepted(event.target.checked)}
             />
-            <span className="label-text">{copy.deleteRiskConfirm}</span>
+            <span className="label-text">{apiKeysText("deleteRiskConfirm")}</span>
           </label>
           <div className="flex gap-4 justify-end">
             <button className="btn btn-outline" type="button" onClick={cancelDelete}>
-              {copy.cancel}
+              {apiKeysText("cancel")}
             </button>
             <button
               className="btn btn-error"
@@ -300,12 +241,12 @@ export default function ApiKeysList() {
               disabled={!deleteRiskAccepted}
               onClick={confirmDelete}
             >
-              {copy.remove}
+              {apiKeysText("remove")}
             </button>
           </div>
         </div>
         <form method="dialog" className="modal-backdrop" onClick={cancelDelete}>
-          <button>{copy.close}</button>
+          <button>{apiKeysText("close")}</button>
         </form>
       </dialog>
     </div>

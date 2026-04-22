@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ZodError } from "zod";
 import { isAxiosError } from "axios";
@@ -40,121 +40,8 @@ export type ApiKeyFormProps = {
 };
 
 export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: ApiKeyFormProps) {
-  const { locale } = useI18n();
-  const copy =
-    locale === "pl"
-      ? {
-          fillCredentialsBeforeTest: "Uzupelnij API Key i API Secret przed testem.",
-          testConnectionOk: "Polaczenie dziala poprawnie.",
-          testConnectionFailed: "Nie udalo sie zweryfikowac polaczenia.",
-          provideBothKeys: "Podaj API Key i API Secret, aby zaktualizowac polaczenie.",
-          testBeforeSave: "Przetestuj polaczenie i uzyskaj status OK przed zapisem.",
-          validationError: "Blad walidacji",
-          keyName: "Nazwa klucza",
-          exchange: "Gielda",
-          apiKey: "API Key",
-          currentApiKey: "Aktualny API Key",
-          apiSecret: "API Secret",
-          apiKeyPlaceholder: "Podaj nowy API Key (opcjonalnie)",
-          apiSecretPlaceholder: "Podaj nowy API Secret (opcjonalnie)",
-          syncExternal: "Synchronizuj zewnetrzne pozycje z gieldy",
-          manageExternal: "Zarzadzaj zewnetrznymi pozycjami przez bota",
-          testing: "Testowanie...",
-          testConnection: "Testuj polaczenie",
-          testStoredConnection: "Testuj zapisane polaczenie",
-          ok: "OK",
-          error: "Blad",
-          save: "Zapisz",
-          cancel: "Anuluj",
-          exchangeRequirementsTitle: "Wymagania tej gieldy",
-          appSupportTitle: "Wsparcie w aplikacji",
-          supportApiProbe: "Test API key",
-          supportLiveExecution: "Live trading bota",
-          supportAvailable: "Dostepne",
-          supportUnavailable: "Niedostepne",
-          ipWhitelistTitle: "Whitelist IP (Binance)",
-          ipWhitelistLead: "Dodaj backendowe IP do whitelisty klucza API Binance:",
-          ipWhitelistMissing:
-            "Adres backendowego IP nie jest skonfigurowany. Ustaw NEXT_PUBLIC_BINANCE_IP_WHITELIST w srodowisku web.",
-          ipWhitelistHint:
-            "Jesli test zwroci IP_RESTRICTED, sprawdz whitelist Binance i sproboj ponownie po propagacji zmian.",
-          binancePermissionsTitle: "Wymagane uprawnienia API (Binance)",
-          binancePermissionsLead: "Aby bot mogl handlowac, wlacz w Binance:",
-          binancePermissionReading: "Enable Reading",
-          binancePermissionSpotMargin: "Enable Spot & Margin Trading",
-          binancePermissionFutures: "Enable Futures",
-          binancePermissionsHint:
-            "Nazwy uprawnien sa zgodne z Binance API restrictions: enableReading, enableSpotAndMarginTrading, enableFutures.",
-          manageBotsTitle: "Boty gotowe do przejecia pozycji",
-          manageBotsHint:
-            "Pokazujemy aktywne boty LIVE z opt-in dla tej gieldy. Upewnij sie, ze bot ma przypiety ten klucz API.",
-          manageBotsLoading: "Ladowanie listy botow...",
-          manageBotsEmpty: "Brak aktywnych botow LIVE dla tej gieldy.",
-          manageBotsLoadError: "Nie udalo sie pobrac listy botow.",
-          botUsesThisKey: "Uzywa tego klucza",
-          botUsesAnotherKey: "Uzywa innego klucza",
-          botWithoutApiKey: "Brak przypietego klucza",
-          editSecretHint:
-            "API Secret nie jest wyswietlany. Pozostaw pola puste, aby przetestowac zapisane polaczenie dla tego klucza.",
-          placeholderProbeInfo:
-            "Dla {exchange} test API key nie jest jeszcze dostepny (placeholder adapter). Zapis jest dozwolony.",
-        }
-      : {
-          fillCredentialsBeforeTest: "Fill in API Key and API Secret before testing.",
-          testConnectionOk: "Connection verified successfully.",
-          testConnectionFailed: "Could not verify connection.",
-          provideBothKeys: "Provide both API Key and API Secret to update connection.",
-          testBeforeSave: "Run connection test and get OK status before saving.",
-          validationError: "Validation error",
-          keyName: "Key name",
-          exchange: "Exchange",
-          apiKey: "API Key",
-          currentApiKey: "Current API Key",
-          apiSecret: "API Secret",
-          apiKeyPlaceholder: "Provide new API Key (optional)",
-          apiSecretPlaceholder: "Provide new API Secret (optional)",
-          syncExternal: "Sync external exchange positions",
-          manageExternal: "Allow bot to manage external positions",
-          testing: "Testing...",
-          testConnection: "Test connection",
-          testStoredConnection: "Test stored connection",
-          ok: "OK",
-          error: "Error",
-          save: "Save",
-          cancel: "Cancel",
-          exchangeRequirementsTitle: "Exchange requirements",
-          appSupportTitle: "App support status",
-          supportApiProbe: "API key probe",
-          supportLiveExecution: "Bot live trading",
-          supportAvailable: "Available",
-          supportUnavailable: "Unavailable",
-          ipWhitelistTitle: "IP Whitelist (Binance)",
-          ipWhitelistLead: "Add backend egress IP(s) to your Binance API key whitelist:",
-          ipWhitelistMissing:
-            "Backend egress IP is not configured. Set NEXT_PUBLIC_BINANCE_IP_WHITELIST in web environment.",
-          ipWhitelistHint:
-            "If test returns IP_RESTRICTED, update Binance whitelist and retry after propagation.",
-          binancePermissionsTitle: "Required API permissions (Binance)",
-          binancePermissionsLead: "To let the bot trade, enable in Binance:",
-          binancePermissionReading: "Enable Reading",
-          binancePermissionSpotMargin: "Enable Spot & Margin Trading",
-          binancePermissionFutures: "Enable Futures",
-          binancePermissionsHint:
-            "Permission names follow Binance API restrictions: enableReading, enableSpotAndMarginTrading, enableFutures.",
-          manageBotsTitle: "Bots ready to take over positions",
-          manageBotsHint:
-            "Showing active LIVE bots with live opt-in for this exchange. Ensure bot is bound to this API key.",
-          manageBotsLoading: "Loading bots list...",
-          manageBotsEmpty: "No active LIVE bots for this exchange.",
-          manageBotsLoadError: "Could not load bots list.",
-          botUsesThisKey: "Uses this key",
-          botUsesAnotherKey: "Uses another key",
-          botWithoutApiKey: "No API key assigned",
-          editSecretHint:
-            "API Secret is never shown. Leave both fields empty to test stored connection for this key.",
-          placeholderProbeInfo:
-            "API key test is not available for {exchange} yet (placeholder adapter). Saving is still allowed.",
-        };
+  const { t } = useI18n();
+  const formText = useCallback((key: string) => t(`dashboard.apiKeys.form.${key}`), [t]);
 
   const [label, setLabel] = useState(defaultValues?.label || "");
   const [exchange, setExchange] = useState<ExchangeOption>(
@@ -215,19 +102,19 @@ export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: 
     };
   }, [exchange, isManageBotListVisible]);
 
-  const placeholderProbeInfo = copy.placeholderProbeInfo.replace("{exchange}", exchange);
+  const placeholderProbeInfo = formText("placeholderProbeInfo").replace("{exchange}", exchange);
 
   const manageableBotRows = useMemo(
     () =>
       manageableBots.map((bot) => {
-        let bindingLabel = copy.botWithoutApiKey;
+        let bindingLabel = formText("botWithoutApiKey");
         let bindingTone = "badge-ghost";
 
         if (bot.apiKeyId && currentApiKeyId && bot.apiKeyId === currentApiKeyId) {
-          bindingLabel = copy.botUsesThisKey;
+          bindingLabel = formText("botUsesThisKey");
           bindingTone = "badge-success";
         } else if (bot.apiKeyId) {
-          bindingLabel = copy.botUsesAnotherKey;
+          bindingLabel = formText("botUsesAnotherKey");
           bindingTone = "badge-warning";
         }
 
@@ -239,7 +126,7 @@ export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: 
           bindingTone,
         };
       }),
-    [copy.botUsesAnotherKey, copy.botUsesThisKey, copy.botWithoutApiKey, currentApiKeyId, manageableBots]
+    [currentApiKeyId, formText, manageableBots]
   );
 
   const handleTest = async () => {
@@ -261,18 +148,18 @@ export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: 
         const result = await testStoredApiKeyConnection(currentApiKeyId as string);
         if (result.ok) {
           setTestStatus("success");
-          setTestMessage(result.message ?? copy.testConnectionOk);
+          setTestMessage(result.message ?? formText("testConnectionOk"));
           setTestedFingerprint(null);
           return;
         }
 
         setTestStatus("error");
-        setTestMessage(result.message ?? copy.testConnectionFailed);
+        setTestMessage(result.message ?? formText("testConnectionFailed"));
         setTestedFingerprint(null);
       } catch (err: unknown) {
         const message = isAxiosError<{ message?: string }>(err)
-          ? (err.response?.data?.message ?? copy.testConnectionFailed)
-          : copy.testConnectionFailed;
+          ? (err.response?.data?.message ?? formText("testConnectionFailed"))
+          : formText("testConnectionFailed");
         setTestStatus("error");
         setTestMessage(message);
         setTestedFingerprint(null);
@@ -282,7 +169,7 @@ export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: 
 
     if (!apiKey || !apiSecret) {
       setTestStatus("error");
-      setTestMessage(copy.fillCredentialsBeforeTest);
+      setTestMessage(formText("fillCredentialsBeforeTest"));
       setTestedFingerprint(null);
       return;
     }
@@ -294,18 +181,18 @@ export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: 
       const result = await testApiKeyConnection({ exchange, apiKey, apiSecret });
       if (result.ok) {
         setTestStatus("success");
-        setTestMessage(result.message ?? copy.testConnectionOk);
+        setTestMessage(result.message ?? formText("testConnectionOk"));
         setTestedFingerprint(currentFingerprint);
         return;
       }
 
       setTestStatus("error");
-      setTestMessage(result.message ?? copy.testConnectionFailed);
+      setTestMessage(result.message ?? formText("testConnectionFailed"));
       setTestedFingerprint(null);
     } catch (err: unknown) {
       const message = isAxiosError<{ message?: string }>(err)
-        ? (err.response?.data?.message ?? copy.testConnectionFailed)
-        : copy.testConnectionFailed;
+        ? (err.response?.data?.message ?? formText("testConnectionFailed"))
+        : formText("testConnectionFailed");
       setTestStatus("error");
       setTestMessage(message);
       setTestedFingerprint(null);
@@ -318,7 +205,7 @@ export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: 
       if (isEdit) {
         apiKeySchema.pick({ label: true, exchange: true }).parse({ label, exchange });
         if ((apiKey && !apiSecret) || (!apiKey && apiSecret)) {
-          toast.error(copy.provideBothKeys);
+          toast.error(formText("provideBothKeys"));
           return;
         }
       } else {
@@ -328,7 +215,7 @@ export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: 
       if (requiresConnectionTest) {
         const hasMatchingSuccess = testStatus === "success" && testedFingerprint === currentFingerprint;
         if (!hasMatchingSuccess) {
-          toast.error(copy.testBeforeSave);
+          toast.error(formText("testBeforeSave"));
           return;
         }
       }
@@ -339,10 +226,10 @@ export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: 
       onSave(payload);
     } catch (err: unknown) {
       if (err instanceof ZodError) {
-        toast.error(err.issues[0]?.message || copy.validationError);
+        toast.error(err.issues[0]?.message || formText("validationError"));
         return;
       }
-      toast.error(copy.validationError);
+      toast.error(formText("validationError"));
     }
   };
 
@@ -351,12 +238,12 @@ export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <div className="form-control w-full">
           <label className="label pl-0">
-            <span className="label-text text-left w-full">{copy.keyName}</span>
+            <span className="label-text text-left w-full">{formText("keyName")}</span>
           </label>
           <input
             className="input input-bordered w-full"
             type="text"
-            aria-label={copy.keyName}
+            aria-label={formText("keyName")}
             value={label}
             onChange={(e) => setLabel(e.target.value)}
             required
@@ -364,11 +251,11 @@ export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: 
         </div>
         <div className="form-control w-full">
           <label className="label pl-0">
-            <span className="label-text text-left w-full">{copy.exchange}</span>
+            <span className="label-text text-left w-full">{formText("exchange")}</span>
           </label>
           <select
             className="select select-bordered w-full"
-            aria-label={copy.exchange}
+            aria-label={formText("exchange")}
             value={exchange}
             onChange={(e) => setExchange((e.target.value as ExchangeOption) || "BINANCE")}
           >
@@ -383,20 +270,20 @@ export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: 
 
       <div className="form-control w-full">
         <label className="label pl-0">
-          <span className="label-text text-left w-full">{copy.apiKey}</span>
+          <span className="label-text text-left w-full">{formText("apiKey")}</span>
         </label>
         {isEdit && defaultValues?.maskedApiKey ? (
           <div className="text-xs opacity-70 mb-1">
-            {copy.currentApiKey}: <span className="font-mono">{defaultValues.maskedApiKey}</span>
+            {formText("currentApiKey")}: <span className="font-mono">{defaultValues.maskedApiKey}</span>
           </div>
         ) : null}
         <input
           className="input input-bordered w-full font-mono"
           type="text"
-          aria-label={copy.apiKey}
+          aria-label={formText("apiKey")}
           value={apiKey}
           onChange={(e) => setApiKey(e.target.value)}
-          placeholder={isEdit ? copy.apiKeyPlaceholder : ""}
+          placeholder={isEdit ? formText("apiKeyPlaceholder") : ""}
           autoComplete="new-password"
           data-form-type="other"
           data-lpignore="true"
@@ -407,22 +294,22 @@ export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: 
 
       <div className="form-control w-full">
         <label className="label pl-0">
-          <span className="label-text text-left w-full">{copy.apiSecret}</span>
+          <span className="label-text text-left w-full">{formText("apiSecret")}</span>
         </label>
         <input
           className="input input-bordered w-full font-mono"
           type="password"
-          aria-label={copy.apiSecret}
+          aria-label={formText("apiSecret")}
           value={apiSecret}
           onChange={(e) => setApiSecret(e.target.value)}
-          placeholder={isEdit ? copy.apiSecretPlaceholder : ""}
+          placeholder={isEdit ? formText("apiSecretPlaceholder") : ""}
           autoComplete="new-password"
           data-form-type="other"
           data-lpignore="true"
           spellCheck={false}
           required={!isEdit}
         />
-        {isEdit ? <p className="text-xs opacity-70 mt-1">{copy.editSecretHint}</p> : null}
+        {isEdit ? <p className="text-xs opacity-70 mt-1">{formText("editSecretHint")}</p> : null}
       </div>
 
       <div className="rounded-box border border-base-300/70 bg-base-100/60 p-3">
@@ -433,7 +320,7 @@ export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: 
             checked={syncExternalPositions}
             onChange={(e) => setSyncExternalPositions(e.target.checked)}
           />
-          <span className="label-text">{copy.syncExternal}</span>
+          <span className="label-text">{formText("syncExternal")}</span>
         </label>
       </div>
 
@@ -445,14 +332,14 @@ export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: 
             checked={manageExternalPositions}
             onChange={(e) => setManageExternalPositions(e.target.checked)}
           />
-          <span className="label-text">{copy.manageExternal}</span>
+          <span className="label-text">{formText("manageExternal")}</span>
         </label>
         {isManageBotListVisible ? (
           <div className="rounded-box border border-base-300 bg-base-200/40 p-3 text-sm space-y-2">
-            <p className="font-semibold">{copy.manageBotsTitle}</p>
-            {manageBotsStatus === "loading" ? <p>{copy.manageBotsLoading}</p> : null}
-            {manageBotsStatus === "error" ? <p className="text-error">{copy.manageBotsLoadError}</p> : null}
-            {manageBotsStatus === "success" && manageableBotRows.length === 0 ? <p>{copy.manageBotsEmpty}</p> : null}
+            <p className="font-semibold">{formText("manageBotsTitle")}</p>
+            {manageBotsStatus === "loading" ? <p>{formText("manageBotsLoading")}</p> : null}
+            {manageBotsStatus === "error" ? <p className="text-error">{formText("manageBotsLoadError")}</p> : null}
+            {manageBotsStatus === "success" && manageableBotRows.length === 0 ? <p>{formText("manageBotsEmpty")}</p> : null}
             {manageBotsStatus === "success" && manageableBotRows.length > 0 ? (
               <ul className="space-y-1.5">
                 {manageableBotRows.map((bot) => (
@@ -464,7 +351,7 @@ export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: 
                 ))}
               </ul>
             ) : null}
-            <p className="opacity-70">{copy.manageBotsHint}</p>
+            <p className="opacity-70">{formText("manageBotsHint")}</p>
           </div>
         ) : null}
       </div>
@@ -472,20 +359,20 @@ export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: 
       <div className={`grid grid-cols-1 gap-3 ${exchange === "BINANCE" ? "lg:grid-cols-2" : ""}`}>
         <div className="alert alert-info text-sm">
           <div className="space-y-2">
-            <span className="badge badge-sm badge-neutral">{copy.exchangeRequirementsTitle}</span>
+            <span className="badge badge-sm badge-neutral">{formText("exchangeRequirementsTitle")}</span>
             <div className="space-y-1">
-              <p className="font-semibold">{copy.appSupportTitle}</p>
+              <p className="font-semibold">{formText("appSupportTitle")}</p>
               <ul className="list-disc pl-5">
                 <li>
-                  {copy.supportApiProbe}:{" "}
+                  {formText("supportApiProbe")}:{" "}
                   <span className={exchangeSupportsProbe ? "text-success" : "text-warning"}>
-                    {exchangeSupportsProbe ? copy.supportAvailable : copy.supportUnavailable}
+                    {exchangeSupportsProbe ? formText("supportAvailable") : formText("supportUnavailable")}
                   </span>
                 </li>
                 <li>
-                  {copy.supportLiveExecution}:{" "}
+                  {formText("supportLiveExecution")}:{" "}
                   <span className={exchangeSupportsLiveExecution ? "text-success" : "text-warning"}>
-                    {exchangeSupportsLiveExecution ? copy.supportAvailable : copy.supportUnavailable}
+                    {exchangeSupportsLiveExecution ? formText("supportAvailable") : formText("supportUnavailable")}
                   </span>
                 </li>
               </ul>
@@ -503,20 +390,20 @@ export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: 
           <div className="alert alert-info text-sm">
             <div className="space-y-3">
               <div className="space-y-1">
-                <p className="font-semibold">{copy.binancePermissionsTitle}</p>
-                <p>{copy.binancePermissionsLead}</p>
+                <p className="font-semibold">{formText("binancePermissionsTitle")}</p>
+                <p>{formText("binancePermissionsLead")}</p>
                 <ul className="list-disc pl-5">
-                  <li>{copy.binancePermissionReading}</li>
-                  <li>{copy.binancePermissionSpotMargin}</li>
-                  <li>{copy.binancePermissionFutures}</li>
+                  <li>{formText("binancePermissionReading")}</li>
+                  <li>{formText("binancePermissionSpotMargin")}</li>
+                  <li>{formText("binancePermissionFutures")}</li>
                 </ul>
-                <p className="opacity-80">{copy.binancePermissionsHint}</p>
+                <p className="opacity-80">{formText("binancePermissionsHint")}</p>
               </div>
               <div className="space-y-2">
-                <span className="badge badge-sm badge-neutral">{copy.ipWhitelistTitle}</span>
+                <span className="badge badge-sm badge-neutral">{formText("ipWhitelistTitle")}</span>
                 {binanceWhitelistIps.length > 0 ? (
                   <>
-                    <p>{copy.ipWhitelistLead}</p>
+                    <p>{formText("ipWhitelistLead")}</p>
                     <ul className="list-disc pl-5 font-mono">
                       {binanceWhitelistIps.map((ip) => (
                         <li key={ip}>{ip}</li>
@@ -524,9 +411,9 @@ export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: 
                     </ul>
                   </>
                 ) : (
-                  <p>{copy.ipWhitelistMissing}</p>
+                  <p>{formText("ipWhitelistMissing")}</p>
                 )}
-                <p className="opacity-80">{copy.ipWhitelistHint}</p>
+                <p className="opacity-80">{formText("ipWhitelistHint")}</p>
               </div>
             </div>
           </div>
@@ -545,21 +432,21 @@ export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: 
             ) : null}
             <span>
               {testStatus === "loading"
-                ? copy.testing
+                ? formText("testing")
                 : usesStoredTestMode
-                  ? copy.testStoredConnection
-                  : copy.testConnection}
+                  ? formText("testStoredConnection")
+                  : formText("testConnection")}
             </span>
           </button>
-          {testStatus === "success" && <span className="text-success">{copy.ok}</span>}
-          {testStatus === "error" && <span className="text-error">{copy.error}</span>}
+          {testStatus === "success" && <span className="text-success">{formText("ok")}</span>}
+          {testStatus === "error" && <span className="text-error">{formText("error")}</span>}
         </div>
         <div className="flex items-center gap-2">
           <button className="btn btn-primary" type="submit">
-            {copy.save}
+            {formText("save")}
           </button>
           <button className="btn btn-outline" type="button" onClick={onCancel}>
-            {copy.cancel}
+            {formText("cancel")}
           </button>
         </div>
       </div>

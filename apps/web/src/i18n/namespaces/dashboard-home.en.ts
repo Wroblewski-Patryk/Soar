@@ -134,6 +134,7 @@ export const dashboardHomeEn = {
     "actionOpen": "Open",
     "actionDca": "DCA",
     "actionClose": "Close",
+    "actionUnknown": "Unknown",
     "closePositionButton": "Close position",
     "closePositionPending": "Closing...",
     "closePositionNoSession": "No active runtime session selected.",

@@ -4,56 +4,42 @@ import { fetchApiKeys, addApiKey, editApiKey, deleteApiKey } from "../services/a
 import { ApiKey } from "../types/apiKey.type";
 import { handleError } from "../../../lib/handleError";
 import { useI18n } from "../../../i18n/I18nProvider";
+import { runAsyncWithViewState } from "@/lib/async";
 
 const getErrorMessage = (err: unknown, fallback: string) => {
-  const parsed = handleError(err);
-  return parsed && parsed !== "Wystapil blad" ? parsed : fallback;
+  return handleError(err, { fallback }) || fallback;
 };
 
 export function useApiKeys() {
-  const { locale } = useI18n();
-  const copy =
-    locale === "pl"
-      ? {
-          fetchFallback: "Nie udalo sie pobrac kluczy API.",
-          addSuccess: "Klucz zostal dodany!",
-          addFailed: "Nie udalo sie dodac klucza.",
-          addFailedDescription: "Blad zapisu klucza API.",
-          editSuccess: "Klucz zostal zaktualizowany!",
-          editFailed: "Nie udalo sie zaktualizowac klucza.",
-          editFailedDescription: "Blad aktualizacji klucza API.",
-          deleteSuccess: "Klucz zostal usuniety!",
-          deleteFailed: "Nie udalo sie usunac klucza.",
-          deleteFailedDescription: "Blad usuwania klucza API.",
-        }
-      : {
-          fetchFallback: "Failed to fetch API keys.",
-          addSuccess: "API key added.",
-          addFailed: "Could not add API key.",
-          addFailedDescription: "Failed to save API key.",
-          editSuccess: "API key updated.",
-          editFailed: "Could not update API key.",
-          editFailedDescription: "Failed to update API key.",
-          deleteSuccess: "API key deleted.",
-          deleteFailed: "Could not delete API key.",
-          deleteFailedDescription: "Failed to delete API key.",
-        };
+  const { t } = useI18n();
+  const copy = {
+    fetchFallback: t('dashboard.apiKeys.hook.fetchFallback'),
+    addSuccess: t('dashboard.apiKeys.hook.addSuccess'),
+    addFailed: t('dashboard.apiKeys.hook.addFailed'),
+    addFailedDescription: t('dashboard.apiKeys.hook.addFailedDescription'),
+    editSuccess: t('dashboard.apiKeys.hook.editSuccess'),
+    editFailed: t('dashboard.apiKeys.hook.editFailed'),
+    editFailedDescription: t('dashboard.apiKeys.hook.editFailedDescription'),
+    deleteSuccess: t('dashboard.apiKeys.hook.deleteSuccess'),
+    deleteFailed: t('dashboard.apiKeys.hook.deleteFailed'),
+    deleteFailedDescription: t('dashboard.apiKeys.hook.deleteFailedDescription'),
+  } as const;
 
   const [keys, setKeys] = useState<ApiKey[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
-    setLoading(true);
     try {
-      const data = await fetchApiKeys();
+      const data = await runAsyncWithViewState({
+        setPending: setLoading,
+        setError,
+        clearErrorValue: null,
+        resolveError: (err) => getErrorMessage(err, copy.fetchFallback),
+        operation: () => fetchApiKeys(),
+      });
       setKeys(data);
-      setError(null);
-    } catch (err: unknown) {
-      setError(getErrorMessage(err, copy.fetchFallback));
-    } finally {
-      setLoading(false);
-    }
+    } catch {}
   }, [copy.fetchFallback]);
 
   useEffect(() => {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useRef, useState } from 'react';
+import { useOptionalI18n } from '@/i18n/useOptionalI18n';
 import { useDetailsDropdown } from '../../../ui/hooks/useDetailsDropdown';
 
 export type MultiSelectOption = {
@@ -31,18 +32,31 @@ export default function SearchableMultiSelect({
   options,
   selectedValues,
   onChange,
-  emptyText = 'No options',
-  selectedSummaryLabel = 'Selected',
-  selectedCountLabel = 'Selected: {count}',
-  placeholderLabel = 'Select...',
-  searchPlaceholder = 'Search...',
-  selectFilteredLabel = 'Select filtered',
-  clearLabel = 'Clear',
+  emptyText,
+  selectedSummaryLabel,
+  selectedCountLabel,
+  placeholderLabel,
+  searchPlaceholder,
+  selectFilteredLabel,
+  clearLabel,
   maxListHeightClassName = 'max-h-72',
 }: SearchableMultiSelectProps) {
+  const { t } = useOptionalI18n();
   const detailsRef = useRef<HTMLDetailsElement>(null);
   useDetailsDropdown(detailsRef);
   const [query, setQuery] = useState('');
+  const resolvedEmptyText = emptyText ?? t('public.sharedUi.multiSelect.emptyText');
+  const resolvedSelectedSummaryLabel =
+    selectedSummaryLabel ?? t('public.sharedUi.multiSelect.selectedSummaryLabel');
+  const resolvedSelectedCountLabel =
+    selectedCountLabel ?? t('public.sharedUi.multiSelect.selectedCountLabel');
+  const resolvedPlaceholderLabel =
+    placeholderLabel ?? t('public.sharedUi.multiSelect.placeholderLabel');
+  const resolvedSearchPlaceholder =
+    searchPlaceholder ?? t('public.sharedUi.multiSelect.searchPlaceholder');
+  const resolvedSelectFilteredLabel =
+    selectFilteredLabel ?? t('public.sharedUi.multiSelect.selectFilteredLabel');
+  const resolvedClearLabel = clearLabel ?? t('public.sharedUi.multiSelect.clearLabel');
 
   const selectedSet = useMemo(() => new Set(selectedValues), [selectedValues]);
   const filteredOptions = useMemo(() => {
@@ -76,8 +90,8 @@ export default function SearchableMultiSelect({
         <summary className="btn btn-outline btn-sm w-full justify-between">
           <span className="truncate">
             {selectedValues.length > 0
-              ? selectedCountLabel.replace('{count}', String(selectedValues.length))
-              : placeholderLabel}
+              ? resolvedSelectedCountLabel.replace('{count}', String(selectedValues.length))
+              : resolvedPlaceholderLabel}
           </span>
           <span className="opacity-60">v</span>
         </summary>
@@ -85,24 +99,24 @@ export default function SearchableMultiSelect({
           <div className="mb-2">
             <input
               className="input input-bordered input-sm w-full"
-              placeholder={searchPlaceholder}
+              placeholder={resolvedSearchPlaceholder}
               value={query}
               onChange={(event) => setQuery(event.target.value)}
             />
           </div>
           <div className="mb-2 flex gap-2">
             <button type="button" className="btn btn-xs btn-ghost" onClick={selectAllFiltered}>
-              {selectFilteredLabel}
+              {resolvedSelectFilteredLabel}
             </button>
             <button type="button" className="btn btn-xs btn-ghost" onClick={clearAll}>
-              {clearLabel}
+              {resolvedClearLabel}
             </button>
           </div>
           <ul
             className={`menu rounded-box border border-base-300 bg-base-200 ${maxListHeightClassName} overflow-y-auto overflow-x-hidden`}
-            aria-label={selectedSummaryLabel}
+            aria-label={resolvedSelectedSummaryLabel}
           >
-            {filteredOptions.length === 0 && <li className="px-3 py-2 text-sm opacity-70">{emptyText}</li>}
+            {filteredOptions.length === 0 && <li className="px-3 py-2 text-sm opacity-70">{resolvedEmptyText}</li>}
             {filteredOptions.map((option) => (
               <li key={option.value}>
                 <label className="cursor-pointer justify-start gap-2">

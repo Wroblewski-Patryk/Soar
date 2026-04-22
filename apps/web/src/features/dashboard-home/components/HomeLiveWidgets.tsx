@@ -1,12 +1,11 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { LuChartCandlestick, LuChevronDown, LuListChecks, LuPackageOpen, LuPencil, LuX } from "react-icons/lu";
+import { useCallback, useMemo, useState } from "react";
+import { LuChartCandlestick, LuListChecks, LuPackageOpen } from "react-icons/lu";
 import { toast } from "sonner";
 
 import { ErrorState } from "../../../ui/components/ViewState";
 import { SkeletonCardBlock, SkeletonKpiRow, SkeletonTableRows } from "../../../ui/components/loading";
-import { DataTableColumn } from "../../../ui/components/DataTable";
 import FormModal from "../../../ui/components/FormModal";
 import AssetSymbol from "../../../ui/components/AssetSymbol";
 import { useI18n } from "../../../i18n/I18nProvider";
@@ -15,19 +14,12 @@ import { createMarketStreamEventSource } from "../../../lib/marketStream";
 import { normalizeSymbol } from "@/lib/symbols";
 import { getAxiosMessage } from "@/lib/getAxiosMessage";
 import {
-  BotRuntimePositionItem,
-  BotRuntimeTrade,
-  DashboardManualOrderContext,
-} from "../../../features/bots/types/bot.type";
-import {
-  getDashboardManualOrderContext,
   getBotRuntimeGraph,
   getBotRuntimeMonitoringAggregate,
   listBots,
   listBotRuntimeSessionPositions,
   listBotRuntimeSessionSymbolStats,
   listBotRuntimeSessionTrades,
-  openDashboardManualOrder,
   listBotRuntimeSessions,
 } from "../../../features/bots/services/bots.service";
 import { supportsExchangeCapability } from "../../../features/exchanges/exchangeCapabilities";
@@ -50,21 +42,29 @@ import {
   SIGNAL_CARDS_DESKTOP_MIN_WIDTH,
 } from "./home-live-widgets/formatters";
 import {
-  resolveDynamicTslDisplay,
-  resolveDynamicTtpDisplay,
-} from "./home-live-widgets/runtimeDerivations";
+  createHistoryPositionsColumns,
+  createOpenOrdersColumns,
+  createOpenPositionsColumns,
+  createTradesColumns,
+} from "./home-live-widgets/runtimeDataTablePresenters";
+import {
+  buildRuntimeSidebarManualOrderPresenter,
+  buildRuntimeSidebarTextPresenter,
+} from "./home-live-widgets/runtimeSidebarPresenters";
 import { useRuntimeSelectionViewModel } from "./home-live-widgets/useRuntimeSelectionViewModel";
 import { useCloseRuntimePositionAction } from "../hooks/useCloseRuntimePositionAction";
 import { useHomeLiveWidgetsController } from "../hooks/useHomeLiveWidgetsController";
+import { useManualOrderController } from "../hooks/useManualOrderController";
 import type {
-  HistoryPositionsTableColumn,
   OpenPositionWithLive,
-  OpenOrdersTableColumn,
   RuntimeDataTab,
+  RuntimeSnapshot,
   RuntimeTabItem,
 } from "./home-live-widgets/types";
-type DirectionPillValue = "LONG" | "SHORT" | "BUY" | "SELL";
-type ManualOrderSide = "BUY" | "SELL";
+import {
+  parseOptionalPositivePriceInput,
+  PositionEditDraft,
+} from "./home-live-widgets/runtimeUiHelpers";
 
 const CARD = "rounded-box bg-base-100/80";
 const CARD_ASIDE = "rounded-box bg-base-100/85 h-fit xl:sticky xl:top-4";
@@ -92,209 +92,33 @@ const RUNTIME_DATA_TABS: {
   { key: "TRADE_HISTORY", hash: "history", labelKey: "dashboard.home.runtime.tradesHistoryTitlePaper" },
 ];
 
-
-const normalizeDcaLevels = (levels?: number[] | null) =>
-  (levels ?? []).filter((level) => Number.isFinite(level));
-
-const resolveDcaExecutedLevels = (position: BotRuntimePositionItem) => {
-  const dcaCount = Number.isFinite(position.dcaCount) ? Math.max(0, Math.trunc(position.dcaCount)) : 0;
-  if (dcaCount <= 0) return [];
-
-  const executed = normalizeDcaLevels(position.dcaExecutedLevels);
-  if (executed.length >= dcaCount) return executed.slice(0, dcaCount);
-  if (executed.length > 0) {
-    return [
-      ...executed,
-      ...Array.from({ length: dcaCount - executed.length }, () => executed[executed.length - 1]!),
-    ];
-  }
-
-  const planned = normalizeDcaLevels(position.dcaPlannedLevels);
-  if (planned.length === 0) return [];
-  if (planned.length >= dcaCount) return planned.slice(0, dcaCount);
-
-  return [
-    ...planned,
-    ...Array.from({ length: dcaCount - planned.length }, () => planned[planned.length - 1]!),
-  ];
+const resolvePositionOriginLabel = (
+  origin: OpenPositionWithLive["origin"] | null | undefined,
+  t: (key: string) => string
+) => {
+  if (origin === "MANUAL") return t("dashboard.home.runtime.sourceManual");
+  if (origin === "BOT") return t("dashboard.home.runtime.sourceBot");
+  if (origin === "EXCHANGE_SYNC" || origin === "BACKTEST") return t("dashboard.home.runtime.sourceImported");
+  return t("dashboard.home.runtime.reasonUnknown");
 };
 
-const renderDcaLadderCell = (params: {
-  position: BotRuntimePositionItem;
-  formatPercent: (value: number) => string;
-}) => {
-  const dcaCount = Number.isFinite(params.position.dcaCount)
-    ? Math.max(0, Math.trunc(params.position.dcaCount))
-    : 0;
-  if (dcaCount <= 0) return <span className="text-xs opacity-70">0</span>;
+const resolveSelectedStrategyDisplay = (
+  selected: RuntimeSnapshot | null,
+  t: (key: string) => string
+) => {
+  if (!selected) return t("dashboard.home.runtime.reasonUnknown");
 
-  const executedLevels = resolveDcaExecutedLevels(params.position);
-  if (executedLevels.length === 0) {
-    return (
-      <span className="inline-flex items-center rounded-full border border-warning/40 bg-warning/10 px-2 py-0.5 text-[11px] font-semibold text-warning">
-        {dcaCount}
-      </span>
-    );
-  }
+  const runtimeGraphStrategyName = selected.runtimeGraph?.marketGroups
+    .flatMap((marketGroup) => marketGroup.strategies)
+    .find((strategyBinding) => strategyBinding.strategy.id === selected.bot.strategyId)?.strategy.name;
+  if (runtimeGraphStrategyName) return runtimeGraphStrategyName;
 
-  const ladderPreview = executedLevels
-    .map((level, index) => `${index + 1}:${params.formatPercent(level)}`)
-    .join(", ");
+  const legacyStrategyName = selected.runtimeGraph?.legacyBotStrategies.find(
+    (strategyBinding) => strategyBinding.strategyId === selected.bot.strategyId
+  )?.strategy.name;
+  if (legacyStrategyName) return legacyStrategyName;
 
-  return (
-    <details className="group inline-block align-middle">
-      <summary className="list-none cursor-pointer [&::-webkit-details-marker]:hidden">
-        <span
-          className="inline-flex items-center gap-1 rounded-full border border-warning/40 bg-warning/10 px-2 py-0.5 text-[11px] font-semibold text-warning"
-          title={ladderPreview}
-        >
-          {dcaCount}
-          <LuChevronDown className="h-3 w-3 transition-transform duration-150 group-open:rotate-180" />
-        </span>
-      </summary>
-      <div className="mt-1 w-max rounded-box border border-base-300/70 bg-base-200/60 px-2 py-1.5 text-[11px] shadow-sm">
-        <ul className="space-y-1">
-          {executedLevels.map((level, index) => (
-            <li
-              key={`${params.position.id}-dca-${index}`}
-              className="grid grid-cols-[auto_auto] items-center gap-x-1.5 whitespace-nowrap"
-            >
-              <span className="font-medium opacity-70">{index + 1}</span>
-              <span className="font-semibold">{params.formatPercent(level)}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </details>
-  );
-};
-
-const directionPillClass = (value: DirectionPillValue) => {
-  if (value === "LONG" || value === "BUY") return "border-success/40 bg-success/10 text-success";
-  return "border-error/40 bg-error/10 text-error";
-};
-
-const DirectionPillIcon = ({ value }: { value: DirectionPillValue }) => {
-  if (value === "LONG" || value === "BUY") {
-    return (
-      <svg
-        stroke="currentColor"
-        fill="none"
-        strokeWidth="2"
-        viewBox="0 0 24 24"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="h-3.5 w-3.5"
-        aria-hidden="true"
-      >
-        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
-        <polyline points="16 7 22 7 22 13" />
-      </svg>
-    );
-  }
-
-  return (
-    <svg
-      stroke="currentColor"
-      fill="none"
-      strokeWidth="2"
-      viewBox="0 0 24 24"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-3.5 w-3.5"
-      aria-hidden="true"
-    >
-      <polyline points="22 17 13.5 8.5 8.5 13.5 2 7" />
-      <polyline points="16 17 22 17 22 11" />
-    </svg>
-  );
-};
-
-const DirectionPill = ({ value }: { value: DirectionPillValue }) => (
-  <span className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs ${directionPillClass(value)}`}>
-    <DirectionPillIcon value={value} />
-    <span className="font-medium">{value}</span>
-  </span>
-);
-
-const parseOptionalPositivePriceInput = (value: string): number | null | "invalid" => {
-  const normalized = value.trim();
-  if (!normalized) return null;
-  const parsed = Number(normalized);
-  if (!Number.isFinite(parsed) || parsed <= 0) return "invalid";
-  return parsed;
-};
-
-const parsePositiveQuantityInput = (value: string): number | "invalid" => {
-  const normalized = value.trim();
-  const parsed = Number(normalized);
-  if (!normalized || !Number.isFinite(parsed) || parsed <= 0) return "invalid";
-  return parsed;
-};
-
-const formatQuantityForInput = (value: number) => {
-  if (!Number.isFinite(value) || value <= 0) return "";
-  return Number(value.toFixed(8)).toString();
-};
-
-type TradeActionValue = "OPEN" | "DCA" | "CLOSE" | "UNKNOWN";
-type TradeActionReasonValue =
-  | "SIGNAL_ENTRY"
-  | "DCA_LEVEL"
-  | "TAKE_PROFIT"
-  | "STOP_LOSS"
-  | "TRAILING_TAKE_PROFIT"
-  | "TRAILING_STOP"
-  | "SIGNAL_EXIT"
-  | "MANUAL"
-  | "UNKNOWN";
-type PositionEditDraft = {
-  position: OpenPositionWithLive;
-  takeProfit: string;
-  stopLoss: string;
-  notes: string;
-  lockRules: boolean;
-};
-
-const tradeActionPillClass = (value: TradeActionValue) => {
-  if (value === "OPEN") return "border-success/40 bg-success/10 text-success";
-  if (value === "DCA") return "border-warning/40 bg-warning/10 text-warning";
-  if (value === "CLOSE") return "border-primary/40 bg-primary/10 text-primary";
-  return "border-base-300 bg-base-100 text-base-content/70";
-};
-
-const tradeActionLabel = (value: TradeActionValue) => {
-  if (value === "OPEN") return "Otwarcie";
-  if (value === "DCA") return "DCA";
-  if (value === "CLOSE") return "Zamkniecie";
-  return "Nieznane";
-};
-
-const TradeActionPill = ({ value }: { value: TradeActionValue }) => (
-  <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${tradeActionPillClass(value)}`}>
-    {tradeActionLabel(value)}
-  </span>
-);
-
-const tradeReasonPillClass = (value: TradeActionReasonValue) => {
-  if (value === "TAKE_PROFIT" || value === "TRAILING_TAKE_PROFIT") return "border-success/40 bg-success/10 text-success";
-  if (value === "STOP_LOSS" || value === "TRAILING_STOP") return "border-error/40 bg-error/10 text-error";
-  if (value === "SIGNAL_ENTRY" || value === "SIGNAL_EXIT") return "border-info/40 bg-info/10 text-info";
-  if (value === "DCA_LEVEL") return "border-warning/40 bg-warning/10 text-warning";
-  if (value === "MANUAL") return "border-secondary/40 bg-secondary/10 text-secondary";
-  return "border-base-300 bg-base-100 text-base-content/70";
-};
-
-const tradeReasonLabelKey = (value: TradeActionReasonValue) => {
-  if (value === "SIGNAL_ENTRY") return "dashboard.home.runtime.reasonSignalEntry";
-  if (value === "DCA_LEVEL") return "dashboard.home.runtime.reasonDcaLevel";
-  if (value === "TAKE_PROFIT") return "dashboard.home.runtime.reasonTakeProfit";
-  if (value === "STOP_LOSS") return "dashboard.home.runtime.reasonStopLoss";
-  if (value === "TRAILING_TAKE_PROFIT") return "dashboard.home.runtime.reasonTrailingTakeProfit";
-  if (value === "TRAILING_STOP") return "dashboard.home.runtime.reasonTrailingStop";
-  if (value === "SIGNAL_EXIT") return "dashboard.home.runtime.reasonSignalExit";
-  if (value === "MANUAL") return "dashboard.home.runtime.reasonManual";
-  return "dashboard.home.runtime.reasonUnknown";
+  return t("dashboard.home.runtime.reasonUnknown");
 };
 
 export default function HomeLiveWidgets() {
@@ -346,14 +170,6 @@ export default function HomeLiveWidgets() {
   });
   const [positionEditDraft, setPositionEditDraft] = useState<PositionEditDraft | null>(null);
   const [isSavingPositionEdit, setIsSavingPositionEdit] = useState(false);
-  const [manualOrderSymbol, setManualOrderSymbol] = useState("");
-  const [manualOrderSide, setManualOrderSide] = useState<ManualOrderSide>("BUY");
-  const [manualOrderPrice, setManualOrderPrice] = useState("");
-  const [manualOrderQuantity, setManualOrderQuantity] = useState("");
-  const [manualOrderSliderPercent, setManualOrderSliderPercent] = useState(0);
-  const [manualOrderContext, setManualOrderContext] = useState<DashboardManualOrderContext | null>(null);
-  const [manualOrderContextLoading, setManualOrderContextLoading] = useState(false);
-  const [isSubmittingManualOrder, setIsSubmittingManualOrder] = useState(false);
   const runtimeOnboardingSteps = useMemo(() => buildRuntimeOnboardingSteps(t), [t]);
   const runtimeNoActiveBotsOnboardingSteps = useMemo(
     () => extendWithRuntimeActivationStep(runtimeOnboardingSteps, t),
@@ -489,7 +305,6 @@ export default function HomeLiveWidgets() {
   const closePositionSuccessLabel = t("dashboard.home.runtime.closePositionSuccess");
   const closePositionIgnoredLabel = t("dashboard.home.runtime.closePositionIgnored");
   const closePositionErrorLabel = t("dashboard.home.runtime.closePositionError");
-  const manualOrderPanelTitle = t("dashboard.home.runtime.manualOrderTitle");
   const manualOrderOpenLabel = t("dashboard.home.runtime.manualOrderOpen");
   const manualOrderSubmittingLabel = t("dashboard.home.runtime.manualOrderOpening");
   const manualOrderSuccessLabel = t("dashboard.home.runtime.manualOrderSuccess");
@@ -559,281 +374,44 @@ export default function HomeLiveWidgets() {
     closePositionEdit();
   }, [closePositionEdit, isSavingPositionEdit]);
 
-  const manualOrderSymbolOptions = useMemo(() => {
-    const options = new Set<string>();
-    for (const item of selectedData?.symbols ?? []) options.add(normalizeSymbol(item.symbol));
-    for (const item of selectedData?.open ?? []) options.add(normalizeSymbol(item.symbol));
-    return [...options].sort((left, right) => left.localeCompare(right));
-  }, [selectedData?.open, selectedData?.symbols]);
-
-  useEffect(() => {
-    if (manualOrderSymbolOptions.length === 0) {
-      if (manualOrderSymbol !== "") setManualOrderSymbol("");
-      return;
-    }
-
-    const normalized = normalizeSymbol(manualOrderSymbol);
-    if (!normalized || !manualOrderSymbolOptions.includes(normalized)) {
-      setManualOrderSymbol(manualOrderSymbolOptions[0] ?? "");
-    }
-  }, [manualOrderSymbol, manualOrderSymbolOptions]);
-
-  useEffect(() => {
-    const symbol = normalizeSymbol(manualOrderSymbol);
-    const selectedBotId = selected?.bot.id;
-    if (!selectedBotId || !symbol) {
-      setManualOrderContext(null);
-      setManualOrderContextLoading(false);
-      return;
-    }
-
-    let canceled = false;
-    setManualOrderContextLoading(true);
-
-    void getDashboardManualOrderContext({
-      botId: selectedBotId,
-      symbol,
-      side: manualOrderSide,
-    })
-      .then((context) => {
-        if (canceled) return;
-        setManualOrderContext(context);
-      })
-      .catch(() => {
-        if (canceled) return;
-        setManualOrderContext(null);
-      })
-      .finally(() => {
-        if (canceled) return;
-        setManualOrderContextLoading(false);
-      });
-
-    return () => {
-      canceled = true;
-    };
-  }, [manualOrderSide, manualOrderSymbol, selected?.bot.id]);
-
-  const manualOrderLiveReferencePrice = useMemo(() => {
-    const symbolKey = normalizeSymbol(manualOrderSymbol);
-    if (!symbolKey) return null;
-
-    const contextPrice = manualOrderContext?.priceReference.markPrice;
-    if (typeof contextPrice === "number" && Number.isFinite(contextPrice) && contextPrice > 0) {
-      return contextPrice;
-    }
-
-    const symbolItem = selectedData?.symbols.find((item) => normalizeSymbol(item.symbol) === symbolKey);
-    if (typeof symbolItem?.liveLastPrice === "number" && Number.isFinite(symbolItem.liveLastPrice) && symbolItem.liveLastPrice > 0) {
-      return symbolItem.liveLastPrice;
-    }
-
-    const openPositionItem = selectedData?.open.find((item) => normalizeSymbol(item.symbol) === symbolKey);
-    if (typeof openPositionItem?.liveMarkPrice === "number" && Number.isFinite(openPositionItem.liveMarkPrice) && openPositionItem.liveMarkPrice > 0) {
-      return openPositionItem.liveMarkPrice;
-    }
-
-    if (typeof openPositionItem?.entryPrice === "number" && Number.isFinite(openPositionItem.entryPrice) && openPositionItem.entryPrice > 0) {
-      return openPositionItem.entryPrice;
-    }
-
-    return null;
-  }, [manualOrderContext?.priceReference.markPrice, manualOrderSymbol, selectedData?.open, selectedData?.symbols]);
-
-  const resolvedManualOrderType = manualOrderContext?.orderType ?? "MARKET";
-  const manualOrderTypeRequiresPrice =
-    resolvedManualOrderType === "LIMIT" ||
-    resolvedManualOrderType === "STOP" ||
-    resolvedManualOrderType === "STOP_LIMIT" ||
-    resolvedManualOrderType === "TAKE_PROFIT";
-  const manualOrderMinExecutableQty = manualOrderContext?.quantityConstraints.minExecutableQty ?? null;
-
-  const manualOrderLeverageForEstimate = useMemo(() => {
-    if (manualOrderContext?.leverage && Number.isFinite(manualOrderContext.leverage) && manualOrderContext.leverage > 0) {
-      return manualOrderContext.leverage;
-    }
-    return selected?.bot.marketType === "SPOT" ? 1 : null;
-  }, [manualOrderContext?.leverage, selected?.bot.marketType]);
-
-  const manualOrderSliderMaxQuantity = useMemo(() => {
-    if (manualOrderLiveReferencePrice == null || manualOrderLiveReferencePrice <= 0) {
-      return manualOrderMinExecutableQty;
-    }
-    const freeCash = selectedData?.free;
-    if (freeCash == null || !Number.isFinite(freeCash) || freeCash <= 0) {
-      return manualOrderMinExecutableQty;
-    }
-
-    const leverage = manualOrderLeverageForEstimate ?? 1;
-    const rawMax =
-      selected?.bot.marketType === "SPOT"
-        ? freeCash / manualOrderLiveReferencePrice
-        : (freeCash * Math.max(1, leverage)) / manualOrderLiveReferencePrice;
-    if (!Number.isFinite(rawMax) || rawMax <= 0) return manualOrderMinExecutableQty;
-
-    if (manualOrderMinExecutableQty != null) {
-      return Math.max(manualOrderMinExecutableQty, rawMax);
-    }
-    return rawMax;
-  }, [
+  const {
+    isSubmittingManualOrder,
+    manualOrderContext,
+    manualOrderContextLoading,
     manualOrderLeverageForEstimate,
     manualOrderLiveReferencePrice,
+    manualOrderMarginEstimate,
     manualOrderMinExecutableQty,
-    selected?.bot.marketType,
-    selectedData?.free,
-  ]);
-
-  useEffect(() => {
-    if (manualOrderMinExecutableQty == null || !Number.isFinite(manualOrderMinExecutableQty) || manualOrderMinExecutableQty <= 0) {
-      return;
-    }
-
-    setManualOrderQuantity((current) => {
-      const parsed = Number(current);
-      if (!Number.isFinite(parsed) || parsed <= 0 || parsed < manualOrderMinExecutableQty) {
-        return formatQuantityForInput(manualOrderMinExecutableQty);
-      }
-      return current;
-    });
-  }, [manualOrderMinExecutableQty]);
-
-  useEffect(() => {
-    const minQty = manualOrderMinExecutableQty ?? 0;
-    const maxQty = manualOrderSliderMaxQuantity ?? minQty;
-    if (maxQty <= 0 || maxQty < minQty) return;
-
-    const parsed = Number(manualOrderQuantity);
-    if (!Number.isFinite(parsed) || parsed < minQty) {
-      setManualOrderSliderPercent(0);
-      return;
-    }
-
-    if (maxQty === minQty) {
-      setManualOrderSliderPercent(100);
-      return;
-    }
-
-    const derived = ((parsed - minQty) / (maxQty - minQty)) * 100;
-    if (!Number.isFinite(derived)) return;
-    const clamped = Math.max(0, Math.min(100, derived));
-    setManualOrderSliderPercent(clamped);
-  }, [manualOrderMinExecutableQty, manualOrderQuantity, manualOrderSliderMaxQuantity]);
-
-  const handleManualOrderSliderChange = useCallback((nextPercent: number) => {
-    const clampedPercent = Math.max(0, Math.min(100, nextPercent));
-    setManualOrderSliderPercent(clampedPercent);
-
-    const minQty = manualOrderMinExecutableQty ?? 0;
-    const maxQty = manualOrderSliderMaxQuantity ?? minQty;
-    if (!Number.isFinite(maxQty) || maxQty <= 0) return;
-
-    const targetQuantity =
-      maxQty <= minQty
-        ? minQty
-        : minQty + ((maxQty - minQty) * clampedPercent) / 100;
-    setManualOrderQuantity(formatQuantityForInput(targetQuantity));
-  }, [manualOrderMinExecutableQty, manualOrderSliderMaxQuantity]);
-
-  const fillManualOrderPriceFromReference = useCallback(() => {
-    if (manualOrderLiveReferencePrice == null || !Number.isFinite(manualOrderLiveReferencePrice) || manualOrderLiveReferencePrice <= 0) {
-      return;
-    }
-    setManualOrderPrice(formatQuantityForInput(manualOrderLiveReferencePrice));
-  }, [manualOrderLiveReferencePrice]);
-
-  const manualOrderQuantityValue = useMemo(() => {
-    const parsed = Number(manualOrderQuantity);
-    return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
-  }, [manualOrderQuantity]);
-
-  const manualOrderNotionalEstimate = useMemo(() => {
-    if (manualOrderQuantityValue == null || manualOrderLiveReferencePrice == null) return null;
-    return manualOrderQuantityValue * manualOrderLiveReferencePrice;
-  }, [manualOrderLiveReferencePrice, manualOrderQuantityValue]);
-
-  const manualOrderMarginEstimate = useMemo(() => {
-    if (manualOrderNotionalEstimate == null || manualOrderLeverageForEstimate == null || manualOrderLeverageForEstimate <= 0) {
-      return null;
-    }
-    return manualOrderNotionalEstimate / manualOrderLeverageForEstimate;
-  }, [manualOrderLeverageForEstimate, manualOrderNotionalEstimate]);
-
-  const handleSubmitManualOrder = useCallback(async () => {
-    if (!selected) return;
-    const symbol = normalizeSymbol(manualOrderSymbol);
-    if (!symbol) {
-      toast.error(manualOrderInvalidSymbolLabel);
-      return;
-    }
-    const quantity = parsePositiveQuantityInput(manualOrderQuantity);
-    if (quantity === "invalid") {
-      toast.error(manualOrderInvalidQuantityLabel);
-      return;
-    }
-    if (manualOrderMinExecutableQty != null && quantity < manualOrderMinExecutableQty) {
-      toast.error(
-        interpolateTemplate(manualOrderMinQuantityLabel, {
-          value: formatQuantityForInput(manualOrderMinExecutableQty),
-        })
-      );
-      return;
-    }
-
-    const parsedPrice = parseOptionalPositivePriceInput(manualOrderPrice);
-    if (parsedPrice === "invalid") {
-      toast.error(manualOrderInvalidPriceLabel);
-      return;
-    }
-    if (manualOrderTypeRequiresPrice && parsedPrice == null) {
-      toast.error(manualOrderRequiredPriceLabel);
-      return;
-    }
-    const fallbackMarketPrice =
-      !manualOrderTypeRequiresPrice &&
-      manualOrderLiveReferencePrice != null &&
-      Number.isFinite(manualOrderLiveReferencePrice) &&
-      manualOrderLiveReferencePrice > 0
-        ? manualOrderLiveReferencePrice
-        : undefined;
-    const effectiveManualOrderPrice = typeof parsedPrice === "number" ? parsedPrice : fallbackMarketPrice;
-
-    setIsSubmittingManualOrder(true);
-    try {
-      await openDashboardManualOrder({
-        botId: selected.bot.id,
-        symbol,
-        side: manualOrderSide,
-        type: resolvedManualOrderType,
-        quantity,
-        price: effectiveManualOrderPrice,
-        riskAck: true,
-      });
-      toast.success(manualOrderSuccessLabel);
-      setManualOrderQuantity("");
-      await load({ silent: true });
-    } catch (error) {
-      toast.error(getAxiosMessage(error) ?? manualOrderErrorLabel);
-    } finally {
-      setIsSubmittingManualOrder(false);
-    }
-  }, [
-    load,
-    manualOrderInvalidQuantityLabel,
-    manualOrderInvalidPriceLabel,
-    manualOrderMinExecutableQty,
-    manualOrderMinQuantityLabel,
+    manualOrderNotionalEstimate,
     manualOrderPrice,
-    manualOrderRequiredPriceLabel,
-    manualOrderInvalidSymbolLabel,
     manualOrderQuantity,
     manualOrderSide,
+    manualOrderSliderMaxQuantity,
+    manualOrderSliderPercent,
     manualOrderSymbol,
-    manualOrderErrorLabel,
-    manualOrderLiveReferencePrice,
-    manualOrderSuccessLabel,
-    manualOrderTypeRequiresPrice,
+    manualOrderSymbolOptions,
     resolvedManualOrderType,
+    fillManualOrderPriceFromReference,
+    handleManualOrderSliderChange,
+    handleSubmitManualOrder,
+    setManualOrderPrice,
+    setManualOrderQuantity,
+    setManualOrderSide,
+    setManualOrderSymbol,
+  } = useManualOrderController({
     selected,
-  ]);
+    selectedData,
+    load,
+    labels: {
+      invalidSymbol: manualOrderInvalidSymbolLabel,
+      invalidQuantity: manualOrderInvalidQuantityLabel,
+      invalidPrice: manualOrderInvalidPriceLabel,
+      requiredPrice: manualOrderRequiredPriceLabel,
+      minQuantity: manualOrderMinQuantityLabel,
+      success: manualOrderSuccessLabel,
+      error: manualOrderErrorLabel,
+    },
+  });
 
   const { isClosingPosition, handleCloseRuntimePosition } = useCloseRuntimePositionAction({
     closePositionErrorLabel,
@@ -845,335 +423,73 @@ export default function HomeLiveWidgets() {
     selectedSessionId: selected?.actionSessionId ?? selected?.session?.id,
   });
 
-  const openPositionsColumns = useMemo<DataTableColumn<OpenPositionWithLive>[]>(() => {
-    const columns: DataTableColumn<OpenPositionWithLive>[] = [
-      {
-        key: "openedAt",
-        label: t("dashboard.home.runtime.timeOpened"),
-        sortable: true,
-        accessor: (row) => row.openedAt ?? "",
-        render: (row) => formatDateTimeWithSeconds(row.openedAt),
-      },
-      {
-        key: "symbol",
-        label: t("dashboard.home.runtime.symbol"),
-        sortable: true,
-        accessor: (row) => row.symbol,
-        render: (row) => {
-          const icon = resolveRuntimeIcon(row.symbol);
-          return (
-            <AssetSymbol
-              symbol={row.symbol}
-              iconUrl={icon?.iconUrl ?? null}
-              loading={runtimeIconsLoading && !icon}
-              hasError={Boolean(runtimeIconsError)}
-              className="font-medium"
-            />
-          );
-        },
-      },
-      {
-        key: "side",
-        label: t("dashboard.home.runtime.side"),
-        sortable: true,
-        accessor: (row) => row.side,
-        render: (row) => <DirectionPill value={row.side} />,
-      },
-      {
-        key: "margin",
-        label: withRuntimeUnit(t("dashboard.home.runtime.margin")),
-        sortable: true,
-        accessor: (row) => row.marginNotional,
-        render: (row) => formatRuntimeAmount(row.marginNotional),
-      },
-      {
-        key: "pnl",
-        label: withRuntimeUnit(t("dashboard.home.runtime.pnl")),
-        sortable: true,
-        accessor: (row) => row.liveUnrealizedPnl,
-        render: (row) => (
-          <span className={row.liveUnrealizedPnl >= 0 ? "text-success" : "text-error"}>
-            {formatRuntimeAmount(row.liveUnrealizedPnl)}
-          </span>
-        ),
-      },
-      {
-        key: "pnlPercent",
-        label: t("dashboard.home.runtime.pnlPercent"),
-        sortable: true,
-        accessor: (row) => row.livePnlPct ?? null,
-        render: (row) => (
-          <span className={row.liveUnrealizedPnl >= 0 ? "text-success" : "text-error"}>
-            {row.livePnlPct == null ? "-" : formatPercent(row.livePnlPct)}
-          </span>
-        ),
-      },
-      {
-        key: "dca",
-        label: t("dashboard.home.runtime.dca"),
-        sortable: true,
-        accessor: (row) => row.dcaCount,
-        className: "text-[11px]",
-        render: (row) => renderDcaLadderCell({ position: row, formatPercent: formatDcaPercent }),
-      },
-    ];
-
-    if (showDynamicStopColumns) {
-      columns.push(
-        {
-          key: "ttp",
-          label: t("dashboard.home.runtime.slTtp"),
-          sortable: true,
-          accessor: (row) => resolveDynamicTtpDisplay(row) ?? null,
-          render: (row) => {
-            const ttpDisplay = resolveDynamicTtpDisplay(row);
-            return ttpDisplay == null ? "-" : formatPercent(ttpDisplay);
-          },
-        },
-        {
-          key: "tsl",
-          label: t("dashboard.home.runtime.slTsl"),
-          sortable: true,
-          accessor: (row) => resolveDynamicTslDisplay(row) ?? null,
-          render: (row) => {
-            const tslDisplay = resolveDynamicTslDisplay(row);
-            return tslDisplay == null ? "-" : formatPercent(tslDisplay);
-          },
-        }
-      );
-    }
-
-    columns.push({
-      key: "actionClosePosition",
-      label: closePositionActionColumnLabel,
-      className: "text-right",
-      render: (row) => {
-        const isClosing = isClosingPosition(row.id);
-        const actionLabel = isClosing ? closePositionPendingLabel : closePositionButtonLabel;
-        return (
-          <div className="flex items-center justify-end gap-1">
-            <button
-              type="button"
-              className="btn btn-outline btn-xs btn-square"
-              onClick={() => openPositionEdit(row)}
-              disabled={isClosing}
-              aria-label={editPositionButtonLabel}
-              title={editPositionButtonLabel}
-            >
-              <LuPencil className="h-3.5 w-3.5" aria-hidden />
-              <span className="sr-only">{editPositionButtonLabel}</span>
-            </button>
-            <button
-              type="button"
-              className="btn btn-error btn-outline btn-xs btn-square"
-              onClick={() => void handleCloseRuntimePosition(row)}
-              disabled={isClosing}
-              aria-label={actionLabel}
-              title={actionLabel}
-            >
-              {isClosing ? (
-                <span className="loading loading-spinner loading-xs" aria-hidden />
-              ) : (
-                <LuX className="h-3.5 w-3.5" aria-hidden />
-              )}
-              <span className="sr-only">{actionLabel}</span>
-            </button>
-          </div>
-        );
-      },
-    });
-
-    return columns;
-  }, [
-    closePositionActionColumnLabel,
-    closePositionButtonLabel,
-    closePositionPendingLabel,
-    editPositionButtonLabel,
-    formatDateTimeWithSeconds,
-    formatDcaPercent,
-    formatPercent,
-    formatRuntimeAmount,
-    handleCloseRuntimePosition,
-    isClosingPosition,
-    openPositionEdit,
-    resolveRuntimeIcon,
-    runtimeIconsError,
-    runtimeIconsLoading,
-    showDynamicStopColumns,
-    t,
-    withRuntimeUnit,
-  ]);
-
-  const resolveOpenOrderSourceLabel = useCallback(
-    (origin: string | null | undefined) => {
-      if (origin === "USER") return t("dashboard.home.runtime.sourceManual");
-      if (origin === "BOT") return t("dashboard.home.runtime.sourceBot");
-      return t("dashboard.home.runtime.sourceImported");
-    },
-    [t]
-  );
-
-  const resolveOpenOrderStatusLabel = useCallback(
-    (status: string | null | undefined) => {
-      const normalized = status?.trim().toUpperCase();
-      if (normalized === "PENDING" || normalized === "OPEN") {
-        return t("dashboard.home.runtime.openOrderStatusWaitingFill");
-      }
-      if (normalized === "PARTIALLY_FILLED") {
-        return t("dashboard.home.runtime.openOrderStatusPartiallyFilled");
-      }
-      if (normalized === "FILLED") {
-        return t("dashboard.home.runtime.openOrderStatusFilled");
-      }
-      return status ?? "-";
-    },
-    [t]
-  );
-
-  const openOrdersColumns = useMemo<OpenOrdersTableColumn[]>(
-    () => [
-      {
-        key: "submittedAt",
-        label: t("dashboard.home.runtime.time"),
-        sortable: true,
-        accessor: (row) => row.submittedAt ?? row.createdAt,
-        render: (row) => formatDateTimeWithSeconds(row.submittedAt ?? row.createdAt),
-      },
-      {
-        key: "symbol",
-        label: t("dashboard.home.runtime.symbol"),
-        sortable: true,
-        accessor: (row) => row.symbol,
-        render: (row) => {
-          const icon = resolveRuntimeIcon(row.symbol);
-          return (
-            <AssetSymbol
-              symbol={row.symbol}
-              iconUrl={icon?.iconUrl ?? null}
-              loading={runtimeIconsLoading && !icon}
-              hasError={Boolean(runtimeIconsError)}
-              className="font-medium"
-            />
-          );
-        },
-      },
-      {
-        key: "source",
-        label: t("dashboard.home.runtime.source"),
-        sortable: true,
-        accessor: (row) => row.origin ?? "EXCHANGE_SYNC",
-        render: (row) => <span className="font-semibold">{resolveOpenOrderSourceLabel(row.origin)}</span>,
-      },
-      {
-        key: "side",
-        label: t("dashboard.home.runtime.side"),
-        sortable: true,
-        accessor: (row) => row.side,
-        render: (row) => <DirectionPill value={row.side === "BUY" ? "BUY" : "SELL"} />,
-      },
-      {
-        key: "status",
-        label: t("dashboard.home.runtime.status"),
-        sortable: true,
-        accessor: (row) => row.status,
-        render: (row) => <span className="font-semibold">{resolveOpenOrderStatusLabel(row.status)}</span>,
-      },
-      {
-        key: "quantity",
-        label: t("dashboard.home.runtime.qty"),
-        sortable: true,
-        accessor: (row) => row.quantity,
-        render: (row) => formatNumber(row.quantity, { maximumFractionDigits: 6 }),
-      },
-      {
-        key: "price",
-        label: t("dashboard.home.runtime.price"),
-        sortable: true,
-        accessor: (row) => row.price ?? null,
-        render: (row) =>
-          row.price == null ? "-" : formatNumber(row.price, { minimumFractionDigits: 2, maximumFractionDigits: 6 }),
-      },
-    ],
+  const openPositionsColumns = useMemo(
+    () =>
+      createOpenPositionsColumns({
+        t,
+        formatDateTimeWithSeconds,
+        formatPercent,
+        formatRuntimeAmount,
+        formatDcaPercent,
+        withRuntimeUnit,
+        resolveRuntimeIcon,
+        runtimeIconsLoading,
+        runtimeIconsError,
+        showDynamicStopColumns,
+        closePositionActionColumnLabel,
+        closePositionPendingLabel,
+        closePositionButtonLabel,
+        editPositionButtonLabel,
+        isClosingPosition,
+        onOpenPositionEdit: openPositionEdit,
+        onCloseRuntimePosition: (row) => void handleCloseRuntimePosition(row),
+      }),
     [
+      closePositionActionColumnLabel,
+      closePositionButtonLabel,
+      closePositionPendingLabel,
+      editPositionButtonLabel,
       formatDateTimeWithSeconds,
-      formatNumber,
+      formatDcaPercent,
+      formatPercent,
+      formatRuntimeAmount,
+      handleCloseRuntimePosition,
+      isClosingPosition,
+      openPositionEdit,
       resolveRuntimeIcon,
-      resolveOpenOrderStatusLabel,
-      resolveOpenOrderSourceLabel,
       runtimeIconsError,
       runtimeIconsLoading,
+      showDynamicStopColumns,
       t,
+      withRuntimeUnit,
     ]
   );
 
-  const historyPositionsColumns = useMemo<HistoryPositionsTableColumn[]>(
-    () => [
-      {
-        key: "closedAt",
-        label: t("dashboard.home.runtime.time"),
-        sortable: true,
-        accessor: (row) => row.closedAt ?? row.openedAt,
-        render: (row) => formatDateTime(row.closedAt ?? row.openedAt),
-      },
-      {
-        key: "symbol",
-        label: t("dashboard.home.runtime.symbol"),
-        sortable: true,
-        accessor: (row) => row.symbol,
-        render: (row) => {
-          const icon = resolveRuntimeIcon(row.symbol);
-          return (
-            <AssetSymbol
-              symbol={row.symbol}
-              iconUrl={icon?.iconUrl ?? null}
-              loading={runtimeIconsLoading && !icon}
-              hasError={Boolean(runtimeIconsError)}
-              className="font-medium"
-            />
-          );
-        },
-      },
-      {
-        key: "side",
-        label: t("dashboard.home.runtime.side"),
-        sortable: true,
-        accessor: (row) => row.side,
-        render: (row) => <DirectionPill value={row.side} />,
-      },
-      {
-        key: "qty",
-        label: t("dashboard.home.runtime.qty"),
-        sortable: true,
-        accessor: (row) => row.quantity,
-        render: (row) => formatNumber(row.quantity, { maximumFractionDigits: 6 }),
-      },
-      {
-        key: "entryPrice",
-        label: t("dashboard.bots.monitoring.table.entry"),
-        sortable: true,
-        accessor: (row) => row.entryPrice,
-        render: (row) => formatNumber(row.entryPrice, { minimumFractionDigits: 2, maximumFractionDigits: 6 }),
-      },
-      {
-        key: "exitPrice",
-        label: t("dashboard.bots.monitoring.table.exit"),
-        sortable: true,
-        accessor: (row) => row.exitPrice ?? null,
-        render: (row) =>
-          row.exitPrice == null ? "-" : formatNumber(row.exitPrice, { minimumFractionDigits: 2, maximumFractionDigits: 6 }),
-      },
-      {
-        key: "realizedPnl",
-        label: withRuntimeUnit(t("dashboard.home.runtime.realizedPnl")),
-        sortable: true,
-        accessor: (row) => row.realizedPnl,
-        render: (row) => (
-          <span className={row.realizedPnl >= 0 ? "text-success" : "text-error"}>
-            {formatRuntimeAmount(row.realizedPnl)}
-          </span>
-        ),
-      },
-    ],
+  const openOrdersColumns = useMemo(
+    () =>
+      createOpenOrdersColumns({
+        t,
+        formatDateTimeWithSeconds,
+        formatNumber,
+        resolveRuntimeIcon,
+        runtimeIconsLoading,
+        runtimeIconsError,
+      }),
+    [formatDateTimeWithSeconds, formatNumber, resolveRuntimeIcon, runtimeIconsError, runtimeIconsLoading, t]
+  );
+
+  const historyPositionsColumns = useMemo(
+    () =>
+      createHistoryPositionsColumns({
+        t,
+        formatDateTime,
+        formatNumber,
+        formatRuntimeAmount,
+        withRuntimeUnit,
+        resolveRuntimeIcon,
+        runtimeIconsLoading,
+        runtimeIconsError,
+      }),
     [
       formatDateTime,
       formatNumber,
@@ -1186,102 +502,29 @@ export default function HomeLiveWidgets() {
     ]
   );
 
-  const tradesColumns = useMemo<DataTableColumn<BotRuntimeTrade>[]>(() => [
-    {
-      key: "executedAt",
-      label: t("dashboard.home.runtime.time"),
-      sortable: true,
-      accessor: (row) => row.executedAt ?? "",
-      render: (row) => formatDateTime(row.executedAt),
-    },
-    {
-      key: "symbol",
-      label: t("dashboard.home.runtime.symbol"),
-      sortable: true,
-      accessor: (row) => row.symbol,
-      render: (row) => {
-        const icon = resolveRuntimeIcon(row.symbol);
-        return (
-          <AssetSymbol
-            symbol={row.symbol}
-            iconUrl={icon?.iconUrl ?? null}
-            loading={runtimeIconsLoading && !icon}
-            hasError={Boolean(runtimeIconsError)}
-            className="font-medium"
-          />
-        );
-      },
-    },
-    {
-      key: "side",
-      label: t("dashboard.home.runtime.side"),
-      sortable: true,
-      accessor: (row) => row.side,
-      render: (row) => <DirectionPill value={row.side === "BUY" ? "BUY" : "SELL"} />,
-    },
-    {
-      key: "lifecycleAction",
-      label: t("dashboard.home.runtime.filterAction"),
-      sortable: true,
-      accessor: (row) => row.lifecycleAction,
-      render: (row) => <TradeActionPill value={row.lifecycleAction} />,
-    },
-    {
-      key: "actionReason",
-      label: t("dashboard.home.runtime.reason"),
-      sortable: false,
-      accessor: (row) => row.actionReason ?? "UNKNOWN",
-      render: (row) => {
-        const reason = (row.actionReason ?? "UNKNOWN") as TradeActionReasonValue;
-        return (
-          <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${tradeReasonPillClass(reason)}`}>
-            {t(tradeReasonLabelKey(reason))}
-          </span>
-        );
-      },
-    },
-    {
-      key: "qty",
-      label: t("dashboard.home.runtime.qty"),
-      sortable: false,
-      accessor: (row) => row.quantity,
-      render: (row) => formatNumber(row.quantity, { maximumFractionDigits: 6 }),
-    },
-    {
-      key: "price",
-      label: t("dashboard.home.runtime.price"),
-      sortable: false,
-      accessor: (row) => row.price,
-      render: (row) => formatNumber(row.price, { maximumFractionDigits: 4 }),
-    },
-    {
-      key: "margin",
-      label: withRuntimeUnit(t("dashboard.home.runtime.margin")),
-      sortable: true,
-      accessor: (row) => row.margin,
-      render: (row) => formatRuntimeAmount(row.margin),
-    },
-    {
-      key: "realizedPnl",
-      label: withRuntimeUnit(t("dashboard.home.runtime.realizedPnl")),
-      sortable: true,
-      accessor: (row) => row.realizedPnl,
-      render: (row) => (
-        <span className={row.realizedPnl >= 0 ? "text-success" : "text-error"}>
-          {formatRuntimeAmount(row.realizedPnl)}
-        </span>
-      ),
-    },
-  ], [
-    formatDateTime,
-    formatNumber,
-    formatRuntimeAmount,
-    resolveRuntimeIcon,
-    runtimeIconsError,
-    runtimeIconsLoading,
-    t,
-    withRuntimeUnit,
-  ]);
+  const tradesColumns = useMemo(
+    () =>
+      createTradesColumns({
+        t,
+        formatDateTime,
+        formatNumber,
+        formatRuntimeAmount,
+        withRuntimeUnit,
+        resolveRuntimeIcon,
+        runtimeIconsLoading,
+        runtimeIconsError,
+      }),
+    [
+      formatDateTime,
+      formatNumber,
+      formatRuntimeAmount,
+      resolveRuntimeIcon,
+      runtimeIconsError,
+      runtimeIconsLoading,
+      t,
+      withRuntimeUnit,
+    ]
+  );
 
   const runtimeTabItems = useMemo<RuntimeTabItem[]>(
     () =>
@@ -1308,6 +551,72 @@ export default function HomeLiveWidgets() {
       })),
     [selected?.bot.mode, t]
   );
+
+  const runtimeSidebarManualOrder = useMemo(
+    () =>
+      buildRuntimeSidebarManualOrderPresenter({
+        t,
+        selected,
+        selectedRuntimeCapabilityAvailable,
+        manualOrderOpenLabel,
+        manualOrderSubmittingLabel,
+        manualOrderContext,
+        manualOrderLeverageForEstimate,
+        manualOrderMinExecutableQty,
+        manualOrderSliderMaxQuantity,
+        manualOrderLiveReferencePrice,
+        manualOrderQuantity,
+        manualOrderPrice,
+        manualOrderSliderPercent,
+        manualOrderNotionalEstimate,
+        manualOrderMarginEstimate,
+        manualOrderContextLoading,
+        isSubmittingManualOrder,
+        manualOrderSymbolOptions,
+        manualOrderSymbol,
+        manualOrderSide,
+        resolvedManualOrderType,
+        onSymbolChange: setManualOrderSymbol,
+        onSideChange: setManualOrderSide,
+        onPriceChange: setManualOrderPrice,
+        onFillPrice: fillManualOrderPriceFromReference,
+        onQuantityChange: setManualOrderQuantity,
+        onSliderChange: handleManualOrderSliderChange,
+        onSubmit: () => void handleSubmitManualOrder(),
+      }),
+    [
+      fillManualOrderPriceFromReference,
+      handleManualOrderSliderChange,
+      handleSubmitManualOrder,
+      isSubmittingManualOrder,
+      manualOrderContext,
+      manualOrderContextLoading,
+      manualOrderLeverageForEstimate,
+      manualOrderLiveReferencePrice,
+      manualOrderMarginEstimate,
+      manualOrderMinExecutableQty,
+      manualOrderNotionalEstimate,
+      manualOrderOpenLabel,
+      manualOrderPrice,
+      manualOrderQuantity,
+      manualOrderSide,
+      manualOrderSliderMaxQuantity,
+      manualOrderSliderPercent,
+      manualOrderSubmittingLabel,
+      manualOrderSymbol,
+      manualOrderSymbolOptions,
+      resolvedManualOrderType,
+      selected,
+      selectedRuntimeCapabilityAvailable,
+      setManualOrderPrice,
+      setManualOrderQuantity,
+      setManualOrderSide,
+      setManualOrderSymbol,
+      t,
+    ]
+  );
+
+  const runtimeSidebarText = useMemo(() => buildRuntimeSidebarTextPresenter(t), [t]);
 
   if (loading) {
     return (
@@ -1427,6 +736,7 @@ export default function HomeLiveWidgets() {
                 noHistoryPositionsLabel={t("dashboard.bots.monitoring.emptyClosedPositions")}
                 tradesRows={selectedData?.trades ?? []}
                 tradesColumns={tradesColumns}
+                filterPlaceholder={t("dashboard.home.runtime.manualOrderSymbolPlaceholder")}
                 tradeDraftFilters={tradeDraftFilters}
                 onTradeDraftFiltersPatch={patchTradeDraftFilters}
                 onApplyTradeFilters={applyTradeFilters}
@@ -1437,7 +747,7 @@ export default function HomeLiveWidgets() {
                 advancedOptionsLabel={t("dashboard.bots.monitoring.advancedOptions")}
                 allLabel={t("dashboard.home.runtime.all")}
                 openActionLabel={t("dashboard.home.runtime.actionOpen")}
-                dcaActionLabel="DCA"
+                dcaActionLabel={t("dashboard.home.runtime.actionDca")}
                 closeActionLabel={t("dashboard.home.runtime.actionClose")}
                 filterSideLabel={t("dashboard.home.runtime.filterSide")}
                 filterActionLabel={t("dashboard.home.runtime.filterAction")}
@@ -1514,93 +824,8 @@ export default function HomeLiveWidgets() {
           formatPercent={formatPercent}
           formatDateTime={formatDateTime}
           sessionBadgeClassName={sessionBadge}
-          manualOrder={{
-            title: manualOrderPanelTitle,
-            symbolLabel: t("dashboard.home.runtime.symbol"),
-            sideLabel: t("dashboard.home.runtime.side"),
-            orderTypeLabel: t("dashboard.home.runtime.manualOrderOrderTypeLabel"),
-            marginModeLabel: t("dashboard.home.runtime.manualOrderMarginModeLabel"),
-            leverageLabel: t("dashboard.home.runtime.manualOrderLeverageLabel"),
-            quantityLabel: t("dashboard.home.runtime.qty"),
-            priceLabel: t("dashboard.home.runtime.price"),
-            fillPriceLabel: t("dashboard.home.runtime.manualOrderUseMarketPrice"),
-            minQtyLabel: t("dashboard.home.runtime.manualOrderMinQtyLabel"),
-            sliderLabel: t("dashboard.home.runtime.manualOrderSliderLabel"),
-            sliderMinLabel: t("dashboard.home.runtime.manualOrderSliderMinLabel"),
-            sliderMaxLabel: t("dashboard.home.runtime.manualOrderSliderMaxLabel"),
-            summaryBuyLabel: t("dashboard.home.runtime.manualOrderSummaryBuy"),
-            summarySellLabel: t("dashboard.home.runtime.manualOrderSummarySell"),
-            summaryEstimateLabel: t("dashboard.home.runtime.manualOrderSummaryEstimate"),
-            summaryMaxLabel: t("dashboard.home.runtime.manualOrderSummaryMax"),
-            openLabel: manualOrderOpenLabel,
-            openingLabel: manualOrderSubmittingLabel,
-            buyLabel: t("dashboard.home.runtime.manualOrderBuyLabel"),
-            sellLabel: t("dashboard.home.runtime.manualOrderSellLabel"),
-            contextLoadingLabel: t("dashboard.home.runtime.manualOrderContextLoading"),
-            contextUnavailableLabel: t("dashboard.home.runtime.manualOrderContextUnavailable"),
-            semanticsHintLabel: t("dashboard.home.runtime.manualOrderSemanticsHint"),
-            noSymbolsLabel: t("dashboard.home.runtime.noSignalData"),
-            botContext: selected ? `${selected.bot.name} | ${selected.bot.mode}` : "-",
-            symbolOptions: manualOrderSymbolOptions,
-            symbol: manualOrderSymbol,
-            side: manualOrderSide,
-            orderType: resolvedManualOrderType,
-            marginMode: manualOrderContext?.marginMode ?? (selected?.bot.marketType === "SPOT" ? "NONE" : "CROSSED"),
-            leverage: manualOrderLeverageForEstimate,
-            minExecutableQty: manualOrderMinExecutableQty,
-            maxExecutableQty: manualOrderSliderMaxQuantity ?? null,
-            liveReferencePrice: manualOrderLiveReferencePrice,
-            quantity: manualOrderQuantity,
-            price: manualOrderPrice,
-            sliderPercent: manualOrderSliderPercent,
-            estimatedNotional: manualOrderNotionalEstimate,
-            estimatedMargin: manualOrderMarginEstimate,
-            isContextLoading: manualOrderContextLoading,
-            isSubmitting: isSubmittingManualOrder,
-            isActionDisabled: !selectedRuntimeCapabilityAvailable || manualOrderSymbolOptions.length === 0,
-            onSymbolChange: setManualOrderSymbol,
-            onSideChange: setManualOrderSide,
-            onPriceChange: setManualOrderPrice,
-            onFillPrice: fillManualOrderPriceFromReference,
-            onQuantityChange: setManualOrderQuantity,
-            onSliderChange: handleManualOrderSliderChange,
-            onSubmit: () => void handleSubmitManualOrder(),
-          }}
-          text={{
-            walletTitle: t("dashboard.home.runtime.walletTitle"),
-            selectedBot: t("dashboard.home.runtime.selectedBot"),
-            status: t("dashboard.home.runtime.status"),
-            mode: t("dashboard.home.runtime.mode"),
-            heartbeat: t("dashboard.home.runtime.heartbeat"),
-            openPositions: t("dashboard.home.runtime.openPositions"),
-            signalsDca: t("dashboard.home.runtime.signalsDca"),
-            netPnl: t("dashboard.home.runtime.netPnl"),
-            noSession: t("dashboard.home.runtime.noSession"),
-            noActiveSessionWarning: t("dashboard.home.runtime.noActiveSessionWarning"),
-            capitalRiskTitle: t("dashboard.home.runtime.capitalRiskTitle"),
-            portfolio: t("dashboard.home.runtime.portfolio"),
-            deltaFromStart: t("dashboard.home.runtime.deltaFromStart"),
-            marketContextTitle: t("dashboard.home.runtime.marketContextTitle"),
-            strategyContextTitle: t("dashboard.home.runtime.strategyContextTitle"),
-            marketGroup: t("dashboard.home.runtime.marketGroup"),
-            exchange: t("dashboard.home.runtime.exchange"),
-            market: t("dashboard.home.runtime.market"),
-            strategy: t("dashboard.bots.create.strategyLabel"),
-            interval: t("dashboard.home.runtime.interval"),
-            leverage: t("dashboard.home.runtime.leverage"),
-            walletAllocation: t("dashboard.home.runtime.walletAllocation"),
-            markets: t("dashboard.home.runtime.markets"),
-            strategies: t("dashboard.nav.strategies"),
-            baseCurrency: t("dashboard.home.runtime.baseCurrency"),
-            freeFunds: t("dashboard.home.runtime.freeFunds"),
-            fundsInPositions: t("dashboard.home.runtime.fundsInPositions"),
-            inPositionsShort: t("dashboard.home.runtime.inPositionsShort"),
-            exposure: t("dashboard.home.runtime.exposure"),
-            realizedOpen: t("dashboard.home.runtime.realizedOpen"),
-            winRate: t("dashboard.home.runtime.winRate"),
-            maxDrawdown: t("dashboard.home.runtime.maxDrawdown"),
-            updatedAt: (value) => interpolateTemplate(t("dashboard.home.runtime.updatedAt"), { value }),
-          }}
+          manualOrder={runtimeSidebarManualOrder}
+          text={runtimeSidebarText}
         />
       </section>
       <FormModal
@@ -1623,7 +848,9 @@ export default function HomeLiveWidgets() {
                 </p>
                 <p>
                   <span className="opacity-70">{t("dashboard.home.runtime.reason")}:</span>{" "}
-                  <span className="font-semibold">{positionEditDraft.position.origin ?? "BOT"}</span>
+                  <span className="font-semibold">
+                    {resolvePositionOriginLabel(positionEditDraft.position.origin, t)}
+                  </span>
                 </p>
                 <p>
                   <span className="opacity-70">{t("dashboard.home.runtime.dca")}:</span>{" "}
@@ -1631,7 +858,7 @@ export default function HomeLiveWidgets() {
                 </p>
                 <p>
                   <span className="opacity-70">{t("dashboard.bots.create.strategyLabel")}:</span>{" "}
-                  <span className="font-semibold">{selected?.bot.strategyId ?? "-"}</span>
+                  <span className="font-semibold">{resolveSelectedStrategyDisplay(selected, t)}</span>
                 </p>
                 <p>
                   <span className="opacity-70">{t("dashboard.home.runtime.timeOpened")}:</span>{" "}

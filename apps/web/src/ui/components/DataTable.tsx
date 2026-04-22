@@ -96,9 +96,9 @@ export default function DataTable<T>({
   getRowId,
   title,
   description,
-  filterPlaceholder = 'Filter...',
+  filterPlaceholder,
   filterFn,
-  emptyText = 'No rows',
+  emptyText,
   isRowExpanded,
   renderExpandedRow,
   compact = false,
@@ -109,7 +109,7 @@ export default function DataTable<T>({
   onQueryChange,
   onSearch,
   advancedFilters,
-  advancedToggleLabel = 'Advanced',
+  advancedToggleLabel,
   advancedDefaultOpen = false,
   advancedTogglePlacement = 'toolbar',
   manualFiltering = false,
@@ -123,9 +123,9 @@ export default function DataTable<T>({
   paginationEnabled = false,
   pageSizeOptions = [10, 25, 50, 100],
   defaultPageSize,
-  rowsPerPageLabel = 'Rows',
-  previousLabel = 'Previous',
-  nextLabel = 'Next',
+  rowsPerPageLabel,
+  previousLabel,
+  nextLabel,
   manualPagination = false,
   page: externalPage,
   pageSize: externalPageSize,
@@ -137,10 +137,10 @@ export default function DataTable<T>({
   onPageSizeChange,
   paginationSummary,
   paginationClassName = '',
-  rowsPerPageSuffixLabel = 'per page',
-  rowsTotalLabel = 'Rows',
-  pageLabel = 'Page',
-  columnsToggleLabel = 'Columns',
+  rowsPerPageSuffixLabel,
+  rowsTotalLabel,
+  pageLabel,
+  columnsToggleLabel,
   columnVisibilityEnabled = true,
   columnVisibilityPreferenceKey,
   settingsGroupVisible = true,
@@ -148,6 +148,19 @@ export default function DataTable<T>({
   advancedMode = false,
 }: DataTableProps<T>) {
   const { t } = useOptionalI18n();
+  const resolvedFilterPlaceholder = filterPlaceholder ?? t('public.sharedUi.dataTable.filterPlaceholder');
+  const resolvedEmptyText = emptyText ?? t('public.sharedUi.dataTable.emptyText');
+  const resolvedAdvancedToggleLabel =
+    advancedToggleLabel ?? t('public.sharedUi.dataTable.advancedToggleLabel');
+  const resolvedRowsPerPageLabel = rowsPerPageLabel ?? t('public.sharedUi.dataTable.rowsPerPageLabel');
+  const resolvedPreviousLabel = previousLabel ?? t('public.sharedUi.dataTable.previousLabel');
+  const resolvedNextLabel = nextLabel ?? t('public.sharedUi.dataTable.nextLabel');
+  const resolvedRowsPerPageSuffixLabel =
+    rowsPerPageSuffixLabel ?? t('public.sharedUi.dataTable.rowsPerPageSuffixLabel');
+  const resolvedRowsTotalLabel = rowsTotalLabel ?? t('public.sharedUi.dataTable.rowsTotalLabel');
+  const resolvedPageLabel = pageLabel ?? t('public.sharedUi.dataTable.pageLabel');
+  const resolvedColumnsToggleLabel =
+    columnsToggleLabel ?? t('public.sharedUi.dataTable.columnsToggleLabel');
   const effectivePaginationEnabled = paginationEnabled || advancedMode;
   const effectiveColumnVisibilityEnabled = advancedMode ? true : columnVisibilityEnabled;
   const effectiveSettingsGroupVisible = advancedMode ? true : settingsGroupVisible;
@@ -401,7 +414,7 @@ export default function DataTable<T>({
               <LuSearch className='pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 opacity-60' />
               <input
                 className='input input-bordered input-sm w-full pl-3 pr-10'
-                placeholder={filterPlaceholder}
+                placeholder={resolvedFilterPlaceholder}
                 value={queryValue}
                 onChange={(event) => setQueryValue(event.target.value)}
                 onKeyDown={(event) => {
@@ -430,7 +443,7 @@ export default function DataTable<T>({
               aria-expanded={advancedOpen}
             >
               <LuSlidersHorizontal className='h-3.5 w-3.5' />
-              <span>{advancedToggleLabel}</span>
+              <span>{resolvedAdvancedToggleLabel}</span>
             </button>
           ) : null}
         </div>
@@ -496,7 +509,7 @@ export default function DataTable<T>({
         </table>
       </div>
 
-      {pagedRows.length === 0 ? <p className='px-3 text-sm opacity-70'>{emptyText}</p> : null}
+      {pagedRows.length === 0 ? <p className='px-3 text-sm opacity-70'>{resolvedEmptyText}</p> : null}
 
       {effectivePaginationEnabled ? (
         <div
@@ -518,10 +531,14 @@ export default function DataTable<T>({
                       }`}
                         onClick={() => setColumnsDropdownOpen((prev) => !prev)}
                         aria-expanded={columnsDropdownOpen}
-                        aria-label={columnsToggleLabel}
+                        aria-label={resolvedColumnsToggleLabel}
                       >
                         <LuColumns3 className='h-4 w-4' />
-                        {effectiveSettingsControlsIconOnly ? <span className='sr-only'>{columnsToggleLabel}</span> : <span>{columnsToggleLabel}</span>}
+                        {effectiveSettingsControlsIconOnly ? (
+                          <span className='sr-only'>{resolvedColumnsToggleLabel}</span>
+                        ) : (
+                          <span>{resolvedColumnsToggleLabel}</span>
+                        )}
                       </button>
                       {columnsDropdownOpen ? (
                         <ul className='menu dropdown-content z-[40] mb-2 w-56 rounded-box border border-base-300/70 bg-base-100 p-2 shadow-lg'>
@@ -564,10 +581,14 @@ export default function DataTable<T>({
                       }`}
                       onClick={() => setAdvancedOpen((prev) => !prev)}
                       aria-expanded={advancedOpen}
-                      aria-label={advancedToggleLabel}
+                      aria-label={resolvedAdvancedToggleLabel}
                     >
                       <LuSlidersHorizontal className='h-3.5 w-3.5' />
-                      {effectiveSettingsControlsIconOnly ? <span className='sr-only'>{advancedToggleLabel}</span> : <span>{advancedToggleLabel}</span>}
+                      {effectiveSettingsControlsIconOnly ? (
+                        <span className='sr-only'>{resolvedAdvancedToggleLabel}</span>
+                      ) : (
+                        <span>{resolvedAdvancedToggleLabel}</span>
+                      )}
                     </button>
                   ) : null}
                 </div>
@@ -577,9 +598,9 @@ export default function DataTable<T>({
 
           <div className={`min-w-0 w-full lg:w-auto text-xs text-base-content/75 ${showSettingsControls ? '' : 'col-span-2'} lg:col-span-1`}>
             <div className='flex items-center justify-end gap-6 lg:justify-start'>
-              <span>{rowsTotalLabel}: {totalRowsCount}</span>
+              <span>{resolvedRowsTotalLabel}: {totalRowsCount}</span>
               <span className='inline-flex items-center gap-2'>
-                <span>{rowsPerPageLabel}</span>
+                <span>{resolvedRowsPerPageLabel}</span>
                 <select
                   className='select select-bordered select-sm h-8 min-h-8 w-20'
                   value={effectivePageSize}
@@ -591,7 +612,7 @@ export default function DataTable<T>({
                     </option>
                   ))}
                 </select>
-                <span>{rowsPerPageSuffixLabel}</span>
+                <span>{resolvedRowsPerPageSuffixLabel}</span>
               </span>
             </div>
             {paginationSummary ? (
@@ -605,7 +626,7 @@ export default function DataTable<T>({
             <div className='col-span-2 lg:col-span-1 min-w-0 w-full lg:w-auto text-xs text-base-content/75'>
               <div className='flex items-center justify-between gap-2 lg:gap-6'>
                 <span className='inline-flex items-center gap-2'>
-                  <span>{pageLabel}</span>
+                  <span>{resolvedPageLabel}</span>
                   <input
                     type='number'
                     inputMode='numeric'
@@ -620,15 +641,15 @@ export default function DataTable<T>({
                       event.preventDefault();
                       commitPageInput();
                     }}
-                    aria-label={`${pageLabel} input`}
+                    aria-label={`${resolvedPageLabel} input`}
                   />
                   <span>/ {totalPages}</span>
                 </span>
                 <InlinePager
                   size='sm'
                   className='shrink-0'
-                  previousLabel={previousLabel}
-                  nextLabel={nextLabel}
+                  previousLabel={resolvedPreviousLabel}
+                  nextLabel={resolvedNextLabel}
                   previousDisabled={manualPagination ? !(externalHasPrev ?? effectivePage > 1) : effectivePage <= 1}
                   nextDisabled={manualPagination ? !(externalHasNext ?? effectivePage < totalPages) : effectivePage >= totalPages}
                   onPrevious={() => goToPage(effectivePage - 1)}

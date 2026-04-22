@@ -134,6 +134,7 @@ export const dashboardHomePt = {
     "actionOpen": "Abrir",
     "actionDca": "DCA",
     "actionClose": "Fechar",
+    "actionUnknown": "Desconhecido",
     "closePositionButton": "Fechar posicao",
     "closePositionPending": "A fechar...",
     "closePositionNoSession": "Nenhuma sessao ativa de runtime selecionada.",

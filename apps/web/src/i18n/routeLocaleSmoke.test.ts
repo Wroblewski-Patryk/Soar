@@ -41,6 +41,27 @@ const ROUTE_SMOKE_CASES: RouteSmokeCase[] = [
     keys: ["dashboard.backtests.detailsLabel", "dashboard.backtests.runsTable.preview"],
   },
   {
+    route: "/dashboard/profile",
+    keys: [
+      "dashboard.profilePage.title",
+      "dashboard.apiKeys.title",
+      "dashboard.security.passwordSectionTitle",
+      "dashboard.subscription.title",
+    ],
+  },
+  {
+    route: "/dashboard/strategies/list",
+    keys: ["dashboard.strategies.title", "dashboard.strategies.list.filterPlaceholder"],
+  },
+  {
+    route: "/dashboard/wallets/create",
+    keys: ["dashboard.wallets.createLabel", "dashboard.wallets.form.sectionBasics"],
+  },
+  {
+    route: "/dashboard/wallets/wallet-1/edit",
+    keys: ["dashboard.wallets.editLabel", "dashboard.wallets.form.sectionSummary"],
+  },
+  {
     route: "/dashboard/bots/create",
     keys: ["dashboard.bots.create.title", "dashboard.bots.page.breadcrumbCreate"],
   },

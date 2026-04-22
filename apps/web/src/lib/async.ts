@@ -6,6 +6,14 @@ export type AsyncRetryOptions = {
   shouldRetry?: (error: unknown, attempt: number) => boolean;
 };
 
+export type AsyncViewStateOptions<T, TError = string | null> = {
+  setPending: (next: boolean) => void;
+  operation: () => Promise<T>;
+  setError?: (next: TError) => void;
+  resolveError?: (error: unknown) => TError;
+  clearErrorValue?: TError;
+};
+
 const wait = (ms: number) =>
   new Promise<void>((resolve) => {
     setTimeout(resolve, Math.max(0, ms));
@@ -53,4 +61,27 @@ export const runAsyncWithState = async <T>(
   } finally {
     setPending(false);
   }
+};
+
+export const runAsyncWithViewState = async <T, TError = string | null>({
+  setPending,
+  operation,
+  setError,
+  resolveError,
+  clearErrorValue,
+}: AsyncViewStateOptions<T, TError>): Promise<T> => {
+  if (setError) {
+    setError((clearErrorValue ?? null) as TError);
+  }
+
+  return runAsyncWithState(setPending, async () => {
+    try {
+      return await operation();
+    } catch (error) {
+      if (setError && resolveError) {
+        setError(resolveError(error));
+      }
+      throw error;
+    }
+  });
 };

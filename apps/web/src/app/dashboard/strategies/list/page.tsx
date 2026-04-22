@@ -8,31 +8,17 @@ import { LuList, LuListChecks } from 'react-icons/lu';
 import { useI18n } from '@/i18n/I18nProvider';
 
 export default function StrategiesListPage() {
-  const { locale, t } = useI18n();
+  const { t } = useI18n();
   const router = useRouter();
 
   const copy = useMemo(
     () => ({
-      en: {
-        title: 'Strategies',
-        breadcrumbStrategies: 'Strategies',
-        breadcrumbList: 'List',
-        addLabel: 'Create',
-      },
-      pl: {
-        title: 'Strategie',
-        breadcrumbStrategies: 'Strategie',
-        breadcrumbList: 'Lista',
-        addLabel: 'Create',
-      },
-      pt: {
-        title: 'Estrategias',
-        breadcrumbStrategies: 'Estrategias',
-        breadcrumbList: 'Lista',
-        addLabel: 'Create',
-      },
-    } as const)[locale],
-    [locale]
+      title: t('dashboard.strategies.title'),
+      breadcrumbStrategies: t('dashboard.strategies.title'),
+      breadcrumbList: t('dashboard.strategies.listLabel'),
+      addLabel: t('dashboard.strategies.createLabel'),
+    }),
+    [t]
   );
 
   return (

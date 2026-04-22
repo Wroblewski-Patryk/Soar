@@ -48,6 +48,10 @@ describe('compat wrappers', () => {
   });
 
   it('keeps default fallback behavior in handleError', () => {
-    expect(handleError({})).toBe('Wystapil blad');
+    expect(handleError({})).toBe('Something went wrong');
+  });
+
+  it('accepts localized fallback override in handleError', () => {
+    expect(handleError({}, { fallback: 'Wystapil blad' })).toBe('Wystapil blad');
   });
 });

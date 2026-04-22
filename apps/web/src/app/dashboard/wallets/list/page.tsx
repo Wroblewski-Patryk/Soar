@@ -15,7 +15,7 @@ import { runAsyncWithState } from '@/lib/async';
 import { resolveUiErrorMessage } from '@/lib/errorResolver';
 
 export default function WalletsListPage() {
-  const { locale } = useI18n();
+  const { t } = useI18n();
   const router = useRouter();
   const [rows, setRows] = useState<Wallet[]>([]);
   const [loading, setLoading] = useState(true);
@@ -23,44 +23,18 @@ export default function WalletsListPage() {
 
   const copy = useMemo(
     () => ({
-      en: {
-        loadError: 'Could not fetch wallets list.',
-        title: 'Wallets',
-        breadcrumbWallets: 'Wallets',
-        breadcrumbList: 'List',
-        addLabel: 'Create',
-        loading: 'Loading wallets',
-        errorTitle: 'Could not load wallets',
-        retry: 'Try again',
-        emptyTitle: 'No wallets',
-        emptyDescription: 'Add your first wallet to assign it to bots.',
-      },
-      pl: {
-        loadError: 'Nie udalo sie pobrac listy portfeli.',
-        title: 'Portfele',
-        breadcrumbWallets: 'Portfele',
-        breadcrumbList: 'Lista',
-        addLabel: 'Create',
-        loading: 'Ladowanie portfeli',
-        errorTitle: 'Nie udalo sie pobrac portfeli',
-        retry: 'Sprobuj ponownie',
-        emptyTitle: 'Brak portfeli',
-        emptyDescription: 'Dodaj pierwszy portfel, aby przypisywac go do botow.',
-      },
-      pt: {
-        loadError: 'Nao foi possivel carregar a lista de carteiras.',
-        title: 'Carteiras',
-        breadcrumbWallets: 'Carteiras',
-        breadcrumbList: 'Lista',
-        addLabel: 'Create',
-        loading: 'A carregar carteiras',
-        errorTitle: 'Nao foi possivel carregar carteiras',
-        retry: 'Tentar novamente',
-        emptyTitle: 'Sem carteiras',
-        emptyDescription: 'Adiciona a primeira carteira para atribuir aos bots.',
-      },
-    } as const)[locale],
-    [locale]
+      loadError: t('dashboard.wallets.listPage.loadError'),
+      title: t('dashboard.wallets.title'),
+      breadcrumbWallets: t('dashboard.wallets.title'),
+      breadcrumbList: t('dashboard.wallets.listLabel'),
+      addLabel: t('dashboard.wallets.createLabel'),
+      loading: t('dashboard.wallets.listPage.loading'),
+      errorTitle: t('dashboard.wallets.listPage.errorTitle'),
+      retry: t('dashboard.wallets.listPage.retry'),
+      emptyTitle: t('dashboard.wallets.listPage.emptyTitle'),
+      emptyDescription: t('dashboard.wallets.listPage.emptyDescription'),
+    }),
+    [t]
   );
 
   const loadData = useCallback(async () => {
@@ -85,7 +59,7 @@ export default function WalletsListPage() {
         title={copy.title}
         icon={<LuWallet className='h-5 w-5' />}
         breadcrumb={[
-          { label: 'Dashboard', href: '/dashboard' },
+          { label: t('dashboard.common.dashboard'), href: '/dashboard' },
           { label: copy.breadcrumbWallets, href: dashboardRoutes.wallets.list },
           { label: copy.breadcrumbList, icon: <LuList className='h-3.5 w-3.5' /> },
         ]}

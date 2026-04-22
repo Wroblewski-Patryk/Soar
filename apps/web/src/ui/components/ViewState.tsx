@@ -9,6 +9,7 @@ import {
   SkeletonKpiRow,
   SkeletonTableRows,
 } from './loading';
+import { useOptionalI18n } from '@/i18n/useOptionalI18n';
 
 type LoadingStateVariant = 'table' | 'cards' | 'form' | 'kpi';
 
@@ -17,10 +18,13 @@ type LoadingStateProps = Partial<BaseStateProps> & {
 };
 
 export function LoadingState({
-  title = "Ladowanie danych",
-  description = "Poczekaj chwile, przygotowujemy widok.",
+  title,
+  description,
   variant = 'table',
 }: LoadingStateProps) {
+  const { t } = useOptionalI18n();
+  const resolvedTitle = title ?? t('public.sharedUi.loadingTitle');
+  const resolvedDescription = description ?? t('public.sharedUi.loadingDescription');
   const skeletonContent =
     variant === 'cards' ? (
       <SkeletonCardBlock cards={3} title={false} />
@@ -35,12 +39,12 @@ export function LoadingState({
   return (
     <section
       aria-busy='true'
-      aria-label={title}
+      aria-label={resolvedTitle}
       className='space-y-3 rounded-box border border-base-300/60 bg-base-100/80 p-4'
     >
       <div>
-        <h3 className='text-base font-semibold'>{title}</h3>
-        <p className='text-sm opacity-70'>{description}</p>
+        <h3 className='text-base font-semibold'>{resolvedTitle}</h3>
+        <p className='text-sm opacity-70'>{resolvedDescription}</p>
       </div>
       {skeletonContent}
     </section>

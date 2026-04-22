@@ -2,7 +2,7 @@ import { LuArrowDownRight, LuArrowUpRight, LuBot, LuChartCandlestick, LuChartLin
 import { normalizeSymbol } from "@/lib/symbols";
 import type { RuntimeSelectedData, RuntimeSnapshot, RuntimeSummary } from "./types";
 
-type RuntimeSidebarSectionProps = {
+export type RuntimeSidebarSectionProps = {
   asideClassName: string;
   snapshots: RuntimeSnapshot[];
   selected: RuntimeSnapshot | null;

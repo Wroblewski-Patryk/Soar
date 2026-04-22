@@ -1,4 +1,8 @@
 import { normalizeSymbol } from '@/lib/symbols';
+import {
+  formatAgeCompact,
+  toRuntimeSessionStatusBadgeClass,
+} from '../../../shared/runtimeMonitoringFormatters';
 
 export const SIGNAL_CARDS_DESKTOP_MIN_WIDTH = 1280;
 const SIGNAL_CARDS_TABLET_MIN_WIDTH = 768;
@@ -37,15 +41,7 @@ export const resolveSignalCardsPerView = (width: number) => {
   return 2;
 };
 
-export const formatAgeCompact = (ms: number) => {
-  if (!Number.isFinite(ms) || ms <= 0) return '0s';
-  if (ms < 60_000) return `${Math.max(1, Math.floor(ms / 1_000))}s`;
-  const totalMinutes = Math.floor(ms / 60_000);
-  const hours = Math.floor(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
-  if (hours <= 0) return `${minutes}m`;
-  return `${hours}h ${minutes}m`;
-};
+export { formatAgeCompact };
 
 export const readFiniteNumber = (value: unknown) => {
   if (typeof value === 'number' && Number.isFinite(value)) return value;
@@ -62,9 +58,5 @@ export const interpolateTemplate = (
 ) => template.replace(/\{(\w+)\}/g, (_, token) => String(values[token] ?? ''));
 
 export const sessionBadge = (status?: string | null) => {
-  if (status === 'RUNNING') return 'badge-info';
-  if (status === 'COMPLETED') return 'badge-success';
-  if (status === 'FAILED') return 'badge-error';
-  if (status === 'CANCELED') return 'badge-warning';
-  return 'badge-ghost';
+  return toRuntimeSessionStatusBadgeClass(status);
 };

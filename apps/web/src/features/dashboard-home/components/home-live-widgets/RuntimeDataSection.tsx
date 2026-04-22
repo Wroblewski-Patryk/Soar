@@ -49,6 +49,7 @@ type RuntimeDataSectionProps = {
   noHistoryPositionsLabel: string;
   tradesRows: BotRuntimeTrade[];
   tradesColumns: TradesTableColumn[];
+  filterPlaceholder: string;
   tradeDraftFilters: TradeFiltersState;
   onTradeDraftFiltersPatch: (patch: Partial<TradeFiltersState>) => void;
   onApplyTradeFilters: () => void;
@@ -206,7 +207,7 @@ export default function RuntimeDataSection(props: RuntimeDataSectionProps) {
                 rows={props.tradesRows}
                 columns={props.tradesColumns}
                 getRowId={(row) => row.id}
-                filterPlaceholder="BTCUSDT"
+                filterPlaceholder={props.filterPlaceholder}
                 query={props.tradeDraftFilters.symbol}
                 onQueryChange={(value) => props.onTradeDraftFiltersPatch({ symbol: value })}
                 onSearch={props.onApplyTradeFilters}

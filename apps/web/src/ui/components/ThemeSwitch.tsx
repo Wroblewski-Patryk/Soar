@@ -71,7 +71,7 @@ export default function ThemeSwitcher({
   summaryClassName = '',
   tone = 'header',
 }: ThemeSwitcherProps) {
-  const { locale } = useI18n();
+  const { t } = useI18n();
   const [activeTheme, setActiveTheme] = useState<ThemePreference>('system');
   const [resolvedTheme, setResolvedTheme] = useState<string>('light');
   const [systemResolvedTheme, setSystemResolvedTheme] = useState<'light' | 'dark'>('light');
@@ -117,27 +117,12 @@ export default function ThemeSwitcher({
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, [activeTheme]);
 
-  const copyByLocale = {
-    en: {
-      selectorAria: 'Theme selector',
-      optionsAria: 'Theme options',
-      currentTheme: 'Current theme',
-      systemLabel: 'System',
-    },
-    pl: {
-      selectorAria: 'Wybierz motyw',
-      optionsAria: 'Opcje motywu',
-      currentTheme: 'Aktualny motyw',
-      systemLabel: 'System',
-    },
-    pt: {
-      selectorAria: 'Seletor de tema',
-      optionsAria: 'Opcoes de tema',
-      currentTheme: 'Tema atual',
-      systemLabel: 'Sistema',
-    },
+  const copy = {
+    selectorAria: t('public.themeSwitcher.selectorAria'),
+    optionsAria: t('public.themeSwitcher.optionsAria'),
+    currentTheme: t('public.themeSwitcher.currentTheme'),
+    systemLabel: t('public.themeSwitcher.systemLabel'),
   } as const;
-  const copy = copyByLocale[locale];
 
   const activeThemeConfig = themes.find((item) => item.value === activeTheme) ?? themes[0];
   const activeSwatchTheme = activeTheme === 'system' ? systemResolvedTheme : activeThemeConfig.value;

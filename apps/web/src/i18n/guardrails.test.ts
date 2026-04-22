@@ -41,10 +41,35 @@ const UXR_I_WRAPPER_FILES = [
   "app/dashboard/bots/_components/BotFormPageContent.tsx",
 ];
 
+const CQLT_C_MIGRATED_ROUTE_FILES = [
+  "app/dashboard/profile/page.tsx",
+  "features/profile/components/ApiKeyForm.tsx",
+  "features/profile/components/ApiKeysList.tsx",
+  "features/profile/components/Security.tsx",
+  "features/profile/components/Subscription.tsx",
+  "features/profile/hooks/useUser.ts",
+  "features/profile/pages/ProfilePage.tsx",
+  "app/dashboard/strategies/list/page.tsx",
+  "features/strategies/components/StrategiesList.tsx",
+  "app/dashboard/wallets/create/page.tsx",
+  "app/dashboard/wallets/[id]/edit/page.tsx",
+  "features/wallets/components/WalletCreateEditForm.tsx",
+];
+
+const TRUTH_A_MONITORED_FILES = [
+  "features/dashboard-home/components/HomeLiveWidgets.tsx",
+  "features/dashboard-home/components/home-live-widgets/runtimeUiHelpers.tsx",
+  "features/dashboard-home/components/home-live-widgets/RuntimeDataSection.tsx",
+];
+
 const LOCAL_COPY_PATTERN = /const\s+\w+\s*=\s*{[\s\S]*?\b(?:en|pl|pt)\s*:/i;
 const FALLBACK_PL_PATTERN = /(?:\?\?|\|\|)\s*['"]pl['"]/;
 const HARD_CODED_ATTRIBUTE_PATTERN =
   /\b(?:title|placeholder|aria-label|aria-placeholder)\s*=\s*['"][^'"{][^'"]*['"]/g;
+const HARD_CODED_PROP_LITERAL_PATTERN =
+  /\b(?:\w*(?:Label|Title|Description|Placeholder|Hint|Text)|emptyText)\s*=\s*['"][^'"{][^'"]*['"]/g;
+const HARD_CODED_FALLBACK_LITERAL_PATTERN =
+  /\.(?:origin|source|status|reason)\s*\?\?\s*['"][^'"{][^'"]*['"]/g;
 const HARD_CODED_TOAST_PATTERN =
   /toast\.(?:success|error|info|warning)\s*\(\s*['"][^'"]+['"]/g;
 
@@ -64,6 +89,8 @@ const scanSource = (source: string): GuardrailScanResult => ({
   fallbackPl: FALLBACK_PL_PATTERN.test(source),
   hardcodedUiMatches: [
     ...collectMatches(source, HARD_CODED_ATTRIBUTE_PATTERN),
+    ...collectMatches(source, HARD_CODED_PROP_LITERAL_PATTERN),
+    ...collectMatches(source, HARD_CODED_FALLBACK_LITERAL_PATTERN),
     ...collectMatches(source, HARD_CODED_TOAST_PATTERN),
   ],
 });
@@ -81,7 +108,8 @@ const scanFiles = (relativePaths: string[]) => {
 };
 
 describe("i18n guardrails", () => {
-  const monitoredFiles = [...MONITORED_ROUTE_FILES, ...UXR_I_WRAPPER_FILES];
+  const monitoredFiles = [...MONITORED_ROUTE_FILES, ...UXR_I_WRAPPER_FILES, ...TRUTH_A_MONITORED_FILES];
+  const cqltMigratedFiles = [...CQLT_C_MIGRATED_ROUTE_FILES];
 
   it("blocks route-reachable local copy dictionary regressions", () => {
     const offenders = scanFiles(monitoredFiles)
@@ -116,5 +144,19 @@ describe("i18n guardrails", () => {
     expect(result.localCopy).toBe(true);
     expect(result.fallbackPl).toBe(true);
     expect(result.hardcodedUiMatches.length).toBeGreaterThan(0);
+  });
+
+  it("keeps CQLT-C migrated route files free from local copy/fallback drift", () => {
+    const offenders = scanFiles(cqltMigratedFiles).flatMap((entry) => {
+      const findings: string[] = [];
+      if (entry.localCopy) findings.push(`${entry.relativePath}: localCopy`);
+      if (entry.fallbackPl) findings.push(`${entry.relativePath}: fallbackPl`);
+      if (entry.hardcodedUiMatches.length > 0) {
+        findings.push(`${entry.relativePath}: hardcodedUi=${entry.hardcodedUiMatches.join(" | ")}`);
+      }
+      return findings;
+    });
+
+    expect(offenders, `CQLT-C migrated route drift found in:\n${offenders.join("\n")}`).toEqual([]);
   });
 });

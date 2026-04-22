@@ -147,8 +147,8 @@ const buildAggregatePayload = (botId: string, historySymbol: string, tradeSymbol
   },
   positions: {
     sessionId: "AGGREGATE",
-    total: 1,
-    openCount: 0,
+    total: 2,
+    openCount: 1,
     closedCount: 1,
     openOrdersCount: 0,
     showDynamicStopColumns: false,
@@ -158,7 +158,36 @@ const buildAggregatePayload = (botId: string, historySymbol: string, tradeSymbol
     },
     summary: { realizedPnl: 5, unrealizedPnl: 0, feesPaid: 0.2 },
     openOrders: [],
-    openItems: [],
+    openItems: [
+      {
+        id: `open-${botId}`,
+        origin: "BOT",
+        managementMode: "BOT_MANAGED",
+        symbol: `${botId === "bot-a" ? "ALPHA" : "BETA"}OPENUSDT`,
+        side: "LONG",
+        status: "OPEN",
+        quantity: 1,
+        leverage: 3,
+        entryPrice: 100,
+        entryNotional: 100,
+        exitPrice: null,
+        stopLoss: null,
+        takeProfit: null,
+        openedAt: "2026-03-31T10:01:00.000Z",
+        closedAt: null,
+        holdMs: 120000,
+        dcaCount: 2,
+        dcaExecutedLevels: [-1.25, -2.5],
+        dcaPlannedLevels: [-1.25, -2.5, -5],
+        feesPaid: 0.1,
+        realizedPnl: 0,
+        unrealizedPnl: 2,
+        markPrice: 102,
+        firstTradeAt: "2026-03-31T10:01:00.000Z",
+        lastTradeAt: "2026-03-31T10:02:00.000Z",
+        tradesCount: 2,
+      },
+    ],
     historyItems: [
       {
         id: `history-${botId}`,
@@ -448,5 +477,46 @@ describe("Selected bot aggregate parity: /dashboard vs /dashboard/bots/:id/previ
     expect(await screen.findByText("BETATRADEUSDT")).toBeInTheDocument();
     expect(screen.queryByText("ALPHAHISTUSDT")).not.toBeInTheDocument();
     expect(screen.queryByText("ALPHATRADEUSDT")).not.toBeInTheDocument();
+  });
+
+  it("preserves DCA ladder and runtime trade labels between dashboard and preview monitoring route", async () => {
+    window.history.pushState({}, "", "/dashboard");
+    const home = renderWithI18n(<HomeLiveWidgets />);
+
+    fireEvent.change(await screen.findByLabelText("Wybrany bot"), {
+      target: { value: "bot-b" },
+    });
+
+    expect((await screen.findAllByText("BETAOPENUSDT")).length).toBeGreaterThan(0);
+    expect(screen.getByTitle(/1:-1[.,]25%, 2:-2[.,]5(?:0)?%/)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("tab", { name: /Historia|History/i }));
+
+    expect((await screen.findAllByText("BETATRADEUSDT")).length).toBeGreaterThan(0);
+    expect(screen.getAllByText("SELL").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Zamkniecie").length).toBeGreaterThan(0);
+
+    home.unmount();
+
+    listBotRuntimeSessionsMock.mockClear();
+    getBotRuntimeMonitoringAggregateMock.mockClear();
+
+    window.history.pushState({}, "", "/dashboard/bots/bot-b/preview");
+    renderWithI18n(
+      <BotsManagement initialTab="monitoring" lockedTab="monitoring" preferredBotId="bot-b" />
+    );
+
+    await waitFor(() => {
+      expect(listBotRuntimeSessionsMock).toHaveBeenCalledWith("bot-b", {
+        status: undefined,
+        limit: 50,
+      });
+    });
+
+    expect((await screen.findAllByText("BETAOPENUSDT")).length).toBeGreaterThan(0);
+    expect(screen.getByTitle(/1:-1[.,]25%, 2:-2[.,]5(?:0)?%/)).toBeInTheDocument();
+    expect(screen.getAllByText("BETATRADEUSDT").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("SELL").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Zamkniecie").length).toBeGreaterThan(0);
   });
 });
