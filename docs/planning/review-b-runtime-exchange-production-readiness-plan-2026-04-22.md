@@ -1,6 +1,6 @@
 # Review-B Runtime/Exchange Production Readiness Plan (2026-04-22)
 
-Status: Queued  
+Status: Closed 2026-04-22  
 Wave: `REVIEW-B`
 
 ## Objective
@@ -214,3 +214,13 @@ Validation:
 - `pnpm --filter api run typecheck`
 - `pnpm --filter api run build`
 - focused `vitest` pack for touched runtime/positions modules
+
+## Progress Log
+
+- 2026-04-22: Closed `REVIEW-B` end-to-end by moving DCA/add-leg execution onto
+  canonical fill-result lifecycle, making submitted dedupe non-terminal until
+  linked order truth is known, making exchange snapshots fail closed when
+  ownership is ambiguous unless `apiKeyId` is explicit, narrowing watchdog
+  symbol scope to explicit Binance-futures contexts, and publishing closure
+  evidence in
+  `docs/operations/review-b-runtime-exchange-production-closure-2026-04-22.md`.

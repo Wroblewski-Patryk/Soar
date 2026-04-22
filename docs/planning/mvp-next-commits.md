@@ -7,16 +7,16 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `REVIEW-B-01 docs(contract): freeze review-driven runtime/exchange closure scope and non-regression rules`
-- [ ] `REVIEW-B-02 test(api-red): lock DCA pending/partial-fill failure modes before refactor`
-- [ ] `REVIEW-B-03 refactor(api-runtime): move DCA/add-leg execution onto canonical fill-result lifecycle`
+- [x] `REVIEW-B-01 docs(contract): freeze review-driven runtime/exchange closure scope and non-regression rules`
+- [x] `REVIEW-B-02 test(api-red): lock DCA pending/partial-fill failure modes before refactor`
+- [x] `REVIEW-B-03 refactor(api-runtime): move DCA/add-leg execution onto canonical fill-result lifecycle`
 ## NEXT
-- [ ] `REVIEW-B-04 test(api-red): lock submitted-order retry semantics after exchange failure/cancel`
-- [ ] `REVIEW-B-05 refactor(api-runtime): make submitted dedupe non-terminal until canonical order outcome is known`
-- [ ] `REVIEW-B-06 audit(api-ops): inventory exchange snapshot ownership ambiguity and watchdog scope drift`
+- [x] `REVIEW-B-04 test(api-red): lock submitted-order retry semantics after exchange failure/cancel`
+- [x] `REVIEW-B-05 refactor(api-runtime): make submitted dedupe non-terminal until canonical order outcome is known`
+- [x] `REVIEW-B-06 audit(api-ops): inventory exchange snapshot ownership ambiguity and watchdog scope drift`
 ## PIPELINE
-- [ ] `REVIEW-B-07 refactor(api-ops): make exchange snapshots and watchdog scope explicit and deterministic`
-- [ ] `REVIEW-B-08 qa(closure): run focused production-readiness pack and publish closure evidence`
+- [x] `REVIEW-B-07 refactor(api-ops): make exchange snapshots and watchdog scope explicit and deterministic`
+- [x] `REVIEW-B-08 qa(closure): run focused production-readiness pack and publish closure evidence`
 - [x] `XLIFE-07 docs(contract): freeze one shared PAPER/LIVE fill adapter boundary`
 - [x] `XLIFE-08 refactor(api-shared): converge PAPER and LIVE execution onto one canonical fill-result application path`
 - [x] `XLIFE-09 audit(api-exchange-scope): inventory runtime watchdog, automation, and reconciliation exchange-truth drift`
@@ -34,11 +34,11 @@ Operational queue for one-task execution runs.
 - [x] `CQLT-32 docs(decision): freeze legacy bridge sunset list and mark compatibility-only code paths that remain intentional`
 - [x] `CQLT-34 docs(sync): update queue/context/module docs and capture post-wave coding rules for future agents`
 ## GROUP QUEUE
-- [ ] `REVIEW-B planning queued (post-XLIFE runtime/exchange production-readiness closure)`
-- [ ] `REVIEW-B1 (commits REVIEW-B-01..REVIEW-B-03): DCA lifecycle parity and add-leg fill truth`
-- [ ] `REVIEW-B2 (commits REVIEW-B-04..REVIEW-B-05): submitted-order retry truth and dedupe non-terminality`
-- [ ] `REVIEW-B3 (commits REVIEW-B-06..REVIEW-B-07): deterministic operator snapshot ownership and watchdog scope truth`
-- [ ] `REVIEW-B4 (commit REVIEW-B-08): focused closure validation and evidence sync`
+- [x] `REVIEW-B planning queued (post-XLIFE runtime/exchange production-readiness closure)`
+- [x] `REVIEW-B1 (commits REVIEW-B-01..REVIEW-B-03): DCA lifecycle parity and add-leg fill truth`
+- [x] `REVIEW-B2 (commits REVIEW-B-04..REVIEW-B-05): submitted-order retry truth and dedupe non-terminality`
+- [x] `REVIEW-B3 (commits REVIEW-B-06..REVIEW-B-07): deterministic operator snapshot ownership and watchdog scope truth`
+- [x] `REVIEW-B4 (commit REVIEW-B-08): focused closure validation and evidence sync`
 - [x] `XLIFE-A planning queued (one canonical PAPER/LIVE execution lifecycle, fill-truth accounting, and explicit exchange-scope runtime contracts)`
 - [x] `XLIFE-A1 (commits XLIFE-01..XLIFE-03): lifecycle contract freeze + before-state audit + red tests`
 - [x] `XLIFE-A2 (commits XLIFE-04..XLIFE-06): close-state truth + fill-price truth + realized-PnL truth`

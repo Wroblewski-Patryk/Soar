@@ -2528,18 +2528,19 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-22: Queued `XLIFE-A` from the post-`TRUTH-A` runtime review after confirming the remaining V1-critical gaps are no longer primarily structural, but execution-truth related: local close-before-fill behavior in `LIVE`, runtime accounting based on signal `markPrice` instead of canonical fill truth, partial duplication or divergence risk between `PAPER` and `LIVE` lifecycle semantics, and hidden Binance-only assumptions in runtime watchdog/automation infrastructure. Published executor-ready plan `docs/planning/execution-lifecycle-parity-and-exchange-truth-plan-2026-04-22.md` and froze the permanent extension rules in `docs/architecture/reference/execution-lifecycle-parity-contract.md`.
 - 2026-04-22: Closed `XLIFE-A` end-to-end by making LIVE close flow fail-closed until canonical fill truth exists, switching runtime trade and realized-PnL persistence to canonical fill price and quantity, persisting runtime-origin orders with `origin=BOT` so bot-opened positions keep ownership truth through canonical order-fill-position lifecycle, keeping runtime automation alive during submitted close state, and publishing closure evidence in `docs/operations/execution-lifecycle-parity-and-exchange-truth-closure-2026-04-22.md`. Validation PASS: focused XLIFE engine/runtime pack, `api typecheck`, `api build`, `quality:guardrails`.
 
-## Phase REVIEW-B - Runtime/Exchange Production Readiness Review Closure (Queued 2026-04-22)
-- [ ] `REVIEW-B-01 docs(contract): freeze review-driven runtime/exchange closure scope and non-regression rules`
-- [ ] `REVIEW-B-02 test(api-red): lock DCA pending/partial-fill failure modes before refactor`
-- [ ] `REVIEW-B-03 refactor(api-runtime): move DCA/add-leg execution onto canonical fill-result lifecycle`
-- [ ] `REVIEW-B-04 test(api-red): lock submitted-order retry semantics after exchange failure/cancel`
-- [ ] `REVIEW-B-05 refactor(api-runtime): make submitted dedupe non-terminal until canonical order outcome is known`
-- [ ] `REVIEW-B-06 audit(api-ops): inventory exchange snapshot ownership ambiguity and watchdog scope drift`
-- [ ] `REVIEW-B-07 refactor(api-ops): make exchange snapshots and watchdog scope explicit and deterministic`
-- [ ] `REVIEW-B-08 qa(closure): run focused production-readiness pack and publish closure evidence`
+## Phase REVIEW-B - Runtime/Exchange Production Readiness Review Closure (Closed 2026-04-22)
+- [x] `REVIEW-B-01 docs(contract): freeze review-driven runtime/exchange closure scope and non-regression rules`
+- [x] `REVIEW-B-02 test(api-red): lock DCA pending/partial-fill failure modes before refactor`
+- [x] `REVIEW-B-03 refactor(api-runtime): move DCA/add-leg execution onto canonical fill-result lifecycle`
+- [x] `REVIEW-B-04 test(api-red): lock submitted-order retry semantics after exchange failure/cancel`
+- [x] `REVIEW-B-05 refactor(api-runtime): make submitted dedupe non-terminal until canonical order outcome is known`
+- [x] `REVIEW-B-06 audit(api-ops): inventory exchange snapshot ownership ambiguity and watchdog scope drift`
+- [x] `REVIEW-B-07 refactor(api-ops): make exchange snapshots and watchdog scope explicit and deterministic`
+- [x] `REVIEW-B-08 qa(closure): run focused production-readiness pack and publish closure evidence`
 
 ### Progress Log (Phase REVIEW-B - Runtime/Exchange Production Readiness Review Closure)
 - 2026-04-22: Queued `REVIEW-B` from the post-`XLIFE-A` review after confirming four remaining production-readiness gaps: DCA/add-leg lifecycle still bypasses canonical fill truth, submitted-order dedupe becomes terminal too early, generic exchange snapshots are ambiguous when multiple API keys exist, and watchdog symbol scope is broader than its explicit Binance-only coverage. Published audit evidence in `docs/operations/review-b-runtime-exchange-production-audit-2026-04-22.md` and executor-ready rollout plan in `docs/planning/review-b-runtime-exchange-production-readiness-plan-2026-04-22.md`.
+- 2026-04-22: Closed `REVIEW-B-01..REVIEW-B-08` end-to-end by moving runtime DCA/add-leg execution onto canonical fill-result lifecycle, making submitted dedupe non-terminal until linked order truth is known, making generic exchange snapshots fail closed when ownership is ambiguous unless `apiKeyId` is explicit, narrowing watchdog symbol inventory to explicit Binance-futures scope, and publishing closure evidence in `docs/operations/review-b-runtime-exchange-production-closure-2026-04-22.md`. Validation PASS: focused runtime/positions Vitest pack, `pnpm --filter api run typecheck`, `pnpm --filter api run build`, `pnpm run typecheck`, `pnpm run build`, `pnpm run quality:guardrails`.
 
 ## Phase ARCCON - Architecture Conformance and Service Ownership Closure (Closed 2026-04-21)
 - [x] `ARCCON-01 test(api-red): lock fail-closed manual-order strategy context when selected bot has no symbol-matching strategy`
