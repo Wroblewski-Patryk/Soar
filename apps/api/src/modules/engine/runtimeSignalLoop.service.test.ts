@@ -148,6 +148,7 @@ const withStrategyBot = (
     mode?: 'PAPER' | 'LIVE';
     maxOpenPositions?: number;
     strategies?: any[];
+    symbols?: string[];
     marketType?: 'FUTURES' | 'SPOT';
     exchange?: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE';
   }
@@ -166,7 +167,7 @@ const withStrategyBot = (
           symbolGroupId: 'symbol-group-1',
           executionOrder: 1,
           maxOpenPositions: options?.maxOpenPositions ?? 1,
-          symbols: ['BTCUSDT'],
+          symbols: options?.symbols ?? ['BTCUSDT'],
           strategies: options?.strategies ?? [strategyLong],
         },
       ],
@@ -215,7 +216,7 @@ const emitFinalCandleSeries = async (
 describe('RuntimeSignalLoop', () => {
   it('records hot-path metrics for active-bot reads and eligible-group sampling', async () => {
     const { deps, emit } = createDeps();
-    withStrategyBot(deps, { strategies: [] });
+    withStrategyBot(deps);
     const before = metricsStore.snapshot().runtime.hotPath;
     const loop = new RuntimeSignalLoop(deps);
     await loop.start();
@@ -1577,6 +1578,30 @@ describe('RuntimeSignalLoop', () => {
 
     expect(deps.createSignal).not.toHaveBeenCalled();
     expect(deps.orchestrateFn).not.toHaveBeenCalled();
+  });
+
+  it('keeps empty resolved symbol scope fail-closed instead of widening to wildcard routing', async () => {
+    const { deps, emit } = createDeps();
+    withStrategyBot(deps, { symbols: [] });
+    deps.recordRuntimeEvent = vi.fn(async () => undefined);
+    const loop = new RuntimeSignalLoop(deps);
+    await loop.start();
+
+    await emitFinalCandleSeries(emit, { symbol: 'ETHUSDT' });
+
+    expect(deps.createSignal).not.toHaveBeenCalled();
+    expect(deps.orchestrateFn).not.toHaveBeenCalled();
+    expect(deps.recordRuntimeEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: 'SIGNAL_DECISION',
+        level: 'DEBUG',
+        message: 'Runtime group has no routable symbols configured',
+        payload: expect.objectContaining({
+          reason: 'EMPTY_SYMBOL_SCOPE',
+          botMarketGroupId: 'group-1',
+        }),
+      })
+    );
   });
 
   it('derives market-group max-open cap from active strategy risk settings', () => {

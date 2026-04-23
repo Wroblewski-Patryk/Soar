@@ -1293,15 +1293,27 @@ describe('Bots module contract', () => {
     const ownerEmail = 'bot-runtime-external-position-owner@example.com';
     const owner = await registerAndLogin(ownerEmail);
     const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
+    const liveApiKey = await prisma.apiKey.create({
+      data: {
+        userId: ownerUser.id,
+        label: 'External Runtime Live Key',
+        exchange: 'BINANCE',
+        apiKey: 'live-key',
+        apiSecret: 'live-secret',
+      },
+      select: { id: true },
+    });
     const wallet = await prisma.wallet.create({
       data: {
         userId: ownerUser.id,
         name: 'External Runtime Wallet',
-        mode: 'PAPER',
+        mode: 'LIVE',
         exchange: 'BINANCE',
         marketType: 'FUTURES',
         baseCurrency: 'USDT',
-        paperInitialBalance: 10000,
+        liveAllocationMode: 'PERCENT',
+        liveAllocationValue: 100,
+        apiKeyId: liveApiKey.id,
       },
     });
 
@@ -1309,6 +1321,14 @@ describe('Bots module contract', () => {
     const strategyB = await createStrategy(owner, 'Runtime External Strategy B');
     const marketGroupA = await createMarketGroup(ownerEmail, 'FUTURES');
     const marketGroupB = await createMarketGroup(ownerEmail, 'FUTURES');
+    await prisma.symbolGroup.update({
+      where: { id: marketGroupA },
+      data: { symbols: ['BTCUSDT'] },
+    });
+    await prisma.symbolGroup.update({
+      where: { id: marketGroupB },
+      data: { symbols: ['ETHUSDT'] },
+    });
 
     const botARes = await owner.post('/dashboard/bots').send({
       ...createPayload({
@@ -1317,6 +1337,9 @@ describe('Bots module contract', () => {
       }),
       name: 'External Owner A',
       walletId: wallet.id,
+      isActive: true,
+      liveOptIn: true,
+      consentTextVersion: 'mvp-v1',
     });
     expect(botARes.status).toBe(201);
     const botAId = botARes.body.id as string;
@@ -1328,6 +1351,9 @@ describe('Bots module contract', () => {
       }),
       name: 'External Owner B',
       walletId: wallet.id,
+      isActive: true,
+      liveOptIn: true,
+      consentTextVersion: 'mvp-v1',
     });
     expect(botBRes.status).toBe(201);
     const botBId = botBRes.body.id as string;
@@ -1338,7 +1364,7 @@ describe('Bots module contract', () => {
       data: {
         userId: ownerUser.id,
         botId: botAId,
-        mode: 'PAPER',
+        mode: 'LIVE',
         status: 'RUNNING',
         startedAt,
         lastHeartbeatAt: new Date('2026-04-10T01:05:00.000Z'),
@@ -1348,7 +1374,7 @@ describe('Bots module contract', () => {
       data: {
         userId: ownerUser.id,
         botId: botBId,
-        mode: 'PAPER',
+        mode: 'LIVE',
         status: 'RUNNING',
         startedAt,
         lastHeartbeatAt: new Date('2026-04-10T01:05:00.000Z'),
@@ -1359,6 +1385,7 @@ describe('Bots module contract', () => {
       data: {
         userId: ownerUser.id,
         botId: null,
+        walletId: wallet.id,
         strategyId: null,
         symbol: 'BTCUSDT',
         side: 'LONG',

@@ -2,14 +2,27 @@ import request from 'supertest';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { app } from '../../../index';
 import { prisma } from '../../../prisma/client';
+import { hashPassword } from '../../../utils/hash';
 
 const registerAndLogin = async (email: string, password = 'test1234') => {
+  const existing = await prisma.user.findUnique({
+    where: { email },
+    select: { id: true },
+  });
+  if (!existing) {
+    await prisma.user.create({
+      data: {
+        email,
+        password: await hashPassword(password),
+      },
+    });
+  }
   const agent = request.agent(app);
-  const res = await agent.post('/auth/register').send({
+  const res = await agent.post('/auth/login').send({
     email,
     password,
   });
-  expect(res.status).toBe(201);
+  expect(res.status).toBe(200);
   return agent;
 };
 
@@ -36,6 +49,7 @@ describe('Profile security contract', () => {
     await prisma.symbolGroup.deleteMany();
     await prisma.marketUniverse.deleteMany();
     await prisma.strategy.deleteMany();
+    await prisma.runtimeExecutionDedupe.deleteMany();
     await prisma.apiKey.deleteMany();
     await prisma.user.deleteMany();
   });
@@ -54,7 +68,8 @@ describe('Profile security contract', () => {
   });
 
   it('changes password only with valid current password', async () => {
-    const agent = await registerAndLogin('security-password@example.com', 'start1234');
+    const email = `security-password-${Date.now()}@example.com`;
+    const agent = await registerAndLogin(email, 'start1234');
 
     const wrongCurrentRes = await agent.patch('/dashboard/profile/security/password').send({
       currentPassword: 'wrong1234',
@@ -63,7 +78,8 @@ describe('Profile security contract', () => {
     expect(wrongCurrentRes.status).toBe(400);
     expect(wrongCurrentRes.body.error.message).toBe('Invalid current password');
 
-    const weakNextPasswordRes = await agent.patch('/dashboard/profile/security/password').send({
+    const weakPasswordAgent = await registerAndLogin(email, 'start1234');
+    const weakNextPasswordRes = await weakPasswordAgent.patch('/dashboard/profile/security/password').send({
       currentPassword: 'start1234',
       newPassword: 'weak',
     });
@@ -82,21 +98,21 @@ describe('Profile security contract', () => {
     const meAfterPasswordChange = await agent.get('/auth/me');
     expect(meAfterPasswordChange.status).toBe(401);
 
-    const oldLoginRes = await agent.post('/auth/login').send({
-      email: 'security-password@example.com',
+    const oldLoginRes = await request(app).post('/auth/login').send({
+      email,
       password: 'start1234',
     });
     expect(oldLoginRes.status).toBe(401);
 
-    const newLoginRes = await agent.post('/auth/login').send({
-      email: 'security-password@example.com',
+    const newLoginRes = await request(app).post('/auth/login').send({
+      email,
       password: 'next1234',
     });
     expect(newLoginRes.status).toBe(200);
   });
 
   it('deletes account only when password confirmation is valid', async () => {
-    const email = 'security-delete@example.com';
+    const email = `security-delete-${Date.now()}@example.com`;
     const agent = await registerAndLogin(email, 'start1234');
     const user = await prisma.user.findUniqueOrThrow({ where: { email } });
 

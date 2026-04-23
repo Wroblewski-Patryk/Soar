@@ -74,6 +74,7 @@ type RuntimeSignalLoopDeps = {
     botId?: string;
     strategyId?: string;
     symbol: string;
+    timeframe: string;
     direction: SignalDirection;
     confidence: number;
     payload: Record<string, unknown>;
@@ -490,7 +491,7 @@ export class RuntimeSignalLoop {
         const symbolKeys = group.symbols
           .map((symbol) => normalizeSymbol(symbol))
           .filter((symbol): symbol is string => symbol.length > 0);
-        const effectiveSymbolKeys = symbolKeys.length > 0 ? symbolKeys : ['*'];
+        const effectiveSymbolKeys = symbolKeys;
         const intervalKeys = Array.from(
           new Set(
             group.strategies.map((strategy) =>
@@ -499,6 +500,10 @@ export class RuntimeSignalLoop {
           )
         );
         const effectiveIntervalKeys = intervalKeys.length > 0 ? intervalKeys : ['*'];
+
+        if (effectiveSymbolKeys.length === 0) {
+          continue;
+        }
 
         for (const symbolKey of effectiveSymbolKeys) {
           for (const intervalKey of effectiveIntervalKeys) {

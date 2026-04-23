@@ -10,11 +10,12 @@ Last updated: 2026-04-23
 - Commercial model: SaaS-style subscription product with staged entitlements
 - Current phase: V1 is formally approved for production activation from the
   current evidence set, and active engineering focus has shifted to
-  post-approval runtime-architecture-and-truth alignment: freeze one honest
-  worker-ownership contract (`split` as deployed target, `inline` as
-  local/degraded-only) and close the remaining runtime truth drift around
-  symbol scope, signal interval persistence, freshness authority, and explicit
-  operator diagnostics
+  post-approval runtime hardening after the closed `V1CONF-A`, `V1SIG-A`,
+  `V1CAP-A`, and `V1ALIGN-A` waves. The current repository truth is that the
+  deployed worker contract is frozen to `split`, runtime symbol scope and
+  signal interval truth now fail closed and persist honestly, runtime
+  freshness authority is scoped to active sessions, and operator diagnostics
+  are more explicit about degraded routing/runtime-input outcomes
 
 ## Product Decisions (Confirmed)
 - 2026-04-21: `docs/architecture/` is the canonical source of truth for how
@@ -232,6 +233,31 @@ Last updated: 2026-04-23
   workers are the healthy deployed topology for `STAGE` and `PROD`, while
   inline worker ownership is reserved for local/test use or explicit
   degraded-mode fallback and must not be presented as normal deployment parity.
+- 2026-04-23: `V1ALIGN-02` is closed. Runtime routing no longer widens empty
+  resolved symbol scope into wildcard `*`; empty market-group symbol sets stay
+  fail closed, and the final-candle path emits explicit `SIGNAL_DECISION`
+  telemetry with reason `EMPTY_SYMBOL_SCOPE` instead of silently routing all
+  symbols.
+- 2026-04-23: `V1ALIGN-03` is closed. Persisted runtime signals now carry the
+  truthful normalized candle interval used by the decision path instead of a
+  hardcoded `1m`, keeping `Signal.timeframe` aligned with the architecture's
+  interval-window contract.
+- 2026-04-23: `V1ALIGN-04` is closed. `/workers/runtime-freshness` now
+  evaluates decision-activity truth per active runtime session, so one
+  unrelated fresh signal can no longer mask starvation for the running bot the
+  operator is actually watching.
+- 2026-04-23: `V1ALIGN-05` is closed. Runtime diagnostics now make the empty
+  symbol-scope route outcome explicit as operator-visible telemetry, reducing
+  the remaining "nothing happened" ambiguity in the runtime path.
+- 2026-04-23: `V1ALIGN-06` is closed. Focused runtime-alignment tests, API
+  typecheck, repository guardrails, and the full API pack are green. Full API
+  validation requires explicit test-only encryption env
+  (`API_KEY_ENCRYPTION_KEYS`, `API_KEY_ENCRYPTION_ACTIVE_VERSION`), and local
+  `test:go-live:smoke` remains workstation-blocked when Docker cannot bind
+  `5432` because another Postgres container is already using that port.
+- 2026-04-23: `V1ALIGN-A` is closed as a wave. Worker-ownership docs, runtime
+  symbol scope, signal interval truth, freshness authority, and explicit
+  degraded diagnostics are now aligned with the approved V1 architecture.
 - 2026-04-22: `scripts/runV1ReleaseGate.mjs` now selects the latest same-day
   evidence artifact by full timestamp-bearing filename, preventing older
   same-day restore-drill failures from shadowing newer PASS artifacts.

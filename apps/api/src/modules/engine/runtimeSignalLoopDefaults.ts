@@ -165,6 +165,7 @@ export const createRuntimeSignal = async (params: {
   botId?: string;
   strategyId?: string;
   symbol: string;
+  timeframe: string;
   direction: SignalDirection;
   confidence: number;
   payload: Record<string, unknown>;

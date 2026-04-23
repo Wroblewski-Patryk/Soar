@@ -138,6 +138,7 @@ export const createRuntimeSignalRecord = async (params: {
   botId?: string;
   strategyId?: string;
   symbol: string;
+  timeframe: string;
   direction: SignalDirection;
   confidence: number;
   payload: Record<string, unknown>;
@@ -148,7 +149,7 @@ export const createRuntimeSignalRecord = async (params: {
       botId: params.botId,
       strategyId: params.strategyId,
       symbol: params.symbol,
-      timeframe: '1m',
+      timeframe: params.timeframe,
       direction: params.direction,
       confidence: params.confidence,
       payload: params.payload as Prisma.InputJsonValue,

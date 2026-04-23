@@ -3,7 +3,7 @@
 ## Header
 - ID: V1ALIGN-A
 - Title: Align runtime worker ownership and signal truth contracts with the approved V1 architecture
-- Status: READY
+- Status: DONE
 - Owner: Planning Agent
 - Depends on: V1SIG-A, V1CAP-A, V1 approved baseline
 - Priority: P0
@@ -73,15 +73,15 @@ Queue one executor-ready V1 alignment wave that:
 - do not duplicate logic
 
 ## Definition of Done
-- [ ] Worker ownership architecture is frozen explicitly: `split` is the
+- [x] Worker ownership architecture is frozen explicitly: `split` is the
       deployed target and `inline` is documented as local/degraded-only.
-- [ ] Empty runtime symbol scopes remain empty and fail closed instead of
+- [x] Empty runtime symbol scopes remain empty and fail closed instead of
       widening to wildcard routing.
-- [ ] Persisted runtime signals carry truthful interval data aligned with the
+- [x] Persisted runtime signals carry truthful interval data aligned with the
       real decision window.
-- [ ] Runtime freshness and diagnostics expose per-active-runtime truth instead
+- [x] Runtime freshness and diagnostics expose per-active-runtime truth instead
       of silent or globally masked status.
-- [ ] Canonical queue/context/docs and focused validation evidence are
+- [x] Canonical queue/context/docs and focused validation evidence are
       synchronized with the closure.
 
 ## Forbidden
@@ -139,14 +139,14 @@ Queue one executor-ready V1 alignment wave that:
   relative to canonical API truth
 
 ## Review Checklist (mandatory)
-- [ ] Architecture alignment confirmed.
-- [ ] Existing systems were reused where applicable.
-- [ ] No workaround paths were introduced.
-- [ ] No logic duplication was introduced.
-- [ ] Definition of Done evidence is attached.
-- [ ] Relevant validations were run.
-- [ ] Docs or context were updated if repository truth changed.
-- [ ] Learning journal was updated if a recurring pitfall was confirmed.
+- [x] Architecture alignment confirmed.
+- [x] Existing systems were reused where applicable.
+- [x] No workaround paths were introduced.
+- [x] No logic duplication was introduced.
+- [x] Definition of Done evidence is attached.
+- [x] Relevant validations were run.
+- [x] Docs or context were updated if repository truth changed.
+- [x] Learning journal was updated if a recurring pitfall was confirmed.
 
 ## Notes
 - Planned execution slices:
@@ -164,3 +164,38 @@ Queue one executor-ready V1 alignment wave that:
     permits operator-visible degraded truth.
   - `V1ALIGN-06 qa(closure)`: run focused alignment pack, go-live-sensitive
     validation where needed, and sync queue/context/docs.
+
+## Closure Evidence
+- `V1ALIGN-01` froze the deployed worker-ownership contract in canonical
+  architecture, local-development, and Coolify docs: `split` is the healthy
+  `STAGE/PROD` target; `inline` is local/test or explicit degraded fallback.
+- `V1ALIGN-02` removed the runtime widening of empty symbol scope to wildcard
+  routing. Empty resolved symbol sets now stay fail-closed, and runtime emits
+  explicit `SIGNAL_DECISION` telemetry with reason `EMPTY_SYMBOL_SCOPE`.
+- `V1ALIGN-03` removed the hardcoded persisted runtime signal timeframe.
+  Runtime signal writes now carry the truthful normalized candle interval used
+  by the decision path.
+- `V1ALIGN-04` moved `/workers/runtime-freshness` from global latest-signal
+  shortcuts to active-session decision-activity truth, so one unrelated fresh
+  signal can no longer mask starvation for the bot the operator is actually
+  watching.
+- `V1ALIGN-05` completed the remaining explicit runtime diagnostics needed by
+  this wave through empty-scope telemetry and route-aware decision handling,
+  keeping operator surfaces aligned with the architecture's degraded-truth
+  standard instead of silent "nothing happened" gaps.
+- `V1ALIGN-06` closure validation passed for the targeted runtime-alignment
+  pack, API typecheck, repository guardrails, and the full API test suite.
+  `test:go-live:smoke` was environment-blocked on this workstation because the
+  local Docker bootstrap could not bind `5432` while another Postgres container
+  was already using that port.
+
+## Validation Results
+- `pnpm --filter api exec vitest run src/modules/engine/runtimeFinalCandleDecision.service.test.ts src/modules/engine/runtimeSignalLoop.service.test.ts src/router/workers-runtime-freshness.test.ts`
+- `pnpm --filter api run typecheck`
+- `pnpm run quality:guardrails`
+- `$env:API_KEY_ENCRYPTION_KEYS='v1:test-key-material'; $env:API_KEY_ENCRYPTION_ACTIVE_VERSION='v1'; pnpm --filter api run test -- --run`
+
+## Docs Sync Outputs
+- `.codex/context/PROJECT_STATE.md`
+- `.codex/context/TASK_BOARD.md`
+- `docs/planning/mvp-next-commits.md`

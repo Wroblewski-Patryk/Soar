@@ -60,6 +60,7 @@ const baseEvent = {
 
 const createContext = (options?: {
   direction: 'LONG' | 'SHORT' | 'EXIT' | null;
+  strategyInterval?: string;
   orchestrationResult?:
     | { status: 'opened'; orderId: string; positionId: string }
     | { status: 'ignored'; reason: 'already_open_same_side' | 'dedupe_inflight' };
@@ -72,6 +73,12 @@ const createContext = (options?: {
   };
   const bot = structuredClone(baseBot);
   const group = bot.marketGroups[0];
+  group.strategies = [
+    {
+      ...group.strategies[0],
+      strategyInterval: options?.strategyInterval ?? group.strategies[0].strategyInterval,
+    },
+  ];
   const createSignal = vi.fn(async () => undefined);
   const orchestrateFn = vi.fn(async () => orchestrationResult);
   const recordRuntimeEvent = vi.fn(async () => undefined);
@@ -168,6 +175,31 @@ describe('runtimeFinalCandleDecision.service', () => {
 
     expect(createSignal).toHaveBeenCalledTimes(1);
     expect(orchestrateFn).toHaveBeenCalledTimes(1);
+  });
+
+  it('persists runtime signal truth with the real candle interval instead of hardcoded 1m', async () => {
+    const { context, createSignal } = createContext({
+      direction: 'LONG',
+      strategyInterval: '5m',
+    });
+
+    await processRuntimeFinalCandleDecision(
+      {
+        ...baseEvent,
+        interval: '5m',
+      },
+      context as any
+    );
+
+    expect(createSignal).toHaveBeenCalledWith(
+      expect.objectContaining({
+        direction: 'LONG',
+        timeframe: '5m',
+        payload: expect.objectContaining({
+          strategyInterval: '5m',
+        }),
+      })
+    );
   });
 
   it('records EXIT as trace-only and skips orchestration execution', async () => {

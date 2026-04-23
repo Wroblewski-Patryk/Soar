@@ -673,3 +673,20 @@ pnpm --filter api exec prisma migrate deploy
 - Avoid: repeated `prisma generate` retries without releasing locked Node processes.
 - Evidence:
   - Observed on 2026-04-20 during WAPR closure validation setup; after stopping stale Node processes, `prisma generate` and follow-up wallet API e2e passed.
+
+### 2026-04-23 - Full API pack needs explicit test encryption env for API-key suites
+- Context: `V1ALIGN-06` closure validation on local Codex desktop after runtime truth-alignment changes.
+- Symptom: `pnpm --filter api run test -- --run` fails in API-key-related suites unless encryption env is present, even when the touched runtime code is otherwise correct.
+- Root cause: full API coverage includes authenticated API-key encryption paths that require versioned test encryption material; the local shell does not always provide those env vars by default.
+- Guardrail: before treating full API-pack failures as regressions, set the test-only encryption env explicitly:
+  - `API_KEY_ENCRYPTION_KEYS`
+  - `API_KEY_ENCRYPTION_ACTIVE_VERSION`
+- Preferred pattern:
+```powershell
+$env:API_KEY_ENCRYPTION_KEYS='v1:test-key-material'
+$env:API_KEY_ENCRYPTION_ACTIVE_VERSION='v1'
+pnpm --filter api run test -- --run
+```
+- Avoid: assuming the API pack is self-contained on a fresh shell when it exercises encrypted API-key flows.
+- Evidence:
+  - 2026-04-23 `V1ALIGN-06`: focused runtime pack, typecheck, and guardrails passed first; the full API pack also passed once the explicit test encryption env was exported in the same shell.

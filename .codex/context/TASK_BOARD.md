@@ -17,14 +17,11 @@ Last updated: 2026-04-23
 
 ## READY
 
-- [ ] `V1ALIGN-02 fix(api-runtime-symbol-scope): keep empty resolved symbol scope fail-closed instead of widening to wildcard routing`
+- [ ] (none)
 
 ## BACKLOG
 
-- [ ] `V1ALIGN-03 fix(api-signal-interval-truth): persist truthful runtime signal interval/window metadata`
-- [ ] `V1ALIGN-04 fix(api-runtime-freshness-authority): scope freshness truth to active runtime sessions instead of global latest-signal presence`
-- [ ] `V1ALIGN-05 fix(api-runtime-diagnostics): make no-route and missing-runtime-input conditions explicit operator telemetry where architecture allows`
-- [ ] `V1ALIGN-06 qa(closure): run focused runtime-alignment closure pack and sync canonical docs/context`
+- [ ] (none)
 
 ## IN_PROGRESS
 
@@ -42,6 +39,16 @@ Last updated: 2026-04-23
 
 - [x] `V1ALIGN-01 docs(architecture-worker-ownership): freeze split workers as deployed target and inline as local/degraded-only contract`
   - 2026-04-23: Updated canonical architecture and deployment docs so `split` is now the explicit deployed worker-ownership target for `STAGE` and `PROD`, while `inline` is documented as local/test-only or explicit degraded fallback. Synced the canonical queue so implementation can now proceed against one honest architecture contract instead of the prior half-state.
+- [x] `V1ALIGN-02 fix(api-runtime-symbol-scope): keep empty resolved symbol scope fail-closed instead of widening to wildcard routing`
+  - 2026-04-23: Runtime routing no longer widens empty resolved symbol scope into wildcard `*`. Empty market-group symbol sets now stay fail-closed, and the final-candle decision path emits explicit `SIGNAL_DECISION` telemetry with reason `EMPTY_SYMBOL_SCOPE` instead of silently routing all symbols.
+- [x] `V1ALIGN-03 fix(api-signal-interval-truth): persist truthful runtime signal interval/window metadata`
+  - 2026-04-23: Runtime signal persistence now stores the real normalized candle interval used by the decision path instead of hardcoding `1m`, keeping `Signal.timeframe` aligned with the architecture's `intervalWindow` truth.
+- [x] `V1ALIGN-04 fix(api-runtime-freshness-authority): scope freshness truth to active runtime sessions instead of global latest-signal presence`
+  - 2026-04-23: `/workers/runtime-freshness` now evaluates decision-activity truth per active runtime session. One unrelated fresh signal can no longer mask a starving running session, and the readiness payload exposes stale session ids explicitly.
+- [x] `V1ALIGN-05 fix(api-runtime-diagnostics): make no-route and missing-runtime-input conditions explicit operator telemetry where architecture allows`
+  - 2026-04-23: Completed the explicit diagnostics slice by recording empty-scope runtime decisions as operator-visible telemetry and keeping route/decision handling fail-closed instead of collapsing back into silent "nothing happened" gaps.
+- [x] `V1ALIGN-06 qa(closure): run focused runtime-alignment closure pack and sync canonical docs/context`
+  - 2026-04-23: Focused runtime-alignment tests, API typecheck, repository guardrails, and the full API pack all passed. Full API validation required explicit test-only encryption env (`API_KEY_ENCRYPTION_KEYS`, `API_KEY_ENCRYPTION_ACTIVE_VERSION`). `pnpm run test:go-live:smoke` remained workstation-blocked because local Docker bootstrap could not bind `5432` while another Postgres container was already using that port.
 - [x] `V1ALIGN-A planning: runtime worker-ownership alignment plus symbol-scope, interval-truth, freshness-authority, and diagnostics closure`
   - 2026-04-23: Published `docs/planning/v1-runtime-architecture-and-truth-alignment-2026-04-23.md` after a fresh architecture-conformance review. The planned wave freezes one target answer for the current worker-ownership drift (`split` as deployed target, `inline` as local/degraded-only), then queues executor-ready slices for empty-scope runtime routing, truthful signal interval persistence, per-active-session freshness authority, and explicit no-route/runtime-input diagnostics.
 

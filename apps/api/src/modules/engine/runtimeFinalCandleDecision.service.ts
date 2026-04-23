@@ -56,6 +56,7 @@ type RuntimeFinalCandleDecisionContext = {
     botId?: string;
     strategyId?: string;
     symbol: string;
+    timeframe: string;
     direction: SignalDirection;
     confidence: number;
     payload: Record<string, unknown>;
@@ -196,6 +197,49 @@ export const processRuntimeFinalCandleDecision = async (
     metricsStore.recordRuntimeExecutionError('runtime_external_positions_lookup_failure');
   }
   const runtimeRoutes = context.resolveRuntimeRoutesForEvent(event, bots);
+  if (runtimeRoutes.length === 0) {
+    const marketScopedBots = bots.filter(
+      (bot) => bot.exchange === event.exchange && bot.marketType === event.marketType
+    );
+    await Promise.all(
+      marketScopedBots.flatMap((bot) =>
+        bot.marketGroups
+          .filter(
+            (group) =>
+              group.strategies.length > 0 &&
+              group.symbols.length === 0 &&
+              group.strategies.some((strategy) =>
+                strategyMatchesCandleInterval(strategy.strategyInterval, event.interval)
+              )
+          )
+          .map(async (group) => {
+            const sessionId = await context.ensureRuntimeSession?.({
+              userId: bot.userId,
+              botId: bot.id,
+              mode: bot.mode,
+            });
+            await context.recordRuntimeEvent?.({
+              userId: bot.userId,
+              botId: bot.id,
+              mode: bot.mode,
+              sessionId,
+              eventType: 'SIGNAL_DECISION',
+              level: 'DEBUG',
+              symbol: event.symbol,
+              botMarketGroupId: group.id,
+              message: 'Runtime group has no routable symbols configured',
+              payload: {
+                reason: 'EMPTY_SYMBOL_SCOPE',
+                botMarketGroupId: group.id,
+                strategyIntervals: group.strategies.map((strategy) => strategy.strategyInterval ?? '*'),
+              },
+              eventAt: new Date(event.eventTime),
+            });
+          })
+      )
+    );
+    return;
+  }
   runtimeMetricsService.recordEligibleGroupsCount(runtimeRoutes.length);
   const runtimeSessionByBotId = new Map<string, string | undefined>();
 
@@ -385,6 +429,7 @@ export const processRuntimeFinalCandleDecision = async (
         botId: bot.id,
         strategyId: merged.strategyId,
         symbol: event.symbol,
+        timeframe: normalizeInterval(event.interval),
         direction,
         confidence: candleConfidence(event),
         payload: {

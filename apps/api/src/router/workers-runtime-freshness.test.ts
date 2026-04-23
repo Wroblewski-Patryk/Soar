@@ -8,6 +8,7 @@ const originalWorkerHeartbeat = process.env.WORKER_LAST_HEARTBEAT_AT;
 const originalMarketDataHeartbeat = process.env.WORKER_LAST_MARKET_DATA_AT;
 const originalSessionThreshold = process.env.RUNTIME_FRESHNESS_MAX_SESSION_HEARTBEAT_MS;
 const originalSignalThreshold = process.env.RUNTIME_FRESHNESS_MAX_SIGNAL_AGE_MS;
+const originalRequireDecisionActivity = process.env.RUNTIME_FRESHNESS_REQUIRE_SIGNAL_FOR_RUNNING_SESSIONS;
 const originalWorkerMode = process.env.WORKER_MODE;
 
 const restoreEnv = (key: string, value: string | undefined) => {
@@ -39,6 +40,10 @@ afterEach(() => {
   restoreEnv('WORKER_LAST_MARKET_DATA_AT', originalMarketDataHeartbeat);
   restoreEnv('RUNTIME_FRESHNESS_MAX_SESSION_HEARTBEAT_MS', originalSessionThreshold);
   restoreEnv('RUNTIME_FRESHNESS_MAX_SIGNAL_AGE_MS', originalSignalThreshold);
+  restoreEnv(
+    'RUNTIME_FRESHNESS_REQUIRE_SIGNAL_FOR_RUNNING_SESSIONS',
+    originalRequireDecisionActivity
+  );
   restoreEnv('WORKER_MODE', originalWorkerMode);
 });
 
@@ -130,6 +135,94 @@ describe('workers runtime freshness endpoint', () => {
     expect(res.body.status).toBe('FAIL');
     expect(res.body.checks.runtimeSessions.status).toBe('FAIL');
     expect(res.body.checks.runtimeSessions.staleSessionIds.length).toBeGreaterThan(0);
+  });
+
+  it('fails runtime decision freshness when active session has no fresh decision activity even if another bot has a fresh signal', async () => {
+    const { agent, userId } = await createAdminAgent();
+    process.env.RUNTIME_FRESHNESS_REQUIRE_SIGNAL_FOR_RUNNING_SESSIONS = 'true';
+    const [staleBot, unrelatedBot] = await Promise.all([
+      prisma.bot.create({
+        data: {
+          userId,
+          name: 'Stale Decision Bot',
+        },
+        select: { id: true },
+      }),
+      prisma.bot.create({
+        data: {
+          userId,
+          name: 'Other Bot',
+        },
+        select: { id: true },
+      }),
+    ]);
+    const runningSession = await prisma.botRuntimeSession.create({
+      data: {
+        userId,
+        botId: staleBot.id,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date(Date.now() - 10 * 60 * 1000),
+        lastHeartbeatAt: new Date(),
+      },
+      select: { id: true },
+    });
+    await prisma.signal.create({
+      data: {
+        userId,
+        botId: unrelatedBot.id,
+        symbol: 'BTCUSDT',
+        timeframe: '1m',
+        direction: 'LONG',
+        triggeredAt: new Date(),
+      },
+    });
+
+    const res = await agent.get('/workers/runtime-freshness');
+    expect(res.status).toBe(503);
+    expect(res.body.status).toBe('FAIL');
+    expect(res.body.checks.runtimeDecisionActivity.status).toBe('FAIL');
+    expect(res.body.checks.runtimeDecisionActivity.staleSessionIds).toContain(runningSession.id);
+  });
+
+  it('passes runtime decision freshness when the running session has fresh SIGNAL_DECISION activity', async () => {
+    const { agent, userId } = await createAdminAgent();
+    process.env.RUNTIME_FRESHNESS_REQUIRE_SIGNAL_FOR_RUNNING_SESSIONS = 'true';
+    const bot = await prisma.bot.create({
+      data: {
+        userId,
+        name: 'Fresh Decision Bot',
+      },
+      select: { id: true },
+    });
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId,
+        botId: bot.id,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date(Date.now() - 10 * 60 * 1000),
+        lastHeartbeatAt: new Date(),
+      },
+      select: { id: true },
+    });
+    await prisma.botRuntimeEvent.create({
+      data: {
+        userId,
+        botId: bot.id,
+        sessionId: session.id,
+        eventType: 'SIGNAL_DECISION',
+        level: 'DEBUG',
+        message: 'No trade decision after strategy merge',
+        eventAt: new Date(),
+      },
+    });
+
+    const res = await agent.get('/workers/runtime-freshness');
+    expect(res.status).toBe(200);
+    expect(res.body.status).toBe('PASS');
+    expect(res.body.checks.runtimeDecisionActivity.status).toBe('PASS');
+    expect(res.body.checks.runtimeDecisionActivity.runningCount).toBe(1);
   });
 
   it('returns PASS in inline mode when there is no active runtime demand yet', async () => {

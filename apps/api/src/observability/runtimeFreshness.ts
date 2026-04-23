@@ -22,8 +22,10 @@ type RuntimeFreshnessSnapshot = {
       runningCount: number;
       staleSessionIds: string[];
     };
-    latestSignal: FreshnessCheck & {
+    runtimeDecisionActivity: FreshnessCheck & {
       required: boolean;
+      runningCount: number;
+      staleSessionIds: string[];
     };
   };
 };
@@ -98,6 +100,8 @@ export const buildRuntimeFreshnessSnapshot = async (
       },
       select: {
         id: true,
+        botId: true,
+        startedAt: true,
         lastHeartbeatAt: true,
       },
     }),
@@ -190,46 +194,91 @@ export const buildRuntimeFreshnessSnapshot = async (
         : `${staleSessionIds.length} running session(s) stale`,
   };
 
-  const latestSignal = await prisma.signal.findFirst({
-    select: {
-      triggeredAt: true,
-    },
-    orderBy: {
-      triggeredAt: 'desc',
-    },
-  });
-
-  const requireSignalFreshness =
+  const requireDecisionActivity =
     requireLatestSignalForRunningSessions && runningSessions.length > 0;
-  const latestSignalAgeMs = latestSignal ? Math.max(0, nowMs - latestSignal.triggeredAt.getTime()) : null;
-  const latestSignalCheck: RuntimeFreshnessSnapshot['checks']['latestSignal'] = (() => {
-    if (!requireSignalFreshness) {
+  const latestRuntimeDecisionEvents = requireDecisionActivity
+    ? await prisma.botRuntimeEvent.findMany({
+        where: {
+          sessionId: {
+            in: runningSessions.map((session) => session.id),
+          },
+          eventType: {
+            in: [
+              'SIGNAL_DECISION',
+              'PRETRADE_BLOCKED',
+              'ORDER_SUBMITTED',
+              'ORDER_FILLED',
+              'POSITION_OPENED',
+              'POSITION_CLOSED',
+              'DCA_EXECUTED',
+            ],
+          },
+        },
+        select: {
+          sessionId: true,
+          eventAt: true,
+        },
+        orderBy: [{ eventAt: 'desc' }],
+      })
+    : [];
+  const latestDecisionAtBySessionId = new Map<string, Date>();
+  for (const runtimeEvent of latestRuntimeDecisionEvents) {
+    if (!latestDecisionAtBySessionId.has(runtimeEvent.sessionId)) {
+      latestDecisionAtBySessionId.set(runtimeEvent.sessionId, runtimeEvent.eventAt);
+    }
+  }
+  const staleDecisionSessionIds = requireDecisionActivity
+    ? runningSessions
+        .filter((session) => {
+          const latestDecisionAt = latestDecisionAtBySessionId.get(session.id);
+          if (!latestDecisionAt) return true;
+          return nowMs - latestDecisionAt.getTime() > latestSignalThresholdMs;
+        })
+        .map((session) => session.id)
+    : [];
+  const latestDecisionAgeMs =
+    requireDecisionActivity && latestDecisionAtBySessionId.size > 0
+      ? Math.max(
+          0,
+          Math.min(
+            ...[...latestDecisionAtBySessionId.values()].map((eventAt) => nowMs - eventAt.getTime())
+          )
+        )
+      : null;
+  const runtimeDecisionActivityCheck: RuntimeFreshnessSnapshot['checks']['runtimeDecisionActivity'] = (() => {
+    if (!requireDecisionActivity) {
       return {
         status: 'SKIP',
         thresholdMs: latestSignalThresholdMs,
-        ageMs: latestSignalAgeMs,
+        ageMs: latestDecisionAgeMs,
         required: false,
-        detail: 'latest signal freshness check disabled for running sessions',
+        runningCount: runningSessions.length,
+        staleSessionIds: [],
+        detail: 'runtime decision activity freshness check disabled for running sessions',
       };
     }
-    if (latestSignalAgeMs === null) {
+    if (latestDecisionAtBySessionId.size === 0) {
       return {
         status: 'FAIL',
         thresholdMs: latestSignalThresholdMs,
         ageMs: null,
         required: true,
-        detail: 'latest signal missing for active runtime sessions',
+        runningCount: runningSessions.length,
+        staleSessionIds: runningSessions.map((session) => session.id),
+        detail: 'runtime decision activity missing for active runtime sessions',
       };
     }
     return {
-      status: latestSignalAgeMs <= latestSignalThresholdMs ? 'PASS' : 'FAIL',
+      status: staleDecisionSessionIds.length === 0 ? 'PASS' : 'FAIL',
       thresholdMs: latestSignalThresholdMs,
-      ageMs: latestSignalAgeMs,
+      ageMs: latestDecisionAgeMs,
       required: true,
+      runningCount: runningSessions.length,
+      staleSessionIds: staleDecisionSessionIds,
       detail:
-        latestSignalAgeMs <= latestSignalThresholdMs
-          ? 'latest signal freshness within threshold'
-          : 'latest signal is stale for active runtime sessions',
+        staleDecisionSessionIds.length === 0
+          ? 'runtime decision activity freshness within threshold for active sessions'
+          : 'runtime decision activity is stale for one or more active sessions',
     };
   })();
 
@@ -238,14 +287,14 @@ export const buildRuntimeFreshnessSnapshot = async (
     marketData: marketDataCheck,
     runtimeSignalLag: runtimeSignalLagCheck,
     runtimeSessions: runtimeSessionsCheck,
-    latestSignal: latestSignalCheck,
+    runtimeDecisionActivity: runtimeDecisionActivityCheck,
   };
   const statuses = [
     checks.workerHeartbeat.status,
     checks.marketData.status,
     checks.runtimeSignalLag.status,
     checks.runtimeSessions.status,
-    checks.latestSignal.status,
+    checks.runtimeDecisionActivity.status,
   ];
   const status = statuses.includes('FAIL') ? 'FAIL' : 'PASS';
 
