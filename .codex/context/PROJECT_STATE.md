@@ -198,6 +198,12 @@ Last updated: 2026-04-23
   bots are currently reaching real `No votes` / `No trade decision after
   strategy merge` outcomes, not silently losing accepted signals on the paper
   or live adapter path.
+- 2026-04-23: after local Docker-backed infra became available again, the
+  remaining DB-backed runtime recovery evidence also passed: selected-bot
+  symbol-stats scope, monitoring aggregate read-model truth, paper reset
+  capital baseline, execution orchestrator close-path behavior, and
+  `PAPER`/`LIVE` decision parity are now all covered by green focused API
+  suites in addition to the earlier non-DB packs.
 - 2026-04-23: wallet/runtime capital authority now has a dedicated follow-up
   planning wave `V1CAP-A`, covering two operator-critical cases that need
   explicit V1 closure: `PAPER` reset checkpoint semantics and `LIVE`

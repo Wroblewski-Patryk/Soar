@@ -111,9 +111,10 @@ Restore a truthful and debuggable V1 runtime path where:
   stays reserved for actual runtime decisions/signals.
 - Paper reset capital parity remains locked to wallet `paperInitialBalance`
   plus realized PnL only from `paperResetAt` forward.
-- Local DB-backed API e2e/parity suites were attempted but are currently
-  infra-blocked because this workstation does not have a reachable Docker
-  Desktop / Postgres runtime (`localhost:5432`).
+- The remaining DB-backed API validation also passed once local Docker-backed
+  Postgres/Redis were available again, so the closure evidence now includes
+  selected-bot scope e2e, monitoring aggregate e2e, paper reset capital
+  aggregate coverage, and execution parity around exit/close behavior.
 
 ## Architecture Evidence (required for architecture-impacting tasks)
 - Architecture source reviewed:
