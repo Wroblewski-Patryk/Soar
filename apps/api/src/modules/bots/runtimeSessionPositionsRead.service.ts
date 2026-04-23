@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { runtimePositionAutomationService } from '../engine/runtimePositionAutomation.service';
 import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
-import { resolveRuntimeReferenceBalance } from '../engine/runtimeCapitalContext.service';
+import { resolveRuntimeCapitalSnapshot } from '../engine/runtimeCapitalContext.service';
 import { getRuntimeTicker } from '../engine/runtimeTickerStore';
 import { normalizeSymbol } from '../../lib/symbols';
 import { ListBotRuntimePositionsQueryDto } from './bots.types';
@@ -107,7 +107,7 @@ export const listBotRuntimeSessionPositions = async (
   const botMarketType = botContext.marketType ?? 'FUTURES';
   const resolveRuntimeCapitalSummary = async (usedMargin: number) => {
     try {
-      const referenceBalanceRaw = await resolveRuntimeReferenceBalance({
+      const snapshot = await resolveRuntimeCapitalSnapshot({
         userId,
         botId,
         walletId: botContext.walletId,
@@ -117,14 +117,41 @@ export const listBotRuntimeSessionPositions = async (
         paperStartBalance: botContext.paperStartBalance,
         nowMs: Date.now(),
       });
-      if (!Number.isFinite(referenceBalanceRaw)) {
-        return { referenceBalance: null, freeCash: null };
+      if (!Number.isFinite(snapshot.referenceBalance)) {
+        return {
+          referenceBalance: null,
+          freeCash: null,
+          accountBalance: snapshot.accountBalance,
+          baseCurrency: snapshot.baseCurrency,
+          capitalSource: snapshot.capitalSource,
+          allocationMode: snapshot.allocationMode,
+          allocationValue: snapshot.allocationValue,
+          paperResetAt: snapshot.paperResetAt,
+        };
       }
-      const referenceBalance = Math.max(0, referenceBalanceRaw);
+      const referenceBalance = Math.max(0, snapshot.referenceBalance);
       const freeCash = Math.max(0, referenceBalance - Math.max(0, usedMargin));
-      return { referenceBalance, freeCash };
+      return {
+        referenceBalance,
+        freeCash,
+        accountBalance: snapshot.accountBalance,
+        baseCurrency: snapshot.baseCurrency,
+        capitalSource: snapshot.capitalSource,
+        allocationMode: snapshot.allocationMode,
+        allocationValue: snapshot.allocationValue,
+        paperResetAt: snapshot.paperResetAt,
+      };
     } catch {
-      return { referenceBalance: null, freeCash: null };
+      return {
+        referenceBalance: null,
+        freeCash: null,
+        accountBalance: null,
+        baseCurrency: null,
+        capitalSource: null,
+        allocationMode: null,
+        allocationValue: null,
+        paperResetAt: null,
+      };
     }
   };
 

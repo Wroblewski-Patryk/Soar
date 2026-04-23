@@ -5,8 +5,8 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/wallets`
 - Owner: frontend/trading-setup
-- Last updated: 2026-04-20
-- Related planning task: `DCP-09`, `WAPR-10`
+- Last updated: 2026-04-23
+- Related planning task: `DCP-09`, `WAPR-10`, `V1CAP-A`
 
 ## 1. Purpose and Scope
 - Owns wallet management UI for trading context setup.
@@ -42,6 +42,10 @@ Out of scope:
     - present -> `Connected`,
     - missing -> `Not connected`.
   - wallet edit flow exposes dedicated `Reset paper wallet` action only for `PAPER` wallets (command path, not generic edit side effect).
+- V1CAP UI contract lock:
+  - wallet list, wallet summary, and runtime wallet sidebar must expose capital-source truth explicitly.
+  - `PAPER` reset copy must explain that history stays visible while active capital starts from the latest reset checkpoint.
+  - `LIVE` preview/runtime copy must explain whether usable capital follows percent allocation, fixed-cap allocation, or full authenticated exchange balance.
 
 ## 4. Runtime Flows
 - List flow:
@@ -52,8 +56,9 @@ Out of scope:
   1. Load metadata and (for edit) existing wallet.
   2. Enforce mode-aware form sections.
   3. Preview LIVE balance when API key and allocation are provided.
-  4. For `PAPER` edit, surface dedicated reset action with explicit confirmation and fail-closed error handling.
-  5. Save wallet payload and return to list/edit context.
+  4. Explain the active capital authority in summary/preview copy so post-reset and post-deposit behavior is visible before save.
+  5. For `PAPER` edit, surface dedicated reset action with explicit confirmation and fail-closed error handling.
+  6. Save wallet payload and return to list/edit context.
 
 ## 5. UI Integration
 - Main components:
@@ -73,6 +78,7 @@ Out of scope:
 ## 7. Observability and Operations
 - Metadata source and preview states are surfaced in form UX to explain capability fallback.
 - Retry-aware request helpers reduce transient load/save failures.
+- Runtime wallet sidebar surfaces capital source, account balance, and paper reset checkpoint so operator monitoring stays aligned with backend capital truth.
 
 ## 8. Test Coverage and Evidence
 - Primary tests:

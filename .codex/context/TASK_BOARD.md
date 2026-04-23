@@ -17,11 +17,7 @@ Last updated: 2026-04-23
 
 ## READY
 
-- [ ] `V1CAP-01 docs(capital-authority): freeze wallet capital rules for PAPER reset and LIVE post-deposit recovery`
-- [ ] `V1CAP-02 test(wallet-runtime): add focused regression coverage for reset checkpoint and refreshed exchange balance semantics`
-- [ ] `V1CAP-03 fix(wallet-runtime): align runtime capital snapshot and wallet/operator read-model behavior`
-- [ ] `V1CAP-04 fix(wallet-ui): expose capital source/allocation/reset truth in wallet and runtime monitoring surfaces`
-- [ ] `V1CAP-05 qa(wallet-closure): run focused wallet/runtime closure pack and sync docs/context`
+- [ ] (none)
 
 ## BACKLOG
 
@@ -55,6 +51,16 @@ Last updated: 2026-04-23
   - 2026-04-23: Investigated production through authenticated API access on `https://api.soar.luckysparrow.ch` for the active PAPER bot `859fd4f7-cbb1-4f8e-b52a-5d119442e265` and LIVE bot `7204173d-af68-494a-bca8-95d3c1ba8ef1`. Both sessions are `RUNNING` with fresh heartbeats, but aggregate runtime truth shows `totalSignals=0`, `openPositionCount=0`, and `tradesTotal=0`. Runtime symbol monitoring currently exposes `configured_fallback` strategy context that can look like "signals" even when no persisted runtime signal exists. Published recovery packet `docs/planning/v1-runtime-signal-delivery-recovery-2026-04-23.md` and promoted the diagnosis slice plus follow-up recovery slices into the canonical queue.
 - [x] `V1CAP-A planning: wallet capital authority recovery for reset and post-deposit cases`
   - 2026-04-23: Analyzed wallet/runtime capital authority against current Soar architecture and production investigation. Published `docs/planning/v1-wallet-capital-authority-recovery-2026-04-23.md` to freeze the two critical operator cases: `PAPER` reset checkpoint semantics and `LIVE` post-loss/post-deposit exchange balance refresh behavior under wallet allocation modes (`PERCENT`, `FIXED`, effective full balance). Promoted the capital-authority follow-up slices into the canonical queue.
+- [x] `V1CAP-01 docs(capital-authority): freeze wallet capital rules for PAPER reset and LIVE post-deposit recovery`
+  - 2026-04-23: Froze the explicit capital-authority contract in architecture/module docs so `PAPER` reset checkpoints and `LIVE` post-deposit allocation behavior are now documented as source-of-truth instead of planning-only intent.
+- [x] `V1CAP-02 test(wallet-runtime): add focused regression coverage for reset checkpoint and refreshed exchange balance semantics`
+  - 2026-04-23: Added focused API regressions covering `PAPER` reset checkpoint truth plus `LIVE` refreshed exchange balance behavior under `PERCENT`, `FIXED`, and effective full-balance semantics. Validation PASS: `pnpm -C apps/api exec vitest run src/modules/engine/runtimeCapitalContext.service.test.ts src/modules/wallets/wallets.e2e.test.ts src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`.
+- [x] `V1CAP-03 fix(wallet-runtime): align runtime capital snapshot and wallet/operator read-model behavior`
+  - 2026-04-23: Introduced one shared API capital-allocation helper for wallet preview and runtime use, promoted runtime capital into an explicit snapshot contract, and extended runtime monitoring summaries with capital-source, allocation, account-balance, and `paperResetAt` truth.
+- [x] `V1CAP-04 fix(wallet-ui): expose capital source/allocation/reset truth in wallet and runtime monitoring surfaces`
+  - 2026-04-23: Wallet list/form and runtime wallet sidebar now expose capital source and mode-specific hints so operators can distinguish paper reset checkpoints, live percent/fixed allocation, and full-balance live behavior.
+- [x] `V1CAP-05 qa(wallet-closure): run focused wallet/runtime closure pack and sync docs/context`
+  - 2026-04-23: Closure pack PASS with focused API/web regression suites, API/web typecheck, and repository guardrails. No recurring pitfall strong enough for learning-journal entry was confirmed in this slice.
 
 - [x] `V1CONF-07 test(signal-cleanup): reduce remaining non-failing web warning noise outside the high-signal confidence pack`
   - 2026-04-23: Removed the remaining non-failing web warning noise by aligning bots/markets/strategies form-and-table suites with their real dashboard routes, adding provider-safe render/teardown helpers for route-aware dashboard-home suites, and settling async widget/table assertions so the full web pack now runs cleanly. Validation PASS: `pnpm --filter web exec vitest run src/features/bots/components/BotCreateEditForm.test.tsx src/features/backtest/components/BacktestCreateForm.test.tsx src/features/strategies/components/StrategyForm.test.tsx src/features/strategies/components/StrategiesList.test.tsx src/features/markets/components/MarketUniversesTable.test.tsx`, `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.aggregate-history.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.test.tsx`, `pnpm --filter web run test -- --run`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.

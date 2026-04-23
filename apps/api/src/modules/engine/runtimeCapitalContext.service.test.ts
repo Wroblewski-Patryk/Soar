@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
   resolvePaperRuntimeCapitalSnapshot,
+  resolveRuntimeCapitalSnapshot,
   resolveRuntimeDcaFundsExhausted,
   resolveRuntimeWalletFundsExhausted,
   resolveRuntimeReferenceBalance,
@@ -85,6 +86,7 @@ describe('runtimeCapitalContext', () => {
     );
 
     expect(snapshot.referenceBalance).toBe(4_250);
+    expect(snapshot.capitalSource).toBe('PAPER_INITIAL_BALANCE');
   });
 
   it('applies wallet LIVE allocation rules to runtime reference balance', async () => {
@@ -117,6 +119,77 @@ describe('runtimeCapitalContext', () => {
     );
 
     expect(reference).toBe(1_000);
+  });
+
+  it('keeps FIXED live allocation capped after exchange balance deposit refresh', async () => {
+    const snapshot = await resolveRuntimeCapitalSnapshot(
+      {
+        userId: 'u-wallet-live-fixed',
+        botId: 'b-wallet-live-fixed',
+        walletId: 'wallet-live-fixed',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        paperStartBalance: 0,
+        nowMs: 5_500,
+      },
+      buildDeps({
+        getWalletContext: async () => ({
+          id: 'wallet-live-fixed',
+          mode: 'LIVE',
+          paperInitialBalance: 0,
+          paperResetAt: null,
+          liveAllocationMode: 'FIXED',
+          liveAllocationValue: 1_000,
+          baseCurrency: 'USDT',
+          exchange: 'BINANCE',
+          apiKey: null,
+        }),
+        getLiveApiKeyContext: async () => ({ apiKey: 'k', apiSecret: 's' }),
+        fetchLiveBalance: async () => 4_000,
+      })
+    );
+
+    expect(snapshot.accountBalance).toBe(4_000);
+    expect(snapshot.referenceBalance).toBe(1_000);
+    expect(snapshot.capitalSource).toBe('LIVE_EXCHANGE_BALANCE');
+    expect(snapshot.allocationMode).toBe('FIXED');
+    expect(snapshot.allocationValue).toBe(1_000);
+  });
+
+  it('uses refreshed full exchange balance when LIVE wallet has no explicit allocation rule', async () => {
+    const snapshot = await resolveRuntimeCapitalSnapshot(
+      {
+        userId: 'u-wallet-live-full',
+        botId: 'b-wallet-live-full',
+        walletId: 'wallet-live-full',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        paperStartBalance: 0,
+        nowMs: 5_600,
+      },
+      buildDeps({
+        getWalletContext: async () => ({
+          id: 'wallet-live-full',
+          mode: 'LIVE',
+          paperInitialBalance: 0,
+          paperResetAt: null,
+          liveAllocationMode: null,
+          liveAllocationValue: null,
+          baseCurrency: 'USDT',
+          exchange: 'BINANCE',
+          apiKey: null,
+        }),
+        getLiveApiKeyContext: async () => ({ apiKey: 'k', apiSecret: 's' }),
+        fetchLiveBalance: async () => 4_000,
+      })
+    );
+
+    expect(snapshot.accountBalance).toBe(4_000);
+    expect(snapshot.referenceBalance).toBe(4_000);
+    expect(snapshot.allocationMode).toBeNull();
+    expect(snapshot.allocationValue).toBeNull();
   });
 
   it('fails closed for wallet-scoped LIVE balance when wallet context is unavailable', async () => {
@@ -220,6 +293,8 @@ describe('runtimeCapitalContext', () => {
     );
 
     expect(snapshot.referenceBalance).toBe(880);
+    expect(snapshot.capitalSource).toBe('PAPER_RESET_CHECKPOINT');
+    expect(snapshot.paperResetAt).toEqual(checkpoint);
     expect(sumClosedBotManagedRealizedPnl).toHaveBeenCalledWith(
       expect.objectContaining({
         realizedSince: checkpoint,

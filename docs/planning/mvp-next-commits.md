@@ -7,15 +7,17 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `V1CAP-01 docs(capital-authority): freeze wallet capital rules for PAPER reset and LIVE post-deposit recovery`
+- [ ] (none)
 ## NEXT
-- [ ] `V1CAP-02 test(wallet-runtime): add focused regression coverage for reset checkpoint and refreshed exchange balance semantics`
-- [ ] `V1CAP-03 fix(wallet-runtime): align runtime capital snapshot and wallet/operator read-model behavior`
-- [ ] `V1CAP-04 fix(wallet-ui): expose capital source/allocation/reset truth in wallet and runtime monitoring surfaces`
-- [ ] `V1CAP-05 qa(wallet-closure): run focused wallet/runtime closure pack and sync docs/context`
+- [ ] (none)
 ## PIPELINE
 - [x] `V1SIG-A planning queued (runtime signal delivery recovery, truthful operator diagnostics, and paper reset capital parity after production investigation)`
-- [ ] `V1CAP-A planning queued (wallet capital authority recovery for PAPER reset checkpoints and LIVE post-deposit exchange balance changes)`
+- [x] `V1CAP-A planning queued (wallet capital authority recovery for PAPER reset checkpoints and LIVE post-deposit exchange balance changes)`
+- [x] `V1CAP-01 docs(capital-authority): freeze wallet capital rules for PAPER reset and LIVE post-deposit recovery`
+- [x] `V1CAP-02 test(wallet-runtime): add focused regression coverage for reset checkpoint and refreshed exchange balance semantics`
+- [x] `V1CAP-03 fix(wallet-runtime): align runtime capital snapshot and wallet/operator read-model behavior`
+- [x] `V1CAP-04 fix(wallet-ui): expose capital source/allocation/reset truth in wallet and runtime monitoring surfaces`
+- [x] `V1CAP-05 qa(wallet-closure): run focused wallet/runtime closure pack and sync docs/context`
 - [ ] `V1CONF-A planning queued (post-approval V1 confidence hardening and signal-quality closure)`
 - [x] `V1CONF-07 test(signal-cleanup): reduce remaining non-failing web warning noise outside the high-signal confidence pack`
 - [x] `V1CONF-06 test(i18n-signal): reduce remaining I18nProvider act warnings and route-namespace noise in high-signal web suites`

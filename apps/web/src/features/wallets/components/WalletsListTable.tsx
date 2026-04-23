@@ -51,6 +51,11 @@ export default function WalletsListTable({ rows, onDeleted, onCloned }: WalletsL
         apiKey: t('dashboard.wallets.table.apiKey'),
         apiKeyConnected: t('dashboard.wallets.table.apiKeyConnected'),
         apiKeyMissing: t('dashboard.wallets.table.apiKeyMissing'),
+        capitalPaper: t('dashboard.wallets.table.capitalPaper'),
+        capitalPaperReset: t('dashboard.wallets.table.capitalPaperReset'),
+        capitalLivePercent: t('dashboard.wallets.table.capitalLivePercent'),
+        capitalLiveFixed: t('dashboard.wallets.table.capitalLiveFixed'),
+        capitalLiveFull: t('dashboard.wallets.table.capitalLiveFull'),
         columns: t('dashboard.wallets.table.columns'),
         cancel: t('dashboard.wallets.table.cancel'),
       }),
@@ -68,6 +73,17 @@ export default function WalletsListTable({ rows, onDeleted, onCloned }: WalletsL
       return copy.liveFixed.replace('{value}', String(wallet.liveAllocationValue ?? 0));
     },
     [copy.liveFixed, copy.livePercent, copy.paperLabel]
+  );
+  const formatCapitalAuthority = useCallback(
+    (wallet: Wallet) => {
+      if (wallet.mode === 'PAPER') {
+        return wallet.paperResetAt ? copy.capitalPaperReset : copy.capitalPaper;
+      }
+      if (wallet.liveAllocationMode === 'PERCENT') return copy.capitalLivePercent;
+      if (wallet.liveAllocationMode === 'FIXED') return copy.capitalLiveFixed;
+      return copy.capitalLiveFull;
+    },
+    [copy.capitalLiveFixed, copy.capitalLiveFull, copy.capitalLivePercent, copy.capitalPaper, copy.capitalPaperReset]
   );
 
   const handleDelete = async () => {
@@ -153,6 +169,12 @@ export default function WalletsListTable({ rows, onDeleted, onCloned }: WalletsL
         label: copy.allocation,
         sortable: true,
         accessor: (row) => formatAllocation(row),
+        render: (row) => (
+          <div className='space-y-0.5'>
+            <p>{formatAllocation(row)}</p>
+            <p className='text-xs opacity-60'>{formatCapitalAuthority(row)}</p>
+          </div>
+        ),
       },
       {
         key: 'apiKey',
@@ -199,6 +221,11 @@ export default function WalletsListTable({ rows, onDeleted, onCloned }: WalletsL
       copy.apiKey,
       copy.apiKeyConnected,
       copy.apiKeyMissing,
+      copy.capitalLiveFixed,
+      copy.capitalLiveFull,
+      copy.capitalLivePercent,
+      copy.capitalPaper,
+      copy.capitalPaperReset,
       copy.baseCurrency,
       copy.delete,
       copy.deleting,
@@ -211,6 +238,7 @@ export default function WalletsListTable({ rows, onDeleted, onCloned }: WalletsL
       cloningId,
       deletingId,
       formatAllocation,
+      formatCapitalAuthority,
       handleClone,
     ]
   );

@@ -5,8 +5,8 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/wallets`
 - Owner: backend/trading-domain
-- Last updated: 2026-04-20
-- Related planning task: `DCP-07`, `WAPR-10`
+- Last updated: 2026-04-23
+- Related planning task: `DCP-07`, `WAPR-10`, `V1CAP-A`
 
 ## Canonical Architecture Linkage
 Canonical wallet and execution-context rules live in:
@@ -48,6 +48,10 @@ Out of scope:
   - dedicated paper reset command is canonical contract (`POST /dashboard/wallets/:id/reset-paper`), separate from generic wallet update.
   - paper reset is non-destructive and reset-baseline aware via wallet checkpoint (`paperResetAt`).
   - reset guards are fail-closed (`PAPER`-only, owned wallet only, blocked when open paper positions or active paper open orders exist).
+- V1CAP contract lock (implemented):
+  - shared capital-allocation mapping is reused by wallet preview and runtime capital snapshot paths (no duplicated percent/fixed logic).
+  - runtime/operator read models expose capital-source truth explicitly (`PAPER_INITIAL_BALANCE`, `PAPER_RESET_CHECKPOINT`, `LIVE_EXCHANGE_BALANCE`) together with allocation metadata and `paperResetAt`.
+  - `LIVE` balance preview and runtime both treat refreshed authenticated exchange balance as the authority after deposits.
 
 ## 4. Runtime Flows
 - Create/update wallet flow:
@@ -69,6 +73,11 @@ Out of scope:
   2. Verify no open paper positions and no active paper open orders.
   3. Persist reset checkpoint for paper capital baseline (`paperResetAt`), without deleting history rows.
   4. Return deterministic success payload for caller refresh.
+- Runtime/read-model capital flow:
+  1. Resolve one runtime capital snapshot from wallet mode, wallet checkpoint, authenticated exchange balance, and reserved margin.
+  2. Keep `PAPER` active capital scoped to wallet baseline + realized PnL since `paperResetAt`.
+  3. Keep `LIVE` active capital exchange-authoritative and then map it through allocation mode/value.
+  4. Return explicit capital-source/allocation/reset metadata to monitoring read models.
 
 ## 5. API and UI Integration
 - Representative routes:
@@ -102,6 +111,7 @@ Out of scope:
 - Primary tests:
   - `wallets.e2e.test.ts`
   - `runtimeCapitalContext.service.test.ts` (capital-baseline parity scope)
+  - `bots.monitoring-aggregate.e2e.test.ts` (runtime monitoring capital-source parity)
 - Suggested validation command:
 ```powershell
 pnpm --filter api test -- src/modules/wallets/wallets.e2e.test.ts

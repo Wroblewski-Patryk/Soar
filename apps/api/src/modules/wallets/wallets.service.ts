@@ -15,6 +15,7 @@ import {
 import { walletErrors } from './wallets.errors';
 import { isAppErrorLike } from '../../lib/errors';
 import { normalizeBaseCurrency } from '../../lib/symbols';
+import { resolveReferenceBalanceFromAllocation } from '../../lib/capitalAllocation';
 import { resolveExchangeMetadataByMarketType } from '../exchange/exchangeMetadataContract.service';
 import { fetchAuthenticatedExchangeBalanceRaw } from '../exchange/exchangeAuthenticatedRead.service';
 import {
@@ -369,26 +370,6 @@ const extractBalanceForCurrency = (payload: unknown, currency: string) => {
   };
 };
 
-const resolveReferenceBalanceFromAllocation = (params: {
-  accountBalance: number;
-  liveAllocationMode?: 'PERCENT' | 'FIXED' | null;
-  liveAllocationValue?: number | null;
-}) => {
-  if (!Number.isFinite(params.accountBalance) || params.accountBalance <= 0) return 0;
-
-  if (params.liveAllocationMode === 'PERCENT' && Number.isFinite(params.liveAllocationValue)) {
-    const percent = Math.max(0, Math.min(100, params.liveAllocationValue ?? 0));
-    return params.accountBalance * (percent / 100);
-  }
-
-  if (params.liveAllocationMode === 'FIXED' && Number.isFinite(params.liveAllocationValue)) {
-    const fixed = Math.max(0, params.liveAllocationValue ?? 0);
-    return Math.min(params.accountBalance, fixed);
-  }
-
-  return params.accountBalance;
-};
-
 const fetchAuthenticatedBalancePreview = async (params: {
   exchange: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE';
   apiKey: string;
@@ -451,8 +432,8 @@ export const previewWalletBalance = async (userId: string, payload: WalletBalanc
 
     const referenceBalance = resolveReferenceBalanceFromAllocation({
       accountBalance: snapshot.accountBalance,
-      liveAllocationMode: payload.liveAllocationMode,
-      liveAllocationValue: payload.liveAllocationValue,
+      liveAllocationMode: payload.liveAllocationMode ?? null,
+      liveAllocationValue: payload.liveAllocationValue ?? null,
     });
 
     await prisma.apiKey.update({

@@ -158,9 +158,10 @@ export function WalletPaperSection({
           step={0.01}
         />
       </FormGrid>
+      <p className='mt-2 text-xs opacity-70'>{walletText('capitalAuthorityPaper')}</p>
       {lastResetAt ? (
         <p className='mt-2 text-xs opacity-70'>
-          {walletText('resetPaperLastAt')}: {lastResetAt}
+          {walletText('resetPaperLastAt')}: {lastResetAt}. {walletText('capitalAuthorityPaperReset')}
         </p>
       ) : null}
       {resetError ? <p className='mt-2 text-xs text-error'>{resetError}</p> : null}
@@ -247,6 +248,15 @@ type SummarySectionProps = {
 };
 
 export function WalletSummarySection({ walletText, form, selectedApiKey }: SummarySectionProps) {
+  const capitalAuthorityLabel =
+    form.mode === 'PAPER'
+      ? walletText('capitalAuthorityPaper')
+      : form.liveAllocationMode === 'PERCENT'
+        ? walletText('capitalAuthorityLivePercent')
+        : form.liveAllocationMode === 'FIXED'
+          ? walletText('capitalAuthorityLiveFixed')
+          : walletText('capitalAuthorityLiveFull');
+
   return (
     <FormSectionCard title={walletText('sectionSummary')} description={walletText('summaryHint')} className='bg-base-100/85 text-sm'>
       <div className='space-y-2'>
@@ -265,6 +275,10 @@ export function WalletSummarySection({ walletText, form, selectedApiKey }: Summa
         <p className='flex items-center justify-between gap-2'>
           <span className='opacity-65'>{walletText('baseCurrency')}</span>
           <span className='font-semibold'>{normalizeSymbol(form.baseCurrency) || '-'}</span>
+        </p>
+        <p className='flex items-center justify-between gap-2'>
+          <span className='opacity-65'>{walletText('capitalAuthority')}</span>
+          <span className='max-w-[13rem] text-right font-semibold'>{capitalAuthorityLabel}</span>
         </p>
         {form.mode === 'LIVE' ? (
           <>
@@ -332,6 +346,15 @@ export function WalletPreviewSection({
       {previewError ? <p className='text-xs text-error'>{previewError}</p> : null}
 
       <div className='space-y-2'>
+        <p className='text-xs opacity-70'>
+          {preview
+            ? preview.allocationApplied?.mode === 'PERCENT'
+              ? walletText('capitalAuthorityLivePercent')
+              : preview.allocationApplied?.mode === 'FIXED'
+                ? walletText('capitalAuthorityLiveFixed')
+                : walletText('capitalAuthorityLiveFull')
+            : walletText('capitalAuthorityRuntimeBalance')}
+        </p>
         <p className='flex items-center justify-between gap-2'>
           <span className='opacity-65'>{walletText('accountBalance')}</span>
           <span className='font-semibold'>

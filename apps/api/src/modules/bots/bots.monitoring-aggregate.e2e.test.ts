@@ -339,6 +339,9 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     expect(aggregateRes.status).toBe(200);
     expect(aggregateRes.body.positions.summary.referenceBalance).toBe(880);
     expect(aggregateRes.body.positions.summary.freeCash).toBe(880);
+    expect(aggregateRes.body.positions.summary.capitalSource).toBe('PAPER_RESET_CHECKPOINT');
+    expect(aggregateRes.body.positions.summary.paperResetAt).toBe(resetAt.toISOString());
+    expect(aggregateRes.body.positions.summary.baseCurrency).toBe('USDT');
   });
 
   it('keeps aggregate positions/orders/history deterministic when running session is empty', async () => {

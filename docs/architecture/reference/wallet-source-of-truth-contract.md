@@ -31,6 +31,12 @@ Status: accepted (2026-04-16)
 
 `freeCash = referenceBalance - reservedMargin(walletId)`
 
+`paperResetAt` is a non-destructive checkpoint:
+- active paper capital is recalculated from wallet `paperInitialBalance` plus
+  realized PnL only from `paperResetAt` onward,
+- historical pre-reset trades, orders, and positions stay readable but do not
+  count toward active runtime capital after reset.
+
 ### LIVE wallet
 `accountBalance = exchangeBalance(wallet.baseCurrency)`
 
@@ -39,6 +45,14 @@ Status: accepted (2026-04-16)
 `referenceBalance = min(accountBalance, walletCap)`
 
 `freeCash = referenceBalance - reservedMargin(walletId)`
+
+Post-deposit rule:
+- authenticated exchange balance remains the authority for `LIVE`,
+- `PERCENT` allocation scales with refreshed exchange balance,
+- `FIXED` allocation remains capped at the configured wallet amount even after
+  an exchange deposit,
+- no explicit allocation means runtime uses the full authenticated exchange
+  balance.
 
 ## Bot/API Contract
 - Bot create/update no longer accepts mode as canonical input.

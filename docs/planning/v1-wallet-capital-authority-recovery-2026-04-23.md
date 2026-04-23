@@ -3,7 +3,7 @@
 ## Header
 - ID: V1CAP-A
 - Title: Restore truthful wallet capital authority for PAPER reset checkpoints and LIVE post-deposit balance changes
-- Status: READY
+- Status: DONE
 - Owner: Planning Agent
 - Depends on: WAPR-10, SAFEV1-A2, V1SIG-A
 - Priority: P0
@@ -70,17 +70,17 @@ following cases:
 - do not duplicate logic
 
 ## Definition of Done
-- [ ] Wallet capital authority is documented explicitly for `PAPER` and `LIVE`
+- [x] Wallet capital authority is documented explicitly for `PAPER` and `LIVE`
       runtime, including post-reset and post-deposit behavior.
-- [ ] `LIVE` runtime balance refresh after exchange deposit is validated under
+- [x] `LIVE` runtime balance refresh after exchange deposit is validated under
       all supported allocation modes without silent fallback or stale local
       balance truth.
-- [ ] `PAPER` reset baseline is validated end-to-end so runtime, positions, and
+- [x] `PAPER` reset baseline is validated end-to-end so runtime, positions, and
       monitoring summaries do not mix pre-reset and post-reset active capital
       semantics.
-- [ ] Operator wallet/runtime surfaces expose enough truth to explain why a bot
+- [x] Operator wallet/runtime surfaces expose enough truth to explain why a bot
       can or cannot continue trading after loss, reset, or deposit.
-- [ ] Queue/context/docs and focused validation evidence are synchronized.
+- [x] Queue/context/docs and focused validation evidence are synchronized.
 
 ## Forbidden
 - new systems without approval
@@ -132,13 +132,13 @@ following cases:
   must agree on the same capital-authority truth
 
 ## Review Checklist (mandatory)
-- [ ] Architecture alignment confirmed.
-- [ ] Existing systems were reused where applicable.
-- [ ] No workaround paths were introduced.
-- [ ] No logic duplication was introduced.
-- [ ] Definition of Done evidence is attached.
-- [ ] Relevant validations were run.
-- [ ] Docs or context were updated if repository truth changed.
+- [x] Architecture alignment confirmed.
+- [x] Existing systems were reused where applicable.
+- [x] No workaround paths were introduced.
+- [x] No logic duplication was introduced.
+- [x] Definition of Done evidence is attached.
+- [x] Relevant validations were run.
+- [x] Docs or context were updated if repository truth changed.
 - [ ] Learning journal was updated if a recurring pitfall was confirmed.
 
 ## Notes
@@ -158,13 +158,29 @@ following cases:
       increases,
     - unresolved exchange truth must remain fail closed and operator-visible.
 - Planned execution slices:
-  - `V1CAP-01 docs(contract): freeze wallet capital-authority rules for
+  - [x] `V1CAP-01 docs(contract): freeze wallet capital-authority rules for
     PAPER-reset and LIVE post-deposit recovery`
-  - `V1CAP-02 test(api-runtime): add red/green regression coverage for reset
+  - [x] `V1CAP-02 test(api-runtime): add red/green regression coverage for reset
     checkpoint and refreshed exchange balance semantics`
-  - `V1CAP-03 fix(api-runtime): align runtime capital snapshot behavior and any
+  - [x] `V1CAP-03 fix(api-runtime): align runtime capital snapshot behavior and any
     wallet/runtime read-model drift`
-  - `V1CAP-04 fix(operator-ui): expose capital source/allocation/reset truth in
+  - [x] `V1CAP-04 fix(operator-ui): expose capital source/allocation/reset truth in
     wallet/runtime monitoring surfaces`
-  - `V1CAP-05 qa(closure): run focused wallet/runtime closure pack and sync
+  - [x] `V1CAP-05 qa(closure): run focused wallet/runtime closure pack and sync
     docs/context`
+- Closure evidence:
+  - shared API capital-allocation helper now backs both wallet preview and
+    runtime capital snapshots, eliminating duplicated percent/fixed balance
+    mapping.
+  - runtime monitoring summary now exposes explicit capital-source/allocation
+    metadata plus `paperResetAt`, allowing operator UI to distinguish paper
+    reset checkpoints from authenticated live balance truth.
+  - wallet list/form and runtime wallet sidebar now explain active capital
+    authority for `PAPER`, `LIVE percent`, `LIVE fixed`, and full-balance live
+    modes.
+  - Validation PASS:
+    - `pnpm -C apps/api exec vitest run src/modules/engine/runtimeCapitalContext.service.test.ts src/modules/wallets/wallets.e2e.test.ts src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`
+    - `pnpm -C apps/web exec vitest run src/features/wallets/components/WalletCreateEditForm.test.tsx src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx`
+    - `pnpm --filter api run typecheck`
+    - `pnpm --filter web run typecheck`
+    - `pnpm run quality:guardrails`

@@ -212,6 +212,12 @@ Last updated: 2026-04-23
   exchange-authoritative and should reflect later deposits automatically,
   while `PAPER` reset must create a clean active-capital baseline without
   deleting history.
+- 2026-04-23: `V1CAP-A` is closed. Wallet preview and runtime now reuse one
+  shared capital-allocation helper, runtime monitoring summaries expose
+  explicit capital-source/allocation/reset metadata, and wallet/runtime UI
+  surfaces explain whether active capital comes from paper baseline, paper
+  reset checkpoint, or authenticated live exchange balance under percent,
+  fixed, or full-balance allocation.
 - 2026-04-22: `scripts/runV1ReleaseGate.mjs` now selects the latest same-day
   evidence artifact by full timestamp-bearing filename, preventing older
   same-day restore-drill failures from shadowing newer PASS artifacts.

@@ -2,6 +2,7 @@ import { BotMode, Exchange, PositionManagementMode, PositionStatus, TradeMarket,
 import { prisma } from '../../prisma/client';
 import { decrypt } from '../../utils/crypto';
 import { normalizeBaseCurrency } from '../../lib/symbols';
+import { resolveReferenceBalanceFromAllocation } from '../../lib/capitalAllocation';
 
 const liveBalanceCacheTtlMs = Number.parseInt(process.env.RUNTIME_LIVE_BALANCE_CACHE_TTL_MS ?? '30000', 10);
 const liveBalanceCache = new Map<string, { value: number; fetchedAt: number }>();
@@ -216,30 +217,28 @@ const defaultDeps: RuntimeCapitalContextDeps = {
   },
 };
 
-const resolveWalletReferenceBalanceFromAllocation = (input: {
-  accountBalance: number;
-  liveAllocationMode: WalletAllocationMode | null;
-  liveAllocationValue: number | null;
-}) => {
-  if (!Number.isFinite(input.accountBalance) || input.accountBalance <= 0) return 0;
+export type RuntimeCapitalSource =
+  | 'PAPER_INITIAL_BALANCE'
+  | 'PAPER_RESET_CHECKPOINT'
+  | 'LIVE_EXCHANGE_BALANCE';
 
-  if (input.liveAllocationMode === 'PERCENT' && Number.isFinite(input.liveAllocationValue)) {
-    const percent = Math.max(0, Math.min(100, input.liveAllocationValue ?? 0));
-    return input.accountBalance * (percent / 100);
-  }
-
-  if (input.liveAllocationMode === 'FIXED' && Number.isFinite(input.liveAllocationValue)) {
-    const fixed = Math.max(0, input.liveAllocationValue ?? 0);
-    return Math.min(input.accountBalance, fixed);
-  }
-
-  return input.accountBalance;
+export type RuntimeCapitalSnapshot = {
+  referenceBalance: number;
+  freeCash: number;
+  reservedMargin: number;
+  accountBalance: number | null;
+  baseCurrency: string | null;
+  capitalSource: RuntimeCapitalSource;
+  allocationMode: WalletAllocationMode | null;
+  allocationValue: number | null;
+  paperResetAt: Date | null;
+  realizedPnl: number | null;
 };
 
 export const resolvePaperRuntimeCapitalSnapshot = async (
   input: { userId: string; botId?: string | null; walletId?: string | null; paperStartBalance: number },
   deps: RuntimeCapitalContextDeps = defaultDeps
-) => {
+) : Promise<RuntimeCapitalSnapshot> => {
   const wallet = await deps.getWalletContext({
     userId: input.userId,
     walletId: input.walletId,
@@ -281,6 +280,12 @@ export const resolvePaperRuntimeCapitalSnapshot = async (
     referenceBalance,
     freeCash,
     reservedMargin,
+    accountBalance: null,
+    baseCurrency: wallet?.baseCurrency ?? null,
+    capitalSource: wallet?.paperResetAt ? 'PAPER_RESET_CHECKPOINT' : 'PAPER_INITIAL_BALANCE',
+    allocationMode: null,
+    allocationValue: null,
+    paperResetAt: wallet?.paperResetAt ?? null,
     realizedPnl,
   };
 };
@@ -295,7 +300,7 @@ const resolveLiveRuntimeCapitalSnapshot = async (
     nowMs: number;
   },
   deps: RuntimeCapitalContextDeps = defaultDeps
-) => {
+) : Promise<RuntimeCapitalSnapshot> => {
   const wallet = await deps.getWalletContext({
     userId: input.userId,
     walletId: input.walletId,
@@ -324,6 +329,11 @@ const resolveLiveRuntimeCapitalSnapshot = async (
       reservedMargin,
       accountBalance: cached.value,
       baseCurrency,
+      capitalSource: 'LIVE_EXCHANGE_BALANCE',
+      allocationMode: wallet?.liveAllocationMode ?? null,
+      allocationValue: wallet?.liveAllocationValue ?? null,
+      paperResetAt: null,
+      realizedPnl: null,
     };
   }
 
@@ -348,7 +358,7 @@ const resolveLiveRuntimeCapitalSnapshot = async (
   }
 
   const referenceBalance = wallet
-    ? resolveWalletReferenceBalanceFromAllocation({
+    ? resolveReferenceBalanceFromAllocation({
         accountBalance,
         liveAllocationMode: wallet.liveAllocationMode,
         liveAllocationValue: wallet.liveAllocationValue,
@@ -376,7 +386,50 @@ const resolveLiveRuntimeCapitalSnapshot = async (
     reservedMargin,
     accountBalance,
     baseCurrency,
+    capitalSource: 'LIVE_EXCHANGE_BALANCE',
+    allocationMode: wallet?.liveAllocationMode ?? null,
+    allocationValue: wallet?.liveAllocationValue ?? null,
+    paperResetAt: null,
+    realizedPnl: null,
   };
+};
+
+export const resolveRuntimeCapitalSnapshot = async (
+  input: {
+    userId: string;
+    botId?: string | null;
+    walletId?: string | null;
+    mode: BotMode | 'PAPER' | 'LIVE';
+    exchange: Exchange;
+    marketType: TradeMarket;
+    paperStartBalance: number;
+    nowMs: number;
+  },
+  deps: RuntimeCapitalContextDeps = defaultDeps
+) : Promise<RuntimeCapitalSnapshot> => {
+  if (input.mode === 'PAPER') {
+    return resolvePaperRuntimeCapitalSnapshot(
+      {
+        userId: input.userId,
+        botId: input.botId,
+        walletId: input.walletId,
+        paperStartBalance: input.paperStartBalance,
+      },
+      deps
+    );
+  }
+
+  return resolveLiveRuntimeCapitalSnapshot(
+    {
+      userId: input.userId,
+      botId: input.botId,
+      walletId: input.walletId,
+      exchange: input.exchange,
+      marketType: input.marketType,
+      nowMs: input.nowMs,
+    },
+    deps
+  );
 };
 
 export const resolveRuntimeReferenceBalance = async (
@@ -392,31 +445,7 @@ export const resolveRuntimeReferenceBalance = async (
   },
   deps: RuntimeCapitalContextDeps = defaultDeps
 ) => {
-  if (input.mode === 'PAPER') {
-    const snapshot = await resolvePaperRuntimeCapitalSnapshot(
-      {
-        userId: input.userId,
-        botId: input.botId,
-        walletId: input.walletId,
-        paperStartBalance: input.paperStartBalance,
-      },
-      deps
-    );
-    return snapshot.referenceBalance;
-  }
-
-  const snapshot = await resolveLiveRuntimeCapitalSnapshot(
-    {
-      userId: input.userId,
-      botId: input.botId,
-      walletId: input.walletId,
-      exchange: input.exchange,
-      marketType: input.marketType,
-      nowMs: input.nowMs,
-    },
-    deps
-  );
-
+  const snapshot = await resolveRuntimeCapitalSnapshot(input, deps);
   return snapshot.referenceBalance;
 };
 
@@ -440,29 +469,11 @@ export const resolveRuntimeWalletFundsExhausted = async (
   if (!Number.isFinite(requiredMargin) || requiredMargin <= 0) return false;
 
   if (input.mode === 'PAPER') {
-    const snapshot = await resolvePaperRuntimeCapitalSnapshot(
-      {
-        userId: input.userId,
-        botId: input.botId,
-        walletId: input.walletId,
-        paperStartBalance: input.paperStartBalance,
-      },
-      deps
-    );
+    const snapshot = await resolveRuntimeCapitalSnapshot(input, deps);
     return requiredMargin > snapshot.freeCash;
   }
 
-  const snapshot = await resolveLiveRuntimeCapitalSnapshot(
-    {
-      userId: input.userId,
-      botId: input.botId,
-      walletId: input.walletId,
-      exchange: input.exchange,
-      marketType: input.marketType,
-      nowMs: input.nowMs,
-    },
-    deps
-  );
+  const snapshot = await resolveRuntimeCapitalSnapshot(input, deps);
 
   return requiredMargin > snapshot.freeCash;
 };

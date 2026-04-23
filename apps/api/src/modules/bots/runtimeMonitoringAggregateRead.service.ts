@@ -127,6 +127,12 @@ const buildEmptyAggregatePayload = (params: {
         feesPaid: 0,
         referenceBalance: null,
         freeCash: null,
+        accountBalance: null,
+        baseCurrency: null,
+        capitalSource: null,
+        allocationMode: null,
+        allocationValue: null,
+        paperResetAt: null,
       },
       openOrders: [] as RuntimePositionsResponse['openOrders'],
       openItems: [] as RuntimePositionsResponse['openItems'],
@@ -455,6 +461,21 @@ export const getBotRuntimeMonitoringAggregate = async (
     feesPaid: [...openItems, ...historyItems].reduce((acc, item) => acc + item.feesPaid, 0),
     referenceBalance,
     freeCash,
+    accountBalance: readFiniteNumber(latestCapitalSummary?.accountBalance),
+    baseCurrency:
+      typeof latestCapitalSummary?.baseCurrency === 'string' && latestCapitalSummary.baseCurrency.length > 0
+        ? latestCapitalSummary.baseCurrency
+        : null,
+    capitalSource:
+      typeof latestCapitalSummary?.capitalSource === 'string' && latestCapitalSummary.capitalSource.length > 0
+        ? latestCapitalSummary.capitalSource
+        : null,
+    allocationMode:
+      latestCapitalSummary?.allocationMode === 'PERCENT' || latestCapitalSummary?.allocationMode === 'FIXED'
+        ? latestCapitalSummary.allocationMode
+        : null,
+    allocationValue: readFiniteNumber(latestCapitalSummary?.allocationValue),
+    paperResetAt: toDate(latestCapitalSummary?.paperResetAt),
   };
 
   const tradeItems = uniqueById(completePayloadRows.flatMap((row) => row.trades.items)).sort(

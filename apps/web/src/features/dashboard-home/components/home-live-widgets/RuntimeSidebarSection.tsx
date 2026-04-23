@@ -86,6 +86,17 @@ export type RuntimeSidebarSectionProps = {
     interval: string;
     leverage: string;
     walletAllocation: string;
+    capitalSource: string;
+    capitalSourcePaperInitial: string;
+    capitalSourcePaperReset: string;
+    capitalSourceLiveExchange: string;
+    capitalHintPaperInitial: string;
+    capitalHintPaperReset: string;
+    capitalHintLivePercent: string;
+    capitalHintLiveFixed: string;
+    capitalHintLiveFull: string;
+    accountBalance: string;
+    paperResetAt: string;
     heartbeat: string;
     openPositions: string;
     signalsDca: string;
@@ -110,6 +121,7 @@ export type RuntimeSidebarSectionProps = {
 
 export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps) {
   const selectedWallet = props.selected?.bot.wallet ?? null;
+  const capitalSummary = props.selected?.positions?.summary ?? null;
   const selectedWalletMode = selectedWallet?.mode ?? props.selected?.bot.mode ?? null;
   const walletName = selectedWallet?.name ?? "-";
   const selectedUsedMargin = Math.max(0, props.selectedData?.usedMargin ?? 0);
@@ -154,6 +166,37 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
           ? props.formatAmountWithUnit(selectedWallet.liveAllocationValue ?? 0)
           : "-"
       : "-";
+  const walletCapitalSourceLabel = (() => {
+    switch (capitalSummary?.capitalSource) {
+      case "PAPER_RESET_CHECKPOINT":
+        return props.text.capitalSourcePaperReset;
+      case "LIVE_EXCHANGE_BALANCE":
+        return props.text.capitalSourceLiveExchange;
+      case "PAPER_INITIAL_BALANCE":
+      default:
+        return props.text.capitalSourcePaperInitial;
+    }
+  })();
+  const walletCapitalHint = (() => {
+    if (selectedWalletMode === "PAPER") {
+      return capitalSummary?.capitalSource === "PAPER_RESET_CHECKPOINT"
+        ? props.text.capitalHintPaperReset
+        : props.text.capitalHintPaperInitial;
+    }
+    if (selectedWallet?.liveAllocationMode === "PERCENT") return props.text.capitalHintLivePercent;
+    if (selectedWallet?.liveAllocationMode === "FIXED") return props.text.capitalHintLiveFixed;
+    return props.text.capitalHintLiveFull;
+  })();
+  const walletAccountBalance =
+    selectedWalletMode === "LIVE" &&
+    capitalSummary?.accountBalance != null &&
+    Number.isFinite(capitalSummary.accountBalance)
+      ? props.formatAmountWithUnit(capitalSummary.accountBalance)
+      : null;
+  const walletPaperResetAt =
+    selectedWalletMode === "PAPER" && capitalSummary?.paperResetAt
+      ? props.formatDateTime(capitalSummary.paperResetAt)
+      : null;
   const walletSplitKpis = [
     {
       key: "free",
@@ -452,6 +495,22 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
                   <span className="font-semibold">{walletAllocationLabel}</span>
                 </p>
               ) : null}
+              <p className="flex items-center justify-between gap-2" data-testid="wallet-kpi-capital-source-row">
+                <span className="opacity-65">{props.text.capitalSource}</span>
+                <span className="font-semibold">{walletCapitalSourceLabel}</span>
+              </p>
+              {walletAccountBalance ? (
+                <p className="flex items-center justify-between gap-2" data-testid="wallet-kpi-account-balance-row">
+                  <span className="opacity-65">{props.text.accountBalance}</span>
+                  <span className="font-semibold">{walletAccountBalance}</span>
+                </p>
+              ) : null}
+              {walletPaperResetAt ? (
+                <p className="flex items-center justify-between gap-2" data-testid="wallet-kpi-paper-reset-row">
+                  <span className="opacity-65">{props.text.paperResetAt}</span>
+                  <span className="font-semibold">{walletPaperResetAt}</span>
+                </p>
+              ) : null}
               <p className="flex items-center justify-between gap-2" data-testid="wallet-kpi-delta-row">
                 <span className="opacity-65">{props.text.deltaFromStart}</span>
                 <span className={`font-semibold ${selectedNet >= 0 ? "text-success" : "text-error"}`}>
@@ -463,6 +522,9 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
               <p className="flex items-center justify-between gap-2" data-testid="wallet-kpi-portfolio">
                 <span className="opacity-65">{props.text.portfolio}</span>
                 <span className="font-semibold">{walletTotal != null ? props.formatAmountWithUnit(walletTotal) : "-"}</span>
+              </p>
+              <p className="rounded-box border border-base-300/40 bg-base-100/45 px-2 py-1.5 text-[11px] opacity-75">
+                {walletCapitalHint}
               </p>
               <div className="grid grid-cols-2 gap-2 pt-1" data-testid="wallet-kpi-row">
                 {walletSplitKpis.map((kpi) => (

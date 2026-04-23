@@ -396,6 +396,16 @@ export type BotRuntimePositionsResponse = {
     feesPaid: number;
     referenceBalance?: number | null;
     freeCash?: number | null;
+    accountBalance?: number | null;
+    baseCurrency?: string | null;
+    capitalSource?:
+      | "PAPER_INITIAL_BALANCE"
+      | "PAPER_RESET_CHECKPOINT"
+      | "LIVE_EXCHANGE_BALANCE"
+      | null;
+    allocationMode?: "PERCENT" | "FIXED" | null;
+    allocationValue?: number | null;
+    paperResetAt?: string | null;
   };
   openOrders: BotRuntimeOpenOrderItem[];
   openItems: BotRuntimePositionItem[];

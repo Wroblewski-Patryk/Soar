@@ -16,6 +16,13 @@ const translations = vi.hoisted<Record<string, string>>(() => ({
   'dashboard.wallets.form.modePaper': 'PAPER',
   'dashboard.wallets.form.modeLive': 'LIVE',
   'dashboard.wallets.form.accountBalance': 'Saldo konta',
+  'dashboard.wallets.form.capitalAuthority': 'Zrodlo kapitalu',
+  'dashboard.wallets.form.capitalAuthorityPaper': 'Aktywny kapital paper bierze sie z bazowego stanu portfela oraz zrealizowanego PnL po ostatnim resecie.',
+  'dashboard.wallets.form.capitalAuthorityPaperReset': 'Aktywny kapital paper startuje teraz od ostatniego checkpointu resetu, ale historia transakcji pozostaje widoczna.',
+  'dashboard.wallets.form.capitalAuthorityLivePercent': 'Aktywny kapital LIVE sledzi uwierzytelnione saldo gieldy i stosuje alokacje procentowa.',
+  'dashboard.wallets.form.capitalAuthorityLiveFixed': 'Aktywny kapital LIVE sledzi uwierzytelnione saldo gieldy, ale pozostaje ograniczony limitem kwotowym.',
+  'dashboard.wallets.form.capitalAuthorityLiveFull': 'Aktywny kapital LIVE sledzi pelne uwierzytelnione saldo gieldy.',
+  'dashboard.wallets.form.capitalAuthorityRuntimeBalance': 'Podglad korzysta z uwierzytelnionego salda gieldy jako zrodla kapitalu LIVE.',
   'dashboard.wallets.form.paperInitialBalance': 'Kwota startowa paper',
   'dashboard.wallets.form.liveAllocationValue': 'Wartosc limitu LIVE',
   'dashboard.wallets.form.name': 'Nazwa',
@@ -157,6 +164,7 @@ describe('WalletCreateEditForm', () => {
       expect(screen.getByText('Saldo konta')).toBeInTheDocument();
     });
     expect(screen.getAllByText('100.00 USDT').length).toBeGreaterThan(0);
+    expect(screen.getByText('Aktywny kapital LIVE sledzi pelne uwierzytelnione saldo gieldy.')).toBeInTheDocument();
   });
 
   it('shows validation helper and blocks submit when name is missing', async () => {
@@ -466,6 +474,7 @@ describe('WalletCreateEditForm', () => {
     await waitFor(() => {
       expect(screen.getByText(/Ostatni reset:/)).toBeInTheDocument();
     });
+    expect(screen.getByText(/Aktywny kapital paper startuje teraz od ostatniego checkpointu resetu/)).toBeInTheDocument();
 
     confirmSpy.mockRestore();
   });

@@ -226,6 +226,17 @@ const createProps = (overrides?: Partial<RuntimeSidebarSectionProps>): RuntimeSi
       interval: "Interval",
       leverage: "Leverage",
       walletAllocation: "Allocation",
+      capitalSource: "Capital source",
+      capitalSourcePaperInitial: "Paper baseline",
+      capitalSourcePaperReset: "Paper reset checkpoint",
+      capitalSourceLiveExchange: "Authenticated exchange balance",
+      capitalHintPaperInitial: "Paper hint",
+      capitalHintPaperReset: "Paper reset hint",
+      capitalHintLivePercent: "Live percent hint",
+      capitalHintLiveFixed: "Live fixed hint",
+      capitalHintLiveFull: "Live full hint",
+      accountBalance: "Account balance",
+      paperResetAt: "Paper reset",
       heartbeat: "Heartbeat",
       openPositions: "Open positions",
       signalsDca: "Signals DCA",
@@ -288,5 +299,99 @@ describe("RuntimeSidebarSection strategy edge behavior", () => {
     expect(screen.getByText("Canonical Strategy")).toBeInTheDocument();
     expect(screen.queryByText("Legacy Market")).not.toBeInTheDocument();
     expect(screen.queryByText("Legacy Strategy")).not.toBeInTheDocument();
+  });
+
+  it("renders paper reset capital source context from runtime summary", () => {
+    const props = createProps({
+      selected: {
+        ...createProps().selected!,
+        positions: {
+          sessionId: "session-1",
+          total: 0,
+          openCount: 0,
+          closedCount: 0,
+          openOrdersCount: 0,
+          window: {
+            startedAt: "2026-04-20T10:00:00.000Z",
+            finishedAt: "2026-04-20T10:05:00.000Z",
+          },
+          summary: {
+            realizedPnl: 0,
+            unrealizedPnl: 0,
+            feesPaid: 0,
+            referenceBalance: 10000,
+            freeCash: 10000,
+            capitalSource: "PAPER_RESET_CHECKPOINT",
+            paperResetAt: "2026-04-20T12:00:00.000Z",
+            baseCurrency: "USDT",
+          },
+          openOrders: [],
+          openItems: [],
+          historyItems: [],
+        },
+      },
+    });
+
+    render(<RuntimeSidebarSection {...props} />);
+
+    expect(screen.getByText("Paper reset checkpoint")).toBeInTheDocument();
+    expect(screen.getByText("Paper reset hint")).toBeInTheDocument();
+    expect(screen.getByText("2026-04-20T12:00:00.000Z")).toBeInTheDocument();
+  });
+
+  it("renders live account balance and capital source context from runtime summary", () => {
+    const base = createProps();
+    const props = createProps({
+      selected: {
+        ...base.selected!,
+        bot: {
+          ...base.selected!.bot,
+          mode: "LIVE",
+          wallet: {
+            ...base.selected!.bot.wallet!,
+            mode: "LIVE",
+            liveAllocationMode: "PERCENT",
+            liveAllocationValue: 25,
+          },
+        },
+        positions: {
+          sessionId: "session-live-1",
+          total: 0,
+          openCount: 0,
+          closedCount: 0,
+          openOrdersCount: 0,
+          window: {
+            startedAt: "2026-04-20T10:00:00.000Z",
+            finishedAt: "2026-04-20T10:05:00.000Z",
+          },
+          summary: {
+            realizedPnl: 0,
+            unrealizedPnl: 0,
+            feesPaid: 0,
+            referenceBalance: 1000,
+            freeCash: 970,
+            accountBalance: 4000,
+            capitalSource: "LIVE_EXCHANGE_BALANCE",
+            allocationMode: "PERCENT",
+            allocationValue: 25,
+            baseCurrency: "USDT",
+          },
+          openOrders: [],
+          openItems: [],
+          historyItems: [],
+        },
+      },
+      selectedData: {
+        ...base.selectedData!,
+        equity: 1000,
+        free: 970,
+      },
+    });
+
+    render(<RuntimeSidebarSection {...props} />);
+
+    expect(screen.getByText("Authenticated exchange balance")).toBeInTheDocument();
+    expect(screen.getByTestId("wallet-kpi-account-balance-row")).toHaveTextContent(/4000[,\.]00 USDT/);
+    expect(screen.getByText("Live percent hint")).toBeInTheDocument();
   });
 });

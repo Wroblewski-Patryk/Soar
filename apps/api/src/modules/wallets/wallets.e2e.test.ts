@@ -1,7 +1,9 @@
 import request from 'supertest';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
+
+const originalApiKeyEncryptionKeys = process.env.API_KEY_ENCRYPTION_KEYS;
 
 const registerAndLogin = async (email: string) => {
   const agent = request.agent(app);
@@ -23,6 +25,10 @@ const resolveUserIdByEmail = async (email: string) => {
 };
 
 describe('Wallets balance preview contract', () => {
+  beforeAll(() => {
+    process.env.API_KEY_ENCRYPTION_KEYS = 'v1:test-wallet-preview-keyring';
+  });
+
   beforeEach(async () => {
     delete process.env.WALLET_PREVIEW_TEST_ACCOUNT_BALANCE;
     delete process.env.WALLET_PREVIEW_TEST_FREE_BALANCE;
@@ -47,6 +53,11 @@ describe('Wallets balance preview contract', () => {
     await prisma.apiKey.deleteMany();
     await prisma.log.deleteMany();
     await prisma.user.deleteMany();
+  });
+
+  afterAll(() => {
+    if (originalApiKeyEncryptionKeys === undefined) delete process.env.API_KEY_ENCRYPTION_KEYS;
+    else process.env.API_KEY_ENCRYPTION_KEYS = originalApiKeyEncryptionKeys;
   });
 
   it('rejects unauthenticated balance preview access', async () => {
@@ -140,6 +151,69 @@ describe('Wallets balance preview contract', () => {
       source: 'BINANCE',
     });
     expect(typeof previewRes.body.fetchedAt).toBe('string');
+  });
+
+  it('caps LIVE preview reference balance at FIXED allocation even after higher exchange deposit', async () => {
+    const agent = await registerAndLogin('wallet-preview-fixed@example.com');
+
+    const apiKeyRes = await agent.post('/dashboard/profile/apiKeys').send({
+      label: 'Preview fixed key',
+      exchange: 'BINANCE',
+      apiKey: 'PREVIEW_FIXED_KEY_123',
+      apiSecret: 'PREVIEW_FIXED_SECRET_123',
+      syncExternalPositions: true,
+      manageExternalPositions: true,
+    });
+    expect(apiKeyRes.status).toBe(201);
+
+    process.env.WALLET_PREVIEW_TEST_ACCOUNT_BALANCE = '2500';
+    process.env.WALLET_PREVIEW_TEST_FREE_BALANCE = '2400';
+
+    const previewRes = await agent.post('/dashboard/wallets/preview-balance').send({
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      apiKeyId: apiKeyRes.body.id,
+      liveAllocationMode: 'FIXED',
+      liveAllocationValue: 1000,
+    });
+
+    expect(previewRes.status).toBe(200);
+    expect(previewRes.body.accountBalance).toBe(2500);
+    expect(previewRes.body.referenceBalance).toBe(1000);
+    expect(previewRes.body.allocationApplied).toEqual({
+      mode: 'FIXED',
+      value: 1000,
+    });
+  });
+
+  it('uses full refreshed exchange balance in preview when no LIVE allocation is provided', async () => {
+    const agent = await registerAndLogin('wallet-preview-full@example.com');
+
+    const apiKeyRes = await agent.post('/dashboard/profile/apiKeys').send({
+      label: 'Preview full key',
+      exchange: 'BINANCE',
+      apiKey: 'PREVIEW_FULL_KEY_123',
+      apiSecret: 'PREVIEW_FULL_SECRET_123',
+      syncExternalPositions: true,
+      manageExternalPositions: true,
+    });
+    expect(apiKeyRes.status).toBe(201);
+
+    process.env.WALLET_PREVIEW_TEST_ACCOUNT_BALANCE = '1750';
+    process.env.WALLET_PREVIEW_TEST_FREE_BALANCE = '1700';
+
+    const previewRes = await agent.post('/dashboard/wallets/preview-balance').send({
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      apiKeyId: apiKeyRes.body.id,
+    });
+
+    expect(previewRes.status).toBe(200);
+    expect(previewRes.body.accountBalance).toBe(1750);
+    expect(previewRes.body.referenceBalance).toBe(1750);
+    expect(previewRes.body.allocationApplied).toBeNull();
   });
 
   it('returns 404 when selected API key does not belong to current user', async () => {
