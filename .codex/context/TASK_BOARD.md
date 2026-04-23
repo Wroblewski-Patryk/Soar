@@ -17,7 +17,7 @@ Last updated: 2026-04-23
 
 ## READY
 
-- [ ] `V1CONF-06 test(i18n-signal): reduce remaining I18nProvider act warnings and route-namespace noise in high-signal web suites`
+- [ ] `V1CONF-07 test(signal-cleanup): reduce remaining non-failing web warning noise outside the high-signal confidence pack`
 
 ## BACKLOG
 
@@ -37,6 +37,8 @@ Last updated: 2026-04-23
 
 ## DONE
 
+- [x] `V1CONF-06 test(i18n-signal): reduce remaining I18nProvider act warnings and route-namespace noise in high-signal web suites`
+  - 2026-04-23: Removed mount-time `I18nProvider` hydration drift by lazily initializing locale/timezone from storage, mapped `/dashboard/profile` to the `auth` namespace, aligned the affected auth/profile/reports/backtests/dashboard suites with their real route context, and stabilized `BotsManagement` against brittle render/fetch timing assumptions. Validation PASS: `pnpm --filter web exec vitest run src/i18n/I18nProvider.test.tsx src/i18n/namespaceRegistry.test.ts src/features/auth/components/LoginForm.test.tsx src/features/auth/components/RegisterForm.test.tsx src/features/profile/components/Security.test.tsx src/app/dashboard/dashboard.a11y.smoke.test.tsx src/features/reports/components/PerformanceReportsView.test.tsx src/features/backtest/components/BacktestsListView.test.tsx`, `pnpm --filter web exec vitest run src/features/bots/components/BotsManagement.test.tsx`, `pnpm --filter web run test -- --run`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
 - [x] `V1CONF-01 docs(sync): align canonical phase + queue with approved V1 and confidence-hardening mode`
   - 2026-04-23: Published `docs/planning/v1-confidence-hardening-plan-2026-04-23.md`, updated the canonical queue, and aligned project state with the fact that V1 is already approved and active engineering work is now a post-approval confidence-hardening wave.
 - [x] `V1CONF-02 test(web-route-context): continue removing false i18n/noise drift from high-signal dashboard table tests`

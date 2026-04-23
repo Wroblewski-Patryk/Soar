@@ -80,5 +80,10 @@ describe("namespaceRegistry", () => {
       "dashboardShell",
       "dashboardBots",
     ]);
+    expect(resolveNamespacesForRoute("/dashboard/profile")).toEqual([
+      "public",
+      "dashboardShell",
+      "auth",
+    ]);
   });
 });

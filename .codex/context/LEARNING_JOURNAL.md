@@ -22,6 +22,33 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-23 - Route-aware web tests must unmount before resetting history
+- Context: `V1CONF-06` confidence cleanup after route-sensitive auth, reports,
+  backtests, and dashboard suites still emitted false i18n and `act(...)`
+  noise despite otherwise passing assertions.
+- Symptom: suites logged missing-namespace warnings or `I18nProvider` act
+  warnings after each test, especially when cleanup logic pushed the browser
+  back to `/` in `afterEach`.
+- Root cause: tests were resetting `window.history` while provider trees were
+  still mounted, so route listeners and provider effects observed an extra
+  route change during teardown.
+- Guardrail: in route-aware web tests, call `cleanup()` before any
+  `window.history.pushState(...)` reset, and wait for the intended route/lang
+  state after render before asserting.
+- Preferred pattern:
+```text
+1) Render the suite under its real route context.
+2) Await the provider-owned locale/route hydration signal.
+3) In afterEach, unmount first with cleanup().
+4) Only then reset localStorage and window.history back to the neutral route.
+```
+- Avoid: resetting the route to `/` while `I18nProvider` or other route-aware
+  providers are still mounted.
+- Evidence:
+  - 2026-04-23 `V1CONF-06`: adding `cleanup()` before history reset in the
+    affected auth/reports/backtests suites removed false teardown noise while
+    the same tests kept passing under the real route context.
+
 ### 2026-04-23 - DataTable component tests must not hit profile preference hydration by default
 - Context: post-approval V1 confidence hardening after dashboard table suites still emitted `AggregateError` even after route-context cleanup.
 - Symptom: otherwise passing component tests for bots, wallets, and backtests logged jsdom XHR failures against `/dashboard/profile/basic`.

@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -38,9 +38,15 @@ vi.mock("@/features/wallets/services/wallets.service", () => ({
   listWallets: listWalletsMock,
 }));
 
-const renderWithI18n = (node: ReactNode) => {
+const renderWithI18n = async (node: ReactNode, route: string) => {
   window.localStorage.setItem("cryptosparrow-locale", "en");
-  return render(<I18nProvider>{node}</I18nProvider>);
+  window.history.pushState({}, "", route);
+  await act(async () => {
+    render(<I18nProvider>{node}</I18nProvider>);
+  });
+  await waitFor(() => {
+    expect(document.documentElement.lang).toBe("en");
+  });
 };
 
 const expectNamedInteractiveControls = () => {
@@ -56,8 +62,8 @@ describe("Dashboard core routes accessibility smoke", () => {
     window.localStorage.clear();
   });
 
-  it("keeps dashboard home route semantically navigable", () => {
-    renderWithI18n(<DashboardPage />);
+  it("keeps dashboard home route semantically navigable", async () => {
+    await renderWithI18n(<DashboardPage />, "/dashboard");
 
     expect(screen.getByRole("navigation", { name: "Breadcrumb navigation" })).toBeInTheDocument();
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
@@ -66,8 +72,8 @@ describe("Dashboard core routes accessibility smoke", () => {
     expectNamedInteractiveControls();
   });
 
-  it("keeps bots route create action accessible with contextual description", () => {
-    renderWithI18n(<BotsPage />);
+  it("keeps bots route create action accessible with contextual description", async () => {
+    await renderWithI18n(<BotsPage />, "/dashboard/bots");
 
     expect(screen.getByRole("navigation", { name: "Breadcrumb navigation" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1, name: "Bots" })).toBeInTheDocument();
@@ -83,7 +89,7 @@ describe("Dashboard core routes accessibility smoke", () => {
   it("keeps wallets list route a11y-safe in empty state", async () => {
     listWalletsMock.mockResolvedValue([]);
 
-    renderWithI18n(<WalletsListPage />);
+    await renderWithI18n(<WalletsListPage />, "/dashboard/wallets/list");
 
     await waitFor(() => {
       expect(listWalletsMock).toHaveBeenCalledTimes(1);

@@ -45,6 +45,17 @@ const normalizeTimeZonePreference = (value: string | null | undefined) => {
   return isValidTimeZone(normalized) ? normalized : AUTO_TIMEZONE;
 };
 
+const readStoredLocale = (): Locale => {
+  const raw = getLocalStorageItem(LOCALE_STORAGE_KEY);
+  return raw === "en" || raw === "pl" || raw === "pt" ? raw : DEFAULT_LOCALE;
+};
+
+const readStoredTimeZonePreference = (): string =>
+  normalizeTimeZonePreference(getLocalStorageItem(TIMEZONE_STORAGE_KEY));
+
+const resolveTimeZone = (timeZonePreference: string): string =>
+  timeZonePreference === AUTO_TIMEZONE ? detectSystemTimeZone() : timeZonePreference;
+
 const detectRoutePath = () => {
   if (typeof window === "undefined") return "/";
   return window.location.pathname || "/";
@@ -81,21 +92,12 @@ const reportMissingTranslation = (
 };
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(DEFAULT_LOCALE);
-  const [timeZonePreference, setTimeZonePreferenceState] = useState<string>(AUTO_TIMEZONE);
-  const [timeZone, setTimeZoneState] = useState<string>(detectSystemTimeZone());
+  const [locale, setLocaleState] = useState<Locale>(() => readStoredLocale());
+  const [timeZonePreference, setTimeZonePreferenceState] = useState<string>(() =>
+    readStoredTimeZonePreference()
+  );
   const [routePath, setRoutePath] = useState<string>(detectRoutePath);
-
-  useEffect(() => {
-    const raw = getLocalStorageItem(LOCALE_STORAGE_KEY);
-    if (raw === "en" || raw === "pl" || raw === "pt") {
-      setLocaleState(raw);
-    }
-
-    const storedTimeZone = normalizeTimeZonePreference(getLocalStorageItem(TIMEZONE_STORAGE_KEY));
-    setTimeZonePreferenceState(storedTimeZone);
-    setTimeZoneState(storedTimeZone === AUTO_TIMEZONE ? detectSystemTimeZone() : storedTimeZone);
-  }, []);
+  const timeZone = useMemo(() => resolveTimeZone(timeZonePreference), [timeZonePreference]);
 
   useEffect(() => {
     setLocalStorageItem(LOCALE_STORAGE_KEY, locale);
@@ -104,16 +106,16 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setLocalStorageItem(TIMEZONE_STORAGE_KEY, timeZonePreference);
-    setTimeZoneState(
-      timeZonePreference === AUTO_TIMEZONE ? detectSystemTimeZone() : timeZonePreference
-    );
   }, [timeZonePreference]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
 
     const syncRoutePath = () => {
-      setRoutePath(detectRoutePath());
+      const nextRoutePath = detectRoutePath();
+      setRoutePath((currentRoutePath) =>
+        currentRoutePath === nextRoutePath ? currentRoutePath : nextRoutePath
+      );
     };
 
     const originalPushState = window.history.pushState.bind(window.history);
@@ -131,7 +133,6 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
     window.addEventListener("popstate", syncRoutePath);
     window.addEventListener(ROUTE_CHANGE_EVENT, syncRoutePath);
-    syncRoutePath();
 
     return () => {
       window.history.pushState = originalPushState as History["pushState"];

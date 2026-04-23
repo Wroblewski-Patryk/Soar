@@ -168,6 +168,12 @@ Last updated: 2026-04-23
   noise is narrowed to `I18nProvider`-driven `act(...)` warnings and a small
   set of route-namespace warning cases, which are now isolated as the next
   confidence follow-up instead of mixed into auth/dashboard table noise.
+- 2026-04-23: `V1CONF-06` is closed; `I18nProvider` now lazily hydrates
+  locale/timezone from storage without mount-time state churn, the route
+  namespace registry explicitly maps `/dashboard/profile` to `auth`, the
+  affected auth/profile/reports/backtests/dashboard suites render under their
+  owned route context, and `BotsManagement` no longer depends on brittle
+  fetch-order or uncontrolled rerender timing.
 - 2026-04-22: `scripts/runV1ReleaseGate.mjs` now selects the latest same-day
   evidence artifact by full timestamp-bearing filename, preventing older
   same-day restore-drill failures from shadowing newer PASS artifacts.
@@ -307,21 +313,24 @@ Last updated: 2026-04-23
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: keep prod activation truth synchronized while the
-  approved production-activation packet synchronized after the final Gate 4
-  sign-off closure.
+- Main active objective: harden post-approval V1 confidence by keeping the web
+  validation signal clean, deterministic, and aligned with real route/runtime
+  ownership after the production activation packet was already approved.
 - Top blockers:
-  - no active blockers recorded.
+  - no product/runtime blockers recorded; remaining work is non-failing web
+    warning cleanup to improve signal quality.
 - Success criteria for this phase:
-  - keep queue/context/docs synchronized after each ops-evidence refresh,
-  - keep release-gate truth fail closed when fresh proof artifacts report
-    `FAIL`,
-  - preserve green deploy/build gates on `main`,
-  - avoid reintroducing false-green activation status through stale or
-    structurally incomplete evidence.
+  - preserve green `web test`, `web typecheck`, and `quality:guardrails`
+    on `main`,
+  - keep high-signal auth/dashboard confidence suites free of false route/i18n
+    noise,
+  - reduce residual non-failing warning output in the broader web pack without
+    loosening runtime or auth contracts,
+  - keep queue/context/docs synchronized after each confidence-hardening slice.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - none; activation evidence is approved for the current packet state.
+  - `V1CONF-07 test(signal-cleanup): reduce remaining non-failing web warning
+    noise outside the high-signal confidence pack`.
 
 ## Recent Progress
 - 2026-04-22: queued `SAFEV1-A` in

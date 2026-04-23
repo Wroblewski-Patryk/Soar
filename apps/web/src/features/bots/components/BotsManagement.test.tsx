@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import BotsManagement from "./BotsManagement";
@@ -64,6 +64,7 @@ vi.mock("../../wallets/services/wallets.service", () => ({
 }));
 
 afterEach(() => {
+  cleanup();
   vi.useRealTimers();
   vi.clearAllMocks();
   window.localStorage.clear();
@@ -83,14 +84,17 @@ afterEach(() => {
   window.history.pushState({}, "", "/");
 });
 
-const renderWithI18n = () => {
+const renderWithI18n = async () => {
   window.localStorage.setItem("cryptosparrow-locale", "pl");
   window.history.pushState({}, "", "/dashboard/bots");
-  return render(
+  render(
     <I18nProvider>
       <BotsManagement />
     </I18nProvider>
   );
+  await waitFor(() => {
+    expect(document.documentElement.lang).toBe("pl");
+  });
 };
 
 describe("BotsManagement", () => {
@@ -121,7 +125,7 @@ describe("BotsManagement", () => {
       },
     ]);
 
-    renderWithI18n();
+    await renderWithI18n();
     await waitFor(() => {
     expect(screen.getByLabelText(/wallet|bot wallet|portfel/i)).toHaveValue("w-paper");
       expect(screen.getByText("PAPER")).toBeInTheDocument();
@@ -157,7 +161,7 @@ describe("BotsManagement", () => {
       { id: "g-summary", name: "Summary Group", marketType: "FUTURES", baseCurrency: "USDT", whitelist: [], blacklist: [] },
     ]);
 
-    renderWithI18n();
+    await renderWithI18n();
     await waitFor(() => {
       expect(screen.getByLabelText("Strategia bota")).toHaveValue("s-one");
     });
@@ -204,7 +208,7 @@ describe("BotsManagement", () => {
       liveOptIn: false,
       maxOpenPositions: 1,
     });
-    renderWithI18n();
+    await renderWithI18n();
     await waitFor(() => {
       expect(listMarketUniversesMock).toHaveBeenCalled();
       expect(screen.getByLabelText("Strategia")).toHaveValue("s-live");
@@ -235,7 +239,7 @@ describe("BotsManagement", () => {
     listStrategiesMock.mockResolvedValue([]);
     listMarketUniversesMock.mockResolvedValue([]);
 
-    renderWithI18n();
+    await renderWithI18n();
 
     await waitFor(() => {
       expect(screen.getByText("Brak botow")).toBeInTheDocument();
@@ -272,7 +276,7 @@ describe("BotsManagement", () => {
       maxOpenPositions: 3,
     });
 
-    renderWithI18n();
+    await renderWithI18n();
     await waitFor(() => {
       expect(listMarketUniversesMock).toHaveBeenCalled();
       expect(screen.getByLabelText("Strategia")).toHaveValue("s1");
@@ -301,70 +305,50 @@ describe("BotsManagement", () => {
     listMarketUniversesMock.mockResolvedValue([
       { id: "g-filter", name: "Filter Group", marketType: "FUTURES", baseCurrency: "USDT", whitelist: [], blacklist: [] },
     ]);
-    listMock
-      .mockResolvedValueOnce([
-        {
-          id: "b-futures",
-          name: "Futures Bot",
-          mode: "PAPER",
-          paperStartBalance: 10000,
-          marketType: "FUTURES",
-          positionMode: "ONE_WAY",
-          isActive: false,
-          liveOptIn: false,
-          maxOpenPositions: 1,
-        },
-        {
-          id: "b-spot",
-          name: "Spot Bot",
-          mode: "PAPER",
-          paperStartBalance: 10000,
-          marketType: "SPOT",
-          positionMode: "ONE_WAY",
-          isActive: false,
-          liveOptIn: false,
-          maxOpenPositions: 1,
-        },
-      ])
-      .mockResolvedValueOnce([
-        {
-          id: "b-futures",
-          name: "Futures Bot",
-          mode: "PAPER",
-          paperStartBalance: 10000,
-          marketType: "FUTURES",
-          positionMode: "ONE_WAY",
-          isActive: false,
-          liveOptIn: false,
-          maxOpenPositions: 1,
-        },
-        {
-          id: "b-spot",
-          name: "Spot Bot",
-          mode: "PAPER",
-          paperStartBalance: 10000,
-          marketType: "SPOT",
-          positionMode: "ONE_WAY",
-          isActive: false,
-          liveOptIn: false,
-          maxOpenPositions: 1,
-        },
-      ])
-      .mockResolvedValueOnce([
-        {
-          id: "b-spot",
-          name: "Spot Bot",
-          mode: "PAPER",
-          paperStartBalance: 10000,
-          marketType: "SPOT",
-          positionMode: "ONE_WAY",
-          isActive: false,
-          liveOptIn: false,
-          maxOpenPositions: 1,
-        },
-      ]);
+    listMock.mockImplementation(async (marketType?: "SPOT" | "FUTURES") => {
+      if (marketType === "SPOT") {
+        return [
+          {
+            id: "b-spot",
+            name: "Spot Bot",
+            mode: "PAPER",
+            paperStartBalance: 10000,
+            marketType: "SPOT",
+            positionMode: "ONE_WAY",
+            isActive: false,
+            liveOptIn: false,
+            maxOpenPositions: 1,
+          },
+        ];
+      }
 
-    renderWithI18n();
+      return [
+        {
+          id: "b-futures",
+          name: "Futures Bot",
+          mode: "PAPER",
+          paperStartBalance: 10000,
+          marketType: "FUTURES",
+          positionMode: "ONE_WAY",
+          isActive: false,
+          liveOptIn: false,
+          maxOpenPositions: 1,
+        },
+        {
+          id: "b-spot",
+          name: "Spot Bot",
+          mode: "PAPER",
+          paperStartBalance: 10000,
+          marketType: "SPOT",
+          positionMode: "ONE_WAY",
+          isActive: false,
+          liveOptIn: false,
+          maxOpenPositions: 1,
+        },
+      ];
+    });
+
+    await renderWithI18n();
 
     await waitFor(() => {
       expect(screen.getByDisplayValue("Futures Bot")).toBeInTheDocument();
@@ -401,10 +385,10 @@ describe("BotsManagement", () => {
       },
     ]);
     deleteMock.mockResolvedValue(undefined);
-    renderWithI18n();
+    await renderWithI18n();
 
     await waitFor(() => {
-      expect(screen.getByDisplayValue("Live Bot")).toBeInTheDocument();
+      expect(screen.getAllByRole("button", { name: "Usun" })).toHaveLength(1);
     });
 
     fireEvent.click(screen.getByRole("button", { name: "Usun" }));
@@ -671,7 +655,7 @@ describe("BotsManagement", () => {
       ],
     });
 
-    renderWithI18n();
+    await renderWithI18n();
     await waitFor(() => {
       expect(screen.getByDisplayValue("Monitor Bot")).toBeInTheDocument();
     });
@@ -859,7 +843,7 @@ describe("BotsManagement", () => {
       };
     });
 
-    renderWithI18n();
+    await renderWithI18n();
 
     await waitFor(() => {
       expect(screen.getByDisplayValue("Stale Bot")).toBeInTheDocument();
@@ -1031,7 +1015,7 @@ describe("BotsManagement", () => {
       items: [],
     });
 
-    renderWithI18n();
+    await renderWithI18n();
     await waitFor(() => {
       expect(screen.getByDisplayValue("Refresh Bot")).toBeInTheDocument();
     });
@@ -1255,7 +1239,7 @@ describe("BotsManagement", () => {
       items: [],
     });
 
-    renderWithI18n();
+    await renderWithI18n();
     await waitFor(() => {
       expect(screen.getByDisplayValue("SSE Bot")).toBeInTheDocument();
     });

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { I18nProvider } from "../../../i18n/I18nProvider";
@@ -10,15 +10,22 @@ vi.mock("../services/security.service", () => ({
 }));
 
 describe("SecurityPanel", () => {
-  const renderPanel = () =>
-    render(
-      <I18nProvider>
-        <SecurityPanel />
-      </I18nProvider>
-    );
+  const renderPanel = async () => {
+    window.history.pushState({}, "", "/dashboard/profile");
+    await act(async () => {
+      render(
+        <I18nProvider>
+          <SecurityPanel />
+        </I18nProvider>
+      );
+    });
+    await waitFor(() => {
+      expect(document.documentElement.lang).toBe("en");
+    });
+  };
 
-  it("hides passwords by default and toggles visibility per field", () => {
-    renderPanel();
+  it("hides passwords by default and toggles visibility per field", async () => {
+    await renderPanel();
 
     const currentPasswordInput = screen.getByLabelText("Current password");
     const newPasswordInput = screen.getByLabelText("New password");
@@ -57,4 +64,3 @@ describe("SecurityPanel", () => {
     expect(deletePasswordInput).toHaveAttribute("type", "password");
   });
 });
-

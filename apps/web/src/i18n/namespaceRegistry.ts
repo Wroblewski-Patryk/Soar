@@ -133,6 +133,7 @@ export const ROUTE_NAMESPACE_MAP: Array<{ routePrefix: string; namespaces: I18nN
   { routePrefix: "/dashboard/strategies", namespaces: ["dashboardShell", "dashboardStrategies"] },
   { routePrefix: "/dashboard/wallets", namespaces: ["dashboardShell", "dashboardWallets"] },
   { routePrefix: "/dashboard/reports", namespaces: ["dashboardShell", "dashboardReports"] },
+  { routePrefix: "/dashboard/profile", namespaces: ["dashboardShell", "auth"] },
   { routePrefix: "/dashboard/bots", namespaces: ["dashboardShell", "dashboardBots"] },
   { routePrefix: "/dashboard", namespaces: ["dashboardShell", "dashboardHome", "dashboardBots"] },
   { routePrefix: "/", namespaces: ["public"] },

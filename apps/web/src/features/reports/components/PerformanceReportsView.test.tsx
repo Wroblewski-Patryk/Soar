@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import PerformanceReportsView from "./PerformanceReportsView";
@@ -19,17 +19,23 @@ vi.mock("../services/reports.service", () => ({
 
 describe("PerformanceReportsView", () => {
   afterEach(() => {
+    cleanup();
     window.localStorage.removeItem("cryptosparrow-locale");
     window.history.pushState({}, "", "/");
   });
 
-  const renderWithI18n = () => {
+  const renderWithI18n = async () => {
     window.history.pushState({}, "", "/dashboard/reports");
-    return render(
-      <I18nProvider>
-        <PerformanceReportsView />
-      </I18nProvider>
-    );
+    await act(async () => {
+      render(
+        <I18nProvider>
+          <PerformanceReportsView />
+        </I18nProvider>
+      );
+    });
+    await waitFor(() => {
+      expect(document.documentElement.lang).toBe(window.localStorage.getItem("cryptosparrow-locale") ?? "en");
+    });
   };
 
   it("renders empty state when there are no completed runs", async () => {
@@ -41,7 +47,7 @@ describe("PerformanceReportsView", () => {
       rows: [],
     });
 
-    renderWithI18n();
+    await renderWithI18n();
 
     await waitFor(() => {
       expect(screen.getByText("No performance reports yet")).toBeInTheDocument();
@@ -114,7 +120,7 @@ describe("PerformanceReportsView", () => {
       ],
     });
 
-    renderWithI18n();
+    await renderWithI18n();
 
     await waitFor(() => {
       expect(screen.getByText("Performance reports loaded")).toBeInTheDocument();
@@ -138,7 +144,7 @@ describe("PerformanceReportsView", () => {
       rows: [],
     });
 
-    renderWithI18n();
+    await renderWithI18n();
 
     await waitFor(() => {
       expect(screen.getByText("Sem relatorios de performance")).toBeInTheDocument();
