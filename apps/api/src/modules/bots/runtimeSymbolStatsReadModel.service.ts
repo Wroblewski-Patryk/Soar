@@ -4,6 +4,11 @@ import {
   buildSignalIndicatorSummary,
   SignalConditionLine,
 } from './runtimeSignalConditionLines.service';
+import {
+  resolveRuntimeMarketTruthState,
+  RuntimeMarketTruthState,
+  RuntimeSignalContextSource,
+} from './runtimeMarketTruthState.service';
 
 type RuntimeSymbolStatRow = {
   id: string;
@@ -43,12 +48,6 @@ type RuntimeSymbolSignal = {
     { conditionLines: SignalConditionLine[] | null; indicatorSummary: string | null }
   >;
 };
-
-export type RuntimeSignalContextSource =
-  | 'latest_signal'
-  | 'latest_decision'
-  | 'configured_fallback'
-  | 'unresolved';
 
 type RuntimeStrategyProjection = {
   name: string;
@@ -139,6 +138,11 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
       direction: effectiveSignalDirection,
       closes: signalCloses,
     });
+    const runtimeMarketState: RuntimeMarketTruthState = resolveRuntimeMarketTruthState({
+      openPositionCount: openCount ?? stat?.openPositionCount ?? 0,
+      signalContextSource,
+      signalDirection: effectiveSignalDirection,
+    });
     const useComputedSignalValues =
       effectiveSignalDirection != null &&
       signalCloses.length > 0 &&
@@ -182,6 +186,7 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
       lastSignalStrategyId: latestSignal?.strategyId ?? null,
       lastSignalStrategyName: signalStrategy?.name ?? null,
       lastSignalContextSource: signalContextSource,
+      runtimeMarketState,
       configuredStrategyId: fallbackStrategyId,
       configuredStrategyName: configuredStrategy?.name ?? null,
       lastSignalConditionSummary: signalConditionSummary,

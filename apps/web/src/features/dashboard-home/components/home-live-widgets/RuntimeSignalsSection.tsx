@@ -23,7 +23,14 @@ type RuntimeSignalsSectionProps = {
   contextSourceValueLatestDecision: string;
   contextSourceValueConfiguredFallback: string;
   contextSourceValueUnresolved: string;
+  statusLabel: string;
+  marketStatePositionOpen: string;
+  marketStateSignalActive: string;
+  marketStateEvaluatedNoTrade: string;
+  marketStateConfiguredOnly: string;
+  marketStateUnresolved: string;
   strategyContextLabel: string;
+  runtimeDecisionPendingLabel: string;
   renderSymbolLabel?: (symbol: string) => ReactNode;
 };
 
@@ -65,12 +72,25 @@ const scopeLabelClass = (scope: "LONG" | "SHORT") =>
 
 export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps) {
   const sortedSignalSymbols = useMemo(() => {
-    return [...props.signalSymbols].sort((a, b) => {
-      const aHasSignal = a.lastSignalDirection === "LONG" || a.lastSignalDirection === "SHORT";
-      const bHasSignal = b.lastSignalDirection === "LONG" || b.lastSignalDirection === "SHORT";
+    const stateRank = (state: string | null | undefined) => {
+      if (state === "POSITION_OPEN") return 0;
+      if (state === "SIGNAL_ACTIVE") return 1;
+      if (state === "EVALUATED_NO_TRADE") return 2;
+      if (state === "CONFIGURED_ONLY") return 3;
+      return 4;
+    };
 
-      if (aHasSignal !== bHasSignal) {
-        return aHasSignal ? -1 : 1;
+    return [...props.signalSymbols].sort((a, b) => {
+      const byState = stateRank(a.runtimeMarketState) - stateRank(b.runtimeMarketState);
+      if (byState !== 0) {
+        return byState;
+      }
+
+      const aTs = Date.parse(a.lastSignalDecisionAt ?? a.lastSignalAt ?? "");
+      const bTs = Date.parse(b.lastSignalDecisionAt ?? b.lastSignalAt ?? "");
+      if (Number.isFinite(aTs) || Number.isFinite(bTs)) {
+        const byTs = (Number.isFinite(bTs) ? bTs : 0) - (Number.isFinite(aTs) ? aTs : 0);
+        if (byTs !== 0) return byTs;
       }
 
       const symbolCompare = a.symbol.localeCompare(b.symbol, undefined, {
@@ -125,10 +145,26 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
                 : signal.lastSignalContextSource === "configured_fallback"
                   ? props.contextSourceValueConfiguredFallback
                   : props.contextSourceValueUnresolved;
+            const statusLabel =
+              signal.runtimeMarketState === "POSITION_OPEN"
+                ? props.marketStatePositionOpen
+                : signal.runtimeMarketState === "SIGNAL_ACTIVE"
+                  ? props.marketStateSignalActive
+                  : signal.runtimeMarketState === "EVALUATED_NO_TRADE"
+                    ? props.marketStateEvaluatedNoTrade
+                    : signal.runtimeMarketState === "CONFIGURED_ONLY"
+                      ? props.marketStateConfiguredOnly
+                      : props.marketStateUnresolved;
             const configuredStrategyName =
               signal.lastSignalContextSource === "latest_signal"
                 ? null
                 : signal.configuredStrategyName ?? null;
+            const runtimeDetail =
+              signal.lastSignalMessage?.trim() ||
+              signal.lastSignalReason?.trim() ||
+              (signal.lastSignalContextSource === "configured_fallback"
+                ? props.runtimeDecisionPendingLabel
+                : null);
 
             return (
               <article
@@ -141,12 +177,20 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
                       {props.renderSymbolLabel ? props.renderSymbolLabel(signal.symbol) : signal.symbol}
                     </p>
                   </div>
+                  <p className="mt-1 text-[10px] opacity-65">
+                    {props.statusLabel}: <span className="font-semibold">{statusLabel}</span>
+                  </p>
                   <p className="mt-1 text-[10px] opacity-65" data-testid={`signal-source-${signal.symbol}`}>
                     {props.contextSourceLabel}: <span className="font-semibold">{sourceLabel}</span>
                   </p>
                   {configuredStrategyName ? (
                     <p className="mt-1 text-[10px] opacity-65" data-testid={`signal-strategy-${signal.symbol}`}>
                       {props.strategyContextLabel}: <span className="font-semibold">{configuredStrategyName}</span>
+                    </p>
+                  ) : null}
+                  {runtimeDetail ? (
+                    <p className="mt-1 text-[10px] opacity-65" data-testid={`signal-detail-${signal.symbol}`}>
+                      {runtimeDetail}
                     </p>
                   ) : null}
                   <div className="mt-2.5 grid grid-cols-2 gap-2.5 text-[11px] leading-4">

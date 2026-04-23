@@ -211,18 +211,10 @@ export default function HomeLiveWidgets() {
   const signalCardsPerView = resolveSignalCardsPerView(
     viewportWidth > 0 ? viewportWidth : SIGNAL_CARDS_DESKTOP_MIN_WIDTH
   );
-  const signalSymbols = useMemo(
-    () =>
-      (selectedData?.symbols ?? []).filter(
-        (item) =>
-          item.lastSignalContextSource === "latest_signal" ||
-          item.lastSignalContextSource === "latest_decision"
-      ),
-    [selectedData?.symbols]
-  );
+  const signalSymbols = useMemo(() => selectedData?.symbols ?? [], [selectedData?.symbols]);
   const signalHeaderStats = useMemo(() => {
     const actionableSignalsCount = signalSymbols.reduce((count, item) => {
-      return item.lastSignalDirection === "LONG" || item.lastSignalDirection === "SHORT" ? count + 1 : count;
+      return item.runtimeMarketState === "SIGNAL_ACTIVE" ? count + 1 : count;
     }, 0);
 
     return {
@@ -805,7 +797,14 @@ export default function HomeLiveWidgets() {
                 contextSourceValueLatestDecision={t("dashboard.home.runtime.signalContextSourceLatestDecision")}
                 contextSourceValueConfiguredFallback={t("dashboard.home.runtime.signalContextSourceConfiguredFallback")}
                 contextSourceValueUnresolved={t("dashboard.home.runtime.signalContextSourceUnresolved")}
+                statusLabel={t("dashboard.home.runtime.status")}
+                marketStatePositionOpen={t("dashboard.home.runtime.marketStatePositionOpen")}
+                marketStateSignalActive={t("dashboard.home.runtime.marketStateSignalActive")}
+                marketStateEvaluatedNoTrade={t("dashboard.home.runtime.marketStateEvaluatedNoTrade")}
+                marketStateConfiguredOnly={t("dashboard.home.runtime.marketStateConfiguredOnly")}
+                marketStateUnresolved={t("dashboard.home.runtime.marketStateUnresolved")}
                 strategyContextLabel={t("dashboard.home.runtime.strategyContextTitle")}
+                runtimeDecisionPendingLabel={t("dashboard.home.runtime.runtimeDecisionPending")}
                 renderSymbolLabel={renderRuntimeSymbol}
               />
               {runtimeDataIsStale ? (

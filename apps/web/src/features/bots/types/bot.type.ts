@@ -228,6 +228,13 @@ export type BotRuntimeSymbolStat = {
     | "configured_fallback"
     | "unresolved"
     | null;
+  runtimeMarketState?:
+    | "POSITION_OPEN"
+    | "SIGNAL_ACTIVE"
+    | "EVALUATED_NO_TRADE"
+    | "CONFIGURED_ONLY"
+    | "UNRESOLVED"
+    | null;
   configuredStrategyId?: string | null;
   configuredStrategyName?: string | null;
   lastSignalConditionSummary?: string | null;

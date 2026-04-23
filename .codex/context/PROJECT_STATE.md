@@ -118,6 +118,11 @@ Last updated: 2026-04-23
   prod restore/rollback proof artifacts instead of accepting same-day files on
   freshness alone, preventing false-green release readiness when a proof file
   exists but reports `FAIL`.
+- 2026-04-23: selected-bot dashboard runtime markets are now rendered against
+  one explicit truth state contract. Runtime symbol stats distinguish
+  `CONFIGURED_ONLY`, `EVALUATED_NO_TRADE`, `SIGNAL_ACTIVE`, `POSITION_OPEN`,
+  and `UNRESOLVED`, so configured strategy fallback context remains visible as
+  operator context without pretending accepted runtime signal truth.
 - 2026-04-22: prod restore-drill proof now passes from a real Coolify terminal
   execution in the production postgres container
   (`x11cfnz1dd9x0yzccftqzcoe`), and the final non-dry-run prod release gate now

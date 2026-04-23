@@ -194,6 +194,8 @@ Operational queue for one-task execution runs.
 - [x] `none`
 
 ## DONE
+- [x] `V1SURF-01 fix(api+web-runtime-surface): make selected-bot dashboard markets section truth-based instead of mixing fallback context with accepted signal feed`
+  - 2026-04-23: Added explicit runtime market truth states to runtime symbol stats and rewired the selected-bot dashboard section to show all attached markets with factual runtime state instead of letting `configured_fallback` masquerade as signal truth. Validation PASS: `pnpm --filter api exec vitest run src/modules/bots/runtimeSymbolStatsReadModel.service.test.ts`, `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx src/features/bots/services/botsMonitoringAggregate.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter web run typecheck`.
 - [x] `V1FACT-11 docs(sync): close wave, sync canonical queue/context, and freeze future-agent activation rules`
   - 2026-04-22: Published [docs/operations/v1-production-activation-closure-2026-04-22.md](/C:/Personal/Projekty/Aplikacje/Soar/docs/operations/v1-production-activation-closure-2026-04-22.md), synchronized queue/context to the final `CLOSED_WITH_OPERATOR_BLOCKERS` state, and froze future-agent rules so nobody can treat stage success, public prod smoke, or fresh docs alone as final production activation.
 - [x] `V1FACT-10 qa(prod-pack): build final prod activation evidence pack and sign-off summary`

@@ -4,6 +4,7 @@ import { listRuntimeSessionsWithSummary } from './runtimeSessionsRead.service';
 import { listBotRuntimeSessionPositions } from './runtimeSessionPositionsRead.service';
 import { listBotRuntimeSessionSymbolStats } from './runtimeSessionSymbolStatsRead.service';
 import { listBotRuntimeSessionTrades } from './runtimeSessionTradesRead.service';
+import { resolveRuntimeMarketTruthState } from './runtimeMarketTruthState.service';
 
 type RuntimeSessionListItem = Awaited<ReturnType<typeof listRuntimeSessionsWithSummary>>[number];
 type RuntimeSymbolStatsResponse = NonNullable<Awaited<ReturnType<typeof listBotRuntimeSessionSymbolStats>>>;
@@ -255,6 +256,13 @@ export const getBotRuntimeMonitoringAggregate = async (
           ...item,
           id: `aggregate-${item.symbol}`,
           sessionId: 'AGGREGATE',
+          runtimeMarketState:
+            item.runtimeMarketState ??
+            resolveRuntimeMarketTruthState({
+              openPositionCount: item.openPositionCount,
+              signalContextSource: item.lastSignalContextSource ?? 'unresolved',
+              signalDirection: item.lastSignalDirection ?? null,
+            }),
         });
         continue;
       }
@@ -318,6 +326,10 @@ export const getBotRuntimeMonitoringAggregate = async (
           shouldUseCurrentSignalContext
             ? item.lastSignalContextSource
             : existing.lastSignalContextSource,
+        runtimeMarketState:
+          shouldUseCurrentSignalContext
+            ? item.runtimeMarketState
+            : existing.runtimeMarketState,
         configuredStrategyId:
           shouldUseCurrentSignalContext
             ? item.configuredStrategyId
@@ -348,6 +360,14 @@ export const getBotRuntimeMonitoringAggregate = async (
             ? item.snapshotAt
             : existing.snapshotAt,
       });
+      const merged = symbolMap.get(item.symbol);
+      if (merged) {
+        merged.runtimeMarketState = resolveRuntimeMarketTruthState({
+          openPositionCount: merged.openPositionCount,
+          signalContextSource: merged.lastSignalContextSource ?? 'unresolved',
+          signalDirection: merged.lastSignalDirection ?? null,
+        });
+      }
     }
   }
 

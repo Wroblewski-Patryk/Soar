@@ -60,6 +60,7 @@ describe('runtimeSymbolStatsReadModel.service', () => {
       expect.objectContaining({
         symbol: 'BTCUSDT',
         lastSignalContextSource: 'configured_fallback',
+        runtimeMarketState: 'CONFIGURED_ONLY',
         lastSignalStrategyId: null,
         lastSignalStrategyName: null,
         configuredStrategyId: 'strategy-fallback',
@@ -110,6 +111,7 @@ describe('runtimeSymbolStatsReadModel.service', () => {
         symbol: 'BTCUSDT',
         lastSignalDirection: null,
         lastSignalContextSource: 'latest_decision',
+        runtimeMarketState: 'EVALUATED_NO_TRADE',
         lastSignalMessage: 'No trade decision after strategy merge',
         lastSignalReason: 'No votes',
         lastSignalStrategyId: null,

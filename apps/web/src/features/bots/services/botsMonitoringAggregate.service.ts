@@ -37,6 +37,29 @@ type LoadBotMonitoringAggregateArgs = {
   perSessionLimit?: number;
 };
 
+const resolveRuntimeMarketState = (item: {
+  openPositionCount?: number | null;
+  lastSignalContextSource?:
+    | "latest_signal"
+    | "latest_decision"
+    | "configured_fallback"
+    | "unresolved"
+    | null;
+  lastSignalDirection?: "LONG" | "SHORT" | "EXIT" | null;
+}) => {
+  if ((item.openPositionCount ?? 0) > 0) return "POSITION_OPEN" as const;
+  if (item.lastSignalDirection === "LONG" || item.lastSignalDirection === "SHORT") {
+    return "SIGNAL_ACTIVE" as const;
+  }
+  if (item.lastSignalContextSource === "latest_decision") {
+    return "EVALUATED_NO_TRADE" as const;
+  }
+  if (item.lastSignalContextSource === "configured_fallback") {
+    return "CONFIGURED_ONLY" as const;
+  }
+  return "UNRESOLVED" as const;
+};
+
 const uniqueById = <T extends { id: string }>(items: T[]) => {
   const map = new Map<string, T>();
   for (const item of items) {
@@ -91,6 +114,13 @@ export const aggregateBotMonitoringPayload = (
           ...item,
           id: `aggregate-${item.symbol}`,
           sessionId: "AGGREGATE",
+          runtimeMarketState:
+            item.runtimeMarketState ??
+            resolveRuntimeMarketState({
+              openPositionCount: item.openPositionCount,
+              lastSignalContextSource: item.lastSignalContextSource,
+              lastSignalDirection: item.lastSignalDirection,
+            }),
         });
         continue;
       }
@@ -138,6 +168,17 @@ export const aggregateBotMonitoringPayload = (
           toTimestamp(item.snapshotAt) >= toTimestamp(existing.snapshotAt)
             ? item.snapshotAt
             : existing.snapshotAt,
+        runtimeMarketState: resolveRuntimeMarketState({
+          openPositionCount: existing.openPositionCount + item.openPositionCount,
+          lastSignalContextSource:
+            currentSignalTs >= existingSignalTs
+              ? item.lastSignalContextSource
+              : existing.lastSignalContextSource,
+          lastSignalDirection:
+            currentSignalTs >= existingSignalTs
+              ? item.lastSignalDirection
+              : existing.lastSignalDirection,
+        }),
       });
     }
   }

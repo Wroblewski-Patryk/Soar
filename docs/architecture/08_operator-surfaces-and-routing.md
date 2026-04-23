@@ -38,6 +38,12 @@ Wallets come before bot creation because wallet context owns mode and capital se
 - selected-bot data must remain strict and fail-closed
 - empty runtime tables are valid states, not a reason to hide surfaces
 - dashboard and bot preview must stay parity-compatible for the same bot where the product contract says they should
+- configured strategy fallback context must never masquerade as accepted runtime signal truth
+- runtime market surfaces must distinguish at least:
+  - configured-only scope
+  - evaluated-with-no-trade outcome
+  - accepted runtime signal
+  - open-position state
 
 ## Canonical View States
 All operator surfaces must use explicit:
