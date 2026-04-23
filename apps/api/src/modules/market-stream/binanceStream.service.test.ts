@@ -1,5 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
-import { BinanceMarketStreamWorker, normalizeBinanceStreamEvent, WebSocketLike } from './binanceStream.service';
+import {
+  BinanceMarketStreamWorker,
+  normalizeBinanceStreamEvent,
+  resolveBinanceStreamUrl,
+  WebSocketLike,
+} from './binanceStream.service';
 import { StreamLogger } from './binanceStream.types';
 
 const createLogger = (): StreamLogger => ({
@@ -99,6 +104,14 @@ describe('normalizeBinanceStreamEvent', () => {
 });
 
 describe('BinanceMarketStreamWorker', () => {
+  it('uses futures websocket by default for FUTURES market type', () => {
+    expect(resolveBinanceStreamUrl('FUTURES')).toBe('wss://fstream.binance.com/ws');
+  });
+
+  it('uses spot websocket by default for SPOT market type', () => {
+    expect(resolveBinanceStreamUrl('SPOT')).toBe('wss://stream.binance.com:9443/ws');
+  });
+
   it('subscribes to ticker and kline streams on socket open', () => {
     const socket = createMockSocket();
     const socketFactory = vi.fn().mockReturnValue(socket);
@@ -124,6 +137,24 @@ describe('BinanceMarketStreamWorker', () => {
     };
     expect(payload.method).toBe('SUBSCRIBE');
     expect(payload.params).toEqual(['btcusdt@ticker', 'btcusdt@kline_1m']);
+  });
+
+  it('defaults to futures websocket when streamUrl override is not provided', () => {
+    const socket = createMockSocket();
+    const socketFactory = vi.fn().mockReturnValue(socket);
+    const worker = new BinanceMarketStreamWorker(
+      {
+        symbols: ['BTCUSDT'],
+        candleIntervals: ['5m'],
+        marketType: 'FUTURES',
+      },
+      socketFactory,
+      createLogger()
+    );
+
+    worker.start();
+
+    expect(socketFactory).toHaveBeenCalledWith('wss://fstream.binance.com/ws');
   });
 
   it('logs normalized ticker event from socket message', () => {

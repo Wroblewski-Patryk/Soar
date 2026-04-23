@@ -37,6 +37,9 @@ Last updated: 2026-04-23
 
 ## DONE
 
+- [x] `V1RT-02 fix(api-market-stream-endpoint): select Binance websocket default by runtime market type`
+  - 2026-04-23: Authenticated production verification after the `V1RT-01` deploy showed that only symbols listed on both Binance spot and futures were receiving runtime decisions, while futures-only symbols stayed at `configured_fallback`. Root cause: `BinanceMarketStreamWorker` defaulted to the spot websocket even for `FUTURES` runtime. The worker now defaults `FUTURES` to `wss://fstream.binance.com/ws` and `SPOT` to `wss://stream.binance.com:9443/ws`, with focused regression coverage in `src/modules/market-stream/binanceStream.service.test.ts`.
+
 - [x] `V1RT-01 fix(api-market-stream): align market-stream worker subscriptions with canonical runtime symbol scope`
   - 2026-04-23: Found and fixed a production-relevant contract drift where `marketStream.worker` built symbol subscriptions from ad-hoc whitelist logic instead of the canonical symbol-group resolver already used by runtime signal topology. Active bot stream subscriptions now resolve the same symbol scope as runtime and operator reads, including catalog-backed/filter-backed market universes. Validation PASS: `pnpm --filter api exec vitest run src/workers/marketStreamSubscriptions.service.test.ts src/modules/bots/runtimeSymbolStatsReadModel.service.test.ts`, `pnpm --filter api run typecheck`.
 

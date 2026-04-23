@@ -11,6 +11,7 @@ Operational queue for one-task execution runs.
 ## NEXT
 - [ ] (none)
 ## PIPELINE
+- [x] `V1RT-02 fix(api-market-stream-endpoint): select Binance websocket default by runtime market type`
 - [x] `V1ALIGN-A planning queued (runtime worker-ownership alignment plus symbol-scope, interval-truth, freshness-authority, and diagnostics closure)`
 - [x] `V1ALIGN-01 docs(architecture-worker-ownership): freeze split workers as deployed target and inline as local/degraded-only contract`
 - [x] `V1ALIGN-02 fix(api-runtime-symbol-scope): keep empty resolved symbol scope fail-closed instead of widening to wildcard routing`

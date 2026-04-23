@@ -200,6 +200,13 @@ type BinanceMarketStreamConfig = {
   onEvent?: (event: MarketStreamEvent) => void | Promise<void>;
 };
 
+export const resolveBinanceStreamUrl = (marketType: TradeMarketType = 'FUTURES') => {
+  if (marketType === 'SPOT') {
+    return 'wss://stream.binance.com:9443/ws';
+  }
+  return 'wss://fstream.binance.com/ws';
+};
+
 export class BinanceMarketStreamWorker {
   private socket: WebSocketLike | null = null;
   private readonly streamUrl: string;
@@ -210,8 +217,8 @@ export class BinanceMarketStreamWorker {
     private readonly webSocketFactory: WebSocketFactory = defaultWebSocketFactory,
     private readonly logger: StreamLogger = defaultLogger
   ) {
-    this.streamUrl = config.streamUrl ?? 'wss://stream.binance.com:9443/ws';
     this.marketType = config.marketType ?? 'FUTURES';
+    this.streamUrl = config.streamUrl ?? resolveBinanceStreamUrl(this.marketType);
   }
 
   start() {

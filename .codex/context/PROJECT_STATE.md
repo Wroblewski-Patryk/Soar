@@ -129,6 +129,14 @@ Last updated: 2026-04-23
   already used by runtime topology. The worker now reuses the canonical
   resolver, so catalog-backed and filter-backed market universes subscribe the
   same symbols that runtime and operator surfaces consider in-scope.
+- 2026-04-23: post-deploy production verification exposed a third concrete
+  runtime-stream drift for `BINANCE/FUTURES`: the market-stream worker still
+  defaulted to Binance's spot websocket URL when no explicit
+  `BINANCE_STREAM_URL` override was configured. This caused futures-only
+  symbols to remain at `configured_fallback` while symbols listed on both spot
+  and futures received real runtime decisions. The canonical default now
+  follows runtime market type (`FUTURES` -> `wss://fstream.binance.com/ws`,
+  `SPOT` -> `wss://stream.binance.com:9443/ws`).
 - 2026-04-22: prod restore-drill proof now passes from a real Coolify terminal
   execution in the production postgres container
   (`x11cfnz1dd9x0yzccftqzcoe`), and the final non-dry-run prod release gate now

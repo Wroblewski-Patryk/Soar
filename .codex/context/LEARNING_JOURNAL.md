@@ -22,6 +22,37 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-23 - Binance runtime stream defaults must follow market type, not assume spot
+- Context: production verification after `V1RT-01` fixed canonical symbol
+  subscriptions and `V1SURF-01` made the dashboard market surface truthful.
+- Symptom: a `BINANCE/FUTURES` paper bot still produced runtime decisions only
+  for symbols listed on both spot and futures (`1000CATUSDT`,
+  `1000CHEEMSUSDT`, `1000SATSUSDT`, `DOGEUSDT`), while futures-only symbols
+  remained stuck at `configured_fallback`.
+- Root cause: `BinanceMarketStreamWorker` defaulted to the spot websocket URL
+  (`wss://stream.binance.com:9443/ws`) whenever `BINANCE_STREAM_URL` was not
+  explicitly configured, even for `FUTURES` runtime.
+- Guardrail: exchange stream defaults must derive from explicit market-type
+  truth. `FUTURES` must default to the futures websocket
+  (`wss://fstream.binance.com/ws`), and `SPOT` must default to the spot
+  websocket.
+- Preferred pattern:
+```text
+1) When a runtime stream supports more than one market type, centralize the default endpoint resolver.
+2) Make market type part of the resolver input, not an env-only convention.
+3) Lock the resolver and worker default behavior with focused regression tests.
+4) Verify suspicious production symbol gaps against public exchange metadata before changing strategy logic.
+```
+- Avoid: using one implicit Binance websocket default for both spot and
+  futures or relying on operators to remember an override env for canonical
+  production behavior.
+- Evidence:
+  - 2026-04-23 production investigation showed only symbols present in both
+    Binance spot and futures received `latest_decision`, while futures-only
+    symbols stayed at `configured_fallback`; public `exchangeInfo` parity check
+    matched that split exactly until the default endpoint contract was fixed in
+    `apps/api/src/modules/market-stream/binanceStream.service.ts`.
+
 ### 2026-04-23 - Route-aware web tests must unmount before resetting history
 - Context: `V1CONF-06` confidence cleanup after route-sensitive auth, reports,
   backtests, and dashboard suites still emitted false i18n and `act(...)`

@@ -156,6 +156,14 @@ Shared worker env:
 - `DATABASE_URL=<coolify-postgres-url>`
 - `REDIS_URL=<coolify-redis-url>`
 - runtime/queue keys required by current worker contract (`WORKER_*`, selected `RUNTIME_*`)
+- `BINANCE_STREAM_URL` only when intentionally overriding the canonical default
+  market-type endpoint
+
+Binance stream endpoint contract:
+- `SPOT` workers default to `wss://stream.binance.com:9443/ws`
+- `FUTURES` workers default to `wss://fstream.binance.com/ws`
+- do not point `FUTURES` runtime to the spot websocket unless an explicit
+  degraded/test scenario is documented
 
 Operational rule:
 - a deployment is not considered topology-complete unless the split worker
