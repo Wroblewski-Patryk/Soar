@@ -20,6 +20,7 @@ vi.mock("@/features/strategies/api/strategies.api", () => ({
 
 const renderWithI18n = () => {
   window.localStorage.setItem("cryptosparrow-locale", "pl");
+  window.history.pushState({}, '', '/dashboard/bots');
   return render(
     <I18nProvider>
       <BotsListTable />

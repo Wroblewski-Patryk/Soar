@@ -8,10 +8,10 @@ Last updated: 2026-04-23
   live execution support, operator dashboards, and a path toward assistant or
   agent-driven workflows
 - Commercial model: SaaS-style subscription product with staged entitlements
-- Current phase: production activation planning after full `SCALE`, `TRUTH-A`,
-  `XLIFE-A`, `REVIEW-B`, `REVIEW-C`, `RELEASE-HARDEN-A`, `SAFEV1-A`, and
-  `REVIEW-D` closure, with `V1FACT-A` newly queued to convert hardened runtime
-  state into fresh, operator-reviewable release evidence
+- Current phase: V1 is formally approved for production activation from the
+  current evidence set, and active engineering focus has shifted to
+  post-approval confidence hardening, signal-quality cleanup, and regression
+  locks around the highest-risk runtime/auth/release paths
 
 ## Product Decisions (Confirmed)
 - 2026-04-21: `docs/architecture/` is the canonical source of truth for how
@@ -151,6 +151,14 @@ Last updated: 2026-04-23
 - 2026-04-23: the dashboard wallets list page test now renders under its real
   route context, removing avoidable i18n missing-namespace noise caused by
   rendering the dashboard view under `/`.
+- 2026-04-23: active work has moved out of production-activation planning and
+  into a new post-approval `V1CONF-A` confidence-hardening wave, focused on
+  keeping repository truth aligned with the approved candidate and reducing
+  false-negative noise in high-signal validation packs.
+- 2026-04-23: high-signal dashboard table tests now render under their real
+  dashboard route context (`/dashboard/bots`, `/dashboard/wallets`,
+  `/dashboard/backtests`) so route-owned i18n namespaces are loaded
+  intentionally instead of falling back through the default `/` route.
 - 2026-04-22: `scripts/runV1ReleaseGate.mjs` now selects the latest same-day
   evidence artifact by full timestamp-bearing filename, preventing older
   same-day restore-drill failures from shadowing newer PASS artifacts.

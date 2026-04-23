@@ -19,6 +19,7 @@ describe("BacktestsRunsTable", () => {
 
   it("uses canonical preset actions for preview and delete", async () => {
     window.localStorage.setItem("cryptosparrow-locale", "pl");
+    window.history.pushState({}, '', '/dashboard/backtests');
     render(
       <I18nProvider>
         <BacktestsRunsTable

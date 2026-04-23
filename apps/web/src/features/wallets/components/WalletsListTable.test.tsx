@@ -50,6 +50,7 @@ describe('WalletsListTable', () => {
 
   const renderTable = (onDeleted = vi.fn(), onCloned = vi.fn(), rows: Wallet[] = walletRows) => {
     window.localStorage.setItem('cryptosparrow-locale', 'en');
+    window.history.pushState({}, '', '/dashboard/wallets');
     render(
       <I18nProvider>
         <WalletsListTable
