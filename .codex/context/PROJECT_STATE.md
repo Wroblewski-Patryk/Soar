@@ -132,6 +132,9 @@ Last updated: 2026-04-23
 - 2026-04-23: the shared web API interceptor now has direct regression coverage
   for protected-route `/auth/me` behavior, explicitly locking `401` redirect,
   non-redirect `429`, and repeated-backend-failure fallback semantics.
+- 2026-04-23: the auth-focused web regression pack now runs under real auth
+  route namespace context, removing a false-positive i18n warning and keeping
+  the post-incident auth test signal clean.
 - 2026-04-22: `scripts/runV1ReleaseGate.mjs` now selects the latest same-day
   evidence artifact by full timestamp-bearing filename, preventing older
   same-day restore-drill failures from shadowing newer PASS artifacts.

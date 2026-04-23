@@ -1,9 +1,13 @@
 import { renderHook } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { I18nProvider } from './I18nProvider';
 import { useOptionalI18n } from './useOptionalI18n';
 
 describe('useOptionalI18n', () => {
+  beforeEach(() => {
+    window.history.pushState({}, '', '/auth/login');
+  });
+
   it('keeps fallback translator stable across rerenders without provider', () => {
     const { result, rerender } = renderHook(() => useOptionalI18n());
     const firstTranslator = result.current.t;

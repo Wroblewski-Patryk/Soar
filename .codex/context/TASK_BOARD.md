@@ -37,6 +37,8 @@ Last updated: 2026-04-23
 
 ## DONE
 
+- [x] `AUTH-I18N-TEST-SIGNAL cleanup provider-backed auth translation test context`
+  - 2026-04-23: Aligned `useOptionalI18n.test.tsx` with the real `/auth/login` route context so the auth regression pack no longer emits a false missing-namespace warning for auth translation keys. Validation PASS: `pnpm --filter web exec vitest run src/i18n/useOptionalI18n.test.tsx src/lib/api.test.ts src/context/AuthContext.test.tsx`.
 - [x] `AUTH-INTERCEPTOR-REGRESSION lock protected-route auth-me redirect semantics`
   - 2026-04-23: Added a focused shared-API interceptor regression test so protected-route `/auth/me` behavior is now explicit for `401` session-expired redirect, `429` non-redirect handling, and repeated backend-failure fallback to `/`. Validation PASS: `pnpm --filter web exec vitest run src/lib/api.test.ts src/context/AuthContext.test.tsx src/i18n/useOptionalI18n.test.tsx`.
 - [x] `AUTH-BOOTSTRAP-REGRESSION lock single auth bootstrap fetch across rerenders`
