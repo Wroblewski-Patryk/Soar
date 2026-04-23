@@ -211,29 +211,48 @@ export default function HomeLiveWidgets() {
   const signalCardsPerView = resolveSignalCardsPerView(
     viewportWidth > 0 ? viewportWidth : SIGNAL_CARDS_DESKTOP_MIN_WIDTH
   );
-  const signalSymbols = useMemo(() => selectedData?.symbols ?? [], [selectedData?.symbols]);
+  const signalSymbols = useMemo(
+    () =>
+      (selectedData?.symbols ?? []).filter(
+        (item) =>
+          item.lastSignalContextSource === "latest_signal" ||
+          item.lastSignalContextSource === "latest_decision"
+      ),
+    [selectedData?.symbols]
+  );
   const signalHeaderStats = useMemo(() => {
     const actionableSignalsCount = signalSymbols.reduce((count, item) => {
       return item.lastSignalDirection === "LONG" || item.lastSignalDirection === "SHORT" ? count + 1 : count;
     }, 0);
 
+    return {
+      marketsCount: signalSymbols.length,
+      actionableSignalsCount,
+    };
+  }, [signalSymbols]);
+  const runtimeBaseCurrencyCode = useMemo(() => {
+    const summaryBaseCurrency =
+      typeof selected?.positions?.summary?.baseCurrency === "string" && selected.positions.summary.baseCurrency.length > 0
+        ? selected.positions.summary.baseCurrency
+        : null;
+    if (summaryBaseCurrency) return summaryBaseCurrency;
+
+    const walletBaseCurrency =
+      typeof selected?.bot.wallet?.baseCurrency === "string" && selected.bot.wallet.baseCurrency.length > 0
+        ? selected.bot.wallet.baseCurrency
+        : null;
+    if (walletBaseCurrency) return walletBaseCurrency;
+
     const quoteCounts = new Map<string, number>();
-    for (const item of signalSymbols) {
+    for (const item of selectedData?.symbols ?? []) {
       const quote = resolveQuoteCurrency(item.symbol);
       if (!quote) continue;
       quoteCounts.set(quote, (quoteCounts.get(quote) ?? 0) + 1);
     }
 
-    const baseCurrencyCode =
-      [...quoteCounts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]?.[0] ?? null;
-
-    return {
-      marketsCount: signalSymbols.length,
-      actionableSignalsCount,
-      baseCurrencyCode,
-    };
-  }, [signalSymbols]);
-  const runtimeAmountUnit = signalHeaderStats.baseCurrencyCode?.toUpperCase() ?? null;
+    return [...quoteCounts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]?.[0] ?? null;
+  }, [selected?.bot.wallet?.baseCurrency, selected?.positions?.summary?.baseCurrency, selectedData?.symbols]);
+  const runtimeAmountUnit = runtimeBaseCurrencyCode?.toUpperCase() ?? null;
   const formatRuntimeAmount = useCallback(
     (value: number) =>
       formatNumber(value, {
@@ -255,9 +274,9 @@ export default function HomeLiveWidgets() {
     for (const item of signalSymbols) symbols.add(normalizeSymbol(item.symbol));
     for (const item of selectedData?.open ?? []) symbols.add(normalizeSymbol(item.symbol));
     for (const item of selectedData?.trades ?? []) symbols.add(normalizeSymbol(item.symbol));
-    if (signalHeaderStats.baseCurrencyCode) symbols.add(signalHeaderStats.baseCurrencyCode);
+    if (runtimeBaseCurrencyCode) symbols.add(runtimeBaseCurrencyCode);
     return [...symbols];
-  }, [selectedData?.open, selectedData?.trades, signalHeaderStats.baseCurrencyCode, signalSymbols]);
+  }, [runtimeBaseCurrencyCode, selectedData?.open, selectedData?.trades, signalSymbols]);
   const { iconMap: runtimeIconMap, loading: runtimeIconsLoading, error: runtimeIconsError } =
     useCoinIconLookup(runtimeIconSymbols);
   const resolveRuntimeIcon = useCallback(

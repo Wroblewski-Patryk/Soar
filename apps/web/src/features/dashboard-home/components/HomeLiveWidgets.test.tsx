@@ -1420,8 +1420,9 @@ describe("HomeLiveWidgets", () => {
         unrealizedPnl: 0,
         lastPrice: null,
         lastSignalAt: null,
-        lastSignalDirection: "NEUTRAL",
-        lastSignalDecisionAt: null,
+        lastSignalDirection: null,
+        lastSignalDecisionAt: "2026-03-31T10:05:00.000Z",
+        lastSignalContextSource: "latest_decision",
         lastTradeAt: null,
         snapshotAt: "2026-03-31T10:05:00.000Z",
         createdAt: "2026-03-31T10:05:00.000Z",
@@ -1604,8 +1605,8 @@ describe("HomeLiveWidgets", () => {
               unrealizedPnl: 0,
               lastPrice: 1.01,
               lastSignalAt: "2026-03-31T10:05:00.000Z",
-              lastSignalDirection: "LONG",
-              lastSignalDecisionAt: "2026-03-31T10:05:00.000Z",
+              lastSignalDirection: null,
+              lastSignalDecisionAt: null,
               lastSignalContextSource: "configured_fallback",
               configuredStrategyName: "Scope A Strategy",
               lastSignalConditionLines: [
@@ -1752,10 +1753,9 @@ describe("HomeLiveWidgets", () => {
       expect(selectorLabel).not.toBeNull();
       selector = within(selectorLabel as HTMLLabelElement).getByRole("combobox") as HTMLSelectElement;
       expect(selector.value).toBe("bot-scope-a");
-      expect(screen.getAllByText("ADAUSDT").length).toBeGreaterThan(0);
-      expect(screen.getByText("A_CTX_FAST")).toBeInTheDocument();
-      expect(screen.getByTestId("signal-source-ADAUSDT")).toHaveTextContent(/Fallback konfiguracji/i);
-      expect(screen.getByTestId("signal-strategy-ADAUSDT")).toHaveTextContent(/Scope A Strategy/i);
+      expect(screen.queryByTestId("signal-source-ADAUSDT")).not.toBeInTheDocument();
+      expect(screen.queryByText("A_CTX_FAST")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("signal-strategy-ADAUSDT")).not.toBeInTheDocument();
       expect(screen.queryAllByText("SOLUSDT")).toHaveLength(0);
       expect(screen.queryByRole("button", { name: /Wstecz|Prev/i })).toBeNull();
       expect(screen.queryByRole("button", { name: /Dalej|Next/i })).toBeNull();
@@ -1765,7 +1765,7 @@ describe("HomeLiveWidgets", () => {
 
     await waitFor(() => {
       expect(selector!.value).toBe("bot-scope-b");
-      expect(screen.queryAllByText("ADAUSDT")).toHaveLength(0);
+      expect(screen.queryByTestId("signal-source-ADAUSDT")).not.toBeInTheDocument();
       expect(screen.queryByText("A_CTX_FAST")).not.toBeInTheDocument();
       expect(screen.getAllByText("BTCUSDT").length).toBeGreaterThan(0);
       expect(screen.getAllByText("ETHUSDT").length).toBeGreaterThan(0);
@@ -1774,8 +1774,8 @@ describe("HomeLiveWidgets", () => {
       expect(screen.getByText("B_CTX_1")).toBeInTheDocument();
       expect(screen.getByTestId("signal-source-BTCUSDT")).toHaveTextContent(/Ostatni sygnal/i);
       expect(screen.queryByTestId("signal-source-ADAUSDT")).not.toBeInTheDocument();
-      expect(screen.getByRole("button", { name: /Wstecz|Prev/i })).toBeInTheDocument();
-      expect(screen.getByRole("button", { name: /Dalej|Next/i })).toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: /Wstecz|Prev/i })).toBeNull();
+      expect(screen.queryByRole("button", { name: /Dalej|Next/i })).toBeNull();
     });
   });
 
