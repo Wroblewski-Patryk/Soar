@@ -10,9 +10,11 @@ Last updated: 2026-04-23
 - Commercial model: SaaS-style subscription product with staged entitlements
 - Current phase: V1 is formally approved for production activation from the
   current evidence set, and active engineering focus has shifted to
-  post-approval confidence hardening plus a new runtime signal-delivery
-  recovery wave after production investigation showed active bots with healthy
-  sessions but zero persisted runtime signals, positions, and trades
+  post-approval runtime-architecture-and-truth alignment: freeze one honest
+  worker-ownership contract (`split` as deployed target, `inline` as
+  local/degraded-only) and close the remaining runtime truth drift around
+  symbol scope, signal interval persistence, freshness authority, and explicit
+  operator diagnostics
 
 ## Product Decisions (Confirmed)
 - 2026-04-21: `docs/architecture/` is the canonical source of truth for how
@@ -218,6 +220,13 @@ Last updated: 2026-04-23
   surfaces explain whether active capital comes from paper baseline, paper
   reset checkpoint, or authenticated live exchange balance under percent,
   fixed, or full-balance allocation.
+- 2026-04-23: a fresh architecture-conformance review after `V1SIG-A` and
+  `V1CAP-A` surfaced the next explicit V1 closure wave `V1ALIGN-A`. The
+  repository now has one queued answer for worker ownership drift (`split` is
+  the deployed target; `inline` is local/degraded-only) plus four executor
+  slices for empty runtime symbol-scope fail-closed routing, truthful signal
+  interval persistence, per-active-session freshness authority, and explicit
+  no-route/runtime-input diagnostics.
 - 2026-04-22: `scripts/runV1ReleaseGate.mjs` now selects the latest same-day
   evidence artifact by full timestamp-bearing filename, preventing older
   same-day restore-drill failures from shadowing newer PASS artifacts.

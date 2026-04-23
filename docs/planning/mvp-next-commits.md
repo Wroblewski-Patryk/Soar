@@ -7,10 +7,15 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] (none)
+- [ ] `V1ALIGN-01 docs(architecture-worker-ownership): freeze split workers as deployed target and inline as local/degraded-only contract`
 ## NEXT
-- [ ] (none)
+- [ ] `V1ALIGN-02 fix(api-runtime-symbol-scope): keep empty resolved symbol scope fail-closed instead of widening to wildcard routing`
+- [ ] `V1ALIGN-03 fix(api-signal-interval-truth): persist truthful runtime signal interval/window metadata`
+- [ ] `V1ALIGN-04 fix(api-runtime-freshness-authority): scope freshness truth to active runtime sessions instead of global latest-signal presence`
+- [ ] `V1ALIGN-05 fix(api-runtime-diagnostics): make no-route and missing-runtime-input conditions explicit operator telemetry where architecture allows`
+- [ ] `V1ALIGN-06 qa(closure): run focused runtime-alignment closure pack and sync canonical docs/context`
 ## PIPELINE
+- [x] `V1ALIGN-A planning queued (runtime worker-ownership alignment plus symbol-scope, interval-truth, freshness-authority, and diagnostics closure)`
 - [x] `V1SIG-A planning queued (runtime signal delivery recovery, truthful operator diagnostics, and paper reset capital parity after production investigation)`
 - [x] `V1CAP-A planning queued (wallet capital authority recovery for PAPER reset checkpoints and LIVE post-deposit exchange balance changes)`
 - [x] `V1CAP-01 docs(capital-authority): freeze wallet capital rules for PAPER reset and LIVE post-deposit recovery`
@@ -18,7 +23,7 @@ Operational queue for one-task execution runs.
 - [x] `V1CAP-03 fix(wallet-runtime): align runtime capital snapshot and wallet/operator read-model behavior`
 - [x] `V1CAP-04 fix(wallet-ui): expose capital source/allocation/reset truth in wallet and runtime monitoring surfaces`
 - [x] `V1CAP-05 qa(wallet-closure): run focused wallet/runtime closure pack and sync docs/context`
-- [ ] `V1CONF-A planning queued (post-approval V1 confidence hardening and signal-quality closure)`
+- [x] `V1CONF-A planning queued (post-approval V1 confidence hardening and signal-quality closure)`
 - [x] `V1CONF-07 test(signal-cleanup): reduce remaining non-failing web warning noise outside the high-signal confidence pack`
 - [x] `V1CONF-06 test(i18n-signal): reduce remaining I18nProvider act warnings and route-namespace noise in high-signal web suites`
 - [x] `V1CONF-01 docs(sync): align canonical phase + queue with approved V1 and confidence-hardening mode`

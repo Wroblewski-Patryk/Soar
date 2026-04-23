@@ -17,11 +17,15 @@ Last updated: 2026-04-23
 
 ## READY
 
-- [ ] (none)
+- [ ] `V1ALIGN-01 docs(architecture-worker-ownership): freeze split workers as deployed target and inline as local/degraded-only contract`
 
 ## BACKLOG
 
-- [ ] (none)
+- [ ] `V1ALIGN-02 fix(api-runtime-symbol-scope): keep empty resolved symbol scope fail-closed instead of widening to wildcard routing`
+- [ ] `V1ALIGN-03 fix(api-signal-interval-truth): persist truthful runtime signal interval/window metadata`
+- [ ] `V1ALIGN-04 fix(api-runtime-freshness-authority): scope freshness truth to active runtime sessions instead of global latest-signal presence`
+- [ ] `V1ALIGN-05 fix(api-runtime-diagnostics): make no-route and missing-runtime-input conditions explicit operator telemetry where architecture allows`
+- [ ] `V1ALIGN-06 qa(closure): run focused runtime-alignment closure pack and sync canonical docs/context`
 
 ## IN_PROGRESS
 
@@ -36,6 +40,9 @@ Last updated: 2026-04-23
 - [ ] (none)
 
 ## DONE
+
+- [x] `V1ALIGN-A planning: runtime worker-ownership alignment plus symbol-scope, interval-truth, freshness-authority, and diagnostics closure`
+  - 2026-04-23: Published `docs/planning/v1-runtime-architecture-and-truth-alignment-2026-04-23.md` after a fresh architecture-conformance review. The planned wave freezes one target answer for the current worker-ownership drift (`split` as deployed target, `inline` as local/degraded-only), then queues executor-ready slices for empty-scope runtime routing, truthful signal interval persistence, per-active-session freshness authority, and explicit no-route/runtime-input diagnostics.
 
 - [x] `V1SIG-01 diagnose(prod-runtime-truth): reproduce and classify why active PAPER/LIVE bots stay at zero persisted runtime signals/positions/trades`
   - 2026-04-23: Closed the diagnosis slice by confirming through authenticated production investigation plus local code tracing that the active PAPER/LIVE bots are not failing at the paper/live execution adapter boundary. The canonical runtime evidence points instead to repeated decision-stage `No trade decision after strategy merge` / `No votes` outcomes, while the monitoring read model previously overstated configured fallback strategy context as if it were accepted signal truth.
