@@ -144,6 +144,10 @@ Last updated: 2026-04-23
 - 2026-04-23: `useRegisterForm` now has the same direct regression coverage as
   `useLoginForm` for request failure, success redirect, and missing
   session-confirmation behavior after auth bootstrap.
+- 2026-04-23: the shared auth navigation fallback helper now has direct
+  regression coverage for one delayed retry on stuck auth routes, no retry
+  after the browser already leaves the fallback prefix, and test-mode retry
+  suppression so hook tests stay deterministic.
 - 2026-04-22: `scripts/runV1ReleaseGate.mjs` now selects the latest same-day
   evidence artifact by full timestamp-bearing filename, preventing older
   same-day restore-drill failures from shadowing newer PASS artifacts.

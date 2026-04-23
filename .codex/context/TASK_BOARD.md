@@ -37,6 +37,8 @@ Last updated: 2026-04-23
 
 ## DONE
 
+- [x] `AUTH-NAVIGATION-FALLBACK-REGRESSION lock delayed auth-route retry semantics`
+  - 2026-04-23: Added a focused `navigateWithFallback()` regression pack so auth success navigation now explicitly proves one delayed retry on stuck auth routes, no retry after the browser already leaves the fallback route, and test-mode retry suppression for deterministic hook tests. Validation PASS: `pnpm --filter web exec vitest run src/lib/navigation.test.ts src/features/auth/hooks/useLoginForm.test.tsx src/features/auth/hooks/useRegisterForm.test.tsx src/context/AuthContext.test.tsx src/lib/api.test.ts src/i18n/useOptionalI18n.test.tsx`.
 - [x] `AUTH-REGISTER-HOOK-REGRESSION lock register request/session-confirmation outcomes`
   - 2026-04-23: Added a focused `useRegisterForm` regression pack so registration now proves request-failure handling, success redirect, and missing session-confirmation failure behavior symmetrically with the existing login-hook tests. Validation PASS: `pnpm --filter web exec vitest run src/features/auth/hooks/useRegisterForm.test.tsx src/features/auth/hooks/useLoginForm.test.tsx`.
 - [x] `AUTH-SESSION-UX-REGRESSION lock explicit expired-session and logout provider flows`
