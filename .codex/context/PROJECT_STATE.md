@@ -123,6 +123,12 @@ Last updated: 2026-04-23
   `CONFIGURED_ONLY`, `EVALUATED_NO_TRADE`, `SIGNAL_ACTIVE`, `POSITION_OPEN`,
   and `UNRESOLVED`, so configured strategy fallback context remains visible as
   operator context without pretending accepted runtime signal truth.
+- 2026-04-23: production runtime investigation uncovered a second concrete
+  drift: `marketStream.worker` was deriving symbol subscriptions from
+  whitelist-only universe logic instead of the canonical symbol-group resolver
+  already used by runtime topology. The worker now reuses the canonical
+  resolver, so catalog-backed and filter-backed market universes subscribe the
+  same symbols that runtime and operator surfaces consider in-scope.
 - 2026-04-22: prod restore-drill proof now passes from a real Coolify terminal
   execution in the production postgres container
   (`x11cfnz1dd9x0yzccftqzcoe`), and the final non-dry-run prod release gate now
