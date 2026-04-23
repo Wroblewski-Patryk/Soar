@@ -25,6 +25,7 @@ vi.mock('@/features/wallets/components/WalletsListTable', () => ({
 
 const renderWithI18n = () => {
   window.localStorage.setItem('cryptosparrow-locale', 'en');
+  window.history.pushState({}, '', '/dashboard/wallets/list');
   return render(
     <I18nProvider>
       <WalletsListPage />
@@ -75,4 +76,3 @@ describe('Wallets list page', () => {
     expect(screen.getByText('Add your first wallet to assign it to bots.')).toBeInTheDocument();
   });
 });
-

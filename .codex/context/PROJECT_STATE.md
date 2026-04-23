@@ -148,6 +148,9 @@ Last updated: 2026-04-23
   regression coverage for one delayed retry on stuck auth routes, no retry
   after the browser already leaves the fallback prefix, and test-mode retry
   suppression so hook tests stay deterministic.
+- 2026-04-23: the dashboard wallets list page test now renders under its real
+  route context, removing avoidable i18n missing-namespace noise caused by
+  rendering the dashboard view under `/`.
 - 2026-04-22: `scripts/runV1ReleaseGate.mjs` now selects the latest same-day
   evidence artifact by full timestamp-bearing filename, preventing older
   same-day restore-drill failures from shadowing newer PASS artifacts.

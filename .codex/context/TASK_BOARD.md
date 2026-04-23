@@ -37,6 +37,8 @@ Last updated: 2026-04-23
 
 ## DONE
 
+- [x] `WALLETS-PAGE-ROUTE-CONTEXT-TEST-SIGNAL cleanup dashboard wallets route drift`
+  - 2026-04-23: Aligned the dashboard wallets list page test with its real route context so i18n namespace loading matches runtime ownership instead of emitting avoidable `/`-route missing-key noise. Validation PASS: `pnpm --filter web exec vitest run src/app/dashboard/wallets/list/page.test.tsx`.
 - [x] `AUTH-NAVIGATION-FALLBACK-REGRESSION lock delayed auth-route retry semantics`
   - 2026-04-23: Added a focused `navigateWithFallback()` regression pack so auth success navigation now explicitly proves one delayed retry on stuck auth routes, no retry after the browser already leaves the fallback route, and test-mode retry suppression for deterministic hook tests. Validation PASS: `pnpm --filter web exec vitest run src/lib/navigation.test.ts src/features/auth/hooks/useLoginForm.test.tsx src/features/auth/hooks/useRegisterForm.test.tsx src/context/AuthContext.test.tsx src/lib/api.test.ts src/i18n/useOptionalI18n.test.tsx`.
 - [x] `AUTH-REGISTER-HOOK-REGRESSION lock register request/session-confirmation outcomes`
