@@ -135,6 +135,15 @@ Last updated: 2026-04-23
 - 2026-04-23: the auth-focused web regression pack now runs under real auth
   route namespace context, removing a false-positive i18n warning and keeping
   the post-incident auth test signal clean.
+- 2026-04-23: `AuthProvider` now has direct regression coverage for the
+  explicit `session=expired` hint path, including one-time warning behavior and
+  URL query cleanup after handling the expired-session notice.
+- 2026-04-23: `AuthProvider` logout now also has direct regression coverage for
+  posting `/auth/logout`, clearing local auth state, and redirecting back to
+  the login screen.
+- 2026-04-23: `useRegisterForm` now has the same direct regression coverage as
+  `useLoginForm` for request failure, success redirect, and missing
+  session-confirmation behavior after auth bootstrap.
 - 2026-04-22: `scripts/runV1ReleaseGate.mjs` now selects the latest same-day
   evidence artifact by full timestamp-bearing filename, preventing older
   same-day restore-drill failures from shadowing newer PASS artifacts.

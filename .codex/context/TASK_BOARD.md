@@ -37,6 +37,10 @@ Last updated: 2026-04-23
 
 ## DONE
 
+- [x] `AUTH-REGISTER-HOOK-REGRESSION lock register request/session-confirmation outcomes`
+  - 2026-04-23: Added a focused `useRegisterForm` regression pack so registration now proves request-failure handling, success redirect, and missing session-confirmation failure behavior symmetrically with the existing login-hook tests. Validation PASS: `pnpm --filter web exec vitest run src/features/auth/hooks/useRegisterForm.test.tsx src/features/auth/hooks/useLoginForm.test.tsx`.
+- [x] `AUTH-SESSION-UX-REGRESSION lock explicit expired-session and logout provider flows`
+  - 2026-04-23: Added focused `AuthProvider` regression tests so the explicit `session=expired` hint now proves one-time warning behavior plus URL query cleanup after unauthorized refetch handling, and logout now proves `/auth/logout` post, local auth-state clearing, and redirect back to login. Validation PASS: `pnpm --filter web exec vitest run src/context/AuthContext.test.tsx src/lib/api.test.ts src/i18n/useOptionalI18n.test.tsx`.
 - [x] `AUTH-I18N-TEST-SIGNAL cleanup provider-backed auth translation test context`
   - 2026-04-23: Aligned `useOptionalI18n.test.tsx` with the real `/auth/login` route context so the auth regression pack no longer emits a false missing-namespace warning for auth translation keys. Validation PASS: `pnpm --filter web exec vitest run src/i18n/useOptionalI18n.test.tsx src/lib/api.test.ts src/context/AuthContext.test.tsx`.
 - [x] `AUTH-INTERCEPTOR-REGRESSION lock protected-route auth-me redirect semantics`
