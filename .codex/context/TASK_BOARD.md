@@ -17,11 +17,10 @@ Last updated: 2026-04-23
 
 ## READY
 
-- [ ] `V1ALIGN-01 docs(architecture-worker-ownership): freeze split workers as deployed target and inline as local/degraded-only contract`
+- [ ] `V1ALIGN-02 fix(api-runtime-symbol-scope): keep empty resolved symbol scope fail-closed instead of widening to wildcard routing`
 
 ## BACKLOG
 
-- [ ] `V1ALIGN-02 fix(api-runtime-symbol-scope): keep empty resolved symbol scope fail-closed instead of widening to wildcard routing`
 - [ ] `V1ALIGN-03 fix(api-signal-interval-truth): persist truthful runtime signal interval/window metadata`
 - [ ] `V1ALIGN-04 fix(api-runtime-freshness-authority): scope freshness truth to active runtime sessions instead of global latest-signal presence`
 - [ ] `V1ALIGN-05 fix(api-runtime-diagnostics): make no-route and missing-runtime-input conditions explicit operator telemetry where architecture allows`
@@ -41,6 +40,8 @@ Last updated: 2026-04-23
 
 ## DONE
 
+- [x] `V1ALIGN-01 docs(architecture-worker-ownership): freeze split workers as deployed target and inline as local/degraded-only contract`
+  - 2026-04-23: Updated canonical architecture and deployment docs so `split` is now the explicit deployed worker-ownership target for `STAGE` and `PROD`, while `inline` is documented as local/test-only or explicit degraded fallback. Synced the canonical queue so implementation can now proceed against one honest architecture contract instead of the prior half-state.
 - [x] `V1ALIGN-A planning: runtime worker-ownership alignment plus symbol-scope, interval-truth, freshness-authority, and diagnostics closure`
   - 2026-04-23: Published `docs/planning/v1-runtime-architecture-and-truth-alignment-2026-04-23.md` after a fresh architecture-conformance review. The planned wave freezes one target answer for the current worker-ownership drift (`split` as deployed target, `inline` as local/degraded-only), then queues executor-ready slices for empty-scope runtime routing, truthful signal interval persistence, per-active-session freshness authority, and explicit no-route/runtime-input diagnostics.
 

@@ -227,6 +227,11 @@ Last updated: 2026-04-23
   slices for empty runtime symbol-scope fail-closed routing, truthful signal
   interval persistence, per-active-session freshness authority, and explicit
   no-route/runtime-input diagnostics.
+- 2026-04-23: `V1ALIGN-01` is closed. Canonical architecture, local
+  development, and Coolify deployment docs now all say the same thing: split
+  workers are the healthy deployed topology for `STAGE` and `PROD`, while
+  inline worker ownership is reserved for local/test use or explicit
+  degraded-mode fallback and must not be presented as normal deployment parity.
 - 2026-04-22: `scripts/runV1ReleaseGate.mjs` now selects the latest same-day
   evidence artifact by full timestamp-bearing filename, preventing older
   same-day restore-drill failures from shadowing newer PASS artifacts.

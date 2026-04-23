@@ -7,15 +7,15 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `V1ALIGN-01 docs(architecture-worker-ownership): freeze split workers as deployed target and inline as local/degraded-only contract`
-## NEXT
 - [ ] `V1ALIGN-02 fix(api-runtime-symbol-scope): keep empty resolved symbol scope fail-closed instead of widening to wildcard routing`
+## NEXT
 - [ ] `V1ALIGN-03 fix(api-signal-interval-truth): persist truthful runtime signal interval/window metadata`
 - [ ] `V1ALIGN-04 fix(api-runtime-freshness-authority): scope freshness truth to active runtime sessions instead of global latest-signal presence`
 - [ ] `V1ALIGN-05 fix(api-runtime-diagnostics): make no-route and missing-runtime-input conditions explicit operator telemetry where architecture allows`
 - [ ] `V1ALIGN-06 qa(closure): run focused runtime-alignment closure pack and sync canonical docs/context`
 ## PIPELINE
 - [x] `V1ALIGN-A planning queued (runtime worker-ownership alignment plus symbol-scope, interval-truth, freshness-authority, and diagnostics closure)`
+- [x] `V1ALIGN-01 docs(architecture-worker-ownership): freeze split workers as deployed target and inline as local/degraded-only contract`
 - [x] `V1SIG-A planning queued (runtime signal delivery recovery, truthful operator diagnostics, and paper reset capital parity after production investigation)`
 - [x] `V1CAP-A planning queued (wallet capital authority recovery for PAPER reset checkpoints and LIVE post-deposit exchange balance changes)`
 - [x] `V1CAP-01 docs(capital-authority): freeze wallet capital rules for PAPER reset and LIVE post-deposit recovery`

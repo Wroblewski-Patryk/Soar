@@ -24,6 +24,12 @@ The canonical dashboard stream endpoint is:
 
 Each service has explicit ownership. Worker responsibilities must not be implicit in web or API code.
 
+Worker ownership contract:
+- deployed target (`STAGE`, `PROD`) = split workers
+- allowed local/test fallback = inline ownership where explicitly chosen
+- emergency degraded deploy fallback may be temporarily inline, but it must be
+  treated as degraded and operator-visible rather than as canonical parity
+
 ## Health and Readiness
 Canonical health surfaces:
 - `/health`
@@ -45,13 +51,30 @@ Canonical environment split:
 - workers remain separate from API for runtime clarity and production safety
 - persistent stores are `postgres` and `redis`
 
+The canonical deployed worker split is:
+- `workers-market-data`
+- `workers-market-stream`
+- `workers-backtest`
+- `workers-execution`
+
+`inline` worker ownership is not the normal deployed contract. If used
+temporarily outside local development, it must stay explicit in health,
+readiness, and operator runbooks.
+
 ## Deployment Safety Rules
 - keep environment ownership explicit
 - keep rollback path explicit
 - keep health checks and smoke checks versioned with operations docs
+- keep worker mode truth explicit: split is healthy deployed baseline, inline
+  is local/degraded-only
 
 ## Canonical Runtime Freshness Rule
 Operator surfaces may degrade when stream or polling freshness is lost, but they must expose that degradation explicitly.
+
+The same explicitness rule applies to worker ownership drift:
+- split worker ownership may be reported as healthy deployed topology
+- inline ownership in deployed environments must surface as degraded or
+  exception-mode truth, never as silent equivalence
 
 ## Out of Scope
 - CI workflow specifics

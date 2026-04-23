@@ -28,6 +28,12 @@ Minimum local endpoints:
 
 ## A) Local DEV Startup (watch mode)
 
+Local worker-ownership note:
+- `inline` ownership is allowed in local development and targeted tests
+- separate workers remain the preferred local path whenever you need runtime
+  behavior close to `STAGE` / `PROD`
+- do not treat successful local inline runs as proof of deployed topology
+
 ### 1) Install dependencies (repo root)
 ```bash
 pnpm install
@@ -66,6 +72,12 @@ pnpm run workers/dev
 ## B) Local PROD-like Startup (build + start)
 
 Use this mode to validate behavior close to STAGE/PROD process ownership.
+
+Canonical expectation:
+- local PROD-like should mirror split worker ownership as closely as the local
+  machine allows
+- if you intentionally run inline for debugging, treat that as a local-only
+  degraded shortcut, not as deployment-equivalent proof
 
 ### Fast path (one command, with preflight checks)
 ```bash

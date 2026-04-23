@@ -22,6 +22,11 @@ For each environment (`stage` and `prod`) deploy:
 5. Workers service (`apps/api` workers)
 
 Do not run workers inside API process in VPS deployment.
+Deployed worker ownership contract:
+- canonical healthy state = split workers
+- inline worker ownership is not a normal VPS topology
+- if inline is ever used as an emergency fallback, treat the environment as
+  degraded until split ownership is restored
 
 ## Domain Routing Contract
 
@@ -151,6 +156,10 @@ Shared worker env:
 - `DATABASE_URL=<coolify-postgres-url>`
 - `REDIS_URL=<coolify-redis-url>`
 - runtime/queue keys required by current worker contract (`WORKER_*`, selected `RUNTIME_*`)
+
+Operational rule:
+- a deployment is not considered topology-complete unless the split worker
+  services are present and healthy
 
 ## Step 6: Attach Domains and TLS
 

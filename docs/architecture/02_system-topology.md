@@ -6,6 +6,14 @@ Describe the high-level structure of Soar and the runtime boundaries between its
 ## Runtime Shape
 Soar is a modular monolith with explicit runtime service separation.
 
+Deployed target for V1 and beyond:
+- `split` worker ownership is the canonical deployment contract for `STAGE`
+  and `PROD`
+- `inline` execution is allowed only for local development, deterministic test
+  harnesses, and explicit degraded/operator-known fallback windows
+- deployed environments must not treat `inline` as the normal healthy runtime
+  topology
+
 Primary parts:
 - `web`: Next.js operator UI
 - `api`: Express application and public product API
@@ -65,6 +73,23 @@ Primary parts:
 - local development via Docker Compose
 - stage and production on Coolify-managed VPS
 - separate web, api, worker, postgres, and redis process ownership
+
+## Worker Ownership Contract
+- `DEV`
+  - may run with `inline` ownership when fast local iteration matters more than
+    production topology fidelity
+  - should still support separate worker processes for runtime-sensitive local
+    verification
+- `STAGE` and `PROD`
+  - must target split worker ownership for `market-data`, `market-stream`,
+    `backtest`, and `execution`
+  - readiness and operations docs must treat split ownership as the healthy
+    baseline
+- emergency degraded mode
+  - temporary `inline` operation is allowed only as an explicit operator-known
+    exception
+  - degraded operation must remain visible in health/readiness surfaces and
+    must not be described as equivalent to the canonical deployed topology
 
 ## Related Files
 - [04 Runtime Contexts](./04_runtime-contexts.md)
