@@ -17,7 +17,15 @@ Last updated: 2026-04-23
 
 ## READY
 
-- [ ] (none)
+- [ ] `V1SIG-02 refactor(api-runtime-events): make no-trade/route/block reasons explicit runtime telemetry instead of silent absence where architecture permits diagnostics`
+- [ ] `V1SIG-03 fix(operator-signal-truth): separate configured fallback strategy context from accepted runtime signal truth in monitoring read models and web surfaces`
+- [ ] `V1SIG-04 audit(paper-reset-capital): verify and fix wallet-reset/runtime-capital parity for PAPER bots after reset checkpoints`
+- [ ] `V1SIG-05 qa(runtime-recovery): run focused backtest-paper-live parity and runtime delivery closure pack, then sync docs/context`
+- [ ] `V1CAP-01 docs(capital-authority): freeze wallet capital rules for PAPER reset and LIVE post-deposit recovery`
+- [ ] `V1CAP-02 test(wallet-runtime): add focused regression coverage for reset checkpoint and refreshed exchange balance semantics`
+- [ ] `V1CAP-03 fix(wallet-runtime): align runtime capital snapshot and wallet/operator read-model behavior`
+- [ ] `V1CAP-04 fix(wallet-ui): expose capital source/allocation/reset truth in wallet and runtime monitoring surfaces`
+- [ ] `V1CAP-05 qa(wallet-closure): run focused wallet/runtime closure pack and sync docs/context`
 
 ## BACKLOG
 
@@ -25,7 +33,7 @@ Last updated: 2026-04-23
 
 ## IN_PROGRESS
 
-- [ ] (none)
+- [ ] `V1SIG-01 diagnose(prod-runtime-truth): reproduce and classify why active PAPER/LIVE bots stay at zero persisted runtime signals/positions/trades`
 
 ## BLOCKED
 
@@ -36,6 +44,11 @@ Last updated: 2026-04-23
 - [ ] (none)
 
 ## DONE
+
+- [x] `V1SIG-A planning: runtime signal delivery recovery and truthful operator diagnostics`
+  - 2026-04-23: Investigated production through authenticated API access on `https://api.soar.luckysparrow.ch` for the active PAPER bot `859fd4f7-cbb1-4f8e-b52a-5d119442e265` and LIVE bot `7204173d-af68-494a-bca8-95d3c1ba8ef1`. Both sessions are `RUNNING` with fresh heartbeats, but aggregate runtime truth shows `totalSignals=0`, `openPositionCount=0`, and `tradesTotal=0`. Runtime symbol monitoring currently exposes `configured_fallback` strategy context that can look like "signals" even when no persisted runtime signal exists. Published recovery packet `docs/planning/v1-runtime-signal-delivery-recovery-2026-04-23.md` and promoted the diagnosis slice plus follow-up recovery slices into the canonical queue.
+- [x] `V1CAP-A planning: wallet capital authority recovery for reset and post-deposit cases`
+  - 2026-04-23: Analyzed wallet/runtime capital authority against current Soar architecture and production investigation. Published `docs/planning/v1-wallet-capital-authority-recovery-2026-04-23.md` to freeze the two critical operator cases: `PAPER` reset checkpoint semantics and `LIVE` post-loss/post-deposit exchange balance refresh behavior under wallet allocation modes (`PERCENT`, `FIXED`, effective full balance). Promoted the capital-authority follow-up slices into the canonical queue.
 
 - [x] `V1CONF-07 test(signal-cleanup): reduce remaining non-failing web warning noise outside the high-signal confidence pack`
   - 2026-04-23: Removed the remaining non-failing web warning noise by aligning bots/markets/strategies form-and-table suites with their real dashboard routes, adding provider-safe render/teardown helpers for route-aware dashboard-home suites, and settling async widget/table assertions so the full web pack now runs cleanly. Validation PASS: `pnpm --filter web exec vitest run src/features/bots/components/BotCreateEditForm.test.tsx src/features/backtest/components/BacktestCreateForm.test.tsx src/features/strategies/components/StrategyForm.test.tsx src/features/strategies/components/StrategiesList.test.tsx src/features/markets/components/MarketUniversesTable.test.tsx`, `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.aggregate-history.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.test.tsx`, `pnpm --filter web run test -- --run`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.

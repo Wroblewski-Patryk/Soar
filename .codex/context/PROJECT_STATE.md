@@ -10,8 +10,9 @@ Last updated: 2026-04-23
 - Commercial model: SaaS-style subscription product with staged entitlements
 - Current phase: V1 is formally approved for production activation from the
   current evidence set, and active engineering focus has shifted to
-  post-approval confidence hardening, signal-quality cleanup, and regression
-  locks around the highest-risk runtime/auth/release paths
+  post-approval confidence hardening plus a new runtime signal-delivery
+  recovery wave after production investigation showed active bots with healthy
+  sessions but zero persisted runtime signals, positions, and trades
 
 ## Product Decisions (Confirmed)
 - 2026-04-21: `docs/architecture/` is the canonical source of truth for how
@@ -179,6 +180,22 @@ Last updated: 2026-04-23
   their dashboard routes and by adding settled render/teardown helpers for the
   dashboard-home widget suites, so the full web pack now runs green without
   the previous `stderr` act/i18n warning spill.
+- 2026-04-23: authenticated production investigation confirmed that the active
+  PAPER and LIVE bots for the primary operator account are heartbeat-healthy
+  but currently produce `0` persisted runtime signals, positions, and trades.
+  The operator-facing runtime monitoring surface can still show
+  `configured_fallback` strategy context, which looks signal-like even when no
+  canonical runtime signal row exists. This has been promoted into a dedicated
+  `V1SIG-A` recovery wave focused on runtime delivery truth, operator
+  diagnostics, and paper-reset capital parity.
+- 2026-04-23: wallet/runtime capital authority now has a dedicated follow-up
+  planning wave `V1CAP-A`, covering two operator-critical cases that need
+  explicit V1 closure: `PAPER` reset checkpoint semantics and `LIVE`
+  post-loss/post-deposit exchange balance refresh behavior under wallet
+  allocation modes. The intended rule is that `LIVE` capital truth remains
+  exchange-authoritative and should reflect later deposits automatically,
+  while `PAPER` reset must create a clean active-capital baseline without
+  deleting history.
 - 2026-04-22: `scripts/runV1ReleaseGate.mjs` now selects the latest same-day
   evidence artifact by full timestamp-bearing filename, preventing older
   same-day restore-drill failures from shadowing newer PASS artifacts.
@@ -319,13 +336,27 @@ Last updated: 2026-04-23
 
 ## Current Focus
 - Main active objective: preserve the now-clean post-approval V1 validation
-  signal and keep future web/runtime changes aligned with the approved
-  production candidate.
+  signal, recover truthful runtime signal delivery for active PAPER/LIVE bots,
+  and keep future web/runtime changes aligned with the approved production
+  candidate.
 - Top blockers:
-  - no active blockers recorded.
+  - active production bots can remain `RUNNING` with zero persisted runtime
+    signals/positions/trades while operator monitoring still shows configured
+    fallback strategy context that looks like emitted signal state.
+  - wallet capital authority is not yet explicit enough for `PAPER` reset and
+    `LIVE` post-deposit recovery cases, which risks confusing operators about
+    when a bot should resume trading after capital changes.
 - Success criteria for this phase:
   - preserve green `web test`, `web typecheck`, and `quality:guardrails`
     on `main`,
+  - restore explicit and trustworthy runtime signal-delivery diagnostics for
+    active PAPER/LIVE bots,
+  - distinguish configured strategy context from accepted runtime signal truth
+    in operator monitoring,
+  - verify wallet reset and PAPER capital snapshots do not leave misleading
+    runtime balance truth,
+  - freeze and validate wallet capital-authority behavior for `LIVE`
+    exchange-balance refresh after deposits and for `PAPER` reset checkpoints,
   - keep high-signal auth/dashboard confidence suites free of false route/i18n
     noise,
   - keep the broader web pack free of avoidable `stderr` warning spill without
@@ -333,7 +364,8 @@ Last updated: 2026-04-23
   - keep queue/context/docs synchronized after each confidence-hardening slice.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - none currently queued.
+  - `V1SIG-01 diagnose(prod-runtime-truth): reproduce and classify why active PAPER/LIVE bots stay at zero persisted runtime signals/positions/trades.`
+  - `V1CAP-01 docs(capital-authority): freeze wallet capital rules for PAPER reset and LIVE post-deposit recovery.`
 
 ## Recent Progress
 - 2026-04-22: queued `SAFEV1-A` in
