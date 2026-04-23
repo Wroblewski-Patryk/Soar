@@ -126,6 +126,9 @@ Last updated: 2026-04-23
   `/auth/me` bootstrap loop. `AuthProvider` runs above route i18n providers, so
   `useOptionalI18n()` now memoizes its fallback translator to keep auth
   bootstrap dependencies stable and stop rate-limit-triggering session checks.
+- 2026-04-23: web auth bootstrap now has a direct `AuthProvider` rerender
+  regression test, so the `/auth/me` loop fix is locked both at the optional
+  i18n helper level and at the provider bootstrap boundary itself.
 - 2026-04-22: `scripts/runV1ReleaseGate.mjs` now selects the latest same-day
   evidence artifact by full timestamp-bearing filename, preventing older
   same-day restore-drill failures from shadowing newer PASS artifacts.

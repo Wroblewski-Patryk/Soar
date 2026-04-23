@@ -37,6 +37,8 @@ Last updated: 2026-04-23
 
 ## DONE
 
+- [x] `AUTH-BOOTSTRAP-REGRESSION lock single auth bootstrap fetch across rerenders`
+  - 2026-04-23: Added a focused `AuthProvider` regression test so providerless bootstrap auth now proves it performs only one initial `/auth/me` fetch across parent rerenders, complementing the optional-i18n fallback stabilization test. Validation PASS: `pnpm --filter web exec vitest run src/context/AuthContext.test.tsx src/i18n/useOptionalI18n.test.tsx`.
 - [x] `PROD-AUTH-HOTFIX stop providerless i18n fallback from looping auth bootstrap`
   - 2026-04-23: traced the remaining prod login bounce to repeated `/auth/me` calls from the login chunk, caused by `useOptionalI18n()` returning a fresh fallback translator on every render while `AuthProvider` bootstraps above route i18n providers. Memoized the fallback translator/object and locked the contract with a focused rerender-identity test. Validation PASS: `pnpm --filter web exec vitest run src/i18n/useOptionalI18n.test.tsx src/features/auth/hooks/useLoginForm.test.tsx`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
 - [x] `PROD-AUTH-HOTFIX prevent stale cached auth shells after deploy`
