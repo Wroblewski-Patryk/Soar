@@ -17,12 +17,11 @@ Last updated: 2026-04-23
 
 ## READY
 
-- [ ] `V1CONF-03 investigate(web-test-noise): isolate remaining AggregateError source after route-context cleanup`
+- [ ] `V1CONF-06 test(i18n-signal): reduce remaining I18nProvider act warnings and route-namespace noise in high-signal web suites`
 
 ## BACKLOG
 
-- [ ] `V1CONF-04 qa(confidence): rerun focused web confidence pack, guardrails, and selected go-live evidence where applicable`
-- [ ] `V1CONF-05 docs(sync): refresh confidence findings in context and activation notes if any runtime-relevant truth changes`
+- [ ] (none)
 
 ## IN_PROGRESS
 
@@ -42,6 +41,12 @@ Last updated: 2026-04-23
   - 2026-04-23: Published `docs/planning/v1-confidence-hardening-plan-2026-04-23.md`, updated the canonical queue, and aligned project state with the fact that V1 is already approved and active engineering work is now a post-approval confidence-hardening wave.
 - [x] `V1CONF-02 test(web-route-context): continue removing false i18n/noise drift from high-signal dashboard table tests`
   - 2026-04-23: Aligned the bots, wallets, and backtests table tests with their real dashboard route context so route-owned namespaces load intentionally instead of producing false `/`-route i18n warnings. Validation PASS: `pnpm --filter web exec vitest run src/features/backtest/components/BacktestsRunsTable.test.tsx src/features/bots/components/BotsListTable.test.tsx src/features/wallets/components/WalletsListTable.test.tsx`.
+- [x] `V1CONF-03 investigate(web-test-noise): isolate remaining AggregateError source after route-context cleanup`
+  - 2026-04-23: Traced the remaining dashboard-table test noise to `DataTable` column-visibility hydration issuing `/dashboard/profile/basic` requests through `profileBasicCache`, then stabilized the Vitest harness with a default `profileBasicCache` mock for component tests. Validation PASS: `pnpm --filter web exec vitest run src/features/backtest/components/BacktestsRunsTable.test.tsx src/features/bots/components/BotsListTable.test.tsx src/features/wallets/components/WalletsListTable.test.tsx`.
+- [x] `V1CONF-04 qa(confidence): rerun focused web confidence pack, guardrails, and selected go-live evidence where applicable`
+  - 2026-04-23: Re-ran the full web confidence pack after the route-context and test-harness fixes. Validation PASS: `pnpm --filter web run test -- --run`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`. Residual signal noise is now limited to non-failing `I18nProvider` `act(...)` warnings and a few route-namespace warnings.
+- [x] `V1CONF-05 docs(sync): refresh confidence findings in context and activation notes if any runtime-relevant truth changes`
+  - 2026-04-23: Synchronized planning/context/learning docs so the remaining confidence work is narrowed to residual i18n signal cleanup instead of mixed dashboard/auth/DataTable noise.
 - [x] `WALLETS-PAGE-ROUTE-CONTEXT-TEST-SIGNAL cleanup dashboard wallets route drift`
   - 2026-04-23: Aligned the dashboard wallets list page test with its real route context so i18n namespace loading matches runtime ownership instead of emitting avoidable `/`-route missing-key noise. Validation PASS: `pnpm --filter web exec vitest run src/app/dashboard/wallets/list/page.test.tsx`.
 - [x] `AUTH-NAVIGATION-FALLBACK-REGRESSION lock delayed auth-route retry semantics`

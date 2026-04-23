@@ -64,10 +64,12 @@ describe('WalletsListTable', () => {
     return { onDeleted, onCloned };
   };
 
-  it('shows inline API key column and removes Details action/row contract', () => {
+  it('shows inline API key column and removes Details action/row contract', async () => {
     renderTable();
 
-    expect(screen.getByRole('columnheader', { name: 'API key' })).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByRole('columnheader', { name: 'API key' })).toBeInTheDocument();
+    });
     expect(screen.getByText('Connected')).toBeInTheDocument();
     expect(screen.getByText('Not connected')).toBeInTheDocument();
 

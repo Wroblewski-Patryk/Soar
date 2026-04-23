@@ -27,12 +27,12 @@ Create one explicit post-approval execution wave that turns "V1 approved" into
 - treat prod auth, runtime, and release evidence as fail-closed paths
 
 ## Definition of Done
-- [ ] Canonical queue and project state explicitly reflect that V1 is approved
+- [x] Canonical queue and project state explicitly reflect that V1 is approved
       and the active work is confidence hardening rather than activation
       planning.
-- [ ] The new confidence wave is decomposed into tiny executable tasks with one
+- [x] The new confidence wave is decomposed into tiny executable tasks with one
       active `NOW` item and clear follow-ups.
-- [ ] At least the first confidence task is implemented and validated.
+- [x] At least the first confidence task is implemented and validated.
 
 ## Forbidden
 - new systems without approval
@@ -41,7 +41,11 @@ Create one explicit post-approval execution wave that turns "V1 approved" into
 - architecture changes without explicit approval
 
 ## Validation Evidence
-- Tests: task-specific focused packs plus relevant web/app confidence checks
+- Tests:
+  - `pnpm --filter web exec vitest run src/features/backtest/components/BacktestsRunsTable.test.tsx src/features/bots/components/BotsListTable.test.tsx src/features/wallets/components/WalletsListTable.test.tsx`
+  - `pnpm --filter web run test -- --run`
+  - `pnpm --filter web run typecheck`
+  - `pnpm run quality:guardrails`
 - Manual checks: queue/context/planning parity review
 - Screenshots/logs: not required
 - High-risk checks: preserve fail-closed auth/release confidence contracts
@@ -68,10 +72,10 @@ Create one explicit post-approval execution wave that turns "V1 approved" into
 - [ ] Existing systems were reused where applicable.
 - [ ] No workaround paths were introduced.
 - [ ] No logic duplication was introduced.
-- [ ] Definition of Done evidence is attached.
-- [ ] Relevant validations were run.
-- [ ] Docs or context were updated if repository truth changed.
-- [ ] Learning journal was updated if a recurring pitfall was confirmed.
+- [x] Definition of Done evidence is attached.
+- [x] Relevant validations were run.
+- [x] Docs or context were updated if repository truth changed.
+- [x] Learning journal was updated if a recurring pitfall was confirmed.
 
 ## Notes
 - Planned execution slices:
@@ -79,3 +83,9 @@ Create one explicit post-approval execution wave that turns "V1 approved" into
   2. `V1CONF-02 test(web-route-context): continue removing false i18n/noise drift from high-signal dashboard table tests`
   3. `V1CONF-03 investigate(web-test-noise): isolate remaining AggregateError source after route-context cleanup`
   4. `V1CONF-04 qa(confidence): rerun focused web confidence pack, guardrails, and selected go-live evidence where applicable`
+- Outcome:
+  - `V1CONF-01..04` are now complete.
+  - Residual non-failing signal noise remains limited to widespread `act(...)`
+    warnings around `I18nProvider` plus a few route-namespace warning cases.
+  - Follow-up is intentionally narrowed to a separate task instead of being
+    hidden inside this completed confidence slice.

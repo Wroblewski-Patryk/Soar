@@ -13,3 +13,10 @@ vi.mock('next/navigation', () => ({
   useSearchParams: () => new URLSearchParams(),
   useParams: () => ({}),
 }));
+
+vi.mock('@/features/profile/services/profileBasicCache', () => ({
+  readProfileBasic: vi.fn(async () => null),
+  updateProfileBasic: vi.fn(async () => null),
+  readTableColumnVisibilityPreference: vi.fn(async () => null),
+  saveTableColumnVisibilityPreference: vi.fn(async () => undefined),
+}));

@@ -22,6 +22,22 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-23 - DataTable component tests must not hit profile preference hydration by default
+- Context: post-approval V1 confidence hardening after dashboard table suites still emitted `AggregateError` even after route-context cleanup.
+- Symptom: otherwise passing component tests for bots, wallets, and backtests logged jsdom XHR failures against `/dashboard/profile/basic`.
+- Root cause: shared `DataTable` column-visibility hydration calls `profileBasicCache`, and ordinary rendering tests were not isolating that profile-preference side effect.
+- Guardrail: Vitest web setup should default-mock `profileBasicCache` for component tests, and only suites explicitly covering profile preference behavior should opt into real cache mocking.
+- Preferred pattern:
+```text
+1) Trace unexpected jsdom XHR noise to the exact endpoint before changing production code.
+2) If the endpoint is orthogonal to the component assertion, mock that service in the shared test harness.
+3) Keep component tests focused on rendering/interaction contracts, not profile preference persistence.
+4) Re-run both focused suites and a wider pack after the harness change.
+```
+- Avoid: changing production components just to suppress test-only profile-preference requests.
+- Evidence:
+  - 2026-04-23 focused tracing showed repeated `GET /dashboard/profile/basic` from `useDataTableColumnVisibilityState`; adding a default `profileBasicCache` mock in `apps/web/vitest.setup.ts` removed the `AggregateError` noise from the affected suites.
+
 ### 2026-04-23 - Optional i18n helpers used above providers must return stable function references
 - Context: production auth follow-up after cached auth pages were fixed, but login still bounced back to `/auth/login` under real browser traffic.
 - Symptom: the web app spammed `/auth/me` from the login chunk until the API rate limiter returned `429`, after which the dashboard session fell back to the login screen.

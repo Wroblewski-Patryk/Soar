@@ -159,6 +159,15 @@ Last updated: 2026-04-23
   dashboard route context (`/dashboard/bots`, `/dashboard/wallets`,
   `/dashboard/backtests`) so route-owned i18n namespaces are loaded
   intentionally instead of falling back through the default `/` route.
+- 2026-04-23: web component tests now default-mock `profileBasicCache` in
+  Vitest setup, so shared `DataTable` column-visibility hydration no longer
+  issues unrelated `/dashboard/profile/basic` requests during ordinary
+  rendering assertions.
+- 2026-04-23: the full web confidence pack now passes with `web test`,
+  `web typecheck`, and `quality:guardrails`; the remaining non-failing signal
+  noise is narrowed to `I18nProvider`-driven `act(...)` warnings and a small
+  set of route-namespace warning cases, which are now isolated as the next
+  confidence follow-up instead of mixed into auth/dashboard table noise.
 - 2026-04-22: `scripts/runV1ReleaseGate.mjs` now selects the latest same-day
   evidence artifact by full timestamp-bearing filename, preventing older
   same-day restore-drill failures from shadowing newer PASS artifacts.
