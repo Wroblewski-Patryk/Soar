@@ -174,6 +174,11 @@ Last updated: 2026-04-23
   affected auth/profile/reports/backtests/dashboard suites render under their
   owned route context, and `BotsManagement` no longer depends on brittle
   fetch-order or uncontrolled rerender timing.
+- 2026-04-23: `V1CONF-07` is closed; the remaining non-failing web warning
+  noise was removed by aligning bots/markets/strategies route-aware tests with
+  their dashboard routes and by adding settled render/teardown helpers for the
+  dashboard-home widget suites, so the full web pack now runs green without
+  the previous `stderr` act/i18n warning spill.
 - 2026-04-22: `scripts/runV1ReleaseGate.mjs` now selects the latest same-day
   evidence artifact by full timestamp-bearing filename, preventing older
   same-day restore-drill failures from shadowing newer PASS artifacts.
@@ -313,24 +318,22 @@ Last updated: 2026-04-23
   rollback according to `docs/operations/deployment-rollback-playbook.md`
 
 ## Current Focus
-- Main active objective: harden post-approval V1 confidence by keeping the web
-  validation signal clean, deterministic, and aligned with real route/runtime
-  ownership after the production activation packet was already approved.
+- Main active objective: preserve the now-clean post-approval V1 validation
+  signal and keep future web/runtime changes aligned with the approved
+  production candidate.
 - Top blockers:
-  - no product/runtime blockers recorded; remaining work is non-failing web
-    warning cleanup to improve signal quality.
+  - no active blockers recorded.
 - Success criteria for this phase:
   - preserve green `web test`, `web typecheck`, and `quality:guardrails`
     on `main`,
   - keep high-signal auth/dashboard confidence suites free of false route/i18n
     noise,
-  - reduce residual non-failing warning output in the broader web pack without
+  - keep the broader web pack free of avoidable `stderr` warning spill without
     loosening runtime or auth contracts,
   - keep queue/context/docs synchronized after each confidence-hardening slice.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - `V1CONF-07 test(signal-cleanup): reduce remaining non-failing web warning
-    noise outside the high-signal confidence pack`.
+  - none currently queued.
 
 ## Recent Progress
 - 2026-04-22: queued `SAFEV1-A` in

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { I18nProvider } from "@/i18n/I18nProvider";
 import MarketUniversesTable from "./MarketUniversesTable";
@@ -20,12 +20,15 @@ vi.mock("../services/markets.service", () => ({
 
 describe("MarketUniversesTable", () => {
   afterEach(() => {
+    cleanup();
     vi.clearAllMocks();
     window.localStorage.clear();
+    window.history.pushState({}, "", "/");
   });
 
   it("clones market entry using create contract payload with clone-marked name", async () => {
     window.localStorage.setItem("cryptosparrow-locale", "en");
+    window.history.pushState({}, "", "/dashboard/markets");
     fetchMarketCatalogMock.mockResolvedValue({
       source: "BINANCE",
       exchange: "BINANCE",
@@ -52,27 +55,32 @@ describe("MarketUniversesTable", () => {
 
     const onCloned = vi.fn();
 
-    render(
-      <I18nProvider>
-        <MarketUniversesTable
-          rows={[
-            {
-              id: "mu-1",
-              name: "Trend Set",
-              exchange: "BINANCE",
-              marketType: "FUTURES",
-              baseCurrency: "USDT",
-              filterRules: { minQuoteVolumeEnabled: true, minQuoteVolume24h: 500000 },
-              whitelist: ["BTCUSDT"],
-              blacklist: ["ETHUSDT"],
-              createdAt: "2026-04-17T10:00:00.000Z",
-            },
-          ]}
-          onDeleted={vi.fn()}
-          onCloned={onCloned}
-        />
-      </I18nProvider>
-    );
+    await act(async () => {
+      render(
+        <I18nProvider>
+          <MarketUniversesTable
+            rows={[
+              {
+                id: "mu-1",
+                name: "Trend Set",
+                exchange: "BINANCE",
+                marketType: "FUTURES",
+                baseCurrency: "USDT",
+                filterRules: { minQuoteVolumeEnabled: true, minQuoteVolume24h: 500000 },
+                whitelist: ["BTCUSDT"],
+                blacklist: ["ETHUSDT"],
+                createdAt: "2026-04-17T10:00:00.000Z",
+              },
+            ]}
+            onDeleted={vi.fn()}
+            onCloned={onCloned}
+          />
+        </I18nProvider>
+      );
+    });
+    await waitFor(() => {
+      expect(document.documentElement.lang).toBe("en");
+    });
 
     fireEvent.click(screen.getByRole("button", { name: "Clone" }));
 

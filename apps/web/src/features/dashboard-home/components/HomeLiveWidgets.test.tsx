@@ -163,6 +163,20 @@ describe("HomeLiveWidgets", () => {
     );
   };
 
+  const renderSubjectSettled = async (locale: "pl" | "en" | "pt" = "pl") => {
+    let view: ReturnType<typeof render>;
+    await act(async () => {
+      view = renderSubject(locale);
+    });
+    await act(async () => {
+      await Promise.resolve();
+    });
+    await waitFor(() => {
+      expect(document.documentElement.lang).toBe(locale);
+    });
+    return view!;
+  };
+
   it("renders empty state when there are no bots", async () => {
     listBotsMock.mockResolvedValue([]);
     listBotRuntimeSessionsMock.mockResolvedValue([]);
@@ -799,8 +813,10 @@ describe("HomeLiveWidgets", () => {
     expect(lookupCoinIconsMock).toHaveBeenCalledWith(expect.arrayContaining(["BTCUSDT", "ETHUSDT"]));
 
     fireEvent.click(screen.getByRole("tab", { name: /Historia|History/i }));
-    expect(screen.queryByRole("columnheader", { name: /^Fee$/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole("columnheader", { name: /^Origin$/i })).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByRole("columnheader", { name: /^Fee$/i })).not.toBeInTheDocument();
+      expect(screen.queryByRole("columnheader", { name: /^Origin$/i })).not.toBeInTheDocument();
+    });
   });
 
   it("renders orders tab as a table with deterministic empty state", async () => {
@@ -904,16 +920,18 @@ describe("HomeLiveWidgets", () => {
       items: [],
     });
 
-    renderSubject();
+    await renderSubjectSettled();
 
     const ordersTab = await screen.findByRole("tab", { name: /Zlecenia|Orders/i });
     fireEvent.click(ordersTab);
 
-    expect(screen.getByRole("table")).toBeInTheDocument();
-    expect(screen.getByRole("columnheader", { name: /Symbol/i })).toBeInTheDocument();
-    expect(screen.getByRole("columnheader", { name: /Side/i })).toBeInTheDocument();
-    expect(screen.getByText(/Brak otwartych zlecen|No open orders/i)).toBeInTheDocument();
-    expect(screen.queryByText(/zakladka otwartych zlecen|Open orders tab is prepared/i)).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByRole("table")).toBeInTheDocument();
+      expect(screen.getByRole("columnheader", { name: /Symbol/i })).toBeInTheDocument();
+      expect(screen.getByRole("columnheader", { name: /Side/i })).toBeInTheDocument();
+      expect(screen.getByText(/Brak otwartych zlecen|No open orders/i)).toBeInTheDocument();
+      expect(screen.queryByText(/zakladka otwartych zlecen|Open orders tab is prepared/i)).not.toBeInTheDocument();
+    });
   });
 
   it("refreshes strategy context when switching selected bot", async () => {
@@ -1306,7 +1324,7 @@ describe("HomeLiveWidgets", () => {
       items: [],
     });
 
-    renderSubject();
+    await renderSubjectSettled();
     expect(await screen.findByTestId("manual-order-panel")).toBeInTheDocument();
     expect(screen.getByTestId("manual-order-semantics-hint")).toHaveTextContent(
       /jednolitego cyklu|unified lifecycle/i
@@ -1464,7 +1482,7 @@ describe("HomeLiveWidgets", () => {
       items: [],
     });
 
-    renderSubject();
+    await renderSubjectSettled();
 
     await waitFor(() => {
       expect(screen.getByRole("button", { name: /Wstecz|Prev/i })).toBeInTheDocument();

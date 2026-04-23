@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { I18nProvider } from "@/i18n/I18nProvider";
 import StrategiesList from "./StrategiesList";
@@ -20,12 +20,15 @@ vi.mock("../api/strategies.api", () => ({
 
 describe("StrategiesList", () => {
   afterEach(() => {
+    cleanup();
     vi.clearAllMocks();
     window.localStorage.clear();
+    window.history.pushState({}, "", "/");
   });
 
   it("clones strategy with deterministic clone name and create payload", async () => {
     window.localStorage.setItem("cryptosparrow-locale", "en");
+    window.history.pushState({}, "", "/dashboard/strategies");
     listStrategiesMock.mockResolvedValue([
       {
         id: "str-1",
@@ -66,11 +69,16 @@ describe("StrategiesList", () => {
       config: {},
     });
 
-    render(
-      <I18nProvider>
-        <StrategiesList />
-      </I18nProvider>
-    );
+    await act(async () => {
+      render(
+        <I18nProvider>
+          <StrategiesList />
+        </I18nProvider>
+      );
+    });
+    await waitFor(() => {
+      expect(document.documentElement.lang).toBe("en");
+    });
 
     const cloneButton = await screen.findByRole("button", { name: "Clone" });
     fireEvent.click(cloneButton);

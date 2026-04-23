@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, act } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import BotCreateEditForm from "./BotCreateEditForm";
@@ -54,13 +54,21 @@ vi.mock("sonner", () => ({
   },
 }));
 
-const renderWithI18n = () => {
+const renderWithI18n = async () => {
   window.localStorage.setItem("cryptosparrow-locale", "en");
-  return render(
-    <I18nProvider>
-      <BotCreateEditForm />
-    </I18nProvider>
-  );
+  window.history.pushState({}, "", "/dashboard/bots/create");
+  let view: ReturnType<typeof render>;
+  await act(async () => {
+    view = render(
+      <I18nProvider>
+        <BotCreateEditForm />
+      </I18nProvider>
+    );
+  });
+  await waitFor(() => {
+    expect(document.documentElement.lang).toBe("en");
+  });
+  return view!;
 };
 
 const baseApiKey = {
@@ -90,8 +98,10 @@ const baseWallet = {
 };
 
 afterEach(() => {
+  cleanup();
   vi.restoreAllMocks();
   window.localStorage.clear();
+  window.history.pushState({}, "", "/");
   listStrategiesMock.mockReset();
   listMarketUniversesMock.mockReset();
   listWalletsMock.mockReset();
@@ -132,7 +142,7 @@ describe("BotCreateEditForm", () => {
     ]);
     fetchApiKeysMock.mockResolvedValue([baseApiKey]);
 
-    renderWithI18n();
+    await renderWithI18n();
 
     await waitFor(() => {
       expect(screen.getByTestId("wallet-context-summary")).toBeInTheDocument();
@@ -179,7 +189,7 @@ describe("BotCreateEditForm", () => {
     ]);
     fetchApiKeysMock.mockResolvedValue([]);
 
-    const { container } = renderWithI18n();
+    const { container } = await renderWithI18n();
 
     await waitFor(() => {
       expect(screen.getByLabelText("Name")).toBeInTheDocument();
@@ -222,7 +232,7 @@ describe("BotCreateEditForm", () => {
     ]);
     fetchApiKeysMock.mockResolvedValue([baseApiKey]);
 
-    renderWithI18n();
+    await renderWithI18n();
 
     await waitFor(() => {
       expect(screen.getByLabelText("Name")).toBeInTheDocument();
@@ -250,7 +260,7 @@ describe("BotCreateEditForm", () => {
     fetchApiKeysMock.mockResolvedValue([baseApiKey]);
     createBotMock.mockResolvedValue({ id: "bot-created" });
 
-    const { container } = renderWithI18n();
+    const { container } = await renderWithI18n();
 
     await waitFor(() => {
       expect(screen.getByLabelText("Name")).toBeInTheDocument();

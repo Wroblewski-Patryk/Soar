@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { I18nProvider } from "../../../i18n/I18nProvider";
@@ -38,14 +38,21 @@ vi.mock("../../../features/positions/services/positions.service", () => ({
   updatePositionManualParams: updatePositionManualParamsMock,
 }));
 
-const renderSubject = () => {
+const renderSubject = async () => {
   window.localStorage.setItem("cryptosparrow-locale", "pl");
   window.history.pushState({}, "", "/dashboard");
-  return render(
-    <I18nProvider>
-      <HomeLiveWidgets />
-    </I18nProvider>
-  );
+  let view: ReturnType<typeof render>;
+  await act(async () => {
+    view = render(
+      <I18nProvider>
+        <HomeLiveWidgets />
+      </I18nProvider>
+    );
+  });
+  await waitFor(() => {
+    expect(document.documentElement.lang).toBe("pl");
+  });
+  return view!;
 };
 
 describe("HomeLiveWidgets aggregate history parity", () => {
@@ -144,7 +151,9 @@ describe("HomeLiveWidgets aggregate history parity", () => {
   });
 
   afterEach(() => {
+    cleanup();
     window.history.pushState({}, "", "/");
+    window.localStorage.clear();
   });
 
   it("keeps selected-bot history visible from aggregate scope when RUNNING session is empty", async () => {
@@ -334,7 +343,7 @@ describe("HomeLiveWidgets aggregate history parity", () => {
       },
     });
 
-    renderSubject();
+    await renderSubject();
 
     const tradeHistoryTab = await screen.findByRole("tab", { name: /Historia|History/i });
     fireEvent.click(tradeHistoryTab);
@@ -531,7 +540,7 @@ describe("HomeLiveWidgets aggregate history parity", () => {
       };
     });
 
-    renderSubject();
+    await renderSubject();
 
     const tradeHistoryTab = await screen.findByRole("tab", { name: /Historia|History/i });
     fireEvent.click(tradeHistoryTab);

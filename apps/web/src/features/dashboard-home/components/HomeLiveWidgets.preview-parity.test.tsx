@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -251,9 +251,16 @@ const buildAggregatePayload = (botId: string, historySymbol: string, tradeSymbol
   },
 });
 
-const renderWithI18n = (node: ReactNode) => {
+const renderWithI18n = async (node: ReactNode) => {
   window.localStorage.setItem("cryptosparrow-locale", "pl");
-  return render(<I18nProvider>{node}</I18nProvider>);
+  let view: ReturnType<typeof render>;
+  await act(async () => {
+    view = render(<I18nProvider>{node}</I18nProvider>);
+  });
+  await waitFor(() => {
+    expect(document.documentElement.lang).toBe("pl");
+  });
+  return view!;
 };
 
 describe("Selected bot aggregate parity: /dashboard vs /dashboard/bots/:id/preview", () => {
@@ -434,13 +441,14 @@ describe("Selected bot aggregate parity: /dashboard vs /dashboard/bots/:id/previ
   });
 
   afterEach(() => {
+    cleanup();
     window.history.pushState({}, "", "/");
     window.localStorage.clear();
   });
 
   it("keeps selected-bot aggregate history consistent between dashboard and preview monitoring route", async () => {
     window.history.pushState({}, "", "/dashboard");
-    const home = renderWithI18n(<HomeLiveWidgets />);
+    const home = await renderWithI18n(<HomeLiveWidgets />);
 
     fireEvent.change(await screen.findByLabelText("Wybrany bot"), {
       target: { value: "bot-b" },
@@ -462,7 +470,7 @@ describe("Selected bot aggregate parity: /dashboard vs /dashboard/bots/:id/previ
     getBotRuntimeMonitoringAggregateMock.mockClear();
 
     window.history.pushState({}, "", "/dashboard/bots/bot-b/preview");
-    renderWithI18n(
+    await renderWithI18n(
       <BotsManagement initialTab="monitoring" lockedTab="monitoring" preferredBotId="bot-b" />
     );
 
@@ -481,7 +489,7 @@ describe("Selected bot aggregate parity: /dashboard vs /dashboard/bots/:id/previ
 
   it("preserves DCA ladder and runtime trade labels between dashboard and preview monitoring route", async () => {
     window.history.pushState({}, "", "/dashboard");
-    const home = renderWithI18n(<HomeLiveWidgets />);
+    const home = await renderWithI18n(<HomeLiveWidgets />);
 
     fireEvent.change(await screen.findByLabelText("Wybrany bot"), {
       target: { value: "bot-b" },
@@ -502,7 +510,7 @@ describe("Selected bot aggregate parity: /dashboard vs /dashboard/bots/:id/previ
     getBotRuntimeMonitoringAggregateMock.mockClear();
 
     window.history.pushState({}, "", "/dashboard/bots/bot-b/preview");
-    renderWithI18n(
+    await renderWithI18n(
       <BotsManagement initialTab="monitoring" lockedTab="monitoring" preferredBotId="bot-b" />
     );
 

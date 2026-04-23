@@ -85,12 +85,14 @@ Create one explicit post-approval execution wave that turns "V1 approved" into
   4. `V1CONF-04 qa(confidence): rerun focused web confidence pack, guardrails, and selected go-live evidence where applicable`
   5. `V1CONF-06 test(i18n-signal): reduce remaining I18nProvider act warnings and route-namespace noise in high-signal web suites`
 - Outcome:
-  - `V1CONF-01..04` and `V1CONF-06` are now complete.
+  - `V1CONF-01..04`, `V1CONF-06`, and `V1CONF-07` are now complete.
   - The route-aware confidence pack is stable: locale/timezone hydration no
     longer triggers mount-time `act(...)` noise, `/dashboard/profile` now
     resolves its `auth` namespace explicitly, and the previously red
     `BotsManagement` suite is green under deterministic render/fetch behavior.
+  - The broader web pack now also runs cleanly: the remaining
+    route-namespace and `act(...)` warning noise was removed from the
+    dashboard-home, bots, strategies, markets, and backtests suites.
   - The full web pack remains green under `web test`, `web typecheck`, and
     `quality:guardrails`.
-  - Remaining follow-up is intentionally narrowed to broader non-failing web
-    warning cleanup outside the high-signal confidence pack.
+  - No active confidence follow-up is queued from this plan at the moment.
