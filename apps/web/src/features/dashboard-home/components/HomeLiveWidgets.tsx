@@ -783,8 +783,10 @@ export default function HomeLiveWidgets() {
                 actionableSignalsCount={signalHeaderStats.actionableSignalsCount}
                 contextSourceLabel={t("dashboard.home.runtime.signalContextSource")}
                 contextSourceValueLatestSignal={t("dashboard.home.runtime.signalContextSourceLatestSignal")}
+                contextSourceValueLatestDecision={t("dashboard.home.runtime.signalContextSourceLatestDecision")}
                 contextSourceValueConfiguredFallback={t("dashboard.home.runtime.signalContextSourceConfiguredFallback")}
                 contextSourceValueUnresolved={t("dashboard.home.runtime.signalContextSourceUnresolved")}
+                strategyContextLabel={t("dashboard.home.runtime.strategyContextTitle")}
                 renderSymbolLabel={renderRuntimeSymbol}
               />
               {runtimeDataIsStale ? (

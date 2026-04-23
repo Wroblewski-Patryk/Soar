@@ -217,6 +217,7 @@ export const dashboardHomePt = {
     "signals": "Signals",
     "signalContextSource": "Fonte do contexto",
     "signalContextSourceLatestSignal": "Sinal mais recente",
+    "signalContextSourceLatestDecision": "Decisao mais recente",
     "signalContextSourceConfiguredFallback": "Fallback configurado",
     "signalContextSourceUnresolved": "Nao resolvido",
     "baseCurrency": "Base currency",

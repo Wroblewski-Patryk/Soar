@@ -7,19 +7,14 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `V1SIG-01 diagnose(prod-runtime-truth): reproduce and classify why active PAPER/LIVE bots stay at zero persisted runtime signals/positions/trades`
-## NEXT
-- [ ] `V1SIG-02 refactor(api-runtime-events): make no-trade/route/block reasons explicit runtime telemetry instead of silent absence where architecture permits diagnostics`
-- [ ] `V1SIG-03 fix(operator-signal-truth): separate configured fallback strategy context from accepted runtime signal truth in monitoring read models and web surfaces`
-- [ ] `V1SIG-04 audit(paper-reset-capital): verify and fix wallet-reset/runtime-capital parity for PAPER bots after reset checkpoints`
-- [ ] `V1SIG-05 qa(runtime-recovery): run focused backtest-paper-live parity and runtime delivery closure pack, then sync docs/context`
 - [ ] `V1CAP-01 docs(capital-authority): freeze wallet capital rules for PAPER reset and LIVE post-deposit recovery`
+## NEXT
 - [ ] `V1CAP-02 test(wallet-runtime): add focused regression coverage for reset checkpoint and refreshed exchange balance semantics`
 - [ ] `V1CAP-03 fix(wallet-runtime): align runtime capital snapshot and wallet/operator read-model behavior`
 - [ ] `V1CAP-04 fix(wallet-ui): expose capital source/allocation/reset truth in wallet and runtime monitoring surfaces`
 - [ ] `V1CAP-05 qa(wallet-closure): run focused wallet/runtime closure pack and sync docs/context`
 ## PIPELINE
-- [ ] `V1SIG-A planning queued (runtime signal delivery recovery, truthful operator diagnostics, and paper reset capital parity after production investigation)`
+- [x] `V1SIG-A planning queued (runtime signal delivery recovery, truthful operator diagnostics, and paper reset capital parity after production investigation)`
 - [ ] `V1CAP-A planning queued (wallet capital authority recovery for PAPER reset checkpoints and LIVE post-deposit exchange balance changes)`
 - [ ] `V1CONF-A planning queued (post-approval V1 confidence hardening and signal-quality closure)`
 - [x] `V1CONF-07 test(signal-cleanup): reduce remaining non-failing web warning noise outside the high-signal confidence pack`

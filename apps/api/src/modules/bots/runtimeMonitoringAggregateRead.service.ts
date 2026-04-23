@@ -312,6 +312,14 @@ export const getBotRuntimeMonitoringAggregate = async (
           shouldUseCurrentSignalContext
             ? item.lastSignalContextSource
             : existing.lastSignalContextSource,
+        configuredStrategyId:
+          shouldUseCurrentSignalContext
+            ? item.configuredStrategyId
+            : existing.configuredStrategyId,
+        configuredStrategyName:
+          shouldUseCurrentSignalContext
+            ? item.configuredStrategyName
+            : existing.configuredStrategyName,
         lastSignalConditionSummary:
           shouldUseCurrentSignalContext
             ? item.lastSignalConditionSummary

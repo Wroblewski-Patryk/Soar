@@ -1607,6 +1607,7 @@ describe("HomeLiveWidgets", () => {
               lastSignalDirection: "LONG",
               lastSignalDecisionAt: "2026-03-31T10:05:00.000Z",
               lastSignalContextSource: "configured_fallback",
+              configuredStrategyName: "Scope A Strategy",
               lastSignalConditionLines: [
                 {
                   scope: "LONG",
@@ -1670,6 +1671,7 @@ describe("HomeLiveWidgets", () => {
           lastSignalDirection: index % 2 === 0 ? "LONG" : "SHORT",
           lastSignalDecisionAt: "2026-03-31T10:05:00.000Z",
           lastSignalContextSource: index % 2 === 0 ? "latest_signal" : "configured_fallback",
+          configuredStrategyName: index % 2 === 0 ? null : `Scope B Strategy ${index + 1}`,
           lastSignalConditionLines: [
             {
               scope: index % 2 === 0 ? "LONG" : "SHORT",
@@ -1753,6 +1755,7 @@ describe("HomeLiveWidgets", () => {
       expect(screen.getAllByText("ADAUSDT").length).toBeGreaterThan(0);
       expect(screen.getByText("A_CTX_FAST")).toBeInTheDocument();
       expect(screen.getByTestId("signal-source-ADAUSDT")).toHaveTextContent(/Fallback konfiguracji/i);
+      expect(screen.getByTestId("signal-strategy-ADAUSDT")).toHaveTextContent(/Scope A Strategy/i);
       expect(screen.queryAllByText("SOLUSDT")).toHaveLength(0);
       expect(screen.queryByRole("button", { name: /Wstecz|Prev/i })).toBeNull();
       expect(screen.queryByRole("button", { name: /Dalej|Next/i })).toBeNull();

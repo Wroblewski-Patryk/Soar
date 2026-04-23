@@ -321,6 +321,28 @@ export const processRuntimeFinalCandleDecision = async (
           symbols: group.symbols,
         });
         if (openPositionsInGroup >= group.maxOpenPositions) {
+          await context.recordRuntimeEvent?.({
+            userId: bot.userId,
+            botId: bot.id,
+            mode: bot.mode,
+            sessionId,
+            eventType: 'PRETRADE_BLOCKED',
+            level: 'WARN',
+            symbol: event.symbol,
+            botMarketGroupId: group.id,
+            strategyId: merged.strategyId,
+            signalDirection: direction,
+            message: 'Signal blocked because bot market-group reached max open positions',
+            payload: {
+              reason: 'GROUP_MAX_OPEN_POSITIONS_REACHED',
+              openPositionsInGroup,
+              maxOpenPositions: group.maxOpenPositions,
+              groupSymbols: group.symbols,
+            },
+            eventAt: new Date(event.eventTime),
+          });
+          metricsStore.recordRuntimeMergeOutcome('NO_TRADE');
+          metricsStore.recordRuntimeGroupEvaluation(context.nowMs() - groupEvalStartedAt);
           return;
         }
 

@@ -427,14 +427,16 @@ describe('Bots runtime scope remediation contract', () => {
       statsRes.body.items as Array<{
         symbol: string;
         lastSignalStrategyName: string | null;
+        configuredStrategyName?: string | null;
         lastSignalContextSource?: string | null;
       }>
     ).find(
       (item) => item.symbol === 'BTCUSDT'
     );
     expect(btc).toBeTruthy();
-    expect(btc?.lastSignalStrategyName).toBe(activeStrategyName);
-    expect(btc?.lastSignalStrategyName).not.toBe(pausedStrategyName);
+    expect(btc?.lastSignalStrategyName).toBeNull();
+    expect(btc?.configuredStrategyName).toBe(activeStrategyName);
+    expect(btc?.configuredStrategyName).not.toBe(pausedStrategyName);
     expect(btc?.lastSignalContextSource).toBe('configured_fallback');
   });
 
@@ -560,14 +562,16 @@ describe('Bots runtime scope remediation contract', () => {
       statsRes.body.items as Array<{
         symbol: string;
         lastSignalStrategyName: string | null;
+        configuredStrategyName?: string | null;
         lastSignalContextSource?: string | null;
       }>
     ).find(
       (item) => item.symbol === 'BTCUSDT'
     );
     expect(btc).toBeTruthy();
-    expect(btc?.lastSignalStrategyName).toBe(canonicalStrategyName);
-    expect(btc?.lastSignalStrategyName).not.toBe(legacyStrategyName);
+    expect(btc?.lastSignalStrategyName).toBeNull();
+    expect(btc?.configuredStrategyName).toBe(canonicalStrategyName);
+    expect(btc?.configuredStrategyName).not.toBe(legacyStrategyName);
     expect(btc?.lastSignalContextSource).toBe('configured_fallback');
   });
 
@@ -645,5 +649,75 @@ describe('Bots runtime scope remediation contract', () => {
     expect(btc?.lastSignalStrategyId).toBe(latestSignalStrategyId);
     expect(btc?.lastSignalStrategyName).toBe('Runtime Latest Signal Strategy');
     expect(btc?.lastSignalContextSource).toBe('latest_signal');
+  });
+
+  it('marks symbol context as latest_decision when runtime evaluated the symbol without accepting a directional signal', async () => {
+    const ownerEmail = 'bot-runtime-latest-decision-context-source@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
+
+    const fallbackStrategyId = await createStrategy(owner, 'Runtime Decision Fallback Strategy');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    await prisma.symbolGroup.update({
+      where: { id: marketGroupId },
+      data: { symbols: ['BTCUSDT'] },
+    });
+
+    const botRes = await owner.post('/dashboard/bots').send(
+      createPayload({
+        strategyId: fallbackStrategyId,
+        marketGroupId,
+      })
+    );
+    expect(botRes.status).toBe(201);
+    const botId = botRes.body.id as string;
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-06T10:00:00.000Z'),
+      },
+    });
+
+    await prisma.botRuntimeEvent.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        sessionId: session.id,
+        eventType: 'SIGNAL_DECISION',
+        level: 'DEBUG',
+        symbol: 'BTCUSDT',
+        message: 'No trade decision after strategy merge',
+        payload: {
+          merge: {
+            reason: 'no_votes',
+          },
+        },
+        eventAt: new Date('2026-04-06T10:05:00.000Z'),
+      },
+    });
+
+    const statsRes = await owner.get(`/dashboard/bots/${botId}/runtime-sessions/${session.id}/symbol-stats`);
+    expect(statsRes.status).toBe(200);
+
+    const btc = (
+      statsRes.body.items as Array<{
+        symbol: string;
+        lastSignalDirection?: string | null;
+        lastSignalStrategyName?: string | null;
+        configuredStrategyName?: string | null;
+        lastSignalReason?: string | null;
+        lastSignalContextSource?: string | null;
+      }>
+    ).find((item) => item.symbol === 'BTCUSDT');
+    expect(btc).toBeTruthy();
+    expect(btc?.lastSignalDirection).toBeNull();
+    expect(btc?.lastSignalStrategyName).toBeNull();
+    expect(btc?.configuredStrategyName).toBe('Runtime Decision Fallback Strategy');
+    expect(btc?.lastSignalReason).toBe('No votes');
+    expect(btc?.lastSignalContextSource).toBe('latest_decision');
   });
 });

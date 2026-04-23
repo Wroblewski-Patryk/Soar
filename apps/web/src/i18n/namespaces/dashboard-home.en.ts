@@ -217,6 +217,7 @@ export const dashboardHomeEn = {
     "signals": "Signals",
     "signalContextSource": "Context source",
     "signalContextSourceLatestSignal": "Latest signal",
+    "signalContextSourceLatestDecision": "Latest decision",
     "signalContextSourceConfiguredFallback": "Configured fallback",
     "signalContextSourceUnresolved": "Unresolved",
     "baseCurrency": "Base currency",

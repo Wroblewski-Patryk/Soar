@@ -20,8 +20,10 @@ type RuntimeSignalsSectionProps = {
   actionableSignalsCount: number;
   contextSourceLabel: string;
   contextSourceValueLatestSignal: string;
+  contextSourceValueLatestDecision: string;
   contextSourceValueConfiguredFallback: string;
   contextSourceValueUnresolved: string;
+  strategyContextLabel: string;
   renderSymbolLabel?: (symbol: string) => ReactNode;
 };
 
@@ -118,9 +120,15 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
             const sourceLabel =
               signal.lastSignalContextSource === "latest_signal"
                 ? props.contextSourceValueLatestSignal
+                : signal.lastSignalContextSource === "latest_decision"
+                  ? props.contextSourceValueLatestDecision
                 : signal.lastSignalContextSource === "configured_fallback"
                   ? props.contextSourceValueConfiguredFallback
                   : props.contextSourceValueUnresolved;
+            const configuredStrategyName =
+              signal.lastSignalContextSource === "latest_signal"
+                ? null
+                : signal.configuredStrategyName ?? null;
 
             return (
               <article
@@ -136,6 +144,11 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
                   <p className="mt-1 text-[10px] opacity-65" data-testid={`signal-source-${signal.symbol}`}>
                     {props.contextSourceLabel}: <span className="font-semibold">{sourceLabel}</span>
                   </p>
+                  {configuredStrategyName ? (
+                    <p className="mt-1 text-[10px] opacity-65" data-testid={`signal-strategy-${signal.symbol}`}>
+                      {props.strategyContextLabel}: <span className="font-semibold">{configuredStrategyName}</span>
+                    </p>
+                  ) : null}
                   <div className="mt-2.5 grid grid-cols-2 gap-2.5 text-[11px] leading-4">
                     <div
                       className={`space-y-1.5 rounded-box transition-opacity duration-150 ${

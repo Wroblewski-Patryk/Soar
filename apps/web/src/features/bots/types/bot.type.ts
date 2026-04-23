@@ -222,7 +222,14 @@ export type BotRuntimeSymbolStat = {
   lastSignalReason?: string | null;
   lastSignalStrategyId?: string | null;
   lastSignalStrategyName?: string | null;
-  lastSignalContextSource?: "latest_signal" | "configured_fallback" | "unresolved" | null;
+  lastSignalContextSource?:
+    | "latest_signal"
+    | "latest_decision"
+    | "configured_fallback"
+    | "unresolved"
+    | null;
+  configuredStrategyId?: string | null;
+  configuredStrategyName?: string | null;
   lastSignalConditionSummary?: string | null;
   lastSignalIndicatorSummary?: string | null;
   lastSignalConditionLines?: Array<{

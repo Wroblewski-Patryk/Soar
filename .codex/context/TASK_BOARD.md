@@ -17,10 +17,6 @@ Last updated: 2026-04-23
 
 ## READY
 
-- [ ] `V1SIG-02 refactor(api-runtime-events): make no-trade/route/block reasons explicit runtime telemetry instead of silent absence where architecture permits diagnostics`
-- [ ] `V1SIG-03 fix(operator-signal-truth): separate configured fallback strategy context from accepted runtime signal truth in monitoring read models and web surfaces`
-- [ ] `V1SIG-04 audit(paper-reset-capital): verify and fix wallet-reset/runtime-capital parity for PAPER bots after reset checkpoints`
-- [ ] `V1SIG-05 qa(runtime-recovery): run focused backtest-paper-live parity and runtime delivery closure pack, then sync docs/context`
 - [ ] `V1CAP-01 docs(capital-authority): freeze wallet capital rules for PAPER reset and LIVE post-deposit recovery`
 - [ ] `V1CAP-02 test(wallet-runtime): add focused regression coverage for reset checkpoint and refreshed exchange balance semantics`
 - [ ] `V1CAP-03 fix(wallet-runtime): align runtime capital snapshot and wallet/operator read-model behavior`
@@ -33,7 +29,7 @@ Last updated: 2026-04-23
 
 ## IN_PROGRESS
 
-- [ ] `V1SIG-01 diagnose(prod-runtime-truth): reproduce and classify why active PAPER/LIVE bots stay at zero persisted runtime signals/positions/trades`
+- [ ] (none)
 
 ## BLOCKED
 
@@ -45,6 +41,16 @@ Last updated: 2026-04-23
 
 ## DONE
 
+- [x] `V1SIG-01 diagnose(prod-runtime-truth): reproduce and classify why active PAPER/LIVE bots stay at zero persisted runtime signals/positions/trades`
+  - 2026-04-23: Closed the diagnosis slice by confirming through authenticated production investigation plus local code tracing that the active PAPER/LIVE bots are not failing at the paper/live execution adapter boundary. The canonical runtime evidence points instead to repeated decision-stage `No trade decision after strategy merge` / `No votes` outcomes, while the monitoring read model previously overstated configured fallback strategy context as if it were accepted signal truth.
+- [x] `V1SIG-02 refactor(api-runtime-events): make no-trade/route/block reasons explicit runtime telemetry instead of silent absence where architecture permits diagnostics`
+  - 2026-04-23: Runtime final-candle processing now records explicit `PRETRADE_BLOCKED` telemetry when a bot market-group is already at `maxOpenPositions`, complementing the existing explicit diagnostics for `No trade decision after strategy merge`, pre-trade guard blocks, orchestration ignores, external-position ownership conflicts, exchange min-order constraints, and insufficient funds. Validation PASS: `pnpm --filter api exec vitest run src/modules/engine/runtimeFinalCandleDecision.service.test.ts`.
+- [x] `V1SIG-03 fix(operator-signal-truth): separate configured fallback strategy context from accepted runtime signal truth in monitoring read models and web surfaces`
+  - 2026-04-23: Runtime symbol stats and dashboard monitoring now distinguish `latest_signal`, `latest_decision`, and `configured_fallback`. `lastSignal*` fields no longer inherit fallback strategy identity, while configured strategy context stays explicit through dedicated `configuredStrategy*` fields and web labels. Validation PASS: `pnpm --filter api exec vitest run src/modules/bots/runtimeSymbolStatsReadModel.service.test.ts`, `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx`.
+- [x] `V1SIG-04 audit(paper-reset-capital): verify and fix wallet-reset/runtime-capital parity for PAPER bots after reset checkpoints`
+  - 2026-04-23: Verified the canonical paper reset capital path and locked it with focused coverage so runtime reference balance continues to use wallet `paperInitialBalance` plus realized PnL only from `paperResetAt` onward. Added a DB-backed aggregate regression for the same scenario, but local execution remains infra-blocked until Postgres/Docker is available. Validation PASS: `pnpm --filter api exec vitest run src/modules/engine/runtimeCapitalContext.service.test.ts`.
+- [x] `V1SIG-05 qa(runtime-recovery): run focused backtest-paper-live parity and runtime delivery closure pack, then sync docs/context`
+  - 2026-04-23: Focused non-DB runtime closure pack passed for final-candle diagnostics, runtime signal-loop behavior, read-model truth separation, web monitoring parity, API typecheck, web typecheck, and repository guardrails. DB-backed API e2e/parity suites were attempted but remain blocked locally because this workstation currently lacks reachable Docker Desktop / Postgres (`localhost:5432`). Validation PASS: `pnpm --filter api exec vitest run src/modules/engine/runtimeFinalCandleDecision.service.test.ts src/modules/engine/runtimeCapitalContext.service.test.ts src/modules/bots/runtimeSymbolStatsReadModel.service.test.ts`, `pnpm --filter api exec vitest run src/modules/engine/runtimeSignalLoop.service.test.ts`, `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx`, `pnpm --filter api run typecheck`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
 - [x] `V1SIG-A planning: runtime signal delivery recovery and truthful operator diagnostics`
   - 2026-04-23: Investigated production through authenticated API access on `https://api.soar.luckysparrow.ch` for the active PAPER bot `859fd4f7-cbb1-4f8e-b52a-5d119442e265` and LIVE bot `7204173d-af68-494a-bca8-95d3c1ba8ef1`. Both sessions are `RUNNING` with fresh heartbeats, but aggregate runtime truth shows `totalSignals=0`, `openPositionCount=0`, and `tradesTotal=0`. Runtime symbol monitoring currently exposes `configured_fallback` strategy context that can look like "signals" even when no persisted runtime signal exists. Published recovery packet `docs/planning/v1-runtime-signal-delivery-recovery-2026-04-23.md` and promoted the diagnosis slice plus follow-up recovery slices into the canonical queue.
 - [x] `V1CAP-A planning: wallet capital authority recovery for reset and post-deposit cases`

@@ -44,7 +44,11 @@ type RuntimeSymbolSignal = {
   >;
 };
 
-export type RuntimeSignalContextSource = 'latest_signal' | 'configured_fallback' | 'unresolved';
+export type RuntimeSignalContextSource =
+  | 'latest_signal'
+  | 'latest_decision'
+  | 'configured_fallback'
+  | 'unresolved';
 
 type RuntimeStrategyProjection = {
   name: string;
@@ -95,32 +99,43 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
     const latestSignal = params.latestSignalBySymbol.get(symbol);
     const lastPrice = params.lastPriceBySymbol.get(symbol) ?? null;
     const fallbackStrategyId = params.configuredStrategyBySymbol.get(symbol) ?? null;
-    const signalStrategyId = latestSignal?.strategyId ?? fallbackStrategyId;
+    const signalStrategyId = latestSignal?.strategyId ?? null;
     const signalContextSource: RuntimeSignalContextSource =
-      latestSignal?.strategyId != null
+      latestSignal?.signalDirection != null
         ? 'latest_signal'
-        : fallbackStrategyId != null
+        : latestSignal != null
+          ? 'latest_decision'
+          : fallbackStrategyId != null
           ? 'configured_fallback'
           : 'unresolved';
     const signalStrategy =
       signalStrategyId != null ? params.strategiesById.get(signalStrategyId) ?? null : null;
+    const configuredStrategy =
+      fallbackStrategyId != null ? params.strategiesById.get(fallbackStrategyId) ?? null : null;
+    const effectiveContextStrategyId = signalStrategyId ?? fallbackStrategyId;
+    const effectiveContextStrategy =
+      signalStrategyId != null ? signalStrategy : configuredStrategy;
     const signalSeriesKey =
-      signalStrategy?.interval != null ? `${symbol}|${signalStrategy.interval.trim().toLowerCase()}` : null;
+      effectiveContextStrategy?.interval != null
+        ? `${symbol}|${effectiveContextStrategy.interval.trim().toLowerCase()}`
+        : null;
     const signalCloses = signalSeriesKey ? params.candleClosesBySeries.get(signalSeriesKey) ?? [] : [];
     const effectiveSignalDirection = latestSignal?.signalDirection ?? null;
     const signalConditionSummary = buildSignalConditionSummary(
-      signalStrategy?.config ?? null,
+      effectiveContextStrategy?.config ?? null,
       effectiveSignalDirection
     );
     const signalAnalysis =
-      signalStrategyId != null ? latestSignal?.analysisByStrategy?.[signalStrategyId] ?? null : null;
+      effectiveContextStrategyId != null
+        ? latestSignal?.analysisByStrategy?.[effectiveContextStrategyId] ?? null
+        : null;
     const signalIndicatorSummary = buildSignalIndicatorSummary({
-      strategyConfig: signalStrategy?.config ?? null,
+      strategyConfig: effectiveContextStrategy?.config ?? null,
       direction: effectiveSignalDirection,
       closes: signalCloses,
     });
     const signalConditionLines = buildSignalConditionLines({
-      strategyConfig: signalStrategy?.config ?? null,
+      strategyConfig: effectiveContextStrategy?.config ?? null,
       direction: effectiveSignalDirection,
       closes: signalCloses,
     });
@@ -167,6 +182,8 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
       lastSignalStrategyId: latestSignal?.strategyId ?? null,
       lastSignalStrategyName: signalStrategy?.name ?? null,
       lastSignalContextSource: signalContextSource,
+      configuredStrategyId: fallbackStrategyId,
+      configuredStrategyName: configuredStrategy?.name ?? null,
       lastSignalConditionSummary: signalConditionSummary,
       lastSignalIndicatorSummary: useComputedSignalValues
         ? signalIndicatorSummary

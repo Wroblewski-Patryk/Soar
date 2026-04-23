@@ -4,6 +4,7 @@ import {
   createMarketGroup,
   createPayload,
   createStrategy,
+  createWalletForContext,
   registerAndLogin,
   resetBotsE2eState,
 } from './bots.e2e.shared';
@@ -237,6 +238,107 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     expect(aggregateRes.body.symbolStats.items).toHaveLength(0);
     expect(aggregateRes.body.positions.total).toBe(0);
     expect(aggregateRes.body.trades.total).toBe(0);
+  });
+
+  it('uses paper reset checkpoint as the active capital baseline in runtime monitoring summary', async () => {
+    const ownerEmail = 'bots-monitoring-aggregate-paper-reset@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({
+      where: { email: ownerEmail },
+      select: { id: true },
+    });
+
+    const strategyId = await createStrategy(owner, 'Monitoring Aggregate Reset Strategy');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    const walletId = await createWalletForContext(ownerEmail, {
+      mode: 'PAPER',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+    });
+    const resetAt = new Date('2026-04-19T11:00:00.000Z');
+    await prisma.wallet.update({
+      where: { id: walletId },
+      data: {
+        paperInitialBalance: 1_000,
+        paperResetAt: resetAt,
+      },
+    });
+
+    const createRes = await owner.post('/dashboard/bots').send(
+      createPayload({
+        strategyId,
+        marketGroupId,
+        walletId,
+      })
+    );
+    expect(createRes.status).toBe(201);
+    const botId = createRes.body.id as string;
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-19T11:05:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-19T11:10:00.000Z'),
+      },
+    });
+
+    await prisma.botRuntimeSymbolStat.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        sessionId: session.id,
+        symbol: 'BTCUSDT',
+        totalSignals: 1,
+        longEntries: 1,
+        snapshotAt: new Date('2026-04-19T11:09:00.000Z'),
+      },
+    });
+
+    await prisma.position.createMany({
+      data: [
+        {
+          userId: ownerUser.id,
+          botId,
+          walletId,
+          strategyId,
+          symbol: 'ETHUSDT',
+          side: 'LONG',
+          status: 'CLOSED',
+          entryPrice: 3200,
+          quantity: 1,
+          leverage: 1,
+          realizedPnl: -800,
+          openedAt: new Date('2026-04-19T10:00:00.000Z'),
+          closedAt: new Date('2026-04-19T10:30:00.000Z'),
+          managementMode: 'BOT_MANAGED',
+        },
+        {
+          userId: ownerUser.id,
+          botId,
+          walletId,
+          strategyId,
+          symbol: 'BTCUSDT',
+          side: 'LONG',
+          status: 'CLOSED',
+          entryPrice: 60000,
+          quantity: 0.01,
+          leverage: 1,
+          realizedPnl: -120,
+          openedAt: new Date('2026-04-19T11:06:00.000Z'),
+          closedAt: new Date('2026-04-19T11:08:00.000Z'),
+          managementMode: 'BOT_MANAGED',
+        },
+      ],
+    });
+
+    const aggregateRes = await owner.get(`/dashboard/bots/${botId}/runtime-monitoring/aggregate`);
+    expect(aggregateRes.status).toBe(200);
+    expect(aggregateRes.body.positions.summary.referenceBalance).toBe(880);
+    expect(aggregateRes.body.positions.summary.freeCash).toBe(880);
   });
 
   it('keeps aggregate positions/orders/history deterministic when running session is empty', async () => {

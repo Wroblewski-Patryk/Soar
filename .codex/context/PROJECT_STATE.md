@@ -188,6 +188,16 @@ Last updated: 2026-04-23
   canonical runtime signal row exists. This has been promoted into a dedicated
   `V1SIG-A` recovery wave focused on runtime delivery truth, operator
   diagnostics, and paper-reset capital parity.
+- 2026-04-23: `V1SIG-A` is closed as a truth-and-diagnostics wave. Runtime now
+  emits explicit `GROUP_MAX_OPEN_POSITIONS_REACHED` pre-trade telemetry, the
+  monitoring read model separates `latest_signal`, `latest_decision`, and
+  `configured_fallback`, web surfaces show fallback strategy context without
+  claiming it as accepted signal truth, and paper reset capital parity remains
+  locked to wallet `paperInitialBalance + post-reset realizedPnL`. The
+  residual production finding is now narrower and more honest: the affected
+  bots are currently reaching real `No votes` / `No trade decision after
+  strategy merge` outcomes, not silently losing accepted signals on the paper
+  or live adapter path.
 - 2026-04-23: wallet/runtime capital authority now has a dedicated follow-up
   planning wave `V1CAP-A`, covering two operator-critical cases that need
   explicit V1 closure: `PAPER` reset checkpoint semantics and `LIVE`

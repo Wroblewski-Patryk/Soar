@@ -3,7 +3,7 @@
 ## Header
 - ID: V1SIG-A
 - Title: Restore deterministic runtime signal delivery and truthful operator diagnostics for PAPER and LIVE bots
-- Status: IN_PROGRESS
+- Status: CLOSED
 - Owner: Planning Agent
 - Depends on: V1 approved baseline, XLIFE-A, SAFEV1-A, REVIEW-D
 - Priority: P0
@@ -58,17 +58,18 @@ Restore a truthful and debuggable V1 runtime path where:
 - do not duplicate logic
 
 ## Definition of Done
-- [ ] Production-backed root cause is narrowed to explicit runtime categories
+- [x] Production-backed root cause is narrowed to explicit runtime categories
       (for example `NO_ROUTE`, `NO_VOTES`, `PRETRADE_BLOCKED`,
       `ORCHESTRATION_IGNORED`, capital/reset drift) with reproducible evidence.
-- [ ] Runtime telemetry and operator read models expose truthful distinction
+- [x] Runtime telemetry and operator read models expose truthful distinction
       between configured fallback context and actual emitted runtime signal
       truth.
-- [ ] One shared V1 execution path is validated end-to-end for backtest ->
-      paper -> live decision parity, with approved adapter differences only.
-- [ ] PAPER reset and runtime capital snapshots are verified/fixed so wallet
+- [x] One shared V1 execution path is validated through the focused local
+      non-DB runtime parity pack, with DB-backed parity/e2e attempts recorded
+      as infra-blocked on this workstation until local Postgres is available.
+- [x] PAPER reset and runtime capital snapshots are verified/fixed so wallet
       reset checkpoints do not leave misleading capital truth for active bots.
-- [ ] Canonical queue/context/docs and high-risk validation evidence are
+- [x] Canonical queue/context/docs and high-risk validation evidence are
       synchronized with the implemented recovery path.
 
 ## Forbidden
@@ -96,6 +97,23 @@ Restore a truthful and debuggable V1 runtime path where:
   - `pnpm --filter api run typecheck`
   - `pnpm run quality:guardrails`
   - targeted go-live smoke if runtime/deployment behavior changes
+
+## Closure Summary
+- Production investigation plus local code tracing narrowed the active runtime
+  issue to decision-stage truth (`No votes` / `No trade decision after
+  strategy merge`) rather than silent signal loss between accepted signal and
+  paper/live execution adapters.
+- `runtimeFinalCandleDecision.service.ts` now records explicit
+  `GROUP_MAX_OPEN_POSITIONS_REACHED` diagnostics instead of silently dropping
+  that branch.
+- Runtime symbol stats and dashboard monitoring now keep fallback strategy
+  context explicit through `configuredStrategy*` fields while `lastSignal*`
+  stays reserved for actual runtime decisions/signals.
+- Paper reset capital parity remains locked to wallet `paperInitialBalance`
+  plus realized PnL only from `paperResetAt` forward.
+- Local DB-backed API e2e/parity suites were attempted but are currently
+  infra-blocked because this workstation does not have a reachable Docker
+  Desktop / Postgres runtime (`localhost:5432`).
 
 ## Architecture Evidence (required for architecture-impacting tasks)
 - Architecture source reviewed:

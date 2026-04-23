@@ -115,6 +115,7 @@ const buildAggregatePayload = (botId: string, historySymbol: string, tradeSymbol
         symbol: "BTCUSDT",
         lastSignalDirection: "LONG",
         lastSignalContextSource: botId === "bot-a" ? "configured_fallback" : "latest_signal",
+        configuredStrategyName: botId === "bot-a" ? "Alpha Fallback Strategy" : null,
         lastSignalConditionLines: [
           {
             scope: "LONG",

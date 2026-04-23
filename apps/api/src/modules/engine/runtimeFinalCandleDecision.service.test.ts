@@ -124,6 +124,36 @@ describe('runtimeFinalCandleDecision.service', () => {
       expect.objectContaining({
         eventType: 'SIGNAL_DECISION',
         level: 'DEBUG',
+        message: 'No trade decision after strategy merge',
+        payload: expect.objectContaining({
+          merge: expect.objectContaining({
+            reason: 'no_votes',
+          }),
+        }),
+      })
+    );
+  });
+
+  it('records explicit PRETRADE_BLOCKED diagnostics when group max open positions is reached', async () => {
+    const { context, createSignal, orchestrateFn, recordRuntimeEvent } = createContext({
+      direction: 'LONG',
+    });
+    context.countOpenPositionsForBotAndSymbols = vi.fn(async () => 2);
+
+    await processRuntimeFinalCandleDecision(baseEvent, context as any);
+
+    expect(createSignal).not.toHaveBeenCalled();
+    expect(orchestrateFn).not.toHaveBeenCalled();
+    expect(recordRuntimeEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: 'PRETRADE_BLOCKED',
+        level: 'WARN',
+        message: 'Signal blocked because bot market-group reached max open positions',
+        payload: expect.objectContaining({
+          reason: 'GROUP_MAX_OPEN_POSITIONS_REACHED',
+          openPositionsInGroup: 2,
+          maxOpenPositions: 2,
+        }),
       })
     );
   });
