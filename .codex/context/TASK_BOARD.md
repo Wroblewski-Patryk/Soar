@@ -37,6 +37,8 @@ Last updated: 2026-04-23
 
 ## DONE
 
+- [x] `AUTH-INTERCEPTOR-REGRESSION lock protected-route auth-me redirect semantics`
+  - 2026-04-23: Added a focused shared-API interceptor regression test so protected-route `/auth/me` behavior is now explicit for `401` session-expired redirect, `429` non-redirect handling, and repeated backend-failure fallback to `/`. Validation PASS: `pnpm --filter web exec vitest run src/lib/api.test.ts src/context/AuthContext.test.tsx src/i18n/useOptionalI18n.test.tsx`.
 - [x] `AUTH-BOOTSTRAP-REGRESSION lock single auth bootstrap fetch across rerenders`
   - 2026-04-23: Added a focused `AuthProvider` regression test so providerless bootstrap auth now proves it performs only one initial `/auth/me` fetch across parent rerenders, complementing the optional-i18n fallback stabilization test. Validation PASS: `pnpm --filter web exec vitest run src/context/AuthContext.test.tsx src/i18n/useOptionalI18n.test.tsx`.
 - [x] `PROD-AUTH-HOTFIX stop providerless i18n fallback from looping auth bootstrap`

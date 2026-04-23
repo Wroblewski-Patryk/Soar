@@ -129,6 +129,9 @@ Last updated: 2026-04-23
 - 2026-04-23: web auth bootstrap now has a direct `AuthProvider` rerender
   regression test, so the `/auth/me` loop fix is locked both at the optional
   i18n helper level and at the provider bootstrap boundary itself.
+- 2026-04-23: the shared web API interceptor now has direct regression coverage
+  for protected-route `/auth/me` behavior, explicitly locking `401` redirect,
+  non-redirect `429`, and repeated-backend-failure fallback semantics.
 - 2026-04-22: `scripts/runV1ReleaseGate.mjs` now selects the latest same-day
   evidence artifact by full timestamp-bearing filename, preventing older
   same-day restore-drill failures from shadowing newer PASS artifacts.

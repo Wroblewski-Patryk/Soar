@@ -61,4 +61,12 @@ api.interceptors.response.use(
   }
 );
 
+export const __apiInternals = {
+  isProtectedRoute,
+  resetForTests: () => {
+    hardRedirectInProgress = false;
+    authMeBackendFailureCount = 0;
+  },
+};
+
 export default api;
