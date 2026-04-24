@@ -38,10 +38,7 @@ Last updated: 2026-04-25
   operator signal surfaces reuse the shared indicator analysis kernel, and
   configured market snapshots no longer depend on the old subset formatter that
   emitted opaque `X` placeholders. Full web validation, build, and focused API
-  parity packs are green for the indicator wave. One separate repository follow-up
-  remains outside `V1IND-A`: full `api` e2e still has 7 red cases in older
-  backtests/orders runtime-scope suites that reflect post-`V1BOT` contract/test
-  drift rather than indicator-parity regressions. `V1POSTBOT-A` is now also
+  parity packs are green for the indicator wave. `V1POSTBOT-A` is now also
   closed: the remaining red full-API cases were resolved by aligning stale
   `backtests/orders` e2e fixtures to the canonical singular bot contract,
   which restored full `api` suite parity for pre-trade expectations,

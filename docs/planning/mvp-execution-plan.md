@@ -2630,6 +2630,12 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 ### Progress Log (Phase DEPLOY-2026-04-25 - Coolify Web Build Hotfix Closure)
 - 2026-04-25: Closed `DEPLOY-2026-04-25-B` as the smallest follow-up to the same-day Coolify web deploy hotfix by rerunning the exact local gate that had blocked deployment. Validation PASS: `pnpm --filter web run build`, `pnpm run quality:guardrails`. No additional code changes were required in this closure slice.
 
+## Phase DOCSYNC-2026-04-25 - Project State Drift Cleanup (Closed 2026-04-25)
+- [x] `DOCSYNC-2026-04-25-A docs(sync): remove stale V1POSTBOT full-api red-suite drift from project state`
+
+### Progress Log (Phase DOCSYNC-2026-04-25 - Project State Drift Cleanup)
+- 2026-04-25: Closed `DOCSYNC-2026-04-25-A` by removing the stale `PROJECT_STATE.md` sentence that still claimed a separate 7-case full-API red-suite follow-up outside `V1IND-A`, keeping the canonical product snapshot aligned with the already-closed `V1POSTBOT-A` parity recovery. Validation PASS: `pnpm run quality:guardrails`.
+
 ## Phase ARCCON - Architecture Conformance and Service Ownership Closure (Closed 2026-04-21)
 - [x] `ARCCON-01 test(api-red): lock fail-closed manual-order strategy context when selected bot has no symbol-matching strategy`
 - [x] `ARCCON-02 fix(api-orders): remove hidden first-strategy fallback from manual-order context resolution and keep unresolved state explicit`

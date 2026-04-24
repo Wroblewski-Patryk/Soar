@@ -39,6 +39,9 @@ Last updated: 2026-04-25
 
 ## DONE
 
+- [x] `DOCSYNC-2026-04-25-A docs(sync): remove stale V1POSTBOT full-api red-suite drift from project state`
+  - 2026-04-25: Removed the stale `PROJECT_STATE.md` sentence that still claimed a separate 7-case full-API red-suite follow-up outside `V1IND-A`, keeping project-state wording aligned with the already-closed `V1POSTBOT-A` parity recovery.
+
 - [x] `DEPLOY-2026-04-25-B qa(web-build): validate Coolify deploy hotfix locally and sync closure evidence`
   - 2026-04-25: Verified the local deploy gate for the same-day Coolify hotfix. Validation PASS: `pnpm --filter web run build`, `pnpm run quality:guardrails`.
 
