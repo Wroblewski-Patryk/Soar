@@ -250,6 +250,12 @@ Last updated: 2026-04-24
   snapshots instead of reading like accepted or evaluated runtime decisions,
   while still showing the same canonical condition lines for operator
   comparison.
+- 2026-04-24: `V1SURF-05` is now closed. `dashboard-home` no longer rebuilds
+  selected-bot runtime aggregate payloads in the browser when the aggregate
+  endpoint fails; the controller keeps real session truth from
+  `listBotRuntimeSessions`, clears aggregate data fail-closed, and exposes an
+  explicit degraded selected-bot state instead of reconstructing symbol stats,
+  positions, and trades from session endpoints.
 - 2026-04-24: the next post-`V1IND-A` operator-truth follow-up is now active
   as `V1MON-A`. The first slice is already closed: bot monitoring no longer
   reconstructs aggregate runtime truth client-side when the backend aggregate

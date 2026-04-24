@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { I18nProvider } from "../../../i18n/I18nProvider";
 import HomeLiveWidgets from "./HomeLiveWidgets";
+import { buildMonitoringAggregateFromSessionMocks } from "./HomeLiveWidgets.test-helpers";
 
 const listBotsMock = vi.hoisted(() => vi.fn());
 const getBotRuntimeGraphMock = vi.hoisted(() => vi.fn());
@@ -126,7 +127,14 @@ describe("HomeLiveWidgets open orders actions", () => {
     vi.clearAllMocks();
     lookupCoinIconsMock.mockResolvedValue(new Map());
     getBotRuntimeGraphMock.mockImplementation(async (botId: string) => runtimeGraph(botId));
-    getBotRuntimeMonitoringAggregateMock.mockRejectedValue(new Error("aggregate unavailable"));
+    getBotRuntimeMonitoringAggregateMock.mockImplementation(
+      buildMonitoringAggregateFromSessionMocks({
+        listBotRuntimeSessionsMock,
+        listBotRuntimeSessionSymbolStatsMock,
+        listBotRuntimeSessionPositionsMock,
+        listBotRuntimeSessionTradesMock,
+      })
+    );
     closeBotRuntimeSessionPositionMock.mockResolvedValue({
       status: "closed",
       positionId: "position-default",

@@ -7,12 +7,13 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `V1SURF-05 web(aggregate-truth): remove selected-bot dashboard aggregate fallback and fail closed on aggregate errors`
-## NEXT
 - [ ] `V1SURF-06 web(inherited-venue): align runtime sidebar and manual-order estimate semantics to inherited bot context`
+## NEXT
 - [ ] `V1SURF-07 web(bot-monitoring-context): align quick-context/control venue labels and capability checks to inherited context`
+- [ ] `V1SURF-08 qa(closure): rerun focused residual surface-truth pack and sync canonical docs/context`
 ## PIPELINE
 - [x] `V1SURF-B planning queued (residual operator-surface truth closure after V1LIFE)`
+- [x] `V1SURF-05 web(aggregate-truth): remove selected-bot dashboard aggregate fallback and fail closed on aggregate errors`
 - [x] `V1LIFE-01 docs+web(contract): freeze and expose 0=no-limit semantics for strategy order/position lifetime`
 - [x] `V1LIFE-02 api(shared-lifetime): add one canonical strategy-lifetime resolver for order and position policies`
 - [x] `V1FINAL-03 qa(prod-closure): rerun focused runtime closure pack and capture remaining infra-only blockers`

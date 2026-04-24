@@ -3,7 +3,7 @@
 ## Header
 - ID: V1SURF-B
 - Title: Residual operator-surface truth closure after V1LIFE
-- Status: READY
+- Status: IN_PROGRESS
 - Owner: Frontend Builder
 - Depends on: V1MON-A, V1LIFE-A
 - Priority: P1
@@ -40,7 +40,7 @@ the browser.
 - do not duplicate logic
 
 ## Definition of Done
-- [ ] `V1SURF-05` dashboard-home no longer reconstructs aggregate runtime truth
+- [x] `V1SURF-05` dashboard-home no longer reconstructs aggregate runtime truth
       client-side when aggregate API fails.
 - [ ] `V1SURF-06` dashboard runtime sidebar and manual-order estimates derive
       venue semantics from inherited bot context or explicit manual-order
@@ -59,6 +59,7 @@ the browser.
 
 ## Validation Evidence
 - Tests:
+  - `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.aggregate-error.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.aggregate-wallet.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.open-orders-actions.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.open-orders-source.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.test.tsx`
   - `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.aggregate-history.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.aggregate-wallet.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.manual-order-scope.test.tsx src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx`
   - `pnpm --filter web exec vitest run src/features/bots/components/BotsManagement.test.tsx src/features/bots/services/botsMonitoringAggregate.service.test.ts`
   - `pnpm --filter web run typecheck`
@@ -116,6 +117,13 @@ The audit that triggered this wave found a concrete architectural regression:
 `V1MON-A` already removed browser-side aggregate reconstruction from bot
 monitoring, but dashboard-home still contains the same anti-pattern in a
 different controller.
+
+`V1SURF-05` is now closed. `useHomeLiveWidgetsController.ts` no longer contains
+`buildAggregateFallback(...)`, and selected-bot dashboard runtime state now
+keeps only session truth plus explicit degraded aggregate state when
+`getBotRuntimeMonitoringAggregate()` fails. Focused regression coverage was
+added in `HomeLiveWidgets.aggregate-error.test.tsx` to prove that session-level
+symbol stats/positions/trades fallbacks are not invoked on aggregate failure.
 
 This wave should prefer shared helpers already present in
 `features/bots/utils/runtimeSurfaceTruth.ts` and must not add a second venue

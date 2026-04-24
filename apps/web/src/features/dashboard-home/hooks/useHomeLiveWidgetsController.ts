@@ -5,9 +5,7 @@ import {
   Bot,
   BotRuntimeGraph,
   BotRuntimeMonitoringAggregateResponse,
-  BotRuntimePositionsResponse,
   BotRuntimeSessionStatus,
-  BotRuntimeSymbolStatsResponse,
   BotRuntimeTrade,
   BotRuntimeSessionListItem,
   BotRuntimeTradesResponse,
@@ -205,21 +203,6 @@ type UseHomeLiveWidgetsControllerArgs = {
     botId: string,
     query?: { status?: BotRuntimeSessionStatus; symbol?: string; sessionsLimit?: number; perSessionLimit?: number }
   ) => Promise<BotRuntimeMonitoringAggregateResponse>;
-  listBotRuntimeSessionPositions: (
-    botId: string,
-    sessionId: string,
-    query?: { limit?: number; symbol?: string }
-  ) => Promise<BotRuntimePositionsResponse>;
-  listBotRuntimeSessionSymbolStats: (
-    botId: string,
-    sessionId: string,
-    query?: { limit?: number; symbol?: string }
-  ) => Promise<BotRuntimeSymbolStatsResponse>;
-  listBotRuntimeSessionTrades: (
-    botId: string,
-    sessionId: string,
-    query?: Record<string, unknown>
-  ) => Promise<BotRuntimeTradesResponse>;
   listBotRuntimeSessions: (botId: string, query?: { limit?: number }) => Promise<BotRuntimeSessionListItem[]>;
   listBots: () => Promise<Bot[]>;
   t: (key: TranslationKey) => string;
@@ -229,9 +212,6 @@ export const useHomeLiveWidgetsController = ({
   createMarketStreamEventSource,
   getBotRuntimeGraph,
   getBotRuntimeMonitoringAggregate,
-  listBotRuntimeSessionPositions,
-  listBotRuntimeSessionSymbolStats,
-  listBotRuntimeSessionTrades,
   listBotRuntimeSessions,
   listBots,
   t,
@@ -268,203 +248,6 @@ export const useHomeLiveWidgetsController = ({
   const lastSseTickerAtRef = useRef<number | null>(null);
   const lastSseDrivenRefreshAtRef = useRef(0);
   const signalRailRef = useRef<HTMLDivElement | null>(null);
-
-  const buildAggregateFallback = useCallback(
-    async (botId: string, sessions: BotRuntimeSessionListItem[]): Promise<BotRuntimeMonitoringAggregateResponse> => {
-      const scopedSessions = sessions.slice(0, 20);
-      const payloads = await Promise.all(
-        scopedSessions.map(async (session) => {
-          const [symbolStats, positions, trades] = await Promise.all([
-            listBotRuntimeSessionSymbolStats(botId, session.id, { limit: 200 }),
-            listBotRuntimeSessionPositions(botId, session.id, { limit: 200 }),
-            listBotRuntimeSessionTrades(botId, session.id, { limit: 200 }),
-          ]);
-          return { session, symbolStats, positions, trades };
-        })
-      );
-      const primarySession = pickPrimarySession(scopedSessions);
-      const primaryPayload =
-        (primarySession
-          ? payloads.find((payload) => payload.session.id === primarySession.id)
-          : null) ?? payloads[0] ?? null;
-      const primaryPositionsSummary = (primaryPayload?.positions.summary ?? {}) as Record<string, unknown>;
-
-      const dedupeById = <T extends { id: string }>(items: T[]) => {
-        const map = new Map<string, T>();
-        for (const item of items) {
-          if (!map.has(item.id)) map.set(item.id, item);
-        }
-        return [...map.values()];
-      };
-
-      const symbolItems = dedupeById(
-        payloads.flatMap((payload) =>
-          payload.symbolStats.items.map((item) => ({
-            ...item,
-            id: `aggregate-${item.id}`,
-            sessionId: "AGGREGATE",
-          }))
-        )
-      ).sort((a, b) => a.symbol.localeCompare(b.symbol));
-
-      const symbolSummary = symbolItems.reduce(
-        (acc, item) => ({
-          totalSignals: acc.totalSignals + item.totalSignals,
-          longEntries: acc.longEntries + item.longEntries,
-          shortEntries: acc.shortEntries + item.shortEntries,
-          exits: acc.exits + item.exits,
-          dcaCount: acc.dcaCount + item.dcaCount,
-          closedTrades: acc.closedTrades + item.closedTrades,
-          winningTrades: acc.winningTrades + item.winningTrades,
-          losingTrades: acc.losingTrades + item.losingTrades,
-          realizedPnl: acc.realizedPnl + item.realizedPnl,
-          unrealizedPnl: acc.unrealizedPnl + (item.unrealizedPnl ?? 0),
-          totalPnl: acc.totalPnl + item.realizedPnl + (item.unrealizedPnl ?? 0),
-          grossProfit: acc.grossProfit + item.grossProfit,
-          grossLoss: acc.grossLoss + item.grossLoss,
-          feesPaid: acc.feesPaid + item.feesPaid,
-          openPositionCount: acc.openPositionCount + item.openPositionCount,
-          openPositionQty: acc.openPositionQty + item.openPositionQty,
-        }),
-        {
-          totalSignals: 0,
-          longEntries: 0,
-          shortEntries: 0,
-          exits: 0,
-          dcaCount: 0,
-          closedTrades: 0,
-          winningTrades: 0,
-          losingTrades: 0,
-          realizedPnl: 0,
-          unrealizedPnl: 0,
-          totalPnl: 0,
-          grossProfit: 0,
-          grossLoss: 0,
-          feesPaid: 0,
-          openPositionCount: 0,
-          openPositionQty: 0,
-        }
-      );
-
-      const openOrders = dedupeById(payloads.flatMap((payload) => payload.positions.openOrders)).sort(
-        (a, b) => toTimestamp(b.submittedAt ?? b.createdAt) - toTimestamp(a.submittedAt ?? a.createdAt)
-      );
-      const openItems = dedupeById(payloads.flatMap((payload) => payload.positions.openItems)).sort(
-        (a, b) => toTimestamp(b.openedAt) - toTimestamp(a.openedAt)
-      );
-      const historyItems = dedupeById(payloads.flatMap((payload) => payload.positions.historyItems)).sort(
-        (a, b) => toTimestamp(b.closedAt) - toTimestamp(a.closedAt)
-      );
-      const tradeItems = dedupeById(payloads.flatMap((payload) => payload.trades.items)).sort(
-        (a, b) => toTimestamp(b.executedAt) - toTimestamp(a.executedAt)
-      );
-
-      const startedAt =
-        scopedSessions
-          .map((session) => session.startedAt)
-          .filter(Boolean)
-          .sort((a, b) => toTimestamp(a) - toTimestamp(b))[0] ?? new Date().toISOString();
-      const finishedAt =
-        scopedSessions
-          .map((session) => session.finishedAt)
-          .filter((value): value is string => Boolean(value))
-          .sort((a, b) => toTimestamp(b) - toTimestamp(a))[0] ?? null;
-      const lastHeartbeatAt =
-        scopedSessions
-          .map((session) => session.lastHeartbeatAt)
-          .filter((value): value is string => Boolean(value))
-          .sort((a, b) => toTimestamp(b) - toTimestamp(a))[0] ?? null;
-
-      return {
-        sessionDetail: {
-          id: "AGGREGATE",
-          botId,
-          mode: scopedSessions.some((session) => session.mode === "LIVE") ? "LIVE" : "PAPER",
-          status: scopedSessions.some((session) => session.status === "RUNNING")
-            ? "RUNNING"
-            : scopedSessions.some((session) => session.status === "FAILED")
-              ? "FAILED"
-              : scopedSessions.some((session) => session.status === "CANCELED")
-                ? "CANCELED"
-                : "COMPLETED",
-          startedAt,
-          finishedAt,
-          lastHeartbeatAt,
-          stopReason: null,
-          errorMessage: null,
-          metadata: { aggregate: true, sessionsCount: scopedSessions.length },
-          createdAt: startedAt,
-          updatedAt: lastHeartbeatAt ?? finishedAt ?? startedAt,
-          durationMs: scopedSessions.reduce((acc, session) => acc + Math.max(0, session.durationMs), 0),
-          eventsCount: scopedSessions.reduce((acc, session) => acc + session.eventsCount, 0),
-          symbolsTracked: symbolItems.length,
-          summary: {
-            totalSignals: symbolSummary.totalSignals,
-            longEntries: symbolSummary.longEntries,
-            shortEntries: symbolSummary.shortEntries,
-            exits: symbolSummary.exits,
-            dcaCount: symbolSummary.dcaCount,
-            closedTrades: symbolSummary.closedTrades,
-            winningTrades: symbolSummary.winningTrades,
-            losingTrades: symbolSummary.losingTrades,
-            realizedPnl: tradeItems.reduce((acc, item) => acc + item.realizedPnl, 0),
-            grossProfit: symbolSummary.grossProfit,
-            grossLoss: symbolSummary.grossLoss,
-            feesPaid: tradeItems.reduce((acc, item) => acc + item.fee, 0),
-            openPositionCount: openItems.length,
-            openPositionQty: openItems.reduce((acc, item) => acc + item.quantity, 0),
-          },
-        },
-        symbolStats: {
-          sessionId: "AGGREGATE",
-          items: symbolItems,
-          summary: symbolSummary,
-        },
-        positions: {
-          sessionId: "AGGREGATE",
-          total: openItems.length + historyItems.length,
-          openCount: openItems.length,
-          closedCount: historyItems.length,
-          openOrdersCount: openOrders.length,
-          window: {
-            startedAt,
-            finishedAt: finishedAt ?? new Date().toISOString(),
-          },
-          summary: {
-            ...primaryPositionsSummary,
-            realizedPnl: historyItems.reduce((acc, item) => acc + item.realizedPnl, 0),
-            unrealizedPnl: openItems.reduce((acc, item) => acc + (item.unrealizedPnl ?? 0), 0),
-            feesPaid: [...openItems, ...historyItems].reduce((acc, item) => acc + item.feesPaid, 0),
-          },
-          openOrders,
-          openItems,
-          historyItems,
-        },
-        trades: {
-          sessionId: "AGGREGATE",
-          total: tradeItems.length,
-          meta: {
-            page: 1,
-            pageSize: tradeItems.length || 1,
-            total: tradeItems.length,
-            totalPages: 1,
-            hasPrev: false,
-            hasNext: false,
-          },
-          window: {
-            startedAt,
-            finishedAt: finishedAt ?? new Date().toISOString(),
-          },
-          items: tradeItems,
-        },
-      };
-    },
-    [
-      listBotRuntimeSessionPositions,
-      listBotRuntimeSessionSymbolStats,
-      listBotRuntimeSessionTrades,
-    ]
-  );
 
   const load = useCallback(async (opts?: { silent?: boolean }) => {
     const silent = opts?.silent ?? false;
@@ -522,45 +305,53 @@ export const useHomeLiveWidgetsController = ({
                 runtimeGraph,
               };
             }
-            let aggregate: BotRuntimeMonitoringAggregateResponse;
             try {
-              aggregate = await getBotRuntimeMonitoringAggregate(bot.id, {
+              const aggregate = await getBotRuntimeMonitoringAggregate(bot.id, {
                 sessionsLimit: sessions.length,
                 perSessionLimit: 200,
               });
-            } catch {
-              aggregate = await buildAggregateFallback(bot.id, sessions);
-            }
-            return {
-              bot,
-              session: {
-                id: aggregate.sessionDetail.id,
-                botId: aggregate.sessionDetail.botId,
-                mode: aggregate.sessionDetail.mode,
-                status: aggregate.sessionDetail.status,
-                startedAt: aggregate.sessionDetail.startedAt,
-                finishedAt: aggregate.sessionDetail.finishedAt,
-                lastHeartbeatAt: aggregate.sessionDetail.lastHeartbeatAt,
-                stopReason: aggregate.sessionDetail.stopReason,
-                errorMessage: aggregate.sessionDetail.errorMessage,
-                createdAt: aggregate.sessionDetail.createdAt,
-                updatedAt: aggregate.sessionDetail.updatedAt,
-                durationMs: aggregate.sessionDetail.durationMs,
-                eventsCount: aggregate.sessionDetail.eventsCount,
-                symbolsTracked: aggregate.sessionDetail.symbolsTracked,
-                summary: {
-                  totalSignals: aggregate.sessionDetail.summary.totalSignals,
-                  dcaCount: aggregate.sessionDetail.summary.dcaCount,
-                  closedTrades: aggregate.sessionDetail.summary.closedTrades,
-                  realizedPnl: aggregate.sessionDetail.summary.realizedPnl,
+              return {
+                bot,
+                session: {
+                  id: aggregate.sessionDetail.id,
+                  botId: aggregate.sessionDetail.botId,
+                  mode: aggregate.sessionDetail.mode,
+                  status: aggregate.sessionDetail.status,
+                  startedAt: aggregate.sessionDetail.startedAt,
+                  finishedAt: aggregate.sessionDetail.finishedAt,
+                  lastHeartbeatAt: aggregate.sessionDetail.lastHeartbeatAt,
+                  stopReason: aggregate.sessionDetail.stopReason,
+                  errorMessage: aggregate.sessionDetail.errorMessage,
+                  createdAt: aggregate.sessionDetail.createdAt,
+                  updatedAt: aggregate.sessionDetail.updatedAt,
+                  durationMs: aggregate.sessionDetail.durationMs,
+                  eventsCount: aggregate.sessionDetail.eventsCount,
+                  symbolsTracked: aggregate.sessionDetail.symbolsTracked,
+                  summary: {
+                    totalSignals: aggregate.sessionDetail.summary.totalSignals,
+                    dcaCount: aggregate.sessionDetail.summary.dcaCount,
+                    closedTrades: aggregate.sessionDetail.summary.closedTrades,
+                    realizedPnl: aggregate.sessionDetail.summary.realizedPnl,
+                  },
                 },
-              },
-              actionSessionId: primary.id,
-              symbolStats: aggregate.symbolStats,
-              positions: aggregate.positions,
-              trades: aggregate.trades,
-              runtimeGraph,
-            };
+                actionSessionId: primary.id,
+                symbolStats: aggregate.symbolStats,
+                positions: aggregate.positions,
+                trades: aggregate.trades,
+                runtimeGraph,
+              };
+            } catch {
+              return {
+                bot,
+                session: primary,
+                actionSessionId: null,
+                symbolStats: null,
+                positions: null,
+                trades: null,
+                runtimeGraph,
+                loadError: t("dashboard.home.runtime.noSignalData"),
+              };
+            }
           } catch (err) {
             return {
               bot,
@@ -593,7 +384,6 @@ export const useHomeLiveWidgetsController = ({
       if (!silent) setLoading(false);
     }
   }, [
-    buildAggregateFallback,
     getBotRuntimeGraph,
     getBotRuntimeMonitoringAggregate,
     listBotRuntimeSessions,

@@ -18,9 +18,6 @@ import {
   getBotRuntimeGraph,
   getBotRuntimeMonitoringAggregate,
   listBots,
-  listBotRuntimeSessionPositions,
-  listBotRuntimeSessionSymbolStats,
-  listBotRuntimeSessionTrades,
   listBotRuntimeSessions,
 } from "../../../features/bots/services/bots.service";
 import { supportsExchangeCapability } from "../../../features/exchanges/exchangeCapabilities";
@@ -173,9 +170,6 @@ export default function HomeLiveWidgets() {
     createMarketStreamEventSource,
     getBotRuntimeGraph,
     getBotRuntimeMonitoringAggregate,
-    listBotRuntimeSessionPositions,
-    listBotRuntimeSessionSymbolStats,
-    listBotRuntimeSessionTrades,
     listBotRuntimeSessions,
     listBots,
     t,
