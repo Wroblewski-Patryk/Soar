@@ -22,6 +22,38 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-24 - Post-V1BOT e2e fixtures must use direct singular bot context
+- Context: after `V1BOT-A` and `V1IND-A`, the remaining red full-API cases sat
+  in `backtests/orders` suites rather than in runtime/indicator code.
+- Symptom: full `pnpm --filter api run test -- --run` still failed in a small
+  cluster of e2e tests even though focused runtime, orders, and indicator packs
+  were green. The failing cases created LIVE/PAPER bots with only partial
+  context and then expected singular-bot runtime behavior for pre-trade,
+  manual-order ownership, carryover open orders, and exchange-synced runtime
+  position visibility.
+- Root cause: older fixtures were still building bots through legacy or
+  half-populated topology assumptions (`walletId` missing, `symbolGroupId`
+  missing, `strategyId` missing, or only legacy link rows present) after the
+  canonical runtime/API path had already moved to one direct bot context.
+- Guardrail: any new or updated API e2e that asserts runtime, manual-order, or
+  pre-trade behavior must create bots with direct singular refs unless the test
+  is explicitly about legacy compatibility handling.
+- Preferred pattern:
+```text
+1) Create wallet, market universe, symbol group, and strategy explicitly.
+2) Create the bot with direct `walletId`, `symbolGroupId`, and `strategyId` when the scenario depends on runtime or selected-bot truth.
+3) Use legacy graph rows only in tests that are specifically verifying compatibility or repair paths.
+4) When a full-suite failure appears after an architecture migration, classify stale fixtures before changing runtime code.
+```
+- Avoid: creating partially configured LIVE bots and expecting them to behave
+  like canonical singular-context bots, or treating legacy topology rows as the
+  default fixture path after the direct refs are the approved contract.
+- Evidence:
+  - 2026-04-24 `V1POSTBOT-A`: the last 7 red full-API cases in
+    `backtests/orders` were cleared by aligning fixtures to direct
+    `walletId/symbolGroupId/strategyId`, after which full
+    `pnpm --filter api run test -- --run` passed.
+
 ### 2026-04-24 - Dashboard manual order must derive truth from bot scope, and PAPER market opens need a canonical fill price
 - Context: authenticated production investigation after the singular bot
   runtime migration and paper-capital fix, when a newly created paper bot was

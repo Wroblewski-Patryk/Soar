@@ -3,7 +3,7 @@
 ## Header
 - ID: V1POSTBOT-A
 - Title: Recover full API contract parity after single-context bot migration
-- Status: READY
+- Status: CLOSED
 - Owner: Planning Agent
 - Depends on: V1BOT-A
 - Priority: P0
@@ -61,15 +61,15 @@ one canonical singular bot context.
   direct dependency
 
 ## Definition of Done
-- [ ] Full API e2e no longer contains the current post-`V1BOT` drift failures
+- [x] Full API e2e no longer contains the current post-`V1BOT` drift failures
       in `backtests/orders` runtime-scope suites.
-- [ ] Pre-trade and backtest/live reconciliation expectations are explicit and
+- [x] Pre-trade and backtest/live reconciliation expectations are explicit and
       aligned with the singular bot contract.
-- [ ] Manual-order persistence and runtime session positions read/write paths
+- [x] Manual-order persistence and runtime session positions read/write paths
       use inherited singular bot context consistently for `walletId`,
       `strategyId`, carryover open orders, and `EXCHANGE_SYNC BOT_MANAGED`
       ownership.
-- [ ] `pnpm --filter api run test -- --run` is green with the required
+- [x] `pnpm --filter api run test -- --run` is green with the required
       encryption env.
 
 ## Forbidden
@@ -126,14 +126,14 @@ one canonical singular bot context.
     positions/orders that API runtime endpoints expose
 
 ## Review Checklist (mandatory)
-- [ ] Architecture alignment confirmed.
-- [ ] Existing systems were reused where applicable.
-- [ ] No workaround paths were introduced.
-- [ ] No logic duplication was introduced.
-- [ ] Definition of Done evidence is attached.
-- [ ] Relevant validations were run.
-- [ ] Docs or context were updated if repository truth changed.
-- [ ] Learning journal was updated if a recurring pitfall was confirmed.
+- [x] Architecture alignment confirmed.
+- [x] Existing systems were reused where applicable.
+- [x] No workaround paths were introduced.
+- [x] No logic duplication was introduced.
+- [x] Definition of Done evidence is attached.
+- [x] Relevant validations were run.
+- [x] Docs or context were updated if repository truth changed.
+- [x] Learning journal was updated if a recurring pitfall was confirmed.
 
 ## Notes
 The likely execution order is:
@@ -145,30 +145,52 @@ The likely execution order is:
 ## Execution Plan
 
 ### Slice 1 - Pre-trade and backtest contract alignment
-- [ ] `V1POSTBOT-01 audit(pretrade): classify failing pre-trade/backtest expectations against the approved singular bot contract`
+- [x] `V1POSTBOT-01 audit(pretrade): classify failing pre-trade/backtest expectations against the approved singular bot contract`
   - confirm which failing e2e expectations are legacy fixture drift versus code
     drift
   - freeze the expected semantics for:
     - LIVE bot with missing singular context
     - reconciled external position ownership under one linked wallet
 
-- [ ] `V1POSTBOT-02 fix(api-backtests-pretrade): align backtests/pre-trade behavior and fixtures to the singular bot contract`
+- [x] `V1POSTBOT-02 fix(api-backtests-pretrade): align backtests/pre-trade behavior and fixtures to the singular bot contract`
   - update code and/or fixtures so LIVE gating reasons and free-symbol
     allow/block behavior match the approved architecture
 
 ### Slice 2 - Orders and runtime positions recovery
-- [ ] `V1POSTBOT-03 fix(api-orders): keep singular manual-order persistence deterministic for bot, wallet, and strategy ownership`
+- [x] `V1POSTBOT-03 fix(api-orders): keep singular manual-order persistence deterministic for bot, wallet, and strategy ownership`
   - ensure manual-order write path persists inherited `walletId` and
     `strategyId` deterministically from selected bot context
 
-- [ ] `V1POSTBOT-04 fix(api-runtime-positions): recover runtime positions read/close parity for carryover open orders and exchange-synced LIVE ownership`
+- [x] `V1POSTBOT-04 fix(api-runtime-positions): recover runtime positions read/close parity for carryover open orders and exchange-synced LIVE ownership`
   - keep `EXCHANGE_SYNC BOT_MANAGED` positions visible for the owning LIVE bot
   - keep carryover open orders visible in runtime session views
   - make dashboard close command succeed for owned exchange-synced runtime
     positions
 
 ### Slice 3 - Closure
-- [ ] `V1POSTBOT-05 qa(closure): rerun focused failing suites plus full API pack and sync canonical docs/context`
+- [x] `V1POSTBOT-05 qa(closure): rerun focused failing suites plus full API pack and sync canonical docs/context`
   - rerun the focused failing suites first
   - rerun full `api` pack with required encryption env
   - close the wave in queue/context if green
+
+## Closure Notes
+- Root cause classification:
+  - no new architecture mismatch was found after `V1BOT-A`
+  - the remaining red full-API cases were mostly stale fixtures still creating
+    bots without direct `walletId/symbolGroupId/strategyId` truth while
+    expecting singular-context runtime behavior
+- Code/test outcome:
+  - updated affected `backtests/orders` e2e fixtures so LIVE and PAPER bots
+    carry the same singular context expected by canonical runtime reads and
+    pre-trade
+  - this restored deterministic runtime-session positions visibility for
+    carryover open orders and owned `EXCHANGE_SYNC BOT_MANAGED` positions
+  - manual-order selected-bot persistence expectations now align with direct
+    singular bot refs
+- Validation PASS:
+  - `pnpm --filter api exec vitest run src/modules/backtests/backtests.e2e.test.ts src/modules/orders/orders-positions.e2e.test.ts`
+  - `pnpm --filter api run test -- --run` with
+    `API_KEY_ENCRYPTION_KEYS='v1:test-key-material'` and
+    `API_KEY_ENCRYPTION_ACTIVE_VERSION='v1'`
+  - `pnpm --filter api run typecheck`
+  - `pnpm run quality:guardrails`

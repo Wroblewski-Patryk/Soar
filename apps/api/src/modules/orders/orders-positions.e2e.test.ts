@@ -18,6 +18,38 @@ const getUserId = async (email: string) => {
   return user.id;
 };
 
+const createMarketScope = async (params: {
+  userId: string;
+  name: string;
+  symbols: string[];
+  exchange?: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE';
+  marketType?: 'FUTURES' | 'SPOT';
+  baseCurrency?: string;
+}) => {
+  const universe = await prisma.marketUniverse.create({
+    data: {
+      userId: params.userId,
+      name: `${params.name} universe`,
+      exchange: params.exchange ?? 'BINANCE',
+      marketType: params.marketType ?? 'FUTURES',
+      baseCurrency: params.baseCurrency ?? 'USDT',
+      whitelist: params.symbols,
+      blacklist: [],
+    },
+    select: { id: true },
+  });
+
+  return prisma.symbolGroup.create({
+    data: {
+      userId: params.userId,
+      marketUniverseId: universe.id,
+      name: `${params.name} group`,
+      symbols: params.symbols,
+    },
+    select: { id: true },
+  });
+};
+
 describe('Orders and positions read contract', () => {
   beforeEach(async () => {
     await prisma.log.deleteMany();
@@ -680,6 +712,8 @@ describe('Orders and positions read contract', () => {
         liveOptIn: true,
         consentTextVersion: 'mvp-v1',
         walletId: liveWallet.id,
+        symbolGroupId: scopeSymbolGroup.id,
+        strategyId: liveStrategy.id,
       },
     });
     const paperBot = await prisma.bot.create({
@@ -692,6 +726,8 @@ describe('Orders and positions read contract', () => {
         positionMode: 'ONE_WAY',
         isActive: true,
         walletId: paperWallet.id,
+        symbolGroupId: scopeSymbolGroup.id,
+        strategyId: paperStrategy.id,
       },
     });
     const liveBotGroup = await prisma.botMarketGroup.create({
@@ -1108,6 +1144,7 @@ describe('Orders and positions read contract', () => {
         mode: 'PAPER',
         marketType: 'FUTURES',
         isActive: true,
+        symbolGroupId: symbolGroup.id,
         createdAt: new Date('2026-04-12T10:00:00.000Z'),
       },
     });
@@ -1121,29 +1158,9 @@ describe('Orders and positions read contract', () => {
         liveOptIn: true,
         consentTextVersion: 'mvp-v1',
         walletId: liveWallet.id,
+        symbolGroupId: symbolGroup.id,
         createdAt: new Date('2026-04-12T10:05:00.000Z'),
       },
-    });
-
-    await prisma.botMarketGroup.createMany({
-      data: [
-        {
-          userId: ownerId,
-          botId: paperBot.id,
-          symbolGroupId: symbolGroup.id,
-          lifecycleStatus: 'ACTIVE',
-          executionOrder: 1,
-          isEnabled: true,
-        },
-        {
-          userId: ownerId,
-          botId: liveBot.id,
-          symbolGroupId: symbolGroup.id,
-          lifecycleStatus: 'ACTIVE',
-          executionOrder: 1,
-          isEnabled: true,
-        },
-      ],
     });
 
     const session = await prisma.botRuntimeSession.create({
@@ -1227,6 +1244,7 @@ describe('Orders and positions read contract', () => {
         mode: 'PAPER',
         marketType: 'FUTURES',
         isActive: true,
+        symbolGroupId: symbolGroup.id,
         createdAt: new Date('2026-04-12T10:00:00.000Z'),
       },
     });
@@ -1240,29 +1258,9 @@ describe('Orders and positions read contract', () => {
         liveOptIn: true,
         consentTextVersion: 'mvp-v1',
         walletId: liveWallet.id,
+        symbolGroupId: symbolGroup.id,
         createdAt: new Date('2026-04-12T10:05:00.000Z'),
       },
-    });
-
-    await prisma.botMarketGroup.createMany({
-      data: [
-        {
-          userId: ownerId,
-          botId: paperBot.id,
-          symbolGroupId: symbolGroup.id,
-          lifecycleStatus: 'ACTIVE',
-          executionOrder: 1,
-          isEnabled: true,
-        },
-        {
-          userId: ownerId,
-          botId: liveBot.id,
-          symbolGroupId: symbolGroup.id,
-          lifecycleStatus: 'ACTIVE',
-          executionOrder: 1,
-          isEnabled: true,
-        },
-      ],
     });
 
     const session = await prisma.botRuntimeSession.create({
@@ -1337,6 +1335,13 @@ describe('Orders and positions read contract', () => {
         liveOptIn: true,
         consentTextVersion: 'mvp-v1',
         walletId: liveWallet.id,
+        symbolGroupId: (
+          await createMarketScope({
+            userId: ownerId,
+            name: 'Live carryover scope',
+            symbols: ['BTCUSDT'],
+          })
+        ).id,
       },
     });
 
@@ -1408,6 +1413,13 @@ describe('Orders and positions read contract', () => {
         marketType: 'FUTURES',
         isActive: true,
         walletId: paperWallet.id,
+        symbolGroupId: (
+          await createMarketScope({
+            userId: ownerId,
+            name: 'Paper carryover scope',
+            symbols: ['ETHUSDT'],
+          })
+        ).id,
       },
     });
 

@@ -53,6 +53,40 @@ const createWalletForUser = async (params: {
     },
   });
 
+const createMarketScopeForUser = async (params: {
+  userId: string;
+  name: string;
+  symbols: string[];
+  exchange?: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE';
+  marketType?: 'FUTURES' | 'SPOT';
+  baseCurrency?: string;
+}) => {
+  const marketUniverse = await prisma.marketUniverse.create({
+    data: {
+      userId: params.userId,
+      name: `${params.name} universe`,
+      exchange: params.exchange ?? 'BINANCE',
+      marketType: params.marketType ?? 'FUTURES',
+      baseCurrency: params.baseCurrency ?? 'USDT',
+      whitelist: params.symbols,
+      blacklist: [],
+    },
+    select: { id: true },
+  });
+
+  const symbolGroup = await prisma.symbolGroup.create({
+    data: {
+      userId: params.userId,
+      marketUniverseId: marketUniverse.id,
+      name: `${params.name} group`,
+      symbols: params.symbols,
+    },
+    select: { id: true },
+  });
+
+  return symbolGroup;
+};
+
 const waitForBacktestReport = async (
   agent: ReturnType<typeof request.agent>,
   runId: string,
@@ -432,6 +466,16 @@ describe('Backtests runs contract', () => {
     expect(runRes.body.strategyId).toBe(strategyId);
 
     const userId = await getUserIdByEmail(ownerEmail);
+    const liveWallet = await createWalletForUser({
+      userId,
+      name: 'Flow live wallet',
+      mode: 'LIVE',
+    });
+    const liveScope = await createMarketScopeForUser({
+      userId,
+      name: 'Flow live scope',
+      symbols: ['BTCUSDT'],
+    });
     const bot = await prisma.bot.create({
       data: {
         userId,
@@ -440,6 +484,9 @@ describe('Backtests runs contract', () => {
         liveOptIn: false,
         consentTextVersion: null,
         isActive: true,
+        walletId: liveWallet.id,
+        symbolGroupId: liveScope.id,
+        strategyId,
       },
     });
 
@@ -504,6 +551,11 @@ describe('Backtests runs contract', () => {
     expect(runRes.body.strategyId).toBe(strategyId);
 
     const userId = await getUserIdByEmail(ownerEmail);
+    const liveScope = await createMarketScopeForUser({
+      userId,
+      name: 'Parity live scope',
+      symbols: ['BTCUSDT', 'ETHUSDT'],
+    });
     const bot = await prisma.bot.create({
       data: {
         userId,
@@ -512,6 +564,8 @@ describe('Backtests runs contract', () => {
         liveOptIn: true,
         consentTextVersion: 'mvp-v1',
         isActive: true,
+        symbolGroupId: liveScope.id,
+        strategyId,
       },
     });
 

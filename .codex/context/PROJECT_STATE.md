@@ -41,11 +41,12 @@ Last updated: 2026-04-24
   parity packs are green for the indicator wave. One separate repository follow-up
   remains outside `V1IND-A`: full `api` e2e still has 7 red cases in older
   backtests/orders runtime-scope suites that reflect post-`V1BOT` contract/test
-  drift rather than indicator-parity regressions. The newest queued recovery
-  wave is `V1POSTBOT-A`, which isolates those remaining failures into one
-  singular-bot contract closure for pre-trade/backtests expectations,
-  deterministic manual-order persistence, and runtime-session positions
-  read/close parity.
+  drift rather than indicator-parity regressions. `V1POSTBOT-A` is now also
+  closed: the remaining red full-API cases were resolved by aligning stale
+  `backtests/orders` e2e fixtures to the canonical singular bot contract,
+  which restored full `api` suite parity for pre-trade expectations,
+  deterministic selected-bot order ownership, carryover open orders, and
+  `EXCHANGE_SYNC BOT_MANAGED` LIVE runtime position visibility/close flows.
 
 ## Product Decisions (Confirmed)
 - 2026-04-21: `docs/architecture/` is the canonical source of truth for how
@@ -238,6 +239,11 @@ Last updated: 2026-04-24
   partially configured LIVE bots, one manual-order path still loses inherited
   `strategyId`, and runtime session positions still drift for carryover open
   orders plus `EXCHANGE_SYNC BOT_MANAGED` LIVE ownership.
+- 2026-04-24: `V1POSTBOT-A` is closed. The remaining red full-API cases after
+  `V1BOT-A` were resolved by aligning stale `backtests/orders` e2e fixtures to
+  the canonical singular bot contract instead of keeping half-legacy bot
+  setup. Full `pnpm --filter api run test -- --run` is green again with the
+  required API-key encryption env.
 - 2026-04-22: prod restore-drill proof now passes from a real Coolify terminal
   execution in the production postgres container
   (`x11cfnz1dd9x0yzccftqzcoe`), and the final non-dry-run prod release gate now
