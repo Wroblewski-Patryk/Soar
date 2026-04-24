@@ -24,6 +24,7 @@ import {
   RuntimeSignalWarmupLockHandle,
   RuntimeSignalWarmupLockInput,
 } from './runtimeSignalMarketDataGateway';
+import { resolveRuntimeLifecycleMarkPrice } from './runtimeLifecycleMarkPrice.service';
 import {
   resolveRuntimeReferenceBalance,
   resolveRuntimeWalletFundsExhausted,
@@ -362,24 +363,18 @@ export class RuntimeSignalLoop {
   }
 
   private resolveRuntimeLifecycleMarkPrice(bot: ActiveBot, symbol: string) {
-    const latestTicker = getRuntimeTicker(symbol, {
-      exchange: bot.exchange,
-      marketType: bot.marketType,
-    });
-    if (latestTicker && Number.isFinite(latestTicker.lastPrice) && latestTicker.lastPrice > 0) {
-      return latestTicker.lastPrice;
-    }
-
-    const recentCloses = this.getRecentCloses({
-      marketType: bot.marketType,
-      symbol,
-      interval: bot.runtimeContext?.strategy.strategyInterval,
-      limit: 1,
-    });
-    const fallbackClose = recentCloses.at(-1) ?? null;
-    return typeof fallbackClose === 'number' && Number.isFinite(fallbackClose) && fallbackClose > 0
-      ? fallbackClose
-      : null;
+    return resolveRuntimeLifecycleMarkPrice(
+      {
+        exchange: bot.exchange,
+        marketType: bot.marketType,
+        symbol,
+        interval: bot.runtimeContext?.strategy.strategyInterval,
+      },
+      {
+        getTicker: getRuntimeTicker,
+        getRecentCloses: (input) => this.getRecentCloses(input),
+      },
+    );
   }
 
   private async listActiveBotsDirectWithMetrics() {

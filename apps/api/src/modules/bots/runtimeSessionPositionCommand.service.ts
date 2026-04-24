@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import { orchestrateRuntimeSignal } from '../engine/executionOrchestrator.service';
-import { getRuntimeTicker } from '../engine/runtimeTickerStore';
+import { resolveRuntimeLifecycleMarkPrice } from '../engine/runtimeLifecycleMarkPrice.service';
 import { CloseBotRuntimePositionDto } from './bots.types';
 import { getOwnedBotRuntimeSession } from './botOwnership.service';
 import { botErrors } from './bots.errors';
@@ -153,16 +153,14 @@ export const closeBotRuntimeSessionPosition = async (
 
   const botExchange = botContext.exchange ?? 'BINANCE';
   const botMarketType = botContext.marketType ?? 'FUTURES';
-  const liveTicker = getRuntimeTicker(position.symbol, {
+  const markPrice = resolveRuntimeLifecycleMarkPrice({
     exchange: botExchange,
     marketType: botMarketType,
+    symbol: position.symbol,
   });
-  const fallbackMarkPrice =
-    Number.isFinite(position.entryPrice) && position.entryPrice > 0 ? position.entryPrice : 1;
-  const markPrice =
-    liveTicker && Number.isFinite(liveTicker.lastPrice) && liveTicker.lastPrice > 0
-      ? liveTicker.lastPrice
-      : fallbackMarkPrice;
+  if (!markPrice) {
+    throw botErrors.positionClosePriceUnavailable();
+  }
 
   const closeResult = await orchestrateRuntimeSignal({
     userId,

@@ -3,7 +3,7 @@
 ## Header
 - ID: PAPERPNL-01
 - Title: fix(api-runtime): recover truthful PAPER close PnL and wallet-capital updates for manual/runtime exits
-- Status: READY
+- Status: DONE
 - Owner: Backend Builder
 - Depends on: none
 - Priority: P0
@@ -30,11 +30,11 @@ all reflect the same profitable close result.
   close paths
 
 ## Definition of Done
-- [ ] Manual dashboard close no longer falls back to `position.entryPrice` as
+- [x] Manual dashboard close no longer falls back to `position.entryPrice` as
       synthetic close truth when current market price cannot be proven.
-- [ ] `PAPER` close lifecycle persists matching realized PnL truth across
+- [x] `PAPER` close lifecycle persists matching realized PnL truth across
       `position`, `trade`, runtime history, and capital summary reads.
-- [ ] Focused regression coverage proves profitable manual close and profitable
+- [x] Focused regression coverage proves profitable manual close and profitable
       runtime close both increase paper runtime capital instead of showing a
       loss.
 
@@ -74,14 +74,14 @@ all reflect the same profitable close result.
   realized PnL sign
 
 ## Review Checklist (mandatory)
-- [ ] Architecture alignment confirmed.
-- [ ] Existing systems were reused where applicable.
-- [ ] No workaround paths were introduced.
-- [ ] No logic duplication was introduced.
-- [ ] Definition of Done evidence is attached.
-- [ ] Relevant validations were run.
-- [ ] Docs or context were updated if repository truth changed.
-- [ ] Learning journal was updated if a recurring pitfall was confirmed.
+- [x] Architecture alignment confirmed.
+- [x] Existing systems were reused where applicable.
+- [x] No workaround paths were introduced.
+- [x] No logic duplication was introduced.
+- [x] Definition of Done evidence is attached.
+- [x] Relevant validations were run.
+- [x] Docs or context were updated if repository truth changed.
+- [x] Learning journal was updated if a recurring pitfall was confirmed.
 
 ## Notes
 Verified code-level suspicion before queuing:
@@ -89,3 +89,19 @@ Verified code-level suspicion before queuing:
   `apps/api/src/modules/bots/runtimeSessionPositionCommand.service.ts`
 - realized PnL then feeds both runtime history and paper capital summary via
   existing canonical read models
+
+## Completion Notes
+- Implemented `apps/api/src/modules/engine/runtimeLifecycleMarkPrice.service.ts`
+  as the canonical close-price authority shared by runtime lifecycle and manual
+  dashboard close.
+- Shared recent runtime candle closes through
+  `apps/api/src/modules/engine/runtimeSignalMarketDataGateway.ts` so the same
+  ticker-or-recent-close fallback contract is available outside the live signal
+  loop.
+- Manual dashboard close now throws `POSITION_CLOSE_PRICE_UNAVAILABLE` instead
+  of persisting synthetic market truth from `position.entryPrice`.
+
+## Validation Evidence
+- `pnpm --filter api exec vitest run src/modules/engine/runtimeLifecycleMarkPrice.service.test.ts src/modules/bots/runtimeSessionPositionCommand.service.test.ts src/modules/orders/orders-positions.e2e.test.ts`
+- `pnpm --filter api run typecheck`
+- `pnpm run quality:guardrails`

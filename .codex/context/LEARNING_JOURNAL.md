@@ -22,6 +22,34 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-24 - Runtime close must never synthesize market truth from entry price
+- Context: production paper-bot investigation after manual/runtime close and
+  paper-capital parity work.
+- Symptom: positions visibly closed on profit could persist as losses in
+  runtime history, while paper wallet/runtime capital summary did not increase.
+- Root cause: the manual dashboard close path could still fall back to
+  `position.entryPrice` when no live ticker was available, so realized PnL was
+  computed from a synthetic flat exit price minus fees and then reused by
+  history/capital reads as if it were canonical truth.
+- Guardrail: any runtime/manual close path must derive exit price from one
+  canonical market-truth resolver and fail closed when that price cannot be
+  proven.
+- Preferred pattern:
+```text
+1) Share one close-price resolver between automated runtime lifecycle and manual dashboard close.
+2) Accept only canonical market sources such as runtime ticker or the latest recent runtime candle close.
+3) If no market truth is available, return an explicit fail-closed error instead of using entry price or another synthetic placeholder.
+4) Lock parity with regression coverage that checks persisted position/trade realized PnL and downstream runtime capital/history reads together.
+```
+- Avoid: using `position.entryPrice`, `1`, or another placeholder as a close
+  fallback in money-impacting runtime flows.
+- Evidence:
+  - 2026-04-24 `PAPERPNL-01`: extracted shared
+    `runtimeLifecycleMarkPrice.service.ts`, added
+    `POSITION_CLOSE_PRICE_UNAVAILABLE`, and proved profitable PAPER manual
+    close raises persisted realized PnL and runtime `referenceBalance/freeCash`
+    in API e2e coverage.
+
 ### 2026-04-24 - Post-V1BOT e2e fixtures must use direct singular bot context
 - Context: after `V1BOT-A` and `V1IND-A`, the remaining red full-API cases sat
   in `backtests/orders` suites rather than in runtime/indicator code.

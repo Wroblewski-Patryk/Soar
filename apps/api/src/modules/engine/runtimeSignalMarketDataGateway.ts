@@ -80,9 +80,55 @@ const runtimeOrderBookRefreshMs = Math.max(
   10_000,
   Number.parseInt(process.env.RUNTIME_ORDER_BOOK_REFRESH_MS ?? '60000', 10),
 );
+const runtimeCandleSeriesStore = new Map<string, RuntimeCandle[]>();
+
+const buildRuntimeSignalSeriesKey = (
+  marketType: 'FUTURES' | 'SPOT',
+  symbol: string,
+  interval: string,
+) => `${marketType}|${normalizeSymbol(symbol)}|${normalizeInterval(interval)}`;
+
+const getRuntimeSignalSeries = (
+  marketType: 'FUTURES' | 'SPOT',
+  symbol: string,
+  interval?: string | null,
+) => {
+  const normalizedInterval = normalizeInterval(interval);
+  const key = buildRuntimeSignalSeriesKey(marketType, symbol, normalizedInterval);
+  const exact = runtimeCandleSeriesStore.get(key);
+  if (exact && exact.length > 0) return exact;
+
+  const prefix = `${marketType}|${normalizeSymbol(symbol)}|`;
+  const fallbackKey = [...runtimeCandleSeriesStore.keys()].find((entry) => entry.startsWith(prefix));
+  if (!fallbackKey) return null;
+  const fallbackSeries = runtimeCandleSeriesStore.get(fallbackKey);
+  return fallbackSeries && fallbackSeries.length > 0 ? fallbackSeries : null;
+};
+
+export const getRecentRuntimeCloses = (input: {
+  marketType: 'FUTURES' | 'SPOT';
+  symbol: string;
+  interval?: string | null;
+  limit?: number;
+}) => {
+  const series = getRuntimeSignalSeries(input.marketType, input.symbol, input.interval);
+  if (!series || series.length === 0) return [];
+  const closes = series
+    .map((candle) => candle.close)
+    .filter((value): value is number => Number.isFinite(value));
+  if (closes.length === 0) return [];
+  const limit = Number.isFinite(input.limit)
+    ? Math.max(1, Math.floor(input.limit as number))
+    : closes.length;
+  return closes.slice(-limit);
+};
+
+export const clearRuntimeSignalMarketDataStore = () => {
+  runtimeCandleSeriesStore.clear();
+};
 
 export class RuntimeSignalMarketDataGateway {
-  private readonly candleSeries = new Map<string, RuntimeCandle[]>();
+  private readonly candleSeries = runtimeCandleSeriesStore;
   private readonly warmupLastAttemptAt = new Map<string, number>();
   private readonly fundingRatePoints = new Map<string, FundingRatePoint[]>();
   private readonly fundingLastFetchAt = new Map<string, number>();
@@ -144,16 +190,7 @@ export class RuntimeSignalMarketDataGateway {
     symbol: string,
     interval?: string | null,
   ) {
-    const normalizedInterval = normalizeInterval(interval);
-    const key = this.getSeriesKey(marketType, symbol, normalizedInterval);
-    const exact = this.candleSeries.get(key);
-    if (exact && exact.length > 0) return exact;
-
-    const prefix = `${marketType}|${normalizeSymbol(symbol)}|`;
-    const fallbackKey = [...this.candleSeries.keys()].find((entry) => entry.startsWith(prefix));
-    if (!fallbackKey) return null;
-    const fallbackSeries = this.candleSeries.get(fallbackKey);
-    return fallbackSeries && fallbackSeries.length > 0 ? fallbackSeries : null;
+    return getRuntimeSignalSeries(marketType, symbol, interval);
   }
 
   getRecentCloses(input: {
@@ -710,6 +747,6 @@ export class RuntimeSignalMarketDataGateway {
   }
 
   private getSeriesKey(marketType: 'FUTURES' | 'SPOT', symbol: string, interval: string) {
-    return `${marketType}|${normalizeSymbol(symbol)}|${normalizeInterval(interval)}`;
+    return buildRuntimeSignalSeriesKey(marketType, symbol, interval);
   }
 }

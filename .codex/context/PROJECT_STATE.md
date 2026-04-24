@@ -49,14 +49,13 @@ Last updated: 2026-04-24
   `EXCHANGE_SYNC BOT_MANAGED` LIVE runtime position visibility/close flows.
 
 ## Product Decisions (Confirmed)
-- 2026-04-24: queued `PAPERPNL-01` as the next active post-closure runtime
-  recovery slice after a fresh production paper-bot investigation confirmed a
-  concrete close-price truth gap. Manual dashboard close can still fall back
-  to `position.entryPrice` when no ticker price is available, which records
-  profitable paper exits as fee-only losses and then propagates the wrong sign
-  into runtime history and paper capital summary. The approved fix scope is
-  limited to canonical close-price authority and downstream realized-PnL
-  parity, not to a broader wallet/runtime redesign.
+- 2026-04-24: closed `PAPERPNL-01` after replacing the manual dashboard close
+  fallback to `position.entryPrice` with one canonical runtime lifecycle
+  mark-price resolver shared with automated runtime close logic. Manual close
+  now fails closed with `POSITION_CLOSE_PRICE_UNAVAILABLE` when no ticker or
+  recent runtime close can prove market truth, and focused regressions confirm
+  profitable `PAPER` manual close now persists positive realized PnL through
+  position, trade, runtime history, and capital summary reads.
 - 2026-04-21: `docs/architecture/` is the canonical source of truth for how
   Soar works; resolved architecture decisions no longer live in
   `docs/planning/open-decisions.md`, and module deep-dives are implementation

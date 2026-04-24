@@ -2,6 +2,8 @@ import request from 'supertest';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
+import { clearRuntimeSignalMarketDataStore } from '../engine/runtimeSignalMarketDataGateway';
+import { clearRuntimeTickerStore, upsertRuntimeTicker } from '../engine/runtimeTickerStore';
 
 const registerAndLogin = async (email: string) => {
   const agent = request.agent(app);
@@ -52,6 +54,8 @@ const createMarketScope = async (params: {
 
 describe('Orders and positions read contract', () => {
   beforeEach(async () => {
+    clearRuntimeTickerStore();
+    clearRuntimeSignalMarketDataStore();
     await prisma.log.deleteMany();
     await prisma.backtestReport.deleteMany();
     await prisma.backtestTrade.deleteMany();
@@ -1293,6 +1297,16 @@ describe('Orders and positions read contract', () => {
       },
     });
 
+    upsertRuntimeTicker({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'BTCUSDT',
+      lastPrice: 64_100,
+      eventTime: Date.parse('2026-04-12T11:03:00.000Z'),
+      priceChangePercent24h: 0,
+    });
+
     const closeRes = await ownerAgent
       .post(`/dashboard/bots/${liveBot.id}/runtime-sessions/${session.id}/positions/${exchangePosition.id}/close`)
       .send({ riskAck: true });
@@ -1308,6 +1322,122 @@ describe('Orders and positions read contract', () => {
     expect(secondCloseRes.status).toBe(200);
     expect(secondCloseRes.body.status).toBe('closed');
     expect(secondCloseRes.body.positionId).toBe(exchangePosition.id);
+  });
+
+  it('keeps profitable PAPER runtime manual close consistent across position history and capital summary', async () => {
+    const ownerAgent = await registerAndLogin('runtime-paper-profit-close@example.com');
+    const ownerId = await getUserId('runtime-paper-profit-close@example.com');
+
+    const paperWallet = await prisma.wallet.create({
+      data: {
+        userId: ownerId,
+        name: 'Paper profit wallet',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        paperInitialBalance: 1_000,
+      },
+    });
+
+    const symbolGroup = await createMarketScope({
+      userId: ownerId,
+      name: 'Paper profit scope',
+      symbols: ['BTCUSDT'],
+    });
+
+    const paperBot = await prisma.bot.create({
+      data: {
+        userId: ownerId,
+        name: 'Paper profit bot',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        walletId: paperWallet.id,
+        symbolGroupId: symbolGroup.id,
+      },
+    });
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerId,
+        botId: paperBot.id,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-24T09:00:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-24T09:02:00.000Z'),
+      },
+    });
+
+    const openPosition = await prisma.position.create({
+      data: {
+        userId: ownerId,
+        botId: paperBot.id,
+        walletId: paperWallet.id,
+        symbol: 'BTCUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 100,
+        quantity: 1,
+        leverage: 1,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        openedAt: new Date('2026-04-24T09:01:00.000Z'),
+      },
+    });
+
+    upsertRuntimeTicker({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'BTCUSDT',
+      lastPrice: 110,
+      eventTime: Date.parse('2026-04-24T09:03:00.000Z'),
+      priceChangePercent24h: 0,
+    });
+
+    const closeRes = await ownerAgent
+      .post(
+        `/dashboard/bots/${paperBot.id}/runtime-sessions/${session.id}/positions/${openPosition.id}/close`
+      )
+      .send({ riskAck: true });
+
+    expect(closeRes.status).toBe(200);
+    expect(closeRes.body.status).toBe('closed');
+    expect(closeRes.body.positionId).toBe(openPosition.id);
+
+    const closedPosition = await prisma.position.findUniqueOrThrow({
+      where: { id: openPosition.id },
+    });
+    expect(closedPosition.status).toBe('CLOSED');
+    expect(closedPosition.realizedPnl ?? 0).toBeGreaterThan(0);
+
+    const closeTrade = await prisma.trade.findFirstOrThrow({
+      where: {
+        userId: ownerId,
+        botId: paperBot.id,
+        positionId: openPosition.id,
+        lifecycleAction: 'CLOSE',
+      },
+      orderBy: { executedAt: 'desc' },
+    });
+    expect(closeTrade.realizedPnl ?? 0).toBeGreaterThan(0);
+
+    const positionsRes = await ownerAgent.get(
+      `/dashboard/bots/${paperBot.id}/runtime-sessions/${session.id}/positions`
+    );
+    expect(positionsRes.status).toBe(200);
+    expect(positionsRes.body.summary.referenceBalance).toBeGreaterThan(1_000);
+    expect(positionsRes.body.summary.freeCash).toBeGreaterThan(1_000);
+
+    const historyItem = positionsRes.body.historyItems.find(
+      (item: { id: string }) => item.id === openPosition.id
+    ) as { realizedPnl: number } | undefined;
+    expect(historyItem).toBeDefined();
+    expect(historyItem?.realizedPnl ?? 0).toBeGreaterThan(0);
   });
 
   it('keeps LIVE open orders visible in runtime view when order was created before current session start', async () => {

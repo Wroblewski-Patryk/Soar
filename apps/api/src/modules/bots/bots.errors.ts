@@ -16,6 +16,7 @@ export const BOT_ERROR_CODES = {
   marketGroupStrategyLinkNotFound: 'MARKET_GROUP_STRATEGY_LINK_NOT_FOUND',
   subagentSlotOutOfRange: 'SUBAGENT_SLOT_OUT_OF_RANGE',
   positionCloseRiskAckRequired: 'POSITION_CLOSE_RISK_ACK_REQUIRED',
+  positionClosePriceUnavailable: 'POSITION_CLOSE_PRICE_UNAVAILABLE',
   botLiveApiKeyNotFound: 'BOT_LIVE_API_KEY_NOT_FOUND',
   botLiveApiKeyExchangeMismatch: 'BOT_LIVE_API_KEY_EXCHANGE_MISMATCH',
 } as const;
@@ -57,6 +58,8 @@ export const botErrors = {
   subagentSlotOutOfRange: () => new BotDomainError(BOT_ERROR_CODES.subagentSlotOutOfRange, 400),
   positionCloseRiskAckRequired: () =>
     new BotDomainError(BOT_ERROR_CODES.positionCloseRiskAckRequired, 400),
+  positionClosePriceUnavailable: () =>
+    new BotDomainError(BOT_ERROR_CODES.positionClosePriceUnavailable, 409),
   botLiveApiKeyNotFound: () => new BotDomainError(BOT_ERROR_CODES.botLiveApiKeyNotFound, 404),
   botLiveApiKeyExchangeMismatch: () =>
     new BotDomainError(BOT_ERROR_CODES.botLiveApiKeyExchangeMismatch, 400),

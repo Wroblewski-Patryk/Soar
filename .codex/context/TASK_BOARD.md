@@ -17,8 +17,9 @@ Last updated: 2026-04-24
 
 ## READY
 
-- [ ] `PAPERPNL-01 fix(api-runtime): recover truthful PAPER close PnL and wallet-capital updates for manual/runtime exits`
-  - 2026-04-24: Queued from production paper-bot investigation after confirming a concrete close-price truth gap. Manual dashboard close currently falls back to `position.entryPrice` when ticker truth is missing, which can persist profitable exits as fee-only losses and then propagate the wrong sign into runtime history and paper wallet capital. Task packet: `docs/planning/paper-close-pnl-truth-recovery-task-2026-04-24.md`.
+- [x] `PAPERPNL-01 fix(api-runtime): recover truthful PAPER close PnL and wallet-capital updates for manual/runtime exits`
+  - 2026-04-24: Closed by extracting one canonical runtime close-price resolver, removing the manual dashboard fallback to `position.entryPrice`, and failing closed with `POSITION_CLOSE_PRICE_UNAVAILABLE` when market truth cannot be proven.
+  - 2026-04-24: Added focused regression coverage for mark-price resolution, manual runtime close fail-closed behavior, and profitable PAPER manual close parity across persisted position/trade/history/capital summary reads.
 
 ## BACKLOG
 
