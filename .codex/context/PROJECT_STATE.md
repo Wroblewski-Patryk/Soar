@@ -29,7 +29,13 @@ Last updated: 2026-04-24
   behavior: `PAPER` manual `MARKET` open can persist as `OPEN` without a fill
   or position when no explicit request price is supplied, and the dashboard
   manual-order surface still needs truthful symbol sourcing plus explicit
-  `submitted / waiting_for_fill / position_opened` lifecycle feedback.
+  `submitted / waiting_for_fill / position_opened` lifecycle feedback. A
+  broader dashboard truth audit from the same date also confirmed follow-up
+  surface gaps: selected-bot wallet KPIs still partly derive paper baseline
+  from `bot.paperStartBalance` instead of treating runtime capital summary as
+  first authority, and pending/degraded runtime states are still too quiet for
+  operator use when a bot is running with tracked symbols or open orders but no
+  open position yet.
 
 ## Product Decisions (Confirmed)
 - 2026-04-21: `docs/architecture/` is the canonical source of truth for how
@@ -190,6 +196,13 @@ Last updated: 2026-04-24
   next queued recovery slice is `V1BOT-09`, covering singular manual-context
   resolution, immediate paper fill authority, and truthful dashboard manual
   action states for both `PAPER` and `LIVE`.
+- 2026-04-24: a wider dashboard truth audit confirmed that the manual-order
+  path is not the only remaining operator-surface gap. The selected-bot
+  dashboard still needs a follow-up hardening wave after `V1BOT-09` so that
+  wallet/equity KPIs prefer authoritative runtime capital summary fields,
+  pending open-order / waiting-for-fill states become explicit, and
+  running-but-non-actionable runtime states are surfaced as degraded operator
+  truth instead of reading like healthy emptiness.
 - 2026-04-22: prod restore-drill proof now passes from a real Coolify terminal
   execution in the production postgres container
   (`x11cfnz1dd9x0yzccftqzcoe`), and the final non-dry-run prod release gate now

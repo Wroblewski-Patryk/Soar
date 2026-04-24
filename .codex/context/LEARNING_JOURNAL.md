@@ -64,6 +64,39 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
     bot and symbol returned `201`, but persisted `status=OPEN`,
     `positionId=null`, and left aggregate open positions empty.
 
+### 2026-04-24 - Dashboard runtime KPIs should prefer aggregate capital summary over bot paper baseline math
+- Context: a wider dashboard truth audit after the singular bot migration and
+  manual-order production investigation on `2026-04-24`.
+- Symptom: the selected-bot dashboard can already expose authoritative runtime
+  capital summary fields (`referenceBalance`, `freeCash`, `capitalSource`,
+  `paperResetAt`), but some paper KPI and equity calculations in the web
+  view-model/sidebar still begin from `bot.paperStartBalance` and session
+  delta math. This risks a second display drift after paper resets or future
+  capital-authority changes even when the API summary itself is correct.
+- Root cause: dashboard web code evolved in layers; newer runtime capital
+  summary fields were added, but legacy paper-baseline calculations were left
+  in place as a parallel display authority.
+- Guardrail: for selected-bot dashboard wallet and equity surfaces, runtime
+  capital summary must be the first authority for both `PAPER` and `LIVE`;
+  legacy baseline math may exist only as explicit fallback when the
+  authoritative summary fields are absent.
+- Preferred pattern:
+```text
+1) Read selected-bot runtime capital from positions.summary first.
+2) Use capitalSource/accountBalance/referenceBalance/freeCash/paperResetAt as the display truth.
+3) Keep bot or wallet baseline fields only as compatibility fallback when summary fields are missing.
+4) Lock the behavior with focused dashboard KPI regression tests, especially for paper reset checkpoints and pending open orders.
+```
+- Avoid: mixing bot-owned paper baseline math with authoritative runtime
+  capital summary in the same dashboard KPI path.
+- Evidence:
+  - 2026-04-24 production aggregate for paper bot
+    `dec24168-7bba-4c44-aac9-97b3c6c60ce1` showed authoritative
+    `referenceBalance=1000`, `freeCash=1000`, `capitalSource=PAPER_INITIAL_BALANCE`,
+    while web code in `useRuntimeSelectionViewModel.ts` and
+    `RuntimeSidebarSection.tsx` still seeded paper display math from
+    `bot.paperStartBalance` / `paperInit`.
+
 ### 2026-04-24 - PAPER runtime capital must not reuse wallet-wide historical lifecycle rows for selected-bot authority
 - Context: production investigation for a selected PAPER bot showed the wallet
   module at `100 USDT`, strategy config at `walletRisk=2` and `leverage=25`,
