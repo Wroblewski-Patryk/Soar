@@ -3,7 +3,6 @@ import Tabs from "../../../../ui/components/Tabs";
 import { SkeletonTableRows } from "../../../../ui/components/loading";
 import { TAB_CONTENT_FRAME_CLASS, TAB_CONTENT_INNER_CLASS } from "../../../../ui/components/tabContentFrame";
 import type {
-  HistoryPositionsTableColumn,
   OpenPositionWithLive,
   OpenOrdersTableColumn,
   OpenPositionsTableColumn,
@@ -18,7 +17,7 @@ import type {
   RuntimeTradeMeta,
 } from "./types";
 import type { BotRuntimeTrade } from "../../../../features/bots/types/bot.type";
-import type { BotRuntimeOpenOrderItem, BotRuntimePositionItem } from "../../../../features/bots/types/bot.type";
+import type { BotRuntimeOpenOrderItem } from "../../../../features/bots/types/bot.type";
 
 type RuntimeDataSectionProps = {
   runtimeDataTab: RuntimeDataTab;
@@ -40,13 +39,7 @@ type RuntimeDataSectionProps = {
   noOpenOrdersLabel: string;
   tradesLoading: boolean;
   loadingLabel: string;
-  historyRows: BotRuntimePositionItem[];
-  historyColumns: HistoryPositionsTableColumn[];
-  historyPositionsSortStorageKey: string;
-  historyPositionsColumnVisibilityKey: string;
-  historyPositionsTitle: string;
   historyTradesTitle: string;
-  noHistoryPositionsLabel: string;
   tradesRows: BotRuntimeTrade[];
   tradesColumns: TradesTableColumn[];
   filterPlaceholder: string;
@@ -148,33 +141,7 @@ export default function RuntimeDataSection(props: RuntimeDataSectionProps) {
 
       {props.runtimeDataTab === "TRADE_HISTORY" ? (
         <section className={TAB_CONTENT_FRAME_CLASS}>
-          <div className={`${TAB_CONTENT_INNER_CLASS} space-y-4`}>
-            <section className="space-y-2">
-              <p className="px-3 text-xs font-semibold uppercase tracking-wide opacity-65">
-                {props.historyPositionsTitle}
-              </p>
-              <DataTable
-                compact
-                framed={false}
-                rows={props.historyRows}
-                columns={props.historyColumns}
-                getRowId={(row) => row.id}
-                defaultSortKey="closedAt"
-                defaultSortDirection="desc"
-                persistSortKey={props.historyPositionsSortStorageKey}
-                columnVisibilityEnabled
-                columnVisibilityPreferenceKey={props.historyPositionsColumnVisibilityKey}
-                showSearch={false}
-                paginationEnabled
-                pageSizeOptions={[...props.openPositionsPageSizeOptions]}
-                defaultPageSize={props.openPositionsPageSizeOptions[0]}
-                rowsPerPageLabel={props.rowsPerPageLabel}
-                previousLabel={props.previousLabel}
-                nextLabel={props.nextLabel}
-                emptyText={props.noHistoryPositionsLabel}
-                paginationClassName="p-3"
-              />
-            </section>
+          <div className={TAB_CONTENT_INNER_CLASS}>
             <section className="space-y-2">
               <p className="px-3 text-xs font-semibold uppercase tracking-wide opacity-65">
                 {props.historyTradesTitle}

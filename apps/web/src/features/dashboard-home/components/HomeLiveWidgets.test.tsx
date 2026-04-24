@@ -1768,12 +1768,7 @@ describe("HomeLiveWidgets", () => {
       expect(selectorLabel).not.toBeNull();
       selector = within(selectorLabel as HTMLLabelElement).getByRole("combobox") as HTMLSelectElement;
       expect(selector.value).toBe("bot-scope-a");
-      expect(screen.getByTestId("signal-source-ADAUSDT")).toHaveTextContent(/Snapshot zamknietej swiecy/i);
-      expect(screen.getByTestId("signal-detail-ADAUSDT")).toHaveTextContent(
-        /To tylko snapshot z ostatniej zamknietej swiecy/i
-      );
       expect(screen.getByText("A_CTX_FAST")).toBeInTheDocument();
-      expect(screen.getByTestId("signal-strategy-ADAUSDT")).toHaveTextContent(/Scope A Strategy/i);
       expect(screen.queryAllByText("SOLUSDT")).toHaveLength(0);
       expect(screen.queryByRole("button", { name: /Wstecz|Prev/i })).toBeNull();
       expect(screen.queryByRole("button", { name: /Dalej|Next/i })).toBeNull();
@@ -1783,15 +1778,12 @@ describe("HomeLiveWidgets", () => {
 
     await waitFor(() => {
       expect(selector!.value).toBe("bot-scope-b");
-      expect(screen.queryByTestId("signal-source-ADAUSDT")).not.toBeInTheDocument();
       expect(screen.queryByText("A_CTX_FAST")).not.toBeInTheDocument();
       expect(screen.getAllByText("BTCUSDT").length).toBeGreaterThan(0);
       expect(screen.getAllByText("ETHUSDT").length).toBeGreaterThan(0);
       expect(screen.getAllByText("SOLUSDT").length).toBeGreaterThan(0);
       expect(screen.getAllByText("XRPUSDT").length).toBeGreaterThan(0);
       expect(screen.getByText("B_CTX_1")).toBeInTheDocument();
-      expect(screen.getByTestId("signal-source-BTCUSDT")).toHaveTextContent(/Ostatni sygnal/i);
-      expect(screen.queryByTestId("signal-source-ADAUSDT")).not.toBeInTheDocument();
       expect(screen.getByRole("button", { name: /Wstecz|Prev/i })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: /Dalej|Next/i })).toBeInTheDocument();
     });

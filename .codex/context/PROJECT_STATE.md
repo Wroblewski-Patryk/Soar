@@ -268,6 +268,14 @@ Last updated: 2026-04-24
   the focused residual operator-surface closure pack passed across selected-bot
   dashboard aggregate fail-closed behavior, inherited dashboard venue truth,
   bot-monitoring inherited venue truth, and dashboard/preview parity views.
+- 2026-04-24: a small UX/UI refinement slice is also closed for operator-facing
+  density polish. Strategy tabs now render inside one cleaner content
+  container instead of nested framed boxes, dashboard `Historia` keeps only the
+  operational trade log, runtime market cards no longer surface the removed
+  helper labels/counters (`Status`, `Source`, `Strategy`, `Decision`,
+  `Pozycja otwarta`, `Oceniono/brak wejścia`), dashboard warning text is more
+  readable, and wallet create/edit form now groups fields into denser rows
+  with a button-style mode switcher.
 - 2026-04-24: the next post-`V1IND-A` operator-truth follow-up is now active
   as `V1MON-A`. The first slice is already closed: bot monitoring no longer
   reconstructs aggregate runtime truth client-side when the backend aggregate
@@ -647,27 +655,27 @@ Last updated: 2026-04-24
 
 ## Current Focus
 - Main active objective: preserve the now-clean post-approval V1 validation
-  signal, recover truthful runtime signal delivery for active PAPER/LIVE bots,
-  and keep future web/runtime changes aligned with the approved production
-  candidate.
+  signal, keep canonical queue/context docs honest after the closed
+  `V1SIG-A`, `V1CAP-A`, `V1IND-A`, `V1POSTBOT-A`, `V1SURF-B`, and `V1LIFE-A`
+  waves, and derive the next engineering slice only from a fresh
+  architecture-fit audit instead of stale queued follow-ups.
 - Top blockers:
-  - active production bots can remain `RUNNING` with zero persisted runtime
-    signals/positions/trades while operator monitoring still shows configured
-    fallback strategy context that looks like emitted signal state.
-  - wallet capital authority is not yet explicit enough for `PAPER` reset and
-    `LIVE` post-deposit recovery cases, which risks confusing operators about
-    when a bot should resume trading after capital changes.
+  - there is currently no active engineering task in the canonical short
+    queue, so the next execution slice must be derived from a fresh audit of
+    the remaining repo truth instead of reusing already closed `V1SIG` or
+    `V1CAP` tasks.
+  - local `test:go-live:smoke` remains workstation-blocked on this machine
+    when Docker cannot bind `5432/6379` because another local stack is already
+    occupying those ports.
+  - final V1 production activation remains operator-blocked by prod evidence
+    generation and named sign-off capture, not by an open engineering wave.
 - Success criteria for this phase:
   - preserve green `web test`, `web typecheck`, and `quality:guardrails`
     on `main`,
-  - restore explicit and trustworthy runtime signal-delivery diagnostics for
-    active PAPER/LIVE bots,
-  - distinguish configured strategy context from accepted runtime signal truth
-    in operator monitoring,
-  - verify wallet reset and PAPER capital snapshots do not leave misleading
-    runtime balance truth,
-  - freeze and validate wallet capital-authority behavior for `LIVE`
-    exchange-balance refresh after deposits and for `PAPER` reset checkpoints,
+  - keep canonical queue/context docs synchronized so future execution nudges
+    do not revive already closed `V1SIG` / `V1CAP` slices,
+  - derive any next implementation task from current architecture and planning
+    truth instead of stale follow-up text,
   - keep high-signal auth/dashboard confidence suites free of false route/i18n
     noise,
   - keep the broader web pack free of avoidable `stderr` warning spill without
@@ -675,8 +683,10 @@ Last updated: 2026-04-24
   - keep queue/context/docs synchronized after each confidence-hardening slice.
 - execution slices remain scope-locked and documentation-synchronized.
 - Next queued follow-up:
-  - `V1SIG-01 diagnose(prod-runtime-truth): reproduce and classify why active PAPER/LIVE bots stay at zero persisted runtime signals/positions/trades.`
-  - `V1CAP-01 docs(capital-authority): freeze wallet capital rules for PAPER reset and LIVE post-deposit recovery.`
+  - `(none currently queued in canonical NOW/NEXT/READY states)`
+  - next implementation work must be derived fresh from
+    `docs/planning/mvp-execution-plan.md` plus current architecture/context
+    truth.
 
 ## Recent Progress
 - 2026-04-22: queued `SAFEV1-A` in

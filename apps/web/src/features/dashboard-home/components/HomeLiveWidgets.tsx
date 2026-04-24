@@ -41,7 +41,6 @@ import {
   SIGNAL_CARDS_DESKTOP_MIN_WIDTH,
 } from "./home-live-widgets/formatters";
 import {
-  createHistoryPositionsColumns,
   createOpenOrdersColumns,
   createOpenPositionsColumns,
   createTradesColumns,
@@ -72,8 +71,6 @@ const DASHBOARD_OPEN_POSITIONS_SORT_STORAGE_KEY = "dashboard.home.openPositions.
 const DASHBOARD_OPEN_POSITIONS_COLUMNS_STORAGE_KEY = "dashboard.home.openPositions.columns.v1";
 const DASHBOARD_OPEN_ORDERS_SORT_STORAGE_KEY = "dashboard.home.openOrders.sort.v1";
 const DASHBOARD_OPEN_ORDERS_COLUMNS_STORAGE_KEY = "dashboard.home.openOrders.columns.v1";
-const DASHBOARD_HISTORY_POSITIONS_SORT_STORAGE_KEY = "dashboard.home.historyPositions.sort.v1";
-const DASHBOARD_HISTORY_POSITIONS_COLUMNS_STORAGE_KEY = "dashboard.home.historyPositions.columns.v1";
 const DASHBOARD_TRADE_HISTORY_COLUMNS_STORAGE_KEY = "dashboard.home.tradeHistory.columns.v1";
 const TRADE_PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
 const OPEN_POSITIONS_PAGE_SIZE_OPTIONS = [10, 25, 50] as const;
@@ -221,16 +218,15 @@ export default function HomeLiveWidgets() {
     viewportWidth > 0 ? viewportWidth : SIGNAL_CARDS_DESKTOP_MIN_WIDTH
   );
   const signalSymbols = useMemo(() => selectedData?.symbols ?? [], [selectedData?.symbols]);
-  const signalHeaderStats = useMemo(() => {
-    const actionableSignalsCount = signalSymbols.reduce((count, item) => {
-      return item.runtimeMarketState === "SIGNAL_ACTIVE" ? count + 1 : count;
-    }, 0);
-
-    return {
+  const signalHeaderStats = useMemo(
+    () => ({
       marketsCount: signalSymbols.length,
-      actionableSignalsCount,
-    };
-  }, [signalSymbols]);
+      actionableSignalsCount: signalSymbols.reduce((count, item) => {
+        return item.runtimeMarketState === "SIGNAL_ACTIVE" ? count + 1 : count;
+      }, 0),
+    }),
+    [signalSymbols]
+  );
   const runtimeBaseCurrencyCode = useMemo(() => {
     const summaryBaseCurrency =
       typeof selected?.positions?.summary?.baseCurrency === "string" && selected.positions.summary.baseCurrency.length > 0
@@ -541,30 +537,6 @@ export default function HomeLiveWidgets() {
     ]
   );
 
-  const historyPositionsColumns = useMemo(
-    () =>
-      createHistoryPositionsColumns({
-        t,
-        formatDateTime,
-        formatNumber,
-        formatRuntimeAmount,
-        withRuntimeUnit,
-        resolveRuntimeIcon,
-        runtimeIconsLoading,
-        runtimeIconsError,
-      }),
-    [
-      formatDateTime,
-      formatNumber,
-      formatRuntimeAmount,
-      resolveRuntimeIcon,
-      runtimeIconsError,
-      runtimeIconsLoading,
-      t,
-      withRuntimeUnit,
-    ]
-  );
-
   const tradesColumns = useMemo(
     () =>
       createTradesColumns({
@@ -761,7 +733,7 @@ export default function HomeLiveWidgets() {
           <section className={CARD}>
             <div className="space-y-6">
               {!selectedRuntimeCapabilityAvailable ? (
-                <div className="rounded-box border border-warning/40 bg-warning/10 px-3 py-2 text-xs">
+                <div className="rounded-box border border-warning/40 bg-warning/10 px-3 py-2 text-xs text-warning">
                   <div className="mb-1">
                     <span className="badge badge-xs badge-warning badge-outline">
                       {t("dashboard.bots.list.placeholderBadge")}
@@ -790,13 +762,7 @@ export default function HomeLiveWidgets() {
                 noOpenOrdersLabel={t("dashboard.home.runtime.openOrdersPlaceholder")}
                 tradesLoading={selectedTradesLoading}
                 loadingLabel={t("dashboard.home.loadWidgets")}
-                historyRows={selected?.positions?.historyItems ?? []}
-                historyColumns={historyPositionsColumns}
-                historyPositionsSortStorageKey={DASHBOARD_HISTORY_POSITIONS_SORT_STORAGE_KEY}
-                historyPositionsColumnVisibilityKey={DASHBOARD_HISTORY_POSITIONS_COLUMNS_STORAGE_KEY}
-                historyPositionsTitle={t("dashboard.bots.monitoring.sections.historyPositionsTitle")}
                 historyTradesTitle={t("dashboard.bots.monitoring.sections.historyTradesTitle")}
-                noHistoryPositionsLabel={t("dashboard.bots.monitoring.emptyClosedPositions")}
                 tradesRows={selectedData?.trades ?? []}
                 tradesColumns={tradesColumns}
                 filterPlaceholder={t("dashboard.home.runtime.manualOrderSymbolPlaceholder")}
@@ -844,24 +810,11 @@ export default function HomeLiveWidgets() {
                 signalsLabel={t("dashboard.home.runtime.signals")}
                 marketsCount={signalHeaderStats.marketsCount}
                 actionableSignalsCount={signalHeaderStats.actionableSignalsCount}
-                contextSourceLabel={t("dashboard.home.runtime.signalContextSource")}
-                contextSourceValueLatestSignal={t("dashboard.home.runtime.signalContextSourceLatestSignal")}
-                contextSourceValueLatestDecision={t("dashboard.home.runtime.signalContextSourceLatestDecision")}
-                contextSourceValueConfiguredFallback={t("dashboard.home.runtime.signalContextSourceConfiguredFallback")}
-                contextSourceValueUnresolved={t("dashboard.home.runtime.signalContextSourceUnresolved")}
-                statusLabel={t("dashboard.home.runtime.status")}
-                marketStatePositionOpen={t("dashboard.home.runtime.marketStatePositionOpen")}
-                marketStateSignalActive={t("dashboard.home.runtime.marketStateSignalActive")}
-                marketStateEvaluatedNoTrade={t("dashboard.home.runtime.marketStateEvaluatedNoTrade")}
-                marketStateConfiguredOnly={t("dashboard.home.runtime.marketStateConfiguredOnly")}
-                marketStateUnresolved={t("dashboard.home.runtime.marketStateUnresolved")}
-                strategyContextLabel={t("dashboard.home.runtime.strategyContextTitle")}
-                runtimeDecisionPendingLabel={t("dashboard.home.runtime.runtimeDecisionPending")}
                 renderSymbolLabel={renderRuntimeSymbol}
               />
               {runtimeDataIsStale ? (
                 <p
-                  className="rounded-box border border-warning/40 bg-warning/10 px-3 py-2 text-xs text-warning-content/85"
+                  className="rounded-box border border-warning/40 bg-warning/10 px-3 py-2 text-xs text-warning"
                   aria-live="polite"
                 >
                   {interpolateTemplate(t("dashboard.home.runtime.staleDataWarning"), {

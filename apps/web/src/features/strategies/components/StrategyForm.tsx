@@ -4,8 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { LuCog, LuDoorClosed, LuDoorOpen, LuPencilLine } from "react-icons/lu";
 import { useI18n } from "@/i18n/I18nProvider";
 import Tabs from "@/ui/components/Tabs";
-import { TAB_CONTENT_FRAME_CLASS, TAB_CONTENT_INNER_CLASS } from "@/ui/components/tabContentFrame";
-import { focusFirstInvalidField, FormPageShell, FormSectionCard, FormValidationSummary, toValidationSummaryErrors } from "@/ui/forms";
+import { focusFirstInvalidField, FormPageShell, FormValidationSummary, toValidationSummaryErrors } from "@/ui/forms";
 import { useStrategyForm } from "../hooks/useStrategyForm";
 import { StrategyFormProps } from "../types/StrategyForm.type";
 import { Additional } from "./StrategyFormSections/Additional";
@@ -33,9 +32,6 @@ export default function StrategyForm({
   const copy = useMemo(() => ({
     title: t("dashboard.strategies.form.title"),
     subtitle: t("dashboard.strategies.form.subtitle"),
-    sections: {
-      config: t("dashboard.strategies.form.sections.config"),
-    },
     steps: {
       basic: t("dashboard.strategies.form.steps.basic"),
       open: t("dashboard.strategies.form.steps.open"),
@@ -99,41 +95,37 @@ export default function StrategyForm({
       ) : null}
       <fieldset disabled={submitting}>
         <FormPageShell title={copy.title} description={copy.subtitle}>
-          <FormSectionCard title={copy.sections.config}>
-            <div className="w-full">
-              <Tabs
-                items={steps}
-                value={currentStep}
-                onChange={(value) => setCurrentStep(value as StrategyFormStep)}
-                variant="border"
-                className="overflow-x-auto whitespace-nowrap"
-                tabClassName="shrink-0"
-                syncWithHash
-              />
+          <div className="w-full space-y-4">
+            <Tabs
+              items={steps}
+              value={currentStep}
+              onChange={(value) => setCurrentStep(value as StrategyFormStep)}
+              variant="border"
+              className="overflow-x-auto whitespace-nowrap"
+              tabClassName="shrink-0"
+              syncWithHash
+            />
 
-              <section className={TAB_CONTENT_FRAME_CLASS}>
-                <div className={`${TAB_CONTENT_INNER_CLASS} p-4 sm:p-5`}>
-                  {currentStep === "basic" && (
-                    <Basic
-                      data={form}
-                      setData={setBasic}
-                      errors={
-                        showValidation
-                          ? {
-                              name: fieldErrors.name,
-                              interval: fieldErrors.interval,
-                            }
-                          : undefined
-                      }
-                    />
-                  )}
-                  {currentStep === "open" && <Open data={form.openConditions} setData={setOpenConditions} />}
-                  {currentStep === "close" && <Close data={form.closeConditions} setData={setCloseConditions} />}
-                  {currentStep === "additional" && <Additional data={form.additional} setData={setAdditional} />}
-                </div>
-              </section>
-            </div>
-          </FormSectionCard>
+            <section className="rounded-box border border-base-300/55 bg-base-100/85 px-4 py-4 sm:px-5 sm:py-5">
+              {currentStep === "basic" && (
+                <Basic
+                  data={form}
+                  setData={setBasic}
+                  errors={
+                    showValidation
+                      ? {
+                          name: fieldErrors.name,
+                          interval: fieldErrors.interval,
+                        }
+                      : undefined
+                  }
+                />
+              )}
+              {currentStep === "open" && <Open data={form.openConditions} setData={setOpenConditions} />}
+              {currentStep === "close" && <Close data={form.closeConditions} setData={setCloseConditions} />}
+              {currentStep === "additional" && <Additional data={form.additional} setData={setAdditional} />}
+            </section>
+          </div>
         </FormPageShell>
       </fieldset>
     </form>

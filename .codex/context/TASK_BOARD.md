@@ -37,6 +37,12 @@ Last updated: 2026-04-24
 
 ## DONE
 
+- [x] `UXUI-2026-04-24-A web(uxui): refine strategies tabs, dashboard runtime density, and wallets form layout`
+  - 2026-04-24: Simplified strategy tab framing to one content container, removed closed-position history table from dashboard `Historia`, reduced runtime market-card helper chrome (`Status` / `Source` / `Strategy` / `Decision` labels plus extra market-state counters), improved warning readability on dashboard runtime surfaces, and tightened wallet create/edit layout with requested row grouping plus a button-style mode switcher. Validation PASS: `pnpm --filter web exec vitest run src/features/strategies/components/StrategyForm.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.aggregate-history.test.tsx src/features/wallets/components/WalletCreateEditForm.test.tsx`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
+
+- [x] `DOCSYNC-QUEUE-2026-04-24 planning/docs: sync canonical queue state after closed V1SIG and V1CAP waves`
+  - 2026-04-24: `PROJECT_STATE.md` no longer lists closed `V1SIG-01` / `V1CAP-01` slices as the next queued follow-up. Current source of truth now explicitly reflects that `TASK_BOARD` has no `READY` / `IN_PROGRESS` work and `mvp-next-commits.md` has no `NOW` / `NEXT` items, so any next engineering slice must be derived fresh rather than revived from stale follow-up text.
+
 - [x] `V1LIFE-05 web(open-orders-action): add final Action column with cancel affordance in dashboard Orders tab`
   - 2026-04-24: Dashboard `Orders` tab now exposes a final `Action` column that reuses the existing `POST /dashboard/orders/:id/cancel` endpoint instead of a parallel web-only path. Cancel affordance is only shown for active open-order statuses (`PENDING` / `OPEN` / `PARTIALLY_FILLED`), runs with explicit pending state, and refreshes the selected-bot runtime snapshot after success. Focused validation PASS: `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.open-orders-actions.test.tsx`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
 

@@ -457,11 +457,8 @@ describe("Selected bot aggregate parity: /dashboard vs /dashboard/bots/:id/previ
 
     fireEvent.click(await screen.findByRole("tab", { name: /Historia|History/i }));
 
-    expect(await screen.findByText("BETAHISTUSDT")).toBeInTheDocument();
     expect(await screen.findByText("BETATRADEUSDT")).toBeInTheDocument();
     expect(screen.getByText("BETA_CTX_FAST")).toBeInTheDocument();
-    expect(screen.getByTestId("signal-source-BTCUSDT")).toHaveTextContent(/Ostatni sygnal|Latest signal/i);
-    expect(screen.queryByText("ALPHAHISTUSDT")).not.toBeInTheDocument();
     expect(screen.queryByText("ALPHATRADEUSDT")).not.toBeInTheDocument();
     expect(screen.queryByText("ALPHA_CTX_FAST")).not.toBeInTheDocument();
 
@@ -482,9 +479,7 @@ describe("Selected bot aggregate parity: /dashboard vs /dashboard/bots/:id/previ
       });
     });
 
-    expect(await screen.findByText("BETAHISTUSDT")).toBeInTheDocument();
     expect(await screen.findByText("BETATRADEUSDT")).toBeInTheDocument();
-    expect(screen.queryByText("ALPHAHISTUSDT")).not.toBeInTheDocument();
     expect(screen.queryByText("ALPHATRADEUSDT")).not.toBeInTheDocument();
   });
 

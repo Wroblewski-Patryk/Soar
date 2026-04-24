@@ -756,7 +756,7 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
         </section>
 
         {props.selectedData?.session?.status !== "RUNNING" ? (
-          <p className="text-[11px] rounded-box border border-warning/40 bg-warning/10 px-2 py-1 text-warning-content/80">
+          <p className="text-[11px] rounded-box border border-warning/40 bg-warning/10 px-2 py-1 text-warning">
             {props.text.noActiveSessionWarning}
           </p>
         ) : null}

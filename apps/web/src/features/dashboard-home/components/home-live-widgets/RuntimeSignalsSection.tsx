@@ -1,7 +1,6 @@
 import { useMemo, type ReactNode, type RefObject } from "react";
 import { LuCoins, LuSignal } from "react-icons/lu";
 import InlinePager from "../../../../ui/components/InlinePager";
-import { countRuntimeMarketStates } from "@/features/bots/utils/runtimeSurfaceTruth";
 import type { RuntimeSymbolWithLive, SignalPillValue } from "./types";
 
 type RuntimeSignalsSectionProps = {
@@ -19,19 +18,6 @@ type RuntimeSignalsSectionProps = {
   signalsLabel: string;
   marketsCount: number;
   actionableSignalsCount: number;
-  contextSourceLabel: string;
-  contextSourceValueLatestSignal: string;
-  contextSourceValueLatestDecision: string;
-  contextSourceValueConfiguredFallback: string;
-  contextSourceValueUnresolved: string;
-  statusLabel: string;
-  marketStatePositionOpen: string;
-  marketStateSignalActive: string;
-  marketStateEvaluatedNoTrade: string;
-  marketStateConfiguredOnly: string;
-  marketStateUnresolved: string;
-  strategyContextLabel: string;
-  runtimeDecisionPendingLabel: string;
   renderSymbolLabel?: (symbol: string) => ReactNode;
 };
 
@@ -104,11 +90,6 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
     });
   }, [props.signalSymbols]);
 
-  const runtimeStateSummary = useMemo(
-    () => countRuntimeMarketStates(props.signalSymbols),
-    [props.signalSymbols]
-  );
-
   return (
     <div>
       <div className="mb-2 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
@@ -125,33 +106,6 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
             <span className="opacity-70">{props.signalsLabel}:</span>
             <span className="font-semibold">{props.actionableSignalsCount}</span>
           </span>
-            {runtimeStateSummary.POSITION_OPEN > 0 ? (
-              <>
-                <span className="opacity-40">|</span>
-                <span className="inline-flex items-center gap-1.5">
-                  <span className="opacity-70">{props.marketStatePositionOpen}:</span>
-                  <span className="font-semibold">{runtimeStateSummary.POSITION_OPEN}</span>
-                </span>
-              </>
-            ) : null}
-            {runtimeStateSummary.EVALUATED_NO_TRADE > 0 ? (
-              <>
-                <span className="opacity-40">|</span>
-                <span className="inline-flex items-center gap-1.5">
-                  <span className="opacity-70">{props.marketStateEvaluatedNoTrade}:</span>
-                  <span className="font-semibold">{runtimeStateSummary.EVALUATED_NO_TRADE}</span>
-                </span>
-              </>
-            ) : null}
-            {runtimeStateSummary.CONFIGURED_ONLY > 0 ? (
-              <>
-                <span className="opacity-40">|</span>
-                <span className="inline-flex items-center gap-1.5">
-                  <span className="opacity-70">{props.marketStateConfiguredOnly}:</span>
-                  <span className="font-semibold">{runtimeStateSummary.CONFIGURED_ONLY}</span>
-                </span>
-              </>
-            ) : null}
         </div>
       </div>
       </div>
@@ -173,34 +127,6 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
             const isConfiguredSnapshot =
               signal.runtimeMarketState === "CONFIGURED_ONLY" ||
               signal.lastSignalContextSource === "configured_fallback";
-            const sourceLabel =
-              signal.lastSignalContextSource === "latest_signal"
-                ? props.contextSourceValueLatestSignal
-                : signal.lastSignalContextSource === "latest_decision"
-                  ? props.contextSourceValueLatestDecision
-                : signal.lastSignalContextSource === "configured_fallback"
-                  ? props.contextSourceValueConfiguredFallback
-                  : props.contextSourceValueUnresolved;
-            const statusLabel =
-              signal.runtimeMarketState === "POSITION_OPEN"
-                ? props.marketStatePositionOpen
-                : signal.runtimeMarketState === "SIGNAL_ACTIVE"
-                  ? props.marketStateSignalActive
-                  : signal.runtimeMarketState === "EVALUATED_NO_TRADE"
-                    ? props.marketStateEvaluatedNoTrade
-                    : signal.runtimeMarketState === "CONFIGURED_ONLY"
-                      ? props.marketStateConfiguredOnly
-                      : props.marketStateUnresolved;
-            const configuredStrategyName =
-              signal.lastSignalContextSource === "latest_signal"
-                ? null
-                : signal.configuredStrategyName ?? null;
-            const runtimeDetail =
-              signal.lastSignalMessage?.trim() ||
-              signal.lastSignalReason?.trim() ||
-              (signal.lastSignalContextSource === "configured_fallback"
-                ? props.runtimeDecisionPendingLabel
-                : null);
 
             return (
               <article
@@ -213,23 +139,7 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
                       {props.renderSymbolLabel ? props.renderSymbolLabel(signal.symbol) : signal.symbol}
                     </p>
                   </div>
-                  <p className="mt-1 text-[10px] opacity-65">
-                    {props.statusLabel}: <span className="font-semibold">{statusLabel}</span>
-                  </p>
-                  <p className="mt-1 text-[10px] opacity-65" data-testid={`signal-source-${signal.symbol}`}>
-                    {props.contextSourceLabel}: <span className="font-semibold">{sourceLabel}</span>
-                  </p>
-                  {configuredStrategyName ? (
-                    <p className="mt-1 text-[10px] opacity-65" data-testid={`signal-strategy-${signal.symbol}`}>
-                      {props.strategyContextLabel}: <span className="font-semibold">{configuredStrategyName}</span>
-                    </p>
-                  ) : null}
-                  {runtimeDetail ? (
-                    <p className="mt-1 text-[10px] opacity-65" data-testid={`signal-detail-${signal.symbol}`}>
-                      {runtimeDetail}
-                    </p>
-                  ) : null}
-                  <div className="mt-2.5 grid grid-cols-2 gap-2.5 text-[11px] leading-4">
+                  <div className="mt-3 grid grid-cols-2 gap-2.5 text-[11px] leading-4">
                     <div
                       className={`space-y-1.5 rounded-box transition-opacity duration-150 ${
                         isConfiguredSnapshot

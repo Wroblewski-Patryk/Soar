@@ -2,11 +2,11 @@ import { LuBadgeCheck } from 'react-icons/lu';
 
 import type { ApiKey } from '@/features/profile/types/apiKey.type';
 import {
+  FormField,
   FormGrid,
   FormSectionCard,
   NumberField,
   type Option,
-  RadioGroupField,
   SelectField,
   TextField,
   ToggleField,
@@ -38,6 +38,51 @@ type BasicsSectionProps = {
   onBaseCurrencyChange: (value: string) => void;
 };
 
+function WalletModeField({
+  id,
+  label,
+  hint,
+  value,
+  options,
+  onChange,
+}: {
+  id: string;
+  label: string;
+  hint?: string;
+  value: WalletFormState['mode'];
+  options: Option[];
+  onChange: (value: WalletFormState['mode']) => void;
+}) {
+  return (
+    <FormField label={label} htmlFor={`${id}-${value}`} hint={hint}>
+      <div className='join w-full' role='radiogroup' aria-label={label}>
+        {options.map((option) => {
+          const isActive = value === option.value;
+          return (
+            <button
+              key={option.value}
+              id={`${id}-${option.value}`}
+              type='button'
+              role='radio'
+              aria-checked={isActive}
+              disabled={option.disabled}
+              className={[
+                'btn btn-sm join-item min-h-11 flex-1 border transition-colors duration-150',
+                isActive
+                  ? 'border-accent/45 bg-accent/10 text-accent hover:border-accent/70 hover:bg-accent/20'
+                  : 'border-base-300 bg-base-100/60 text-base-content/75 hover:border-base-content/35 hover:bg-base-100 hover:text-base-content',
+              ].join(' ')}
+              onClick={() => onChange(option.value as WalletFormState['mode'])}
+            >
+              {option.label}
+            </button>
+          );
+        })}
+      </div>
+    </FormField>
+  );
+}
+
 export function WalletBasicsSection({
   walletText,
   form,
@@ -66,16 +111,16 @@ export function WalletBasicsSection({
           error={showValidation ? fieldErrors.name : undefined}
         />
 
-        <RadioGroupField
+        <WalletModeField
           id='wallet-mode'
           label={walletText('mode')}
           hint={form.mode === 'LIVE' ? walletText('modeLiveHint') : walletText('modePaperHint')}
-          className='md:col-span-2'
           value={form.mode}
           options={modeOptions}
-          onChange={(value) => onModeChange(value as WalletFormState['mode'])}
+          onChange={onModeChange}
         />
-
+      </FormGrid>
+      <FormGrid columns={3} className='mt-3'>
         <SelectField
           id='wallet-exchange'
           label={walletText('exchange')}
@@ -103,7 +148,7 @@ export function WalletBasicsSection({
           error={showValidation ? fieldErrors.baseCurrency : undefined}
           hint={walletMetadataLoading ? walletText('baseCurrencyLoading') : undefined}
         />
-        {walletMetadataError ? <p className='text-xs text-warning md:col-span-2'>{walletMetadataError}</p> : null}
+        {walletMetadataError ? <p className='text-xs text-warning md:col-span-2 xl:col-span-3'>{walletMetadataError}</p> : null}
       </FormGrid>
     </FormSectionCard>
   );
@@ -199,33 +244,37 @@ export function WalletLiveSection({
   return (
     <FormSectionCard title={walletText('sectionLive')}>
       <FormGrid columns={2}>
-        <NumberField
-          id='wallet-live-allocation-value'
-          label={walletText('liveAllocationValue')}
-          value={form.liveAllocationValue}
-          onChange={(value) => onLiveAllocationValueChange(Number(value) || 0)}
-          min={0.01}
-          step={0.01}
-          error={showValidation ? fieldErrors.liveAllocationValue : undefined}
-        />
+        <div className='md:col-span-2 grid gap-3 md:grid-cols-2'>
+          <NumberField
+            id='wallet-live-allocation-value'
+            label={walletText('liveAllocationValue')}
+            value={form.liveAllocationValue}
+            onChange={(value) => onLiveAllocationValueChange(Number(value) || 0)}
+            min={0.01}
+            step={0.01}
+            error={showValidation ? fieldErrors.liveAllocationValue : undefined}
+          />
 
-        <SelectField
-          id='wallet-live-allocation-mode'
-          label={walletText('liveAllocationMode')}
-          value={form.liveAllocationMode}
-          options={liveAllocationModeOptions}
-          onChange={(value) => onLiveAllocationModeChange(value as WalletFormState['liveAllocationMode'])}
-        />
+          <SelectField
+            id='wallet-live-allocation-mode'
+            label={walletText('liveAllocationMode')}
+            value={form.liveAllocationMode}
+            options={liveAllocationModeOptions}
+            onChange={(value) => onLiveAllocationModeChange(value as WalletFormState['liveAllocationMode'])}
+          />
+        </div>
 
-        <SelectField
-          id='wallet-api-key'
-          label={walletText('apiKey')}
-          value={form.apiKeyId}
-          options={apiKeyOptions}
-          className='md:col-span-2'
-          onChange={onApiKeyChange}
-          error={showValidation ? fieldErrors.apiKeyId : undefined}
-        />
+        <div className='md:col-span-2 grid gap-3 md:grid-cols-2'>
+          <SelectField
+            id='wallet-api-key'
+            label={walletText('apiKey')}
+            value={form.apiKeyId}
+            options={apiKeyOptions}
+            onChange={onApiKeyChange}
+            error={showValidation ? fieldErrors.apiKeyId : undefined}
+          />
+          <div className='hidden md:block' aria-hidden='true' />
+        </div>
         {compatibleApiKeys.length === 0 ? <p className='text-xs text-warning md:col-span-2'>{walletText('noApiKeys')}</p> : null}
 
         <ToggleField
