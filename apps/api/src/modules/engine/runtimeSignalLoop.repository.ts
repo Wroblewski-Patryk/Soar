@@ -16,50 +16,33 @@ export const listActiveRuntimeBotsRaw = () =>
       exchange: true,
       paperStartBalance: true,
       marketType: true,
-      botMarketGroups: {
-        where: {
-          isEnabled: true,
-          lifecycleStatus: { in: ['ACTIVE', 'PAUSED'] },
-        },
+      maxOpenPositions: true,
+      strategyId: true,
+      symbolGroupId: true,
+      strategy: {
         select: {
           id: true,
-          symbolGroupId: true,
-          executionOrder: true,
-          maxOpenPositions: true,
-          symbolGroup: {
+          interval: true,
+          config: true,
+          leverage: true,
+          walletRisk: true,
+        },
+      },
+      symbolGroup: {
+        select: {
+          id: true,
+          symbols: true,
+          marketUniverse: {
             select: {
-              symbols: true,
-              marketUniverse: {
-                select: {
-                  exchange: true,
-                  marketType: true,
-                  baseCurrency: true,
-                  filterRules: true,
-                  whitelist: true,
-                  blacklist: true,
-                },
-              },
-            },
-          },
-          strategyLinks: {
-            where: { isEnabled: true },
-            orderBy: [{ priority: 'asc' }, { createdAt: 'asc' }],
-            select: {
-              strategyId: true,
-              priority: true,
-              weight: true,
-              strategy: {
-                select: {
-                  interval: true,
-                  config: true,
-                  leverage: true,
-                  walletRisk: true,
-                },
-              },
+              exchange: true,
+              marketType: true,
+              baseCurrency: true,
+              filterRules: true,
+              whitelist: true,
+              blacklist: true,
             },
           },
         },
-        orderBy: [{ executionOrder: 'asc' }, { createdAt: 'asc' }],
       },
     },
   });

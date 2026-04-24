@@ -153,6 +153,13 @@ Last updated: 2026-04-24
   canonical row exists), create/update commands write the direct refs, and
   bot list/get/runtime-graph reads expose the singular inherited bot context
   without relying on legacy graph reconstruction as the only truth.
+- 2026-04-24: `V1BOT-06` is closed. Canonical runtime topology now resolves one
+  direct bot runtime context (`symbolGroupId + strategyId`) instead of
+  iterating over legacy `botMarketGroups/strategyLinks`, final-candle routing
+  and execution run against that singular context, dynamic market-stream
+  subscriptions read direct bot refs first, and the selected-bot runtime
+  surfaces that show market/strategy context now prefer direct inherited bot
+  data over legacy runtime-graph reconstruction.
 - 2026-04-22: prod restore-drill proof now passes from a real Coolify terminal
   execution in the production postgres container
   (`x11cfnz1dd9x0yzccftqzcoe`), and the final non-dry-run prod release gate now

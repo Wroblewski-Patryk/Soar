@@ -8,8 +8,7 @@ type StrategySymbolsAssignment = {
 };
 
 export const buildConfiguredStrategyBySymbol = (params: {
-  configuredBotStrategies: StrategySymbolsAssignment[];
-  configuredMarketGroupStrategyLinks: StrategySymbolsAssignment[];
+  configuredStrategyAssignments: StrategySymbolsAssignment[];
   symbols: string[];
   strategiesById: Map<string, unknown>;
 }) => {
@@ -27,11 +26,8 @@ export const buildConfiguredStrategyBySymbol = (params: {
     }
   };
 
-  for (const configuredLink of params.configuredMarketGroupStrategyLinks) {
-    assignStrategy(configuredLink);
-  }
-  for (const configuredBotStrategy of params.configuredBotStrategies) {
-    assignStrategy(configuredBotStrategy);
+  for (const assignment of params.configuredStrategyAssignments) {
+    assignStrategy(assignment);
   }
 
   return configuredStrategyBySymbol;

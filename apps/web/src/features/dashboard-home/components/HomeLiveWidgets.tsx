@@ -108,6 +108,17 @@ const resolveSelectedStrategyDisplay = (
 ) => {
   if (!selected) return t("dashboard.home.runtime.reasonUnknown");
 
+  if (selected.bot.strategy?.name) return selected.bot.strategy.name;
+
+  const runtimeGraphBotStrategyId = selected.runtimeGraph?.bot.strategyId ?? null;
+  const runtimeGraphBotStrategyName =
+    runtimeGraphBotStrategyId != null
+      ? selected.runtimeGraph?.marketGroups
+          .flatMap((marketGroup) => marketGroup.strategies)
+          .find((strategyBinding) => strategyBinding.strategy.id === runtimeGraphBotStrategyId)?.strategy.name
+      : null;
+  if (runtimeGraphBotStrategyName) return runtimeGraphBotStrategyName;
+
   const runtimeGraphStrategyName = selected.runtimeGraph?.marketGroups
     .flatMap((marketGroup) => marketGroup.strategies)
     .find((strategyBinding) => strategyBinding.strategy.id === selected.bot.strategyId)?.strategy.name;

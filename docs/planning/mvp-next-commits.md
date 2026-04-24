@@ -7,9 +7,8 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `V1BOT-06 engine(runtime-topology): replace multi-group runtime topology with singular bot context`
-## NEXT
 - [ ] `V1BOT-07 engine(capital-strategy-inheritance): source runtime parameters from wallet and strategy modules`
+## NEXT
 - [ ] `V1BOT-08 web(bot-crud): align create/edit/detail flows to the singular contract`
 - [ ] `V1BOT-09 web(runtime-surfaces): align monitoring, dashboard, and manual actions to singular bot context`
 - [ ] `V1BOT-10 cleanup(legacy-runtime): remove legacy topology from canonical runtime path`
@@ -21,6 +20,7 @@ Operational queue for one-task execution runs.
 - [x] `V1BOT-03 db(migration): backfill single-context refs from legacy topology and fail-closed on incompatible bots`
 - [x] `V1BOT-04 api(commands): collapse create/update validation onto inherited single-context contract`
 - [x] `V1BOT-05 api(reads): expose bot runtime context as inherited and singular`
+- [x] `V1BOT-06 engine(runtime-topology): replace multi-group runtime topology with singular bot context`
 - [x] `V1RT-02 fix(api-market-stream-endpoint): select Binance websocket default by runtime market type`
 - [x] `V1ALIGN-A planning queued (runtime worker-ownership alignment plus symbol-scope, interval-truth, freshness-authority, and diagnostics closure)`
 - [x] `V1ALIGN-01 docs(architecture-worker-ownership): freeze split workers as deployed target and inline as local/degraded-only contract`

@@ -5,14 +5,13 @@ import { StreamCandleEvent } from '../market-stream/binanceStream.types';
 import { resolveRuntimeReferenceBalance, resolveRuntimeWalletFundsExhausted } from './runtimeCapitalContext.service';
 import { runtimeMetricsService } from './runtimeMetrics.service';
 import { mergeRuntimeStrategyVotes, StrategyVote } from './runtimeSignalMerge';
-import { ActiveBot, ActiveBotMarketGroup, ActiveBotStrategy, resolveRuntimeOrderQuantity } from './runtimeSignalLoopDefaults';
+import { ActiveBot, ActiveBotStrategy, resolveRuntimeOrderQuantity } from './runtimeSignalLoopDefaults';
 import { normalizeInterval } from './runtimeSignalLoopDefaults';
 import { RuntimeSignalConditionLine, StrategyEvaluation } from './runtimeSignalEvaluationTypes';
 import { RuntimeExchangeOrderGuardResult } from './runtimeExchangeOrderGuard.service';
 
 type RuntimeSignalRouteEntry = {
   bot: ActiveBot;
-  group: ActiveBotMarketGroup;
 };
 
 type RuntimeFinalCandleDecisionContext = {
@@ -148,7 +147,7 @@ const candleConfidence = (event: StreamCandleEvent) => {
 
 const buildDecisionWindowKey = (input: {
   botId: string;
-  groupId: string;
+  symbolGroupId: string;
   symbol: string;
   interval: string;
   openTime: number;
@@ -156,7 +155,7 @@ const buildDecisionWindowKey = (input: {
 }) =>
   [
     input.botId,
-    input.groupId,
+    input.symbolGroupId,
     normalizeSymbol(input.symbol),
     normalizeInterval(input.interval),
     String(input.openTime),
@@ -202,41 +201,38 @@ export const processRuntimeFinalCandleDecision = async (
       (bot) => bot.exchange === event.exchange && bot.marketType === event.marketType
     );
     await Promise.all(
-      marketScopedBots.flatMap((bot) =>
-        bot.marketGroups
-          .filter(
-            (group) =>
-              group.strategies.length > 0 &&
-              group.symbols.length === 0 &&
-              group.strategies.some((strategy) =>
-                strategyMatchesCandleInterval(strategy.strategyInterval, event.interval)
-              )
-          )
-          .map(async (group) => {
-            const sessionId = await context.ensureRuntimeSession?.({
-              userId: bot.userId,
-              botId: bot.id,
-              mode: bot.mode,
-            });
-            await context.recordRuntimeEvent?.({
-              userId: bot.userId,
-              botId: bot.id,
-              mode: bot.mode,
-              sessionId,
-              eventType: 'SIGNAL_DECISION',
-              level: 'DEBUG',
-              symbol: event.symbol,
-              botMarketGroupId: group.id,
-              message: 'Runtime group has no routable symbols configured',
-              payload: {
-                reason: 'EMPTY_SYMBOL_SCOPE',
-                botMarketGroupId: group.id,
-                strategyIntervals: group.strategies.map((strategy) => strategy.strategyInterval ?? '*'),
-              },
-              eventAt: new Date(event.eventTime),
-            });
-          })
-      )
+      marketScopedBots.map(async (bot) => {
+        const runtimeContext = bot.runtimeContext;
+        if (
+          !runtimeContext ||
+          runtimeContext.symbols.length > 0 ||
+          !strategyMatchesCandleInterval(runtimeContext.strategy.strategyInterval, event.interval)
+        ) {
+          return;
+        }
+        const sessionId = await context.ensureRuntimeSession?.({
+          userId: bot.userId,
+          botId: bot.id,
+          mode: bot.mode,
+        });
+        await context.recordRuntimeEvent?.({
+          userId: bot.userId,
+          botId: bot.id,
+          mode: bot.mode,
+          sessionId,
+          eventType: 'SIGNAL_DECISION',
+          level: 'DEBUG',
+          symbol: event.symbol,
+          strategyId: runtimeContext.strategyId,
+          message: 'Runtime bot context has no routable symbols configured',
+          payload: {
+            reason: 'EMPTY_SYMBOL_SCOPE',
+            symbolGroupId: runtimeContext.symbolGroupId,
+            strategyInterval: runtimeContext.strategy.strategyInterval ?? '*',
+          },
+          eventAt: new Date(event.eventTime),
+        });
+      })
     );
     return;
   }
@@ -244,7 +240,9 @@ export const processRuntimeFinalCandleDecision = async (
   const runtimeSessionByBotId = new Map<string, string | undefined>();
 
   await Promise.all(
-    runtimeRoutes.map(async ({ bot, group }) => {
+    runtimeRoutes.map(async ({ bot }) => {
+      const runtimeContext = bot.runtimeContext;
+      if (!runtimeContext) return;
       if (!runtimeSessionByBotId.has(bot.id)) {
         const ensuredSessionId = await context.ensureRuntimeSession?.({
           userId: bot.userId,
@@ -260,8 +258,10 @@ export const processRuntimeFinalCandleDecision = async (
         string,
         { conditionLines: RuntimeSignalConditionLine[]; indicatorSummary: string | null }
       > = {};
-      const strategyVotes: StrategyVote[] = group.strategies
-        .filter((strategy) => strategyMatchesCandleInterval(strategy.strategyInterval, event.interval))
+      const eligibleStrategies = [runtimeContext.strategy].filter((strategy) =>
+        strategyMatchesCandleInterval(strategy.strategyInterval, event.interval)
+      );
+      const strategyVotes: StrategyVote[] = eligibleStrategies
         .map((strategy) => {
           const evaluation = context.evaluateStrategy({
             marketType: bot.marketType,
@@ -278,14 +278,14 @@ export const processRuntimeFinalCandleDecision = async (
           return {
             strategyId: strategy.strategyId,
             direction,
-            priority: strategy.priority,
-            weight: strategy.weight,
+            priority: 1,
+            weight: 1,
           } satisfies StrategyVote;
         })
         .filter((vote): vote is StrategyVote => Boolean(vote));
 
       const merged = mergeRuntimeStrategyVotes({
-        strategies: group.strategies,
+        strategies: eligibleStrategies,
         votes: strategyVotes,
         minDirectionalScore: context.minDirectionalScore,
       });
@@ -299,7 +299,7 @@ export const processRuntimeFinalCandleDecision = async (
           eventType: 'SIGNAL_DECISION',
           level: 'DEBUG',
           symbol: event.symbol,
-          botMarketGroupId: group.id,
+          strategyId: runtimeContext.strategyId,
           message: 'No trade decision after strategy merge',
           payload: {
             merge: merged.metadata,
@@ -322,7 +322,7 @@ export const processRuntimeFinalCandleDecision = async (
       );
       const decisionWindowKey = buildDecisionWindowKey({
         botId: bot.id,
-        groupId: group.id,
+        symbolGroupId: runtimeContext.symbolGroupId,
         symbol: event.symbol,
         interval: event.interval,
         openTime: event.openTime,
@@ -345,12 +345,12 @@ export const processRuntimeFinalCandleDecision = async (
             eventType: 'PRETRADE_BLOCKED',
             level: 'WARN',
             symbol: event.symbol,
-            botMarketGroupId: group.id,
             strategyId: merged.strategyId,
             signalDirection: direction,
             message: 'Signal blocked due to managed external position on symbol',
             payload: {
               reason: 'EXTERNAL_POSITION_ALREADY_OPEN',
+              symbolGroupId: runtimeContext.symbolGroupId,
             },
             eventAt: new Date(event.eventTime),
           });
@@ -359,12 +359,12 @@ export const processRuntimeFinalCandleDecision = async (
           return;
         }
 
-        const openPositionsInGroup = await context.countOpenPositionsForBotAndSymbols({
+        const openPositionsInBotScope = await context.countOpenPositionsForBotAndSymbols({
           userId: bot.userId,
           botId: bot.id,
-          symbols: group.symbols,
+          symbols: runtimeContext.symbols,
         });
-        if (openPositionsInGroup >= group.maxOpenPositions) {
+        if (openPositionsInBotScope >= runtimeContext.maxOpenPositions) {
           await context.recordRuntimeEvent?.({
             userId: bot.userId,
             botId: bot.id,
@@ -373,15 +373,15 @@ export const processRuntimeFinalCandleDecision = async (
             eventType: 'PRETRADE_BLOCKED',
             level: 'WARN',
             symbol: event.symbol,
-            botMarketGroupId: group.id,
             strategyId: merged.strategyId,
             signalDirection: direction,
-            message: 'Signal blocked because bot market-group reached max open positions',
+            message: 'Signal blocked because bot runtime context reached max open positions',
             payload: {
-              reason: 'GROUP_MAX_OPEN_POSITIONS_REACHED',
-              openPositionsInGroup,
-              maxOpenPositions: group.maxOpenPositions,
-              groupSymbols: group.symbols,
+              reason: 'BOT_MAX_OPEN_POSITIONS_REACHED',
+              openPositionsInBotScope,
+              maxOpenPositions: runtimeContext.maxOpenPositions,
+              symbolGroupId: runtimeContext.symbolGroupId,
+              runtimeSymbols: runtimeContext.symbols,
             },
             eventAt: new Date(event.eventTime),
           });
@@ -406,7 +406,6 @@ export const processRuntimeFinalCandleDecision = async (
             eventType: 'PRETRADE_BLOCKED',
             level: 'WARN',
             symbol: event.symbol,
-            botMarketGroupId: group.id,
             strategyId: merged.strategyId,
             signalDirection: direction,
             message: 'Pre-trade guard blocked execution',
@@ -434,14 +433,13 @@ export const processRuntimeFinalCandleDecision = async (
         confidence: candleConfidence(event),
         payload: {
           source: 'market_stream.candle_final',
-          botMarketGroupId: group.id,
-          symbolGroupId: group.symbolGroupId,
+          symbolGroupId: runtimeContext.symbolGroupId,
           strategyDriven: true,
           strategyInterval: event.interval,
           merge: merged.metadata,
           strategyExitTraceOnly,
-          groupRisk: {
-            maxOpenPositions: group.maxOpenPositions,
+          botRuntimeContext: {
+            maxOpenPositions: runtimeContext.maxOpenPositions,
           },
           eventTime: event.eventTime,
           candle: {
@@ -464,7 +462,6 @@ export const processRuntimeFinalCandleDecision = async (
         eventType: 'SIGNAL_DECISION',
         level: 'INFO',
         symbol: event.symbol,
-        botMarketGroupId: group.id,
         strategyId: merged.strategyId,
         signalDirection: direction,
         message: strategyExitTraceOnly
@@ -503,7 +500,8 @@ export const processRuntimeFinalCandleDecision = async (
         return;
       }
 
-      const selectedStrategy = group.strategies.find((strategy) => strategy.strategyId === merged.strategyId);
+      const selectedStrategy =
+        runtimeContext.strategy.strategyId === merged.strategyId ? runtimeContext.strategy : undefined;
       const referenceBalance = await resolveRuntimeReferenceBalance({
         userId: bot.userId,
         botId: bot.id,
@@ -545,6 +543,7 @@ export const processRuntimeFinalCandleDecision = async (
             message: `Signal blocked for ${event.symbol} due to exchange order constraints`,
             payload: {
               reason: 'EXCHANGE_MIN_ORDER_CONSTRAINT',
+              symbolGroupId: runtimeContext.symbolGroupId,
               constraintReason: exchangeOrderValidation.reason,
               quantity: orderQuantity,
               markPrice: event.close,
@@ -588,6 +587,7 @@ export const processRuntimeFinalCandleDecision = async (
           message: `Signal blocked for ${event.symbol} due to insufficient wallet budget`,
           payload: {
             reason: 'WALLET_INSUFFICIENT_FUNDS',
+            symbolGroupId: runtimeContext.symbolGroupId,
             quantity: orderQuantity,
             markPrice: event.close,
             leverage,
@@ -603,7 +603,7 @@ export const processRuntimeFinalCandleDecision = async (
         userId: bot.userId,
         botId: bot.id,
         walletId: bot.walletId ?? undefined,
-        botMarketGroupId: group.id,
+        botMarketGroupId: runtimeContext.symbolGroupId,
         runtimeSessionId: sessionId,
         symbol: event.symbol,
         direction,
@@ -626,12 +626,12 @@ export const processRuntimeFinalCandleDecision = async (
           eventType: 'PRETRADE_BLOCKED',
           level: 'WARN',
           symbol: event.symbol,
-          botMarketGroupId: group.id,
           strategyId: merged.strategyId,
           signalDirection: direction,
           message: 'Signal execution blocked by runtime orchestration guardrails',
           payload: {
             reason: orchestrationResult.reason,
+            symbolGroupId: runtimeContext.symbolGroupId,
             merge: merged.metadata,
           },
           eventAt: signalEventAt,

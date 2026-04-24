@@ -30,7 +30,11 @@ describe('listActiveRuntimeBots', () => {
         exchange: 'BINANCE',
         paperStartBalance: 1000,
         marketType: 'FUTURES',
-        botMarketGroups: [],
+        maxOpenPositions: 1,
+        strategyId: null,
+        symbolGroupId: null,
+        strategy: null,
+        symbolGroup: null,
       },
       {
         id: 'bot-live-disabled',
@@ -41,7 +45,11 @@ describe('listActiveRuntimeBots', () => {
         exchange: 'BINANCE',
         paperStartBalance: 1000,
         marketType: 'FUTURES',
-        botMarketGroups: [],
+        maxOpenPositions: 1,
+        strategyId: null,
+        symbolGroupId: null,
+        strategy: null,
+        symbolGroup: null,
       },
       {
         id: 'bot-live-enabled',
@@ -52,7 +60,11 @@ describe('listActiveRuntimeBots', () => {
         exchange: 'BINANCE',
         paperStartBalance: 1000,
         marketType: 'FUTURES',
-        botMarketGroups: [],
+        maxOpenPositions: 1,
+        strategyId: null,
+        symbolGroupId: null,
+        strategy: null,
+        symbolGroup: null,
       },
     ] as any);
 

@@ -23,6 +23,23 @@ describe('marketStreamSubscriptions.service', () => {
   it('uses canonical symbol-group resolver so market-stream subscriptions match runtime scope', async () => {
     prismaFindManyMock.mockResolvedValue([
       {
+        symbolGroup: {
+          symbols: [],
+          marketUniverse: {
+            exchange: 'BINANCE',
+            marketType: 'FUTURES',
+            baseCurrency: 'USDT',
+            filterRules: {
+              minQuoteVolumeEnabled: true,
+              minQuoteVolume24h: 1000000,
+            },
+            whitelist: [],
+            blacklist: [],
+          },
+        },
+        strategy: {
+          interval: '5m',
+        },
         botMarketGroups: [
           {
             symbolGroup: {

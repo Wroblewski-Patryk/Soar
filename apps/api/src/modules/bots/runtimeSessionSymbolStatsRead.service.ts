@@ -39,9 +39,6 @@ export const listBotRuntimeSessionSymbolStats = async (
   const {
     items,
     summary,
-    configuredMarketGroups,
-    configuredBotStrategies,
-    configuredMarketGroupStrategyLinks,
     botContext,
   } = await getRuntimeSymbolStatsBaseData({
     userId,
@@ -54,20 +51,10 @@ export const listBotRuntimeSessionSymbolStats = async (
   const botMarketType = botContext?.marketType ?? 'FUTURES';
 
   const catalogSymbolsCache = new Map<string, string[]>();
-  const [configuredMarketGroupSymbols, configuredBotStrategySymbols] = await Promise.all([
-    Promise.all(
-      configuredMarketGroups.map((group) =>
-        resolveEffectiveSymbolGroupSymbolsWithCatalog(group.symbolGroup, catalogSymbolsCache)
-      )
-    ),
-    Promise.all(
-      configuredBotStrategies.map((strategy) =>
-        resolveEffectiveSymbolGroupSymbolsWithCatalog(strategy.symbolGroup, catalogSymbolsCache)
-      )
-    ),
-  ]);
   const configuredSymbols = normalizeSymbols(
-    [...configuredMarketGroupSymbols.flat(), ...configuredBotStrategySymbols.flat()]
+    botContext?.symbolGroup
+      ? await resolveEffectiveSymbolGroupSymbolsWithCatalog(botContext.symbolGroup, catalogSymbolsCache)
+      : []
   ).slice(0, query.limit);
   const symbols = normalizedSymbol ? [normalizedSymbol] : configuredSymbols;
   const [openPositions, latestTradeBySymbolRows, latestSignalEvents] = symbols.length
@@ -112,18 +99,8 @@ export const listBotRuntimeSessionSymbolStats = async (
     string,
     { name: string; interval: string; config: Record<string, unknown> | null }
   >();
-  for (const configuredBotStrategy of configuredBotStrategies) {
-    const strategy = configuredBotStrategy.strategy;
-    if (!strategy) continue;
-    strategiesById.set(strategy.id, {
-      name: strategy.name,
-      interval: strategy.interval,
-      config: asRecord(strategy.config) ?? null,
-    });
-  }
-  for (const configuredLink of configuredMarketGroupStrategyLinks) {
-    const strategy = configuredLink.strategy;
-    if (!strategy) continue;
+  if (botContext?.strategy) {
+    const strategy = botContext.strategy;
     strategiesById.set(strategy.id, {
       name: strategy.name,
       interval: strategy.interval,
@@ -202,27 +179,16 @@ export const listBotRuntimeSessionSymbolStats = async (
     }
   }
 
-  const configuredBotStrategySymbolsResolved = await Promise.all(
-    configuredBotStrategies.map(async (configuredBotStrategy) => ({
-      strategyId: configuredBotStrategy.strategyId?.trim() ?? '',
-      symbols: await resolveEffectiveSymbolGroupSymbolsWithCatalog(
-        configuredBotStrategy.symbolGroup,
-        catalogSymbolsCache
-      ),
-    }))
-  );
-  const configuredLinkSymbolsResolved = await Promise.all(
-    configuredMarketGroupStrategyLinks.map(async (configuredLink) => ({
-      strategyId: configuredLink.strategyId?.trim() ?? '',
-      symbols: await resolveEffectiveSymbolGroupSymbolsWithCatalog(
-        configuredLink.botMarketGroup.symbolGroup,
-        catalogSymbolsCache
-      ),
-    }))
-  );
   const configuredStrategyBySymbol = buildConfiguredStrategyBySymbol({
-    configuredBotStrategies: configuredBotStrategySymbolsResolved,
-    configuredMarketGroupStrategyLinks: configuredLinkSymbolsResolved,
+    configuredStrategyAssignments:
+      botContext?.strategyId != null
+        ? [
+            {
+              strategyId: botContext.strategyId,
+              symbols: configuredSymbols,
+            },
+          ]
+        : [],
     symbols,
     strategiesById,
   });

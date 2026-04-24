@@ -17,11 +17,10 @@ Last updated: 2026-04-24
 
 ## READY
 
-- [ ] `V1BOT-06 engine(runtime-topology): replace multi-group runtime topology with singular bot context`
+- [ ] `V1BOT-07 engine(capital-strategy-inheritance): source runtime parameters from wallet and strategy modules`
 
 ## BACKLOG
 
-- [ ] `V1BOT-07 engine(capital-strategy-inheritance): source runtime parameters from wallet and strategy modules`
 - [ ] `V1BOT-08 web(bot-crud): align create/edit/detail flows to the singular contract`
 - [ ] `V1BOT-09 web(runtime-surfaces): align monitoring, dashboard, and manual actions to singular bot context`
 - [ ] `V1BOT-10 cleanup(legacy-runtime): remove legacy topology from canonical runtime path`
@@ -46,6 +45,9 @@ Last updated: 2026-04-24
 
 - [x] `V1BOT-02..05 foundation: add direct bot refs, backfill migration, and align singular bot command/read contracts`
   - 2026-04-24: Added direct `Bot.strategyId` and `Bot.symbolGroupId` refs in Prisma schema plus migration/backfill SQL, updated create/update flows to persist the direct single-context refs while still syncing legacy compatibility rows, and aligned bot read contracts so list/get/runtime-graph return singular inherited bot context without reconstructing canonical truth only from legacy graph. Validation PASS: `pnpm --filter api exec vitest run src/modules/bots/bots.e2e.test.ts src/modules/bots/bots.runtime-scope.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter web exec vitest run src/features/bots/components/BotCreateEditForm.test.tsx`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
+
+- [x] `V1BOT-06 engine(runtime-topology): replace multi-group runtime topology with singular bot context`
+  - 2026-04-24: Canonical runtime routing and final-candle execution now use one direct bot runtime context (`symbolGroupId + strategyId`) instead of iterating over legacy `botMarketGroups/strategyLinks`. Dynamic market-stream subscriptions now read direct bot refs first, selected-bot runtime symbol stats build configured truth from the singular bot context, and dashboard runtime strategy/market context prefers direct inherited bot data. Validation PASS: `pnpm --filter api exec vitest run src/modules/engine/runtimeSignalLoopDefaults.test.ts src/modules/engine/runtimeFinalCandleDecision.service.test.ts src/modules/engine/runtimeSignalLoop.service.test.ts src/workers/marketStreamSubscriptions.service.test.ts src/modules/bots/runtimeSymbolStatsReadModel.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx src/features/bots/services/botsMonitoringAggregate.service.test.ts`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
 
 - [x] `V1BOT-A planning: approve and queue the single-context bot architecture migration`
   - 2026-04-24: User approved the full target-domain rewrite where one bot owns exactly one wallet, one symbol-group market scope, and one strategy, while inheriting execution context from wallet, venue/symbol scope from market group, and logic/risk settings from strategy. Published detailed migration packet `docs/planning/v1-single-context-bot-architecture-migration-2026-04-24.md`, updated the canonical architecture docs, and queued `V1BOT-01..11`.

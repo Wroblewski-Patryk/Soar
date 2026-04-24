@@ -232,6 +232,8 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
     return props.selected.bot.marketType === "FUTURES" ? "Futures" : "Spot";
   })();
   const runtimeGraph = props.selected?.runtimeGraph;
+  const directSymbolGroup = props.selected?.bot.symbolGroup ?? null;
+  const directStrategy = props.selected?.bot.strategy ?? null;
   const sortedGraphGroups = [...(runtimeGraph?.marketGroups ?? [])].sort(
     (left, right) => left.executionOrder - right.executionOrder
   );
@@ -265,6 +267,14 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
     return typeof raw === "number" && Number.isFinite(raw) ? raw : null;
   };
   const selectedStrategyContext = (() => {
+    if (directSymbolGroup || directStrategy) {
+      return {
+        marketGroupName: directSymbolGroup?.name ?? null,
+        strategyName: directStrategy?.name ?? null,
+        strategyInterval: directStrategy?.interval ?? null,
+        strategyLeverage: readStrategyLeverage(directStrategy),
+      };
+    }
     if (canonicalPreferredEnabled) {
       return {
         marketGroupName: canonicalPreferredEnabled.group.symbolGroup?.name ?? null,

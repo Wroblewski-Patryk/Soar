@@ -107,6 +107,19 @@ const strategyOrderBookLong = {
   weight: 1,
 };
 
+const createRuntimeContext = (input?: {
+  symbolGroupId?: string;
+  maxOpenPositions?: number;
+  symbols?: string[];
+  strategy?: any | null;
+}) => ({
+  symbolGroupId: input?.symbolGroupId ?? 'symbol-group-1',
+  strategyId: input?.strategy?.strategyId ?? strategyLong.strategyId,
+  maxOpenPositions: input?.maxOpenPositions ?? 1,
+  symbols: input?.symbols ?? ['BTCUSDT'],
+  strategy: input?.strategy ?? strategyLong,
+});
+
 const createDeps = () => {
   let handler: ((event: MarketStreamEvent) => void | Promise<void>) | null = null;
 
@@ -161,16 +174,11 @@ const withStrategyBot = (
       exchange: options?.exchange ?? ('BINANCE' as const),
       paperStartBalance: 1000,
       marketType: options?.marketType ?? ('FUTURES' as const),
-      marketGroups: [
-        {
-          id: 'group-1',
-          symbolGroupId: 'symbol-group-1',
-          executionOrder: 1,
-          maxOpenPositions: options?.maxOpenPositions ?? 1,
-          symbols: options?.symbols ?? ['BTCUSDT'],
-          strategies: options?.strategies ?? [strategyLong],
-        },
-      ],
+      runtimeContext: createRuntimeContext({
+        maxOpenPositions: options?.maxOpenPositions ?? 1,
+        symbols: options?.symbols ?? ['BTCUSDT'],
+        strategy: options?.strategies?.[0] ?? strategyLong,
+      }),
     },
   ]);
 };
@@ -256,16 +264,7 @@ describe('RuntimeSignalLoop', () => {
         exchange: 'BINANCE' as const,
         paperStartBalance: 1000,
         marketType: 'FUTURES' as const,
-        marketGroups: [
-          {
-            id: 'group-1',
-            symbolGroupId: 'symbol-group-1',
-            executionOrder: 1,
-            maxOpenPositions: 1,
-            symbols: ['BTCUSDT'],
-            strategies: [strategyLong],
-          },
-        ],
+        runtimeContext: createRuntimeContext(),
       },
     ]);
 
@@ -300,7 +299,7 @@ describe('RuntimeSignalLoop', () => {
 
   it('preserves parity across topology-cache invalidation by applying refreshed bot topology', async () => {
     const { deps, emit } = createDeps();
-    const noStrategyTopology = [
+    const noStrategyTopology: any[] = [
       {
         id: 'bot-1',
         userId: 'user-1',
@@ -308,19 +307,10 @@ describe('RuntimeSignalLoop', () => {
         exchange: 'BINANCE' as const,
         paperStartBalance: 1000,
         marketType: 'FUTURES' as const,
-        marketGroups: [
-          {
-            id: 'group-1',
-            symbolGroupId: 'symbol-group-1',
-            executionOrder: 1,
-            maxOpenPositions: 1,
-            symbols: ['BTCUSDT'],
-            strategies: [] as Array<typeof strategyLong>,
-          },
-        ],
+        runtimeContext: null,
       },
     ];
-    const refreshedTopology = [
+    const refreshedTopology: any[] = [
       {
         id: 'bot-1',
         userId: 'user-1',
@@ -328,16 +318,7 @@ describe('RuntimeSignalLoop', () => {
         exchange: 'BINANCE' as const,
         paperStartBalance: 1000,
         marketType: 'FUTURES' as const,
-        marketGroups: [
-          {
-            id: 'group-1',
-            symbolGroupId: 'symbol-group-1',
-            executionOrder: 1,
-            maxOpenPositions: 1,
-            symbols: ['BTCUSDT'],
-            strategies: [strategyLong],
-          },
-        ],
+        runtimeContext: createRuntimeContext(),
       },
     ];
     let activeTopology = noStrategyTopology;
@@ -449,16 +430,7 @@ describe('RuntimeSignalLoop', () => {
         exchange: 'BINANCE' as const,
         paperStartBalance: 1000,
         marketType: 'FUTURES' as const,
-        marketGroups: [
-          {
-            id: 'group-fallback',
-            symbolGroupId: 'symbol-group-fallback',
-            executionOrder: 1,
-            maxOpenPositions: 1,
-            symbols: ['BTCUSDT'],
-            strategies: [],
-          },
-        ],
+        runtimeContext: null,
       },
     ]);
 
@@ -936,16 +908,10 @@ describe('RuntimeSignalLoop', () => {
         walletId: 'wallet-shared',
         paperStartBalance: 1000,
         marketType: 'FUTURES' as const,
-        marketGroups: [
-          {
-            id: 'group-1',
-            symbolGroupId: 'symbol-group-1',
-            executionOrder: 1,
-            maxOpenPositions: 1,
-            symbols: ['BTCUSDT'],
-            strategies: [strategyLong],
-          },
-        ],
+        runtimeContext: createRuntimeContext({
+          symbolGroupId: 'symbol-group-1',
+          strategy: strategyLong,
+        }),
       },
       {
         id: 'bot-2',
@@ -955,16 +921,10 @@ describe('RuntimeSignalLoop', () => {
         walletId: 'wallet-shared',
         paperStartBalance: 1000,
         marketType: 'FUTURES' as const,
-        marketGroups: [
-          {
-            id: 'group-2',
-            symbolGroupId: 'symbol-group-2',
-            executionOrder: 1,
-            maxOpenPositions: 1,
-            symbols: ['BTCUSDT'],
-            strategies: [strategyLong],
-          },
-        ],
+        runtimeContext: createRuntimeContext({
+          symbolGroupId: 'symbol-group-2',
+          strategy: strategyLong,
+        }),
       },
     ]);
 
@@ -1482,16 +1442,10 @@ describe('RuntimeSignalLoop', () => {
         exchange: 'BINANCE' as const,
         paperStartBalance: 1_000,
         marketType: 'FUTURES' as const,
-        marketGroups: [
-          {
-            id: `group-${userSlot}-${botSlot}`,
-            symbolGroupId: `symbol-group-${userSlot}-${botSlot}`,
-            executionOrder: 1,
-            maxOpenPositions: 1,
-            symbols: ['BTCUSDT'],
-            strategies: [sharedExitStrategy],
-          },
-        ],
+        runtimeContext: createRuntimeContext({
+          symbolGroupId: `symbol-group-${userSlot}-${botSlot}`,
+          strategy: sharedExitStrategy,
+        }),
       };
     });
     deps.listActiveBots = vi.fn(async () => activeBots);
@@ -1595,10 +1549,10 @@ describe('RuntimeSignalLoop', () => {
       expect.objectContaining({
         eventType: 'SIGNAL_DECISION',
         level: 'DEBUG',
-        message: 'Runtime group has no routable symbols configured',
+        message: 'Runtime bot context has no routable symbols configured',
         payload: expect.objectContaining({
           reason: 'EMPTY_SYMBOL_SCOPE',
-          botMarketGroupId: 'group-1',
+          symbolGroupId: 'symbol-group-1',
         }),
       })
     );

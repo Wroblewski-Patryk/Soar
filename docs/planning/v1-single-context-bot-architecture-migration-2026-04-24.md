@@ -144,10 +144,11 @@ runtime compatibility removed only after migration evidence exists.
   - explicit derived context block for operators
 
 ### Slice 4 - Runtime and execution migration
-- `V1BOT-06 engine(runtime-topology): replace multi-group runtime topology with singular bot context`
+- [x] `V1BOT-06 engine(runtime-topology): replace multi-group runtime topology with singular bot context`
   - runtime unit becomes one bot, one symbol group, one strategy
   - routing, signal evaluation, pre-trade, and execution use direct bot refs
   - remove group/strategy-link iteration from canonical decision path
+  - 2026-04-24: Closed by introducing one canonical `runtimeContext` per bot in the runtime topology query/defaults path, rewiring final-candle routing + execution to that singular context, moving market-stream subscription discovery onto direct bot refs first, and aligning selected-bot runtime symbol stats/dashboard strategy context reads to the same inherited bot truth.
 - `V1BOT-07 engine(capital-strategy-inheritance): source runtime parameters from wallet and strategy modules`
   - wallet:
     - mode

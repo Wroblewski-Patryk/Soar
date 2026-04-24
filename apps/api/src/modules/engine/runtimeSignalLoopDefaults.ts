@@ -17,17 +17,14 @@ export type ActiveBotStrategy = {
   strategyConfig: Record<string, unknown> | null;
   strategyLeverage: number;
   walletRisk: number;
-  priority: number;
-  weight: number;
 };
 
-export type ActiveBotMarketGroup = {
-  id: string;
+export type ActiveBotRuntimeContext = {
   symbolGroupId: string;
-  executionOrder: number;
+  strategyId: string;
   maxOpenPositions: number;
   symbols: string[];
-  strategies: ActiveBotStrategy[];
+  strategy: ActiveBotStrategy;
 };
 
 export type ActiveBot = {
@@ -38,7 +35,7 @@ export type ActiveBot = {
   exchange: Exchange;
   paperStartBalance: number;
   marketType: 'FUTURES' | 'SPOT';
-  marketGroups: ActiveBotMarketGroup[];
+  runtimeContext: ActiveBotRuntimeContext | null;
 };
 
 const toPositiveInteger = (value: unknown): number | null => {
@@ -89,35 +86,33 @@ export const listActiveRuntimeBots = async (): Promise<ActiveBot[]> => {
 
   return Promise.all(
     activeBots.map(async (bot) => {
-      const marketGroupsFromNewModel: ActiveBotMarketGroup[] = [];
-      for (const group of bot.botMarketGroups) {
-        const strategies = group.strategyLinks.map((link) => ({
-          strategyId: link.strategyId,
-          strategyInterval: link.strategy.interval,
-          strategyConfig: (link.strategy.config as Record<string, unknown> | undefined) ?? null,
-          strategyLeverage: link.strategy.leverage,
-          walletRisk: normalizeWalletRiskPercent(link.strategy.walletRisk, 1),
-          priority: link.priority,
-          weight: link.weight,
-        }));
-
-        const symbols = await resolveEffectiveSymbolGroupSymbolsWithCatalog(
-          group.symbolGroup,
-          catalogSymbolsCache
-        );
-
-        marketGroupsFromNewModel.push({
-          id: group.id,
-          symbolGroupId: group.symbolGroupId,
-          executionOrder: group.executionOrder,
-          maxOpenPositions: deriveRuntimeGroupMaxOpenPositions({
-            configuredGroupMaxOpenPositions: group.maxOpenPositions,
-            strategies,
-          }),
-          symbols,
-          strategies,
-        });
-      }
+      const runtimeStrategy =
+        bot.strategy && bot.strategyId
+          ? ({
+              strategyId: bot.strategyId,
+              strategyInterval: bot.strategy.interval,
+              strategyConfig: (bot.strategy.config as Record<string, unknown> | undefined) ?? null,
+              strategyLeverage: bot.strategy.leverage,
+              walletRisk: normalizeWalletRiskPercent(bot.strategy.walletRisk, 1),
+            } satisfies ActiveBotStrategy)
+          : null;
+      const runtimeSymbols =
+        bot.symbolGroup && bot.symbolGroupId
+          ? await resolveEffectiveSymbolGroupSymbolsWithCatalog(bot.symbolGroup, catalogSymbolsCache)
+          : [];
+      const runtimeContext =
+        runtimeStrategy && bot.symbolGroupId
+          ? ({
+              symbolGroupId: bot.symbolGroupId,
+              strategyId: runtimeStrategy.strategyId,
+              maxOpenPositions: deriveRuntimeGroupMaxOpenPositions({
+                configuredGroupMaxOpenPositions: bot.maxOpenPositions,
+                strategies: [{ strategyConfig: runtimeStrategy.strategyConfig }],
+              }),
+              symbols: runtimeSymbols,
+              strategy: runtimeStrategy,
+            } satisfies ActiveBotRuntimeContext)
+          : null;
 
       return {
         id: bot.id,
@@ -127,9 +122,7 @@ export const listActiveRuntimeBots = async (): Promise<ActiveBot[]> => {
         exchange: bot.exchange,
         paperStartBalance: Number.isFinite(bot.paperStartBalance) ? Math.max(0, bot.paperStartBalance) : 10_000,
         marketType: bot.marketType,
-        marketGroups: [...marketGroupsFromNewModel].sort(
-          (left, right) => left.executionOrder - right.executionOrder
-        ),
+        runtimeContext,
       };
     })
   );

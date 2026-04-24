@@ -39,7 +39,6 @@ import {
 } from './runtimeSignalEvaluationTypes';
 import {
   ActiveBot,
-  ActiveBotMarketGroup,
   ActiveBotStrategy,
   deriveRuntimeGroupMaxOpenPositions,
   normalizeInterval,
@@ -194,7 +193,6 @@ const defaultDeps: RuntimeSignalLoopDeps = {
 
 type RuntimeSignalRouteEntry = {
   bot: ActiveBot;
-  group: ActiveBotMarketGroup;
 };
 
 type RuntimeQueuedCandleEvent = {
@@ -485,40 +483,31 @@ export class RuntimeSignalLoop {
         this.routeBotsByMarketKey.set(marketKey, [bot]);
       }
 
-      for (const group of bot.marketGroups) {
-        if (group.strategies.length === 0) continue;
+      const runtimeContext = bot.runtimeContext;
+      if (!runtimeContext) continue;
 
-        const symbolKeys = group.symbols
-          .map((symbol) => normalizeSymbol(symbol))
-          .filter((symbol): symbol is string => symbol.length > 0);
-        const effectiveSymbolKeys = symbolKeys;
-        const intervalKeys = Array.from(
-          new Set(
-            group.strategies.map((strategy) =>
-              strategy.strategyInterval ? normalizeInterval(strategy.strategyInterval) : '*'
-            )
-          )
-        );
-        const effectiveIntervalKeys = intervalKeys.length > 0 ? intervalKeys : ['*'];
+      const symbolKeys = runtimeContext.symbols
+        .map((symbol) => normalizeSymbol(symbol))
+        .filter((symbol): symbol is string => symbol.length > 0);
+      const intervalKey = runtimeContext.strategy.strategyInterval
+        ? normalizeInterval(runtimeContext.strategy.strategyInterval)
+        : '*';
 
-        if (effectiveSymbolKeys.length === 0) {
-          continue;
-        }
+      if (symbolKeys.length === 0) {
+        continue;
+      }
 
-        for (const symbolKey of effectiveSymbolKeys) {
-          for (const intervalKey of effectiveIntervalKeys) {
-            const routeKey = this.buildRuntimeSeriesRouteKey({
-              marketKey,
-              symbol: symbolKey,
-              interval: intervalKey,
-            });
-            const routeEntries = this.routeEntriesBySeriesKey.get(routeKey);
-            if (routeEntries) {
-              routeEntries.push({ bot, group });
-            } else {
-              this.routeEntriesBySeriesKey.set(routeKey, [{ bot, group }]);
-            }
-          }
+      for (const symbolKey of symbolKeys) {
+        const routeKey = this.buildRuntimeSeriesRouteKey({
+          marketKey,
+          symbol: symbolKey,
+          interval: intervalKey,
+        });
+        const routeEntries = this.routeEntriesBySeriesKey.get(routeKey);
+        if (routeEntries) {
+          routeEntries.push({ bot });
+        } else {
+          this.routeEntriesBySeriesKey.set(routeKey, [{ bot }]);
         }
       }
     }
@@ -534,13 +523,7 @@ export class RuntimeSignalLoop {
       this.routeEntriesBySeriesKey.set(
         routeKey,
         [...routeEntries].sort((left, right) => {
-          if (left.bot.id !== right.bot.id) {
-            return left.bot.id.localeCompare(right.bot.id);
-          }
-          if (left.group.executionOrder !== right.group.executionOrder) {
-            return left.group.executionOrder - right.group.executionOrder;
-          }
-          return left.group.id.localeCompare(right.group.id);
+          return left.bot.id.localeCompare(right.bot.id);
         })
       );
     }
@@ -585,7 +568,7 @@ export class RuntimeSignalLoop {
       const routeEntries = this.routeEntriesBySeriesKey.get(routeKey);
       if (!routeEntries?.length) continue;
       for (const routeEntry of routeEntries) {
-        const dedupeKey = `${routeEntry.bot.id}|${routeEntry.group.id}`;
+        const dedupeKey = routeEntry.bot.id;
         if (seenRouteKeys.has(dedupeKey)) continue;
         seenRouteKeys.add(dedupeKey);
         resolvedRoutes.push(routeEntry);

@@ -29,16 +29,13 @@ const baseBot = {
   paperStartBalance: 1000,
   marketType: 'FUTURES' as const,
   walletId: 'wallet-1',
-  marketGroups: [
-    {
-      id: 'group-1',
-      symbolGroupId: 'symbol-group-1',
-      executionOrder: 1,
-      maxOpenPositions: 2,
-      symbols: ['BTCUSDT'],
-      strategies: [baseStrategy],
-    },
-  ],
+  runtimeContext: {
+    symbolGroupId: 'symbol-group-1',
+    strategyId: 'strategy-1',
+    maxOpenPositions: 2,
+    symbols: ['BTCUSDT'],
+    strategy: baseStrategy,
+  },
 };
 
 const baseEvent = {
@@ -72,13 +69,13 @@ const createContext = (options?: {
     positionId: 'p1',
   };
   const bot = structuredClone(baseBot);
-  const group = bot.marketGroups[0];
-  group.strategies = [
-    {
-      ...group.strategies[0],
-      strategyInterval: options?.strategyInterval ?? group.strategies[0].strategyInterval,
+  bot.runtimeContext = {
+    ...bot.runtimeContext,
+    strategy: {
+      ...bot.runtimeContext.strategy,
+      strategyInterval: options?.strategyInterval ?? bot.runtimeContext.strategy.strategyInterval,
     },
-  ];
+  };
   const createSignal = vi.fn(async () => undefined);
   const orchestrateFn = vi.fn(async () => orchestrationResult);
   const recordRuntimeEvent = vi.fn(async () => undefined);
@@ -93,7 +90,7 @@ const createContext = (options?: {
       listActiveBotsFromTopologyCacheWithMetrics: async () => [bot],
       closeInactiveRuntimeSessions: async () => undefined,
       listRuntimeManagedExternalPositions: async () => [],
-      resolveRuntimeRoutesForEvent: () => [{ bot, group }],
+      resolveRuntimeRoutesForEvent: () => [{ bot }],
       ensureRuntimeSession: async () => 'runtime-session-1',
       recordRuntimeEvent,
       upsertRuntimeSymbolStat: async () => undefined,
@@ -155,10 +152,10 @@ describe('runtimeFinalCandleDecision.service', () => {
       expect.objectContaining({
         eventType: 'PRETRADE_BLOCKED',
         level: 'WARN',
-        message: 'Signal blocked because bot market-group reached max open positions',
+        message: 'Signal blocked because bot runtime context reached max open positions',
         payload: expect.objectContaining({
-          reason: 'GROUP_MAX_OPEN_POSITIONS_REACHED',
-          openPositionsInGroup: 2,
+          reason: 'BOT_MAX_OPEN_POSITIONS_REACHED',
+          openPositionsInBotScope: 2,
           maxOpenPositions: 2,
         }),
       })
