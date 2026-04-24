@@ -289,6 +289,12 @@ Last updated: 2026-04-24
   expire strategy-governed `PENDING` / `OPEN` / `PARTIALLY_FILLED` orders,
   guarded by runtime `CANCEL` dedupe under `reasonCode=stale_open` and
   fail-closed when strategy lifetime is disabled (`0` or invalid config).
+- 2026-04-24: `V1LIFE-04` is closed. Runtime session watchdog now also enforces
+  strategy-configured position lifetime through one canonical stale-position
+  service, reusing the existing runtime EXIT lifecycle instead of a separate
+  cleanup path. Close attempts prefer current ticker truth, fall back to the
+  latest recent close for the bot strategy interval, and fail closed when no
+  valid mark price can be proven.
 - 2026-04-24: published `V1LIFE-A` after a focused lifecycle audit covering
   strategy builder, runtime/order services, and dashboard open orders UI.
   Confirmed that strategy already stores `maxOrders`, `orderLifetime`,

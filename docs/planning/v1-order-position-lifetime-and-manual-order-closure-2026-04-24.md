@@ -166,7 +166,7 @@ not as justification to keep stale open orders indefinitely.
   - include recovery/cleanup path for the known historical orphan paper order
 
 ### Slice 4 - Position lifetime enforcement
-- [ ] `V1LIFE-04 api(position-lifetime): enforce strategy-configured position lifetime via canonical close lifecycle`
+- [x] `V1LIFE-04 api(position-lifetime): enforce strategy-configured position lifetime via canonical close lifecycle`
   - cover both `PAPER` and `LIVE`
   - do not bypass lifecycle ownership or create a second close system
   - preserve `0 = no limit`
@@ -204,3 +204,12 @@ not as justification to keep stale open orders indefinitely.
     (`reasonCode=stale_open`)
   - race cases where an order is already terminal during cleanup are treated as
     successful resolution rather than noisy retry loops
+- `V1LIFE-04` closed on `2026-04-24`
+  - runtime watchdog now enforces stale-position lifetime through one
+    canonical service (`runtimePositionLifetime.service.ts`) instead of a
+    side cleanup path
+  - stale `OPEN` positions for active bots are closed through the existing
+    runtime EXIT orchestration with `reason='position_lifetime_expired'`
+  - mark-price authority is fail-closed: runtime prefers current ticker truth,
+    falls back to the most recent close for the bot strategy interval, and
+    skips closure when no valid positive price can be proven

@@ -54,6 +54,7 @@ import {
 import { RuntimeSignalLoopSupervisor } from './runtimeSignalLoopSupervisor';
 import { processRuntimeFinalCandleDecision } from './runtimeFinalCandleDecision.service';
 import { enforceRuntimeOrderLifetimes } from './runtimeOrderLifetime.service';
+import { enforceRuntimePositionLifetimes } from './runtimePositionLifetime.service';
 
 export {
   deriveRuntimeGroupMaxOpenPositions,
@@ -98,6 +99,7 @@ type RuntimeSignalLoopDeps = {
   }) => Promise<void>;
   closeInactiveRuntimeSessions?: (activeBotIds: string[]) => Promise<void>;
   enforceOrderLifetimePolicies?: (activeBots: ActiveBot[]) => Promise<void>;
+  enforcePositionLifetimePolicies?: (activeBots: ActiveBot[]) => Promise<void>;
   recordRuntimeEvent?: (params: {
     userId: string;
     botId: string;
@@ -349,7 +351,35 @@ export class RuntimeSignalLoop {
       )
     );
     await this.deps.enforceOrderLifetimePolicies?.(activeBots);
+    if (this.deps.enforcePositionLifetimePolicies) {
+      await this.deps.enforcePositionLifetimePolicies(activeBots);
+    } else {
+      await enforceRuntimePositionLifetimes(activeBots, {
+        resolveMarkPrice: async ({ bot, symbol }) => this.resolveRuntimeLifecycleMarkPrice(bot, symbol),
+      });
+    }
     return activeBots;
+  }
+
+  private resolveRuntimeLifecycleMarkPrice(bot: ActiveBot, symbol: string) {
+    const latestTicker = getRuntimeTicker(symbol, {
+      exchange: bot.exchange,
+      marketType: bot.marketType,
+    });
+    if (latestTicker && Number.isFinite(latestTicker.lastPrice) && latestTicker.lastPrice > 0) {
+      return latestTicker.lastPrice;
+    }
+
+    const recentCloses = this.getRecentCloses({
+      marketType: bot.marketType,
+      symbol,
+      interval: bot.runtimeContext?.strategy.strategyInterval,
+      limit: 1,
+    });
+    const fallbackClose = recentCloses.at(-1) ?? null;
+    return typeof fallbackClose === 'number' && Number.isFinite(fallbackClose) && fallbackClose > 0
+      ? fallbackClose
+      : null;
   }
 
   private async listActiveBotsDirectWithMetrics() {
