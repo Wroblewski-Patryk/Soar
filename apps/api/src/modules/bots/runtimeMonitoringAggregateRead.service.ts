@@ -227,15 +227,17 @@ export const getBotRuntimeMonitoringAggregate = async (
       : activeSessions.some((session) => session.status === 'CANCELED')
         ? 'CANCELED'
         : 'COMPLETED';
+  const hasRunningSession = status === 'RUNNING';
   const startedAt =
     activeSessions
       .map((session) => session.startedAt)
       .sort((left, right) => left.getTime() - right.getTime())[0] ?? new Date();
-  const finishedAt =
-    activeSessions
-      .map((session) => session.finishedAt)
-      .filter((value): value is Date => value instanceof Date)
-      .sort((left, right) => right.getTime() - left.getTime())[0] ?? null;
+  const finishedAt = hasRunningSession
+    ? null
+    : activeSessions
+        .map((session) => session.finishedAt)
+        .filter((value): value is Date => value instanceof Date)
+        .sort((left, right) => right.getTime() - left.getTime())[0] ?? null;
   const lastHeartbeatAt =
     activeSessions
       .map((session) => session.lastHeartbeatAt)

@@ -270,6 +270,20 @@ Last updated: 2026-04-24
   strategy context over duplicated bot snapshot fields, and bot-monitoring
   future-signal rows now match dashboard-home semantics under one focused
   closure pack.
+- 2026-04-24: fresh repository-wide closure verification now passes again:
+  full `api` suite (with required API-key encryption env), full `web` suite,
+  `api` typecheck, `build`, and `quality:guardrails` are green. A fresh
+  production API audit confirmed that runtime signal/operator truth is now
+  materially healthy on both paper and live bots with numeric indicator values
+  and wallet/strategy-sized paper positions. The final narrow backend/runtime
+  follow-up is published as `V1FINAL-A`: aggregate session detail must not
+  expose stale `finishedAt` while still `RUNNING`, and at least one legacy
+  pre-fix paper manual `MARKET` order on production still requires explicit
+  orphan-order recovery.
+- 2026-04-24: `V1FINAL-01` is closed. Synthetic aggregate runtime session
+  detail now keeps `finishedAt=null` whenever any aggregated session is still
+  `RUNNING`, instead of mixing active state with stale completion metadata from
+  older sessions.
 - 2026-04-22: prod restore-drill proof now passes from a real Coolify terminal
   execution in the production postgres container
   (`x11cfnz1dd9x0yzccftqzcoe`), and the final non-dry-run prod release gate now

@@ -17,11 +17,11 @@ Last updated: 2026-04-24
 
 ## READY
 
-- [ ] (none)
+- [ ] `V1FINAL-02 api/ops(paper-order-recovery): classify and recover orphaned PAPER MARKET manual orders persisted pre-fix as OPEN without fill/position`
 
 ## BACKLOG
 
-- [ ] (none)
+- [ ] `V1FINAL-03 qa(prod-closure): rerun focused runtime closure pack and capture remaining infra-only blockers`
 
 ## IN_PROGRESS
 
@@ -36,6 +36,12 @@ Last updated: 2026-04-24
 - [ ] (none)
 
 ## DONE
+
+- [x] `V1FINAL-A planning: publish final runtime closure wave after full repo green plus fresh production aggregate audit`
+  - 2026-04-24: After rerunning full `api`, full `web`, `build`, and `quality:guardrails`, the repository is green again. Fresh production API verification showed the main runtime/signal path is now healthy, but two narrow follow-ups remain: aggregate session detail still mixed `RUNNING` with stale `finishedAt`, and production still contains at least one legacy paper manual `MARKET` order persisted pre-fix as `OPEN` without fill/position. Published `docs/planning/v1-final-runtime-closure-2026-04-24.md` and queued `V1FINAL-01..03`.
+
+- [x] `V1FINAL-01 api(aggregate-session-truth): keep aggregate sessionDetail finishedAt null while any session is still RUNNING`
+  - 2026-04-24: Fixed synthetic aggregate session semantics in `runtimeMonitoringAggregateRead.service.ts` so `sessionDetail.finishedAt` stays `null` whenever any aggregated runtime session is still `RUNNING`, instead of copying a stale finished timestamp from older completed sessions. Added regression coverage in `bots.monitoring-aggregate.e2e.test.ts`. Validation PASS: `pnpm --filter api exec vitest run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 
 - [x] `V1MON-A planning: publish bot monitoring runtime-truth hardening wave`
   - 2026-04-24: After the post-`V1IND-A` operator-surface audit, user explicitly approved the strict architecture direction for bot monitoring: one backend aggregate endpoint is the only truth, and web must fail closed into degraded/error state instead of reconstructing runtime aggregate locally. Published `docs/planning/v1-monitoring-runtime-truth-hardening-2026-04-24.md` and queued `V1MON-01..04`.

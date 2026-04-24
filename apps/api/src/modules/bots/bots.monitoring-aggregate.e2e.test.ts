@@ -632,6 +632,8 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
       })
     );
     expect(firstAggregate.body.symbolStats.summary.totalSignals).toBe(2);
+    expect(firstAggregate.body.sessionDetail.status).toBe('RUNNING');
+    expect(firstAggregate.body.sessionDetail.finishedAt).toBeNull();
     expect(firstAggregate.body.positions.openCount).toBe(0);
     expect(firstAggregate.body.positions.closedCount).toBe(2);
     expect(firstAggregate.body.positions.openOrdersCount).toBe(1);
