@@ -284,6 +284,11 @@ Last updated: 2026-04-24
   detail now keeps `finishedAt=null` whenever any aggregated session is still
   `RUNNING`, instead of mixing active state with stale completion metadata from
   older sessions.
+- 2026-04-24: `V1LIFE-03` is closed. Runtime session watchdog now reuses one
+  canonical stale-order service plus the existing `cancelOrder` command path to
+  expire strategy-governed `PENDING` / `OPEN` / `PARTIALLY_FILLED` orders,
+  guarded by runtime `CANCEL` dedupe under `reasonCode=stale_open` and
+  fail-closed when strategy lifetime is disabled (`0` or invalid config).
 - 2026-04-24: published `V1LIFE-A` after a focused lifecycle audit covering
   strategy builder, runtime/order services, and dashboard open orders UI.
   Confirmed that strategy already stores `maxOrders`, `orderLifetime`,

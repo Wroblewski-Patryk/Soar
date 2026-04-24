@@ -17,9 +17,9 @@ Last updated: 2026-04-24
 
 ## READY
 
-- [ ] `V1LIFE-03 api(order-lifetime): enforce strategy-configured order lifetime via canonical cancel path`
 - [ ] `V1LIFE-04 api(position-lifetime): enforce strategy-configured position lifetime via canonical close lifecycle`
 - [ ] `V1LIFE-05 web(open-orders-action): add final Action column with cancel affordance in dashboard Orders tab`
+- [ ] `V1LIFE-06 qa(closure): run focused lifetime/order-control pack and sync canonical docs/context`
 
 ## BACKLOG
 
@@ -39,6 +39,9 @@ Last updated: 2026-04-24
 - [ ] (none)
 
 ## DONE
+
+- [x] `V1LIFE-03 api(order-lifetime): enforce strategy-configured order lifetime via canonical cancel path`
+  - 2026-04-24: Added canonical runtime order-lifetime enforcement in `runtimeOrderLifetime.service.ts` and wired it into the runtime session watchdog so stale `PENDING` / `OPEN` / `PARTIALLY_FILLED` orders are canceled through the existing `cancelOrder` path, guarded by runtime `CANCEL` dedupe with `reasonCode=stale_open`. Focused validation PASS: `pnpm --filter api exec vitest run src/modules/engine/runtimeOrderLifetime.service.test.ts src/modules/engine/runtimeSignalLoop.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 
 - [x] `V1LIFE-02 api(shared-lifetime): add one canonical strategy-lifetime resolver for order and position policies`
   - 2026-04-24: Added one canonical strategy-lifetime resolver in `strategyLifetimePolicy.ts` for both order and position lifecycle policies. The helper owns `orderLifetime/orderUnit` and `positionLifetime/positionUnit`, treats `0`, missing, negative, non-finite, and unsupported-unit cases as fail-closed `disabled`, and emits normalized duration-in-milliseconds output for downstream runtime/order consumers. Validation PASS: `pnpm --filter api exec vitest run src/modules/engine/strategyLifetimePolicy.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.

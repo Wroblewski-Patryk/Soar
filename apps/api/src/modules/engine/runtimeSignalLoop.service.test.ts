@@ -1060,17 +1060,20 @@ describe('RuntimeSignalLoop', () => {
     withStrategyBot(deps, { strategies: [] });
     deps.ensureRuntimeSession = vi.fn(async () => 'session-1');
     deps.closeInactiveRuntimeSessions = vi.fn(async () => undefined);
+    deps.enforceOrderLifetimePolicies = vi.fn(async () => undefined);
 
     const loop = new RuntimeSignalLoop(deps);
     await loop.start();
 
     expect(deps.ensureRuntimeSession).toHaveBeenCalledTimes(1);
     expect(deps.closeInactiveRuntimeSessions).toHaveBeenCalledTimes(1);
+    expect(deps.enforceOrderLifetimePolicies).toHaveBeenCalledTimes(1);
 
     await vi.advanceTimersByTimeAsync(16_000);
 
     expect((deps.ensureRuntimeSession as ReturnType<typeof vi.fn>).mock.calls.length).toBeGreaterThan(1);
     expect((deps.closeInactiveRuntimeSessions as ReturnType<typeof vi.fn>).mock.calls.length).toBeGreaterThan(1);
+    expect((deps.enforceOrderLifetimePolicies as ReturnType<typeof vi.fn>).mock.calls.length).toBeGreaterThan(1);
 
     await loop.stop();
     vi.useRealTimers();

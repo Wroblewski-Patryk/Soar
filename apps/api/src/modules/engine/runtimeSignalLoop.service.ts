@@ -53,6 +53,7 @@ import {
 } from './runtimeSignalLoopDefaults';
 import { RuntimeSignalLoopSupervisor } from './runtimeSignalLoopSupervisor';
 import { processRuntimeFinalCandleDecision } from './runtimeFinalCandleDecision.service';
+import { enforceRuntimeOrderLifetimes } from './runtimeOrderLifetime.service';
 
 export {
   deriveRuntimeGroupMaxOpenPositions,
@@ -96,6 +97,7 @@ type RuntimeSignalLoopDeps = {
     errorMessage?: string;
   }) => Promise<void>;
   closeInactiveRuntimeSessions?: (activeBotIds: string[]) => Promise<void>;
+  enforceOrderLifetimePolicies?: (activeBots: ActiveBot[]) => Promise<void>;
   recordRuntimeEvent?: (params: {
     userId: string;
     botId: string;
@@ -185,6 +187,7 @@ const defaultDeps: RuntimeSignalLoopDeps = {
   closeRuntimeSession: (params) => runtimeTelemetryService.closeRuntimeSession(params),
   closeInactiveRuntimeSessions: (activeBotIds) =>
     runtimeTelemetryService.closeInactiveRuntimeSessions(activeBotIds),
+  enforceOrderLifetimePolicies: (activeBots) => enforceRuntimeOrderLifetimes(activeBots),
   recordRuntimeEvent: (params) => runtimeTelemetryService.recordRuntimeEvent(params),
   upsertRuntimeSymbolStat: (params) => runtimeTelemetryService.upsertRuntimeSymbolStat(params),
   validateExchangeOrderFn: (params) => validateRuntimeExchangeOrder(params),
@@ -345,6 +348,7 @@ export class RuntimeSignalLoop {
         })
       )
     );
+    await this.deps.enforceOrderLifetimePolicies?.(activeBots);
     return activeBots;
   }
 

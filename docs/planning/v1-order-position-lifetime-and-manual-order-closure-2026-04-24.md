@@ -159,7 +159,7 @@ not as justification to keep stale open orders indefinitely.
   - keep ownership on strategy config only
 
 ### Slice 3 - Order lifetime enforcement
-- [ ] `V1LIFE-03 api(order-lifetime): enforce strategy-configured order lifetime via canonical cancel path`
+- [x] `V1LIFE-03 api(order-lifetime): enforce strategy-configured order lifetime via canonical cancel path`
   - cover both `PAPER` and `LIVE`
   - reuse existing `cancelOrder` semantics or extracted shared order-cancel
     lifecycle where necessary
@@ -196,3 +196,11 @@ not as justification to keep stale open orders indefinitely.
     fail closed to `disabled`
   - downstream runtime/order consumers can now depend on one normalized
     `durationMs` contract instead of re-parsing strategy config ad hoc
+- `V1LIFE-03` closed on `2026-04-24`
+  - runtime watchdog now enforces stale-order lifetime through one canonical
+    service (`runtimeOrderLifetime.service.ts`) instead of ad-hoc cleanup
+  - stale `PENDING` / `OPEN` / `PARTIALLY_FILLED` orders are canceled via the
+    existing `cancelOrder` lifecycle with runtime `CANCEL` dedupe
+    (`reasonCode=stale_open`)
+  - race cases where an order is already terminal during cleanup are treated as
+    successful resolution rather than noisy retry loops
