@@ -134,7 +134,7 @@ truth gaps so backend/runtime stops blocking final UI work.
   - add regression coverage in the mixed-sessions aggregate e2e
 
 ### Slice 2 - Legacy paper-order recovery
-- [ ] `V1FINAL-02 api/ops(paper-order-recovery): classify and recover orphaned PAPER MARKET manual orders persisted pre-fix as OPEN without fill/position`
+- [x] `V1FINAL-02 api/ops(paper-order-recovery): classify and recover orphaned PAPER MARKET manual orders persisted pre-fix as OPEN without fill/position`
   - audit canonical order lifecycle expectations for pre-fix paper manual
     orders
   - implement one deterministic recovery path using existing order lifecycle or
@@ -147,3 +147,17 @@ truth gaps so backend/runtime stops blocking final UI work.
   - record that local `test:go-live:smoke` is currently blocked by already
     bound Docker ports from another stack unless ports are freed first
   - sync canonical queue/context for final UI handoff readiness
+
+## Closure Notes
+- `V1FINAL-02` classification:
+  - no new code path was required for the known orphan paper order
+  - the historical row was a pre-fix manual `PAPER MARKET` order persisted as
+    `OPEN` with `positionId=null`
+  - the existing canonical recovery path is the already approved
+    `cancelOrder` command
+- Production recovery executed on `2026-04-24`:
+  - canceled order `3c147495-519e-4f74-b8eb-07027e4a49f1` through
+    `POST /dashboard/orders/:id/cancel`
+  - confirmed the paper bot aggregate no longer reports the orphan in
+    `positions.openOrders`
+  - aggregate after recovery: `openOrdersCount=0`

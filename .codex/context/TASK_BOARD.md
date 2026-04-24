@@ -17,7 +17,7 @@ Last updated: 2026-04-24
 
 ## READY
 
-- [ ] `V1FINAL-02 api/ops(paper-order-recovery): classify and recover orphaned PAPER MARKET manual orders persisted pre-fix as OPEN without fill/position`
+- [ ] `V1FINAL-03 qa(prod-closure): rerun focused runtime closure pack and capture remaining infra-only blockers`
 - [ ] `V1LIFE-01 docs+web(contract): freeze and expose 0=no-limit semantics for strategy order/position lifetime`
 - [ ] `V1LIFE-02 api(shared-lifetime): add one canonical strategy-lifetime resolver for order and position policies`
 
@@ -42,6 +42,9 @@ Last updated: 2026-04-24
 - [ ] (none)
 
 ## DONE
+
+- [x] `V1FINAL-02 api/ops(paper-order-recovery): classify and recover orphaned PAPER MARKET manual orders persisted pre-fix as OPEN without fill/position`
+  - 2026-04-24: Confirmed that the known production orphan was a historical pre-fix `PAPER MARKET` manual order persisted as `OPEN` with `positionId=null`, not a new runtime regression. Recovery reused the existing canonical `cancelOrder` path: order `3c147495-519e-4f74-b8eb-07027e4a49f1` was canceled successfully on production via `POST /dashboard/orders/:id/cancel`, and the paper bot runtime aggregate now reports `openOrdersCount=0`.
 
 - [x] `V1LIFE-A planning: publish order/position lifetime enforcement and dashboard open-order control wave`
   - 2026-04-24: Audited strategy builder, API/runtime, and dashboard open orders surfaces after the final V1 runtime review. Confirmed that lifetime fields already exist in `strategy.config.additional` and are exposed in the web form, but runtime currently only consumes `maxPositions`; no canonical enforcement path was found for `orderLifetime`, `positionLifetime`, or `maxOrders`, and dashboard orders table still lacks a cancel action despite an existing backend cancel endpoint. Published `docs/planning/v1-order-position-lifetime-and-manual-order-closure-2026-04-24.md` and queued `V1LIFE-01..06`.

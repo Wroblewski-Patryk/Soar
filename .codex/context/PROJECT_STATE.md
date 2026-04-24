@@ -294,6 +294,11 @@ Last updated: 2026-04-24
   open orders table still lacks an operator cancel action despite the existing
   backend `cancelOrder` endpoint. The queued wave closes those gaps under one
   contract, including `0 = no time limit` semantics in the strategy UI.
+- 2026-04-24: `V1FINAL-02` is closed without new code. The known production
+  orphan paper order was confirmed to be a historical pre-fix manual
+  `PAPER MARKET` row persisted as `OPEN` with no fill/position. Recovery
+  reused the canonical existing `cancelOrder` lifecycle path, and production
+  paper aggregate now reports `openOrdersCount=0`.
 - 2026-04-22: prod restore-drill proof now passes from a real Coolify terminal
   execution in the production postgres container
   (`x11cfnz1dd9x0yzccftqzcoe`), and the final non-dry-run prod release gate now
