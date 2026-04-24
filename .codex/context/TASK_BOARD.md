@@ -39,6 +39,9 @@ Last updated: 2026-04-25
 
 ## DONE
 
+- [x] `PAPERPNL-02 test(api-runtime): lock profitable PAPER EXIT realized-PnL sign for canonical LONG and SHORT closes`
+  - 2026-04-25: Added focused `executionOrchestrator.service.test.ts` regression coverage proving the canonical `PAPER` `EXIT` lifecycle keeps positive realized PnL for profitable `LONG` and `SHORT` closes, and that the same positive value is written to both `position.closePosition(...)` and `trade.createTrade(...)`.
+
 - [x] `DEPLOY-2026-04-25-A fix(web-build): remove Coolify deploy blockers in dashboard test helper and wallets table deps`
   - 2026-04-25: Fixed the `apps/web` deploy gate reported by Coolify for commit `0dd951d1696bd45ac11983c67e72213134a632d3`. Replaced `any` in `HomeLiveWidgets.test-helpers.ts` with canonical bot runtime response types and removed redundant `useMemo` dependencies from `WalletsListTable.tsx` so `pnpm --filter web build` can pass again. Validation target for closure: `pnpm --filter web run build`, `pnpm run quality:guardrails`.
 

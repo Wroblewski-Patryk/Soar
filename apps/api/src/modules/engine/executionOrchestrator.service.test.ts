@@ -10,6 +10,14 @@ import {
   RuntimeTradeGateway,
 } from './executionOrchestrator.service';
 
+vi.spyOn(prisma.trade, 'aggregate').mockResolvedValue({
+  _sum: { fee: 0 },
+  _avg: { fee: null },
+  _count: { fee: 0 },
+  _min: { fee: null },
+  _max: { fee: null },
+});
+
 const createOrderGateway = (): OrderFlowGateway => ({
   openOrder: vi.fn().mockResolvedValue({
     id: 'order-1',
@@ -518,6 +526,200 @@ describe('orchestrateRuntimeSignal', () => {
       expect.objectContaining({
         status: 'closed',
         positionId: 'position-open',
+      })
+    );
+  });
+
+  it('keeps profitable PAPER LONG exit realizedPnl positive at canonical close price', async () => {
+    const orderGateway = createOrderGateway();
+    const positionGateway = createPositionGateway();
+    const eventGateway = createEventGateway();
+    const tradeGateway = createTradeGateway();
+    const dedupeGateway = createDedupeGateway();
+    (positionGateway.getOpenPositionBySymbol as ReturnType<typeof vi.fn>).mockResolvedValue({
+      id: 'position-long-profit',
+      userId: 'u1',
+      externalId: null,
+      origin: 'BOT',
+      managementMode: 'BOT_MANAGED',
+      syncState: 'IN_SYNC',
+      symbol: 'BTCUSDT',
+      side: 'LONG',
+      status: 'OPEN',
+      entryPrice: 100,
+      quantity: 1,
+      leverage: 1,
+      openedAt: new Date(),
+      closedAt: null,
+      realizedPnl: null,
+      unrealizedPnl: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      botId: 'bot-paper',
+      walletId: 'wallet-paper',
+      strategyId: 'strategy-paper',
+      stopLoss: null,
+      takeProfit: null,
+    });
+    (orderGateway.openOrder as ReturnType<typeof vi.fn>).mockResolvedValue({
+      id: 'order-long-profit',
+      userId: 'u1',
+      symbol: 'BTCUSDT',
+      side: 'SELL',
+      type: 'MARKET',
+      status: 'FILLED',
+      quantity: 1,
+      filledQuantity: 1,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      submittedAt: new Date(),
+      filledAt: new Date(),
+      botId: 'bot-paper',
+      walletId: 'wallet-paper',
+      strategyId: 'strategy-paper',
+      positionId: 'position-long-profit',
+      price: 109,
+      stopPrice: null,
+      averageFillPrice: 110,
+      fee: null,
+      feeSource: 'ESTIMATED',
+      feePending: false,
+      feeCurrency: null,
+      effectiveFeeRate: null,
+      exchangeOrderId: null,
+      exchangeTradeId: null,
+      canceledAt: null,
+    });
+
+    await orchestrateRuntimeSignal(
+      {
+        userId: 'u1',
+        walletId: 'wallet-paper',
+        strategyId: 'strategy-paper',
+        symbol: 'BTCUSDT',
+        direction: 'EXIT',
+        quantity: 1,
+        markPrice: 110,
+        mode: 'PAPER',
+      },
+      orderGateway,
+      positionGateway,
+      eventGateway,
+      tradeGateway,
+      dedupeGateway
+    );
+
+    expect(positionGateway.closePosition).toHaveBeenCalledWith(
+      'position-long-profit',
+      'u1',
+      expect.objectContaining({
+        realizedPnl: 9.956,
+      })
+    );
+    expect(tradeGateway.createTrade).toHaveBeenCalledWith(
+      expect.objectContaining({
+        orderId: 'order-long-profit',
+        positionId: 'position-long-profit',
+        side: 'SELL',
+        price: 110,
+        realizedPnl: 9.956,
+      })
+    );
+  });
+
+  it('keeps profitable PAPER SHORT exit realizedPnl positive at canonical close price', async () => {
+    const orderGateway = createOrderGateway();
+    const positionGateway = createPositionGateway();
+    const eventGateway = createEventGateway();
+    const tradeGateway = createTradeGateway();
+    const dedupeGateway = createDedupeGateway();
+    (positionGateway.getOpenPositionBySymbol as ReturnType<typeof vi.fn>).mockResolvedValue({
+      id: 'position-short-profit',
+      userId: 'u1',
+      externalId: null,
+      origin: 'BOT',
+      managementMode: 'BOT_MANAGED',
+      syncState: 'IN_SYNC',
+      symbol: 'BTCUSDT',
+      side: 'SHORT',
+      status: 'OPEN',
+      entryPrice: 100,
+      quantity: 1,
+      leverage: 1,
+      openedAt: new Date(),
+      closedAt: null,
+      realizedPnl: null,
+      unrealizedPnl: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      botId: 'bot-paper',
+      walletId: 'wallet-paper',
+      strategyId: 'strategy-paper',
+      stopLoss: null,
+      takeProfit: null,
+    });
+    (orderGateway.openOrder as ReturnType<typeof vi.fn>).mockResolvedValue({
+      id: 'order-short-profit',
+      userId: 'u1',
+      symbol: 'BTCUSDT',
+      side: 'BUY',
+      type: 'MARKET',
+      status: 'FILLED',
+      quantity: 1,
+      filledQuantity: 1,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      submittedAt: new Date(),
+      filledAt: new Date(),
+      botId: 'bot-paper',
+      walletId: 'wallet-paper',
+      strategyId: 'strategy-paper',
+      positionId: 'position-short-profit',
+      price: 91,
+      stopPrice: null,
+      averageFillPrice: 90,
+      fee: null,
+      feeSource: 'ESTIMATED',
+      feePending: false,
+      feeCurrency: null,
+      effectiveFeeRate: null,
+      exchangeOrderId: null,
+      exchangeTradeId: null,
+      canceledAt: null,
+    });
+
+    await orchestrateRuntimeSignal(
+      {
+        userId: 'u1',
+        walletId: 'wallet-paper',
+        strategyId: 'strategy-paper',
+        symbol: 'BTCUSDT',
+        direction: 'EXIT',
+        quantity: 1,
+        markPrice: 90,
+        mode: 'PAPER',
+      },
+      orderGateway,
+      positionGateway,
+      eventGateway,
+      tradeGateway,
+      dedupeGateway
+    );
+
+    expect(positionGateway.closePosition).toHaveBeenCalledWith(
+      'position-short-profit',
+      'u1',
+      expect.objectContaining({
+        realizedPnl: 9.964,
+      })
+    );
+    expect(tradeGateway.createTrade).toHaveBeenCalledWith(
+      expect.objectContaining({
+        orderId: 'order-short-profit',
+        positionId: 'position-short-profit',
+        side: 'BUY',
+        price: 90,
+        realizedPnl: 9.964,
       })
     );
   });

@@ -49,6 +49,12 @@ Last updated: 2026-04-25
   `EXCHANGE_SYNC BOT_MANAGED` LIVE runtime position visibility/close flows.
 
 ## Product Decisions (Confirmed)
+- 2026-04-25: closed `PAPERPNL-02` as a test-only follow-up to
+  `PAPERPNL-01`. The canonical `PAPER` `EXIT` lifecycle is now explicitly
+  regression-locked for both profitable `LONG` and profitable `SHORT` closes,
+  proving the same positive `realizedPnl` sign is persisted through both the
+  closed-position payload and the close-trade payload in
+  `executionOrchestrator`.
 - 2026-04-25: Coolify deployment for web commit
   `0dd951d1696bd45ac11983c67e72213134a632d3` failed strictly at the web
   build gate, not at Docker or runtime startup. The blocking issues were one
