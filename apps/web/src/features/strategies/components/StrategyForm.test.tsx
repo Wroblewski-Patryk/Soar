@@ -77,4 +77,45 @@ describe('StrategyForm', () => {
     expect(screen.getByText('Pozycje')).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'DCA' })).toBeInTheDocument();
   });
+
+  it('allows zero lifetime values and explains the no-limit semantic', async () => {
+    window.localStorage.setItem('cryptosparrow-locale', 'pl');
+    window.history.pushState({}, '', '/dashboard/strategies/create');
+    const onSubmit = vi.fn().mockResolvedValue(undefined);
+    const { container } = await renderWithI18n(onSubmit);
+
+    fireEvent.change(screen.getByLabelText('Nazwa'), { target: { value: 'Lifetime zero strat' } });
+    fireEvent.click(screen.getByRole('tab', { name: 'Dodatkowe ustawienia' }));
+
+    expect(
+      screen.getAllByText('Ustaw 0, aby wylaczyc limit czasu dla tego cyklu zycia.').length
+    ).toBeGreaterThan(0);
+
+    const positionLifetimeInput = container.querySelector(
+      '#strategy-additional-position-lifetime'
+    ) as HTMLInputElement | null;
+    const orderLifetimeInput = container.querySelector(
+      '#strategy-additional-order-lifetime'
+    ) as HTMLInputElement | null;
+
+    expect(positionLifetimeInput).not.toBeNull();
+    expect(orderLifetimeInput).not.toBeNull();
+    expect(positionLifetimeInput?.min).toBe('0');
+    expect(orderLifetimeInput?.min).toBe('0');
+
+    fireEvent.change(positionLifetimeInput as HTMLInputElement, { target: { value: '0' } });
+    fireEvent.change(orderLifetimeInput as HTMLInputElement, { target: { value: '0' } });
+
+    const form = container.querySelector('form');
+    expect(form).not.toBeNull();
+    fireEvent.submit(form as HTMLFormElement);
+
+    await waitFor(() => {
+      expect(onSubmit).toHaveBeenCalledTimes(1);
+    });
+
+    const submitted = onSubmit.mock.calls[0]?.[0] as StrategyFormState;
+    expect(submitted.additional.positionLifetime).toBe(0);
+    expect(submitted.additional.orderLifetime).toBe(0);
+  });
 });

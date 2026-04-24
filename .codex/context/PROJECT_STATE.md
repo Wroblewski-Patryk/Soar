@@ -294,6 +294,10 @@ Last updated: 2026-04-24
   open orders table still lacks an operator cancel action despite the existing
   backend `cancelOrder` endpoint. The queued wave closes those gaps under one
   contract, including `0 = no time limit` semantics in the strategy UI.
+- 2026-04-24: `V1LIFE-01` is closed. Strategy form lifetime inputs now allow
+  `0` for both order and position lifetime, helper copy explicitly documents
+  `0 = no time limit`, and focused web regressions lock the submit payload to
+  preserve zero values instead of coercing them away.
 - 2026-04-24: `V1FINAL-02` is closed without new code. The known production
   orphan paper order was confirmed to be a historical pre-fix manual
   `PAPER MARKET` row persisted as `OPEN` with no fill/position. Recovery

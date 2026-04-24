@@ -145,7 +145,7 @@ not as justification to keep stale open orders indefinitely.
 ## Execution Plan
 
 ### Slice 1 - Freeze semantics and form contract
-- [ ] `V1LIFE-01 docs+web(contract): freeze and expose 0=no-limit semantics for strategy order/position lifetime`
+- [x] `V1LIFE-01 docs+web(contract): freeze and expose 0=no-limit semantics for strategy order/position lifetime`
   - update planning/architecture/source-of-truth with explicit `0 = disabled`
   - update strategy form inputs to allow `0`
   - add helper text so the user understands `0` means no time cap
@@ -182,3 +182,10 @@ not as justification to keep stale open orders indefinitely.
   - rerun focused api/web tests
   - verify prod orphan-order cleanup note
   - sync queue/context/architecture notes
+
+## Progress Notes
+- `V1LIFE-01` closed on `2026-04-24`
+  - strategy lifetime inputs now allow `0`
+  - helper copy explicitly documents `0 = no time limit`
+  - payload mapping is regression-locked to preserve `0` for both
+    `positionLifetime` and `orderLifetime`

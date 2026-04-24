@@ -100,6 +100,7 @@ export const dashboardStrategiesPl = {
       orders: "Zlecenia",
       maxCount: "Maksymalna ilosc",
       lifetime: "Dlugosc zycia",
+      lifetimeHint: "Ustaw 0, aby wylaczyc limit czasu dla tego cyklu zycia.",
       unitMin: "min",
       unitHour: "godz.",
       unitDay: "dni",

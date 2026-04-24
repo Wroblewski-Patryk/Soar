@@ -64,5 +64,19 @@ describe('formToPayload', () => {
     expect(additional.dcaLevels).toHaveLength(2);
     expect(additional.dcaTimes).toBe(2);
   });
-});
 
+  it('preserves zero lifetime values as explicit no-limit semantics', () => {
+    const form = baseForm();
+    form.additional.positionLifetime = 0;
+    form.additional.orderLifetime = 0;
+
+    const payload = formToPayload(form);
+    const additional = payload.config.additional as {
+      positionLifetime: number;
+      orderLifetime: number;
+    };
+
+    expect(additional.positionLifetime).toBe(0);
+    expect(additional.orderLifetime).toBe(0);
+  });
+});

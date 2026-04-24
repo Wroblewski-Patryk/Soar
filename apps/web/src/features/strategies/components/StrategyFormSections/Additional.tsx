@@ -27,6 +27,7 @@ export function Additional({ data, setData }: AdditionalProps) {
     orders: t("dashboard.strategies.form.additional.orders"),
     maxCount: t("dashboard.strategies.form.additional.maxCount"),
     lifetime: t("dashboard.strategies.form.additional.lifetime"),
+    lifetimeHint: t("dashboard.strategies.form.additional.lifetimeHint"),
     unitMin: t("dashboard.strategies.form.additional.unitMin"),
     unitHour: t("dashboard.strategies.form.additional.unitHour"),
     unitDay: t("dashboard.strategies.form.additional.unitDay"),
@@ -105,11 +106,11 @@ export function Additional({ data, setData }: AdditionalProps) {
                 patch({ maxPositions: parsed });
               }}
             />
-            <CompoundField label={copy.lifetime} columns={2}>
+            <CompoundField label={copy.lifetime} hint={copy.lifetimeHint} columns={2}>
               <input
                 id="strategy-additional-position-lifetime"
                 type="number"
-                min={1}
+                min={0}
                 inputMode={integerInputProps.inputMode}
                 step={integerInputProps.step}
                 className="input input-bordered w-full"
@@ -151,11 +152,11 @@ export function Additional({ data, setData }: AdditionalProps) {
                   patch({ maxOrders: parsed });
                 }}
               />
-              <CompoundField label={copy.lifetime} columns={2}>
+              <CompoundField label={copy.lifetime} hint={copy.lifetimeHint} columns={2}>
                 <input
                   id="strategy-additional-order-lifetime"
                   type="number"
-                  min={1}
+                  min={0}
                   inputMode={integerInputProps.inputMode}
                   step={integerInputProps.step}
                   className="input input-bordered w-full"

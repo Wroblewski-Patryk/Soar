@@ -17,13 +17,12 @@ Last updated: 2026-04-24
 
 ## READY
 
-- [ ] `V1LIFE-01 docs+web(contract): freeze and expose 0=no-limit semantics for strategy order/position lifetime`
 - [ ] `V1LIFE-02 api(shared-lifetime): add one canonical strategy-lifetime resolver for order and position policies`
 - [ ] `V1LIFE-03 api(order-lifetime): enforce strategy-configured order lifetime via canonical cancel path`
+- [ ] `V1LIFE-04 api(position-lifetime): enforce strategy-configured position lifetime via canonical close lifecycle`
 
 ## BACKLOG
 
-- [ ] `V1LIFE-04 api(position-lifetime): enforce strategy-configured position lifetime via canonical close lifecycle`
 - [ ] `V1LIFE-05 web(open-orders-action): add final Action column with cancel affordance in dashboard Orders tab`
 - [ ] `V1LIFE-06 qa(closure): run focused lifetime/order-control pack and sync canonical docs/context`
 
@@ -40,6 +39,9 @@ Last updated: 2026-04-24
 - [ ] (none)
 
 ## DONE
+
+- [x] `V1LIFE-01 docs+web(contract): freeze and expose 0=no-limit semantics for strategy order/position lifetime`
+  - 2026-04-24: Strategy form lifetime inputs now allow `0` for both position and order lifetime, helper copy explicitly documents `0 = no time limit`, and focused regressions prove the submit payload preserves zero values instead of coercing them away. Validation PASS: `pnpm --filter web exec vitest run src/features/strategies/components/StrategyForm.test.tsx src/features/strategies/utils/StrategyForm.map.test.ts`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
 
 - [x] `V1FINAL-03 qa(prod-closure): rerun focused runtime closure pack and capture remaining infra-only blockers`
   - 2026-04-24: Reran the focused backend runtime-closure pack and confirmed green results for aggregate monitoring truth, paper manual-order immediate-fill behavior, runtime flow parity, `api` typecheck, and repository guardrails. Recorded that the remaining blocker for local `test:go-live:smoke` is infra-only on this machine: Docker cannot bind `5432/6379` because another local stack (`cryptosparrow-postgres-1`, `cryptosparrow-redis-1`) is already occupying those ports.

@@ -100,6 +100,7 @@ export const dashboardStrategiesPt = {
       orders: "Ordens",
       maxCount: "Quantidade maxima",
       lifetime: "Duracao",
+      lifetimeHint: "Define 0 para desativar o limite temporal deste ciclo de vida.",
       unitMin: "min",
       unitHour: "h",
       unitDay: "dias",
