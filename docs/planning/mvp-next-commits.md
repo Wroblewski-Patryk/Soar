@@ -11,6 +11,7 @@ Operational queue for one-task execution runs.
 ## NEXT
 - [ ] (none)
 ## PIPELINE
+- [x] `DEPLOY-2026-04-25-B qa(web-build): validate Coolify deploy hotfix locally and sync closure evidence`
 - [x] `PAPERPNL-02 test(api-runtime): lock profitable PAPER EXIT realized-PnL sign for canonical LONG and SHORT closes`
 - [x] `PAPERPNL-01 fix(api-runtime): recover truthful PAPER close PnL and wallet-capital updates for manual/runtime exits`
 - [x] `V1SURF-B planning queued (residual operator-surface truth closure after V1LIFE)`

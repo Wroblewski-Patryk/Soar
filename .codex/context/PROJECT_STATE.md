@@ -49,6 +49,11 @@ Last updated: 2026-04-25
   `EXCHANGE_SYNC BOT_MANAGED` LIVE runtime position visibility/close flows.
 
 ## Product Decisions (Confirmed)
+- 2026-04-25: closed `DEPLOY-2026-04-25-B` as the validation-only follow-up to
+  the same-day Coolify hotfix. Local `pnpm --filter web run build` now passes
+  cleanly again, confirming the previously reported web deploy gate is no
+  longer reproducible in the repository, and `quality:guardrails` remained
+  green after closure sync.
 - 2026-04-25: closed `PAPERPNL-02` as a test-only follow-up to
   `PAPERPNL-01`. The canonical `PAPER` `EXIT` lifecycle is now explicitly
   regression-locked for both profitable `LONG` and profitable `SHORT` closes,

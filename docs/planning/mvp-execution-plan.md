@@ -2624,6 +2624,12 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-24: Closed `PAPERPNL-01` by extracting `runtimeLifecycleMarkPrice.service.ts` as the shared close-price authority, wiring manual dashboard close and automated runtime close to the same ticker-or-recent-close resolver, and failing closed with `POSITION_CLOSE_PRICE_UNAVAILABLE` instead of synthesizing market truth from `position.entryPrice`. Added focused unit coverage plus API e2e parity proving a profitable `PAPER` manual close now persists positive realized PnL into position/trade records and raises runtime `referenceBalance/freeCash` in the session positions response.
 - 2026-04-25: Closed `PAPERPNL-02` as the next smallest follow-up by adding focused `executionOrchestrator.service.test.ts` coverage that locks the canonical `PAPER` `EXIT` realized-PnL sign for both profitable `LONG` and profitable `SHORT` closes. The regression proves the same positive value is written into both the closed-position payload and the persisted close-trade payload, without changing production runtime logic.
 
+## Phase DEPLOY-2026-04-25 - Coolify Web Build Hotfix Closure (Closed 2026-04-25)
+- [x] `DEPLOY-2026-04-25-B qa(web-build): validate Coolify deploy hotfix locally and sync closure evidence`
+
+### Progress Log (Phase DEPLOY-2026-04-25 - Coolify Web Build Hotfix Closure)
+- 2026-04-25: Closed `DEPLOY-2026-04-25-B` as the smallest follow-up to the same-day Coolify web deploy hotfix by rerunning the exact local gate that had blocked deployment. Validation PASS: `pnpm --filter web run build`, `pnpm run quality:guardrails`. No additional code changes were required in this closure slice.
+
 ## Phase ARCCON - Architecture Conformance and Service Ownership Closure (Closed 2026-04-21)
 - [x] `ARCCON-01 test(api-red): lock fail-closed manual-order strategy context when selected bot has no symbol-matching strategy`
 - [x] `ARCCON-02 fix(api-orders): remove hidden first-strategy fallback from manual-order context resolution and keep unresolved state explicit`

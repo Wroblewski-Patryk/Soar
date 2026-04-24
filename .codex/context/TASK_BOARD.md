@@ -39,11 +39,15 @@ Last updated: 2026-04-25
 
 ## DONE
 
+- [x] `DEPLOY-2026-04-25-B qa(web-build): validate Coolify deploy hotfix locally and sync closure evidence`
+  - 2026-04-25: Verified the local deploy gate for the same-day Coolify hotfix. Validation PASS: `pnpm --filter web run build`, `pnpm run quality:guardrails`.
+
 - [x] `PAPERPNL-02 test(api-runtime): lock profitable PAPER EXIT realized-PnL sign for canonical LONG and SHORT closes`
   - 2026-04-25: Added focused `executionOrchestrator.service.test.ts` regression coverage proving the canonical `PAPER` `EXIT` lifecycle keeps positive realized PnL for profitable `LONG` and `SHORT` closes, and that the same positive value is written to both `position.closePosition(...)` and `trade.createTrade(...)`.
 
 - [x] `DEPLOY-2026-04-25-A fix(web-build): remove Coolify deploy blockers in dashboard test helper and wallets table deps`
-  - 2026-04-25: Fixed the `apps/web` deploy gate reported by Coolify for commit `0dd951d1696bd45ac11983c67e72213134a632d3`. Replaced `any` in `HomeLiveWidgets.test-helpers.ts` with canonical bot runtime response types and removed redundant `useMemo` dependencies from `WalletsListTable.tsx` so `pnpm --filter web build` can pass again. Validation target for closure: `pnpm --filter web run build`, `pnpm run quality:guardrails`.
+  - 2026-04-25: Fixed the `apps/web` deploy gate reported by Coolify for commit `0dd951d1696bd45ac11983c67e72213134a632d3`. Replaced `any` in `HomeLiveWidgets.test-helpers.ts` with canonical bot runtime response types and removed redundant `useMemo` dependencies from `WalletsListTable.tsx`.
+  - 2026-04-25: Closure evidence captured in `DEPLOY-2026-04-25-B`. Validation PASS: `pnpm --filter web run build`, `pnpm run quality:guardrails`.
 
 - [x] `UXUI-2026-04-24-A web(uxui): refine strategies tabs, dashboard runtime density, and wallets form layout`
   - 2026-04-24: Simplified strategy tab framing to one content container, removed closed-position history table from dashboard `Historia`, reduced runtime market-card helper chrome (`Status` / `Source` / `Strategy` / `Decision` labels plus extra market-state counters), improved warning readability on dashboard runtime surfaces, and tightened wallet create/edit layout with requested row grouping plus a button-style mode switcher. Validation PASS: `pnpm --filter web exec vitest run src/features/strategies/components/StrategyForm.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.aggregate-history.test.tsx src/features/wallets/components/WalletCreateEditForm.test.tsx`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
