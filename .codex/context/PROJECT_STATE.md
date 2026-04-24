@@ -295,6 +295,12 @@ Last updated: 2026-04-24
   cleanup path. Close attempts prefer current ticker truth, fall back to the
   latest recent close for the bot strategy interval, and fail closed when no
   valid mark price can be proven.
+- 2026-04-24: `V1LIFE-05` is closed. Dashboard `Orders` tab now exposes a
+  final action column backed by the existing cancel-order endpoint, with
+  explicit pending state and fail-closed visibility rules: only active
+  open-order statuses render cancel affordance, while terminal rows stay
+  read-only and table truth refreshes from the canonical selected-bot runtime
+  snapshot after successful cancellation.
 - 2026-04-24: published `V1LIFE-A` after a focused lifecycle audit covering
   strategy builder, runtime/order services, and dashboard open orders UI.
   Confirmed that strategy already stores `maxOrders`, `orderLifetime`,

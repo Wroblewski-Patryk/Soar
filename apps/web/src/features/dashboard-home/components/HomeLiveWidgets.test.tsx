@@ -12,6 +12,7 @@ const listBotRuntimeSessionSymbolStatsMock = vi.hoisted(() => vi.fn());
 const listBotRuntimeSessionPositionsMock = vi.hoisted(() => vi.fn());
 const listBotRuntimeSessionTradesMock = vi.hoisted(() => vi.fn());
 const closeBotRuntimeSessionPositionMock = vi.hoisted(() => vi.fn());
+const cancelDashboardOrderMock = vi.hoisted(() => vi.fn());
 const openDashboardManualOrderMock = vi.hoisted(() => vi.fn());
 const getDashboardManualOrderContextMock = vi.hoisted(() => vi.fn());
 const updatePositionManualParamsMock = vi.hoisted(() => vi.fn());
@@ -26,6 +27,7 @@ vi.mock("../../../features/bots/services/bots.service", () => ({
   listBotRuntimeSessionPositions: listBotRuntimeSessionPositionsMock,
   listBotRuntimeSessionTrades: listBotRuntimeSessionTradesMock,
   closeBotRuntimeSessionPosition: closeBotRuntimeSessionPositionMock,
+  cancelDashboardOrder: cancelDashboardOrderMock,
   openDashboardManualOrder: openDashboardManualOrderMock,
   getDashboardManualOrderContext: getDashboardManualOrderContextMock,
 }));
@@ -52,6 +54,11 @@ describe("HomeLiveWidgets", () => {
       status: "closed",
       positionId: "position-default",
       orderId: "order-default",
+    });
+    cancelDashboardOrderMock.mockReset();
+    cancelDashboardOrderMock.mockResolvedValue({
+      id: "order-default",
+      status: "CANCELED",
     });
     openDashboardManualOrderMock.mockReset();
     openDashboardManualOrderMock.mockResolvedValue({

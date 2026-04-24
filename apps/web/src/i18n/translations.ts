@@ -212,6 +212,10 @@ type TranslationSchema = {
         slTsl: string;
         noOpenPositions: string;
         openOrdersPlaceholder: string;
+        cancelOpenOrderButton: string;
+        cancelOpenOrderPending: string;
+        cancelOpenOrderSuccess: string;
+        cancelOpenOrderError: string;
         tradesHistoryTitlePaper: string;
         tradesHistoryTitleLive: string;
         filterSymbol: string;

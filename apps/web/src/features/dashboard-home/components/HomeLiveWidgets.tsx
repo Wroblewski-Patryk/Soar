@@ -14,6 +14,7 @@ import { createMarketStreamEventSource } from "../../../lib/marketStream";
 import { normalizeSymbol } from "@/lib/symbols";
 import { getAxiosMessage } from "@/lib/getAxiosMessage";
 import {
+  cancelDashboardOrder,
   getBotRuntimeGraph,
   getBotRuntimeMonitoringAggregate,
   listBots,
@@ -181,6 +182,7 @@ export default function HomeLiveWidgets() {
   });
   const [positionEditDraft, setPositionEditDraft] = useState<PositionEditDraft | null>(null);
   const [isSavingPositionEdit, setIsSavingPositionEdit] = useState(false);
+  const [cancelingOpenOrderIds, setCancelingOpenOrderIds] = useState<string[]>([]);
   const runtimeOnboardingSteps = useMemo(() => buildRuntimeOnboardingSteps(t), [t]);
   const runtimeNoActiveBotsOnboardingSteps = useMemo(
     () => extendWithRuntimeActivationStep(runtimeOnboardingSteps, t),
@@ -331,6 +333,10 @@ export default function HomeLiveWidgets() {
   const manualOrderSubmittingLabel = t("dashboard.home.runtime.manualOrderOpening");
   const manualOrderSuccessLabel = t("dashboard.home.runtime.manualOrderSuccess");
   const manualOrderErrorLabel = t("dashboard.home.runtime.manualOrderError");
+  const cancelOpenOrderLabel = t("dashboard.home.runtime.cancelOpenOrderButton");
+  const cancelOpenOrderPendingLabel = t("dashboard.home.runtime.cancelOpenOrderPending");
+  const cancelOpenOrderSuccessLabel = t("dashboard.home.runtime.cancelOpenOrderSuccess");
+  const cancelOpenOrderErrorLabel = t("dashboard.home.runtime.cancelOpenOrderError");
   const manualOrderInvalidSymbolLabel = t("dashboard.home.runtime.manualOrderSymbolRequired");
   const manualOrderInvalidQuantityLabel = t("dashboard.home.runtime.manualOrderQuantityRequired");
   const manualOrderInvalidPriceLabel = t("dashboard.home.runtime.manualOrderPriceInvalid");
@@ -445,6 +451,29 @@ export default function HomeLiveWidgets() {
     selectedSessionId: selected?.actionSessionId ?? selected?.session?.id,
   });
 
+  const isCancelingOpenOrder = useCallback(
+    (orderId: string) => cancelingOpenOrderIds.includes(orderId),
+    [cancelingOpenOrderIds]
+  );
+
+  const handleCancelOpenOrder = useCallback(
+    async (orderId: string) => {
+      if (cancelingOpenOrderIds.includes(orderId)) return;
+
+      setCancelingOpenOrderIds((current) => [...current, orderId]);
+      try {
+        await cancelDashboardOrder(orderId, { riskAck: true });
+        toast.success(cancelOpenOrderSuccessLabel);
+        await load({ silent: true });
+      } catch (error) {
+        toast.error(getAxiosMessage(error) ?? cancelOpenOrderErrorLabel);
+      } finally {
+        setCancelingOpenOrderIds((current) => current.filter((currentId) => currentId !== orderId));
+      }
+    },
+    [cancelOpenOrderErrorLabel, cancelOpenOrderSuccessLabel, cancelingOpenOrderIds, load]
+  );
+
   const openPositionsColumns = useMemo(
     () =>
       createOpenPositionsColumns({
@@ -496,8 +525,24 @@ export default function HomeLiveWidgets() {
         resolveRuntimeIcon,
         runtimeIconsLoading,
         runtimeIconsError,
+        actionColumnLabel: t("dashboard.home.runtime.filterAction"),
+        cancelOpenOrderLabel,
+        cancelOpenOrderPendingLabel,
+        isCancelingOpenOrder,
+        onCancelOpenOrder: (orderId) => void handleCancelOpenOrder(orderId),
       }),
-    [formatDateTimeWithSeconds, formatNumber, resolveRuntimeIcon, runtimeIconsError, runtimeIconsLoading, t]
+    [
+      cancelOpenOrderLabel,
+      cancelOpenOrderPendingLabel,
+      formatDateTimeWithSeconds,
+      formatNumber,
+      handleCancelOpenOrder,
+      isCancelingOpenOrder,
+      resolveRuntimeIcon,
+      runtimeIconsError,
+      runtimeIconsLoading,
+      t,
+    ]
   );
 
   const historyPositionsColumns = useMemo(

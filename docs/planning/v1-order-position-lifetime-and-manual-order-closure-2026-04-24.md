@@ -172,7 +172,7 @@ not as justification to keep stale open orders indefinitely.
   - preserve `0 = no limit`
 
 ### Slice 5 - Dashboard control
-- [ ] `V1LIFE-05 web(open-orders-action): add final Action column with cancel affordance in dashboard Orders tab`
+- [x] `V1LIFE-05 web(open-orders-action): add final Action column with cancel affordance in dashboard Orders tab`
   - use existing backend cancel endpoint
   - add pending/error/success operator states
   - show action only for cancelable active orders
@@ -213,3 +213,12 @@ not as justification to keep stale open orders indefinitely.
   - mark-price authority is fail-closed: runtime prefers current ticker truth,
     falls back to the most recent close for the bot strategy interval, and
     skips closure when no valid positive price can be proven
+- `V1LIFE-05` closed on `2026-04-24`
+  - dashboard `Orders` tab now shows a final `Action` column wired to the
+    existing `POST /dashboard/orders/:id/cancel` lifecycle
+  - cancel affordance is shown only for active open-order statuses
+    (`PENDING` / `OPEN` / `PARTIALLY_FILLED`) and remains hidden for terminal
+    rows like `FILLED`
+  - web now shows explicit pending state during cancel and refreshes the
+    selected-bot runtime snapshot after success instead of mutating table truth
+    locally

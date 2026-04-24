@@ -241,6 +241,16 @@ type OpenOrdersColumnsArgs = {
   resolveRuntimeIcon: ResolveRuntimeIcon;
   runtimeIconsLoading: boolean;
   runtimeIconsError: unknown;
+  actionColumnLabel: string;
+  cancelOpenOrderLabel: string;
+  cancelOpenOrderPendingLabel: string;
+  isCancelingOpenOrder: (orderId: string) => boolean;
+  onCancelOpenOrder: (orderId: string) => void;
+};
+
+const isCancelableOpenOrderStatus = (status: string | null | undefined) => {
+  const normalized = status?.trim().toUpperCase();
+  return normalized === "PENDING" || normalized === "OPEN" || normalized === "PARTIALLY_FILLED";
 };
 
 export const createOpenOrdersColumns = ({
@@ -250,6 +260,11 @@ export const createOpenOrdersColumns = ({
   resolveRuntimeIcon,
   runtimeIconsLoading,
   runtimeIconsError,
+  actionColumnLabel,
+  cancelOpenOrderLabel,
+  cancelOpenOrderPendingLabel,
+  isCancelingOpenOrder,
+  onCancelOpenOrder,
 }: OpenOrdersColumnsArgs): OpenOrdersTableColumn[] => [
   {
     key: "submittedAt",
@@ -311,6 +326,39 @@ export const createOpenOrdersColumns = ({
     accessor: (row) => row.price ?? null,
     render: (row) =>
       row.price == null ? "-" : formatNumber(row.price, { minimumFractionDigits: 2, maximumFractionDigits: 6 }),
+  },
+  {
+    key: "action",
+    label: actionColumnLabel,
+    className: "text-right",
+    render: (row) => {
+      if (!isCancelableOpenOrderStatus(row.status)) {
+        return <span className="opacity-50">-</span>;
+      }
+
+      const isCanceling = isCancelingOpenOrder(row.id);
+      const actionLabel = isCanceling ? cancelOpenOrderPendingLabel : cancelOpenOrderLabel;
+
+      return (
+        <div className="flex items-center justify-end">
+          <button
+            type="button"
+            className="btn btn-error btn-outline btn-xs btn-square"
+            onClick={() => onCancelOpenOrder(row.id)}
+            disabled={isCanceling}
+            aria-label={actionLabel}
+            title={actionLabel}
+          >
+            {isCanceling ? (
+              <span className="loading loading-spinner loading-xs" aria-hidden />
+            ) : (
+              <LuX className="h-3.5 w-3.5" aria-hidden />
+            )}
+            <span className="sr-only">{actionLabel}</span>
+          </button>
+        </div>
+      );
+    },
   },
 ];
 

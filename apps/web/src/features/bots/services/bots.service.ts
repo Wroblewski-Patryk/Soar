@@ -162,6 +162,14 @@ export const openDashboardManualOrder = async (payload: {
   return res.data;
 };
 
+export const cancelDashboardOrder = async (
+  id: string,
+  payload: { riskAck?: boolean } = { riskAck: true }
+): Promise<{ id: string; status: string }> => {
+  const res = await api.post<{ id: string; status: string }>(`/dashboard/orders/${id}/cancel`, payload);
+  return res.data;
+};
+
 export const getDashboardManualOrderContext = async (params: {
   botId: string;
   symbol: string;
