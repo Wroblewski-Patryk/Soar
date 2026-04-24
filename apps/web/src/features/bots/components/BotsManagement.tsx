@@ -22,6 +22,8 @@ import {
 } from "../utils/trailingStopDisplay";
 import {
   countRuntimeMarketStates,
+  deriveStrategyMaxOpenPositions,
+  resolveBotVenueContext,
   resolvePaperConfigBaseline,
   resolveRuntimeFreeFunds,
   resolveRuntimeMarketState,
@@ -215,9 +217,11 @@ export default function BotsManagement({
   );
   const monitorRuntimeCapabilityAvailable = useMemo(() => {
     if (!selectedMonitorBot) return true;
+    const venue = resolveBotVenueContext(selectedMonitorBot);
+    if (!venue.exchange) return true;
     return selectedMonitorBot.mode === "LIVE"
-      ? supportsExchangeCapability(selectedMonitorBot.exchange, "LIVE_EXECUTION")
-      : supportsExchangeCapability(selectedMonitorBot.exchange, "PAPER_PRICING_FEED");
+      ? supportsExchangeCapability(venue.exchange, "LIVE_EXECUTION")
+      : supportsExchangeCapability(venue.exchange, "PAPER_PRICING_FEED");
   }, [selectedMonitorBot]);
   const monitorWinRate = useMemo(() => {
     const closedTrades = monitorSessionDetail?.summary.closedTrades ?? 0;
@@ -720,6 +724,10 @@ export default function BotsManagement({
               <tbody>
                 {bots.map((bot) => {
                   const risk = toRiskBadge(bot);
+                  const venue = resolveBotVenueContext(bot);
+                  const strategy = strategies.find((item) => item.id === (bot.strategyId ?? bot.strategy?.id)) ?? null;
+                  const effectiveMaxOpenPositions =
+                    deriveStrategyMaxOpenPositions(strategy) ?? bot.maxOpenPositions;
                   return (
                     <tr key={bot.id}>
                       <td>
@@ -730,7 +738,9 @@ export default function BotsManagement({
                         />
                       </td>
                       <td>
-                        <span className="text-xs opacity-70">{bot.exchange} - {bot.marketType}</span>
+                        <span className="text-xs opacity-70">
+                          {venue.exchange ?? bot.exchange} - {venue.marketType ?? bot.marketType}
+                        </span>
                       </td>
                       <td>
                         <span className="text-xs opacity-70">{bot.positionMode}</span>
@@ -779,7 +789,7 @@ export default function BotsManagement({
                         </div>
                       </td>
                       <td>
-                        <span className="text-xs opacity-70">{bot.maxOpenPositions}</span>
+                        <span className="text-xs opacity-70">{effectiveMaxOpenPositions}</span>
                       </td>
                       <td>
                         <input

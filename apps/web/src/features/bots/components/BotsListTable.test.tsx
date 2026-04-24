@@ -70,7 +70,7 @@ describe("BotsListTable", () => {
     expect(screen.queryByRole("link", { name: /asystent/i })).not.toBeInTheDocument();
   });
 
-  it("shows placeholder badge for unsupported exchange and supports filtering by exchange name", async () => {
+  it("shows placeholder badge for inherited unsupported exchange and supports filtering by exchange name", async () => {
     listStrategiesMock.mockResolvedValue([
       {
         id: "strat-2",
@@ -85,13 +85,26 @@ describe("BotsListTable", () => {
         name: "OKX Bot",
         mode: "PAPER",
         paperStartBalance: 12_000,
-        exchange: "OKX",
-        marketType: "FUTURES",
+        exchange: "BINANCE",
+        marketType: "SPOT",
         positionMode: "ONE_WAY",
         strategyId: "strat-2",
         isActive: false,
         liveOptIn: false,
         maxOpenPositions: 1,
+        symbolGroup: {
+          id: "sg-okx",
+          name: "OKX Scope",
+          symbols: ["BTCUSDT"],
+          marketUniverseId: "mu-okx",
+          marketUniverse: {
+            id: "mu-okx",
+            name: "OKX Futures",
+            exchange: "OKX",
+            marketType: "FUTURES",
+            baseCurrency: "USDT",
+          },
+        },
       },
       {
         id: "bot-binance",

@@ -18,6 +18,7 @@ const getRuntimeSessionMock = vi.hoisted(() => vi.fn());
 const listRuntimeSymbolStatsMock = vi.hoisted(() => vi.fn());
 const listRuntimePositionsMock = vi.hoisted(() => vi.fn());
 const listRuntimeTradesMock = vi.hoisted(() => vi.fn());
+const loadBotMonitoringAggregateMock = vi.hoisted(() => vi.fn());
 const listStrategiesMock = vi.hoisted(() => vi.fn());
 const listMarketUniversesMock = vi.hoisted(() => vi.fn());
 const listWalletsMock = vi.hoisted(() =>
@@ -63,6 +64,10 @@ vi.mock("../../wallets/services/wallets.service", () => ({
   listWallets: listWalletsMock,
 }));
 
+vi.mock("../services/botsMonitoringAggregate.service", () => ({
+  loadBotMonitoringAggregate: loadBotMonitoringAggregateMock,
+}));
+
 afterEach(() => {
   cleanup();
   vi.useRealTimers();
@@ -80,6 +85,7 @@ afterEach(() => {
   listRuntimeSymbolStatsMock.mockReset();
   listRuntimePositionsMock.mockReset();
   listRuntimeTradesMock.mockReset();
+  loadBotMonitoringAggregateMock.mockReset();
   listWalletsMock.mockClear();
   window.history.pushState({}, "", "/");
 });
@@ -366,6 +372,57 @@ describe("BotsManagement", () => {
     });
   });
 
+  it("prefers inherited market venue and strategy max-open context in bots table", async () => {
+    listStrategiesMock.mockResolvedValue([
+      {
+        id: "s-inherited",
+        name: "Inherited Strategy",
+        interval: "5m",
+        config: { additional: { maxOpenPositions: 5 } },
+      },
+    ]);
+    listMarketUniversesMock.mockResolvedValue([
+      { id: "g-inherited", name: "Inherited Group", marketType: "FUTURES", baseCurrency: "USDT", whitelist: [], blacklist: [] },
+    ]);
+    listMock.mockResolvedValue([
+      {
+        id: "b-inherited",
+        name: "Inherited Bot",
+        mode: "PAPER",
+        paperStartBalance: 10000,
+        exchange: "BINANCE",
+        marketType: "SPOT",
+        positionMode: "ONE_WAY",
+        strategyId: "s-inherited",
+        isActive: false,
+        liveOptIn: false,
+        maxOpenPositions: 1,
+        symbolGroup: {
+          id: "sg-inherited",
+          name: "Inherited Scope",
+          symbols: ["BTCUSDT"],
+          marketUniverseId: "mu-inherited",
+          marketUniverse: {
+            id: "mu-inherited",
+            name: "OKX Futures",
+            exchange: "OKX",
+            marketType: "FUTURES",
+            baseCurrency: "USDT",
+          },
+        },
+      },
+    ]);
+
+    await renderWithI18n();
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue("Inherited Bot")).toBeInTheDocument();
+    });
+
+    expect(screen.getByText("OKX - FUTURES")).toBeInTheDocument();
+    expect(screen.getAllByText("5").length).toBeGreaterThan(0);
+  });
+
   it("requires confirmation before deleting active LIVE bot", async () => {
     listStrategiesMock.mockResolvedValue([{ id: "s-delete", name: "Delete Strategy", interval: "5m" }]);
     listMarketUniversesMock.mockResolvedValue([
@@ -490,7 +547,7 @@ describe("BotsManagement", () => {
       },
     });
 
-    listRuntimeSymbolStatsMock.mockResolvedValue({
+    const symbolStatsResponse = {
       sessionId: "session-1",
       items: [
         {
@@ -531,13 +588,13 @@ describe("BotsManagement", () => {
         winningTrades: 2,
         losingTrades: 0,
         realizedPnl: 90,
-        grossProfit: 100,
-        grossLoss: -10,
-        feesPaid: 4,
+      grossProfit: 100,
+      grossLoss: -10,
+      feesPaid: 4,
       },
-    });
+    };
 
-    listRuntimePositionsMock.mockResolvedValue({
+    const positionsResponse = {
       sessionId: "session-1",
       total: 2,
       openCount: 2,
@@ -613,9 +670,9 @@ describe("BotsManagement", () => {
         },
       ],
       historyItems: [],
-    });
+    };
 
-    listRuntimeTradesMock.mockResolvedValue({
+    const tradesResponse = {
       sessionId: "session-1",
       total: 1,
       meta: {
@@ -653,6 +710,13 @@ describe("BotsManagement", () => {
           margin: 700,
         },
       ],
+    };
+
+    loadBotMonitoringAggregateMock.mockResolvedValue({
+      sessionDetail: await getRuntimeSessionMock(),
+      symbolStats: symbolStatsResponse,
+      positions: positionsResponse,
+      trades: tradesResponse,
     });
 
     await renderWithI18n();
@@ -667,9 +731,12 @@ describe("BotsManagement", () => {
     });
 
     await waitFor(() => {
-      expect(listRuntimeSymbolStatsMock).toHaveBeenCalledWith("b-monitor", "session-1", {
+      expect(loadBotMonitoringAggregateMock).toHaveBeenCalledWith({
+        botId: "b-monitor",
+        sessions: expect.any(Array),
+        status: "ALL",
         symbol: undefined,
-        limit: 200,
+        perSessionLimit: 200,
       });
       expect(screen.getByTitle(/1:-15(\.00)?%, 2:-30(\.00)?%/)).toBeInTheDocument();
       expect(screen.getByText("TTP")).toBeInTheDocument();
@@ -777,9 +844,7 @@ describe("BotsManagement", () => {
       };
     });
 
-    listRuntimeSymbolStatsMock.mockImplementation(async () => {
-      if (shouldFailRefresh) throw new Error("stale-refresh");
-      return {
+    const staleSymbolStats = {
         sessionId: "session-stale",
         items: [],
         summary: {
@@ -792,16 +857,13 @@ describe("BotsManagement", () => {
           winningTrades: 0,
           losingTrades: 0,
           realizedPnl: 0,
-          grossProfit: 0,
-          grossLoss: 0,
-          feesPaid: 0,
+        grossProfit: 0,
+        grossLoss: 0,
+        feesPaid: 0,
         },
       };
-    });
 
-    listRuntimePositionsMock.mockImplementation(async () => {
-      if (shouldFailRefresh) throw new Error("stale-refresh");
-      return {
+    const stalePositions = {
         sessionId: "session-stale",
         total: 0,
         openCount: 0,
@@ -820,26 +882,32 @@ describe("BotsManagement", () => {
         openItems: [],
         historyItems: [],
       };
-    });
 
-    listRuntimeTradesMock.mockImplementation(async () => {
+    const staleTrades = {
+      sessionId: "session-stale",
+      total: 0,
+      meta: {
+        page: 1,
+        pageSize: 25,
+        total: 0,
+        totalPages: 0,
+        hasPrev: false,
+        hasNext: false,
+      },
+      window: {
+        startedAt: "2026-03-31T10:00:00.000Z",
+        finishedAt: "2026-03-31T10:05:00.000Z",
+      },
+      items: [],
+    };
+
+    loadBotMonitoringAggregateMock.mockImplementation(async () => {
       if (shouldFailRefresh) throw new Error("stale-refresh");
       return {
-        sessionId: "session-stale",
-        total: 0,
-        meta: {
-          page: 1,
-          pageSize: 25,
-          total: 0,
-          totalPages: 0,
-          hasPrev: false,
-          hasNext: false,
-        },
-        window: {
-          startedAt: "2026-03-31T10:00:00.000Z",
-          finishedAt: "2026-03-31T10:05:00.000Z",
-        },
-        items: [],
+        sessionDetail: await getRuntimeSessionMock(),
+        symbolStats: staleSymbolStats,
+        positions: stalePositions,
+        trades: staleTrades,
       };
     });
 
@@ -958,7 +1026,9 @@ describe("BotsManagement", () => {
       },
     });
 
-    listRuntimeSymbolStatsMock.mockResolvedValue({
+    loadBotMonitoringAggregateMock.mockResolvedValue({
+      sessionDetail: await getRuntimeSessionMock(),
+      symbolStats: {
       sessionId: "session-refresh",
       items: [],
       summary: {
@@ -971,13 +1041,12 @@ describe("BotsManagement", () => {
         winningTrades: 0,
         losingTrades: 0,
         realizedPnl: 0,
-        grossProfit: 0,
-        grossLoss: 0,
-        feesPaid: 0,
+      grossProfit: 0,
+      grossLoss: 0,
+      feesPaid: 0,
       },
-    });
-
-    listRuntimePositionsMock.mockResolvedValue({
+    },
+      positions: {
       sessionId: "session-refresh",
       total: 0,
       openCount: 0,
@@ -995,9 +1064,8 @@ describe("BotsManagement", () => {
       openOrders: [],
       openItems: [],
       historyItems: [],
-    });
-
-    listRuntimeTradesMock.mockResolvedValue({
+    },
+      trades: {
       sessionId: "session-refresh",
       total: 0,
       meta: {
@@ -1013,6 +1081,7 @@ describe("BotsManagement", () => {
         finishedAt: "2026-03-31T10:05:00.000Z",
       },
       items: [],
+    },
     });
 
     await renderWithI18n();
@@ -1154,7 +1223,9 @@ describe("BotsManagement", () => {
       },
     });
 
-    listRuntimeSymbolStatsMock.mockResolvedValue({
+    loadBotMonitoringAggregateMock.mockResolvedValue({
+      sessionDetail: await getRuntimeSessionMock(),
+      symbolStats: {
       sessionId: "session-sse",
       items: [
         {
@@ -1195,13 +1266,12 @@ describe("BotsManagement", () => {
         winningTrades: 0,
         losingTrades: 0,
         realizedPnl: 0,
-        grossProfit: 0,
-        grossLoss: 0,
-        feesPaid: 0,
+      grossProfit: 0,
+      grossLoss: 0,
+      feesPaid: 0,
       },
-    });
-
-    listRuntimePositionsMock.mockResolvedValue({
+    },
+      positions: {
       sessionId: "session-sse",
       total: 0,
       openCount: 0,
@@ -1219,9 +1289,8 @@ describe("BotsManagement", () => {
       openOrders: [],
       openItems: [],
       historyItems: [],
-    });
-
-    listRuntimeTradesMock.mockResolvedValue({
+    },
+      trades: {
       sessionId: "session-sse",
       total: 0,
       meta: {
@@ -1237,6 +1306,7 @@ describe("BotsManagement", () => {
         finishedAt: "2026-03-31T10:05:00.000Z",
       },
       items: [],
+    },
     });
 
     await renderWithI18n();
@@ -1267,7 +1337,7 @@ describe("BotsManagement", () => {
 
     const callsBeforeFallback = listRuntimeSessionsMock.mock.calls.length;
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(10_100);
+      await vi.advanceTimersByTimeAsync(20_500);
     });
 
     await waitFor(() => {

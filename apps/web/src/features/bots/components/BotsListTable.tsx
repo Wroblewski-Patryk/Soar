@@ -15,7 +15,10 @@ import { StrategyDto } from "@/features/strategies/types/StrategyForm.type";
 import { supportsExchangeCapability } from "@/features/exchanges/exchangeCapabilities";
 import { deleteBot, listBots } from "../services/bots.service";
 import { Bot } from "../types/bot.type";
-import { resolvePaperConfigBaseline } from "../utils/runtimeSurfaceTruth";
+import {
+  resolveBotVenueContext,
+  resolvePaperConfigBaseline,
+} from "../utils/runtimeSurfaceTruth";
 import { getAxiosMessage } from '@/lib/getAxiosMessage';
 
 export default function BotsListTable() {
@@ -33,7 +36,7 @@ export default function BotsListTable() {
       new Map(
         strategies.map((strategy) => [
           strategy.id,
-          { name: strategy.name, interval: strategy.interval, leverage: strategy.leverage },
+          strategy,
         ])
       ),
     [strategies]
@@ -107,14 +110,22 @@ export default function BotsListTable() {
       key: "market",
       label: t("dashboard.bots.list.columns.market"),
       sortable: true,
-      accessor: (row) => `${row.exchange} ${row.marketType}`,
-      render: (row) => (
+      accessor: (row) => {
+        const venue = resolveBotVenueContext(row);
+        return `${venue.exchange ?? row.exchange ?? ""} ${venue.marketType ?? row.marketType ?? ""}`;
+      },
+      render: (row) => {
+        const venue = resolveBotVenueContext(row);
+        const exchange = venue.exchange ?? row.exchange;
+        const marketType = venue.marketType ?? row.marketType;
+        return (
         <div className="space-y-0.5">
-          <p className="font-medium">{row.exchange}</p>
+          <p className="font-medium">{exchange ?? "-"}</p>
           <div className="flex items-center gap-1.5">
-            <p className="text-[11px] uppercase tracking-wide opacity-60">{row.marketType}</p>
-            {!supportsExchangeCapability(row.exchange, "PAPER_PRICING_FEED") &&
-            !supportsExchangeCapability(row.exchange, "LIVE_EXECUTION") ? (
+            <p className="text-[11px] uppercase tracking-wide opacity-60">{marketType ?? "-"}</p>
+            {exchange &&
+            !supportsExchangeCapability(exchange, "PAPER_PRICING_FEED") &&
+            !supportsExchangeCapability(exchange, "LIVE_EXECUTION") ? (
               <TableToneBadge
                 label={t("dashboard.bots.list.placeholderBadge")}
                 tone="warning"
@@ -123,7 +134,8 @@ export default function BotsListTable() {
             ) : null}
           </div>
         </div>
-      ),
+      );
+      },
       className: "w-40",
     },
     {
@@ -234,10 +246,11 @@ export default function BotsListTable() {
         filterPlaceholder={t("dashboard.bots.list.searchPlaceholder")}
         filterFn={(row, query) => {
           const normalized = query.trim().toLowerCase();
+          const venue = resolveBotVenueContext(row);
           return (
             row.name.toLowerCase().includes(normalized) ||
-            row.marketType.toLowerCase().includes(normalized) ||
-            row.exchange.toLowerCase().includes(normalized) ||
+            (venue.marketType ?? row.marketType ?? "").toLowerCase().includes(normalized) ||
+            (venue.exchange ?? row.exchange ?? "").toLowerCase().includes(normalized) ||
             row.mode.toLowerCase().includes(normalized) ||
             (strategyMap.get(row.strategyId ?? "")?.name ?? "").toLowerCase().includes(normalized)
           );

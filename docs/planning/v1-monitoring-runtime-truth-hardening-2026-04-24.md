@@ -38,7 +38,7 @@ context.
 ## Definition of Done
 - [x] `V1MON-01` web monitoring no longer reconstructs aggregate runtime truth
       client-side when the backend aggregate endpoint fails.
-- [ ] `V1MON-02` bot list and bot management prefer inherited context over
+- [x] `V1MON-02` bot list and bot management prefer inherited context over
       duplicated bot snapshot fields where the architecture requires it.
 - [ ] `V1MON-03` bot monitoring signal semantics match dashboard-home for
       market snapshot vs runtime decision truth.
@@ -53,6 +53,9 @@ context.
 ## Validation Evidence
 - Tests:
   - `pnpm --filter web exec vitest run src/features/bots/services/botsMonitoringAggregate.service.test.ts`
+  - `pnpm --filter web exec vitest run src/features/bots/components/BotsListTable.test.tsx src/features/bots/components/BotsManagement.test.tsx src/features/bots/services/botsMonitoringAggregate.service.test.ts`
+  - `pnpm --filter web run typecheck`
+  - `pnpm run quality:guardrails`
 - Manual checks: n/a
 - Screenshots/logs: n/a
 - High-risk checks:
@@ -90,3 +93,9 @@ context.
 This packet intentionally breaks the follow-up into small slices. `V1MON-01`
 must land first because the current browser fallback is itself an architectural
 violation and can mask the real backend state seen by operators.
+
+`V1MON-02` is now also closed: bot list and bot management prefer inherited
+venue context from `symbolGroup.marketUniverse` (with compatibility-only
+fallback to wallet/bot snapshot fields) and derive strategy position-limit
+display from linked strategy configuration instead of treating the bot snapshot
+as the primary truth.

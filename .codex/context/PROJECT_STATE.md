@@ -255,6 +255,11 @@ Last updated: 2026-04-24
   reconstructs aggregate runtime truth client-side when the backend aggregate
   endpoint fails, and instead relies on one canonical backend aggregate plus
   explicit degraded/error state in web.
+- 2026-04-24: `V1MON-02` is now also closed. Bot list and bot management
+  surfaces prefer inherited venue truth from `symbolGroup.marketUniverse` and
+  derive displayed strategy position-limit context from linked strategy
+  configuration, keeping legacy bot snapshot fields as compatibility-only
+  fallback instead of the primary operator narrative.
 - 2026-04-22: prod restore-drill proof now passes from a real Coolify terminal
   execution in the production postgres container
   (`x11cfnz1dd9x0yzccftqzcoe`), and the final non-dry-run prod release gate now

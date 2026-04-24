@@ -12,23 +12,11 @@ import { Wallet } from "../../wallets/types/wallet.type";
 import { createBot, deleteBot, listBots, updateBot } from "../services/bots.service";
 import { Bot, TradeMarket } from "../types/bot.type";
 import { getAxiosMessage } from '@/lib/getAxiosMessage';
+import { deriveStrategyMaxOpenPositions } from "../utils/runtimeSurfaceTruth";
 
 const LIVE_CONSENT_TEXT_VERSION = "mvp-v1";
 const DUPLICATE_ACTIVE_BOT_ERROR =
   "active bot already exists for this wallet + strategy + market group tuple";
-
-const deriveStrategyMaxOpenPositions = (strategy: StrategyDto | null): number => {
-  if (!strategy?.config || typeof strategy.config !== "object") return 1;
-  const config = strategy.config as {
-    additional?: {
-      maxPositions?: unknown;
-      maxOpenPositions?: unknown;
-    };
-  };
-  const raw = config.additional?.maxPositions ?? config.additional?.maxOpenPositions;
-  const parsed = Number(raw);
-  return Number.isFinite(parsed) && parsed > 0 ? Math.trunc(parsed) : 1;
-};
 
 type UseBotsListControllerArgs = {
   confirmLiveRisk: (message: string) => Promise<boolean>;
@@ -155,7 +143,7 @@ export const useBotsListController = ({ confirmLiveRisk, t }: UseBotsListControl
     [walletId, wallets]
   );
   const selectedStrategyMaxOpenPositions = useMemo(
-    () => deriveStrategyMaxOpenPositions(selectedStrategy),
+    () => deriveStrategyMaxOpenPositions(selectedStrategy) ?? 1,
     [selectedStrategy]
   );
 

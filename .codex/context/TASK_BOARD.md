@@ -43,6 +43,9 @@ Last updated: 2026-04-24
 - [x] `V1MON-01 web(aggregate-truth): remove client-side monitoring aggregate fallback and fail closed on backend aggregate errors`
   - 2026-04-24: Removed the browser-side aggregate reconstruction path from `botsMonitoringAggregate.service.ts`. Bot monitoring now depends on the canonical backend aggregate endpoint and surfaces endpoint failure through the existing degraded/error state instead of building a second runtime truth path in web code. Validation PASS: `pnpm --filter web exec vitest run src/features/bots/services/botsMonitoringAggregate.service.test.ts`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
 
+- [x] `V1MON-02 web(inherited-context): make bot list and bot management prefer inherited venue/strategy context over duplicated bot snapshot fields`
+  - 2026-04-24: Bot list and bot management now prefer inherited venue truth from `symbolGroup.marketUniverse` (with compatibility-only fallback to wallet/bot snapshot fields) and derive displayed max-open-position limits from linked strategy configuration instead of treating bot snapshot values as the primary truth. Focused validation PASS: `pnpm --filter web exec vitest run src/features/bots/components/BotsListTable.test.tsx src/features/bots/components/BotsManagement.test.tsx src/features/bots/services/botsMonitoringAggregate.service.test.ts`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
+
 - [x] `V1SIGSEM-A planning: publish signal-surface semantic hardening slice`
   - 2026-04-24: After `V1IND-A` closed the canonical indicator and signal-analysis drift, a smaller operator-surface issue remained: `CONFIGURED_ONLY` rows still read too much like runtime decisions even though architecture defines them as market snapshots from the latest closed candle. Published `docs/planning/v1-signal-surface-semantic-hardening-2026-04-24.md` to lock the slice as presentation-only semantic hardening.
 
