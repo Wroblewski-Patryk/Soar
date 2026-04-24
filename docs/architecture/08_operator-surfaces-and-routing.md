@@ -45,6 +45,12 @@ Wallets come before bot creation because wallet context owns mode and capital se
   - accepted runtime signal
   - open-position state
 
+Configured-only rows are operator market snapshots, not runtime decisions.
+Their indicator values must come from the same canonical closed-candle and
+derivatives analysis kernel used by runtime/backtest evaluation. When data is
+missing, surfaces must show explicit degraded/no-data messaging rather than
+opaque placeholders.
+
 ## Canonical View States
 All operator surfaces must use explicit:
 - `loading`

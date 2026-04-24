@@ -32,15 +32,16 @@ Last updated: 2026-04-24
   immediately without an explicit request price, selected-bot dashboard KPIs
   prefer authoritative runtime capital summary fields, and bot
   monitoring/list/detail surfaces expose the same runtime capital/state truth
-  instead of mixing config baseline with active runtime semantics. The next
-  engineering queue is no longer the bot-architecture migration itself. The
-  newest active planning follow-up is `V1IND-A`, which addresses the remaining
-  indicator/signal-truth drift: architecture docs still disagree on the frozen
-  V1 indicator parity scope, strategy-builder metadata still comes from a
-  standalone source instead of one canonical registry, signal read-models still
-  own a subset fallback formatter that emits `X`/`-`, and operator surfaces
-  still blur configured closed-candle market snapshots with runtime-evaluated
-  decisions.
+  instead of mixing config baseline with active runtime semantics. `V1IND-A`
+  is now also closed: architecture freezes one canonical indicator registry
+  scope, strategy-builder metadata is served from that registry, runtime and
+  operator signal surfaces reuse the shared indicator analysis kernel, and
+  configured market snapshots no longer depend on the old subset formatter that
+  emitted opaque `X` placeholders. Full web validation, build, and focused API
+  parity packs are green for the indicator wave. One separate repository follow-up
+  remains outside `V1IND-A`: full `api` e2e still has 7 red cases in older
+  backtests/orders runtime-scope suites that reflect post-`V1BOT` contract/test
+  drift rather than indicator-parity regressions.
 
 ## Product Decisions (Confirmed)
 - 2026-04-21: `docs/architecture/` is the canonical source of truth for how
@@ -218,12 +219,14 @@ Last updated: 2026-04-24
   signal-surface audit. Builder-exposed indicators in
   `strategies/indicators.data.ts` largely match shared evaluator support in
   `strategyIndicatorKernel.ts`, but canonical repo truth is still split across
-  competing architecture contracts, standalone builder metadata ownership, and
-  operator read-model fallback formatting that can emit `X` or `-` instead of a
-  truthful latest closed-candle value or explicit degraded state. The new wave
-  queues architecture reconciliation, canonical registry ownership, signal
-  analysis/read-model cleanup, operator surface semantics recovery, and a full
-  exposed-indicator parity matrix.
+  architecture docs, builder metadata ownership, and operator signal-surface
+  fallback analysis.
+- 2026-04-24: `V1IND-A` is closed. One canonical indicator registry now drives
+  builder metadata, runtime/backtest evaluator parity, and operator
+  signal-surface analysis; configured market snapshots use the same shared
+  indicator kernel as runtime/backtest decisions, and signal surfaces no longer
+  emit the old subset-evaluator placeholder `X` when canonical market data
+  exists.
 - 2026-04-22: prod restore-drill proof now passes from a real Coolify terminal
   execution in the production postgres container
   (`x11cfnz1dd9x0yzccftqzcoe`), and the final non-dry-run prod release gate now

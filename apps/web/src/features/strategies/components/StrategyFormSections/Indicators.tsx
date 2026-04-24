@@ -51,7 +51,11 @@ const conditionLabelMap: Record<StrategyConditionOperator, { en: string; pl: str
 const resolveConditionOptions = (
   indicatorName: string,
   indicatorType: string | undefined,
+  indicatorOperators?: StrategyConditionOperator[],
 ): StrategyConditionOperator[] => {
+  if (Array.isArray(indicatorOperators) && indicatorOperators.length > 0) {
+    return indicatorOperators;
+  }
   const normalizedType = (indicatorType ?? "").trim().toLowerCase();
   const normalizedName = normalizeUppercaseToken(indicatorName);
 
@@ -128,7 +132,7 @@ export default function Indicators({ side, indicators, value, setValue }: Indica
       group: indicator.group,
     });
     const meta = normalizedIndicators.find((entry) => entry.name === indicator.name);
-    const conditionOptions = resolveConditionOptions(indicator.name, meta?.type);
+    const conditionOptions = resolveConditionOptions(indicator.name, meta?.type, meta?.operators);
     const condition = conditionOptions.includes(indicator.condition)
       ? indicator.condition
       : (conditionOptions[0] ?? ">");
@@ -156,7 +160,7 @@ export default function Indicators({ side, indicators, value, setValue }: Indica
     const indicatorsInGroup = normalizedIndicators.filter((indicator) => indicator.group === group);
     const meta = indicatorsInGroup[0];
     if (!meta) return;
-    const defaultCondition = resolveConditionOptions(meta.name, meta.type)[0] ?? ">";
+    const defaultCondition = resolveConditionOptions(meta.name, meta.type, meta.operators)[0] ?? ">";
     setValue([
       ...normalizedValue,
       {
@@ -182,7 +186,7 @@ export default function Indicators({ side, indicators, value, setValue }: Indica
       normalizedValue.map((entry, index) =>
         index === idx
           ? (() => {
-              const nextConditionOptions = resolveConditionOptions(meta.name, meta.type);
+              const nextConditionOptions = resolveConditionOptions(meta.name, meta.type, meta.operators);
               const nextCondition = nextConditionOptions.includes(entry.condition)
                 ? entry.condition
                 : (nextConditionOptions[0] ?? ">");
@@ -207,7 +211,7 @@ export default function Indicators({ side, indicators, value, setValue }: Indica
       normalizedValue.map((entry, index) =>
         index === idx
           ? (() => {
-              const nextConditionOptions = resolveConditionOptions(meta.name, meta.type);
+              const nextConditionOptions = resolveConditionOptions(meta.name, meta.type, meta.operators);
               const nextCondition = nextConditionOptions.includes(entry.condition)
                 ? entry.condition
                 : (nextConditionOptions[0] ?? ">");
@@ -316,7 +320,7 @@ export default function Indicators({ side, indicators, value, setValue }: Indica
           indicatorsInGroup.length > 0
             ? indicatorsInGroup
             : [{ name: indicator.name, group: indicator.group, type: "custom", params: [] }];
-        const conditionOptions = resolveConditionOptions(indicator.name, meta?.type);
+        const conditionOptions = resolveConditionOptions(indicator.name, meta?.type, meta?.operators);
 
         return (
           <div key={idx} className="card bg-base-200 shadow-md mb-6">

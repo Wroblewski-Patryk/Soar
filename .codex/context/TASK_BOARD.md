@@ -17,16 +17,11 @@ Last updated: 2026-04-24
 
 ## READY
 
-- [ ] `V1IND-01 docs(decision): reconcile indicator parity architecture and freeze one canonical V1 registry scope`
+- [ ] (none)
 
 ## BACKLOG
 
-- [ ] `V1IND-02 api(registry): replace standalone strategy-builder indicator metadata with canonical registry-backed metadata`
-- [ ] `V1IND-03 api(signal-analysis): remove subset fallback indicator formatter from signal read models and reuse canonical runtime analysis truth`
-- [ ] `V1IND-04 api(read-model): derive signal-surface venue context only from inherited symbol-group market universe`
-- [ ] `V1IND-05 web(signal-surface): distinguish configured market snapshot from evaluated runtime decision and remove opaque X placeholders`
-- [ ] `V1IND-06 test(parity-matrix): add explicit parity coverage for every builder-exposed indicator across builder metadata, runtime, and backtest`
-- [ ] `V1IND-07 qa(closure): run focused closure pack and sync canonical docs/context`
+- [ ] (none)
 
 ## IN_PROGRESS
 
@@ -41,6 +36,9 @@ Last updated: 2026-04-24
 - [ ] (none)
 
 ## DONE
+
+- [x] `V1IND-01..07 docs/api/web/test/qa: recover canonical indicator parity and truthful signal surfaces`
+  - 2026-04-24: Closed the full `V1IND-A` wave. Architecture now freezes one canonical V1 indicator registry scope and one shared parity contract for builder, runtime, backtest, and operator surfaces. Strategy-builder metadata is served from the canonical registry, signal read-models no longer own a subset indicator formatter that emitted opaque `X` placeholders, configured market snapshots are analyzed through the same shared indicator kernel used by runtime/backtest, and signal-surface venue truth now derives from inherited `SymbolGroup -> MarketUniverse` context. Added parity coverage proving every builder-exposed indicator is executable through the canonical registry/evaluator path. Focused validation PASS: `pnpm --filter api exec vitest run src/modules/engine/strategyIndicatorRegistryParity.test.ts src/modules/strategies/indicators/indicators.service.test.ts src/modules/bots/runtimeSymbolStatsReadModel.service.test.ts src/modules/engine/runtimeFinalCandleDecision.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter web exec vitest run src/features/strategies/components/StrategyFormSections/Indicators.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx`, `pnpm --filter web exec vitest run src/i18n/translations.test.ts src/i18n/namespaceRegistry.test.ts`, `pnpm --filter web run test -- --run`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`, `pnpm run build`.
 
 - [x] `V1IND-A planning: publish canonical indicator parity and signal-surface recovery wave`
   - 2026-04-24: Audited builder-exposed indicators, shared runtime/backtest kernel coverage, signal-surface read models, and architecture contracts. Found that the currently exposed indicator families are broadly implemented in `strategyIndicatorKernel.ts`, but architecture docs still disagree on the frozen V1 parity scope, strategy-builder metadata still comes from standalone `indicators.data.ts`, signal read-models still contain subset fallback formatting that emits `X`/`-`, and operator surfaces still blur configured market snapshots with evaluated runtime decisions. Published `docs/planning/v1-indicator-parity-and-signal-surface-recovery-2026-04-24.md` and queued `V1IND-01..07`.

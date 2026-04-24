@@ -1,9 +1,8 @@
 import { buildSignalConditionSummary } from './runtimeSignalConditionSummary.service';
-import {
-  buildSignalConditionLines,
-  buildSignalIndicatorSummary,
-  SignalConditionLine,
-} from './runtimeSignalConditionLines.service';
+import { SignalConditionLine } from './runtimeSignalConditionLines.service';
+import { buildStrategySignalAnalysis } from '../engine/strategySignalAnalysis';
+import { RuntimeCandle } from '../engine/runtimeSignalMarketDataGateway';
+import { StrategySignalDerivativesSeries } from '../engine/strategySignalEvaluator';
 import {
   resolveRuntimeMarketTruthState,
   RuntimeMarketTruthState,
@@ -88,7 +87,10 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
   latestSignalBySymbol: Map<string, RuntimeSymbolSignal>;
   configuredStrategyBySymbol: Map<string, string>;
   strategiesById: Map<string, RuntimeStrategyProjection>;
-  candleClosesBySeries: Map<string, number[]>;
+  marketSnapshotsBySeries: Map<
+    string,
+    { candles: RuntimeCandle[]; derivatives?: StrategySignalDerivativesSeries }
+  >;
 }) => {
   const items = params.symbols.map((symbol) => {
     const stat = params.statBySymbol.get(symbol) ?? null;
@@ -118,7 +120,9 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
       effectiveContextStrategy?.interval != null
         ? `${symbol}|${effectiveContextStrategy.interval.trim().toLowerCase()}`
         : null;
-    const signalCloses = signalSeriesKey ? params.candleClosesBySeries.get(signalSeriesKey) ?? [] : [];
+    const marketSnapshot = signalSeriesKey
+      ? params.marketSnapshotsBySeries.get(signalSeriesKey) ?? null
+      : null;
     const effectiveSignalDirection = latestSignal?.signalDirection ?? null;
     const signalConditionSummary = buildSignalConditionSummary(
       effectiveContextStrategy?.config ?? null,
@@ -128,25 +132,17 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
       effectiveContextStrategyId != null
         ? latestSignal?.analysisByStrategy?.[effectiveContextStrategyId] ?? null
         : null;
-    const signalIndicatorSummary = buildSignalIndicatorSummary({
+    const snapshotAnalysis = buildStrategySignalAnalysis({
       strategyConfig: effectiveContextStrategy?.config ?? null,
-      direction: effectiveSignalDirection,
-      closes: signalCloses,
-    });
-    const signalConditionLines = buildSignalConditionLines({
-      strategyConfig: effectiveContextStrategy?.config ?? null,
-      direction: effectiveSignalDirection,
-      closes: signalCloses,
+      candles: marketSnapshot?.candles ?? [],
+      decisionIndex: marketSnapshot?.candles.length ? marketSnapshot.candles.length - 1 : null,
+      derivatives: marketSnapshot?.derivatives,
     });
     const runtimeMarketState: RuntimeMarketTruthState = resolveRuntimeMarketTruthState({
       openPositionCount: openCount ?? stat?.openPositionCount ?? 0,
       signalContextSource,
       signalDirection: effectiveSignalDirection,
     });
-    const useComputedSignalValues =
-      effectiveSignalDirection != null &&
-      signalCloses.length > 0 &&
-      signalAnalysis == null;
     const signalScoreSummary =
       latestSignal?.scoreLong != null || latestSignal?.scoreShort != null
         ? {
@@ -190,12 +186,10 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
       configuredStrategyId: fallbackStrategyId,
       configuredStrategyName: configuredStrategy?.name ?? null,
       lastSignalConditionSummary: signalConditionSummary,
-      lastSignalIndicatorSummary: useComputedSignalValues
-        ? signalIndicatorSummary
-        : signalAnalysis?.indicatorSummary ?? signalIndicatorSummary,
-      lastSignalConditionLines: useComputedSignalValues
-        ? signalConditionLines
-        : signalAnalysis?.conditionLines ?? signalConditionLines,
+      lastSignalIndicatorSummary:
+        signalAnalysis?.indicatorSummary ?? snapshotAnalysis.indicatorSummary,
+      lastSignalConditionLines:
+        signalAnalysis?.conditionLines ?? snapshotAnalysis.conditionLines,
       lastSignalScoreSummary: signalScoreSummary,
       snapshotAt: stat?.snapshotAt ?? params.sessionStartedAt,
       createdAt: stat?.createdAt ?? params.sessionCreatedAt,

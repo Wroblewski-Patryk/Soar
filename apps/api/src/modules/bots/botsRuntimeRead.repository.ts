@@ -44,8 +44,6 @@ export const getRuntimeSymbolStatsBaseData = async (params: {
           userId: params.userId,
         },
         select: {
-          exchange: true,
-          marketType: true,
           strategyId: true,
           symbolGroupId: true,
           strategy: {
@@ -178,7 +176,7 @@ export const listStrategiesByIds = async (params: {
     },
   });
 
-export const listMarketCandleCloses = async (params: {
+export const listMarketCandles = async (params: {
   marketType: 'FUTURES' | 'SPOT';
   symbol: string;
   interval: string;
@@ -193,6 +191,12 @@ export const listMarketCandleCloses = async (params: {
     orderBy: [{ openTime: 'desc' }],
     take: params.limit,
     select: {
+      openTime: true,
+      closeTime: true,
+      open: true,
+      high: true,
+      low: true,
       close: true,
+      volume: true,
     },
   });

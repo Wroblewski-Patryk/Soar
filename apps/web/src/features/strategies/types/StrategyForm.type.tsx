@@ -55,6 +55,11 @@ export type IndicatorMeta = {
     group: string;
     type: string;
     params: { name: string; default: number; min: number; max: number }[];
+    dataRequirement?: "CLOSE" | "OHLC" | "OHLCV" | "DERIVATIVES";
+    outputs?: string[];
+    defaultPanel?: "price" | "oscillator" | "hidden_filter";
+    supportedModes?: Array<"BACKTEST" | "PAPER" | "LIVE">;
+    operators?: StrategyConditionOperator[];
 };
 
 export type UserIndicator = {

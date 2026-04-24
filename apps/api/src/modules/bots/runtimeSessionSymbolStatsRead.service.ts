@@ -1,5 +1,8 @@
+import { alignTimedNumericPointsToCandles } from '../engine/sharedDerivativesSeries';
+import { StrategySignalDerivativesSeries } from '../engine/strategySignalEvaluator';
 import { runtimeSignalLoop } from '../engine/runtimeSignalLoop.service';
 import { getRuntimeTicker } from '../engine/runtimeTickerStore';
+import { RuntimeCandle } from '../engine/runtimeSignalMarketDataGateway';
 import { normalizeSymbol } from '../../lib/symbols';
 import { ListBotRuntimeSymbolStatsQueryDto } from './bots.types';
 import {
@@ -9,7 +12,14 @@ import {
 import { normalizeSymbols } from './runtimeSymbolUniverse.service';
 import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from './runtimeSymbolCatalogResolver.service';
 import { asRecord, humanizeMergeReason, toFiniteNumber } from './runtimeSignalStatsFormatting.service';
-import { fetchFallbackKlineCloses } from './runtimeMarketDataFallback.service';
+import {
+  fetchFallbackFundingRateHistory,
+  fetchFallbackFundingRateSnapshot,
+  fetchFallbackKlines,
+  fetchFallbackOpenInterestHistory,
+  fetchFallbackOpenInterestSnapshot,
+  fetchFallbackOrderBookSnapshot,
+} from './runtimeMarketDataFallback.service';
 import { getOwnedBotRuntimeSession, resolveSessionWindowEnd } from './botOwnership.service';
 import {
   buildConfiguredStrategyBySymbol,
@@ -20,9 +30,195 @@ import { composeRuntimeSymbolStatsReadModel } from './runtimeSymbolStatsReadMode
 import {
   getRuntimeSymbolLiveRows,
   getRuntimeSymbolStatsBaseData,
-  listMarketCandleCloses,
+  listMarketCandles,
   listStrategiesByIds,
 } from './botsRuntimeRead.repository';
+
+const resolveFallbackDerivatives = async (params: {
+  marketType: 'FUTURES' | 'SPOT';
+  symbol: string;
+  interval: string;
+  candles: RuntimeCandle[];
+}): Promise<StrategySignalDerivativesSeries | undefined> => {
+  if (params.marketType !== 'FUTURES' || params.candles.length === 0) return undefined;
+  const lastCandle = params.candles[params.candles.length - 1];
+  const [fundingHistory, fundingSnapshot, openInterestHistory, openInterestSnapshot, orderBookSnapshot] =
+    await Promise.all([
+      fetchFallbackFundingRateHistory({
+        symbol: params.symbol,
+        limit: 200,
+        endTimeMs: lastCandle.closeTime,
+      }),
+      fetchFallbackFundingRateSnapshot(params.symbol),
+      fetchFallbackOpenInterestHistory({
+        symbol: params.symbol,
+        interval: params.interval,
+        limit: 200,
+        endTimeMs: lastCandle.closeTime,
+      }),
+      fetchFallbackOpenInterestSnapshot(params.symbol),
+      fetchFallbackOrderBookSnapshot(params.symbol),
+    ]);
+
+  const fundingPoints = fundingHistory.map((item) => ({
+    timestamp: item.timestamp,
+    value: item.fundingRate,
+  }));
+  if (fundingSnapshot) {
+    fundingPoints.push({
+      timestamp: fundingSnapshot.timestamp,
+      value: fundingSnapshot.fundingRate,
+    });
+  }
+
+  const openInterestPoints = openInterestHistory.map((item) => ({
+    timestamp: item.timestamp,
+    value: item.openInterest,
+  }));
+  if (openInterestSnapshot) {
+    openInterestPoints.push({
+      timestamp: openInterestSnapshot.timestamp,
+      value: openInterestSnapshot.openInterest,
+    });
+  }
+
+  return {
+    ...(fundingPoints.length > 0
+      ? { fundingRate: alignTimedNumericPointsToCandles(params.candles, fundingPoints) }
+      : {}),
+    ...(openInterestPoints.length > 0
+      ? { openInterest: alignTimedNumericPointsToCandles(params.candles, openInterestPoints) }
+      : {}),
+    ...(orderBookSnapshot
+      ? {
+          orderBookImbalance: alignTimedNumericPointsToCandles(params.candles, [
+            { timestamp: orderBookSnapshot.timestamp, value: orderBookSnapshot.imbalance },
+          ]),
+          orderBookSpreadBps: alignTimedNumericPointsToCandles(params.candles, [
+            { timestamp: orderBookSnapshot.timestamp, value: orderBookSnapshot.spreadBps },
+          ]),
+          orderBookDepthRatio: alignTimedNumericPointsToCandles(params.candles, [
+            { timestamp: orderBookSnapshot.timestamp, value: orderBookSnapshot.depthRatio },
+          ]),
+        }
+      : {}),
+  };
+};
+
+const loadMarketSnapshot = async (params: {
+  marketType: 'FUTURES' | 'SPOT';
+  symbol: string;
+  interval: string;
+}): Promise<{ candles: RuntimeCandle[]; derivatives?: StrategySignalDerivativesSeries } | null> => {
+  const inMemoryCandles = runtimeSignalLoop.getSeries({
+    marketType: params.marketType,
+    symbol: params.symbol,
+    interval: params.interval,
+  });
+  const candles =
+    inMemoryCandles && inMemoryCandles.length > 0
+      ? inMemoryCandles
+      : (() => undefined)();
+
+  const runtimeCandles =
+    candles ??
+    (await listMarketCandles({
+      marketType: params.marketType,
+      symbol: params.symbol,
+      interval: params.interval,
+      limit: 300,
+    }))
+      .map((item) => ({
+        openTime: Number(item.openTime),
+        closeTime: Number(item.closeTime),
+        open: item.open,
+        high: item.high,
+        low: item.low,
+        close: item.close,
+        volume: item.volume,
+      }))
+      .filter(
+        (item): item is RuntimeCandle =>
+          Number.isFinite(item.openTime) &&
+          Number.isFinite(item.closeTime) &&
+          Number.isFinite(item.open) &&
+          Number.isFinite(item.high) &&
+          Number.isFinite(item.low) &&
+          Number.isFinite(item.close) &&
+          Number.isFinite(item.volume),
+      )
+      .reverse();
+
+  const resolvedCandles =
+    runtimeCandles.length > 0
+      ? runtimeCandles
+      : await fetchFallbackKlines({
+          marketType: params.marketType,
+          symbol: params.symbol,
+          interval: params.interval,
+          limit: 300,
+        });
+
+  if (resolvedCandles.length === 0) return null;
+
+  const fundingRate = runtimeSignalLoop.resolveFundingRateSeriesForCandles({
+    marketType: params.marketType,
+    symbol: params.symbol,
+    candles: resolvedCandles,
+  });
+  const openInterest = runtimeSignalLoop.resolveOpenInterestSeriesForCandles({
+    marketType: params.marketType,
+    symbol: params.symbol,
+    candles: resolvedCandles,
+  });
+  const orderBook = runtimeSignalLoop.resolveOrderBookSeriesForCandles({
+    marketType: params.marketType,
+    symbol: params.symbol,
+    candles: resolvedCandles,
+  });
+  const runtimeDerivatives =
+    fundingRate || openInterest || orderBook
+      ? {
+          ...(fundingRate ? { fundingRate } : {}),
+          ...(openInterest ? { openInterest } : {}),
+          ...(orderBook
+            ? {
+                orderBookImbalance: orderBook.orderBookImbalance,
+                orderBookSpreadBps: orderBook.orderBookSpreadBps,
+                orderBookDepthRatio: orderBook.orderBookDepthRatio,
+              }
+            : {}),
+        }
+      : undefined;
+  const fallbackDerivatives =
+    runtimeDerivatives &&
+    (
+      runtimeDerivatives.fundingRate?.some((value) => typeof value === 'number') ||
+      runtimeDerivatives.openInterest?.some((value) => typeof value === 'number') ||
+      runtimeDerivatives.orderBookImbalance?.some((value) => typeof value === 'number') ||
+      runtimeDerivatives.orderBookSpreadBps?.some((value) => typeof value === 'number') ||
+      runtimeDerivatives.orderBookDepthRatio?.some((value) => typeof value === 'number')
+    )
+      ? undefined
+      : await resolveFallbackDerivatives({
+          marketType: params.marketType,
+          symbol: params.symbol,
+          interval: params.interval,
+          candles: resolvedCandles,
+        });
+
+  return {
+    candles: resolvedCandles,
+    ...((runtimeDerivatives ?? fallbackDerivatives)
+      ? {
+          derivatives: {
+            ...(runtimeDerivatives ?? {}),
+            ...(fallbackDerivatives ?? {}),
+          },
+        }
+      : {}),
+  };
+};
 
 export const listBotRuntimeSessionSymbolStats = async (
   userId: string,
@@ -36,19 +232,16 @@ export const listBotRuntimeSessionSymbolStats = async (
   const normalizedSymbol = normalizeSymbol(query.symbol) || undefined;
   const windowEnd = resolveSessionWindowEnd(session);
 
-  const {
-    items,
-    summary,
-    botContext,
-  } = await getRuntimeSymbolStatsBaseData({
+  const { items, summary, botContext } = await getRuntimeSymbolStatsBaseData({
     userId,
     botId,
     sessionId,
     normalizedSymbol,
     limit: query.limit,
   });
-  const botExchange = botContext?.exchange ?? 'BINANCE';
-  const botMarketType = botContext?.marketType ?? 'FUTURES';
+  const inheritedVenueContext = botContext?.symbolGroup?.marketUniverse ?? null;
+  const botExchange = inheritedVenueContext?.exchange ?? 'BINANCE';
+  const botMarketType = inheritedVenueContext?.marketType ?? 'FUTURES';
 
   const catalogSymbolsCache = new Map<string, string[]>();
   const configuredSymbols = normalizeSymbols(
@@ -128,7 +321,8 @@ export const listBotRuntimeSessionSymbolStats = async (
         parsedAnalysisByStrategy[strategyKey.trim()] = {
           conditionLines: parseSignalConditionLines(strategyStats.conditionLines),
           indicatorSummary:
-            typeof strategyStats.indicatorSummary === 'string' && strategyStats.indicatorSummary.trim().length > 0
+            typeof strategyStats.indicatorSummary === 'string' &&
+            strategyStats.indicatorSummary.trim().length > 0
               ? strategyStats.indicatorSummary.trim()
               : null,
         };
@@ -145,8 +339,7 @@ export const listBotRuntimeSessionSymbolStats = async (
     const strategyId =
       (typeof event.strategyId === 'string' && event.strategyId.trim().length > 0
         ? event.strategyId.trim()
-        : null) ??
-      winnerStrategyId;
+        : null) ?? winnerStrategyId;
     if (strategyId) latestSignalStrategyIds.add(strategyId);
     latestSignalBySymbol.set(event.symbol, {
       signalDirection:
@@ -164,7 +357,9 @@ export const listBotRuntimeSessionSymbolStats = async (
       analysisByStrategy: parsedAnalysisByStrategy,
     });
   }
-  const missingStrategyIds = [...latestSignalStrategyIds].filter((strategyId) => !strategiesById.has(strategyId));
+  const missingStrategyIds = [...latestSignalStrategyIds].filter(
+    (strategyId) => !strategiesById.has(strategyId),
+  );
   if (missingStrategyIds.length > 0) {
     const signalStrategies = await listStrategiesByIds({
       userId,
@@ -206,55 +401,28 @@ export const listBotRuntimeSessionSymbolStats = async (
     strategySeriesKeys.set(key, { symbol, interval });
   }
 
-  const candleClosesBySeries = new Map<string, number[]>();
+  const marketSnapshotsBySeries = new Map<
+    string,
+    { candles: RuntimeCandle[]; derivatives?: StrategySignalDerivativesSeries }
+  >();
   if (strategySeriesKeys.size > 0) {
-    const entries = [...strategySeriesKeys.values()];
-    const seriesRows = await Promise.all(
-      entries.map(async ({ symbol, interval }) => {
-        const inMemoryCloses = runtimeSignalLoop.getRecentCloses({
+    const snapshots = await Promise.all(
+      [...strategySeriesKeys.entries()].map(async ([key, value]) => ({
+        key,
+        snapshot: await loadMarketSnapshot({
           marketType: botMarketType,
-          symbol,
-          interval,
-          limit: 300,
-        });
-        if (inMemoryCloses.length > 0) {
-          return {
-            key: `${symbol}|${interval}`,
-            closes: inMemoryCloses,
-          };
-        }
-
-        const candles = await listMarketCandleCloses({
-          marketType: botMarketType,
-          symbol,
-          interval,
-          limit: 300,
-        });
-        return {
-          key: `${symbol}|${interval}`,
-          closes:
-            candles
-              .map((item) => item.close)
-              .filter((value): value is number => Number.isFinite(value))
-              .reverse(),
-        };
-      })
+          symbol: value.symbol,
+          interval: value.interval,
+        }),
+      })),
     );
-    for (const row of seriesRows) {
-      if (row.closes.length > 0) {
-        candleClosesBySeries.set(row.key, row.closes);
-        continue;
+    for (const item of snapshots) {
+      if (item.snapshot) {
+        marketSnapshotsBySeries.set(item.key, item.snapshot);
       }
-      const [symbol, interval] = row.key.split('|');
-      const fallbackCloses = await fetchFallbackKlineCloses({
-        marketType: botMarketType,
-        symbol,
-        interval,
-        limit: 300,
-      });
-      candleClosesBySeries.set(row.key, fallbackCloses);
     }
   }
+
   const { openPositionCountBySymbol, openPositionQtyBySymbol, unrealizedPnlBySymbol } =
     buildOpenPositionSymbolMetrics({
       openPositions,
@@ -292,7 +460,7 @@ export const listBotRuntimeSessionSymbolStats = async (
     latestSignalBySymbol,
     configuredStrategyBySymbol,
     strategiesById,
-    candleClosesBySeries,
+    marketSnapshotsBySeries,
   });
 
   return {

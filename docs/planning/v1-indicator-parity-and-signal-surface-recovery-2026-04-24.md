@@ -3,7 +3,7 @@
 ## Header
 - ID: V1IND-A
 - Title: Recover canonical indicator parity and truthful signal surfaces for V1
-- Status: READY
+- Status: CLOSED
 - Owner: Planning Agent
 - Depends on: V1BOT-A
 - Priority: P0
@@ -60,16 +60,16 @@ contract so every indicator exposed in the strategy builder is either:
   snapshots as accepted runtime signal truth
 
 ## Definition of Done
-- [ ] Architecture freezes one unambiguous V1 indicator parity scope and one
+- [x] Architecture freezes one unambiguous V1 indicator parity scope and one
       canonical indicator registry owner.
-- [ ] Strategy builder metadata, runtime evaluator support, backtest evaluator
+- [x] Strategy builder metadata, runtime evaluator support, backtest evaluator
       support, and operator signal-surface rendering all derive from the same
       canonical registry.
-- [ ] Every builder-exposed indicator has explicit parity coverage or is
+- [x] Every builder-exposed indicator has explicit parity coverage or is
       removed/hidden from canonical V1 builder metadata.
-- [ ] Signal surfaces show real latest closed-candle values when data exists and
+- [x] Signal surfaces show real latest closed-candle values when data exists and
       explicit degraded state when it does not, never opaque `X` placeholders.
-- [ ] `Configured only`, `Evaluated / no trade`, `Signal active`, and
+- [x] `Configured only`, `Evaluated / no trade`, `Signal active`, and
       `Position open` have distinct, truthful semantics in API and web.
 
 ## Forbidden
@@ -97,12 +97,12 @@ contract so every indicator exposed in the strategy builder is either:
   - `docs/architecture/08_operator-surfaces-and-routing.md`
   - `docs/architecture/reference/indicator-registry-parity-contract.md`
   - `docs/architecture/reference/strategy-evaluation-parity-contract.md`
-- Fits approved architecture: no
-- Mismatch discovered: yes
-- Decision required from user: yes
+- Fits approved architecture: yes
+- Mismatch discovered: resolved
+- Decision required from user: no
 - Approval reference if architecture changed:
-  - pending; required because architecture docs currently disagree about the
-    frozen V1 indicator parity scope
+  - 2026-04-24 user decision: keep one full canonical indicator set shared by
+    builder, bot runtime (`PAPER`/`LIVE`), backtest, and operator surfaces
 - Follow-up architecture doc updates:
   - `docs/architecture/reference/indicator-registry-parity-contract.md`
   - `docs/architecture/reference/strategy-evaluation-parity-contract.md`
@@ -123,13 +123,13 @@ contract so every indicator exposed in the strategy builder is either:
   - `Position open` = active position state
 
 ## Review Checklist (mandatory)
-- [ ] Architecture alignment confirmed.
-- [ ] Existing systems were reused where applicable.
-- [ ] No workaround paths were introduced.
-- [ ] No logic duplication was introduced.
-- [ ] Definition of Done evidence is attached.
-- [ ] Relevant validations were run.
-- [ ] Docs or context were updated if repository truth changed.
+- [x] Architecture alignment confirmed.
+- [x] Existing systems were reused where applicable.
+- [x] No workaround paths were introduced.
+- [x] No logic duplication was introduced.
+- [x] Definition of Done evidence is attached.
+- [x] Relevant validations were run.
+- [x] Docs or context were updated if repository truth changed.
 - [ ] Learning journal was updated if a recurring pitfall was confirmed.
 
 ## Notes
@@ -157,7 +157,7 @@ not missing evaluator support for those exposed indicators, but:
 ## Execution Plan
 
 ### Slice 1 - Architecture and registry freeze
-- [ ] `V1IND-01 docs(decision): reconcile indicator parity architecture and freeze one canonical V1 registry scope`
+- [x] `V1IND-01 docs(decision): reconcile indicator parity architecture and freeze one canonical V1 registry scope`
   - resolve the architecture mismatch between
     `indicator-registry-parity-contract.md` and
     `strategy-evaluation-parity-contract.md`
@@ -165,7 +165,7 @@ not missing evaluator support for those exposed indicators, but:
   - freeze one canonical registry owner used by builder/runtime/backtest/surfaces
 
 ### Slice 2 - Canonical indicator registry ownership
-- [ ] `V1IND-02 api(registry): replace standalone strategy-builder indicator metadata with canonical registry-backed metadata`
+- [x] `V1IND-02 api(registry): replace standalone strategy-builder indicator metadata with canonical registry-backed metadata`
   - stop treating `indicators.data.ts` as independent truth
   - expose builder metadata from the same canonical indicator registry used by
     runtime/backtest
@@ -173,25 +173,25 @@ not missing evaluator support for those exposed indicators, but:
     `group`, `type`, `dataRequirement`, `outputs`, `supportedModes`, `operators`
 
 ### Slice 3 - Signal-analysis and surface truth recovery
-- [ ] `V1IND-03 api(signal-analysis): remove subset fallback indicator formatter from signal read models and reuse canonical runtime analysis truth`
+- [x] `V1IND-03 api(signal-analysis): remove subset fallback indicator formatter from signal read models and reuse canonical runtime analysis truth`
   - replace `runtimeSignalConditionLines.service.ts` as a source of business truth
   - surface canonical evaluation analysis from runtime where available
   - for non-evaluated configured snapshots, compute values through the shared
     indicator kernel only
 
-- [ ] `V1IND-04 api(read-model): derive signal-surface venue context only from inherited symbol-group market universe`
+- [x] `V1IND-04 api(read-model): derive signal-surface venue context only from inherited symbol-group market universe`
   - remove residual `bot.exchange` / `bot.marketType` authority from signal
     read-model paths
   - keep signal snapshot sourcing aligned with the singular bot architecture
 
 ### Slice 4 - Operator UX truth
-- [ ] `V1IND-05 web(signal-surface): distinguish configured market snapshot from evaluated runtime decision and remove opaque X placeholders`
+- [x] `V1IND-05 web(signal-surface): distinguish configured market snapshot from evaluated runtime decision and remove opaque X placeholders`
   - rename/reshape configured-only content as market snapshot, not signal
   - show explicit degraded/no-data message instead of `X`
   - preserve existing layout intent while making the state semantics truthful
 
 ### Slice 5 - End-to-end parity coverage
-- [ ] `V1IND-06 test(parity-matrix): add explicit parity coverage for every builder-exposed indicator across builder metadata, runtime, and backtest`
+- [x] `V1IND-06 test(parity-matrix): add explicit parity coverage for every builder-exposed indicator across builder metadata, runtime, and backtest`
   - one generated or table-driven pack proving every exposed indicator is
     supported in:
     - builder metadata
@@ -200,8 +200,23 @@ not missing evaluator support for those exposed indicators, but:
     - backtest parity
   - fail closed if a builder-exposed indicator lacks support
 
-- [ ] `V1IND-07 qa(closure): run focused closure pack and sync canonical docs/context`
+- [x] `V1IND-07 qa(closure): run focused closure pack and sync canonical docs/context`
   - API tests
   - web tests
   - typecheck/build/guardrails
   - source-of-truth sync
+
+## Closure Notes
+- `V1IND-A` is closed on focused validation evidence:
+  - `pnpm --filter api exec vitest run src/modules/engine/strategyIndicatorRegistryParity.test.ts src/modules/strategies/indicators/indicators.service.test.ts src/modules/bots/runtimeSymbolStatsReadModel.service.test.ts src/modules/engine/runtimeFinalCandleDecision.service.test.ts`
+  - `pnpm --filter api run typecheck`
+  - `pnpm --filter web exec vitest run src/features/strategies/components/StrategyFormSections/Indicators.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx`
+  - `pnpm --filter web exec vitest run src/i18n/translations.test.ts src/i18n/namespaceRegistry.test.ts`
+  - `pnpm --filter web run test -- --run`
+  - `pnpm --filter web run typecheck`
+  - `pnpm run quality:guardrails`
+  - `pnpm run build`
+- Full `pnpm --filter api run test -- --run` remains red in 7 unrelated
+  backtests/orders runtime-scope e2e cases that reflect post-`V1BOT`
+  contract/test drift rather than indicator parity regressions. That follow-up
+  remains separate from this wave and was not reopened under `V1IND-A`.

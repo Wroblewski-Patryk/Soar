@@ -1,6 +1,6 @@
 # Strategy Evaluation Parity Contract (V1)
 
-Status: canonical, locked for cross-mode parity closure on 2026-03-28.
+Status: canonical, locked for `V1IND-01` on 2026-04-24.
 
 ## Purpose
 Define one deterministic strategy-evaluation contract shared by `BACKTEST`, `PAPER`, and `LIVE`.
@@ -18,10 +18,16 @@ Define one deterministic strategy-evaluation contract shared by `BACKTEST`, `PAP
   - `open.indicatorsLong|indicatorsShort` or `openConditions.indicatorsLong|indicatorsShort`.
 - Supported indicator rule operators:
   - `>`, `>=`, `<`, `<=`, `==`, `!=`.
-- Supported indicator families in V1 parity contract:
-  - `EMA` (`fast`,`slow`),
-  - `RSI` (`period`/`length`),
-  - `MOMENTUM` (`period`/`length`).
+  - `CROSS_ABOVE`, `CROSS_BELOW`.
+  - `IN_RANGE`, `OUT_OF_RANGE`.
+- Supported indicator families in V1 parity contract are the full canonical
+  builder-exposed registry from
+  [indicator-registry-parity-contract.md](./indicator-registry-parity-contract.md):
+  - trend: `EMA`, `SMA`, `MACD`, `ADX`
+  - momentum / oscillator: `RSI`, `MOMENTUM`, `ROC`, `STOCHRSI`, `STOCHASTIC`, `CCI`
+  - volatility: `BOLLINGER_BANDS`, `ATR`, `DONCHIAN_CHANNELS`
+  - candle patterns: `BULLISH_ENGULFING`, `BEARISH_ENGULFING`, `HAMMER`, `SHOOTING_STAR`, `DOJI`, `MORNING_STAR`, `EVENING_STAR`, `INSIDE_BAR`, `OUTSIDE_BAR`
+  - futures derivatives: `FUNDING_RATE`, `FUNDING_RATE_ZSCORE`, `OPEN_INTEREST`, `OPEN_INTEREST_DELTA`, `OPEN_INTEREST_MA`, `OPEN_INTEREST_ZSCORE`, `ORDER_BOOK_IMBALANCE`, `ORDER_BOOK_SPREAD_BPS`, `ORDER_BOOK_DEPTH_RATIO`
 
 ## Evaluation Rules
 1. Parse strategy rules from canonical input.
@@ -45,6 +51,10 @@ Define one deterministic strategy-evaluation contract shared by `BACKTEST`, `PAP
 - Only closed candles are eligible for deterministic signal evaluation.
 - Candle ordering must be ascending by open time.
 - Indicator series cache keys must be deterministic (`indicator + params`) and reusable in one evaluation pass.
+- Runtime, paper, live, backtest, and operator surfaces must evaluate the same
+  indicator registry against the same candle/derivatives snapshot contract.
+- Operator surfaces must not introduce a second subset evaluator or synthetic
+  placeholder values such as `X` when canonical indicator data is available.
 
 ## Diagnostics and Testing
 - Every parity change must include:

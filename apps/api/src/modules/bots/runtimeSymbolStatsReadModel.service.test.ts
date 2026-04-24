@@ -30,7 +30,51 @@ describe('runtimeSymbolStatsReadModel.service', () => {
     unrealizedPnlBySymbol: new Map(),
     lastPriceBySymbol: new Map([['BTCUSDT', 63_000]]),
     latestTradeAtBySymbol: new Map(),
-    candleClosesBySeries: new Map([['BTCUSDT|5m', [60_000, 61_000, 62_000, 63_000]]]),
+    marketSnapshotsBySeries: new Map([
+      [
+        'BTCUSDT|5m',
+        {
+          candles: [
+            {
+              openTime: 1,
+              closeTime: 2,
+              open: 60_000,
+              high: 60_500,
+              low: 59_500,
+              close: 60_000,
+              volume: 10,
+            },
+            {
+              openTime: 3,
+              closeTime: 4,
+              open: 60_000,
+              high: 61_500,
+              low: 59_900,
+              close: 61_000,
+              volume: 10,
+            },
+            {
+              openTime: 5,
+              closeTime: 6,
+              open: 61_000,
+              high: 62_500,
+              low: 60_900,
+              close: 62_000,
+              volume: 10,
+            },
+            {
+              openTime: 7,
+              closeTime: 8,
+              open: 62_000,
+              high: 63_500,
+              low: 61_900,
+              close: 63_000,
+              volume: 10,
+            },
+          ],
+        },
+      ],
+    ]),
   };
 
   it('keeps configured fallback strategy separate from accepted runtime signal truth', () => {
@@ -120,5 +164,61 @@ describe('runtimeSymbolStatsReadModel.service', () => {
         configuredStrategyName: 'Fallback Strategy',
       })
     );
+  });
+
+  it('computes configured fallback lines from canonical market snapshot data without opaque placeholders', () => {
+    const readModel = composeRuntimeSymbolStatsReadModel({
+      ...baseParams,
+      latestSignalBySymbol: new Map(),
+      configuredStrategyBySymbol: new Map([['BTCUSDT', 'strategy-rsi']]),
+      strategiesById: new Map([
+        [
+          'strategy-rsi',
+          {
+            name: 'RSI 40/60',
+            interval: '5m',
+            config: {
+              open: {
+                indicatorsLong: [
+                  {
+                    name: 'RSI',
+                    condition: '>',
+                    value: 60,
+                    params: { period: 2 },
+                  },
+                ],
+                indicatorsShort: [
+                  {
+                    name: 'RSI',
+                    condition: '<',
+                    value: 40,
+                    params: { period: 2 },
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      ]),
+    });
+
+    const lines = readModel.items[0].lastSignalConditionLines ?? [];
+    expect(lines).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          scope: 'LONG',
+          left: 'RSI(2)',
+          operator: '>',
+          right: '60',
+        }),
+        expect.objectContaining({
+          scope: 'SHORT',
+          left: 'RSI(2)',
+          operator: '<',
+          right: '40',
+        }),
+      ]),
+    );
+    expect(lines.every((line) => line.value !== 'n/a')).toBe(true);
   });
 });

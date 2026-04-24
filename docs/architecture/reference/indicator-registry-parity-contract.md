@@ -1,6 +1,6 @@
 # Indicator Registry + Parity Contract (V1)
 
-Status: canonical, locked for Phase 39 `IND-01` on 2026-04-07.
+Status: canonical, locked for `V1IND-01` on 2026-04-24.
 
 ## Purpose
 Define one canonical indicator registry and one parity contract for strategy builder, runtime bot evaluation, and backtest timeline/evaluator paths.
@@ -52,36 +52,55 @@ Builder and API metadata must use explicit groups:
 6. `Candle Patterns`
 7. `Derivatives (Futures-only)`
 
-## Indicator Families Covered by This Expansion Track
-### Close-based
-- EMA, SMA, WMA
-- RSI, ROC, MOMENTUM
-- MACD, StochRSI
+## Canonical V1 Registry Scope
+The canonical V1 registry scope is exactly the indicator set exposed by the
+strategy builder endpoint. No broader "planned" catalog is canonical for V1.
 
-### OHLC-based
-- Bollinger Bands (true upper/mid/lower output)
-- ATR
-- ADX (+DI/-DI)
-- Stochastic (%K/%D)
-- CCI
-- Donchian
+### Trend
+- `EMA`
+- `SMA`
+- `MACD`
+- `ADX`
 
-### OHLCV-based
-- OBV
-- MFI
-- VWAP
+### Momentum / Oscillator
+- `RSI`
+- `MOMENTUM`
+- `ROC`
+- `STOCHRSI`
+- `STOCHASTIC`
+- `CCI`
+
+### Volatility
+- `BOLLINGER_BANDS`
+- `ATR`
+- `DONCHIAN_CHANNELS`
 
 ### Candle Patterns
-- Bullish/Bearish Engulfing
-- Hammer/Shooting Star
-- Doji
-- Morning Star/Evening Star
-- Inside Bar/Outside Bar
+- `BULLISH_ENGULFING`
+- `BEARISH_ENGULFING`
+- `HAMMER`
+- `SHOOTING_STAR`
+- `DOJI`
+- `MORNING_STAR`
+- `EVENING_STAR`
+- `INSIDE_BAR`
+- `OUTSIDE_BAR`
 
-### Futures derivatives filters
-- Funding rate filters
-- Open interest filters
-- Order-book imbalance/spread filters
+### Futures Derivatives
+- `FUNDING_RATE`
+- `FUNDING_RATE_ZSCORE`
+- `OPEN_INTEREST`
+- `OPEN_INTEREST_DELTA`
+- `OPEN_INTEREST_MA`
+- `OPEN_INTEREST_ZSCORE`
+- `ORDER_BOOK_IMBALANCE`
+- `ORDER_BOOK_SPREAD_BPS`
+- `ORDER_BOOK_DEPTH_RATIO`
+
+### Registry Growth Rule
+- If a new indicator is added to the builder, it must be added to this
+  canonical registry in the same change.
+- If an indicator is not canonical here, it must not be exposed by the builder.
 
 ## Runtime/Backtest Parity Rules
 1. Shared evaluator semantics:

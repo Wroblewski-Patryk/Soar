@@ -19,6 +19,8 @@ import { RuntimeSignalDecisionEngine } from './runtimeSignalDecisionEngine';
 import { runtimeTopologyCacheService } from './runtimeTopologyCache.service';
 import {
   RuntimeSignalMarketDataGateway,
+  RuntimeCandle,
+  RuntimeOrderBookSeries,
   RuntimeSignalWarmupLockHandle,
   RuntimeSignalWarmupLockInput,
 } from './runtimeSignalMarketDataGateway';
@@ -719,6 +721,50 @@ export class RuntimeSignalLoop {
     limit?: number;
   }) {
     return this.marketDataGateway.getRecentCloses(input);
+  }
+
+  getSeries(input: {
+    marketType: 'FUTURES' | 'SPOT';
+    symbol: string;
+    interval?: string | null;
+  }): RuntimeCandle[] | null {
+    return this.marketDataGateway.getSeries(input.marketType, input.symbol, input.interval);
+  }
+
+  resolveFundingRateSeriesForCandles(input: {
+    marketType: 'FUTURES' | 'SPOT';
+    symbol: string;
+    candles: RuntimeCandle[];
+  }) {
+    return this.marketDataGateway.resolveFundingRateSeriesForCandles(
+      input.marketType,
+      input.symbol,
+      input.candles
+    );
+  }
+
+  resolveOpenInterestSeriesForCandles(input: {
+    marketType: 'FUTURES' | 'SPOT';
+    symbol: string;
+    candles: RuntimeCandle[];
+  }) {
+    return this.marketDataGateway.resolveOpenInterestSeriesForCandles(
+      input.marketType,
+      input.symbol,
+      input.candles
+    );
+  }
+
+  resolveOrderBookSeriesForCandles(input: {
+    marketType: 'FUTURES' | 'SPOT';
+    symbol: string;
+    candles: RuntimeCandle[];
+  }): RuntimeOrderBookSeries | null {
+    return this.marketDataGateway.resolveOrderBookSeriesForCandles(
+      input.marketType,
+      input.symbol,
+      input.candles
+    );
   }
 
   private evaluateStrategy(input: {

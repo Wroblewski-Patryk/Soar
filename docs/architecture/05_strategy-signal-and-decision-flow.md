@@ -39,8 +39,15 @@ One indicator registry must drive:
 - runtime evaluator availability
 - backtest evaluator availability
 - timeline overlay availability
+- operator signal-surface analysis and condition rendering
 
 If an indicator is not implemented end-to-end, it must not silently behave like a supported rule.
+
+Operator surfaces must reuse the same shared indicator kernel and rule parser as
+runtime/backtest evaluation. A configured market snapshot may be shown before
+runtime has emitted a decision, but it must still use canonical
+closed-candle/derivatives analysis semantics and must not invent subset-only
+fallback values such as `X`.
 
 ## Evaluation Unit
 The canonical evaluation unit is:

@@ -7,16 +7,18 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `V1IND-01 docs(decision): reconcile indicator parity architecture and freeze one canonical V1 registry scope`
+- [ ] (none)
 ## NEXT
-- [ ] `V1IND-02 api(registry): replace standalone strategy-builder indicator metadata with canonical registry-backed metadata`
-- [ ] `V1IND-03 api(signal-analysis): remove subset fallback indicator formatter from signal read models and reuse canonical runtime analysis truth`
-- [ ] `V1IND-04 api(read-model): derive signal-surface venue context only from inherited symbol-group market universe`
-- [ ] `V1IND-05 web(signal-surface): distinguish configured market snapshot from evaluated runtime decision and remove opaque X placeholders`
-- [ ] `V1IND-06 test(parity-matrix): add explicit parity coverage for every builder-exposed indicator across builder metadata, runtime, and backtest`
-- [ ] `V1IND-07 qa(closure): run focused closure pack and sync canonical docs/context`
+- [ ] (none)
 ## PIPELINE
 - [x] `V1IND-A planning queued (canonical indicator parity and truthful signal-surface recovery after V1BOT closure and production signal audit)`
+- [x] `V1IND-01 docs(decision): reconcile indicator parity architecture and freeze one canonical V1 registry scope`
+- [x] `V1IND-02 api(registry): replace standalone strategy-builder indicator metadata with canonical registry-backed metadata`
+- [x] `V1IND-03 api(signal-analysis): remove subset fallback indicator formatter from signal read models and reuse canonical runtime analysis truth`
+- [x] `V1IND-04 api(read-model): derive signal-surface venue context only from inherited symbol-group market universe`
+- [x] `V1IND-05 web(signal-surface): distinguish configured market snapshot from evaluated runtime decision and remove opaque X placeholders`
+- [x] `V1IND-06 test(parity-matrix): add explicit parity coverage for every builder-exposed indicator across builder metadata, runtime, and backtest`
+- [x] `V1IND-07 qa(closure): run focused closure pack and sync canonical docs/context`
 - [x] `V1DASH-A planning queued (dashboard operator truth hardening after singular bot migration and manual-order recovery)`
 - [x] `V1BOTSURF-A planning queued (bot operator surface truth hardening after singular bot migration and dashboard truth audit)`
 - [x] `V1SURF-A planning queued (cross-surface runtime-truth alignment after dashboard and bot audits)`
