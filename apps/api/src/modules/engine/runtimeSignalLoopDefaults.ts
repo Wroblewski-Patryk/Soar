@@ -10,6 +10,7 @@ import {
 } from './runtimeSignalLoop.repository';
 import { normalizeSymbols } from '../../lib/symbols';
 import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from '../bots/runtimeSymbolCatalogResolver.service';
+import { resolveInheritedRuntimeExecutionContext } from './runtimeBotExecutionContext';
 
 export type ActiveBotStrategy = {
   strategyId: string;
@@ -36,6 +37,20 @@ export type ActiveBot = {
   paperStartBalance: number;
   marketType: 'FUTURES' | 'SPOT';
   runtimeContext: ActiveBotRuntimeContext | null;
+};
+
+type InheritedExecutionContext = Pick<ActiveBot, 'mode' | 'exchange' | 'marketType' | 'paperStartBalance'>;
+
+const resolveInheritedExecutionContext = (
+  bot: Awaited<ReturnType<typeof listActiveRuntimeBotsRaw>>[number]
+): InheritedExecutionContext | null => {
+  const resolved = resolveInheritedRuntimeExecutionContext({
+    walletId: bot.walletId,
+    wallet: bot.wallet,
+    venueContext: bot.symbolGroup?.marketUniverse,
+  });
+  if (!resolved) return null;
+  return resolved;
 };
 
 const toPositiveInteger = (value: unknown): number | null => {
@@ -79,13 +94,32 @@ export const supportsRuntimeSignalLoopExchange = (bot: Pick<ActiveBot, 'exchange
 
 export const listActiveRuntimeBots = async (): Promise<ActiveBot[]> => {
   const bots = await listActiveRuntimeBotsRaw();
-  const activeBots = bots.filter(
-    (bot) => (bot.mode !== 'LIVE' || bot.liveOptIn) && supportsRuntimeSignalLoopExchange(bot)
+  const inheritedBots = bots
+    .map((bot) => {
+      const executionContext = resolveInheritedExecutionContext(bot);
+      if (!executionContext) return null;
+      return {
+        raw: bot,
+        executionContext,
+      };
+    })
+    .filter(
+      (
+        bot
+      ): bot is {
+        raw: Awaited<ReturnType<typeof listActiveRuntimeBotsRaw>>[number];
+        executionContext: InheritedExecutionContext;
+      } => bot !== null
+    );
+  const activeBots = inheritedBots.filter(
+    ({ raw, executionContext }) =>
+      (executionContext.mode !== 'LIVE' || raw.liveOptIn) &&
+      supportsRuntimeSignalLoopExchange(executionContext)
   );
   const catalogSymbolsCache = new Map<string, string[]>();
 
   return Promise.all(
-    activeBots.map(async (bot) => {
+    activeBots.map(async ({ raw: bot, executionContext }) => {
       const runtimeStrategy =
         bot.strategy && bot.strategyId
           ? ({
@@ -118,10 +152,10 @@ export const listActiveRuntimeBots = async (): Promise<ActiveBot[]> => {
         id: bot.id,
         userId: bot.userId,
         walletId: bot.walletId ?? null,
-        mode: bot.mode as 'PAPER' | 'LIVE',
-        exchange: bot.exchange,
-        paperStartBalance: Number.isFinite(bot.paperStartBalance) ? Math.max(0, bot.paperStartBalance) : 10_000,
-        marketType: bot.marketType,
+        mode: executionContext.mode,
+        exchange: executionContext.exchange,
+        paperStartBalance: executionContext.paperStartBalance,
+        marketType: executionContext.marketType,
         runtimeContext,
       };
     })

@@ -30,7 +30,7 @@ export const PreTradeAnalysisInputSchema = z.object({
 export type PreTradeAnalysisInput = z.input<typeof PreTradeAnalysisInputSchema>;
 export type PreTradeAnalysisParsedInput = z.output<typeof PreTradeAnalysisInputSchema>;
 
-export type PreTradeBotLiveConfig = {
+export type PreTradeBotExecutionConfig = {
   mode: 'PAPER' | 'LIVE';
   marketType: 'FUTURES' | 'SPOT';
   positionMode: 'ONE_WAY' | 'HEDGE';

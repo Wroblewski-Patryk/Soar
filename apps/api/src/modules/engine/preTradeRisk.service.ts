@@ -1,11 +1,11 @@
-import { PreTradeAnalysisParsedInput, PreTradeBotLiveConfig } from './preTrade.types';
+import { PreTradeAnalysisParsedInput, PreTradeBotExecutionConfig } from './preTrade.types';
 
 type EvaluatePreTradeRiskInput = {
   parsed: PreTradeAnalysisParsedInput;
   userOpenPositions: number;
   botOpenPositions: number | null;
   hasOpenPositionOnSymbol: boolean;
-  botLiveConfig: PreTradeBotLiveConfig | null;
+  botLiveConfig: PreTradeBotExecutionConfig | null;
 };
 
 export const evaluatePreTradeRiskReasons = (input: EvaluatePreTradeRiskInput) => {

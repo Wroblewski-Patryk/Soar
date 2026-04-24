@@ -10,7 +10,6 @@ import {
 describe('runtimeCapitalContext', () => {
   const buildDeps = (overrides?: Partial<any>) => ({
     getWalletContext: async () => null,
-    getBotPaperStartBalance: async ({ fallback }: { fallback: number }) => fallback,
     listOpenBotManagedPositions: async () => [],
     sumClosedBotManagedRealizedPnl: async () => 0,
     getLiveApiKeyContext: async () => null,
@@ -78,9 +77,6 @@ describe('runtimeCapitalContext', () => {
           exchange: 'BINANCE',
           apiKey: null,
         }),
-        getBotPaperStartBalance: async () => {
-          throw new Error('wallet-scoped paper path should not read bot paper balance');
-        },
         sumClosedBotManagedRealizedPnl: async () => 250,
       }),
     );
@@ -235,6 +231,20 @@ describe('runtimeCapitalContext', () => {
 
     expect(reference).toBe(0);
     expect(fetchLiveBalance).not.toHaveBeenCalled();
+  });
+
+  it('uses direct runtime paper baseline input when wallet context is absent', async () => {
+    const snapshot = await resolvePaperRuntimeCapitalSnapshot(
+      {
+        userId: 'u-paper-direct',
+        botId: 'b-paper-direct',
+        paperStartBalance: 1_234,
+      },
+      buildDeps()
+    );
+
+    expect(snapshot.referenceBalance).toBe(1_234);
+    expect(snapshot.capitalSource).toBe('PAPER_INITIAL_BALANCE');
   });
 
   it('treats LIVE DCA as exhausted when canonical credential ownership is unresolved', async () => {

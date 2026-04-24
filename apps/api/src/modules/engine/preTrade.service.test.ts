@@ -14,7 +14,7 @@ const createStore = (overrides?: Partial<MockPreTradeStore>): MockPreTradeStore 
   countOpenByUser: vi.fn().mockResolvedValue(0),
   countOpenByBot: vi.fn().mockResolvedValue(0),
   hasOpenPositionOnSymbol: vi.fn().mockResolvedValue(false),
-  getBotLiveConfig: vi.fn().mockResolvedValue({
+  getBotExecutionConfig: vi.fn().mockResolvedValue({
     mode: 'LIVE',
     marketType: 'FUTURES',
     positionMode: 'ONE_WAY',
@@ -245,7 +245,7 @@ describe('preTrade analysis', () => {
 
   it('blocks when live bot does not exist for user', async () => {
     const store = createStore({
-      getBotLiveConfig: vi.fn().mockResolvedValue(null),
+      getBotExecutionConfig: vi.fn().mockResolvedValue(null),
     });
 
     const decision = await analyzePreTrade(
@@ -264,7 +264,7 @@ describe('preTrade analysis', () => {
 
   it('blocks when bot is not explicitly allowed for live mode', async () => {
     const store = createStore({
-      getBotLiveConfig: vi.fn().mockResolvedValue({
+      getBotExecutionConfig: vi.fn().mockResolvedValue({
         mode: 'PAPER',
         marketType: 'FUTURES',
         positionMode: 'ONE_WAY',
@@ -290,7 +290,7 @@ describe('preTrade analysis', () => {
 
   it('blocks when live consent version is missing', async () => {
     const store = createStore({
-      getBotLiveConfig: vi.fn().mockResolvedValue({
+      getBotExecutionConfig: vi.fn().mockResolvedValue({
         mode: 'LIVE',
         marketType: 'FUTURES',
         positionMode: 'ONE_WAY',
@@ -394,7 +394,7 @@ describe('preTrade analysis', () => {
 
   it('writes bot marketType into pre-trade audit metadata', async () => {
     const store = createStore({
-      getBotLiveConfig: vi.fn().mockResolvedValue({
+      getBotExecutionConfig: vi.fn().mockResolvedValue({
         mode: 'LIVE',
         marketType: 'SPOT',
         positionMode: 'HEDGE',
@@ -430,7 +430,7 @@ describe('preTrade analysis', () => {
 
   it('blocks when requested marketType differs from bot marketType', async () => {
     const store = createStore({
-      getBotLiveConfig: vi.fn().mockResolvedValue({
+      getBotExecutionConfig: vi.fn().mockResolvedValue({
         mode: 'LIVE',
         marketType: 'FUTURES',
         positionMode: 'ONE_WAY',

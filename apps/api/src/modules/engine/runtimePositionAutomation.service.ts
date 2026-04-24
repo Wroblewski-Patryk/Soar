@@ -12,6 +12,7 @@ import {
   buildDcaExecutionDedupeKey,
   runtimeExecutionDedupeService,
 } from './runtimeExecutionDedupe.service';
+import { resolveInheritedRuntimeExecutionContext } from './runtimeBotExecutionContext';
 
 type RuntimeManagedPosition = Pick<
   Position,
@@ -32,12 +33,26 @@ type RuntimeManagedPosition = Pick<
 > & {
   bot:
     | {
-        mode: BotMode;
-        marketType: TradeMarket;
-        exchange: Exchange;
-        paperStartBalance: number;
         walletId: string | null;
         liveOptIn: boolean;
+        wallet:
+          | {
+              mode: BotMode;
+              exchange: Exchange;
+              marketType: TradeMarket;
+              baseCurrency: string;
+              paperInitialBalance: number;
+            }
+          | null;
+        symbolGroup:
+          | {
+              marketUniverse: {
+                exchange: Exchange;
+                marketType: TradeMarket;
+                baseCurrency: string;
+              } | null;
+            }
+          | null;
       }
     | null;
 };
@@ -171,13 +186,9 @@ const getRuntimeConfig = (): RuntimeFallbackConfig => ({
   trailingValue: Number.parseFloat(process.env.RUNTIME_TRAILING_VALUE ?? '0.005'),
 });
 
-const getRuntimeManualPositionMode = (): 'PAPER' | 'LIVE' =>
-  (process.env.RUNTIME_MANUAL_POSITION_MODE ?? 'LIVE') as 'PAPER' | 'LIVE';
-
-const getRuntimeManualPositionMarketType = (): TradeMarket =>
-  (process.env.RUNTIME_MANUAL_POSITION_MARKET_TYPE ?? 'FUTURES') as TradeMarket;
-const getRuntimeManualPositionExchange = (): Exchange =>
-  (process.env.RUNTIME_MANUAL_POSITION_EXCHANGE ?? 'BINANCE') as Exchange;
+const getRuntimeManualPositionMode = (): 'PAPER' | 'LIVE' => (process.env.RUNTIME_MANUAL_POSITION_MODE ?? 'LIVE') as 'PAPER' | 'LIVE';
+const getRuntimeManualPositionMarketType = (): TradeMarket => (process.env.RUNTIME_MANUAL_POSITION_MARKET_TYPE ?? 'FUTURES') as TradeMarket;
+const getRuntimeManualPositionExchange = (): Exchange => (process.env.RUNTIME_MANUAL_POSITION_EXCHANGE ?? 'BINANCE') as Exchange;
 
 const getRuntimeManualPaperStartBalance = () => {
   const parsed = Number.parseFloat(process.env.RUNTIME_MANUAL_PAPER_START_BALANCE ?? '10000');
@@ -203,19 +214,13 @@ const resolveRuntimeTakerFeeRate = (mode: 'PAPER' | 'LIVE') => {
   return 0.0004;
 };
 
-const resolveExecutedOrderPrice = (
-  input: { averageFillPrice?: number | null; price?: number | null },
-  fallback: number
-) => {
+const resolveExecutedOrderPrice = (input: { averageFillPrice?: number | null; price?: number | null }, fallback: number) => {
   if (isPositiveFiniteNumber(input.averageFillPrice)) return input.averageFillPrice;
   if (isPositiveFiniteNumber(input.price)) return input.price;
   return fallback;
 };
 
-const resolveExecutedOrderQuantity = (
-  input: { filledQuantity?: number | null; quantity: number },
-  fallback: number
-) => {
+const resolveExecutedOrderQuantity = (input: { filledQuantity?: number | null; quantity: number }, fallback: number) => {
   if (isPositiveFiniteNumber(input.filledQuantity)) {
     return Math.min(Math.max(0, input.quantity), input.filledQuantity);
   }
@@ -431,30 +436,12 @@ export const executeRuntimeDca = async (input: {
   }
 };
 
-const resolvePositionExecutionMode = (position: RuntimeManagedPosition): 'PAPER' | 'LIVE' => {
-  const botMode = position.bot?.mode;
-  if (botMode === 'PAPER' || botMode === 'LIVE') return botMode;
-  return getRuntimeManualPositionMode();
-};
-
-const resolvePositionMarketType = (position: RuntimeManagedPosition): TradeMarket => {
-  if (position.bot?.marketType === 'FUTURES' || position.bot?.marketType === 'SPOT') {
-    return position.bot.marketType;
-  }
-  return getRuntimeManualPositionMarketType();
-};
-
-const resolvePositionExchange = (position: RuntimeManagedPosition): Exchange => {
-  if (position.bot?.exchange) return position.bot.exchange;
-  return getRuntimeManualPositionExchange();
-};
-
-const resolvePositionPaperStartBalance = (position: RuntimeManagedPosition) => {
-  if (position.bot && Number.isFinite(position.bot.paperStartBalance)) {
-    return Math.max(0, position.bot.paperStartBalance);
-  }
-  return getRuntimeManualPaperStartBalance();
-};
+const resolveInheritedPositionExecutionContext = (position: RuntimeManagedPosition) =>
+  resolveInheritedRuntimeExecutionContext({
+    walletId: position.walletId ?? position.bot?.walletId ?? null,
+    wallet: position.bot?.wallet,
+    venueContext: position.bot?.symbolGroup?.marketUniverse,
+  });
 
 const resolveDcaLevelCount = (input: PositionManagementInput) => {
   if (!input.dca?.enabled) return 0;
@@ -464,10 +451,7 @@ const resolveDcaLevelCount = (input: PositionManagementInput) => {
   return Math.max(0, input.dca.maxAdds ?? 0);
 };
 
-const estimateNextDcaAddedQuantity = (
-  input: PositionManagementInput,
-  state: PositionManagementState
-) => {
+const estimateNextDcaAddedQuantity = (input: PositionManagementInput, state: PositionManagementState) => {
   if (!input.dca?.enabled) return 0;
   const index = Math.max(0, state.currentAdds);
   const addFraction = input.dca.addSizeFractions?.[index] ?? input.dca.addSizeFraction ?? 0;
@@ -508,12 +492,28 @@ const defaultDeps: RuntimePositionAutomationDeps = {
         origin: true,
           bot: {
             select: {
-              mode: true,
-              marketType: true,
-              exchange: true,
-              paperStartBalance: true,
               walletId: true,
               liveOptIn: true,
+              wallet: {
+                select: {
+                  mode: true,
+                  exchange: true,
+                  marketType: true,
+                  baseCurrency: true,
+                  paperInitialBalance: true,
+                },
+              },
+              symbolGroup: {
+                select: {
+                  marketUniverse: {
+                    select: {
+                      exchange: true,
+                      marketType: true,
+                      baseCurrency: true,
+                    },
+                  },
+                },
+              },
             },
           },
         },
@@ -814,16 +814,23 @@ export class RuntimePositionAutomationService {
       );
       return;
     }
-    if (position.bot?.mode === 'LIVE' && !position.bot.liveOptIn) {
+    const inheritedExecutionContext = resolveInheritedPositionExecutionContext(position);
+    if (position.botId && !inheritedExecutionContext) {
+      console.warn(
+        `[RuntimePositionAutomation] position=${position.id} symbol=${position.symbol} skipped: canonical bot execution context unresolved`
+      );
+      return;
+    }
+    if (inheritedExecutionContext?.mode === 'LIVE' && !position.bot?.liveOptIn) {
       console.warn(
         `[RuntimePositionAutomation] position=${position.id} symbol=${position.symbol} skipped: LIVE bot without live opt-in`
       );
       return;
     }
 
-    const mode = resolvePositionExecutionMode(position);
-    const exchange = resolvePositionExchange(position);
-    const marketType = resolvePositionMarketType(position);
+    const mode = inheritedExecutionContext?.mode ?? getRuntimeManualPositionMode();
+    const exchange = inheritedExecutionContext?.exchange ?? getRuntimeManualPositionExchange();
+    const marketType = inheritedExecutionContext?.marketType ?? getRuntimeManualPositionMarketType();
     if (event.exchange !== exchange || event.marketType !== marketType) return;
 
     const runtimeConfig = getRuntimeConfig();
@@ -843,7 +850,8 @@ export class RuntimePositionAutomationService {
       defaultState;
     const previousStateSnapshot = this.cloneState(previousState);
 
-    const paperStartBalance = resolvePositionPaperStartBalance(position);
+    const paperStartBalance =
+      inheritedExecutionContext?.paperStartBalance ?? getRuntimeManualPaperStartBalance();
     const dcaLevelCount = resolveDcaLevelCount(input);
     const hasPendingDca = input.dca?.enabled && previousState.currentAdds < dcaLevelCount;
     const estimatedAddedQuantity = hasPendingDca
@@ -854,7 +862,7 @@ export class RuntimePositionAutomationService {
         ? await this.deps.resolveDcaFundsExhausted({
             userId: position.userId,
             botId: position.botId,
-            walletId: position.walletId ?? position.bot?.walletId ?? null,
+            walletId: inheritedExecutionContext?.walletId ?? position.walletId ?? position.bot?.walletId ?? null,
             mode,
             exchange,
             marketType,
@@ -888,7 +896,7 @@ export class RuntimePositionAutomationService {
         const dcaResult = await this.deps.executeDca({
           userId: position.userId,
           botId: position.botId,
-          walletId: position.walletId ?? position.bot?.walletId ?? null,
+          walletId: inheritedExecutionContext?.walletId ?? position.walletId ?? position.bot?.walletId ?? null,
           strategyId: position.strategyId,
           positionId: position.id,
           symbol: position.symbol,
@@ -961,7 +969,7 @@ export class RuntimePositionAutomationService {
       const closeResult = await this.deps.closeByExitSignal({
         userId: position.userId,
         botId: position.botId ?? undefined,
-        walletId: position.walletId ?? position.bot?.walletId ?? null,
+        walletId: inheritedExecutionContext?.walletId ?? position.walletId ?? position.bot?.walletId ?? null,
         symbol: position.symbol,
         markPrice: event.lastPrice,
         mode,

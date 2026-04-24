@@ -26,7 +26,6 @@ type RuntimeCapitalContextDeps = {
       exchange: Exchange;
     } | null;
   } | null>;
-  getBotPaperStartBalance: (input: { userId: string; botId?: string | null; fallback: number }) => Promise<number>;
   listOpenBotManagedPositions: (input: {
     userId: string;
     botId?: string | null;
@@ -88,15 +87,6 @@ const defaultDeps: RuntimeCapitalContextDeps = {
     });
     if (!wallet) return null;
     return wallet;
-  },
-  getBotPaperStartBalance: async ({ userId, botId, fallback }) => {
-    if (!botId) return Math.max(0, fallback);
-    const bot = await prisma.bot.findFirst({
-      where: { id: botId, userId },
-      select: { paperStartBalance: true },
-    });
-    if (!bot || !Number.isFinite(bot.paperStartBalance)) return Math.max(0, fallback);
-    return Math.max(0, bot.paperStartBalance);
   },
   listOpenBotManagedPositions: async ({ userId, botId, walletId }) =>
     prisma.position.findMany({
@@ -165,26 +155,6 @@ const defaultDeps: RuntimeCapitalContextDeps = {
       };
     }
 
-    if (botId) {
-      const bot = await prisma.bot.findFirst({
-        where: { id: botId, userId },
-        select: {
-          apiKey: {
-            select: {
-              apiKey: true,
-              apiSecret: true,
-              exchange: true,
-            },
-          },
-        },
-      });
-      if (bot?.apiKey && bot.apiKey.exchange === exchange) {
-        return {
-          apiKey: decrypt(bot.apiKey.apiKey),
-          apiSecret: decrypt(bot.apiKey.apiSecret),
-        };
-      }
-    }
     return null;
   },
   fetchLiveBalance: async ({ apiKey, apiSecret, marketType, baseCurrency }) => {
@@ -248,11 +218,7 @@ export const resolvePaperRuntimeCapitalSnapshot = async (
     ? Math.max(0, wallet.paperInitialBalance)
     : input.walletId
       ? 0
-      : await deps.getBotPaperStartBalance({
-          userId: input.userId,
-          botId: input.botId,
-          fallback: input.paperStartBalance,
-        });
+      : Math.max(0, input.paperStartBalance);
   const realizedSince = wallet?.paperResetAt ?? null;
 
   const [openPositions, realizedPnl] = await Promise.all([

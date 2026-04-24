@@ -1,9 +1,10 @@
 import { Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/client';
+import { normalizeBaseCurrency } from '../../lib/symbols';
 import {
   PreTradeAnalysisInput,
   PreTradeAnalysisInputSchema,
-  PreTradeBotLiveConfig,
+  PreTradeBotExecutionConfig,
   PreTradeDecision,
 } from './preTrade.types';
 import { evaluatePreTradeRiskReasons } from './preTradeRisk.service';
@@ -29,7 +30,7 @@ type PreTradeAuditEntry = {
 };
 
 export interface BotReadStore {
-  getBotLiveConfig(userId: string, botId: string): Promise<PreTradeBotLiveConfig | null>;
+  getBotExecutionConfig(userId: string, botId: string): Promise<PreTradeBotExecutionConfig | null>;
 }
 
 export interface AuditLogWriter {
@@ -139,17 +140,51 @@ class PrismaPreTradeReadStore implements PreTradeReadStore {
     return Boolean(found);
   }
 
-  async getBotLiveConfig(userId: string, botId: string) {
-    return prisma.bot.findFirst({
+  async getBotExecutionConfig(userId: string, botId: string) {
+    const bot = await prisma.bot.findFirst({
       where: { id: botId, userId },
       select: {
-        mode: true,
-        marketType: true,
         positionMode: true,
         liveOptIn: true,
         consentTextVersion: true,
+        wallet: {
+          select: {
+            mode: true,
+            exchange: true,
+            marketType: true,
+            baseCurrency: true,
+          },
+        },
+        symbolGroup: {
+          select: {
+            marketUniverse: {
+              select: {
+                exchange: true,
+                marketType: true,
+                baseCurrency: true,
+              },
+            },
+          },
+        },
       },
     });
+    const wallet = bot?.wallet;
+    const marketUniverse = bot?.symbolGroup?.marketUniverse;
+    if (!bot || !wallet || !marketUniverse) return null;
+    if (
+      wallet.exchange !== marketUniverse.exchange ||
+      wallet.marketType !== marketUniverse.marketType ||
+      normalizeBaseCurrency(wallet.baseCurrency) !== normalizeBaseCurrency(marketUniverse.baseCurrency)
+    ) {
+      return null;
+    }
+    return {
+      mode: wallet.mode,
+      marketType: marketUniverse.marketType,
+      positionMode: bot.positionMode,
+      liveOptIn: bot.liveOptIn,
+      consentTextVersion: bot.consentTextVersion,
+    };
   }
 }
 
@@ -192,7 +227,7 @@ export const analyzePreTrade = async (
       ? await readStore.hasOpenPositionOnSymbol(parsed.userId, parsed.symbol)
       : false;
     const botLiveConfig = parsed.botId
-      ? await readStore.getBotLiveConfig(parsed.userId, parsed.botId)
+      ? await readStore.getBotExecutionConfig(parsed.userId, parsed.botId)
       : null;
     const reasons = evaluatePreTradeRiskReasons({
       parsed,

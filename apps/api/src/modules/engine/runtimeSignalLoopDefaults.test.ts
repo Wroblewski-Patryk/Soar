@@ -24,7 +24,7 @@ describe('listActiveRuntimeBots', () => {
       {
         id: 'bot-paper',
         userId: 'user-1',
-        walletId: null,
+        walletId: 'wallet-paper',
         mode: 'PAPER',
         liveOptIn: false,
         exchange: 'BINANCE',
@@ -34,7 +34,26 @@ describe('listActiveRuntimeBots', () => {
         strategyId: null,
         symbolGroupId: null,
         strategy: null,
-        symbolGroup: null,
+        symbolGroup: {
+          id: 'group-paper',
+          symbols: [],
+          marketUniverse: {
+            exchange: 'BINANCE',
+            marketType: 'FUTURES',
+            baseCurrency: 'USDT',
+            filterRules: null,
+            whitelist: [],
+            blacklist: [],
+          },
+        },
+        wallet: {
+          id: 'wallet-paper',
+          mode: 'PAPER',
+          exchange: 'BINANCE',
+          marketType: 'FUTURES',
+          baseCurrency: 'USDT',
+          paperInitialBalance: 1500,
+        },
       },
       {
         id: 'bot-live-disabled',
@@ -49,7 +68,26 @@ describe('listActiveRuntimeBots', () => {
         strategyId: null,
         symbolGroupId: null,
         strategy: null,
-        symbolGroup: null,
+        symbolGroup: {
+          id: 'group-live-disabled',
+          symbols: [],
+          marketUniverse: {
+            exchange: 'BINANCE',
+            marketType: 'FUTURES',
+            baseCurrency: 'USDT',
+            filterRules: null,
+            whitelist: [],
+            blacklist: [],
+          },
+        },
+        wallet: {
+          id: 'wallet-1',
+          mode: 'LIVE',
+          exchange: 'BINANCE',
+          marketType: 'FUTURES',
+          baseCurrency: 'USDT',
+          paperInitialBalance: 1000,
+        },
       },
       {
         id: 'bot-live-enabled',
@@ -64,12 +102,74 @@ describe('listActiveRuntimeBots', () => {
         strategyId: null,
         symbolGroupId: null,
         strategy: null,
-        symbolGroup: null,
+        symbolGroup: {
+          id: 'group-live-enabled',
+          symbols: [],
+          marketUniverse: {
+            exchange: 'BINANCE',
+            marketType: 'FUTURES',
+            baseCurrency: 'USDT',
+            filterRules: null,
+            whitelist: [],
+            blacklist: [],
+          },
+        },
+        wallet: {
+          id: 'wallet-2',
+          mode: 'LIVE',
+          exchange: 'BINANCE',
+          marketType: 'FUTURES',
+          baseCurrency: 'USDT',
+          paperInitialBalance: 1000,
+        },
       },
     ] as any);
 
     const topology = await listActiveRuntimeBots();
 
     expect(topology.map((bot) => bot.id)).toEqual(['bot-paper', 'bot-live-enabled']);
+  });
+
+  it('fails closed when wallet and market-universe venue contexts drift apart', async () => {
+    vi.mocked(listActiveRuntimeBotsRaw).mockResolvedValue([
+      {
+        id: 'bot-drift',
+        userId: 'user-1',
+        walletId: 'wallet-drift',
+        mode: 'LIVE',
+        liveOptIn: true,
+        exchange: 'BINANCE',
+        paperStartBalance: 1000,
+        marketType: 'FUTURES',
+        maxOpenPositions: 1,
+        strategyId: null,
+        symbolGroupId: null,
+        strategy: null,
+        symbolGroup: {
+          id: 'group-drift',
+          symbols: [],
+          marketUniverse: {
+            exchange: 'BINANCE',
+            marketType: 'FUTURES',
+            baseCurrency: 'USDT',
+            filterRules: null,
+            whitelist: [],
+            blacklist: [],
+          },
+        },
+        wallet: {
+          id: 'wallet-drift',
+          mode: 'LIVE',
+          exchange: 'BINANCE',
+          marketType: 'SPOT',
+          baseCurrency: 'USDT',
+          paperInitialBalance: 1000,
+        },
+      },
+    ] as any);
+
+    const topology = await listActiveRuntimeBots();
+
+    expect(topology).toEqual([]);
   });
 });

@@ -149,7 +149,7 @@ runtime compatibility removed only after migration evidence exists.
   - routing, signal evaluation, pre-trade, and execution use direct bot refs
   - remove group/strategy-link iteration from canonical decision path
   - 2026-04-24: Closed by introducing one canonical `runtimeContext` per bot in the runtime topology query/defaults path, rewiring final-candle routing + execution to that singular context, moving market-stream subscription discovery onto direct bot refs first, and aligning selected-bot runtime symbol stats/dashboard strategy context reads to the same inherited bot truth.
-- `V1BOT-07 engine(capital-strategy-inheritance): source runtime parameters from wallet and strategy modules`
+- [x] `V1BOT-07 engine(capital-strategy-inheritance): source runtime parameters from wallet and strategy modules`
   - wallet:
     - mode
     - API key/live entitlement context
@@ -163,6 +163,11 @@ runtime compatibility removed only after migration evidence exists.
     - activation state
     - live consent
     - runtime identity
+  - 2026-04-24: Closed by deriving active runtime bot mode/venue/paper baseline
+    from wallet + market-universe compatibility, moving pre-trade execution
+    config onto inherited wallet/symbol-group truth, switching runtime position
+    automation to inherited wallet/market-scope context, and removing
+    canonical runtime fallback to bot-owned paper/api-key execution truth.
 
 ### Slice 5 - Web/UI migration
 - `V1BOT-08 web(bot-crud): align create/edit/detail flows to the singular contract`

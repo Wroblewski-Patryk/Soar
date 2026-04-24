@@ -160,6 +160,14 @@ Last updated: 2026-04-24
   subscriptions read direct bot refs first, and the selected-bot runtime
   surfaces that show market/strategy context now prefer direct inherited bot
   data over legacy runtime-graph reconstruction.
+- 2026-04-24: `V1BOT-07` is closed. Canonical runtime execution now derives
+  mode, paper baseline, and LIVE credential ownership from wallet context and
+  venue truth from the linked symbol-group market universe. Active runtime
+  topology fails closed on wallet-vs-market-scope drift, pre-trade now reads
+  inherited execution config instead of bot snapshot mode/marketType, runtime
+  position automation uses inherited wallet/venue context for DCA/close
+  actions, and canonical runtime capital no longer falls back to bot-owned
+  paper/api-key execution truth.
 - 2026-04-22: prod restore-drill proof now passes from a real Coolify terminal
   execution in the production postgres container
   (`x11cfnz1dd9x0yzccftqzcoe`), and the final non-dry-run prod release gate now

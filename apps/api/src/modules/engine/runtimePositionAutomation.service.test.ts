@@ -6,6 +6,55 @@ afterEach(async () => {
   await runtimePositionStateStore.deletePositionRuntimeState('pos-replay-1');
 });
 
+const buildBotExecutionContext = (
+  overrides?: Partial<{
+    walletId: string | null;
+    liveOptIn: boolean;
+    wallet: Partial<{
+      mode: 'PAPER' | 'LIVE';
+      exchange: 'BINANCE' | 'BYBIT';
+      marketType: 'FUTURES' | 'SPOT';
+      baseCurrency: string;
+      paperInitialBalance: number;
+    }> | null;
+    symbolGroup: {
+      marketUniverse: Partial<{
+        exchange: 'BINANCE' | 'BYBIT';
+        marketType: 'FUTURES' | 'SPOT';
+        baseCurrency: string;
+      }> | null;
+    } | null;
+  }>
+) => ({
+  walletId: overrides?.walletId ?? 'wallet-1',
+  liveOptIn: overrides?.liveOptIn ?? true,
+  wallet:
+    overrides?.wallet === null
+      ? null
+      : {
+          mode: 'PAPER' as const,
+          exchange: 'BINANCE' as const,
+          marketType: 'FUTURES' as const,
+          baseCurrency: 'USDT',
+          paperInitialBalance: 10_000,
+          ...overrides?.wallet,
+        },
+  symbolGroup:
+    overrides?.symbolGroup === null
+      ? null
+      : {
+          marketUniverse:
+            overrides?.symbolGroup?.marketUniverse === null
+              ? null
+              : {
+                  exchange: 'BINANCE' as const,
+                  marketType: 'FUTURES' as const,
+                  baseCurrency: 'USDT',
+                  ...(overrides?.symbolGroup?.marketUniverse ?? {}),
+                },
+        },
+});
+
 describe('RuntimePositionAutomationService', () => {
   it('closes position when take-profit is hit', async () => {
     const deps: any = {
@@ -23,7 +72,7 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: 58_000,
           takeProfit: 61_000,
           managementMode: 'BOT_MANAGED' as const,
-          bot: { mode: 'PAPER' as const },
+          bot: buildBotExecutionContext(),
         },
       ]),
       getStrategyConfigById: vi.fn(async () => null),
@@ -117,13 +166,19 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: 58_000,
           takeProfit: 61_000,
           managementMode: 'BOT_MANAGED' as const,
-          bot: {
-            mode: 'LIVE' as const,
-            liveOptIn: true,
-            exchange: 'BYBIT' as const,
-            marketType: 'SPOT' as const,
-            paperStartBalance: 10_000,
-          },
+          bot: buildBotExecutionContext({
+            wallet: {
+              mode: 'LIVE',
+              exchange: 'BYBIT',
+              marketType: 'SPOT',
+            },
+            symbolGroup: {
+              marketUniverse: {
+                exchange: 'BYBIT',
+                marketType: 'SPOT',
+              },
+            },
+          }),
         },
       ]),
       getStrategyConfigById: vi.fn(async () => null),
@@ -168,7 +223,9 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: null,
           takeProfit: null,
           managementMode: 'BOT_MANAGED' as const,
-          bot: { mode: 'LIVE' as const, liveOptIn: true },
+          bot: buildBotExecutionContext({
+            wallet: { mode: 'LIVE' },
+          }),
         },
       ]),
       getStrategyConfigById: vi.fn(async () => ({
@@ -225,7 +282,9 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: null,
           takeProfit: null,
           managementMode: 'BOT_MANAGED' as const,
-          bot: { mode: 'PAPER' as const, marketType: 'FUTURES' as const, paperStartBalance: 1000 },
+          bot: buildBotExecutionContext({
+            wallet: { paperInitialBalance: 1000 },
+          }),
         },
       ]),
       getStrategyConfigById: vi.fn(async () => ({
@@ -272,7 +331,7 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: null,
           takeProfit: null,
           managementMode: 'BOT_MANAGED' as const,
-          bot: { mode: 'PAPER' as const },
+          bot: buildBotExecutionContext(),
         },
       ]),
       getStrategyConfigById: vi.fn(async () => ({
@@ -343,7 +402,9 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: null,
           takeProfit: null,
           managementMode: 'BOT_MANAGED' as const,
-          bot: { mode: 'LIVE' as const, liveOptIn: true },
+          bot: buildBotExecutionContext({
+            wallet: { mode: 'LIVE' },
+          }),
         },
       ]),
       getStrategyConfigById: vi.fn(async () => ({
@@ -404,7 +465,9 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: null,
           takeProfit: null,
           managementMode: 'BOT_MANAGED' as const,
-          bot: { mode: 'LIVE' as const, liveOptIn: true },
+          bot: buildBotExecutionContext({
+            wallet: { mode: 'LIVE' },
+          }),
         },
       ]),
       getStrategyConfigById: vi.fn(async () => ({
@@ -464,7 +527,9 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: null,
           takeProfit: null,
           managementMode: 'BOT_MANAGED' as const,
-          bot: { mode: 'LIVE' as const, liveOptIn: true },
+          bot: buildBotExecutionContext({
+            wallet: { mode: 'LIVE' },
+          }),
         },
       ]),
       getStrategyConfigById: vi.fn(async () => ({
@@ -559,7 +624,9 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: 0.95,
           takeProfit: 1.05,
           managementMode: 'MANUAL_MANAGED' as const,
-          bot: { mode: 'LIVE' as const, liveOptIn: true },
+          bot: buildBotExecutionContext({
+            wallet: { mode: 'LIVE' },
+          }),
         },
       ]),
       getStrategyConfigById: vi.fn(async () => null),
@@ -602,14 +669,10 @@ describe('RuntimePositionAutomationService', () => {
           takeProfit: 61_000,
           managementMode: 'BOT_MANAGED' as const,
           origin: 'BOT' as const,
-          bot: {
-            mode: 'LIVE' as const,
+          bot: buildBotExecutionContext({
             liveOptIn: false,
-            exchange: 'BINANCE' as const,
-            marketType: 'FUTURES' as const,
-            paperStartBalance: 10_000,
-            walletId: 'wallet-1',
-          },
+            wallet: { mode: 'LIVE' },
+          }),
         },
       ]),
       getStrategyConfigById: vi.fn(async () => null),
@@ -702,13 +765,19 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: 58_000,
           takeProfit: 61_000,
           managementMode: 'BOT_MANAGED' as const,
-          bot: {
-            mode: 'LIVE' as const,
-            liveOptIn: true,
-            exchange: 'BYBIT' as const,
-            marketType: 'FUTURES' as const,
-            paperStartBalance: 10_000,
-          },
+          bot: buildBotExecutionContext({
+            wallet: {
+              mode: 'LIVE',
+              exchange: 'BYBIT',
+              marketType: 'FUTURES',
+            },
+            symbolGroup: {
+              marketUniverse: {
+                exchange: 'BYBIT',
+                marketType: 'FUTURES',
+              },
+            },
+          }),
         },
       ]),
       getStrategyConfigById: vi.fn(async () => null),
@@ -756,7 +825,9 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: null,
           takeProfit: null,
           managementMode: 'BOT_MANAGED' as const,
-          bot: { mode: 'LIVE' as const, liveOptIn: true },
+          bot: buildBotExecutionContext({
+            wallet: { mode: 'LIVE' },
+          }),
         },
       ]),
       getStrategyConfigById: vi.fn(async () => ({
@@ -808,7 +879,9 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: null,
           takeProfit: null,
           managementMode: 'BOT_MANAGED' as const,
-          bot: { mode: 'LIVE' as const, liveOptIn: true },
+          bot: buildBotExecutionContext({
+            wallet: { mode: 'LIVE' },
+          }),
         },
       ]),
       getStrategyConfigById: vi.fn(async () => ({
