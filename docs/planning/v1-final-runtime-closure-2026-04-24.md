@@ -142,7 +142,7 @@ truth gaps so backend/runtime stops blocking final UI work.
   - add focused regression or recovery validation
 
 ### Slice 3 - Closure
-- [ ] `V1FINAL-03 qa(prod-closure): rerun focused runtime closure pack and capture remaining infra-only blockers`
+- [x] `V1FINAL-03 qa(prod-closure): rerun focused runtime closure pack and capture remaining infra-only blockers`
   - rerun focused API validation
   - record that local `test:go-live:smoke` is currently blocked by already
     bound Docker ports from another stack unless ports are freed first
@@ -161,3 +161,14 @@ truth gaps so backend/runtime stops blocking final UI work.
   - confirmed the paper bot aggregate no longer reports the orphan in
     `positions.openOrders`
   - aggregate after recovery: `openOrdersCount=0`
+- `V1FINAL-03` validation PASS:
+  - `pnpm --filter api exec vitest run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts src/modules/orders/orders.service.test.ts src/modules/engine/runtime-flow.e2e.test.ts`
+  - `pnpm --filter api run typecheck`
+  - `pnpm run quality:guardrails`
+- Remaining non-code blocker:
+  - local `pnpm run test:go-live:smoke` is still blocked on this machine when
+    `docker compose up` tries to bind `5432` and `6379`, because those ports
+    are already occupied by another running local stack
+    (`cryptosparrow-postgres-1`, `cryptosparrow-redis-1`)
+  - this is classified as an infra-only blocker for the local smoke command,
+    not as an application-runtime regression

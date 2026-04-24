@@ -17,14 +17,12 @@ Last updated: 2026-04-24
 
 ## READY
 
-- [ ] `V1FINAL-03 qa(prod-closure): rerun focused runtime closure pack and capture remaining infra-only blockers`
 - [ ] `V1LIFE-01 docs+web(contract): freeze and expose 0=no-limit semantics for strategy order/position lifetime`
 - [ ] `V1LIFE-02 api(shared-lifetime): add one canonical strategy-lifetime resolver for order and position policies`
+- [ ] `V1LIFE-03 api(order-lifetime): enforce strategy-configured order lifetime via canonical cancel path`
 
 ## BACKLOG
 
-- [ ] `V1FINAL-03 qa(prod-closure): rerun focused runtime closure pack and capture remaining infra-only blockers`
-- [ ] `V1LIFE-03 api(order-lifetime): enforce strategy-configured order lifetime via canonical cancel path`
 - [ ] `V1LIFE-04 api(position-lifetime): enforce strategy-configured position lifetime via canonical close lifecycle`
 - [ ] `V1LIFE-05 web(open-orders-action): add final Action column with cancel affordance in dashboard Orders tab`
 - [ ] `V1LIFE-06 qa(closure): run focused lifetime/order-control pack and sync canonical docs/context`
@@ -42,6 +40,9 @@ Last updated: 2026-04-24
 - [ ] (none)
 
 ## DONE
+
+- [x] `V1FINAL-03 qa(prod-closure): rerun focused runtime closure pack and capture remaining infra-only blockers`
+  - 2026-04-24: Reran the focused backend runtime-closure pack and confirmed green results for aggregate monitoring truth, paper manual-order immediate-fill behavior, runtime flow parity, `api` typecheck, and repository guardrails. Recorded that the remaining blocker for local `test:go-live:smoke` is infra-only on this machine: Docker cannot bind `5432/6379` because another local stack (`cryptosparrow-postgres-1`, `cryptosparrow-redis-1`) is already occupying those ports.
 
 - [x] `V1FINAL-02 api/ops(paper-order-recovery): classify and recover orphaned PAPER MARKET manual orders persisted pre-fix as OPEN without fill/position`
   - 2026-04-24: Confirmed that the known production orphan was a historical pre-fix `PAPER MARKET` manual order persisted as `OPEN` with `positionId=null`, not a new runtime regression. Recovery reused the existing canonical `cancelOrder` path: order `3c147495-519e-4f74-b8eb-07027e4a49f1` was canceled successfully on production via `POST /dashboard/orders/:id/cancel`, and the paper bot runtime aggregate now reports `openOrdersCount=0`.

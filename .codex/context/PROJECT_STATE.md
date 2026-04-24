@@ -299,6 +299,13 @@ Last updated: 2026-04-24
   `PAPER MARKET` row persisted as `OPEN` with no fill/position. Recovery
   reused the canonical existing `cancelOrder` lifecycle path, and production
   paper aggregate now reports `openOrdersCount=0`.
+- 2026-04-24: `V1FINAL-03` is closed. Focused backend runtime-closure
+  validation passed again for aggregate monitoring truth, paper manual-order
+  immediate fill, runtime flow parity, `api` typecheck, and repository
+  guardrails. The only remaining blocker captured for the backend handoff is
+  infra-only on this workstation: local `test:go-live:smoke` cannot bind
+  `5432/6379` while another local docker stack is already occupying those
+  ports.
 - 2026-04-22: prod restore-drill proof now passes from a real Coolify terminal
   execution in the production postgres container
   (`x11cfnz1dd9x0yzccftqzcoe`), and the final non-dry-run prod release gate now
