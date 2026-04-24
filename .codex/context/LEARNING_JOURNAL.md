@@ -865,6 +865,7 @@ After closing a wave:
 - Avoid: assuming test-only edits are excluded from production build lint gates.
 - Evidence:
   - 2026-04-20 Coolify log: `HomeLiveWidgets.aggregate-wallet.test.tsx` and `RuntimeSidebarSection.test.tsx` failed build on `no-explicit-any`; local web build PASS after replacing casts.
+  - 2026-04-25 Coolify log for commit `0dd951d1696bd45ac11983c67e72213134a632d3` failed again inside `pnpm --filter web build`, this time on `HomeLiveWidgets.test-helpers.ts` plus a hook-deps warning in `WalletsListTable.tsx`, confirming that even helper/test-only web edits must be revalidated with a real web build before push.
 
 ### 2026-04-20 - Queue-idle mode still requires stale-status sweep before "nothing planned"
 - Context: canonical queue reports `NOW/NEXT/PIPELINE = none` after major wave closures.

@@ -1,9 +1,19 @@
-type RuntimeSessionsMock = (botId: string, query: { limit: number }) => Promise<any[]>;
-type RuntimePayloadMock = (
+import type {
+  BotRuntimePositionsResponse,
+  BotRuntimeSessionListItem,
+  BotRuntimeSymbolStatsResponse,
+  BotRuntimeTradesResponse,
+} from "../../bots/types/bot.type";
+
+type RuntimeSessionsMock = (
+  botId: string,
+  query: { limit: number }
+) => Promise<BotRuntimeSessionListItem[]>;
+type RuntimePayloadMock<T> = (
   botId: string,
   sessionId: string,
   query: { limit: number }
-) => Promise<any>;
+) => Promise<T>;
 
 export const buildMonitoringAggregateFromSessionMocks = ({
   listBotRuntimeSessionsMock,
@@ -12,9 +22,9 @@ export const buildMonitoringAggregateFromSessionMocks = ({
   listBotRuntimeSessionTradesMock,
 }: {
   listBotRuntimeSessionsMock: RuntimeSessionsMock;
-  listBotRuntimeSessionSymbolStatsMock: RuntimePayloadMock;
-  listBotRuntimeSessionPositionsMock: RuntimePayloadMock;
-  listBotRuntimeSessionTradesMock: RuntimePayloadMock;
+  listBotRuntimeSessionSymbolStatsMock: RuntimePayloadMock<BotRuntimeSymbolStatsResponse>;
+  listBotRuntimeSessionPositionsMock: RuntimePayloadMock<BotRuntimePositionsResponse>;
+  listBotRuntimeSessionTradesMock: RuntimePayloadMock<BotRuntimeTradesResponse>;
 }) => {
   return async (botId: string) => {
     const sessions = await listBotRuntimeSessionsMock(botId, { limit: 20 });

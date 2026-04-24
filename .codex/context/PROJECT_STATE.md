@@ -1,6 +1,6 @@
 # PROJECT_STATE
 
-Last updated: 2026-04-24
+Last updated: 2026-04-25
 
 ## Product Snapshot
 - Name: CryptoSparrow / Soar
@@ -49,6 +49,13 @@ Last updated: 2026-04-24
   `EXCHANGE_SYNC BOT_MANAGED` LIVE runtime position visibility/close flows.
 
 ## Product Decisions (Confirmed)
+- 2026-04-25: Coolify deployment for web commit
+  `0dd951d1696bd45ac11983c67e72213134a632d3` failed strictly at the web
+  build gate, not at Docker or runtime startup. The blocking issues were one
+  `no-explicit-any` violation in `HomeLiveWidgets.test-helpers.ts` and one
+  redundant `useMemo` dependency warning in `WalletsListTable.tsx`; the
+  follow-up hotfix restores the required `pnpm --filter web run build`
+  contract for automatic redeploy.
 - 2026-04-24: closed `PAPERPNL-01` after replacing the manual dashboard close
   fallback to `position.entryPrice` with one canonical runtime lifecycle
   mark-price resolver shared with automated runtime close logic. Manual close
