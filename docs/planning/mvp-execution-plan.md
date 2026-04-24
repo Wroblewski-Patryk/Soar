@@ -2615,6 +2615,12 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-22: Closed `V1FACT-10` by publishing `docs/operations/v1-production-activation-pack-2026-04-22.md`, refreshing RC external-gates status, RC sign-off, and RC checklist to current-day truth, and narrowing residual activation blockers to missing prod restore-drill proof, missing prod rollback-proof pack, open RC Gate 2, and missing named human approvers. Validation PASS: `pnpm run ops:release:v1:gate -- --environment prod --dry-run --skip-local-quality --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch`, `pnpm run ops:rc:gates:status`, `pnpm run ops:rc:signoff:build`, `pnpm run ops:rc:checklist:sync`.
 - 2026-04-22: Closed `V1FACT-11` by publishing `docs/operations/v1-production-activation-closure-2026-04-22.md`, syncing queue/context/project state to the final `CLOSED_WITH_OPERATOR_BLOCKERS` state, and freezing future-agent rules so no future executor can infer production readiness from stage success, public prod smoke, or fresh docs alone.
 
+## Phase PAPERPNL-A - Paper Close PnL Truth Recovery (Queued 2026-04-24)
+- [ ] `PAPERPNL-01 fix(api-runtime): recover truthful PAPER close PnL and wallet-capital updates for manual/runtime exits`
+
+### Progress Log (Phase PAPERPNL-A - Paper Close PnL Truth Recovery)
+- 2026-04-24: Queued `PAPERPNL-01` from a production paper-bot investigation after confirming one concrete drift in the canonical close path: manual dashboard close can still fall back to `position.entryPrice` when runtime ticker truth is unavailable, which records profitable exits as fee-only losses and then propagates the wrong realized PnL sign into runtime history and paper capital summary. Published task packet `docs/planning/paper-close-pnl-truth-recovery-task-2026-04-24.md` and promoted the task to `NOW`.
+
 ## Phase ARCCON - Architecture Conformance and Service Ownership Closure (Closed 2026-04-21)
 - [x] `ARCCON-01 test(api-red): lock fail-closed manual-order strategy context when selected bot has no symbol-matching strategy`
 - [x] `ARCCON-02 fix(api-orders): remove hidden first-strategy fallback from manual-order context resolution and keep unresolved state explicit`
