@@ -262,6 +262,12 @@ Last updated: 2026-04-24
   `exchange/marketType` fields. Capability checks, placeholder venue labels,
   sidebar market context, and SPOT-vs-FUTURES fallback margin/leverage
   behavior now align on one shared `resolveBotVenueContext()` helper.
+- 2026-04-24: `V1SURF-B` is now fully closed. Bot-monitoring quick-context
+  cards and placeholder capability warnings now also resolve venue semantics
+  from inherited bot context instead of duplicated bot snapshot fields, and
+  the focused residual operator-surface closure pack passed across selected-bot
+  dashboard aggregate fail-closed behavior, inherited dashboard venue truth,
+  bot-monitoring inherited venue truth, and dashboard/preview parity views.
 - 2026-04-24: the next post-`V1IND-A` operator-truth follow-up is now active
   as `V1MON-A`. The first slice is already closed: bot monitoring no longer
   reconstructs aggregate runtime truth client-side when the backend aggregate

@@ -3,7 +3,7 @@
 ## Header
 - ID: V1SURF-B
 - Title: Residual operator-surface truth closure after V1LIFE
-- Status: IN_PROGRESS
+- Status: CLOSED
 - Owner: Frontend Builder
 - Depends on: V1MON-A, V1LIFE-A
 - Priority: P1
@@ -45,10 +45,10 @@ the browser.
 - [x] `V1SURF-06` dashboard runtime sidebar and manual-order estimates derive
       venue semantics from inherited bot context or explicit manual-order
       context, not duplicated bot snapshot fields.
-- [ ] `V1SURF-07` bot monitoring quick-context/control surfaces derive venue
+- [x] `V1SURF-07` bot monitoring quick-context/control surfaces derive venue
       and capability labels from inherited context, not duplicated bot snapshot
       fields.
-- [ ] `V1SURF-08` focused closure pack passes and canonical queue/context docs
+- [x] `V1SURF-08` focused closure pack passes and canonical queue/context docs
       are synced.
 
 ## Forbidden
@@ -104,13 +104,13 @@ the browser.
     inherited bot context under the same fail-closed aggregate rules
 
 ## Review Checklist (mandatory)
-- [ ] Architecture alignment confirmed.
-- [ ] Existing systems were reused where applicable.
-- [ ] No workaround paths were introduced.
-- [ ] No logic duplication was introduced.
-- [ ] Definition of Done evidence is attached.
-- [ ] Relevant validations were run.
-- [ ] Docs or context were updated if repository truth changed.
+- [x] Architecture alignment confirmed.
+- [x] Existing systems were reused where applicable.
+- [x] No workaround paths were introduced.
+- [x] No logic duplication was introduced.
+- [x] Definition of Done evidence is attached.
+- [x] Relevant validations were run.
+- [x] Docs or context were updated if repository truth changed.
 - [ ] Learning journal was updated if a recurring pitfall was confirmed.
 
 ## Notes
@@ -139,3 +139,18 @@ vs inherited SPOT semantics.
 This wave should prefer shared helpers already present in
 `features/bots/utils/runtimeSurfaceTruth.ts` and must not add a second venue
 resolver or a second aggregate compatibility layer.
+
+`V1SURF-07` is now closed. `BotsMonitoringSections.tsx` no longer reads quick
+context or placeholder venue semantics from duplicated `bot.exchange` /
+`bot.marketType` snapshot fields. Quick-switch cards and the unsupported-venue
+warning now resolve inherited venue truth through
+`resolveBotVenueContext()`, keeping monitoring aligned with the same
+symbol-group market-universe truth used by dashboard-home. Focused regression
+coverage was added in `BotsManagement.test.tsx` for a bot whose inherited venue
+differs from stale bot snapshot fields.
+
+`V1SURF-08` is now closed. The focused residual closure pack passed across
+dashboard aggregate fail-closed truth, inherited dashboard venue semantics,
+bot-monitoring inherited venue truth, and shared dashboard/preview runtime
+parity. Canonical queue/context docs are synchronized and the residual
+operator-surface truth wave is fully closed.

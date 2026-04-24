@@ -825,6 +825,62 @@ describe("BotsManagement", () => {
     });
   });
 
+  it("prefers inherited venue context in monitoring quick cards and placeholder warning", async () => {
+    listStrategiesMock.mockResolvedValue([{ id: "s-monitor-venue", name: "Monitor Venue Strategy", interval: "5m" }]);
+    listMarketUniversesMock.mockResolvedValue([
+      {
+        id: "g-monitor-venue",
+        name: "Monitor Venue Group",
+        marketType: "FUTURES",
+        baseCurrency: "USDT",
+        whitelist: [],
+        blacklist: [],
+      },
+    ]);
+    listMock.mockResolvedValue([
+      {
+        id: "b-monitor-venue",
+        name: "Monitor Venue Bot",
+        mode: "LIVE",
+        paperStartBalance: 10000,
+        exchange: "BINANCE",
+        marketType: "SPOT",
+        positionMode: "ONE_WAY",
+        isActive: true,
+        liveOptIn: true,
+        maxOpenPositions: 1,
+        symbolGroup: {
+          id: "sg-monitor-venue",
+          name: "Inherited Venue Scope",
+          symbols: ["BTCUSDT"],
+          marketUniverseId: "mu-monitor-venue",
+          marketUniverse: {
+            id: "mu-monitor-venue",
+            name: "OKX Futures",
+            exchange: "OKX",
+            marketType: "FUTURES",
+            baseCurrency: "USDT",
+          },
+        },
+      },
+    ]);
+    listRuntimeSessionsMock.mockResolvedValue([]);
+
+    await renderWithI18n();
+    await waitFor(() => {
+      expect(screen.getByDisplayValue("Monitor Venue Bot")).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole("tab", { name: /Operacje runtime|Monitoring|Runtime operations/i }));
+
+    await waitFor(() => {
+      expect(
+        screen.getAllByText((content) => content.includes("OKX - FUTURES")).length
+      ).toBeGreaterThan(0);
+      expect(screen.getByText(/OKX: .*LIVE/i)).toBeInTheDocument();
+    });
+  });
+
   it("shows stale monitoring warning after refresh failures and clears it after successful refresh", async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
 

@@ -17,8 +17,7 @@ Last updated: 2026-04-24
 
 ## READY
 
-- [ ] `V1SURF-07 web(bot-monitoring-context): align quick-context/control venue labels and capability checks to inherited context`
-- [ ] `V1SURF-08 qa(closure): rerun focused residual surface-truth pack and sync canonical docs/context`
+- [ ] (none)
 
 ## BACKLOG
 
@@ -52,6 +51,12 @@ Last updated: 2026-04-24
 
 - [x] `V1SURF-06 web(inherited-venue): align runtime sidebar and manual-order estimate semantics to inherited bot context`
   - 2026-04-24: Runtime sidebar and dashboard manual-order estimate semantics now reuse inherited venue truth from `resolveBotVenueContext()` instead of duplicated bot snapshot `exchange/marketType` fields. `HomeLiveWidgets`, `RuntimeSidebarSection`, `runtimeSidebarPresenters`, and `useManualOrderController` now prefer the linked symbol-group market-universe context for capability checks, sidebar venue labels, manual-order margin fallback, and SPOT-vs-FUTURES estimate behavior. Added focused regression coverage for inherited venue labels and SPOT fallback semantics when manual-order context is unavailable. Validation PASS: `pnpm --filter web exec vitest run src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.manual-order-scope.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.manual-order-venue.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
+
+- [x] `V1SURF-07 web(bot-monitoring-context): align quick-context/control venue labels and capability checks to inherited context`
+  - 2026-04-24: Bot monitoring quick-context cards and placeholder capability warning now resolve venue semantics through `resolveBotVenueContext()` instead of duplicated bot snapshot `exchange/marketType` fields. Monitoring cards show inherited market-universe venue labels, capability badges evaluate against inherited exchange truth, and the warning banner now names the same inherited venue as the rest of the monitoring surface. Focused validation PASS: `pnpm --filter web exec vitest run src/features/bots/components/BotsManagement.test.tsx`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
+
+- [x] `V1SURF-08 qa(closure): rerun focused residual surface-truth pack and sync canonical docs/context`
+  - 2026-04-24: Closed `V1SURF-B` after rerunning the focused residual operator-surface pack across dashboard aggregate fail-closed behavior, inherited dashboard venue semantics, bot-monitoring inherited venue truth, and shared runtime parity views. Validation PASS: `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.aggregate-error.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.aggregate-wallet.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.open-orders-actions.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.open-orders-source.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.manual-order-scope.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.manual-order-venue.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx src/features/bots/components/BotsManagement.test.tsx src/features/bots/services/botsMonitoringAggregate.service.test.ts`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
 
 - [x] `V1LIFE-04 api(position-lifetime): enforce strategy-configured position lifetime via canonical close lifecycle`
   - 2026-04-24: Added canonical runtime stale-position enforcement in `runtimePositionLifetime.service.ts` and wired it into the runtime session watchdog so stale `OPEN` positions for active bots are closed through the existing runtime EXIT lifecycle instead of a second cleanup path. The close flow now resolves one runtime mark price from ticker truth with a recent-close fallback, and fails closed when no valid price can be proven. Focused validation PASS: `pnpm --filter api exec vitest run src/modules/engine/runtimePositionLifetime.service.test.ts src/modules/engine/runtimeSignalLoop.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.

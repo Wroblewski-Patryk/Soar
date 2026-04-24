@@ -5,6 +5,7 @@ import { EmptyState, ErrorState } from "../../../../ui/components/ViewState";
 import { SkeletonCardBlock, SkeletonKpiRow } from "../../../../ui/components/loading";
 import { supportsExchangeCapability } from "../../../exchanges/exchangeCapabilities";
 import type { Bot, BotRuntimeSessionListItem, BotRuntimeSessionStatus } from "../../types/bot.type";
+import { resolveBotVenueContext } from "../../utils/runtimeSurfaceTruth";
 
 type MonitoringSectionBaseProps = {
   t: (key: TranslationKey) => string;
@@ -55,32 +56,41 @@ export function MonitoringQuickContextSection({
         </span>
       </div>
       <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-4">
-        {monitorQuickSwitchBots.map((bot) => (
-          <button
-            key={bot.id}
-            type="button"
-            className={`rounded-md border p-2 text-left transition-colors ${
-              monitorBotId === bot.id
-                ? "border-primary bg-primary/10"
-                : "border-base-300 bg-base-200 hover:border-primary/50"
-            }`}
-            onClick={() => setMonitorBotId(bot.id)}
-          >
-            <p className="truncate text-sm font-semibold">{bot.name}</p>
-            <p className="mt-1 text-[11px] opacity-70">
-              {bot.exchange} - {bot.marketType} | {bot.mode} | {bot.isActive ? t("dashboard.bots.monitoring.active") : t("dashboard.bots.monitoring.inactive")}
-            </p>
-            {!((bot.mode === "LIVE"
-              ? supportsExchangeCapability(bot.exchange, "LIVE_EXECUTION")
-              : supportsExchangeCapability(bot.exchange, "PAPER_PRICING_FEED"))) ? (
-              <div className="mt-1">
-                <span className="badge badge-xs badge-warning badge-outline">
-                  {t("dashboard.bots.list.placeholderBadge")}
-                </span>
-              </div>
-            ) : null}
-          </button>
-        ))}
+        {monitorQuickSwitchBots.map((bot) => {
+          const venue = resolveBotVenueContext(bot);
+          const exchange = venue.exchange ?? "-";
+          const marketType = venue.marketType ?? "-";
+          const runtimeCapabilityAvailable =
+            venue.exchange != null &&
+            (bot.mode === "LIVE"
+              ? supportsExchangeCapability(venue.exchange, "LIVE_EXECUTION")
+              : supportsExchangeCapability(venue.exchange, "PAPER_PRICING_FEED"));
+
+          return (
+            <button
+              key={bot.id}
+              type="button"
+              className={`rounded-md border p-2 text-left transition-colors ${
+                monitorBotId === bot.id
+                  ? "border-primary bg-primary/10"
+                  : "border-base-300 bg-base-200 hover:border-primary/50"
+              }`}
+              onClick={() => setMonitorBotId(bot.id)}
+            >
+              <p className="truncate text-sm font-semibold">{bot.name}</p>
+              <p className="mt-1 text-[11px] opacity-70">
+                {exchange} - {marketType} | {bot.mode} | {bot.isActive ? t("dashboard.bots.monitoring.active") : t("dashboard.bots.monitoring.inactive")}
+              </p>
+              {!runtimeCapabilityAvailable ? (
+                <div className="mt-1">
+                  <span className="badge badge-xs badge-warning badge-outline">
+                    {t("dashboard.bots.list.placeholderBadge")}
+                  </span>
+                </div>
+              ) : null}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
@@ -111,6 +121,8 @@ export function MonitoringControlsSection({
   formatDateTime,
   interpolateTemplate,
 }: Omit<MonitoringSectionBaseProps, "monitorQuickSwitchBots" | "monitorLoading" | "monitorError" | "refreshMonitoring">) {
+  const selectedMonitorVenue = resolveBotVenueContext(selectedMonitorBot);
+
   return (
     <div className="space-y-3 rounded-lg border border-base-300 bg-base-100 p-3">
       <div className="flex flex-wrap items-start justify-between gap-2">
@@ -128,7 +140,7 @@ export function MonitoringControlsSection({
               {t("dashboard.bots.list.placeholderBadge")}
             </span>
             <span>
-              {selectedMonitorBot.exchange}:{" "}
+              {selectedMonitorVenue.exchange ?? "-"}:{" "}
               {t("dashboard.bots.create.placeholderActivationHint").replace("{mode}", selectedMonitorBot.mode)}
             </span>
           </div>
