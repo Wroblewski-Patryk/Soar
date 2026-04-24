@@ -9,8 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - [ ] `V1FINAL-02 api/ops(paper-order-recovery): classify and recover orphaned PAPER MARKET manual orders persisted pre-fix as OPEN without fill/position`
 ## NEXT
+- [ ] `V1LIFE-01 docs+web(contract): freeze and expose 0=no-limit semantics for strategy order/position lifetime`
+- [ ] `V1LIFE-02 api(shared-lifetime): add one canonical strategy-lifetime resolver for order and position policies`
 - [ ] `V1FINAL-03 qa(prod-closure): rerun focused runtime closure pack and capture remaining infra-only blockers`
 ## PIPELINE
+- [x] `V1LIFE-A planning queued (order/position lifetime enforcement plus dashboard open-order cancel control)`
+- [x] `V1LIFE-03 api(order-lifetime): enforce strategy-configured order lifetime via canonical cancel path`
+- [x] `V1LIFE-04 api(position-lifetime): enforce strategy-configured position lifetime via canonical close lifecycle`
+- [x] `V1LIFE-05 web(open-orders-action): add final Action column with cancel affordance in dashboard Orders tab`
+- [x] `V1LIFE-06 qa(closure): run focused lifetime/order-control pack and sync canonical docs/context`
 - [x] `V1FINAL-A planning queued (final runtime closure after full repo green plus fresh production aggregate audit)`
 - [x] `V1FINAL-01 api(aggregate-session-truth): keep aggregate sessionDetail finishedAt null while any session is still RUNNING`
 - [x] `V1MON-A planning queued (bot monitoring runtime-truth hardening after post-V1IND surface audit and explicit fail-closed decision)`

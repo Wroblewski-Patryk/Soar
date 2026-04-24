@@ -18,10 +18,16 @@ Last updated: 2026-04-24
 ## READY
 
 - [ ] `V1FINAL-02 api/ops(paper-order-recovery): classify and recover orphaned PAPER MARKET manual orders persisted pre-fix as OPEN without fill/position`
+- [ ] `V1LIFE-01 docs+web(contract): freeze and expose 0=no-limit semantics for strategy order/position lifetime`
+- [ ] `V1LIFE-02 api(shared-lifetime): add one canonical strategy-lifetime resolver for order and position policies`
 
 ## BACKLOG
 
 - [ ] `V1FINAL-03 qa(prod-closure): rerun focused runtime closure pack and capture remaining infra-only blockers`
+- [ ] `V1LIFE-03 api(order-lifetime): enforce strategy-configured order lifetime via canonical cancel path`
+- [ ] `V1LIFE-04 api(position-lifetime): enforce strategy-configured position lifetime via canonical close lifecycle`
+- [ ] `V1LIFE-05 web(open-orders-action): add final Action column with cancel affordance in dashboard Orders tab`
+- [ ] `V1LIFE-06 qa(closure): run focused lifetime/order-control pack and sync canonical docs/context`
 
 ## IN_PROGRESS
 
@@ -36,6 +42,9 @@ Last updated: 2026-04-24
 - [ ] (none)
 
 ## DONE
+
+- [x] `V1LIFE-A planning: publish order/position lifetime enforcement and dashboard open-order control wave`
+  - 2026-04-24: Audited strategy builder, API/runtime, and dashboard open orders surfaces after the final V1 runtime review. Confirmed that lifetime fields already exist in `strategy.config.additional` and are exposed in the web form, but runtime currently only consumes `maxPositions`; no canonical enforcement path was found for `orderLifetime`, `positionLifetime`, or `maxOrders`, and dashboard orders table still lacks a cancel action despite an existing backend cancel endpoint. Published `docs/planning/v1-order-position-lifetime-and-manual-order-closure-2026-04-24.md` and queued `V1LIFE-01..06`.
 
 - [x] `V1FINAL-A planning: publish final runtime closure wave after full repo green plus fresh production aggregate audit`
   - 2026-04-24: After rerunning full `api`, full `web`, `build`, and `quality:guardrails`, the repository is green again. Fresh production API verification showed the main runtime/signal path is now healthy, but two narrow follow-ups remain: aggregate session detail still mixed `RUNNING` with stale `finishedAt`, and production still contains at least one legacy paper manual `MARKET` order persisted pre-fix as `OPEN` without fill/position. Published `docs/planning/v1-final-runtime-closure-2026-04-24.md` and queued `V1FINAL-01..03`.

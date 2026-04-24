@@ -284,6 +284,16 @@ Last updated: 2026-04-24
   detail now keeps `finishedAt=null` whenever any aggregated session is still
   `RUNNING`, instead of mixing active state with stale completion metadata from
   older sessions.
+- 2026-04-24: published `V1LIFE-A` after a focused lifecycle audit covering
+  strategy builder, runtime/order services, and dashboard open orders UI.
+  Confirmed that strategy already stores `maxOrders`, `orderLifetime`,
+  `orderUnit`, `maxPositions`, `positionLifetime`, and `positionUnit` inside
+  `strategy.config.additional`, but canonical runtime enforcement currently
+  only consumes `maxPositions`. No explicit runtime/manual-order enforcement
+  path was found yet for order lifetime or position lifetime, and the dashboard
+  open orders table still lacks an operator cancel action despite the existing
+  backend `cancelOrder` endpoint. The queued wave closes those gaps under one
+  contract, including `0 = no time limit` semantics in the strategy UI.
 - 2026-04-22: prod restore-drill proof now passes from a real Coolify terminal
   execution in the production postgres container
   (`x11cfnz1dd9x0yzccftqzcoe`), and the final non-dry-run prod release gate now
