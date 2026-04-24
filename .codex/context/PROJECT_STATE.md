@@ -250,6 +250,11 @@ Last updated: 2026-04-24
   snapshots instead of reading like accepted or evaluated runtime decisions,
   while still showing the same canonical condition lines for operator
   comparison.
+- 2026-04-24: the next post-`V1IND-A` operator-truth follow-up is now active
+  as `V1MON-A`. The first slice is already closed: bot monitoring no longer
+  reconstructs aggregate runtime truth client-side when the backend aggregate
+  endpoint fails, and instead relies on one canonical backend aggregate plus
+  explicit degraded/error state in web.
 - 2026-04-22: prod restore-drill proof now passes from a real Coolify terminal
   execution in the production postgres container
   (`x11cfnz1dd9x0yzccftqzcoe`), and the final non-dry-run prod release gate now

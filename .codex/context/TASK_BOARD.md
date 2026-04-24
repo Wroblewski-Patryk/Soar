@@ -37,6 +37,12 @@ Last updated: 2026-04-24
 
 ## DONE
 
+- [x] `V1MON-A planning: publish bot monitoring runtime-truth hardening wave`
+  - 2026-04-24: After the post-`V1IND-A` operator-surface audit, user explicitly approved the strict architecture direction for bot monitoring: one backend aggregate endpoint is the only truth, and web must fail closed into degraded/error state instead of reconstructing runtime aggregate locally. Published `docs/planning/v1-monitoring-runtime-truth-hardening-2026-04-24.md` and queued `V1MON-01..04`.
+
+- [x] `V1MON-01 web(aggregate-truth): remove client-side monitoring aggregate fallback and fail closed on backend aggregate errors`
+  - 2026-04-24: Removed the browser-side aggregate reconstruction path from `botsMonitoringAggregate.service.ts`. Bot monitoring now depends on the canonical backend aggregate endpoint and surfaces endpoint failure through the existing degraded/error state instead of building a second runtime truth path in web code. Validation PASS: `pnpm --filter web exec vitest run src/features/bots/services/botsMonitoringAggregate.service.test.ts`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
+
 - [x] `V1SIGSEM-A planning: publish signal-surface semantic hardening slice`
   - 2026-04-24: After `V1IND-A` closed the canonical indicator and signal-analysis drift, a smaller operator-surface issue remained: `CONFIGURED_ONLY` rows still read too much like runtime decisions even though architecture defines them as market snapshots from the latest closed candle. Published `docs/planning/v1-signal-surface-semantic-hardening-2026-04-24.md` to lock the slice as presentation-only semantic hardening.
 
