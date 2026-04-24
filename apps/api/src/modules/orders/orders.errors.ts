@@ -8,6 +8,8 @@ export const ORDER_ERROR_CODES = {
   liveBotModeRequired: 'LIVE_BOT_MODE_REQUIRED',
   liveBotOptInRequired: 'LIVE_BOT_OPT_IN_REQUIRED',
   liveBotActiveRequired: 'LIVE_BOT_ACTIVE_REQUIRED',
+  liveBotContextMismatch: 'LIVE_BOT_CONTEXT_MISMATCH',
+  liveManualScopeUnresolved: 'LIVE_MANUAL_SCOPE_UNRESOLVED',
   liveApiKeyRequired: 'LIVE_API_KEY_REQUIRED',
   liveOrderTypeUnsupported: 'LIVE_ORDER_TYPE_UNSUPPORTED',
   liveExecutionFailed: 'LIVE_EXECUTION_FAILED',
@@ -43,6 +45,10 @@ export const orderErrors = {
   liveBotModeRequired: () => new OrderDomainError(ORDER_ERROR_CODES.liveBotModeRequired, 400),
   liveBotOptInRequired: () => new OrderDomainError(ORDER_ERROR_CODES.liveBotOptInRequired, 400),
   liveBotActiveRequired: () => new OrderDomainError(ORDER_ERROR_CODES.liveBotActiveRequired, 400),
+  liveBotContextMismatch: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.liveBotContextMismatch, 400),
+  liveManualScopeUnresolved: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.liveManualScopeUnresolved, 400),
   liveApiKeyRequired: () => new OrderDomainError(ORDER_ERROR_CODES.liveApiKeyRequired, 400),
   liveOrderTypeUnsupported: () => new OrderDomainError(ORDER_ERROR_CODES.liveOrderTypeUnsupported, 400),
   liveExecutionFailed: () => new OrderDomainError(ORDER_ERROR_CODES.liveExecutionFailed, 502),

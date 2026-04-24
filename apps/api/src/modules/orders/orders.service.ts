@@ -18,9 +18,14 @@ import {
 import { liveOrderingConfig } from '../../config/runtimeExecution';
 import { isAppErrorLike } from '../../lib/errors';
 import { orderErrors } from './orders.errors';
-import { getManualOrderContext as getManualOrderContextService, type ManualOrderContextDeps } from './orders.manualContext.service';
+import {
+  getManualOrderContext as getManualOrderContextService,
+  resolveManualOrderStrategyContext,
+  type ManualOrderContextDeps,
+} from './orders.manualContext.service';
 import { applyOrderFillLifecycle } from './orders.lifecycle.service';
 import { enforceLivePretradeGuards } from './orders.quantityRules';
+import { resolveInheritedRuntimeExecutionContext } from '../engine/runtimeBotExecutionContext';
 
 type OpenOrderInput = OpenOrderDto & {
   positionId?: string | null;
@@ -61,8 +66,6 @@ type LiveBotContext = {
 type CanonicalOrderBotContext = {
   id: string;
   mode: 'PAPER' | 'LIVE';
-  exchange: Exchange;
-  marketType: 'FUTURES' | 'SPOT';
   positionMode: 'ONE_WAY' | 'HEDGE';
   apiKeyId: string | null;
   walletId: string | null;
@@ -70,6 +73,13 @@ type CanonicalOrderBotContext = {
   liveOptIn: boolean;
   isActive: boolean;
   consentTextVersion: string | null;
+  inheritedExecutionContext: {
+    mode: 'PAPER' | 'LIVE';
+    exchange: Exchange;
+    marketType: 'FUTURES' | 'SPOT';
+    walletId: string | null;
+  } | null;
+  manualStrategyScopeResolved: boolean;
 };
 
 type LiveExecutionResult = {
@@ -129,8 +139,6 @@ const resolveCanonicalBotContext = async (userId: string, payload: OpenOrderInpu
     select: {
       id: true,
       mode: true,
-      exchange: true,
-      marketType: true,
       positionMode: true,
       apiKeyId: true,
       walletId: true,
@@ -138,17 +146,46 @@ const resolveCanonicalBotContext = async (userId: string, payload: OpenOrderInpu
       liveOptIn: true,
       isActive: true,
       consentTextVersion: true,
+      wallet: {
+        select: {
+          mode: true,
+          exchange: true,
+          marketType: true,
+          baseCurrency: true,
+          paperInitialBalance: true,
+        },
+      },
+      symbolGroup: {
+        select: {
+          marketUniverse: {
+            select: {
+              exchange: true,
+              marketType: true,
+              baseCurrency: true,
+            },
+          },
+        },
+      },
     },
   });
   if (!bot) {
     throw orderErrors.botContextNotFound();
   }
 
+  const inheritedExecutionContext = resolveInheritedRuntimeExecutionContext({
+    walletId: bot.walletId,
+    wallet: bot.wallet,
+    venueContext: bot.symbolGroup?.marketUniverse,
+  });
+  const manualStrategyContext = await resolveManualOrderStrategyContext({
+    userId,
+    botId: bot.id,
+    symbol: payload.symbol,
+  });
+
   const botContext: CanonicalOrderBotContext = {
     id: bot.id,
     mode: bot.mode,
-    exchange: bot.exchange,
-    marketType: bot.marketType,
     positionMode: bot.positionMode,
     apiKeyId: bot.apiKeyId,
     walletId: bot.walletId,
@@ -156,6 +193,15 @@ const resolveCanonicalBotContext = async (userId: string, payload: OpenOrderInpu
     liveOptIn: bot.liveOptIn,
     isActive: bot.isActive,
     consentTextVersion: bot.consentTextVersion,
+    inheritedExecutionContext: inheritedExecutionContext
+      ? {
+          mode: inheritedExecutionContext.mode,
+          exchange: inheritedExecutionContext.exchange,
+          marketType: inheritedExecutionContext.marketType,
+          walletId: inheritedExecutionContext.walletId,
+        }
+      : null,
+    manualStrategyScopeResolved: manualStrategyContext != null,
   };
 
   return {
@@ -164,7 +210,7 @@ const resolveCanonicalBotContext = async (userId: string, payload: OpenOrderInpu
       botId: botContext.id,
       mode: botContext.mode,
       walletId: botContext.walletId ?? undefined,
-      strategyId: botContext.strategyId ?? undefined,
+      strategyId: manualStrategyContext?.strategyId ?? undefined,
     } as OpenOrderInput,
     botContext,
   };
@@ -184,14 +230,20 @@ const ensureLiveOrderAllowed = (
   if (botContext.mode !== 'LIVE') throw orderErrors.liveBotModeRequired();
   if (!botContext.liveOptIn || !botContext.consentTextVersion) throw orderErrors.liveBotOptInRequired();
   if (!botContext.isActive) throw orderErrors.liveBotActiveRequired();
+  if (!botContext.inheritedExecutionContext || botContext.inheritedExecutionContext.mode !== 'LIVE') {
+    throw orderErrors.liveBotContextMismatch();
+  }
+  if (!botContext.manualStrategyScopeResolved) {
+    throw orderErrors.liveManualScopeUnresolved();
+  }
 
   return {
     id: botContext.id,
-    exchange: botContext.exchange,
-    marketType: botContext.marketType,
+    exchange: botContext.inheritedExecutionContext.exchange,
+    marketType: botContext.inheritedExecutionContext.marketType,
     positionMode: botContext.positionMode,
     apiKeyId: botContext.apiKeyId,
-    walletId: botContext.walletId,
+    walletId: botContext.inheritedExecutionContext.walletId,
   };
 };
 

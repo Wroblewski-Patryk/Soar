@@ -592,6 +592,87 @@ describe('Orders and positions read contract', () => {
     expect(contextRes.body.leverage).toBe(1);
   });
 
+  it('rejects LIVE manual open when selected bot has no canonical strategy scope for symbol', async () => {
+    const ownerAgent = await registerAndLogin('manual-live-scope-reject-owner@example.com');
+    const ownerId = await getUserId('manual-live-scope-reject-owner@example.com');
+
+    const strategy = await prisma.strategy.create({
+      data: {
+        userId: ownerId,
+        name: 'Manual live scoped strategy',
+        interval: '5m',
+        leverage: 6,
+        walletRisk: 1,
+        config: {
+          additional: {
+            marginMode: 'ISOLATED',
+            orderType: 'MARKET',
+          },
+        },
+      },
+    });
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId: ownerId,
+        name: 'Manual live scoped wallet',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const universe = await prisma.marketUniverse.create({
+      data: {
+        userId: ownerId,
+        name: 'Manual live scoped universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: ['BTCUSDT'],
+        blacklist: [],
+      },
+    });
+    const symbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: ownerId,
+        marketUniverseId: universe.id,
+        name: 'Manual live scoped group',
+        symbols: ['BTCUSDT'],
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: ownerId,
+        name: 'Manual live scoped bot',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'mvp-v1',
+        walletId: wallet.id,
+        strategyId: strategy.id,
+        symbolGroupId: symbolGroup.id,
+      },
+    });
+
+    const openRes = await ownerAgent.post('/dashboard/orders/open').send({
+      botId: bot.id,
+      symbol: 'ETHUSDT',
+      side: 'BUY',
+      type: 'MARKET',
+      quantity: 0.1,
+      mode: 'LIVE',
+      riskAck: true,
+    });
+
+    expect(openRes.status).toBe(400);
+    expect(openRes.body.error.message).toBe(
+      'selected bot has no canonical strategy scope for requested LIVE symbol'
+    );
+  });
+
   it('routes manual open through unified fill lifecycle and creates position only after fill', async () => {
     const ownerAgent = await registerAndLogin('manual-order-order-only-owner@example.com');
     const ownerId = await getUserId('manual-order-order-only-owner@example.com');
@@ -859,17 +940,51 @@ describe('Orders and positions read contract', () => {
     expect(liveWithoutAckRes.status).toBe(400);
     expect(liveWithoutAckRes.body.error.message).toBe('riskAck is required for LIVE order open');
 
+    const liveStrategy = await prisma.strategy.create({
+      data: {
+        userId: ownerId,
+        name: 'Orders write live strategy',
+        interval: '5m',
+        leverage: 5,
+        walletRisk: 1,
+        config: {
+          additional: {
+            orderType: 'LIMIT',
+            marginMode: 'ISOLATED',
+          },
+        },
+      },
+    });
+    const liveWallet = await prisma.wallet.create({
+      data: {
+        userId: ownerId,
+        name: 'Orders write live wallet',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const liveSymbolGroup = await createMarketScope({
+      userId: ownerId,
+      name: 'Orders write live scope',
+      symbols: ['BTCUSDT'],
+    });
     const liveBot = await prisma.bot.create({
       data: {
         userId: ownerId,
         name: 'Live Bot',
         mode: 'LIVE',
+        exchange: 'BINANCE',
         marketType: 'FUTURES',
         positionMode: 'ONE_WAY',
         isActive: true,
         liveOptIn: true,
         consentTextVersion: 'mvp-v1',
         maxOpenPositions: 3,
+        walletId: liveWallet.id,
+        symbolGroupId: liveSymbolGroup.id,
+        strategyId: liveStrategy.id,
       },
     });
 
@@ -1240,6 +1355,21 @@ describe('Orders and positions read contract', () => {
         symbols: ['BTCUSDT'],
       },
     });
+    const liveStrategy = await prisma.strategy.create({
+      data: {
+        userId: ownerId,
+        name: 'Runtime close strategy',
+        interval: '5m',
+        leverage: 5,
+        walletRisk: 1,
+        config: {
+          additional: {
+            orderType: 'MARKET',
+            marginMode: 'ISOLATED',
+          },
+        },
+      },
+    });
 
     const paperBot = await prisma.bot.create({
       data: {
@@ -1257,12 +1387,14 @@ describe('Orders and positions read contract', () => {
         userId: ownerId,
         name: 'Live close owner',
         mode: 'LIVE',
+        exchange: 'BINANCE',
         marketType: 'FUTURES',
         isActive: true,
         liveOptIn: true,
         consentTextVersion: 'mvp-v1',
         walletId: liveWallet.id,
         symbolGroupId: symbolGroup.id,
+        strategyId: liveStrategy.id,
         createdAt: new Date('2026-04-12T10:05:00.000Z'),
       },
     });

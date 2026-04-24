@@ -8,44 +8,67 @@ Last updated: 2026-04-25
   live execution support, operator dashboards, and a path toward assistant or
   agent-driven workflows
 - Commercial model: SaaS-style subscription product with staged entitlements
-- Current phase: V1 is formally approved for production activation from the
-  current evidence set, and active engineering focus has shifted to
-  post-approval runtime hardening after the closed `V1CONF-A`, `V1SIG-A`,
-  `V1CAP-A`, `V1ALIGN-A`, and now fully closed `V1BOT-A` migration wave. The
-  current repository truth is that the deployed worker contract is frozen to
-  `split`, runtime symbol scope and signal interval truth now fail closed and
-  persist honestly, runtime freshness authority is scoped to active sessions,
-  operator diagnostics are more explicit about degraded routing/runtime-input
-  outcomes, and the approved singular bot architecture is now implemented as
-  canonical production truth: `1 bot = 1 wallet + 1 symbol-group market scope
-  + 1 strategy`. Runtime and operator surfaces now consume inherited context
-  from wallet, symbol-group market scope, and strategy modules instead of
+- Current phase: V1 engineering scope appears complete from the current code
+  and evidence set, but the final production-activation truth is not yet
+  canonically reconciled across all activation artifacts. Active focus has
+  shifted from broad feature delivery to residual execution cohesion and final
+  activation-truth closure after the closed `V1CONF-A`, `V1SIG-A`, `V1CAP-A`,
+  `V1ALIGN-A`, and now fully closed `V1BOT-A` migration wave. The current
+  repository truth is that the
+  deployed worker contract is frozen to `split`, runtime symbol scope and
+  signal interval truth now fail closed and persist honestly, runtime
+  freshness authority is scoped to active sessions, operator diagnostics are
+  more explicit about degraded routing/runtime-input outcomes, and the
+  approved singular bot architecture is now implemented as canonical
+  production truth: `1 bot = 1 wallet + 1 symbol-group market scope + 1
+  strategy`. Runtime and operator surfaces now consume inherited context from
+  wallet, symbol-group market scope, and strategy modules instead of
   reconstructing canonical truth from legacy topology. The newest production
   hardening slices (`V1BOT-07B`, `V1BOT-09`, `V1DASH-A`, `V1BOTSURF-A`,
-  `V1SURF-A`) additionally proved and fixed a critical PAPER
-  capital-authority drift where wallet-scoped historical paper lifecycle rows
-  could inflate the selected bot runtime capital and sizing; `LIVE` remains
-  wallet-authoritative from authenticated exchange balance, while `PAPER`
-  runtime/dashboard capital is now bot-scoped under the linked wallet.
-  Manual-order execution is singular-context-aware for both backend context
-  resolution and dashboard symbol sourcing, `PAPER` market orders can fill
-  immediately without an explicit request price, selected-bot dashboard KPIs
-  prefer authoritative runtime capital summary fields, and bot
-  monitoring/list/detail surfaces expose the same runtime capital/state truth
-  instead of mixing config baseline with active runtime semantics. `V1IND-A`
-  is now also closed: architecture freezes one canonical indicator registry
-  scope, strategy-builder metadata is served from that registry, runtime and
-  operator signal surfaces reuse the shared indicator analysis kernel, and
-  configured market snapshots no longer depend on the old subset formatter that
-  emitted opaque `X` placeholders. Full web validation, build, and focused API
-  parity packs are green for the indicator wave. `V1POSTBOT-A` is now also
-  closed: the remaining red full-API cases were resolved by aligning stale
+  `V1SURF-A`) additionally proved and fixed a critical PAPER capital-authority
+  drift where wallet-scoped historical paper lifecycle rows could inflate the
+  selected bot runtime capital and sizing; `LIVE` remains wallet-authoritative
+  from authenticated exchange balance, while `PAPER` runtime/dashboard capital
+  is now bot-scoped under the linked wallet. Manual-order execution is
+  singular-context-aware for both backend context resolution and dashboard
+  symbol sourcing, `PAPER` market orders can fill immediately without an
+  explicit request price, selected-bot dashboard KPIs prefer authoritative
+  runtime capital summary fields, and bot monitoring/list/detail surfaces
+  expose the same runtime capital/state truth instead of mixing config
+  baseline with active runtime semantics. `V1IND-A` is now also closed:
+  architecture freezes one canonical indicator registry scope,
+  strategy-builder metadata is served from that registry, runtime and operator
+  signal surfaces reuse the shared indicator analysis kernel, and configured
+  market snapshots no longer depend on the old subset formatter that emitted
+  opaque `X` placeholders. Full web validation, build, and focused API parity
+  packs are green for the indicator wave. `V1POSTBOT-A` is now also closed:
+  the remaining red full-API cases were resolved by aligning stale
   `backtests/orders` e2e fixtures to the canonical singular bot contract,
   which restored full `api` suite parity for pre-trade expectations,
   deterministic selected-bot order ownership, carryover open orders, and
   `EXCHANGE_SYNC BOT_MANAGED` LIVE runtime position visibility/close flows.
 
 ## Product Decisions (Confirmed)
+- 2026-04-25: queued `V1COH-A` after a fresh residual execution audit driven by
+  reported doubt around manual `LIVE` opens. The current highest-priority gap
+  is now execution cohesion rather than a missing feature wave: manual `LIVE`
+  write authorization still needs a stricter fail-closed contract for
+  canonical symbol scope, inherited venue context, and submitted->reconciled
+  operator truth across orders, exchange-synced open orders, and positions.
+- 2026-04-25: closed `V1COH-01` and `V1COH-02` as the first residual execution
+  cohesion hardening slice. Manual `LIVE` open now reuses inherited
+  wallet+market-universe execution truth on the write path and rejects
+  unresolved symbol scope with explicit domain errors instead of relying on
+  duplicated bot snapshot venue fields. Focused `orders.service` and
+  route-level regressions now lock both the fail-closed cases and valid scoped
+  `LIVE` fixtures under the canonical singular bot contract.
+- 2026-04-25: queued `V1READY-2026-04-25-A` after a fresh V1 audit showed that
+  the remaining gap to a clean V1 claim is no longer an engineering feature
+  slice. The repository now needs one canonical reconciliation pass across
+  `PROJECT_STATE.md`, the activation pack, the activation closure, the RC
+  sign-off record, and the RC checklist/status artifacts so it can state
+  honestly whether V1 is already achieved or still blocked only by explicit
+  operator-owned sign-off steps.
 - 2026-04-25: closed `DEPLOY-2026-04-25-B` as the validation-only follow-up to
   the same-day Coolify hotfix. Local `pnpm --filter web run build` now passes
   cleanly again, confirming the previously reported web deploy gate is no

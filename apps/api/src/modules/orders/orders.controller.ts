@@ -35,6 +35,12 @@ const handleOrderError = (res: Response, error: unknown) => {
   if (mapped.code === ORDER_ERROR_CODES.liveBotActiveRequired) {
     return sendError(res, 400, 'bot must be active for LIVE order open', mapped.details);
   }
+  if (mapped.code === ORDER_ERROR_CODES.liveBotContextMismatch) {
+    return sendError(res, 400, 'bot wallet and venue context must match canonical runtime ownership', mapped.details);
+  }
+  if (mapped.code === ORDER_ERROR_CODES.liveManualScopeUnresolved) {
+    return sendError(res, 400, 'selected bot has no canonical strategy scope for requested LIVE symbol', mapped.details);
+  }
   if (mapped.code === ORDER_ERROR_CODES.liveApiKeyRequired) {
     return sendError(res, 400, 'Compatible API key is required for LIVE order open', mapped.details);
   }

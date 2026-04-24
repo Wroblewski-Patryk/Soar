@@ -2638,6 +2638,24 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-25: Closed `DOCSYNC-2026-04-25-A` by removing the stale `PROJECT_STATE.md` sentence that still claimed a separate 7-case full-API red-suite follow-up outside `V1IND-A`, keeping the canonical product snapshot aligned with the already-closed `V1POSTBOT-A` parity recovery. Validation PASS: `pnpm run quality:guardrails`.
 - 2026-04-25: Closed `DOCSYNC-2026-04-25-B` by removing the already-closed `PAPERPNL-01` entry from the `TASK_BOARD` `READY` lane so the canonical queue state matches `mvp-next-commits.md`, `mvp-execution-plan.md`, and `PROJECT_STATE.md`. Validation PASS: `pnpm run quality:guardrails`.
 
+## Phase V1READY-2026-04-25 - Final V1 Activation Truth Reconciliation (Queued 2026-04-25)
+- [ ] `V1READY-2026-04-25-A docs/ops(sync): reconcile final V1 activation truth, remaining blockers, and operator handoff`
+
+### Progress Log (Phase V1READY-2026-04-25 - Final V1 Activation Truth Reconciliation)
+- 2026-04-25: Queued `V1READY-2026-04-25-A` after a fresh canonical-state audit showed that V1 engineering scope appears complete, but the final activation truth drifts across `PROJECT_STATE.md`, `v1-production-activation-pack-2026-04-22.md`, `v1-production-activation-closure-2026-04-22.md`, and `v1-rc-signoff-record.md`. The next smallest honest slice is to reconcile those artifacts against the frozen activation contract and publish one canonical answer on whether V1 is already achieved or still blocked only by explicit operator-owned sign-off steps.
+
+## Phase V1COH-A - Residual Execution Cohesion Closure (Queued 2026-04-25)
+- [x] `V1COH-01 test(api-red): lock manual LIVE order against out-of-scope symbol and unresolved strategy context`
+- [x] `V1COH-02 fix(api-orders): enforce inherited wallet+venue context and fail closed for unresolved LIVE manual scope`
+- [ ] `V1COH-03 test(api-runtime-red): lock manual LIVE market submitted->reconciled truth across order, open order, and position visibility`
+- [ ] `V1COH-04 fix(api-reconciliation): tighten exchange-synced order/position adoption around manual LIVE opens`
+- [ ] `V1COH-05 web(runtime-state): expose explicit manual LIVE action states on dashboard surfaces`
+- [ ] `V1COH-06 qa(closure): run focused API + web closure pack and sync canonical docs/context`
+
+### Progress Log (Phase V1COH-A - Residual Execution Cohesion Closure)
+- 2026-04-25: Queued `V1COH-A` after a fresh residual-gap audit triggered by reported production doubt around manual `LIVE` open behavior. The audit found that the main remaining risk is execution cohesion, not broad feature absence: manual `LIVE` write authorization still trusts duplicated bot snapshot venue fields too much, unresolved symbol-scoped strategy context remains safe for reads but not explicitly fail-closed for `LIVE` writes, and the submitted->reconciled truth for manual `LIVE` `MARKET` orders is not yet frozen end-to-end across order, open-order, and position visibility. Published `docs/planning/v1-residual-execution-cohesion-plan-2026-04-25.md` and promoted `V1COH-01` to `NOW`.
+- 2026-04-25: Closed `V1COH-01` and `V1COH-02` together as one tightly coupled backend hardening slice. Added focused `orders.service` and `orders-positions` regressions proving manual `LIVE` open now fails closed when the selected bot has no canonical symbol-matching strategy scope or when inherited wallet+market-universe venue truth drifts, then rewired `orders.service.ts` to reuse `resolveInheritedRuntimeExecutionContext()` and the manual strategy resolver on the write path instead of duplicated bot snapshot venue fields. Validation PASS: `pnpm --filter api exec vitest run src/modules/orders/orders.service.test.ts src/modules/orders/orders-positions.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
+
 ## Phase ARCCON - Architecture Conformance and Service Ownership Closure (Closed 2026-04-21)
 - [x] `ARCCON-01 test(api-red): lock fail-closed manual-order strategy context when selected bot has no symbol-matching strategy`
 - [x] `ARCCON-02 fix(api-orders): remove hidden first-strategy fallback from manual-order context resolution and keep unresolved state explicit`

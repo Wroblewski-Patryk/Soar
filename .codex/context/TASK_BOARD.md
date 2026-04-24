@@ -17,11 +17,16 @@ Last updated: 2026-04-25
 
 ## READY
 
-- [ ] (none)
+- [ ] `V1COH-03 test(api-runtime-red): lock manual LIVE market submitted->reconciled truth across order, open order, and position visibility`
+  - 2026-04-25: The next red pack freezes explicit delayed-fill truth for manual `LIVE` market orders so dashboard/runtime state can distinguish `submitted` from `position_opened`.
+
+- [ ] `V1COH-04 fix(api-reconciliation): tighten exchange-synced order/position adoption around manual LIVE opens`
+  - 2026-04-25: After the submitted->reconciled red pack, the next backend slice should keep one deterministic ownership/state contract between native manual-order rows and later `EXCHANGE_SYNC` adoption.
 
 ## BACKLOG
 
-- [ ] (none)
+- [ ] `V1READY-2026-04-25-A docs/ops(sync): reconcile final V1 activation truth, remaining blockers, and operator handoff`
+  - 2026-04-25: This remains valid, but it is no longer the next honest slice after the fresh code-path audit. Final V1 activation truth should be reconciled after residual execution cohesion is closed in code.
 
 ## IN_PROGRESS
 
@@ -36,6 +41,12 @@ Last updated: 2026-04-25
 - [ ] (none)
 
 ## DONE
+
+- [x] `V1COH-01 test(api-red): lock manual LIVE order against out-of-scope symbol and unresolved strategy context`
+  - 2026-04-25: Added focused service and API e2e regressions proving manual `LIVE` open is rejected when the selected bot has no canonical symbol-matching strategy scope, and that accepted `LIVE` fixtures must provide the full inherited bot context.
+
+- [x] `V1COH-02 fix(api-orders): enforce inherited wallet+venue context and fail closed for unresolved LIVE manual scope`
+  - 2026-04-25: Manual `LIVE` write authorization now reuses inherited wallet + market-universe truth through `resolveInheritedRuntimeExecutionContext()` and rejects unresolved scope with explicit `LIVE_BOT_CONTEXT_MISMATCH` / `LIVE_MANUAL_SCOPE_UNRESOLVED` errors instead of trusting duplicated bot snapshot venue fields.
 
 - [x] `DOCSYNC-2026-04-25-B docs(sync): remove closed PAPERPNL entry from TASK_BOARD READY lane`
   - 2026-04-25: Removed the already-closed `PAPERPNL-01` entry from the `READY` lane so `TASK_BOARD` now matches the closed queue state already reflected in `mvp-next-commits.md`, `mvp-execution-plan.md`, and `PROJECT_STATE.md`.

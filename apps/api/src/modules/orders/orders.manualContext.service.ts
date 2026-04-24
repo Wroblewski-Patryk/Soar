@@ -20,6 +20,7 @@ export type ManualOrderContextDeps = {
 };
 
 type ResolvedManualOrderStrategyContext = {
+  strategyId: string | null;
   leverage: number | null;
   config: Record<string, unknown> | null;
 };
@@ -61,7 +62,7 @@ const resolveMarginModeFromStrategyConfig = (
   return 'CROSSED' as const;
 };
 
-const resolveManualOrderStrategyContext = async (params: {
+export const resolveManualOrderStrategyContext = async (params: {
   userId: string;
   botId: string;
   symbol: string;
@@ -78,6 +79,7 @@ const resolveManualOrderStrategyContext = async (params: {
       symbolGroupId: true,
       strategy: {
         select: {
+          id: true,
           leverage: true,
           config: true,
         },
@@ -112,6 +114,7 @@ const resolveManualOrderStrategyContext = async (params: {
     );
     if (directSymbols.includes(normalizedSymbol)) {
       return {
+        strategyId: botDirectContext.strategyId,
         leverage: botDirectContext.strategy.leverage,
         config: (botDirectContext.strategy.config as Record<string, unknown> | null | undefined) ?? null,
       };
@@ -149,6 +152,7 @@ const resolveManualOrderStrategyContext = async (params: {
         select: {
           strategy: {
             select: {
+              id: true,
               leverage: true,
               config: true,
             },
@@ -167,6 +171,7 @@ const resolveManualOrderStrategyContext = async (params: {
     const selected = group.strategyLinks[0]?.strategy;
     if (selected) {
       return {
+        strategyId: selected.id,
         leverage: selected.leverage,
         config: (selected.config as Record<string, unknown> | null | undefined) ?? null,
       };
@@ -198,6 +203,7 @@ const resolveManualOrderStrategyContext = async (params: {
       },
       strategy: {
         select: {
+          id: true,
           leverage: true,
           config: true,
         },
@@ -212,6 +218,7 @@ const resolveManualOrderStrategyContext = async (params: {
     );
     if (!symbols.includes(normalizedSymbol)) continue;
     return {
+      strategyId: link.strategy.id,
       leverage: link.strategy.leverage,
       config: (link.strategy.config as Record<string, unknown> | null | undefined) ?? null,
     };
