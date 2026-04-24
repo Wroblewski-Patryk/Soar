@@ -571,8 +571,74 @@ describe("BotsManagement", () => {
           openPositionCount: 0,
           openPositionQty: 0,
           lastPrice: 72000,
+          lastSignalContextSource: "latest_decision",
+          runtimeMarketState: "EVALUATED_NO_TRADE",
+          lastSignalMessage: "No trade decision after strategy merge",
+          configuredStrategyName: "Monitor Strategy",
+          lastSignalConditionLines: [
+            {
+              scope: "LONG",
+              left: "RSI(14)",
+              value: "31.0057",
+              operator: ">",
+              right: "60",
+            },
+            {
+              scope: "SHORT",
+              left: "RSI(14)",
+              value: "31.0057",
+              operator: "<",
+              right: "40",
+            },
+          ],
           lastSignalAt: "2026-03-31T10:03:00.000Z",
           lastTradeAt: "2026-03-31T10:04:00.000Z",
+          snapshotAt: "2026-03-31T10:05:00.000Z",
+          createdAt: "2026-03-31T10:00:00.000Z",
+          updatedAt: "2026-03-31T10:05:00.000Z",
+        },
+        {
+          id: "stat-2",
+          userId: "u1",
+          botId: "b-monitor",
+          sessionId: "session-1",
+          symbol: "BONKUSDT",
+          totalSignals: 0,
+          longEntries: 0,
+          shortEntries: 0,
+          exits: 0,
+          dcaCount: 0,
+          closedTrades: 0,
+          winningTrades: 0,
+          losingTrades: 0,
+          realizedPnl: 0,
+          grossProfit: 0,
+          grossLoss: 0,
+          feesPaid: 0,
+          openPositionCount: 0,
+          openPositionQty: 0,
+          lastPrice: 0.00002,
+          lastSignalContextSource: "configured_fallback",
+          runtimeMarketState: "CONFIGURED_ONLY",
+          configuredStrategyName: "RSI 40/60",
+          lastSignalConditionLines: [
+            {
+              scope: "LONG",
+              left: "RSI(14)",
+              value: "31.0057",
+              operator: ">",
+              right: "60",
+            },
+            {
+              scope: "SHORT",
+              left: "RSI(14)",
+              value: "31.0057",
+              operator: "<",
+              right: "40",
+            },
+          ],
+          lastSignalAt: null,
+          lastTradeAt: null,
           snapshotAt: "2026-03-31T10:05:00.000Z",
           createdAt: "2026-03-31T10:00:00.000Z",
           updatedAt: "2026-03-31T10:05:00.000Z",
@@ -747,6 +813,14 @@ describe("BotsManagement", () => {
       expect(screen.getAllByText("-").length).toBeGreaterThan(0);
       expect(screen.getByText(/3\. Co bedzie - live check sygnalow|Co bedzie - live check sygnalow/i)).toBeInTheDocument();
       expect(screen.getAllByText("BTCUSDT").length).toBeGreaterThan(0);
+      expect(screen.getByText("BONKUSDT")).toBeInTheDocument();
+      expect(screen.getByText("Kontekst strategii")).toBeInTheDocument();
+      expect(screen.getByText("Detal decyzji")).toBeInTheDocument();
+      expect(screen.getByText("Warunki")).toBeInTheDocument();
+      expect(screen.getByText("No trade decision after strategy merge")).toBeInTheDocument();
+      expect(screen.getByText("Brak jeszcze decyzji runtime.")).toBeInTheDocument();
+      expect(screen.getAllByText("RSI(14) | 31.0057 > 60").length).toBeGreaterThan(0);
+      expect(screen.getAllByText("RSI(14) | 31.0057 < 40").length).toBeGreaterThan(0);
       expect(screen.getByText("Historia - log operacyjny trade'ow")).toBeInTheDocument();
     });
   });

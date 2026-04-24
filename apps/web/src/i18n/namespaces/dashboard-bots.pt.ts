@@ -253,6 +253,8 @@ export const dashboardBotsPt = {
     "contextSourceLatestDecision": "Latest decision",
     "contextSourceConfiguredFallback": "Snapshot da vela fechada",
     "contextSourceUnresolved": "Unresolved",
+    "strategyContextLabel": "Contexto da estrategia",
+    "runtimeDecisionPendingLabel": "Ainda nao existe decisao de runtime.",
     "sections": {
       "nowOpenPositionsTitle": "1. Agora - posicoes abertas",
       "nowOpenPositionsDescription": "Controlo imediato do que esta ativo neste momento.",
@@ -310,6 +312,8 @@ export const dashboardBotsPt = {
       "time": "Time",
       "action": "Action",
       "signal": "Signal",
+      "decisionDetail": "Decision detail",
+      "conditions": "Conditions",
       "signalTime": "Signal time"
     },
     "emptyOpenPositions": "No open positions in this session.",

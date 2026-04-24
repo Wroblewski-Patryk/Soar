@@ -248,6 +248,8 @@ export const dashboardBotsPl = {
     "contextSourceLatestDecision": "Ostatnia decyzja",
     "contextSourceConfiguredFallback": "Snapshot zamknietej swiecy",
     "contextSourceUnresolved": "Nieustalone",
+    "strategyContextLabel": "Kontekst strategii",
+    "runtimeDecisionPendingLabel": "Brak jeszcze decyzji runtime.",
     "operatorCheckTitle": "Szybka kontrola operatora",
     "heartbeatLagLabel": "Heartbeat lag",
     "lastSignalLabel": "Ostatni sygnal",
@@ -309,6 +311,8 @@ export const dashboardBotsPl = {
       "time": "Czas",
       "action": "Action",
       "signal": "Sygnal",
+      "decisionDetail": "Detal decyzji",
+      "conditions": "Warunki",
       "signalTime": "Czas sygnalu",
       "runtimeState": "Stan runtime"
     },

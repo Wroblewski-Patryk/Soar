@@ -14,6 +14,8 @@ Operational queue for one-task execution runs.
 - [x] `V1MON-A planning queued (bot monitoring runtime-truth hardening after post-V1IND surface audit and explicit fail-closed decision)`
 - [x] `V1MON-01 web(aggregate-truth): remove client-side monitoring aggregate fallback and fail closed on backend aggregate errors`
 - [x] `V1MON-02 web(inherited-context): make bot list and bot management prefer inherited venue/strategy context over duplicated bot snapshot fields`
+- [x] `V1MON-03 web(signal-semantics): align bot monitoring future-signals semantics with dashboard-home runtime truth`
+- [x] `V1MON-04 qa(closure): rerun focused monitoring truth pack and sync canonical queue/context`
 - [x] `V1SIGSEM-A planning queued (signal-surface semantic hardening so configured-only rows read as closed-candle market snapshots, not pseudo-signals)`
 - [x] `V1SIGSEM-01 web(copy+semantics): label configured-only runtime rows as market snapshots across dashboard-home and bot monitoring`
 - [x] `V1POSTBOT-A planning queued (post-V1BOT full API contract recovery for pre-trade, orders, and runtime-session positions)`

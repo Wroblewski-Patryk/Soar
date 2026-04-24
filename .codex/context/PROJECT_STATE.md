@@ -260,6 +260,16 @@ Last updated: 2026-04-24
   derive displayed strategy position-limit context from linked strategy
   configuration, keeping legacy bot snapshot fields as compatibility-only
   fallback instead of the primary operator narrative.
+- 2026-04-24: `V1MON-03` is now also closed. Bot monitoring future-signal
+  rows expose the same semantics as dashboard-home: runtime state, context
+  source, strategy context, decision detail, and canonical condition lines are
+  operator-visible, while configured-only rows remain visibly degraded market
+  snapshots rather than looking like accepted runtime signals.
+- 2026-04-24: `V1MON-A` is now closed. Bot monitoring no longer reconstructs
+  aggregate truth client-side, bot list/management prefer inherited venue and
+  strategy context over duplicated bot snapshot fields, and bot-monitoring
+  future-signal rows now match dashboard-home semantics under one focused
+  closure pack.
 - 2026-04-22: prod restore-drill proof now passes from a real Coolify terminal
   execution in the production postgres container
   (`x11cfnz1dd9x0yzccftqzcoe`), and the final non-dry-run prod release gate now

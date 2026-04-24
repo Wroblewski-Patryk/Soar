@@ -10,11 +10,7 @@ import {
   MonitoringQuickContextSection,
   MonitoringQuickNavSection,
 } from "./BotsMonitoringSections";
-import {
-  resolveContextSourceLabel,
-  resolveRuntimeStateBadgeClass,
-  resolveRuntimeStateLabel,
-} from "./monitoringRuntimeLabels";
+import { MonitoringFutureSignalsSection } from "./MonitoringFutureSignalsSection";
 import {
   Bot,
   BotRuntimeSessionDetail,
@@ -161,6 +157,16 @@ type BotsMonitoringTabProps = {
     lastSignalDirection?: "LONG" | "SHORT" | "EXIT" | null;
     lastSignalDecisionAt?: string | null;
     lastSignalAt?: string | null;
+    lastSignalMessage?: string | null;
+    lastSignalReason?: string | null;
+    configuredStrategyName?: string | null;
+    lastSignalConditionLines?: Array<{
+      scope: "LONG" | "SHORT";
+      left: string;
+      value: string;
+      operator: string;
+      right: string;
+    }> | null;
     totalSignals: number;
     longEntries: number;
     shortEntries: number;
@@ -885,104 +891,15 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                     </div>
                   </div>
 
-                  <div id="monitor-future" className="scroll-mt-24 rounded-lg border border-base-300 bg-base-100 p-3">
-                    <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
-                      <div>
-                        <h3 className="text-sm font-semibold">{t("dashboard.bots.monitoring.sections.futureSignalsTitle")}</h3>
-                        <p className="text-xs opacity-65">
-                          {t("dashboard.bots.monitoring.sections.futureSignalsDescription")}
-                        </p>
-                      </div>
-                      <div className="text-right text-xs opacity-60">
-                        <div>
-                          {interpolateTemplate(t("dashboard.bots.monitoring.symbolCount"), {
-                            count: monitorSignalRows.length,
-                            total: monitorSessionDetail?.symbolsTracked ?? 0,
-                          })}
-                        </div>
-                        <div className="opacity-50">{t("dashboard.bots.monitoring.sortLatestSignal")}</div>
-                      </div>
-                    </div>
-                    <div className="overflow-x-auto">
-                      <table className="table table-xs table-zebra">
-                        <thead>
-                          <tr>
-                            <th>{t("dashboard.bots.monitoring.table.symbol")}</th>
-                            <th>{t("dashboard.bots.monitoring.table.runtimeState")}</th>
-                            <th>{t("dashboard.bots.monitoring.contextSourceLabel")}</th>
-                            <th>{t("dashboard.bots.monitoring.table.signal")}</th>
-                            <th>{t("dashboard.bots.monitoring.table.signalTime")}</th>
-                            <th>{t("dashboard.bots.monitoring.table.signals")}</th>
-                            <th>{t("dashboard.bots.monitoring.table.lse")}</th>
-                            <th>{t("dashboard.bots.monitoring.table.dca")}</th>
-                            <th>{t("dashboard.bots.monitoring.table.closed")}</th>
-                            <th>{t("dashboard.bots.monitoring.table.wl")}</th>
-                            <th>{t("dashboard.bots.monitoring.table.openQty")}</th>
-                            <th>{t("dashboard.bots.monitoring.table.realizedPnl")}</th>
-                            <th>{t("dashboard.bots.monitoring.table.openPnl")}</th>
-                            <th>{t("dashboard.bots.monitoring.table.fees")}</th>
-                            <th>{t("dashboard.bots.monitoring.table.lastTrade")}</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {monitorSignalRows.map((item) => (
-                            <tr key={item.id}>
-                              <td className="font-medium">{item.symbol}</td>
-                              <td>
-                                <span className={`badge badge-xs ${resolveRuntimeStateBadgeClass(item.runtimeMarketState)}`}>
-                                  {resolveRuntimeStateLabel(t, item.runtimeMarketState)}
-                                </span>
-                              </td>
-                              <td className="text-[11px] opacity-70">
-                                {resolveContextSourceLabel(t, item.lastSignalContextSource)}
-                              </td>
-                              <td>
-                                <span
-                                  className={`badge badge-xs ${
-                                    item.lastSignalDirection === "LONG"
-                                      ? "badge-success"
-                                      : item.lastSignalDirection === "SHORT"
-                                        ? "badge-error"
-                                        : item.lastSignalDirection === "EXIT"
-                                          ? "badge-warning"
-                                          : "badge-ghost"
-                                  }`}
-                                >
-                                  {item.lastSignalDirection ?? t("dashboard.bots.monitoring.neutral")}
-                                </span>
-                              </td>
-                              <td>{formatDateTime(item.lastSignalDecisionAt ?? item.lastSignalAt)}</td>
-                              <td>{item.totalSignals}</td>
-                              <td>
-                                {item.longEntries}/{item.shortEntries}/{item.exits}
-                              </td>
-                              <td>{item.dcaCount}</td>
-                              <td>{item.closedTrades}</td>
-                              <td>
-                                {item.winningTrades}/{item.losingTrades}
-                              </td>
-                              <td>{formatNumber(item.openPositionQty, 6)}</td>
-                              <td className={item.realizedPnl >= 0 ? "text-success" : "text-error"}>
-                                {formatCurrency(item.realizedPnl)}
-                              </td>
-                              <td className={(item.unrealizedPnl ?? 0) >= 0 ? "text-success" : "text-error"}>
-                                {formatCurrency(item.unrealizedPnl ?? 0)}
-                              </td>
-                              <td>{formatCurrency(item.feesPaid)}</td>
-                              <td>{formatDateTime(item.lastTradeAt)}</td>
-                            </tr>
-                          ))}
-                          {monitorSignalRows.length === 0 ? (
-                            <tr>
-                              <td colSpan={15} className="text-center text-xs opacity-70">
-                                {t("dashboard.bots.monitoring.emptySignalData")}
-                              </td>
-                            </tr>
-                          ) : null}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
+                  <MonitoringFutureSignalsSection
+                    t={t}
+                    monitorSignalRows={monitorSignalRows}
+                    monitorSessionDetail={monitorSessionDetail}
+                    formatDateTime={formatDateTime}
+                    formatNumber={formatNumber}
+                    formatCurrency={formatCurrency}
+                    interpolateTemplate={interpolateTemplate}
+                  />
                 </div>
               ) : null}
             </>

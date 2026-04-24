@@ -3,7 +3,7 @@
 ## Header
 - ID: V1MON-A
 - Title: Bot monitoring runtime-truth hardening
-- Status: IN_PROGRESS
+- Status: CLOSED
 - Owner: Frontend Builder
 - Depends on: V1BOT-A, V1IND-A
 - Priority: P1
@@ -40,9 +40,9 @@ context.
       client-side when the backend aggregate endpoint fails.
 - [x] `V1MON-02` bot list and bot management prefer inherited context over
       duplicated bot snapshot fields where the architecture requires it.
-- [ ] `V1MON-03` bot monitoring signal semantics match dashboard-home for
+- [x] `V1MON-03` bot monitoring signal semantics match dashboard-home for
       market snapshot vs runtime decision truth.
-- [ ] `V1MON-04` focused closure pack passes and source-of-truth is synced.
+- [x] `V1MON-04` focused closure pack passes and source-of-truth is synced.
 
 ## Forbidden
 - new systems without approval
@@ -99,3 +99,12 @@ venue context from `symbolGroup.marketUniverse` (with compatibility-only
 fallback to wallet/bot snapshot fields) and derive strategy position-limit
 display from linked strategy configuration instead of treating the bot snapshot
 as the primary truth.
+
+`V1MON-03` is now also closed: bot monitoring future-signals now exposes the
+same operator semantics as dashboard-home by separating runtime state, context
+source, strategy context, decision detail, and canonical condition lines.
+Configured-only rows remain visibly degraded market snapshots instead of
+looking like accepted runtime signals.
+
+`V1MON-04` is now also closed: the focused closure pack passed and canonical
+queue/context files are synchronized, so `V1MON-A` can be treated as closed.
