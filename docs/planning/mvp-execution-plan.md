@@ -2632,9 +2632,11 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 
 ## Phase DOCSYNC-2026-04-25 - Project State Drift Cleanup (Closed 2026-04-25)
 - [x] `DOCSYNC-2026-04-25-A docs(sync): remove stale V1POSTBOT full-api red-suite drift from project state`
+- [x] `DOCSYNC-2026-04-25-B docs(sync): remove closed PAPERPNL entry from TASK_BOARD READY lane`
 
 ### Progress Log (Phase DOCSYNC-2026-04-25 - Project State Drift Cleanup)
 - 2026-04-25: Closed `DOCSYNC-2026-04-25-A` by removing the stale `PROJECT_STATE.md` sentence that still claimed a separate 7-case full-API red-suite follow-up outside `V1IND-A`, keeping the canonical product snapshot aligned with the already-closed `V1POSTBOT-A` parity recovery. Validation PASS: `pnpm run quality:guardrails`.
+- 2026-04-25: Closed `DOCSYNC-2026-04-25-B` by removing the already-closed `PAPERPNL-01` entry from the `TASK_BOARD` `READY` lane so the canonical queue state matches `mvp-next-commits.md`, `mvp-execution-plan.md`, and `PROJECT_STATE.md`. Validation PASS: `pnpm run quality:guardrails`.
 
 ## Phase ARCCON - Architecture Conformance and Service Ownership Closure (Closed 2026-04-21)
 - [x] `ARCCON-01 test(api-red): lock fail-closed manual-order strategy context when selected bot has no symbol-matching strategy`

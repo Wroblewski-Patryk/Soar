@@ -17,9 +17,7 @@ Last updated: 2026-04-25
 
 ## READY
 
-- [x] `PAPERPNL-01 fix(api-runtime): recover truthful PAPER close PnL and wallet-capital updates for manual/runtime exits`
-  - 2026-04-24: Closed by extracting one canonical runtime close-price resolver, removing the manual dashboard fallback to `position.entryPrice`, and failing closed with `POSITION_CLOSE_PRICE_UNAVAILABLE` when market truth cannot be proven.
-  - 2026-04-24: Added focused regression coverage for mark-price resolution, manual runtime close fail-closed behavior, and profitable PAPER manual close parity across persisted position/trade/history/capital summary reads.
+- [ ] (none)
 
 ## BACKLOG
 
@@ -38,6 +36,9 @@ Last updated: 2026-04-25
 - [ ] (none)
 
 ## DONE
+
+- [x] `DOCSYNC-2026-04-25-B docs(sync): remove closed PAPERPNL entry from TASK_BOARD READY lane`
+  - 2026-04-25: Removed the already-closed `PAPERPNL-01` entry from the `READY` lane so `TASK_BOARD` now matches the closed queue state already reflected in `mvp-next-commits.md`, `mvp-execution-plan.md`, and `PROJECT_STATE.md`.
 
 - [x] `DOCSYNC-2026-04-25-A docs(sync): remove stale V1POSTBOT full-api red-suite drift from project state`
   - 2026-04-25: Removed the stale `PROJECT_STATE.md` sentence that still claimed a separate 7-case full-API red-suite follow-up outside `V1IND-A`, keeping project-state wording aligned with the already-closed `V1POSTBOT-A` parity recovery.
