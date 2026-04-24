@@ -30,11 +30,13 @@ type RuntimeCapitalContextDeps = {
     userId: string;
     botId?: string | null;
     walletId?: string | null;
+    mode?: BotMode | 'PAPER' | 'LIVE';
   }) => Promise<Array<{ entryPrice: number; quantity: number; leverage: number }>>;
   sumClosedBotManagedRealizedPnl: (input: {
     userId: string;
     botId?: string | null;
     walletId?: string | null;
+    mode?: BotMode | 'PAPER' | 'LIVE';
     realizedSince?: Date | null;
   }) => Promise<number>;
   getLiveApiKeyContext: (input: {
@@ -88,13 +90,19 @@ const defaultDeps: RuntimeCapitalContextDeps = {
     if (!wallet) return null;
     return wallet;
   },
-  listOpenBotManagedPositions: async ({ userId, botId, walletId }) =>
+  listOpenBotManagedPositions: async ({ userId, botId, walletId, mode }) =>
     prisma.position.findMany({
       where: {
         userId,
         status: PositionStatus.OPEN,
         managementMode: PositionManagementMode.BOT_MANAGED,
-        ...(walletId ? { walletId } : botId ? { botId } : { botId: null }),
+        ...(walletId
+          ? mode === 'PAPER' && botId
+            ? { walletId, botId }
+            : { walletId }
+          : botId
+            ? { botId }
+            : { botId: null }),
       },
       select: {
         entryPrice: true,
@@ -102,7 +110,7 @@ const defaultDeps: RuntimeCapitalContextDeps = {
         leverage: true,
       },
     }),
-  sumClosedBotManagedRealizedPnl: async ({ userId, botId, walletId, realizedSince }) => {
+  sumClosedBotManagedRealizedPnl: async ({ userId, botId, walletId, mode, realizedSince }) => {
     const aggregate = await prisma.position.aggregate({
       where: {
         userId,
@@ -126,7 +134,13 @@ const defaultDeps: RuntimeCapitalContextDeps = {
               ],
             }
           : {}),
-        ...(walletId ? { walletId } : botId ? { botId } : { botId: null }),
+        ...(walletId
+          ? mode === 'PAPER' && botId
+            ? { walletId, botId }
+            : { walletId }
+          : botId
+            ? { botId }
+            : { botId: null }),
       },
       _sum: {
         realizedPnl: true,
@@ -226,11 +240,13 @@ export const resolvePaperRuntimeCapitalSnapshot = async (
       userId: input.userId,
       botId: input.botId,
       walletId: input.walletId,
+      mode: 'PAPER',
     }),
     deps.sumClosedBotManagedRealizedPnl({
       userId: input.userId,
       botId: input.botId,
       walletId: input.walletId,
+      mode: 'PAPER',
       realizedSince,
     }),
   ]);
@@ -282,6 +298,7 @@ const resolveLiveRuntimeCapitalSnapshot = async (
         userId: input.userId,
         botId: input.botId,
         walletId: input.walletId,
+        mode: 'LIVE',
       }),
     ]);
     const reservedMargin = openPositions.reduce((sum, position) => {
@@ -339,6 +356,7 @@ const resolveLiveRuntimeCapitalSnapshot = async (
     userId: input.userId,
     botId: input.botId,
     walletId: input.walletId,
+    mode: 'LIVE',
   });
   const reservedMargin = openPositions.reduce((sum, position) => {
     const leverage = Math.max(1, position.leverage || 1);

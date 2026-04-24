@@ -5,11 +5,29 @@ export const getRuntimePositionBotContext = async (userId: string, botId: string
   prisma.bot.findFirst({
     where: { id: botId, userId },
     select: {
-      mode: true,
-      exchange: true,
-      marketType: true,
+      id: true,
       walletId: true,
       paperStartBalance: true,
+      wallet: {
+        select: {
+          mode: true,
+          exchange: true,
+          marketType: true,
+          baseCurrency: true,
+          paperInitialBalance: true,
+        },
+      },
+      symbolGroup: {
+        select: {
+          marketUniverse: {
+            select: {
+              exchange: true,
+              marketType: true,
+              baseCurrency: true,
+            },
+          },
+        },
+      },
     },
   });
 

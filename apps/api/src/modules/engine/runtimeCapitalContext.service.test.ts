@@ -360,11 +360,12 @@ describe('runtimeCapitalContext', () => {
     expect(exhaustedHigh).toBe(true);
   });
 
-  it('treats shared-wallet open exposure as reserved margin for another bot', async () => {
+  it('treats PAPER capital as bot-scoped even when a wallet historically had other bot exposure', async () => {
     const listOpenBotManagedPositions = vi.fn(async () => [
       // Exposure from another bot on the same shared wallet
       { entryPrice: 300, quantity: 2, leverage: 1 }, // reserved 600
     ]);
+    const sumClosedBotManagedRealizedPnl = vi.fn(async () => 900);
 
     const exhausted = await resolveRuntimeWalletFundsExhausted(
       {
@@ -393,16 +394,73 @@ describe('runtimeCapitalContext', () => {
           apiKey: null,
         }),
         listOpenBotManagedPositions,
-        sumClosedBotManagedRealizedPnl: async () => 0,
+        sumClosedBotManagedRealizedPnl,
+      })
+    );
+
+    expect(exhausted).toBe(false);
+    expect(listOpenBotManagedPositions).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'u-shared',
+        botId: 'bot-b',
+        walletId: 'wallet-shared',
+        mode: 'PAPER',
+      })
+    );
+    expect(sumClosedBotManagedRealizedPnl).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'u-shared',
+        botId: 'bot-b',
+        walletId: 'wallet-shared',
+        mode: 'PAPER',
+      })
+    );
+  });
+
+  it('keeps LIVE capital authority wallet-scoped for shared exchange exposure', async () => {
+    const listOpenBotManagedPositions = vi.fn(async () => [
+      { entryPrice: 300, quantity: 2, leverage: 1 }, // reserved 600
+    ]);
+
+    const exhausted = await resolveRuntimeWalletFundsExhausted(
+      {
+        userId: 'u-shared-live',
+        botId: 'bot-live-b',
+        walletId: 'wallet-shared-live',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        paperStartBalance: 0,
+        markPrice: 100,
+        addedQuantity: 5,
+        leverage: 1,
+        nowMs: 10_000,
+      },
+      buildDeps({
+        getWalletContext: async () => ({
+          id: 'wallet-shared-live',
+          mode: 'LIVE',
+          paperInitialBalance: 0,
+          paperResetAt: null,
+          liveAllocationMode: null,
+          liveAllocationValue: null,
+          baseCurrency: 'USDT',
+          exchange: 'BINANCE',
+          apiKey: null,
+        }),
+        listOpenBotManagedPositions,
+        getLiveApiKeyContext: async () => ({ apiKey: 'k', apiSecret: 's' }),
+        fetchLiveBalance: async () => 1_000,
       })
     );
 
     expect(exhausted).toBe(true);
     expect(listOpenBotManagedPositions).toHaveBeenCalledWith(
       expect.objectContaining({
-        userId: 'u-shared',
-        botId: 'bot-b',
-        walletId: 'wallet-shared',
+        userId: 'u-shared-live',
+        botId: 'bot-live-b',
+        walletId: 'wallet-shared-live',
+        mode: 'LIVE',
       })
     );
   });

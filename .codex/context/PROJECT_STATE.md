@@ -17,7 +17,13 @@ Last updated: 2026-04-24
   freshness authority is scoped to active sessions, operator diagnostics are
   more explicit about degraded routing/runtime-input outcomes, and the next
   approved architectural migration is the single-context bot rewrite:
-  `1 bot = 1 wallet + 1 symbol-group market scope + 1 strategy`
+  `1 bot = 1 wallet + 1 symbol-group market scope + 1 strategy`. The newest
+  production hardening slice (`V1BOT-07B`) additionally proved and fixed a
+  critical PAPER capital-authority drift where wallet-scoped historical paper
+  lifecycle rows could inflate the selected bot runtime capital and sizing;
+  `LIVE` remains wallet-authoritative from authenticated exchange balance,
+  while `PAPER` runtime/dashboard capital is now bot-scoped under the linked
+  wallet.
 
 ## Product Decisions (Confirmed)
 - 2026-04-21: `docs/architecture/` is the canonical source of truth for how

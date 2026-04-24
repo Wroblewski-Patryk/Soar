@@ -21,6 +21,7 @@ Operational queue for one-task execution runs.
 - [x] `V1BOT-05 api(reads): expose bot runtime context as inherited and singular`
 - [x] `V1BOT-06 engine(runtime-topology): replace multi-group runtime topology with singular bot context`
 - [x] `V1BOT-07 engine(capital-strategy-inheritance): source runtime parameters from wallet and strategy modules`
+- [x] `V1BOT-07B fix(api-paper-capital): keep PAPER runtime capital bot-scoped under the linked wallet and align selected-bot monitoring reads to inherited execution context`
 - [x] `V1RT-02 fix(api-market-stream-endpoint): select Binance websocket default by runtime market type`
 - [x] `V1ALIGN-A planning queued (runtime worker-ownership alignment plus symbol-scope, interval-truth, freshness-authority, and diagnostics closure)`
 - [x] `V1ALIGN-01 docs(architecture-worker-ownership): freeze split workers as deployed target and inline as local/degraded-only contract`

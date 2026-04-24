@@ -13,7 +13,7 @@ Status: accepted (2026-04-16)
    - venue context (`exchange`, `marketType`, `baseCurrency`),
    - capital reference (`paperInitialBalance` or live allocation policy).
 2. Bot write contract is wallet-first (`walletId` required after compatibility window).
-3. Shared wallet is allowed: multiple bots can bind to one wallet.
+3. Canonical V1 runtime is single-context: one bot binds to one wallet.
 4. Backtests remain wallet-independent and keep explicit `initialBalance`.
 
 ## Context Invariants
@@ -27,13 +27,14 @@ Status: accepted (2026-04-16)
 - Hard-fail policy is mandatory: when required margin exceeds wallet free budget, reject order (`OPEN`/`DCA`) and do not auto-clamp size.
 
 ### PAPER wallet
-`referenceBalance = paperInitialBalance + realizedPnl(walletId)`
+`referenceBalance = paperInitialBalance + realizedPnl(botId within walletId)`
 
-`freeCash = referenceBalance - reservedMargin(walletId)`
+`freeCash = referenceBalance - reservedMargin(botId within walletId)`
 
 `paperResetAt` is a non-destructive checkpoint:
 - active paper capital is recalculated from wallet `paperInitialBalance` plus
-  realized PnL only from `paperResetAt` onward,
+  realized PnL only from `paperResetAt` onward for the selected bot-scoped
+  paper lifecycle,
 - historical pre-reset trades, orders, and positions stay readable but do not
   count toward active runtime capital after reset.
 
@@ -45,6 +46,12 @@ Status: accepted (2026-04-16)
 `referenceBalance = min(accountBalance, walletCap)`
 
 `freeCash = referenceBalance - reservedMargin(walletId)`
+
+Current V1 rule:
+- `LIVE` stays wallet-authoritative because exchange balance is external truth,
+- `PAPER` runtime and dashboard capital are selected-bot scoped under the
+  linked wallet so historical lifecycle rows from replaced or legacy bots do
+  not inflate current runtime capital.
 
 Post-deposit rule:
 - authenticated exchange balance remains the authority for `LIVE`,

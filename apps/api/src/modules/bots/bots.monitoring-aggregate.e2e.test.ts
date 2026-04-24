@@ -344,6 +344,126 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     expect(aggregateRes.body.positions.summary.baseCurrency).toBe('USDT');
   });
 
+  it('keeps PAPER monitoring capital scoped to the selected bot even when the wallet has historical rows from another bot', async () => {
+    const ownerEmail = 'bots-monitoring-aggregate-paper-scope@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({
+      where: { email: ownerEmail },
+      select: { id: true },
+    });
+
+    const strategyId = await createStrategy(owner, 'Monitoring Aggregate Scope Strategy');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    const walletId = await createWalletForContext(ownerEmail, {
+      mode: 'PAPER',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+    });
+    const resetAt = new Date('2026-04-19T11:00:00.000Z');
+    await prisma.wallet.update({
+      where: { id: walletId },
+      data: {
+        paperInitialBalance: 100,
+        paperResetAt: resetAt,
+      },
+    });
+
+    const createRes = await owner.post('/dashboard/bots').send(
+      createPayload({
+        strategyId,
+        marketGroupId,
+        walletId,
+      })
+    );
+    expect(createRes.status).toBe(201);
+    const botId = createRes.body.id as string;
+
+    const otherBot = await prisma.bot.create({
+      data: {
+        userId: ownerUser.id,
+        name: 'historical-paper-bot',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: false,
+        paperStartBalance: 100,
+        walletId,
+        strategyId,
+        symbolGroupId: marketGroupId,
+      },
+      select: { id: true },
+    });
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-19T11:05:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-19T11:10:00.000Z'),
+      },
+    });
+
+    await prisma.botRuntimeSymbolStat.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        sessionId: session.id,
+        symbol: 'BTCUSDT',
+        totalSignals: 1,
+        longEntries: 1,
+        snapshotAt: new Date('2026-04-19T11:09:00.000Z'),
+      },
+    });
+
+    await prisma.position.createMany({
+      data: [
+        {
+          userId: ownerUser.id,
+          botId,
+          walletId,
+          strategyId,
+          symbol: 'BTCUSDT',
+          side: 'LONG',
+          status: 'CLOSED',
+          entryPrice: 60000,
+          quantity: 0.001,
+          leverage: 1,
+          realizedPnl: 20,
+          openedAt: new Date('2026-04-19T11:06:00.000Z'),
+          closedAt: new Date('2026-04-19T11:08:00.000Z'),
+          managementMode: 'BOT_MANAGED',
+        },
+        {
+          userId: ownerUser.id,
+          botId: otherBot.id,
+          walletId,
+          strategyId,
+          symbol: 'ETHUSDT',
+          side: 'LONG',
+          status: 'CLOSED',
+          entryPrice: 3200,
+          quantity: 10,
+          leverage: 1,
+          realizedPnl: 50_000,
+          openedAt: new Date('2026-04-19T11:01:00.000Z'),
+          closedAt: new Date('2026-04-19T11:02:00.000Z'),
+          managementMode: 'BOT_MANAGED',
+        },
+      ],
+    });
+
+    const aggregateRes = await owner.get(`/dashboard/bots/${botId}/runtime-monitoring/aggregate`);
+    expect(aggregateRes.status).toBe(200);
+    expect(aggregateRes.body.positions.summary.referenceBalance).toBe(120);
+    expect(aggregateRes.body.positions.summary.freeCash).toBe(120);
+    expect(aggregateRes.body.positions.summary.capitalSource).toBe('PAPER_RESET_CHECKPOINT');
+    expect(aggregateRes.body.positions.summary.paperResetAt).toBe(resetAt.toISOString());
+  });
+
   it('keeps aggregate positions/orders/history deterministic when running session is empty', async () => {
     const ownerEmail = 'bots-monitoring-aggregate-mixed-sessions@example.com';
     const owner = await registerAndLogin(ownerEmail);

@@ -71,7 +71,8 @@ Define who owns the runtime context required to make and execute trading decisio
 
 ## Capital Context
 ### PAPER
-- reference balance comes from wallet paper baseline plus realized results
+- reference balance comes from wallet paper baseline plus realized results from
+  the selected bot-scoped paper runtime lifecycle
 - paper reset changes the baseline checkpoint, not historical truth
 
 ### LIVE

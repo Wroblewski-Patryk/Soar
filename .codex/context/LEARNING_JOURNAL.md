@@ -22,6 +22,38 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-24 - PAPER runtime capital must not reuse wallet-wide historical lifecycle rows for selected-bot authority
+- Context: production investigation for a selected PAPER bot showed the wallet
+  module at `100 USDT`, strategy config at `walletRisk=2` and `leverage=25`,
+  but the runtime dashboard reported `referenceBalance ~= 96,695 USDT` and
+  opened ~`48k USDT` notional paper positions.
+- Symptom: selected-bot dashboard wallet KPIs and paper order sizing inflated
+  far beyond the configured paper baseline, even though strategy leverage and
+  wallet risk were configured sanely.
+- Root cause: the PAPER runtime capital snapshot still allowed wallet-scoped
+  lifecycle rows to contribute realized PnL and reserved margin, so historical
+  or legacy bot rows sharing the same wallet could contaminate the currently
+  selected bot runtime authority.
+- Guardrail: for `PAPER`, selected-bot runtime capital must be bot-scoped
+  under the linked wallet; for `LIVE`, wallet-wide authenticated exchange
+  balance remains the authority.
+- Preferred pattern:
+```text
+1) Derive runtime execution context from wallet + market-universe truth, not deprecated bot-owned mode/venue fields.
+2) In PAPER capital reads, filter lifecycle truth by both walletId and botId when bot identity is known.
+3) Keep LIVE capital wallet-authoritative from authenticated exchange balance and wallet allocation policy.
+4) Lock the distinction with focused capital tests plus selected-bot aggregate e2e coverage.
+```
+- Avoid: reusing wallet-wide paper lifecycle rows as the selected-bot capital authority or inferring safe sizing from sidebar portfolio figures without tracing the capital snapshot source.
+- Evidence:
+  - 2026-04-24 production audit artifacts `.tmp-prod-wallet-audit.json` and
+    `.tmp-prod-bot-runtime.json` showed `paperInitialBalance=100` but
+    `positions.summary.referenceBalance ~= 96,695`.
+  - 2026-04-24 `V1BOT-07B` fixed the scope in
+    `apps/api/src/modules/engine/runtimeCapitalContext.service.ts` and aligned
+    selected-bot monitoring reads in
+    `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts`.
+
 ### 2026-04-24 - Local Prisma CLI runs must match the repository Prisma version
 - Context: `V1BOT-02..05` added new Prisma fields/migration work for the
   single-context bot model and required local client regeneration plus schema

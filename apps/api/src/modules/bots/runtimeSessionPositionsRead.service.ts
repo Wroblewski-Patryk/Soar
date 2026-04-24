@@ -34,6 +34,7 @@ import {
   listRuntimePositionStrategies,
   listRuntimePositionTradeRows,
 } from './runtimeSessionPositionsRead.repository';
+import { resolveInheritedRuntimeExecutionContext } from '../engine/runtimeBotExecutionContext';
 
 type RuntimeTakeoverStatus = 'OWNED_AND_MANAGED' | 'UNOWNED' | 'AMBIGUOUS' | 'MANUAL_ONLY';
 
@@ -63,23 +64,32 @@ export const listBotRuntimeSessionPositions = async (
   const windowEnd = resolveSessionWindowEnd(session);
   const botContext = await getRuntimePositionBotContext(userId, botId);
   if (!botContext) return null;
+  const inheritedExecutionContext = resolveInheritedRuntimeExecutionContext({
+    walletId: botContext.walletId,
+    wallet: botContext.wallet,
+    venueContext: botContext.symbolGroup?.marketUniverse,
+  });
+  if (!inheritedExecutionContext) return null;
 
   const botScopedPositionWhere: Prisma.PositionWhereInput =
-    botContext.mode === 'LIVE' && botContext.walletId
+    inheritedExecutionContext.mode === 'LIVE' && botContext.walletId
       ? {
           botId,
           OR: [{ walletId: botContext.walletId }, { walletId: null }],
         }
       : { botId };
   const botScopedOrderWhere: Prisma.OrderWhereInput =
-    botContext.mode === 'LIVE' && botContext.walletId
+    inheritedExecutionContext.mode === 'LIVE' && botContext.walletId
       ? { botId, walletId: botContext.walletId }
       : { botId };
   const botScopedTradeWhere: Prisma.TradeWhereInput =
-    botContext.mode === 'LIVE' && botContext.walletId
+    inheritedExecutionContext.mode === 'LIVE' && botContext.walletId
       ? { botId, walletId: botContext.walletId }
       : { botId };
-  const externalOwnerBySymbol = await resolveExternalPositionOwnerBySymbol(userId, botContext.mode);
+  const externalOwnerBySymbol = await resolveExternalPositionOwnerBySymbol(
+    userId,
+    inheritedExecutionContext.mode
+  );
   const ownedExternalSymbols = [...externalOwnerBySymbol.entries()]
     .filter(
       ([, owner]) =>
@@ -95,7 +105,7 @@ export const listBotRuntimeSessionPositions = async (
             botId: null,
             origin: 'EXCHANGE_SYNC',
             symbol: { in: ownedExternalSymbols },
-            ...(botContext.mode === 'LIVE' && botContext.walletId
+            ...(inheritedExecutionContext.mode === 'LIVE' && botContext.walletId
               ? {
                   OR: [{ walletId: botContext.walletId }, { walletId: null }],
                 }
@@ -103,18 +113,18 @@ export const listBotRuntimeSessionPositions = async (
           },
         ]
       : [];
-  const botExchange = botContext.exchange ?? 'BINANCE';
-  const botMarketType = botContext.marketType ?? 'FUTURES';
+  const botExchange = inheritedExecutionContext.exchange;
+  const botMarketType = inheritedExecutionContext.marketType;
   const resolveRuntimeCapitalSummary = async (usedMargin: number) => {
     try {
       const snapshot = await resolveRuntimeCapitalSnapshot({
         userId,
         botId,
         walletId: botContext.walletId,
-        mode: botContext.mode,
+        mode: inheritedExecutionContext.mode,
         exchange: botExchange,
         marketType: botMarketType,
-        paperStartBalance: botContext.paperStartBalance,
+        paperStartBalance: inheritedExecutionContext.paperStartBalance,
         nowMs: Date.now(),
       });
       if (!Number.isFinite(snapshot.referenceBalance)) {
