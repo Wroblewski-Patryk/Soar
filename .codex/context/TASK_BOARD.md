@@ -17,11 +17,11 @@ Last updated: 2026-04-24
 
 ## READY
 
+- [ ] `V1BOT-09 api+web(manual-order): recover dashboard manual-order truth and singular-context execution for PAPER and LIVE`
 - [ ] `V1BOT-08 web(bot-crud): align create/edit/detail flows to the singular contract`
 
 ## BACKLOG
 
-- [ ] `V1BOT-09 web(runtime-surfaces): align monitoring, dashboard, and manual actions to singular bot context`
 - [ ] `V1BOT-10 cleanup(legacy-runtime): remove legacy topology from canonical runtime path`
 - [ ] `V1BOT-11 qa(closure): full parity and migration closure pack`
 

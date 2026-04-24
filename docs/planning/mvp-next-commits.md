@@ -7,9 +7,9 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `V1BOT-08 web(bot-crud): align create/edit/detail flows to the singular contract`
+- [ ] `V1BOT-09 api+web(manual-order): recover dashboard manual-order truth and singular-context execution for PAPER and LIVE`
 ## NEXT
-- [ ] `V1BOT-09 web(runtime-surfaces): align monitoring, dashboard, and manual actions to singular bot context`
+- [ ] `V1BOT-08 web(bot-crud): align create/edit/detail flows to the singular contract`
 - [ ] `V1BOT-10 cleanup(legacy-runtime): remove legacy topology from canonical runtime path`
 - [ ] `V1BOT-11 qa(closure): full parity and migration closure pack`
 ## PIPELINE

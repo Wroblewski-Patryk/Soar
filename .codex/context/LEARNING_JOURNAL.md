@@ -22,6 +22,48 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-24 - Dashboard manual order must derive truth from bot scope, and PAPER market opens need a canonical fill price
+- Context: authenticated production investigation after the singular bot
+  runtime migration and paper-capital fix, when a newly created paper bot was
+  otherwise healthy but dashboard manual order still did not result in a
+  visible opened position.
+- Symptom: `GET /dashboard/orders/manual-context` could show coherent bot and
+  strategy context, yet `POST /dashboard/orders/open` for a paper `MARKET`
+  order without explicit request `price` returned `201` with `Order.status=OPEN`
+  and `positionId=null`; the selected-bot aggregate still showed no open
+  position. On the web side, manual-order symbol availability depended on
+  already surfaced runtime rows and open positions instead of the bot's linked
+  symbol-group scope.
+- Root cause: the paper manual-order lifecycle required a resolved fill price
+  before applying immediate fill authority, but the open-order path did not
+  source a canonical price when a market order omitted request `price`.
+  Separately, the dashboard manual-order surface still treated runtime/open
+  rows as the symbol source instead of using the selected bot's canonical
+  market scope.
+- Guardrail: manual order must follow the same singular truth model as runtime:
+  symbol availability comes from the linked `symbolGroup`, strategy semantics
+  come from the linked `strategy`, execution mode and capital come from the
+  linked `wallet`, and paper `MARKET` orders must resolve one canonical fill
+  price instead of waiting indefinitely for a fill that paper mode owns.
+- Preferred pattern:
+```text
+1) Resolve manual-order context from bot direct refs first; use legacy topology only as compatibility fallback when direct refs are absent.
+2) For PAPER MARKET opens without explicit request price, resolve one canonical mark/reference price and apply the existing order->fill->position lifecycle immediately.
+3) On the dashboard, build manual-order symbol options from the bot's attached symbol group, not from already active runtime rows only.
+4) Expose truthful operator states: loading, context unavailable, submitted, waiting for fill, position opened, and error.
+```
+- Avoid: treating dashboard manual order as a preview-only helper, deriving
+  symbol availability from activity instead of configuration scope, or
+  persisting paper market orders as permanently waiting for fill when the
+  system itself is the paper fill authority.
+- Evidence:
+  - 2026-04-24 production call to `/dashboard/orders/manual-context` for bot
+    `dec24168-7bba-4c44-aac9-97b3c6c60ce1` returned strategy-derived `25x`
+    leverage and `ISOLATED` margin for `1000000BOBUSDT`.
+  - 2026-04-24 production call to `POST /dashboard/orders/open` for the same
+    bot and symbol returned `201`, but persisted `status=OPEN`,
+    `positionId=null`, and left aggregate open positions empty.
+
 ### 2026-04-24 - PAPER runtime capital must not reuse wallet-wide historical lifecycle rows for selected-bot authority
 - Context: production investigation for a selected PAPER bot showed the wallet
   module at `100 USDT`, strategy config at `walletRisk=2` and `leverage=25`,

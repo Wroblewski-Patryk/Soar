@@ -23,7 +23,13 @@ Last updated: 2026-04-24
   lifecycle rows could inflate the selected bot runtime capital and sizing;
   `LIVE` remains wallet-authoritative from authenticated exchange balance,
   while `PAPER` runtime/dashboard capital is now bot-scoped under the linked
-  wallet.
+  wallet. The next production-facing focus is manual-order recovery under the
+  same singular bot contract because authenticated production verification on
+  `2026-04-24` showed that dashboard manual actions still drift from canonical
+  behavior: `PAPER` manual `MARKET` open can persist as `OPEN` without a fill
+  or position when no explicit request price is supplied, and the dashboard
+  manual-order surface still needs truthful symbol sourcing plus explicit
+  `submitted / waiting_for_fill / position_opened` lifecycle feedback.
 
 ## Product Decisions (Confirmed)
 - 2026-04-21: `docs/architecture/` is the canonical source of truth for how
@@ -174,6 +180,16 @@ Last updated: 2026-04-24
   position automation uses inherited wallet/venue context for DCA/close
   actions, and canonical runtime capital no longer falls back to bot-owned
   paper/api-key execution truth.
+- 2026-04-24: authenticated production verification for the new paper bot
+  `dec24168-7bba-4c44-aac9-97b3c6c60ce1` confirmed the next V1 gap is now the
+  manual-order path rather than general bot runtime health. `manual-context`
+  can resolve singular strategy truth (for example `25x` leverage on
+  `1000000BOBUSDT`), but `POST /dashboard/orders/open` for a paper `MARKET`
+  order without an explicit request price still persisted `Order.status=OPEN`
+  with `positionId=null`, leaving the selected-bot aggregate unchanged. The
+  next queued recovery slice is `V1BOT-09`, covering singular manual-context
+  resolution, immediate paper fill authority, and truthful dashboard manual
+  action states for both `PAPER` and `LIVE`.
 - 2026-04-22: prod restore-drill proof now passes from a real Coolify terminal
   execution in the production postgres container
   (`x11cfnz1dd9x0yzccftqzcoe`), and the final non-dry-run prod release gate now
