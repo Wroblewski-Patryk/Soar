@@ -33,8 +33,14 @@ Last updated: 2026-04-24
   prefer authoritative runtime capital summary fields, and bot
   monitoring/list/detail surfaces expose the same runtime capital/state truth
   instead of mixing config baseline with active runtime semantics. The next
-  engineering queue is no longer the bot-architecture migration itself, but
-  whichever post-V1 hardening slice is promoted next in `mvp-next-commits`.
+  engineering queue is no longer the bot-architecture migration itself. The
+  newest active planning follow-up is `V1IND-A`, which addresses the remaining
+  indicator/signal-truth drift: architecture docs still disagree on the frozen
+  V1 indicator parity scope, strategy-builder metadata still comes from a
+  standalone source instead of one canonical registry, signal read-models still
+  own a subset fallback formatter that emits `X`/`-`, and operator surfaces
+  still blur configured closed-candle market snapshots with runtime-evaluated
+  decisions.
 
 ## Product Decisions (Confirmed)
 - 2026-04-21: `docs/architecture/` is the canonical source of truth for how
@@ -208,6 +214,16 @@ Last updated: 2026-04-24
   focused web suites, typecheck, build, and repository guardrails. Legacy
   topology remains compatibility-only and is no longer part of canonical
   execution truth.
+- 2026-04-24: published `V1IND-A` after a fresh end-to-end indicator and
+  signal-surface audit. Builder-exposed indicators in
+  `strategies/indicators.data.ts` largely match shared evaluator support in
+  `strategyIndicatorKernel.ts`, but canonical repo truth is still split across
+  competing architecture contracts, standalone builder metadata ownership, and
+  operator read-model fallback formatting that can emit `X` or `-` instead of a
+  truthful latest closed-candle value or explicit degraded state. The new wave
+  queues architecture reconciliation, canonical registry ownership, signal
+  analysis/read-model cleanup, operator surface semantics recovery, and a full
+  exposed-indicator parity matrix.
 - 2026-04-22: prod restore-drill proof now passes from a real Coolify terminal
   execution in the production postgres container
   (`x11cfnz1dd9x0yzccftqzcoe`), and the final non-dry-run prod release gate now

@@ -17,11 +17,16 @@ Last updated: 2026-04-24
 
 ## READY
 
-- [ ] (none)
+- [ ] `V1IND-01 docs(decision): reconcile indicator parity architecture and freeze one canonical V1 registry scope`
 
 ## BACKLOG
 
-- [ ] (none)
+- [ ] `V1IND-02 api(registry): replace standalone strategy-builder indicator metadata with canonical registry-backed metadata`
+- [ ] `V1IND-03 api(signal-analysis): remove subset fallback indicator formatter from signal read models and reuse canonical runtime analysis truth`
+- [ ] `V1IND-04 api(read-model): derive signal-surface venue context only from inherited symbol-group market universe`
+- [ ] `V1IND-05 web(signal-surface): distinguish configured market snapshot from evaluated runtime decision and remove opaque X placeholders`
+- [ ] `V1IND-06 test(parity-matrix): add explicit parity coverage for every builder-exposed indicator across builder metadata, runtime, and backtest`
+- [ ] `V1IND-07 qa(closure): run focused closure pack and sync canonical docs/context`
 
 ## IN_PROGRESS
 
@@ -36,6 +41,9 @@ Last updated: 2026-04-24
 - [ ] (none)
 
 ## DONE
+
+- [x] `V1IND-A planning: publish canonical indicator parity and signal-surface recovery wave`
+  - 2026-04-24: Audited builder-exposed indicators, shared runtime/backtest kernel coverage, signal-surface read models, and architecture contracts. Found that the currently exposed indicator families are broadly implemented in `strategyIndicatorKernel.ts`, but architecture docs still disagree on the frozen V1 parity scope, strategy-builder metadata still comes from standalone `indicators.data.ts`, signal read-models still contain subset fallback formatting that emits `X`/`-`, and operator surfaces still blur configured market snapshots with evaluated runtime decisions. Published `docs/planning/v1-indicator-parity-and-signal-surface-recovery-2026-04-24.md` and queued `V1IND-01..07`.
 
 - [x] `V1BOT-09 api+web(manual-order): recover dashboard manual-order truth and singular-context execution for PAPER and LIVE`
   - 2026-04-24: Manual-order context now resolves against the singular bot contract first (`bot -> symbolGroup + strategy`) and fails closed when a symbol is outside the direct bot scope. `PAPER` `MARKET` orders without explicit request price now resolve one canonical fill price from manual-order context and immediately apply the shared order -> fill -> position lifecycle instead of persisting as hanging `OPEN` orders. The dashboard manual-order symbol list now prefers the selected bot market scope even before runtime activity appears. Validation PASS: `pnpm --filter api exec vitest run src/modules/orders/orders.service.test.ts`, `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.manual-order-scope.test.tsx`.
