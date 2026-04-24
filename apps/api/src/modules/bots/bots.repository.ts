@@ -41,39 +41,6 @@ const botWithStrategyInclude = Prisma.validator<Prisma.BotInclude>()({
       },
     },
   },
-  botStrategies: {
-    select: {
-      strategyId: true,
-      symbolGroupId: true,
-      isEnabled: true,
-      createdAt: true,
-    },
-  },
-  botMarketGroups: {
-    select: {
-      symbolGroupId: true,
-      isEnabled: true,
-      lifecycleStatus: true,
-      executionOrder: true,
-      createdAt: true,
-    },
-  },
-  marketGroupStrategyLinks: {
-    select: {
-      strategyId: true,
-      isEnabled: true,
-      priority: true,
-      createdAt: true,
-      botMarketGroup: {
-        select: {
-          isEnabled: true,
-          lifecycleStatus: true,
-          executionOrder: true,
-          createdAt: true,
-        },
-      },
-    },
-  },
 });
 
 export const listOwnedBotsWithStrategyProjection = async (params: {

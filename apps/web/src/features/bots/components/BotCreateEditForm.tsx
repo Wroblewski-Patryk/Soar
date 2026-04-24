@@ -31,7 +31,6 @@ import {
 import {
   createBot,
   getBot,
-  getBotRuntimeGraph,
   updateBot,
 } from '../services/bots.service';
 
@@ -128,24 +127,21 @@ export default function BotCreateEditForm({
         return;
       }
 
-      const [bot, runtimeGraph] = await Promise.all([getBot(editId), getBotRuntimeGraph(editId)]);
-      const selectedGroup =
-        runtimeGraph.marketGroups.find((group) => group.isEnabled) ?? runtimeGraph.marketGroups[0];
+      const bot = await getBot(editId);
       const selectedGroupId =
         bot.symbolGroup?.marketUniverseId ??
-        selectedGroup?.symbolGroup?.marketUniverseId ??
         marketGroupRows[0]?.id ??
         '';
       const selectedStrategyId =
         bot.strategy?.id ??
-        selectedGroup?.strategies.find((strategy) => strategy.isEnabled)?.strategyId ??
         bot.strategyId ??
         strategyRows[0]?.id ??
         '';
+      const selectedWalletId = bot.walletId ?? bot.wallet?.id ?? walletRows[0]?.id ?? '';
 
       setForm({
         name: bot.name,
-        walletId: bot.walletId ?? bot.wallet?.id ?? walletRows[0]?.id ?? '',
+        walletId: selectedWalletId,
         strategyId: selectedStrategyId,
         marketGroupId: selectedGroupId,
         isActive: bot.isActive,

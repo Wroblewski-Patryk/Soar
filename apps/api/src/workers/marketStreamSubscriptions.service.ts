@@ -46,39 +46,6 @@ export const resolveMarketStreamDynamicSubscriptions = async (params: {
           interval: true,
         },
       },
-      botMarketGroups: {
-        where: {
-          isEnabled: true,
-          lifecycleStatus: { in: ['ACTIVE', 'PAUSED'] },
-        },
-        select: {
-          symbolGroup: {
-            select: {
-              symbols: true,
-              marketUniverse: {
-                select: {
-                  exchange: true,
-                  marketType: true,
-                  baseCurrency: true,
-                  filterRules: true,
-                  whitelist: true,
-                  blacklist: true,
-                },
-              },
-            },
-          },
-          strategyLinks: {
-            where: { isEnabled: true },
-            select: {
-              strategy: {
-                select: {
-                  interval: true,
-                },
-              },
-            },
-          },
-        },
-      },
     },
   });
 
@@ -98,25 +65,6 @@ export const resolveMarketStreamDynamicSubscriptions = async (params: {
     const directInterval = normalizeInterval(bot.strategy?.interval);
     if (directInterval) {
       intervals.add(directInterval);
-    }
-
-    if (!bot.symbolGroup || !bot.strategy) {
-      for (const group of bot.botMarketGroups) {
-        const groupSymbols = await resolveEffectiveSymbolGroupSymbolsWithCatalog(
-          group.symbolGroup,
-          catalogSymbolsCache
-        );
-        for (const symbol of groupSymbols) {
-          if (typeof symbol !== 'string' || symbol.trim().length === 0) continue;
-          symbols.add(normalizeSymbol(symbol));
-        }
-
-        for (const link of group.strategyLinks) {
-          const interval = normalizeInterval(link.strategy.interval);
-          if (!interval) continue;
-          intervals.add(interval);
-        }
-      }
     }
   }
 

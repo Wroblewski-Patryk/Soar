@@ -32,30 +32,18 @@ describe('resolveExternalPositionOwnerBySymbol', () => {
       {
         id: 'bot-a',
         walletId: 'wallet-a',
-        botMarketGroups: [
-          {
-            symbolGroup: {
-              symbols: ['BTCUSDT'],
-              marketUniverse: null,
-            },
-          },
-        ],
-        botStrategies: [],
-        marketGroupStrategyLinks: [],
+        symbolGroup: {
+          symbols: ['BTCUSDT'],
+          marketUniverse: null,
+        },
       },
       {
         id: 'bot-b',
         walletId: 'wallet-b',
-        botMarketGroups: [
-          {
-            symbolGroup: {
-              symbols: ['BTCUSDT'],
-              marketUniverse: null,
-            },
-          },
-        ],
-        botStrategies: [],
-        marketGroupStrategyLinks: [],
+        symbolGroup: {
+          symbols: ['BTCUSDT'],
+          marketUniverse: null,
+        },
       },
     ]);
 
@@ -68,35 +56,15 @@ describe('resolveExternalPositionOwnerBySymbol', () => {
     });
   });
 
-  it('prefers canonical ownership over legacy-only candidates', async () => {
+  it('resolves ownership from direct symbol-group scope', async () => {
     mocks.prisma.bot.findMany.mockResolvedValue([
       {
-        id: 'bot-canonical',
-        walletId: 'wallet-canonical',
-        botMarketGroups: [
-          {
-            symbolGroup: {
-              symbols: ['ETHUSDT'],
-              marketUniverse: null,
-            },
-          },
-        ],
-        botStrategies: [],
-        marketGroupStrategyLinks: [],
-      },
-      {
-        id: 'bot-legacy',
-        walletId: 'wallet-legacy',
-        botMarketGroups: [],
-        botStrategies: [
-          {
-            symbolGroup: {
-              symbols: ['ETHUSDT'],
-              marketUniverse: null,
-            },
-          },
-        ],
-        marketGroupStrategyLinks: [],
+        id: 'bot-direct',
+        walletId: 'wallet-direct',
+        symbolGroup: {
+          symbols: ['ETHUSDT'],
+          marketUniverse: null,
+        },
       },
     ]);
 
@@ -104,35 +72,22 @@ describe('resolveExternalPositionOwnerBySymbol', () => {
 
     expect(result.get('ETHUSDT')).toEqual({
       status: 'OWNED',
-      botId: 'bot-canonical',
-      walletId: 'wallet-canonical',
+      botId: 'bot-direct',
+      walletId: 'wallet-direct',
     });
   });
 
-  it('falls back to legacy ownership only when canonical scope is absent', async () => {
+  it('skips bots without a direct symbol-group scope', async () => {
     mocks.prisma.bot.findMany.mockResolvedValue([
       {
-        id: 'bot-legacy-only',
-        walletId: 'wallet-legacy-only',
-        botMarketGroups: [],
-        botStrategies: [
-          {
-            symbolGroup: {
-              symbols: ['SOLUSDT'],
-              marketUniverse: null,
-            },
-          },
-        ],
-        marketGroupStrategyLinks: [],
+        id: 'bot-without-scope',
+        walletId: 'wallet-without-scope',
+        symbolGroup: null,
       },
     ]);
 
     const result = await resolveExternalPositionOwnerBySymbol('user-3', 'LIVE');
 
-    expect(result.get('SOLUSDT')).toEqual({
-      status: 'OWNED',
-      botId: 'bot-legacy-only',
-      walletId: 'wallet-legacy-only',
-    });
+    expect(result.size).toBe(0);
   });
 });

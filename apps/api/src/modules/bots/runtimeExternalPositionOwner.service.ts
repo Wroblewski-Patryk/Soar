@@ -77,69 +77,17 @@ export const resolveExternalPositionOwnerBySymbol = async (
     select: {
       id: true,
       walletId: true,
-      botMarketGroups: {
-        where: {
-          isEnabled: true,
-          lifecycleStatus: { in: ['ACTIVE', 'PAUSED'] },
-        },
+      symbolGroup: {
         select: {
-          symbolGroup: {
+          symbols: true,
+          marketUniverse: {
             select: {
-              symbols: true,
-              marketUniverse: {
-                select: {
-                  exchange: true,
-                  marketType: true,
-                  baseCurrency: true,
-                  filterRules: true,
-                  whitelist: true,
-                  blacklist: true,
-                },
-              },
-            },
-          },
-        },
-      },
-      botStrategies: {
-        where: { isEnabled: true },
-        select: {
-          symbolGroup: {
-            select: {
-              symbols: true,
-              marketUniverse: {
-                select: {
-                  exchange: true,
-                  marketType: true,
-                  baseCurrency: true,
-                  filterRules: true,
-                  whitelist: true,
-                  blacklist: true,
-                },
-              },
-            },
-          },
-        },
-      },
-      marketGroupStrategyLinks: {
-        where: { isEnabled: true },
-        select: {
-          botMarketGroup: {
-            select: {
-              symbolGroup: {
-                select: {
-                  symbols: true,
-                  marketUniverse: {
-                    select: {
-                      exchange: true,
-                      marketType: true,
-                      baseCurrency: true,
-                      filterRules: true,
-                      whitelist: true,
-                      blacklist: true,
-                    },
-                  },
-                },
-              },
+              exchange: true,
+              marketType: true,
+              baseCurrency: true,
+              filterRules: true,
+              whitelist: true,
+              blacklist: true,
             },
           },
         },
@@ -148,7 +96,6 @@ export const resolveExternalPositionOwnerBySymbol = async (
   });
 
   const canonicalCandidatesBySymbol = new Map<string, Map<string, Candidate>>();
-  const legacyCandidatesBySymbol = new Map<string, Map<string, Candidate>>();
 
   for (const bot of bots) {
     const candidate = {
@@ -156,42 +103,15 @@ export const resolveExternalPositionOwnerBySymbol = async (
       walletId: bot.walletId,
     };
 
-    for (const configuredGroup of bot.botMarketGroups) {
+    if (bot.symbolGroup) {
       for (const symbol of resolveEffectiveSymbolGroupSymbols({
-        symbols: configuredGroup.symbolGroup.symbols,
-        marketUniverse: configuredGroup.symbolGroup.marketUniverse,
+        symbols: bot.symbolGroup.symbols,
+        marketUniverse: bot.symbolGroup.marketUniverse,
       })) {
         addCandidate(canonicalCandidatesBySymbol, symbol, candidate);
       }
     }
-
-    for (const configuredLink of bot.marketGroupStrategyLinks) {
-      for (const symbol of resolveEffectiveSymbolGroupSymbols({
-        symbols: configuredLink.botMarketGroup.symbolGroup.symbols,
-        marketUniverse: configuredLink.botMarketGroup.symbolGroup.marketUniverse,
-      })) {
-        addCandidate(canonicalCandidatesBySymbol, symbol, candidate);
-      }
-    }
-
-    for (const legacyStrategy of bot.botStrategies) {
-      for (const symbol of resolveEffectiveSymbolGroupSymbols({
-        symbols: legacyStrategy.symbolGroup.symbols,
-        marketUniverse: legacyStrategy.symbolGroup.marketUniverse,
-      })) {
-        addCandidate(legacyCandidatesBySymbol, symbol, candidate);
-      }
-    }
   }
 
-  const ownershipBySymbol = buildOwnershipMap(canonicalCandidatesBySymbol);
-  const legacyOwnershipBySymbol = buildOwnershipMap(legacyCandidatesBySymbol);
-
-  for (const [symbol, ownership] of legacyOwnershipBySymbol.entries()) {
-    if (!ownershipBySymbol.has(symbol)) {
-      ownershipBySymbol.set(symbol, ownership);
-    }
-  }
-
-  return ownershipBySymbol;
+  return buildOwnershipMap(canonicalCandidatesBySymbol);
 };

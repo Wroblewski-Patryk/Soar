@@ -15,7 +15,6 @@ import {
   createAuthenticatedExchangeConnector,
   createPublicExchangeConnector,
 } from '../exchange/exchangeConnectorFactory.service';
-import { mapBotResponse } from '../bots/botResponseMapper.service';
 import { liveOrderingConfig } from '../../config/runtimeExecution';
 import { isAppErrorLike } from '../../lib/errors';
 import { orderErrors } from './orders.errors';
@@ -135,40 +134,16 @@ const resolveCanonicalBotContext = async (userId: string, payload: OpenOrderInpu
       positionMode: true,
       apiKeyId: true,
       walletId: true,
+      strategyId: true,
       liveOptIn: true,
       isActive: true,
       consentTextVersion: true,
-      botStrategies: {
-        select: {
-          strategyId: true,
-          isEnabled: true,
-          createdAt: true,
-        },
-      },
-      marketGroupStrategyLinks: {
-        select: {
-          strategyId: true,
-          isEnabled: true,
-          priority: true,
-          createdAt: true,
-          botMarketGroup: {
-            select: {
-              isEnabled: true,
-              lifecycleStatus: true,
-              executionOrder: true,
-              createdAt: true,
-            },
-          },
-        },
-      },
     },
   });
   if (!bot) {
     throw orderErrors.botContextNotFound();
   }
 
-  const botWithCanonicalStrategy = mapBotResponse(bot);
-  const resolvedStrategyId = botWithCanonicalStrategy.strategyId ?? null;
   const botContext: CanonicalOrderBotContext = {
     id: bot.id,
     mode: bot.mode,
@@ -177,7 +152,7 @@ const resolveCanonicalBotContext = async (userId: string, payload: OpenOrderInpu
     positionMode: bot.positionMode,
     apiKeyId: bot.apiKeyId,
     walletId: bot.walletId,
-    strategyId: resolvedStrategyId,
+    strategyId: bot.strategyId ?? null,
     liveOptIn: bot.liveOptIn,
     isActive: bot.isActive,
     consentTextVersion: bot.consentTextVersion,

@@ -11,7 +11,6 @@ const fetchApiKeysMock = vi.hoisted(() => vi.fn());
 const createBotMock = vi.hoisted(() => vi.fn());
 const updateBotMock = vi.hoisted(() => vi.fn());
 const getBotMock = vi.hoisted(() => vi.fn());
-const getBotRuntimeGraphMock = vi.hoisted(() => vi.fn());
 const routerReplaceMock = vi.hoisted(() => vi.fn());
 const routerPushMock = vi.hoisted(() => vi.fn());
 const toastErrorMock = vi.hoisted(() => vi.fn());
@@ -44,7 +43,6 @@ vi.mock("../services/bots.service", () => ({
   createBot: createBotMock,
   updateBot: updateBotMock,
   getBot: getBotMock,
-  getBotRuntimeGraph: getBotRuntimeGraphMock,
 }));
 
 vi.mock("sonner", () => ({
@@ -54,14 +52,14 @@ vi.mock("sonner", () => ({
   },
 }));
 
-const renderWithI18n = async () => {
+const renderWithI18n = async (props: { editId?: string | null } = {}) => {
   window.localStorage.setItem("cryptosparrow-locale", "en");
-  window.history.pushState({}, "", "/dashboard/bots/create");
+  window.history.pushState({}, "", props.editId ? `/dashboard/bots/${props.editId}/edit` : "/dashboard/bots/create");
   let view: ReturnType<typeof render>;
   await act(async () => {
     view = render(
       <I18nProvider>
-        <BotCreateEditForm />
+        <BotCreateEditForm editId={props.editId ?? null} />
       </I18nProvider>
     );
   });
@@ -109,7 +107,6 @@ afterEach(() => {
   createBotMock.mockReset();
   updateBotMock.mockReset();
   getBotMock.mockReset();
-  getBotRuntimeGraphMock.mockReset();
   routerReplaceMock.mockReset();
   routerPushMock.mockReset();
   toastErrorMock.mockReset();
@@ -291,5 +288,71 @@ describe("BotCreateEditForm", () => {
     expect(payload).not.toHaveProperty("paperStartBalance");
     expect(payload).not.toHaveProperty("apiKeyId");
     expect(routerReplaceMock).toHaveBeenCalledWith("/dashboard/bots/bot-created/edit");
+  });
+
+  it("prefills edit mode from direct bot context without runtime graph fallback", async () => {
+    listStrategiesMock.mockResolvedValue([
+      { id: "s-edit", name: "Direct strategy", interval: "15m", leverage: 3, config: {} },
+    ]);
+    listMarketUniversesMock.mockResolvedValue([
+      {
+        id: "g-edit",
+        name: "Direct universe",
+        exchange: "BINANCE",
+        marketType: "FUTURES",
+        baseCurrency: "USDT",
+        whitelist: ["ETHUSDT"],
+        blacklist: [],
+      },
+    ]);
+    listWalletsMock.mockResolvedValue([
+      { ...baseWallet, id: "w-edit", name: "Direct wallet" },
+    ]);
+    getBotMock.mockResolvedValue({
+      id: "bot-edit",
+      name: "Direct context bot",
+      walletId: "w-edit",
+      strategyId: "s-edit",
+      symbolGroupId: "sg-edit",
+      mode: "PAPER",
+      paperStartBalance: 10000,
+      exchange: "BINANCE",
+      marketType: "FUTURES",
+      positionMode: "ONE_WAY",
+      isActive: true,
+      liveOptIn: false,
+      maxOpenPositions: 1,
+      wallet: { ...baseWallet, id: "w-edit", name: "Direct wallet" },
+      strategy: {
+        id: "s-edit",
+        name: "Direct strategy",
+        interval: "15m",
+        leverage: 3,
+        walletRisk: 2,
+      },
+      symbolGroup: {
+        id: "sg-edit",
+        name: "Direct group",
+        symbols: ["ETHUSDT"],
+        marketUniverseId: "g-edit",
+        marketUniverse: {
+          id: "g-edit",
+          name: "Direct universe",
+          exchange: "BINANCE",
+          marketType: "FUTURES",
+          baseCurrency: "USDT",
+        },
+      },
+    });
+
+    await renderWithI18n({ editId: "bot-edit" });
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue("Direct context bot")).toBeInTheDocument();
+    });
+
+    expect(screen.getByDisplayValue("Direct wallet (PAPER / BINANCE / FUTURES / USDT)")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("Direct universe (BINANCE - FUTURES/USDT)")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("Direct strategy")).toBeInTheDocument();
   });
 });

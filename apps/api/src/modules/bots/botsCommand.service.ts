@@ -336,44 +336,22 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
   }
 
   if (nextIsActive) {
-    const targetStrategyId = requestedStrategyId !== undefined ? requestedStrategyId : (existing.strategyId ?? null);
-    if (targetStrategyId) {
-      let targetSymbolGroupId: string | null = null;
+    const targetStrategyId =
+      requestedStrategyId !== undefined ? requestedStrategyId : (existing.strategyId ?? null);
+    const targetSymbolGroupId = requestedSymbolGroup?.id ?? existing.symbolGroupId ?? null;
 
-      if (requestedSymbolGroup) {
-        targetSymbolGroupId = requestedSymbolGroup.id;
-      } else {
-        targetSymbolGroupId = existing.symbolGroupId ?? null;
+    if (targetStrategyId && targetSymbolGroupId) {
+      const targetWalletId = targetWallet?.id ?? existing.walletId ?? null;
+      if (!targetWalletId) {
+        throw botErrors.walletNotFound();
       }
-
-      if (!targetSymbolGroupId) {
-        const primaryGroup = await prisma.botMarketGroup.findFirst({
-          where: {
-            userId,
-            botId: existing.id,
-            isEnabled: true,
-          },
-          orderBy: [{ executionOrder: 'asc' }, { createdAt: 'asc' }],
-          select: {
-            symbolGroupId: true,
-          },
-        });
-        targetSymbolGroupId = primaryGroup?.symbolGroupId ?? null;
-      }
-
-      if (targetSymbolGroupId) {
-        const targetWalletId = targetWallet?.id ?? existing.walletId ?? null;
-        if (!targetWalletId) {
-          throw botErrors.walletNotFound();
-        }
-        await assertNoDuplicateActiveBotByStrategyAndSymbolGroup({
-          userId,
-          strategyId: targetStrategyId,
-          symbolGroupId: targetSymbolGroupId,
-          walletId: targetWalletId,
-          excludeBotId: existing.id,
-        });
-      }
+      await assertNoDuplicateActiveBotByStrategyAndSymbolGroup({
+        userId,
+        strategyId: targetStrategyId,
+        symbolGroupId: targetSymbolGroupId,
+        walletId: targetWalletId,
+        excludeBotId: existing.id,
+      });
     }
   }
 
@@ -401,41 +379,6 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
         apiKeyId: resolvedApiKeyId,
         liveOptIn: nextLiveOptIn,
         consentTextVersion: nextConsentTextVersion,
-      },
-      include: {
-        botStrategies: {
-          select: {
-            strategyId: true,
-            symbolGroupId: true,
-            isEnabled: true,
-            createdAt: true,
-          },
-        },
-        botMarketGroups: {
-          select: {
-            symbolGroupId: true,
-            isEnabled: true,
-            lifecycleStatus: true,
-            executionOrder: true,
-            createdAt: true,
-          },
-        },
-        marketGroupStrategyLinks: {
-          select: {
-            strategyId: true,
-            isEnabled: true,
-            priority: true,
-            createdAt: true,
-            botMarketGroup: {
-              select: {
-                isEnabled: true,
-                lifecycleStatus: true,
-                executionOrder: true,
-                createdAt: true,
-              },
-            },
-          },
-        },
       },
     });
 

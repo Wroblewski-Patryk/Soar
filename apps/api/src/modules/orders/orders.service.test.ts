@@ -315,6 +315,8 @@ describe('openOrder live execution contract', () => {
         liveOptIn: true,
         consentTextVersion: 'mvp-v1',
         walletId: liveWallet.id,
+        strategyId: strategyCanonical.id,
+        symbolGroupId: group.id,
       },
     });
     const botGroup = await prisma.botMarketGroup.create({

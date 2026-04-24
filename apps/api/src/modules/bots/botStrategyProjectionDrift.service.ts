@@ -1,5 +1,5 @@
 import { prisma } from '../../prisma/client';
-import { mapBotResponse } from './botResponseMapper.service';
+import { resolveLegacyPrimaryBotContext } from './botResponseMapper.service';
 import type { ListBotStrategyDriftQueryDto, RepairBotStrategyDriftDto } from './bots.types';
 
 export type StrategyProjectionDriftItem = {
@@ -67,23 +67,7 @@ export const buildStrategyProjectionDriftItem = (bot: {
       (left, right) => toComparableTimestamp(left.createdAt) - toComparableTimestamp(right.createdAt)
     )[0] ??
     null;
-  const projectedStrategyId = mapBotResponse({
-    ...bot,
-    marketGroupStrategyLinks: sortedGroups.flatMap((group) =>
-      group.strategyLinks.map((link) => ({
-        strategyId: link.strategyId,
-        isEnabled: link.isEnabled,
-        priority: link.priority,
-        createdAt: link.createdAt,
-        botMarketGroup: {
-          isEnabled: group.isEnabled,
-          lifecycleStatus: group.lifecycleStatus,
-          executionOrder: group.executionOrder,
-          createdAt: group.createdAt,
-        },
-      }))
-    ),
-  }).strategyId;
+  const projectedStrategyId = resolveLegacyPrimaryBotContext(bot).strategyId;
 
   const canonicalPrimaryStrategyId = primaryCanonicalStrategy?.strategyId ?? null;
   const legacyEnabledStrategyId = legacyEnabledStrategy?.strategyId ?? null;

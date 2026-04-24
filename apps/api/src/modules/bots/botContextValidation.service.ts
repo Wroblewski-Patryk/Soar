@@ -33,10 +33,10 @@ export const assertWalletContextMatchesExistingBotMarketGroups = async (params: 
     baseCurrency: string;
   };
 }) => {
-  const botGroups = await prisma.botMarketGroup.findMany({
+  const bot = await prisma.bot.findFirst({
     where: {
       userId: params.userId,
-      botId: params.botId,
+      id: params.botId,
     },
     select: {
       id: true,
@@ -56,16 +56,18 @@ export const assertWalletContextMatchesExistingBotMarketGroups = async (params: 
     },
   });
 
-  const mismatch = botGroups.find((group) => {
-    const universe = group.symbolGroup.marketUniverse;
-    return !isWalletContextCompatibleWithMarketUniverse({
-      wallet: params.wallet,
-      marketUniverse: {
-        exchange: universe.exchange,
-        marketType: universe.marketType,
-        baseCurrency: universe.baseCurrency,
-      },
-    });
+  const universe = bot?.symbolGroup?.marketUniverse;
+  if (!universe) {
+    return;
+  }
+
+  const mismatch = !isWalletContextCompatibleWithMarketUniverse({
+    wallet: params.wallet,
+    marketUniverse: {
+      exchange: universe.exchange,
+      marketType: universe.marketType,
+      baseCurrency: universe.baseCurrency,
+    },
   });
 
   if (mismatch) {
@@ -74,13 +76,11 @@ export const assertWalletContextMatchesExistingBotMarketGroups = async (params: 
       walletExchange: params.wallet.exchange,
       walletMarketType: params.wallet.marketType,
       walletBaseCurrency: normalizeWalletContextValue(params.wallet.baseCurrency),
-      symbolGroupId: mismatch.symbolGroupId,
-      marketUniverseId: mismatch.symbolGroup.marketUniverse.id,
-      marketUniverseExchange: mismatch.symbolGroup.marketUniverse.exchange,
-      marketUniverseMarketType: mismatch.symbolGroup.marketUniverse.marketType,
-      marketUniverseBaseCurrency: normalizeWalletContextValue(
-        mismatch.symbolGroup.marketUniverse.baseCurrency
-      ),
+      symbolGroupId: bot?.symbolGroupId ?? null,
+      marketUniverseId: universe.id,
+      marketUniverseExchange: universe.exchange,
+      marketUniverseMarketType: universe.marketType,
+      marketUniverseBaseCurrency: normalizeWalletContextValue(universe.baseCurrency),
     });
   }
 };
