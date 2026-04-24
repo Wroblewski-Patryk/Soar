@@ -301,6 +301,14 @@ Last updated: 2026-04-24
   open-order statuses render cancel affordance, while terminal rows stay
   read-only and table truth refreshes from the canonical selected-bot runtime
   snapshot after successful cancellation.
+- 2026-04-24: `V1LIFE-A` is now closed. Strategy lifetime semantics are fully
+  aligned end-to-end: `0` is an explicit `no time limit` contract in the
+  strategy form and payload mapping, runtime now enforces stale-order and
+  stale-position expiry through the existing canonical cancel/close lifecycles,
+  and the dashboard `Orders` tab exposes a real cancel action over the same
+  backend endpoint. Focused closure validation for the lifetime/order-control
+  wave is green across web tests, API tests, typecheck, and repository
+  guardrails.
 - 2026-04-24: published `V1LIFE-A` after a focused lifecycle audit covering
   strategy builder, runtime/order services, and dashboard open orders UI.
   Confirmed that strategy already stores `maxOrders`, `orderLifetime`,

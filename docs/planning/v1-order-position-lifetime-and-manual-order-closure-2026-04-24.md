@@ -3,7 +3,7 @@
 ## Header
 - ID: V1LIFE-A
 - Title: Close order/position lifetime enforcement and dashboard open-order control for final V1 runtime hygiene
-- Status: READY
+- Status: CLOSED
 - Owner: Planning Agent
 - Depends on: V1FINAL-A
 - Priority: P0
@@ -178,7 +178,7 @@ not as justification to keep stale open orders indefinitely.
   - show action only for cancelable active orders
 
 ### Slice 6 - Closure
-- [ ] `V1LIFE-06 qa(closure): run focused lifetime/order-control pack and sync canonical docs/context`
+- [x] `V1LIFE-06 qa(closure): run focused lifetime/order-control pack and sync canonical docs/context`
   - rerun focused api/web tests
   - verify prod orphan-order cleanup note
   - sync queue/context/architecture notes
@@ -222,3 +222,11 @@ not as justification to keep stale open orders indefinitely.
   - web now shows explicit pending state during cancel and refreshes the
     selected-bot runtime snapshot after success instead of mutating table truth
     locally
+- `V1LIFE-06` closed on `2026-04-24`
+  - focused closure validation is green across the full lifetime/order-control
+    scope: strategy zero-limit semantics, shared lifetime policy normalization,
+    runtime stale-order cancellation, runtime stale-position closure, and
+    dashboard open-order cancel action
+  - the already recovered production orphan order remains the explicit cleanup
+    evidence for this wave; no silent stale-order residue is left in the final
+    V1 lifetime contract
