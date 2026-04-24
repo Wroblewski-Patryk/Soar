@@ -68,6 +68,56 @@ const resolveManualOrderStrategyContext = async (params: {
 }): Promise<ResolvedManualOrderStrategyContext | null> => {
   const normalizedSymbol = params.symbol.toUpperCase();
   const catalogSymbolsCache = new Map<string, string[]>();
+  const botDirectContext = await prisma.bot.findFirst({
+    where: {
+      id: params.botId,
+      userId: params.userId,
+    },
+    select: {
+      strategyId: true,
+      symbolGroupId: true,
+      strategy: {
+        select: {
+          leverage: true,
+          config: true,
+        },
+      },
+      symbolGroup: {
+        select: {
+          symbols: true,
+          marketUniverse: {
+            select: {
+              exchange: true,
+              marketType: true,
+              baseCurrency: true,
+              filterRules: true,
+              whitelist: true,
+              blacklist: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (
+    botDirectContext?.strategyId &&
+    botDirectContext.symbolGroupId &&
+    botDirectContext.strategy &&
+    botDirectContext.symbolGroup
+  ) {
+    const directSymbols = await resolveEffectiveSymbolGroupSymbolsWithCatalog(
+      botDirectContext.symbolGroup,
+      catalogSymbolsCache
+    );
+    if (directSymbols.includes(normalizedSymbol)) {
+      return {
+        leverage: botDirectContext.strategy.leverage,
+        config: (botDirectContext.strategy.config as Record<string, unknown> | null | undefined) ?? null,
+      };
+    }
+    return null;
+  }
 
   const groupLinks = await prisma.botMarketGroup.findMany({
     where: {

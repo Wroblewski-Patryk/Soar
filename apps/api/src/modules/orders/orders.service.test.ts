@@ -141,6 +141,105 @@ describe('openOrder live execution contract', () => {
     }
   });
 
+  it('fills PAPER MARKET order immediately from canonical manual-context price when bot scope is provided', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-paper-manual-context-fill@example.com', password: 'hashed' },
+    });
+    const strategy = await prisma.strategy.create({
+      data: {
+        userId: user.id,
+        name: 'Paper market strategy',
+        interval: '5m',
+        leverage: 5,
+        walletRisk: 1,
+        config: {
+          additional: {
+            marginMode: 'ISOLATED',
+            orderType: 'MARKET',
+          },
+        },
+      },
+    });
+    const universe = await prisma.marketUniverse.create({
+      data: {
+        userId: user.id,
+        name: 'Paper market universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: ['BTCUSDT'],
+        blacklist: [],
+      },
+    });
+    const symbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: user.id,
+        marketUniverseId: universe.id,
+        name: 'Paper market symbols',
+        symbols: ['BTCUSDT'],
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'Paper market bot',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        strategyId: strategy.id,
+        symbolGroupId: symbolGroup.id,
+      },
+    });
+    const executeLiveOrder = vi.fn();
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+
+    try {
+      const order = await openOrder(
+        user.id,
+        {
+          botId: bot.id,
+          symbol: 'BTCUSDT',
+          side: 'BUY',
+          type: 'MARKET',
+          quantity: 0.1,
+          mode: 'PAPER',
+          riskAck: false,
+        },
+        { executeLiveOrder }
+      );
+
+      expect(executeLiveOrder).not.toHaveBeenCalled();
+      expect(order.status).toBe('FILLED');
+      expect(order.averageFillPrice).toBeTruthy();
+      expect(order.positionId).toBeTruthy();
+      const openedPosition = await prisma.position.findUnique({
+        where: { id: order.positionId ?? '' },
+      });
+      expect(openedPosition).not.toBeNull();
+      expect(openedPosition?.entryPrice).toBe(order.averageFillPrice);
+      const auditLog = await prisma.log.findFirst({
+        where: {
+          userId: user.id,
+          action: 'order.opened',
+          entityType: 'ORDER',
+          entityId: order.id,
+        },
+        orderBy: { occurredAt: 'desc' },
+      });
+      const metadata = (auditLog?.metadata ?? {}) as {
+        waitingForFill?: boolean;
+        fillPriceResolved?: boolean;
+      };
+      expect(metadata.waitingForFill).toBe(false);
+      expect(metadata.fillPriceResolved).toBe(true);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
   it('derives mode, wallet and strategy from canonical bot context when botId is provided', async () => {
     const user = await prisma.user.create({
       data: { email: 'orders-canonical-context@example.com', password: 'hashed' },

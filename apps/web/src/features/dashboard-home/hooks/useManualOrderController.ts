@@ -53,10 +53,18 @@ export const useManualOrderController = ({
 
   const manualOrderSymbolOptions = useMemo(() => {
     const options = new Set<string>();
+    for (const symbol of selected?.bot.symbolGroup?.symbols ?? []) {
+      options.add(normalizeSymbol(symbol));
+    }
+    for (const marketGroup of selected?.runtimeGraph?.marketGroups ?? []) {
+      for (const symbol of marketGroup.symbolGroup?.symbols ?? []) {
+        options.add(normalizeSymbol(symbol));
+      }
+    }
     for (const item of selectedData?.symbols ?? []) options.add(normalizeSymbol(item.symbol));
     for (const item of selectedData?.open ?? []) options.add(normalizeSymbol(item.symbol));
     return [...options].sort((left, right) => left.localeCompare(right));
-  }, [selectedData?.open, selectedData?.symbols]);
+  }, [selected?.bot.symbolGroup?.symbols, selected?.runtimeGraph?.marketGroups, selectedData?.open, selectedData?.symbols]);
 
   useEffect(() => {
     if (manualOrderSymbolOptions.length === 0) {

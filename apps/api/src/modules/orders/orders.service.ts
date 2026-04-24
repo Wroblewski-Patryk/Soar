@@ -445,6 +445,36 @@ const defaultOpenOrderDeps: OpenOrderDeps = {
 const isPositiveFiniteNumber = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value) && value > 0;
 
+const resolvePaperImmediateFillPrice = async (params: {
+  userId: string;
+  payload: OpenOrderInput;
+}) => {
+  if (params.payload.mode !== 'PAPER' || params.payload.type !== 'MARKET') {
+    return isPositiveFiniteNumber(params.payload.price) ? params.payload.price : null;
+  }
+
+  if (isPositiveFiniteNumber(params.payload.price)) {
+    return params.payload.price;
+  }
+
+  if (!params.payload.botId) return null;
+
+  const manualContext = await getManualOrderContextService(
+    params.userId,
+    {
+      botId: params.payload.botId,
+      symbol: params.payload.symbol,
+      side: params.payload.side,
+      quantity: params.payload.quantity,
+    },
+    defaultManualOrderContextDeps
+  );
+
+  return isPositiveFiniteNumber(manualContext?.priceReference.markPrice)
+    ? manualContext.priceReference.markPrice
+    : null;
+};
+
 const writeOrderAudit = async (params: {
   userId: string;
   orderId: string;
@@ -518,8 +548,16 @@ export const openOrder = async (
           return Number.isFinite(quantity) ? sum + Math.max(0, quantity) : sum;
         }, 0)
       : null;
+  const resolvedPaperFillPrice =
+    canonicalPayload.mode === 'PAPER' && status === 'FILLED'
+      ? await resolvePaperImmediateFillPrice({
+          userId,
+          payload: canonicalPayload,
+        })
+      : null;
   const fillPriceFromExchange =
     fills.find((fill) => Number.isFinite(fill.price) && fill.price > 0)?.price ??
+    resolvedPaperFillPrice ??
     (isPositiveFiniteNumber(canonicalPayload.price) ? canonicalPayload.price : null);
   const shouldApplyImmediateFillLifecycle = status === 'FILLED' && isPositiveFiniteNumber(fillPriceFromExchange);
   const persistedStatus: 'OPEN' | 'FILLED' = shouldApplyImmediateFillLifecycle ? 'FILLED' : 'OPEN';
