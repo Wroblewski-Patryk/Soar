@@ -13,11 +13,16 @@ Operational queue for one-task execution runs.
 - [ ] `V1DASH-02 web(pending-state): expose pending open-order and waiting-for-fill truth in selected-bot dashboard surfaces`
 - [ ] `V1DASH-03 web(degraded-state): make running-but-non-actionable runtime states explicit on the dashboard`
 - [ ] `V1DASH-04 qa(closure): run focused dashboard truth pack and sync canonical docs/context`
+- [ ] `V1BOT-12 web(bot-monitoring-capital): align bot monitoring capital widgets to authoritative runtime capital summary`
+- [ ] `V1BOT-13 web(bot-list-truth): distinguish bot configuration baseline from active runtime capital truth`
+- [ ] `V1BOT-14 web(bot-monitoring-states): expose pending open-order and degraded runtime states in bot monitoring`
+- [ ] `V1BOT-15 qa(closure): run focused bot-surface truth pack and sync canonical docs/context`
 - [ ] `V1BOT-08 web(bot-crud): align create/edit/detail flows to the singular contract`
 - [ ] `V1BOT-10 cleanup(legacy-runtime): remove legacy topology from canonical runtime path`
 - [ ] `V1BOT-11 qa(closure): full parity and migration closure pack`
 ## PIPELINE
 - [x] `V1DASH-A planning queued (dashboard operator truth hardening after singular bot migration and manual-order recovery)`
+- [x] `V1BOTSURF-A planning queued (bot operator surface truth hardening after singular bot migration and dashboard truth audit)`
 - [x] `V1BOT-A planning queued (single-context bot architecture migration with inherited wallet, market-group, and strategy context)`
 - [x] `V1BOT-01 docs(architecture): freeze single-context bot contract`
 - [x] `V1BOT-02 db(schema): add direct bot references for symbolGroup and strategy; classify legacy topology`

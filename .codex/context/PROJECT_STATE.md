@@ -35,7 +35,12 @@ Last updated: 2026-04-24
   from `bot.paperStartBalance` instead of treating runtime capital summary as
   first authority, and pending/degraded runtime states are still too quiet for
   operator use when a bot is running with tracked symbols or open orders but no
-  open position yet.
+  open position yet. A second audit pass confirmed the same class of drift in
+  bot-focused surfaces: `BotsManagement` and `BotsListTable` still partly
+  render paper/config values from legacy bot snapshot fields instead of
+  authoritative runtime capital summary semantics, and bot monitoring needs its
+  own explicit pending/degraded state hardening wave after the selected-bot
+  dashboard follow-up.
 
 ## Product Decisions (Confirmed)
 - 2026-04-21: `docs/architecture/` is the canonical source of truth for how

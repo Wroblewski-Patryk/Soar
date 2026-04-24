@@ -22,6 +22,10 @@ Last updated: 2026-04-24
 - [ ] `V1DASH-02 web(pending-state): expose pending open-order and waiting-for-fill truth in selected-bot dashboard surfaces`
 - [ ] `V1DASH-03 web(degraded-state): make running-but-non-actionable runtime states explicit on the dashboard`
 - [ ] `V1DASH-04 qa(closure): run focused dashboard truth pack and sync canonical docs/context`
+- [ ] `V1BOT-12 web(bot-monitoring-capital): align bot monitoring capital widgets to authoritative runtime capital summary`
+- [ ] `V1BOT-13 web(bot-list-truth): distinguish bot configuration baseline from active runtime capital truth`
+- [ ] `V1BOT-14 web(bot-monitoring-states): expose pending open-order and degraded runtime states in bot monitoring`
+- [ ] `V1BOT-15 qa(closure): run focused bot-surface truth pack and sync canonical docs/context`
 - [ ] `V1BOT-08 web(bot-crud): align create/edit/detail flows to the singular contract`
 
 ## BACKLOG
@@ -57,6 +61,9 @@ Last updated: 2026-04-24
 
 - [x] `V1BOT-07B fix(api-paper-capital): keep PAPER runtime capital bot-scoped under the linked wallet and align selected-bot monitoring reads to inherited execution context`
   - 2026-04-24: Production investigation proved a critical drift: the PAPER wallet showed `100 USDT` baseline and the selected strategy used `walletRisk=2` with `25x` leverage, yet the runtime dashboard reported `referenceBalance ~= 96,695 USDT` and opened ~`48k` notional paper positions. Root cause: PAPER runtime capital could still be derived from wallet-scoped lifecycle rows, allowing historical or legacy bot rows on the same wallet to inflate the currently selected bot. Fixed by keeping PAPER capital bot-scoped under the linked wallet while preserving LIVE wallet authority from authenticated exchange balance, and by aligning runtime position monitoring reads to inherited wallet/market-universe execution context instead of deprecated bot-owned mode/venue snapshots. Validation PASS: `pnpm --filter api exec vitest run src/modules/engine/runtimeCapitalContext.service.test.ts src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
+
+- [x] `V1BOTSURF-A planning: queue bot operator-surface truth hardening after the wider dashboard audit`
+  - 2026-04-24: A broader operator-surface audit confirmed that dashboard-home is not the only place still capable of drifting away from runtime truth. `BotsManagement` and `BotsListTable` still partly seed paper values from legacy bot snapshot fields, and bot monitoring does not yet expose pending open-order / degraded runtime states strongly enough for operator use. Published `docs/planning/v1-bot-surfaces-truth-hardening-2026-04-24.md` and queued `V1BOT-12..15`.
 
 - [x] `V1BOT-A planning: approve and queue the single-context bot architecture migration`
   - 2026-04-24: User approved the full target-domain rewrite where one bot owns exactly one wallet, one symbol-group market scope, and one strategy, while inheriting execution context from wallet, venue/symbol scope from market group, and logic/risk settings from strategy. Published detailed migration packet `docs/planning/v1-single-context-bot-architecture-migration-2026-04-24.md`, updated the canonical architecture docs, and queued `V1BOT-01..11`.
