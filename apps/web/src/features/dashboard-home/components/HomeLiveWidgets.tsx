@@ -23,6 +23,7 @@ import {
 import { supportsExchangeCapability } from "../../../features/exchanges/exchangeCapabilities";
 import { useCoinIconLookup } from "../../../features/icons/hooks/useCoinIconLookup";
 import { updatePositionManualParams } from "../../../features/positions/services/positions.service";
+import { resolveBotVenueContext } from "../../../features/bots/utils/runtimeSurfaceTruth";
 import RuntimeDataSection from "./home-live-widgets/RuntimeDataSection";
 import RuntimeOnboardingSection from "./home-live-widgets/RuntimeOnboardingSection";
 import RuntimeSidebarSection from "./home-live-widgets/RuntimeSidebarSection";
@@ -189,14 +190,15 @@ export default function HomeLiveWidgets() {
     liveTickerPrices,
     ttpStickyFavorableMoveByPositionRef,
   });
+  const selectedVenueContext = useMemo(() => resolveBotVenueContext(selected?.bot), [selected?.bot]);
 
   const selectedRuntimeCapabilityAvailable = useMemo(() => {
     if (!selected) return true;
-    if (!selected.bot.exchange) return true;
+    if (!selectedVenueContext.exchange) return true;
     return selected.bot.mode === "LIVE"
-      ? supportsExchangeCapability(selected.bot.exchange, "LIVE_EXECUTION")
-      : supportsExchangeCapability(selected.bot.exchange, "PAPER_PRICING_FEED");
-  }, [selected]);
+      ? supportsExchangeCapability(selectedVenueContext.exchange, "LIVE_EXECUTION")
+      : supportsExchangeCapability(selectedVenueContext.exchange, "PAPER_PRICING_FEED");
+  }, [selected, selectedVenueContext.exchange]);
 
   const runtimeDataAgeMs = useMemo(() => {
     if (!lastUpdatedAt) return null;
@@ -211,9 +213,9 @@ export default function HomeLiveWidgets() {
   );
 
   const selectedPlaceholderHint = useMemo(() => {
-    if (!selected || !selected.bot.exchange) return "";
-    return `${selected.bot.exchange}: ${t("dashboard.bots.create.placeholderActivationHint").replace("{mode}", selected.bot.mode)}`;
-  }, [selected, t]);
+    if (!selected || !selectedVenueContext.exchange) return "";
+    return `${selectedVenueContext.exchange}: ${t("dashboard.bots.create.placeholderActivationHint").replace("{mode}", selected.bot.mode)}`;
+  }, [selected, selectedVenueContext.exchange, t]);
 
   const signalCardsPerView = resolveSignalCardsPerView(
     viewportWidth > 0 ? viewportWidth : SIGNAL_CARDS_DESKTOP_MIN_WIDTH

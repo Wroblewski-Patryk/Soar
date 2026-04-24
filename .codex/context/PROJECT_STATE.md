@@ -256,6 +256,12 @@ Last updated: 2026-04-24
   `listBotRuntimeSessions`, clears aggregate data fail-closed, and exposes an
   explicit degraded selected-bot state instead of reconstructing symbol stats,
   positions, and trades from session endpoints.
+- 2026-04-24: `V1SURF-06` is now closed. Dashboard runtime sidebar and
+  manual-order estimate semantics now reuse inherited venue truth from the
+  linked symbol-group market universe instead of duplicated bot snapshot
+  `exchange/marketType` fields. Capability checks, placeholder venue labels,
+  sidebar market context, and SPOT-vs-FUTURES fallback margin/leverage
+  behavior now align on one shared `resolveBotVenueContext()` helper.
 - 2026-04-24: the next post-`V1IND-A` operator-truth follow-up is now active
   as `V1MON-A`. The first slice is already closed: bot monitoring no longer
   reconstructs aggregate runtime truth client-side when the backend aggregate

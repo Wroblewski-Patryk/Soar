@@ -1,4 +1,5 @@
 import { interpolateTemplate } from "./formatters";
+import { resolveBotVenueContext } from "@/features/bots/utils/runtimeSurfaceTruth";
 import type { RuntimeSnapshot } from "./types";
 import type { RuntimeSidebarSectionProps } from "./RuntimeSidebarSection";
 
@@ -69,7 +70,10 @@ export const buildRuntimeSidebarManualOrderPresenter = ({
   onQuantityChange,
   onSliderChange,
   onSubmit,
-}: BuildManualOrderPresenterArgs): ManualOrderPresenter => ({
+}: BuildManualOrderPresenterArgs): ManualOrderPresenter => {
+  const selectedVenueContext = resolveBotVenueContext(selected?.bot);
+
+  return ({
   title: t("dashboard.home.runtime.manualOrderTitle"),
   symbolLabel: t("dashboard.home.runtime.symbol"),
   sideLabel: t("dashboard.home.runtime.side"),
@@ -100,7 +104,7 @@ export const buildRuntimeSidebarManualOrderPresenter = ({
   symbol: manualOrderSymbol,
   side: manualOrderSide,
   orderType: resolvedManualOrderType,
-  marginMode: manualOrderContext?.marginMode ?? (selected?.bot.marketType === "SPOT" ? "NONE" : "CROSSED"),
+  marginMode: manualOrderContext?.marginMode ?? (selectedVenueContext.marketType === "SPOT" ? "NONE" : "CROSSED"),
   leverage: manualOrderLeverageForEstimate,
   minExecutableQty: manualOrderMinExecutableQty,
   maxExecutableQty: manualOrderSliderMaxQuantity ?? null,
@@ -120,7 +124,8 @@ export const buildRuntimeSidebarManualOrderPresenter = ({
   onQuantityChange,
   onSliderChange,
   onSubmit,
-});
+  });
+};
 
 export const buildRuntimeSidebarTextPresenter = (t: Translate): TextPresenter => ({
   walletTitle: t("dashboard.home.runtime.walletTitle"),

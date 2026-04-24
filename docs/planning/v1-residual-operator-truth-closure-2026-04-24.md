@@ -42,7 +42,7 @@ the browser.
 ## Definition of Done
 - [x] `V1SURF-05` dashboard-home no longer reconstructs aggregate runtime truth
       client-side when aggregate API fails.
-- [ ] `V1SURF-06` dashboard runtime sidebar and manual-order estimates derive
+- [x] `V1SURF-06` dashboard runtime sidebar and manual-order estimates derive
       venue semantics from inherited bot context or explicit manual-order
       context, not duplicated bot snapshot fields.
 - [ ] `V1SURF-07` bot monitoring quick-context/control surfaces derive venue
@@ -60,6 +60,7 @@ the browser.
 ## Validation Evidence
 - Tests:
   - `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.aggregate-error.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.aggregate-wallet.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.open-orders-actions.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.open-orders-source.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.test.tsx`
+  - `pnpm --filter web exec vitest run src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.manual-order-scope.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.manual-order-venue.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx`
   - `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.aggregate-history.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.aggregate-wallet.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.manual-order-scope.test.tsx src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx`
   - `pnpm --filter web exec vitest run src/features/bots/components/BotsManagement.test.tsx src/features/bots/services/botsMonitoringAggregate.service.test.ts`
   - `pnpm --filter web run typecheck`
@@ -124,6 +125,16 @@ keeps only session truth plus explicit degraded aggregate state when
 `getBotRuntimeMonitoringAggregate()` fails. Focused regression coverage was
 added in `HomeLiveWidgets.aggregate-error.test.tsx` to prove that session-level
 symbol stats/positions/trades fallbacks are not invoked on aggregate failure.
+
+`V1SURF-06` is now closed. Dashboard runtime sidebar and manual-order estimate
+semantics now reuse inherited venue context through
+`features/bots/utils/runtimeSurfaceTruth.ts` instead of duplicated bot snapshot
+fields. `HomeLiveWidgets`, `RuntimeSidebarSection`, `runtimeSidebarPresenters`,
+and `useManualOrderController` now prefer the linked symbol-group market
+universe for capability checks, venue labels, SPOT-vs-FUTURES margin defaults,
+and fallback leverage/quantity estimation. Focused regression coverage was
+added in `HomeLiveWidgets.manual-order-venue.test.tsx` for stale bot snapshot
+vs inherited SPOT semantics.
 
 This wave should prefer shared helpers already present in
 `features/bots/utils/runtimeSurfaceTruth.ts` and must not add a second venue

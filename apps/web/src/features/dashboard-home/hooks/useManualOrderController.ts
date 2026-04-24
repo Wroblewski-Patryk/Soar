@@ -3,6 +3,7 @@ import { toast } from "sonner";
 
 import { getAxiosMessage } from "@/lib/getAxiosMessage";
 import { normalizeSymbol } from "@/lib/symbols";
+import { resolveBotVenueContext } from "@/features/bots/utils/runtimeSurfaceTruth";
 import { interpolateTemplate } from "../components/home-live-widgets/formatters";
 import {
   formatQuantityForInput,
@@ -50,6 +51,7 @@ export const useManualOrderController = ({
   } | null>(null);
   const [manualOrderContextLoading, setManualOrderContextLoading] = useState(false);
   const [isSubmittingManualOrder, setIsSubmittingManualOrder] = useState(false);
+  const selectedVenueContext = useMemo(() => resolveBotVenueContext(selected?.bot), [selected?.bot]);
 
   const manualOrderSymbolOptions = useMemo(() => {
     const options = new Set<string>();
@@ -151,8 +153,8 @@ export const useManualOrderController = ({
     if (manualOrderContext?.leverage && Number.isFinite(manualOrderContext.leverage) && manualOrderContext.leverage > 0) {
       return manualOrderContext.leverage;
     }
-    return selected?.bot.marketType === "SPOT" ? 1 : null;
-  }, [manualOrderContext?.leverage, selected?.bot.marketType]);
+    return selectedVenueContext.marketType === "SPOT" ? 1 : null;
+  }, [manualOrderContext?.leverage, selectedVenueContext.marketType]);
 
   const manualOrderSliderMaxQuantity = useMemo(() => {
     if (manualOrderLiveReferencePrice == null || manualOrderLiveReferencePrice <= 0) {
@@ -165,7 +167,7 @@ export const useManualOrderController = ({
 
     const leverage = manualOrderLeverageForEstimate ?? 1;
     const rawMax =
-      selected?.bot.marketType === "SPOT"
+      selectedVenueContext.marketType === "SPOT"
         ? freeCash / manualOrderLiveReferencePrice
         : (freeCash * Math.max(1, leverage)) / manualOrderLiveReferencePrice;
     if (!Number.isFinite(rawMax) || rawMax <= 0) return manualOrderMinExecutableQty;
@@ -178,7 +180,7 @@ export const useManualOrderController = ({
     manualOrderLeverageForEstimate,
     manualOrderLiveReferencePrice,
     manualOrderMinExecutableQty,
-    selected?.bot.marketType,
+    selectedVenueContext.marketType,
     selectedData?.free,
   ]);
 

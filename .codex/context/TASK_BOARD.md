@@ -17,7 +17,6 @@ Last updated: 2026-04-24
 
 ## READY
 
-- [ ] `V1SURF-06 web(inherited-venue): align runtime sidebar and manual-order estimate semantics to inherited bot context`
 - [ ] `V1SURF-07 web(bot-monitoring-context): align quick-context/control venue labels and capability checks to inherited context`
 - [ ] `V1SURF-08 qa(closure): rerun focused residual surface-truth pack and sync canonical docs/context`
 
@@ -50,6 +49,9 @@ Last updated: 2026-04-24
 
 - [x] `V1SURF-05 web(aggregate-truth): remove selected-bot dashboard aggregate fallback and fail closed on aggregate errors`
   - 2026-04-24: Removed the remaining browser-side aggregate reconstruction path from `useHomeLiveWidgetsController.ts`. Selected-bot dashboard now keeps only real session truth from `listBotRuntimeSessions`, clears runtime aggregate payloads on aggregate endpoint failure, and exposes degraded selected-bot state instead of reconstructing symbol stats, positions, and trades in web. Added focused regression coverage proving aggregate failure does not trigger session-level reconstruction. Validation PASS: `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.aggregate-error.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.aggregate-wallet.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.open-orders-actions.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.open-orders-source.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.test.tsx`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
+
+- [x] `V1SURF-06 web(inherited-venue): align runtime sidebar and manual-order estimate semantics to inherited bot context`
+  - 2026-04-24: Runtime sidebar and dashboard manual-order estimate semantics now reuse inherited venue truth from `resolveBotVenueContext()` instead of duplicated bot snapshot `exchange/marketType` fields. `HomeLiveWidgets`, `RuntimeSidebarSection`, `runtimeSidebarPresenters`, and `useManualOrderController` now prefer the linked symbol-group market-universe context for capability checks, sidebar venue labels, manual-order margin fallback, and SPOT-vs-FUTURES estimate behavior. Added focused regression coverage for inherited venue labels and SPOT fallback semantics when manual-order context is unavailable. Validation PASS: `pnpm --filter web exec vitest run src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.manual-order-scope.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.manual-order-venue.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
 
 - [x] `V1LIFE-04 api(position-lifetime): enforce strategy-configured position lifetime via canonical close lifecycle`
   - 2026-04-24: Added canonical runtime stale-position enforcement in `runtimePositionLifetime.service.ts` and wired it into the runtime session watchdog so stale `OPEN` positions for active bots are closed through the existing runtime EXIT lifecycle instead of a second cleanup path. The close flow now resolves one runtime mark price from ticker truth with a recent-close fallback, and fails closed when no valid price can be proven. Focused validation PASS: `pnpm --filter api exec vitest run src/modules/engine/runtimePositionLifetime.service.test.ts src/modules/engine/runtimeSignalLoop.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.

@@ -1,6 +1,7 @@
 import { LuArrowDownRight, LuArrowUpRight, LuBot, LuChartCandlestick, LuChartLine, LuListChecks, LuShieldCheck, LuTrophy, LuWallet } from "react-icons/lu";
 import { normalizeSymbol } from "@/lib/symbols";
 import {
+  resolveBotVenueContext,
   resolvePaperConfigBaseline,
   resolveRuntimeFreeFunds,
   resolveRuntimePortfolio,
@@ -228,6 +229,7 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
   const panelFrameClassName =
     "rounded-box border-b-[3px] border-secondary/70 bg-gradient-to-br from-primary/70 to-secondary/70 p-px";
   const panelBodyClassName = "rounded-box bg-base-100/85 p-3";
+  const selectedVenueContext = resolveBotVenueContext(props.selected?.bot);
   const statusValueClassName = (status?: string | null) => {
     if (status === "RUNNING") return "text-info";
     if (status === "COMPLETED") return "text-success";
@@ -236,8 +238,8 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
     return "text-base-content/70";
   };
   const normalizedMarketType = (() => {
-    if (!props.selected?.bot.marketType) return "-";
-    return props.selected.bot.marketType === "FUTURES" ? "Futures" : "Spot";
+    if (!selectedVenueContext.marketType) return "-";
+    return selectedVenueContext.marketType === "FUTURES" ? "Futures" : "Spot";
   })();
   const runtimeGraph = props.selected?.runtimeGraph;
   const directSymbolGroup = props.selected?.bot.symbolGroup ?? null;
@@ -457,7 +459,7 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
                   </p>
                   <p className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-2">
                     <span className="opacity-65">{props.text.exchange}</span>
-                    <span className="min-w-0 break-words text-right font-semibold">{props.selected?.bot.exchange ?? "-"}</span>
+                    <span className="min-w-0 break-words text-right font-semibold">{selectedVenueContext.exchange ?? "-"}</span>
                   </p>
                   <p className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-2">
                     <span className="opacity-65">{props.text.market}</span>

@@ -394,4 +394,38 @@ describe("RuntimeSidebarSection strategy edge behavior", () => {
     expect(screen.getByTestId("wallet-kpi-account-balance-row")).toHaveTextContent(/4000[,\.]00 USDT/);
     expect(screen.getByText("Live percent hint")).toBeInTheDocument();
   });
+
+  it("prefers inherited venue context over duplicated bot snapshot fields", () => {
+    const base = createProps();
+    const props = createProps({
+      selected: {
+        ...base.selected!,
+        bot: {
+          ...base.selected!.bot,
+          exchange: "KRAKEN",
+          marketType: "SPOT",
+          symbolGroup: {
+            id: "sg-direct",
+            name: "Direct Market",
+            symbols: ["BTCUSDT"],
+            marketUniverseId: "mu-direct",
+            marketUniverse: {
+              id: "mu-inherited",
+              name: "Inherited Universe",
+              exchange: "BINANCE",
+              marketType: "FUTURES",
+              baseCurrency: "USDT",
+            },
+          },
+        },
+      },
+    });
+
+    render(<RuntimeSidebarSection {...props} />);
+
+    expect(screen.getByText("BINANCE")).toBeInTheDocument();
+    expect(screen.getByText("Futures")).toBeInTheDocument();
+    expect(screen.queryByText("KRAKEN")).not.toBeInTheDocument();
+    expect(screen.queryByText("Spot")).not.toBeInTheDocument();
+  });
 });
