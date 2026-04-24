@@ -14,8 +14,10 @@ Last updated: 2026-04-23
   `V1CAP-A`, and `V1ALIGN-A` waves. The current repository truth is that the
   deployed worker contract is frozen to `split`, runtime symbol scope and
   signal interval truth now fail closed and persist honestly, runtime
-  freshness authority is scoped to active sessions, and operator diagnostics
-  are more explicit about degraded routing/runtime-input outcomes
+  freshness authority is scoped to active sessions, operator diagnostics are
+  more explicit about degraded routing/runtime-input outcomes, and the next
+  approved architectural migration is the single-context bot rewrite:
+  `1 bot = 1 wallet + 1 symbol-group market scope + 1 strategy`
 
 ## Product Decisions (Confirmed)
 - 2026-04-21: `docs/architecture/` is the canonical source of truth for how
@@ -137,6 +139,13 @@ Last updated: 2026-04-23
   and futures received real runtime decisions. The canonical default now
   follows runtime market type (`FUTURES` -> `wss://fstream.binance.com/ws`,
   `SPOT` -> `wss://stream.binance.com:9443/ws`).
+- 2026-04-24: the approved target bot architecture is now a full singular
+  runtime-context model rather than a compatibility cleanup. Canonical target:
+  one bot links exactly one wallet, one symbol-group-derived market scope, and
+  one strategy. The bot keeps activation/runtime identity only, while wallet
+  owns execution/capital context, symbol group + market universe own venue and
+  symbol scope, and strategy owns logic/risk settings. The execution queue for
+  this migration is published as `V1BOT-01..11`.
 - 2026-04-22: prod restore-drill proof now passes from a real Coolify terminal
   execution in the production postgres container
   (`x11cfnz1dd9x0yzccftqzcoe`), and the final non-dry-run prod release gate now

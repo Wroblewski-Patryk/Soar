@@ -17,11 +17,20 @@ Last updated: 2026-04-23
 
 ## READY
 
-- [ ] (none)
+- [ ] `V1BOT-01 docs(architecture): freeze single-context bot contract`
 
 ## BACKLOG
 
-- [ ] (none)
+- [ ] `V1BOT-02 db(schema): add direct bot references for symbolGroup and strategy; classify legacy topology`
+- [ ] `V1BOT-03 db(migration): backfill single-context refs from legacy topology and fail-closed on incompatible bots`
+- [ ] `V1BOT-04 api(commands): collapse create/update validation onto inherited single-context contract`
+- [ ] `V1BOT-05 api(reads): expose bot runtime context as inherited and singular`
+- [ ] `V1BOT-06 engine(runtime-topology): replace multi-group runtime topology with singular bot context`
+- [ ] `V1BOT-07 engine(capital-strategy-inheritance): source runtime parameters from wallet and strategy modules`
+- [ ] `V1BOT-08 web(bot-crud): align create/edit/detail flows to the singular contract`
+- [ ] `V1BOT-09 web(runtime-surfaces): align monitoring, dashboard, and manual actions to singular bot context`
+- [ ] `V1BOT-10 cleanup(legacy-runtime): remove legacy topology from canonical runtime path`
+- [ ] `V1BOT-11 qa(closure): full parity and migration closure pack`
 
 ## IN_PROGRESS
 
@@ -36,6 +45,9 @@ Last updated: 2026-04-23
 - [ ] (none)
 
 ## DONE
+
+- [x] `V1BOT-A planning: approve and queue the single-context bot architecture migration`
+  - 2026-04-24: User approved the full target-domain rewrite where one bot owns exactly one wallet, one symbol-group market scope, and one strategy, while inheriting execution context from wallet, venue/symbol scope from market group, and logic/risk settings from strategy. Published detailed migration packet `docs/planning/v1-single-context-bot-architecture-migration-2026-04-24.md`, updated the canonical architecture docs, and queued `V1BOT-01..11`.
 
 - [x] `V1RT-02 fix(api-market-stream-endpoint): select Binance websocket default by runtime market type`
   - 2026-04-23: Authenticated production verification after the `V1RT-01` deploy showed that only symbols listed on both Binance spot and futures were receiving runtime decisions, while futures-only symbols stayed at `configured_fallback`. Root cause: `BinanceMarketStreamWorker` defaulted to the spot websocket even for `FUTURES` runtime. The worker now defaults `FUTURES` to `wss://fstream.binance.com/ws` and `SPOT` to `wss://stream.binance.com:9443/ws`, with focused regression coverage in `src/modules/market-stream/binanceStream.service.test.ts`.

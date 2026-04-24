@@ -46,8 +46,12 @@ If an indicator is not implemented end-to-end, it must not silently behave like 
 The canonical evaluation unit is:
 
 ```text
-(botId, marketGroupId, symbol, intervalWindow)
+(botId, symbol, intervalWindow)
 ```
+
+The bot's single linked symbol-group market scope defines whether the symbol is
+in scope for that evaluation unit. The linked strategy defines the interval and
+decision schema for the bot.
 
 ## Signal Output Domain
 - `LONG`

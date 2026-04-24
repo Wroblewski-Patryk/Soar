@@ -67,7 +67,7 @@ Primary parts:
 - browser never talks directly to exchange WebSockets or order APIs
 - runtime side effects must be replay-safe
 - critical trading flows must remain fail-closed
-- runtime topology must stay explicit: `User -> Bot -> Market Group -> Strategy`
+- runtime topology must stay explicit: `User -> Bot -> SymbolGroup + Strategy`
 
 ## Deployment Baseline
 - local development via Docker Compose

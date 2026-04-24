@@ -31,8 +31,8 @@ Define who owns the runtime context required to make and execute trading decisio
 {
   "botId": "uuid",
   "walletId": "uuid",
-  "marketGroupId": "uuid",
-  "strategyLinkIds": ["uuid"],
+  "symbolGroupId": "uuid",
+  "strategyId": "uuid",
   "selectedScope": "strict bot-scoped runtime surface"
 }
 ```
@@ -52,14 +52,22 @@ Define who owns the runtime context required to make and execute trading decisio
 
 ### Bot owns runtime unit identity
 - activation state
-- runtime partitioning through market-groups and strategy links
+- strict runtime identity over one linked wallet, one linked symbol group,
+  and one linked strategy
 - selected-bot operator scope
+
+### Strategy owns logic context
+- interval and evaluation timeframe rules
+- entry, exit, filter, and risk schema
+- strategy-scoped runtime settings such as leverage, weighting, and max-position rules
 
 ## Canonical Invariants
 - wallet venue context must match the linked market universe venue context
+- wallet and symbol-group venue contexts must be compatible; bot does not resolve conflicts by guessing
 - `LIVE` bot execution requires a compatible wallet and API key context
 - no hidden fallback from one venue context to another
 - selected-bot reads and writes are strict and fail-closed
+- a bot cannot own more than one symbol-group market scope or more than one strategy
 
 ## Capital Context
 ### PAPER
@@ -77,6 +85,21 @@ Allowed visibility and actionability are derived from:
 - canonical runtime topology
 - wallet compatibility
 - explicit takeover rules where imported exchange state is allowed
+
+## Inherited Runtime Contract
+The approved runtime context assembly is:
+
+```text
+Bot
+  -> WalletExecutionContext
+  -> SymbolGroup / MarketUniverse venue context
+  -> Strategy logic + risk context
+```
+
+The bot may persist denormalized snapshots for read performance or runtime
+stability, but those snapshots must be derived from the linked wallet,
+symbol group, and strategy rather than acting as independent source-of-truth
+fields.
 
 ## Out of Scope
 - strategy evaluation semantics

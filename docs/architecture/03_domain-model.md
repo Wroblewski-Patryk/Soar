@@ -30,15 +30,10 @@ Define the canonical entities of Soar, their responsibilities, and their relatio
 
 ### Bot
 - explicit runtime unit
-- binds operator intent to a wallet and runtime topology
-
-### BotMarketGroup
-- explicit runtime partition inside a bot
-- groups one market scope within one bot
-
-### MarketGroupStrategyLink
-- binds one strategy to one bot market-group
-- carries evaluation ordering metadata such as weight and priority
+- binds operator intent to exactly one wallet, one symbol-group-derived market scope,
+  and one strategy
+- owns activation state and runtime identity, but does not invent venue,
+  execution, or strategy logic context that already belongs to linked modules
 
 ### Order
 - tracks submitted trading intent and order-state evolution
@@ -64,10 +59,9 @@ Define the canonical entities of Soar, their responsibilities, and their relatio
 - `MarketUniverse 1 -> N SymbolGroup`
 - `User 1 -> N Strategy`
 - `User 1 -> N Bot`
-- `Bot 1 -> N BotMarketGroup`
-- `BotMarketGroup 1 -> N MarketGroupStrategyLink`
-- `MarketGroupStrategyLink N -> 1 Strategy`
 - `Bot N -> 1 Wallet`
+- `Bot N -> 1 SymbolGroup`
+- `Bot N -> 1 Strategy`
 - `Bot 1 -> N runtime events/orders/positions/trades/signals`
 
 ## Runtime Unit
@@ -76,15 +70,17 @@ The canonical runtime unit is:
 ```text
 User
   -> Bot
-    -> BotMarketGroup
-      -> MarketGroupStrategyLink
-        -> Strategy evaluation
+    -> SymbolGroup-derived market scope
+    -> Strategy evaluation
 ```
 
 ## Entity Boundaries
 - `Wallet` owns execution mode and capital context.
 - `MarketUniverse` owns venue context.
-- `Bot` owns runtime activation and operator-facing execution scope.
+- `SymbolGroup` owns selected symbol scope and inherits venue context from its parent market universe.
+- `Bot` owns runtime activation and operator-facing execution scope, while inheriting
+  execution context from `Wallet`, venue/symbol scope from `SymbolGroup`, and logic/risk
+  schema from `Strategy`.
 - `Strategy` owns logic and risk schema, not wallet or venue context.
 - `Order` does not directly equal `Position`.
 - `Position` becomes visible only through fill/lifecycle authority.
@@ -93,14 +89,25 @@ User
 When multiple entities can imply context, the canonical priority is:
 1. Market universe for venue context
 2. Wallet for execution mode and capital context
-3. Bot runtime topology for selected-bot scope
+3. Symbol group for selected symbol scope inside the inherited venue context
 4. Strategy for logic and risk rules
+5. Bot for runtime identity, activation, and operator scope only
 
 ## MVP vs Future
 ### Current baseline
 - one exchange family in production scope
 - multi-bot runtime model
 - assistant configuration attached to bots
+- one wallet + one symbol-group market scope + one strategy per bot
+
+## Migration Note
+Legacy compatibility structures such as `BotMarketGroup` and `MarketGroupStrategyLink`
+may remain temporarily during migration, but they are no longer canonical domain
+ownership. The approved target contract is singular bot context:
+
+```text
+Bot = Wallet + SymbolGroup + Strategy + Activation/Runtime Identity
+```
 
 ### Future extensions
 - more exchange adapters
