@@ -34,9 +34,12 @@ describe('Bots runtime scope remediation contract', () => {
     });
     expect(updateRes.status).toBe(200);
     expect(updateRes.body.strategyId).toBe(strategyBId);
+    expect(updateRes.body.symbolGroupId).toBe(marketGroupBId);
 
     const graphRes = await agent.get(`/dashboard/bots/${botId}/runtime-graph`);
     expect(graphRes.status).toBe(200);
+    expect(graphRes.body.bot.strategyId).toBe(strategyBId);
+    expect(graphRes.body.bot.symbolGroupId).toBe(marketGroupBId);
 
     const activePrimaryGroup = (graphRes.body.marketGroups as Array<{
       symbolGroupId: string;
@@ -110,6 +113,7 @@ describe('Bots runtime scope remediation contract', () => {
 
     expect(listed?.strategyId).toBe(primaryStrategy?.strategyId);
     expect(getRes.body.strategyId).toBe(primaryStrategy?.strategyId);
+    expect(getRes.body.symbolGroupId).toBe(marketGroupId);
     expect(getRes.body.strategyId).not.toBe(legacyStrategyId);
     expect(listed?.strategyId).not.toBe(legacyStrategyId);
 

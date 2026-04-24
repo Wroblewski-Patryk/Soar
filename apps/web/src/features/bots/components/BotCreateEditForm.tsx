@@ -132,10 +132,12 @@ export default function BotCreateEditForm({
       const selectedGroup =
         runtimeGraph.marketGroups.find((group) => group.isEnabled) ?? runtimeGraph.marketGroups[0];
       const selectedGroupId =
+        bot.symbolGroup?.marketUniverseId ??
         selectedGroup?.symbolGroup?.marketUniverseId ??
         marketGroupRows[0]?.id ??
         '';
       const selectedStrategyId =
+        bot.strategy?.id ??
         selectedGroup?.strategies.find((strategy) => strategy.isEnabled)?.strategyId ??
         bot.strategyId ??
         strategyRows[0]?.id ??

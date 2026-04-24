@@ -22,6 +22,34 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-24 - Local Prisma CLI runs must match the repository Prisma version
+- Context: `V1BOT-02..05` added new Prisma fields/migration work for the
+  single-context bot model and required local client regeneration plus schema
+  sync before DB-backed e2e validation.
+- Symptom: `pnpm dlx prisma` pulled Prisma `7.x`, which rejected the repo's
+  Prisma `6.x` config/schema contract; local validation also drifted until the
+  database schema was pushed after adding new columns.
+- Root cause: `pnpm dlx prisma` defaults to the latest CLI, not the repo's
+  pinned Prisma version, and the Prisma CLI only reads the correct local
+  `DATABASE_URL` when invoked from `apps/api` where `.env` lives.
+- Guardrail: for local Prisma maintenance in this repo, use the pinned Prisma
+  version and run schema-changing commands from `apps/api`.
+- Preferred pattern:
+```text
+1) Use `pnpm dlx prisma@6.19.3 ...` instead of unversioned `pnpm dlx prisma`.
+2) Run `generate` or `db push` from `apps/api` when the command needs the local `.env`.
+3) Regenerate Prisma Client before TypeScript validation after schema edits.
+4) Push the local schema before DB-backed e2e if new columns/relations were added.
+```
+- Avoid: using the latest Prisma CLI ad hoc or running DB-backed validation
+  before the local schema is synced.
+- Evidence:
+  - 2026-04-24 `V1BOT-02..05`: unversioned `pnpm dlx prisma` used Prisma
+    `7.8.0` and failed against the repo's schema/config contract, while
+    `pnpm dlx prisma@6.19.3 generate --schema apps/api/prisma/schema.prisma`
+    plus `pnpm dlx prisma@6.19.3 db push --schema prisma/schema.prisma` from
+    `apps/api` restored correct client/types and green DB-backed bot e2e runs.
+
 ### 2026-04-23 - Binance runtime stream defaults must follow market type, not assume spot
 - Context: production verification after `V1RT-01` fixed canonical symbol
   subscriptions and `V1SURF-01` made the dashboard market surface truthful.

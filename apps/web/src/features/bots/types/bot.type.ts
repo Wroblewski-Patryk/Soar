@@ -9,6 +9,7 @@ export type Bot = {
   id: string;
   name: string;
   walletId?: string | null;
+  symbolGroupId?: string | null;
   mode: BotMode;
   paperStartBalance: number;
   exchange: Exchange;
@@ -31,6 +32,26 @@ export type Bot = {
     liveAllocationMode?: "PERCENT" | "FIXED" | null;
     liveAllocationValue?: number | null;
   } | null;
+  strategy?: {
+    id: string;
+    name: string;
+    interval: string;
+    leverage: number;
+    walletRisk: number;
+  } | null;
+  symbolGroup?: {
+    id: string;
+    name: string;
+    symbols: string[];
+    marketUniverseId: string;
+    marketUniverse?: {
+      id: string;
+      name: string;
+      exchange: Exchange;
+      marketType: TradeMarket;
+      baseCurrency: string;
+    } | null;
+  } | null;
   createdAt?: string;
   updatedAt?: string;
 };
@@ -40,6 +61,9 @@ export type BotRuntimeGraph = {
     id: string;
     userId: string;
     name: string;
+    walletId?: string | null;
+    strategyId?: string | null;
+    symbolGroupId?: string | null;
     mode: BotMode;
     marketType: TradeMarket;
     positionMode: PositionMode;

@@ -15,10 +15,46 @@ const botWithStrategyInclude = Prisma.validator<Prisma.BotInclude>()({
       liveAllocationValue: true,
     },
   },
+  strategy: {
+    select: {
+      id: true,
+      name: true,
+      interval: true,
+      leverage: true,
+      walletRisk: true,
+    },
+  },
+  symbolGroup: {
+    select: {
+      id: true,
+      name: true,
+      symbols: true,
+      marketUniverseId: true,
+      marketUniverse: {
+        select: {
+          id: true,
+          name: true,
+          exchange: true,
+          marketType: true,
+          baseCurrency: true,
+        },
+      },
+    },
+  },
   botStrategies: {
     select: {
       strategyId: true,
+      symbolGroupId: true,
       isEnabled: true,
+      createdAt: true,
+    },
+  },
+  botMarketGroups: {
+    select: {
+      symbolGroupId: true,
+      isEnabled: true,
+      lifecycleStatus: true,
+      executionOrder: true,
       createdAt: true,
     },
   },

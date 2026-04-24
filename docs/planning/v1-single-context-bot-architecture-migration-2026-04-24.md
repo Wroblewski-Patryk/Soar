@@ -3,7 +3,7 @@
 ## Header
 - ID: V1BOT-A
 - Title: Migrate Soar to the approved single-context bot architecture
-- Status: READY
+- Status: IN_PROGRESS
 - Owner: Planning Agent
 - Depends on: V1ALIGN-A, V1SIG-A, V1CAP-A, V1RT-02
 - Priority: P0
@@ -107,7 +107,7 @@ runtime compatibility removed only after migration evidence exists.
 ## Detailed Migration Plan
 
 ### Slice 1 - Canonical contract freeze
-- `V1BOT-01 docs(architecture): freeze single-context bot contract`
+- [x] `V1BOT-01 docs(architecture): freeze single-context bot contract`
   - update architecture docs so `BotMarketGroup` and `MarketGroupStrategyLink`
     are no longer canonical ownership
   - freeze inheritance rules:
@@ -117,12 +117,12 @@ runtime compatibility removed only after migration evidence exists.
   - define temporary compatibility rule for legacy storage only
 
 ### Slice 2 - Data model migration foundation
-- `V1BOT-02 db(schema): add direct bot references for symbolGroup and strategy; classify legacy topology`
+- [x] `V1BOT-02 db(schema): add direct bot references for symbolGroup and strategy; classify legacy topology`
   - add direct `bot.symbolGroupId`
   - add direct `bot.strategyId`
   - decide whether bot keeps derived snapshot fields or computes on read
   - mark legacy `BotMarketGroup` and `MarketGroupStrategyLink` as compatibility-only
-- `V1BOT-03 db(migration): backfill single-context refs from legacy topology and fail-closed on incompatible bots`
+- [x] `V1BOT-03 db(migration): backfill single-context refs from legacy topology and fail-closed on incompatible bots`
   - backfill bots with exactly one active group and one active strategy link
   - classify incompatible bots:
     - multiple active groups
@@ -131,14 +131,14 @@ runtime compatibility removed only after migration evidence exists.
   - incompatible bots must be blocked explicitly, not guessed
 
 ### Slice 3 - Command/API contract migration
-- `V1BOT-04 api(commands): collapse create/update validation onto inherited single-context contract`
+- [x] `V1BOT-04 api(commands): collapse create/update validation onto inherited single-context contract`
   - `createBot` and `updateBot` accept only:
     - `walletId`
     - `marketGroupId` or `symbolGroupId` depending on final route naming
     - `strategyId`
     - bot-local activation/consent metadata
   - remove bot-owned venue/mode duplication from command truth
-- `V1BOT-05 api(reads): expose bot runtime context as inherited and singular`
+- [x] `V1BOT-05 api(reads): expose bot runtime context as inherited and singular`
   - one bot detail shape
   - no legacy topology collections in canonical web/API contract
   - explicit derived context block for operators

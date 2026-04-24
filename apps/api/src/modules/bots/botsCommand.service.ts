@@ -139,6 +139,8 @@ export const createBot = async (userId: string, data: CreateBotDto) => {
       data: {
         userId,
         name: botData.name,
+        strategyId,
+        symbolGroupId: symbolGroup.id,
         mode: derivedMode,
         walletId: wallet.id,
         paperStartBalance: derivedPaperStartBalance,
@@ -341,6 +343,10 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
       if (requestedSymbolGroup) {
         targetSymbolGroupId = requestedSymbolGroup.id;
       } else {
+        targetSymbolGroupId = existing.symbolGroupId ?? null;
+      }
+
+      if (!targetSymbolGroupId) {
         const primaryGroup = await prisma.botMarketGroup.findFirst({
           where: {
             userId,
@@ -384,6 +390,11 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
         ...botData,
         mode: nextMode,
         walletId: targetWallet?.id ?? existing.walletId ?? null,
+        strategyId:
+          typeof requestedStrategyId === 'string' && requestedStrategyId.length > 0
+            ? requestedStrategyId
+            : existing.strategyId ?? null,
+        symbolGroupId: requestedSymbolGroup?.id ?? existing.symbolGroupId ?? null,
         paperStartBalance: targetPaperStartBalance,
         exchange: targetExchange,
         marketType: targetMarketType,
@@ -395,7 +406,17 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
         botStrategies: {
           select: {
             strategyId: true,
+            symbolGroupId: true,
             isEnabled: true,
+            createdAt: true,
+          },
+        },
+        botMarketGroups: {
+          select: {
+            symbolGroupId: true,
+            isEnabled: true,
+            lifecycleStatus: true,
+            executionOrder: true,
             createdAt: true,
           },
         },
@@ -676,6 +697,9 @@ export const getBotRuntimeGraph = async (userId: string, botId: string) => {
       id: true,
       userId: true,
       name: true,
+      walletId: true,
+      strategyId: true,
+      symbolGroupId: true,
       mode: true,
       marketType: true,
       positionMode: true,

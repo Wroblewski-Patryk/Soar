@@ -76,6 +76,7 @@ describe('Bots module contract', () => {
     expect(createRes.body.name).toBe('Momentum Runner');
     expect(createRes.body.positionMode).toBe('ONE_WAY');
     expect(createRes.body.strategyId).toBe(strategyId);
+    expect(createRes.body.symbolGroupId).toBe(futuresMarketGroupId);
     const botId = createRes.body.id as string;
     const futuresBotId = botId;
 
@@ -107,6 +108,7 @@ describe('Bots module contract', () => {
     expect(getRes.body.mode).toBe('PAPER');
     expect(getRes.body.marketType).toBe('FUTURES');
     expect(getRes.body.strategyId).toBe(strategyId);
+    expect(getRes.body.symbolGroupId).toBe(futuresMarketGroupId);
 
     const mappingAfterCreate = await prisma.botStrategy.findMany({
       where: { botId },
@@ -157,6 +159,7 @@ describe('Bots module contract', () => {
     expect(updateRes.body.consentTextVersion).toBe('mvp-v1');
     expect(updateRes.body.maxOpenPositions).toBe(1);
     expect(updateRes.body.strategyId).toBe(strategyId);
+    expect(updateRes.body.symbolGroupId).toBe(futuresMarketGroupId);
 
     const mappingAfterUpdate = await prisma.botStrategy.findMany({
       where: { botId },

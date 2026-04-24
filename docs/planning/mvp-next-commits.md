@@ -7,13 +7,8 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `V1BOT-01 docs(architecture): freeze single-context bot contract`
-## NEXT
-- [ ] `V1BOT-02 db(schema): add direct bot references for symbolGroup and strategy; classify legacy topology`
-- [ ] `V1BOT-03 db(migration): backfill single-context refs from legacy topology and fail-closed on incompatible bots`
-- [ ] `V1BOT-04 api(commands): collapse create/update validation onto inherited single-context contract`
-- [ ] `V1BOT-05 api(reads): expose bot runtime context as inherited and singular`
 - [ ] `V1BOT-06 engine(runtime-topology): replace multi-group runtime topology with singular bot context`
+## NEXT
 - [ ] `V1BOT-07 engine(capital-strategy-inheritance): source runtime parameters from wallet and strategy modules`
 - [ ] `V1BOT-08 web(bot-crud): align create/edit/detail flows to the singular contract`
 - [ ] `V1BOT-09 web(runtime-surfaces): align monitoring, dashboard, and manual actions to singular bot context`
@@ -21,6 +16,11 @@ Operational queue for one-task execution runs.
 - [ ] `V1BOT-11 qa(closure): full parity and migration closure pack`
 ## PIPELINE
 - [x] `V1BOT-A planning queued (single-context bot architecture migration with inherited wallet, market-group, and strategy context)`
+- [x] `V1BOT-01 docs(architecture): freeze single-context bot contract`
+- [x] `V1BOT-02 db(schema): add direct bot references for symbolGroup and strategy; classify legacy topology`
+- [x] `V1BOT-03 db(migration): backfill single-context refs from legacy topology and fail-closed on incompatible bots`
+- [x] `V1BOT-04 api(commands): collapse create/update validation onto inherited single-context contract`
+- [x] `V1BOT-05 api(reads): expose bot runtime context as inherited and singular`
 - [x] `V1RT-02 fix(api-market-stream-endpoint): select Binance websocket default by runtime market type`
 - [x] `V1ALIGN-A planning queued (runtime worker-ownership alignment plus symbol-scope, interval-truth, freshness-authority, and diagnostics closure)`
 - [x] `V1ALIGN-01 docs(architecture-worker-ownership): freeze split workers as deployed target and inline as local/degraded-only contract`

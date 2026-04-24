@@ -1,6 +1,40 @@
 export const mapBotResponse = <
   T extends {
-    botStrategies: Array<{ strategyId: string; isEnabled: boolean; createdAt?: Date | string }>;
+    strategyId?: string | null;
+    symbolGroupId?: string | null;
+    strategy?: {
+      id: string;
+      name: string;
+      interval: string;
+      leverage: number;
+      walletRisk: number;
+    } | null;
+    symbolGroup?: {
+      id: string;
+      name: string;
+      symbols: string[];
+      marketUniverseId: string;
+      marketUniverse?: {
+        id: string;
+        name: string;
+        exchange: string;
+        marketType: string;
+        baseCurrency: string;
+      } | null;
+    } | null;
+    botStrategies: Array<{
+      strategyId: string;
+      symbolGroupId?: string;
+      isEnabled: boolean;
+      createdAt?: Date | string;
+    }>;
+    botMarketGroups?: Array<{
+      symbolGroupId: string;
+      isEnabled: boolean;
+      lifecycleStatus: string;
+      executionOrder?: number;
+      createdAt?: Date | string;
+    }>;
     marketGroupStrategyLinks?: Array<{
       strategyId: string;
       isEnabled: boolean;
@@ -17,7 +51,16 @@ export const mapBotResponse = <
 >(
   bot: T
 ) => {
-  const { botStrategies, marketGroupStrategyLinks = [], ...rest } = bot;
+  const {
+    botStrategies,
+    botMarketGroups = [],
+    marketGroupStrategyLinks = [],
+    strategyId: directStrategyId,
+    symbolGroupId: directSymbolGroupId,
+    strategy,
+    symbolGroup,
+    ...rest
+  } = bot;
   const toTimestamp = (value?: Date | string) => {
     if (!value) return Number.MAX_SAFE_INTEGER;
     const timestamp = Date.parse(String(value));
@@ -73,10 +116,40 @@ export const mapBotResponse = <
     [...botStrategies].sort((left, right) => toTimestamp(left.createdAt) - toTimestamp(right.createdAt))[0] ??
     null;
 
-  const resolvedStrategy = canonicalStrategy ?? legacyStrategy;
+  const activeCanonicalGroups = botMarketGroups
+    .filter((group) => group.isEnabled && group.lifecycleStatus === 'ACTIVE')
+    .sort((left, right) => {
+      const orderDiff =
+        (left.executionOrder ?? Number.MAX_SAFE_INTEGER) -
+        (right.executionOrder ?? Number.MAX_SAFE_INTEGER);
+      if (orderDiff !== 0) return orderDiff;
+      return toTimestamp(left.createdAt) - toTimestamp(right.createdAt);
+    });
+  const canonicalGroup =
+    activeCanonicalGroups[0] ??
+    [...botMarketGroups].sort((left, right) => {
+      const orderDiff =
+        (left.executionOrder ?? Number.MAX_SAFE_INTEGER) -
+        (right.executionOrder ?? Number.MAX_SAFE_INTEGER);
+      if (orderDiff !== 0) return orderDiff;
+      return toTimestamp(left.createdAt) - toTimestamp(right.createdAt);
+    })[0] ??
+    null;
+
+  const legacySymbolGroup =
+    botStrategies.find((item) => item.isEnabled) ??
+    [...botStrategies].sort((left, right) => toTimestamp(left.createdAt) - toTimestamp(right.createdAt))[0] ??
+    null;
+
+  const resolvedStrategyId = directStrategyId ?? canonicalStrategy?.strategyId ?? legacyStrategy?.strategyId ?? null;
+  const resolvedSymbolGroupId =
+    directSymbolGroupId ?? canonicalGroup?.symbolGroupId ?? legacySymbolGroup?.symbolGroupId ?? null;
 
   return {
     ...rest,
-    strategyId: resolvedStrategy?.strategyId ?? null,
+    strategyId: resolvedStrategyId,
+    symbolGroupId: resolvedSymbolGroupId,
+    strategy: strategy ?? null,
+    symbolGroup: symbolGroup ?? null,
   };
 };

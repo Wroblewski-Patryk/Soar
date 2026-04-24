@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-04-23
+Last updated: 2026-04-24
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -17,15 +17,10 @@ Last updated: 2026-04-23
 
 ## READY
 
-- [ ] `V1BOT-01 docs(architecture): freeze single-context bot contract`
+- [ ] `V1BOT-06 engine(runtime-topology): replace multi-group runtime topology with singular bot context`
 
 ## BACKLOG
 
-- [ ] `V1BOT-02 db(schema): add direct bot references for symbolGroup and strategy; classify legacy topology`
-- [ ] `V1BOT-03 db(migration): backfill single-context refs from legacy topology and fail-closed on incompatible bots`
-- [ ] `V1BOT-04 api(commands): collapse create/update validation onto inherited single-context contract`
-- [ ] `V1BOT-05 api(reads): expose bot runtime context as inherited and singular`
-- [ ] `V1BOT-06 engine(runtime-topology): replace multi-group runtime topology with singular bot context`
 - [ ] `V1BOT-07 engine(capital-strategy-inheritance): source runtime parameters from wallet and strategy modules`
 - [ ] `V1BOT-08 web(bot-crud): align create/edit/detail flows to the singular contract`
 - [ ] `V1BOT-09 web(runtime-surfaces): align monitoring, dashboard, and manual actions to singular bot context`
@@ -45,6 +40,12 @@ Last updated: 2026-04-23
 - [ ] (none)
 
 ## DONE
+
+- [x] `V1BOT-01 docs(architecture): freeze single-context bot contract`
+  - 2026-04-24: Canonical architecture was updated to the approved singular bot model where one bot owns exactly one wallet, one symbol-group-derived market scope, and one strategy. `BotMarketGroup` and `MarketGroupStrategyLink` were reclassified as migration compatibility only, while the canonical runtime contract moved to inherited wallet/market-group/strategy context.
+
+- [x] `V1BOT-02..05 foundation: add direct bot refs, backfill migration, and align singular bot command/read contracts`
+  - 2026-04-24: Added direct `Bot.strategyId` and `Bot.symbolGroupId` refs in Prisma schema plus migration/backfill SQL, updated create/update flows to persist the direct single-context refs while still syncing legacy compatibility rows, and aligned bot read contracts so list/get/runtime-graph return singular inherited bot context without reconstructing canonical truth only from legacy graph. Validation PASS: `pnpm --filter api exec vitest run src/modules/bots/bots.e2e.test.ts src/modules/bots/bots.runtime-scope.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter web exec vitest run src/features/bots/components/BotCreateEditForm.test.tsx`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
 
 - [x] `V1BOT-A planning: approve and queue the single-context bot architecture migration`
   - 2026-04-24: User approved the full target-domain rewrite where one bot owns exactly one wallet, one symbol-group market scope, and one strategy, while inheriting execution context from wallet, venue/symbol scope from market group, and logic/risk settings from strategy. Published detailed migration packet `docs/planning/v1-single-context-bot-architecture-migration-2026-04-24.md`, updated the canonical architecture docs, and queued `V1BOT-01..11`.

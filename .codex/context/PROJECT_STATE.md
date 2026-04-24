@@ -1,6 +1,6 @@
 # PROJECT_STATE
 
-Last updated: 2026-04-23
+Last updated: 2026-04-24
 
 ## Product Snapshot
 - Name: CryptoSparrow / Soar
@@ -146,6 +146,13 @@ Last updated: 2026-04-23
   owns execution/capital context, symbol group + market universe own venue and
   symbol scope, and strategy owns logic/risk settings. The execution queue for
   this migration is published as `V1BOT-01..11`.
+- 2026-04-24: the first implementation slice of the single-context bot rewrite
+  is now landed. `Bot` persists direct `strategyId` and `symbolGroupId`
+  references, migration SQL backfills those refs from one unambiguous active
+  canonical topology row (or one unambiguous legacy `BotStrategy` row when no
+  canonical row exists), create/update commands write the direct refs, and
+  bot list/get/runtime-graph reads expose the singular inherited bot context
+  without relying on legacy graph reconstruction as the only truth.
 - 2026-04-22: prod restore-drill proof now passes from a real Coolify terminal
   execution in the production postgres container
   (`x11cfnz1dd9x0yzccftqzcoe`), and the final non-dry-run prod release gate now
