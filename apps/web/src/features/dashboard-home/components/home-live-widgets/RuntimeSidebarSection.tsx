@@ -1,5 +1,10 @@
 import { LuArrowDownRight, LuArrowUpRight, LuBot, LuChartCandlestick, LuChartLine, LuListChecks, LuShieldCheck, LuTrophy, LuWallet } from "react-icons/lu";
 import { normalizeSymbol } from "@/lib/symbols";
+import {
+  resolvePaperConfigBaseline,
+  resolveRuntimeFreeFunds,
+  resolveRuntimePortfolio,
+} from "@/features/bots/utils/runtimeSurfaceTruth";
 import type { RuntimeSelectedData, RuntimeSnapshot, RuntimeSummary } from "./types";
 
 export type RuntimeSidebarSectionProps = {
@@ -126,13 +131,7 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
   const walletName = selectedWallet?.name ?? "-";
   const selectedUsedMargin = Math.max(0, props.selectedData?.usedMargin ?? 0);
   const selectedNet = props.selectedData?.net ?? 0;
-  const paperStartBalance =
-    selectedWalletMode === "PAPER"
-      ? (props.selectedData?.paperInit ??
-        selectedWallet?.paperInitialBalance ??
-        props.selected?.bot.paperStartBalance ??
-        null)
-      : null;
+  const paperStartBalance = resolvePaperConfigBaseline(props.selected?.bot);
   const liveFixedAllocation =
     selectedWalletMode === "LIVE" && selectedWallet?.liveAllocationMode === "FIXED"
       ? selectedWallet.liveAllocationValue ?? null
@@ -140,14 +139,23 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
   const walletBaseline = paperStartBalance ?? liveFixedAllocation;
   const runtimeWalletTotal =
     props.selectedData?.equity ??
-    (props.selectedData?.free != null ? Math.max(0, props.selectedData.free + selectedUsedMargin) : null);
+    resolveRuntimePortfolio({
+      bot: props.selected?.bot,
+      summary: capitalSummary,
+      net: selectedNet,
+      usedMargin: selectedUsedMargin,
+    });
   const walletTotal =
     selectedWalletMode === "LIVE"
       ? runtimeWalletTotal
       : runtimeWalletTotal ?? (walletBaseline != null ? Math.max(0, walletBaseline + selectedNet) : null);
   const walletFree =
     props.selectedData?.free ??
-    (selectedWalletMode !== "LIVE" && walletTotal != null ? Math.max(0, walletTotal - selectedUsedMargin) : null);
+    resolveRuntimeFreeFunds({
+      summary: capitalSummary,
+      portfolio: walletTotal,
+      usedMargin: selectedUsedMargin,
+    });
   const canCalculatePortfolioSplit = walletTotal != null && walletFree != null;
   const walletDenominator = canCalculatePortfolioSplit
     ? Math.max(walletTotal, walletFree + selectedUsedMargin, 1)

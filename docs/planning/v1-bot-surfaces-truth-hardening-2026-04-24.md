@@ -3,7 +3,7 @@
 ## Header
 - ID: V1BOTSURF-A
 - Title: Bot operator surface truth hardening after singular bot migration
-- Status: READY
+- Status: DONE
 - Owner: Frontend Builder
 - Depends on: V1BOT-09, V1DASH-01, V1DASH-02, V1DASH-03
 - Priority: P1
@@ -34,10 +34,10 @@ rendered explicitly instead of being buried in tables or implied by silence.
 - do not duplicate logic
 
 ## Definition of Done
-- [ ] Bot monitoring capital widgets derive active-paper/runtime values from canonical runtime capital summary rather than `bot.paperStartBalance`.
-- [ ] Bot list and bot-detail surfaces distinguish configuration baseline from active runtime capital truth wherever both can appear.
-- [ ] Bot monitoring exposes explicit pending/degraded operator states for open orders, waiting-for-fill, and running-but-no-actionable-outcome cases.
-- [ ] Focused regression coverage exists for the touched bot surfaces and canonical queue/context docs are synchronized.
+- [x] Bot monitoring capital widgets derive active-paper/runtime values from canonical runtime capital summary rather than `bot.paperStartBalance`.
+- [x] Bot list and bot-detail surfaces distinguish configuration baseline from active runtime capital truth wherever both can appear.
+- [x] Bot monitoring exposes explicit pending/degraded operator states for open orders, waiting-for-fill, and running-but-no-actionable-outcome cases.
+- [x] Focused regression coverage exists for the touched bot surfaces and canonical queue/context docs are synchronized.
 
 ## Forbidden
 - new systems without approval
@@ -46,7 +46,10 @@ rendered explicitly instead of being buried in tables or implied by silence.
 - architecture changes without explicit approval
 
 ## Validation Evidence
-- Tests: `pnpm --filter web exec vitest run src/features/bots/components/BotsManagement.test.tsx src/features/bots/components/BotsListTable.test.tsx src/features/bots/services/botsMonitoringAggregate.service.test.ts`
+- Tests:
+  - `pnpm --filter web exec vitest run src/features/bots/components/BotsManagement.test.tsx src/features/bots/components/BotsListTable.test.tsx src/features/bots/services/botsMonitoringAggregate.service.test.ts`
+  - `pnpm --filter web run typecheck`
+  - `pnpm run quality:guardrails`
 - Manual checks: compare bot list/monitoring against production aggregate payload semantics after implementation
 - Screenshots/logs: n/a
 - High-risk checks: confirm `PAPER` and `LIVE` bot surfaces both preserve fail-closed pending/degraded states
@@ -68,13 +71,13 @@ rendered explicitly instead of being buried in tables or implied by silence.
 - Parity evidence: bot surfaces must reflect the same runtime capital/pending-state truth as dashboard-home after `V1DASH-01..03`
 
 ## Review Checklist (mandatory)
-- [ ] Architecture alignment confirmed.
-- [ ] Existing systems were reused where applicable.
-- [ ] No workaround paths were introduced.
-- [ ] No logic duplication was introduced.
-- [ ] Definition of Done evidence is attached.
-- [ ] Relevant validations were run.
-- [ ] Docs or context were updated if repository truth changed.
+- [x] Architecture alignment confirmed.
+- [x] Existing systems were reused where applicable.
+- [x] No workaround paths were introduced.
+- [x] No logic duplication was introduced.
+- [x] Definition of Done evidence is attached.
+- [x] Relevant validations were run.
+- [x] Docs or context were updated if repository truth changed.
 - [ ] Learning journal was updated if a recurring pitfall was confirmed.
 
 ## Notes

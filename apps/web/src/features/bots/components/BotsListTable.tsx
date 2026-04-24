@@ -15,6 +15,7 @@ import { StrategyDto } from "@/features/strategies/types/StrategyForm.type";
 import { supportsExchangeCapability } from "@/features/exchanges/exchangeCapabilities";
 import { deleteBot, listBots } from "../services/bots.service";
 import { Bot } from "../types/bot.type";
+import { resolvePaperConfigBaseline } from "../utils/runtimeSurfaceTruth";
 import { getAxiosMessage } from '@/lib/getAxiosMessage';
 
 export default function BotsListTable() {
@@ -147,13 +148,28 @@ export default function BotsListTable() {
       key: "paperBalance",
       label: t("dashboard.bots.list.columns.paperBalance"),
       sortable: true,
-      accessor: (row) => row.paperStartBalance,
-      render: (row) =>
-        new Intl.NumberFormat("en-US", {
-          style: "currency",
-          currency: "USD",
-          maximumFractionDigits: 2,
-        }).format(row.paperStartBalance),
+      accessor: (row) => resolvePaperConfigBaseline(row) ?? 0,
+      render: (row) => {
+        const baseline = resolvePaperConfigBaseline(row);
+        return (
+          <div className="space-y-0.5">
+            <p>
+              {baseline == null
+                ? "-"
+                : new Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                    maximumFractionDigits: 2,
+                  }).format(baseline)}
+            </p>
+            <p className="text-[11px] opacity-60">
+              {row.mode === "PAPER"
+                ? t("dashboard.bots.create.paperBalanceLabel")
+                : t("dashboard.bots.monitoring.capitalSourceLiveExchange")}
+            </p>
+          </div>
+        );
+      },
       className: "w-36",
     },
     {

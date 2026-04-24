@@ -1,6 +1,7 @@
 import { useMemo, type ReactNode, type RefObject } from "react";
 import { LuCoins, LuSignal } from "react-icons/lu";
 import InlinePager from "../../../../ui/components/InlinePager";
+import { countRuntimeMarketStates } from "@/features/bots/utils/runtimeSurfaceTruth";
 import type { RuntimeSymbolWithLive, SignalPillValue } from "./types";
 
 type RuntimeSignalsSectionProps = {
@@ -103,6 +104,11 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
     });
   }, [props.signalSymbols]);
 
+  const runtimeStateSummary = useMemo(
+    () => countRuntimeMarketStates(props.signalSymbols),
+    [props.signalSymbols]
+  );
+
   return (
     <div>
       <div className="mb-2 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
@@ -119,6 +125,33 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
             <span className="opacity-70">{props.signalsLabel}:</span>
             <span className="font-semibold">{props.actionableSignalsCount}</span>
           </span>
+            {runtimeStateSummary.POSITION_OPEN > 0 ? (
+              <>
+                <span className="opacity-40">|</span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="opacity-70">{props.marketStatePositionOpen}:</span>
+                  <span className="font-semibold">{runtimeStateSummary.POSITION_OPEN}</span>
+                </span>
+              </>
+            ) : null}
+            {runtimeStateSummary.EVALUATED_NO_TRADE > 0 ? (
+              <>
+                <span className="opacity-40">|</span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="opacity-70">{props.marketStateEvaluatedNoTrade}:</span>
+                  <span className="font-semibold">{runtimeStateSummary.EVALUATED_NO_TRADE}</span>
+                </span>
+              </>
+            ) : null}
+            {runtimeStateSummary.CONFIGURED_ONLY > 0 ? (
+              <>
+                <span className="opacity-40">|</span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="opacity-70">{props.marketStateConfiguredOnly}:</span>
+                  <span className="font-semibold">{runtimeStateSummary.CONFIGURED_ONLY}</span>
+                </span>
+              </>
+            ) : null}
         </div>
       </div>
       </div>

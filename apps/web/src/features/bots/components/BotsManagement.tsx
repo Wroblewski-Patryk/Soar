@@ -20,6 +20,13 @@ import {
   resolveFallbackTtpProtectedPercent,
   toProtectedPnlPercentFromStopPrice,
 } from "../utils/trailingStopDisplay";
+import {
+  countRuntimeMarketStates,
+  resolvePaperConfigBaseline,
+  resolveRuntimeFreeFunds,
+  resolveRuntimeMarketState,
+  resolveRuntimePortfolio,
+} from "../utils/runtimeSurfaceTruth";
 import { renderDcaLadderCell } from "../../shared/dcaLadderCell";
 import { useBotsListController } from "../hooks/useBotsListController";
 import { useBotsAssistantController } from "../hooks/useBotsAssistantController";
@@ -241,10 +248,15 @@ export default function BotsManagement({
   }, [monitorTrades?.items]);
 
   const monitorOpenPositionRows = useMemo(() => {
-    const initBalance =
-      selectedMonitorBot?.mode === "PAPER" && selectedMonitorBot.paperStartBalance > 0
-        ? selectedMonitorBot.paperStartBalance
-        : null;
+    const runtimePortfolio = resolveRuntimePortfolio({
+      bot: selectedMonitorBot,
+      summary: monitorPositions?.summary ?? null,
+      net:
+        (monitorSessionDetail?.summary.realizedPnl ?? 0) +
+        (monitorPositions?.summary?.unrealizedPnl ?? 0),
+      usedMargin: 0,
+    });
+    const initBalance = runtimePortfolio ?? resolvePaperConfigBaseline(selectedMonitorBot);
     const openItems = monitorPositions?.openItems ?? [];
     const stickyFavorableMoveByPosition = monitorTtpStickyFavorableMoveByPositionRef.current;
     pruneStickyFavorableMoveMap(
@@ -304,7 +316,14 @@ export default function BotsManagement({
         tslProtectedPercent,
       };
     });
-  }, [monitorLiveTickerPrices, monitorPositions?.openItems, monitorTtpStickyFavorableMoveByPositionRef, selectedMonitorBot]);
+  }, [
+    monitorLiveTickerPrices,
+    monitorPositions?.openItems,
+    monitorPositions?.summary,
+    monitorSessionDetail?.summary.realizedPnl,
+    monitorTtpStickyFavorableMoveByPositionRef,
+    selectedMonitorBot,
+  ]);
 
   const monitorShowDynamicStopColumns = useMemo(
     () => {
@@ -326,9 +345,12 @@ export default function BotsManagement({
     const totalNotional = monitorOpenPositionRows.reduce((acc, item) => acc + item.entryNotional, 0);
     const totalOpenPnl = monitorOpenPositionRows.reduce((acc, item) => acc + item.openPnl, 0);
     const initBalance =
-      selectedMonitorBot?.mode === "PAPER" && selectedMonitorBot.paperStartBalance > 0
-        ? selectedMonitorBot.paperStartBalance
-        : null;
+      resolveRuntimePortfolio({
+        bot: selectedMonitorBot,
+        summary: monitorPositions?.summary ?? null,
+        net: (monitorSessionDetail?.summary.realizedPnl ?? 0) + totalOpenPnl,
+        usedMargin: totalMarginUsed,
+      }) ?? resolvePaperConfigBaseline(selectedMonitorBot);
     const marginInitPct = initBalance && initBalance > 0 ? (totalMarginUsed / initBalance) * 100 : null;
 
     return {
@@ -337,7 +359,7 @@ export default function BotsManagement({
       totalOpenPnl,
       marginInitPct,
     };
-  }, [monitorOpenPositionRows, selectedMonitorBot]);
+  }, [monitorOpenPositionRows, monitorPositions?.summary, monitorSessionDetail?.summary.realizedPnl, selectedMonitorBot]);
 
   const monitorShowOpenOrders = useMemo(() => {
     const mode = monitorSessionDetail?.mode ?? selectedMonitorBot?.mode ?? null;
@@ -345,13 +367,54 @@ export default function BotsManagement({
   }, [monitorSessionDetail?.mode, selectedMonitorBot?.mode]);
 
   const monitorSignalRows = useMemo(() => {
-    return [...(monitorSymbolStats?.items ?? [])].sort((a, b) => {
+    return [...(monitorSymbolStats?.items ?? [])]
+      .map((item) => ({
+        ...item,
+        runtimeMarketState: resolveRuntimeMarketState(item),
+      }))
+      .sort((a, b) => {
       const aTs = Math.max(toTimestamp(a.lastSignalDecisionAt), toTimestamp(a.lastSignalAt));
       const bTs = Math.max(toTimestamp(b.lastSignalDecisionAt), toTimestamp(b.lastSignalAt));
       if (aTs !== bTs) return bTs - aTs;
       return a.symbol.localeCompare(b.symbol);
-    });
+      });
   }, [monitorSymbolStats?.items]);
+
+  const monitorRuntimeStateSummary = useMemo(
+    () => countRuntimeMarketStates(monitorSignalRows),
+    [monitorSignalRows]
+  );
+
+  const monitorCapitalKpis = useMemo(() => {
+    const portfolio = resolveRuntimePortfolio({
+      bot: selectedMonitorBot,
+      summary: monitorPositions?.summary ?? null,
+      net:
+        (monitorSessionDetail?.summary.realizedPnl ?? 0) +
+        monitorOpenMarginSummary.totalOpenPnl,
+      usedMargin: monitorOpenMarginSummary.totalMarginUsed,
+    });
+    const free = resolveRuntimeFreeFunds({
+      summary: monitorPositions?.summary ?? null,
+      portfolio,
+      usedMargin: monitorOpenMarginSummary.totalMarginUsed,
+    });
+    const capitalSource = monitorPositions?.summary?.capitalSource ?? null;
+
+    return {
+      portfolio,
+      free,
+      inPositions: monitorOpenMarginSummary.totalMarginUsed,
+      capitalSource,
+      paperResetAt: monitorPositions?.summary?.paperResetAt ?? null,
+    };
+  }, [
+    monitorOpenMarginSummary.totalMarginUsed,
+    monitorOpenMarginSummary.totalOpenPnl,
+    monitorPositions?.summary,
+    monitorSessionDetail?.summary.realizedPnl,
+    selectedMonitorBot,
+  ]);
 
   const monitorLastSignalAt = useMemo(() => {
     const timestamp = Math.max(
@@ -702,11 +765,18 @@ export default function BotsManagement({
                         </div>
                       </td>
                       <td>
-                        <span className="text-xs opacity-70">
-                          {bot.mode === "PAPER"
-                            ? formatCurrency(bot.wallet?.paperInitialBalance ?? bot.paperStartBalance)
-                            : "-"}
-                        </span>
+                        <div className="space-y-0.5 text-xs">
+                          <span className="opacity-70">
+                            {bot.mode === "PAPER"
+                              ? formatCurrency(resolvePaperConfigBaseline(bot) ?? 0)
+                              : "-"}
+                          </span>
+                          <p className="opacity-50">
+                            {bot.mode === "PAPER"
+                              ? t("dashboard.bots.create.paperBalanceLabel")
+                              : t("dashboard.bots.monitoring.capitalSourceLiveExchange")}
+                          </p>
+                        </div>
                       </td>
                       <td>
                         <span className="text-xs opacity-70">{bot.maxOpenPositions}</span>
@@ -804,6 +874,8 @@ export default function BotsManagement({
           monitorOperationalTrades={monitorOperationalTrades}
           monitorTrades={monitorTrades}
           monitorSignalRows={monitorSignalRows}
+          monitorRuntimeStateSummary={monitorRuntimeStateSummary}
+          monitorCapitalKpis={monitorCapitalKpis}
           monitorHeartbeatLagMs={monitorHeartbeatLagMs}
           monitorDataIsStale={monitorDataIsStale}
           monitorDataAgeLabel={monitorDataAgeLabel}

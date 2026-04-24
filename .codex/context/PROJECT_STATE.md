@@ -18,29 +18,20 @@ Last updated: 2026-04-24
   more explicit about degraded routing/runtime-input outcomes, and the next
   approved architectural migration is the single-context bot rewrite:
   `1 bot = 1 wallet + 1 symbol-group market scope + 1 strategy`. The newest
-  production hardening slice (`V1BOT-07B`) additionally proved and fixed a
+  production hardening slices (`V1BOT-07B`, `V1BOT-09`, `V1DASH-A`,
+  `V1BOTSURF-A`, `V1SURF-A`) additionally proved and fixed a
   critical PAPER capital-authority drift where wallet-scoped historical paper
   lifecycle rows could inflate the selected bot runtime capital and sizing;
   `LIVE` remains wallet-authoritative from authenticated exchange balance,
   while `PAPER` runtime/dashboard capital is now bot-scoped under the linked
-  wallet. The next production-facing focus is manual-order recovery under the
-  same singular bot contract because authenticated production verification on
-  `2026-04-24` showed that dashboard manual actions still drift from canonical
-  behavior: `PAPER` manual `MARKET` open can persist as `OPEN` without a fill
-  or position when no explicit request price is supplied, and the dashboard
-  manual-order surface still needs truthful symbol sourcing plus explicit
-  `submitted / waiting_for_fill / position_opened` lifecycle feedback. A
-  broader dashboard truth audit from the same date also confirmed follow-up
-  surface gaps: selected-bot wallet KPIs still partly derive paper baseline
-  from `bot.paperStartBalance` instead of treating runtime capital summary as
-  first authority, and pending/degraded runtime states are still too quiet for
-  operator use when a bot is running with tracked symbols or open orders but no
-  open position yet. A second audit pass confirmed the same class of drift in
-  bot-focused surfaces: `BotsManagement` and `BotsListTable` still partly
-  render paper/config values from legacy bot snapshot fields instead of
-  authoritative runtime capital summary semantics, and bot monitoring needs its
-  own explicit pending/degraded state hardening wave after the selected-bot
-  dashboard follow-up.
+  wallet. Manual-order execution is now singular-context-aware for both backend
+  context resolution and dashboard symbol sourcing, `PAPER` market orders can
+  fill immediately without an explicit request price, selected-bot dashboard
+  KPIs now prefer authoritative runtime capital summary fields, and bot
+  monitoring/list surfaces expose the same runtime capital/state truth instead
+  of mixing config baseline with active runtime semantics. The next active
+  engineering queue item is `V1BOT-08`, followed by legacy-topology cleanup and
+  full migration parity closure.
 
 ## Product Decisions (Confirmed)
 - 2026-04-21: `docs/architecture/` is the canonical source of truth for how
@@ -201,13 +192,12 @@ Last updated: 2026-04-24
   next queued recovery slice is `V1BOT-09`, covering singular manual-context
   resolution, immediate paper fill authority, and truthful dashboard manual
   action states for both `PAPER` and `LIVE`.
-- 2026-04-24: a wider dashboard truth audit confirmed that the manual-order
-  path is not the only remaining operator-surface gap. The selected-bot
-  dashboard still needs a follow-up hardening wave after `V1BOT-09` so that
-  wallet/equity KPIs prefer authoritative runtime capital summary fields,
-  pending open-order / waiting-for-fill states become explicit, and
-  running-but-non-actionable runtime states are surfaced as degraded operator
-  truth instead of reading like healthy emptiness.
+- 2026-04-24: `V1BOT-09`, `V1DASH-A`, `V1BOTSURF-A`, and `V1SURF-A` are now
+  closed. Manual-order singular-context recovery, dashboard capital KPI
+  hardening, bot-surface truth alignment, and shared operator-state alignment
+  all passed focused validation, and the web now reuses one shared runtime
+  capital/runtime-state presentation helper across selected-bot dashboard and
+  bot monitoring/list surfaces.
 - 2026-04-22: prod restore-drill proof now passes from a real Coolify terminal
   execution in the production postgres container
   (`x11cfnz1dd9x0yzccftqzcoe`), and the final non-dry-run prod release gate now

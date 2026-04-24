@@ -17,15 +17,6 @@ Last updated: 2026-04-24
 
 ## READY
 
-- [ ] `V1BOT-09 api+web(manual-order): recover dashboard manual-order truth and singular-context execution for PAPER and LIVE`
-- [ ] `V1DASH-01 web(capital-kpis): align selected-bot dashboard capital KPIs to authoritative runtime capital summary`
-- [ ] `V1DASH-02 web(pending-state): expose pending open-order and waiting-for-fill truth in selected-bot dashboard surfaces`
-- [ ] `V1DASH-03 web(degraded-state): make running-but-non-actionable runtime states explicit on the dashboard`
-- [ ] `V1DASH-04 qa(closure): run focused dashboard truth pack and sync canonical docs/context`
-- [ ] `V1BOT-12 web(bot-monitoring-capital): align bot monitoring capital widgets to authoritative runtime capital summary`
-- [ ] `V1BOT-13 web(bot-list-truth): distinguish bot configuration baseline from active runtime capital truth`
-- [ ] `V1BOT-14 web(bot-monitoring-states): expose pending open-order and degraded runtime states in bot monitoring`
-- [ ] `V1BOT-15 qa(closure): run focused bot-surface truth pack and sync canonical docs/context`
 - [ ] `V1BOT-08 web(bot-crud): align create/edit/detail flows to the singular contract`
 
 ## BACKLOG
@@ -46,6 +37,18 @@ Last updated: 2026-04-24
 - [ ] (none)
 
 ## DONE
+
+- [x] `V1BOT-09 api+web(manual-order): recover dashboard manual-order truth and singular-context execution for PAPER and LIVE`
+  - 2026-04-24: Manual-order context now resolves against the singular bot contract first (`bot -> symbolGroup + strategy`) and fails closed when a symbol is outside the direct bot scope. `PAPER` `MARKET` orders without explicit request price now resolve one canonical fill price from manual-order context and immediately apply the shared order -> fill -> position lifecycle instead of persisting as hanging `OPEN` orders. The dashboard manual-order symbol list now prefers the selected bot market scope even before runtime activity appears. Validation PASS: `pnpm --filter api exec vitest run src/modules/orders/orders.service.test.ts`, `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.manual-order-scope.test.tsx`.
+
+- [x] `V1DASH-01..04 web/qa(dashboard-truth): align selected-bot dashboard capital KPIs plus pending/degraded runtime truth`
+  - 2026-04-24: Selected-bot dashboard capital widgets now reuse one shared runtime-capital truth helper, so `PAPER` and `LIVE` portfolio/free-funds KPI math prefer authoritative runtime capital summary fields over legacy bot snapshot baselines. The selected-bot markets rail now exposes operator state counts for `POSITION_OPEN`, `EVALUATED_NO_TRADE`, and `CONFIGURED_ONLY`, making running-but-non-actionable runtime states explicit instead of visually collapsing into empty healthy state. Focused dashboard truth pack PASS: `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.aggregate-wallet.test.tsx src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx`.
+
+- [x] `V1BOT-12..15 web/qa(bot-surface-truth): align bot monitoring/list surfaces to runtime capital truth and runtime state visibility`
+  - 2026-04-24: Bot monitoring now derives portfolio/free-funds/capital-source context from authoritative runtime capital summary semantics, surfaces runtime market states and context-source truth directly in the future-signals table, and elevates configured-only / evaluated-no-trade counts into operator summary cards. Bot list and inline bot-management table now label paper values as configuration baseline context rather than implying active runtime capital truth. Focused bot-surface pack PASS: `pnpm --filter web exec vitest run src/features/bots/components/BotsManagement.test.tsx src/features/bots/components/BotsListTable.test.tsx src/features/bots/services/botsMonitoringAggregate.service.test.ts`.
+
+- [x] `V1SURF-01..04 web/qa(shared-operator-truth): align repeated capital/runtime-state presentation across dashboard-home and bot monitoring`
+  - 2026-04-24: Added one shared runtime-surface truth helper for capital and runtime-market-state derivation, reused by selected-bot dashboard and bot monitoring aggregate surfaces so the same backend truth now produces the same operator narrative across both views. Closure validation PASS: `pnpm --filter api run typecheck`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
 
 - [x] `V1BOT-01 docs(architecture): freeze single-context bot contract`
   - 2026-04-24: Canonical architecture was updated to the approved singular bot model where one bot owns exactly one wallet, one symbol-group-derived market scope, and one strategy. `BotMarketGroup` and `MarketGroupStrategyLink` were reclassified as migration compatibility only, while the canonical runtime contract moved to inherited wallet/market-group/strategy context.

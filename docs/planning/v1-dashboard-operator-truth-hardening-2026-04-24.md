@@ -3,7 +3,7 @@
 ## Header
 - ID: V1DASH-A
 - Title: Harden dashboard operator truth after singular bot migration and manual-order recovery
-- Status: READY
+- Status: DONE
 - Owner: Frontend Builder + Backend Builder
 - Depends on: V1BOT-09
 - Priority: P1
@@ -51,17 +51,17 @@ states, and post-action lifecycle feedback to canonical runtime data.
   client-side truth models
 
 ## Definition of Done
-- [ ] Selected-bot wallet/equity/free-funds KPIs use the runtime capital summary
+- [x] Selected-bot wallet/equity/free-funds KPIs use the runtime capital summary
       as first authority for both `PAPER` and `LIVE`, with fallback only when
       the authoritative fields are truly absent.
-- [ ] Dashboard exposes an explicit pending-action operator state when manual or
+- [x] Dashboard exposes an explicit pending-action operator state when manual or
       runtime orders are open but no position is opened yet.
-- [ ] Dashboard exposes an explicit running-but-no-action / degraded-runtime
+- [x] Dashboard exposes an explicit running-but-no-action / degraded-runtime
       state when the bot is running, has tracked symbols or events, but has no
       actionable runtime outputs yet.
-- [ ] Manual-order follow-up states stay consistent across sidebar, open-orders
+- [x] Manual-order follow-up states stay consistent across sidebar, open-orders
       table, and selected-bot summary after `V1BOT-09` lands.
-- [ ] Focused web regressions lock the capital-authority path and the new
+- [x] Focused web regressions lock the capital-authority path and the new
       pending/degraded operator states.
 
 ## Forbidden
@@ -73,7 +73,11 @@ states, and post-action lifecycle feedback to canonical runtime data.
   data
 
 ## Validation Evidence
-- Tests: to attach in execution closure
+- Tests:
+  - `pnpm --filter api exec vitest run src/modules/orders/orders.service.test.ts`
+  - `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.manual-order-scope.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.aggregate-wallet.test.tsx src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx`
+  - `pnpm --filter web run typecheck`
+  - `pnpm run quality:guardrails`
 - Manual checks:
   - authenticated production check of selected-bot aggregate vs displayed
     wallet/runtime KPIs
@@ -127,13 +131,13 @@ states, and post-action lifecycle feedback to canonical runtime data.
   - improve only truth labels, KPI authority, and state feedback
 
 ## Review Checklist (mandatory)
-- [ ] Architecture alignment confirmed.
-- [ ] Existing systems were reused where applicable.
-- [ ] No workaround paths were introduced.
-- [ ] No logic duplication was introduced.
-- [ ] Definition of Done evidence is attached.
-- [ ] Relevant validations were run.
-- [ ] Docs or context were updated if repository truth changed.
+- [x] Architecture alignment confirmed.
+- [x] Existing systems were reused where applicable.
+- [x] No workaround paths were introduced.
+- [x] No logic duplication was introduced.
+- [x] Definition of Done evidence is attached.
+- [x] Relevant validations were run.
+- [x] Docs or context were updated if repository truth changed.
 - [ ] Learning journal was updated if a recurring pitfall was confirmed.
 
 ## Notes

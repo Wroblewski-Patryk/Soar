@@ -11,6 +11,11 @@ import {
   MonitoringQuickNavSection,
 } from "./BotsMonitoringSections";
 import {
+  resolveContextSourceLabel,
+  resolveRuntimeStateBadgeClass,
+  resolveRuntimeStateLabel,
+} from "./monitoringRuntimeLabels";
+import {
   Bot,
   BotRuntimeSessionDetail,
   BotRuntimeSessionListItem,
@@ -137,6 +142,13 @@ type BotsMonitoringTabProps = {
     totalOpenPnl: number;
     marginInitPct: number | null;
   };
+  monitorCapitalKpis: {
+    portfolio: number | null;
+    free: number | null;
+    inPositions: number;
+    capitalSource: "PAPER_INITIAL_BALANCE" | "PAPER_RESET_CHECKPOINT" | "LIVE_EXCHANGE_BALANCE" | null;
+    paperResetAt: string | null;
+  };
   monitorWinRate: number;
   monitorShowOpenOrders: boolean;
   monitorOpenPositionRows: MonitorOpenPositionRow[];
@@ -162,7 +174,27 @@ type BotsMonitoringTabProps = {
     unrealizedPnl?: number | null;
     feesPaid: number;
     lastTradeAt?: string | null;
+    lastSignalContextSource?:
+      | "latest_signal"
+      | "latest_decision"
+      | "configured_fallback"
+      | "unresolved"
+      | null;
+    runtimeMarketState?:
+      | "POSITION_OPEN"
+      | "SIGNAL_ACTIVE"
+      | "EVALUATED_NO_TRADE"
+      | "CONFIGURED_ONLY"
+      | "UNRESOLVED"
+      | null;
   }>;
+  monitorRuntimeStateSummary: {
+    POSITION_OPEN: number;
+    SIGNAL_ACTIVE: number;
+    EVALUATED_NO_TRADE: number;
+    CONFIGURED_ONLY: number;
+    UNRESOLVED: number;
+  };
   monitorHeartbeatLagMs: number | null;
   monitorDataIsStale: boolean;
   monitorDataAgeLabel: string | null;
@@ -221,6 +253,7 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
     monitorSessionLoading,
     monitorPositions,
     monitorOpenMarginSummary,
+    monitorCapitalKpis,
     monitorWinRate,
     monitorShowOpenOrders,
     monitorOpenPositionRows,
@@ -228,6 +261,7 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
     monitorOperationalTrades,
     monitorTrades,
     monitorSignalRows,
+    monitorRuntimeStateSummary,
     monitorHeartbeatLagMs,
     monitorDataIsStale,
     monitorDataAgeLabel,
@@ -389,6 +423,20 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                         <p className="text-xs font-semibold uppercase tracking-wide opacity-65">{t("dashboard.bots.monitoring.nowTitle")}</p>
                         <div className="mt-2 space-y-1 text-sm">
                           <p>
+                            <span className="opacity-60">{t("dashboard.bots.monitoring.portfolioLabel")}</span>{" "}
+                            <span className="font-semibold">
+                              {monitorCapitalKpis.portfolio != null
+                                ? formatCurrency(monitorCapitalKpis.portfolio)
+                                : "-"}
+                            </span>
+                          </p>
+                          <p>
+                            <span className="opacity-60">{t("dashboard.bots.monitoring.freeFundsLabel")}</span>{" "}
+                            <span className="font-semibold">
+                              {monitorCapitalKpis.free != null ? formatCurrency(monitorCapitalKpis.free) : "-"}
+                            </span>
+                          </p>
+                          <p>
                             <span className="opacity-60">{t("dashboard.bots.monitoring.openPositionsLabel")}</span>{" "}
                             <span className="font-semibold">{monitorPositions?.openCount ?? 0}</span>
                           </p>
@@ -443,8 +491,16 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                             <span className="font-semibold">{monitorSymbolStats?.items.length ?? 0}</span>
                           </p>
                           <p>
-                            <span className="opacity-60">{t("dashboard.bots.monitoring.signalsLabel")}</span>{" "}
-                            <span className="font-semibold">{monitorSessionDetail.summary.totalSignals}</span>
+                            <span className="opacity-60">{t("dashboard.bots.monitoring.marketStateSignalActive")}</span>{" "}
+                            <span className="font-semibold">{monitorRuntimeStateSummary.SIGNAL_ACTIVE}</span>
+                          </p>
+                          <p>
+                            <span className="opacity-60">{t("dashboard.bots.monitoring.marketStateEvaluatedNoTrade")}</span>{" "}
+                            <span className="font-semibold">{monitorRuntimeStateSummary.EVALUATED_NO_TRADE}</span>
+                          </p>
+                          <p>
+                            <span className="opacity-60">{t("dashboard.bots.monitoring.marketStateConfiguredOnly")}</span>{" "}
+                            <span className="font-semibold">{monitorRuntimeStateSummary.CONFIGURED_ONLY}</span>
                           </p>
                           <p>
                             <span className="opacity-60">{t("dashboard.bots.monitoring.dcaLabel")}</span>{" "}
@@ -477,6 +533,22 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                           <p className="opacity-60">{t("dashboard.bots.monitoring.lastTradeLabel")}</p>
                           <p className="mt-1 font-semibold">{formatDateTime(monitorLastTradeAt)}</p>
                         </div>
+                        <div className="rounded-md border border-base-300 bg-base-200 px-2 py-2">
+                          <p className="opacity-60">{t("dashboard.bots.monitoring.capitalSourceLabel")}</p>
+                          <p className="mt-1 font-semibold">
+                            {monitorCapitalKpis.capitalSource === "PAPER_RESET_CHECKPOINT"
+                              ? t("dashboard.bots.monitoring.capitalSourcePaperReset")
+                              : monitorCapitalKpis.capitalSource === "LIVE_EXCHANGE_BALANCE"
+                                ? t("dashboard.bots.monitoring.capitalSourceLiveExchange")
+                                : t("dashboard.bots.monitoring.capitalSourcePaperInitial")}
+                          </p>
+                        </div>
+                        {monitorCapitalKpis.paperResetAt ? (
+                          <div className="rounded-md border border-base-300 bg-base-200 px-2 py-2">
+                            <p className="opacity-60">{t("dashboard.bots.monitoring.paperResetAtLabel")}</p>
+                            <p className="mt-1 font-semibold">{formatDateTime(monitorCapitalKpis.paperResetAt)}</p>
+                          </div>
+                        ) : null}
                         <div className="rounded-md border border-base-300 bg-base-200 px-2 py-2">
                           <p className="opacity-60">{t("dashboard.bots.monitoring.openPositionsOrdersLabel")}</p>
                           <p className="mt-1 font-semibold">
@@ -836,6 +908,8 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                         <thead>
                           <tr>
                             <th>{t("dashboard.bots.monitoring.table.symbol")}</th>
+                            <th>{t("dashboard.bots.monitoring.table.runtimeState")}</th>
+                            <th>{t("dashboard.bots.monitoring.contextSourceLabel")}</th>
                             <th>{t("dashboard.bots.monitoring.table.signal")}</th>
                             <th>{t("dashboard.bots.monitoring.table.signalTime")}</th>
                             <th>{t("dashboard.bots.monitoring.table.signals")}</th>
@@ -854,6 +928,14 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                           {monitorSignalRows.map((item) => (
                             <tr key={item.id}>
                               <td className="font-medium">{item.symbol}</td>
+                              <td>
+                                <span className={`badge badge-xs ${resolveRuntimeStateBadgeClass(item.runtimeMarketState)}`}>
+                                  {resolveRuntimeStateLabel(t, item.runtimeMarketState)}
+                                </span>
+                              </td>
+                              <td className="text-[11px] opacity-70">
+                                {resolveContextSourceLabel(t, item.lastSignalContextSource)}
+                              </td>
                               <td>
                                 <span
                                   className={`badge badge-xs ${
@@ -892,7 +974,7 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                           ))}
                           {monitorSignalRows.length === 0 ? (
                             <tr>
-                              <td colSpan={13} className="text-center text-xs opacity-70">
+                              <td colSpan={15} className="text-center text-xs opacity-70">
                                 {t("dashboard.bots.monitoring.emptySignalData")}
                               </td>
                             </tr>

@@ -3,10 +3,14 @@ import { normalizeSymbol } from "@/lib/symbols";
 import { toTimestamp } from "@/lib/time";
 import type { BotRuntimeTradesResponse } from "@/features/bots/types/bot.type";
 import {
+  resolvePaperConfigBaseline,
+  resolveRuntimeFreeFunds,
+  resolveRuntimePortfolio,
+} from "@/features/bots/utils/runtimeSurfaceTruth";
+import {
   pruneStickyFavorableMoveMap,
   resolveFallbackTtpProtectedPercent,
 } from "@/features/bots/utils/trailingStopDisplay";
-import { readFiniteNumber } from "./formatters";
 import {
   buildLiveOpenPositions,
   maxDrawdown,
@@ -55,12 +59,24 @@ export const useRuntimeSelectionViewModel = ({
     const dcaCount = snapshots.reduce((acc, x) => acc + (x.session?.summary.dcaCount ?? 0), 0);
 
     const paper = snapshots.filter((x) => x.bot.mode === "PAPER");
-    const paperStart = paper.reduce((acc, x) => acc + x.bot.paperStartBalance, 0);
-    const paperDelta = paper.reduce(
-      (acc, x) => acc + (x.session?.summary.realizedPnl ?? 0) + resolveUnrealized(x),
-      0
-    );
-    const paperEquity = paperStart + paperDelta;
+    const paperStart = paper.reduce((acc, x) => acc + (resolvePaperConfigBaseline(x.bot) ?? 0), 0);
+    const paperDelta = paper.reduce((acc, x) => {
+      const net = (x.session?.summary.realizedPnl ?? 0) + resolveUnrealized(x);
+      return acc + net;
+    }, 0);
+    const paperEquity = paper.reduce((acc, x) => {
+      const net = (x.session?.summary.realizedPnl ?? 0) + resolveUnrealized(x);
+      return (
+        acc +
+        (resolveRuntimePortfolio({
+          bot: x.bot,
+          summary: x.positions?.summary ?? null,
+          net,
+          usedMargin: resolveUsedMargin(x.positions),
+        }) ??
+          0)
+      );
+    }, 0);
     return {
       openPositions,
       usedMargin,
@@ -126,34 +142,22 @@ export const useRuntimeSelectionViewModel = ({
     const wins = selected.symbolStats?.summary.winningTrades ?? 0;
     const losses = selected.symbolStats?.summary.losingTrades ?? 0;
     const winRate = wins + losses > 0 ? (wins / (wins + losses)) * 100 : null;
-    const paperInit = selected.bot.mode === "PAPER" ? selected.bot.paperStartBalance : null;
-    const paperEquity = paperInit != null ? paperInit + net : null;
+    const paperInit =
+      selected.bot.mode === "PAPER"
+        ? selected.bot.wallet?.paperInitialBalance ?? selected.bot.paperStartBalance
+        : null;
     const runtimeCapitalSummary = (selected.positions?.summary ?? {}) as Record<string, unknown>;
-    const liveReferenceBalanceRaw =
-      readFiniteNumber(runtimeCapitalSummary.referenceBalance) ??
-      readFiniteNumber(runtimeCapitalSummary.allocatedBalance) ??
-      readFiniteNumber(runtimeCapitalSummary.accountBalance) ??
-      readFiniteNumber(runtimeCapitalSummary.walletBalance);
-    const liveReferenceBalance =
-      selected.bot.mode === "LIVE" &&
-      liveReferenceBalanceRaw != null &&
-      Number.isFinite(liveReferenceBalanceRaw)
-        ? Math.max(0, liveReferenceBalanceRaw)
-        : null;
-    const liveFreeCashRaw =
-      readFiniteNumber(runtimeCapitalSummary.freeCash) ??
-      readFiniteNumber(runtimeCapitalSummary.availableBalance) ??
-      readFiniteNumber(runtimeCapitalSummary.freeBalance);
-    const liveFreeCash =
-      selected.bot.mode === "LIVE" && liveFreeCashRaw != null && Number.isFinite(liveFreeCashRaw)
-        ? Math.max(0, liveFreeCashRaw)
-        : null;
-    const equityFromFreeAndUsedMargin =
-      selected.bot.mode === "LIVE" && liveReferenceBalance == null && liveFreeCash != null
-        ? Math.max(0, liveFreeCash + usedMargin)
-        : null;
-    const equity = selected.bot.mode === "LIVE" ? (liveReferenceBalance ?? equityFromFreeAndUsedMargin) : paperEquity;
-    const free = liveFreeCash ?? (equity != null ? Math.max(0, equity - usedMargin) : null);
+    const equity = resolveRuntimePortfolio({
+      bot: selected.bot,
+      summary: runtimeCapitalSummary,
+      net,
+      usedMargin,
+    });
+    const free = resolveRuntimeFreeFunds({
+      summary: runtimeCapitalSummary,
+      portfolio: equity,
+      usedMargin,
+    });
     const exposurePct = equity && equity > 0 ? (usedMargin / equity) * 100 : null;
     const runtimeTradesSessionId = selected.trades?.sessionId ?? selected.session?.id ?? null;
     const trades =

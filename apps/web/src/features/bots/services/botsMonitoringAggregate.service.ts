@@ -6,6 +6,7 @@ import {
   listBotRuntimeSessionSymbolStats,
   listBotRuntimeSessionTrades,
 } from "./bots.service";
+import { resolveRuntimeMarketState } from "../utils/runtimeSurfaceTruth";
 import type {
   BotRuntimePositionsResponse,
   BotRuntimeSessionDetail,
@@ -35,29 +36,6 @@ type LoadBotMonitoringAggregateArgs = {
   status?: "ALL" | BotRuntimeSessionStatus;
   symbol?: string;
   perSessionLimit?: number;
-};
-
-const resolveRuntimeMarketState = (item: {
-  openPositionCount?: number | null;
-  lastSignalContextSource?:
-    | "latest_signal"
-    | "latest_decision"
-    | "configured_fallback"
-    | "unresolved"
-    | null;
-  lastSignalDirection?: "LONG" | "SHORT" | "EXIT" | null;
-}) => {
-  if ((item.openPositionCount ?? 0) > 0) return "POSITION_OPEN" as const;
-  if (item.lastSignalDirection === "LONG" || item.lastSignalDirection === "SHORT") {
-    return "SIGNAL_ACTIVE" as const;
-  }
-  if (item.lastSignalContextSource === "latest_decision") {
-    return "EVALUATED_NO_TRADE" as const;
-  }
-  if (item.lastSignalContextSource === "configured_fallback") {
-    return "CONFIGURED_ONLY" as const;
-  }
-  return "UNRESOLVED" as const;
 };
 
 const uniqueById = <T extends { id: string }>(items: T[]) => {
