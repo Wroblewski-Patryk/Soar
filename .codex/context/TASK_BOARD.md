@@ -17,12 +17,11 @@ Last updated: 2026-04-24
 
 ## READY
 
-- [ ] `V1BOT-08 web(bot-crud): align create/edit/detail flows to the singular contract`
+- [ ] (none)
 
 ## BACKLOG
 
-- [ ] `V1BOT-10 cleanup(legacy-runtime): remove legacy topology from canonical runtime path`
-- [ ] `V1BOT-11 qa(closure): full parity and migration closure pack`
+- [ ] (none)
 
 ## IN_PROGRESS
 
@@ -64,6 +63,18 @@ Last updated: 2026-04-24
 
 - [x] `V1BOT-07B fix(api-paper-capital): keep PAPER runtime capital bot-scoped under the linked wallet and align selected-bot monitoring reads to inherited execution context`
   - 2026-04-24: Production investigation proved a critical drift: the PAPER wallet showed `100 USDT` baseline and the selected strategy used `walletRisk=2` with `25x` leverage, yet the runtime dashboard reported `referenceBalance ~= 96,695 USDT` and opened ~`48k` notional paper positions. Root cause: PAPER runtime capital could still be derived from wallet-scoped lifecycle rows, allowing historical or legacy bot rows on the same wallet to inflate the currently selected bot. Fixed by keeping PAPER capital bot-scoped under the linked wallet while preserving LIVE wallet authority from authenticated exchange balance, and by aligning runtime position monitoring reads to inherited wallet/market-universe execution context instead of deprecated bot-owned mode/venue snapshots. Validation PASS: `pnpm --filter api exec vitest run src/modules/engine/runtimeCapitalContext.service.test.ts src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
+
+- [x] `V1BOT-08 web(bot-crud): align create/edit/detail flows to the singular contract`
+  - 2026-04-24: Bot create/edit flows now prefill and submit against the direct singular bot contract (`walletId + symbolGroupId + strategyId`) without depending on runtime-graph fallback reconstruction. Edit mode loads inherited context directly from `GET /dashboard/bots/:id`, while compatibility graph reads remain available only for legacy monitoring surfaces that have not yet been retired. Validation PASS: `pnpm --filter web exec vitest run src/features/bots/components/BotCreateEditForm.test.tsx`, `pnpm --filter web run typecheck`.
+
+- [x] `V1BOT-10 cleanup(legacy-runtime): remove legacy topology from canonical runtime path`
+  - 2026-04-24: Canonical bot reads, duplicate-active validation, wallet-context validation, market-stream subscription discovery, external-position ownership, and manual-order bot-context resolution no longer infer singular truth from legacy `botMarketGroups` / `marketGroupStrategyLinks` / `botStrategies`. Legacy topology remains compatibility-only and explicit drift analysis moved onto dedicated helper ownership instead of silently affecting the primary runtime/API path. Validation PASS: `pnpm --filter api exec vitest run src/modules/bots/runtimeExternalPositionOwner.service.test.ts src/workers/marketStreamSubscriptions.service.test.ts src/modules/orders/orders.service.test.ts`, `pnpm --filter api run typecheck`.
+
+- [x] `V1BOT-11 qa(closure): full parity and migration closure pack`
+  - 2026-04-24: Closure pack passed for the single-context bot migration across API, runtime, web, build, and repository guardrails. Validation PASS: `pnpm --filter api exec vitest run src/modules/bots/bots.e2e.test.ts src/modules/bots/bots.runtime-scope.e2e.test.ts src/modules/bots/runtimeExternalPositionOwner.service.test.ts src/modules/engine/runtimeSignalLoopDefaults.test.ts src/workers/marketStreamSubscriptions.service.test.ts src/modules/orders/orders.service.test.ts`, `pnpm --filter web exec vitest run src/features/bots/components/BotCreateEditForm.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx`, `pnpm --filter api run typecheck`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`, `pnpm run build`.
+
+- [x] `V1BOT-A closure: single-context bot architecture migration`
+  - 2026-04-24: The approved singular bot model is now the canonical implementation path for Soar V1. One bot owns exactly one wallet, one symbol-group-derived market scope, and one strategy; runtime and operator surfaces consume inherited context from those linked modules, while legacy topology is compatibility-only and excluded from canonical execution truth.
 
 - [x] `V1BOTSURF-A planning: queue bot operator-surface truth hardening after the wider dashboard audit`
   - 2026-04-24: A broader operator-surface audit confirmed that dashboard-home is not the only place still capable of drifting away from runtime truth. `BotsManagement` and `BotsListTable` still partly seed paper values from legacy bot snapshot fields, and bot monitoring does not yet expose pending open-order / degraded runtime states strongly enough for operator use. Published `docs/planning/v1-bot-surfaces-truth-hardening-2026-04-24.md` and queued `V1BOT-12..15`.

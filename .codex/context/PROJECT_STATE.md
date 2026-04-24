@@ -11,27 +11,30 @@ Last updated: 2026-04-24
 - Current phase: V1 is formally approved for production activation from the
   current evidence set, and active engineering focus has shifted to
   post-approval runtime hardening after the closed `V1CONF-A`, `V1SIG-A`,
-  `V1CAP-A`, and `V1ALIGN-A` waves. The current repository truth is that the
-  deployed worker contract is frozen to `split`, runtime symbol scope and
-  signal interval truth now fail closed and persist honestly, runtime
-  freshness authority is scoped to active sessions, operator diagnostics are
-  more explicit about degraded routing/runtime-input outcomes, and the next
-  approved architectural migration is the single-context bot rewrite:
-  `1 bot = 1 wallet + 1 symbol-group market scope + 1 strategy`. The newest
-  production hardening slices (`V1BOT-07B`, `V1BOT-09`, `V1DASH-A`,
-  `V1BOTSURF-A`, `V1SURF-A`) additionally proved and fixed a
-  critical PAPER capital-authority drift where wallet-scoped historical paper
-  lifecycle rows could inflate the selected bot runtime capital and sizing;
-  `LIVE` remains wallet-authoritative from authenticated exchange balance,
-  while `PAPER` runtime/dashboard capital is now bot-scoped under the linked
-  wallet. Manual-order execution is now singular-context-aware for both backend
-  context resolution and dashboard symbol sourcing, `PAPER` market orders can
-  fill immediately without an explicit request price, selected-bot dashboard
-  KPIs now prefer authoritative runtime capital summary fields, and bot
-  monitoring/list surfaces expose the same runtime capital/state truth instead
-  of mixing config baseline with active runtime semantics. The next active
-  engineering queue item is `V1BOT-08`, followed by legacy-topology cleanup and
-  full migration parity closure.
+  `V1CAP-A`, `V1ALIGN-A`, and now fully closed `V1BOT-A` migration wave. The
+  current repository truth is that the deployed worker contract is frozen to
+  `split`, runtime symbol scope and signal interval truth now fail closed and
+  persist honestly, runtime freshness authority is scoped to active sessions,
+  operator diagnostics are more explicit about degraded routing/runtime-input
+  outcomes, and the approved singular bot architecture is now implemented as
+  canonical production truth: `1 bot = 1 wallet + 1 symbol-group market scope
+  + 1 strategy`. Runtime and operator surfaces now consume inherited context
+  from wallet, symbol-group market scope, and strategy modules instead of
+  reconstructing canonical truth from legacy topology. The newest production
+  hardening slices (`V1BOT-07B`, `V1BOT-09`, `V1DASH-A`, `V1BOTSURF-A`,
+  `V1SURF-A`) additionally proved and fixed a critical PAPER
+  capital-authority drift where wallet-scoped historical paper lifecycle rows
+  could inflate the selected bot runtime capital and sizing; `LIVE` remains
+  wallet-authoritative from authenticated exchange balance, while `PAPER`
+  runtime/dashboard capital is now bot-scoped under the linked wallet.
+  Manual-order execution is singular-context-aware for both backend context
+  resolution and dashboard symbol sourcing, `PAPER` market orders can fill
+  immediately without an explicit request price, selected-bot dashboard KPIs
+  prefer authoritative runtime capital summary fields, and bot
+  monitoring/list/detail surfaces expose the same runtime capital/state truth
+  instead of mixing config baseline with active runtime semantics. The next
+  engineering queue is no longer the bot-architecture migration itself, but
+  whichever post-V1 hardening slice is promoted next in `mvp-next-commits`.
 
 ## Product Decisions (Confirmed)
 - 2026-04-21: `docs/architecture/` is the canonical source of truth for how
@@ -198,6 +201,13 @@ Last updated: 2026-04-24
   all passed focused validation, and the web now reuses one shared runtime
   capital/runtime-state presentation helper across selected-bot dashboard and
   bot monitoring/list surfaces.
+- 2026-04-24: `V1BOT-A` is now fully closed. Bot create/edit flows use direct
+  singular refs instead of runtime-graph fallback, canonical API/runtime paths
+  no longer infer primary context from legacy multi-group/multi-strategy
+  topology, and the migration closure pack passed across API e2e/runtime,
+  focused web suites, typecheck, build, and repository guardrails. Legacy
+  topology remains compatibility-only and is no longer part of canonical
+  execution truth.
 - 2026-04-22: prod restore-drill proof now passes from a real Coolify terminal
   execution in the production postgres container
   (`x11cfnz1dd9x0yzccftqzcoe`), and the final non-dry-run prod release gate now

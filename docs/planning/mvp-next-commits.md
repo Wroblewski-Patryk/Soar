@@ -7,10 +7,9 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `V1BOT-08 web(bot-crud): align create/edit/detail flows to the singular contract`
+- [ ] (no active task selected)
 ## NEXT
-- [ ] `V1BOT-10 cleanup(legacy-runtime): remove legacy topology from canonical runtime path`
-- [ ] `V1BOT-11 qa(closure): full parity and migration closure pack`
+- [ ] (promote the next post-V1 hardening slice from planning/context)
 ## PIPELINE
 - [x] `V1DASH-A planning queued (dashboard operator truth hardening after singular bot migration and manual-order recovery)`
 - [x] `V1BOTSURF-A planning queued (bot operator surface truth hardening after singular bot migration and dashboard truth audit)`
@@ -37,6 +36,9 @@ Operational queue for one-task execution runs.
 - [x] `V1BOT-06 engine(runtime-topology): replace multi-group runtime topology with singular bot context`
 - [x] `V1BOT-07 engine(capital-strategy-inheritance): source runtime parameters from wallet and strategy modules`
 - [x] `V1BOT-07B fix(api-paper-capital): keep PAPER runtime capital bot-scoped under the linked wallet and align selected-bot monitoring reads to inherited execution context`
+- [x] `V1BOT-08 web(bot-crud): align create/edit/detail flows to the singular contract`
+- [x] `V1BOT-10 cleanup(legacy-runtime): remove legacy topology from canonical runtime path`
+- [x] `V1BOT-11 qa(closure): full parity and migration closure pack`
 - [x] `V1RT-02 fix(api-market-stream-endpoint): select Binance websocket default by runtime market type`
 - [x] `V1ALIGN-A planning queued (runtime worker-ownership alignment plus symbol-scope, interval-truth, freshness-authority, and diagnostics closure)`
 - [x] `V1ALIGN-01 docs(architecture-worker-ownership): freeze split workers as deployed target and inline as local/degraded-only contract`

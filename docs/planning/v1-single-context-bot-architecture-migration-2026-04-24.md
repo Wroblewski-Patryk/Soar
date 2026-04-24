@@ -3,7 +3,7 @@
 ## Header
 - ID: V1BOT-A
 - Title: Migrate Soar to the approved single-context bot architecture
-- Status: IN_PROGRESS
+- Status: CLOSED
 - Owner: Planning Agent
 - Depends on: V1ALIGN-A, V1SIG-A, V1CAP-A, V1RT-02
 - Priority: P0
@@ -40,14 +40,18 @@ parity, and operator clarity.
 - keep backward-compatible read/migration paths only as explicit temporary compatibility
 
 ## Definition of Done
-- [ ] Canonical architecture, API, runtime, and UI contracts all treat the bot as
+- [x] Canonical architecture, API, runtime, and UI contracts all treat the bot as
       one wallet + one symbol-group market scope + one strategy.
-- [ ] Legacy multi-group/multi-strategy runtime ownership is removed from the
+- [x] Legacy multi-group/multi-strategy runtime ownership is removed from the
       canonical execution path.
-- [ ] Existing data is migrated or explicitly blocked/fail-closed if incompatible.
-- [ ] Backtest, paper, and live runtime context assembly is explained by one
+- [x] Existing data is migrated or explicitly blocked/fail-closed if incompatible.
+- [x] Backtest, paper, and live runtime context assembly is explained by one
       inherited-context contract.
-- [ ] Operator surfaces expose only the approved single-context model.
+- [x] Operator surfaces expose only the approved single-context model.
+  - 2026-04-24 closure evidence: all criteria satisfied through `V1BOT-01..11`,
+    including direct bot refs, singular runtime topology, inherited
+    wallet/strategy execution context, truthful operator surfaces, and closure
+    validation across API/runtime/web/build/guardrails.
 
 ## Forbidden
 - new systems without approval
@@ -90,13 +94,13 @@ parity, and operator clarity.
 - Parity evidence: bot create/edit/detail/monitoring surfaces must match the single-context architecture with no legacy topology controls exposed
 
 ## Review Checklist (mandatory)
-- [ ] Architecture alignment confirmed.
-- [ ] Existing systems were reused where applicable.
-- [ ] No workaround paths were introduced.
-- [ ] No logic duplication was introduced.
-- [ ] Definition of Done evidence is attached.
-- [ ] Relevant validations were run.
-- [ ] Docs or context were updated if repository truth changed.
+- [x] Architecture alignment confirmed.
+- [x] Existing systems were reused where applicable.
+- [x] No workaround paths were introduced.
+- [x] No logic duplication was introduced.
+- [x] Definition of Done evidence is attached.
+- [x] Relevant validations were run.
+- [x] Docs or context were updated if repository truth changed.
 - [ ] Learning journal was updated if a recurring pitfall was confirmed.
 
 ## Notes
@@ -170,24 +174,44 @@ runtime compatibility removed only after migration evidence exists.
     canonical runtime fallback to bot-owned paper/api-key execution truth.
 
 ### Slice 5 - Web/UI migration
-- `V1BOT-08 web(bot-crud): align create/edit/detail flows to the singular contract`
+- [x] `V1BOT-08 web(bot-crud): align create/edit/detail flows to the singular contract`
   - keep existing UX intent
   - remove legacy topology affordances from API wiring and data mapping
   - show inherited context explicitly in bot details:
     - wallet-derived execution context
     - market-group-derived venue context
     - strategy-derived runtime settings
+  - 2026-04-24: Closed by moving bot create/edit prefill onto direct bot refs
+    (`walletId`, `symbolGroupId`, `strategyId`) instead of runtime-graph
+    fallback reconstruction, while keeping compatibility graph reads available
+    only for legacy monitoring/detail paths that still need them temporarily.
 - `V1BOT-09 web(runtime-surfaces): align monitoring, dashboard, and manual actions to singular bot context`
   - no assumptions about multiple groups or strategy links
   - selected-bot runtime surfaces show one consistent inherited context
+  - 2026-04-24: Closed by the already-landed manual-order truth, dashboard
+    truth, and bot-surface truth slices (`V1BOT-09`, `V1DASH-A`,
+    `V1BOTSURF-A`, `V1SURF-A`), which now render one inherited bot context
+    across monitoring, dashboard, and manual actions.
 
 ### Slice 6 - Compatibility removal and closure
-- `V1BOT-10 cleanup(legacy-runtime): remove legacy topology from canonical runtime path`
+- [x] `V1BOT-10 cleanup(legacy-runtime): remove legacy topology from canonical runtime path`
   - retain transitional migration helpers only where required for old rows
   - remove dead projection drift/bridge logic once data migration is complete
-- `V1BOT-11 qa(closure): full parity and migration closure pack`
+  - 2026-04-24: Closed by removing legacy topology inference from canonical bot
+    reads, duplicate-active validation, wallet-context validation, runtime
+    ownership helpers, market-stream subscription discovery, and manual-order
+    bot-context resolution. Remaining legacy helpers are explicit
+    compatibility-only or drift-analysis utilities.
+- [x] `V1BOT-11 qa(closure): full parity and migration closure pack`
   - API e2e
   - runtime parity packs
   - web tests
   - build/typecheck/guardrails
   - production-safe migration/runbook evidence
+  - 2026-04-24: Closure pack PASS:
+    `pnpm --filter api exec vitest run src/modules/bots/bots.e2e.test.ts src/modules/bots/bots.runtime-scope.e2e.test.ts src/modules/bots/runtimeExternalPositionOwner.service.test.ts src/modules/engine/runtimeSignalLoopDefaults.test.ts src/workers/marketStreamSubscriptions.service.test.ts src/modules/orders/orders.service.test.ts`,
+    `pnpm --filter web exec vitest run src/features/bots/components/BotCreateEditForm.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx`,
+    `pnpm --filter api run typecheck`,
+    `pnpm --filter web run typecheck`,
+    `pnpm run quality:guardrails`,
+    `pnpm run build`.
