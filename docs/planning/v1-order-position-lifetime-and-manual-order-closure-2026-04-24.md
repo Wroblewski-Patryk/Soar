@@ -152,7 +152,7 @@ not as justification to keep stale open orders indefinitely.
   - update mapping/tests so config payload preserves `0`
 
 ### Slice 2 - Canonical lifetime parsing
-- [ ] `V1LIFE-02 api(shared-lifetime): add one canonical strategy-lifetime resolver for order and position policies`
+- [x] `V1LIFE-02 api(shared-lifetime): add one canonical strategy-lifetime resolver for order and position policies`
   - resolve `orderLifetime` + `orderUnit`
   - resolve `positionLifetime` + `positionUnit`
   - normalize invalid or missing values fail-closed to `disabled`
@@ -189,3 +189,10 @@ not as justification to keep stale open orders indefinitely.
   - helper copy explicitly documents `0 = no time limit`
   - payload mapping is regression-locked to preserve `0` for both
     `positionLifetime` and `orderLifetime`
+- `V1LIFE-02` closed on `2026-04-24`
+  - one canonical API helper now resolves both order and position lifetime
+    policies from `strategy.config.additional`
+  - invalid, missing, negative, unsupported-unit, and explicit `0` values now
+    fail closed to `disabled`
+  - downstream runtime/order consumers can now depend on one normalized
+    `durationMs` contract instead of re-parsing strategy config ad hoc

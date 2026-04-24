@@ -17,9 +17,9 @@ Last updated: 2026-04-24
 
 ## READY
 
-- [ ] `V1LIFE-02 api(shared-lifetime): add one canonical strategy-lifetime resolver for order and position policies`
 - [ ] `V1LIFE-03 api(order-lifetime): enforce strategy-configured order lifetime via canonical cancel path`
 - [ ] `V1LIFE-04 api(position-lifetime): enforce strategy-configured position lifetime via canonical close lifecycle`
+- [ ] `V1LIFE-05 web(open-orders-action): add final Action column with cancel affordance in dashboard Orders tab`
 
 ## BACKLOG
 
@@ -39,6 +39,9 @@ Last updated: 2026-04-24
 - [ ] (none)
 
 ## DONE
+
+- [x] `V1LIFE-02 api(shared-lifetime): add one canonical strategy-lifetime resolver for order and position policies`
+  - 2026-04-24: Added one canonical strategy-lifetime resolver in `strategyLifetimePolicy.ts` for both order and position lifecycle policies. The helper owns `orderLifetime/orderUnit` and `positionLifetime/positionUnit`, treats `0`, missing, negative, non-finite, and unsupported-unit cases as fail-closed `disabled`, and emits normalized duration-in-milliseconds output for downstream runtime/order consumers. Validation PASS: `pnpm --filter api exec vitest run src/modules/engine/strategyLifetimePolicy.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 
 - [x] `V1LIFE-01 docs+web(contract): freeze and expose 0=no-limit semantics for strategy order/position lifetime`
   - 2026-04-24: Strategy form lifetime inputs now allow `0` for both position and order lifetime, helper copy explicitly documents `0 = no time limit`, and focused regressions prove the submit payload preserves zero values instead of coercing them away. Validation PASS: `pnpm --filter web exec vitest run src/features/strategies/components/StrategyForm.test.tsx src/features/strategies/utils/StrategyForm.map.test.ts`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.

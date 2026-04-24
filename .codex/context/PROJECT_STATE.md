@@ -298,6 +298,13 @@ Last updated: 2026-04-24
   `0` for both order and position lifetime, helper copy explicitly documents
   `0 = no time limit`, and focused web regressions lock the submit payload to
   preserve zero values instead of coercing them away.
+- 2026-04-24: `V1LIFE-02` is closed. API now exposes one canonical
+  `strategyLifetimePolicy` resolver for both order and position lifecycle
+  policies, sourced only from `strategy.config.additional`. The helper
+  normalizes `orderLifetime/orderUnit` and `positionLifetime/positionUnit`,
+  treats explicit `0`, missing, negative, non-finite, and unsupported-unit
+  inputs as fail-closed disabled policies, and emits normalized `durationMs`
+  output for downstream runtime/order consumers.
 - 2026-04-24: `V1FINAL-02` is closed without new code. The known production
   orphan paper order was confirmed to be a historical pre-fix manual
   `PAPER MARKET` row persisted as `OPEN` with no fill/position. Recovery
