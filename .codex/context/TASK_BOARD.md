@@ -17,7 +17,10 @@ Last updated: 2026-04-24
 
 ## READY
 
-- [ ] (none)
+- [ ] `V1SURF-05 web(aggregate-truth): remove selected-bot dashboard aggregate fallback and fail closed on aggregate errors`
+- [ ] `V1SURF-06 web(inherited-venue): align runtime sidebar and manual-order estimate semantics to inherited bot context`
+- [ ] `V1SURF-07 web(bot-monitoring-context): align quick-context/control venue labels and capability checks to inherited context`
+- [ ] `V1SURF-08 qa(closure): rerun focused residual surface-truth pack and sync canonical docs/context`
 
 ## BACKLOG
 
@@ -42,6 +45,9 @@ Last updated: 2026-04-24
 
 - [x] `V1LIFE-06 qa(closure): run focused lifetime/order-control pack and sync canonical docs/context`
   - 2026-04-24: Closed the lifetime/order-control wave after rerunning the focused closure pack across strategy `0 = no limit` semantics, shared lifetime policy normalization, runtime stale-order cancellation, runtime stale-position close flow, and dashboard open-order cancel action. Validation PASS: `pnpm --filter web exec vitest run src/features/strategies/components/StrategyForm.test.tsx src/features/strategies/utils/StrategyForm.map.test.ts src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.open-orders-actions.test.tsx`, `pnpm --filter api exec vitest run src/modules/engine/strategyLifetimePolicy.test.ts src/modules/engine/runtimeOrderLifetime.service.test.ts src/modules/engine/runtimePositionLifetime.service.test.ts src/modules/engine/runtimeSignalLoop.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
+
+- [x] `V1SURF-B planning: publish residual operator-surface truth closure after V1LIFE`
+  - 2026-04-24: Fresh post-`V1LIFE` audit found that the backend/runtime core is no longer the main risk; the remaining drift is on operator surfaces. `dashboard-home` still reconstructs runtime aggregate in the browser when the aggregate endpoint fails, while dashboard/manual-order and bot-monitoring quick-context surfaces still read some venue semantics from duplicated bot snapshot fields instead of inherited context. Published `docs/planning/v1-residual-operator-truth-closure-2026-04-24.md` and queued `V1SURF-05..08`.
 
 - [x] `V1LIFE-04 api(position-lifetime): enforce strategy-configured position lifetime via canonical close lifecycle`
   - 2026-04-24: Added canonical runtime stale-position enforcement in `runtimePositionLifetime.service.ts` and wired it into the runtime session watchdog so stale `OPEN` positions for active bots are closed through the existing runtime EXIT lifecycle instead of a second cleanup path. The close flow now resolves one runtime mark price from ticker truth with a recent-close fallback, and fails closed when no valid price can be proven. Focused validation PASS: `pnpm --filter api exec vitest run src/modules/engine/runtimePositionLifetime.service.test.ts src/modules/engine/runtimeSignalLoop.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.

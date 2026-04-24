@@ -309,6 +309,13 @@ Last updated: 2026-04-24
   backend endpoint. Focused closure validation for the lifetime/order-control
   wave is green across web tests, API tests, typecheck, and repository
   guardrails.
+- 2026-04-24: a fresh post-`V1LIFE-A` audit narrowed the remaining V1 risk to
+  residual operator-surface truth drift rather than backend execution logic.
+  The main concrete findings are: `dashboard-home` still reconstructs selected
+  bot aggregate state in the browser when aggregate API fetch fails, and a few
+  dashboard/bot-monitoring surfaces still read venue semantics from duplicated
+  bot snapshot fields instead of inherited symbol-group market-universe truth.
+  This follow-up is now tracked as `V1SURF-B`.
 - 2026-04-24: published `V1LIFE-A` after a focused lifecycle audit covering
   strategy builder, runtime/order services, and dashboard open orders UI.
   Confirmed that strategy already stores `maxOrders`, `orderLifetime`,
