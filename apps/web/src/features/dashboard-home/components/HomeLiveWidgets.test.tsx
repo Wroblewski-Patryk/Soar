@@ -1753,7 +1753,10 @@ describe("HomeLiveWidgets", () => {
       expect(selectorLabel).not.toBeNull();
       selector = within(selectorLabel as HTMLLabelElement).getByRole("combobox") as HTMLSelectElement;
       expect(selector.value).toBe("bot-scope-a");
-      expect(screen.getByTestId("signal-source-ADAUSDT")).toHaveTextContent(/Fallback konfiguracji/i);
+      expect(screen.getByTestId("signal-source-ADAUSDT")).toHaveTextContent(/Snapshot zamknietej swiecy/i);
+      expect(screen.getByTestId("signal-detail-ADAUSDT")).toHaveTextContent(
+        /To tylko snapshot z ostatniej zamknietej swiecy/i
+      );
       expect(screen.getByText("A_CTX_FAST")).toBeInTheDocument();
       expect(screen.getByTestId("signal-strategy-ADAUSDT")).toHaveTextContent(/Scope A Strategy/i);
       expect(screen.queryAllByText("SOLUSDT")).toHaveLength(0);

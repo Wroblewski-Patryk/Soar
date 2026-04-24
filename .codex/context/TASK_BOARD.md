@@ -37,6 +37,12 @@ Last updated: 2026-04-24
 
 ## DONE
 
+- [x] `V1SIGSEM-A planning: publish signal-surface semantic hardening slice`
+  - 2026-04-24: After `V1IND-A` closed the canonical indicator and signal-analysis drift, a smaller operator-surface issue remained: `CONFIGURED_ONLY` rows still read too much like runtime decisions even though architecture defines them as market snapshots from the latest closed candle. Published `docs/planning/v1-signal-surface-semantic-hardening-2026-04-24.md` to lock the slice as presentation-only semantic hardening.
+
+- [x] `V1SIGSEM-01 web(copy+semantics): make configured-only signal rows explicit market snapshots`
+  - 2026-04-24: Dashboard-home and bot-monitoring copy now describe `CONFIGURED_ONLY` / `configured_fallback` rows as closed-candle market snapshots instead of pseudo-signals or runtime decisions. The selected-bot signal rail also reduces visual emphasis for snapshot-only rows while keeping the same conditions visible for operator comparison. Validation PASS: `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/i18n/translations.test.ts`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
+
 - [x] `V1POSTBOT-A planning: publish post-V1BOT full API contract recovery wave`
   - 2026-04-24: After `V1IND-A` closure, full `pnpm --filter api run test -- --run` still had 7 red cases in `backtests/orders` suites. Audit grouped them into one post-`V1BOT` singular-context recovery wave rather than an indicator regression: older e2e fixtures still assumed partially configured LIVE bots, manual-order persistence expectations still depended on legacy linkage, and runtime session positions read/close flows still drifted for carryover open orders plus `EXCHANGE_SYNC BOT_MANAGED` LIVE ownership. Published `docs/planning/v1-post-v1bot-runtime-contract-recovery-2026-04-24.md` and queued `V1POSTBOT-01..05`.
 

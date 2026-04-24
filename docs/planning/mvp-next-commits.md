@@ -11,6 +11,8 @@ Operational queue for one-task execution runs.
 ## NEXT
 - [ ] (none)
 ## PIPELINE
+- [x] `V1SIGSEM-A planning queued (signal-surface semantic hardening so configured-only rows read as closed-candle market snapshots, not pseudo-signals)`
+- [x] `V1SIGSEM-01 web(copy+semantics): label configured-only runtime rows as market snapshots across dashboard-home and bot monitoring`
 - [x] `V1POSTBOT-A planning queued (post-V1BOT full API contract recovery for pre-trade, orders, and runtime-session positions)`
 - [x] `V1POSTBOT-01 audit(pretrade): classify failing pre-trade/backtest expectations against the approved singular bot contract`
 - [x] `V1POSTBOT-02 fix(api-backtests-pretrade): align backtests/pre-trade behavior and fixtures to the singular bot contract`

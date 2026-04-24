@@ -241,12 +241,12 @@ export const dashboardBotsEn = {
     "marketStatePositionOpen": "Position open",
     "marketStateSignalActive": "Signal active",
     "marketStateEvaluatedNoTrade": "Evaluated / no trade",
-    "marketStateConfiguredOnly": "Configured only",
+    "marketStateConfiguredOnly": "Market snapshot",
     "marketStateUnresolved": "Unresolved",
     "contextSourceLabel": "Context source",
     "contextSourceLatestSignal": "Latest signal",
     "contextSourceLatestDecision": "Latest decision",
-    "contextSourceConfiguredFallback": "Configured fallback",
+    "contextSourceConfiguredFallback": "Closed-candle snapshot",
     "contextSourceUnresolved": "Unresolved",
     "operatorCheckTitle": "Quick operator check",
     "heartbeatLagLabel": "Heartbeat lag",
@@ -261,7 +261,7 @@ export const dashboardBotsEn = {
       "historyPositionsDescription": "Verify what already happened: result, pace and execution quality.",
       "historyTradesTitle": "History - operational trade log",
       "futureSignalsTitle": "3. Future - live signal check",
-      "futureSignalsDescription": "Quick assessment which symbol has LONG/SHORT/EXIT signal or no signal."
+      "futureSignalsDescription": "Quick operator view of which symbols are market snapshots, evaluated runtime decisions, accepted signals, or open positions."
     },
     "notionalLabel": "Notional",
     "marginLabel": "Margin",

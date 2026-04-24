@@ -244,6 +244,12 @@ Last updated: 2026-04-24
   the canonical singular bot contract instead of keeping half-legacy bot
   setup. Full `pnpm --filter api run test -- --run` is green again with the
   required API-key encryption env.
+- 2026-04-24: signal-surface semantic hardening is now also closed as a small
+  post-`V1IND-A` follow-up. Dashboard-home and bot-monitoring surfaces now
+  label `CONFIGURED_ONLY` / `configured_fallback` rows as closed-candle market
+  snapshots instead of reading like accepted or evaluated runtime decisions,
+  while still showing the same canonical condition lines for operator
+  comparison.
 - 2026-04-22: prod restore-drill proof now passes from a real Coolify terminal
   execution in the production postgres container
   (`x11cfnz1dd9x0yzccftqzcoe`), and the final non-dry-run prod release gate now

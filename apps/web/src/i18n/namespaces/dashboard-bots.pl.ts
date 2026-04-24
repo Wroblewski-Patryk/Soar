@@ -241,12 +241,12 @@ export const dashboardBotsPl = {
     "marketStatePositionOpen": "Pozycja otwarta",
     "marketStateSignalActive": "Sygnal aktywny",
     "marketStateEvaluatedNoTrade": "Sprawdzone / bez wejscia",
-    "marketStateConfiguredOnly": "Tylko konfiguracja",
+    "marketStateConfiguredOnly": "Snapshot rynku",
     "marketStateUnresolved": "Nieustalone",
     "contextSourceLabel": "Zrodlo kontekstu",
     "contextSourceLatestSignal": "Ostatni sygnal",
     "contextSourceLatestDecision": "Ostatnia decyzja",
-    "contextSourceConfiguredFallback": "Configured fallback",
+    "contextSourceConfiguredFallback": "Snapshot zamknietej swiecy",
     "contextSourceUnresolved": "Nieustalone",
     "operatorCheckTitle": "Szybka kontrola operatora",
     "heartbeatLagLabel": "Heartbeat lag",
@@ -261,7 +261,7 @@ export const dashboardBotsPl = {
       "historyPositionsDescription": "Weryfikacja tego, co juz sie wydarzylo: wynik, tempo i jakosc wykonania.",
       "historyTradesTitle": "Historia - log operacyjny trade'ow",
       "futureSignalsTitle": "3. Co bedzie - live check sygnalow",
-      "futureSignalsDescription": "Szybka ocena, ktory symbol ma sygnal LONG/SHORT/EXIT lub brak sygnalu."
+      "futureSignalsDescription": "Szybki widok operatora: ktore symbole sa tylko snapshotem rynku, ktore maja decyzje runtime, zaakceptowany sygnal albo otwarta pozycje."
     },
     "notionalLabel": "Notional",
     "marginLabel": "Margin",

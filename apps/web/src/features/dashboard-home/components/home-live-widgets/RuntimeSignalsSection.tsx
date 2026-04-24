@@ -170,6 +170,9 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
             const longActive = signalDirection === "LONG";
             const shortActive = signalDirection === "SHORT";
             const isNeutral = !longActive && !shortActive;
+            const isConfiguredSnapshot =
+              signal.runtimeMarketState === "CONFIGURED_ONLY" ||
+              signal.lastSignalContextSource === "configured_fallback";
             const sourceLabel =
               signal.lastSignalContextSource === "latest_signal"
                 ? props.contextSourceValueLatestSignal
@@ -229,7 +232,13 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
                   <div className="mt-2.5 grid grid-cols-2 gap-2.5 text-[11px] leading-4">
                     <div
                       className={`space-y-1.5 rounded-box transition-opacity duration-150 ${
-                        longActive ? "opacity-100" : isNeutral ? "opacity-25 hover:opacity-100" : "opacity-50 hover:opacity-100"
+                        isConfiguredSnapshot
+                          ? "opacity-75"
+                          : longActive
+                            ? "opacity-100"
+                            : isNeutral
+                              ? "opacity-25 hover:opacity-100"
+                              : "opacity-50 hover:opacity-100"
                       }`}
                     >
                       <div className="mb-2 flex items-center gap-1">
@@ -257,7 +266,13 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
                     </div>
                     <div
                       className={`space-y-1.5 rounded-box transition-opacity duration-150 ${
-                        shortActive ? "opacity-100" : isNeutral ? "opacity-25 hover:opacity-100" : "opacity-50 hover:opacity-100"
+                        isConfiguredSnapshot
+                          ? "opacity-75"
+                          : shortActive
+                            ? "opacity-100"
+                            : isNeutral
+                              ? "opacity-25 hover:opacity-100"
+                              : "opacity-50 hover:opacity-100"
                       }`}
                     >
                       <div className="mb-2 flex items-center gap-1">
