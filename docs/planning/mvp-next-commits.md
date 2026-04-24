@@ -7,10 +7,14 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] (none)
+- [ ] `V1POSTBOT-01 audit(pretrade): classify failing pre-trade/backtest expectations against the approved singular bot contract`
 ## NEXT
-- [ ] (none)
+- [ ] `V1POSTBOT-02 fix(api-backtests-pretrade): align backtests/pre-trade behavior and fixtures to the singular bot contract`
+- [ ] `V1POSTBOT-03 fix(api-orders): keep singular manual-order persistence deterministic for bot, wallet, and strategy ownership`
+- [ ] `V1POSTBOT-04 fix(api-runtime-positions): recover runtime positions read/close parity for carryover open orders and exchange-synced LIVE ownership`
+- [ ] `V1POSTBOT-05 qa(closure): rerun focused failing suites plus full API pack and sync canonical docs/context`
 ## PIPELINE
+- [x] `V1POSTBOT-A planning queued (post-V1BOT full API contract recovery for pre-trade, orders, and runtime-session positions)`
 - [x] `V1IND-A planning queued (canonical indicator parity and truthful signal-surface recovery after V1BOT closure and production signal audit)`
 - [x] `V1IND-01 docs(decision): reconcile indicator parity architecture and freeze one canonical V1 registry scope`
 - [x] `V1IND-02 api(registry): replace standalone strategy-builder indicator metadata with canonical registry-backed metadata`

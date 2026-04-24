@@ -17,11 +17,14 @@ Last updated: 2026-04-24
 
 ## READY
 
-- [ ] (none)
+- [ ] `V1POSTBOT-01 audit(pretrade): classify failing pre-trade/backtest expectations against the approved singular bot contract`
 
 ## BACKLOG
 
-- [ ] (none)
+- [ ] `V1POSTBOT-02 fix(api-backtests-pretrade): align backtests/pre-trade behavior and fixtures to the singular bot contract`
+- [ ] `V1POSTBOT-03 fix(api-orders): keep singular manual-order persistence deterministic for bot, wallet, and strategy ownership`
+- [ ] `V1POSTBOT-04 fix(api-runtime-positions): recover runtime positions read/close parity for carryover open orders and exchange-synced LIVE ownership`
+- [ ] `V1POSTBOT-05 qa(closure): rerun focused failing suites plus full API pack and sync canonical docs/context`
 
 ## IN_PROGRESS
 
@@ -36,6 +39,9 @@ Last updated: 2026-04-24
 - [ ] (none)
 
 ## DONE
+
+- [x] `V1POSTBOT-A planning: publish post-V1BOT full API contract recovery wave`
+  - 2026-04-24: After `V1IND-A` closure, full `pnpm --filter api run test -- --run` still had 7 red cases in `backtests/orders` suites. Audit grouped them into one post-`V1BOT` singular-context recovery wave rather than an indicator regression: older e2e fixtures still assume partially configured LIVE bots, manual-order persistence still misses inherited singular ownership in one path, and runtime session positions read/close flows still drift for carryover open orders plus `EXCHANGE_SYNC BOT_MANAGED` LIVE ownership. Published `docs/planning/v1-post-v1bot-runtime-contract-recovery-2026-04-24.md` and queued `V1POSTBOT-01..05`.
 
 - [x] `V1IND-01..07 docs/api/web/test/qa: recover canonical indicator parity and truthful signal surfaces`
   - 2026-04-24: Closed the full `V1IND-A` wave. Architecture now freezes one canonical V1 indicator registry scope and one shared parity contract for builder, runtime, backtest, and operator surfaces. Strategy-builder metadata is served from the canonical registry, signal read-models no longer own a subset indicator formatter that emitted opaque `X` placeholders, configured market snapshots are analyzed through the same shared indicator kernel used by runtime/backtest, and signal-surface venue truth now derives from inherited `SymbolGroup -> MarketUniverse` context. Added parity coverage proving every builder-exposed indicator is executable through the canonical registry/evaluator path. Focused validation PASS: `pnpm --filter api exec vitest run src/modules/engine/strategyIndicatorRegistryParity.test.ts src/modules/strategies/indicators/indicators.service.test.ts src/modules/bots/runtimeSymbolStatsReadModel.service.test.ts src/modules/engine/runtimeFinalCandleDecision.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter web exec vitest run src/features/strategies/components/StrategyFormSections/Indicators.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx`, `pnpm --filter web exec vitest run src/i18n/translations.test.ts src/i18n/namespaceRegistry.test.ts`, `pnpm --filter web run test -- --run`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`, `pnpm run build`.

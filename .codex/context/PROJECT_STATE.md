@@ -41,7 +41,11 @@ Last updated: 2026-04-24
   parity packs are green for the indicator wave. One separate repository follow-up
   remains outside `V1IND-A`: full `api` e2e still has 7 red cases in older
   backtests/orders runtime-scope suites that reflect post-`V1BOT` contract/test
-  drift rather than indicator-parity regressions.
+  drift rather than indicator-parity regressions. The newest queued recovery
+  wave is `V1POSTBOT-A`, which isolates those remaining failures into one
+  singular-bot contract closure for pre-trade/backtests expectations,
+  deterministic manual-order persistence, and runtime-session positions
+  read/close parity.
 
 ## Product Decisions (Confirmed)
 - 2026-04-21: `docs/architecture/` is the canonical source of truth for how
@@ -227,6 +231,13 @@ Last updated: 2026-04-24
   indicator kernel as runtime/backtest decisions, and signal surfaces no longer
   emit the old subset-evaluator placeholder `X` when canonical market data
   exists.
+- 2026-04-24: published `V1POSTBOT-A` after re-running full API validation for
+  the post-`V1BOT` repository state. The remaining 7 red cases are clustered in
+  `backtests/orders` suites and look like one singular-bot contract recovery
+  wave rather than an indicator regression: older fixtures still create
+  partially configured LIVE bots, one manual-order path still loses inherited
+  `strategyId`, and runtime session positions still drift for carryover open
+  orders plus `EXCHANGE_SYNC BOT_MANAGED` LIVE ownership.
 - 2026-04-22: prod restore-drill proof now passes from a real Coolify terminal
   execution in the production postgres container
   (`x11cfnz1dd9x0yzccftqzcoe`), and the final non-dry-run prod release gate now
