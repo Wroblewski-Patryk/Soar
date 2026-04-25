@@ -136,8 +136,8 @@ implementation
 - [x] keep exchange module entrypoints dependent on family contracts instead of low-level connector bootstrap duplication
 
 ### XVENUE-05 refactor(api-markets-engine): remove direct exchange SDK access from `markets` and `engine`
-- migrate market catalog and runtime live-balance reads behind exchange families
-- preserve fail-closed behavior for unsupported contexts
+- [x] migrate market catalog and runtime live-balance reads behind exchange families
+- [x] preserve fail-closed behavior for unsupported contexts
 
 ### XVENUE-06 test(api): add explicit no-mixing parity coverage across exchange and market type pairs
 - prove `SPOT` does not reuse `FUTURES`
@@ -205,3 +205,11 @@ Context:
   exchange connector/bootstrap entrypoints now resolve public/account/execution
   wiring through that registry, and focused exchange tests plus API typecheck
   remain green. The queue now advances to `XVENUE-05`.
+- 2026-04-25: Closed `XVENUE-05` by moving market catalog ownership to
+  `apps/api/src/modules/exchange/exchangeMarketCatalog.service.ts` and routing
+  runtime live-balance reads through the canonical exchange balance boundary.
+  `markets.service.ts` and `runtimeCapitalContext.service.ts` no longer own
+  direct exchange SDK/bootstrap logic for those paths. Focused exchange/runtime
+  tests, API typecheck, and repository guardrails remained green; local
+  `markets.e2e` is still infra-blocked by unreachable `localhost:5432`. The
+  queue now advances to `XVENUE-06`.

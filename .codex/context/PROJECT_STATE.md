@@ -221,6 +221,13 @@ Last updated: 2026-04-25
   that registry instead of rebuilding it locally. This does not yet remove the
   direct Binance-shaped feature leaks in `markets` and `engine`; it prepares
   the safe seam for `XVENUE-05`.
+- 2026-04-25: closed `XVENUE-05` as the first feature-module leak-removal
+  slice. Market catalog bootstrap now lives in
+  `apps/api/src/modules/exchange/exchangeMarketCatalog.service.ts`, and runtime
+  live-balance reads in `runtimeCapitalContext.service.ts` now go through the
+  canonical exchange balance boundary instead of building a local Binance CCXT
+  client. The remaining next exchange-context hardening step is now explicit
+  no-mixing parity coverage in `XVENUE-06`.
 - 2026-04-25: closed `DEPLOY-2026-04-25-B` as the validation-only follow-up to
   the same-day Coolify hotfix. Local `pnpm --filter web run build` now passes
   cleanly again, confirming the previously reported web deploy gate is no

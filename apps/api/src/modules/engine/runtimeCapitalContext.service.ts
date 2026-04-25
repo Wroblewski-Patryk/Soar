@@ -1,8 +1,8 @@
 import { BotMode, Exchange, PositionManagementMode, PositionStatus, TradeMarket, WalletAllocationMode } from '@prisma/client';
 import { prisma } from '../../prisma/client';
-import { decrypt } from '../../utils/crypto';
 import { normalizeBaseCurrency } from '../../lib/symbols';
 import { resolveReferenceBalanceFromAllocation } from '../../lib/capitalAllocation';
+import { fetchSupportedExchangeBalanceRaw } from '../exchange/exchangeAdapterBoundary.service';
 
 const liveBalanceCacheTtlMs = Number.parseInt(process.env.RUNTIME_LIVE_BALANCE_CACHE_TTL_MS ?? '30000', 10);
 const liveBalanceCache = new Map<string, { value: number; fetchedAt: number }>();
@@ -46,6 +46,7 @@ type RuntimeCapitalContextDeps = {
     exchange: Exchange;
   }) => Promise<{ apiKey: string; apiSecret: string } | null>;
   fetchLiveBalance: (input: {
+    exchange: Exchange;
     apiKey: string;
     apiSecret: string;
     marketType: TradeMarket;
@@ -164,37 +165,22 @@ const defaultDeps: RuntimeCapitalContextDeps = {
       });
       if (!wallet?.apiKey || wallet.apiKey.exchange !== exchange) return null;
       return {
-        apiKey: decrypt(wallet.apiKey.apiKey),
-        apiSecret: decrypt(wallet.apiKey.apiSecret),
+        apiKey: wallet.apiKey.apiKey,
+        apiSecret: wallet.apiKey.apiSecret,
       };
     }
 
     return null;
   },
-  fetchLiveBalance: async ({ apiKey, apiSecret, marketType, baseCurrency }) => {
+  fetchLiveBalance: async ({ exchange, apiKey, apiSecret, marketType, baseCurrency }) => {
     try {
-      const ccxtModule = (await import('ccxt')) as unknown as {
-        binance: new (config: Record<string, unknown>) => {
-          fetchBalance: () => Promise<unknown>;
-          close?: () => Promise<void>;
-        };
-      };
-      const client = new ccxtModule.binance({
+      const balance = await fetchSupportedExchangeBalanceRaw({
+        exchange,
+        marketType,
         apiKey,
-        secret: apiSecret,
-        enableRateLimit: true,
-        options: {
-          defaultType: marketType === 'FUTURES' ? 'future' : 'spot',
-        },
+        apiSecret,
       });
-      try {
-        const balance = await client.fetchBalance();
-        return extractBalanceForCurrency(balance, baseCurrency);
-      } finally {
-        if (typeof client.close === 'function') {
-          await client.close().catch(() => undefined);
-        }
-      }
+      return extractBalanceForCurrency(balance, baseCurrency);
     } catch {
       return null;
     }
@@ -330,6 +316,7 @@ const resolveLiveRuntimeCapitalSnapshot = async (
   let accountBalance = 0;
   if (apiKey) {
     const fetched = await deps.fetchLiveBalance({
+      exchange: input.exchange,
       apiKey: apiKey.apiKey,
       apiSecret: apiKey.apiSecret,
       marketType: input.marketType,

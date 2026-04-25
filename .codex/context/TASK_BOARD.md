@@ -17,8 +17,8 @@ Last updated: 2026-04-25
 
 ## READY
 
-- [ ] `XVENUE-05 refactor(api-markets-engine): remove direct exchange SDK access from feature modules`
-  - 2026-04-25: `XVENUE-04` introduced one canonical exact-context registry entrypoint for adapter families and routed existing exchange bootstrap seams through it. The next slice is removing direct exchange SDK access from `markets` and `engine`, where the leak audit found the highest-value remaining drift.
+- [ ] `XVENUE-06 test(api): add no-mixing parity coverage`
+  - 2026-04-25: `XVENUE-05` removed the highest-value feature leaks for market catalog and runtime live-balance ownership. The next slice is to lock explicit no-mixing coverage across exchange and market-type pairs so the new boundaries do not quietly regress back into spot/futures or cross-exchange reuse.
 
 ## BACKLOG
 
@@ -98,6 +98,9 @@ Last updated: 2026-04-25
 
 - [x] `XVENUE-04 refactor(api-exchange): registry-driven adapter-family entrypoints`
   - 2026-04-25: Added `exchangeAdapterRegistry.service.ts` as the canonical family registry keyed by exact `(exchange, marketType)` context, with fail-closed rejection for unsupported venue pairs such as `KRAKEN + FUTURES`. `exchangeConnectorFactory.service.ts`, `exchangePublicRead.service.ts`, `exchangeAuthenticatedRead.service.ts`, and the default execution path in `exchangeAdapterBoundary.service.ts` now reuse that registry instead of rebuilding connector bootstrap locally. Validation PASS: focused exchange-module tests, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
+
+- [x] `XVENUE-05 refactor(api-markets-engine): remove direct exchange SDK access from feature modules`
+  - 2026-04-25: Added `exchangeMarketCatalog.service.ts` so public market catalog ownership now lives under `modules/exchange`, and routed `runtimeCapitalContext.service.ts` live balance reads through `fetchSupportedExchangeBalanceRaw` instead of direct `ccxt/binance` construction. Validation PASS: `pnpm --filter api run test -- --run src/modules/exchange/exchangeMarketCatalog.service.test.ts src/modules/engine/runtimeCapitalContext.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`. Note: local `markets.e2e.test.ts` remains infra-blocked by unreachable `localhost:5432`.
 
 - [x] `V1COH-01 test(api-red): lock manual LIVE order against out-of-scope symbol and unresolved strategy context`
   - 2026-04-25: Added focused service and API e2e regressions proving manual `LIVE` open is rejected when the selected bot has no canonical symbol-matching strategy scope, and that accepted `LIVE` fixtures must provide the full inherited bot context.
