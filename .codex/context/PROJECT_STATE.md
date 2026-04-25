@@ -241,6 +241,11 @@ Last updated: 2026-04-25
   support from deployed degraded inline or partial-split topology, and passive
   runtime-freshness skips are now limited to that explicit local/test inline
   mode. The remaining active wave slice is now `XVENUE-08`.
+- 2026-04-25: closed `XVENUE-08` and with it the full `XVENUE-A` wave. A
+  focused closure rerun confirmed that exact-context exchange seams,
+  worker-topology truth, API typecheck, and repository guardrails all remain
+  green together after the final worker-alignment slice, so there is no longer
+  an active `XVENUE` item in the canonical queue.
 - 2026-04-25: closed `DEPLOY-2026-04-25-B` as the validation-only follow-up to
   the same-day Coolify hotfix. Local `pnpm --filter web run build` now passes
   cleanly again, confirming the previously reported web deploy gate is no

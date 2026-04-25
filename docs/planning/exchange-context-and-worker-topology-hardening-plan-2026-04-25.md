@@ -1,6 +1,6 @@
 # Exchange Context and Worker Topology Hardening Plan
 
-Status: Active  
+Status: Closed  
 Updated: 2026-04-25
 
 ## Purpose
@@ -150,9 +150,9 @@ implementation
 - [x] keep local/test inline support explicit
 
 ### XVENUE-08 qa(closure): rerun focused exchange-context and worker-topology closure pack
-- rerun focused API tests
-- rerun typecheck and guardrails
-- sync queue/context/docs
+- [x] rerun focused API tests
+- [x] rerun typecheck and guardrails
+- [x] sync queue/context/docs
 
 ## Validation Expectations
 
@@ -227,3 +227,8 @@ Context:
   canonical split-worker contract. `runtimeFreshness.ts` now skips passive
   inline checks only for explicit local/test inline. The queue now advances to
   `XVENUE-08`.
+- 2026-04-25: Closed `XVENUE-08` by rerunning the focused `XVENUE-A` closure
+  pack across exchange exact-context seams, worker-topology truth, API
+  typecheck, and repository guardrails. The full wave is now closed in one
+  canonical evidence pass, and queue/context artifacts no longer keep
+  `XVENUE-A` as an active `NOW` item.

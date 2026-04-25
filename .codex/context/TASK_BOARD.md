@@ -17,8 +17,7 @@ Last updated: 2026-04-25
 
 ## READY
 
-- [ ] `XVENUE-08 qa(closure): rerun focused closure pack and sync docs/context`
-  - 2026-04-25: `XVENUE-07` aligned `/workers/*` and passive runtime freshness to the canonical worker-topology contract. The next slice is the focused closure pack plus queue/context sync for the full `XVENUE-A` wave.
+- [ ] (none)
 
 ## BACKLOG
 
@@ -107,6 +106,9 @@ Last updated: 2026-04-25
 
 - [x] `XVENUE-07 refactor(api-ops): align worker topology truth`
   - 2026-04-25: Expanded the canonical worker-topology contract to model `market-data`, `market-stream`, `backtest`, and `execution`, rewired `/workers/health` and `/workers/ready` to expose explicit topology truth, and limited passive runtime-freshness skips to explicit local/test inline mode. Deployed `inline` or partial-split topology now surfaces as degraded/not-ready instead of silently healthy. Validation PASS: `pnpm --filter api run test -- --run src/workers/workerOwnership.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
+
+- [x] `XVENUE-08 qa(closure): rerun focused closure pack and sync docs/context`
+  - 2026-04-25: Reran the focused `XVENUE-A` closure pack across exchange exact-context seams, worker-topology truth, API typecheck, and repository guardrails, then synced queue/context artifacts so the wave no longer remains active. Validation PASS: `pnpm --filter api run test -- --run src/modules/exchange/exchangeAdapterRegistry.service.test.ts src/modules/exchange/exchangeConnectorFactory.service.test.ts src/modules/exchange/exchangePublicRead.service.test.ts src/modules/exchange/exchangeAuthenticatedRead.service.test.ts src/modules/exchange/exchangeAdapterBoundary.service.test.ts src/modules/exchange/exchangeMarketCatalog.service.test.ts src/modules/exchange/exchangeExecutionCapabilityContract.service.test.ts src/modules/engine/runtimeCapitalContext.service.test.ts src/workers/workerOwnership.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 
 - [x] `V1COH-01 test(api-red): lock manual LIVE order against out-of-scope symbol and unresolved strategy context`
   - 2026-04-25: Added focused service and API e2e regressions proving manual `LIVE` open is rejected when the selected bot has no canonical symbol-matching strategy scope, and that accepted `LIVE` fixtures must provide the full inherited bot context.
