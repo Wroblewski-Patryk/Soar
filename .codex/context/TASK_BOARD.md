@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-04-25
+Last updated: 2026-04-26
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -20,6 +20,9 @@ Last updated: 2026-04-25
 - [ ] (none)
 
 ## BACKLOG
+
+- [x] `V1FIX-2026-04-26-A api(manual-order-lifecycle): reuse existing same-symbol open position on manual fill and fail closed on reverse-side conflict`
+  - 2026-04-26: Closed after reproducing the production `P2002` crash path directly in `soar-api` for manual `PAPER MARKET` open on a user who already had an open same-symbol position. `applyOrderFillLifecycle()` now updates and links the existing open position for same-direction fills, `openOrder()` fails closed with an explicit `409` for reverse-direction open attempts, and focused service + route regressions lock both cases. Validation PASS: `pnpm --filter api exec vitest run src/modules/orders/orders.service.test.ts src/modules/orders/orders.manual-paper-market.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 
 - [x] `V1UX-01 web(manual-order-autofill): refresh Price from market reference on first symbol hydrate and symbol change`
   - 2026-04-25: Closed together with `V1UX-02/03` under one selected-bot dashboard manual-order UX polish slice. `Price` now auto-fills from the canonical `Use market` reference on first symbol hydrate, symbol changes reset the field back onto the current symbol reference, and ordinary same-symbol manual edits are no longer overwritten. Focused validation PASS: `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.manual-order.test.tsx src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`, `pnpm --filter web run build`.

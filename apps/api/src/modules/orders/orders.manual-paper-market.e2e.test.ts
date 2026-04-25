@@ -70,4 +70,44 @@ describe('Orders manual PAPER market truth', () => {
     expect(persistedOrders).toHaveLength(0);
     expect(persistedPositions).toHaveLength(0);
   });
+
+  it('returns 409 when reverse-side manual open is requested for an already open symbol', async () => {
+    const ownerAgent = await registerAndLogin('manual-paper-market-side-conflict@example.com');
+    const ownerId =
+      (await prisma.user.findUniqueOrThrow({
+        where: { email: 'manual-paper-market-side-conflict@example.com' },
+        select: { id: true },
+      })).id;
+
+    await prisma.position.create({
+      data: {
+        userId: ownerId,
+        symbol: 'DOGEUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 0.1,
+        quantity: 1000,
+      },
+    });
+
+    const openRes = await ownerAgent.post('/dashboard/orders/open').send({
+      symbol: 'DOGEUSDT',
+      side: 'SELL',
+      type: 'MARKET',
+      quantity: 100,
+      price: 0.09,
+      mode: 'PAPER',
+      riskAck: false,
+    });
+
+    expect(openRes.status).toBe(409);
+    expect(openRes.body.error.message).toBe(
+      'Open position already exists on this symbol with opposite side. Close it before opening the reverse direction.'
+    );
+
+    const persistedOrders = await prisma.order.findMany({
+      where: { userId: ownerId },
+    });
+    expect(persistedOrders).toHaveLength(0);
+  });
 });

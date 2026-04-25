@@ -1,6 +1,6 @@
 # PROJECT_STATE
 
-Last updated: 2026-04-25
+Last updated: 2026-04-26
 
 ## Product Snapshot
 - Name: CryptoSparrow / Soar
@@ -50,9 +50,16 @@ Last updated: 2026-04-25
   The next active user-approved scope is a small dashboard manual-order UX
   polish slice: symbol-driven price autofill, quote-budget entry under the qty
   slider, and removal of non-essential helper noise from the sidebar while
-  preserving the current selected-bot execution context.
+  preserving the current selected-bot execution context. The newest post-V1
+  production hotfix slice (`V1FIX-2026-04-26-A`) additionally recovers manual
+  order open lifecycle truth when a same-symbol open position already exists:
+  manual same-direction fills now update and link the existing open position
+  instead of crashing on the historical partial unique open-position index,
+  while reverse-direction opens fail closed with an explicit domain error
+  instead of a raw `500`.
 
 ## Product Decisions (Confirmed)
+- 2026-04-26: closed `V1FIX-2026-04-26-A` after reproducing the production manual-order `500` directly in `soar-api`. The root cause was a real lifecycle gap, not a web issue: `applyOrderFillLifecycle()` still tried to create a second `OPEN` position for the same user and symbol even though the canonical lifecycle contract and production DB index still enforce one open position per symbol. Same-direction manual fills now reuse/update the existing position with weighted entry repricing, and reverse-direction opens fail closed with explicit `OPEN_POSITION_SIDE_CONFLICT` API semantics. Validation PASS: `pnpm --filter api exec vitest run src/modules/orders/orders.service.test.ts src/modules/orders/orders.manual-paper-market.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 - 2026-04-25: closed `V1COH-07` as the final manual-LIVE action-state semantics cleanup on dashboard-home. The runtime sidebar no longer mislabels a valid pre-submit manual `LIVE` context as `blocked`; it now exposes one explicit `ready` state, while `blocked` remains reserved for missing selected bot, unavailable exchange capability, unresolved symbol, or empty symbol scope. Validation PASS: `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.manual-order.test.tsx`.
 - 2026-04-25: closed `V1UX-01`, `V1UX-02`, and `V1UX-03` together as the selected-bot manual-order UX polish slice after fresh production feedback. The dashboard sidebar now auto-fills `Price` from the canonical market reference on first symbol hydrate, re-applies that reference when symbol context changes, adds a quote-budget input under the qty slider with wallet free-funds fail-closed behavior, and removes the summary/lifecycle/action-state helper noise so only `order type`, `margin mode`, and `leverage` remain in the static context block. Validation PASS: `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.manual-order.test.tsx src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`, `pnpm --filter web run build`.
 - 2026-04-25: closed `V1DEPLOY-2026-04-25-B` as the final deployed-commit proof hardening slice for `soar-web`. `GET /api/build-info` now falls back to runtime env commit/branch hints when file metadata is absent, `scripts/writeWebBuildMetadata.mjs` still prefers `SOURCE_COMMIT` / `SOURCE_BRANCH` during build, and the Coolify web-service runbook now freezes the required production wiring: declare `SOURCE_COMMIT=$SOURCE_COMMIT`, declare `SOURCE_BRANCH=$COOLIFY_BRANCH`, and enable `Include Source Commit in Build` for the web app. Validation PASS: `pnpm --filter web run build`, `docker build -f apps/web/Dockerfile -t soar-web-gitsha-fix .`.

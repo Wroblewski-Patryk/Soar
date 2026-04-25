@@ -305,6 +305,160 @@ describe('openOrder live execution contract', () => {
     }
   });
 
+  it('reuses and reprices existing same-symbol open position for manual PAPER MARKET add', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-paper-manual-add-existing-position@example.com', password: 'hashed' },
+    });
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'Paper add wallet',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const strategy = await prisma.strategy.create({
+      data: {
+        userId: user.id,
+        name: 'Paper add strategy',
+        interval: '5m',
+        leverage: 5,
+        walletRisk: 1,
+        config: {
+          additional: {
+            marginMode: 'ISOLATED',
+            orderType: 'MARKET',
+          },
+        },
+      },
+    });
+    const universe = await prisma.marketUniverse.create({
+      data: {
+        userId: user.id,
+        name: 'Paper add universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: ['DOGEUSDT'],
+        blacklist: [],
+      },
+    });
+    const symbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: user.id,
+        marketUniverseId: universe.id,
+        name: 'Paper add symbols',
+        symbols: ['DOGEUSDT'],
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'Paper add bot',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        walletId: wallet.id,
+        strategyId: strategy.id,
+        symbolGroupId: symbolGroup.id,
+      },
+    });
+    const existingPosition = await prisma.position.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        walletId: wallet.id,
+        strategyId: strategy.id,
+        symbol: 'DOGEUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 100,
+        quantity: 2,
+        leverage: 5,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+      },
+    });
+
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+
+    try {
+      const order = await openOrder(user.id, {
+        botId: bot.id,
+        symbol: 'DOGEUSDT',
+        side: 'BUY',
+        type: 'MARKET',
+        quantity: 1,
+        price: 130,
+        mode: 'PAPER',
+        riskAck: false,
+      });
+
+      expect(order.status).toBe('FILLED');
+      expect(order.positionId).toBe(existingPosition.id);
+
+      const updatedPosition = await prisma.position.findUniqueOrThrow({
+        where: { id: existingPosition.id },
+      });
+      expect(updatedPosition.quantity).toBeCloseTo(3, 10);
+      expect(updatedPosition.entryPrice).toBeCloseTo(110, 10);
+
+      const openPositions = await prisma.position.findMany({
+        where: {
+          userId: user.id,
+          symbol: 'DOGEUSDT',
+          status: 'OPEN',
+        },
+      });
+      expect(openPositions).toHaveLength(1);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it('fails closed when manual open tries to reverse an already open symbol direction', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-paper-manual-reverse-conflict@example.com', password: 'hashed' },
+    });
+    await prisma.position.create({
+      data: {
+        userId: user.id,
+        symbol: 'DOGEUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 100,
+        quantity: 2,
+      },
+    });
+
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+
+    try {
+      await expect(
+        openOrder(user.id, {
+          symbol: 'DOGEUSDT',
+          side: 'SELL',
+          type: 'MARKET',
+          quantity: 1,
+          price: 90,
+          mode: 'PAPER',
+          riskAck: false,
+        })
+      ).rejects.toMatchObject({
+        code: ORDER_ERROR_CODES.openPositionSideConflict,
+      });
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
   it('derives mode, wallet and strategy from canonical bot context when botId is provided', async () => {
     const user = await prisma.user.create({
       data: { email: 'orders-canonical-context@example.com', password: 'hashed' },

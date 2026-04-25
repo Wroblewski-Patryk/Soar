@@ -17,6 +17,14 @@ const handleOrderError = (res: Response, error: unknown) => {
   if (mapped.code === ORDER_ERROR_CODES.botContextNotFound) {
     return sendError(res, 404, 'Bot context not found', mapped.details);
   }
+  if (mapped.code === ORDER_ERROR_CODES.openPositionSideConflict) {
+    return sendError(
+      res,
+      409,
+      'Open position already exists on this symbol with opposite side. Close it before opening the reverse direction.',
+      mapped.details
+    );
+  }
   if (mapped.code === ORDER_ERROR_CODES.paperMarketPriceUnavailable) {
     return sendError(res, 400, 'PAPER MARKET order requires canonical fill price truth', mapped.details);
   }

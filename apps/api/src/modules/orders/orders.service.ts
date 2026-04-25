@@ -21,7 +21,6 @@ import {
   resolveLiveExecutionApiKey,
   submitLiveOrderThroughBoundary,
 } from '../exchange/exchangeAdapterBoundary.service';
-
 export { resolveLiveExecutionApiKey } from '../exchange/exchangeAdapterBoundary.service';
 
 type OpenOrderInput = OpenOrderDto & {
@@ -338,6 +337,36 @@ const resolvePaperImmediateFillPrice = async (params: {
     : null;
 };
 
+const resolveRequestedPositionSide = (side: OpenOrderInput['side']): PositionSide =>
+  side === 'BUY' ? 'LONG' : 'SHORT';
+
+const assertNoImplicitReverseOpenConflict = async (params: {
+  userId: string;
+  payload: OpenOrderInput;
+}) => {
+  if (params.payload.positionId) return;
+
+  const existingOpenPosition = await prisma.position.findFirst({
+    where: {
+      userId: params.userId,
+      symbol: params.payload.symbol.toUpperCase(),
+      status: 'OPEN',
+    },
+    select: {
+      id: true,
+      side: true,
+    },
+    orderBy: {
+      openedAt: 'desc',
+    },
+  });
+
+  if (!existingOpenPosition) return;
+  if (existingOpenPosition.side === resolveRequestedPositionSide(params.payload.side)) return;
+
+  throw orderErrors.openPositionSideConflict();
+};
+
 const writeOrderAudit = async (params: {
   userId: string;
   orderId: string;
@@ -370,6 +399,10 @@ export const openOrder = async (
   deps: OpenOrderDeps = defaultOpenOrderDeps
 ) => {
   const { payload: canonicalPayload, botContext } = await resolveCanonicalBotContext(userId, payload);
+  await assertNoImplicitReverseOpenConflict({
+    userId,
+    payload: canonicalPayload,
+  });
   const liveBot = ensureLiveOrderAllowed(canonicalPayload, botContext);
 
   const now = new Date();

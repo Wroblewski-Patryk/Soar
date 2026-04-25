@@ -22,6 +22,22 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-26 - Respect partial unique open-position indexes even when Prisma schema no longer shows them inline
+- Context: production manual-order investigation after V1 manual-order UX and deploy hardening looked green.
+- Symptom: `POST /dashboard/orders/open` returned a generic `Internal server error` for a paper-bot manual MARKET open, even though context resolution and fill-price truth were valid.
+- Root cause: the production database still enforces the historical partial unique index `Position_userId_symbol_open_key` (`OPEN` one-per-symbol), but the lifecycle path still attempted unconditional `position.create()` on fill when `order.positionId` was empty. The current `schema.prisma` model block no longer makes that partial unique constraint obvious at a glance, so code drift slipped through.
+- Guardrail: whenever order/position lifecycle code touches open-position creation, check SQL migration history for partial indexes and make the lifecycle honor the real DB contract, not only the current Prisma model block.
+- Preferred pattern:
+```text
+1) Confirm whether the symbol already has an OPEN position before creating a new one.
+2) If same-direction, update the existing position through canonical add/DCA semantics.
+3) If opposite-direction, fail closed with an explicit domain error instead of letting Prisma throw a raw constraint error.
+4) Lock both paths with focused regression coverage.
+```
+- Avoid: assuming `schema.prisma` is sufficient evidence that no partial unique DB constraint exists, or relying on raw Prisma `P2002` to communicate lifecycle conflicts.
+- Evidence:
+  - 2026-04-26 `V1FIX-2026-04-26-A`: production reproduction in `soar-api` container showed `PrismaClientKnownRequestError P2002` for `(userId,symbol)` during `applyOrderFillLifecycle`; fix added same-side position reuse/update plus explicit reverse-side conflict handling.
+
 ### 2026-04-25 - Do not run DB-backed vitest packs in parallel against the same local database
 - Context: while closing `V1TAKE-08`, multiple DB-backed API test commands were launched at the same time against the same local Postgres instance.
 - Symptom: otherwise green takeover/runtime/manual-order tests failed with contradictory results, including missing runtime open orders and bot-create assertions that passed when rerun alone.

@@ -13,6 +13,7 @@ import {
   runtimeExecutionDedupeService,
 } from './runtimeExecutionDedupe.service';
 import { resolveInheritedRuntimeExecutionContext } from './runtimeBotExecutionContext';
+import { computePositionAddUpdate } from '../orders/positionFillMath';
 
 type RuntimeManagedPosition = Pick<
   Position,
@@ -227,30 +228,6 @@ const resolveExecutedOrderQuantity = (input: { filledQuantity?: number | null; q
   return Math.max(0, fallback);
 };
 
-export const computeDcaPositionUpdate = (input: {
-  currentQuantity: number;
-  currentEntryPrice: number;
-  addedQuantity: number;
-  fillPrice: number;
-}) => {
-  const currentQuantity = Math.max(0, input.currentQuantity);
-  const addedQuantity = Math.max(0, input.addedQuantity);
-  const nextQuantity = currentQuantity + addedQuantity;
-  if (!isPositiveFiniteNumber(input.fillPrice) || nextQuantity <= 0) {
-    return {
-      nextQuantity: currentQuantity,
-      nextEntryPrice: input.currentEntryPrice,
-    };
-  }
-
-  const currentNotional = Math.max(0, input.currentEntryPrice) * currentQuantity;
-  const addedNotional = input.fillPrice * addedQuantity;
-  return {
-    nextQuantity,
-    nextEntryPrice: (currentNotional + addedNotional) / nextQuantity,
-  };
-};
-
 const loadCanonicalPositionExecutionState = async (positionId: string) => {
   const position = await prisma.position.findUnique({
     where: { id: positionId },
@@ -347,7 +324,7 @@ export const executeRuntimeDca = async (input: {
 
     const executedQuantity = resolveExecutedOrderQuantity(opened, dcaQuantity);
     const executedPrice = resolveExecutedOrderPrice(opened, input.markPrice);
-    const { nextQuantity, nextEntryPrice } = computeDcaPositionUpdate({
+    const { nextQuantity, nextEntryPrice } = computePositionAddUpdate({
       currentQuantity: input.currentQuantity,
       currentEntryPrice: input.currentEntryPrice,
       addedQuantity: executedQuantity,

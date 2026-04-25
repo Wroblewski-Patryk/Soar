@@ -1,6 +1,8 @@
 import { OrderStatus, PositionSide } from '@prisma/client';
 
 import { prisma } from '../../prisma/client';
+import { orderErrors } from './orders.errors';
+import { computePositionAddUpdate } from './positionFillMath';
 
 type ApplyOrderFillLifecycleInput = {
   userId: string;
@@ -91,6 +93,57 @@ export const applyOrderFillLifecycle = async (params: ApplyOrderFillLifecycleInp
       return {
         order: updatedOrder,
         positionId: updatedOrder.positionId,
+      };
+    }
+
+    const targetPositionSide = resolvePositionSideFromOrderSide(updatedOrder.side);
+    const existingOpenPosition = await tx.position.findFirst({
+      where: {
+        userId: updatedOrder.userId,
+        symbol: updatedOrder.symbol,
+        status: 'OPEN',
+      },
+      orderBy: {
+        openedAt: 'desc',
+      },
+      select: {
+        id: true,
+        side: true,
+        entryPrice: true,
+        quantity: true,
+      },
+    });
+
+    if (existingOpenPosition) {
+      if (existingOpenPosition.side !== targetPositionSide) {
+        throw orderErrors.openPositionSideConflict();
+      }
+
+      const { nextQuantity, nextEntryPrice } = computePositionAddUpdate({
+        currentQuantity: existingOpenPosition.quantity,
+        currentEntryPrice: existingOpenPosition.entryPrice,
+        addedQuantity: targetQuantity,
+        fillPrice,
+      });
+
+      await tx.position.update({
+        where: { id: existingOpenPosition.id },
+        data: {
+          quantity: nextQuantity,
+          entryPrice: nextEntryPrice,
+        },
+      });
+
+      const orderWithExistingPosition = await tx.order.update({
+        where: { id: updatedOrder.id },
+        data: {
+          positionId: existingOpenPosition.id,
+        },
+      });
+
+      return {
+        order: orderWithExistingPosition,
+        positionId: existingOpenPosition.id,
       };
     }
 

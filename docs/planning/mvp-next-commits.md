@@ -7,7 +7,7 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] (none)
+- [x] `V1FIX-2026-04-26-A api(manual-order-lifecycle): reuse existing same-symbol open position on manual fill and fail closed on reverse-side conflict`
 ## NEXT
 - [x] `V1UX-01 web(manual-order-autofill): refresh Price from market reference on first symbol hydrate and symbol change`
 - [x] `V1UX-02 web(manual-order-budget): add quote-budget input under Qty slider with wallet free-funds cap`
