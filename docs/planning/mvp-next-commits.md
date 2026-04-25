@@ -7,9 +7,9 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `V1REG-04 planning(sync): classify failures and queue missing or regressed functions`
-## NEXT
 - [ ] `V1REG-05 qa(regression): rerun touched function packs and refresh checklist status`
+## NEXT
+- [ ] derive the next smallest executable slice only if `V1REG-05` reveals a real product regression
 ## PIPELINE
 - [ ] `V1REG-05 qa(regression): rerun touched function packs and refresh checklist status`
 - [x] `XADAPT-02 audit(api-exchange): classify Binance-specific assumptions across orders, exchange, and reconciliation paths`

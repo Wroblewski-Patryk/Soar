@@ -153,7 +153,7 @@ Primary reusable artifact:
   - capture enough notes for repeatability one week later
 
 ### Slice 4 - Queue sync from findings
-- [ ] `V1REG-04 planning(sync): classify failures and queue missing or regressed functions`
+- [x] `V1REG-04 planning(sync): classify failures and queue missing or regressed functions`
   - reuse existing queued waves when scope already matches
   - add new `V1REG-Fxx` tasks only for uncovered gaps
   - update queue/context after triage

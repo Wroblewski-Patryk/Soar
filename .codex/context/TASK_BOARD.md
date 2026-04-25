@@ -17,8 +17,8 @@ Last updated: 2026-04-25
 
 ## READY
 
-- [ ] `V1REG-04 planning(sync): classify failures and queue missing or regressed functions`
-  - 2026-04-25: `V1REG-03` completed the browser/manual sweep. No new product-visible regression was isolated; the next slice is classification of the remaining infra-blocked functions and an explicit decision on whether any new follow-up tasks are actually needed.
+- [ ] `V1REG-05 qa(regression): rerun touched function packs and refresh checklist status`
+  - 2026-04-25: `V1REG-04` completed triage for the reusable architecture checklist. No new `V1REG-Fxx` bugfix task was justified from the current evidence set, so the next slice is a rerun/refresh pass once local infra prerequisites are available.
 
 ## BACKLOG
 
@@ -80,6 +80,9 @@ Last updated: 2026-04-25
 
 - [x] `V1REG-03 qa(browser): execute architecture-v1 browser checklist and capture findings`
   - 2026-04-25: Completed the local browser/manual sweep against the reachable web target. `/auth/login` and `/auth/register` rendered correctly, unauthenticated `/dashboard` redirected back to `/auth/login`, and invalid sign-in stayed explicit with `Sign-in failed: Network Error` instead of false success. No new product-visible regression was isolated; the remaining manual function checks are infra-blocked locally because the API dev target fails closed on missing `API_KEY_ENCRYPTION_KEYS` and local Docker/Postgres were unavailable.
+
+- [x] `V1REG-04 planning(sync): classify failures and queue missing or regressed functions`
+  - 2026-04-25: Classified every remaining non-green checklist verdict against the current queue and local environment blockers. No new `V1REG-Fxx` product task was justified: `F09`, `F10`, and `F12` stay owned by already-closed waves, while the broader remaining gaps are infra-only blockers tied to local Docker/Postgres availability and local API secret-readiness prerequisites.
 
 - [x] `V1COH-01 test(api-red): lock manual LIVE order against out-of-scope symbol and unresolved strategy context`
   - 2026-04-25: Added focused service and API e2e regressions proving manual `LIVE` open is rejected when the selected bot has no canonical symbol-matching strategy scope, and that accepted `LIVE` fixtures must provide the full inherited bot context.

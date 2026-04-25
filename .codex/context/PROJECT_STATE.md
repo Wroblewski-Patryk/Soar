@@ -174,6 +174,13 @@ Last updated: 2026-04-25
   authenticated browser pass remains infra-blocked locally because the API dev
   target fails closed on missing `API_KEY_ENCRYPTION_KEYS` and local
   Docker/Postgres were unavailable in this run.
+- 2026-04-25: closed `V1REG-04` as the triage/classification slice for the
+  reusable V1 verification loop. The current evidence set does not justify any
+  new `V1REG-Fxx` product bugfix task: `F09`, `F10`, and `F12` remain covered
+  by already-closed cohesion/adapter/surface waves with no new post-closure
+  regression isolated, while the remaining non-green function verdicts are
+  attributable to documented local infra blockers (`Docker Desktop` /
+  `localhost:5432`) and local API critical-secret startup prerequisites.
 - 2026-04-25: closed `DEPLOY-2026-04-25-B` as the validation-only follow-up to
   the same-day Coolify hotfix. Local `pnpm --filter web run build` now passes
   cleanly again, confirming the previously reported web deploy gate is no

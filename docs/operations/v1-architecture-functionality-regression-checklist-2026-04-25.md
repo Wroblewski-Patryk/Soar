@@ -120,6 +120,53 @@ The checklist maps architecture-defined V1 functions to:
   - Authenticated browser flows for `F02..F15` and health/readiness checks for
     `F16` remain `INFRA_BLOCKED` in this local run rather than product-failed.
 
+### 2026-04-25 - Regression Run
+- Scope:
+  - `V1REG-04` triage/classification of automated and browser findings
+- Automated packs run:
+  - none; reused `V1REG-02` evidence
+- Manual flows checked:
+  - none; reused `V1REG-03` evidence
+- Functions passed:
+  - no new product regression required follow-up work
+- Functions failed:
+  - none newly isolated as product failures
+- Queued follow-up tasks:
+  - `V1REG-05`
+- Notes:
+  - No new `V1REG-Fxx` task was created.
+  - `F09` manual LIVE order truth remains owned by the already-closed
+    `V1COH-A` wave; this sweep did not isolate a new post-closure regression.
+  - `F10` exchange snapshot and ownership truth remains owned by the
+    already-closed `XADAPT-A` wave; this sweep did not isolate a new
+    post-closure regression.
+  - `F12` dashboard selected-bot runtime surface remains covered by the
+    already-closed dashboard/cohesion waves and did not show a new product
+    regression in the available evidence.
+  - `F02..F08`, `F11`, `F13..F16` remain blocked by local infra prerequisites
+    rather than by isolated product defects:
+    - Docker Desktop / local Postgres unavailable
+    - local API fail-closed startup without `API_KEY_ENCRYPTION_KEYS`
+
+## Triage Summary (2026-04-25)
+
+- Existing-wave-owned, no new task:
+  - `F09` -> keep historical ownership under `V1COH-A`; rerun only after infra
+    is restored
+  - `F10` -> keep historical ownership under `XADAPT-A`; rerun only after
+    infra is restored
+  - `F12` -> keep historical ownership under the closed dashboard/cohesion
+    closures; rerun only after infra is restored
+- Infra-only blockers, no product task:
+  - `F01` API-side auth verification
+  - `F02..F08`
+  - `F11`
+  - `F13..F16`
+- Immediate queue decision:
+  - do not open `V1REG-Fxx` from the 2026-04-25 pass
+  - move directly to `V1REG-05` as the rerun/refresh slice once local infra
+    prerequisites are available
+
 ## Manual Sweep Verdicts (2026-04-25)
 
 - `F01`: `PARTIAL_PASS_INFRA_BLOCKED`
