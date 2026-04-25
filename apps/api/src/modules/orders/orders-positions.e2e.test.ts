@@ -952,6 +952,7 @@ describe('Orders and positions read contract', () => {
         exchange: 'BINANCE',
         marketType: 'FUTURES',
         baseCurrency: 'USDT',
+        manageExternalPositions: true,
       },
     });
     const liveScope = await createMarketScope({

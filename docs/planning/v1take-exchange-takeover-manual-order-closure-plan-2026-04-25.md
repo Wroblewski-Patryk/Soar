@@ -163,6 +163,13 @@ validation gate instead of treating them as purely infra-blocked.
   `PAPER_MARKET_PRICE_UNAVAILABLE`, and the dashboard blocks that degraded
   submit path before calling the shared order endpoint. Next active slice is
   `V1TAKE-08`.
+- 2026-04-25: `V1TAKE-08` is now closed and the whole `V1TAKE-A` wave is green.
+  Final closure evidence passed for takeover-status, reconciliation, runtime
+  ownership/visibility, manual-order API truth, and dashboard manual-order
+  surfaces. One fixture was aligned to the approved wallet-first contract so
+  manual `LIVE` exchange adoption now explicitly depends on
+  `wallet.manageExternalPositions=true`. Local execution note: DB-backed API
+  closure packs must run sequentially against the shared Postgres instance.
 
 ## Non-Goals
 

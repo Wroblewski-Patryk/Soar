@@ -22,6 +22,22 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-25 - Do not run DB-backed vitest packs in parallel against the same local database
+- Context: while closing `V1TAKE-08`, multiple DB-backed API test commands were launched at the same time against the same local Postgres instance.
+- Symptom: otherwise green takeover/runtime/manual-order tests failed with contradictory results, including missing runtime open orders and bot-create assertions that passed when rerun alone.
+- Root cause: separate Vitest processes were mutating and cleaning the same database concurrently (`deleteMany`-heavy `beforeEach` plus overlapping fixture setup), so the failure was caused by cross-test interference rather than product behavior.
+- Guardrail: run DB-backed test packs sequentially unless each process is isolated to its own database/schema.
+- Preferred pattern:
+```text
+1) Group focused DB-backed files into one awaited command when possible.
+2) If multiple DB-backed commands are needed, execute them sequentially.
+3) Reserve parallel execution for pure unit tests or suites that do not share mutable infra.
+4) If a failure appears only in the parallel closure pack, rerun the same files sequentially before changing product code.
+```
+- Avoid: launching multiple `pnpm --filter api exec vitest run ...` commands in parallel when they touch the same local Postgres state.
+- Evidence:
+  - 2026-04-25 `V1TAKE-08`: parallel DB-backed closure runs produced false red results in `bots.runtime-takeover.e2e.test.ts` and `orders-positions.e2e.test.ts`; the same pack passed when rerun sequentially.
+
 ### 2026-04-25 - Do not run parallel Git writes in this repo from PowerShell
 - Context: while closing `XVENUE-02` and `XVENUE-03`, commit/stage/status
   operations were executed in parallel tool calls from the same working tree.

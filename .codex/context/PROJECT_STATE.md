@@ -49,6 +49,13 @@ Last updated: 2026-04-25
   `EXCHANGE_SYNC BOT_MANAGED` LIVE runtime position visibility/close flows.
 
 ## Product Decisions (Confirmed)
+- 2026-04-25: closed `V1TAKE-08` and with it the full `V1TAKE-A` wave. Final
+  closure evidence is green across takeover-status, reconciliation, runtime
+  ownership/visibility, and manual-order API + dashboard truth. One local
+  execution guardrail was confirmed during closure: DB-backed Vitest packs
+  must run sequentially against the shared local Postgres instance to avoid
+  cross-test interference. Validation PASS: the focused `V1TAKE-A` closure
+  pack plus `api/web` typechecks and repository guardrails.
 - 2026-04-25: closed `V1TAKE-06` and `V1TAKE-07` by hardening manual-order
   fill truth across both API and dashboard UI. `PAPER MARKET` opens now fail
   closed when canonical fill price cannot be proven, the API surfaces an
