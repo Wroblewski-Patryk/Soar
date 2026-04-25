@@ -49,6 +49,17 @@ Last updated: 2026-04-25
   `EXCHANGE_SYNC BOT_MANAGED` LIVE runtime position visibility/close flows.
 
 ## Product Decisions (Confirmed)
+- 2026-04-25: closed `V1TAKE-09` as the wallet-single-switch UI cleanup
+  slice. The web UI now exposes exactly one editable takeover-management
+  switch on the wallet form, while the API key form no longer renders the
+  legacy import/manage toggles or the derived bot-takeover helper list. To
+  keep backend compatibility stable, API-key form submit remains explicit
+  about `syncExternalPositions=true` and
+  `manageExternalPositions=false`, but takeover-management editing is now
+  wallet-only in the operator UI. Validation PASS:
+  `pnpm --filter web exec vitest run src/features/profile/components/ApiKeyForm.test.tsx src/features/wallets/components/WalletCreateEditForm.test.tsx src/features/wallets/components/WalletsListTable.test.tsx`,
+  `pnpm --filter web run typecheck`,
+  `pnpm run quality:guardrails`.
 - 2026-04-25: closed `V1READY-2026-04-25-C` as the residual deploy-truth and artifact-sync slice after final V1 approval. The web build now writes deploy-verifiable git metadata into `.next/BUILD_META.json`, `GET /api/build-info` can expose `gitSha`/`gitRef` for the deployed web target, `ops:rc:gates:summary` now makes stale evidence timing explicit instead of silently presenting old evidence as current, and the reusable architecture-V1 checklist no longer labels already-closed `V1COH-A`, `XADAPT-A`, or `V1READY-2026-04-25-A` work as active `PARTIAL` closures. Validation PASS: `pnpm run quality:guardrails`, `pnpm run typecheck`, `pnpm run build`, `pnpm run ops:rc:gates:summary`.
 - 2026-04-25: closed `V1TAKE-08` and with it the full `V1TAKE-A` wave. Final
   closure evidence is green across takeover-status, reconciliation, runtime

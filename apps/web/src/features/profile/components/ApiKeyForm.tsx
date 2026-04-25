@@ -1,13 +1,11 @@
 "use client";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { ZodError } from "zod";
 import { isAxiosError } from "axios";
 import { apiKeySchema } from "../types/apiKeyForm.type";
 import { testApiKeyConnection, testStoredApiKeyConnection } from "../services/apiKeys.service";
 import { useI18n } from "../../../i18n/I18nProvider";
-import { listBots } from "@/features/bots/services/bots.service";
-import type { Bot } from "@/features/bots/types/bot.type";
 import {
   EXCHANGE_OPTIONS,
   ExchangeOption,
@@ -31,8 +29,6 @@ export type ApiKeyFormProps = {
     label: string;
     exchange: ExchangeOption;
     maskedApiKey?: string;
-    syncExternalPositions: boolean;
-    manageExternalPositions: boolean;
   };
   isEdit?: boolean;
   onSave: (data: ApiKeyFormSavePayload) => void;
@@ -49,13 +45,9 @@ export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: 
   );
   const [apiKey, setApiKey] = useState("");
   const [apiSecret, setApiSecret] = useState("");
-  const [syncExternalPositions, setSyncExternalPositions] = useState(defaultValues?.syncExternalPositions ?? true);
-  const [manageExternalPositions, setManageExternalPositions] = useState(defaultValues?.manageExternalPositions ?? false);
   const [testStatus, setTestStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [testMessage, setTestMessage] = useState<string | null>(null);
   const [testedFingerprint, setTestedFingerprint] = useState<string | null>(null);
-  const [manageableBots, setManageableBots] = useState<Bot[]>([]);
-  const [manageBotsStatus, setManageBotsStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
   const currentFingerprint = `${exchange}::${apiKey}::${apiSecret}`;
   const currentApiKeyId = defaultValues?.id ?? null;
@@ -67,67 +59,12 @@ export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: 
   const exchangeSupportsProbe = supportsExchangeCapability(exchange, "API_KEY_PROBE");
   const exchangeSupportsLiveExecution = supportsExchangeCapability(exchange, "LIVE_EXECUTION");
   const requiresConnectionTest = (!isEdit || Boolean(apiKey) || Boolean(apiSecret)) && exchangeSupportsProbe;
-  const isManageBotListVisible = manageExternalPositions && exchange === "BINANCE";
   const usesStoredTestMode =
     Boolean(isEdit && currentApiKeyId && exchange === defaultValues?.exchange) &&
     apiKey.trim().length === 0 &&
     apiSecret.trim().length === 0;
 
-  useEffect(() => {
-    if (!isManageBotListVisible) {
-      setManageBotsStatus("idle");
-      return;
-    }
-
-    let isCanceled = false;
-    setManageBotsStatus("loading");
-
-    void listBots()
-      .then((bots) => {
-        if (isCanceled) return;
-        const eligibleBots = bots.filter(
-          (bot) => bot.exchange === exchange && bot.mode === "LIVE" && bot.isActive && bot.liveOptIn
-        );
-        setManageableBots(eligibleBots);
-        setManageBotsStatus("success");
-      })
-      .catch(() => {
-        if (isCanceled) return;
-        setManageableBots([]);
-        setManageBotsStatus("error");
-      });
-
-    return () => {
-      isCanceled = true;
-    };
-  }, [exchange, isManageBotListVisible]);
-
   const placeholderProbeInfo = formText("placeholderProbeInfo").replace("{exchange}", exchange);
-
-  const manageableBotRows = useMemo(
-    () =>
-      manageableBots.map((bot) => {
-        let bindingLabel = formText("botWithoutApiKey");
-        let bindingTone = "badge-ghost";
-
-        if (bot.apiKeyId && currentApiKeyId && bot.apiKeyId === currentApiKeyId) {
-          bindingLabel = formText("botUsesThisKey");
-          bindingTone = "badge-success";
-        } else if (bot.apiKeyId) {
-          bindingLabel = formText("botUsesAnotherKey");
-          bindingTone = "badge-warning";
-        }
-
-        return {
-          id: bot.id,
-          name: bot.name,
-          marketType: bot.marketType,
-          bindingLabel,
-          bindingTone,
-        };
-      }),
-    [currentApiKeyId, formText, manageableBots]
-  );
 
   const handleTest = async () => {
     if (!exchangeSupportsProbe) {
@@ -220,7 +157,12 @@ export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: 
         }
       }
 
-      const payload: ApiKeyFormSavePayload = { label, exchange, syncExternalPositions, manageExternalPositions };
+      const payload: ApiKeyFormSavePayload = {
+        label,
+        exchange,
+        syncExternalPositions: true,
+        manageExternalPositions: false,
+      };
       if (apiKey) payload.apiKey = apiKey;
       if (apiSecret) payload.apiSecret = apiSecret;
       onSave(payload);
@@ -310,50 +252,6 @@ export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: 
           required={!isEdit}
         />
         {isEdit ? <p className="text-xs opacity-70 mt-1">{formText("editSecretHint")}</p> : null}
-      </div>
-
-      <div className="rounded-box border border-base-300/70 bg-base-100/60 p-3">
-        <label className="label cursor-pointer justify-start gap-3">
-          <input
-            type="checkbox"
-            className="toggle toggle-primary"
-            checked={syncExternalPositions}
-            onChange={(e) => setSyncExternalPositions(e.target.checked)}
-          />
-          <span className="label-text">{formText("syncExternal")}</span>
-        </label>
-      </div>
-
-      <div className="rounded-box border border-base-300/70 bg-base-100/60 p-3 space-y-3">
-        <label className="label cursor-pointer justify-start gap-3">
-          <input
-            type="checkbox"
-            className="toggle toggle-secondary"
-            checked={manageExternalPositions}
-            onChange={(e) => setManageExternalPositions(e.target.checked)}
-          />
-          <span className="label-text">{formText("manageExternal")}</span>
-        </label>
-        {isManageBotListVisible ? (
-          <div className="rounded-box border border-base-300 bg-base-200/40 p-3 text-sm space-y-2">
-            <p className="font-semibold">{formText("manageBotsTitle")}</p>
-            {manageBotsStatus === "loading" ? <p>{formText("manageBotsLoading")}</p> : null}
-            {manageBotsStatus === "error" ? <p className="text-error">{formText("manageBotsLoadError")}</p> : null}
-            {manageBotsStatus === "success" && manageableBotRows.length === 0 ? <p>{formText("manageBotsEmpty")}</p> : null}
-            {manageBotsStatus === "success" && manageableBotRows.length > 0 ? (
-              <ul className="space-y-1.5">
-                {manageableBotRows.map((bot) => (
-                  <li key={bot.id} className="flex flex-wrap items-center gap-2">
-                    <span className="font-medium">{bot.name}</span>
-                    <span className="badge badge-outline badge-xs">{bot.marketType}</span>
-                    <span className={`badge badge-xs ${bot.bindingTone}`}>{bot.bindingLabel}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : null}
-            <p className="opacity-70">{formText("manageBotsHint")}</p>
-          </div>
-        ) : null}
       </div>
 
       <div className={`grid grid-cols-1 gap-3 ${exchange === "BINANCE" ? "lg:grid-cols-2" : ""}`}>

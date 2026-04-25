@@ -79,8 +79,6 @@ export default function ApiKeysList() {
         label: selectedKey.label,
         exchange: selectedKey.exchange,
         maskedApiKey: selectedKey.apiKey,
-        syncExternalPositions: selectedKey.syncExternalPositions,
-        manageExternalPositions: selectedKey.manageExternalPositions,
       }
     : undefined;
 

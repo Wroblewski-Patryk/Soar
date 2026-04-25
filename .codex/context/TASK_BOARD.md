@@ -20,6 +20,9 @@ Last updated: 2026-04-25
 
 ## BACKLOG
 
+- [x] `V1TAKE-09 web(wallet-ui): remove API-key takeover toggles and keep wallet as the single editable management switch`
+  - 2026-04-25: Removed the legacy API-key takeover/import switches from `ApiKeyForm` and deleted the helper bot-takeover list that depended on API-key-level management. The wallet form remains the only editable takeover-management surface, while API-key saves still submit compatibility-safe `syncExternalPositions=true` and `manageExternalPositions=false` defaults behind the scenes. Validation PASS: `pnpm --filter web exec vitest run src/features/profile/components/ApiKeyForm.test.tsx src/features/wallets/components/WalletCreateEditForm.test.tsx src/features/wallets/components/WalletsListTable.test.tsx`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
+
 - [x] `V1READY-2026-04-25-C ops/deploy(sync): expose deployed commit truth and reconcile residual V1 activation artifacts`
   - 2026-04-25: Closed the residual post-approval truth gap that still made V1 verification unnecessarily ambiguous. Added web build metadata generation plus `/api/build-info` git SHA exposure for deploy verification, made `ops:rc:gates:summary` report stale evidence timing instead of silently presenting old evidence as current, and resynced the architecture-V1 checklist plus activation/checklist docs so already-closed V1 waves are no longer labeled as active `PARTIAL` closures. Validation PASS: `pnpm run quality:guardrails`, `pnpm run typecheck`, `pnpm run build`, `pnpm run ops:rc:gates:summary`.
 - [x] `V1TAKE-08 qa(closure): rerun focused DB-backed API + web closure pack and sync canonical docs/context`

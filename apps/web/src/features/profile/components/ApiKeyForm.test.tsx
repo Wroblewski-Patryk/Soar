@@ -7,16 +7,11 @@ import { EXCHANGE_OPTIONS } from "@/features/exchanges/exchangeCapabilities";
 
 const testApiKeyConnectionMock = vi.hoisted(() => vi.fn());
 const testStoredApiKeyConnectionMock = vi.hoisted(() => vi.fn());
-const listBotsMock = vi.hoisted(() => vi.fn());
 const originalBinanceWhitelist = process.env.NEXT_PUBLIC_BINANCE_IP_WHITELIST;
 
 vi.mock("../services/apiKeys.service", () => ({
   testApiKeyConnection: testApiKeyConnectionMock,
   testStoredApiKeyConnection: testStoredApiKeyConnectionMock,
-}));
-
-vi.mock("@/features/bots/services/bots.service", () => ({
-  listBots: listBotsMock,
 }));
 
 describe("ApiKeyForm", () => {
@@ -30,7 +25,6 @@ describe("ApiKeyForm", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     delete process.env.NEXT_PUBLIC_BINANCE_IP_WHITELIST;
-    listBotsMock.mockResolvedValue([]);
     testStoredApiKeyConnectionMock.mockResolvedValue({
       ok: true,
       message: "Stored Binance connection OK",
@@ -64,16 +58,12 @@ describe("ApiKeyForm", () => {
     const exchangeSelect = screen.getByLabelText("Exchange");
     const apiKeyInput = screen.getByLabelText("API Key");
     const apiSecretInput = screen.getByLabelText("API Secret");
-    const syncToggle = screen.getByLabelText("Sync external exchange positions");
-    const manageToggle = screen.getByLabelText("Allow bot to manage external positions");
     const requirementsBlock = screen.getByText("Exchange requirements");
 
     expect(keyNameInput.compareDocumentPosition(exchangeSelect) & Node.DOCUMENT_POSITION_FOLLOWING).not.toBe(0);
     expect(exchangeSelect.compareDocumentPosition(apiKeyInput) & Node.DOCUMENT_POSITION_FOLLOWING).not.toBe(0);
     expect(apiKeyInput.compareDocumentPosition(apiSecretInput) & Node.DOCUMENT_POSITION_FOLLOWING).not.toBe(0);
-    expect(apiSecretInput.compareDocumentPosition(syncToggle) & Node.DOCUMENT_POSITION_FOLLOWING).not.toBe(0);
-    expect(syncToggle.compareDocumentPosition(manageToggle) & Node.DOCUMENT_POSITION_FOLLOWING).not.toBe(0);
-    expect(manageToggle.compareDocumentPosition(requirementsBlock) & Node.DOCUMENT_POSITION_FOLLOWING).not.toBe(0);
+    expect(apiSecretInput.compareDocumentPosition(requirementsBlock) & Node.DOCUMENT_POSITION_FOLLOWING).not.toBe(0);
   });
 
   it("shows success status for successful connection test", async () => {
@@ -178,7 +168,7 @@ describe("ApiKeyForm", () => {
     });
   });
 
-  it("includes onboarding toggles in save payload", async () => {
+  it("keeps compatibility-safe takeover defaults in save payload without rendering old toggles", async () => {
     const onSave = vi.fn();
     testApiKeyConnectionMock.mockResolvedValueOnce({
       ok: true,
@@ -196,8 +186,8 @@ describe("ApiKeyForm", () => {
       target: { value: "toggle-api-secret" },
     });
 
-    fireEvent.click(screen.getByLabelText("Sync external exchange positions"));
-    fireEvent.click(screen.getByLabelText("Allow bot to manage external positions"));
+    expect(screen.queryByLabelText("Sync external exchange positions")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Allow bot to manage external positions")).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Test connection" }));
     await screen.findByText("OK");
@@ -208,42 +198,9 @@ describe("ApiKeyForm", () => {
       exchange: "BINANCE",
       apiKey: "toggle-api-key",
       apiSecret: "toggle-api-secret",
-      syncExternalPositions: false,
-      manageExternalPositions: true,
+      syncExternalPositions: true,
+      manageExternalPositions: false,
     });
-  });
-
-  it("shows eligible live bots when external management is enabled", async () => {
-    listBotsMock.mockResolvedValueOnce([
-      {
-        id: "bot-live-1",
-        name: "Live BTC Bot",
-        exchange: "BINANCE",
-        mode: "LIVE",
-        isActive: true,
-        liveOptIn: true,
-        marketType: "FUTURES",
-        apiKeyId: null,
-      },
-      {
-        id: "bot-paper-1",
-        name: "Paper Bot",
-        exchange: "BINANCE",
-        mode: "PAPER",
-        isActive: true,
-        liveOptIn: false,
-        marketType: "FUTURES",
-        apiKeyId: null,
-      },
-    ]);
-
-    renderForm({ onSave: vi.fn(), onCancel: vi.fn() });
-
-    fireEvent.click(screen.getByLabelText("Allow bot to manage external positions"));
-
-    expect(await screen.findByText("Bots ready to take over positions")).toBeInTheDocument();
-    expect(screen.getByText("Live BTC Bot")).toBeInTheDocument();
-    expect(screen.queryByText("Paper Bot")).not.toBeInTheDocument();
   });
 
   it("allows saving placeholder exchange key without connection probe", async () => {
@@ -340,8 +297,6 @@ describe("ApiKeyForm", () => {
         label: "Binance main",
         exchange: "BINANCE",
         maskedApiKey: "AB********YZ",
-        syncExternalPositions: true,
-        manageExternalPositions: false,
       },
       onSave: vi.fn(),
       onCancel: vi.fn(),
