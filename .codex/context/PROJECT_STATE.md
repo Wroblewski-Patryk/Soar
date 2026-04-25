@@ -181,6 +181,13 @@ Last updated: 2026-04-25
   regression isolated, while the remaining non-green function verdicts are
   attributable to documented local infra blockers (`Docker Desktop` /
   `localhost:5432`) and local API critical-secret startup prerequisites.
+- 2026-04-25: closed `V1REG-05` and with it the full `V1REG-A` wave. Closure
+  rerun kept the web checklist pack green, kept the non-DB API checklist pack
+  green, and reconfirmed that the remaining auth/API failures still stop at the
+  same infra boundary (`prisma.log.deleteMany()` cannot reach
+  `localhost:5432`). The repository now has a reusable architecture-based V1
+  verification protocol with no active follow-up task until either local infra
+  is restored for a fuller rerun or a real new product regression is observed.
 - 2026-04-25: closed `DEPLOY-2026-04-25-B` as the validation-only follow-up to
   the same-day Coolify hotfix. Local `pnpm --filter web run build` now passes
   cleanly again, confirming the previously reported web deploy gate is no

@@ -17,8 +17,7 @@ Last updated: 2026-04-25
 
 ## READY
 
-- [ ] `V1REG-05 qa(regression): rerun touched function packs and refresh checklist status`
-  - 2026-04-25: `V1REG-04` completed triage for the reusable architecture checklist. No new `V1REG-Fxx` bugfix task was justified from the current evidence set, so the next slice is a rerun/refresh pass once local infra prerequisites are available.
+- [ ] (none)
 
 ## BACKLOG
 
@@ -83,6 +82,9 @@ Last updated: 2026-04-25
 
 - [x] `V1REG-04 planning(sync): classify failures and queue missing or regressed functions`
   - 2026-04-25: Classified every remaining non-green checklist verdict against the current queue and local environment blockers. No new `V1REG-Fxx` product task was justified: `F09`, `F10`, and `F12` stay owned by already-closed waves, while the broader remaining gaps are infra-only blockers tied to local Docker/Postgres availability and local API secret-readiness prerequisites.
+
+- [x] `V1REG-05 qa(regression): rerun touched function packs and refresh checklist status`
+  - 2026-04-25: Closure rerun confirmed that the reusable V1 verification loop is complete and stable: the web checklist pack and non-DB API checklist pack remain green, API/web typechecks remain green, and DB-backed auth/API still fail only because `localhost:5432` is unreachable. No new product regression was isolated, so the queue now has no active follow-up from `V1REG-A`.
 
 - [x] `V1COH-01 test(api-red): lock manual LIVE order against out-of-scope symbol and unresolved strategy context`
   - 2026-04-25: Added focused service and API e2e regressions proving manual `LIVE` open is rejected when the selected bot has no canonical symbol-matching strategy scope, and that accepted `LIVE` fixtures must provide the full inherited bot context.

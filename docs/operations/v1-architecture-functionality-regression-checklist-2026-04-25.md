@@ -167,6 +167,39 @@ The checklist maps architecture-defined V1 functions to:
   - move directly to `V1REG-05` as the rerun/refresh slice once local infra
     prerequisites are available
 
+### 2026-04-25 - Regression Run
+- Scope:
+  - `V1REG-05` closure rerun for the reusable architecture-V1 verification loop
+- Automated packs run:
+  - PASS (web checklist closure pack):
+    - `pnpm --filter web exec vitest run src/features/auth/components/LoginForm.test.tsx src/features/auth/components/RegisterForm.test.tsx src/features/auth/hooks/useLoginForm.test.tsx src/features/profile/components/ApiKeyForm.test.tsx src/features/profile/components/ApiKeysList.test.tsx src/features/exchanges/components/ExchangeConnectionsView.test.tsx src/features/wallets/components/WalletCreateEditForm.test.tsx src/features/wallets/components/WalletsListTable.test.tsx src/features/markets/components/MarketUniverseForm.test.tsx src/features/markets/components/MarketUniversesTable.test.tsx src/features/strategies/components/StrategyForm.test.tsx src/features/strategies/components/StrategyFormSections/Indicators.test.tsx src/features/strategies/utils/StrategyForm.map.test.ts src/features/bots/components/BotCreateEditForm.test.tsx src/features/bots/components/BotsListTable.test.tsx src/features/backtest/components/BacktestCreateForm.test.tsx src/features/backtest/components/BacktestRunDetails.test.tsx src/features/backtest/components/BacktestsListView.test.tsx src/features/backtest/components/BacktestsRunsTable.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.aggregate-wallet.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.manual-order-scope.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.manual-order-venue.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.aggregate-error.test.tsx src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.open-orders-actions.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.open-orders-source.test.tsx src/features/bots/components/BotsManagement.test.tsx src/features/bots/services/botsMonitoringAggregate.service.test.ts src/features/dashboard-home/components/LiveMarketBar.test.tsx src/features/reports/components/PerformanceReportsView.test.tsx src/features/logs/components/AuditTrailView.test.tsx`
+  - PASS (non-DB API closure pack):
+    - `API_KEY_ENCRYPTION_KEYS=v1:test-key-material`
+    - `API_KEY_ENCRYPTION_ACTIVE_VERSION=v1`
+    - `pnpm --filter api exec vitest run src/modules/profile/apiKey/binanceApiKeyProbe.service.test.ts src/modules/strategies/indicators/indicators.service.test.ts src/modules/engine/strategyIndicatorRegistryParity.test.ts src/modules/engine/strategySignalEvaluator.test.ts src/modules/exchange/exchangeAdapterBoundary.service.test.ts src/modules/exchange/exchangeExecutionCapabilityContract.service.test.ts src/modules/exchange/exchangeAuthenticatedRead.service.test.ts src/modules/exchange/exchangeAuthenticatedReadContract.service.test.ts src/modules/market-stream/binanceStream.service.test.ts src/modules/market-stream/marketStream.routes.contract.test.ts`
+  - FAIL (expected infra-only DB auth rerun):
+    - `API_KEY_ENCRYPTION_KEYS=v1:test-key-material`
+    - `API_KEY_ENCRYPTION_ACTIVE_VERSION=v1`
+    - `pnpm --filter api exec vitest run src/modules/auth/auth.e2e.test.ts src/modules/auth/auth.service.test.ts`
+  - PASS (repo gates):
+    - `pnpm --filter api run typecheck`
+    - `pnpm --filter web run typecheck`
+    - `pnpm run quality:guardrails`
+- Manual flows checked:
+  - none; reused `V1REG-03`
+- Functions passed:
+  - all previously green web and non-DB API function groups remained green
+- Functions failed:
+  - no product regression was isolated
+- Queued follow-up tasks:
+  - none
+- Notes:
+  - DB-backed auth/API tests still fail at the same first touchpoint:
+    `prisma.log.deleteMany()` cannot reach `localhost:5432`.
+  - This closure rerun confirms the blocker is still local infra rather than
+    newly introduced product drift.
+  - `V1REG-A` can now be treated as a reusable completed protocol.
+
 ## Manual Sweep Verdicts (2026-04-25)
 
 - `F01`: `PARTIAL_PASS_INFRA_BLOCKED`

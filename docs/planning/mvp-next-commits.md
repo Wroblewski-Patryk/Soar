@@ -7,11 +7,11 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `V1REG-05 qa(regression): rerun touched function packs and refresh checklist status`
+- [ ] (none)
 ## NEXT
-- [ ] derive the next smallest executable slice only if `V1REG-05` reveals a real product regression
+- [ ] derive the next smallest executable slice only when a new approved goal or a real product regression appears
 ## PIPELINE
-- [ ] `V1REG-05 qa(regression): rerun touched function packs and refresh checklist status`
+- [ ] (none)
 - [x] `XADAPT-02 audit(api-exchange): classify Binance-specific assumptions across orders, exchange, and reconciliation paths`
 - [x] `XADAPT-01 docs(contract): freeze exchange execution capability matrix for authenticated reads and write-side execution`
 - [x] `XADAPT-03 refactor(api-exchange): expose one canonical exchange adapter boundary for write and authenticated-read consumers`

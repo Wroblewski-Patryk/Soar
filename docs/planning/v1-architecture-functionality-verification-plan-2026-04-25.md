@@ -3,7 +3,7 @@
 ## Header
 - ID: V1REG-A
 - Title: Architecture-V1 functionality verification loop and reusable regression protocol
-- Status: BACKLOG
+- Status: DONE
 - Owner: Planning Agent
 - Depends on: V1COH-A, XADAPT-A
 - Priority: P1
@@ -47,13 +47,13 @@ checked function by function, with deterministic follow-up planning for:
 ## Definition of Done
 - [x] One reusable architecture-based functionality checklist exists in docs and
       maps each V1 function to implementation status plus auto/manual checks.
-- [ ] The automated verification sweep has been executed and results are
+- [x] The automated verification sweep has been executed and results are
       recorded against the checklist.
 - [x] The manual browser sweep has been executed and findings are recorded with
       enough detail to reproduce later.
-- [ ] Every failed or partial function is either mapped to an existing queued
+- [x] Every failed or partial function is either mapped to an existing queued
       wave or queued as a new explicit follow-up task.
-- [ ] The checklist can be re-used for weekly regression without re-auditing
+- [x] The checklist can be re-used for weekly regression without re-auditing
       the architecture set from scratch.
 
 ## Forbidden
@@ -159,6 +159,6 @@ Primary reusable artifact:
   - update queue/context after triage
 
 ### Slice 5 - Regression closure
-- [ ] `V1REG-05 qa(regression): rerun touched function packs and refresh checklist status`
+- [x] `V1REG-05 qa(regression): rerun touched function packs and refresh checklist status`
   - rerun only the changed function groups plus required guardrails
   - refresh checklist state and notes after fixes land
