@@ -2695,7 +2695,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-25: Closed `V1REG-05` and with it the full `V1REG-A` verification loop. Web closure packs and non-DB API closure packs remained green, typechecks and repository guardrails remained green, and DB-backed auth/API rerun still failed only on the known local Postgres blocker at `localhost:5432`. No new product regression was isolated, so the reusable protocol now stands as a closed artifact rather than an active queue item.
 
 ## Phase XVENUE-A - Exact Exchange-Context and Worker-Topology Hardening (Queued 2026-04-25)
-- [ ] `XVENUE-01 docs(contract): freeze exact exchange-context and adapter-family model`
+- [x] `XVENUE-01 docs(contract): freeze exact exchange-context and adapter-family model`
 - [ ] `XVENUE-02 audit(api): inventory boundary leaks and direct exchange SDK usage`
 - [ ] `XVENUE-03 docs(contract): freeze capability matrix migration rules`
 - [ ] `XVENUE-04 refactor(api-exchange): registry-driven adapter-family entrypoints`
@@ -2706,6 +2706,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 
 ### Progress Log (Phase XVENUE-A - Exact Exchange-Context and Worker-Topology Hardening)
 - 2026-04-25: Queued `XVENUE-A` after user-approved clarification of the target model. Exchange behavior must be driven by the exact `(exchange, marketType)` pair selected by the user; `SPOT` and `FUTURES` must remain separate market domains; one exchange must not reuse another exchange's prices, candles, indicators, or signal inputs; the scalable implementation model is a family of narrow adapters under one registry; and worker health/readiness should be brought in line with the full deployed topology where needed. Published `docs/planning/exchange-context-and-worker-topology-hardening-plan-2026-04-25.md`.
+- 2026-04-25: Closed `XVENUE-01` by freezing the approved architecture contract in `04_runtime-contexts.md`, `05_strategy-signal-and-decision-flow.md`, and `09_integrations-deployment-and-runtime-services.md`. The repository now has one canonical statement that all exchange-owned behavior resolves from exact `(exchange, marketType)` context, that `SPOT`/`FUTURES` and cross-exchange inputs must not mix, that the approved implementation shape is a family of narrow adapters under one registry, and that worker health/readiness should reflect the full deployed topology. Validation PASS: `pnpm run quality:guardrails`.
 
 ## Phase ARCCON - Architecture Conformance and Service Ownership Closure (Closed 2026-04-21)
 - [x] `ARCCON-01 test(api-red): lock fail-closed manual-order strategy context when selected bot has no symbol-matching strategy`

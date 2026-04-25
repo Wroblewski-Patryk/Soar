@@ -113,9 +113,9 @@ implementation
 ## Execution Plan
 
 ### XVENUE-01 docs(contract): freeze exact `(exchange, marketType)` context and adapter-family architecture
-- update architecture docs with the approved exact-context rule
-- freeze the narrow-adapter family model
-- freeze the no-mixing rule for prices/candles/indicators/signals
+- [x] update architecture docs with the approved exact-context rule
+- [x] freeze the narrow-adapter family model
+- [x] freeze the no-mixing rule for prices/candles/indicators/signals
 
 ### XVENUE-02 audit(api): inventory direct exchange access and boundary leaks outside `modules/exchange`
 - locate every non-exchange-module import of `ccxt` or exchange-specific client construction
@@ -170,12 +170,14 @@ Per-wave validation should include:
 - no speculative support claims for exchanges or market types not yet wired
 
 ## Recommended Queue Order
-
-1. `XVENUE-01 docs(contract): freeze exact exchange-context and adapter-family model`
-2. `XVENUE-02 audit(api): inventory boundary leaks and direct exchange SDK usage`
-3. `XVENUE-03 docs(contract): freeze capability matrix migration rules`
-4. `XVENUE-04 refactor(api-exchange): registry-driven adapter-family entrypoints`
-5. `XVENUE-05 refactor(api-markets-engine): remove direct exchange SDK access from feature modules`
-6. `XVENUE-06 test(api): add no-mixing parity coverage`
-7. `XVENUE-07 refactor(api-ops): align worker topology truth`
-8. `XVENUE-08 qa(closure): rerun focused closure pack and sync docs/context`
+1. `XVENUE-02 audit(api): inventory boundary leaks and direct exchange SDK usage`
+Context:
+`XVENUE-01` is now closed through the canonical architecture updates in
+`04_runtime-contexts.md`, `05_strategy-signal-and-decision-flow.md`, and
+`09_integrations-deployment-and-runtime-services.md`.
+2. `XVENUE-03 docs(contract): freeze capability matrix migration rules`
+3. `XVENUE-04 refactor(api-exchange): registry-driven adapter-family entrypoints`
+4. `XVENUE-05 refactor(api-markets-engine): remove direct exchange SDK access from feature modules`
+5. `XVENUE-06 test(api): add no-mixing parity coverage`
+6. `XVENUE-07 refactor(api-ops): align worker topology truth`
+7. `XVENUE-08 qa(closure): rerun focused closure pack and sync docs/context`

@@ -17,8 +17,8 @@ Last updated: 2026-04-25
 
 ## READY
 
-- [ ] `XVENUE-01 docs(contract): freeze exact exchange-context and adapter-family model`
-  - 2026-04-25: User approved the scalable target model: exact `(exchange, marketType)` context, no mixing between exchanges or between `SPOT` and `FUTURES`, narrow adapter families under one registry, and worker health/readiness brought in line with the full deployed topology where needed.
+- [ ] `XVENUE-02 audit(api): inventory boundary leaks and direct exchange SDK usage`
+  - 2026-04-25: `XVENUE-01` froze the approved architecture contract. The next slice is the concrete code audit of direct exchange SDK usage and boundary leaks outside `modules/exchange`.
 
 ## BACKLOG
 
@@ -86,6 +86,9 @@ Last updated: 2026-04-25
 
 - [x] `V1REG-05 qa(regression): rerun touched function packs and refresh checklist status`
   - 2026-04-25: Closure rerun confirmed that the reusable V1 verification loop is complete and stable: the web checklist pack and non-DB API checklist pack remain green, API/web typechecks remain green, and DB-backed auth/API still fail only because `localhost:5432` is unreachable. No new product regression was isolated, so the queue now has no active follow-up from `V1REG-A`.
+
+- [x] `XVENUE-01 docs(contract): freeze exact exchange-context and adapter-family model`
+  - 2026-04-25: Froze the approved exchange/runtime architecture in canonical docs. `04_runtime-contexts.md`, `05_strategy-signal-and-decision-flow.md`, and `09_integrations-deployment-and-runtime-services.md` now explicitly require exact `(exchange, marketType)` context, forbid mixing `SPOT` and `FUTURES` or cross-exchange market-data reuse, freeze the narrow adapter-family model, and require worker health/readiness to reflect the full deployed topology.
 
 - [x] `V1COH-01 test(api-red): lock manual LIVE order against out-of-scope symbol and unresolved strategy context`
   - 2026-04-25: Added focused service and API e2e regressions proving manual `LIVE` open is rejected when the selected bot has no canonical symbol-matching strategy scope, and that accepted `LIVE` fixtures must provide the full inherited bot context.
