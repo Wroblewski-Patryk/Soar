@@ -92,6 +92,89 @@ The checklist maps architecture-defined V1 functions to:
     Postgres availability. Web suites, non-DB API suites, typechecks, and repo
     guardrails are green.
 
+### 2026-04-25 - Regression Run
+- Scope:
+  - `V1REG-03` browser/manual architecture-V1 sweep on the local web target
+- Automated packs run:
+  - none; reused `V1REG-02` automated evidence
+- Manual flows checked:
+  - `/auth/login` render on desktop (`1366x900`), tablet (`768x1024`), and
+    mobile (`390x844`)
+  - `/auth/register` render on desktop
+  - unauthenticated `/dashboard` redirect to `/auth/login`
+  - invalid sign-in submit from `/auth/login`
+- Functions passed:
+  - `F01` auth-shell rendering and protected-route redirect contract
+- Functions failed:
+  - no new product-visible regression was isolated in this slice
+- Queued follow-up tasks:
+  - `V1REG-04`
+- Notes:
+  - Local web target was reachable at `http://localhost:3002`.
+  - Local API target was not reachable. The API dev process failed closed on
+    critical secret readiness because `API_KEY_ENCRYPTION_KEYS` was missing in
+    the local process environment, and Docker Desktop / local Postgres were
+    also unavailable in this run.
+  - Invalid sign-in still produced an explicit UI error state
+    (`Sign-in failed: Network Error`) rather than a false success.
+  - Authenticated browser flows for `F02..F15` and health/readiness checks for
+    `F16` remain `INFRA_BLOCKED` in this local run rather than product-failed.
+
+## Manual Sweep Verdicts (2026-04-25)
+
+- `F01`: `PARTIAL_PASS_INFRA_BLOCKED`
+  - `/auth/login` and `/auth/register` rendered correctly, including labeled
+    controls and visible auth copy on desktop/tablet/mobile.
+  - Unauthenticated `/dashboard` redirected back to `/auth/login`.
+  - Invalid sign-in showed explicit `Sign-in failed: Network Error` while the
+    API was unavailable.
+- `F02`: `INFRA_BLOCKED`
+  - Profile/API-key flows could not be reached because authenticated browser
+    state was unavailable with the local API offline.
+- `F03`: `INFRA_BLOCKED`
+  - Wallet flows require authenticated dashboard access plus API persistence;
+    this run never reached that state.
+- `F04`: `INFRA_BLOCKED`
+  - Market-universe and symbol-group flows require authenticated dashboard/API
+    access; blocked in this run.
+- `F05`: `INFRA_BLOCKED`
+  - Strategy builder requires authenticated access; blocked in this run.
+- `F06`: `INFRA_BLOCKED`
+  - Bot create/edit/runtime-context browser flows require authenticated access
+    and persisted API state; blocked in this run.
+- `F07`: `INFRA_BLOCKED`
+  - Backtest browser flows require authenticated access and backend execution;
+    blocked in this run.
+- `F08`: `INFRA_BLOCKED`
+  - PAPER runtime parity checks require authenticated runtime surfaces and a
+    working backend; blocked in this run.
+- `F09`: `INFRA_BLOCKED`
+  - Manual `LIVE` order browser checks require a signed-in operator session,
+    Binance-linked context, and backend/runtime availability; blocked in this
+    run.
+- `F10`: `INFRA_BLOCKED`
+  - Exchange snapshot and external position sync browser verification requires
+    authenticated exchange-linked flows; blocked in this run.
+- `F11`: `INFRA_BLOCKED`
+  - Runtime loop and lifecycle browser verification requires active bot/runtime
+    state; blocked in this run.
+- `F12`: `INFRA_BLOCKED`
+  - Dashboard selected-bot runtime surface could not be reached beyond the
+    protected-route redirect because API/auth were unavailable.
+- `F13`: `INFRA_BLOCKED`
+  - Bot monitoring and assistant surfaces require authenticated dashboard/API
+    access; blocked in this run.
+- `F14`: `INFRA_BLOCKED`
+  - Live market bar verification requires authenticated dashboard access; this
+    run did not reach dashboard-home.
+- `F15`: `INFRA_BLOCKED`
+  - Reports and logs pages require authenticated access and backend data;
+    blocked in this run.
+- `F16`: `INFRA_BLOCKED`
+  - `/health` and `/ready` were not reachable because the API dev target
+    failed closed on missing `API_KEY_ENCRYPTION_KEYS`, and local Docker /
+    Postgres were also unavailable.
+
 ## Function Checklist
 
 ### F01 - Authentication and protected operator access

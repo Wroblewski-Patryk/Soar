@@ -165,6 +165,15 @@ Last updated: 2026-04-25
   touched V1 surface, while DB-backed API verification is currently blocked by
   unreachable local Postgres at `localhost:5432`; no new product regression was
   isolated in this automated slice.
+- 2026-04-25: closed `V1REG-03` as the matching browser/manual sweep for the
+  reusable V1 checklist. Local browser verification confirmed that the auth
+  shell still renders correctly on desktop/tablet/mobile, unauthenticated
+  protected-route navigation still redirects `/dashboard` back to
+  `/auth/login`, and invalid sign-in remains explicit rather than silently
+  succeeding. No new product-visible regression was isolated, but the broader
+  authenticated browser pass remains infra-blocked locally because the API dev
+  target fails closed on missing `API_KEY_ENCRYPTION_KEYS` and local
+  Docker/Postgres were unavailable in this run.
 - 2026-04-25: closed `DEPLOY-2026-04-25-B` as the validation-only follow-up to
   the same-day Coolify hotfix. Local `pnpm --filter web run build` now passes
   cleanly again, confirming the previously reported web deploy gate is no

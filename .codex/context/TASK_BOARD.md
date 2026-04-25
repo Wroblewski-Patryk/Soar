@@ -17,8 +17,8 @@ Last updated: 2026-04-25
 
 ## READY
 
-- [ ] `V1REG-03 qa(browser): execute architecture-v1 browser checklist and capture findings`
-  - 2026-04-25: `V1REG-02` recorded the automated function-by-function sweep. The next slice is the matching browser/manual pass so the checklist can distinguish infra blockers from operator-visible regressions.
+- [ ] `V1REG-04 planning(sync): classify failures and queue missing or regressed functions`
+  - 2026-04-25: `V1REG-03` completed the browser/manual sweep. No new product-visible regression was isolated; the next slice is classification of the remaining infra-blocked functions and an explicit decision on whether any new follow-up tasks are actually needed.
 
 ## BACKLOG
 
@@ -55,9 +55,6 @@ Last updated: 2026-04-25
 - [x] `V1COH-05 web(runtime-state): expose explicit manual LIVE action states on dashboard surfaces`
   - 2026-04-25: Added explicit manual LIVE action-state presenters plus sidebar UI, localized the new state contract, and locked it with focused `HomeLiveWidgets` and `RuntimeSidebarSection` regressions plus web typecheck.
 
-- [ ] `V1REG-02 qa(auto): execute architecture-v1 automated verification pack and record function-by-function status`
-  - 2026-04-25: The reusable architecture checklist is now published. The next regression-governance step after `V1COH-A` and `XADAPT-A` is to run the grouped automated pack and record status per V1 function instead of only per file.
-
 ## IN_PROGRESS
 
 - [ ] (none)
@@ -80,6 +77,9 @@ Last updated: 2026-04-25
 
 - [x] `V1REG-01 docs(audit): publish architecture-v1 functionality inventory and reusable regression checklist`
   - 2026-04-25: Published one reusable V1 checklist in `docs/operations/v1-architecture-functionality-regression-checklist-2026-04-25.md` plus the execution packet in `docs/planning/v1-architecture-functionality-verification-plan-2026-04-25.md`, mapping architecture-defined functions to implementation status, automated tests, manual browser checks, and follow-up task families.
+
+- [x] `V1REG-03 qa(browser): execute architecture-v1 browser checklist and capture findings`
+  - 2026-04-25: Completed the local browser/manual sweep against the reachable web target. `/auth/login` and `/auth/register` rendered correctly, unauthenticated `/dashboard` redirected back to `/auth/login`, and invalid sign-in stayed explicit with `Sign-in failed: Network Error` instead of false success. No new product-visible regression was isolated; the remaining manual function checks are infra-blocked locally because the API dev target fails closed on missing `API_KEY_ENCRYPTION_KEYS` and local Docker/Postgres were unavailable.
 
 - [x] `V1COH-01 test(api-red): lock manual LIVE order against out-of-scope symbol and unresolved strategy context`
   - 2026-04-25: Added focused service and API e2e regressions proving manual `LIVE` open is rejected when the selected bot has no canonical symbol-matching strategy scope, and that accepted `LIVE` fixtures must provide the full inherited bot context.

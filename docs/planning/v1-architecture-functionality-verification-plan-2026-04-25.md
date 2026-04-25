@@ -49,7 +49,7 @@ checked function by function, with deterministic follow-up planning for:
       maps each V1 function to implementation status plus auto/manual checks.
 - [ ] The automated verification sweep has been executed and results are
       recorded against the checklist.
-- [ ] The manual browser sweep has been executed and findings are recorded with
+- [x] The manual browser sweep has been executed and findings are recorded with
       enough detail to reproduce later.
 - [ ] Every failed or partial function is either mapped to an existing queued
       wave or queued as a new explicit follow-up task.
@@ -141,13 +141,13 @@ Primary reusable artifact:
   - attach automated and manual verification paths for each function
 
 ### Slice 2 - Automated verification sweep
-- [ ] `V1REG-02 qa(auto): execute architecture-v1 automated verification pack and record function-by-function status`
+- [x] `V1REG-02 qa(auto): execute architecture-v1 automated verification pack and record function-by-function status`
   - run grouped API and web packs from the checklist
   - record pass/fail by function instead of only per test file
   - keep known queued partials explicit
 
 ### Slice 3 - Manual browser verification sweep
-- [ ] `V1REG-03 qa(browser): execute architecture-v1 browser checklist and capture findings`
+- [x] `V1REG-03 qa(browser): execute architecture-v1 browser checklist and capture findings`
   - click through each function surface
   - record observed states and any divergence from architecture truth
   - capture enough notes for repeatability one week later
@@ -162,4 +162,3 @@ Primary reusable artifact:
 - [ ] `V1REG-05 qa(regression): rerun touched function packs and refresh checklist status`
   - rerun only the changed function groups plus required guardrails
   - refresh checklist state and notes after fixes land
-
