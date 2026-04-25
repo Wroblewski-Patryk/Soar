@@ -134,6 +134,20 @@ Last updated: 2026-04-25
   separates intentional Binance-only runtime scope from compatibility seams and
   from generic-looking drift risks. This gives `XADAPT-03` a concrete owner map
   for narrowing adapter boundaries without rediscovering support truth.
+- 2026-04-25: closed `XADAPT-03` as the boundary-hardening slice for post-V1
+  exchange work. The codebase now has one shared execution capability matrix
+  covering authenticated reads, `LIVE_ORDER_SUBMIT`, and explicitly unsupported
+  `LIVE_ORDER_CANCEL`, plus one feature-facing exchange adapter boundary for
+  orders, positions, and wallets. Lower-level connector and CCXT seams remain
+  internal infrastructure, while feature modules now consume the narrowed
+  boundary instead of composing connector factory, authenticated-read support,
+  and live-submit primitives directly.
+- 2026-04-25: closed `XADAPT-04` as the focused Binance contract-lock slice.
+  The exchange hardening wave now has dedicated tests for the shared execution
+  capability matrix and the new feature-facing adapter boundary, proving
+  Binance-only read/submit support, explicit `LIVE_ORDER_CANCEL` non-support,
+  unsupported-exchange fail-closed behavior, and live-submit result
+  normalization without relying on broad DB-backed e2e packs.
 - 2026-04-25: closed `DEPLOY-2026-04-25-B` as the validation-only follow-up to
   the same-day Coolify hotfix. Local `pnpm --filter web run build` now passes
   cleanly again, confirming the previously reported web deploy gate is no

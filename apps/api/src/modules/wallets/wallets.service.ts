@@ -17,11 +17,11 @@ import { isAppErrorLike } from '../../lib/errors';
 import { normalizeBaseCurrency } from '../../lib/symbols';
 import { resolveReferenceBalanceFromAllocation } from '../../lib/capitalAllocation';
 import { resolveExchangeMetadataByMarketType } from '../exchange/exchangeMetadataContract.service';
-import { fetchAuthenticatedExchangeBalanceRaw } from '../exchange/exchangeAuthenticatedRead.service';
 import {
-  assertAuthenticatedExchangeReadSupport,
-  resolveAuthenticatedExchangeReadSource,
-} from '../exchange/exchangeAuthenticatedReadContract.service';
+  assertExchangeAdapterOperationSupport,
+  fetchSupportedExchangeBalanceRaw,
+  resolveExchangeAdapterSource,
+} from '../exchange/exchangeAdapterBoundary.service';
 
 const normalizeWalletInput = (payload: CreateWalletDto | UpdateWalletDto) => {
   const mode = payload.mode;
@@ -388,7 +388,7 @@ const fetchAuthenticatedBalancePreview = async (params: {
     };
   }
 
-  const balancePayload = await fetchAuthenticatedExchangeBalanceRaw({
+  const balancePayload = await fetchSupportedExchangeBalanceRaw({
     exchange: params.exchange,
     marketType: params.marketType,
     apiKey: params.apiKey,
@@ -398,7 +398,7 @@ const fetchAuthenticatedBalancePreview = async (params: {
 };
 
 export const previewWalletBalance = async (userId: string, payload: WalletBalancePreviewDto) => {
-  assertAuthenticatedExchangeReadSupport(payload.exchange, 'BALANCE_PREVIEW');
+  assertExchangeAdapterOperationSupport(payload.exchange, 'BALANCE_PREVIEW');
 
   const apiKey = await prisma.apiKey.findFirst({
     where: {
@@ -456,7 +456,7 @@ export const previewWalletBalance = async (userId: string, payload: WalletBalanc
             }
           : null,
       fetchedAt: new Date().toISOString(),
-      source: resolveAuthenticatedExchangeReadSource(payload.exchange),
+      source: resolveExchangeAdapterSource(payload.exchange),
     };
   } catch (error) {
     if (isAppErrorLike(error) && error.code === 'WALLET_PREVIEW_FETCH_FAILED') {

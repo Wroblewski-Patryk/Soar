@@ -17,13 +17,19 @@ Last updated: 2026-04-25
 
 ## READY
 
-- [ ] `XADAPT-03 refactor(api-exchange): expose one canonical exchange adapter boundary for write and authenticated-read consumers`
-  - 2026-04-25: `XADAPT-02` published the assumption inventory and ownership map. The next slice is the actual boundary hardening: narrow the generic-looking seams without broadening exchange support.
+- [ ] `XADAPT-05 qa(closure): run focused exchange-adapter closure pack and sync canonical docs/context`
+  - 2026-04-25: `XADAPT-04` locked the new boundary with focused Binance-first contract coverage. The next slice is the closure pack and final queue/context sync for the exchange-hardening wave.
 
 ## BACKLOG
 
 - [x] `XADAPT-02 audit(api-exchange): classify Binance-specific assumptions across orders, exchange, and reconciliation paths`
   - 2026-04-25: Published the classification packet for orders, exchange, and reconciliation paths. The repository now distinguishes intentional Binance-only runtime scope, compatibility-only generic seams, and generic-looking drift risks that `XADAPT-03` must narrow.
+
+- [x] `XADAPT-03 refactor(api-exchange): expose one canonical exchange adapter boundary for write and authenticated-read consumers`
+  - 2026-04-25: Added one code-level capability matrix for authenticated reads plus `LIVE_ORDER_SUBMIT` / `LIVE_ORDER_CANCEL`, introduced `exchangeAdapterBoundary.service.ts` as the single feature-facing exchange boundary, moved `orders.service.ts`, `positions.service.ts`, and `wallets.service.ts` to that boundary, and kept lower-level connector/CCXT seams internal to `exchange`. Validation PASS: `pnpm --filter api exec vitest run src/modules/exchange/exchangeExecutionCapabilityContract.service.test.ts`, `pnpm --filter api exec vitest run src/modules/exchange/exchangeAuthenticatedRead.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
+
+- [x] `XADAPT-04 test(api-binance): add focused Binance adapter contract coverage for live submit and reconciliation-facing reads`
+  - 2026-04-25: Added focused boundary-first coverage in `exchangeAdapterBoundary.service.test.ts` plus capability-matrix coverage in `exchangeExecutionCapabilityContract.service.test.ts`, locking Binance-only read/submit support, explicit `LIVE_ORDER_CANCEL` non-support, unsupported-exchange fail-closed behavior, and live-submit normalization through the new boundary. Validation PASS: `pnpm --filter api exec vitest run src/modules/exchange/exchangeAdapterBoundary.service.test.ts src/modules/exchange/exchangeExecutionCapabilityContract.service.test.ts src/modules/exchange/exchangeAuthenticatedRead.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 
 - [x] `XADAPT-01 docs(contract): freeze exchange execution capability matrix for authenticated reads and write-side execution`
   - 2026-04-25: Updated architecture docs so authenticated reads and write-side execution now share one explicit capability matrix. Frozen V1 truth is: Binance-only support for `BALANCE_PREVIEW`, `POSITIONS_SNAPSHOT`, `OPEN_ORDERS_SNAPSHOT`, and `LIVE_ORDER_SUBMIT`, with `LIVE_ORDER_CANCEL` explicitly unsupported for every exchange until a canonical exchange-cancel boundary exists.

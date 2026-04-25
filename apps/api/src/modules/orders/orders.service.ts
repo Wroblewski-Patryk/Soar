@@ -7,16 +7,8 @@ import {
   ManualOrderContextQuery,
   OpenOrderDto,
 } from './orders.types';
-import { decrypt } from '../../utils/crypto';
-import { CcxtFuturesConnector } from '../exchange/ccxtFuturesConnector.service';
-import { createLiveOrderAdapter } from '../exchange/liveOrderAdapter.service';
 import { CcxtFuturesOrderFill } from '../exchange/ccxtFuturesConnector.types';
-import {
-  createAuthenticatedExchangeConnector,
-  createPublicExchangeConnector,
-} from '../exchange/exchangeConnectorFactory.service';
-import { liveOrderingConfig } from '../../config/runtimeExecution';
-import { isAppErrorLike } from '../../lib/errors';
+import { createPublicExchangeConnector } from '../exchange/exchangeConnectorFactory.service';
 import { orderErrors } from './orders.errors';
 import {
   getManualOrderContext as getManualOrderContextService,
@@ -24,8 +16,13 @@ import {
   type ManualOrderContextDeps,
 } from './orders.manualContext.service';
 import { applyOrderFillLifecycle } from './orders.lifecycle.service';
-import { enforceLivePretradeGuards } from './orders.quantityRules';
 import { resolveInheritedRuntimeExecutionContext } from '../engine/runtimeBotExecutionContext';
+import {
+  resolveLiveExecutionApiKey,
+  submitLiveOrderThroughBoundary,
+} from '../exchange/exchangeAdapterBoundary.service';
+
+export { resolveLiveExecutionApiKey } from '../exchange/exchangeAdapterBoundary.service';
 
 type OpenOrderInput = OpenOrderDto & {
   positionId?: string | null;
@@ -102,29 +99,12 @@ type OpenOrderDeps = {
   }) => Promise<LiveExecutionResult>;
 };
 
-const mapLiveOrderType = (type: OpenOrderDto['type']) => {
-  if (type === 'MARKET') return 'market' as const;
-  if (type === 'LIMIT') return 'limit' as const;
+const resolveSupportedLiveOrderType = (
+  type: OpenOrderDto['type']
+): Extract<OpenOrderDto['type'], 'MARKET' | 'LIMIT'> => {
+  if (type === 'MARKET' || type === 'LIMIT') return type;
   throw orderErrors.liveOrderTypeUnsupported();
 };
-
-const mapLiveOrderStatus = (status: string | undefined, fallbackType: OpenOrderDto['type']) => {
-  if (status) {
-    const normalized = status.toLowerCase();
-    if (normalized.includes('filled') || normalized.includes('closed')) return 'FILLED' as const;
-  }
-  return fallbackType === 'MARKET' ? ('FILLED' as const) : ('OPEN' as const);
-};
-
-const liveMarginLeverageConvergenceCache = new Map<string, { expiresAtMs: number }>();
-
-const getLiveConvergenceCacheKey = (params: {
-  apiKeyId: string;
-  symbol: string;
-  leverage: number | null;
-  marginMode: 'cross' | 'isolated' | null;
-}) =>
-  `${params.apiKeyId}:${params.symbol.toUpperCase()}:${params.leverage ?? 'na'}:${params.marginMode ?? 'na'}`;
 
 const resolveCanonicalBotContext = async (userId: string, payload: OpenOrderInput) => {
   if (!payload.botId) {
@@ -247,61 +227,6 @@ const ensureLiveOrderAllowed = (
   };
 };
 
-type LiveExecutionApiKey = {
-  id: string;
-  exchange: Exchange;
-  apiKey: string;
-  apiSecret: string;
-};
-
-export const resolveLiveExecutionApiKey = async (params: {
-  userId: string;
-  bot: Pick<LiveBotContext, 'exchange' | 'apiKeyId' | 'walletId'>;
-}): Promise<LiveExecutionApiKey> => {
-  if (params.bot.apiKeyId) {
-    const botBoundApiKey = await prisma.apiKey.findFirst({
-      where: { id: params.bot.apiKeyId, userId: params.userId },
-      select: {
-        id: true,
-        exchange: true,
-        apiKey: true,
-        apiSecret: true,
-      },
-    });
-
-    if (botBoundApiKey && botBoundApiKey.exchange === params.bot.exchange) {
-      return botBoundApiKey;
-    }
-  }
-
-  if (params.bot.walletId) {
-    const walletBoundApiKey = await prisma.wallet.findFirst({
-      where: {
-        id: params.bot.walletId,
-        userId: params.userId,
-        exchange: params.bot.exchange,
-        apiKeyId: { not: null },
-      },
-      select: {
-        apiKey: {
-          select: {
-            id: true,
-            exchange: true,
-            apiKey: true,
-            apiSecret: true,
-          },
-        },
-      },
-    });
-
-    if (walletBoundApiKey?.apiKey && walletBoundApiKey.apiKey.exchange === params.bot.exchange) {
-      return walletBoundApiKey.apiKey;
-    }
-  }
-
-  throw orderErrors.liveApiKeyRequired();
-};
-
 const resolveLiveTargetLeverage = async (params: {
   userId: string;
   marketType: 'FUTURES' | 'SPOT';
@@ -354,115 +279,26 @@ export const getManualOrderContext = async (
   return getManualOrderContextService(userId, query, deps);
 };
 
-const convergeLiveMarginAndLeverageIfNeeded = async (params: {
-  connector: CcxtFuturesConnector;
-  apiKeyId: string;
-  symbol: string;
-  targetLeverage: number | null;
-}) => {
-  if (!liveOrderingConfig.convergenceEnabled) return;
-  if (params.targetLeverage == null && liveOrderingConfig.targetMarginMode == null) return;
-
-  const cacheKey = getLiveConvergenceCacheKey({
-    apiKeyId: params.apiKeyId,
-    symbol: params.symbol,
-    leverage: params.targetLeverage,
-    marginMode: liveOrderingConfig.targetMarginMode,
-  });
-  const nowMs = Date.now();
-  const cached = liveMarginLeverageConvergenceCache.get(cacheKey);
-  if (cached && cached.expiresAtMs > nowMs) {
-    return;
-  }
-
-  try {
-    await params.connector.convergeFuturesLeverageAndMargin({
-      symbol: params.symbol,
-      leverage: params.targetLeverage,
-      marginMode: liveOrderingConfig.targetMarginMode,
-    });
-    liveMarginLeverageConvergenceCache.set(cacheKey, {
-      expiresAtMs: nowMs + liveOrderingConfig.convergenceCacheTtlMs,
-    });
-  } catch (error) {
-    if (liveOrderingConfig.convergenceStrict) {
-      throw orderErrors.livePretradeMarginLeverageConvergenceFailed();
-    }
-    const message = error instanceof Error ? error.message : 'unknown_error';
-    console.warn(
-      `[OrdersService] live_margin_leverage_convergence_failed symbol=${params.symbol} apiKey=${params.apiKeyId} error=${message}`
-    );
-  }
-};
-
 const executeLiveOrderOnExchange: OpenOrderDeps['executeLiveOrder'] = async (params) => {
-  const apiKey = await resolveLiveExecutionApiKey({
+  const targetLeverage = await resolveLiveTargetLeverage({
     userId: params.userId,
-    bot: {
-      exchange: params.bot.exchange,
-      apiKeyId: params.bot.apiKeyId,
-      walletId: params.bot.walletId,
-    },
-  });
-
-  const connector = createAuthenticatedExchangeConnector({
-    exchange: apiKey.exchange,
-    apiKey: apiKey.apiKey,
-    apiSecret: apiKey.apiSecret,
     marketType: params.bot.marketType,
+    payload: params.payload,
   });
 
-  const liveAdapter = createLiveOrderAdapter(connector);
-  try {
-    const targetLeverage = await resolveLiveTargetLeverage({
-      userId: params.userId,
-      marketType: params.bot.marketType,
-      payload: params.payload,
-    });
-    await enforceLivePretradeGuards({
-      connector,
-      apiKeyId: apiKey.id,
-      exchange: apiKey.exchange,
-      marketType: params.bot.marketType,
-      payload: params.payload,
-    });
-    await convergeLiveMarginAndLeverageIfNeeded({
-      connector,
-      apiKeyId: apiKey.id,
-      symbol: params.payload.symbol.toUpperCase(),
-      targetLeverage,
-    });
-
-    const result = await liveAdapter.placeLiveOrderWithFees({
-      order: {
-        symbol: params.payload.symbol.toUpperCase(),
-        side: params.payload.side === 'BUY' ? 'buy' : 'sell',
-        type: mapLiveOrderType(params.payload.type),
-        amount: params.payload.quantity,
-        price: params.payload.price,
-        positionMode: params.bot.positionMode,
-      },
-    });
-
-    return {
-      exchangeOrderId: result.exchangeOrderId,
-      status: mapLiveOrderStatus(result.rawOrderStatus ?? result.status, params.payload.type),
-      fee: result.fee,
-      feeSource: result.feeSource,
-      feePending: result.feePending,
-      feeCurrency: result.feeCurrency,
-      effectiveFeeRate: result.effectiveFeeRate,
-      exchangeTradeId: result.exchangeTradeId,
-      fills: result.fills,
-    };
-  } catch (error) {
-    if (isAppErrorLike(error) && error.code.startsWith('LIVE_PRETRADE_')) {
-      throw error;
-    }
-    throw orderErrors.liveExecutionFailed();
-  } finally {
-    await connector.disconnect().catch(() => undefined);
-  }
+  return submitLiveOrderThroughBoundary({
+    userId: params.userId,
+    bot: params.bot,
+    order: {
+      symbol: params.payload.symbol,
+      side: params.payload.side,
+      type: resolveSupportedLiveOrderType(params.payload.type),
+      quantity: params.payload.quantity,
+      price: params.payload.price,
+      strategyId: params.payload.strategyId,
+    },
+    targetLeverage,
+  });
 };
 
 const defaultOpenOrderDeps: OpenOrderDeps = {

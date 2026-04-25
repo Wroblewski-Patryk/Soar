@@ -1,6 +1,11 @@
 import { Exchange } from '@prisma/client';
 
 import { DomainError } from '../../lib/errors';
+import {
+  assertExchangeExecutionCapabilitySupport,
+  resolveExchangeExecutionSource,
+  supportsExchangeExecutionCapability,
+} from './exchangeExecutionCapabilityContract.service';
 
 export const EXCHANGE_AUTHENTICATED_READ_UNSUPPORTED_CODE =
   'EXCHANGE_AUTHENTICATED_READ_UNSUPPORTED' as const;
@@ -9,37 +14,6 @@ export type AuthenticatedExchangeReadOperation =
   | 'BALANCE_PREVIEW'
   | 'POSITIONS_SNAPSHOT'
   | 'OPEN_ORDERS_SNAPSHOT';
-
-const AUTHENTICATED_EXCHANGE_READ_SUPPORT_MATRIX: Record<
-  Exchange,
-  Record<AuthenticatedExchangeReadOperation, boolean>
-> = {
-  BINANCE: {
-    BALANCE_PREVIEW: true,
-    POSITIONS_SNAPSHOT: true,
-    OPEN_ORDERS_SNAPSHOT: true,
-  },
-  BYBIT: {
-    BALANCE_PREVIEW: false,
-    POSITIONS_SNAPSHOT: false,
-    OPEN_ORDERS_SNAPSHOT: false,
-  },
-  OKX: {
-    BALANCE_PREVIEW: false,
-    POSITIONS_SNAPSHOT: false,
-    OPEN_ORDERS_SNAPSHOT: false,
-  },
-  KRAKEN: {
-    BALANCE_PREVIEW: false,
-    POSITIONS_SNAPSHOT: false,
-    OPEN_ORDERS_SNAPSHOT: false,
-  },
-  COINBASE: {
-    BALANCE_PREVIEW: false,
-    POSITIONS_SNAPSHOT: false,
-    OPEN_ORDERS_SNAPSHOT: false,
-  },
-};
 
 export class ExchangeAuthenticatedReadUnsupportedError extends DomainError<{
   exchange: Exchange;
@@ -67,15 +41,18 @@ export class ExchangeAuthenticatedReadUnsupportedError extends DomainError<{
 export const supportsAuthenticatedExchangeRead = (
   exchange: Exchange,
   operation: AuthenticatedExchangeReadOperation
-) => AUTHENTICATED_EXCHANGE_READ_SUPPORT_MATRIX[exchange]?.[operation] ?? false;
+) => supportsExchangeExecutionCapability(exchange, operation);
 
 export const assertAuthenticatedExchangeReadSupport = (
   exchange: Exchange,
   operation: AuthenticatedExchangeReadOperation
 ) => {
-  if (!supportsAuthenticatedExchangeRead(exchange, operation)) {
+  try {
+    assertExchangeExecutionCapabilitySupport(exchange, operation);
+  } catch {
     throw new ExchangeAuthenticatedReadUnsupportedError(exchange, operation);
   }
 };
 
-export const resolveAuthenticatedExchangeReadSource = (exchange: Exchange) => exchange;
+export const resolveAuthenticatedExchangeReadSource = (exchange: Exchange) =>
+  resolveExchangeExecutionSource(exchange);

@@ -2,15 +2,12 @@ import { Exchange, Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import { ListPositionsQuery, UpdatePositionManualParamsInput } from './positions.types';
 import {
-  fetchAuthenticatedExchangeOpenOrdersRaw,
-  fetchAuthenticatedExchangePositionsRaw,
-} from '../exchange/exchangeAuthenticatedRead.service';
-import {
-  ExchangeAuthenticatedReadUnsupportedError,
-  assertAuthenticatedExchangeReadSupport,
-  resolveAuthenticatedExchangeReadSource,
-  supportsAuthenticatedExchangeRead,
-} from '../exchange/exchangeAuthenticatedReadContract.service';
+  fetchSupportedExchangeOpenOrdersRaw,
+  fetchSupportedExchangePositionsRaw,
+  resolveExchangeAdapterSource,
+  supportsExchangeAdapterOperation,
+} from '../exchange/exchangeAdapterBoundary.service';
+import { ExchangeExecutionCapabilityUnsupportedError } from '../exchange/exchangeExecutionCapabilityContract.service';
 
 export type ExchangePositionSnapshotItem = {
   symbol: string;
@@ -274,7 +271,7 @@ const buildSnapshotForApiKey = async (apiKey: ApiKeyRecordForSnapshot): Promise<
       };
     }
 
-    const rawPositions = await fetchAuthenticatedExchangePositionsRaw({
+    const rawPositions = await fetchSupportedExchangePositionsRaw({
       exchange: apiKey.exchange,
       marketType: 'FUTURES',
       apiKey: apiKey.apiKey,
@@ -287,12 +284,12 @@ const buildSnapshotForApiKey = async (apiKey: ApiKeyRecordForSnapshot): Promise<
     });
 
     return {
-      source: resolveAuthenticatedExchangeReadSource(apiKey.exchange),
+      source: resolveExchangeAdapterSource(apiKey.exchange),
       syncedAt: new Date().toISOString(),
       positions: rawPositions.map(normalizeExchangePosition),
     };
   } catch (error) {
-    if (error instanceof ExchangeAuthenticatedReadUnsupportedError) throw error;
+    if (error instanceof ExchangeExecutionCapabilityUnsupportedError) throw error;
     if (error instanceof ExchangeSnapshotError) throw error;
     throw new ExchangeSnapshotError('EXCHANGE_FETCH_FAILED', 'Unable to fetch exchange positions snapshot.');
   }
@@ -328,7 +325,7 @@ const buildOpenOrdersSnapshotForApiKey = async (
   }
 
   try {
-    const rawOrders = await fetchAuthenticatedExchangeOpenOrdersRaw({
+    const rawOrders = await fetchSupportedExchangeOpenOrdersRaw({
       exchange: apiKey.exchange,
       marketType: 'FUTURES',
       apiKey: apiKey.apiKey,
@@ -341,7 +338,7 @@ const buildOpenOrdersSnapshotForApiKey = async (
     });
 
     return {
-      source: resolveAuthenticatedExchangeReadSource(apiKey.exchange),
+      source: resolveExchangeAdapterSource(apiKey.exchange),
       syncedAt: new Date().toISOString(),
       orders: rawOrders.map(normalizeExchangeOpenOrder),
     };
@@ -486,7 +483,7 @@ export const fetchExchangePositionsSnapshot = async (userId: string): Promise<Ex
       userId,
       exchange: {
         in: (['BINANCE', 'BYBIT', 'OKX', 'KRAKEN', 'COINBASE'] as const).filter((exchange) =>
-          supportsAuthenticatedExchangeRead(exchange, 'POSITIONS_SNAPSHOT')
+          supportsExchangeAdapterOperation(exchange, 'POSITIONS_SNAPSHOT')
         ),
       },
     },
@@ -510,7 +507,6 @@ export const fetchExchangePositionsSnapshot = async (userId: string): Promise<Ex
   }
 
   const [apiKey] = eligibleApiKeys;
-  assertAuthenticatedExchangeReadSupport(apiKey.exchange, 'POSITIONS_SNAPSHOT');
   return buildSnapshotForApiKey(apiKey);
 };
 
@@ -535,7 +531,6 @@ export const fetchExchangePositionsSnapshotByApiKeyId = async (
     throw new ExchangeSnapshotError('API_KEY_NOT_FOUND', 'No supported exchange API key configured.');
   }
 
-  assertAuthenticatedExchangeReadSupport(apiKey.exchange, 'POSITIONS_SNAPSHOT');
   return buildSnapshotForApiKey(apiKey);
 };
 
@@ -560,7 +555,6 @@ export const fetchExchangeOpenOrdersSnapshotByApiKeyId = async (
     throw new ExchangeSnapshotError('API_KEY_NOT_FOUND', 'No supported exchange API key configured.');
   }
 
-  assertAuthenticatedExchangeReadSupport(apiKey.exchange, 'OPEN_ORDERS_SNAPSHOT');
   return buildOpenOrdersSnapshotForApiKey(apiKey);
 };
 
