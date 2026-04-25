@@ -20,6 +20,9 @@ Last updated: 2026-04-25
 
 ## BACKLOG
 
+- [x] `V1DEPLOY-2026-04-25-A ops/web-image: restore production web Docker build parity after build-metadata rollout`
+  - 2026-04-25: Fixed the production-only deploy regression introduced after deploy-truth hardening. `apps/web/Dockerfile` now copies the repo `scripts/` directory into the build stage, so the existing `web` build contract `node ../../scripts/writeWebBuildMetadata.mjs && next build` remains valid inside Coolify just as it does locally. Validation PASS: `pnpm --filter web run build`, `docker build -f apps/web/Dockerfile -t soar-web-localfix .`.
+
 - [x] `V1TAKE-09 web(wallet-ui): remove API-key takeover toggles and keep wallet as the single editable management switch`
   - 2026-04-25: Removed the legacy API-key takeover/import switches from `ApiKeyForm` and deleted the helper bot-takeover list that depended on API-key-level management. The wallet form remains the only editable takeover-management surface, while API-key saves still submit compatibility-safe `syncExternalPositions=true` and `manageExternalPositions=false` defaults behind the scenes. Validation PASS: `pnpm --filter web exec vitest run src/features/profile/components/ApiKeyForm.test.tsx src/features/wallets/components/WalletCreateEditForm.test.tsx src/features/wallets/components/WalletsListTable.test.tsx`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
 

@@ -17,6 +17,7 @@ RUN pnpm install --frozen-lockfile
 FROM deps AS build
 COPY apps/web apps/web
 COPY libs/shared libs/shared
+COPY scripts scripts
 RUN pnpm --filter web build
 
 FROM node:20-bookworm-slim AS runtime

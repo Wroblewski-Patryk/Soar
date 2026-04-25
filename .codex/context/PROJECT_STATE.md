@@ -49,6 +49,7 @@ Last updated: 2026-04-25
   `EXCHANGE_SYNC BOT_MANAGED` LIVE runtime position visibility/close flows.
 
 ## Product Decisions (Confirmed)
+- 2026-04-25: closed `V1DEPLOY-2026-04-25-A` as the production web-image parity fix after the deploy-truth hardening slice. The production `apps/web/Dockerfile` now copies the repository `scripts/` directory into the build stage, preserving the approved web build contract `node ../../scripts/writeWebBuildMetadata.mjs && next build` inside Coolify. Validation PASS: `pnpm --filter web run build`, `docker build -f apps/web/Dockerfile -t soar-web-localfix .`.
 - 2026-04-25: closed `V1TAKE-09` as the wallet-single-switch UI cleanup
   slice. The web UI now exposes exactly one editable takeover-management
   switch on the wallet form, while the API key form no longer renders the
