@@ -17,7 +17,8 @@ Last updated: 2026-04-25
 
 ## READY
 
-- [ ] (none)
+- [ ] `XVENUE-01 docs(contract): freeze exact exchange-context and adapter-family model`
+  - 2026-04-25: User approved the scalable target model: exact `(exchange, marketType)` context, no mixing between exchanges or between `SPOT` and `FUTURES`, narrow adapter families under one registry, and worker health/readiness brought in line with the full deployed topology where needed.
 
 ## BACKLOG
 

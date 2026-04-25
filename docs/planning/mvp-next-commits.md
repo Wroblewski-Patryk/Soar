@@ -7,11 +7,16 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] (none)
+- [ ] `XVENUE-01 docs(contract): freeze exact exchange-context and adapter-family model`
 ## NEXT
-- [ ] derive the next smallest executable slice only when a new approved goal or a real product regression appears
+- [ ] `XVENUE-02 audit(api): inventory boundary leaks and direct exchange SDK usage`
 ## PIPELINE
-- [ ] (none)
+- [ ] `XVENUE-03 docs(contract): freeze capability matrix migration rules`
+- [ ] `XVENUE-04 refactor(api-exchange): registry-driven adapter-family entrypoints`
+- [ ] `XVENUE-05 refactor(api-markets-engine): remove direct exchange SDK access from feature modules`
+- [ ] `XVENUE-06 test(api): add no-mixing parity coverage`
+- [ ] `XVENUE-07 refactor(api-ops): align worker topology truth`
+- [ ] `XVENUE-08 qa(closure): rerun focused closure pack and sync docs/context`
 - [x] `XADAPT-02 audit(api-exchange): classify Binance-specific assumptions across orders, exchange, and reconciliation paths`
 - [x] `XADAPT-01 docs(contract): freeze exchange execution capability matrix for authenticated reads and write-side execution`
 - [x] `XADAPT-03 refactor(api-exchange): expose one canonical exchange adapter boundary for write and authenticated-read consumers`

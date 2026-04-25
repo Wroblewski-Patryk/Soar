@@ -11,6 +11,17 @@ Define how Soar turns market inputs into deterministic trading decisions.
 - runtime wallet and bot context
 - open-position and risk state
 
+All market inputs are scoped by the inherited `ExchangeContext`
+`(exchange, marketType)`.
+
+This means:
+- `SPOT` indicators and signals are derived from `SPOT` candles and `SPOT`
+  pricing only
+- `FUTURES` indicators and signals are derived from `FUTURES` candles and
+  `FUTURES` pricing only
+- one exchange's market data must not be reused as another exchange's signal
+  input
+
 ## Strategy Schema
 The MVP strategy schema is structured around:
 - `entry`
@@ -48,6 +59,11 @@ runtime/backtest evaluation. A configured market snapshot may be shown before
 runtime has emitted a decision, but it must still use canonical
 closed-candle/derivatives analysis semantics and must not invent subset-only
 fallback values such as `X`.
+
+The indicator registry is shared, but indicator input data is not shared across
+venue pairs. The same indicator definition may run on many exchanges and market
+types, yet each execution must consume the exact candles and derivatives context
+ for the current `(exchange, marketType)` pair.
 
 ## Evaluation Unit
 The canonical evaluation unit is:

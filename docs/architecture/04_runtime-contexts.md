@@ -13,6 +13,23 @@ Define who owns the runtime context required to make and execute trading decisio
 }
 ```
 
+### ExchangeContext
+```json
+{
+  "exchange": "BINANCE | BYBIT | OKX | KRAKEN | COINBASE",
+  "marketType": "SPOT | FUTURES"
+}
+```
+
+`ExchangeContext` is the minimal market-data and execution context. It is
+always resolved as the exact pair `(exchange, marketType)`.
+
+The system must not widen, merge, or substitute one side of that pair:
+- no fallback from `FUTURES` to `SPOT`
+- no fallback from one exchange to another
+- no reuse of symbol rules, candles, indicators, or prices from another
+  exchange/market type pair
+
 ### WalletExecutionContext
 ```json
 {
@@ -45,6 +62,13 @@ Define who owns the runtime context required to make and execute trading decisio
 
 `SymbolGroup`, `Bot`, and `BacktestRun` inherit from this context. They do not invent their own venue context.
 
+The inherited venue context is exact:
+- `BINANCE + FUTURES` is a different market context from `BINANCE + SPOT`
+- `BINANCE + SPOT` is a different market context from `BYBIT + SPOT`
+
+Every downstream runtime consumer must preserve that exact context instead of
+silently normalizing to a Binance-only or spot-only assumption.
+
 ### Wallet owns execution context
 - `mode`
 - compatible exchange credential binding for `LIVE`
@@ -66,6 +90,10 @@ Define who owns the runtime context required to make and execute trading decisio
 - wallet and symbol-group venue contexts must be compatible; bot does not resolve conflicts by guessing
 - `LIVE` bot execution requires a compatible wallet and API key context
 - no hidden fallback from one venue context to another
+- no hidden fallback from one `(exchange, marketType)` pair to another
+- prices, candles, indicators, signal inputs, symbol rules, and execution
+  commands must all resolve from the same inherited `(exchange, marketType)`
+  pair
 - selected-bot reads and writes are strict and fail-closed
 - a bot cannot own more than one symbol-group market scope or more than one strategy
 

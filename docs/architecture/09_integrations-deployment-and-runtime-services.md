@@ -8,12 +8,56 @@ Define how Soar integrates with exchanges and how runtime services are deployed 
 - the browser never owns direct exchange transport
 - server-side infrastructure owns live stream fan-out and execution commands
 
+The canonical integration key is `ExchangeContext = (exchange, marketType)`.
+All exchange-owned behavior must resolve through that exact pair.
+
+### Canonical Adapter Family Model
+The approved scalable model is a family of narrow adapters behind one registry,
+not one growing generic service and not feature modules importing exchange SDKs
+directly.
+
+Approved adapter families:
+- `ExchangeMarketDataAdapter`
+- `ExchangeMetadataAdapter`
+- `ExchangeAccountAdapter`
+- `ExchangeExecutionAdapter`
+
+The registry key is the exact `(exchange, marketType)` pair.
+
+Examples:
+- `BINANCE + FUTURES`
+- `BINANCE + SPOT`
+- `BYBIT + FUTURES`
+
+These pairs are different market domains. They must not share pricing,
+indicator input, symbol rules, or account-read assumptions unless an adapter
+explicitly owns that normalization.
+
+### Canonical Boundary Rule
+Feature modules outside `modules/exchange` must not import exchange SDKs or
+exchange-specific constructors directly.
+
+This includes:
+- `ccxt`
+- hardcoded `binance` or `binanceusdm` clients
+- exchange REST endpoints embedded directly in non-exchange modules
+
+`engine`, `markets`, `wallets`, `orders`, and other consumers must depend on
+the exchange adapter families instead of low-level exchange clients.
+
 For V1 capability truth:
 - authenticated exchange reads and write-side execution are separate support
   families
 - `LIVE_EXECUTION` alone is not enough to imply account-read or cancel support
 - the canonical support matrix lives in
   `reference/exchange-access-ownership-matrix.md`
+
+The next-step scalable matrix must resolve support by:
+- `exchange`
+- `marketType`
+- `operation family`
+
+Not just by a broad exchange-level flag.
 
 ## Stream Contract
 Current frontend live-stream transport is:
@@ -36,6 +80,16 @@ Worker ownership contract:
 - allowed local/test fallback = inline ownership where explicitly chosen
 - emergency degraded deploy fallback may be temporarily inline, but it must be
   treated as degraded and operator-visible rather than as canonical parity
+
+Worker health and readiness must model the full deployed topology rather than a
+partial subset. The canonical topology is:
+- `market-data`
+- `market-stream`
+- `backtest`
+- `execution`
+
+Health/readiness surfaces must not imply full split-worker conformity if only a
+subset of those worker families is being checked.
 
 ## Health and Readiness
 Canonical health surfaces:

@@ -2694,6 +2694,19 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-25: Closed `V1REG-04` by classifying all remaining non-green checklist verdicts. No new `V1REG-Fxx` product task was justified from the current evidence set: `F09`, `F10`, and `F12` remain owned by already-closed waves with no fresh regression isolated, while the broader remaining gaps are infra-only blockers tied to local Docker/Postgres availability and local API critical-secret readiness.
 - 2026-04-25: Closed `V1REG-05` and with it the full `V1REG-A` verification loop. Web closure packs and non-DB API closure packs remained green, typechecks and repository guardrails remained green, and DB-backed auth/API rerun still failed only on the known local Postgres blocker at `localhost:5432`. No new product regression was isolated, so the reusable protocol now stands as a closed artifact rather than an active queue item.
 
+## Phase XVENUE-A - Exact Exchange-Context and Worker-Topology Hardening (Queued 2026-04-25)
+- [ ] `XVENUE-01 docs(contract): freeze exact exchange-context and adapter-family model`
+- [ ] `XVENUE-02 audit(api): inventory boundary leaks and direct exchange SDK usage`
+- [ ] `XVENUE-03 docs(contract): freeze capability matrix migration rules`
+- [ ] `XVENUE-04 refactor(api-exchange): registry-driven adapter-family entrypoints`
+- [ ] `XVENUE-05 refactor(api-markets-engine): remove direct exchange SDK access from feature modules`
+- [ ] `XVENUE-06 test(api): add no-mixing parity coverage`
+- [ ] `XVENUE-07 refactor(api-ops): align worker topology truth`
+- [ ] `XVENUE-08 qa(closure): rerun focused closure pack and sync docs/context`
+
+### Progress Log (Phase XVENUE-A - Exact Exchange-Context and Worker-Topology Hardening)
+- 2026-04-25: Queued `XVENUE-A` after user-approved clarification of the target model. Exchange behavior must be driven by the exact `(exchange, marketType)` pair selected by the user; `SPOT` and `FUTURES` must remain separate market domains; one exchange must not reuse another exchange's prices, candles, indicators, or signal inputs; the scalable implementation model is a family of narrow adapters under one registry; and worker health/readiness should be brought in line with the full deployed topology where needed. Published `docs/planning/exchange-context-and-worker-topology-hardening-plan-2026-04-25.md`.
+
 ## Phase ARCCON - Architecture Conformance and Service Ownership Closure (Closed 2026-04-21)
 - [x] `ARCCON-01 test(api-red): lock fail-closed manual-order strategy context when selected bot has no symbol-matching strategy`
 - [x] `ARCCON-02 fix(api-orders): remove hidden first-strategy fallback from manual-order context resolution and keep unresolved state explicit`

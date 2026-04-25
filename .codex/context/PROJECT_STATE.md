@@ -188,6 +188,15 @@ Last updated: 2026-04-25
   `localhost:5432`). The repository now has a reusable architecture-based V1
   verification protocol with no active follow-up task until either local infra
   is restored for a fuller rerun or a real new product regression is observed.
+- 2026-04-25: approved the next exchange/runtime architecture direction after a
+  fresh audit. The target model is now explicit: all exchange-owned behavior
+  must resolve from the exact `(exchange, marketType)` pair; `SPOT` and
+  `FUTURES` must never mix prices, candles, indicators, or signal inputs; the
+  scalable implementation model is a family of narrow adapters under one
+  registry; and worker health/readiness should be aligned with the full
+  deployed topology where needed. Published
+  `docs/planning/exchange-context-and-worker-topology-hardening-plan-2026-04-25.md`
+  and queued `XVENUE-01..08`.
 - 2026-04-25: closed `DEPLOY-2026-04-25-B` as the validation-only follow-up to
   the same-day Coolify hotfix. Local `pnpm --filter web run build` now passes
   cleanly again, confirming the previously reported web deploy gate is no
