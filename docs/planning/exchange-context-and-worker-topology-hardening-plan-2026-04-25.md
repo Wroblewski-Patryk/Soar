@@ -118,12 +118,13 @@ implementation
 - [x] freeze the no-mixing rule for prices/candles/indicators/signals
 
 ### XVENUE-02 audit(api): inventory direct exchange access and boundary leaks outside `modules/exchange`
-- locate every non-exchange-module import of `ccxt` or exchange-specific client construction
-- classify each leak by adapter family target:
+- [x] locate every confirmed non-exchange-module import of `ccxt` or exchange-specific client construction
+- [x] classify each confirmed leak by adapter family target:
   - market data
   - metadata
   - account
   - execution
+- [x] publish worker-topology drift inventory for the later ops slice
 
 ### XVENUE-03 docs(contract): freeze capability matrix evolution toward `(exchange, marketType, operation)`
 - define the target capability matrix shape
@@ -181,3 +182,13 @@ Context:
 5. `XVENUE-06 test(api): add no-mixing parity coverage`
 6. `XVENUE-07 refactor(api-ops): align worker topology truth`
 7. `XVENUE-08 qa(closure): rerun focused closure pack and sync docs/context`
+
+## Progress Log
+
+- 2026-04-25: Closed `XVENUE-02` by publishing
+  `docs/planning/xvenue-02-exchange-boundary-leak-audit-2026-04-25.md` plus
+  the task packet `docs/planning/xvenue-02-boundary-leak-audit-task-2026-04-25.md`.
+  The audit confirms direct exchange boundary leaks in `markets`, `engine`,
+  `bots`, `backtests`, and profile API-key probing, plus narrower-than-approved
+  worker topology truth in `/workers/*` and `workerOwnership.ts`. The queue now
+  advances to `XVENUE-03`.

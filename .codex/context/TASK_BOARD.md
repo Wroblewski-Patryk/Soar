@@ -17,8 +17,8 @@ Last updated: 2026-04-25
 
 ## READY
 
-- [ ] `XVENUE-02 audit(api): inventory boundary leaks and direct exchange SDK usage`
-  - 2026-04-25: `XVENUE-01` froze the approved architecture contract. The next slice is the concrete code audit of direct exchange SDK usage and boundary leaks outside `modules/exchange`.
+- [ ] `XVENUE-03 docs(contract): freeze capability matrix migration rules`
+  - 2026-04-25: `XVENUE-02` closed the concrete leak audit across markets, engine, bots, backtests, API-key probing, and worker topology surfaces. The next slice is to freeze how capability truth migrates from exchange-only flags toward exact `(exchange, marketType, operation)` semantics without over-claiming support.
 
 ## BACKLOG
 
@@ -89,6 +89,9 @@ Last updated: 2026-04-25
 
 - [x] `XVENUE-01 docs(contract): freeze exact exchange-context and adapter-family model`
   - 2026-04-25: Froze the approved exchange/runtime architecture in canonical docs. `04_runtime-contexts.md`, `05_strategy-signal-and-decision-flow.md`, and `09_integrations-deployment-and-runtime-services.md` now explicitly require exact `(exchange, marketType)` context, forbid mixing `SPOT` and `FUTURES` or cross-exchange market-data reuse, freeze the narrow adapter-family model, and require worker health/readiness to reflect the full deployed topology.
+
+- [x] `XVENUE-02 audit(api): inventory boundary leaks and direct exchange SDK usage`
+  - 2026-04-25: Published `docs/planning/xvenue-02-exchange-boundary-leak-audit-2026-04-25.md`, which inventories the confirmed direct exchange leaks still living outside `modules/exchange`: market catalog and public ticker access in `markets.service.ts`, live balance reads in `runtimeCapitalContext.service.ts`, runtime/backtest Binance REST dependencies in `runtimeSignalMarketDataGateway.ts`, `runtimeMarketDataFallback.service.ts`, and `backtestDataGateway.ts`, Binance-specific API-key probing outside the exchange module, and worker topology drift in `/workers/*` plus `workerOwnership.ts`. This closes the audit uncertainty and moves the queue to `XVENUE-03`.
 
 - [x] `V1COH-01 test(api-red): lock manual LIVE order against out-of-scope symbol and unresolved strategy context`
   - 2026-04-25: Added focused service and API e2e regressions proving manual `LIVE` open is rejected when the selected bot has no canonical symbol-matching strategy scope, and that accepted `LIVE` fixtures must provide the full inherited bot context.

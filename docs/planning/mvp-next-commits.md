@@ -7,9 +7,9 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `XVENUE-02 audit(api): inventory boundary leaks and direct exchange SDK usage`
-## NEXT
 - [ ] `XVENUE-03 docs(contract): freeze capability matrix migration rules`
+## NEXT
+- [ ] `XVENUE-04 refactor(api-exchange): registry-driven adapter-family entrypoints`
 ## PIPELINE
 - [ ] `XVENUE-04 refactor(api-exchange): registry-driven adapter-family entrypoints`
 - [ ] `XVENUE-05 refactor(api-markets-engine): remove direct exchange SDK access from feature modules`

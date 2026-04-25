@@ -197,6 +197,15 @@ Last updated: 2026-04-25
   deployed topology where needed. Published
   `docs/planning/exchange-context-and-worker-topology-hardening-plan-2026-04-25.md`
   and queued `XVENUE-01..08`.
+- 2026-04-25: closed `XVENUE-02` as the concrete code-audit slice for the new
+  exchange-context wave. The repository now has one leak inventory in
+  `docs/planning/xvenue-02-exchange-boundary-leak-audit-2026-04-25.md`
+  confirming that direct exchange-specific behavior still exists outside
+  `modules/exchange` across `markets`, `engine`, `bots`, `backtests`, and
+  profile API-key probing, while worker health/readiness still models only part
+  of the approved topology. No implementation claim changed in this slice; it
+  simply freezes the migration map so `XVENUE-03` can define the exact
+  capability-matrix evolution without guesswork.
 - 2026-04-25: closed `DEPLOY-2026-04-25-B` as the validation-only follow-up to
   the same-day Coolify hotfix. Local `pnpm --filter web run build` now passes
   cleanly again, confirming the previously reported web deploy gate is no
