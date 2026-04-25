@@ -13,7 +13,7 @@
   - bots LIVE confirmations,
   - shell/accessibility smoke.
 
-### Latest Verification (2026-04-22)
+### Latest Verification (2026-04-25)
 - `pnpm --filter api build` passed.
 - `pnpm --filter web build` passed.
 - `pnpm --filter api test -- src/modules/auth/auth.e2e.test.ts src/modules/exchange/liveOrderAdapter.service.test.ts src/router/health-readiness.test.ts src/router/workers-health-readiness.test.ts src/router/metrics.test.ts src/router/alerts.test.ts` passed (`6` files, `20` tests).
@@ -98,8 +98,8 @@
 - [x] RC owner assigned with rollback authority.
 - Sign-off record template: `docs/operations/v1-rc-signoff-record.md`.
 
-## Outstanding External Gates (2026-04-22)
-- current snapshot is `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS` (synced 2026-04-22).
+## Outstanding External Gates (2026-04-25)
+- current snapshot is `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS` (synced 2026-04-25).
 - Execution guide: `docs/operations/v1-rc-external-gates-runbook.md`.
 - SLO definitions and metric mapping: `docs/operations/v1-slo-catalog.md`.
 - Binance live bot-control verification checklist: `docs/operations/binance-live-ops-verification-checklist-2026-04-06.md`.

@@ -925,6 +925,174 @@ describe('Orders and positions read contract', () => {
     ).toBe(false);
   });
 
+  it('keeps manual LIVE MARKET visibility truthful from submitted order through exchange-synced adoption', async () => {
+    const ownerAgent = await registerAndLogin('manual-live-market-reconciled-owner@example.com');
+    const ownerId = await getUserId('manual-live-market-reconciled-owner@example.com');
+
+    const liveStrategy = await prisma.strategy.create({
+      data: {
+        userId: ownerId,
+        name: 'Manual live market strategy',
+        interval: '1m',
+        leverage: 5,
+        walletRisk: 1,
+        config: {
+          additional: {
+            orderType: 'MARKET',
+            marginMode: 'ISOLATED',
+          },
+        },
+      },
+    });
+    const liveWallet = await prisma.wallet.create({
+      data: {
+        userId: ownerId,
+        name: 'Manual live market wallet',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const liveScope = await createMarketScope({
+      userId: ownerId,
+      name: 'Manual live market scope',
+      symbols: ['BTCUSDT'],
+    });
+    const liveBot = await prisma.bot.create({
+      data: {
+        userId: ownerId,
+        name: 'Manual live market bot',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'mvp-v1',
+        walletId: liveWallet.id,
+        symbolGroupId: liveScope.id,
+        strategyId: liveStrategy.id,
+      },
+    });
+
+    const liveSession = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerId,
+        botId: liveBot.id,
+        mode: 'LIVE',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-24T22:00:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-24T22:00:30.000Z'),
+      },
+    });
+
+    const submittedOrder = await prisma.order.create({
+      data: {
+        userId: ownerId,
+        botId: liveBot.id,
+        walletId: liveWallet.id,
+        strategyId: liveStrategy.id,
+        symbol: 'BTCUSDT',
+        side: 'BUY',
+        type: 'MARKET',
+        status: 'OPEN',
+        quantity: 0.03,
+        filledQuantity: 0,
+        price: null,
+        origin: 'USER',
+        managementMode: 'BOT_MANAGED',
+        exchangeOrderId: 'manual-live-market-1',
+        submittedAt: new Date('2026-04-24T22:00:15.000Z'),
+        createdAt: new Date('2026-04-24T22:00:15.000Z'),
+      },
+    });
+
+    const submittedOrderRes = await ownerAgent.get(`/dashboard/orders/${submittedOrder.id}`);
+    expect(submittedOrderRes.status).toBe(200);
+    expect(submittedOrderRes.body.status).toBe('OPEN');
+    expect(submittedOrderRes.body.positionId).toBeNull();
+    expect(submittedOrderRes.body.exchangeOrderId).toBe('manual-live-market-1');
+
+    const submittedRuntimeRes = await ownerAgent.get(
+      `/dashboard/bots/${liveBot.id}/runtime-sessions/${liveSession.id}/positions`
+    );
+    expect(submittedRuntimeRes.status).toBe(200);
+    expect(submittedRuntimeRes.body.openOrdersCount).toBe(1);
+    expect(
+      submittedRuntimeRes.body.openOrders.some((item: { id: string }) => item.id === submittedOrder.id)
+    ).toBe(true);
+    expect(submittedRuntimeRes.body.openItems).toHaveLength(0);
+
+    await prisma.order.create({
+      data: {
+        userId: ownerId,
+        botId: null,
+        walletId: null,
+        strategyId: null,
+        symbol: 'BTCUSDT',
+        side: 'BUY',
+        type: 'MARKET',
+        status: 'OPEN',
+        quantity: 0.03,
+        filledQuantity: 0,
+        price: null,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        exchangeOrderId: 'manual-live-market-1',
+        submittedAt: new Date('2026-04-24T22:00:18.000Z'),
+        createdAt: new Date('2026-04-24T22:00:18.000Z'),
+      },
+    });
+
+    const syncedOpenOrderRuntimeRes = await ownerAgent.get(
+      `/dashboard/bots/${liveBot.id}/runtime-sessions/${liveSession.id}/positions`
+    );
+    expect(syncedOpenOrderRuntimeRes.status).toBe(200);
+    expect(syncedOpenOrderRuntimeRes.body.openOrdersCount).toBe(1);
+    expect(
+      syncedOpenOrderRuntimeRes.body.openOrders.some(
+        (item: { origin?: string; exchangeOrderId?: string }) =>
+          item.origin === 'EXCHANGE_SYNC' && item.exchangeOrderId === 'manual-live-market-1'
+      )
+    ).toBe(true);
+    expect(
+      syncedOpenOrderRuntimeRes.body.openOrders.filter(
+        (item: { exchangeOrderId?: string }) => item.exchangeOrderId === 'manual-live-market-1'
+      )
+    ).toHaveLength(1);
+    expect(syncedOpenOrderRuntimeRes.body.openItems).toHaveLength(0);
+
+    const exchangePosition = await prisma.position.create({
+      data: {
+        userId: ownerId,
+        botId: null,
+        walletId: null,
+        strategyId: null,
+        externalId: 'manual-live-market-1:BTCUSDT:LONG',
+        symbol: 'BTCUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 64_050,
+        quantity: 0.03,
+        leverage: 5,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        openedAt: new Date('2026-04-24T22:00:20.000Z'),
+      },
+    });
+
+    const adoptedPositionRuntimeRes = await ownerAgent.get(
+      `/dashboard/bots/${liveBot.id}/runtime-sessions/${liveSession.id}/positions`
+    );
+    expect(adoptedPositionRuntimeRes.status).toBe(200);
+    expect(
+      adoptedPositionRuntimeRes.body.openItems.some((item: { id: string }) => item.id === exchangePosition.id)
+    ).toBe(true);
+  });
+
   it('supports open/cancel/close write endpoints with LIVE risk guards', async () => {
     const ownerAgent = await registerAndLogin('orders-write-owner@example.com');
     const ownerId = await getUserId('orders-write-owner@example.com');

@@ -49,6 +49,14 @@ Last updated: 2026-04-25
   `EXCHANGE_SYNC BOT_MANAGED` LIVE runtime position visibility/close flows.
 
 ## Product Decisions (Confirmed)
+- 2026-04-25: published a reusable V1 architecture functionality checklist and
+  verification loop. Canonical artifact:
+  `docs/operations/v1-architecture-functionality-regression-checklist-2026-04-25.md`.
+  It maps architecture-defined V1 functions to current implementation status,
+  automated test files, manual browser flows, and follow-up task families, so
+  future weekly or post-deploy regression work can execute function-by-function
+  without re-auditing the architecture set from scratch.
+- 2026-04-25: queued `XADAPT-A` as the next post-`V1COH-A` engineering wave for exchange-boundary hardening. The approved direction is not to add a second exchange immediately, but to first freeze one truthful capability matrix for authenticated reads and write-side execution, classify residual Binance-specific assumptions behind generic-looking APIs, lock Binance against a focused adapter contract pack, and only then publish a staged next-exchange rollout packet.
 - 2026-04-25: queued `V1COH-A` after a fresh residual execution audit driven by
   reported doubt around manual `LIVE` opens. The current highest-priority gap
   is now execution cohesion rather than a missing feature wave: manual `LIVE`
@@ -62,6 +70,36 @@ Last updated: 2026-04-25
   duplicated bot snapshot venue fields. Focused `orders.service` and
   route-level regressions now lock both the fail-closed cases and valid scoped
   `LIVE` fixtures under the canonical singular bot contract.
+- 2026-04-25: closed `V1COH-03` as the red runtime-truth lock for manual
+  `LIVE MARKET` submitted->reconciled behavior. The repository now has one
+  focused service regression proving a manual `LIVE` market open can remain
+  `OPEN/submitted` with `waitingForFill=true` and no position when exchange
+  placement returns no fill truth, and one route-level runtime regression that
+  currently fails exactly on the next missing step: `EXCHANGE_SYNC` open-order
+  visibility is not yet adopted into runtime reads before later
+  `EXCHANGE_SYNC` position visibility. This makes `V1COH-04` the next smallest
+  honest fix slice.
+- 2026-04-25: closed `V1COH-04` by tightening runtime adoption for manual
+  `LIVE` opens at the read-model boundary. Runtime session positions now apply
+  the same symbol-ownership adoption rule to eligible `EXCHANGE_SYNC`
+  open-order rows that was already used for external positions, and open-order
+  presentation deduplicates manual-vs-synced rows by `exchangeOrderId` with
+  preference for the exchange-synced record. The resulting runtime truth is
+  now explicit and non-duplicative across the backend stages
+  `submitted -> imported_open_order -> position_opened`, making the remaining
+  gap primarily an operator-surface/web-state problem in `V1COH-05`.
+- 2026-04-25: closed `V1COH-05` by exposing explicit manual `LIVE` action
+  states on dashboard-home runtime surfaces. The manual-order sidebar now
+  renders localized `submitted`, `waiting_for_fill`, `imported_open_order`,
+  `position_opened`, and `blocked` states derived from the already-hardened
+  runtime order and position truth, so operators no longer need to infer
+  progress from generic fallback wording.
+- 2026-04-25: closed `V1COH-06` with a focused closure pack across the touched
+  backend and web surfaces. Manual `LIVE` execution cohesion is now backed by
+  passing API regressions for submitted->imported order->position truth,
+  passing dashboard/manual-order regressions for the explicit operator states,
+  passing API and web typechecks, and a green repository guardrail pass after
+  splitting oversized manual-order UI coverage into its own test file.
 - 2026-04-25: queued `V1READY-2026-04-25-A` after a fresh V1 audit showed that
   the remaining gap to a clean V1 claim is no longer an engineering feature
   slice. The repository now needs one canonical reconciliation pass across
@@ -69,6 +107,20 @@ Last updated: 2026-04-25
   sign-off record, and the RC checklist/status artifacts so it can state
   honestly whether V1 is already achieved or still blocked only by explicit
   operator-owned sign-off steps.
+- 2026-04-25: closed `V1READY-2026-04-25-A` as the final activation-truth
+  reconciliation pass. The canonical answer is now fail-closed and explicit:
+  V1 engineering scope is complete, but formal activation remains blocked by
+  one inconsistent RC sign-off artifact rather than by missing product or
+  runtime work. The next honest slice is `V1READY-2026-04-25-B`, an
+  operator-owned rebuild of the RC sign-off artifact plus checklist/status
+  resync before any final `READY` claim.
+- 2026-04-25: closed `V1READY-2026-04-25-B` by rebuilding the RC sign-off
+  artifact, refreshing RC external gate status, rebuilding sign-off once more
+  so its own snapshot captured `G4=PASS`, and resyncing the RC checklist.
+  Canonical V1 activation truth is now internally consistent again: activation
+  pack, activation closure, RC gates status, RC checklist, RC sign-off record,
+  and planning/context docs all agree that V1 is approved from the current
+  repository evidence set.
 - 2026-04-25: closed `DEPLOY-2026-04-25-B` as the validation-only follow-up to
   the same-day Coolify hotfix. Local `pnpm --filter web run build` now passes
   cleanly again, confirming the previously reported web deploy gate is no
@@ -563,9 +615,11 @@ Last updated: 2026-04-25
 - 2026-04-22: `scripts/runV1ReleaseGate.mjs` now selects the latest same-day
   evidence artifact by full timestamp-bearing filename, preventing older
   same-day restore-drill failures from shadowing newer PASS artifacts.
-- 2026-04-22: formal RC sign-off is now recorded with Gate 4 closed to `PASS`,
-  so the V1 production activation packet is fully approved from the current
-  repository evidence set.
+- 2026-04-22: formal RC sign-off was recorded, but the later `2026-04-25`
+  activation-truth reconciliation found the generated sign-off artifact to be
+  internally inconsistent (`PASS, PASS, PASS, OPEN` plus `RC status:
+  APPROVED`), so V1 must remain operator-blocked until the sign-off record is
+  rebuilt and checklist/status are resynced from the corrected source.
 - 2026-04-22: `SAFEV1-A1` is closed; exchange reconciliation now refuses to
   create or update open synced positions when canonical entry truth is missing,
   keeping incomplete exchange snapshots out of the local open-position model.

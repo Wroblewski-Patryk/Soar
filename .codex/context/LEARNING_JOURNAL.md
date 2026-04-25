@@ -387,6 +387,21 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Evidence:
   - 2026-04-22 production deploy on `49ea8e0c`: public smoke PASS, internal `/workers/health`, `/workers/runtime-freshness`, `/alerts` PASS, but external protected OPS endpoints remained `403`, leaving prod proof generation and final activation sign-off still blocked.
 
+### 2026-04-25 - Final activation status must fail closed when RC sign-off artifacts disagree with gate snapshots
+- Context: `V1READY-2026-04-25-A` audited the post-hardening activation artifacts after `V1COH-A` closed.
+- Symptom: the repository simultaneously claimed V1 `APPROVED` in the activation pack and project state, while the RC sign-off record still captured gate values `PASS, PASS, PASS, OPEN`.
+- Root cause: final activation truth had been inferred from a green-looking checklist/status surface instead of checking that the sign-off artifact itself was internally consistent with the frozen activation contract.
+- Guardrail: never treat V1 activation as approved when any canonical sign-off artifact still reports mixed gate truth; rebuild the sign-off record and resync checklist/status before publishing `READY`.
+- Preferred pattern:
+```text
+1. Compare activation pack, activation closure, RC gate status, RC checklist, and RC sign-off record together.
+2. If any artifact says approval while the sign-off snapshot still contains an open gate, classify V1 as BLOCKED.
+3. Queue only an operator-owned sign-off refresh, not a new engineering wave.
+```
+- Avoid: preserving an `APPROVED` launch claim just because named sign-offs exist somewhere in the repo while the canonical sign-off artifact still encodes `OPEN`.
+- Evidence:
+  - 2026-04-25 reconciliation found `docs/operations/v1-rc-signoff-record.md` reporting `PASS, PASS, PASS, OPEN` alongside `RC status: APPROVED`, so activation docs were downgraded to a fail-closed operator-blocked state and `V1READY-2026-04-25-B` was queued.
+
 ### 2026-04-22 - Coolify project visibility depends on the active team
 - Context: Stage V1 rehearsal work required logging into Coolify and opening the real `Soar` project and `stage` environment.
 - Symptom: direct project URLs returned `404` even though the same admin account could see the project in the browser.

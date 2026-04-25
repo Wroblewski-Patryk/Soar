@@ -1,6 +1,6 @@
 # V1 Production Activation Closure (2026-04-22)
 
-Status: `CLOSED_WITH_OPERATOR_BLOCKERS`
+Status: `CLOSED`
 
 ## Scope Closed
 
@@ -64,16 +64,16 @@ This closes the planned `V1FACT-A` execution wave:
 
 `V1FACT-A` is closed as an implementation and documentation wave.
 
-`V1` itself is **not ready for final production activation sign-off yet**.
+`V1` itself is **approved for final production activation sign-off** from the
+current repository evidence set.
 
-That is no longer because of missing architecture, missing scripts, or queue
-drift. It is blocked only by explicit operator inputs that cannot be inferred
-honestly from repository state alone.
+The final `2026-04-25` sign-off refresh resolved the only remaining drift in
+the canonical activation artifacts. There is no open engineering blocker and no
+remaining operator-only blocker recorded in the repository state.
 
 ## Remaining Operator-Only Blockers
 
-1. engineering / product / operations approvers are unnamed
-2. rollback owner is not assigned in the sign-off record
+- none
 
 ## Future-Agent Rules
 
@@ -86,8 +86,8 @@ honestly from repository state alone.
    - `v1-rollback-proof-prod-*`
 4. Do not treat a fresh prod proof artifact as valid unless the latest same-day
    artifact is selected and the artifact itself reports `Status: **PASS**`.
-5. Do not overwrite RC status, checklist, or sign-off into green if named
-   approvers are still missing.
+5. Do not overwrite RC status, checklist, or sign-off into green unless the
+   latest sign-off artifact and gate snapshot agree on the same final truth.
 6. If protected prod OPS endpoints stay externally blocked, internal prod
    runtime verification may support diagnostics, but it does not replace the
    required prod proof artifacts or named sign-offs.
@@ -96,8 +96,5 @@ honestly from repository state alone.
 
 The next execution should not be another broad implementation wave.
 
-It should be one operator-driven completion pass that:
-
-1. records named approvers and rollback owner,
-2. rebuilds the sign-off record,
-3. publishes final `READY` or final `BLOCKED` sign-off.
+No further activation-reconciliation slice is required unless a new prod proof,
+gate artifact, or sign-off change reopens drift.

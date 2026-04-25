@@ -7,13 +7,23 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `V1COH-03 test(api-runtime-red): lock manual LIVE market submitted->reconciled truth across order, open order, and position visibility`
+- [ ] `XADAPT-01 docs(contract): freeze exchange execution capability matrix for authenticated reads and write-side execution`
 ## NEXT
-- [ ] `V1COH-04 fix(api-reconciliation): tighten exchange-synced order/position adoption around manual LIVE opens`
-- [ ] `V1COH-05 web(runtime-state): expose explicit manual LIVE action states on dashboard surfaces`
-- [ ] `V1READY-2026-04-25-A docs/ops(sync): reconcile final V1 activation truth, remaining blockers, and operator handoff`
+- [ ] `XADAPT-02 audit(api-exchange): classify Binance-specific assumptions across orders, exchange, and reconciliation paths`
 ## PIPELINE
-- [ ] `V1COH-06 qa(closure): run focused API + web closure pack and sync canonical docs/context`
+- [ ] `XADAPT-03 refactor(api-exchange): expose one canonical exchange adapter boundary for write and authenticated-read consumers`
+- [ ] `XADAPT-04 test(api-binance): add focused Binance adapter contract coverage for live submit and reconciliation-facing reads`
+- [ ] `XADAPT-05 qa(closure): run focused exchange-adapter closure pack and sync canonical docs/context`
+- [ ] `XADAPT-06 planning(readiness): publish staged next-exchange rollout packet after Binance boundary closure`
+- [ ] `V1REG-02 qa(auto): execute architecture-v1 automated verification pack and record function-by-function status`
+- [ ] `V1REG-03 qa(browser): execute architecture-v1 browser checklist and capture findings`
+- [ ] `V1REG-04 planning(sync): classify failures and queue missing or regressed functions`
+- [ ] `V1REG-05 qa(regression): rerun touched function packs and refresh checklist status`
+- [x] `V1READY-2026-04-25-B ops/signoff(sync): rebuild RC sign-off artifact and publish final V1 READY/BLOCKED launch decision`
+- [x] `V1READY-2026-04-25-A docs/ops(sync): reconcile final V1 activation truth, remaining blockers, and operator handoff`
+- [x] `V1COH-04 fix(api-reconciliation): tighten exchange-synced order/position adoption around manual LIVE opens`
+- [x] `V1COH-03 test(api-runtime-red): lock manual LIVE market submitted->reconciled truth across order, open order, and position visibility`
+- [x] `V1REG-01 docs(audit): publish architecture-v1 functionality inventory and reusable regression checklist`
 - [x] `V1COH-01 test(api-red): lock manual LIVE order against out-of-scope symbol and unresolved strategy context`
 - [x] `V1COH-02 fix(api-orders): enforce inherited wallet+venue context and fail closed for unresolved LIVE manual scope`
 - [x] `DOCSYNC-2026-04-25-B docs(sync): remove closed PAPERPNL entry from TASK_BOARD READY lane`

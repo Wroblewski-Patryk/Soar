@@ -17,16 +17,28 @@ Last updated: 2026-04-25
 
 ## READY
 
-- [ ] `V1COH-03 test(api-runtime-red): lock manual LIVE market submitted->reconciled truth across order, open order, and position visibility`
-  - 2026-04-25: The next red pack freezes explicit delayed-fill truth for manual `LIVE` market orders so dashboard/runtime state can distinguish `submitted` from `position_opened`.
-
-- [ ] `V1COH-04 fix(api-reconciliation): tighten exchange-synced order/position adoption around manual LIVE opens`
-  - 2026-04-25: After the submitted->reconciled red pack, the next backend slice should keep one deterministic ownership/state contract between native manual-order rows and later `EXCHANGE_SYNC` adoption.
+- [ ] `XADAPT-01 docs(contract): freeze exchange execution capability matrix for authenticated reads and write-side execution`
+  - 2026-04-25: V1 activation truth is now fully reconciled and approved. The next smallest engineering slice returns to the queued Binance-first adapter hardening plan.
 
 ## BACKLOG
 
-- [ ] `V1READY-2026-04-25-A docs/ops(sync): reconcile final V1 activation truth, remaining blockers, and operator handoff`
-  - 2026-04-25: This remains valid, but it is no longer the next honest slice after the fresh code-path audit. Final V1 activation truth should be reconciled after residual execution cohesion is closed in code.
+- [x] `V1READY-2026-04-25-B ops/signoff(sync): rebuild RC sign-off artifact and publish final V1 READY/BLOCKED launch decision`
+  - 2026-04-25: Rebuilt the RC sign-off artifact, refreshed RC external gate status, rebuilt sign-off once more so its own gate snapshot captured `G4=PASS`, and resynced the RC checklist. Activation pack, closure, and project/context truth now agree that V1 is formally approved from the current repository evidence set.
+
+- [x] `V1READY-2026-04-25-A docs/ops(sync): reconcile final V1 activation truth, remaining blockers, and operator handoff`
+  - 2026-04-25: Reconciled activation pack, activation closure, RC gate status, RC checklist, RC sign-off record, and `PROJECT_STATE.md` against the frozen activation contract. Canonical truth is now fail-closed: V1 remains blocked only because the RC sign-off artifact still contains mixed gate truth and must be rebuilt before Gate 4 can close honestly.
+
+- [x] `V1COH-06 qa(closure): run focused API + web closure pack and sync canonical docs/context`
+  - 2026-04-25: Ran the focused closure pack across API and web, including the manual `LIVE` submitted->imported order->position regressions, the dashboard manual-order action-state regressions, typechecks, and repository guardrails. Guardrail closure required splitting manual-order coverage into a dedicated `HomeLiveWidgets.manual-order.test.tsx` file so the suite stayed under the repository file-size budget.
+
+- [x] `V1COH-05 web(runtime-state): expose explicit manual LIVE action states on dashboard surfaces`
+  - 2026-04-25: Added explicit manual LIVE action-state presenters plus sidebar UI, localized the new state contract, and locked it with focused `HomeLiveWidgets` and `RuntimeSidebarSection` regressions plus web typecheck.
+
+- [ ] `XADAPT-01 docs(contract): freeze exchange execution capability matrix for authenticated reads and write-side execution`
+  - 2026-04-25: Queued as the first post-`V1COH-A` adapter-hardening slice so future exchange work can follow one explicit capability matrix instead of mixing Binance-only production truth with generic-looking execution seams.
+
+- [ ] `V1REG-02 qa(auto): execute architecture-v1 automated verification pack and record function-by-function status`
+  - 2026-04-25: The reusable architecture checklist is now published. The next regression-governance step after `V1COH-A` and `XADAPT-A` is to run the grouped automated pack and record status per V1 function instead of only per file.
 
 ## IN_PROGRESS
 
@@ -41,6 +53,15 @@ Last updated: 2026-04-25
 - [ ] (none)
 
 ## DONE
+
+- [x] `V1COH-04 fix(api-reconciliation): tighten exchange-synced order/position adoption around manual LIVE opens`
+  - 2026-04-25: Extended runtime session open-order reads to adopt eligible `EXCHANGE_SYNC` orders through the same symbol-ownership contract already used for external positions, and deduplicated manual-vs-synced open-order visibility by `exchangeOrderId` with preference for the exchange-synced row. This keeps the runtime view truthful across `submitted -> imported_open_order -> position_opened` without double-counting the same LIVE order. Validation PASS: `pnpm --filter api exec vitest run src/modules/orders/orders-positions.e2e.test.ts -t "keeps manual LIVE MARKET visibility truthful from submitted order through exchange-synced adoption"`, `pnpm --filter api exec vitest run src/modules/orders/orders-positions.e2e.test.ts -t "keeps LIVE open orders visible in runtime view when order was created before current session start"`, `pnpm --filter api run typecheck`.
+
+- [x] `V1COH-03 test(api-runtime-red): lock manual LIVE market submitted->reconciled truth across order, open order, and position visibility`
+  - 2026-04-25: Added a focused `orders.service` regression proving manual `LIVE MARKET` orders stay `OPEN/submitted` with `waitingForFill=true` when exchange placement returns no fill truth, plus a route-level runtime e2e regression that currently fails exactly on missing `EXCHANGE_SYNC` open-order visibility before later `EXCHANGE_SYNC` position adoption. Validation evidence: PASS `pnpm --filter api exec vitest run src/modules/orders/orders.service.test.ts -t "keeps LIVE MARKET order submitted when exchange placement returns OPEN without fill truth"`, expected RED `pnpm --filter api exec vitest run src/modules/orders/orders-positions.e2e.test.ts -t "keeps manual LIVE MARKET visibility truthful from submitted order through exchange-synced adoption"`.
+
+- [x] `V1REG-01 docs(audit): publish architecture-v1 functionality inventory and reusable regression checklist`
+  - 2026-04-25: Published one reusable V1 checklist in `docs/operations/v1-architecture-functionality-regression-checklist-2026-04-25.md` plus the execution packet in `docs/planning/v1-architecture-functionality-verification-plan-2026-04-25.md`, mapping architecture-defined functions to implementation status, automated tests, manual browser checks, and follow-up task families.
 
 - [x] `V1COH-01 test(api-red): lock manual LIVE order against out-of-scope symbol and unresolved strategy context`
   - 2026-04-25: Added focused service and API e2e regressions proving manual `LIVE` open is rejected when the selected bot has no canonical symbol-matching strategy scope, and that accepted `LIVE` fixtures must provide the full inherited bot context.

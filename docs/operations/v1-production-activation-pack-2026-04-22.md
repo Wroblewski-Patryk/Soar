@@ -71,10 +71,10 @@ after `REVIEW-D`, `V1FACT-A2`, `V1FACT-07B`, and `V1FACT-A3`.
 
 ## Activation Decision
 
-V1 is **approved for formal production activation sign-off** on `2026-04-22`
-from the current repository evidence set.
+V1 is **approved for formal production activation sign-off** from the current
+repository evidence set after the `2026-04-25` sign-off refresh.
 
-All four RC gates are now closed:
+Current canonical gate truth:
 
 - `G1=PASS`
 - `G2=PASS`
@@ -83,22 +83,23 @@ All four RC gates are now closed:
 
 ## Exact Next Commands
 
-1. keep the fresh prod rollback proof as current reference if deploy/runtime state changes
-
-```bash
-pnpm run ops:deploy:rollback-proof:prod -- --base-url https://api.soar.luckysparrow.ch --auth-email <OPS_ADMIN_EMAIL> --auth-password <OPS_ADMIN_PASSWORD>
-```
-
-2. if sign-off metadata changes, rebuild the sign-off record
+1. keep the RC sign-off record current if named approvers or rollback
+   ownership change
 
 ```bash
 pnpm run ops:rc:signoff:build -- --engineering-name "<name>" --product-name "<name>" --operations-name "<name>" --owner-name "<name>" --owner-contact "<contact>"
 ```
 
-3. if any gate artifact changes, resync checklist/state
+2. resync the RC checklist if gate artifacts or sign-off metadata change
 
 ```bash
 pnpm run ops:rc:checklist:sync
+```
+
+3. if deploy/runtime state changes, refresh the prod rollback proof reference
+
+```bash
+pnpm run ops:deploy:rollback-proof:prod -- --base-url https://api.soar.luckysparrow.ch --auth-email <OPS_ADMIN_EMAIL> --auth-password <OPS_ADMIN_PASSWORD>
 ```
 
 ## Future-Agent Rule

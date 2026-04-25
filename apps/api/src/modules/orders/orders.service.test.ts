@@ -522,6 +522,71 @@ describe('openOrder live execution contract', () => {
     }
   });
 
+  it('keeps LIVE MARKET order submitted when exchange placement returns OPEN without fill truth', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-live-market-submitted@example.com', password: 'hashed' },
+    });
+    const { bot } = await createLiveScopedBotContext({
+      userId: user.id,
+      botName: 'Live Market Submitted Bot',
+      strategyName: 'Live Market Submitted Strategy',
+      symbol: 'BTCUSDT',
+    });
+
+    const executeLiveOrder = vi.fn().mockResolvedValue({
+      exchangeOrderId: 'binance-market-submitted-1',
+      status: 'OPEN' as const,
+    });
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+
+    try {
+      const order = await openOrder(
+        user.id,
+        {
+          botId: bot.id,
+          symbol: 'BTCUSDT',
+          side: 'BUY',
+          type: 'MARKET',
+          quantity: 0.15,
+          mode: 'LIVE',
+          riskAck: true,
+        },
+        { executeLiveOrder }
+      );
+
+      expect(executeLiveOrder).toHaveBeenCalledOnce();
+      expect(order.exchangeOrderId).toBe('binance-market-submitted-1');
+      expect(order.status).toBe('OPEN');
+      expect(order.positionId).toBeNull();
+      expect(order.filledQuantity).toBe(0);
+      expect(order.filledAt).toBeNull();
+
+      const openedPosition = await prisma.position.findFirst({
+        where: { userId: user.id },
+      });
+      expect(openedPosition).toBeNull();
+
+      const auditLog = await prisma.log.findFirst({
+        where: {
+          userId: user.id,
+          action: 'order.opened',
+          entityType: 'ORDER',
+          entityId: order.id,
+        },
+        orderBy: { occurredAt: 'desc' },
+      });
+      const metadata = (auditLog?.metadata ?? {}) as {
+        waitingForFill?: boolean;
+        fillPriceResolved?: boolean;
+      };
+      expect(metadata.waitingForFill).toBe(true);
+      expect(metadata.fillPriceResolved).toBe(false);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
   it('fails closed for LIVE order when requested symbol is outside canonical bot strategy scope', async () => {
     const user = await prisma.user.create({
       data: { email: 'orders-live-scope-mismatch@example.com', password: 'hashed' },

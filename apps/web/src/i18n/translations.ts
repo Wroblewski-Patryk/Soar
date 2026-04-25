@@ -216,6 +216,17 @@ type TranslationSchema = {
         cancelOpenOrderPending: string;
         cancelOpenOrderSuccess: string;
         cancelOpenOrderError: string;
+        manualOrderActionStateTitle: string;
+        manualOrderActionStateSubmitted: string;
+        manualOrderActionDescriptionSubmitted: string;
+        manualOrderActionStateWaitingForFill: string;
+        manualOrderActionDescriptionWaitingForFill: string;
+        manualOrderActionStateImportedOpenOrder: string;
+        manualOrderActionDescriptionImportedOpenOrder: string;
+        manualOrderActionStatePositionOpened: string;
+        manualOrderActionDescriptionPositionOpened: string;
+        manualOrderActionStateBlocked: string;
+        manualOrderActionDescriptionBlocked: string;
         tradesHistoryTitlePaper: string;
         tradesHistoryTitleLive: string;
         filterSymbol: string;

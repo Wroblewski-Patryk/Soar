@@ -72,6 +72,7 @@ export const listRuntimeOpenOrders = async (params: {
     select: {
       id: true,
       origin: true,
+      exchangeOrderId: true,
       symbol: true,
       side: true,
       type: true,

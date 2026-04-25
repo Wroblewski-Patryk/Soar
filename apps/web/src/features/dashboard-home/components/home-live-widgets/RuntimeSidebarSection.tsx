@@ -50,6 +50,11 @@ export type RuntimeSidebarSectionProps = {
     contextLoadingLabel: string;
     contextUnavailableLabel: string;
     semanticsHintLabel: string;
+    stateTitle: string;
+    stateLabel: string;
+    stateDescription: string;
+    stateToneClassName: string;
+    stateBadgeClassName: string;
     noSymbolsLabel: string;
     botContext: string;
     symbolOptions: string[];
@@ -738,6 +743,28 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
                   <p className="mt-1 text-[10px] opacity-60" data-testid="manual-order-semantics-hint">
                     {props.manualOrder.semanticsHintLabel}
                   </p>
+                  <div
+                    className="mt-2 rounded-box border border-base-300/40 bg-base-100/70 px-2 py-1.5"
+                    data-testid="manual-order-action-state"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[10px] uppercase tracking-wide opacity-65">
+                        {props.manualOrder.stateTitle}
+                      </span>
+                      <span
+                        className={`badge badge-xs ${props.manualOrder.stateBadgeClassName}`}
+                        data-testid="manual-order-action-state-badge"
+                      >
+                        {props.manualOrder.stateLabel}
+                      </span>
+                    </div>
+                    <p
+                      className={`mt-1 text-[10px] ${props.manualOrder.stateToneClassName}`}
+                      data-testid="manual-order-action-state-description"
+                    >
+                      {props.manualOrder.stateDescription}
+                    </p>
+                  </div>
                 </div>
                 <button
                   type="button"
