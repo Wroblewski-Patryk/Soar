@@ -159,6 +159,12 @@ Last updated: 2026-04-25
   across `API_KEY_PROBE`, `BALANCE_PREVIEW`, `POSITIONS_SNAPSHOT`,
   `OPEN_ORDERS_SNAPSHOT`, and `LIVE_ORDER_SUBMIT`, while keeping reconciliation
   broadening and `LIVE_ORDER_CANCEL` explicitly out of scope.
+- 2026-04-25: closed `V1REG-02` as the first automated architecture-V1 sweep.
+  The reusable checklist now contains one dated execution log and per-function
+  automated verdicts. Web suites and non-DB API suites are green across the
+  touched V1 surface, while DB-backed API verification is currently blocked by
+  unreachable local Postgres at `localhost:5432`; no new product regression was
+  isolated in this automated slice.
 - 2026-04-25: closed `DEPLOY-2026-04-25-B` as the validation-only follow-up to
   the same-day Coolify hotfix. Local `pnpm --filter web run build` now passes
   cleanly again, confirming the previously reported web deploy gate is no

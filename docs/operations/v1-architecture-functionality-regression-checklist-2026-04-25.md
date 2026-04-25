@@ -52,6 +52,46 @@ The checklist maps architecture-defined V1 functions to:
 - Notes:
 ```
 
+## Execution Log
+
+### 2026-04-25 - Regression Run
+- Scope:
+  - `V1REG-02` automated architecture-V1 sweep after closure of `V1COH-A` and
+    `XADAPT-A`
+- Automated packs run:
+  - FAIL (environment-blocked DB API):
+    - `pnpm --filter api exec vitest run src/modules/auth/auth.e2e.test.ts src/modules/auth/auth.service.test.ts`
+  - PASS (web operator/product flows):
+    - `pnpm --filter web exec vitest run src/features/auth/components/LoginForm.test.tsx src/features/auth/components/RegisterForm.test.tsx src/features/auth/hooks/useLoginForm.test.tsx src/features/profile/components/ApiKeyForm.test.tsx src/features/profile/components/ApiKeysList.test.tsx src/features/exchanges/components/ExchangeConnectionsView.test.tsx src/features/wallets/components/WalletCreateEditForm.test.tsx src/features/wallets/components/WalletsListTable.test.tsx src/features/markets/components/MarketUniverseForm.test.tsx src/features/markets/components/MarketUniversesTable.test.tsx src/features/strategies/components/StrategyForm.test.tsx src/features/strategies/components/StrategyFormSections/Indicators.test.tsx src/features/strategies/utils/StrategyForm.map.test.ts src/features/bots/components/BotCreateEditForm.test.tsx src/features/bots/components/BotsListTable.test.tsx`
+    - `pnpm --filter web exec vitest run src/features/backtest/components/BacktestCreateForm.test.tsx src/features/backtest/components/BacktestRunDetails.test.tsx src/features/backtest/components/BacktestsListView.test.tsx src/features/backtest/components/BacktestsRunsTable.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.aggregate-wallet.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.manual-order-scope.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.manual-order-venue.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.aggregate-error.test.tsx src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.open-orders-actions.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.open-orders-source.test.tsx src/features/bots/components/BotsManagement.test.tsx src/features/bots/services/botsMonitoringAggregate.service.test.ts src/features/dashboard-home/components/LiveMarketBar.test.tsx src/features/reports/components/PerformanceReportsView.test.tsx src/features/logs/components/AuditTrailView.test.tsx`
+  - PASS (non-DB API contract/unit scope):
+    - `pnpm --filter api exec vitest run src/modules/profile/apiKey/binanceApiKeyProbe.service.test.ts src/modules/strategies/indicators/indicators.service.test.ts src/modules/engine/strategyIndicatorRegistryParity.test.ts src/modules/engine/strategySignalEvaluator.test.ts src/modules/exchange/exchangeAdapterBoundary.service.test.ts src/modules/exchange/exchangeExecutionCapabilityContract.service.test.ts src/modules/exchange/exchangeAuthenticatedRead.service.test.ts src/modules/exchange/exchangeAuthenticatedReadContract.service.test.ts src/modules/market-stream/binanceStream.service.test.ts src/modules/market-stream/marketStream.routes.contract.test.ts`
+  - PASS (repo gates):
+    - `pnpm --filter api run typecheck`
+    - `pnpm --filter web run typecheck`
+    - `pnpm run quality:guardrails`
+- Manual flows checked:
+  - none in this slice; deferred to `V1REG-03`
+- Functions passed:
+  - `F05` strategy builder and indicator registry parity
+  - `F10` exchange capability and adapter boundary contract coverage
+  - `F14` market stream ingest and server-owned live market bar
+  - web-side operator surfaces for `F01`, `F02`, `F03`, `F04`, `F06`, `F07`,
+    `F08`, `F09`, `F12`, `F13`, `F15`
+- Functions failed:
+  - no product regression was isolated in this sweep
+- Queued follow-up tasks:
+  - `V1REG-03`
+  - environment note only: DB-backed API verification is blocked until local
+    Postgres at `localhost:5432` is reachable again
+- Notes:
+  - DB-backed API suites are currently environment-blocked, not product-failed.
+    The first failing touchpoint is `prisma.log.deleteMany()` with `Can't reach
+    database server at localhost:5432`.
+  - This matches the existing learning-journal guardrail for local Docker /
+    Postgres availability. Web suites, non-DB API suites, typechecks, and repo
+    guardrails are green.
+
 ## Function Checklist
 
 ### F01 - Authentication and protected operator access
@@ -75,6 +115,10 @@ The checklist maps architecture-defined V1 functions to:
     verify redirect back to login
 - If failed:
   - queue bugfix under `V1REG-F01 auth/protected-route regression`
+- Automated sweep 2026-04-25:
+  - Web: PASS
+  - API: BLOCKED_BY_INFRA (`localhost:5432` unavailable)
+  - Current automated verdict: `INFRA_BLOCKED`
 
 ### F02 - Exchange credentials and API-key onboarding
 - Architecture source:
@@ -99,6 +143,12 @@ The checklist maps architecture-defined V1 functions to:
 - If failed:
   - Binance credential or permission regression -> queue `V1REG-F02`
   - exchange-scope truth drift -> use `XADAPT-A`
+- Automated sweep 2026-04-25:
+  - Web: PASS
+  - API probe service: PASS
+  - API e2e: not executed in this slice because DB-backed API verification is
+    environment-blocked
+  - Current automated verdict: `PARTIAL_PASS_INFRA_BLOCKED`
 
 ### F03 - Wallet execution context and capital baseline
 - Architecture source:
@@ -122,6 +172,10 @@ The checklist maps architecture-defined V1 functions to:
     explicit
 - If failed:
   - queue `V1REG-F03 wallet execution/capital regression`
+- Automated sweep 2026-04-25:
+  - Web: PASS
+  - API: not re-verified here because DB-backed suites are environment-blocked
+  - Current automated verdict: `PARTIAL_PASS_INFRA_BLOCKED`
 
 ### F04 - Market universes and symbol groups
 - Architecture source:
@@ -143,6 +197,10 @@ The checklist maps architecture-defined V1 functions to:
   - verify venue context shown in UI matches the parent market universe
 - If failed:
   - queue `V1REG-F04 market-universe or symbol-group regression`
+- Automated sweep 2026-04-25:
+  - Web: PASS
+  - API: not re-verified here because DB-backed suites are environment-blocked
+  - Current automated verdict: `PARTIAL_PASS_INFRA_BLOCKED`
 
 ### F05 - Strategy builder and indicator registry parity
 - Architecture source:
@@ -166,6 +224,10 @@ The checklist maps architecture-defined V1 functions to:
   - verify strategy lifetime and risk fields remain explicit in the form
 - If failed:
   - queue `V1REG-F05 strategy-builder or indicator-parity regression`
+- Automated sweep 2026-04-25:
+  - Web: PASS
+  - API: PASS for indicator registry and evaluator coverage
+  - Current automated verdict: `PASS`
 
 ### F06 - Bot creation, singular runtime context, and entitlements
 - Architecture source:
@@ -190,6 +252,10 @@ The checklist maps architecture-defined V1 functions to:
     overrides
 - If failed:
   - queue `V1REG-F06 bot-context or entitlement regression`
+- Automated sweep 2026-04-25:
+  - Web: PASS
+  - API: not re-verified here because DB-backed suites are environment-blocked
+  - Current automated verdict: `PARTIAL_PASS_INFRA_BLOCKED`
 
 ### F07 - Backtest run, report, timeline, and replay diagnostics
 - Architecture source:
@@ -215,6 +281,10 @@ The checklist maps architecture-defined V1 functions to:
   - verify timeline overlays and parity diagnostics are readable
 - If failed:
   - queue `V1REG-F07 backtest/replay/report regression`
+- Automated sweep 2026-04-25:
+  - Web: PASS
+  - API: not re-verified here because DB-backed suites are environment-blocked
+  - Current automated verdict: `PARTIAL_PASS_INFRA_BLOCKED`
 
 ### F08 - Paper runtime and execution lifecycle parity
 - Architecture source:
@@ -237,6 +307,10 @@ The checklist maps architecture-defined V1 functions to:
   - verify paper capital and runtime history move consistently after open/close
 - If failed:
   - queue `V1REG-F08 paper-runtime parity regression`
+- Automated sweep 2026-04-25:
+  - Web support: PASS
+  - API: not re-verified here because DB-backed suites are environment-blocked
+  - Current automated verdict: `PARTIAL_PASS_INFRA_BLOCKED`
 
 ### F09 - Manual LIVE order path and submitted->reconciled truth
 - Architecture source:
@@ -266,6 +340,12 @@ The checklist maps architecture-defined V1 functions to:
   - verify no fake position-open state appears before exchange truth confirms it
 - If failed:
   - use `V1COH-A`; do not queue a parallel workaround path
+- Automated sweep 2026-04-25:
+  - Web: PASS
+  - API: not re-verified here because DB-backed suites are environment-blocked
+  - Known product status remains `PARTIAL` by contract, but no new regression
+    was isolated in the automated sweep
+  - Current automated verdict: `PARTIAL_PASS_INFRA_BLOCKED`
 
 ### F10 - Exchange snapshots, open orders, and external position sync
 - Architecture source:
@@ -294,6 +374,12 @@ The checklist maps architecture-defined V1 functions to:
 - If failed:
   - authenticated read/write boundary drift -> use `XADAPT-A`
   - ownership/reconciliation bug -> queue `V1REG-F10`
+- Automated sweep 2026-04-25:
+  - Web support: PASS
+  - API boundary/contract coverage: PASS
+  - DB-backed positions snapshot and reconciliation suites were not re-run here
+    because local Postgres is unavailable
+  - Current automated verdict: `PASS_WITH_DB_INFRA_BLOCKER`
 
 ### F11 - Runtime execution loop, pre-trade, DCA, and lifetime enforcement
 - Architecture source:
@@ -317,6 +403,10 @@ The checklist maps architecture-defined V1 functions to:
   - verify no-flip and insufficient-funds outcomes remain visible, not silent
 - If failed:
   - queue `V1REG-F11 runtime loop or lifecycle regression`
+- Automated sweep 2026-04-25:
+  - Web support: PASS (`open-orders-action`)
+  - API: not re-verified here because DB-backed suites are environment-blocked
+  - Current automated verdict: `PARTIAL_PASS_INFRA_BLOCKED`
 
 ### F12 - Dashboard selected-bot runtime surface
 - Architecture source:
@@ -345,6 +435,11 @@ The checklist maps architecture-defined V1 functions to:
 - If failed:
   - manual LIVE state truth -> use `V1COH-A`
   - general dashboard regression -> queue `V1REG-F12`
+- Automated sweep 2026-04-25:
+  - Web: PASS
+  - API support suite: not re-verified here because DB-backed suites are
+    environment-blocked
+  - Current automated verdict: `PARTIAL_PASS_INFRA_BLOCKED`
 
 ### F13 - Bots runtime monitoring and assistant surface
 - Architecture source:
@@ -367,6 +462,11 @@ The checklist maps architecture-defined V1 functions to:
     is explicit rather than silent
 - If failed:
   - queue `V1REG-F13 bot-monitoring or assistant regression`
+- Automated sweep 2026-04-25:
+  - Web and aggregate service support: PASS
+  - API orchestration packs: not re-verified here because DB-backed suites are
+    environment-blocked
+  - Current automated verdict: `PARTIAL_PASS_INFRA_BLOCKED`
 
 ### F14 - Market stream ingest and server-owned live market bar
 - Architecture source:
@@ -387,6 +487,10 @@ The checklist maps architecture-defined V1 functions to:
   - verify browser does not require direct exchange transport knowledge
 - If failed:
   - queue `V1REG-F14 market-stream or SSE regression`
+- Automated sweep 2026-04-25:
+  - Web: PASS
+  - API: PASS
+  - Current automated verdict: `PASS`
 
 ### F15 - Reports and audit logs
 - Architecture source:
@@ -408,6 +512,10 @@ The checklist maps architecture-defined V1 functions to:
     leave readable traces
 - If failed:
   - queue `V1REG-F15 reports/logs regression`
+- Automated sweep 2026-04-25:
+  - Web: PASS
+  - API: not re-verified here because DB-backed suites are environment-blocked
+  - Current automated verdict: `PARTIAL_PASS_INFRA_BLOCKED`
 
 ### F16 - Deployment topology, health, readiness, and operator activation truth
 - Architecture source:
@@ -432,4 +540,3 @@ The checklist maps architecture-defined V1 functions to:
     `V1READY-2026-04-25-A`
   - code/runtime issue discovered during smoke -> queue a new fix task under
     the relevant function family
-

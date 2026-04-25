@@ -17,8 +17,8 @@ Last updated: 2026-04-25
 
 ## READY
 
-- [ ] `V1REG-02 qa(auto): execute architecture-v1 automated verification pack and record function-by-function status`
-  - 2026-04-25: `XADAPT-A` is now fully closed. The next active wave returns to the reusable V1 verification loop, starting with the automated architecture-functionality pack.
+- [ ] `V1REG-03 qa(browser): execute architecture-v1 browser checklist and capture findings`
+  - 2026-04-25: `V1REG-02` recorded the automated function-by-function sweep. The next slice is the matching browser/manual pass so the checklist can distinguish infra blockers from operator-visible regressions.
 
 ## BACKLOG
 
@@ -36,6 +36,9 @@ Last updated: 2026-04-25
 
 - [x] `XADAPT-06 planning(readiness): publish staged next-exchange rollout packet after Binance boundary closure`
   - 2026-04-25: Published the staged next-exchange readiness packet in `docs/planning/xadapt-06-next-exchange-readiness-packet-2026-04-25.md`. The packet chooses `BYBIT` as the next target, freezes staged rollout order (`API_KEY_PROBE -> BALANCE_PREVIEW -> POSITIONS_SNAPSHOT -> OPEN_ORDERS_SNAPSHOT -> LIVE_ORDER_SUBMIT`), keeps reconciliation broadening out of scope, and preserves `LIVE_ORDER_CANCEL` as unsupported. Validation PASS: `pnpm run quality:guardrails`.
+
+- [x] `V1REG-02 qa(auto): execute architecture-v1 automated verification pack and record function-by-function status`
+  - 2026-04-25: Ran the first post-`V1COH-A` / post-`XADAPT-A` automated architecture-V1 sweep and wrote results back into the checklist. Web suites and non-DB API suites passed; DB-backed API verification is environment-blocked by unreachable local Postgres at `localhost:5432`, so affected functions are recorded as `INFRA_BLOCKED` or `PARTIAL_PASS_INFRA_BLOCKED` instead of false product failures. Validation PASS: web regression batches, non-DB API regression batch, `pnpm --filter api run typecheck`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
 
 - [x] `XADAPT-01 docs(contract): freeze exchange execution capability matrix for authenticated reads and write-side execution`
   - 2026-04-25: Updated architecture docs so authenticated reads and write-side execution now share one explicit capability matrix. Frozen V1 truth is: Binance-only support for `BALANCE_PREVIEW`, `POSITIONS_SNAPSHOT`, `OPEN_ORDERS_SNAPSHOT`, and `LIVE_ORDER_SUBMIT`, with `LIVE_ORDER_CANCEL` explicitly unsupported for every exchange until a canonical exchange-cancel boundary exists.

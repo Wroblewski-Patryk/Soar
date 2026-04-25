@@ -2682,13 +2682,14 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 
 ## Phase V1REG-A - Architecture-V1 Functionality Verification Loop (Queued 2026-04-25)
 - [x] `V1REG-01 docs(audit): publish architecture-v1 functionality inventory and reusable regression checklist`
-- [ ] `V1REG-02 qa(auto): execute architecture-v1 automated verification pack and record function-by-function status`
+- [x] `V1REG-02 qa(auto): execute architecture-v1 automated verification pack and record function-by-function status`
 - [ ] `V1REG-03 qa(browser): execute architecture-v1 browser checklist and capture findings`
 - [ ] `V1REG-04 planning(sync): classify failures and queue missing or regressed functions`
 - [ ] `V1REG-05 qa(regression): rerun touched function packs and refresh checklist status`
 
 ### Progress Log (Phase V1REG-A - Architecture-V1 Functionality Verification Loop)
 - 2026-04-25: Published the reusable checklist `docs/operations/v1-architecture-functionality-regression-checklist-2026-04-25.md` plus the execution packet `docs/planning/v1-architecture-functionality-verification-plan-2026-04-25.md`. The checklist maps architecture-defined V1 functions to implementation status, repository test files, manual browser flows, and queued follow-up families so weekly or post-deploy regression work can run A-to-Z without rediscovering scope from scratch.
+- 2026-04-25: Closed `V1REG-02` by executing the first automated function-by-function sweep after `V1COH-A` and `XADAPT-A` closure. Web suites and non-DB API suites passed, API/web typechecks passed, and repository guardrails passed. DB-backed API suites are currently environment-blocked by unreachable local Postgres at `localhost:5432`, so the checklist records those functions as infra-blocked rather than product-failed.
 
 ## Phase ARCCON - Architecture Conformance and Service Ownership Closure (Closed 2026-04-21)
 - [x] `ARCCON-01 test(api-red): lock fail-closed manual-order strategy context when selected bot has no symbol-matching strategy`
