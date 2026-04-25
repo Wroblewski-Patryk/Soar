@@ -7,10 +7,17 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] (none)
+- [ ] `V1TAKE-01 audit(api+runtime): publish confirmed ownership/manual-order investigation packet with DB-backed validation`
+- [ ] `V1TAKE-02 test(api-red): lock takeover authority drift between API key, wallet, and bot visibility`
 ## NEXT
-- [ ] (none)
+- [ ] `V1TAKE-03 fix(api-positions): unify external-position management contract and takeover status ownership`
+- [ ] `V1TAKE-04 test(api-runtime-red): lock deterministic runtime visibility for owned exchange-synced LIVE positions`
+- [ ] `V1TAKE-05 fix(api-runtime): align runtime position adoption with canonical owned external-position truth`
+- [ ] `V1TAKE-06 test(api+web-red): lock manual PAPER/LIVE open truth from dashboard submission to order/position state`
+- [ ] `V1TAKE-07 fix(api+web-orders): harden manual-order fill/context truth and fail-closed UI semantics`
+- [ ] `V1TAKE-08 qa(closure): rerun focused DB-backed API + web closure pack and sync canonical docs/context`
 ## PIPELINE
+- [x] `V1TAKE-A planning queued (exchange takeover ownership and manual-order truth closure after fresh live investigation)`
 - [x] `XVENUE-04 refactor(api-exchange): registry-driven adapter-family entrypoints`
 - [x] `XVENUE-05 refactor(api-markets-engine): remove direct exchange SDK access from feature modules`
 - [x] `XVENUE-06 test(api): add no-mixing parity coverage`

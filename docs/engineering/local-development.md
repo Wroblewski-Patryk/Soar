@@ -49,6 +49,29 @@ Expected:
 - `postgres` is `Up` on `5432`
 - `redis` is `Up` on `6379`
 
+### Docker troubleshooting on Windows
+If Docker commands exist but local infrastructure still does not start, verify
+the Desktop engine before assuming the repository is broken.
+
+Recovery sequence:
+```powershell
+docker context ls
+docker info
+docker context use desktop-linux
+Start-Process "$Env:ProgramFiles\Docker\Docker\Docker Desktop.exe"
+```
+
+Wait until `docker info` shows a `Server:` section before retrying compose.
+
+If `docker compose up -d postgres redis` fails with `port is already allocated`
+for `5432` or `6379`, inspect existing containers first:
+```powershell
+docker ps -a
+```
+
+In this repository that usually means another local Postgres/Redis container is
+already running and can already satisfy DB-backed API tests.
+
 ### 3) Start API (terminal #1, repo root)
 ```bash
 pnpm --filter api dev

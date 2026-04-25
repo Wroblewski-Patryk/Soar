@@ -2694,6 +2694,19 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-25: Closed `V1REG-04` by classifying all remaining non-green checklist verdicts. No new `V1REG-Fxx` product task was justified from the current evidence set: `F09`, `F10`, and `F12` remain owned by already-closed waves with no fresh regression isolated, while the broader remaining gaps are infra-only blockers tied to local Docker/Postgres availability and local API critical-secret readiness.
 - 2026-04-25: Closed `V1REG-05` and with it the full `V1REG-A` verification loop. Web closure packs and non-DB API closure packs remained green, typechecks and repository guardrails remained green, and DB-backed auth/API rerun still failed only on the known local Postgres blocker at `localhost:5432`. No new product regression was isolated, so the reusable protocol now stands as a closed artifact rather than an active queue item.
 
+## Phase V1TAKE-A - Exchange Takeover Ownership and Manual-Order Truth Closure (Queued 2026-04-25)
+- [ ] `V1TAKE-01 audit(api+runtime): publish confirmed ownership/manual-order investigation packet with DB-backed validation`
+- [ ] `V1TAKE-02 test(api-red): lock takeover authority drift between API key, wallet, and bot visibility`
+- [ ] `V1TAKE-03 fix(api-positions): unify external-position management contract and takeover status ownership`
+- [ ] `V1TAKE-04 test(api-runtime-red): lock deterministic runtime visibility for owned exchange-synced LIVE positions`
+- [ ] `V1TAKE-05 fix(api-runtime): align runtime position adoption with canonical owned external-position truth`
+- [ ] `V1TAKE-06 test(api+web-red): lock manual PAPER/LIVE open truth from dashboard submission to order/position state`
+- [ ] `V1TAKE-07 fix(api+web-orders): harden manual-order fill/context truth and fail-closed UI semantics`
+- [ ] `V1TAKE-08 qa(closure): rerun focused DB-backed API + web closure pack and sync canonical docs/context`
+
+### Progress Log (Phase V1TAKE-A - Exchange Takeover Ownership and Manual-Order Truth Closure)
+- 2026-04-25: Queued `V1TAKE-A` after a fresh user-driven investigation into exchange takeover visibility and dashboard manual-order behavior. Published `docs/planning/v1take-exchange-takeover-manual-order-closure-plan-2026-04-25.md` and the planning task packet `docs/planning/v1take-00-planning-task-2026-04-25.md`. The frozen findings are: takeover authority still drifts between API-key and wallet flags, supported import scope remains intentionally narrow (`BINANCE + FUTURES`), runtime visibility depends on deterministic `BOT_MANAGED` ownership proof, and manual `PAPER/LIVE` open truth still needs one focused API + web closure pack. Local DB-backed verification is no longer blocked by a missing Docker engine in this workspace: `docker info` is healthy, `docker compose up -d postgres redis` failed only because `5432` was already allocated by an existing local Postgres container, and `positions.takeover-status.e2e.test.ts` now passes locally.
+
 ## Phase XVENUE-A - Exact Exchange-Context and Worker-Topology Hardening (Closed 2026-04-25)
 - [x] `XVENUE-01 docs(contract): freeze exact exchange-context and adapter-family model`
 - [x] `XVENUE-02 audit(api): inventory boundary leaks and direct exchange SDK usage`

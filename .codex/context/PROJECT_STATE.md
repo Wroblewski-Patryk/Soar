@@ -49,6 +49,25 @@ Last updated: 2026-04-25
   `EXCHANGE_SYNC BOT_MANAGED` LIVE runtime position visibility/close flows.
 
 ## Product Decisions (Confirmed)
+- 2026-04-25: queued `V1TAKE-A` as the next post-V1 hardening wave after a
+  fresh live-position/manual-order investigation driven by user-reported
+  runtime symptoms. The confirmed findings are now explicit: takeover
+  authority still drifts between API-key and wallet flags, supported import
+  scope remains intentionally narrow (`BINANCE + FUTURES`), bot runtime
+  visibility still depends on deterministic `BOT_MANAGED` ownership proof, and
+  manual `PAPER/LIVE` open truth still needs one tighter API + web closure
+  pack. Canonical artifacts:
+  `docs/planning/v1take-exchange-takeover-manual-order-closure-plan-2026-04-25.md`
+  and `docs/planning/v1take-00-planning-task-2026-04-25.md`.
+- 2026-04-25: local Docker validation for DB-backed API work is no longer
+  engine-blocked in the current workspace. `docker info` now reports a healthy
+  Docker Desktop server, compose start failed only because `localhost:5432`
+  was already allocated by an existing local Postgres container, and focused
+  DB-backed verification now passes again for
+  `src/modules/positions/positions.takeover-status.e2e.test.ts`. The Docker
+  recovery guardrail and port-collision handling were synced into
+  `.codex/context/LEARNING_JOURNAL.md` and
+  `docs/engineering/local-development.md`.
 - 2026-04-25: published a reusable V1 architecture functionality checklist and
   verification loop. Canonical artifact:
   `docs/operations/v1-architecture-functionality-regression-checklist-2026-04-25.md`.

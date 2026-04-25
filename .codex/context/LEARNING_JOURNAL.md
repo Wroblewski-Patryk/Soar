@@ -699,21 +699,25 @@ if ($LASTEXITCODE -eq 0) { pnpm --filter web run typecheck }
   - Observed on 2026-04-18 during `UXR-E-12` closure pack; non-escalated `next/vitest` failed with `spawn EPERM`, escalated reruns passed (`next build` PASS, focused Vitest pack `30/30` PASS).
 
 ### 2026-04-18 - API e2e requires active Docker Engine / local Postgres
-- Context: running focused API e2e regression for bots runtime scope (`BRS-A`) in local Codex desktop environment.
-- Symptom: e2e run fails at setup (`prisma.log.deleteMany`) with `Can't reach database server at localhost:5432`; `docker compose up -d postgres` also fails with missing `dockerDesktopLinuxEngine` pipe.
-- Root cause: Docker Desktop engine is not running/available in the session, so local Postgres container cannot be started.
-- Guardrail: before DB-backed API e2e runs, verify Docker engine availability and `localhost:5432` reachability; if unavailable, mark validation as environment-blocked and run non-DB gates (`typecheck`, guardrails) until DB runtime is restored.
+- Context: running focused API e2e regression for bots runtime scope (`BRS-A`) in local Codex desktop environment, then revisiting the same failure during the 2026-04-25 takeover/manual-order investigation.
+- Symptom: e2e run fails at setup (`prisma.log.deleteMany`) with `Can't reach database server at localhost:5432`; `docker compose up -d postgres redis` can also fail with missing `dockerDesktopLinuxEngine` pipe or with `Bind for 0.0.0.0:5432 failed: port is already allocated`.
+- Root cause: DB-backed API tests depend on two things at once: a healthy Docker Desktop engine and one reachable Postgres listener on `localhost:5432`. If the `desktop-linux` engine is down, compose cannot start. If port `5432` is already bound by another local Postgres container, compose fails even though DB-backed tests may already be runnable.
+- Guardrail: before DB-backed API e2e runs, verify Docker context + server health first, then verify whether `localhost:5432` is already occupied by a usable local Postgres before starting new compose services. If Docker server is unavailable, restore it first; if port `5432` is already allocated, inspect the existing container/process instead of blindly retrying compose.
 - Preferred pattern:
 ```powershell
-docker --version
-docker compose version
-docker compose up -d postgres
+docker context ls
+docker info
+docker context use desktop-linux
+Start-Process "$Env:ProgramFiles\Docker\Docker\Docker Desktop.exe"
+docker compose up -d postgres redis
+docker ps -a
 pnpm --filter api run typecheck
 pnpm run quality:guardrails
 ```
-- Avoid: repeatedly rerunning DB-backed e2e tests before engine health is restored.
+- Avoid: repeatedly rerunning DB-backed e2e tests before engine health is restored, or assuming a compose port-collision means Postgres is unavailable.
 - Evidence:
   - Observed on 2026-04-18 during `BRS-02..BRS-04` validation (`bots.e2e.test.ts` targeted run).
+  - Reconfirmed on 2026-04-25 during the takeover/manual-order investigation: `docker info` recovered after Docker Desktop was available, `docker compose up -d postgres redis` failed only because port `5432` was already allocated by `cryptosparrow-postgres-1`, and DB-backed verification then passed with `positions.takeover-status.e2e.test.ts`.
 
 ### 2026-04-19 - Domain drift in ops smoke targets after brand-domain switch
 - Context: running `OPV-01` stage/prod deployment rehearsal and smoke checks.
