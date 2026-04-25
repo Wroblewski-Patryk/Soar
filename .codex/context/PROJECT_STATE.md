@@ -8,13 +8,13 @@ Last updated: 2026-04-25
   live execution support, operator dashboards, and a path toward assistant or
   agent-driven workflows
 - Commercial model: SaaS-style subscription product with staged entitlements
-- Current phase: V1 engineering scope appears complete from the current code
-  and evidence set, but the final production-activation truth is not yet
-  canonically reconciled across all activation artifacts. Active focus has
-  shifted from broad feature delivery to residual execution cohesion and final
-  activation-truth closure after the closed `V1CONF-A`, `V1SIG-A`, `V1CAP-A`,
-  `V1ALIGN-A`, and now fully closed `V1BOT-A` migration wave. The current
-  repository truth is that the
+- Current phase: V1 is approved from the current repository evidence set, with
+  engineering scope complete and activation artifacts canonically reconciled
+  after the closed `V1READY-2026-04-25-A/B` refresh. Active focus has shifted
+  from broad V1 feature delivery to post-V1 hardening, reusable regression
+  verification, and scalable exchange/runtime architecture work after the
+  closed `V1CONF-A`, `V1SIG-A`, `V1CAP-A`, `V1ALIGN-A`, and fully closed
+  `V1BOT-A` migration wave. The current repository truth is that the
   deployed worker contract is frozen to `split`, runtime symbol scope and
   signal interval truth now fail closed and persist honestly, runtime
   freshness authority is scoped to active sessions, operator diagnostics are

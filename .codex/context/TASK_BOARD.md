@@ -110,6 +110,9 @@ Last updated: 2026-04-25
 - [x] `XVENUE-08 qa(closure): rerun focused closure pack and sync docs/context`
   - 2026-04-25: Reran the focused `XVENUE-A` closure pack across exchange exact-context seams, worker-topology truth, API typecheck, and repository guardrails, then synced queue/context artifacts so the wave no longer remains active. Validation PASS: `pnpm --filter api run test -- --run src/modules/exchange/exchangeAdapterRegistry.service.test.ts src/modules/exchange/exchangeConnectorFactory.service.test.ts src/modules/exchange/exchangePublicRead.service.test.ts src/modules/exchange/exchangeAuthenticatedRead.service.test.ts src/modules/exchange/exchangeAdapterBoundary.service.test.ts src/modules/exchange/exchangeMarketCatalog.service.test.ts src/modules/exchange/exchangeExecutionCapabilityContract.service.test.ts src/modules/engine/runtimeCapitalContext.service.test.ts src/workers/workerOwnership.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 
+- [x] `DOCSYNC-2026-04-25-C docs(sync): reconcile stale V1 current-phase wording in project state`
+  - 2026-04-25: Removed the last contradictory `Current phase` wording in `PROJECT_STATE.md` that still implied unreconciled activation truth even after the closed `V1READY-2026-04-25-A/B` refresh. The canonical source-of-truth now states consistently that V1 is approved from the current evidence set and that active work has moved to post-V1 hardening. Validation PASS: `pnpm run quality:guardrails`.
+
 - [x] `V1COH-01 test(api-red): lock manual LIVE order against out-of-scope symbol and unresolved strategy context`
   - 2026-04-25: Added focused service and API e2e regressions proving manual `LIVE` open is rejected when the selected bot has no canonical symbol-matching strategy scope, and that accepted `LIVE` fixtures must provide the full inherited bot context.
 
