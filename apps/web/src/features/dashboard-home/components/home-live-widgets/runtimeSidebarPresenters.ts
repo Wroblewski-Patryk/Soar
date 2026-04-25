@@ -9,6 +9,7 @@ type ManualOrderPresenter = RuntimeSidebarSectionProps["manualOrder"];
 type TextPresenter = RuntimeSidebarSectionProps["text"];
 
 type ManualOrderActionState =
+  | "ready"
   | "submitted"
   | "waiting_for_fill"
   | "imported_open_order"
@@ -145,11 +146,11 @@ const resolveManualOrderActionState = (params: {
   }
 
   return {
-    state: "blocked" as ManualOrderActionState,
-    labelKey: "dashboard.home.runtime.manualOrderActionStateBlocked",
-    descriptionKey: "dashboard.home.runtime.manualOrderActionDescriptionBlocked",
-    toneClassName: "text-warning",
-    badgeClassName: "badge-warning badge-outline",
+    state: "ready" as ManualOrderActionState,
+    labelKey: "dashboard.home.runtime.manualOrderActionStateReady",
+    descriptionKey: "dashboard.home.runtime.manualOrderActionDescriptionReady",
+    toneClassName: "text-success",
+    badgeClassName: "badge-success badge-outline",
   };
 };
 

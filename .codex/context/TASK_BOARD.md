@@ -20,6 +20,9 @@ Last updated: 2026-04-25
 
 ## BACKLOG
 
+- [x] `V1COH-07 web(manual-live-state): expose ready state for actionable dashboard manual LIVE context`
+  - 2026-04-25: Closed the misleading operator-surface gap where dashboard manual LIVE state defaulted to `blocked` even in a valid actionable context. The runtime sidebar now exposes an explicit `ready` state before submit, keeps `blocked` only for genuinely non-actionable dashboard contexts, and locks the semantics with focused `HomeLiveWidgets.manual-order` regression coverage plus i18n sync.
+
 - [x] `V1DEPLOY-2026-04-25-B ops/web-build-meta: make deployed web git SHA resolvable inside Coolify Docker builds`
   - 2026-04-25: Closed the last deploy-proof gap for `soar-web`. `GET /api/build-info` now falls back to runtime env commit/branch hints when file metadata is absent, the build metadata writer still reads `SOURCE_COMMIT` / `SOURCE_BRANCH` first, and the Coolify ops guide now freezes the required production wiring: declare `SOURCE_COMMIT=$SOURCE_COMMIT`, `SOURCE_BRANCH=$COOLIFY_BRANCH`, and enable `Include Source Commit in Build` for the web app. Validation PASS: `pnpm --filter web run build`, `docker build -f apps/web/Dockerfile -t soar-web-gitsha-fix .`.
 

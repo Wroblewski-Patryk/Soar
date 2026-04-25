@@ -219,6 +219,8 @@ type TranslationSchema = {
         manualOrderActionStateTitle: string;
         manualOrderActionStateSubmitted: string;
         manualOrderActionDescriptionSubmitted: string;
+        manualOrderActionStateReady: string;
+        manualOrderActionDescriptionReady: string;
         manualOrderActionStateWaitingForFill: string;
         manualOrderActionDescriptionWaitingForFill: string;
         manualOrderActionStateImportedOpenOrder: string;

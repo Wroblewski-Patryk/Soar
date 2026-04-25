@@ -134,6 +134,8 @@ export const dashboardHomePl = {
     "manualOrderActionDescriptionImportedOpenOrder": "Open order z gieldy jest juz widoczny. Fill nadal jest oczekiwany, zanim otworzy sie pozycja.",
     "manualOrderActionStatePositionOpened": "Pozycja otwarta",
     "manualOrderActionDescriptionPositionOpened": "Dla wybranego symbolu widac juz otwarta pozycje.",
+    "manualOrderActionStateReady": "Gotowe",
+    "manualOrderActionDescriptionReady": "Manual LIVE moze zostac wykonany z obecnego kontekstu dashboardu.",
     "manualOrderActionStateBlocked": "Zablokowane",
     "manualOrderActionDescriptionBlocked": "Manual LIVE nie jest teraz wykonywalny z tego kontekstu dashboardu.",
     "tradesHistoryTitlePaper": "Historia",

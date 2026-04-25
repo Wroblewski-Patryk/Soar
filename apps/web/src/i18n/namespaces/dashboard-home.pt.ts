@@ -134,6 +134,8 @@ export const dashboardHomePt = {
     "manualOrderActionDescriptionImportedOpenOrder": "A open order da exchange ja esta visivel. O fill continua pendente antes de abrir qualquer posicao.",
     "manualOrderActionStatePositionOpened": "Posicao aberta",
     "manualOrderActionDescriptionPositionOpened": "Ja existe uma posicao aberta visivel para o simbolo selecionado.",
+    "manualOrderActionStateReady": "Pronta",
+    "manualOrderActionDescriptionReady": "A acao manual LIVE pode ser enviada a partir do contexto atual do dashboard.",
     "manualOrderActionStateBlocked": "Bloqueada",
     "manualOrderActionDescriptionBlocked": "A acao manual LIVE nao esta acionavel neste contexto do dashboard.",
     "tradesHistoryTitlePaper": "Historico",

@@ -664,6 +664,149 @@ describe("HomeLiveWidgets manual order", () => {
     );
   });
 
+  it("shows ready action state when LIVE manual order is actionable before submit", async () => {
+    listBotsMock.mockResolvedValue([
+      {
+        id: "bot-live-manual-ready",
+        name: "Live Ready Bot",
+        mode: "LIVE",
+        exchange: "BINANCE",
+        paperStartBalance: 10000,
+        marketType: "FUTURES",
+        positionMode: "ONE_WAY",
+        strategyId: "str-live-ready",
+        isActive: true,
+        liveOptIn: true,
+        maxOpenPositions: 2,
+        symbolGroup: {
+          id: "group-live-ready",
+          name: "Ready group",
+          symbols: ["BTCUSDT"],
+          marketUniverseId: "mu-live-ready",
+        },
+      },
+    ]);
+    listBotRuntimeSessionsMock.mockResolvedValue([
+      {
+        id: "session-live-manual-ready",
+        botId: "bot-live-manual-ready",
+        mode: "LIVE",
+        status: "RUNNING",
+        startedAt: "2026-03-31T10:00:00.000Z",
+        finishedAt: null,
+        lastHeartbeatAt: "2026-03-31T10:05:00.000Z",
+        stopReason: null,
+        errorMessage: null,
+        createdAt: "2026-03-31T10:00:00.000Z",
+        updatedAt: "2026-03-31T10:05:00.000Z",
+        durationMs: 300000,
+        eventsCount: 0,
+        symbolsTracked: 1,
+        summary: {
+          totalSignals: 0,
+          dcaCount: 0,
+          closedTrades: 0,
+          realizedPnl: 0,
+        },
+      },
+    ]);
+    listBotRuntimeSessionSymbolStatsMock.mockResolvedValue({
+      sessionId: "session-live-manual-ready",
+      items: [
+        {
+          id: "stat-live-manual-ready",
+          userId: "u-live-ready",
+          botId: "bot-live-manual-ready",
+          sessionId: "session-live-manual-ready",
+          symbol: "BTCUSDT",
+          totalSignals: 0,
+          longEntries: 0,
+          shortEntries: 0,
+          exits: 0,
+          dcaCount: 0,
+          closedTrades: 0,
+          winningTrades: 0,
+          losingTrades: 0,
+          realizedPnl: 0,
+          grossProfit: 0,
+          grossLoss: 0,
+          feesPaid: 0,
+          openPositionCount: 0,
+          openPositionQty: 0,
+          unrealizedPnl: 0,
+          lastPrice: 68000,
+          lastSignalAt: null,
+          lastSignalDirection: "NEUTRAL",
+          lastSignalDecisionAt: null,
+          lastTradeAt: null,
+          snapshotAt: "2026-03-31T10:05:00.000Z",
+          createdAt: "2026-03-31T10:05:00.000Z",
+          updatedAt: "2026-03-31T10:05:00.000Z",
+        },
+      ],
+      summary: {
+        totalSignals: 0,
+        longEntries: 0,
+        shortEntries: 0,
+        exits: 0,
+        dcaCount: 0,
+        closedTrades: 0,
+        winningTrades: 0,
+        losingTrades: 0,
+        realizedPnl: 0,
+        unrealizedPnl: 0,
+        totalPnl: 0,
+        grossProfit: 0,
+        grossLoss: 0,
+        feesPaid: 0,
+      },
+    });
+    listBotRuntimeSessionPositionsMock.mockResolvedValue({
+      sessionId: "session-live-manual-ready",
+      total: 0,
+      openCount: 0,
+      closedCount: 0,
+      openOrdersCount: 0,
+      showDynamicStopColumns: false,
+      window: {
+        startedAt: "2026-03-31T10:00:00.000Z",
+        finishedAt: "2026-03-31T10:05:00.000Z",
+      },
+      summary: {
+        realizedPnl: 0,
+        unrealizedPnl: 0,
+        feesPaid: 0,
+      },
+      openOrders: [],
+      openItems: [],
+      historyItems: [],
+    });
+    listBotRuntimeSessionTradesMock.mockResolvedValue({
+      sessionId: "session-live-manual-ready",
+      total: 0,
+      meta: {
+        page: 1,
+        pageSize: 25,
+        total: 0,
+        totalPages: 0,
+        hasPrev: false,
+        hasNext: false,
+      },
+      window: {
+        startedAt: "2026-03-31T10:00:00.000Z",
+        finishedAt: "2026-03-31T10:05:00.000Z",
+      },
+      items: [],
+    });
+
+    await renderSubjectSettled();
+
+    expect(screen.getByTestId("manual-order-action-state-badge")).toHaveTextContent(/gotowe|ready/i);
+    expect(screen.getByTestId("manual-order-action-state-description")).toHaveTextContent(
+      /moze zostac wykonany|can be submitted/i
+    );
+  });
+
   it("shows imported-open-order action state once exchange_sync order is visible", async () => {
     listBotsMock.mockResolvedValue([
       {

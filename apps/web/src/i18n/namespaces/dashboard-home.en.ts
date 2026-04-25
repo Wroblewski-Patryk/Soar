@@ -134,6 +134,8 @@ export const dashboardHomeEn = {
     "manualOrderActionDescriptionImportedOpenOrder": "Exchange open order is visible. Fill is still pending before any position can open.",
     "manualOrderActionStatePositionOpened": "Position opened",
     "manualOrderActionDescriptionPositionOpened": "Open position is already visible for the selected symbol.",
+    "manualOrderActionStateReady": "Ready",
+    "manualOrderActionDescriptionReady": "Manual LIVE can be submitted from the current dashboard context.",
     "manualOrderActionStateBlocked": "Blocked",
     "manualOrderActionDescriptionBlocked": "Manual LIVE action is currently not actionable from this dashboard context.",
     "tradesHistoryTitlePaper": "History",

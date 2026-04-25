@@ -7,6 +7,7 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1COH-07 web(manual-live-state): expose ready state for actionable dashboard manual LIVE context`
 ## NEXT
 ## PIPELINE
 - [x] `V1TAKE-09 web(wallet-ui): remove API-key takeover toggles and keep wallet as the single editable management switch`
