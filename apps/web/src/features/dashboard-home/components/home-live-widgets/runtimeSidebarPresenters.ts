@@ -8,14 +8,6 @@ type Translate = (key: string) => string;
 type ManualOrderPresenter = RuntimeSidebarSectionProps["manualOrder"];
 type TextPresenter = RuntimeSidebarSectionProps["text"];
 
-type ManualOrderActionState =
-  | "ready"
-  | "submitted"
-  | "waiting_for_fill"
-  | "imported_open_order"
-  | "position_opened"
-  | "blocked";
-
 type BuildManualOrderPresenterArgs = {
   t: Translate;
   selected: RuntimeSnapshot | null;
@@ -30,6 +22,7 @@ type BuildManualOrderPresenterArgs = {
   manualOrderSliderMaxQuantity: number | null;
   manualOrderLiveReferencePrice: number | null;
   manualOrderQuantity: string;
+  manualOrderBudget: string;
   manualOrderPrice: string;
   manualOrderSliderPercent: number;
   manualOrderNotionalEstimate: number | null;
@@ -45,113 +38,9 @@ type BuildManualOrderPresenterArgs = {
   onPriceChange: (price: string) => void;
   onFillPrice: () => void;
   onQuantityChange: (quantity: string) => void;
+  onBudgetChange: (budget: string) => void;
   onSliderChange: (nextPercent: number) => void;
   onSubmit: () => void;
-};
-
-const toComparableTimestamp = (value: string | null | undefined) => {
-  if (!value) return Number.NEGATIVE_INFINITY;
-  const parsed = Date.parse(value);
-  return Number.isFinite(parsed) ? parsed : Number.NEGATIVE_INFINITY;
-};
-
-const resolveManualOrderActionState = (params: {
-  selected: RuntimeSnapshot | null;
-  manualOrderSymbol: string;
-  manualOrderSide: "BUY" | "SELL";
-  manualOrderSymbolOptions: string[];
-  isSubmittingManualOrder: boolean;
-  selectedRuntimeCapabilityAvailable: boolean;
-}) => {
-  if (params.isSubmittingManualOrder) {
-    return {
-      state: "submitted" as ManualOrderActionState,
-      labelKey: "dashboard.home.runtime.manualOrderActionStateSubmitted",
-      descriptionKey: "dashboard.home.runtime.manualOrderActionDescriptionSubmitted",
-      toneClassName: "text-info",
-      badgeClassName: "badge-info badge-outline",
-    };
-  }
-
-  const symbol = params.manualOrderSymbol.trim().toUpperCase();
-  if (
-    !params.selected ||
-    !params.selectedRuntimeCapabilityAvailable ||
-    !symbol ||
-    params.manualOrderSymbolOptions.length === 0
-  ) {
-    return {
-      state: "blocked" as ManualOrderActionState,
-      labelKey: "dashboard.home.runtime.manualOrderActionStateBlocked",
-      descriptionKey: "dashboard.home.runtime.manualOrderActionDescriptionBlocked",
-      toneClassName: "text-warning",
-      badgeClassName: "badge-warning badge-outline",
-    };
-  }
-
-  const positionSide = params.manualOrderSide === "BUY" ? "LONG" : "SHORT";
-  const openPosition = (params.selected.positions?.openItems ?? [])
-    .filter((item) => item.symbol.trim().toUpperCase() === symbol && item.side === positionSide)
-    .sort((left, right) => {
-      const openedDiff = toComparableTimestamp(right.openedAt) - toComparableTimestamp(left.openedAt);
-      if (openedDiff !== 0) return openedDiff;
-      return left.id.localeCompare(right.id);
-    })[0];
-  if (openPosition) {
-    return {
-      state: "position_opened" as ManualOrderActionState,
-      labelKey: "dashboard.home.runtime.manualOrderActionStatePositionOpened",
-      descriptionKey: "dashboard.home.runtime.manualOrderActionDescriptionPositionOpened",
-      toneClassName: "text-success",
-      badgeClassName: "badge-success badge-outline",
-    };
-  }
-
-  const importedOpenOrder = (params.selected.positions?.openOrders ?? [])
-    .filter((item) => item.symbol.trim().toUpperCase() === symbol && item.origin === "EXCHANGE_SYNC")
-    .sort((left, right) => {
-      const submittedDiff =
-        toComparableTimestamp(right.submittedAt ?? right.createdAt) -
-        toComparableTimestamp(left.submittedAt ?? left.createdAt);
-      if (submittedDiff !== 0) return submittedDiff;
-      return left.id.localeCompare(right.id);
-    })[0];
-  if (importedOpenOrder) {
-    return {
-      state: "imported_open_order" as ManualOrderActionState,
-      labelKey: "dashboard.home.runtime.manualOrderActionStateImportedOpenOrder",
-      descriptionKey: "dashboard.home.runtime.manualOrderActionDescriptionImportedOpenOrder",
-      toneClassName: "text-secondary",
-      badgeClassName: "badge-secondary badge-outline",
-    };
-  }
-
-  const manualSubmittedOrder = (params.selected.positions?.openOrders ?? [])
-    .filter((item) => item.symbol.trim().toUpperCase() === symbol && item.origin === "USER")
-    .sort((left, right) => {
-      const submittedDiff =
-        toComparableTimestamp(right.submittedAt ?? right.createdAt) -
-        toComparableTimestamp(left.submittedAt ?? left.createdAt);
-      if (submittedDiff !== 0) return submittedDiff;
-      return left.id.localeCompare(right.id);
-    })[0];
-  if (manualSubmittedOrder) {
-    return {
-      state: "waiting_for_fill" as ManualOrderActionState,
-      labelKey: "dashboard.home.runtime.manualOrderActionStateWaitingForFill",
-      descriptionKey: "dashboard.home.runtime.manualOrderActionDescriptionWaitingForFill",
-      toneClassName: "text-info",
-      badgeClassName: "badge-info badge-outline",
-    };
-  }
-
-  return {
-    state: "ready" as ManualOrderActionState,
-    labelKey: "dashboard.home.runtime.manualOrderActionStateReady",
-    descriptionKey: "dashboard.home.runtime.manualOrderActionDescriptionReady",
-    toneClassName: "text-success",
-    badgeClassName: "badge-success badge-outline",
-  };
 };
 
 export const buildRuntimeSidebarManualOrderPresenter = ({
@@ -166,6 +55,7 @@ export const buildRuntimeSidebarManualOrderPresenter = ({
   manualOrderSliderMaxQuantity,
   manualOrderLiveReferencePrice,
   manualOrderQuantity,
+  manualOrderBudget,
   manualOrderPrice,
   manualOrderSliderPercent,
   manualOrderNotionalEstimate,
@@ -181,18 +71,11 @@ export const buildRuntimeSidebarManualOrderPresenter = ({
   onPriceChange,
   onFillPrice,
   onQuantityChange,
+  onBudgetChange,
   onSliderChange,
   onSubmit,
 }: BuildManualOrderPresenterArgs): ManualOrderPresenter => {
   const selectedVenueContext = resolveBotVenueContext(selected?.bot);
-  const manualOrderActionState = resolveManualOrderActionState({
-    selected,
-    manualOrderSymbol,
-    manualOrderSide,
-    manualOrderSymbolOptions,
-    isSubmittingManualOrder,
-    selectedRuntimeCapabilityAvailable,
-  });
 
   return ({
   title: t("dashboard.home.runtime.manualOrderTitle"),
@@ -202,28 +85,18 @@ export const buildRuntimeSidebarManualOrderPresenter = ({
   marginModeLabel: t("dashboard.home.runtime.manualOrderMarginModeLabel"),
   leverageLabel: t("dashboard.home.runtime.manualOrderLeverageLabel"),
   quantityLabel: t("dashboard.home.runtime.qty"),
+  budgetLabel: t("dashboard.home.runtime.manualOrderBudgetLabel"),
+  budgetMaxLabel: t("dashboard.home.runtime.manualOrderBudgetMaxLabel"),
   priceLabel: t("dashboard.home.runtime.price"),
   fillPriceLabel: t("dashboard.home.runtime.manualOrderUseMarketPrice"),
   minQtyLabel: t("dashboard.home.runtime.manualOrderMinQtyLabel"),
   sliderLabel: t("dashboard.home.runtime.manualOrderSliderLabel"),
   sliderMinLabel: t("dashboard.home.runtime.manualOrderSliderMinLabel"),
   sliderMaxLabel: t("dashboard.home.runtime.manualOrderSliderMaxLabel"),
-  summaryBuyLabel: t("dashboard.home.runtime.manualOrderSummaryBuy"),
-  summarySellLabel: t("dashboard.home.runtime.manualOrderSummarySell"),
-  summaryEstimateLabel: t("dashboard.home.runtime.manualOrderSummaryEstimate"),
-  summaryMaxLabel: t("dashboard.home.runtime.manualOrderSummaryMax"),
   openLabel: manualOrderOpenLabel,
   openingLabel: manualOrderSubmittingLabel,
   buyLabel: t("dashboard.home.runtime.manualOrderBuyLabel"),
   sellLabel: t("dashboard.home.runtime.manualOrderSellLabel"),
-  contextLoadingLabel: t("dashboard.home.runtime.manualOrderContextLoading"),
-  contextUnavailableLabel: t("dashboard.home.runtime.manualOrderContextUnavailable"),
-  semanticsHintLabel: t("dashboard.home.runtime.manualOrderSemanticsHint"),
-  stateTitle: t("dashboard.home.runtime.manualOrderActionStateTitle"),
-  stateLabel: t(manualOrderActionState.labelKey),
-  stateDescription: t(manualOrderActionState.descriptionKey),
-  stateToneClassName: manualOrderActionState.toneClassName,
-  stateBadgeClassName: manualOrderActionState.badgeClassName,
   noSymbolsLabel: t("dashboard.home.runtime.noSignalData"),
   botContext: selected ? `${selected.bot.name} | ${selected.bot.mode}` : "-",
   symbolOptions: manualOrderSymbolOptions,
@@ -236,6 +109,7 @@ export const buildRuntimeSidebarManualOrderPresenter = ({
   maxExecutableQty: manualOrderSliderMaxQuantity ?? null,
   liveReferencePrice: manualOrderLiveReferencePrice,
   quantity: manualOrderQuantity,
+  budget: manualOrderBudget,
   price: manualOrderPrice,
   sliderPercent: manualOrderSliderPercent,
   estimatedNotional: manualOrderNotionalEstimate,
@@ -248,6 +122,7 @@ export const buildRuntimeSidebarManualOrderPresenter = ({
   onPriceChange,
   onFillPrice,
   onQuantityChange,
+  onBudgetChange,
   onSliderChange,
   onSubmit,
   });

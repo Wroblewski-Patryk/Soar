@@ -7,8 +7,12 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [x] `V1COH-07 web(manual-live-state): expose ready state for actionable dashboard manual LIVE context`
+- [ ] (none)
 ## NEXT
+- [x] `V1UX-01 web(manual-order-autofill): refresh Price from market reference on first symbol hydrate and symbol change`
+- [x] `V1UX-02 web(manual-order-budget): add quote-budget input under Qty slider with wallet free-funds cap`
+- [x] `V1UX-03 web(manual-order-sidebar): remove summary/lifecycle/action-state noise and rerun focused closure pack`
+- [x] `V1COH-07 web(manual-live-state): expose ready state for actionable dashboard manual LIVE context`
 ## PIPELINE
 - [x] `V1TAKE-09 web(wallet-ui): remove API-key takeover toggles and keep wallet as the single editable management switch`
 - [x] `V1READY-2026-04-25-C ops/deploy(sync): expose deployed commit truth and reconcile residual V1 activation artifacts`

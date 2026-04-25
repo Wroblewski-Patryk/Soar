@@ -17,8 +17,18 @@ Last updated: 2026-04-25
 
 ## READY
 
+- [ ] (none)
 
 ## BACKLOG
+
+- [x] `V1UX-01 web(manual-order-autofill): refresh Price from market reference on first symbol hydrate and symbol change`
+  - 2026-04-25: Closed together with `V1UX-02/03` under one selected-bot dashboard manual-order UX polish slice. `Price` now auto-fills from the canonical `Use market` reference on first symbol hydrate, symbol changes reset the field back onto the current symbol reference, and ordinary same-symbol manual edits are no longer overwritten. Focused validation PASS: `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.manual-order.test.tsx src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`, `pnpm --filter web run build`.
+
+- [x] `V1UX-02 web(manual-order-budget): add quote-budget input under Qty slider with wallet free-funds cap`
+  - 2026-04-25: Closed together with `V1UX-01/03`. The manual-order sidebar now exposes a quote-budget input under the qty slider, derives `Qty` from final order cost, keeps budget/qty synchronized through the existing selected-bot controller, and fails closed when requested spend exceeds wallet free funds. Focused validation PASS: `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.manual-order.test.tsx src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`, `pnpm --filter web run build`.
+
+- [x] `V1UX-03 web(manual-order-sidebar): remove summary/lifecycle/action-state noise and rerun focused closure pack`
+  - 2026-04-25: Closed as the final manual-order sidebar cleanup slice. The runtime sidebar now keeps only the actionable fields (`order type`, `margin mode`, `leverage`) and removes the summary line, lifecycle hint, and action-state card that were adding operator noise without helping V1 execution flow. Focused validation PASS: `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.manual-order.test.tsx src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`, `pnpm --filter web run build`.
 
 - [x] `V1COH-07 web(manual-live-state): expose ready state for actionable dashboard manual LIVE context`
   - 2026-04-25: Closed the misleading operator-surface gap where dashboard manual LIVE state defaulted to `blocked` even in a valid actionable context. The runtime sidebar now exposes an explicit `ready` state before submit, keeps `blocked` only for genuinely non-actionable dashboard contexts, and locks the semantics with focused `HomeLiveWidgets.manual-order` regression coverage plus i18n sync.

@@ -33,28 +33,18 @@ export type RuntimeSidebarSectionProps = {
     marginModeLabel: string;
     leverageLabel: string;
     quantityLabel: string;
+    budgetLabel: string;
+    budgetMaxLabel: string;
     priceLabel: string;
     fillPriceLabel: string;
     minQtyLabel: string;
     sliderLabel: string;
     sliderMinLabel: string;
     sliderMaxLabel: string;
-    summaryBuyLabel: string;
-    summarySellLabel: string;
-    summaryEstimateLabel: string;
-    summaryMaxLabel: string;
     openLabel: string;
     openingLabel: string;
     buyLabel: string;
     sellLabel: string;
-    contextLoadingLabel: string;
-    contextUnavailableLabel: string;
-    semanticsHintLabel: string;
-    stateTitle: string;
-    stateLabel: string;
-    stateDescription: string;
-    stateToneClassName: string;
-    stateBadgeClassName: string;
     noSymbolsLabel: string;
     botContext: string;
     symbolOptions: string[];
@@ -67,6 +57,7 @@ export type RuntimeSidebarSectionProps = {
     maxExecutableQty: number | null;
     liveReferencePrice: number | null;
     quantity: string;
+    budget: string;
     price: string;
     sliderPercent: number;
     estimatedNotional: number | null;
@@ -79,6 +70,7 @@ export type RuntimeSidebarSectionProps = {
     onPriceChange: (price: string) => void;
     onFillPrice: () => void;
     onQuantityChange: (quantity: string) => void;
+    onBudgetChange: (budget: string) => void;
     onSliderChange: (nextPercent: number) => void;
     onSubmit: () => void;
   };
@@ -373,10 +365,6 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
     if (selectedStrategyLeverageValue != null) return `${selectedStrategyLeverageValue}x`;
     return "-";
   })();
-  const manualOrderSummaryLabel =
-    props.manualOrder.side === "BUY"
-      ? props.manualOrder.summaryBuyLabel
-      : props.manualOrder.summarySellLabel;
   const selectedBaseCurrency = (() => {
     const fromWallet = selectedWallet?.baseCurrency;
     if (fromWallet) return fromWallet.toUpperCase();
@@ -600,6 +588,7 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
                   <span className="label-text text-xs">{props.manualOrder.symbolLabel}</span>
                   <select
                     className="select select-bordered select-sm"
+                    data-testid="manual-order-symbol-select"
                     value={props.manualOrder.symbol}
                     disabled={props.manualOrder.isSubmitting || props.manualOrder.symbolOptions.length === 0}
                     onChange={(event) => props.manualOrder.onSymbolChange(event.target.value)}
@@ -654,6 +643,7 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
                       min="0"
                       step="0.000001"
                       className="input input-bordered input-sm flex-1"
+                      data-testid="manual-order-price-input"
                       value={props.manualOrder.price}
                       disabled={props.manualOrder.isSubmitting}
                       onChange={(event) => props.manualOrder.onPriceChange(event.target.value)}
@@ -702,6 +692,23 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
                     <span>{props.manualOrder.sliderMaxLabel}</span>
                   </span>
                 </label>
+                <label className="form-control gap-1">
+                  <span className="label-text text-xs">{props.manualOrder.budgetLabel}</span>
+                  <input
+                    type="number"
+                    inputMode="decimal"
+                    min="0"
+                    step="0.000001"
+                    className="input input-bordered input-sm"
+                    data-testid="manual-order-budget-input"
+                    value={props.manualOrder.budget}
+                    disabled={props.manualOrder.isSubmitting}
+                    onChange={(event) => props.manualOrder.onBudgetChange(event.target.value)}
+                  />
+                  <span className="text-[10px] opacity-70">
+                    {props.manualOrder.budgetMaxLabel}: {props.selectedData?.free != null ? props.formatAmountWithUnit(props.selectedData.free) : "-"}
+                  </span>
+                </label>
                 <div className="rounded-box border border-base-300/45 bg-base-100/55 p-2 text-[11px]">
                   <p className="flex items-center justify-between gap-2">
                     <span className="opacity-65">{props.manualOrder.orderTypeLabel}</span>
@@ -721,50 +728,6 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
                       {props.manualOrder.leverage != null ? `${props.manualOrder.leverage}x` : "-"}
                     </span>
                   </p>
-                  <p className="mt-1.5 text-[10px] opacity-70" data-testid="manual-order-summary-line">
-                    {manualOrderSummaryLabel}: {props.manualOrder.summaryEstimateLabel}{" "}
-                    <span className="font-semibold">
-                      {props.manualOrder.estimatedNotional != null ? props.formatAmountWithUnit(props.manualOrder.estimatedNotional) : "-"}
-                    </span>{" "}
-                    | {props.manualOrder.summaryMaxLabel}{" "}
-                    <span className="font-semibold">
-                      {props.manualOrder.maxExecutableQty != null ? props.formatNumber(props.manualOrder.maxExecutableQty, { maximumFractionDigits: 8 }) : "-"}
-                    </span>
-                  </p>
-                  {props.manualOrder.isContextLoading ? (
-                    <p className="mt-1 text-[10px] opacity-60" data-testid="manual-order-context-state">
-                      {props.manualOrder.contextLoadingLabel}
-                    </p>
-                  ) : props.manualOrder.liveReferencePrice == null ? (
-                    <p className="mt-1 text-[10px] opacity-60" data-testid="manual-order-context-state">
-                      {props.manualOrder.contextUnavailableLabel}
-                    </p>
-                  ) : null}
-                  <p className="mt-1 text-[10px] opacity-60" data-testid="manual-order-semantics-hint">
-                    {props.manualOrder.semanticsHintLabel}
-                  </p>
-                  <div
-                    className="mt-2 rounded-box border border-base-300/40 bg-base-100/70 px-2 py-1.5"
-                    data-testid="manual-order-action-state"
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-[10px] uppercase tracking-wide opacity-65">
-                        {props.manualOrder.stateTitle}
-                      </span>
-                      <span
-                        className={`badge badge-xs ${props.manualOrder.stateBadgeClassName}`}
-                        data-testid="manual-order-action-state-badge"
-                      >
-                        {props.manualOrder.stateLabel}
-                      </span>
-                    </div>
-                    <p
-                      className={`mt-1 text-[10px] ${props.manualOrder.stateToneClassName}`}
-                      data-testid="manual-order-action-state-description"
-                    >
-                      {props.manualOrder.stateDescription}
-                    </p>
-                  </div>
                 </div>
                 <button
                   type="button"

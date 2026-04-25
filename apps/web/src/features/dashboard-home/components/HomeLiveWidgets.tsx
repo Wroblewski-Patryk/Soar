@@ -337,6 +337,7 @@ export default function HomeLiveWidgets() {
     "dashboard.home.runtime.manualOrderMarketPriceUnavailable"
   );
   const manualOrderMinQuantityLabel = t("dashboard.home.runtime.manualOrderMinQtyValidation");
+  const manualOrderExceedsFreeFundsLabel = t("dashboard.home.runtime.manualOrderExceedsFreeFunds");
   const editPositionButtonLabel = t("dashboard.home.runtime.editPositionButton");
   const editPositionModalTitle = t("dashboard.home.runtime.editPositionTitle");
   const editPositionModalDescription = t("dashboard.home.runtime.editPositionDescription");
@@ -401,6 +402,7 @@ export default function HomeLiveWidgets() {
     isSubmittingManualOrder,
     manualOrderContext,
     manualOrderContextLoading,
+    manualOrderBudget,
     manualOrderLeverageForEstimate,
     manualOrderLiveReferencePrice,
     manualOrderMarginEstimate,
@@ -415,12 +417,13 @@ export default function HomeLiveWidgets() {
     manualOrderSymbolOptions,
     resolvedManualOrderType,
     fillManualOrderPriceFromReference,
+    handleManualOrderBudgetChange,
     handleManualOrderSliderChange,
+    handleManualOrderSymbolChange,
     handleSubmitManualOrder,
-    setManualOrderPrice,
+    handleManualOrderPriceChange,
     setManualOrderQuantity,
     setManualOrderSide,
-    setManualOrderSymbol,
   } = useManualOrderController({
     selected,
     selectedData,
@@ -432,6 +435,7 @@ export default function HomeLiveWidgets() {
       requiredPrice: manualOrderRequiredPriceLabel,
       marketPriceUnavailable: manualOrderMarketPriceUnavailableLabel,
       minQuantity: manualOrderMinQuantityLabel,
+      exceedsFreeFunds: manualOrderExceedsFreeFundsLabel,
       success: manualOrderSuccessLabel,
       error: manualOrderErrorLabel,
     },
@@ -605,6 +609,7 @@ export default function HomeLiveWidgets() {
         manualOrderSliderMaxQuantity,
         manualOrderLiveReferencePrice,
         manualOrderQuantity,
+        manualOrderBudget,
         manualOrderPrice,
         manualOrderSliderPercent,
         manualOrderNotionalEstimate,
@@ -615,11 +620,12 @@ export default function HomeLiveWidgets() {
         manualOrderSymbol,
         manualOrderSide,
         resolvedManualOrderType,
-        onSymbolChange: setManualOrderSymbol,
+        onSymbolChange: handleManualOrderSymbolChange,
         onSideChange: setManualOrderSide,
-        onPriceChange: setManualOrderPrice,
+        onPriceChange: handleManualOrderPriceChange,
         onFillPrice: fillManualOrderPriceFromReference,
         onQuantityChange: setManualOrderQuantity,
+        onBudgetChange: handleManualOrderBudgetChange,
         onSliderChange: handleManualOrderSliderChange,
         onSubmit: () => void handleSubmitManualOrder(),
       }),
@@ -630,6 +636,7 @@ export default function HomeLiveWidgets() {
       isSubmittingManualOrder,
       manualOrderContext,
       manualOrderContextLoading,
+      manualOrderBudget,
       manualOrderLeverageForEstimate,
       manualOrderLiveReferencePrice,
       manualOrderMarginEstimate,
@@ -645,12 +652,13 @@ export default function HomeLiveWidgets() {
       manualOrderSymbol,
       manualOrderSymbolOptions,
       resolvedManualOrderType,
+      handleManualOrderBudgetChange,
+      handleManualOrderPriceChange,
+      handleManualOrderSymbolChange,
       selected,
       selectedRuntimeCapabilityAvailable,
-      setManualOrderPrice,
       setManualOrderQuantity,
       setManualOrderSide,
-      setManualOrderSymbol,
       t,
     ]
   );

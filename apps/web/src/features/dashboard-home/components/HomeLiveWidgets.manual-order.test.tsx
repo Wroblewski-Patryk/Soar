@@ -323,23 +323,23 @@ describe("HomeLiveWidgets manual order", () => {
 
     await renderSubjectSettled();
     expect(await screen.findByTestId("manual-order-panel")).toBeInTheDocument();
-    expect(screen.getByTestId("manual-order-semantics-hint")).toHaveTextContent(
-      /jednolitego cyklu|unified lifecycle/i
-    );
+    expect(screen.queryByTestId("manual-order-semantics-hint")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("manual-order-summary-line")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("manual-order-action-state")).not.toBeInTheDocument();
     expect(
       screen.getByTestId("wallet-section").compareDocumentPosition(screen.getByTestId("manual-order-section")) &
         Node.DOCUMENT_POSITION_FOLLOWING
     ).toBeTruthy();
 
-    const symbolSelect = await screen.findByLabelText(/Symbol/i);
+    const symbolSelect = await screen.findByTestId("manual-order-symbol-select");
     fireEvent.change(symbolSelect, { target: { value: "BTCUSDT" } });
     fireEvent.click(screen.getByRole("button", { name: /sprzedaj|sell/i }));
-    fireEvent.change(screen.getByTestId("manual-order-quantity-input"), { target: { value: "0.25" } });
+    fireEvent.change(screen.getByTestId("manual-order-quantity-input"), { target: { value: "0.1" } });
     await waitFor(() => {
       expect(screen.getByTestId("manual-order-order-type")).toHaveTextContent("MARKET");
       expect(screen.getByTestId("manual-order-margin-mode")).toHaveTextContent("CROSSED");
       expect(screen.getByTestId("manual-order-leverage")).toHaveTextContent("10x");
-      expect(screen.getByTestId("manual-order-summary-line")).toHaveTextContent(/17[\s\u00a0,.]*000/i);
+      expect(screen.getByTestId("manual-order-budget-input")).toHaveValue(6800);
     });
     fireEvent.click(screen.getByRole("button", { name: /Otworz zlecenie reczne|Open manual order/i }));
 
@@ -349,10 +349,324 @@ describe("HomeLiveWidgets manual order", () => {
         symbol: "BTCUSDT",
         side: "SELL",
         type: "MARKET",
-        quantity: 0.25,
+        quantity: 0.1,
         price: 68000,
         riskAck: true,
       });
+    });
+  });
+
+  it("autofills price on first symbol hydrate and does not overwrite manual edits while the same symbol stays selected", async () => {
+    getDashboardManualOrderContextMock.mockImplementation(
+      async (params: { botId: string; symbol: string; side?: "BUY" | "SELL"; quantity?: number }) => ({
+        botId: params.botId,
+        symbol: params.symbol.toUpperCase(),
+        mode: "PAPER",
+        orderType: "MARKET",
+        marginMode: "CROSSED",
+        leverage: 10,
+        priceReference: {
+          markPrice: params.symbol.toUpperCase() === "ETHUSDT" ? 3200 : 68000,
+          source: "exchange_mark",
+        },
+        quantityConstraints: {
+          minAmount: 0.001,
+          amountPrecision: 0.001,
+          minNotional: 50,
+          minExecutableQty: 0.001,
+        },
+        sideAwarePreview: {
+          side: params.side ?? "BUY",
+          requestedQuantity: params.quantity ?? null,
+          estimatedNotional: null,
+          estimatedMargin: null,
+          maxOpenPositions: 2,
+        },
+      })
+    );
+    listBotsMock.mockResolvedValue([
+      {
+        id: "bot-manual-order-price-refresh",
+        name: "Manual Price Refresh Bot",
+        walletId: "wallet-manual-order-price-refresh",
+        mode: "PAPER",
+        paperStartBalance: 10000,
+        marketType: "FUTURES",
+        positionMode: "ONE_WAY",
+        strategyId: "str-manual-order-price-refresh",
+        isActive: true,
+        liveOptIn: false,
+        maxOpenPositions: 2,
+      },
+    ]);
+    listBotRuntimeSessionsMock.mockResolvedValue([
+      {
+        id: "session-manual-order-price-refresh",
+        botId: "bot-manual-order-price-refresh",
+        mode: "PAPER",
+        status: "RUNNING",
+        startedAt: "2026-03-31T10:00:00.000Z",
+        finishedAt: null,
+        lastHeartbeatAt: "2026-03-31T10:05:00.000Z",
+        stopReason: null,
+        errorMessage: null,
+        createdAt: "2026-03-31T10:00:00.000Z",
+        updatedAt: "2026-03-31T10:05:00.000Z",
+        durationMs: 300000,
+        eventsCount: 0,
+        symbolsTracked: 2,
+        summary: { totalSignals: 0, dcaCount: 0, closedTrades: 0, realizedPnl: 0 },
+      },
+    ]);
+    listBotRuntimeSessionSymbolStatsMock.mockResolvedValue({
+      sessionId: "session-manual-order-price-refresh",
+      items: [
+        {
+          id: "stat-manual-order-price-refresh-btc",
+          userId: "u-manual-order-price-refresh",
+          botId: "bot-manual-order-price-refresh",
+          sessionId: "session-manual-order-price-refresh",
+          symbol: "BTCUSDT",
+          totalSignals: 0,
+          longEntries: 0,
+          shortEntries: 0,
+          exits: 0,
+          dcaCount: 0,
+          closedTrades: 0,
+          winningTrades: 0,
+          losingTrades: 0,
+          realizedPnl: 0,
+          grossProfit: 0,
+          grossLoss: 0,
+          feesPaid: 0,
+          openPositionCount: 0,
+          openPositionQty: 0,
+          unrealizedPnl: 0,
+          lastPrice: 68000,
+          lastSignalAt: null,
+          lastSignalDirection: "NEUTRAL",
+          lastSignalDecisionAt: null,
+          lastTradeAt: null,
+          snapshotAt: "2026-03-31T10:05:00.000Z",
+          createdAt: "2026-03-31T10:05:00.000Z",
+          updatedAt: "2026-03-31T10:05:00.000Z",
+        },
+        {
+          id: "stat-manual-order-price-refresh-eth",
+          userId: "u-manual-order-price-refresh",
+          botId: "bot-manual-order-price-refresh",
+          sessionId: "session-manual-order-price-refresh",
+          symbol: "ETHUSDT",
+          totalSignals: 0,
+          longEntries: 0,
+          shortEntries: 0,
+          exits: 0,
+          dcaCount: 0,
+          closedTrades: 0,
+          winningTrades: 0,
+          losingTrades: 0,
+          realizedPnl: 0,
+          grossProfit: 0,
+          grossLoss: 0,
+          feesPaid: 0,
+          openPositionCount: 0,
+          openPositionQty: 0,
+          unrealizedPnl: 0,
+          lastPrice: 3200,
+          lastSignalAt: null,
+          lastSignalDirection: "NEUTRAL",
+          lastSignalDecisionAt: null,
+          lastTradeAt: null,
+          snapshotAt: "2026-03-31T10:05:00.000Z",
+          createdAt: "2026-03-31T10:05:00.000Z",
+          updatedAt: "2026-03-31T10:05:00.000Z",
+        },
+      ],
+      summary: {
+        totalSignals: 0,
+        longEntries: 0,
+        shortEntries: 0,
+        exits: 0,
+        dcaCount: 0,
+        closedTrades: 0,
+        winningTrades: 0,
+        losingTrades: 0,
+        realizedPnl: 0,
+        unrealizedPnl: 0,
+        totalPnl: 0,
+        grossProfit: 0,
+        grossLoss: 0,
+        feesPaid: 0,
+      },
+    });
+    listBotRuntimeSessionPositionsMock.mockResolvedValue({
+      sessionId: "session-manual-order-price-refresh",
+      total: 0,
+      openCount: 0,
+      closedCount: 0,
+      openOrdersCount: 0,
+      showDynamicStopColumns: false,
+      window: {
+        startedAt: "2026-03-31T10:00:00.000Z",
+        finishedAt: "2026-03-31T10:05:00.000Z",
+      },
+      summary: { realizedPnl: 0, unrealizedPnl: 0, feesPaid: 0 },
+      openOrders: [],
+      openItems: [],
+      historyItems: [],
+    });
+    listBotRuntimeSessionTradesMock.mockResolvedValue({
+      sessionId: "session-manual-order-price-refresh",
+      total: 0,
+      meta: { page: 1, pageSize: 25, total: 0, totalPages: 0, hasPrev: false, hasNext: false },
+      window: {
+        startedAt: "2026-03-31T10:00:00.000Z",
+        finishedAt: "2026-03-31T10:05:00.000Z",
+      },
+      items: [],
+    });
+
+    await renderSubjectSettled();
+
+    await waitFor(() => {
+      expect(screen.getByTestId("manual-order-price-input")).toHaveValue(68000);
+    });
+
+    fireEvent.change(screen.getByTestId("manual-order-price-input"), { target: { value: "70000" } });
+    await waitFor(() => {
+      expect(screen.getByTestId("manual-order-price-input")).toHaveValue(70000);
+    });
+  });
+
+  it("derives quantity from budget input and clamps budget to free funds", async () => {
+    listBotsMock.mockResolvedValue([
+      {
+        id: "bot-manual-order-budget",
+        name: "Manual Budget Bot",
+        walletId: "wallet-manual-order-budget",
+        mode: "PAPER",
+        paperStartBalance: 10000,
+        marketType: "FUTURES",
+        positionMode: "ONE_WAY",
+        strategyId: "str-manual-order-budget",
+        isActive: true,
+        liveOptIn: false,
+        maxOpenPositions: 2,
+      },
+    ]);
+    listBotRuntimeSessionsMock.mockResolvedValue([
+      {
+        id: "session-manual-order-budget",
+        botId: "bot-manual-order-budget",
+        mode: "PAPER",
+        status: "RUNNING",
+        startedAt: "2026-03-31T10:00:00.000Z",
+        finishedAt: null,
+        lastHeartbeatAt: "2026-03-31T10:05:00.000Z",
+        stopReason: null,
+        errorMessage: null,
+        createdAt: "2026-03-31T10:00:00.000Z",
+        updatedAt: "2026-03-31T10:05:00.000Z",
+        durationMs: 300000,
+        eventsCount: 0,
+        symbolsTracked: 1,
+        summary: { totalSignals: 0, dcaCount: 0, closedTrades: 0, realizedPnl: 0 },
+      },
+    ]);
+    listBotRuntimeSessionSymbolStatsMock.mockResolvedValue({
+      sessionId: "session-manual-order-budget",
+      items: [
+        {
+          id: "stat-manual-order-budget",
+          userId: "u-manual-order-budget",
+          botId: "bot-manual-order-budget",
+          sessionId: "session-manual-order-budget",
+          symbol: "BTCUSDT",
+          totalSignals: 0,
+          longEntries: 0,
+          shortEntries: 0,
+          exits: 0,
+          dcaCount: 0,
+          closedTrades: 0,
+          winningTrades: 0,
+          losingTrades: 0,
+          realizedPnl: 0,
+          grossProfit: 0,
+          grossLoss: 0,
+          feesPaid: 0,
+          openPositionCount: 0,
+          openPositionQty: 0,
+          unrealizedPnl: 0,
+          lastPrice: 68000,
+          lastSignalAt: null,
+          lastSignalDirection: "NEUTRAL",
+          lastSignalDecisionAt: null,
+          lastTradeAt: null,
+          snapshotAt: "2026-03-31T10:05:00.000Z",
+          createdAt: "2026-03-31T10:05:00.000Z",
+          updatedAt: "2026-03-31T10:05:00.000Z",
+        },
+      ],
+      summary: {
+        totalSignals: 0,
+        longEntries: 0,
+        shortEntries: 0,
+        exits: 0,
+        dcaCount: 0,
+        closedTrades: 0,
+        winningTrades: 0,
+        losingTrades: 0,
+        realizedPnl: 0,
+        unrealizedPnl: 0,
+        totalPnl: 0,
+        grossProfit: 0,
+        grossLoss: 0,
+        feesPaid: 0,
+      },
+    });
+    listBotRuntimeSessionPositionsMock.mockResolvedValue({
+      sessionId: "session-manual-order-budget",
+      total: 0,
+      openCount: 0,
+      closedCount: 0,
+      openOrdersCount: 0,
+      showDynamicStopColumns: false,
+      window: {
+        startedAt: "2026-03-31T10:00:00.000Z",
+        finishedAt: "2026-03-31T10:05:00.000Z",
+      },
+      summary: { realizedPnl: 0, unrealizedPnl: 0, feesPaid: 0 },
+      openOrders: [],
+      openItems: [],
+      historyItems: [],
+    });
+    listBotRuntimeSessionTradesMock.mockResolvedValue({
+      sessionId: "session-manual-order-budget",
+      total: 0,
+      meta: { page: 1, pageSize: 25, total: 0, totalPages: 0, hasPrev: false, hasNext: false },
+      window: {
+        startedAt: "2026-03-31T10:00:00.000Z",
+        finishedAt: "2026-03-31T10:05:00.000Z",
+      },
+      items: [],
+    });
+
+    await renderSubjectSettled();
+
+    await waitFor(() => {
+      expect(screen.getByTestId("manual-order-price-input")).toHaveValue(68000);
+    });
+
+    fireEvent.change(screen.getByTestId("manual-order-budget-input"), { target: { value: "6800" } });
+    await waitFor(() => {
+      expect(screen.getByTestId("manual-order-quantity-input")).toHaveValue(0.1);
+      expect(screen.getByTestId("manual-order-budget-input")).toHaveValue(6800);
+    });
+
+    fireEvent.change(screen.getByTestId("manual-order-budget-input"), { target: { value: "12000" } });
+    await waitFor(() => {
+      expect(screen.getByTestId("manual-order-budget-input")).toHaveValue(9999.99976);
+      expect(screen.getByTestId("manual-order-quantity-input")).toHaveValue(0.14705882);
     });
   });
 
@@ -494,7 +808,7 @@ describe("HomeLiveWidgets manual order", () => {
 
     await renderSubjectSettled();
 
-    fireEvent.change(await screen.findByLabelText(/Symbol/i), { target: { value: "BTCUSDT" } });
+    fireEvent.change(await screen.findByTestId("manual-order-symbol-select"), { target: { value: "BTCUSDT" } });
     fireEvent.change(screen.getByTestId("manual-order-quantity-input"), { target: { value: "0.25" } });
     fireEvent.click(screen.getByRole("button", { name: /Otworz zlecenie reczne|Open manual order/i }));
 
@@ -656,12 +970,7 @@ describe("HomeLiveWidgets manual order", () => {
 
     await renderSubjectSettled();
 
-    expect(screen.getByTestId("manual-order-action-state-badge")).toHaveTextContent(
-      /oczekuje na fill|waiting for fill/i
-    );
-    expect(screen.getByTestId("manual-order-action-state-description")).toHaveTextContent(
-      /recznego juz istnieje|manual order row exists/i
-    );
+    expect(screen.queryByTestId("manual-order-action-state")).not.toBeInTheDocument();
   });
 
   it("shows ready action state when LIVE manual order is actionable before submit", async () => {
@@ -801,10 +1110,8 @@ describe("HomeLiveWidgets manual order", () => {
 
     await renderSubjectSettled();
 
-    expect(screen.getByTestId("manual-order-action-state-badge")).toHaveTextContent(/gotowe|ready/i);
-    expect(screen.getByTestId("manual-order-action-state-description")).toHaveTextContent(
-      /moze zostac wykonany|can be submitted/i
-    );
+    expect(screen.queryByTestId("manual-order-action-state")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Otworz zlecenie reczne|Open manual order/i })).toBeEnabled();
   });
 
   it("shows imported-open-order action state once exchange_sync order is visible", async () => {
@@ -960,12 +1267,7 @@ describe("HomeLiveWidgets manual order", () => {
 
     await renderSubjectSettled();
 
-    expect(screen.getByTestId("manual-order-action-state-badge")).toHaveTextContent(
-      /importowany open order|imported open order/i
-    );
-    expect(screen.getByTestId("manual-order-action-state-description")).toHaveTextContent(
-      /open order z gieldy|exchange open order is visible/i
-    );
+    expect(screen.queryByTestId("manual-order-action-state")).not.toBeInTheDocument();
   });
 
   it("shows position-opened action state once matching runtime position exists", async () => {
@@ -1134,12 +1436,7 @@ describe("HomeLiveWidgets manual order", () => {
 
     await renderSubjectSettled();
 
-    expect(screen.getByTestId("manual-order-action-state-badge")).toHaveTextContent(
-      /pozycja otwarta|position opened/i
-    );
-    expect(screen.getByTestId("manual-order-action-state-description")).toHaveTextContent(
-      /otwarta pozycje|open position is already visible/i
-    );
+    expect(screen.queryByTestId("manual-order-action-state")).not.toBeInTheDocument();
   });
 
   it("shows blocked action state when LIVE execution capability is unavailable", async () => {
@@ -1255,10 +1552,8 @@ describe("HomeLiveWidgets manual order", () => {
 
     await renderSubjectSettled();
 
-    expect(screen.getByTestId("manual-order-action-state-badge")).toHaveTextContent(/zablokowane|blocked/i);
-    expect(screen.getByTestId("manual-order-action-state-description")).toHaveTextContent(
-      /nie jest teraz wykonywalny|not actionable/i
-    );
+    expect(screen.queryByTestId("manual-order-action-state")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Otworz zlecenie reczne|Open manual order/i })).toBeDisabled();
   });
 
   it("shows submitted action state while manual order request is still in flight", async () => {
@@ -1407,12 +1702,12 @@ describe("HomeLiveWidgets manual order", () => {
 
     await renderSubjectSettled();
 
-    fireEvent.change(await screen.findByLabelText(/Symbol/i), { target: { value: "BTCUSDT" } });
+    fireEvent.change(await screen.findByTestId("manual-order-symbol-select"), { target: { value: "BTCUSDT" } });
     fireEvent.change(screen.getByTestId("manual-order-quantity-input"), { target: { value: "0.25" } });
     fireEvent.click(screen.getByRole("button", { name: /Otworz zlecenie reczne|Open manual order/i }));
 
     await waitFor(() => {
-      expect(screen.getByTestId("manual-order-action-state-badge")).toHaveTextContent(/wyslane|submitted/i);
+      expect(screen.getByRole("button", { name: /Otwieranie|Opening/i })).toBeDisabled();
     });
 
     await act(async () => {

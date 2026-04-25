@@ -27,6 +27,7 @@ type UseManualOrderControllerArgs = {
     requiredPrice: string;
     marketPriceUnavailable: string;
     minQuantity: string;
+    exceedsFreeFunds: string;
     success: string;
     error: string;
   };
@@ -42,7 +43,11 @@ export const useManualOrderController = ({
   const [manualOrderSide, setManualOrderSide] = useState<"BUY" | "SELL">("BUY");
   const [manualOrderPrice, setManualOrderPrice] = useState("");
   const [manualOrderQuantity, setManualOrderQuantity] = useState("");
+  const [manualOrderBudget, setManualOrderBudget] = useState("");
   const [manualOrderSliderPercent, setManualOrderSliderPercent] = useState(0);
+  const [manualOrderPriceAutofilledSymbol, setManualOrderPriceAutofilledSymbol] = useState<string | null>(null);
+  const [manualOrderPriceManuallyEditedSymbol, setManualOrderPriceManuallyEditedSymbol] = useState<string | null>(null);
+  const [manualOrderLastResolvedSymbol, setManualOrderLastResolvedSymbol] = useState<string | null>(null);
   const [manualOrderContext, setManualOrderContext] = useState<{
     orderType: "MARKET" | "LIMIT" | "STOP" | "STOP_LIMIT" | "TAKE_PROFIT" | "TRAILING";
     marginMode: "CROSSED" | "ISOLATED" | "NONE";
@@ -72,6 +77,8 @@ export const useManualOrderController = ({
   useEffect(() => {
     if (manualOrderSymbolOptions.length === 0) {
       if (manualOrderSymbol !== "") setManualOrderSymbol("");
+      setManualOrderPriceAutofilledSymbol(null);
+      setManualOrderPriceManuallyEditedSymbol(null);
       return;
     }
 
@@ -83,6 +90,14 @@ export const useManualOrderController = ({
 
   useEffect(() => {
     const symbol = normalizeSymbol(manualOrderSymbol);
+    if (symbol !== manualOrderLastResolvedSymbol) {
+      setManualOrderPriceManuallyEditedSymbol(null);
+      setManualOrderLastResolvedSymbol(symbol || null);
+    }
+  }, [manualOrderLastResolvedSymbol, manualOrderSymbol]);
+
+  useEffect(() => {
+    const symbol = normalizeSymbol(manualOrderSymbol);
     const selectedBotId = selected?.bot.id;
     if (!selectedBotId || !symbol) {
       setManualOrderContext(null);
@@ -91,6 +106,7 @@ export const useManualOrderController = ({
     }
 
     let canceled = false;
+    setManualOrderContext(null);
     setManualOrderContextLoading(true);
 
     void getDashboardManualOrderContext({
@@ -157,20 +173,28 @@ export const useManualOrderController = ({
     return selectedVenueContext.marketType === "SPOT" ? 1 : null;
   }, [manualOrderContext?.leverage, selectedVenueContext.marketType]);
 
+  const manualOrderEffectivePriceForSizing = useMemo(() => {
+    const parsedManualPrice = parseOptionalPositivePriceInput(manualOrderPrice);
+    if (typeof parsedManualPrice === "number") return parsedManualPrice;
+    if (
+      manualOrderLiveReferencePrice != null &&
+      Number.isFinite(manualOrderLiveReferencePrice) &&
+      manualOrderLiveReferencePrice > 0
+    ) {
+      return manualOrderLiveReferencePrice;
+    }
+    return null;
+  }, [manualOrderLiveReferencePrice, manualOrderPrice]);
+
   const manualOrderSliderMaxQuantity = useMemo(() => {
-    if (manualOrderLiveReferencePrice == null || manualOrderLiveReferencePrice <= 0) {
+    if (manualOrderEffectivePriceForSizing == null || manualOrderEffectivePriceForSizing <= 0) {
       return manualOrderMinExecutableQty;
     }
     const freeCash = selectedData?.free;
     if (freeCash == null || !Number.isFinite(freeCash) || freeCash <= 0) {
       return manualOrderMinExecutableQty;
     }
-
-    const leverage = manualOrderLeverageForEstimate ?? 1;
-    const rawMax =
-      selectedVenueContext.marketType === "SPOT"
-        ? freeCash / manualOrderLiveReferencePrice
-        : (freeCash * Math.max(1, leverage)) / manualOrderLiveReferencePrice;
+    const rawMax = freeCash / manualOrderEffectivePriceForSizing;
     if (!Number.isFinite(rawMax) || rawMax <= 0) return manualOrderMinExecutableQty;
 
     if (manualOrderMinExecutableQty != null) {
@@ -178,11 +202,35 @@ export const useManualOrderController = ({
     }
     return rawMax;
   }, [
-    manualOrderLeverageForEstimate,
-    manualOrderLiveReferencePrice,
+    manualOrderEffectivePriceForSizing,
     manualOrderMinExecutableQty,
-    selectedVenueContext.marketType,
     selectedData?.free,
+  ]);
+
+  useEffect(() => {
+    const symbol = normalizeSymbol(manualOrderSymbol);
+    if (!symbol) {
+      setManualOrderPriceAutofilledSymbol(null);
+      return;
+    }
+    if (
+      manualOrderLiveReferencePrice == null ||
+      !Number.isFinite(manualOrderLiveReferencePrice) ||
+      manualOrderLiveReferencePrice <= 0
+    ) {
+      return;
+    }
+    if (manualOrderPriceAutofilledSymbol === symbol) return;
+    if (manualOrderPriceManuallyEditedSymbol === symbol) return;
+
+    setManualOrderPrice(formatQuantityForInput(manualOrderLiveReferencePrice));
+    setManualOrderPriceAutofilledSymbol(symbol);
+    setManualOrderPriceManuallyEditedSymbol(null);
+  }, [
+    manualOrderLiveReferencePrice,
+    manualOrderPriceAutofilledSymbol,
+    manualOrderPriceManuallyEditedSymbol,
+    manualOrderSymbol,
   ]);
 
   useEffect(() => {
@@ -241,7 +289,22 @@ export const useManualOrderController = ({
       return;
     }
     setManualOrderPrice(formatQuantityForInput(manualOrderLiveReferencePrice));
-  }, [manualOrderLiveReferencePrice]);
+    setManualOrderPriceAutofilledSymbol(normalizeSymbol(manualOrderSymbol));
+    setManualOrderPriceManuallyEditedSymbol(null);
+  }, [manualOrderLiveReferencePrice, manualOrderSymbol]);
+
+  const handleManualOrderPriceChange = useCallback((price: string) => {
+    setManualOrderPrice(price);
+    setManualOrderPriceManuallyEditedSymbol(normalizeSymbol(manualOrderSymbol));
+  }, [manualOrderSymbol]);
+
+  const handleManualOrderSymbolChange = useCallback((symbol: string) => {
+    const normalizedSymbol = normalizeSymbol(symbol);
+    setManualOrderSymbol(normalizedSymbol);
+    setManualOrderPrice("");
+    setManualOrderPriceAutofilledSymbol(null);
+    setManualOrderPriceManuallyEditedSymbol(null);
+  }, []);
 
   const manualOrderQuantityValue = useMemo(() => {
     const parsed = Number(manualOrderQuantity);
@@ -249,9 +312,9 @@ export const useManualOrderController = ({
   }, [manualOrderQuantity]);
 
   const manualOrderNotionalEstimate = useMemo(() => {
-    if (manualOrderQuantityValue == null || manualOrderLiveReferencePrice == null) return null;
-    return manualOrderQuantityValue * manualOrderLiveReferencePrice;
-  }, [manualOrderLiveReferencePrice, manualOrderQuantityValue]);
+    if (manualOrderQuantityValue == null || manualOrderEffectivePriceForSizing == null) return null;
+    return manualOrderQuantityValue * manualOrderEffectivePriceForSizing;
+  }, [manualOrderEffectivePriceForSizing, manualOrderQuantityValue]);
 
   const manualOrderMarginEstimate = useMemo(() => {
     if (manualOrderNotionalEstimate == null || manualOrderLeverageForEstimate == null || manualOrderLeverageForEstimate <= 0) {
@@ -259,6 +322,46 @@ export const useManualOrderController = ({
     }
     return manualOrderNotionalEstimate / manualOrderLeverageForEstimate;
   }, [manualOrderLeverageForEstimate, manualOrderNotionalEstimate]);
+
+  useEffect(() => {
+    if (manualOrderNotionalEstimate == null || !Number.isFinite(manualOrderNotionalEstimate) || manualOrderNotionalEstimate <= 0) {
+      if (manualOrderBudget !== "") setManualOrderBudget("");
+      return;
+    }
+    const nextBudget = formatQuantityForInput(manualOrderNotionalEstimate);
+    if (nextBudget !== manualOrderBudget) {
+      setManualOrderBudget(nextBudget);
+    }
+  }, [manualOrderBudget, manualOrderNotionalEstimate]);
+
+  const handleManualOrderBudgetChange = useCallback((budget: string) => {
+    setManualOrderBudget(budget);
+
+    const parsedBudget = parseOptionalPositivePriceInput(budget);
+    if (parsedBudget == null) {
+      setManualOrderQuantity("");
+      return;
+    }
+    if (parsedBudget === "invalid") {
+      return;
+    }
+
+    if (
+      manualOrderEffectivePriceForSizing == null ||
+      !Number.isFinite(manualOrderEffectivePriceForSizing) ||
+      manualOrderEffectivePriceForSizing <= 0
+    ) {
+      return;
+    }
+
+    const freeFunds =
+      selectedData?.free != null && Number.isFinite(selectedData.free) && selectedData.free > 0
+        ? selectedData.free
+        : null;
+    const clampedBudget = freeFunds != null ? Math.min(parsedBudget, freeFunds) : parsedBudget;
+    const targetQuantity = clampedBudget / manualOrderEffectivePriceForSizing;
+    setManualOrderQuantity(formatQuantityForInput(targetQuantity));
+  }, [manualOrderEffectivePriceForSizing, selectedData?.free]);
 
   const handleSubmitManualOrder = useCallback(async () => {
     if (!selected) return;
@@ -306,6 +409,20 @@ export const useManualOrderController = ({
       toast.error(labels.marketPriceUnavailable);
       return;
     }
+    const freeFunds =
+      selectedData?.free != null && Number.isFinite(selectedData.free) && selectedData.free > 0
+        ? selectedData.free
+        : null;
+    if (
+      freeFunds != null &&
+      effectiveManualOrderPrice != null &&
+      Number.isFinite(effectiveManualOrderPrice) &&
+      effectiveManualOrderPrice > 0 &&
+      quantity * effectiveManualOrderPrice > freeFunds + 1e-8
+    ) {
+      toast.error(labels.exceedsFreeFunds);
+      return;
+    }
 
     setIsSubmittingManualOrder(true);
     try {
@@ -328,6 +445,7 @@ export const useManualOrderController = ({
     }
   }, [
     labels.error,
+    labels.exceedsFreeFunds,
     labels.invalidPrice,
     labels.invalidQuantity,
     labels.invalidSymbol,
@@ -345,10 +463,12 @@ export const useManualOrderController = ({
     manualOrderTypeRequiresPrice,
     resolvedManualOrderType,
     selected,
+    selectedData?.free,
   ]);
 
   return {
     isSubmittingManualOrder,
+    manualOrderBudget,
     manualOrderContext,
     manualOrderContextLoading,
     manualOrderLeverageForEstimate,
@@ -365,11 +485,12 @@ export const useManualOrderController = ({
     manualOrderSymbolOptions,
     resolvedManualOrderType,
     fillManualOrderPriceFromReference,
+    handleManualOrderBudgetChange,
     handleManualOrderSliderChange,
+    handleManualOrderSymbolChange,
     handleSubmitManualOrder,
-    setManualOrderPrice,
+    handleManualOrderPriceChange,
     setManualOrderQuantity,
     setManualOrderSide,
-    setManualOrderSymbol,
   };
 };
