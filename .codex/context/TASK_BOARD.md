@@ -17,10 +17,16 @@ Last updated: 2026-04-25
 
 ## READY
 
-- [ ] `XADAPT-01 docs(contract): freeze exchange execution capability matrix for authenticated reads and write-side execution`
-  - 2026-04-25: V1 activation truth is now fully reconciled and approved. The next smallest engineering slice returns to the queued Binance-first adapter hardening plan.
+- [ ] `XADAPT-03 refactor(api-exchange): expose one canonical exchange adapter boundary for write and authenticated-read consumers`
+  - 2026-04-25: `XADAPT-02` published the assumption inventory and ownership map. The next slice is the actual boundary hardening: narrow the generic-looking seams without broadening exchange support.
 
 ## BACKLOG
+
+- [x] `XADAPT-02 audit(api-exchange): classify Binance-specific assumptions across orders, exchange, and reconciliation paths`
+  - 2026-04-25: Published the classification packet for orders, exchange, and reconciliation paths. The repository now distinguishes intentional Binance-only runtime scope, compatibility-only generic seams, and generic-looking drift risks that `XADAPT-03` must narrow.
+
+- [x] `XADAPT-01 docs(contract): freeze exchange execution capability matrix for authenticated reads and write-side execution`
+  - 2026-04-25: Updated architecture docs so authenticated reads and write-side execution now share one explicit capability matrix. Frozen V1 truth is: Binance-only support for `BALANCE_PREVIEW`, `POSITIONS_SNAPSHOT`, `OPEN_ORDERS_SNAPSHOT`, and `LIVE_ORDER_SUBMIT`, with `LIVE_ORDER_CANCEL` explicitly unsupported for every exchange until a canonical exchange-cancel boundary exists.
 
 - [x] `V1READY-2026-04-25-B ops/signoff(sync): rebuild RC sign-off artifact and publish final V1 READY/BLOCKED launch decision`
   - 2026-04-25: Rebuilt the RC sign-off artifact, refreshed RC external gate status, rebuilt sign-off once more so its own gate snapshot captured `G4=PASS`, and resynced the RC checklist. Activation pack, closure, and project/context truth now agree that V1 is formally approved from the current repository evidence set.

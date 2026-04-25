@@ -7,18 +7,18 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `XADAPT-01 docs(contract): freeze exchange execution capability matrix for authenticated reads and write-side execution`
-## NEXT
-- [ ] `XADAPT-02 audit(api-exchange): classify Binance-specific assumptions across orders, exchange, and reconciliation paths`
-## PIPELINE
 - [ ] `XADAPT-03 refactor(api-exchange): expose one canonical exchange adapter boundary for write and authenticated-read consumers`
+## NEXT
 - [ ] `XADAPT-04 test(api-binance): add focused Binance adapter contract coverage for live submit and reconciliation-facing reads`
+## PIPELINE
 - [ ] `XADAPT-05 qa(closure): run focused exchange-adapter closure pack and sync canonical docs/context`
 - [ ] `XADAPT-06 planning(readiness): publish staged next-exchange rollout packet after Binance boundary closure`
 - [ ] `V1REG-02 qa(auto): execute architecture-v1 automated verification pack and record function-by-function status`
 - [ ] `V1REG-03 qa(browser): execute architecture-v1 browser checklist and capture findings`
 - [ ] `V1REG-04 planning(sync): classify failures and queue missing or regressed functions`
 - [ ] `V1REG-05 qa(regression): rerun touched function packs and refresh checklist status`
+- [x] `XADAPT-02 audit(api-exchange): classify Binance-specific assumptions across orders, exchange, and reconciliation paths`
+- [x] `XADAPT-01 docs(contract): freeze exchange execution capability matrix for authenticated reads and write-side execution`
 - [x] `V1READY-2026-04-25-B ops/signoff(sync): rebuild RC sign-off artifact and publish final V1 READY/BLOCKED launch decision`
 - [x] `V1READY-2026-04-25-A docs/ops(sync): reconcile final V1 activation truth, remaining blockers, and operator handoff`
 - [x] `V1COH-04 fix(api-reconciliation): tighten exchange-synced order/position adoption around manual LIVE opens`

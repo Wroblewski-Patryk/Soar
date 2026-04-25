@@ -61,8 +61,13 @@ execution will keep landing on misleading foundations.
   - balance preview support
   - positions snapshot support
   - open-orders snapshot support
+  - live order submit support
+  - live order cancel support
 - If a requested exchange is unsupported for a specific authenticated read, the
   API must return an explicit unsupported-capability/domain error.
+- If a requested exchange is unsupported for a specific write-side execution
+  family, the API or canonical owner service must fail closed with an explicit
+  unsupported-capability/domain error instead of narrowing silently.
 - A route may be Binance-only in V1, but then:
   - its API contract must say so explicitly, or
   - its generic `exchange` input must be narrowed or guarded fail-closed.

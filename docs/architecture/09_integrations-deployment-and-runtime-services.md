@@ -8,6 +8,13 @@ Define how Soar integrates with exchanges and how runtime services are deployed 
 - the browser never owns direct exchange transport
 - server-side infrastructure owns live stream fan-out and execution commands
 
+For V1 capability truth:
+- authenticated exchange reads and write-side execution are separate support
+  families
+- `LIVE_EXECUTION` alone is not enough to imply account-read or cancel support
+- the canonical support matrix lives in
+  `reference/exchange-access-ownership-matrix.md`
+
 ## Stream Contract
 Current frontend live-stream transport is:
 - exchange ingest in worker layer
@@ -83,6 +90,7 @@ The same explicitness rule applies to worker ownership drift:
 
 ## Supporting References
 - `reference/stream-transport-contract.md`
+- `reference/exchange-access-ownership-matrix.md`
 - `archive/tech-stack.md`
 
 ## Related Files

@@ -121,6 +121,19 @@ Last updated: 2026-04-25
   pack, activation closure, RC gates status, RC checklist, RC sign-off record,
   and planning/context docs all agree that V1 is approved from the current
   repository evidence set.
+- 2026-04-25: closed `XADAPT-01` as the contract-freeze slice for post-V1
+  exchange hardening. Architecture docs now expose one explicit capability
+  matrix across authenticated reads and write-side execution, so the repository
+  no longer needs to infer write support from generic adapter naming or from
+  broad `LIVE_EXECUTION` flags alone. Frozen V1 truth is Binance-only support
+  for authenticated reads plus `LIVE_ORDER_SUBMIT`, while `LIVE_ORDER_CANCEL`
+  remains explicitly unsupported until a canonical exchange-side cancel
+  boundary exists.
+- 2026-04-25: closed `XADAPT-02` as the assumption-classification slice for the
+  adapter hardening wave. The repository now has one explicit audit packet that
+  separates intentional Binance-only runtime scope from compatibility seams and
+  from generic-looking drift risks. This gives `XADAPT-03` a concrete owner map
+  for narrowing adapter boundaries without rediscovering support truth.
 - 2026-04-25: closed `DEPLOY-2026-04-25-B` as the validation-only follow-up to
   the same-day Coolify hotfix. Local `pnpm --filter web run build` now passes
   cleanly again, confirming the previously reported web deploy gate is no
