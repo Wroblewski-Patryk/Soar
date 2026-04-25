@@ -145,9 +145,9 @@ implementation
 - [x] lock capability and fallback behavior at exact-context seams
 
 ### XVENUE-07 refactor(api-ops): align worker ownership, health, and readiness to full topology truth
-- model all four canonical worker families
-- make deployed `inline` surface as degraded/exception truth instead of silent healthy equivalence
-- keep local/test inline support explicit
+- [x] model all four canonical worker families
+- [x] make deployed `inline` surface as degraded/exception truth instead of silent healthy equivalence
+- [x] keep local/test inline support explicit
 
 ### XVENUE-08 qa(closure): rerun focused exchange-context and worker-topology closure pack
 - rerun focused API tests
@@ -218,3 +218,12 @@ Context:
   prove `BINANCE + SPOT` does not reuse `BINANCE + FUTURES`, keep unsupported
   venue/context pairs fail-closed, and preserve current capability truth at the
   exchange module boundary. The queue now advances to `XVENUE-07`.
+- 2026-04-25: Closed `XVENUE-07` by extending
+  `apps/api/src/workers/workerOwnership.ts` into the canonical worker-topology
+  contract for ops and freshness truth. `/workers/health` and `/workers/ready`
+  now expose all four approved families (`market-data`, `market-stream`,
+  `backtest`, `execution`), distinguish local/test inline from deployed
+  degraded inline, and fail closed when deployed topology deviates from the
+  canonical split-worker contract. `runtimeFreshness.ts` now skips passive
+  inline checks only for explicit local/test inline. The queue now advances to
+  `XVENUE-08`.

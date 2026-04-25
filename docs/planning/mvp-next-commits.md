@@ -7,14 +7,14 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `XVENUE-07 refactor(api-ops): align worker topology truth`
-## NEXT
 - [ ] `XVENUE-08 qa(closure): rerun focused closure pack and sync docs/context`
+## NEXT
+- [ ] (none)
 ## PIPELINE
 - [x] `XVENUE-04 refactor(api-exchange): registry-driven adapter-family entrypoints`
 - [x] `XVENUE-05 refactor(api-markets-engine): remove direct exchange SDK access from feature modules`
 - [x] `XVENUE-06 test(api): add no-mixing parity coverage`
-- [ ] `XVENUE-07 refactor(api-ops): align worker topology truth`
+- [x] `XVENUE-07 refactor(api-ops): align worker topology truth`
 - [ ] `XVENUE-08 qa(closure): rerun focused closure pack and sync docs/context`
 - [x] `XADAPT-02 audit(api-exchange): classify Binance-specific assumptions across orders, exchange, and reconciliation paths`
 - [x] `XADAPT-01 docs(contract): freeze exchange execution capability matrix for authenticated reads and write-side execution`

@@ -234,6 +234,13 @@ Last updated: 2026-04-25
   registry and market-catalog paths, and that unsupported venue/context pairs
   stay fail-closed. The remaining active wave slice is now worker-topology
   truth alignment in `XVENUE-07`.
+- 2026-04-25: closed `XVENUE-07` as the worker-topology truth slice of
+  `XVENUE-A`. The repository now models `market-data`, `market-stream`,
+  `backtest`, and `execution` through one shared worker-topology contract,
+  `/workers/health` and `/workers/ready` distinguish explicit local/test inline
+  support from deployed degraded inline or partial-split topology, and passive
+  runtime-freshness skips are now limited to that explicit local/test inline
+  mode. The remaining active wave slice is now `XVENUE-08`.
 - 2026-04-25: closed `DEPLOY-2026-04-25-B` as the validation-only follow-up to
   the same-day Coolify hotfix. Local `pnpm --filter web run build` now passes
   cleanly again, confirming the previously reported web deploy gate is no

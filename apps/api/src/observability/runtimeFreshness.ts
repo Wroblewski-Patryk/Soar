@@ -1,6 +1,7 @@
 import { prisma } from '../prisma/client';
 import { metricsStore } from './metrics';
 import { parsePositiveInt } from '../lib/env';
+import { resolveWorkerTopologySnapshot } from '../workers/workerOwnership';
 
 type FreshnessStatus = 'PASS' | 'FAIL' | 'SKIP';
 
@@ -69,7 +70,7 @@ const computeTimeCheck = (input: {
 export const buildRuntimeFreshnessSnapshot = async (
   nowMs = Date.now()
 ): Promise<RuntimeFreshnessSnapshot> => {
-  const workerMode = process.env.WORKER_MODE?.trim() || 'inline';
+  const workerTopology = resolveWorkerTopologySnapshot();
   const workerHeartbeatThresholdMs = parsePositiveInt(
     process.env.RUNTIME_FRESHNESS_MAX_WORKER_HEARTBEAT_MS,
     60_000
@@ -131,7 +132,7 @@ export const buildRuntimeFreshnessSnapshot = async (
   const marketDataLastAtMs =
     marketDataCandidates.length > 0 ? Math.max(...marketDataCandidates) : null;
   const shouldSkipPassiveInlineFreshness =
-    workerMode !== 'split' &&
+    workerTopology.topologyStatus === 'local_inline' &&
     runningSessions.length === 0 &&
     workerHeartbeatLastAtMs === null &&
     marketDataLastAtMs === null;

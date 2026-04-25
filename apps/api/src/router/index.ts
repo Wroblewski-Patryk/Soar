@@ -11,7 +11,7 @@ import { requireOpsNetwork } from '../middleware/requireOpsNetwork';
 import { applyNoStoreHeaders } from '../middleware/noStoreHeaders';
 import { evaluateCriticalSecretsReadiness } from '../config/criticalSecretsReadiness';
 import { buildRuntimeFreshnessSnapshot } from '../observability/runtimeFreshness';
-import { resolveWorkerOwnershipConfig } from '../workers/workerOwnership';
+import { resolveWorkerTopologySnapshot } from '../workers/workerOwnership';
 
 const router = Router();
 
@@ -92,20 +92,22 @@ router.get('/alerts', ...requireOpsAccess, (_req, res) => {
 });
 
 router.get('/workers/health', ...requireOpsAccess, (_req, res) => {
-  const mode = process.env.WORKER_MODE?.trim() || 'inline';
-  const ownership = resolveWorkerOwnershipConfig();
+  const topology = resolveWorkerTopologySnapshot();
   return res.status(200).json({
-    status: 'ok',
+    status: topology.topologyStatus === 'degraded' ? 'degraded' : 'ok',
     service: 'workers',
-    mode,
-    ownership,
+    mode: topology.mode,
+    environment: topology.environment,
+    ownership: topology.ownership,
+    topologyStatus: topology.topologyStatus,
+    degradedReasons: topology.degradedReasons,
+    requiredWorkerFamilies: topology.requiredWorkerFamilies,
     timestamp: new Date().toISOString(),
   });
 });
 
 router.get('/workers/ready', ...requireOpsAccess, (_req, res) => {
-  const mode = process.env.WORKER_MODE?.trim() || 'inline';
-  const ownership = resolveWorkerOwnershipConfig();
+  const topology = resolveWorkerTopologySnapshot();
   const marketDataLag = Number.parseInt(process.env.WORKER_MARKET_DATA_QUEUE_LAG ?? '0', 10);
   const backtestLag = Number.parseInt(process.env.WORKER_BACKTEST_QUEUE_LAG ?? '0', 10);
   const executionLag = Number.parseInt(process.env.WORKER_EXECUTION_QUEUE_LAG ?? '0', 10);
@@ -113,40 +115,64 @@ router.get('/workers/ready', ...requireOpsAccess, (_req, res) => {
   metricsStore.setWorkerQueueLag('backtest', Number.isNaN(backtestLag) ? 0 : backtestLag);
   metricsStore.setWorkerQueueLag('execution', Number.isNaN(executionLag) ? 0 : executionLag);
 
-  if (mode !== 'split') {
+  if (topology.topologyStatus === 'local_inline') {
     return res.status(200).json({
       status: 'ready',
       service: 'workers',
-      mode,
-      ownership,
-      details: 'Dedicated workers not required in current mode',
+      mode: topology.mode,
+      environment: topology.environment,
+      ownership: topology.ownership,
+      topologyStatus: topology.topologyStatus,
+      degradedReasons: topology.degradedReasons,
+      requiredQueues: topology.requiredQueues,
+      requiredWorkerFamilies: topology.requiredWorkerFamilies,
+      details: 'Inline worker mode is explicitly supported only for local/test environments',
     });
   }
-
-  const requiredQueues = [
-    ...(ownership.marketData === 'worker' ? ['WORKER_MARKET_DATA_QUEUE'] : []),
-    ...(ownership.backtest === 'worker' ? ['WORKER_BACKTEST_QUEUE'] : []),
-    'WORKER_EXECUTION_QUEUE',
-  ];
-  const missing = requiredQueues.filter((envName) => !process.env[envName]);
+  const requiresSplitTopology = topology.topologyStatus === 'degraded';
+  const missing = topology.missingQueues;
 
   if (missing.length > 0) {
     return res.status(503).json({
       status: 'not_ready',
       service: 'workers',
-      mode,
-      ownership,
-      requiredQueues,
+      mode: topology.mode,
+      environment: topology.environment,
+      ownership: topology.ownership,
+      topologyStatus: topology.topologyStatus,
+      degradedReasons: topology.degradedReasons,
+      requiredQueues: topology.requiredQueues,
+      requiredWorkerFamilies: topology.requiredWorkerFamilies,
       missing,
+    });
+  }
+
+  if (requiresSplitTopology) {
+    return res.status(503).json({
+      status: 'not_ready',
+      service: 'workers',
+      mode: topology.mode,
+      environment: topology.environment,
+      ownership: topology.ownership,
+      topologyStatus: topology.topologyStatus,
+      degradedReasons: topology.degradedReasons,
+      requiredQueues: topology.requiredQueues,
+      requiredWorkerFamilies: topology.requiredWorkerFamilies,
+      missing: [],
+      details: 'Deployed worker topology deviates from the canonical split-worker contract',
     });
   }
 
   return res.status(200).json({
     status: 'ready',
     service: 'workers',
-    mode,
-    ownership,
-    requiredQueues,
+    mode: topology.mode,
+    environment: topology.environment,
+    ownership: topology.ownership,
+    topologyStatus: topology.topologyStatus,
+    degradedReasons: topology.degradedReasons,
+    requiredQueues: topology.requiredQueues,
+    requiredWorkerFamilies: topology.requiredWorkerFamilies,
   });
 });
 
