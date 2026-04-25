@@ -17,14 +17,16 @@ Last updated: 2026-04-25
 
 ## READY
 
-- [ ] `V1TAKE-04 test(api-runtime-red): lock deterministic runtime visibility for owned exchange-synced LIVE positions`
-- [ ] `V1TAKE-05 fix(api-runtime): align runtime position adoption with canonical owned external-position truth`
+- [ ] `V1TAKE-06 test(api+web-red): lock manual PAPER/LIVE open truth from dashboard submission to order/position state`
+- [ ] `V1TAKE-07 fix(api+web-orders): harden manual-order fill/context truth and fail-closed UI semantics`
 
 ## BACKLOG
 
-- [ ] `V1TAKE-06 test(api+web-red): lock manual PAPER/LIVE open truth from dashboard submission to order/position state`
-- [ ] `V1TAKE-07 fix(api+web-orders): harden manual-order fill/context truth and fail-closed UI semantics`
 - [ ] `V1TAKE-08 qa(closure): rerun focused DB-backed API + web closure pack and sync canonical docs/context`
+- [x] `V1TAKE-05 fix(api-runtime): align runtime position adoption with canonical owned external-position truth`
+  - 2026-04-25: Reused wallet-owned takeover truth inside `runtimeExternalPositionOwner.service.ts`, so LIVE runtime ownership candidates now exclude bots whose linked wallets disable external-position management. Added focused unit coverage plus `bots.runtime-takeover.e2e.test.ts`, proving a wallet-managed bot now sees its owned `EXCHANGE_SYNC` position even when another LIVE bot shares the same symbol scope but is manual-only. Validation PASS: `pnpm --filter api exec vitest run src/modules/bots/runtimeExternalPositionOwner.service.test.ts src/modules/bots/bots.runtime-takeover.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
+- [x] `V1TAKE-04 test(api-runtime-red): lock deterministic runtime visibility for owned exchange-synced LIVE positions`
+  - 2026-04-25: Added focused DB-backed runtime coverage for the exact path "active exchange position exists, ownership is deterministic, bot runtime must show it". The new runtime takeover regression first failed with `expected +0 to be 1`, proving runtime ownership still counted a competing LIVE bot whose wallet disabled external-position management and therefore collapsed deterministic ownership into false ambiguity.
 - [x] `V1TAKE-03 fix(api-positions): unify external-position management contract and takeover status ownership`
   - 2026-04-25: Made wallet the only management source of truth for takeover-related positions behavior. `livePositionReconciliation.service.ts` no longer consumes API-key-level `manageExternalPositions`, and `positions.service.ts` takeover-status classification now treats API-key-level management as compatibility-only while failing closed to `MANUAL_ONLY` when the linked LIVE wallet disables management. Validation PASS: `positions.takeover-status.e2e.test.ts`, `livePositionReconciliation.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 - [x] `V1TAKE-02 test(api-red): lock takeover authority drift between API key, wallet, and bot visibility`

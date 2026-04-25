@@ -32,6 +32,9 @@ describe('resolveExternalPositionOwnerBySymbol', () => {
       {
         id: 'bot-a',
         walletId: 'wallet-a',
+        wallet: {
+          manageExternalPositions: true,
+        },
         symbolGroup: {
           symbols: ['BTCUSDT'],
           marketUniverse: null,
@@ -40,6 +43,9 @@ describe('resolveExternalPositionOwnerBySymbol', () => {
       {
         id: 'bot-b',
         walletId: 'wallet-b',
+        wallet: {
+          manageExternalPositions: true,
+        },
         symbolGroup: {
           symbols: ['BTCUSDT'],
           marketUniverse: null,
@@ -61,6 +67,9 @@ describe('resolveExternalPositionOwnerBySymbol', () => {
       {
         id: 'bot-direct',
         walletId: 'wallet-direct',
+        wallet: {
+          manageExternalPositions: true,
+        },
         symbolGroup: {
           symbols: ['ETHUSDT'],
           marketUniverse: null,
@@ -82,6 +91,9 @@ describe('resolveExternalPositionOwnerBySymbol', () => {
       {
         id: 'bot-without-scope',
         walletId: 'wallet-without-scope',
+        wallet: {
+          manageExternalPositions: true,
+        },
         symbolGroup: null,
       },
     ]);
@@ -89,5 +101,40 @@ describe('resolveExternalPositionOwnerBySymbol', () => {
     const result = await resolveExternalPositionOwnerBySymbol('user-3', 'LIVE');
 
     expect(result.size).toBe(0);
+  });
+
+  it('ignores LIVE bots whose wallets disable external-position management', async () => {
+    mocks.prisma.bot.findMany.mockResolvedValue([
+      {
+        id: 'bot-managed',
+        walletId: 'wallet-managed',
+        wallet: {
+          manageExternalPositions: true,
+        },
+        symbolGroup: {
+          symbols: ['BTCUSDT'],
+          marketUniverse: null,
+        },
+      },
+      {
+        id: 'bot-manual-only',
+        walletId: 'wallet-manual-only',
+        wallet: {
+          manageExternalPositions: false,
+        },
+        symbolGroup: {
+          symbols: ['BTCUSDT'],
+          marketUniverse: null,
+        },
+      },
+    ]);
+
+    const result = await resolveExternalPositionOwnerBySymbol('user-4', 'LIVE');
+
+    expect(result.get('BTCUSDT')).toEqual({
+      status: 'OWNED',
+      botId: 'bot-managed',
+      walletId: 'wallet-managed',
+    });
   });
 });

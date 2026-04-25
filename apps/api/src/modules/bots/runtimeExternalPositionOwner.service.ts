@@ -77,6 +77,11 @@ export const resolveExternalPositionOwnerBySymbol = async (
     select: {
       id: true,
       walletId: true,
+      wallet: {
+        select: {
+          manageExternalPositions: true,
+        },
+      },
       symbolGroup: {
         select: {
           symbols: true,
@@ -98,6 +103,10 @@ export const resolveExternalPositionOwnerBySymbol = async (
   const canonicalCandidatesBySymbol = new Map<string, Map<string, Candidate>>();
 
   for (const bot of bots) {
+    if (mode === 'LIVE' && bot.wallet?.manageExternalPositions !== true) {
+      continue;
+    }
+
     const candidate = {
       botId: bot.id,
       walletId: bot.walletId,

@@ -7,13 +7,13 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `V1TAKE-04 test(api-runtime-red): lock deterministic runtime visibility for owned exchange-synced LIVE positions`
-- [ ] `V1TAKE-05 fix(api-runtime): align runtime position adoption with canonical owned external-position truth`
-## NEXT
 - [ ] `V1TAKE-06 test(api+web-red): lock manual PAPER/LIVE open truth from dashboard submission to order/position state`
 - [ ] `V1TAKE-07 fix(api+web-orders): harden manual-order fill/context truth and fail-closed UI semantics`
+## NEXT
 - [ ] `V1TAKE-08 qa(closure): rerun focused DB-backed API + web closure pack and sync canonical docs/context`
 ## PIPELINE
+- [x] `V1TAKE-05 fix(api-runtime): align runtime position adoption with canonical owned external-position truth`
+- [x] `V1TAKE-04 test(api-runtime-red): lock deterministic runtime visibility for owned exchange-synced LIVE positions`
 - [x] `V1TAKE-03 fix(api-positions): unify external-position management contract and takeover status ownership`
 - [x] `V1TAKE-02 test(api-red): lock takeover authority drift between API key, wallet, and bot visibility`
 - [x] `V1TAKE-01 audit(api+runtime): publish confirmed ownership/manual-order investigation packet with DB-backed validation`

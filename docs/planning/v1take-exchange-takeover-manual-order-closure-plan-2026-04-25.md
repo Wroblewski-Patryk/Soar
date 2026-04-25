@@ -148,6 +148,16 @@ validation gate instead of treating them as purely infra-blocked.
 7. `V1TAKE-07`
 8. `V1TAKE-08`
 
+## Progress Update
+
+- 2026-04-25: `V1TAKE-04` and `V1TAKE-05` are now closed under the same
+  wallet-first ownership contract chosen by the user. Runtime takeover
+  visibility now reuses wallet-managed truth: `bots.runtime-takeover.e2e.test.ts`
+  first proved false ambiguity when a competing LIVE bot shared symbol scope
+  but its wallet disabled external-position management, and
+  `runtimeExternalPositionOwner.service.ts` now excludes such manual-only
+  wallets from LIVE ownership candidates. Next active slice is `V1TAKE-06`.
+
 ## Non-Goals
 
 - no new exchange integration beyond the already frozen capability matrix,

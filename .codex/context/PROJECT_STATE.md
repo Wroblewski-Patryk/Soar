@@ -49,6 +49,15 @@ Last updated: 2026-04-25
   `EXCHANGE_SYNC BOT_MANAGED` LIVE runtime position visibility/close flows.
 
 ## Product Decisions (Confirmed)
+- 2026-04-25: closed `V1TAKE-04` and `V1TAKE-05` by carrying the user-approved
+  wallet-first takeover contract into runtime ownership resolution. Canonical
+  bot runtime visibility for imported LIVE positions now excludes competing
+  bots whose linked wallets disable external-position management, which
+  prevents false ambiguity when symbol scope overlaps. Validation PASS:
+  `runtimeExternalPositionOwner.service.test.ts`,
+  `bots.runtime-takeover.e2e.test.ts`,
+  `pnpm --filter api run typecheck`,
+  `pnpm run quality:guardrails`.
 - 2026-04-25: closed `V1TAKE-02` and `V1TAKE-03` under one user-approved
   wallet-first ownership decision for exchange takeover. Canonical management
   truth is now explicit: `wallet.manageExternalPositions` is the only
