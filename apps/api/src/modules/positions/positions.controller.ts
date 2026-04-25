@@ -1,7 +1,10 @@
 import { Request, Response } from 'express';
 import { sendError } from '../../utils/apiError';
 import { sendValidationError } from '../../utils/formatZodError';
-import { livePositionReconciliationLoop } from './livePositionReconciliation.service';
+import {
+  livePositionReconciliationLoop,
+  reconcileExternalPositionsFromExchange,
+} from './livePositionReconciliation.service';
 import {
   ListPositionsQuerySchema,
   UpdatePositionManagementModeSchema,
@@ -89,6 +92,23 @@ export const postExternalTakeoverRebind = async (req: Request, res: Response) =>
 
   const result = await positionsService.rebindExternalTakeoverOwnership(userId);
   return res.status(200).json(result);
+};
+
+export const postLegacyOpenPositionRepair = async (req: Request, res: Response) => {
+  const userId = req.user?.id;
+  if (!userId) return sendError(res, 401, 'Unauthorized');
+
+  const localRepair = await positionsService.repairLegacyOpenPositions(userId);
+  const exchangeReconciliation = await reconcileExternalPositionsFromExchange();
+  const takeoverRebind = await positionsService.rebindExternalTakeoverOwnership(userId);
+  const liveStatus = livePositionReconciliationLoop.getStatus();
+
+  return res.status(200).json({
+    localRepair,
+    exchangeReconciliation,
+    takeoverRebind,
+    liveStatus,
+  });
 };
 
 export const updatePositionManagementMode = async (req: Request, res: Response) => {

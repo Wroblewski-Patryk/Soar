@@ -22,6 +22,25 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-26 - Hidden legacy open positions can block prod manual-order and exchange takeover without showing up in selected-bot runtime
+- Context: real-account production investigation after manual-order lifecycle fixes were already deployed.
+- Symptom: Binance exchange snapshot still returned a real Futures position, but selected-bot runtime showed no live position, takeover status stayed empty, and manual-order opens collided with apparently invisible blockers.
+- Root cause: the account still contained legacy `OPEN` rows with `botId=null`, including fully detached local rows (`origin in BOT/USER`, no wallet, no strategy, no externalId) and partially linked local rows missing canonical bot ownership. Under the current singular bot contract those rows are hidden from selected-bot runtime, yet they still block one-open-position-per-symbol semantics and exchange-sync imports.
+- Guardrail: when prod says "manual order / import still does not work", verify exchange truth and raw open-position debt before assuming a new runtime bug.
+- Preferred pattern:
+```text
+1) Check GET /dashboard/positions/exchange-snapshot for current exchange truth.
+2) Check GET /dashboard/positions?status=OPEN&limit=100 for hidden legacy blockers.
+3) Check GET /dashboard/positions/takeover-status and worker logs for ownership skips.
+4) Use an explicit repair path that only:
+   - rebinds with canonical owner proof
+   - closes fully detached local orphans
+   - reruns exchange reconciliation afterward
+```
+- Avoid: treating empty selected-bot runtime as proof that no open position exists, or force-rebinding BOT-origin orphan rows without explicit owner proof.
+- Evidence:
+  - 2026-04-26 `V1FIX-2026-04-26-B`: prod `exchange-snapshot` showed a live DOGE short while hidden local `OPEN` rows with `botId=null` blocked takeover/manual-order semantics; explicit orphan-repair path was added and validated with focused API coverage.
+
 ### 2026-04-26 - Respect partial unique open-position indexes even when Prisma schema no longer shows them inline
 - Context: production manual-order investigation after V1 manual-order UX and deploy hardening looked green.
 - Symptom: `POST /dashboard/orders/open` returned a generic `Internal server error` for a paper-bot manual MARKET open, even though context resolution and fill-price truth were valid.

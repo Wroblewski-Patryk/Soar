@@ -89,6 +89,13 @@ export type ExternalTakeoverRebindResponse = {
   };
 };
 
+export type LegacyOpenPositionRepairResponse = {
+  scanned: number;
+  reboundToCanonicalBot: number;
+  closedDetachedOrphans: number;
+  unresolved: number;
+};
+
 type ExchangePositionLike = {
   symbol?: string;
   side?: string;
@@ -107,6 +114,17 @@ type ApiKeyRecordForSnapshot = {
   exchange: Exchange;
   apiKey: string;
   apiSecret: string;
+};
+
+type CanonicalBotRepairCandidate = {
+  id: string;
+  walletId: string | null;
+  strategyId: string | null;
+  mode: 'LIVE' | 'PAPER';
+  liveOptIn: boolean;
+  symbolGroup: {
+    symbols: string[];
+  } | null;
 };
 
 export class ExchangeSnapshotError extends Error {
@@ -563,6 +581,135 @@ const parseApiKeyIdFromExternalId = (externalId: string | null): string | null =
   const [apiKeyId] = externalId.split(':');
   if (!apiKeyId || apiKeyId.trim().length === 0) return null;
   return apiKeyId.trim();
+};
+
+const normalizeRepairSymbol = (symbol: string) => symbol.trim().toUpperCase();
+
+const canBotRepairPosition = (
+  bot: CanonicalBotRepairCandidate,
+  position: {
+    symbol: string;
+    walletId: string | null;
+    strategyId: string | null;
+  }
+) => {
+  if (bot.mode === 'LIVE' && !bot.liveOptIn) return false;
+  const botSymbols = bot.symbolGroup?.symbols?.map(normalizeRepairSymbol) ?? [];
+  if (!botSymbols.includes(normalizeRepairSymbol(position.symbol))) return false;
+
+  const walletMatches = Boolean(position.walletId && bot.walletId && position.walletId === bot.walletId);
+  const strategyMatches = Boolean(
+    position.strategyId &&
+      bot.strategyId &&
+      position.strategyId === bot.strategyId &&
+      (!position.walletId || !bot.walletId || position.walletId === bot.walletId)
+  );
+
+  return walletMatches || strategyMatches;
+};
+
+export const repairLegacyOpenPositions = async (
+  userId: string,
+  now: Date = new Date()
+): Promise<LegacyOpenPositionRepairResponse> => {
+  const [positions, activeBots] = await Promise.all([
+    prisma.position.findMany({
+      where: {
+        userId,
+        status: 'OPEN',
+        botId: null,
+        origin: { in: ['BOT', 'USER'] },
+      },
+      orderBy: [{ openedAt: 'asc' }, { createdAt: 'asc' }, { id: 'asc' }],
+      select: {
+        id: true,
+        symbol: true,
+        origin: true,
+        walletId: true,
+        strategyId: true,
+        externalId: true,
+      },
+    }),
+    prisma.bot.findMany({
+      where: {
+        userId,
+        isActive: true,
+        walletId: { not: null },
+      },
+      select: {
+        id: true,
+        walletId: true,
+        strategyId: true,
+        mode: true,
+        liveOptIn: true,
+        symbolGroup: {
+          select: {
+            symbols: true,
+          },
+        },
+      },
+    }),
+  ]);
+
+  const result: LegacyOpenPositionRepairResponse = {
+    scanned: positions.length,
+    reboundToCanonicalBot: 0,
+    closedDetachedOrphans: 0,
+    unresolved: 0,
+  };
+
+  for (const position of positions) {
+    const candidates = activeBots.filter((bot) => canBotRepairPosition(bot, position));
+
+    if (candidates.length === 1) {
+      const owner = candidates[0];
+      const update = await prisma.position.updateMany({
+        where: {
+          id: position.id,
+          userId,
+          botId: null,
+          status: 'OPEN',
+        },
+        data: {
+          botId: owner.id,
+          walletId: owner.walletId,
+          strategyId: owner.strategyId,
+        },
+      });
+
+      if (update.count > 0) {
+        result.reboundToCanonicalBot += 1;
+        continue;
+      }
+    }
+
+    const detachedOrphan = !position.walletId && !position.strategyId && !position.externalId;
+    if (detachedOrphan) {
+      const update = await prisma.position.updateMany({
+        where: {
+          id: position.id,
+          userId,
+          botId: null,
+          status: 'OPEN',
+        },
+        data: {
+          status: 'CLOSED',
+          closedAt: now,
+          syncState: 'ORPHAN_LOCAL',
+          unrealizedPnl: 0,
+        },
+      });
+
+      if (update.count > 0) {
+        result.closedDetachedOrphans += 1;
+        continue;
+      }
+    }
+
+    result.unresolved += 1;
+  }
+
+  return result;
 };
 
 export const rebindExternalTakeoverOwnership = async (
