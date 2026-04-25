@@ -34,6 +34,15 @@ const parseGateLabel = (rawStatus, gateNumber) => {
   return rawStatus.match(regex)?.[1]?.trim() ?? 'UNKNOWN';
 };
 
+const parseStatusGeneratedAt = (rawStatus) =>
+  rawStatus.match(/Generated at \(UTC\):\s*([^\r\n]+)/i)?.[1]?.trim() ?? null;
+
+const asIsoTimestamp = (value) => {
+  if (typeof value !== 'string' || value.trim().length === 0) return null;
+  const parsed = Date.parse(value);
+  return Number.isNaN(parsed) ? null : parsed;
+};
+
 const main = async () => {
   const options = parseArgs();
   if (options.help) {
@@ -58,6 +67,12 @@ const main = async () => {
     gate3: parseGateLabel(rawStatus, 3),
     gate4: parseGateLabel(rawStatus, 4),
   };
+  const statusGeneratedAt = parseStatusGeneratedAt(rawStatus);
+  const evidenceGeneratedAt = evidence?.generatedAt ?? null;
+  const evidenceIsStaleRelativeToStatus =
+    asIsoTimestamp(statusGeneratedAt) != null &&
+    asIsoTimestamp(evidenceGeneratedAt) != null &&
+    asIsoTimestamp(evidenceGeneratedAt) < asIsoTimestamp(statusGeneratedAt);
 
   const summary = {
     generatedAt: new Date().toISOString(),
@@ -65,7 +80,13 @@ const main = async () => {
     missingEvidenceCount: Number.isFinite(evidence?.counts?.missing) ? evidence.counts.missing : null,
     strictPassed: evidence ? Boolean(evidence.strictPassed) : null,
     gate2Policy: typeof evidence?.gate2Policy === 'string' ? evidence.gate2Policy : null,
+    statusGeneratedAt,
     evidenceGeneratedAt: evidence?.generatedAt ?? null,
+    evidenceFreshness: evidence
+      ? evidenceIsStaleRelativeToStatus
+        ? 'stale_relative_to_status'
+        : 'current_or_unknown'
+      : 'missing',
   };
 
   if (options.json) {
@@ -83,7 +104,9 @@ const main = async () => {
     `- Strict passed: ${summary.strictPassed == null ? 'n/a' : summary.strictPassed ? 'yes' : 'no'}`
   );
   console.log(`- Gate2 policy: ${summary.gate2Policy ?? 'n/a'}`);
+  console.log(`- Status generated at: ${summary.statusGeneratedAt ?? 'n/a'}`);
   console.log(`- Evidence generated at: ${summary.evidenceGeneratedAt ?? 'n/a'}`);
+  console.log(`- Evidence freshness: ${summary.evidenceFreshness}`);
 };
 
 main().catch((error) => {

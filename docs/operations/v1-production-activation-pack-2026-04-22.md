@@ -59,6 +59,9 @@ after `REVIEW-D`, `V1FACT-A2`, `V1FACT-07B`, and `V1FACT-A3`.
   - `GET /health`
   - `GET /ready`
   - `GET /` on web
+- deploy identity must be verified from `GET /api/build-info` on the deployed
+  web target before claiming that production already runs the latest repository
+  SHA
 - protected prod worker/runtime probes were validated from inside the prod API
   runtime:
   - `/workers/health` `200`

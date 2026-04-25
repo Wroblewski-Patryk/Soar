@@ -15,6 +15,24 @@ const readBuildIdFromFile = async (): Promise<string | null> => {
   }
 };
 
+type BuildMetadata = {
+  generatedAt?: string;
+  gitRef?: string | null;
+  gitSha?: string | null;
+  metadataSource?: string | null;
+};
+
+const readBuildMetadataFromFile = async (): Promise<BuildMetadata | null> => {
+  try {
+    const filePath = path.join(process.cwd(), ".next", "BUILD_META.json");
+    const raw = await readFile(filePath, "utf8");
+    const parsed = JSON.parse(raw) as BuildMetadata;
+    return parsed && typeof parsed === "object" ? parsed : null;
+  } catch {
+    return null;
+  }
+};
+
 const resolveBuildId = async () => {
   const fileBuildId = await readBuildIdFromFile();
   if (fileBuildId) return fileBuildId;
@@ -34,10 +52,15 @@ const resolveBuildId = async () => {
 
 export async function GET() {
   const buildId = await resolveBuildId();
+  const buildMetadata = await readBuildMetadataFromFile();
 
   return NextResponse.json(
     {
       buildId,
+      gitSha: buildMetadata?.gitSha ?? null,
+      gitRef: buildMetadata?.gitRef ?? null,
+      metadataGeneratedAt: buildMetadata?.generatedAt ?? null,
+      metadataSource: buildMetadata?.metadataSource ?? null,
       checkedAt: new Date().toISOString(),
     },
     {

@@ -49,6 +49,7 @@ Last updated: 2026-04-25
   `EXCHANGE_SYNC BOT_MANAGED` LIVE runtime position visibility/close flows.
 
 ## Product Decisions (Confirmed)
+- 2026-04-25: closed `V1READY-2026-04-25-C` as the residual deploy-truth and artifact-sync slice after final V1 approval. The web build now writes deploy-verifiable git metadata into `.next/BUILD_META.json`, `GET /api/build-info` can expose `gitSha`/`gitRef` for the deployed web target, `ops:rc:gates:summary` now makes stale evidence timing explicit instead of silently presenting old evidence as current, and the reusable architecture-V1 checklist no longer labels already-closed `V1COH-A`, `XADAPT-A`, or `V1READY-2026-04-25-A` work as active `PARTIAL` closures. Validation PASS: `pnpm run quality:guardrails`, `pnpm run typecheck`, `pnpm run build`, `pnpm run ops:rc:gates:summary`.
 - 2026-04-25: closed `V1TAKE-08` and with it the full `V1TAKE-A` wave. Final
   closure evidence is green across takeover-status, reconciliation, runtime
   ownership/visibility, and manual-order API + dashboard truth. One local

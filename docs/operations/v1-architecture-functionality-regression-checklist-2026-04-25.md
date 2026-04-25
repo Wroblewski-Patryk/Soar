@@ -480,12 +480,7 @@ The checklist maps architecture-defined V1 functions to:
   - `docs/architecture/04_runtime-contexts.md`
   - `docs/architecture/06_execution-lifecycle.md`
   - `docs/architecture/10_safety-entitlements-and-risk.md`
-- Status: `PARTIAL`
-- Known queued closure:
-  - `V1COH-03`
-  - `V1COH-04`
-  - `V1COH-05`
-  - `V1COH-06`
+- Status: `IMPLEMENTED`
 - Automated verification:
   - API:
     - `apps/api/src/modules/orders/orders.service.test.ts`
@@ -506,17 +501,15 @@ The checklist maps architecture-defined V1 functions to:
 - Automated sweep 2026-04-25:
   - Web: PASS
   - API: not re-verified here because DB-backed suites are environment-blocked
-  - Known product status remains `PARTIAL` by contract, but no new regression
-    was isolated in the automated sweep
+  - Historical closure remains owned by closed `V1COH-A`; no new regression was
+    isolated in the automated sweep
   - Current automated verdict: `PARTIAL_PASS_INFRA_BLOCKED`
 
 ### F10 - Exchange snapshots, open orders, and external position sync
 - Architecture source:
   - `docs/architecture/09_integrations-deployment-and-runtime-services.md`
   - `docs/architecture/reference/exchange-access-ownership-matrix.md`
-- Status: `PARTIAL`
-- Known queued closure:
-  - `XADAPT-01..06`
+- Status: `IMPLEMENTED`
 - Automated verification:
   - API:
     - `apps/api/src/modules/positions/positions.exchangeSnapshot.e2e.test.ts`
@@ -575,10 +568,7 @@ The checklist maps architecture-defined V1 functions to:
 - Architecture source:
   - `docs/architecture/08_operator-surfaces-and-routing.md`
   - `docs/architecture/09_integrations-deployment-and-runtime-services.md`
-- Status: `PARTIAL`
-- Known queued closure:
-  - `V1COH-05`
-  - `V1COH-06`
+- Status: `IMPLEMENTED`
 - Automated verification:
   - Web:
     - `apps/web/src/features/dashboard-home/components/HomeLiveWidgets.test.tsx`
@@ -684,9 +674,7 @@ The checklist maps architecture-defined V1 functions to:
 - Architecture source:
   - `docs/architecture/02_system-topology.md`
   - `docs/architecture/09_integrations-deployment-and-runtime-services.md`
-- Status: `OPS_PARTIAL`
-- Known queued closure:
-  - `V1READY-2026-04-25-A`
+- Status: `IMPLEMENTED`
 - Automated verification:
   - repository-level:
     - `pnpm run build`

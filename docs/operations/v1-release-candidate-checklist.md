@@ -56,20 +56,23 @@
    - `GET /workers/ready` -> `200`
 3. Runtime freshness:
    - `GET /workers/runtime-freshness` -> `200`, payload `status=PASS`
-4. Runtime alert sanity:
+4. Deploy identity:
+   - `GET /api/build-info` on the deployed web target
+   - verify returned `gitSha` matches the promoted commit SHA
+5. Runtime alert sanity:
    - `GET /alerts` and confirm no rollback-critical alerts (`worker_heartbeat_missing`, `market_data_staleness`, `runtime_signal_lag_stale`, `runtime_restarts_repeated(SEV-1)`, `runtime_reconciliation_drift(SEV-1)`).
-5. Cache and stream contract:
+6. Cache and stream contract:
    - protected routes return no-store headers (`/auth|/dashboard|/admin`),
    - service worker runtime cache stays static-only (no API/runtime payload caching),
    - stream freshness (`WORKER_LAST_MARKET_DATA_AT`) within threshold and no stale alert.
-6. Gate commands (recommended order):
+7. Gate commands (recommended order):
    - canonical one-command gate:
      - `pnpm run ops:release:v1:gate -- --base-url https://<target-api> --auth-token <ADMIN_JWT>`
    - manual equivalent:
      - `pnpm run ops:deploy:smoke`
      - `pnpm run ops:deploy:runtime-freshness -- --base-url https://<target-api> --auth-token <ADMIN_JWT>`
      - `pnpm run ops:deploy:rollback-guard -- --base-url https://<target-api> --auth-token <ADMIN_JWT>`
-7. Binance live-ops verification:
+8. Binance live-ops verification:
    - execute and fill `docs/operations/binance-live-ops-verification-checklist-2026-04-06.md`
 
 ## Security and Risk Gates
