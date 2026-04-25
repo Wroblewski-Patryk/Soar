@@ -148,6 +148,11 @@ Last updated: 2026-04-25
   Binance-only read/submit support, explicit `LIVE_ORDER_CANCEL` non-support,
   unsupported-exchange fail-closed behavior, and live-submit result
   normalization without relying on broad DB-backed e2e packs.
+- 2026-04-25: closed `XADAPT-05` as the closure-validation slice for the
+  exchange-hardening wave. Focused adapter-boundary, capability-matrix, and
+  authenticated-read contract suites are green together with API typecheck and
+  repository guardrails, and canonical queue/context state now points to
+  `XADAPT-06` as the planning-only next step after Binance boundary closure.
 - 2026-04-25: closed `DEPLOY-2026-04-25-B` as the validation-only follow-up to
   the same-day Coolify hotfix. Local `pnpm --filter web run build` now passes
   cleanly again, confirming the previously reported web deploy gate is no
