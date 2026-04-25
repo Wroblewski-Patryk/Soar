@@ -20,6 +20,9 @@ Last updated: 2026-04-25
 
 ## BACKLOG
 
+- [x] `V1DEPLOY-2026-04-25-B ops/web-build-meta: make deployed web git SHA resolvable inside Coolify Docker builds`
+  - 2026-04-25: Closed the last deploy-proof gap for `soar-web`. The build metadata writer now falls back to minimal `.git` metadata files (`HEAD`, `refs`, `packed-refs`) when env-based SHA hints are absent, `.dockerignore` now keeps only those minimal `.git` files in Docker context, and `apps/web/Dockerfile` copies `.git` into the build stage so Coolify builds can resolve the deployed commit without relying on unavailable runtime/build envs. Validation PASS: `pnpm --filter web run build`, `docker build -f apps/web/Dockerfile -t soar-web-gitsha-fix .`.
+
 - [x] `V1DEPLOY-2026-04-25-A ops/web-image: restore production web Docker build parity after build-metadata rollout`
   - 2026-04-25: Fixed the production-only deploy regression introduced after deploy-truth hardening. `apps/web/Dockerfile` now copies the repo `scripts/` directory into the build stage, so the existing `web` build contract `node ../../scripts/writeWebBuildMetadata.mjs && next build` remains valid inside Coolify just as it does locally. Validation PASS: `pnpm --filter web run build`, `docker build -f apps/web/Dockerfile -t soar-web-localfix .`.
 
