@@ -153,6 +153,12 @@ Last updated: 2026-04-25
   authenticated-read contract suites are green together with API typecheck and
   repository guardrails, and canonical queue/context state now points to
   `XADAPT-06` as the planning-only next step after Binance boundary closure.
+- 2026-04-25: closed `XADAPT-06` as the final planning slice of the exchange
+  hardening wave. The repository now has one explicit next-exchange readiness
+  packet choosing `BYBIT` as the next target and freezing staged rollout order
+  across `API_KEY_PROBE`, `BALANCE_PREVIEW`, `POSITIONS_SNAPSHOT`,
+  `OPEN_ORDERS_SNAPSHOT`, and `LIVE_ORDER_SUBMIT`, while keeping reconciliation
+  broadening and `LIVE_ORDER_CANCEL` explicitly out of scope.
 - 2026-04-25: closed `DEPLOY-2026-04-25-B` as the validation-only follow-up to
   the same-day Coolify hotfix. Local `pnpm --filter web run build` now passes
   cleanly again, confirming the previously reported web deploy gate is no

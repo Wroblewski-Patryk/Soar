@@ -17,8 +17,8 @@ Last updated: 2026-04-25
 
 ## READY
 
-- [ ] `XADAPT-06 planning(readiness): publish staged next-exchange rollout packet after Binance boundary closure`
-  - 2026-04-25: `XADAPT-05` closed the focused validation pack and synced queue/context/project state. The next slice is planning-only: publish the staged readiness packet for the next exchange after the Binance boundary closure.
+- [ ] `V1REG-02 qa(auto): execute architecture-v1 automated verification pack and record function-by-function status`
+  - 2026-04-25: `XADAPT-A` is now fully closed. The next active wave returns to the reusable V1 verification loop, starting with the automated architecture-functionality pack.
 
 ## BACKLOG
 
@@ -33,6 +33,9 @@ Last updated: 2026-04-25
 
 - [x] `XADAPT-05 qa(closure): run focused exchange-adapter closure pack and sync canonical docs/context`
   - 2026-04-25: Reran the focused exchange-hardening closure pack, confirmed the adapter boundary and capability-contract suites stay green together, and synced queue/context artifacts to point at `XADAPT-06` as the next smallest slice. Validation PASS: `pnpm --filter api exec vitest run src/modules/exchange/exchangeAdapterBoundary.service.test.ts src/modules/exchange/exchangeExecutionCapabilityContract.service.test.ts src/modules/exchange/exchangeAuthenticatedRead.service.test.ts src/modules/exchange/exchangeAuthenticatedReadContract.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
+
+- [x] `XADAPT-06 planning(readiness): publish staged next-exchange rollout packet after Binance boundary closure`
+  - 2026-04-25: Published the staged next-exchange readiness packet in `docs/planning/xadapt-06-next-exchange-readiness-packet-2026-04-25.md`. The packet chooses `BYBIT` as the next target, freezes staged rollout order (`API_KEY_PROBE -> BALANCE_PREVIEW -> POSITIONS_SNAPSHOT -> OPEN_ORDERS_SNAPSHOT -> LIVE_ORDER_SUBMIT`), keeps reconciliation broadening out of scope, and preserves `LIVE_ORDER_CANCEL` as unsupported. Validation PASS: `pnpm run quality:guardrails`.
 
 - [x] `XADAPT-01 docs(contract): freeze exchange execution capability matrix for authenticated reads and write-side execution`
   - 2026-04-25: Updated architecture docs so authenticated reads and write-side execution now share one explicit capability matrix. Frozen V1 truth is: Binance-only support for `BALANCE_PREVIEW`, `POSITIONS_SNAPSHOT`, `OPEN_ORDERS_SNAPSHOT`, and `LIVE_ORDER_SUBMIT`, with `LIVE_ORDER_CANCEL` explicitly unsupported for every exchange until a canonical exchange-cancel boundary exists.
