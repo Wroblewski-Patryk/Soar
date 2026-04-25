@@ -127,9 +127,9 @@ implementation
 - [x] publish worker-topology drift inventory for the later ops slice
 
 ### XVENUE-03 docs(contract): freeze capability matrix evolution toward `(exchange, marketType, operation)`
-- define the target capability matrix shape
-- mark current exchange-only matrix as compatibility-stage truth
-- document staged migration rules
+- [x] define the target capability matrix shape
+- [x] mark current exchange-only matrix as compatibility-stage truth
+- [x] document staged migration rules
 
 ### XVENUE-04 refactor(api-exchange): introduce registry-driven adapter-family entrypoints
 - add family-level registry resolution for `(exchange, marketType)`
@@ -192,3 +192,10 @@ Context:
   `bots`, `backtests`, and profile API-key probing, plus narrower-than-approved
   worker topology truth in `/workers/*` and `workerOwnership.ts`. The queue now
   advances to `XVENUE-03`.
+- 2026-04-25: Closed `XVENUE-03` by freezing capability migration rules in
+  `docs/architecture/reference/exchange-access-ownership-matrix.md` and
+  `docs/architecture/09_integrations-deployment-and-runtime-services.md`.
+  Canonical docs now distinguish compatibility-stage exchange flags from the
+  target exact-stage `(exchange, marketType, operation)` matrix and explicitly
+  forbid support inference across operation families, market types, or
+  exchanges. The queue now advances to `XVENUE-04`.

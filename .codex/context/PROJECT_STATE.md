@@ -206,6 +206,13 @@ Last updated: 2026-04-25
   of the approved topology. No implementation claim changed in this slice; it
   simply freezes the migration map so `XVENUE-03` can define the exact
   capability-matrix evolution without guesswork.
+- 2026-04-25: closed `XVENUE-03` as the capability-contract follow-up to the
+  boundary leak audit. Canonical docs now distinguish compatibility-stage
+  exchange-level flags from the target exact-stage
+  `(exchange, marketType, operation)` matrix, and they explicitly forbid
+  inferring support across operation families, market types, or exchanges. This
+  means the upcoming registry refactor can move code toward exact venue truth
+  without changing the honest support claims the repository makes today.
 - 2026-04-25: closed `DEPLOY-2026-04-25-B` as the validation-only follow-up to
   the same-day Coolify hotfix. Local `pnpm --filter web run build` now passes
   cleanly again, confirming the previously reported web deploy gate is no

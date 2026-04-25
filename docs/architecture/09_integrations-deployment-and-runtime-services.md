@@ -51,6 +51,8 @@ For V1 capability truth:
 - `LIVE_EXECUTION` alone is not enough to imply account-read or cancel support
 - the canonical support matrix lives in
   `reference/exchange-access-ownership-matrix.md`
+- older exchange-level flags remain compatibility-stage truth only and must not
+  override narrower operation contracts
 
 The next-step scalable matrix must resolve support by:
 - `exchange`

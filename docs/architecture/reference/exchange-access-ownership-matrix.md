@@ -39,6 +39,69 @@ Exchange support must be explicit per operation family and must fail closed when
 unsupported. Authenticated reads and write-side execution are separate
 capability families and must never be inferred from each other.
 
+### Stage 1 - Compatibility-Stage Matrix
+
+The repository still contains exchange-level capability flags used by older
+callers and compatibility surfaces:
+
+- `MARKET_CATALOG`
+- `PAPER_PRICING_FEED`
+- `LIVE_EXECUTION`
+- `API_KEY_PROBE`
+
+These flags remain allowed only as coarse compatibility truth. They answer:
+
+- whether a broad exchange family has any currently approved support for that
+  area
+- whether a caller may enter the exchange module for that capability family at
+  all
+
+They do **not** answer:
+
+- exact market-type support
+- exact operation support
+- whether spot and futures share the same implementation
+- whether account reads, submit, and cancel are all available together
+
+### Stage 2 - Exact-Stage Matrix
+
+The target canonical matrix resolves support by:
+
+```text
+(exchange, marketType, operation)
+```
+
+Examples:
+- `BINANCE + FUTURES + LIVE_ORDER_SUBMIT`
+- `BINANCE + SPOT + MARKET_CATALOG`
+- `BYBIT + FUTURES + POSITIONS_SNAPSHOT`
+
+This exact-stage matrix is the only form allowed to answer whether a specific
+operation is supported for a specific venue context.
+
+### Migration Rules
+
+During the transition from stage 1 to stage 2:
+
+1. broad exchange-level flags may gate entry into a capability family
+2. exact behavior must still fail closed at the narrower operation contract
+3. feature modules must not invent their own support inference rules
+4. new exchange-facing code must prefer the narrowest already-approved contract
+5. when stage-1 and stage-2 truth disagree, stage-2 exact operation truth wins
+
+### Forbidden Inferences
+
+Consumers must never infer:
+
+- `LIVE_EXECUTION => BALANCE_PREVIEW`
+- `LIVE_EXECUTION => POSITIONS_SNAPSHOT`
+- `LIVE_EXECUTION => OPEN_ORDERS_SNAPSHOT`
+- `LIVE_EXECUTION => LIVE_ORDER_CANCEL`
+- `MARKET_CATALOG(exchange) => MARKET_CATALOG(exchange, all market types)`
+- `API_KEY_PROBE(exchange) => authenticated reads or execution support`
+- `supported on SPOT => supported on FUTURES`
+- `supported on BINANCE => supported on another exchange`
+
 | Exchange | `BALANCE_PREVIEW` | `POSITIONS_SNAPSHOT` | `OPEN_ORDERS_SNAPSHOT` | `LIVE_ORDER_SUBMIT` | `LIVE_ORDER_CANCEL` | Source derivation |
 | --- | --- | --- | --- | --- | --- | --- |
 | `BINANCE` | supported | supported | supported | supported | unsupported | authenticated-read contract + shared `LIVE_EXECUTION` capability + actual submit path through `orders.service.ts` / `liveOrderAdapter.service.ts`; no canonical exchange-cancel path yet |
@@ -68,6 +131,7 @@ Consumers must never:
 - hardcode `BINANCE` while route input accepts broader `exchange`,
 - infer support from `LIVE_EXECUTION`,
 - infer exchange-side cancel support from the existence of a local cancel route,
+- infer support for one `marketType` from another `marketType`,
 - or silently narrow to another exchange at runtime.
 
 ## Non-Goals
