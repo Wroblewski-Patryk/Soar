@@ -166,6 +166,7 @@ export const dashboardHomePl = {
     "manualOrderQuantityRequired": "Ilosc musi byc dodatnia liczba.",
     "manualOrderPriceRequired": "Dla tego typu zlecenia cena jest wymagana.",
     "manualOrderPriceInvalid": "Cena musi byc dodatnia liczba.",
+    "manualOrderMarketPriceUnavailable": "Brak wiarygodnej ceny rynkowej do otwarcia PAPER MARKET.",
     "manualOrderMinQtyValidation": "Ilosc musi byc co najmniej {value}.",
     "manualOrderSymbolPlaceholder": "BTCUSDT",
     "manualOrderBuyLabel": "Kup",

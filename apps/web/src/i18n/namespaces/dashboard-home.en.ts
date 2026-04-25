@@ -166,6 +166,7 @@ export const dashboardHomeEn = {
     "manualOrderQuantityRequired": "Quantity must be a positive number.",
     "manualOrderPriceRequired": "Price is required for this order type.",
     "manualOrderPriceInvalid": "Price must be a positive number.",
+    "manualOrderMarketPriceUnavailable": "No trustworthy market price is available for PAPER MARKET open.",
     "manualOrderMinQtyValidation": "Quantity must be at least {value}.",
     "manualOrderSymbolPlaceholder": "BTCUSDT",
     "manualOrderBuyLabel": "BUY",

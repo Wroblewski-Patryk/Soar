@@ -25,6 +25,7 @@ type UseManualOrderControllerArgs = {
     invalidQuantity: string;
     invalidPrice: string;
     requiredPrice: string;
+    marketPriceUnavailable: string;
     minQuantity: string;
     success: string;
     error: string;
@@ -297,6 +298,14 @@ export const useManualOrderController = ({
         ? manualOrderLiveReferencePrice
         : undefined;
     const effectiveManualOrderPrice = typeof parsedPrice === "number" ? parsedPrice : fallbackMarketPrice;
+    if (
+      selected.bot.mode === "PAPER" &&
+      resolvedManualOrderType === "MARKET" &&
+      (effectiveManualOrderPrice == null || !Number.isFinite(effectiveManualOrderPrice) || effectiveManualOrderPrice <= 0)
+    ) {
+      toast.error(labels.marketPriceUnavailable);
+      return;
+    }
 
     setIsSubmittingManualOrder(true);
     try {
@@ -322,6 +331,7 @@ export const useManualOrderController = ({
     labels.invalidPrice,
     labels.invalidQuantity,
     labels.invalidSymbol,
+    labels.marketPriceUnavailable,
     labels.minQuantity,
     labels.requiredPrice,
     labels.success,

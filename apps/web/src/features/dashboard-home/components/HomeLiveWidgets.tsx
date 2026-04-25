@@ -333,6 +333,9 @@ export default function HomeLiveWidgets() {
   const manualOrderInvalidQuantityLabel = t("dashboard.home.runtime.manualOrderQuantityRequired");
   const manualOrderInvalidPriceLabel = t("dashboard.home.runtime.manualOrderPriceInvalid");
   const manualOrderRequiredPriceLabel = t("dashboard.home.runtime.manualOrderPriceRequired");
+  const manualOrderMarketPriceUnavailableLabel = t(
+    "dashboard.home.runtime.manualOrderMarketPriceUnavailable"
+  );
   const manualOrderMinQuantityLabel = t("dashboard.home.runtime.manualOrderMinQtyValidation");
   const editPositionButtonLabel = t("dashboard.home.runtime.editPositionButton");
   const editPositionModalTitle = t("dashboard.home.runtime.editPositionTitle");
@@ -427,6 +430,7 @@ export default function HomeLiveWidgets() {
       invalidQuantity: manualOrderInvalidQuantityLabel,
       invalidPrice: manualOrderInvalidPriceLabel,
       requiredPrice: manualOrderRequiredPriceLabel,
+      marketPriceUnavailable: manualOrderMarketPriceUnavailableLabel,
       minQuantity: manualOrderMinQuantityLabel,
       success: manualOrderSuccessLabel,
       error: manualOrderErrorLabel,

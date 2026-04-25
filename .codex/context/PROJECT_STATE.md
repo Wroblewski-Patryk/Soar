@@ -49,6 +49,17 @@ Last updated: 2026-04-25
   `EXCHANGE_SYNC BOT_MANAGED` LIVE runtime position visibility/close flows.
 
 ## Product Decisions (Confirmed)
+- 2026-04-25: closed `V1TAKE-06` and `V1TAKE-07` by hardening manual-order
+  fill truth across both API and dashboard UI. `PAPER MARKET` opens now fail
+  closed when canonical fill price cannot be proven, the API surfaces an
+  explicit `PAPER_MARKET_PRICE_UNAVAILABLE` error, and the dashboard manual
+  order controller blocks the same degraded submit path before calling the
+  shared order endpoint. Validation PASS: `orders.service.test.ts`,
+  `orders.manual-paper-market.e2e.test.ts`,
+  `HomeLiveWidgets.manual-order.test.tsx`,
+  `pnpm --filter api run typecheck`,
+  `pnpm --filter web run typecheck`,
+  `pnpm run quality:guardrails`.
 - 2026-04-25: closed `V1TAKE-04` and `V1TAKE-05` by carrying the user-approved
   wallet-first takeover contract into runtime ownership resolution. Canonical
   bot runtime visibility for imported LIVE positions now excludes competing

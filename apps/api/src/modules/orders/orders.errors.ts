@@ -2,6 +2,7 @@ import { DomainError } from '../../lib/errors';
 
 export const ORDER_ERROR_CODES = {
   botContextNotFound: 'BOT_CONTEXT_NOT_FOUND',
+  paperMarketPriceUnavailable: 'PAPER_MARKET_PRICE_UNAVAILABLE',
   liveRiskAckRequired: 'LIVE_RISK_ACK_REQUIRED',
   liveBotRequired: 'LIVE_BOT_REQUIRED',
   liveBotNotFound: 'LIVE_BOT_NOT_FOUND',
@@ -39,6 +40,8 @@ export class OrderDomainError extends DomainError {
 
 export const orderErrors = {
   botContextNotFound: () => new OrderDomainError(ORDER_ERROR_CODES.botContextNotFound, 404),
+  paperMarketPriceUnavailable: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.paperMarketPriceUnavailable, 400),
   liveRiskAckRequired: () => new OrderDomainError(ORDER_ERROR_CODES.liveRiskAckRequired, 400),
   liveBotRequired: () => new OrderDomainError(ORDER_ERROR_CODES.liveBotRequired, 400),
   liveBotNotFound: () => new OrderDomainError(ORDER_ERROR_CODES.liveBotNotFound, 404),

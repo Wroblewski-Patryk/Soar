@@ -17,6 +17,9 @@ const handleOrderError = (res: Response, error: unknown) => {
   if (mapped.code === ORDER_ERROR_CODES.botContextNotFound) {
     return sendError(res, 404, 'Bot context not found', mapped.details);
   }
+  if (mapped.code === ORDER_ERROR_CODES.paperMarketPriceUnavailable) {
+    return sendError(res, 400, 'PAPER MARKET order requires canonical fill price truth', mapped.details);
+  }
   if (mapped.code === ORDER_ERROR_CODES.liveRiskAckRequired) {
     return sendError(res, 400, 'riskAck is required for LIVE order open', mapped.details);
   }

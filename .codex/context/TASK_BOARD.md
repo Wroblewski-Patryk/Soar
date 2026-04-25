@@ -17,12 +17,14 @@ Last updated: 2026-04-25
 
 ## READY
 
-- [ ] `V1TAKE-06 test(api+web-red): lock manual PAPER/LIVE open truth from dashboard submission to order/position state`
-- [ ] `V1TAKE-07 fix(api+web-orders): harden manual-order fill/context truth and fail-closed UI semantics`
+- [ ] `V1TAKE-08 qa(closure): rerun focused DB-backed API + web closure pack and sync canonical docs/context`
 
 ## BACKLOG
 
-- [ ] `V1TAKE-08 qa(closure): rerun focused DB-backed API + web closure pack and sync canonical docs/context`
+- [x] `V1TAKE-07 fix(api+web-orders): harden manual-order fill/context truth and fail-closed UI semantics`
+  - 2026-04-25: `PAPER MARKET` manual open now fails closed when canonical fill price cannot be proven. Added explicit `PAPER_MARKET_PRICE_UNAVAILABLE` handling in `orders.service.ts`/`orders.controller.ts`, blocked the same degraded submit path in `useManualOrderController.ts`, and synced dashboard i18n copy for the new validation message. Validation PASS: `pnpm --filter api exec vitest run src/modules/orders/orders.service.test.ts src/modules/orders/orders.manual-paper-market.e2e.test.ts`, `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.manual-order.test.tsx`, `pnpm --filter api run typecheck`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
+- [x] `V1TAKE-06 test(api+web-red): lock manual PAPER/LIVE open truth from dashboard submission to order/position state`
+  - 2026-04-25: Added focused regression coverage proving two things: `PAPER MARKET` without canonical price truth must not cross the dashboard/API boundary as a fake waiting-for-fill order, and the existing `LIVE` manual-order state progression remains the truthful operator path. The red slice is now frozen in `orders.service.test.ts`, `orders.manual-paper-market.e2e.test.ts`, and `HomeLiveWidgets.manual-order.test.tsx`.
 - [x] `V1TAKE-05 fix(api-runtime): align runtime position adoption with canonical owned external-position truth`
   - 2026-04-25: Reused wallet-owned takeover truth inside `runtimeExternalPositionOwner.service.ts`, so LIVE runtime ownership candidates now exclude bots whose linked wallets disable external-position management. Added focused unit coverage plus `bots.runtime-takeover.e2e.test.ts`, proving a wallet-managed bot now sees its owned `EXCHANGE_SYNC` position even when another LIVE bot shares the same symbol scope but is manual-only. Validation PASS: `pnpm --filter api exec vitest run src/modules/bots/runtimeExternalPositionOwner.service.test.ts src/modules/bots/bots.runtime-takeover.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 - [x] `V1TAKE-04 test(api-runtime-red): lock deterministic runtime visibility for owned exchange-synced LIVE positions`

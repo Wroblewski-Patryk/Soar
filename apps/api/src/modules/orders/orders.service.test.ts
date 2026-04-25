@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { prisma } from '../../prisma/client';
 import { getManualOrderContext, openOrder, resolveLiveExecutionApiKey } from './orders.service';
+import { ORDER_ERROR_CODES } from './orders.errors';
 
 const cleanupDb = async () => {
   await prisma.log.deleteMany();
@@ -165,7 +166,7 @@ describe('openOrder live execution contract', () => {
     }
   });
 
-  it('keeps MARKET order submitted when fill price cannot be resolved', async () => {
+  it('rejects PAPER MARKET order when canonical fill price cannot be resolved', async () => {
     const user = await prisma.user.create({
       data: { email: 'orders-paper-waiting-fill@example.com', password: 'hashed' },
     });
@@ -174,41 +175,32 @@ describe('openOrder live execution contract', () => {
     process.env.NODE_ENV = 'development';
 
     try {
-      const order = await openOrder(
-        user.id,
-        {
-          symbol: 'BTCUSDT',
-          side: 'BUY',
-          type: 'MARKET',
-          quantity: 0.1,
-          mode: 'PAPER',
-          riskAck: false,
-        },
-        { executeLiveOrder }
-      );
+      await expect(
+        openOrder(
+          user.id,
+          {
+            symbol: 'BTCUSDT',
+            side: 'BUY',
+            type: 'MARKET',
+            quantity: 0.1,
+            mode: 'PAPER',
+            riskAck: false,
+          },
+          { executeLiveOrder }
+        )
+      ).rejects.toMatchObject({
+        code: ORDER_ERROR_CODES.paperMarketPriceUnavailable,
+      });
 
       expect(executeLiveOrder).not.toHaveBeenCalled();
-      expect(order.status).toBe('OPEN');
-      expect(order.positionId).toBeNull();
+      const persistedOrder = await prisma.order.findFirst({
+        where: { userId: user.id },
+      });
       const openedPosition = await prisma.position.findFirst({
         where: { userId: user.id },
       });
+      expect(persistedOrder).toBeNull();
       expect(openedPosition).toBeNull();
-      const auditLog = await prisma.log.findFirst({
-        where: {
-          userId: user.id,
-          action: 'order.opened',
-          entityType: 'ORDER',
-          entityId: order.id,
-        },
-        orderBy: { occurredAt: 'desc' },
-      });
-      const metadata = (auditLog?.metadata ?? {}) as {
-        waitingForFill?: boolean;
-        fillPriceResolved?: boolean;
-      };
-      expect(metadata.waitingForFill).toBe(true);
-      expect(metadata.fillPriceResolved).toBe(false);
     } finally {
       process.env.NODE_ENV = previousNodeEnv;
     }

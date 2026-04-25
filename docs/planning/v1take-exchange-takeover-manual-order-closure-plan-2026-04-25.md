@@ -157,6 +157,12 @@ validation gate instead of treating them as purely infra-blocked.
   but its wallet disabled external-position management, and
   `runtimeExternalPositionOwner.service.ts` now excludes such manual-only
   wallets from LIVE ownership candidates. Next active slice is `V1TAKE-06`.
+- 2026-04-25: `V1TAKE-06` and `V1TAKE-07` are now closed. Manual-order truth
+  is tighter on both sides of the dashboard/API boundary: `PAPER MARKET` now
+  fails closed without canonical fill price truth, the API surfaces
+  `PAPER_MARKET_PRICE_UNAVAILABLE`, and the dashboard blocks that degraded
+  submit path before calling the shared order endpoint. Next active slice is
+  `V1TAKE-08`.
 
 ## Non-Goals
 

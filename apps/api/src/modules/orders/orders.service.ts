@@ -422,6 +422,13 @@ export const openOrder = async (
     fills.find((fill) => Number.isFinite(fill.price) && fill.price > 0)?.price ??
     resolvedPaperFillPrice ??
     (isPositiveFiniteNumber(canonicalPayload.price) ? canonicalPayload.price : null);
+  if (
+    canonicalPayload.mode === 'PAPER' &&
+    canonicalPayload.type === 'MARKET' &&
+    !isPositiveFiniteNumber(fillPriceFromExchange)
+  ) {
+    throw orderErrors.paperMarketPriceUnavailable();
+  }
   const shouldApplyImmediateFillLifecycle = status === 'FILLED' && isPositiveFiniteNumber(fillPriceFromExchange);
   const persistedStatus: 'OPEN' | 'FILLED' = shouldApplyImmediateFillLifecycle ? 'FILLED' : 'OPEN';
 
