@@ -17,8 +17,8 @@ Last updated: 2026-04-25
 
 ## READY
 
-- [ ] `XVENUE-06 test(api): add no-mixing parity coverage`
-  - 2026-04-25: `XVENUE-05` removed the highest-value feature leaks for market catalog and runtime live-balance ownership. The next slice is to lock explicit no-mixing coverage across exchange and market-type pairs so the new boundaries do not quietly regress back into spot/futures or cross-exchange reuse.
+- [ ] `XVENUE-07 refactor(api-ops): align worker topology truth`
+  - 2026-04-25: `XVENUE-06` locked no-mixing parity at the exchange exact-context seams. The next slice is aligning `/workers/*`, ownership config, and runtime freshness truth to the full deployed worker topology.
 
 ## BACKLOG
 
@@ -101,6 +101,9 @@ Last updated: 2026-04-25
 
 - [x] `XVENUE-05 refactor(api-markets-engine): remove direct exchange SDK access from feature modules`
   - 2026-04-25: Added `exchangeMarketCatalog.service.ts` so public market catalog ownership now lives under `modules/exchange`, and routed `runtimeCapitalContext.service.ts` live balance reads through `fetchSupportedExchangeBalanceRaw` instead of direct `ccxt/binance` construction. Validation PASS: `pnpm --filter api run test -- --run src/modules/exchange/exchangeMarketCatalog.service.test.ts src/modules/engine/runtimeCapitalContext.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`. Note: local `markets.e2e.test.ts` remains infra-blocked by unreachable `localhost:5432`.
+
+- [x] `XVENUE-06 test(api): add no-mixing parity coverage`
+  - 2026-04-25: Added focused exact-context regression coverage proving `BINANCE + SPOT` does not reuse `BINANCE + FUTURES` in the registry and market catalog seams, while unsupported venue pairs remain fail-closed. Validation PASS: `pnpm --filter api run test -- --run src/modules/exchange/exchangeAdapterRegistry.service.test.ts src/modules/exchange/exchangeMarketCatalog.service.test.ts src/modules/exchange/exchangeExecutionCapabilityContract.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 
 - [x] `V1COH-01 test(api-red): lock manual LIVE order against out-of-scope symbol and unresolved strategy context`
   - 2026-04-25: Added focused service and API e2e regressions proving manual `LIVE` open is rejected when the selected bot has no canonical symbol-matching strategy scope, and that accepted `LIVE` fixtures must provide the full inherited bot context.

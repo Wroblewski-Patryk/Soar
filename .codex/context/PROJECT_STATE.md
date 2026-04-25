@@ -228,6 +228,12 @@ Last updated: 2026-04-25
   canonical exchange balance boundary instead of building a local Binance CCXT
   client. The remaining next exchange-context hardening step is now explicit
   no-mixing parity coverage in `XVENUE-06`.
+- 2026-04-25: closed `XVENUE-06` as the parity-lock follow-up for the new
+  exact-context seams. The repository now has focused regression coverage
+  proving that `BINANCE + SPOT` and `BINANCE + FUTURES` remain isolated in the
+  registry and market-catalog paths, and that unsupported venue/context pairs
+  stay fail-closed. The remaining active wave slice is now worker-topology
+  truth alignment in `XVENUE-07`.
 - 2026-04-25: closed `DEPLOY-2026-04-25-B` as the validation-only follow-up to
   the same-day Coolify hotfix. Local `pnpm --filter web run build` now passes
   cleanly again, confirming the previously reported web deploy gate is no

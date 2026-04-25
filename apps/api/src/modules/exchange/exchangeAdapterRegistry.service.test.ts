@@ -37,6 +37,29 @@ describe('exchangeAdapterRegistry.service', () => {
     expect(typeof entry.execution.createLiveOrderAdapter).toBe('function');
   });
 
+  it('keeps SPOT and FUTURES connector resolution isolated for the same exchange', () => {
+    const futuresEntry = resolveExchangeAdapterRegistryEntry({
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+    });
+    const spotEntry = resolveExchangeAdapterRegistryEntry({
+      exchange: 'BINANCE',
+      marketType: 'SPOT',
+    });
+
+    const futuresPublic = futuresEntry.marketData.createPublicConnector() as unknown as {
+      config: { exchangeId: string; marketType: string };
+    };
+    const spotPublic = spotEntry.marketData.createPublicConnector() as unknown as {
+      config: { exchangeId: string; marketType: string };
+    };
+
+    expect(futuresPublic.config.exchangeId).toBe('binance');
+    expect(futuresPublic.config.marketType).toBe('future');
+    expect(spotPublic.config.exchangeId).toBe('binance');
+    expect(spotPublic.config.marketType).toBe('spot');
+  });
+
   it('fails closed for exchange contexts that are not allowed by market-type options', () => {
     expect(() =>
       resolveExchangeAdapterRegistryEntry({

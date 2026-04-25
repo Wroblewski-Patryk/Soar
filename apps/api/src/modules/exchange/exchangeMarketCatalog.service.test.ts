@@ -76,4 +76,73 @@ describe('exchangeMarketCatalog.service', () => {
       })
     ).rejects.toThrowError();
   });
+
+  it('keeps catalog resolution isolated between SPOT and FUTURES for the same exchange', async () => {
+    resetExchangeMarketCatalogCacheForTests();
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+
+    try {
+      const spotCatalog = await getSupportedExchangeMarketCatalog(
+        'USDT',
+        'SPOT',
+        'BINANCE',
+        {
+          loadMarketMap: async () => ({
+            'BTC/USDT': {
+              id: 'BTCUSDT',
+              symbol: 'BTC/USDT',
+              base: 'BTC',
+              quote: 'USDT',
+              active: true,
+            },
+          }),
+          fetchJson: async () => [{ symbol: 'BTCUSDT', quoteVolume: '100', lastPrice: '90000' }],
+        }
+      );
+
+      const futuresCatalog = await getSupportedExchangeMarketCatalog(
+        'USDT',
+        'FUTURES',
+        'BINANCE',
+        {
+          loadMarketMap: async () => ({
+            'BTC/USDT:USDT': {
+              id: 'BTCUSDT',
+              symbol: 'BTC/USDT',
+              base: 'BTC',
+              quote: 'USDT',
+              active: true,
+            },
+          }),
+          fetchJson: async () => [{ symbol: 'BTCUSDT', quoteVolume: '200', lastPrice: '100000' }],
+        }
+      );
+
+      expect(spotCatalog.marketType).toBe('SPOT');
+      expect(spotCatalog.markets).toEqual([
+        {
+          symbol: 'BTCUSDT',
+          displaySymbol: 'BTC/USDT',
+          baseAsset: 'BTC',
+          quoteAsset: 'USDT',
+          quoteVolume24h: 100,
+          lastPrice: 90000,
+        },
+      ]);
+      expect(futuresCatalog.marketType).toBe('FUTURES');
+      expect(futuresCatalog.markets).toEqual([
+        {
+          symbol: 'BTCUSDT',
+          displaySymbol: 'BTC/USDT',
+          baseAsset: 'BTC',
+          quoteAsset: 'USDT',
+          quoteVolume24h: 200,
+          lastPrice: 100000,
+        },
+      ]);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
 });

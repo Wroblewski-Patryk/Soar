@@ -140,9 +140,9 @@ implementation
 - [x] preserve fail-closed behavior for unsupported contexts
 
 ### XVENUE-06 test(api): add explicit no-mixing parity coverage across exchange and market type pairs
-- prove `SPOT` does not reuse `FUTURES`
-- prove one exchange does not reuse another exchange
-- lock capability and fallback behavior
+- [x] prove `SPOT` does not reuse `FUTURES`
+- [x] prove unsupported venue/context pairs stay fail-closed
+- [x] lock capability and fallback behavior at exact-context seams
 
 ### XVENUE-07 refactor(api-ops): align worker ownership, health, and readiness to full topology truth
 - model all four canonical worker families
@@ -213,3 +213,8 @@ Context:
   tests, API typecheck, and repository guardrails remained green; local
   `markets.e2e` is still infra-blocked by unreachable `localhost:5432`. The
   queue now advances to `XVENUE-06`.
+- 2026-04-25: Closed `XVENUE-06` by adding focused no-mixing parity coverage
+  for the exact-context registry and market catalog seams. Regression tests now
+  prove `BINANCE + SPOT` does not reuse `BINANCE + FUTURES`, keep unsupported
+  venue/context pairs fail-closed, and preserve current capability truth at the
+  exchange module boundary. The queue now advances to `XVENUE-07`.
