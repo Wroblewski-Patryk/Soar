@@ -36,6 +36,12 @@ in the bot" is compatible with this drift because one path can classify a row
 as eligible for sync while another path classifies the same runtime ownership
 as unmanaged or unresolved.
 
+User decision recorded on 2026-04-25:
+- `manageExternalPositions` must become wallet-only truth,
+- `apiKey.syncExternalPositions` may remain as the import/snapshot toggle,
+- API-key-level `manageExternalPositions` must become compatibility-only and
+  must not decide takeover ownership.
+
 ### 2. Exchange-position import remains intentionally narrow and fail-closed
 
 The frozen capability matrix still makes authenticated position/open-order
@@ -98,6 +104,9 @@ validation gate instead of treating them as purely infra-blocked.
 
 3. `V1TAKE-03 fix(api-positions): unify external-position management contract and takeover status ownership`
    - Remove the remaining split authority where architecture allows.
+   - Make `wallet.manageExternalPositions` the only management source of truth.
+   - Downgrade API-key-level `manageExternalPositions` to compatibility-only
+     metadata that no longer decides takeover ownership.
    - Keep one canonical ownership/management source for reconciliation,
      takeover-status, and manual takeover actions.
 

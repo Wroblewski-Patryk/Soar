@@ -553,4 +553,159 @@ describe('Positions takeover status API', () => {
     expect(updatedPosition.botId).toBeNull();
     expect(updatedPosition.walletId).toBeNull();
   });
+
+  it('uses wallet-only management truth for stale BOT_MANAGED takeover rows', async () => {
+    const email = 'positions-takeover-policy-drift@example.com';
+    const agent = await registerAndLogin(email);
+    const owner = await prisma.user.findUniqueOrThrow({
+      where: { email },
+      select: { id: true },
+    });
+
+    const createApiKey = async (label: string, options?: { manageExternalPositions?: boolean }) => {
+      const res = await agent.post('/dashboard/profile/apiKeys').send({
+        label,
+        exchange: 'BINANCE',
+        apiKey: `APIKEY_${label}_${Date.now()}`,
+        apiSecret: `APISECRET_${label}_${Date.now()}`,
+        syncExternalPositions: true,
+        manageExternalPositions: options?.manageExternalPositions ?? true,
+      });
+      expect(res.status).toBe(201);
+      return res.body.id as string;
+    };
+
+    const keyApiDisabled = await createApiKey('api-disabled', {
+      manageExternalPositions: false,
+    });
+    const keyWalletDisabled = await createApiKey('wallet-disabled', {
+      manageExternalPositions: true,
+    });
+
+    const walletApiDisabled = await prisma.wallet.create({
+      data: {
+        userId: owner.id,
+        name: 'wallet-api-disabled',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        paperInitialBalance: 10_000,
+        liveAllocationMode: 'PERCENT',
+        liveAllocationValue: 100,
+        apiKeyId: keyApiDisabled,
+        manageExternalPositions: true,
+      },
+      select: { id: true },
+    });
+
+    const walletWalletDisabled = await prisma.wallet.create({
+      data: {
+        userId: owner.id,
+        name: 'wallet-wallet-disabled',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        paperInitialBalance: 10_000,
+        liveAllocationMode: 'PERCENT',
+        liveAllocationValue: 100,
+        apiKeyId: keyWalletDisabled,
+        manageExternalPositions: false,
+      },
+      select: { id: true },
+    });
+
+    const botApiDisabled = await prisma.bot.create({
+      data: {
+        userId: owner.id,
+        name: 'bot-api-disabled',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        liveOptIn: true,
+        apiKeyId: keyApiDisabled,
+        walletId: walletApiDisabled.id,
+      },
+      select: { id: true },
+    });
+
+    const botWalletDisabled = await prisma.bot.create({
+      data: {
+        userId: owner.id,
+        name: 'bot-wallet-disabled',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        liveOptIn: true,
+        apiKeyId: keyWalletDisabled,
+        walletId: walletWalletDisabled.id,
+      },
+      select: { id: true },
+    });
+
+    await prisma.position.createMany({
+      data: [
+        {
+          userId: owner.id,
+          botId: botApiDisabled.id,
+          walletId: walletApiDisabled.id,
+          externalId: `${keyApiDisabled}:BTCUSDT:LONG`,
+          origin: 'EXCHANGE_SYNC',
+          managementMode: 'BOT_MANAGED',
+          syncState: 'IN_SYNC',
+          symbol: 'BTCUSDT',
+          side: 'LONG',
+          status: 'OPEN',
+          entryPrice: 68000,
+          quantity: 0.01,
+          leverage: 3,
+        },
+        {
+          userId: owner.id,
+          botId: botWalletDisabled.id,
+          walletId: walletWalletDisabled.id,
+          externalId: `${keyWalletDisabled}:ETHUSDT:SHORT`,
+          origin: 'EXCHANGE_SYNC',
+          managementMode: 'BOT_MANAGED',
+          syncState: 'IN_SYNC',
+          symbol: 'ETHUSDT',
+          side: 'SHORT',
+          status: 'OPEN',
+          entryPrice: 3200,
+          quantity: 0.2,
+          leverage: 2,
+        },
+      ],
+    });
+
+    const res = await agent.get('/dashboard/positions/takeover-status');
+    expect(res.status).toBe(200);
+
+    const bySymbol = new Map(
+      (
+        res.body.items as Array<{
+          symbol: string;
+          takeoverStatus: string;
+          managementMode: string;
+          botId: string | null;
+        }>
+      ).map((item) => [item.symbol, item])
+    );
+
+    expect(bySymbol.get('BTCUSDT')).toMatchObject({
+      takeoverStatus: 'OWNED_AND_MANAGED',
+      managementMode: 'BOT_MANAGED',
+      botId: botApiDisabled.id,
+    });
+    expect(bySymbol.get('ETHUSDT')).toMatchObject({
+      takeoverStatus: 'MANUAL_ONLY',
+      managementMode: 'MANUAL_MANAGED',
+      botId: null,
+    });
+  });
 });

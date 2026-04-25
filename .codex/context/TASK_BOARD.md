@@ -17,16 +17,18 @@ Last updated: 2026-04-25
 
 ## READY
 
-- [ ] `V1TAKE-02 test(api-red): lock takeover authority drift between API key, wallet, and bot visibility`
-- [ ] `V1TAKE-03 fix(api-positions): unify external-position management contract and takeover status ownership`
+- [ ] `V1TAKE-04 test(api-runtime-red): lock deterministic runtime visibility for owned exchange-synced LIVE positions`
+- [ ] `V1TAKE-05 fix(api-runtime): align runtime position adoption with canonical owned external-position truth`
 
 ## BACKLOG
 
-- [ ] `V1TAKE-04 test(api-runtime-red): lock deterministic runtime visibility for owned exchange-synced LIVE positions`
-- [ ] `V1TAKE-05 fix(api-runtime): align runtime position adoption with canonical owned external-position truth`
 - [ ] `V1TAKE-06 test(api+web-red): lock manual PAPER/LIVE open truth from dashboard submission to order/position state`
 - [ ] `V1TAKE-07 fix(api+web-orders): harden manual-order fill/context truth and fail-closed UI semantics`
 - [ ] `V1TAKE-08 qa(closure): rerun focused DB-backed API + web closure pack and sync canonical docs/context`
+- [x] `V1TAKE-03 fix(api-positions): unify external-position management contract and takeover status ownership`
+  - 2026-04-25: Made wallet the only management source of truth for takeover-related positions behavior. `livePositionReconciliation.service.ts` no longer consumes API-key-level `manageExternalPositions`, and `positions.service.ts` takeover-status classification now treats API-key-level management as compatibility-only while failing closed to `MANUAL_ONLY` when the linked LIVE wallet disables management. Validation PASS: `positions.takeover-status.e2e.test.ts`, `livePositionReconciliation.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
+- [x] `V1TAKE-02 test(api-red): lock takeover authority drift between API key, wallet, and bot visibility`
+  - 2026-04-25: Added focused DB-backed takeover-status coverage proving the old drift around stale `BOT_MANAGED` rows and then refined it under the user-approved wallet-only contract. The red slice now documents that API-key-level `manageExternalPositions=false` is compatibility-only, while wallet-disabled takeover must fail closed.
 - [x] `V1TAKE-01 audit(api+runtime): publish confirmed ownership/manual-order investigation packet with DB-backed validation`
   - 2026-04-25: Published `docs/planning/v1take-01-investigation-audit-2026-04-25.md` and the matching task packet `docs/planning/v1take-01-investigation-audit-task-2026-04-25.md`. The audit freezes four concrete classes: a confirmed ownership-contract split between API key and wallet flags, the intentional `BINANCE + FUTURES` import boundary, the operator gap between takeover status and runtime `BOT_MANAGED` visibility, and a narrower manual-order watch item around UI estimation versus backend truth. Validation PASS: `positions.takeover-status.e2e.test.ts`, targeted `orders.service.test.ts`, targeted `orders-positions.e2e.test.ts`, and `pnpm run quality:guardrails`.
 - [x] `V1TAKE-A planning queued (exchange takeover ownership and manual-order truth closure after fresh live investigation)`

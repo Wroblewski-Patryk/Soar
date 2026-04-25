@@ -726,7 +726,7 @@ export const listExternalTakeoverStatuses = async (
     ),
   ];
 
-  const eligibleBots =
+  const linkedLiveBots =
     apiKeyIds.length === 0
       ? []
       : await prisma.bot.findMany({
@@ -742,36 +742,57 @@ export const listExternalTakeoverStatuses = async (
             wallet: {
               is: {
                 mode: 'LIVE',
-                manageExternalPositions: true,
               },
             },
           },
           select: {
             apiKeyId: true,
             id: true,
+            wallet: {
+              select: {
+                manageExternalPositions: true,
+              },
+            },
           },
         });
 
-  const eligibleCountByApiKeyId = new Map<string, number>();
-  for (const bot of eligibleBots) {
+  const linkedCountByApiKeyId = new Map<string, number>();
+  const managedCountByApiKeyId = new Map<string, number>();
+  const managedBotIdsByApiKeyId = new Map<string, Set<string>>();
+  for (const bot of linkedLiveBots) {
     if (!bot.apiKeyId) continue;
-    eligibleCountByApiKeyId.set(bot.apiKeyId, (eligibleCountByApiKeyId.get(bot.apiKeyId) ?? 0) + 1);
+    linkedCountByApiKeyId.set(bot.apiKeyId, (linkedCountByApiKeyId.get(bot.apiKeyId) ?? 0) + 1);
+    if (bot.wallet?.manageExternalPositions !== true) continue;
+    managedCountByApiKeyId.set(bot.apiKeyId, (managedCountByApiKeyId.get(bot.apiKeyId) ?? 0) + 1);
+    const current = managedBotIdsByApiKeyId.get(bot.apiKeyId) ?? new Set<string>();
+    current.add(bot.id);
+    managedBotIdsByApiKeyId.set(bot.apiKeyId, current);
   }
 
   const items: ExternalTakeoverStatusItem[] = positions.map((position) => {
     const apiKeyId = parseApiKeyIdFromExternalId(position.externalId);
-    const eligibleOwnerCount = apiKeyId ? (eligibleCountByApiKeyId.get(apiKeyId) ?? 0) : 0;
+    const linkedOwnerCount = apiKeyId ? (linkedCountByApiKeyId.get(apiKeyId) ?? 0) : 0;
+    const managedOwnerCount = apiKeyId ? (managedCountByApiKeyId.get(apiKeyId) ?? 0) : 0;
+    const managedBotIds = apiKeyId ? (managedBotIdsByApiKeyId.get(apiKeyId) ?? new Set<string>()) : new Set<string>();
+    const ownedByManagedBot = position.botId != null && managedBotIds.has(position.botId);
 
     let takeoverStatus: ExternalTakeoverStatus;
     if (position.managementMode === 'MANUAL_MANAGED') {
       takeoverStatus = 'MANUAL_ONLY';
-    } else if (position.botId) {
+    } else if (ownedByManagedBot) {
       takeoverStatus = 'OWNED_AND_MANAGED';
-    } else if (eligibleOwnerCount > 1) {
+    } else if (managedOwnerCount > 1) {
       takeoverStatus = 'AMBIGUOUS';
+    } else if (managedOwnerCount === 0 && linkedOwnerCount > 0) {
+      takeoverStatus = 'MANUAL_ONLY';
     } else {
       takeoverStatus = 'UNOWNED';
     }
+
+    const effectiveBotId = takeoverStatus === 'OWNED_AND_MANAGED' ? position.botId : null;
+    const effectiveWalletId = takeoverStatus === 'OWNED_AND_MANAGED' ? position.walletId : null;
+    const effectiveManagementMode =
+      takeoverStatus === 'OWNED_AND_MANAGED' ? position.managementMode : 'MANUAL_MANAGED';
 
     return {
       positionId: position.id,
@@ -780,10 +801,10 @@ export const listExternalTakeoverStatuses = async (
       openedAt: position.openedAt.toISOString(),
       externalId: position.externalId,
       apiKeyId,
-      managementMode: position.managementMode,
+      managementMode: effectiveManagementMode,
       syncState: position.syncState,
-      botId: position.botId,
-      walletId: position.walletId,
+      botId: effectiveBotId,
+      walletId: effectiveWalletId,
       takeoverStatus,
     };
   });

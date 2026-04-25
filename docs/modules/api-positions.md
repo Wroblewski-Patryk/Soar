@@ -46,6 +46,11 @@ Out of scope:
   4. Update `lastUsed` metadata for key.
 - Takeover status flow:
   - classify open exchange-synced positions by ownership/management/sync-state.
+  - canonical management truth is wallet-owned:
+    - `apiKey.syncExternalPositions` enables external snapshot ingestion,
+    - `wallet.manageExternalPositions` enables `BOT_MANAGED` takeover,
+    - API-key-level `manageExternalPositions` is compatibility-only and must
+      not decide takeover ownership.
 - Rebind flow:
   - attempts deterministic rebind of candidate external positions to owned bot context.
 

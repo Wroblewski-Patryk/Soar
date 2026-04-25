@@ -15,6 +15,14 @@ Status: accepted (2026-04-16)
 2. Bot write contract is wallet-first (`walletId` required after compatibility window).
 3. Canonical V1 runtime is single-context: one bot binds to one wallet.
 4. Backtests remain wallet-independent and keep explicit `initialBalance`.
+5. For `LIVE` exchange takeover, wallet is also the canonical source-of-truth
+   for management policy:
+   - `wallet.manageExternalPositions` decides whether synced exchange positions
+     may become `BOT_MANAGED`,
+   - `apiKey.syncExternalPositions` decides only whether external positions are
+     imported/snapshotted,
+   - `apiKey.manageExternalPositions` is compatibility-only legacy metadata and
+     must not outrank wallet ownership or management rules.
 
 ## Context Invariants
 1. `wallet.exchange == marketUniverse.exchange`
@@ -64,6 +72,10 @@ Post-deposit rule:
 ## Bot/API Contract
 - Bot create/update no longer accepts mode as canonical input.
 - During compatibility window, legacy bot fields (`mode`, `paperStartBalance`, `apiKeyId`) are derived from wallet only.
+- During compatibility window, API-key-level `manageExternalPositions` may
+  still be persisted or returned for legacy profile surfaces, but runtime
+  ownership, takeover status, and reconciliation must derive management truth
+  only from the linked `LIVE` wallet.
 - Required wallet error contract:
   - `WALLET_NOT_FOUND`
   - `WALLET_MODE_INVALID`

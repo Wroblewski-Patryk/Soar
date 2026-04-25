@@ -49,7 +49,6 @@ describe('reconcileExternalPositionsFromExchange', () => {
         {
           id: 'key-1',
           userId: 'user-1',
-          manageExternalPositions: true,
         },
       ]),
       resolveOwnershipForApiKey: vi.fn(async () => ({
@@ -112,7 +111,6 @@ describe('reconcileExternalPositionsFromExchange', () => {
         {
           id: 'key-2',
           userId: 'user-2',
-          manageExternalPositions: false,
         },
       ]),
       resolveOwnershipForApiKey: vi.fn(async () => ({
@@ -168,12 +166,10 @@ describe('reconcileExternalPositionsFromExchange', () => {
         {
           id: 'key-failing',
           userId: 'user-1',
-          manageExternalPositions: true,
         },
         {
           id: 'key-healthy',
           userId: 'user-2',
-          manageExternalPositions: true,
         },
       ]),
       resolveOwnershipForApiKey: vi.fn(async ({ apiKeyId }: { apiKeyId: string }) => {
@@ -248,7 +244,6 @@ describe('reconcileExternalPositionsFromExchange', () => {
         {
           id: 'key-ambiguous',
           userId: 'user-ambiguous',
-          manageExternalPositions: true,
         },
       ]),
       resolveOwnershipForApiKey: vi.fn(async () => ({
@@ -305,7 +300,6 @@ describe('reconcileExternalPositionsFromExchange', () => {
         {
           id: 'key-missing-entry',
           userId: 'user-missing-entry',
-          manageExternalPositions: true,
         },
       ]),
       resolveOwnershipForApiKey: vi.fn(async () => ({
@@ -357,7 +351,6 @@ describe('reconcileExternalPositionsFromExchange', () => {
         {
           id: 'key-orders-1',
           userId: 'user-orders-1',
-          manageExternalPositions: true,
         },
       ]),
       resolveOwnershipForApiKey: vi.fn(async () => ({

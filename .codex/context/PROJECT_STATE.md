@@ -49,6 +49,19 @@ Last updated: 2026-04-25
   `EXCHANGE_SYNC BOT_MANAGED` LIVE runtime position visibility/close flows.
 
 ## Product Decisions (Confirmed)
+- 2026-04-25: closed `V1TAKE-02` and `V1TAKE-03` under one user-approved
+  wallet-first ownership decision for exchange takeover. Canonical management
+  truth is now explicit: `wallet.manageExternalPositions` is the only
+  management source of truth for takeover-related API behavior, while
+  `apiKey.syncExternalPositions` remains the import toggle and API-key-level
+  `manageExternalPositions` is compatibility-only metadata. The backend now
+  ignores API-key management during reconciliation and fails closed in
+  takeover-status reads when a stale `BOT_MANAGED` row is linked to a wallet
+  that no longer allows external-position management. Validation PASS:
+  `positions.takeover-status.e2e.test.ts`,
+  `livePositionReconciliation.service.test.ts`,
+  `pnpm --filter api run typecheck`,
+  `pnpm run quality:guardrails`.
 - 2026-04-25: closed `V1TAKE-01` by publishing the concrete investigation
   packet `docs/planning/v1take-01-investigation-audit-2026-04-25.md` plus the
   task packet `docs/planning/v1take-01-investigation-audit-task-2026-04-25.md`.

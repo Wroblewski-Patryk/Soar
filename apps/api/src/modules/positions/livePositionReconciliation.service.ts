@@ -18,7 +18,6 @@ type ReconcileFn = () => Promise<{ openPositionsSeen: number }>;
 type SyncedApiKey = {
   id: string;
   userId: string;
-  manageExternalPositions: boolean;
 };
 
 type ExternalSnapshotPosition = {
@@ -50,7 +49,6 @@ type ReconcileDeps = {
   resolveOwnershipForApiKey: (input: {
     userId: string;
     apiKeyId: string;
-    manageExternalPositions: boolean;
   }) => Promise<{
     status: 'OWNED' | 'UNOWNED' | 'AMBIGUOUS';
     botId: string | null;
@@ -209,12 +207,11 @@ const defaultDeps: ReconcileDeps = {
       select: {
         id: true,
         userId: true,
-        manageExternalPositions: true,
       },
       orderBy: [{ userId: 'asc' }, { updatedAt: 'desc' }],
     });
   },
-  resolveOwnershipForApiKey: async ({ userId, apiKeyId, manageExternalPositions }) => {
+  resolveOwnershipForApiKey: async ({ userId, apiKeyId }) => {
     const walletManagedCandidates = await prisma.bot.findMany({
       where: {
         userId,
@@ -263,15 +260,6 @@ const defaultDeps: ReconcileDeps = {
         botId: null,
         walletId: null,
         takeoverEnabled: true,
-      };
-    }
-
-    if (!manageExternalPositions) {
-      return {
-        status: 'UNOWNED' as const,
-        botId: null,
-        walletId: null,
-        takeoverEnabled: false,
       };
     }
 
@@ -494,7 +482,6 @@ export const reconcileExternalPositionsFromExchange = async (
       const ownership = await deps.resolveOwnershipForApiKey({
         userId: apiKey.userId,
         apiKeyId: apiKey.id,
-        manageExternalPositions: apiKey.manageExternalPositions,
       });
       const managedByBot = ownership.status === 'OWNED';
       const managementMode = managedByBot ? 'BOT_MANAGED' : 'MANUAL_MANAGED';
