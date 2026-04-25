@@ -1,10 +1,13 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import {
   createAuthenticatedExchangeConnector,
   createPublicExchangeConnector,
 } from './exchangeConnectorFactory.service';
-import { encrypt } from '../../utils/crypto';
+
+vi.mock('../../utils/crypto', () => ({
+  decrypt: vi.fn((value: string) => `dec:${value}`),
+}));
 
 describe('exchangeConnectorFactory.service', () => {
   it('builds public and authenticated connector configs from canonical exchange context', () => {
@@ -16,15 +19,15 @@ describe('exchangeConnectorFactory.service', () => {
     const authenticatedConnector = createAuthenticatedExchangeConnector({
       exchange: 'BINANCE',
       marketType: 'FUTURES',
-      apiKey: encrypt('api-key'),
-      apiSecret: encrypt('secret'),
+      apiKey: 'enc:api-key',
+      apiSecret: 'enc:secret',
     }) as unknown as { config: { exchangeId: string; marketType: string; apiKey: string; secret: string } };
 
     expect(publicConnector.config.exchangeId).toBe('binance');
     expect(publicConnector.config.marketType).toBe('spot');
     expect(authenticatedConnector.config.exchangeId).toBe('binance');
     expect(authenticatedConnector.config.marketType).toBe('future');
-    expect(authenticatedConnector.config.apiKey).toBeTruthy();
-    expect(authenticatedConnector.config.secret).toBeTruthy();
+    expect(authenticatedConnector.config.apiKey).toBe('dec:enc:api-key');
+    expect(authenticatedConnector.config.secret).toBe('dec:enc:secret');
   });
 });

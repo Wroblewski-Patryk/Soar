@@ -132,8 +132,8 @@ implementation
 - [x] document staged migration rules
 
 ### XVENUE-04 refactor(api-exchange): introduce registry-driven adapter-family entrypoints
-- add family-level registry resolution for `(exchange, marketType)`
-- keep feature modules dependent on family contracts instead of low-level SDKs
+- [x] add family-level registry resolution for `(exchange, marketType)`
+- [x] keep exchange module entrypoints dependent on family contracts instead of low-level connector bootstrap duplication
 
 ### XVENUE-05 refactor(api-markets-engine): remove direct exchange SDK access from `markets` and `engine`
 - migrate market catalog and runtime live-balance reads behind exchange families
@@ -199,3 +199,9 @@ Context:
   target exact-stage `(exchange, marketType, operation)` matrix and explicitly
   forbid support inference across operation families, market types, or
   exchanges. The queue now advances to `XVENUE-04`.
+- 2026-04-25: Closed `XVENUE-04` by adding
+  `apps/api/src/modules/exchange/exchangeAdapterRegistry.service.ts` as the
+  canonical exact-context registry entrypoint for adapter families. Existing
+  exchange connector/bootstrap entrypoints now resolve public/account/execution
+  wiring through that registry, and focused exchange tests plus API typecheck
+  remain green. The queue now advances to `XVENUE-05`.

@@ -22,6 +22,32 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-25 - Do not run parallel Git writes in this repo from PowerShell
+- Context: while closing `XVENUE-02` and `XVENUE-03`, commit/stage/status
+  operations were executed in parallel tool calls from the same working tree.
+- Symptom: repeated `.git/index.lock` collisions blocked `git commit` even
+  though no interactive Git process was intentionally open.
+- Root cause: parallel Git write operations against the same repository can
+  race in this environment, especially when one call creates or retains
+  `index.lock` while another Git command starts immediately.
+- Guardrail: run Git write operations (`add`, `commit`, `reset`, etc.)
+  sequentially in one shell invocation or in separate awaited steps, never in
+  parallel tool calls for the same repo.
+- Preferred pattern:
+```text
+1) Finish file edits and validation first.
+2) Run `git add` on the intended paths.
+3) Run `git commit` only after the add step finishes.
+4) Check `git status` after the commit in a separate awaited step.
+5) If a stale `.git/index.lock` remains from a failed attempt, remove it only after confirming no other Git process is still running.
+```
+- Avoid: launching `git add`, `git commit`, and `git status` in parallel
+  against the same worktree.
+- Evidence:
+  - 2026-04-25 `XVENUE-02` / `XVENUE-03`: parallel Git tool calls reproduced
+    `fatal: Unable to create '.git/index.lock': File exists.` and were
+    resolved by sequential Git execution.
+
 ### 2026-04-24 - Runtime close must never synthesize market truth from entry price
 - Context: production paper-bot investigation after manual/runtime close and
   paper-capital parity work.

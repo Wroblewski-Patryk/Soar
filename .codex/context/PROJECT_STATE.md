@@ -213,6 +213,14 @@ Last updated: 2026-04-25
   inferring support across operation families, market types, or exchanges. This
   means the upcoming registry refactor can move code toward exact venue truth
   without changing the honest support claims the repository makes today.
+- 2026-04-25: closed `XVENUE-04` as the first code refactor under the new
+  exact-context contract. The repository now has one canonical exchange adapter
+  registry in `apps/api/src/modules/exchange/exchangeAdapterRegistry.service.ts`
+  keyed by exact `(exchange, marketType)` context, and the existing exchange
+  public/account/execution entrypoints now resolve connector bootstrap through
+  that registry instead of rebuilding it locally. This does not yet remove the
+  direct Binance-shaped feature leaks in `markets` and `engine`; it prepares
+  the safe seam for `XVENUE-05`.
 - 2026-04-25: closed `DEPLOY-2026-04-25-B` as the validation-only follow-up to
   the same-day Coolify hotfix. Local `pnpm --filter web run build` now passes
   cleanly again, confirming the previously reported web deploy gate is no

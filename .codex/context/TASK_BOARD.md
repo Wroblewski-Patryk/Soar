@@ -17,8 +17,8 @@ Last updated: 2026-04-25
 
 ## READY
 
-- [ ] `XVENUE-04 refactor(api-exchange): registry-driven adapter-family entrypoints`
-  - 2026-04-25: `XVENUE-03` froze the migration contract for capability truth. The next slice is the code-level registry entrypoint refactor so feature modules can depend on narrow adapter families instead of direct exchange-specific seams.
+- [ ] `XVENUE-05 refactor(api-markets-engine): remove direct exchange SDK access from feature modules`
+  - 2026-04-25: `XVENUE-04` introduced one canonical exact-context registry entrypoint for adapter families and routed existing exchange bootstrap seams through it. The next slice is removing direct exchange SDK access from `markets` and `engine`, where the leak audit found the highest-value remaining drift.
 
 ## BACKLOG
 
@@ -95,6 +95,9 @@ Last updated: 2026-04-25
 
 - [x] `XVENUE-03 docs(contract): freeze capability matrix migration rules`
   - 2026-04-25: Canonical docs now distinguish compatibility-stage exchange-level flags from the target exact-stage `(exchange, marketType, operation)` matrix. `exchange-access-ownership-matrix.md` freezes the migration rules and forbidden inferences, while `09_integrations-deployment-and-runtime-services.md` makes explicit that broad exchange flags cannot override narrower operation contracts. This moves the queue to `XVENUE-04`.
+
+- [x] `XVENUE-04 refactor(api-exchange): registry-driven adapter-family entrypoints`
+  - 2026-04-25: Added `exchangeAdapterRegistry.service.ts` as the canonical family registry keyed by exact `(exchange, marketType)` context, with fail-closed rejection for unsupported venue pairs such as `KRAKEN + FUTURES`. `exchangeConnectorFactory.service.ts`, `exchangePublicRead.service.ts`, `exchangeAuthenticatedRead.service.ts`, and the default execution path in `exchangeAdapterBoundary.service.ts` now reuse that registry instead of rebuilding connector bootstrap locally. Validation PASS: focused exchange-module tests, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 
 - [x] `V1COH-01 test(api-red): lock manual LIVE order against out-of-scope symbol and unresolved strategy context`
   - 2026-04-25: Added focused service and API e2e regressions proving manual `LIVE` open is rejected when the selected bot has no canonical symbol-matching strategy scope, and that accepted `LIVE` fixtures must provide the full inherited bot context.

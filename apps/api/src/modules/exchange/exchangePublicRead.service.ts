@@ -1,6 +1,6 @@
 import { Exchange } from '@prisma/client';
 
-import { createPublicExchangeConnector } from './exchangeConnectorFactory.service';
+import { resolveExchangeAdapterRegistryEntry } from './exchangeAdapterRegistry.service';
 
 type TradeMarket = 'FUTURES' | 'SPOT';
 
@@ -17,7 +17,8 @@ type ExchangePublicReadDeps = {
 };
 
 const defaultDeps: ExchangePublicReadDeps = {
-  createPublicConnector: createPublicExchangeConnector,
+  createPublicConnector: (params) =>
+    resolveExchangeAdapterRegistryEntry(params).marketData.createPublicConnector(),
 };
 
 export const loadExchangePublicMarketMap = async (
@@ -34,4 +35,3 @@ export const loadExchangePublicMarketMap = async (
     await connector.disconnect().catch(() => undefined);
   }
 };
-

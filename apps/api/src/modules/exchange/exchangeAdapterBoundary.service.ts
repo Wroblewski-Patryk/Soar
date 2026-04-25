@@ -1,10 +1,8 @@
 import { Exchange } from '@prisma/client';
 
 import { prisma } from '../../prisma/client';
-import { createAuthenticatedExchangeConnector } from './exchangeConnectorFactory.service';
 import { CcxtFuturesConnector } from './ccxtFuturesConnector.service';
 import { CcxtFuturesOrderFill } from './ccxtFuturesConnector.types';
-import { createLiveOrderAdapter } from './liveOrderAdapter.service';
 import {
   assertExchangeExecutionCapabilitySupport,
   resolveExchangeExecutionSource,
@@ -15,6 +13,7 @@ import { liveOrderingConfig } from '../../config/runtimeExecution';
 import { isAppErrorLike } from '../../lib/errors';
 import { orderErrors } from '../orders/orders.errors';
 import { enforceLivePretradeGuards } from '../orders/orders.quantityRules';
+import { resolveExchangeAdapterRegistryEntry } from './exchangeAdapterRegistry.service';
 
 type TradeMarket = 'FUTURES' | 'SPOT';
 
@@ -89,7 +88,11 @@ type ExchangeAdapterBoundaryDeps = {
     userId: string;
     bot: Pick<SubmitLiveExchangeOrderInput['bot'], 'exchange' | 'apiKeyId' | 'walletId'>;
   }) => Promise<LiveExecutionApiKey>;
-  createLiveOrderAdapter: (connector: AuthenticatedConnectorLike) => {
+  createLiveOrderAdapter: (params: {
+    exchange: Exchange;
+    marketType: TradeMarket;
+    connector: AuthenticatedConnectorLike;
+  }) => {
     placeLiveOrderWithFees: (input: {
       order: {
         symbol: string;
@@ -118,11 +121,21 @@ type ExchangeAdapterBoundaryDeps = {
 
 const getDefaultDeps = (): ExchangeAdapterBoundaryDeps => ({
   createAuthenticatedConnector: (params) =>
-    createAuthenticatedExchangeConnector(params) as unknown as AuthenticatedConnectorLike,
+    resolveExchangeAdapterRegistryEntry(params).account.createAuthenticatedConnector({
+      apiKey: params.apiKey,
+      apiSecret: params.apiSecret,
+    }) as unknown as AuthenticatedConnectorLike,
   fetchBalanceRaw: fetchAuthenticatedExchangeBalanceRaw,
   resolveLiveExecutionApiKey,
-  createLiveOrderAdapter: (connector) =>
-    createLiveOrderAdapter(connector as unknown as CcxtFuturesConnector),
+  createLiveOrderAdapter: (params) => {
+    const registry = resolveExchangeAdapterRegistryEntry({
+      exchange: resolveExchangeExecutionSource(params.exchange),
+      marketType: params.marketType,
+    });
+    return registry.execution.createLiveOrderAdapter(
+      params.connector as unknown as CcxtFuturesConnector
+    );
+  },
   enforceLivePretradeGuards,
   convergeLiveMarginAndLeverageIfNeeded,
 });
@@ -297,7 +310,11 @@ export const submitLiveOrderThroughBoundary = async (
     apiSecret: apiKey.apiSecret,
     marketType: params.bot.marketType,
   });
-  const liveAdapter = deps.createLiveOrderAdapter(connector);
+  const liveAdapter = deps.createLiveOrderAdapter({
+    exchange: params.bot.exchange,
+    marketType: params.bot.marketType,
+    connector,
+  });
 
   try {
     await deps.enforceLivePretradeGuards({

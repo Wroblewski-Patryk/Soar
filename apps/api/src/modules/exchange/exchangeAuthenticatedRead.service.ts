@@ -1,6 +1,6 @@
 import { Exchange } from '@prisma/client';
 
-import { createAuthenticatedExchangeConnector } from './exchangeConnectorFactory.service';
+import { resolveExchangeAdapterRegistryEntry } from './exchangeAdapterRegistry.service';
 
 type TradeMarket = 'FUTURES' | 'SPOT';
 
@@ -21,7 +21,11 @@ type ExchangeAuthenticatedReadDeps = {
 };
 
 const defaultDeps: ExchangeAuthenticatedReadDeps = {
-  createAuthenticatedConnector: createAuthenticatedExchangeConnector,
+  createAuthenticatedConnector: (params) =>
+    resolveExchangeAdapterRegistryEntry(params).account.createAuthenticatedConnector({
+      apiKey: params.apiKey,
+      apiSecret: params.apiSecret,
+    }),
 };
 
 const withAuthenticatedConnector = async <T>(
@@ -79,4 +83,3 @@ export const fetchAuthenticatedExchangeBalanceRaw = (
   },
   deps: ExchangeAuthenticatedReadDeps = defaultDeps
 ) => withAuthenticatedConnector(params, deps, (connector) => connector.fetchBalance());
-

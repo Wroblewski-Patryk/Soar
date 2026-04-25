@@ -1,29 +1,22 @@
 import { Exchange } from '@prisma/client';
 
-import { CcxtFuturesConnector } from './ccxtFuturesConnector.service';
-import { decrypt } from '../../utils/crypto';
+import { resolveExchangeAdapterRegistryEntry } from './exchangeAdapterRegistry.service';
 
-const resolveConnectorMarketType = (marketType: 'FUTURES' | 'SPOT') =>
-  marketType === 'SPOT' ? 'spot' : 'future';
+type TradeMarket = 'FUTURES' | 'SPOT';
 
 export const createPublicExchangeConnector = (params: {
   exchange: Exchange;
-  marketType: 'FUTURES' | 'SPOT';
+  marketType: TradeMarket;
 }) =>
-  new CcxtFuturesConnector({
-    exchangeId: params.exchange.toLowerCase(),
-    marketType: resolveConnectorMarketType(params.marketType),
-  });
+  resolveExchangeAdapterRegistryEntry(params).marketData.createPublicConnector();
 
 export const createAuthenticatedExchangeConnector = (params: {
   exchange: Exchange;
-  marketType: 'FUTURES' | 'SPOT';
+  marketType: TradeMarket;
   apiKey: string;
   apiSecret: string;
 }) =>
-  new CcxtFuturesConnector({
-    exchangeId: params.exchange.toLowerCase(),
-    apiKey: decrypt(params.apiKey),
-    secret: decrypt(params.apiSecret),
-    marketType: params.marketType,
+  resolveExchangeAdapterRegistryEntry(params).account.createAuthenticatedConnector({
+    apiKey: params.apiKey,
+    apiSecret: params.apiSecret,
   });

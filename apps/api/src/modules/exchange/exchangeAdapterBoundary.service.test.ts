@@ -70,6 +70,9 @@ describe('exchangeAdapterBoundary.service', () => {
       apiKey: 'enc-key',
       apiSecret: 'enc-secret',
     }));
+    const createLiveOrderAdapter = vi.fn(() => ({
+      placeLiveOrderWithFees,
+    }));
     const placeLiveOrderWithFees = vi.fn(async () => ({
       exchangeOrderId: 'binance-order-1',
       status: 'open',
@@ -106,9 +109,7 @@ describe('exchangeAdapterBoundary.service', () => {
         createAuthenticatedConnector,
         fetchBalanceRaw: vi.fn(),
         resolveLiveExecutionApiKey,
-        createLiveOrderAdapter: () => ({
-          placeLiveOrderWithFees,
-        }),
+        createLiveOrderAdapter,
         enforceLivePretradeGuards: vi.fn(async () => undefined),
         convergeLiveMarginAndLeverageIfNeeded: vi.fn(async () => undefined),
       }
@@ -116,6 +117,11 @@ describe('exchangeAdapterBoundary.service', () => {
 
     expect(resolveLiveExecutionApiKey).toHaveBeenCalledOnce();
     expect(createAuthenticatedConnector).toHaveBeenCalledOnce();
+    expect(createLiveOrderAdapter).toHaveBeenCalledWith({
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      connector,
+    });
     expect(placeLiveOrderWithFees).toHaveBeenCalledWith({
       order: {
         symbol: 'BTCUSDT',

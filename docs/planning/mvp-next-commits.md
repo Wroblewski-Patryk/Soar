@@ -7,11 +7,11 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `XVENUE-04 refactor(api-exchange): registry-driven adapter-family entrypoints`
-## NEXT
 - [ ] `XVENUE-05 refactor(api-markets-engine): remove direct exchange SDK access from feature modules`
+## NEXT
+- [ ] `XVENUE-06 test(api): add no-mixing parity coverage`
 ## PIPELINE
-- [ ] `XVENUE-04 refactor(api-exchange): registry-driven adapter-family entrypoints`
+- [x] `XVENUE-04 refactor(api-exchange): registry-driven adapter-family entrypoints`
 - [ ] `XVENUE-05 refactor(api-markets-engine): remove direct exchange SDK access from feature modules`
 - [ ] `XVENUE-06 test(api): add no-mixing parity coverage`
 - [ ] `XVENUE-07 refactor(api-ops): align worker topology truth`
