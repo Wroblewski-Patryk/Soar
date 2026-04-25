@@ -22,6 +22,32 @@ type BuildMetadata = {
   metadataSource?: string | null;
 };
 
+const readTrimmedEnv = (...keys: string[]) => {
+  for (const key of keys) {
+    const value = process.env[key]?.trim();
+    if (value) return value;
+  }
+  return null;
+};
+
+const resolveGitShaFromEnv = () =>
+  readTrimmedEnv(
+    "SOURCE_COMMIT",
+    "GITHUB_SHA",
+    "COOLIFY_GIT_COMMIT_SHA",
+    "VERCEL_GIT_COMMIT_SHA",
+    "RAILWAY_GIT_COMMIT_SHA"
+  );
+
+const resolveGitRefFromEnv = () =>
+  readTrimmedEnv(
+    "SOURCE_BRANCH",
+    "COOLIFY_BRANCH",
+    "GITHUB_REF_NAME",
+    "VERCEL_GIT_COMMIT_REF",
+    "RAILWAY_GIT_BRANCH"
+  );
+
 const readBuildMetadataFromFile = async (): Promise<BuildMetadata | null> => {
   try {
     const filePath = path.join(process.cwd(), ".next", "BUILD_META.json");
@@ -53,14 +79,21 @@ const resolveBuildId = async () => {
 export async function GET() {
   const buildId = await resolveBuildId();
   const buildMetadata = await readBuildMetadataFromFile();
+  const envGitSha = resolveGitShaFromEnv();
+  const envGitRef = resolveGitRefFromEnv();
+  const gitSha = buildMetadata?.gitSha ?? envGitSha ?? null;
+  const gitRef = buildMetadata?.gitRef ?? envGitRef ?? null;
+  const metadataSource =
+    buildMetadata?.metadataSource ??
+    (envGitSha || envGitRef ? "env-runtime" : null);
 
   return NextResponse.json(
     {
       buildId,
-      gitSha: buildMetadata?.gitSha ?? null,
-      gitRef: buildMetadata?.gitRef ?? null,
+      gitSha,
+      gitRef,
       metadataGeneratedAt: buildMetadata?.generatedAt ?? null,
-      metadataSource: buildMetadata?.metadataSource ?? null,
+      metadataSource,
       checkedAt: new Date().toISOString(),
     },
     {

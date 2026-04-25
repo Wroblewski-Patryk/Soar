@@ -1,8 +1,4 @@
-.git/*
-!.git/HEAD
-!.git/refs
-!.git/refs/**
-!.git/packed-refs
+.git
 .github
 .vscode
 .claude
