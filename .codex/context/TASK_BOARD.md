@@ -17,7 +17,6 @@ Last updated: 2026-04-25
 
 ## READY
 
-- [ ] `V1TAKE-01 audit(api+runtime): publish confirmed ownership/manual-order investigation packet with DB-backed validation`
 - [ ] `V1TAKE-02 test(api-red): lock takeover authority drift between API key, wallet, and bot visibility`
 - [ ] `V1TAKE-03 fix(api-positions): unify external-position management contract and takeover status ownership`
 
@@ -28,6 +27,8 @@ Last updated: 2026-04-25
 - [ ] `V1TAKE-06 test(api+web-red): lock manual PAPER/LIVE open truth from dashboard submission to order/position state`
 - [ ] `V1TAKE-07 fix(api+web-orders): harden manual-order fill/context truth and fail-closed UI semantics`
 - [ ] `V1TAKE-08 qa(closure): rerun focused DB-backed API + web closure pack and sync canonical docs/context`
+- [x] `V1TAKE-01 audit(api+runtime): publish confirmed ownership/manual-order investigation packet with DB-backed validation`
+  - 2026-04-25: Published `docs/planning/v1take-01-investigation-audit-2026-04-25.md` and the matching task packet `docs/planning/v1take-01-investigation-audit-task-2026-04-25.md`. The audit freezes four concrete classes: a confirmed ownership-contract split between API key and wallet flags, the intentional `BINANCE + FUTURES` import boundary, the operator gap between takeover status and runtime `BOT_MANAGED` visibility, and a narrower manual-order watch item around UI estimation versus backend truth. Validation PASS: `positions.takeover-status.e2e.test.ts`, targeted `orders.service.test.ts`, targeted `orders-positions.e2e.test.ts`, and `pnpm run quality:guardrails`.
 - [x] `V1TAKE-A planning queued (exchange takeover ownership and manual-order truth closure after fresh live investigation)`
   - 2026-04-25: Published `docs/planning/v1take-exchange-takeover-manual-order-closure-plan-2026-04-25.md` plus the planning task packet `docs/planning/v1take-00-planning-task-2026-04-25.md`. The new wave freezes four confirmed audit findings: takeover authority drift between API-key and wallet flags, Binance Futures-only import scope, runtime visibility gated by deterministic `BOT_MANAGED` ownership, and remaining manual `PAPER/LIVE` open truth closure. Local Docker verification is no longer engine-blocked; DB-backed `positions.takeover-status.e2e.test.ts` now passes and the targeted `orders.service` manual-LIVE regression also passes.
 

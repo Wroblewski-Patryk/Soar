@@ -49,6 +49,17 @@ Last updated: 2026-04-25
   `EXCHANGE_SYNC BOT_MANAGED` LIVE runtime position visibility/close flows.
 
 ## Product Decisions (Confirmed)
+- 2026-04-25: closed `V1TAKE-01` by publishing the concrete investigation
+  packet `docs/planning/v1take-01-investigation-audit-2026-04-25.md` plus the
+  task packet `docs/planning/v1take-01-investigation-audit-task-2026-04-25.md`.
+  The repository now has one explicit handoff for the next red-test slice:
+  takeover authority is confirmed to drift between API-key and wallet flags,
+  the supported import boundary remains intentionally `BINANCE + FUTURES`,
+  imported position visibility still depends on deterministic `BOT_MANAGED`
+  ownership proof, and the remaining manual-order issue is now narrowed to a
+  watch item around UI estimation versus backend lifecycle truth. Focused
+  takeover/manual-order DB-backed verification is green in the current local
+  workspace.
 - 2026-04-25: queued `V1TAKE-A` as the next post-V1 hardening wave after a
   fresh live-position/manual-order investigation driven by user-reported
   runtime symptoms. The confirmed findings are now explicit: takeover
