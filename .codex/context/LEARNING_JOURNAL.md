@@ -20,6 +20,15 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Evidence:
 ```
 
+### 2026-04-26 - Drifted local Prisma replay can block focused DB validation
+- Context: a production hotfix needed one new partial unique-index contract for open positions, but local validation also had to keep moving on the shared dev Postgres.
+- Symptom: `pnpm --filter api exec prisma migrate deploy` failed locally on an older migration with `column "strategyId" of relation "Bot" already exists`, even though the repository change under test was a later index-only migration.
+- Root cause: the local database migration history had drifted from a clean replayable chain, so full migration reapply was no longer a trustworthy validation step for this focused task.
+- Guardrail: when the task only needs local verification of one new DB index contract, apply the exact SQL with `prisma db execute` for local test setup, but still commit the real migration file and rely on the production `start-with-migrate` path for actual deployment.
+- Preferred pattern: separate local focused DB-contract validation from full migration-chain health when the local database is already known-dirty.
+- Avoid: treating a drifted local `migrate deploy` failure as proof that the new production migration is invalid.
+- Evidence: 2026-04-26 `V1FIX-2026-04-26-C` local index validation required `prisma db execute` after `migrate deploy` failed on pre-existing `20260424094500_add_single_context_bot_refs` drift.
+
 ## Entries
 
 ### 2026-04-26 - Hidden legacy open positions can block prod manual-order and exchange takeover without showing up in selected-bot runtime

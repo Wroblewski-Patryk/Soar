@@ -459,6 +459,130 @@ describe('openOrder live execution contract', () => {
     }
   });
 
+  it('allows manual open when the same symbol is already open on a different wallet scope', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-wallet-scoped-open@example.com', password: 'hashed' },
+    });
+    const liveWallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'Live scoped wallet',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    await prisma.position.create({
+      data: {
+        userId: user.id,
+        walletId: liveWallet.id,
+        symbol: 'DOGEUSDT',
+        side: 'SHORT',
+        status: 'OPEN',
+        entryPrice: 0.1,
+        quantity: 50,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+      },
+    });
+    const paperWallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'Paper scoped wallet',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const strategy = await prisma.strategy.create({
+      data: {
+        userId: user.id,
+        name: 'Paper scoped strategy',
+        interval: '5m',
+        leverage: 5,
+        walletRisk: 1,
+        config: {
+          additional: {
+            marginMode: 'ISOLATED',
+            orderType: 'MARKET',
+          },
+        },
+      },
+    });
+    const universe = await prisma.marketUniverse.create({
+      data: {
+        userId: user.id,
+        name: 'Scoped universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: ['DOGEUSDT'],
+        blacklist: [],
+      },
+    });
+    const symbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: user.id,
+        marketUniverseId: universe.id,
+        name: 'Scoped symbols',
+        symbols: ['DOGEUSDT'],
+      },
+    });
+    const paperBot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'Paper scoped bot',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        walletId: paperWallet.id,
+        strategyId: strategy.id,
+        symbolGroupId: symbolGroup.id,
+      },
+    });
+
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+
+    try {
+      const order = await openOrder(user.id, {
+        botId: paperBot.id,
+        symbol: 'DOGEUSDT',
+        side: 'BUY',
+        type: 'MARKET',
+        quantity: 100,
+        price: 0.09,
+        mode: 'PAPER',
+        riskAck: false,
+      });
+
+      expect(order.status).toBe('FILLED');
+      expect(order.positionId).toBeTruthy();
+
+      const openPositions = await prisma.position.findMany({
+        where: {
+          userId: user.id,
+          symbol: 'DOGEUSDT',
+          status: 'OPEN',
+        },
+        orderBy: { createdAt: 'asc' },
+      });
+      expect(openPositions).toHaveLength(2);
+      expect(openPositions.map((position) => position.walletId)).toEqual([
+        liveWallet.id,
+        paperWallet.id,
+      ]);
+      expect(openPositions.map((position) => position.side)).toEqual(['SHORT', 'LONG']);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
   it('derives mode, wallet and strategy from canonical bot context when botId is provided', async () => {
     const user = await prisma.user.create({
       data: { email: 'orders-canonical-context@example.com', password: 'hashed' },

@@ -2,6 +2,7 @@ import { OrderStatus, PositionSide } from '@prisma/client';
 
 import { prisma } from '../../prisma/client';
 import { orderErrors } from './orders.errors';
+import { resolveOpenPositionScopeWhere } from './orders.positionScope';
 import { computePositionAddUpdate } from './positionFillMath';
 
 type ApplyOrderFillLifecycleInput = {
@@ -98,11 +99,12 @@ export const applyOrderFillLifecycle = async (params: ApplyOrderFillLifecycleInp
 
     const targetPositionSide = resolvePositionSideFromOrderSide(updatedOrder.side);
     const existingOpenPosition = await tx.position.findFirst({
-      where: {
+      where: resolveOpenPositionScopeWhere({
         userId: updatedOrder.userId,
         symbol: updatedOrder.symbol,
-        status: 'OPEN',
-      },
+        walletId: updatedOrder.walletId ?? null,
+        botId: updatedOrder.botId ?? null,
+      }),
       orderBy: {
         openedAt: 'desc',
       },

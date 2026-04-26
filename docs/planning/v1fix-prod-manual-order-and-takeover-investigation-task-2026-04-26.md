@@ -97,3 +97,11 @@ set required to make the V1 operator paths work end-to-end.
     manual-order symbol reuse
   - execution worker is alive; the blocker is canonical ownership/data repair,
     not missing worker deployment
+- A second real-account blocker was confirmed after the orphan repair:
+  - manual-order conflict/reuse still resolved `OPEN` positions globally by
+    `userId + symbol`
+  - a `LIVE` DOGE position on the live wallet falsely blocked a `PAPER`
+    DOGE order on the paper wallet with `OPEN_POSITION_SIDE_CONFLICT`
+  - the repository fix now scopes both conflict detection and fill adoption by
+    canonical wallet first, bot fallback, and adds a matching partial unique
+    index migration for `Position`

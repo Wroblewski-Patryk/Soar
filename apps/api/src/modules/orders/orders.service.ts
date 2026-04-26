@@ -16,6 +16,7 @@ import {
   type ManualOrderContextDeps,
 } from './orders.manualContext.service';
 import { applyOrderFillLifecycle } from './orders.lifecycle.service';
+import { resolveOpenPositionScopeWhere } from './orders.positionScope';
 import { resolveInheritedRuntimeExecutionContext } from '../engine/runtimeBotExecutionContext';
 import {
   resolveLiveExecutionApiKey,
@@ -347,11 +348,12 @@ const assertNoImplicitReverseOpenConflict = async (params: {
   if (params.payload.positionId) return;
 
   const existingOpenPosition = await prisma.position.findFirst({
-    where: {
+    where: resolveOpenPositionScopeWhere({
       userId: params.userId,
-      symbol: params.payload.symbol.toUpperCase(),
-      status: 'OPEN',
-    },
+      symbol: params.payload.symbol,
+      walletId: params.payload.walletId ?? null,
+      botId: params.payload.botId ?? null,
+    }),
     select: {
       id: true,
       side: true,
