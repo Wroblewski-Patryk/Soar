@@ -19,6 +19,10 @@ Rules:
 - Read `docs/ux/experience-quality-bar.md` for substantial UI tasks.
 - Read `docs/ux/visual-direction-brief.md` when establishing or changing the
   visual direction.
+- Follow `docs/ux/canonical-visual-implementation-workflow.md` when a
+  screenshot, mockup, or approved frame is the target.
+- Follow `docs/ux/background-and-decorative-asset-strategy.md` when
+  atmospheric backgrounds or decorative imagery matter to fidelity.
 - Reuse approved entries from `docs/ux/design-memory.md` when relevant.
 - Use `docs/ux/screen-quality-checklist.md` before calling a screen polished.
 - Avoid normalized mistakes listed in `docs/ux/anti-patterns.md`.
@@ -28,10 +32,14 @@ Rules:
 - Pull MCP design context before coding for UX/UI tasks.
 - Treat Stitch output as draft guidance unless explicitly approved.
 - Capture design and parity evidence in task notes.
+- Treat canonical visuals as specs, not loose inspiration, when parity is the
+  goal.
 - Keep route, state, and error or loading behavior explicit in the changed
   flow.
 - Avoid generic default styling when the task allows a stronger approved visual
   direction.
+- Do not approximate painterly or illustrated backgrounds with generic
+  gradients when the correct solution is an actual asset.
 - Translate brand adjectives into practical design choices with
   `docs/ux/brand-personality-tokens.md`.
 - Do not bypass approved architecture or design-system docs. If the better path
@@ -40,6 +48,8 @@ Rules:
   be captured.
 - After implementation, decide whether the result created a reusable visual
   pattern or UX learning and record it.
+- For pixel-close tasks, finish with a screenshot comparison pass and list the
+  remaining mismatches explicitly.
 
 Output:
 1) Task completed

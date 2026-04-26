@@ -19,3 +19,10 @@
 - gambling aesthetics
 - noisy gradients and glow
 - dense tables without hierarchy
+
+## Canonical Asset Addendum
+- Background style:
+- Illustration or motif style:
+- Raster assets expected: yes | no
+- SVG assets preferred: yes | no
+- Approximation tolerance:

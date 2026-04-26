@@ -8,3 +8,11 @@
 - Is hierarchy created through spacing, typography, and status treatment before
   color effects?
 - Would this remain usable during stress, urgency, or repeated daily operation?
+
+## Canonical Asset Questions
+
+- Does the screen depend on decorative or atmospheric imagery?
+- If yes, was the correct medium chosen: code-native, SVG, or raster asset?
+- Were canonical background elements preserved instead of approximated away?
+- If a canonical reference exists, is the remaining difference documented and
+  explicitly acceptable?

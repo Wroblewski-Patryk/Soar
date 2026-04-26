@@ -6,3 +6,6 @@
 - Tables with density but no scan path or sticky context.
 - Error states that hide impact or the next recovery step.
 - Mobile monitoring views that require desktop-level precision to use.
+- Treating a canonical screenshot as inspiration instead of a spec.
+- Replacing approved painterly or illustrated backgrounds with cheap gradient
+  approximations.

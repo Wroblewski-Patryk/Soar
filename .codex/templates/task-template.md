@@ -60,6 +60,8 @@ Describe exactly what should be produced in the current stage only.
 ## UX/UI Evidence (required for UX tasks)
 - Design source type: figma | approved_snapshot
 - Design source reference:
+- Canonical visual target:
+- Fidelity target: pixel_close | structurally_faithful | style_inspired
 - Stitch used: yes | no
 - Experience-quality bar reviewed: yes | no
 - Visual-direction brief reviewed: yes | no
@@ -67,6 +69,11 @@ Describe exactly what should be produced in the current stage only.
 - New shared pattern introduced: yes | no
 - Design-memory entry reused:
 - Design-memory update required: yes | no
+- Visual gap audit completed: yes | no
+- Background or decorative asset strategy:
+- Canonical asset extraction required: yes | no
+- Screenshot comparison pass completed: yes | no
+- Remaining mismatches:
 - Required states: loading | empty | error | success
 - Responsive checks: desktop | tablet | mobile
 - Input-mode checks: touch | pointer | keyboard

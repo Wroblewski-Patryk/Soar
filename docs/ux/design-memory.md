@@ -14,3 +14,5 @@
 
 - Prefer shared dashboard treatment for analytics, bots, markets, and logs.
 - Record approved operator patterns here when they should shape future modules.
+- When a canonical screenshot drives implementation, record any background or
+  decorative fidelity rules that should be reused instead of rediscovered.

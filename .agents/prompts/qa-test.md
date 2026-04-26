@@ -12,6 +12,8 @@ Rules:
   relevant.
 - Use browser-driven validation when dashboard UX or parity-sensitive flows are
   affected.
+- For canonical-visual UI tasks, include browser screenshots compared against
+  the approved reference and report remaining visual gaps explicitly.
 - Include one negative path when live, exchange, auth, or validation behavior
   changes.
 - Capture minimal reproducible notes for bugs or regressions.

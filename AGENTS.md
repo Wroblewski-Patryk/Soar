@@ -47,6 +47,8 @@ Read these before starting non-trivial work:
 - `docs/ux/screen-quality-checklist.md`
 - `docs/ux/anti-patterns.md`
 - `docs/ux/brand-personality-tokens.md`
+- `docs/ux/canonical-visual-implementation-workflow.md`
+- `docs/ux/background-and-decorative-asset-strategy.md`
 - `docs/ux/view-generation-prompt-pack.md`
 
 ## Core Rules
@@ -143,6 +145,10 @@ If any check fails, fix before closure.
   evidence, accessibility checks, and parity notes.
 - Reuse shared UI patterns before introducing screen-local style inventions.
 - When a new pattern is approved, record it in `docs/ux/design-memory.md`.
+- When a canonical visual target exists, treat it as a specification and close
+  the task with screenshot-comparison evidence.
+- Do not silently downgrade decorative fidelity by replacing image-based
+  backgrounds with gradient approximations.
 - When a recurring environment or tooling pitfall is discovered, record it in
   `.codex/context/LEARNING_JOURNAL.md` in the same task.
 - Before saying "nothing is planned", cross-check:
@@ -229,6 +235,10 @@ Design-source policy:
   `docs/ux/dashboard-design-system.md`.
 - Use `docs/ux/visual-direction-brief.md` before broad dashboard refresh work.
 - Use `docs/ux/screen-quality-checklist.md` before calling a screen polished.
+- Use `docs/ux/canonical-visual-implementation-workflow.md` for screenshot or
+  mockup driven parity tasks.
+- Use `docs/ux/background-and-decorative-asset-strategy.md` when atmospheric
+  backgrounds or illustration matter to the target view.
 - Avoid recurring traps in `docs/ux/anti-patterns.md`.
 - Figma is the primary implementation source when available.
 - Stitch is draft-only unless the repository explicitly documents an approved

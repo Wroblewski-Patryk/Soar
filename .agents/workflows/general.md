@@ -51,6 +51,10 @@ description: Workspace rules for this project
 - If design tools are used, record source-of-truth links.
 - For UX-heavy work, require states, responsive checks, accessibility checks,
   and parity evidence.
+- When a canonical screenshot or mockup exists, require a visual gap audit,
+  asset strategy, and screenshot comparison pass.
+- Do not replace decorative image assets with gradient approximations when the
+  approved design depends on textured or illustrated backgrounds.
 - Figma is the primary implementation source when available.
 - Stitch is draft-only unless the repository explicitly approves another rule.
 
