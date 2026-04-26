@@ -31,6 +31,22 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-26 - Imported Binance Futures leverage can hide in raw margin fields and floating precision can silently degrade it
+- Context: real-account production debugging of imported live-position drift after takeover/manual-order fixes were already deployed.
+- Symptom: the live bot runtime showed a real imported DOGE Futures position but margin and PnL% drifted badly from the exchange because the imported row persisted with `leverage=1`, and a first fix still degraded the recovered `15x` to `14x`.
+- Root cause: Binance/CCXT position payloads can omit a clean top-level leverage while still exposing enough truth in raw nested fields (`notional`, `initialMargin`, `positionInitialMargin`, `isolatedMargin`, `isolatedWallet`); after leverage was inferred, floating precision (`14.999999...`) plus `Math.floor` silently shaved one more level off.
+- Guardrail: when importing Futures positions, treat leverage as derived trading truth rather than a single raw field, and normalize it before persistence.
+- Preferred pattern:
+```text
+1) Read explicit leverage from normalized fields first.
+2) If absent, derive it from notional ÷ initial/isolated margin using raw exchange payload fields.
+3) Normalize imported leverage with rounding before persisting or using it for margin/PnL%.
+4) Keep stale local managed LIVE cleanup independent from auxiliary open-order snapshot success.
+```
+- Avoid: assuming `position.leverage` is always present on imported Futures snapshots, or flooring derived leverage values that came through floating-point math.
+- Evidence:
+  - 2026-04-26 `V1LIVE-PROD-2026-04-26-B`: production DOGE import returned `leverage=null`, then `14.999999...`; fixes added margin-based inference in `positions.service.ts`, rounded imported leverage in `livePositionReconciliation.service.ts`, and closed stale local BNB debt on the same account.
+
 ### 2026-04-26 - Manual-order context price must be scoped to the current bot and symbol
 - Context: real-account production browser debugging after backend manual-order and takeover fixes were already verified.
 - Symptom: the dashboard could submit `symbol=DOGEUSDT` with a stale previous-symbol price such as `0.01432`, producing absurd paper PnL and making the feature look broken even though `/dashboard/orders/manual-context` and `/dashboard/orders/open` were individually healthy.
