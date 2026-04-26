@@ -15,6 +15,8 @@ Define a repeatable workflow where implementation AI collaborates with UX/UI AI 
 4. Implement using project conventions and shared components/tokens.
 5. Validate parity: layout, spacing, typography, colors, interactions, states, responsive behavior.
 6. Record evidence in task notes and review notes.
+7. When AI is asked to propose or generate a new screen, include the prompt
+   contract from `docs/ux/view-generation-prompt-pack.md`.
 
 ## Role Responsibilities
 
@@ -59,6 +61,15 @@ Use this shape when asking a UX-specialized agent/tool for implementation suppor
   ]
 }
 ```
+
+## Aesthetic Constraints For Generated Views
+- The result should feel like a premium operator dashboard, not generic SaaS.
+- Prefer bold but disciplined hierarchy over decorative effects.
+- Risk, mode, and runtime truth must stay visually primary.
+- Desktop, tablet, and mobile should differ intentionally, not by simple
+  scaling.
+- The generator should reuse shared shell, state, and badge patterns before
+  inventing new components.
 
 ## Required Evidence
 - Design source reference

@@ -47,6 +47,7 @@ Read these before starting non-trivial work:
 - `docs/ux/screen-quality-checklist.md`
 - `docs/ux/anti-patterns.md`
 - `docs/ux/brand-personality-tokens.md`
+- `docs/ux/view-generation-prompt-pack.md`
 
 ## Core Rules
 

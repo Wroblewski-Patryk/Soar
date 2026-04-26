@@ -10,6 +10,8 @@ This folder contains canonical project documentation grouped by responsibility.
 - `operations/`: runbooks, smoke checks, deployment, rollback, and evidence
 - `security/`: security and risk policy
 - `ux/`: design-system and UX implementation guidance
+- `ux/view-generation-prompt-pack.md`: ready prompt contract for AI-generated
+  screen and dashboard work in this repository
 - `governance/`: repository rules and agent workflow policies
 - `governance/code-quality-guardrails.md`: temporary exception policy for
   maintainability debt that is actively being removed

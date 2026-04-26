@@ -14,6 +14,15 @@ This document defines the baseline UX and UI assumptions for CryptoSparrow dashb
 - Risk and operational status always have higher information priority than secondary analytics.
 - Explainability is mandatory for trading decisions and critical system actions.
 
+## Beautiful Views Rule
+- Screens should be visually strong enough to feel premium in screenshots, but
+  never at the expense of operator trust.
+- Beauty comes from signal hierarchy, spacing, typography, and confident
+  composition before decorative effects.
+- If a generated screen looks like a template marketplace admin panel, it does
+  not meet the Soar bar.
+- If a generated screen looks like a gambling app, it also fails the Soar bar.
+
 ## Global Information Architecture (MVP)
 1. `/dashboard` (Control Center)
 2. `/dashboard/strategies`
@@ -86,6 +95,15 @@ Provide a fast, actionable overview of risk, exposure, and bot execution health.
 - Radius/shadow tokens: reusable card and panel depth styles.
 - Typography tokens: UI text styles and metric/number styles.
 - Motion tokens: short utility transitions for state and feedback.
+
+### Composition rules for generated screens
+- Desktop should use width for scanning, side-by-side comparison, and visible
+  supporting context.
+- Tablet should reduce taps with better grouping and contextual panels.
+- Mobile should keep one dominant action or reading task per viewport.
+- Do not fill pages with equal-weight cards; establish a clear primary zone and
+  secondary zones.
+- Every screen should have one memorable structural idea, not random polish.
 
 ### Core reusable components
 - Layout: `AppHeader`, `DashboardNav`, `PageHeader`, `Breadcrumbs`.

@@ -8,6 +8,15 @@ This document defines the shared UI foundation used across dashboard modules.
 - Reusable semantics: mode/risk badges and page-header patterns remain uniform.
 - Responsive parity: every core module supports desktop/tablet/mobile layouts.
 
+## Visual Direction
+- Soar should feel like an operator cockpit, not a casino-style crypto app.
+- Favor high-signal hierarchy, premium restraint, and technical sharpness.
+- Use contrast in layout, typography, and density before reaching for louder
+  color.
+- Dense data should feel deliberate and scannable, never cluttered.
+- New screens should look strong enough for marketing screenshots while still
+  being credible during real trading operations.
+
 ## Shared Components
 - `ViewState` (`LoadingState`, `EmptyState`, `ErrorState`, `SuccessState`)
 - `StatusBadge` (mode + risk variants)
@@ -25,12 +34,20 @@ This document defines the shared UI foundation used across dashboard modules.
   - `risk-warning`
   - `risk-danger`
 - State components must use semantic tokens instead of custom one-off colors.
+- Accent colors should reinforce mode, status, or urgency, not decorate empty
+  space.
+- Avoid novelty glow, glassmorphism overuse, or gradients without operational
+  meaning.
 
 ## Interaction Standards
 - LIVE-affecting actions require explicit confirmation.
 - Long lists/tables require filtering and refresh controls.
 - Audit-heavy workflows should provide trace drill-down (metadata context).
 - Critical status changes should be visible without page reload.
+- Desktop layouts should use width for monitoring and comparison, not centered
+  mobile-style stacks.
+- Tablet layouts should preserve touch comfort while exposing more context than
+  mobile.
 
 ## Accessibility Standards
 - Keyboard focus visible on all interactive controls.
