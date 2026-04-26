@@ -20,8 +20,8 @@ Last updated: 2026-04-26
 - [ ] `V1LIVE-01 audit(api+docs): publish canonical live-execution and takeover regression packet`
   - 2026-04-26: Fresh repository audit after the user's live-position report confirmed this is no longer only a manual-order bug. The current drift spans exact adapter selection from user/bot exchange settings, ownership classification, imported live entry truth, runtime visibility/close parity for exchange-synced positions, and missing live event-stream lifecycle support for the first Binance adapter family. The task must publish one canonical investigation packet with exact findings, file-scoped follow-up tasks, and focused validation evidence.
 
-- [ ] `V1LIVE-PROD-2026-04-26-A web(prod-manual-order): close stale manual-order symbol-context drift on the real account and verify by browser`
-  - 2026-04-26: Real-account production browser verification proved the remaining blocker is no longer backend lifecycle or exchange takeover. Imported LIVE positions now surface/manage correctly once the API target is healthy, and direct authenticated `POST /dashboard/orders/open` succeeds for the paper bot. The active defect is a web-side stale context race in `useManualOrderController`: after bot/symbol changes, a previous-symbol `manualOrderContext.priceReference.markPrice` could still override the current symbol and freeze the wrong request price into submit payload. Repository fix now guards context prices by current `botId + symbol`, keeps focused `HomeLiveWidgets.manual-order` coverage green, and adds a dedicated hook regression for bot-switch + symbol-switch submit truth. Validation PASS locally: `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.manual-order.test.tsx src/features/dashboard-home/hooks/useManualOrderController.test.tsx`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`, `pnpm --filter web run build`. Remaining step: deploy web to prod and rerun the manual-order dashboard flow on the affected account.
+- [x] `V1LIVE-PROD-2026-04-26-A web(prod-manual-order): close stale manual-order symbol-context drift on the real account and verify by browser`
+  - 2026-04-26: Closed after real-account production browser verification on the affected account. The deployed dashboard no longer reuses stale previous-symbol manual-order context price after bot/symbol switches, and authenticated production submit on the real account now follows current `botId + symbol` truth instead of freezing a previous-symbol `markPrice` into the request payload. Validation PASS locally: `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.manual-order.test.tsx src/features/dashboard-home/hooks/useManualOrderController.test.tsx`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`, `pnpm --filter web run build`; production browser verification PASS after manual Coolify deploy.
 
 - [x] `V1LIVE-PROD-2026-04-26-B api(prod-position-truth): recover imported leverage truth and stale local LIVE cleanup on the affected account`
   - 2026-04-26: Closed after real-account production verification on the affected live bot. `positions.service.ts` now reads leverage truth from nested raw Binance Futures payload fields and can infer leverage from notional/margin when the explicit field is absent, while `livePositionReconciliation.service.ts` now treats open-orders fetch as fail-soft for stale local managed LIVE cleanup and rounds imported leverage truth before persistence. Production proof after manual Coolify deploys and authenticated `POST /dashboard/positions/orphan-repair`: stale `BNBUSDT` no longer remains in runtime `openItems` and is now closed as `ORPHAN_LOCAL`, the imported `DOGEUSDT` exchange snapshot exposes `leverage≈15`, and the runtime/live position now persists `leverage=15` instead of degrading to `1x` or `14`. Validation PASS: `pnpm --filter api exec vitest run src/modules/positions/livePositionReconciliation.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`, `pnpm --filter api run build`.
@@ -31,6 +31,7 @@ Last updated: 2026-04-26
 
 - [ ] `V1LIVE-03 fix(api-exchange): make adapter selection strictly follow user-selected exchange settings`
   - 2026-04-26: After the red contract is frozen, make adapter selection resolve only from linked wallet/bot execution context. Keep `BINANCE + SPOT` and `BINANCE + FUTURES` as the first implemented family while unsupported exchange paths stay explicit and fail closed.
+  - 2026-04-26: Post-fix quality audit confirmed that env-driven runtime/manual helpers still carry hidden `BINANCE` defaults in places such as `runtimeScanLoop.service.ts` and `runtimePositionAutomation.service.ts`. Fold that cleanup into this slice instead of shipping another hotfix seam.
 
 ## BACKLOG
 
@@ -42,6 +43,7 @@ Last updated: 2026-04-26
 
 - [ ] `V1LIVE-06 test(api-red): lock fail-closed imported entry/fill truth`
   - 2026-04-26: Add focused regressions proving imported live positions must not synthesize canonical entry truth from `markPrice` or other convenience fallbacks. Missing exchange entry truth must stay unresolved or fail closed.
+  - 2026-04-26: Post-fix quality audit confirmed this remains a live architecture violation today: `livePositionReconciliation.service.ts` still falls back from imported `entryPrice` to `markPrice`.
 
 - [ ] `V1LIVE-07 fix(api-reconciliation): remove synthetic mark-price entry fallback and keep unresolved states explicit`
   - 2026-04-26: Remove the live import fallback from `entryPrice -> markPrice`, then keep downstream order/position behavior explicit and fail-closed where canonical truth is unavailable.
@@ -63,6 +65,7 @@ Last updated: 2026-04-26
 
 - [ ] `V1LIVE-13 cleanup(api+tests+web): remove stale fallback paths, stale fixtures, and misleading manual-order semantics`
   - 2026-04-26: Remove fallback and compatibility paths that actively conflict with the approved live/paper execution model. Keep orphan repair as a repair tool only, not a normal lifecycle truth source.
+  - 2026-04-26: Include removal of remaining legacy runtime-sidebar strategy/group fallbacks once the singular inherited bot-context path is fully proven. The post-fix quality audit identified `RuntimeSidebarSection.tsx` legacy strategy reads as residual operator-surface debt, not canonical long-term behavior.
 
 - [ ] `V1LIVE-14 qa(closure): rerun focused live/paper/takeover closure pack and sync canonical docs/context`
   - 2026-04-26: Run the final focused closure evidence for exact adapter selection, signal-driven `LIVE`, manual `LIVE`, `PAPER` no-exchange parity, imported-position takeover visibility/close, and Binance Spot/Futures adapter-family lifecycle truth.

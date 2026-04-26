@@ -10,14 +10,14 @@ Operational queue for one-task execution runs.
 - [ ] `V1LIVE-01 audit(api+docs): publish canonical live-execution and takeover regression packet`
 - [ ] `V1LIVE-02 test(api-exchange-red): lock adapter selection to exact user/bot exchange context`
 - [ ] `V1LIVE-03 fix(api-exchange): make adapter selection strictly follow user-selected exchange settings`
+- [ ] `V1LIVE-06 test(api-red): lock fail-closed imported entry/fill truth`
+- [ ] `V1LIVE-07 fix(api-reconciliation): remove synthetic mark-price entry fallback and keep unresolved states explicit`
 ## NEXT
 - [ ] `V1LIVE-04 test(api-red): lock one canonical ownership classifier for imported LIVE positions`
 - [ ] `V1LIVE-05 fix(api-ownership): reuse one ownership classifier across reconciliation, runtime, and takeover`
-- [ ] `V1LIVE-06 test(api-red): lock fail-closed imported entry/fill truth`
-- [ ] `V1LIVE-07 fix(api-reconciliation): remove synthetic mark-price entry fallback and keep unresolved states explicit`
-## PIPELINE
 - [ ] `V1LIVE-08 test(api-runtime-red): lock runtime visibility and close parity for owned imported LIVE positions`
 - [ ] `V1LIVE-09 fix(api-runtime): recover imported-position runtime visibility and close authority`
+## PIPELINE
 - [ ] `V1LIVE-10 test(api-engine-red): lock signal -> LIVE order -> position lifecycle truth`
 - [ ] `V1LIVE-11 refactor(api-exchange): complete Binance adapter family inside the existing exchange boundary`
 - [ ] `V1LIVE-12 fix(api-execution): wire Binance adapter-family events into canonical order and position lifecycle`
