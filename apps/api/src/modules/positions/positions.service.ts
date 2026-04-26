@@ -107,6 +107,7 @@ type ExchangePositionLike = {
   marginMode?: string;
   liquidationPrice?: number;
   timestamp?: number;
+  info?: Record<string, unknown>;
 };
 
 type ApiKeyRecordForSnapshot = {
@@ -201,22 +202,6 @@ const validateDirectionalStops = (params: {
   }
 };
 
-const normalizeExchangePosition = (position: ExchangePositionLike): ExchangePositionSnapshotItem => ({
-  symbol: position.symbol ?? 'UNKNOWN',
-  side: position.side ?? null,
-  contracts: readNumber(position.contracts) ?? 0,
-  entryPrice: readNumber(position.entryPrice),
-  markPrice: readNumber(position.markPrice),
-  unrealizedPnl: readNumber(position.unrealizedPnl),
-  leverage: readNumber(position.leverage),
-  marginMode: position.marginMode ?? null,
-  liquidationPrice: readNumber(position.liquidationPrice),
-  timestamp:
-    typeof readNumber(position.timestamp) === 'number'
-      ? new Date(readNumber(position.timestamp)!).toISOString()
-      : null,
-});
-
 const readNumber = (value: unknown): number | null => {
   if (typeof value === 'number' && Number.isFinite(value)) return value;
   if (typeof value === 'string' && value.trim().length > 0) {
@@ -230,6 +215,28 @@ const readString = (value: unknown): string | null => {
   if (typeof value === 'string' && value.trim().length > 0) return value.trim();
   if (typeof value === 'number' && Number.isFinite(value)) return String(value);
   return null;
+};
+
+const normalizeExchangePosition = (position: ExchangePositionLike): ExchangePositionSnapshotItem => {
+  const info = (position.info ?? {}) as Record<string, unknown>;
+  const timestampMs = readNumber(position.timestamp) ?? readNumber(info.updateTime) ?? readNumber(info.time);
+
+  return {
+    symbol: position.symbol ?? readString(info.symbol) ?? 'UNKNOWN',
+    side: position.side ?? readString(info.positionSide) ?? null,
+    contracts:
+      readNumber(position.contracts) ??
+      readNumber(info.contracts) ??
+      readNumber(info.positionAmt) ??
+      0,
+    entryPrice: readNumber(position.entryPrice) ?? readNumber(info.entryPrice),
+    markPrice: readNumber(position.markPrice) ?? readNumber(info.markPrice),
+    unrealizedPnl: readNumber(position.unrealizedPnl) ?? readNumber(info.unRealizedProfit),
+    leverage: readNumber(position.leverage) ?? readNumber(info.leverage),
+    marginMode: position.marginMode ?? readString(info.marginType),
+    liquidationPrice: readNumber(position.liquidationPrice) ?? readNumber(info.liquidationPrice),
+    timestamp: typeof timestampMs === 'number' ? new Date(timestampMs).toISOString() : null,
+  };
 };
 
 const normalizeExchangeOpenOrder = (order: Record<string, unknown>): ExchangeOpenOrderSnapshotItem => {

@@ -137,6 +137,7 @@ type ReconcileDeps = {
 };
 
 const STALE_LOCAL_MANAGED_LIVE_POSITION_GRACE_MS = 10 * 60 * 1000;
+const STALE_LOCAL_MANAGED_LIVE_POSITION_FALLBACK_GRACE_MS = 60 * 60 * 1000;
 
 const normalizeSymbol = (symbol: string) => {
   const trimmed = symbol.trim().toUpperCase();
@@ -612,76 +613,86 @@ export const reconcileExternalPositionsFromExchange = async (
         await deps.closeStaleSyncedPosition(stale.id, deps.now());
       }
 
-      if (
-        managedByBot &&
-        ownership.botId &&
-        ownership.walletId &&
-        deps.fetchOpenOrdersForApiKey &&
-        deps.upsertSyncedOpenOrder &&
-        deps.listOpenSyncedOrdersForOwner &&
-        deps.markStaleSyncedOrderUnresolved
-      ) {
-        const openOrders = await deps.fetchOpenOrdersForApiKey(apiKey);
-        const seenOpenExchangeOrderIds = new Set<string>();
+      if (managedByBot && ownership.botId && ownership.walletId) {
         const openOrderPositionKeys = new Set<string>();
-
-        for (const order of openOrders) {
-          const exchangeOrderId = order.exchangeOrderId?.trim();
-          if (!exchangeOrderId) continue;
-          const side = toOrderSide(order.side);
-          const status = toOpenOrderStatus(order.status);
-          if (!side || !status) continue;
-
-          const normalizedSymbol = normalizeSymbol(order.symbol);
-          if (!normalizedSymbol) continue;
-          openOrderPositionKeys.add(
-            buildPositionIdentity(normalizedSymbol, toPositionSideFromOrderSide(side))
-          );
-
-          const quantity = Number.isFinite(order.amount) ? Math.max(0, order.amount) : 0;
-          if (quantity <= 0) continue;
-          const filledQuantity = Number.isFinite(order.filled)
-            ? Math.max(0, Math.min(quantity, order.filled))
-            : 0;
-          const submittedAt =
-            typeof order.timestamp === 'string' && order.timestamp.length > 0
-              ? new Date(order.timestamp)
-              : null;
-
-          seenOpenExchangeOrderIds.add(exchangeOrderId);
-
-          await deps.upsertSyncedOpenOrder({
-            userId: apiKey.userId,
-            exchangeOrderId,
-            botId: ownership.botId,
-            walletId: ownership.walletId,
-            symbol: normalizedSymbol,
-            side,
-            type: toOrderType(order.type),
-            status,
-            quantity,
-            filledQuantity,
-            price: typeof order.price === 'number' && Number.isFinite(order.price) ? order.price : null,
-            submittedAt,
-          });
-        }
-
-        const openSyncedOrders = await deps.listOpenSyncedOrdersForOwner({
-          userId: apiKey.userId,
-          botId: ownership.botId,
-          walletId: ownership.walletId,
-        });
-        for (const openSyncedOrder of openSyncedOrders) {
-          const exchangeOrderId = openSyncedOrder.exchangeOrderId?.trim();
-          if (!exchangeOrderId || seenOpenExchangeOrderIds.has(exchangeOrderId)) continue;
-          await deps.markStaleSyncedOrderUnresolved(openSyncedOrder.id);
-        }
+        let openOrderSnapshotAvailable = false;
 
         if (
-          deps.listOpenLocalManagedPositionsForOwner &&
-          deps.closeStaleLocalManagedPosition
+          deps.fetchOpenOrdersForApiKey &&
+          deps.upsertSyncedOpenOrder &&
+          deps.listOpenSyncedOrdersForOwner &&
+          deps.markStaleSyncedOrderUnresolved
         ) {
-          const staleCutoffMs = deps.now().getTime() - STALE_LOCAL_MANAGED_LIVE_POSITION_GRACE_MS;
+          try {
+            const openOrders = await deps.fetchOpenOrdersForApiKey(apiKey);
+            const seenOpenExchangeOrderIds = new Set<string>();
+            openOrderSnapshotAvailable = true;
+
+            for (const order of openOrders) {
+              const exchangeOrderId = order.exchangeOrderId?.trim();
+              if (!exchangeOrderId) continue;
+              const side = toOrderSide(order.side);
+              const status = toOpenOrderStatus(order.status);
+              if (!side || !status) continue;
+
+              const normalizedSymbol = normalizeSymbol(order.symbol);
+              if (!normalizedSymbol) continue;
+              openOrderPositionKeys.add(
+                buildPositionIdentity(normalizedSymbol, toPositionSideFromOrderSide(side))
+              );
+
+              const quantity = Number.isFinite(order.amount) ? Math.max(0, order.amount) : 0;
+              if (quantity <= 0) continue;
+              const filledQuantity = Number.isFinite(order.filled)
+                ? Math.max(0, Math.min(quantity, order.filled))
+                : 0;
+              const submittedAt =
+                typeof order.timestamp === 'string' && order.timestamp.length > 0
+                  ? new Date(order.timestamp)
+                  : null;
+
+              seenOpenExchangeOrderIds.add(exchangeOrderId);
+
+              await deps.upsertSyncedOpenOrder({
+                userId: apiKey.userId,
+                exchangeOrderId,
+                botId: ownership.botId,
+                walletId: ownership.walletId,
+                symbol: normalizedSymbol,
+                side,
+                type: toOrderType(order.type),
+                status,
+                quantity,
+                filledQuantity,
+                price:
+                  typeof order.price === 'number' && Number.isFinite(order.price) ? order.price : null,
+                submittedAt,
+              });
+            }
+
+            const openSyncedOrders = await deps.listOpenSyncedOrdersForOwner({
+              userId: apiKey.userId,
+              botId: ownership.botId,
+              walletId: ownership.walletId,
+            });
+            for (const openSyncedOrder of openSyncedOrders) {
+              const exchangeOrderId = openSyncedOrder.exchangeOrderId?.trim();
+              if (!exchangeOrderId || seenOpenExchangeOrderIds.has(exchangeOrderId)) continue;
+              await deps.markStaleSyncedOrderUnresolved(openSyncedOrder.id);
+            }
+          } catch (error) {
+            const message = error instanceof Error ? error.message : 'unknown_error';
+            console.warn(
+              `[LivePositionReconciliation] apiKey=${apiKey.id} user=${apiKey.userId} open_orders_snapshot_failed=${message}`
+            );
+          }
+        }
+
+        if (deps.listOpenLocalManagedPositionsForOwner && deps.closeStaleLocalManagedPosition) {
+          const staleGraceMs = openOrderSnapshotAvailable
+            ? STALE_LOCAL_MANAGED_LIVE_POSITION_GRACE_MS
+            : STALE_LOCAL_MANAGED_LIVE_POSITION_FALLBACK_GRACE_MS;
+          const staleCutoffMs = deps.now().getTime() - staleGraceMs;
           const localManagedPositions = await deps.listOpenLocalManagedPositionsForOwner({
             userId: apiKey.userId,
             botId: ownership.botId,
@@ -691,7 +702,7 @@ export const reconcileExternalPositionsFromExchange = async (
           for (const localPosition of localManagedPositions) {
             const localIdentity = buildPositionIdentity(localPosition.symbol, localPosition.side);
             if (seenExternalPositionKeys.has(localIdentity)) continue;
-            if (openOrderPositionKeys.has(localIdentity)) continue;
+            if (openOrderSnapshotAvailable && openOrderPositionKeys.has(localIdentity)) continue;
             if (localPosition.openedAt.getTime() > staleCutoffMs) continue;
             await deps.closeStaleLocalManagedPosition(localPosition.id, deps.now());
           }

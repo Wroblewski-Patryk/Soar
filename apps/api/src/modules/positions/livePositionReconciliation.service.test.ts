@@ -492,4 +492,71 @@ describe('reconcileExternalPositionsFromExchange', () => {
       new Date('2026-03-23T01:10:00.000Z')
     );
   });
+
+  it('still closes long-stale local managed live positions when open-order snapshot fetch fails', async () => {
+    const closeStaleLocalManagedPosition = vi.fn(async () => undefined);
+
+    const result = await reconcileExternalPositionsFromExchange({
+      listSyncedApiKeys: vi.fn(async () => [
+        {
+          id: 'key-stale-local-fallback-1',
+          userId: 'user-stale-local-fallback-1',
+        },
+      ]),
+      resolveOwnershipForApiKey: vi.fn(async () => ({
+        status: 'OWNED' as const,
+        botId: 'bot-stale-local-fallback-1',
+        walletId: 'wallet-stale-local-fallback-1',
+        takeoverEnabled: true,
+      })),
+      fetchPositionsForApiKey: vi.fn(async () => ({
+        positions: [
+          {
+            symbol: 'DOGE/USDT:USDT',
+            side: 'short',
+            contracts: 54,
+            entryPrice: 0.09791,
+            markPrice: 0.09792,
+            unrealizedPnl: 0.01,
+            leverage: 15,
+            timestamp: '2026-03-23T01:00:00.000Z',
+          },
+        ],
+      })),
+      fetchOpenOrdersForApiKey: vi.fn(async () => {
+        throw new Error('binance_open_orders_denied');
+      }),
+      findOpenSyncedPositionByExternalId: vi.fn(async () => null),
+      updateSyncedPosition: vi.fn(async () => undefined),
+      createSyncedPosition: vi.fn(async () => undefined),
+      listOpenSyncedPositionsForApiKey: vi.fn(async () => []),
+      closeStaleSyncedPosition: vi.fn(async () => undefined),
+      upsertSyncedOpenOrder: vi.fn(async () => undefined),
+      listOpenSyncedOrdersForOwner: vi.fn(async () => []),
+      markStaleSyncedOrderUnresolved: vi.fn(async () => undefined),
+      listOpenLocalManagedPositionsForOwner: vi.fn(async () => [
+        {
+          id: 'pos-live-stale-bnb-fallback',
+          symbol: 'BNBUSDT',
+          side: 'SHORT' as const,
+          openedAt: new Date('2026-03-23T00:00:00.000Z'),
+        },
+        {
+          id: 'pos-live-fresh-sol-fallback',
+          symbol: 'SOLUSDT',
+          side: 'LONG' as const,
+          openedAt: new Date('2026-03-23T01:30:30.000Z'),
+        },
+      ]),
+      closeStaleLocalManagedPosition,
+      now: () => new Date('2026-03-23T02:00:00.000Z'),
+    });
+
+    expect(result.openPositionsSeen).toBe(1);
+    expect(closeStaleLocalManagedPosition).toHaveBeenCalledTimes(1);
+    expect(closeStaleLocalManagedPosition).toHaveBeenCalledWith(
+      'pos-live-stale-bnb-fallback',
+      new Date('2026-03-23T02:00:00.000Z')
+    );
+  });
 });
