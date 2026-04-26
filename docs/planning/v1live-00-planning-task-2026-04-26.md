@@ -2,7 +2,7 @@
 
 ## Header
 - ID: V1LIVE-00
-- Title: planning(queue): publish Binance live-execution and takeover hardening packet
+- Title: planning(queue): publish exchange-selected live-execution and takeover hardening packet
 - Status: DONE
 - Owner: Planning Agent
 - Depends on:
@@ -12,17 +12,19 @@
 Fresh user-reported analysis on 2026-04-26 showed that live execution,
 exchange takeover, and manual takeover/runtime visibility are still not closed
 under one canonical contract. The existing repository contains residual drift
-between reconciliation, runtime ownership, imported-position lifecycle truth,
-and Binance live adapter behavior. A planning-only synchronization task is
-required before further implementation so future commits can execute in a safe,
-reversible order.
+between exact exchange selection, reconciliation, runtime ownership,
+imported-position lifecycle truth, and the first live adapter family behavior.
+A planning-only synchronization task is required before further implementation
+so future commits can execute in a safe, reversible order.
 
 ## Goal
 Publish one detailed, file-scoped execution packet that:
 
 - keeps `PAPER` exchange-free,
-- completes Binance Futures `LIVE` behavior inside the existing exchange
-  boundary,
+- makes adapter resolution follow the user-selected `exchange + marketType`
+  context,
+- completes the first live adapter family inside the existing exchange
+  boundary as `BINANCE + SPOT` and `BINANCE + FUTURES`,
 - unifies imported-position ownership/runtime/takeover truth,
 - queues the exact red-test and fix order needed to close the path end-to-end.
 
@@ -52,10 +54,11 @@ Publish one detailed, file-scoped execution packet that:
   - reviewed current architecture and module docs for execution, ownership, and exchange boundaries
   - verified repository queue/context drift before writing the new packet
 - Screenshots/logs:
-  - `runtime-flow.e2e.test.ts` still uses stale singular-bot setup expectations and currently fails with `POST /dashboard/bots` returning `500`
-  - `orders-positions.e2e.test.ts` still exposes imported `LIVE` runtime visibility and close regressions for `EXCHANGE_SYNC BOT_MANAGED`
+- `runtime-flow.e2e.test.ts` still uses stale singular-bot setup expectations and currently fails with `POST /dashboard/bots` returning `500`
+- `orders-positions.e2e.test.ts` still exposes imported `LIVE` runtime visibility and close regressions for `EXCHANGE_SYNC BOT_MANAGED`
 - High-risk checks:
-  - confirmed the repository still lacks Binance Futures user-data-stream handling for `ACCOUNT_UPDATE` and `ORDER_TRADE_UPDATE`
+  - confirmed the repository still lacks adapter-family event handling for Binance live user-data-stream flows and still behaves too REST/polling-first
+  - confirmed the plan had to be corrected so Binance is the first adapter family, not a hidden execution default
   - confirmed imported live entry truth still falls back to `markPrice`, which conflicts with the live-safety contract
 
 ## Architecture Evidence (required for architecture-impacting tasks)
@@ -92,7 +95,7 @@ Publish one detailed, file-scoped execution packet that:
 - [ ] Learning journal was updated if a recurring pitfall was confirmed.
 
 ## Notes
-This planning packet intentionally starts with ownership and fail-closed truth
-before Binance websocket work. The goal is to avoid repeating the earlier
-pattern where exchange import, takeover, runtime visibility, and live submit
-evolved in partially separate slices.
+This planning packet intentionally starts with exact adapter selection and
+ownership/fail-closed truth before Binance family completion work. The goal is
+to avoid repeating the earlier pattern where exchange import, takeover,
+runtime visibility, and live submit evolved in partially separate slices.

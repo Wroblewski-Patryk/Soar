@@ -18,42 +18,48 @@ Last updated: 2026-04-26
 ## READY
 
 - [ ] `V1LIVE-01 audit(api+docs): publish canonical live-execution and takeover regression packet`
-  - 2026-04-26: Fresh repository audit after the user's live-position report confirmed this is no longer only a manual-order bug. The current drift spans ownership classification, imported live entry truth, runtime visibility/close parity for exchange-synced positions, and missing Binance Futures user-data-stream lifecycle support. The task must publish one canonical investigation packet with exact findings, file-scoped follow-up tasks, and focused validation evidence.
+  - 2026-04-26: Fresh repository audit after the user's live-position report confirmed this is no longer only a manual-order bug. The current drift spans exact adapter selection from user/bot exchange settings, ownership classification, imported live entry truth, runtime visibility/close parity for exchange-synced positions, and missing live event-stream lifecycle support for the first Binance adapter family. The task must publish one canonical investigation packet with exact findings, file-scoped follow-up tasks, and focused validation evidence.
 
-- [ ] `V1LIVE-02 test(api-red): lock one canonical ownership classifier for imported LIVE positions`
-  - 2026-04-26: Add DB-backed failing coverage for disagreement between reconciliation, takeover-status, runtime visibility, and runtime close authority. This slice must prove the exact path where a position is imported as owned but still not surfaced or closeable by the bot runtime.
+- [ ] `V1LIVE-02 test(api-exchange-red): lock adapter selection to exact user/bot exchange context`
+  - 2026-04-26: Add failing coverage proving that live execution and authenticated exchange reads resolve from the exact selected `exchange + marketType` context. Binance must be the first implemented adapter family, not a hidden default when another exchange is selected or unsupported.
 
-- [ ] `V1LIVE-03 fix(api-ownership): reuse one ownership classifier across reconciliation, runtime, and takeover`
-  - 2026-04-26: Remove ownership drift after `V1LIVE-02` is red. Reuse one canonical classifier across `livePositionReconciliation`, runtime ownership, runtime read visibility, and takeover-status flows without adding a parallel ownership system.
+- [ ] `V1LIVE-03 fix(api-exchange): make adapter selection strictly follow user-selected exchange settings`
+  - 2026-04-26: After the red contract is frozen, make adapter selection resolve only from linked wallet/bot execution context. Keep `BINANCE + SPOT` and `BINANCE + FUTURES` as the first implemented family while unsupported exchange paths stay explicit and fail closed.
 
 ## BACKLOG
 
-- [ ] `V1LIVE-04 test(api-red): lock fail-closed imported entry/fill truth`
+- [ ] `V1LIVE-04 test(api-red): lock one canonical ownership classifier for imported LIVE positions`
+  - 2026-04-26: Add DB-backed failing coverage for disagreement between reconciliation, takeover-status, runtime visibility, and runtime close authority. This slice must prove the exact path where a position is imported as owned but still not surfaced or closeable by the bot runtime.
+
+- [ ] `V1LIVE-05 fix(api-ownership): reuse one ownership classifier across reconciliation, runtime, and takeover`
+  - 2026-04-26: Remove ownership drift after `V1LIVE-04` is red. Reuse one canonical classifier across `livePositionReconciliation`, runtime ownership, runtime read visibility, and takeover-status flows without adding a parallel ownership system.
+
+- [ ] `V1LIVE-06 test(api-red): lock fail-closed imported entry/fill truth`
   - 2026-04-26: Add focused regressions proving imported live positions must not synthesize canonical entry truth from `markPrice` or other convenience fallbacks. Missing exchange entry truth must stay unresolved or fail closed.
 
-- [ ] `V1LIVE-05 fix(api-reconciliation): remove synthetic mark-price entry fallback and keep unresolved states explicit`
+- [ ] `V1LIVE-07 fix(api-reconciliation): remove synthetic mark-price entry fallback and keep unresolved states explicit`
   - 2026-04-26: Remove the live import fallback from `entryPrice -> markPrice`, then keep downstream order/position behavior explicit and fail-closed where canonical truth is unavailable.
 
-- [ ] `V1LIVE-06 test(api-runtime-red): lock runtime visibility and close parity for owned imported LIVE positions`
+- [ ] `V1LIVE-08 test(api-runtime-red): lock runtime visibility and close parity for owned imported LIVE positions`
   - 2026-04-26: Add focused DB-backed red coverage for `EXCHANGE_SYNC BOT_MANAGED` runtime visibility and dashboard close semantics so the current regression is frozen before more exchange work lands.
 
-- [ ] `V1LIVE-07 fix(api-runtime): recover imported-position runtime visibility and close authority`
+- [ ] `V1LIVE-09 fix(api-runtime): recover imported-position runtime visibility and close authority`
   - 2026-04-26: Make owned imported `LIVE` positions visible and closeable through the same canonical runtime/read-model path used for other execution lifecycle states.
 
-- [ ] `V1LIVE-08 test(api-engine-red): lock signal -> LIVE order -> position lifecycle truth`
+- [ ] `V1LIVE-10 test(api-engine-red): lock signal -> LIVE order -> position lifecycle truth`
   - 2026-04-26: Add focused signal-driven `LIVE` execution coverage and remove stale fixtures that still represent retired bot contracts or older exchange assumptions.
 
-- [ ] `V1LIVE-09 refactor(api-exchange): add Binance Futures user-data stream inside the existing exchange boundary`
-  - 2026-04-26: Implement `listenKey` lifecycle plus Binance Futures user-data-stream consumption under the approved exchange boundary instead of relying mainly on REST snapshots and 15s reconciliation polling.
+- [ ] `V1LIVE-11 refactor(api-exchange): complete Binance adapter family inside the existing exchange boundary`
+  - 2026-04-26: Implement the first supported adapter family explicitly as `BINANCE + SPOT` and `BINANCE + FUTURES`, including user-data-stream/event handling where Binance supports it. Adapter selection must remain exact to the chosen exchange context and fail closed for unsupported venues.
 
-- [ ] `V1LIVE-10 fix(api-execution): wire Binance order/account events into canonical order and position lifecycle`
-  - 2026-04-26: Normalize `ACCOUNT_UPDATE` and `ORDER_TRADE_UPDATE` into existing order/position/runtime services so `LIVE` state truth becomes event-driven inside the current lifecycle contract.
+- [ ] `V1LIVE-12 fix(api-execution): wire Binance adapter-family events into canonical order and position lifecycle`
+  - 2026-04-26: Normalize Binance live event updates into existing order/position/runtime services so `LIVE` state truth becomes event-driven inside the current lifecycle contract for the first adapter family.
 
-- [ ] `V1LIVE-11 cleanup(api+tests+web): remove stale fallback paths, stale fixtures, and misleading manual-order semantics`
+- [ ] `V1LIVE-13 cleanup(api+tests+web): remove stale fallback paths, stale fixtures, and misleading manual-order semantics`
   - 2026-04-26: Remove fallback and compatibility paths that actively conflict with the approved live/paper execution model. Keep orphan repair as a repair tool only, not a normal lifecycle truth source.
 
-- [ ] `V1LIVE-12 qa(closure): rerun focused live/paper/takeover closure pack and sync canonical docs/context`
-  - 2026-04-26: Run the final focused closure evidence for signal-driven `LIVE`, manual `LIVE`, `PAPER` no-exchange parity, imported-position takeover visibility/close, and Binance adapter lifecycle truth.
+- [ ] `V1LIVE-14 qa(closure): rerun focused live/paper/takeover closure pack and sync canonical docs/context`
+  - 2026-04-26: Run the final focused closure evidence for exact adapter selection, signal-driven `LIVE`, manual `LIVE`, `PAPER` no-exchange parity, imported-position takeover visibility/close, and Binance Spot/Futures adapter-family lifecycle truth.
 
 - [ ] `V1FIX-2026-04-26-B api/ops(orphan-repair): recover canonical bot ownership for legacy open-position debt and unblock prod manual-order + exchange takeover`
   - 2026-04-26: In progress after real-account production reproduction proved two concrete blockers on the user account: authenticated Binance position snapshot works, but legacy open positions with `botId=null` still exist as hidden blockers, so manual order collides with invisible stale rows and exchange takeover cannot project current exchange truth into runtime/UI cleanly. Added explicit `POST /dashboard/positions/orphan-repair` flow that rebinds local open rows only when canonical bot proof exists and closes only fully detached local orphans before forcing exchange reconciliation and takeover rebind. Validation PASS so far: `pnpm --filter api test -- --run src/modules/positions/positions.orphan-repair.e2e.test.ts src/modules/positions/positions.takeover-status.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`. Remaining step: deploy to prod, execute repair on the affected account, and recheck dashboard/takeover behavior end-to-end.

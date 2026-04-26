@@ -1,4 +1,4 @@
-# V1LIVE Binance Execution and Takeover Hardening Plan (2026-04-26)
+# V1LIVE Exchange-Selected Execution and Takeover Hardening Plan (2026-04-26)
 
 ## Status
 
@@ -12,7 +12,7 @@ across:
 
 - signal-driven `LIVE` order execution,
 - exchange-synced position ownership and runtime visibility,
-- takeover of positions opened manually on Binance,
+- takeover of positions opened manually on the selected live exchange,
 - lifecycle truth after order submit,
 - `PAPER` vs `LIVE` execution parity boundaries.
 
@@ -32,11 +32,17 @@ execution-lifecycle contract as `LIVE`, but it must not perform exchange I/O.
 Its fills, positions, and lifecycle updates must stay internal to the approved
 paper execution path.
 
-### 2. `LIVE` must use the existing exchange boundary, not a second subsystem
+### 2. `LIVE` must resolve the adapter from user-selected exchange context
 
-All Binance Futures live work must stay inside the approved exchange module and
-its boundary services. This wave must not create a second exchange lifecycle,
-sidecar takeover engine, or parallel runtime feed.
+`LIVE` execution must always resolve from the exact user/bot execution context:
+
+- `exchange`
+- `marketType`
+- linked wallet/API-key ownership
+
+This wave must not create a second exchange lifecycle, sidecar takeover
+engine, or parallel runtime feed. All live work must stay inside the approved
+exchange module and its boundary services.
 
 ### 3. Takeover and runtime visibility must share one ownership classifier
 
@@ -53,6 +59,18 @@ The same ownership decision must drive:
 If canonical exchange entry or fill truth is unavailable, the system must fail
 closed or remain unresolved. This wave must not synthesize live trading truth
 from convenience fallbacks such as mark price.
+
+### 5. Binance is the first adapter family, not the global execution default
+
+This packet uses Binance as the first implemented adapter family only:
+
+- `BINANCE + SPOT`
+- `BINANCE + FUTURES`
+
+The architecture target remains exchange-selected execution. If a user chooses
+another exchange in the future, the system must resolve that exact adapter or
+fail closed as unsupported. It must never silently route live behavior through
+Binance because Binance is the first completed family.
 
 ## Confirmed Findings
 
@@ -97,23 +115,32 @@ repository still lacks a fully trustworthy proof for:
 - position appears and becomes automatable,
 - close/update logic stays coherent.
 
-### 5. Binance Futures lifecycle truth still relies mainly on REST snapshots
+### 5. Binance adapter lifecycle truth still relies mainly on REST snapshots
 
 The exchange integration currently uses REST-style authenticated reads and
-polling reconciliation. The codebase does not yet consume Binance Futures user
-data stream events such as:
+polling reconciliation. The codebase does not yet consume Binance user-data
+stream events for the live adapter family such as:
 
 - `ACCOUNT_UPDATE`
 - `ORDER_TRADE_UPDATE`
 - optional `TRADE_LITE`
 
 That keeps `LIVE` truth slower and more fragile than required for reliable
-order/position/takeover handling.
+order/position/takeover handling in the first supported exchange family.
 
-## Official Binance Scope For This Wave
+## Exchange Scope For This Wave
 
-This wave is intentionally limited to Binance USD-M Futures and the already
-approved exchange boundary.
+This wave is intentionally limited to the first supported adapter family under
+the already approved exchange boundary:
+
+- `BINANCE + SPOT`
+- `BINANCE + FUTURES`
+
+The implementation goal is not "Binance-only forever". The goal is:
+
+1. keep adapter selection driven by user/bot exchange settings,
+2. complete one real adapter family end-to-end,
+3. make future exchange adapters follow the same contract.
 
 Required Binance references:
 
@@ -144,12 +171,19 @@ Required Binance references:
 
 ### Wave: `V1LIVE-A`
 
+The execution order below is split into:
+
+- adapter-selection and exchange-context hardening,
+- shared live/takeover truth hardening,
+- Binance adapter-family completion for `SPOT` and `FUTURES`.
+
 1. `V1LIVE-01 audit(api+docs): publish canonical live-execution and takeover regression packet`
    - Freeze the exact current failure map, including:
+     - adapter-selection drift vs user-selected exchange settings,
      - ownership drift,
      - imported-entry truth drift,
-     - runtime visibility/close regression,
-     - missing Binance user-data stream lifecycle.
+      - runtime visibility/close regression,
+     - missing Binance adapter-family user-data stream lifecycle.
    - Touched files:
      - `docs/planning/v1live-01-investigation-audit-2026-04-26.md`
      - `docs/planning/v1live-01-investigation-audit-task-2026-04-26.md`
@@ -157,7 +191,29 @@ Required Binance references:
      - `.codex/context/TASK_BOARD.md`
      - `.codex/context/PROJECT_STATE.md`
 
-2. `V1LIVE-02 test(api-red): lock one canonical ownership classifier for imported LIVE positions`
+2. `V1LIVE-02 test(api-exchange-red): lock adapter selection to exact user/bot exchange context`
+   - Add failing coverage that proves live execution and authenticated exchange
+     reads resolve from the selected `exchange + marketType` context, not from
+     a hardcoded Binance path.
+   - Freeze unsupported exchange behavior as explicit fail-closed output.
+   - Touched files:
+     - `apps/api/src/modules/exchange/exchangeAdapterBoundary.service.test.ts`
+     - `apps/api/src/modules/exchange/exchangeExecutionCapabilityContract.service.test.ts`
+     - `apps/api/src/modules/engine/executionAdapterParity.test.ts`
+
+3. `V1LIVE-03 fix(api-exchange): make adapter selection strictly follow user-selected exchange settings`
+   - Ensure the exchange boundary resolves adapters from the linked wallet/bot
+     execution context only.
+   - Keep Binance as the first implemented adapter family, not as a fallback
+     for all live execution.
+   - Primary files:
+     - `apps/api/src/modules/exchange/exchangeAdapterBoundary.service.ts`
+     - `apps/api/src/modules/exchange/exchangeExecutionCapabilityContract.service.ts`
+     - `apps/api/src/modules/exchange/exchangeAuthenticatedRead.service.ts`
+     - `apps/api/src/modules/orders/orders.service.ts`
+     - `apps/api/src/modules/engine/executionOrchestrator.service.ts`
+
+4. `V1LIVE-04 test(api-red): lock one canonical ownership classifier for imported LIVE positions`
    - Add failing coverage for disagreement between reconciliation,
      takeover-status, runtime visibility, and close authority.
    - Touched files:
@@ -166,7 +222,7 @@ Required Binance references:
      - `apps/api/src/modules/bots/runtimeExternalPositionOwner.service.test.ts`
      - `apps/api/src/modules/orders/orders-positions.e2e.test.ts`
 
-3. `V1LIVE-03 fix(api-ownership): reuse one ownership classifier across reconciliation, runtime, and takeover`
+5. `V1LIVE-05 fix(api-ownership): reuse one ownership classifier across reconciliation, runtime, and takeover`
    - Remove any fallback path that can classify a position as owned under rules
      different from runtime/takeover logic.
    - Prefer shared ownership service extraction only if it reuses existing
@@ -177,14 +233,14 @@ Required Binance references:
      - `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts`
      - `apps/api/src/modules/positions/positions.service.ts`
 
-4. `V1LIVE-04 test(api-red): lock fail-closed imported entry/fill truth`
+6. `V1LIVE-06 test(api-red): lock fail-closed imported entry/fill truth`
    - Add failing coverage proving imported live positions must not use
      `markPrice` as synthetic entry truth.
    - Touched files:
      - `apps/api/src/modules/positions/livePositionReconciliation.service.test.ts`
      - `apps/api/src/modules/orders/orders.service.test.ts`
 
-5. `V1LIVE-05 fix(api-reconciliation): remove synthetic mark-price entry fallback and keep unresolved states explicit`
+7. `V1LIVE-07 fix(api-reconciliation): remove synthetic mark-price entry fallback and keep unresolved states explicit`
    - Make imported live entry truth either canonical or unresolved.
    - Ensure downstream services and UI-facing reads tolerate unresolved live
      entry truth without inventing lifecycle certainty.
@@ -194,7 +250,7 @@ Required Binance references:
      - `apps/api/src/modules/orders/orders.service.ts`
      - `apps/web/src/features/dashboard-home/hooks/useManualOrderController.ts`
 
-6. `V1LIVE-06 test(api-runtime-red): lock runtime visibility and close parity for owned imported LIVE positions`
+8. `V1LIVE-08 test(api-runtime-red): lock runtime visibility and close parity for owned imported LIVE positions`
    - Add DB-backed regressions for:
      - runtime visibility of owned `EXCHANGE_SYNC BOT_MANAGED` rows,
      - dashboard-driven close on such rows,
@@ -204,7 +260,7 @@ Required Binance references:
      - `apps/api/src/modules/bots/bots.runtime-takeover.e2e.test.ts`
      - `apps/api/src/modules/positions/positions.takeover-status.e2e.test.ts`
 
-7. `V1LIVE-07 fix(api-runtime): recover imported-position runtime visibility and close authority`
+9. `V1LIVE-09 fix(api-runtime): recover imported-position runtime visibility and close authority`
    - Make imported owned live positions visible and closeable through the same
      canonical runtime/read-model path used by the rest of execution.
    - Primary files:
@@ -214,7 +270,7 @@ Required Binance references:
      - `apps/api/src/modules/positions/positions.service.ts`
      - `apps/api/src/modules/engine/executionOrchestrator.service.ts`
 
-8. `V1LIVE-08 test(api-engine-red): lock signal -> LIVE order -> position lifecycle truth`
+10. `V1LIVE-10 test(api-engine-red): lock signal -> LIVE order -> position lifecycle truth`
    - Add focused regression coverage for signal-driven live execution and
      remove stale fixtures that still represent retired contracts.
    - Touched files:
@@ -223,31 +279,37 @@ Required Binance references:
      - `apps/api/src/modules/engine/runtimePositionAutomation.service.test.ts`
      - `apps/api/src/modules/orders/orders-positions.e2e.test.ts`
 
-9. `V1LIVE-09 refactor(api-exchange): add Binance Futures user-data stream inside the existing exchange boundary`
-   - Implement `listenKey` lifecycle and websocket consumption without
-     creating a second exchange subsystem.
+11. `V1LIVE-11 refactor(api-exchange): complete Binance adapter family inside the existing exchange boundary`
+   - Implement the first exchange adapter family explicitly as:
+     - `BINANCE + SPOT`
+     - `BINANCE + FUTURES`
+   - Keep adapter selection exact and fail closed for unsupported
+     exchange/market combinations.
+   - Add `listenKey` lifecycle and websocket consumption where Binance supports
+     user-data-stream lifecycle truth.
    - REST remains bootstrap/recovery only; event stream becomes lifecycle
-     truth for live order and position updates.
+     truth for the supported live adapter family.
    - Primary files:
      - `apps/api/src/modules/exchange/exchangeAdapterBoundary.service.ts`
      - `apps/api/src/modules/exchange/ccxtFuturesConnector.service.ts`
+     - `apps/api/src/modules/exchange/ccxtSpotConnector.service.ts`
      - `apps/api/src/modules/exchange/liveOrderAdapter.service.ts`
      - `apps/api/src/modules/exchange/exchangeAuthenticatedRead.service.ts`
-     - new `apps/api/src/modules/exchange/binanceFuturesUserDataStream*.ts`
+     - new `apps/api/src/modules/exchange/binanceUserDataStream*.ts`
      - new focused tests under `apps/api/src/modules/exchange/`
 
-10. `V1LIVE-10 fix(api-execution): wire Binance order/account events into canonical order and position lifecycle`
-    - Normalize `ACCOUNT_UPDATE` and `ORDER_TRADE_UPDATE` into the existing
-      execution lifecycle so runtime, orders, and positions all see the same
-      event truth.
+12. `V1LIVE-12 fix(api-execution): wire Binance adapter-family events into canonical order and position lifecycle`
+    - Normalize Binance `ACCOUNT_UPDATE` and `ORDER_TRADE_UPDATE` into the
+      existing execution lifecycle so runtime, orders, and positions all see
+      the same event truth for the supported adapter family.
     - Primary files:
       - `apps/api/src/modules/orders/orders.service.ts`
       - `apps/api/src/modules/positions/livePositionReconciliation.service.ts`
       - `apps/api/src/modules/engine/executionOrchestrator.service.ts`
       - `apps/api/src/modules/engine/runtimePositionAutomation.service.ts`
-      - exchange event handlers created in `V1LIVE-09`
+      - exchange event handlers created in `V1LIVE-11`
 
-11. `V1LIVE-11 cleanup(api+tests+web): remove stale fallback paths, stale fixtures, and misleading manual-order semantics`
+13. `V1LIVE-13 cleanup(api+tests+web): remove stale fallback paths, stale fixtures, and misleading manual-order semantics`
     - Remove compatibility or diagnostic paths that actively conflict with the
       approved execution model.
     - Keep orphan repair as a repair tool only, not as normal lifecycle truth.
@@ -256,15 +318,16 @@ Required Binance references:
       - `apps/api/src/modules/orders/orders.service.ts`
       - `apps/api/src/modules/engine/runtime-flow.e2e.test.ts`
       - `apps/web/src/features/dashboard-home/hooks/useManualOrderController.ts`
-      - any focused stale test fixtures touched during `V1LIVE-08..10`
+      - any focused stale test fixtures touched during `V1LIVE-10..12`
 
-12. `V1LIVE-12 qa(closure): rerun focused live/paper/takeover closure pack and sync canonical docs/context`
+14. `V1LIVE-14 qa(closure): rerun focused live/paper/takeover closure pack and sync canonical docs/context`
     - Required closure evidence:
+      - exact adapter selection from user/bot exchange settings,
       - signal-driven `LIVE` open truth,
       - manual `LIVE` open truth,
       - `PAPER` no-exchange parity,
       - imported-position takeover visibility/close,
-      - adapter boundary parity and user-data-stream lifecycle.
+      - adapter boundary parity for `BINANCE + SPOT` and `BINANCE + FUTURES`.
     - Touched files:
       - `docs/planning/mvp-next-commits.md`
       - `docs/planning/mvp-execution-plan.md`
@@ -274,13 +337,15 @@ Required Binance references:
 ## Delivery Rules For This Wave
 
 - Start with red tests before fixes.
+- Resolve adapters from exact user-selected exchange context.
 - Keep one canonical execution lifecycle.
 - Keep `PAPER` and `LIVE` adapter parity at the contract boundary, not by
   mixing internals.
-- Keep Binance websocket/event support inside `modules/exchange`.
+- Keep Binance adapter-family support inside `modules/exchange`.
 - Use REST snapshots for bootstrap, recovery, and reconciliation guardrails,
-  not as the primary live lifecycle source.
-- Do not broaden scope to other exchanges in this wave.
+  not as the primary live lifecycle source for supported adapters.
+- Do not broaden implementation scope beyond the first adapter family in this
+  wave.
 
 ## Priority Order
 
@@ -296,11 +361,13 @@ Required Binance references:
 10. `V1LIVE-10`
 11. `V1LIVE-11`
 12. `V1LIVE-12`
+13. `V1LIVE-13`
+14. `V1LIVE-14`
 
 ## Non-Goals
 
 - no second takeover engine,
-- no new exchange beyond Binance Futures,
+- no live fallback from unsupported exchange settings into Binance,
 - no relaxation of fail-closed ownership ambiguity,
 - no `PAPER` exchange access,
 - no workaround that hides missing live truth behind synthetic prices or
@@ -310,11 +377,12 @@ Required Binance references:
 
 At minimum for the full closure wave:
 
+- `pnpm --filter api exec vitest run src/modules/exchange/exchangeAdapterBoundary.service.test.ts src/modules/exchange/exchangeExecutionCapabilityContract.service.test.ts src/modules/engine/executionAdapterParity.test.ts`
 - `pnpm --filter api exec vitest run src/modules/positions/livePositionReconciliation.service.test.ts src/modules/positions/positions.takeover-status.e2e.test.ts`
 - `pnpm --filter api exec vitest run src/modules/bots/runtimeExternalPositionOwner.service.test.ts src/modules/bots/bots.runtime-takeover.e2e.test.ts`
 - `pnpm --filter api exec vitest run src/modules/orders/orders.service.test.ts src/modules/orders/orders-positions.e2e.test.ts`
 - `pnpm --filter api exec vitest run src/modules/engine/executionOrchestrator.service.test.ts src/modules/engine/runtime-flow.e2e.test.ts`
-- focused exchange adapter tests added for Binance user-data stream support
+- focused exchange adapter tests added for `BINANCE + SPOT` and `BINANCE + FUTURES`
 - `pnpm --filter api run typecheck`
 - `pnpm --filter web run typecheck`
 - `pnpm run quality:guardrails`
