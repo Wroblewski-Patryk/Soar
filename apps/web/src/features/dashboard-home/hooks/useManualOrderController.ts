@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { getAxiosMessage } from "@/lib/getAxiosMessage";
@@ -49,6 +49,8 @@ export const useManualOrderController = ({
   const [manualOrderPriceManuallyEditedSymbol, setManualOrderPriceManuallyEditedSymbol] = useState<string | null>(null);
   const [manualOrderLastResolvedSymbol, setManualOrderLastResolvedSymbol] = useState<string | null>(null);
   const [manualOrderContext, setManualOrderContext] = useState<{
+    botId: string;
+    symbol: string;
     orderType: "MARKET" | "LIMIT" | "STOP" | "STOP_LIMIT" | "TAKE_PROFIT" | "TRAILING";
     marginMode: "CROSSED" | "ISOLATED" | "NONE";
     leverage: number;
@@ -57,6 +59,8 @@ export const useManualOrderController = ({
   } | null>(null);
   const [manualOrderContextLoading, setManualOrderContextLoading] = useState(false);
   const [isSubmittingManualOrder, setIsSubmittingManualOrder] = useState(false);
+  const manualOrderContextRequestIdRef = useRef(0);
+  const previousSelectedBotIdRef = useRef<string | null>(null);
   const selectedVenueContext = useMemo(() => resolveBotVenueContext(selected?.bot), [selected?.bot]);
 
   const manualOrderSymbolOptions = useMemo(() => {
@@ -73,6 +77,23 @@ export const useManualOrderController = ({
     for (const item of selectedData?.open ?? []) options.add(normalizeSymbol(item.symbol));
     return [...options].sort((left, right) => left.localeCompare(right));
   }, [selected?.bot.symbolGroup?.symbols, selected?.runtimeGraph?.marketGroups, selectedData?.open, selectedData?.symbols]);
+
+  useEffect(() => {
+    const nextBotId = selected?.bot.id ?? null;
+    if (previousSelectedBotIdRef.current === nextBotId) return;
+
+    previousSelectedBotIdRef.current = nextBotId;
+    setManualOrderSymbol("");
+    setManualOrderPrice("");
+    setManualOrderQuantity("");
+    setManualOrderBudget("");
+    setManualOrderSliderPercent(0);
+    setManualOrderPriceAutofilledSymbol(null);
+    setManualOrderPriceManuallyEditedSymbol(null);
+    setManualOrderLastResolvedSymbol(null);
+    setManualOrderContext(null);
+    setManualOrderContextLoading(false);
+  }, [selected?.bot.id]);
 
   useEffect(() => {
     if (manualOrderSymbolOptions.length === 0) {
@@ -100,12 +121,15 @@ export const useManualOrderController = ({
     const symbol = normalizeSymbol(manualOrderSymbol);
     const selectedBotId = selected?.bot.id;
     if (!selectedBotId || !symbol) {
+      manualOrderContextRequestIdRef.current += 1;
       setManualOrderContext(null);
       setManualOrderContextLoading(false);
       return;
     }
 
     let canceled = false;
+    const requestId = manualOrderContextRequestIdRef.current + 1;
+    manualOrderContextRequestIdRef.current = requestId;
     setManualOrderContext(null);
     setManualOrderContextLoading(true);
 
@@ -116,14 +140,19 @@ export const useManualOrderController = ({
     })
       .then((context) => {
         if (canceled) return;
+        if (manualOrderContextRequestIdRef.current !== requestId) return;
+        if (context.botId !== selectedBotId) return;
+        if (normalizeSymbol(context.symbol) !== symbol) return;
         setManualOrderContext(context);
       })
       .catch(() => {
         if (canceled) return;
+        if (manualOrderContextRequestIdRef.current !== requestId) return;
         setManualOrderContext(null);
       })
       .finally(() => {
         if (canceled) return;
+        if (manualOrderContextRequestIdRef.current !== requestId) return;
         setManualOrderContextLoading(false);
       });
 
@@ -136,7 +165,11 @@ export const useManualOrderController = ({
     const symbolKey = normalizeSymbol(manualOrderSymbol);
     if (!symbolKey) return null;
 
-    const contextPrice = manualOrderContext?.priceReference.markPrice;
+    const contextMatchesCurrentSelection =
+      manualOrderContext != null &&
+      manualOrderContext.botId === selected?.bot.id &&
+      normalizeSymbol(manualOrderContext.symbol) === symbolKey;
+    const contextPrice = contextMatchesCurrentSelection ? manualOrderContext.priceReference.markPrice : null;
     if (typeof contextPrice === "number" && Number.isFinite(contextPrice) && contextPrice > 0) {
       return contextPrice;
     }
@@ -156,7 +189,7 @@ export const useManualOrderController = ({
     }
 
     return null;
-  }, [manualOrderContext?.priceReference.markPrice, manualOrderSymbol, selectedData?.open, selectedData?.symbols]);
+  }, [manualOrderContext, manualOrderSymbol, selected?.bot.id, selectedData?.open, selectedData?.symbols]);
 
   const resolvedManualOrderType = manualOrderContext?.orderType ?? "MARKET";
   const manualOrderTypeRequiresPrice =
@@ -393,6 +426,8 @@ export const useManualOrderController = ({
       toast.error(labels.requiredPrice);
       return;
     }
+    const shouldTrustManualPriceForCurrentSymbol =
+      typeof parsedPrice === "number" && manualOrderPriceManuallyEditedSymbol === symbol;
     const fallbackMarketPrice =
       !manualOrderTypeRequiresPrice &&
       manualOrderLiveReferencePrice != null &&
@@ -400,7 +435,9 @@ export const useManualOrderController = ({
       manualOrderLiveReferencePrice > 0
         ? manualOrderLiveReferencePrice
         : undefined;
-    const effectiveManualOrderPrice = typeof parsedPrice === "number" ? parsedPrice : fallbackMarketPrice;
+    const effectiveManualOrderPrice = shouldTrustManualPriceForCurrentSymbol
+      ? parsedPrice
+      : fallbackMarketPrice ?? (typeof parsedPrice === "number" ? parsedPrice : undefined);
     if (
       selected.bot.mode === "PAPER" &&
       resolvedManualOrderType === "MARKET" &&
@@ -457,6 +494,7 @@ export const useManualOrderController = ({
     manualOrderLiveReferencePrice,
     manualOrderMinExecutableQty,
     manualOrderPrice,
+    manualOrderPriceManuallyEditedSymbol,
     manualOrderQuantity,
     manualOrderSide,
     manualOrderSymbol,

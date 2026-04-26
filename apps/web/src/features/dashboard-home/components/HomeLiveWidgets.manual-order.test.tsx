@@ -45,6 +45,7 @@ describe("HomeLiveWidgets manual order", () => {
   beforeEach(() => {
     vi.useRealTimers();
     vi.clearAllMocks();
+    window.localStorage.clear();
     lookupCoinIconsMock.mockReset();
     lookupCoinIconsMock.mockResolvedValue(new Map());
     getBotRuntimeGraphMock.mockReset();
@@ -112,6 +113,7 @@ describe("HomeLiveWidgets manual order", () => {
 
   afterEach(() => {
     vi.useRealTimers();
+    window.localStorage.clear();
   });
 
   const renderSubject = (locale: "pl" | "en" | "pt" = "pl") => {

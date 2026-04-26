@@ -31,6 +31,22 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-26 - Manual-order context price must be scoped to the current bot and symbol
+- Context: real-account production browser debugging after backend manual-order and takeover fixes were already verified.
+- Symptom: the dashboard could submit `symbol=DOGEUSDT` with a stale previous-symbol price such as `0.01432`, producing absurd paper PnL and making the feature look broken even though `/dashboard/orders/manual-context` and `/dashboard/orders/open` were individually healthy.
+- Root cause: `useManualOrderController` gave `manualOrderContext.priceReference.markPrice` priority over symbol/live data without verifying that the stored context still belonged to the current `selected bot + symbol`. After a fast bot/symbol switch, a previous-symbol context price could autofill the new symbol and then lock itself in as the current-symbol autofill truth.
+- Guardrail: whenever a dashboard flow caches symbol-scoped execution context, only trust that context if it still matches the active selection identity.
+- Preferred pattern:
+```text
+1) Store enough identity on cached context to prove what it belongs to (at least botId + symbol).
+2) Before using cached price/constraints, verify the cached identity matches the current selected bot and symbol.
+3) If it does not match, fall back to current symbol/live data or wait for fresh context.
+4) Lock the race with a focused hook-level regression, not only a large dashboard integration test.
+```
+- Avoid: prioritizing a cached symbol-scoped context field globally just because it is non-null, or freezing auto-filled price by symbol without rechecking the context identity first.
+- Evidence:
+  - 2026-04-26 `V1LIVE-PROD-2026-04-26-A`: production browser repro showed `DOGEUSDT` submit payload carrying stale `1000000BOBUSDT` price; fix added `botId + symbol` guard in `useManualOrderController` plus focused hook regression coverage.
+
 ### 2026-04-26 - Hidden legacy open positions can block prod manual-order and exchange takeover without showing up in selected-bot runtime
 - Context: real-account production investigation after manual-order lifecycle fixes were already deployed.
 - Symptom: Binance exchange snapshot still returned a real Futures position, but selected-bot runtime showed no live position, takeover status stayed empty, and manual-order opens collided with apparently invisible blockers.
