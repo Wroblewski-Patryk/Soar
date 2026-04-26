@@ -179,6 +179,9 @@ const toPositionSideFromOrderSide = (side: 'BUY' | 'SELL'): 'LONG' | 'SHORT' =>
 const buildPositionIdentity = (symbol: string, side: 'LONG' | 'SHORT') =>
   `${normalizeSymbol(symbol)}:${side}`;
 
+const normalizeImportedLeverage = (value: number | null | undefined) =>
+  Number.isFinite(value) ? Math.max(1, Math.round(value!)) : 1;
+
 const toOrderType = (
   type: string | null
 ): 'MARKET' | 'LIMIT' | 'STOP' | 'STOP_LIMIT' | 'TAKE_PROFIT' | 'TRAILING' => {
@@ -577,7 +580,7 @@ export const reconcileExternalPositionsFromExchange = async (
             quantity: size,
             entryPrice: canonicalEntryPrice,
             unrealizedPnl: position.unrealizedPnl ?? null,
-            leverage: Math.max(1, Math.floor(position.leverage ?? 1)),
+            leverage: normalizeImportedLeverage(position.leverage),
             managementMode,
             syncState,
             botId: ownership.botId,
@@ -593,7 +596,7 @@ export const reconcileExternalPositionsFromExchange = async (
             quantity: size,
             entryPrice: canonicalEntryPrice,
             unrealizedPnl: position.unrealizedPnl ?? null,
-            leverage: Math.max(1, Math.floor(position.leverage ?? 1)),
+            leverage: normalizeImportedLeverage(position.leverage),
             managementMode,
             syncState,
             botId: ownership.botId,
