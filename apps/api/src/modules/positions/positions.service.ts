@@ -217,22 +217,35 @@ const readString = (value: unknown): string | null => {
   return null;
 };
 
+const deriveExchangePositionLeverage = (position: ExchangePositionLike, info: Record<string, unknown>) => {
+  const explicitLeverage = readNumber(position.leverage) ?? readNumber(info.leverage);
+  if (explicitLeverage != null && explicitLeverage > 0) return explicitLeverage;
+  const contracts = readNumber(position.contracts) ?? readNumber(info.contracts) ?? readNumber(info.positionAmt);
+  const contractSize = readNumber(info.contractSize) ?? 1;
+  const markPrice = readNumber(position.markPrice) ?? readNumber(info.markPrice);
+  const entryPrice = readNumber(position.entryPrice) ?? readNumber(info.entryPrice);
+  const notional =
+    Math.abs(readNumber(info.notional) ?? 0) ||
+    Math.abs((contracts ?? 0) * contractSize * (markPrice ?? entryPrice ?? 0));
+  const margin =
+    Math.abs(
+      readNumber(info.initialMargin) ?? readNumber(info.positionInitialMargin) ?? readNumber(info.isolatedMargin) ??
+        readNumber(info.isolatedWallet) ?? 0
+    ) || 0;
+  return notional > 0 && margin > 0 ? notional / margin : null;
+};
+
 const normalizeExchangePosition = (position: ExchangePositionLike): ExchangePositionSnapshotItem => {
   const info = (position.info ?? {}) as Record<string, unknown>;
   const timestampMs = readNumber(position.timestamp) ?? readNumber(info.updateTime) ?? readNumber(info.time);
-
   return {
     symbol: position.symbol ?? readString(info.symbol) ?? 'UNKNOWN',
     side: position.side ?? readString(info.positionSide) ?? null,
-    contracts:
-      readNumber(position.contracts) ??
-      readNumber(info.contracts) ??
-      readNumber(info.positionAmt) ??
-      0,
+    contracts: readNumber(position.contracts) ?? readNumber(info.contracts) ?? readNumber(info.positionAmt) ?? 0,
     entryPrice: readNumber(position.entryPrice) ?? readNumber(info.entryPrice),
     markPrice: readNumber(position.markPrice) ?? readNumber(info.markPrice),
     unrealizedPnl: readNumber(position.unrealizedPnl) ?? readNumber(info.unRealizedProfit),
-    leverage: readNumber(position.leverage) ?? readNumber(info.leverage),
+    leverage: deriveExchangePositionLeverage(position, info),
     marginMode: position.marginMode ?? readString(info.marginType),
     liquidationPrice: readNumber(position.liquidationPrice) ?? readNumber(info.liquidationPrice),
     timestamp: typeof timestampMs === 'number' ? new Date(timestampMs).toISOString() : null,
