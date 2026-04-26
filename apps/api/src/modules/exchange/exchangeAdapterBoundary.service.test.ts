@@ -145,4 +145,46 @@ describe('exchangeAdapterBoundary.service', () => {
       fills: [],
     });
   });
+
+  it('fails closed when resolved api key exchange drifts from selected bot exchange', async () => {
+    const createAuthenticatedConnector = vi.fn(() => createConnector());
+    const resolveLiveExecutionApiKey = vi.fn(async () => ({
+      id: 'api-key-1',
+      exchange: 'BINANCE' as const,
+      apiKey: 'enc-key',
+      apiSecret: 'enc-secret',
+    }));
+
+    await expect(
+      submitLiveOrderThroughBoundary(
+        {
+          userId: 'user-1',
+          bot: {
+            exchange: 'BYBIT',
+            marketType: 'FUTURES',
+            positionMode: 'ONE_WAY',
+            apiKeyId: 'api-key-1',
+            walletId: 'wallet-1',
+          },
+          order: {
+            symbol: 'BTCUSDT',
+            side: 'BUY',
+            type: 'LIMIT',
+            quantity: 0.1,
+            price: 100_000,
+          },
+          targetLeverage: 5,
+        },
+        {
+          createAuthenticatedConnector,
+          fetchBalanceRaw: vi.fn(),
+          resolveLiveExecutionApiKey,
+          createLiveOrderAdapter: vi.fn(),
+          enforceLivePretradeGuards: vi.fn(async () => undefined),
+          convergeLiveMarginAndLeverageIfNeeded: vi.fn(async () => undefined),
+        }
+      )
+    ).rejects.toMatchObject({ code: 'LIVE_API_KEY_REQUIRED' });
+    expect(createAuthenticatedConnector).not.toHaveBeenCalled();
+  });
 });

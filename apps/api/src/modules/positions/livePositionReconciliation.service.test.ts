@@ -315,7 +315,7 @@ describe('reconcileExternalPositionsFromExchange', () => {
             side: 'long',
             contracts: 2,
             entryPrice: null,
-            markPrice: null,
+            markPrice: 155.25,
             unrealizedPnl: null,
             leverage: 4,
             timestamp: null,

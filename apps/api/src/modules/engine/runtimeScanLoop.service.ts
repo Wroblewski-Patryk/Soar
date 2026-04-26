@@ -5,8 +5,8 @@ import { getRuntimeTicker } from './runtimeTickerStore';
 import { StreamTickerEvent } from '../market-stream/binanceStream.types';
 
 type RuntimeScanDeps = {
-  listScanSymbols: () => Promise<string[]>;
-  getTickerSnapshot: (symbol: string) => Promise<{
+  listScanTargets: () => Promise<RuntimeScanTarget[]>;
+  getTickerSnapshot: (target: RuntimeScanTarget) => Promise<{
     symbol: string;
     exchange: 'BINANCE';
     marketType: 'FUTURES' | 'SPOT';
@@ -43,10 +43,11 @@ type RuntimeScanPositionContext = {
   } | null;
 };
 
-const resolveManualWatchdogScope = () => ({
-  exchange: (process.env.RUNTIME_MANUAL_POSITION_EXCHANGE ?? 'BINANCE').trim().toUpperCase(),
-  marketType: ((process.env.RUNTIME_MANUAL_POSITION_MARKET_TYPE ?? 'FUTURES').trim().toUpperCase() as 'FUTURES' | 'SPOT'),
-});
+type RuntimeScanTarget = {
+  symbol: string;
+  exchange: 'BINANCE';
+  marketType: 'FUTURES';
+};
 
 export const supportsRuntimeWatchdogPositionContext = (context: RuntimeScanPositionContext) => {
   if (context.bot) {
@@ -55,27 +56,41 @@ export const supportsRuntimeWatchdogPositionContext = (context: RuntimeScanPosit
   if (context.wallet) {
     return context.wallet.exchange === 'BINANCE' && context.wallet.marketType === 'FUTURES';
   }
-
-  const manualScope = resolveManualWatchdogScope();
-  return manualScope.exchange === 'BINANCE' && manualScope.marketType === 'FUTURES';
+  return false;
 };
 
 export const deriveRuntimeWatchdogSymbols = (contexts: RuntimeScanPositionContext[]) => {
-  const symbols = new Set<string>();
+  return deriveRuntimeWatchdogTargets(contexts).map((target) => target.symbol);
+};
+
+export const deriveRuntimeWatchdogTargets = (
+  contexts: RuntimeScanPositionContext[]
+): RuntimeScanTarget[] => {
+  const targets = new Map<string, RuntimeScanTarget>();
   for (const context of contexts) {
     if (!supportsRuntimeWatchdogPositionContext(context)) continue;
     const normalized = normalizeSymbol(context.symbol);
-    if (normalized.length > 0) {
-      symbols.add(normalized);
-    }
+    if (normalized.length === 0) continue;
+    const target: RuntimeScanTarget = {
+      symbol: normalized,
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+    };
+    targets.set(`${target.exchange}|${target.marketType}|${target.symbol}`, target);
   }
-  return [...symbols];
+  return [...targets.values()];
 };
 
 const defaultDeps: RuntimeScanDeps = {
-  listScanSymbols: async () => {
+  listScanTargets: async () => {
     const envSymbols = parseEnvSymbols(process.env.RUNTIME_SCAN_SYMBOLS);
-    if (envSymbols.length > 0) return envSymbols;
+    if (envSymbols.length > 0) {
+      return envSymbols.map((symbol) => ({
+        symbol,
+        exchange: 'BINANCE' as const,
+        marketType: 'FUTURES' as const,
+      }));
+    }
 
     const positions = await prisma.position.findMany({
       where: { status: 'OPEN' },
@@ -95,15 +110,18 @@ const defaultDeps: RuntimeScanDeps = {
         },
       },
     });
-    return deriveRuntimeWatchdogSymbols(positions);
+    return deriveRuntimeWatchdogTargets(positions);
   },
-  getTickerSnapshot: async (symbol) => {
-    const ticker = getRuntimeTicker(symbol);
+  getTickerSnapshot: async (target) => {
+    const ticker = getRuntimeTicker(target.symbol, {
+      exchange: target.exchange,
+      marketType: target.marketType,
+    });
     if (!ticker) return null;
     return {
       symbol: ticker.symbol,
-      exchange: 'BINANCE',
-      marketType: ticker.marketType,
+      exchange: target.exchange,
+      marketType: target.marketType,
       lastPrice: ticker.lastPrice,
       priceChangePercent24h: ticker.priceChangePercent24h,
     };
@@ -147,10 +165,10 @@ export class RuntimeScanLoop {
     this.inFlight = true;
 
     try {
-      const symbols = (await this.deps.listScanSymbols()).slice(0, Math.max(scanMaxSymbols, 1));
+      const targets = (await this.deps.listScanTargets()).slice(0, Math.max(scanMaxSymbols, 1));
       await Promise.all(
-        symbols.map(async (symbol) => {
-          const ticker = await this.deps.getTickerSnapshot(symbol);
+        targets.map(async (target) => {
+          const ticker = await this.deps.getTickerSnapshot(target);
           if (!ticker) return;
           await this.deps.processTicker({
             type: 'ticker',

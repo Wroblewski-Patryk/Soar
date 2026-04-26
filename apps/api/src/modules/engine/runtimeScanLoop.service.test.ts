@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
+  deriveRuntimeWatchdogTargets,
   deriveRuntimeWatchdogSymbols,
   RuntimeScanLoop,
   isRuntimeScanWatchdogEnabled,
@@ -26,11 +27,16 @@ describe('RuntimeScanLoop', () => {
         wallet: { exchange: 'BINANCE', marketType: 'SPOT' },
       })
     ).toBe(false);
+    expect(
+      supportsRuntimeWatchdogPositionContext({
+        symbol: 'ADAUSDT',
+      })
+    ).toBe(false);
   });
 
-  it('derives unique watchdog symbols only from supported position contexts', () => {
+  it('derives unique watchdog targets only from supported ownership contexts', () => {
     expect(
-      deriveRuntimeWatchdogSymbols([
+      deriveRuntimeWatchdogTargets([
         {
           symbol: 'btcusdt',
           bot: { exchange: 'BINANCE', marketType: 'FUTURES' },
@@ -43,6 +49,27 @@ describe('RuntimeScanLoop', () => {
           symbol: 'BTCUSDT',
           wallet: { exchange: 'BINANCE', marketType: 'FUTURES' },
         },
+        {
+          symbol: 'ADAUSDT',
+        },
+      ])
+    ).toEqual([
+      {
+        symbol: 'BTCUSDT',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+      },
+    ]);
+    expect(
+      deriveRuntimeWatchdogSymbols([
+        {
+          symbol: 'btcusdt',
+          bot: { exchange: 'BINANCE', marketType: 'FUTURES' },
+        },
+        {
+          symbol: 'BTCUSDT',
+          wallet: { exchange: 'BINANCE', marketType: 'FUTURES' },
+        },
       ])
     ).toEqual(['BTCUSDT']);
   });
@@ -50,7 +77,13 @@ describe('RuntimeScanLoop', () => {
   it('keeps watchdog auto-loop disabled by default', async () => {
     vi.useFakeTimers();
     const deps = {
-      listScanSymbols: vi.fn(async () => ['BTCUSDT']),
+      listScanTargets: vi.fn(async () => [
+        {
+          symbol: 'BTCUSDT',
+          exchange: 'BINANCE' as const,
+          marketType: 'FUTURES' as const,
+        },
+      ]),
       getTickerSnapshot: vi.fn(async () => ({
         symbol: 'BTCUSDT',
         exchange: 'BINANCE' as const,
@@ -74,9 +107,20 @@ describe('RuntimeScanLoop', () => {
 
   it('processes configured symbols and forwards synthesized ticker events', async () => {
     const deps = {
-      listScanSymbols: vi.fn(async () => ['BTCUSDT', 'ETHUSDT']),
-      getTickerSnapshot: vi.fn(async (symbol: string) => {
-        if (symbol === 'BTCUSDT') {
+      listScanTargets: vi.fn(async () => [
+        {
+          symbol: 'BTCUSDT',
+          exchange: 'BINANCE' as const,
+          marketType: 'FUTURES' as const,
+        },
+        {
+          symbol: 'ETHUSDT',
+          exchange: 'BINANCE' as const,
+          marketType: 'FUTURES' as const,
+        },
+      ]),
+      getTickerSnapshot: vi.fn(async (target: { symbol: string }) => {
+        if (target.symbol === 'BTCUSDT') {
           return {
             symbol: 'BTCUSDT',
             exchange: 'BINANCE' as const,
@@ -119,7 +163,13 @@ describe('RuntimeScanLoop', () => {
 
   it('forwards watchdog fallback as ticker-only payloads (no candle semantics)', async () => {
     const deps = {
-      listScanSymbols: vi.fn(async () => ['BTCUSDT']),
+      listScanTargets: vi.fn(async () => [
+        {
+          symbol: 'BTCUSDT',
+          exchange: 'BINANCE' as const,
+          marketType: 'FUTURES' as const,
+        },
+      ]),
       getTickerSnapshot: vi.fn(async () => ({
         symbol: 'BTCUSDT',
         exchange: 'BINANCE' as const,

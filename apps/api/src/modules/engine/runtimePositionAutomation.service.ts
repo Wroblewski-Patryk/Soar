@@ -187,15 +187,6 @@ const getRuntimeConfig = (): RuntimeFallbackConfig => ({
   trailingValue: Number.parseFloat(process.env.RUNTIME_TRAILING_VALUE ?? '0.005'),
 });
 
-const getRuntimeManualPositionMode = (): 'PAPER' | 'LIVE' => (process.env.RUNTIME_MANUAL_POSITION_MODE ?? 'LIVE') as 'PAPER' | 'LIVE';
-const getRuntimeManualPositionMarketType = (): TradeMarket => (process.env.RUNTIME_MANUAL_POSITION_MARKET_TYPE ?? 'FUTURES') as TradeMarket;
-const getRuntimeManualPositionExchange = (): Exchange => (process.env.RUNTIME_MANUAL_POSITION_EXCHANGE ?? 'BINANCE') as Exchange;
-
-const getRuntimeManualPaperStartBalance = () => {
-  const parsed = Number.parseFloat(process.env.RUNTIME_MANUAL_PAPER_START_BALANCE ?? '10000');
-  return Number.isFinite(parsed) ? Math.max(0, parsed) : 10_000;
-};
-
 const parseFeeRate = (value: string | undefined) => {
   const parsed = Number(value);
   if (!Number.isFinite(parsed) || parsed < 0) return null;
@@ -798,16 +789,22 @@ export class RuntimePositionAutomationService {
       );
       return;
     }
-    if (inheritedExecutionContext?.mode === 'LIVE' && !position.bot?.liveOptIn) {
+    if (!inheritedExecutionContext) {
+      console.warn(
+        `[RuntimePositionAutomation] position=${position.id} symbol=${position.symbol} skipped: execution context unresolved`
+      );
+      return;
+    }
+    if (inheritedExecutionContext.mode === 'LIVE' && !position.bot?.liveOptIn) {
       console.warn(
         `[RuntimePositionAutomation] position=${position.id} symbol=${position.symbol} skipped: LIVE bot without live opt-in`
       );
       return;
     }
 
-    const mode = inheritedExecutionContext?.mode ?? getRuntimeManualPositionMode();
-    const exchange = inheritedExecutionContext?.exchange ?? getRuntimeManualPositionExchange();
-    const marketType = inheritedExecutionContext?.marketType ?? getRuntimeManualPositionMarketType();
+    const mode = inheritedExecutionContext.mode;
+    const exchange = inheritedExecutionContext.exchange;
+    const marketType = inheritedExecutionContext.marketType;
     if (event.exchange !== exchange || event.marketType !== marketType) return;
 
     const runtimeConfig = getRuntimeConfig();
@@ -827,8 +824,7 @@ export class RuntimePositionAutomationService {
       defaultState;
     const previousStateSnapshot = this.cloneState(previousState);
 
-    const paperStartBalance =
-      inheritedExecutionContext?.paperStartBalance ?? getRuntimeManualPaperStartBalance();
+    const paperStartBalance = inheritedExecutionContext.paperStartBalance;
     const dcaLevelCount = resolveDcaLevelCount(input);
     const hasPendingDca = input.dca?.enabled && previousState.currentAdds < dcaLevelCount;
     const estimatedAddedQuantity = hasPendingDca
@@ -839,7 +835,7 @@ export class RuntimePositionAutomationService {
         ? await this.deps.resolveDcaFundsExhausted({
             userId: position.userId,
             botId: position.botId,
-            walletId: inheritedExecutionContext?.walletId ?? position.walletId ?? position.bot?.walletId ?? null,
+            walletId: inheritedExecutionContext.walletId ?? position.walletId ?? position.bot?.walletId ?? null,
             mode,
             exchange,
             marketType,
@@ -873,7 +869,7 @@ export class RuntimePositionAutomationService {
         const dcaResult = await this.deps.executeDca({
           userId: position.userId,
           botId: position.botId,
-          walletId: inheritedExecutionContext?.walletId ?? position.walletId ?? position.bot?.walletId ?? null,
+          walletId: inheritedExecutionContext.walletId ?? position.walletId ?? position.bot?.walletId ?? null,
           strategyId: position.strategyId,
           positionId: position.id,
           symbol: position.symbol,
@@ -946,7 +942,7 @@ export class RuntimePositionAutomationService {
       const closeResult = await this.deps.closeByExitSignal({
         userId: position.userId,
         botId: position.botId ?? undefined,
-        walletId: inheritedExecutionContext?.walletId ?? position.walletId ?? position.bot?.walletId ?? null,
+        walletId: inheritedExecutionContext.walletId ?? position.walletId ?? position.bot?.walletId ?? null,
         symbol: position.symbol,
         markPrice: event.lastPrice,
         mode,

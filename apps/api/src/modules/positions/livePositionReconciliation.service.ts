@@ -215,9 +215,7 @@ const resolveCanonicalEntryPrice = (
   const entryPrice =
     typeof position.entryPrice === 'number' && Number.isFinite(position.entryPrice)
       ? position.entryPrice
-      : typeof position.markPrice === 'number' && Number.isFinite(position.markPrice)
-        ? position.markPrice
-        : null;
+      : null;
   if (entryPrice == null || entryPrice <= 0) return null;
   return entryPrice;
 };

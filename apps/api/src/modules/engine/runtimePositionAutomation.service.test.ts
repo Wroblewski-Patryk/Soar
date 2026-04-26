@@ -561,9 +561,7 @@ describe('RuntimePositionAutomationService', () => {
     expect(deps.closeByExitSignal).not.toHaveBeenCalled();
   });
 
-  it('uses manual position mode fallback only when bot mode is unavailable', async () => {
-    process.env.RUNTIME_MANUAL_POSITION_MODE = 'PAPER';
-
+  it('skips automation when canonical execution context is unavailable', async () => {
     const deps: any = {
       listOpenPositionsBySymbol: vi.fn(async () => [
         {
@@ -600,12 +598,10 @@ describe('RuntimePositionAutomationService', () => {
       priceChangePercent24h: 0.2,
     });
 
-    expect(deps.closeByExitSignal).toHaveBeenCalledWith(
-      expect.objectContaining({
-        symbol: 'BNBUSDT',
-        mode: 'PAPER',
-      }),
-    );
+    expect(deps.getStrategyConfigById).not.toHaveBeenCalled();
+    expect(deps.resolveDcaFundsExhausted).not.toHaveBeenCalled();
+    expect(deps.executeDca).not.toHaveBeenCalled();
+    expect(deps.closeByExitSignal).not.toHaveBeenCalled();
   });
 
   it('ignores MANUAL_MANAGED positions as an additional safeguard', async () => {
@@ -700,10 +696,6 @@ describe('RuntimePositionAutomationService', () => {
   });
 
   it('skips automation for orphan BOT-origin positions without canonical bot context', async () => {
-    process.env.RUNTIME_MANUAL_POSITION_MODE = 'PAPER';
-    process.env.RUNTIME_MANUAL_POSITION_EXCHANGE = 'BINANCE';
-    process.env.RUNTIME_MANUAL_POSITION_MARKET_TYPE = 'FUTURES';
-
     const deps: any = {
       listOpenPositionsBySymbol: vi.fn(async () => [
         {

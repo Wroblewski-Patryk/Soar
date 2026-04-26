@@ -303,6 +303,9 @@ export const submitLiveOrderThroughBoundary = async (
     userId: params.userId,
     bot: params.bot,
   });
+  if (apiKey.exchange !== params.bot.exchange) {
+    throw orderErrors.liveApiKeyRequired();
+  }
 
   const connector = deps.createAuthenticatedConnector({
     exchange: apiKey.exchange,
