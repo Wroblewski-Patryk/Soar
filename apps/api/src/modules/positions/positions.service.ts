@@ -204,14 +204,17 @@ const validateDirectionalStops = (params: {
 const normalizeExchangePosition = (position: ExchangePositionLike): ExchangePositionSnapshotItem => ({
   symbol: position.symbol ?? 'UNKNOWN',
   side: position.side ?? null,
-  contracts: typeof position.contracts === 'number' ? position.contracts : 0,
-  entryPrice: typeof position.entryPrice === 'number' ? position.entryPrice : null,
-  markPrice: typeof position.markPrice === 'number' ? position.markPrice : null,
-  unrealizedPnl: typeof position.unrealizedPnl === 'number' ? position.unrealizedPnl : null,
-  leverage: typeof position.leverage === 'number' ? position.leverage : null,
+  contracts: readNumber(position.contracts) ?? 0,
+  entryPrice: readNumber(position.entryPrice),
+  markPrice: readNumber(position.markPrice),
+  unrealizedPnl: readNumber(position.unrealizedPnl),
+  leverage: readNumber(position.leverage),
   marginMode: position.marginMode ?? null,
-  liquidationPrice: typeof position.liquidationPrice === 'number' ? position.liquidationPrice : null,
-  timestamp: typeof position.timestamp === 'number' ? new Date(position.timestamp).toISOString() : null,
+  liquidationPrice: readNumber(position.liquidationPrice),
+  timestamp:
+    typeof readNumber(position.timestamp) === 'number'
+      ? new Date(readNumber(position.timestamp)!).toISOString()
+      : null,
 });
 
 const readNumber = (value: unknown): number | null => {

@@ -421,4 +421,75 @@ describe('reconcileExternalPositionsFromExchange', () => {
     expect(markStaleSyncedOrderUnresolved).toHaveBeenCalledTimes(1);
     expect(markStaleSyncedOrderUnresolved).toHaveBeenCalledWith('local-open-stale-2');
   });
+
+  it('closes stale local managed live positions when exchange no longer confirms them after grace window', async () => {
+    const closeStaleLocalManagedPosition = vi.fn(async () => undefined);
+
+    const result = await reconcileExternalPositionsFromExchange({
+      listSyncedApiKeys: vi.fn(async () => [
+        {
+          id: 'key-stale-local-1',
+          userId: 'user-stale-local-1',
+        },
+      ]),
+      resolveOwnershipForApiKey: vi.fn(async () => ({
+        status: 'OWNED' as const,
+        botId: 'bot-stale-local-1',
+        walletId: 'wallet-stale-local-1',
+        takeoverEnabled: true,
+      })),
+      fetchPositionsForApiKey: vi.fn(async () => ({
+        positions: [
+          {
+            symbol: 'DOGE/USDT:USDT',
+            side: 'short',
+            contracts: 54,
+            entryPrice: 0.09791,
+            markPrice: 0.09792,
+            unrealizedPnl: 0.01,
+            leverage: 15,
+            timestamp: '2026-03-23T01:00:00.000Z',
+          },
+        ],
+      })),
+      fetchOpenOrdersForApiKey: vi.fn(async () => []),
+      findOpenSyncedPositionByExternalId: vi.fn(async () => null),
+      updateSyncedPosition: vi.fn(async () => undefined),
+      createSyncedPosition: vi.fn(async () => undefined),
+      listOpenSyncedPositionsForApiKey: vi.fn(async () => []),
+      closeStaleSyncedPosition: vi.fn(async () => undefined),
+      upsertSyncedOpenOrder: vi.fn(async () => undefined),
+      listOpenSyncedOrdersForOwner: vi.fn(async () => []),
+      markStaleSyncedOrderUnresolved: vi.fn(async () => undefined),
+      listOpenLocalManagedPositionsForOwner: vi.fn(async () => [
+        {
+          id: 'pos-live-stale-bnb',
+          symbol: 'BNBUSDT',
+          side: 'SHORT' as const,
+          openedAt: new Date('2026-03-23T00:30:00.000Z'),
+        },
+        {
+          id: 'pos-live-current-doge',
+          symbol: 'DOGEUSDT',
+          side: 'SHORT' as const,
+          openedAt: new Date('2026-03-23T00:30:00.000Z'),
+        },
+        {
+          id: 'pos-live-fresh-sol',
+          symbol: 'SOLUSDT',
+          side: 'LONG' as const,
+          openedAt: new Date('2026-03-23T01:09:30.000Z'),
+        },
+      ]),
+      closeStaleLocalManagedPosition,
+      now: () => new Date('2026-03-23T01:10:00.000Z'),
+    });
+
+    expect(result.openPositionsSeen).toBe(1);
+    expect(closeStaleLocalManagedPosition).toHaveBeenCalledTimes(1);
+    expect(closeStaleLocalManagedPosition).toHaveBeenCalledWith(
+      'pos-live-stale-bnb',
+      new Date('2026-03-23T01:10:00.000Z')
+    );
+  });
 });

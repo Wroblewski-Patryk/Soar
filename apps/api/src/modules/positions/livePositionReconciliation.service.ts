@@ -44,6 +44,13 @@ type ExternalSnapshotOpenOrder = {
   timestamp: string | null;
 };
 
+type LocalManagedLivePosition = {
+  id: string;
+  symbol: string;
+  side: 'LONG' | 'SHORT';
+  openedAt: Date;
+};
+
 type ReconcileDeps = {
   listSyncedApiKeys: () => Promise<SyncedApiKey[]>;
   resolveOwnershipForApiKey: (input: {
@@ -120,8 +127,16 @@ type ReconcileDeps = {
     walletId: string;
   }) => Promise<Array<{ id: string; exchangeOrderId: string | null }>>;
   markStaleSyncedOrderUnresolved?: (orderId: string) => Promise<void>;
+  listOpenLocalManagedPositionsForOwner?: (input: {
+    userId: string;
+    botId: string;
+    walletId: string;
+  }) => Promise<LocalManagedLivePosition[]>;
+  closeStaleLocalManagedPosition?: (positionId: string, closedAt: Date) => Promise<void>;
   now: () => Date;
 };
+
+const STALE_LOCAL_MANAGED_LIVE_POSITION_GRACE_MS = 10 * 60 * 1000;
 
 const normalizeSymbol = (symbol: string) => {
   const trimmed = symbol.trim().toUpperCase();
@@ -156,6 +171,12 @@ const toOrderSide = (side: string | null): 'BUY' | 'SELL' | null => {
   if (normalized === 'sell') return 'SELL';
   return null;
 };
+
+const toPositionSideFromOrderSide = (side: 'BUY' | 'SELL'): 'LONG' | 'SHORT' =>
+  side === 'BUY' ? 'LONG' : 'SHORT';
+
+const buildPositionIdentity = (symbol: string, side: 'LONG' | 'SHORT') =>
+  `${normalizeSymbol(symbol)}:${side}`;
 
 const toOrderType = (
   type: string | null
@@ -465,6 +486,34 @@ const defaultDeps: ReconcileDeps = {
       },
     });
   },
+  listOpenLocalManagedPositionsForOwner: async ({ userId, botId, walletId }) =>
+    prisma.position.findMany({
+      where: {
+        userId,
+        botId,
+        walletId,
+        status: 'OPEN',
+        managementMode: 'BOT_MANAGED',
+        origin: { in: ['BOT', 'USER'] },
+      },
+      select: {
+        id: true,
+        symbol: true,
+        side: true,
+        openedAt: true,
+      },
+    }),
+  closeStaleLocalManagedPosition: async (positionId, closedAt) => {
+    await prisma.position.update({
+      where: { id: positionId },
+      data: {
+        status: 'CLOSED',
+        closedAt,
+        syncState: 'ORPHAN_LOCAL',
+        unrealizedPnl: 0,
+      },
+    });
+  },
   now: () => new Date(),
 };
 
@@ -478,6 +527,7 @@ export const reconcileExternalPositionsFromExchange = async (
     try {
       const snapshot = await deps.fetchPositionsForApiKey(apiKey);
       const seenExternalIds = new Set<string>();
+      const seenExternalPositionKeys = new Set<string>();
       const openedAtFallback = deps.now();
       const ownership = await deps.resolveOwnershipForApiKey({
         userId: apiKey.userId,
@@ -505,6 +555,7 @@ export const reconcileExternalPositionsFromExchange = async (
         openPositionsSeen += 1;
         const externalId = `${apiKey.id}:${normalizedSymbol}:${side}`;
         seenExternalIds.add(externalId);
+        seenExternalPositionKeys.add(buildPositionIdentity(normalizedSymbol, side));
         const canonicalEntryPrice = resolveCanonicalEntryPrice(position);
         if (canonicalEntryPrice == null) {
           console.warn(
@@ -572,6 +623,7 @@ export const reconcileExternalPositionsFromExchange = async (
       ) {
         const openOrders = await deps.fetchOpenOrdersForApiKey(apiKey);
         const seenOpenExchangeOrderIds = new Set<string>();
+        const openOrderPositionKeys = new Set<string>();
 
         for (const order of openOrders) {
           const exchangeOrderId = order.exchangeOrderId?.trim();
@@ -582,6 +634,9 @@ export const reconcileExternalPositionsFromExchange = async (
 
           const normalizedSymbol = normalizeSymbol(order.symbol);
           if (!normalizedSymbol) continue;
+          openOrderPositionKeys.add(
+            buildPositionIdentity(normalizedSymbol, toPositionSideFromOrderSide(side))
+          );
 
           const quantity = Number.isFinite(order.amount) ? Math.max(0, order.amount) : 0;
           if (quantity <= 0) continue;
@@ -620,6 +675,26 @@ export const reconcileExternalPositionsFromExchange = async (
           const exchangeOrderId = openSyncedOrder.exchangeOrderId?.trim();
           if (!exchangeOrderId || seenOpenExchangeOrderIds.has(exchangeOrderId)) continue;
           await deps.markStaleSyncedOrderUnresolved(openSyncedOrder.id);
+        }
+
+        if (
+          deps.listOpenLocalManagedPositionsForOwner &&
+          deps.closeStaleLocalManagedPosition
+        ) {
+          const staleCutoffMs = deps.now().getTime() - STALE_LOCAL_MANAGED_LIVE_POSITION_GRACE_MS;
+          const localManagedPositions = await deps.listOpenLocalManagedPositionsForOwner({
+            userId: apiKey.userId,
+            botId: ownership.botId,
+            walletId: ownership.walletId,
+          });
+
+          for (const localPosition of localManagedPositions) {
+            const localIdentity = buildPositionIdentity(localPosition.symbol, localPosition.side);
+            if (seenExternalPositionKeys.has(localIdentity)) continue;
+            if (openOrderPositionKeys.has(localIdentity)) continue;
+            if (localPosition.openedAt.getTime() > staleCutoffMs) continue;
+            await deps.closeStaleLocalManagedPosition(localPosition.id, deps.now());
+          }
         }
       }
     } catch (error) {
