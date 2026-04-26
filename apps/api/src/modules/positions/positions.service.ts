@@ -13,6 +13,7 @@ import {
   parseApiKeyIdFromExternalPositionId,
   resolveExternalPositionOwnershipIndex,
 } from '../bots/runtimeExternalPositionOwner.service';
+import { resolveSystemRepairCloseAttribution } from './positionCloseAttribution';
 
 export type ExchangePositionSnapshotItem = {
   symbol: string;
@@ -706,6 +707,7 @@ export const repairLegacyOpenPositions = async (
 
     const detachedOrphan = !position.walletId && !position.strategyId && !position.externalId;
     if (detachedOrphan) {
+      const closeAttribution = resolveSystemRepairCloseAttribution();
       const update = await prisma.position.updateMany({
         where: {
           id: position.id,
@@ -718,6 +720,8 @@ export const repairLegacyOpenPositions = async (
           closedAt: now,
           syncState: 'ORPHAN_LOCAL',
           unrealizedPnl: 0,
+          closeReason: closeAttribution.closeReason,
+          closeInitiator: closeAttribution.closeInitiator,
         },
       });
 

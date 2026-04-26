@@ -10,6 +10,10 @@ import {
   buildOpenExecutionDedupeKey,
   runtimeExecutionDedupeService,
 } from './runtimeExecutionDedupe.service';
+import {
+  PositionCloseAttribution,
+  resolveRuntimeCloseAttribution,
+} from '../positions/positionCloseAttribution';
 
 export type RuntimeSignalDirection = 'LONG' | 'SHORT' | 'EXIT';
 export type RuntimeExecutionMode = 'PAPER' | 'LIVE';
@@ -65,6 +69,10 @@ export interface OrderFlowGateway {
   }): Promise<Order>;
   closeOrder(userId: string, orderId: string, input: { riskAck: boolean }): Promise<Order | null>;
   linkOrderToPosition(orderId: string, positionId: string): Promise<void>;
+  annotateCloseAttribution?(
+    orderId: string,
+    attribution: PositionCloseAttribution
+  ): Promise<void>;
 }
 
 export interface PositionFlowGateway {
@@ -82,6 +90,8 @@ export interface PositionFlowGateway {
     payload?: {
       closedAt?: Date;
       realizedPnl?: number;
+      closeReason?: PositionCloseAttribution['closeReason'];
+      closeInitiator?: PositionCloseAttribution['closeInitiator'];
     }
   ): Promise<void>;
 }
@@ -169,6 +179,8 @@ export interface RuntimeTradeGateway {
     effectiveFeeRate?: number | null;
     exchangeTradeId?: string | null;
     realizedPnl?: number;
+    closeReason?: PositionCloseAttribution['closeReason'] | null;
+    closeInitiator?: PositionCloseAttribution['closeInitiator'] | null;
     lifecycleAction?: 'OPEN' | 'DCA' | 'CLOSE' | 'UNKNOWN';
     origin?: 'BOT';
     managementMode?: 'BOT_MANAGED' | 'MANUAL_MANAGED';
@@ -233,6 +245,15 @@ const defaultOrderGateway: OrderFlowGateway = {
       data: { positionId },
     });
   },
+  annotateCloseAttribution: async (orderId, attribution) => {
+    await prisma.order.update({
+      where: { id: orderId },
+      data: {
+        closeReason: attribution.closeReason,
+        closeInitiator: attribution.closeInitiator,
+      },
+    });
+  },
 };
 
 const defaultPositionGateway: PositionFlowGateway = {
@@ -249,6 +270,8 @@ const defaultPositionGateway: PositionFlowGateway = {
       data: {
         status: 'CLOSED',
         closedAt,
+        ...(payload?.closeReason ? { closeReason: payload.closeReason } : {}),
+        ...(payload?.closeInitiator ? { closeInitiator: payload.closeInitiator } : {}),
         ...(typeof payload?.realizedPnl === 'number' && Number.isFinite(payload.realizedPnl)
           ? { realizedPnl: payload.realizedPnl }
           : {}),
@@ -370,6 +393,8 @@ const defaultRuntimeTradeGateway: RuntimeTradeGateway = {
         effectiveFeeRate: input.effectiveFeeRate ?? null,
         exchangeTradeId: input.exchangeTradeId ?? null,
         realizedPnl: input.realizedPnl,
+        closeReason: input.closeReason ?? null,
+        closeInitiator: input.closeInitiator ?? null,
         origin: input.origin ?? 'BOT',
         managementMode: input.managementMode ?? 'BOT_MANAGED',
       },
@@ -542,6 +567,7 @@ export const orchestrateRuntimeSignal = async (
     }
 
     try {
+    const closeAttribution = resolveRuntimeCloseAttribution(input.reason);
     const closeEventAt = new Date();
     const closeOrder = await orderGateway.openOrder(input.userId, {
       botId: input.botId,
@@ -557,6 +583,7 @@ export const orchestrateRuntimeSignal = async (
       mode: input.mode,
       riskAck: true,
     });
+    await orderGateway.annotateCloseAttribution?.(closeOrder.id, closeAttribution);
     if (closeOrder.status === 'OPEN' || closeOrder.status === 'PARTIALLY_FILLED') {
       await runtimeEventGateway.writeEvent({
         userId: input.userId,
@@ -611,6 +638,8 @@ export const orchestrateRuntimeSignal = async (
     await positionGateway.closePosition(openPosition.id, input.userId, {
       closedAt: closeEventAt,
       realizedPnl,
+      closeReason: closeAttribution.closeReason,
+      closeInitiator: closeAttribution.closeInitiator,
     });
     await runtimeTradeGateway.createTrade({
       userId: input.userId,
@@ -630,6 +659,8 @@ export const orchestrateRuntimeSignal = async (
       effectiveFeeRate: closeOrder.effectiveFeeRate,
       exchangeTradeId: closeOrder.exchangeTradeId,
       realizedPnl,
+      closeReason: closeAttribution.closeReason,
+      closeInitiator: closeAttribution.closeInitiator,
       lifecycleAction: 'CLOSE',
       managementMode: openPosition.managementMode as 'BOT_MANAGED' | 'MANUAL_MANAGED',
     });

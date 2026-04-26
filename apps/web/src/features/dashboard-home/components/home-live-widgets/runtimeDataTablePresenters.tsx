@@ -7,6 +7,9 @@ import { renderDcaLadderCell } from "@/features/shared/dcaLadderCell";
 import { resolveDynamicTslDisplay, resolveDynamicTtpDisplay } from "./runtimeDerivations";
 import type { HistoryPositionsTableColumn, OpenOrdersTableColumn, OpenPositionWithLive } from "./types";
 import {
+  closeInitiatorLabelKey,
+  closeInitiatorPillClass,
+  CloseInitiatorValue,
   DirectionPill,
   tradeReasonLabelKey,
   tradeReasonPillClass,
@@ -437,6 +440,21 @@ export const createHistoryPositionsColumns = ({
       </span>
     ),
   },
+  {
+    key: "closeInitiator",
+    label: t("dashboard.home.runtime.closeBy"),
+    sortable: false,
+    accessor: (row) => row.closeInitiator ?? "",
+    render: (row) => {
+      const initiator = row.closeInitiator as CloseInitiatorValue | null | undefined;
+      if (!initiator) return "-";
+      return (
+        <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${closeInitiatorPillClass(initiator)}`}>
+          {t(closeInitiatorLabelKey(initiator))}
+        </span>
+      );
+    },
+  },
 ];
 
 export const createTradesColumns = ({
@@ -498,6 +516,21 @@ export const createTradesColumns = ({
       return (
         <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${tradeReasonPillClass(reason)}`}>
           {t(tradeReasonLabelKey(reason))}
+        </span>
+      );
+    },
+  },
+  {
+    key: "closeInitiator",
+    label: t("dashboard.home.runtime.closeBy"),
+    sortable: false,
+    accessor: (row) => row.closeInitiator ?? "",
+    render: (row) => {
+      const initiator = row.closeInitiator as CloseInitiatorValue | null | undefined;
+      if (!initiator) return "-";
+      return (
+        <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${closeInitiatorPillClass(initiator)}`}>
+          {t(closeInitiatorLabelKey(initiator))}
         </span>
       );
     },

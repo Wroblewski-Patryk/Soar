@@ -10,15 +10,15 @@ Operational queue for one-task execution runs.
 - [ ] `V1FIX-2026-04-26-B release(prod): deploy latest scoped-position/backtests closure pack to Coolify and rerun affected-account smoke`
 ## NEXT
 - [x] `V1CLOSE-00 planning(queue): publish canonical close-attribution and external-close hardening packet`
-- [ ] `V1CLOSE-01 docs(contract): freeze canonical close-attribution model`
-- [ ] `V1CLOSE-02 test(api-red): lock missing close-attribution gaps on current write paths`
-- [ ] `V1CLOSE-03 db(schema): add canonical close-attribution fields`
-- [ ] `V1CLOSE-04 fix(api-runtime): persist USER_APP and BOT_APP on canonical app-driven closes`
-- [ ] `V1CLOSE-05 fix(api-events): preserve close attribution through exchange confirmation`
-- [ ] `V1CLOSE-06 fix(api-reconciliation): classify external manual close separately from repair cleanup`
-- [ ] `V1CLOSE-07 test(api+read-red): lock read-model and history attribution parity`
-- [ ] `V1CLOSE-08 fix(api+web): expose close attribution on operator surfaces`
-- [ ] `V1CLOSE-09 qa(closure): run focused close-attribution pack and sync docs/context`
+- [x] `V1CLOSE-01 docs(contract): freeze canonical close-attribution model`
+- [x] `V1CLOSE-02 test(api-red): lock missing close-attribution gaps on current write paths`
+- [x] `V1CLOSE-03 db(schema): add canonical close-attribution fields`
+- [x] `V1CLOSE-04 fix(api-runtime): persist USER_APP and BOT_APP on canonical app-driven closes`
+- [x] `V1CLOSE-05 fix(api-events): preserve close attribution through exchange confirmation`
+- [x] `V1CLOSE-06 fix(api-reconciliation): classify external manual close separately from repair cleanup`
+- [x] `V1CLOSE-07 test(api+read-red): lock read-model and history attribution parity`
+- [x] `V1CLOSE-08 fix(api+web): expose close attribution on operator surfaces`
+- [x] `V1CLOSE-09 qa(closure): run focused close-attribution pack and sync docs/context`
 ## PIPELINE
 - [x] `V1LIVE-01 audit(api+docs): publish canonical live-execution and takeover regression packet`
 - [x] `V1LIVE-02 test(api-exchange-red): lock adapter selection to exact user/bot exchange context`
@@ -172,7 +172,7 @@ Operational queue for one-task execution runs.
 - [x] `CQLT-32 docs(decision): freeze legacy bridge sunset list and mark compatibility-only code paths that remain intentional`
 - [x] `CQLT-34 docs(sync): update queue/context/module docs and capture post-wave coding rules for future agents`
 ## GROUP QUEUE
-- [ ] `V1CLOSE-A planning queued (canonical close-attribution model for bot-close, app-close, exchange-manual close, liquidation, and repair semantics)`
+- [x] `V1CLOSE-A planning queued (canonical close-attribution model for bot-close, app-close, exchange-manual close, liquidation, and repair semantics)`
 - [x] `V1LIVE-A planning queued (exchange-selected live execution, Binance Spot/Futures first adapter family, takeover ownership, imported-position runtime parity, and paper/live boundary hardening)`
 - [x] `V1FACT-A planning queued (V1 production activation through release-gate truth, stage/prod evidence freshness, backup/rollback proof, and final sign-off packaging)`
 - [x] `V1FACT-A1 (commits V1FACT-01..V1FACT-03): contract + audit + queue truth`

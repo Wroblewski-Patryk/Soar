@@ -7,6 +7,9 @@ import {
   ExternalPositionOwnershipIndex,
   getExternalPositionOwnership,
 } from '../bots/runtimeExternalPositionOwner.service';
+import {
+  resolveExternalSyncMissingCloseAttribution,
+} from './positionCloseAttribution';
 
 type ReconciliationStatus = {
   running: boolean;
@@ -304,6 +307,7 @@ const defaultDeps: ReconcileDeps = {
       select: { id: true, externalId: true },
     }),
   closeStaleSyncedPosition: async (positionId, closedAt) => {
+    const closeAttribution = resolveExternalSyncMissingCloseAttribution();
     await prisma.position.update({
       where: { id: positionId },
       data: {
@@ -311,6 +315,8 @@ const defaultDeps: ReconcileDeps = {
         closedAt,
         syncState: 'ORPHAN_LOCAL',
         unrealizedPnl: 0,
+        closeReason: closeAttribution.closeReason,
+        closeInitiator: closeAttribution.closeInitiator,
       },
     });
   },
@@ -408,6 +414,7 @@ const defaultDeps: ReconcileDeps = {
       },
     }),
   closeStaleLocalManagedPosition: async (positionId, closedAt) => {
+    const closeAttribution = resolveExternalSyncMissingCloseAttribution();
     await prisma.position.update({
       where: { id: positionId },
       data: {
@@ -415,6 +422,8 @@ const defaultDeps: ReconcileDeps = {
         closedAt,
         syncState: 'ORPHAN_LOCAL',
         unrealizedPnl: 0,
+        closeReason: closeAttribution.closeReason,
+        closeInitiator: closeAttribution.closeInitiator,
       },
     });
   },

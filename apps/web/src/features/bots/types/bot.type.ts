@@ -317,7 +317,31 @@ export type BotRuntimeTrade = {
     | "TRAILING_STOP"
     | "SIGNAL_EXIT"
     | "MANUAL"
+    | "LIQUIDATION"
+    | "POSITION_LIFETIME"
+    | "EXTERNAL_CLOSE"
+    | "SYSTEM_REPAIR"
     | "UNKNOWN";
+  closeReason?:
+    | "TP"
+    | "TTP"
+    | "SL"
+    | "TSL"
+    | "LIQUIDATION"
+    | "ACCOUNT_FLOOR"
+    | "MANUAL"
+    | "SIGNAL_EXIT"
+    | "POSITION_LIFETIME"
+    | "EXTERNAL_SYNC_MISSING"
+    | "SYSTEM_REPAIR"
+    | null;
+  closeInitiator?:
+    | "BOT_APP"
+    | "USER_APP"
+    | "USER_EXCHANGE"
+    | "EXCHANGE"
+    | "SYSTEM_REPAIR"
+    | null;
   price: number;
   quantity: number;
   fee: number;
@@ -362,6 +386,26 @@ export type BotRuntimePositionItem = {
   symbol: string;
   side: "LONG" | "SHORT";
   status: "OPEN" | "CLOSED";
+  closeReason?:
+    | "TP"
+    | "TTP"
+    | "SL"
+    | "TSL"
+    | "LIQUIDATION"
+    | "ACCOUNT_FLOOR"
+    | "MANUAL"
+    | "SIGNAL_EXIT"
+    | "POSITION_LIFETIME"
+    | "EXTERNAL_SYNC_MISSING"
+    | "SYSTEM_REPAIR"
+    | null;
+  closeInitiator?:
+    | "BOT_APP"
+    | "USER_APP"
+    | "USER_EXCHANGE"
+    | "EXCHANGE"
+    | "SYSTEM_REPAIR"
+    | null;
   quantity: number;
   leverage: number;
   entryPrice: number;

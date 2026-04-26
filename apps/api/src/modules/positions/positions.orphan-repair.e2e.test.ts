@@ -220,11 +220,15 @@ describe('Positions orphan repair API', () => {
         status: true,
         syncState: true,
         closedAt: true,
+        closeReason: true,
+        closeInitiator: true,
       },
     });
     expect(closedBlocker.status).toBe('CLOSED');
     expect(closedBlocker.syncState).toBe('ORPHAN_LOCAL');
     expect(closedBlocker.closedAt).not.toBeNull();
+    expect(closedBlocker.closeReason).toBe('SYSTEM_REPAIR');
+    expect(closedBlocker.closeInitiator).toBe('SYSTEM_REPAIR');
 
     const syncedExchangePosition = await prisma.position.findFirst({
       where: {

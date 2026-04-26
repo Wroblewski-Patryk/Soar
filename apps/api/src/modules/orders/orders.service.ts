@@ -22,6 +22,9 @@ import {
   resolveLiveExecutionApiKey,
   submitLiveOrderThroughBoundary,
 } from '../exchange/exchangeAdapterBoundary.service';
+import {
+  resolveUserAppManualCloseAttribution,
+} from '../positions/positionCloseAttribution';
 export { resolveLiveExecutionApiKey } from '../exchange/exchangeAdapterBoundary.service';
 
 type OpenOrderInput = OpenOrderDto & {
@@ -478,6 +481,8 @@ export const openOrder = async (
       symbol: canonicalPayload.symbol.toUpperCase(),
       side: canonicalPayload.side,
       type: canonicalPayload.type,
+      closeReason: null,
+      closeInitiator: null,
       status: persistedStatus,
       quantity: canonicalPayload.quantity,
       filledQuantity: persistedStatus === 'FILLED' ? canonicalPayload.quantity : 0,
@@ -608,6 +613,8 @@ export const closeOrder = async (userId: string, id: string, payload: CloseOrder
   const updated = await prisma.order.update({
     where: { id: existing.id },
     data: {
+      closeReason: 'MANUAL',
+      closeInitiator: 'USER_APP',
       status: 'FILLED',
       filledQuantity: existing.quantity,
       filledAt: now,
@@ -615,6 +622,7 @@ export const closeOrder = async (userId: string, id: string, payload: CloseOrder
   });
 
   if (existing.positionId) {
+    const closeAttribution = resolveUserAppManualCloseAttribution();
     await prisma.position.updateMany({
       where: {
         id: existing.positionId,
@@ -624,6 +632,9 @@ export const closeOrder = async (userId: string, id: string, payload: CloseOrder
       data: {
         status: 'CLOSED',
         closedAt: now,
+        closeReason: closeAttribution.closeReason,
+        closeInitiator: closeAttribution.closeInitiator,
+        unrealizedPnl: 0,
       },
     });
   }

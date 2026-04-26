@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { prisma } from '../../prisma/client';
-import { getManualOrderContext, openOrder, resolveLiveExecutionApiKey } from './orders.service';
+import { closeOrder, getManualOrderContext, openOrder, resolveLiveExecutionApiKey } from './orders.service';
 import { ORDER_ERROR_CODES } from './orders.errors';
 
 const cleanupDb = async () => {
@@ -1623,6 +1623,60 @@ describe('getManualOrderContext', () => {
     expect(context?.quantityConstraints.minAmount).toBeNull();
     expect(context?.quantityConstraints.minNotional).toBeNull();
     expect(context?.quantityConstraints.minExecutableQty).toBeNull();
+  });
+});
+
+describe('closeOrder close attribution', () => {
+  beforeEach(async () => {
+    await cleanupDb();
+  });
+
+  it('persists USER_APP manual close attribution on both order and linked position', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-close-attribution@example.com', password: 'hashed' },
+    });
+    const position = await prisma.position.create({
+      data: {
+        userId: user.id,
+        symbol: 'BTCUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 62_000,
+        quantity: 0.1,
+      },
+    });
+    const order = await prisma.order.create({
+      data: {
+        userId: user.id,
+        positionId: position.id,
+        origin: 'USER',
+        managementMode: 'MANUAL_MANAGED',
+        symbol: 'BTCUSDT',
+        side: 'SELL',
+        type: 'MARKET',
+        status: 'OPEN',
+        quantity: 0.1,
+      },
+    });
+
+    const result = await closeOrder(user.id, order.id, { riskAck: true });
+
+    expect(result).not.toBeNull();
+    expect(result?.closeReason).toBe('MANUAL');
+    expect(result?.closeInitiator).toBe('USER_APP');
+
+    const closedOrder = await prisma.order.findUniqueOrThrow({
+      where: { id: order.id },
+    });
+    expect(closedOrder.closeReason).toBe('MANUAL');
+    expect(closedOrder.closeInitiator).toBe('USER_APP');
+
+    const closedPosition = await prisma.position.findUniqueOrThrow({
+      where: { id: position.id },
+    });
+    expect(closedPosition.status).toBe('CLOSED');
+    expect(closedPosition.closeReason).toBe('MANUAL');
+    expect(closedPosition.closeInitiator).toBe('USER_APP');
   });
 });
 

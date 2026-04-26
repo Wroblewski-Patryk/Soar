@@ -719,6 +719,8 @@ model Position {
   entryPrice    Float
   quantity      Float
   leverage      Int            @default(1)
+  closeReason   PositionCloseReason?
+  closeInitiator PositionCloseInitiator?
   stopLoss      Float?
   takeProfit    Float?
   openedAt      DateTime       @default(now())
@@ -767,6 +769,8 @@ model Order {
   symbol           String
   side             OrderSide
   type             OrderType
+  closeReason      PositionCloseReason?
+  closeInitiator   PositionCloseInitiator?
   status           OrderStatus @default(PENDING)
   quantity         Float
   price            Float?
@@ -826,6 +830,8 @@ model Trade {
   symbol           String
   side             OrderSide
   lifecycleAction  TradeLifecycleAction @default(UNKNOWN)
+  closeReason      PositionCloseReason?
+  closeInitiator   PositionCloseInitiator?
   price            Float
   quantity         Float
   fee              Float?
@@ -942,6 +948,28 @@ enum PositionStatus {
   OPEN
   CLOSED
   LIQUIDATED
+}
+
+enum PositionCloseReason {
+  TP
+  TTP
+  SL
+  TSL
+  LIQUIDATION
+  ACCOUNT_FLOOR
+  MANUAL
+  SIGNAL_EXIT
+  POSITION_LIFETIME
+  EXTERNAL_SYNC_MISSING
+  SYSTEM_REPAIR
+}
+
+enum PositionCloseInitiator {
+  BOT_APP
+  USER_APP
+  USER_EXCHANGE
+  EXCHANGE
+  SYSTEM_REPAIR
 }
 
 enum OrderSide {

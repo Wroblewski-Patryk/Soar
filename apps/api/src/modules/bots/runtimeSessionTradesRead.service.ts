@@ -2,7 +2,11 @@ import { Prisma } from '@prisma/client';
 import { normalizeSymbol } from '../../lib/symbols';
 import { getOwnedBotRuntimeSession, resolveSessionWindowEnd } from './botOwnership.service';
 import { ListBotRuntimeTradesQueryDto } from './bots.types';
-import { buildCloseReasonLookup, RuntimeTradeActionReason } from './runtimeTradeActionReason.service';
+import {
+  buildCloseReasonLookup,
+  normalizeCloseReason,
+  RuntimeTradeActionReason,
+} from './runtimeTradeActionReason.service';
 import { buildLifecycleActionByTradeId, toPositionMetaById } from './runtimeTradeLifecycle.service';
 import {
   getRuntimeTradeBotContext,
@@ -182,7 +186,8 @@ export const listBotRuntimeSessionTrades = async (
           : inferredLifecycleAction === 'DCA'
             ? 'DCA_LEVEL'
             : inferredLifecycleAction === 'CLOSE'
-              ? closeReasonByOrderId.get(trade.orderId ?? '')?.reason ??
+              ? normalizeCloseReason(trade.closeReason) ??
+                closeReasonByOrderId.get(trade.orderId ?? '')?.reason ??
                 closeReasonByPositionId.get(trade.positionId ?? '')?.reason ??
                 (trade.managementMode === 'MANUAL_MANAGED' ? 'MANUAL' : 'UNKNOWN')
               : 'UNKNOWN';
@@ -209,6 +214,8 @@ export const listBotRuntimeSessionTrades = async (
         strategyId: trade.strategyId,
         origin: trade.origin,
         managementMode: trade.managementMode,
+        closeReason: trade.closeReason ?? null,
+        closeInitiator: trade.closeInitiator ?? null,
         lifecycleAction: inferredLifecycleAction,
         actionReason,
         notional,

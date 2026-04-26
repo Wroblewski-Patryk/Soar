@@ -251,7 +251,17 @@ type TranslationSchema = {
         reasonTrailingStop: string;
         reasonSignalExit: string;
         reasonManual: string;
+        reasonLiquidation: string;
+        reasonPositionLifetime: string;
+        reasonExternalClose: string;
+        reasonSystemRepair: string;
         reasonUnknown: string;
+        closeBy: string;
+        closeByBotApp: string;
+        closeByUserApp: string;
+        closeByUserExchange: string;
+        closeByExchange: string;
+        closeBySystemRepair: string;
         time: string;
         qty: string;
         price: string;

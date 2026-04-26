@@ -6,6 +6,10 @@ import {
   NormalizedBinanceOrderTradeUpdateEvent,
   NormalizedBinanceUserDataStreamEvent,
 } from '../exchange/binanceUserDataStream.types';
+import {
+  resolveExchangeConfirmedCloseAttribution,
+  resolveExternalSyncMissingCloseAttribution,
+} from '../positions/positionCloseAttribution';
 import { applyOrderFillLifecycle } from './orders.lifecycle.service';
 
 const isPositiveFiniteNumber = (value: unknown): value is number =>
@@ -130,7 +134,10 @@ const ensureTradeRecord = async (input: {
   exchangeTradeId: string | null;
   lifecycleAction: 'OPEN' | 'CLOSE';
   managementMode: 'BOT_MANAGED' | 'MANUAL_MANAGED';
+  origin: 'BOT' | 'USER' | 'EXCHANGE_SYNC' | 'BACKTEST';
   realizedPnl?: number;
+  closeReason?: 'TP' | 'TTP' | 'SL' | 'TSL' | 'LIQUIDATION' | 'ACCOUNT_FLOOR' | 'MANUAL' | 'SIGNAL_EXIT' | 'POSITION_LIFETIME' | 'EXTERNAL_SYNC_MISSING' | 'SYSTEM_REPAIR' | null;
+  closeInitiator?: 'BOT_APP' | 'USER_APP' | 'USER_EXCHANGE' | 'EXCHANGE' | 'SYSTEM_REPAIR' | null;
 }) => {
   if (input.exchangeTradeId) {
     const existing = await prisma.trade.findFirst({
@@ -163,7 +170,9 @@ const ensureTradeRecord = async (input: {
       effectiveFeeRate: input.effectiveFeeRate,
       exchangeTradeId: input.exchangeTradeId,
       realizedPnl: input.realizedPnl,
-      origin: 'BOT',
+      closeReason: input.closeReason ?? null,
+      closeInitiator: input.closeInitiator ?? null,
+      origin: input.origin,
       managementMode: input.managementMode,
     },
   });
@@ -265,6 +274,11 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
           positionSide: updatedOrder.position.side,
         })
       ) {
+        const closeAttribution = resolveExchangeConfirmedCloseAttribution({
+          orderCloseReason: updatedOrder.closeReason,
+          orderCloseInitiator: updatedOrder.closeInitiator,
+          executionType: input.event.executionType,
+        });
         const exitFee = typeof fee === 'number' && Number.isFinite(fee) ? fee : 0;
         const realizedPnl = await computeCloseRealizedPnl({
           userId: input.userId,
@@ -284,6 +298,8 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
             closedAt: eventAt,
             realizedPnl,
             unrealizedPnl: 0,
+            closeReason: closeAttribution.closeReason,
+            closeInitiator: closeAttribution.closeInitiator,
           },
         });
         await ensureTradeRecord({
@@ -305,7 +321,10 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
           exchangeTradeId: input.event.exchangeTradeId ?? null,
           lifecycleAction: 'CLOSE',
           managementMode: updatedOrder.managementMode,
+          origin: updatedOrder.origin,
           realizedPnl,
+          closeReason: closeAttribution.closeReason,
+          closeInitiator: closeAttribution.closeInitiator,
         });
       } else {
         await ensureTradeRecord({
@@ -327,6 +346,7 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
           exchangeTradeId: input.event.exchangeTradeId ?? null,
           lifecycleAction: 'OPEN',
           managementMode: updatedOrder.managementMode,
+          origin: updatedOrder.origin,
           realizedPnl: 0,
         });
       }
@@ -375,6 +395,7 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
           exchangeTradeId: input.event.exchangeTradeId ?? null,
           lifecycleAction: 'OPEN',
           managementMode: updatedOrder.managementMode,
+          origin: updatedOrder.origin,
           realizedPnl: 0,
         });
       }
@@ -394,6 +415,7 @@ export const applyLiveExchangeAccountUpdateEvent = async (input: {
   event: NormalizedBinanceAccountUpdateEvent;
 }) => {
   let updatedPositions = 0;
+  const eventAt = new Date(input.event.transactionTime ?? input.event.eventTime);
   for (const position of input.event.positions) {
     const normalizedSymbol = normalizeSymbol(position.symbol);
     if (!normalizedSymbol) continue;
@@ -407,6 +429,26 @@ export const applyLiveExchangeAccountUpdateEvent = async (input: {
       typeof position.amount === 'number' && Number.isFinite(position.amount)
         ? Math.abs(position.amount)
         : null;
+    if (quantity === 0) {
+      const closeAttribution = resolveExternalSyncMissingCloseAttribution();
+      const result = await prisma.position.updateMany({
+        where: {
+          userId: input.userId,
+          symbol: normalizedSymbol,
+          side,
+          status: 'OPEN',
+        },
+        data: {
+          status: 'CLOSED',
+          closedAt: eventAt,
+          unrealizedPnl: 0,
+          closeReason: closeAttribution.closeReason,
+          closeInitiator: closeAttribution.closeInitiator,
+        },
+      });
+      updatedPositions += result.count;
+      continue;
+    }
     const result = await prisma.position.updateMany({
       where: {
         userId: input.userId,

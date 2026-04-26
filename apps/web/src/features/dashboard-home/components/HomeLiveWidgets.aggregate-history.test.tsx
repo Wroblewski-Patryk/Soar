@@ -288,6 +288,8 @@ describe("HomeLiveWidgets aggregate history parity", () => {
             symbol: "LEGACYPOSUSDT",
             side: "LONG",
             status: "CLOSED",
+            closeReason: "EXTERNAL_SYNC_MISSING",
+            closeInitiator: "USER_EXCHANGE",
             quantity: 1,
             leverage: 3,
             entryPrice: 111,
@@ -323,6 +325,8 @@ describe("HomeLiveWidgets aggregate history parity", () => {
             symbol: "LEGACYUSDT",
             side: "SELL",
             lifecycleAction: "CLOSE",
+            closeReason: "EXTERNAL_SYNC_MISSING",
+            closeInitiator: "USER_EXCHANGE",
             price: 123,
             quantity: 1,
             fee: 0.1,
@@ -349,6 +353,7 @@ describe("HomeLiveWidgets aggregate history parity", () => {
     fireEvent.click(tradeHistoryTab);
 
     expect(await screen.findByText("LEGACYUSDT")).toBeInTheDocument();
+    expect(screen.getByText("Uzytkownik na gieldzie")).toBeInTheDocument();
     expect(screen.queryByText("LEGACYPOSUSDT")).not.toBeInTheDocument();
   });
 
@@ -484,6 +489,8 @@ describe("HomeLiveWidgets aggregate history parity", () => {
               symbol: historySymbol,
               side: "LONG",
               status: "CLOSED",
+              closeReason: "MANUAL",
+              closeInitiator: "USER_APP",
               quantity: 1,
               leverage: 3,
               entryPrice: 100,
@@ -519,6 +526,8 @@ describe("HomeLiveWidgets aggregate history parity", () => {
               symbol: tradeSymbol,
               side: "SELL",
               lifecycleAction: "CLOSE",
+              closeReason: "MANUAL",
+              closeInitiator: "USER_APP",
               price: 105,
               quantity: 1,
               fee: 0.2,

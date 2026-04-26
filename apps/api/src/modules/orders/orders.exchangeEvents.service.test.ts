@@ -258,11 +258,15 @@ describe('orders.exchangeEvents.service', () => {
     });
     expect(closedPosition.status).toBe('CLOSED');
     expect(closedPosition.realizedPnl).toBeCloseTo(99.82, 6);
+    expect(closedPosition.closeReason).toBe('MANUAL');
+    expect(closedPosition.closeInitiator).toBe('BOT_APP');
     const closeTrade = await prisma.trade.findFirstOrThrow({
       where: { orderId: order.id },
     });
     expect(closeTrade.lifecycleAction).toBe('CLOSE');
     expect(closeTrade.realizedPnl).toBeCloseTo(99.82, 6);
+    expect(closeTrade.closeReason).toBe('MANUAL');
+    expect(closeTrade.closeInitiator).toBe('BOT_APP');
   });
 
   it('applies account update to refresh canonical open-position quantities and pnl', async () => {
@@ -316,5 +320,58 @@ describe('orders.exchangeEvents.service', () => {
     expect(updatedPosition.quantity).toBe(0.15);
     expect(updatedPosition.entryPrice).toBe(62_500);
     expect(updatedPosition.unrealizedPnl).toBe(12.34);
+  });
+
+  it('closes locally open exchange-synced position when account update confirms zero quantity', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'exchange-event-account-close@example.com', password: 'hashed' },
+    });
+    const position = await prisma.position.create({
+      data: {
+        userId: user.id,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        symbol: 'DOGEUSDT',
+        side: 'SHORT',
+        status: 'OPEN',
+        entryPrice: 0.1,
+        quantity: 100,
+        leverage: 10,
+        unrealizedPnl: 4,
+      },
+    });
+
+    const result = await applyLiveExchangeAccountUpdateEvent({
+      userId: user.id,
+      event: {
+        eventType: 'ACCOUNT_UPDATE',
+        marketType: 'FUTURES',
+        eventTime: 4_000,
+        transactionTime: 4_001,
+        balances: [],
+        positions: [
+          {
+            symbol: 'DOGEUSDT',
+            amount: 0,
+            entryPrice: 0,
+            unrealizedPnl: 0,
+            positionSide: 'SHORT',
+          },
+        ],
+        raw: {},
+      },
+    });
+
+    expect(result).toEqual({
+      status: 'applied',
+      updatedPositions: 1,
+    });
+    const closedPosition = await prisma.position.findUniqueOrThrow({
+      where: { id: position.id },
+    });
+    expect(closedPosition.status).toBe('CLOSED');
+    expect(closedPosition.closeReason).toBe('EXTERNAL_SYNC_MISSING');
+    expect(closedPosition.closeInitiator).toBe('USER_EXCHANGE');
   });
 });

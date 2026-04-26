@@ -14,7 +14,18 @@ export type TradeActionReasonValue =
   | "TRAILING_STOP"
   | "SIGNAL_EXIT"
   | "MANUAL"
+  | "LIQUIDATION"
+  | "POSITION_LIFETIME"
+  | "EXTERNAL_CLOSE"
+  | "SYSTEM_REPAIR"
   | "UNKNOWN";
+
+export type CloseInitiatorValue =
+  | "BOT_APP"
+  | "USER_APP"
+  | "USER_EXCHANGE"
+  | "EXCHANGE"
+  | "SYSTEM_REPAIR";
 
 export type PositionEditDraft = {
   position: OpenPositionWithLive;
@@ -116,6 +127,9 @@ export const tradeReasonPillClass = (value: TradeActionReasonValue) => {
   if (value === "SIGNAL_ENTRY" || value === "SIGNAL_EXIT") return "border-info/40 bg-info/10 text-info";
   if (value === "DCA_LEVEL") return "border-warning/40 bg-warning/10 text-warning";
   if (value === "MANUAL") return "border-secondary/40 bg-secondary/10 text-secondary";
+  if (value === "LIQUIDATION") return "border-error/50 bg-error/15 text-error";
+  if (value === "POSITION_LIFETIME" || value === "SYSTEM_REPAIR") return "border-warning/40 bg-warning/10 text-warning";
+  if (value === "EXTERNAL_CLOSE") return "border-info/40 bg-info/10 text-info";
   return "border-base-300 bg-base-100 text-base-content/70";
 };
 
@@ -128,5 +142,25 @@ export const tradeReasonLabelKey = (value: TradeActionReasonValue): TranslationK
   if (value === "TRAILING_STOP") return "dashboard.home.runtime.reasonTrailingStop";
   if (value === "SIGNAL_EXIT") return "dashboard.home.runtime.reasonSignalExit";
   if (value === "MANUAL") return "dashboard.home.runtime.reasonManual";
+  if (value === "LIQUIDATION") return "dashboard.home.runtime.reasonLiquidation";
+  if (value === "POSITION_LIFETIME") return "dashboard.home.runtime.reasonPositionLifetime";
+  if (value === "EXTERNAL_CLOSE") return "dashboard.home.runtime.reasonExternalClose";
+  if (value === "SYSTEM_REPAIR") return "dashboard.home.runtime.reasonSystemRepair";
   return "dashboard.home.runtime.reasonUnknown";
+};
+
+export const closeInitiatorPillClass = (value: CloseInitiatorValue) => {
+  if (value === "USER_APP") return "border-secondary/40 bg-secondary/10 text-secondary";
+  if (value === "BOT_APP") return "border-primary/40 bg-primary/10 text-primary";
+  if (value === "USER_EXCHANGE") return "border-info/40 bg-info/10 text-info";
+  if (value === "EXCHANGE") return "border-error/40 bg-error/10 text-error";
+  return "border-warning/40 bg-warning/10 text-warning";
+};
+
+export const closeInitiatorLabelKey = (value: CloseInitiatorValue): TranslationKey => {
+  if (value === "BOT_APP") return "dashboard.home.runtime.closeByBotApp";
+  if (value === "USER_APP") return "dashboard.home.runtime.closeByUserApp";
+  if (value === "USER_EXCHANGE") return "dashboard.home.runtime.closeByUserExchange";
+  if (value === "EXCHANGE") return "dashboard.home.runtime.closeByExchange";
+  return "dashboard.home.runtime.closeBySystemRepair";
 };

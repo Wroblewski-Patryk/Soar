@@ -2,7 +2,7 @@
 
 ## Status
 
-Queued
+Closed
 
 ## Why This Wave Exists
 

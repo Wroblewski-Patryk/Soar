@@ -454,6 +454,8 @@ export const listBotRuntimeSessionPositions = async (
       status: position.status,
       quantity: position.quantity,
       leverage: position.leverage,
+      closeReason: position.closeReason ?? null,
+      closeInitiator: position.closeInitiator ?? null,
       entryPrice: position.entryPrice,
       entryNotional: position.entryPrice * position.quantity,
       exitPrice: exitTrade?.price ?? null,

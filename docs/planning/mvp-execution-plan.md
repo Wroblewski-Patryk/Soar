@@ -2765,18 +2765,19 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 
 ## Phase V1CLOSE-A - Position Close Attribution and External-Close Hardening (Queued 2026-04-27)
 - [x] `V1CLOSE-00 planning(queue): publish canonical close-attribution and external-close hardening packet`
-- [ ] `V1CLOSE-01 docs(contract): freeze canonical close-attribution model`
-- [ ] `V1CLOSE-02 test(api-red): lock missing close-attribution gaps on current write paths`
-- [ ] `V1CLOSE-03 db(schema): add canonical close-attribution fields`
-- [ ] `V1CLOSE-04 fix(api-runtime): persist USER_APP and BOT_APP on canonical app-driven closes`
-- [ ] `V1CLOSE-05 fix(api-events): preserve close attribution through exchange confirmation`
-- [ ] `V1CLOSE-06 fix(api-reconciliation): classify external manual close separately from repair cleanup`
-- [ ] `V1CLOSE-07 test(api+read-red): lock read-model and history attribution parity`
-- [ ] `V1CLOSE-08 fix(api+web): expose close attribution on operator surfaces`
-- [ ] `V1CLOSE-09 qa(closure): run focused close-attribution pack and sync docs/context`
+- [x] `V1CLOSE-01 docs(contract): freeze canonical close-attribution model`
+- [x] `V1CLOSE-02 test(api-red): lock missing close-attribution gaps on current write paths`
+- [x] `V1CLOSE-03 db(schema): add canonical close-attribution fields`
+- [x] `V1CLOSE-04 fix(api-runtime): persist USER_APP and BOT_APP on canonical app-driven closes`
+- [x] `V1CLOSE-05 fix(api-events): preserve close attribution through exchange confirmation`
+- [x] `V1CLOSE-06 fix(api-reconciliation): classify external manual close separately from repair cleanup`
+- [x] `V1CLOSE-07 test(api+read-red): lock read-model and history attribution parity`
+- [x] `V1CLOSE-08 fix(api+web): expose close attribution on operator surfaces`
+- [x] `V1CLOSE-09 qa(closure): run focused close-attribution pack and sync docs/context`
 
 ### Progress Log (Phase V1CLOSE-A - Position Close Attribution and External-Close Hardening)
 - 2026-04-27: Queued `V1CLOSE-A` after a fresh post-deploy close-lifecycle audit on the production-ready repository. The confirmed gap is no longer basic close execution, but canonical attribution truth: current runtime, exchange-event, and reconcile paths can close positions, yet the system still lacks one persisted contract that answers who or what initiated the close. The user approved the canonical two-dimension model (`closeReason` + `closeInitiator`) on 2026-04-27. Published the planning packet `docs/planning/v1close-position-close-attribution-hardening-plan-2026-04-27.md`, normalized the architecture contract into `docs/architecture/06_execution-lifecycle.md` and `docs/architecture/reference/position-close-attribution-contract.md`, extended lifecycle parity docs, and synchronized canonical queue/context truth for the upcoming implementation wave.
+- 2026-04-27: Closed `V1CLOSE-A`. The repository now persists canonical close attribution across app-driven closes, bot-driven closes, exchange-event confirmation, reconcile-driven external disappearance, and repair-only orphan cleanup. Prisma schema and migration add nullable `closeReason` / `closeInitiator` to `Position`, `Order`, and `Trade`; shared mapping lives in `positionCloseAttribution.ts`; runtime/exchange/reconcile/repair paths now reuse that mapping instead of inferring from `syncState` or logs. Runtime history/read models and dashboard aggregate history now expose persisted close-attribution truth with operator labels for `BOT_APP`, `USER_APP`, `USER_EXCHANGE`, `EXCHANGE`, and `SYSTEM_REPAIR`. Closure validation PASS: `pnpm --filter api run test -- --run src/modules/orders/orders.service.test.ts src/modules/orders/orders.exchangeEvents.service.test.ts src/modules/positions/positions.orphan-repair.e2e.test.ts src/modules/engine/paperLiveDecisionEquivalence.test.ts src/modules/engine/runtimeCrashRetry.regression.test.ts`, `pnpm --filter web run test -- --run src/features/dashboard-home/components/HomeLiveWidgets.aggregate-history.test.tsx`, `pnpm --filter api run typecheck`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`, `pnpm run build`.
 
 ## Phase ARCCON - Architecture Conformance and Service Ownership Closure (Closed 2026-04-21)
 - [x] `ARCCON-01 test(api-red): lock fail-closed manual-order strategy context when selected bot has no symbol-matching strategy`
