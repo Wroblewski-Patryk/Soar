@@ -21,7 +21,22 @@ const baseStrategy = {
   weight: 1,
 };
 
-const baseBot = {
+const baseBot: {
+  id: string;
+  userId: string;
+  mode: 'PAPER' | 'LIVE';
+  exchange: 'BINANCE';
+  paperStartBalance: number;
+  marketType: 'FUTURES' | 'SPOT';
+  walletId: string;
+  runtimeContext: {
+    symbolGroupId: string;
+    strategyId: string;
+    maxOpenPositions: number;
+    symbols: string[];
+    strategy: typeof baseStrategy;
+  };
+} = {
   id: 'bot-1',
   userId: 'user-1',
   mode: 'PAPER' as const,
@@ -60,7 +75,9 @@ const createContext = (options?: {
   strategyInterval?: string;
   orchestrationResult?:
     | { status: 'opened'; orderId: string; positionId: string }
+    | { status: 'submitted'; orderId: string }
     | { status: 'ignored'; reason: 'already_open_same_side' | 'dedupe_inflight' };
+  botOverrides?: Partial<typeof baseBot>;
 }) => {
   const direction = options?.direction === undefined ? 'LONG' : options.direction;
   const orchestrationResult = options?.orchestrationResult ?? {
@@ -69,10 +86,13 @@ const createContext = (options?: {
     positionId: 'p1',
   };
   const bot = structuredClone(baseBot);
+  Object.assign(bot, options?.botOverrides ?? {});
   bot.runtimeContext = {
     ...bot.runtimeContext,
+    ...(options?.botOverrides?.runtimeContext ?? {}),
     strategy: {
       ...bot.runtimeContext.strategy,
+      ...options?.botOverrides?.runtimeContext?.strategy,
       strategyInterval: options?.strategyInterval ?? bot.runtimeContext.strategy.strategyInterval,
     },
   };
@@ -246,6 +266,81 @@ describe('runtimeFinalCandleDecision.service', () => {
         payload: expect.objectContaining({
           reason: 'already_open_same_side',
         }),
+      })
+    );
+  });
+
+  it('keeps signal-driven LIVE execution explicit as submitted while preserving exact runtime context', async () => {
+    const { context, createSignal, orchestrateFn, recordRuntimeEvent } = createContext({
+      direction: 'LONG',
+      orchestrationResult: {
+        status: 'submitted',
+        orderId: 'live-order-1',
+      },
+      botOverrides: {
+        mode: 'LIVE',
+        walletId: 'wallet-live-1',
+        marketType: 'FUTURES',
+        runtimeContext: {
+          symbolGroupId: 'symbol-group-live-1',
+          strategyId: 'strategy-live-1',
+          maxOpenPositions: 2,
+          symbols: ['BTCUSDT'],
+          strategy: {
+            ...baseStrategy,
+            strategyId: 'strategy-live-1',
+            strategyInterval: '5m',
+            strategyLeverage: 12,
+            walletRisk: 7.5,
+          },
+        },
+      },
+      strategyInterval: '5m',
+    });
+
+    await processRuntimeFinalCandleDecision(
+      {
+        ...baseEvent,
+        interval: '5m',
+        openTime: 300_000,
+        closeTime: 599_000,
+        close: 63_500,
+      },
+      context as any
+    );
+
+    expect(createSignal).toHaveBeenCalledWith(
+      expect.objectContaining({
+        symbol: 'BTCUSDT',
+        timeframe: '5m',
+        direction: 'LONG',
+        payload: expect.objectContaining({
+          strategyInterval: '5m',
+        }),
+      })
+    );
+    expect(orchestrateFn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'user-1',
+        botId: 'bot-1',
+        walletId: 'wallet-live-1',
+        botMarketGroupId: 'symbol-group-live-1',
+        runtimeSessionId: 'runtime-session-1',
+        symbol: 'BTCUSDT',
+        direction: 'LONG',
+        strategyId: 'strategy-live-1',
+        strategyLeverage: 12,
+        strategyInterval: '5m',
+        quantity: expect.any(Number),
+        markPrice: 63_500,
+        mode: 'LIVE',
+        candleOpenTime: 300_000,
+        candleCloseTime: 599_000,
+      })
+    );
+    expect(recordRuntimeEvent).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: 'PRETRADE_BLOCKED',
       })
     );
   });

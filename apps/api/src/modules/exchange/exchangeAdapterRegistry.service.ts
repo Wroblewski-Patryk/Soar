@@ -3,7 +3,12 @@ import { Exchange } from '@prisma/client';
 import { DomainError } from '../../lib/errors';
 import { decrypt } from '../../utils/crypto';
 import { CcxtFuturesConnector } from './ccxtFuturesConnector.service';
-import { createLiveOrderAdapter, LiveOrderAdapter } from './liveOrderAdapter.service';
+import { CcxtSpotConnector } from './ccxtSpotConnector.service';
+import {
+  createBinanceFuturesLiveOrderAdapter,
+  createBinanceSpotLiveOrderAdapter,
+  LiveOrderAdapter,
+} from './liveOrderAdapter.service';
 import { getExchangeMarketTypeOptions } from './exchangeCapabilities';
 
 type TradeMarket = 'FUTURES' | 'SPOT';
@@ -82,22 +87,40 @@ export const resolveExchangeAdapterRegistryEntry = (
 ): ExchangeAdapterFamilyRegistryEntry => {
   assertExchangeContextSupported(context);
 
-  const createPublicConnector = () =>
-    new CcxtFuturesConnector({
-      exchangeId: context.exchange.toLowerCase(),
-      marketType: resolveConnectorMarketType(context.marketType),
-    });
+  const createPublicConnector =
+    context.marketType === 'SPOT'
+      ? () =>
+          new CcxtSpotConnector({
+            exchangeId: context.exchange.toLowerCase(),
+            marketType: 'spot',
+          })
+      : () =>
+          new CcxtFuturesConnector({
+            exchangeId: context.exchange.toLowerCase(),
+            marketType: resolveConnectorMarketType(context.marketType),
+          });
 
-  const createAuthenticatedConnector = (credentials: {
-    apiKey: string;
-    apiSecret: string;
-  }) =>
-    new CcxtFuturesConnector({
-      exchangeId: context.exchange.toLowerCase(),
-      apiKey: decrypt(credentials.apiKey),
-      secret: decrypt(credentials.apiSecret),
-      marketType: context.marketType,
-    });
+  const createAuthenticatedConnector =
+    context.marketType === 'SPOT'
+      ? (credentials: { apiKey: string; apiSecret: string }) =>
+          new CcxtSpotConnector({
+            exchangeId: context.exchange.toLowerCase(),
+            apiKey: decrypt(credentials.apiKey),
+            secret: decrypt(credentials.apiSecret),
+            marketType: 'spot',
+          })
+      : (credentials: { apiKey: string; apiSecret: string }) =>
+          new CcxtFuturesConnector({
+            exchangeId: context.exchange.toLowerCase(),
+            apiKey: decrypt(credentials.apiKey),
+            secret: decrypt(credentials.apiSecret),
+            marketType: context.marketType,
+          });
+
+  const createLiveOrderAdapter =
+    context.marketType === 'SPOT'
+      ? createBinanceSpotLiveOrderAdapter
+      : createBinanceFuturesLiveOrderAdapter;
 
   return {
     marketData: {

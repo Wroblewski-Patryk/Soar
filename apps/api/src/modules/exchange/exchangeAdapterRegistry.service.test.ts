@@ -58,6 +58,19 @@ describe('exchangeAdapterRegistry.service', () => {
     expect(futuresPublic.config.marketType).toBe('future');
     expect(spotPublic.config.exchangeId).toBe('binance');
     expect(spotPublic.config.marketType).toBe('spot');
+
+    const spotAuth = spotEntry.account.createAuthenticatedConnector({
+      apiKey: 'enc-key',
+      apiSecret: 'enc-secret',
+    }) as unknown as {
+      config: { exchangeId: string; marketType: string; apiKey: string; secret: string };
+    };
+    expect(spotAuth.config).toMatchObject({
+      exchangeId: 'binance',
+      marketType: 'spot',
+      apiKey: 'dec:enc-key',
+      secret: 'dec:enc-secret',
+    });
   });
 
   it('fails closed for exchange contexts that are not allowed by market-type options', () => {

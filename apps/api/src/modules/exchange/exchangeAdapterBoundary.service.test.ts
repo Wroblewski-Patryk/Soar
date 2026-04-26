@@ -146,6 +146,93 @@ describe('exchangeAdapterBoundary.service', () => {
     });
   });
 
+  it('submits Binance SPOT live orders through the exact spot adapter family', async () => {
+    const connector = createConnector();
+    const createAuthenticatedConnector = vi.fn(() => connector);
+    const resolveLiveExecutionApiKey = vi.fn(async () => ({
+      id: 'api-key-spot-1',
+      exchange: 'BINANCE' as const,
+      apiKey: 'enc-key',
+      apiSecret: 'enc-secret',
+    }));
+    const placeLiveOrderWithFees = vi.fn(async () => ({
+      exchangeOrderId: 'binance-spot-order-1',
+      status: 'closed',
+      rawOrderStatus: 'filled',
+      fee: 0.25,
+      feeSource: 'EXCHANGE_FILL' as const,
+      feePending: false,
+      feeCurrency: 'USDT',
+      effectiveFeeRate: 0.001,
+      exchangeTradeId: 'spot-trade-1',
+      fills: [],
+    }));
+    const createLiveOrderAdapter = vi.fn(() => ({
+      placeLiveOrderWithFees,
+    }));
+
+    const result = await submitLiveOrderThroughBoundary(
+      {
+        userId: 'user-spot-1',
+        bot: {
+          exchange: 'BINANCE',
+          marketType: 'SPOT',
+          positionMode: 'ONE_WAY',
+          apiKeyId: 'api-key-spot-1',
+          walletId: 'wallet-spot-1',
+        },
+        order: {
+          symbol: 'ETHUSDT',
+          side: 'SELL',
+          type: 'MARKET',
+          quantity: 2,
+        },
+        targetLeverage: null,
+      },
+      {
+        createAuthenticatedConnector,
+        fetchBalanceRaw: vi.fn(),
+        resolveLiveExecutionApiKey,
+        createLiveOrderAdapter,
+        enforceLivePretradeGuards: vi.fn(async () => undefined),
+        convergeLiveMarginAndLeverageIfNeeded: vi.fn(async () => undefined),
+      }
+    );
+
+    expect(createAuthenticatedConnector).toHaveBeenCalledWith({
+      exchange: 'BINANCE',
+      apiKey: 'enc-key',
+      apiSecret: 'enc-secret',
+      marketType: 'SPOT',
+    });
+    expect(createLiveOrderAdapter).toHaveBeenCalledWith({
+      exchange: 'BINANCE',
+      marketType: 'SPOT',
+      connector,
+    });
+    expect(placeLiveOrderWithFees).toHaveBeenCalledWith({
+      order: {
+        symbol: 'ETHUSDT',
+        side: 'sell',
+        type: 'market',
+        amount: 2,
+        price: undefined,
+        positionMode: 'ONE_WAY',
+      },
+    });
+    expect(result).toEqual({
+      exchangeOrderId: 'binance-spot-order-1',
+      status: 'FILLED',
+      fee: 0.25,
+      feeSource: 'EXCHANGE_FILL',
+      feePending: false,
+      feeCurrency: 'USDT',
+      effectiveFeeRate: 0.001,
+      exchangeTradeId: 'spot-trade-1',
+      fills: [],
+    });
+  });
+
   it('fails closed when resolved api key exchange drifts from selected bot exchange', async () => {
     const createAuthenticatedConnector = vi.fn(() => createConnector());
     const resolveLiveExecutionApiKey = vi.fn(async () => ({

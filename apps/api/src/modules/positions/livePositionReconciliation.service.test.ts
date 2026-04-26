@@ -51,12 +51,18 @@ describe('reconcileExternalPositionsFromExchange', () => {
           userId: 'user-1',
         },
       ]),
-      resolveOwnershipForApiKey: vi.fn(async () => ({
-        status: 'OWNED' as const,
-        botId: 'bot-live-1',
-        walletId: 'wallet-live-1',
-        takeoverEnabled: true,
-      })),
+      resolveOwnershipIndexForUser: vi.fn(async () =>
+        new Map([
+          [
+            'key-1:BTCUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-live-1',
+              walletId: 'wallet-live-1',
+            },
+          ],
+        ])
+      ),
       fetchPositionsForApiKey: vi.fn(async () => ({
         positions: [
           {
@@ -113,12 +119,18 @@ describe('reconcileExternalPositionsFromExchange', () => {
           userId: 'user-2',
         },
       ]),
-      resolveOwnershipForApiKey: vi.fn(async () => ({
-        status: 'UNOWNED' as const,
-        botId: null,
-        walletId: null,
-        takeoverEnabled: false,
-      })),
+      resolveOwnershipIndexForUser: vi.fn(async () =>
+        new Map([
+          [
+            'key-2:ETHUSDT',
+            {
+              status: 'MANUAL_ONLY' as const,
+              botId: null,
+              walletId: null,
+            },
+          ],
+        ])
+      ),
       fetchPositionsForApiKey: vi.fn(async () => ({
         positions: [
           {
@@ -172,16 +184,20 @@ describe('reconcileExternalPositionsFromExchange', () => {
           userId: 'user-2',
         },
       ]),
-      resolveOwnershipForApiKey: vi.fn(async ({ apiKeyId }: { apiKeyId: string }) => {
-        if (apiKeyId === 'key-failing') {
-          return { status: 'UNOWNED' as const, botId: null, walletId: null, takeoverEnabled: true };
+      resolveOwnershipIndexForUser: vi.fn(async ({ userId }: { userId: string }) => {
+        if (userId === 'user-1') {
+          return new Map();
         }
-        return {
-          status: 'OWNED' as const,
-          botId: 'bot-live-2',
-          walletId: 'wallet-live-2',
-          takeoverEnabled: true,
-        };
+        return new Map([
+          [
+            'key-healthy:BTCUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-live-2',
+              walletId: 'wallet-live-2',
+            },
+          ],
+        ]);
       }),
       fetchPositionsForApiKey: vi.fn(async (apiKey) => {
         if (apiKey.id === 'key-failing') {
@@ -246,12 +262,18 @@ describe('reconcileExternalPositionsFromExchange', () => {
           userId: 'user-ambiguous',
         },
       ]),
-      resolveOwnershipForApiKey: vi.fn(async () => ({
-        status: 'AMBIGUOUS' as const,
-        botId: null,
-        walletId: null,
-        takeoverEnabled: true,
-      })),
+      resolveOwnershipIndexForUser: vi.fn(async () =>
+        new Map([
+          [
+            'key-ambiguous:BNBUSDT',
+            {
+              status: 'AMBIGUOUS' as const,
+              botId: null,
+              walletId: null,
+            },
+          ],
+        ])
+      ),
       fetchPositionsForApiKey: vi.fn(async () => ({
         positions: [
           {
@@ -284,7 +306,7 @@ describe('reconcileExternalPositionsFromExchange', () => {
       })
     );
     expect(consoleWarnSpy).toHaveBeenCalledWith(
-      '[LivePositionReconciliation] apiKey=key-ambiguous user=user-ambiguous unresolved_takeover_owner=AMBIGUOUS'
+      '[LivePositionReconciliation] apiKey=key-ambiguous user=user-ambiguous symbol=BNBUSDT unresolved_takeover_owner=AMBIGUOUS'
     );
 
     consoleWarnSpy.mockRestore();
@@ -302,12 +324,18 @@ describe('reconcileExternalPositionsFromExchange', () => {
           userId: 'user-missing-entry',
         },
       ]),
-      resolveOwnershipForApiKey: vi.fn(async () => ({
-        status: 'OWNED' as const,
-        botId: 'bot-live-safe',
-        walletId: 'wallet-live-safe',
-        takeoverEnabled: true,
-      })),
+      resolveOwnershipIndexForUser: vi.fn(async () =>
+        new Map([
+          [
+            'key-missing-entry:SOLUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-live-safe',
+              walletId: 'wallet-live-safe',
+            },
+          ],
+        ])
+      ),
       fetchPositionsForApiKey: vi.fn(async () => ({
         positions: [
           {
@@ -353,12 +381,18 @@ describe('reconcileExternalPositionsFromExchange', () => {
           userId: 'user-orders-1',
         },
       ]),
-      resolveOwnershipForApiKey: vi.fn(async () => ({
-        status: 'OWNED' as const,
-        botId: 'bot-owned-1',
-        walletId: 'wallet-owned-1',
-        takeoverEnabled: true,
-      })),
+      resolveOwnershipIndexForUser: vi.fn(async () =>
+        new Map([
+          [
+            'key-orders-1:BTCUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-owned-1',
+              walletId: 'wallet-owned-1',
+            },
+          ],
+        ])
+      ),
       fetchPositionsForApiKey: vi.fn(async () => ({
         positions: [],
       })),
@@ -432,12 +466,34 @@ describe('reconcileExternalPositionsFromExchange', () => {
           userId: 'user-stale-local-1',
         },
       ]),
-      resolveOwnershipForApiKey: vi.fn(async () => ({
-        status: 'OWNED' as const,
-        botId: 'bot-stale-local-1',
-        walletId: 'wallet-stale-local-1',
-        takeoverEnabled: true,
-      })),
+      resolveOwnershipIndexForUser: vi.fn(async () =>
+        new Map([
+          [
+            'key-stale-local-1:DOGEUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-stale-local-1',
+              walletId: 'wallet-stale-local-1',
+            },
+          ],
+          [
+            'key-stale-local-1:BNBUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-stale-local-1',
+              walletId: 'wallet-stale-local-1',
+            },
+          ],
+          [
+            'key-stale-local-1:SOLUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-stale-local-1',
+              walletId: 'wallet-stale-local-1',
+            },
+          ],
+        ])
+      ),
       fetchPositionsForApiKey: vi.fn(async () => ({
         positions: [
           {
@@ -503,12 +559,34 @@ describe('reconcileExternalPositionsFromExchange', () => {
           userId: 'user-stale-local-fallback-1',
         },
       ]),
-      resolveOwnershipForApiKey: vi.fn(async () => ({
-        status: 'OWNED' as const,
-        botId: 'bot-stale-local-fallback-1',
-        walletId: 'wallet-stale-local-fallback-1',
-        takeoverEnabled: true,
-      })),
+      resolveOwnershipIndexForUser: vi.fn(async () =>
+        new Map([
+          [
+            'key-stale-local-fallback-1:DOGEUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-stale-local-fallback-1',
+              walletId: 'wallet-stale-local-fallback-1',
+            },
+          ],
+          [
+            'key-stale-local-fallback-1:BNBUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-stale-local-fallback-1',
+              walletId: 'wallet-stale-local-fallback-1',
+            },
+          ],
+          [
+            'key-stale-local-fallback-1:SOLUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-stale-local-fallback-1',
+              walletId: 'wallet-stale-local-fallback-1',
+            },
+          ],
+        ])
+      ),
       fetchPositionsForApiKey: vi.fn(async () => ({
         positions: [
           {
@@ -557,6 +635,90 @@ describe('reconcileExternalPositionsFromExchange', () => {
     expect(closeStaleLocalManagedPosition).toHaveBeenCalledWith(
       'pos-live-stale-bnb-fallback',
       new Date('2026-03-23T02:00:00.000Z')
+    );
+  });
+
+  it('assigns different exact owners for different symbols under the same api key', async () => {
+    const createSyncedPosition = vi.fn(async () => undefined);
+
+    const result = await reconcileExternalPositionsFromExchange({
+      listSyncedApiKeys: vi.fn(async () => [
+        {
+          id: 'key-shared-1',
+          userId: 'user-shared-1',
+        },
+      ]),
+      resolveOwnershipIndexForUser: vi.fn(async () =>
+        new Map([
+          [
+            'key-shared-1:BTCUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-btc',
+              walletId: 'wallet-btc',
+            },
+          ],
+          [
+            'key-shared-1:ETHUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-eth',
+              walletId: 'wallet-eth',
+            },
+          ],
+        ])
+      ),
+      fetchPositionsForApiKey: vi.fn(async () => ({
+        positions: [
+          {
+            symbol: 'BTC/USDT:USDT',
+            side: 'long',
+            contracts: 0.01,
+            entryPrice: 68000,
+            markPrice: 68010,
+            unrealizedPnl: 1,
+            leverage: 3,
+            timestamp: null,
+          },
+          {
+            symbol: 'ETH/USDT:USDT',
+            side: 'short',
+            contracts: 0.2,
+            entryPrice: 3200,
+            markPrice: 3190,
+            unrealizedPnl: 2,
+            leverage: 4,
+            timestamp: null,
+          },
+        ],
+      })),
+      findOpenSyncedPositionByExternalId: vi.fn(async () => null),
+      updateSyncedPosition: vi.fn(async () => undefined),
+      createSyncedPosition,
+      listOpenSyncedPositionsForApiKey: vi.fn(async () => []),
+      closeStaleSyncedPosition: vi.fn(async () => undefined),
+      now: () => new Date('2026-03-23T03:00:00.000Z'),
+    });
+
+    expect(result.openPositionsSeen).toBe(2);
+    expect(createSyncedPosition).toHaveBeenCalledTimes(2);
+    expect(createSyncedPosition).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({
+        externalId: 'key-shared-1:BTCUSDT:LONG',
+        botId: 'bot-btc',
+        walletId: 'wallet-btc',
+        managementMode: 'BOT_MANAGED',
+      })
+    );
+    expect(createSyncedPosition).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({
+        externalId: 'key-shared-1:ETHUSDT:SHORT',
+        botId: 'bot-eth',
+        walletId: 'wallet-eth',
+        managementMode: 'BOT_MANAGED',
+      })
     );
   });
 });

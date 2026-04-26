@@ -73,6 +73,7 @@ import {
 import {
   buildRunLifecyclePayload,
   isTerminalBacktestStatus,
+  safeUpsertBacktestReportForRun,
   safeUpdateRun,
 } from './backtestReportLifecycle.service';
 
@@ -388,7 +389,7 @@ const runBacktestAsync = createBacktestRunJob({
   createBacktestTrades,
   countWinningBacktestTrades,
   countLosingBacktestTrades,
-  upsertBacktestReportForRun,
+  upsertBacktestReportForRun: safeUpsertBacktestReportForRun,
   computeSourceWindowMs,
   maxDrawdownFromPnlSeries,
 });
@@ -406,6 +407,10 @@ export const deleteRun = async (userId: string, id: string) => {
   const existing = await findOwnedBacktestRunId(userId, id);
   if (!existing) return false;
 
+  await safeUpdateRun(existing.id, {
+    status: 'CANCELED',
+    finishedAt: new Date(),
+  });
   await deleteOwnedBacktestRunCascade(userId, existing.id);
 
   return true;

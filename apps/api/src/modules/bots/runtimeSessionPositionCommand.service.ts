@@ -5,7 +5,11 @@ import { resolveRuntimeLifecycleMarkPrice } from '../engine/runtimeLifecycleMark
 import { CloseBotRuntimePositionDto } from './bots.types';
 import { getOwnedBotRuntimeSession } from './botOwnership.service';
 import { botErrors } from './bots.errors';
-import { resolveExternalPositionOwnerBySymbol } from './runtimeExternalPositionOwner.service';
+import {
+  getExternalPositionOwnership,
+  parseApiKeyIdFromExternalPositionId,
+  resolveExternalPositionOwnershipIndex,
+} from './runtimeExternalPositionOwner.service';
 
 export const closeBotRuntimeSessionPosition = async (
   userId: string,
@@ -86,6 +90,11 @@ export const closeBotRuntimeSessionPosition = async (
       exchange: true,
       marketType: true,
       walletId: true,
+      wallet: {
+        select: {
+          apiKeyId: true,
+        },
+      },
     },
   });
   if (!botContext) return null;
@@ -106,6 +115,7 @@ export const closeBotRuntimeSessionPosition = async (
       quantity: true,
       entryPrice: true,
       origin: true,
+      externalId: true,
     },
   });
   if (!position) {
@@ -121,9 +131,18 @@ export const closeBotRuntimeSessionPosition = async (
   const directlyOwnedByBot = position.botId === botId;
   let externallyOwnedByBot = false;
   if (!directlyOwnedByBot && !position.botId && position.origin === 'EXCHANGE_SYNC') {
-    const externalOwnerBySymbol = await resolveExternalPositionOwnerBySymbol(userId, botContext.mode);
-    const ownership = externalOwnerBySymbol.get(position.symbol);
-    externallyOwnedByBot = ownership?.status === 'OWNED' && ownership.botId === botId;
+    const ownershipIndex = await resolveExternalPositionOwnershipIndex(userId, botContext.mode);
+    const ownership = getExternalPositionOwnership(ownershipIndex, {
+      apiKeyId:
+        parseApiKeyIdFromExternalPositionId(position.externalId) ??
+        botContext.wallet?.apiKeyId ??
+        null,
+      symbol: position.symbol,
+    });
+    externallyOwnedByBot =
+      ownership.status === 'OWNED' &&
+      ownership.botId === botId &&
+      (!botContext.walletId || ownership.walletId === botContext.walletId);
   }
   if (!directlyOwnedByBot && !externallyOwnedByBot) {
     return { status: 'ignored', reason: 'no_open_position' };

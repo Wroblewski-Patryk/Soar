@@ -8,6 +8,11 @@ import {
   supportsExchangeAdapterOperation,
 } from '../exchange/exchangeAdapterBoundary.service';
 import { ExchangeExecutionCapabilityUnsupportedError } from '../exchange/exchangeExecutionCapabilityContract.service';
+import {
+  getExternalPositionOwnership,
+  parseApiKeyIdFromExternalPositionId,
+  resolveExternalPositionOwnershipIndex,
+} from '../bots/runtimeExternalPositionOwner.service';
 
 export type ExchangePositionSnapshotItem = {
   symbol: string;
@@ -599,13 +604,6 @@ export const fetchExchangeOpenOrdersSnapshotByApiKeyId = async (
   return buildOpenOrdersSnapshotForApiKey(apiKey);
 };
 
-const parseApiKeyIdFromExternalId = (externalId: string | null): string | null => {
-  if (!externalId) return null;
-  const [apiKeyId] = externalId.split(':');
-  if (!apiKeyId || apiKeyId.trim().length === 0) return null;
-  return apiKeyId.trim();
-};
-
 const normalizeRepairSymbol = (symbol: string) => symbol.trim().toUpperCase();
 
 const canBotRepairPosition = (
@@ -738,7 +736,7 @@ export const repairLegacyOpenPositions = async (
 export const rebindExternalTakeoverOwnership = async (
   userId: string
 ): Promise<ExternalTakeoverRebindResponse> => {
-  const [positions, eligibleBots] = await Promise.all([
+  const [positions, ownershipIndex] = await Promise.all([
     prisma.position.findMany({
       where: {
         userId,
@@ -749,42 +747,13 @@ export const rebindExternalTakeoverOwnership = async (
       select: {
         id: true,
         externalId: true,
+        symbol: true,
         botId: true,
         origin: true,
       },
     }),
-    prisma.bot.findMany({
-      where: {
-        userId,
-        mode: 'LIVE',
-        exchange: 'BINANCE',
-        marketType: 'FUTURES',
-        isActive: true,
-        liveOptIn: true,
-        walletId: { not: null },
-        apiKeyId: { not: null },
-        wallet: {
-          is: {
-            mode: 'LIVE',
-            manageExternalPositions: true,
-          },
-        },
-      },
-      select: {
-        id: true,
-        walletId: true,
-        apiKeyId: true,
-      },
-    }),
+    resolveExternalPositionOwnershipIndex(userId, 'LIVE'),
   ]);
-
-  const ownersByApiKeyId = new Map<string, Array<{ botId: string; walletId: string }>>();
-  for (const bot of eligibleBots) {
-    if (!bot.apiKeyId || !bot.walletId) continue;
-    const current = ownersByApiKeyId.get(bot.apiKeyId) ?? [];
-    current.push({ botId: bot.id, walletId: bot.walletId });
-    ownersByApiKeyId.set(bot.apiKeyId, current);
-  }
 
   const result: ExternalTakeoverRebindResponse = {
     scanned: positions.length,
@@ -816,12 +785,19 @@ export const rebindExternalTakeoverOwnership = async (
 
     let owners: Array<{ botId: string; walletId: string }> = [];
     if (position.origin === 'EXCHANGE_SYNC') {
-      const apiKeyId = parseApiKeyIdFromExternalId(position.externalId);
-      if (!apiKeyId) {
+      const ownership = getExternalPositionOwnership(ownershipIndex, {
+        apiKeyId: parseApiKeyIdFromExternalPositionId(position.externalId),
+        symbol: position.symbol,
+      });
+      if (ownership.status === 'OWNED') {
+        owners = [{ botId: ownership.botId, walletId: ownership.walletId }];
+      } else if (ownership.status === 'AMBIGUOUS') {
+        result.ambiguous += 1;
+        continue;
+      } else {
         result.unowned += 1;
         continue;
       }
-      owners = ownersByApiKeyId.get(apiKeyId) ?? [];
     } else if (position.origin === 'BOT') {
       // BOT-origin orphan positions require explicit canonical owner proof.
       // Without one, rebind must stay fail-closed instead of guessing from the
@@ -868,99 +844,55 @@ export const rebindExternalTakeoverOwnership = async (
 export const listExternalTakeoverStatuses = async (
   userId: string
 ): Promise<ExternalTakeoverStatusResponse> => {
-  const positions = await prisma.position.findMany({
-    where: {
-      userId,
-      status: 'OPEN',
-      origin: 'EXCHANGE_SYNC',
-    },
-    orderBy: [{ openedAt: 'desc' }, { createdAt: 'desc' }],
-    select: {
-      id: true,
-      symbol: true,
-      side: true,
-      openedAt: true,
-      externalId: true,
-      managementMode: true,
-      syncState: true,
-      botId: true,
-      walletId: true,
-    },
-  });
-
-  const apiKeyIds = [
-    ...new Set(
-      positions
-        .map((position) => parseApiKeyIdFromExternalId(position.externalId))
-        .filter((apiKeyId): apiKeyId is string => Boolean(apiKeyId))
-    ),
-  ];
-
-  const linkedLiveBots =
-    apiKeyIds.length === 0
-      ? []
-      : await prisma.bot.findMany({
-          where: {
-            userId,
-            apiKeyId: { in: apiKeyIds },
-            mode: 'LIVE',
-            exchange: 'BINANCE',
-            marketType: 'FUTURES',
-            isActive: true,
-            liveOptIn: true,
-            walletId: { not: null },
-            wallet: {
-              is: {
-                mode: 'LIVE',
-              },
-            },
-          },
-          select: {
-            apiKeyId: true,
-            id: true,
-            wallet: {
-              select: {
-                manageExternalPositions: true,
-              },
-            },
-          },
-        });
-
-  const linkedCountByApiKeyId = new Map<string, number>();
-  const managedCountByApiKeyId = new Map<string, number>();
-  const managedBotIdsByApiKeyId = new Map<string, Set<string>>();
-  for (const bot of linkedLiveBots) {
-    if (!bot.apiKeyId) continue;
-    linkedCountByApiKeyId.set(bot.apiKeyId, (linkedCountByApiKeyId.get(bot.apiKeyId) ?? 0) + 1);
-    if (bot.wallet?.manageExternalPositions !== true) continue;
-    managedCountByApiKeyId.set(bot.apiKeyId, (managedCountByApiKeyId.get(bot.apiKeyId) ?? 0) + 1);
-    const current = managedBotIdsByApiKeyId.get(bot.apiKeyId) ?? new Set<string>();
-    current.add(bot.id);
-    managedBotIdsByApiKeyId.set(bot.apiKeyId, current);
-  }
+  const [positions, ownershipIndex] = await Promise.all([
+    prisma.position.findMany({
+      where: {
+        userId,
+        status: 'OPEN',
+        origin: 'EXCHANGE_SYNC',
+      },
+      orderBy: [{ openedAt: 'desc' }, { createdAt: 'desc' }],
+      select: {
+        id: true,
+        symbol: true,
+        side: true,
+        openedAt: true,
+        externalId: true,
+        managementMode: true,
+        syncState: true,
+        botId: true,
+        walletId: true,
+      },
+    }),
+    resolveExternalPositionOwnershipIndex(userId, 'LIVE'),
+  ]);
 
   const items: ExternalTakeoverStatusItem[] = positions.map((position) => {
-    const apiKeyId = parseApiKeyIdFromExternalId(position.externalId);
-    const linkedOwnerCount = apiKeyId ? (linkedCountByApiKeyId.get(apiKeyId) ?? 0) : 0;
-    const managedOwnerCount = apiKeyId ? (managedCountByApiKeyId.get(apiKeyId) ?? 0) : 0;
-    const managedBotIds = apiKeyId ? (managedBotIdsByApiKeyId.get(apiKeyId) ?? new Set<string>()) : new Set<string>();
-    const ownedByManagedBot = position.botId != null && managedBotIds.has(position.botId);
+    const apiKeyId = parseApiKeyIdFromExternalPositionId(position.externalId);
+    const ownership = getExternalPositionOwnership(ownershipIndex, {
+      apiKeyId,
+      symbol: position.symbol,
+    });
 
     let takeoverStatus: ExternalTakeoverStatus;
-    if (position.managementMode === 'MANUAL_MANAGED') {
+    if (position.managementMode === 'MANUAL_MANAGED' || ownership.status === 'MANUAL_ONLY') {
       takeoverStatus = 'MANUAL_ONLY';
-    } else if (ownedByManagedBot) {
+    } else if (ownership.status === 'OWNED') {
       takeoverStatus = 'OWNED_AND_MANAGED';
-    } else if (managedOwnerCount > 1) {
+    } else if (ownership.status === 'AMBIGUOUS') {
       takeoverStatus = 'AMBIGUOUS';
-    } else if (managedOwnerCount === 0 && linkedOwnerCount > 0) {
-      takeoverStatus = 'MANUAL_ONLY';
     } else {
       takeoverStatus = 'UNOWNED';
     }
 
-    const effectiveBotId = takeoverStatus === 'OWNED_AND_MANAGED' ? position.botId : null;
-    const effectiveWalletId = takeoverStatus === 'OWNED_AND_MANAGED' ? position.walletId : null;
+    const effectiveBotId =
+      takeoverStatus === 'OWNED_AND_MANAGED' && ownership.status === 'OWNED'
+        ? ownership.botId
+        : null;
+    const effectiveWalletId =
+      takeoverStatus === 'OWNED_AND_MANAGED' && ownership.status === 'OWNED'
+        ? ownership.walletId
+        : null;
     const effectiveManagementMode =
       takeoverStatus === 'OWNED_AND_MANAGED' ? position.managementMode : 'MANUAL_MANAGED';
 

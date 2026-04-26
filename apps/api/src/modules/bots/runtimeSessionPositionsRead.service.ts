@@ -25,7 +25,10 @@ import {
 } from './runtimeStrategyDisplayBySymbol.service';
 import { fetchFallbackTickerPrices } from './runtimeMarketDataFallback.service';
 import { getOwnedBotRuntimeSession, resolveSessionWindowEnd } from './botOwnership.service';
-import { resolveExternalPositionOwnerBySymbol } from './runtimeExternalPositionOwner.service';
+import {
+  listOwnedExternalSymbolsForBot,
+  resolveExternalPositionOwnershipIndex,
+} from './runtimeExternalPositionOwner.service';
 import {
   getRuntimePositionBotContext,
   listRuntimeManagedPositions,
@@ -122,24 +125,23 @@ export const listBotRuntimeSessionPositions = async (
     inheritedExecutionContext.mode === 'LIVE' && botContext.walletId
       ? { botId, walletId: botContext.walletId }
       : { botId };
-  const externalOwnerBySymbol = await resolveExternalPositionOwnerBySymbol(
+  const ownershipIndex = await resolveExternalPositionOwnershipIndex(
     userId,
     inheritedExecutionContext.mode
   );
-  const ownedExternalSymbols = [...externalOwnerBySymbol.entries()]
-    .filter(
-      ([, owner]) =>
-        owner.status === 'OWNED' &&
-        owner.botId === botId &&
-        (!botContext.walletId || owner.walletId === botContext.walletId)
-    )
-    .map(([symbol]) => symbol);
+  const botApiKeyId = botContext.wallet?.apiKeyId ?? botContext.apiKeyId ?? null;
+  const ownedExternalSymbols = listOwnedExternalSymbolsForBot(ownershipIndex, {
+    apiKeyId: botApiKeyId,
+    botId,
+    walletId: botContext.walletId,
+  });
   const externalOwnedWhere: Prisma.PositionWhereInput[] =
-    ownedExternalSymbols.length > 0
+    ownedExternalSymbols.length > 0 && botApiKeyId
       ? [
           {
             botId: null,
             origin: 'EXCHANGE_SYNC',
+            externalId: { startsWith: `${botApiKeyId}:` },
             symbol: { in: ownedExternalSymbols },
             ...(inheritedExecutionContext.mode === 'LIVE' && botContext.walletId
               ? {
@@ -150,7 +152,7 @@ export const listBotRuntimeSessionPositions = async (
         ]
       : [];
   const externalOwnedOrderWhere: Prisma.OrderWhereInput[] =
-    ownedExternalSymbols.length > 0
+    ownedExternalSymbols.length > 0 && botApiKeyId
       ? [
           {
             botId: null,

@@ -158,24 +158,36 @@ export const findOwnedBacktestRunId = (userId: string, runId: string) =>
     select: { id: true },
   });
 
+const isBacktestDeleteRaceError = (error: unknown) =>
+  error instanceof Prisma.PrismaClientKnownRequestError &&
+  (error.code === 'P2003' || error.code === 'P2025');
+
 export const deleteOwnedBacktestRunCascade = async (userId: string, runId: string) => {
-  await prisma.$transaction([
-    prisma.backtestReport.deleteMany({
-      where: {
-        userId,
-        backtestRunId: runId,
-      },
-    }),
-    prisma.backtestTrade.deleteMany({
-      where: {
-        userId,
-        backtestRunId: runId,
-      },
-    }),
-    prisma.backtestRun.delete({
-      where: { id: runId },
-    }),
-  ]);
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      await prisma.$transaction([
+        prisma.backtestReport.deleteMany({
+          where: {
+            userId,
+            backtestRunId: runId,
+          },
+        }),
+        prisma.backtestTrade.deleteMany({
+          where: {
+            userId,
+            backtestRunId: runId,
+          },
+        }),
+        prisma.backtestRun.delete({
+          where: { id: runId },
+        }),
+      ]);
+      return;
+    } catch (error) {
+      if (!isBacktestDeleteRaceError(error) || attempt === 2) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+  }
 };
 
 export const createBacktestRun = (data: Prisma.BacktestRunUncheckedCreateInput) =>

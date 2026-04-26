@@ -18,8 +18,13 @@ vi.mock('./runtimeSymbolUniverse.service', () => ({
 }));
 
 import { resolveExternalPositionOwnerBySymbol } from './runtimeExternalPositionOwner.service';
+import {
+  getExternalPositionOwnership,
+  listOwnedExternalSymbolsForBot,
+  resolveExternalPositionOwnershipIndex,
+} from './runtimeExternalPositionOwner.service';
 
-describe('resolveExternalPositionOwnerBySymbol', () => {
+describe('resolveExternalPositionOwnershipIndex', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mocks.resolveEffectiveSymbolGroupSymbols.mockImplementation(
@@ -27,11 +32,12 @@ describe('resolveExternalPositionOwnerBySymbol', () => {
     );
   });
 
-  it('marks canonical overlapping symbol ownership as ambiguous', async () => {
+  it('marks canonical overlapping symbol ownership as ambiguous for the same api key and symbol', async () => {
     mocks.prisma.bot.findMany.mockResolvedValue([
       {
         id: 'bot-a',
         walletId: 'wallet-a',
+        apiKeyId: 'key-1',
         wallet: {
           manageExternalPositions: true,
         },
@@ -43,6 +49,7 @@ describe('resolveExternalPositionOwnerBySymbol', () => {
       {
         id: 'bot-b',
         walletId: 'wallet-b',
+        apiKeyId: 'key-1',
         wallet: {
           manageExternalPositions: true,
         },
@@ -53,20 +60,38 @@ describe('resolveExternalPositionOwnerBySymbol', () => {
       },
     ]);
 
-    const result = await resolveExternalPositionOwnerBySymbol('user-1', 'LIVE');
+    const result = await resolveExternalPositionOwnershipIndex('user-1', 'LIVE');
 
-    expect(result.get('BTCUSDT')).toEqual({
+    expect(
+      getExternalPositionOwnership(result, {
+        apiKeyId: 'key-1',
+        symbol: 'BTCUSDT',
+      })
+    ).toEqual({
       status: 'AMBIGUOUS',
       botId: null,
       walletId: null,
     });
   });
 
-  it('resolves ownership from direct symbol-group scope', async () => {
+  it('resolves exact ownership from api key + symbol scope', async () => {
     mocks.prisma.bot.findMany.mockResolvedValue([
       {
-        id: 'bot-direct',
-        walletId: 'wallet-direct',
+        id: 'bot-btc',
+        walletId: 'wallet-btc',
+        apiKeyId: 'key-shared',
+        wallet: {
+          manageExternalPositions: true,
+        },
+        symbolGroup: {
+          symbols: ['BTCUSDT'],
+          marketUniverse: null,
+        },
+      },
+      {
+        id: 'bot-eth',
+        walletId: 'wallet-eth',
+        apiKeyId: 'key-shared',
         wallet: {
           manageExternalPositions: true,
         },
@@ -77,64 +102,194 @@ describe('resolveExternalPositionOwnerBySymbol', () => {
       },
     ]);
 
-    const result = await resolveExternalPositionOwnerBySymbol('user-2', 'LIVE');
+    const result = await resolveExternalPositionOwnershipIndex('user-2', 'LIVE');
 
-    expect(result.get('ETHUSDT')).toEqual({
+    expect(
+      getExternalPositionOwnership(result, {
+        apiKeyId: 'key-shared',
+        symbol: 'BTCUSDT',
+      })
+    ).toEqual({
       status: 'OWNED',
-      botId: 'bot-direct',
-      walletId: 'wallet-direct',
+      botId: 'bot-btc',
+      walletId: 'wallet-btc',
+    });
+    expect(
+      getExternalPositionOwnership(result, {
+        apiKeyId: 'key-shared',
+        symbol: 'ETHUSDT',
+      })
+    ).toEqual({
+      status: 'OWNED',
+      botId: 'bot-eth',
+      walletId: 'wallet-eth',
     });
   });
 
-  it('skips bots without a direct symbol-group scope', async () => {
+  it('returns manual-only when linked live scope exists but wallet takeover is disabled', async () => {
     mocks.prisma.bot.findMany.mockResolvedValue([
-      {
-        id: 'bot-without-scope',
-        walletId: 'wallet-without-scope',
-        wallet: {
-          manageExternalPositions: true,
-        },
-        symbolGroup: null,
-      },
-    ]);
-
-    const result = await resolveExternalPositionOwnerBySymbol('user-3', 'LIVE');
-
-    expect(result.size).toBe(0);
-  });
-
-  it('ignores LIVE bots whose wallets disable external-position management', async () => {
-    mocks.prisma.bot.findMany.mockResolvedValue([
-      {
-        id: 'bot-managed',
-        walletId: 'wallet-managed',
-        wallet: {
-          manageExternalPositions: true,
-        },
-        symbolGroup: {
-          symbols: ['BTCUSDT'],
-          marketUniverse: null,
-        },
-      },
       {
         id: 'bot-manual-only',
         walletId: 'wallet-manual-only',
+        apiKeyId: 'key-2',
         wallet: {
           manageExternalPositions: false,
         },
         symbolGroup: {
+          symbols: ['SOLUSDT'],
+          marketUniverse: null,
+        },
+      },
+    ]);
+
+    const result = await resolveExternalPositionOwnershipIndex('user-3', 'LIVE');
+
+    expect(
+      getExternalPositionOwnership(result, {
+        apiKeyId: 'key-2',
+        symbol: 'SOLUSDT',
+      })
+    ).toEqual({
+      status: 'MANUAL_ONLY',
+      botId: null,
+      walletId: null,
+    });
+  });
+
+  it('keeps ownership isolated across different api keys for the same symbol', async () => {
+    mocks.prisma.bot.findMany.mockResolvedValue([
+      {
+        id: 'bot-key-a',
+        walletId: 'wallet-key-a',
+        apiKeyId: 'key-a',
+        wallet: {
+          manageExternalPositions: true,
+        },
+        symbolGroup: {
+          symbols: ['BTCUSDT'],
+          marketUniverse: null,
+        },
+      },
+      {
+        id: 'bot-key-b',
+        walletId: 'wallet-key-b',
+        apiKeyId: 'key-b',
+        wallet: {
+          manageExternalPositions: true,
+        },
+        symbolGroup: {
           symbols: ['BTCUSDT'],
           marketUniverse: null,
         },
       },
     ]);
 
-    const result = await resolveExternalPositionOwnerBySymbol('user-4', 'LIVE');
+    const result = await resolveExternalPositionOwnershipIndex('user-4', 'LIVE');
+
+    expect(
+      getExternalPositionOwnership(result, {
+        apiKeyId: 'key-a',
+        symbol: 'BTCUSDT',
+      })
+    ).toEqual({
+      status: 'OWNED',
+      botId: 'bot-key-a',
+      walletId: 'wallet-key-a',
+    });
+    expect(
+      getExternalPositionOwnership(result, {
+        apiKeyId: 'key-b',
+        symbol: 'BTCUSDT',
+      })
+    ).toEqual({
+      status: 'OWNED',
+      botId: 'bot-key-b',
+      walletId: 'wallet-key-b',
+    });
+  });
+
+  it('lists exact owned symbols for a bot within one api key scope', async () => {
+    mocks.prisma.bot.findMany.mockResolvedValue([
+      {
+        id: 'bot-owned',
+        walletId: 'wallet-owned',
+        apiKeyId: 'key-owned',
+        wallet: {
+          manageExternalPositions: true,
+        },
+        symbolGroup: {
+          symbols: ['BTCUSDT', 'ETHUSDT'],
+          marketUniverse: null,
+        },
+      },
+      {
+        id: 'bot-ambiguous',
+        walletId: 'wallet-ambiguous',
+        apiKeyId: 'key-owned',
+        wallet: {
+          manageExternalPositions: true,
+        },
+        symbolGroup: {
+          symbols: ['ETHUSDT'],
+          marketUniverse: null,
+        },
+      },
+    ]);
+
+    const result = await resolveExternalPositionOwnershipIndex('user-5', 'LIVE');
+
+    expect(
+      listOwnedExternalSymbolsForBot(result, {
+        apiKeyId: 'key-owned',
+        botId: 'bot-owned',
+        walletId: 'wallet-owned',
+      })
+    ).toEqual(['BTCUSDT']);
+  });
+});
+
+describe('resolveExternalPositionOwnerBySymbol', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mocks.resolveEffectiveSymbolGroupSymbols.mockImplementation(
+      ({ symbols }: { symbols?: string[] | null }) => symbols ?? []
+    );
+  });
+
+  it('collapses multi-api ownership for the same symbol to ambiguous on the legacy symbol-only view', async () => {
+    mocks.prisma.bot.findMany.mockResolvedValue([
+      {
+        id: 'bot-a',
+        walletId: 'wallet-a',
+        apiKeyId: 'key-a',
+        wallet: {
+          manageExternalPositions: true,
+        },
+        symbolGroup: {
+          symbols: ['BTCUSDT'],
+          marketUniverse: null,
+        },
+      },
+      {
+        id: 'bot-b',
+        walletId: 'wallet-b',
+        apiKeyId: 'key-b',
+        wallet: {
+          manageExternalPositions: true,
+        },
+        symbolGroup: {
+          symbols: ['BTCUSDT'],
+          marketUniverse: null,
+        },
+      },
+    ]);
+
+    const result = await resolveExternalPositionOwnerBySymbol('user-legacy', 'LIVE');
 
     expect(result.get('BTCUSDT')).toEqual({
-      status: 'OWNED',
-      botId: 'bot-managed',
-      walletId: 'wallet-managed',
+      status: 'AMBIGUOUS',
+      botId: null,
+      walletId: null,
     });
   });
 });

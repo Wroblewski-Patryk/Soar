@@ -19,7 +19,7 @@ const mocks = vi.hoisted(() => ({
   orchestrateRuntimeSignal: vi.fn(),
   getOwnedBotRuntimeSession: vi.fn(),
   resolveRuntimeLifecycleMarkPrice: vi.fn(),
-  resolveExternalPositionOwnerBySymbol: vi.fn(),
+  resolveExternalPositionOwnershipIndex: vi.fn(),
 }));
 
 vi.mock('../../prisma/client', () => ({
@@ -39,7 +39,17 @@ vi.mock('../engine/runtimeLifecycleMarkPrice.service', () => ({
 }));
 
 vi.mock('./runtimeExternalPositionOwner.service', () => ({
-  resolveExternalPositionOwnerBySymbol: mocks.resolveExternalPositionOwnerBySymbol,
+  getExternalPositionOwnership: (
+    ownershipIndex: Map<string, { status: string; botId: string | null; walletId: string | null }>,
+    params: { apiKeyId: string | null; symbol: string }
+  ) =>
+    (params.apiKeyId ? ownershipIndex.get(`${params.apiKeyId}:${params.symbol}`) : null) ?? {
+      status: 'UNOWNED',
+      botId: null,
+      walletId: null,
+    },
+  parseApiKeyIdFromExternalPositionId: (externalId: string | null) => externalId?.split(':')[0] ?? null,
+  resolveExternalPositionOwnershipIndex: mocks.resolveExternalPositionOwnershipIndex,
 }));
 
 import { closeBotRuntimeSessionPosition } from './runtimeSessionPositionCommand.service';
@@ -55,6 +65,9 @@ describe('closeBotRuntimeSessionPosition', () => {
       exchange: 'BINANCE',
       marketType: 'FUTURES',
       walletId: 'wallet-live-1',
+      wallet: {
+        apiKeyId: 'key-live-1',
+      },
     });
     mocks.resolveRuntimeLifecycleMarkPrice.mockReturnValue(50_100);
   });
@@ -69,11 +82,12 @@ describe('closeBotRuntimeSessionPosition', () => {
       quantity: 0.5,
       entryPrice: 50_000,
       origin: 'EXCHANGE_SYNC',
+      externalId: 'key-live-1:BTCUSDT:LONG',
     });
-    mocks.resolveExternalPositionOwnerBySymbol.mockResolvedValue(
+    mocks.resolveExternalPositionOwnershipIndex.mockResolvedValue(
       new Map([
         [
-          'BTCUSDT',
+          'key-live-1:BTCUSDT',
           {
             status: 'AMBIGUOUS',
             botId: null,
@@ -109,6 +123,7 @@ describe('closeBotRuntimeSessionPosition', () => {
       quantity: 0.5,
       entryPrice: 50_000,
       origin: 'BOT',
+      externalId: null,
     });
     mocks.orchestrateRuntimeSignal.mockResolvedValue({
       status: 'closed',
@@ -154,6 +169,7 @@ describe('closeBotRuntimeSessionPosition', () => {
       quantity: 0.5,
       entryPrice: 50_000,
       origin: 'BOT',
+      externalId: null,
     });
     mocks.resolveRuntimeLifecycleMarkPrice.mockReturnValue(null);
 
@@ -165,5 +181,64 @@ describe('closeBotRuntimeSessionPosition', () => {
       code: 'POSITION_CLOSE_PRICE_UNAVAILABLE',
     });
     expect(mocks.orchestrateRuntimeSignal).not.toHaveBeenCalled();
+  });
+
+  it('claims exact imported ownership when api key and symbol resolve to the selected live bot', async () => {
+    mocks.prisma.position.findFirst.mockResolvedValue({
+      id: 'position-1',
+      botId: null,
+      walletId: null,
+      strategyId: 'strategy-1',
+      symbol: 'DOGEUSDT',
+      quantity: 54,
+      entryPrice: 0.09791,
+      origin: 'EXCHANGE_SYNC',
+      externalId: 'key-live-1:DOGEUSDT:SHORT',
+    });
+    mocks.resolveExternalPositionOwnershipIndex.mockResolvedValue(
+      new Map([
+        [
+          'key-live-1:DOGEUSDT',
+          {
+            status: 'OWNED',
+            botId: 'bot-1',
+            walletId: 'wallet-live-1',
+          },
+        ],
+      ])
+    );
+    mocks.prisma.position.updateMany.mockResolvedValue({ count: 1 });
+    mocks.orchestrateRuntimeSignal.mockResolvedValue({
+      status: 'closed',
+      orderId: 'order-1',
+      positionId: 'position-1',
+    });
+
+    const result = await closeBotRuntimeSessionPosition(
+      'user-1',
+      'bot-1',
+      'session-1',
+      'position-1',
+      { riskAck: true }
+    );
+
+    expect(mocks.prisma.position.updateMany).toHaveBeenCalledWith({
+      where: {
+        id: 'position-1',
+        userId: 'user-1',
+        status: 'OPEN',
+        managementMode: 'BOT_MANAGED',
+      },
+      data: {
+        syncState: 'IN_SYNC',
+        botId: 'bot-1',
+        walletId: 'wallet-live-1',
+      },
+    });
+    expect(result).toEqual({
+      status: 'closed',
+      orderId: 'order-1',
+      positionId: 'position-1',
+    });
   });
 });

@@ -253,11 +253,6 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
     if (left.priority !== right.priority) return left.priority - right.priority;
     return right.weight - left.weight;
   });
-  const fallbackLegacyStrategy = runtimeGraph?.legacyBotStrategies[0] ?? null;
-  const fallbackLegacyByPreferredId =
-    runtimeGraph?.legacyBotStrategies.find(
-      (item) => preferredStrategyId != null && item.strategyId === preferredStrategyId
-    ) ?? null;
   const canonicalPreferredEnabled =
     groupStrategyLinks.find(
       ({ strategy }) => preferredStrategyId != null && strategy.isEnabled && strategy.strategyId === preferredStrategyId
@@ -312,22 +307,6 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
         strategyName: canonicalPrimaryAny.strategy?.name ?? null,
         strategyInterval: canonicalPrimaryAny.strategy?.interval ?? null,
         strategyLeverage: readStrategyLeverage(canonicalPrimaryAny.strategy),
-      };
-    }
-    if (fallbackLegacyByPreferredId) {
-      return {
-        marketGroupName: fallbackLegacyByPreferredId.symbolGroup?.name ?? null,
-        strategyName: fallbackLegacyByPreferredId.strategy?.name ?? null,
-        strategyInterval: fallbackLegacyByPreferredId.strategy?.interval ?? null,
-        strategyLeverage: readStrategyLeverage(fallbackLegacyByPreferredId.strategy),
-      };
-    }
-    if (fallbackLegacyStrategy) {
-      return {
-        marketGroupName: fallbackLegacyStrategy.symbolGroup?.name ?? null,
-        strategyName: fallbackLegacyStrategy.strategy?.name ?? null,
-        strategyInterval: fallbackLegacyStrategy.strategy?.interval ?? null,
-        strategyLeverage: readStrategyLeverage(fallbackLegacyStrategy.strategy),
       };
     }
     if (primaryGroup) {

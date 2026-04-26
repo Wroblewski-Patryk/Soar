@@ -157,3 +157,9 @@ export class LiveOrderAdapter {
 export const createLiveOrderAdapter = (connector: CcxtFuturesConnector) => {
   return new LiveOrderAdapter(connector);
 };
+
+export const createBinanceFuturesLiveOrderAdapter = (connector: CcxtFuturesConnector) =>
+  createLiveOrderAdapter(connector);
+
+export const createBinanceSpotLiveOrderAdapter = (connector: CcxtFuturesConnector) =>
+  createLiveOrderAdapter(connector);

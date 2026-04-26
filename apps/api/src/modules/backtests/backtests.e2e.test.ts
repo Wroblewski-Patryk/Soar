@@ -1,9 +1,12 @@
 import request from 'supertest';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { app } from '../../index';
 import { analyzePreTrade } from '../engine/preTrade.service';
 import { prisma } from '../../prisma/client';
 import { reconcileExternalPositionsFromExchange } from '../positions/livePositionReconciliation.service';
+
+const originalApiKeyEncryptionKeys = process.env.API_KEY_ENCRYPTION_KEYS;
+const originalApiKeyEncryptionActiveVersion = process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
 
 const registerAndLogin = async (email: string) => {
   const agent = request.agent(app);
@@ -36,6 +39,7 @@ const createWalletForUser = async (params: {
   exchange?: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE';
   baseCurrency?: string;
   apiKeyId?: string | null;
+  manageExternalPositions?: boolean;
 }) =>
   prisma.wallet.create({
     data: {
@@ -47,6 +51,7 @@ const createWalletForUser = async (params: {
       baseCurrency: params.baseCurrency ?? 'USDT',
       paperInitialBalance: 10_000,
       apiKeyId: params.apiKeyId ?? null,
+      manageExternalPositions: params.manageExternalPositions ?? false,
     },
     select: {
       id: true,
@@ -92,12 +97,13 @@ const waitForBacktestReport = async (
   runId: string,
   attempts = 20,
   delayMs = 250,
+  isReady: ((response: Awaited<ReturnType<typeof agent.get>>) => boolean) | null = null,
 ) => {
   for (let attempt = 0; attempt < attempts; attempt += 1) {
     const response = await agent.get(`/dashboard/backtests/runs/${runId}/report`);
     if (response.status === 200) {
       const reportReady = response.body?.metrics?.runLifecycle?.reportReady;
-      if (reportReady === true) return response;
+      if (reportReady === true && (isReady ? isReady(response) : true)) return response;
     } else if (response.status !== 404) {
       return response;
     }
@@ -108,6 +114,9 @@ const waitForBacktestReport = async (
 
 describe('Backtests runs contract', () => {
   beforeEach(async () => {
+    process.env.API_KEY_ENCRYPTION_KEYS = 'v1:test-keyring-material';
+    process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION = 'v1';
+
     await prisma.$executeRawUnsafe(
       'ALTER TABLE "Bot" ADD COLUMN IF NOT EXISTS "paperStartBalance" DOUBLE PRECISION NOT NULL DEFAULT 10000',
     );
@@ -143,6 +152,17 @@ describe('Backtests runs contract', () => {
     await prisma.runtimeExecutionDedupe.deleteMany();
     await prisma.apiKey.deleteMany();
     await prisma.user.deleteMany();
+  });
+
+  afterEach(() => {
+    if (originalApiKeyEncryptionKeys === undefined) delete process.env.API_KEY_ENCRYPTION_KEYS;
+    else process.env.API_KEY_ENCRYPTION_KEYS = originalApiKeyEncryptionKeys;
+
+    if (originalApiKeyEncryptionActiveVersion === undefined) {
+      delete process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
+    } else {
+      process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION = originalApiKeyEncryptionActiveVersion;
+    }
   });
 
   it('rejects unauthenticated access', async () => {
@@ -584,6 +604,7 @@ describe('Backtests runs contract', () => {
       name: 'Parity takeover wallet',
       mode: 'LIVE',
       apiKeyId,
+      manageExternalPositions: false,
     });
 
     await prisma.bot.update({
@@ -615,8 +636,8 @@ describe('Backtests runs contract', () => {
     expect(listRes.body[0].origin).toBe('EXCHANGE_SYNC');
     expect(listRes.body[0].managementMode).toBe('MANUAL_MANAGED');
 
-    await prisma.apiKey.update({
-      where: { id: apiKeyId },
+    await prisma.wallet.update({
+      where: { id: liveWallet.id },
       data: { manageExternalPositions: true },
     });
 
@@ -971,7 +992,13 @@ describe('Backtests runs contract', () => {
     expect(runRes.status).toBe(201);
     const runId = runRes.body.id as string;
 
-    const reportRes = await waitForBacktestReport(agent, runId);
+    const reportRes = await waitForBacktestReport(
+      agent,
+      runId,
+      40,
+      250,
+      (response) => Array.isArray(response.body?.metrics?.parityDiagnostics),
+    );
     expect(reportRes.status).toBe(200);
 
     const runDetailRes = await agent.get(`/dashboard/backtests/runs/${runId}`);
@@ -1081,7 +1108,13 @@ describe('Backtests runs contract', () => {
     expect(createRes.status).toBe(201);
     const runId = createRes.body.id as string;
 
-    const reportRes = await waitForBacktestReport(agent, runId, 25, 250);
+    const reportRes = await waitForBacktestReport(
+      agent,
+      runId,
+      25,
+      250,
+      (response) => Array.isArray(response.body?.metrics?.parityDiagnostics),
+    );
     expect(reportRes.status).toBe(200);
 
     const metrics = reportRes.body.metrics as {

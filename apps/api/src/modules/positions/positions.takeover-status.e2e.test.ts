@@ -16,6 +16,31 @@ const registerAndLogin = async (email: string) => {
   return agent;
 };
 
+const createLiveSymbolGroup = async (userId: string, name: string, symbols: string[]) => {
+  const universe = await prisma.marketUniverse.create({
+    data: {
+      userId,
+      name: `${name} Universe`,
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+    },
+    select: { id: true },
+  });
+
+  const symbolGroup = await prisma.symbolGroup.create({
+    data: {
+      userId,
+      marketUniverseId: universe.id,
+      name,
+      symbols,
+    },
+    select: { id: true },
+  });
+
+  return symbolGroup.id;
+};
+
 describe('Positions takeover status API', () => {
   beforeEach(async () => {
     process.env.API_KEY_ENCRYPTION_KEYS = 'v1:test-keyring-material';
@@ -84,6 +109,9 @@ describe('Positions takeover status API', () => {
     const keyOwned = await createApiKey('owned');
     const keyUnowned = await createApiKey('unowned');
     const keyAmbiguous = await createApiKey('ambiguous');
+    const ownedScopeId = await createLiveSymbolGroup(owner.id, 'Owned Scope', ['BTCUSDT']);
+    const ambiguousScopeAId = await createLiveSymbolGroup(owner.id, 'Ambiguous Scope A', ['BNBUSDT']);
+    const ambiguousScopeBId = await createLiveSymbolGroup(owner.id, 'Ambiguous Scope B', ['BNBUSDT']);
 
     const ownedWallet = await prisma.wallet.create({
       data: {
@@ -148,6 +176,7 @@ describe('Positions takeover status API', () => {
         liveOptIn: true,
         apiKeyId: keyOwned,
         walletId: ownedWallet.id,
+        symbolGroupId: ownedScopeId,
       },
       select: { id: true },
     });
@@ -164,6 +193,7 @@ describe('Positions takeover status API', () => {
         liveOptIn: true,
         apiKeyId: keyAmbiguous,
         walletId: ambiguousWalletA.id,
+        symbolGroupId: ambiguousScopeAId,
       },
     });
 
@@ -179,6 +209,7 @@ describe('Positions takeover status API', () => {
         liveOptIn: true,
         apiKeyId: keyAmbiguous,
         walletId: ambiguousWalletB.id,
+        symbolGroupId: ambiguousScopeBId,
       },
     });
 
@@ -299,6 +330,9 @@ describe('Positions takeover status API', () => {
     const keyOwned = await createApiKey('owned-rebind');
     const keyAmbiguous = await createApiKey('ambiguous-rebind');
     const keyUnowned = await createApiKey('unowned-rebind');
+    const ownedScopeId = await createLiveSymbolGroup(owner.id, 'Owned Rebind Scope', ['SOLUSDT']);
+    const ambiguousScopeAId = await createLiveSymbolGroup(owner.id, 'Ambiguous Rebind Scope A', ['BNBUSDT']);
+    const ambiguousScopeBId = await createLiveSymbolGroup(owner.id, 'Ambiguous Rebind Scope B', ['BNBUSDT']);
 
     const ownedWallet = await prisma.wallet.create({
       data: {
@@ -329,6 +363,7 @@ describe('Positions takeover status API', () => {
         liveOptIn: true,
         apiKeyId: keyOwned,
         walletId: ownedWallet.id,
+        symbolGroupId: ownedScopeId,
       },
     });
 
@@ -378,6 +413,7 @@ describe('Positions takeover status API', () => {
           liveOptIn: true,
           apiKeyId: keyAmbiguous,
           walletId: ambiguousWalletA.id,
+          symbolGroupId: ambiguousScopeAId,
         },
         {
           userId: owner.id,
@@ -390,6 +426,7 @@ describe('Positions takeover status API', () => {
           liveOptIn: true,
           apiKeyId: keyAmbiguous,
           walletId: ambiguousWalletB.id,
+          symbolGroupId: ambiguousScopeBId,
         },
       ],
     });
@@ -581,6 +618,8 @@ describe('Positions takeover status API', () => {
     const keyWalletDisabled = await createApiKey('wallet-disabled', {
       manageExternalPositions: true,
     });
+    const apiDisabledScopeId = await createLiveSymbolGroup(owner.id, 'API Disabled Scope', ['BTCUSDT']);
+    const walletDisabledScopeId = await createLiveSymbolGroup(owner.id, 'Wallet Disabled Scope', ['ETHUSDT']);
 
     const walletApiDisabled = await prisma.wallet.create({
       data: {
@@ -628,6 +667,7 @@ describe('Positions takeover status API', () => {
         liveOptIn: true,
         apiKeyId: keyApiDisabled,
         walletId: walletApiDisabled.id,
+        symbolGroupId: apiDisabledScopeId,
       },
       select: { id: true },
     });
@@ -644,6 +684,7 @@ describe('Positions takeover status API', () => {
         liveOptIn: true,
         apiKeyId: keyWalletDisabled,
         walletId: walletWalletDisabled.id,
+        symbolGroupId: walletDisabledScopeId,
       },
       select: { id: true },
     });

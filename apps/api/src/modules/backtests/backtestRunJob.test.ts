@@ -281,4 +281,63 @@ describe('createBacktestRunJob', () => {
     expect(fetchSupplementalCall[4]).toBe(Date.parse(endAt));
     expect(fetchSupplementalCall[5]).toBe(Date.parse(startAt));
   });
+
+  it('fails soft when report upsert loses its parent rows during async completion', async () => {
+    const upsertBacktestReportForRun = vi.fn(async () => false);
+    const safeUpdateRun = vi.fn(async () => true);
+
+    const runJob = createBacktestRunJob({
+      findBacktestRunById: vi.fn(async () => ({
+        id: 'run-missing-parent',
+        userId: 'user-1',
+        symbol: 'BTCUSDT',
+        timeframe: '1m',
+        strategyId: null,
+        seedConfig: {
+          symbols: ['BTCUSDT'],
+          marketType: 'FUTURES',
+          leverage: 2,
+          marginMode: 'CROSSED',
+          initialBalance: 10_000,
+          maxCandles: 200,
+        },
+      })),
+      safeUpdateRun,
+      uniqueSorted: (values) => [...new Set(values)].sort(),
+      computeAdaptiveMaxCandles: vi.fn(() => 120),
+      resolveIndicatorWarmupCandles: () => 0,
+      normalizeWalletRiskPercent: () => 1,
+      parseStrategySignalRules: () => null,
+      findOwnedStrategySignalConfig: vi.fn(async () => null),
+      fetchKlines: vi.fn(async () => [
+        {
+          openTime: 0,
+          closeTime: 59_000,
+          open: 100,
+          high: 101,
+          low: 99,
+          close: 100,
+          volume: 1_000,
+        },
+      ]),
+      fetchSupplementalSeries: vi.fn(async () => ({
+        fundingRates: [],
+        openInterest: [],
+        orderBook: [],
+      })),
+      simulateInterleavedPortfolio: vi.fn(() => {
+        throw new Error('parent rows removed during async completion');
+      }),
+      createBacktestTrades: vi.fn(async () => undefined),
+      countWinningBacktestTrades: vi.fn(async () => 0),
+      countLosingBacktestTrades: vi.fn(async () => 0),
+      upsertBacktestReportForRun,
+      computeSourceWindowMs: () => 14 * 24 * 60 * 60 * 1000,
+      maxDrawdownFromPnlSeries: () => 0,
+    });
+
+    await expect(runJob('run-missing-parent')).resolves.toBeUndefined();
+    expect(upsertBacktestReportForRun).toHaveBeenCalledTimes(1);
+    expect(safeUpdateRun).toHaveBeenCalled();
+  });
 });

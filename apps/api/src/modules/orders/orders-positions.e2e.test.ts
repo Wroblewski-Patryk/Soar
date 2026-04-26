@@ -20,6 +20,18 @@ const getUserId = async (email: string) => {
   return user.id;
 };
 
+const createBinanceApiKey = async (userId: string, label: string) =>
+  prisma.apiKey.create({
+    data: {
+      userId,
+      label,
+      exchange: 'BINANCE',
+      apiKey: `${label}-key`,
+      apiSecret: `${label}-secret`,
+    },
+    select: { id: true },
+  });
+
 const createMarketScope = async (params: {
   userId: string;
   name: string;
@@ -928,6 +940,7 @@ describe('Orders and positions read contract', () => {
   it('keeps manual LIVE MARKET visibility truthful from submitted order through exchange-synced adoption', async () => {
     const ownerAgent = await registerAndLogin('manual-live-market-reconciled-owner@example.com');
     const ownerId = await getUserId('manual-live-market-reconciled-owner@example.com');
+    const liveApiKey = await createBinanceApiKey(ownerId, 'manual-live-market');
 
     const liveStrategy = await prisma.strategy.create({
       data: {
@@ -952,6 +965,7 @@ describe('Orders and positions read contract', () => {
         exchange: 'BINANCE',
         marketType: 'FUTURES',
         baseCurrency: 'USDT',
+        apiKeyId: liveApiKey.id,
         manageExternalPositions: true,
       },
     });
@@ -971,6 +985,7 @@ describe('Orders and positions read contract', () => {
         isActive: true,
         liveOptIn: true,
         consentTextVersion: 'mvp-v1',
+        apiKeyId: liveApiKey.id,
         walletId: liveWallet.id,
         symbolGroupId: liveScope.id,
         strategyId: liveStrategy.id,
@@ -1071,7 +1086,7 @@ describe('Orders and positions read contract', () => {
         botId: null,
         walletId: null,
         strategyId: null,
-        externalId: 'manual-live-market-1:BTCUSDT:LONG',
+        externalId: `${liveApiKey.id}:BTCUSDT:LONG`,
         symbol: 'BTCUSDT',
         side: 'LONG',
         status: 'OPEN',
@@ -1393,6 +1408,7 @@ describe('Orders and positions read contract', () => {
   it('keeps EXCHANGE_SYNC BOT_MANAGED runtime positions visible for LIVE bot even when PAPER bot shares symbol', async () => {
     const ownerAgent = await registerAndLogin('runtime-ownership-live-paper@example.com');
     const ownerId = await getUserId('runtime-ownership-live-paper@example.com');
+    const liveApiKey = await createBinanceApiKey(ownerId, 'runtime-ownership-live-paper');
 
     const liveWallet = await prisma.wallet.create({
       data: {
@@ -1402,6 +1418,8 @@ describe('Orders and positions read contract', () => {
         exchange: 'BINANCE',
         marketType: 'FUTURES',
         baseCurrency: 'USDT',
+        apiKeyId: liveApiKey.id,
+        manageExternalPositions: true,
       },
     });
 
@@ -1441,10 +1459,12 @@ describe('Orders and positions read contract', () => {
         userId: ownerId,
         name: 'Live runtime owner',
         mode: 'LIVE',
+        exchange: 'BINANCE',
         marketType: 'FUTURES',
         isActive: true,
         liveOptIn: true,
         consentTextVersion: 'mvp-v1',
+        apiKeyId: liveApiKey.id,
         walletId: liveWallet.id,
         symbolGroupId: symbolGroup.id,
         createdAt: new Date('2026-04-12T10:05:00.000Z'),
@@ -1467,7 +1487,7 @@ describe('Orders and positions read contract', () => {
         userId: ownerId,
         botId: null,
         walletId: null,
-        externalId: 'runtime-owner-key:BTCUSDT:LONG',
+        externalId: `${liveApiKey.id}:BTCUSDT:LONG`,
         symbol: 'BTCUSDT',
         side: 'LONG',
         status: 'OPEN',
@@ -1493,6 +1513,7 @@ describe('Orders and positions read contract', () => {
   it('closes EXCHANGE_SYNC BOT_MANAGED runtime position selected from LIVE dashboard flow', async () => {
     const ownerAgent = await registerAndLogin('runtime-close-live-exchange@example.com');
     const ownerId = await getUserId('runtime-close-live-exchange@example.com');
+    const liveApiKey = await createBinanceApiKey(ownerId, 'runtime-close-live-exchange');
 
     const liveWallet = await prisma.wallet.create({
       data: {
@@ -1502,6 +1523,8 @@ describe('Orders and positions read contract', () => {
         exchange: 'BINANCE',
         marketType: 'FUTURES',
         baseCurrency: 'USDT',
+        apiKeyId: liveApiKey.id,
+        manageExternalPositions: true,
       },
     });
 
@@ -1561,6 +1584,7 @@ describe('Orders and positions read contract', () => {
         isActive: true,
         liveOptIn: true,
         consentTextVersion: 'mvp-v1',
+        apiKeyId: liveApiKey.id,
         walletId: liveWallet.id,
         symbolGroupId: symbolGroup.id,
         strategyId: liveStrategy.id,
@@ -1584,7 +1608,7 @@ describe('Orders and positions read contract', () => {
         userId: ownerId,
         botId: null,
         walletId: null,
-        externalId: 'runtime-close-key:BTCUSDT:LONG',
+        externalId: `${liveApiKey.id}:BTCUSDT:LONG`,
         symbol: 'BTCUSDT',
         side: 'LONG',
         status: 'OPEN',

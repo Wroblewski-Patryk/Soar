@@ -6,10 +6,12 @@ export const getRuntimePositionBotContext = async (userId: string, botId: string
     where: { id: botId, userId },
     select: {
       id: true,
+      apiKeyId: true,
       walletId: true,
       paperStartBalance: true,
       wallet: {
         select: {
+          apiKeyId: true,
           mode: true,
           exchange: true,
           marketType: true,
@@ -19,6 +21,7 @@ export const getRuntimePositionBotContext = async (userId: string, botId: string
       },
       symbolGroup: {
         select: {
+          symbols: true,
           marketUniverse: {
             select: {
               exchange: true,
