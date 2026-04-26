@@ -7,13 +7,20 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [x] `V1FIX-2026-04-26-A api(manual-order-lifecycle): reuse existing same-symbol open position on manual fill and fail closed on reverse-side conflict`
+- [ ] `V1LIVE-01 audit(api+docs): publish canonical live-execution and takeover regression packet`
+- [ ] `V1LIVE-02 test(api-red): lock one canonical ownership classifier for imported LIVE positions`
+- [ ] `V1LIVE-03 fix(api-ownership): reuse one ownership classifier across reconciliation, runtime, and takeover`
 ## NEXT
-- [x] `V1UX-01 web(manual-order-autofill): refresh Price from market reference on first symbol hydrate and symbol change`
-- [x] `V1UX-02 web(manual-order-budget): add quote-budget input under Qty slider with wallet free-funds cap`
-- [x] `V1UX-03 web(manual-order-sidebar): remove summary/lifecycle/action-state noise and rerun focused closure pack`
-- [x] `V1COH-07 web(manual-live-state): expose ready state for actionable dashboard manual LIVE context`
+- [ ] `V1LIVE-04 test(api-red): lock fail-closed imported entry/fill truth`
+- [ ] `V1LIVE-05 fix(api-reconciliation): remove synthetic mark-price entry fallback and keep unresolved states explicit`
+- [ ] `V1LIVE-06 test(api-runtime-red): lock runtime visibility and close parity for owned imported LIVE positions`
+- [ ] `V1LIVE-07 fix(api-runtime): recover imported-position runtime visibility and close authority`
 ## PIPELINE
+- [ ] `V1LIVE-08 test(api-engine-red): lock signal -> LIVE order -> position lifecycle truth`
+- [ ] `V1LIVE-09 refactor(api-exchange): add Binance Futures user-data stream inside the existing exchange boundary`
+- [ ] `V1LIVE-10 fix(api-execution): wire Binance order/account events into canonical order and position lifecycle`
+- [ ] `V1LIVE-11 cleanup(api+tests+web): remove stale fallback paths, stale fixtures, and misleading manual-order semantics`
+- [ ] `V1LIVE-12 qa(closure): rerun focused live/paper/takeover closure pack and sync canonical docs/context`
 - [x] `V1TAKE-09 web(wallet-ui): remove API-key takeover toggles and keep wallet as the single editable management switch`
 - [x] `V1READY-2026-04-25-C ops/deploy(sync): expose deployed commit truth and reconcile residual V1 activation artifacts`
 - [x] `V1TAKE-08 qa(closure): rerun focused DB-backed API + web closure pack and sync canonical docs/context`
@@ -157,6 +164,7 @@ Operational queue for one-task execution runs.
 - [x] `CQLT-32 docs(decision): freeze legacy bridge sunset list and mark compatibility-only code paths that remain intentional`
 - [x] `CQLT-34 docs(sync): update queue/context/module docs and capture post-wave coding rules for future agents`
 ## GROUP QUEUE
+- [x] `V1LIVE-A planning queued (Binance Futures live execution, takeover ownership, imported-position runtime parity, and paper/live boundary hardening)`
 - [x] `V1FACT-A planning queued (V1 production activation through release-gate truth, stage/prod evidence freshness, backup/rollback proof, and final sign-off packaging)`
 - [x] `V1FACT-A1 (commits V1FACT-01..V1FACT-03): contract + audit + queue truth`
 - [x] `V1FACT-A2 (commits V1FACT-04..V1FACT-07): release-gate freshness + stage rehearsal evidence`

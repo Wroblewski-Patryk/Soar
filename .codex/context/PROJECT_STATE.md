@@ -47,18 +47,26 @@ Last updated: 2026-04-26
   which restored full `api` suite parity for pre-trade expectations,
   deterministic selected-bot order ownership, carryover open orders, and
   `EXCHANGE_SYNC BOT_MANAGED` LIVE runtime position visibility/close flows.
-  The next active user-approved scope is a small dashboard manual-order UX
-  polish slice: symbol-driven price autofill, quote-budget entry under the qty
-  slider, and removal of non-essential helper noise from the sidebar while
-  preserving the current selected-bot execution context. The newest post-V1
-  production hotfix slice (`V1FIX-2026-04-26-A`) additionally recovers manual
-  order open lifecycle truth when a same-symbol open position already exists:
-  manual same-direction fills now update and link the existing open position
-  instead of crashing on the historical partial unique open-position index,
-  while reverse-direction opens fail closed with an explicit domain error
-  instead of a raw `500`.
+  Fresh analysis on 2026-04-26, however, proved that the repository still has
+  residual live-execution drift beyond the already closed `V1TAKE-A` packet:
+  ownership truth still differs between reconciliation and runtime,
+  imported-position entry truth can still degrade to `markPrice`, runtime close
+  parity for owned imported `LIVE` positions is not yet stable in focused
+  DB-backed tests, and Binance Futures lifecycle truth still relies mainly on
+  REST snapshots instead of exchange-boundary event handling. The next active
+  user-approved scope is therefore `V1LIVE-A`, a Binance Futures hardening wave
+  that keeps `PAPER` exchange-free, keeps all `LIVE` work inside the approved
+  exchange boundary, and closes the full path `signal -> order -> exchange
+  update -> position -> takeover/runtime visibility` under one canonical
+  contract. The newest post-V1 production hotfix slice
+  (`V1FIX-2026-04-26-A`) additionally recovers manual order open lifecycle
+  truth when a same-symbol open position already exists: manual same-direction
+  fills now update and link the existing open position instead of crashing on
+  the historical partial unique open-position index, while reverse-direction
+  opens fail closed with an explicit domain error instead of a raw `500`.
 
 ## Product Decisions (Confirmed)
+- 2026-04-26: queued `V1LIVE-A` as the next canonical post-V1 hardening wave after a fresh audit of the user-reported live-position and signal-open issues. The frozen repository truth is now explicit: `PAPER` must remain exchange-free, `LIVE` must stay inside the approved exchange boundary, imported-position ownership must be decided by one canonical classifier reused across reconciliation/runtime/takeover flows, imported live entry truth must not fall back to `markPrice`, and reliable Binance Futures lifecycle handling now requires user-data-stream support (`ACCOUNT_UPDATE`, `ORDER_TRADE_UPDATE`) instead of depending mainly on REST snapshots plus polling reconciliation. Canonical artifacts: `docs/planning/v1live-binance-execution-and-takeover-hardening-plan-2026-04-26.md` and `docs/planning/v1live-00-planning-task-2026-04-26.md`.
 - 2026-04-26: closed `V1FIX-2026-04-26-A` after reproducing the production manual-order `500` directly in `soar-api`. The root cause was a real lifecycle gap, not a web issue: `applyOrderFillLifecycle()` still tried to create a second `OPEN` position for the same user and symbol even though the canonical lifecycle contract and production DB index still enforce one open position per symbol. Same-direction manual fills now reuse/update the existing position with weighted entry repricing, and reverse-direction opens fail closed with explicit `OPEN_POSITION_SIDE_CONFLICT` API semantics. Validation PASS: `pnpm --filter api exec vitest run src/modules/orders/orders.service.test.ts src/modules/orders/orders.manual-paper-market.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 - 2026-04-26: queued and implemented the first closure slice of `V1FIX-2026-04-26-B` after browser-level production repro on the real user account exposed a deeper source of truth problem: authenticated Binance Futures snapshot still returns the real external position, but legacy local `OPEN` rows with `botId=null` were surviving from older topology waves and silently blocking both manual-order reuse and exchange takeover/runtime projection. The repository now has an explicit authenticated repair endpoint `POST /dashboard/positions/orphan-repair` that rebinds local open rows only when canonical bot proof exists, closes only fully detached local open orphans, then forces exchange reconciliation + takeover rebind so current exchange truth can re-enter the canonical runtime path. Validation PASS: `pnpm --filter api test -- --run src/modules/positions/positions.orphan-repair.e2e.test.ts src/modules/positions/positions.takeover-status.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`. Remaining work is operational: deploy to prod, run repair on the affected account, and re-check dashboard/manual-order/takeover behavior live.
 - 2026-04-25: closed `V1COH-07` as the final manual-LIVE action-state semantics cleanup on dashboard-home. The runtime sidebar no longer mislabels a valid pre-submit manual `LIVE` context as `blocked`; it now exposes one explicit `ready` state, while `blocked` remains reserved for missing selected bot, unavailable exchange capability, unresolved symbol, or empty symbol scope. Validation PASS: `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.manual-order.test.tsx`.
