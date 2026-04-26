@@ -2763,6 +2763,21 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-25: Closed `XVENUE-07` by extending `apps/api/src/workers/workerOwnership.ts` into the shared worker-topology contract for ops and freshness truth. `/workers/health` and `/workers/ready` now model all four approved worker families, distinguish explicit local/test inline support from deployed degraded inline or partial-split topology, and `runtimeFreshness.ts` now skips passive inline checks only for explicit local/test inline mode. Validation PASS: `pnpm --filter api run test -- --run src/workers/workerOwnership.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 - 2026-04-25: Closed `XVENUE-08` by rerunning the focused `XVENUE-A` closure pack across exchange exact-context seams, worker-topology truth, API typecheck, and repository guardrails. Queue/context state now records the wave as fully closed rather than leaving a residual active closure step. Validation PASS: `pnpm --filter api run test -- --run src/modules/exchange/exchangeAdapterRegistry.service.test.ts src/modules/exchange/exchangeConnectorFactory.service.test.ts src/modules/exchange/exchangePublicRead.service.test.ts src/modules/exchange/exchangeAuthenticatedRead.service.test.ts src/modules/exchange/exchangeAdapterBoundary.service.test.ts src/modules/exchange/exchangeMarketCatalog.service.test.ts src/modules/exchange/exchangeExecutionCapabilityContract.service.test.ts src/modules/engine/runtimeCapitalContext.service.test.ts src/workers/workerOwnership.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 
+## Phase V1CLOSE-A - Position Close Attribution and External-Close Hardening (Queued 2026-04-27)
+- [x] `V1CLOSE-00 planning(queue): publish canonical close-attribution and external-close hardening packet`
+- [ ] `V1CLOSE-01 docs(contract): freeze canonical close-attribution model`
+- [ ] `V1CLOSE-02 test(api-red): lock missing close-attribution gaps on current write paths`
+- [ ] `V1CLOSE-03 db(schema): add canonical close-attribution fields`
+- [ ] `V1CLOSE-04 fix(api-runtime): persist USER_APP and BOT_APP on canonical app-driven closes`
+- [ ] `V1CLOSE-05 fix(api-events): preserve close attribution through exchange confirmation`
+- [ ] `V1CLOSE-06 fix(api-reconciliation): classify external manual close separately from repair cleanup`
+- [ ] `V1CLOSE-07 test(api+read-red): lock read-model and history attribution parity`
+- [ ] `V1CLOSE-08 fix(api+web): expose close attribution on operator surfaces`
+- [ ] `V1CLOSE-09 qa(closure): run focused close-attribution pack and sync docs/context`
+
+### Progress Log (Phase V1CLOSE-A - Position Close Attribution and External-Close Hardening)
+- 2026-04-27: Queued `V1CLOSE-A` after a fresh post-deploy close-lifecycle audit on the production-ready repository. The confirmed gap is no longer basic close execution, but canonical attribution truth: current runtime, exchange-event, and reconcile paths can close positions, yet the system still lacks one persisted contract that answers who or what initiated the close. The user approved the canonical two-dimension model (`closeReason` + `closeInitiator`) on 2026-04-27. Published the planning packet `docs/planning/v1close-position-close-attribution-hardening-plan-2026-04-27.md`, normalized the architecture contract into `docs/architecture/06_execution-lifecycle.md` and `docs/architecture/reference/position-close-attribution-contract.md`, extended lifecycle parity docs, and synchronized canonical queue/context truth for the upcoming implementation wave.
+
 ## Phase ARCCON - Architecture Conformance and Service Ownership Closure (Closed 2026-04-21)
 - [x] `ARCCON-01 test(api-red): lock fail-closed manual-order strategy context when selected bot has no symbol-matching strategy`
 - [x] `ARCCON-02 fix(api-orders): remove hidden first-strategy fallback from manual-order context resolution and keep unresolved state explicit`

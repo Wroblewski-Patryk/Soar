@@ -44,6 +44,39 @@ Canonical close authority is lifecycle-based:
 - `LIQUIDATION`
 - account-floor protection
 
+## Close Attribution
+
+Close lifecycle truth has two separate dimensions:
+
+1. `closeReason`
+2. `closeInitiator`
+
+`closeReason` explains why the position closed.
+
+`closeInitiator` explains who or what initiated the close.
+
+The system must not collapse these into one field or reconstruct one from the
+other through UI inference.
+
+Canonical initiator semantics are defined in:
+
+- `reference/position-close-attribution-contract.md`
+
+Examples:
+
+- bot lifecycle take-profit:
+  - `closeReason=TP`
+  - `closeInitiator=BOT_APP`
+- user closes from dashboard:
+  - `closeReason=MANUAL`
+  - `closeInitiator=USER_APP`
+- position disappears from exchange without app-side close authority:
+  - `closeReason=EXTERNAL_SYNC_MISSING`
+  - `closeInitiator=USER_EXCHANGE`
+- liquidation:
+  - `closeReason=LIQUIDATION`
+  - `closeInitiator=EXCHANGE`
+
 ## DCA-First Rule
 Per-position evaluation order is:
 1. `DCA`
@@ -77,6 +110,7 @@ LONG accepted
 - `reference/runtime-execution-idempotency-contract.md`
 - `reference/live-fee-reconciliation-contract.md`
 - `reference/position-lifecycle-parity-matrix.md`
+- `reference/position-close-attribution-contract.md`
 
 ## Related Files
 - [05 Strategy, Signal, and Decision Flow](./05_strategy-signal-and-decision-flow.md)

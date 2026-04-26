@@ -73,6 +73,31 @@ State reset on:
 
 ---
 
+## Close Attribution Parity
+
+Close parity must remain identical across `BACKTEST`, `PAPER`, and `LIVE` at
+the domain-contract level:
+
+- every close writes one canonical `closeReason`
+- every close writes one canonical `closeInitiator`
+
+Shared lifecycle examples:
+
+| Scenario | closeReason | closeInitiator |
+|---|---|---|
+| Automated take-profit by bot | `TP` | `BOT_APP` |
+| Automated stop-loss by bot | `SL` | `BOT_APP` |
+| Manual close from app | `MANUAL` | `USER_APP` |
+| Close detected after external exchange-only action | `EXTERNAL_SYNC_MISSING` | `USER_EXCHANGE` |
+| Exchange liquidation | `LIQUIDATION` | `EXCHANGE` |
+| Local orphan cleanup/repair | `SYSTEM_REPAIR` | `SYSTEM_REPAIR` |
+
+`BACKTEST` and `PAPER` may not use all initiator variants in normal operation,
+but they must still preserve the same contract shape where close attribution is
+stored or exposed.
+
+---
+
 ## Shared Engine Contract
 
 Backtest, paper, and live must call one shared lifecycle decision engine with identical inputs:

@@ -1,6 +1,6 @@
 # PROJECT_STATE
 
-Last updated: 2026-04-26
+Last updated: 2026-04-27
 
 ## Product Snapshot
 - Name: CryptoSparrow / Soar
@@ -81,9 +81,20 @@ Last updated: 2026-04-26
   the wrong submit price for the current symbol. `useManualOrderController`
   now trusts context price only when it matches the current `botId + symbol`
   selection, preserving the approved canonical architecture where one current
-  selected bot and one current selected symbol define manual-order truth.
+  selected bot and one current selected symbol define manual-order truth. The
+  newest approved post-V1 hardening direction is no longer basic open/close
+  execution correctness, but canonical close-attribution truth. A fresh audit
+  on 2026-04-27 confirmed the repository can already close positions through
+  app commands, bot lifecycle, exchange events, and reconciliation, yet still
+  lacks one persisted, architecture-backed model for who or what initiated the
+  close. The approved next wave `V1CLOSE-A` now freezes a two-dimensional close
+  contract: `closeReason` remains the lifecycle reason, while a new canonical
+  `closeInitiator` distinguishes `BOT_APP`, `USER_APP`, `USER_EXCHANGE`,
+  `EXCHANGE`, and `SYSTEM_REPAIR` so operator history, repair flows, and
+  exchange-manual-close detection stop guessing from orphan states and logs.
 
 ## Product Decisions (Confirmed)
+- 2026-04-27: approved and normalized the canonical close-attribution model after a fresh audit of runtime close, exchange-event close, reconciliation disappearance, and repair-only cleanup semantics. The repository architecture now explicitly separates `closeReason` from `closeInitiator`; canonical V1 initiator scope is `BOT_APP`, `USER_APP`, `USER_EXCHANGE`, `EXCHANGE`, and `SYSTEM_REPAIR`. Reconcile-driven exchange disappearance without stronger exchange event proof is now planned to persist as `closeInitiator=USER_EXCHANGE` with `closeReason=EXTERNAL_SYNC_MISSING`, while repair-only orphan cleanup remains a distinct `SYSTEM_REPAIR` path. Canonical artifacts: `docs/architecture/reference/position-close-attribution-contract.md` and `docs/planning/v1close-position-close-attribution-hardening-plan-2026-04-27.md`.
 - 2026-04-26: refined `V1LIVE-A` so it matches the approved exact exchange-context architecture. The frozen repository truth is now explicit: `PAPER` must remain exchange-free, `LIVE` must stay inside the approved exchange boundary, adapter selection must follow the exact user/bot `exchange + marketType` settings, unsupported exchange paths must fail closed instead of falling back to Binance, imported-position ownership must be decided by one canonical classifier reused across reconciliation/runtime/takeover flows, and imported live entry truth must not fall back to `markPrice`. The first adapter family to be completed in this wave is `BINANCE + SPOT` plus `BINANCE + FUTURES`, which serves as the template for future exchange adapters. Canonical artifacts: `docs/planning/v1live-binance-execution-and-takeover-hardening-plan-2026-04-26.md` and `docs/planning/v1live-00-planning-task-2026-04-26.md`.
 - 2026-04-26: closed `V1FIX-2026-04-26-A` after reproducing the production manual-order `500` directly in `soar-api`. The root cause was a real lifecycle gap, not a web issue: `applyOrderFillLifecycle()` still tried to create a second `OPEN` position for the same user and symbol even though the canonical lifecycle contract and production DB index still enforce one open position per symbol. Same-direction manual fills now reuse/update the existing position with weighted entry repricing, and reverse-direction opens fail closed with explicit `OPEN_POSITION_SIDE_CONFLICT` API semantics. Validation PASS: `pnpm --filter api exec vitest run src/modules/orders/orders.service.test.ts src/modules/orders/orders.manual-paper-market.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 - 2026-04-26: queued and implemented the first closure slice of `V1FIX-2026-04-26-B` after browser-level production repro on the real user account exposed a deeper source of truth problem: authenticated Binance Futures snapshot still returns the real external position, but legacy local `OPEN` rows with `botId=null` were surviving from older topology waves and silently blocking both manual-order reuse and exchange takeover/runtime projection. The repository now has an explicit authenticated repair endpoint `POST /dashboard/positions/orphan-repair` that rebinds local open rows only when canonical bot proof exists, closes only fully detached local open orphans, then forces exchange reconciliation + takeover rebind so current exchange truth can re-enter the canonical runtime path. Validation PASS: `pnpm --filter api test -- --run src/modules/positions/positions.orphan-repair.e2e.test.ts src/modules/positions/positions.takeover-status.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`. Remaining work is operational: deploy to prod, run repair on the affected account, and re-check dashboard/manual-order/takeover behavior live.

@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-04-26
+Last updated: 2026-04-27
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -16,6 +16,9 @@ Last updated: 2026-04-26
     needed
 
 ## READY
+
+- [x] `V1CLOSE-00 planning(queue): publish canonical close-attribution and external-close hardening packet`
+  - 2026-04-27: Closed after a focused audit of close-lifecycle semantics across architecture, runtime close commands, exchange-event application, reconciliation, and repair flows. The repository can already close positions technically, but it still lacked one canonical model for who or what initiated the close. The user approved the architecture extension on 2026-04-27: keep `closeReason` separate from a new canonical `closeInitiator` dimension. Published `docs/planning/v1close-position-close-attribution-hardening-plan-2026-04-27.md`, normalized the contract into `docs/architecture/06_execution-lifecycle.md` plus new `docs/architecture/reference/position-close-attribution-contract.md`, extended lifecycle parity docs, and synchronized canonical planning/context truth for the follow-up implementation wave.
 
 - [x] `V1LIVE-01 audit(api+docs): publish canonical live-execution and takeover regression packet`
   - 2026-04-26: Fresh repository audit after the user's live-position report confirmed this is no longer only a manual-order bug. The current drift spans exact adapter selection from user/bot exchange settings, ownership classification, imported live entry truth, runtime visibility/close parity for exchange-synced positions, and missing live event-stream lifecycle support for the first Binance adapter family. The task must publish one canonical investigation packet with exact findings, file-scoped follow-up tasks, and focused validation evidence.
