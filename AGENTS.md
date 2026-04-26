@@ -4,7 +4,7 @@
 
 This repository follows a project-specific multi-agent workflow so multiple
 execution chats can move Soar forward without losing source-of-truth quality,
-runtime safety, deployment discipline, or documentation parity.
+runtime safety, deployment discipline, UX quality, or documentation parity.
 
 ## Canonical Context
 
@@ -41,6 +41,12 @@ Read these before starting non-trivial work:
 - `docs/operations/deployment-rollback-playbook.md`
 - `docs/ux/ux-ui-mcp-collaboration.md`
 - `docs/ux/dashboard-design-system.md`
+- `docs/ux/visual-direction-brief.md`
+- `docs/ux/experience-quality-bar.md`
+- `docs/ux/design-memory.md`
+- `docs/ux/screen-quality-checklist.md`
+- `docs/ux/anti-patterns.md`
+- `docs/ux/brand-personality-tokens.md`
 
 ## Core Rules
 
@@ -76,7 +82,28 @@ Each task must use `.codex/templates/task-template.md`, including:
 - `Definition of Done`
 - `Forbidden`
 
-### 5. Mandatory Review And Refactor
+### 5. Stage-Based Delivery Workflow
+
+Every task must declare its current delivery stage and the output expected from
+that stage.
+
+Supported stages:
+- `intake`
+- `analysis`
+- `planning`
+- `implementation`
+- `verification`
+- `release`
+- `post-release`
+
+Rules:
+- Do not skip stages implicitly.
+- Do not implement during `analysis` or `planning` unless explicitly requested.
+- Do not declare a task complete without `verification` evidence.
+- If missing information materially affects quality or risk, stop at the
+  current stage and surface the gap.
+
+### 6. Mandatory Review And Refactor
 
 After implementation, verify:
 
@@ -87,7 +114,7 @@ After implementation, verify:
 
 If any check fails, fix before closure.
 
-### 6. Repository Guardrails
+### 7. Repository Guardrails
 
 - Project state, task board, learning journal, and canonical docs are the
   source of truth.
@@ -111,6 +138,10 @@ If any check fails, fix before closure.
 - Do not mark a task done without acceptance-criteria evidence.
 - For auth-sensitive, money-impacting, or live-trading flows, include
   adversarial and fail-closed validation before completion.
+- For UX/UI work, require explicit design source, state coverage, responsive
+  evidence, accessibility checks, and parity notes.
+- Reuse shared UI patterns before introducing screen-local style inventions.
+- When a new pattern is approved, record it in `docs/ux/design-memory.md`.
 - When a recurring environment or tooling pitfall is discovered, record it in
   `.codex/context/LEARNING_JOURNAL.md` in the same task.
 - Before saying "nothing is planned", cross-check:
@@ -189,11 +220,15 @@ For UX/UI tasks, always include:
 - responsive checks (`desktop`, `tablet`, `mobile`)
 - accessibility checks
 - parity evidence in task or review notes
+- input-mode evidence when relevant
 
 Design-source policy:
 
 - Follow `docs/ux/ux-ui-mcp-collaboration.md` and
   `docs/ux/dashboard-design-system.md`.
+- Use `docs/ux/visual-direction-brief.md` before broad dashboard refresh work.
+- Use `docs/ux/screen-quality-checklist.md` before calling a screen polished.
+- Avoid recurring traps in `docs/ux/anti-patterns.md`.
 - Figma is the primary implementation source when available.
 - Stitch is draft-only unless the repository explicitly documents an approved
   exception workflow.

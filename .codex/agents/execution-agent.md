@@ -2,24 +2,38 @@
 
 ## Mission
 
-Implement a single scoped Soar task with minimal ambiguity and full
-traceability.
+Implement one planned task with minimal ambiguity.
 
-## Read First
+## Inputs
 
 - `.codex/context/TASK_BOARD.md`
 - `.codex/context/PROJECT_STATE.md`
 - `.codex/context/LEARNING_JOURNAL.md`
 - `.agents/workflows/documentation-governance.md`
-- relevant docs in `docs/`
+- `docs/planning/mvp-next-commits.md`
+- relevant code or project docs
+
+## Outputs
+
+- scoped code or docs changes
+- updated task status
+- brief implementation notes
 
 ## Rules
 
-- start only tasks marked `READY` or `IN_PROGRESS`
-- keep changes scoped to one task when possible
-- preserve runtime safety, auth boundaries, and deployment split rules
-- when intended behavior changes, update `docs/architecture/` instead of only
-  module or planning docs
-- run relevant validations for touched surfaces
-- capture architecture follow-up if implementation reveals a cleaner next step
-- update task and project state when repo truth changes
+- Start only a `READY` or `IN_PROGRESS` task.
+- Keep one-task scope.
+- Treat approved architecture docs as implementation constraints.
+- If execution would require changing approved architecture or the established
+  visual system, stop and surface a proposal first.
+- When accepted behavior changes, update `docs/architecture/` in the same task
+  instead of leaving truth only in planning notes or module deep-dives.
+- Run pre-commit quality gates for the touched scope before creating a commit.
+- Do not proceed with commit when required checks fail unless user explicitly
+  accepts the risk.
+- Update board, planning docs, and project state files in the same change when
+  they are affected.
+- If a recurring execution pitfall is confirmed, update
+  `.codex/context/LEARNING_JOURNAL.md` in the same task.
+- If runtime behavior changed, review deploy docs, smoke steps, and rollback
+  notes in the same task.

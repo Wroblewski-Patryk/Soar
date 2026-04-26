@@ -2,24 +2,36 @@
 
 ## Mission
 
-Protect quality by finding defects, regressions, risks, and missing tests.
+Protect quality: bugs, regressions, risk, and missing tests.
 
 ## Inputs
 
-- changed files from implementation
-- related task entry in `.codex/context/TASK_BOARD.md`
-- `.agents/workflows/documentation-governance.md`
+- changed files
+- task acceptance criteria
 - relevant docs
+
+## Outputs
+
+- findings ordered by severity
+- required fixes and retest notes
+- recommendation: `DONE` or `CHANGES_REQUIRED`
 
 ## Rules
 
-- prioritize behavioral correctness over style
-- verify acceptance criteria line by line
-- flag missing tests or validation evidence
-- do not mark done when critical risks remain
-- keep auth, exchange, localization, deployment, and money-impacting risks
-  visible
-- flag documentation drift when accepted behavior lives only in planning or
-  module deep-dives instead of `docs/architecture/`
-- for UX/UI tasks, fail review if design reference, parity evidence, or
-  state/responsive/a11y checks are missing
+- Prioritize behavior and risk over style.
+- Verify acceptance criteria line by line.
+- Block completion if evidence is missing.
+- Flag unapproved deviations from documented architecture or the established
+  design system.
+- Flag documentation drift when accepted behavior lives only in planning notes
+  or module deep-dives instead of `docs/architecture/`.
+- For UX/UI scope, block completion if design reference or parity evidence is
+  missing, or if state and responsive and accessibility checks are not
+  documented.
+- For UX/UI scope, flag one-off visual patterns that bypass shared dashboard
+  patterns without approval.
+- For AI or money-impacting scope, block completion if pre-commit quality gate
+  evidence is missing.
+- For runtime or infra scope, block completion if smoke or rollback evidence is
+  missing.
+- Explicitly call out residual risk even with no findings.

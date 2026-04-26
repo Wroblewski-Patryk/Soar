@@ -1,44 +1,54 @@
 ---
-description: Workspace rules for CryptoSparrow / Soar
+description: Workspace rules for this project
 ---
 
 # General Workspace Rules
 
 ## Stack Snapshot
-- Backend: Node.js 20+, Express API, Prisma, PostgreSQL, Redis
-- Frontend: Next.js 15, React 19, TypeScript
-- Mobile: none in current repository scope, responsive web and PWA-first
+- Backend: Express API, workers, Prisma, PostgreSQL, Redis
+- Frontend: Next.js dashboard
+- Mobile:
 - Database: PostgreSQL
-- Hosting target: Coolify on VPS by default
-- Deployment shape: split web, api, worker, postgres, and redis services
+- Hosting target: Coolify / VPS
+- Deployment shape: multi-service runtime with API, web, and workers
 - Runtime constraints:
-  - 24/7 bot runtime matters more than cosmetic polish
-  - backtest, paper, and live paths should converge toward shared logic
-  - worker ownership must stay explicit in deployed environments
-  - auth, exchange, and trading flows must fail closed
+  - trading and execution safety
+  - auth and money-impacting behavior
+  - operator-visible status and fail-closed posture
 
 ## Architecture Rules
 - Keep project-specific conventions explicit.
 - Document where state lives and why.
+- Treat `docs/architecture/` as the approved implementation contract.
+- If a better design requires changing architecture, propose it before
+  changing code direction or docs.
 - Prefer existing patterns over introducing a new style per feature.
 - Keep cross-module contracts explicit when shared code or shared schemas exist.
 - Do not remove potentially shared code without checking remaining consumers.
-- Preserve parity and safety contracts across backtest, paper, and live flows.
 
 ## Repository And Docs Rules
 - Keep root minimal and intentional.
 - Put project documentation under `docs/`.
-- Update planning, architecture, operations, or UX docs when behavior or
-  structure changes.
+- Update planning, architecture, or operations docs when behavior or structure changes.
+- Treat docs parity as a real done-state requirement when routes, modules, IA,
+  or runtime ownership change.
+- Use `.agents/workflows/documentation-governance.md` when deciding where new
+  truth should live.
 - Keep links repository-relative and avoid sibling-repository references.
-- Treat docs parity as a real done-state requirement for module, route, and IA
-  changes.
-- Follow `.agents/workflows/documentation-governance.md` for architecture
-  source-of-truth placement and decision promotion rules.
 
 ## UI/UX Rules
-- Follow `docs/ux/dashboard-design-system.md` and
-  `docs/ux/ux-ui-mcp-collaboration.md`.
+- Define approved component style and motion approach.
+- Treat the visual system as a reuse-first contract.
+- Reuse an existing shared component or approved variant before creating a new
+  visual pattern.
+- If a new visual pattern is necessary, make it reusable and document it.
+- Use `docs/ux/visual-direction-brief.md` when setting or changing visual
+  direction.
+- Use `docs/ux/experience-quality-bar.md` for substantial UI review.
+- Record reusable UI decisions and proven patterns in `docs/ux/design-memory.md`.
+- Use `docs/ux/screen-quality-checklist.md` before calling a screen polished.
+- Avoid recurring traps in `docs/ux/anti-patterns.md`.
+- If design tools are used, record source-of-truth links.
 - For UX-heavy work, require states, responsive checks, accessibility checks,
   and parity evidence.
 - Figma is the primary implementation source when available.
@@ -58,6 +68,10 @@ description: Workspace rules for CryptoSparrow / Soar
 - Keep changes scoped and reversible.
 - Require acceptance evidence before completion.
 - Keep planning docs and task board synchronized.
+- Declare the current delivery stage in each task and keep output aligned to
+  that stage only.
+- Do not skip from analysis or planning straight to implementation unless
+  explicitly requested.
 - Follow the default loop:
   `plan -> implement -> test -> architecture review -> sync context -> repeat`.
 - Apply the validation commands from `.codex/context/PROJECT_STATE.md` before
