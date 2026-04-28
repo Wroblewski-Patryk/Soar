@@ -1,9 +1,13 @@
 import request from 'supertest';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 
 const PLACEHOLDER_EXCHANGES = ['BYBIT', 'OKX', 'KRAKEN', 'COINBASE'] as const;
+let emailCounter = 0;
+
+const uniqueEmail = (prefix: string) =>
+  `${prefix}-${Date.now()}-${++emailCounter}@example.com`;
 
 const registerAndLogin = async (email: string) => {
   const agent = request.agent(app);
@@ -119,7 +123,7 @@ const createActiveBotUsingUniverse = async (params: {
 };
 
 describe('Markets module contract', () => {
-  beforeEach(async () => {
+  beforeAll(async () => {
     await prisma.log.deleteMany();
     await prisma.backtestReport.deleteMany();
     await prisma.backtestTrade.deleteMany();
@@ -143,6 +147,8 @@ describe('Markets module contract', () => {
     await prisma.marketUniverse.deleteMany();
     await prisma.runtimeExecutionDedupe.deleteMany();
     await prisma.apiKey.deleteMany();
+    await prisma.paymentIntent.deleteMany();
+    await prisma.userSubscription.deleteMany();
     await prisma.user.deleteMany();
   });
 
@@ -153,7 +159,7 @@ describe('Markets module contract', () => {
   });
 
   it('supports full CRUD for authenticated owner', async () => {
-    const agent = await registerAndLogin('markets-owner@example.com');
+    const agent = await registerAndLogin(uniqueEmail('markets-owner'));
 
     const createRes = await agent.post('/dashboard/markets/universes').send(createPayload());
     expect(createRes.status).toBe(201);
@@ -200,7 +206,7 @@ describe('Markets module contract', () => {
   });
 
   it('syncs linked symbol groups with composed universe contract (volume U whitelist) - blacklist', async () => {
-    const agent = await registerAndLogin('markets-sync@example.com');
+    const agent = await registerAndLogin(uniqueEmail('markets-sync'));
 
     const createRes = await agent.post('/dashboard/markets/universes').send(createPayload());
     expect(createRes.status).toBe(201);
@@ -239,7 +245,7 @@ describe('Markets module contract', () => {
   });
 
   it('syncs linked symbol groups to empty set when filter is disabled and whitelist is empty', async () => {
-    const agent = await registerAndLogin('markets-sync-empty-contract@example.com');
+    const agent = await registerAndLogin(uniqueEmail('markets-sync-empty-contract'));
 
     const createRes = await agent.post('/dashboard/markets/universes').send(createPayload());
     expect(createRes.status).toBe(201);
@@ -277,7 +283,7 @@ describe('Markets module contract', () => {
   });
 
   it('returns public market catalog filtered by base currency and market type', async () => {
-    const agent = await registerAndLogin('markets-catalog@example.com');
+    const agent = await registerAndLogin(uniqueEmail('markets-catalog'));
 
     const res = await agent.get('/dashboard/markets/catalog').query({
       exchange: 'BINANCE',
@@ -300,7 +306,7 @@ describe('Markets module contract', () => {
   });
 
   it('allows persisting universes with placeholder exchanges', async () => {
-    const agent = await registerAndLogin('markets-placeholder-create@example.com');
+    const agent = await registerAndLogin(uniqueEmail('markets-placeholder-create'));
 
     const createRes = await agent.post('/dashboard/markets/universes').send({
       ...createPayload(),
@@ -321,7 +327,7 @@ describe('Markets module contract', () => {
   });
 
   it('returns explicit not-implemented contract for placeholder market catalog requests', async () => {
-    const agent = await registerAndLogin('markets-placeholder-catalog@example.com');
+    const agent = await registerAndLogin(uniqueEmail('markets-placeholder-catalog'));
     for (const exchange of PLACEHOLDER_EXCHANGES) {
       const res = await agent.get('/dashboard/markets/catalog').query({
         exchange,
@@ -342,7 +348,7 @@ describe('Markets module contract', () => {
   });
 
   it('blocks universe update/delete when linked symbol group is used by active bot', async () => {
-    const agent = await registerAndLogin('markets-active-guard@example.com');
+    const agent = await registerAndLogin(uniqueEmail('markets-active-guard'));
 
     const createRes = await agent.post('/dashboard/markets/universes').send(createPayload());
     expect(createRes.status).toBe(201);
@@ -376,7 +382,7 @@ describe('Markets module contract', () => {
   });
 
   it('allows universe updates and delete when linked bot is inactive', async () => {
-    const agent = await registerAndLogin('markets-inactive-guard@example.com');
+    const agent = await registerAndLogin(uniqueEmail('markets-inactive-guard'));
 
     const createRes = await agent.post('/dashboard/markets/universes').send(createPayload());
     expect(createRes.status).toBe(201);
@@ -411,7 +417,7 @@ describe('Markets module contract', () => {
   });
 
   it('blocks universe update/delete when active primary bot still points at the universe even if group links drifted', async () => {
-    const agent = await registerAndLogin('markets-primary-guard@example.com');
+    const agent = await registerAndLogin(uniqueEmail('markets-primary-guard'));
 
     const createRes = await agent.post('/dashboard/markets/universes').send(createPayload());
     expect(createRes.status).toBe(201);
@@ -445,8 +451,8 @@ describe('Markets module contract', () => {
   });
 
   it('enforces ownership isolation for get/update/delete', async () => {
-    const owner = await registerAndLogin('markets-owner-2@example.com');
-    const other = await registerAndLogin('markets-other@example.com');
+    const owner = await registerAndLogin(uniqueEmail('markets-owner-2'));
+    const other = await registerAndLogin(uniqueEmail('markets-other'));
 
     const createRes = await owner.post('/dashboard/markets/universes').send(createPayload());
     expect(createRes.status).toBe(201);

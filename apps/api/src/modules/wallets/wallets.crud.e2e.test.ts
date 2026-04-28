@@ -1,9 +1,17 @@
 import request from 'supertest';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
+import {
+  registerAndCreateAuthenticatedClient,
+  type AuthenticatedRequestClient,
+} from '../../test/authenticatedRequest';
 
-type AuthenticatedAgent = ReturnType<typeof request.agent>;
+const originalApiKeyEncryptionKeys = process.env.API_KEY_ENCRYPTION_KEYS;
+let emailCounter = 0;
+
+const uniqueEmail = (prefix: string) =>
+  `${prefix}-${Date.now()}-${++emailCounter}@example.com`;
 
 const registerAndLogin = async (email: string) => {
   const agent = request.agent(app);
@@ -16,7 +24,7 @@ const registerAndLogin = async (email: string) => {
 };
 
 const createApiKey = async (
-  agent: AuthenticatedAgent,
+  agent: Pick<AuthenticatedRequestClient, 'post'>,
   params: {
     label: string;
     exchange: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE';
@@ -36,32 +44,17 @@ const createApiKey = async (
 };
 
 describe('Wallet CRUD and ownership contract', () => {
-  beforeEach(async () => {
-    await prisma.botSubagentConfig.deleteMany();
-    await prisma.botAssistantConfig.deleteMany();
-    await prisma.marketGroupStrategyLink.deleteMany();
-    await prisma.botMarketGroup.deleteMany();
-    await prisma.botRuntimeSymbolStat.deleteMany();
-    await prisma.botRuntimeEvent.deleteMany();
-    await prisma.botRuntimeSession.deleteMany();
-    await prisma.botStrategy.deleteMany();
-    await prisma.bot.deleteMany();
-    await prisma.position.deleteMany();
-    await prisma.order.deleteMany();
-    await prisma.trade.deleteMany();
-    await prisma.signal.deleteMany();
-    await prisma.wallet.deleteMany();
-    await prisma.strategy.deleteMany();
-    await prisma.symbolGroup.deleteMany();
-    await prisma.marketUniverse.deleteMany();
-    await prisma.runtimeExecutionDedupe.deleteMany();
-    await prisma.apiKey.deleteMany();
-    await prisma.log.deleteMany();
-    await prisma.user.deleteMany();
+  beforeAll(() => {
+    process.env.API_KEY_ENCRYPTION_KEYS = 'v1:test-wallet-crud-keyring';
+  });
+
+  afterAll(() => {
+    if (originalApiKeyEncryptionKeys === undefined) delete process.env.API_KEY_ENCRYPTION_KEYS;
+    else process.env.API_KEY_ENCRYPTION_KEYS = originalApiKeyEncryptionKeys;
   });
 
   it('creates PAPER wallet and normalizes context fields', async () => {
-    const agent = await registerAndLogin('wallet-crud-paper@example.com');
+    const agent = await registerAndLogin(uniqueEmail('wallet-crud-paper'));
 
     const response = await agent.post('/dashboard/wallets').send({
       name: '  Main paper wallet  ',
@@ -88,7 +81,7 @@ describe('Wallet CRUD and ownership contract', () => {
   });
 
   it('persists external takeover flag on LIVE wallet', async () => {
-    const agent = await registerAndLogin('wallet-crud-live-manage@example.com');
+    const agent = await registerAndLogin(uniqueEmail('wallet-crud-live-manage'));
     const apiKeyId = await createApiKey(agent, {
       label: 'binance-live-manage',
       exchange: 'BINANCE',
@@ -115,7 +108,7 @@ describe('Wallet CRUD and ownership contract', () => {
   });
 
   it('rejects LIVE wallet create when api key or allocation config is missing', async () => {
-    const agent = await registerAndLogin('wallet-crud-live-missing@example.com');
+    const agent = await registerAndLogin(uniqueEmail('wallet-crud-live-missing'));
 
     const response = await agent.post('/dashboard/wallets').send({
       name: 'Live wallet',
@@ -130,7 +123,7 @@ describe('Wallet CRUD and ownership contract', () => {
   });
 
   it('rejects LIVE wallet create when api key exchange mismatches wallet exchange', async () => {
-    const agent = await registerAndLogin('wallet-crud-live-mismatch@example.com');
+    const agent = await registerAndLogin(uniqueEmail('wallet-crud-live-mismatch'));
     const bybitApiKeyId = await createApiKey(agent, {
       label: 'bybit',
       exchange: 'BYBIT',
@@ -152,7 +145,7 @@ describe('Wallet CRUD and ownership contract', () => {
   });
 
   it('supports partial update without resetting existing LIVE mode fields', async () => {
-    const agent = await registerAndLogin('wallet-crud-live-update@example.com');
+    const agent = await registerAndLogin(uniqueEmail('wallet-crud-live-update'));
     const apiKeyId = await createApiKey(agent, {
       label: 'binance-live',
       exchange: 'BINANCE',
@@ -186,7 +179,7 @@ describe('Wallet CRUD and ownership contract', () => {
   });
 
   it('blocks wallet update when wallet is used by active bot', async () => {
-    const email = 'wallet-crud-update-guard@example.com';
+    const email = uniqueEmail('wallet-crud-update-guard');
     const agent = await registerAndLogin(email);
 
     const created = await agent.post('/dashboard/wallets').send({
@@ -225,8 +218,8 @@ describe('Wallet CRUD and ownership contract', () => {
   });
 
   it('enforces ownership isolation for get/update/delete wallet endpoints', async () => {
-    const owner = await registerAndLogin('wallet-crud-owner@example.com');
-    const outsider = await registerAndLogin('wallet-crud-outsider@example.com');
+    const owner = await registerAndCreateAuthenticatedClient(uniqueEmail('wallet-crud-owner'));
+    const outsider = await registerAndCreateAuthenticatedClient(uniqueEmail('wallet-crud-outsider'));
 
     const created = await owner.post('/dashboard/wallets').send({
       name: 'Owner wallet',
@@ -251,8 +244,8 @@ describe('Wallet CRUD and ownership contract', () => {
   });
 
   it('lists wallets only for authenticated owner', async () => {
-    const owner = await registerAndLogin('wallet-crud-list-owner@example.com');
-    const other = await registerAndLogin('wallet-crud-list-other@example.com');
+    const owner = await registerAndCreateAuthenticatedClient(uniqueEmail('wallet-crud-list-owner'));
+    const other = await registerAndCreateAuthenticatedClient(uniqueEmail('wallet-crud-list-other'));
 
     const ownerWallet = await owner.post('/dashboard/wallets').send({
       name: 'Owner wallet',
@@ -281,7 +274,7 @@ describe('Wallet CRUD and ownership contract', () => {
   });
 
   it('blocks wallet deletion when wallet is linked to at least one bot', async () => {
-    const email = 'wallet-crud-delete-guard@example.com';
+    const email = uniqueEmail('wallet-crud-delete-guard');
     const agent = await registerAndLogin(email);
 
     const created = await agent.post('/dashboard/wallets').send({
@@ -316,7 +309,7 @@ describe('Wallet CRUD and ownership contract', () => {
   });
 
   it('deletes wallet when no bot references exist', async () => {
-    const agent = await registerAndLogin('wallet-crud-delete-ok@example.com');
+    const agent = await registerAndLogin(uniqueEmail('wallet-crud-delete-ok'));
 
     const created = await agent.post('/dashboard/wallets').send({
       name: 'Disposable wallet',
@@ -336,7 +329,7 @@ describe('Wallet CRUD and ownership contract', () => {
   });
 
   it('deletes wallet and preserves historical rows by detaching wallet references', async () => {
-    const email = 'wallet-crud-delete-history@example.com';
+    const email = uniqueEmail('wallet-crud-delete-history');
     const agent = await registerAndLogin(email);
 
     const created = await agent.post('/dashboard/wallets').send({

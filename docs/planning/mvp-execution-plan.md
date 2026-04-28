@@ -90,6 +90,12 @@ Rule: fix/cleanup/update first, then feature delivery.
 
 ### Progress Log (Phase UXSAFE-2026-04-28 - Markets/Wallets Safety Hardening)
 - 2026-04-28: Closed `UXSAFE-2026-04-28-A` by aligning `MarketUniverse` edit/delete protection with the approved active-usage rule used elsewhere: inactive linked bots no longer block save, while active primary/canonical/legacy bot ownership still fails closed. The same slice also hardens wallet delete by nulling nullable historical `walletId` references on `Position`, `Order`, and `Trade` before removing the wallet, so historical lifecycle rows survive and the API no longer leaks raw internal errors for that path. Validation PASS: focused `markets.e2e` inactive/active guard regressions, focused `wallets.crud.e2e` history-detach regression, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
+
+## Phase QH-E2E-2026-04-28 - Legacy CRUD Suite Stabilization (Closed 2026-04-28)
+- [x] `QH-E2E-2026-04-28-A qa(api-e2e): stabilize full markets and wallets CRUD suites after focused regression closure`
+
+### Progress Log (Phase QH-E2E-2026-04-28 - Legacy CRUD Suite Stabilization)
+- 2026-04-28: Closed `QH-E2E-2026-04-28-A` by restoring deterministic full-file green execution for `markets.e2e.test.ts` and `wallets.crud.e2e.test.ts` without weakening the approved domain behavior from `UXSAFE-2026-04-28-A`. The chosen harness pattern is unique per-test user identities plus one-time cleanup where needed, with `apps/api/src/test/authenticatedRequest.ts` added only for explicit multi-user authenticated-request assertions in the wallet suite. Validation PASS: `pnpm --filter api exec vitest run src/modules/markets/markets.e2e.test.ts`, `pnpm --filter api exec vitest run src/modules/wallets/wallets.crud.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 - [x] `security(live): explicit live opt-in per bot`
 - [x] `security(live): global kill-switch and emergency stop`
 - [x] `feat(logs): write audit entries for critical trading decisions`

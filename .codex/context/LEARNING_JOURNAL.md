@@ -31,6 +31,22 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-28 - Legacy DB-backed e2e suites are often more stable with unique per-test identities than destructive per-test cleanup
+- Context: the follow-up quality task after `UXSAFE-2026-04-28-A` needed the full legacy `markets` and `wallets` CRUD suites green again, not only focused `-t` regressions.
+- Symptom: broad CRUD files showed auth/session and relational-state noise when every test tried to wipe shared tables in `beforeEach`, even though the underlying domain behavior was already correct.
+- Root cause: older end-to-end files mix auth, subscriptions, and deep relational graphs, so aggressive per-test cleanup can create more drift and coupling than simply isolating each scenario with unique fixture identities.
+- Guardrail: when stabilizing an older DB-backed API e2e file in this repo, prefer unique per-test emails and narrower shared helpers before introducing destructive global reset logic.
+- Preferred pattern:
+```text
+1) Keep one-time suite cleanup only if the file truly needs an initial baseline.
+2) Give each scenario a unique user identity and let ownership/auth state stay local to that scenario.
+3) Use shared bearer helpers only for explicit cross-user assertions where session agents add noise.
+4) Re-run the whole file before considering the harness stable again.
+```
+- Avoid: defaulting to `beforeEach` table truncation/reset helpers as the first fix for legacy DB-backed e2e drift.
+- Evidence:
+  - 2026-04-28 `QH-E2E-2026-04-28-A`: full `markets.e2e.test.ts` and `wallets.crud.e2e.test.ts` were stabilized by unique per-test identities plus a narrow shared authenticated-request helper, while the abandoned reset-helper path was removed.
+
 ### 2026-04-28 - Focused regressions may be safer than whole legacy e2e files when validating a narrow backend fix
 - Context: a small dashboard-management hardening task touched `markets.e2e.test.ts` and `wallets.crud.e2e.test.ts`, but the full files surfaced older unrelated auth/setup noise in this local environment.
 - Symptom: the exact newly added regressions passed in isolation, while running the whole legacy file produced mixed failures unrelated to the changed service contract.
