@@ -1,4 +1,4 @@
-# Security and Risk
+﻿# Security and Risk
 
 ## Security Principles
 - Minimum access to API keys.
@@ -74,3 +74,9 @@ For ownership-boundary coverage snapshot, use:
 | R-SEC-03 | Exchange key misuse after long-lived key exposure | Unauthorized exchange actions | AEAD encryption, masked responses, rotate/revoke endpoints | Medium | Enforce periodic key rotation and "last used" alerts |
 | R-SEC-04 | Operational misconfiguration of live bots | Unintended live trades | liveOptIn + consentTextVersion + kill-switch + emergency stop | Low/Medium | Add risk-first confirmation UX for all live mutations |
 | R-SEC-05 | Incomplete infra observability during incidents | Slower detection and response | Audit logs + baseline runbook | Medium | Add structured metrics/alerts/SLO dashboards |
+
+## AI Security Rule
+
+AI systems must be tested against prompt injection, data leakage, and unauthorized access before deployment. Use `AI_TESTING_PROTOCOL.md` and `.codex/agents/ai-red-team-agent.md` for reproducible red-team scenarios.
+
+AI, auth-sensitive, money-impacting, and cross-user data flows must fail closed when authorization, ownership, tool access, model memory, or policy validation is ambiguous.

@@ -1,4 +1,4 @@
-# Testing Strategy
+﻿# Testing Strategy
 
 ## Critical Areas
 - Authorization and data isolation.
@@ -40,3 +40,11 @@
   - defaults target: `/health`, `/ready`, `/metrics`, `/workers/health`
   - configurable with env: `LOAD_TEST_TARGET_URL`, `LOAD_TEST_DURATION_MS`, `LOAD_TEST_CONCURRENCY`, `LOAD_TEST_PATHS`
 
+
+## AI And Integration Validation
+
+AI features require repeatable multi-turn validation using `AI_TESTING_PROTOCOL.md`. Required coverage includes memory consistency, multi-step context stability, adversarial contradiction handling, role break and prompt injection resistance, memory corruption resistance, edge cases, data leakage, and unauthorized access attempts.
+
+Runtime features require integration validation using `INTEGRATION_CHECKLIST.md`. A feature is not complete until real UI/client paths, API contracts, database schema or migrations, validation, loading states, error states, refresh or restart behavior, and regression risk are verified.
+
+Completion evidence must satisfy `DEFINITION_OF_DONE.md` and include exact commands, manual checks, scenario results, and residual risks.
