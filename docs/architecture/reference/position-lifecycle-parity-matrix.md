@@ -98,6 +98,32 @@ stored or exposed.
 
 ---
 
+## Restart Continuity Parity
+
+`LIVE` restart recovery introduces additional continuity semantics that are not
+normal `BACKTEST` or ordinary `PAPER` concerns, but the lifecycle contract
+still requires one explicit truth model rather than UI or reconcile guessing.
+
+Canonical `LIVE` restart rules:
+
+- restart does not authorize close
+- one missing post-restart snapshot is not equal to closed
+- recovered visibility and recovered actionability are separate truths
+- exchange-event truth outranks one weak post-restart snapshot
+- recovered automation requires canonical owner and strategy context
+
+Shared lifecycle examples:
+
+| Scenario | Required lifecycle truth |
+|---|---|
+| Position existed before restart and still exists on exchange | continuity preserved; position remains visible or recoverable, not closed |
+| First post-restart snapshot misses position once | explicit recovery / uncertainty state, not final external close |
+| Repeated stronger proof shows position disappeared during downtime | external close classification with canonical attribution |
+| Position is recovered but strategy context is unresolved | visible but fail-closed for DCA/TSL/close automation |
+| Position is recovered with deterministic bot, wallet, and strategy truth | may return to canonical managed lifecycle |
+
+---
+
 ## Shared Engine Contract
 
 Backtest, paper, and live must call one shared lifecycle decision engine with identical inputs:

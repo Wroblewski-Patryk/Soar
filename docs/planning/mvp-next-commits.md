@@ -9,6 +9,8 @@ Operational queue for one-task execution runs.
 ## NOW
 - [ ] `V1FIX-2026-04-26-B release(prod): deploy latest scoped-position/backtests closure pack to Coolify and rerun affected-account smoke`
 ## NEXT
+- [x] `V1RESTART-00 planning(queue): publish canonical LIVE restart continuity and recovery hardening packet`
+- [x] `V1RESTART-01 docs(contract): freeze canonical LIVE restart and downtime continuity model`
 - [x] `V1CLOSE-00 planning(queue): publish canonical close-attribution and external-close hardening packet`
 - [x] `V1CLOSE-01 docs(contract): freeze canonical close-attribution model`
 - [x] `V1CLOSE-02 test(api-red): lock missing close-attribution gaps on current write paths`
@@ -172,6 +174,7 @@ Operational queue for one-task execution runs.
 - [x] `CQLT-32 docs(decision): freeze legacy bridge sunset list and mark compatibility-only code paths that remain intentional`
 - [x] `CQLT-34 docs(sync): update queue/context/module docs and capture post-wave coding rules for future agents`
 ## GROUP QUEUE
+- [ ] `V1RESTART-A planning queued (restart-safe LIVE position continuity, event-first recovery, staged reconcile, and post-restart automation restoration)`
 - [x] `V1CLOSE-A planning queued (canonical close-attribution model for bot-close, app-close, exchange-manual close, liquidation, and repair semantics)`
 - [x] `V1LIVE-A planning queued (exchange-selected live execution, Binance Spot/Futures first adapter family, takeover ownership, imported-position runtime parity, and paper/live boundary hardening)`
 - [x] `V1FACT-A planning queued (V1 production activation through release-gate truth, stage/prod evidence freshness, backup/rollback proof, and final sign-off packaging)`

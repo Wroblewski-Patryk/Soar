@@ -20,6 +20,8 @@ Manual and bot-originated entries share this lifecycle. They do not use separate
 ## Fill Authority
 ### LIVE
 - exchange fills and exchange sync are the authority for position-open visibility
+- restart recovery for `LIVE` positions must follow
+  `reference/live-position-restart-continuity-contract.md`
 
 ### PAPER
 - internal paper execution and fill simulation are the authority
@@ -32,6 +34,32 @@ All runtime side-effecting commands must be idempotent for:
 - `CANCEL`
 
 Replayed commands must resolve to reuse or no-op, not duplicate side effects.
+
+## Restart and Downtime Continuity
+
+`LIVE` restart continuity is a canonical lifecycle concern, not a best-effort
+read-model concern.
+
+Worker or bot restart must not by itself:
+
+- finalize close state,
+- erase canonical ownership,
+- or remove previously open exchange-position continuity after one weak
+  recovery pass.
+
+Post-restart recovery must follow strict evidence priority:
+
+1. confirmed exchange events
+2. durable local lifecycle state
+3. repeated authenticated exchange snapshot confirmation
+4. explicit repair-only actions
+
+One post-restart missing snapshot is insufficient to classify a previously open
+`LIVE` position as closed.
+
+Recovered `LIVE` positions may return to actionable lifecycle management only
+when canonical ownership and strategy context are restored or preserved
+deterministically.
 
 ## Close Authority
 Direct strategy `EXIT` may exist as analytical context, but close behavior follows the lifecycle manager contract.
@@ -109,6 +137,7 @@ LONG accepted
 ## Supporting References
 - `reference/runtime-execution-idempotency-contract.md`
 - `reference/live-fee-reconciliation-contract.md`
+- `reference/live-position-restart-continuity-contract.md`
 - `reference/position-lifecycle-parity-matrix.md`
 - `reference/position-close-attribution-contract.md`
 

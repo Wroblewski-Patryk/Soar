@@ -114,6 +114,15 @@ Allowed visibility and actionability are derived from:
 - canonical runtime topology
 - wallet compatibility
 - explicit takeover rules where imported exchange state is allowed
+- explicit restart-recovery continuity rules for previously open `LIVE`
+  positions
+
+Restart recovery may keep a position visible before it becomes fully
+actionable again. Visibility and actionability are separate truths during
+post-restart recovery:
+
+- visibility preserves operator continuity,
+- actionability requires restored canonical ownership and strategy context.
 
 ## Inherited Runtime Contract
 The approved runtime context assembly is:
@@ -130,12 +139,21 @@ stability, but those snapshots must be derived from the linked wallet,
 symbol group, and strategy rather than acting as independent source-of-truth
 fields.
 
+For recovered `LIVE` exchange-synced positions, restart continuity must either:
+
+- preserve this inherited context from already persisted canonical truth, or
+- restore it deterministically from canonical owner proof.
+
+The system must not regain post-restart strategy or bot context by guessing
+from the first compatible symbol or first active bot.
+
 ## Out of Scope
 - strategy evaluation semantics
 - order execution adapter details
 - UI presentation details
 
 ## Supporting References
+- `reference/live-position-restart-continuity-contract.md`
 - `reference/venue-context-source-of-truth-contract.md`
 - `reference/wallet-source-of-truth-contract.md`
 
