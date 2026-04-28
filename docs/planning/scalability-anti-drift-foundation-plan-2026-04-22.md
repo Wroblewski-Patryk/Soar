@@ -1,6 +1,6 @@
 # Scalability and Anti-Drift Foundation Plan (2026-04-22)
 
-Status: Active
+Status: Closed 2026-04-22
 Wave: `SCALE-A`
 
 ## Objective

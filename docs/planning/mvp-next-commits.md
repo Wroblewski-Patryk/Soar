@@ -8,6 +8,7 @@ Operational queue for one-task execution runs.
 
 ## NOW
 ## NEXT
+- [x] `DOCSYNC-2026-04-28-C docs(planning-status): close stale Active headers in already closed planning packets`
 - [x] `QH-E2E-2026-04-28-A qa(api-e2e): stabilize full markets and wallets CRUD suites after focused regression closure`
 - [x] `V1FIX-2026-04-26-B release(prod): deploy latest scoped-position/backtests closure pack to Coolify and rerun affected-account smoke`
 - [x] `UXSAFE-2026-04-28-A fix(api-markets+wallets): harden active market-universe edit guard and wallet delete history cleanup`

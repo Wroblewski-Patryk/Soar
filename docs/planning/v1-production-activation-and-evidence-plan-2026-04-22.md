@@ -1,6 +1,6 @@
 # V1 Production Activation and Evidence Plan (2026-04-22)
 
-Status: Active  
+Status: Closed 2026-04-22  
 Wave: `V1FACT-A`
 
 ## Objective

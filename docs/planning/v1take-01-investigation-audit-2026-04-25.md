@@ -1,6 +1,6 @@
 # V1TAKE-01 Investigation Audit
 
-Status: Active  
+Status: Closed 2026-04-25  
 Updated: 2026-04-25
 
 ## Purpose

@@ -2649,6 +2649,12 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-25: Closed `DEPLOY-2026-04-25-B` as the smallest follow-up to the same-day Coolify web deploy hotfix by rerunning the exact local gate that had blocked deployment. Validation PASS: `pnpm --filter web run build`, `pnpm run quality:guardrails`. No additional code changes were required in this closure slice.
 
 ## Phase DOCSYNC-2026-04-25 - Project State Drift Cleanup (Closed 2026-04-25)
+
+## Phase DOCSYNC-2026-04-28 - Planning Status Header Parity (Closed 2026-04-28)
+- [x] `DOCSYNC-2026-04-28-C docs(planning-status): close stale Active headers in already closed planning packets`
+
+### Progress Log (Phase DOCSYNC-2026-04-28 - Planning Status Header Parity)
+- 2026-04-28: Closed `DOCSYNC-2026-04-28-C` by correcting stale `Status: Active` headers in already closed planning packets for `SCALE-A`, `V1FACT-A`, `V1TAKE-01`, `XADAPT-02`, and `XADAPT-06`. The slice was intentionally docs-only and restored parity between packet headers and canonical closure state already recorded in queue/context truth. Validation PASS: `pnpm run quality:guardrails`.
 - [x] `DOCSYNC-2026-04-25-A docs(sync): remove stale V1POSTBOT full-api red-suite drift from project state`
 - [x] `DOCSYNC-2026-04-25-B docs(sync): remove closed PAPERPNL entry from TASK_BOARD READY lane`
 

@@ -17,6 +17,8 @@ Last updated: 2026-04-28
 
 ## READY
 
+- [x] `DOCSYNC-2026-04-28-C docs(planning-status): close stale Active headers in already closed planning packets`
+  - 2026-04-28: Closed by correcting stale `Status: Active` headers in already closed planning packets for `SCALE-A`, `V1FACT-A`, `V1TAKE-01`, `XADAPT-02`, and `XADAPT-06`. The task changed no runtime or feature behavior; it only restored parity between individual plan headers and canonical closure truth already recorded in `PROJECT_STATE` and `TASK_BOARD`. Validation PASS: `pnpm run quality:guardrails`.
 - [x] `QH-E2E-2026-04-28-A qa(api-e2e): stabilize full markets and wallets CRUD suites after focused regression closure`
   - 2026-04-28: Closed by stabilizing the two legacy CRUD suites without loosening runtime behavior. `markets.e2e.test.ts` now uses one-time cleanup plus unique per-test identities so the full file can run deterministically without auth/session cross-talk, and `wallets.crud.e2e.test.ts` now uses the same unique-identity approach while reserving a shared bearer helper only for explicit multi-user ownership assertions. Added `apps/api/src/test/authenticatedRequest.ts` as the canonical helper for those multi-user authenticated-request cases. Validation PASS: full `markets.e2e`, full `wallets.crud.e2e`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 - [x] `UXSAFE-2026-04-28-A fix(api-markets+wallets): harden active market-universe edit guard and wallet delete history cleanup`
