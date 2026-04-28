@@ -31,6 +31,22 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-28 - Focused regressions may be safer than whole legacy e2e files when validating a narrow backend fix
+- Context: a small dashboard-management hardening task touched `markets.e2e.test.ts` and `wallets.crud.e2e.test.ts`, but the full files surfaced older unrelated auth/setup noise in this local environment.
+- Symptom: the exact newly added regressions passed in isolation, while running the whole legacy file produced mixed failures unrelated to the changed service contract.
+- Root cause: some older broad e2e files still combine many auth/setup/database assumptions, so a narrow fix can get buried under unrelated local instability before the targeted contract is even exercised.
+- Guardrail: when validating a small backend safety fix in a known-noisy legacy e2e file, run the exact affected regression(s) with `vitest -t` in addition to typecheck and repository guardrails, and document that the full-file instability is outside the current scope.
+- Preferred pattern:
+```text
+1) Add or tighten the exact regression for the changed contract.
+2) Run that regression by name with `vitest -t`.
+3) Pair it with `typecheck` and repository guardrails.
+4) Record any broader unrelated file instability as a separate hygiene follow-up, not as a blocker to the narrow fix.
+```
+- Avoid: treating unrelated failures from a broad legacy suite as proof that the narrow fix is unvalidated, or expanding the task scope into opportunistic test-suite cleanup.
+- Evidence:
+  - 2026-04-28 `UXSAFE-2026-04-28-A`: focused `markets` and `wallets` regressions passed in isolation while the full legacy files still showed unrelated noise outside the requested fix.
+
 ### 2026-04-26 - Imported Binance Futures leverage can hide in raw margin fields and floating precision can silently degrade it
 - Context: real-account production debugging of imported live-position drift after takeover/manual-order fixes were already deployed.
 - Symptom: the live bot runtime showed a real imported DOGE Futures position but margin and PnL% drifted badly from the exchange because the imported row persisted with `leverage=1`, and a first fix still degraded the recovered `15x` to `14x`.

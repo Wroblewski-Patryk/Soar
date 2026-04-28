@@ -29,6 +29,7 @@ const createActiveBotUsingUniverse = async (params: {
   userId: string;
   universeId: string;
   isActive?: boolean;
+  createCanonicalLinksOnly?: boolean;
 }) => {
   const symbolGroup = await prisma.symbolGroup.create({
     data: {
@@ -39,10 +40,36 @@ const createActiveBotUsingUniverse = async (params: {
     },
   });
 
+  const strategy = await prisma.strategy.create({
+    data: {
+      userId: params.userId,
+      name: `Guard strategy ${Date.now()}`,
+      interval: '1h',
+      leverage: 2,
+      walletRisk: 1,
+      config: {},
+    },
+  });
+
+  const wallet = await prisma.wallet.create({
+    data: {
+      userId: params.userId,
+      name: `Guard wallet ${Date.now()}`,
+      mode: 'PAPER',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      paperInitialBalance: 10_000,
+    },
+  });
+
   const bot = await prisma.bot.create({
     data: {
       userId: params.userId,
       name: `Guard bot ${Date.now()}`,
+      strategyId: strategy.id,
+      symbolGroupId: symbolGroup.id,
+      walletId: wallet.id,
       mode: 'PAPER',
       isActive: params.isActive ?? true,
       paperStartBalance: 10_000,
@@ -53,7 +80,11 @@ const createActiveBotUsingUniverse = async (params: {
     },
   });
 
-  await prisma.botMarketGroup.create({
+  if (params.createCanonicalLinksOnly === true) {
+    return;
+  }
+
+  const botMarketGroup = await prisma.botMarketGroup.create({
     data: {
       userId: params.userId,
       botId: bot.id,
@@ -63,6 +94,27 @@ const createActiveBotUsingUniverse = async (params: {
       executionOrder: 1,
       maxOpenPositions: 1,
     },
+  });
+
+  await prisma.marketGroupStrategyLink.create({
+    data: {
+      userId: params.userId,
+      botId: bot.id,
+      botMarketGroupId: botMarketGroup.id,
+      strategyId: strategy.id,
+      priority: 1,
+      weight: 1,
+      isEnabled: true,
+    },
+  });
+
+  await prisma.botStrategy.create({
+    data: {
+      botId: bot.id,
+      strategyId: strategy.id,
+      symbolGroupId: symbolGroup.id,
+      isEnabled: true,
+    }
   });
 };
 
@@ -85,6 +137,7 @@ describe('Markets module contract', () => {
     await prisma.botRuntimeEvent.deleteMany();
     await prisma.botRuntimeSession.deleteMany();
     await prisma.bot.deleteMany();
+    await prisma.wallet.deleteMany();
     await prisma.symbolGroup.deleteMany();
     await prisma.strategy.deleteMany();
     await prisma.marketUniverse.deleteMany();
@@ -355,6 +408,40 @@ describe('Markets module contract', () => {
       select: { id: true },
     });
     expect(deletedUniverse).toBeNull();
+  });
+
+  it('blocks universe update/delete when active primary bot still points at the universe even if group links drifted', async () => {
+    const agent = await registerAndLogin('markets-primary-guard@example.com');
+
+    const createRes = await agent.post('/dashboard/markets/universes').send(createPayload());
+    expect(createRes.status).toBe(201);
+    const universeId = createRes.body.id as string;
+    const universe = await prisma.marketUniverse.findUnique({
+      where: { id: universeId },
+      select: { userId: true },
+    });
+    expect(universe?.userId).toBeTruthy();
+
+    await createActiveBotUsingUniverse({
+      userId: universe!.userId,
+      universeId,
+      isActive: true,
+      createCanonicalLinksOnly: true,
+    });
+
+    const updateRes = await agent.put(`/dashboard/markets/universes/${universeId}`).send({
+      name: 'Blocked by active primary bot',
+    });
+    expect(updateRes.status).toBe(409);
+    expect(updateRes.body.error.message).toBe(
+      'market universe is used by active bot and cannot be edited'
+    );
+
+    const deleteRes = await agent.delete(`/dashboard/markets/universes/${universeId}`);
+    expect(deleteRes.status).toBe(409);
+    expect(deleteRes.body.error.message).toBe(
+      'market universe is used by active bot and cannot be deleted'
+    );
   });
 
   it('enforces ownership isolation for get/update/delete', async () => {

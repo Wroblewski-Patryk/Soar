@@ -84,6 +84,12 @@ Rule: fix/cleanup/update first, then feature delivery.
 
 ### Progress Log (Phase BOTLIVE-2026-04-28 - Active LIVE Symbol-Overlap Guard)
 - 2026-04-28: Closed `BOTLIVE-2026-04-28-A` by adding one canonical bot write-path guard that blocks create/update when a bot would become `LIVE + isActive + liveOptIn` and its selected market-group symbols overlap another active opted-in LIVE bot for the same user. The API now returns fail-closed conflict details naming the blocking bot and symbols, while focused DB-backed regression coverage locks both create-time and activation-time overlap cases. Validation PASS: `pnpm --filter api exec vitest run src/modules/bots/bots.duplicate-guard.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
+
+## Phase UXSAFE-2026-04-28 - Markets/Wallets Safety Hardening (Closed 2026-04-28)
+- [x] `UXSAFE-2026-04-28-A fix(api-markets+wallets): harden active market-universe edit guard and wallet delete history cleanup`
+
+### Progress Log (Phase UXSAFE-2026-04-28 - Markets/Wallets Safety Hardening)
+- 2026-04-28: Closed `UXSAFE-2026-04-28-A` by aligning `MarketUniverse` edit/delete protection with the approved active-usage rule used elsewhere: inactive linked bots no longer block save, while active primary/canonical/legacy bot ownership still fails closed. The same slice also hardens wallet delete by nulling nullable historical `walletId` references on `Position`, `Order`, and `Trade` before removing the wallet, so historical lifecycle rows survive and the API no longer leaks raw internal errors for that path. Validation PASS: focused `markets.e2e` inactive/active guard regressions, focused `wallets.crud.e2e` history-detach regression, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 - [x] `security(live): explicit live opt-in per bot`
 - [x] `security(live): global kill-switch and emergency stop`
 - [x] `feat(logs): write audit entries for critical trading decisions`

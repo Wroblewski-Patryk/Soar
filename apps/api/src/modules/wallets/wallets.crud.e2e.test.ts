@@ -46,14 +46,14 @@ describe('Wallet CRUD and ownership contract', () => {
     await prisma.botRuntimeSession.deleteMany();
     await prisma.botStrategy.deleteMany();
     await prisma.bot.deleteMany();
-    await prisma.wallet.deleteMany();
-    await prisma.strategy.deleteMany();
-    await prisma.symbolGroup.deleteMany();
-    await prisma.marketUniverse.deleteMany();
     await prisma.position.deleteMany();
     await prisma.order.deleteMany();
     await prisma.trade.deleteMany();
     await prisma.signal.deleteMany();
+    await prisma.wallet.deleteMany();
+    await prisma.strategy.deleteMany();
+    await prisma.symbolGroup.deleteMany();
+    await prisma.marketUniverse.deleteMany();
     await prisma.runtimeExecutionDedupe.deleteMany();
     await prisma.apiKey.deleteMany();
     await prisma.log.deleteMany();
@@ -333,5 +333,97 @@ describe('Wallet CRUD and ownership contract', () => {
 
     const fetchAfterDelete = await agent.get(`/dashboard/wallets/${created.body.id}`);
     expect(fetchAfterDelete.status).toBe(404);
+  });
+
+  it('deletes wallet and preserves historical rows by detaching wallet references', async () => {
+    const email = 'wallet-crud-delete-history@example.com';
+    const agent = await registerAndLogin(email);
+
+    const created = await agent.post('/dashboard/wallets').send({
+      name: 'History wallet',
+      mode: 'PAPER',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      paperInitialBalance: 3200,
+    });
+    expect(created.status).toBe(201);
+
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: { id: true },
+    });
+    expect(user?.id).toBeTruthy();
+
+    const position = await prisma.position.create({
+      data: {
+        userId: user!.id,
+        walletId: created.body.id,
+        symbol: 'BTCUSDT',
+        side: 'LONG',
+        status: 'CLOSED',
+        entryPrice: 100,
+        quantity: 1,
+        leverage: 1,
+        realizedPnl: 25,
+        openedAt: new Date('2026-04-20T10:00:00.000Z'),
+        closedAt: new Date('2026-04-20T11:00:00.000Z'),
+      },
+    });
+
+    const order = await prisma.order.create({
+      data: {
+        userId: user!.id,
+        walletId: created.body.id,
+        positionId: position.id,
+        symbol: 'BTCUSDT',
+        side: 'BUY',
+        type: 'MARKET',
+        status: 'FILLED',
+        quantity: 1,
+        filledQuantity: 1,
+      },
+    });
+
+    const trade = await prisma.trade.create({
+      data: {
+        userId: user!.id,
+        walletId: created.body.id,
+        positionId: position.id,
+        orderId: order.id,
+        symbol: 'BTCUSDT',
+        side: 'BUY',
+        price: 100,
+        quantity: 1,
+        lifecycleAction: 'OPEN',
+      },
+    });
+
+    const deleted = await agent.delete(`/dashboard/wallets/${created.body.id}`);
+    expect(deleted.status).toBe(204);
+
+    const [deletedWallet, refreshedPosition, refreshedOrder, refreshedTrade] = await Promise.all([
+      prisma.wallet.findUnique({
+        where: { id: created.body.id },
+        select: { id: true },
+      }),
+      prisma.position.findUnique({
+        where: { id: position.id },
+        select: { walletId: true },
+      }),
+      prisma.order.findUnique({
+        where: { id: order.id },
+        select: { walletId: true },
+      }),
+      prisma.trade.findUnique({
+        where: { id: trade.id },
+        select: { walletId: true },
+      }),
+    ]);
+
+    expect(deletedWallet).toBeNull();
+    expect(refreshedPosition?.walletId).toBeNull();
+    expect(refreshedOrder?.walletId).toBeNull();
+    expect(refreshedTrade?.walletId).toBeNull();
   });
 });

@@ -257,11 +257,46 @@ export const deleteWallet = async (userId: string, id: string) => {
   }
 
   try {
-    await prisma.wallet.delete({
-      where: { id: existing.id },
+    await prisma.$transaction(async (tx) => {
+      await Promise.all([
+        tx.position.updateMany({
+          where: {
+            userId,
+            walletId: existing.id,
+          },
+          data: {
+            walletId: null,
+          },
+        }),
+        tx.order.updateMany({
+          where: {
+            userId,
+            walletId: existing.id,
+          },
+          data: {
+            walletId: null,
+          },
+        }),
+        tx.trade.updateMany({
+          where: {
+            userId,
+            walletId: existing.id,
+          },
+          data: {
+            walletId: null,
+          },
+        }),
+      ]);
+
+      await tx.wallet.delete({
+        where: { id: existing.id },
+      });
     });
   } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2003') {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      ['P2003', 'P2014', 'P2025', 'P2022'].includes(error.code)
+    ) {
       throw walletErrors.inUseCannotDelete();
     }
     throw error;

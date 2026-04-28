@@ -18,8 +18,8 @@ export class MarketDomainError extends DomainError {
 }
 
 export const marketErrors = {
-  universeUsedByActiveBot: () =>
-    new MarketDomainError(MARKET_ERROR_CODES.universeUsedByActiveBot, 409),
+  universeUsedByActiveBot: (details?: Record<string, unknown>) =>
+    new MarketDomainError(MARKET_ERROR_CODES.universeUsedByActiveBot, 409, details),
   universeLinkedRecords: () =>
     new MarketDomainError(MARKET_ERROR_CODES.universeLinkedRecords, 409),
 };

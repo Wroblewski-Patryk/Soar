@@ -97,10 +97,25 @@ const resolveEffectiveUniverseSymbolsForSync = async (params: {
 const assertUniverseNotUsedByActiveBot = async (params: { userId: string; marketUniverseId: string }) => {
   const { userId, marketUniverseId } = params;
 
+  const usedByActivePrimaryBot = await prisma.bot.findFirst({
+    where: {
+      userId,
+      isActive: true,
+      symbolGroup: {
+        marketUniverseId,
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+
   const usedByActiveCanonicalBot = await prisma.botMarketGroup.findFirst({
     where: {
       userId,
       isEnabled: true,
+      lifecycleStatus: 'ACTIVE',
       bot: {
         userId,
         isActive: true,
@@ -109,7 +124,15 @@ const assertUniverseNotUsedByActiveBot = async (params: { userId: string; market
         marketUniverseId,
       },
     },
-    select: { id: true },
+    select: {
+      id: true,
+      bot: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
   });
 
   const usedByActiveLegacyBot = await prisma.botStrategy.findFirst({
@@ -123,11 +146,28 @@ const assertUniverseNotUsedByActiveBot = async (params: { userId: string; market
         marketUniverseId,
       },
     },
-    select: { id: true },
+    select: {
+      id: true,
+      bot: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
   });
 
-  if (usedByActiveCanonicalBot || usedByActiveLegacyBot) {
-    throw marketErrors.universeUsedByActiveBot();
+  const blockingBot =
+    usedByActivePrimaryBot ??
+    usedByActiveCanonicalBot?.bot ??
+    usedByActiveLegacyBot?.bot ??
+    null;
+
+  if (blockingBot) {
+    throw marketErrors.universeUsedByActiveBot({
+      botId: blockingBot.id,
+      botName: blockingBot.name,
+    });
   }
 };
 
