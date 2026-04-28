@@ -41,6 +41,38 @@ const handleCloseRuntimePositionError = (res: Response, error: unknown) => {
   return sendError(res, mapped.status, mapped.message, mapped.details);
 };
 
+const buildActiveLiveSymbolOverlapMessage = (details: unknown) => {
+  if (!details || typeof details !== 'object') {
+    return 'selected market group overlaps symbols already used by another active LIVE bot';
+  }
+
+  const conflictingBots = (details as { conflictingBots?: Array<{ botName?: string; symbols?: string[] }> })
+    .conflictingBots;
+  if (!Array.isArray(conflictingBots) || conflictingBots.length === 0) {
+    return 'selected market group overlaps symbols already used by another active LIVE bot';
+  }
+
+  if (conflictingBots.length === 1) {
+    const [conflict] = conflictingBots;
+    const symbols = Array.isArray(conflict.symbols) ? conflict.symbols.filter(Boolean) : [];
+    const symbolLabel = symbols.join(', ');
+    const botLabel = conflict.botName?.trim() || 'unknown bot';
+    if (symbolLabel.length > 0) {
+      return `remove ${symbolLabel} from selected market group because it is already used by active LIVE bot ${botLabel}`;
+    }
+    return `selected market group overlaps active LIVE bot ${botLabel}`;
+  }
+
+  const summary = conflictingBots
+    .map((conflict) => {
+      const botLabel = conflict.botName?.trim() || 'unknown bot';
+      const symbols = Array.isArray(conflict.symbols) ? conflict.symbols.filter(Boolean) : [];
+      return symbols.length > 0 ? `${botLabel} [${symbols.join(', ')}]` : botLabel;
+    })
+    .join('; ');
+  return `selected market group overlaps active LIVE bot scopes: ${summary}`;
+};
+
 const handleBotCommandValidationError = (res: Response, error: unknown) => {
   const mapped = mapErrorToHttpResponse(error);
   if (mapped.code === BOT_ERROR_CODES.liveConsentVersionRequired) {
@@ -73,6 +105,9 @@ const handleBotCommandValidationError = (res: Response, error: unknown) => {
       'active bot already exists for this wallet + strategy + market group tuple',
       mapped.details
     );
+  }
+  if (mapped.code === BOT_ERROR_CODES.activeLiveBotSymbolOverlap) {
+    return sendError(res, 409, buildActiveLiveSymbolOverlapMessage(mapped.details), mapped.details);
   }
   if (mapped.code === BOT_ERROR_CODES.botNotFound) {
     return sendError(res, 404, 'Not found', mapped.details);

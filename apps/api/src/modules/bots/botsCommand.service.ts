@@ -9,6 +9,7 @@ import {
   UpdateBotDto,
 } from './bots.types';
 import {
+  assertNoActiveLiveBotSymbolOverlap,
   assertNoDuplicateActiveBotByStrategyAndSymbolGroup,
   deriveMaxOpenPositionsFromStrategy,
   getOwnedStrategy,
@@ -129,6 +130,12 @@ export const createBot = async (userId: string, data: CreateBotDto) => {
       strategyId,
       symbolGroupId: symbolGroup.id,
       walletId: wallet.id,
+    });
+  }
+  if (derivedMode === 'LIVE' && botData.isActive && botData.liveOptIn) {
+    await assertNoActiveLiveBotSymbolOverlap({
+      userId,
+      symbolGroupId: symbolGroup.id,
     });
   }
 
@@ -350,6 +357,16 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
         strategyId: targetStrategyId,
         symbolGroupId: targetSymbolGroupId,
         walletId: targetWalletId,
+        excludeBotId: existing.id,
+      });
+    }
+  }
+  if (nextMode === 'LIVE' && nextIsActive && nextLiveOptIn) {
+    const targetSymbolGroupId = requestedSymbolGroup?.id ?? existing.symbolGroupId ?? null;
+    if (targetSymbolGroupId) {
+      await assertNoActiveLiveBotSymbolOverlap({
+        userId,
+        symbolGroupId: targetSymbolGroupId,
         excludeBotId: existing.id,
       });
     }

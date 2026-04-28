@@ -9,6 +9,8 @@ type OwnedStrategy = {
 
 type OwnedSymbolGroupWithMarketUniverse = {
   id: string;
+  name?: string;
+  symbols?: string[];
   marketUniverse: {
     marketType: 'FUTURES' | 'SPOT';
     exchange: import('@prisma/client').Exchange;
@@ -16,11 +18,21 @@ type OwnedSymbolGroupWithMarketUniverse = {
   };
 };
 
+type LiveBotSymbolOverlapConflict = {
+  botId: string;
+  botName: string;
+  symbols: string[];
+};
+
+const normalizeTrackedSymbol = (symbol: string) => symbol.trim().toUpperCase().replace(/[/:]/g, '');
+
 const getOwnedSymbolGroup = async (userId: string, symbolGroupId: string) =>
   prisma.symbolGroup.findFirst({
     where: { id: symbolGroupId, userId },
     select: {
       id: true,
+      name: true,
+      symbols: true,
       marketUniverse: {
         select: { marketType: true, exchange: true, baseCurrency: true },
       },
@@ -91,6 +103,8 @@ export const resolveCreateMarketGroupToSymbolGroup = async (
     },
     select: {
       id: true,
+      name: true,
+      symbols: true,
       marketUniverse: {
         select: { marketType: true, exchange: true, baseCurrency: true },
       },
@@ -120,6 +134,8 @@ export const resolveCreateMarketGroupToSymbolGroup = async (
     },
     select: {
       id: true,
+      name: true,
+      symbols: true,
       marketUniverse: {
         select: { marketType: true, exchange: true, baseCurrency: true },
       },
@@ -160,4 +176,82 @@ export const assertNoDuplicateActiveBotByStrategyAndSymbolGroup = async (params:
   if (duplicate) {
     throw botErrors.activeBotStrategyMarketGroupDuplicate();
   }
+};
+
+const findActiveLiveBotSymbolOverlap = async (params: {
+  userId: string;
+  symbolGroupId: string;
+  excludeBotId?: string;
+}): Promise<LiveBotSymbolOverlapConflict[]> => {
+  const targetSymbolGroup = await getOwnedSymbolGroup(params.userId, params.symbolGroupId);
+  if (!targetSymbolGroup) {
+    return [];
+  }
+
+  const targetSymbols = new Set(
+    (targetSymbolGroup.symbols ?? [])
+      .map((symbol) => normalizeTrackedSymbol(symbol))
+      .filter((symbol) => symbol.length > 0)
+  );
+  if (targetSymbols.size === 0) {
+    return [];
+  }
+
+  const activeLiveBots = await prisma.bot.findMany({
+    where: {
+      userId: params.userId,
+      mode: 'LIVE',
+      isActive: true,
+      liveOptIn: true,
+      symbolGroupId: { not: null },
+      ...(params.excludeBotId ? { id: { not: params.excludeBotId } } : {}),
+    },
+    select: {
+      id: true,
+      name: true,
+      symbolGroup: {
+        select: {
+          symbols: true,
+        },
+      },
+    },
+    orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+  });
+
+  const conflicts: LiveBotSymbolOverlapConflict[] = [];
+  for (const bot of activeLiveBots) {
+    const overlappingSymbols = [...new Set(
+      (bot.symbolGroup?.symbols ?? [])
+        .map((symbol) => normalizeTrackedSymbol(symbol))
+        .filter((symbol) => targetSymbols.has(symbol))
+    )].sort((left, right) => left.localeCompare(right));
+
+    if (overlappingSymbols.length === 0) continue;
+    conflicts.push({
+      botId: bot.id,
+      botName: bot.name,
+      symbols: overlappingSymbols,
+    });
+  }
+
+  return conflicts;
+};
+
+export const assertNoActiveLiveBotSymbolOverlap = async (params: {
+  userId: string;
+  symbolGroupId: string;
+  excludeBotId?: string;
+}) => {
+  const conflicts = await findActiveLiveBotSymbolOverlap(params);
+  if (conflicts.length === 0) {
+    return;
+  }
+
+  throw botErrors.activeLiveBotSymbolOverlap({
+    symbolGroupId: params.symbolGroupId,
+    conflictingBots: conflicts,
+    conflictingSymbols: [...new Set(conflicts.flatMap((conflict) => conflict.symbols))].sort(
+      (left, right) => left.localeCompare(right)
+    ),
+  });
 };

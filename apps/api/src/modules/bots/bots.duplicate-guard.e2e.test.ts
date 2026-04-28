@@ -5,6 +5,7 @@ import { prisma } from '../../prisma/client';
 import { setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 
 const walletIdByMarketGroupId = new Map<string, string>();
+const liveWalletIdByMarketGroupId = new Map<string, string>();
 
 const createWalletForContext = async (email: string) => {
   const user = await prisma.user.findUniqueOrThrow({
@@ -20,6 +21,39 @@ const createWalletForContext = async (email: string) => {
       marketType: 'FUTURES',
       baseCurrency: 'USDT',
       paperInitialBalance: 10_000,
+    },
+    select: { id: true },
+  });
+  return created.id;
+};
+
+const createLiveWalletForContext = async (email: string) => {
+  const user = await prisma.user.findUniqueOrThrow({
+    where: { email },
+    select: { id: true },
+  });
+  const apiKey = await prisma.apiKey.create({
+    data: {
+      userId: user.id,
+      label: `Duplicate Guard Live Key ${Date.now()}`,
+      exchange: 'BINANCE',
+      apiKey: 'encrypted-key',
+      apiSecret: 'encrypted-secret',
+      syncExternalPositions: true,
+      manageExternalPositions: false,
+    },
+    select: { id: true },
+  });
+  const created = await prisma.wallet.create({
+    data: {
+      userId: user.id,
+      name: `Duplicate Guard Live Wallet ${Date.now()}`,
+      mode: 'LIVE',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      paperInitialBalance: 10_000,
+      apiKeyId: apiKey.id,
     },
     select: { id: true },
   });
@@ -61,7 +95,10 @@ const createStrategy = async (agent: ReturnType<typeof request.agent>, name: str
   return strategyRes.body.id as string;
 };
 
-const createMarketGroup = async (email: string) => {
+const createMarketGroup = async (
+  email: string,
+  symbols: string[] = ['BTCUSDT', 'ETHUSDT']
+) => {
   const user = await prisma.user.findUniqueOrThrow({ where: { email } });
   const marketUniverse = await prisma.marketUniverse.create({
     data: {
@@ -69,7 +106,7 @@ const createMarketGroup = async (email: string) => {
       name: `Duplicate Guard Universe ${Date.now()}`,
       marketType: 'FUTURES',
       baseCurrency: 'USDT',
-      whitelist: ['BTCUSDT', 'ETHUSDT'],
+      whitelist: symbols,
       blacklist: [],
     },
   });
@@ -78,12 +115,15 @@ const createMarketGroup = async (email: string) => {
       userId: user.id,
       marketUniverseId: marketUniverse.id,
       name: `Duplicate Guard Group ${Date.now()}`,
-      symbols: ['BTCUSDT', 'ETHUSDT'],
+      symbols,
     },
   });
   const walletId = await createWalletForContext(email);
+  const liveWalletId = await createLiveWalletForContext(email);
   walletIdByMarketGroupId.set(symbolGroup.id, walletId);
   walletIdByMarketGroupId.set(marketUniverse.id, walletId);
+  liveWalletIdByMarketGroupId.set(symbolGroup.id, liveWalletId);
+  liveWalletIdByMarketGroupId.set(marketUniverse.id, liveWalletId);
 
   return symbolGroup.id;
 };
@@ -91,6 +131,7 @@ const createMarketGroup = async (email: string) => {
 describe('Bots duplicate active guard', () => {
   beforeEach(async () => {
     walletIdByMarketGroupId.clear();
+    liveWalletIdByMarketGroupId.clear();
     await prisma.log.deleteMany();
     await prisma.backtestReport.deleteMany();
     await prisma.backtestTrade.deleteMany();
@@ -198,6 +239,89 @@ describe('Bots duplicate active guard', () => {
     expect(activateSecondary.status).toBe(409);
     expect(activateSecondary.body.error.message).toBe(
       'active bot already exists for this wallet + strategy + market group tuple'
+    );
+  });
+
+  it('blocks creating active LIVE bot when selected market group overlaps symbols owned by another active LIVE bot', async () => {
+    const email = 'bots-live-symbol-overlap-create@example.com';
+    const agent = await registerAndLogin(email);
+    const strategyId = await createStrategy(agent, 'Live Overlap Create Strategy');
+    const primaryMarketGroupId = await createMarketGroup(email, ['BTCUSDT', 'ETHUSDT', 'DOGEUSDT']);
+    const overlappingMarketGroupId = await createMarketGroup(email, ['ETHUSDT', 'DOTUSDT', 'POLUSDT']);
+
+    const firstCreate = await agent.post('/dashboard/bots').send({
+      name: 'Primary Live Bot',
+      strategyId,
+      marketGroupId: primaryMarketGroupId,
+      walletId: liveWalletIdByMarketGroupId.get(primaryMarketGroupId),
+      isActive: true,
+      liveOptIn: true,
+      consentTextVersion: 'mvp-v1',
+    });
+    expect(firstCreate.status).toBe(201);
+
+    const overlappingCreate = await agent.post('/dashboard/bots').send({
+      name: 'Overlapping Live Bot',
+      strategyId,
+      marketGroupId: overlappingMarketGroupId,
+      walletId: liveWalletIdByMarketGroupId.get(overlappingMarketGroupId),
+      isActive: true,
+      liveOptIn: true,
+      consentTextVersion: 'mvp-v1',
+    });
+    expect(overlappingCreate.status).toBe(409);
+    expect(overlappingCreate.body.error.message).toBe(
+      'remove ETHUSDT from selected market group because it is already used by active LIVE bot Primary Live Bot'
+    );
+    expect(overlappingCreate.body.error.details).toEqual(
+      expect.objectContaining({
+        conflictingSymbols: ['ETHUSDT'],
+        conflictingBots: [
+          expect.objectContaining({
+            botName: 'Primary Live Bot',
+            symbols: ['ETHUSDT'],
+          }),
+        ],
+      })
+    );
+  });
+
+  it('blocks activating LIVE bot when update introduces overlap with another active LIVE bot', async () => {
+    const email = 'bots-live-symbol-overlap-update@example.com';
+    const agent = await registerAndLogin(email);
+    const strategyId = await createStrategy(agent, 'Live Overlap Update Strategy');
+    const primaryMarketGroupId = await createMarketGroup(email, ['BTCUSDT', 'ETHUSDT', 'DOGEUSDT']);
+    const overlappingMarketGroupId = await createMarketGroup(email, ['ETHUSDT', 'DOTUSDT', 'POLUSDT']);
+
+    const firstCreate = await agent.post('/dashboard/bots').send({
+      name: 'Primary Live Bot',
+      strategyId,
+      marketGroupId: primaryMarketGroupId,
+      walletId: liveWalletIdByMarketGroupId.get(primaryMarketGroupId),
+      isActive: true,
+      liveOptIn: true,
+      consentTextVersion: 'mvp-v1',
+    });
+    expect(firstCreate.status).toBe(201);
+
+    const secondCreate = await agent.post('/dashboard/bots').send({
+      name: 'Secondary Live Draft',
+      strategyId,
+      marketGroupId: overlappingMarketGroupId,
+      walletId: liveWalletIdByMarketGroupId.get(overlappingMarketGroupId),
+      isActive: false,
+      liveOptIn: false,
+    });
+    expect(secondCreate.status).toBe(201);
+
+    const activateOverlappingLiveBot = await agent.put(`/dashboard/bots/${secondCreate.body.id}`).send({
+      isActive: true,
+      liveOptIn: true,
+      consentTextVersion: 'mvp-v1',
+    });
+    expect(activateOverlappingLiveBot.status).toBe(409);
+    expect(activateOverlappingLiveBot.body.error.message).toBe(
+      'remove ETHUSDT from selected market group because it is already used by active LIVE bot Primary Live Bot'
     );
   });
 });

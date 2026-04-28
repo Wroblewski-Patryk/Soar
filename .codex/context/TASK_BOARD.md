@@ -17,6 +17,8 @@ Last updated: 2026-04-28
 
 ## READY
 
+- [x] `BOTLIVE-2026-04-28-A api(bot-guard): block active LIVE bot market-group overlap against other active LIVE bot scopes`
+  - 2026-04-28: Closed by adding one canonical create/update guard for bots that would become `LIVE + isActive + liveOptIn`. The write path now fails closed when the selected market group overlaps any symbol already covered by another active opted-in LIVE bot for the same user, while still allowing `PAPER` and `LIVE` overlap. Conflict responses now identify the blocking bot name plus exact conflicting symbols, e.g. `ETHUSDT` owned by another active LIVE bot. Validation PASS: `pnpm --filter api exec vitest run src/modules/bots/bots.duplicate-guard.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 - [x] `V1RESTART-00 planning(queue): publish canonical LIVE restart continuity and recovery hardening packet`
   - 2026-04-28: Closed as a planning-only task after a fresh user-reported production analysis of restart-time LIVE position disappearance. Published `docs/planning/v1restart-live-position-continuity-hardening-plan-2026-04-28.md` plus `docs/planning/v1restart-00-planning-task-2026-04-28.md`, freezing the target model as a high-quality continuity wave rather than a narrow bugfix. The plan locks restart-safe position continuity, event-first recovery authority, staged reconcile semantics for missing exchange rows, canonical ownership and strategy-context restoration for recovered positions, explicit operator recovery states, and an adversarial verification matrix for manual exchange close, liquidation, partial snapshots, and post-restart DCA/TSL continuity.
 - [x] `V1RESTART-01 docs(contract): freeze canonical LIVE restart and downtime continuity model`

@@ -8,6 +8,7 @@ export const BOT_ERROR_CODES = {
   walletMarketContextMismatch: 'WALLET_MARKET_CONTEXT_MISMATCH',
   walletLiveApiKeyRequired: 'WALLET_LIVE_API_KEY_REQUIRED',
   activeBotStrategyMarketGroupDuplicate: 'ACTIVE_BOT_STRATEGY_MARKET_GROUP_DUPLICATE',
+  activeLiveBotSymbolOverlap: 'ACTIVE_LIVE_BOT_SYMBOL_OVERLAP',
   botNotFound: 'BOT_NOT_FOUND',
   botMarketGroupMarketTypeMismatch: 'BOT_MARKET_GROUP_MARKET_TYPE_MISMATCH',
   botMarketGroupExchangeMismatch: 'BOT_MARKET_GROUP_EXCHANGE_MISMATCH',
@@ -45,6 +46,8 @@ export const botErrors = {
     new BotDomainError(BOT_ERROR_CODES.walletLiveApiKeyRequired, 400),
   activeBotStrategyMarketGroupDuplicate: () =>
     new BotDomainError(BOT_ERROR_CODES.activeBotStrategyMarketGroupDuplicate, 409),
+  activeLiveBotSymbolOverlap: (details?: Record<string, unknown>) =>
+    new BotDomainError(BOT_ERROR_CODES.activeLiveBotSymbolOverlap, 409, details),
   botNotFound: () => new BotDomainError(BOT_ERROR_CODES.botNotFound, 404),
   botMarketGroupMarketTypeMismatch: () =>
     new BotDomainError(BOT_ERROR_CODES.botMarketGroupMarketTypeMismatch, 400),

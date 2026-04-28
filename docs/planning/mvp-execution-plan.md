@@ -78,6 +78,12 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `feat(engine): paper position lifecycle and order simulation parity`
 - [x] `feat(exchange): CCXT futures connector scaffold`
 - [x] `feat(exchange): live order placement adapter with retries`
+
+## Phase BOTLIVE-2026-04-28 - Active LIVE Symbol-Overlap Guard (Closed 2026-04-28)
+- [x] `BOTLIVE-2026-04-28-A api(bot-guard): block active LIVE bot market-group overlap against other active LIVE bot scopes`
+
+### Progress Log (Phase BOTLIVE-2026-04-28 - Active LIVE Symbol-Overlap Guard)
+- 2026-04-28: Closed `BOTLIVE-2026-04-28-A` by adding one canonical bot write-path guard that blocks create/update when a bot would become `LIVE + isActive + liveOptIn` and its selected market-group symbols overlap another active opted-in LIVE bot for the same user. The API now returns fail-closed conflict details naming the blocking bot and symbols, while focused DB-backed regression coverage locks both create-time and activation-time overlap cases. Validation PASS: `pnpm --filter api exec vitest run src/modules/bots/bots.duplicate-guard.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 - [x] `security(live): explicit live opt-in per bot`
 - [x] `security(live): global kill-switch and emergency stop`
 - [x] `feat(logs): write audit entries for critical trading decisions`
