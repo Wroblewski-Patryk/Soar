@@ -7,7 +7,7 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `V1FIX-2026-04-26-B release(prod): deploy latest scoped-position/backtests closure pack to Coolify and rerun affected-account smoke`
+- [x] `V1FIX-2026-04-26-B release(prod): deploy latest scoped-position/backtests closure pack to Coolify and rerun affected-account smoke`
 ## NEXT
 - [x] `UXSAFE-2026-04-28-A fix(api-markets+wallets): harden active market-universe edit guard and wallet delete history cleanup`
 - [x] `BOTLIVE-2026-04-28-A api(bot-guard): block active LIVE bot market-group overlap against other active LIVE bot scopes`
