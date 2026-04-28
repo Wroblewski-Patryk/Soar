@@ -1,6 +1,6 @@
 # Exchange Boundary Leak Audit
 
-Status: Published  
+Status: Closed 2026-04-25
 Date: 2026-04-25  
 Wave: `XVENUE-A`
 

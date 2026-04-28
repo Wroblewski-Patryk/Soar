@@ -2661,6 +2661,12 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 
 ### Progress Log (Phase DOCSYNC-2026-04-28B - Planning Catalog Refresh)
 - 2026-04-28: Closed `DOCSYNC-2026-04-28-D` by refreshing `planning-catalog-index-2026-04-19.md` with post-2026-04-20 wave history and correcting the stale `Status: queued` header in the already closed `UOLF` plan. The slice stayed docs-only and restored truthful discoverability for newer `implemented` and `superseded` planning artifacts. Validation PASS: `pnpm run quality:guardrails`.
+
+## Phase DOCSYNC-2026-04-28C - Historical Status Normalization (Closed 2026-04-28)
+- [x] `DOCSYNC-2026-04-28-E docs(planning-history): normalize remaining historical status wording`
+
+### Progress Log (Phase DOCSYNC-2026-04-28C - Historical Status Normalization)
+- 2026-04-28: Closed `DOCSYNC-2026-04-28-E` by normalizing the last ambiguous historical planning headers that still suggested active work (`PLANNED`, `planned`, `Published`) after their owning waves had closed, and by extending the planning catalog so those artifacts are discoverable as historical implemented or superseded references. Validation PASS: `pnpm run quality:guardrails`.
 - [x] `DOCSYNC-2026-04-25-A docs(sync): remove stale V1POSTBOT full-api red-suite drift from project state`
 - [x] `DOCSYNC-2026-04-25-B docs(sync): remove closed PAPERPNL entry from TASK_BOARD READY lane`
 

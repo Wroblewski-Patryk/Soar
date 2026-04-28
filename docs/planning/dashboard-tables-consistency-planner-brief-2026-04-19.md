@@ -1,6 +1,6 @@
 # Dashboard Tables Consistency Planner Brief (2026-04-19)
 
-Status: planned (queued via `UXR-J` wave on 2026-04-19)  
+Status: superseded (executed via `UXR-J` wave on 2026-04-19)
 Execution mode: tiny-commit only  
 Audience: Planner agent (sequencing + queue activation)
 

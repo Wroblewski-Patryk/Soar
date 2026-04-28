@@ -1,6 +1,6 @@
 # Dashboard Loading Skeleton + Progress Bar Plan (2026-04-05)
 
-Status: PLANNED
+Status: closed (LDUX-01..LDUX-09 completed on 2026-04-05)
 
 ## Goal
 - Modernize dashboard loading UX by replacing alert-like loading blocks with DaisyUI skeleton placeholders.
@@ -73,4 +73,3 @@ Status: PLANNED
   - Mitigation: keep skeleton dimensions tied to existing container/table/card classes and run responsive smoke.
 - Risk: too large change-surface if migrated in one pass.
   - Mitigation: enforce route-by-route tiny commits (`LDUX-05..07`).
-

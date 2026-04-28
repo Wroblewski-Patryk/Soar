@@ -21,6 +21,7 @@ Canonical queue source: `docs/planning/mvp-next-commits.md`
 | `docs/planning/dashboard-runtime-bot-selector-parity-plan-2026-04-18.md` | `implemented` | closed (`DBSEL-A`) | Mixed LIVE/PAPER selector parity wave completed. |
 | `docs/planning/dashboard-selected-bot-runtime-scope-remediation-plan-2026-04-18.md` | `implemented` | closed (`BRS-A..BRS-C`) | Scope-hardening wave completed with API+WEB regression closure. |
 | `docs/planning/dashboard-forms-consistency-planner-brief-2026-04-19.md` | `superseded` | none | Planner brief was executed through the canonical `UXR-I` wave and remains a source brief only. |
+| `docs/planning/dashboard-loading-skeleton-progress-plan-2026-04-05.md` | `implemented` | closed (`LDUX-01..LDUX-09`) | Dashboard loading skeleton/progress wave completed; plan remains as historical UI contract reference. |
 | `docs/planning/dashboard-tables-consistency-planner-brief-2026-04-19.md` | `superseded` | none | Planner brief was executed through the canonical `UXR-J` wave and remains a source brief only. |
 | `docs/planning/full-commit-roadmap.md` | `superseded` | none | Historical checklist superseded by `mvp-execution-plan` + `mvp-next-commits`. |
 | `docs/planning/i18n-contract-remediation-plan-2026-04-17.md` | `implemented` | closed (`L10NQ-A..L10NQ-D`) | i18n remediation wave completed in canonical queue. |
@@ -42,6 +43,7 @@ Canonical queue source: `docs/planning/mvp-next-commits.md`
 | `docs/planning/uxr-e-table-actions-clone-dashboard-polish-plan-2026-04-18.md` | `implemented` | closed (`UXR-E-A..UXR-E-C`) | UXR-E wave completed and closed. |
 | `docs/planning/uxr-f-dashboard-forms-unification-plan-2026-04-18.md` | `implemented` | closed (`UXR-F-A..UXR-F-D`) | Forms unification wave completed and closed. |
 | `docs/planning/uxr-g-dashboard-wallet-manual-order-layout-plan-2026-04-18.md` | `implemented` | closed (`UXR-G-A..UXR-G-B`) | Wallet/manual-order layout wave completed and closed. |
+| `docs/planning/xvenue-02-exchange-boundary-leak-audit-2026-04-25.md` | `implemented` | closed (`XVENUE-02`) | Exchange boundary leak audit packet was published, executed, and later status wording was normalized. |
 | `docs/planning/v1-production-activation-and-evidence-plan-2026-04-22.md` | `implemented` | closed (`V1FACT-A`) | V1 activation wave is engineering-doc complete and retained as historical activation contract/evidence packet. |
 | `docs/planning/v1close-position-close-attribution-hardening-plan-2026-04-27.md` | `implemented` | closed (`V1CLOSE-A`) | Close-attribution hardening wave completed end-to-end. |
 | `docs/planning/v1live-binance-execution-and-takeover-hardening-plan-2026-04-26.md` | `implemented` | closed (`V1LIVE-A`) | Binance execution/takeover hardening wave completed with focused closure pack. |
@@ -58,5 +60,5 @@ Canonical queue source: `docs/planning/mvp-next-commits.md`
 
 ## Non-Implemented Work Ownership
 - Current snapshot has no canonical `queued` or `external-blocked` wave plans in this catalog index.
-- Historical source briefs may still show `planned` wording, but they are not active execution sources once their owning wave has been queued or closed in canonical queue/context files.
+- Historical source briefs may retain context-specific wording, but they are not active execution sources once their owning wave has been queued or closed in canonical queue/context files.
 - `superseded` items are retained for historical traceability and must not be treated as active execution sources.

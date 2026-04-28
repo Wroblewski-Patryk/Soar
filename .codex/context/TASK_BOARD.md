@@ -17,6 +17,8 @@ Last updated: 2026-04-28
 
 ## READY
 
+- [x] `DOCSYNC-2026-04-28-E docs(planning-history): normalize remaining historical status wording`
+  - 2026-04-28: Closed by normalizing the last ambiguous historical planning headers that still looked active after their owning waves had closed: `dashboard-loading-skeleton-progress-plan`, both dashboard planner briefs, and `xvenue-02-exchange-boundary-leak-audit`. The planning catalog now records those artifacts truthfully as historical implemented or superseded references instead of leaving mixed `PLANNED/planned/Published` wording in place. Validation PASS: `pnpm run quality:guardrails`.
 - [x] `DOCSYNC-2026-04-28-D docs(planning-catalog): refresh catalog index and correct stale UOLF queued header`
   - 2026-04-28: Closed by refreshing `planning-catalog-index-2026-04-19.md` with the post-2026-04-20 wave history and correcting the stale `Status: queued` header left in the already closed `UOLF` plan. The slice restored truthful classification for newer `implemented` and `superseded` planning artifacts without changing runtime or feature behavior. Validation PASS: `pnpm run quality:guardrails`.
 - [x] `DOCSYNC-2026-04-28-C docs(planning-status): close stale Active headers in already closed planning packets`
