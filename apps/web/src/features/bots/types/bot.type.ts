@@ -382,7 +382,14 @@ export type BotRuntimePositionItem = {
   origin?: "BOT" | "MANUAL" | "EXCHANGE_SYNC" | "BACKTEST";
   managementMode?: "BOT_MANAGED" | "MANUAL_MANAGED";
   syncState?: "IN_SYNC" | "DRIFT" | "ORPHAN_LOCAL" | "ORPHAN_EXCHANGE";
+  continuityState?:
+    | "CONFIRMED"
+    | "RECOVERING"
+    | "RECOVERED_UNACTIONABLE"
+    | "EXTERNAL_CLOSE_CONFIRMED"
+    | "REPAIR_ONLY_CLEANUP";
   takeoverStatus?: "OWNED_AND_MANAGED" | "UNOWNED" | "AMBIGUOUS" | "MANUAL_ONLY" | null;
+  actionable?: boolean;
   symbol: string;
   side: "LONG" | "SHORT";
   status: "OPEN" | "CLOSED";

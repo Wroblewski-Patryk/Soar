@@ -58,6 +58,27 @@ type LocalManagedLivePosition = {
   openedAt: Date;
 };
 
+type OpenSyncedPositionRecord = {
+  id: string;
+  botId: string | null;
+  walletId: string | null;
+  strategyId: string | null;
+  managementMode: 'BOT_MANAGED' | 'MANUAL_MANAGED';
+  continuityState:
+    | 'CONFIRMED'
+    | 'RECOVERING'
+    | 'RECOVERED_UNACTIONABLE'
+    | 'EXTERNAL_CLOSE_CONFIRMED'
+    | 'REPAIR_ONLY_CLEANUP';
+  missingSyncCount: number;
+};
+
+type CanonicalBotContinuityContext = {
+  botId: string;
+  walletId: string | null;
+  strategyId: string | null;
+};
+
 type ReconcileDeps = {
   listSyncedApiKeys: () => Promise<SyncedApiKey[]>;
   resolveOwnershipIndexForUser: (input: {
@@ -73,7 +94,10 @@ type ReconcileDeps = {
   findOpenSyncedPositionByExternalId: (input: {
     userId: string;
     externalId: string;
-  }) => Promise<{ id: string } | null>;
+  }) => Promise<OpenSyncedPositionRecord | null>;
+  resolveCanonicalBotContinuityContext?: (
+    botId: string
+  ) => Promise<CanonicalBotContinuityContext | null>;
   updateSyncedPosition: (
     positionId: string,
     input: {
@@ -87,6 +111,17 @@ type ReconcileDeps = {
       syncState: 'IN_SYNC' | 'DRIFT';
       botId: string | null;
       walletId: string | null;
+      strategyId: string | null;
+      continuityState:
+        | 'CONFIRMED'
+        | 'RECOVERING'
+        | 'RECOVERED_UNACTIONABLE'
+        | 'EXTERNAL_CLOSE_CONFIRMED'
+        | 'REPAIR_ONLY_CLEANUP';
+      lastExchangeSeenAt: Date;
+      lastExchangeSyncAt: Date;
+      missingSince: Date | null;
+      missingSyncCount: number;
     }
   ) => Promise<void>;
   createSyncedPosition: (input: {
@@ -102,12 +137,33 @@ type ReconcileDeps = {
     syncState: 'IN_SYNC' | 'DRIFT';
     botId: string | null;
     walletId: string | null;
+    strategyId: string | null;
+    continuityState:
+      | 'CONFIRMED'
+      | 'RECOVERING'
+      | 'RECOVERED_UNACTIONABLE'
+      | 'EXTERNAL_CLOSE_CONFIRMED'
+      | 'REPAIR_ONLY_CLEANUP';
     openedAt: Date;
+    lastExchangeSeenAt: Date;
+    lastExchangeSyncAt: Date;
+    missingSince: Date | null;
+    missingSyncCount: number;
   }) => Promise<void>;
   listOpenSyncedPositionsForApiKey: (input: {
     userId: string;
     apiKeyId: string;
-  }) => Promise<Array<{ id: string; externalId: string | null }>>;
+  }) => Promise<Array<{ id: string; externalId: string | null; missingSyncCount: number }>>;
+  markMissingSyncedPosition: (
+    positionId: string,
+    input: {
+      syncState: 'DRIFT';
+      continuityState: 'RECOVERING';
+      missingSince: Date;
+      missingSyncCount: number;
+      lastExchangeSyncAt: Date;
+    }
+  ) => Promise<void>;
   closeStaleSyncedPosition: (positionId: string, closedAt: Date) => Promise<void>;
   upsertSyncedOpenOrder?: (input: {
     userId: string;
@@ -140,6 +196,7 @@ type ReconcileDeps = {
 
 const STALE_LOCAL_MANAGED_LIVE_POSITION_GRACE_MS = 10 * 60 * 1000;
 const STALE_LOCAL_MANAGED_LIVE_POSITION_FALLBACK_GRACE_MS = 60 * 60 * 1000;
+const EXTERNAL_POSITION_MISSING_CONFIRMATION_THRESHOLD = 2;
 const buildOwnerIdentity = (botId: string, walletId: string) => `${botId}:${walletId}`;
 
 const normalizeSymbol = (symbol: string) => {
@@ -184,6 +241,32 @@ const buildPositionIdentity = (symbol: string, side: 'LONG' | 'SHORT') =>
 
 const normalizeImportedLeverage = (value: number | null | undefined) =>
   Number.isFinite(value) ? Math.max(1, Math.round(value!)) : 1;
+
+const resolveRecoveredContinuityState = (input: {
+  ownershipStatus: 'OWNED' | 'AMBIGUOUS' | 'MANUAL_ONLY' | 'UNOWNED';
+  existing: OpenSyncedPositionRecord | null;
+}) => {
+  if (input.ownershipStatus === 'OWNED') {
+    return 'CONFIRMED' as const;
+  }
+  if (input.existing?.botId) {
+    return 'RECOVERED_UNACTIONABLE' as const;
+  }
+  return 'CONFIRMED' as const;
+};
+
+const resolveRecoveredManagementMode = (input: {
+  ownershipStatus: 'OWNED' | 'AMBIGUOUS' | 'MANUAL_ONLY' | 'UNOWNED';
+  existing: OpenSyncedPositionRecord | null;
+}) => {
+  if (input.ownershipStatus === 'OWNED') {
+    return 'BOT_MANAGED' as const;
+  }
+  if (input.existing?.botId) {
+    return 'BOT_MANAGED' as const;
+  }
+  return 'MANUAL_MANAGED' as const;
+};
 
 const toOrderType = (
   type: string | null
@@ -253,8 +336,33 @@ const defaultDeps: ReconcileDeps = {
     prisma.position.findFirst({
       where: { userId, externalId, status: 'OPEN' },
       orderBy: { openedAt: 'desc' },
-      select: { id: true },
+      select: {
+        id: true,
+        botId: true,
+        walletId: true,
+        strategyId: true,
+        managementMode: true,
+        continuityState: true,
+        missingSyncCount: true,
+      },
     }),
+  resolveCanonicalBotContinuityContext: async (botId) =>
+    prisma.bot.findUnique({
+      where: { id: botId },
+      select: {
+        id: true,
+        walletId: true,
+        strategyId: true,
+      },
+    }).then((bot) =>
+      bot
+        ? {
+            botId: bot.id,
+            walletId: bot.walletId,
+            strategyId: bot.strategyId,
+          }
+        : null
+    ),
   updateSyncedPosition: async (positionId, input) => {
     await prisma.position.update({
       where: { id: positionId },
@@ -270,7 +378,12 @@ const defaultDeps: ReconcileDeps = {
         syncState: input.syncState,
         botId: input.botId,
         walletId: input.walletId,
-        strategyId: null,
+        strategyId: input.strategyId,
+        continuityState: input.continuityState,
+        lastExchangeSeenAt: input.lastExchangeSeenAt,
+        lastExchangeSyncAt: input.lastExchangeSyncAt,
+        missingSince: input.missingSince,
+        missingSyncCount: input.missingSyncCount,
       },
     });
   },
@@ -280,11 +393,12 @@ const defaultDeps: ReconcileDeps = {
         userId: input.userId,
         botId: input.botId,
         walletId: input.walletId,
-        strategyId: null,
+        strategyId: input.strategyId,
         externalId: input.externalId,
         origin: 'EXCHANGE_SYNC',
         managementMode: input.managementMode,
         syncState: input.syncState,
+        continuityState: input.continuityState,
         symbol: input.symbol,
         side: input.side,
         status: 'OPEN',
@@ -293,6 +407,10 @@ const defaultDeps: ReconcileDeps = {
         leverage: input.leverage,
         unrealizedPnl: input.unrealizedPnl,
         openedAt: input.openedAt,
+        lastExchangeSeenAt: input.lastExchangeSeenAt,
+        lastExchangeSyncAt: input.lastExchangeSyncAt,
+        missingSince: input.missingSince,
+        missingSyncCount: input.missingSyncCount,
       },
     });
   },
@@ -304,8 +422,20 @@ const defaultDeps: ReconcileDeps = {
         status: 'OPEN',
         externalId: { startsWith: `${apiKeyId}:` },
       },
-      select: { id: true, externalId: true },
+      select: { id: true, externalId: true, missingSyncCount: true },
     }),
+  markMissingSyncedPosition: async (positionId, input) => {
+    await prisma.position.update({
+      where: { id: positionId },
+      data: {
+        syncState: input.syncState,
+        continuityState: input.continuityState,
+        lastExchangeSyncAt: input.lastExchangeSyncAt,
+        missingSince: input.missingSince,
+        missingSyncCount: input.missingSyncCount,
+      },
+    });
+  },
   closeStaleSyncedPosition: async (positionId, closedAt) => {
     const closeAttribution = resolveExternalSyncMissingCloseAttribution();
     await prisma.position.update({
@@ -314,6 +444,7 @@ const defaultDeps: ReconcileDeps = {
         status: 'CLOSED',
         closedAt,
         syncState: 'ORPHAN_LOCAL',
+        continuityState: 'EXTERNAL_CLOSE_CONFIRMED',
         unrealizedPnl: 0,
         closeReason: closeAttribution.closeReason,
         closeInitiator: closeAttribution.closeInitiator,
@@ -421,6 +552,7 @@ const defaultDeps: ReconcileDeps = {
         status: 'CLOSED',
         closedAt,
         syncState: 'ORPHAN_LOCAL',
+        continuityState: 'REPAIR_ONLY_CLEANUP',
         unrealizedPnl: 0,
         closeReason: closeAttribution.closeReason,
         closeInitiator: closeAttribution.closeInitiator,
@@ -441,10 +573,23 @@ export const reconcileExternalPositionsFromExchange = async (
       const snapshot = await deps.fetchPositionsForApiKey(apiKey);
       const seenExternalIds = new Set<string>();
       const openedAtFallback = deps.now();
+      const syncedAt = deps.now();
       const ownershipIndex = await deps.resolveOwnershipIndexForUser({
         userId: apiKey.userId,
         mode: 'LIVE',
       });
+      const canonicalBotContextCache = new Map<string, CanonicalBotContinuityContext | null>();
+      const resolveCanonicalBotContext = async (botId: string) => {
+        if (!deps.resolveCanonicalBotContinuityContext) {
+          return null;
+        }
+        if (canonicalBotContextCache.has(botId)) {
+          return canonicalBotContextCache.get(botId) ?? null;
+        }
+        const context = await deps.resolveCanonicalBotContinuityContext(botId);
+        canonicalBotContextCache.set(botId, context ?? null);
+        return context ?? null;
+      };
       const ownedOwnersByKey = new Map<string, { botId: string; walletId: string }>();
       for (const [ownershipKey, ownership] of ownershipIndex.entries()) {
         if (!ownershipKey.startsWith(`${apiKey.id}:`)) continue;
@@ -476,14 +621,41 @@ export const reconcileExternalPositionsFromExchange = async (
           continue;
         }
 
+        const existing = await deps.findOpenSyncedPositionByExternalId({
+          userId: apiKey.userId,
+          externalId,
+        });
         const ownership = getExternalPositionOwnership(ownershipIndex, {
           apiKeyId: apiKey.id,
           symbol: normalizedSymbol,
         });
         const managedByBot = ownership.status === 'OWNED';
-        const managementMode = managedByBot ? 'BOT_MANAGED' : 'MANUAL_MANAGED';
-        const syncState =
-          ownership.status === 'OWNED' || ownership.status === 'MANUAL_ONLY' ? 'IN_SYNC' : 'DRIFT';
+        const managementMode = resolveRecoveredManagementMode({
+          ownershipStatus: ownership.status,
+          existing,
+        });
+        const continuityState = resolveRecoveredContinuityState({
+          ownershipStatus: ownership.status,
+          existing,
+        });
+        const syncState = ownership.status === 'OWNED' || ownership.status === 'MANUAL_ONLY'
+          ? 'IN_SYNC'
+          : 'DRIFT';
+        const canonicalOwnerContext =
+          ownership.status === 'OWNED'
+            ? await resolveCanonicalBotContext(ownership.botId)
+            : existing?.botId
+              ? await resolveCanonicalBotContext(existing.botId)
+              : null;
+        const restoredBotId = ownership.status === 'OWNED' ? ownership.botId : existing?.botId ?? null;
+        const restoredWalletId =
+          ownership.status === 'OWNED'
+            ? (canonicalOwnerContext?.walletId ?? ownership.walletId)
+            : existing?.walletId ?? canonicalOwnerContext?.walletId ?? null;
+        const restoredStrategyId =
+          ownership.status === 'OWNED'
+            ? (canonicalOwnerContext?.strategyId ?? existing?.strategyId ?? null)
+            : existing?.strategyId ?? canonicalOwnerContext?.strategyId ?? null;
 
         if (ownership.status !== 'OWNED' && ownership.status !== 'MANUAL_ONLY') {
           console.warn(
@@ -498,11 +670,6 @@ export const reconcileExternalPositionsFromExchange = async (
           seenExternalPositionKeysByOwner.set(ownerKey, seenKeys);
         }
 
-        const existing = await deps.findOpenSyncedPositionByExternalId({
-          userId: apiKey.userId,
-          externalId,
-        });
-
         if (existing) {
           await deps.updateSyncedPosition(existing.id, {
             symbol: normalizedSymbol,
@@ -513,8 +680,29 @@ export const reconcileExternalPositionsFromExchange = async (
             leverage: normalizeImportedLeverage(position.leverage),
             managementMode,
             syncState,
-            botId: ownership.status === 'OWNED' ? ownership.botId : null,
-            walletId: ownership.status === 'OWNED' ? ownership.walletId : null,
+            botId:
+              ownership.status === 'OWNED'
+                ? restoredBotId
+                : managementMode === 'BOT_MANAGED'
+                  ? restoredBotId
+                  : null,
+            walletId:
+              ownership.status === 'OWNED'
+                ? restoredWalletId
+                : managementMode === 'BOT_MANAGED'
+                  ? restoredWalletId
+                  : null,
+            strategyId:
+              ownership.status === 'OWNED'
+                ? restoredStrategyId
+                : managementMode === 'BOT_MANAGED'
+                  ? restoredStrategyId
+                  : null,
+            continuityState,
+            lastExchangeSeenAt: syncedAt,
+            lastExchangeSyncAt: syncedAt,
+            missingSince: null,
+            missingSyncCount: 0,
           });
         } else {
           const openedAt = position.timestamp ? new Date(position.timestamp) : openedAtFallback;
@@ -529,9 +717,15 @@ export const reconcileExternalPositionsFromExchange = async (
             leverage: normalizeImportedLeverage(position.leverage),
             managementMode,
             syncState,
-            botId: ownership.status === 'OWNED' ? ownership.botId : null,
-            walletId: ownership.status === 'OWNED' ? ownership.walletId : null,
+            botId: managementMode === 'BOT_MANAGED' ? restoredBotId : null,
+            walletId: managementMode === 'BOT_MANAGED' ? restoredWalletId : null,
+            strategyId: managementMode === 'BOT_MANAGED' ? restoredStrategyId : null,
+            continuityState,
             openedAt,
+            lastExchangeSeenAt: syncedAt,
+            lastExchangeSyncAt: syncedAt,
+            missingSince: null,
+            missingSyncCount: 0,
           });
         }
       }
@@ -543,6 +737,17 @@ export const reconcileExternalPositionsFromExchange = async (
 
       for (const stale of currentOpen) {
         if (stale.externalId && seenExternalIds.has(stale.externalId)) continue;
+        const nextMissingSyncCount = stale.missingSyncCount + 1;
+        if (nextMissingSyncCount < EXTERNAL_POSITION_MISSING_CONFIRMATION_THRESHOLD) {
+          await deps.markMissingSyncedPosition(stale.id, {
+            syncState: 'DRIFT',
+            continuityState: 'RECOVERING',
+            missingSince: syncedAt,
+            missingSyncCount: nextMissingSyncCount,
+            lastExchangeSyncAt: syncedAt,
+          });
+          continue;
+        }
         await deps.closeStaleSyncedPosition(stale.id, deps.now());
       }
 

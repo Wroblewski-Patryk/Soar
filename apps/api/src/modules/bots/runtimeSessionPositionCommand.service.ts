@@ -116,6 +116,7 @@ export const closeBotRuntimeSessionPosition = async (
       entryPrice: true,
       origin: true,
       externalId: true,
+      continuityState: true,
     },
   });
   if (!position) {
@@ -145,6 +146,9 @@ export const closeBotRuntimeSessionPosition = async (
       (!botContext.walletId || ownership.walletId === botContext.walletId);
   }
   if (!directlyOwnedByBot && !externallyOwnedByBot) {
+    return { status: 'ignored', reason: 'no_open_position' };
+  }
+  if (position.continuityState !== 'CONFIRMED') {
     return { status: 'ignored', reason: 'no_open_position' };
   }
 

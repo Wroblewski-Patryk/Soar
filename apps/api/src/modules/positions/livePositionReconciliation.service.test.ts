@@ -39,9 +39,10 @@ describe('LivePositionReconciliationLoop', () => {
 });
 
 describe('reconcileExternalPositionsFromExchange', () => {
-  it('creates/updates synced positions and closes stale ones', async () => {
+  it('creates/updates synced positions and marks first stale miss as recovering instead of closing', async () => {
     const createSyncedPosition = vi.fn(async () => undefined);
     const updateSyncedPosition = vi.fn(async () => undefined);
+    const markMissingSyncedPosition = vi.fn(async () => undefined);
     const closeStaleSyncedPosition = vi.fn(async () => undefined);
 
     const result = await reconcileExternalPositionsFromExchange({
@@ -78,14 +79,30 @@ describe('reconcileExternalPositionsFromExchange', () => {
         ],
       })),
       findOpenSyncedPositionByExternalId: vi.fn(async ({ externalId }) =>
-        externalId === 'key-1:BTCUSDT:LONG' ? { id: 'pos-open-1' } : null
+        externalId === 'key-1:BTCUSDT:LONG'
+          ? {
+              id: 'pos-open-1',
+              botId: 'bot-live-1',
+              walletId: 'wallet-live-1',
+              strategyId: 'strategy-live-1',
+              managementMode: 'BOT_MANAGED' as const,
+              continuityState: 'CONFIRMED' as const,
+              missingSyncCount: 0,
+            }
+          : null
       ),
+      resolveCanonicalBotContinuityContext: vi.fn(async () => ({
+        botId: 'bot-live-1',
+        walletId: 'wallet-live-1',
+        strategyId: 'strategy-live-1',
+      })),
       updateSyncedPosition,
       createSyncedPosition,
       listOpenSyncedPositionsForApiKey: vi.fn(async () => [
-        { id: 'pos-open-1', externalId: 'key-1:BTCUSDT:LONG' },
-        { id: 'pos-open-stale', externalId: 'key-1:ADAUSDT:LONG' },
+        { id: 'pos-open-1', externalId: 'key-1:BTCUSDT:LONG', missingSyncCount: 0 },
+        { id: 'pos-open-stale', externalId: 'key-1:ADAUSDT:LONG', missingSyncCount: 0 },
       ]),
+      markMissingSyncedPosition,
       closeStaleSyncedPosition,
       now: () => new Date('2026-03-23T00:00:01.000Z'),
     });
@@ -100,13 +117,19 @@ describe('reconcileExternalPositionsFromExchange', () => {
         syncState: 'IN_SYNC',
         botId: 'bot-live-1',
         walletId: 'wallet-live-1',
+        strategyId: 'strategy-live-1',
+        continuityState: 'CONFIRMED',
       })
     );
     expect(createSyncedPosition).not.toHaveBeenCalled();
-    expect(closeStaleSyncedPosition).toHaveBeenCalledWith(
+    expect(markMissingSyncedPosition).toHaveBeenCalledWith(
       'pos-open-stale',
-      new Date('2026-03-23T00:00:01.000Z')
+      expect.objectContaining({
+        continuityState: 'RECOVERING',
+        missingSyncCount: 1,
+      })
     );
+    expect(closeStaleSyncedPosition).not.toHaveBeenCalled();
   });
 
   it('creates MANUAL_MANAGED position when external management is disabled', async () => {
@@ -146,9 +169,11 @@ describe('reconcileExternalPositionsFromExchange', () => {
         ],
       })),
       findOpenSyncedPositionByExternalId: vi.fn(async () => null),
+      resolveCanonicalBotContinuityContext: vi.fn(async () => null),
       updateSyncedPosition: vi.fn(async () => undefined),
       createSyncedPosition,
       listOpenSyncedPositionsForApiKey: vi.fn(async () => []),
+      markMissingSyncedPosition: vi.fn(async () => undefined),
       closeStaleSyncedPosition: vi.fn(async () => undefined),
       now: () => new Date('2026-03-23T00:10:00.000Z'),
     });
@@ -164,6 +189,37 @@ describe('reconcileExternalPositionsFromExchange', () => {
         botId: null,
         walletId: null,
       })
+    );
+  });
+
+  it('requires repeated missing confirmations before classifying external close', async () => {
+    const markMissingSyncedPosition = vi.fn(async () => undefined);
+    const closeStaleSyncedPosition = vi.fn(async () => undefined);
+
+    await reconcileExternalPositionsFromExchange({
+      listSyncedApiKeys: vi.fn(async () => [
+        {
+          id: 'key-confirm-1',
+          userId: 'user-confirm-1',
+        },
+      ]),
+      resolveOwnershipIndexForUser: vi.fn(async () => new Map()),
+      fetchPositionsForApiKey: vi.fn(async () => ({ positions: [] })),
+      findOpenSyncedPositionByExternalId: vi.fn(async () => null),
+      updateSyncedPosition: vi.fn(async () => undefined),
+      createSyncedPosition: vi.fn(async () => undefined),
+      listOpenSyncedPositionsForApiKey: vi.fn(async () => [
+        { id: 'pos-confirm-1', externalId: 'key-confirm-1:DOGEUSDT:LONG', missingSyncCount: 1 },
+      ]),
+      markMissingSyncedPosition,
+      closeStaleSyncedPosition,
+      now: () => new Date('2026-03-23T00:11:00.000Z'),
+    });
+
+    expect(markMissingSyncedPosition).not.toHaveBeenCalled();
+    expect(closeStaleSyncedPosition).toHaveBeenCalledWith(
+      'pos-confirm-1',
+      new Date('2026-03-23T00:11:00.000Z')
     );
   });
 
@@ -219,9 +275,15 @@ describe('reconcileExternalPositionsFromExchange', () => {
         };
       }),
       findOpenSyncedPositionByExternalId: vi.fn(async () => null),
+      resolveCanonicalBotContinuityContext: vi.fn(async () => ({
+        botId: 'bot-live-2',
+        walletId: 'wallet-live-2',
+        strategyId: 'strategy-live-2',
+      })),
       updateSyncedPosition: vi.fn(async () => undefined),
       createSyncedPosition,
       listOpenSyncedPositionsForApiKey,
+      markMissingSyncedPosition: vi.fn(async () => undefined),
       closeStaleSyncedPosition: vi.fn(async () => undefined),
       now: () => new Date('2026-03-23T00:10:00.000Z'),
     });
@@ -236,6 +298,7 @@ describe('reconcileExternalPositionsFromExchange', () => {
         syncState: 'IN_SYNC',
         botId: 'bot-live-2',
         walletId: 'wallet-live-2',
+        strategyId: 'strategy-live-2',
       })
     );
     expect(listOpenSyncedPositionsForApiKey).toHaveBeenCalledTimes(1);
@@ -289,9 +352,11 @@ describe('reconcileExternalPositionsFromExchange', () => {
         ],
       })),
       findOpenSyncedPositionByExternalId: vi.fn(async () => null),
+      resolveCanonicalBotContinuityContext: vi.fn(async () => null),
       updateSyncedPosition: vi.fn(async () => undefined),
       createSyncedPosition,
       listOpenSyncedPositionsForApiKey: vi.fn(async () => []),
+      markMissingSyncedPosition: vi.fn(async () => undefined),
       closeStaleSyncedPosition: vi.fn(async () => undefined),
       now: () => new Date('2026-03-23T00:20:00.000Z'),
     });
@@ -310,6 +375,79 @@ describe('reconcileExternalPositionsFromExchange', () => {
     );
 
     consoleWarnSpy.mockRestore();
+  });
+
+  it('preserves canonical continuity as recovered but non-actionable when ownership is temporarily unresolved', async () => {
+    const updateSyncedPosition = vi.fn(async () => undefined);
+
+    await reconcileExternalPositionsFromExchange({
+      listSyncedApiKeys: vi.fn(async () => [
+        {
+          id: 'key-preserve-1',
+          userId: 'user-preserve-1',
+        },
+      ]),
+      resolveOwnershipIndexForUser: vi.fn(async () =>
+        new Map([
+          [
+            'key-preserve-1:DOGEUSDT',
+            {
+              status: 'AMBIGUOUS' as const,
+              botId: null,
+              walletId: null,
+            },
+          ],
+        ])
+      ),
+      fetchPositionsForApiKey: vi.fn(async () => ({
+        positions: [
+          {
+            symbol: 'DOGE/USDT:USDT',
+            side: 'long',
+            contracts: 2400,
+            entryPrice: 0.11,
+            markPrice: 0.109,
+            unrealizedPnl: -3,
+            leverage: 10,
+            timestamp: null,
+          },
+        ],
+      })),
+      findOpenSyncedPositionByExternalId: vi.fn(async () => ({
+        id: 'pos-preserve-1',
+        botId: 'bot-preserve-1',
+        walletId: 'wallet-preserve-1',
+        strategyId: 'strategy-preserve-1',
+        managementMode: 'BOT_MANAGED' as const,
+        continuityState: 'CONFIRMED' as const,
+        missingSyncCount: 0,
+      })),
+      resolveCanonicalBotContinuityContext: vi.fn(async () => ({
+        botId: 'bot-preserve-1',
+        walletId: 'wallet-preserve-1',
+        strategyId: 'strategy-preserve-1',
+      })),
+      updateSyncedPosition,
+      createSyncedPosition: vi.fn(async () => undefined),
+      listOpenSyncedPositionsForApiKey: vi.fn(async () => [
+        { id: 'pos-preserve-1', externalId: 'key-preserve-1:DOGEUSDT:LONG', missingSyncCount: 0 },
+      ]),
+      markMissingSyncedPosition: vi.fn(async () => undefined),
+      closeStaleSyncedPosition: vi.fn(async () => undefined),
+      now: () => new Date('2026-03-23T00:25:00.000Z'),
+    });
+
+    expect(updateSyncedPosition).toHaveBeenCalledWith(
+      'pos-preserve-1',
+      expect.objectContaining({
+        managementMode: 'BOT_MANAGED',
+        syncState: 'DRIFT',
+        continuityState: 'RECOVERED_UNACTIONABLE',
+        botId: 'bot-preserve-1',
+        walletId: 'wallet-preserve-1',
+        strategyId: 'strategy-preserve-1',
+      })
+    );
   });
 
   it('skips syncing open positions when canonical entry truth is missing', async () => {
@@ -350,12 +488,30 @@ describe('reconcileExternalPositionsFromExchange', () => {
           },
         ],
       })),
-      findOpenSyncedPositionByExternalId: vi.fn(async () => ({ id: 'pos-existing-safe' })),
+      findOpenSyncedPositionByExternalId: vi.fn(async () => ({
+        id: 'pos-existing-safe',
+        botId: 'bot-live-safe',
+        walletId: 'wallet-live-safe',
+        strategyId: 'strategy-live-safe',
+        managementMode: 'BOT_MANAGED' as const,
+        continuityState: 'CONFIRMED' as const,
+        missingSyncCount: 0,
+      })),
+      resolveCanonicalBotContinuityContext: vi.fn(async () => ({
+        botId: 'bot-live-safe',
+        walletId: 'wallet-live-safe',
+        strategyId: 'strategy-live-safe',
+      })),
       updateSyncedPosition,
       createSyncedPosition,
       listOpenSyncedPositionsForApiKey: vi.fn(async () => [
-        { id: 'pos-existing-safe', externalId: 'key-missing-entry:SOLUSDT:LONG' },
+        {
+          id: 'pos-existing-safe',
+          externalId: 'key-missing-entry:SOLUSDT:LONG',
+          missingSyncCount: 0,
+        },
       ]),
+      markMissingSyncedPosition: vi.fn(async () => undefined),
       closeStaleSyncedPosition: vi.fn(async () => undefined),
       now: () => new Date('2026-03-23T00:30:00.000Z'),
     });
@@ -423,9 +579,15 @@ describe('reconcileExternalPositionsFromExchange', () => {
         },
       ]),
       findOpenSyncedPositionByExternalId: vi.fn(async () => null),
+      resolveCanonicalBotContinuityContext: vi.fn(async () => ({
+        botId: 'bot-owned-1',
+        walletId: 'wallet-owned-1',
+        strategyId: 'strategy-owned-1',
+      })),
       updateSyncedPosition: vi.fn(async () => undefined),
       createSyncedPosition: vi.fn(async () => undefined),
       listOpenSyncedPositionsForApiKey: vi.fn(async () => []),
+      markMissingSyncedPosition: vi.fn(async () => undefined),
       closeStaleSyncedPosition: vi.fn(async () => undefined),
       upsertSyncedOpenOrder,
       listOpenSyncedOrdersForOwner: vi.fn(async () => [
@@ -510,9 +672,15 @@ describe('reconcileExternalPositionsFromExchange', () => {
       })),
       fetchOpenOrdersForApiKey: vi.fn(async () => []),
       findOpenSyncedPositionByExternalId: vi.fn(async () => null),
+      resolveCanonicalBotContinuityContext: vi.fn(async () => ({
+        botId: 'bot-stale-local-1',
+        walletId: 'wallet-stale-local-1',
+        strategyId: 'strategy-stale-local-1',
+      })),
       updateSyncedPosition: vi.fn(async () => undefined),
       createSyncedPosition: vi.fn(async () => undefined),
       listOpenSyncedPositionsForApiKey: vi.fn(async () => []),
+      markMissingSyncedPosition: vi.fn(async () => undefined),
       closeStaleSyncedPosition: vi.fn(async () => undefined),
       upsertSyncedOpenOrder: vi.fn(async () => undefined),
       listOpenSyncedOrdersForOwner: vi.fn(async () => []),
@@ -605,9 +773,15 @@ describe('reconcileExternalPositionsFromExchange', () => {
         throw new Error('binance_open_orders_denied');
       }),
       findOpenSyncedPositionByExternalId: vi.fn(async () => null),
+      resolveCanonicalBotContinuityContext: vi.fn(async () => ({
+        botId: 'bot-stale-local-fallback-1',
+        walletId: 'wallet-stale-local-fallback-1',
+        strategyId: 'strategy-stale-local-fallback-1',
+      })),
       updateSyncedPosition: vi.fn(async () => undefined),
       createSyncedPosition: vi.fn(async () => undefined),
       listOpenSyncedPositionsForApiKey: vi.fn(async () => []),
+      markMissingSyncedPosition: vi.fn(async () => undefined),
       closeStaleSyncedPosition: vi.fn(async () => undefined),
       upsertSyncedOpenOrder: vi.fn(async () => undefined),
       listOpenSyncedOrdersForOwner: vi.fn(async () => []),
@@ -693,9 +867,15 @@ describe('reconcileExternalPositionsFromExchange', () => {
         ],
       })),
       findOpenSyncedPositionByExternalId: vi.fn(async () => null),
+      resolveCanonicalBotContinuityContext: vi.fn(async (botId: string) => ({
+        botId,
+        walletId: botId === 'bot-btc' ? 'wallet-btc' : 'wallet-eth',
+        strategyId: botId === 'bot-btc' ? 'strategy-btc' : 'strategy-eth',
+      })),
       updateSyncedPosition: vi.fn(async () => undefined),
       createSyncedPosition,
       listOpenSyncedPositionsForApiKey: vi.fn(async () => []),
+      markMissingSyncedPosition: vi.fn(async () => undefined),
       closeStaleSyncedPosition: vi.fn(async () => undefined),
       now: () => new Date('2026-03-23T03:00:00.000Z'),
     });
@@ -708,6 +888,7 @@ describe('reconcileExternalPositionsFromExchange', () => {
         externalId: 'key-shared-1:BTCUSDT:LONG',
         botId: 'bot-btc',
         walletId: 'wallet-btc',
+        strategyId: 'strategy-btc',
         managementMode: 'BOT_MANAGED',
       })
     );
@@ -717,6 +898,7 @@ describe('reconcileExternalPositionsFromExchange', () => {
         externalId: 'key-shared-1:ETHUSDT:SHORT',
         botId: 'bot-eth',
         walletId: 'wallet-eth',
+        strategyId: 'strategy-eth',
         managementMode: 'BOT_MANAGED',
       })
     );

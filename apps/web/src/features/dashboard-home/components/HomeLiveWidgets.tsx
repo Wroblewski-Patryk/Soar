@@ -321,6 +321,7 @@ export default function HomeLiveWidgets() {
   const closePositionSuccessLabel = t("dashboard.home.runtime.closePositionSuccess");
   const closePositionIgnoredLabel = t("dashboard.home.runtime.closePositionIgnored");
   const closePositionErrorLabel = t("dashboard.home.runtime.closePositionError");
+  const positionActionsUnavailableLabel = t("dashboard.home.runtime.positionActionsUnavailable");
   const manualOrderOpenLabel = t("dashboard.home.runtime.manualOrderOpen");
   const manualOrderSubmittingLabel = t("dashboard.home.runtime.manualOrderOpening");
   const manualOrderSuccessLabel = t("dashboard.home.runtime.manualOrderSuccess");
@@ -491,6 +492,7 @@ export default function HomeLiveWidgets() {
         closePositionPendingLabel,
         closePositionButtonLabel,
         editPositionButtonLabel,
+        positionActionsUnavailableLabel,
         isClosingPosition,
         onOpenPositionEdit: openPositionEdit,
         onCloseRuntimePosition: (row) => void handleCloseRuntimePosition(row),
@@ -507,6 +509,7 @@ export default function HomeLiveWidgets() {
       handleCloseRuntimePosition,
       isClosingPosition,
       openPositionEdit,
+      positionActionsUnavailableLabel,
       resolveRuntimeIcon,
       runtimeIconsError,
       runtimeIconsLoading,

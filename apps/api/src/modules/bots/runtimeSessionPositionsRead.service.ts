@@ -55,6 +55,22 @@ const resolveRuntimeTakeoverStatus = (input: {
   return input.syncState === 'DRIFT' ? 'AMBIGUOUS' : 'UNOWNED';
 };
 
+const resolveRuntimePositionActionable = (input: {
+  continuityState:
+    | 'CONFIRMED'
+    | 'RECOVERING'
+    | 'RECOVERED_UNACTIONABLE'
+    | 'EXTERNAL_CLOSE_CONFIRMED'
+    | 'REPAIR_ONLY_CLEANUP';
+  botId: string | null;
+  strategyId: string | null;
+}) =>
+  input.continuityState === 'CONFIRMED' &&
+  typeof input.botId === 'string' &&
+  input.botId.length > 0 &&
+  typeof input.strategyId === 'string' &&
+  input.strategyId.length > 0;
+
 const selectPreferredRuntimeOpenOrder = (
   current: RuntimeOpenOrderRow,
   candidate: RuntimeOpenOrderRow
@@ -443,6 +459,7 @@ export const listBotRuntimeSessionPositions = async (
       origin: position.origin,
       managementMode: position.managementMode,
       syncState: position.syncState,
+      continuityState: position.continuityState,
       takeoverStatus: resolveRuntimeTakeoverStatus({
         origin: position.origin,
         managementMode: position.managementMode,
@@ -456,6 +473,11 @@ export const listBotRuntimeSessionPositions = async (
       leverage: position.leverage,
       closeReason: position.closeReason ?? null,
       closeInitiator: position.closeInitiator ?? null,
+      actionable: resolveRuntimePositionActionable({
+        continuityState: position.continuityState,
+        botId: position.botId,
+        strategyId: position.strategyId,
+      }),
       entryPrice: position.entryPrice,
       entryNotional: position.entryPrice * position.quantity,
       exitPrice: exitTrade?.price ?? null,

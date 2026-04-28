@@ -47,6 +47,7 @@ export const listRuntimeManagedPositions = async (params: {
       origin: true,
       managementMode: true,
       syncState: true,
+      continuityState: true,
       botId: true,
       symbol: true,
       strategyId: true,

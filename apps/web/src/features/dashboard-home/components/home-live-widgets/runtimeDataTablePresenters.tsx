@@ -41,6 +41,25 @@ export const resolveOpenOrderStatusLabel = (t: Translate, status: string | null 
   return status ?? "-";
 };
 
+const resolveContinuityStateLabel = (
+  t: Translate,
+  continuityState: OpenPositionWithLive["continuityState"] | null | undefined
+) => {
+  switch (continuityState) {
+    case "RECOVERING":
+      return t("dashboard.home.runtime.continuityRecovering");
+    case "RECOVERED_UNACTIONABLE":
+      return t("dashboard.home.runtime.continuityRecoveredUnactionable");
+    case "EXTERNAL_CLOSE_CONFIRMED":
+      return t("dashboard.home.runtime.continuityExternalCloseConfirmed");
+    case "REPAIR_ONLY_CLEANUP":
+      return t("dashboard.home.runtime.continuityRepairOnlyCleanup");
+    case "CONFIRMED":
+    default:
+      return t("dashboard.home.runtime.continuityConfirmed");
+  }
+};
+
 type OpenPositionsColumnsArgs = {
   t: Translate;
   formatDateTimeWithSeconds: (value?: string | null) => string;
@@ -56,6 +75,7 @@ type OpenPositionsColumnsArgs = {
   closePositionPendingLabel: string;
   closePositionButtonLabel: string;
   editPositionButtonLabel: string;
+  positionActionsUnavailableLabel: string;
   isClosingPosition: (positionId: string) => boolean;
   onOpenPositionEdit: (position: OpenPositionWithLive) => void;
   onCloseRuntimePosition: (position: OpenPositionWithLive) => void;
@@ -76,6 +96,7 @@ export const createOpenPositionsColumns = ({
   closePositionPendingLabel,
   closePositionButtonLabel,
   editPositionButtonLabel,
+  positionActionsUnavailableLabel,
   isClosingPosition,
   onOpenPositionEdit,
   onCloseRuntimePosition,
@@ -112,6 +133,17 @@ export const createOpenPositionsColumns = ({
       sortable: true,
       accessor: (row) => row.side,
       render: (row) => <DirectionPill value={row.side} />,
+    },
+    {
+      key: "status",
+      label: t("dashboard.home.runtime.status"),
+      sortable: true,
+      accessor: (row) => row.continuityState ?? "CONFIRMED",
+      render: (row) => (
+        <span className={row.actionable === false ? "badge badge-warning badge-sm" : "badge badge-success badge-sm"}>
+          {resolveContinuityStateLabel(t, row.continuityState)}
+        </span>
+      ),
     },
     {
       key: "margin",
@@ -190,25 +222,31 @@ export const createOpenPositionsColumns = ({
     className: "text-right",
     render: (row) => {
       const isClosing = isClosingPosition(row.id);
-      const actionLabel = isClosing ? closePositionPendingLabel : closePositionButtonLabel;
+      const actionsDisabled = isClosing || row.actionable === false;
+      const actionLabel = row.actionable === false
+        ? positionActionsUnavailableLabel
+        : isClosing
+          ? closePositionPendingLabel
+          : closePositionButtonLabel;
+      const editLabel = row.actionable === false ? positionActionsUnavailableLabel : editPositionButtonLabel;
       return (
         <div className="flex items-center justify-end gap-1">
           <button
             type="button"
             className="btn btn-outline btn-xs btn-square"
             onClick={() => onOpenPositionEdit(row)}
-            disabled={isClosing}
-            aria-label={editPositionButtonLabel}
-            title={editPositionButtonLabel}
+            disabled={actionsDisabled}
+            aria-label={editLabel}
+            title={editLabel}
           >
             <LuPencil className="h-3.5 w-3.5" aria-hidden />
-            <span className="sr-only">{editPositionButtonLabel}</span>
+            <span className="sr-only">{editLabel}</span>
           </button>
           <button
             type="button"
             className="btn btn-error btn-outline btn-xs btn-square"
             onClick={() => onCloseRuntimePosition(row)}
-            disabled={isClosing}
+            disabled={actionsDisabled}
             aria-label={actionLabel}
             title={actionLabel}
           >

@@ -310,4 +310,98 @@ describe('Bots runtime takeover visibility', () => {
     expect(ethPositionsRes.body.openItems).toHaveLength(1);
     expect(ethPositionsRes.body.openItems[0].symbol).toBe('ETHUSDT');
   });
+
+  it('keeps recovered imported LIVE positions visible for the owning bot while marking them non-actionable', async () => {
+    const ownerEmail = 'bot-runtime-recovered-visibility@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
+
+    const apiKey = await prisma.apiKey.create({
+      data: {
+        userId: ownerUser.id,
+        label: 'Runtime recovered visibility key',
+        exchange: 'BINANCE',
+        apiKey: 'runtime_recovered_visibility_key',
+        apiSecret: 'runtime_recovered_visibility_secret',
+        syncExternalPositions: true,
+        manageExternalPositions: false,
+      },
+      select: { id: true },
+    });
+
+    const walletId = await createWalletForContext(ownerEmail, {
+      mode: 'LIVE',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      apiKeyId: apiKey.id,
+    });
+    await prisma.wallet.update({
+      where: { id: walletId },
+      data: { manageExternalPositions: true },
+    });
+
+    const strategyId = await createStrategy(owner, 'Runtime Recovered Visibility Strategy');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    await prisma.symbolGroup.update({
+      where: { id: marketGroupId },
+      data: { symbols: ['DOGEUSDT'] },
+    });
+
+    const botRes = await owner.post('/dashboard/bots').send({
+      ...createPayload({
+        strategyId,
+        marketGroupId,
+      }),
+      name: 'Recovered Visibility Bot',
+      walletId,
+      isActive: true,
+      liveOptIn: true,
+      consentTextVersion: 'mvp-v1',
+    });
+    expect(botRes.status).toBe(201);
+    const botId = botRes.body.id as string;
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'LIVE',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-28T09:00:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-28T09:01:00.000Z'),
+      },
+    });
+
+    await prisma.position.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        walletId,
+        strategyId,
+        symbol: 'DOGEUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 0.11,
+        quantity: 5000,
+        leverage: 5,
+        openedAt: new Date('2026-04-28T08:55:00.000Z'),
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'DRIFT',
+        continuityState: 'RECOVERED_UNACTIONABLE',
+        externalId: `${apiKey.id}:DOGEUSDT:LONG`,
+      },
+    });
+
+    const positionsRes = await owner.get(
+      `/dashboard/bots/${botId}/runtime-sessions/${session.id}/positions`
+    );
+    expect(positionsRes.status).toBe(200);
+    expect(positionsRes.body.total).toBe(1);
+    expect(positionsRes.body.openItems).toHaveLength(1);
+    expect(positionsRes.body.openItems[0].symbol).toBe('DOGEUSDT');
+    expect(positionsRes.body.openItems[0].continuityState).toBe('RECOVERED_UNACTIONABLE');
+    expect(positionsRes.body.openItems[0].actionable).toBe(false);
+  });
 });

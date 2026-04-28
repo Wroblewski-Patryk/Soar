@@ -31,6 +31,7 @@ type RuntimeManagedPosition = Pick<
   | 'takeProfit'
   | 'managementMode'
   | 'origin'
+  | 'continuityState'
 > & {
   bot:
     | {
@@ -458,6 +459,7 @@ const defaultDeps: RuntimePositionAutomationDeps = {
         takeProfit: true,
         managementMode: true,
         origin: true,
+        continuityState: true,
           bot: {
             select: {
               walletId: true,
@@ -770,6 +772,12 @@ export class RuntimePositionAutomationService {
     position: RuntimeManagedPosition
   ) {
     if (position.managementMode !== 'BOT_MANAGED') return;
+    if (position.continuityState !== 'CONFIRMED') {
+      console.warn(
+        `[RuntimePositionAutomation] position=${position.id} symbol=${position.symbol} skipped: continuity_state=${position.continuityState}`
+      );
+      return;
+    }
     if (!position.botId && position.origin === 'EXCHANGE_SYNC') {
       console.warn(
         `[RuntimePositionAutomation] position=${position.id} symbol=${position.symbol} skipped: BOT_MANAGED position without bot ownership`

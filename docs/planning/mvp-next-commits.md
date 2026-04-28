@@ -174,7 +174,7 @@ Operational queue for one-task execution runs.
 - [x] `CQLT-32 docs(decision): freeze legacy bridge sunset list and mark compatibility-only code paths that remain intentional`
 - [x] `CQLT-34 docs(sync): update queue/context/module docs and capture post-wave coding rules for future agents`
 ## GROUP QUEUE
-- [ ] `V1RESTART-A planning queued (restart-safe LIVE position continuity, event-first recovery, staged reconcile, and post-restart automation restoration)`
+- [x] `V1RESTART-A planning queued (restart-safe LIVE position continuity, event-first recovery, staged reconcile, and post-restart automation restoration)`
 - [x] `V1CLOSE-A planning queued (canonical close-attribution model for bot-close, app-close, exchange-manual close, liquidation, and repair semantics)`
 - [x] `V1LIVE-A planning queued (exchange-selected live execution, Binance Spot/Futures first adapter family, takeover ownership, imported-position runtime parity, and paper/live boundary hardening)`
 - [x] `V1FACT-A planning queued (V1 production activation through release-gate truth, stage/prod evidence freshness, backup/rollback proof, and final sign-off packaging)`

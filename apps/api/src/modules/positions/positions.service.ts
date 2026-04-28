@@ -68,6 +68,12 @@ export type ExternalTakeoverStatusItem = {
   apiKeyId: string | null;
   managementMode: 'BOT_MANAGED' | 'MANUAL_MANAGED';
   syncState: 'IN_SYNC' | 'DRIFT' | 'ORPHAN_LOCAL' | 'ORPHAN_EXCHANGE';
+  continuityState:
+    | 'CONFIRMED'
+    | 'RECOVERING'
+    | 'RECOVERED_UNACTIONABLE'
+    | 'EXTERNAL_CLOSE_CONFIRMED'
+    | 'REPAIR_ONLY_CLEANUP';
   botId: string | null;
   walletId: string | null;
   takeoverStatus: ExternalTakeoverStatus;
@@ -719,6 +725,7 @@ export const repairLegacyOpenPositions = async (
           status: 'CLOSED',
           closedAt: now,
           syncState: 'ORPHAN_LOCAL',
+          continuityState: 'REPAIR_ONLY_CLEANUP',
           unrealizedPnl: 0,
           closeReason: closeAttribution.closeReason,
           closeInitiator: closeAttribution.closeInitiator,
@@ -829,6 +836,9 @@ export const rebindExternalTakeoverOwnership = async (
         botId: owner.botId,
         walletId: owner.walletId,
         syncState: 'IN_SYNC',
+        continuityState: 'CONFIRMED',
+        missingSince: null,
+        missingSyncCount: 0,
       },
     });
 
@@ -864,6 +874,7 @@ export const listExternalTakeoverStatuses = async (
         externalId: true,
         managementMode: true,
         syncState: true,
+        continuityState: true,
         botId: true,
         walletId: true,
       },
@@ -909,6 +920,7 @@ export const listExternalTakeoverStatuses = async (
       apiKeyId,
       managementMode: effectiveManagementMode,
       syncState: position.syncState,
+      continuityState: position.continuityState,
       botId: effectiveBotId,
       walletId: effectiveWalletId,
       takeoverStatus,

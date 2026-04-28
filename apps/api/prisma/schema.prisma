@@ -712,6 +712,7 @@ model Position {
   origin         TradingRecordOrigin    @default(BOT)
   managementMode PositionManagementMode @default(BOT_MANAGED)
   syncState      SyncState              @default(IN_SYNC)
+  continuityState PositionContinuityState @default(CONFIRMED)
 
   symbol        String
   side          PositionSide
@@ -727,6 +728,10 @@ model Position {
   closedAt      DateTime?
   realizedPnl   Float?
   unrealizedPnl Float?
+  lastExchangeSeenAt DateTime?
+  lastExchangeSyncAt DateTime?
+  missingSince       DateTime?
+  missingSyncCount   Int       @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1031,6 +1036,14 @@ enum SyncState {
   DRIFT
   ORPHAN_LOCAL
   ORPHAN_EXCHANGE
+}
+
+enum PositionContinuityState {
+  CONFIRMED
+  RECOVERING
+  RECOVERED_UNACTIONABLE
+  EXTERNAL_CLOSE_CONFIRMED
+  REPAIR_ONLY_CLEANUP
 }
 
 model BacktestRun {

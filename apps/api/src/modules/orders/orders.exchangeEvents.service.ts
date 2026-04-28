@@ -296,6 +296,8 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
           data: {
             status: 'CLOSED',
             closedAt: eventAt,
+            syncState: 'ORPHAN_LOCAL',
+            continuityState: 'EXTERNAL_CLOSE_CONFIRMED',
             realizedPnl,
             unrealizedPnl: 0,
             closeReason: closeAttribution.closeReason,
@@ -441,6 +443,8 @@ export const applyLiveExchangeAccountUpdateEvent = async (input: {
         data: {
           status: 'CLOSED',
           closedAt: eventAt,
+          syncState: 'ORPHAN_LOCAL',
+          continuityState: 'EXTERNAL_CLOSE_CONFIRMED',
           unrealizedPnl: 0,
           closeReason: closeAttribution.closeReason,
           closeInitiator: closeAttribution.closeInitiator,
@@ -462,6 +466,11 @@ export const applyLiveExchangeAccountUpdateEvent = async (input: {
         ...(typeof position.unrealizedPnl === 'number'
           ? { unrealizedPnl: position.unrealizedPnl }
           : {}),
+        lastExchangeSeenAt: eventAt,
+        lastExchangeSyncAt: eventAt,
+        missingSince: null,
+        missingSyncCount: 0,
+        continuityState: 'CONFIRMED',
       },
     });
     updatedPositions += result.count;

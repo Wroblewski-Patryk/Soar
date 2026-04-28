@@ -72,6 +72,7 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: 58_000,
           takeProfit: 61_000,
           managementMode: 'BOT_MANAGED' as const,
+          continuityState: 'CONFIRMED' as const,
           bot: buildBotExecutionContext(),
         },
       ]),
@@ -126,6 +127,7 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: null,
           takeProfit: null,
           managementMode: 'BOT_MANAGED' as const,
+          continuityState: 'CONFIRMED' as const,
           bot: null,
         },
       ]),
@@ -166,6 +168,7 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: 58_000,
           takeProfit: 61_000,
           managementMode: 'BOT_MANAGED' as const,
+          continuityState: 'CONFIRMED' as const,
           bot: buildBotExecutionContext({
             wallet: {
               mode: 'LIVE',
@@ -223,6 +226,7 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: null,
           takeProfit: null,
           managementMode: 'BOT_MANAGED' as const,
+          continuityState: 'CONFIRMED' as const,
           bot: buildBotExecutionContext({
             wallet: { mode: 'LIVE' },
           }),
@@ -282,6 +286,7 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: null,
           takeProfit: null,
           managementMode: 'BOT_MANAGED' as const,
+          continuityState: 'CONFIRMED' as const,
           bot: buildBotExecutionContext({
             wallet: { paperInitialBalance: 1000 },
           }),
@@ -331,6 +336,7 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: null,
           takeProfit: null,
           managementMode: 'BOT_MANAGED' as const,
+          continuityState: 'CONFIRMED' as const,
           bot: buildBotExecutionContext(),
         },
       ]),
@@ -402,6 +408,7 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: null,
           takeProfit: null,
           managementMode: 'BOT_MANAGED' as const,
+          continuityState: 'CONFIRMED' as const,
           bot: buildBotExecutionContext({
             wallet: { mode: 'LIVE' },
           }),
@@ -465,6 +472,7 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: null,
           takeProfit: null,
           managementMode: 'BOT_MANAGED' as const,
+          continuityState: 'CONFIRMED' as const,
           bot: buildBotExecutionContext({
             wallet: { mode: 'LIVE' },
           }),
@@ -527,6 +535,7 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: null,
           takeProfit: null,
           managementMode: 'BOT_MANAGED' as const,
+          continuityState: 'CONFIRMED' as const,
           bot: buildBotExecutionContext({
             wallet: { mode: 'LIVE' },
           }),
@@ -577,6 +586,7 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: 590,
           takeProfit: 605,
           managementMode: 'BOT_MANAGED' as const,
+          continuityState: 'CONFIRMED' as const,
           bot: null,
         },
       ]),
@@ -620,6 +630,7 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: 0.95,
           takeProfit: 1.05,
           managementMode: 'MANUAL_MANAGED' as const,
+          continuityState: 'CONFIRMED' as const,
           bot: buildBotExecutionContext({
             wallet: { mode: 'LIVE' },
           }),
@@ -648,6 +659,54 @@ describe('RuntimePositionAutomationService', () => {
     expect(deps.closeByExitSignal).not.toHaveBeenCalled();
   });
 
+  it('keeps recovered-but-unactionable positions visible but fail-closed for automation', async () => {
+    const deps: any = {
+      listOpenPositionsBySymbol: vi.fn(async () => [
+        {
+          id: 'pos-recovered-unactionable',
+          userId: 'user-recovered-unactionable',
+          botId: 'bot-recovered-unactionable',
+          strategyId: 'strategy-recovered-unactionable',
+          symbol: 'DOGEUSDT',
+          side: 'LONG' as const,
+          entryPrice: 0.11,
+          quantity: 5000,
+          leverage: 5,
+          stopLoss: null,
+          takeProfit: null,
+          managementMode: 'BOT_MANAGED' as const,
+          continuityState: 'RECOVERED_UNACTIONABLE' as const,
+          origin: 'EXCHANGE_SYNC' as const,
+          bot: buildBotExecutionContext({
+            wallet: { mode: 'LIVE' },
+          }),
+        },
+      ]),
+      getStrategyConfigById: vi.fn(async () => null),
+      executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
+      closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
+      resolveDcaFundsExhausted: vi.fn(async () => false),
+      nowMs: vi.fn(() => Date.now()),
+    };
+
+    const service = new RuntimePositionAutomationService(deps);
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'DOGEUSDT',
+      eventTime: 7_500,
+      lastPrice: 0.109,
+      priceChangePercent24h: -1.5,
+    });
+
+    expect(deps.getStrategyConfigById).not.toHaveBeenCalled();
+    expect(deps.resolveDcaFundsExhausted).not.toHaveBeenCalled();
+    expect(deps.executeDca).not.toHaveBeenCalled();
+    expect(deps.closeByExitSignal).not.toHaveBeenCalled();
+    expect(service.getPositionStateSnapshot('pos-recovered-unactionable')).toBeNull();
+  });
+
   it('skips automation for LIVE bot positions when live opt-in is disabled', async () => {
     const deps: any = {
       listOpenPositionsBySymbol: vi.fn(async () => [
@@ -664,6 +723,7 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: 58_000,
           takeProfit: 61_000,
           managementMode: 'BOT_MANAGED' as const,
+          continuityState: 'CONFIRMED' as const,
           origin: 'BOT' as const,
           bot: buildBotExecutionContext({
             liveOptIn: false,
@@ -712,6 +772,7 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: 2900,
           takeProfit: 3100,
           managementMode: 'BOT_MANAGED' as const,
+          continuityState: 'CONFIRMED' as const,
           origin: 'BOT' as const,
           bot: null,
         },
@@ -757,6 +818,7 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: 58_000,
           takeProfit: 61_000,
           managementMode: 'BOT_MANAGED' as const,
+          continuityState: 'CONFIRMED' as const,
           bot: buildBotExecutionContext({
             wallet: {
               mode: 'LIVE',
@@ -817,6 +879,7 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: null,
           takeProfit: null,
           managementMode: 'BOT_MANAGED' as const,
+          continuityState: 'CONFIRMED' as const,
           bot: buildBotExecutionContext({
             wallet: { mode: 'LIVE' },
           }),
@@ -871,6 +934,7 @@ describe('RuntimePositionAutomationService', () => {
           stopLoss: null,
           takeProfit: null,
           managementMode: 'BOT_MANAGED' as const,
+          continuityState: 'CONFIRMED' as const,
           bot: buildBotExecutionContext({
             wallet: { mode: 'LIVE' },
           }),
