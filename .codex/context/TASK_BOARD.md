@@ -17,6 +17,8 @@ Last updated: 2026-04-28
 
 ## READY
 
+- [x] `DOCSYNC-2026-04-28-D docs(planning-catalog): refresh catalog index and correct stale UOLF queued header`
+  - 2026-04-28: Closed by refreshing `planning-catalog-index-2026-04-19.md` with the post-2026-04-20 wave history and correcting the stale `Status: queued` header left in the already closed `UOLF` plan. The slice restored truthful classification for newer `implemented` and `superseded` planning artifacts without changing runtime or feature behavior. Validation PASS: `pnpm run quality:guardrails`.
 - [x] `DOCSYNC-2026-04-28-C docs(planning-status): close stale Active headers in already closed planning packets`
   - 2026-04-28: Closed by correcting stale `Status: Active` headers in already closed planning packets for `SCALE-A`, `V1FACT-A`, `V1TAKE-01`, `XADAPT-02`, and `XADAPT-06`. The task changed no runtime or feature behavior; it only restored parity between individual plan headers and canonical closure truth already recorded in `PROJECT_STATE` and `TASK_BOARD`. Validation PASS: `pnpm run quality:guardrails`.
 - [x] `QH-E2E-2026-04-28-A qa(api-e2e): stabilize full markets and wallets CRUD suites after focused regression closure`

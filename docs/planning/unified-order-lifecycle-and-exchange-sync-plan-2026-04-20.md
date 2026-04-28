@@ -1,6 +1,6 @@
 # Unified Order Lifecycle and Exchange Sync Plan (2026-04-20)
 
-Status: queued  
+Status: closed (UOLF-01..UOLF-15 completed on 2026-04-20)  
 Execution mode: tiny-commit only (exactly one task per commit)  
 Primary audience: execution agent
 

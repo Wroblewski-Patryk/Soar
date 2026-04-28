@@ -2655,6 +2655,12 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 
 ### Progress Log (Phase DOCSYNC-2026-04-28 - Planning Status Header Parity)
 - 2026-04-28: Closed `DOCSYNC-2026-04-28-C` by correcting stale `Status: Active` headers in already closed planning packets for `SCALE-A`, `V1FACT-A`, `V1TAKE-01`, `XADAPT-02`, and `XADAPT-06`. The slice was intentionally docs-only and restored parity between packet headers and canonical closure state already recorded in queue/context truth. Validation PASS: `pnpm run quality:guardrails`.
+
+## Phase DOCSYNC-2026-04-28B - Planning Catalog Refresh (Closed 2026-04-28)
+- [x] `DOCSYNC-2026-04-28-D docs(planning-catalog): refresh catalog index and correct stale UOLF queued header`
+
+### Progress Log (Phase DOCSYNC-2026-04-28B - Planning Catalog Refresh)
+- 2026-04-28: Closed `DOCSYNC-2026-04-28-D` by refreshing `planning-catalog-index-2026-04-19.md` with post-2026-04-20 wave history and correcting the stale `Status: queued` header in the already closed `UOLF` plan. The slice stayed docs-only and restored truthful discoverability for newer `implemented` and `superseded` planning artifacts. Validation PASS: `pnpm run quality:guardrails`.
 - [x] `DOCSYNC-2026-04-25-A docs(sync): remove stale V1POSTBOT full-api red-suite drift from project state`
 - [x] `DOCSYNC-2026-04-25-B docs(sync): remove closed PAPERPNL entry from TASK_BOARD READY lane`
 
