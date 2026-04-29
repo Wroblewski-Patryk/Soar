@@ -5,6 +5,7 @@ import { resolveRuntimeLifecycleMarkPrice } from '../engine/runtimeLifecycleMark
 import { CloseBotRuntimePositionDto } from './bots.types';
 import { getOwnedBotRuntimeSession } from './botOwnership.service';
 import { botErrors } from './bots.errors';
+import { fetchFallbackTickerPrices } from './runtimeMarketDataFallback.service';
 import {
   getExternalPositionOwnership,
   parseApiKeyIdFromExternalPositionId,
@@ -176,13 +177,24 @@ export const closeBotRuntimeSessionPosition = async (
 
   const botExchange = botContext.exchange ?? 'BINANCE';
   const botMarketType = botContext.marketType ?? 'FUTURES';
-  const markPrice = resolveRuntimeLifecycleMarkPrice({
-    exchange: botExchange,
-    marketType: botMarketType,
-    symbol: position.symbol,
-  });
-  const closeReferencePrice =
-    markPrice ??
+  let closeReferencePrice =
+    resolveRuntimeLifecycleMarkPrice({
+      exchange: botExchange,
+      marketType: botMarketType,
+      symbol: position.symbol,
+    }) ?? null;
+  if (!(typeof closeReferencePrice === 'number' && Number.isFinite(closeReferencePrice) && closeReferencePrice > 0)) {
+    const fallbackPrices = await fetchFallbackTickerPrices({
+      marketType: botMarketType === 'SPOT' ? 'SPOT' : 'FUTURES',
+      symbols: [position.symbol],
+    });
+    const fallbackPrice = fallbackPrices.get(position.symbol);
+    if (typeof fallbackPrice === 'number' && Number.isFinite(fallbackPrice) && fallbackPrice > 0) {
+      closeReferencePrice = fallbackPrice;
+    }
+  }
+  closeReferencePrice =
+    closeReferencePrice ??
     (botContext.mode === 'LIVE' && Number.isFinite(position.entryPrice) && position.entryPrice > 0
       ? position.entryPrice
       : null);

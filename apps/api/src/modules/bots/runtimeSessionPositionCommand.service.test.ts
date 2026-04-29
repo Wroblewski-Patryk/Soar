@@ -19,6 +19,7 @@ const mocks = vi.hoisted(() => ({
   orchestrateRuntimeSignal: vi.fn(),
   getOwnedBotRuntimeSession: vi.fn(),
   resolveRuntimeLifecycleMarkPrice: vi.fn(),
+  fetchFallbackTickerPrices: vi.fn(),
   resolveExternalPositionOwnershipIndex: vi.fn(),
 }));
 
@@ -36,6 +37,10 @@ vi.mock('./botOwnership.service', () => ({
 
 vi.mock('../engine/runtimeLifecycleMarkPrice.service', () => ({
   resolveRuntimeLifecycleMarkPrice: mocks.resolveRuntimeLifecycleMarkPrice,
+}));
+
+vi.mock('./runtimeMarketDataFallback.service', () => ({
+  fetchFallbackTickerPrices: mocks.fetchFallbackTickerPrices,
 }));
 
 vi.mock('./runtimeExternalPositionOwner.service', () => ({
@@ -70,6 +75,7 @@ describe('closeBotRuntimeSessionPosition', () => {
       },
     });
     mocks.resolveRuntimeLifecycleMarkPrice.mockReturnValue(50_100);
+    mocks.fetchFallbackTickerPrices.mockResolvedValue(new Map());
   });
 
   it('fails closed when external exchange ownership is ambiguous', async () => {
@@ -229,6 +235,58 @@ describe('closeBotRuntimeSessionPosition', () => {
       code: 'POSITION_CLOSE_PRICE_UNAVAILABLE',
     });
     expect(mocks.orchestrateRuntimeSignal).not.toHaveBeenCalled();
+  });
+
+  it('uses fallback ticker price for PAPER manual close when runtime lifecycle price is unavailable', async () => {
+    mocks.prisma.bot.findFirst.mockResolvedValue({
+      mode: 'PAPER',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      walletId: 'wallet-paper-1',
+      wallet: {
+        apiKeyId: null,
+      },
+    });
+    mocks.prisma.position.findFirst.mockResolvedValue({
+      id: 'position-1',
+      botId: 'bot-1',
+      walletId: 'wallet-paper-1',
+      strategyId: 'strategy-1',
+      symbol: 'BTCUSDT',
+      quantity: 0.5,
+      entryPrice: 50_000,
+      origin: 'BOT',
+      externalId: null,
+      continuityState: 'CONFIRMED',
+    });
+    mocks.resolveRuntimeLifecycleMarkPrice.mockReturnValue(null);
+    mocks.fetchFallbackTickerPrices.mockResolvedValue(new Map([['BTCUSDT', 50_250]]));
+    mocks.orchestrateRuntimeSignal.mockResolvedValue({
+      status: 'closed',
+      orderId: 'order-1',
+      positionId: 'position-1',
+    });
+
+    const result = await closeBotRuntimeSessionPosition('user-1', 'bot-1', 'session-1', 'position-1', {
+      riskAck: true,
+    });
+
+    expect(mocks.fetchFallbackTickerPrices).toHaveBeenCalledWith({
+      marketType: 'FUTURES',
+      symbols: ['BTCUSDT'],
+    });
+    expect(mocks.orchestrateRuntimeSignal).toHaveBeenCalledWith(
+      expect.objectContaining({
+        symbol: 'BTCUSDT',
+        direction: 'EXIT',
+        markPrice: 50_250,
+      })
+    );
+    expect(result).toEqual({
+      status: 'closed',
+      orderId: 'order-1',
+      positionId: 'position-1',
+    });
   });
 
   it('claims exact imported ownership when api key and symbol resolve to the selected live bot', async () => {
