@@ -142,3 +142,8 @@ export const countRuntimeMarketStates = (
     }
   );
 };
+
+export const resolveRuntimeDynamicStopColumnVisibility = (
+  fromStrategyMode: boolean | null | undefined,
+  hasRowTruth: boolean
+) => fromStrategyMode === true || hasRowTruth;

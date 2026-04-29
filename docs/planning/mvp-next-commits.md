@@ -39,8 +39,10 @@ Operational queue for one-task execution runs.
   - 2026-04-29: Closed the second `V1COVER-A` slice by restoring wallet cleanup to the shared runtime takeover helper and aligning the outdated overlap proof to the current architecture. The shared takeover suite now deletes wallet-linked topology deterministically, and the first visibility regression no longer assumes two active LIVE bots may share one symbol; it now proves the approved contract instead: imported `LIVE` positions stay visible for the owning LIVE bot while a PAPER bot may share the symbol without taking ownership.
 ## NEXT
 - [ ] `V1REOPEN-05 test(api-runtime-red): lock TTP continuity and loss-side-only DCA behavior on reopened LIVE positions`
-- [ ] `V1REOPEN-06 fix(api+web-truth): align final operator truth for reopened LIVE positions`
+  - 2026-04-29 progress note: operator-truth gating is already closed in `V1REOPEN-06`; what remains is the narrower reopened-`LIVE` + loss-side-only `DCA` proof.
 - [ ] `V1REOPEN-07 qa(closure): run focused close/reopen truth pack and publish evidence`
+- [x] `V1REOPEN-06 fix(api+web-truth): align final operator truth for reopened LIVE positions`
+  - 2026-04-29: Closed by repairing backend `showDynamicStopColumns` truth, reusing one shared web visibility helper across dashboard and monitoring runtime tables, and restoring bot-managed `TTP` fallback/sticky continuity in runtime serialization.
 - [x] `V1EXCEL-01 audit(v1-gap-map): freeze the exact remaining gap map against DoD, integration, deployment, and activation contracts`
   - 2026-04-29: Closed by publishing `docs/operations/v1excel-gap-map-audit-2026-04-29.md` plus `docs/planning/v1excel-01-gap-map-audit-task-2026-04-29.md`. The audit freezes one explicit answer: no open core implementation or architecture gap remains for `V1`; the remaining blockers are fresh manual evidence, honest local full-confidence reproducibility, fresh stage/prod activation evidence, and one final operator-facing `GO / NO-GO` decision.
 - [x] `V1EXCEL-02 qa(local-infra): restore fully reproducible local confidence path or classify the exact external blocker`

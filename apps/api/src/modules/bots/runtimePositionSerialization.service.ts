@@ -42,6 +42,18 @@ const selectActiveTrailingStopDisplayLevel = (
   return active;
 };
 
+const selectActiveTrailingTakeProfitDisplayLevel = (
+  favorableMovePercent: number | null,
+  levels: TrailingTakeProfitDisplayLevel[]
+) => {
+  if (favorableMovePercent == null || !Number.isFinite(favorableMovePercent)) return null;
+  let active: TrailingTakeProfitDisplayLevel | null = null;
+  for (const level of levels) {
+    if (favorableMovePercent >= level.armPercent) active = level;
+  }
+  return active;
+};
+
 const computeTrailingStopPriceFromAnchor = (params: {
   side: 'LONG' | 'SHORT';
   anchorPrice: number;
@@ -85,7 +97,9 @@ type ResolveRuntimePositionDynamicStopsParams = {
   marketPrice: number | null | undefined;
   stateEntryPrice: number;
   runtimeState: PositionManagementState | null;
+  trailingTakeProfitLevels: TrailingTakeProfitDisplayLevel[];
   trailingStopLevels: TrailingStopDisplayLevel[];
+  allowStrategyProtectionFallback: boolean;
 };
 
 export const resolveRuntimePositionDynamicStops = (
@@ -100,7 +114,9 @@ export const resolveRuntimePositionDynamicStops = (
     marketPrice,
     stateEntryPrice,
     runtimeState,
+    trailingTakeProfitLevels,
     trailingStopLevels,
+    allowStrategyProtectionFallback,
   } = params;
 
   const effectiveLeverage =
@@ -142,6 +158,33 @@ export const resolveRuntimePositionDynamicStops = (
     ttpTriggerPercentFromState != null && ttpTriggerPercentFromState > 0
       ? ttpTriggerPercentFromState
       : null;
+  const activeTtpLevel =
+    !hasRuntimeTtpState && allowStrategyProtectionFallback
+      ? selectActiveTrailingTakeProfitDisplayLevel(
+          favorableMovePercentFromLivePrice,
+          trailingTakeProfitLevels
+        )
+      : null;
+  const fallbackTtpTriggerPercent =
+    activeTtpLevel != null && favorableMovePercentFromLivePrice != null
+      ? favorableMovePercentFromLivePrice - activeTtpLevel.trailPercent
+      : null;
+  const tslTriggerPercent = hasRuntimeTslState
+    ? (runtimeState.trailingLossLimitPercent as number)
+    : null;
+  const stickyFallbackTtpLevel =
+    !hasRuntimeTtpState &&
+    allowStrategyProtectionFallback &&
+    tslTriggerPercent != null
+      ? trailingTakeProfitLevels.reduce<TrailingTakeProfitDisplayLevel | null>((active, level) => {
+          if (tslTriggerPercent + level.trailPercent < level.armPercent) return active;
+          return level;
+        }, null)
+      : null;
+  const stickyFallbackTtpTriggerPercent =
+    stickyFallbackTtpLevel != null && tslTriggerPercent != null
+      ? tslTriggerPercent + stickyFallbackTtpLevel.trailPercent
+      : null;
   const activeTslLevel =
     runtimeState && favorableMovePercentFromLivePrice != null
       ? selectActiveTrailingStopDisplayLevel(
@@ -149,35 +192,41 @@ export const resolveRuntimePositionDynamicStops = (
           trailingStopLevels
         )
       : null;
-  const tslTriggerPercent = hasRuntimeTslState
-    ? (runtimeState.trailingLossLimitPercent as number)
-    : null;
   const dynamicTtpStopLoss =
-    ttpTriggerPercent != null
+    (
+      ttpTriggerPercent != null ||
+      fallbackTtpTriggerPercent != null ||
+      stickyFallbackTtpTriggerPercent != null
+    )
       ? computePriceFromLeveragedMovePercent(
           positionSide,
           stateEntryPrice,
-          ttpTriggerPercent,
+          ttpTriggerPercent ??
+            fallbackTtpTriggerPercent ??
+            stickyFallbackTtpTriggerPercent ??
+            0,
           leverage
         )
       : null;
   const dynamicTslStopLoss =
-    activeTslLevel &&
-    runtimeState &&
-    Number.isFinite(runtimeState.trailingAnchorPrice)
-      ? computeTrailingStopPriceFromAnchor({
-          side: positionSide,
-          anchorPrice: runtimeState.trailingAnchorPrice as number,
-          trailPercent: activeTslLevel.trailPercent,
-        })
+    hasRuntimeTtpState
+      ? null
       : tslTriggerPercent != null
-      ? computePriceFromLeveragedMovePercent(
-          positionSide,
-          stateEntryPrice,
-          tslTriggerPercent,
-          effectiveLeverage
-        )
-      : null;
+        ? computePriceFromLeveragedMovePercent(
+            positionSide,
+            stateEntryPrice,
+            tslTriggerPercent,
+            effectiveLeverage
+          )
+        : activeTslLevel &&
+            runtimeState &&
+            Number.isFinite(runtimeState.trailingAnchorPrice)
+          ? computeTrailingStopPriceFromAnchor({
+              side: positionSide,
+              anchorPrice: runtimeState.trailingAnchorPrice as number,
+              trailPercent: activeTslLevel.trailPercent,
+            })
+        : null;
   const liveUnrealizedPnl =
     typeof liveUnrealizedPnlFromPrice === 'number' && Number.isFinite(liveUnrealizedPnlFromPrice)
       ? liveUnrealizedPnlFromPrice

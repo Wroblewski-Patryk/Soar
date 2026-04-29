@@ -12,7 +12,9 @@ describe('runtimePositionSerialization', () => {
       marketPrice: 0.989,
       stateEntryPrice: 1,
       runtimeState: null,
+      trailingTakeProfitLevels: [{ armPercent: 0.04, trailPercent: 0.01 }],
       trailingStopLevels: [{ armPercent: 5, trailPercent: 1 }],
+      allowStrategyProtectionFallback: false,
     });
 
     expect(result.dynamicTtpStopLoss).toBeNull();
@@ -36,7 +38,9 @@ describe('runtimePositionSerialization', () => {
         trailingTakeProfitHighPercent: 0.11,
         trailingTakeProfitStepPercent: 0.01,
       },
+      trailingTakeProfitLevels: [{ armPercent: 0.04, trailPercent: 0.01 }],
       trailingStopLevels: [{ armPercent: 0.05, trailPercent: 0.01 }],
+      allowStrategyProtectionFallback: true,
     });
 
     expect(result.dynamicTtpStopLoss).toBeCloseTo(0.99, 8);
@@ -57,9 +61,55 @@ describe('runtimePositionSerialization', () => {
         currentAdds: 0,
         trailingAnchorPrice: 105,
       },
+      trailingTakeProfitLevels: [{ armPercent: 0.04, trailPercent: 0.01 }],
       trailingStopLevels: [{ armPercent: 0.2, trailPercent: 0.04 }],
+      allowStrategyProtectionFallback: true,
     });
 
     expect(result.dynamicTslStopLoss).toBeCloseTo(100.8, 8);
+  });
+
+  it('derives dynamic TTP stop from strategy levels when bot-managed runtime state has not persisted TTP tracking yet', () => {
+    const result = resolveRuntimePositionDynamicStops({
+      positionSide: 'LONG',
+      entryPrice: 100,
+      quantity: 1,
+      leverage: 2,
+      unrealizedPnl: null,
+      marketPrice: 106,
+      stateEntryPrice: 100,
+      runtimeState: null,
+      trailingTakeProfitLevels: [{ armPercent: 0.04, trailPercent: 0.01 }],
+      trailingStopLevels: [],
+      allowStrategyProtectionFallback: true,
+    });
+
+    expect(result.dynamicTtpStopLoss).toBeCloseTo(105.5, 8);
+    expect(result.dynamicTslStopLoss).toBeNull();
+  });
+
+  it('keeps dynamic TTP stop visible after pullback when trailing loss limit proves the trail was already armed', () => {
+    const result = resolveRuntimePositionDynamicStops({
+      positionSide: 'LONG',
+      entryPrice: 100,
+      quantity: 1,
+      leverage: 2,
+      unrealizedPnl: null,
+      marketPrice: 101,
+      stateEntryPrice: 100,
+      runtimeState: {
+        averageEntryPrice: 100,
+        quantity: 1,
+        currentAdds: 0,
+        trailingAnchorPrice: 100,
+        trailingLossLimitPercent: 0.04,
+      },
+      trailingTakeProfitLevels: [{ armPercent: 0.04, trailPercent: 0.01 }],
+      trailingStopLevels: [{ armPercent: 0.05, trailPercent: 0.02 }],
+      allowStrategyProtectionFallback: true,
+    });
+
+    expect(result.dynamicTtpStopLoss).toBeCloseTo(102.5, 8);
+    expect(result.dynamicTslStopLoss).toBeCloseTo(102, 8);
   });
 });

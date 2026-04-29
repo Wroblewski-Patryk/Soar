@@ -39,9 +39,13 @@ Last updated: 2026-04-29
 
 - [ ] `V1REOPEN-05 test(api-runtime-red): lock TTP continuity and loss-side-only DCA behavior on reopened LIVE positions`
   - Scope: prove the reopened lifecycle arms `TTP` correctly when remaining DCA thresholds are loss-side only and no stale state survives from the prior lifecycle.
+  - 2026-04-29 audit note: extend this proof to cover the operator-visible path where row-level dynamic `TTP` exists after reopen but bot-level advanced-close gating may still hide the column.
+  - 2026-04-29 progress note: operator-truth gating is already closed in `V1REOPEN-06`; the remaining proof is now strictly about reopened `LIVE` continuity with loss-side-only remaining `DCA`.
 
-- [ ] `V1REOPEN-06 fix(api+web-truth): align final operator truth for reopened LIVE positions`
+- [x] `V1REOPEN-06 fix(api+web-truth): align final operator truth for reopened LIVE positions`
   - Scope: keep operator surfaces faithful to the repaired backend truth and only add a minimal read-model adjustment if focused proof shows it is still needed.
+  - 2026-04-29 audit note: strongest remaining code-level candidate is `showDynamicStopColumns` gating that depends on bot-level topology rather than actual reopened row truth.
+  - 2026-04-29: Closed by OR-ing backend `showDynamicStopColumns` with actual open-row dynamic-stop truth, reusing one shared web visibility helper across dashboard and monitoring surfaces, and repairing missing bot-managed `TTP` fallback/sticky continuity inside runtime serialization. Evidence: focused API dynamic-stop unit/e2e pack, focused web runtime table pack, API/web typecheck, `pnpm run quality:guardrails`.
 
 - [ ] `V1REOPEN-07 qa(closure): run focused close/reopen truth pack and publish evidence`
   - Scope: rerun the focused reconciliation/runtime/operator pack, typechecks, and repository guardrails; then publish closure evidence.

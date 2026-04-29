@@ -116,7 +116,7 @@ export const listBotRuntimeSessionPositions = async (
 ) => {
   const session = await getOwnedBotRuntimeSession(userId, botId, sessionId);
   if (!session) return null;
-  const showDynamicStopColumns = await resolveBotAdvancedCloseMode(userId, botId);
+  const showDynamicStopColumnsFromStrategyMode = await resolveBotAdvancedCloseMode(userId, botId);
 
   const normalizedSymbol = normalizeSymbol(query.symbol) || undefined;
   const windowEnd = resolveSessionWindowEnd(session);
@@ -277,7 +277,7 @@ export const listBotRuntimeSessionPositions = async (
       openCount: 0,
       closedCount: 0,
       openOrdersCount: visibleOpenOrders.length,
-      showDynamicStopColumns,
+      showDynamicStopColumns: showDynamicStopColumnsFromStrategyMode,
       window: {
         startedAt: session.startedAt,
         finishedAt: windowEnd,
@@ -448,7 +448,9 @@ export const listBotRuntimeSessionPositions = async (
       marketPrice,
       stateEntryPrice,
       runtimeState,
+      trailingTakeProfitLevels,
       trailingStopLevels,
+      allowStrategyProtectionFallback: strategyAutomationContextResolved,
     });
 
     const holdUntil = position.closedAt ?? windowEnd;
@@ -510,6 +512,12 @@ export const listBotRuntimeSessionPositions = async (
   const historyItems = mappedPositions
     .filter((position) => position.status === 'CLOSED')
     .sort((left, right) => (right.closedAt?.getTime() ?? 0) - (left.closedAt?.getTime() ?? 0));
+  const showDynamicStopColumns =
+    showDynamicStopColumnsFromStrategyMode ||
+    openItems.some(
+      (position) =>
+        position.dynamicTtpStopLoss != null || position.dynamicTslStopLoss != null
+    );
   const usedMargin = openItems.reduce((sum, position) => {
     const leverage = Math.max(1, position.leverage || 1);
     return sum + position.entryNotional / leverage;

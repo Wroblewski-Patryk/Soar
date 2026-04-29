@@ -4,6 +4,7 @@ import { toTimestamp } from "@/lib/time";
 import type { BotRuntimeTradesResponse } from "@/features/bots/types/bot.type";
 import {
   resolvePaperConfigBaseline,
+  resolveRuntimeDynamicStopColumnVisibility,
   resolveRuntimeFreeFunds,
   resolveRuntimePortfolio,
 } from "@/features/bots/utils/runtimeSurfaceTruth";
@@ -174,10 +175,10 @@ export const useRuntimeSelectionViewModel = ({
 
   const showDynamicStopColumns = useMemo(() => {
     const fromStrategyMode = selected?.positions?.showDynamicStopColumns;
-    if (typeof fromStrategyMode === "boolean") return fromStrategyMode;
-    return (selectedData?.open ?? []).some(
+    const hasRowTruth = (selectedData?.open ?? []).some(
       (row) => row.dynamicTtpStopLoss != null || row.dynamicTslStopLoss != null
     );
+    return resolveRuntimeDynamicStopColumnVisibility(fromStrategyMode, hasRowTruth);
   }, [selected?.positions?.showDynamicStopColumns, selectedData?.open]);
 
   return {

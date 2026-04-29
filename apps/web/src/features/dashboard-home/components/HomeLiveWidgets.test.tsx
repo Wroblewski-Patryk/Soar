@@ -673,7 +673,7 @@ describe("HomeLiveWidgets", () => {
       openCount: 2,
       closedCount: 0,
       openOrdersCount: 0,
-      showDynamicStopColumns: true,
+      showDynamicStopColumns: false,
       window: {
         startedAt: "2026-03-31T10:00:00.000Z",
         finishedAt: "2026-03-31T10:05:00.000Z",

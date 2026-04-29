@@ -68,6 +68,11 @@ Confirmed likely drift areas:
 - `TTP` semantics are already frozen correctly for loss-side-only `DCA`, so a
   failure here likely means stale lifecycle/protection continuity instead of a
   still-wrong rule.
+- operator-visible `TTP` can still disappear even when row-level dynamic stop
+  truth exists, because dashboard `TTP/TSL` columns are gated by one bot-level
+  `showDynamicStopColumns` flag derived from active advanced-close topology
+  instead of the actual reopened position rows. This makes `V1REOPEN-06`
+  a real code-risk slice rather than a cosmetic UI follow-up.
 
 ## Execution Plan
 
@@ -87,7 +92,9 @@ Confirmed likely drift areas:
 4. Harden runtime protection-state cleanup so stale lifecycle state cannot bleed
    into the reopened position.
 5. Verify whether any web read-model guard is still needed after backend truth
-   is fixed; if yes, keep it minimal and architecture-aligned.
+   is fixed; if yes, keep it minimal and architecture-aligned. First candidate:
+   stop hiding `TTP/TSL` columns solely because bot-level advanced-close
+   topology is unresolved when row-level dynamic stop truth is already present.
 6. Run focused API/web/guardrail validation and publish closure evidence.
 
 ## Acceptance Criteria
@@ -129,3 +136,15 @@ Confirmed likely drift areas:
 - What is incomplete: focused regression lock, reconciliation/runtime fix,
   closure evidence
 - Next steps: `V1REOPEN-01..07`
+
+## Implementation Status
+
+- 2026-04-29: `V1REOPEN-06` is now closed. Backend runtime positions keep
+  `showDynamicStopColumns=true` whenever any open row still carries real
+  dynamic-stop truth, both web operator surfaces OR topology mode with actual
+  row truth, and runtime serialization now restores the missing bot-managed
+  `TTP` fallback/sticky continuity path from strategy levels plus persisted
+  `trailingLossLimitPercent`.
+- 2026-04-29: `V1REOPEN-05` remains open because the repo still needs one
+  narrower proof for reopened `LIVE` positions with remaining loss-side-only
+  `DCA` thresholds.
