@@ -14,6 +14,12 @@ separate:
 - and what still requires a real authenticated operator session with exchange
   authority.
 
+Detailed mixed-origin `LIVE` lifecycle scenarios now also live in
+`docs/operations/v1live-mixed-origin-verification-matrix-2026-04-29.md`.
+That companion matrix expands the original checklist into explicit
+`exchange/app` open-close combinations plus wait-based `DCA` / `TTP` / `TSL`
+flows.
+
 ## Executed Today
 
 ### Automated confidence evidence
@@ -43,18 +49,23 @@ separate:
 - production `PAPER` manual-order context was verified on the active paper bot
 - production `PAPER` manual same-side add on the active managed position passed
   truthfully
-- production `PAPER` manual close attempt exposed a real command/read drift:
-  `POSITION_CLOSE_PRICE_UNAVAILABLE` despite visible `markPrice`
-- remediation commit `f12f3efb` was pushed to `main`; fresh post-deploy
-  confirmation is still pending
+- fresh post-deploy production `PAPER` manual close now passes truthfully:
+  `200 OK`, `openCount -> 0`, closed row preserved in `historyItems`, and
+  runtime capital summary moved realized PnL into `freeCash`
+- authenticated production dashboard UI walkthrough also passed for the paper
+  bot state:
+  - selected bot switch `LIVE -> PAPER`
+  - `Positions` shows `No open positions.`
+  - wallet summary reflects `Delta from start 1.25% | 12.48 USDT`
+  - `History` shows the expected top row `Close / Manual / User in app`
 - canonical evidence: `docs/operations/v1excel-paper-operator-verification-2026-04-29.md`
 
 ## Manual Matrix
 
 | Scenario | Required surface | Current status | Notes |
 | --- | --- | --- | --- |
-| PAPER manual open through dashboard | real UI + API + DB | PARTIAL | authenticated API/operator path executed; full real-UI walkthrough still pending |
-| PAPER manual close through dashboard | real UI + API + DB | PARTIAL | authenticated API/operator path executed and exposed `POSITION_CLOSE_PRICE_UNAVAILABLE`; fix pushed, post-deploy and real-UI confirmation still pending |
+| PAPER manual open through dashboard | real UI + API + DB | PARTIAL | authenticated API/operator path executed truthfully; dashboard state walkthrough is green, but no fresh browser-side order submission was executed in this session |
+| PAPER manual close through dashboard | real UI + API + DB | PARTIAL | authenticated API/operator path now passes truthfully after deploy and dashboard state/history walkthrough is green, but no fresh browser-side close click was executed in this session |
 | LIVE manual open through dashboard | real UI + real exchange | NOT EXECUTED | requires authenticated operator and exchange account |
 | LIVE manual close through dashboard | real UI + real exchange | NOT EXECUTED | requires authenticated operator and exchange account |
 | Pending external exchange order stays in `orders` until fill | real exchange + dashboard | NOT EXECUTED | requires real external order lifecycle |
@@ -81,16 +92,16 @@ Without those inputs, claiming this matrix as manually executed would violate:
 
 The smallest truthful next step is:
 
-1. confirm the pushed `PAPER` manual-close fix after deploy,
-2. execute the still-missing real-UI walkthrough for `PAPER`,
-3. execute the `LIVE` exchange-authority scenarios,
-4. execute one manual exchange-side intervention case,
-5. execute one restart / recovery case
+1. execute the browser-side `PAPER` trade-action clicks if we want full UI-action proof instead of API-plus-UI-state proof,
+2. execute the `LIVE` exchange-authority scenarios,
+3. execute one manual exchange-side intervention case,
+4. execute one restart / recovery case
 
 ## Final Classification
 
 The manual matrix is no longer purely blocked by missing Soar auth. It is now
-`IN_PROGRESS`, with authenticated `PAPER` API/operator evidence recorded and
-one real `PAPER` close drift surfaced. The remaining blockers are real-UI
-execution, `LIVE` exchange authority, and fresh post-deploy confirmation of the
-pushed `PAPER` close fix.
+`IN_PROGRESS`, with authenticated `PAPER` API/operator evidence recorded for
+truthful same-side add, truthful post-deploy manual close, and aligned
+dashboard state/history truth. The remaining blockers are browser-side action
+proof if required, `LIVE` exchange authority, and restart/recovery or
+mixed-origin operator scenarios.

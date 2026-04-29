@@ -16,6 +16,8 @@ once real Soar admin credentials were available during `V1EXCEL-03`.
 - production manual-order context verification
 - production manual same-side add on an existing `PAPER` managed position
 - production manual close attempt on that same `PAPER` managed position
+- fresh post-deploy production manual close confirmation on the same paper bot
+- fresh authenticated production dashboard UI walkthrough for the same paper bot
 
 ## Production Context
 
@@ -46,23 +48,67 @@ managed position:
 This is strong production evidence that the canonical `filled order -> existing
 position merge` path is working for `PAPER`.
 
-### 2. Production PAPER manual close still fails before fresh deploy confirmation
+### 2. Production PAPER manual close now passes after deploy
 
-The same authenticated production pass proved a remaining operator-visible
-close drift:
+After the latest production deploy, the same authenticated protected API path
+was rerun against the active paper runtime session and the previously failing
+manual close path now behaved truthfully:
 
-- manual close on the open `PAPER` position returned `409`
-- error code: `POSITION_CLOSE_PRICE_UNAVAILABLE`
-- this happened even though runtime positions still displayed a valid
-  `markPrice` (`0.1541`) for the same open position
+- before close:
+  - `openCount` was `1`
+  - open position id was `c7d184a3-3c11-4a52-b2ed-20b88011295f`
+  - runtime row was actionable and had visible `markPrice=0.1541`
+- manual close returned `200 OK`
+- response payload:
+  - `status: closed`
+  - `orderId: 27504a61-94d2-4ffa-9f28-beb0b39e40ba`
+  - `positionId: c7d184a3-3c11-4a52-b2ed-20b88011295f`
+- after close:
+  - `openCount` became `0`
+  - `historyItems[0]` is the just-closed position
+  - `closeReason` is `MANUAL`
+  - `closeInitiator` is `USER_APP`
+  - `closedAt` is `2026-04-29T22:14:21.116Z`
+  - `exitPrice` is `0.1492`
+  - `tradesCount` is `3`
+  - capital summary moved realized profit into runtime truth:
+    - `realizedPnl: 12.482282366594582`
+    - `unrealizedPnl: 0`
+    - `freeCash: 1012.4822823665946`
 
-This means the operator-visible read path had stronger price truth than the
-command path.
+This is strong production evidence that the post-deploy `PAPER` manual-close
+path now uses sufficient close-price authority and records truthful history
+plus capital outcomes.
 
-## Code Remediation Prepared
+### 3. Production PAPER dashboard UI is now aligned with the API truth
 
-To remove that drift, remediation on `main` now reuses two already approved
-price sources in the close command path before it fails closed:
+Authenticated browser automation against the real production dashboard now
+confirms the same operator-visible truth directly in UI:
+
+- switching the selected bot from `live` to `Peper bot` succeeds in the
+  dashboard
+- `Positions` shows `No open positions.`
+- wallet summary shows:
+  - `Delta from start: 1.25% | 12.48 USDT`
+  - `Portfolio: 1,012.48 USDT`
+  - `FREE FUNDS: 1,012.48 USDT`
+  - `IN POSITIONS: 0.00 USDT`
+- `History` shows the expected closed `1000000MOGUSDT` lifecycle row at the
+  top of the table:
+  - `Action: Close`
+  - `Reason: Manual`
+  - `Closed by: User in app`
+  - `Price: 0.1492`
+  - `Realized PnL [USDT]: 23.07`
+
+This confirms that the operator-visible production dashboard is no longer
+lagging behind the fixed protected API path for this `PAPER` close flow.
+
+## Code Remediation Confirmed
+
+The deployed remediation proved effective. The close command now successfully
+reuses the approved price-authority seams that had already been prepared on
+`main`:
 
 - `runtimeMarketDataFallback`
 - the same public exchange connector family already used by manual-order
@@ -79,9 +125,10 @@ already available elsewhere in production. Focused validation PASS:
 
 - authenticated production `PAPER` operator evidence: `PARTIAL`
 - `PAPER` manual add: `PASS`
-- `PAPER` manual close: `FAIL` on current live production response before fresh
-  deploy confirmation
+- `PAPER` manual close: `PASS` after fresh production deploy confirmation
+- `PAPER` dashboard real-UI walkthrough: `PARTIAL PASS`
 - full `V1EXCEL-03` remains incomplete because:
-  - real UI walkthrough is still pending
   - `LIVE` exchange-authority scenarios are still pending
-  - post-deploy confirmation for the manual-close fix is still pending
+  - restart/recovery and mixed-origin `LIVE` scenarios are still pending
+  - `PAPER` UI walkthrough is not yet a full trade-placement walkthrough from
+    the browser itself, only an authenticated operator-state verification
