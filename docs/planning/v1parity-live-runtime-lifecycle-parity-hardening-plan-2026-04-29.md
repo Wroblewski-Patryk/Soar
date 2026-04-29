@@ -1,8 +1,11 @@
 # V1PARITY-A - LIVE Runtime Lifecycle Parity Hardening Plan
 
-Status: Planned
+Status: Closed
 Date: 2026-04-29
 Owner: Codex Planning Agent
+
+Closure evidence:
+- `docs/operations/v1parity-live-runtime-lifecycle-parity-closure-2026-04-29.md`
 
 ## Why This Wave Exists
 

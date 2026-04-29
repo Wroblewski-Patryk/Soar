@@ -7,16 +7,19 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `V1PARITY-02 test(api-red): lock confirmed LIVE add-fill -> canonical position update and DCA attribution`
+- no active queued task
 ## NEXT
-- [ ] `V1PARITY-03 fix(api-events): reuse canonical add-update lifecycle for existing-position LIVE fills`
-- [ ] `V1PARITY-04 test(api-red): lock account-update scope to canonical position ownership`
-- [ ] `V1PARITY-05 fix(api-events): narrow account-update application to canonical owned position scope`
-- [ ] `V1PARITY-06 test(api-runtime-red): lock runtime/read-model strategy-context parity for LIVE managed positions`
-- [ ] `V1PARITY-07 fix(api-runtime+reads): remove or explicitly degrade symbol-level fallback when strategy context is unresolved`
-- [ ] `V1PARITY-08 test(api-ops-red): lock operator-visible telemetry for fail-closed LIVE automation skips`
-- [ ] `V1PARITY-09 fix(api-telemetry): emit canonical runtime diagnostics for skipped LIVE management actions`
-- [ ] `V1PARITY-10 qa(closure): run focused LIVE parity pack and publish closure evidence`
+- no active queued task
+- [x] `V1PARITY-02 test(api-red): lock confirmed LIVE add-fill -> canonical position update and DCA attribution`
+- [x] `V1PARITY-03 fix(api-events): reuse canonical add-update lifecycle for existing-position LIVE fills`
+- [x] `V1PARITY-04 test(api-red): lock account-update scope to canonical position ownership`
+- [x] `V1PARITY-05 fix(api-events): narrow account-update application to canonical owned position scope`
+- [x] `V1PARITY-06 test(api-runtime-red): lock runtime/read-model strategy-context parity for LIVE managed positions`
+- [x] `V1PARITY-07 fix(api-runtime+reads): remove or explicitly degrade symbol-level fallback when strategy context is unresolved`
+- [x] `V1PARITY-08 test(api-ops-red): lock operator-visible telemetry for fail-closed LIVE automation skips`
+- [x] `V1PARITY-09 fix(api-telemetry): emit canonical runtime diagnostics for skipped LIVE management actions`
+- [x] `V1PARITY-10 qa(closure): run focused LIVE parity pack and publish closure evidence`
+  - 2026-04-29: Closed the full `V1PARITY-A` wave. Canonical `LIVE` add fills now reuse fill-derived add-update lifecycle authority with explicit `DCA` attribution, `ACCOUNT_UPDATE` reconciliation is narrowed to canonical owned LIVE scope, runtime read models stop implying DCA/TSL strategy truth through symbol fallback when `position.strategyId` is missing, and fail-closed LIVE automation skips now emit operator-visible `PRETRADE_BLOCKED` runtime diagnostics. Closure evidence: `docs/operations/v1parity-live-runtime-lifecycle-parity-closure-2026-04-29.md`. Validation PASS: focused `orders.exchangeEvents`, `runtimePositionAutomation`, `bots.runtime-strategy-context`, focused DCA ladder e2e, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 - [x] `DOCSYNC-2026-04-28-E docs(planning-history): normalize remaining historical status wording`
 - [x] `DOCSYNC-2026-04-28-D docs(planning-catalog): refresh catalog index and correct stale UOLF queued header`
 - [x] `DOCSYNC-2026-04-28-C docs(planning-status): close stale Active headers in already closed planning packets`
