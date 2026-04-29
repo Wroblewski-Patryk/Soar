@@ -5,7 +5,7 @@ This file tracks intentionally unresolved decisions only.
 Resolved architecture decisions must be normalized into `docs/architecture/`.
 
 ## Current Status
-- No active unresolved architecture decisions are recorded as of 2026-04-21.
+- 0 active unresolved architecture decisions are recorded as of 2026-04-29.
 
 ## How To Use This File
 - add an item here only when the decision is still open,

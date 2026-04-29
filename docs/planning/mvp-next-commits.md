@@ -7,9 +7,19 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- no active queued task
+- [ ] `V1SAFE-01 docs(contract): freeze canonical DCA/TTP/TSL parity contract for imported and recovered LIVE positions`
 ## NEXT
-- no active queued task
+- [ ] `V1SAFE-02 test(api-runtime-red): lock imported/recovered LIVE TTP/TSL state parity and fail-closed degradation`
+- [ ] `V1SAFE-03 fix(api-runtime): hydrate or explicitly degrade LIVE protection state on imported/recovered positions`
+- [ ] `V1SAFE-04 test(api-runtime-red): lock DCA-first affordability parity across backtest, paper, and live`
+- [ ] `V1SAFE-05 fix(api-runtime): align LIVE DCA affordability and close gating with canonical parity expectations`
+- [ ] `V1SAFE-06 test(api-runtime-red): lock LIVE trigger-input and exit-submission parity for DCA/TTP/TSL`
+- [ ] `V1SAFE-07 fix(api-runtime+events): close remaining LIVE DCA/TTP/TSL execution parity gaps`
+- [ ] `V1SAFE-08 test(api-ops-red): lock operator protection truth for actionable versus visual-only fallback states`
+- [ ] `V1SAFE-09 fix(api+read-model): expose honest LIVE protection state and degradation reasons on operator surfaces`
+- [ ] `V1SAFE-10 qa(closure): run focused LIVE DCA/TTP/TSL parity pack and publish closure evidence`
+- [x] `V1SAFE-00 planning(audit): publish LIVE protection and liquidation-safety analysis plus execution packet`
+  - 2026-04-29: Published `docs/planning/v1safe-live-protection-and-liquidation-safety-plan-2026-04-29.md` after refining the scope to the exact remaining `LIVE` parity problem. The repository-level conclusion is that Soar still lacks one canonical `DCA/TTP/TSL` parity model for imported and recovered `LIVE` positions: runtime trailing execution depends on persisted management state, runtime read-models can still imply dynamic protection through fallback logic the engine cannot enforce, and `DCA-first` gating remains insufficiently proven across `backtest`, `paper`, and `live` for the reported real-account symptom class.
 - [x] `V1PARITY-02 test(api-red): lock confirmed LIVE add-fill -> canonical position update and DCA attribution`
 - [x] `V1PARITY-03 fix(api-events): reuse canonical add-update lifecycle for existing-position LIVE fills`
 - [x] `V1PARITY-04 test(api-red): lock account-update scope to canonical position ownership`
