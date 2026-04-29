@@ -7,7 +7,12 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [ ] `V1COVER-01 test(runtime-state): reset shared runtime candle/ticker stores at canonical test boundaries`
+- [ ] `V1COVER-02 test(shared-cleanup): repair singular-bot wallet cleanup drift in runtime takeover helpers`
 ## NEXT
+- [ ] `V1COVER-03 qa(runtime-pack): rerun broad runtime/order regression pack and classify real post-stabilization failures`
+- [ ] `V1COVER-04 fix(runtime-or-orders): close the first real product drift that survives the stabilized pack`
+- [ ] `V1COVER-05 qa(closure): rerun stabilized LIVE runtime coverage pack and publish closure evidence`
 - [x] `GOLIVE-2026-04-29-A fix(tooling): harden local go-live smoke wrapper against existing infra and failed-migration diagnostics`
   - 2026-04-29: Closed the local smoke-wrapper hardening slice. `scripts/goLiveSmoke.mjs` now reuses already-running reachable Postgres/Redis when Docker Compose cannot bind `5432/6379`, avoids tearing down infra it did not start itself, and surfaces the local Prisma `P3009` blocker explicitly instead of failing with opaque mixed CLI noise. Canonical go-live packs remain green when run directly: `pnpm run test:go-live:api`, `pnpm run test:go-live:web`, `pnpm run typecheck`, and `pnpm run build`. The remaining blocker to a fully green umbrella smoke is external to repo code: local DB migration debt `20260424094500_add_single_context_bot_refs`.
 - [x] `V1GUARD-01..05 docs+api+qa(closure): close final LIVE protection drifts for DCA/TTP/TSL parity`

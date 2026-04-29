@@ -17,6 +17,12 @@ Last updated: 2026-04-29
 
 ## READY
 
+- [ ] `V1COVER-01 test(runtime-state): reset shared runtime candle/ticker stores at canonical test boundaries`
+  - 2026-04-29: New `V1COVER-A` wave starts with deterministic runtime-state cleanup. Fresh broad Vitest runs show that some engine/runtime files still share module-global candle/ticker state, so the first slice is to clear those stores explicitly at canonical test boundaries before trusting any broader `LIVE` parity signal.
+
+- [ ] `V1COVER-02 test(shared-cleanup): repair singular-bot wallet cleanup drift in runtime takeover helpers`
+  - 2026-04-29: Shared runtime takeover e2e helpers still create wallet-linked topology without deleting wallets in the shared reset path. That leaves broad suite truth vulnerable to FK cleanup noise under the singular bot contract and needs one focused helper fix before broader `LIVE` coverage can be trusted.
+
 - [x] `GOLIVE-2026-04-29-A tooling(smoke): harden local go-live smoke wrapper for reusable local infra`
   - 2026-04-29: Closed the local tooling slice. The umbrella smoke wrapper now reuses already-running reachable Postgres/Redis when Docker Compose cannot bind `5432/6379`, avoids shutting down infra it did not start, and surfaces the real remaining local blocker explicitly: Prisma `P3009` from failed migration `20260424094500_add_single_context_bot_refs`. Direct canonical go-live packs remain green, so the unresolved blocker is local DB state rather than current repo code.
 
