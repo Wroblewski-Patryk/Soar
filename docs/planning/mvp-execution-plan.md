@@ -131,6 +131,35 @@ Rule: fix/cleanup/update first, then feature delivery.
 - 2026-04-29: Closed `V1MARK-01` by publishing `docs/architecture/reference/live-futures-lifecycle-price-contract.md` and linking it into `06_execution-lifecycle.md` plus `reference/execution-lifecycle-parity-contract.md`. The architecture now explicitly freezes the runtime hierarchy for `LIVE FUTURES`: stream `markPrice` first, then ticker `lastPrice`, then latest positive candle close.
 - 2026-04-29: Closed `V1MARK-02..05` by extending the approved Binance futures stream boundary with `@markPrice@1s`, preserving `markPrice` in runtime ticker state, and making the shared lifecycle-price resolver prefer futures mark price without changing spot semantics. Closure evidence: `docs/operations/v1mark-live-futures-mark-price-parity-closure-2026-04-29.md`. Validation PASS: focused `binanceStream`, `runtimeTickerStore`, `runtimeLifecycleMarkPrice`, `runtimePositionAutomation`, and `runtimePositionLifetime` suites, API typecheck, and repository guardrails.
 
+## Phase V1TRUTH-2026-04-29 - Final LIVE Exchange Truth Hardening For V1 (Queued 2026-04-29)
+- [x] `V1TRUTH-00 planning(queue): publish final LIVE exchange-truth packet`
+- [ ] `V1TRUTH-01 audit(api+web+exchange): freeze the exact remaining money-path failure matrix`
+- [ ] `V1TRUTH-02 fix(web+api-contract): align futures manual-order sizing and free-funds validation`
+- [ ] `V1TRUTH-03 test(api-red): lock exchange-backed manual close parity`
+- [ ] `V1TRUTH-04 fix(api-exchange+runtime): make manual close fail-closed and exchange-truthful`
+- [ ] `V1TRUTH-05 test(api+web-red): lock pending external order versus position truth`
+- [ ] `V1TRUTH-06 fix(api+reads+web): harden order/position merge and operator presentation`
+- [ ] `V1TRUTH-07 docs+test(runtime-red): freeze and prove the final DCA/TTP/TSL rule`
+- [ ] `V1TRUTH-08 fix(api-runtime+web): align protection execution and operator truth`
+- [ ] `V1TRUTH-09 qa(closure): run focused real-money truth pack and publish closure evidence`
+
+### Progress Log (Phase V1TRUTH-2026-04-29 - Final LIVE Exchange Truth Hardening For V1)
+- 2026-04-29: Published the execution packet after a fresh architecture-and-code audit driven by new real-account notes. The strongest remaining confirmed `LIVE` money-path drifts are now tightly scoped: leverage-aware futures manual-order sizing still lacks frontend/backend parity; app-driven manual close still depends too heavily on runtime-session context instead of one explicit exchange-backed close authority; order-versus-position truth still needs focused proof for external/manual exchange pending-order scenarios; and the final user-requested `DCA/TTP/TSL` nuance still needs one explicit frozen contract. The approved staged direction is now canonical: keep `1 bot = 1 wallet + 1 symbol-group + 1 strategy` through this wave, close truthful `V1` `LIVE` behavior first, and defer multi-strategy-per-bot to a post-`V1` architecture wave. Canonical packet: `docs/planning/v1truth-live-exchange-truth-hardening-plan-2026-04-29.md`.
+
+## Phase BOTMULTI-POSTV1-2026-04-29 - Post-V1 Multi-Strategy Bot Reintroduction (Deferred 2026-04-29)
+- [x] `BOTMULTI-00 planning(post-v1): publish deferred multi-strategy reintroduction packet`
+- [ ] `BOTMULTI-01 docs(decision): freeze post-V1 multi-strategy bot contract`
+- [ ] `BOTMULTI-02 audit(data+runtime): inventory legacy compatibility remnants and migration debt`
+- [ ] `BOTMULTI-03 db(schema): finalize canonical multi-strategy topology and migration path`
+- [ ] `BOTMULTI-04 api(write): support bot create/update with multiple strategies`
+- [ ] `BOTMULTI-05 runtime(signal-merge): execute deterministic multi-strategy evaluation per bot`
+- [ ] `BOTMULTI-06 runtime(risk+lifecycle): align DCA/TTP/TSL and ownership across multiple strategies`
+- [ ] `BOTMULTI-07 web(ui+operator): expose multi-strategy bot management and runtime truth`
+- [ ] `BOTMULTI-08 qa(closure): run architecture-to-runtime closure pack and publish evidence`
+
+### Progress Log (Phase BOTMULTI-POSTV1-2026-04-29 - Post-V1 Multi-Strategy Bot Reintroduction)
+- 2026-04-29: Published the deferred post-`V1` roadmap after the user approved the staged direction. This wave is intentionally not active yet: the repository keeps the singular bot architecture as canonical truth until `V1TRUTH-A` is fully closed and production verification remains stable. The deferred packet freezes the future execution order, architecture prerequisites, and closure expectations for reintroducing `1 bot = 1 wallet + 1 symbol-group + N strategies` without mixing that architecture change into the final `LIVE` money-path hardening wave. Canonical packet: `docs/planning/botmulti-post-v1-multi-strategy-reintroduction-plan-2026-04-29.md`.
+
 ## Phase BOTLIVE-2026-04-28 - Active LIVE Symbol-Overlap Guard (Closed 2026-04-28)
 - [x] `BOTLIVE-2026-04-28-A api(bot-guard): block active LIVE bot market-group overlap against other active LIVE bot scopes`
 

@@ -17,6 +17,39 @@ Last updated: 2026-04-29
 
 ## READY
 
+- [x] `V1TRUTH-00 planning(queue): publish final LIVE exchange-truth packet`
+  - 2026-04-29: Closed as the next planning-only slice after the new real-account notes review. Published `docs/planning/v1truth-live-exchange-truth-hardening-plan-2026-04-29.md` plus `docs/planning/v1truth-00-planning-task-2026-04-29.md`, freezing one final `V1` hardening wave around truthful `LIVE` money paths: leverage-aware futures manual-order sizing, exchange-backed manual close, pending external order versus position truth, and the final explicit `DCA/TTP/TSL` rule. The user-approved staged direction is now canonical: keep the singular bot architecture through this wave and defer multi-strategy-per-bot to post-`V1`.
+
+- [ ] `V1TRUTH-01 audit(api+web+exchange): freeze the exact remaining money-path failure matrix`
+  - Scope: reproduce and lock the reported real-account scenarios for external DCA pending-order truth, manual close failure, futures manual-order leverage drift, and operator-visible order/position separation.
+
+- [ ] `V1TRUTH-02 fix(web+api-contract): align futures manual-order sizing and free-funds validation`
+  - Scope: unify leverage-aware margin validation between manual-order context and dashboard controller while preserving exchange min-notional truth.
+
+- [ ] `V1TRUTH-03 test(api-red): lock exchange-backed manual close parity`
+  - Scope: add failing proof for one canonical app-driven `LIVE` close authority with honest degradation behavior.
+
+- [ ] `V1TRUTH-04 fix(api-exchange+runtime): make manual close fail-closed and exchange-truthful`
+  - Scope: route manual close through the approved exchange boundary and keep runtime diagnostics explicit instead of acting as hidden close authority.
+
+- [ ] `V1TRUTH-05 test(api+web-red): lock pending external order versus position truth`
+  - Scope: prove that unfilled external/manual exchange orders remain in `orders` only and do not inflate open position size, margin, or automation state.
+
+- [ ] `V1TRUTH-06 fix(api+reads+web): harden order/position merge and operator presentation`
+  - Scope: keep reconciliation, read models, and dashboard surfaces aligned to exchange-confirmed fill truth.
+
+- [ ] `V1TRUTH-07 docs+test(runtime-red): freeze and prove the final DCA/TTP/TSL rule`
+  - Scope: document and prove when `TTP` must and must not consider DCA thresholds.
+
+- [ ] `V1TRUTH-08 fix(api-runtime+web): align protection execution and operator truth`
+  - Scope: close any remaining implementation drift versus the frozen protection contract.
+
+- [ ] `V1TRUTH-09 qa(closure): run focused real-money truth pack and publish closure evidence`
+  - Scope: run the final focused closure pack for API, web, runtime, and guardrails before the post-`V1` architecture wave begins.
+
+- [x] `BOTMULTI-00 planning(post-v1): publish deferred multi-strategy reintroduction packet`
+  - 2026-04-29: Closed as a deferred planning-only slice. Published `docs/planning/botmulti-post-v1-multi-strategy-reintroduction-plan-2026-04-29.md` plus `docs/planning/botmulti-00-planning-task-2026-04-29.md`, recording the approved post-`V1` architecture direction: only after `V1TRUTH-A` closes and remains stable should Soar reopen the bot model from `1 strategy` to `N strategies`.
+
 - [x] `V1MARK-00 planning(queue): publish LIVE futures mark-price parity packet`
   - 2026-04-29: Closed as the next derived post-`V1COVER-A` planning slice. Published the canonical packet `docs/planning/v1mark-live-futures-mark-price-parity-plan-2026-04-29.md` plus `docs/planning/v1mark-00-planning-task-2026-04-29.md`, freezing the next `LIVE exchange` hardening wave around one concrete futures-only drift: runtime protection and position-lifetime automation still resolve lifecycle price from ticker `lastPrice` / candle close instead of preferring futures mark price through the existing shared seam.
 

@@ -7,6 +7,12 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1TRUTH-00 planning(queue): publish final LIVE exchange-truth packet`
+  - 2026-04-29: Published `docs/planning/v1truth-live-exchange-truth-hardening-plan-2026-04-29.md` plus `docs/planning/v1truth-00-planning-task-2026-04-29.md` after a fresh real-account analysis of the remaining money-path drift. The approved staged direction is now canonical: keep the singular bot architecture through the final `V1` hardening wave, close truthful `LIVE` order/position/manual-close/protection behavior first, and defer multi-strategy-per-bot to a post-`V1` architecture wave.
+- [ ] `V1TRUTH-01 audit(api+web+exchange): freeze the exact remaining money-path failure matrix`
+- [ ] `V1TRUTH-02 fix(web+api-contract): align futures manual-order sizing and free-funds validation`
+- [ ] `V1TRUTH-03 test(api-red): lock exchange-backed manual close parity`
+- [ ] `V1TRUTH-04 fix(api-exchange+runtime): make manual close fail-closed and exchange-truthful`
 - [x] `V1MARK-00 planning(queue): publish LIVE futures mark-price parity packet`
   - 2026-04-29: Published `docs/planning/v1mark-live-futures-mark-price-parity-plan-2026-04-29.md` and `docs/planning/v1mark-00-planning-task-2026-04-29.md` to freeze the next narrow `LIVE exchange` hardening slice. The strongest remaining real-money drift is that `LIVE FUTURES` runtime protection and position-lifetime enforcement still resolve lifecycle price from ticker `lastPrice` and candle close fallback, while exchange futures risk semantics are mark-price driven.
 - [x] `V1MARK-01 docs(contract): freeze LIVE futures lifecycle-price hierarchy`
@@ -16,6 +22,13 @@ Operational queue for one-task execution runs.
 - [x] `V1COVER-02 test(shared-cleanup): repair singular-bot wallet cleanup drift in runtime takeover helpers`
   - 2026-04-29: Closed the second `V1COVER-A` slice by restoring wallet cleanup to the shared runtime takeover helper and aligning the outdated overlap proof to the current architecture. The shared takeover suite now deletes wallet-linked topology deterministically, and the first visibility regression no longer assumes two active LIVE bots may share one symbol; it now proves the approved contract instead: imported `LIVE` positions stay visible for the owning LIVE bot while a PAPER bot may share the symbol without taking ownership.
 ## NEXT
+- [ ] `V1TRUTH-05 test(api+web-red): lock pending external order versus position truth`
+- [ ] `V1TRUTH-06 fix(api+reads+web): harden order/position merge and operator presentation`
+- [ ] `V1TRUTH-07 docs+test(runtime-red): freeze and prove the final DCA/TTP/TSL rule`
+- [ ] `V1TRUTH-08 fix(api-runtime+web): align protection execution and operator truth`
+- [ ] `V1TRUTH-09 qa(closure): run focused real-money truth pack and publish closure evidence`
+- [x] `BOTMULTI-00 planning(post-v1): publish deferred multi-strategy reintroduction packet`
+  - 2026-04-29: Published `docs/planning/botmulti-post-v1-multi-strategy-reintroduction-plan-2026-04-29.md` plus `docs/planning/botmulti-00-planning-task-2026-04-29.md`. The packet is intentionally deferred: multi-strategy-per-bot becomes a post-`V1` architecture wave only after `V1TRUTH-A` closes and production verification remains stable.
 - [x] `V1MARK-03 fix(api-stream): add futures mark-price ingestion to the market-stream boundary`
 - [x] `V1MARK-04 fix(api-runtime): prefer futures mark price in shared lifecycle-price resolution`
 - [x] `V1MARK-05 qa(closure): run focused futures parity pack and publish closure evidence`
@@ -66,6 +79,14 @@ Operational queue for one-task execution runs.
 - [x] `V1CLOSE-08 fix(api+web): expose close attribution on operator surfaces`
 - [x] `V1CLOSE-09 qa(closure): run focused close-attribution pack and sync docs/context`
 ## PIPELINE
+- [ ] `BOTMULTI-01 docs(decision): freeze post-V1 multi-strategy bot contract`
+- [ ] `BOTMULTI-02 audit(data+runtime): inventory legacy compatibility remnants and migration debt`
+- [ ] `BOTMULTI-03 db(schema): finalize canonical multi-strategy topology and migration path`
+- [ ] `BOTMULTI-04 api(write): support bot create/update with multiple strategies`
+- [ ] `BOTMULTI-05 runtime(signal-merge): execute deterministic multi-strategy evaluation per bot`
+- [ ] `BOTMULTI-06 runtime(risk+lifecycle): align DCA/TTP/TSL and ownership across multiple strategies`
+- [ ] `BOTMULTI-07 web(ui+operator): expose multi-strategy bot management and runtime truth`
+- [ ] `BOTMULTI-08 qa(closure): run architecture-to-runtime closure pack and publish evidence`
 - [x] `V1LIVE-01 audit(api+docs): publish canonical live-execution and takeover regression packet`
 - [x] `V1LIVE-02 test(api-exchange-red): lock adapter selection to exact user/bot exchange context`
 - [x] `V1LIVE-03 fix(api-exchange): make adapter selection strictly follow user-selected exchange settings`
