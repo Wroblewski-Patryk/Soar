@@ -143,6 +143,22 @@ export const normalizeBinanceStreamEvent = (
     };
   }
 
+  if (eventType === 'markPriceUpdate' && marketType === 'FUTURES') {
+    const markPrice = toNumber(data.p);
+    if (markPrice === null) return null;
+
+    return {
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType,
+      symbol,
+      eventTime,
+      lastPrice: markPrice,
+      markPrice,
+      priceChangePercent24h: 0,
+    };
+  }
+
   if (eventType === 'kline') {
     const kline = toObject(data.k);
     if (!kline) return null;
@@ -228,10 +244,14 @@ export class BinanceMarketStreamWorker {
 
     this.socket.onopen = () => {
       const tickerStreams = this.config.symbols.map((symbol) => `${symbol.toLowerCase()}@ticker`);
+      const markPriceStreams =
+        this.marketType === 'FUTURES'
+          ? this.config.symbols.map((symbol) => `${symbol.toLowerCase()}@markPrice@1s`)
+          : [];
       const candleStreams = this.config.symbols.flatMap((symbol) =>
         this.config.candleIntervals.map((interval) => `${symbol.toLowerCase()}@kline_${interval}`)
       );
-      const params = [...tickerStreams, ...candleStreams];
+      const params = [...tickerStreams, ...markPriceStreams, ...candleStreams];
 
       this.socket?.send(
         JSON.stringify({

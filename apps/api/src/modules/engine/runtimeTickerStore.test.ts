@@ -69,4 +69,34 @@ describe('runtimeTickerStore', () => {
     expect(latest?.marketType).toBe('FUTURES');
     expect(latest?.eventTime).toBe(2_000);
   });
+
+  it('preserves futures mark price across ticker updates for the same context', () => {
+    upsertRuntimeTicker({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'BTCUSDT',
+      eventTime: 1_000,
+      lastPrice: 60_000,
+      markPrice: 59_950,
+      priceChangePercent24h: 0,
+    });
+    upsertRuntimeTicker({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'BTCUSDT',
+      eventTime: 1_100,
+      lastPrice: 60_100,
+      priceChangePercent24h: 0.5,
+    });
+
+    const ticker = getRuntimeTicker('BTCUSDT', {
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+    });
+
+    expect(ticker?.lastPrice).toBe(60_100);
+    expect(ticker?.markPrice).toBe(59_950);
+  });
 });

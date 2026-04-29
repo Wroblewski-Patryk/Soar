@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { resolveRuntimeLifecycleMarkPrice } from './runtimeLifecycleMarkPrice.service';
 
 describe('resolveRuntimeLifecycleMarkPrice', () => {
-  it('prefers live ticker price when available', () => {
+  it('prefers futures mark price over ticker last price when available', () => {
     const result = resolveRuntimeLifecycleMarkPrice(
       {
         exchange: 'BINANCE',
@@ -17,6 +17,33 @@ describe('resolveRuntimeLifecycleMarkPrice', () => {
           exchange: 'BINANCE' as const,
           marketType: 'FUTURES' as const,
           lastPrice: 110,
+          markPrice: 109.5,
+          eventTime: 1_000,
+          priceChangePercent24h: 0,
+        })),
+        getRecentCloses: vi.fn(() => [108]),
+      },
+    );
+
+    expect(result).toBe(109.5);
+  });
+
+  it('uses ticker last price for spot lifecycle truth', () => {
+    const result = resolveRuntimeLifecycleMarkPrice(
+      {
+        exchange: 'BINANCE',
+        marketType: 'SPOT',
+        symbol: 'BTCUSDT',
+        interval: '5m',
+      },
+      {
+        getTicker: vi.fn(() => ({
+          type: 'ticker' as const,
+          symbol: 'BTCUSDT',
+          exchange: 'BINANCE' as const,
+          marketType: 'SPOT' as const,
+          lastPrice: 110,
+          markPrice: 109.5,
           eventTime: 1_000,
           priceChangePercent24h: 0,
         })),

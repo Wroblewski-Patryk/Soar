@@ -18,9 +18,21 @@ const toTickerKey = (params: {
 
 export const upsertRuntimeTicker = (event: StreamTickerEvent) => {
   const normalizedSymbol = normalizeSymbol(event.symbol);
+  const existingByContext = tickerStoreByContext.get(
+    toTickerKey({
+      symbol: normalizedSymbol,
+      exchange: event.exchange,
+      marketType: event.marketType,
+    })
+  );
   const normalizedEvent: StreamTickerEvent = {
+    ...(existingByContext ?? {}),
     ...event,
     symbol: normalizedSymbol,
+    markPrice:
+      typeof event.markPrice === 'number' && Number.isFinite(event.markPrice) && event.markPrice > 0
+        ? event.markPrice
+        : existingByContext?.markPrice,
   };
 
   tickerStoreByContext.set(

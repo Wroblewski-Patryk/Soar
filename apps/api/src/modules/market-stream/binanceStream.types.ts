@@ -8,6 +8,7 @@ export type StreamTickerEvent = {
   symbol: string;
   eventTime: number;
   lastPrice: number;
+  markPrice?: number;
   priceChangePercent24h: number;
 };
 

@@ -43,6 +43,26 @@ describe('normalizeBinanceStreamEvent', () => {
     });
   });
 
+  it('normalizes futures mark-price payload into ticker-compatible lifecycle truth', () => {
+    const event = normalizeBinanceStreamEvent({
+      e: 'markPriceUpdate',
+      E: 1700000000200,
+      s: 'BTCUSDT',
+      p: '43123.4',
+    });
+
+    expect(event).toEqual({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'BTCUSDT',
+      eventTime: 1700000000200,
+      lastPrice: 43123.4,
+      markPrice: 43123.4,
+      priceChangePercent24h: 0,
+    });
+  });
+
   it('normalizes kline payload', () => {
     const event = normalizeBinanceStreamEvent({
       stream: 'btcusdt@kline_1m',
@@ -136,7 +156,11 @@ describe('BinanceMarketStreamWorker', () => {
       params: string[];
     };
     expect(payload.method).toBe('SUBSCRIBE');
-    expect(payload.params).toEqual(['btcusdt@ticker', 'btcusdt@kline_1m']);
+    expect(payload.params).toEqual([
+      'btcusdt@ticker',
+      'btcusdt@markPrice@1s',
+      'btcusdt@kline_1m',
+    ]);
   });
 
   it('defaults to futures websocket when streamUrl override is not provided', () => {
@@ -155,6 +179,28 @@ describe('BinanceMarketStreamWorker', () => {
     worker.start();
 
     expect(socketFactory).toHaveBeenCalledWith('wss://fstream.binance.com/ws');
+  });
+
+  it('does not subscribe to futures mark-price streams for spot workers', () => {
+    const socket = createMockSocket();
+    const socketFactory = vi.fn().mockReturnValue(socket);
+    const worker = new BinanceMarketStreamWorker(
+      {
+        symbols: ['BTCUSDT'],
+        candleIntervals: ['1m'],
+        marketType: 'SPOT',
+      },
+      socketFactory,
+      createLogger()
+    );
+
+    worker.start();
+    socket.onopen?.();
+
+    const payload = JSON.parse((socket.send as ReturnType<typeof vi.fn>).mock.calls[0][0] as string) as {
+      params: string[];
+    };
+    expect(payload.params).toEqual(['btcusdt@ticker', 'btcusdt@kline_1m']);
   });
 
   it('logs normalized ticker event from socket message', () => {

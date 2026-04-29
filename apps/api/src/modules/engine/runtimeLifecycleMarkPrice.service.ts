@@ -25,6 +25,14 @@ export const resolveRuntimeLifecycleMarkPrice = (
     exchange: input.exchange,
     marketType: input.marketType,
   });
+  if (
+    input.marketType === 'FUTURES' &&
+    latestTicker &&
+    Number.isFinite(latestTicker.markPrice) &&
+    (latestTicker.markPrice as number) > 0
+  ) {
+    return latestTicker.markPrice as number;
+  }
   if (latestTicker && Number.isFinite(latestTicker.lastPrice) && latestTicker.lastPrice > 0) {
     return latestTicker.lastPrice;
   }
