@@ -320,6 +320,63 @@ describe('RuntimePositionAutomationService', () => {
     expect(deps.executeDca).not.toHaveBeenCalled();
   });
 
+  it('keeps LIVE DCA idle when exchange-style margin truth says drawdown is still above the threshold', async () => {
+    process.env.RUNTIME_TRAILING_ENABLED = 'false';
+    process.env.RUNTIME_DCA_ENABLED = 'false';
+
+    const deps: any = {
+      listOpenPositionsBySymbol: vi.fn(async () => [
+        {
+          id: 'pos-live-margin-truth',
+          userId: 'user-live-margin-truth',
+          botId: 'bot-live-margin-truth',
+          walletId: 'wallet-live-margin-truth',
+          strategyId: 'strat-live-margin-truth',
+          symbol: 'DOGEUSDT',
+          side: 'LONG' as const,
+          entryPrice: 100,
+          quantity: 1,
+          leverage: 10,
+          marginUsed: 52.6315789474,
+          stopLoss: null,
+          takeProfit: null,
+          managementMode: 'BOT_MANAGED' as const,
+          continuityState: 'CONFIRMED' as const,
+          bot: buildBotExecutionContext({
+            wallet: { mode: 'LIVE' },
+          }),
+        },
+      ]),
+      getStrategyConfigById: vi.fn(async () => ({
+        close: { mode: 'advanced', tp: 0, sl: 0, ttp: [], tsl: [] },
+        additional: {
+          dcaEnabled: true,
+          dcaMode: 'advanced',
+          dcaTimes: 1,
+          dcaLevels: [{ percent: -25, multiplier: 1 }],
+        },
+      })),
+      executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
+      closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
+      resolveDcaFundsExhausted: vi.fn(async () => false),
+      nowMs: vi.fn(() => Date.now()),
+    };
+
+    const service = new RuntimePositionAutomationService(deps);
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'DOGEUSDT',
+      eventTime: 3_000,
+      lastPrice: 90,
+      priceChangePercent24h: -1,
+    });
+
+    expect(deps.executeDca).not.toHaveBeenCalled();
+    expect(deps.closeByExitSignal).not.toHaveBeenCalled();
+  });
+
   it('respects advanced DCA levels even when dcaTimes is lower than levels length', async () => {
     process.env.RUNTIME_TRAILING_ENABLED = 'false';
     process.env.RUNTIME_DCA_ENABLED = 'false';

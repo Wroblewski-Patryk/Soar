@@ -2,6 +2,7 @@ import { PositionSide, TradeMarket, Exchange } from '@prisma/client';
 
 import { resolveInheritedRuntimeExecutionContext } from './runtimeBotExecutionContext';
 import { PositionManagementInput, PositionManagementState } from './positionManagement.types';
+import { resolvePositionPnlFraction } from './positionPnlSemantics';
 
 type RuntimeManagedPositionContext = {
   walletId: string | null;
@@ -72,3 +73,20 @@ export const computePriceFromPercent = (
   }
   return side === 'LONG' ? entryPrice * (1 - adjustedPct) : entryPrice * (1 + adjustedPct);
 };
+
+export const resolveRuntimeCurrentPnlFraction = (input: {
+  side: PositionSide;
+  currentPrice: number;
+  leverage: number;
+  marginUsed?: number | null;
+  state: Pick<PositionManagementState, 'averageEntryPrice' | 'quantity'>;
+}) =>
+  resolvePositionPnlFraction({
+    side: input.side,
+    entryPrice: input.state.averageEntryPrice,
+    currentPrice: input.currentPrice,
+    quantity: input.state.quantity,
+    leverage: input.leverage,
+    marginUsed: input.marginUsed ?? null,
+    unrealizedPnl: null,
+  });

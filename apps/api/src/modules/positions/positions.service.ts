@@ -17,12 +17,14 @@ import {
 import { resolveSystemRepairCloseAttribution } from './positionCloseAttribution';
 import {
   ExchangeOpenOrderSnapshot,
-  ExchangeOpenOrderSnapshotItem,
   ExchangePositionSnapshot,
-  ExchangePositionSnapshotItem,
-  ExchangeTradeHistoryItem,
   ExchangeTradeHistorySnapshot,
 } from './positions.exchangeSnapshot.types';
+import {
+  normalizeExchangeOpenOrder,
+  normalizeExchangePosition,
+  normalizeExchangeTradeHistoryItem,
+} from './positions.exchangeSnapshotNormalization';
 
 export type ExternalTakeoverStatus =
   | 'OWNED_AND_MANAGED'
@@ -77,20 +79,6 @@ export type LegacyOpenPositionRepairResponse = {
   reboundToCanonicalBot: number;
   closedDetachedOrphans: number;
   unresolved: number;
-};
-
-type ExchangePositionLike = {
-  symbol?: string;
-  side?: string;
-  contracts?: number;
-  entryPrice?: number;
-  markPrice?: number;
-  unrealizedPnl?: number;
-  leverage?: number;
-  marginMode?: string;
-  liquidationPrice?: number;
-  timestamp?: number;
-  info?: Record<string, unknown>;
 };
 
 type ApiKeyRecordForSnapshot = {
@@ -184,100 +172,6 @@ const validateDirectionalStops = (params: {
     );
   }
 };
-
-const readNumber = (value: unknown): number | null => {
-  if (typeof value === 'number' && Number.isFinite(value)) return value;
-  if (typeof value === 'string' && value.trim().length > 0) {
-    const parsed = Number(value);
-    return Number.isFinite(parsed) ? parsed : null;
-  }
-  return null;
-};
-
-const readString = (value: unknown): string | null => {
-  if (typeof value === 'string' && value.trim().length > 0) return value.trim();
-  if (typeof value === 'number' && Number.isFinite(value)) return String(value);
-  return null;
-};
-
-const deriveExchangePositionLeverage = (position: ExchangePositionLike, info: Record<string, unknown>) => {
-  const explicitLeverage = readNumber(position.leverage) ?? readNumber(info.leverage);
-  if (explicitLeverage != null && explicitLeverage > 0) return explicitLeverage;
-  const contracts = readNumber(position.contracts) ?? readNumber(info.contracts) ?? readNumber(info.positionAmt);
-  const contractSize = readNumber(info.contractSize) ?? 1;
-  const markPrice = readNumber(position.markPrice) ?? readNumber(info.markPrice);
-  const entryPrice = readNumber(position.entryPrice) ?? readNumber(info.entryPrice);
-  const notional =
-    Math.abs(readNumber(info.notional) ?? 0) ||
-    Math.abs((contracts ?? 0) * contractSize * (markPrice ?? entryPrice ?? 0));
-  const margin =
-    Math.abs(
-      readNumber(info.initialMargin) ?? readNumber(info.positionInitialMargin) ?? readNumber(info.isolatedMargin) ??
-        readNumber(info.isolatedWallet) ?? 0
-    ) || 0;
-  return notional > 0 && margin > 0 ? notional / margin : null;
-};
-
-const normalizeExchangePosition = (position: ExchangePositionLike): ExchangePositionSnapshotItem => {
-  const info = (position.info ?? {}) as Record<string, unknown>;
-  const timestampMs = readNumber(position.timestamp) ?? readNumber(info.updateTime) ?? readNumber(info.time);
-  return {
-    symbol: position.symbol ?? readString(info.symbol) ?? 'UNKNOWN',
-    side: position.side ?? readString(info.positionSide) ?? null,
-    contracts: readNumber(position.contracts) ?? readNumber(info.contracts) ?? readNumber(info.positionAmt) ?? 0,
-    entryPrice: readNumber(position.entryPrice) ?? readNumber(info.entryPrice),
-    markPrice: readNumber(position.markPrice) ?? readNumber(info.markPrice),
-    unrealizedPnl: readNumber(position.unrealizedPnl) ?? readNumber(info.unRealizedProfit),
-    leverage: deriveExchangePositionLeverage(position, info),
-    marginMode: position.marginMode ?? readString(info.marginType),
-    liquidationPrice: readNumber(position.liquidationPrice) ?? readNumber(info.liquidationPrice),
-    timestamp: typeof timestampMs === 'number' ? new Date(timestampMs).toISOString() : null,
-  };
-};
-
-const normalizeExchangeOpenOrder = (order: Record<string, unknown>): ExchangeOpenOrderSnapshotItem => {
-  const info = (order.info ?? {}) as Record<string, unknown>;
-  const timestampMs =
-    readNumber(order.timestamp) ?? readNumber(info.time) ?? readNumber(info.transactTime);
-  const amount = readNumber(order.amount) ?? readNumber(info.origQty) ?? 0;
-  const filled = readNumber(order.filled) ?? readNumber(info.executedQty) ?? 0;
-  const explicitRemaining = readNumber(order.remaining);
-  const remaining =
-    typeof explicitRemaining === 'number'
-      ? explicitRemaining
-      : Number.isFinite(amount) && Number.isFinite(filled)
-        ? Math.max(0, amount - filled)
-        : null;
-
-  return {
-    exchangeOrderId: readString(order.id) ?? readString(info.orderId) ?? null,
-    symbol: readString(order.symbol) ?? readString(info.symbol) ?? 'UNKNOWN',
-    side: readString(order.side) ?? readString(info.side) ?? null,
-    type: readString(order.type) ?? readString(info.type) ?? null,
-    status: readString(order.status) ?? readString(info.status) ?? null,
-    amount,
-    filled,
-    remaining,
-    price: readNumber(order.price) ?? readNumber(info.price),
-    timestamp: typeof timestampMs === 'number' ? new Date(timestampMs).toISOString() : null,
-  };
-};
-
-const normalizeExchangeTradeHistoryItem = (
-  trade: Awaited<ReturnType<typeof fetchSupportedExchangeTradeHistoryRaw>>[number]
-): ExchangeTradeHistoryItem => ({
-  exchangeTradeId: trade.exchangeTradeId,
-  exchangeOrderId: trade.exchangeOrderId,
-  symbol: trade.symbol,
-  side: trade.side,
-  price: trade.price,
-  quantity: trade.quantity,
-  notional: trade.notional,
-  feeCost: trade.feeCost,
-  feeCurrency: trade.feeCurrency,
-  feeRate: trade.feeRate,
-  executedAt: trade.executedAt ? trade.executedAt.toISOString() : null,
-});
 
 const buildSnapshotForApiKey = async (apiKey: ApiKeyRecordForSnapshot): Promise<ExchangePositionSnapshot> => {
   try {

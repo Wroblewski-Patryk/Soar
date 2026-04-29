@@ -40,11 +40,28 @@ export const toProtectedPnlPercentFromStopPrice = (params: {
   side: "LONG" | "SHORT";
   entryPrice: number;
   leverage: number;
+  quantity?: number | null;
+  marginUsed?: number | null;
   stopPrice: number | null | undefined;
 }) => {
-  const { side, entryPrice, leverage, stopPrice } = params;
+  const { side, entryPrice, leverage, quantity, marginUsed, stopPrice } = params;
   if (stopPrice == null || !Number.isFinite(stopPrice) || stopPrice <= 0) return null;
   if (!Number.isFinite(entryPrice) || entryPrice <= 0) return null;
+  if (
+    typeof marginUsed === "number" &&
+    Number.isFinite(marginUsed) &&
+    marginUsed > 0 &&
+    typeof quantity === "number" &&
+    Number.isFinite(quantity) &&
+    quantity > 0
+  ) {
+    const pnl =
+      side === "LONG"
+        ? (stopPrice - entryPrice) * quantity
+        : (entryPrice - stopPrice) * quantity;
+    const pnlPercent = (pnl / marginUsed) * 100;
+    return Number.isFinite(pnlPercent) ? pnlPercent : null;
+  }
   const effectiveLeverage = Number.isFinite(leverage) && leverage > 0 ? leverage : 1;
   const spotMove =
     side === "LONG" ? (stopPrice - entryPrice) / entryPrice : (entryPrice - stopPrice) / entryPrice;

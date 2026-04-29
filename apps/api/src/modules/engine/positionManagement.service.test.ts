@@ -139,6 +139,33 @@ describe('position management', () => {
     expect(result.nextState.lastDcaPrice).toBe(94);
   });
 
+  it('uses canonical currentPnlFraction when provided instead of leveraged-price fallback', () => {
+    const result = evaluatePositionManagement(
+      {
+        side: 'LONG',
+        currentPrice: 90,
+        leverage: 10,
+        currentPnlFraction: -0.19,
+        dca: {
+          enabled: true,
+          maxAdds: 1,
+          levelPercents: [-0.25],
+          addSizeFractions: [1],
+          stepPercent: 0.25,
+          addSizeFraction: 1,
+        },
+      },
+      {
+        averageEntryPrice: 100,
+        quantity: 1,
+        currentAdds: 0,
+      }
+    );
+
+    expect(result.dcaExecuted).toBe(false);
+    expect(result.nextState.currentAdds).toBe(0);
+  });
+
   it('evaluates next DCA level against updated average entry (not last dca price)', () => {
     const first = evaluatePositionManagement(
       {

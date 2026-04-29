@@ -270,15 +270,24 @@ export default function BotsManagement({
             (position.side === "LONG" ? 1 : -1)
           : (position.unrealizedPnl ?? 0);
       const entryNotional = position.entryNotional;
-      const marginUsed = position.leverage > 0 ? entryNotional / position.leverage : entryNotional;
+      const marginUsed =
+        position.marginUsed ??
+        (position.leverage > 0 ? entryNotional / position.leverage : entryNotional);
       const pnlNotionalPct = entryNotional > 0 ? (openPnl / entryNotional) * 100 : 0;
-      const pnlMarginPct = marginUsed > 0 ? (openPnl / marginUsed) * 100 : 0;
+      const pnlMarginPct =
+        typeof position.unrealizedPnlPercent === "number" && liveMarkPrice == null
+          ? position.unrealizedPnlPercent
+          : marginUsed > 0
+            ? (openPnl / marginUsed) * 100
+            : 0;
       const marginInitPct = initBalance && initBalance > 0 ? (marginUsed / initBalance) * 100 : null;
       const ttpProtectedPercentFromStopPrice =
         toProtectedPnlPercentFromStopPrice({
           side: position.side,
           entryPrice: position.entryPrice,
           leverage: position.leverage,
+          quantity: position.quantity,
+          marginUsed,
           stopPrice: position.dynamicTtpStopLoss,
         }) ?? null;
       const ttpProtectedPercent = ttpProtectedPercentFromStopPrice ?? null;
@@ -289,6 +298,8 @@ export default function BotsManagement({
               side: position.side,
               entryPrice: position.entryPrice,
               leverage: position.leverage,
+              quantity: position.quantity,
+              marginUsed,
               stopPrice: position.dynamicTslStopLoss,
             }) ?? null;
 

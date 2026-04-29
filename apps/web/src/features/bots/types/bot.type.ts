@@ -415,6 +415,7 @@ export type BotRuntimePositionItem = {
     | null;
   quantity: number;
   leverage: number;
+  marginUsed?: number | null;
   entryPrice: number;
   entryNotional: number;
   exitPrice: number | null;
@@ -437,6 +438,7 @@ export type BotRuntimePositionItem = {
   feesPaid: number;
   realizedPnl: number;
   unrealizedPnl: number | null;
+  unrealizedPnlPercent?: number | null;
   markPrice: number | null;
   dynamicTtpStopLoss?: number | null;
   dynamicTslStopLoss?: number | null;

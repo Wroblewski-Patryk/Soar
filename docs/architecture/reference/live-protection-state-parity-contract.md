@@ -103,11 +103,15 @@ Forbidden:
 
 This contract does not remove the existing `DCA-first` architecture rule.
 
+For `LIVE`, the current position pnl fraction must be derived from canonical
+exchange-synced margin truth whenever `marginUsed` is available. `LIVE` may
+fall back to modeled margin only until stronger exchange truth is present.
+
 If the next DCA is still valid and financially possible:
 
 - `TSL` and `SL` must still not close
 - `TTP` must still not close when at least one remaining DCA threshold is on
-  the profit side (`>= 0` leveraged move threshold)
+  the profit side (`>= 0` current position pnl fraction threshold)
 - `TTP` may still close when all remaining DCA thresholds are loss-side only,
   because those levels do not represent pending profit-side continuation intent
 

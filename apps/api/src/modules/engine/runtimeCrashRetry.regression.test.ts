@@ -324,6 +324,7 @@ describe('runtime crash/retry regression', () => {
             closedAt: null,
             realizedPnl: null,
             unrealizedPnl: null,
+            marginUsed: null,
             lastExchangeSeenAt: null,
             lastExchangeSyncAt: null,
             missingSince: null,

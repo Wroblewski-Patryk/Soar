@@ -5,6 +5,7 @@ import {
   PositionManagementState,
   PositionManagementStateSchema,
 } from './positionManagement.types';
+import { resolvePositionPnlFraction } from './positionPnlSemantics';
 
 const round = (value: number) => Math.round(value * 100_000) / 100_000;
 
@@ -39,22 +40,14 @@ const updateTrailingAnchor = (side: 'LONG' | 'SHORT', currentPrice: number, curr
   return side === 'LONG' ? Math.max(currentAnchor, currentPrice) : Math.min(currentAnchor, currentPrice);
 };
 
-const shouldDca = (
-  side: 'LONG' | 'SHORT',
-  currentPrice: number,
-  referencePrice: number,
-  triggerPercent: number,
-  leverage: number,
-) => {
-  const rawMove =
-    side === 'LONG'
-      ? (currentPrice - referencePrice) / Math.max(referencePrice, 1e-8)
-      : (referencePrice - currentPrice) / Math.max(referencePrice, 1e-8);
-  const leveragedMove = rawMove * Math.max(1, leverage);
-  if (triggerPercent >= 0) {
-    return leveragedMove >= triggerPercent;
+const shouldDca = (currentPnlFraction: number | null, triggerPercent: number) => {
+  if (typeof currentPnlFraction !== 'number' || !Number.isFinite(currentPnlFraction)) {
+    return false;
   }
-  return leveragedMove <= triggerPercent;
+  if (triggerPercent >= 0) {
+    return currentPnlFraction >= triggerPercent;
+  }
+  return currentPnlFraction <= triggerPercent;
 };
 
 const normalizeTrailingTakeProfitLevels = (
@@ -142,20 +135,21 @@ export const evaluatePositionManagement = (
         ? Array.from({ length: parsedInput.dca?.maxAdds ?? 0 }, () => parsedInput.dca?.addSizeFraction ?? 0.5)
         : [];
   const dcaLevelsRequired = dcaLevels.length;
+  const currentPnlFraction =
+    typeof parsedInput.currentPnlFraction === 'number' && Number.isFinite(parsedInput.currentPnlFraction)
+      ? parsedInput.currentPnlFraction
+      : resolvePositionPnlFraction({
+          side: parsedInput.side,
+          entryPrice: parsedState.averageEntryPrice,
+          currentPrice: parsedInput.currentPrice,
+          quantity: parsedState.quantity,
+          leverage: effectiveLeverage,
+        });
 
   // Legacy parity order: DCA -> TP -> TTP -> SL -> TSL.
   if (dcaEnabled && nextState.currentAdds < dcaLevelsRequired) {
-    // DCA levels are evaluated against current average entry.
-    // This keeps repeated levels (e.g. -30, -30, -30) meaningful after each add.
-    const referencePrice = nextState.averageEntryPrice;
     const nextLevelPercent = dcaLevels[nextState.currentAdds] ?? -(parsedInput.dca?.stepPercent ?? 0.01);
-    const trigger = shouldDca(
-      parsedInput.side,
-      parsedInput.currentPrice,
-      referencePrice,
-      nextLevelPercent,
-      effectiveLeverage
-    );
+    const trigger = shouldDca(currentPnlFraction, nextLevelPercent);
 
     if (trigger) {
       const nextAddSizeFraction =
@@ -210,9 +204,9 @@ export const evaluatePositionManagement = (
 
   const anchor = nextState.trailingAnchorPrice ?? nextState.averageEntryPrice;
   const favorableMove =
-    parsedInput.side === 'LONG'
-      ? ((parsedInput.currentPrice - nextState.averageEntryPrice) / Math.max(nextState.averageEntryPrice, 1e-8)) * effectiveLeverage
-      : ((nextState.averageEntryPrice - parsedInput.currentPrice) / Math.max(nextState.averageEntryPrice, 1e-8)) * effectiveLeverage;
+    typeof currentPnlFraction === 'number' && Number.isFinite(currentPnlFraction)
+      ? currentPnlFraction
+      : 0;
   const trailingTakeProfitLevels = normalizeTrailingTakeProfitLevels(
     parsedInput.trailingTakeProfitLevels ??
       (parsedInput.trailingTakeProfit?.enabled

@@ -56,6 +56,7 @@ export const listRuntimeManagedPositions = async (params: {
       entryPrice: true,
       quantity: true,
       leverage: true,
+      marginUsed: true,
       closeReason: true,
       closeInitiator: true,
       stopLoss: true,

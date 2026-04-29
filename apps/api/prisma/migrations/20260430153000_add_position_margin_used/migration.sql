@@ -1,0 +1,2 @@
+ALTER TABLE "Position"
+ADD COLUMN "marginUsed" DOUBLE PRECISION;

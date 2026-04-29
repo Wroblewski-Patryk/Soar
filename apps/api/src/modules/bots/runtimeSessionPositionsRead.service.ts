@@ -38,6 +38,7 @@ import {
   listRuntimePositionTradeRows,
 } from './runtimeSessionPositionsRead.repository';
 import { resolveInheritedRuntimeExecutionContext } from '../engine/runtimeBotExecutionContext';
+import { resolveModeledMarginUsed, resolvePositionPnlFraction } from '../engine/positionPnlSemantics';
 
 type RuntimeTakeoverStatus = 'OWNED_AND_MANAGED' | 'UNOWNED' | 'AMBIGUOUS' | 'MANUAL_ONLY';
 
@@ -444,6 +445,7 @@ export const listBotRuntimeSessionPositions = async (
       entryPrice: position.entryPrice,
       quantity: position.quantity,
       leverage: position.leverage,
+      marginUsed: position.marginUsed ?? null,
       unrealizedPnl: position.unrealizedPnl ?? null,
       marketPrice,
       stateEntryPrice,
@@ -455,6 +457,35 @@ export const listBotRuntimeSessionPositions = async (
 
     const holdUntil = position.closedAt ?? windowEnd;
     const holdMs = Math.max(0, holdUntil.getTime() - position.openedAt.getTime());
+    const effectiveMarginUsed =
+      position.marginUsed ??
+      resolveModeledMarginUsed({
+        entryPrice: position.entryPrice,
+        quantity: position.quantity,
+        leverage: position.leverage,
+      });
+    const unrealizedPnlPercentFraction =
+      marketPrice != null
+        ? resolvePositionPnlFraction({
+            side: position.side,
+            entryPrice: position.entryPrice,
+            currentPrice: marketPrice,
+            quantity: position.quantity,
+            leverage: position.leverage,
+            marginUsed: effectiveMarginUsed,
+            unrealizedPnl: liveUnrealizedPnl,
+          })
+        : typeof position.unrealizedPnl === 'number' && Number.isFinite(position.unrealizedPnl)
+          ? resolvePositionPnlFraction({
+              side: position.side,
+              entryPrice: position.entryPrice,
+              currentPrice: position.entryPrice,
+              quantity: position.quantity,
+              leverage: position.leverage,
+              marginUsed: effectiveMarginUsed,
+              unrealizedPnl: position.unrealizedPnl,
+            })
+          : null;
 
     return {
       id: position.id,
@@ -473,6 +504,7 @@ export const listBotRuntimeSessionPositions = async (
       status: position.status,
       quantity: position.quantity,
       leverage: position.leverage,
+      marginUsed: effectiveMarginUsed,
       closeReason: position.closeReason ?? null,
       closeInitiator: position.closeInitiator ?? null,
       strategyAutomationContextResolved,
@@ -497,6 +529,8 @@ export const listBotRuntimeSessionPositions = async (
       feesPaid,
       realizedPnl: position.realizedPnl ?? tradeRealizedPnl ?? 0,
       unrealizedPnl: liveUnrealizedPnl ?? position.unrealizedPnl ?? null,
+      unrealizedPnlPercent:
+        unrealizedPnlPercentFraction != null ? unrealizedPnlPercentFraction * 100 : null,
       markPrice: typeof marketPrice === 'number' && Number.isFinite(marketPrice) ? marketPrice : null,
       dynamicTtpStopLoss,
       dynamicTslStopLoss,
@@ -519,8 +553,7 @@ export const listBotRuntimeSessionPositions = async (
         position.dynamicTtpStopLoss != null || position.dynamicTslStopLoss != null
     );
   const usedMargin = openItems.reduce((sum, position) => {
-    const leverage = Math.max(1, position.leverage || 1);
-    return sum + position.entryNotional / leverage;
+    return sum + Math.max(0, position.marginUsed ?? 0);
   }, 0);
   const capitalSummary = await resolveRuntimeCapitalSummary(usedMargin);
 

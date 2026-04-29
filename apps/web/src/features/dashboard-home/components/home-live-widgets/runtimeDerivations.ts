@@ -12,8 +12,11 @@ import type { OpenPositionWithLive, RuntimeSnapshot } from './types';
 
 export const resolveUsedMargin = (positions: BotRuntimePositionsResponse | null) =>
   (positions?.openItems ?? []).reduce((sum, position) => {
-    const leverage = Number.isFinite(position.leverage) && position.leverage > 0 ? position.leverage : 1;
-    return sum + position.entryNotional / leverage;
+    const modeledMargin =
+      Number.isFinite(position.leverage) && position.leverage > 0
+        ? position.entryNotional / position.leverage
+        : position.entryNotional;
+    return sum + (position.marginUsed ?? modeledMargin);
   }, 0);
 
 export const resolveDynamicTtpDisplay = (position: OpenPositionWithLive) =>
@@ -21,6 +24,8 @@ export const resolveDynamicTtpDisplay = (position: OpenPositionWithLive) =>
     side: position.side,
     entryPrice: position.entryPrice,
     leverage: position.leverage,
+    quantity: position.quantity,
+    marginUsed: position.marginUsed,
     stopPrice: position.dynamicTtpStopLoss,
   }) ?? null;
 
@@ -30,6 +35,8 @@ export const resolveDynamicTslDisplay = (position: OpenPositionWithLive) => {
     side: position.side,
     entryPrice: position.entryPrice,
     leverage: position.leverage,
+    quantity: position.quantity,
+    marginUsed: position.marginUsed,
     stopPrice: position.dynamicTslStopLoss,
   });
 };
@@ -49,7 +56,7 @@ export const buildLiveOpenPositions = (
   return (positions?.openItems ?? []).map((position) => {
     const symbolKey = normalizeSymbol(position.symbol);
     const leverage = Number.isFinite(position.leverage) && position.leverage > 0 ? position.leverage : 1;
-    const marginNotional = position.entryNotional / leverage;
+    const marginNotional = position.marginUsed ?? position.entryNotional / leverage;
     const candidateMark =
       streamPrices.get(symbolKey) ?? priceBySymbol.get(symbolKey) ?? position.markPrice ?? null;
     const liveMarkPrice = typeof candidateMark === 'number' && Number.isFinite(candidateMark) ? candidateMark : null;
@@ -61,7 +68,12 @@ export const buildLiveOpenPositions = (
           ? (liveMarkPrice - position.entryPrice) * position.quantity
           : (position.entryPrice - liveMarkPrice) * position.quantity;
     const liveUnrealizedPnl = hasPriceContext ? grossLiveUnrealizedPnl : 0;
-    const livePnlPct = marginNotional > 0 ? (liveUnrealizedPnl / marginNotional) * 100 : 0;
+    const livePnlPct =
+      liveMarkPrice == null && typeof position.unrealizedPnlPercent === "number"
+        ? position.unrealizedPnlPercent
+        : marginNotional > 0
+          ? (liveUnrealizedPnl / marginNotional) * 100
+          : 0;
 
     return {
       ...position,

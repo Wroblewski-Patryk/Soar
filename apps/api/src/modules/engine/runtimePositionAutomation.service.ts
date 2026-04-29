@@ -23,6 +23,7 @@ import {
   estimateNextDcaAddedQuantity,
   resolveDcaLevelCount,
   resolveInheritedPositionExecutionContext,
+  resolveRuntimeCurrentPnlFraction,
 } from './runtimePositionAutomation.helpers';
 
 type RuntimeManagedPosition = Pick<
@@ -43,6 +44,7 @@ type RuntimeManagedPosition = Pick<
   | 'origin'
   | 'continuityState'
 > & {
+  marginUsed?: number | null;
   bot:
     | {
         walletId: string | null;
@@ -448,6 +450,7 @@ const defaultDeps: RuntimePositionAutomationDeps = {
         entryPrice: true,
         quantity: true,
         leverage: true,
+        marginUsed: true,
         stopLoss: true,
         takeProfit: true,
         managementMode: true,
@@ -832,13 +835,7 @@ export class RuntimePositionAutomationService {
       })) ?? event.lastPrice;
     const effectiveLifecyclePrice =
       Number.isFinite(lifecyclePrice) && lifecyclePrice > 0 ? lifecyclePrice : event.lastPrice;
-    const input = buildPositionManagementInput(
-      position,
-      effectiveLifecyclePrice,
-      strategyConfig,
-      runtimeConfig
-    );
-
+    const input = buildPositionManagementInput(position, effectiveLifecyclePrice, strategyConfig, runtimeConfig);
     const defaultState = {
       quantity: position.quantity,
       averageEntryPrice: position.entryPrice,
@@ -851,13 +848,18 @@ export class RuntimePositionAutomationService {
       (await runtimePositionStateStore.getPositionRuntimeState(position.id)) ??
       defaultState;
     const previousStateSnapshot = this.cloneState(previousState);
+    const currentPnlFraction = resolveRuntimeCurrentPnlFraction({
+      side: position.side,
+      currentPrice: effectiveLifecyclePrice,
+      leverage: Math.max(1, position.leverage || 1),
+      marginUsed: position.marginUsed ?? null,
+      state: previousState,
+    });
 
     const paperStartBalance = inheritedExecutionContext.paperStartBalance;
     const dcaLevelCount = resolveDcaLevelCount(input);
     const hasPendingDca = input.dca?.enabled && previousState.currentAdds < dcaLevelCount;
-    const estimatedAddedQuantity = hasPendingDca
-      ? estimateNextDcaAddedQuantity(input, previousState)
-      : 0;
+    const estimatedAddedQuantity = hasPendingDca ? estimateNextDcaAddedQuantity(input, previousState) : 0;
     const dcaFundsExhausted =
       hasPendingDca && estimatedAddedQuantity > 0
         ? await this.deps.resolveDcaFundsExhausted({
@@ -878,11 +880,13 @@ export class RuntimePositionAutomationService {
     const managementInput: PositionManagementInput = dcaFundsExhausted
       ? {
           ...input,
+          currentPnlFraction: currentPnlFraction ?? undefined,
           dca: undefined,
           dcaFundsExhausted: true,
         }
       : {
           ...input,
+          currentPnlFraction: currentPnlFraction ?? undefined,
           dcaFundsExhausted: false,
         };
 
@@ -920,11 +924,11 @@ export class RuntimePositionAutomationService {
           if (!canonicalState) {
             effectiveState = previousStateSnapshot;
           } else {
-          effectiveState = {
-            ...result.nextState,
-            quantity: canonicalState.quantity,
-            averageEntryPrice: canonicalState.averageEntryPrice,
-          };
+            effectiveState = {
+              ...result.nextState,
+              quantity: canonicalState.quantity,
+              averageEntryPrice: canonicalState.averageEntryPrice,
+            };
           }
         } else {
           effectiveState = previousStateSnapshot;

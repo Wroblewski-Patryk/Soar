@@ -728,6 +728,7 @@ model Position {
   closedAt      DateTime?
   realizedPnl   Float?
   unrealizedPnl Float?
+  marginUsed    Float?
   lastExchangeSeenAt DateTime?
   lastExchangeSyncAt DateTime?
   missingSince       DateTime?

@@ -1,4 +1,5 @@
 import { PositionManagementState } from '../engine/positionManagement.types';
+import { computePriceFromPnlFraction, resolvePositionPnlFraction } from '../engine/positionPnlSemantics';
 
 export type TrailingStopDisplayLevel = {
   armPercent: number;
@@ -8,22 +9,6 @@ export type TrailingStopDisplayLevel = {
 export type TrailingTakeProfitDisplayLevel = {
   armPercent: number;
   trailPercent: number;
-};
-
-const computePriceFromLeveragedMovePercent = (
-  side: 'LONG' | 'SHORT',
-  entryPrice: number,
-  movePercent: number,
-  leverage: number
-) => {
-  if (!Number.isFinite(entryPrice) || entryPrice <= 0) return null;
-  if (!Number.isFinite(movePercent)) return null;
-  const effectiveLeverage = Number.isFinite(leverage) && leverage > 0 ? leverage : 1;
-  const delta = movePercent / effectiveLeverage;
-  const raw =
-    side === 'LONG' ? entryPrice * (1 + delta) : entryPrice * (1 - delta);
-  if (!Number.isFinite(raw) || raw <= 0) return null;
-  return raw;
 };
 
 export const cleanupStaleRuntimePositionSerializationState = (_nowTs: number) => {
@@ -93,6 +78,7 @@ type ResolveRuntimePositionDynamicStopsParams = {
   entryPrice: number;
   quantity: number;
   leverage: number;
+  marginUsed?: number | null;
   unrealizedPnl: number | null | undefined;
   marketPrice: number | null | undefined;
   stateEntryPrice: number;
@@ -110,6 +96,7 @@ export const resolveRuntimePositionDynamicStops = (
     entryPrice,
     quantity,
     leverage,
+    marginUsed,
     unrealizedPnl,
     marketPrice,
     stateEntryPrice,
@@ -135,25 +122,28 @@ export const resolveRuntimePositionDynamicStops = (
     typeof marketPrice === 'number' && Number.isFinite(marketPrice)
       ? (marketPrice - entryPrice) * quantity * (positionSide === 'LONG' ? 1 : -1)
       : null;
-  const marginUsed = entryPrice > 0 ? (entryPrice * quantity) / effectiveLeverage : null;
   const favorableMovePercentFromLivePrice =
-    typeof marketPrice === 'number' && Number.isFinite(marketPrice) && stateEntryPrice > 0
-      ? positionSide === 'LONG'
-        ? ((marketPrice - stateEntryPrice) / stateEntryPrice) * effectiveLeverage
-        : ((stateEntryPrice - marketPrice) / stateEntryPrice) * effectiveLeverage
-      : typeof liveUnrealizedPnlFromPrice === 'number' &&
-          Number.isFinite(liveUnrealizedPnlFromPrice) &&
-          marginUsed != null &&
-          Number.isFinite(marginUsed) &&
-          marginUsed > 0
-        ? liveUnrealizedPnlFromPrice / marginUsed
-        : typeof unrealizedPnl === 'number' &&
-            Number.isFinite(unrealizedPnl) &&
-            marginUsed != null &&
-            Number.isFinite(marginUsed) &&
-            marginUsed > 0
-          ? unrealizedPnl / marginUsed
-          : null;
+    typeof marketPrice === 'number' && Number.isFinite(marketPrice)
+      ? resolvePositionPnlFraction({
+          side: positionSide,
+          entryPrice: stateEntryPrice,
+          currentPrice: marketPrice,
+          quantity,
+          leverage: effectiveLeverage,
+          marginUsed,
+          unrealizedPnl: liveUnrealizedPnlFromPrice,
+        })
+      : typeof unrealizedPnl === 'number' && Number.isFinite(unrealizedPnl)
+        ? resolvePositionPnlFraction({
+            side: positionSide,
+            entryPrice: stateEntryPrice,
+            currentPrice: stateEntryPrice,
+            quantity,
+            leverage: effectiveLeverage,
+            marginUsed,
+            unrealizedPnl,
+          })
+        : null;
   const ttpTriggerPercent =
     ttpTriggerPercentFromState != null && ttpTriggerPercentFromState > 0
       ? ttpTriggerPercentFromState
@@ -192,32 +182,18 @@ export const resolveRuntimePositionDynamicStops = (
           trailingStopLevels
         )
       : null;
-  const dynamicTtpStopLoss =
-    (
-      ttpTriggerPercent != null ||
-      fallbackTtpTriggerPercent != null ||
-      stickyFallbackTtpTriggerPercent != null
-    )
-      ? computePriceFromLeveragedMovePercent(
-          positionSide,
-          stateEntryPrice,
-          ttpTriggerPercent ??
-            fallbackTtpTriggerPercent ??
-            stickyFallbackTtpTriggerPercent ??
-            0,
-          leverage
-        )
-      : null;
   const dynamicTslStopLoss =
     hasRuntimeTtpState
       ? null
       : tslTriggerPercent != null
-        ? computePriceFromLeveragedMovePercent(
-            positionSide,
-            stateEntryPrice,
-            tslTriggerPercent,
-            effectiveLeverage
-          )
+        ? computePriceFromPnlFraction({
+            side: positionSide,
+            entryPrice: stateEntryPrice,
+            quantity,
+            leverage: effectiveLeverage,
+            marginUsed,
+            pnlFraction: tslTriggerPercent,
+          })
         : activeTslLevel &&
             runtimeState &&
             Number.isFinite(runtimeState.trailingAnchorPrice)
@@ -233,7 +209,25 @@ export const resolveRuntimePositionDynamicStops = (
       : null;
 
   return {
-    dynamicTtpStopLoss,
+    dynamicTtpStopLoss:
+      (
+        ttpTriggerPercent != null ||
+        fallbackTtpTriggerPercent != null ||
+        stickyFallbackTtpTriggerPercent != null
+      )
+        ? computePriceFromPnlFraction({
+            side: positionSide,
+            entryPrice: stateEntryPrice,
+            quantity,
+            leverage: effectiveLeverage,
+            marginUsed,
+            pnlFraction:
+              ttpTriggerPercent ??
+              fallbackTtpTriggerPercent ??
+              stickyFallbackTtpTriggerPercent ??
+              0,
+          })
+        : null,
     dynamicTslStopLoss,
     liveUnrealizedPnl,
   };

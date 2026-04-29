@@ -24,6 +24,7 @@ export type ExternalSnapshotPosition = {
   entryPrice: number | null;
   markPrice: number | null;
   unrealizedPnl: number | null;
+  marginUsed?: number | null;
   leverage: number | null;
   timestamp: string | null;
 };
@@ -116,6 +117,7 @@ export type ReconcileDeps = {
       quantity: number;
       entryPrice: number;
       unrealizedPnl: number | null;
+      marginUsed: number | null;
       leverage: number;
       managementMode: 'BOT_MANAGED' | 'MANUAL_MANAGED';
       syncState: 'IN_SYNC' | 'DRIFT';
@@ -142,6 +144,7 @@ export type ReconcileDeps = {
     quantity: number;
     entryPrice: number;
     unrealizedPnl: number | null;
+    marginUsed: number | null;
     leverage: number;
     managementMode: 'BOT_MANAGED' | 'MANUAL_MANAGED';
     syncState: 'IN_SYNC' | 'DRIFT';

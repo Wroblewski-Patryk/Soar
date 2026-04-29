@@ -7,6 +7,7 @@ export type ExchangePositionSnapshotItem = {
   entryPrice: number | null;
   markPrice: number | null;
   unrealizedPnl: number | null;
+  marginUsed?: number | null;
   leverage: number | null;
   marginMode: string | null;
   liquidationPrice: number | null;

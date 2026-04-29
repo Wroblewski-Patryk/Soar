@@ -40,7 +40,7 @@ Order is hard contract.
 If there are pending DCA levels and next DCA is still financially possible:
 - `TSL` and `SL` must not close the position yet.
 - `TTP` must not close while any remaining DCA threshold is on the profit side
-  (`>= 0` leveraged move threshold).
+  (`>= 0` current position pnl fraction threshold).
 - `TTP` may close if all remaining DCA thresholds are loss-side only, because
   those levels do not represent pending profit-side continuation.
 
@@ -55,7 +55,7 @@ This is required for parity with expected strategy semantics in CryptoSparrow.
 
 | Step | Activation Gate | Trigger Condition | Side Effect | Reset Rules |
 |---|---|---|---|---|
-| `DCA` | `dca.enabled=true`, `dcaCount < maxAdds` | Current leveraged move crosses next configured DCA level | Increase quantity and recalc average entry; increment DCA count | Clear on open/close |
+| `DCA` | `dca.enabled=true`, `dcaCount < maxAdds` | Current position pnl fraction crosses next configured DCA level | Increase quantity and recalc average entry; increment DCA count | Clear on open/close |
 | `TP` (basic) | `close.mode=basic`, `tp.enabled` | Profit reaches TP threshold | Close with `TP` reason | Clear DCA/TTP/TSL on close |
 | `SL` (basic) | `close.mode=basic`, `sl.enabled`, DCA-first guard allows close | Price reaches SL threshold | Close with `SL` reason | Clear DCA/TTP/TSL on close |
 | `TTP` (advanced) | `close.mode=advanced`, `ttp levels active`, DCA-first guard allows close for remaining profit-side DCA only | Profit retraces by active trailing step from high watermark | Close with `TTP` reason | Clear DCA/TTP/TSL on close |
@@ -142,12 +142,22 @@ Shared lifecycle examples:
 Backtest, paper, and live must call one shared lifecycle decision engine with identical inputs:
 - side,
 - current price context,
+- current position pnl fraction,
 - strategy close config,
 - DCA config,
-- leverage/margin mode,
+- leverage/margin mode and canonical margin basis,
 - affordability flag for next DCA.
 
-Adapters may differ in price source and execution layer, but decision semantics must be identical.
+Canonical margin-basis authority by mode:
+
+- `BACKTEST`: modeled margin from simulated entry, quantity, and leverage
+- `PAPER`: modeled margin from canonical paper position state
+- `LIVE`: exchange-synced `marginUsed` when canonical truth is available;
+  otherwise explicit modeled-margin fallback until stronger exchange truth
+  arrives
+
+Adapters may differ in price source and execution layer, but decision
+semantics must be identical.
 
 ---
 

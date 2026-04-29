@@ -1,6 +1,6 @@
 # V1ROE-A - LIVE PnL / ROE Truth And Imported Automation Parity
 
-Status: proposed  
+Status: active  
 Date: 2026-04-30  
 Owner: Codex Planning Agent
 
@@ -77,7 +77,24 @@ Additional stale-runtime evidence:
 This strongly suggests a second bug: imported/reopened `LIVE` position
 automation continuity is not fully reattached to fresh runtime market truth.
 
-## Architecture Mismatch That Requires Explicit User Decision
+## Approved Product Direction
+
+On 2026-04-30 the user approved one shared lifecycle direction:
+
+- operator-visible `PnL %` must align with exchange truth in `LIVE`
+- `DCA/TTP/TSL` must not use a different hidden percentage semantics than the
+  operator-visible lifecycle truth
+- one shared lifecycle engine remains canonical across `BACKTEST`, `PAPER`,
+  and `LIVE`
+- `BACKTEST` and `PAPER` keep modeled margin semantics
+- `LIVE` uses exchange-synced margin truth whenever canonical `marginUsed`
+  exists, and only then falls back to modeled margin
+
+This means the repository is not splitting into a second exchange-only
+decision engine. It is moving to one shared `current position pnl fraction`
+contract with mode-specific margin-basis authority.
+
+## Architecture Mismatch That Required Explicit User Decision
 
 The current approved lifecycle architecture defines `DCA`, `TTP`, and `TSL`
 thresholds as leveraged move thresholds, not as exchange UI ROE.
@@ -200,9 +217,26 @@ Run focused prod-faithful verification for:
 - DCA execution
 - TTP/TSL visibility and execution after reopen/import
 
-## Immediate Rule
+## Implementation Progress
 
-No implementation should start until the product decision is explicit:
+### 2026-04-30 - first closure slice
 
-- keep lifecycle thresholds on leveraged move,
-- or migrate them to exchange ROE semantics.
+Closed in code:
+
+- `Position.marginUsed` now persists canonical exchange-synced margin basis for
+  `LIVE`
+- exchange snapshot normalization and reconciliation now carry that truth into
+  managed `LIVE` positions
+- runtime lifecycle evaluation now accepts one canonical
+  `current position pnl fraction`, so `LIVE` can evaluate `DCA/TTP/TSL` on
+  exchange-style margin truth while `PAPER` and `BACKTEST` keep modeled-margin
+  parity
+- runtime/read-model/dashboard surfaces now expose `marginUsed` and
+  `unrealizedPnlPercent` so operator-visible `PnL %` stays aligned with the
+  same canonical basis
+
+Still open:
+
+- fresh protected production verification on the affected `DOGEUSDT` flow
+- remaining `V1EXCEL-03` manual-matrix evidence for mixed-origin `LIVE`
+  scenarios and restart/recovery proof
