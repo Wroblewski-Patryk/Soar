@@ -7,9 +7,8 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `V1PARITY-01 docs(contract): freeze LIVE add-fill, account-update scope, and runtime/read-model strategy-context parity`
-## NEXT
 - [ ] `V1PARITY-02 test(api-red): lock confirmed LIVE add-fill -> canonical position update and DCA attribution`
+## NEXT
 - [ ] `V1PARITY-03 fix(api-events): reuse canonical add-update lifecycle for existing-position LIVE fills`
 - [ ] `V1PARITY-04 test(api-red): lock account-update scope to canonical position ownership`
 - [ ] `V1PARITY-05 fix(api-events): narrow account-update application to canonical owned position scope`

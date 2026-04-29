@@ -80,7 +80,7 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `feat(exchange): live order placement adapter with retries`
 
 ## Phase V1PARITY-2026-04-29 - LIVE Runtime Lifecycle Parity Hardening (Planned)
-- [ ] `V1PARITY-01 docs(contract): freeze LIVE add-fill, account-update scope, and runtime/read-model strategy-context parity`
+- [x] `V1PARITY-01 docs(contract): freeze LIVE add-fill, account-update scope, and runtime/read-model strategy-context parity`
 - [ ] `V1PARITY-02 test(api-red): lock confirmed LIVE add-fill -> canonical position update and DCA attribution`
 - [ ] `V1PARITY-03 fix(api-events): reuse canonical add-update lifecycle for existing-position LIVE fills`
 - [ ] `V1PARITY-04 test(api-red): lock account-update scope to canonical position ownership`
@@ -93,6 +93,7 @@ Rule: fix/cleanup/update first, then feature delivery.
 
 ### Progress Log (Phase V1PARITY-2026-04-29 - LIVE Runtime Lifecycle Parity Hardening)
 - 2026-04-29: Published the execution packet after a focused repository review centered on the reported LIVE DCA mismatch. Confirmed drifts include: confirmed existing-position LIVE fills not fully reusing canonical add-update lifecycle authority, add-leg fills persisted as generic `OPEN` instead of explicit `DCA`, overly broad account-update scoping by `userId + symbol + side`, read-model fallback that can mask missing canonical `strategyId`, and weak operator telemetry for fail-closed runtime skips. Canonical packet: `docs/planning/v1parity-live-runtime-lifecycle-parity-hardening-plan-2026-04-29.md`.
+- 2026-04-29: Closed `V1PARITY-01` by publishing `docs/architecture/reference/live-runtime-lifecycle-parity-contract.md` and syncing the parity rules into `06_execution-lifecycle.md`, `04_runtime-contexts.md`, and `reference/execution-lifecycle-parity-contract.md`. The frozen contract now explicitly covers LIVE add-fill position updates, DCA attribution semantics, narrow account-update ownership scope, and runtime/read-model strategy-context parity.
 
 ## Phase BOTLIVE-2026-04-28 - Active LIVE Symbol-Overlap Guard (Closed 2026-04-28)
 - [x] `BOTLIVE-2026-04-28-A api(bot-guard): block active LIVE bot market-group overlap against other active LIVE bot scopes`

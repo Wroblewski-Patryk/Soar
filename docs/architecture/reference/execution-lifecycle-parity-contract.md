@@ -111,6 +111,8 @@ final state.
 
 - `OPEN` position creation requires canonical fill truth.
 - `CLOSED` position transition requires canonical close fill truth.
+- confirmed add-fills on an already open position require canonical position
+  add-update truth from the fill path itself.
 - submitted or partially-filled close orders must keep local position state
   unresolved until closure truth is confirmed.
 - if closure truth is unresolved, the system must remain explicitly pending
@@ -119,12 +121,24 @@ final state.
 ### Trade and Telemetry Truth
 
 - trade ledger entries must use canonical fill price and quantity.
+- trade lifecycle semantics must distinguish initial `OPEN` from add-leg `DCA`
+  when an existing position receives additional entry quantity.
 - realized PnL must be computed from canonical entry and exit fill truth plus
   canonical fees.
 - runtime telemetry may display signal/reference price, but must not confuse it
   with execution price.
 - runtime-generated orders, positions, and trades must preserve bot ownership
   truth via `origin=BOT` instead of falling back to user/manual ownership.
+- fail-closed money-impacting runtime skips must become canonical operator
+  telemetry, not only local console diagnostics.
+
+### Account Update Scope Truth
+
+- exchange account-update reconciliation is a confirmation/repair input, not a
+  broad rewrite authority over all open rows sharing one `userId + symbol +
+  side`.
+- when canonical ownership scope is ambiguous, the system must fail closed and
+  avoid mutating multiple candidate rows.
 
 ## Exchange Scope Truth
 

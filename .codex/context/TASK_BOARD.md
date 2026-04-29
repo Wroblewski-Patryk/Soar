@@ -17,7 +17,6 @@ Last updated: 2026-04-29
 
 ## READY
 
-- [ ] `V1PARITY-01 docs(contract): freeze LIVE add-fill, account-update scope, and runtime/read-model strategy-context parity`
 - [ ] `V1PARITY-02 test(api-red): lock confirmed LIVE add-fill -> canonical position update and DCA attribution`
 - [ ] `V1PARITY-03 fix(api-events): reuse canonical add-update lifecycle for existing-position LIVE fills`
 - [ ] `V1PARITY-04 test(api-red): lock account-update scope to canonical position ownership`
@@ -215,6 +214,8 @@ Last updated: 2026-04-29
 
 ## DONE
 
+- [x] `V1PARITY-01 docs(contract): freeze LIVE add-fill, account-update scope, and runtime/read-model strategy-context parity`
+  - 2026-04-29: Closed by publishing `docs/architecture/reference/live-runtime-lifecycle-parity-contract.md` and normalizing the contract into `06_execution-lifecycle.md`, `04_runtime-contexts.md`, and `reference/execution-lifecycle-parity-contract.md`. The repository now explicitly freezes that confirmed LIVE add-fills on an existing position must update canonical quantity/entry from fill truth, that add-leg fills must preserve `DCA` semantics instead of collapsing into generic `OPEN`, that `ACCOUNT_UPDATE` is confirmation/repair rather than broad rewrite authority across all `userId + symbol + side` rows, and that read models must not visually imply strategy-manageable runtime truth when canonical `position.strategyId` is missing.
 - [x] `V1PARITY-00 planning(audit): publish LIVE runtime lifecycle parity analysis and execution packet`
   - 2026-04-29: Closed as a planning-only analysis slice after a fresh repository audit requested by the user. Published `docs/planning/v1parity-live-runtime-lifecycle-parity-hardening-plan-2026-04-29.md` plus the task packet `docs/planning/v1parity-00-analysis-task-2026-04-29.md`. The packet freezes five high-value confirmed drifts behind the reported `LIVE DCA` mismatch: exchange-confirmed fills on existing positions do not fully reuse canonical add-update lifecycle authority, add-leg fills are persisted as generic `OPEN` instead of explicit `DCA`, `ACCOUNT_UPDATE` scoping is too broad (`userId + symbol + side`), runtime read models can mask missing `strategyId` with symbol-level fallback, and fail-closed runtime skip reasons are still mostly console-only instead of operator-visible telemetry.
 

@@ -147,6 +147,13 @@ For recovered `LIVE` exchange-synced positions, restart continuity must either:
 The system must not regain post-restart strategy or bot context by guessing
 from the first compatible symbol or first active bot.
 
+Operator read models may display degraded continuity states, but they must not
+upgrade missing canonical strategy truth into actionable runtime semantics.
+
+If runtime automation requires canonical `position.strategyId` for DCA or
+strategy-derived exit logic, read models must not present symbol-only fallback
+as if that same automation is safely executable.
+
 ## Out of Scope
 - strategy evaluation semantics
 - order execution adapter details
@@ -154,6 +161,7 @@ from the first compatible symbol or first active bot.
 
 ## Supporting References
 - `reference/live-position-restart-continuity-contract.md`
+- `reference/live-runtime-lifecycle-parity-contract.md`
 - `reference/venue-context-source-of-truth-contract.md`
 - `reference/wallet-source-of-truth-contract.md`
 

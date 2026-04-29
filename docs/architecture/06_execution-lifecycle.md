@@ -22,6 +22,9 @@ Manual and bot-originated entries share this lifecycle. They do not use separate
 - exchange fills and exchange sync are the authority for position-open visibility
 - restart recovery for `LIVE` positions must follow
   `reference/live-position-restart-continuity-contract.md`
+- confirmed add-fills on an existing local `positionId` must update canonical
+  position quantity and entry from fill truth rather than waiting for later
+  account snapshots as primary authority
 
 ### PAPER
 - internal paper execution and fill simulation are the authority
@@ -115,6 +118,10 @@ Per-position evaluation order is:
 
 If a DCA level is still valid and affordable, the runtime must not bypass it by guessing a different close path.
 
+For `LIVE`, when a confirmed fill adds to an already open position and the
+semantic action is an add-leg, persistence and telemetry must preserve explicit
+`DCA` meaning rather than collapsing it into generic `OPEN`.
+
 ## Fee Contract
 - LIVE fee truth comes from exchange fills and trades when available
 - temporary estimated fees may exist only as traceable placeholders
@@ -138,6 +145,7 @@ LONG accepted
 - `reference/runtime-execution-idempotency-contract.md`
 - `reference/live-fee-reconciliation-contract.md`
 - `reference/live-position-restart-continuity-contract.md`
+- `reference/live-runtime-lifecycle-parity-contract.md`
 - `reference/position-lifecycle-parity-matrix.md`
 - `reference/position-close-attribution-contract.md`
 
