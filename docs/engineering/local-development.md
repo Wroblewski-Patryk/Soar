@@ -72,6 +72,14 @@ docker ps -a
 In this repository that usually means another local Postgres/Redis container is
 already running and can already satisfy DB-backed API tests.
 
+`pnpm run test:go-live:smoke` now reuses already-reachable local Postgres and
+Redis instead of failing immediately on that port-collision case. It still
+fails closed on real migration errors.
+
+If the smoke wrapper reports Prisma `P3009`, the blocker is the target local
+database state rather than the wrapper itself. Resolve the failed local
+migration first, then rerun the smoke command.
+
 ### 3) Start API (terminal #1, repo root)
 ```bash
 pnpm --filter api dev

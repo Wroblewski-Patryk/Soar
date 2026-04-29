@@ -1,4 +1,5 @@
 import { spawnSync } from 'node:child_process';
+import net from 'node:net';
 
 const args = process.argv.slice(2);
 const targetArg = args.find((arg) => arg.startsWith('--target='));
@@ -10,46 +11,102 @@ if (!['api', 'full'].includes(target)) {
   process.exit(1);
 }
 
-const run = (command, commandArgs) => {
+const localPrismaCommand =
+  process.platform === 'win32'
+    ? '.\\node_modules\\.bin\\prisma.CMD'
+    : './node_modules/.bin/prisma';
+
+const run = (command, commandArgs, options = {}) => {
   const result = spawnSync(command, commandArgs, {
-    stdio: 'inherit',
+    stdio: options.captureOutput ? 'pipe' : 'inherit',
     shell: process.platform === 'win32',
+    encoding: options.captureOutput ? 'utf8' : undefined,
+    cwd: options.cwd,
   });
-  if (typeof result.status === 'number') {
-    return result.status;
-  }
-  return 1;
+  return {
+    exitCode: typeof result.status === 'number' ? result.status : 1,
+    stdout: typeof result.stdout === 'string' ? result.stdout : '',
+    stderr: typeof result.stderr === 'string' ? result.stderr : '',
+  };
+};
+
+const canConnect = (port, host = '127.0.0.1', timeoutMs = 1_500) =>
+  new Promise((resolve) => {
+    const socket = new net.Socket();
+    let settled = false;
+    const finish = (value) => {
+      if (settled) return;
+      settled = true;
+      socket.destroy();
+      resolve(value);
+    };
+    socket.setTimeout(timeoutMs);
+    socket.once('connect', () => finish(true));
+    socket.once('timeout', () => finish(false));
+    socket.once('error', () => finish(false));
+    socket.connect(port, host);
+  });
+
+const localInfraIsReachable = async () => {
+  const [postgresOk, redisOk] = await Promise.all([canConnect(5432), canConnect(6379)]);
+  return { postgresOk, redisOk, allOk: postgresOk && redisOk };
+};
+
+const printLocalMigrationGuidance = (output) => {
+  if (!output.includes('P3009')) return;
+  console.error('\n[go-live-smoke] Prisma migrate deploy is blocked by failed migrations in the local target database.');
+  console.error('[go-live-smoke] Known local blocker detected: failed migration `20260424094500_add_single_context_bot_refs`.');
+  console.error('[go-live-smoke] Resolve the failed local migration state first, then rerun the smoke wrapper.');
 };
 
 let exitCode = 0;
 let infraStarted = false;
+let infraReused = false;
 
 try {
-  exitCode = run('pnpm', ['run', 'go-live:infra:up']);
-  if (exitCode !== 0) {
-    process.exit(exitCode);
+  const infraUp = run('pnpm', ['run', 'go-live:infra:up'], { captureOutput: true });
+  if (infraUp.exitCode !== 0) {
+    const infraStatus = await localInfraIsReachable();
+    if (!infraStatus.allOk) {
+      process.stdout.write(infraUp.stdout);
+      process.stderr.write(infraUp.stderr);
+      process.exit(infraUp.exitCode);
+    }
+    infraReused = true;
+    console.warn(
+      '[go-live-smoke] Reusing already-running local Postgres/Redis because docker compose startup failed but both ports are reachable (5432, 6379).'
+    );
+  } else {
+    process.stdout.write(infraUp.stdout);
+    process.stderr.write(infraUp.stderr);
+    infraStarted = true;
   }
-  infraStarted = true;
 
-  exitCode = run('pnpm', ['--filter', 'api', 'exec', 'prisma', 'migrate', 'deploy']);
-  if (exitCode !== 0) {
-    process.exit(exitCode);
+  const migrateDeploy = run(localPrismaCommand, ['migrate', 'deploy'], {
+    captureOutput: true,
+    cwd: 'apps/api',
+  });
+  process.stdout.write(migrateDeploy.stdout);
+  process.stderr.write(migrateDeploy.stderr);
+  if (migrateDeploy.exitCode !== 0) {
+    printLocalMigrationGuidance(`${migrateDeploy.stdout}\n${migrateDeploy.stderr}`);
+    process.exit(migrateDeploy.exitCode);
   }
 
-  exitCode = run('pnpm', ['run', 'test:go-live:api']);
+  exitCode = run('pnpm', ['run', 'test:go-live:api']).exitCode;
   if (exitCode !== 0) {
     process.exit(exitCode);
   }
 
   if (target === 'full') {
-    exitCode = run('pnpm', ['run', 'test:go-live:client']);
+    exitCode = run('pnpm', ['run', 'test:go-live:client']).exitCode;
     if (exitCode !== 0) {
       process.exit(exitCode);
     }
   }
 } finally {
-  if (infraStarted) {
-    const downCode = run('pnpm', ['run', 'go-live:infra:down']);
+  if (infraStarted && !infraReused) {
+    const downCode = run('pnpm', ['run', 'go-live:infra:down']).exitCode;
     if (exitCode === 0 && downCode !== 0) {
       exitCode = downCode;
     }

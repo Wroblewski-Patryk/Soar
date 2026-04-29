@@ -1092,3 +1092,10 @@ pnpm --filter api run test -- --run
 - What happened: A repository audit after `V1SAFE-A` confirmed a `LIVE`-only drift where runtime automation could submit a DCA market add, let the exchange confirm the fill later through `ORDER_TRADE_UPDATE`, and still leave runtime management state stale (`currentAdds`, average entry, last DCA price) because the exchange-event path updated only the canonical `Position` row.
 - Verified learning: For `LIVE` runtime DCA, the fill-closure path must update all three layers together when exchange truth arrives: canonical position/order lifecycle, runtime execution dedupe, and persisted runtime position state. Updating only DB position truth is not enough for the next automation tick.
 - Action taken: `orders.exchangeEvents.service.ts` now marks matching runtime DCA dedupe rows as `SUCCEEDED` and updates `runtimePositionStateStore` from exchange-confirmed fill truth; focused regression coverage was added in `orders.exchangeEvents.service.test.ts`.
+
+# 2026-04-29 - Local go-live smoke should reuse healthy infra but stay fail-closed on migration debt
+
+- Context: `GOLIVE-2026-04-29-A`
+- Symptom: `pnpm run test:go-live:smoke` failed before meaningful validation when Docker Compose could not bind `5432` or `6379`, even though healthy local Postgres/Redis were already reachable. On the same machine, Prisma then surfaced the real blocker separately: local failed migration state `P3009`.
+- Verified learning: For local smoke tooling, port-collision on standard dev infra should be treated as a reusable-environment case if both services are actually reachable. The wrapper should not tear down infra it did not start itself, and it should surface failed migration state explicitly instead of burying it in mixed CLI noise.
+- Action taken: `scripts/goLiveSmoke.mjs` now reuses reachable local Postgres/Redis when Compose start fails because ports are already occupied, avoids `infra:down` in that reuse case, calls the local Prisma binary directly for cleaner output, and prints an explicit diagnostic when `P3009` blocks the local target DB.

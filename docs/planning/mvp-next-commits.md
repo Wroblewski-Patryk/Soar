@@ -8,6 +8,8 @@ Operational queue for one-task execution runs.
 
 ## NOW
 ## NEXT
+- [x] `GOLIVE-2026-04-29-A fix(tooling): harden local go-live smoke wrapper against existing infra and failed-migration diagnostics`
+  - 2026-04-29: Closed the local smoke-wrapper hardening slice. `scripts/goLiveSmoke.mjs` now reuses already-running reachable Postgres/Redis when Docker Compose cannot bind `5432/6379`, avoids tearing down infra it did not start itself, and surfaces the local Prisma `P3009` blocker explicitly instead of failing with opaque mixed CLI noise. Canonical go-live packs remain green when run directly: `pnpm run test:go-live:api`, `pnpm run test:go-live:web`, `pnpm run typecheck`, and `pnpm run build`. The remaining blocker to a fully green umbrella smoke is external to repo code: local DB migration debt `20260424094500_add_single_context_bot_refs`.
 - [x] `V1GUARD-01..05 docs+api+qa(closure): close final LIVE protection drifts for DCA/TTP/TSL parity`
   - 2026-04-29: Closed the full `V1GUARD-A` wave. Shared engine parity now keeps `TTP` behind the canonical `DCA-first` guard, exchange-confirmed `LIVE DCA` fills now converge runtime dedupe plus persisted runtime position state instead of leaving `currentAdds` stale after a submitted market add, and runtime protection evaluation now uses one explicit lifecycle-price seam instead of hardcoding raw ticker `lastPrice`. Closure evidence: `docs/operations/v1guard-live-protection-final-closure-2026-04-29.md`. Validation PASS: focused `positionManagement`, focused `runtimePositionAutomation`, focused `orders.exchangeEvents`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 - [x] `V1GUARD-00 planning(queue): publish final LIVE protection hardening packet for DCA/TTP/TSL parity`

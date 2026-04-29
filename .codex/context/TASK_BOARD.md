@@ -17,6 +17,9 @@ Last updated: 2026-04-29
 
 ## READY
 
+- [x] `GOLIVE-2026-04-29-A tooling(smoke): harden local go-live smoke wrapper for reusable local infra`
+  - 2026-04-29: Closed the local tooling slice. The umbrella smoke wrapper now reuses already-running reachable Postgres/Redis when Docker Compose cannot bind `5432/6379`, avoids shutting down infra it did not start, and surfaces the real remaining local blocker explicitly: Prisma `P3009` from failed migration `20260424094500_add_single_context_bot_refs`. Direct canonical go-live packs remain green, so the unresolved blocker is local DB state rather than current repo code.
+
 - [x] `V1GUARD-01..05 docs+api+qa(closure): close final LIVE protection drifts for DCA/TTP/TSL parity`
   - 2026-04-29: Closed the full `V1GUARD-A` wave. Shared engine parity now keeps `TTP` blocked until the canonical `DCA-first` guard is satisfied, exchange-confirmed `LIVE DCA` fills now mark runtime dedupe success and converge persisted runtime position-state truth, and runtime protection evaluation now flows through one explicit lifecycle-price seam instead of hardcoding ticker `lastPrice`. Closure evidence: `docs/operations/v1guard-live-protection-final-closure-2026-04-29.md`. Validation PASS: focused `positionManagement`, focused `runtimePositionAutomation`, focused `orders.exchangeEvents`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 
