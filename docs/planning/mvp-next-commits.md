@@ -7,7 +7,17 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [ ] `V1PARITY-01 docs(contract): freeze LIVE add-fill, account-update scope, and runtime/read-model strategy-context parity`
 ## NEXT
+- [ ] `V1PARITY-02 test(api-red): lock confirmed LIVE add-fill -> canonical position update and DCA attribution`
+- [ ] `V1PARITY-03 fix(api-events): reuse canonical add-update lifecycle for existing-position LIVE fills`
+- [ ] `V1PARITY-04 test(api-red): lock account-update scope to canonical position ownership`
+- [ ] `V1PARITY-05 fix(api-events): narrow account-update application to canonical owned position scope`
+- [ ] `V1PARITY-06 test(api-runtime-red): lock runtime/read-model strategy-context parity for LIVE managed positions`
+- [ ] `V1PARITY-07 fix(api-runtime+reads): remove or explicitly degrade symbol-level fallback when strategy context is unresolved`
+- [ ] `V1PARITY-08 test(api-ops-red): lock operator-visible telemetry for fail-closed LIVE automation skips`
+- [ ] `V1PARITY-09 fix(api-telemetry): emit canonical runtime diagnostics for skipped LIVE management actions`
+- [ ] `V1PARITY-10 qa(closure): run focused LIVE parity pack and publish closure evidence`
 - [x] `DOCSYNC-2026-04-28-E docs(planning-history): normalize remaining historical status wording`
 - [x] `DOCSYNC-2026-04-28-D docs(planning-catalog): refresh catalog index and correct stale UOLF queued header`
 - [x] `DOCSYNC-2026-04-28-C docs(planning-status): close stale Active headers in already closed planning packets`
@@ -180,6 +190,7 @@ Operational queue for one-task execution runs.
 - [x] `CQLT-32 docs(decision): freeze legacy bridge sunset list and mark compatibility-only code paths that remain intentional`
 - [x] `CQLT-34 docs(sync): update queue/context/module docs and capture post-wave coding rules for future agents`
 ## GROUP QUEUE
+- [x] `V1PARITY-A planning queued (LIVE runtime lifecycle parity hardening for DCA fills, account-update scope, strategy-context truth, and operator diagnostics)`
 - [x] `V1RESTART-A planning queued (restart-safe LIVE position continuity, event-first recovery, staged reconcile, and post-restart automation restoration)`
 - [x] `V1CLOSE-A planning queued (canonical close-attribution model for bot-close, app-close, exchange-manual close, liquidation, and repair semantics)`
 - [x] `V1LIVE-A planning queued (exchange-selected live execution, Binance Spot/Futures first adapter family, takeover ownership, imported-position runtime parity, and paper/live boundary hardening)`

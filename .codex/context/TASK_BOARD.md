@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-04-28
+Last updated: 2026-04-29
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -16,6 +16,17 @@ Last updated: 2026-04-28
     needed
 
 ## READY
+
+- [ ] `V1PARITY-01 docs(contract): freeze LIVE add-fill, account-update scope, and runtime/read-model strategy-context parity`
+- [ ] `V1PARITY-02 test(api-red): lock confirmed LIVE add-fill -> canonical position update and DCA attribution`
+- [ ] `V1PARITY-03 fix(api-events): reuse canonical add-update lifecycle for existing-position LIVE fills`
+- [ ] `V1PARITY-04 test(api-red): lock account-update scope to canonical position ownership`
+- [ ] `V1PARITY-05 fix(api-events): narrow account-update application to canonical owned position scope`
+- [ ] `V1PARITY-06 test(api-runtime-red): lock runtime/read-model strategy-context parity for LIVE managed positions`
+- [ ] `V1PARITY-07 fix(api-runtime+reads): remove or explicitly degrade symbol-level fallback when strategy context is unresolved`
+- [ ] `V1PARITY-08 test(api-ops-red): lock operator-visible telemetry for fail-closed LIVE automation skips`
+- [ ] `V1PARITY-09 fix(api-telemetry): emit canonical runtime diagnostics for skipped LIVE management actions`
+- [ ] `V1PARITY-10 qa(closure): run focused LIVE parity pack and publish closure evidence`
 
 - [x] `DOCSYNC-2026-04-28-E docs(planning-history): normalize remaining historical status wording`
   - 2026-04-28: Closed by normalizing the last ambiguous historical planning headers that still looked active after their owning waves had closed: `dashboard-loading-skeleton-progress-plan`, both dashboard planner briefs, and `xvenue-02-exchange-boundary-leak-audit`. The planning catalog now records those artifacts truthfully as historical implemented or superseded references instead of leaving mixed `PLANNED/planned/Published` wording in place. Validation PASS: `pnpm run quality:guardrails`.
@@ -203,6 +214,9 @@ Last updated: 2026-04-28
 - [ ] (none)
 
 ## DONE
+
+- [x] `V1PARITY-00 planning(audit): publish LIVE runtime lifecycle parity analysis and execution packet`
+  - 2026-04-29: Closed as a planning-only analysis slice after a fresh repository audit requested by the user. Published `docs/planning/v1parity-live-runtime-lifecycle-parity-hardening-plan-2026-04-29.md` plus the task packet `docs/planning/v1parity-00-analysis-task-2026-04-29.md`. The packet freezes five high-value confirmed drifts behind the reported `LIVE DCA` mismatch: exchange-confirmed fills on existing positions do not fully reuse canonical add-update lifecycle authority, add-leg fills are persisted as generic `OPEN` instead of explicit `DCA`, `ACCOUNT_UPDATE` scoping is too broad (`userId + symbol + side`), runtime read models can mask missing `strategyId` with symbol-level fallback, and fail-closed runtime skip reasons are still mostly console-only instead of operator-visible telemetry.
 
 - [x] `V1COH-04 fix(api-reconciliation): tighten exchange-synced order/position adoption around manual LIVE opens`
   - 2026-04-25: Extended runtime session open-order reads to adopt eligible `EXCHANGE_SYNC` orders through the same symbol-ownership contract already used for external positions, and deduplicated manual-vs-synced open-order visibility by `exchangeOrderId` with preference for the exchange-synced row. This keeps the runtime view truthful across `submitted -> imported_open_order -> position_opened` without double-counting the same LIVE order. Validation PASS: `pnpm --filter api exec vitest run src/modules/orders/orders-positions.e2e.test.ts -t "keeps manual LIVE MARKET visibility truthful from submitted order through exchange-synced adoption"`, `pnpm --filter api exec vitest run src/modules/orders/orders-positions.e2e.test.ts -t "keeps LIVE open orders visible in runtime view when order was created before current session start"`, `pnpm --filter api run typecheck`.

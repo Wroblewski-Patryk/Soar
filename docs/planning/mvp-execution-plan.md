@@ -79,6 +79,21 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `feat(exchange): CCXT futures connector scaffold`
 - [x] `feat(exchange): live order placement adapter with retries`
 
+## Phase V1PARITY-2026-04-29 - LIVE Runtime Lifecycle Parity Hardening (Planned)
+- [ ] `V1PARITY-01 docs(contract): freeze LIVE add-fill, account-update scope, and runtime/read-model strategy-context parity`
+- [ ] `V1PARITY-02 test(api-red): lock confirmed LIVE add-fill -> canonical position update and DCA attribution`
+- [ ] `V1PARITY-03 fix(api-events): reuse canonical add-update lifecycle for existing-position LIVE fills`
+- [ ] `V1PARITY-04 test(api-red): lock account-update scope to canonical position ownership`
+- [ ] `V1PARITY-05 fix(api-events): narrow account-update application to canonical owned position scope`
+- [ ] `V1PARITY-06 test(api-runtime-red): lock runtime/read-model strategy-context parity for LIVE managed positions`
+- [ ] `V1PARITY-07 fix(api-runtime+reads): remove or explicitly degrade symbol-level fallback when strategy context is unresolved`
+- [ ] `V1PARITY-08 test(api-ops-red): lock operator-visible telemetry for fail-closed LIVE automation skips`
+- [ ] `V1PARITY-09 fix(api-telemetry): emit canonical runtime diagnostics for skipped LIVE management actions`
+- [ ] `V1PARITY-10 qa(closure): run focused LIVE parity pack and publish closure evidence`
+
+### Progress Log (Phase V1PARITY-2026-04-29 - LIVE Runtime Lifecycle Parity Hardening)
+- 2026-04-29: Published the execution packet after a focused repository review centered on the reported LIVE DCA mismatch. Confirmed drifts include: confirmed existing-position LIVE fills not fully reusing canonical add-update lifecycle authority, add-leg fills persisted as generic `OPEN` instead of explicit `DCA`, overly broad account-update scoping by `userId + symbol + side`, read-model fallback that can mask missing canonical `strategyId`, and weak operator telemetry for fail-closed runtime skips. Canonical packet: `docs/planning/v1parity-live-runtime-lifecycle-parity-hardening-plan-2026-04-29.md`.
+
 ## Phase BOTLIVE-2026-04-28 - Active LIVE Symbol-Overlap Guard (Closed 2026-04-28)
 - [x] `BOTLIVE-2026-04-28-A api(bot-guard): block active LIVE bot market-group overlap against other active LIVE bot scopes`
 
