@@ -17,6 +17,11 @@ Last updated: 2026-04-29
 
 ## READY
 
+- [x] `V1MARK-00 planning(queue): publish LIVE futures mark-price parity packet`
+  - 2026-04-29: Closed as the next derived post-`V1COVER-A` planning slice. Published the canonical packet `docs/planning/v1mark-live-futures-mark-price-parity-plan-2026-04-29.md` plus `docs/planning/v1mark-00-planning-task-2026-04-29.md`, freezing the next `LIVE exchange` hardening wave around one concrete futures-only drift: runtime protection and position-lifetime automation still resolve lifecycle price from ticker `lastPrice` / candle close instead of preferring futures mark price through the existing shared seam.
+
+- [ ] `V1MARK-01..05 docs+api+qa(closure): close LIVE futures lifecycle-price parity for runtime protection`
+
 - [x] `V1COVER-01 test(runtime-state): reset shared runtime candle/ticker stores at canonical test boundaries`
   - 2026-04-29: Closed the first `V1COVER-A` slice by clearing module-global runtime candle/ticker stores in `runtime-flow.e2e.test.ts` and `runtimeSignalLoop.service.test.ts`. Focused combined validation now passes when those two files run together, which removes one confirmed source of false-red `LIVE` parity noise caused by inherited runtime market data.
 

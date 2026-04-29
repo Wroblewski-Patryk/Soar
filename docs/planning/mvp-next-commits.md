@@ -7,11 +7,18 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1MARK-00 planning(queue): publish LIVE futures mark-price parity packet`
+  - 2026-04-29: Published `docs/planning/v1mark-live-futures-mark-price-parity-plan-2026-04-29.md` and `docs/planning/v1mark-00-planning-task-2026-04-29.md` to freeze the next narrow `LIVE exchange` hardening slice. The strongest remaining real-money drift is that `LIVE FUTURES` runtime protection and position-lifetime enforcement still resolve lifecycle price from ticker `lastPrice` and candle close fallback, while exchange futures risk semantics are mark-price driven.
+- [ ] `V1MARK-01 docs(contract): freeze LIVE futures lifecycle-price hierarchy`
+- [ ] `V1MARK-02 test(api-red): lock futures mark-price stream and lifecycle-price preference`
 - [x] `V1COVER-01 test(runtime-state): reset shared runtime candle/ticker stores at canonical test boundaries`
   - 2026-04-29: Closed the first `V1COVER-A` slice by resetting module-global runtime candle/ticker stores in the two engine files that emit runtime events directly (`runtime-flow.e2e` and `runtimeSignalLoop.service.test`). This removes one broad false-red source where `runtime-flow` could leave shared candle history behind and later make `runtimeSignalLoop` look broken only because it inherited prior series state.
 - [x] `V1COVER-02 test(shared-cleanup): repair singular-bot wallet cleanup drift in runtime takeover helpers`
   - 2026-04-29: Closed the second `V1COVER-A` slice by restoring wallet cleanup to the shared runtime takeover helper and aligning the outdated overlap proof to the current architecture. The shared takeover suite now deletes wallet-linked topology deterministically, and the first visibility regression no longer assumes two active LIVE bots may share one symbol; it now proves the approved contract instead: imported `LIVE` positions stay visible for the owning LIVE bot while a PAPER bot may share the symbol without taking ownership.
 ## NEXT
+- [ ] `V1MARK-03 fix(api-stream): add futures mark-price ingestion to the market-stream boundary`
+- [ ] `V1MARK-04 fix(api-runtime): prefer futures mark price in shared lifecycle-price resolution`
+- [ ] `V1MARK-05 qa(closure): run focused futures parity pack and publish closure evidence`
 - [x] `V1COVER-03 qa(runtime-pack): rerun broad runtime/order regression pack and classify real post-stabilization failures`
   - 2026-04-29: Closed by rerunning the broader runtime/order packs on the stabilized harness. The remaining false-reds were classified as invalid parallel DB-backed evidence when separate Vitest processes hit the same local Postgres concurrently; the sequential broad pack passed, so no new product drift was confirmed from this step.
 - [x] `V1COVER-04 fix(runtime-or-orders): close the first real product drift that survives the stabilized pack`

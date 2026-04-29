@@ -118,6 +118,17 @@ Rule: fix/cleanup/update first, then feature delivery.
 - 2026-04-29: Closed `V1SAFE-08..09` by removing sticky fallback `TTP` overlays from dashboard-home and bot-monitoring surfaces. Operator views now show dynamic protection only when the runtime engine actually has the same canonical stop truth.
 - 2026-04-29: Closed `V1SAFE-10` with focused validation across runtime automation parity, runtime position serialization, dashboard-home runtime surfaces, bot-monitoring surfaces, API/web typechecks, and repository guardrails. Closure evidence: `docs/operations/v1safe-live-dca-ttp-tsl-parity-closure-2026-04-29.md`.
 
+## Phase V1MARK-2026-04-29 - LIVE Futures Mark-Price Parity Hardening (Queued 2026-04-29)
+- [x] `V1MARK-00 planning(queue): publish LIVE futures mark-price parity packet`
+- [ ] `V1MARK-01 docs(contract): freeze LIVE futures lifecycle-price hierarchy`
+- [ ] `V1MARK-02 test(api-red): lock futures mark-price stream and lifecycle-price preference`
+- [ ] `V1MARK-03 fix(api-stream): add futures mark-price ingestion to the market-stream boundary`
+- [ ] `V1MARK-04 fix(api-runtime): prefer futures mark price in shared lifecycle-price resolution`
+- [ ] `V1MARK-05 qa(closure): run focused futures parity pack and publish closure evidence`
+
+### Progress Log (Phase V1MARK-2026-04-29 - LIVE Futures Mark-Price Parity Hardening)
+- 2026-04-29: Published the execution packet after a fresh post-`V1COVER-A` audit of the remaining `LIVE exchange` money path. The strongest remaining confirmed drift is futures-specific lifecycle-price truth: runtime protection and position-lifetime automation already reuse one shared resolver seam, but that seam still resolves ticker `lastPrice` and recent candle close only because the Binance futures market-stream boundary does not ingest mark price yet. Canonical packet: `docs/planning/v1mark-live-futures-mark-price-parity-plan-2026-04-29.md`.
+
 ## Phase BOTLIVE-2026-04-28 - Active LIVE Symbol-Overlap Guard (Closed 2026-04-28)
 - [x] `BOTLIVE-2026-04-28-A api(bot-guard): block active LIVE bot market-group overlap against other active LIVE bot scopes`
 
