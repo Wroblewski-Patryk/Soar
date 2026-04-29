@@ -20,6 +20,7 @@ const mocks = vi.hoisted(() => ({
   getOwnedBotRuntimeSession: vi.fn(),
   resolveRuntimeLifecycleMarkPrice: vi.fn(),
   fetchFallbackTickerPrices: vi.fn(),
+  createPublicExchangeConnector: vi.fn(),
   resolveExternalPositionOwnershipIndex: vi.fn(),
 }));
 
@@ -41,6 +42,10 @@ vi.mock('../engine/runtimeLifecycleMarkPrice.service', () => ({
 
 vi.mock('./runtimeMarketDataFallback.service', () => ({
   fetchFallbackTickerPrices: mocks.fetchFallbackTickerPrices,
+}));
+
+vi.mock('../exchange/exchangeConnectorFactory.service', () => ({
+  createPublicExchangeConnector: mocks.createPublicExchangeConnector,
 }));
 
 vi.mock('./runtimeExternalPositionOwner.service', () => ({
@@ -76,6 +81,10 @@ describe('closeBotRuntimeSessionPosition', () => {
     });
     mocks.resolveRuntimeLifecycleMarkPrice.mockReturnValue(50_100);
     mocks.fetchFallbackTickerPrices.mockResolvedValue(new Map());
+    mocks.createPublicExchangeConnector.mockReturnValue({
+      fetchMarkPrice: vi.fn(async () => Number.NaN),
+      disconnect: vi.fn(async () => undefined),
+    });
   });
 
   it('fails closed when external exchange ownership is ambiguous', async () => {
@@ -280,6 +289,66 @@ describe('closeBotRuntimeSessionPosition', () => {
         symbol: 'BTCUSDT',
         direction: 'EXIT',
         markPrice: 50_250,
+      })
+    );
+    expect(result).toEqual({
+      status: 'closed',
+      orderId: 'order-1',
+      positionId: 'position-1',
+    });
+  });
+
+  it('uses public connector mark price for PAPER manual close when ticker fallback is unavailable', async () => {
+    const fetchMarkPrice = vi.fn(async () => 50_275);
+    const disconnect = vi.fn(async () => undefined);
+    mocks.prisma.bot.findFirst.mockResolvedValue({
+      mode: 'PAPER',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      walletId: 'wallet-paper-1',
+      wallet: {
+        apiKeyId: null,
+      },
+    });
+    mocks.prisma.position.findFirst.mockResolvedValue({
+      id: 'position-1',
+      botId: 'bot-1',
+      walletId: 'wallet-paper-1',
+      strategyId: 'strategy-1',
+      symbol: 'BTCUSDT',
+      quantity: 0.5,
+      entryPrice: 50_000,
+      origin: 'BOT',
+      externalId: null,
+      continuityState: 'CONFIRMED',
+    });
+    mocks.resolveRuntimeLifecycleMarkPrice.mockReturnValue(null);
+    mocks.fetchFallbackTickerPrices.mockResolvedValue(new Map());
+    mocks.createPublicExchangeConnector.mockReturnValue({
+      fetchMarkPrice,
+      disconnect,
+    });
+    mocks.orchestrateRuntimeSignal.mockResolvedValue({
+      status: 'closed',
+      orderId: 'order-1',
+      positionId: 'position-1',
+    });
+
+    const result = await closeBotRuntimeSessionPosition('user-1', 'bot-1', 'session-1', 'position-1', {
+      riskAck: true,
+    });
+
+    expect(mocks.createPublicExchangeConnector).toHaveBeenCalledWith({
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+    });
+    expect(fetchMarkPrice).toHaveBeenCalledWith('BTCUSDT');
+    expect(disconnect).toHaveBeenCalled();
+    expect(mocks.orchestrateRuntimeSignal).toHaveBeenCalledWith(
+      expect.objectContaining({
+        symbol: 'BTCUSDT',
+        direction: 'EXIT',
+        markPrice: 50_275,
       })
     );
     expect(result).toEqual({

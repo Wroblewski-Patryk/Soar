@@ -6,6 +6,7 @@ import { CloseBotRuntimePositionDto } from './bots.types';
 import { getOwnedBotRuntimeSession } from './botOwnership.service';
 import { botErrors } from './bots.errors';
 import { fetchFallbackTickerPrices } from './runtimeMarketDataFallback.service';
+import { createPublicExchangeConnector } from '../exchange/exchangeConnectorFactory.service';
 import {
   getExternalPositionOwnership,
   parseApiKeyIdFromExternalPositionId,
@@ -191,6 +192,22 @@ export const closeBotRuntimeSessionPosition = async (
     const fallbackPrice = fallbackPrices.get(position.symbol);
     if (typeof fallbackPrice === 'number' && Number.isFinite(fallbackPrice) && fallbackPrice > 0) {
       closeReferencePrice = fallbackPrice;
+    }
+  }
+  if (!(typeof closeReferencePrice === 'number' && Number.isFinite(closeReferencePrice) && closeReferencePrice > 0)) {
+    const connector = createPublicExchangeConnector({
+      exchange: botExchange,
+      marketType: botMarketType,
+    });
+    try {
+      const connectorPrice = await connector.fetchMarkPrice(position.symbol);
+      if (typeof connectorPrice === 'number' && Number.isFinite(connectorPrice) && connectorPrice > 0) {
+        closeReferencePrice = connectorPrice;
+      }
+    } catch {
+      // Keep fail-closed behavior; later fallback logic decides whether we may continue.
+    } finally {
+      await connector.disconnect().catch(() => undefined);
     }
   }
   closeReferencePrice =

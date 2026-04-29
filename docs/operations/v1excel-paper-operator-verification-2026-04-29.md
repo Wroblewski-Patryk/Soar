@@ -61,12 +61,15 @@ command path.
 
 ## Code Remediation Prepared
 
-To remove that drift, commit `f12f3efb` (`fix(api-paper): allow manual close
-fallback price resolution`) was pushed to `main`.
+To remove that drift, remediation on `main` now reuses two already approved
+price sources in the close command path before it fails closed:
 
-The fix reuses the existing approved `runtimeMarketDataFallback` seam in
-`runtimeSessionPositionCommand.service` so manual close may resolve a fallback
-ticker price before failing closed. Focused validation PASS:
+- `runtimeMarketDataFallback`
+- the same public exchange connector family already used by manual-order
+  context
+
+This keeps the command path closer to the operator-visible price truth that is
+already available elsewhere in production. Focused validation PASS:
 
 - `pnpm --filter api exec vitest run src/modules/bots/runtimeSessionPositionCommand.service.test.ts`
 - `pnpm --filter api run typecheck`
