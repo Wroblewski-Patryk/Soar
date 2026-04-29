@@ -731,23 +731,34 @@ describe('openOrder live execution contract', () => {
 
   it('executes exchange order for LIVE and persists exchangeOrderId/status', async () => {
     const user = await prisma.user.create({
-      data: { email: 'orders-live@example.com', password: 'hashed' },
-    });
-    const apiKey = await prisma.apiKey.create({
       data: {
-        userId: user.id,
-        label: 'Binance Live Key',
-        exchange: 'BINANCE',
-        apiKey: 'encrypted_key',
-        apiSecret: 'encrypted_secret',
+        email: 'orders-live@example.com',
+        password: 'hashed',
+        apiKeys: {
+          create: {
+            label: 'Binance Live Key',
+            exchange: 'BINANCE',
+            apiKey: 'encrypted_key',
+            apiSecret: 'encrypted_secret',
+          },
+        },
+      },
+      include: {
+        apiKeys: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
+    const apiKeyId = user.apiKeys[0]?.id;
+    expect(apiKeyId).toBeTruthy();
     const { bot } = await createLiveScopedBotContext({
       userId: user.id,
       botName: 'Live Bot',
       strategyName: 'Live Bot Strategy',
       symbol: 'ETHUSDT',
-      apiKeyId: apiKey.id,
+      apiKeyId,
     });
 
     const executeLiveOrder = vi.fn().mockResolvedValue({
@@ -779,7 +790,7 @@ describe('openOrder live execution contract', () => {
           bot: expect.objectContaining({
             id: bot.id,
             exchange: 'BINANCE',
-            apiKeyId: apiKey.id,
+            apiKeyId,
           }),
         })
       );

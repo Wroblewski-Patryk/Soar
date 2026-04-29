@@ -23,6 +23,9 @@ Last updated: 2026-04-29
 - [x] `V1COVER-02 test(shared-cleanup): repair singular-bot wallet cleanup drift in runtime takeover helpers`
   - 2026-04-29: Closed by restoring `wallet.deleteMany()` to the shared takeover reset helper and updating the stale overlap proof to the current architecture. Runtime takeover coverage now matches the approved rule set: `LIVE + PAPER` may share a symbol, but the imported `LIVE` position stays visible only for the owning LIVE bot, while the older two-active-LIVE overlap assumption is no longer treated as valid proof.
 
+- [x] `V1COVER-03..05 qa+test(closure): rerun stabilized broad LIVE runtime coverage and close residual fixture drift`
+  - 2026-04-29: Closed the full `V1COVER-A` wave. Sequential broad runtime/order coverage is green again after removing shared runtime-state leaks, restoring shared wallet cleanup, aligning takeover overlap proof to the current architecture, and stabilizing the remaining `orders.service` LIVE fixture path through nested user+API-key setup. Closure evidence: `docs/operations/v1cover-live-runtime-regression-coverage-closure-2026-04-29.md`. Validation PASS: broad sequential runtime/order pack, full `orders.service`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
+
 - [x] `GOLIVE-2026-04-29-A tooling(smoke): harden local go-live smoke wrapper for reusable local infra`
   - 2026-04-29: Closed the local tooling slice. The umbrella smoke wrapper now reuses already-running reachable Postgres/Redis when Docker Compose cannot bind `5432/6379`, avoids shutting down infra it did not start, and surfaces the real remaining local blocker explicitly: Prisma `P3009` from failed migration `20260424094500_add_single_context_bot_refs`. Direct canonical go-live packs remain green, so the unresolved blocker is local DB state rather than current repo code.
 
