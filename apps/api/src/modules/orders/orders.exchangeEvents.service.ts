@@ -11,6 +11,7 @@ import {
   resolveExternalSyncMissingCloseAttribution,
 } from '../positions/positionCloseAttribution';
 import { applyOrderFillLifecycle } from './orders.lifecycle.service';
+import { computePositionAddUpdate } from './positionFillMath';
 
 const isPositiveFiniteNumber = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value) && value > 0;
@@ -132,7 +133,7 @@ const ensureTradeRecord = async (input: {
   feeCurrency: string | null;
   effectiveFeeRate: number | null;
   exchangeTradeId: string | null;
-  lifecycleAction: 'OPEN' | 'CLOSE';
+  lifecycleAction: 'OPEN' | 'DCA' | 'CLOSE';
   managementMode: 'BOT_MANAGED' | 'MANUAL_MANAGED';
   origin: 'BOT' | 'USER' | 'EXCHANGE_SYNC' | 'BACKTEST';
   realizedPnl?: number;
@@ -176,6 +177,51 @@ const ensureTradeRecord = async (input: {
       managementMode: input.managementMode,
     },
   });
+};
+
+const resolveLiveAccountUpdateScope = async (input: {
+  userId: string;
+  symbol: string;
+  side: 'LONG' | 'SHORT';
+  marketType: 'FUTURES' | 'SPOT';
+}) => {
+  const candidates = await prisma.position.findMany({
+    where: {
+      userId: input.userId,
+      symbol: input.symbol,
+      side: input.side,
+      status: 'OPEN',
+      OR: [
+        {
+          wallet: {
+            mode: 'LIVE',
+            exchange: 'BINANCE',
+            marketType: input.marketType,
+          },
+        },
+        {
+          bot: {
+            mode: 'LIVE',
+            exchange: 'BINANCE',
+            marketType: input.marketType,
+          },
+        },
+      ],
+    },
+    select: {
+      id: true,
+    },
+    orderBy: [{ openedAt: 'desc' }, { createdAt: 'desc' }, { id: 'desc' }],
+  });
+
+  if (candidates.length <= 1) {
+    return candidates.map((candidate) => candidate.id);
+  }
+
+  console.warn(
+    `[LiveExchangeAccountUpdate] user=${input.userId} symbol=${input.symbol} side=${input.side} marketType=${input.marketType} skipped: ambiguous_live_scope candidates=${candidates.length}`
+  );
+  return [];
 };
 
 export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
@@ -329,6 +375,24 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
           closeInitiator: closeAttribution.closeInitiator,
         });
       } else {
+        const { nextQuantity, nextEntryPrice } = computePositionAddUpdate({
+          currentQuantity: updatedOrder.position.quantity,
+          currentEntryPrice: updatedOrder.position.entryPrice,
+          addedQuantity: cumulativeFilledQuantity,
+          fillPrice: averageFillPrice,
+        });
+        await prisma.position.update({
+          where: { id: updatedOrder.position.id },
+          data: {
+            quantity: nextQuantity,
+            entryPrice: nextEntryPrice,
+            lastExchangeSeenAt: eventAt,
+            lastExchangeSyncAt: eventAt,
+            missingSince: null,
+            missingSyncCount: 0,
+            continuityState: 'CONFIRMED',
+          },
+        });
         await ensureTradeRecord({
           userId: input.userId,
           botId: updatedOrder.botId,
@@ -346,7 +410,7 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
           feeCurrency: updatedOrder.feeCurrency,
           effectiveFeeRate: updatedOrder.effectiveFeeRate,
           exchangeTradeId: input.event.exchangeTradeId ?? null,
-          lifecycleAction: 'OPEN',
+          lifecycleAction: 'DCA',
           managementMode: updatedOrder.managementMode,
           origin: updatedOrder.origin,
           realizedPnl: 0,
@@ -431,14 +495,18 @@ export const applyLiveExchangeAccountUpdateEvent = async (input: {
       typeof position.amount === 'number' && Number.isFinite(position.amount)
         ? Math.abs(position.amount)
         : null;
+    const scopedPositionIds = await resolveLiveAccountUpdateScope({
+      userId: input.userId,
+      symbol: normalizedSymbol,
+      side,
+      marketType: input.event.marketType,
+    });
+    if (scopedPositionIds.length === 0) continue;
     if (quantity === 0) {
       const closeAttribution = resolveExternalSyncMissingCloseAttribution();
       const result = await prisma.position.updateMany({
         where: {
-          userId: input.userId,
-          symbol: normalizedSymbol,
-          side,
-          status: 'OPEN',
+          id: { in: scopedPositionIds },
         },
         data: {
           status: 'CLOSED',
@@ -455,10 +523,7 @@ export const applyLiveExchangeAccountUpdateEvent = async (input: {
     }
     const result = await prisma.position.updateMany({
       where: {
-        userId: input.userId,
-        symbol: normalizedSymbol,
-        side,
-        status: 'OPEN',
+        id: { in: scopedPositionIds },
       },
       data: {
         ...(typeof quantity === 'number' ? { quantity } : {}),

@@ -269,13 +269,135 @@ describe('orders.exchangeEvents.service', () => {
     expect(closeTrade.closeInitiator).toBe('BOT_APP');
   });
 
-  it('applies account update to refresh canonical open-position quantities and pnl', async () => {
+  it('applies Binance order-trade update to reprice and extend an existing LIVE position as DCA', async () => {
     const user = await prisma.user.create({
-      data: { email: 'exchange-event-account@example.com', password: 'hashed' },
+      data: { email: 'exchange-event-dca@example.com', password: 'hashed' },
+    });
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'live-wallet-dca',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'live-bot-dca',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        walletId: wallet.id,
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'v1',
+      },
     });
     const position = await prisma.position.create({
       data: {
         userId: user.id,
+        botId: bot.id,
+        walletId: wallet.id,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        symbol: 'BTCUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 62_000,
+        quantity: 0.1,
+        leverage: 5,
+        continuityState: 'RECOVERING',
+        missingSyncCount: 2,
+      },
+    });
+    const order = await prisma.order.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        walletId: wallet.id,
+        positionId: position.id,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        symbol: 'BTCUSDT',
+        side: 'BUY',
+        type: 'MARKET',
+        status: 'OPEN',
+        quantity: 0.05,
+        filledQuantity: 0,
+        exchangeOrderId: 'event-order-dca-1',
+        submittedAt: new Date('2026-04-29T10:00:00.000Z'),
+      },
+    });
+
+    const result = await applyLiveExchangeOrderTradeUpdateEvent({
+      userId: user.id,
+      event: {
+        eventType: 'ORDER_TRADE_UPDATE',
+        marketType: 'FUTURES',
+        eventTime: 5_000,
+        transactionTime: 5_001,
+        symbol: 'BTCUSDT',
+        side: 'BUY',
+        orderType: 'MARKET',
+        orderStatus: 'FILLED',
+        executionType: 'TRADE',
+        exchangeOrderId: 'event-order-dca-1',
+        clientOrderId: 'client-dca-1',
+        averagePrice: 63_500,
+        cumulativeFilledQuantity: 0.05,
+        lastFilledQuantity: 0.05,
+        lastFilledPrice: 63_500,
+        fee: 0.03,
+        feeCurrency: 'USDT',
+        exchangeTradeId: 'trade-dca-1',
+        raw: {},
+      },
+    });
+
+    expect(result).toEqual(
+      expect.objectContaining({
+        status: 'applied',
+        orderId: order.id,
+        positionId: position.id,
+        orderStatus: 'FILLED',
+      })
+    );
+    const updatedPosition = await prisma.position.findUniqueOrThrow({
+      where: { id: position.id },
+    });
+    expect(updatedPosition.quantity).toBeCloseTo(0.15, 10);
+    expect(updatedPosition.entryPrice).toBeCloseTo(62_500, 10);
+    expect(updatedPosition.continuityState).toBe('CONFIRMED');
+    expect(updatedPosition.missingSyncCount).toBe(0);
+    const dcaTrade = await prisma.trade.findFirstOrThrow({
+      where: { orderId: order.id },
+    });
+    expect(dcaTrade.lifecycleAction).toBe('DCA');
+    expect(dcaTrade.exchangeTradeId).toBe('trade-dca-1');
+  });
+
+  it('applies account update to refresh canonical open-position quantities and pnl', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'exchange-event-account@example.com', password: 'hashed' },
+    });
+    const liveWallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'account-update-live-wallet',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const position = await prisma.position.create({
+      data: {
+        userId: user.id,
+        walletId: liveWallet.id,
         origin: 'EXCHANGE_SYNC',
         managementMode: 'BOT_MANAGED',
         syncState: 'IN_SYNC',
@@ -286,6 +408,31 @@ describe('orders.exchangeEvents.service', () => {
         quantity: 0.1,
         leverage: 10,
         unrealizedPnl: 0,
+      },
+    });
+    const paperWallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'account-update-paper-wallet',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const untouchedPaperPosition = await prisma.position.create({
+      data: {
+        userId: user.id,
+        walletId: paperWallet.id,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        symbol: 'BTCUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 48_000,
+        quantity: 0.25,
+        leverage: 3,
+        unrealizedPnl: 7,
       },
     });
 
@@ -320,15 +467,32 @@ describe('orders.exchangeEvents.service', () => {
     expect(updatedPosition.quantity).toBe(0.15);
     expect(updatedPosition.entryPrice).toBe(62_500);
     expect(updatedPosition.unrealizedPnl).toBe(12.34);
+    const paperPositionAfterUpdate = await prisma.position.findUniqueOrThrow({
+      where: { id: untouchedPaperPosition.id },
+    });
+    expect(paperPositionAfterUpdate.quantity).toBe(0.25);
+    expect(paperPositionAfterUpdate.entryPrice).toBe(48_000);
+    expect(paperPositionAfterUpdate.unrealizedPnl).toBe(7);
   });
 
   it('closes locally open exchange-synced position when account update confirms zero quantity', async () => {
     const user = await prisma.user.create({
       data: { email: 'exchange-event-account-close@example.com', password: 'hashed' },
     });
+    const liveWallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'account-close-live-wallet',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
     const position = await prisma.position.create({
       data: {
         userId: user.id,
+        walletId: liveWallet.id,
         origin: 'EXCHANGE_SYNC',
         managementMode: 'BOT_MANAGED',
         syncState: 'IN_SYNC',
@@ -339,6 +503,31 @@ describe('orders.exchangeEvents.service', () => {
         quantity: 100,
         leverage: 10,
         unrealizedPnl: 4,
+      },
+    });
+    const paperWallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'account-close-paper-wallet',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const untouchedPaperPosition = await prisma.position.create({
+      data: {
+        userId: user.id,
+        walletId: paperWallet.id,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        symbol: 'DOGEUSDT',
+        side: 'SHORT',
+        status: 'OPEN',
+        entryPrice: 0.12,
+        quantity: 50,
+        leverage: 3,
+        unrealizedPnl: 1.5,
       },
     });
 
@@ -373,5 +562,10 @@ describe('orders.exchangeEvents.service', () => {
     expect(closedPosition.status).toBe('CLOSED');
     expect(closedPosition.closeReason).toBe('EXTERNAL_SYNC_MISSING');
     expect(closedPosition.closeInitiator).toBe('USER_EXCHANGE');
+    const paperPositionAfterUpdate = await prisma.position.findUniqueOrThrow({
+      where: { id: untouchedPaperPosition.id },
+    });
+    expect(paperPositionAfterUpdate.status).toBe('OPEN');
+    expect(paperPositionAfterUpdate.quantity).toBe(50);
   });
 });
