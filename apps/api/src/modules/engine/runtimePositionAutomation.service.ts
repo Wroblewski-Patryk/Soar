@@ -14,6 +14,10 @@ import {
 } from './runtimeExecutionDedupe.service';
 import { resolveInheritedRuntimeExecutionContext } from './runtimeBotExecutionContext';
 import { computePositionAddUpdate } from '../orders/positionFillMath';
+import {
+  recordRuntimeAutomationSkipTelemetry,
+  RuntimeAutomationSkipReason,
+} from './runtimePositionAutomationSkipTelemetry';
 
 type RuntimeManagedPosition = Pick<
   Position,
@@ -414,9 +418,7 @@ const resolveInheritedPositionExecutionContext = (position: RuntimeManagedPositi
 
 const resolveDcaLevelCount = (input: PositionManagementInput) => {
   if (!input.dca?.enabled) return 0;
-  if (Array.isArray(input.dca.levelPercents) && input.dca.levelPercents.length > 0) {
-    return input.dca.levelPercents.length;
-  }
+  if (Array.isArray(input.dca.levelPercents) && input.dca.levelPercents.length > 0) return input.dca.levelPercents.length;
   return Math.max(0, input.dca.maxAdds ?? 0);
 };
 
@@ -752,19 +754,15 @@ export class RuntimePositionAutomationService {
   }
 
   getPositionStateSnapshot(positionId: string): PositionManagementState | null {
-    const state = this.positionStates.get(positionId);
-    if (!state) return null;
-    return this.cloneState(state);
+    const state = this.positionStates.get(positionId); return state ? this.cloneState(state) : null;
   }
 
   async handleTickerEvent(event: StreamTickerEvent) {
-    const openPositions = await this.deps.listOpenPositionsBySymbol(event.symbol);
-    await Promise.all(openPositions.map((position) => this.processPosition(event, position)));
+    await Promise.all((await this.deps.listOpenPositionsBySymbol(event.symbol)).map((position) => this.processPosition(event, position)));
   }
 
   private async getStrategyConfig(strategyId: string | null) {
-    if (!strategyId) return null;
-    return this.deps.getStrategyConfigById(strategyId);
+    return strategyId ? this.deps.getStrategyConfigById(strategyId) : null;
   }
 
   private async processPosition(
@@ -776,6 +774,16 @@ export class RuntimePositionAutomationService {
       console.warn(
         `[RuntimePositionAutomation] position=${position.id} symbol=${position.symbol} skipped: continuity_state=${position.continuityState}`
       );
+      await recordRuntimeAutomationSkipTelemetry({
+        recordRuntimeEvent: this.deps.recordRuntimeEvent,
+        event,
+        position,
+        reason: 'continuity_state_unconfirmed',
+        message: `Runtime automation skipped because continuity state is ${position.continuityState}`,
+        extraPayload: {
+          actionable: false,
+        },
+      });
       return;
     }
     if (!position.botId && position.origin === 'EXCHANGE_SYNC') {
@@ -795,6 +803,14 @@ export class RuntimePositionAutomationService {
       console.warn(
         `[RuntimePositionAutomation] position=${position.id} symbol=${position.symbol} skipped: canonical bot execution context unresolved`
       );
+      await recordRuntimeAutomationSkipTelemetry({
+        recordRuntimeEvent: this.deps.recordRuntimeEvent,
+        event,
+        position,
+        inheritedExecutionContext,
+        reason: 'canonical_execution_context_unresolved',
+        message: 'Runtime automation skipped because canonical LIVE execution context is unresolved',
+      });
       return;
     }
     if (!inheritedExecutionContext) {
@@ -807,6 +823,14 @@ export class RuntimePositionAutomationService {
       console.warn(
         `[RuntimePositionAutomation] position=${position.id} symbol=${position.symbol} skipped: LIVE bot without live opt-in`
       );
+      await recordRuntimeAutomationSkipTelemetry({
+        recordRuntimeEvent: this.deps.recordRuntimeEvent,
+        event,
+        position,
+        inheritedExecutionContext,
+        reason: 'live_opt_in_disabled',
+        message: 'Runtime automation skipped because LIVE bot has no active live opt-in',
+      });
       return;
     }
 

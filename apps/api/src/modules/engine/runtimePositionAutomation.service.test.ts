@@ -660,6 +660,7 @@ describe('RuntimePositionAutomationService', () => {
   });
 
   it('keeps recovered-but-unactionable positions visible but fail-closed for automation', async () => {
+    const recordRuntimeEvent = vi.fn(async () => undefined);
     const deps: any = {
       listOpenPositionsBySymbol: vi.fn(async () => [
         {
@@ -686,6 +687,7 @@ describe('RuntimePositionAutomationService', () => {
       executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
       closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
       resolveDcaFundsExhausted: vi.fn(async () => false),
+      recordRuntimeEvent,
       nowMs: vi.fn(() => Date.now()),
     };
 
@@ -705,9 +707,27 @@ describe('RuntimePositionAutomationService', () => {
     expect(deps.executeDca).not.toHaveBeenCalled();
     expect(deps.closeByExitSignal).not.toHaveBeenCalled();
     expect(service.getPositionStateSnapshot('pos-recovered-unactionable')).toBeNull();
+    expect(recordRuntimeEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'user-recovered-unactionable',
+        botId: 'bot-recovered-unactionable',
+        mode: 'LIVE',
+        eventType: 'PRETRADE_BLOCKED',
+        level: 'WARN',
+        symbol: 'DOGEUSDT',
+        strategyId: 'strategy-recovered-unactionable',
+        payload: expect.objectContaining({
+          positionId: 'pos-recovered-unactionable',
+          continuityState: 'RECOVERED_UNACTIONABLE',
+          skipReason: 'continuity_state_unconfirmed',
+          actionable: false,
+        }),
+      })
+    );
   });
 
   it('skips automation for LIVE bot positions when live opt-in is disabled', async () => {
+    const recordRuntimeEvent = vi.fn(async () => undefined);
     const deps: any = {
       listOpenPositionsBySymbol: vi.fn(async () => [
         {
@@ -735,6 +755,7 @@ describe('RuntimePositionAutomationService', () => {
       executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
       closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
       resolveDcaFundsExhausted: vi.fn(async () => false),
+      recordRuntimeEvent,
       nowMs: vi.fn(() => Date.now()),
     };
 
@@ -753,6 +774,21 @@ describe('RuntimePositionAutomationService', () => {
     expect(deps.resolveDcaFundsExhausted).not.toHaveBeenCalled();
     expect(deps.executeDca).not.toHaveBeenCalled();
     expect(deps.closeByExitSignal).not.toHaveBeenCalled();
+    expect(recordRuntimeEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'user-live-optout',
+        botId: 'bot-live-optout',
+        mode: 'LIVE',
+        eventType: 'PRETRADE_BLOCKED',
+        level: 'WARN',
+        symbol: 'BTCUSDT',
+        strategyId: 'strat-live-optout',
+        payload: expect.objectContaining({
+          positionId: 'pos-live-optout',
+          skipReason: 'live_opt_in_disabled',
+        }),
+      })
+    );
   });
 
   it('skips automation for orphan BOT-origin positions without canonical bot context', async () => {
@@ -799,6 +835,69 @@ describe('RuntimePositionAutomationService', () => {
     expect(deps.resolveDcaFundsExhausted).not.toHaveBeenCalled();
     expect(deps.executeDca).not.toHaveBeenCalled();
     expect(deps.closeByExitSignal).not.toHaveBeenCalled();
+  });
+
+  it('records operator-visible telemetry when canonical LIVE execution context is unresolved', async () => {
+    const recordRuntimeEvent = vi.fn(async () => undefined);
+    const deps: any = {
+      listOpenPositionsBySymbol: vi.fn(async () => [
+        {
+          id: 'pos-live-context-missing',
+          userId: 'user-live-context-missing',
+          botId: 'bot-live-context-missing',
+          walletId: 'wallet-live-context-missing',
+          strategyId: 'strat-live-context-missing',
+          symbol: 'ETHUSDT',
+          side: 'LONG' as const,
+          entryPrice: 3000,
+          quantity: 1,
+          leverage: 5,
+          stopLoss: 2900,
+          takeProfit: 3100,
+          managementMode: 'BOT_MANAGED' as const,
+          continuityState: 'CONFIRMED' as const,
+          origin: 'EXCHANGE_SYNC' as const,
+          bot: null,
+        },
+      ]),
+      getStrategyConfigById: vi.fn(async () => null),
+      executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
+      closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
+      resolveDcaFundsExhausted: vi.fn(async () => false),
+      recordRuntimeEvent,
+      nowMs: vi.fn(() => Date.now()),
+    };
+
+    const service = new RuntimePositionAutomationService(deps);
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'ETHUSDT',
+      eventTime: 11_500,
+      lastPrice: 3110,
+      priceChangePercent24h: 0.7,
+    });
+
+    expect(deps.getStrategyConfigById).not.toHaveBeenCalled();
+    expect(deps.resolveDcaFundsExhausted).not.toHaveBeenCalled();
+    expect(deps.executeDca).not.toHaveBeenCalled();
+    expect(deps.closeByExitSignal).not.toHaveBeenCalled();
+    expect(recordRuntimeEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'user-live-context-missing',
+        botId: 'bot-live-context-missing',
+        mode: 'LIVE',
+        eventType: 'PRETRADE_BLOCKED',
+        level: 'WARN',
+        symbol: 'ETHUSDT',
+        strategyId: 'strat-live-context-missing',
+        payload: expect.objectContaining({
+          positionId: 'pos-live-context-missing',
+          skipReason: 'canonical_execution_context_unresolved',
+        }),
+      })
+    );
   });
 
   it('keeps monitoring flow alive when close signal is only submitted', async () => {
