@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-04-29
+Last updated: 2026-04-30
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -16,6 +16,10 @@ Last updated: 2026-04-29
     needed
 
 ## READY
+
+- [x] `V1ROE-00 analysis(queue): publish LIVE PnL/ROE semantics and imported automation parity packet`
+  - Scope: freeze the newly confirmed production drift where operator-visible `PnL %` diverges from Binance Futures semantics while imported/reopened `LIVE` automation also appears stale enough to miss `DCA/TTP` evaluation.
+  - 2026-04-30: Closed as an analysis-only slice. Published `docs/planning/v1roe-live-pnl-roe-and-runtime-automation-parity-plan-2026-04-30.md` plus `docs/planning/v1roe-00-analysis-task-2026-04-30.md` after protected production API/UI verification and code review of runtime percent + DCA semantics. Current conclusion: there is one ordinary runtime bug to fix (imported/reopened `LIVE` automation continuity) and one architecture/product decision to make explicitly (`leveraged move` versus exchange `ROE` semantics for the primary percent truth).
 
 - [x] `V1REOPEN-00 analysis(queue): publish same-symbol LIVE close/reopen hardening packet`
   - Scope: freeze the newly reported `LIVE close -> reopen same symbol` regression into one exact execution packet covering stale lifecycle visibility, wrong `PnL%` basis, and stale `TTP` continuity risk.

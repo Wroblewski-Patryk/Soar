@@ -1,6 +1,6 @@
 # PROJECT_STATE
 
-Last updated: 2026-04-29
+Last updated: 2026-04-30
 
 ## Product Snapshot
 - Name: CryptoSparrow / Soar
@@ -100,6 +100,7 @@ Last updated: 2026-04-29
   of reconstructing it from `syncState` or audit logs.
 
 ## Product Decisions (Confirmed)
+- 2026-04-30: published `V1ROE-A` after a fresh protected production audit of the active `LIVE DOGEUSDT` flow. The repository now has explicit evidence that two different drifts were being conflated: current Soar `PnL %` semantics are still `unrealizedPnl / (entryNotional / leverage)` rather than exchange-style `ROE`, and imported/reopened `LIVE` automation still appears stale enough to miss `DCA/TTP` evaluation after reopen/import even under Soar's own current leveraged-move thresholds. The analysis packet intentionally stops before implementation because one explicit product/architecture decision is required first: keep lifecycle thresholds on leveraged move and align operator UI separately, or migrate lifecycle thresholds to exchange-ROE semantics. Canonical packet: `docs/planning/v1roe-live-pnl-roe-and-runtime-automation-parity-plan-2026-04-30.md`.
 - 2026-04-29: closed the first backend hydration slice of `V1HIST-A`. Soar no longer has to rely only on the weaker imported position snapshot timestamp for newly adopted exchange positions: the authenticated exchange boundary now exposes trade-history reads, imported lifecycle hydration reconstructs the current open lifecycle only when canonical fill truth is sufficient, imported `OPEN` / `DCA` / partial `CLOSE` trades are persisted without inventing fake fills, and `position.openedAt` is corrected to the first canonical fill when hydration succeeds. External-close ledger parity still remains open.
 - 2026-04-29: closed the external-close ledger parity slice of `V1HIST-A`. Imported managed positions that disappear from exchange truth are no longer limited to row-level closure only when deterministic exchange trade history is available: reconciliation now backfills the final lifecycle window from canonical exchange trades, persists missing imported `CLOSE` trades with `USER_EXCHANGE` attribution, and updates `position.closedAt` to the last canonical close fill instead of trusting only the local reconciliation timestamp. The implementation stays fail-closed when exchange trade history is insufficient.
 - 2026-04-29: closed the full `V1HIST-A` packet. The repository now has one coherent imported lifecycle history model for `V1`: imported opening history may be hydrated only from deterministic exchange trades, imported externally closed managed positions may backfill missing `CLOSE` trades and canonical `closedAt` from deterministic exchange trade history, runtime history keeps those closed positions visible, and dashboard history surfaces expose separate `openedAt` and `closedAt`. Closure evidence: `docs/operations/v1hist-imported-exchange-lifecycle-history-closure-2026-04-29.md`.
