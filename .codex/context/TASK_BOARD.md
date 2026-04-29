@@ -30,7 +30,7 @@ Last updated: 2026-04-29
 
 - [ ] `V1EXCEL-03 qa(manual-matrix): execute the full critical manual UI/API/operator matrix`
   - Scope: run and record the real critical `PAPER` and `LIVE` operator scenarios, including manual order/close, pending external order truth, DCA/close protection behavior, and restart/recovery truth.
-  - 2026-04-29 status: BLOCKED. The full matrix is now explicit in `docs/operations/v1excel-manual-verification-matrix-2026-04-29.md`, but it still requires authenticated Soar operator access plus real exchange authority for `LIVE` scenarios.
+  - 2026-04-29 status: IN_PROGRESS. The full matrix remains incomplete, but authenticated Soar production operator access is now available and the first `PAPER` API/operator pass has been executed. Evidence: `docs/operations/v1excel-paper-operator-verification-2026-04-29.md`. That pass proved truthful same-side add behavior for an existing managed `PAPER` position and exposed one real drift: manual close still returns `POSITION_CLOSE_PRICE_UNAVAILABLE` even while the operator-visible position row shows a valid mark price. Remediation commit `f12f3efb` was pushed to `main`; post-deploy confirmation and the remaining real-UI plus `LIVE` scenarios are still pending.
 
 - [ ] `V1EXCEL-04 ops(stage-refresh): rerun the latest authenticated stage release gate and smoke on the current candidate`
   - Scope: refresh stage rehearsal and smoke artifacts against the newest repository candidate instead of inheriting older activation evidence.

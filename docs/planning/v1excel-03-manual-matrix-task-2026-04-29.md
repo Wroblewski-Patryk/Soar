@@ -5,7 +5,7 @@
 - Title: Execute the full critical manual UI/API/operator matrix
 - Task Type: qa
 - Current Stage: verification
-- Status: BLOCKED
+- Status: IN_PROGRESS
 - Owner: Codex Execution Agent
 - Depends on: `V1EXCEL-02`
 - Priority: P0
@@ -18,7 +18,8 @@ manual operator pass across the affected `PAPER` and `LIVE` flows.
 ## Goal
 Run and record the full critical operator matrix for manual order, manual
 close, pending external order truth, DCA/protection behavior, and
-restart/recovery truth.
+restart/recovery truth, using real authenticated operator surfaces where they
+are now available.
 
 ## Deliverable For This Stage
 A canonical matrix that records:
@@ -37,7 +38,8 @@ A canonical matrix that records:
 - [x] The required manual matrix is frozen explicitly
 - [x] Executed automated and public-smoke evidence is linked
 - [ ] The full authenticated operator matrix is executed end to end
-- [x] The blocker is classified precisely instead of hand-waved
+- [x] Partial authenticated operator execution is recorded precisely
+- [x] The remaining blockers are classified precisely instead of hand-waved
 
 ## Stage Exit Criteria
 - [x] The output matches the declared `Current Stage`.
@@ -54,14 +56,20 @@ A canonical matrix that records:
 ## Validation Evidence
 - Tests:
   - `pnpm run test:go-live:smoke`
+  - `pnpm --filter api exec vitest run src/modules/bots/runtimeSessionPositionCommand.service.test.ts`
+  - `pnpm --filter api run typecheck`
+  - `pnpm run quality:guardrails`
   - public stage smoke PASS
   - public prod smoke PASS
 - Manual checks:
-  - reviewed the real-money scenarios required by the user's notes
-  - confirmed no authenticated operator/exchange session is available in this run
+  - authenticated production Soar login through the protected API
+  - inspected real production bots and runtime sessions
+  - executed one production `PAPER` manual same-side add against the active managed position
+  - attempted one production `PAPER` manual close against the same managed position
 - Screenshots/logs: not applicable
 - High-risk checks:
-  - refused to mark manual real-money flows as executed without real authority
+  - refused to execute real `LIVE` exchange orders from this session
+  - kept operator execution to `PAPER` while `LIVE` exchange authority remains unavailable
 
 ## Architecture Evidence (required for architecture-impacting tasks)
 - Architecture source reviewed: yes
@@ -91,8 +99,10 @@ A canonical matrix that records:
 - [x] Learning journal was updated if a recurring pitfall was confirmed.
 
 ## Notes
-This task is intentionally blocked, not failed. The missing input is operator
-authority, not an open repository bug.
+This task is now partially unblocked. Authenticated `PAPER` operator execution
+is available and has already surfaced one real repository drift
+(`POSITION_CLOSE_PRICE_UNAVAILABLE` on manual close), while `LIVE` exchange
+authority and real-UI confirmation remain incomplete.
 
 ## Production-Grade Required Contract
 
@@ -129,15 +139,21 @@ trust claim.
 
 ## Result Report
 
-- Task summary: published the full manual verification matrix and classified it
-  as blocked by missing authenticated operator/exchange access
-- Files changed: matrix doc plus canonical queue/context sync
+- Task summary: advanced the manual matrix from a pure auth blocker to a
+  partial authenticated production operator pass, recorded the first `PAPER`
+  execution evidence, and captured the newly exposed manual-close drift
+- Files changed: matrix doc, operator evidence doc, and canonical queue/context sync
 - How tested:
   - `pnpm run test:go-live:smoke`
+  - `pnpm --filter api exec vitest run src/modules/bots/runtimeSessionPositionCommand.service.test.ts`
+  - `pnpm --filter api run typecheck`
+  - `pnpm run quality:guardrails`
   - stage public smoke PASS
   - prod public smoke PASS
 - What is incomplete:
-  - every real authenticated operator scenario in the matrix
+  - real UI walkthrough for `PAPER`
+  - fresh post-deploy confirmation for the pushed `PAPER` manual-close fix
+  - all `LIVE` exchange-authority scenarios
 - Next steps:
-  - run the matrix with real Soar auth plus real exchange authority
-
+  - verify the fresh deploy closes the exposed `PAPER` manual-close drift
+  - continue with the remaining `LIVE` and restart/recovery matrix items

@@ -153,6 +153,7 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `V1EXCEL-01 audit(v1-gap-map): freeze the exact remaining gap map against DoD, integration, deployment, and activation contracts`
 - [x] `V1EXCEL-02 qa(local-infra): restore fully reproducible local confidence path or classify the exact external blocker`
 - [ ] `V1EXCEL-03 qa(manual-matrix): execute the full critical manual UI/API/operator matrix`
+  - 2026-04-29 status: IN_PROGRESS. Authenticated Soar production operator access is now available and the first `PAPER` API/operator pass is captured in `docs/operations/v1excel-paper-operator-verification-2026-04-29.md`. That pass proved truthful same-side add behavior and exposed a real `PAPER` manual-close drift (`POSITION_CLOSE_PRICE_UNAVAILABLE` despite visible mark price). Remediation commit `f12f3efb` was pushed to `main`; fresh post-deploy confirmation plus the remaining real-UI and `LIVE` scenarios are still pending.
 - [ ] `V1EXCEL-04 ops(stage-refresh): rerun the latest authenticated stage release gate and smoke on the current candidate`
 - [ ] `V1EXCEL-05 ops(prod-refresh): rerun fresh production release-gate evidence families on the current candidate`
 - [ ] `V1EXCEL-06 ops(runtime-observability): verify active LIVE worker/runtime diagnostics under current production truth`
