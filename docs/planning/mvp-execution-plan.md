@@ -99,20 +99,24 @@ Rule: fix/cleanup/update first, then feature delivery.
 - 2026-04-29: Closed `V1PARITY-08..09` by surfacing fail-closed LIVE automation skips through canonical runtime telemetry. Continuity degradation, unresolved canonical LIVE execution context, and live-opt-out management skips now emit operator-visible `PRETRADE_BLOCKED` diagnostics instead of remaining console-only.
 - 2026-04-29: Closed `V1PARITY-10` with focused validation across exchange-event lifecycle parity, runtime automation parity, runtime/read-model strategy-context truth, and DCA ladder read-model coverage. Closure evidence: `docs/operations/v1parity-live-runtime-lifecycle-parity-closure-2026-04-29.md`. Validation PASS: `pnpm --filter api exec vitest run src/modules/orders/orders.exchangeEvents.service.test.ts`, `pnpm --filter api exec vitest run src/modules/engine/runtimePositionAutomation.service.test.ts`, `pnpm --filter api exec vitest run src/modules/bots/bots.runtime-strategy-context.e2e.test.ts`, `pnpm --filter api exec vitest run src/modules/bots/bots.e2e.test.ts -t "maps DCA ladder levels for basic repeated, advanced, and legacy strategy configs"`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 
-## Phase V1SAFE-2026-04-29 - LIVE DCA/TTP/TSL Parity Hardening (Planned)
-- [ ] `V1SAFE-01 docs(contract): freeze canonical DCA/TTP/TSL parity contract for imported and recovered LIVE positions`
-- [ ] `V1SAFE-02 test(api-runtime-red): lock imported/recovered LIVE TTP/TSL state parity and fail-closed degradation`
-- [ ] `V1SAFE-03 fix(api-runtime): hydrate or explicitly degrade LIVE protection state on imported/recovered positions`
-- [ ] `V1SAFE-04 test(api-runtime-red): lock DCA-first affordability parity across backtest, paper, and live`
-- [ ] `V1SAFE-05 fix(api-runtime): align LIVE DCA affordability and close gating with canonical parity expectations`
-- [ ] `V1SAFE-06 test(api-runtime-red): lock LIVE trigger-input and exit-submission parity for DCA/TTP/TSL`
-- [ ] `V1SAFE-07 fix(api-runtime+events): close remaining LIVE DCA/TTP/TSL execution parity gaps`
-- [ ] `V1SAFE-08 test(api-ops-red): lock operator protection truth for actionable versus visual-only fallback states`
-- [ ] `V1SAFE-09 fix(api+read-model): expose honest LIVE protection state and degradation reasons on operator surfaces`
-- [ ] `V1SAFE-10 qa(closure): run focused LIVE DCA/TTP/TSL parity pack and publish closure evidence`
+## Phase V1SAFE-2026-04-29 - LIVE DCA/TTP/TSL Parity Hardening (Closed 2026-04-29)
+- [x] `V1SAFE-01 docs(contract): freeze canonical DCA/TTP/TSL parity contract for imported and recovered LIVE positions`
+- [x] `V1SAFE-02 test(api-runtime-red): lock imported/recovered LIVE TTP/TSL state parity and fail-closed degradation`
+- [x] `V1SAFE-03 fix(api-runtime): hydrate or explicitly degrade LIVE protection state on imported/recovered positions`
+- [x] `V1SAFE-04 test(api-runtime-red): lock DCA-first affordability parity across backtest, paper, and live`
+- [x] `V1SAFE-05 fix(api-runtime): align LIVE DCA affordability and close gating with canonical parity expectations`
+- [x] `V1SAFE-06 test(api-runtime-red): lock LIVE trigger-input and exit-submission parity for DCA/TTP/TSL`
+- [x] `V1SAFE-07 fix(api-runtime+events): close remaining LIVE DCA/TTP/TSL execution parity gaps`
+- [x] `V1SAFE-08 test(api-ops-red): lock operator protection truth for actionable versus visual-only fallback states`
+- [x] `V1SAFE-09 fix(api+read-model): expose honest LIVE protection state and degradation reasons on operator surfaces`
+- [x] `V1SAFE-10 qa(closure): run focused LIVE DCA/TTP/TSL parity pack and publish closure evidence`
 
 ### Progress Log (Phase V1SAFE-2026-04-29 - LIVE DCA/TTP/TSL Parity Hardening)
 - 2026-04-29: Published the execution packet after refining the earlier broad liquidation-safety draft down to the exact remaining parity problem. The strongest confirmed gap is not "missing exchange-native protection first", but that imported and recovered `LIVE` positions can still enter runtime without fully armed canonical trailing/DCA management state while runtime read-models continue to imply dynamic protection through fallback display logic. The wave now targets one fail-closed parity contract for `DCA`, `TTP`, and `TSL` across `backtest`, `paper`, and `live`, with first-class coverage for imported/recovered positions, trailing-state hydration, and operator/runtime honesty. Canonical packet: `docs/planning/v1safe-live-protection-and-liquidation-safety-plan-2026-04-29.md`.
+- 2026-04-29: Closed `V1SAFE-01` by publishing `docs/architecture/reference/live-protection-state-parity-contract.md` and syncing the key rules into `06_execution-lifecycle.md`, `reference/position-lifecycle-parity-matrix.md`, and `reference/live-runtime-lifecycle-parity-contract.md`. The frozen contract now explicitly forbids retroactive trailing-history guessing for imported or recovered `LIVE` positions while allowing prospective protection from the adoption point onward.
+- 2026-04-29: Closed `V1SAFE-02..07` by hardening the runtime and serialization path itself. Focused runtime coverage now proves imported `LIVE` positions can arm `TTP` prospectively and close on later retrace, while API dynamic-stop serialization now uses only canonical runtime trailing state and trailing-anchor truth instead of display-only sticky fallback.
+- 2026-04-29: Closed `V1SAFE-08..09` by removing sticky fallback `TTP` overlays from dashboard-home and bot-monitoring surfaces. Operator views now show dynamic protection only when the runtime engine actually has the same canonical stop truth.
+- 2026-04-29: Closed `V1SAFE-10` with focused validation across runtime automation parity, runtime position serialization, dashboard-home runtime surfaces, bot-monitoring surfaces, API/web typechecks, and repository guardrails. Closure evidence: `docs/operations/v1safe-live-dca-ttp-tsl-parity-closure-2026-04-29.md`.
 
 ## Phase BOTLIVE-2026-04-28 - Active LIVE Symbol-Overlap Guard (Closed 2026-04-28)
 - [x] `BOTLIVE-2026-04-28-A api(bot-guard): block active LIVE bot market-group overlap against other active LIVE bot scopes`
