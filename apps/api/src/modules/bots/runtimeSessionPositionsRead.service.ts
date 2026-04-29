@@ -71,6 +71,9 @@ const resolveRuntimePositionActionable = (input: {
   typeof input.strategyId === 'string' &&
   input.strategyId.length > 0;
 
+const resolveRuntimeStrategyAutomationContext = (strategyId: string | null) =>
+  typeof strategyId === 'string' && strategyId.length > 0;
+
 const selectPreferredRuntimeOpenOrder = (
   current: RuntimeOpenOrderRow,
   candidate: RuntimeOpenOrderRow
@@ -406,20 +409,21 @@ export const listBotRuntimeSessionPositions = async (
     const entryTrade = entryLegs[0] ?? positionTrades[0] ?? null;
     const exitTrade = exitLegs.at(-1) ?? (position.status === 'CLOSED' ? positionTrades.at(-1) ?? null : null);
     const dcaCount = Math.max(0, entryLegs.length - 1);
+    const strategyAutomationContextResolved = resolveRuntimeStrategyAutomationContext(position.strategyId);
     const dcaPlannedLevels =
-      (position.strategyId ? dcaPlanByStrategyId.get(position.strategyId) : null) ??
-      dcaPlanBySymbol.get(position.symbol) ??
-      [];
+      strategyAutomationContextResolved
+        ? ((position.strategyId ? dcaPlanByStrategyId.get(position.strategyId) : null) ?? [])
+        : [];
     const trailingStopLevels =
-      (position.strategyId ? trailingStopLevelsByStrategyId.get(position.strategyId) : null) ??
-      trailingStopLevelsBySymbol.get(position.symbol) ??
-      [];
+      strategyAutomationContextResolved
+        ? ((position.strategyId ? trailingStopLevelsByStrategyId.get(position.strategyId) : null) ?? [])
+        : [];
     const trailingTakeProfitLevels =
-      (position.strategyId
-        ? trailingTakeProfitLevelsByStrategyId.get(position.strategyId)
-        : null) ??
-      trailingTakeProfitLevelsBySymbol.get(position.symbol) ??
-      [];
+      strategyAutomationContextResolved
+        ? ((position.strategyId
+            ? trailingTakeProfitLevelsByStrategyId.get(position.strategyId)
+            : null) ?? [])
+        : [];
     const dcaExecutedLevels = resolveDcaExecutedLevels(dcaCount, dcaPlannedLevels);
 
     const marketPrice = lastPriceBySymbol.get(position.symbol);
@@ -473,6 +477,7 @@ export const listBotRuntimeSessionPositions = async (
       leverage: position.leverage,
       closeReason: position.closeReason ?? null,
       closeInitiator: position.closeInitiator ?? null,
+      strategyAutomationContextResolved,
       actionable: resolveRuntimePositionActionable({
         continuityState: position.continuityState,
         botId: position.botId,
