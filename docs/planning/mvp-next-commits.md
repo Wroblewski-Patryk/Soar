@@ -7,6 +7,16 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1REOPEN-00 analysis(queue): publish same-symbol LIVE close/reopen hardening packet`
+  - 2026-04-29: Published `docs/planning/v1reopen-live-close-reopen-pnl-ttp-hardening-plan-2026-04-29.md` plus `docs/planning/v1reopen-00-analysis-task-2026-04-29.md` after a focused audit of the newly reported `DOGEUSDT` real-account flow. The strongest current hypothesis is stale lifecycle continuity across `LIVE close -> same-symbol reopen`: stale open-row identity or stale runtime protection state likely survives long enough to invert operator-visible `PnL%` and contaminate `TTP` behavior on the new position. The packet freezes the next narrow wave inside existing approved systems: regression lock, reconciliation hardening, runtime-state cleanup, and minimal read-model verification.
+- [x] `V1REOPEN-01 audit(regression-matrix): freeze the exact same-symbol close/reopen failure matrix`
+  - 2026-04-29: Closed by freezing the regression class directly into the canonical packet and focused tests. The repository now has explicit proof coverage for the three highest-risk variants of the user report: opposite-side stale lifecycle on the same symbol, same-side reopen treated as a new lifecycle when exchange timestamp proves discontinuity, and stale runtime protection-state cleanup on forced lifecycle retirement.
+- [x] `V1REOPEN-02 test(api-red): lock stale lifecycle visibility, side truth, and PnL basis on LIVE reopen`
+  - 2026-04-29: Closed by adding focused reconciliation regressions proving that a reopened `LIVE` position on the same symbol cannot keep a stale opposite-side row actionable or visible, and that a same-side reopen with a newer exchange timestamp is treated as a new lifecycle instead of silently reusing stale identity.
+- [x] `V1REOPEN-03 fix(api-reconcile): retire superseded same-symbol lifecycle rows deterministically`
+  - 2026-04-29: Closed by hardening `livePositionReconciliation` in two ways: stale opposite-side rows for the same symbol now close immediately when new exchange truth confirms a replacement lifecycle, and same-side rows are no longer reused when exchange open timestamp proves a new lifecycle after close/reopen continuity.
+- [x] `V1REOPEN-04 fix(api-runtime-state): clear stale runtime protection state on close or lifecycle replacement`
+  - 2026-04-29: Closed by deleting persisted runtime position state whenever reconciliation force-closes or supersedes a lifecycle, which prevents stale `currentAdds` / trailing `TTP` / trailing `TSL` state from bleeding into the reopened position.
 - [x] `V1EXCEL-00 planning(queue): publish full V1 excellence and production-confidence packet`
   - 2026-04-29: Published `docs/planning/v1excel-full-v1-excellence-and-confidence-plan-2026-04-29.md` plus `docs/planning/v1excel-00-planning-task-2026-04-29.md` after reviewing the repository's own `Definition Of Done`, integration gate, deployment gate, and production-activation contract against the newly closed `V1TRUTH-A` wave. The packet freezes the remaining non-deferred gap as a confidence/evidence problem rather than an architecture problem: fresh manual verification, fresh stage/prod activation evidence, honest local go-live reproducibility, and one final GO/NO-GO decision on the current candidate.
 - [x] `V1TRUTH-00 planning(queue): publish final LIVE exchange-truth packet`
@@ -28,6 +38,9 @@ Operational queue for one-task execution runs.
 - [x] `V1COVER-02 test(shared-cleanup): repair singular-bot wallet cleanup drift in runtime takeover helpers`
   - 2026-04-29: Closed the second `V1COVER-A` slice by restoring wallet cleanup to the shared runtime takeover helper and aligning the outdated overlap proof to the current architecture. The shared takeover suite now deletes wallet-linked topology deterministically, and the first visibility regression no longer assumes two active LIVE bots may share one symbol; it now proves the approved contract instead: imported `LIVE` positions stay visible for the owning LIVE bot while a PAPER bot may share the symbol without taking ownership.
 ## NEXT
+- [ ] `V1REOPEN-05 test(api-runtime-red): lock TTP continuity and loss-side-only DCA behavior on reopened LIVE positions`
+- [ ] `V1REOPEN-06 fix(api+web-truth): align final operator truth for reopened LIVE positions`
+- [ ] `V1REOPEN-07 qa(closure): run focused close/reopen truth pack and publish evidence`
 - [x] `V1EXCEL-01 audit(v1-gap-map): freeze the exact remaining gap map against DoD, integration, deployment, and activation contracts`
   - 2026-04-29: Closed by publishing `docs/operations/v1excel-gap-map-audit-2026-04-29.md` plus `docs/planning/v1excel-01-gap-map-audit-task-2026-04-29.md`. The audit freezes one explicit answer: no open core implementation or architecture gap remains for `V1`; the remaining blockers are fresh manual evidence, honest local full-confidence reproducibility, fresh stage/prod activation evidence, and one final operator-facing `GO / NO-GO` decision.
 - [x] `V1EXCEL-02 qa(local-infra): restore fully reproducible local confidence path or classify the exact external blocker`

@@ -85,6 +85,7 @@ describe('reconcileExternalPositionsFromExchange', () => {
               botId: 'bot-live-1',
               walletId: 'wallet-live-1',
               strategyId: 'strategy-live-1',
+              openedAt: new Date('2026-03-23T00:00:00.000Z'),
               managementMode: 'BOT_MANAGED' as const,
               continuityState: 'CONFIRMED' as const,
               missingSyncCount: 0,
@@ -322,7 +323,7 @@ describe('reconcileExternalPositionsFromExchange', () => {
         id: 'local-bot-pos-1',
         symbol: 'BTCUSDT',
         side: 'LONG' as const,
-        openedAt: new Date('2026-03-23T00:00:00.000Z'),
+        openedAt: new Date('2026-03-23T00:09:30.000Z'),
       },
     ]);
 
@@ -397,6 +398,158 @@ describe('reconcileExternalPositionsFromExchange', () => {
       })
     );
     expect(createSyncedPosition).not.toHaveBeenCalled();
+  });
+
+  it('closes stale opposite-side synced lifecycle immediately when same symbol reopens on the other side', async () => {
+    const closeStaleSyncedPosition = vi.fn(async () => undefined);
+    const deleteRuntimePositionState = vi.fn(async () => undefined);
+    const createSyncedPosition = vi.fn(async () => undefined);
+
+    const result = await reconcileExternalPositionsFromExchange({
+      listSyncedApiKeys: vi.fn(async () => [
+        {
+          id: 'key-reopen-opposite-1',
+          userId: 'user-reopen-opposite-1',
+        },
+      ]),
+      resolveOwnershipIndexForUser: vi.fn(async () =>
+        new Map([
+          [
+            'key-reopen-opposite-1:DOGEUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-reopen-opposite-1',
+              walletId: 'wallet-reopen-opposite-1',
+            },
+          ],
+        ])
+      ),
+      fetchPositionsForApiKey: vi.fn(async () => ({
+        positions: [
+          {
+            symbol: 'DOGE/USDT:USDT',
+            side: 'long',
+            contracts: 1500,
+            entryPrice: 0.11,
+            markPrice: 0.1125,
+            unrealizedPnl: 3,
+            leverage: 15,
+            timestamp: '2026-03-23T00:10:00.000Z',
+          },
+        ],
+      })),
+      findOpenSyncedPositionByExternalId: vi.fn(async () => null),
+      resolveCanonicalBotContinuityContext: vi.fn(async () => ({
+        botId: 'bot-reopen-opposite-1',
+        walletId: 'wallet-reopen-opposite-1',
+        strategyId: 'strategy-reopen-opposite-1',
+      })),
+      updateSyncedPosition: vi.fn(async () => undefined),
+      createSyncedPosition,
+      listOpenSyncedPositionsForApiKey: vi.fn(async () => [
+        {
+          id: 'pos-stale-doge-short',
+          externalId: 'key-reopen-opposite-1:DOGEUSDT:SHORT',
+          missingSyncCount: 0,
+        },
+      ]),
+      markMissingSyncedPosition: vi.fn(async () => undefined),
+      closeStaleSyncedPosition,
+      deleteRuntimePositionState,
+      now: () => new Date('2026-03-23T00:10:01.000Z'),
+    });
+
+    expect(result.openPositionsSeen).toBe(1);
+    expect(createSyncedPosition).toHaveBeenCalledWith(
+      expect.objectContaining({
+        externalId: 'key-reopen-opposite-1:DOGEUSDT:LONG',
+        side: 'LONG',
+      })
+    );
+    expect(closeStaleSyncedPosition).toHaveBeenCalledWith(
+      'pos-stale-doge-short',
+      new Date('2026-03-23T00:10:01.000Z')
+    );
+    expect(deleteRuntimePositionState).toHaveBeenCalledWith('pos-stale-doge-short');
+  });
+
+  it('treats same-side reopen with a newer exchange timestamp as a new lifecycle and clears stale runtime state', async () => {
+    const updateSyncedPosition = vi.fn(async () => undefined);
+    const createSyncedPosition = vi.fn(async () => undefined);
+    const closeStaleSyncedPosition = vi.fn(async () => undefined);
+    const deleteRuntimePositionState = vi.fn(async () => undefined);
+
+    await reconcileExternalPositionsFromExchange({
+      listSyncedApiKeys: vi.fn(async () => [
+        {
+          id: 'key-reopen-same-side-1',
+          userId: 'user-reopen-same-side-1',
+        },
+      ]),
+      resolveOwnershipIndexForUser: vi.fn(async () =>
+        new Map([
+          [
+            'key-reopen-same-side-1:DOGEUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-reopen-same-side-1',
+              walletId: 'wallet-reopen-same-side-1',
+            },
+          ],
+        ])
+      ),
+      fetchPositionsForApiKey: vi.fn(async () => ({
+        positions: [
+          {
+            symbol: 'DOGE/USDT:USDT',
+            side: 'long',
+            contracts: 2000,
+            entryPrice: 0.12,
+            markPrice: 0.123,
+            unrealizedPnl: 4,
+            leverage: 15,
+            timestamp: '2026-03-23T00:15:00.000Z',
+          },
+        ],
+      })),
+      findOpenSyncedPositionByExternalId: vi.fn(async () => ({
+        id: 'pos-old-doge-long',
+        botId: 'bot-reopen-same-side-1',
+        walletId: 'wallet-reopen-same-side-1',
+        strategyId: 'strategy-reopen-same-side-1',
+        openedAt: new Date('2026-03-23T00:00:00.000Z'),
+        managementMode: 'BOT_MANAGED' as const,
+        continuityState: 'CONFIRMED' as const,
+        missingSyncCount: 0,
+      })),
+      resolveCanonicalBotContinuityContext: vi.fn(async () => ({
+        botId: 'bot-reopen-same-side-1',
+        walletId: 'wallet-reopen-same-side-1',
+        strategyId: 'strategy-reopen-same-side-1',
+      })),
+      updateSyncedPosition,
+      createSyncedPosition,
+      listOpenSyncedPositionsForApiKey: vi.fn(async () => []),
+      markMissingSyncedPosition: vi.fn(async () => undefined),
+      closeStaleSyncedPosition,
+      deleteRuntimePositionState,
+      now: () => new Date('2026-03-23T00:15:01.000Z'),
+    });
+
+    expect(closeStaleSyncedPosition).toHaveBeenCalledWith(
+      'pos-old-doge-long',
+      new Date('2026-03-23T00:15:01.000Z')
+    );
+    expect(deleteRuntimePositionState).toHaveBeenCalledWith('pos-old-doge-long');
+    expect(updateSyncedPosition).not.toHaveBeenCalled();
+    expect(createSyncedPosition).toHaveBeenCalledWith(
+      expect.objectContaining({
+        externalId: 'key-reopen-same-side-1:DOGEUSDT:LONG',
+        entryPrice: 0.12,
+        quantity: 2000,
+        openedAt: new Date('2026-03-23T00:15:00.000Z'),
+      })
+    );
   });
 
   it('falls back to MANUAL_MANAGED + DRIFT when takeover ownership is ambiguous', async () => {
@@ -503,6 +656,7 @@ describe('reconcileExternalPositionsFromExchange', () => {
         botId: 'bot-preserve-1',
         walletId: 'wallet-preserve-1',
         strategyId: 'strategy-preserve-1',
+        openedAt: new Date('2026-03-23T00:20:00.000Z'),
         managementMode: 'BOT_MANAGED' as const,
         continuityState: 'CONFIRMED' as const,
         missingSyncCount: 0,
@@ -578,6 +732,7 @@ describe('reconcileExternalPositionsFromExchange', () => {
         botId: 'bot-live-safe',
         walletId: 'wallet-live-safe',
         strategyId: 'strategy-live-safe',
+        openedAt: new Date('2026-03-23T01:00:00.000Z'),
         managementMode: 'BOT_MANAGED' as const,
         continuityState: 'CONFIRMED' as const,
         missingSyncCount: 0,
@@ -795,11 +950,83 @@ describe('reconcileExternalPositionsFromExchange', () => {
     });
 
     expect(result.openPositionsSeen).toBe(1);
-    expect(closeStaleLocalManagedPosition).toHaveBeenCalledTimes(1);
+    expect(closeStaleLocalManagedPosition).toHaveBeenCalledTimes(2);
     expect(closeStaleLocalManagedPosition).toHaveBeenCalledWith(
       'pos-live-stale-bnb',
       new Date('2026-03-23T01:10:00.000Z')
     );
+    expect(closeStaleLocalManagedPosition).toHaveBeenCalledWith(
+      'pos-live-current-doge',
+      new Date('2026-03-23T01:10:00.000Z')
+    );
+  });
+
+  it('closes stale opposite-side local managed lifecycle immediately when the same symbol reopens on the other side', async () => {
+    const closeStaleLocalManagedPosition = vi.fn(async () => undefined);
+    const deleteRuntimePositionState = vi.fn(async () => undefined);
+
+    await reconcileExternalPositionsFromExchange({
+      listSyncedApiKeys: vi.fn(async () => [
+        {
+          id: 'key-local-reopen-opposite-1',
+          userId: 'user-local-reopen-opposite-1',
+        },
+      ]),
+      resolveOwnershipIndexForUser: vi.fn(async () =>
+        new Map([
+          [
+            'key-local-reopen-opposite-1:DOGEUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-local-reopen-opposite-1',
+              walletId: 'wallet-local-reopen-opposite-1',
+            },
+          ],
+        ])
+      ),
+      fetchPositionsForApiKey: vi.fn(async () => ({
+        positions: [
+          {
+            symbol: 'DOGE/USDT:USDT',
+            side: 'long',
+            contracts: 1800,
+            entryPrice: 0.115,
+            markPrice: 0.1175,
+            unrealizedPnl: 2.5,
+            leverage: 15,
+            timestamp: '2026-03-23T00:40:00.000Z',
+          },
+        ],
+      })),
+      findOpenSyncedPositionByExternalId: vi.fn(async () => null),
+      resolveCanonicalBotContinuityContext: vi.fn(async () => ({
+        botId: 'bot-local-reopen-opposite-1',
+        walletId: 'wallet-local-reopen-opposite-1',
+        strategyId: 'strategy-local-reopen-opposite-1',
+      })),
+      updateSyncedPosition: vi.fn(async () => undefined),
+      createSyncedPosition: vi.fn(async () => undefined),
+      listOpenSyncedPositionsForApiKey: vi.fn(async () => []),
+      listOpenLocalManagedPositionsForOwner: vi.fn(async () => [
+        {
+          id: 'pos-local-doge-short',
+          symbol: 'DOGEUSDT',
+          side: 'SHORT' as const,
+          openedAt: new Date('2026-03-23T00:39:50.000Z'),
+        },
+      ]),
+      closeStaleLocalManagedPosition,
+      markMissingSyncedPosition: vi.fn(async () => undefined),
+      closeStaleSyncedPosition: vi.fn(async () => undefined),
+      deleteRuntimePositionState,
+      now: () => new Date('2026-03-23T00:40:01.000Z'),
+    });
+
+    expect(closeStaleLocalManagedPosition).toHaveBeenCalledWith(
+      'pos-local-doge-short',
+      new Date('2026-03-23T00:40:01.000Z')
+    );
+    expect(deleteRuntimePositionState).toHaveBeenCalledWith('pos-local-doge-short');
   });
 
   it('still closes long-stale local managed live positions when open-order snapshot fetch fails', async () => {

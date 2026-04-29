@@ -17,6 +17,35 @@ Last updated: 2026-04-29
 
 ## READY
 
+- [x] `V1REOPEN-00 analysis(queue): publish same-symbol LIVE close/reopen hardening packet`
+  - Scope: freeze the newly reported `LIVE close -> reopen same symbol` regression into one exact execution packet covering stale lifecycle visibility, wrong `PnL%` basis, and stale `TTP` continuity risk.
+  - 2026-04-29: Closed as an analysis-only slice. Published `docs/planning/v1reopen-live-close-reopen-pnl-ttp-hardening-plan-2026-04-29.md` plus `docs/planning/v1reopen-00-analysis-task-2026-04-29.md` after reviewing reconciliation, runtime protection-state, and dashboard derivation seams. Current strongest hypothesis: the bug is stale lifecycle continuity across same-symbol `LIVE` close/reopen, not a simple UI percent formula drift.
+
+- [x] `V1REOPEN-01 audit(regression-matrix): freeze the exact same-symbol close/reopen failure matrix`
+  - Scope: reproduce and lock the reported `DOGEUSDT` class across same-side and opposite-side reentry, including wrong PnL sign/basis and stale protection carryover.
+  - 2026-04-29: Closed by freezing the matrix directly in focused reconciliation coverage. The repository now has explicit proofs for stale opposite-side overlap, same-side lifecycle replacement, and stale runtime-state cleanup on lifecycle retirement.
+
+- [x] `V1REOPEN-02 test(api-red): lock stale lifecycle visibility, side truth, and PnL basis on LIVE reopen`
+  - Scope: add failing coverage proving a new same-symbol `LIVE` position cannot inherit the old lifecycle row, side, entry basis, or operator-visible PnL sign.
+  - 2026-04-29: Closed with focused tests in `livePositionReconciliation.service.test.ts` for opposite-side reopen and same-side reopen with newer exchange timestamp.
+
+- [x] `V1REOPEN-03 fix(api-reconcile): retire superseded same-symbol lifecycle rows deterministically`
+  - Scope: harden reconciliation so exchange truth for a new same-symbol lifecycle closes or supersedes the stale old row instead of letting both truths overlap through the grace window.
+  - 2026-04-29: Closed by immediately retiring same-symbol conflicting rows and by treating newer exchange open timestamps as lifecycle discontinuity for same-side reopen.
+
+- [x] `V1REOPEN-04 fix(api-runtime-state): clear stale runtime protection state on close or lifecycle replacement`
+  - Scope: prevent `TTP`/`TSL`/DCA runtime state from bleeding into the reopened lifecycle after old-position retirement.
+  - 2026-04-29: Closed by deleting persisted runtime position state whenever reconciliation closes or supersedes a lifecycle.
+
+- [ ] `V1REOPEN-05 test(api-runtime-red): lock TTP continuity and loss-side-only DCA behavior on reopened LIVE positions`
+  - Scope: prove the reopened lifecycle arms `TTP` correctly when remaining DCA thresholds are loss-side only and no stale state survives from the prior lifecycle.
+
+- [ ] `V1REOPEN-06 fix(api+web-truth): align final operator truth for reopened LIVE positions`
+  - Scope: keep operator surfaces faithful to the repaired backend truth and only add a minimal read-model adjustment if focused proof shows it is still needed.
+
+- [ ] `V1REOPEN-07 qa(closure): run focused close/reopen truth pack and publish evidence`
+  - Scope: rerun the focused reconciliation/runtime/operator pack, typechecks, and repository guardrails; then publish closure evidence.
+
 - [x] `V1EXCEL-00 planning(queue): publish full V1 excellence and production-confidence packet`
   - 2026-04-29: Closed as a planning-only slice after reviewing the repo's own completion and activation contracts against the newly closed `V1TRUTH-A` wave. Published `docs/planning/v1excel-full-v1-excellence-and-confidence-plan-2026-04-29.md` plus `docs/planning/v1excel-00-planning-task-2026-04-29.md`, freezing the remaining non-deferred gap as a confidence/evidence wave rather than a code-architecture wave.
 

@@ -10,6 +10,22 @@ import {
 import {
   resolveExternalSyncMissingCloseAttribution,
 } from './positionCloseAttribution';
+import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
+import {
+  buildPositionIdentity,
+  extractSymbolFromExternalId,
+  normalizeImportedLeverage,
+  normalizeSymbol,
+  resolveCanonicalEntryPrice,
+  resolveRecoveredContinuityState,
+  resolveRecoveredManagementMode,
+  shouldTreatAsLifecycleReplacement,
+  toOpenOrderStatus,
+  toOrderSide,
+  toOrderType,
+  toPositionSide,
+  toPositionSideFromOrderSide,
+} from './livePositionReconciliation.helpers';
 
 type ReconciliationStatus = {
   running: boolean;
@@ -63,6 +79,7 @@ type OpenSyncedPositionRecord = {
   botId: string | null;
   walletId: string | null;
   strategyId: string | null;
+  openedAt: Date;
   managementMode: 'BOT_MANAGED' | 'MANUAL_MANAGED';
   continuityState:
     | 'CONFIRMED'
@@ -165,6 +182,7 @@ type ReconcileDeps = {
     }
   ) => Promise<void>;
   closeStaleSyncedPosition: (positionId: string, closedAt: Date) => Promise<void>;
+  deleteRuntimePositionState?: (positionId: string) => Promise<void>;
   upsertSyncedOpenOrder?: (input: {
     userId: string;
     exchangeOrderId: string;
@@ -198,113 +216,6 @@ const STALE_LOCAL_MANAGED_LIVE_POSITION_GRACE_MS = 10 * 60 * 1000;
 const STALE_LOCAL_MANAGED_LIVE_POSITION_FALLBACK_GRACE_MS = 60 * 60 * 1000;
 const EXTERNAL_POSITION_MISSING_CONFIRMATION_THRESHOLD = 2;
 const buildOwnerIdentity = (botId: string, walletId: string) => `${botId}:${walletId}`;
-
-const normalizeSymbol = (symbol: string) => {
-  const trimmed = symbol.trim().toUpperCase();
-  if (!trimmed) return '';
-  if (trimmed.includes('/') && trimmed.includes(':')) {
-    const [base, quoteAndSettle] = trimmed.split('/');
-    const [, settle] = quoteAndSettle.split(':');
-    if (base && settle) return `${base}${settle}`;
-  }
-  if (trimmed.includes('/')) {
-    const [base, quote] = trimmed.split('/');
-    if (base && quote) return `${base}${quote}`;
-  }
-  return trimmed.replace(/[/:]/g, '');
-};
-
-const toPositionSide = (
-  side: string | null,
-  contracts: number
-): 'LONG' | 'SHORT' | null => {
-  const normalized = (side ?? '').trim().toLowerCase();
-  if (normalized === 'long') return 'LONG';
-  if (normalized === 'short') return 'SHORT';
-  if (contracts > 0) return 'LONG';
-  if (contracts < 0) return 'SHORT';
-  return null;
-};
-
-const toOrderSide = (side: string | null): 'BUY' | 'SELL' | null => {
-  const normalized = (side ?? '').trim().toLowerCase();
-  if (normalized === 'buy') return 'BUY';
-  if (normalized === 'sell') return 'SELL';
-  return null;
-};
-
-const toPositionSideFromOrderSide = (side: 'BUY' | 'SELL'): 'LONG' | 'SHORT' =>
-  side === 'BUY' ? 'LONG' : 'SHORT';
-
-const buildPositionIdentity = (symbol: string, side: 'LONG' | 'SHORT') =>
-  `${normalizeSymbol(symbol)}:${side}`;
-
-const normalizeImportedLeverage = (value: number | null | undefined) =>
-  Number.isFinite(value) ? Math.max(1, Math.round(value!)) : 1;
-
-const resolveRecoveredContinuityState = (input: {
-  ownershipStatus: 'OWNED' | 'AMBIGUOUS' | 'MANUAL_ONLY' | 'UNOWNED';
-  existing: OpenSyncedPositionRecord | null;
-}) => {
-  if (input.ownershipStatus === 'OWNED') {
-    return 'CONFIRMED' as const;
-  }
-  if (input.existing?.botId) {
-    return 'RECOVERED_UNACTIONABLE' as const;
-  }
-  return 'CONFIRMED' as const;
-};
-
-const resolveRecoveredManagementMode = (input: {
-  ownershipStatus: 'OWNED' | 'AMBIGUOUS' | 'MANUAL_ONLY' | 'UNOWNED';
-  existing: OpenSyncedPositionRecord | null;
-}) => {
-  if (input.ownershipStatus === 'OWNED') {
-    return 'BOT_MANAGED' as const;
-  }
-  if (input.existing?.botId) {
-    return 'BOT_MANAGED' as const;
-  }
-  return 'MANUAL_MANAGED' as const;
-};
-
-const toOrderType = (
-  type: string | null
-): 'MARKET' | 'LIMIT' | 'STOP' | 'STOP_LIMIT' | 'TAKE_PROFIT' | 'TRAILING' => {
-  const normalized = (type ?? '').trim().toLowerCase();
-  if (normalized.includes('market') && normalized.includes('stop')) return 'STOP';
-  if (normalized.includes('stop') && normalized.includes('limit')) return 'STOP_LIMIT';
-  if (normalized.includes('stop')) return 'STOP';
-  if (normalized.includes('take') && normalized.includes('profit')) return 'TAKE_PROFIT';
-  if (normalized.includes('trail')) return 'TRAILING';
-  if (normalized.includes('market')) return 'MARKET';
-  return 'LIMIT';
-};
-
-const toOpenOrderStatus = (status: string | null): 'OPEN' | 'PARTIALLY_FILLED' | null => {
-  const normalized = (status ?? '').trim().toLowerCase();
-  if (!normalized) return null;
-  if (normalized.includes('partial')) return 'PARTIALLY_FILLED';
-  if (
-    normalized.includes('open') ||
-    normalized.includes('new') ||
-    normalized.includes('working')
-  ) {
-    return 'OPEN';
-  }
-  return null;
-};
-
-const resolveCanonicalEntryPrice = (
-  position: Pick<ExternalSnapshotPosition, 'entryPrice' | 'markPrice'>
-) => {
-  const entryPrice =
-    typeof position.entryPrice === 'number' && Number.isFinite(position.entryPrice)
-      ? position.entryPrice
-      : null;
-  if (entryPrice == null || entryPrice <= 0) return null;
-  return entryPrice;
-};
 
 const defaultDeps: ReconcileDeps = {
   listSyncedApiKeys: async () => {
@@ -344,6 +255,7 @@ const defaultDeps: ReconcileDeps = {
         managementMode: true,
         continuityState: true,
         missingSyncCount: true,
+        openedAt: true,
       },
     }),
   resolveCanonicalBotContinuityContext: async (botId) =>
@@ -450,6 +362,9 @@ const defaultDeps: ReconcileDeps = {
         closeInitiator: closeAttribution.closeInitiator,
       },
     });
+  },
+  deleteRuntimePositionState: async (positionId) => {
+    await runtimePositionStateStore.deletePositionRuntimeState(positionId);
   },
   upsertSyncedOpenOrder: async (input) => {
     const existing = await prisma.order.findFirst({
@@ -572,6 +487,7 @@ export const reconcileExternalPositionsFromExchange = async (
     try {
       const snapshot = await deps.fetchPositionsForApiKey(apiKey);
       const seenExternalIds = new Set<string>();
+      const seenExternalSymbols = new Set<string>();
       const openedAtFallback = deps.now();
       const syncedAt = deps.now();
       const ownershipIndex = await deps.resolveOwnershipIndexForUser({
@@ -600,6 +516,7 @@ export const reconcileExternalPositionsFromExchange = async (
         });
       }
       const seenExternalPositionKeysByOwner = new Map<string, Set<string>>();
+      const seenExternalSymbolsByOwner = new Map<string, Set<string>>();
       const localManagedPositionsByOwner = new Map<string, LocalManagedLivePosition[]>();
 
       const loadLocalManagedPositionsForOwner = async (input: {
@@ -616,6 +533,30 @@ export const reconcileExternalPositionsFromExchange = async (
         return positions;
       };
 
+      const evictLocalManagedPositionFromCache = (input: {
+        botId: string;
+        walletId: string;
+        positionId: string;
+      }) => {
+        const ownerKey = buildOwnerIdentity(input.botId, input.walletId);
+        const cached = localManagedPositionsByOwner.get(ownerKey);
+        if (!cached) return;
+        localManagedPositionsByOwner.set(
+          ownerKey,
+          cached.filter((position) => position.id !== input.positionId)
+        );
+      };
+
+      const closePositionLifecycle = async (positionId: string, closedAt: Date, closePosition: (
+        positionId: string,
+        closedAt: Date
+      ) => Promise<void>) => {
+        await closePosition(positionId, closedAt);
+        if (deps.deleteRuntimePositionState) {
+          await deps.deleteRuntimePositionState(positionId);
+        }
+      };
+
       for (const position of snapshot.positions) {
         const size = Math.abs(position.contracts ?? 0);
         if (size <= 0) continue;
@@ -628,6 +569,7 @@ export const reconcileExternalPositionsFromExchange = async (
         openPositionsSeen += 1;
         const externalId = `${apiKey.id}:${normalizedSymbol}:${side}`;
         seenExternalIds.add(externalId);
+        seenExternalSymbols.add(normalizedSymbol);
         const canonicalEntryPrice = resolveCanonicalEntryPrice(position);
         if (canonicalEntryPrice == null) {
           console.warn(
@@ -647,11 +589,11 @@ export const reconcileExternalPositionsFromExchange = async (
         const managedByBot = ownership.status === 'OWNED';
         const managementMode = resolveRecoveredManagementMode({
           ownershipStatus: ownership.status,
-          existing,
+          existingBotId: existing?.botId,
         });
         const continuityState = resolveRecoveredContinuityState({
           ownershipStatus: ownership.status,
-          existing,
+          existingBotId: existing?.botId,
         });
         const syncState = ownership.status === 'OWNED' || ownership.status === 'MANUAL_ONLY'
           ? 'IN_SYNC'
@@ -683,9 +625,25 @@ export const reconcileExternalPositionsFromExchange = async (
           const seenKeys = seenExternalPositionKeysByOwner.get(ownerKey) ?? new Set<string>();
           seenKeys.add(buildPositionIdentity(normalizedSymbol, side));
           seenExternalPositionKeysByOwner.set(ownerKey, seenKeys);
+          const seenSymbols = seenExternalSymbolsByOwner.get(ownerKey) ?? new Set<string>();
+          seenSymbols.add(normalizedSymbol);
+          seenExternalSymbolsByOwner.set(ownerKey, seenSymbols);
+        }
+
+        const snapshotOpenedAt = position.timestamp ? new Date(position.timestamp) : null;
+
+        const existingLifecycleReplaced =
+          existing &&
+          shouldTreatAsLifecycleReplacement({
+            candidateOpenedAt: existing.openedAt,
+            snapshotOpenedAt,
+          });
+        if (existingLifecycleReplaced) {
+          await closePositionLifecycle(existing.id, deps.now(), deps.closeStaleSyncedPosition);
         }
 
         const localManagedPosition =
+          !existingLifecycleReplaced &&
           !existing &&
           ownership.status === 'OWNED' &&
           restoredBotId &&
@@ -703,8 +661,26 @@ export const reconcileExternalPositionsFromExchange = async (
               ) ?? null
             : null;
 
-        if (existing || localManagedPosition) {
-          await deps.updateSyncedPosition((existing ?? localManagedPosition)!.id, {
+        const localLifecycleReplaced =
+          localManagedPosition != null &&
+          shouldTreatAsLifecycleReplacement({
+            candidateOpenedAt: localManagedPosition.openedAt,
+            snapshotOpenedAt,
+          });
+        if (localLifecycleReplaced && restoredBotId && restoredWalletId) {
+          await closePositionLifecycle(localManagedPosition.id, deps.now(), deps.closeStaleLocalManagedPosition!);
+          evictLocalManagedPositionFromCache({
+            botId: restoredBotId,
+            walletId: restoredWalletId,
+            positionId: localManagedPosition.id,
+          });
+        }
+
+        const reusablePosition =
+          existingLifecycleReplaced || localLifecycleReplaced ? null : existing ?? localManagedPosition;
+
+        if (reusablePosition) {
+          await deps.updateSyncedPosition(reusablePosition.id, {
             symbol: normalizedSymbol,
             side,
             quantity: size,
@@ -770,6 +746,10 @@ export const reconcileExternalPositionsFromExchange = async (
 
       for (const stale of currentOpen) {
         if (stale.externalId && seenExternalIds.has(stale.externalId)) continue;
+        if (seenExternalSymbols.has(extractSymbolFromExternalId(stale.externalId) ?? '')) {
+          await closePositionLifecycle(stale.id, deps.now(), deps.closeStaleSyncedPosition);
+          continue;
+        }
         const nextMissingSyncCount = stale.missingSyncCount + 1;
         if (nextMissingSyncCount < EXTERNAL_POSITION_MISSING_CONFIRMATION_THRESHOLD) {
           await deps.markMissingSyncedPosition(stale.id, {
@@ -781,7 +761,7 @@ export const reconcileExternalPositionsFromExchange = async (
           });
           continue;
         }
-        await deps.closeStaleSyncedPosition(stale.id, deps.now());
+        await closePositionLifecycle(stale.id, deps.now(), deps.closeStaleSyncedPosition);
       }
 
       const openOrderPositionKeysByOwner = new Map<string, Set<string>>();
@@ -892,14 +872,37 @@ export const reconcileExternalPositionsFromExchange = async (
             walletId: owner.walletId,
           });
           const seenExternalPositionKeys = seenExternalPositionKeysByOwner.get(ownerKey) ?? new Set<string>();
+          const seenExternalSymbolsForOwner = seenExternalSymbolsByOwner.get(ownerKey) ?? new Set<string>();
           const openOrderPositionKeys = openOrderPositionKeysByOwner.get(ownerKey) ?? new Set<string>();
 
           for (const localPosition of localManagedPositions) {
             const localIdentity = buildPositionIdentity(localPosition.symbol, localPosition.side);
             if (seenExternalPositionKeys.has(localIdentity)) continue;
+            if (seenExternalSymbolsForOwner.has(normalizeSymbol(localPosition.symbol))) {
+              await closePositionLifecycle(
+                localPosition.id,
+                deps.now(),
+                deps.closeStaleLocalManagedPosition
+              );
+              evictLocalManagedPositionFromCache({
+                botId: owner.botId,
+                walletId: owner.walletId,
+                positionId: localPosition.id,
+              });
+              continue;
+            }
             if (openOrderSnapshotAvailable && openOrderPositionKeys.has(localIdentity)) continue;
             if (localPosition.openedAt.getTime() > staleCutoffMs) continue;
-            await deps.closeStaleLocalManagedPosition(localPosition.id, deps.now());
+            await closePositionLifecycle(
+              localPosition.id,
+              deps.now(),
+              deps.closeStaleLocalManagedPosition
+            );
+            evictLocalManagedPositionFromCache({
+              botId: owner.botId,
+              walletId: owner.walletId,
+              positionId: localPosition.id,
+            });
           }
         }
       }
