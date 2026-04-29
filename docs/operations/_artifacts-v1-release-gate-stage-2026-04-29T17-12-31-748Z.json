@@ -1,0 +1,130 @@
+{
+  "generatedAt": "2026-04-29T17:12:31.820Z",
+  "environment": "stage",
+  "dryRun": true,
+  "readiness": "not_ready",
+  "baseUrl": "https://stage-api.soar.luckysparrow.ch",
+  "webBaseUrl": "https://stage.soar.luckysparrow.ch",
+  "evidence": [
+    {
+      "key": "activationAudit",
+      "label": "activation evidence audit",
+      "state": "stale",
+      "required": true,
+      "reason": "expected 2026-04-29, found 2026-04-22",
+      "path": "docs\\operations\\v1-production-activation-evidence-audit-2026-04-22.md",
+      "date": "2026-04-22"
+    },
+    {
+      "key": "activationPlan",
+      "label": "activation execution plan",
+      "state": "stale",
+      "required": true,
+      "reason": "expected 2026-04-29, found 2026-04-22",
+      "path": "docs\\planning\\v1-production-activation-and-evidence-plan-2026-04-22.md",
+      "date": "2026-04-22"
+    },
+    {
+      "key": "rcExternalGateStatus",
+      "label": "RC external gates status",
+      "state": "skipped",
+      "required": false,
+      "reason": "not required for stage",
+      "path": null,
+      "date": null
+    },
+    {
+      "key": "rcSignoffRecord",
+      "label": "RC sign-off record",
+      "state": "skipped",
+      "required": false,
+      "reason": "not required for stage",
+      "path": null,
+      "date": null
+    },
+    {
+      "key": "rcChecklist",
+      "label": "RC checklist verification block",
+      "state": "skipped",
+      "required": false,
+      "reason": "not required for stage",
+      "path": null,
+      "date": null
+    },
+    {
+      "key": "backupRestoreDrill",
+      "label": "backup/restore drill evidence",
+      "state": "skipped",
+      "required": false,
+      "reason": "not required for stage",
+      "path": null,
+      "date": null
+    },
+    {
+      "key": "rollbackProof",
+      "label": "rollback proof pack",
+      "state": "skipped",
+      "required": false,
+      "reason": "not required for stage",
+      "path": null,
+      "date": null
+    }
+  ],
+  "blockers": [
+    "evidence:activationAudit:stale",
+    "evidence:activationPlan:stale",
+    "mode:stage_dry_run_requires_remote_execution"
+  ],
+  "steps": [
+    {
+      "label": "post-deploy smoke gate",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "ops:deploy:smoke",
+        "--",
+        "--base-url",
+        "https://stage-api.soar.luckysparrow.ch",
+        "--web-base-url",
+        "https://stage.soar.luckysparrow.ch"
+      ],
+      "startedAt": "2026-04-29T17:12:31.820Z",
+      "endedAt": "2026-04-29T17:12:31.820Z",
+      "durationMs": 0,
+      "status": "skipped",
+      "exitCode": 0
+    },
+    {
+      "label": "runtime freshness gate",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "ops:deploy:runtime-freshness",
+        "--",
+        "--base-url",
+        "https://stage-api.soar.luckysparrow.ch"
+      ],
+      "startedAt": "2026-04-29T17:12:31.820Z",
+      "endedAt": "2026-04-29T17:12:31.820Z",
+      "durationMs": 0,
+      "status": "skipped",
+      "exitCode": 0
+    },
+    {
+      "label": "rollback guard gate",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "ops:deploy:rollback-guard",
+        "--",
+        "--base-url",
+        "https://stage-api.soar.luckysparrow.ch"
+      ],
+      "startedAt": "2026-04-29T17:12:31.820Z",
+      "endedAt": "2026-04-29T17:12:31.820Z",
+      "durationMs": 0,
+      "status": "skipped",
+      "exitCode": 0
+    }
+  ]
+}

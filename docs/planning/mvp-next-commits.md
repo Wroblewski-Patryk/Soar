@@ -7,6 +7,8 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1EXCEL-00 planning(queue): publish full V1 excellence and production-confidence packet`
+  - 2026-04-29: Published `docs/planning/v1excel-full-v1-excellence-and-confidence-plan-2026-04-29.md` plus `docs/planning/v1excel-00-planning-task-2026-04-29.md` after reviewing the repository's own `Definition Of Done`, integration gate, deployment gate, and production-activation contract against the newly closed `V1TRUTH-A` wave. The packet freezes the remaining non-deferred gap as a confidence/evidence problem rather than an architecture problem: fresh manual verification, fresh stage/prod activation evidence, honest local go-live reproducibility, and one final GO/NO-GO decision on the current candidate.
 - [x] `V1TRUTH-00 planning(queue): publish final LIVE exchange-truth packet`
   - 2026-04-29: Published `docs/planning/v1truth-live-exchange-truth-hardening-plan-2026-04-29.md` plus `docs/planning/v1truth-00-planning-task-2026-04-29.md` after a fresh real-account analysis of the remaining money-path drift. The approved staged direction is now canonical: keep the singular bot architecture through the final `V1` hardening wave, close truthful `LIVE` order/position/manual-close/protection behavior first, and defer multi-strategy-per-bot to a post-`V1` architecture wave.
 - [x] `V1TRUTH-01 audit(api+web+exchange): freeze the exact remaining money-path failure matrix`
@@ -26,6 +28,22 @@ Operational queue for one-task execution runs.
 - [x] `V1COVER-02 test(shared-cleanup): repair singular-bot wallet cleanup drift in runtime takeover helpers`
   - 2026-04-29: Closed the second `V1COVER-A` slice by restoring wallet cleanup to the shared runtime takeover helper and aligning the outdated overlap proof to the current architecture. The shared takeover suite now deletes wallet-linked topology deterministically, and the first visibility regression no longer assumes two active LIVE bots may share one symbol; it now proves the approved contract instead: imported `LIVE` positions stay visible for the owning LIVE bot while a PAPER bot may share the symbol without taking ownership.
 ## NEXT
+- [x] `V1EXCEL-01 audit(v1-gap-map): freeze the exact remaining gap map against DoD, integration, deployment, and activation contracts`
+  - 2026-04-29: Closed by publishing `docs/operations/v1excel-gap-map-audit-2026-04-29.md` plus `docs/planning/v1excel-01-gap-map-audit-task-2026-04-29.md`. The audit freezes one explicit answer: no open core implementation or architecture gap remains for `V1`; the remaining blockers are fresh manual evidence, honest local full-confidence reproducibility, fresh stage/prod activation evidence, and one final operator-facing `GO / NO-GO` decision.
+- [x] `V1EXCEL-02 qa(local-infra): restore fully reproducible local confidence path or classify the exact external blocker`
+  - 2026-04-29: Closed by repairing local Prisma migration-history drift non-destructively with `migrate resolve`, documenting the recovery in engineering docs, and rerunning `pnpm run test:go-live:smoke` successfully. Canonical closure: `docs/operations/v1excel-local-confidence-path-closure-2026-04-29.md`.
+- [ ] `V1EXCEL-03 qa(manual-matrix): execute the full critical manual UI/API/operator matrix`
+  - 2026-04-29 status: BLOCKED by missing authenticated operator and exchange access. The exact matrix is now frozen in `docs/operations/v1excel-manual-verification-matrix-2026-04-29.md`.
+- [ ] `V1EXCEL-04 ops(stage-refresh): rerun the latest authenticated stage release gate and smoke on the current candidate`
+  - 2026-04-29 status: BLOCKED by missing stage OPS/private-route auth. Public stage smoke PASS and dry-run rehearsal artifacts were refreshed: `docs/operations/v1excel-stage-refresh-2026-04-29.md`.
+- [ ] `V1EXCEL-05 ops(prod-refresh): rerun fresh production release-gate evidence families on the current candidate`
+  - 2026-04-29 status: BLOCKED by stale prod evidence plus missing OPS/private-route auth. Public prod smoke PASS and prod gate dry-run was refreshed: `docs/operations/v1excel-prod-refresh-2026-04-29.md`.
+- [ ] `V1EXCEL-06 ops(runtime-observability): verify active LIVE worker/runtime diagnostics under current production truth`
+  - 2026-04-29 status: BLOCKED by protected-route `401` on stage and prod runtime observability probes without OPS auth. Canonical status: `docs/operations/v1excel-runtime-observability-2026-04-29.md`.
+- [x] `V1EXCEL-07 release(go-no-go): rebuild RC status/sign-off/checklist and publish final V1 excellence decision`
+  - 2026-04-29: Closed with `NO-GO` for candidate `51acd9c445227a3ca8cc8b781564d14b55fda43f`. Canonical decision: `docs/operations/v1excel-final-go-no-go-2026-04-29.md`.
+- [x] `V1EXCEL-08 docs(closure): sync canonical queue/context and freeze the final post-V1 handoff`
+  - 2026-04-29: Closed by syncing queue/context and freezing the current truth: local confidence is green, but the final operational blockers are still `V1EXCEL-03..06`.
 - [x] `V1TRUTH-05 test(api+web-red): lock pending external order versus position truth`
   - 2026-04-29: Closed by adding a focused `orders-positions.e2e` proof for the reported real-money baseline: one open `LIVE` position plus one pending external/manual exchange `DCA` order on the same symbol. Runtime session positions and dashboard aggregate both stay truthful: the position keeps its original quantity/notional, while the pending exchange order remains visible only in `openOrders` until fill confirmation arrives.
 - [x] `V1TRUTH-06 fix(api+reads+web): harden order/position merge and operator presentation`

@@ -29,6 +29,22 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Avoid: treating a drifted local `migrate deploy` failure as proof that the new production migration is invalid.
 - Evidence: 2026-04-26 `V1FIX-2026-04-26-C` local index validation required `prisma db execute` after `migrate deploy` failed on pre-existing `20260424094500_add_single_context_bot_refs` drift.
 
+### 2026-04-29 - Local Prisma migration-history drift can often be repaired non-destructively with `migrate resolve`
+- Context: `V1EXCEL-02` needed the full umbrella `pnpm run test:go-live:smoke` path green on a workstation whose shared dev database had historical failed migration rows, while the actual schema objects were already present.
+- Symptom: local `prisma migrate deploy` and the umbrella smoke reported `P3009` on older migrations even though the current schema already contained the canonical columns, indexes, and close/restart fields required by the repo.
+- Root cause: the database schema and the `_prisma_migrations` bookkeeping had diverged. The schema was effectively ahead, but Prisma still believed specific historical migrations had failed.
+- Guardrail: when local schema inspection confirms the target objects already exist, repair the local history with `prisma migrate resolve --applied <migration>` before treating `P3009` as a current repository defect or wiping the whole dev DB.
+- Preferred pattern:
+```text
+1) Inspect whether the failed migration's schema objects already exist.
+2) If they do, mark the migration applied with `prisma migrate resolve`.
+3) Rerun `prisma migrate deploy` or the higher-level smoke wrapper.
+4) Document both the non-destructive repair path and the destructive reset fallback.
+```
+- Avoid: defaulting to `docker compose down -v` or declaring the repo broken when the real problem is only local migration bookkeeping drift.
+- Evidence:
+  - 2026-04-29 `V1EXCEL-02`: local umbrella smoke became green after resolving the historical rows for `20260424094500_add_single_context_bot_refs`, `20260426003000_scope_open_position_uniqueness_by_wallet_or_bot`, `20260427103000_add_position_close_attribution`, and `20260428113000_add_position_restart_continuity_state`.
+
 ## Entries
 
 ### 2026-04-28 - Legacy DB-backed e2e suites are often more stable with unique per-test identities than destructive per-test cleanup

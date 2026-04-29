@@ -1,0 +1,15 @@
+{
+  "generatedAt": "2026-04-29T17:12:31.831Z",
+  "status": "BLOCKED",
+  "dryRun": true,
+  "baseUrl": "https://stage-api.soar.luckysparrow.ch",
+  "webBaseUrl": "https://stage.soar.luckysparrow.ch",
+  "command": "node scripts/runV1ReleaseGate.mjs --environment stage --base-url https://stage-api.soar.luckysparrow.ch --web-base-url https://stage.soar.luckysparrow.ch --skip-local-quality --artifact-stamp 2026-04-29T17-12-31-748Z --dry-run",
+  "exitCode": 0,
+  "gateJsonPath": "docs\\operations\\_artifacts-v1-release-gate-stage-2026-04-29T17-12-31-748Z.json",
+  "gateReportPath": "docs\\operations\\v1-release-gate-stage-2026-04-29T17-12-31-748Z.md",
+  "blockers": [
+    "stage credentials and target environment were not exercised in this local dry-run",
+    "fresh stage evidence exists only as rehearsal planning, not as remote execution proof"
+  ]
+}

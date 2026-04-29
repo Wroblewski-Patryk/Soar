@@ -17,6 +17,41 @@ Last updated: 2026-04-29
 
 ## READY
 
+- [x] `V1EXCEL-00 planning(queue): publish full V1 excellence and production-confidence packet`
+  - 2026-04-29: Closed as a planning-only slice after reviewing the repo's own completion and activation contracts against the newly closed `V1TRUTH-A` wave. Published `docs/planning/v1excel-full-v1-excellence-and-confidence-plan-2026-04-29.md` plus `docs/planning/v1excel-00-planning-task-2026-04-29.md`, freezing the remaining non-deferred gap as a confidence/evidence wave rather than a code-architecture wave.
+
+- [x] `V1EXCEL-01 audit(v1-gap-map): freeze the exact remaining gap map against DoD, integration, deployment, and activation contracts`
+  - Scope: produce one canonical map of what is already closed in code, what is still missing only as fresh evidence, what remains locally blocked by reproducibility debt, and what is explicitly deferred beyond `V1`.
+  - 2026-04-29: Closed by publishing `docs/operations/v1excel-gap-map-audit-2026-04-29.md` plus `docs/planning/v1excel-01-gap-map-audit-task-2026-04-29.md`. The audit confirms there is no remaining core implementation gap in `V1`; the remaining blockers are confidence and evidence only.
+
+- [x] `V1EXCEL-02 qa(local-infra): restore fully reproducible local confidence path or classify the exact external blocker`
+  - Scope: resolve or strictly classify the remaining `test:go-live:smoke` local blocker around migration-history debt and reusable infra so another engineer can reproduce the local confidence path honestly.
+  - 2026-04-29: Closed by non-destructively repairing drifted local Prisma migration history with `migrate resolve`, updating the local-development and smoke-wrapper guidance, and rerunning the umbrella local pack successfully. Fresh evidence: `pnpm run test:go-live:smoke` => PASS with `35/35` API and `17/17` web checks. Canonical closure: `docs/operations/v1excel-local-confidence-path-closure-2026-04-29.md`.
+
+- [ ] `V1EXCEL-03 qa(manual-matrix): execute the full critical manual UI/API/operator matrix`
+  - Scope: run and record the real critical `PAPER` and `LIVE` operator scenarios, including manual order/close, pending external order truth, DCA/close protection behavior, and restart/recovery truth.
+  - 2026-04-29 status: BLOCKED. The full matrix is now explicit in `docs/operations/v1excel-manual-verification-matrix-2026-04-29.md`, but it still requires authenticated Soar operator access plus real exchange authority for `LIVE` scenarios.
+
+- [ ] `V1EXCEL-04 ops(stage-refresh): rerun the latest authenticated stage release gate and smoke on the current candidate`
+  - Scope: refresh stage rehearsal and smoke artifacts against the newest repository candidate instead of inheriting older activation evidence.
+  - 2026-04-29 status: BLOCKED. Public stage smoke is green, and dry-run rehearsal artifacts were regenerated, but authenticated stage OPS/private-route evidence remains blocked by missing credentials. Canonical status: `docs/operations/v1excel-stage-refresh-2026-04-29.md`.
+
+- [ ] `V1EXCEL-05 ops(prod-refresh): rerun fresh production release-gate evidence families on the current candidate`
+  - Scope: refresh prod release gate, post-deploy smoke, rollback proof, restore-drill proof, and related candidate-day artifacts.
+  - 2026-04-29 status: BLOCKED. Public prod smoke is green, but the prod release-gate dry-run still reports stale evidence families and protected OPS routes remain auth-gated from this session. Canonical status: `docs/operations/v1excel-prod-refresh-2026-04-29.md`.
+
+- [ ] `V1EXCEL-06 ops(runtime-observability): verify active LIVE worker/runtime diagnostics under current production truth`
+  - Scope: confirm worker health, runtime freshness, event visibility, and operator diagnostics remain healthy under the current hardened `LIVE` candidate.
+  - 2026-04-29 status: BLOCKED. Stage and prod runtime observability probes both hit protected-route `401` boundaries without OPS auth; this proves the endpoint boundary but not current worker/runtime health. Canonical status: `docs/operations/v1excel-runtime-observability-2026-04-29.md`.
+
+- [x] `V1EXCEL-07 release(go-no-go): rebuild RC status/sign-off/checklist and publish final V1 excellence decision`
+  - Scope: produce one final operator-facing `GO / NO-GO` answer for the current candidate with exact residual risks or blockers.
+  - 2026-04-29: Closed with an explicit `NO-GO` decision for candidate `51acd9c445227a3ca8cc8b781564d14b55fda43f`. The repository no longer shows a known implementation or architecture gap for `V1`, but fresh manual authenticated operator evidence and protected stage/prod OPS evidence remain missing. Canonical decision: `docs/operations/v1excel-final-go-no-go-2026-04-29.md`.
+
+- [x] `V1EXCEL-08 docs(closure): sync canonical queue/context and freeze the final post-V1 handoff`
+  - Scope: if `GO`, close the wave and point future work to `BOTMULTI-A`; if `NO-GO`, open only the smallest missing fix packet(s).
+  - 2026-04-29: Closed as a docs/context sync slice. Canonical truth is now frozen: `V1EXCEL-02` is green locally, `V1EXCEL-03..06` remain external-evidence blockers, and the latest candidate stays `NO-GO` until authenticated manual and OPS evidence is rerun.
+
 - [x] `V1TRUTH-00 planning(queue): publish final LIVE exchange-truth packet`
   - 2026-04-29: Closed as the next planning-only slice after the new real-account notes review. Published `docs/planning/v1truth-live-exchange-truth-hardening-plan-2026-04-29.md` plus `docs/planning/v1truth-00-planning-task-2026-04-29.md`, freezing one final `V1` hardening wave around truthful `LIVE` money paths: leverage-aware futures manual-order sizing, exchange-backed manual close, pending external order versus position truth, and the final explicit `DCA/TTP/TSL` rule. The user-approved staged direction is now canonical: keep the singular bot architecture through this wave and defer multi-strategy-per-bot to post-`V1`.
 

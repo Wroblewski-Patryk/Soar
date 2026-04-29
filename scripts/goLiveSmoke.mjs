@@ -57,6 +57,13 @@ const printLocalMigrationGuidance = (output) => {
   console.error('\n[go-live-smoke] Prisma migrate deploy is blocked by failed migrations in the local target database.');
   console.error('[go-live-smoke] Known local blocker detected: failed migration `20260424094500_add_single_context_bot_refs`.');
   console.error('[go-live-smoke] Resolve the failed local migration state first, then rerun the smoke wrapper.');
+  console.error('[go-live-smoke] On this repo/workstation the known failure shape is local schema-history drift, not a newly confirmed V1 product bug.');
+  console.error('[go-live-smoke] Recovery options:');
+  console.error('[go-live-smoke]  1) destructive local reset: `docker compose down -v` and recreate local infra');
+  console.error(
+    '[go-live-smoke]  2) non-destructive local recovery if schema already contains `Bot.strategyId` and `Bot.symbolGroupId`: `cd apps/api && .\\\\node_modules\\\\.bin\\\\prisma.CMD migrate resolve --applied 20260424094500_add_single_context_bot_refs`'
+  );
+  console.error('[go-live-smoke] After recovery, rerun `pnpm run test:go-live:smoke` to verify the full local path.');
 };
 
 let exitCode = 0;

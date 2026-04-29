@@ -80,6 +80,33 @@ If the smoke wrapper reports Prisma `P3009`, the blocker is the target local
 database state rather than the wrapper itself. Resolve the failed local
 migration first, then rerun the smoke command.
 
+Known local blocker on this workstation/repo history:
+- failed migration: `20260424094500_add_single_context_bot_refs`
+- observed failure shape: duplicate-column drift
+  (`column "strategyId" of relation "Bot" already exists`)
+
+Safe local recovery options:
+
+1. Destructive local reset when preserving local DB contents does not matter:
+```powershell
+docker compose down -v
+docker compose up -d postgres redis
+pnpm run test:go-live:smoke
+```
+
+2. Non-destructive recovery when the schema already contains
+`Bot.strategyId` and `Bot.symbolGroupId` and only migration history is dirty:
+```powershell
+Set-Location apps/api
+.\node_modules\.bin\prisma.CMD migrate resolve --applied 20260424094500_add_single_context_bot_refs
+Set-Location ../..
+pnpm run test:go-live:smoke
+```
+
+Use option 2 only after confirming the local DB already contains the expected
+schema changes. This recovers local migration history; it is not a substitute
+for real production migration validation.
+
 ### 3) Start API (terminal #1, repo root)
 ```bash
 pnpm --filter api dev
