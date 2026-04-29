@@ -330,6 +330,22 @@ export class CcxtFuturesConnector {
       .map((trade) => this.normalizeTradeFill(trade, request.symbol, 'fetchMyTrades'));
   }
 
+  async fetchTradesForWindow(input: {
+    symbol: string;
+    since?: number;
+    limit?: number;
+  }): Promise<CcxtFuturesOrderFill[]> {
+    const request = CcxtFetchTradesForOrderInputSchema.omit({ orderId: true }).parse(input);
+    const client = await this.getOrCreateClient();
+    if (typeof client.fetchMyTrades !== 'function') {
+      throw new Error('fetchMyTrades is not supported by this CCXT connector');
+    }
+
+    const trades = await client.fetchMyTrades(request.symbol, request.since, request.limit);
+
+    return trades.map((trade) => this.normalizeTradeFill(trade, request.symbol, 'fetchMyTrades'));
+  }
+
   async fetchOpenOrders(input?: { symbol?: string }): Promise<CcxtFuturesOpenOrder[]> {
     const client = await this.getOrCreateClient();
     if (typeof client.fetchOpenOrders !== 'function') {

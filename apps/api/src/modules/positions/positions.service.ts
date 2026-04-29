@@ -4,6 +4,7 @@ import { ListPositionsQuery, UpdatePositionManualParamsInput } from './positions
 import {
   fetchSupportedExchangeOpenOrdersRaw,
   fetchSupportedExchangePositionsRaw,
+  fetchSupportedExchangeTradeHistoryRaw,
   resolveExchangeAdapterSource,
   supportsExchangeAdapterOperation,
 } from '../exchange/exchangeAdapterBoundary.service';
@@ -14,44 +15,14 @@ import {
   resolveExternalPositionOwnershipIndex,
 } from '../bots/runtimeExternalPositionOwner.service';
 import { resolveSystemRepairCloseAttribution } from './positionCloseAttribution';
-
-export type ExchangePositionSnapshotItem = {
-  symbol: string;
-  side: string | null;
-  contracts: number;
-  entryPrice: number | null;
-  markPrice: number | null;
-  unrealizedPnl: number | null;
-  leverage: number | null;
-  marginMode: string | null;
-  liquidationPrice: number | null;
-  timestamp: string | null;
-};
-
-export type ExchangePositionSnapshot = {
-  source: Exchange;
-  syncedAt: string;
-  positions: ExchangePositionSnapshotItem[];
-};
-
-export type ExchangeOpenOrderSnapshotItem = {
-  exchangeOrderId: string | null;
-  symbol: string;
-  side: string | null;
-  type: string | null;
-  status: string | null;
-  amount: number;
-  filled: number;
-  remaining: number | null;
-  price: number | null;
-  timestamp: string | null;
-};
-
-export type ExchangeOpenOrderSnapshot = {
-  source: Exchange;
-  syncedAt: string;
-  orders: ExchangeOpenOrderSnapshotItem[];
-};
+import {
+  ExchangeOpenOrderSnapshot,
+  ExchangeOpenOrderSnapshotItem,
+  ExchangePositionSnapshot,
+  ExchangePositionSnapshotItem,
+  ExchangeTradeHistoryItem,
+  ExchangeTradeHistorySnapshot,
+} from './positions.exchangeSnapshot.types';
 
 export type ExternalTakeoverStatus =
   | 'OWNED_AND_MANAGED'
@@ -291,6 +262,22 @@ const normalizeExchangeOpenOrder = (order: Record<string, unknown>): ExchangeOpe
     timestamp: typeof timestampMs === 'number' ? new Date(timestampMs).toISOString() : null,
   };
 };
+
+const normalizeExchangeTradeHistoryItem = (
+  trade: Awaited<ReturnType<typeof fetchSupportedExchangeTradeHistoryRaw>>[number]
+): ExchangeTradeHistoryItem => ({
+  exchangeTradeId: trade.exchangeTradeId,
+  exchangeOrderId: trade.exchangeOrderId,
+  symbol: trade.symbol,
+  side: trade.side,
+  price: trade.price,
+  quantity: trade.quantity,
+  notional: trade.notional,
+  feeCost: trade.feeCost,
+  feeCurrency: trade.feeCurrency,
+  feeRate: trade.feeRate,
+  executedAt: trade.executedAt ? trade.executedAt.toISOString() : null,
+});
 
 const buildSnapshotForApiKey = async (apiKey: ApiKeyRecordForSnapshot): Promise<ExchangePositionSnapshot> => {
   try {
@@ -609,6 +596,73 @@ export const fetchExchangeOpenOrdersSnapshotByApiKeyId = async (
   }
 
   return buildOpenOrdersSnapshotForApiKey(apiKey);
+};
+
+export const fetchExchangeTradeHistorySnapshotByApiKeyId = async (
+  userId: string,
+  apiKeyId: string,
+  input: {
+    symbol: string;
+    since?: Date;
+    limit?: number;
+  }
+): Promise<ExchangeTradeHistorySnapshot> => {
+  const apiKey = await prisma.apiKey.findFirst({
+    where: {
+      id: apiKeyId,
+      userId,
+    },
+    select: {
+      id: true,
+      exchange: true,
+      apiKey: true,
+      apiSecret: true,
+    },
+  });
+
+  if (!apiKey) {
+    throw new ExchangeSnapshotError('API_KEY_NOT_FOUND', 'No supported exchange API key configured.');
+  }
+
+  if (process.env.NODE_ENV === 'test') {
+    await prisma.apiKey.update({
+      where: { id: apiKey.id },
+      data: { lastUsed: new Date() },
+    });
+
+    return {
+      source: apiKey.exchange,
+      syncedAt: new Date().toISOString(),
+      symbol: input.symbol,
+      trades: [],
+    };
+  }
+
+  try {
+    const rawTrades = await fetchSupportedExchangeTradeHistoryRaw({
+      exchange: apiKey.exchange,
+      marketType: 'FUTURES',
+      apiKey: apiKey.apiKey,
+      apiSecret: apiKey.apiSecret,
+      symbol: input.symbol,
+      since: input.since?.getTime(),
+      limit: input.limit,
+    });
+
+    await prisma.apiKey.update({
+      where: { id: apiKey.id },
+      data: { lastUsed: new Date() },
+    });
+
+    return {
+      source: resolveExchangeAdapterSource(apiKey.exchange),
+      syncedAt: new Date().toISOString(),
+      symbol: input.symbol,
+      trades: rawTrades.map(normalizeExchangeTradeHistoryItem),
+    };
+  } catch {
+    throw new ExchangeSnapshotError('EXCHANGE_FETCH_FAILED', 'Unable to fetch exchange trade history snapshot.');
+  }
 };
 
 const normalizeRepairSymbol = (symbol: string) => symbol.trim().toUpperCase();

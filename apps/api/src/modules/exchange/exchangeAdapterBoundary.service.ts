@@ -67,6 +67,11 @@ export type SubmitLiveExchangeOrderResult = {
 type AuthenticatedConnectorLike = {
   fetchPositions: () => Promise<Record<string, unknown>[]>;
   fetchOpenOrders: () => Promise<Record<string, unknown>[]>;
+  fetchTradesForWindow?: (input: {
+    symbol: string;
+    since?: number;
+    limit?: number;
+  }) => Promise<CcxtFuturesOrderFill[]>;
   disconnect: () => Promise<void>;
   hasOpenPosition: (symbol: string) => Promise<boolean>;
   getSymbolTradingRules: (symbol: string) => Promise<{
@@ -283,6 +288,32 @@ export const fetchSupportedExchangeOpenOrdersRaw = async (
   const connector = deps.createAuthenticatedConnector(params);
   try {
     const raw = await connector.fetchOpenOrders();
+    return Array.isArray(raw) ? raw : [];
+  } finally {
+    await connector.disconnect().catch(() => undefined);
+  }
+};
+
+export const fetchSupportedExchangeTradeHistoryRaw = async (
+  params: SupportedExchangeReadCredentials & {
+    symbol: string;
+    since?: number;
+    limit?: number;
+  },
+  deps: Pick<ExchangeAdapterBoundaryDeps, 'createAuthenticatedConnector'> = getDefaultDeps()
+) => {
+  assertExchangeExecutionCapabilitySupport(params.exchange, 'TRADE_HISTORY_SNAPSHOT');
+
+  const connector = deps.createAuthenticatedConnector(params);
+  try {
+    if (typeof connector.fetchTradesForWindow !== 'function') {
+      throw new Error('fetchTradesForWindow is not supported by this authenticated connector');
+    }
+    const raw = await connector.fetchTradesForWindow({
+      symbol: params.symbol,
+      since: params.since,
+      limit: params.limit,
+    });
     return Array.isArray(raw) ? raw : [];
   } finally {
     await connector.disconnect().catch(() => undefined);

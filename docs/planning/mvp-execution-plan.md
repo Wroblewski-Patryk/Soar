@@ -178,12 +178,32 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `V1REOPEN-03 fix(api-reconcile): retire superseded same-symbol lifecycle rows deterministically`
 - [x] `V1REOPEN-04 fix(api-runtime-state): clear stale runtime protection state on close or lifecycle replacement`
 - [ ] `V1REOPEN-05 test(api-runtime-red): lock TTP continuity and loss-side-only DCA behavior on reopened LIVE positions`
-- [ ] `V1REOPEN-06 fix(api+web-truth): align final operator truth for reopened LIVE positions`
+- [x] `V1REOPEN-06 fix(api+web-truth): align final operator truth for reopened LIVE positions`
 - [ ] `V1REOPEN-07 qa(closure): run focused close/reopen truth pack and publish evidence`
 
 ### Progress Log (Phase V1REOPEN-2026-04-29 - LIVE Same-Symbol Close/Reopen Truth Hardening)
 - 2026-04-29: Published the packet after a focused architecture-and-code audit of the newly reported `DOGEUSDT` production flow: app-driven `LIVE` close succeeds, exchange truth closes the position, same-symbol reopen is imported again, but operator-visible `PnL%` becomes dramatically wrong and pre-close `TTP` still appears contaminated despite loss-side-only remaining `DCA`. The strongest current hypothesis is stale lifecycle continuity rather than simple UI math: old same-symbol lifecycle rows can survive too long through reconciliation grace windows, and stale runtime protection state may remain alive when the old lifecycle is retired outside the normal app/bot close path. Canonical packet: `docs/planning/v1reopen-live-close-reopen-pnl-ttp-hardening-plan-2026-04-29.md`.
 - 2026-04-29: Closed `V1REOPEN-01..04` as the first implementation slice of the wave. Focused reconciliation regressions now lock three failure modes from the user report: stale opposite-side lifecycle overlap on the same symbol, same-side reopen treated as a new lifecycle when exchange open timestamp proves discontinuity, and stale runtime protection-state cleanup on forced lifecycle retirement. `livePositionReconciliation` now closes same-symbol conflicting rows immediately instead of waiting through the generic grace window, detects same-side reopen discontinuity by exchange timestamp, and clears persisted runtime position state whenever a lifecycle is force-closed or superseded. Validation PASS: `pnpm --filter api exec vitest run src/modules/positions/livePositionReconciliation.service.test.ts src/modules/engine/runtimePositionAutomation.service.test.ts src/modules/orders/orders-positions.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
+- 2026-04-29: Closed `V1REOPEN-06` by restoring dynamic-stop operator truth after reopen/recovery. Backend runtime positions now keep `showDynamicStopColumns` true whenever any open row carries real dynamic-stop truth, both web operator surfaces OR topology mode with row truth instead of hiding `TTP/TSL`, and runtime serialization regains the missing bot-managed `TTP` fallback plus sticky continuity after pullback.
+
+## Phase V1HIST-2026-04-29 - Imported Exchange Lifecycle History Truth (Queued 2026-04-29)
+- [x] `V1HIST-00 analysis(queue): publish imported exchange lifecycle history packet and mixed-origin live matrix`
+- [x] `V1HIST-01 audit(api+history): freeze the imported open/close history failure matrix`
+  - 2026-04-29: Closed through the canonical `V1HIST-A` packet and mixed-origin live matrix. Failure coverage is now explicitly frozen for imported open truth, imported external close truth, mixed-origin lifecycle continuity, and wait-based protection verification.
+- [x] `V1HIST-02 docs(contract): freeze imported lifecycle history and history-table timestamp truth`
+  - 2026-04-29: Closed by the canonical plan plus closure packet. Imported lifecycle history is now documented as canonical `Position/Trade` truth only, with deterministic exchange-trade hydration as the only approved repair path.
+- [x] `V1HIST-03 test(api-red): lock imported opening-history and external-close history parity`
+- [x] `V1HIST-04 fix(api-exchange+reconcile): hydrate imported position opening history through approved lifecycle entities`
+- [x] `V1HIST-05 fix(api-ledger+history): persist external close history for imported managed positions`
+  - 2026-04-29: Closed by making reconciliation backfill imported external-close truth from canonical exchange trades before final row closure when deterministic data exists. Missing imported close trades are now persisted with exchange-fill fees and `USER_EXCHANGE` attribution, and `position.closedAt` is corrected to the last canonical close fill instead of staying limited to the local reconciliation timestamp.
+- [x] `V1HIST-06 fix(api+web-read): expose truthful open/close timestamps in operator history surfaces`
+- [x] `V1HIST-07 qa(closure): run focused history-truth pack and publish evidence`
+  - 2026-04-29: Closed with focused closure evidence in `docs/operations/v1hist-imported-exchange-lifecycle-history-closure-2026-04-29.md`.
+
+### Progress Log (Phase V1HIST-2026-04-29 - Imported Exchange Lifecycle History Truth)
+- 2026-04-29: Published the packet after a focused audit of imported `LIVE` exchange lifecycle continuity. Current repository truth is that Soar can adopt imported `EXCHANGE_SYNC` positions and later stale-close them, but imported opening-history ledger truth, reconciliation-driven external-close history parity, and operator-visible history timestamp fidelity are still not fully closed vertical slices. Canonical packet: `docs/planning/v1hist-imported-exchange-lifecycle-history-plan-2026-04-29.md`. Detailed operator scenarios: `docs/operations/v1live-mixed-origin-verification-matrix-2026-04-29.md`.
+- 2026-04-29: Closed `V1HIST-06` as the first implementation slice. Dashboard history positions now expose distinct `openedAt` and `closedAt` columns, removing the previous `closedAt ?? openedAt` ambiguity, and focused API parity proof now locks that a closed imported `EXCHANGE_SYNC BOT_MANAGED` position stays visible in `historyItems` with both timestamps preserved.
+- 2026-04-29: Closed `V1HIST-03` and `V1HIST-04` as the first backend hydration slice. The exchange boundary now exposes authenticated trade-history reads, imported-position hydration reconstructs current open lifecycle only when canonical exchange fill truth is sufficient, persists imported `OPEN` / `DCA` / partial `CLOSE` trade rows without synthesizing fake fills, and updates `position.openedAt` from the first canonical fill instead of the weaker snapshot timestamp.
 
 ## Phase BOTMULTI-POSTV1-2026-04-29 - Post-V1 Multi-Strategy Bot Reintroduction (Deferred 2026-04-29)
 - [x] `BOTMULTI-00 planning(post-v1): publish deferred multi-strategy reintroduction packet`

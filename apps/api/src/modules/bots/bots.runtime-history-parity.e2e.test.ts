@@ -3,6 +3,7 @@ import { prisma } from '../../prisma/client';
 import {
   createMarketGroup,
   createPayload,
+  createWalletForContext,
   createStrategy,
   registerAndLogin,
   resetBotsE2eState,
@@ -139,5 +140,89 @@ describe('Bots runtime history parity contract', () => {
     expect(detailRes.status).toBe(200);
     expect(detailRes.body.id).toBe(session.id);
     expect(detailRes.body.eventsCount).toBe(1);
+  });
+
+  it('keeps externally closed imported bot-managed positions visible in history with open and close timestamps', async () => {
+    const ownerEmail = 'bot-history-imported-external-close@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
+
+    const strategyId = await createStrategy(owner, 'Imported History Carry-over');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    const walletId = await createWalletForContext(ownerEmail, {
+      mode: 'LIVE',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: ownerUser.id,
+        name: 'Imported history live bot',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'mvp-v1',
+        walletId,
+        symbolGroupId: marketGroupId,
+        strategyId,
+      },
+      select: { id: true },
+    });
+    const botId = bot.id;
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'LIVE',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-10T07:00:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-10T07:10:00.000Z'),
+      },
+      select: { id: true },
+    });
+
+    await prisma.position.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        walletId,
+        strategyId,
+        externalId: 'api-key-1:DOGEUSDT:LONG',
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'ORPHAN_LOCAL',
+        continuityState: 'EXTERNAL_CLOSE_CONFIRMED',
+        symbol: 'DOGEUSDT',
+        side: 'LONG',
+        status: 'CLOSED',
+        entryPrice: 0.1,
+        quantity: 1000,
+        leverage: 5,
+        openedAt: new Date('2026-04-10T06:45:00.000Z'),
+        closedAt: new Date('2026-04-10T07:05:00.000Z'),
+        closeReason: 'EXTERNAL_SYNC_MISSING',
+        closeInitiator: 'USER_EXCHANGE',
+      },
+    });
+
+    const positionsRes = await owner.get(`/dashboard/bots/${botId}/runtime-sessions/${session.id}/positions`);
+    expect(positionsRes.status).toBe(200);
+    expect(positionsRes.body.openCount).toBe(0);
+    expect(positionsRes.body.closedCount).toBe(1);
+    expect(positionsRes.body.historyItems).toHaveLength(1);
+    expect(positionsRes.body.historyItems[0]).toEqual(
+      expect.objectContaining({
+        symbol: 'DOGEUSDT',
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        closeInitiator: 'USER_EXCHANGE',
+        openedAt: '2026-04-10T06:45:00.000Z',
+        closedAt: '2026-04-10T07:05:00.000Z',
+      })
+    );
   });
 });

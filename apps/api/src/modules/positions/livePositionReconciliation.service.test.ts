@@ -193,6 +193,112 @@ describe('reconcileExternalPositionsFromExchange', () => {
     );
   });
 
+  it('hydrates imported lifecycle history after creating a new synced position', async () => {
+    const createSyncedPosition = vi.fn(async () => undefined);
+    const hydrateImportedPositionHistory = vi.fn(async () => ({
+      hydrated: true,
+      openedAt: new Date('2026-03-23T00:00:00.000Z'),
+    }));
+    const fetchTradeHistoryForApiKeySymbol = vi.fn(async () => [
+      {
+        exchangeTradeId: 'trade-1',
+        exchangeOrderId: 'order-1',
+        symbol: 'BTCUSDT',
+        side: 'BUY',
+        price: 50000,
+        quantity: 0.01,
+        notional: 500,
+        feeCost: 0.5,
+        feeCurrency: 'USDT',
+        feeRate: 0.001,
+        executedAt: '2026-03-23T00:00:00.000Z',
+      },
+    ]);
+    const findOpenSyncedPositionByExternalId = vi
+      .fn<({ externalId }: { userId: string; externalId: string }) => Promise<{
+        id: string;
+        botId: string;
+        walletId: string;
+        strategyId: string;
+        openedAt: Date;
+        managementMode: 'BOT_MANAGED';
+        continuityState: 'CONFIRMED';
+        missingSyncCount: number;
+      } | null>>(async () => null)
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce({
+        id: 'pos-created-1',
+        botId: 'bot-live-1',
+        walletId: 'wallet-live-1',
+        strategyId: 'strategy-live-1',
+        openedAt: new Date('2026-03-23T00:05:00.000Z'),
+        managementMode: 'BOT_MANAGED' as const,
+        continuityState: 'CONFIRMED' as const,
+        missingSyncCount: 0,
+      });
+
+    await reconcileExternalPositionsFromExchange({
+      listSyncedApiKeys: vi.fn(async () => [{ id: 'key-1', userId: 'user-1' }]),
+      resolveOwnershipIndexForUser: vi.fn(async () =>
+        new Map([
+          [
+            'key-1:BTCUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-live-1',
+              walletId: 'wallet-live-1',
+            },
+          ],
+        ])
+      ),
+      fetchPositionsForApiKey: vi.fn(async () => ({
+        positions: [
+          {
+            symbol: 'BTC/USDT:USDT',
+            side: 'long',
+            contracts: 0.01,
+            entryPrice: 50000,
+            markPrice: 50100,
+            unrealizedPnl: 10,
+            leverage: 5,
+            timestamp: '2026-03-23T00:05:00.000Z',
+          },
+        ],
+      })),
+      fetchTradeHistoryForApiKeySymbol,
+      findOpenSyncedPositionByExternalId,
+      resolveCanonicalBotContinuityContext: vi.fn(async () => ({
+        botId: 'bot-live-1',
+        walletId: 'wallet-live-1',
+        strategyId: 'strategy-live-1',
+      })),
+      updateSyncedPosition: vi.fn(async () => undefined),
+      createSyncedPosition,
+      listOpenSyncedPositionsForApiKey: vi.fn(async () => []),
+      markMissingSyncedPosition: vi.fn(async () => undefined),
+      closeStaleSyncedPosition: vi.fn(async () => undefined),
+      hydrateImportedPositionHistory,
+      now: () => new Date('2026-03-23T00:05:00.000Z'),
+    });
+
+    expect(createSyncedPosition).toHaveBeenCalledOnce();
+    expect(fetchTradeHistoryForApiKeySymbol).toHaveBeenCalledWith({
+      apiKey: { id: 'key-1', userId: 'user-1' },
+      symbol: 'BTCUSDT',
+      since: new Date('2026-02-21T00:05:00.000Z'),
+      limit: 500,
+    });
+    expect(hydrateImportedPositionHistory).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'user-1',
+        positionId: 'pos-created-1',
+        symbol: 'BTCUSDT',
+        positionSide: 'LONG',
+        positionQuantity: 0.01,
+      })
+    );
+  });
+
   it('requires repeated missing confirmations before classifying external close', async () => {
     const markMissingSyncedPosition = vi.fn(async () => undefined);
     const closeStaleSyncedPosition = vi.fn(async () => undefined);
@@ -221,6 +327,79 @@ describe('reconcileExternalPositionsFromExchange', () => {
     expect(closeStaleSyncedPosition).toHaveBeenCalledWith(
       'pos-confirm-1',
       new Date('2026-03-23T00:11:00.000Z')
+    );
+  });
+
+  it('backfills canonical external close history before closing imported synced positions', async () => {
+    const closeStaleSyncedPosition = vi.fn(async () => undefined);
+    const fetchTradeHistoryForApiKeySymbol = vi.fn(async () => [
+      {
+        exchangeTradeId: 'trade-close-1',
+        exchangeOrderId: 'order-close-1',
+        symbol: 'DOGEUSDT',
+        side: 'SELL',
+        price: 0.12,
+        quantity: 1000,
+        notional: 120,
+        feeCost: 0.12,
+        feeCurrency: 'USDT',
+        feeRate: 0.001,
+        executedAt: '2026-03-23T00:12:00.000Z',
+      },
+    ]);
+    const hydrateClosedImportedPositionHistory = vi.fn(async () => ({
+      hydrated: true,
+      openedAt: new Date('2026-03-23T00:00:00.000Z'),
+      closedAt: new Date('2026-03-23T00:12:00.000Z'),
+    }));
+
+    await reconcileExternalPositionsFromExchange({
+      listSyncedApiKeys: vi.fn(async () => [
+        {
+          id: 'key-confirm-2',
+          userId: 'user-confirm-2',
+        },
+      ]),
+      resolveOwnershipIndexForUser: vi.fn(async () => new Map()),
+      fetchPositionsForApiKey: vi.fn(async () => ({ positions: [] })),
+      fetchTradeHistoryForApiKeySymbol,
+      findOpenSyncedPositionByExternalId: vi.fn(async () => null),
+      updateSyncedPosition: vi.fn(async () => undefined),
+      createSyncedPosition: vi.fn(async () => undefined),
+      listOpenSyncedPositionsForApiKey: vi.fn(async () => [
+        {
+          id: 'pos-confirm-2',
+          externalId: 'key-confirm-2:DOGEUSDT:LONG',
+          missingSyncCount: 1,
+          symbol: 'DOGEUSDT',
+          side: 'LONG' as const,
+          openedAt: new Date('2026-03-23T00:05:00.000Z'),
+          managementMode: 'BOT_MANAGED' as const,
+        },
+      ]),
+      markMissingSyncedPosition: vi.fn(async () => undefined),
+      closeStaleSyncedPosition,
+      hydrateClosedImportedPositionHistory,
+      now: () => new Date('2026-03-23T00:11:00.000Z'),
+    });
+
+    expect(fetchTradeHistoryForApiKeySymbol).toHaveBeenCalledWith({
+      apiKey: { id: 'key-confirm-2', userId: 'user-confirm-2' },
+      symbol: 'DOGEUSDT',
+      since: new Date('2026-02-21T00:05:00.000Z'),
+      limit: 500,
+    });
+    expect(hydrateClosedImportedPositionHistory).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'user-confirm-2',
+        positionId: 'pos-confirm-2',
+        symbol: 'DOGEUSDT',
+        positionSide: 'LONG',
+      })
+    );
+    expect(closeStaleSyncedPosition).toHaveBeenCalledWith(
+      'pos-confirm-2',
+      new Date('2026-03-23T00:12:00.000Z')
     );
   });
 

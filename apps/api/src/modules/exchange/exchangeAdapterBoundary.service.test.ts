@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   fetchSupportedExchangeOpenOrdersRaw,
   fetchSupportedExchangePositionsRaw,
+  fetchSupportedExchangeTradeHistoryRaw,
   submitLiveOrderThroughBoundary,
 } from './exchangeAdapterBoundary.service';
 import {
@@ -12,6 +13,23 @@ import {
 const createConnector = () => ({
   fetchPositions: vi.fn(async () => [{ symbol: 'BTC/USDT:USDT', contracts: 1 }]),
   fetchOpenOrders: vi.fn(async () => [{ id: 'ord-1', symbol: 'BTC/USDT:USDT' }]),
+  fetchTradesForWindow: vi.fn(async () => [
+    {
+      exchangeTradeId: 'trade-1',
+      exchangeOrderId: 'order-1',
+      symbol: 'BTC/USDT:USDT',
+      side: 'buy',
+      price: 100_000,
+      quantity: 0.01,
+      notional: 1_000,
+      feeCost: 1,
+      feeCurrency: 'USDT',
+      feeRate: 0.001,
+      executedAt: new Date('2026-04-29T10:00:00.000Z'),
+      source: 'fetchMyTrades' as const,
+      raw: {},
+    },
+  ]),
   disconnect: vi.fn(async () => undefined),
   hasOpenPosition: vi.fn(async () => false),
   getSymbolTradingRules: vi.fn(async () => ({
@@ -34,15 +52,32 @@ describe('exchangeAdapterBoundary.service', () => {
       apiSecret: 'enc-secret',
     };
 
-    const [positions, orders] = await Promise.all([
+    const [positions, orders, trades] = await Promise.all([
       fetchSupportedExchangePositionsRaw(params, { createAuthenticatedConnector }),
       fetchSupportedExchangeOpenOrdersRaw(params, { createAuthenticatedConnector }),
+      fetchSupportedExchangeTradeHistoryRaw({
+        ...params,
+        symbol: 'BTCUSDT',
+        since: Date.parse('2026-04-29T00:00:00.000Z'),
+        limit: 200,
+      }, { createAuthenticatedConnector }),
     ]);
 
-    expect(createAuthenticatedConnector).toHaveBeenCalledTimes(2);
+    expect(createAuthenticatedConnector).toHaveBeenCalledTimes(3);
     expect(positions).toEqual([{ symbol: 'BTC/USDT:USDT', contracts: 1 }]);
     expect(orders).toEqual([{ id: 'ord-1', symbol: 'BTC/USDT:USDT' }]);
-    expect(connector.disconnect).toHaveBeenCalledTimes(2);
+    expect(trades).toEqual([
+      expect.objectContaining({
+        exchangeTradeId: 'trade-1',
+        symbol: 'BTC/USDT:USDT',
+      }),
+    ]);
+    expect(connector.fetchTradesForWindow).toHaveBeenCalledWith({
+      symbol: 'BTCUSDT',
+      since: Date.parse('2026-04-29T00:00:00.000Z'),
+      limit: 200,
+    });
+    expect(connector.disconnect).toHaveBeenCalledTimes(3);
   });
 
   it('fails closed for unsupported read exchanges at the boundary', async () => {

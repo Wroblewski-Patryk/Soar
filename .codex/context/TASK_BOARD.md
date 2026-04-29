@@ -50,6 +50,38 @@ Last updated: 2026-04-29
 - [ ] `V1REOPEN-07 qa(closure): run focused close/reopen truth pack and publish evidence`
   - Scope: rerun the focused reconciliation/runtime/operator pack, typechecks, and repository guardrails; then publish closure evidence.
 
+- [x] `V1HIST-00 analysis(queue): publish imported exchange lifecycle history packet and mixed-origin live matrix`
+  - Scope: freeze the newly reported imported-position history gap into one exact execution packet covering imported opening-history truth, external-close history parity, and operator-visible history timestamps, plus an explicit mixed-origin `exchange/app` live verification matrix.
+  - 2026-04-29: Closed as an analysis-only slice. Published `docs/planning/v1hist-imported-exchange-lifecycle-history-plan-2026-04-29.md`, `docs/planning/v1hist-00-analysis-task-2026-04-29.md`, and `docs/operations/v1live-mixed-origin-verification-matrix-2026-04-29.md` after reviewing imported `EXCHANGE_SYNC` reconciliation, exchange-event close truth, runtime history reads, and dashboard history presentation. Current strongest conclusion: imported position lifecycle history is still snapshot-strong for active rows but ledger-weak for history truth.
+
+- [x] `V1HIST-01 audit(api+history): freeze the imported open/close history failure matrix`
+  - Scope: reproduce and lock the missing-history class across imported open, imported external close, and mixed-origin lifecycle continuity.
+  - 2026-04-29: Closed by freezing the full imported lifecycle matrix in `docs/planning/v1hist-imported-exchange-lifecycle-history-plan-2026-04-29.md` and `docs/operations/v1live-mixed-origin-verification-matrix-2026-04-29.md`.
+
+- [x] `V1HIST-02 docs(contract): freeze imported lifecycle history and history-table timestamp truth`
+  - Scope: document the canonical rule for imported opening history, imported external close history, and explicit `openedAt` plus `closedAt` operator truth.
+  - 2026-04-29: Closed by the canonical `V1HIST-A` packet and closure record. Imported lifecycle history is now explicitly constrained to canonical `Position/Trade` truth with deterministic exchange-trade hydration only.
+
+- [x] `V1HIST-03 test(api-red): lock imported opening-history and external-close history parity`
+  - Scope: add failing coverage proving imported positions cannot remain history-incomplete and externally closed imported positions cannot disappear without canonical historical continuity.
+  - 2026-04-29: Closed with focused API coverage across `exchangeAdapterBoundary`, imported lifecycle hydrator, runtime history parity, and reconciler hydration trigger flow. Imported opening history is now proven to depend on canonical exchange trades, and externally closed imported positions are locked as still visible in runtime `historyItems`.
+
+- [x] `V1HIST-04 fix(api-exchange+reconcile): hydrate imported position opening history through approved lifecycle entities`
+  - Scope: extend the approved exchange/reconciliation path so imported opening truth persists through canonical lifecycle entities instead of active-row-only snapshot state.
+  - 2026-04-29: Closed with the first backend hydration slice. The authenticated exchange boundary now exposes trade-history reads, imported lifecycle hydrator reconstructs current open lifecycle from canonical fills when deterministic, persists imported `OPEN` / `DCA` / partial `CLOSE` trades, and updates `position.openedAt` from the first canonical fill.
+
+- [x] `V1HIST-05 fix(api-ledger+history): persist external close history for imported managed positions`
+  - Scope: ensure externally closed imported positions record truthful close history, attribution, and lifecycle continuity instead of only leaving active positions.
+  - 2026-04-29: Closed by extending imported lifecycle hydration to externally closed reconciliation paths. Before Soar finalizes an imported `EXCHANGE_SYNC` position as externally closed, it now fetches canonical exchange trade history for the lifecycle window, persists any missing imported `CLOSE` trades with `USER_EXCHANGE` attribution when deterministic, and updates `closedAt` to the last canonical close fill timestamp.
+
+- [x] `V1HIST-06 fix(api+web-read): expose truthful open/close timestamps in operator history surfaces`
+  - Scope: keep history read-model and dashboard history UI faithful to lifecycle truth by showing distinct open and close anchors where applicable.
+  - 2026-04-29: Closed as the first operator-truth implementation slice. History positions on the dashboard now show separate `openedAt` and `closedAt` columns, and focused API parity proof in `bots.runtime-history-parity.e2e.test.ts` locks that a closed imported `EXCHANGE_SYNC BOT_MANAGED` position remains visible in `historyItems` with both timestamps preserved.
+
+- [x] `V1HIST-07 qa(closure): run focused history-truth pack and publish evidence`
+  - Scope: rerun the focused imported-history pack, typechecks, and repository guardrails; then publish closure evidence.
+  - 2026-04-29: Closed with `docs/operations/v1hist-imported-exchange-lifecycle-history-closure-2026-04-29.md`. Focused validation PASS: imported hydrator unit pack, live reconciliation pack, exchange boundary contract pack, runtime history parity e2e, API typecheck, web typecheck, and repository guardrails.
+
 - [x] `V1EXCEL-00 planning(queue): publish full V1 excellence and production-confidence packet`
   - 2026-04-29: Closed as a planning-only slice after reviewing the repo's own completion and activation contracts against the newly closed `V1TRUTH-A` wave. Published `docs/planning/v1excel-full-v1-excellence-and-confidence-plan-2026-04-29.md` plus `docs/planning/v1excel-00-planning-task-2026-04-29.md`, freezing the remaining non-deferred gap as a confidence/evidence wave rather than a code-architecture wave.
 

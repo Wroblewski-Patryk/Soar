@@ -2,11 +2,9 @@ import { prisma } from '../../prisma/client';
 import {
   fetchExchangeOpenOrdersSnapshotByApiKeyId,
   fetchExchangePositionsSnapshotByApiKeyId,
+  fetchExchangeTradeHistorySnapshotByApiKeyId,
 } from './positions.service';
-import {
-  ExternalPositionOwnershipIndex,
-  getExternalPositionOwnership,
-} from '../bots/runtimeExternalPositionOwner.service';
+import { getExternalPositionOwnership } from '../bots/runtimeExternalPositionOwner.service';
 import {
   resolveExternalSyncMissingCloseAttribution,
 } from './positionCloseAttribution';
@@ -26,191 +24,19 @@ import {
   toPositionSide,
   toPositionSideFromOrderSide,
 } from './livePositionReconciliation.helpers';
-
-type ReconciliationStatus = {
-  running: boolean;
-  iterations: number;
-  lastRunAt: string | null;
-  lastDurationMs: number | null;
-  lastError: string | null;
-  openPositionsSeen: number;
-};
-
-type ReconcileFn = () => Promise<{ openPositionsSeen: number }>;
-
-type SyncedApiKey = {
-  id: string;
-  userId: string;
-};
-
-type ExternalSnapshotPosition = {
-  symbol: string;
-  side: string | null;
-  contracts: number;
-  entryPrice: number | null;
-  markPrice: number | null;
-  unrealizedPnl: number | null;
-  leverage: number | null;
-  timestamp: string | null;
-};
-
-type ExternalSnapshotOpenOrder = {
-  exchangeOrderId: string | null;
-  symbol: string;
-  side: string | null;
-  type: string | null;
-  status: string | null;
-  amount: number;
-  filled: number;
-  remaining: number | null;
-  price: number | null;
-  timestamp: string | null;
-};
-
-type LocalManagedLivePosition = {
-  id: string;
-  symbol: string;
-  side: 'LONG' | 'SHORT';
-  openedAt: Date;
-};
-
-type OpenSyncedPositionRecord = {
-  id: string;
-  botId: string | null;
-  walletId: string | null;
-  strategyId: string | null;
-  openedAt: Date;
-  managementMode: 'BOT_MANAGED' | 'MANUAL_MANAGED';
-  continuityState:
-    | 'CONFIRMED'
-    | 'RECOVERING'
-    | 'RECOVERED_UNACTIONABLE'
-    | 'EXTERNAL_CLOSE_CONFIRMED'
-    | 'REPAIR_ONLY_CLEANUP';
-  missingSyncCount: number;
-};
-
-type CanonicalBotContinuityContext = {
-  botId: string;
-  walletId: string | null;
-  strategyId: string | null;
-};
-
-type ReconcileDeps = {
-  listSyncedApiKeys: () => Promise<SyncedApiKey[]>;
-  resolveOwnershipIndexForUser: (input: {
-    userId: string;
-    mode: 'LIVE' | 'PAPER';
-  }) => Promise<ExternalPositionOwnershipIndex>;
-  fetchPositionsForApiKey: (
-    apiKey: SyncedApiKey
-  ) => Promise<{ positions: ExternalSnapshotPosition[] }>;
-  fetchOpenOrdersForApiKey?: (
-    apiKey: SyncedApiKey
-  ) => Promise<ExternalSnapshotOpenOrder[]>;
-  findOpenSyncedPositionByExternalId: (input: {
-    userId: string;
-    externalId: string;
-  }) => Promise<OpenSyncedPositionRecord | null>;
-  resolveCanonicalBotContinuityContext?: (
-    botId: string
-  ) => Promise<CanonicalBotContinuityContext | null>;
-  updateSyncedPosition: (
-    positionId: string,
-    input: {
-      symbol: string;
-      side: 'LONG' | 'SHORT';
-      quantity: number;
-      entryPrice: number;
-      unrealizedPnl: number | null;
-      leverage: number;
-      managementMode: 'BOT_MANAGED' | 'MANUAL_MANAGED';
-      syncState: 'IN_SYNC' | 'DRIFT';
-      botId: string | null;
-      walletId: string | null;
-      strategyId: string | null;
-      continuityState:
-        | 'CONFIRMED'
-        | 'RECOVERING'
-        | 'RECOVERED_UNACTIONABLE'
-        | 'EXTERNAL_CLOSE_CONFIRMED'
-        | 'REPAIR_ONLY_CLEANUP';
-      lastExchangeSeenAt: Date;
-      lastExchangeSyncAt: Date;
-      missingSince: Date | null;
-      missingSyncCount: number;
-    }
-  ) => Promise<void>;
-  createSyncedPosition: (input: {
-    userId: string;
-    externalId: string;
-    symbol: string;
-    side: 'LONG' | 'SHORT';
-    quantity: number;
-    entryPrice: number;
-    unrealizedPnl: number | null;
-    leverage: number;
-    managementMode: 'BOT_MANAGED' | 'MANUAL_MANAGED';
-    syncState: 'IN_SYNC' | 'DRIFT';
-    botId: string | null;
-    walletId: string | null;
-    strategyId: string | null;
-    continuityState:
-      | 'CONFIRMED'
-      | 'RECOVERING'
-      | 'RECOVERED_UNACTIONABLE'
-      | 'EXTERNAL_CLOSE_CONFIRMED'
-      | 'REPAIR_ONLY_CLEANUP';
-    openedAt: Date;
-    lastExchangeSeenAt: Date;
-    lastExchangeSyncAt: Date;
-    missingSince: Date | null;
-    missingSyncCount: number;
-  }) => Promise<void>;
-  listOpenSyncedPositionsForApiKey: (input: {
-    userId: string;
-    apiKeyId: string;
-  }) => Promise<Array<{ id: string; externalId: string | null; missingSyncCount: number }>>;
-  markMissingSyncedPosition: (
-    positionId: string,
-    input: {
-      syncState: 'DRIFT';
-      continuityState: 'RECOVERING';
-      missingSince: Date;
-      missingSyncCount: number;
-      lastExchangeSyncAt: Date;
-    }
-  ) => Promise<void>;
-  closeStaleSyncedPosition: (positionId: string, closedAt: Date) => Promise<void>;
-  deleteRuntimePositionState?: (positionId: string) => Promise<void>;
-  upsertSyncedOpenOrder?: (input: {
-    userId: string;
-    exchangeOrderId: string;
-    botId: string;
-    walletId: string;
-    symbol: string;
-    side: 'BUY' | 'SELL';
-    type: 'MARKET' | 'LIMIT' | 'STOP' | 'STOP_LIMIT' | 'TAKE_PROFIT' | 'TRAILING';
-    status: 'OPEN' | 'PARTIALLY_FILLED';
-    quantity: number;
-    filledQuantity: number;
-    price: number | null;
-    submittedAt: Date | null;
-  }) => Promise<void>;
-  listOpenSyncedOrdersForOwner?: (input: {
-    userId: string;
-    botId: string;
-    walletId: string;
-  }) => Promise<Array<{ id: string; exchangeOrderId: string | null }>>;
-  markStaleSyncedOrderUnresolved?: (orderId: string) => Promise<void>;
-  listOpenLocalManagedPositionsForOwner?: (input: {
-    userId: string;
-    botId: string;
-    walletId: string;
-  }) => Promise<LocalManagedLivePosition[]>;
-  closeStaleLocalManagedPosition?: (positionId: string, closedAt: Date) => Promise<void>;
-  now: () => Date;
-};
+import {
+  backfillClosedImportedPositionHistory,
+  hydrateImportedPositionHistory,
+  resolveImportedTradeHistoryLimit,
+  resolveImportedTradeHistorySince,
+} from './importedPositionHistoryHydrator.service';
+import {
+  CanonicalBotContinuityContext,
+  LocalManagedLivePosition,
+  ReconcileDeps,
+  ReconcileFn,
+  ReconciliationStatus,
+} from './livePositionReconciliation.types';
 
 const STALE_LOCAL_MANAGED_LIVE_POSITION_GRACE_MS = 10 * 60 * 1000;
 const STALE_LOCAL_MANAGED_LIVE_POSITION_FALLBACK_GRACE_MS = 60 * 60 * 1000;
@@ -242,6 +68,14 @@ const defaultDeps: ReconcileDeps = {
   fetchOpenOrdersForApiKey: async (apiKey) => {
     const snapshot = await fetchExchangeOpenOrdersSnapshotByApiKeyId(apiKey.userId, apiKey.id);
     return snapshot.orders;
+  },
+  fetchTradeHistoryForApiKeySymbol: async ({ apiKey, symbol, since, limit }) => {
+    const snapshot = await fetchExchangeTradeHistorySnapshotByApiKeyId(apiKey.userId, apiKey.id, {
+      symbol,
+      since,
+      limit,
+    });
+    return snapshot.trades;
   },
   findOpenSyncedPositionByExternalId: async ({ userId, externalId }) =>
     prisma.position.findFirst({
@@ -334,7 +168,18 @@ const defaultDeps: ReconcileDeps = {
         status: 'OPEN',
         externalId: { startsWith: `${apiKeyId}:` },
       },
-      select: { id: true, externalId: true, missingSyncCount: true },
+      select: {
+        id: true,
+        externalId: true,
+        missingSyncCount: true,
+        symbol: true,
+        side: true,
+        openedAt: true,
+        botId: true,
+        walletId: true,
+        strategyId: true,
+        managementMode: true,
+      },
     }),
   markMissingSyncedPosition: async (positionId, input) => {
     await prisma.position.update({
@@ -366,6 +211,8 @@ const defaultDeps: ReconcileDeps = {
   deleteRuntimePositionState: async (positionId) => {
     await runtimePositionStateStore.deletePositionRuntimeState(positionId);
   },
+  hydrateImportedPositionHistory,
+  hydrateClosedImportedPositionHistory: backfillClosedImportedPositionHistory,
   upsertSyncedOpenOrder: async (input) => {
     const existing = await prisma.order.findFirst({
       where: {
@@ -736,6 +583,33 @@ export const reconcileExternalPositionsFromExchange = async (
             missingSince: null,
             missingSyncCount: 0,
           });
+
+          if (deps.fetchTradeHistoryForApiKeySymbol && deps.hydrateImportedPositionHistory) {
+            const createdPosition = await deps.findOpenSyncedPositionByExternalId({
+              userId: apiKey.userId,
+              externalId,
+            });
+            if (createdPosition) {
+              const tradeHistory = await deps.fetchTradeHistoryForApiKeySymbol({
+                apiKey,
+                symbol: normalizedSymbol,
+                since: resolveImportedTradeHistorySince(openedAt),
+                limit: resolveImportedTradeHistoryLimit(),
+              });
+              await deps.hydrateImportedPositionHistory({
+                userId: apiKey.userId,
+                positionId: createdPosition.id,
+                botId: managementMode === 'BOT_MANAGED' ? restoredBotId : null,
+                walletId: managementMode === 'BOT_MANAGED' ? restoredWalletId : null,
+                strategyId: managementMode === 'BOT_MANAGED' ? restoredStrategyId : null,
+                symbol: normalizedSymbol,
+                positionSide: side,
+                positionQuantity: size,
+                managementMode,
+                trades: tradeHistory,
+              });
+            }
+          }
         }
       }
 
@@ -747,7 +621,37 @@ export const reconcileExternalPositionsFromExchange = async (
       for (const stale of currentOpen) {
         if (stale.externalId && seenExternalIds.has(stale.externalId)) continue;
         if (seenExternalSymbols.has(extractSymbolFromExternalId(stale.externalId) ?? '')) {
-          await closePositionLifecycle(stale.id, deps.now(), deps.closeStaleSyncedPosition);
+          let lifecycleClosedAt = deps.now();
+          if (
+            stale.symbol &&
+            stale.side &&
+            stale.openedAt &&
+            stale.managementMode &&
+            deps.fetchTradeHistoryForApiKeySymbol &&
+            deps.hydrateClosedImportedPositionHistory
+          ) {
+            const tradeHistory = await deps.fetchTradeHistoryForApiKeySymbol({
+              apiKey,
+              symbol: normalizeSymbol(stale.symbol),
+              since: resolveImportedTradeHistorySince(stale.openedAt),
+              limit: resolveImportedTradeHistoryLimit(),
+            });
+            const closedHistory = await deps.hydrateClosedImportedPositionHistory({
+              userId: apiKey.userId,
+              positionId: stale.id,
+              botId: stale.botId ?? null,
+              walletId: stale.walletId ?? null,
+              strategyId: stale.strategyId ?? null,
+              symbol: normalizeSymbol(stale.symbol),
+              positionSide: stale.side,
+              managementMode: stale.managementMode,
+              trades: tradeHistory,
+            });
+            if (closedHistory.closedAt) {
+              lifecycleClosedAt = closedHistory.closedAt;
+            }
+          }
+          await closePositionLifecycle(stale.id, lifecycleClosedAt, deps.closeStaleSyncedPosition);
           continue;
         }
         const nextMissingSyncCount = stale.missingSyncCount + 1;
@@ -761,7 +665,37 @@ export const reconcileExternalPositionsFromExchange = async (
           });
           continue;
         }
-        await closePositionLifecycle(stale.id, deps.now(), deps.closeStaleSyncedPosition);
+        let lifecycleClosedAt = deps.now();
+        if (
+          stale.symbol &&
+          stale.side &&
+          stale.openedAt &&
+          stale.managementMode &&
+          deps.fetchTradeHistoryForApiKeySymbol &&
+          deps.hydrateClosedImportedPositionHistory
+        ) {
+          const tradeHistory = await deps.fetchTradeHistoryForApiKeySymbol({
+            apiKey,
+            symbol: normalizeSymbol(stale.symbol),
+            since: resolveImportedTradeHistorySince(stale.openedAt),
+            limit: resolveImportedTradeHistoryLimit(),
+          });
+          const closedHistory = await deps.hydrateClosedImportedPositionHistory({
+            userId: apiKey.userId,
+            positionId: stale.id,
+            botId: stale.botId ?? null,
+            walletId: stale.walletId ?? null,
+            strategyId: stale.strategyId ?? null,
+            symbol: normalizeSymbol(stale.symbol),
+            positionSide: stale.side,
+            managementMode: stale.managementMode,
+            trades: tradeHistory,
+          });
+          if (closedHistory.closedAt) {
+            lifecycleClosedAt = closedHistory.closedAt;
+          }
+        }
+        await closePositionLifecycle(stale.id, lifecycleClosedAt, deps.closeStaleSyncedPosition);
       }
 
       const openOrderPositionKeysByOwner = new Map<string, Set<string>>();

@@ -202,6 +202,7 @@ type TranslationSchema = {
         openPositionsTitle: string;
         openOrdersTitle: string;
         timeOpened: string;
+        timeClosed: string;
         symbol: string;
         side: string;
         margin: string;

@@ -13,7 +13,8 @@ export const EXCHANGE_AUTHENTICATED_READ_UNSUPPORTED_CODE =
 export type AuthenticatedExchangeReadOperation =
   | 'BALANCE_PREVIEW'
   | 'POSITIONS_SNAPSHOT'
-  | 'OPEN_ORDERS_SNAPSHOT';
+  | 'OPEN_ORDERS_SNAPSHOT'
+  | 'TRADE_HISTORY_SNAPSHOT';
 
 export class ExchangeAuthenticatedReadUnsupportedError extends DomainError<{
   exchange: Exchange;

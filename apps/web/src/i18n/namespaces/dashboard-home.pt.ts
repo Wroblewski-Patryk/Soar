@@ -108,6 +108,7 @@ export const dashboardHomePt = {
     "openPositionsTitle": "Posicoes",
     "openOrdersTitle": "Ordens",
     "timeOpened": "Time",
+    "timeClosed": "Time closed",
     "symbol": "Symbol",
     "side": "Side",
     "margin": "Margin",

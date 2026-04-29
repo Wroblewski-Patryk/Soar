@@ -414,11 +414,18 @@ export const createHistoryPositionsColumns = ({
   formatDateTime,
 }: SharedColumnsArgs & { formatDateTime: (value?: string | null) => string }): HistoryPositionsTableColumn[] => [
   {
-    key: "closedAt",
-    label: t("dashboard.home.runtime.time"),
+    key: "openedAt",
+    label: t("dashboard.home.runtime.timeOpened"),
     sortable: true,
-    accessor: (row) => row.closedAt ?? row.openedAt,
-    render: (row) => formatDateTime(row.closedAt ?? row.openedAt),
+    accessor: (row) => row.openedAt,
+    render: (row) => formatDateTime(row.openedAt),
+  },
+  {
+    key: "closedAt",
+    label: t("dashboard.home.runtime.timeClosed"),
+    sortable: true,
+    accessor: (row) => row.closedAt ?? "",
+    render: (row) => (row.closedAt ? formatDateTime(row.closedAt) : "-"),
   },
   {
     key: "symbol",
