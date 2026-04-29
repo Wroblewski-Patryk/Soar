@@ -193,23 +193,15 @@ Freeze the chosen semantics in architecture and planning docs.
 
 ### V1ROE-02
 
-Lock production-style red coverage for:
+Lock API/runtime contract coverage for:
 
-- exchange margin / ROE read-model truth
-- imported/reopened `LIVE` stale automation continuity
-- `DOGEUSDT`-class DCA non-execution after reopen/import
+- `runtime-sessions/:id/positions` returning canonical `marginUsed`
+- `runtime-sessions/:id/positions` returning canonical
+  `unrealizedPnlPercent`
+- one explicit proof that `LIVE` read truth uses persisted margin basis rather
+  than the old modeled-margin shortcut when those values differ
 
 ### V1ROE-03
-
-Propagate exchange margin truth into canonical runtime open-position read
-models and operator surfaces.
-
-### V1ROE-04
-
-Repair imported/reopened `LIVE` automation continuity so open managed positions
-re-enter fresh market evaluation deterministically after import/reopen.
-
-### V1ROE-05
 
 Run focused prod-faithful verification for:
 
@@ -237,6 +229,8 @@ Closed in code:
 
 Still open:
 
+- red-lock coverage proving the `runtime positions` API contract cannot drop
+  `marginUsed` or `unrealizedPnlPercent` silently
 - fresh protected production verification on the affected `DOGEUSDT` flow
 - remaining `V1EXCEL-03` manual-matrix evidence for mixed-origin `LIVE`
   scenarios and restart/recovery proof
