@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   RuntimeSignalLoop,
   deriveRuntimeGroupMaxOpenPositions,
@@ -6,6 +6,8 @@ import {
 } from './runtimeSignalLoop.service';
 import { MarketStreamEvent } from '../market-stream/binanceStream.types';
 import { metricsStore } from '../../observability/metrics';
+import { clearRuntimeSignalMarketDataStore } from './runtimeSignalMarketDataGateway';
+import { clearRuntimeTickerStore } from './runtimeTickerStore';
 
 vi.mock('./runtimeCapitalContext.service', () => ({
   resolveRuntimeReferenceBalance: vi.fn(async () => 10_000),
@@ -222,6 +224,11 @@ const emitFinalCandleSeries = async (
 };
 
 describe('RuntimeSignalLoop', () => {
+  beforeEach(() => {
+    clearRuntimeTickerStore();
+    clearRuntimeSignalMarketDataStore();
+  });
+
   it('records hot-path metrics for active-bot reads and eligible-group sampling', async () => {
     const { deps, emit } = createDeps();
     withStrategyBot(deps);

@@ -17,8 +17,8 @@ Last updated: 2026-04-29
 
 ## READY
 
-- [ ] `V1COVER-01 test(runtime-state): reset shared runtime candle/ticker stores at canonical test boundaries`
-  - 2026-04-29: New `V1COVER-A` wave starts with deterministic runtime-state cleanup. Fresh broad Vitest runs show that some engine/runtime files still share module-global candle/ticker state, so the first slice is to clear those stores explicitly at canonical test boundaries before trusting any broader `LIVE` parity signal.
+- [x] `V1COVER-01 test(runtime-state): reset shared runtime candle/ticker stores at canonical test boundaries`
+  - 2026-04-29: Closed the first `V1COVER-A` slice by clearing module-global runtime candle/ticker stores in `runtime-flow.e2e.test.ts` and `runtimeSignalLoop.service.test.ts`. Focused combined validation now passes when those two files run together, which removes one confirmed source of false-red `LIVE` parity noise caused by inherited runtime market data.
 
 - [ ] `V1COVER-02 test(shared-cleanup): repair singular-bot wallet cleanup drift in runtime takeover helpers`
   - 2026-04-29: Shared runtime takeover e2e helpers still create wallet-linked topology without deleting wallets in the shared reset path. That leaves broad suite truth vulnerable to FK cleanup noise under the singular bot contract and needs one focused helper fix before broader `LIVE` coverage can be trusted.

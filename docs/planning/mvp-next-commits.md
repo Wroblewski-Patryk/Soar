@@ -7,7 +7,8 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `V1COVER-01 test(runtime-state): reset shared runtime candle/ticker stores at canonical test boundaries`
+- [x] `V1COVER-01 test(runtime-state): reset shared runtime candle/ticker stores at canonical test boundaries`
+  - 2026-04-29: Closed the first `V1COVER-A` slice by resetting module-global runtime candle/ticker stores in the two engine files that emit runtime events directly (`runtime-flow.e2e` and `runtimeSignalLoop.service.test`). This removes one broad false-red source where `runtime-flow` could leave shared candle history behind and later make `runtimeSignalLoop` look broken only because it inherited prior series state.
 - [ ] `V1COVER-02 test(shared-cleanup): repair singular-bot wallet cleanup drift in runtime takeover helpers`
 ## NEXT
 - [ ] `V1COVER-03 qa(runtime-pack): rerun broad runtime/order regression pack and classify real post-stabilization failures`

@@ -1099,3 +1099,10 @@ pnpm --filter api run test -- --run
 - Symptom: `pnpm run test:go-live:smoke` failed before meaningful validation when Docker Compose could not bind `5432` or `6379`, even though healthy local Postgres/Redis were already reachable. On the same machine, Prisma then surfaced the real blocker separately: local failed migration state `P3009`.
 - Verified learning: For local smoke tooling, port-collision on standard dev infra should be treated as a reusable-environment case if both services are actually reachable. The wrapper should not tear down infra it did not start itself, and it should surface failed migration state explicitly instead of burying it in mixed CLI noise.
 - Action taken: `scripts/goLiveSmoke.mjs` now reuses reachable local Postgres/Redis when Compose start fails because ports are already occupied, avoids `infra:down` in that reuse case, calls the local Prisma binary directly for cleaner output, and prints an explicit diagnostic when `P3009` blocks the local target DB.
+
+# 2026-04-29 - Runtime engine tests must clear shared market-data stores at file boundaries
+
+- Context: `V1COVER-01`
+- Symptom: broad runtime packs could report false-red failures in `runtimeSignalLoop.service.test.ts` only when run alongside other engine files, while the same assertions passed in isolation.
+- Verified learning: `RuntimeSignalMarketDataGateway` uses a module-global candle-series store, and runtime ticker state is also shared module-wide. Any test file that emits real runtime candle/ticker events must clear those stores in `beforeEach`, or later files can inherit stale series and look broken for the wrong reason.
+- Action taken: added explicit `clearRuntimeSignalMarketDataStore()` and `clearRuntimeTickerStore()` resets to the runtime files that emit market events directly (`runtime-flow.e2e.test.ts`, `runtimeSignalLoop.service.test.ts`) before relying on broader `LIVE` parity packs.

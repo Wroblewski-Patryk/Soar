@@ -3,6 +3,8 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 import { RuntimeSignalLoop } from './runtimeSignalLoop.service';
+import { clearRuntimeSignalMarketDataStore } from './runtimeSignalMarketDataGateway';
+import { clearRuntimeTickerStore } from './runtimeTickerStore';
 import { setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -34,6 +36,8 @@ const registerAndLogin = async (email: string) => {
 
 describe('Runtime flow e2e (strategy -> backtest -> paper runtime)', () => {
   beforeEach(async () => {
+    clearRuntimeTickerStore();
+    clearRuntimeSignalMarketDataStore();
     await prisma.log.deleteMany();
     await prisma.backtestReport.deleteMany();
     await prisma.backtestTrade.deleteMany();
