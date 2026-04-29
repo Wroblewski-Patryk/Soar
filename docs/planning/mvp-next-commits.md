@@ -10,9 +10,12 @@ Operational queue for one-task execution runs.
 - [x] `V1TRUTH-00 planning(queue): publish final LIVE exchange-truth packet`
   - 2026-04-29: Published `docs/planning/v1truth-live-exchange-truth-hardening-plan-2026-04-29.md` plus `docs/planning/v1truth-00-planning-task-2026-04-29.md` after a fresh real-account analysis of the remaining money-path drift. The approved staged direction is now canonical: keep the singular bot architecture through the final `V1` hardening wave, close truthful `LIVE` order/position/manual-close/protection behavior first, and defer multi-strategy-per-bot to a post-`V1` architecture wave.
 - [ ] `V1TRUTH-01 audit(api+web+exchange): freeze the exact remaining money-path failure matrix`
-- [ ] `V1TRUTH-02 fix(web+api-contract): align futures manual-order sizing and free-funds validation`
-- [ ] `V1TRUTH-03 test(api-red): lock exchange-backed manual close parity`
-- [ ] `V1TRUTH-04 fix(api-exchange+runtime): make manual close fail-closed and exchange-truthful`
+- [x] `V1TRUTH-02 fix(web+api-contract): align futures manual-order sizing and free-funds validation`
+  - 2026-04-29: Closed by making dashboard futures manual-order semantics leverage-aware end to end on the web side. `FUTURES` budget/max-size/budget-to-quantity/free-funds validation now operate on required margin instead of full notional, while `SPOT` remains unchanged. Validation PASS: focused `useManualOrderController`, focused `HomeLiveWidgets.manual-order`, `pnpm --filter web run typecheck`.
+- [x] `V1TRUTH-03 test(api-red): lock exchange-backed manual close parity`
+  - 2026-04-29: Closed by pinning the manual-close contract at the orchestration and exchange-boundary seams. Focused regressions now prove that `LIVE` close submissions carry canonical `reduceOnly` intent through the existing order/exchange path and that runtime close may degrade only to explicit submitted exchange authority instead of inventing a local close.
+- [x] `V1TRUTH-04 fix(api-exchange+runtime): make manual close fail-closed and exchange-truthful`
+  - 2026-04-29: Closed by wiring `reduceOnly` through `executionOrchestrator -> orders -> exchangeAdapterBoundary`, relaxing live pretrade exposure blocking for reduce-only closes only, and letting runtime manual close use persisted entry price as `LIVE` fallback reference when lifecycle mark price is temporarily unavailable. `PAPER` keeps the stricter `POSITION_CLOSE_PRICE_UNAVAILABLE` failure mode when no canonical close price exists. Validation PASS: focused API manual-close pack, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 - [x] `V1MARK-00 planning(queue): publish LIVE futures mark-price parity packet`
   - 2026-04-29: Published `docs/planning/v1mark-live-futures-mark-price-parity-plan-2026-04-29.md` and `docs/planning/v1mark-00-planning-task-2026-04-29.md` to freeze the next narrow `LIVE exchange` hardening slice. The strongest remaining real-money drift is that `LIVE FUTURES` runtime protection and position-lifetime enforcement still resolve lifecycle price from ticker `lastPrice` and candle close fallback, while exchange futures risk semantics are mark-price driven.
 - [x] `V1MARK-01 docs(contract): freeze LIVE futures lifecycle-price hierarchy`
@@ -22,8 +25,10 @@ Operational queue for one-task execution runs.
 - [x] `V1COVER-02 test(shared-cleanup): repair singular-bot wallet cleanup drift in runtime takeover helpers`
   - 2026-04-29: Closed the second `V1COVER-A` slice by restoring wallet cleanup to the shared runtime takeover helper and aligning the outdated overlap proof to the current architecture. The shared takeover suite now deletes wallet-linked topology deterministically, and the first visibility regression no longer assumes two active LIVE bots may share one symbol; it now proves the approved contract instead: imported `LIVE` positions stay visible for the owning LIVE bot while a PAPER bot may share the symbol without taking ownership.
 ## NEXT
-- [ ] `V1TRUTH-05 test(api+web-red): lock pending external order versus position truth`
-- [ ] `V1TRUTH-06 fix(api+reads+web): harden order/position merge and operator presentation`
+- [x] `V1TRUTH-05 test(api+web-red): lock pending external order versus position truth`
+  - 2026-04-29: Closed by adding a focused `orders-positions.e2e` proof for the reported real-money baseline: one open `LIVE` position plus one pending external/manual exchange `DCA` order on the same symbol. Runtime session positions and dashboard aggregate both stay truthful: the position keeps its original quantity/notional, while the pending exchange order remains visible only in `openOrders` until fill confirmation arrives.
+- [x] `V1TRUTH-06 fix(api+reads+web): harden order/position merge and operator presentation`
+  - 2026-04-29: Closed by fixing the strongest confirmed drift above the green pending-order baseline. `livePositionReconciliation` now reuses the existing local `BOT`/`USER` managed `LIVE` position for the same owner and `symbol/side` identity instead of creating a second imported `EXCHANGE_SYNC` row when the exchange snapshot arrives. Focused validation PASS: `livePositionReconciliation.service.test.ts`, `orders-positions.e2e.test.ts`, manual-close/runtime/exchange packs, API typecheck, guardrails.
 - [ ] `V1TRUTH-07 docs+test(runtime-red): freeze and prove the final DCA/TTP/TSL rule`
 - [ ] `V1TRUTH-08 fix(api-runtime+web): align protection execution and operator truth`
 - [ ] `V1TRUTH-09 qa(closure): run focused real-money truth pack and publish closure evidence`

@@ -209,6 +209,7 @@ export const enforceLivePretradeGuards = async (params: {
     symbol: string;
     quantity: number;
     price?: number;
+    reduceOnly?: boolean;
   };
 }) => {
   const normalizedSymbol = params.payload.symbol.toUpperCase();
@@ -217,13 +218,15 @@ export const enforceLivePretradeGuards = async (params: {
     throw orderErrors.livePretradeInvalidQuantity();
   }
 
-  const hasExposure = await hasOpenExposureCached({
-    connector: params.connector,
-    apiKeyId: params.apiKeyId,
-    symbol: normalizedSymbol,
-  });
-  if (hasExposure) {
-    throw orderErrors.livePretradeExternalPositionOpen();
+  if (params.payload.reduceOnly !== true) {
+    const hasExposure = await hasOpenExposureCached({
+      connector: params.connector,
+      apiKeyId: params.apiKeyId,
+      symbol: normalizedSymbol,
+    });
+    if (hasExposure) {
+      throw orderErrors.livePretradeExternalPositionOpen();
+    }
   }
 
   const rules = await getSymbolTradingRulesCached({

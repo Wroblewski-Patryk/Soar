@@ -181,7 +181,12 @@ export const closeBotRuntimeSessionPosition = async (
     marketType: botMarketType,
     symbol: position.symbol,
   });
-  if (!markPrice) {
+  const closeReferencePrice =
+    markPrice ??
+    (botContext.mode === 'LIVE' && Number.isFinite(position.entryPrice) && position.entryPrice > 0
+      ? position.entryPrice
+      : null);
+  if (!closeReferencePrice) {
     throw botErrors.positionClosePriceUnavailable();
   }
 
@@ -194,7 +199,7 @@ export const closeBotRuntimeSessionPosition = async (
     symbol: position.symbol,
     direction: 'EXIT',
     quantity: Math.max(0, position.quantity),
-    markPrice,
+    markPrice: closeReferencePrice,
     mode: botContext.mode,
     reason: 'manual_dashboard_close_position',
   });

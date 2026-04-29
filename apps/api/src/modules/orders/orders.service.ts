@@ -299,6 +299,7 @@ const executeLiveOrderOnExchange: OpenOrderDeps['executeLiveOrder'] = async (par
       quantity: params.payload.quantity,
       price: params.payload.price,
       strategyId: params.payload.strategyId,
+      reduceOnly: params.payload.reduceOnly,
     },
     targetLeverage,
   });

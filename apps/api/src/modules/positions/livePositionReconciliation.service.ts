@@ -600,6 +600,21 @@ export const reconcileExternalPositionsFromExchange = async (
         });
       }
       const seenExternalPositionKeysByOwner = new Map<string, Set<string>>();
+      const localManagedPositionsByOwner = new Map<string, LocalManagedLivePosition[]>();
+
+      const loadLocalManagedPositionsForOwner = async (input: {
+        userId: string;
+        botId: string;
+        walletId: string;
+      }) => {
+        if (!deps.listOpenLocalManagedPositionsForOwner) return [] as LocalManagedLivePosition[];
+        const ownerKey = buildOwnerIdentity(input.botId, input.walletId);
+        const cached = localManagedPositionsByOwner.get(ownerKey);
+        if (cached) return cached;
+        const positions = await deps.listOpenLocalManagedPositionsForOwner(input);
+        localManagedPositionsByOwner.set(ownerKey, positions);
+        return positions;
+      };
 
       for (const position of snapshot.positions) {
         const size = Math.abs(position.contracts ?? 0);
@@ -670,8 +685,26 @@ export const reconcileExternalPositionsFromExchange = async (
           seenExternalPositionKeysByOwner.set(ownerKey, seenKeys);
         }
 
-        if (existing) {
-          await deps.updateSyncedPosition(existing.id, {
+        const localManagedPosition =
+          !existing &&
+          ownership.status === 'OWNED' &&
+          restoredBotId &&
+          restoredWalletId
+            ? (
+                await loadLocalManagedPositionsForOwner({
+                  userId: apiKey.userId,
+                  botId: restoredBotId,
+                  walletId: restoredWalletId,
+                })
+              ).find(
+                (localPosition) =>
+                  normalizeSymbol(localPosition.symbol) === normalizedSymbol &&
+                  localPosition.side === side
+              ) ?? null
+            : null;
+
+        if (existing || localManagedPosition) {
+          await deps.updateSyncedPosition((existing ?? localManagedPosition)!.id, {
             symbol: normalizedSymbol,
             side,
             quantity: size,

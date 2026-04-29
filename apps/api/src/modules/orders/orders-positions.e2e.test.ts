@@ -1844,6 +1844,162 @@ describe('Orders and positions read contract', () => {
     expect(projectedOrder?.origin).toBe('EXCHANGE_SYNC');
   });
 
+  it('keeps pending external LIVE DCA order separate from the existing open position until exchange fill confirms it', async () => {
+    const ownerAgent = await registerAndLogin('runtime-live-pending-dca-truth@example.com');
+    const ownerId = await getUserId('runtime-live-pending-dca-truth@example.com');
+
+    const liveWallet = await prisma.wallet.create({
+      data: {
+        userId: ownerId,
+        name: 'Live pending DCA wallet',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+
+    const liveBot = await prisma.bot.create({
+      data: {
+        userId: ownerId,
+        name: 'Live pending DCA bot',
+        mode: 'LIVE',
+        marketType: 'FUTURES',
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'mvp-v1',
+        walletId: liveWallet.id,
+        symbolGroupId: (
+          await createMarketScope({
+            userId: ownerId,
+            name: 'Live pending DCA scope',
+            symbols: ['BTCUSDT'],
+          })
+        ).id,
+      },
+    });
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerId,
+        botId: liveBot.id,
+        mode: 'LIVE',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-12T12:00:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-12T12:02:00.000Z'),
+      },
+    });
+
+    const livePosition = await prisma.position.create({
+      data: {
+        userId: ownerId,
+        botId: liveBot.id,
+        walletId: liveWallet.id,
+        strategyId: null,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        continuityState: 'CONFIRMED',
+        symbol: 'BTCUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 62000,
+        quantity: 0.03,
+        leverage: 5,
+        unrealizedPnl: 0,
+      },
+    });
+
+    const pendingExternalDcaOrder = await prisma.order.create({
+      data: {
+        userId: ownerId,
+        botId: liveBot.id,
+        walletId: liveWallet.id,
+        positionId: null,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        symbol: 'BTCUSDT',
+        side: 'BUY',
+        type: 'LIMIT',
+        status: 'OPEN',
+        quantity: 0.02,
+        filledQuantity: 0,
+        price: 61000,
+        exchangeOrderId: 'exchange-pending-dca-1',
+        submittedAt: new Date('2026-04-12T12:01:00.000Z'),
+        createdAt: new Date('2026-04-12T12:01:00.000Z'),
+      },
+    });
+
+    const positionsRes = await ownerAgent.get(
+      `/dashboard/bots/${liveBot.id}/runtime-sessions/${session.id}/positions`
+    );
+    expect(positionsRes.status).toBe(200);
+    expect(positionsRes.body.openCount).toBe(1);
+    expect(positionsRes.body.openOrdersCount).toBe(1);
+    expect(positionsRes.body.openItems).toHaveLength(1);
+    expect(positionsRes.body.openOrders).toHaveLength(1);
+
+    const projectedPosition = positionsRes.body.openItems.find(
+      (item: { id: string }) => item.id === livePosition.id
+    );
+    expect(projectedPosition).toEqual(
+      expect.objectContaining({
+        id: livePosition.id,
+        symbol: 'BTCUSDT',
+        quantity: 0.03,
+        entryPrice: 62000,
+        entryNotional: 1860,
+      })
+    );
+
+    const projectedOrder = positionsRes.body.openOrders.find(
+      (item: { id: string }) => item.id === pendingExternalDcaOrder.id
+    );
+    expect(projectedOrder).toEqual(
+      expect.objectContaining({
+        id: pendingExternalDcaOrder.id,
+        symbol: 'BTCUSDT',
+        side: 'BUY',
+        status: 'OPEN',
+        quantity: 0.02,
+        filledQuantity: 0,
+        origin: 'EXCHANGE_SYNC',
+      })
+    );
+
+    const aggregateRes = await ownerAgent.get(
+      `/dashboard/bots/${liveBot.id}/runtime-monitoring/aggregate`
+    );
+    expect(aggregateRes.status).toBe(200);
+    expect(aggregateRes.body.positions.openCount).toBe(1);
+    expect(aggregateRes.body.positions.openOrdersCount).toBe(1);
+    expect(aggregateRes.body.positions.openItems).toHaveLength(1);
+    expect(aggregateRes.body.positions.openOrders).toHaveLength(1);
+
+    const aggregatePosition = aggregateRes.body.positions.openItems.find(
+      (item: { id: string }) => item.id === livePosition.id
+    );
+    expect(aggregatePosition).toEqual(
+      expect.objectContaining({
+        id: livePosition.id,
+        quantity: 0.03,
+        entryNotional: 1860,
+      })
+    );
+    const aggregateOrder = aggregateRes.body.positions.openOrders.find(
+      (item: { id: string }) => item.id === pendingExternalDcaOrder.id
+    );
+    expect(aggregateOrder).toEqual(
+      expect.objectContaining({
+        id: pendingExternalDcaOrder.id,
+        quantity: 0.02,
+        filledQuantity: 0,
+      })
+    );
+  });
+
   it('keeps PAPER open orders visible in runtime view when order was created before current session start', async () => {
     const ownerAgent = await registerAndLogin('runtime-paper-open-order-carryover@example.com');
     const ownerId = await getUserId('runtime-paper-open-order-carryover@example.com');

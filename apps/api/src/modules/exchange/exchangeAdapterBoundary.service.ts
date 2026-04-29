@@ -47,6 +47,7 @@ export type SubmitLiveExchangeOrderInput = {
     quantity: number;
     price?: number;
     strategyId?: string | null;
+    reduceOnly?: boolean;
   };
   targetLeverage: number | null;
 };
@@ -100,6 +101,7 @@ type ExchangeAdapterBoundaryDeps = {
         type: 'market' | 'limit';
         amount: number;
         price?: number;
+        reduceOnly?: boolean;
         positionMode: 'ONE_WAY' | 'HEDGE';
       };
     }) => Promise<{
@@ -329,6 +331,7 @@ export const submitLiveOrderThroughBoundary = async (
         symbol: params.order.symbol,
         quantity: params.order.quantity,
         price: params.order.price,
+        reduceOnly: params.order.reduceOnly,
       },
     });
     await deps.convergeLiveMarginAndLeverageIfNeeded({
@@ -345,6 +348,7 @@ export const submitLiveOrderThroughBoundary = async (
         type: mapLiveOrderType(params.order.type),
         amount: params.order.quantity,
         price: params.order.price,
+        reduceOnly: params.order.reduceOnly,
         positionMode: params.bot.positionMode,
       },
     });

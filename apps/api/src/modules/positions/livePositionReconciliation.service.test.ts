@@ -314,6 +314,91 @@ describe('reconcileExternalPositionsFromExchange', () => {
     consoleWarnSpy.mockRestore();
   });
 
+  it('reuses existing local BOT-managed LIVE position instead of creating duplicate synced row for the same owner and identity', async () => {
+    const createSyncedPosition = vi.fn(async () => undefined);
+    const updateSyncedPosition = vi.fn(async () => undefined);
+    const listOpenLocalManagedPositionsForOwner = vi.fn(async () => [
+      {
+        id: 'local-bot-pos-1',
+        symbol: 'BTCUSDT',
+        side: 'LONG' as const,
+        openedAt: new Date('2026-03-23T00:00:00.000Z'),
+      },
+    ]);
+
+    const result = await reconcileExternalPositionsFromExchange({
+      listSyncedApiKeys: vi.fn(async () => [
+        {
+          id: 'key-live-dup-1',
+          userId: 'user-live-dup-1',
+        },
+      ]),
+      resolveOwnershipIndexForUser: vi.fn(async () =>
+        new Map([
+          [
+            'key-live-dup-1:BTCUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-live-dup-1',
+              walletId: 'wallet-live-dup-1',
+            },
+          ],
+        ])
+      ),
+      fetchPositionsForApiKey: vi.fn(async () => ({
+        positions: [
+          {
+            symbol: 'BTC/USDT:USDT',
+            side: 'long',
+            contracts: 0.05,
+            entryPrice: 64000,
+            markPrice: 64100,
+            unrealizedPnl: 5,
+            leverage: 4,
+            timestamp: '2026-03-23T00:10:00.000Z',
+          },
+        ],
+      })),
+      findOpenSyncedPositionByExternalId: vi.fn(async () => null),
+      resolveCanonicalBotContinuityContext: vi.fn(async () => ({
+        botId: 'bot-live-dup-1',
+        walletId: 'wallet-live-dup-1',
+        strategyId: 'strategy-live-dup-1',
+      })),
+      updateSyncedPosition,
+      createSyncedPosition,
+      listOpenSyncedPositionsForApiKey: vi.fn(async () => []),
+      listOpenLocalManagedPositionsForOwner,
+      closeStaleLocalManagedPosition: vi.fn(async () => undefined),
+      markMissingSyncedPosition: vi.fn(async () => undefined),
+      closeStaleSyncedPosition: vi.fn(async () => undefined),
+      now: () => new Date('2026-03-23T00:10:01.000Z'),
+    });
+
+    expect(result.openPositionsSeen).toBe(1);
+    expect(listOpenLocalManagedPositionsForOwner).toHaveBeenCalledWith({
+      userId: 'user-live-dup-1',
+      botId: 'bot-live-dup-1',
+      walletId: 'wallet-live-dup-1',
+    });
+    expect(updateSyncedPosition).toHaveBeenCalledWith(
+      'local-bot-pos-1',
+      expect.objectContaining({
+        symbol: 'BTCUSDT',
+        side: 'LONG',
+        quantity: 0.05,
+        entryPrice: 64000,
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        botId: 'bot-live-dup-1',
+        walletId: 'wallet-live-dup-1',
+        strategyId: 'strategy-live-dup-1',
+        continuityState: 'CONFIRMED',
+      })
+    );
+    expect(createSyncedPosition).not.toHaveBeenCalled();
+  });
+
   it('falls back to MANUAL_MANAGED + DRIFT when takeover ownership is ambiguous', async () => {
     const createSyncedPosition = vi.fn(async () => undefined);
     const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);

@@ -59,6 +59,7 @@ export interface OrderFlowGateway {
     strategyId?: string;
     positionId?: string;
     origin?: 'BOT';
+    reduceOnly?: boolean;
     symbol: string;
     side: 'BUY' | 'SELL';
     type: 'MARKET';
@@ -575,6 +576,7 @@ export const orchestrateRuntimeSignal = async (
       strategyId: input.strategyId,
       positionId: openPosition.id,
       origin: 'BOT',
+      reduceOnly: input.mode === 'LIVE' ? true : undefined,
       symbol: input.symbol,
       side: decision.orderSide,
       type: 'MARKET',

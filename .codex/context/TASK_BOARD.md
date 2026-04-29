@@ -23,21 +23,25 @@ Last updated: 2026-04-29
 - [ ] `V1TRUTH-01 audit(api+web+exchange): freeze the exact remaining money-path failure matrix`
   - Scope: reproduce and lock the reported real-account scenarios for external DCA pending-order truth, manual close failure, futures manual-order leverage drift, and operator-visible order/position separation.
 
-- [ ] `V1TRUTH-02 fix(web+api-contract): align futures manual-order sizing and free-funds validation`
+- [x] `V1TRUTH-02 fix(web+api-contract): align futures manual-order sizing and free-funds validation`
   - Scope: unify leverage-aware margin validation between manual-order context and dashboard controller while preserving exchange min-notional truth.
   - 2026-04-29 progress: web-side manual-order controller parity is now in place. `FUTURES` budget/max-size/free-funds checks no longer treat wallet free capital as if it had to cover full notional, while `SPOT` remains unchanged. Focused web validation PASS: `useManualOrderController.test.tsx`, `HomeLiveWidgets.manual-order.test.tsx`, `pnpm --filter web run typecheck`.
 
-- [ ] `V1TRUTH-03 test(api-red): lock exchange-backed manual close parity`
+- [x] `V1TRUTH-03 test(api-red): lock exchange-backed manual close parity`
   - Scope: add failing proof for one canonical app-driven `LIVE` close authority with honest degradation behavior.
+  - 2026-04-29: Closed by locking focused regressions at the runtime close command, orchestration, and exchange-boundary seams. The test pack now proves that `LIVE` manual close keeps one approved exchange-backed authority path, including explicit `reduceOnly` propagation and `PAPER`-specific fail-closed behavior when no canonical close price exists.
 
-- [ ] `V1TRUTH-04 fix(api-exchange+runtime): make manual close fail-closed and exchange-truthful`
+- [x] `V1TRUTH-04 fix(api-exchange+runtime): make manual close fail-closed and exchange-truthful`
   - Scope: route manual close through the approved exchange boundary and keep runtime diagnostics explicit instead of acting as hidden close authority.
+  - 2026-04-29: Closed by extending the canonical `openOrder`/exchange boundary flow with optional `reduceOnly` for `LIVE` close intent, exempting that reduce-only close path from the exposure-open pretrade blocker, and degrading `LIVE` runtime close to persisted `entryPrice` only as reference context when lifecycle mark price is unavailable. Focused API validation PASS: `runtimeSessionPositionCommand.service.test.ts`, `executionOrchestrator.service.test.ts`, `exchangeAdapterBoundary.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 
-- [ ] `V1TRUTH-05 test(api+web-red): lock pending external order versus position truth`
+- [x] `V1TRUTH-05 test(api+web-red): lock pending external order versus position truth`
   - Scope: prove that unfilled external/manual exchange orders remain in `orders` only and do not inflate open position size, margin, or automation state.
+  - 2026-04-29: Closed by adding a focused `orders-positions.e2e` reproduction for one open `LIVE` position plus one pending external/manual exchange `DCA` order on the same symbol. The canonical session read and dashboard aggregate both stay truthful: `openCount=1`, `openOrdersCount=1`, unchanged position quantity/notional, and the external order remains only in `openOrders` until fill.
 
-- [ ] `V1TRUTH-06 fix(api+reads+web): harden order/position merge and operator presentation`
+- [x] `V1TRUTH-06 fix(api+reads+web): harden order/position merge and operator presentation`
   - Scope: keep reconciliation, read models, and dashboard surfaces aligned to exchange-confirmed fill truth.
+  - 2026-04-29: Closed by fixing the strongest confirmed reconcile drift above the green pending-order baseline. When exchange snapshot truth arrives for a bot-owned `LIVE` position and the repository already has a local open `BOT`/`USER` managed row for the same owner plus `symbol/side`, reconciliation now updates that row to exchange truth instead of creating a duplicate `EXCHANGE_SYNC` open position. Focused validation PASS: `livePositionReconciliation.service.test.ts`, `orders-positions.e2e.test.ts`, focused manual-close/runtime/exchange packs, API typecheck, guardrails.
 
 - [ ] `V1TRUTH-07 docs+test(runtime-red): freeze and prove the final DCA/TTP/TSL rule`
   - Scope: document and prove when `TTP` must and must not consider DCA thresholds.

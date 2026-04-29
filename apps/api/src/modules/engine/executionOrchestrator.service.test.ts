@@ -503,6 +503,7 @@ describe('orchestrateRuntimeSignal', () => {
         price: 43000,
         mode: 'LIVE',
         walletId: 'wallet-open',
+        reduceOnly: true,
       })
     );
     expect(positionGateway.closePosition).toHaveBeenCalledWith(
@@ -814,6 +815,13 @@ describe('orchestrateRuntimeSignal', () => {
         reason: 'waiting_fill',
         orderId: 'order-close-pending',
         positionId: 'position-open',
+      })
+    );
+    expect(orderGateway.openOrder).toHaveBeenCalledWith(
+      'u1',
+      expect.objectContaining({
+        reduceOnly: true,
+        side: 'SELL',
       })
     );
     expect(dedupeGateway.markSubmitted).toHaveBeenCalledWith(

@@ -129,6 +129,7 @@ describe('exchangeAdapterBoundary.service', () => {
         type: 'limit',
         amount: 0.1,
         price: 100_000,
+        reduceOnly: undefined,
         positionMode: 'ONE_WAY',
       },
     });
@@ -217,6 +218,7 @@ describe('exchangeAdapterBoundary.service', () => {
         type: 'market',
         amount: 2,
         price: undefined,
+        reduceOnly: undefined,
         positionMode: 'ONE_WAY',
       },
     });
@@ -273,5 +275,83 @@ describe('exchangeAdapterBoundary.service', () => {
       )
     ).rejects.toMatchObject({ code: 'LIVE_API_KEY_REQUIRED' });
     expect(createAuthenticatedConnector).not.toHaveBeenCalled();
+  });
+
+  it('propagates reduce-only LIVE close intent through the canonical exchange boundary', async () => {
+    const connector = createConnector();
+    const createAuthenticatedConnector = vi.fn(() => connector);
+    const resolveLiveExecutionApiKey = vi.fn(async () => ({
+      id: 'api-key-close-1',
+      exchange: 'BINANCE' as const,
+      apiKey: 'enc-key',
+      apiSecret: 'enc-secret',
+    }));
+    const enforceLivePretradeGuards = vi.fn(async () => undefined);
+    const placeLiveOrderWithFees = vi.fn(async () => ({
+      exchangeOrderId: 'binance-close-order-1',
+      status: 'open',
+      rawOrderStatus: 'open',
+      fee: null,
+      feeSource: 'ESTIMATED' as const,
+      feePending: true,
+      feeCurrency: null,
+      effectiveFeeRate: null,
+      exchangeTradeId: null,
+      fills: [],
+    }));
+    const createLiveOrderAdapter = vi.fn(() => ({
+      placeLiveOrderWithFees,
+    }));
+
+    await submitLiveOrderThroughBoundary(
+      {
+        userId: 'user-close-1',
+        bot: {
+          exchange: 'BINANCE',
+          marketType: 'FUTURES',
+          positionMode: 'ONE_WAY',
+          apiKeyId: 'api-key-close-1',
+          walletId: 'wallet-close-1',
+        },
+        order: {
+          symbol: 'BTCUSDT',
+          side: 'SELL',
+          type: 'MARKET',
+          quantity: 0.25,
+          reduceOnly: true,
+        },
+        targetLeverage: 8,
+      },
+      {
+        createAuthenticatedConnector,
+        fetchBalanceRaw: vi.fn(),
+        resolveLiveExecutionApiKey,
+        createLiveOrderAdapter,
+        enforceLivePretradeGuards,
+        convergeLiveMarginAndLeverageIfNeeded: vi.fn(async () => undefined),
+      }
+    );
+
+    expect(enforceLivePretradeGuards).toHaveBeenCalledWith(
+      expect.objectContaining({
+        payload: {
+          symbol: 'BTCUSDT',
+          quantity: 0.25,
+          price: undefined,
+          reduceOnly: true,
+        },
+      })
+    );
+    expect(placeLiveOrderWithFees).toHaveBeenCalledWith({
+      order: {
+        symbol: 'BTCUSDT',
+        side: 'sell',
+        type: 'market',
+        amount: 0.25,
+        price: undefined,
+        reduceOnly: true,
+        positionMode: 'ONE_WAY',
+      },
+    });
   });
 });

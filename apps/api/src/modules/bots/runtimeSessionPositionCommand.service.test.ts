@@ -83,6 +83,7 @@ describe('closeBotRuntimeSessionPosition', () => {
       entryPrice: 50_000,
       origin: 'EXCHANGE_SYNC',
       externalId: 'key-live-1:BTCUSDT:LONG',
+      continuityState: 'CONFIRMED',
     });
     mocks.resolveExternalPositionOwnershipIndex.mockResolvedValue(
       new Map([
@@ -124,6 +125,7 @@ describe('closeBotRuntimeSessionPosition', () => {
       entryPrice: 50_000,
       origin: 'BOT',
       externalId: null,
+      continuityState: 'CONFIRMED',
     });
     mocks.orchestrateRuntimeSignal.mockResolvedValue({
       status: 'closed',
@@ -159,7 +161,7 @@ describe('closeBotRuntimeSessionPosition', () => {
     });
   });
 
-  it('fails closed when no canonical close price is available', async () => {
+  it('falls back to entry price for LIVE manual close when runtime lifecycle price is unavailable', async () => {
     mocks.prisma.position.findFirst.mockResolvedValue({
       id: 'position-1',
       botId: 'bot-1',
@@ -170,6 +172,52 @@ describe('closeBotRuntimeSessionPosition', () => {
       entryPrice: 50_000,
       origin: 'BOT',
       externalId: null,
+      continuityState: 'CONFIRMED',
+    });
+    mocks.resolveRuntimeLifecycleMarkPrice.mockReturnValue(null);
+    mocks.orchestrateRuntimeSignal.mockResolvedValue({
+      status: 'submitted',
+      orderId: 'order-close-pending-1',
+    });
+
+    const result = await closeBotRuntimeSessionPosition('user-1', 'bot-1', 'session-1', 'position-1', {
+      riskAck: true,
+    });
+
+    expect(mocks.orchestrateRuntimeSignal).toHaveBeenCalledWith(
+      expect.objectContaining({
+        symbol: 'BTCUSDT',
+        direction: 'EXIT',
+        markPrice: 50_000,
+      })
+    );
+    expect(result).toEqual({
+      status: 'submitted',
+      orderId: 'order-close-pending-1',
+    });
+  });
+
+  it('fails closed in PAPER when no canonical close price is available', async () => {
+    mocks.prisma.bot.findFirst.mockResolvedValue({
+      mode: 'PAPER',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      walletId: 'wallet-paper-1',
+      wallet: {
+        apiKeyId: null,
+      },
+    });
+    mocks.prisma.position.findFirst.mockResolvedValue({
+      id: 'position-1',
+      botId: 'bot-1',
+      walletId: 'wallet-paper-1',
+      strategyId: 'strategy-1',
+      symbol: 'BTCUSDT',
+      quantity: 0.5,
+      entryPrice: 50_000,
+      origin: 'BOT',
+      externalId: null,
+      continuityState: 'CONFIRMED',
     });
     mocks.resolveRuntimeLifecycleMarkPrice.mockReturnValue(null);
 
@@ -194,6 +242,7 @@ describe('closeBotRuntimeSessionPosition', () => {
       entryPrice: 0.09791,
       origin: 'EXCHANGE_SYNC',
       externalId: 'key-live-1:DOGEUSDT:SHORT',
+      continuityState: 'CONFIRMED',
     });
     mocks.resolveExternalPositionOwnershipIndex.mockResolvedValue(
       new Map([

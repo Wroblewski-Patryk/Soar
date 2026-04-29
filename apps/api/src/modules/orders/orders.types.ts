@@ -16,6 +16,7 @@ export const OpenOrderSchema = z.object({
   botId: z.string().uuid().optional(),
   walletId: z.string().trim().min(1).optional(),
   strategyId: z.string().uuid().optional(),
+  reduceOnly: z.boolean().optional(),
   symbol: z.string().trim().min(1),
   side: z.enum(['BUY', 'SELL']),
   type: z.enum(['MARKET', 'LIMIT', 'STOP', 'STOP_LIMIT', 'TAKE_PROFIT', 'TRAILING']),
