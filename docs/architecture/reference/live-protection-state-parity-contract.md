@@ -105,7 +105,11 @@ This contract does not remove the existing `DCA-first` architecture rule.
 
 If the next DCA is still valid and financially possible:
 
-- `TTP`, `TSL`, and `SL` must still not close
+- `TSL` and `SL` must still not close
+- `TTP` must still not close when at least one remaining DCA threshold is on
+  the profit side (`>= 0` leveraged move threshold)
+- `TTP` may still close when all remaining DCA thresholds are loss-side only,
+  because those levels do not represent pending profit-side continuation intent
 
 But parity work must prove the same rule is applied consistently in:
 
@@ -140,6 +144,8 @@ Any implementation wave touching this contract must include:
   from the adoption point
 - focused tests proving retrace closes after prospective hydration behave
   canonically
+- focused tests proving `TTP` distinguishes pending profit-side DCA from
+  loss-side-only DCA
 - focused tests proving DCA-first gating remains consistent across
   `backtest`, `paper`, and `live`
 

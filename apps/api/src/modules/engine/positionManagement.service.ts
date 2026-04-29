@@ -109,6 +109,15 @@ const selectActiveTrailingStop = (
   return active;
 };
 
+const hasRemainingProfitSideDcaLevels = (
+  dcaEnabled: boolean,
+  dcaLevels: number[],
+  currentAdds: number,
+) => {
+  if (!dcaEnabled || dcaLevels.length === 0) return false;
+  return dcaLevels.slice(currentAdds).some((level) => Number.isFinite(level) && level >= 0);
+};
+
 export const evaluatePositionManagement = (
   input: PositionManagementInput,
   state: PositionManagementState
@@ -168,6 +177,9 @@ export const evaluatePositionManagement = (
 
   const dcaSequenceCompleted = !dcaEnabled || dcaLevelsRequired === 0 || nextState.currentAdds >= dcaLevelsRequired;
   const dcaProtectionSatisfied = dcaSequenceCompleted || parsedInput.dcaFundsExhausted === true;
+  const ttpDcaProtectionSatisfied =
+    dcaProtectionSatisfied ||
+    !hasRemainingProfitSideDcaLevels(dcaEnabled, dcaLevels, nextState.currentAdds);
 
   if (
     typeof parsedInput.takeProfitPrice === 'number' &&
@@ -262,7 +274,7 @@ export const evaluatePositionManagement = (
         nextState.trailingTakeProfitHighPercent = undefined;
         nextState.trailingTakeProfitStepPercent = undefined;
       } else if (
-        dcaProtectionSatisfied &&
+        ttpDcaProtectionSatisfied &&
         favorableMove <= finalTrackedHigh - finalTrackedStep
       ) {
         return {

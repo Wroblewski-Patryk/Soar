@@ -1216,5 +1216,168 @@ describe('RuntimePositionAutomationService', () => {
       })
     );
   });
+
+  it('allows runtime TTP close when remaining DCA levels are loss-side only', async () => {
+    process.env.RUNTIME_TRAILING_ENABLED = 'false';
+    process.env.RUNTIME_DCA_ENABLED = 'false';
+
+    const closeByExitSignal = vi.fn(async () => ({ status: 'closed' as const }));
+    const deps: any = {
+      listOpenPositionsBySymbol: vi.fn(async () => [
+        {
+          id: 'pos-ttp-loss-side-dca',
+          userId: 'user-ttp-loss-side-dca',
+          botId: 'bot-ttp-loss-side-dca',
+          walletId: 'wallet-ttp-loss-side-dca',
+          strategyId: 'strat-ttp-loss-side-dca',
+          symbol: 'ADAUSDT',
+          side: 'LONG' as const,
+          entryPrice: 100,
+          quantity: 1,
+          leverage: 10,
+          stopLoss: null,
+          takeProfit: null,
+          managementMode: 'BOT_MANAGED' as const,
+          continuityState: 'CONFIRMED' as const,
+          origin: 'BOT' as const,
+          bot: buildBotExecutionContext({
+            wallet: { mode: 'LIVE' },
+          }),
+        },
+      ]),
+      getStrategyConfigById: vi.fn(async () => ({
+        close: {
+          mode: 'advanced',
+          tp: null,
+          sl: null,
+          ttp: [{ percent: 5, arm: 10 }],
+          tsl: [],
+        },
+        additional: {
+          dcaEnabled: true,
+          dcaMode: 'advanced',
+          dcaTimes: 2,
+          dcaLevels: [
+            { percent: -2, multiplier: 1 },
+            { percent: -3, multiplier: 1 },
+          ],
+        },
+      })),
+      executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
+      closeByExitSignal,
+      resolveDcaFundsExhausted: vi.fn(async () => false),
+      nowMs: vi.fn(() => Date.now()),
+    };
+
+    const service = new RuntimePositionAutomationService(deps);
+
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'ADAUSDT',
+      eventTime: 12_000,
+      lastPrice: 120,
+      priceChangePercent24h: 1.2,
+    });
+
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'ADAUSDT',
+      eventTime: 13_000,
+      lastPrice: 115,
+      priceChangePercent24h: 0.9,
+    });
+
+    expect(closeByExitSignal).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'user-ttp-loss-side-dca',
+        botId: 'bot-ttp-loss-side-dca',
+        walletId: 'wallet-ttp-loss-side-dca',
+        symbol: 'ADAUSDT',
+        mode: 'LIVE',
+        reason: 'trailing_take_profit',
+      }),
+    );
+  });
+
+  it('keeps runtime TTP blocked when remaining DCA levels are still profit-side', async () => {
+    process.env.RUNTIME_TRAILING_ENABLED = 'false';
+    process.env.RUNTIME_DCA_ENABLED = 'false';
+
+    const closeByExitSignal = vi.fn(async () => ({ status: 'closed' as const }));
+    const deps: any = {
+      listOpenPositionsBySymbol: vi.fn(async () => [
+        {
+          id: 'pos-ttp-profit-side-dca',
+          userId: 'user-ttp-profit-side-dca',
+          botId: 'bot-ttp-profit-side-dca',
+          walletId: 'wallet-ttp-profit-side-dca',
+          strategyId: 'strat-ttp-profit-side-dca',
+          symbol: 'ADAUSDT',
+          side: 'LONG' as const,
+          entryPrice: 100,
+          quantity: 1,
+          leverage: 1,
+          stopLoss: null,
+          takeProfit: null,
+          managementMode: 'BOT_MANAGED' as const,
+          continuityState: 'CONFIRMED' as const,
+          origin: 'BOT' as const,
+          bot: buildBotExecutionContext({
+            wallet: { mode: 'LIVE' },
+          }),
+        },
+      ]),
+      getStrategyConfigById: vi.fn(async () => ({
+        close: {
+          mode: 'advanced',
+          tp: null,
+          sl: null,
+          ttp: [{ percent: 5, arm: 10 }],
+          tsl: [],
+        },
+        additional: {
+          dcaEnabled: true,
+          dcaMode: 'advanced',
+          dcaTimes: 2,
+          dcaLevels: [
+            { percent: 80, multiplier: 1 },
+            { percent: 90, multiplier: 1 },
+          ],
+        },
+      })),
+      executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
+      closeByExitSignal,
+      resolveDcaFundsExhausted: vi.fn(async () => false),
+      nowMs: vi.fn(() => Date.now()),
+    };
+
+    const service = new RuntimePositionAutomationService(deps);
+
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'ADAUSDT',
+      eventTime: 14_000,
+      lastPrice: 120,
+      priceChangePercent24h: 1.2,
+    });
+
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'ADAUSDT',
+      eventTime: 15_000,
+      lastPrice: 109,
+      priceChangePercent24h: 0.9,
+    });
+
+    expect(closeByExitSignal).not.toHaveBeenCalled();
+  });
 });
 

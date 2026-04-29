@@ -20,8 +20,9 @@ Last updated: 2026-04-29
 - [x] `V1TRUTH-00 planning(queue): publish final LIVE exchange-truth packet`
   - 2026-04-29: Closed as the next planning-only slice after the new real-account notes review. Published `docs/planning/v1truth-live-exchange-truth-hardening-plan-2026-04-29.md` plus `docs/planning/v1truth-00-planning-task-2026-04-29.md`, freezing one final `V1` hardening wave around truthful `LIVE` money paths: leverage-aware futures manual-order sizing, exchange-backed manual close, pending external order versus position truth, and the final explicit `DCA/TTP/TSL` rule. The user-approved staged direction is now canonical: keep the singular bot architecture through this wave and defer multi-strategy-per-bot to post-`V1`.
 
-- [ ] `V1TRUTH-01 audit(api+web+exchange): freeze the exact remaining money-path failure matrix`
+- [x] `V1TRUTH-01 audit(api+web+exchange): freeze the exact remaining money-path failure matrix`
   - Scope: reproduce and lock the reported real-account scenarios for external DCA pending-order truth, manual close failure, futures manual-order leverage drift, and operator-visible order/position separation.
+  - 2026-04-29: Closed by the final `V1TRUTH-A` closure packet, which freezes the exact failure matrix and its resolution status in `docs/operations/v1truth-live-exchange-truth-closure-2026-04-29.md`.
 
 - [x] `V1TRUTH-02 fix(web+api-contract): align futures manual-order sizing and free-funds validation`
   - Scope: unify leverage-aware margin validation between manual-order context and dashboard controller while preserving exchange min-notional truth.
@@ -43,14 +44,17 @@ Last updated: 2026-04-29
   - Scope: keep reconciliation, read models, and dashboard surfaces aligned to exchange-confirmed fill truth.
   - 2026-04-29: Closed by fixing the strongest confirmed reconcile drift above the green pending-order baseline. When exchange snapshot truth arrives for a bot-owned `LIVE` position and the repository already has a local open `BOT`/`USER` managed row for the same owner plus `symbol/side`, reconciliation now updates that row to exchange truth instead of creating a duplicate `EXCHANGE_SYNC` open position. Focused validation PASS: `livePositionReconciliation.service.test.ts`, `orders-positions.e2e.test.ts`, focused manual-close/runtime/exchange packs, API typecheck, guardrails.
 
-- [ ] `V1TRUTH-07 docs+test(runtime-red): freeze and prove the final DCA/TTP/TSL rule`
+- [x] `V1TRUTH-07 docs+test(runtime-red): freeze and prove the final DCA/TTP/TSL rule`
   - Scope: document and prove when `TTP` must and must not consider DCA thresholds.
+  - 2026-04-29: Closed by freezing the exact rule in the protection architecture refs and by adding focused shared-kernel plus runtime regressions for profit-side versus loss-side-only pending DCA. Canonical task record: `docs/planning/v1truth-07-08-protection-rule-task-2026-04-29.md`.
 
-- [ ] `V1TRUTH-08 fix(api-runtime+web): align protection execution and operator truth`
+- [x] `V1TRUTH-08 fix(api-runtime+web): align protection execution and operator truth`
   - Scope: close any remaining implementation drift versus the frozen protection contract.
+  - 2026-04-29: Closed by updating the shared lifecycle kernel so `TTP` waits only for remaining profit-side DCA thresholds, while `SL` and `TSL` keep the stricter DCA-first fail-closed block. No additional web-specific drift survived once runtime parity was restored.
 
-- [ ] `V1TRUTH-09 qa(closure): run focused real-money truth pack and publish closure evidence`
+- [x] `V1TRUTH-09 qa(closure): run focused real-money truth pack and publish closure evidence`
   - Scope: run the final focused closure pack for API, web, runtime, and guardrails before the post-`V1` architecture wave begins.
+  - 2026-04-29: Closed by running the focused API closure pack (`99/99 PASS`), focused web closure pack (`15/15 PASS`), API/web typecheck, and repository guardrails. Closure evidence: `docs/operations/v1truth-live-exchange-truth-closure-2026-04-29.md`.
 
 - [x] `BOTMULTI-00 planning(post-v1): publish deferred multi-strategy reintroduction packet`
   - 2026-04-29: Closed as a deferred planning-only slice. Published `docs/planning/botmulti-post-v1-multi-strategy-reintroduction-plan-2026-04-29.md` plus `docs/planning/botmulti-00-planning-task-2026-04-29.md`, recording the approved post-`V1` architecture direction: only after `V1TRUTH-A` closes and remains stable should Soar reopen the bot model from `1 strategy` to `N strategies`.

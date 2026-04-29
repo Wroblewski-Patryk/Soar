@@ -9,7 +9,8 @@ Operational queue for one-task execution runs.
 ## NOW
 - [x] `V1TRUTH-00 planning(queue): publish final LIVE exchange-truth packet`
   - 2026-04-29: Published `docs/planning/v1truth-live-exchange-truth-hardening-plan-2026-04-29.md` plus `docs/planning/v1truth-00-planning-task-2026-04-29.md` after a fresh real-account analysis of the remaining money-path drift. The approved staged direction is now canonical: keep the singular bot architecture through the final `V1` hardening wave, close truthful `LIVE` order/position/manual-close/protection behavior first, and defer multi-strategy-per-bot to a post-`V1` architecture wave.
-- [ ] `V1TRUTH-01 audit(api+web+exchange): freeze the exact remaining money-path failure matrix`
+- [x] `V1TRUTH-01 audit(api+web+exchange): freeze the exact remaining money-path failure matrix`
+  - 2026-04-29: Closed by the final `V1TRUTH-A` closure evidence packet. The failure matrix is now frozen in `docs/operations/v1truth-live-exchange-truth-closure-2026-04-29.md` across the four confirmed money-path classes: futures manual-order margin parity, exchange-backed `LIVE` manual close, pending external order versus position truth, and the final `DCA/TTP/TSL` nuance.
 - [x] `V1TRUTH-02 fix(web+api-contract): align futures manual-order sizing and free-funds validation`
   - 2026-04-29: Closed by making dashboard futures manual-order semantics leverage-aware end to end on the web side. `FUTURES` budget/max-size/budget-to-quantity/free-funds validation now operate on required margin instead of full notional, while `SPOT` remains unchanged. Validation PASS: focused `useManualOrderController`, focused `HomeLiveWidgets.manual-order`, `pnpm --filter web run typecheck`.
 - [x] `V1TRUTH-03 test(api-red): lock exchange-backed manual close parity`
@@ -29,9 +30,12 @@ Operational queue for one-task execution runs.
   - 2026-04-29: Closed by adding a focused `orders-positions.e2e` proof for the reported real-money baseline: one open `LIVE` position plus one pending external/manual exchange `DCA` order on the same symbol. Runtime session positions and dashboard aggregate both stay truthful: the position keeps its original quantity/notional, while the pending exchange order remains visible only in `openOrders` until fill confirmation arrives.
 - [x] `V1TRUTH-06 fix(api+reads+web): harden order/position merge and operator presentation`
   - 2026-04-29: Closed by fixing the strongest confirmed drift above the green pending-order baseline. `livePositionReconciliation` now reuses the existing local `BOT`/`USER` managed `LIVE` position for the same owner and `symbol/side` identity instead of creating a second imported `EXCHANGE_SYNC` row when the exchange snapshot arrives. Focused validation PASS: `livePositionReconciliation.service.test.ts`, `orders-positions.e2e.test.ts`, manual-close/runtime/exchange packs, API typecheck, guardrails.
-- [ ] `V1TRUTH-07 docs+test(runtime-red): freeze and prove the final DCA/TTP/TSL rule`
-- [ ] `V1TRUTH-08 fix(api-runtime+web): align protection execution and operator truth`
-- [ ] `V1TRUTH-09 qa(closure): run focused real-money truth pack and publish closure evidence`
+- [x] `V1TRUTH-07 docs+test(runtime-red): freeze and prove the final DCA/TTP/TSL rule`
+  - 2026-04-29: Closed by freezing the exact `TTP` versus DCA nuance in the protection architecture refs and by adding focused shared-kernel plus runtime regressions for loss-side-only versus profit-side remaining DCA. Canonical task record: `docs/planning/v1truth-07-08-protection-rule-task-2026-04-29.md`.
+- [x] `V1TRUTH-08 fix(api-runtime+web): align protection execution and operator truth`
+  - 2026-04-29: Closed by refining the shared lifecycle kernel so `TTP` waits only for remaining profit-side DCA thresholds, while `SL` and `TSL` keep the stricter DCA-first fail-closed behavior. No separate web drift survived once the runtime kernel and regression pack were updated.
+- [x] `V1TRUTH-09 qa(closure): run focused real-money truth pack and publish closure evidence`
+  - 2026-04-29: Closed by running the focused API closure pack (`99/99 PASS`), focused web closure pack (`15/15 PASS`), API/web typecheck, and repository guardrails. Closure evidence: `docs/operations/v1truth-live-exchange-truth-closure-2026-04-29.md`.
 - [x] `BOTMULTI-00 planning(post-v1): publish deferred multi-strategy reintroduction packet`
   - 2026-04-29: Published `docs/planning/botmulti-post-v1-multi-strategy-reintroduction-plan-2026-04-29.md` plus `docs/planning/botmulti-00-planning-task-2026-04-29.md`. The packet is intentionally deferred: multi-strategy-per-bot becomes a post-`V1` architecture wave only after `V1TRUTH-A` closes and production verification remains stable.
 - [x] `V1MARK-03 fix(api-stream): add futures mark-price ingestion to the market-stream boundary`

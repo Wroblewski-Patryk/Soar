@@ -216,7 +216,61 @@ describe('position management', () => {
     expect(result.closeReason).toBe('take_profit');
   });
 
-  it('keeps trailing take-profit blocked until DCA sequence is completed (or funds exhausted)', () => {
+  it('keeps trailing take-profit blocked until profit-side DCA sequence is completed (or funds exhausted)', () => {
+    const armed = evaluatePositionManagement(
+      {
+        side: 'LONG',
+        currentPrice: 120,
+        leverage: 10,
+        trailingTakeProfit: {
+          enabled: true,
+          armPercent: 0.05,
+          trailPercent: 0.1,
+        },
+        dca: {
+          enabled: true,
+          maxAdds: 2,
+          levelPercents: [3, 4],
+          addSizeFractions: [1, 1],
+          stepPercent: 0.2,
+          addSizeFraction: 1,
+        },
+      },
+      {
+        averageEntryPrice: 100,
+        quantity: 1,
+        currentAdds: 0,
+      }
+    );
+
+    const closed = evaluatePositionManagement(
+      {
+        side: 'LONG',
+        currentPrice: 115,
+        leverage: 10,
+        trailingTakeProfit: {
+          enabled: true,
+          armPercent: 0.05,
+          trailPercent: 0.1,
+        },
+        dca: {
+          enabled: true,
+          maxAdds: 2,
+          levelPercents: [3, 4],
+          addSizeFractions: [1, 1],
+          stepPercent: 0.2,
+          addSizeFraction: 1,
+        },
+      },
+      armed.nextState
+    );
+
+    expect(armed.shouldClose).toBe(false);
+    expect(closed.shouldClose).toBe(false);
+    expect(closed.closeReason).toBeUndefined();
+  });
+
+  it('allows trailing take-profit when remaining DCA levels are loss-side only', () => {
     const armed = evaluatePositionManagement(
       {
         side: 'LONG',
@@ -257,6 +311,60 @@ describe('position management', () => {
           enabled: true,
           maxAdds: 2,
           levelPercents: [-0.2, -0.2],
+          addSizeFractions: [1, 1],
+          stepPercent: 0.2,
+          addSizeFraction: 1,
+        },
+      },
+      armed.nextState
+    );
+
+    expect(armed.shouldClose).toBe(false);
+    expect(closed.shouldClose).toBe(true);
+    expect(closed.closeReason).toBe('trailing_take_profit');
+  });
+
+  it('keeps trailing take-profit blocked when remaining DCA levels are still profit-side', () => {
+    const armed = evaluatePositionManagement(
+      {
+        side: 'LONG',
+        currentPrice: 120,
+        leverage: 10,
+        trailingTakeProfit: {
+          enabled: true,
+          armPercent: 0.05,
+          trailPercent: 0.1,
+        },
+        dca: {
+          enabled: true,
+          maxAdds: 2,
+          levelPercents: [3, 4],
+          addSizeFractions: [1, 1],
+          stepPercent: 0.2,
+          addSizeFraction: 1,
+        },
+      },
+      {
+        averageEntryPrice: 100,
+        quantity: 1,
+        currentAdds: 0,
+      }
+    );
+
+    const closed = evaluatePositionManagement(
+      {
+        side: 'LONG',
+        currentPrice: 115,
+        leverage: 10,
+        trailingTakeProfit: {
+          enabled: true,
+          armPercent: 0.05,
+          trailPercent: 0.1,
+        },
+        dca: {
+          enabled: true,
+          maxAdds: 2,
+          levelPercents: [3, 4],
           addSizeFractions: [1, 1],
           stepPercent: 0.2,
           addSizeFraction: 1,

@@ -38,7 +38,11 @@ Order is hard contract.
 ## DCA-First Guard (Mandatory)
 
 If there are pending DCA levels and next DCA is still financially possible:
-- `TTP`, `TSL`, and `SL` must not close the position yet.
+- `TSL` and `SL` must not close the position yet.
+- `TTP` must not close while any remaining DCA threshold is on the profit side
+  (`>= 0` leveraged move threshold).
+- `TTP` may close if all remaining DCA thresholds are loss-side only, because
+  those levels do not represent pending profit-side continuation.
 
 If pending DCA exists but next DCA is not affordable:
 - close protections may execute (`TTP`/`TSL`/`SL`) to avoid uncontrolled loss.
@@ -54,7 +58,7 @@ This is required for parity with expected strategy semantics in CryptoSparrow.
 | `DCA` | `dca.enabled=true`, `dcaCount < maxAdds` | Current leveraged move crosses next configured DCA level | Increase quantity and recalc average entry; increment DCA count | Clear on open/close |
 | `TP` (basic) | `close.mode=basic`, `tp.enabled` | Profit reaches TP threshold | Close with `TP` reason | Clear DCA/TTP/TSL on close |
 | `SL` (basic) | `close.mode=basic`, `sl.enabled`, DCA-first guard allows close | Price reaches SL threshold | Close with `SL` reason | Clear DCA/TTP/TSL on close |
-| `TTP` (advanced) | `close.mode=advanced`, `ttp levels active`, DCA-first guard allows close | Profit retraces by active trailing step from high watermark | Close with `TTP` reason | Clear DCA/TTP/TSL on close |
+| `TTP` (advanced) | `close.mode=advanced`, `ttp levels active`, DCA-first guard allows close for remaining profit-side DCA only | Profit retraces by active trailing step from high watermark | Close with `TTP` reason | Clear DCA/TTP/TSL on close |
 | `TSL` (advanced) | `close.mode=advanced`, `tsl levels active`, DCA-first guard allows close | Trailing-loss condition reached | Close with `TSL` reason | Clear DCA/TTP/TSL on close |
 | `LIQUIDATION` | Futures risk boundary crossed | Mark/price breach of liquidation boundary | Force close with `LIQUIDATION` reason | Clear DCA/TTP/TSL on close |
 
@@ -149,7 +153,8 @@ Adapters may differ in price source and execution layer, but decision semantics 
 
 ## Required Verification
 
-- Unit tests for DCA-first guard and affordability exception.
+- Unit tests for DCA-first guard, profit-side-vs-loss-side `TTP` gating, and
+  affordability exception.
 - Parity tests ensuring same close reason for identical candle/price sequence in:
   - replay/backtest engine,
   - runtime paper/live engine.
