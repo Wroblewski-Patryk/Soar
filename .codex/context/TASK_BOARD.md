@@ -17,6 +17,9 @@ Last updated: 2026-04-29
 
 ## READY
 
+- [ ] `V1GUARD-01..05 docs+api+qa(closure): close final LIVE protection drifts for DCA/TTP/TSL parity`
+  - 2026-04-29: New active wave after the closed `V1SAFE-A` audit. The remaining confirmed gaps are now narrow and architecture-backed: shared lifecycle logic still allows `TTP` to bypass the canonical `DCA-first` guard, async `LIVE DCA` fills can leave runtime management state stale after exchange confirmation, and `LIVE` protection evaluation still consumes raw ticker `lastPrice` directly inside automation instead of one explicit lifecycle-price seam. The execution wave must add focused red tests first, then converge shared-engine and runtime behavior without introducing a parallel protection system.
+
 - [x] `V1SAFE-00 planning(audit): publish LIVE protection and liquidation-safety analysis plus execution packet`
   - 2026-04-29: Closed as a planning-only analysis slice after refining the earlier broad liquidation-safety draft to the exact remaining parity problem. Published `docs/planning/v1safe-live-protection-and-liquidation-safety-plan-2026-04-29.md` plus the task packet `docs/planning/v1safe-00-analysis-task-2026-04-29.md`. The packet freezes the strongest confirmed drifts behind the current real-account symptom class: imported and recovered `LIVE` positions can still lack canonical trailing/DCA runtime state, runtime read-models can imply dynamic protection through fallback logic the engine cannot execute, and `DCA-first` close gating still lacks focused parity proof across `backtest`, `paper`, and `live`.
 - [x] `V1SAFE-01..10 docs+api+web+qa(closure): close LIVE DCA/TTP/TSL parity for imported and recovered positions`

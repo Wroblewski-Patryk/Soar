@@ -7,7 +7,14 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [ ] `V1GUARD-01 test(shared-engine+api-red): lock remaining LIVE protection drifts around DCA-first TTP gating, async DCA fill convergence, and lifecycle-price reuse`
+- [ ] `V1GUARD-02 fix(shared-engine): make TTP respect the canonical DCA-first guard`
+- [ ] `V1GUARD-03 fix(api-live-runtime): converge LIVE DCA runtime state after async exchange-confirmed fills`
+- [ ] `V1GUARD-04 refactor(api-runtime): route LIVE protection evaluation through one lifecycle-price seam`
+- [ ] `V1GUARD-05 qa(closure): rerun focused LIVE protection final pack and publish closure evidence`
 ## NEXT
+- [x] `V1GUARD-00 planning(queue): publish final LIVE protection hardening packet for DCA/TTP/TSL parity`
+  - 2026-04-29: Published `docs/planning/v1guard-live-protection-final-hardening-plan-2026-04-29.md` to freeze the last confirmed money-impacting drifts after `V1SAFE-A`: `TTP` still bypasses the canonical `DCA-first` guard, async `LIVE DCA` fills can leave runtime state stale after exchange confirmation, and runtime protection still consumes ticker `lastPrice` directly instead of one explicit lifecycle-price seam. Validation PASS: `pnpm run quality:guardrails`.
 - [x] `V1SAFE-00 planning(audit): publish LIVE protection and liquidation-safety analysis plus execution packet`
   - 2026-04-29: Published `docs/planning/v1safe-live-protection-and-liquidation-safety-plan-2026-04-29.md` after refining the scope to the exact remaining `LIVE` parity problem. The repository-level conclusion is that Soar still lacks one canonical `DCA/TTP/TSL` parity model for imported and recovered `LIVE` positions: runtime trailing execution depends on persisted management state, runtime read-models can still imply dynamic protection through fallback logic the engine cannot enforce, and `DCA-first` gating remains insufficiently proven across `backtest`, `paper`, and `live` for the reported real-account symptom class.
 - [x] `V1SAFE-01..10 docs+api+web+qa(closure): close LIVE DCA/TTP/TSL parity for imported and recovered positions`
