@@ -1,5 +1,6 @@
 import { renderHook, act, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { toast } from "sonner";
 
 import { useManualOrderController } from "./useManualOrderController";
 import type {
@@ -13,6 +14,13 @@ const openDashboardManualOrderMock = vi.hoisted(() => vi.fn());
 vi.mock("../../bots/services/bots.service", () => ({
   getDashboardManualOrderContext: getDashboardManualOrderContextMock,
   openDashboardManualOrder: openDashboardManualOrderMock,
+}));
+
+vi.mock("sonner", () => ({
+  toast: {
+    error: vi.fn(),
+    success: vi.fn(),
+  },
 }));
 
 describe("useManualOrderController", () => {
@@ -217,7 +225,7 @@ describe("useManualOrderController", () => {
     });
 
     await waitFor(() => {
-      expect(result.current.manualOrderQuantity).toBe("61.30581383");
+      expect(result.current.manualOrderQuantity).toBe("1532.64534587");
     });
 
     await act(async () => {
@@ -229,9 +237,132 @@ describe("useManualOrderController", () => {
       symbol: "DOGEUSDT",
       side: "BUY",
       type: "MARKET",
-      quantity: 61.30581383,
+      quantity: 1532.64534587,
       price: 0.09787,
       riskAck: true,
     });
+  });
+
+  it("treats futures budget and free-funds validation as leverage-aware margin instead of raw notional", async () => {
+    getDashboardManualOrderContextMock.mockResolvedValue({
+      botId: "bot-live-margin",
+      symbol: "BTCUSDT",
+      mode: "LIVE",
+      orderType: "MARKET",
+      marginMode: "ISOLATED",
+      leverage: 10,
+      priceReference: {
+        markPrice: 100,
+        source: "exchange_mark",
+      },
+      quantityConstraints: {
+        minAmount: 0.001,
+        amountPrecision: 0.001,
+        minNotional: 5,
+        minExecutableQty: 0.001,
+      },
+    });
+
+    const labels = {
+      invalidSymbol: "invalid-symbol",
+      invalidQuantity: "invalid-quantity",
+      invalidPrice: "invalid-price",
+      requiredPrice: "required-price",
+      marketPriceUnavailable: "market-price-unavailable",
+      minQuantity: "min-quantity {value}",
+      exceedsFreeFunds: "exceeds-free-funds",
+      success: "success",
+      error: "error",
+    };
+
+    const selected = {
+      bot: {
+        id: "bot-live-margin",
+        mode: "LIVE",
+        marketType: "FUTURES",
+        exchange: "BINANCE",
+        symbolGroup: {
+          id: "group-live-margin",
+          name: "Margin group",
+          symbols: ["BTCUSDT"],
+        },
+      },
+      runtimeGraph: {
+        marketGroups: [],
+      },
+    } as unknown as RuntimeSnapshot;
+
+    const selectedData = {
+      free: 100,
+      symbols: [
+        {
+          symbol: "BTCUSDT",
+          liveLastPrice: 100,
+        },
+      ],
+      open: [],
+    } as unknown as RuntimeSelectedData;
+
+    const loadMock = vi.fn().mockResolvedValue(undefined);
+
+    const { result } = renderHook(() =>
+      useManualOrderController({
+        selected,
+        selectedData,
+        load: loadMock,
+        labels,
+      })
+    );
+
+    await waitFor(() => {
+      expect(result.current.manualOrderSymbol).toBe("BTCUSDT");
+      expect(result.current.manualOrderLeverageForEstimate).toBe(10);
+      expect(result.current.manualOrderPrice).toBe("100");
+      expect(result.current.manualOrderSliderMaxQuantity).toBe(10);
+    });
+
+    act(() => {
+      result.current.handleManualOrderBudgetChange("100");
+    });
+
+    await waitFor(() => {
+      expect(result.current.manualOrderQuantity).toBe("10");
+      expect(result.current.manualOrderNotionalEstimate).toBe(1000);
+      expect(result.current.manualOrderMarginEstimate).toBe(100);
+      expect(result.current.manualOrderBudget).toBe("100");
+    });
+
+    act(() => {
+      result.current.setManualOrderQuantity("5");
+    });
+
+    await waitFor(() => {
+      expect(result.current.manualOrderBudget).toBe("50");
+    });
+
+    await act(async () => {
+      await result.current.handleSubmitManualOrder();
+    });
+
+    expect(openDashboardManualOrderMock).toHaveBeenCalledWith({
+      botId: "bot-live-margin",
+      symbol: "BTCUSDT",
+      side: "BUY",
+      type: "MARKET",
+      quantity: 5,
+      price: 100,
+      riskAck: true,
+    });
+
+    act(() => {
+      result.current.setManualOrderQuantity("11");
+    });
+
+    await act(async () => {
+      await result.current.handleSubmitManualOrder();
+    });
+
+    expect(toast.error).toHaveBeenCalledWith("exceeds-free-funds");
+    expect(openDashboardManualOrderMock).toHaveBeenCalledTimes(1);
   });
 });

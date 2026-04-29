@@ -25,6 +25,7 @@ Last updated: 2026-04-29
 
 - [ ] `V1TRUTH-02 fix(web+api-contract): align futures manual-order sizing and free-funds validation`
   - Scope: unify leverage-aware margin validation between manual-order context and dashboard controller while preserving exchange min-notional truth.
+  - 2026-04-29 progress: web-side manual-order controller parity is now in place. `FUTURES` budget/max-size/free-funds checks no longer treat wallet free capital as if it had to cover full notional, while `SPOT` remains unchanged. Focused web validation PASS: `useManualOrderController.test.tsx`, `HomeLiveWidgets.manual-order.test.tsx`, `pnpm --filter web run typecheck`.
 
 - [ ] `V1TRUTH-03 test(api-red): lock exchange-backed manual close parity`
   - Scope: add failing proof for one canonical app-driven `LIVE` close authority with honest degradation behavior.

@@ -205,6 +205,7 @@ export const useManualOrderController = ({
     }
     return selectedVenueContext.marketType === "SPOT" ? 1 : null;
   }, [manualOrderContext?.leverage, selectedVenueContext.marketType]);
+  const manualOrderBudgetUsesMargin = selectedVenueContext.marketType !== "SPOT";
 
   const manualOrderEffectivePriceForSizing = useMemo(() => {
     const parsedManualPrice = parseOptionalPositivePriceInput(manualOrderPrice);
@@ -227,7 +228,11 @@ export const useManualOrderController = ({
     if (freeCash == null || !Number.isFinite(freeCash) || freeCash <= 0) {
       return manualOrderMinExecutableQty;
     }
-    const rawMax = freeCash / manualOrderEffectivePriceForSizing;
+    const effectiveLeverage =
+      manualOrderBudgetUsesMargin && manualOrderLeverageForEstimate != null && manualOrderLeverageForEstimate > 0
+        ? manualOrderLeverageForEstimate
+        : 1;
+    const rawMax = (freeCash * effectiveLeverage) / manualOrderEffectivePriceForSizing;
     if (!Number.isFinite(rawMax) || rawMax <= 0) return manualOrderMinExecutableQty;
 
     if (manualOrderMinExecutableQty != null) {
@@ -236,6 +241,8 @@ export const useManualOrderController = ({
     return rawMax;
   }, [
     manualOrderEffectivePriceForSizing,
+    manualOrderBudgetUsesMargin,
+    manualOrderLeverageForEstimate,
     manualOrderMinExecutableQty,
     selectedData?.free,
   ]);
@@ -357,15 +364,16 @@ export const useManualOrderController = ({
   }, [manualOrderLeverageForEstimate, manualOrderNotionalEstimate]);
 
   useEffect(() => {
-    if (manualOrderNotionalEstimate == null || !Number.isFinite(manualOrderNotionalEstimate) || manualOrderNotionalEstimate <= 0) {
+    const nextBudgetSource = manualOrderBudgetUsesMargin ? manualOrderMarginEstimate : manualOrderNotionalEstimate;
+    if (nextBudgetSource == null || !Number.isFinite(nextBudgetSource) || nextBudgetSource <= 0) {
       if (manualOrderBudget !== "") setManualOrderBudget("");
       return;
     }
-    const nextBudget = formatQuantityForInput(manualOrderNotionalEstimate);
+    const nextBudget = formatQuantityForInput(nextBudgetSource);
     if (nextBudget !== manualOrderBudget) {
       setManualOrderBudget(nextBudget);
     }
-  }, [manualOrderBudget, manualOrderNotionalEstimate]);
+  }, [manualOrderBudget, manualOrderBudgetUsesMargin, manualOrderMarginEstimate, manualOrderNotionalEstimate]);
 
   const handleManualOrderBudgetChange = useCallback((budget: string) => {
     setManualOrderBudget(budget);
@@ -392,9 +400,13 @@ export const useManualOrderController = ({
         ? selectedData.free
         : null;
     const clampedBudget = freeFunds != null ? Math.min(parsedBudget, freeFunds) : parsedBudget;
-    const targetQuantity = clampedBudget / manualOrderEffectivePriceForSizing;
+    const effectiveLeverage =
+      manualOrderBudgetUsesMargin && manualOrderLeverageForEstimate != null && manualOrderLeverageForEstimate > 0
+        ? manualOrderLeverageForEstimate
+        : 1;
+    const targetQuantity = (clampedBudget * effectiveLeverage) / manualOrderEffectivePriceForSizing;
     setManualOrderQuantity(formatQuantityForInput(targetQuantity));
-  }, [manualOrderEffectivePriceForSizing, selectedData?.free]);
+  }, [manualOrderBudgetUsesMargin, manualOrderEffectivePriceForSizing, manualOrderLeverageForEstimate, selectedData?.free]);
 
   const handleSubmitManualOrder = useCallback(async () => {
     if (!selected) return;
@@ -455,7 +467,12 @@ export const useManualOrderController = ({
       effectiveManualOrderPrice != null &&
       Number.isFinite(effectiveManualOrderPrice) &&
       effectiveManualOrderPrice > 0 &&
-      quantity * effectiveManualOrderPrice > freeFunds + 1e-8
+      ((quantity * effectiveManualOrderPrice) /
+        (manualOrderBudgetUsesMargin && manualOrderLeverageForEstimate != null && manualOrderLeverageForEstimate > 0
+          ? manualOrderLeverageForEstimate
+          : 1)) >
+        freeFunds +
+          1e-8
     ) {
       toast.error(labels.exceedsFreeFunds);
       return;
@@ -492,6 +509,8 @@ export const useManualOrderController = ({
     labels.success,
     load,
     manualOrderLiveReferencePrice,
+    manualOrderBudgetUsesMargin,
+    manualOrderLeverageForEstimate,
     manualOrderMinExecutableQty,
     manualOrderPrice,
     manualOrderPriceManuallyEditedSymbol,

@@ -341,7 +341,7 @@ describe("HomeLiveWidgets manual order", () => {
       expect(screen.getByTestId("manual-order-order-type")).toHaveTextContent("MARKET");
       expect(screen.getByTestId("manual-order-margin-mode")).toHaveTextContent("CROSSED");
       expect(screen.getByTestId("manual-order-leverage")).toHaveTextContent("10x");
-      expect(screen.getByTestId("manual-order-budget-input")).toHaveValue(6800);
+      expect(screen.getByTestId("manual-order-budget-input")).toHaveValue(680);
     });
     fireEvent.click(screen.getByRole("button", { name: /Otworz zlecenie reczne|Open manual order/i }));
 
@@ -661,14 +661,169 @@ describe("HomeLiveWidgets manual order", () => {
 
     fireEvent.change(screen.getByTestId("manual-order-budget-input"), { target: { value: "6800" } });
     await waitFor(() => {
-      expect(screen.getByTestId("manual-order-quantity-input")).toHaveValue(0.1);
+      expect(screen.getByTestId("manual-order-quantity-input")).toHaveValue(1);
       expect(screen.getByTestId("manual-order-budget-input")).toHaveValue(6800);
     });
 
     fireEvent.change(screen.getByTestId("manual-order-budget-input"), { target: { value: "12000" } });
     await waitFor(() => {
-      expect(screen.getByTestId("manual-order-budget-input")).toHaveValue(9999.99976);
-      expect(screen.getByTestId("manual-order-quantity-input")).toHaveValue(0.14705882);
+      expect(Number(screen.getByTestId("manual-order-budget-input").getAttribute("value") ?? "0")).toBeCloseTo(10000, 3);
+      expect(Number(screen.getByTestId("manual-order-quantity-input").getAttribute("value") ?? "0")).toBeCloseTo(1.4705882, 6);
+    });
+  });
+
+  it("treats futures budget max as leverage-aware margin instead of raw notional", async () => {
+    listBotsMock.mockResolvedValue([
+      {
+        id: "bot-manual-order-futures-budget",
+        name: "Manual Futures Budget Bot",
+        walletId: "wallet-manual-order-futures-budget",
+        mode: "LIVE",
+        exchange: "BINANCE",
+        paperStartBalance: 10000,
+        marketType: "FUTURES",
+        positionMode: "ONE_WAY",
+        strategyId: "str-manual-order-futures-budget",
+        isActive: true,
+        liveOptIn: true,
+        maxOpenPositions: 2,
+      },
+    ]);
+    listBotRuntimeSessionsMock.mockResolvedValue([
+      {
+        id: "session-manual-order-futures-budget",
+        botId: "bot-manual-order-futures-budget",
+        mode: "LIVE",
+        status: "RUNNING",
+        startedAt: "2026-03-31T10:00:00.000Z",
+        finishedAt: null,
+        lastHeartbeatAt: "2026-03-31T10:05:00.000Z",
+        stopReason: null,
+        errorMessage: null,
+        createdAt: "2026-03-31T10:00:00.000Z",
+        updatedAt: "2026-03-31T10:05:00.000Z",
+        durationMs: 300000,
+        eventsCount: 0,
+        symbolsTracked: 1,
+        summary: { totalSignals: 0, dcaCount: 0, closedTrades: 0, realizedPnl: 0 },
+      },
+    ]);
+    listBotRuntimeSessionSymbolStatsMock.mockResolvedValue({
+      sessionId: "session-manual-order-futures-budget",
+      items: [
+        {
+          id: "stat-manual-order-futures-budget",
+          userId: "u-manual-order-futures-budget",
+          botId: "bot-manual-order-futures-budget",
+          sessionId: "session-manual-order-futures-budget",
+          symbol: "BTCUSDT",
+          totalSignals: 0,
+          longEntries: 0,
+          shortEntries: 0,
+          exits: 0,
+          dcaCount: 0,
+          closedTrades: 0,
+          winningTrades: 0,
+          losingTrades: 0,
+          realizedPnl: 0,
+          grossProfit: 0,
+          grossLoss: 0,
+          feesPaid: 0,
+          openPositionCount: 0,
+          openPositionQty: 0,
+          unrealizedPnl: 0,
+          lastPrice: 68000,
+          lastSignalAt: null,
+          lastSignalDirection: "NEUTRAL",
+          lastSignalDecisionAt: null,
+          lastTradeAt: null,
+          snapshotAt: "2026-03-31T10:05:00.000Z",
+          createdAt: "2026-03-31T10:05:00.000Z",
+          updatedAt: "2026-03-31T10:05:00.000Z",
+        },
+      ],
+      summary: {
+        totalSignals: 0,
+        longEntries: 0,
+        shortEntries: 0,
+        exits: 0,
+        dcaCount: 0,
+        closedTrades: 0,
+        winningTrades: 0,
+        losingTrades: 0,
+        realizedPnl: 0,
+        unrealizedPnl: 0,
+        totalPnl: 0,
+        grossProfit: 0,
+        grossLoss: 0,
+        feesPaid: 0,
+      },
+    });
+    listBotRuntimeSessionPositionsMock.mockResolvedValue({
+      sessionId: "session-manual-order-futures-budget",
+      total: 0,
+      openCount: 0,
+      closedCount: 0,
+      openOrdersCount: 0,
+      showDynamicStopColumns: false,
+      window: {
+        startedAt: "2026-03-31T10:00:00.000Z",
+        finishedAt: "2026-03-31T10:05:00.000Z",
+      },
+      summary: { realizedPnl: 0, unrealizedPnl: 0, feesPaid: 0 },
+      openOrders: [],
+      openItems: [],
+      historyItems: [],
+    });
+    listBotRuntimeSessionTradesMock.mockResolvedValue({
+      sessionId: "session-manual-order-futures-budget",
+      total: 0,
+      meta: { page: 1, pageSize: 25, total: 0, totalPages: 0, hasPrev: false, hasNext: false },
+      window: {
+        startedAt: "2026-03-31T10:00:00.000Z",
+        finishedAt: "2026-03-31T10:05:00.000Z",
+      },
+      items: [],
+    });
+    getDashboardManualOrderContextMock.mockImplementationOnce(
+      async (params: { botId: string; symbol: string; side?: "BUY" | "SELL"; quantity?: number }) => ({
+        botId: params.botId,
+        symbol: params.symbol.toUpperCase(),
+        mode: "LIVE",
+        orderType: "MARKET",
+        marginMode: "ISOLATED",
+        leverage: 10,
+        priceReference: {
+          markPrice: 68000,
+          source: "exchange_mark",
+        },
+        quantityConstraints: {
+          minAmount: 0.001,
+          amountPrecision: 0.001,
+          minNotional: 50,
+          minExecutableQty: 0.001,
+        },
+        sideAwarePreview: {
+          side: params.side ?? "BUY",
+          requestedQuantity: params.quantity ?? null,
+          estimatedNotional: params.quantity ? params.quantity * 68000 : null,
+          estimatedMargin: params.quantity ? (params.quantity * 68000) / 10 : null,
+          maxOpenPositions: 2,
+        },
+      })
+    );
+
+    await renderSubjectSettled();
+
+    await waitFor(() => {
+      expect(screen.getByTestId("manual-order-price-input")).toHaveValue(68000);
+      expect(screen.getByTestId("manual-order-leverage")).toHaveTextContent("10x");
+    });
+
+    fireEvent.change(screen.getByTestId("manual-order-budget-input"), { target: { value: "100" } });
+    await waitFor(() => {
+      expect(Number(screen.getByTestId("manual-order-budget-input").getAttribute("value") ?? "0")).toBeCloseTo(100, 3);
+      expect(screen.getByTestId("manual-order-quantity-input")).toHaveValue(0.01470588);
     });
   });
 
