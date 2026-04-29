@@ -132,6 +132,15 @@ final state.
 - fail-closed money-impacting runtime skips must become canonical operator
   telemetry, not only local console diagnostics.
 
+### LIVE Futures Lifecycle-Price Truth
+
+- `LIVE FUTURES` lifecycle-price evaluation must prefer futures mark price when
+  the approved stream boundary provides it.
+- ticker `lastPrice` and recent candle close remain explicit degraded fallbacks,
+  not equal-priority truth sources.
+- callers must reuse one shared lifecycle-price resolver seam instead of
+  embedding their own futures-price hierarchy.
+
 ### Account Update Scope Truth
 
 - exchange account-update reconciliation is a confirmation/repair input, not a

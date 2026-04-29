@@ -134,6 +134,16 @@ parity rule:
 - if safe initialization cannot be proven, the row may remain visible but must
   not appear more protection-armed than runtime can really execute
 
+For `LIVE FUTURES`, money-impacting lifecycle-price truth must follow:
+
+1. futures stream `markPrice`
+2. ticker `lastPrice`
+3. latest positive recent candle close
+
+This hierarchy is owned by:
+
+- `reference/live-futures-lifecycle-price-contract.md`
+
 ## Fee Contract
 - LIVE fee truth comes from exchange fills and trades when available
 - temporary estimated fees may exist only as traceable placeholders
@@ -158,6 +168,7 @@ LONG accepted
 - `reference/live-fee-reconciliation-contract.md`
 - `reference/live-position-restart-continuity-contract.md`
 - `reference/live-runtime-lifecycle-parity-contract.md`
+- `reference/live-futures-lifecycle-price-contract.md`
 - `reference/position-lifecycle-parity-matrix.md`
 - `reference/position-close-attribution-contract.md`
 
