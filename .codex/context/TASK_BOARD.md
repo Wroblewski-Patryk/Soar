@@ -45,6 +45,10 @@ Last updated: 2026-04-29
   - Scope: confirm worker health, runtime freshness, event visibility, and operator diagnostics remain healthy under the current hardened `LIVE` candidate.
   - 2026-04-29 status: BLOCKED. Stage and prod runtime observability probes both hit protected-route `401` boundaries without OPS auth; this proves the endpoint boundary but not current worker/runtime health. Canonical status: `docs/operations/v1excel-runtime-observability-2026-04-29.md`.
 
+- [ ] `V1EXCEL-UNBLOCK ops(runbook): execute the final authenticated unblock sequence for GO readiness`
+  - Scope: use the prepared operator runbook to clear the remaining external blockers `V1EXCEL-03..06` once Soar operator auth, OPS/private-route auth, and exchange authority are available.
+  - 2026-04-29: Ready as an execution handoff only. Canonical runbook: `docs/operations/v1excel-final-unblock-runbook-2026-04-29.md`.
+
 - [x] `V1EXCEL-07 release(go-no-go): rebuild RC status/sign-off/checklist and publish final V1 excellence decision`
   - Scope: produce one final operator-facing `GO / NO-GO` answer for the current candidate with exact residual risks or blockers.
   - 2026-04-29: Closed with an explicit `NO-GO` decision for candidate `51acd9c445227a3ca8cc8b781564d14b55fda43f`. The repository no longer shows a known implementation or architecture gap for `V1`, but fresh manual authenticated operator evidence and protected stage/prod OPS evidence remain missing. Canonical decision: `docs/operations/v1excel-final-go-no-go-2026-04-29.md`.
