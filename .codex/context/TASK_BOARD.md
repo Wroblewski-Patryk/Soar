@@ -39,6 +39,7 @@ Last updated: 2026-04-29
 - [ ] `V1EXCEL-05 ops(prod-refresh): rerun fresh production release-gate evidence families on the current candidate`
   - Scope: refresh prod release gate, post-deploy smoke, rollback proof, restore-drill proof, and related candidate-day artifacts.
   - 2026-04-29 status: BLOCKED. Public prod smoke is green, but the prod release-gate dry-run still reports stale evidence families and protected OPS routes remain auth-gated from this session. Canonical status: `docs/operations/v1excel-prod-refresh-2026-04-29.md`.
+  - 2026-04-29 post-redeploy check: public prod smoke passed again on candidate `4514894127ad07cbe95415043658e10b8c0cf75d`; protected runtime and rollback probes still fail at the same `401` auth boundary. Follow-up note: `docs/operations/v1excel-prod-post-deploy-check-2026-04-29.md`.
 
 - [ ] `V1EXCEL-06 ops(runtime-observability): verify active LIVE worker/runtime diagnostics under current production truth`
   - Scope: confirm worker health, runtime freshness, event visibility, and operator diagnostics remain healthy under the current hardened `LIVE` candidate.
