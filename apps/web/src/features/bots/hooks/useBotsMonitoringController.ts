@@ -70,7 +70,6 @@ export const useBotsMonitoringController = ({
   const [monitorLastUpdatedAt, setMonitorLastUpdatedAt] = useState<string | null>(null);
   const [monitorStaleWatchNowMs, setMonitorStaleWatchNowMs] = useState(() => Date.now());
   const [monitorLiveTickerPrices, setMonitorLiveTickerPrices] = useState<Record<string, number>>({});
-  const monitorTtpStickyFavorableMoveByPositionRef = useRef<Map<string, number>>(new Map());
   const monitorStreamEligibleRef = useRef(false);
   const monitorStreamConnectedRef = useRef(false);
   const monitorLastSseTickerAtRef = useRef<number | null>(null);
@@ -389,7 +388,6 @@ export const useBotsMonitoringController = ({
 
   useEffect(() => {
     setMonitorLiveTickerPrices({});
-    monitorTtpStickyFavorableMoveByPositionRef.current.clear();
   }, [monitorBotId, monitorSessionId, monitorViewMode]);
 
   useEffect(() => {
@@ -467,7 +465,6 @@ export const useBotsMonitoringController = ({
     monitorStatus,
     monitorSymbolFilter,
     monitorSymbolStats,
-    monitorTtpStickyFavorableMoveByPositionRef,
     monitorTrades,
     monitorViewMode,
     refreshMonitoring,

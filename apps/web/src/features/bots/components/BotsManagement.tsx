@@ -16,8 +16,6 @@ import {
 } from "../types/bot.type";
 import { supportsExchangeCapability } from "../../exchanges/exchangeCapabilities";
 import {
-  pruneStickyFavorableMoveMap,
-  resolveFallbackTtpProtectedPercent,
   toProtectedPnlPercentFromStopPrice,
 } from "../utils/trailingStopDisplay";
 import {
@@ -187,7 +185,6 @@ export default function BotsManagement({
     monitorStatus,
     monitorSymbolFilter,
     monitorSymbolStats,
-    monitorTtpStickyFavorableMoveByPositionRef,
     monitorTrades,
     monitorViewMode,
     refreshMonitoring,
@@ -262,12 +259,6 @@ export default function BotsManagement({
     });
     const initBalance = runtimePortfolio ?? resolvePaperConfigBaseline(selectedMonitorBot);
     const openItems = monitorPositions?.openItems ?? [];
-    const stickyFavorableMoveByPosition = monitorTtpStickyFavorableMoveByPositionRef.current;
-    pruneStickyFavorableMoveMap(
-      stickyFavorableMoveByPosition,
-      new Set(openItems.map((position) => position.id))
-    );
-
     return openItems.map((position) => {
       const liveMarkPrice =
         monitorLiveTickerPrices[normalizeSymbol(position.symbol)] ?? position.markPrice ?? null;
@@ -289,14 +280,7 @@ export default function BotsManagement({
           leverage: position.leverage,
           stopPrice: position.dynamicTtpStopLoss,
         }) ?? null;
-      const ttpProtectedPercentFallback = resolveFallbackTtpProtectedPercent({
-        positionId: position.id,
-        livePnlPercent: pnlMarginPct,
-        trailingTakeProfitLevels: position.trailingTakeProfitLevels,
-        stickyFavorableMoveByPosition,
-      });
-      const ttpProtectedPercent =
-        ttpProtectedPercentFromStopPrice ?? ttpProtectedPercentFallback ?? null;
+      const ttpProtectedPercent = ttpProtectedPercentFromStopPrice ?? null;
       const tslProtectedPercent =
         ttpProtectedPercent != null
           ? null
@@ -325,7 +309,6 @@ export default function BotsManagement({
     monitorPositions?.openItems,
     monitorPositions?.summary,
     monitorSessionDetail?.summary.realizedPnl,
-    monitorTtpStickyFavorableMoveByPositionRef,
     selectedMonitorBot,
   ]);
 

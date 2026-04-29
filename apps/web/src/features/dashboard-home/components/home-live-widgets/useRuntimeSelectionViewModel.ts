@@ -1,4 +1,4 @@
-import { useMemo, type MutableRefObject } from "react";
+import { useMemo } from "react";
 import { normalizeSymbol } from "@/lib/symbols";
 import { toTimestamp } from "@/lib/time";
 import type { BotRuntimeTradesResponse } from "@/features/bots/types/bot.type";
@@ -7,10 +7,6 @@ import {
   resolveRuntimeFreeFunds,
   resolveRuntimePortfolio,
 } from "@/features/bots/utils/runtimeSurfaceTruth";
-import {
-  pruneStickyFavorableMoveMap,
-  resolveFallbackTtpProtectedPercent,
-} from "@/features/bots/utils/trailingStopDisplay";
 import {
   buildLiveOpenPositions,
   maxDrawdown,
@@ -29,7 +25,6 @@ type UseRuntimeSelectionViewModelArgs = {
   selected: RuntimeSnapshot | null;
   selectedTrades: BotRuntimeTradesResponse | null;
   liveTickerPrices: Record<string, number>;
-  ttpStickyFavorableMoveByPositionRef: MutableRefObject<Map<string, number>>;
 };
 
 export const useRuntimeSelectionViewModel = ({
@@ -37,7 +32,6 @@ export const useRuntimeSelectionViewModel = ({
   selected,
   selectedTrades,
   liveTickerPrices,
-  ttpStickyFavorableMoveByPositionRef,
 }: UseRuntimeSelectionViewModelArgs) => {
   const summary = useMemo<RuntimeSummary>(() => {
     const openPositions = snapshots.reduce((acc, x) => acc + (x.positions?.openCount ?? 0), 0);
@@ -101,16 +95,9 @@ export const useRuntimeSelectionViewModel = ({
     );
     const streamPrices = new Map<string, number>(Object.entries(liveTickerPrices));
     const open = buildLiveOpenPositions(selected.positions, selected.symbolStats, streamPrices);
-    const stickyFavorableMoveByPosition = ttpStickyFavorableMoveByPositionRef.current;
-    pruneStickyFavorableMoveMap(stickyFavorableMoveByPosition, new Set(open.map((position) => position.id)));
     const openWithProtectedFallback = open.map((position) => ({
       ...position,
-      fallbackTtpProtectedPercent: resolveFallbackTtpProtectedPercent({
-        positionId: position.id,
-        livePnlPercent: position.livePnlPct,
-        trailingTakeProfitLevels: position.trailingTakeProfitLevels,
-        stickyFavorableMoveByPosition,
-      }),
+      fallbackTtpProtectedPercent: null,
       runtimeBotId: selected.bot.id,
       runtimeSessionId: selected.actionSessionId ?? selected.session?.id ?? null,
     }));
@@ -183,7 +170,7 @@ export const useRuntimeSelectionViewModel = ({
       trades,
       drawdown: maxDrawdown(trades),
     };
-  }, [liveTickerPrices, selected, selectedTrades, ttpStickyFavorableMoveByPositionRef]);
+  }, [liveTickerPrices, selected, selectedTrades]);
 
   const showDynamicStopColumns = useMemo(() => {
     const fromStrategyMode = selected?.positions?.showDynamicStopColumns;

@@ -22,7 +22,7 @@ export const resolveDynamicTtpDisplay = (position: OpenPositionWithLive) =>
     entryPrice: position.entryPrice,
     leverage: position.leverage,
     stopPrice: position.dynamicTtpStopLoss,
-  }) ?? position.fallbackTtpProtectedPercent ?? null;
+  }) ?? null;
 
 export const resolveDynamicTslDisplay = (position: OpenPositionWithLive) => {
   if (resolveDynamicTtpDisplay(position) != null) return null;

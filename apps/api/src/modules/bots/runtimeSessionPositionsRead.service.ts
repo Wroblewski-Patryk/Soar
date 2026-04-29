@@ -440,8 +440,6 @@ export const listBotRuntimeSessionPositions = async (
       dynamicTslStopLoss,
       liveUnrealizedPnl,
     } = resolveRuntimePositionDynamicStops({
-      positionId: position.id,
-      positionStatus: position.status,
       positionSide: position.side,
       entryPrice: position.entryPrice,
       quantity: position.quantity,
@@ -451,8 +449,6 @@ export const listBotRuntimeSessionPositions = async (
       stateEntryPrice,
       runtimeState,
       trailingStopLevels,
-      trailingTakeProfitLevels,
-      nowTs,
     });
 
     const holdUntil = position.closedAt ?? windowEnd;

@@ -10,12 +10,6 @@ export type TrailingTakeProfitDisplayLevel = {
   trailPercent: number;
 };
 
-const FAVORABLE_MOVE_FALLBACK_TTL_MS = 6 * 60 * 60 * 1000;
-const favorableMoveFallbackHighByPositionId = new Map<
-  string,
-  { highPercent: number; lastSeenAt: number }
->();
-
 const computePriceFromLeveragedMovePercent = (
   side: 'LONG' | 'SHORT',
   entryPrice: number,
@@ -32,45 +26,8 @@ const computePriceFromLeveragedMovePercent = (
   return raw;
 };
 
-export const cleanupStaleRuntimePositionSerializationState = (nowTs: number) => {
-  for (const [positionId, state] of favorableMoveFallbackHighByPositionId.entries()) {
-    if (nowTs - state.lastSeenAt > FAVORABLE_MOVE_FALLBACK_TTL_MS) {
-      favorableMoveFallbackHighByPositionId.delete(positionId);
-    }
-  }
-};
-
-const resolveStickyFavorableMovePercent = (params: {
-  positionId: string;
-  favorableMovePercent: number | null;
-  isOpen: boolean;
-  nowTs: number;
-}) => {
-  const { positionId, favorableMovePercent, isOpen, nowTs } = params;
-  const existing = favorableMoveFallbackHighByPositionId.get(positionId);
-  const hasCurrent =
-    favorableMovePercent != null &&
-    Number.isFinite(favorableMovePercent);
-
-  const nextHigh =
-    hasCurrent && existing
-      ? Math.max(existing.highPercent, favorableMovePercent as number)
-      : hasCurrent
-        ? (favorableMovePercent as number)
-        : existing?.highPercent ?? null;
-
-  if (isOpen && nextHigh != null && Number.isFinite(nextHigh)) {
-    favorableMoveFallbackHighByPositionId.set(positionId, {
-      highPercent: nextHigh,
-      lastSeenAt: nowTs,
-    });
-  } else if (!isOpen && existing) {
-    favorableMoveFallbackHighByPositionId.delete(positionId);
-  } else if (existing) {
-    existing.lastSeenAt = nowTs;
-  }
-
-  return nextHigh;
+export const cleanupStaleRuntimePositionSerializationState = (_nowTs: number) => {
+  // No-op after removing display-only sticky fallback state.
 };
 
 const selectActiveTrailingStopDisplayLevel = (
@@ -85,16 +42,20 @@ const selectActiveTrailingStopDisplayLevel = (
   return active;
 };
 
-const selectActiveTrailingTakeProfitDisplayLevel = (
-  favorableMovePercent: number | null,
-  levels: TrailingTakeProfitDisplayLevel[]
-) => {
-  if (favorableMovePercent == null || !Number.isFinite(favorableMovePercent)) return null;
-  let active: TrailingTakeProfitDisplayLevel | null = null;
-  for (const level of levels) {
-    if (favorableMovePercent >= level.armPercent) active = level;
-  }
-  return active;
+const computeTrailingStopPriceFromAnchor = (params: {
+  side: 'LONG' | 'SHORT';
+  anchorPrice: number;
+  trailPercent: number;
+}) => {
+  const { side, anchorPrice, trailPercent } = params;
+  if (!Number.isFinite(anchorPrice) || anchorPrice <= 0) return null;
+  if (!Number.isFinite(trailPercent) || trailPercent <= 0) return null;
+  const raw =
+    side === 'LONG'
+      ? anchorPrice * (1 - trailPercent)
+      : anchorPrice * (1 + trailPercent);
+  if (!Number.isFinite(raw) || raw <= 0) return null;
+  return raw;
 };
 
 export const resolveDcaExecutedLevels = (
@@ -116,8 +77,6 @@ export const resolveDcaExecutedLevels = (
 };
 
 type ResolveRuntimePositionDynamicStopsParams = {
-  positionId: string;
-  positionStatus: string;
   positionSide: 'LONG' | 'SHORT';
   entryPrice: number;
   quantity: number;
@@ -127,16 +86,12 @@ type ResolveRuntimePositionDynamicStopsParams = {
   stateEntryPrice: number;
   runtimeState: PositionManagementState | null;
   trailingStopLevels: TrailingStopDisplayLevel[];
-  trailingTakeProfitLevels: TrailingTakeProfitDisplayLevel[];
-  nowTs: number;
 };
 
 export const resolveRuntimePositionDynamicStops = (
   params: ResolveRuntimePositionDynamicStopsParams
 ) => {
   const {
-    positionId,
-    positionStatus,
     positionSide,
     entryPrice,
     quantity,
@@ -146,8 +101,6 @@ export const resolveRuntimePositionDynamicStops = (
     stateEntryPrice,
     runtimeState,
     trailingStopLevels,
-    trailingTakeProfitLevels,
-    nowTs,
   } = params;
 
   const effectiveLeverage =
@@ -185,65 +138,20 @@ export const resolveRuntimePositionDynamicStops = (
             marginUsed > 0
           ? unrealizedPnl / marginUsed
           : null;
-  const favorableMovePercentFromRuntimeState =
-    runtimeState && Number.isFinite(runtimeState.trailingTakeProfitHighPercent)
-      ? (runtimeState.trailingTakeProfitHighPercent as number)
-      : null;
-  const favorableMovePercentForStickyHigh =
-    favorableMovePercentFromRuntimeState != null &&
-    Number.isFinite(favorableMovePercentFromRuntimeState)
-      ? favorableMovePercentFromLivePrice != null &&
-          Number.isFinite(favorableMovePercentFromLivePrice)
-        ? Math.max(favorableMovePercentFromRuntimeState, favorableMovePercentFromLivePrice)
-        : favorableMovePercentFromRuntimeState
-      : favorableMovePercentFromLivePrice;
-  const stickyFavorableMovePercent = resolveStickyFavorableMovePercent({
-    positionId,
-    favorableMovePercent: favorableMovePercentForStickyHigh,
-    isOpen: positionStatus === 'OPEN',
-    nowTs,
-  });
-  const fallbackTtpLevel =
-    !hasRuntimeTtpState
-      ? selectActiveTrailingTakeProfitDisplayLevel(
-          stickyFavorableMovePercent,
-          trailingTakeProfitLevels
-        )
-      : null;
-  const ttpTriggerPercentFromStrategyFallback =
-    fallbackTtpLevel &&
-    stickyFavorableMovePercent != null &&
-    Number.isFinite(stickyFavorableMovePercent)
-      ? stickyFavorableMovePercent - fallbackTtpLevel.trailPercent
-      : null;
   const ttpTriggerPercent =
     ttpTriggerPercentFromState != null && ttpTriggerPercentFromState > 0
       ? ttpTriggerPercentFromState
-      : ttpTriggerPercentFromStrategyFallback != null &&
-          Number.isFinite(ttpTriggerPercentFromStrategyFallback) &&
-          ttpTriggerPercentFromStrategyFallback > 0
-        ? ttpTriggerPercentFromStrategyFallback
-        : null;
-  const fallbackTslLevel =
-    !hasRuntimeTslState && !hasRuntimeTtpState
+      : null;
+  const activeTslLevel =
+    runtimeState && favorableMovePercentFromLivePrice != null
       ? selectActiveTrailingStopDisplayLevel(
-          stickyFavorableMovePercent,
+          favorableMovePercentFromLivePrice,
           trailingStopLevels
         )
       : null;
-  const tslTriggerPercentFromStrategyFallback =
-    fallbackTslLevel &&
-    stickyFavorableMovePercent != null &&
-    Number.isFinite(stickyFavorableMovePercent)
-      ? stickyFavorableMovePercent - fallbackTslLevel.trailPercent
-      : null;
-  const tslTriggerPercent =
-    hasRuntimeTslState
-      ? (runtimeState.trailingLossLimitPercent as number)
-      : tslTriggerPercentFromStrategyFallback != null &&
-          Number.isFinite(tslTriggerPercentFromStrategyFallback)
-        ? tslTriggerPercentFromStrategyFallback
-        : null;
+  const tslTriggerPercent = hasRuntimeTslState
+    ? (runtimeState.trailingLossLimitPercent as number)
+    : null;
   const dynamicTtpStopLoss =
     ttpTriggerPercent != null
       ? computePriceFromLeveragedMovePercent(
@@ -254,7 +162,15 @@ export const resolveRuntimePositionDynamicStops = (
         )
       : null;
   const dynamicTslStopLoss =
-    tslTriggerPercent != null
+    activeTslLevel &&
+    runtimeState &&
+    Number.isFinite(runtimeState.trailingAnchorPrice)
+      ? computeTrailingStopPriceFromAnchor({
+          side: positionSide,
+          anchorPrice: runtimeState.trailingAnchorPrice as number,
+          trailPercent: activeTslLevel.trailPercent,
+        })
+      : tslTriggerPercent != null
       ? computePriceFromLeveragedMovePercent(
           positionSide,
           stateEntryPrice,

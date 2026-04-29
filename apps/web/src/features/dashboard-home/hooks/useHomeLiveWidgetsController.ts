@@ -239,7 +239,6 @@ export const useHomeLiveWidgetsController = ({
   const [liveTickerPrices, setLiveTickerPrices] = useState<Record<string, number>>({});
   const [viewportWidth, setViewportWidth] = useState(0);
   const [runtimeStaleWatchNowMs, setRuntimeStaleWatchNowMs] = useState(() => Date.now());
-  const ttpStickyFavorableMoveByPositionRef = useRef<Map<string, number>>(new Map());
   const hasLoadedTradesRef = useRef(false);
   const loadInFlightRef = useRef(false);
   const loadStartedAtRef = useRef<number | null>(null);
@@ -633,7 +632,6 @@ export const useHomeLiveWidgetsController = ({
     setTradePageSize,
     signalRailRef,
     snapshots,
-    ttpStickyFavorableMoveByPositionRef,
     tradeDraftFilters,
     tradePage,
     tradePageSize,

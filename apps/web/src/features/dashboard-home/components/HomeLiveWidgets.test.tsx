@@ -1807,7 +1807,7 @@ describe("HomeLiveWidgets", () => {
 
     await waitFor(() => {
       expect(screen.getByText(/100[,.]00\s*USDT/)).toBeInTheDocument();
-      expect(screen.getByText(/98[,.]84\s*USDT/)).toBeInTheDocument();
+      expect(screen.getAllByText(/98[,.]84\s*USDT/).length).toBeGreaterThan(0);
       expect(screen.getByText(/1[,.]16\s*USDT/)).toBeInTheDocument();
     });
   });

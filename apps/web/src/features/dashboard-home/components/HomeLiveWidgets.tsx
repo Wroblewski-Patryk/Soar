@@ -157,7 +157,6 @@ export default function HomeLiveWidgets() {
     setTradePageSize,
     signalRailRef,
     snapshots,
-    ttpStickyFavorableMoveByPositionRef,
     tradeDraftFilters,
     tradePage,
     tradePageSize,
@@ -185,7 +184,6 @@ export default function HomeLiveWidgets() {
     selected,
     selectedTrades,
     liveTickerPrices,
-    ttpStickyFavorableMoveByPositionRef,
   });
   const selectedVenueContext = useMemo(() => resolveBotVenueContext(selected?.bot), [selected?.bot]);
 
