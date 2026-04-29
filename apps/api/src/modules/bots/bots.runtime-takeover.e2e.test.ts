@@ -12,106 +12,101 @@ import {
 describe('Bots runtime takeover visibility', () => {
   beforeEach(resetBotsE2eState);
 
-  it('shows owned exchange-synced LIVE positions only for the wallet-managed bot when competing symbol scope is manual-only', async () => {
-    const ownerEmail = 'bot-runtime-wallet-managed-ownership@example.com';
+  it('shows owned exchange-synced LIVE positions only for the owning LIVE bot when a PAPER bot shares the same symbol', async () => {
+    const ownerEmail = 'bot-runtime-live-paper-shared-symbol@example.com';
     const owner = await registerAndLogin(ownerEmail);
     const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
 
     const apiKey = await prisma.apiKey.create({
       data: {
         userId: ownerUser.id,
-        label: 'Runtime Wallet Ownership Key',
+        label: 'Runtime Live Paper Shared Symbol Key',
         exchange: 'BINANCE',
-        apiKey: 'runtime_wallet_ownership_key',
-        apiSecret: 'runtime_wallet_ownership_secret',
+        apiKey: 'runtime_live_paper_shared_symbol_key',
+        apiSecret: 'runtime_live_paper_shared_symbol_secret',
         syncExternalPositions: true,
         manageExternalPositions: false,
       },
       select: { id: true },
     });
 
-    const managedWalletId = await createWalletForContext(ownerEmail, {
+    const liveWalletId = await createWalletForContext(ownerEmail, {
       mode: 'LIVE',
       exchange: 'BINANCE',
       marketType: 'FUTURES',
       baseCurrency: 'USDT',
       apiKeyId: apiKey.id,
     });
-    const manualOnlyWalletId = await createWalletForContext(ownerEmail, {
-      mode: 'LIVE',
+    const paperWalletId = await createWalletForContext(ownerEmail, {
+      mode: 'PAPER',
       exchange: 'BINANCE',
       marketType: 'FUTURES',
       baseCurrency: 'USDT',
-      apiKeyId: apiKey.id,
     });
 
     await prisma.wallet.update({
-      where: { id: managedWalletId },
+      where: { id: liveWalletId },
       data: { manageExternalPositions: true },
     });
-    await prisma.wallet.update({
-      where: { id: manualOnlyWalletId },
-      data: { manageExternalPositions: false },
-    });
 
-    const strategyManagedId = await createStrategy(owner, 'Runtime Managed Ownership Strategy');
-    const strategyManualId = await createStrategy(owner, 'Runtime Manual Ownership Strategy');
-    const managedMarketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
-    const manualMarketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    const liveStrategyId = await createStrategy(owner, 'Runtime Live Ownership Strategy');
+    const paperStrategyId = await createStrategy(owner, 'Runtime Paper Shared Symbol Strategy');
+    const liveMarketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    const paperMarketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
 
     await prisma.symbolGroup.update({
-      where: { id: managedMarketGroupId },
+      where: { id: liveMarketGroupId },
       data: { symbols: ['BTCUSDT'] },
     });
     await prisma.symbolGroup.update({
-      where: { id: manualMarketGroupId },
+      where: { id: paperMarketGroupId },
       data: { symbols: ['BTCUSDT'] },
     });
 
-    const managedBotRes = await owner.post('/dashboard/bots').send({
+    const liveBotRes = await owner.post('/dashboard/bots').send({
       ...createPayload({
-        strategyId: strategyManagedId,
-        marketGroupId: managedMarketGroupId,
+        strategyId: liveStrategyId,
+        marketGroupId: liveMarketGroupId,
       }),
-      name: 'Managed Ownership Bot',
-      walletId: managedWalletId,
+      name: 'Live Ownership Bot',
+      walletId: liveWalletId,
       isActive: true,
       liveOptIn: true,
       consentTextVersion: 'mvp-v1',
     });
-    expect(managedBotRes.status).toBe(201);
-    const managedBotId = managedBotRes.body.id as string;
+    expect(liveBotRes.status).toBe(201);
+    const liveBotId = liveBotRes.body.id as string;
 
-    const manualBotRes = await owner.post('/dashboard/bots').send({
+    const paperBotRes = await owner.post('/dashboard/bots').send({
       ...createPayload({
-        strategyId: strategyManualId,
-        marketGroupId: manualMarketGroupId,
+        strategyId: paperStrategyId,
+        marketGroupId: paperMarketGroupId,
       }),
-      name: 'Manual Only Ownership Bot',
-      walletId: manualOnlyWalletId,
+      name: 'Paper Shared Symbol Bot',
+      walletId: paperWalletId,
       isActive: true,
-      liveOptIn: true,
-      consentTextVersion: 'mvp-v1',
+      liveOptIn: false,
+      consentTextVersion: null,
     });
-    expect(manualBotRes.status).toBe(201);
-    const manualBotId = manualBotRes.body.id as string;
+    expect(paperBotRes.status).toBe(201);
+    const paperBotId = paperBotRes.body.id as string;
 
     const startedAt = new Date('2026-04-10T02:00:00.000Z');
-    const managedSession = await prisma.botRuntimeSession.create({
+    const liveSession = await prisma.botRuntimeSession.create({
       data: {
         userId: ownerUser.id,
-        botId: managedBotId,
+        botId: liveBotId,
         mode: 'LIVE',
         status: 'RUNNING',
         startedAt,
         lastHeartbeatAt: new Date('2026-04-10T02:05:00.000Z'),
       },
     });
-    const manualSession = await prisma.botRuntimeSession.create({
+    const paperSession = await prisma.botRuntimeSession.create({
       data: {
         userId: ownerUser.id,
-        botId: manualBotId,
-        mode: 'LIVE',
+        botId: paperBotId,
+        mode: 'PAPER',
         status: 'RUNNING',
         startedAt,
         lastHeartbeatAt: new Date('2026-04-10T02:05:00.000Z'),
@@ -122,7 +117,7 @@ describe('Bots runtime takeover visibility', () => {
       data: {
         userId: ownerUser.id,
         botId: null,
-        walletId: managedWalletId,
+        walletId: liveWalletId,
         strategyId: null,
         symbol: 'BTCUSDT',
         side: 'LONG',
@@ -138,21 +133,21 @@ describe('Bots runtime takeover visibility', () => {
       },
     });
 
-    const managedPositionsRes = await owner.get(
-      `/dashboard/bots/${managedBotId}/runtime-sessions/${managedSession.id}/positions`
+    const livePositionsRes = await owner.get(
+      `/dashboard/bots/${liveBotId}/runtime-sessions/${liveSession.id}/positions`
     );
-    expect(managedPositionsRes.status).toBe(200);
-    expect(managedPositionsRes.body.total).toBe(1);
-    expect(managedPositionsRes.body.openItems).toHaveLength(1);
-    expect(managedPositionsRes.body.openItems[0].symbol).toBe('BTCUSDT');
-    expect(managedPositionsRes.body.openItems[0].origin).toBe('EXCHANGE_SYNC');
+    expect(livePositionsRes.status).toBe(200);
+    expect(livePositionsRes.body.total).toBe(1);
+    expect(livePositionsRes.body.openItems).toHaveLength(1);
+    expect(livePositionsRes.body.openItems[0].symbol).toBe('BTCUSDT');
+    expect(livePositionsRes.body.openItems[0].origin).toBe('EXCHANGE_SYNC');
 
-    const manualPositionsRes = await owner.get(
-      `/dashboard/bots/${manualBotId}/runtime-sessions/${manualSession.id}/positions`
+    const paperPositionsRes = await owner.get(
+      `/dashboard/bots/${paperBotId}/runtime-sessions/${paperSession.id}/positions`
     );
-    expect(manualPositionsRes.status).toBe(200);
-    expect(manualPositionsRes.body.total).toBe(0);
-    expect(manualPositionsRes.body.openItems).toHaveLength(0);
+    expect(paperPositionsRes.status).toBe(200);
+    expect(paperPositionsRes.body.total).toBe(0);
+    expect(paperPositionsRes.body.openItems).toHaveLength(0);
   });
 
   it('shows only exact api-key-and-symbol owned imported rows for each competing live bot', async () => {

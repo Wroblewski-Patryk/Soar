@@ -172,6 +172,7 @@ export const resetBotsE2eState = async () => {
   await prisma.symbolGroup.deleteMany();
   await prisma.marketUniverse.deleteMany();
   await prisma.strategy.deleteMany();
+  await prisma.wallet.deleteMany();
   await prisma.runtimeExecutionDedupe.deleteMany();
   await prisma.apiKey.deleteMany();
   await prisma.user.deleteMany();

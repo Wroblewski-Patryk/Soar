@@ -9,7 +9,8 @@ Operational queue for one-task execution runs.
 ## NOW
 - [x] `V1COVER-01 test(runtime-state): reset shared runtime candle/ticker stores at canonical test boundaries`
   - 2026-04-29: Closed the first `V1COVER-A` slice by resetting module-global runtime candle/ticker stores in the two engine files that emit runtime events directly (`runtime-flow.e2e` and `runtimeSignalLoop.service.test`). This removes one broad false-red source where `runtime-flow` could leave shared candle history behind and later make `runtimeSignalLoop` look broken only because it inherited prior series state.
-- [ ] `V1COVER-02 test(shared-cleanup): repair singular-bot wallet cleanup drift in runtime takeover helpers`
+- [x] `V1COVER-02 test(shared-cleanup): repair singular-bot wallet cleanup drift in runtime takeover helpers`
+  - 2026-04-29: Closed the second `V1COVER-A` slice by restoring wallet cleanup to the shared runtime takeover helper and aligning the outdated overlap proof to the current architecture. The shared takeover suite now deletes wallet-linked topology deterministically, and the first visibility regression no longer assumes two active LIVE bots may share one symbol; it now proves the approved contract instead: imported `LIVE` positions stay visible for the owning LIVE bot while a PAPER bot may share the symbol without taking ownership.
 ## NEXT
 - [ ] `V1COVER-03 qa(runtime-pack): rerun broad runtime/order regression pack and classify real post-stabilization failures`
 - [ ] `V1COVER-04 fix(runtime-or-orders): close the first real product drift that survives the stabilized pack`

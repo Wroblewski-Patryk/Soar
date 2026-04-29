@@ -20,8 +20,8 @@ Last updated: 2026-04-29
 - [x] `V1COVER-01 test(runtime-state): reset shared runtime candle/ticker stores at canonical test boundaries`
   - 2026-04-29: Closed the first `V1COVER-A` slice by clearing module-global runtime candle/ticker stores in `runtime-flow.e2e.test.ts` and `runtimeSignalLoop.service.test.ts`. Focused combined validation now passes when those two files run together, which removes one confirmed source of false-red `LIVE` parity noise caused by inherited runtime market data.
 
-- [ ] `V1COVER-02 test(shared-cleanup): repair singular-bot wallet cleanup drift in runtime takeover helpers`
-  - 2026-04-29: Shared runtime takeover e2e helpers still create wallet-linked topology without deleting wallets in the shared reset path. That leaves broad suite truth vulnerable to FK cleanup noise under the singular bot contract and needs one focused helper fix before broader `LIVE` coverage can be trusted.
+- [x] `V1COVER-02 test(shared-cleanup): repair singular-bot wallet cleanup drift in runtime takeover helpers`
+  - 2026-04-29: Closed by restoring `wallet.deleteMany()` to the shared takeover reset helper and updating the stale overlap proof to the current architecture. Runtime takeover coverage now matches the approved rule set: `LIVE + PAPER` may share a symbol, but the imported `LIVE` position stays visible only for the owning LIVE bot, while the older two-active-LIVE overlap assumption is no longer treated as valid proof.
 
 - [x] `GOLIVE-2026-04-29-A tooling(smoke): harden local go-live smoke wrapper for reusable local infra`
   - 2026-04-29: Closed the local tooling slice. The umbrella smoke wrapper now reuses already-running reachable Postgres/Redis when Docker Compose cannot bind `5432/6379`, avoids shutting down infra it did not start, and surfaces the real remaining local blocker explicitly: Prisma `P3009` from failed migration `20260424094500_add_single_context_bot_refs`. Direct canonical go-live packs remain green, so the unresolved blocker is local DB state rather than current repo code.
