@@ -216,7 +216,7 @@ describe('position management', () => {
     expect(result.closeReason).toBe('take_profit');
   });
 
-  it('triggers trailing take-profit regardless of pending DCA levels', () => {
+  it('keeps trailing take-profit blocked until DCA sequence is completed (or funds exhausted)', () => {
     const armed = evaluatePositionManagement(
       {
         side: 'LONG',
@@ -266,8 +266,8 @@ describe('position management', () => {
     );
 
     expect(armed.shouldClose).toBe(false);
-    expect(closed.shouldClose).toBe(true);
-    expect(closed.closeReason).toBe('trailing_take_profit');
+    expect(closed.shouldClose).toBe(false);
+    expect(closed.closeReason).toBeUndefined();
   });
 
   it('keeps trailing stop blocked until DCA sequence is completed (or funds exhausted)', () => {

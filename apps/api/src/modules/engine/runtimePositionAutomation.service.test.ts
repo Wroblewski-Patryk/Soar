@@ -727,6 +727,66 @@ describe('RuntimePositionAutomationService', () => {
     );
   });
 
+  it('uses the lifecycle price resolver instead of raw ticker lastPrice for LIVE protection evaluation', async () => {
+    process.env.RUNTIME_TRAILING_ENABLED = 'false';
+    process.env.RUNTIME_DCA_ENABLED = 'false';
+    const resolveLifecyclePrice = vi.fn(async () => 97.5);
+    const deps: any = {
+      listOpenPositionsBySymbol: vi.fn(async () => [
+        {
+          id: 'pos-live-price-resolver',
+          userId: 'user-live-price-resolver',
+          botId: 'bot-live-price-resolver',
+          strategyId: 'strat-live-price-resolver',
+          symbol: 'SOLUSDT',
+          side: 'LONG' as const,
+          entryPrice: 100,
+          quantity: 1,
+          leverage: 5,
+          stopLoss: null,
+          takeProfit: null,
+          managementMode: 'BOT_MANAGED' as const,
+          continuityState: 'CONFIRMED' as const,
+          bot: buildBotExecutionContext({
+            wallet: { mode: 'LIVE' },
+          }),
+        },
+      ]),
+      getStrategyConfigById: vi.fn(async () => ({
+        close: { mode: 'advanced', ttp: [], tsl: [] },
+        additional: { dcaEnabled: true, dcaTimes: 1, dcaLevels: [{ percent: -1, multiplier: 1.5 }] },
+      })),
+      executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
+      closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
+      resolveDcaFundsExhausted: vi.fn(async () => false),
+      resolveLifecyclePrice,
+      nowMs: vi.fn(() => Date.now()),
+    };
+
+    const service = new RuntimePositionAutomationService(deps);
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'SOLUSDT',
+      eventTime: 2_600,
+      lastPrice: 98.8,
+      priceChangePercent24h: -0.6,
+    });
+
+    expect(resolveLifecyclePrice).toHaveBeenCalledWith({
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'SOLUSDT',
+      fallbackPrice: 98.8,
+    });
+    expect(deps.executeDca).toHaveBeenCalledWith(
+      expect.objectContaining({
+        markPrice: 97.5,
+      })
+    );
+  });
+
   it('skips automation for LIVE bot positions when live opt-in is disabled', async () => {
     const recordRuntimeEvent = vi.fn(async () => undefined);
     const deps: any = {

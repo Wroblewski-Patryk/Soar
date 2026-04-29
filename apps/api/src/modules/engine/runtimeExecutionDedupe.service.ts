@@ -217,6 +217,13 @@ type MarkSuccessInput = {
   now?: Date;
 };
 
+type MarkSuccessByOrderIdInput = {
+  orderId: string;
+  commandType?: RuntimeExecutionCommandType;
+  positionId?: string | null;
+  now?: Date;
+};
+
 type MarkSubmittedInput = {
   dedupeKey: string;
   orderId: string;
@@ -411,6 +418,45 @@ export class RuntimeExecutionDedupeService {
         errorClass: null,
       },
     });
+  }
+
+  async markSucceededByOrderId(input: MarkSuccessByOrderIdInput) {
+    const now = input.now ?? new Date();
+    const existing = await prisma.runtimeExecutionDedupe.findFirst({
+      where: {
+        orderId: input.orderId,
+        ...(input.commandType ? { commandType: input.commandType } : {}),
+      },
+      orderBy: [{ updatedAt: 'desc' }, { createdAt: 'desc' }],
+      select: {
+        dedupeKey: true,
+        commandType: true,
+        positionId: true,
+        commandFingerprint: true,
+      },
+    });
+    if (!existing) return null;
+
+    await prisma.runtimeExecutionDedupe.update({
+      where: { dedupeKey: existing.dedupeKey },
+      data: {
+        status: 'SUCCEEDED',
+        lastSeenAt: now,
+        orderId: input.orderId,
+        positionId: input.positionId ?? existing.positionId ?? null,
+        errorClass: null,
+      },
+    });
+
+    return {
+      dedupeKey: existing.dedupeKey,
+      commandType: existing.commandType,
+      positionId: input.positionId ?? existing.positionId ?? null,
+      commandFingerprint:
+        existing.commandFingerprint && typeof existing.commandFingerprint === 'object'
+          ? (existing.commandFingerprint as Record<string, unknown>)
+          : null,
+    };
   }
 
   async markFailed(input: MarkFailedInput) {

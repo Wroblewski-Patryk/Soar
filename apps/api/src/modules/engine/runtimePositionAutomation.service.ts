@@ -12,12 +12,18 @@ import {
   buildDcaExecutionDedupeKey,
   runtimeExecutionDedupeService,
 } from './runtimeExecutionDedupe.service';
-import { resolveInheritedRuntimeExecutionContext } from './runtimeBotExecutionContext';
 import { computePositionAddUpdate } from '../orders/positionFillMath';
 import {
   recordRuntimeAutomationSkipTelemetry,
   RuntimeAutomationSkipReason,
 } from './runtimePositionAutomationSkipTelemetry';
+import { resolveRuntimeLifecycleMarkPrice } from './runtimeLifecycleMarkPrice.service';
+import {
+  computePriceFromPercent,
+  estimateNextDcaAddedQuantity,
+  resolveDcaLevelCount,
+  resolveInheritedPositionExecutionContext,
+} from './runtimePositionAutomation.helpers';
 
 type RuntimeManagedPosition = Pick<
   Position,
@@ -164,6 +170,12 @@ type RuntimePositionAutomationDeps = {
     openPositionCount?: number;
     openPositionQty?: number;
   }) => Promise<void>;
+  resolveLifecyclePrice?: (input: {
+    exchange: Exchange;
+    marketType: TradeMarket;
+    symbol: string;
+    fallbackPrice: number;
+  }) => Promise<number | null> | number | null;
   nowMs: () => number;
 };
 
@@ -409,27 +421,6 @@ export const executeRuntimeDca = async (input: {
   }
 };
 
-const resolveInheritedPositionExecutionContext = (position: RuntimeManagedPosition) =>
-  resolveInheritedRuntimeExecutionContext({
-    walletId: position.walletId ?? position.bot?.walletId ?? null,
-    wallet: position.bot?.wallet,
-    venueContext: position.bot?.symbolGroup?.marketUniverse,
-  });
-
-const resolveDcaLevelCount = (input: PositionManagementInput) => {
-  if (!input.dca?.enabled) return 0;
-  if (Array.isArray(input.dca.levelPercents) && input.dca.levelPercents.length > 0) return input.dca.levelPercents.length;
-  return Math.max(0, input.dca.maxAdds ?? 0);
-};
-
-const estimateNextDcaAddedQuantity = (input: PositionManagementInput, state: PositionManagementState) => {
-  if (!input.dca?.enabled) return 0;
-  const index = Math.max(0, state.currentAdds);
-  const addFraction = input.dca.addSizeFractions?.[index] ?? input.dca.addSizeFraction ?? 0;
-  if (!Number.isFinite(addFraction) || addFraction <= 0) return 0;
-  return state.quantity * addFraction;
-};
-
 const defaultDeps: RuntimePositionAutomationDeps = {
   listOpenPositionsBySymbol: (symbol) =>
     prisma.position.findMany({
@@ -519,6 +510,12 @@ const defaultDeps: RuntimePositionAutomationDeps = {
   resolveDcaFundsExhausted: (input) => resolveRuntimeDcaFundsExhausted(input),
   recordRuntimeEvent: (params) => runtimeTelemetryService.recordRuntimeEvent(params),
   upsertRuntimeSymbolStat: (params) => runtimeTelemetryService.upsertRuntimeSymbolStat(params),
+  resolveLifecyclePrice: ({ exchange, marketType, symbol, fallbackPrice }) =>
+    resolveRuntimeLifecycleMarkPrice({
+      exchange,
+      marketType,
+      symbol,
+    }) ?? fallbackPrice,
   nowMs: () => Date.now(),
 };
 
@@ -538,21 +535,6 @@ const toPositive = (value: unknown, fallback = 0) => {
   const num = Number(value);
   if (!Number.isFinite(num)) return fallback;
   return Math.max(0, num);
-};
-
-const computePriceFromPercent = (
-  side: PositionSide,
-  entryPrice: number,
-  pct: number,
-  kind: 'tp' | 'sl',
-  leverage = 1
-) => {
-  if (!Number.isFinite(entryPrice) || entryPrice <= 0 || pct <= 0) return undefined;
-  const adjustedPct = pct / Math.max(1, leverage);
-  if (kind === 'tp') {
-    return side === 'LONG' ? entryPrice * (1 + adjustedPct) : entryPrice * (1 - adjustedPct);
-  }
-  return side === 'LONG' ? entryPrice * (1 - adjustedPct) : entryPrice * (1 + adjustedPct);
 };
 
 export const buildPositionManagementInput = (
@@ -841,7 +823,21 @@ export class RuntimePositionAutomationService {
 
     const runtimeConfig = getRuntimeConfig();
     const strategyConfig = await this.getStrategyConfig(position.strategyId ?? null);
-    const input = buildPositionManagementInput(position, event.lastPrice, strategyConfig, runtimeConfig);
+    const lifecyclePrice =
+      (await this.deps.resolveLifecyclePrice?.({
+        exchange,
+        marketType,
+        symbol: position.symbol,
+        fallbackPrice: event.lastPrice,
+      })) ?? event.lastPrice;
+    const effectiveLifecyclePrice =
+      Number.isFinite(lifecyclePrice) && lifecyclePrice > 0 ? lifecyclePrice : event.lastPrice;
+    const input = buildPositionManagementInput(
+      position,
+      effectiveLifecyclePrice,
+      strategyConfig,
+      runtimeConfig
+    );
 
     const defaultState = {
       quantity: position.quantity,
@@ -872,7 +868,7 @@ export class RuntimePositionAutomationService {
             exchange,
             marketType,
             paperStartBalance,
-            markPrice: event.lastPrice,
+            markPrice: effectiveLifecyclePrice,
             addedQuantity: estimatedAddedQuantity,
             leverage: Math.max(1, position.leverage || 1),
             nowMs: this.deps.nowMs(),
@@ -907,7 +903,7 @@ export class RuntimePositionAutomationService {
           symbol: position.symbol,
           positionSide: position.side,
           dcaLevelIndex: previousState.currentAdds,
-          markPrice: event.lastPrice,
+          markPrice: effectiveLifecyclePrice,
           mode,
           addedQuantity: dcaAddedQuantity,
           currentQuantity: previousState.quantity,
@@ -961,7 +957,7 @@ export class RuntimePositionAutomationService {
               dcaCount: 1,
               feesPaid: dcaResult.feePaid,
             },
-            lastPrice: event.lastPrice,
+            lastPrice: effectiveLifecyclePrice,
             lastTradeAt: eventAt,
             openPositionQty: effectiveState.quantity,
           });
@@ -976,7 +972,7 @@ export class RuntimePositionAutomationService {
         botId: position.botId ?? undefined,
         walletId: inheritedExecutionContext.walletId ?? position.walletId ?? position.bot?.walletId ?? null,
         symbol: position.symbol,
-        markPrice: event.lastPrice,
+        markPrice: effectiveLifecyclePrice,
         mode,
         quantity: effectiveState.quantity,
         reason: result.closeReason,

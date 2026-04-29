@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { prisma } from '../../prisma/client';
+import { buildDcaExecutionDedupeKey } from '../engine/runtimeExecutionDedupe.service';
+import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
 import {
   applyLiveExchangeAccountUpdateEvent,
   applyLiveExchangeOrderTradeUpdateEvent,
@@ -332,6 +334,39 @@ describe('orders.exchangeEvents.service', () => {
         submittedAt: new Date('2026-04-29T10:00:00.000Z'),
       },
     });
+    const dedupeKey = buildDcaExecutionDedupeKey({
+      userId: user.id,
+      botId: bot.id,
+      symbol: 'BTCUSDT',
+      positionId: position.id,
+      dcaLevelIndex: 0,
+      positionSide: 'LONG',
+    });
+    await prisma.runtimeExecutionDedupe.create({
+      data: {
+        dedupeKey,
+        dedupeVersion: 'v1',
+        commandType: 'DCA',
+        userId: user.id,
+        botId: bot.id,
+        symbol: 'BTCUSDT',
+        status: 'PENDING',
+        commandFingerprint: {
+          positionId: position.id,
+          dcaLevelIndex: 0,
+          positionSide: 'LONG',
+        },
+        orderId: order.id,
+        positionId: position.id,
+        ttlExpiresAt: new Date('2026-04-30T10:00:00.000Z'),
+      },
+    });
+    await runtimePositionStateStore.setPositionRuntimeState(position.id, {
+      quantity: 0.1,
+      averageEntryPrice: 62_000,
+      currentAdds: 0,
+      trailingAnchorPrice: 62_000,
+    });
 
     const result = await applyLiveExchangeOrderTradeUpdateEvent({
       userId: user.id,
@@ -378,6 +413,17 @@ describe('orders.exchangeEvents.service', () => {
     });
     expect(dcaTrade.lifecycleAction).toBe('DCA');
     expect(dcaTrade.exchangeTradeId).toBe('trade-dca-1');
+    const updatedDedupe = await prisma.runtimeExecutionDedupe.findUniqueOrThrow({
+      where: { dedupeKey },
+    });
+    expect(updatedDedupe.status).toBe('SUCCEEDED');
+    const runtimeState = await runtimePositionStateStore.getPositionRuntimeState(position.id);
+    expect(runtimeState?.quantity).toBeCloseTo(0.15, 10);
+    expect(runtimeState?.averageEntryPrice).toBeCloseTo(62_500, 10);
+    expect(runtimeState?.currentAdds).toBe(1);
+    expect(runtimeState?.trailingAnchorPrice).toBeCloseTo(62_000, 10);
+    expect(runtimeState?.lastDcaPrice).toBeCloseTo(63_500, 10);
+    await runtimePositionStateStore.deletePositionRuntimeState(position.id);
   });
 
   it('applies account update to refresh canonical open-position quantities and pnl', async () => {

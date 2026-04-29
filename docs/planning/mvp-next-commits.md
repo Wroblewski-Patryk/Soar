@@ -7,12 +7,9 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [ ] `V1GUARD-01 test(shared-engine+api-red): lock remaining LIVE protection drifts around DCA-first TTP gating, async DCA fill convergence, and lifecycle-price reuse`
-- [ ] `V1GUARD-02 fix(shared-engine): make TTP respect the canonical DCA-first guard`
-- [ ] `V1GUARD-03 fix(api-live-runtime): converge LIVE DCA runtime state after async exchange-confirmed fills`
-- [ ] `V1GUARD-04 refactor(api-runtime): route LIVE protection evaluation through one lifecycle-price seam`
-- [ ] `V1GUARD-05 qa(closure): rerun focused LIVE protection final pack and publish closure evidence`
 ## NEXT
+- [x] `V1GUARD-01..05 docs+api+qa(closure): close final LIVE protection drifts for DCA/TTP/TSL parity`
+  - 2026-04-29: Closed the full `V1GUARD-A` wave. Shared engine parity now keeps `TTP` behind the canonical `DCA-first` guard, exchange-confirmed `LIVE DCA` fills now converge runtime dedupe plus persisted runtime position state instead of leaving `currentAdds` stale after a submitted market add, and runtime protection evaluation now uses one explicit lifecycle-price seam instead of hardcoding raw ticker `lastPrice`. Closure evidence: `docs/operations/v1guard-live-protection-final-closure-2026-04-29.md`. Validation PASS: focused `positionManagement`, focused `runtimePositionAutomation`, focused `orders.exchangeEvents`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 - [x] `V1GUARD-00 planning(queue): publish final LIVE protection hardening packet for DCA/TTP/TSL parity`
   - 2026-04-29: Published `docs/planning/v1guard-live-protection-final-hardening-plan-2026-04-29.md` to freeze the last confirmed money-impacting drifts after `V1SAFE-A`: `TTP` still bypasses the canonical `DCA-first` guard, async `LIVE DCA` fills can leave runtime state stale after exchange confirmation, and runtime protection still consumes ticker `lastPrice` directly instead of one explicit lifecycle-price seam. Validation PASS: `pnpm run quality:guardrails`.
 - [x] `V1SAFE-00 planning(audit): publish LIVE protection and liquidation-safety analysis plus execution packet`

@@ -12,6 +12,8 @@ import {
 } from '../positions/positionCloseAttribution';
 import { applyOrderFillLifecycle } from './orders.lifecycle.service';
 import { computePositionAddUpdate } from './positionFillMath';
+import { runtimeExecutionDedupeService } from '../engine/runtimeExecutionDedupe.service';
+import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
 
 const isPositiveFiniteNumber = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value) && value > 0;
@@ -224,6 +226,39 @@ const resolveLiveAccountUpdateScope = async (input: {
   return [];
 };
 
+const syncRuntimeDcaStateFromExchangeFill = async (input: {
+  orderId: string;
+  positionId: string;
+  nextQuantity: number;
+  nextEntryPrice: number;
+  fillPrice: number;
+}) => {
+  const dedupe = await runtimeExecutionDedupeService.markSucceededByOrderId({
+    orderId: input.orderId,
+    commandType: 'DCA',
+    positionId: input.positionId,
+  });
+  if (!dedupe) return;
+
+  const previousState =
+    (await runtimePositionStateStore.getPositionRuntimeState(input.positionId)) ?? null;
+  const rawLevelIndex = dedupe.commandFingerprint?.dcaLevelIndex;
+  const levelIndex = Number(rawLevelIndex);
+  await runtimePositionStateStore.setPositionRuntimeState(input.positionId, {
+    quantity: input.nextQuantity,
+    averageEntryPrice: input.nextEntryPrice,
+    currentAdds: Math.max(
+      previousState?.currentAdds ?? 0,
+      Number.isFinite(levelIndex) ? Math.max(0, Math.floor(levelIndex) + 1) : 0,
+    ),
+    trailingAnchorPrice: previousState?.trailingAnchorPrice ?? input.nextEntryPrice,
+    trailingLossLimitPercent: previousState?.trailingLossLimitPercent,
+    trailingTakeProfitHighPercent: previousState?.trailingTakeProfitHighPercent,
+    trailingTakeProfitStepPercent: previousState?.trailingTakeProfitStepPercent,
+    lastDcaPrice: input.fillPrice,
+  });
+};
+
 export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
   userId: string;
   event: NormalizedBinanceOrderTradeUpdateEvent;
@@ -414,6 +449,13 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
           managementMode: updatedOrder.managementMode,
           origin: updatedOrder.origin,
           realizedPnl: 0,
+        });
+        await syncRuntimeDcaStateFromExchangeFill({
+          orderId: updatedOrder.id,
+          positionId: updatedOrder.position.id,
+          nextQuantity,
+          nextEntryPrice,
+          fillPrice: averageFillPrice,
         });
       }
       updatedOrder = await prisma.order.findUniqueOrThrow({

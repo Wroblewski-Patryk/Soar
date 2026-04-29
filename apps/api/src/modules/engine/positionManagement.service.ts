@@ -261,7 +261,10 @@ export const evaluatePositionManagement = (
       if (droppedBelowBaseFloor) {
         nextState.trailingTakeProfitHighPercent = undefined;
         nextState.trailingTakeProfitStepPercent = undefined;
-      } else if (favorableMove <= finalTrackedHigh - finalTrackedStep) {
+      } else if (
+        dcaProtectionSatisfied &&
+        favorableMove <= finalTrackedHigh - finalTrackedStep
+      ) {
         return {
           shouldClose: true,
           closeReason: 'trailing_take_profit',

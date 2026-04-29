@@ -1086,3 +1086,9 @@ pnpm --filter api run test -- --run
 - Avoid: assuming the API pack is self-contained on a fresh shell when it exercises encrypted API-key flows.
 - Evidence:
   - 2026-04-23 `V1ALIGN-06`: focused runtime pack, typecheck, and guardrails passed first; the full API pack also passed once the explicit test encryption env was exported in the same shell.
+# 2026-04-29 - LIVE DCA completion must bridge exchange fills back into runtime state
+
+- Context: `V1GUARD-A`
+- What happened: A repository audit after `V1SAFE-A` confirmed a `LIVE`-only drift where runtime automation could submit a DCA market add, let the exchange confirm the fill later through `ORDER_TRADE_UPDATE`, and still leave runtime management state stale (`currentAdds`, average entry, last DCA price) because the exchange-event path updated only the canonical `Position` row.
+- Verified learning: For `LIVE` runtime DCA, the fill-closure path must update all three layers together when exchange truth arrives: canonical position/order lifecycle, runtime execution dedupe, and persisted runtime position state. Updating only DB position truth is not enough for the next automation tick.
+- Action taken: `orders.exchangeEvents.service.ts` now marks matching runtime DCA dedupe rows as `SUCCEEDED` and updates `runtimePositionStateStore` from exchange-confirmed fill truth; focused regression coverage was added in `orders.exchangeEvents.service.test.ts`.
