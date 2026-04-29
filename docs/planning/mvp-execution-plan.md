@@ -177,9 +177,11 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `V1REOPEN-02 test(api-red): lock stale lifecycle visibility, side truth, and PnL basis on LIVE reopen`
 - [x] `V1REOPEN-03 fix(api-reconcile): retire superseded same-symbol lifecycle rows deterministically`
 - [x] `V1REOPEN-04 fix(api-runtime-state): clear stale runtime protection state on close or lifecycle replacement`
-- [ ] `V1REOPEN-05 test(api-runtime-red): lock TTP continuity and loss-side-only DCA behavior on reopened LIVE positions`
-- [x] `V1REOPEN-06 fix(api+web-truth): align final operator truth for reopened LIVE positions`
-- [ ] `V1REOPEN-07 qa(closure): run focused close/reopen truth pack and publish evidence`
+- [x] `V1REOPEN-05 test(api-runtime-red): lock TTP continuity and loss-side-only DCA behavior on reopened LIVE positions`
+  - 2026-04-29: Closed by focused runtime automation proof for reopened imported `LIVE` lifecycle continuity under loss-side-only remaining `DCA`.
+  - [x] `V1REOPEN-06 fix(api+web-truth): align final operator truth for reopened LIVE positions`
+- [x] `V1REOPEN-07 qa(closure): run focused close/reopen truth pack and publish evidence`
+  - 2026-04-29: Closed with closure evidence in `docs/operations/v1reopen-live-close-reopen-truth-closure-2026-04-29.md`.
 
 ### Progress Log (Phase V1REOPEN-2026-04-29 - LIVE Same-Symbol Close/Reopen Truth Hardening)
 - 2026-04-29: Published the packet after a focused architecture-and-code audit of the newly reported `DOGEUSDT` production flow: app-driven `LIVE` close succeeds, exchange truth closes the position, same-symbol reopen is imported again, but operator-visible `PnL%` becomes dramatically wrong and pre-close `TTP` still appears contaminated despite loss-side-only remaining `DCA`. The strongest current hypothesis is stale lifecycle continuity rather than simple UI math: old same-symbol lifecycle rows can survive too long through reconciliation grace windows, and stale runtime protection state may remain alive when the old lifecycle is retired outside the normal app/bot close path. Canonical packet: `docs/planning/v1reopen-live-close-reopen-pnl-ttp-hardening-plan-2026-04-29.md`.

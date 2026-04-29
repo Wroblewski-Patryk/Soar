@@ -145,6 +145,10 @@ Confirmed likely drift areas:
   row truth, and runtime serialization now restores the missing bot-managed
   `TTP` fallback/sticky continuity path from strategy levels plus persisted
   `trailingLossLimitPercent`.
-- 2026-04-29: `V1REOPEN-05` remains open because the repo still needs one
-  narrower proof for reopened `LIVE` positions with remaining loss-side-only
-  `DCA` thresholds.
+- 2026-04-29: `V1REOPEN-05` is now closed. Focused runtime automation coverage
+  proves that a reopened imported `LIVE` position on the same symbol starts
+  from fresh lifecycle state (`currentAdds=0`), does not inherit stale prior
+  lifecycle runtime values, and still executes `TTP` correctly when all
+  remaining `DCA` thresholds are loss-side only.
+- 2026-04-29: `V1REOPEN-07` is now closed with the focused closure evidence
+  packet `docs/operations/v1reopen-live-close-reopen-truth-closure-2026-04-29.md`.

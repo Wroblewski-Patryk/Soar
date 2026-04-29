@@ -38,9 +38,10 @@ Operational queue for one-task execution runs.
 - [x] `V1COVER-02 test(shared-cleanup): repair singular-bot wallet cleanup drift in runtime takeover helpers`
   - 2026-04-29: Closed the second `V1COVER-A` slice by restoring wallet cleanup to the shared runtime takeover helper and aligning the outdated overlap proof to the current architecture. The shared takeover suite now deletes wallet-linked topology deterministically, and the first visibility regression no longer assumes two active LIVE bots may share one symbol; it now proves the approved contract instead: imported `LIVE` positions stay visible for the owning LIVE bot while a PAPER bot may share the symbol without taking ownership.
 ## NEXT
-- [ ] `V1REOPEN-05 test(api-runtime-red): lock TTP continuity and loss-side-only DCA behavior on reopened LIVE positions`
-  - 2026-04-29 progress note: operator-truth gating is already closed in `V1REOPEN-06`; what remains is the narrower reopened-`LIVE` + loss-side-only `DCA` proof.
-- [ ] `V1REOPEN-07 qa(closure): run focused close/reopen truth pack and publish evidence`
+- [x] `V1REOPEN-05 test(api-runtime-red): lock TTP continuity and loss-side-only DCA behavior on reopened LIVE positions`
+  - 2026-04-29: Closed by adding focused runtime automation proof for a reopened imported `LIVE` position on the same symbol. The regression locks fresh lifecycle state (`currentAdds=0`), proves stale prior lifecycle state does not bleed into the reopened row, and confirms `TTP` still closes correctly when all remaining `DCA` thresholds are loss-side only.
+- [x] `V1REOPEN-07 qa(closure): run focused close/reopen truth pack and publish evidence`
+  - 2026-04-29: Closed with `docs/operations/v1reopen-live-close-reopen-truth-closure-2026-04-29.md`. Focused validation PASS: runtime automation reopen pack, live reconciliation pack, orders/positions runtime parity e2e, focused web operator pack, API/web typecheck, and repository guardrails.
 - [x] `V1HIST-00 analysis(queue): publish imported exchange lifecycle history packet and mixed-origin live matrix`
   - 2026-04-29: Published `docs/planning/v1hist-imported-exchange-lifecycle-history-plan-2026-04-29.md`, `docs/planning/v1hist-00-analysis-task-2026-04-29.md`, and `docs/operations/v1live-mixed-origin-verification-matrix-2026-04-29.md` after a focused audit of imported `EXCHANGE_SYNC` lifecycle truth. Current repository evidence says active imported positions can already be adopted and later stale-closed, but imported opening history, reconciliation-driven external close history, and operator-visible history timestamps are still not a fully closed vertical slice.
 - [x] `V1HIST-01 audit(api+history): freeze the imported open/close history failure matrix`

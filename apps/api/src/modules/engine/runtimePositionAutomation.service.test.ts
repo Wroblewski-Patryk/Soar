@@ -5,6 +5,8 @@ import { runtimePositionStateStore } from './runtimePositionState.store';
 afterEach(async () => {
   await runtimePositionStateStore.deletePositionRuntimeState('pos-replay-1');
   await runtimePositionStateStore.deletePositionRuntimeState('pos-live-import-ttp');
+  await runtimePositionStateStore.deletePositionRuntimeState('pos-live-reopen-ttp');
+  await runtimePositionStateStore.deletePositionRuntimeState('pos-live-reopen-old');
 });
 
 const buildBotExecutionContext = (
@@ -1301,6 +1303,116 @@ describe('RuntimePositionAutomationService', () => {
         reason: 'trailing_take_profit',
       }),
     );
+  });
+
+  it('allows reopened imported LIVE TTP close when remaining DCA levels are loss-side only', async () => {
+    process.env.RUNTIME_TRAILING_ENABLED = 'false';
+    process.env.RUNTIME_DCA_ENABLED = 'false';
+
+    await runtimePositionStateStore.setPositionRuntimeState('pos-live-reopen-old', {
+      quantity: 3,
+      averageEntryPrice: 0.4,
+      currentAdds: 2,
+      trailingAnchorPrice: 0.5,
+      trailingTakeProfitHighPercent: 0.35,
+      trailingTakeProfitStepPercent: 0.02,
+      lastDcaPrice: 0.39,
+    });
+
+    const closeByExitSignal = vi.fn(async () => ({ status: 'closed' as const }));
+    const deps: any = {
+      listOpenPositionsBySymbol: vi.fn(async () => [
+        {
+          id: 'pos-live-reopen-ttp',
+          userId: 'user-live-reopen-ttp',
+          botId: 'bot-live-reopen-ttp',
+          walletId: 'wallet-live-reopen-ttp',
+          strategyId: 'strat-live-reopen-ttp',
+          symbol: 'DOGEUSDT',
+          side: 'LONG' as const,
+          entryPrice: 0.1,
+          quantity: 1000,
+          leverage: 10,
+          stopLoss: null,
+          takeProfit: null,
+          managementMode: 'BOT_MANAGED' as const,
+          continuityState: 'CONFIRMED' as const,
+          origin: 'EXCHANGE_SYNC' as const,
+          bot: buildBotExecutionContext({
+            wallet: { mode: 'LIVE' },
+          }),
+        },
+      ]),
+      getStrategyConfigById: vi.fn(async () => ({
+        close: {
+          mode: 'advanced',
+          tp: null,
+          sl: null,
+          ttp: [{ percent: 5, arm: 10 }],
+          tsl: [],
+        },
+        additional: {
+          dcaEnabled: true,
+          dcaMode: 'advanced',
+          dcaTimes: 2,
+          dcaLevels: [
+            { percent: -2, multiplier: 1 },
+            { percent: -4, multiplier: 1 },
+          ],
+        },
+      })),
+      executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
+      closeByExitSignal,
+      resolveDcaFundsExhausted: vi.fn(async () => false),
+      nowMs: vi.fn(() => Date.now()),
+    };
+
+    const service = new RuntimePositionAutomationService(deps);
+
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'DOGEUSDT',
+      eventTime: 16_000,
+      lastPrice: 0.12,
+      priceChangePercent24h: 1.5,
+    });
+
+    const reopenedState = service.getPositionStateSnapshot('pos-live-reopen-ttp');
+    expect(reopenedState).toEqual(
+      expect.objectContaining({
+        quantity: 1000,
+        averageEntryPrice: 0.1,
+        currentAdds: 0,
+      }),
+    );
+    expect(reopenedState?.trailingTakeProfitHighPercent ?? 0).toBeGreaterThan(0);
+    expect(reopenedState?.trailingTakeProfitStepPercent ?? 0).toBeGreaterThan(0);
+    expect(reopenedState?.averageEntryPrice).not.toBe(0.4);
+    expect(reopenedState?.currentAdds).not.toBe(2);
+
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'DOGEUSDT',
+      eventTime: 17_000,
+      lastPrice: 0.115,
+      priceChangePercent24h: 1.1,
+    });
+
+    expect(closeByExitSignal).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'user-live-reopen-ttp',
+        botId: 'bot-live-reopen-ttp',
+        walletId: 'wallet-live-reopen-ttp',
+        symbol: 'DOGEUSDT',
+        mode: 'LIVE',
+        reason: 'trailing_take_profit',
+      }),
+    );
+    expect(service.getPositionStateSnapshot('pos-live-reopen-old')).toBeNull();
   });
 
   it('keeps runtime TTP blocked when remaining DCA levels are still profit-side', async () => {

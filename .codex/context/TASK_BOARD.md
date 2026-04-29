@@ -37,18 +37,19 @@ Last updated: 2026-04-29
   - Scope: prevent `TTP`/`TSL`/DCA runtime state from bleeding into the reopened lifecycle after old-position retirement.
   - 2026-04-29: Closed by deleting persisted runtime position state whenever reconciliation closes or supersedes a lifecycle.
 
-- [ ] `V1REOPEN-05 test(api-runtime-red): lock TTP continuity and loss-side-only DCA behavior on reopened LIVE positions`
+- [x] `V1REOPEN-05 test(api-runtime-red): lock TTP continuity and loss-side-only DCA behavior on reopened LIVE positions`
   - Scope: prove the reopened lifecycle arms `TTP` correctly when remaining DCA thresholds are loss-side only and no stale state survives from the prior lifecycle.
   - 2026-04-29 audit note: extend this proof to cover the operator-visible path where row-level dynamic `TTP` exists after reopen but bot-level advanced-close gating may still hide the column.
-  - 2026-04-29 progress note: operator-truth gating is already closed in `V1REOPEN-06`; the remaining proof is now strictly about reopened `LIVE` continuity with loss-side-only remaining `DCA`.
+  - 2026-04-29: Closed by adding focused runtime automation coverage for reopened imported `LIVE` continuity. The proof locks fresh `currentAdds=0`, rejects stale prior lifecycle state bleed-through, and still allows `TTP` close when all remaining `DCA` thresholds are loss-side only.
 
 - [x] `V1REOPEN-06 fix(api+web-truth): align final operator truth for reopened LIVE positions`
   - Scope: keep operator surfaces faithful to the repaired backend truth and only add a minimal read-model adjustment if focused proof shows it is still needed.
   - 2026-04-29 audit note: strongest remaining code-level candidate is `showDynamicStopColumns` gating that depends on bot-level topology rather than actual reopened row truth.
   - 2026-04-29: Closed by OR-ing backend `showDynamicStopColumns` with actual open-row dynamic-stop truth, reusing one shared web visibility helper across dashboard and monitoring surfaces, and repairing missing bot-managed `TTP` fallback/sticky continuity inside runtime serialization. Evidence: focused API dynamic-stop unit/e2e pack, focused web runtime table pack, API/web typecheck, `pnpm run quality:guardrails`.
 
-- [ ] `V1REOPEN-07 qa(closure): run focused close/reopen truth pack and publish evidence`
+- [x] `V1REOPEN-07 qa(closure): run focused close/reopen truth pack and publish evidence`
   - Scope: rerun the focused reconciliation/runtime/operator pack, typechecks, and repository guardrails; then publish closure evidence.
+  - 2026-04-29: Closed with `docs/operations/v1reopen-live-close-reopen-truth-closure-2026-04-29.md`. Focused validation PASS: API runtime/reconcile/orders pack, focused web operator pack, API/web typecheck, and repository guardrails.
 
 - [x] `V1HIST-00 analysis(queue): publish imported exchange lifecycle history packet and mixed-origin live matrix`
   - Scope: freeze the newly reported imported-position history gap into one exact execution packet covering imported opening-history truth, external-close history parity, and operator-visible history timestamps, plus an explicit mixed-origin `exchange/app` live verification matrix.
