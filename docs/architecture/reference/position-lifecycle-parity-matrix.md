@@ -71,6 +71,15 @@ State reset on:
 - position open,
 - position close (any reason).
 
+For imported or recovered `LIVE` positions:
+
+- runtime may only use trailing state it actually persisted or safely
+  initialized from the adoption point onward
+- runtime may not retroactively guess an unseen trailing high watermark from a
+  single exchange snapshot
+- read models must not present a stronger dynamic `TTP` / `TSL` trigger than
+  the runtime engine can execute
+
 ---
 
 ## Close Attribution Parity

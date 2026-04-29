@@ -122,6 +122,18 @@ For `LIVE`, when a confirmed fill adds to an already open position and the
 semantic action is an add-leg, persistence and telemetry must preserve explicit
 `DCA` meaning rather than collapsing it into generic `OPEN`.
 
+For imported or recovered `LIVE` positions, advanced protection has one extra
+parity rule:
+
+- runtime execution truth for `TTP` / `TSL` comes from canonical runtime
+  protection state
+- the repository must not retroactively invent unseen trailing history from a
+  single exchange snapshot
+- runtime may initialize prospective protection from the adoption point onward
+  when owner, strategy, and execution context are canonical
+- if safe initialization cannot be proven, the row may remain visible but must
+  not appear more protection-armed than runtime can really execute
+
 ## Fee Contract
 - LIVE fee truth comes from exchange fills and trades when available
 - temporary estimated fees may exist only as traceable placeholders

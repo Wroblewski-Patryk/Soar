@@ -13,6 +13,7 @@ correctly while `LIVE` appears operationally similar but diverges in:
 - DCA attribution,
 - account-update write scope,
 - runtime versus read-model strategy truth,
+- runtime versus read-model protection-state truth,
 - operator-visible degraded runtime diagnostics.
 
 ## Canonical Rule 1: Existing-Position Add Fills Must Update the Position
@@ -105,6 +106,24 @@ They must share:
 - the same strategy-context requirements for automation,
 - the same operator-visible degraded-state semantics when canonical truth is
   missing.
+
+## Canonical Rule 7: Runtime and Read Models Must Not Disagree About Protection Truth
+
+If `LIVE` runtime advanced protection (`TTP` / `TSL`) depends on persisted or
+prospectively hydrated runtime protection state, operator-facing read models
+must not imply a stronger dynamic stop than the runtime engine can really
+execute.
+
+Allowed:
+
+- explicit labels such as `prospective_only` or degraded protection state
+- showing configured trailing levels without claiming the current dynamic stop
+  is armed
+
+Forbidden:
+
+- read-model sticky-high fallback acting as if it were execution truth for
+  imported or recovered `LIVE` positions
 
 ## Required Validation For This Contract
 
