@@ -17,10 +17,7 @@ Last updated: 2026-05-01
 
 ## READY
 
-- [ ] `V1ROE-04 qa(prod-manual): verify exchange-aligned LIVE PnL truth and imported automation on protected DOGEUSDT`
-  - Scope: collect authenticated protected production API/browser evidence after the current candidate is deployed, proving `DOGEUSDT` `LIVE` PnL truth and imported managed automation are aligned with exchange-synced runtime truth.
-  - 2026-05-01 status: BLOCKED by missing protected production auth, not by a known remaining local code gap. The exact evidence contract is published in `docs/planning/v1roe-04-production-verification-task-2026-04-30.md`. Do not mark this done from local tests alone.
-  - 2026-05-01 partial: deploy freshness is verified on production (`522e1d95`, `main`) and public API/web smoke passed, but protected runtime probes return `401 Missing token` without production auth in this environment. Evidence: `docs/operations/v1roe-04-prod-verification-partial-2026-04-30.md`.
+- [ ] (none)
 
 - [x] `WLEDGER-07..09 web-wallet-preview: expose ledger-backed wallet preview from wallet list`
   - Scope: add a wallets table preview action and `/dashboard/wallets/:id/preview` surface for ledger-backed summary, equity timeline, and cashflow events.
@@ -509,6 +506,7 @@ Last updated: 2026-05-01
 ## BLOCKED
 
 - [ ] `V1ROE-04 qa(prod-manual): verify exchange-aligned LIVE PnL truth and imported automation on protected DOGEUSDT`
+  - Scope: collect authenticated protected production API/browser evidence after the current candidate is deployed, proving `DOGEUSDT` `LIVE` PnL truth and imported managed automation are aligned with exchange-synced runtime truth.
   - 2026-05-01: Blocked until production auth is available through `SMOKE_AUTH_TOKEN` / `DEPLOY_FRESHNESS_AUTH_TOKEN`, `SMOKE_AUTH_EMAIL + SMOKE_AUTH_PASSWORD`, `DEPLOY_FRESHNESS_AUTH_EMAIL + DEPLOY_FRESHNESS_AUTH_PASSWORD`, or an equivalent authenticated browser/session cookie. Public deploy freshness and smoke evidence is already recorded; protected runtime evidence is still required.
 
 ## REVIEW
