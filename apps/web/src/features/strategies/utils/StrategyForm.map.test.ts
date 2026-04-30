@@ -80,6 +80,32 @@ describe('formToPayload', () => {
     expect(additional.orderLifetime).toBe(0);
   });
 
+  it('strips legacy invalid advanced trailing thresholds from submit payload', () => {
+    const form = baseForm();
+    form.closeConditions = {
+      mode: 'advanced',
+      tp: 3,
+      sl: 2,
+      ttp: [
+        { percent: 20, arm: 10 },
+        { percent: 10, arm: 20 },
+      ],
+      tsl: [
+        { percent: -20, arm: 10 },
+        { percent: -5, arm: 10 },
+      ],
+    };
+
+    const payload = formToPayload(form);
+    const close = payload.config.close as {
+      ttp: Array<{ percent: number; arm: number }>;
+      tsl: Array<{ percent: number; arm: number }>;
+    };
+
+    expect(close.ttp).toEqual([{ percent: 20, arm: 10 }]);
+    expect(close.tsl).toEqual([{ percent: -5, arm: 10 }]);
+  });
+
   it('sanitizes legacy invalid advanced trailing thresholds on dto load', () => {
     const form = dtoToForm({
       id: 'strategy-1',

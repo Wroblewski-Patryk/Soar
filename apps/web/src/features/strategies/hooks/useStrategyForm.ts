@@ -18,7 +18,7 @@ const defaultState: StrategyFormState = {
         tp: 3,
         sl: 2,
         ttp: [createThreshold({ percent: 5, arm: 2 })],
-        tsl: [createThreshold({ percent: -2, arm: 1 })],
+        tsl: [createThreshold({ percent: -1, arm: 1 })],
     },
     additional: {
         dcaEnabled: true,

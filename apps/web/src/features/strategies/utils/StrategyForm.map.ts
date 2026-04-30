@@ -92,6 +92,22 @@ const sanitizeCloseConditions = (close?: CloseConditions): CloseConditions => {
   };
 };
 
+const sanitizeCloseConditionsForPayload = (close: CloseConditions): CloseConditions => {
+  if (close.mode !== "advanced") {
+    return {
+      ...close,
+      ttp: ensureThresholdClientIds(close.ttp ?? []),
+      tsl: ensureThresholdClientIds(close.tsl ?? []),
+    };
+  }
+
+  return {
+    ...close,
+    ttp: ensureThresholdClientIds(sanitizeTrailingTakeProfitThresholds(close.ttp ?? [])),
+    tsl: ensureThresholdClientIds(sanitizeTrailingStopThresholds(close.tsl ?? [])),
+  };
+};
+
 // backend DTO -> form state
 export const dtoToForm = (s: StrategyDtoLike): StrategyFormState => ({
   name: s.name,
@@ -110,11 +126,7 @@ export const dtoToForm = (s: StrategyDtoLike): StrategyFormState => ({
 
 // form -> PATCH/POST payload
 export const formToPayload = (f: StrategyFormState) => {
-  const close = {
-    ...f.closeConditions,
-    ttp: stripThresholdClientIds(ensureThresholdClientIds(f.closeConditions.ttp)),
-    tsl: stripThresholdClientIds(ensureThresholdClientIds(f.closeConditions.tsl)),
-  };
+  const close = sanitizeCloseConditionsForPayload(f.closeConditions);
   const normalizedBasicLevel = {
     percent:
       Number.isFinite(f.additional.dcaLevels[0]?.percent) && Number(f.additional.dcaLevels[0].percent) !== 0
@@ -157,7 +169,11 @@ export const formToPayload = (f: StrategyFormState) => {
     walletRisk: f.walletRisk,
     config: {
       open: f.openConditions,
-      close,
+      close: {
+        ...close,
+        ttp: stripThresholdClientIds(close.ttp),
+        tsl: stripThresholdClientIds(close.tsl),
+      },
       additional,
     },
   };
