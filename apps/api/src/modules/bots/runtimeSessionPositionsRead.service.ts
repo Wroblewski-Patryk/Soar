@@ -110,6 +110,20 @@ const dedupeRuntimeOpenOrders = (orders: RuntimeOpenOrderRow[]) => {
   });
 };
 
+const resolveRuntimePositionDcaCount = (input: {
+  entryLegsCount: number;
+  explicitDcaTradeCount: number;
+  runtimeStateCurrentAdds: number | null;
+}) => {
+  const inferredFromEntryLegs = Math.max(0, input.entryLegsCount - 1);
+  const inferredFromTrades = Math.max(0, input.explicitDcaTradeCount);
+  const inferredFromRuntimeState =
+    typeof input.runtimeStateCurrentAdds === 'number' && Number.isFinite(input.runtimeStateCurrentAdds)
+      ? Math.max(0, Math.trunc(input.runtimeStateCurrentAdds))
+      : 0;
+  return Math.max(inferredFromEntryLegs, inferredFromTrades, inferredFromRuntimeState);
+};
+
 export const listBotRuntimeSessionPositions = async (
   userId: string,
   botId: string,
@@ -441,7 +455,6 @@ export const listBotRuntimeSessionPositions = async (
     const tradeRealizedPnl = positionTrades.reduce((acc, trade) => acc + (trade.realizedPnl ?? 0), 0);
     const entryTrade = entryLegs[0] ?? positionTrades[0] ?? null;
     const exitTrade = exitLegs.at(-1) ?? (position.status === 'CLOSED' ? positionTrades.at(-1) ?? null : null);
-    const dcaCount = Math.max(0, entryLegs.length - 1);
     const strategyAutomationContextResolved = resolveRuntimeStrategyAutomationContext(position.strategyId);
     const dcaPlannedLevels =
       strategyAutomationContextResolved
@@ -457,8 +470,6 @@ export const listBotRuntimeSessionPositions = async (
             ? trailingTakeProfitLevelsByStrategyId.get(position.strategyId)
             : null) ?? [])
         : [];
-    const dcaExecutedLevels = resolveDcaExecutedLevels(dcaCount, dcaPlannedLevels);
-
     const marketPrice = resolvePreferredRuntimeOrExchangeSyncedPrice({
       origin: position.origin,
       status: position.status,
@@ -478,6 +489,15 @@ export const listBotRuntimeSessionPositions = async (
       runtimePositionAutomationService.getPositionStateSnapshot(position.id) ??
       persistedRuntimeStatesByPositionId.get(position.id) ??
       null;
+    const explicitDcaTradeCount = positionTrades.filter(
+      (trade) => trade.lifecycleAction === 'DCA'
+    ).length;
+    const dcaCount = resolveRuntimePositionDcaCount({
+      entryLegsCount: entryLegs.length,
+      explicitDcaTradeCount,
+      runtimeStateCurrentAdds: runtimeState?.currentAdds ?? null,
+    });
+    const dcaExecutedLevels = resolveDcaExecutedLevels(dcaCount, dcaPlannedLevels);
     const stateEntryPrice =
       runtimeState && Number.isFinite(runtimeState.averageEntryPrice) && runtimeState.averageEntryPrice > 0
         ? runtimeState.averageEntryPrice

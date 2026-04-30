@@ -102,6 +102,7 @@ export const listRuntimePositionTradeRows = async (where: Prisma.TradeWhereInput
     select: {
       positionId: true,
       side: true,
+      lifecycleAction: true,
       price: true,
       quantity: true,
       fee: true,
