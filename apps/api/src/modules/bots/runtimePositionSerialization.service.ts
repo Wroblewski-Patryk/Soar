@@ -55,6 +55,33 @@ const computeTrailingStopPriceFromAnchor = (params: {
   return raw;
 };
 
+const resolveAnchorBasedPnlFraction = (params: {
+  side: 'LONG' | 'SHORT';
+  entryPrice: number;
+  anchorPrice: number | null | undefined;
+  quantity: number;
+  leverage: number;
+  marginUsed?: number | null;
+}) => {
+  const { side, entryPrice, anchorPrice, quantity, leverage, marginUsed } = params;
+  if (typeof anchorPrice !== 'number' || !Number.isFinite(anchorPrice) || anchorPrice <= 0) {
+    return null;
+  }
+  const anchorUnrealizedPnl =
+    side === 'LONG'
+      ? (anchorPrice - entryPrice) * quantity
+      : (entryPrice - anchorPrice) * quantity;
+  return resolvePositionPnlFraction({
+    side,
+    entryPrice,
+    currentPrice: anchorPrice,
+    quantity,
+    leverage,
+    marginUsed,
+    unrealizedPnl: anchorUnrealizedPnl,
+  });
+};
+
 export const resolveDcaExecutedLevels = (
   dcaCount: number,
   dcaPlannedLevels: number[]
@@ -144,6 +171,17 @@ export const resolveRuntimePositionDynamicStops = (
             unrealizedPnl,
           })
         : null;
+  const favorableMovePercentFromAnchor =
+    runtimeState && Number.isFinite(runtimeState.trailingAnchorPrice)
+      ? resolveAnchorBasedPnlFraction({
+          side: positionSide,
+          entryPrice: stateEntryPrice,
+          anchorPrice: runtimeState.trailingAnchorPrice,
+          quantity,
+          leverage: effectiveLeverage,
+          marginUsed,
+        })
+      : favorableMovePercentFromLivePrice;
   const ttpTriggerPercent =
     ttpTriggerPercentFromState != null && ttpTriggerPercentFromState > 0
       ? ttpTriggerPercentFromState
@@ -151,11 +189,15 @@ export const resolveRuntimePositionDynamicStops = (
   const activeTtpLevel =
     !hasRuntimeTtpState && allowStrategyProtectionFallback
       ? selectActiveTrailingTakeProfitDisplayLevel(
-          favorableMovePercentFromLivePrice,
+          favorableMovePercentFromAnchor,
           trailingTakeProfitLevels
         )
       : null;
-  const fallbackTtpTriggerPercent =
+  const fallbackTtpTriggerPercentFromAnchor =
+    activeTtpLevel != null && favorableMovePercentFromAnchor != null
+      ? favorableMovePercentFromAnchor - activeTtpLevel.trailPercent
+      : null;
+  const fallbackTtpTriggerPercentFromLivePrice =
     activeTtpLevel != null && favorableMovePercentFromLivePrice != null
       ? favorableMovePercentFromLivePrice - activeTtpLevel.trailPercent
       : null;
@@ -211,23 +253,42 @@ export const resolveRuntimePositionDynamicStops = (
 
   return {
     dynamicTtpStopLoss:
-      (
-        ttpTriggerPercent != null ||
-        fallbackTtpTriggerPercent != null ||
-        stickyFallbackTtpTriggerPercent != null
-      )
+      ttpTriggerPercent != null
         ? computePriceFromPnlFraction({
             side: positionSide,
             entryPrice: stateEntryPrice,
             quantity,
             leverage: effectiveLeverage,
             marginUsed,
-            pnlFraction:
-              ttpTriggerPercent ??
-              fallbackTtpTriggerPercent ??
-              stickyFallbackTtpTriggerPercent ??
-              0,
+            pnlFraction: ttpTriggerPercent,
           })
+        : fallbackTtpTriggerPercentFromAnchor != null
+          ? computePriceFromPnlFraction({
+              side: positionSide,
+              entryPrice: stateEntryPrice,
+              quantity,
+              leverage: effectiveLeverage,
+              marginUsed,
+              pnlFraction: fallbackTtpTriggerPercentFromAnchor,
+            })
+          : fallbackTtpTriggerPercentFromLivePrice != null
+            ? computePriceFromPnlFraction({
+                side: positionSide,
+                entryPrice: stateEntryPrice,
+                quantity,
+                leverage: effectiveLeverage,
+                marginUsed,
+                pnlFraction: fallbackTtpTriggerPercentFromLivePrice,
+              })
+          : stickyFallbackTtpTriggerPercent != null
+            ? computePriceFromPnlFraction({
+                side: positionSide,
+                entryPrice: stateEntryPrice,
+                quantity,
+                leverage: effectiveLeverage,
+                marginUsed,
+                pnlFraction: stickyFallbackTtpTriggerPercent,
+              })
         : null,
     dynamicTslStopLoss,
     liveUnrealizedPnl,

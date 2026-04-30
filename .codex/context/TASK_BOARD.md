@@ -17,6 +17,10 @@ Last updated: 2026-04-30
 
 ## READY
 
+- [x] `V1SAFE-15 fix(api-runtime-serialization): keep fallback dynamic TTP display monotonic from canonical trailing anchor`
+  - Scope: stop the live dashboard `Positions` table from lowering displayed `TTP` during a pullback just because runtime serialization still derives fallback `TTP` from current favorable move instead of the already achieved trailing anchor.
+  - 2026-04-30: Closed after confirming the drift at the serialization seam. When canonical `trailingTakeProfitHighPercent` is absent but canonical runtime anchor state already exists, runtime position serialization now derives fallback `TTP` from anchor-based `PnL fraction` instead of current favorable move, so the displayed protected floor no longer drops during a pullback. Focused validation PASS: `runtimePositionSerialization.service.test.ts`, `bots.dynamic-stop-operator-truth.e2e.test.ts`, API typecheck, repository guardrails.
+
 - [x] `V1SAFE-14 fix(api+web+runtime+backtest-tsl): restore advanced TSL as negative-start plus positive-step semantics`
   - Scope: stop the advanced strategy editor and strategy validation pipeline from treating `TSL` like a profit-side trailing retrace capped by the activation threshold, because that blocks the intended operator contract `percent=-20 / arm=10` and desynchronizes `LIVE`, `PAPER`, and `BACKTEST`.
   - 2026-04-30: Closed after direct operator repro showed the repository had hardened the wrong `TSL` contract. Web validation and form sanitization now accept negative `TSL start` plus positive `step`, API strategy validation enforces the same rule, runtime strategy parsing no longer drops those levels as invalid, and runtime/backtest management-input builders now align on loss-side `trailingLoss` semantics instead of misclassifying the config as profit-side trailing-stop levels. Validation PASS: focused web `StrategyForm` + `StrategyForm.map`, focused API `strategies.e2e` + `runtimeStrategyConfigParser` + `runtimeBacktestParserParity`, focused runtime `positionManagement` + `runtimePositionAutomation`, API/web typecheck, repository guardrails.

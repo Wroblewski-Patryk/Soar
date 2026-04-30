@@ -78,7 +78,12 @@ describe('runtimePositionSerialization', () => {
       unrealizedPnl: null,
       marketPrice: 106,
       stateEntryPrice: 100,
-      runtimeState: null,
+      runtimeState: {
+        averageEntryPrice: 100,
+        quantity: 1,
+        currentAdds: 0,
+        trailingAnchorPrice: 106,
+      },
       trailingTakeProfitLevels: [{ armPercent: 0.04, trailPercent: 0.01 }],
       trailingStopLevels: [],
       allowStrategyProtectionFallback: true,
@@ -86,6 +91,29 @@ describe('runtimePositionSerialization', () => {
 
     expect(result.dynamicTtpStopLoss).toBeCloseTo(105.5, 8);
     expect(result.dynamicTslStopLoss).toBeNull();
+  });
+
+  it('keeps fallback dynamic TTP stop monotonic on pullback when anchor already moved higher', () => {
+    const result = resolveRuntimePositionDynamicStops({
+      positionSide: 'LONG',
+      entryPrice: 100,
+      quantity: 1,
+      leverage: 2,
+      unrealizedPnl: null,
+      marketPrice: 105,
+      stateEntryPrice: 100,
+      runtimeState: {
+        averageEntryPrice: 100,
+        quantity: 1,
+        currentAdds: 0,
+        trailingAnchorPrice: 106,
+      },
+      trailingTakeProfitLevels: [{ armPercent: 0.04, trailPercent: 0.01 }],
+      trailingStopLevels: [],
+      allowStrategyProtectionFallback: true,
+    });
+
+    expect(result.dynamicTtpStopLoss).toBeCloseTo(105.5, 8);
   });
 
   it('keeps dynamic TTP stop visible after pullback when trailing loss limit proves the trail was already armed', () => {
