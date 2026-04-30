@@ -94,6 +94,8 @@ describe('Bots runtime pnl parity contract', () => {
         quantity: 1,
         leverage: 10,
         marginUsed: 25,
+        unrealizedPnl: -8,
+        lastExchangeSyncAt: new Date('2026-04-29T10:05:00.000Z'),
         openedAt: new Date('2026-04-29T10:01:00.000Z'),
       },
     });
@@ -138,9 +140,25 @@ describe('Bots runtime pnl parity contract', () => {
       expect.objectContaining({
         symbol: 'ETHUSDT',
         marginUsed: 25,
-        unrealizedPnl: -5,
-        unrealizedPnlPercent: -20,
+        markPrice: 108,
+        unrealizedPnl: -8,
+        unrealizedPnlPercent: -32,
       })
+    );
+
+    const symbolStatsRes = await owner.get(
+      `/dashboard/bots/${bot.id}/runtime-sessions/${session.id}/symbol-stats`
+    );
+
+    expect(symbolStatsRes.status).toBe(200);
+    expect(symbolStatsRes.body.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          symbol: 'ETHUSDT',
+          lastPrice: 108,
+          unrealizedPnl: -8,
+        }),
+      ])
     );
   });
 });

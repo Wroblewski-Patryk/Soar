@@ -1,3 +1,5 @@
+import { resolvePreferredRuntimeOrExchangeSyncedPrice } from './runtimeExchangeSyncedPositionPrice';
+
 export const buildLatestTradeAtBySymbol = (
   rows: Array<{ symbol: string; _max: { executedAt: Date | null } }>
 ) => new Map(rows.map((row) => [row.symbol, row._max.executedAt ?? null]));
@@ -35,21 +37,40 @@ export const buildConfiguredStrategyBySymbol = (params: {
 
 type RuntimeOpenPosition = {
   symbol: string;
+  origin: string;
   side: 'LONG' | 'SHORT';
+  status: string;
   entryPrice: number;
   quantity: number;
+  unrealizedPnl: number | null;
+  lastExchangeSyncAt: Date | null;
 };
 
 export const buildOpenPositionSymbolMetrics = (params: {
   openPositions: RuntimeOpenPosition[];
   lastPriceBySymbol: Map<string, number | null>;
+  lastPriceObservedAtBySymbol?: Map<string, number | null>;
 }) => {
   const openPositionCountBySymbol = new Map<string, number>();
   const openPositionQtyBySymbol = new Map<string, number>();
   const unrealizedPnlBySymbol = new Map<string, number>();
 
   for (const position of params.openPositions) {
-    const lastPrice = params.lastPriceBySymbol.get(position.symbol);
+    const lastPrice = resolvePreferredRuntimeOrExchangeSyncedPrice({
+      origin: position.origin,
+      status: position.status,
+      side: position.side,
+      entryPrice: position.entryPrice,
+      quantity: position.quantity,
+      unrealizedPnl: position.unrealizedPnl,
+      lastExchangeSyncAt: position.lastExchangeSyncAt,
+      runtimePriceCandidates: [
+        {
+          price: params.lastPriceBySymbol.get(position.symbol),
+          observedAtMs: params.lastPriceObservedAtBySymbol?.get(position.symbol) ?? null,
+        },
+      ],
+    });
     if (typeof lastPrice === 'number' && Number.isFinite(lastPrice)) {
       const sideMultiplier = position.side === 'LONG' ? 1 : -1;
       const pnl = (lastPrice - position.entryPrice) * position.quantity * sideMultiplier;

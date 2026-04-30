@@ -35,7 +35,7 @@ Last updated: 2026-04-30
 
 - [ ] `V1ROE-04 qa(prod-manual): verify exchange-aligned LIVE PnL truth and DCA non-trigger on the protected DOGEUSDT flow`
   - Scope: rerun the protected production/operator checks on the reported `DOGEUSDT` lifecycle after deploy, proving that `LIVE` percent truth matches the exchange closely enough for operator use and that `DCA` stays idle when the exchange-aligned drawdown remains above the configured threshold boundary (for example about `-19%` versus `DCA=-25%`).
-  - 2026-04-30 status: READY. Code-level parity is now aligned locally, but the exact affected production flow still needs authenticated verification through the protected Soar API and operator UI before the drift can be called closed end to end. This verification now also needs to confirm that isolated-wallet margin precedence is the final missing delta, not only serializer freshness.
+  - 2026-04-30 status: READY. Fresh protected diagnostics narrowed the remaining gap further: reconciliation and direct exchange snapshot were already fresh, but runtime session `positions` and `symbol-stats` could still recompute operator truth from an older session/ticker price than the latest exchange sync. Local code now prefers fresher exchange-synced lifecycle truth when runtime cache is older, and focused API e2e locks that seam. Remaining closure is post-deploy protected verification on the affected `DOGEUSDT` flow.
 
 - [x] `V1REOPEN-00 analysis(queue): publish same-symbol LIVE close/reopen hardening packet`
   - Scope: freeze the newly reported `LIVE close -> reopen same symbol` regression into one exact execution packet covering stale lifecycle visibility, wrong `PnL%` basis, and stale `TTP` continuity risk.

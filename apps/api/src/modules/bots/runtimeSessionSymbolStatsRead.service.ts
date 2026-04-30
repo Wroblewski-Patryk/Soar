@@ -33,6 +33,7 @@ import {
   listMarketCandles,
   listStrategiesByIds,
 } from './botsRuntimeRead.repository';
+import { resolvePreferredRuntimeOrExchangeSyncedPrice } from './runtimeExchangeSyncedPositionPrice';
 
 const resolveFallbackDerivatives = async (params: {
   marketType: 'FUTURES' | 'SPOT';
@@ -261,14 +262,60 @@ export const listBotRuntimeSessionSymbolStats = async (
       })
     : [[], [], []];
 
-  const lastPriceBySymbol = new Map(items.map((item) => [item.symbol, item.lastPrice]));
+  const lastPriceBySymbol = new Map<string, number | null>(
+    items.map((item) => [item.symbol, item.lastPrice])
+  );
+  const lastPriceObservedAtBySymbol = new Map<string, number | null>(
+    items.map((item) => [item.symbol, item.snapshotAt?.getTime() ?? null])
+  );
   for (const symbol of symbols) {
     const ticker = getRuntimeTicker(symbol, {
       exchange: botExchange,
       marketType: botMarketType,
     });
     if (ticker && Number.isFinite(ticker.lastPrice)) {
-      lastPriceBySymbol.set(symbol, ticker.lastPrice);
+      const tickerObservedAtMs =
+        typeof ticker.eventTime === 'number' && Number.isFinite(ticker.eventTime)
+          ? ticker.eventTime
+          : null;
+      const currentObservedAtMs = lastPriceObservedAtBySymbol.get(symbol) ?? null;
+      if (
+        currentObservedAtMs == null ||
+        (tickerObservedAtMs != null && tickerObservedAtMs >= currentObservedAtMs)
+      ) {
+        lastPriceBySymbol.set(symbol, ticker.lastPrice);
+        lastPriceObservedAtBySymbol.set(symbol, tickerObservedAtMs);
+      }
+    }
+  }
+  for (const position of openPositions) {
+    const preferredLastPrice = resolvePreferredRuntimeOrExchangeSyncedPrice({
+      origin: position.origin,
+      status: position.status,
+      side: position.side,
+      entryPrice: position.entryPrice,
+      quantity: position.quantity,
+      unrealizedPnl: position.unrealizedPnl,
+      lastExchangeSyncAt: position.lastExchangeSyncAt,
+      runtimePriceCandidates: [
+        {
+          price: lastPriceBySymbol.get(position.symbol) ?? null,
+          observedAtMs: lastPriceObservedAtBySymbol.get(position.symbol) ?? null,
+        },
+      ],
+    });
+    if (preferredLastPrice != null) {
+      const currentObservedAtMs = lastPriceObservedAtBySymbol.get(position.symbol) ?? null;
+      const exchangeObservedAtMs = position.lastExchangeSyncAt?.getTime() ?? null;
+      lastPriceBySymbol.set(position.symbol, preferredLastPrice);
+      lastPriceObservedAtBySymbol.set(
+        position.symbol,
+        currentObservedAtMs == null
+          ? exchangeObservedAtMs
+          : exchangeObservedAtMs == null
+            ? currentObservedAtMs
+            : Math.max(currentObservedAtMs, exchangeObservedAtMs)
+      );
     }
   }
   const latestTradeAtBySymbol = buildLatestTradeAtBySymbol(latestTradeBySymbolRows);
@@ -427,6 +474,7 @@ export const listBotRuntimeSessionSymbolStats = async (
     buildOpenPositionSymbolMetrics({
       openPositions,
       lastPriceBySymbol,
+      lastPriceObservedAtBySymbol,
     });
   const statBySymbol = new Map(items.map((item) => [item.symbol, item]));
   const readModel = composeRuntimeSymbolStatsReadModel({

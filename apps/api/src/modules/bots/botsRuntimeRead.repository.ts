@@ -121,9 +121,13 @@ export const getRuntimeSymbolLiveRows = async (params: {
       },
       select: {
         symbol: true,
+        origin: true,
         side: true,
+        status: true,
         entryPrice: true,
         quantity: true,
+        unrealizedPnl: true,
+        lastExchangeSyncAt: true,
       },
     }),
     prisma.trade.groupBy({

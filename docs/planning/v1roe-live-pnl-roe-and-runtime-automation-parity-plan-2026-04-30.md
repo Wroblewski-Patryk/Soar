@@ -256,3 +256,32 @@ Still open:
 - fresh protected production verification on the affected `DOGEUSDT` flow
 - remaining `V1EXCEL-03` manual-matrix evidence for mixed-origin `LIVE`
   scenarios and restart/recovery proof
+
+### 2026-04-30 - runtime read-model freshness slice
+
+Closed in code:
+
+- authenticated production diagnostics proved one narrower residual drift after
+  `V1ROE-03`: exchange reconciliation was already persisting fresh
+  `Position.unrealizedPnl`, `marginUsed`, and `lastExchangeSyncAt`, but
+  `runtime-sessions/:sessionId/positions` and `symbol-stats` could still
+  recompute `LIVE` operator truth from an older runtime symbol-stat/ticker
+  price
+- runtime session positions now prefer fresh exchange-synced lifecycle price
+  truth for `EXCHANGE_SYNC OPEN` rows whenever runtime ticker/stat price is
+  older than `lastExchangeSyncAt`, instead of silently overwriting fresh
+  exchange-sync PnL with stale session price
+- runtime symbol-stats now reuse the same freshness rule for `lastPrice` and
+  aggregated open-position `unrealizedPnl`, so dashboard surfaces stop
+  disagreeing with exchange-synced position truth when ticker/session cache
+  lags behind reconciliation
+- focused end-to-end coverage now locks the exact production-shaped seam: a
+  newer exchange-synced position with older runtime stat price must return the
+  derived fresh mark/last price, truthful `unrealizedPnl`, and truthful
+  `unrealizedPnlPercent` from the runtime session API
+
+Still open:
+
+- fresh protected production verification on the affected `DOGEUSDT` flow
+- remaining `V1EXCEL-03` manual-matrix evidence for mixed-origin `LIVE`
+  scenarios and restart/recovery proof

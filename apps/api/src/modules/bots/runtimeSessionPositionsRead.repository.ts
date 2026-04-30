@@ -57,6 +57,7 @@ export const listRuntimeManagedPositions = async (params: {
       quantity: true,
       leverage: true,
       marginUsed: true,
+      lastExchangeSyncAt: true,
       closeReason: true,
       closeInitiator: true,
       stopLoss: true,
@@ -115,6 +116,7 @@ export const listRuntimePositionLastPrices = async (where: Prisma.BotRuntimeSymb
     select: {
       symbol: true,
       lastPrice: true,
+      snapshotAt: true,
     },
   });
 

@@ -39,6 +39,7 @@ import {
 } from './runtimeSessionPositionsRead.repository';
 import { resolveInheritedRuntimeExecutionContext } from '../engine/runtimeBotExecutionContext';
 import { resolveModeledMarginUsed, resolvePositionPnlFraction } from '../engine/positionPnlSemantics';
+import { resolvePreferredRuntimeOrExchangeSyncedPrice } from './runtimeExchangeSyncedPositionPrice';
 
 type RuntimeTakeoverStatus = 'OWNED_AND_MANAGED' | 'UNOWNED' | 'AMBIGUOUS' | 'MANUAL_ONLY';
 
@@ -368,16 +369,47 @@ export const listBotRuntimeSessionPositions = async (
     tradesByPosition.set(trade.positionId, bucket);
   }
 
-  const lastPriceBySymbol = new Map(lastSymbolPrices.map((row) => [row.symbol, row.lastPrice]));
+  const runtimeStatPriceBySymbol = new Map<
+    string,
+    {
+      price: number | null;
+      observedAtMs: number | null;
+    }
+  >(
+    lastSymbolPrices.map((row) => [
+      row.symbol,
+      {
+        price: row.lastPrice,
+        observedAtMs: row.snapshotAt.getTime(),
+      },
+    ])
+  );
   for (const symbol of symbols) {
     const ticker = getRuntimeTicker(symbol, {
       exchange: botExchange,
       marketType: botMarketType,
     });
     if (ticker && Number.isFinite(ticker.lastPrice)) {
-      lastPriceBySymbol.set(symbol, ticker.lastPrice);
+      const current = runtimeStatPriceBySymbol.get(symbol);
+      const candidate = {
+        price: ticker.lastPrice,
+        observedAtMs:
+          typeof ticker.eventTime === 'number' && Number.isFinite(ticker.eventTime)
+            ? ticker.eventTime
+            : null,
+      };
+      if (
+        !current ||
+        (candidate.observedAtMs ?? Number.NEGATIVE_INFINITY) >=
+          (current.observedAtMs ?? Number.NEGATIVE_INFINITY)
+      ) {
+        runtimeStatPriceBySymbol.set(symbol, candidate);
+      }
     }
   }
+  const lastPriceBySymbol = new Map(
+    [...runtimeStatPriceBySymbol.entries()].map(([symbol, candidate]) => [symbol, candidate.price])
+  );
   const missingPriceSymbols = symbols.filter((symbol) => {
     const current = lastPriceBySymbol.get(symbol);
     return !Number.isFinite(current) || (current as number) <= 0;
@@ -427,7 +459,21 @@ export const listBotRuntimeSessionPositions = async (
         : [];
     const dcaExecutedLevels = resolveDcaExecutedLevels(dcaCount, dcaPlannedLevels);
 
-    const marketPrice = lastPriceBySymbol.get(position.symbol);
+    const marketPrice = resolvePreferredRuntimeOrExchangeSyncedPrice({
+      origin: position.origin,
+      status: position.status,
+      side: position.side,
+      entryPrice: position.entryPrice,
+      quantity: position.quantity,
+      unrealizedPnl: position.unrealizedPnl ?? null,
+      lastExchangeSyncAt: position.lastExchangeSyncAt,
+      runtimePriceCandidates: [
+        runtimeStatPriceBySymbol.get(position.symbol) ?? {
+          price: null,
+          observedAtMs: null,
+        },
+      ],
+    });
     const runtimeState =
       runtimePositionAutomationService.getPositionStateSnapshot(position.id) ??
       persistedRuntimeStatesByPositionId.get(position.id) ??
