@@ -93,7 +93,7 @@ export type IndicatorsProps = {
 
 
 //SECTION CLOSE
-export type Threshold = { percent: number; arm: number };
+export type Threshold = { percent: number; arm: number; clientId?: string };
 export type CloseConditions = {
     mode: "basic" | "advanced";
     tp: number;
@@ -109,7 +109,7 @@ export type CloseProps = {
 //SECTION ADDITIONAL
 export type TimeUnit = "min" | "h" | "d" | "w";
 export type DcaMode = "basic" | "advanced";
-export type DcaLevel = { percent: number; multiplier: number };
+export type DcaLevel = { percent: number; multiplier: number; clientId?: string };
 export type MarginMode = "CROSSED" | "ISOLATED";
 
 export type AdditionalState = {

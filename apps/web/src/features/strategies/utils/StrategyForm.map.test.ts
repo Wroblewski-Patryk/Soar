@@ -52,8 +52,8 @@ describe('formToPayload', () => {
     form.additional.dcaMode = 'advanced';
     form.additional.dcaTimes = 1;
     form.additional.dcaLevels = [
-      { percent: -10, multiplier: 1 },
-      { percent: 10, multiplier: 1.5 },
+      { percent: -10, multiplier: 1, clientId: 'dca-1' },
+      { percent: 10, multiplier: 1.5, clientId: 'dca-2' },
     ];
 
     const payload = formToPayload(form);
@@ -108,7 +108,39 @@ describe('formToPayload', () => {
       },
     });
 
-    expect(form.closeConditions.ttp).toEqual([{ percent: 20, arm: 10 }]);
-    expect(form.closeConditions.tsl).toEqual([{ percent: -5, arm: 10 }]);
+    expect(form.closeConditions.ttp).toEqual([
+      expect.objectContaining({ percent: 20, arm: 10 }),
+    ]);
+    expect(form.closeConditions.tsl).toEqual([
+      expect.objectContaining({ percent: -5, arm: 10 }),
+    ]);
+  });
+
+  it('strips local client ids from close and advanced DCA payloads', () => {
+    const form = baseForm();
+    form.closeConditions.mode = 'advanced';
+    form.closeConditions.ttp = [{ percent: 20, arm: 10, clientId: 'ttp-1' }];
+    form.closeConditions.tsl = [{ percent: -5, arm: 10, clientId: 'tsl-1' }];
+    form.additional.dcaMode = 'advanced';
+    form.additional.dcaLevels = [
+      { percent: -10, multiplier: 5, clientId: 'dca-1' },
+      { percent: -20, multiplier: 10, clientId: 'dca-2' },
+    ];
+
+    const payload = formToPayload(form);
+    const close = payload.config.close as {
+      ttp: Array<Record<string, number>>;
+      tsl: Array<Record<string, number>>;
+    };
+    const additional = payload.config.additional as {
+      dcaLevels: Array<Record<string, number>>;
+    };
+
+    expect(close.ttp).toEqual([{ percent: 20, arm: 10 }]);
+    expect(close.tsl).toEqual([{ percent: -5, arm: 10 }]);
+    expect(additional.dcaLevels).toEqual([
+      { percent: -10, multiplier: 5 },
+      { percent: -20, multiplier: 10 },
+    ]);
   });
 });

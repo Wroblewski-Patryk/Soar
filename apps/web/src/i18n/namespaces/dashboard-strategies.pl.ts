@@ -56,6 +56,9 @@ export const dashboardStrategiesPl = {
       additional: "Dodatkowe ustawienia",
     },
     validationSummaryTitle: "Popraw zaznaczone pola strategii przed zapisem.",
+    reorderDrag: "Przeciagnij, aby zmienic kolejnosc",
+    reorderUp: "Wyzej",
+    reorderDown: "Nizej",
     basic: {
       title: "Podstawowa konfiguracja",
       name: "Nazwa",

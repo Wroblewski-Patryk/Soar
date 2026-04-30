@@ -56,6 +56,9 @@ export const dashboardStrategiesEn = {
       additional: "Additional settings",
     },
     validationSummaryTitle: "Please fix the highlighted strategy fields before saving.",
+    reorderDrag: "Drag to reorder",
+    reorderUp: "Move up",
+    reorderDown: "Move down",
     basic: {
       title: "Basic setup",
       name: "Name",

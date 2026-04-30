@@ -17,6 +17,10 @@ Last updated: 2026-04-30
 
 ## READY
 
+- [x] `V1SAFE-13 feature(web-strategy-form): shared sortable threshold editor for TTP, TSL, and advanced DCA`
+  - Scope: remove duplicated threshold-list UI in strategy create/edit, add reorder support for `TTP`, `TSL`, and advanced `DCA`, preserve backend payload compatibility by stripping local-only row ids before submit, and keep trailing-threshold validation behavior unchanged.
+  - 2026-04-30: Closed after introducing one shared sortable editor with drag handle plus keyboard-accessible move up/down controls, wiring stable row `clientId` handling into strategy form state, and stripping those local ids from `close` and `additional.dcaLevels` before POST/PUT payload serialization. Validation PASS: focused `StrategyForm` + `StrategyForm.map` tests, web typecheck, route-reachable i18n audit, web build, repository guardrails.
+
 - [x] `V1SAFE-12 fix(web-strategy-edit): sanitize legacy invalid trailing thresholds on strategy form load`
   - Scope: stop legacy invalid advanced `TTP/TSL` values already stored in strategy config from blocking all later edits in the strategy form, while keeping create/update validation fail-closed for newly submitted invalid thresholds.
   - 2026-04-30: Closed after the user reported that editing `TTP` still failed even with the bot disabled. Root cause: the current strategy payload still contained one legacy invalid `TSL` level (`arm=10`, `percent=-20`), so the new fail-closed validation correctly blocked submit before the user could save any unrelated `TTP` change. `dtoToForm` now sanitizes legacy invalid advanced trailing thresholds on form load, keeping only levels that satisfy the same protective-close contract already enforced by API/runtime validation. Validation PASS: focused `StrategyForm.map` tests, focused `StrategyForm` tests, web typecheck, repository guardrails.

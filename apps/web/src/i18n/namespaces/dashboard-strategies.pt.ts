@@ -56,6 +56,9 @@ export const dashboardStrategiesPt = {
       additional: "Definicoes adicionais",
     },
     validationSummaryTitle: "Corrige os campos assinalados da estrategia antes de guardar.",
+    reorderDrag: "Arrastar para reordenar",
+    reorderUp: "Subir",
+    reorderDown: "Descer",
     basic: {
       title: "Configuracao basica",
       name: "Nome",

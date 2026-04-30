@@ -16,3 +16,7 @@
 - Record approved operator patterns here when they should shape future modules.
 - When a canonical screenshot drives implementation, record any background or
   decorative fidelity rules that should be reused instead of rediscovered.
+- Strategy threshold ladders:
+  Reuse one shared two-field sortable editor for `TTP`, `TSL`, and advanced
+  `DCA` rows. Keep drag reorder available, but also expose keyboard move
+  controls so order-sensitive ladders remain editable without pointer drag.

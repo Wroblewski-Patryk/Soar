@@ -5,6 +5,12 @@ import {
   StrategyDto,
   StrategyFormState,
 } from "../types/StrategyForm.type";
+import {
+  ensureDcaLevelClientIds,
+  ensureThresholdClientIds,
+  stripDcaLevelClientIds,
+  stripThresholdClientIds,
+} from "./strategyThresholdItems";
 
 type StrategyDtoLike = StrategyDto & {
   config?: {
@@ -72,11 +78,17 @@ const sanitizeTrailingStopThresholds = (thresholds: CloseConditions["tsl"]) =>
 
 const sanitizeCloseConditions = (close?: CloseConditions): CloseConditions => {
   const normalized = close ?? { mode: "basic", tp: 3, sl: 2, ttp: [], tsl: [] };
-  if (normalized.mode !== "advanced") return normalized;
+  if (normalized.mode !== "advanced") {
+    return {
+      ...normalized,
+      ttp: ensureThresholdClientIds(normalized.ttp ?? []),
+      tsl: ensureThresholdClientIds(normalized.tsl ?? []),
+    };
+  }
   return {
     ...normalized,
-    ttp: sanitizeTrailingTakeProfitThresholds(normalized.ttp ?? []),
-    tsl: sanitizeTrailingStopThresholds(normalized.tsl ?? []),
+    ttp: ensureThresholdClientIds(sanitizeTrailingTakeProfitThresholds(normalized.ttp ?? [])),
+    tsl: ensureThresholdClientIds(sanitizeTrailingStopThresholds(normalized.tsl ?? [])),
   };
 };
 
@@ -89,11 +101,20 @@ export const dtoToForm = (s: StrategyDtoLike): StrategyFormState => ({
   walletRisk: s.walletRisk ?? 1,
   openConditions: s.config?.open ?? { direction: "both", indicatorsLong: [], indicatorsShort: [] },
   closeConditions: sanitizeCloseConditions(s.config?.close),
-  additional: { ...defaultAdditional, ...(s.config?.additional ?? {}) },
+  additional: {
+    ...defaultAdditional,
+    ...(s.config?.additional ?? {}),
+    dcaLevels: ensureDcaLevelClientIds(s.config?.additional?.dcaLevels),
+  },
 });
 
 // form -> PATCH/POST payload
 export const formToPayload = (f: StrategyFormState) => {
+  const close = {
+    ...f.closeConditions,
+    ttp: stripThresholdClientIds(ensureThresholdClientIds(f.closeConditions.ttp)),
+    tsl: stripThresholdClientIds(ensureThresholdClientIds(f.closeConditions.tsl)),
+  };
   const normalizedBasicLevel = {
     percent:
       Number.isFinite(f.additional.dcaLevels[0]?.percent) && Number(f.additional.dcaLevels[0].percent) !== 0
@@ -112,7 +133,10 @@ export const formToPayload = (f: StrategyFormState) => {
     .filter((level) => Number.isFinite(level.percent) && level.percent !== 0 && Number.isFinite(level.multiplier) && level.multiplier > 0);
 
   const additional = !f.additional.dcaEnabled
-    ? f.additional
+    ? {
+        ...f.additional,
+        dcaLevels: stripDcaLevelClientIds(ensureDcaLevelClientIds(f.additional.dcaLevels)),
+      }
     : f.additional.dcaMode === "basic"
       ? {
           ...f.additional,
@@ -133,7 +157,7 @@ export const formToPayload = (f: StrategyFormState) => {
     walletRisk: f.walletRisk,
     config: {
       open: f.openConditions,
-      close: f.closeConditions,
+      close,
       additional,
     },
   };

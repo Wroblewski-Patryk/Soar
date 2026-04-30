@@ -164,4 +164,57 @@ describe('StrategyForm', () => {
       screen.getAllByText('Trailing TTP/TSL nie moze cofana bardziej niz prog aktywacji.').length
     ).toBeGreaterThan(0);
   });
+
+  it('preserves reordered advanced DCA levels on submit', async () => {
+    window.localStorage.setItem('cryptosparrow-locale', 'pl');
+    window.history.pushState({}, '', '/dashboard/strategies/create');
+    const onSubmit = vi.fn().mockResolvedValue(undefined);
+    const { container } = await renderWithI18n(onSubmit);
+
+    fireEvent.change(screen.getByLabelText('Nazwa'), { target: { value: 'DCA reorder strat' } });
+    fireEvent.click(screen.getByRole('tab', { name: 'Dodatkowe ustawienia' }));
+
+    const advancedModeInput = container.querySelector(
+      '#strategy-dca-mode-advanced'
+    ) as HTMLInputElement | null;
+    expect(advancedModeInput).not.toBeNull();
+    fireEvent.click(advancedModeInput as HTMLInputElement);
+
+    const addLevelButton = screen.getByRole('button', { name: '+ Dodaj poziom' });
+    fireEvent.click(addLevelButton);
+    fireEvent.click(addLevelButton);
+
+    const percentInputs = () =>
+      Array.from(container.querySelectorAll('input[id^="strategy-dca-level-percent-"]')) as HTMLInputElement[];
+    const multiplierInputs = () =>
+      Array.from(container.querySelectorAll('input[id^="strategy-dca-level-multiplier-"]')) as HTMLInputElement[];
+
+    fireEvent.change(percentInputs()[0], { target: { value: '-20' } });
+    fireEvent.change(multiplierInputs()[0], { target: { value: '10' } });
+    fireEvent.change(percentInputs()[1], { target: { value: '-40' } });
+    fireEvent.change(multiplierInputs()[1], { target: { value: '20' } });
+    fireEvent.change(percentInputs()[2], { target: { value: '-10' } });
+    fireEvent.change(multiplierInputs()[2], { target: { value: '5' } });
+
+    fireEvent.click(screen.getAllByRole('button', { name: 'Wyzej' })[2]);
+    fireEvent.click(screen.getAllByRole('button', { name: 'Wyzej' })[1]);
+
+    const form = container.querySelector('form');
+    expect(form).not.toBeNull();
+    fireEvent.submit(form as HTMLFormElement);
+
+    await waitFor(() => {
+      expect(onSubmit).toHaveBeenCalledTimes(1);
+    });
+
+    const submitted = onSubmit.mock.calls[0]?.[0] as StrategyFormState;
+    expect(submitted.additional.dcaLevels.map((level) => ({
+      percent: level.percent,
+      multiplier: level.multiplier,
+    }))).toEqual([
+      { percent: -10, multiplier: 5 },
+      { percent: -20, multiplier: 10 },
+      { percent: -40, multiplier: 20 },
+    ]);
+  });
 });

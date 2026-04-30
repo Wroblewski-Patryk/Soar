@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { StrategyFormState, OpenConditions, CloseConditions, AdditionalState } from "../types/StrategyForm.type";
+import { createDcaLevel, createThreshold } from "../utils/strategyThresholdItems";
 
 const defaultState: StrategyFormState = {
     name: "",
@@ -16,15 +17,15 @@ const defaultState: StrategyFormState = {
         mode: "basic",
         tp: 3,
         sl: 2,
-        ttp: [{ percent: 5, arm: 2 }],
-        tsl: [{ percent: -2, arm: 1 }],
+        ttp: [createThreshold({ percent: 5, arm: 2 })],
+        tsl: [createThreshold({ percent: -2, arm: 1 })],
     },
     additional: {
         dcaEnabled: true,
         dcaMode: "advanced",
         dcaTimes: 1,
         dcaMultiplier: 2,
-        dcaLevels: [{ percent: -2, multiplier: 2 }],
+        dcaLevels: [createDcaLevel({ percent: -2, multiplier: 2 })],
 
         maxPositions: 1,
         maxOrders: 1,

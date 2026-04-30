@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { LuTrash2 } from "react-icons/lu";
 import { useI18n } from "@/i18n/I18nProvider";
 import {
   CompoundField,
@@ -15,8 +14,10 @@ import {
   readNumericInputValue,
   strategyNumericContracts,
 } from "../../utils/strategyNumericInput";
+import { createDcaLevel } from "../../utils/strategyThresholdItems";
+import { SortableThresholdListEditor } from "./SortableThresholdListEditor";
 
-const getPrimaryDcaLevel = (levels: DcaLevel[]): DcaLevel => levels[0] ?? { percent: -1, multiplier: 2 };
+const getPrimaryDcaLevel = (levels: DcaLevel[]): DcaLevel => levels[0] ?? createDcaLevel();
 const integerInputProps = numericInputProps(strategyNumericContracts.integer);
 const decimalInputProps = numericInputProps(strategyNumericContracts.decimal2);
 
@@ -41,6 +42,9 @@ export function Additional({ data, setData }: AdditionalProps) {
     levelPercent: t("dashboard.strategies.form.additional.levelPercent"),
     removeLevel: t("dashboard.strategies.form.additional.removeLevel"),
     addLevel: t("dashboard.strategies.form.additional.addLevel"),
+    dragLevel: t("dashboard.strategies.form.reorderDrag"),
+    moveLevelUp: t("dashboard.strategies.form.reorderUp"),
+    moveLevelDown: t("dashboard.strategies.form.reorderDown"),
   }), [t]);
   const timeUnitOptions = useMemo(
     () => [
@@ -54,14 +58,11 @@ export function Additional({ data, setData }: AdditionalProps) {
 
   const patch = (changes: Partial<typeof data>) => setData((prev) => ({ ...prev, ...changes }));
 
-  const updateLevel = (idx: number, field: keyof DcaLevel, value: number) =>
+  const setAdvancedLevels = (levels: DcaLevel[]) =>
     setData((prev) => ({
       ...prev,
-      dcaLevels: prev.dcaLevels.map((level, i) => (i === idx ? { ...level, [field]: value } : level)),
-      dcaTimes:
-        prev.dcaMode === "advanced"
-          ? prev.dcaLevels.map((level, i) => (i === idx ? { ...level, [field]: value } : level)).length
-          : prev.dcaTimes,
+      dcaLevels: levels,
+      dcaTimes: prev.dcaMode === "advanced" ? levels.length : prev.dcaTimes,
     }));
 
   const setPrimaryDcaLevel = (changes: Partial<DcaLevel>) =>
@@ -71,20 +72,6 @@ export function Additional({ data, setData }: AdditionalProps) {
       const rest = prev.dcaLevels.slice(1);
       return { ...prev, dcaLevels: [next, ...rest] };
     });
-
-  const addLevel = () =>
-    setData((prev) => ({
-      ...prev,
-      dcaLevels: [...prev.dcaLevels, { percent: -1, multiplier: 2 }],
-      dcaTimes: prev.dcaMode === "advanced" ? prev.dcaLevels.length + 1 : prev.dcaTimes,
-    }));
-
-  const removeLevel = (idx: number) =>
-    setData((prev) => ({
-      ...prev,
-      dcaLevels: prev.dcaLevels.filter((_, i) => i !== idx),
-      dcaTimes: prev.dcaMode === "advanced" ? Math.max(0, prev.dcaLevels.length - 1) : prev.dcaTimes,
-    }));
 
   const primaryLevel = getPrimaryDcaLevel(data.dcaLevels);
 
@@ -288,50 +275,20 @@ export function Additional({ data, setData }: AdditionalProps) {
                   />
                 </FormGrid>
               ) : (
-                <>
-                  <div className="space-y-3">
-                    {data.dcaLevels.map((level, idx) => (
-                      <div key={`dca-level-${idx}`} className="grid grid-cols-1 items-end gap-3 sm:grid-cols-[1fr_1fr_auto]">
-                        <NumberField
-                          id={`strategy-dca-level-percent-${idx}`}
-                          label={copy.levelPercent}
-                          step={Number(decimalInputProps.step)}
-                          inputMode={decimalInputProps.inputMode}
-                          value={level.percent}
-                          onChange={(value) => {
-                            const parsed = readNumericInputValue(value, strategyNumericContracts.decimal2);
-                            if (parsed == null) return;
-                            updateLevel(idx, "percent", parsed);
-                          }}
-                        />
-                        <NumberField
-                          id={`strategy-dca-level-multiplier-${idx}`}
-                          label={copy.multiplier}
-                          min={1}
-                          step={Number(decimalInputProps.step)}
-                          inputMode={decimalInputProps.inputMode}
-                          value={level.multiplier}
-                          onChange={(value) => {
-                            const parsed = readNumericInputValue(value, strategyNumericContracts.decimal2);
-                            if (parsed == null) return;
-                            updateLevel(idx, "multiplier", parsed);
-                          }}
-                        />
-                        <button
-                          type="button"
-                          className="btn btn-primary"
-                          onClick={() => removeLevel(idx)}
-                          title={copy.removeLevel}
-                        >
-                          <LuTrash2 className="h-4 w-4" aria-hidden />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                  <button type="button" className="btn btn-outline mt-2" onClick={addLevel}>
-                    {copy.addLevel}
-                  </button>
-                </>
+                <SortableThresholdListEditor
+                  items={data.dcaLevels}
+                  fields={[
+                    { key: "percent", label: copy.levelPercent, idPrefix: "strategy-dca-level-percent" },
+                    { key: "multiplier", label: copy.multiplier, idPrefix: "strategy-dca-level-multiplier", min: 1 },
+                  ]}
+                  addLabel={copy.addLevel}
+                  removeLabel={copy.removeLevel}
+                  moveUpLabel={copy.moveLevelUp}
+                  moveDownLabel={copy.moveLevelDown}
+                  dragLabel={copy.dragLevel}
+                  createItem={() => createDcaLevel()}
+                  onChange={setAdvancedLevels}
+                />
               )}
             </>
           ) : null}

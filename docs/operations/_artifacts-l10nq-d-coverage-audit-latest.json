@@ -1,11 +1,11 @@
 {
   "version": "1.0.0",
-  "generatedAtUtc": "2026-04-30T04:52:02.705Z",
+  "generatedAtUtc": "2026-04-30T13:46:38.994Z",
   "rootDir": ".",
   "scope": {
-    "scannedSourceFiles": 279,
+    "scannedSourceFiles": 281,
     "routePages": 37,
-    "routeReachableFiles": 266
+    "routeReachableFiles": 268
   },
   "summary": {
     "filesWithFindings": 0,
@@ -90,7 +90,7 @@
     },
     {
       "routePage": "apps/web/src/app/dashboard/backtests/[id]/page.tsx",
-      "reachableFilesCount": 91,
+      "reachableFilesCount": 92,
       "issueFilesCount": 0,
       "moduleIssueFilesCount": 0,
       "sharedIssueFilesCount": 0,
@@ -102,7 +102,7 @@
     },
     {
       "routePage": "apps/web/src/app/dashboard/backtests/create/page.tsx",
-      "reachableFilesCount": 83,
+      "reachableFilesCount": 84,
       "issueFilesCount": 0,
       "moduleIssueFilesCount": 0,
       "sharedIssueFilesCount": 0,
@@ -126,7 +126,7 @@
     },
     {
       "routePage": "apps/web/src/app/dashboard/bots/[id]/assistant/page.tsx",
-      "reachableFilesCount": 101,
+      "reachableFilesCount": 102,
       "issueFilesCount": 0,
       "moduleIssueFilesCount": 0,
       "sharedIssueFilesCount": 0,
@@ -138,7 +138,7 @@
     },
     {
       "routePage": "apps/web/src/app/dashboard/bots/[id]/edit/page.tsx",
-      "reachableFilesCount": 93,
+      "reachableFilesCount": 94,
       "issueFilesCount": 0,
       "moduleIssueFilesCount": 0,
       "sharedIssueFilesCount": 0,
@@ -162,7 +162,7 @@
     },
     {
       "routePage": "apps/web/src/app/dashboard/bots/[id]/preview/page.tsx",
-      "reachableFilesCount": 101,
+      "reachableFilesCount": 102,
       "issueFilesCount": 0,
       "moduleIssueFilesCount": 0,
       "sharedIssueFilesCount": 0,
@@ -198,7 +198,7 @@
     },
     {
       "routePage": "apps/web/src/app/dashboard/bots/create/page.tsx",
-      "reachableFilesCount": 93,
+      "reachableFilesCount": 94,
       "issueFilesCount": 0,
       "moduleIssueFilesCount": 0,
       "sharedIssueFilesCount": 0,
@@ -222,7 +222,7 @@
     },
     {
       "routePage": "apps/web/src/app/dashboard/bots/page.tsx",
-      "reachableFilesCount": 82,
+      "reachableFilesCount": 83,
       "issueFilesCount": 0,
       "moduleIssueFilesCount": 0,
       "sharedIssueFilesCount": 0,
@@ -342,7 +342,7 @@
     },
     {
       "routePage": "apps/web/src/app/dashboard/strategies/[id]/edit/page.tsx",
-      "reachableFilesCount": 95,
+      "reachableFilesCount": 97,
       "issueFilesCount": 0,
       "moduleIssueFilesCount": 0,
       "sharedIssueFilesCount": 0,
@@ -366,7 +366,7 @@
     },
     {
       "routePage": "apps/web/src/app/dashboard/strategies/create/page.tsx",
-      "reachableFilesCount": 89,
+      "reachableFilesCount": 91,
       "issueFilesCount": 0,
       "moduleIssueFilesCount": 0,
       "sharedIssueFilesCount": 0,
@@ -378,7 +378,7 @@
     },
     {
       "routePage": "apps/web/src/app/dashboard/strategies/list/page.tsx",
-      "reachableFilesCount": 81,
+      "reachableFilesCount": 82,
       "issueFilesCount": 0,
       "moduleIssueFilesCount": 0,
       "sharedIssueFilesCount": 0,
