@@ -115,6 +115,7 @@ const defaultDeps: ReconcileDeps = {
     await prisma.position.update({
       where: { id: positionId },
       data: {
+        externalId: input.externalId,
         symbol: input.symbol,
         side: input.side,
         quantity: input.quantity,
@@ -297,14 +298,25 @@ const defaultDeps: ReconcileDeps = {
     prisma.position.findMany({
       where: {
         userId,
-        botId,
-        walletId,
         status: 'OPEN',
         managementMode: 'BOT_MANAGED',
         origin: { in: ['BOT', 'USER'] },
+        OR: [
+          {
+            botId,
+            walletId,
+          },
+          {
+            botId: null,
+            walletId,
+          },
+        ],
       },
       select: {
         id: true,
+        botId: true,
+        walletId: true,
+        strategyId: true,
         symbol: true,
         side: true,
         openedAt: true,
@@ -560,6 +572,7 @@ export const reconcileExternalPositionsFromExchange = async (
 
         if (reusablePosition) {
           await deps.updateSyncedPosition(reusablePosition.id, {
+            externalId,
             symbol: normalizedSymbol,
             side,
             quantity: size,

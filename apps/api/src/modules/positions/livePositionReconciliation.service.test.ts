@@ -633,6 +633,9 @@ describe('reconcileExternalPositionsFromExchange', () => {
     const listOpenLocalManagedPositionsForOwner = vi.fn(async () => [
       {
         id: 'local-bot-pos-1',
+        botId: null,
+        walletId: 'wallet-live-dup-1',
+        strategyId: 'strategy-live-dup-1',
         symbol: 'BTCUSDT',
         side: 'LONG' as const,
         openedAt: new Date('2026-03-23T00:09:30.000Z'),
@@ -697,6 +700,7 @@ describe('reconcileExternalPositionsFromExchange', () => {
     expect(updateSyncedPosition).toHaveBeenCalledWith(
       'local-bot-pos-1',
       expect.objectContaining({
+        externalId: 'key-live-dup-1:BTCUSDT:LONG',
         symbol: 'BTCUSDT',
         side: 'LONG',
         quantity: 0.05,
@@ -710,6 +714,137 @@ describe('reconcileExternalPositionsFromExchange', () => {
       })
     );
     expect(createSyncedPosition).not.toHaveBeenCalled();
+  });
+
+  it('closes stale botless wallet-owned blockers and imports fresh exchange truth for another symbol under the same owner', async () => {
+    const updateSyncedPosition = vi.fn(async () => undefined);
+    const createSyncedPosition = vi.fn(async () => undefined);
+    const closeStaleLocalManagedPosition = vi.fn(async () => undefined);
+    const deleteRuntimePositionState = vi.fn(async () => undefined);
+    const listOpenLocalManagedPositionsForOwner = vi.fn(async () => [
+      {
+        id: 'pos-stale-bnb-botless',
+        botId: null,
+        walletId: 'wallet-live-bnb-gap-1',
+        strategyId: 'strategy-live-bnb-gap-1',
+        symbol: 'BNBUSDT',
+        side: 'SHORT' as const,
+        openedAt: new Date('2026-04-26T19:25:03.592Z'),
+      },
+    ]);
+
+    const result = await reconcileExternalPositionsFromExchange({
+      listSyncedApiKeys: vi.fn(async () => [
+        {
+          id: 'key-live-bnb-gap-1',
+          userId: 'user-live-bnb-gap-1',
+        },
+      ]),
+      resolveOwnershipIndexForUser: vi.fn(async () =>
+        new Map([
+          [
+            'key-live-bnb-gap-1:DOGEUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-live-bnb-gap-1',
+              walletId: 'wallet-live-bnb-gap-1',
+            },
+          ],
+          [
+            'key-live-bnb-gap-1:BNBUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-live-bnb-gap-1',
+              walletId: 'wallet-live-bnb-gap-1',
+            },
+          ],
+        ])
+      ),
+      fetchPositionsForApiKey: vi.fn(async () => ({
+        positions: [
+          {
+            symbol: 'DOGE/USDT:USDT',
+            side: 'short',
+            contracts: 216,
+            entryPrice: 0.1056787962963,
+            markPrice: 0.1058900062963,
+            unrealizedPnl: -0.04562136,
+            leverage: 15,
+            timestamp: '2026-04-30T02:24:51.241Z',
+          },
+          {
+            symbol: 'BNB/USDT:USDT',
+            side: 'short',
+            contracts: 0.01,
+            entryPrice: 618.46,
+            markPrice: 616.86218437,
+            unrealizedPnl: 0.01597815,
+            leverage: 15,
+            timestamp: '2026-04-30T02:33:17.223Z',
+          },
+        ],
+      })),
+      findOpenSyncedPositionByExternalId: vi.fn(async ({ externalId }) =>
+        externalId === 'key-live-bnb-gap-1:DOGEUSDT:SHORT'
+          ? {
+              id: 'pos-doge-current',
+              botId: 'bot-live-bnb-gap-1',
+              walletId: 'wallet-live-bnb-gap-1',
+              strategyId: 'strategy-live-bnb-gap-1',
+              openedAt: new Date('2026-04-30T02:24:51.241Z'),
+              managementMode: 'BOT_MANAGED' as const,
+              continuityState: 'CONFIRMED' as const,
+              missingSyncCount: 0,
+            }
+          : null
+      ),
+      resolveCanonicalBotContinuityContext: vi.fn(async () => ({
+        botId: 'bot-live-bnb-gap-1',
+        walletId: 'wallet-live-bnb-gap-1',
+        strategyId: 'strategy-live-bnb-gap-1',
+      })),
+      updateSyncedPosition,
+      createSyncedPosition,
+      listOpenSyncedPositionsForApiKey: vi.fn(async () => [
+        {
+          id: 'pos-doge-current',
+          externalId: 'key-live-bnb-gap-1:DOGEUSDT:SHORT',
+          missingSyncCount: 0,
+        },
+      ]),
+      listOpenLocalManagedPositionsForOwner,
+      closeStaleLocalManagedPosition,
+      markMissingSyncedPosition: vi.fn(async () => undefined),
+      closeStaleSyncedPosition: vi.fn(async () => undefined),
+      deleteRuntimePositionState,
+      now: () => new Date('2026-04-30T02:33:18.000Z'),
+    });
+
+    expect(result.openPositionsSeen).toBe(2);
+    expect(updateSyncedPosition).toHaveBeenCalledWith(
+      'pos-doge-current',
+      expect.objectContaining({
+        externalId: 'key-live-bnb-gap-1:DOGEUSDT:SHORT',
+        symbol: 'DOGEUSDT',
+        side: 'SHORT',
+      })
+    );
+    expect(closeStaleLocalManagedPosition).toHaveBeenCalledWith(
+      'pos-stale-bnb-botless',
+      new Date('2026-04-30T02:33:18.000Z')
+    );
+    expect(deleteRuntimePositionState).toHaveBeenCalledWith('pos-stale-bnb-botless');
+    expect(createSyncedPosition).toHaveBeenCalledWith(
+      expect.objectContaining({
+        externalId: 'key-live-bnb-gap-1:BNBUSDT:SHORT',
+        symbol: 'BNBUSDT',
+        side: 'SHORT',
+        botId: 'bot-live-bnb-gap-1',
+        walletId: 'wallet-live-bnb-gap-1',
+        strategyId: 'strategy-live-bnb-gap-1',
+        managementMode: 'BOT_MANAGED',
+      })
+    );
   });
 
   it('closes stale opposite-side synced lifecycle immediately when same symbol reopens on the other side', async () => {

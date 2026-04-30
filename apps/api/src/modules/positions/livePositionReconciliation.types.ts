@@ -49,6 +49,9 @@ export type LocalManagedLivePosition = {
   symbol: string;
   side: 'LONG' | 'SHORT';
   openedAt: Date;
+  botId?: string | null;
+  walletId?: string | null;
+  strategyId?: string | null;
 };
 
 export type OpenSyncedPositionRecord = {
@@ -114,6 +117,7 @@ export type ReconcileDeps = {
   updateSyncedPosition: (
     positionId: string,
     input: {
+      externalId: string;
       symbol: string;
       side: 'LONG' | 'SHORT';
       quantity: number;

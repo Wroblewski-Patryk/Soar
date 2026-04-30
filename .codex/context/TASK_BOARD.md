@@ -17,6 +17,10 @@ Last updated: 2026-04-30
 
 ## READY
 
+- [x] `V1IMPORT-01 fix(api-reconcile): let owned LIVE import replace or adopt botless wallet-owned local blockers`
+  - Scope: stop imported `LIVE` positions from disappearing from bot runtime surfaces when an older open local `BOT/USER` row for the same wallet + symbol still exists without `botId`, and ensure adopted local rows become fully exchange-synced instead of staying half-local.
+  - 2026-04-30: Closed after protected production verification on `BNBUSDT` proved the exchange snapshot was fresh while runtime positions still missed the symbol because a stale wallet-owned botless blocker row prevented canonical import. `livePositionReconciliation` now includes wallet-owned botless local managed rows in the same owner-candidate pool it already used for exact local reuse, so existing lifecycle-replacement logic can close stale blockers deterministically before import or adopt a fresh local row into canonical `EXCHANGE_SYNC` truth. Reused local rows now also receive canonical `externalId`, preventing half-synced adoption drift on later iterations. Validation PASS: focused `livePositionReconciliation.service.test.ts`, API typecheck, repository guardrails.
+
 - [x] `V1OWN-01 fix(api-runtime): hydrate imported owned LIVE positions into canonical runtime ownership`
   - Scope: stop runtime automation and bot-scope open-position counting from keying only on persisted `position.botId` when a `BOT_MANAGED EXCHANGE_SYNC` row is canonically owned through the external-position ownership contract.
   - 2026-04-30: Closed by reusing the canonical ownership classifier in `runtimePositionAutomation` default imported-position lookup and in `runtimeSignalLoopDefaults` bot-scope open-position counting. Imported owned rows can now execute automation with effective bot context even when the canonical row still has `botId=null`, and signal-loop bot-scope counts no longer ignore those rows. Closure evidence: `docs/operations/v1own-imported-live-runtime-ownership-closure-2026-04-30.md`.
