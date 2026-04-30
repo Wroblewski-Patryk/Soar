@@ -775,7 +775,6 @@ export default function HomeLiveWidgets() {
                 noOpenOrdersLabel={t("dashboard.home.runtime.openOrdersPlaceholder")}
                 tradesLoading={selectedTradesLoading}
                 loadingLabel={t("dashboard.home.loadWidgets")}
-                historyTradesTitle={t("dashboard.bots.monitoring.sections.historyTradesTitle")}
                 tradesRows={selectedData?.trades ?? []}
                 tradesColumns={tradesColumns}
                 filterPlaceholder={t("dashboard.home.runtime.manualOrderSymbolPlaceholder")}

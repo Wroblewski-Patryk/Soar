@@ -11,6 +11,7 @@ import {
   closeInitiatorPillClass,
   CloseInitiatorValue,
   DirectionPill,
+  tradeActorPresentation,
   tradeReasonPresentation,
   TradeActionPill,
   TradeActionReasonValue,
@@ -570,15 +571,19 @@ export const createTradesColumns = ({
   },
   {
     key: "closeInitiator",
-    label: t("dashboard.home.runtime.closeBy"),
+    label: t("dashboard.home.runtime.openedClosedBy"),
     sortable: false,
-    accessor: (row) => row.closeInitiator ?? "",
+    accessor: (row) => row.closeInitiator ?? row.origin ?? "",
     render: (row) => {
-      const initiator = row.closeInitiator as CloseInitiatorValue | null | undefined;
-      if (!initiator) return "-";
+      const presentation = tradeActorPresentation({
+        lifecycleAction: row.lifecycleAction,
+        closeInitiator: row.closeInitiator as CloseInitiatorValue | null | undefined,
+        origin: row.origin,
+      });
+      if (!presentation) return "-";
       return (
-        <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${closeInitiatorPillClass(initiator)}`}>
-          {t(closeInitiatorLabelKey(initiator))}
+        <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${presentation.className}`}>
+          {t(presentation.labelKey)}
         </span>
       );
     },

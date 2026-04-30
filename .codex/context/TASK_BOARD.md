@@ -17,6 +17,10 @@ Last updated: 2026-04-30
 
 ## READY
 
+- [x] `V1SAFE-18 fix(web-history): unify opened/closed actor truth and remove redundant history subheading`
+  - Scope: keep the backend trade-history contract unchanged, but stop leaving imported/open lifecycle rows blank in the actor column and remove the extra `History - operational trade log` caption above the table.
+  - 2026-04-30: Closed by switching the trade-history actor column to one `Opened / Closed by` presentation: close rows still use canonical `closeInitiator`, while open/imported rows infer actor from existing `origin` without inventing a second backend contract. The redundant history subheading was removed at the same time. Validation PASS: focused `runtimeUiHelpers` test, web typecheck, route-reachable i18n audit, repository guardrails.
+
 - [x] `V1SAFE-17 fix(web-history): distinguish imported OPEN lifecycle anchors from true position-lifetime closes`
   - Scope: keep the existing backend/runtime trade-history contract intact, but stop the dashboard `History` table from presenting imported `OPEN` anchor rows as if `Position lifetime` were the real close reason.
   - 2026-04-30: Closed after protected production payload inspection and code review confirmed the drift lived in the web reason badge, not in close attribution itself. The dashboard now treats `POSITION_LIFETIME + OPEN` as lifecycle-open context with dedicated copy, while true close-side `POSITION_LIFETIME` rows keep the existing timeout-close label. Validation PASS: focused `runtimeUiHelpers` test, web typecheck, route-reachable i18n audit, repository guardrails.

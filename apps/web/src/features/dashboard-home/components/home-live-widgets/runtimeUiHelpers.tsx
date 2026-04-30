@@ -27,6 +27,10 @@ export type CloseInitiatorValue =
   | "EXCHANGE"
   | "SYSTEM_REPAIR";
 
+export type TradeActorValue =
+  | CloseInitiatorValue
+  | "BACKTEST";
+
 export type PositionEditDraft = {
   position: OpenPositionWithLive;
   takeProfit: string;
@@ -183,4 +187,49 @@ export const closeInitiatorLabelKey = (value: CloseInitiatorValue): TranslationK
   if (value === "USER_EXCHANGE") return "dashboard.home.runtime.closeByUserExchange";
   if (value === "EXCHANGE") return "dashboard.home.runtime.closeByExchange";
   return "dashboard.home.runtime.closeBySystemRepair";
+};
+
+const openActorLabelKey = (value: TradeActorValue): TranslationKey => {
+  if (value === "BOT_APP") return "dashboard.home.runtime.openByBotApp";
+  if (value === "USER_APP") return "dashboard.home.runtime.openByUserApp";
+  if (value === "USER_EXCHANGE") return "dashboard.home.runtime.openByUserExchange";
+  if (value === "EXCHANGE") return "dashboard.home.runtime.openByExchange";
+  if (value === "BACKTEST") return "dashboard.home.runtime.openByBacktest";
+  return "dashboard.home.runtime.openBySystemRepair";
+};
+
+const inferOpenActorFromOrigin = (origin?: string | null): TradeActorValue | null => {
+  if (origin === "BOT") return "BOT_APP";
+  if (origin === "MANUAL" || origin === "USER") return "USER_APP";
+  if (origin === "EXCHANGE_SYNC") return "USER_EXCHANGE";
+  if (origin === "BACKTEST") return "BACKTEST";
+  return null;
+};
+
+export const tradeActorPresentation = ({
+  lifecycleAction,
+  closeInitiator,
+  origin,
+}: {
+  lifecycleAction: TradeActionValue;
+  closeInitiator?: CloseInitiatorValue | null;
+  origin?: string | null;
+}): { className: string; labelKey: TranslationKey } | null => {
+  if (lifecycleAction === "CLOSE" && closeInitiator) {
+    return {
+      className: closeInitiatorPillClass(closeInitiator),
+      labelKey: closeInitiatorLabelKey(closeInitiator),
+    };
+  }
+
+  const openActor = inferOpenActorFromOrigin(origin);
+  if (!openActor) return null;
+
+  return {
+    className:
+      openActor === "BACKTEST"
+        ? "border-base-300 bg-base-100 text-base-content/70"
+        : closeInitiatorPillClass(openActor),
+    labelKey: openActorLabelKey(openActor),
+  };
 };

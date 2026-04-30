@@ -39,7 +39,6 @@ type RuntimeDataSectionProps = {
   noOpenOrdersLabel: string;
   tradesLoading: boolean;
   loadingLabel: string;
-  historyTradesTitle: string;
   tradesRows: BotRuntimeTrade[];
   tradesColumns: TradesTableColumn[];
   filterPlaceholder: string;
@@ -143,9 +142,6 @@ export default function RuntimeDataSection(props: RuntimeDataSectionProps) {
         <section className={TAB_CONTENT_FRAME_CLASS}>
           <div className={TAB_CONTENT_INNER_CLASS}>
             <section className="space-y-2">
-              <p className="px-3 text-xs font-semibold uppercase tracking-wide opacity-65">
-                {props.historyTradesTitle}
-              </p>
               {props.tradesLoading ? (
                 <>
                   <div className="hidden md:block">

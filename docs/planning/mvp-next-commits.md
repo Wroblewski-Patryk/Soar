@@ -7,6 +7,8 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1SAFE-18 fix(web-history): show one truthful opened/closed-by actor column and remove redundant history subheading`
+  - 2026-04-30: Closed after the live-history follow-up showed one remaining operator gap: imported/open anchor rows still left the actor column empty because only close-side `closeInitiator` truth was rendered, and the extra `History - operational trade log` subheading added noise without information. The dashboard trade-history table now exposes one `Opened / Closed by` column that reuses canonical `closeInitiator` for close rows and infers open-side actor from existing `origin` for open/imported rows, while the redundant subheading is removed. Validation PASS: focused `runtimeUiHelpers` web test, web typecheck, route-reachable i18n audit, repository guardrails.
 - [x] `V1SAFE-17 fix(web-history): stop labeling imported OPEN lifecycle anchors as close-by-position-lifetime`
   - 2026-04-30: Closed after protected production and code inspection confirmed that `History` could show `Position lifetime` on imported `OPEN` lifecycle anchors, even though those rows were not true timeout closes. The backend contract intentionally reuses `POSITION_LIFETIME` for imported/open anchors, so the fix stays in the web presentation layer: trade-history badges now distinguish `POSITION_LIFETIME + OPEN` as lifecycle-open context and keep `Position lifetime` only for true close-side rows. Validation PASS: focused `runtimeUiHelpers` web test, web typecheck, route-reachable i18n audit, repository guardrails.
 - [x] `V1SAFE-16 fix(api+web-strategy-edit): clarify active-bot strategy lock and surface direct bot-settings unblock path`
