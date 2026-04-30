@@ -577,7 +577,7 @@ describe('position management', () => {
     expect(pulledBackWithinTunnel.nextState.trailingTakeProfitStepPercent).toBeCloseTo(0.05, 5);
   });
 
-  it('disarms TTP when favorable move drops below first level base floor and allows re-arming', () => {
+  it('keeps TTP armed instead of disarming below the first base floor when close is still blocked', () => {
     const levels = [{ armPercent: 0.1, trailPercent: 0.05 }];
 
     const armed = evaluatePositionManagement(
@@ -586,6 +586,13 @@ describe('position management', () => {
         currentPrice: 112,
         leverage: 1,
         trailingTakeProfitLevels: levels,
+        dca: {
+          enabled: true,
+          maxAdds: 1,
+          stepPercent: 0.1,
+          addSizeFraction: 0.5,
+          levelPercents: [0.15],
+        },
       },
       {
         averageEntryPrice: 100,
@@ -600,27 +607,21 @@ describe('position management', () => {
         currentPrice: 104,
         leverage: 1,
         trailingTakeProfitLevels: levels,
+        dca: {
+          enabled: true,
+          maxAdds: 1,
+          stepPercent: 0.1,
+          addSizeFraction: 0.5,
+          levelPercents: [0.15],
+        },
       },
       armed.nextState
     );
 
-    const rearmed = evaluatePositionManagement(
-      {
-        side: 'LONG',
-        currentPrice: 111,
-        leverage: 1,
-        trailingTakeProfitLevels: levels,
-      },
-      disarmed.nextState
-    );
-
     expect(armed.shouldClose).toBe(false);
     expect(disarmed.shouldClose).toBe(false);
-    expect(disarmed.nextState.trailingTakeProfitHighPercent).toBeUndefined();
-    expect(disarmed.nextState.trailingTakeProfitStepPercent).toBeUndefined();
-    expect(rearmed.shouldClose).toBe(false);
-    expect(rearmed.nextState.trailingTakeProfitHighPercent).toBeCloseTo(0.11, 5);
-    expect(rearmed.nextState.trailingTakeProfitStepPercent).toBeCloseTo(0.05, 5);
+    expect(disarmed.nextState.trailingTakeProfitHighPercent).toBeCloseTo(0.12, 5);
+    expect(disarmed.nextState.trailingTakeProfitStepPercent).toBeCloseTo(0.05, 5);
   });
 
   it('keeps TTP tunnel monotonic when switching to higher threshold with wider step', () => {
