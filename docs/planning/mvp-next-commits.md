@@ -7,6 +7,8 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1AUTO-01 fix(api-runtime): rebase stale imported runtime state to canonical exchange-synced basis`
+  - 2026-04-30: Closed together with the focused regression and closure pass. Imported `EXCHANGE_SYNC` runtime automation now rebases stale persisted state to canonical `quantity + entryPrice` truth before evaluating `DCA/TTP/TSL`, preventing stale `currentAdds` from suppressing valid management on a new canonical basis. Closure evidence: `docs/operations/v1auto-runtime-state-rebase-closure-2026-04-30.md`.
 - [x] `V1ROE-00 analysis(queue): publish LIVE PnL/ROE semantics and imported automation parity packet`
   - 2026-04-30: Published `docs/planning/v1roe-live-pnl-roe-and-runtime-automation-parity-plan-2026-04-30.md` plus `docs/planning/v1roe-00-analysis-task-2026-04-30.md` after protected production verification of the active `LIVE DOGEUSDT` flow. The packet freezes two distinct truths that were previously conflated: Soar's current `PnL %` is a leveraged-move-over-modeled-margin metric rather than exchange ROE, and imported/reopened `LIVE` automation still appears stale enough to miss `DCA/TTP` evaluation after reopen/import. Implementation is intentionally blocked until the user chooses whether lifecycle thresholds stay on leveraged move or migrate to exchange ROE semantics.
 - [x] `V1ROE-01 fix(api+web+runtime): align shared lifecycle PnL fraction to canonical margin basis`

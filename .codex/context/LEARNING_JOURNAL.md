@@ -47,6 +47,21 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-30 - Imported LIVE automation can stay stale even after exchange-sync price truth is fixed
+- Context: protected production verification after the `V1ROE-04` deploy showed the active imported `LIVE DOGEUSDT` row carrying fresh exchange-synced `markPrice`, `unrealizedPnl`, and `marginUsed`, yet `DCA/TTP` still looked dormant.
+- Symptom: runtime/operator reads looked much healthier on price truth, but imported `EXCHANGE_SYNC` management still behaved as if prior `currentAdds` or prior entry basis survived the new canonical lifecycle basis.
+- Root cause: the runtime engine can reuse persisted `runtimePositionStateStore` continuity on the same `positionId` even when exchange-sync has already changed the canonical imported `quantity + entryPrice` basis materially.
+- Guardrail: for imported `EXCHANGE_SYNC` positions, rebase runtime state to canonical exchange-synced basis before `DCA/TTP/TSL` evaluation whenever persisted quantity or average-entry drift is material.
+- Preferred pattern:
+```text
+1) Treat exchange-synced imported position basis as authoritative.
+2) Compare persisted runtime state against canonical position quantity and entry price.
+3) Rebase imported runtime continuity before management evaluation when the drift is material.
+4) Lock the seam with a focused regression proving stale `currentAdds` cannot suppress the next valid DCA.
+```
+- Avoid: assuming that fixing runtime/session price truth alone is enough to restore imported LIVE automation continuity.
+- Evidence: 2026-04-30 `V1AUTO-A` (`runtimePositionAutomation.service.ts`, `runtimePositionAutomation.service.test.ts`, `docs/operations/v1auto-runtime-state-rebase-closure-2026-04-30.md`).
+
 ### 2026-04-28 - Legacy DB-backed e2e suites are often more stable with unique per-test identities than destructive per-test cleanup
 - Context: the follow-up quality task after `UXSAFE-2026-04-28-A` needed the full legacy `markets` and `wallets` CRUD suites green again, not only focused `-t` regressions.
 - Symptom: broad CRUD files showed auth/session and relational-state noise when every test tried to wipe shared tables in `beforeEach`, even though the underlying domain behavior was already correct.

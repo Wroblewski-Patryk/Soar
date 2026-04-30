@@ -25,6 +25,7 @@ import {
   resolveInheritedPositionExecutionContext,
   resolveRuntimeCurrentPnlFraction,
 } from './runtimePositionAutomation.helpers';
+import { hasMaterialCanonicalBasisDrift } from './runtimePositionAutomationStateRebase';
 
 type RuntimeManagedPosition = Pick<
   Position,
@@ -843,10 +844,9 @@ export class RuntimePositionAutomationService {
       trailingAnchorPrice: position.entryPrice,
       lastDcaPrice: undefined,
     } as PositionManagementState;
-    const previousState =
-      this.positionStates.get(position.id) ??
-      (await runtimePositionStateStore.getPositionRuntimeState(position.id)) ??
-      defaultState;
+    const persistedState = this.positionStates.get(position.id) ?? (await runtimePositionStateStore.getPositionRuntimeState(position.id));
+    const stateRebasedToCanonical = hasMaterialCanonicalBasisDrift({ position, state: persistedState ?? null });
+    const previousState = stateRebasedToCanonical ? defaultState : persistedState ?? defaultState;
     const previousStateSnapshot = this.cloneState(previousState);
     const currentPnlFraction = resolveRuntimeCurrentPnlFraction({
       side: position.side,
@@ -984,13 +984,13 @@ export class RuntimePositionAutomationService {
       if (closeResult.status === 'closed') {
         await runtimePositionStateStore.deletePositionRuntimeState(position.id);
         this.positionStates.delete(position.id);
-      } else if (!this.statesEqual(previousStateSnapshot, effectiveState)) {
+      } else if (stateRebasedToCanonical || !this.statesEqual(previousStateSnapshot, effectiveState)) {
         await runtimePositionStateStore.setPositionRuntimeState(position.id, effectiveState);
       }
       return;
     }
 
-    if (!this.statesEqual(previousStateSnapshot, effectiveState)) {
+    if (stateRebasedToCanonical || !this.statesEqual(previousStateSnapshot, effectiveState)) {
       await runtimePositionStateStore.setPositionRuntimeState(position.id, effectiveState);
     }
   }

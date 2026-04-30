@@ -17,6 +17,10 @@ Last updated: 2026-04-30
 
 ## READY
 
+- [x] `V1AUTO-01 fix(api-runtime): rebase stale imported runtime state to canonical exchange-synced basis`
+  - Scope: keep imported `LIVE` automation fail-closed when the same `EXCHANGE_SYNC` row is updated in place by exchange truth but the persisted runtime state still reflects an older basis or older `currentAdds`.
+  - 2026-04-30: Closed with a focused runtime-state rebase seam in `runtimePositionAutomation`. Imported `EXCHANGE_SYNC` positions now rebase stale persisted state to canonical exchange-synced `quantity + entryPrice` truth before management evaluation, and the regression pack proves stale `currentAdds` can no longer suppress valid DCA on the new canonical basis. Closure evidence: `docs/operations/v1auto-runtime-state-rebase-closure-2026-04-30.md`.
+
 - [x] `V1ROE-00 analysis(queue): publish LIVE PnL/ROE semantics and imported automation parity packet`
   - Scope: freeze the newly confirmed production drift where operator-visible `PnL %` diverges from Binance Futures semantics while imported/reopened `LIVE` automation also appears stale enough to miss `DCA/TTP` evaluation.
   - 2026-04-30: Closed as an analysis-only slice. Published `docs/planning/v1roe-live-pnl-roe-and-runtime-automation-parity-plan-2026-04-30.md` plus `docs/planning/v1roe-00-analysis-task-2026-04-30.md` after protected production API/UI verification and code review of runtime percent + DCA semantics. Current conclusion: there is one ordinary runtime bug to fix (imported/reopened `LIVE` automation continuity) and one architecture/product decision to make explicitly (`leveraged move` versus exchange `ROE` semantics for the primary percent truth).
