@@ -39,7 +39,8 @@ export const resolveTrailingTakeProfitLevelsFromStrategyConfig = (
         Number.isFinite(item.armPercent) &&
         Number.isFinite(item.trailPercent) &&
         item.armPercent > 0 &&
-        item.trailPercent > 0
+        item.trailPercent > 0 &&
+        item.trailPercent <= item.armPercent
     )
     .sort((left, right) => left.armPercent - right.armPercent);
 };
@@ -64,7 +65,8 @@ export const resolveTrailingStopLevelsFromStrategyConfig = (
         Number.isFinite(item.armPercent) &&
         Number.isFinite(item.trailPercent) &&
         item.armPercent > 0 &&
-        item.trailPercent > 0
+        item.trailPercent > 0 &&
+        item.trailPercent <= item.armPercent
     )
     .sort((left, right) => left.armPercent - right.armPercent);
 };

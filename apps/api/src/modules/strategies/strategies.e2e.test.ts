@@ -184,6 +184,64 @@ describe('Strategies CRUD contract', () => {
     expect(importRes.body.interval).toBe(exportRes.body.strategy.interval);
   });
 
+  it('rejects invalid trailing close configuration on create', async () => {
+    const agent = await registerAndLogin('strategies-invalid-close-create@example.com');
+
+    const createRes = await agent.post('/dashboard/strategies').send({
+      ...createStrategyPayload(),
+      config: {
+        open: { direction: 'both', indicatorsLong: [], indicatorsShort: [] },
+        close: {
+          mode: 'advanced',
+          sl: 2,
+          tp: 3,
+          ttp: [],
+          tsl: [{ arm: 10, percent: -20 }],
+        },
+      },
+    });
+
+    expect(createRes.status).toBe(400);
+    expect(createRes.body.error.message).toBe('Invalid trailing close configuration');
+    expect(createRes.body.error.details).toEqual(
+      expect.objectContaining({
+        field: 'close.tsl[0]',
+        rule: 'trail_cannot_exceed_arm',
+      })
+    );
+  });
+
+  it('rejects invalid trailing close configuration on import', async () => {
+    const agent = await registerAndLogin('strategies-invalid-close-import@example.com');
+
+    const importRes = await agent.post('/dashboard/strategies/import').send({
+      formatVersion: 'strategy.v1',
+      exportedAt: new Date().toISOString(),
+      strategy: {
+        ...createStrategyPayload(),
+        config: {
+          open: { direction: 'both', indicatorsLong: [], indicatorsShort: [] },
+          close: {
+            mode: 'advanced',
+            sl: 2,
+            tp: 3,
+            ttp: [{ percent: 10, arm: 20 }],
+            tsl: [],
+          },
+        },
+      },
+    });
+
+    expect(importRes.status).toBe(400);
+    expect(importRes.body.error.message).toBe('Invalid trailing close configuration');
+    expect(importRes.body.error.details).toEqual(
+      expect.objectContaining({
+        field: 'close.ttp[0]',
+        rule: 'trail_cannot_exceed_trigger',
+      })
+    );
+  });
+
   it('rejects import when formatVersion is invalid', async () => {
     const agent = await registerAndLogin('strategies-import-invalid@example.com');
     const invalidPayload = {

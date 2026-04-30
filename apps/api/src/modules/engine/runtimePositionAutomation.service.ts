@@ -585,7 +585,7 @@ export const buildPositionManagementInput = (
       armPercent: toPercent(level.percent),
       trailPercent: toPercent(level.arm),
     }))
-    .filter((level) => level.armPercent > 0 && level.trailPercent > 0)
+    .filter((level) => level.armPercent > 0 && level.trailPercent > 0 && level.trailPercent <= level.armPercent)
     .sort((left, right) => left.armPercent - right.armPercent);
   const trailingStopLevels = (closeMode === 'advanced' ? tslConfig : [])
     .map((level) => ({
@@ -593,7 +593,7 @@ export const buildPositionManagementInput = (
       type: 'percent' as const,
       value: toPercent(level.percent),
     }))
-    .filter((level) => level.value > 0)
+    .filter((level) => level.armPercent > 0 && level.value > 0 && level.value <= level.armPercent)
     .sort((left, right) => left.armPercent - right.armPercent);
   const dcaEnabled = Boolean(additionalConfig?.dcaEnabled ?? fallback.dcaEnabled);
   const configuredMaxAdds = Math.floor(toPositive(additionalConfig?.dcaTimes, fallback.dcaMaxAdds));
@@ -641,7 +641,7 @@ export const buildPositionManagementInput = (
     stopLossPrice,
     takeProfitPrice,
     trailingTakeProfit:
-      trailingTakeProfitPercent > 0 && trailingTakeProfitArmPercent > 0
+      trailingTakeProfitPercent > 0 && trailingTakeProfitArmPercent > 0 && trailingTakeProfitPercent <= trailingTakeProfitArmPercent
         ? {
             enabled: true,
             trailPercent: trailingTakeProfitPercent,
@@ -651,7 +651,7 @@ export const buildPositionManagementInput = (
     trailingTakeProfitLevels:
       trailingTakeProfitLevels.length > 0 ? trailingTakeProfitLevels : undefined,
     trailingStop:
-      trailingStopPercent > 0
+      trailingStopPercent > 0 && toPercent(tslConfig[0]?.arm) > 0 && trailingStopPercent <= toPercent(tslConfig[0]?.arm)
         ? {
             enabled: true,
             type: 'percent',

@@ -92,6 +92,8 @@ export const dashboardStrategiesEn = {
       tsl: "Trailing Stop Loss",
       percent: "Percent (%)",
       arm: "Arm",
+      trailingThresholdValidation:
+        "Trailing TTP/TSL cannot retrace more than its activation threshold.",
       removeThreshold: "Remove threshold",
       addThreshold: "+ Add threshold",
     },

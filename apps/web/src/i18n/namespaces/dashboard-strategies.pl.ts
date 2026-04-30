@@ -92,6 +92,8 @@ export const dashboardStrategiesPl = {
       tsl: "Trailing Stop Loss",
       percent: "Procent (%)",
       arm: "Ramie",
+      trailingThresholdValidation:
+        "Trailing TTP/TSL nie moze cofana bardziej niz prog aktywacji.",
       removeThreshold: "Usun prog",
       addThreshold: "+ Dodaj prog",
     },

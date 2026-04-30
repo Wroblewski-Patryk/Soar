@@ -26,6 +26,10 @@ const handleStrategyError = (
     return sendError(res, 400, 'Invalid strategy import payload', mapped.details);
   }
 
+  if (mapped.code === STRATEGY_ERROR_CODES.invalidCloseConfig) {
+    return sendError(res, 400, 'Invalid trailing close configuration', mapped.details);
+  }
+
   return sendError(res, mapped.status, mapped.message, mapped.details);
 };
 
@@ -51,8 +55,12 @@ export const getStrategy = async (req: Request, res: Response) => {
 export const createStrategy = async (req: Request, res: Response) => {
     const userId = req.user?.id;
     if (!userId) return sendError(res, 401, 'Unauthorized');
-    const strategy = await strategyService.createStrategy(userId, req.body);
-    res.status(201).json(strategy);
+    try {
+      const strategy = await strategyService.createStrategy(userId, req.body);
+      return res.status(201).json(strategy);
+    } catch (error) {
+      return handleStrategyError(res, error);
+    }
 };
 
 // PUT /strategies/:id

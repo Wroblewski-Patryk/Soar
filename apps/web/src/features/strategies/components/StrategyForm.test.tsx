@@ -118,4 +118,50 @@ describe('StrategyForm', () => {
     expect(submitted.additional.positionLifetime).toBe(0);
     expect(submitted.additional.orderLifetime).toBe(0);
   });
+
+  it('blocks submit when advanced trailing thresholds would allow a negative protected exit', async () => {
+    window.localStorage.setItem('cryptosparrow-locale', 'pl');
+    window.history.pushState({}, '', '/dashboard/strategies/create');
+    const onSubmit = vi.fn().mockResolvedValue(undefined);
+    const { container } = await renderWithI18n(onSubmit);
+
+    fireEvent.change(screen.getByLabelText('Nazwa'), { target: { value: 'Niepoprawny TSL' } });
+    fireEvent.click(screen.getByRole('tab', { name: 'Warunki zamkniecia' }));
+    const advancedModeInput = container.querySelector(
+      '#strategy-close-mode-advanced'
+    ) as HTMLInputElement | null;
+    expect(advancedModeInput).not.toBeNull();
+    fireEvent.click(advancedModeInput as HTMLInputElement);
+    const tslPercentInput = await waitFor(() => {
+      const input = container.querySelector(
+        '#strategy-close-tsl-percent-0'
+      ) as HTMLInputElement | null;
+      expect(input).not.toBeNull();
+      return input as HTMLInputElement;
+    });
+    const tslArmInput = await waitFor(() => {
+      const input = container.querySelector(
+        '#strategy-close-tsl-arm-0'
+      ) as HTMLInputElement | null;
+      expect(input).not.toBeNull();
+      return input as HTMLInputElement;
+    });
+
+    fireEvent.change(tslPercentInput, {
+      target: { value: '-20' },
+    });
+    fireEvent.change(tslArmInput, {
+      target: { value: '10' },
+    });
+
+    const form = container.querySelector('form');
+    expect(form).not.toBeNull();
+    fireEvent.submit(form as HTMLFormElement);
+
+    expect(onSubmit).not.toHaveBeenCalled();
+    expect(screen.getByTestId('form-validation-summary')).toBeInTheDocument();
+    expect(
+      screen.getAllByText('Trailing TTP/TSL nie moze cofana bardziej niz prog aktywacji.').length
+    ).toBeGreaterThan(0);
+  });
 });

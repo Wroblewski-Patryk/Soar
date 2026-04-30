@@ -92,6 +92,8 @@ export const dashboardStrategiesPt = {
       tsl: "Trailing Stop Loss",
       percent: "Percentagem (%)",
       arm: "Arm",
+      trailingThresholdValidation:
+        "O trailing TTP/TSL nao pode recuar mais do que o seu limiar de ativacao.",
       removeThreshold: "Remover limiar",
       addThreshold: "+ Adicionar limiar",
     },

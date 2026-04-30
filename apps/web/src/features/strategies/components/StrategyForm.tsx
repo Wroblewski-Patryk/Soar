@@ -7,6 +7,7 @@ import Tabs from "@/ui/components/Tabs";
 import { focusFirstInvalidField, FormPageShell, FormValidationSummary, toValidationSummaryErrors } from "@/ui/forms";
 import { useStrategyForm } from "../hooks/useStrategyForm";
 import { StrategyFormProps } from "../types/StrategyForm.type";
+import { hasInvalidTrailingCloseThresholds } from "../utils/strategyCloseValidation";
 import { Additional } from "./StrategyFormSections/Additional";
 import { Basic } from "./StrategyFormSections/Basic";
 import { Close } from "./StrategyFormSections/Close";
@@ -41,6 +42,7 @@ export default function StrategyForm({
     validationSummaryTitle: t("dashboard.strategies.form.validationSummaryTitle"),
     nameRequiredValidation: t("dashboard.strategies.form.basic.nameRequiredValidation"),
     intervalRequiredValidation: t("dashboard.strategies.form.basic.intervalRequiredValidation"),
+    closeThresholdValidation: t("dashboard.strategies.form.close.trailingThresholdValidation"),
   }), [t]);
 
   const steps = useMemo(
@@ -53,25 +55,41 @@ export default function StrategyForm({
     [copy.steps],
   );
   const fieldErrors = useMemo(() => {
-    const errors: { name?: string; interval?: string } = {};
+    const errors: { name?: string; interval?: string; closeThresholds?: string } = {};
     if (!form.name.trim()) {
       errors.name = copy.nameRequiredValidation;
     }
     if (!form.interval.trim()) {
       errors.interval = copy.intervalRequiredValidation;
     }
+    if (hasInvalidTrailingCloseThresholds(form.closeConditions)) {
+      errors.closeThresholds = copy.closeThresholdValidation;
+    }
     return errors;
-  }, [copy.intervalRequiredValidation, copy.nameRequiredValidation, form.interval, form.name]);
+  }, [
+    copy.closeThresholdValidation,
+    copy.intervalRequiredValidation,
+    copy.nameRequiredValidation,
+    form.closeConditions,
+    form.interval,
+    form.name,
+  ]);
   const hasValidationErrors = Object.keys(fieldErrors).length > 0;
   const validationSummaryErrors = useMemo(
     () => toValidationSummaryErrors(fieldErrors),
     [fieldErrors]
   );
   const focusFirstInvalidControl = useCallback(() => {
-    focusFirstInvalidField(fieldErrors, {
+    focusFirstInvalidField(
+      {
+        name: fieldErrors.name,
+        interval: fieldErrors.interval,
+      },
+      {
       name: "strategy-name",
       interval: "strategy-interval",
-    });
+      }
+    );
   }, [fieldErrors]);
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -79,9 +97,11 @@ export default function StrategyForm({
     if (submitting) return;
     setShowValidation(true);
     if (hasValidationErrors) {
-      setCurrentStep("basic");
+      setCurrentStep(fieldErrors.closeThresholds ? "close" : "basic");
       requestAnimationFrame(() => {
-        focusFirstInvalidControl();
+        if (!fieldErrors.closeThresholds) {
+          focusFirstInvalidControl();
+        }
       });
       return;
     }

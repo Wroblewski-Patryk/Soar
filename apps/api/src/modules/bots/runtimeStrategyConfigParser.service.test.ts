@@ -35,16 +35,36 @@ describe('runtimeStrategyConfigParser.service', () => {
       close: {
         mode: 'advanced',
         tsl: [
-          { percent: -25, arm: 10 },
-          { percent: -10, arm: 5 },
+          { percent: -4, arm: 10 },
+          { percent: -2, arm: 5 },
         ],
       },
     });
 
     expect(levels).toEqual([
-      { armPercent: 0.05, trailPercent: 0.1 },
-      { armPercent: 0.1, trailPercent: 0.25 },
+      { armPercent: 0.05, trailPercent: 0.02 },
+      { armPercent: 0.1, trailPercent: 0.04 },
     ]);
+  });
+
+  it('drops trailing protection levels that would protect below breakeven on first arm', () => {
+    expect(
+      resolveTrailingTakeProfitLevelsFromStrategyConfig({
+        close: {
+          mode: 'advanced',
+          ttp: [{ percent: 10, arm: 20 }],
+        },
+      })
+    ).toEqual([]);
+
+    expect(
+      resolveTrailingStopLevelsFromStrategyConfig({
+        close: {
+          mode: 'advanced',
+          tsl: [{ percent: -20, arm: 10 }],
+        },
+      })
+    ).toEqual([]);
   });
 
   it('builds planned DCA levels for advanced and basic modes', () => {

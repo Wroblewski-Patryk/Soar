@@ -159,9 +159,10 @@ export const resolveRuntimePositionDynamicStops = (
     activeTtpLevel != null && favorableMovePercentFromLivePrice != null
       ? favorableMovePercentFromLivePrice - activeTtpLevel.trailPercent
       : null;
-  const tslTriggerPercent = hasRuntimeTslState
-    ? (runtimeState.trailingLossLimitPercent as number)
-    : null;
+  const tslTriggerPercent =
+    hasRuntimeTslState && (runtimeState.trailingLossLimitPercent as number) > 0
+      ? (runtimeState.trailingLossLimitPercent as number)
+      : null;
   const stickyFallbackTtpLevel =
     !hasRuntimeTtpState &&
     allowStrategyProtectionFallback &&

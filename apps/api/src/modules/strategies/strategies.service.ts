@@ -6,6 +6,7 @@ import {
   StrategyExportPackage,
 } from './strategies.types';
 import { strategyErrors } from './strategies.errors';
+import { validateStrategyConfig } from './strategyConfigValidation';
 
 export const getStrategies = async (userId: string) => {
     return prisma.strategy.findMany({ where: { userId } });
@@ -16,6 +17,7 @@ export const getStrategyById = async (id: string, userId: string) => {
 };
 
 export const createStrategy = async (userId: string, data: CreateStrategyDto) => {
+    validateStrategyConfig(data.config);
     return prisma.strategy.create({
       data: {
         ...data,
@@ -32,6 +34,10 @@ export const updateStrategy = async (id: string, userId: string, data: Partial<C
     const usedByActiveBot = await isStrategyUsedByActiveBot(userId, existing.id);
     if (usedByActiveBot) {
       throw strategyErrors.usedByActiveBot();
+    }
+
+    if (data.config !== undefined) {
+      validateStrategyConfig(data.config);
     }
 
     return prisma.strategy.update({
@@ -143,6 +149,7 @@ export const importStrategy = async (userId: string, payload: unknown) => {
   }
 
   const source = payload.strategy;
+  validateStrategyConfig(source.config);
   return prisma.strategy.create({
     data: {
       userId,
