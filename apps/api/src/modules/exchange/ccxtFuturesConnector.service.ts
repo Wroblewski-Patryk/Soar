@@ -139,9 +139,51 @@ export class CcxtFuturesConnector {
     await client.loadMarkets();
   }
 
+  private normalizeSymbolKey(value: string) {
+    return value
+      .trim()
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, '');
+  }
+
+  private async resolveExchangeSymbol(symbol: string) {
+    const client = await this.getOrCreateClient();
+    const marketsRaw = await client.loadMarkets();
+    const markets =
+      marketsRaw && typeof marketsRaw === 'object'
+        ? (marketsRaw as Record<string, Record<string, unknown>>)
+        : {};
+    const normalizedTarget = this.normalizeSymbolKey(symbol);
+    if (!normalizedTarget) return symbol;
+
+    const directMarket = markets[symbol];
+    if (directMarket && typeof directMarket.symbol === 'string' && directMarket.symbol.trim().length > 0) {
+      return directMarket.symbol;
+    }
+
+    for (const [marketKey, market] of Object.entries(markets)) {
+      const marketSymbol =
+        typeof market?.symbol === 'string' && market.symbol.trim().length > 0
+          ? market.symbol
+          : marketKey;
+      const marketId =
+        typeof market?.id === 'string' && market.id.trim().length > 0 ? market.id : marketKey;
+      if (
+        this.normalizeSymbolKey(marketKey) === normalizedTarget ||
+        this.normalizeSymbolKey(marketSymbol) === normalizedTarget ||
+        this.normalizeSymbolKey(marketId) === normalizedTarget
+      ) {
+        return marketSymbol;
+      }
+    }
+
+    return symbol;
+  }
+
   async fetchMarkPrice(symbol: string) {
     const client = await this.getOrCreateClient();
-    const ticker = await client.fetchTicker(symbol);
+    const exchangeSymbol = await this.resolveExchangeSymbol(symbol);
+    const ticker = await client.fetchTicker(exchangeSymbol);
     const markPrice = ticker.last;
 
     if (typeof markPrice !== 'number' || Number.isNaN(markPrice)) {
@@ -206,7 +248,7 @@ export class CcxtFuturesConnector {
     amountPrecision: number | null;
   }> {
     const client = await this.getOrCreateClient();
-    await client.loadMarkets();
+    const exchangeSymbol = await this.resolveExchangeSymbol(symbol);
 
     const anyClient = client as unknown as {
       market?: (id: string) => Record<string, unknown> | undefined;
@@ -214,8 +256,8 @@ export class CcxtFuturesConnector {
     };
 
     const market =
-      (typeof anyClient.market === 'function' ? anyClient.market(symbol) : undefined) ??
-      anyClient.markets?.[symbol] ??
+      (typeof anyClient.market === 'function' ? anyClient.market(exchangeSymbol) : undefined) ??
+      anyClient.markets?.[exchangeSymbol] ??
       null;
 
     const readNumber = (value: unknown): number | null => {
@@ -301,7 +343,8 @@ export class CcxtFuturesConnector {
       throw new Error('fetchOrder is not supported by this CCXT connector');
     }
 
-    const order = await client.fetchOrder(request.orderId, request.symbol);
+    const exchangeSymbol = await this.resolveExchangeSymbol(request.symbol);
+    const order = await client.fetchOrder(request.orderId, exchangeSymbol);
     const fills = this.normalizeOrderFills(order, request.symbol, 'fetchOrder');
 
     return {
@@ -317,7 +360,8 @@ export class CcxtFuturesConnector {
       throw new Error('fetchMyTrades is not supported by this CCXT connector');
     }
 
-    const trades = await client.fetchMyTrades(request.symbol, request.since, request.limit, {
+    const exchangeSymbol = await this.resolveExchangeSymbol(request.symbol);
+    const trades = await client.fetchMyTrades(exchangeSymbol, request.since, request.limit, {
       orderId: request.orderId,
     });
 
@@ -341,7 +385,8 @@ export class CcxtFuturesConnector {
       throw new Error('fetchMyTrades is not supported by this CCXT connector');
     }
 
-    const trades = await client.fetchMyTrades(request.symbol, request.since, request.limit);
+    const exchangeSymbol = await this.resolveExchangeSymbol(request.symbol);
+    const trades = await client.fetchMyTrades(exchangeSymbol, request.since, request.limit);
 
     return trades.map((trade) => this.normalizeTradeFill(trade, request.symbol, 'fetchMyTrades'));
   }
@@ -352,7 +397,8 @@ export class CcxtFuturesConnector {
       throw new Error('fetchOpenOrders is not supported by this CCXT connector');
     }
 
-    const orders = await client.fetchOpenOrders(input?.symbol);
+    const exchangeSymbol = input?.symbol ? await this.resolveExchangeSymbol(input.symbol) : undefined;
+    const orders = await client.fetchOpenOrders(exchangeSymbol);
     return orders.map((order) => this.normalizeOpenOrder(order, input?.symbol ?? order.symbol ?? ''));
   }
 

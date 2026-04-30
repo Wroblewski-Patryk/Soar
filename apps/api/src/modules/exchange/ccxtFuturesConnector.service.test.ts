@@ -394,6 +394,52 @@ describe('CcxtFuturesConnector scaffold', () => {
     );
   });
 
+  it('resolves app-normalized futures symbols to exchange market symbols for trade history reads', async () => {
+    const client = createMockClient();
+    client.loadMarkets = vi.fn().mockResolvedValue({
+      'XRP/USDT:USDT': {
+        id: 'XRPUSDT',
+        symbol: 'XRP/USDT:USDT',
+      },
+    });
+    client.fetchMyTrades = vi.fn().mockResolvedValue([
+      {
+        id: 'trade-xrp-1',
+        order: 'order-xrp-1',
+        symbol: 'XRP/USDT:USDT',
+        side: 'sell',
+        price: 1.4,
+        amount: 6.2,
+        cost: 8.68,
+        timestamp: 1_714_000_020_000,
+        fee: { cost: 0.002, currency: 'USDT', rate: 0.00023 },
+      },
+    ]);
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'binanceusdm' },
+      vi.fn().mockResolvedValue(client)
+    );
+
+    const trades = await connector.fetchTradesForWindow({
+      symbol: 'XRPUSDT',
+      since: 1_714_000_000_000,
+      limit: 100,
+    });
+
+    expect(client.fetchMyTrades).toHaveBeenCalledWith(
+      'XRP/USDT:USDT',
+      1_714_000_000_000,
+      100
+    );
+    expect(trades).toEqual([
+      expect.objectContaining({
+        exchangeTradeId: 'trade-xrp-1',
+        symbol: 'XRP/USDT:USDT',
+        source: 'fetchMyTrades',
+      }),
+    ]);
+  });
+
   it('throws clear error when exchange client does not support order/trade fetch methods', async () => {
     const client = createMockClient();
     delete client.fetchOrder;
