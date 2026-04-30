@@ -261,6 +261,36 @@ Still open:
 
 Closed in code:
 
+- runtime session `positions` and `symbol-stats` now prefer fresher
+  exchange-synced `EXCHANGE_SYNC OPEN` price truth over older session ticker
+  cache when `lastExchangeSyncAt` is newer
+
+Still open:
+
+- fresh protected production verification on the affected `DOGEUSDT` flow
+- remaining `V1EXCEL-03` manual-matrix evidence for mixed-origin `LIVE`
+  scenarios and restart/recovery proof
+
+### 2026-04-30 - imported runtime ownership slice
+
+Closed in code:
+
+- default `runtimePositionAutomation` imported-position lookup now reuses the
+  canonical external-position ownership classifier and hydrates effective bot
+  execution context for owned imported `EXCHANGE_SYNC` rows even when
+  persisted `position.botId` is still `null`
+- bot-scope open-position counting in the runtime signal loop now includes
+  those canonically owned imported `LIVE` rows instead of relying only on
+  direct `position.botId`
+
+Still open:
+
+- fresh protected production verification on the affected `DOGEUSDT` flow
+- remaining `V1EXCEL-03` manual-matrix evidence for mixed-origin `LIVE`
+  scenarios and restart/recovery proof
+
+Closed in code:
+
 - authenticated production diagnostics proved one narrower residual drift after
   `V1ROE-03`: exchange reconciliation was already persisting fresh
   `Position.unrealizedPnl`, `marginUsed`, and `lastExchangeSyncAt`, but

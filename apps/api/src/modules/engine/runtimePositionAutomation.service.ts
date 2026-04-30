@@ -26,6 +26,7 @@ import {
   resolveRuntimeCurrentPnlFraction,
 } from './runtimePositionAutomation.helpers';
 import { hasMaterialCanonicalBasisDrift } from './runtimePositionAutomationStateRebase';
+import { hydrateImportedRuntimePositionOwnership } from './runtimeImportedPositionOwnership';
 
 type RuntimeManagedPosition = Pick<
   Position,
@@ -425,8 +426,8 @@ export const executeRuntimeDca = async (input: {
 };
 
 const defaultDeps: RuntimePositionAutomationDeps = {
-  listOpenPositionsBySymbol: (symbol) =>
-    prisma.position.findMany({
+  listOpenPositionsBySymbol: async (symbol) => {
+    const positions = await prisma.position.findMany({
       where: {
         status: 'OPEN',
         symbol,
@@ -446,6 +447,7 @@ const defaultDeps: RuntimePositionAutomationDeps = {
         botId: true,
         walletId: true,
         strategyId: true,
+        externalId: true,
         symbol: true,
         side: true,
         entryPrice: true,
@@ -484,7 +486,9 @@ const defaultDeps: RuntimePositionAutomationDeps = {
             },
           },
         },
-    }),
+    });
+    return hydrateImportedRuntimePositionOwnership(positions);
+  },
   getStrategyConfigById: async (strategyId) => {
     const strategy = await prisma.strategy.findUnique({
       where: { id: strategyId },
@@ -507,19 +511,13 @@ const defaultDeps: RuntimePositionAutomationDeps = {
       mode: input.mode,
       reason: input.reason,
     });
-    return {
-      status: result.status === 'closed' ? 'closed' : 'submitted',
-    };
+    return { status: result.status === 'closed' ? 'closed' : 'submitted' };
   },
   resolveDcaFundsExhausted: (input) => resolveRuntimeDcaFundsExhausted(input),
   recordRuntimeEvent: (params) => runtimeTelemetryService.recordRuntimeEvent(params),
   upsertRuntimeSymbolStat: (params) => runtimeTelemetryService.upsertRuntimeSymbolStat(params),
   resolveLifecyclePrice: ({ exchange, marketType, symbol, fallbackPrice }) =>
-    resolveRuntimeLifecycleMarkPrice({
-      exchange,
-      marketType,
-      symbol,
-    }) ?? fallbackPrice,
+    resolveRuntimeLifecycleMarkPrice({ exchange, marketType, symbol }) ?? fallbackPrice,
   nowMs: () => Date.now(),
 };
 
@@ -750,7 +748,6 @@ export class RuntimePositionAutomationService {
   private async getStrategyConfig(strategyId: string | null) {
     return strategyId ? this.deps.getStrategyConfigById(strategyId) : null;
   }
-
   private async processPosition(
     event: StreamTickerEvent,
     position: RuntimeManagedPosition

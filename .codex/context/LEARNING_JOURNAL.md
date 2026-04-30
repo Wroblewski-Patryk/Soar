@@ -47,6 +47,21 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-04-30 - Imported owned LIVE rows can still be skipped if runtime keys only on persisted botId
+- Context: after `V1ROE` price-truth fixes and `V1AUTO` state rebase, protected production verification still showed an imported `DOGEUSDT` row visible as bot-managed while `DCA/TTP` looked dormant.
+- Symptom: runtime read surfaces could present an imported `EXCHANGE_SYNC` row as owned/actionable, yet runtime automation and bot-scope open-position counting behaved as if no canonical bot-owned open position existed.
+- Root cause: some runtime seams were still using direct persisted `position.botId` as the only ownership authority, even though the approved external-position ownership contract already allows canonically owned imported rows to remain `botId=null` until explicit rebind.
+- Guardrail: for imported `BOT_MANAGED EXCHANGE_SYNC` rows, reuse the canonical external-position ownership classifier in runtime automation and bot-scope counting instead of assuming persisted `botId` is always present.
+- Preferred pattern:
+```text
+1) Treat the external-position ownership contract as canonical ownership authority for imported LIVE rows.
+2) Hydrate effective bot execution context for owned imported rows before runtime automation evaluates them.
+3) Include canonically owned imported rows in bot-scope open-position counting.
+4) Keep unresolved or ambiguous imported rows fail-closed.
+```
+- Avoid: mixing read-model ownership truth with runtime seams that still rely only on persisted `position.botId`.
+- Evidence: 2026-04-30 `V1OWN-01` (`runtimePositionAutomation.service.ts`, `runtimeSignalLoopDefaults.ts`, `runtimePositionAutomation.defaultDeps.test.ts`, `runtimeSignalLoopDefaults.test.ts`).
+
 ### 2026-04-30 - Imported LIVE automation can stay stale even after exchange-sync price truth is fixed
 - Context: protected production verification after the `V1ROE-04` deploy showed the active imported `LIVE DOGEUSDT` row carrying fresh exchange-synced `markPrice`, `unrealizedPnl`, and `marginUsed`, yet `DCA/TTP` still looked dormant.
 - Symptom: runtime/operator reads looked much healthier on price truth, but imported `EXCHANGE_SYNC` management still behaved as if prior `currentAdds` or prior entry basis survived the new canonical lifecycle basis.

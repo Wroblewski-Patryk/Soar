@@ -11,12 +11,38 @@ vi.mock('../bots/runtimeSymbolCatalogResolver.service', () => ({
   resolveEffectiveSymbolGroupSymbolsWithCatalog: vi.fn(async (group: { symbols: string[] }) => group.symbols),
 }));
 
-import { listActiveRuntimeBots } from './runtimeSignalLoopDefaults';
-import { listActiveRuntimeBotsRaw } from './runtimeSignalLoop.repository';
+vi.mock('../../prisma/client', () => ({
+  prisma: {
+    bot: {
+      findUnique: vi.fn(),
+    },
+    position: {
+      count: vi.fn(),
+    },
+  },
+}));
+
+vi.mock('../bots/runtimeExternalPositionOwner.service', () => ({
+  resolveExternalPositionOwnershipIndex: vi.fn(),
+  listOwnedExternalSymbolsForBot: vi.fn(),
+}));
+
+import { prisma } from '../../prisma/client';
+import {
+  listOwnedExternalSymbolsForBot,
+  resolveExternalPositionOwnershipIndex,
+} from '../bots/runtimeExternalPositionOwner.service';
+import { countOpenPositionsForBotAndSymbols, listActiveRuntimeBots } from './runtimeSignalLoopDefaults';
+import { countOpenPositionsForBotAndSymbolsRaw, listActiveRuntimeBotsRaw } from './runtimeSignalLoop.repository';
 
 describe('listActiveRuntimeBots', () => {
   beforeEach(() => {
     vi.mocked(listActiveRuntimeBotsRaw).mockReset();
+    vi.mocked(countOpenPositionsForBotAndSymbolsRaw).mockReset();
+    vi.mocked(prisma.bot.findUnique).mockReset();
+    vi.mocked(prisma.position.count).mockReset();
+    vi.mocked(resolveExternalPositionOwnershipIndex).mockReset();
+    vi.mocked(listOwnedExternalSymbolsForBot).mockReset();
   });
 
   it('excludes LIVE bots without liveOptIn from runtime topology', async () => {
@@ -171,5 +197,37 @@ describe('listActiveRuntimeBots', () => {
     const topology = await listActiveRuntimeBots();
 
     expect(topology).toEqual([]);
+  });
+
+  it('counts owned imported LIVE positions in bot scope even when canonical row botId is null', async () => {
+    vi.mocked(countOpenPositionsForBotAndSymbolsRaw).mockResolvedValue(0);
+    vi.mocked(prisma.bot.findUnique).mockResolvedValue({
+      mode: 'LIVE',
+      walletId: 'wallet-1',
+      apiKeyId: 'key-1',
+    } as any);
+    vi.mocked(resolveExternalPositionOwnershipIndex).mockResolvedValue(new Map() as any);
+    vi.mocked(listOwnedExternalSymbolsForBot).mockReturnValue(['DOGEUSDT']);
+    vi.mocked(prisma.position.count).mockResolvedValue(1);
+
+    const count = await countOpenPositionsForBotAndSymbols({
+      userId: 'user-1',
+      botId: 'bot-1',
+      symbols: ['DOGEUSDT'],
+    });
+
+    expect(count).toBe(1);
+    expect(prisma.position.count).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          userId: 'user-1',
+          botId: null,
+          origin: 'EXCHANGE_SYNC',
+          managementMode: 'BOT_MANAGED',
+          symbol: { in: ['DOGEUSDT'] },
+          externalId: { startsWith: 'key-1:' },
+        }),
+      })
+    );
   });
 });

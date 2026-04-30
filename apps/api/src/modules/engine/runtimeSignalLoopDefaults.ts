@@ -1,3 +1,4 @@
+import { prisma } from '../../prisma/client';
 import { Exchange, SignalDirection } from '@prisma/client';
 import { CandlePatternParams } from './sharedCandlePatternSeries';
 import { computeRiskBasedOrderQuantity, normalizeWalletRiskPercent } from './positionSizing';
@@ -10,6 +11,10 @@ import {
 } from './runtimeSignalLoop.repository';
 import { normalizeSymbols } from '../../lib/symbols';
 import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from '../bots/runtimeSymbolCatalogResolver.service';
+import {
+  listOwnedExternalSymbolsForBot,
+  resolveExternalPositionOwnershipIndex,
+} from '../bots/runtimeExternalPositionOwner.service';
 import { resolveInheritedRuntimeExecutionContext } from './runtimeBotExecutionContext';
 
 export type ActiveBotStrategy = {
@@ -180,11 +185,61 @@ export const countOpenPositionsForBotAndSymbols = async ({
   symbols: string[];
 }) => {
   const normalizedSymbols = normalizeSymbols(symbols);
-  return countOpenPositionsForBotAndSymbolsRaw({
+  const directCount = await countOpenPositionsForBotAndSymbolsRaw({
     userId,
     botId,
     normalizedSymbols,
   });
+
+  const botScope = await prisma.bot.findUnique({
+    where: { id: botId },
+    select: {
+      mode: true,
+      walletId: true,
+      apiKeyId: true,
+    },
+  });
+  if (
+    !botScope ||
+    botScope.mode !== 'LIVE' ||
+    !botScope.walletId ||
+    !botScope.apiKeyId
+  ) {
+    return directCount;
+  }
+
+  const ownershipIndex = await resolveExternalPositionOwnershipIndex(userId, 'LIVE');
+  const ownedExternalSymbols = listOwnedExternalSymbolsForBot(ownershipIndex, {
+    apiKeyId: botScope.apiKeyId,
+    botId,
+    walletId: botScope.walletId,
+  });
+  const scopedOwnedExternalSymbols =
+    normalizedSymbols.length > 0
+      ? ownedExternalSymbols.filter((symbol) => normalizedSymbols.includes(symbol))
+      : ownedExternalSymbols;
+  if (scopedOwnedExternalSymbols.length === 0) {
+    return directCount;
+  }
+
+  const externalCount = await prisma.position.count({
+    where: {
+      userId,
+      botId: null,
+      status: 'OPEN',
+      origin: 'EXCHANGE_SYNC',
+      managementMode: 'BOT_MANAGED',
+      externalId: {
+        startsWith: `${botScope.apiKeyId}:`,
+      },
+      symbol: {
+        in: scopedOwnedExternalSymbols,
+      },
+      OR: [{ walletId: botScope.walletId }, { walletId: null }],
+    },
+  });
+
+  return directCount + externalCount;
 };
 
 export const createRuntimeSignal = async (params: {

@@ -17,6 +17,10 @@ Last updated: 2026-04-30
 
 ## READY
 
+- [x] `V1OWN-01 fix(api-runtime): hydrate imported owned LIVE positions into canonical runtime ownership`
+  - Scope: stop runtime automation and bot-scope open-position counting from keying only on persisted `position.botId` when a `BOT_MANAGED EXCHANGE_SYNC` row is canonically owned through the external-position ownership contract.
+  - 2026-04-30: Closed by reusing the canonical ownership classifier in `runtimePositionAutomation` default imported-position lookup and in `runtimeSignalLoopDefaults` bot-scope open-position counting. Imported owned rows can now execute automation with effective bot context even when the canonical row still has `botId=null`, and signal-loop bot-scope counts no longer ignore those rows. Closure evidence: `docs/operations/v1own-imported-live-runtime-ownership-closure-2026-04-30.md`.
+
 - [x] `V1AUTO-01 fix(api-runtime): rebase stale imported runtime state to canonical exchange-synced basis`
   - Scope: keep imported `LIVE` automation fail-closed when the same `EXCHANGE_SYNC` row is updated in place by exchange truth but the persisted runtime state still reflects an older basis or older `currentAdds`.
   - 2026-04-30: Closed with a focused runtime-state rebase seam in `runtimePositionAutomation`. Imported `EXCHANGE_SYNC` positions now rebase stale persisted state to canonical exchange-synced `quantity + entryPrice` truth before management evaluation, and the regression pack proves stale `currentAdds` can no longer suppress valid DCA on the new canonical basis. Closure evidence: `docs/operations/v1auto-runtime-state-rebase-closure-2026-04-30.md`.
