@@ -82,6 +82,12 @@ const resolveAnchorBasedPnlFraction = (params: {
   });
 };
 
+const maxFiniteNumber = (left: number | null, right: number | null) => {
+  if (left == null) return right;
+  if (right == null) return left;
+  return Math.max(left, right);
+};
+
 export const resolveDcaExecutedLevels = (
   dcaCount: number,
   dcaPlannedLevels: number[]
@@ -142,7 +148,8 @@ export const resolveRuntimePositionDynamicStops = (
       ? (runtimeState.trailingTakeProfitHighPercent as number) -
         (runtimeState.trailingTakeProfitStepPercent as number)
       : null;
-  const hasRuntimeTtpState = ttpTriggerPercentFromState != null;
+  const hasActiveRuntimeTtpState =
+    ttpTriggerPercentFromState != null && ttpTriggerPercentFromState > 0;
   const hasRuntimeTslState =
     runtimeState && Number.isFinite(runtimeState.trailingLossLimitPercent);
   const liveUnrealizedPnlFromPrice =
@@ -182,31 +189,29 @@ export const resolveRuntimePositionDynamicStops = (
           marginUsed,
         })
       : favorableMovePercentFromLivePrice;
+  const favorableMovePercentForFallback =
+    maxFiniteNumber(favorableMovePercentFromAnchor, favorableMovePercentFromLivePrice);
   const ttpTriggerPercent =
     ttpTriggerPercentFromState != null && ttpTriggerPercentFromState > 0
       ? ttpTriggerPercentFromState
       : null;
   const activeTtpLevel =
-    !hasRuntimeTtpState && allowStrategyProtectionFallback
+    !hasActiveRuntimeTtpState && allowStrategyProtectionFallback
       ? selectActiveTrailingTakeProfitDisplayLevel(
-          favorableMovePercentFromAnchor,
+          favorableMovePercentForFallback,
           trailingTakeProfitLevels
         )
       : null;
-  const fallbackTtpTriggerPercentFromAnchor =
-    activeTtpLevel != null && favorableMovePercentFromAnchor != null
-      ? favorableMovePercentFromAnchor - activeTtpLevel.trailPercent
-      : null;
-  const fallbackTtpTriggerPercentFromLivePrice =
-    activeTtpLevel != null && favorableMovePercentFromLivePrice != null
-      ? favorableMovePercentFromLivePrice - activeTtpLevel.trailPercent
+  const fallbackTtpTriggerPercent =
+    activeTtpLevel != null && favorableMovePercentForFallback != null
+      ? favorableMovePercentForFallback - activeTtpLevel.trailPercent
       : null;
   const tslTriggerPercent =
     hasRuntimeTslState && (runtimeState.trailingLossLimitPercent as number) > 0
       ? (runtimeState.trailingLossLimitPercent as number)
       : null;
   const stickyFallbackTtpLevel =
-    !hasRuntimeTtpState &&
+    !hasActiveRuntimeTtpState &&
     allowStrategyProtectionFallback &&
     tslTriggerPercent != null
       ? trailingTakeProfitLevels.reduce<TrailingTakeProfitDisplayLevel | null>((active, level) => {
@@ -226,7 +231,7 @@ export const resolveRuntimePositionDynamicStops = (
         )
       : null;
   const dynamicTslStopLoss =
-    hasRuntimeTtpState
+    hasActiveRuntimeTtpState
       ? null
       : tslTriggerPercent != null
         ? computePriceFromPnlFraction({
@@ -262,23 +267,14 @@ export const resolveRuntimePositionDynamicStops = (
             marginUsed,
             pnlFraction: ttpTriggerPercent,
           })
-        : fallbackTtpTriggerPercentFromAnchor != null
+        : fallbackTtpTriggerPercent != null
           ? computePriceFromPnlFraction({
               side: positionSide,
               entryPrice: stateEntryPrice,
               quantity,
               leverage: effectiveLeverage,
               marginUsed,
-              pnlFraction: fallbackTtpTriggerPercentFromAnchor,
-            })
-          : fallbackTtpTriggerPercentFromLivePrice != null
-            ? computePriceFromPnlFraction({
-                side: positionSide,
-                entryPrice: stateEntryPrice,
-                quantity,
-                leverage: effectiveLeverage,
-                marginUsed,
-                pnlFraction: fallbackTtpTriggerPercentFromLivePrice,
+              pnlFraction: fallbackTtpTriggerPercent,
               })
           : stickyFallbackTtpTriggerPercent != null
             ? computePriceFromPnlFraction({

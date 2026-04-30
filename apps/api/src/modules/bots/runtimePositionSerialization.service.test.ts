@@ -116,6 +116,32 @@ describe('runtimePositionSerialization', () => {
     expect(result.dynamicTtpStopLoss).toBeCloseTo(105.5, 8);
   });
 
+  it('falls back to strategy-level TTP when stale runtime tracking does not yield a valid positive trigger', () => {
+    const result = resolveRuntimePositionDynamicStops({
+      positionSide: 'LONG',
+      entryPrice: 100,
+      quantity: 1,
+      leverage: 2,
+      unrealizedPnl: null,
+      marketPrice: 103,
+      stateEntryPrice: 100,
+      runtimeState: {
+        averageEntryPrice: 100,
+        quantity: 1,
+        currentAdds: 0,
+        trailingAnchorPrice: 100,
+        trailingTakeProfitHighPercent: 0.01,
+        trailingTakeProfitStepPercent: 0.02,
+      },
+      trailingTakeProfitLevels: [{ armPercent: 0.05, trailPercent: 0.01 }],
+      trailingStopLevels: [],
+      allowStrategyProtectionFallback: true,
+    });
+
+    expect(result.dynamicTtpStopLoss).toBeCloseTo(102.5, 8);
+    expect(result.dynamicTslStopLoss).toBeNull();
+  });
+
   it('keeps dynamic TTP stop visible after pullback when trailing loss limit proves the trail was already armed', () => {
     const result = resolveRuntimePositionDynamicStops({
       positionSide: 'LONG',

@@ -17,6 +17,10 @@ Last updated: 2026-04-30
 
 ## READY
 
+- [x] `V1SAFE-19 fix(api-runtime-read): keep imported LIVE fallback TTP visible when stale runtime state drifts below the armed threshold`
+  - Scope: stop dashboard `Positions` from hiding valid `TTP` on imported managed `LIVE` rows when the canonical position is already above the first arm threshold, but stale runtime state still carries an older entry basis or non-positive trailing-take-profit trigger fields.
+  - 2026-04-30: Closed after protected production verification on `XRPUSDT` proved the API itself returned `dynamicTtpStopLoss=null` despite `strategyAutomationContextResolved=true`, configured `TTP 5%/2%`, and `PnL%` above the arm threshold. Runtime position serialization now treats runtime `TTP` tracking as authoritative only when it yields a valid positive trigger, and runtime positions read now ignores stale runtime state for display when its canonical basis drifts from the current imported `EXCHANGE_SYNC` position. Validation PASS: focused runtime serialization unit pack, focused dynamic-stop operator-truth e2e, API typecheck, repository guardrails.
+
 - [x] `V1SAFE-18 fix(web-history): unify opened/closed actor truth and remove redundant history subheading`
   - Scope: keep the backend trade-history contract unchanged, but stop leaving imported/open lifecycle rows blank in the actor column and remove the extra `History - operational trade log` caption above the table.
   - 2026-04-30: Closed by switching the trade-history actor column to one `Opened / Closed by` presentation: close rows still use canonical `closeInitiator`, while open/imported rows infer actor from existing `origin` without inventing a second backend contract. The redundant history subheading was removed at the same time. Validation PASS: focused `runtimeUiHelpers` test, web typecheck, route-reachable i18n audit, repository guardrails.

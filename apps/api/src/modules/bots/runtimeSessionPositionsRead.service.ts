@@ -3,6 +3,7 @@ import { runtimePositionAutomationService } from '../engine/runtimePositionAutom
 import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
 import { resolveRuntimeCapitalSnapshot } from '../engine/runtimeCapitalContext.service';
 import { getRuntimeTicker } from '../engine/runtimeTickerStore';
+import { PositionManagementState } from '../engine/positionManagement.types';
 import { normalizeSymbol } from '../../lib/symbols';
 import { ListBotRuntimePositionsQueryDto } from './bots.types';
 import {
@@ -40,6 +41,7 @@ import {
 import { resolveInheritedRuntimeExecutionContext } from '../engine/runtimeBotExecutionContext';
 import { resolveModeledMarginUsed, resolvePositionPnlFraction } from '../engine/positionPnlSemantics';
 import { resolvePreferredRuntimeOrExchangeSyncedPrice } from './runtimeExchangeSyncedPositionPrice';
+import { hasMaterialCanonicalBasisDrift } from '../engine/runtimePositionAutomationStateRebase';
 
 type RuntimeTakeoverStatus = 'OWNED_AND_MANAGED' | 'UNOWNED' | 'AMBIGUOUS' | 'MANUAL_ONLY';
 
@@ -122,6 +124,37 @@ const resolveRuntimePositionDcaCount = (input: {
       ? Math.max(0, Math.trunc(input.runtimeStateCurrentAdds))
       : 0;
   return Math.max(inferredFromEntryLegs, inferredFromTrades, inferredFromRuntimeState);
+};
+
+const selectRuntimeDisplayState = (input: {
+  position: {
+    origin: 'BOT' | 'EXCHANGE_SYNC' | 'USER' | 'SYSTEM_REPAIR' | 'BACKTEST';
+    quantity: number;
+    entryPrice: number;
+  };
+  runtimeSnapshot: PositionManagementState | null;
+  persistedState: PositionManagementState | null;
+}) => {
+  const isCanonical = (state: PositionManagementState | null) => {
+    if (input.position.origin !== 'EXCHANGE_SYNC') return true;
+    return !hasMaterialCanonicalBasisDrift({
+      position: {
+        origin: input.position.origin,
+        quantity: input.position.quantity,
+        entryPrice: input.position.entryPrice,
+      },
+      state: state
+        ? {
+            quantity: state.quantity,
+            averageEntryPrice: state.averageEntryPrice,
+          }
+        : null,
+    });
+  };
+
+  if (input.runtimeSnapshot && isCanonical(input.runtimeSnapshot)) return input.runtimeSnapshot;
+  if (input.persistedState && isCanonical(input.persistedState)) return input.persistedState;
+  return null;
 };
 
 export const listBotRuntimeSessionPositions = async (
@@ -484,10 +517,11 @@ export const listBotRuntimeSessionPositions = async (
         },
       ],
     });
-    const runtimeState =
-      runtimePositionAutomationService.getPositionStateSnapshot(position.id) ??
-      persistedRuntimeStatesByPositionId.get(position.id) ??
-      null;
+    const runtimeState = selectRuntimeDisplayState({
+      position,
+      runtimeSnapshot: runtimePositionAutomationService.getPositionStateSnapshot(position.id),
+      persistedState: persistedRuntimeStatesByPositionId.get(position.id) ?? null,
+    });
     const explicitDcaTradeCount = positionTrades.filter(
       (trade) => trade.lifecycleAction === 'DCA'
     ).length;
