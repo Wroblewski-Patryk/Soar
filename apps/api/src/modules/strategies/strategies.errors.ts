@@ -20,8 +20,8 @@ export class StrategyDomainError extends DomainError {
 }
 
 export const strategyErrors = {
-  usedByActiveBot: () =>
-    new StrategyDomainError(STRATEGY_ERROR_CODES.usedByActiveBot, 409),
+  usedByActiveBot: (details?: Record<string, unknown>) =>
+    new StrategyDomainError(STRATEGY_ERROR_CODES.usedByActiveBot, 409, details),
   linkedRecords: () =>
     new StrategyDomainError(STRATEGY_ERROR_CODES.linkedRecords, 409),
   invalidImportPayload: () =>

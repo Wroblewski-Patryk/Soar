@@ -7,6 +7,8 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1SAFE-16 fix(api+web-strategy-edit): clarify active-bot strategy lock and surface direct bot-settings unblock path`
+  - 2026-04-30: Closed after the user reported that stopping a `LIVE` bot still left strategy edit blocked while trying to set lifecycle lifetime to `0`. The backend guard remains intentionally tied to `bot.isActive`, but strategy-lock responses now carry the blocking `botId + botName`, and the strategy edit screen now states explicitly that runtime stop is not enough and offers a direct link to the blocking bot's settings. Validation PASS: focused `strategies.e2e`, web typecheck, route-reachable i18n audit, repository guardrails.
 - [x] `V1SAFE-15 fix(api-runtime-serialization): keep fallback dynamic TTP display monotonic from canonical trailing anchor`
   - 2026-04-30: Closed after a fresh live operator observation showed a narrower remaining drift: the dashboard `TTP` value could still drop during a pullback even though `TTP/TSL` should only ratchet protection upward. The backend close path already looked healthy; the residual bug lived in runtime position serialization, where fallback `TTP` still used current favorable move. Fallback `TTP` now prefers anchor-based `PnL fraction` whenever canonical runtime anchor state exists, which keeps operator display monotonic without inventing a new display-only sticky store. Validation PASS: focused runtime serialization pack, focused dynamic-stop operator-truth e2e, API typecheck, repository guardrails.
 - [x] `V1SAFE-14 fix(api+web+runtime+backtest-tsl): restore advanced TSL as negative-start plus positive-step semantics`

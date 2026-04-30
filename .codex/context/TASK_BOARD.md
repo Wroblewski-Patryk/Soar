@@ -17,6 +17,10 @@ Last updated: 2026-04-30
 
 ## READY
 
+- [x] `V1SAFE-16 fix(api+web-strategy-edit): clarify active-bot strategy lock and surface direct bot-settings unblock path`
+  - Scope: keep the canonical `strategy edit/delete blocked while linked bot isActive=true` guard intact, but stop operators from confusing runtime stop with configuration deactivation when they need to change urgent strategy fields such as lifetime.
+  - 2026-04-30: Closed after confirming the current backend guard is intentionally keyed to `bot.isActive`, not to runtime session state. Strategy lock errors now include the blocking `botId + botName`, and the strategy edit page now explains that stopping runtime is not enough, surfaces the blocking bot identity, and links straight to that bot's settings so the operator can switch `Active` off before saving. Validation PASS: focused `strategies.e2e`, web typecheck, route-reachable i18n audit, repository guardrails.
+
 - [x] `V1SAFE-15 fix(api-runtime-serialization): keep fallback dynamic TTP display monotonic from canonical trailing anchor`
   - Scope: stop the live dashboard `Positions` table from lowering displayed `TTP` during a pullback just because runtime serialization still derives fallback `TTP` from current favorable move instead of the already achieved trailing anchor.
   - 2026-04-30: Closed after confirming the drift at the serialization seam. When canonical `trailingTakeProfitHighPercent` is absent but canonical runtime anchor state already exists, runtime position serialization now derives fallback `TTP` from anchor-based `PnL fraction` instead of current favorable move, so the displayed protected floor no longer drops during a pullback. Focused validation PASS: `runtimePositionSerialization.service.test.ts`, `bots.dynamic-stop-operator-truth.e2e.test.ts`, API typecheck, repository guardrails.

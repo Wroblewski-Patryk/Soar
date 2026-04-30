@@ -35,7 +35,10 @@ export const dashboardStrategiesEn = {
     createFailed: "Failed to create strategy",
     updated: "Strategy updated",
     activeBotTitle: "Strategy is currently used by an active bot",
-    activeBotDescription: "Disable the bot or set it inactive before editing strategy.",
+    activeBotDescription:
+      "Stopping the runtime session is not enough. Open bot settings and switch Active off before saving strategy changes.",
+    activeBotHint: "The bot that is still active in configuration is",
+    activeBotOpenBot: "Open bot settings",
     saveFailed: "Failed to save strategy",
     saving: "Saving...",
     loading: "Loading strategy",

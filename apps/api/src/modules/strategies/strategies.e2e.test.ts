@@ -319,6 +319,12 @@ describe('Strategies CRUD contract', () => {
     });
     expect(updateRes.status).toBe(409);
     expect(updateRes.body.error.message).toBe('strategy is used by active bot and cannot be edited');
+    expect(updateRes.body.error.details).toEqual(
+      expect.objectContaining({
+        botId: expect.any(String),
+        botName: expect.stringContaining('Strategy Guard Bot'),
+      })
+    );
   });
 
   it('allows strategy updates when linked bots are inactive', async () => {
@@ -361,6 +367,12 @@ describe('Strategies CRUD contract', () => {
     const deleteRes = await agent.delete(`/dashboard/strategies/${strategyId}`);
     expect(deleteRes.status).toBe(409);
     expect(deleteRes.body.error.message).toBe('strategy is used by active bot and cannot be deleted');
+    expect(deleteRes.body.error.details).toEqual(
+      expect.objectContaining({
+        botId: expect.any(String),
+        botName: expect.stringContaining('Strategy Guard Bot'),
+      })
+    );
   });
 });
 

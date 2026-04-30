@@ -35,7 +35,10 @@ export const dashboardStrategiesPl = {
     createFailed: "Blad tworzenia strategii",
     updated: "Strategia zaktualizowana",
     activeBotTitle: "Strategia jest aktualnie uzywana przez aktywnego bota",
-    activeBotDescription: "Wylacz bota lub ustaw go jako nieaktywny przed edycja strategii.",
+    activeBotDescription:
+      "Samo zatrzymanie sesji runtime nie wystarcza. Otworz ustawienia bota i wylacz przelacznik Active przed zapisem zmian strategii.",
+    activeBotHint: "Bot, ktory nadal jest aktywny w konfiguracji, to",
+    activeBotOpenBot: "Otworz ustawienia bota",
     saveFailed: "Blad zapisu strategii",
     saving: "Zapisywanie...",
     loading: "Ladowanie strategii",

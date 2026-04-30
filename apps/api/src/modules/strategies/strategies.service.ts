@@ -31,9 +31,9 @@ export const updateStrategy = async (id: string, userId: string, data: Partial<C
     const existing = await getStrategyById(id, userId);
     if (!existing) return null;
 
-    const usedByActiveBot = await isStrategyUsedByActiveBot(userId, existing.id);
-    if (usedByActiveBot) {
-      throw strategyErrors.usedByActiveBot();
+    const blockingBot = await getStrategyBlockingActiveBot(userId, existing.id);
+    if (blockingBot) {
+      throw strategyErrors.usedByActiveBot(blockingBot);
     }
 
     if (data.config !== undefined) {
@@ -49,7 +49,7 @@ export const updateStrategy = async (id: string, userId: string, data: Partial<C
     });
 };
 
-const isStrategyUsedByActiveBot = async (userId: string, strategyId: string) => {
+const getStrategyBlockingActiveBot = async (userId: string, strategyId: string) => {
     const usedByActiveCanonicalBot = await prisma.marketGroupStrategyLink.findFirst({
       where: {
         userId,
@@ -65,7 +65,14 @@ const isStrategyUsedByActiveBot = async (userId: string, strategyId: string) => 
           lifecycleStatus: 'ACTIVE',
         },
       },
-      select: { id: true },
+      select: {
+        bot: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
 
     const usedByActiveLegacyBot = await prisma.botStrategy.findFirst({
@@ -77,22 +84,31 @@ const isStrategyUsedByActiveBot = async (userId: string, strategyId: string) => 
           isActive: true,
         },
       },
-      select: { id: true },
+      select: {
+        bot: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
 
-    if (usedByActiveCanonicalBot || usedByActiveLegacyBot) {
-      return true;
-    }
-    return false;
+    const blockingBot = usedByActiveCanonicalBot?.bot ?? usedByActiveLegacyBot?.bot ?? null;
+    if (!blockingBot) return null;
+    return {
+      botId: blockingBot.id,
+      botName: blockingBot.name,
+    };
 };
 
 export const deleteStrategy = async (id: string, userId: string) => {
     const existing = await getStrategyById(id, userId);
     if (!existing) return false;
 
-    const usedByActiveBot = await isStrategyUsedByActiveBot(userId, existing.id);
-    if (usedByActiveBot) {
-      throw strategyErrors.usedByActiveBot();
+    const blockingBot = await getStrategyBlockingActiveBot(userId, existing.id);
+    if (blockingBot) {
+      throw strategyErrors.usedByActiveBot(blockingBot);
     }
 
     try {

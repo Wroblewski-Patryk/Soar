@@ -35,7 +35,10 @@ export const dashboardStrategiesPt = {
     createFailed: "Falha ao criar estrategia",
     updated: "Estrategia atualizada",
     activeBotTitle: "A estrategia esta a ser usada por um bot ativo",
-    activeBotDescription: "Desativa o bot ou marca-o inativo antes de editar.",
+    activeBotDescription:
+      "Parar a sessao runtime nao chega. Abre as definicoes do bot e desliga o interruptor Active antes de guardar as alteracoes da estrategia.",
+    activeBotHint: "O bot que continua ativo na configuracao e",
+    activeBotOpenBot: "Abrir definicoes do bot",
     saveFailed: "Falha ao guardar estrategia",
     saving: "A guardar...",
     loading: "A carregar estrategia",
