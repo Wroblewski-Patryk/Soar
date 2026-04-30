@@ -38,10 +38,19 @@ export const CcxtFetchTradesForOrderInputSchema = z.object({
   limit: z.number().int().min(1).max(1000).optional(),
 });
 
+export const CcxtFetchWalletCashflowHistoryInputSchema = z.object({
+  currency: z.string().trim().min(1).optional(),
+  since: z.number().int().nonnegative().optional(),
+  limit: z.number().int().min(1).max(1000).optional(),
+});
+
 export type CcxtFuturesConnectorConfig = z.input<typeof CcxtFuturesConnectorConfigSchema>;
 export type CcxtFuturesOrderRequest = z.input<typeof CcxtFuturesOrderRequestSchema>;
 export type CcxtFetchOrderWithFillsInput = z.input<typeof CcxtFetchOrderWithFillsInputSchema>;
 export type CcxtFetchTradesForOrderInput = z.input<typeof CcxtFetchTradesForOrderInputSchema>;
+export type CcxtFetchWalletCashflowHistoryInput = z.input<
+  typeof CcxtFetchWalletCashflowHistoryInputSchema
+>;
 
 export type CcxtFuturesOrderFill = {
   exchangeTradeId: string | null;
@@ -84,5 +93,19 @@ export type CcxtFuturesOrderResult = {
   price?: number;
   average?: number;
   fills?: CcxtFuturesOrderFill[];
+  raw: unknown;
+};
+
+export type CcxtWalletCashflowHistoryEntry = {
+  exchangeEventId: string | null;
+  direction: 'IN' | 'OUT' | 'NEUTRAL';
+  type: string | null;
+  amount: number;
+  currency: string | null;
+  feeCost: number;
+  feeCurrency: string | null;
+  occurredAt: Date | null;
+  status: string | null;
+  source: 'fetchLedger' | 'fetchDeposits' | 'fetchWithdrawals' | 'fetchTransactions';
   raw: unknown;
 };

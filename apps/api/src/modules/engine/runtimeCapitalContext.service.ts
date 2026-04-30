@@ -3,6 +3,7 @@ import { prisma } from '../../prisma/client';
 import { normalizeBaseCurrency } from '../../lib/symbols';
 import { resolveReferenceBalanceFromAllocation } from '../../lib/capitalAllocation';
 import { fetchSupportedExchangeBalanceRaw } from '../exchange/exchangeAdapterBoundary.service';
+import { recordLiveWalletBalanceSnapshot } from '../wallets/walletLedger.service';
 
 const liveBalanceCacheTtlMs = Number.parseInt(process.env.RUNTIME_LIVE_BALANCE_CACHE_TTL_MS ?? '30000', 10);
 const liveBalanceCache = new Map<string, { value: number; fetchedAt: number }>();
@@ -52,6 +53,7 @@ type RuntimeCapitalContextDeps = {
     marketType: TradeMarket;
     baseCurrency: string;
   }) => Promise<number | null>;
+  recordLiveWalletBalanceSnapshot?: typeof recordLiveWalletBalanceSnapshot;
 };
 
 const extractBalanceForCurrency = (payload: unknown, baseCurrency: string) => {
@@ -185,6 +187,7 @@ const defaultDeps: RuntimeCapitalContextDeps = {
       return null;
     }
   },
+  recordLiveWalletBalanceSnapshot,
 };
 
 export type RuntimeCapitalSource =
@@ -336,6 +339,25 @@ const resolveLiveRuntimeCapitalSnapshot = async (
     : walletScoped
       ? 0
       : accountBalance;
+
+  if (wallet && accountBalance > 0 && deps.recordLiveWalletBalanceSnapshot) {
+    await deps.recordLiveWalletBalanceSnapshot({
+      userId: input.userId,
+      walletId: wallet.id,
+      exchange: input.exchange,
+      marketType: input.marketType,
+      baseCurrency,
+      accountBalance,
+      freeBalance: accountBalance,
+      allocationMode: wallet.liveAllocationMode,
+      allocationValue: wallet.liveAllocationValue,
+      fetchedAt: new Date(input.nowMs),
+      metadata: {
+        reason: 'RUNTIME_LIVE_BALANCE_REFRESH',
+        botId: input.botId ?? null,
+      },
+    });
+  }
 
   liveBalanceCache.set(cacheKey, { value: referenceBalance, fetchedAt: input.nowMs });
 

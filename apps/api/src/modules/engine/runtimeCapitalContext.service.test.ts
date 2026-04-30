@@ -87,6 +87,7 @@ describe('runtimeCapitalContext', () => {
 
   it('applies wallet LIVE allocation rules to runtime reference balance', async () => {
     const fetchLiveBalance = vi.fn(async () => 4_000);
+    const recordLiveWalletBalanceSnapshot = vi.fn(async () => undefined);
     const reference = await resolveRuntimeReferenceBalance(
       {
         userId: 'u-wallet-live',
@@ -112,6 +113,7 @@ describe('runtimeCapitalContext', () => {
         }),
         getLiveApiKeyContext: async () => ({ apiKey: 'k', apiSecret: 's' }),
         fetchLiveBalance,
+        recordLiveWalletBalanceSnapshot,
       }),
     );
 
@@ -123,6 +125,20 @@ describe('runtimeCapitalContext', () => {
       marketType: 'FUTURES',
       baseCurrency: 'USDT',
     });
+    expect(recordLiveWalletBalanceSnapshot).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'u-wallet-live',
+        walletId: 'wallet-live',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        accountBalance: 4_000,
+        freeBalance: 4_000,
+        allocationMode: 'PERCENT',
+        allocationValue: 25,
+        fetchedAt: new Date(5_000),
+      })
+    );
   });
 
   it('keeps FIXED live allocation capped after exchange balance deposit refresh', async () => {

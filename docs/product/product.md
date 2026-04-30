@@ -207,6 +207,10 @@ Primary target is advanced users who already understand trading concepts and can
 - Cooldown after losses.
 - Additional data sources (order book, funding, open interest).
 - Advanced time-based conditions.
+- Wallet performance analytics with a LIVE cashflow ledger: initial exchange
+  balance, deposits, withdrawals, transfers, fees/funding, bot PnL, and an
+  equity chart that separates user-contributed capital from bot-generated
+  profit/loss.
 - Optional AI advisor layer.
 - Native mobile app if PWA is insufficient.
 

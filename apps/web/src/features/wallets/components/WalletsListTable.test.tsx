@@ -62,7 +62,7 @@ describe('WalletsListTable', () => {
     return { onDeleted, onCloned };
   };
 
-  it('shows inline API key column and removes Details action/row contract', async () => {
+  it('shows inline API key column and exposes preview action without Details action/row contract', async () => {
     renderTable();
 
     await waitFor(() => {
@@ -71,6 +71,8 @@ describe('WalletsListTable', () => {
     expect(screen.getByText('Connected')).toBeInTheDocument();
     expect(screen.getByText('Not connected')).toBeInTheDocument();
 
+    const previewLink = screen.getAllByRole('link', { name: 'Preview' })[0];
+    expect(previewLink).toHaveAttribute('href', '/dashboard/wallets/wallet-1/preview');
     expect(screen.queryByRole('button', { name: 'Details' })).not.toBeInTheDocument();
     expect(screen.queryByText('Allocation mode:')).not.toBeInTheDocument();
   });

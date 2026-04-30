@@ -23,6 +23,8 @@ const createMockClient = (): CcxtExchangeLikeClient => ({
   }),
   fetchMyTrades: vi.fn().mockResolvedValue([]),
   fetchOpenOrders: vi.fn().mockResolvedValue([]),
+  fetchDeposits: vi.fn().mockResolvedValue([]),
+  fetchWithdrawals: vi.fn().mockResolvedValue([]),
   setLeverage: vi.fn().mockResolvedValue(undefined),
   setMarginMode: vi.fn().mockResolvedValue(undefined),
   createOrder: vi.fn().mockResolvedValue({
@@ -436,6 +438,59 @@ describe('CcxtFuturesConnector scaffold', () => {
         exchangeTradeId: 'trade-xrp-1',
         symbol: 'XRP/USDT:USDT',
         source: 'fetchMyTrades',
+      }),
+    ]);
+  });
+
+  it('normalizes wallet cashflow history from supported exchange account history reads', async () => {
+    const client = createMockClient();
+    client.fetchDeposits = vi.fn().mockResolvedValue([
+      {
+        id: 'deposit-1',
+        amount: '10',
+        currency: 'USDT',
+        timestamp: 1_714_200_000_000,
+        status: 'ok',
+      },
+    ]);
+    client.fetchWithdrawals = vi.fn().mockResolvedValue([
+      {
+        id: 'withdrawal-1',
+        amount: '2',
+        currency: 'USDT',
+        timestamp: 1_714_200_100_000,
+        fee: { cost: 0.1, currency: 'USDT' },
+        status: 'ok',
+      },
+    ]);
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'binanceusdm' },
+      vi.fn().mockResolvedValue(client)
+    );
+
+    const cashflows = await connector.fetchWalletCashflowHistory({
+      currency: 'USDT',
+      since: 1_714_200_000_000,
+      limit: 100,
+    });
+
+    expect(client.fetchDeposits).toHaveBeenCalledWith('USDT', 1_714_200_000_000, 100);
+    expect(client.fetchWithdrawals).toHaveBeenCalledWith('USDT', 1_714_200_000_000, 100);
+    expect(cashflows).toEqual([
+      expect.objectContaining({
+        exchangeEventId: 'deposit-1',
+        direction: 'IN',
+        amount: 10,
+        currency: 'USDT',
+        source: 'fetchDeposits',
+      }),
+      expect.objectContaining({
+        exchangeEventId: 'withdrawal-1',
+        direction: 'OUT',
+        amount: 2,
+        feeCost: 0.1,
+        feeCurrency: 'USDT',
+        source: 'fetchWithdrawals',
       }),
     ]);
   });

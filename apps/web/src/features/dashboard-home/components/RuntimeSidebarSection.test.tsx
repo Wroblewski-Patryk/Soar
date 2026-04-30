@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import type { ComponentProps } from "react";
 import { describe, expect, it, vi } from "vitest";
 import RuntimeSidebarSection from "./home-live-widgets/RuntimeSidebarSection";
@@ -390,6 +390,65 @@ describe("RuntimeSidebarSection strategy edge behavior", () => {
     expect(screen.getByText("Authenticated exchange balance")).toBeInTheDocument();
     expect(screen.getByTestId("wallet-kpi-account-balance-row")).toHaveTextContent(/4000[,\.]00 USDT/);
     expect(screen.getByText("Live percent hint")).toBeInTheDocument();
+  });
+
+  it("derives LIVE percent-allocation delta from runtime equity and net pnl", () => {
+    const base = createProps();
+    const props = createProps({
+      selected: {
+        ...base.selected!,
+        bot: {
+          ...base.selected!.bot,
+          mode: "LIVE",
+          wallet: {
+            ...base.selected!.bot.wallet!,
+            mode: "LIVE",
+            liveAllocationMode: "PERCENT",
+            liveAllocationValue: 100,
+          },
+        },
+        positions: {
+          sessionId: "session-live-delta",
+          total: 0,
+          openCount: 0,
+          closedCount: 0,
+          openOrdersCount: 0,
+          window: {
+            startedAt: "2026-04-20T10:00:00.000Z",
+            finishedAt: "2026-04-20T10:05:00.000Z",
+          },
+          summary: {
+            realizedPnl: 30,
+            unrealizedPnl: 20,
+            feesPaid: 0,
+            referenceBalance: 1000,
+            freeCash: 970,
+            accountBalance: 1000,
+            capitalSource: "LIVE_EXCHANGE_BALANCE",
+            allocationMode: "PERCENT",
+            allocationValue: 100,
+            baseCurrency: "USDT",
+          },
+          openOrders: [],
+          openItems: [],
+          historyItems: [],
+        },
+      },
+      selectedData: {
+        ...base.selectedData!,
+        realized: 30,
+        unrealized: 20,
+        net: 50,
+        equity: 1000,
+        free: 970,
+        usedMargin: 30,
+      },
+    });
+
+    render(<RuntimeSidebarSection {...props} />);
+
+    const deltaRow = screen.getByTestId("wallet-kpi-delta-row");
+    expect(within(deltaRow).getByText(/5[,\.]26%\s*\|\s*50[,\.]00 USDT/)).toBeInTheDocument();
   });
 
   it("prefers inherited venue context over duplicated bot snapshot fields", () => {

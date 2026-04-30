@@ -48,6 +48,8 @@ model User {
   subscriptionAssignments  UserSubscription[]
   paymentIntents           PaymentIntent[]
   wallets                  Wallet[]
+  walletBalanceSnapshots   WalletBalanceSnapshot[]
+  walletCashflowEvents     WalletCashflowEvent[]
   logs                     Log[]
 
   createdAt DateTime @default(now())
@@ -672,6 +674,30 @@ enum WalletAllocationMode {
   FIXED
 }
 
+enum WalletBalanceSnapshotSource {
+  EXCHANGE_BALANCE
+  MANUAL_REPAIR
+}
+
+enum WalletCashflowDirection {
+  IN
+  OUT
+  NEUTRAL
+}
+
+enum WalletCashflowSource {
+  INITIAL_BALANCE
+  DEPOSIT
+  WITHDRAWAL
+  TRANSFER_IN
+  TRANSFER_OUT
+  BOT_REALIZED_PNL
+  BOT_OPEN_PNL_SNAPSHOT
+  FEE
+  FUNDING
+  UNKNOWN_EXTERNAL_ADJUSTMENT
+}
+
 model Wallet {
   id     String @id @default(uuid())
   userId String
@@ -697,10 +723,86 @@ model Wallet {
   positions Position[]
   orders    Order[]
   trades    Trade[]
+  balanceSnapshots WalletBalanceSnapshot[]
+  cashflowEvents   WalletCashflowEvent[]
 
   @@index([userId])
   @@index([apiKeyId])
   @@index([userId, exchange, marketType, baseCurrency])
+}
+
+model WalletBalanceSnapshot {
+  id       String @id @default(uuid())
+  userId   String
+  walletId String
+
+  exchange     Exchange
+  marketType   TradeMarket
+  baseCurrency String
+
+  accountBalance   Float
+  freeBalance      Float
+  allocatedBalance Float
+  allocationMode   WalletAllocationMode?
+  allocationValue  Float?
+
+  fetchedAt   DateTime
+  source      WalletBalanceSnapshotSource @default(EXCHANGE_BALANCE)
+  externalRef String?
+  metadata    Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user           User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  wallet         Wallet                @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  cashflowEvents WalletCashflowEvent[]
+
+  @@index([userId])
+  @@index([walletId, fetchedAt])
+  @@index([userId, walletId, fetchedAt])
+  @@index([exchange, marketType, baseCurrency, fetchedAt])
+}
+
+model WalletCashflowEvent {
+  id       String @id @default(uuid())
+  userId   String
+  walletId String
+
+  direction WalletCashflowDirection
+  source    WalletCashflowSource
+
+  amount     Float
+  currency   String
+  occurredAt DateTime
+
+  exchangeEventId   String?
+  balanceSnapshotId String?
+  orderId           String?
+  tradeId           String?
+  positionId        String?
+  metadata          Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user            User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  wallet          Wallet                 @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  balanceSnapshot WalletBalanceSnapshot? @relation(fields: [balanceSnapshotId], references: [id], onDelete: SetNull)
+  order           Order?                 @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  trade           Trade?                 @relation(fields: [tradeId], references: [id], onDelete: SetNull)
+  position        Position?              @relation(fields: [positionId], references: [id], onDelete: SetNull)
+
+  @@unique([walletId, exchangeEventId, source])
+  @@index([userId])
+  @@index([walletId, occurredAt])
+  @@index([userId, walletId, occurredAt])
+  @@index([source, occurredAt])
+  @@index([direction, occurredAt])
+  @@index([balanceSnapshotId])
+  @@index([orderId])
+  @@index([tradeId])
+  @@index([positionId])
 }
 
 model Position {
@@ -741,10 +843,11 @@ model Position {
   user       User        @relation(fields: [userId], references: [id])
   bot        Bot?        @relation(fields: [botId], references: [id])
   strategy   Strategy?   @relation(fields: [strategyId], references: [id])
-  wallet     Wallet?     @relation(fields: [walletId], references: [id], onDelete: SetNull)
-  orders     Order[]
-  trades     Trade[]
-  orderFills OrderFill[]
+    wallet     Wallet?     @relation(fields: [walletId], references: [id], onDelete: SetNull)
+    orders     Order[]
+    trades     Trade[]
+    orderFills OrderFill[]
+    walletCashflowEvents WalletCashflowEvent[]
 
   @@index([userId])
   @@index([userId, openedAt])
@@ -802,9 +905,10 @@ model Order {
   bot      Bot?        @relation(fields: [botId], references: [id])
   strategy Strategy?   @relation(fields: [strategyId], references: [id])
   position Position?   @relation(fields: [positionId], references: [id])
-  wallet   Wallet?     @relation(fields: [walletId], references: [id], onDelete: SetNull)
-  trades   Trade[]
-  fills    OrderFill[]
+    wallet   Wallet?     @relation(fields: [walletId], references: [id], onDelete: SetNull)
+    trades   Trade[]
+    fills    OrderFill[]
+    walletCashflowEvents WalletCashflowEvent[]
 
   @@index([userId])
   @@index([userId, createdAt])
@@ -858,8 +962,9 @@ model Trade {
   strategy Strategy?   @relation(fields: [strategyId], references: [id])
   order    Order?      @relation(fields: [orderId], references: [id])
   position Position?   @relation(fields: [positionId], references: [id])
-  wallet   Wallet?     @relation(fields: [walletId], references: [id], onDelete: SetNull)
-  fills    OrderFill[]
+    wallet   Wallet?     @relation(fields: [walletId], references: [id], onDelete: SetNull)
+    fills    OrderFill[]
+    walletCashflowEvents WalletCashflowEvent[]
 
   @@index([userId])
   @@index([botId])

@@ -147,6 +147,12 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
     selectedWalletMode === "LIVE"
       ? runtimeWalletTotal
       : runtimeWalletTotal ?? (walletBaseline != null ? Math.max(0, walletBaseline + selectedNet) : null);
+  const walletDeltaBaseline = (() => {
+    if (walletBaseline != null && walletBaseline > 0) return walletBaseline;
+    if (selectedWalletMode !== "LIVE" || walletTotal == null) return null;
+    const derivedBaseline = walletTotal - selectedNet;
+    return Number.isFinite(derivedBaseline) && derivedBaseline > 0 ? derivedBaseline : null;
+  })();
   const walletFree =
     props.selectedData?.free ??
     resolveRuntimeFreeFunds({
@@ -506,8 +512,8 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
               <p className="flex items-center justify-between gap-2" data-testid="wallet-kpi-delta-row">
                 <span className="opacity-65">{props.text.deltaFromStart}</span>
                 <span className={`font-semibold ${selectedNet >= 0 ? "text-success" : "text-error"}`}>
-                  {walletBaseline != null && walletBaseline > 0
-                    ? `${props.formatPercent((selectedNet / walletBaseline) * 100)} | ${props.formatAmountWithUnit(selectedNet)}`
+                  {walletDeltaBaseline != null
+                    ? `${props.formatPercent((selectedNet / walletDeltaBaseline) * 100)} | ${props.formatAmountWithUnit(selectedNet)}`
                     : "-"}
                 </span>
               </p>

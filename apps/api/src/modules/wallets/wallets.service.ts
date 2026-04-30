@@ -1,4 +1,4 @@
-import { OrderStatus, PositionStatus, Prisma } from '@prisma/client';
+import { OrderStatus, PositionStatus, Prisma, WalletCashflowDirection, WalletCashflowSource } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import {
   assertExchangeCapability,
@@ -10,6 +10,7 @@ import {
   ListWalletsQueryDto,
   WalletMetadataQueryDto,
   UpdateWalletDto,
+  WalletAnalyticsQueryDto,
   WalletBalancePreviewDto,
 } from './wallets.types';
 import { walletErrors } from './wallets.errors';
@@ -18,10 +19,12 @@ import { normalizeBaseCurrency } from '../../lib/symbols';
 import { resolveReferenceBalanceFromAllocation } from '../../lib/capitalAllocation';
 import { resolveExchangeMetadataByMarketType } from '../exchange/exchangeMetadataContract.service';
 import {
-  assertExchangeAdapterOperationSupport,
   fetchSupportedExchangeBalanceRaw,
   resolveExchangeAdapterSource,
 } from '../exchange/exchangeAdapterBoundary.service';
+import { assertAuthenticatedExchangeReadSupport } from '../exchange/exchangeAuthenticatedReadContract.service';
+import { recordLiveWalletBalanceSnapshot } from './walletLedger.service';
+import { recordInitialBalanceCashflowForSnapshot } from './walletCashflowClassifier.service';
 
 const normalizeWalletInput = (payload: CreateWalletDto | UpdateWalletDto) => {
   const mode = payload.mode;
@@ -160,20 +163,75 @@ export const createWallet = async (userId: string, payload: CreateWalletDto) => 
     apiKeyId: normalized.apiKeyId,
   });
 
-  return prisma.wallet.create({
-    data: {
-      userId,
-      name: normalized.name.trim(),
-      mode: normalized.mode,
-      exchange: normalized.exchange,
-      marketType: normalized.marketType,
-      baseCurrency: normalizeBaseCurrency(normalized.baseCurrency),
-      paperInitialBalance: normalized.paperInitialBalance,
-      liveAllocationMode: normalized.liveAllocationMode ?? null,
-      liveAllocationValue: normalized.liveAllocationValue ?? null,
-      apiKeyId: normalized.apiKeyId ?? null,
-      manageExternalPositions: false,
-    },
+  const baseCurrency = normalizeBaseCurrency(normalized.baseCurrency);
+  const liveApiKey =
+    normalized.mode === 'LIVE' && normalized.apiKeyId
+      ? await prisma.apiKey.findFirst({
+          where: {
+            id: normalized.apiKeyId,
+            userId,
+            exchange: normalized.exchange,
+          },
+          select: {
+            apiKey: true,
+            apiSecret: true,
+          },
+        })
+      : null;
+  const initialSnapshot =
+    normalized.mode === 'LIVE' && liveApiKey
+      ? await fetchAuthenticatedBalancePreview({
+          exchange: normalized.exchange,
+          apiKey: liveApiKey.apiKey,
+          apiSecret: liveApiKey.apiSecret,
+          marketType: normalized.marketType,
+          baseCurrency,
+        })
+      : null;
+
+  if (normalized.mode === 'LIVE' && initialSnapshot?.accountBalance == null) {
+    throw walletErrors.previewFetchFailed();
+  }
+
+  return prisma.$transaction(async (tx) => {
+    const wallet = await tx.wallet.create({
+      data: {
+        userId,
+        name: normalized.name.trim(),
+        mode: normalized.mode,
+        exchange: normalized.exchange,
+        marketType: normalized.marketType,
+        baseCurrency,
+        paperInitialBalance: normalized.paperInitialBalance,
+        liveAllocationMode: normalized.liveAllocationMode ?? null,
+        liveAllocationValue: normalized.liveAllocationValue ?? null,
+        apiKeyId: normalized.apiKeyId ?? null,
+        manageExternalPositions: false,
+      },
+    });
+
+    if (normalized.mode === 'LIVE' && initialSnapshot?.accountBalance != null) {
+      const snapshot = await recordLiveWalletBalanceSnapshot(
+        {
+          userId,
+          walletId: wallet.id,
+          exchange: wallet.exchange,
+          marketType: wallet.marketType,
+          baseCurrency: wallet.baseCurrency,
+          accountBalance: initialSnapshot.accountBalance,
+          freeBalance: initialSnapshot.freeBalance,
+          allocationMode: wallet.liveAllocationMode,
+          allocationValue: wallet.liveAllocationValue,
+          metadata: {
+            reason: 'LIVE_WALLET_CREATE',
+          },
+        },
+        tx
+      );
+      await recordInitialBalanceCashflowForSnapshot(snapshot, tx);
+    }
+
+    return wallet;
   });
 };
 
@@ -431,7 +489,7 @@ const fetchAuthenticatedBalancePreview = async (params: {
 };
 
 export const previewWalletBalance = async (userId: string, payload: WalletBalancePreviewDto) => {
-  assertExchangeAdapterOperationSupport(payload.exchange, 'BALANCE_PREVIEW');
+  assertAuthenticatedExchangeReadSupport(payload.exchange, 'BALANCE_PREVIEW');
 
   const apiKey = await prisma.apiKey.findFirst({
     where: {
@@ -497,4 +555,225 @@ export const previewWalletBalance = async (userId: string, payload: WalletBalanc
     }
     throw walletErrors.previewFetchFailed();
   }
+};
+
+const signedCashflowAmount = (event: {
+  direction: WalletCashflowDirection;
+  amount: number;
+}) => {
+  if (event.direction === WalletCashflowDirection.OUT) return -Math.abs(event.amount);
+  if (event.direction === WalletCashflowDirection.IN) return Math.abs(event.amount);
+  return event.amount;
+};
+
+const contributedCapitalSources = new Set<WalletCashflowSource>([
+  WalletCashflowSource.INITIAL_BALANCE,
+  WalletCashflowSource.DEPOSIT,
+  WalletCashflowSource.WITHDRAWAL,
+  WalletCashflowSource.TRANSFER_IN,
+  WalletCashflowSource.TRANSFER_OUT,
+]);
+
+const botPnlSources = new Set<WalletCashflowSource>([WalletCashflowSource.BOT_REALIZED_PNL]);
+const feesFundingSources = new Set<WalletCashflowSource>([
+  WalletCashflowSource.FEE,
+  WalletCashflowSource.FUNDING,
+]);
+
+const parseOptionalDate = (value?: string) => (value ? new Date(value) : undefined);
+
+const buildCashflowWindowWhere = (
+  walletId: string,
+  query: WalletAnalyticsQueryDto = {}
+): Prisma.WalletCashflowEventWhereInput => ({
+  walletId,
+  ...(query.source ? { source: query.source as WalletCashflowSource } : {}),
+  ...(query.from || query.to
+    ? {
+        occurredAt: {
+          ...(query.from ? { gte: parseOptionalDate(query.from) } : {}),
+          ...(query.to ? { lte: parseOptionalDate(query.to) } : {}),
+        },
+      }
+    : {}),
+});
+
+export const getWalletPerformanceSummary = async (
+  userId: string,
+  id: string,
+  query: WalletAnalyticsQueryDto = {}
+) => {
+  const wallet = await getWallet(userId, id);
+  if (!wallet) return null;
+
+  const [latestSnapshot, cashflowEvents, openPnlAggregate] = await Promise.all([
+    prisma.walletBalanceSnapshot.findFirst({
+      where: { userId, walletId: id },
+      orderBy: { fetchedAt: 'desc' },
+    }),
+    prisma.walletCashflowEvent.findMany({
+      where: {
+        userId,
+        ...buildCashflowWindowWhere(id, query),
+      },
+      orderBy: { occurredAt: 'asc' },
+    }),
+    prisma.position.aggregate({
+      where: {
+        userId,
+        walletId: id,
+        status: PositionStatus.OPEN,
+        unrealizedPnl: { not: null },
+      },
+      _sum: {
+        unrealizedPnl: true,
+      },
+    }),
+  ]);
+
+  const contributedCapital = cashflowEvents
+    .filter((event) => contributedCapitalSources.has(event.source))
+    .reduce((sum, event) => sum + signedCashflowAmount(event), 0);
+  const botRealizedPnl = cashflowEvents
+    .filter((event) => botPnlSources.has(event.source))
+    .reduce((sum, event) => sum + signedCashflowAmount(event), 0);
+  const feesFunding = cashflowEvents
+    .filter((event) => feesFundingSources.has(event.source))
+    .reduce((sum, event) => sum + signedCashflowAmount(event), 0);
+  const unclassifiedAdjustment = cashflowEvents
+    .filter((event) => event.source === WalletCashflowSource.UNKNOWN_EXTERNAL_ADJUSTMENT)
+    .reduce((sum, event) => sum + signedCashflowAmount(event), 0);
+  const botOpenPnl = Number(openPnlAggregate._sum.unrealizedPnl ?? 0);
+  const botPnl = botRealizedPnl + botOpenPnl + feesFunding;
+  const portfolioEquity = latestSnapshot?.allocatedBalance ?? 0;
+  const walletDeltaPercent =
+    contributedCapital > 0 ? (botPnl / contributedCapital) * 100 : null;
+  const completeness =
+    !latestSnapshot
+      ? 'UNAVAILABLE'
+      : unclassifiedAdjustment !== 0
+        ? 'PARTIAL'
+        : 'COMPLETE';
+
+  return {
+    walletId: wallet.id,
+    exchange: wallet.exchange,
+    marketType: wallet.marketType,
+    baseCurrency: wallet.baseCurrency,
+    completeness,
+    completenessReasons:
+      completeness === 'UNAVAILABLE'
+        ? ['NO_BALANCE_SNAPSHOT']
+        : completeness === 'PARTIAL'
+          ? ['UNCLASSIFIED_ADJUSTMENT_PRESENT']
+          : [],
+    currentAccountBalance: latestSnapshot?.accountBalance ?? null,
+    currentFreeBalance: latestSnapshot?.freeBalance ?? null,
+    currentAllocatedBalance: latestSnapshot?.allocatedBalance ?? null,
+    contributedCapital,
+    botRealizedPnl,
+    botOpenPnl,
+    feesFunding,
+    botPnl,
+    unclassifiedAdjustment,
+    portfolioEquity,
+    walletDeltaPercent,
+    latestSnapshotAt: latestSnapshot?.fetchedAt.toISOString() ?? null,
+  };
+};
+
+export const getWalletCashflowEvents = async (
+  userId: string,
+  id: string,
+  query: WalletAnalyticsQueryDto = {}
+) => {
+  const wallet = await getWallet(userId, id);
+  if (!wallet) return null;
+
+  return prisma.walletCashflowEvent.findMany({
+    where: {
+      userId,
+      ...buildCashflowWindowWhere(id, query),
+    },
+    orderBy: { occurredAt: 'asc' },
+  });
+};
+
+export const getWalletEquityTimeline = async (
+  userId: string,
+  id: string,
+  query: WalletAnalyticsQueryDto = {}
+) => {
+  const wallet = await getWallet(userId, id);
+  if (!wallet) return null;
+
+  const [snapshots, events] = await Promise.all([
+    prisma.walletBalanceSnapshot.findMany({
+      where: {
+        userId,
+        walletId: id,
+        ...(query.from || query.to
+          ? {
+              fetchedAt: {
+                ...(query.from ? { gte: parseOptionalDate(query.from) } : {}),
+                ...(query.to ? { lte: parseOptionalDate(query.to) } : {}),
+              },
+            }
+          : {}),
+      },
+      orderBy: { fetchedAt: 'asc' },
+    }),
+    prisma.walletCashflowEvent.findMany({
+      where: {
+        userId,
+        ...buildCashflowWindowWhere(id, query),
+      },
+      orderBy: { occurredAt: 'asc' },
+    }),
+  ]);
+
+  const points = snapshots.map((snapshot) => {
+    const eventsUntilPoint = events.filter((event) => event.occurredAt <= snapshot.fetchedAt);
+    const contributedCapital = eventsUntilPoint
+      .filter((event) => contributedCapitalSources.has(event.source))
+      .reduce((sum, event) => sum + signedCashflowAmount(event), 0);
+    const botRealizedPnl = eventsUntilPoint
+      .filter((event) => botPnlSources.has(event.source))
+      .reduce((sum, event) => sum + signedCashflowAmount(event), 0);
+    const feesFunding = eventsUntilPoint
+      .filter((event) => feesFundingSources.has(event.source))
+      .reduce((sum, event) => sum + signedCashflowAmount(event), 0);
+    const unclassifiedAdjustment = eventsUntilPoint
+      .filter((event) => event.source === WalletCashflowSource.UNKNOWN_EXTERNAL_ADJUSTMENT)
+      .reduce((sum, event) => sum + signedCashflowAmount(event), 0);
+
+    return {
+      timestamp: snapshot.fetchedAt.toISOString(),
+      portfolioEquity: snapshot.allocatedBalance,
+      accountBalance: snapshot.accountBalance,
+      freeBalance: snapshot.freeBalance,
+      contributedCapital,
+      botRealizedPnl,
+      botOpenPnl: 0,
+      feesFunding,
+      botPnl: botRealizedPnl + feesFunding,
+      unclassifiedAdjustment,
+    };
+  });
+
+  return {
+    walletId: wallet.id,
+    baseCurrency: wallet.baseCurrency,
+    bucket: query.bucket ?? 'raw',
+    completeness: snapshots.length > 0 ? 'COMPLETE' : 'UNAVAILABLE',
+    points,
+    markers: events.map((event) => ({
+      id: event.id,
+      timestamp: event.occurredAt.toISOString(),
+      source: event.source,
+      direction: event.direction,
+      amount: event.amount,
+      currency: event.currency,
+    })),
+  };
 };

@@ -25,6 +25,9 @@ Updated: 2026-04-17
 - `upload`. Upload endpoints and upload validation.
 - `users`. User public representation helpers shared across modules.
 - `wallets`. Wallet CRUD and related dashboard/accounting data boundaries.
+  Target extension: wallets should own the user-facing cashflow/equity ledger
+  for LIVE wallet performance analytics, while authenticated exchange reads
+  remain behind the `exchange` module boundary.
 
 ## Backend Notes
 - `market-stream` fan-out to clients is server-owned.
@@ -49,6 +52,9 @@ Updated: 2026-04-17
 - `dashboard/reports`. Performance reporting views.
 - `dashboard/logs`. Audit trail views and filtering.
 - `dashboard/wallets`. Wallet list/create/detail/edit flows.
+  Target extension: wallet detail should expose current balance, contributed
+  capital, bot PnL, deposits/withdrawals/transfers, unclassified adjustments,
+  and an equity timeline once the LIVE wallet ledger is implemented.
 - `icons`. Frontend icon lookup hooks/services for asset visualization.
 
 ## Frontend Areas (Planned)

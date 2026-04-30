@@ -35,6 +35,7 @@ export default function WalletsListTable({ rows, onDeleted, onCloned }: WalletsL
         allocation: t('dashboard.wallets.table.allocation'),
         actions: t('dashboard.wallets.table.actions'),
         edit: t('dashboard.wallets.table.edit'),
+        preview: t('dashboard.wallets.table.preview'),
         delete: t('dashboard.wallets.table.delete'),
         deleting: t('dashboard.wallets.table.deleting'),
         deleteConfirm: t('dashboard.wallets.table.deleteConfirm'),
@@ -194,6 +195,11 @@ export default function WalletsListTable({ rows, onDeleted, onCloned }: WalletsL
         render: (row) => (
           <div className='flex items-center justify-end gap-2'>
             <TablePresetLinkAction
+              preset='preview'
+              href={dashboardRoutes.wallets.preview(row.id)}
+              label={copy.preview}
+            />
+            <TablePresetLinkAction
               preset='edit'
               href={dashboardRoutes.wallets.edit(row.id)}
               label={copy.edit}
@@ -224,6 +230,7 @@ export default function WalletsListTable({ rows, onDeleted, onCloned }: WalletsL
       copy.delete,
       copy.deleting,
       copy.edit,
+      copy.preview,
       copy.exchange,
       copy.clone,
       copy.marketType,

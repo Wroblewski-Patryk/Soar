@@ -5,7 +5,10 @@ import {
   Wallet,
   WalletBalancePreview,
   WalletBalancePreviewInput,
+  WalletCashflowEvent,
+  WalletEquityTimeline,
   WalletMetadata,
+  WalletPerformanceSummary,
 } from '../types/wallet.type';
 import type { ExchangeOption } from '@/features/exchanges/exchangeCapabilities';
 
@@ -54,5 +57,20 @@ export const fetchWalletMetadata = async (params?: {
   const res = await api.get<WalletMetadata>('/dashboard/wallets/metadata', {
     params: params ?? undefined,
   });
+  return res.data;
+};
+
+export const getWalletPerformanceSummary = async (id: string): Promise<WalletPerformanceSummary> => {
+  const res = await api.get<WalletPerformanceSummary>(`/dashboard/wallets/${id}/performance-summary`);
+  return res.data;
+};
+
+export const getWalletEquityTimeline = async (id: string): Promise<WalletEquityTimeline> => {
+  const res = await api.get<WalletEquityTimeline>(`/dashboard/wallets/${id}/equity-timeline`);
+  return res.data;
+};
+
+export const getWalletCashflowEvents = async (id: string): Promise<WalletCashflowEvent[]> => {
+  const res = await api.get<WalletCashflowEvent[]>(`/dashboard/wallets/${id}/cashflow-events`);
   return res.data;
 };

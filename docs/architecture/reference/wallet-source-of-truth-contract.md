@@ -73,6 +73,77 @@ Post-deposit rule:
 - no explicit allocation means runtime uses the full authenticated exchange
   balance.
 
+### LIVE wallet portfolio-performance target
+Current runtime capital truth is intentionally exchange-balance authoritative,
+but operator-facing performance truth must not treat every exchange-balance
+change as bot profit or loss.
+
+Detailed target contract:
+- `docs/architecture/reference/live-wallet-cashflow-ledger-contract.md`
+
+Target model:
+- `contributedCapital` is the user's net external capital added to the wallet
+  scope:
+  - initial authenticated balance captured when the `LIVE` wallet starts
+    tracking,
+  - plus later deposits and inbound transfers,
+  - minus later withdrawals and outbound transfers.
+- `botPnl` is trading result attributable to Soar-managed activity:
+  - realized PnL from canonical closed trades,
+  - plus current open unrealized PnL,
+  - minus fees and funding where the exchange provides deterministic truth.
+- `portfolioEquity` is current wallet value:
+  - `contributedCapital + botPnl + non-bot exchange adjustments` when the
+    ledger can classify all movements,
+  - otherwise the authenticated exchange balance remains the current balance
+    display authority and the performance view must mark unclassified movement
+    as `UNKNOWN_EXTERNAL_ADJUSTMENT`.
+- `walletDelta` is performance, not raw account-balance drift:
+  - amount: `botPnl`,
+  - percent denominator: `contributedCapital`,
+  - example: initial balance `5 USDT`, bot PnL `+1 USDT`, later user deposit
+    `+10 USDT` => contributed capital `15 USDT`, delta amount `+1 USDT`,
+    delta percent `+6.67%`.
+
+Required ledger concepts:
+- `WalletBalanceSnapshot`: timestamped account/free/allocated balance from the
+  authenticated exchange boundary.
+- `WalletCashflowEvent`: timestamped external money movement with direction
+  (`IN`/`OUT`), amount, currency, source (`DEPOSIT`, `WITHDRAWAL`,
+  `TRANSFER`, `FUNDING`, `FEE`, `REALIZED_PNL`, `UNKNOWN`), and deterministic
+  exchange reference when available.
+- `WalletEquityPoint`: derived timeline point with `portfolioEquity`,
+  `contributedCapital`, `botPnl`, `openPnl`, `feesFunding`, and
+  `unclassifiedAdjustment`.
+
+Classification rules:
+- Deposits and inbound transfers increase `contributedCapital`.
+- Withdrawals and outbound transfers decrease `contributedCapital`.
+- Bot-owned order fills and position lifecycle rows update `botPnl`, not
+  `contributedCapital`.
+- Exchange-side movements that cannot be mapped deterministically must not be
+  silently counted as bot PnL; they remain explicit unclassified adjustments.
+- If the user trades manually on the same exchange account outside Soar, the
+  system must either classify that movement as user/external exchange activity
+  or mark it unclassified until deterministic exchange history can prove the
+  source.
+
+Dashboard target:
+- The wallet panel keeps showing current `accountBalance`, `referenceBalance`,
+  `freeCash`, and `reservedMargin`.
+- The wallet delta row should render `botPnl / contributedCapital` when the
+  ledger is available.
+- The wallet detail view should expose an equity chart with at least:
+  - total wallet equity,
+  - contributed capital,
+  - bot PnL,
+  - deposits/withdrawals/transfers as timeline markers,
+  - unclassified adjustments as visible warnings.
+- Historical charts must be honest about the start boundary:
+  - before the first reliable snapshot/import, show data as unavailable or
+    partially reconstructed,
+  - do not backfill fake deposits or fake PnL from balance differences alone.
+
 ## Bot/API Contract
 - Bot create/update no longer accepts mode as canonical input.
 - Bot create/update accepts the canonical imported-position management flag at

@@ -1,7 +1,88 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
-import { createHistoryPositionsColumns } from "./runtimeDataTablePresenters";
+import type { OpenPositionWithLive } from "./types";
+import { createHistoryPositionsColumns, createOpenPositionsColumns } from "./runtimeDataTablePresenters";
+
+const openPositionRow = {
+  id: "position-open-1",
+  symbol: "DOGEUSDT",
+  side: "LONG",
+  status: "OPEN",
+  quantity: 10,
+  leverage: 5,
+  entryPrice: 0.1,
+  entryNotional: 1,
+  exitPrice: null,
+  stopLoss: null,
+  takeProfit: null,
+  openedAt: "2026-04-29T10:00:00.000Z",
+  closedAt: null,
+  holdMs: 0,
+  dcaCount: 0,
+  feesPaid: 0,
+  realizedPnl: 0,
+  unrealizedPnl: 0,
+  markPrice: 0.11,
+  firstTradeAt: null,
+  lastTradeAt: null,
+  tradesCount: 0,
+  liveMarkPrice: 0.11,
+  liveUnrealizedPnl: 0.1,
+  livePnlPct: 10,
+  marginNotional: 1,
+} satisfies OpenPositionWithLive;
+
+describe("createOpenPositionsColumns", () => {
+  it("renders position action buttons with shared table action tones", () => {
+    const columns = createOpenPositionsColumns({
+      t: (key) =>
+        ({
+          "dashboard.home.runtime.timeOpened": "Time opened",
+          "dashboard.home.runtime.symbol": "Symbol",
+          "dashboard.home.runtime.side": "Side",
+          "dashboard.home.runtime.status": "Status",
+          "dashboard.home.runtime.margin": "Margin",
+          "dashboard.home.runtime.pnl": "PnL",
+          "dashboard.home.runtime.pnlPercent": "PnL%",
+          "dashboard.home.runtime.dca": "DCA",
+          "dashboard.home.runtime.continuityConfirmed": "Confirmed",
+        })[key] ?? key,
+      formatDateTimeWithSeconds: (value) => value ?? "-",
+      formatPercent: (value) => `${value}%`,
+      formatRuntimeAmount: (value) => String(value),
+      formatDcaPercent: (value) => `${value}%`,
+      withRuntimeUnit: (label) => label,
+      resolveRuntimeIcon: () => null,
+      runtimeIconsLoading: false,
+      runtimeIconsError: null,
+      showDynamicStopColumns: false,
+      closePositionActionColumnLabel: "Action",
+      closePositionPendingLabel: "Closing...",
+      closePositionButtonLabel: "Close position",
+      editPositionButtonLabel: "Edit position",
+      positionActionsUnavailableLabel: "Unavailable",
+      isClosingPosition: () => false,
+      onOpenPositionEdit: vi.fn(),
+      onCloseRuntimePosition: vi.fn(),
+    });
+
+    const actionColumn = columns.find((column) => column.key === "actionClosePosition");
+    render(<div>{actionColumn?.render?.(openPositionRow)}</div>);
+
+    expect(screen.getByRole("button", { name: "Edit position" })).toHaveClass(
+      "border-info/45",
+      "bg-info/10",
+      "text-info"
+    );
+    expect(screen.getByRole("button", { name: "Close position" })).toHaveClass(
+      "border-error/45",
+      "bg-error/10",
+      "text-error"
+    );
+    expect(screen.getByRole("button", { name: "Close position" })).not.toHaveClass("btn-outline");
+  });
+});
 
 describe("createHistoryPositionsColumns", () => {
   it("exposes separate opened and closed time columns for history rows", () => {

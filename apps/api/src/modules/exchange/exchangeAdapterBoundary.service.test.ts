@@ -4,6 +4,7 @@ import {
   fetchSupportedExchangeOpenOrdersRaw,
   fetchSupportedExchangePositionsRaw,
   fetchSupportedExchangeTradeHistoryRaw,
+  fetchSupportedExchangeWalletCashflowHistoryRaw,
   submitLiveOrderThroughBoundary,
 } from './exchangeAdapterBoundary.service';
 import {
@@ -30,6 +31,21 @@ const createConnector = () => ({
       raw: {},
     },
   ]),
+  fetchWalletCashflowHistory: vi.fn(async () => [
+    {
+      exchangeEventId: 'deposit-1',
+      direction: 'IN' as const,
+      type: 'deposit',
+      amount: 10,
+      currency: 'USDT',
+      feeCost: 0,
+      feeCurrency: null,
+      occurredAt: new Date('2026-04-29T11:00:00.000Z'),
+      status: 'ok',
+      source: 'fetchDeposits' as const,
+      raw: {},
+    },
+  ]),
   disconnect: vi.fn(async () => undefined),
   hasOpenPosition: vi.fn(async () => false),
   getSymbolTradingRules: vi.fn(async () => ({
@@ -52,7 +68,7 @@ describe('exchangeAdapterBoundary.service', () => {
       apiSecret: 'enc-secret',
     };
 
-    const [positions, orders, trades] = await Promise.all([
+    const [positions, orders, trades, walletCashflows] = await Promise.all([
       fetchSupportedExchangePositionsRaw(params, { createAuthenticatedConnector }),
       fetchSupportedExchangeOpenOrdersRaw(params, { createAuthenticatedConnector }),
       fetchSupportedExchangeTradeHistoryRaw({
@@ -61,9 +77,15 @@ describe('exchangeAdapterBoundary.service', () => {
         since: Date.parse('2026-04-29T00:00:00.000Z'),
         limit: 200,
       }, { createAuthenticatedConnector }),
+      fetchSupportedExchangeWalletCashflowHistoryRaw({
+        ...params,
+        currency: 'USDT',
+        since: Date.parse('2026-04-29T00:00:00.000Z'),
+        limit: 200,
+      }, { createAuthenticatedConnector }),
     ]);
 
-    expect(createAuthenticatedConnector).toHaveBeenCalledTimes(3);
+    expect(createAuthenticatedConnector).toHaveBeenCalledTimes(4);
     expect(positions).toEqual([{ symbol: 'BTC/USDT:USDT', contracts: 1 }]);
     expect(orders).toEqual([{ id: 'ord-1', symbol: 'BTC/USDT:USDT' }]);
     expect(trades).toEqual([
@@ -72,12 +94,25 @@ describe('exchangeAdapterBoundary.service', () => {
         symbol: 'BTC/USDT:USDT',
       }),
     ]);
+    expect(walletCashflows).toEqual([
+      expect.objectContaining({
+        exchangeEventId: 'deposit-1',
+        direction: 'IN',
+        amount: 10,
+        currency: 'USDT',
+      }),
+    ]);
     expect(connector.fetchTradesForWindow).toHaveBeenCalledWith({
       symbol: 'BTCUSDT',
       since: Date.parse('2026-04-29T00:00:00.000Z'),
       limit: 200,
     });
-    expect(connector.disconnect).toHaveBeenCalledTimes(3);
+    expect(connector.fetchWalletCashflowHistory).toHaveBeenCalledWith({
+      currency: 'USDT',
+      since: Date.parse('2026-04-29T00:00:00.000Z'),
+      limit: 200,
+    });
+    expect(connector.disconnect).toHaveBeenCalledTimes(4);
   });
 
   it('fails closed for unsupported read exchanges at the boundary', async () => {

@@ -402,7 +402,7 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 1) Use `pnpm dlx prisma@6.19.3 ...` instead of unversioned `pnpm dlx prisma`.
 2) Run `generate` or `db push` from `apps/api` when the command needs the local `.env`.
 3) Regenerate Prisma Client before TypeScript validation after schema edits.
-4) Push the local schema before DB-backed e2e if new columns/relations were added.
+4) Push the local schema before DB-backed e2e if new columns/relations were added and local migration history is already drifted.
 ```
 - Avoid: using the latest Prisma CLI ad hoc or running DB-backed validation
   before the local schema is synced.
@@ -412,6 +412,11 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
     `pnpm dlx prisma@6.19.3 generate --schema apps/api/prisma/schema.prisma`
     plus `pnpm dlx prisma@6.19.3 db push --schema prisma/schema.prisma` from
     `apps/api` restored correct client/types and green DB-backed bot e2e runs.
+  - 2026-04-30 `WLEDGER-04`: local `migrate deploy` was blocked by pre-existing
+    `20260430153000_add_position_margin_used` drift (`marginUsed` already
+    existed), while `pnpm --filter api exec prisma db push --accept-data-loss`
+    synced the local schema so wallet snapshot e2e could validate the new
+    ledger tables.
 
 ### 2026-04-23 - Binance runtime stream defaults must follow market type, not assume spot
 - Context: production verification after `V1RT-01` fixed canonical symbol
@@ -1105,16 +1110,17 @@ After closing a wave:
 - Context: local API setup/validation on Windows before DB-backed wallet e2e runs.
 - Symptom: `prisma generate` fails with `EPERM: operation not permitted, rename ... query_engine-windows.dll.node`.
 - Root cause: stale Node processes hold file locks on Prisma engine binaries in `node_modules/.prisma/client`.
-- Guardrail: if Prisma reports `EPERM` on engine rename, clear stale Node processes first, then rerun `prisma generate` before migrations/tests.
+- Guardrail: if Prisma reports `EPERM` on engine rename, first make sure no DB-backed tests or other Node processes are running, then clear stale Node processes if needed and rerun `prisma generate` before migrations/tests.
 - Preferred pattern:
 ```powershell
 Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force
 pnpm --filter api exec prisma generate
 pnpm --filter api exec prisma migrate deploy
 ```
-- Avoid: repeated `prisma generate` retries without releasing locked Node processes.
+- Avoid: running `prisma generate` in parallel with Vitest/API processes, or repeatedly retrying `prisma generate` without releasing locked Node processes.
 - Evidence:
   - Observed on 2026-04-20 during WAPR closure validation setup; after stopping stale Node processes, `prisma generate` and follow-up wallet API e2e passed.
+  - Observed again on 2026-04-30 during `WLEDGER-04`: `prisma generate` run in parallel with API tests hit `EPERM` on `query_engine-windows.dll.node`; rerunning `prisma generate` sequentially after tests completed passed.
 
 ### 2026-04-23 - Full API pack needs explicit test encryption env for API-key suites
 - Context: `V1ALIGN-06` closure validation on local Codex desktop after runtime truth-alignment changes.

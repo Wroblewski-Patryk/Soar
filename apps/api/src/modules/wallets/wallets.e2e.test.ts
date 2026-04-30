@@ -216,6 +216,114 @@ describe('Wallets balance preview contract', () => {
     expect(previewRes.body.allocationApplied).toBeNull();
   });
 
+  it('persists an initial LIVE wallet balance snapshot when a live wallet is created', async () => {
+    const email = 'wallet-live-initial-snapshot@example.com';
+    const agent = await registerAndLogin(email);
+    const userId = await resolveUserIdByEmail(email);
+
+    const apiKeyRes = await agent.post('/dashboard/profile/apiKeys').send({
+      label: 'Initial snapshot key',
+      exchange: 'BINANCE',
+      apiKey: 'INITIAL_SNAPSHOT_KEY_123',
+      apiSecret: 'INITIAL_SNAPSHOT_SECRET_123',
+      syncExternalPositions: true,
+      manageExternalPositions: true,
+    });
+    expect(apiKeyRes.status).toBe(201);
+
+    process.env.WALLET_PREVIEW_TEST_ACCOUNT_BALANCE = '500';
+    process.env.WALLET_PREVIEW_TEST_FREE_BALANCE = '450';
+
+    const walletRes = await agent.post('/dashboard/wallets').send({
+      name: 'Initial live ledger wallet',
+      mode: 'LIVE',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'usdt',
+      apiKeyId: apiKeyRes.body.id,
+      liveAllocationMode: 'PERCENT',
+      liveAllocationValue: 40,
+    });
+    expect(walletRes.status, JSON.stringify(walletRes.body)).toBe(201);
+
+    const [snapshots, cashflows] = await Promise.all([
+      prisma.walletBalanceSnapshot.findMany({
+        where: {
+          userId,
+          walletId: walletRes.body.id,
+        },
+      }),
+      prisma.walletCashflowEvent.findMany({
+        where: {
+          userId,
+          walletId: walletRes.body.id,
+        },
+      }),
+    ]);
+
+    expect(snapshots).toHaveLength(1);
+    expect(snapshots[0]).toMatchObject({
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      accountBalance: 500,
+      freeBalance: 450,
+      allocatedBalance: 200,
+      allocationMode: 'PERCENT',
+      allocationValue: 40,
+      source: 'EXCHANGE_BALANCE',
+    });
+    expect(cashflows).toHaveLength(1);
+    expect(cashflows[0]).toMatchObject({
+      direction: 'IN',
+      source: 'INITIAL_BALANCE',
+      amount: 200,
+      currency: 'USDT',
+      exchangeEventId: `initial:${snapshots[0].id}`,
+      balanceSnapshotId: snapshots[0].id,
+    });
+
+    const [summaryRes, timelineRes, eventsRes] = await Promise.all([
+      agent.get(`/dashboard/wallets/${walletRes.body.id}/performance-summary`),
+      agent.get(`/dashboard/wallets/${walletRes.body.id}/equity-timeline`),
+      agent.get(`/dashboard/wallets/${walletRes.body.id}/cashflow-events`),
+    ]);
+
+    expect(summaryRes.status).toBe(200);
+    expect(summaryRes.body).toMatchObject({
+      walletId: walletRes.body.id,
+      baseCurrency: 'USDT',
+      completeness: 'COMPLETE',
+      currentAccountBalance: 500,
+      currentAllocatedBalance: 200,
+      contributedCapital: 200,
+      botPnl: 0,
+      walletDeltaPercent: 0,
+    });
+    expect(timelineRes.status).toBe(200);
+    expect(timelineRes.body.points).toEqual([
+      expect.objectContaining({
+        portfolioEquity: 200,
+        contributedCapital: 200,
+      }),
+    ]);
+    expect(timelineRes.body.markers).toEqual([
+      expect.objectContaining({
+        source: 'INITIAL_BALANCE',
+        direction: 'IN',
+        amount: 200,
+      }),
+    ]);
+    expect(eventsRes.status).toBe(200);
+    expect(eventsRes.body).toEqual([
+      expect.objectContaining({
+        source: 'INITIAL_BALANCE',
+        amount: 200,
+        currency: 'USDT',
+      }),
+    ]);
+  });
+
   it('returns 404 when selected API key does not belong to current user', async () => {
     const owner = await registerAndLogin('wallet-preview-owner-2@example.com');
     const other = await registerAndLogin('wallet-preview-other@example.com');

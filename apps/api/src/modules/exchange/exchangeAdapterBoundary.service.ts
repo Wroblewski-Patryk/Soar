@@ -2,7 +2,10 @@ import { Exchange } from '@prisma/client';
 
 import { prisma } from '../../prisma/client';
 import { CcxtFuturesConnector } from './ccxtFuturesConnector.service';
-import { CcxtFuturesOrderFill } from './ccxtFuturesConnector.types';
+import {
+  CcxtFuturesOrderFill,
+  CcxtWalletCashflowHistoryEntry,
+} from './ccxtFuturesConnector.types';
 import {
   assertExchangeExecutionCapabilitySupport,
   resolveExchangeExecutionSource,
@@ -72,6 +75,11 @@ type AuthenticatedConnectorLike = {
     since?: number;
     limit?: number;
   }) => Promise<CcxtFuturesOrderFill[]>;
+  fetchWalletCashflowHistory?: (input: {
+    currency?: string;
+    since?: number;
+    limit?: number;
+  }) => Promise<CcxtWalletCashflowHistoryEntry[]>;
   disconnect: () => Promise<void>;
   hasOpenPosition: (symbol: string) => Promise<boolean>;
   getSymbolTradingRules: (symbol: string) => Promise<{
@@ -311,6 +319,32 @@ export const fetchSupportedExchangeTradeHistoryRaw = async (
     }
     const raw = await connector.fetchTradesForWindow({
       symbol: params.symbol,
+      since: params.since,
+      limit: params.limit,
+    });
+    return Array.isArray(raw) ? raw : [];
+  } finally {
+    await connector.disconnect().catch(() => undefined);
+  }
+};
+
+export const fetchSupportedExchangeWalletCashflowHistoryRaw = async (
+  params: SupportedExchangeReadCredentials & {
+    currency?: string;
+    since?: number;
+    limit?: number;
+  },
+  deps: Pick<ExchangeAdapterBoundaryDeps, 'createAuthenticatedConnector'> = getDefaultDeps()
+) => {
+  assertExchangeExecutionCapabilitySupport(params.exchange, 'WALLET_CASHFLOW_HISTORY');
+
+  const connector = deps.createAuthenticatedConnector(params);
+  try {
+    if (typeof connector.fetchWalletCashflowHistory !== 'function') {
+      throw new Error('fetchWalletCashflowHistory is not supported by this authenticated connector');
+    }
+    const raw = await connector.fetchWalletCashflowHistory({
+      currency: params.currency,
       since: params.since,
       limit: params.limit,
     });

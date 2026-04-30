@@ -3,6 +3,8 @@ import {
   CcxtFetchOrderWithFillsInputSchema,
   CcxtFetchTradesForOrderInput,
   CcxtFetchTradesForOrderInputSchema,
+  CcxtFetchWalletCashflowHistoryInput,
+  CcxtFetchWalletCashflowHistoryInputSchema,
   CcxtFuturesConnectorConfig,
   CcxtFuturesConnectorConfigSchema,
   CcxtFuturesOpenOrder,
@@ -10,6 +12,7 @@ import {
   CcxtFuturesOrderRequest,
   CcxtFuturesOrderRequestSchema,
   CcxtFuturesOrderResult,
+  CcxtWalletCashflowHistoryEntry,
 } from './ccxtFuturesConnector.types';
 
 type CcxtOrderLike = {
@@ -49,6 +52,22 @@ type CcxtTradeLike = {
   info?: Record<string, unknown>;
 };
 
+type CcxtWalletCashflowLike = {
+  id?: string;
+  txid?: string;
+  referenceId?: string;
+  type?: string;
+  direction?: string;
+  amount?: number;
+  currency?: string;
+  code?: string;
+  timestamp?: number;
+  datetime?: string;
+  status?: string;
+  fee?: CcxtTradeFeeLike | number | null;
+  info?: Record<string, unknown>;
+};
+
 type CcxtPositionLike = {
   symbol?: string;
   contracts?: number;
@@ -83,6 +102,30 @@ export interface CcxtExchangeLikeClient {
     params?: Record<string, unknown>
   ) => Promise<CcxtOrderLike[]>;
   fetchBalance?: (params?: Record<string, unknown>) => Promise<unknown>;
+  fetchLedger?: (
+    code?: string,
+    since?: number,
+    limit?: number,
+    params?: Record<string, unknown>
+  ) => Promise<CcxtWalletCashflowLike[]>;
+  fetchDeposits?: (
+    code?: string,
+    since?: number,
+    limit?: number,
+    params?: Record<string, unknown>
+  ) => Promise<CcxtWalletCashflowLike[]>;
+  fetchWithdrawals?: (
+    code?: string,
+    since?: number,
+    limit?: number,
+    params?: Record<string, unknown>
+  ) => Promise<CcxtWalletCashflowLike[]>;
+  fetchTransactions?: (
+    code?: string,
+    since?: number,
+    limit?: number,
+    params?: Record<string, unknown>
+  ) => Promise<CcxtWalletCashflowLike[]>;
   setLeverage?: (
     leverage: number,
     symbol?: string,
@@ -420,6 +463,38 @@ export class CcxtFuturesConnector {
     return client.fetchBalance(params);
   }
 
+  async fetchWalletCashflowHistory(
+    input: CcxtFetchWalletCashflowHistoryInput = {}
+  ): Promise<CcxtWalletCashflowHistoryEntry[]> {
+    const request = CcxtFetchWalletCashflowHistoryInputSchema.parse(input);
+    const client = await this.getOrCreateClient();
+    const supportedReads = [
+      ['fetchLedger', client.fetchLedger] as const,
+      ['fetchDeposits', client.fetchDeposits] as const,
+      ['fetchWithdrawals', client.fetchWithdrawals] as const,
+      ['fetchTransactions', client.fetchTransactions] as const,
+    ].filter(([, fn]) => typeof fn === 'function');
+
+    if (supportedReads.length === 0) {
+      throw new Error('wallet cashflow history is not supported by this CCXT connector');
+    }
+
+    const entries = await Promise.all(
+      supportedReads.map(async ([source, fn]) => {
+        const rows = await fn!.call(client, request.currency, request.since, request.limit);
+        return (Array.isArray(rows) ? rows : []).map((row) =>
+          this.normalizeWalletCashflowEntry(row, source)
+        );
+      })
+    );
+
+    return entries.flat().sort((left, right) => {
+      const leftTime = left.occurredAt?.getTime() ?? 0;
+      const rightTime = right.occurredAt?.getTime() ?? 0;
+      return leftTime - rightTime;
+    });
+  }
+
   async loadMarketsMap(): Promise<Record<string, unknown>> {
     const client = await this.getOrCreateClient();
     const marketMap = await client.loadMarkets();
@@ -634,6 +709,122 @@ export class CcxtFuturesConnector {
     };
   }
 
+  private normalizeWalletCashflowEntry(
+    rawEntry: unknown,
+    source: CcxtWalletCashflowHistoryEntry['source']
+  ): CcxtWalletCashflowHistoryEntry {
+    const entry = (rawEntry as CcxtWalletCashflowLike | undefined) ?? {};
+    const topLevel = this.readRecord(rawEntry) ?? {};
+    const info = this.readRecord(entry.info) ?? topLevel;
+    const type =
+      this.readString(entry.type) ??
+      this.readString(topLevel.type) ??
+      this.readString(info.type) ??
+      this.readString(info.incomeType) ??
+      this.readString(info.tranType) ??
+      this.readString(info.transferType);
+    const rawAmount =
+      this.readNumber(entry.amount) ??
+      this.readNumber(topLevel.amount) ??
+      this.readNumber(info.amount) ??
+      this.readNumber(info.income) ??
+      this.readNumber(info.delta) ??
+      this.readNumber(info.qty) ??
+      0;
+    const fee = this.extractWalletCashflowFee(entry, topLevel, info);
+    const direction = this.resolveWalletCashflowDirection({
+      amount: rawAmount,
+      direction: this.readString(entry.direction) ?? this.readString(topLevel.direction),
+      source,
+      type,
+    });
+    const occurredAt =
+      this.readDate(entry.timestamp) ??
+      this.readDate(topLevel.timestamp) ??
+      this.readDate(topLevel.time) ??
+      this.readDate(topLevel.datetime) ??
+      this.readDate(info.time) ??
+      this.readDate(info.insertTime) ??
+      this.readDate(info.applyTime) ??
+      this.readDate(info.updateTime) ??
+      this.readDate(info.createdAt) ??
+      this.readDate(entry.datetime);
+
+    return {
+      exchangeEventId:
+        this.readString(entry.id) ??
+        this.readString(entry.txid) ??
+        this.readString(entry.referenceId) ??
+        this.readString(topLevel.id) ??
+        this.readString(topLevel.txid) ??
+        this.readString(info.id) ??
+        this.readString(info.txId) ??
+        this.readString(info.tranId) ??
+        this.readString(info.applyId) ??
+        this.readString(info.withdrawOrderId),
+      direction,
+      type,
+      amount: Math.abs(rawAmount),
+      currency:
+        this.readString(entry.currency) ??
+        this.readString(entry.code) ??
+        this.readString(topLevel.currency) ??
+        this.readString(topLevel.code) ??
+        this.readString(info.asset) ??
+        this.readString(info.coin) ??
+        this.readString(info.currency),
+      feeCost: fee.cost,
+      feeCurrency: fee.currency,
+      occurredAt,
+      status:
+        this.readString(entry.status) ??
+        this.readString(topLevel.status) ??
+        this.readString(info.status),
+      source,
+      raw: rawEntry,
+    };
+  }
+
+  private extractWalletCashflowFee(
+    entry: CcxtWalletCashflowLike,
+    topLevel: Record<string, unknown>,
+    info: Record<string, unknown>
+  ) {
+    if (typeof entry.fee === 'number' && Number.isFinite(entry.fee)) {
+      return { cost: entry.fee, currency: null };
+    }
+    const feeRecord = this.readRecord(entry.fee);
+    return {
+      cost:
+        this.readNumber(feeRecord?.cost) ??
+        this.readNumber(topLevel.fee) ??
+        this.readNumber(info.fee) ??
+        this.readNumber(info.transactionFee) ??
+        0,
+      currency:
+        this.readString(feeRecord?.currency) ??
+        this.readString(info.feeAsset) ??
+        this.readString(info.commissionAsset),
+    };
+  }
+
+  private resolveWalletCashflowDirection(input: {
+    amount: number;
+    direction: string | null;
+    source: CcxtWalletCashflowHistoryEntry['source'];
+    type: string | null;
+  }): CcxtWalletCashflowHistoryEntry['direction'] {
+    const direction = input.direction?.toLowerCase() ?? '';
+    const type = input.type?.toLowerCase() ?? '';
+    if (input.source === 'fetchDeposits' || direction === 'in' || direction === 'credit') return 'IN';
+    if (input.source === 'fetchWithdrawals' || direction === 'out' || direction === 'debit') return 'OUT';
+    if (input.amount > 0) return 'IN';
+    if (input.amount < 0) return 'OUT';
+    if (/(deposit|transfer_in|income|realized_pnl|funding_fee)/i.test(type)) return 'IN';
+    if (/(withdraw|transfer_out|expense|commission|fee)/i.test(type)) return 'OUT';
+    return 'NEUTRAL';
+  }
+
   private extractFee(trade: CcxtTradeLike): {
     feeCost: number;
     feeCurrency: string | null;
@@ -666,6 +857,17 @@ export class CcxtFuturesConnector {
     if (typeof value === 'string' && value.trim().length > 0) {
       const parsed = Number(value);
       return Number.isFinite(parsed) ? parsed : null;
+    }
+    return null;
+  }
+
+  private readDate(value: unknown): Date | null {
+    if (typeof value === 'number' && Number.isFinite(value)) return new Date(value);
+    if (typeof value === 'string' && value.trim().length > 0) {
+      const parsedNumber = Number(value);
+      if (Number.isFinite(parsedNumber)) return new Date(parsedNumber);
+      const parsedDate = Date.parse(value);
+      if (Number.isFinite(parsedDate)) return new Date(parsedDate);
     }
     return null;
   }

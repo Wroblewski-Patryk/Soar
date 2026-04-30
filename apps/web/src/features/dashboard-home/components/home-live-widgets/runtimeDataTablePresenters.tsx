@@ -2,6 +2,7 @@ import { LuPencil, LuX } from "react-icons/lu";
 
 import type { DataTableColumn } from "@/ui/components/DataTable";
 import AssetSymbol from "@/ui/components/AssetSymbol";
+import { TableIconButtonAction } from "@/ui/components/TableUi";
 import type { BotRuntimeTrade } from "@/features/bots/types/bot.type";
 import { renderDcaLadderCell } from "@/features/shared/dcaLadderCell";
 import { resolveDynamicTslDisplay, resolveDynamicTtpDisplay } from "./runtimeDerivations";
@@ -230,33 +231,27 @@ export const createOpenPositionsColumns = ({
           : closePositionButtonLabel;
       const editLabel = row.actionable === false ? positionActionsUnavailableLabel : editPositionButtonLabel;
       return (
-        <div className="flex items-center justify-end gap-1">
-          <button
-            type="button"
-            className="btn btn-outline btn-xs btn-square"
+        <div className="flex items-center justify-end gap-2">
+          <TableIconButtonAction
+            label={editLabel}
+            icon={<LuPencil className="h-3.5 w-3.5" aria-hidden />}
+            tone="info"
             onClick={() => onOpenPositionEdit(row)}
             disabled={actionsDisabled}
-            aria-label={editLabel}
-            title={editLabel}
-          >
-            <LuPencil className="h-3.5 w-3.5" aria-hidden />
-            <span className="sr-only">{editLabel}</span>
-          </button>
-          <button
-            type="button"
-            className="btn btn-error btn-outline btn-xs btn-square"
+          />
+          <TableIconButtonAction
+            label={actionLabel}
+            icon={
+              isClosing ? (
+                <span className="loading loading-spinner loading-xs" aria-hidden />
+              ) : (
+                <LuX className="h-3.5 w-3.5" aria-hidden />
+              )
+            }
+            tone="danger"
             onClick={() => onCloseRuntimePosition(row)}
             disabled={actionsDisabled}
-            aria-label={actionLabel}
-            title={actionLabel}
-          >
-            {isClosing ? (
-              <span className="loading loading-spinner loading-xs" aria-hidden />
-            ) : (
-              <LuX className="h-3.5 w-3.5" aria-hidden />
-            )}
-            <span className="sr-only">{actionLabel}</span>
-          </button>
+          />
         </div>
       );
     },

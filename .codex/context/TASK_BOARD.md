@@ -17,6 +17,46 @@ Last updated: 2026-04-30
 
 ## READY
 
+- [x] `WLEDGER-07..09 web-wallet-preview: expose ledger-backed wallet preview from wallet list`
+  - Scope: add a wallets table preview action and `/dashboard/wallets/:id/preview` surface for ledger-backed summary, equity timeline, and cashflow events.
+  - 2026-04-30: Closed by wiring the shared `preview` table action to a new wallet preview route and rendering performance summary, contributed capital, bot PnL, wallet delta, unclassified adjustment, equity timeline, and cashflow events from the prepared wallet analytics APIs. The UI uses existing dashboard view states/table/card patterns, keeps partial ledger state visible, and formats crypto amounts safely as number plus symbol. Validation PASS: focused wallet web tests, web typecheck, web build, route-reachable i18n audit, repository guardrails.
+
+- [x] `WLEDGER-06 api-read: expose wallet performance summary, timeline, and cashflow APIs`
+  - Scope: add wallet analytics read endpoints with completeness state from persisted snapshots and cashflow events.
+  - 2026-04-30: Closed by adding `performance-summary`, `equity-timeline`, and `cashflow-events` routes under dashboard wallets. The read model exposes current balance, contributed capital, bot PnL fields, fees/funding, unclassified adjustment, wallet delta percent, timeline points, cashflow markers, and completeness state. Validation PASS: focused wallet API e2e and API typecheck.
+
+- [x] `WLEDGER-05 api-classify: classify initial and exchange-backed wallet cashflows`
+  - Scope: classify initial contributed capital and deterministic exchange-history wallet movements into `WalletCashflowEvent` rows without using raw balance drift as bot PnL.
+  - 2026-04-30: Closed by adding `walletCashflowClassifier.service.ts`, mapping initial allocated balance to `INITIAL_BALANCE`, mapping exchange deposits/withdrawals/transfers/fees/funding/realized-income/unknown movements to explicit cashflow sources, and idempotently upserting stable exchange event ids. Validation PASS: focused classifier, wallet, runtime tests and API typecheck.
+
+- [x] `WLEDGER-04 api-ingest: persist initial and runtime LIVE wallet balance snapshots`
+  - Scope: record exchange-backed `WalletBalanceSnapshot` rows during LIVE wallet creation and fresh runtime balance refreshes without changing runtime sizing semantics.
+  - 2026-04-30: Closed by adding `walletLedger.service.ts`, recording the initial LIVE wallet snapshot inside wallet creation, and recording periodic snapshots when runtime capital fetches a fresh exchange balance outside the cache. Validation PASS: focused wallet/runtime tests, API typecheck.
+
+- [x] `WLEDGER-03 exchange: expose Binance wallet cashflow history behind the exchange adapter boundary`
+  - Scope: add one authenticated-read operation for wallet cashflow history, keep Binance as the only supported V1 exchange, normalize supported CCXT account-history reads, and keep unsupported exchanges fail-closed.
+  - 2026-04-30: Closed by adding `WALLET_CASHFLOW_HISTORY` to the exchange execution/authenticated-read contracts, exposing `fetchSupportedExchangeWalletCashflowHistoryRaw(...)` through `exchangeAdapterBoundary`, and teaching `CcxtFuturesConnector` to normalize `fetchLedger`, `fetchDeposits`, `fetchWithdrawals`, and `fetchTransactions` rows into deterministic cashflow-history entries. Validation PASS: focused exchange tests and API typecheck.
+
+- [x] `WLEDGER-02 db: add LIVE wallet balance snapshot and cashflow event persistence`
+  - Scope: add persistent wallet balance snapshot and wallet cashflow event models without changing runtime sizing or dashboard read behavior yet.
+  - 2026-04-30: Closed by adding Prisma enums/models for `WalletBalanceSnapshot` and `WalletCashflowEvent`, including user/wallet ownership, balance/allocation snapshot fields, cashflow direction/source, deterministic exchange-event uniqueness, optional lifecycle links to position/order/trade, and migration `20260430200000_add_live_wallet_cashflow_ledger`. Validation PASS: Prisma validate and API typecheck.
+
+- [x] `WLEDGER-01 docs(contract): freeze LIVE wallet ledger data model and completeness semantics`
+  - Scope: convert the wallet ledger target into an implementation-grade architecture contract before DB/API work begins.
+  - 2026-04-30: Closed by publishing `docs/architecture/reference/live-wallet-cashflow-ledger-contract.md`, linking it from the wallet source-of-truth contract, and extending the exchange access ownership matrix so future wallet cashflow history reads stay behind the canonical exchange authenticated-read boundary. The contract freezes persistent model semantics, event classification, completeness states (`COMPLETE/PARTIAL/UNAVAILABLE`), read-model formulas, API response fields, dashboard behavior, and forbidden accounting shortcuts. Validation PASS: repository guardrails.
+
+- [x] `WLEDGER-00 docs(product+architecture): freeze LIVE wallet cashflow ledger and equity timeline target`
+  - Scope: document the target wallet performance model so future implementation can separate contributed user capital, bot PnL, deposits, withdrawals, transfers, fees/funding, and unclassified exchange adjustments.
+  - 2026-04-30: Closed as a documentation/planning slice after operator discussion confirmed the intended model: if a user starts with `5 USDT`, bot earns `+1 USDT`, and the user later deposits `+10 USDT`, wallet delta should remain bot PnL `+1 USDT` over contributed capital `15 USDT`, not treat the deposit as bot profit. Architecture now records the target ledger/equity model, product docs and known limits are aligned, module docs identify wallet/exchange responsibilities, and the queued implementation plan is published in `docs/planning/live-wallet-cashflow-ledger-and-equity-timeline-plan-2026-04-30.md`. Validation PASS: repository guardrails.
+
+- [x] `UXFIX-2026-04-30-B fix(web-dashboard): derive LIVE percent wallet delta from runtime equity and net PnL`
+  - Scope: keep dashboard wallet KPI rendering in the web layer aligned with the existing runtime capital snapshot contract, without changing API/runtime behavior.
+  - 2026-04-30: Closed after operator review showed the dashboard wallet panel rendered `Delta from start` as `-` for `LIVE` percent-allocation bots even when runtime capital and PnL fields were available. The web now keeps fixed-allocation and PAPER baseline behavior, but for `LIVE` percent allocation derives a session delta baseline from `runtime portfolio - selected net PnL`, so the row can show truthful `net PnL % | amount` whenever runtime equity is present. Validation PASS: focused `RuntimeSidebarSection` test, web typecheck, repository guardrails.
+
+- [x] `UXFIX-2026-04-30-A fix(web-dashboard): align dashboard Positions row actions with shared table action styles`
+  - Scope: keep dashboard runtime `Positions` table behavior unchanged while reusing the shared table action button contract for the row-level edit and close controls.
+  - 2026-04-30: Closed by replacing ad-hoc `btn-outline` action classes in the dashboard open-positions presenter with shared `TableIconButtonAction` tones (`info` for edit, `danger` for close) while preserving existing icons, disabled state, labels, and callbacks. Validation PASS: focused runtime table presenter test, web typecheck, repository guardrails.
+
 - [x] `V1SAFE-19 fix(api-runtime-read): keep imported LIVE fallback TTP visible when stale runtime state drifts below the armed threshold`
   - Scope: stop dashboard `Positions` from hiding valid `TTP` on imported managed `LIVE` rows when the canonical position is already above the first arm threshold, but stale runtime state still carries an older entry basis or non-positive trailing-take-profit trigger fields.
   - 2026-04-30: Closed after protected production verification on `XRPUSDT` proved the API itself returned `dynamicTtpStopLoss=null` despite `strategyAutomationContextResolved=true`, configured `TTP 5%/2%`, and `PnL%` above the arm threshold. Runtime position serialization now treats runtime `TTP` tracking as authoritative only when it yields a valid positive trigger, and runtime positions read now ignores stale runtime state for display when its canonical basis drifts from the current imported `EXCHANGE_SYNC` position. Validation PASS: focused runtime serialization unit pack, focused dynamic-stop operator-truth e2e, API typecheck, repository guardrails.

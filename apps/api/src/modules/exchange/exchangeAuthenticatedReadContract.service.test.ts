@@ -12,8 +12,10 @@ describe('exchangeAuthenticatedReadContract.service', () => {
     expect(supportsAuthenticatedExchangeRead('BINANCE', 'BALANCE_PREVIEW')).toBe(true);
     expect(supportsAuthenticatedExchangeRead('BINANCE', 'POSITIONS_SNAPSHOT')).toBe(true);
     expect(supportsAuthenticatedExchangeRead('BINANCE', 'OPEN_ORDERS_SNAPSHOT')).toBe(true);
+    expect(supportsAuthenticatedExchangeRead('BINANCE', 'WALLET_CASHFLOW_HISTORY')).toBe(true);
     expect(supportsAuthenticatedExchangeRead('OKX', 'BALANCE_PREVIEW')).toBe(false);
     expect(supportsAuthenticatedExchangeRead('BYBIT', 'POSITIONS_SNAPSHOT')).toBe(false);
+    expect(supportsAuthenticatedExchangeRead('COINBASE', 'WALLET_CASHFLOW_HISTORY')).toBe(false);
   });
 
   it('fails closed with explicit operation details when authenticated read is unsupported', () => {

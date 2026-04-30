@@ -4,6 +4,9 @@ import {
   createWallet,
   deleteWallet,
   getWallet,
+  getWalletCashflowEvents,
+  getWalletEquityTimeline,
+  getWalletPerformanceSummary,
   listWalletMetadata,
   listWallets,
   previewBalance,
@@ -19,6 +22,9 @@ const walletPreviewLimiter = createRateLimiter({ windowMs: 60_000, max: 20, keyS
 walletsRouter.get('/', walletReadLimiter, listWallets);
 walletsRouter.get('/metadata', walletReadLimiter, listWalletMetadata);
 walletsRouter.post('/preview-balance', walletPreviewLimiter, previewBalance);
+walletsRouter.get('/:id/performance-summary', walletReadLimiter, getWalletPerformanceSummary);
+walletsRouter.get('/:id/equity-timeline', walletReadLimiter, getWalletEquityTimeline);
+walletsRouter.get('/:id/cashflow-events', walletReadLimiter, getWalletCashflowEvents);
 walletsRouter.get('/:id', walletReadLimiter, getWallet);
 walletsRouter.post('/', walletWriteLimiter, createWallet);
 walletsRouter.put('/:id', walletWriteLimiter, updateWallet);

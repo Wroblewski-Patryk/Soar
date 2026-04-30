@@ -131,8 +131,16 @@ export const WalletBalancePreviewSchema = z
     }
   });
 
+export const WalletAnalyticsQuerySchema = z.object({
+  from: z.string().datetime().optional(),
+  to: z.string().datetime().optional(),
+  bucket: z.enum(['raw', 'hour', 'day']).default('raw').optional(),
+  source: z.string().trim().min(1).optional(),
+});
+
 export type CreateWalletDto = z.infer<typeof CreateWalletSchema>;
 export type UpdateWalletDto = z.infer<typeof UpdateWalletSchema>;
 export type ListWalletsQueryDto = z.infer<typeof ListWalletsQuerySchema>;
 export type WalletMetadataQueryDto = z.infer<typeof WalletMetadataQuerySchema>;
 export type WalletBalancePreviewDto = z.infer<typeof WalletBalancePreviewSchema>;
+export type WalletAnalyticsQueryDto = z.infer<typeof WalletAnalyticsQuerySchema>;

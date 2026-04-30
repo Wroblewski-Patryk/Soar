@@ -8,6 +8,7 @@ export const dashboardRoutes = {
     list: "/dashboard/wallets/list",
     create: "/dashboard/wallets/create",
     edit: (id: string) => `/dashboard/wallets/${id}/edit`,
+    preview: (id: string) => `/dashboard/wallets/${id}/preview`,
   },
   markets: {
     root: "/dashboard/markets",

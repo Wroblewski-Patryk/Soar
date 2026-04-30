@@ -14,7 +14,8 @@ export type AuthenticatedExchangeReadOperation =
   | 'BALANCE_PREVIEW'
   | 'POSITIONS_SNAPSHOT'
   | 'OPEN_ORDERS_SNAPSHOT'
-  | 'TRADE_HISTORY_SNAPSHOT';
+  | 'TRADE_HISTORY_SNAPSHOT'
+  | 'WALLET_CASHFLOW_HISTORY';
 
 export class ExchangeAuthenticatedReadUnsupportedError extends DomainError<{
   exchange: Exchange;

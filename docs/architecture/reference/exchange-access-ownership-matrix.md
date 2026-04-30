@@ -18,6 +18,7 @@ reintroduce parallel bootstrap, metadata, or snapshot flows.
 | Live exchange order submit | `apps/api/src/modules/orders/orders.service.ts` through `apps/api/src/modules/exchange/liveOrderAdapter.service.ts` and authenticated connector bootstrap | manual `LIVE` order-open flow and future runtime execution submitters | direct `ccxt` order placement or connector bootstrap inside feature modules |
 | Wallet metadata resolution | `apps/api/src/modules/exchange/exchangeMetadataContract.service.ts` | wallets module + manual-order symbol-rule metadata consumers | independent wallet+exchange fallback logic in each module |
 | Exchange snapshot reads | `apps/api/src/modules/positions/positions.service.ts` through `exchangeAuthenticatedRead.service.ts` | dashboard positions/exchange sync consumers | direct authenticated client lifecycle ownership outside the shared boundary |
+| Wallet ledger exchange-history reads | `apps/api/src/modules/exchange/exchangeAdapterBoundary.service.ts` via `fetchSupportedExchangeWalletCashflowHistoryRaw` and `WALLET_CASHFLOW_HISTORY` capability | wallets ledger ingestion and wallet performance analytics | wallets/bots modules creating authenticated clients or scraping exchange history directly |
 
 ## Integration Rules
 
@@ -97,6 +98,8 @@ Consumers must never infer:
 - `LIVE_EXECUTION => POSITIONS_SNAPSHOT`
 - `LIVE_EXECUTION => OPEN_ORDERS_SNAPSHOT`
 - `LIVE_EXECUTION => LIVE_ORDER_CANCEL`
+- `LIVE_EXECUTION => wallet cashflow history support`
+- `BALANCE_PREVIEW => wallet cashflow history support`
 - `MARKET_CATALOG(exchange) => MARKET_CATALOG(exchange, all market types)`
 - `API_KEY_PROBE(exchange) => authenticated reads or execution support`
 - `supported on SPOT => supported on FUTURES`

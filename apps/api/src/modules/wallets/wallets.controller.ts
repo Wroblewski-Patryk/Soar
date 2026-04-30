@@ -7,6 +7,7 @@ import {
   ListWalletsQuerySchema,
   UpdateWalletSchema,
   WalletBalancePreviewSchema,
+  WalletAnalyticsQuerySchema,
   WalletMetadataQuerySchema,
 } from './wallets.types';
 import { WALLET_ERROR_CODES } from './wallets.errors';
@@ -70,6 +71,51 @@ export const getWallet = async (req: Request, res: Response) => {
   if (!wallet) return sendError(res, 404, 'Not found');
 
   return res.json(wallet);
+};
+
+export const getWalletPerformanceSummary = async (req: Request, res: Response) => {
+  const userId = req.user?.id;
+  if (!userId) return sendError(res, 401, 'Unauthorized');
+
+  try {
+    const { id } = req.params;
+    const query = WalletAnalyticsQuerySchema.parse(req.query);
+    const summary = await walletsService.getWalletPerformanceSummary(userId, id, query);
+    if (!summary) return sendError(res, 404, 'Not found');
+    return res.json(summary);
+  } catch (error) {
+    return handleWalletError(res, error);
+  }
+};
+
+export const getWalletEquityTimeline = async (req: Request, res: Response) => {
+  const userId = req.user?.id;
+  if (!userId) return sendError(res, 401, 'Unauthorized');
+
+  try {
+    const { id } = req.params;
+    const query = WalletAnalyticsQuerySchema.parse(req.query);
+    const timeline = await walletsService.getWalletEquityTimeline(userId, id, query);
+    if (!timeline) return sendError(res, 404, 'Not found');
+    return res.json(timeline);
+  } catch (error) {
+    return handleWalletError(res, error);
+  }
+};
+
+export const getWalletCashflowEvents = async (req: Request, res: Response) => {
+  const userId = req.user?.id;
+  if (!userId) return sendError(res, 401, 'Unauthorized');
+
+  try {
+    const { id } = req.params;
+    const query = WalletAnalyticsQuerySchema.parse(req.query);
+    const events = await walletsService.getWalletCashflowEvents(userId, id, query);
+    if (!events) return sendError(res, 404, 'Not found');
+    return res.json(events);
+  } catch (error) {
+    return handleWalletError(res, error);
+  }
 };
 
 export const listWalletMetadata = async (req: Request, res: Response) => {

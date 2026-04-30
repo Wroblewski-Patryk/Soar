@@ -17,6 +17,12 @@ This document defines intentional MVP limits so release decisions remain explici
 - No formal SLO/SLA commitments yet.
 - Manual incident handling with runbook guidance (no full incident automation).
 - Backup/restore relies on infrastructure-level routines, not app-managed snapshots.
+- LIVE wallet capital currently uses authenticated exchange balance as the
+  runtime authority, but does not yet persist a full wallet cashflow ledger for
+  deposits, withdrawals, transfers, fees/funding, and historical equity charting.
+  Until that ledger ships, wallet performance analytics can show current balance
+  and bot PnL-derived dashboard deltas, but cannot fully reconstruct all
+  user-added or user-removed capital over time.
 
 ## Security and Risk Limits (MVP)
 - User consent and audit logging are enforced for live-risk actions.
@@ -31,6 +37,8 @@ This document defines intentional MVP limits so release decisions remain explici
 - Expanded logs explorer and decision-trace UX.
 - Strategy import/export versioning and compatibility policy.
 - Hardened auth recovery and account security workflows.
+- LIVE wallet cashflow ledger and equity timeline, including user
+  deposits/withdrawals/transfers and unclassified exchange adjustments.
 
 ## Release Note
 Use this file with:
