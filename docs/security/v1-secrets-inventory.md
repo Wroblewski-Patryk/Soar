@@ -21,12 +21,15 @@ Purpose: canonical inventory of production-relevant secrets, their owners, and r
 ## Platform and Integration Secrets
 | Secret | Environment key(s) | Primary owner | Rotation cadence | Notes |
 | --- | --- | --- | --- | --- |
-| Database credentials | `DATABASE_URL`, `STAGE_DATABASE_URL` | Ops owner | every 90 days | Rotate with restore drill evidence and migration compatibility check. |
+| Database credentials | `DATABASE_URL` | Ops owner | every 90 days | Rotate with restore drill evidence and migration compatibility check. |
 | Redis credentials | `REDIS_URL` | Ops owner | every 90 days | Validate queue/readiness after change. |
 | CoinGecko API key (optional) | `COINGECKO_API_KEY` | Ops owner | every 180 days | Required if target environment enforces vendor key auth. |
-| Stage deploy webhook | `COOLIFY_STAGE_DEPLOY_HOOK_URL` | Ops owner | every 90 days | GitHub Actions secret. |
 | Prod deploy webhook | `COOLIFY_PROD_DEPLOY_HOOK_URL` | Ops owner | every 90 days | GitHub Actions secret. |
 | Prod rollback webhook | `COOLIFY_PROD_ROLLBACK_HOOK_URL` | Ops owner | every 90 days | Must be tested by rollback drill. |
+
+Stage secrets were intentionally removed from the active inventory on 2026-04-29
+because the Soar stage environment is parked. Re-add them only when a stage
+environment and stage workflows are intentionally restored.
 
 ## Rotation Readiness Rules
 1. Any rotation touching `JWT_SECRET` or `API_KEY_ENCRYPTION_KEYS` must pass startup/readiness validation before release.

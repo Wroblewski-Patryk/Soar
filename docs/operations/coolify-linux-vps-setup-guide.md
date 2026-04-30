@@ -10,11 +10,13 @@ Provide one repeatable setup path for hosting CryptoSparrow on a Linux VPS with 
 - domain routing,
 - deployment checks.
 
-This guide is for STAGE and PROD environments.
+This guide is for the active PROD environment. Stage is intentionally parked as
+of 2026-04-29 to avoid unused redeploy queues and duplicated VPS resource usage.
+Reintroduce it only when the project again needs pre-production validation.
 
 ## Target Topology
 
-For each environment (`stage` and `prod`) deploy:
+For the active `prod` environment deploy:
 1. Postgres service
 2. Redis service
 3. API service (`apps/api`)
@@ -34,9 +36,11 @@ Production:
 - Web: `soar.luckysparrow.ch`
 - API: `api.soar.luckysparrow.ch`
 
-Stage (recommended pattern):
-- Web: `stage-soar.luckysparrow.ch`
-- API: `stage-api.soar.luckysparrow.ch`
+Stage:
+- currently disabled/removed from active Coolify deployment
+- previous pattern, if reintroduced later:
+  - Web: `stage.soar.luckysparrow.ch`
+  - API: `stage-api.soar.luckysparrow.ch`
 
 ## Prerequisites
 
@@ -53,10 +57,9 @@ Repository requirements:
 ## Step 1: Create Coolify Project and Environment
 
 1. In Coolify, create project: `cryptosparrow`.
-2. Create environment:
-   - `stage` (first),
-   - `prod` (after stage validation).
-3. Keep stage and prod resources separate.
+2. Create or keep only the `production` environment active.
+3. If stage is reintroduced later, keep stage and prod resources separate and
+   disable auto-deploy until the stage workflow is intentionally restored.
 
 ## Step 2: Provision Data Services
 
@@ -105,7 +108,7 @@ Required environment variables:
 - `COINGECKO_API_BASE_URL=https://api.coingecko.com/api/v3`
 - `COIN_ICON_CACHE_TTL_MINUTES=360` (recommended baseline; tune per traffic profile)
 
-Optional but recommended in STAGE/PROD:
+Optional but recommended in PROD:
 - `COINGECKO_API_KEY=<secret>`
 
 Optional migration toggle:
@@ -224,23 +227,9 @@ Note:
 - API startup runs `prisma migrate deploy` automatically (safe/idempotent path).
 - Do **not** use destructive commands like `prisma migrate reset` or reseeding in production.
 
-## Step 8: Stage Validation Gate
+## Step 8: Production Rollout
 
-After STAGE deploy:
-1. `GET /health` -> `200`
-2. `GET /ready` -> `200`
-3. Open stage web URL and login flow.
-4. Validate dashboard base data load.
-5. Validate workers heartbeat and runtime update path.
-6. Validate icon lookup endpoint for deterministic fallback behavior:
-   - `GET /dashboard/icons/lookup?symbols=BTCUSDT,UNKNOWNXYZ`
-   - verify response includes both `source: "coingecko"` and `source: "placeholder"` contracts when expected.
-
-Only promote same commit SHA to PROD after full pass.
-
-## Step 9: Production Rollout
-
-1. Promote immutable SHA from STAGE to PROD.
+1. Deploy the selected SHA to PROD during a controlled window.
 2. Run same health checks.
 3. Run smoke checks from runbook:
    - `docs/operations/v1-ops-runbook.md`
@@ -257,7 +246,7 @@ If post-deploy health fails:
 ## Common Failure Points
 
 1. Wrong `NEXT_PUBLIC_API_BASE_URL` -> web cannot reach API.
-2. Stage using prod DB/Redis by mistake.
+2. Reintroduced stage using prod DB/Redis by mistake.
 3. Missing worker service -> runtime data stale.
 4. Wrong/missing cookie session config (`COOKIE_DOMAIN`, `COOKIE_SAME_SITE`) for deployed domains.
 5. API CORS not matching web domain.

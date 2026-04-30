@@ -12,9 +12,7 @@ Reduce risk of unsafe deployment promotion by hardening branch protections, work
    - CI/CD workflow and deployment docs paths require owner review.
 2. CI workflow permissions reduced:
    - `.github/workflows/ci.yml` uses `permissions: contents: read`.
-3. Stage/Prod deployment workflows already rely on explicit secrets and protected environments:
-   - `deploy-stage.yml`,
-   - `stage-gates.yml`,
+3. Production deployment workflows rely on explicit secrets and protected environments:
    - `promote-prod.yml`,
    - `prod-rollback.yml`.
 
@@ -31,18 +29,12 @@ Apply in GitHub repository settings:
 - Disallow force pushes.
 - Disallow branch deletion.
 
-### `develop` (integration branch)
+### Integration branches
 - Restrict direct pushes to trusted maintainers or PR-only flow.
-- Require status checks for deployment chain health:
-  - `Deploy STAGE`,
-  - `Stage Gates`.
+- Require normal CI status checks before merging into the production branch.
 - Disallow force pushes.
 
 ## Required Environment Protection
-
-### `stage` environment
-- Limit who can approve/rerun workflows.
-- Keep stage secrets isolated from production values.
 
 ### `production` environment
 - Require manual reviewers for sensitive workflows where needed.
@@ -52,19 +44,16 @@ Apply in GitHub repository settings:
 ## Secret Hardening Rules
 1. Store only in GitHub Secrets/Environment Secrets.
 2. Never commit secret values into repository files or workflow YAML.
-3. Use distinct values per environment (`stage` vs `production`).
+3. Keep production-only values active while stage is parked.
 4. Rotate webhook URLs/credentials after incidents or quarterly.
 5. Audit workflows for secret usage before enabling new automation links.
 
 ## Verification Checklist
 - [ ] `CODEOWNERS` present and active.
-- [ ] Branch protection enabled for `main` and `develop`.
-- [ ] `stage` and `production` environments configured with protections.
+- [ ] Branch protection enabled for the production branch.
+- [ ] `production` environment configured with protections.
 - [ ] Required secrets exist:
-  - `COOLIFY_STAGE_DEPLOY_HOOK_URL`
   - `COOLIFY_PROD_DEPLOY_HOOK_URL`
   - `COOLIFY_PROD_ROLLBACK_HOOK_URL`
-  - `STAGE_DATABASE_URL`
-  - `STAGE_API_BASE_URL`
-  - `STAGE_WEB_BASE_URL`
-- [ ] Deployment chain run completed with green `Stage Gates`.
+- [ ] Stage-only secrets removed or left unused while stage remains parked.
+- [ ] Production deployment run completed with green post-deploy gates.

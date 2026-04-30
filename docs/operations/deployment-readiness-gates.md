@@ -1,17 +1,20 @@
 # Deployment Readiness Gates (Web/API/Workers)
 
 Date: 2026-04-03  
-Scope: Standardized gate contract for STAGE and PROD rollout decisions.
+Scope: Standardized gate contract for production rollout decisions.
 
 ## Goal
-Provide one deterministic gate pack for deployment promotion and post-deploy verification.
+Provide one deterministic gate pack for deployment and post-deploy verification.
+
+Stage is parked as of 2026-04-29. The old `.github/workflows/stage-gates.yml`
+entry point has been removed so unused stage resources do not redeploy on push.
 
 ## Gate Categories
 
 Automation entry point:
-- Workflow: `.github/workflows/stage-gates.yml`
-- Output artifact: `stage-gates-report-<run_id>` (`.json` + `.md`)
-- Required stage secrets: `STAGE_DATABASE_URL`, `STAGE_API_BASE_URL`, `STAGE_WEB_BASE_URL`
+- Workflow: `.github/workflows/promote-prod.yml`
+- Required production secrets: `COOLIFY_PROD_DEPLOY_HOOK_URL`,
+  `PROD_API_BASE_URL`, `PROD_RUNTIME_FRESHNESS_TOKEN`
 
 ### G1 - Build Gate
 Required:
@@ -37,14 +40,14 @@ Required responses:
 Time budget:
 - readiness must become green within configured rollout timeout.
 
-Failure effect: stage fail (or prod rollback trigger if post-deploy).
+Failure effect: prod rollback trigger if post-deploy.
 
 ### G4 - Web Availability Gate
 Required:
 - web root route returns HTTP `200`,
 - web can reach API baseline endpoint through configured `NEXT_PUBLIC_API_BASE_URL`.
 
-Failure effect: stage fail (or prod rollback trigger if post-deploy).
+Failure effect: prod rollback trigger if post-deploy.
 
 ### G5 - Workers Readiness Gate
 Required:
@@ -52,7 +55,7 @@ Required:
 - worker readiness signal is healthy (`/workers/health` and `/workers/ready` via API),
 - no startup crash loop for execution/market workers.
 
-Failure effect: stage fail (or prod rollback trigger if post-deploy).
+Failure effect: prod rollback trigger if post-deploy.
 
 ### G6 - Smoke Gate
 Required minimal smoke:
@@ -71,11 +74,8 @@ Required:
 
 Failure effect: prod rollback trigger condition (runtime-critical regression).
 
-## Stage Promotion Rule
-Promotion to PROD is allowed only when **all required gates G1..G7 pass** for the same candidate SHA.
-
 ## Prod Post-Deploy Rule
-After promotion, required post-deploy verification includes:
+After deployment, required post-deploy verification includes:
 - G3 API,
 - G4 Web,
 - G5 Workers,
@@ -97,4 +97,4 @@ Gate evidence is mandatory for release sign-off and incident audit trail.
 ## Fail-Closed Principle
 Missing or inconclusive gate evidence is treated as `FAIL`.
 
-No gate may be skipped for automatic promotion mode.
+No gate may be skipped for production release sign-off.

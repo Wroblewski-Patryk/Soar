@@ -45,7 +45,7 @@ jobs:
           fi
 
           payload=$(cat <<EOF
-          {"sha":"$GIT_SHA","ref":"$GIT_REF","repository":"$REPOSITORY","actor":"$ACTOR","environment":"production","source":"stage-gates"}
+          {"sha":"$GIT_SHA","ref":"$GIT_REF","repository":"$REPOSITORY","actor":"$ACTOR","environment":"production","source":"manual-production-only"}
           EOF
           )
 

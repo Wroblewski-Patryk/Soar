@@ -1,59 +1,45 @@
-# DEV -> STAGE -> PROD Promotion Contract (Immutable SHA)
+# DEV -> PROD Deployment Contract (Immutable SHA)
 
 Date: 2026-04-03  
 Scope: CI/CD delivery contract for CryptoSparrow deployment pipeline.
 
 ## Goal
-Guarantee that production receives exactly the same verified code revision that passed all STAGE gates.
+Guarantee that production receives an explicit, verified code revision.
 
-Core principle: **build once, verify once, promote the same immutable commit SHA**.
+Core principle: **select one immutable commit SHA, deploy it intentionally, verify it immediately**.
+
+Stage is parked as of 2026-04-29 to avoid unused Coolify redeploy queues and
+duplicated VPS resource usage. Reintroduce it only with an explicit workflow
+restoration task.
 
 ## Canonical Promotion Flow
-1. Developer lands changes in `develop` (or configured integration branch).
-2. CI builds and deploys candidate SHA to `STAGE`.
-3. STAGE gate pack executes (build/test/migrate/health/smoke/workers).
-4. If and only if all required gates are green, pipeline promotes the same SHA to `PROD`.
-5. PROD post-deploy gates run.
-6. If PROD gates fail, automatic rollback moves services to previous stable release.
-
-## Stage Deployment Automation Entry Point
-- Workflow: `.github/workflows/deploy-stage.yml`
-- Trigger: push to `develop` (and manual `workflow_dispatch`)
-- Required secret: `COOLIFY_STAGE_DEPLOY_HOOK_URL`
+1. Developer lands changes in the configured production branch.
+2. CI builds/tests candidate SHA through normal repository checks.
+3. Operator triggers production deployment for the selected SHA.
+4. PROD post-deploy gates run.
+5. If PROD gates fail, automatic rollback moves services to previous stable release.
 
 ## Production Promotion Automation Entry Point
 - Workflow: `.github/workflows/promote-prod.yml`
-- Trigger: successful completion of `Stage Gates` (and manual `workflow_dispatch`)
+- Trigger: manual `workflow_dispatch`
 - Required secret: `COOLIFY_PROD_DEPLOY_HOOK_URL`
 
 ## Immutable SHA Invariants
 The following are non-negotiable:
-1. `PROD` deployment input SHA must equal the SHA validated on `STAGE`.
-2. No rebuild from changed source between STAGE pass and PROD rollout.
-3. Promotion metadata must include:
+1. `PROD` deployment must target the selected repository SHA.
+2. No rebuild from changed source between candidate verification and PROD rollout.
+3. Deployment metadata must include:
    - candidate SHA,
-   - stage gate report ID/path,
-   - promotion timestamp,
+   - production deployment timestamp,
    - operator/automation identity.
-4. Any mismatch (`stageSha != prodCandidateSha`) hard-fails promotion.
-
-## Stage Gate Pack (Required)
-A candidate is eligible for promotion only when all required checks pass:
-1. Monorepo install + build (`api`, `web`) pass.
-2. Migration gate pass:
-   - migration step succeeded on stage DB,
-   - no blocking drift detected.
-3. Critical tests pass (contract/e2e suite baseline for impacted modules).
-4. API health + readiness pass.
-5. Web smoke pass (UI route reachability + API connectivity baseline).
-6. Worker readiness pass (`workers/health`, `workers/ready`, runtime queue sanity).
+4. Any mismatch between requested SHA and deployed SHA blocks release sign-off.
 
 ## Promotion Eligibility Rules
 Candidate is promotable only when:
-- all required STAGE gates are green,
+- repository quality gates are green for the selected SHA,
 - no unresolved blocking incidents are attached to candidate SHA,
 - branch protection rules are satisfied for target branch,
-- evidence artifact is generated and stored.
+- deployment evidence artifact is generated and stored.
 
 If any rule fails: promotion is blocked and `PROD` remains unchanged.
 
@@ -76,10 +62,9 @@ Rollback behavior:
 
 ## Evidence and Audit Contract
 Each promotion attempt must emit machine-readable evidence (JSON/Markdown) with:
-- `stageSha`,
 - `prodSha`,
 - gate results map,
-- decision (`PROMOTED` / `BLOCKED` / `ROLLED_BACK`),
+- decision (`DEPLOYED` / `BLOCKED` / `ROLLED_BACK`),
 - timestamps and service scope,
 - rollback reason (if any).
 
