@@ -20,6 +20,7 @@ Last updated: 2026-04-30
 - [ ] `V1ROE-04 qa(prod-manual): verify exchange-aligned LIVE PnL truth and imported automation on protected DOGEUSDT`
   - Scope: collect authenticated protected production API/browser evidence after the current candidate is deployed, proving `DOGEUSDT` `LIVE` PnL truth and imported managed automation are aligned with exchange-synced runtime truth.
   - 2026-04-30 status: BLOCKED by protected production verification access/deploy freshness, not by a known remaining local code gap. The exact evidence contract is now published in `docs/planning/v1roe-04-production-verification-task-2026-04-30.md`. Do not mark this done from local tests alone.
+  - 2026-04-30 partial: deploy freshness is verified on production (`522e1d95`, `main`) and public API/web smoke passed, but protected runtime probes return `401 Missing token` without production auth in this environment. Evidence: `docs/operations/v1roe-04-prod-verification-partial-2026-04-30.md`.
 
 - [x] `WLEDGER-07..09 web-wallet-preview: expose ledger-backed wallet preview from wallet list`
   - Scope: add a wallets table preview action and `/dashboard/wallets/:id/preview` surface for ledger-backed summary, equity timeline, and cashflow events.

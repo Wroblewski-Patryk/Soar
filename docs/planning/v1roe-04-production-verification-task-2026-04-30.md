@@ -74,11 +74,11 @@ blocked-state report naming the missing access/deploy prerequisite.
   missing prerequisite named.
 
 ## Definition of Done
-- [ ] Production candidate freshness is verified.
+- [x] Production candidate freshness is verified.
 - [ ] Protected `DOGEUSDT` API evidence is captured.
 - [ ] Dashboard/browser parity evidence is captured.
-- [ ] Closure artifact is published in `docs/operations/`.
-- [ ] Canonical queue/context docs are synchronized.
+- [x] Partial evidence artifact is published in `docs/operations/`.
+- [x] Canonical queue/context docs are synchronized for the blocked state.
 
 ## Stage Exit Criteria
 - [x] The output matches the declared `Current Stage`.
@@ -94,9 +94,13 @@ blocked-state report naming the missing access/deploy prerequisite.
   gap; create the next narrow task instead.
 
 ## Validation Evidence
-- Tests: not run for this planning/status slice.
-- Manual checks: local queue/context reviewed on 2026-04-30.
-- Screenshots/logs: none yet.
+- Tests:
+  - `node scripts/deploySmokeCheck.mjs --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers` => PASS
+  - `node scripts/checkPostDeployRuntimeFreshness.mjs --base-url https://api.soar.luckysparrow.ch` => BLOCKED (`401 Missing token`)
+- Manual checks:
+  - Public `https://soar.luckysparrow.ch/api/build-info` reports `gitSha=522e1d95e2612e280ca36eacb825358a3d26f19c`, `gitRef=main`.
+  - Direct unauthenticated protected probes return `401 Missing token`.
+- Screenshots/logs: `docs/operations/v1roe-04-prod-verification-partial-2026-04-30.md`
 - High-risk checks: protected production evidence is still required before
   closure because this touches money-impacting LIVE runtime truth.
 
@@ -217,12 +221,13 @@ Not applicable.
 ## Result Report
 
 - Task summary: published the exact protected production evidence contract for
-  `V1ROE-04` and made the current blocked state explicit.
-- Files changed: this task file plus canonical queue/context status.
-- How tested: repository guardrails for the document-only slice.
-- What is incomplete: production candidate freshness and protected
-  `DOGEUSDT` API/browser evidence.
-- Next steps: deploy/current-candidate confirmation, then authenticated
-  protected verification.
+  `V1ROE-04`, verified production deploy freshness, and recorded the protected
+  auth blocker.
+- Files changed: this task file, partial evidence artifact, plus canonical
+  queue/context status.
+- How tested: public build-info, public deploy smoke, protected runtime
+  freshness attempt, direct protected endpoint probes, repository guardrails.
+- What is incomplete: protected `DOGEUSDT` API/browser evidence.
+- Next steps: rerun protected verification with production auth token/cookie.
 - Decisions made: do not close `V1ROE-04` from local tests or inferred
   evidence.
