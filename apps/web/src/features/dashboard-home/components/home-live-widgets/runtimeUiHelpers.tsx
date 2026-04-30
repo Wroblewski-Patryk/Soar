@@ -149,6 +149,26 @@ export const tradeReasonLabelKey = (value: TradeActionReasonValue): TranslationK
   return "dashboard.home.runtime.reasonUnknown";
 };
 
+export const tradeReasonPresentation = ({
+  value,
+  lifecycleAction,
+}: {
+  value: TradeActionReasonValue;
+  lifecycleAction?: TradeActionValue | null;
+}): { className: string; labelKey: TranslationKey } => {
+  if (value === "POSITION_LIFETIME" && lifecycleAction === "OPEN") {
+    return {
+      className: "border-info/40 bg-info/10 text-info",
+      labelKey: "dashboard.home.runtime.reasonPositionLifecycleOpen",
+    };
+  }
+
+  return {
+    className: tradeReasonPillClass(value),
+    labelKey: tradeReasonLabelKey(value),
+  };
+};
+
 export const closeInitiatorPillClass = (value: CloseInitiatorValue) => {
   if (value === "USER_APP") return "border-secondary/40 bg-secondary/10 text-secondary";
   if (value === "BOT_APP") return "border-primary/40 bg-primary/10 text-primary";

@@ -7,6 +7,8 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1SAFE-17 fix(web-history): stop labeling imported OPEN lifecycle anchors as close-by-position-lifetime`
+  - 2026-04-30: Closed after protected production and code inspection confirmed that `History` could show `Position lifetime` on imported `OPEN` lifecycle anchors, even though those rows were not true timeout closes. The backend contract intentionally reuses `POSITION_LIFETIME` for imported/open anchors, so the fix stays in the web presentation layer: trade-history badges now distinguish `POSITION_LIFETIME + OPEN` as lifecycle-open context and keep `Position lifetime` only for true close-side rows. Validation PASS: focused `runtimeUiHelpers` web test, web typecheck, route-reachable i18n audit, repository guardrails.
 - [x] `V1SAFE-16 fix(api+web-strategy-edit): clarify active-bot strategy lock and surface direct bot-settings unblock path`
   - 2026-04-30: Closed after the user reported that stopping a `LIVE` bot still left strategy edit blocked while trying to set lifecycle lifetime to `0`. The backend guard remains intentionally tied to `bot.isActive`, but strategy-lock responses now carry the blocking `botId + botName`, and the strategy edit screen now states explicitly that runtime stop is not enough and offers a direct link to the blocking bot's settings. Validation PASS: focused `strategies.e2e`, web typecheck, route-reachable i18n audit, repository guardrails.
 - [x] `V1SAFE-15 fix(api-runtime-serialization): keep fallback dynamic TTP display monotonic from canonical trailing anchor`

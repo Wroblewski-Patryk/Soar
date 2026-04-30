@@ -217,6 +217,7 @@ export const dashboardHomePl = {
     "reasonSignalExit": "Wyjscie sygnalem",
     "reasonManual": "Manualnie",
     "reasonLiquidation": "Likwidacja",
+    "reasonPositionLifecycleOpen": "Otwarcie cyklu pozycji",
     "reasonPositionLifetime": "Limit czasu pozycji",
     "reasonExternalClose": "Zamkniete poza aplikacja",
     "reasonSystemRepair": "Naprawa systemowa",

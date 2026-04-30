@@ -17,6 +17,10 @@ Last updated: 2026-04-30
 
 ## READY
 
+- [x] `V1SAFE-17 fix(web-history): distinguish imported OPEN lifecycle anchors from true position-lifetime closes`
+  - Scope: keep the existing backend/runtime trade-history contract intact, but stop the dashboard `History` table from presenting imported `OPEN` anchor rows as if `Position lifetime` were the real close reason.
+  - 2026-04-30: Closed after protected production payload inspection and code review confirmed the drift lived in the web reason badge, not in close attribution itself. The dashboard now treats `POSITION_LIFETIME + OPEN` as lifecycle-open context with dedicated copy, while true close-side `POSITION_LIFETIME` rows keep the existing timeout-close label. Validation PASS: focused `runtimeUiHelpers` test, web typecheck, route-reachable i18n audit, repository guardrails.
+
 - [x] `V1SAFE-16 fix(api+web-strategy-edit): clarify active-bot strategy lock and surface direct bot-settings unblock path`
   - Scope: keep the canonical `strategy edit/delete blocked while linked bot isActive=true` guard intact, but stop operators from confusing runtime stop with configuration deactivation when they need to change urgent strategy fields such as lifetime.
   - 2026-04-30: Closed after confirming the current backend guard is intentionally keyed to `bot.isActive`, not to runtime session state. Strategy lock errors now include the blocking `botId + botName`, and the strategy edit page now explains that stopping runtime is not enough, surfaces the blocking bot identity, and links straight to that bot's settings so the operator can switch `Active` off before saving. Validation PASS: focused `strategies.e2e`, web typecheck, route-reachable i18n audit, repository guardrails.

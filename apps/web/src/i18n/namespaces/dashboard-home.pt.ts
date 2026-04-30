@@ -216,6 +216,7 @@ export const dashboardHomePt = {
     "reasonSignalExit": "Signal exit",
     "reasonManual": "Manual",
     "reasonLiquidation": "Liquidation",
+    "reasonPositionLifecycleOpen": "Abertura do ciclo da posicao",
     "reasonPositionLifetime": "Position lifetime",
     "reasonExternalClose": "External close",
     "reasonSystemRepair": "System repair",

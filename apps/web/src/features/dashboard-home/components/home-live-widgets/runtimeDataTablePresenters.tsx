@@ -11,8 +11,7 @@ import {
   closeInitiatorPillClass,
   CloseInitiatorValue,
   DirectionPill,
-  tradeReasonLabelKey,
-  tradeReasonPillClass,
+  tradeReasonPresentation,
   TradeActionPill,
   TradeActionReasonValue,
 } from "./runtimeUiHelpers";
@@ -558,9 +557,13 @@ export const createTradesColumns = ({
     accessor: (row) => row.actionReason ?? "UNKNOWN",
     render: (row) => {
       const reason = (row.actionReason ?? "UNKNOWN") as TradeActionReasonValue;
+      const presentation = tradeReasonPresentation({
+        value: reason,
+        lifecycleAction: row.lifecycleAction,
+      });
       return (
-        <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${tradeReasonPillClass(reason)}`}>
-          {t(tradeReasonLabelKey(reason))}
+        <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${presentation.className}`}>
+          {t(presentation.labelKey)}
         </span>
       );
     },
