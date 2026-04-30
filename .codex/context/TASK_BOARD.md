@@ -17,6 +17,10 @@ Last updated: 2026-04-30
 
 ## READY
 
+- [ ] `V1ROE-04 qa(prod-manual): verify exchange-aligned LIVE PnL truth and imported automation on protected DOGEUSDT`
+  - Scope: collect authenticated protected production API/browser evidence after the current candidate is deployed, proving `DOGEUSDT` `LIVE` PnL truth and imported managed automation are aligned with exchange-synced runtime truth.
+  - 2026-04-30 status: BLOCKED by protected production verification access/deploy freshness, not by a known remaining local code gap. The exact evidence contract is now published in `docs/planning/v1roe-04-production-verification-task-2026-04-30.md`. Do not mark this done from local tests alone.
+
 - [x] `WLEDGER-07..09 web-wallet-preview: expose ledger-backed wallet preview from wallet list`
   - Scope: add a wallets table preview action and `/dashboard/wallets/:id/preview` surface for ledger-backed summary, equity timeline, and cashflow events.
   - 2026-04-30: Closed by wiring the shared `preview` table action to a new wallet preview route and rendering performance summary, contributed capital, bot PnL, wallet delta, unclassified adjustment, equity timeline, and cashflow events from the prepared wallet analytics APIs. The UI uses existing dashboard view states/table/card patterns, keeps partial ledger state visible, and formats crypto amounts safely as number plus symbol. Validation PASS: focused wallet web tests, web typecheck, web build, route-reachable i18n audit, repository guardrails.

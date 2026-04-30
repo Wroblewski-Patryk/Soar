@@ -154,7 +154,7 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `V1ROE-01 fix(api+web+runtime): align shared lifecycle PnL fraction to canonical margin basis`
 - [x] `V1ROE-02 test(api-contract): lock runtime positions margin-basis and unrealizedPnlPercent contract`
 - [x] `V1ROE-03 fix(api-normalization): prefer isolated-wallet margin truth for isolated LIVE futures positions`
-- [ ] `V1ROE-04 qa(prod-manual): verify exchange-aligned LIVE PnL truth and DCA non-trigger on the protected DOGEUSDT flow`
+- [ ] `V1ROE-04 qa(prod-manual): verify exchange-aligned LIVE PnL truth and DCA non-trigger on the protected DOGEUSDT flow` - BLOCKED pending protected production verification; task packet: `docs/planning/v1roe-04-production-verification-task-2026-04-30.md`
 
 ### Progress Log (Phase V1ROE-2026-04-30 - LIVE PnL Truth And Shared Lifecycle Margin-Basis Parity)
 - 2026-04-30: Closed `V1TAKE-10` as the architecture-alignment companion slice for the imported `LIVE` runtime work. The user-approved contract is now canonical in code and docs: imported-position management authority lives on `Bot.manageExternalPositions`, not on wallet settings. Added schema backfill from linked wallets, rewired runtime/takeover ownership resolution to the bot-level flag plus symbol scope, removed the editable wallet toggle from operator UX, and exposed one checkbox in bot settings only. Validation PASS: focused runtime ownership/takeover API pack, focused bot+wallet web form pack, API/web typecheck, repository guardrails.
