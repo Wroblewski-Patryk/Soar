@@ -37,6 +37,7 @@ import {
   ReconcileFn,
   ReconciliationStatus,
 } from './livePositionReconciliation.types';
+import { runtimePositionAutomationService } from '../engine/runtimePositionAutomation.service';
 
 const STALE_LOCAL_MANAGED_LIVE_POSITION_GRACE_MS = 10 * 60 * 1000;
 const STALE_LOCAL_MANAGED_LIVE_POSITION_FALLBACK_GRACE_MS = 60 * 60 * 1000;
@@ -53,6 +54,7 @@ const defaultDeps: ReconcileDeps = {
       select: {
         id: true,
         userId: true,
+        exchange: true,
       },
       orderBy: [{ userId: 'asc' }, { updatedAt: 'desc' }],
     });
@@ -323,8 +325,36 @@ const defaultDeps: ReconcileDeps = {
       },
     });
   },
+  processOwnedSyncedPositionAutomation: async (input) => {
+    await runtimePositionAutomationService.handleTickerEvent({
+      type: 'ticker',
+      exchange: input.exchange,
+      marketType: input.marketType,
+      symbol: input.symbol,
+      eventTime: input.eventTime.getTime(),
+      lastPrice: input.markPrice,
+      markPrice: input.markPrice,
+      priceChangePercent24h: 0,
+    });
+  },
   now: () => new Date(),
 };
+
+const shouldTriggerOwnedSyncedPositionAutomation = (input: {
+  managementMode: 'BOT_MANAGED' | 'MANUAL_MANAGED';
+  continuityState:
+    | 'CONFIRMED'
+    | 'RECOVERING'
+    | 'RECOVERED_UNACTIONABLE'
+    | 'EXTERNAL_CLOSE_CONFIRMED'
+    | 'REPAIR_ONLY_CLEANUP';
+  markPrice: number | null;
+}) =>
+  input.managementMode === 'BOT_MANAGED' &&
+  input.continuityState === 'CONFIRMED' &&
+  typeof input.markPrice === 'number' &&
+  Number.isFinite(input.markPrice) &&
+  input.markPrice > 0;
 
 export const reconcileExternalPositionsFromExchange = async (
   deps: ReconcileDeps = defaultDeps
@@ -563,6 +593,22 @@ export const reconcileExternalPositionsFromExchange = async (
             missingSince: null,
             missingSyncCount: 0,
           });
+          if (
+            deps.processOwnedSyncedPositionAutomation &&
+            shouldTriggerOwnedSyncedPositionAutomation({
+              managementMode,
+              continuityState,
+              markPrice: position.markPrice ?? null,
+            })
+          ) {
+            await deps.processOwnedSyncedPositionAutomation({
+              exchange: 'BINANCE',
+              marketType: 'FUTURES',
+              symbol: normalizedSymbol,
+              markPrice: position.markPrice as number,
+              eventTime: syncedAt,
+            });
+          }
         } else {
           const openedAt = position.timestamp ? new Date(position.timestamp) : openedAtFallback;
           await deps.createSyncedPosition({
@@ -613,6 +659,22 @@ export const reconcileExternalPositionsFromExchange = async (
                 trades: tradeHistory,
               });
             }
+          }
+          if (
+            deps.processOwnedSyncedPositionAutomation &&
+            shouldTriggerOwnedSyncedPositionAutomation({
+              managementMode,
+              continuityState,
+              markPrice: position.markPrice ?? null,
+            })
+          ) {
+            await deps.processOwnedSyncedPositionAutomation({
+              exchange: 'BINANCE',
+              marketType: 'FUTURES',
+              symbol: normalizedSymbol,
+              markPrice: position.markPrice as number,
+              eventTime: syncedAt,
+            });
           }
         }
       }

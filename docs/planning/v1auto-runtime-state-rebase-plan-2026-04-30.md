@@ -1,17 +1,19 @@
 # V1AUTO-A - Imported LIVE Runtime-State Rebase Hardening
 
-Status: Active
+Status: Closed
 Date: 2026-04-30
 Owner: Codex Execution Agent
 
 ## Goal
 
-Close the remaining `LIVE` automation continuity gap where an `EXCHANGE_SYNC`
-position can keep the same local `positionId` after exchange truth changes, but
-still inherit stale runtime management state (`currentAdds`, trailing state,
-entry basis, quantity basis). This must fail closed and rebase the runtime state
-to canonical exchange-synced position truth before `DCA/TTP/TSL` decisions are
-made.
+Close the remaining imported `LIVE` automation continuity gap in two parts:
+
+1. stale persisted runtime continuity must not survive canonical
+   exchange-synced basis drift on the same imported row
+2. freshly adopted canonically owned imported rows must not stay dormant until
+   a later ticker-path event finally wakes runtime automation
+
+Both parts must stay fail-closed and reuse the canonical runtime engine.
 
 ## Why This Exists
 
@@ -45,8 +47,8 @@ persisted state from `runtimePositionStateStore`.
 ## Task Breakdown
 
 1. `V1AUTO-01 fix(api-runtime): rebase stale imported runtime state to canonical exchange-synced basis`
-2. `V1AUTO-02 test(api-runtime): lock imported same-row basis drift against stale DCA state reuse`
-3. `V1AUTO-03 qa(closure): run focused runtime automation pack and sync context`
+2. `V1AUTO-02 fix(api-reconcile): hydrate imported LIVE automation prospectively from fresh exchange-sync truth`
+3. `V1AUTO-03 qa(closure): run focused runtime automation and reconciliation pack and sync context`
 
 ## Validation Target
 
@@ -56,7 +58,9 @@ persisted state from `runtimePositionStateStore`.
 
 ## Definition of Done
 
-- Imported `LIVE` runtime automation cannot reuse stale persisted state when the
-  canonical exchange-synced position basis changed materially.
-- The new regression is covered by focused tests.
+- Imported `LIVE` runtime automation cannot reuse stale persisted state when
+  the canonical exchange-synced position basis changed materially.
+- Canonically owned imported `LIVE` rows can hydrate automation prospectively
+  from fresh reconciliation truth without waiting for a later ticker-path wake-up.
+- Focused tests cover both the stale-state and hydration seams.
 - Queue/context truth is synchronized.

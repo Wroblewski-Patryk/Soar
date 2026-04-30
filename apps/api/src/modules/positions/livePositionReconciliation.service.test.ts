@@ -299,6 +299,139 @@ describe('reconcileExternalPositionsFromExchange', () => {
     );
   });
 
+  it('hydrates owned LIVE automation from fresh exchange-sync truth after creating a managed imported position', async () => {
+    const processOwnedSyncedPositionAutomation = vi.fn(async () => undefined);
+
+    await reconcileExternalPositionsFromExchange({
+      listSyncedApiKeys: vi.fn(async () => [
+        {
+          id: 'key-live-automation-create-1',
+          userId: 'user-live-automation-create-1',
+          exchange: 'BINANCE' as const,
+          marketType: 'FUTURES' as const,
+        },
+      ]),
+      resolveOwnershipIndexForUser: vi.fn(async () =>
+        new Map([
+          [
+            'key-live-automation-create-1:DOGEUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-live-automation-create-1',
+              walletId: 'wallet-live-automation-create-1',
+            },
+          ],
+        ])
+      ),
+      fetchPositionsForApiKey: vi.fn(async () => ({
+        positions: [
+          {
+            symbol: 'DOGE/USDT:USDT',
+            side: 'short',
+            contracts: 108,
+            entryPrice: 0.1044,
+            markPrice: 0.1069,
+            unrealizedPnl: -0.26,
+            leverage: 15,
+            timestamp: '2026-03-23T00:05:00.000Z',
+          },
+        ],
+      })),
+      findOpenSyncedPositionByExternalId: vi.fn(async () => null),
+      resolveCanonicalBotContinuityContext: vi.fn(async () => ({
+        botId: 'bot-live-automation-create-1',
+        walletId: 'wallet-live-automation-create-1',
+        strategyId: 'strategy-live-automation-create-1',
+      })),
+      updateSyncedPosition: vi.fn(async () => undefined),
+      createSyncedPosition: vi.fn(async () => undefined),
+      listOpenSyncedPositionsForApiKey: vi.fn(async () => []),
+      markMissingSyncedPosition: vi.fn(async () => undefined),
+      closeStaleSyncedPosition: vi.fn(async () => undefined),
+      processOwnedSyncedPositionAutomation,
+      now: () => new Date('2026-03-23T00:05:01.000Z'),
+    });
+
+    expect(processOwnedSyncedPositionAutomation).toHaveBeenCalledWith({
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'DOGEUSDT',
+      markPrice: 0.1069,
+      eventTime: new Date('2026-03-23T00:05:01.000Z'),
+    });
+  });
+
+  it('hydrates owned LIVE automation from fresh exchange-sync truth after updating an existing managed imported position', async () => {
+    const processOwnedSyncedPositionAutomation = vi.fn(async () => undefined);
+
+    await reconcileExternalPositionsFromExchange({
+      listSyncedApiKeys: vi.fn(async () => [
+        {
+          id: 'key-live-automation-update-1',
+          userId: 'user-live-automation-update-1',
+          exchange: 'BINANCE' as const,
+          marketType: 'FUTURES' as const,
+        },
+      ]),
+      resolveOwnershipIndexForUser: vi.fn(async () =>
+        new Map([
+          [
+            'key-live-automation-update-1:DOGEUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-live-automation-update-1',
+              walletId: 'wallet-live-automation-update-1',
+            },
+          ],
+        ])
+      ),
+      fetchPositionsForApiKey: vi.fn(async () => ({
+        positions: [
+          {
+            symbol: 'DOGE/USDT:USDT',
+            side: 'short',
+            contracts: 108,
+            entryPrice: 0.1044,
+            markPrice: 0.1069,
+            unrealizedPnl: -0.26,
+            leverage: 15,
+            timestamp: '2026-03-23T00:06:00.000Z',
+          },
+        ],
+      })),
+      findOpenSyncedPositionByExternalId: vi.fn(async () => ({
+        id: 'pos-live-automation-update-1',
+        botId: 'bot-live-automation-update-1',
+        walletId: 'wallet-live-automation-update-1',
+        strategyId: 'strategy-live-automation-update-1',
+        openedAt: new Date('2026-03-23T00:05:00.000Z'),
+        managementMode: 'BOT_MANAGED' as const,
+        continuityState: 'CONFIRMED' as const,
+        missingSyncCount: 0,
+      })),
+      resolveCanonicalBotContinuityContext: vi.fn(async () => ({
+        botId: 'bot-live-automation-update-1',
+        walletId: 'wallet-live-automation-update-1',
+        strategyId: 'strategy-live-automation-update-1',
+      })),
+      updateSyncedPosition: vi.fn(async () => undefined),
+      createSyncedPosition: vi.fn(async () => undefined),
+      listOpenSyncedPositionsForApiKey: vi.fn(async () => []),
+      markMissingSyncedPosition: vi.fn(async () => undefined),
+      closeStaleSyncedPosition: vi.fn(async () => undefined),
+      processOwnedSyncedPositionAutomation,
+      now: () => new Date('2026-03-23T00:06:01.000Z'),
+    });
+
+    expect(processOwnedSyncedPositionAutomation).toHaveBeenCalledWith({
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'DOGEUSDT',
+      markPrice: 0.1069,
+      eventTime: new Date('2026-03-23T00:06:01.000Z'),
+    });
+  });
+
   it('requires repeated missing confirmations before classifying external close', async () => {
     const markMissingSyncedPosition = vi.fn(async () => undefined);
     const closeStaleSyncedPosition = vi.fn(async () => undefined);

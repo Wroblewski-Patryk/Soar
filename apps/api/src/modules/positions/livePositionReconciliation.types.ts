@@ -1,3 +1,4 @@
+import { Exchange } from '@prisma/client';
 import { ExternalPositionOwnershipIndex } from '../bots/runtimeExternalPositionOwner.service';
 import { ExchangeTradeHistoryItem } from './positions.exchangeSnapshot.types';
 
@@ -15,6 +16,7 @@ export type ReconcileFn = () => Promise<{ openPositionsSeen: number }>;
 export type SyncedApiKey = {
   id: string;
   userId: string;
+  exchange?: Exchange;
 };
 
 export type ExternalSnapshotPosition = {
@@ -228,5 +230,12 @@ export type ReconcileDeps = {
     walletId: string;
   }) => Promise<LocalManagedLivePosition[]>;
   closeStaleLocalManagedPosition?: (positionId: string, closedAt: Date) => Promise<void>;
+  processOwnedSyncedPositionAutomation?: (input: {
+    exchange: 'BINANCE';
+    marketType: 'FUTURES';
+    symbol: string;
+    markPrice: number;
+    eventTime: Date;
+  }) => Promise<void>;
   now: () => Date;
 };
