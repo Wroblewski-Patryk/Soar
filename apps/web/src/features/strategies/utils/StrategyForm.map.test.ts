@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formToPayload } from './StrategyForm.map';
+import { dtoToForm, formToPayload } from './StrategyForm.map';
 import { StrategyFormState } from '../types/StrategyForm.type';
 
 const baseForm = (): StrategyFormState => ({
@@ -78,5 +78,37 @@ describe('formToPayload', () => {
 
     expect(additional.positionLifetime).toBe(0);
     expect(additional.orderLifetime).toBe(0);
+  });
+
+  it('sanitizes legacy invalid advanced trailing thresholds on dto load', () => {
+    const form = dtoToForm({
+      id: 'strategy-1',
+      name: 'Legacy close drift',
+      description: '',
+      interval: '5m',
+      leverage: 10,
+      createdAt: new Date().toISOString(),
+      walletRisk: 1,
+      config: {
+        open: { direction: 'both', indicatorsLong: [], indicatorsShort: [] },
+        close: {
+          mode: 'advanced',
+          tp: 3,
+          sl: 2,
+          ttp: [
+            { percent: 20, arm: 10 },
+            { percent: 10, arm: 20 },
+          ],
+          tsl: [
+            { percent: -20, arm: 10 },
+            { percent: -5, arm: 10 },
+          ],
+        },
+        additional: baseForm().additional,
+      },
+    });
+
+    expect(form.closeConditions.ttp).toEqual([{ percent: 20, arm: 10 }]);
+    expect(form.closeConditions.tsl).toEqual([{ percent: -5, arm: 10 }]);
   });
 });

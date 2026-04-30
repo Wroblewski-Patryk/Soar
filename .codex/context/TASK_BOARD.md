@@ -17,6 +17,10 @@ Last updated: 2026-04-30
 
 ## READY
 
+- [x] `V1SAFE-12 fix(web-strategy-edit): sanitize legacy invalid trailing thresholds on strategy form load`
+  - Scope: stop legacy invalid advanced `TTP/TSL` values already stored in strategy config from blocking all later edits in the strategy form, while keeping create/update validation fail-closed for newly submitted invalid thresholds.
+  - 2026-04-30: Closed after the user reported that editing `TTP` still failed even with the bot disabled. Root cause: the current strategy payload still contained one legacy invalid `TSL` level (`arm=10`, `percent=-20`), so the new fail-closed validation correctly blocked submit before the user could save any unrelated `TTP` change. `dtoToForm` now sanitizes legacy invalid advanced trailing thresholds on form load, keeping only levels that satisfy the same protective-close contract already enforced by API/runtime validation. Validation PASS: focused `StrategyForm.map` tests, focused `StrategyForm` tests, web typecheck, repository guardrails.
+
 - [x] `V1SAFE-11 fix(api+web-strategy-close): fail closed on invalid advanced trailing thresholds`
   - Scope: stop strategy configuration, runtime parsing, and operator surfaces from accepting `TTP/TSL` thresholds whose trailing retrace exceeds the activation trigger or arm, because those values can produce non-protective or impossible exit percentages on `LIVE`, `PAPER`, and `BACKTEST`.
   - 2026-04-30: Closed after protected production verification on `XRPUSDT` exposed that the absurd `TSL -292.81%` was not a table-formatting glitch but real backend truth derived from an invalid advanced close configuration (`TSL arm=10`, `trail=-20`). The repository now rejects invalid advanced trailing thresholds at strategy create/update/import, blocks them in the strategy form, filters them fail-closed in runtime config parsing and runtime automation even if legacy data still exists, and stops serializing trailing-trigger percent from negative runtime state. Validation PASS: focused API parser + strategies e2e, focused web `StrategyForm` pack, API/web typecheck, route-reachable i18n audit, repository guardrails.

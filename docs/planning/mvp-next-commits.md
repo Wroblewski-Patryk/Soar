@@ -7,6 +7,8 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1SAFE-12 fix(web-strategy-edit): sanitize legacy invalid trailing thresholds on strategy form load`
+  - 2026-04-30: Closed after real strategy editing still failed despite the bot being disabled. The current strategy config contained one legacy invalid `TSL` level, so the new fail-closed validator blocked submit before unrelated `TTP` edits could be saved. `dtoToForm` now sanitizes legacy invalid advanced `TTP/TSL` thresholds on form load, while create/update validation stays strict for any newly submitted invalid config. Validation PASS: focused `StrategyForm.map` tests, focused `StrategyForm` tests, web typecheck, repository guardrails.
 - [x] `V1SAFE-11 fix(api+web-strategy-close): fail closed on invalid advanced trailing thresholds`
   - 2026-04-30: Closed after protected production verification on `XRPUSDT` proved that the absurd `TSL -292.81%` was not just display drift; the backend was accepting an invalid advanced trailing-stop configuration whose retrace exceeded the activation threshold. Strategy create/update/import now reject that config, the strategy form blocks it before submit, runtime config parsing and runtime automation both filter any legacy invalid thresholds fail-closed, and runtime serialization no longer exposes trailing-trigger percent from negative runtime state. Validation PASS: focused API parser + strategies e2e, focused web `StrategyForm` pack, API/web typecheck, route-reachable i18n audit, repository guardrails.
 - [x] `V1HIST-10 fix(api-ledger): persist imported OPEN lifecycle anchors and replace them when canonical exchange trades arrive`

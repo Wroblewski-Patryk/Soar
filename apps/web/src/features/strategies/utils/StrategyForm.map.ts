@@ -44,6 +44,42 @@ const defaultAdditional: AdditionalState = {
   marginMode: "CROSSED",
 };
 
+const sanitizeTrailingTakeProfitThresholds = (thresholds: CloseConditions["ttp"]) =>
+  thresholds.filter((threshold) => {
+    const triggerPercent = Math.abs(Number(threshold.percent));
+    const trailPercent = Math.abs(Number(threshold.arm));
+    return (
+      Number.isFinite(triggerPercent) &&
+      Number.isFinite(trailPercent) &&
+      triggerPercent > 0 &&
+      trailPercent > 0 &&
+      trailPercent <= triggerPercent
+    );
+  });
+
+const sanitizeTrailingStopThresholds = (thresholds: CloseConditions["tsl"]) =>
+  thresholds.filter((threshold) => {
+    const trailPercent = Math.abs(Number(threshold.percent));
+    const armPercent = Math.abs(Number(threshold.arm));
+    return (
+      Number.isFinite(trailPercent) &&
+      Number.isFinite(armPercent) &&
+      trailPercent > 0 &&
+      armPercent > 0 &&
+      trailPercent <= armPercent
+    );
+  });
+
+const sanitizeCloseConditions = (close?: CloseConditions): CloseConditions => {
+  const normalized = close ?? { mode: "basic", tp: 3, sl: 2, ttp: [], tsl: [] };
+  if (normalized.mode !== "advanced") return normalized;
+  return {
+    ...normalized,
+    ttp: sanitizeTrailingTakeProfitThresholds(normalized.ttp ?? []),
+    tsl: sanitizeTrailingStopThresholds(normalized.tsl ?? []),
+  };
+};
+
 // backend DTO -> form state
 export const dtoToForm = (s: StrategyDtoLike): StrategyFormState => ({
   name: s.name,
@@ -52,7 +88,7 @@ export const dtoToForm = (s: StrategyDtoLike): StrategyFormState => ({
   leverage: s.leverage,
   walletRisk: s.walletRisk ?? 1,
   openConditions: s.config?.open ?? { direction: "both", indicatorsLong: [], indicatorsShort: [] },
-  closeConditions: s.config?.close ?? { mode: "basic", tp: 3, sl: 2, ttp: [], tsl: [] },
+  closeConditions: sanitizeCloseConditions(s.config?.close),
   additional: { ...defaultAdditional, ...(s.config?.additional ?? {}) },
 });
 
