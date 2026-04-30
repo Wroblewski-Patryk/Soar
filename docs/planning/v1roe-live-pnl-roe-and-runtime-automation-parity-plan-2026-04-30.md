@@ -203,6 +203,12 @@ Lock API/runtime contract coverage for:
 
 ### V1ROE-03
 
+Repair isolated-futures exchange margin normalization so `LIVE` uses the same
+real margin basis the operator sees on the exchange when extra isolated margin
+has been added to the position.
+
+### V1ROE-04
+
 Run focused prod-faithful verification for:
 
 - operator `PnL %` truth
@@ -231,6 +237,22 @@ Still open:
 
 - red-lock coverage proving the `runtime positions` API contract cannot drop
   `marginUsed` or `unrealizedPnlPercent` silently
+- fresh protected production verification on the affected `DOGEUSDT` flow
+- remaining `V1EXCEL-03` manual-matrix evidence for mixed-origin `LIVE`
+  scenarios and restart/recovery proof
+
+### 2026-04-30 - isolated margin normalization slice
+
+Closed in code:
+
+- exchange snapshot normalization for isolated futures positions now prefers
+  `isolatedWallet` over `initialMargin`-style fields when deriving canonical
+  `marginUsed`
+- focused unit coverage locks both branches: isolated positions use isolated
+  wallet margin truth, non-isolated positions keep initial-margin precedence
+
+Still open:
+
 - fresh protected production verification on the affected `DOGEUSDT` flow
 - remaining `V1EXCEL-03` manual-matrix evidence for mixed-origin `LIVE`
   scenarios and restart/recovery proof
