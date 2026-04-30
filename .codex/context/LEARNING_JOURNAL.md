@@ -1137,3 +1137,13 @@ pnpm --filter api run test -- --run
 - Symptom: broad runtime packs could report false-red failures in `runtimeSignalLoop.service.test.ts` only when run alongside other engine files, while the same assertions passed in isolation.
 - Verified learning: `RuntimeSignalMarketDataGateway` uses a module-global candle-series store, and runtime ticker state is also shared module-wide. Any test file that emits real runtime candle/ticker events must clear those stores in `beforeEach`, or later files can inherit stale series and look broken for the wrong reason.
 - Action taken: added explicit `clearRuntimeSignalMarketDataStore()` and `clearRuntimeTickerStore()` resets to the runtime files that emit market events directly (`runtime-flow.e2e.test.ts`, `runtimeSignalLoop.service.test.ts`) before relying on broader `LIVE` parity packs.
+
+### 2026-04-30 - Template world-class delivery standards synced
+
+- Context: The project adopted shared template guidance for user collaboration,
+  evidence-driven UX, reliability, secure development, and post-launch learning.
+- Learning: Agent handoffs are more useful when they include the active source
+  of truth, success signal, validations, residual risks, and next tiny task.
+- Guardrail: Use .agents/workflows/world-class-delivery.md for substantial
+  work and apply reliability/security/UX evidence only when the scope warrants
+  it, rather than adding ceremony to tiny safe changes.

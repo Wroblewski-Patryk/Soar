@@ -23,3 +23,10 @@ Translate Soar decisions and documentation into an actionable execution queue.
 - sync the board with `mvp-next-commits.md` when the active queue changes
 - do not treat planning docs as the long-term home of resolved architecture;
   point accepted behavior back into `docs/architecture/`
+
+## Template Sync Rules
+
+- Use .agents/workflows/world-class-delivery.md for substantial product,
+  runtime, release, UX, security, or AI work.
+- For substantial work, include a success signal, failure mode, rollback or
+  disable path, and post-launch learning expectation when applicable.
