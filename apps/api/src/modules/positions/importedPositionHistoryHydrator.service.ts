@@ -1,4 +1,4 @@
-import { FeeSource, PositionSide, PositionStatus } from '@prisma/client';
+import { FeeSource, PositionSide, PositionStatus, TradeLifecycleAction } from '@prisma/client';
 
 import { prisma } from '../../prisma/client';
 import { resolveExternalSyncMissingCloseAttribution } from './positionCloseAttribution';
@@ -27,7 +27,16 @@ type DerivedLifecycleTrade = HydratableTrade & {
   realizedPnl: number;
 };
 
+type ExistingImportedTradeRow = {
+  id: string;
+  exchangeTradeId: string | null;
+  lifecycleAction: TradeLifecycleAction;
+};
+
 const nearlyEqual = (left: number, right: number) => Math.abs(left - right) <= EPSILON;
+
+const isSyntheticImportedOpenAnchorTrade = (trade: ExistingImportedTradeRow) =>
+  trade.exchangeTradeId == null && trade.lifecycleAction === 'OPEN';
 
 const normalizeTradeSide = (side: string | null): 'BUY' | 'SELL' | null => {
   const normalized = side?.trim().toUpperCase();
@@ -284,6 +293,70 @@ const persistImportedLifecycleTrades = async (input: {
   };
 };
 
+const listExistingImportedTradeRows = async (positionId: string) =>
+  prisma.trade.findMany({
+    where: {
+      positionId,
+      origin: 'EXCHANGE_SYNC',
+    },
+    select: {
+      id: true,
+      exchangeTradeId: true,
+      lifecycleAction: true,
+    },
+  });
+
+const deleteImportedTradeRows = async (tradeIds: string[]) => {
+  if (tradeIds.length === 0) return;
+  await prisma.trade.deleteMany({
+    where: {
+      id: { in: tradeIds },
+    },
+  });
+};
+
+const persistImportedOpenAnchorTrade = async (input: {
+  userId: string;
+  positionId: string;
+  botId: string | null;
+  walletId: string | null;
+  strategyId: string | null;
+  symbol: string;
+  positionSide: PositionSide;
+  positionQuantity: number;
+  positionEntryPrice: number;
+  managementMode: 'BOT_MANAGED' | 'MANUAL_MANAGED';
+  executedAt: Date;
+}) => {
+  await prisma.trade.create({
+    data: {
+      userId: input.userId,
+      botId: input.botId,
+      walletId: input.walletId,
+      strategyId: input.strategyId,
+      orderId: null,
+      positionId: input.positionId,
+      symbol: input.symbol,
+      side: input.positionSide === 'LONG' ? 'BUY' : 'SELL',
+      lifecycleAction: 'OPEN',
+      closeReason: null,
+      closeInitiator: null,
+      price: input.positionEntryPrice,
+      quantity: input.positionQuantity,
+      fee: 0,
+      feeSource: FeeSource.ESTIMATED,
+      feePending: false,
+      feeCurrency: null,
+      effectiveFeeRate: null,
+      exchangeTradeId: null,
+      realizedPnl: 0,
+      origin: 'EXCHANGE_SYNC',
+      managementMode: input.managementMode,
+      executedAt: input.executedAt,
+    },
+  });
+};
+
 export const hydrateImportedPositionHistory = async (input: {
   userId: string;
   positionId: string;
@@ -296,15 +369,22 @@ export const hydrateImportedPositionHistory = async (input: {
   managementMode: 'BOT_MANAGED' | 'MANUAL_MANAGED';
   trades: ExchangeTradeHistoryItem[];
 }) => {
-  const existingTradeCount = await prisma.trade.count({
-    where: {
-      positionId: input.positionId,
-      origin: 'EXCHANGE_SYNC',
+  const position = await prisma.position.findUnique({
+    where: { id: input.positionId },
+    select: {
+      openedAt: true,
+      status: true,
+      entryPrice: true,
     },
   });
-  if (existingTradeCount > 0) {
+  if (!position || position.status !== PositionStatus.OPEN) {
     return { hydrated: false, openedAt: null as Date | null };
   }
+
+  const existingTradeRows = await listExistingImportedTradeRows(input.positionId);
+  const existingSyntheticOpenAnchors =
+    existingTradeRows.length > 0 &&
+    existingTradeRows.every(isSyntheticImportedOpenAnchorTrade);
 
   const derivedTrades = deriveImportedLifecycleTrades({
     positionSide: input.positionSide,
@@ -312,44 +392,61 @@ export const hydrateImportedPositionHistory = async (input: {
     trades: input.trades.filter((trade) => normalizeSymbol(trade.symbol) === normalizeSymbol(input.symbol)),
   });
 
-  if (!derivedTrades || derivedTrades.length === 0) {
+  if (derivedTrades && derivedTrades.length > 0) {
+    if (existingTradeRows.length > 0 && !existingSyntheticOpenAnchors) {
+      return { hydrated: false, openedAt: null as Date | null };
+    }
+    if (existingSyntheticOpenAnchors) {
+      await deleteImportedTradeRows(existingTradeRows.map((trade) => trade.id));
+    }
+
+    const { firstOpenTradeAt } = await persistImportedLifecycleTrades({
+      userId: input.userId,
+      positionId: input.positionId,
+      botId: input.botId,
+      walletId: input.walletId,
+      strategyId: input.strategyId,
+      symbol: input.symbol,
+      managementMode: input.managementMode,
+      derivedTrades,
+    });
+
+    if (firstOpenTradeAt && firstOpenTradeAt.getTime() !== position.openedAt.getTime()) {
+      await prisma.position.update({
+        where: { id: input.positionId },
+        data: {
+          openedAt: firstOpenTradeAt,
+        },
+      });
+    }
+
+    return {
+      hydrated: true,
+      openedAt: firstOpenTradeAt,
+    };
+  }
+
+  if (existingTradeRows.length > 0) {
     return { hydrated: false, openedAt: null as Date | null };
   }
 
-  const position = await prisma.position.findUnique({
-    where: { id: input.positionId },
-    select: {
-      openedAt: true,
-      status: true,
-    },
-  });
-  if (!position || position.status !== PositionStatus.OPEN) {
-    return { hydrated: false, openedAt: null as Date | null };
-  }
-
-  const { firstOpenTradeAt } = await persistImportedLifecycleTrades({
+  await persistImportedOpenAnchorTrade({
     userId: input.userId,
     positionId: input.positionId,
     botId: input.botId,
     walletId: input.walletId,
     strategyId: input.strategyId,
     symbol: input.symbol,
+    positionSide: input.positionSide,
+    positionQuantity: input.positionQuantity,
+    positionEntryPrice: position.entryPrice,
     managementMode: input.managementMode,
-    derivedTrades,
+    executedAt: position.openedAt,
   });
-
-  if (firstOpenTradeAt && firstOpenTradeAt.getTime() !== position.openedAt.getTime()) {
-    await prisma.position.update({
-      where: { id: input.positionId },
-      data: {
-        openedAt: firstOpenTradeAt,
-      },
-    });
-  }
 
   return {
     hydrated: true,
-    openedAt: firstOpenTradeAt,
+    openedAt: position.openedAt,
   };
 };
 
@@ -391,6 +488,14 @@ export const backfillClosedImportedPositionHistory = async (input: {
       openedAt: null as Date | null,
       closedAt: null as Date | null,
     };
+  }
+
+  const existingTradeRows = await listExistingImportedTradeRows(input.positionId);
+  const existingSyntheticOpenAnchors =
+    existingTradeRows.length > 0 &&
+    existingTradeRows.every(isSyntheticImportedOpenAnchorTrade);
+  if (existingSyntheticOpenAnchors) {
+    await deleteImportedTradeRows(existingTradeRows.map((trade) => trade.id));
   }
 
   const { createdCount, firstOpenTradeAt, lastCloseTradeAt, realizedPnl } =

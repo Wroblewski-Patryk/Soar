@@ -310,6 +310,20 @@ describe('Bots runtime history parity contract', () => {
       ])
     );
 
+    const positionsRes = await owner.get(`/dashboard/bots/${botId}/runtime-sessions/${session.id}/positions`);
+    expect(positionsRes.status).toBe(200);
+    expect(positionsRes.body.openItems).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: position.id,
+          symbol: 'BNBUSDT',
+          tradesCount: 0,
+          firstTradeAt: null,
+          lastTradeAt: null,
+        }),
+      ])
+    );
+
     const aggregateRes = await owner.get(`/dashboard/bots/${botId}/runtime-monitoring/aggregate`);
     expect(aggregateRes.status).toBe(200);
     expect(aggregateRes.body.trades.items).toEqual(
@@ -319,6 +333,123 @@ describe('Bots runtime history parity contract', () => {
           symbol: 'BNBUSDT',
           lifecycleAction: 'OPEN',
           actionReason: 'POSITION_LIFETIME',
+        }),
+      ])
+    );
+  });
+
+  it('keeps imported OPEN lifecycle visible in both runtime history and canonical positions metadata after local anchor hydration', async () => {
+    const ownerEmail = 'bot-history-imported-open-ledger@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
+
+    const strategyId = await createStrategy(owner, 'Imported Open Ledger');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    const walletId = await createWalletForContext(ownerEmail, {
+      mode: 'LIVE',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: ownerUser.id,
+        name: 'Imported open ledger live bot',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'mvp-v1',
+        walletId,
+        symbolGroupId: marketGroupId,
+        strategyId,
+      },
+      select: { id: true },
+    });
+    const botId = bot.id;
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'LIVE',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-10T07:00:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-10T07:10:00.000Z'),
+      },
+      select: { id: true },
+    });
+
+    const position = await prisma.position.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        walletId,
+        strategyId,
+        externalId: 'api-key-1:XRPUSDT:SHORT',
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        continuityState: 'CONFIRMED',
+        symbol: 'XRPUSDT',
+        side: 'SHORT',
+        status: 'OPEN',
+        entryPrice: 2.15,
+        quantity: 3,
+        leverage: 15,
+        marginUsed: 0.43,
+        openedAt: new Date('2026-04-10T07:04:00.000Z'),
+      },
+      select: { id: true },
+    });
+
+    await prisma.trade.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        walletId,
+        strategyId,
+        positionId: position.id,
+        symbol: 'XRPUSDT',
+        side: 'SELL',
+        lifecycleAction: 'OPEN',
+        price: 2.15,
+        quantity: 3,
+        fee: 0,
+        feeSource: 'ESTIMATED',
+        feePending: false,
+        feeCurrency: null,
+        exchangeTradeId: null,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        executedAt: new Date('2026-04-10T07:04:00.000Z'),
+      },
+    });
+
+    const positionsRes = await owner.get(`/dashboard/bots/${botId}/runtime-sessions/${session.id}/positions`);
+    expect(positionsRes.status).toBe(200);
+    expect(positionsRes.body.openItems).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: position.id,
+          symbol: 'XRPUSDT',
+          tradesCount: 1,
+          firstTradeAt: '2026-04-10T07:04:00.000Z',
+          lastTradeAt: '2026-04-10T07:04:00.000Z',
+        }),
+      ])
+    );
+
+    const tradesRes = await owner.get(`/dashboard/bots/${botId}/runtime-sessions/${session.id}/trades`);
+    expect(tradesRes.status).toBe(200);
+    expect(tradesRes.body.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          symbol: 'XRPUSDT',
+          lifecycleAction: 'OPEN',
+          actionReason: 'POSITION_LIFETIME',
+          positionId: position.id,
         }),
       ])
     );

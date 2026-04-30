@@ -41,6 +41,7 @@ export const listRuntimeTradeRows = async (where: Prisma.TradeWhereInput) =>
       feePending: true,
       feeCurrency: true,
       realizedPnl: true,
+      exchangeTradeId: true,
       closeReason: true,
       closeInitiator: true,
       executedAt: true,

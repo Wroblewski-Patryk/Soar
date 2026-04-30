@@ -47,6 +47,12 @@ const shouldIncludeOpenAnchor = (input: {
   return input.shouldIncludeCarryOverPositions && openedAtMs <= input.rangeEnd.getTime();
 };
 
+const isPersistedImportedOpenAnchorTrade = (trade: {
+  origin: string;
+  lifecycleAction: 'OPEN' | 'DCA' | 'CLOSE' | 'UNKNOWN' | null;
+  exchangeTradeId: string | null;
+}) => trade.origin === 'EXCHANGE_SYNC' && trade.lifecycleAction === 'OPEN' && trade.exchangeTradeId == null;
+
 export const listBotRuntimeSessionTrades = async (
   userId: string,
   botId: string,
@@ -274,7 +280,9 @@ export const listBotRuntimeSessionTrades = async (
           : lifecycleActionByTradeId.get(trade.id) ?? 'UNKNOWN';
       const actionReason: RuntimeTradeActionReason =
         inferredLifecycleAction === 'OPEN'
-          ? 'SIGNAL_ENTRY'
+          ? isPersistedImportedOpenAnchorTrade(trade)
+            ? 'POSITION_LIFETIME'
+            : 'SIGNAL_ENTRY'
           : inferredLifecycleAction === 'DCA'
             ? 'DCA_LEVEL'
             : inferredLifecycleAction === 'CLOSE'

@@ -272,6 +272,303 @@ describe('hydrateImportedPositionHistory', () => {
     expect(updatedPosition.openedAt.toISOString()).toBe('2026-04-29T10:00:00.000Z');
   });
 
+  it('persists one imported OPEN anchor trade when canonical exchange trades are not yet derivable', async () => {
+    const user = await prisma.user.create({
+      data: {
+        email: 'imported-hydrator-open-anchor@example.com',
+        password: 'test1234',
+      },
+    });
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'Hydrator anchor wallet',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const strategy = await prisma.strategy.create({
+      data: {
+        userId: user.id,
+        name: 'Hydrator anchor strategy',
+        interval: '5m',
+        leverage: 5,
+        walletRisk: 1,
+        config: {},
+      },
+    });
+    const marketUniverse = await prisma.marketUniverse.create({
+      data: {
+        userId: user.id,
+        name: 'Hydrator anchor universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: [],
+        blacklist: [],
+      },
+    });
+    const symbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: user.id,
+        marketUniverseId: marketUniverse.id,
+        name: 'Hydrator anchor group',
+        symbols: ['BNBUSDT'],
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'Hydrator anchor bot',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'mvp-v1',
+        walletId: wallet.id,
+        strategyId: strategy.id,
+        symbolGroupId: symbolGroup.id,
+      },
+    });
+    const position = await prisma.position.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        walletId: wallet.id,
+        strategyId: strategy.id,
+        externalId: 'api-key-1:BNBUSDT:SHORT',
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        continuityState: 'CONFIRMED',
+        symbol: 'BNBUSDT',
+        side: 'SHORT',
+        status: 'OPEN',
+        entryPrice: 618.46,
+        quantity: 0.01,
+        leverage: 15,
+        openedAt: new Date('2026-04-29T11:05:00.000Z'),
+      },
+    });
+
+    const result = await hydrateImportedPositionHistory({
+      userId: user.id,
+      positionId: position.id,
+      botId: bot.id,
+      walletId: wallet.id,
+      strategyId: strategy.id,
+      symbol: 'BNBUSDT',
+      positionSide: 'SHORT',
+      positionQuantity: 0.01,
+      managementMode: 'BOT_MANAGED',
+      trades: [],
+    });
+
+    expect(result).toEqual({
+      hydrated: true,
+      openedAt: new Date('2026-04-29T11:05:00.000Z'),
+    });
+
+    const persistedTrades = await prisma.trade.findMany({
+      where: { positionId: position.id },
+      select: {
+        lifecycleAction: true,
+        side: true,
+        price: true,
+        quantity: true,
+        feeSource: true,
+        exchangeTradeId: true,
+        executedAt: true,
+        origin: true,
+      },
+    });
+    expect(persistedTrades).toEqual([
+      {
+        lifecycleAction: 'OPEN',
+        side: 'SELL',
+        price: 618.46,
+        quantity: 0.01,
+        feeSource: 'ESTIMATED',
+        exchangeTradeId: null,
+        executedAt: new Date('2026-04-29T11:05:00.000Z'),
+        origin: 'EXCHANGE_SYNC',
+      },
+    ]);
+  });
+
+  it('replaces a synthetic imported OPEN anchor with real canonical trades once they become available', async () => {
+    const user = await prisma.user.create({
+      data: {
+        email: 'imported-hydrator-open-anchor-replace@example.com',
+        password: 'test1234',
+      },
+    });
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'Hydrator replace wallet',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const strategy = await prisma.strategy.create({
+      data: {
+        userId: user.id,
+        name: 'Hydrator replace strategy',
+        interval: '5m',
+        leverage: 5,
+        walletRisk: 1,
+        config: {},
+      },
+    });
+    const marketUniverse = await prisma.marketUniverse.create({
+      data: {
+        userId: user.id,
+        name: 'Hydrator replace universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: [],
+        blacklist: [],
+      },
+    });
+    const symbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: user.id,
+        marketUniverseId: marketUniverse.id,
+        name: 'Hydrator replace group',
+        symbols: ['DOGEUSDT'],
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'Hydrator replace bot',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'mvp-v1',
+        walletId: wallet.id,
+        strategyId: strategy.id,
+        symbolGroupId: symbolGroup.id,
+      },
+    });
+    const position = await prisma.position.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        walletId: wallet.id,
+        strategyId: strategy.id,
+        externalId: 'api-key-1:DOGEUSDT:LONG',
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        continuityState: 'CONFIRMED',
+        symbol: 'DOGEUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 0.11,
+        quantity: 2,
+        leverage: 5,
+        openedAt: new Date('2026-04-29T10:05:00.000Z'),
+      },
+    });
+
+    const anchorResult = await hydrateImportedPositionHistory({
+      userId: user.id,
+      positionId: position.id,
+      botId: bot.id,
+      walletId: wallet.id,
+      strategyId: strategy.id,
+      symbol: 'DOGEUSDT',
+      positionSide: 'LONG',
+      positionQuantity: 2,
+      managementMode: 'BOT_MANAGED',
+      trades: [],
+    });
+    expect(anchorResult.hydrated).toBe(true);
+
+    const canonicalResult = await hydrateImportedPositionHistory({
+      userId: user.id,
+      positionId: position.id,
+      botId: bot.id,
+      walletId: wallet.id,
+      strategyId: strategy.id,
+      symbol: 'DOGEUSDT',
+      positionSide: 'LONG',
+      positionQuantity: 2,
+      managementMode: 'BOT_MANAGED',
+      trades: [
+        {
+          exchangeTradeId: 't-1',
+          exchangeOrderId: 'o-1',
+          symbol: 'DOGEUSDT',
+          side: 'BUY',
+          price: 0.1,
+          quantity: 1,
+          notional: 0.1,
+          feeCost: 0.001,
+          feeCurrency: 'USDT',
+          feeRate: 0.001,
+          executedAt: '2026-04-29T10:00:00.000Z',
+        },
+        {
+          exchangeTradeId: 't-2',
+          exchangeOrderId: 'o-2',
+          symbol: 'DOGEUSDT',
+          side: 'BUY',
+          price: 0.11,
+          quantity: 2,
+          notional: 0.22,
+          feeCost: 0.001,
+          feeCurrency: 'USDT',
+          feeRate: 0.001,
+          executedAt: '2026-04-29T10:01:00.000Z',
+        },
+        {
+          exchangeTradeId: 't-3',
+          exchangeOrderId: 'o-3',
+          symbol: 'DOGEUSDT',
+          side: 'SELL',
+          price: 0.12,
+          quantity: 1,
+          notional: 0.12,
+          feeCost: 0.001,
+          feeCurrency: 'USDT',
+          feeRate: 0.001,
+          executedAt: '2026-04-29T10:02:00.000Z',
+        },
+      ],
+    });
+
+    expect(canonicalResult.hydrated).toBe(true);
+    expect(canonicalResult.openedAt?.toISOString()).toBe('2026-04-29T10:00:00.000Z');
+
+    const persistedTrades = await prisma.trade.findMany({
+      where: { positionId: position.id },
+      orderBy: { executedAt: 'asc' },
+      select: {
+        exchangeTradeId: true,
+        lifecycleAction: true,
+        feeSource: true,
+      },
+    });
+    expect(persistedTrades).toEqual([
+      { exchangeTradeId: 't-1', lifecycleAction: 'OPEN', feeSource: 'EXCHANGE_FILL' },
+      { exchangeTradeId: 't-2', lifecycleAction: 'DCA', feeSource: 'EXCHANGE_FILL' },
+      { exchangeTradeId: 't-3', lifecycleAction: 'CLOSE', feeSource: 'EXCHANGE_FILL' },
+    ]);
+  });
+
   it('backfills missing close trade history and canonical closedAt for imported positions closed on exchange', async () => {
     const user = await prisma.user.create({
       data: {
