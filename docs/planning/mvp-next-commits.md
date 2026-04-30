@@ -520,7 +520,8 @@ Operational queue for one-task execution runs.
 - [x] `L10NQ-B (commits 06-11): per-module namespace split + parity/guardrail tests`
 - [x] `L10NQ-C (commits 12-15): route-level namespace loading + English docs normalization`
 ## BLOCKED
-- [x] `none`
+- [ ] `V1ROE-04 qa(prod-manual): verify exchange-aligned LIVE PnL truth and imported automation on protected DOGEUSDT`
+  - 2026-05-01: Blocked by missing protected production auth. Public deploy freshness and smoke evidence are recorded, but protected runtime/dashboard evidence still requires `SMOKE_AUTH_TOKEN` / `DEPLOY_FRESHNESS_AUTH_TOKEN`, smoke email/password credentials, or an equivalent authenticated browser/session cookie. Sync task: `docs/planning/docsync-2026-05-01-mvp-blocked-section-task.md`.
 
 ## DONE
 - [x] `V1RT-01 fix(api-market-stream): align market-stream worker subscriptions with canonical runtime symbol scope`
