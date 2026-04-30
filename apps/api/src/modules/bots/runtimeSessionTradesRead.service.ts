@@ -3,6 +3,10 @@ import { normalizeSymbol } from '../../lib/symbols';
 import { getOwnedBotRuntimeSession, resolveSessionWindowEnd } from './botOwnership.service';
 import { ListBotRuntimeTradesQueryDto } from './bots.types';
 import {
+  listOwnedExternalSymbolsForBot,
+  resolveExternalPositionOwnershipIndex,
+} from './runtimeExternalPositionOwner.service';
+import {
   buildCloseReasonLookup,
   normalizeCloseReason,
   RuntimeTradeActionReason,
@@ -28,9 +32,12 @@ export const listBotRuntimeSessionTrades = async (
   const botContext = await getRuntimeTradeBotContext(userId, botId);
   if (!botContext) return null;
 
-  const botScopedTradeWhere: Prisma.TradeWhereInput =
+  const botScopedPositionWhere: Prisma.PositionWhereInput =
     botContext.mode === 'LIVE' && botContext.walletId
-      ? { botId, walletId: botContext.walletId }
+      ? {
+          botId,
+          OR: [{ walletId: botContext.walletId }, { walletId: null }],
+        }
       : { botId };
 
   const normalizedSymbol = normalizeSymbol(query.symbol) || undefined;
@@ -60,6 +67,29 @@ export const listBotRuntimeSessionTrades = async (
   const rangeEnd = query.to
     ? new Date(Math.min(query.to.getTime(), windowEnd.getTime()))
     : windowEnd;
+  const ownershipIndex = await resolveExternalPositionOwnershipIndex(userId, botContext.mode);
+  const botApiKeyId = botContext.wallet?.apiKeyId ?? botContext.apiKeyId ?? null;
+  const ownedExternalSymbols = listOwnedExternalSymbolsForBot(ownershipIndex, {
+    apiKeyId: botApiKeyId,
+    botId,
+    walletId: botContext.walletId,
+  });
+  const externalOwnedPositionWhere: Prisma.PositionWhereInput[] =
+    ownedExternalSymbols.length > 0 && botApiKeyId
+      ? [
+          {
+            botId: null,
+            origin: 'EXCHANGE_SYNC',
+            externalId: { startsWith: `${botApiKeyId}:` },
+            symbol: { in: ownedExternalSymbols },
+            ...(botContext.mode === 'LIVE' && botContext.walletId
+              ? {
+                  OR: [{ walletId: botContext.walletId }, { walletId: null }],
+                }
+              : {}),
+          },
+        ]
+      : [];
   if (rangeStart.getTime() > rangeEnd.getTime()) {
     return {
       sessionId,
@@ -85,42 +115,59 @@ export const listBotRuntimeSessionTrades = async (
       lte: rangeEnd,
     },
   };
-
+  const scopedPositionIds = await listRuntimeTradeCarryOverPositionIds({
+    userId,
+    managementMode: 'BOT_MANAGED',
+    ...(normalizedSymbol ? { symbol: normalizedSymbol } : {}),
+    openedAt: {
+      lte: windowEnd,
+    },
+    AND: [
+      { OR: [botScopedPositionWhere, ...externalOwnedPositionWhere] },
+      { OR: [{ closedAt: null }, { closedAt: { gte: session.startedAt } }] },
+    ],
+  });
   const shouldIncludeCarryOverPositions = !query.from && !query.to;
-  const carryOverPositionIds = shouldIncludeCarryOverPositions
-    ? await listRuntimeTradeCarryOverPositionIds({
-        userId,
-        ...(botScopedTradeWhere as Prisma.PositionWhereInput),
-        managementMode: 'BOT_MANAGED',
-        ...(normalizedSymbol ? { symbol: normalizedSymbol } : {}),
-        openedAt: {
-          lte: windowEnd,
-        },
-        OR: [{ closedAt: null }, { closedAt: { gte: session.startedAt } }],
-      })
-    : [];
+
+  if (scopedPositionIds.length === 0) {
+    return {
+      sessionId,
+      total: 0,
+      meta: {
+        page,
+        pageSize,
+        total: 0,
+        totalPages: 0,
+        hasPrev: page > 1,
+        hasNext: false,
+      },
+      window: {
+        startedAt: session.startedAt,
+        finishedAt: windowEnd,
+      },
+      items: [],
+    };
+  }
 
   const where: Prisma.TradeWhereInput = {
     userId,
-    ...botScopedTradeWhere,
+    positionId: { in: scopedPositionIds },
     ...(normalizedSymbol ? { symbol: normalizedSymbol } : {}),
     ...(normalizedSide ? { side: normalizedSide } : {}),
-    OR:
-      carryOverPositionIds.length > 0
-        ? [
-            windowClause,
-            {
-              AND: [
-                { positionId: { in: carryOverPositionIds } },
-                {
-                  executedAt: {
-                    lte: rangeEnd,
-                  },
+    AND: shouldIncludeCarryOverPositions
+      ? [
+          {
+            OR: [
+              windowClause,
+              {
+                executedAt: {
+                  lte: rangeEnd,
                 },
-              ],
-            },
-          ]
-        : [windowClause],
+              },
+            ],
+          },
+        ]
+      : [windowClause],
   };
 
   const rows = await listRuntimeTradeRows(where);
@@ -153,7 +200,6 @@ export const listBotRuntimeSessionTrades = async (
       }),
       listRuntimeTradePositionTradeRows({
         userId,
-        ...botScopedTradeWhere,
         positionId: {
           in: positionIds,
         },

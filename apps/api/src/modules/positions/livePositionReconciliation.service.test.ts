@@ -42,6 +42,25 @@ describe('reconcileExternalPositionsFromExchange', () => {
   it('creates/updates synced positions and marks first stale miss as recovering instead of closing', async () => {
     const createSyncedPosition = vi.fn(async () => undefined);
     const updateSyncedPosition = vi.fn(async () => undefined);
+    const fetchTradeHistoryForApiKeySymbol = vi.fn(async () => [
+      {
+        exchangeTradeId: 'trade-update-1',
+        exchangeOrderId: 'order-update-1',
+        symbol: 'BTCUSDT',
+        side: 'BUY',
+        price: 50000,
+        quantity: 0.01,
+        notional: 500,
+        feeCost: 0,
+        feeCurrency: 'USDT',
+        feeRate: null,
+        executedAt: '2026-03-23T00:00:00.000Z',
+      },
+    ]);
+    const hydrateImportedPositionHistory = vi.fn(async () => ({
+      hydrated: false,
+      openedAt: null as Date | null,
+    }));
     const markMissingSyncedPosition = vi.fn(async () => undefined);
     const closeStaleSyncedPosition = vi.fn(async () => undefined);
 
@@ -97,6 +116,7 @@ describe('reconcileExternalPositionsFromExchange', () => {
         walletId: 'wallet-live-1',
         strategyId: 'strategy-live-1',
       })),
+      fetchTradeHistoryForApiKeySymbol,
       updateSyncedPosition,
       createSyncedPosition,
       listOpenSyncedPositionsForApiKey: vi.fn(async () => [
@@ -105,6 +125,7 @@ describe('reconcileExternalPositionsFromExchange', () => {
       ]),
       markMissingSyncedPosition,
       closeStaleSyncedPosition,
+      hydrateImportedPositionHistory,
       now: () => new Date('2026-03-23T00:00:01.000Z'),
     });
 
@@ -123,6 +144,21 @@ describe('reconcileExternalPositionsFromExchange', () => {
       })
     );
     expect(createSyncedPosition).not.toHaveBeenCalled();
+    expect(fetchTradeHistoryForApiKeySymbol).toHaveBeenCalledWith({
+      apiKey: { id: 'key-1', userId: 'user-1' },
+      symbol: 'BTCUSDT',
+      since: new Date('2026-02-21T00:00:00.000Z'),
+      limit: 500,
+    });
+    expect(hydrateImportedPositionHistory).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'user-1',
+        positionId: 'pos-open-1',
+        symbol: 'BTCUSDT',
+        positionSide: 'LONG',
+        positionQuantity: 0.01,
+      })
+    );
     expect(markMissingSyncedPosition).toHaveBeenCalledWith(
       'pos-open-stale',
       expect.objectContaining({

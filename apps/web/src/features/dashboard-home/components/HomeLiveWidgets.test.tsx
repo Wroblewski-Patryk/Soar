@@ -18,6 +18,7 @@ const openDashboardManualOrderMock = vi.hoisted(() => vi.fn());
 const getDashboardManualOrderContextMock = vi.hoisted(() => vi.fn());
 const updatePositionManualParamsMock = vi.hoisted(() => vi.fn());
 const lookupCoinIconsMock = vi.hoisted(() => vi.fn());
+const createMarketStreamEventSourceMock = vi.hoisted(() => vi.fn());
 
 vi.mock("../../../features/bots/services/bots.service", () => ({
   listBots: listBotsMock,
@@ -39,6 +40,10 @@ vi.mock("../../../features/icons/services/icons.service", () => ({
 
 vi.mock("../../../features/positions/services/positions.service", () => ({
   updatePositionManualParams: updatePositionManualParamsMock,
+}));
+
+vi.mock("../../../lib/marketStream", () => ({
+  createMarketStreamEventSource: createMarketStreamEventSourceMock,
 }));
 
 describe("HomeLiveWidgets", () => {
@@ -107,6 +112,13 @@ describe("HomeLiveWidgets", () => {
       takeProfit: null,
       stopLoss: null,
     });
+    createMarketStreamEventSourceMock.mockReset();
+    createMarketStreamEventSourceMock.mockImplementation(() => ({
+      onopen: null as ((event: Event) => void) | null,
+      onerror: null as ((event: Event) => void) | null,
+      addEventListener: vi.fn(),
+      close: vi.fn(),
+    }));
     window.history.pushState({}, "", "/");
   });
 

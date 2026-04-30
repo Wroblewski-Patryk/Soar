@@ -5,8 +5,14 @@ export const getRuntimeTradeBotContext = async (userId: string, botId: string) =
   prisma.bot.findFirst({
     where: { id: botId, userId },
     select: {
+      apiKeyId: true,
       mode: true,
       walletId: true,
+      wallet: {
+        select: {
+          apiKeyId: true,
+        },
+      },
     },
   });
 

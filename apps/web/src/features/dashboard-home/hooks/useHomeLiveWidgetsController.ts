@@ -398,21 +398,6 @@ export const useHomeLiveWidgetsController = ({
     void load({ silent: true });
   }, [load]);
 
-  const shouldRunPollingFallback = useCallback(() => {
-    if (typeof window === "undefined" || typeof window.EventSource === "undefined") {
-      return true;
-    }
-    if (!runtimeStreamEligibleRef.current) {
-      return true;
-    }
-    if (!runtimeStreamConnectedRef.current) {
-      return true;
-    }
-    const lastTickerAt = lastSseTickerAtRef.current;
-    if (lastTickerAt == null) return true;
-    return Date.now() - lastTickerAt >= resolveAutoRefreshIntervalMs();
-  }, []);
-
   useEffect(() => {
     const saved = getLocalStorageItem(SELECTED_BOT_STORAGE_KEY);
     if (saved) setSelectedBotId(saved);
@@ -434,14 +419,12 @@ export const useHomeLiveWidgetsController = ({
     if (typeof document === "undefined") return;
 
     let timer = window.setInterval(() => {
-      if (!shouldRunPollingFallback()) return;
       void load({ silent: true });
     }, resolveAutoRefreshIntervalMs());
 
     const handleVisibilityChange = () => {
       window.clearInterval(timer);
       timer = window.setInterval(() => {
-        if (!shouldRunPollingFallback()) return;
         void load({ silent: true });
       }, resolveAutoRefreshIntervalMs());
     };
@@ -452,7 +435,7 @@ export const useHomeLiveWidgetsController = ({
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.clearInterval(timer);
     };
-  }, [load, shouldRunPollingFallback]);
+  }, [load]);
 
   useEffect(() => {
     const timer = window.setInterval(() => {

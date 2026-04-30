@@ -329,7 +329,6 @@ export const listBotRuntimeSessionPositions = async (
   const [trades, lastSymbolPrices, openOrders, strategyConfigs] = await Promise.all([
     listRuntimePositionTradeRows({
       userId,
-      ...botScopedTradeWhere,
       positionId: { in: positionIds },
     }),
     listRuntimePositionLastPrices({

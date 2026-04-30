@@ -27,9 +27,11 @@ import {
 import {
   backfillClosedImportedPositionHistory,
   hydrateImportedPositionHistory,
-  resolveImportedTradeHistoryLimit,
-  resolveImportedTradeHistorySince,
 } from './importedPositionHistoryHydrator.service';
+import {
+  hydrateReconciledImportedPositionHistory,
+  resolveImportedClosedHistoryClosedAt,
+} from './livePositionReconciliation.history';
 import {
   CanonicalBotContinuityContext,
   LocalManagedLivePosition,
@@ -606,6 +608,20 @@ export const reconcileExternalPositionsFromExchange = async (
             missingSince: null,
             missingSyncCount: 0,
           });
+          await hydrateReconciledImportedPositionHistory({
+            deps,
+            apiKey,
+            userId: apiKey.userId,
+            positionId: reusablePosition.id,
+            botId: managementMode === 'BOT_MANAGED' ? restoredBotId : null,
+            walletId: managementMode === 'BOT_MANAGED' ? restoredWalletId : null,
+            strategyId: managementMode === 'BOT_MANAGED' ? restoredStrategyId : null,
+            symbol: normalizedSymbol,
+            positionSide: side,
+            positionQuantity: size,
+            managementMode,
+            openedAt: reusablePosition.openedAt ?? openedAtFallback,
+          });
           if (
             deps.processOwnedSyncedPositionAutomation &&
             shouldTriggerOwnedSyncedPositionAutomation({
@@ -647,31 +663,25 @@ export const reconcileExternalPositionsFromExchange = async (
             missingSyncCount: 0,
           });
 
-          if (deps.fetchTradeHistoryForApiKeySymbol && deps.hydrateImportedPositionHistory) {
-            const createdPosition = await deps.findOpenSyncedPositionByExternalId({
+          const createdPosition = await deps.findOpenSyncedPositionByExternalId({
+            userId: apiKey.userId,
+            externalId,
+          });
+          if (createdPosition) {
+            await hydrateReconciledImportedPositionHistory({
+              deps,
+              apiKey,
               userId: apiKey.userId,
-              externalId,
+              positionId: createdPosition.id,
+              botId: managementMode === 'BOT_MANAGED' ? restoredBotId : null,
+              walletId: managementMode === 'BOT_MANAGED' ? restoredWalletId : null,
+              strategyId: managementMode === 'BOT_MANAGED' ? restoredStrategyId : null,
+              symbol: normalizedSymbol,
+              positionSide: side,
+              positionQuantity: size,
+              managementMode,
+              openedAt,
             });
-            if (createdPosition) {
-              const tradeHistory = await deps.fetchTradeHistoryForApiKeySymbol({
-                apiKey,
-                symbol: normalizedSymbol,
-                since: resolveImportedTradeHistorySince(openedAt),
-                limit: resolveImportedTradeHistoryLimit(),
-              });
-              await deps.hydrateImportedPositionHistory({
-                userId: apiKey.userId,
-                positionId: createdPosition.id,
-                botId: managementMode === 'BOT_MANAGED' ? restoredBotId : null,
-                walletId: managementMode === 'BOT_MANAGED' ? restoredWalletId : null,
-                strategyId: managementMode === 'BOT_MANAGED' ? restoredStrategyId : null,
-                symbol: normalizedSymbol,
-                positionSide: side,
-                positionQuantity: size,
-                managementMode,
-                trades: tradeHistory,
-              });
-            }
           }
           if (
             deps.processOwnedSyncedPositionAutomation &&
@@ -700,36 +710,23 @@ export const reconcileExternalPositionsFromExchange = async (
       for (const stale of currentOpen) {
         if (stale.externalId && seenExternalIds.has(stale.externalId)) continue;
         if (seenExternalSymbols.has(extractSymbolFromExternalId(stale.externalId) ?? '')) {
-          let lifecycleClosedAt = deps.now();
-          if (
-            stale.symbol &&
-            stale.side &&
-            stale.openedAt &&
-            stale.managementMode &&
-            deps.fetchTradeHistoryForApiKeySymbol &&
-            deps.hydrateClosedImportedPositionHistory
-          ) {
-            const tradeHistory = await deps.fetchTradeHistoryForApiKeySymbol({
-              apiKey,
-              symbol: normalizeSymbol(stale.symbol),
-              since: resolveImportedTradeHistorySince(stale.openedAt),
-              limit: resolveImportedTradeHistoryLimit(),
-            });
-            const closedHistory = await deps.hydrateClosedImportedPositionHistory({
-              userId: apiKey.userId,
-              positionId: stale.id,
-              botId: stale.botId ?? null,
-              walletId: stale.walletId ?? null,
-              strategyId: stale.strategyId ?? null,
-              symbol: normalizeSymbol(stale.symbol),
-              positionSide: stale.side,
-              managementMode: stale.managementMode,
-              trades: tradeHistory,
-            });
-            if (closedHistory.closedAt) {
-              lifecycleClosedAt = closedHistory.closedAt;
-            }
-          }
+          const lifecycleClosedAt =
+            stale.symbol && stale.side && stale.openedAt && stale.managementMode
+              ? await resolveImportedClosedHistoryClosedAt({
+                  deps,
+                  apiKey,
+                  userId: apiKey.userId,
+                  positionId: stale.id,
+                  botId: stale.botId ?? null,
+                  walletId: stale.walletId ?? null,
+                  strategyId: stale.strategyId ?? null,
+                  symbol: normalizeSymbol(stale.symbol),
+                  positionSide: stale.side,
+                  managementMode: stale.managementMode,
+                  openedAt: stale.openedAt,
+                  fallbackClosedAt: deps.now(),
+                })
+              : deps.now();
           await closePositionLifecycle(stale.id, lifecycleClosedAt, deps.closeStaleSyncedPosition);
           continue;
         }
@@ -744,36 +741,23 @@ export const reconcileExternalPositionsFromExchange = async (
           });
           continue;
         }
-        let lifecycleClosedAt = deps.now();
-        if (
-          stale.symbol &&
-          stale.side &&
-          stale.openedAt &&
-          stale.managementMode &&
-          deps.fetchTradeHistoryForApiKeySymbol &&
-          deps.hydrateClosedImportedPositionHistory
-        ) {
-          const tradeHistory = await deps.fetchTradeHistoryForApiKeySymbol({
-            apiKey,
-            symbol: normalizeSymbol(stale.symbol),
-            since: resolveImportedTradeHistorySince(stale.openedAt),
-            limit: resolveImportedTradeHistoryLimit(),
-          });
-          const closedHistory = await deps.hydrateClosedImportedPositionHistory({
-            userId: apiKey.userId,
-            positionId: stale.id,
-            botId: stale.botId ?? null,
-            walletId: stale.walletId ?? null,
-            strategyId: stale.strategyId ?? null,
-            symbol: normalizeSymbol(stale.symbol),
-            positionSide: stale.side,
-            managementMode: stale.managementMode,
-            trades: tradeHistory,
-          });
-          if (closedHistory.closedAt) {
-            lifecycleClosedAt = closedHistory.closedAt;
-          }
-        }
+        const lifecycleClosedAt =
+          stale.symbol && stale.side && stale.openedAt && stale.managementMode
+            ? await resolveImportedClosedHistoryClosedAt({
+                deps,
+                apiKey,
+                userId: apiKey.userId,
+                positionId: stale.id,
+                botId: stale.botId ?? null,
+                walletId: stale.walletId ?? null,
+                strategyId: stale.strategyId ?? null,
+                symbol: normalizeSymbol(stale.symbol),
+                positionSide: stale.side,
+                managementMode: stale.managementMode,
+                openedAt: stale.openedAt,
+                fallbackClosedAt: deps.now(),
+              })
+            : deps.now();
         await closePositionLifecycle(stale.id, lifecycleClosedAt, deps.closeStaleSyncedPosition);
       }
 

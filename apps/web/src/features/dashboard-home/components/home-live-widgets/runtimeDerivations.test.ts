@@ -59,4 +59,110 @@ describe("runtimeDerivations", () => {
     expect(result[0]?.livePnlPct).toBeCloseTo(-19, 8);
     expect(result[0]?.marginNotional).toBeCloseTo(52.6315789474, 8);
   });
+
+  it("prefers backend unrealized pnl truth over stale stream recomputation for imported live positions", () => {
+    const result = buildLiveOpenPositions(
+      {
+        sessionId: "session-1",
+        total: 1,
+        openCount: 1,
+        closedCount: 0,
+        openOrdersCount: 0,
+        window: {
+          startedAt: "2026-04-30T10:00:00.000Z",
+          finishedAt: "2026-04-30T10:05:00.000Z",
+        },
+        summary: {
+          realizedPnl: 0,
+          unrealizedPnl: 0.54,
+          feesPaid: 0,
+        },
+        openOrders: [],
+        openItems: [
+          {
+            id: "pos-2",
+            symbol: "XRPUSDT",
+            side: "LONG",
+            status: "OPEN",
+            quantity: 1000,
+            leverage: 15,
+            marginUsed: 100,
+            entryPrice: 2,
+            entryNotional: 2000,
+            exitPrice: null,
+            stopLoss: null,
+            takeProfit: null,
+            openedAt: "2026-04-30T10:00:00.000Z",
+            closedAt: null,
+            holdMs: 0,
+            dcaCount: 0,
+            feesPaid: 0,
+            realizedPnl: 0,
+            unrealizedPnl: 0.54,
+            unrealizedPnlPercent: 0.54,
+            markPrice: 2.00054,
+            firstTradeAt: null,
+            lastTradeAt: null,
+            tradesCount: 0,
+          },
+        ],
+        historyItems: [],
+      },
+      {
+        sessionId: "session-1",
+        items: [
+          {
+            id: "stat-1",
+            userId: "user-1",
+            botId: "bot-1",
+            sessionId: "session-1",
+            symbol: "XRPUSDT",
+            totalSignals: 0,
+            longEntries: 0,
+            shortEntries: 0,
+            exits: 0,
+            dcaCount: 0,
+            closedTrades: 0,
+            winningTrades: 0,
+            losingTrades: 0,
+            realizedPnl: 0,
+            grossProfit: 0,
+            grossLoss: 0,
+            feesPaid: 0,
+            openPositionCount: 1,
+            openPositionQty: 1000,
+            unrealizedPnl: -47.77,
+            lastPrice: 1.95223,
+            lastSignalAt: null,
+            lastTradeAt: null,
+            snapshotAt: "2026-04-30T10:00:00.000Z",
+            createdAt: "2026-04-30T10:00:00.000Z",
+            updatedAt: "2026-04-30T10:00:00.000Z",
+          },
+        ],
+        summary: {
+          totalSignals: 0,
+          longEntries: 0,
+          shortEntries: 0,
+          exits: 0,
+          dcaCount: 0,
+          closedTrades: 0,
+          winningTrades: 0,
+          losingTrades: 0,
+          realizedPnl: 0,
+          unrealizedPnl: -47.77,
+          totalPnl: -47.77,
+          grossProfit: 0,
+          grossLoss: 0,
+          feesPaid: 0,
+        },
+      },
+      new Map([["XRPUSDT", 1.95223]])
+    );
+
+    expect(result).toHaveLength(1);
+    expect(result[0]?.liveMarkPrice).toBeCloseTo(2.00054, 8);
+    expect(result[0]?.liveUnrealizedPnl).toBeCloseTo(0.54, 8);
+    expect(result[0]?.livePnlPct).toBeCloseTo(0.54, 8);
+  });
 });
