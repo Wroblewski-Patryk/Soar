@@ -17,6 +17,10 @@ Last updated: 2026-04-30
 
 ## READY
 
+- [x] `V1HIST-09 fix(api-runtime): restore imported OPEN visibility in dashboard operational history`
+  - Scope: keep the live dashboard `History` tab truthful for imported `BOT_MANAGED EXCHANGE_SYNC` positions even when canonical exchange trade hydration has not yet produced any local `Trade` rows for the current lifecycle.
+  - 2026-04-30: Closed after fresh protected production/browser verification proved `Positions` and `Orders` were now truthful while `History` still stayed empty for fresh imported `BNB/XRP/DOGE` lifecycles because the runtime trade feed exposed only persisted trade rows. `runtimeSessionTradesRead` now emits one operational `OPEN` anchor row from canonical `Position` truth whenever a scoped lifecycle has no local trade rows yet, reusing existing `POSITION_LIFETIME` semantics instead of inventing fake fills. Focused validation PASS: `bots.runtime-history-parity.e2e.test.ts`, API typecheck, repository guardrails.
+
 - [x] `V1HIST-08 fix(api-exchange): resolve imported trade-history reads through canonical exchange market symbols`
   - Scope: stop imported `LIVE` history hydration from silently returning empty trade windows just because reconciliation asks the exchange boundary for `BNBUSDT/XRPUSDT/...` while the authenticated CCXT connector expects the unified market symbol like `BNB/USDT:USDT`.
   - 2026-04-30: Closed after protected production investigation of `BNB`, `DOGE`, and `XRP` showed the runtime payload still carried `tradesCount=0` and `firstTradeAt=null` for fresh imported open positions even though the surface-truth/UI slice was already green. `CcxtFuturesConnector` now resolves app-normalized symbol ids to canonical CCXT market symbols before `fetchTicker`, `fetchOrder`, `fetchMyTrades`, `fetchOpenOrders`, and trading-rules reads, and a focused connector regression locks `XRPUSDT -> XRP/USDT:USDT` for trade-history fetches. Validation PASS: focused connector/boundary/history/reconciliation API pack, API typecheck, repository guardrails.

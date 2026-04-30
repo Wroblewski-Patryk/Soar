@@ -14,12 +14,38 @@ import {
 import { buildLifecycleActionByTradeId, toPositionMetaById } from './runtimeTradeLifecycle.service';
 import {
   getRuntimeTradeBotContext,
+  listRuntimeTradeAnchorPositionRows,
   listRuntimeTradeCarryOverPositionIds,
   listRuntimeTradeCloseEventRows,
   listRuntimeTradePositionMetaRows,
   listRuntimeTradePositionTradeRows,
   listRuntimeTradeRows,
 } from './runtimeSessionTradesRead.repository';
+
+type RuntimeTradeAnchorPositionRow = Awaited<ReturnType<typeof listRuntimeTradeAnchorPositionRows>>[number];
+
+const toOpenAnchorTradeSide = (side: 'LONG' | 'SHORT') => (side === 'LONG' ? 'BUY' : 'SELL');
+
+const shouldIncludeOpenAnchor = (input: {
+  position: RuntimeTradeAnchorPositionRow;
+  rangeStart: Date;
+  rangeEnd: Date;
+  shouldIncludeCarryOverPositions: boolean;
+  normalizedSide?: 'BUY' | 'SELL';
+  normalizedAction?: 'OPEN' | 'DCA' | 'CLOSE' | 'UNKNOWN';
+}) => {
+  if (input.normalizedAction && input.normalizedAction !== 'OPEN') return false;
+
+  const side = toOpenAnchorTradeSide(input.position.side);
+  if (input.normalizedSide && side !== input.normalizedSide) return false;
+
+  const openedAtMs = input.position.openedAt.getTime();
+  const inExplicitWindow =
+    openedAtMs >= input.rangeStart.getTime() && openedAtMs <= input.rangeEnd.getTime();
+  if (inExplicitWindow) return true;
+
+  return input.shouldIncludeCarryOverPositions && openedAtMs <= input.rangeEnd.getTime();
+};
 
 export const listBotRuntimeSessionTrades = async (
   userId: string,
@@ -186,14 +212,18 @@ export const listBotRuntimeSessionTrades = async (
   const { closeReasonByOrderId, closeReasonByPositionId } = buildCloseReasonLookup(closeEventRows);
 
   const positionIds = [
-    ...new Set(rows.map((trade) => trade.positionId).filter((value): value is string => Boolean(value))),
+    ...new Set(
+      [...scopedPositionIds, ...rows.map((trade) => trade.positionId).filter((value): value is string => Boolean(value))]
+    ),
   ];
 
   let positionMetaById = new Map<string, { side: 'LONG' | 'SHORT'; leverage: number; entryPrice: number }>();
   const lifecycleActionByTradeId = new Map<string, 'OPEN' | 'DCA' | 'CLOSE' | 'UNKNOWN'>();
+  let anchorPositions: RuntimeTradeAnchorPositionRow[] = [];
+  let tradesByPositionId = new Map<string, typeof rows>();
 
   if (positionIds.length > 0) {
-    const [positionMetaRows, allPositionTrades] = await Promise.all([
+    const [positionMetaRows, allPositionTrades, anchorPositionRows] = await Promise.all([
       listRuntimeTradePositionMetaRows({
         id: { in: positionIds },
         userId,
@@ -204,9 +234,14 @@ export const listBotRuntimeSessionTrades = async (
           in: positionIds,
         },
       }),
+      listRuntimeTradeAnchorPositionRows({
+        id: { in: positionIds },
+        userId,
+      }),
     ]);
 
     positionMetaById = toPositionMetaById(positionMetaRows);
+    anchorPositions = anchorPositionRows;
     const lifecycleMap = buildLifecycleActionByTradeId({
       positionMetaById,
       positionTrades: allPositionTrades,
@@ -214,6 +249,17 @@ export const listBotRuntimeSessionTrades = async (
     for (const [tradeId, lifecycleAction] of lifecycleMap.entries()) {
       lifecycleActionByTradeId.set(tradeId, lifecycleAction);
     }
+    tradesByPositionId = rows.reduce((map, trade) => {
+      const positionId = trade.positionId;
+      if (!positionId) return map;
+      const current = map.get(positionId);
+      if (current) {
+        current.push(trade);
+      } else {
+        map.set(positionId, [trade]);
+      }
+      return map;
+    }, new Map<string, typeof rows>());
   }
 
   const enrichedRows = rows
@@ -270,9 +316,59 @@ export const listBotRuntimeSessionTrades = async (
     })
     .filter((trade) => (normalizedAction ? trade.lifecycleAction === normalizedAction : true));
 
+  const anchorRows = anchorPositions
+    .filter((position) => {
+      const existingPositionTrades = tradesByPositionId.get(position.id) ?? [];
+      if (existingPositionTrades.length > 0) return false;
+      return shouldIncludeOpenAnchor({
+        position,
+        rangeStart,
+        rangeEnd,
+        shouldIncludeCarryOverPositions,
+        normalizedSide,
+        normalizedAction,
+      });
+    })
+    .map((position) => {
+      const leverage =
+        Number.isFinite(position.leverage) && position.leverage > 0 ? position.leverage : 1;
+      const notional = position.entryPrice * position.quantity;
+      const margin =
+        typeof position.marginUsed === 'number' && Number.isFinite(position.marginUsed)
+          ? position.marginUsed
+          : notional / leverage;
+      return {
+        id: `position-open:${position.id}`,
+        symbol: position.symbol,
+        side: toOpenAnchorTradeSide(position.side),
+        price: position.entryPrice,
+        quantity: position.quantity,
+        fee: 0,
+        feeSource: 'ESTIMATED' as const,
+        feePending: false,
+        feeCurrency: null,
+        realizedPnl: 0,
+        executedAt: position.openedAt,
+        createdAt: position.openedAt,
+        orderId: '',
+        positionId: position.id,
+        strategyId: position.strategyId ?? '',
+        origin: position.origin,
+        managementMode: position.managementMode,
+        closeReason: null,
+        closeInitiator: null,
+        lifecycleAction: 'OPEN' as const,
+        actionReason: 'POSITION_LIFETIME' as const,
+        notional,
+        margin,
+      };
+    });
+
+  const historyRows = [...enrichedRows, ...anchorRows];
+
   const primaryCompare = (
-    left: (typeof enrichedRows)[number],
-    right: (typeof enrichedRows)[number]
+    left: (typeof historyRows)[number],
+    right: (typeof historyRows)[number]
   ) => {
     const dir = sortDir === 'asc' ? 1 : -1;
     const compareNumbers = (a: number, b: number) => (a === b ? 0 : a > b ? 1 : -1) * dir;
@@ -296,7 +392,7 @@ export const listBotRuntimeSessionTrades = async (
     }
   };
 
-  const sortedRows = [...enrichedRows].sort((left, right) => {
+  const sortedRows = [...historyRows].sort((left, right) => {
     const first = primaryCompare(left, right);
     if (first !== 0) return first;
     const byExecuted = right.executedAt.getTime() - left.executedAt.getTime();

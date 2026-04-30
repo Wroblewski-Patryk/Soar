@@ -225,4 +225,102 @@ describe('Bots runtime history parity contract', () => {
       })
     );
   });
+
+  it('adds an operational OPEN history anchor for imported live positions that have no local trade rows yet', async () => {
+    const ownerEmail = 'bot-history-imported-open-anchor@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
+
+    const strategyId = await createStrategy(owner, 'Imported Open Anchor');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    const walletId = await createWalletForContext(ownerEmail, {
+      mode: 'LIVE',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: ownerUser.id,
+        name: 'Imported open anchor live bot',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'mvp-v1',
+        walletId,
+        symbolGroupId: marketGroupId,
+        strategyId,
+      },
+      select: { id: true },
+    });
+    const botId = bot.id;
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'LIVE',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-10T07:00:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-10T07:10:00.000Z'),
+      },
+      select: { id: true },
+    });
+
+    const position = await prisma.position.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        walletId,
+        strategyId,
+        externalId: 'api-key-1:BNBUSDT:SHORT',
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        continuityState: 'CONFIRMED',
+        symbol: 'BNBUSDT',
+        side: 'SHORT',
+        status: 'OPEN',
+        entryPrice: 618.46,
+        quantity: 0.01,
+        leverage: 15,
+        marginUsed: 0.40921438,
+        openedAt: new Date('2026-04-10T07:03:00.000Z'),
+      },
+      select: { id: true },
+    });
+
+    const tradesRes = await owner.get(`/dashboard/bots/${botId}/runtime-sessions/${session.id}/trades`);
+    expect(tradesRes.status).toBe(200);
+    expect(tradesRes.body.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: `position-open:${position.id}`,
+          symbol: 'BNBUSDT',
+          side: 'SELL',
+          lifecycleAction: 'OPEN',
+          actionReason: 'POSITION_LIFETIME',
+          price: 618.46,
+          quantity: 0.01,
+          positionId: position.id,
+          margin: 0.40921438,
+        }),
+      ])
+    );
+
+    const aggregateRes = await owner.get(`/dashboard/bots/${botId}/runtime-monitoring/aggregate`);
+    expect(aggregateRes.status).toBe(200);
+    expect(aggregateRes.body.trades.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: `position-open:${position.id}`,
+          symbol: 'BNBUSDT',
+          lifecycleAction: 'OPEN',
+          actionReason: 'POSITION_LIFETIME',
+        }),
+      ])
+    );
+  });
 });

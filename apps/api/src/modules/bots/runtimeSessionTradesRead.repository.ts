@@ -78,6 +78,26 @@ export const listRuntimeTradePositionMetaRows = async (
     },
   });
 
+export const listRuntimeTradeAnchorPositionRows = async (
+  where: Prisma.PositionWhereInput
+) =>
+  prisma.position.findMany({
+    where,
+    select: {
+      id: true,
+      symbol: true,
+      side: true,
+      quantity: true,
+      leverage: true,
+      marginUsed: true,
+      entryPrice: true,
+      openedAt: true,
+      strategyId: true,
+      origin: true,
+      managementMode: true,
+    },
+  });
+
 export const listRuntimeTradePositionTradeRows = async (
   where: Prisma.TradeWhereInput
 ) =>
