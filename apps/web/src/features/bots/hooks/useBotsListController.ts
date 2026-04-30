@@ -170,6 +170,7 @@ export const useBotsListController = ({ confirmLiveRisk, t }: UseBotsListControl
         marketGroupId,
         isActive: createMode === "PAPER",
         liveOptIn: false,
+        manageExternalPositions: false,
         consentTextVersion: null,
       });
       setBots((prev) => [created, ...prev]);

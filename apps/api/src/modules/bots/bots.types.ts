@@ -13,6 +13,7 @@ export const CreateBotSchema = z.object({
   marketGroupId: z.string().trim().min(1),
   isActive: z.boolean().default(false),
   liveOptIn: z.boolean().default(false),
+  manageExternalPositions: z.boolean().default(false),
   consentTextVersion: z.string().trim().min(1).max(64).optional().nullable(),
 }).superRefine((value, ctx) => {
   if (value.liveOptIn && !value.consentTextVersion) {

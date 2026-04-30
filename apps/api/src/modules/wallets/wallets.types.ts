@@ -23,7 +23,6 @@ export const CreateWalletSchema = z
     liveAllocationMode: WalletAllocationModeSchema.optional().nullable(),
     liveAllocationValue: z.number().positive().max(1_000_000_000).optional().nullable(),
     apiKeyId: z.string().trim().min(1).optional().nullable(),
-    manageExternalPositions: z.boolean().optional().default(false),
   })
   .superRefine((value, ctx) => {
     if (value.mode === 'PAPER') {
@@ -78,7 +77,6 @@ export const UpdateWalletSchema = z.object({
   liveAllocationMode: WalletAllocationModeSchema.optional().nullable(),
   liveAllocationValue: z.number().positive().max(1_000_000_000).optional().nullable(),
   apiKeyId: z.string().trim().min(1).optional().nullable(),
-  manageExternalPositions: z.boolean().optional(),
 });
 
 export const ListWalletsQuerySchema = z.object({

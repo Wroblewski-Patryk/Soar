@@ -58,6 +58,7 @@ type BotFormState = {
   marketGroupId: string;
   isActive: boolean;
   liveOptIn: boolean;
+  manageExternalPositions: boolean;
 };
 
 const buildDefaultForm = (params: {
@@ -71,6 +72,7 @@ const buildDefaultForm = (params: {
   marketGroupId: params.marketGroups[0]?.id ?? '',
   isActive: true,
   liveOptIn: false,
+  manageExternalPositions: false,
 });
 
 type BotCreateEditFormProps = {
@@ -103,6 +105,7 @@ export default function BotCreateEditForm({
     marketGroupId: '',
     isActive: true,
     liveOptIn: false,
+    manageExternalPositions: false,
   });
 
   useEffect(() => {
@@ -146,6 +149,7 @@ export default function BotCreateEditForm({
         marketGroupId: selectedGroupId,
         isActive: bot.isActive,
         liveOptIn: bot.liveOptIn,
+        manageExternalPositions: bot.manageExternalPositions ?? false,
       });
     } catch (err: unknown) {
       setError(getAxiosMessage(err) ?? t('dashboard.bots.errors.loadBots'));
@@ -215,9 +219,9 @@ export default function BotCreateEditForm({
 
   useEffect(() => {
     if (selectedMode === 'LIVE') return;
-    if (!form.liveOptIn) return;
-    setForm((prev) => ({ ...prev, liveOptIn: false }));
-  }, [form.liveOptIn, selectedMode]);
+    if (!form.liveOptIn && !form.manageExternalPositions) return;
+    setForm((prev) => ({ ...prev, liveOptIn: false, manageExternalPositions: false }));
+  }, [form.liveOptIn, form.manageExternalPositions, selectedMode]);
 
   useEffect(() => {
     if (!form.isActive) return;
@@ -253,6 +257,7 @@ export default function BotCreateEditForm({
       marketGroupId: 'bot-market-group',
       isActive: 'bot-active',
       liveOptIn: 'bot-live-opt-in',
+      manageExternalPositions: 'bot-manage-external-positions',
     });
   }, [fieldErrors]);
 
@@ -301,6 +306,7 @@ export default function BotCreateEditForm({
         marketGroupId: form.marketGroupId,
         isActive: form.isActive,
         liveOptIn: selectedMode === 'LIVE' ? form.liveOptIn : false,
+        manageExternalPositions: selectedMode === 'LIVE' ? form.manageExternalPositions : false,
         consentTextVersion:
           selectedMode === 'LIVE' && form.liveOptIn
             ? LIVE_CONSENT_TEXT_VERSION
@@ -424,16 +430,30 @@ export default function BotCreateEditForm({
 
             <FormGrid columns={2}>
               {selectedMode === 'LIVE' ? (
-                <ToggleField
-                  id='bot-live-opt-in'
-                  label={t('dashboard.bots.list.columns.liveOptIn')}
-                  checked={form.liveOptIn}
-                  onChange={(checked) => setForm((prev) => ({ ...prev, liveOptIn: checked }))}
-                  hint={t('dashboard.bots.create.liveOptInHelper')}
-                />
+                <div className='space-y-3'>
+                  <ToggleField
+                    id='bot-live-opt-in'
+                    label={t('dashboard.bots.list.columns.liveOptIn')}
+                    checked={form.liveOptIn}
+                    onChange={(checked) => setForm((prev) => ({ ...prev, liveOptIn: checked }))}
+                    hint={t('dashboard.bots.create.liveOptInHelper')}
+                  />
+                  <ToggleField
+                    id='bot-manage-external-positions'
+                    label={t('dashboard.bots.create.manageExternalPositionsLabel')}
+                    checked={form.manageExternalPositions}
+                    onChange={(checked) =>
+                      setForm((prev) => ({ ...prev, manageExternalPositions: checked }))
+                    }
+                    hint={t('dashboard.bots.create.manageExternalPositionsHint')}
+                  />
+                </div>
               ) : (
                 <FormAlert variant='info' className='h-fit'>
-                  {t('dashboard.bots.create.liveOptInPaperInfo')}
+                  <div className='space-y-1'>
+                    <p>{t('dashboard.bots.create.liveOptInPaperInfo')}</p>
+                    <p>{t('dashboard.bots.create.manageExternalPositionsPaperInfo')}</p>
+                  </div>
                 </FormAlert>
               )}
 

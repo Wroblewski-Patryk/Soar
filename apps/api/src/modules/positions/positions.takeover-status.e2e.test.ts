@@ -174,6 +174,7 @@ describe('Positions takeover status API', () => {
         positionMode: 'ONE_WAY',
         isActive: true,
         liveOptIn: true,
+        manageExternalPositions: true,
         apiKeyId: keyOwned,
         walletId: ownedWallet.id,
         symbolGroupId: ownedScopeId,
@@ -191,6 +192,7 @@ describe('Positions takeover status API', () => {
         positionMode: 'ONE_WAY',
         isActive: true,
         liveOptIn: true,
+        manageExternalPositions: true,
         apiKeyId: keyAmbiguous,
         walletId: ambiguousWalletA.id,
         symbolGroupId: ambiguousScopeAId,
@@ -207,6 +209,7 @@ describe('Positions takeover status API', () => {
         positionMode: 'ONE_WAY',
         isActive: true,
         liveOptIn: true,
+        manageExternalPositions: true,
         apiKeyId: keyAmbiguous,
         walletId: ambiguousWalletB.id,
         symbolGroupId: ambiguousScopeBId,
@@ -361,6 +364,7 @@ describe('Positions takeover status API', () => {
         positionMode: 'ONE_WAY',
         isActive: true,
         liveOptIn: true,
+        manageExternalPositions: true,
         apiKeyId: keyOwned,
         walletId: ownedWallet.id,
         symbolGroupId: ownedScopeId,
@@ -411,6 +415,7 @@ describe('Positions takeover status API', () => {
           positionMode: 'ONE_WAY',
           isActive: true,
           liveOptIn: true,
+          manageExternalPositions: true,
           apiKeyId: keyAmbiguous,
           walletId: ambiguousWalletA.id,
           symbolGroupId: ambiguousScopeAId,
@@ -424,6 +429,7 @@ describe('Positions takeover status API', () => {
           positionMode: 'ONE_WAY',
           isActive: true,
           liveOptIn: true,
+          manageExternalPositions: true,
           apiKeyId: keyAmbiguous,
           walletId: ambiguousWalletB.id,
           symbolGroupId: ambiguousScopeBId,
@@ -543,6 +549,7 @@ describe('Positions takeover status API', () => {
         positionMode: 'ONE_WAY',
         isActive: true,
         liveOptIn: true,
+        manageExternalPositions: true,
         apiKeyId,
         walletId: wallet.id,
       },
@@ -591,7 +598,7 @@ describe('Positions takeover status API', () => {
     expect(updatedPosition.walletId).toBeNull();
   });
 
-  it('uses wallet-only management truth for stale BOT_MANAGED takeover rows', async () => {
+  it('uses bot-only management truth for stale BOT_MANAGED takeover rows', async () => {
     const email = 'positions-takeover-policy-drift@example.com';
     const agent = await registerAndLogin(email);
     const owner = await prisma.user.findUniqueOrThrow({
@@ -665,6 +672,7 @@ describe('Positions takeover status API', () => {
         positionMode: 'ONE_WAY',
         isActive: true,
         liveOptIn: true,
+        manageExternalPositions: true,
         apiKeyId: keyApiDisabled,
         walletId: walletApiDisabled.id,
         symbolGroupId: apiDisabledScopeId,
@@ -682,6 +690,7 @@ describe('Positions takeover status API', () => {
         positionMode: 'ONE_WAY',
         isActive: true,
         liveOptIn: true,
+        manageExternalPositions: false,
         apiKeyId: keyWalletDisabled,
         walletId: walletWalletDisabled.id,
         symbolGroupId: walletDisabledScopeId,

@@ -19,6 +19,7 @@ export type Bot = {
   strategyId?: string | null;
   isActive: boolean;
   liveOptIn: boolean;
+  manageExternalPositions: boolean;
   consentTextVersion?: string | null;
   maxOpenPositions: number;
   wallet?: {
@@ -69,6 +70,7 @@ export type BotRuntimeGraph = {
     positionMode: PositionMode;
     isActive: boolean;
     liveOptIn: boolean;
+    manageExternalPositions: boolean;
     maxOpenPositions: number;
     createdAt: string;
     updatedAt: string;
@@ -517,6 +519,7 @@ export type CreateBotInput = {
   marketGroupId: string;
   isActive: boolean;
   liveOptIn: boolean;
+  manageExternalPositions: boolean;
   consentTextVersion?: string | null;
 };
 
@@ -527,6 +530,7 @@ export type UpdateBotInput = Partial<{
   marketGroupId: string | null;
   isActive: boolean;
   liveOptIn: boolean;
+  manageExternalPositions: boolean;
   consentTextVersion: string | null;
 }>;
 

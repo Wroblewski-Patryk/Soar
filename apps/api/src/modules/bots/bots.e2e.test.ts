@@ -57,6 +57,7 @@ describe('Bots module contract', () => {
     const runtimeGraphRes = await agent.get(`/dashboard/bots/${botId}/runtime-graph`);
     expect(runtimeGraphRes.status).toBe(200);
     expect(runtimeGraphRes.body.bot.mode).toBe('PAPER');
+    expect(runtimeGraphRes.body.bot.manageExternalPositions).toBe(false);
   });
 
   it('supports full CRUD for authenticated owner', async () => {
@@ -76,6 +77,7 @@ describe('Bots module contract', () => {
     expect(createRes.body.positionMode).toBe('ONE_WAY');
     expect(createRes.body.strategyId).toBe(strategyId);
     expect(createRes.body.symbolGroupId).toBe(futuresMarketGroupId);
+    expect(createRes.body.manageExternalPositions).toBe(false);
     const botId = createRes.body.id as string;
     const futuresBotId = botId;
 
@@ -147,6 +149,7 @@ describe('Bots module contract', () => {
     const updateRes = await agent.put(`/dashboard/bots/${botId}`).send({
       walletId: liveWalletId,
       liveOptIn: true,
+      manageExternalPositions: true,
       consentTextVersion: 'mvp-v1',
       strategyId: null,
     });
@@ -155,6 +158,7 @@ describe('Bots module contract', () => {
     expect(updateRes.body.marketType).toBe('FUTURES');
     expect(updateRes.body.positionMode).toBe('ONE_WAY');
     expect(updateRes.body.liveOptIn).toBe(true);
+    expect(updateRes.body.manageExternalPositions).toBe(true);
     expect(updateRes.body.consentTextVersion).toBe('mvp-v1');
     expect(updateRes.body.maxOpenPositions).toBe(1);
     expect(updateRes.body.strategyId).toBe(strategyId);
@@ -1341,6 +1345,7 @@ describe('Bots module contract', () => {
       walletId: wallet.id,
       isActive: true,
       liveOptIn: true,
+      manageExternalPositions: true,
       consentTextVersion: 'mvp-v1',
     });
     expect(botARes.status).toBe(201);
@@ -1355,6 +1360,7 @@ describe('Bots module contract', () => {
       walletId: wallet.id,
       isActive: true,
       liveOptIn: true,
+      manageExternalPositions: true,
       consentTextVersion: 'mvp-v1',
     });
     expect(botBRes.status).toBe(201);
@@ -1399,7 +1405,7 @@ describe('Bots module contract', () => {
         origin: 'EXCHANGE_SYNC',
         managementMode: 'BOT_MANAGED',
         syncState: 'IN_SYNC',
-        externalId: 'external:btcusdt:long',
+        externalId: `${liveApiKey.id}:BTCUSDT:LONG`,
       },
     });
 

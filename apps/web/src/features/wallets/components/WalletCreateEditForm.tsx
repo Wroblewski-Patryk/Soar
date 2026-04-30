@@ -275,15 +275,14 @@ export default function WalletCreateEditForm({
     setForm((prev) => {
       if (prev.mode === nextMode) return prev;
       if (nextMode === 'PAPER') {
-        return {
-          ...prev,
-          mode: 'PAPER',
-          liveAllocationMode: 'PERCENT',
-          liveAllocationValue: 100,
-          apiKeyId: '',
-          manageExternalPositions: false,
-        };
-      }
+          return {
+            ...prev,
+            mode: 'PAPER',
+            liveAllocationMode: 'PERCENT',
+            liveAllocationValue: 100,
+            apiKeyId: '',
+          };
+        }
       return {
         ...prev,
         mode: 'LIVE',
@@ -296,8 +295,8 @@ export default function WalletCreateEditForm({
 
   useEffect(() => {
     if (form.mode !== 'LIVE') {
-      if (form.apiKeyId || form.manageExternalPositions) {
-        setForm((prev) => ({ ...prev, apiKeyId: '', manageExternalPositions: false }));
+      if (form.apiKeyId) {
+        setForm((prev) => ({ ...prev, apiKeyId: '' }));
       }
       setPreview(null);
       setPreviewError(null);
@@ -309,7 +308,7 @@ export default function WalletCreateEditForm({
       setPreview(null);
       setPreviewError(null);
     }
-  }, [compatibleApiKeys, form.apiKeyId, form.manageExternalPositions, form.mode]);
+  }, [compatibleApiKeys, form.apiKeyId, form.mode]);
 
   const canSaveMode = form.mode === 'LIVE'
     ? supportsExchangeCapability(form.exchange, 'LIVE_EXECUTION')
@@ -335,7 +334,6 @@ export default function WalletCreateEditForm({
       liveAllocationMode: 'wallet-live-allocation-mode',
       liveAllocationValue: 'wallet-live-allocation-value',
       apiKeyId: 'wallet-api-key',
-      manageExternalPositions: 'wallet-manage-external-positions',
     });
   }, [fieldErrors]);
 
@@ -501,7 +499,6 @@ export default function WalletCreateEditForm({
               setPreview(null);
               setPreviewError(null);
             }}
-            onManageExternalPositionsChange={(checked) => setForm((prev) => ({ ...prev, manageExternalPositions: checked }))}
           />
         ) : null}
 

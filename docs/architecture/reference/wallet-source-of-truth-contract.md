@@ -1,11 +1,13 @@
 # Wallet Source-of-Truth Contract
 
-Status: accepted (2026-04-16)
+Status: accepted (updated 2026-04-30)
 
 ## Purpose
 - Make `Wallet` the canonical owner of bot execution mode and capital budgeting context.
 - Remove duplicated mode/capital decisions from bot write contracts.
 - Keep runtime budgeting and UI behavior deterministic under shared-wallet usage.
+- Keep imported `LIVE` exchange-position management authority explicit at bot
+  scope instead of spreading operator control across wallet and bot surfaces.
 
 ## Canonical Ownership
 1. `Wallet` is the source-of-truth for bot execution context:
@@ -15,14 +17,16 @@ Status: accepted (2026-04-16)
 2. Bot write contract is wallet-first (`walletId` required after compatibility window).
 3. Canonical V1 runtime is single-context: one bot binds to one wallet.
 4. Backtests remain wallet-independent and keep explicit `initialBalance`.
-5. For `LIVE` exchange takeover, wallet is also the canonical source-of-truth
-   for management policy:
-   - `wallet.manageExternalPositions` decides whether synced exchange positions
-     may become `BOT_MANAGED`,
+5. For `LIVE` exchange takeover, wallet stays the execution and API-key context,
+   but management policy is bot-scoped:
+   - `bot.manageExternalPositions` decides whether synced exchange positions
+     inside that bot's symbol scope may become `BOT_MANAGED`,
    - `apiKey.syncExternalPositions` decides only whether external positions are
-     imported/snapshotted,
+     imported or snapshotted at the exchange-boundary layer,
+   - `wallet.manageExternalPositions` is legacy compatibility-only persisted
+     metadata and must not outrank bot ownership or management rules,
    - `apiKey.manageExternalPositions` is compatibility-only legacy metadata and
-     must not outrank wallet ownership or management rules.
+     must not outrank bot ownership or management rules.
 
 ## Context Invariants
 1. `wallet.exchange == marketUniverse.exchange`
@@ -71,11 +75,16 @@ Post-deposit rule:
 
 ## Bot/API Contract
 - Bot create/update no longer accepts mode as canonical input.
+- Bot create/update accepts the canonical imported-position management flag at
+  bot scope: `manageExternalPositions`.
 - During compatibility window, legacy bot fields (`mode`, `paperStartBalance`, `apiKeyId`) are derived from wallet only.
 - During compatibility window, API-key-level `manageExternalPositions` may
   still be persisted or returned for legacy profile surfaces, but runtime
   ownership, takeover status, and reconciliation must derive management truth
-  only from the linked `LIVE` wallet.
+  only from the linked `LIVE` bot plus its symbol scope.
+- During compatibility window, wallet-level `manageExternalPositions` may still
+  exist in persistence for historical rows or migration backfill, but operator
+  write paths and runtime ownership must ignore it.
 - Required wallet error contract:
   - `WALLET_NOT_FOUND`
   - `WALLET_MODE_INVALID`
@@ -89,6 +98,8 @@ Post-deposit rule:
 - Wallet module is a first-class dashboard area.
 - Canonical navigation placement for V1 wallet-first rollout: `Exchanges -> Wallets -> Markets`.
 - Bot creator/edit flows must present wallet selector as the execution-context input.
+- The imported-position management toggle exists in bot settings only, not in
+  wallet create/edit surfaces.
 
 ## Non-goals
 - No forced wallet dependency for backtests.

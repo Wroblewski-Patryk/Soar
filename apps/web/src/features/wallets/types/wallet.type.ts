@@ -15,7 +15,6 @@ export type Wallet = {
   liveAllocationMode?: WalletAllocationMode | null;
   liveAllocationValue?: number | null;
   apiKeyId?: string | null;
-  manageExternalPositions?: boolean;
   createdAt?: string;
   updatedAt?: string;
 };
@@ -30,7 +29,6 @@ export type CreateWalletInput = {
   liveAllocationMode?: WalletAllocationMode | null;
   liveAllocationValue?: number | null;
   apiKeyId?: string | null;
-  manageExternalPositions?: boolean;
 };
 
 export type UpdateWalletInput = Partial<CreateWalletInput>;

@@ -9,7 +9,6 @@ import {
   type Option,
   SelectField,
   TextField,
-  ToggleField,
 } from '@/ui/forms';
 import { normalizeFormSymbol } from '@/lib/forms';
 import { normalizeSymbol } from '@/lib/symbols';
@@ -225,7 +224,6 @@ type LiveSectionProps = {
   onLiveAllocationValueChange: (value: number) => void;
   onLiveAllocationModeChange: (value: WalletFormState['liveAllocationMode']) => void;
   onApiKeyChange: (value: string) => void;
-  onManageExternalPositionsChange: (checked: boolean) => void;
 };
 
 export function WalletLiveSection({
@@ -239,7 +237,6 @@ export function WalletLiveSection({
   onLiveAllocationValueChange,
   onLiveAllocationModeChange,
   onApiKeyChange,
-  onManageExternalPositionsChange,
 }: LiveSectionProps) {
   return (
     <FormSectionCard title={walletText('sectionLive')}>
@@ -277,14 +274,6 @@ export function WalletLiveSection({
         </div>
         {compatibleApiKeys.length === 0 ? <p className='text-xs text-warning md:col-span-2'>{walletText('noApiKeys')}</p> : null}
 
-        <ToggleField
-          id='wallet-manage-external-positions'
-          className='md:col-span-2'
-          label={walletText('manageExternalPositions')}
-          hint={walletText('manageExternalPositionsHint')}
-          checked={form.manageExternalPositions}
-          onChange={onManageExternalPositionsChange}
-        />
       </FormGrid>
     </FormSectionCard>
   );
@@ -341,12 +330,6 @@ export function WalletSummarySection({ walletText, form, selectedApiKey }: Summa
             <p className='flex items-center justify-between gap-2'>
               <span className='opacity-65'>{walletText('selectedKey')}</span>
               <span className='max-w-[11rem] truncate text-right font-semibold'>{selectedApiKey?.label ?? walletText('notSelected')}</span>
-            </p>
-            <p className='flex items-center justify-between gap-2'>
-              <span className='opacity-65'>{walletText('manageExternalPositionsSummary')}</span>
-              <span className='font-semibold'>
-                {form.manageExternalPositions ? walletText('enabled') : walletText('disabled')}
-              </span>
             </p>
           </>
         ) : null}

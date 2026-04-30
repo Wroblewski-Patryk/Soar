@@ -158,7 +158,8 @@ describe("BotCreateEditForm", () => {
     expect(screen.getByText("LIVE API key:")).toBeInTheDocument();
     expect(screen.getByText("Linked")).toBeInTheDocument();
     expect(screen.queryByText("Missing")).not.toBeInTheDocument();
-    expect(screen.getAllByRole("checkbox")).toHaveLength(2);
+    expect(screen.getByLabelText("Import and manage external exchange positions")).toBeInTheDocument();
+    expect(screen.getAllByRole("checkbox")).toHaveLength(3);
   });
 
   it("shows validation copy and blocks create when active LIVE has no compatible key", async () => {
@@ -281,6 +282,7 @@ describe("BotCreateEditForm", () => {
         marketGroupId: "g4",
         isActive: true,
         liveOptIn: false,
+        manageExternalPositions: false,
         consentTextVersion: null,
       })
     );
@@ -321,6 +323,7 @@ describe("BotCreateEditForm", () => {
       positionMode: "ONE_WAY",
       isActive: true,
       liveOptIn: false,
+      manageExternalPositions: true,
       maxOpenPositions: 1,
       wallet: { ...baseWallet, id: "w-edit", name: "Direct wallet" },
       strategy: {

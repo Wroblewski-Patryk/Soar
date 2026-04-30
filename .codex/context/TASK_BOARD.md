@@ -17,6 +17,10 @@ Last updated: 2026-04-30
 
 ## READY
 
+- [x] `V1TAKE-10 feat(bot-settings): move LIVE external-position management authority from wallet to bot`
+  - Scope: add one canonical bot-level management flag for imported `LIVE` exchange positions, backfill existing bots from linked wallet truth, move the operator control into bot settings, and remove the editable wallet-level toggle so imported-position management has one source of truth only.
+  - 2026-04-30: Closed after the user approved the architecture shift. Added `Bot.manageExternalPositions` with SQL backfill from linked wallets, rewired `runtimeExternalPositionOwner` and related takeover surfaces to derive management truth from the bot-level flag, removed the editable wallet takeover toggle from wallet create/edit flows, and added the single checkbox to bot settings for `LIVE` wallets only. Validation PASS: focused runtime ownership/takeover API pack, focused bot+wallet web form pack, API/web typecheck, repository guardrails.
+
 - [x] `V1IMPORT-01 fix(api-reconcile): let owned LIVE import replace or adopt botless wallet-owned local blockers`
   - Scope: stop imported `LIVE` positions from disappearing from bot runtime surfaces when an older open local `BOT/USER` row for the same wallet + symbol still exists without `botId`, and ensure adopted local rows become fully exchange-synced instead of staying half-local.
   - 2026-04-30: Closed after protected production verification on `BNBUSDT` proved the exchange snapshot was fresh while runtime positions still missed the symbol because a stale wallet-owned botless blocker row prevented canonical import. `livePositionReconciliation` now includes wallet-owned botless local managed rows in the same owner-candidate pool it already used for exact local reuse, so existing lifecycle-replacement logic can close stale blockers deterministically before import or adopt a fresh local row into canonical `EXCHANGE_SYNC` truth. Reused local rows now also receive canonical `externalId`, preventing half-synced adoption drift on later iterations. Validation PASS: focused `livePositionReconciliation.service.test.ts`, API typecheck, repository guardrails.

@@ -166,13 +166,9 @@ export const resolveExternalPositionOwnershipIndex = async (
     where: baseBotWhere,
     select: {
       id: true,
+      manageExternalPositions: true,
       walletId: true,
       apiKeyId: true,
-      wallet: {
-        select: {
-          manageExternalPositions: true,
-        },
-      },
       symbolGroup: {
         select: {
           symbols: true,
@@ -205,7 +201,7 @@ export const resolveExternalPositionOwnershipIndex = async (
       botId: bot.id,
       walletId: bot.walletId,
       apiKeyId: bot.apiKeyId ?? 'paper',
-      managed: mode === 'LIVE' ? bot.wallet?.manageExternalPositions === true : true,
+      managed: mode === 'LIVE' ? bot.manageExternalPositions === true : true,
     };
 
     if (bot.symbolGroup) {

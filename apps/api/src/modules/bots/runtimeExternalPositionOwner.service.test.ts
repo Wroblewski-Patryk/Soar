@@ -36,11 +36,9 @@ describe('resolveExternalPositionOwnershipIndex', () => {
     mocks.prisma.bot.findMany.mockResolvedValue([
       {
         id: 'bot-a',
+        manageExternalPositions: true,
         walletId: 'wallet-a',
         apiKeyId: 'key-1',
-        wallet: {
-          manageExternalPositions: true,
-        },
         symbolGroup: {
           symbols: ['BTCUSDT'],
           marketUniverse: null,
@@ -48,11 +46,9 @@ describe('resolveExternalPositionOwnershipIndex', () => {
       },
       {
         id: 'bot-b',
+        manageExternalPositions: true,
         walletId: 'wallet-b',
         apiKeyId: 'key-1',
-        wallet: {
-          manageExternalPositions: true,
-        },
         symbolGroup: {
           symbols: ['BTCUSDT'],
           marketUniverse: null,
@@ -78,11 +74,9 @@ describe('resolveExternalPositionOwnershipIndex', () => {
     mocks.prisma.bot.findMany.mockResolvedValue([
       {
         id: 'bot-btc',
+        manageExternalPositions: true,
         walletId: 'wallet-btc',
         apiKeyId: 'key-shared',
-        wallet: {
-          manageExternalPositions: true,
-        },
         symbolGroup: {
           symbols: ['BTCUSDT'],
           marketUniverse: null,
@@ -90,11 +84,9 @@ describe('resolveExternalPositionOwnershipIndex', () => {
       },
       {
         id: 'bot-eth',
+        manageExternalPositions: true,
         walletId: 'wallet-eth',
         apiKeyId: 'key-shared',
-        wallet: {
-          manageExternalPositions: true,
-        },
         symbolGroup: {
           symbols: ['ETHUSDT'],
           marketUniverse: null,
@@ -130,11 +122,9 @@ describe('resolveExternalPositionOwnershipIndex', () => {
     mocks.prisma.bot.findMany.mockResolvedValue([
       {
         id: 'bot-manual-only',
+        manageExternalPositions: false,
         walletId: 'wallet-manual-only',
         apiKeyId: 'key-2',
-        wallet: {
-          manageExternalPositions: false,
-        },
         symbolGroup: {
           symbols: ['SOLUSDT'],
           marketUniverse: null,
@@ -160,11 +150,9 @@ describe('resolveExternalPositionOwnershipIndex', () => {
     mocks.prisma.bot.findMany.mockResolvedValue([
       {
         id: 'bot-key-a',
+        manageExternalPositions: true,
         walletId: 'wallet-key-a',
         apiKeyId: 'key-a',
-        wallet: {
-          manageExternalPositions: true,
-        },
         symbolGroup: {
           symbols: ['BTCUSDT'],
           marketUniverse: null,
@@ -172,11 +160,9 @@ describe('resolveExternalPositionOwnershipIndex', () => {
       },
       {
         id: 'bot-key-b',
+        manageExternalPositions: true,
         walletId: 'wallet-key-b',
         apiKeyId: 'key-b',
-        wallet: {
-          manageExternalPositions: true,
-        },
         symbolGroup: {
           symbols: ['BTCUSDT'],
           marketUniverse: null,
@@ -212,11 +198,9 @@ describe('resolveExternalPositionOwnershipIndex', () => {
     mocks.prisma.bot.findMany.mockResolvedValue([
       {
         id: 'bot-owned',
+        manageExternalPositions: true,
         walletId: 'wallet-owned',
         apiKeyId: 'key-owned',
-        wallet: {
-          manageExternalPositions: true,
-        },
         symbolGroup: {
           symbols: ['BTCUSDT', 'ETHUSDT'],
           marketUniverse: null,
@@ -224,11 +208,9 @@ describe('resolveExternalPositionOwnershipIndex', () => {
       },
       {
         id: 'bot-ambiguous',
+        manageExternalPositions: true,
         walletId: 'wallet-ambiguous',
         apiKeyId: 'key-owned',
-        wallet: {
-          manageExternalPositions: true,
-        },
         symbolGroup: {
           symbols: ['ETHUSDT'],
           marketUniverse: null,
@@ -260,11 +242,9 @@ describe('resolveExternalPositionOwnerBySymbol', () => {
     mocks.prisma.bot.findMany.mockResolvedValue([
       {
         id: 'bot-a',
+        manageExternalPositions: true,
         walletId: 'wallet-a',
         apiKeyId: 'key-a',
-        wallet: {
-          manageExternalPositions: true,
-        },
         symbolGroup: {
           symbols: ['BTCUSDT'],
           marketUniverse: null,
@@ -272,11 +252,9 @@ describe('resolveExternalPositionOwnerBySymbol', () => {
       },
       {
         id: 'bot-b',
+        manageExternalPositions: true,
         walletId: 'wallet-b',
         apiKeyId: 'key-b',
-        wallet: {
-          manageExternalPositions: true,
-        },
         symbolGroup: {
           symbols: ['BTCUSDT'],
           marketUniverse: null,

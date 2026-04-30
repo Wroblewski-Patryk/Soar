@@ -115,7 +115,6 @@ export default function WalletsListTable({ rows, onDeleted, onCloned }: WalletsL
           liveAllocationMode: wallet.liveAllocationMode ?? null,
           liveAllocationValue: wallet.liveAllocationValue ?? null,
           apiKeyId: wallet.apiKeyId ?? null,
-          manageExternalPositions: wallet.manageExternalPositions ?? false,
         });
         onCloned?.(clonedWallet);
         toast.success(copy.cloned);

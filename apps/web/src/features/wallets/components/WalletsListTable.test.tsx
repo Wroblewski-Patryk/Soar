@@ -31,7 +31,6 @@ describe('WalletsListTable', () => {
       liveAllocationMode: 'PERCENT',
       liveAllocationValue: 25,
       apiKeyId: 'key-1',
-      manageExternalPositions: true,
     },
     {
       id: 'wallet-2',
@@ -44,7 +43,6 @@ describe('WalletsListTable', () => {
       liveAllocationMode: null,
       liveAllocationValue: null,
       apiKeyId: null,
-      manageExternalPositions: false,
     },
   ];
 
@@ -90,7 +88,6 @@ describe('WalletsListTable', () => {
       liveAllocationMode: 'PERCENT',
       liveAllocationValue: 25,
       apiKeyId: 'key-1',
-      manageExternalPositions: true,
     });
 
     renderTable(vi.fn(), onCloned);
@@ -112,7 +109,6 @@ describe('WalletsListTable', () => {
         liveAllocationMode: 'PERCENT',
         liveAllocationValue: 25,
         apiKeyId: 'key-1',
-        manageExternalPositions: true,
       });
       expect(onCloned).toHaveBeenCalledWith(
         expect.objectContaining({ id: 'wallet-clone-1', name: 'Main wallet (clone)' })

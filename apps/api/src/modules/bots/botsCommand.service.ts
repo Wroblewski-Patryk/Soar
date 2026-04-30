@@ -157,6 +157,8 @@ export const createBot = async (userId: string, data: CreateBotDto) => {
         positionMode: 'ONE_WAY',
         isActive: botData.isActive,
         liveOptIn: derivedMode === 'LIVE' ? botData.liveOptIn : false,
+        manageExternalPositions:
+          derivedMode === 'LIVE' ? botData.manageExternalPositions ?? false : false,
         maxOpenPositions: derivedMaxOpenPositions,
         consentTextVersion: derivedMode === 'LIVE' && botData.liveOptIn
           ? normalizeConsentTextVersion(botData.consentTextVersion)
@@ -243,6 +245,10 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
 
   const nextMode = targetWallet?.mode ?? existing.mode;
   const nextLiveOptIn = nextMode === 'LIVE' ? (data.liveOptIn ?? existing.liveOptIn) : false;
+  const nextManageExternalPositions =
+    nextMode === 'LIVE'
+      ? (data.manageExternalPositions ?? existing.manageExternalPositions ?? false)
+      : false;
   const nextState: BotConsentState = {
     mode: nextMode,
     liveOptIn: nextLiveOptIn,
@@ -395,6 +401,7 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
         marketType: targetMarketType,
         apiKeyId: resolvedApiKeyId,
         liveOptIn: nextLiveOptIn,
+        manageExternalPositions: nextManageExternalPositions,
         consentTextVersion: nextConsentTextVersion,
       },
     });
@@ -665,6 +672,7 @@ export const getBotRuntimeGraph = async (userId: string, botId: string) => {
       positionMode: true,
       isActive: true,
       liveOptIn: true,
+      manageExternalPositions: true,
       maxOpenPositions: true,
       createdAt: true,
       updatedAt: true,

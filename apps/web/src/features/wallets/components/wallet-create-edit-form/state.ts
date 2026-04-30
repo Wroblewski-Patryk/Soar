@@ -34,7 +34,6 @@ export type WalletFormState = {
   liveAllocationMode: WalletAllocationMode;
   liveAllocationValue: number;
   apiKeyId: string;
-  manageExternalPositions: boolean;
 };
 
 export type WalletMarketType = WalletFormState['marketType'];
@@ -66,7 +65,6 @@ export const buildDefaultForm = (): WalletFormState => ({
   liveAllocationMode: 'PERCENT',
   liveAllocationValue: 100,
   apiKeyId: '',
-  manageExternalPositions: false,
 });
 
 export const mapWalletToForm = (wallet: Wallet): WalletFormState => ({
@@ -79,7 +77,6 @@ export const mapWalletToForm = (wallet: Wallet): WalletFormState => ({
   liveAllocationMode: wallet.liveAllocationMode ?? 'PERCENT',
   liveAllocationValue: wallet.liveAllocationValue ?? 100,
   apiKeyId: wallet.apiKeyId ?? '',
-  manageExternalPositions: wallet.manageExternalPositions ?? false,
 });
 
 export const toPayload = (form: WalletFormState): CreateWalletInput => {
@@ -96,7 +93,6 @@ export const toPayload = (form: WalletFormState): CreateWalletInput => {
       liveAllocationMode: null,
       liveAllocationValue: null,
       apiKeyId: null,
-      manageExternalPositions: false,
     };
   }
 
@@ -110,7 +106,6 @@ export const toPayload = (form: WalletFormState): CreateWalletInput => {
     liveAllocationMode: form.liveAllocationMode,
     liveAllocationValue: form.liveAllocationValue,
     apiKeyId: form.apiKeyId || null,
-    manageExternalPositions: form.manageExternalPositions,
   };
 };
 

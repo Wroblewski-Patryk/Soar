@@ -32,7 +32,6 @@ const translations = vi.hoisted<Record<string, string>>(() => ({
   'dashboard.wallets.form.resetPaperAction': 'Resetuj portfel PAPER',
   'dashboard.wallets.form.resetPaperLoading': 'Resetowanie...',
   'dashboard.wallets.form.resetPaperLastAt': 'Ostatni reset',
-  'dashboard.wallets.form.manageExternalPositions': 'Przejmuj pozycje otwarte poza aplikacja',
   'dashboard.wallets.form.validationName': 'Podaj nazwe portfela.',
 }));
 const tMock = vi.hoisted(() => (key: string) => translations[key] ?? key);
@@ -248,13 +247,12 @@ describe('WalletCreateEditForm', () => {
           liveAllocationMode: null,
           liveAllocationValue: null,
           apiKeyId: null,
-          manageExternalPositions: false,
         })
       );
     });
   });
 
-  it('submits LIVE wallet with external takeover toggle enabled', async () => {
+  it('submits LIVE wallet without external takeover field in wallet payload', async () => {
     fetchApiKeysMock.mockResolvedValue([
       {
         id: 'key-1',
@@ -290,9 +288,6 @@ describe('WalletCreateEditForm', () => {
 
     fireEvent.click(screen.getByRole('radio', { name: 'LIVE' }));
 
-    const takeoverToggle = await screen.findByLabelText('Przejmuj pozycje otwarte poza aplikacja');
-    fireEvent.click(takeoverToggle);
-
     const form = container.querySelector('form');
     expect(form).not.toBeNull();
     fireEvent.submit(form as HTMLFormElement);
@@ -302,10 +297,11 @@ describe('WalletCreateEditForm', () => {
         expect.objectContaining({
           mode: 'LIVE',
           apiKeyId: 'key-1',
-          manageExternalPositions: true,
         })
       );
     });
+    const payload = createWalletMock.mock.calls[0][0] as Record<string, unknown>;
+    expect(payload).not.toHaveProperty('manageExternalPositions');
   });
 
   it('uses wallet metadata endpoint to resolve market type options', async () => {
@@ -379,7 +375,6 @@ describe('WalletCreateEditForm', () => {
       liveAllocationMode: null,
       liveAllocationValue: null,
       apiKeyId: null,
-      manageExternalPositions: false,
       paperResetAt: null,
     });
 
@@ -402,7 +397,6 @@ describe('WalletCreateEditForm', () => {
       liveAllocationMode: 'PERCENT',
       liveAllocationValue: 25,
       apiKeyId: 'key-1',
-      manageExternalPositions: false,
       paperResetAt: null,
     });
 
@@ -430,7 +424,6 @@ describe('WalletCreateEditForm', () => {
         liveAllocationMode: null,
         liveAllocationValue: null,
         apiKeyId: null,
-        manageExternalPositions: false,
         paperResetAt: null,
       })
       .mockResolvedValueOnce({
@@ -444,7 +437,6 @@ describe('WalletCreateEditForm', () => {
         liveAllocationMode: null,
         liveAllocationValue: null,
         apiKeyId: null,
-        manageExternalPositions: false,
         paperResetAt: '2026-04-20T12:00:00.000Z',
       });
 
@@ -492,7 +484,6 @@ describe('WalletCreateEditForm', () => {
       liveAllocationMode: null,
       liveAllocationValue: null,
       apiKeyId: null,
-      manageExternalPositions: false,
       paperResetAt: null,
     });
     resetPaperWalletMock.mockRejectedValue(new Error('reset failed'));

@@ -44,11 +44,6 @@ describe('Bots runtime takeover visibility', () => {
       baseCurrency: 'USDT',
     });
 
-    await prisma.wallet.update({
-      where: { id: liveWalletId },
-      data: { manageExternalPositions: true },
-    });
-
     const liveStrategyId = await createStrategy(owner, 'Runtime Live Ownership Strategy');
     const paperStrategyId = await createStrategy(owner, 'Runtime Paper Shared Symbol Strategy');
     const liveMarketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
@@ -72,6 +67,7 @@ describe('Bots runtime takeover visibility', () => {
       walletId: liveWalletId,
       isActive: true,
       liveOptIn: true,
+      manageExternalPositions: true,
       consentTextVersion: 'mvp-v1',
     });
     expect(liveBotRes.status).toBe(201);
@@ -183,11 +179,6 @@ describe('Bots runtime takeover visibility', () => {
       apiKeyId: apiKey.id,
     });
 
-    await prisma.wallet.updateMany({
-      where: { id: { in: [btcWalletId, ethWalletId] } },
-      data: { manageExternalPositions: true },
-    });
-
     const btcStrategyId = await createStrategy(owner, 'Runtime Exact BTC Strategy');
     const ethStrategyId = await createStrategy(owner, 'Runtime Exact ETH Strategy');
     const btcMarketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
@@ -211,6 +202,7 @@ describe('Bots runtime takeover visibility', () => {
       walletId: btcWalletId,
       isActive: true,
       liveOptIn: true,
+      manageExternalPositions: true,
       consentTextVersion: 'mvp-v1',
     });
     expect(btcBotRes.status).toBe(201);
@@ -225,6 +217,7 @@ describe('Bots runtime takeover visibility', () => {
       walletId: ethWalletId,
       isActive: true,
       liveOptIn: true,
+      manageExternalPositions: true,
       consentTextVersion: 'mvp-v1',
     });
     expect(ethBotRes.status).toBe(201);
@@ -331,11 +324,6 @@ describe('Bots runtime takeover visibility', () => {
       baseCurrency: 'USDT',
       apiKeyId: apiKey.id,
     });
-    await prisma.wallet.update({
-      where: { id: walletId },
-      data: { manageExternalPositions: true },
-    });
-
     const strategyId = await createStrategy(owner, 'Runtime Recovered Visibility Strategy');
     const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
     await prisma.symbolGroup.update({
@@ -352,6 +340,7 @@ describe('Bots runtime takeover visibility', () => {
       walletId,
       isActive: true,
       liveOptIn: true,
+      manageExternalPositions: true,
       consentTextVersion: 'mvp-v1',
     });
     expect(botRes.status).toBe(201);
