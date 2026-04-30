@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-04-30
+Last updated: 2026-05-01
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -19,8 +19,8 @@ Last updated: 2026-04-30
 
 - [ ] `V1ROE-04 qa(prod-manual): verify exchange-aligned LIVE PnL truth and imported automation on protected DOGEUSDT`
   - Scope: collect authenticated protected production API/browser evidence after the current candidate is deployed, proving `DOGEUSDT` `LIVE` PnL truth and imported managed automation are aligned with exchange-synced runtime truth.
-  - 2026-04-30 status: BLOCKED by protected production verification access/deploy freshness, not by a known remaining local code gap. The exact evidence contract is now published in `docs/planning/v1roe-04-production-verification-task-2026-04-30.md`. Do not mark this done from local tests alone.
-  - 2026-04-30 partial: deploy freshness is verified on production (`522e1d95`, `main`) and public API/web smoke passed, but protected runtime probes return `401 Missing token` without production auth in this environment. Evidence: `docs/operations/v1roe-04-prod-verification-partial-2026-04-30.md`.
+  - 2026-05-01 status: BLOCKED by missing protected production auth, not by a known remaining local code gap. The exact evidence contract is published in `docs/planning/v1roe-04-production-verification-task-2026-04-30.md`. Do not mark this done from local tests alone.
+  - 2026-05-01 partial: deploy freshness is verified on production (`522e1d95`, `main`) and public API/web smoke passed, but protected runtime probes return `401 Missing token` without production auth in this environment. Evidence: `docs/operations/v1roe-04-prod-verification-partial-2026-04-30.md`.
 
 - [x] `WLEDGER-07..09 web-wallet-preview: expose ledger-backed wallet preview from wallet list`
   - Scope: add a wallets table preview action and `/dashboard/wallets/:id/preview` surface for ledger-backed summary, equity timeline, and cashflow events.
@@ -154,10 +154,6 @@ Last updated: 2026-04-30
 - [x] `V1ROE-03 fix(api-normalization): prefer isolated-wallet margin truth for isolated LIVE futures positions`
   - Scope: correct exchange snapshot normalization so imported `LIVE` isolated futures positions prefer real isolated-wallet margin truth over initial-margin fields when those differ, keeping operator `%` and lifecycle decisions on the same canonical basis.
   - 2026-04-30: Closed with a targeted fix in `positions.exchangeSnapshotNormalization.ts` and focused coverage in `positions.exchangeSnapshotNormalization.test.ts`. `ISOLATED` futures positions now prefer `isolatedWallet` margin truth, while non-isolated positions keep initial-margin precedence. Validation PASS: focused normalization pack, `bots.runtime-pnl-parity.e2e`, and `pnpm run quality:guardrails`.
-
-- [ ] `V1ROE-04 qa(prod-manual): verify exchange-aligned LIVE PnL truth and DCA non-trigger on the protected DOGEUSDT flow`
-  - Scope: rerun the protected production/operator checks on the reported `DOGEUSDT` lifecycle after deploy, proving that `LIVE` percent truth matches the exchange closely enough for operator use and that `DCA` stays idle when the exchange-aligned drawdown remains above the configured threshold boundary (for example about `-19%` versus `DCA=-25%`).
-  - 2026-04-30 status: READY. Fresh protected diagnostics narrowed the remaining gap further: reconciliation and direct exchange snapshot were already fresh, but runtime session `positions` and `symbol-stats` could still recompute operator truth from an older session/ticker price than the latest exchange sync, and freshly adopted imported rows could still wait too long before runtime automation woke up. Local code now prefers fresher exchange-synced lifecycle truth when runtime cache is older, canonically owned imported rows now hydrate automation prospectively during reconciliation, and focused coverage locks both seams. Remaining closure is post-deploy protected verification on the affected `DOGEUSDT` flow.
 
 - [x] `V1REOPEN-00 analysis(queue): publish same-symbol LIVE close/reopen hardening packet`
   - Scope: freeze the newly reported `LIVE close -> reopen same symbol` regression into one exact execution packet covering stale lifecycle visibility, wrong `PnL%` basis, and stale `TTP` continuity risk.
@@ -512,7 +508,8 @@ Last updated: 2026-04-30
 
 ## BLOCKED
 
-- [ ] (none)
+- [ ] `V1ROE-04 qa(prod-manual): verify exchange-aligned LIVE PnL truth and imported automation on protected DOGEUSDT`
+  - 2026-05-01: Blocked until production auth is available through `SMOKE_AUTH_TOKEN` / `DEPLOY_FRESHNESS_AUTH_TOKEN`, `SMOKE_AUTH_EMAIL + SMOKE_AUTH_PASSWORD`, `DEPLOY_FRESHNESS_AUTH_EMAIL + DEPLOY_FRESHNESS_AUTH_PASSWORD`, or an equivalent authenticated browser/session cookie. Public deploy freshness and smoke evidence is already recorded; protected runtime evidence is still required.
 
 ## REVIEW
 
