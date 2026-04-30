@@ -1402,7 +1402,7 @@ describe('RuntimePositionAutomationService', () => {
           mode: 'advanced',
           tp: null,
           sl: null,
-          ttp: [{ percent: 5, arm: 10 }],
+          ttp: [{ percent: 10, arm: 5 }],
           tsl: [],
         },
         additional: {
@@ -1498,7 +1498,7 @@ describe('RuntimePositionAutomationService', () => {
           mode: 'advanced',
           tp: null,
           sl: null,
-          ttp: [{ percent: 5, arm: 10 }],
+          ttp: [{ percent: 10, arm: 5 }],
           tsl: [],
         },
         additional: {
@@ -1598,7 +1598,7 @@ describe('RuntimePositionAutomationService', () => {
           mode: 'advanced',
           tp: null,
           sl: null,
-          ttp: [{ percent: 5, arm: 10 }],
+          ttp: [{ percent: 10, arm: 5 }],
           tsl: [],
         },
         additional: {

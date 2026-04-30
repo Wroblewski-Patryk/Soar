@@ -80,7 +80,7 @@ describe('formToPayload', () => {
     expect(additional.orderLifetime).toBe(0);
   });
 
-  it('strips legacy invalid advanced trailing thresholds from submit payload', () => {
+  it('strips only truly invalid advanced trailing thresholds from submit payload', () => {
     const form = baseForm();
     form.closeConditions = {
       mode: 'advanced',
@@ -92,6 +92,7 @@ describe('formToPayload', () => {
       ],
       tsl: [
         { percent: -20, arm: 10 },
+        { percent: 20, arm: 10 },
         { percent: -5, arm: 10 },
       ],
     };
@@ -103,10 +104,13 @@ describe('formToPayload', () => {
     };
 
     expect(close.ttp).toEqual([{ percent: 20, arm: 10 }]);
-    expect(close.tsl).toEqual([{ percent: -5, arm: 10 }]);
+    expect(close.tsl).toEqual([
+      { percent: -20, arm: 10 },
+      { percent: -5, arm: 10 },
+    ]);
   });
 
-  it('sanitizes legacy invalid advanced trailing thresholds on dto load', () => {
+  it('sanitizes only truly invalid advanced trailing thresholds on dto load', () => {
     const form = dtoToForm({
       id: 'strategy-1',
       name: 'Legacy close drift',
@@ -127,6 +131,7 @@ describe('formToPayload', () => {
           ],
           tsl: [
             { percent: -20, arm: 10 },
+            { percent: 20, arm: 10 },
             { percent: -5, arm: 10 },
           ],
         },
@@ -138,6 +143,7 @@ describe('formToPayload', () => {
       expect.objectContaining({ percent: 20, arm: 10 }),
     ]);
     expect(form.closeConditions.tsl).toEqual([
+      expect.objectContaining({ percent: -20, arm: 10 }),
       expect.objectContaining({ percent: -5, arm: 10 }),
     ]);
   });

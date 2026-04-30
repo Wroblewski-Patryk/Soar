@@ -119,7 +119,7 @@ describe('StrategyForm', () => {
     expect(submitted.additional.orderLifetime).toBe(0);
   });
 
-  it('blocks submit when advanced trailing thresholds would allow a negative protected exit', async () => {
+  it('allows submit when advanced TSL uses negative start and positive step', async () => {
     window.localStorage.setItem('cryptosparrow-locale', 'pl');
     window.history.pushState({}, '', '/dashboard/strategies/create');
     const onSubmit = vi.fn().mockResolvedValue(undefined);
@@ -158,11 +158,9 @@ describe('StrategyForm', () => {
     expect(form).not.toBeNull();
     fireEvent.submit(form as HTMLFormElement);
 
-    expect(onSubmit).not.toHaveBeenCalled();
-    expect(screen.getByTestId('form-validation-summary')).toBeInTheDocument();
-    expect(
-      screen.getAllByText('Trailing TTP/TSL nie moze cofana bardziej niz prog aktywacji.').length
-    ).toBeGreaterThan(0);
+    await waitFor(() => {
+      expect(onSubmit).toHaveBeenCalledTimes(1);
+    });
   });
 
   it('preserves reordered advanced DCA levels on submit', async () => {

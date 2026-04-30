@@ -184,8 +184,8 @@ describe('Strategies CRUD contract', () => {
     expect(importRes.body.interval).toBe(exportRes.body.strategy.interval);
   });
 
-  it('rejects invalid trailing close configuration on create', async () => {
-    const agent = await registerAndLogin('strategies-invalid-close-create@example.com');
+  it('accepts advanced TSL with negative start and positive step on create', async () => {
+    const agent = await registerAndLogin('strategies-valid-close-create@example.com');
 
     const createRes = await agent.post('/dashboard/strategies').send({
       ...createStrategyPayload(),
@@ -201,12 +201,33 @@ describe('Strategies CRUD contract', () => {
       },
     });
 
+    expect(createRes.status).toBe(201);
+    expect(createRes.body.config.close.tsl).toEqual([{ arm: 10, percent: -20 }]);
+  });
+
+  it('rejects TSL levels that do not use negative start and positive step', async () => {
+    const agent = await registerAndLogin('strategies-invalid-close-create@example.com');
+
+    const createRes = await agent.post('/dashboard/strategies').send({
+      ...createStrategyPayload(),
+      config: {
+        open: { direction: 'both', indicatorsLong: [], indicatorsShort: [] },
+        close: {
+          mode: 'advanced',
+          sl: 2,
+          tp: 3,
+          ttp: [],
+          tsl: [{ arm: 10, percent: 20 }],
+        },
+      },
+    });
+
     expect(createRes.status).toBe(400);
     expect(createRes.body.error.message).toBe('Invalid trailing close configuration');
     expect(createRes.body.error.details).toEqual(
       expect.objectContaining({
         field: 'close.tsl[0]',
-        rule: 'trail_cannot_exceed_arm',
+        rule: 'tsl_requires_negative_start_and_positive_step',
       })
     );
   });

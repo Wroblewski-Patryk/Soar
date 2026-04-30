@@ -57,8 +57,9 @@ export const resolveTrailingStopLevelsFromStrategyConfig = (
   return rawLevels
     .map((item) => asRecord(item))
     .map((item) => ({
-      armPercent: Math.abs(Number(item?.arm)) / 100,
-      trailPercent: Math.abs(Number(item?.percent)) / 100,
+      armPercent: Math.abs(Number(item?.percent)) / 100,
+      trailPercent: Math.abs(Number(item?.arm)) / 100,
+      rawStartPercent: Number(item?.percent),
     }))
     .filter(
       (item) =>
@@ -66,8 +67,9 @@ export const resolveTrailingStopLevelsFromStrategyConfig = (
         Number.isFinite(item.trailPercent) &&
         item.armPercent > 0 &&
         item.trailPercent > 0 &&
-        item.trailPercent <= item.armPercent
+        item.rawStartPercent < 0
     )
+    .map(({ armPercent, trailPercent }) => ({ armPercent, trailPercent }))
     .sort((left, right) => left.armPercent - right.armPercent);
 };
 

@@ -43,16 +43,16 @@ const validateTrailingStopLevels = (config: unknown) => {
   rawLevels.forEach((entry, index) => {
     const level = asRecord(entry);
     if (!level) return;
-    const trailPercent = toFiniteNumber(level.percent);
-    const armPercent = toFiniteNumber(level.arm);
+    const startPercent = toFiniteNumber(level.percent);
+    const stepPercent = toFiniteNumber(level.arm);
     if (
-      trailPercent != null &&
-      armPercent != null &&
-      Math.abs(trailPercent) > Math.abs(armPercent)
+      startPercent != null &&
+      stepPercent != null &&
+      (startPercent >= 0 || stepPercent <= 0)
     ) {
       throw strategyErrors.invalidCloseConfig({
         field: `close.tsl[${index}]`,
-        rule: 'trail_cannot_exceed_arm',
+        rule: 'tsl_requires_negative_start_and_positive_step',
       });
     }
   });

@@ -577,7 +577,6 @@ export const buildPositionManagementInput = (
   // UI contract: `percent` = activation threshold (start), `arm` = trailing step.
   const trailingTakeProfitPercent = closeMode === 'advanced' ? toPercent(ttpConfig[0]?.arm) : 0;
   const trailingTakeProfitArmPercent = closeMode === 'advanced' ? toPercent(ttpConfig[0]?.percent) : 0;
-  const trailingStopPercent = closeMode === 'advanced' ? toPercent(tslConfig[0]?.percent) : 0;
   const trailingLossStartPercent = closeMode === 'advanced' ? toSignedPercent(tslConfig[0]?.percent, Number.NaN) : Number.NaN;
   const trailingLossStepPercent = closeMode === 'advanced' ? toPercent(tslConfig[0]?.arm) : 0;
   const trailingTakeProfitLevels = (closeMode === 'advanced' ? ttpConfig : [])
@@ -589,12 +588,16 @@ export const buildPositionManagementInput = (
     .sort((left, right) => left.armPercent - right.armPercent);
   const trailingStopLevels = (closeMode === 'advanced' ? tslConfig : [])
     .map((level) => ({
-      armPercent: toPercent(level.arm),
+      armPercent: Math.abs(toSignedPercent(level.percent, Number.NaN)),
       type: 'percent' as const,
-      value: toPercent(level.percent),
+      value: toPercent(level.arm),
     }))
-    .filter((level) => level.armPercent > 0 && level.value > 0 && level.value <= level.armPercent)
+    .filter((level) => level.armPercent > 0 && level.value > 0)
     .sort((left, right) => left.armPercent - right.armPercent);
+  const hasConfiguredTrailingLoss =
+    Number.isFinite(trailingLossStartPercent) &&
+    trailingLossStartPercent < 0 &&
+    trailingLossStepPercent > 0;
   const dcaEnabled = Boolean(additionalConfig?.dcaEnabled ?? fallback.dcaEnabled);
   const configuredMaxAdds = Math.floor(toPositive(additionalConfig?.dcaTimes, fallback.dcaMaxAdds));
   const dcaMaxAdds =
@@ -651,14 +654,7 @@ export const buildPositionManagementInput = (
     trailingTakeProfitLevels:
       trailingTakeProfitLevels.length > 0 ? trailingTakeProfitLevels : undefined,
     trailingStop:
-      trailingStopPercent > 0 && toPercent(tslConfig[0]?.arm) > 0 && trailingStopPercent <= toPercent(tslConfig[0]?.arm)
-        ? {
-            enabled: true,
-            type: 'percent',
-            value: trailingStopPercent,
-            armPercent: toPercent(tslConfig[0]?.arm),
-          }
-        : closeMode === 'advanced' && fallback.trailingEnabled
+      !hasConfiguredTrailingLoss && closeMode === 'advanced' && fallback.trailingEnabled
           ? {
               enabled: true,
               type: fallback.trailingType,
@@ -666,7 +662,7 @@ export const buildPositionManagementInput = (
             }
           : undefined,
     trailingStopLevels:
-      trailingStopLevels.length > 0 ? trailingStopLevels : undefined,
+      hasConfiguredTrailingLoss ? undefined : trailingStopLevels.length > 0 ? trailingStopLevels : undefined,
     trailingLoss:
       Number.isFinite(trailingLossStartPercent) &&
       trailingLossStartPercent < 0 &&

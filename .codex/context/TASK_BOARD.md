@@ -17,6 +17,10 @@ Last updated: 2026-04-30
 
 ## READY
 
+- [x] `V1SAFE-14 fix(api+web+runtime+backtest-tsl): restore advanced TSL as negative-start plus positive-step semantics`
+  - Scope: stop the advanced strategy editor and strategy validation pipeline from treating `TSL` like a profit-side trailing retrace capped by the activation threshold, because that blocks the intended operator contract `percent=-20 / arm=10` and desynchronizes `LIVE`, `PAPER`, and `BACKTEST`.
+  - 2026-04-30: Closed after direct operator repro showed the repository had hardened the wrong `TSL` contract. Web validation and form sanitization now accept negative `TSL start` plus positive `step`, API strategy validation enforces the same rule, runtime strategy parsing no longer drops those levels as invalid, and runtime/backtest management-input builders now align on loss-side `trailingLoss` semantics instead of misclassifying the config as profit-side trailing-stop levels. Validation PASS: focused web `StrategyForm` + `StrategyForm.map`, focused API `strategies.e2e` + `runtimeStrategyConfigParser` + `runtimeBacktestParserParity`, focused runtime `positionManagement` + `runtimePositionAutomation`, API/web typecheck, repository guardrails.
+
 - [x] `V1SAFE-13 feature(web-strategy-form): shared sortable threshold editor for TTP, TSL, and advanced DCA`
   - Scope: remove duplicated threshold-list UI in strategy create/edit, add reorder support for `TTP`, `TSL`, and advanced `DCA`, preserve backend payload compatibility by stripping local-only row ids before submit, and keep trailing-threshold validation behavior unchanged.
   - 2026-04-30: Closed after introducing one shared sortable editor with drag handle plus keyboard-accessible move up/down controls, wiring stable row `clientId` handling into strategy form state, and stripping those local ids from `close` and `additional.dcaLevels` before POST/PUT payload serialization. Validation PASS: focused `StrategyForm` + `StrategyForm.map` tests, web typecheck, route-reachable i18n audit, web build, repository guardrails.

@@ -65,14 +65,13 @@ const sanitizeTrailingTakeProfitThresholds = (thresholds: CloseConditions["ttp"]
 
 const sanitizeTrailingStopThresholds = (thresholds: CloseConditions["tsl"]) =>
   thresholds.filter((threshold) => {
-    const trailPercent = Math.abs(Number(threshold.percent));
-    const armPercent = Math.abs(Number(threshold.arm));
+    const startPercent = Number(threshold.percent);
+    const stepPercent = Number(threshold.arm);
     return (
-      Number.isFinite(trailPercent) &&
-      Number.isFinite(armPercent) &&
-      trailPercent > 0 &&
-      armPercent > 0 &&
-      trailPercent <= armPercent
+      Number.isFinite(startPercent) &&
+      Number.isFinite(stepPercent) &&
+      startPercent < 0 &&
+      stepPercent > 0
     );
   });
 

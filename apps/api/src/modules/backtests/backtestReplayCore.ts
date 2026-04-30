@@ -292,13 +292,13 @@ export const parseStrategyRiskConfig = (strategyConfig?: Record<string, unknown>
     .sort((left, right) => left.arm - right.arm);
   const parsedTrailingStopLevels = (Array.isArray(close.tsl) ? close.tsl : [])
     .map((level) => ({
-      arm: asPercent((level as { arm?: unknown })?.arm, 0),
-      percent: asPercent((level as { percent?: unknown })?.percent, Number.NaN),
+      arm: Math.abs(asSignedPercent((level as { percent?: unknown })?.percent, Number.NaN)),
+      percent: asPercent((level as { arm?: unknown })?.arm, Number.NaN),
+      rawStart: Number((level as { percent?: unknown })?.percent),
     }))
-    .filter((level) => Number.isFinite(level.percent) && level.percent > 0)
+    .filter((level) => Number.isFinite(level.percent) && level.percent > 0 && level.rawStart < 0)
+    .map(({ arm, percent }) => ({ arm, percent }))
     .sort((left, right) => left.arm - right.arm);
-  const trailingStopLevels =
-    parsedTrailingStopLevels.length > 0 ? parsedTrailingStopLevels : defaultRiskConfig.trailingStopLevels;
   const trailingLossRawPercent = Number((Array.isArray(close.tsl) ? close.tsl : [])[0]?.percent);
   const trailingLossRawStep = Number((Array.isArray(close.tsl) ? close.tsl : [])[0]?.arm);
   const trailingLoss =
@@ -355,7 +355,7 @@ export const parseStrategyRiskConfig = (strategyConfig?: Record<string, unknown>
     takeProfitPct: closeMode === 'basic' ? Math.max(0.0001, takeProfitPct) : Number.POSITIVE_INFINITY,
     trailingTakeProfitLevels: closeMode === 'advanced' ? trailingTakeProfitLevels : [],
     stopLossPct: closeMode === 'basic' ? Math.max(0.0001, stopLossPct) : Number.POSITIVE_INFINITY,
-    trailingStopLevels: closeMode === 'advanced' ? trailingStopLevels : [],
+    trailingStopLevels: closeMode === 'advanced' && !trailingLoss ? parsedTrailingStopLevels : [],
     trailingLoss: closeMode === 'advanced' ? trailingLoss : null,
     maxDcaPerTrade: dcaLevels.length,
     dcaLevels,

@@ -26,12 +26,12 @@ describe('runtime/backtest parser parity', () => {
         tp: 12,
         sl: 8,
         ttp: [
-          { arm: 1.5, percent: 0.5 },
-          { arm: 2.2, percent: 0.8 },
+          { arm: 0.5, percent: 1.5 },
+          { arm: 0.8, percent: 2.2 },
         ],
         tsl: [
-          { arm: 0.7, percent: 0.4 },
-          { arm: 1.2, percent: 0.6 },
+          { arm: 0.7, percent: -0.4 },
+          { arm: 1.2, percent: -0.6 },
         ],
       },
       additional: {
@@ -68,6 +68,7 @@ describe('runtime/backtest parser parity', () => {
 
     expect(runtimeInput.trailingTakeProfitLevels).toEqual(replayInput.trailingTakeProfitLevels);
     expect(runtimeInput.trailingStopLevels).toEqual(replayInput.trailingStopLevels);
+    expect(runtimeInput.trailingLoss).toEqual(replayInput.trailingLoss);
     expect(runtimeInput.dca?.levelPercents).toEqual(replayInput.dca?.levelPercents);
     expect(runtimeInput.dca?.addSizeFractions).toEqual(replayInput.dca?.addSizeFractions);
   });
