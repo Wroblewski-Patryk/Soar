@@ -75,6 +75,12 @@ Canonical close authority is lifecycle-based:
 - `LIQUIDATION`
 - account-floor protection
 
+For `LIVE`, these semantics may converge operationally to one current
+effective protected floor and one exchange-backed reduce-only protection order
+when the venue supports it. Runtime remains the authority for semantic reason
+and ratcheting logic; exchange order state becomes the authority for last-mile
+venue execution.
+
 ## Close Attribution
 
 Close lifecycle truth has two separate dimensions:
@@ -169,6 +175,8 @@ LONG accepted
 - `reference/live-position-restart-continuity-contract.md`
 - `reference/live-runtime-lifecycle-parity-contract.md`
 - `reference/live-futures-lifecycle-price-contract.md`
+- `reference/live-protection-state-parity-contract.md`
+- `reference/live-exchange-protection-order-contract.md`
 - `reference/position-lifecycle-parity-matrix.md`
 - `reference/position-close-attribution-contract.md`
 

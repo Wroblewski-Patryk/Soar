@@ -138,6 +138,72 @@ midstream from the exchange:
 This is an intentional fail-closed difference in observability, not a license
 for read-model overstatement.
 
+## Core Rule 8: Armed Protection Floor Is Monotonic Until Canonical Close Handling Finishes
+
+Once `SL`, `TTP`, or `TSL` arms for one open lifecycle, the effective
+protected floor for that lifecycle must not loosen or disappear merely because
+current `PnL` or price moved back through it.
+
+Allowed:
+
+- ratcheting protection upward when strategy semantics tighten it
+- replacing one active protected floor with a stronger one
+- clearing protection only after canonical close handling or explicit strategy
+  deactivation for that lifecycle
+
+Forbidden:
+
+- lowering the active protected floor after it was armed
+- erasing armed `TTP` / `TSL` state just because current `PnL` fell below the
+  floor that should already protect the position
+
+If current exchange truth shows the position moved beyond the active protected
+floor before canonical close confirmation arrived:
+
+- the lifecycle must be treated as protection-breached or close-pending
+- runtime and read models must not present that position as if a weaker or
+  fresh trailing floor still applied
+- later exchange close confirmation must finalize the lifecycle and history
+
+This rule exists to keep operator trust under fast moves and gap-through-stop
+scenarios.
+
+## Core Rule 9: LIVE Protection Must Converge Toward One Exchange-Side Effective Stop Order
+
+For `LIVE`, `basic SL`, `advanced TTP`, and `advanced TSL` are different
+strategy semantics, but they all converge operationally to one current
+effective stop floor for the open lifecycle.
+
+When the venue supports native protection orders, the target contract is:
+
+- runtime computes the current effective protected floor
+- Soar maintains one exchange-backed reduce-only protection order matching
+  that floor
+- when the effective floor tightens, the exchange-side stop order is replaced
+  or amended to the stronger floor
+- the repository must never loosen an already tighter protection order
+
+This does not make the exchange order the source of strategy semantics.
+
+Canonical ownership remains:
+
+- runtime state and strategy config define why the floor exists
+- exchange-side protection order defines last-mile execution at the venue
+
+If an exchange-backed protection order fills and the position disappears:
+
+- canonical lifecycle close must be materialized in local history
+- close reason must preserve the semantic source (`SL`, `TTP`, or `TSL`)
+- close initiator must preserve app-side automation authority when the order
+  was placed by Soar
+
+If exchange order fill cannot be proven yet:
+
+- the position may remain in a temporary breach-pending or close-pending
+  state
+- runtime and UI must not imply the position is still protected by a weaker or
+  reset dynamic stop
+
 ## Required Validation
 
 Any implementation wave touching this contract must include:
@@ -152,6 +218,10 @@ Any implementation wave touching this contract must include:
   loss-side-only DCA
 - focused tests proving DCA-first gating remains consistent across
   `backtest`, `paper`, and `live`
+- focused tests proving armed protection remains monotonic on pullback and
+  gap-through-stop scenarios
+- focused tests proving exchange-backed protection fill updates history and
+  close attribution canonically when `LIVE` protection orders are introduced
 
 ## Forbidden Patterns
 
@@ -160,3 +230,6 @@ Any implementation wave touching this contract must include:
 - imported or recovered `LIVE` rows silently acting fully protected while
   runtime lacks canonical protection state
 - fixing `LIVE` by weakening the `DCA-first` contract only in one mode
+- resetting armed protection after a breach without canonical close handling
+- treating exchange-side stop-order fill as optional bookkeeping instead of
+  canonical lifecycle closure once proven
