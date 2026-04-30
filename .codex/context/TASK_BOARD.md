@@ -508,6 +508,7 @@ Last updated: 2026-05-01
 - [ ] `V1ROE-04 qa(prod-manual): verify exchange-aligned LIVE PnL truth and imported automation on protected DOGEUSDT`
   - Scope: collect authenticated protected production API/browser evidence after the current candidate is deployed, proving `DOGEUSDT` `LIVE` PnL truth and imported managed automation are aligned with exchange-synced runtime truth.
   - 2026-05-01: Blocked until production auth is available through `SMOKE_AUTH_TOKEN` / `DEPLOY_FRESHNESS_AUTH_TOKEN`, `SMOKE_AUTH_EMAIL + SMOKE_AUTH_PASSWORD`, `DEPLOY_FRESHNESS_AUTH_EMAIL + DEPLOY_FRESHNESS_AUTH_PASSWORD`, or an equivalent authenticated browser/session cookie. Public deploy freshness and smoke evidence is already recorded; protected runtime evidence is still required.
+  - 2026-05-01 queue note: no auth-free implementation task is promoted ahead of this gate. `BOTMULTI-*` remains deferred in `PIPELINE` until stable post-V1 production verification allows architecture work to resume.
 
 ## REVIEW
 

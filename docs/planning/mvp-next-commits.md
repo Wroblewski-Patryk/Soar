@@ -7,6 +7,13 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- 2026-05-01 execution status: no autonomous `NOW` implementation task is
+  currently executable without protected production auth. `V1ROE-04` remains
+  the active V1 gate, but it is blocked by `401 Missing token` on protected
+  runtime probes. `BOTMULTI-*` remains in `PIPELINE` only because its own
+  preconditions require stable post-V1 production verification before the
+  architecture can reopen the singular bot model. Sync task:
+  `docs/planning/docsync-2026-05-01-no-autonomous-now-task.md`.
 - [x] `WLEDGER-07..09 web-wallet-preview: expose ledger-backed wallet preview from wallet list`
   - 2026-04-30: Closed the wallet preview UI slice. Wallet rows now expose a shared `preview` table action linking to `/dashboard/wallets/:id/preview`, and the new preview page loads the ledger-backed performance summary, equity timeline, and cashflow events APIs. The UI separates contributed capital from bot PnL, keeps unclassified adjustments visible, handles loading/error/empty/partial/success states, and avoids ISO-currency assumptions for crypto symbols such as `USDT`. Validation PASS: focused wallet web tests, web typecheck, web build, route-reachable i18n audit, repository guardrails.
 - [x] `WLEDGER-06 api-read: expose wallet performance summary, timeline, and cashflow APIs`
@@ -209,6 +216,9 @@ Operational queue for one-task execution runs.
 - [x] `V1CLOSE-09 qa(closure): run focused close-attribution pack and sync docs/context`
 ## PIPELINE
 - [ ] `BOTMULTI-01 docs(decision): freeze post-V1 multi-strategy bot contract`
+  - 2026-05-01 status: DEFERRED, not executable as an auth-free fallback while
+    `V1ROE-04` is still blocked. The approved BOTMULTI packet requires stable
+    post-V1 production verification before architecture changes start.
 - [ ] `BOTMULTI-02 audit(data+runtime): inventory legacy compatibility remnants and migration debt`
 - [ ] `BOTMULTI-03 db(schema): finalize canonical multi-strategy topology and migration path`
 - [ ] `BOTMULTI-04 api(write): support bot create/update with multiple strategies`
