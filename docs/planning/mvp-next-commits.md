@@ -12,6 +12,15 @@ Operational queue for one-task execution runs.
   blockers are `V1EXCEL-03..06` authenticated manual operator and OPS evidence.
   `BOTMULTI-*` remains in `PIPELINE` until those post-V1 confidence gates are
   green.
+- [x] `V1DCA-04 fix(api-runtime-read): restore wallet-scoped imported DCA in Positions`
+  - 2026-05-01: Closed the remaining operator-reported ETH DCA regression after
+    `V1DCA-03` deployed. The bug was in the API runtime positions read model:
+    legacy/imported exchange-sync DCA rows with missing `botId` or `strategyId`
+    were not included in supplemental DCA continuity. The read model now counts
+    wallet-scoped imported DCA for owned external symbols while preserving
+    close/reopen boundaries. Validation PASS: focused imported DCA API e2e
+    (`5/5`), API typecheck, API build, repository guardrails. Evidence:
+    `docs/planning/v1dca-04-wallet-scoped-imported-dca-read-model-task-2026-05-01.md`.
 - [x] `V1DCA-03 fix(web-monitoring): restore DCA visibility when portfolio-history refresh fails`
   - 2026-05-01: Closed an operator-reported regression after production
     deployed `fbeae8f0`. Commit scan from 09:00 showed `fbeae8f0` was the only

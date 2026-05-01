@@ -17,6 +17,17 @@ Last updated: 2026-05-01
 
 ## READY
 
+- [x] `V1DCA-04 fix(api-runtime-read): restore wallet-scoped imported DCA in Positions`
+  - Scope: after `V1DCA-03` proved the UI no longer hides monitoring content,
+    ETH still showed `DCA=0` despite two real DCA adds. The remaining issue was
+    backend read-model recovery for imported/exchange-sync DCA trade rows that
+    can lose direct `botId` or `strategyId` refs. Runtime `Positions` now
+    includes wallet-scoped imported DCA for owned external symbols and allows
+    missing strategy refs inside the same lifecycle while preserving close/reopen
+    boundaries. Validation PASS: focused imported DCA API e2e (`5/5`), API
+    typecheck, API build, repository guardrails. Evidence:
+    `docs/planning/v1dca-04-wallet-scoped-imported-dca-read-model-task-2026-05-01.md`.
+
 - [x] `V1DCA-03 fix(web-monitoring): restore DCA visibility when portfolio-history refresh fails`
   - Scope: after production deployed `fbeae8f0`, the operator reported DCA no
     longer showing in the dashboard `Positions` table. Commit review from

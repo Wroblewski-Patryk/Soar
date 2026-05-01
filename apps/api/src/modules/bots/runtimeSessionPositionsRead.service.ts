@@ -134,6 +134,9 @@ const sortRuntimePositionTrades = (trades: RuntimePositionTradeRow[]) =>
 const nullableIdentityMatches = (left: string | null, right: string | null) =>
   !left || !right || left === right;
 
+const strategyIdentityMatches = (positionStrategyId: string | null, tradeStrategyId: string | null) =>
+  !positionStrategyId || !tradeStrategyId || positionStrategyId === tradeStrategyId;
+
 const isSupplementalDcaTradeForOpenPosition = (
   position: RuntimeManagedPositionRow,
   trade: RuntimePositionTradeRow,
@@ -149,7 +152,7 @@ const isSupplementalDcaTradeForOpenPosition = (
   if (trade.executedAt < continuityStart || trade.executedAt > windowEnd) return false;
   if (!nullableIdentityMatches(position.botId, trade.botId)) return false;
   if (!nullableIdentityMatches(position.walletId, trade.walletId)) return false;
-  if (!position.strategyId || trade.strategyId !== position.strategyId) return false;
+  if (!strategyIdentityMatches(position.strategyId, trade.strategyId)) return false;
   return true;
 };
 
@@ -160,7 +163,7 @@ const tradeBelongsToRuntimePositionIdentity = (
   if (trade.symbol !== position.symbol) return false;
   if (!nullableIdentityMatches(position.botId, trade.botId)) return false;
   if (!nullableIdentityMatches(position.walletId, trade.walletId)) return false;
-  if (!position.strategyId || trade.strategyId !== position.strategyId) return false;
+  if (!strategyIdentityMatches(position.strategyId, trade.strategyId)) return false;
   return true;
 };
 
@@ -226,8 +229,25 @@ const resolveRuntimePositionTrades = (
     isSupplementalDcaTradeForOpenPosition(position, trade, entrySide, continuityStart, windowEnd)
   );
   const byTradeId = new Map<string, RuntimePositionTradeRow>();
-  for (const trade of [...directTrades, ...supplementalDcaTrades]) {
+  for (const trade of directTrades) {
     byTradeId.set(trade.id, trade);
+  }
+  for (const trade of supplementalDcaTrades) {
+    const hasStrategyMatchedSibling =
+      trade.strategyId == null &&
+      trade.positionId != null &&
+      lifecycleTrades.some(
+        (candidate) =>
+          candidate.id !== trade.id &&
+          candidate.positionId === trade.positionId &&
+          candidate.lifecycleAction === 'DCA' &&
+          candidate.side === trade.side &&
+          candidate.strategyId != null &&
+          strategyIdentityMatches(position.strategyId, candidate.strategyId)
+      );
+    if (!hasStrategyMatchedSibling) {
+      byTradeId.set(trade.id, trade);
+    }
   }
   return sortRuntimePositionTrades([...byTradeId.values()]);
 };
@@ -337,6 +357,17 @@ export const listBotRuntimeSessionPositions = async (
                   OR: [{ walletId: botContext.walletId }, { walletId: null }],
                 }
               : {}),
+          },
+        ]
+      : [];
+  const externalOwnedTradeWhere: Prisma.TradeWhereInput[] =
+    ownedExternalSymbols.length > 0 && botContext.walletId
+      ? [
+          {
+            botId: null,
+            walletId: botContext.walletId,
+            managementMode: 'BOT_MANAGED',
+            symbol: { in: ownedExternalSymbols },
           },
         ]
       : [];
@@ -481,6 +512,14 @@ export const listBotRuntimeSessionPositions = async (
             lte: windowEnd,
           },
         },
+        ...externalOwnedTradeWhere.map((where) => ({
+          ...where,
+          symbol: { in: symbols.filter((symbol) => ownedExternalSymbols.includes(symbol)) },
+          executedAt: {
+            gte: session.startedAt,
+            lte: windowEnd,
+          },
+        })),
       ],
     }),
     listRuntimePositionLastPrices({

@@ -100,6 +100,16 @@ Last updated: 2026-05-01
   of reconstructing it from `syncState` or audit logs.
 
 ## Product Decisions (Confirmed)
+- 2026-05-01: fixed `V1DCA-04` after the operator confirmed ETH still showed
+  `DCA=0` despite two real DCA adds after the web monitoring hotfix. The
+  remaining issue was the API runtime positions read model: wallet-scoped
+  imported/exchange-sync DCA trade rows with missing `botId` and/or
+  `strategyId` were excluded from supplemental DCA continuity. The read model
+  now includes those rows for owned external symbols and keeps the existing
+  close/reopen boundary that prevents stale DCA from crossing into a fresh
+  lifecycle. Validation PASS: focused imported DCA API e2e (`5/5`), API
+  typecheck, API build, repository guardrails. Evidence:
+  `docs/planning/v1dca-04-wallet-scoped-imported-dca-read-model-task-2026-05-01.md`.
 - 2026-05-01: fixed `V1DCA-03`, an operator-reported dashboard regression after
   production deployed `fbeae8f08926bc838141d53397fc142f52945356`. The commit
   scan from 09:00 identified `fbeae8f0` as the only post-09:00 commit touching
