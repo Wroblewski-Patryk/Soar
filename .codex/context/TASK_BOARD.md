@@ -56,6 +56,18 @@ Last updated: 2026-05-01
     `docs/planning/v1cover-03-function-implementation-readiness-task-2026-05-01.md`,
     `docs/operations/v1-function-implementation-readiness-audit-2026-05-01.md`.
 
+- [x] `V1COVER-04 qa(release): promote function ledger into reusable project standard`
+  - Scope: extract the reusable table model from the Soar V1 ledger so other
+    projects can adopt the same column contract, status vocabulary, readiness
+    buckets, task derivation rules, evidence quality rules, and release-gate
+    rules.
+  - 2026-05-01: Closed with a governance standard plus copyable CSV template.
+    Soar's V1 ledger is now documented as one project-specific instance of the
+    model. Evidence:
+    `docs/planning/v1cover-04-model-function-ledger-standard-task-2026-05-01.md`,
+    `docs/governance/function-coverage-ledger-standard.md`,
+    `docs/governance/function-coverage-ledger-template.csv`.
+
 - [ ] `V1FINAL-01 qa(prod): verify deployed DOGE runtime hardening and run final V1 gates`
   - Scope: execute the final V1 gate structure after production deploys
     `fba29a96` or later. Gate order: deploy freshness, DOGE close/reopen

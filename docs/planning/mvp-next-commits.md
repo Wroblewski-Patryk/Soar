@@ -42,6 +42,13 @@ Operational queue for one-task execution runs.
     smokes, and `V1SCOPE-A` for defer/launch-scope decisions. Evidence:
     `docs/planning/v1cover-03-function-implementation-readiness-task-2026-05-01.md`,
     `docs/operations/v1-function-implementation-readiness-audit-2026-05-01.md`.
+- [x] `V1COVER-04 qa(release): promote function ledger into reusable project standard`
+  - 2026-05-01: Closed the model-quality pass. Added a reusable governance
+    standard and starter CSV template so this ledger shape can be reused in
+    other projects. Evidence:
+    `docs/planning/v1cover-04-model-function-ledger-standard-task-2026-05-01.md`,
+    `docs/governance/function-coverage-ledger-standard.md`,
+    `docs/governance/function-coverage-ledger-template.csv`.
 - [ ] `V1FINAL-01 qa(prod): verify deployed DOGE runtime hardening and run final V1 gates`
   - 2026-05-01 preflight: production public smoke is green, but build-info
     still reports `c081f224134fedb65de2ecad716274b92593c373`, while repository
@@ -93,6 +100,15 @@ Operational queue for one-task execution runs.
     artifacts. The sign-off record itself remains `BLOCKED` because approver
     fields are blank. The fresh prod restore drill artifact is `FAIL` until
     prod DB container settings or VPS/Coolify execution context are available.
+- [x] `DOCSYNC-2026-05-01-WALLET-PREVIEW fix(docs+web-route): sync canonical wallet preview route inventory`
+  - 2026-05-01: Closed a local docs-parity slice after reviewing the active V1
+    queue and confirming the current executable work is blocked on external
+    stage/prod evidence. The shipped app already exposes
+    `/dashboard/wallets/:id/preview`, and `web-wallets` documented that route,
+    but the canonical dashboard route map omitted it. Synced the route
+    inventory, added a focused page test for the wallet preview route, and
+    recorded the task in
+    `docs/planning/docsync-2026-05-01-wallet-preview-route-parity-task.md`.
 - [x] `WPREVIEW-10 fix(web-wallet-preview): fail closed on unavailable ledger analytics`
   - 2026-05-01: Closed a local V1 wallet-preview truth slice after rechecking
     the active queue and confirming external `NOW` tasks are blocked on stage

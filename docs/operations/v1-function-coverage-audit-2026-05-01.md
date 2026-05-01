@@ -10,6 +10,10 @@ functionality. Its job is to stop repeating ad-hoc verification loops and make
 the current confidence level explicit per module, submodule, mode, capability,
 scenario, local evidence, and production evidence.
 
+The reusable ledger model is now documented in
+`docs/governance/function-coverage-ledger-standard.md`; this Soar V1 audit is a
+project-specific instance of that standard.
+
 The 2026-05-01 second pass scanned the actual API route/module map and web
 dashboard route surface, then expanded the initial money-path ledger into a
 broader top-level function inventory.

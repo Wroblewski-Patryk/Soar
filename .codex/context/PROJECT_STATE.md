@@ -125,6 +125,14 @@ Last updated: 2026-05-01
   UI/route smokes, and explicit launch-scope/defer decisions. Evidence:
   `docs/planning/v1cover-03-function-implementation-readiness-task-2026-05-01.md`,
   `docs/operations/v1-function-implementation-readiness-audit-2026-05-01.md`.
+- 2026-05-01: promoted the function coverage/readiness ledger into a reusable
+  project standard. Future projects can copy the standard column contract,
+  status vocabulary, readiness buckets, task derivation rules, evidence quality
+  rules, and release-gate rules from
+  `docs/governance/function-coverage-ledger-standard.md` and
+  `docs/governance/function-coverage-ledger-template.csv`. Soar's V1 matrix is
+  now documented as a project-specific instance of that model. Evidence:
+  `docs/planning/v1cover-04-model-function-ledger-standard-task-2026-05-01.md`.
 - 2026-05-01: executed `V1FINAL-01` after production deployed
   `6a8ded9333eabced5e8461362e9e9237a9bf4e4d` on `main`. Gate 0 is now green:
   public and authenticated production smoke passed, protected runtime freshness

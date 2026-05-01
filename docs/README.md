@@ -15,6 +15,10 @@ This folder contains canonical project documentation grouped by responsibility.
 - `governance/`: repository rules and agent workflow policies
 - `governance/code-quality-guardrails.md`: temporary exception policy for
   maintainability debt that is actively being removed
+- `governance/function-coverage-ledger-standard.md`: reusable function coverage
+  and readiness ledger standard for release planning across projects
+- `governance/function-coverage-ledger-template.csv`: copyable starter CSV for
+  projects adopting the ledger standard
 - `adr/`: architecture decision records when decisions need standalone history
 - `modules/`: implementation-oriented deep-dives mapped to code ownership
 
