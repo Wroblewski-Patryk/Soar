@@ -266,6 +266,15 @@ export const useBotsMonitoringController = ({
     setMonitorAppliedSymbolFilter("");
   };
 
+  const loadMonitorPortfolioHistory = useCallback(async (botId: string) => {
+    try {
+      const history = await getBotPortfolioHistory(botId);
+      setMonitorPortfolioHistory(history);
+    } catch {
+      setMonitorPortfolioHistory(null);
+    }
+  }, []);
+
   const refreshMonitoring = useCallback(
     async (options?: { silent?: boolean }) => {
       if (!monitorBotId) return;
@@ -279,14 +288,7 @@ export const useBotsMonitoringController = ({
           monitorAppliedSymbolFilter,
           options
         );
-        try {
-          const history = await getBotPortfolioHistory(monitorBotId);
-          setMonitorPortfolioHistory(history);
-        } catch (err: unknown) {
-          if (!(options?.silent ?? false)) {
-            setMonitorError(getAxiosMessage(err) ?? t("dashboard.bots.errors.loadPortfolioHistory"));
-          }
-        }
+        await loadMonitorPortfolioHistory(monitorBotId);
         return;
       }
       const effectiveSessionId = monitorSessionId || sessions[0]?.id;
@@ -299,25 +301,18 @@ export const useBotsMonitoringController = ({
         return;
       }
       await loadMonitorSessionData(monitorBotId, effectiveSessionId, monitorAppliedSymbolFilter, options);
-      try {
-        const history = await getBotPortfolioHistory(monitorBotId);
-        setMonitorPortfolioHistory(history);
-      } catch (err: unknown) {
-        if (!(options?.silent ?? false)) {
-          setMonitorError(getAxiosMessage(err) ?? t("dashboard.bots.errors.loadPortfolioHistory"));
-        }
-      }
+      await loadMonitorPortfolioHistory(monitorBotId);
     },
     [
       loadMonitorAggregateData,
       loadMonitorSessionData,
       loadMonitorSessions,
+      loadMonitorPortfolioHistory,
       monitorAppliedSymbolFilter,
       monitorBotId,
       monitorSessionId,
       monitorStatus,
       monitorViewMode,
-      t,
     ]
   );
 

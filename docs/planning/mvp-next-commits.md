@@ -12,6 +12,15 @@ Operational queue for one-task execution runs.
   blockers are `V1EXCEL-03..06` authenticated manual operator and OPS evidence.
   `BOTMULTI-*` remains in `PIPELINE` until those post-V1 confidence gates are
   green.
+- [x] `V1DCA-03 fix(web-monitoring): restore DCA visibility when portfolio-history refresh fails`
+  - 2026-05-01: Closed an operator-reported regression after production
+    deployed `fbeae8f0`. Commit scan from 09:00 showed `fbeae8f0` was the only
+    post-09:00 commit touching bot runtime/web monitoring. The new optional
+    portfolio-history refresh no longer sets global monitoring error state, so
+    a portfolio-history failure cannot hide valid `Positions` DCA ladder
+    output. Validation PASS: focused `BotsManagement` web test (`13/13`) with
+    portfolio-history failure and DCA ladder assertion. Evidence:
+    `docs/planning/v1dca-03-monitoring-dca-visibility-regression-task-2026-05-01.md`.
 - [x] `V1COVER-01 qa(release): create V1 module function coverage ledger`
   - 2026-05-01: Closed the first coverage ledger requested to stop repeated
     ad-hoc feature retesting. The initial matrix covers 33 V1
@@ -98,6 +107,14 @@ Operational queue for one-task execution runs.
     `ca430aa5`/`1e20b6df`/`ef37fca0`. Stage public smoke still fails with
     three `503` checks. Evidence:
     `docs/planning/v1gate-01-current-target-freshness-sync-task-2026-05-01.md`.
+  - 2026-05-01 deploy refresh: production now reports
+    `fbeae8f08926bc838141d53397fc142f52945356`, matching the current local V1
+    candidate on `main`. Public production deploy smoke PASS for API
+    `/health`, API `/ready`, and web `/`. A fresh release-gate classification
+    remains `not_ready` because activation audit/plan evidence is stale and
+    the production backup/restore drill artifact is failed. Stage still returns
+    `503`. Evidence:
+    `docs/operations/v1-release-gate-prod-2026-05-01T18-20-00-000Z.md`.
 - [ ] `V1EXCEL-04 ops(stage-refresh): restore stage target before authenticated gate rerun`
   - 2026-05-01 refresh: stage public smoke now fails before auth. `stage-api`
     and `stage` both return `503 no available server` for health/ready/root and
@@ -111,6 +128,12 @@ Operational queue for one-task execution runs.
     endpoints require a bearer token (`401`). Automated restore/deploy remains
     blocked until the account has access to the real Soar resources or an API
     token is provided. Evidence:
+    `docs/operations/v1excel-04-stage-coolify-access-refresh-2026-05-01.md`.
+  - 2026-05-01 Coolify team follow-up: the account sees
+    `luckysparrow's Team` and `Root Team`, but the active UI remains on
+    `luckysparrow's Team`; attempting to switch to `Root Team` through the
+    rendered Livewire team switch returned `500`. No stage restore action was
+    attempted. Evidence:
     `docs/operations/v1excel-04-stage-coolify-access-refresh-2026-05-01.md`.
   - 2026-05-01 target refresh: public stage smoke still fails before auth with
     `503` for API `/health`, API `/ready`, and web `/`. Evidence:

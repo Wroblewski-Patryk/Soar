@@ -100,6 +100,14 @@ Last updated: 2026-05-01
   of reconstructing it from `syncState` or audit logs.
 
 ## Product Decisions (Confirmed)
+- 2026-05-01: fixed `V1DCA-03`, an operator-reported dashboard regression after
+  production deployed `fbeae8f08926bc838141d53397fc142f52945356`. The commit
+  scan from 09:00 identified `fbeae8f0` as the only post-09:00 commit touching
+  bot runtime/web monitoring. Its new portfolio-history refresh was coupled to
+  the global monitoring error state; that optional panel now fails soft so it
+  cannot mask valid runtime `Positions` DCA ladder content. Validation PASS:
+  focused `BotsManagement` web test (`13/13`). Evidence:
+  `docs/planning/v1dca-03-monitoring-dca-visibility-regression-task-2026-05-01.md`.
 - 2026-05-01: closed `BHIST-01` as the bot-scoped product follow-up after the
   wallet-ledger preview wave. Current repository truth now covers
   wallet-level performance summary, equity timeline, cashflow markers for LIVE
@@ -174,6 +182,14 @@ Last updated: 2026-05-01
   exchange matrix is not complete, and stage remains `503`. Evidence:
   `docs/planning/v1final-01-prod-gate-execution-task-2026-05-01.md`,
   `docs/operations/v1-release-gate-prod-2026-05-01T02-44-00-227Z.md`.
+- 2026-05-01: production deploy freshness advanced to the current local V1
+  candidate `fbeae8f08926bc838141d53397fc142f52945356` on `main`. Public
+  production smoke passed for API `/health`, API `/ready`, and web `/`. A fresh
+  release-gate classification still reports `not_ready` because the activation
+  audit and activation execution plan are stale, and the production
+  backup/restore drill evidence remains failed. Stage still returns `503`, so
+  this is a deploy-fresh production candidate, not a formal V1 GO. Evidence:
+  `docs/operations/v1-release-gate-prod-2026-05-01T18-20-00-000Z.md`.
 - 2026-05-01: published `V1DOGE-01` after the operator reported a real-money
   `LIVE DOGEUSDT` loss close and stale DCA on the next same-symbol open row.
   Protected production inspection confirmed the incident close was app-side

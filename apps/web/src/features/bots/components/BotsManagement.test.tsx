@@ -788,6 +788,7 @@ describe("BotsManagement", () => {
       positions: positionsResponse,
       trades: tradesResponse,
     });
+    getBotPortfolioHistoryMock.mockRejectedValue(new Error("portfolio-history unavailable"));
 
     await renderWithI18n();
     await waitFor(() => {

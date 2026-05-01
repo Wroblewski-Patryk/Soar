@@ -12,9 +12,10 @@ before any protected-route or application-level checks can run. Public stage
 web/API requests return `503 no available server`.
 
 Production remains healthy at public health/readiness endpoints, but the
-production web build-info still reports commit `8db496373763d3a1fa58b15dc1dffa8268f3fe5f`,
-not the newer `V1DCA-02` fix commit `8580ea4e`. The DOGEUSDT post-deploy DCA
-verification is therefore blocked until production deploy freshness catches up.
+production web build-info now reports commit
+`fbeae8f08926bc838141d53397fc142f52945356` on `main`, matching the current
+local V1 candidate. Production deploy freshness is no longer the blocker in
+this artifact; stage availability and release evidence remain the blockers.
 
 No secrets, passwords, session cookies, or tokens are recorded in this
 artifact.
@@ -29,6 +30,14 @@ pnpm run ops:deploy:smoke -- --api-base-url https://stage-api.soar.luckysparrow.
 
 Result: FAIL
 
+- API `/health`: `503`
+- API `/ready`: `503`
+- Web `/`: `503`
+
+Latest recheck on the deploy-fresh production candidate returned the same
+result:
+
+- `pnpm run ops:deploy:smoke -- --api-base-url https://stage-api.soar.luckysparrow.ch --web-base-url https://stage.soar.luckysparrow.ch --no-workers` => FAIL
 - API `/health`: `503`
 - API `/ready`: `503`
 - Web `/`: `503`
@@ -48,19 +57,13 @@ Public production preflight:
 - `GET https://api.soar.luckysparrow.ch/ready` => `200`
 - `GET https://soar.luckysparrow.ch/api/build-info` => `200`
 
-Build-info result:
+Build-info result after the latest deploy refresh:
 
 ```json
 {
-  "gitSha": "8db496373763d3a1fa58b15dc1dffa8268f3fe5f",
+  "gitSha": "fbeae8f08926bc838141d53397fc142f52945356",
   "gitRef": "main"
 }
-```
-
-Expected for the latest DOGEUSDT DCA fix:
-
-```text
-8580ea4e
 ```
 
 ## Coolify Access Check
@@ -70,6 +73,12 @@ opens the Coolify dashboard, but the visible project/environment does not expose
 the Soar application resources needed to restart stage or trigger production
 deploys. The visible project is `My first project`, environment `production`,
 and the rendered resource list exposes no Soar applications.
+
+Follow-up inspection found two available team options in the Coolify UI:
+`luckysparrow's Team` and `Root Team`. The active session remains on
+`luckysparrow's Team`. Attempting to switch to `Root Team` through the rendered
+Livewire `switch-team` component returned `500`, so no automated stage restore
+or deploy action was attempted from this session.
 
 The Coolify API endpoints remain unavailable without a bearer API token:
 
@@ -83,7 +92,6 @@ The production application login credentials are not valid Coolify credentials.
 This is not a Soar code blocker. The current blocker is environment ownership:
 
 - stage service routing is still unavailable at the proxy/Coolify layer
-- production deploy freshness has not reached the latest pushed `main` commit
 - the available Coolify login is insufficient to identify and operate the Soar
   resources through HTTP/API automation from this session
 
@@ -95,9 +103,8 @@ Provide one of the following:
   applications, or
 - Coolify team/resource access for the operator account that exposes the Soar
   web/API/stage/prod resources, or
-- manually trigger the production deploy for `8580ea4e` and restore/redeploy
-  the stage web/API services.
+- manual restoration/redeployment of the stage web/API services from an
+  account/session that can access the Soar resources.
 
-After deploy freshness is confirmed on production, rerun protected DOGEUSDT
-runtime positions verification and expect the current lifecycle to show both
-persisted DCA fills.
+After stage public availability is restored, rerun stage public smoke and then
+the authenticated stage release gates.

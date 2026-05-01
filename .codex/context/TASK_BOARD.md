@@ -17,6 +17,17 @@ Last updated: 2026-05-01
 
 ## READY
 
+- [x] `V1DCA-03 fix(web-monitoring): restore DCA visibility when portfolio-history refresh fails`
+  - Scope: after production deployed `fbeae8f0`, the operator reported DCA no
+    longer showing in the dashboard `Positions` table. Commit review from
+    2026-05-01 09:00 identified `fbeae8f0` as the only post-09:00 commit
+    touching bot runtime/web monitoring. The portfolio-history fetch added in
+    that commit is now fail-soft and cannot set the global monitoring error
+    state that hides otherwise-valid positions/DCA content. Validation PASS:
+    focused `BotsManagement` web test (`13/13`) with portfolio-history mocked
+    as failing while DCA ladder output remains asserted. Evidence:
+    `docs/planning/v1dca-03-monitoring-dca-visibility-regression-task-2026-05-01.md`.
+
 - [x] `V1COVER-01 qa(release): create V1 module function coverage ledger`
   - Scope: replace repeated ad-hoc confidence loops with one filterable
     function coverage matrix split by module, submodule, mode, layer,
@@ -104,6 +115,13 @@ Last updated: 2026-05-01
     manual operator matrix, and stage `503`. Evidence:
     `docs/planning/v1final-01-prod-gate-execution-task-2026-05-01.md`,
     `docs/operations/v1-release-gate-prod-2026-05-01T02-44-00-227Z.md`.
+  - 2026-05-01 deploy refresh: production web build-info now reports
+    `fbeae8f08926bc838141d53397fc142f52945356` on `main`, matching the local
+    V1 candidate. Public production deploy smoke passed for API `/health`, API
+    `/ready`, and web `/`. Release-gate classification remains `not_ready`
+    because activation audit/plan are stale and the production backup/restore
+    drill artifact is still failed. Evidence:
+    `docs/operations/v1-release-gate-prod-2026-05-01T18-20-00-000Z.md`.
 - [ ] `V1EXCEL-04 ops(stage-refresh): restore stage target before authenticated gate rerun`
   - Scope: stage release-gate evidence cannot proceed while the stage web/API
     targets are unavailable.
@@ -120,6 +138,12 @@ Last updated: 2026-05-01
     resources and Coolify API reads return `401` without a bearer token, so
     automated restore/deploy remains blocked on proper Coolify resource/API
     access. Evidence:
+    `docs/operations/v1excel-04-stage-coolify-access-refresh-2026-05-01.md`.
+  - 2026-05-01 Coolify team follow-up: the account sees
+    `luckysparrow's Team` and `Root Team`, but the active UI remains on
+    `luckysparrow's Team`; attempting to switch to `Root Team` through the
+    rendered Livewire team switch returned `500`. No stage restore action was
+    attempted. Evidence:
     `docs/operations/v1excel-04-stage-coolify-access-refresh-2026-05-01.md`.
 - [ ] `V1EXCEL-05 ops(prod-refresh): finish broader production evidence families`
   - Scope: production public smoke and protected runtime rollback gates are

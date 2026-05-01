@@ -61,6 +61,10 @@ release evidence.
 
 ## Validation Evidence
 - Tests:
+  - `GET https://soar.luckysparrow.ch/api/build-info` -> PASS,
+    `gitSha=fbeae8f08926bc838141d53397fc142f52945356`, `gitRef=main`
+  - `pnpm run ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers` -> PASS on deployed `fbeae8f0`
+  - `pnpm run ops:release:v1:gate -- --environment prod --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --skip-local-quality --skip-deploy-smoke --skip-runtime-freshness --skip-rollback-guard --artifact-stamp 2026-05-01T18-20-00-000Z` -> expected `not_ready`
   - `pnpm run ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers` -> PASS
   - authenticated `pnpm run ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch` -> PASS, including `/workers/health`
   - authenticated `pnpm run ops:deploy:runtime-freshness -- --base-url https://api.soar.luckysparrow.ch` -> PASS, `runningCount=4`
@@ -70,9 +74,11 @@ release evidence.
   - `pnpm run ops:db:restore-drill -- --profile prod` -> FAIL, missing production DB container configuration
   - `pnpm run ops:release:v1:gate -- --environment prod --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --skip-local-quality --skip-deploy-smoke --skip-runtime-freshness --skip-rollback-guard` -> expected `not_ready`
 - Manual checks:
+  - `GET https://soar.luckysparrow.ch/api/build-info` returned `gitSha=fbeae8f08926bc838141d53397fc142f52945356`.
   - `GET https://soar.luckysparrow.ch/api/build-info` returned `gitSha=6a8ded9333eabced5e8461362e9e9237a9bf4e4d`.
   - Authenticated `DOGEUSDT` runtime read for the active `LIVE` bot returned one open `SHORT` position opened at `2026-05-01T01:50:55.213Z` with `dcaCount=0`, `tradesCount=1`, and `strategyAutomationContextResolved=true`.
 - Screenshots/logs:
+  - `docs/operations/v1-release-gate-prod-2026-05-01T18-20-00-000Z.md`
   - `docs/operations/v1-rollback-proof-prod-2026-05-01T02-42-49-727Z.md`
   - `docs/operations/v1-release-gate-prod-2026-05-01T02-44-00-227Z.md`
   - `docs/operations/v1-restore-drill-prod-2026-05-01T02-43-39-008Z.md`
