@@ -100,6 +100,17 @@ Last updated: 2026-05-01
   of reconstructing it from `syncState` or audit logs.
 
 ## Product Decisions (Confirmed)
+- 2026-05-01: introduced the first V1 function coverage ledger so module-level
+  confidence can be tracked without repeated ad-hoc retesting. The matrix
+  records module, submodule, mode, layer, parent capability, child scenario,
+  expected behavior, local evidence, production evidence, confidence, risk,
+  priority, owner, next verification, and notes. Initial scope focuses on V1
+  money-path/runtime/release-gate truth and currently contains 33 rows:
+  production `PASS=14`, `PARTIAL=5`, `NEEDS_PROD_SAMPLE=7`,
+  `NEEDS_PROD_UI_CHECK=1`, `BLOCKED=2`, `FAIL=1`, `NOT_APPLICABLE=2`,
+  `NOT_VERIFIED=1`; `P0=22`. Evidence:
+  `docs/operations/v1-function-coverage-audit-2026-05-01.md`,
+  `docs/operations/v1-function-coverage-matrix-2026-05-01.csv`.
 - 2026-05-01: executed `V1FINAL-01` after production deployed
   `6a8ded9333eabced5e8461362e9e9237a9bf4e4d` on `main`. Gate 0 is now green:
   public and authenticated production smoke passed, protected runtime freshness

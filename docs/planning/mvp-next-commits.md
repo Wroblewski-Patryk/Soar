@@ -12,6 +12,15 @@ Operational queue for one-task execution runs.
   blockers are `V1EXCEL-03..06` authenticated manual operator and OPS evidence.
   `BOTMULTI-*` remains in `PIPELINE` until those post-V1 confidence gates are
   green.
+- [x] `V1COVER-01 qa(release): create V1 module function coverage ledger`
+  - 2026-05-01: Closed the first coverage ledger requested to stop repeated
+    ad-hoc feature retesting. The initial matrix covers 33 V1
+    money-path/runtime/release-gate rows with local and production status
+    separated. Production status split: `PASS=14`, `PARTIAL=5`,
+    `NEEDS_PROD_SAMPLE=7`, `NEEDS_PROD_UI_CHECK=1`, `BLOCKED=2`, `FAIL=1`,
+    `NOT_APPLICABLE=2`, `NOT_VERIFIED=1`; `P0=22`. Evidence:
+    `docs/operations/v1-function-coverage-audit-2026-05-01.md`,
+    `docs/operations/v1-function-coverage-matrix-2026-05-01.csv`.
 - [ ] `V1FINAL-01 qa(prod): verify deployed DOGE runtime hardening and run final V1 gates`
   - 2026-05-01 preflight: production public smoke is green, but build-info
     still reports `c081f224134fedb65de2ecad716274b92593c373`, while repository

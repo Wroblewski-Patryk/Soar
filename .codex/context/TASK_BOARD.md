@@ -17,6 +17,19 @@ Last updated: 2026-05-01
 
 ## READY
 
+- [x] `V1COVER-01 qa(release): create V1 module function coverage ledger`
+  - Scope: replace repeated ad-hoc confidence loops with one filterable
+    function coverage matrix split by module, submodule, mode, layer,
+    capability, child scenario, local status/evidence, production
+    status/evidence, risk, priority, owner, and next verification.
+  - 2026-05-01: Closed initial ledger with 33 V1 money-path/runtime/release-gate
+    rows and an operator workbook. Initial production status split:
+    `PASS=14`, `PARTIAL=5`, `NEEDS_PROD_SAMPLE=7`,
+    `NEEDS_PROD_UI_CHECK=1`, `BLOCKED=2`, `FAIL=1`,
+    `NOT_APPLICABLE=2`, `NOT_VERIFIED=1`. Evidence:
+    `docs/operations/v1-function-coverage-audit-2026-05-01.md`,
+    `docs/operations/v1-function-coverage-matrix-2026-05-01.csv`.
+
 - [ ] `V1FINAL-01 qa(prod): verify deployed DOGE runtime hardening and run final V1 gates`
   - Scope: execute the final V1 gate structure after production deploys
     `fba29a96` or later. Gate order: deploy freshness, DOGE close/reopen
