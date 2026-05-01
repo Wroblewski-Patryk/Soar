@@ -1,6 +1,6 @@
 # Dashboard Route-to-Feature-to-API Contract (Canonical)
 
-Updated: 2026-04-17
+Updated: 2026-05-01
 
 Purpose: keep one canonical mapping of web routes to frontend feature ownership, API contracts, and security/operational guardrails.
 Latest docs parity artifact: `docs/operations/_artifacts-docs-parity-2026-04-16T22-37-19-622Z.json` (`PASS`).
@@ -37,6 +37,7 @@ Latest docs parity artifact: `docs/operations/_artifacts-docs-parity-2026-04-16T
 - `/dashboard/wallets/list`
 - `/dashboard/wallets/:id`
 - `/dashboard/wallets/:id/edit`
+- `/dashboard/wallets/:id/preview`
 
 ### Admin
 - `/admin`

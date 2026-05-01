@@ -165,6 +165,37 @@ export default function WalletPreviewPanel({ walletId }: WalletPreviewPanelProps
   }
 
   const { wallet, summary, timeline, events } = data;
+
+  if (summary.completeness === 'UNAVAILABLE') {
+    return (
+      <div className='space-y-4'>
+        <div className='flex flex-wrap items-center justify-between gap-2'>
+          <div className='flex flex-wrap items-center gap-2'>
+            <TableToneBadge label={wallet.mode} tone={wallet.mode === 'LIVE' ? 'warning' : 'info'} />
+            <TableToneBadge label={`${wallet.exchange} / ${wallet.marketType} / ${wallet.baseCurrency}`} tone='neutral' />
+            <TableToneBadge label={`${copy.completeness}: ${summary.completeness}`} tone={completenessTone(summary.completeness)} />
+          </div>
+          <div className='flex flex-wrap items-center gap-2'>
+            <Link href={dashboardRoutes.wallets.list} className='btn btn-sm btn-outline'>
+              <LuArrowLeft className='h-4 w-4' />
+              {copy.backToList}
+            </Link>
+            <Link href={dashboardRoutes.wallets.edit(wallet.id)} className='btn btn-sm btn-outline'>
+              <LuWallet className='h-4 w-4' />
+              {copy.edit}
+            </Link>
+            <button type='button' className='btn btn-sm btn-primary' onClick={() => void loadData()}>
+              <LuRefreshCw className='h-4 w-4' />
+              {copy.refresh}
+            </button>
+          </div>
+        </div>
+
+        <EmptyState title={copy.noLedgerTitle} description={copy.noLedgerDescription} />
+      </div>
+    );
+  }
+
   const currency = summary.baseCurrency || wallet.baseCurrency;
   const formatWalletAmount = (value: number | null | undefined, maximumFractionDigits = 2) =>
     `${formatNumber(value, { maximumFractionDigits })} ${currency}`;
@@ -205,10 +236,6 @@ export default function WalletPreviewPanel({ walletId }: WalletPreviewPanelProps
       {summary.completeness === 'PARTIAL' ? (
         <DegradedState title={copy.partialTitle} description={copy.partialDescription} />
       ) : null}
-      {summary.completeness === 'UNAVAILABLE' ? (
-        <EmptyState title={copy.noLedgerTitle} description={copy.noLedgerDescription} />
-      ) : null}
-
       <section className='space-y-3 rounded-box border border-base-300/60 bg-base-100/85 p-4'>
         <div className='flex items-center justify-between gap-2'>
           <h2 className='inline-flex items-center gap-2 text-base font-semibold'>

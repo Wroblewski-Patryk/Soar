@@ -22,11 +22,13 @@ Out of scope:
   - `/dashboard/wallets/list`
   - `/dashboard/wallets/create`
   - `/dashboard/wallets/:id/edit`
+  - `/dashboard/wallets/:id/preview`
   - `/dashboard/wallets` and `/dashboard/wallets/:id` redirect to canonical list/edit routes
 - Depends on:
   - wallets API service (`features/wallets/services/wallets.service.ts`)
   - exchange capability metadata for dynamic form constraints
   - shared async retry utilities for critical requests
+  - wallet analytics endpoints for performance summary, timeline, and cashflow preview
 
 ## 3. Data and Contract Surface
 - API contracts used:
@@ -52,6 +54,10 @@ Out of scope:
   1. Load wallets with filters.
   2. Render row-only table with inline API key status and delete actions.
   3. Surface empty state guidance for first wallet setup.
+- Preview flow:
+  1. Load wallet identity plus ledger-backed summary, timeline, and cashflow events.
+  2. Render `COMPLETE` and `PARTIAL` states with explicit completeness status.
+  3. Fail closed on `UNAVAILABLE` completeness by showing an empty state instead of summary cards or chart data.
 - Create/edit flow:
   1. Load metadata and (for edit) existing wallet.
   2. Enforce mode-aware form sections.
@@ -64,6 +70,7 @@ Out of scope:
 - Main components:
   - `WalletsListTable`
   - `WalletCreateEditForm`
+  - `WalletPreviewPanel`
   - route-level wrapper `WalletFormPageContent`
 - Table presentation contract:
   - columns include `API key` inline state,
