@@ -1,7 +1,7 @@
 # V1 Function Coverage Audit
 
 Date: 2026-05-01
-Status: INITIAL COVERAGE LEDGER
+Status: CODE-SCANNED COVERAGE LEDGER
 
 ## Purpose
 
@@ -9,6 +9,10 @@ This audit introduces one canonical, filterable coverage ledger for Soar V1
 functionality. Its job is to stop repeating ad-hoc verification loops and make
 the current confidence level explicit per module, submodule, mode, capability,
 scenario, local evidence, and production evidence.
+
+The 2026-05-01 second pass scanned the actual API route/module map and web
+dashboard route surface, then expanded the initial money-path ledger into a
+broader top-level function inventory.
 
 ## Artifacts
 
@@ -79,6 +83,39 @@ is the operator-friendly workbook for filtering and scanning.
   deposit/withdrawal replay evidence should be added before treating wallet
   analytics as fully production-proven.
 
+## Code-Scan Expansion
+
+The second pass expanded the matrix from 33 to 79 rows. The ledger now covers
+the primary top-level route/module families discovered in the code scan:
+
+- `auth`, `admin`, `profile`, `subscriptions`;
+- `wallets`, `markets`, `strategies`, `bots`, `orders`, `positions`,
+  `backtests`, `reports`, `logs`;
+- `exchange`, `market-data`, `market-stream`, `icons`, `upload`;
+- `dashboard-home`, `engine`, `isolation`, `pagination`, and `ops`.
+
+Current production status split after the second pass:
+
+- `PASS=17`
+- `PARTIAL=22`
+- `NEEDS_PROD_SAMPLE=9`
+- `NEEDS_PROD_UI_CHECK=12`
+- `NOT_VERIFIED=11`
+- `NOT_APPLICABLE=5`
+- `BLOCKED=2`
+- `FAIL=1`
+
+Current priority split:
+
+- `P0=45`
+- `P1=24`
+- `P2=10`
+
+This does not mean every low-level parameter, UI state, or edge case is fully
+enumerated. It means the main functional surfaces are now present in the
+ledger, so the next audit can work row-by-row instead of rediscovering module
+scope from scratch.
+
 ## Operating Rule
 
 Every future V1/V1.1 bugfix or confidence task should update this matrix by
@@ -88,13 +125,13 @@ should not be called "100% covered" unless both local and production status are
 
 ## Next Expansion
 
-The current matrix is intentionally focused on V1 money-path and release-gate
-functions. The next pass should add broader CRUD/UI rows for:
+The current matrix now covers the major top-level functions. The next pass
+should go deeper inside the highest-risk `P0` and `PARTIAL` rows by splitting:
 
-1. markets and market-group builder;
-2. strategy create/edit/delete happy/error states;
-3. bots CRUD and lifecycle controls;
-4. backtest creation/results/timeline/chart rows;
-5. reports;
-6. profile/API-key lifecycle;
-7. subscriptions/admin if they remain in the current launch scope.
+1. each strategy close/additional option into basic/advanced parameter rows;
+2. each bot lifecycle control into LIVE/PAPER happy/error/permission rows;
+3. each wallet analytics metric into API/UI/formula/prod-sample rows;
+4. each manual order path into market/limit/cancel/close/reduce-only rows;
+5. each backtest report/timeline/chart behavior into data-contract rows;
+6. each auth/profile/API-key/admin flow into ownership and error-state rows;
+7. each production gate row into exact proof commands and owner sign-off rows.

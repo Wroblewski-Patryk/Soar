@@ -100,7 +100,8 @@ risk, owner, and next verification.
 - Files changed: operations audit/CSV, planning/context docs.
 - How tested: guardrails plus CSV import/count checks.
 - What is incomplete: broader CRUD/UI rows for markets, profile,
-  subscriptions/admin, and deeper backtest/report scenarios should be added in
-  follow-up passes.
+  subscriptions/admin, and deeper backtest/report scenarios were intentionally
+  left for a follow-up pass; the top-level expansion is now tracked in
+  `docs/planning/v1cover-02-code-scan-function-ledger-expansion-task-2026-05-01.md`.
 - Next steps: update the matrix after every future V1/V1.1 confidence task and
   drive open P0 rows to `PASS` or an explicit release-owner waiver.

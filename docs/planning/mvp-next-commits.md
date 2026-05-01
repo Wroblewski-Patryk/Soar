@@ -21,6 +21,17 @@ Operational queue for one-task execution runs.
     `NOT_APPLICABLE=2`, `NOT_VERIFIED=1`; `P0=22`. Evidence:
     `docs/operations/v1-function-coverage-audit-2026-05-01.md`,
     `docs/operations/v1-function-coverage-matrix-2026-05-01.csv`.
+- [x] `V1COVER-02 qa(release): expand function coverage ledger from code scan`
+  - 2026-05-01: Closed the follow-up project scan. The coverage ledger now
+    has 79 rows and includes the main top-level API/web module surfaces
+    discovered from route/module/test scanning. Production status split:
+    `PASS=17`, `PARTIAL=22`, `NEEDS_PROD_SAMPLE=9`,
+    `NEEDS_PROD_UI_CHECK=12`, `NOT_VERIFIED=11`, `NOT_APPLICABLE=5`,
+    `BLOCKED=2`, `FAIL=1`; priorities: `P0=45`, `P1=24`, `P2=10`.
+    Evidence:
+    `docs/planning/v1cover-02-code-scan-function-ledger-expansion-task-2026-05-01.md`,
+    `docs/operations/v1-function-coverage-audit-2026-05-01.md`,
+    `docs/operations/v1-function-coverage-matrix-2026-05-01.csv`.
 - [ ] `V1FINAL-01 qa(prod): verify deployed DOGE runtime hardening and run final V1 gates`
   - 2026-05-01 preflight: production public smoke is green, but build-info
     still reports `c081f224134fedb65de2ecad716274b92593c373`, while repository
