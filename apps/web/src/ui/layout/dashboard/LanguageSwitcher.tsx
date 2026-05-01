@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, type CSSProperties } from 'react';
 import { useI18n } from '../../../i18n/I18nProvider';
 import type { Locale } from '../../../i18n/translations';
 import { useDetailsDropdown } from '../../hooks/useDetailsDropdown';
@@ -12,7 +12,8 @@ type LanguageOption = {
   labelKey: string;
   shortLabel: string;
   countryCode: string;
-  flag: string;
+  flagClassName: string;
+  flagStyle?: CSSProperties;
 };
 
 type DropdownPlacement = 'top' | 'bottom';
@@ -30,21 +31,25 @@ const LANGUAGES: LanguageOption[] = [
     labelKey: 'public.localeNames.en',
     shortLabel: 'EN',
     countryCode: 'gb',
-    flag: '🇬🇧',
+    flagClassName: 'bg-[#012169]',
+    flagStyle: {
+      backgroundImage:
+        'linear-gradient(28deg, transparent 0 39%, #fff 39% 45%, #c8102e 45% 50%, #fff 50% 56%, transparent 56% 100%), linear-gradient(152deg, transparent 0 39%, #fff 39% 45%, #c8102e 45% 50%, #fff 50% 56%, transparent 56% 100%), linear-gradient(90deg, transparent 0 42%, #fff 42% 58%, transparent 58% 100%), linear-gradient(0deg, transparent 0 35%, #fff 35% 65%, transparent 65% 100%), linear-gradient(90deg, transparent 0 46%, #c8102e 46% 54%, transparent 54% 100%), linear-gradient(0deg, transparent 0 41%, #c8102e 41% 59%, transparent 59% 100%)',
+    },
   },
   {
     locale: 'pl',
     labelKey: 'public.localeNames.pl',
     shortLabel: 'PL',
     countryCode: 'pl',
-    flag: '🇵🇱',
+    flagClassName: 'bg-[linear-gradient(to_bottom,#ffffff_0_50%,#dc143c_50%_100%)]',
   },
   {
     locale: 'pt',
     labelKey: 'public.localeNames.pt',
     shortLabel: 'PT',
     countryCode: 'pt',
-    flag: '🇵🇹',
+    flagClassName: 'bg-[linear-gradient(to_right,#046a38_0_42%,#da291c_42%_100%)]',
   },
 ];
 
@@ -55,12 +60,11 @@ function FlagIcon({ option }: { option: LanguageOption }) {
   return (
     <span
       aria-hidden
-      className="inline-flex h-4 w-6 items-center justify-center text-sm leading-none"
+      className={`inline-flex h-4 w-6 shrink-0 overflow-hidden rounded-[2px] border border-base-content/20 shadow-sm ${option.flagClassName}`}
       data-testid={`flag-${option.locale}`}
+      style={option.flagStyle}
       title={option.countryCode.toUpperCase()}
-    >
-      {option.flag}
-    </span>
+    />
   );
 }
 

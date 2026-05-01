@@ -17,6 +17,18 @@ Last updated: 2026-05-01
 
 ## READY
 
+- [x] `V1UI-FLAG-01 fix(web-footer): restore language switcher flags`
+  - Scope: after an operator-reported UI regression, reviewed commits from
+    `2026-05-01 09:00` and confirmed no post-09:00 commit directly touched the
+    footer or language switcher. Hardened the existing shared
+    `LanguageSwitcher` flag output by rendering GB/PL/PT as visual CSS flag
+    badges instead of regional-indicator text, then added public and dashboard
+    footer regressions proving the active language flag remains visible in the
+    footer without text content.
+    Validation PASS: focused footer/language switcher tests (`5/5`), web
+    typecheck, web build, repository guardrails. Evidence:
+    `docs/planning/v1ui-flag-01-footer-language-flags-regression-task-2026-05-01.md`.
+
 - [x] `V1DCA-05 fix(api-runtime-read): restore imported DCA across restarted sessions`
   - Scope: after production deployed `15cddb5a`, authenticated ETHUSDT evidence
     still showed `dcaCount=0` because the current runtime session started at

@@ -40,4 +40,21 @@ describe("Public footer mobile layout", () => {
       "md:text-left"
     );
   });
+
+  it("keeps the language switcher flag visible in the footer", () => {
+    window.localStorage.setItem("cryptosparrow-locale", "en");
+
+    render(
+      <I18nProvider>
+        <Footer />
+      </I18nProvider>
+    );
+
+    const footer = screen.getByText(/Soar\./i).closest("footer");
+    const activeFlag = footer?.querySelector('[data-testid="flag-en"]');
+
+    expect(activeFlag).toBeTruthy();
+    expect(activeFlag).toHaveTextContent("");
+    expect(activeFlag).toHaveClass("overflow-hidden", "border", "bg-[#012169]");
+  });
 });

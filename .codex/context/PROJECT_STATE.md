@@ -100,6 +100,16 @@ Last updated: 2026-05-01
   of reconstructing it from `syncState` or audit logs.
 
 ## Product Decisions (Confirmed)
+- 2026-05-01: fixed `V1UI-FLAG-01`, an operator-reported footer language
+  switcher flag regression. Commit review from `2026-05-01 09:00` found no
+  post-09:00 commit directly touching footer or language switcher ownership, so
+  the existing shared `LanguageSwitcher` contract was preserved and hardened:
+  GB/PL/PT flags now render as visual CSS flag badges instead of
+  regional-indicator text, and both public and dashboard footer tests assert
+  the active footer flag remains visible without text content.
+  Validation PASS: focused footer/language switcher tests (`5/5`), web
+  typecheck, web build, repository guardrails. Evidence:
+  `docs/planning/v1ui-flag-01-footer-language-flags-regression-task-2026-05-01.md`.
 - 2026-05-01: fixed `V1DCA-05` after authenticated production verification on
   deployed `15cddb5a` proved the remaining `ETHUSDT DCA=0` regression was a
   restarted-session read-model gap, not a missing migration. The current

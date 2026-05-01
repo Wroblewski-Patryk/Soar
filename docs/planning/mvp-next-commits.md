@@ -12,6 +12,17 @@ Operational queue for one-task execution runs.
   blockers are `V1EXCEL-03..06` authenticated manual operator and OPS evidence.
   `BOTMULTI-*` remains in `PIPELINE` until those post-V1 confidence gates are
   green.
+- [x] `V1UI-FLAG-01 fix(web-footer): restore language switcher flags`
+  - 2026-05-01: Closed an operator-reported footer language switcher flag
+    regression. Commit review from `2026-05-01 09:00` found no post-09:00
+    change directly touching the footer or switcher, so the existing shared
+    contract was hardened instead of replaced: GB/PL/PT flags now render as
+    visual CSS flag badges instead of regional-indicator text, and both public
+    and dashboard footer tests assert the active footer flag remains visible
+    without text content. Validation PASS: focused
+    footer/language switcher tests (`5/5`), web typecheck, web build,
+    repository guardrails. Evidence:
+    `docs/planning/v1ui-flag-01-footer-language-flags-regression-task-2026-05-01.md`.
 - [x] `V1DCA-05 fix(api-runtime-read): restore imported DCA across restarted sessions`
   - 2026-05-01: Closed the follow-up ETHUSDT production regression after
     deployed `15cddb5a`. Authenticated production evidence showed the current
