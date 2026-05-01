@@ -100,6 +100,21 @@ Last updated: 2026-05-01
   of reconstructing it from `syncState` or audit logs.
 
 ## Product Decisions (Confirmed)
+- 2026-05-01: executed `V1FINAL-01` after production deployed
+  `6a8ded9333eabced5e8461362e9e9237a9bf4e4d` on `main`. Gate 0 is now green:
+  public and authenticated production smoke passed, protected runtime freshness
+  passed with `runningCount=4`, rollback guard returned
+  `shouldRollback=false`, and rollback proof was regenerated. The active
+  `LIVE` `DOGEUSDT` runtime row now reports `dcaCount=0`, `tradesCount=1`, and
+  `strategyAutomationContextResolved=true`, confirming the stale-DCA
+  close/reopen regression no longer appears on the fresh open lifecycle. Final
+  V1 remains `NO-GO/BLOCKED`: release-gate classification still reports stale
+  activation audit/plan from `2026-04-22`, production restore drill failed due
+  missing production DB container configuration in this execution context, the
+  sign-off record is blocked by empty approver fields, manual operator/live
+  exchange matrix is not complete, and stage remains `503`. Evidence:
+  `docs/planning/v1final-01-prod-gate-execution-task-2026-05-01.md`,
+  `docs/operations/v1-release-gate-prod-2026-05-01T02-44-00-227Z.md`.
 - 2026-05-01: published `V1DOGE-01` after the operator reported a real-money
   `LIVE DOGEUSDT` loss close and stale DCA on the next same-symbol open row.
   Protected production inspection confirmed the incident close was app-side

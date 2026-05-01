@@ -1,7 +1,7 @@
 # V1 Final Test Structure
 
 Date: 2026-05-01
-Status: READY FOR EXECUTION AFTER DEPLOY FRESHNESS
+Status: EXECUTED WITH BLOCKERS
 
 ## Purpose
 
@@ -54,6 +54,31 @@ Conclusion:
 
 - Final V1 execution is blocked on an operational production deploy trigger,
   not on a newly discovered code task.
+
+Post-deploy execution on 2026-05-01:
+
+- Production web build-info now reports
+  `6a8ded9333eabced5e8461362e9e9237a9bf4e4d` on `main`.
+- Public production smoke PASS.
+- Authenticated production smoke PASS, including `/workers/health`.
+- Protected runtime freshness PASS with `runningCount=4`.
+- Protected rollback guard PASS with `shouldRollback=false`, no reasons, and no
+  alerts.
+- Active `LIVE` `DOGEUSDT` runtime `Positions` payload no longer carries stale
+  DCA from the previous lifecycle: current open `DOGEUSDT` row reports
+  `dcaCount=0`, `tradesCount=1`, and
+  `strategyAutomationContextResolved=true`.
+- Rollback proof regenerated:
+  `docs/operations/v1-rollback-proof-prod-2026-05-01T02-42-49-727Z.md`.
+- Release-gate classification regenerated:
+  `docs/operations/v1-release-gate-prod-2026-05-01T02-44-00-227Z.md`.
+
+Conclusion:
+
+- Gate 0 and the executable part of Gate 1 PASS on the deployed candidate.
+- Final V1 remains `NO-GO/BLOCKED` because the release-gate report still has:
+  `activationAudit:stale`, `activationPlan:stale`, and
+  `backupRestoreDrill:failed`.
 
 Stage check:
 
@@ -183,17 +208,23 @@ Output artifacts:
 
 ## Current Blockers
 
-- Production has not yet deployed `577c45a8`.
+- Production deploy freshness is resolved on `6a8ded93`.
 - Stage still returns `503 no available server`.
 - Manual LIVE exchange-authority scenarios are not executed in the current
   evidence set.
-- Restore drill and RC rebuild are still missing for the latest deployed SHA.
+- Production restore drill was rerun for the latest candidate but failed because
+  no production DB container configuration was available in this execution
+  context.
+- RC status/checklist/sign-off were refreshed on 2026-05-01; sign-off is
+  `BLOCKED` because required approver fields are empty.
+- Activation audit and activation execution plan are still stale
+  (`2026-04-22`) for the latest deployed SHA.
 
 ## Next Smallest Executable Task
 
-After Coolify deploys `577c45a8` or later to production:
-
-1. run Gate 0 production freshness checks,
-2. run Gate 1 DOGE runtime regression verification,
-3. publish a new production evidence artifact,
-4. only then continue broader `V1EXCEL-05` closure.
+1. provide production DB restore-drill execution context or container settings
+   and rerun `pnpm run ops:db:restore-drill -- --profile prod`;
+2. regenerate the production activation audit and execution plan for
+   `6a8ded93`;
+3. complete or explicitly waive the manual operator matrix;
+4. rerun the final production release gate and publish the GO/NO-GO decision.

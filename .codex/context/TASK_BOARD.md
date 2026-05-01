@@ -31,6 +31,18 @@ Last updated: 2026-05-01
     Test structure:
     `docs/operations/v1-final-test-structure-2026-05-01.md`. Planning task:
     `docs/planning/v1final-00-final-test-structure-task-2026-05-01.md`.
+  - 2026-05-01 execution: production deploy freshness is now resolved on
+    `6a8ded9333eabced5e8461362e9e9237a9bf4e4d`; public and authenticated
+    production smoke passed; protected runtime freshness passed; rollback guard
+    returned `shouldRollback=false`; rollback proof was regenerated; and the
+    active `LIVE` `DOGEUSDT` open row now reports `dcaCount=0`,
+    `tradesCount=1`, and `strategyAutomationContextResolved=true`, so stale DCA
+    no longer crosses into the fresh lifecycle. Final V1 remains blocked by a
+    failed production restore drill caused by missing prod DB container
+    configuration, stale activation audit/plan from `2026-04-22`, incomplete
+    manual operator matrix, and stage `503`. Evidence:
+    `docs/planning/v1final-01-prod-gate-execution-task-2026-05-01.md`,
+    `docs/operations/v1-release-gate-prod-2026-05-01T02-44-00-227Z.md`.
 - [ ] `V1EXCEL-04 ops(stage-refresh): restore stage target before authenticated gate rerun`
   - Scope: stage release-gate evidence cannot proceed while the stage web/API
     targets are unavailable.
@@ -59,6 +71,12 @@ Last updated: 2026-05-01
     `docs/operations/v1excel-05-prod-refresh-2026-05-01.md`. Remaining work:
     restore drill, RC status/sign-off/checklist rebuild, and remaining manual
     matrix items.
+  - 2026-05-01 follow-up: RC status/checklist/sign-off were rebuilt and
+    rollback proof is fresh/pass for production, but sign-off is now `BLOCKED`
+    because approver fields are empty, and the fresh prod restore drill is
+    `FAIL` because this context lacks production DB container settings. Latest
+    release-gate blockers: `activationAudit:stale`, `activationPlan:stale`,
+    `backupRestoreDrill:failed`.
 
 - [x] `V1DCA-01 fix(api-runtime-read): preserve DCA visibility after exchange-sync position replacement`
   - Scope: keep dashboard runtime `Positions` DCA truth aligned with the

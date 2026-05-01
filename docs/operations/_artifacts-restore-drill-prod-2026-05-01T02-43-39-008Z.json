@@ -1,0 +1,20 @@
+{
+  "status": "FAIL",
+  "profile": "prod",
+  "startedAt": "2026-05-01T02:43:38.898Z",
+  "endedAt": "2026-05-01T02:43:38.990Z",
+  "command": "node scripts/runBackupVerificationProfile.mjs --profile prod",
+  "checks": {
+    "commandExitCodeZero": false,
+    "rawArtifactPresent": true,
+    "markdownReportPresent": true,
+    "backupRestoreResultPass": true
+  },
+  "backupRestore": {
+    "result": "PASS",
+    "rawArtifact": "docs\\operations\\_artifacts-db-restore-check-2026-04-22T22-30-48-000Z.txt",
+    "reportArtifact": "docs\\operations\\v1-db-restore-check-2026-04-22T22-30-48-000Z.md"
+  },
+  "stdoutPreview": "",
+  "stderrPreview": "[ops:db:backup-verify] failed: Missing container for profile \"prod\". Set --container or one of: PROD_DB_CHECK_CONTAINER, PRODUCTION_DB_CHECK_CONTAINER."
+}

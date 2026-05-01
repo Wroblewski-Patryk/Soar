@@ -25,6 +25,16 @@ Operational queue for one-task execution runs.
   - 2026-05-01 workflow recheck: latest GitHub `Promote PROD` run is old
     (`0f122ed4`, 2026-04-25) and failed; no current production promotion run
     exists for `577c45a8`/`fba29a96`.
+  - 2026-05-01 execution: production now reports deployed
+    `6a8ded9333eabced5e8461362e9e9237a9bf4e4d`. Public and authenticated
+    production smoke PASS, runtime freshness PASS, rollback guard PASS,
+    rollback proof PASS, and the active `LIVE` `DOGEUSDT` open row no longer
+    carries stale DCA (`dcaCount=0`, `tradesCount=1`). The final release gate is
+    still `not_ready`: activation audit/plan are stale, production restore
+    drill failed because prod DB container config is unavailable in this
+    context, manual operator matrix is not complete, and stage remains `503`.
+    Evidence:
+    `docs/planning/v1final-01-prod-gate-execution-task-2026-05-01.md`.
 - [ ] `V1EXCEL-04 ops(stage-refresh): restore stage target before authenticated gate rerun`
   - 2026-05-01 refresh: stage public smoke now fails before auth. `stage-api`
     and `stage` both return `503 no available server` for health/ready/root and
@@ -48,6 +58,11 @@ Operational queue for one-task execution runs.
     `docs/operations/v1excel-05-prod-refresh-2026-05-01.md`. Still open:
     restore drill, RC status/sign-off/checklist rebuild, and remaining manual
     matrix items.
+  - 2026-05-01 follow-up: RC status/checklist/sign-off refresh completed, and
+    strict RC evidence summary reports Gate 1..4 PASS from current source
+    artifacts. The sign-off record itself remains `BLOCKED` because approver
+    fields are blank. The fresh prod restore drill artifact is `FAIL` until
+    prod DB container settings or VPS/Coolify execution context are available.
 - [x] `V1DCA-01 fix(api-runtime-read): preserve DCA visibility after exchange-sync position replacement`
   - 2026-05-01: Closed after protected production inspection showed the `LIVE`
     DOGEUSDT DCA fill existed in the trade ledger but the current dashboard
