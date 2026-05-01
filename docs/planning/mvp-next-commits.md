@@ -7,13 +7,11 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- 2026-05-01 execution status: no autonomous `NOW` implementation task is
-  currently executable without protected production auth. `V1ROE-04` remains
-  the active V1 gate, but it is blocked by `401 Missing token` on protected
-  runtime probes. `BOTMULTI-*` remains in `PIPELINE` only because its own
-  preconditions require stable post-V1 production verification before the
-  architecture can reopen the singular bot model. Sync task:
-  `docs/planning/docsync-2026-05-01-no-autonomous-now-task.md`.
+- 2026-05-01 execution status: `V1ROE-04` protected production verification is
+  closed with authenticated API/browser evidence. Remaining non-deferred V1
+  blockers are `V1EXCEL-03..06` authenticated manual operator and OPS evidence.
+  `BOTMULTI-*` remains in `PIPELINE` until those post-V1 confidence gates are
+  green.
 - [x] `WLEDGER-07..09 web-wallet-preview: expose ledger-backed wallet preview from wallet list`
   - 2026-04-30: Closed the wallet preview UI slice. Wallet rows now expose a shared `preview` table action linking to `/dashboard/wallets/:id/preview`, and the new preview page loads the ledger-backed performance summary, equity timeline, and cashflow events APIs. The UI separates contributed capital from bot PnL, keeps unclassified adjustments visible, handles loading/error/empty/partial/success states, and avoids ISO-currency assumptions for crypto symbols such as `USDT`. Validation PASS: focused wallet web tests, web typecheck, web build, route-reachable i18n audit, repository guardrails.
 - [x] `WLEDGER-06 api-read: expose wallet performance summary, timeline, and cashflow APIs`
@@ -110,11 +108,12 @@ Operational queue for one-task execution runs.
   - 2026-04-30: Closed with a targeted normalization fix in `positions.exchangeSnapshotNormalization.ts` plus focused unit coverage in `positions.exchangeSnapshotNormalization.test.ts`. `ISOLATED` futures positions now prefer `isolatedWallet` as canonical `marginUsed` truth before falling back to `isolatedMargin` and initial-margin fields, while non-isolated positions keep initial-margin precedence. Validation PASS: focused normalization unit pack, `bots.runtime-pnl-parity.e2e`, and `pnpm run quality:guardrails`.
 - [x] `V1TAKE-10 feat(bot-settings): move LIVE external-position management authority from wallet to bot`
   - 2026-04-30: Closed after the user approved one canonical checkbox in bot settings only. Added `Bot.manageExternalPositions` with migration backfill from linked wallets, rewired imported `LIVE` ownership resolution to derive management truth from the bot-level flag, removed the editable takeover toggle from wallet create/edit flows, and exposed the single control in bot create/edit for `LIVE` wallets. Validation PASS: focused runtime ownership/takeover API pack, focused bot+wallet web form pack, API/web typecheck, repository guardrails.
-- [ ] `V1ROE-04 qa(prod-manual): verify exchange-aligned LIVE PnL truth and DCA non-trigger on the protected DOGEUSDT flow`
+- [x] `V1ROE-04 qa(prod-manual): verify exchange-aligned LIVE PnL truth and DCA non-trigger on the protected DOGEUSDT flow`
   - 2026-04-30 status: BLOCKED by protected production verification, not local code. The protected production audit after `V1ROE-03` first exposed stale runtime price truth, and the following ownership/parity slices closed the local gaps for imported owned rows, stale runtime-state rebase, and prospective imported automation hydration. Canonical task packet: `docs/planning/v1roe-04-production-verification-task-2026-04-30.md`. Next proof after deploying the current candidate: capture authenticated `DOGEUSDT` API/browser evidence showing exchange-aligned `LIVE` PnL truth and non-dormant imported management.
   - 2026-04-30 partial verification: production web build-info confirms `gitSha=522e1d95e2612e280ca36eacb825358a3d26f19c` on `main`, and public deploy smoke passed for API `/health`, API `/ready`, and web `/`. Protected runtime freshness and dashboard runtime probes remain blocked with `401 Missing token` from this environment. Evidence: `docs/operations/v1roe-04-prod-verification-partial-2026-04-30.md`.
   - 2026-05-01 queue sync: `.codex/context/TASK_BOARD.md` was normalized so the only active `V1ROE-04` truth is `BLOCKED` on protected production auth. The stale duplicate `READY` wording was removed to prevent accidental local-only closure. Sync task: `docs/planning/docsync-2026-05-01-queue-auth-blocker-task.md`.
   - 2026-05-01 follow-up sync: `V1ROE-04` was moved out of the `READY` section entirely and now appears only under `BLOCKED` in `.codex/context/TASK_BOARD.md`. Follow-up task: `docs/planning/docsync-2026-05-01-ready-blocked-separation-task.md`.
+  - 2026-05-01 closure: authenticated protected production evidence closed the gate. Production build-info reports `gitSha=e6bdcfda35698dbb29513490a953e15b9a2c0469`, public deploy smoke and protected runtime freshness pass, protected `DOGEUSDT` runtime truth is `IN_SYNC`, `CONFIRMED`, `actionable=true`, and strategy-context resolved, with `marginUsed=1.06308365`, `unrealizedPnl=-0.096012`, `unrealizedPnlPercent=-9.031462%`, and `DCA=0` while the first configured DCA trigger is `-20%`. Headless dashboard proof confirms the `live` bot `Positions` row renders the same identity, side, PnL sign/order, DCA state, and no armed dynamic stop. Evidence: `docs/operations/v1roe-04-prod-verification-closure-2026-05-01.md`.
 - [x] `V1REOPEN-05 test(api-runtime-red): lock TTP continuity and loss-side-only DCA behavior on reopened LIVE positions`
   - 2026-04-29: Closed by adding focused runtime automation proof for a reopened imported `LIVE` position on the same symbol. The regression locks fresh lifecycle state (`currentAdds=0`), proves stale prior lifecycle state does not bleed into the reopened row, and confirms `TTP` still closes correctly when all remaining `DCA` thresholds are loss-side only.
 - [x] `V1REOPEN-07 qa(closure): run focused close/reopen truth pack and publish evidence`
@@ -216,9 +215,9 @@ Operational queue for one-task execution runs.
 - [x] `V1CLOSE-09 qa(closure): run focused close-attribution pack and sync docs/context`
 ## PIPELINE
 - [ ] `BOTMULTI-01 docs(decision): freeze post-V1 multi-strategy bot contract`
-  - 2026-05-01 status: DEFERRED, not executable as an auth-free fallback while
-    `V1ROE-04` is still blocked. The approved BOTMULTI packet requires stable
-    post-V1 production verification before architecture changes start.
+  - 2026-05-01 status: DEFERRED, not executable as a fallback while
+    `V1EXCEL-03..06` remain open. The approved BOTMULTI packet requires stable
+    post-V1 production confidence gates before architecture changes start.
 - [ ] `BOTMULTI-02 audit(data+runtime): inventory legacy compatibility remnants and migration debt`
 - [ ] `BOTMULTI-03 db(schema): finalize canonical multi-strategy topology and migration path`
 - [ ] `BOTMULTI-04 api(write): support bot create/update with multiple strategies`
@@ -520,10 +519,12 @@ Operational queue for one-task execution runs.
 - [x] `L10NQ-B (commits 06-11): per-module namespace split + parity/guardrail tests`
 - [x] `L10NQ-C (commits 12-15): route-level namespace loading + English docs normalization`
 ## BLOCKED
-- [ ] `V1ROE-04 qa(prod-manual): verify exchange-aligned LIVE PnL truth and imported automation on protected DOGEUSDT`
-  - 2026-05-01: Blocked by missing protected production auth. Public deploy freshness and smoke evidence are recorded, but protected runtime/dashboard evidence still requires `SMOKE_AUTH_TOKEN` / `DEPLOY_FRESHNESS_AUTH_TOKEN`, smoke email/password credentials, or an equivalent authenticated browser/session cookie. Sync task: `docs/planning/docsync-2026-05-01-mvp-blocked-section-task.md`.
+- [ ] `V1EXCEL-03..06 confidence gates: finish authenticated manual operator, stage/prod, and runtime observability evidence`
+  - 2026-05-01: `V1ROE-04` is no longer blocked; it is closed by authenticated production evidence. The remaining blocked or incomplete V1 confidence scope is the separate `V1EXCEL` evidence wave: full manual matrix, authenticated stage refresh, authenticated prod refresh, and runtime observability closure on the current candidate.
 
 ## DONE
+- [x] `V1ROE-04 qa(prod-manual): verify exchange-aligned LIVE PnL truth and imported automation on protected DOGEUSDT`
+  - 2026-05-01: Closed with authenticated production API/browser evidence. Evidence: `docs/operations/v1roe-04-prod-verification-closure-2026-05-01.md`.
 - [x] `V1RT-01 fix(api-market-stream): align market-stream worker subscriptions with canonical runtime symbol scope`
   - 2026-04-23: Fixed a production-relevant drift where `marketStream.worker` derived subscriptions from whitelist-only market-universe logic instead of the canonical symbol-group resolver. Worker subscriptions now follow the same symbol scope as runtime topology and operator surfaces, including catalog-backed/filter-backed universes. Validation PASS: `pnpm --filter api exec vitest run src/workers/marketStreamSubscriptions.service.test.ts src/modules/bots/runtimeSymbolStatsReadModel.service.test.ts`, `pnpm --filter api run typecheck`.
 - [x] `V1SURF-01 fix(api+web-runtime-surface): make selected-bot dashboard markets section truth-based instead of mixing fallback context with accepted signal feed`

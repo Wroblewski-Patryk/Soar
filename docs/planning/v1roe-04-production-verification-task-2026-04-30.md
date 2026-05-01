@@ -5,7 +5,7 @@
 - Title: Verify exchange-aligned LIVE PnL truth and imported automation on protected DOGEUSDT
 - Task Type: release
 - Current Stage: verification
-- Status: BLOCKED
+- Status: DONE
 - Owner: QA/Test
 - Depends on: V1ROE-03, V1OWN-01, V1AUTO-01, V1AUTO-02, V1AUTO-03
 - Priority: P0
@@ -34,8 +34,7 @@ runtime truth.
 - Post-launch learning needed: yes
 
 ## Deliverable For This Stage
-A production verification packet with timestamped evidence, or a precise
-blocked-state report naming the missing access/deploy prerequisite.
+A production verification packet with timestamped evidence.
 
 ## Scope
 - Protected production dashboard/API evidence for the active `LIVE DOGEUSDT`
@@ -72,13 +71,15 @@ blocked-state report naming the missing access/deploy prerequisite.
 - Dashboard operator surfaces match the protected API evidence.
 - If evidence cannot be collected, the task remains `BLOCKED` with the exact
   missing prerequisite named.
+- Authenticated protected evidence was collected on 2026-05-01, so this task is
+  now closed.
 
 ## Definition of Done
 - [x] Production candidate freshness is verified.
-- [ ] Protected `DOGEUSDT` API evidence is captured.
-- [ ] Dashboard/browser parity evidence is captured.
-- [x] Partial evidence artifact is published in `docs/operations/`.
-- [x] Canonical queue/context docs are synchronized for the blocked state.
+- [x] Protected `DOGEUSDT` API evidence is captured.
+- [x] Dashboard/browser parity evidence is captured.
+- [x] Closure evidence artifact is published in `docs/operations/`.
+- [x] Canonical queue/context docs are synchronized for the closed state.
 
 ## Stage Exit Criteria
 - [x] The output matches the declared `Current Stage`.
@@ -96,13 +97,13 @@ blocked-state report naming the missing access/deploy prerequisite.
 ## Validation Evidence
 - Tests:
   - `node scripts/deploySmokeCheck.mjs --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers` => PASS
-  - `node scripts/checkPostDeployRuntimeFreshness.mjs --base-url https://api.soar.luckysparrow.ch` => BLOCKED (`401 Missing token`)
+  - `node scripts/checkPostDeployRuntimeFreshness.mjs --base-url https://api.soar.luckysparrow.ch --timeout-ms 15000` => PASS
 - Manual checks:
-  - Public `https://soar.luckysparrow.ch/api/build-info` reports `gitSha=522e1d95e2612e280ca36eacb825358a3d26f19c`, `gitRef=main`.
-  - Direct unauthenticated protected probes return `401 Missing token`.
-- Screenshots/logs: `docs/operations/v1roe-04-prod-verification-partial-2026-04-30.md`
-- High-risk checks: protected production evidence is still required before
-  closure because this touches money-impacting LIVE runtime truth.
+  - Public `https://soar.luckysparrow.ch/api/build-info` reports `gitSha=e6bdcfda35698dbb29513490a953e15b9a2c0469`, `gitRef=main`.
+  - Protected `DOGEUSDT` runtime position evidence was captured with authenticated operator access.
+  - Headless browser dashboard proof confirmed `Positions` renders the `DOGEUSDT` row for the selected `live` bot.
+- Screenshots/logs: `docs/operations/v1roe-04-prod-verification-closure-2026-05-01.md`
+- High-risk checks: no trading action was executed; verification was read-only.
 
 ## Architecture Evidence (required for architecture-impacting tasks)
 - Architecture source reviewed: `docs/architecture/reference/live-protection-state-parity-contract.md`,
@@ -137,10 +138,8 @@ blocked-state report naming the missing access/deploy prerequisite.
 - [x] Learning journal was updated if a recurring pitfall was confirmed.
 
 ## Notes
-This task is intentionally `BLOCKED` until authenticated protected production
-access and deployed candidate freshness are available. Later local runtime
-fixes (`V1OWN`, `V1AUTO`) reduced the likely code gap, but they do not replace
-the required production proof.
+This task is closed by authenticated protected production evidence. Secrets were
+used only through the session environment and were not committed.
 
 ## Production-Grade Required Contract
 
@@ -184,12 +183,12 @@ runtime implementation.
   deploy regression is confirmed.
 
 - `INTEGRATION_CHECKLIST.md` reviewed: yes
-- Real API/service path used: pending protected verification
-- Endpoint and client contract match: pending protected verification
+- Real API/service path used: yes
+- Endpoint and client contract match: yes
 - DB schema and migrations verified: already covered by preceding code slices
 - Loading state verified: not applicable
-- Error state verified: pending protected verification
-- Refresh/restart behavior verified: pending protected verification
+- Error state verified: not applicable to the passing verification path
+- Refresh/restart behavior verified: runtime freshness and session heartbeat passed
 - Regression check performed: local regressions were covered by preceding code
   slices; this task needs production proof
 
@@ -206,8 +205,8 @@ Not applicable.
   evidence artifacts
 - Secret handling: no secrets should be committed
 - Security tests or scans: not applicable
-- Fail-closed behavior: task remains `BLOCKED` without protected access
-- Residual risk: stale deployed code or unavailable auth can block closure
+- Fail-closed behavior: task stayed blocked until protected access was provided
+- Residual risk: live market values can move between API and browser reads
 
 - `AI_TESTING_PROTOCOL.md` reviewed: not applicable
 - Memory consistency scenarios: not applicable
@@ -220,14 +219,14 @@ Not applicable.
 
 ## Result Report
 
-- Task summary: published the exact protected production evidence contract for
-  `V1ROE-04`, verified production deploy freshness, and recorded the protected
-  auth blocker.
-- Files changed: this task file, partial evidence artifact, plus canonical
+- Task summary: closed the protected production verification gate for
+  `V1ROE-04`.
+- Files changed: this task file, closure evidence artifact, plus canonical
   queue/context status.
 - How tested: public build-info, public deploy smoke, protected runtime
-  freshness attempt, direct protected endpoint probes, repository guardrails.
-- What is incomplete: protected `DOGEUSDT` API/browser evidence.
-- Next steps: rerun protected verification with production auth token/cookie.
+  freshness, protected `DOGEUSDT` runtime API reads, strategy-config read,
+  public Binance mark-price cross-check, and headless dashboard DOM proof.
+- What is incomplete: no remaining `V1ROE-04` scope.
+- Next steps: continue remaining `V1EXCEL` authenticated manual/OPS evidence.
 - Decisions made: do not close `V1ROE-04` from local tests or inferred
-  evidence.
+  evidence; close only after protected production proof.
