@@ -360,17 +360,6 @@ export const listBotRuntimeSessionPositions = async (
           },
         ]
       : [];
-  const externalOwnedTradeWhere: Prisma.TradeWhereInput[] =
-    ownedExternalSymbols.length > 0 && botContext.walletId
-      ? [
-          {
-            botId: null,
-            walletId: botContext.walletId,
-            managementMode: 'BOT_MANAGED',
-            symbol: { in: ownedExternalSymbols },
-          },
-        ]
-      : [];
   const botExchange = inheritedExecutionContext.exchange;
   const botMarketType = inheritedExecutionContext.marketType;
   const resolveRuntimeCapitalSummary = async (usedMargin: number) => {
@@ -512,14 +501,20 @@ export const listBotRuntimeSessionPositions = async (
             lte: windowEnd,
           },
         },
-        ...externalOwnedTradeWhere.map((where) => ({
-          ...where,
-          symbol: { in: symbols.filter((symbol) => ownedExternalSymbols.includes(symbol)) },
-          executedAt: {
-            gte: session.startedAt,
-            lte: windowEnd,
-          },
-        })),
+        ...(botContext.walletId
+          ? [
+              {
+                botId: null,
+                walletId: botContext.walletId,
+                managementMode: 'BOT_MANAGED' as const,
+                symbol: { in: symbols },
+                executedAt: {
+                  gte: session.startedAt,
+                  lte: windowEnd,
+                },
+              },
+            ]
+          : []),
       ],
     }),
     listRuntimePositionLastPrices({

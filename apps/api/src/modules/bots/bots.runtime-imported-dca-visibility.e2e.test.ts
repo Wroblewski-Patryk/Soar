@@ -489,7 +489,7 @@ describe('Bots runtime imported DCA visibility', () => {
     const firstImportedRow = await prisma.position.create({
       data: {
         userId: ownerUser.id,
-        botId,
+        botId: null,
         walletId,
         strategyId,
         externalId: `eth:first:${Date.now()}`,
@@ -511,7 +511,7 @@ describe('Bots runtime imported DCA visibility', () => {
     const secondImportedRow = await prisma.position.create({
       data: {
         userId: ownerUser.id,
-        botId,
+        botId: null,
         walletId,
         strategyId,
         externalId: `eth:second:${Date.now()}`,

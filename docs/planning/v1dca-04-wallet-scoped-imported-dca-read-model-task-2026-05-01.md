@@ -31,8 +31,9 @@ destructive data migration.
 2. Allow supplemental DCA continuity to match legacy/imported rows with missing
    `botId` and/or `strategyId` when wallet, symbol, side, and lifecycle window
    match.
-3. Include wallet-scoped imported trades in the read query for owned external
-   symbols.
+3. Include wallet-scoped imported trades in the read query for visible runtime
+   symbols, even when old superseded position rows are no longer directly owned
+   by the bot after wallet migration.
 4. Preserve close/reopen boundaries so stale DCA does not cross into a fresh
    lifecycle.
 5. Prove with an ETH-like regression.
@@ -66,6 +67,9 @@ destructive data migration.
 - Manual checks:
   - The fix is read-model only; no schema/data migration is required for
     existing DCA trade rows.
+  - The focused regression now covers the dirty wallet-migration shape where
+    superseded position rows and DCA trade rows have `botId=null`, while the
+    current open position has the bot context.
 - Screenshots/logs: not applicable
 - High-risk checks:
   - The same-symbol close/reopen stale-DCA regression remains in the focused
