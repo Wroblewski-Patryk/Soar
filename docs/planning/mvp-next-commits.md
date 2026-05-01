@@ -22,7 +22,11 @@ Operational queue for one-task execution runs.
     rows matching bot/wallet/strategy/symbol/side/lifecycle window, and
     deduplicates by trade id. Validation PASS: focused imported DCA visibility
     API e2e, API typecheck, API build, repository guardrails. Post-deploy
-    protected production verification remains the release follow-up.
+    protected production verification PASS on deployed commit
+    `9460317c7d9409062ff2ddd284a179a60ac89f1a`: current DOGEUSDT `Positions`
+    row reports `dcaCount=1`, `tradesCount=2`, and `lastTradeAt` from the real
+    `BOT/DCA` trade. Evidence:
+    `docs/operations/v1dca-01-prod-verification-2026-05-01.md`.
 - [x] `WLEDGER-07..09 web-wallet-preview: expose ledger-backed wallet preview from wallet list`
   - 2026-04-30: Closed the wallet preview UI slice. Wallet rows now expose a shared `preview` table action linking to `/dashboard/wallets/:id/preview`, and the new preview page loads the ledger-backed performance summary, equity timeline, and cashflow events APIs. The UI separates contributed capital from bot PnL, keeps unclassified adjustments visible, handles loading/error/empty/partial/success states, and avoids ISO-currency assumptions for crypto symbols such as `USDT`. Validation PASS: focused wallet web tests, web typecheck, web build, route-reachable i18n audit, repository guardrails.
 - [x] `WLEDGER-06 api-read: expose wallet performance summary, timeline, and cashflow APIs`

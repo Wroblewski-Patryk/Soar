@@ -87,7 +87,8 @@ local position row after the DCA fill.
   - `pnpm --filter api run build` => PASS.
   - `pnpm run quality:guardrails` => PASS.
 - Manual checks: protected production API shape was inspected before the task;
-  post-deploy verification remains a release follow-up after commit deploys.
+  post-deploy verification PASS is recorded in
+  `docs/operations/v1dca-01-prod-verification-2026-05-01.md`.
 - Screenshots/logs: not applicable.
 - High-risk checks: money-impacting read path uses persisted trade ledger and
   fail-closed scoping.
@@ -152,9 +153,9 @@ local position row after the DCA fill.
   - `pnpm --filter api run typecheck`
   - `pnpm --filter api run build`
   - `pnpm run quality:guardrails`
-- What is incomplete: protected production post-deploy verification after
-  Coolify deploy.
-- Next steps: after deploy, re-check the protected `LIVE` DOGEUSDT runtime
-  positions endpoint and dashboard row to confirm `dcaCount=1`.
+- What is incomplete: no code or API evidence gap remains; browser screenshot
+  evidence is optional because the dashboard table consumes the verified
+  positions payload.
+- Next steps: continue the broader `V1EXCEL` confidence wave.
 - Decisions made: no architecture change; the fix reuses the persisted trade
   ledger and existing bots runtime positions read ownership.

@@ -118,8 +118,13 @@ Last updated: 2026-05-01
   and attaches only real persisted DCA rows that match
   bot/wallet/strategy/symbol/side/lifecycle window. Validation PASS: focused
   imported DCA visibility e2e, API typecheck, API build, repository guardrails.
-  Post-deploy protected production verification remains required to prove the
-  live DOGE row updates on the deployed candidate.
+  Post-deploy protected production verification also PASS on deployed commit
+  `9460317c7d9409062ff2ddd284a179a60ac89f1a`: web build-info confirms `main`,
+  public API health/ready pass, and the current protected DOGEUSDT `Positions`
+  row reports `dcaCount=1`, `tradesCount=2`, and `lastTradeAt` from the real
+  `BOT/DCA` trade despite the DCA trade remaining linked to the superseded
+  `positionId`. Evidence:
+  `docs/operations/v1dca-01-prod-verification-2026-05-01.md`.
 - 2026-04-30: closed `WLEDGER-07..09` as the wallet preview UI slice. Wallet list rows now have a shared preview table action that opens `/dashboard/wallets/:id/preview`, and that route renders ledger-backed wallet analytics: account/allocated balance, contributed capital, bot PnL, wallet delta, unclassified adjustment, equity timeline, and cashflow events. The UI keeps deposits/withdrawals separate from bot PnL, surfaces partial ledger completeness, and formats crypto amounts as number plus symbol instead of assuming ISO currency support.
 - 2026-04-30: closed `WLEDGER-06` as the first wallet analytics read API. Dashboard wallet routes now expose performance summary, equity timeline, and cashflow events from persisted snapshots/events, including current balance, contributed capital, bot PnL fields, fees/funding, unclassified adjustment, wallet delta percent, timeline markers, and completeness state.
 - 2026-04-30: closed `WLEDGER-05` as the first cashflow classification slice. Initial allocated LIVE wallet balance is now persisted as `INITIAL_BALANCE`, deterministic exchange-history entries can be mapped into deposit, withdrawal, transfer, fee, funding, realized-income, and unknown cashflow sources, and stable exchange event ids are upserted idempotently by `(walletId, exchangeEventId, source)`. Raw balance drift still does not become bot PnL.

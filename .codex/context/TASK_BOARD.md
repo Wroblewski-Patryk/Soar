@@ -30,8 +30,11 @@ Last updated: 2026-05-01
     attaches them to the current open lifecycle only when
     bot/wallet/strategy/symbol/side/window match. Validation PASS: focused
     imported DCA visibility e2e, API typecheck, API build, repository
-    guardrails. Post-deploy protected production verification remains the
-    release follow-up.
+    guardrails. Post-deploy protected production verification PASS on deployed
+    commit `9460317c7d9409062ff2ddd284a179a60ac89f1a`: current DOGEUSDT
+    `Positions` row reports `dcaCount=1`, `tradesCount=2`, and `lastTradeAt`
+    from the real `BOT/DCA` trade. Evidence:
+    `docs/operations/v1dca-01-prod-verification-2026-05-01.md`.
 
 - [x] `WLEDGER-07..09 web-wallet-preview: expose ledger-backed wallet preview from wallet list`
   - Scope: add a wallets table preview action and `/dashboard/wallets/:id/preview` surface for ledger-backed summary, equity timeline, and cashflow events.
