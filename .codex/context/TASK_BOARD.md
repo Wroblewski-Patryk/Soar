@@ -17,6 +17,19 @@ Last updated: 2026-05-01
 
 ## READY
 
+- [x] `V1DCA-05 fix(api-runtime-read): restore imported DCA across restarted sessions`
+  - Scope: after production deployed `15cddb5a`, authenticated ETHUSDT evidence
+    still showed `dcaCount=0` because the current runtime session started at
+    `2026-05-01T17:11:21.540Z`, while the open exchange-sync row was a
+    continuing lifecycle with DCA rows from the prior session. Runtime
+    `Positions` now fetches and reconstructs lifecycle DCA from the earlier of
+    bot creation and session start, keeps bot/wallet/symbol/management filters,
+    includes pre-wallet `walletId=null` bot-scoped legacy trades, and preserves
+    close/reopen boundaries. Validation PASS: focused imported DCA API e2e
+    (`6/6`), API typecheck, API build, repository guardrails, diff check.
+    Evidence:
+    `docs/planning/v1dca-05-restarted-session-imported-dca-read-model-task-2026-05-01.md`.
+
 - [x] `V1DCA-04 fix(api-runtime-read): restore wallet-scoped imported DCA in Positions`
   - Scope: after `V1DCA-03` proved the UI no longer hides monitoring content,
     ETH still showed `DCA=0` despite two real DCA adds. The remaining issue was

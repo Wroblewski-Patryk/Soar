@@ -100,6 +100,18 @@ Last updated: 2026-05-01
   of reconstructing it from `syncState` or audit logs.
 
 ## Product Decisions (Confirmed)
+- 2026-05-01: fixed `V1DCA-05` after authenticated production verification on
+  deployed `15cddb5a` proved the remaining `ETHUSDT DCA=0` regression was a
+  restarted-session read-model gap, not a missing migration. The current
+  runtime session started at `2026-05-01T17:11:21.540Z`, while the continuing
+  imported ETH lifecycle had DCA rows in the prior session at
+  `2026-05-01T03:20:19.592Z` and `2026-05-01T13:13:43.493Z`. Runtime
+  `Positions` now reconstructs open imported lifecycle DCA from the earlier of
+  bot creation and session start, includes legacy `LIVE` bot-scoped
+  `walletId=null` trades, and preserves close/reopen stale-DCA boundaries.
+  Validation PASS: focused imported DCA API e2e (`6/6`), API typecheck, API
+  build, repository guardrails, diff check. Evidence:
+  `docs/planning/v1dca-05-restarted-session-imported-dca-read-model-task-2026-05-01.md`.
 - 2026-05-01: fixed `V1DCA-04` after the operator confirmed ETH still showed
   `DCA=0` despite two real DCA adds after the web monitoring hotfix. The
   remaining issue was the API runtime positions read model: wallet-scoped

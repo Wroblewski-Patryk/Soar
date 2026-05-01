@@ -471,6 +471,8 @@ export const listBotRuntimeSessionPositions = async (
 
   const positionIds = positions.map((position) => position.id);
   const symbols = [...new Set(positions.map((position) => position.symbol))];
+  const lifecycleTradeWindowStart =
+    botContext.createdAt < session.startedAt ? botContext.createdAt : session.startedAt;
   const strategyIds = [
     ...new Set(
       positions
@@ -497,10 +499,24 @@ export const listBotRuntimeSessionPositions = async (
           managementMode: 'BOT_MANAGED',
           symbol: { in: symbols },
           executedAt: {
-            gte: session.startedAt,
+            gte: lifecycleTradeWindowStart,
             lte: windowEnd,
           },
         },
+        ...(inheritedExecutionContext.mode === 'LIVE' && botContext.walletId
+          ? [
+              {
+                botId,
+                walletId: null,
+                managementMode: 'BOT_MANAGED' as const,
+                symbol: { in: symbols },
+                executedAt: {
+                  gte: lifecycleTradeWindowStart,
+                  lte: windowEnd,
+                },
+              },
+            ]
+          : []),
         ...(botContext.walletId
           ? [
               {
@@ -509,7 +525,7 @@ export const listBotRuntimeSessionPositions = async (
                 managementMode: 'BOT_MANAGED' as const,
                 symbol: { in: symbols },
                 executedAt: {
-                  gte: session.startedAt,
+                  gte: lifecycleTradeWindowStart,
                   lte: windowEnd,
                 },
               },
@@ -642,7 +658,7 @@ export const listBotRuntimeSessionPositions = async (
       position,
       tradesByPosition,
       lifecycleTradesBySymbol,
-      session.startedAt,
+      lifecycleTradeWindowStart,
       windowEnd
     );
     const entrySide = position.side === 'LONG' ? 'BUY' : 'SELL';

@@ -8,6 +8,7 @@ export const getRuntimePositionBotContext = async (userId: string, botId: string
       id: true,
       apiKeyId: true,
       walletId: true,
+      createdAt: true,
       paperStartBalance: true,
       wallet: {
         select: {

@@ -52,6 +52,38 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-05-01 - Imported DCA continuity can cross runtime session restarts
+- Context: after wallet-scoped imported DCA recovery deployed, the production
+  `LIVE ETHUSDT` dashboard row still showed `dcaCount=0` even though the trade
+  ledger showed two DCA fills.
+- Symptom: the current runtime session started at
+  `2026-05-01T17:11:21.540Z`, while the continuing exchange-synced open
+  lifecycle had DCA rows at `2026-05-01T03:20:19.592Z` and
+  `2026-05-01T13:13:43.493Z`. The runtime `Positions` endpoint counted only
+  the current replacement row's `OPEN` trade and returned `tradesCount=1`.
+- Root cause: the read model fetched lifecycle trades from `session.startedAt`
+  and the continuity resolver used the same session start as its cutoff, even
+  though open imported positions can legitimately continue across bot runtime
+  restarts.
+- Guardrail: runtime `Positions` DCA reconstruction for open imported
+  lifecycles must use a bot-lifetime window bounded by strict
+  bot/wallet/symbol/management filters, then rely on the existing close/reopen
+  boundary to prevent stale carryover.
+- Preferred pattern:
+```text
+1) Fetch visible-symbol lifecycle trade rows from min(bot.createdAt, session.startedAt).
+2) Include legacy LIVE bot-scoped rows with walletId=null when wallet migration
+   may have happened after the trade.
+3) Feed the same widened window into continuity reconstruction.
+4) Keep same-symbol close/reopen stale-DCA regressions in the focused pack.
+```
+- Avoid: anchoring open-position DCA continuity only to the current runtime
+  session start or current exchange-sync replacement row's openedAt.
+- Evidence: 2026-05-01 `V1DCA-05`
+  (`runtimeSessionPositionsRead.service.ts`,
+  `runtimeSessionPositionsRead.repository.ts`,
+  `bots.runtime-imported-dca-visibility.e2e.test.ts`).
+
 ### 2026-05-01 - Go-live smoke migration guidance must name the actual failed migration
 - Context: V1 deploy-prep reran `pnpm run test:go-live:smoke` on a workstation
   with several historical local Prisma failed rows.

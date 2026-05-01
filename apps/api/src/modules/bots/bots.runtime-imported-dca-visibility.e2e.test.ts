@@ -661,6 +661,218 @@ describe('Bots runtime imported DCA visibility', () => {
     );
   });
 
+  it('keeps open DCA visible when a wallet-backed imported lifecycle spans a restarted runtime session', async () => {
+    const ownerEmail = 'bot-runtime-restarted-session-dca-owner@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
+
+    const strategyId = await createStrategy(
+      owner,
+      'Restarted Runtime Session DCA Strategy',
+      DCA_ADVANCED_STRATEGY_CONFIG
+    );
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+
+    const createRes = await owner
+      .post('/dashboard/bots')
+      .send(createPayload({ strategyId, marketGroupId }));
+    expect(createRes.status).toBe(201);
+    const botId = createRes.body.id as string;
+    const walletId = createRes.body.walletId as string;
+
+    await prisma.bot.update({
+      where: { id: botId },
+      data: {
+        createdAt: new Date('2026-05-01T00:00:00.000Z'),
+      },
+    });
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'LIVE',
+        status: 'RUNNING',
+        startedAt: new Date('2026-05-01T17:11:21.540Z'),
+        lastHeartbeatAt: new Date('2026-05-01T20:58:30.274Z'),
+      },
+    });
+
+    const firstImportedRow = await prisma.position.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        walletId,
+        strategyId,
+        externalId: `eth-restart:first:${Date.now()}`,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        continuityState: 'EXTERNAL_CLOSE_CONFIRMED',
+        symbol: 'ETHUSDT',
+        side: 'SHORT',
+        status: 'CLOSED',
+        entryPrice: 2258.59,
+        quantity: 0.009,
+        leverage: 15,
+        openedAt: new Date('2026-05-01T00:00:03.967Z'),
+        closedAt: new Date('2026-05-01T03:20:18.692Z'),
+        marginUsed: 1.36,
+      },
+    });
+    const secondImportedRow = await prisma.position.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        walletId,
+        strategyId,
+        externalId: `eth-restart:second:${Date.now()}`,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        continuityState: 'EXTERNAL_CLOSE_CONFIRMED',
+        symbol: 'ETHUSDT',
+        side: 'SHORT',
+        status: 'CLOSED',
+        entryPrice: 2272.485,
+        quantity: 0.018,
+        leverage: 15,
+        openedAt: new Date('2026-05-01T03:20:18.692Z'),
+        closedAt: new Date('2026-05-01T13:13:42.587Z'),
+        marginUsed: 2.73,
+      },
+    });
+    const currentPosition = await prisma.position.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        walletId,
+        strategyId,
+        externalId: `eth-restart:current:${Date.now()}`,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        continuityState: 'CONFIRMED',
+        symbol: 'ETHUSDT',
+        side: 'SHORT',
+        status: 'OPEN',
+        entryPrice: 2291.3725,
+        quantity: 0.036,
+        leverage: 15,
+        openedAt: new Date('2026-05-01T16:00:03.313Z'),
+        marginUsed: 5.47,
+      },
+    });
+
+    await prisma.trade.createMany({
+      data: [
+        {
+          userId: ownerUser.id,
+          botId,
+          walletId,
+          strategyId,
+          positionId: firstImportedRow.id,
+          symbol: 'ETHUSDT',
+          side: 'SELL',
+          lifecycleAction: 'OPEN',
+          price: 2258.59,
+          quantity: 0.009,
+          fee: 0,
+          realizedPnl: 0,
+          origin: 'EXCHANGE_SYNC',
+          managementMode: 'BOT_MANAGED',
+          executedAt: new Date('2026-05-01T00:00:03.967Z'),
+        },
+        {
+          userId: ownerUser.id,
+          botId,
+          walletId: null,
+          strategyId: null,
+          positionId: firstImportedRow.id,
+          symbol: 'ETHUSDT',
+          side: 'SELL',
+          lifecycleAction: 'DCA',
+          price: 2286.38,
+          quantity: 0.009,
+          fee: 0,
+          realizedPnl: 0,
+          origin: 'EXCHANGE_SYNC',
+          managementMode: 'BOT_MANAGED',
+          executedAt: new Date('2026-05-01T03:20:19.592Z'),
+        },
+        {
+          userId: ownerUser.id,
+          botId,
+          walletId,
+          strategyId,
+          positionId: secondImportedRow.id,
+          symbol: 'ETHUSDT',
+          side: 'SELL',
+          lifecycleAction: 'OPEN',
+          price: 2272.485,
+          quantity: 0.018,
+          fee: 0,
+          realizedPnl: 0,
+          origin: 'EXCHANGE_SYNC',
+          managementMode: 'BOT_MANAGED',
+          executedAt: new Date('2026-05-01T03:20:18.692Z'),
+        },
+        {
+          userId: ownerUser.id,
+          botId,
+          walletId,
+          strategyId: null,
+          positionId: secondImportedRow.id,
+          symbol: 'ETHUSDT',
+          side: 'SELL',
+          lifecycleAction: 'DCA',
+          price: 2310.26,
+          quantity: 0.018,
+          fee: 0,
+          realizedPnl: 0,
+          origin: 'EXCHANGE_SYNC',
+          managementMode: 'BOT_MANAGED',
+          executedAt: new Date('2026-05-01T13:13:43.493Z'),
+        },
+        {
+          userId: ownerUser.id,
+          botId,
+          walletId,
+          strategyId,
+          positionId: currentPosition.id,
+          symbol: 'ETHUSDT',
+          side: 'SELL',
+          lifecycleAction: 'OPEN',
+          price: 2291.3725,
+          quantity: 0.036,
+          fee: 0,
+          realizedPnl: 0,
+          origin: 'EXCHANGE_SYNC',
+          managementMode: 'BOT_MANAGED',
+          executedAt: new Date('2026-05-01T16:00:03.313Z'),
+        },
+      ],
+    });
+
+    const positionsRes = await owner.get(
+      `/dashboard/bots/${botId}/runtime-sessions/${session.id}/positions?symbol=ETHUSDT`
+    );
+
+    expect(positionsRes.status).toBe(200);
+    expect(positionsRes.body.openItems).toHaveLength(1);
+    expect(positionsRes.body.openItems[0]).toEqual(
+      expect.objectContaining({
+        id: currentPosition.id,
+        symbol: 'ETHUSDT',
+        dcaCount: 2,
+        dcaPlannedLevels: [-10, -20, -30],
+        dcaExecutedLevels: [-10, -20],
+        tradesCount: 3,
+        lastTradeAt: '2026-05-01T16:00:03.313Z',
+      })
+    );
+  });
+
   it('does not carry stale DCA into a same-symbol reopen after a legacy close without strategy id', async () => {
     const ownerEmail = 'bot-runtime-reopen-stale-dca-owner@example.com';
     const owner = await registerAndLogin(ownerEmail);
