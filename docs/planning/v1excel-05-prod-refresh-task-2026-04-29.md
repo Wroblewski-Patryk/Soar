@@ -52,6 +52,20 @@ Fresh production-status evidence separating:
 
 ## Validation Evidence
 - Tests:
+  - 2026-05-01 production public smoke PASS on current deployed runtime
+    candidate:
+    - API `/health`: `200`
+    - API `/ready`: `200`
+    - Web `/`: `200`
+  - 2026-05-01 protected production runtime freshness PASS:
+    - `workerHeartbeat`: PASS
+    - `marketData`: PASS
+    - `runtimeSignalLag`: PASS
+    - `runtimeSessions`: PASS, `runningCount=4`, `staleSessionIds=[]`
+  - 2026-05-01 protected production rollback guard PASS:
+    - `shouldRollback=false`
+    - `reasons=[]`
+    - `alerts=[]`
   - prod public smoke PASS
   - prod release gate dry-run executed
   - unauthenticated runtime freshness probe returned `401`
@@ -93,6 +107,13 @@ Fresh production-status evidence separating:
 This task moves production confidence from vague to exact: the current blocker
 is not generic uncertainty, but stale prod artifacts plus missing private-route
 auth for the protected proofs.
+
+2026-05-01 refresh: production protected auth is now available for the core
+runtime gates. Public production smoke, runtime freshness, and rollback guard
+are green on the current deployed runtime candidate. The task remains open for
+broader release evidence families: restore drill, rollback-proof artifact, RC
+status/sign-off/checklist rebuild, and remaining manual matrix scenarios.
+Evidence: `docs/operations/v1excel-05-prod-refresh-2026-05-01.md`.
 
 ## Production-Grade Required Contract
 
@@ -139,8 +160,13 @@ candidate.
   - runtime freshness `401`
   - rollback guard `401`-driven failure
 - What is incomplete:
-  - fresh authenticated prod evidence families
+  - fresh authenticated prod evidence families beyond public smoke, runtime
+    freshness, and rollback guard
+  - production restore-drill evidence
+  - production rollback-proof artifact with secret-safe command recording
+  - RC external gate status/sign-off/checklist rebuild
+  - remaining manual operator matrix items
 - Next steps:
-  - rerun prod release-gate, restore-drill, rollback-proof, RC, and runtime
-    diagnostics with real OPS credentials
-
+  - restore stage first, because `V1EXCEL-05` depends on `V1EXCEL-04`
+  - rerun prod restore-drill, rollback-proof, RC, and remaining diagnostics
+    with secret-safe artifact handling

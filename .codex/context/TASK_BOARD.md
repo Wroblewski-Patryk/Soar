@@ -27,6 +27,16 @@ Last updated: 2026-05-01
     `docs/operations/v1excel-04-stage-refresh-503-2026-05-01.md`. Next action
     is a Coolify stage service restore/redeploy, then public smoke and
     authenticated runtime/rollback gate rerun.
+- [ ] `V1EXCEL-05 ops(prod-refresh): finish broader production evidence families`
+  - Scope: production public smoke and protected runtime rollback gates are
+    green, but full production release evidence is not yet complete.
+  - 2026-05-01 refresh: executable production subset PASS on the current
+    deployed runtime candidate. Public smoke passed, protected runtime
+    freshness passed, and rollback guard returned `shouldRollback=false`, no
+    reasons, no alerts, `runningCount=4`. Evidence:
+    `docs/operations/v1excel-05-prod-refresh-2026-05-01.md`. Remaining work:
+    restore drill, secret-safe rollback-proof artifact, RC
+    status/sign-off/checklist rebuild, and remaining manual matrix items.
 
 - [x] `V1DCA-01 fix(api-runtime-read): preserve DCA visibility after exchange-sync position replacement`
   - Scope: keep dashboard runtime `Positions` DCA truth aligned with the
