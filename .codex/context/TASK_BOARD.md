@@ -17,7 +17,16 @@ Last updated: 2026-05-01
 
 ## READY
 
-- [ ] (none)
+- [ ] `V1EXCEL-04 ops(stage-refresh): restore stage target before authenticated gate rerun`
+  - Scope: stage release-gate evidence cannot proceed while the stage web/API
+    targets are unavailable.
+  - 2026-05-01 refresh: public stage smoke now fails before auth with `503 no
+    available server` on `https://stage-api.soar.luckysparrow.ch` and
+    `https://stage.soar.luckysparrow.ch` for health/ready/root/build-info.
+    Evidence:
+    `docs/operations/v1excel-04-stage-refresh-503-2026-05-01.md`. Next action
+    is a Coolify stage service restore/redeploy, then public smoke and
+    authenticated runtime/rollback gate rerun.
 
 - [x] `V1DCA-01 fix(api-runtime-read): preserve DCA visibility after exchange-sync position replacement`
   - Scope: keep dashboard runtime `Positions` DCA truth aligned with the

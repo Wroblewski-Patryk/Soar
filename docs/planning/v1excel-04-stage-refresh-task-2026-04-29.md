@@ -52,6 +52,12 @@ Fresh stage-status evidence separating:
 
 ## Validation Evidence
 - Tests:
+  - 2026-05-01 stage public smoke FAIL on the current check:
+    - `GET https://stage-api.soar.luckysparrow.ch/health` => `503`
+    - `GET https://stage-api.soar.luckysparrow.ch/ready` => `503`
+    - `GET https://stage.soar.luckysparrow.ch/` => `503`
+    - `GET https://stage.soar.luckysparrow.ch/api/build-info` => `503`
+    - response body: `no available server`
   - stage public smoke PASS
   - stage rehearsal dry-run executed
   - unauthenticated runtime freshness probe returned `401`
@@ -93,6 +99,12 @@ Fresh stage-status evidence separating:
 ## Notes
 This task proves the boundary cleanly: public stage is alive, private route
 confidence remains blocked by missing credentials.
+
+2026-05-01 refresh: the boundary changed. Stage public smoke now fails before
+auth with `503 no available server` on both `stage-api` and `stage` targets.
+Protected stage checks must wait until the Coolify stage web/API services are
+restored or redeployed. Evidence:
+`docs/operations/v1excel-04-stage-refresh-503-2026-05-01.md`.
 
 ## Production-Grade Required Contract
 
@@ -139,6 +151,10 @@ Refresh stage evidence honestly for the current candidate.
   - rollback guard `401`-driven failure
 - What is incomplete:
   - fully authenticated stage gate execution
+  - current stage public availability; the latest check returns `503 no
+    available server`
 - Next steps:
-  - rerun stage rehearsal with real OPS/private-route credentials
-
+  - restore/redeploy stage web/API services in Coolify
+  - rerun stage public smoke
+  - rerun stage rehearsal with real OPS/private-route credentials after public
+    smoke is green

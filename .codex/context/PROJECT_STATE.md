@@ -108,6 +108,12 @@ Last updated: 2026-05-01
   - 2026-05-01 follow-up: the legacy `BLOCKED` section in `docs/planning/mvp-next-commits.md` was synced from stale `none` to the same `V1ROE-04` protected-auth blocker. That entry is superseded by the later 2026-05-01 closure. Canonical sync task: `docs/planning/docsync-2026-05-01-mvp-blocked-section-task.md`.
 - 2026-05-01: closed `V1ROE-04` with authenticated protected production evidence. Production build-info reports `e6bdcfda35698dbb29513490a953e15b9a2c0469` on `main`, public deploy smoke and protected runtime freshness pass, protected `DOGEUSDT` runtime truth is exchange-synced, confirmed, actionable, and strategy-context resolved, and headless dashboard proof confirms the `live` bot `Positions` row matches the protected API shape. Evidence: `docs/operations/v1roe-04-prod-verification-closure-2026-05-01.md`. Remaining confidence work is the separate `V1EXCEL-03..06` authenticated manual/OPS evidence wave; `BOTMULTI-*` remains deferred until those gates are green.
 - 2026-05-01: completed the production slice of `V1EXCEL-06` runtime observability. Authenticated `ops:deploy:runtime-freshness` passed on production, and authenticated `ops:deploy:rollback-guard` returned `shouldRollback=false`, no reasons, no alerts, and `runningCount=4`. Evidence: `docs/operations/v1excel-runtime-observability-2026-04-29.md` and `docs/planning/v1excel-06-prod-runtime-observability-task-2026-05-01.md`. The broader `V1EXCEL` confidence wave remains open for manual matrix, stage evidence, broader prod release-gate evidence families, and stage runtime observability.
+- 2026-05-01: refreshed `V1EXCEL-04` stage public smoke and found a new,
+  earlier blocker than protected auth. Stage web/API currently return `503 no
+  available server` for public health/ready/root and web build-info, so
+  authenticated stage release gates cannot be meaningfully rerun until the
+  Coolify stage services are restored or redeployed. Evidence:
+  `docs/operations/v1excel-04-stage-refresh-503-2026-05-01.md`.
 - 2026-05-01: closed `V1DCA-01` for runtime `Positions` DCA visibility after
   exchange-sync position replacement. Protected production inspection showed
   the `LIVE` DOGEUSDT DCA fill existed as a persisted `BOT` `DCA` trade, but it
