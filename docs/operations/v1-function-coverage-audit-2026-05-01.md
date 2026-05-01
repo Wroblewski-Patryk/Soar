@@ -19,6 +19,8 @@ broader top-level function inventory.
 - CSV source: `docs/operations/v1-function-coverage-matrix-2026-05-01.csv`
 - Workbook artifact:
   `outputs/v1-function-coverage-audit-2026-05-01/Soar V1 Function Coverage Audit 2026-05-01.xlsx`
+- Implementation readiness audit:
+  `docs/operations/v1-function-implementation-readiness-audit-2026-05-01.md`
 
 The CSV is repository-tracked so the matrix can be reviewed in diffs. The XLSX
 is the operator-friendly workbook for filtering and scanning.
@@ -115,6 +117,12 @@ This does not mean every low-level parameter, UI state, or edge case is fully
 enumerated. It means the main functional surfaces are now present in the
 ledger, so the next audit can work row-by-row instead of rediscovering module
 scope from scratch.
+
+The follow-up readiness audit classified the 79 rows as `READY=22`,
+`IMPLEMENTED_NEEDS_EVIDENCE=43`, `IMPLEMENTED_NOT_VERIFIED=11`,
+`V1_BLOCKER=3`, and `REQUIRES_IMPLEMENTATION_REVIEW=0`. In practical terms,
+the current ledger does not show a broad missing implementation area; V1 is
+blocked by release-gate/ops issues and production-confidence gaps.
 
 ## Operating Rule
 

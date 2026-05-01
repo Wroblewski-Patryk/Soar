@@ -115,6 +115,16 @@ Last updated: 2026-05-01
   `docs/planning/v1cover-02-code-scan-function-ledger-expansion-task-2026-05-01.md`,
   `docs/operations/v1-function-coverage-audit-2026-05-01.md`,
   `docs/operations/v1-function-coverage-matrix-2026-05-01.csv`.
+- 2026-05-01: classified the expanded V1 function ledger by implementation
+  readiness. Current split: `READY=22`,
+  `IMPLEMENTED_NEEDS_EVIDENCE=43`, `IMPLEMENTED_NOT_VERIFIED=11`,
+  `V1_BLOCKER=3`, `REQUIRES_IMPLEMENTATION_REVIEW=0`. The current repository
+  truth is that the ledger does not expose a broad missing implementation
+  area; remaining V1 closure should prioritize release-gate blockers,
+  live-money production evidence, manual operator matrix execution, targeted
+  UI/route smokes, and explicit launch-scope/defer decisions. Evidence:
+  `docs/planning/v1cover-03-function-implementation-readiness-task-2026-05-01.md`,
+  `docs/operations/v1-function-implementation-readiness-audit-2026-05-01.md`.
 - 2026-05-01: executed `V1FINAL-01` after production deployed
   `6a8ded9333eabced5e8461362e9e9237a9bf4e4d` on `main`. Gate 0 is now green:
   public and authenticated production smoke passed, protected runtime freshness

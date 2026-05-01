@@ -32,6 +32,16 @@ Operational queue for one-task execution runs.
     `docs/planning/v1cover-02-code-scan-function-ledger-expansion-task-2026-05-01.md`,
     `docs/operations/v1-function-coverage-audit-2026-05-01.md`,
     `docs/operations/v1-function-coverage-matrix-2026-05-01.csv`.
+- [x] `V1COVER-03 qa(release): classify function ledger by implementation readiness`
+  - 2026-05-01: Closed readiness classification across all 79 ledger rows.
+    Current split: `READY=22`, `IMPLEMENTED_NEEDS_EVIDENCE=43`,
+    `IMPLEMENTED_NOT_VERIFIED=11`, `V1_BLOCKER=3`,
+    `REQUIRES_IMPLEMENTATION_REVIEW=0`. The next V1 execution waves are:
+    `V1GATE-A` for release blockers, `V1MONEY-A` for live-money automation
+    proof, `V1MANUAL-A` for operator matrix, `V1UX-A` for P1 operational UI
+    smokes, and `V1SCOPE-A` for defer/launch-scope decisions. Evidence:
+    `docs/planning/v1cover-03-function-implementation-readiness-task-2026-05-01.md`,
+    `docs/operations/v1-function-implementation-readiness-audit-2026-05-01.md`.
 - [ ] `V1FINAL-01 qa(prod): verify deployed DOGE runtime hardening and run final V1 gates`
   - 2026-05-01 preflight: production public smoke is green, but build-info
     still reports `c081f224134fedb65de2ecad716274b92593c373`, while repository
@@ -83,6 +93,16 @@ Operational queue for one-task execution runs.
     artifacts. The sign-off record itself remains `BLOCKED` because approver
     fields are blank. The fresh prod restore drill artifact is `FAIL` until
     prod DB container settings or VPS/Coolify execution context are available.
+- [x] `WPREVIEW-10 fix(web-wallet-preview): fail closed on unavailable ledger analytics`
+  - 2026-05-01: Closed a local V1 wallet-preview truth slice after rechecking
+    the active queue and confirming external `NOW` tasks are blocked on stage
+    availability or protected production access. The accepted wallet ledger
+    contract requires `UNAVAILABLE` completeness to show an empty/error state
+    instead of rendering analytics as if they were real. `WalletPreviewPanel`
+    now returns early for `UNAVAILABLE`, preserving only safe controls plus the
+    empty state and hiding summary cards, equity timeline, and cashflow events.
+    Added focused regression coverage and synced wallet module docs. Evidence:
+    `docs/planning/wpreview-10-wallet-preview-unavailable-fail-closed-task-2026-05-01.md`.
 - [x] `V1DCA-01 fix(api-runtime-read): preserve DCA visibility after exchange-sync position replacement`
   - 2026-05-01: Closed after protected production inspection showed the `LIVE`
     DOGEUSDT DCA fill existed in the trade ledger but the current dashboard

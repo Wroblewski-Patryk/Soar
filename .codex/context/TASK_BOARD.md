@@ -44,6 +44,18 @@ Last updated: 2026-05-01
     `docs/operations/v1-function-coverage-audit-2026-05-01.md`,
     `docs/operations/v1-function-coverage-matrix-2026-05-01.csv`.
 
+- [x] `V1COVER-03 qa(release): classify function ledger by implementation readiness`
+  - Scope: classify all 79 ledger rows into implementation-readiness buckets
+    so remaining V1 work can be planned as blockers, evidence tasks, fixes, or
+    launch-scope decisions.
+  - 2026-05-01: Closed with readiness split `READY=22`,
+    `IMPLEMENTED_NEEDS_EVIDENCE=43`, `IMPLEMENTED_NOT_VERIFIED=11`,
+    `V1_BLOCKER=3`, `REQUIRES_IMPLEMENTATION_REVIEW=0`. Recommended follow-up
+    waves are `V1GATE-A`, `V1MONEY-A`, `V1MANUAL-A`, `V1UX-A`, and
+    `V1SCOPE-A`. Evidence:
+    `docs/planning/v1cover-03-function-implementation-readiness-task-2026-05-01.md`,
+    `docs/operations/v1-function-implementation-readiness-audit-2026-05-01.md`.
+
 - [ ] `V1FINAL-01 qa(prod): verify deployed DOGE runtime hardening and run final V1 gates`
   - Scope: execute the final V1 gate structure after production deploys
     `fba29a96` or later. Gate order: deploy freshness, DOGE close/reopen
