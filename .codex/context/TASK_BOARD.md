@@ -19,6 +19,20 @@ Last updated: 2026-05-01
 
 - [ ] (none)
 
+- [x] `V1DCA-01 fix(api-runtime-read): preserve DCA visibility after exchange-sync position replacement`
+  - Scope: keep dashboard runtime `Positions` DCA truth aligned with the
+    persisted trade ledger when exchange sync replaces a local open position
+    row after a DCA fill.
+  - 2026-05-01: Closed after protected production inspection showed DOGEUSDT
+    had a real `BOT` `DCA` trade linked to a superseded `positionId`, while the
+    current `EXCHANGE_SYNC` open row showed `dcaCount=0`. Runtime positions
+    read now includes strictly scoped same-session DCA candidate trades and
+    attaches them to the current open lifecycle only when
+    bot/wallet/strategy/symbol/side/window match. Validation PASS: focused
+    imported DCA visibility e2e, API typecheck, API build, repository
+    guardrails. Post-deploy protected production verification remains the
+    release follow-up.
+
 - [x] `WLEDGER-07..09 web-wallet-preview: expose ledger-backed wallet preview from wallet list`
   - Scope: add a wallets table preview action and `/dashboard/wallets/:id/preview` surface for ledger-backed summary, equity timeline, and cashflow events.
   - 2026-04-30: Closed by wiring the shared `preview` table action to a new wallet preview route and rendering performance summary, contributed capital, bot PnL, wallet delta, unclassified adjustment, equity timeline, and cashflow events from the prepared wallet analytics APIs. The UI uses existing dashboard view states/table/card patterns, keeps partial ledger state visible, and formats crypto amounts safely as number plus symbol. Validation PASS: focused wallet web tests, web typecheck, web build, route-reachable i18n audit, repository guardrails.

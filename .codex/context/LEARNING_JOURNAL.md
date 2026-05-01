@@ -47,6 +47,38 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-05-01 - DCA visibility must survive exchange-sync position replacement
+- Context: protected production inspection of the selected `LIVE` DOGEUSDT bot
+  showed a real DCA fill in the trade ledger while the dashboard runtime
+  `Positions` row still rendered `dcaCount=0`.
+- Symptom: `/dashboard/bots/:botId/runtime-sessions/:sessionId/trades`
+  returned a `BOT` trade with `lifecycleAction=DCA`, but
+  `/dashboard/bots/:botId/runtime-sessions/:sessionId/positions` counted only
+  the current position row's direct `positionId` trades, so the DCA disappeared
+  from the current open row after exchange sync replaced the local position id.
+- Root cause: the runtime positions read model keyed DCA visibility strictly by
+  current `positionId`, even though reconciliation can supersede a local
+  exchange-synced position row after an add fill while the canonical DCA trade
+  remains linked to the previous lifecycle row.
+- Guardrail: runtime position DCA reads must combine direct position trades
+  with strictly scoped persisted DCA candidates from the same session lifecycle
+  identity.
+- Preferred pattern:
+```text
+1) Keep persisted Trade rows as the only source for supplemental DCA display.
+2) Require bot/wallet/strategy/symbol/side and lifecycle-window match.
+3) Deduplicate by trade id before computing counts and timestamps.
+4) Lock the regression with a current-position/new-id plus old-position-DCA
+   e2e scenario.
+```
+- Avoid: broad user+symbol trade matching, display-only DCA counters, or
+  assuming the current exchange-synced position id always owns every add-leg
+  trade after reconciliation.
+- Evidence: 2026-05-01 `V1DCA-01`
+  (`runtimeSessionPositionsRead.service.ts`,
+  `runtimeSessionPositionsRead.repository.ts`,
+  `bots.runtime-imported-dca-visibility.e2e.test.ts`).
+
 ### 2026-05-01 - OPS scripts use command-specific auth environment prefixes
 - Context: `V1EXCEL-06-PROD` needed authenticated production runtime freshness
   and rollback guard evidence without writing secrets to disk.

@@ -46,6 +46,8 @@ import { hasMaterialCanonicalBasisDrift } from '../engine/runtimePositionAutomat
 type RuntimeTakeoverStatus = 'OWNED_AND_MANAGED' | 'UNOWNED' | 'AMBIGUOUS' | 'MANUAL_ONLY';
 
 type RuntimeOpenOrderRow = Awaited<ReturnType<typeof listRuntimeOpenOrders>>[number];
+type RuntimeManagedPositionRow = Awaited<ReturnType<typeof listRuntimeManagedPositions>>[number];
+type RuntimePositionTradeRow = Awaited<ReturnType<typeof listRuntimePositionTradeRows>>[number];
 
 const resolveRuntimeTakeoverStatus = (input: {
   origin: string;
@@ -124,6 +126,48 @@ const resolveRuntimePositionDcaCount = (input: {
       ? Math.max(0, Math.trunc(input.runtimeStateCurrentAdds))
       : 0;
   return Math.max(inferredFromEntryLegs, inferredFromTrades, inferredFromRuntimeState);
+};
+
+const sortRuntimePositionTrades = (trades: RuntimePositionTradeRow[]) =>
+  [...trades].sort((left, right) => left.executedAt.getTime() - right.executedAt.getTime());
+
+const nullableIdentityMatches = (left: string | null, right: string | null) =>
+  !left || !right || left === right;
+
+const isSupplementalDcaTradeForOpenPosition = (
+  position: RuntimeManagedPositionRow,
+  trade: RuntimePositionTradeRow,
+  entrySide: 'BUY' | 'SELL',
+  windowEnd: Date
+) => {
+  if (position.status !== 'OPEN') return false;
+  if (trade.positionId === position.id) return false;
+  if (trade.lifecycleAction !== 'DCA') return false;
+  if (trade.symbol !== position.symbol) return false;
+  if (trade.side !== entrySide) return false;
+  if (trade.executedAt < position.openedAt || trade.executedAt > windowEnd) return false;
+  if (!nullableIdentityMatches(position.botId, trade.botId)) return false;
+  if (!nullableIdentityMatches(position.walletId, trade.walletId)) return false;
+  if (!position.strategyId || trade.strategyId !== position.strategyId) return false;
+  return true;
+};
+
+const resolveRuntimePositionTrades = (
+  position: RuntimeManagedPositionRow,
+  tradesByPosition: Map<string, RuntimePositionTradeRow[]>,
+  dcaCandidatesBySymbolSide: Map<string, RuntimePositionTradeRow[]>,
+  windowEnd: Date
+) => {
+  const entrySide = position.side === 'LONG' ? 'BUY' : 'SELL';
+  const directTrades = tradesByPosition.get(position.id) ?? [];
+  const supplementalDcaTrades = (dcaCandidatesBySymbolSide.get(`${position.symbol}:${entrySide}`) ?? []).filter(
+    (trade) => isSupplementalDcaTradeForOpenPosition(position, trade, entrySide, windowEnd)
+  );
+  const byTradeId = new Map<string, RuntimePositionTradeRow>();
+  for (const trade of [...directTrades, ...supplementalDcaTrades]) {
+    byTradeId.set(trade.id, trade);
+  }
+  return sortRuntimePositionTrades([...byTradeId.values()]);
 };
 
 const selectRuntimeDisplayState = (input: {
@@ -362,7 +406,21 @@ export const listBotRuntimeSessionPositions = async (
   const [trades, lastSymbolPrices, openOrders, strategyConfigs] = await Promise.all([
     listRuntimePositionTradeRows({
       userId,
-      positionId: { in: positionIds },
+      OR: [
+        {
+          positionId: { in: positionIds },
+        },
+        {
+          ...botScopedTradeWhere,
+          managementMode: 'BOT_MANAGED',
+          symbol: { in: symbols },
+          lifecycleAction: 'DCA',
+          executedAt: {
+            gte: session.startedAt,
+            lte: windowEnd,
+          },
+        },
+      ],
     }),
     listRuntimePositionLastPrices({
       sessionId,
@@ -408,11 +466,18 @@ export const listBotRuntimeSessionPositions = async (
   }
 
   const tradesByPosition = new Map<string, typeof trades>();
+  const dcaCandidatesBySymbolSide = new Map<string, typeof trades>();
   for (const trade of trades) {
-    if (!trade.positionId) continue;
-    const bucket = tradesByPosition.get(trade.positionId) ?? [];
-    bucket.push(trade);
-    tradesByPosition.set(trade.positionId, bucket);
+    if (trade.positionId) {
+      const bucket = tradesByPosition.get(trade.positionId) ?? [];
+      bucket.push(trade);
+      tradesByPosition.set(trade.positionId, bucket);
+    }
+    if (trade.lifecycleAction === 'DCA') {
+      const bucket = dcaCandidatesBySymbolSide.get(`${trade.symbol}:${trade.side}`) ?? [];
+      bucket.push(trade);
+      dcaCandidatesBySymbolSide.set(`${trade.symbol}:${trade.side}`, bucket);
+    }
   }
 
   const runtimeStatPriceBySymbol = new Map<
@@ -478,7 +543,12 @@ export const listBotRuntimeSessionPositions = async (
   cleanupStaleRuntimePositionSerializationState(nowTs);
 
   const mappedPositions = positions.map((position) => {
-    const positionTrades = tradesByPosition.get(position.id) ?? [];
+    const positionTrades = resolveRuntimePositionTrades(
+      position,
+      tradesByPosition,
+      dcaCandidatesBySymbolSide,
+      windowEnd
+    );
     const entrySide = position.side === 'LONG' ? 'BUY' : 'SELL';
     const entryLegs = positionTrades.filter((trade) => trade.side === entrySide);
     const exitLegs = positionTrades.filter((trade) => trade.side !== entrySide);

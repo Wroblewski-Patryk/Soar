@@ -12,6 +12,17 @@ Operational queue for one-task execution runs.
   blockers are `V1EXCEL-03..06` authenticated manual operator and OPS evidence.
   `BOTMULTI-*` remains in `PIPELINE` until those post-V1 confidence gates are
   green.
+- [x] `V1DCA-01 fix(api-runtime-read): preserve DCA visibility after exchange-sync position replacement`
+  - 2026-05-01: Closed after protected production inspection showed the `LIVE`
+    DOGEUSDT DCA fill existed in the trade ledger but the current dashboard
+    `Positions` row still showed `dcaCount=0` because exchange sync had
+    replaced the local position row and the DCA trade remained linked to the
+    superseded `positionId`. Runtime positions read now fetches direct position
+    trades plus scoped same-session DCA candidates, attaches only persisted DCA
+    rows matching bot/wallet/strategy/symbol/side/lifecycle window, and
+    deduplicates by trade id. Validation PASS: focused imported DCA visibility
+    API e2e, API typecheck, API build, repository guardrails. Post-deploy
+    protected production verification remains the release follow-up.
 - [x] `WLEDGER-07..09 web-wallet-preview: expose ledger-backed wallet preview from wallet list`
   - 2026-04-30: Closed the wallet preview UI slice. Wallet rows now expose a shared `preview` table action linking to `/dashboard/wallets/:id/preview`, and the new preview page loads the ledger-backed performance summary, equity timeline, and cashflow events APIs. The UI separates contributed capital from bot PnL, keeps unclassified adjustments visible, handles loading/error/empty/partial/success states, and avoids ISO-currency assumptions for crypto symbols such as `USDT`. Validation PASS: focused wallet web tests, web typecheck, web build, route-reachable i18n audit, repository guardrails.
 - [x] `WLEDGER-06 api-read: expose wallet performance summary, timeline, and cashflow APIs`
