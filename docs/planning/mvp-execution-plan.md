@@ -224,6 +224,14 @@ Rule: fix/cleanup/update first, then feature delivery.
 - 2026-04-29: Extended the same `V1EXCEL-03` production verification into the real authenticated dashboard UI without executing new market actions. Browser automation proved that the selected-bot switch `LIVE -> PAPER` works, `Positions` shows `No open positions.`, wallet summary reflects the post-close capital truth (`Delta from start 1.25% | 12.48 USDT`, `Portfolio 1,012.48 USDT`), and `History` shows the expected top row `Close / Manual / User in app` for `1000000MOGUSDT`. This further narrows the remaining gap away from `PAPER` visibility drift and toward browser-side action clicks only if required plus the still-missing `LIVE` authority scenarios.
 - 2026-05-01: Completed the production-only runtime observability slice for `V1EXCEL-06`. Authenticated production `ops:deploy:runtime-freshness` passed and authenticated production `ops:deploy:rollback-guard` returned `shouldRollback=false` with no alerts. This removes the production protected-route blocker for runtime observability, but the full `V1EXCEL` confidence wave remains open for stage observability, stage/prod release evidence families, and the manual matrix.
 - 2026-05-01: Refreshed `V1EXCEL-04` stage public smoke on the current queue pass. Stage is now blocked earlier than protected OPS auth: `stage-api` and `stage` both return `503 no available server` for public health/ready/root and web build-info preflight. Evidence: `docs/operations/v1excel-04-stage-refresh-503-2026-05-01.md`. The next required action is to restore or redeploy the stage services in Coolify before rerunning authenticated stage gates.
+- 2026-05-01: Followed up `V1EXCEL-04` after protected operator credentials
+  became available. Stage still returns `503 no available server`; Coolify web
+  login succeeds for the provided operator account, but the visible
+  project/environment does not expose Soar resources and Coolify API resource
+  reads return `401` without a bearer token. Automated stage restore and
+  production deploy trigger remain blocked on proper Coolify resource/API
+  access. Evidence:
+  `docs/operations/v1excel-04-stage-coolify-access-refresh-2026-05-01.md`.
 - 2026-05-01: Refreshed the executable production subset of `V1EXCEL-05`.
   Production public smoke, protected runtime freshness, and rollback guard are
   green on the current deployed runtime candidate (`shouldRollback=false`,

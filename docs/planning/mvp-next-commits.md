@@ -19,6 +19,13 @@ Operational queue for one-task execution runs.
     `docs/operations/v1excel-04-stage-refresh-503-2026-05-01.md`. Next action:
     restore or redeploy stage web/API services in Coolify, then rerun public
     smoke plus authenticated runtime/rollback gates.
+  - 2026-05-01 follow-up: stage still returns `503 no available server`.
+    Coolify web login succeeds for the provided operator account, but the
+    visible project/environment does not expose Soar resources and Coolify API
+    endpoints require a bearer token (`401`). Automated restore/deploy remains
+    blocked until the account has access to the real Soar resources or an API
+    token is provided. Evidence:
+    `docs/operations/v1excel-04-stage-coolify-access-refresh-2026-05-01.md`.
 - [ ] `V1EXCEL-05 ops(prod-refresh): finish broader production evidence families`
   - 2026-05-01 refresh: executable production subset is green on the current
     deployed runtime candidate. Public smoke PASS, protected runtime freshness

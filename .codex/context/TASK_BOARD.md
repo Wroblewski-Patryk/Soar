@@ -27,6 +27,13 @@ Last updated: 2026-05-01
     `docs/operations/v1excel-04-stage-refresh-503-2026-05-01.md`. Next action
     is a Coolify stage service restore/redeploy, then public smoke and
     authenticated runtime/rollback gate rerun.
+  - 2026-05-01 follow-up: stage public smoke still fails with the same `503 no
+    available server` response. Coolify web login works for the provided
+    operator account, but the visible project/environment does not expose Soar
+    resources and Coolify API reads return `401` without a bearer token, so
+    automated restore/deploy remains blocked on proper Coolify resource/API
+    access. Evidence:
+    `docs/operations/v1excel-04-stage-coolify-access-refresh-2026-05-01.md`.
 - [ ] `V1EXCEL-05 ops(prod-refresh): finish broader production evidence families`
   - Scope: production public smoke and protected runtime rollback gates are
     green, but full production release evidence is not yet complete.

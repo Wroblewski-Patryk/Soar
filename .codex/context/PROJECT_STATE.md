@@ -114,6 +114,12 @@ Last updated: 2026-05-01
   authenticated stage release gates cannot be meaningfully rerun until the
   Coolify stage services are restored or redeployed. Evidence:
   `docs/operations/v1excel-04-stage-refresh-503-2026-05-01.md`.
+  - 2026-05-01 follow-up: stage still returns `503 no available server`.
+    Coolify web login works for the provided operator account, but the visible
+    project/environment does not expose Soar resources and Coolify API resource
+    reads return `401` without a bearer token. Automated restore/deploy remains
+    blocked on proper Coolify resource/API access. Evidence:
+    `docs/operations/v1excel-04-stage-coolify-access-refresh-2026-05-01.md`.
 - 2026-05-01: refreshed the executable production subset of `V1EXCEL-05`.
   Production public smoke, protected runtime freshness, and rollback guard are
   green on the current deployed runtime candidate: `shouldRollback=false`, no
