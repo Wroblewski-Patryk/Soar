@@ -107,6 +107,35 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
   `runtimeSessionPositionsRead.repository.ts`,
   `bots.runtime-imported-dca-visibility.e2e.test.ts`).
 
+### 2026-05-01 - Multi-level DCA visibility must follow lifecycle continuity, not the latest replacement row
+- Context: a follow-up protected DOGEUSDT inspection showed the active runtime
+  session summary and trade ledger contained two persisted `BOT/DCA` fills,
+  but the current exchange-sync replacement row could still imply only one
+  executed DCA level.
+- Symptom: `V1DCA-01` correctly counted DCA rows linked to a superseded
+  `positionId` only when they occurred after the current replacement row's
+  `openedAt`. When exchange sync replaced the local row twice, the older DCA
+  fell before the newest replacement `openedAt` and disappeared from the
+  current `Positions` DCA count.
+- Root cause: the read-model lifecycle window was still anchored to the latest
+  replacement row rather than to the uninterrupted same-session lifecycle.
+- Guardrail: for open imported managed positions, derive supplemental DCA
+  continuity from scoped persisted `OPEN/DCA/CLOSE` rows. Start after the last
+  same-identity exit and prefer the first same-identity open anchor in that
+  continuity segment.
+- Preferred pattern:
+```text
+1) Fetch same-session persisted lifecycle trade rows for the visible symbols.
+2) Keep supplemental DCA matching constrained to bot/wallet/strategy/symbol/side.
+3) Determine the continuity segment from same-identity exits and opens.
+4) Count only persisted DCA rows inside that segment, deduped by trade id.
+```
+- Avoid: using only the current exchange-sync replacement row's `openedAt` as
+  the lifecycle start, or broad-counting all same-symbol DCA rows in a session.
+- Evidence: 2026-05-01 `V1DCA-02`
+  (`runtimeSessionPositionsRead.service.ts`,
+  `bots.runtime-imported-dca-visibility.e2e.test.ts`).
+
 ### 2026-05-01 - OPS scripts use command-specific auth environment prefixes
 - Context: `V1EXCEL-06-PROD` needed authenticated production runtime freshness
   and rollback guard evidence without writing secrets to disk.

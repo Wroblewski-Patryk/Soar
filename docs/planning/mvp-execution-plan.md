@@ -170,6 +170,29 @@ Rule: fix/cleanup/update first, then feature delivery.
 - 2026-04-30: A follow-up protected production audit then exposed one deeper ownership-parity seam behind the still dormant imported `DOGEUSDT` row. The runtime read model could already treat the imported row as owned/actionable, but `runtimePositionAutomation` and bot-scope signal-loop open-position counting still keyed directly on persisted `position.botId`, which can remain `null` for canonically owned imported `EXCHANGE_SYNC` rows. Closed `V1OWN-01` by reusing the external-position ownership classifier in both seams, so imported owned rows can hydrate into runtime automation and bot-scope counts without waiting for eager DB rebind. Closure evidence: `docs/operations/v1own-imported-live-runtime-ownership-closure-2026-04-30.md`.
 - 2026-05-01: Closed `V1ROE-04` with authenticated protected production evidence on the active `LIVE DOGEUSDT` flow. Production build-info reports `e6bdcfda35698dbb29513490a953e15b9a2c0469` on `main`, public deploy smoke and protected runtime freshness pass, the protected runtime row is `IN_SYNC`, `CONFIRMED`, `actionable=true`, and strategy-context resolved, and headless dashboard proof confirms the `Positions` row renders matching operator truth. Evidence: `docs/operations/v1roe-04-prod-verification-closure-2026-05-01.md`.
 
+## Phase V1DCA-2026-05-01 - Runtime Positions DCA Visibility After Exchange-Sync Replacement (Closed 2026-05-01)
+- [x] `V1DCA-01 fix(api-runtime-read): preserve DCA visibility after exchange-sync position replacement`
+- [x] `V1DCA-02 fix(api-runtime-read): preserve multi-level DCA visibility across repeated exchange-sync replacements`
+
+### Progress Log (Phase V1DCA-2026-05-01 - Runtime Positions DCA Visibility After Exchange-Sync Replacement)
+- 2026-05-01: Closed `V1DCA-01` after protected production DOGEUSDT inspection
+  showed one persisted `BOT/DCA` row linked to a superseded local `positionId`
+  while the current exchange-sync `Positions` row showed no DCA. Runtime
+  positions read now attaches strictly scoped same-session persisted DCA rows
+  to the current open lifecycle and post-deploy verification proved
+  `dcaCount=1` on the protected row. Evidence:
+  `docs/operations/v1dca-01-prod-verification-2026-05-01.md`.
+- 2026-05-01: Closed `V1DCA-02` after the operator reported the current
+  DOGEUSDT lifecycle should have two DCA fills. Protected ledger inspection
+  confirmed two persisted `BOT/DCA` rows across consecutive exchange-sync
+  replacement ids. Runtime positions read now resolves same-session continuity
+  from persisted `OPEN/DCA/CLOSE` rows and starts supplemental DCA matching
+  from the first same-identity open after the last exit, preserving multiple
+  DCA levels across replacement chains. Validation PASS: focused imported DCA
+  visibility e2e (`3/3`), lint, API typecheck, API build, repository guardrails.
+  Task packet:
+  `docs/planning/v1dca-02-multi-replacement-dca-count-task-2026-05-01.md`.
+
 ## Phase V1AUTO-2026-04-30 - Imported LIVE Runtime-State Rebase Hardening (Closed 2026-04-30)
 - [x] `V1AUTO-01 fix(api-runtime): rebase stale imported runtime state to canonical exchange-synced basis`
 - [x] `V1AUTO-02 test(api-runtime): lock imported same-row basis drift against stale DCA state reuse`

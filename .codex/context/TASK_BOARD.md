@@ -56,6 +56,20 @@ Last updated: 2026-05-01
     from the real `BOT/DCA` trade. Evidence:
     `docs/operations/v1dca-01-prod-verification-2026-05-01.md`.
 
+- [x] `V1DCA-02 fix(api-runtime-read): preserve multi-level DCA visibility across repeated exchange-sync replacements`
+  - Scope: keep runtime `Positions` DCA levels aligned with persisted trade
+    truth when one imported managed position is represented by several
+    consecutive exchange-sync replacement rows.
+  - 2026-05-01: Closed after protected DOGEUSDT ledger inspection showed two
+    real persisted `BOT/DCA` fills in the active session while the existing
+    read-model window could still start at only the latest replacement row's
+    `openedAt`. Runtime positions read now resolves same-session continuity
+    from scoped persisted `OPEN/DCA/CLOSE` rows and counts supplemental DCA
+    fills from the first same-identity open after the last exit. Validation
+    PASS: focused imported DCA visibility e2e (`3/3`), lint, API typecheck,
+    API build, repository guardrails. Task packet:
+    `docs/planning/v1dca-02-multi-replacement-dca-count-task-2026-05-01.md`.
+
 - [x] `WLEDGER-07..09 web-wallet-preview: expose ledger-backed wallet preview from wallet list`
   - Scope: add a wallets table preview action and `/dashboard/wallets/:id/preview` surface for ledger-backed summary, equity timeline, and cashflow events.
   - 2026-04-30: Closed by wiring the shared `preview` table action to a new wallet preview route and rendering performance summary, contributed capital, bot PnL, wallet delta, unclassified adjustment, equity timeline, and cashflow events from the prepared wallet analytics APIs. The UI uses existing dashboard view states/table/card patterns, keeps partial ledger state visible, and formats crypto amounts safely as number plus symbol. Validation PASS: focused wallet web tests, web typecheck, web build, route-reachable i18n audit, repository guardrails.

@@ -138,6 +138,7 @@ const isSupplementalDcaTradeForOpenPosition = (
   position: RuntimeManagedPositionRow,
   trade: RuntimePositionTradeRow,
   entrySide: 'BUY' | 'SELL',
+  continuityStart: Date,
   windowEnd: Date
 ) => {
   if (position.status !== 'OPEN') return false;
@@ -145,23 +146,70 @@ const isSupplementalDcaTradeForOpenPosition = (
   if (trade.lifecycleAction !== 'DCA') return false;
   if (trade.symbol !== position.symbol) return false;
   if (trade.side !== entrySide) return false;
-  if (trade.executedAt < position.openedAt || trade.executedAt > windowEnd) return false;
+  if (trade.executedAt < continuityStart || trade.executedAt > windowEnd) return false;
   if (!nullableIdentityMatches(position.botId, trade.botId)) return false;
   if (!nullableIdentityMatches(position.walletId, trade.walletId)) return false;
   if (!position.strategyId || trade.strategyId !== position.strategyId) return false;
   return true;
 };
 
+const tradeBelongsToRuntimePositionIdentity = (
+  position: RuntimeManagedPositionRow,
+  trade: RuntimePositionTradeRow
+) => {
+  if (trade.symbol !== position.symbol) return false;
+  if (!nullableIdentityMatches(position.botId, trade.botId)) return false;
+  if (!nullableIdentityMatches(position.walletId, trade.walletId)) return false;
+  if (!position.strategyId || trade.strategyId !== position.strategyId) return false;
+  return true;
+};
+
+const resolveRuntimePositionContinuityStart = (
+  position: RuntimeManagedPositionRow,
+  lifecycleTrades: RuntimePositionTradeRow[],
+  entrySide: 'BUY' | 'SELL',
+  sessionStartedAt: Date,
+  windowEnd: Date
+) => {
+  if (position.status !== 'OPEN') return position.openedAt;
+
+  const sameIdentityTrades = sortRuntimePositionTrades(
+    lifecycleTrades.filter((trade) => tradeBelongsToRuntimePositionIdentity(position, trade))
+  );
+  const latestExitBeforeCurrentOpen = sameIdentityTrades
+    .filter((trade) => trade.side !== entrySide && trade.executedAt <= position.openedAt)
+    .at(-1);
+  const cutoff = latestExitBeforeCurrentOpen?.executedAt ?? sessionStartedAt;
+  const firstOpenAfterCutoff = sameIdentityTrades.find(
+    (trade) =>
+      trade.lifecycleAction === 'OPEN' &&
+      trade.side === entrySide &&
+      trade.executedAt >= cutoff &&
+      trade.executedAt <= windowEnd
+  );
+
+  return firstOpenAfterCutoff?.executedAt ?? cutoff;
+};
+
 const resolveRuntimePositionTrades = (
   position: RuntimeManagedPositionRow,
   tradesByPosition: Map<string, RuntimePositionTradeRow[]>,
-  dcaCandidatesBySymbolSide: Map<string, RuntimePositionTradeRow[]>,
+  lifecycleTradesBySymbol: Map<string, RuntimePositionTradeRow[]>,
+  sessionStartedAt: Date,
   windowEnd: Date
 ) => {
   const entrySide = position.side === 'LONG' ? 'BUY' : 'SELL';
   const directTrades = tradesByPosition.get(position.id) ?? [];
-  const supplementalDcaTrades = (dcaCandidatesBySymbolSide.get(`${position.symbol}:${entrySide}`) ?? []).filter(
-    (trade) => isSupplementalDcaTradeForOpenPosition(position, trade, entrySide, windowEnd)
+  const lifecycleTrades = lifecycleTradesBySymbol.get(position.symbol) ?? [];
+  const continuityStart = resolveRuntimePositionContinuityStart(
+    position,
+    lifecycleTrades,
+    entrySide,
+    sessionStartedAt,
+    windowEnd
+  );
+  const supplementalDcaTrades = lifecycleTrades.filter((trade) =>
+    isSupplementalDcaTradeForOpenPosition(position, trade, entrySide, continuityStart, windowEnd)
   );
   const byTradeId = new Map<string, RuntimePositionTradeRow>();
   for (const trade of [...directTrades, ...supplementalDcaTrades]) {
@@ -414,7 +462,6 @@ export const listBotRuntimeSessionPositions = async (
           ...botScopedTradeWhere,
           managementMode: 'BOT_MANAGED',
           symbol: { in: symbols },
-          lifecycleAction: 'DCA',
           executedAt: {
             gte: session.startedAt,
             lte: windowEnd,
@@ -466,17 +513,17 @@ export const listBotRuntimeSessionPositions = async (
   }
 
   const tradesByPosition = new Map<string, typeof trades>();
-  const dcaCandidatesBySymbolSide = new Map<string, typeof trades>();
+  const lifecycleTradesBySymbol = new Map<string, typeof trades>();
   for (const trade of trades) {
     if (trade.positionId) {
       const bucket = tradesByPosition.get(trade.positionId) ?? [];
       bucket.push(trade);
       tradesByPosition.set(trade.positionId, bucket);
     }
-    if (trade.lifecycleAction === 'DCA') {
-      const bucket = dcaCandidatesBySymbolSide.get(`${trade.symbol}:${trade.side}`) ?? [];
+    if (trade.lifecycleAction === 'OPEN' || trade.lifecycleAction === 'DCA' || trade.lifecycleAction === 'CLOSE') {
+      const bucket = lifecycleTradesBySymbol.get(trade.symbol) ?? [];
       bucket.push(trade);
-      dcaCandidatesBySymbolSide.set(`${trade.symbol}:${trade.side}`, bucket);
+      lifecycleTradesBySymbol.set(trade.symbol, bucket);
     }
   }
 
@@ -546,7 +593,8 @@ export const listBotRuntimeSessionPositions = async (
     const positionTrades = resolveRuntimePositionTrades(
       position,
       tradesByPosition,
-      dcaCandidatesBySymbolSide,
+      lifecycleTradesBySymbol,
+      session.startedAt,
       windowEnd
     );
     const entrySide = position.side === 'LONG' ? 'BUY' : 'SELL';

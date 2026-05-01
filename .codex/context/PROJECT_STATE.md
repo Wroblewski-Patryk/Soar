@@ -139,6 +139,19 @@ Last updated: 2026-05-01
   `BOT/DCA` trade despite the DCA trade remaining linked to the superseded
   `positionId`. Evidence:
   `docs/operations/v1dca-01-prod-verification-2026-05-01.md`.
+- 2026-05-01: closed `V1DCA-02` after the operator reported DOGEUSDT should
+  have two DCA fills while `Positions` implied only one. Protected production
+  inspection confirmed the active session summary and DOGEUSDT trade ledger
+  had two real persisted `BOT/DCA` fills, both linked to superseded local
+  `positionId` rows after consecutive exchange-sync replacements. Runtime
+  positions read now derives supplemental DCA continuity from same-session
+  persisted `OPEN/DCA/CLOSE` lifecycle rows and starts counting from the first
+  same-identity open after the last exit instead of only the latest
+  replacement row's `openedAt`. Focused regression now proves two replacement
+  DCA fills render as `dcaCount=2` with two executed levels while unscoped DCA
+  rows remain excluded. Validation PASS: focused imported DCA visibility e2e
+  (`3/3`), lint, API typecheck, API build, repository guardrails. Task packet:
+  `docs/planning/v1dca-02-multi-replacement-dca-count-task-2026-05-01.md`.
 - 2026-04-30: closed `WLEDGER-07..09` as the wallet preview UI slice. Wallet list rows now have a shared preview table action that opens `/dashboard/wallets/:id/preview`, and that route renders ledger-backed wallet analytics: account/allocated balance, contributed capital, bot PnL, wallet delta, unclassified adjustment, equity timeline, and cashflow events. The UI keeps deposits/withdrawals separate from bot PnL, surfaces partial ledger completeness, and formats crypto amounts as number plus symbol instead of assuming ISO currency support.
 - 2026-04-30: closed `WLEDGER-06` as the first wallet analytics read API. Dashboard wallet routes now expose performance summary, equity timeline, and cashflow events from persisted snapshots/events, including current balance, contributed capital, bot PnL fields, fees/funding, unclassified adjustment, wallet delta percent, timeline markers, and completeness state.
 - 2026-04-30: closed `WLEDGER-05` as the first cashflow classification slice. Initial allocated LIVE wallet balance is now persisted as `INITIAL_BALANCE`, deterministic exchange-history entries can be mapped into deposit, withdrawal, transfer, fee, funding, realized-income, and unknown cashflow sources, and stable exchange event ids are upserted idempotently by `(walletId, exchangeEventId, source)`. Raw balance drift still does not become bot PnL.
