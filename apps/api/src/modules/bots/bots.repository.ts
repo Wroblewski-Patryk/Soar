@@ -11,6 +11,7 @@ const botWithStrategyInclude = Prisma.validator<Prisma.BotInclude>()({
       marketType: true,
       baseCurrency: true,
       paperInitialBalance: true,
+      paperResetAt: true,
       liveAllocationMode: true,
       liveAllocationValue: true,
     },

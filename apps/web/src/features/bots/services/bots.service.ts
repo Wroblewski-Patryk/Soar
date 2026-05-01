@@ -12,6 +12,7 @@ import {
   BotRuntimePositionsResponse,
   BotRuntimeClosePositionResponse,
   BotRuntimeMonitoringAggregateResponse,
+  BotPortfolioHistoryResponse,
   BotRuntimeTradesResponse,
   DashboardManualOrderContext,
   DashboardManualOrderType,
@@ -133,6 +134,11 @@ export const getBotRuntimeMonitoringAggregate = async (
     `/dashboard/bots/${botId}/runtime-monitoring/aggregate`,
     { params }
   );
+  return res.data;
+};
+
+export const getBotPortfolioHistory = async (botId: string): Promise<BotPortfolioHistoryResponse> => {
+  const res = await api.get<BotPortfolioHistoryResponse>(`/dashboard/bots/${botId}/portfolio-history`);
   return res.data;
 };
 

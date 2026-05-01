@@ -5,7 +5,7 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/subscriptions`
 - Owner: backend/billing
-- Last updated: 2026-04-12
+- Last updated: 2026-05-01
 - Related planning task: `DCP-07`
 
 ## 1. Purpose and Scope
@@ -22,6 +22,7 @@ Out of scope:
   - `/dashboard/profile/subscription/checkout-intents`
 - Internal services are consumed by:
   - bot create limit enforcement (`assertSubscriptionAllowsBotCreate`)
+  - bot LIVE capability guard (`assertSubscriptionAllowsLiveTrading`)
   - profile subscription read flow
 - Depends on:
   - Prisma models (`subscriptionPlan`, `userSubscription`, `paymentIntent`)
@@ -48,6 +49,11 @@ Out of scope:
   1. Resolve user entitlements.
   2. Count current total and mode-specific bot usage.
   3. Throw `SubscriptionBotLimitError` when limits are exceeded.
+- LIVE capability guard flow:
+  1. Resolve user entitlements.
+  2. Read `features.liveTrading` from the active plan payload.
+  3. Throw `SubscriptionFeatureUnavailableError` when a bot write path tries
+     to create a LIVE bot or switch `PAPER -> LIVE` without entitlement.
 - Checkout intent flow:
   1. Validate payable plan and sanitize redirect URLs.
   2. Resolve configured payment provider adapter.
@@ -72,6 +78,11 @@ Out of scope:
 
 ## 8. Test Coverage and Evidence
 - Coverage is currently mostly indirect through profile and bot flows.
+- Focused entitlement coverage now proves:
+  - FREE-plan bot-count enforcement,
+  - upgraded plan re-allocation,
+  - no hardcoded bot-cap fallback,
+  - explicit LIVE feature-gate enforcement on create and mode switch.
 - Suggested validation command:
 ```powershell
 pnpm --filter api test -- src/modules/bots/bots.subscription-entitlements.e2e.test.ts src/modules/profile/basic/basic.e2e.test.ts
@@ -80,4 +91,3 @@ pnpm --filter api test -- src/modules/bots/bots.subscription-entitlements.e2e.te
 ## 9. Open Issues and Follow-Ups
 - Add dedicated e2e for checkout intent provider and URL sanitization contract.
 - Add webhook-driven subscription state transitions for production billing lifecycle.
-

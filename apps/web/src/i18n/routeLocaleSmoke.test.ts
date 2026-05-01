@@ -50,6 +50,10 @@ const ROUTE_SMOKE_CASES: RouteSmokeCase[] = [
     ],
   },
   {
+    route: "/dashboard/logs",
+    keys: ["dashboard.logs.title", "dashboard.logs.loadedTitle"],
+  },
+  {
     route: "/dashboard/strategies/list",
     keys: ["dashboard.strategies.title", "dashboard.strategies.list.filterPlaceholder"],
   },
@@ -60,6 +64,10 @@ const ROUTE_SMOKE_CASES: RouteSmokeCase[] = [
   {
     route: "/dashboard/wallets/wallet-1/edit",
     keys: ["dashboard.wallets.editLabel", "dashboard.wallets.form.sectionSummary"],
+  },
+  {
+    route: "/dashboard/wallets/wallet-1/preview",
+    keys: ["dashboard.wallets.preview.title", "dashboard.wallets.preview.summary"],
   },
   {
     route: "/dashboard/bots/create",

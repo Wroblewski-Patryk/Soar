@@ -64,12 +64,12 @@ Out of scope:
 ## 8. Test Coverage and Evidence
 - Primary tests:
   - `PerformanceReportsView.test.tsx`
+  - `app/dashboard/reports/page.test.tsx`
 - Suggested validation command:
 ```powershell
-pnpm --filter web test -- src/features/reports/components/PerformanceReportsView.test.tsx
+pnpm --filter web test -- src/features/reports/components/PerformanceReportsView.test.tsx src/app/dashboard/reports/page.test.tsx
 ```
 
 ## 9. Open Issues and Follow-Ups
 - Continue i18n hardening for remaining static labels in report cards/tables.
 - Consider report query filters (date range, bot, market, strategy) for larger datasets.
-

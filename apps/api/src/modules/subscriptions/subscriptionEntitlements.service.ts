@@ -79,12 +79,28 @@ type BotLimitDetails = {
   requestedBotsTotal: number;
 };
 
+type SubscriptionFeatureDetails = {
+  feature: keyof SubscriptionEntitlements['features'];
+  planCode: SubscriptionPlanCode;
+  planDisplayName: string;
+};
+
 export class SubscriptionBotLimitError extends Error {
   readonly details: BotLimitDetails;
 
   constructor(details: BotLimitDetails) {
     super('SUBSCRIPTION_BOT_LIMIT_TOTAL_REACHED');
     this.name = 'SubscriptionBotLimitError';
+    this.details = details;
+  }
+}
+
+export class SubscriptionFeatureUnavailableError extends Error {
+  readonly details: SubscriptionFeatureDetails;
+
+  constructor(details: SubscriptionFeatureDetails) {
+    super('SUBSCRIPTION_FEATURE_UNAVAILABLE');
+    this.name = 'SubscriptionFeatureUnavailableError';
     this.details = details;
   }
 }
@@ -174,4 +190,20 @@ export const assertSubscriptionAllowsBotCreate = async (
       requestedBotsTotal,
     });
   }
+};
+
+export const assertSubscriptionAllowsLiveTrading = async (
+  userId: string,
+  db: DbClient = prisma,
+) => {
+  const context = await resolveUserEntitlementsContext(userId, db);
+  if (context.entitlements.features.liveTrading) {
+    return context;
+  }
+
+  throw new SubscriptionFeatureUnavailableError({
+    feature: 'liveTrading',
+    planCode: context.planCode,
+    planDisplayName: context.planDisplayName,
+  });
 };

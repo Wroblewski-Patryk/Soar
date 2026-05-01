@@ -57,6 +57,12 @@ Primary target is advanced users who already understand trading concepts and can
 ## Current Limitations (As of 2026-03-21)
 - No full user-facing manual trade panel in dashboard for rich order ticket workflows (current write actions are API-first).
 - Production launch evidence for full 24/7 SLO/incident/load gates remains tracked in V1 release tasks (post-MVP launch validation).
+- Assistant configuration and dry-run surfaces exist in the repository, but
+  they are not part of the current V1 launch-closure gate.
+- Admin and billing workflows may have implementation scaffolding, but they
+  remain post-MVP / V1.1 scope for launch classification.
+- Strategy JSON import/export remains post-MVP scope even though core strategy
+  CRUD is in current V1.
 
 ## MVP Scope (Target for First Release)
 - Strategy builder capable of expressing advanced strategies (indicators, logical conditions, risk rules).

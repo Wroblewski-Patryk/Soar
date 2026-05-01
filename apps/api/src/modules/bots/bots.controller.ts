@@ -3,7 +3,10 @@ import { Prisma } from '@prisma/client';
 import { sendError } from '../../utils/apiError';
 import { mapErrorToHttpResponse } from '../../lib/httpErrorMapper';
 import { ExchangeNotImplementedError } from '../exchange/exchangeCapabilities';
-import { SubscriptionBotLimitError } from '../subscriptions/subscriptionEntitlements.service';
+import {
+  SubscriptionBotLimitError,
+  SubscriptionFeatureUnavailableError,
+} from '../subscriptions/subscriptionEntitlements.service';
 import * as botsService from './bots.service';
 import { BOT_ERROR_CODES } from './bots.errors';
 import {
@@ -11,6 +14,7 @@ import {
   AttachMarketGroupStrategySchema,
   CloseBotRuntimePositionSchema,
   CreateBotMarketGroupSchema,
+  GetBotPortfolioHistoryQuerySchema,
   GetBotRuntimeMonitoringAggregateQuerySchema,
   ListBotRuntimePositionsQuerySchema,
   CreateBotSchema,
@@ -271,6 +275,21 @@ export const getBotRuntimeMonitoringAggregate = async (req: Request, res: Respon
   }
 };
 
+export const getBotPortfolioHistory = async (req: Request, res: Response) => {
+  const userId = req.user?.id;
+  if (!userId) return sendError(res, 401, 'Unauthorized');
+
+  try {
+    GetBotPortfolioHistoryQuerySchema.parse(req.query);
+    const { id } = req.params;
+    const history = await botsService.getBotPortfolioHistory(userId, id);
+    if (!history) return sendError(res, 404, 'Not found');
+    return res.json(history);
+  } catch (error) {
+    return handleBotError(res, error);
+  }
+};
+
 export const listBotRuntimeSessionSymbolStats = async (req: Request, res: Response) => {
   const userId = req.user?.id;
   if (!userId) return sendError(res, 401, 'Unauthorized');
@@ -352,6 +371,9 @@ export const createBot = async (req: Request, res: Response) => {
     if (error instanceof SubscriptionBotLimitError) {
       return sendError(res, 409, 'bot limit for active subscription reached', error.details);
     }
+    if (error instanceof SubscriptionFeatureUnavailableError) {
+      return sendError(res, 403, 'live trading is not available on the active subscription plan', error.details);
+    }
     return handleBotCommandValidationError(res, error);
   }
 };
@@ -378,6 +400,9 @@ export const updateBot = async (req: Request, res: Response) => {
         'cannot switch bot from PAPER to LIVE while paper positions are open; close them first',
         { openPaperPositions: error.openPaperPositions }
       );
+    }
+    if (error instanceof SubscriptionFeatureUnavailableError) {
+      return sendError(res, 403, 'live trading is not available on the active subscription plan', error.details);
     }
     return handleBotCommandValidationError(res, error);
   }

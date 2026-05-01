@@ -75,16 +75,16 @@ Out of scope:
 
 ## 8. Test Coverage and Evidence
 - Primary tests:
+  - `app/dashboard/profile/page.test.tsx`
   - `ApiKeyForm.test.tsx`
   - `ApiKeysList.test.tsx`
   - `Security.test.tsx`
   - `Subscription.test.tsx`
 - Suggested validation command:
 ```powershell
-pnpm --filter web test -- src/features/profile/components/ApiKeyForm.test.tsx src/features/profile/components/ApiKeysList.test.tsx src/features/profile/components/Security.test.tsx src/features/profile/components/Subscription.test.tsx
+pnpm --filter web test -- src/app/dashboard/profile/page.test.tsx src/features/profile/components/ApiKeyForm.test.tsx src/features/profile/components/ApiKeysList.test.tsx src/features/profile/components/Security.test.tsx src/features/profile/components/Subscription.test.tsx
 ```
 
 ## 9. Open Issues and Follow-Ups
 - Replace `window.confirm` in security delete flow with app-level modal guardrail.
 - Expand profile tests to cover timezone preference persistence end-to-end.
-

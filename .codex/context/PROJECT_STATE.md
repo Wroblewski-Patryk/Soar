@@ -100,14 +100,13 @@ Last updated: 2026-05-01
   of reconstructing it from `syncState` or audit logs.
 
 ## Product Decisions (Confirmed)
-- 2026-05-01: queued `BHIST-01` as the next product follow-up after the closed
-  wallet-ledger preview wave. Current repository truth already covers
-  wallet-level performance summary, equity timeline, and cashflow markers for
-  LIVE wallets, but it still lacks a dedicated bot-scoped portfolio history
-  surface that shows progress from active bot start to now with explicit
-  `PAPER_RESET` and wallet-capital event markers. The queued packet freezes one
-  architecture-aligned direction: reuse wallet-ledger events for LIVE markers,
-  reuse `paperResetAt` for PAPER checkpoint markers, and do not create a
+- 2026-05-01: closed `BHIST-01` as the bot-scoped product follow-up after the
+  wallet-ledger preview wave. Current repository truth now covers
+  wallet-level performance summary, equity timeline, cashflow markers for LIVE
+  wallets, and a selected-bot portfolio history surface that shows progress
+  from active bot start to now with explicit `PAPER_RESET` and wallet-capital
+  event markers. The implementation reuses wallet-ledger events for LIVE
+  markers, reuses `paperResetAt` for PAPER checkpoint markers, and avoids a
   parallel accounting path. Evidence:
   `docs/planning/bhist-01-bot-portfolio-history-and-capital-events-task-2026-05-01.md`.
 - 2026-05-01: introduced and expanded the V1 function coverage ledger so
@@ -135,6 +134,23 @@ Last updated: 2026-05-01
   UI/route smokes, and explicit launch-scope/defer decisions. Evidence:
   `docs/planning/v1cover-03-function-implementation-readiness-task-2026-05-01.md`,
   `docs/operations/v1-function-implementation-readiness-audit-2026-05-01.md`.
+- 2026-05-01: closed the remaining local `SUBS-ENTITLEMENTS-001` implementation
+  slice through `V1SUBS-01`. LIVE bot create and `PAPER -> LIVE` mode switch
+  now fail closed against the active subscription payload's
+  `features.liveTrading` flag, using one shared subscription entitlement
+  guard. Validation PASS: focused entitlement e2e (`5/5`), API typecheck, API
+  build, repository guardrails. Evidence:
+  `docs/planning/v1subs-01-live-entitlement-bot-write-guard-task-2026-05-01.md`.
+- 2026-05-01: refreshed the local `V1UX` route-smoke evidence wave after
+  earlier sandbox notes claimed focused Vitest was blocked. The App Router
+  shell pack for profile, logs, exchanges redirect, wallet preview, reports,
+  markets, strategies, backtests, bot preview, bot assistant, and route-locale
+  smoke now passes locally (`18/18` files, `19/19` tests). Web typecheck, web
+  build, and repository guardrails are also green. Evidence:
+  `docs/planning/v1ux-01-operational-route-smoke-task-2026-05-01.md`,
+  `docs/planning/v1ux-reports-01-route-shell-smoke-task-2026-05-01.md`,
+  `docs/planning/v1ux-routes-02-canonical-crud-route-shell-smoke-task-2026-05-01.md`,
+  `docs/planning/v1ux-bots-03-canonical-bot-preview-assistant-route-shell-task-2026-05-01.md`.
 - 2026-05-01: promoted the function coverage/readiness ledger into a reusable
   project standard. Future projects can copy the standard column contract,
   status vocabulary, readiness buckets, task derivation rules, evidence quality
@@ -194,6 +210,28 @@ Last updated: 2026-05-01
   manual operator matrix, and final GO/NO-GO. Evidence:
   `docs/operations/v1-final-test-structure-2026-05-01.md`; task packet:
   `docs/planning/v1final-00-final-test-structure-task-2026-05-01.md`.
+- 2026-05-01: closed `V1GATE-01` as a fresh public target preflight after
+  production/stage state changed again. Production public smoke is green and
+  build-info now reports
+  `662ce9b48fac6a48963a62f8d3bc4ac2f645cac6`, which is an ancestor of local
+  `HEAD` `ef37fca0c4a3c47605986a815b5323fd535a37fa`; production is still behind
+  the newest local commits `ca430aa5`, `1e20b6df`, and `ef37fca0`. Stage public
+  smoke remains blocked before auth with `503` for API `/health`, API `/ready`,
+  and web `/`. Evidence:
+  `docs/planning/v1gate-01-current-target-freshness-sync-task-2026-05-01.md`,
+  `docs/operations/v1gate-01-current-target-freshness-2026-05-01.md`.
+- 2026-05-01: closed `V1SMOKE-01` during deploy preparation. The local
+  umbrella go-live smoke path is green again after verified non-destructive
+  repair of local Prisma migration-history drift and fixture updates for
+  current V1 contracts. `backtests.e2e` now tests external-position management
+  through bot-level authority and grants a live-trading subscription when
+  exercising the LIVE activation path; `BotsManagement` smoke expectations now
+  include the canonical `manageExternalPositions` payload; and
+  `goLiveSmoke.mjs` now names the actual failed migration in recovery guidance.
+  Validation PASS: focused backtests e2e (`14/14`), focused web smoke pack
+  (`17/17`), portfolio-history web test (`1/1`), and full
+  `pnpm run test:go-live:smoke` (API `38/38`, web `17/17`). Evidence:
+  `docs/planning/v1smoke-01-go-live-smoke-recovery-task-2026-05-01.md`.
 - 2026-04-30: `V1ROE-04` was explicitly blocked on protected production evidence rather than local implementation. The local `V1ROE`, `V1OWN`, and `V1AUTO` slices closed the known repository-side margin-basis, stale read-model, imported ownership, runtime-state rebase, and prospective imported automation hydration gaps. The remaining acceptance signal was authenticated deployed-candidate verification on the real `LIVE DOGEUSDT` flow, documented in `docs/planning/v1roe-04-production-verification-task-2026-04-30.md`; local tests alone could not close it.
   - 2026-04-30 partial production check: deployed web build-info now confirms `522e1d95` on `main`, public deploy smoke passes, and the remaining blocker is strictly protected auth for runtime evidence (`401 Missing token` on runtime freshness and dashboard runtime probes). Evidence: `docs/operations/v1roe-04-prod-verification-partial-2026-04-30.md`.
 - 2026-05-01: queue/context sync normalized `V1ROE-04` after the deploy freshness check. The stale duplicate `READY` wording in `.codex/context/TASK_BOARD.md` was removed, and the task stayed blocked until authenticated production evidence could be captured with a token, email/password smoke credentials, or an authenticated browser/session cookie. Canonical sync task: `docs/planning/docsync-2026-05-01-queue-auth-blocker-task.md`.

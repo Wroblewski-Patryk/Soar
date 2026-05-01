@@ -1,7 +1,10 @@
 import { Exchange } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import { runtimeTelemetryService } from '../engine/runtimeTelemetry.service';
-import { assertSubscriptionAllowsBotCreate } from '../subscriptions/subscriptionEntitlements.service';
+import {
+  assertSubscriptionAllowsBotCreate,
+  assertSubscriptionAllowsLiveTrading,
+} from '../subscriptions/subscriptionEntitlements.service';
 import { getOwnedWalletForBotContext } from '../wallets/wallets.service';
 import {
   CreateBotDto,
@@ -140,6 +143,9 @@ export const createBot = async (userId: string, data: CreateBotDto) => {
   }
 
   const createdBotId = await prisma.$transaction(async (tx) => {
+    if (derivedMode === 'LIVE') {
+      await assertSubscriptionAllowsLiveTrading(userId, tx);
+    }
     await assertSubscriptionAllowsBotCreate(userId, derivedMode, tx);
 
     const createdBot = await tx.bot.create({
@@ -291,6 +297,7 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
 
   const switchingPaperToLive = existing.mode === 'PAPER' && nextMode === 'LIVE';
   if (switchingPaperToLive) {
+    await assertSubscriptionAllowsLiveTrading(userId);
     const openPaperPositions = await prisma.position.count({
       where: {
         userId,

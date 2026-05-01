@@ -125,7 +125,8 @@ export const dashboardBotsPt = {
     "loadBots": "Falha ao carregar bots.",
     "loadRuntimeSessions": "Falha ao carregar sessoes de runtime.",
     "loadRuntimeSessionData": "Falha ao carregar dados da sessao de runtime.",
-    "loadAggregateMonitoring": "Falha ao carregar dados agregados de monitorizacao."
+    "loadAggregateMonitoring": "Falha ao carregar dados agregados de monitorizacao.",
+    "loadPortfolioHistory": "Falha ao carregar o historico de portfolio do bot."
   },
   "confirms": {
     "confirmLabel": "Aplicar",
@@ -241,6 +242,13 @@ export const dashboardBotsPt = {
     "capitalSourcePaperInitial": "Paper initial balance",
     "capitalSourcePaperReset": "Paper reset baseline",
     "paperResetAtLabel": "Paper reset",
+    "portfolioHistoryUnavailableTitle": "Historico de portfolio indisponivel",
+    "portfolioHistoryUnavailableDescription": "A verdade atual de capital runtime esta indisponivel para este bot.",
+    "portfolioHistoryPartial": "O historico e dirigido por eventos. Open PnL so e garantido no snapshot mais recente.",
+    "portfolioHistoryStartLabel": "Saldo inicial",
+    "portfolioHistoryCurrentLabel": "Saldo atual",
+    "portfolioHistoryMarkersTitle": "Eventos de capital",
+    "portfolioHistoryNoMarkers": "Nenhum marcador de reset ou capital da wallet nesta janela.",
     "operatorCheckTitle": "Quick operator check",
     "heartbeatLagLabel": "Heartbeat lag",
     "lastSignalLabel": "Last signal",
@@ -266,7 +274,9 @@ export const dashboardBotsPt = {
       "historyPositionsDescription": "Confirma o que ja aconteceu: resultado, ritmo e qualidade de execucao.",
       "historyTradesTitle": "Historico - registo operacional de trades",
       "futureSignalsTitle": "3. Futuro - verificacao de sinais live",
-      "futureSignalsDescription": "Visao rapida do operador: quais simbolos sao snapshot de mercado, quais ja tem decisao de runtime, sinal aceito ou posicao aberta."
+      "futureSignalsDescription": "Visao rapida do operador: quais simbolos sao snapshot de mercado, quais ja tem decisao de runtime, sinal aceito ou posicao aberta.",
+      "portfolioHistoryTitle": "Portfolio history",
+      "portfolioHistoryDescription": "Progressao de valor por bot com marcadores de reset e eventos de capital da wallet."
     },
     "notionalLabel": "Notional",
     "marginLabel": "Margin",

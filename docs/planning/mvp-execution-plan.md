@@ -3001,6 +3001,64 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-26: Closed `V1LIVE-13` by removing the residual runtime-sidebar legacy strategy fallback and aligning stale `orders-positions.e2e` imported-LIVE fixtures to the current exact ownership contract. The previously failing closure cases were not new product regressions; they were legacy fixtures missing canonical `bot.apiKeyId` proof even though runtime ownership now resolves by exact `apiKeyId + symbol`. Validation PASS: `pnpm --filter api test -- --run src/modules/orders/orders-positions.e2e.test.ts -t "keeps manual LIVE MARKET visibility truthful from submitted order through exchange-synced adoption|keeps EXCHANGE_SYNC BOT_MANAGED runtime positions visible for LIVE bot even when PAPER bot shares symbol|closes EXCHANGE_SYNC BOT_MANAGED runtime position selected from LIVE dashboard flow"`, `pnpm --filter web exec vitest run src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.manual-order.test.tsx`.
 - 2026-04-26: Closed `V1LIVE-14` and with it the full `V1LIVE-A` wave. The final focused closure pack is green across exact exchange-context selection, imported-position ownership/runtime parity, signal-driven LIVE submission truth, Binance event-driven lifecycle wiring, manual LIVE runtime visibility, imported-position close authority, web runtime-sidebar cleanup, repository typecheck, and repository guardrails. Validation PASS: `pnpm --filter api exec vitest run src/modules/exchange/exchangeAdapterRegistry.service.test.ts src/modules/exchange/exchangeAdapterBoundary.service.test.ts src/modules/exchange/exchangeAuthenticatedRead.service.test.ts src/modules/exchange/liveOrderAdapter.service.test.ts src/modules/exchange/binanceUserDataStream.service.test.ts src/modules/orders/orders.exchangeEvents.service.test.ts src/modules/engine/runtimeFinalCandleDecision.service.test.ts src/modules/engine/executionOrchestrator.service.test.ts src/modules/orders/orders.service.test.ts src/modules/orders/orders.manual-paper-market.e2e.test.ts src/modules/orders/orders-positions.e2e.test.ts src/modules/positions/livePositionReconciliation.service.test.ts src/modules/positions/positions.takeover-status.e2e.test.ts src/modules/bots/bots.runtime-takeover.e2e.test.ts`, `pnpm --filter web exec vitest run src/features/dashboard-home/components/RuntimeSidebarSection.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.manual-order.test.tsx`, `pnpm run typecheck`, `pnpm run quality:guardrails`.
 
+## Phase V1UX-2026-05-01 - Operational Route Smoke Locks (Closed 2026-05-01)
+- [x] `V1UX-01 qa(web-route): lock operational route smoke for profile, logs, exchanges, and wallet preview`
+- [x] `V1UX-REPORTS-01 qa(web-route): lock canonical reports route shell smoke`
+- [x] `V1UX-ROUTES-02 qa(web-route): lock canonical CRUD/detail route shells for markets, strategies, and backtests`
+- [x] `V1UX-BOTS-03 qa(web-route): lock canonical bot preview and assistant route shells`
+
+### Progress Log (Phase V1UX-2026-05-01 - Operational Route Smoke Locks)
+- 2026-05-01: Closed a local route-parity verification slice while the active V1 queue remained blocked on stage/prod evidence tasks. Added focused route tests for `/dashboard/profile` default and `#api` entry behavior, `/dashboard/logs`, `/dashboard/exchanges -> /dashboard/profile#api` redirect truth, and wallet preview page shell coverage; also extended route-locale smoke for logs and wallet preview and synced the relevant module docs. Refreshed validation PASS: focused route-smoke pack (`18/18` files, `19/19` tests), `web` typecheck, `web` build, repository guardrails.
+- 2026-05-01: Closed `V1UX-REPORTS-01` as a tiny follow-up to the same route-smoke wave. Added a focused shell test for `/dashboard/reports`, proving the canonical reports page still renders one heading, breadcrumb navigation, and the reports feature mount. Synced `web-reports` test evidence. Refreshed validation PASS: focused route-smoke pack (`18/18` files, `19/19` tests), `web` typecheck, `web` build, repository guardrails.
+- 2026-05-01: Closed `V1UX-ROUTES-02` as the remaining local App Router parity slice for the same wave. Added route-shell smoke tests for `markets` list/create/edit, `strategies` list/create/edit plus the canonical `/:id -> /edit` redirect, and `backtests` list/create/detail. Synced `web-markets`, `web-strategies`, and `web-backtest` evidence. Refreshed validation PASS: focused route-smoke pack (`18/18` files, `19/19` tests), `web` typecheck, `web` build, repository guardrails.
+- 2026-05-01: Closed `V1UX-BOTS-03` as the final tiny local App Router parity follow-up in the same wave. Added focused shell tests for `/dashboard/bots/:id/preview` and `/dashboard/bots/:id/assistant`, proving breadcrumb shell stability plus canonical `BotsManagement` tab locks and preferred-bot propagation. Synced `web-bots` test evidence. Refreshed validation PASS: focused route-smoke pack (`18/18` files, `19/19` tests), `web` typecheck, `web` build, repository guardrails.
+
+## Phase V1SCOPE-2026-05-01 - Launch Scope Classification (Closed 2026-05-01)
+- [x] `V1SCOPE-01 planning(scope): classify lower-priority not-verified surfaces`
+
+### Progress Log (Phase V1SCOPE-2026-05-01 - Launch Scope Classification)
+- 2026-05-01: Closed `V1SCOPE-01` as the smallest truthful follow-up after the
+  function readiness audit. The pass removed false V1 pressure from rows that
+  were implemented but still ambiguous in launch classification. Current
+  explicit decisions are: `POST_V1` for admin users/subscriptions, profile
+  subscription UX, strategy import/export, and assistant config/dry-run;
+  `WAIVED_FOR_V1` for cross-mode reports, avatar upload, and the
+  orphan-repair command; `IN_V1` only for subscription entitlement
+  enforcement because it still gates bot/runtime safety and commercial limits.
+  Validation PASS: manual source-of-truth consistency review across
+  `product.md`, the readiness audit, and planning docs. Context sync for
+  `.codex/context/{TASK_BOARD,PROJECT_STATE}` was attempted but blocked by
+  read-only filesystem permissions in this environment.
+
+## Phase V1SUBS-2026-05-01 - LIVE Entitlement Write Guard (Closed 2026-05-01)
+- [x] `V1SUBS-01 fix(api-entitlements): fail closed on LIVE bot writes without live-trading entitlement`
+
+### Progress Log (Phase V1SUBS-2026-05-01 - LIVE Entitlement Write Guard)
+- 2026-05-01: Closed `V1SUBS-01` by adding one shared
+  `assertSubscriptionAllowsLiveTrading(...)` guard and enforcing it on LIVE
+  bot create plus `PAPER -> LIVE` bot updates. The focused entitlement e2e now
+  proves a FREE-plan payload with a LIVE pool but `features.liveTrading=false`
+  cannot create or switch into LIVE mode. Validation PASS:
+  `node node_modules/typescript/bin/tsc -p apps/api/tsconfig.json --noEmit`,
+  `pnpm --filter api exec vitest run src/modules/bots/bots.subscription-entitlements.e2e.test.ts`
+  (`5/5`), `pnpm --filter api run build`, `pnpm run quality:guardrails`.
+
+## Phase BHIST-2026-05-01 - Bot Portfolio History (Closed 2026-05-01)
+- [x] `BHIST-01 feature(bot-history): add bot-scoped portfolio history with reset and wallet-capital markers`
+
+### Progress Log (Phase BHIST-2026-05-01 - Bot Portfolio History)
+- 2026-05-01: Closed `BHIST-01` as a local product slice while the remaining
+  V1 release gates stayed blocked on external stage/prod evidence. Added
+  `GET /dashboard/bots/:id/portfolio-history` and selected-bot monitoring UI
+  for bot-scoped value progression, `PAPER_RESET` markers, and wallet-ledger
+  capital-event markers for LIVE without introducing a parallel accounting
+  path. Validation PASS: `node node_modules/typescript/bin/tsc -p apps/api/tsconfig.json --noEmit`,
+  `node node_modules/typescript/bin/tsc -p apps/web/tsconfig.json --noEmit`,
+  `pnpm --filter api exec vitest run src/modules/bots/bots.portfolio-history.e2e.test.ts`
+  (`2/2`), `pnpm --filter web exec vitest run src/features/bots/components/BotsManagement.portfolio-history.test.tsx`
+  (`1/1`), `pnpm --filter api run build`, `pnpm --filter web run build`,
+  `pnpm run quality:guardrails`.
+
 ## Phase XVENUE-A - Exact Exchange-Context and Worker-Topology Hardening (Closed 2026-04-25)
 - [x] `XVENUE-01 docs(contract): freeze exact exchange-context and adapter-family model`
 - [x] `XVENUE-02 audit(api): inventory boundary leaks and direct exchange SDK usage`

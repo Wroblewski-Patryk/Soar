@@ -125,7 +125,8 @@ export const dashboardBotsEn = {
     "loadBots": "Failed to load bots.",
     "loadRuntimeSessions": "Failed to load runtime sessions.",
     "loadRuntimeSessionData": "Failed to load runtime session data.",
-    "loadAggregateMonitoring": "Failed to load aggregate monitoring data."
+    "loadAggregateMonitoring": "Failed to load aggregate monitoring data.",
+    "loadPortfolioHistory": "Failed to load bot portfolio history."
   },
   "confirms": {
     "confirmLabel": "Apply",
@@ -241,6 +242,13 @@ export const dashboardBotsEn = {
     "capitalSourcePaperReset": "Paper reset checkpoint",
     "capitalSourceLiveExchange": "Authenticated exchange balance",
     "paperResetAtLabel": "Paper reset",
+    "portfolioHistoryUnavailableTitle": "Portfolio history unavailable",
+    "portfolioHistoryUnavailableDescription": "Current runtime capital truth is unavailable for this bot.",
+    "portfolioHistoryPartial": "History is event-driven. Open PnL is only guaranteed for the latest snapshot.",
+    "portfolioHistoryStartLabel": "Start balance",
+    "portfolioHistoryCurrentLabel": "Current balance",
+    "portfolioHistoryMarkersTitle": "Capital events",
+    "portfolioHistoryNoMarkers": "No reset or wallet-capital markers in this window.",
     "marketStatePositionOpen": "Position open",
     "marketStateSignalActive": "Signal active",
     "marketStateEvaluatedNoTrade": "Evaluated / no trade",
@@ -266,7 +274,9 @@ export const dashboardBotsEn = {
       "historyPositionsDescription": "Verify what already happened: result, pace and execution quality.",
       "historyTradesTitle": "History - operational trade log",
       "futureSignalsTitle": "3. Future - live signal check",
-      "futureSignalsDescription": "Quick operator view of which symbols are market snapshots, evaluated runtime decisions, accepted signals, or open positions."
+      "futureSignalsDescription": "Quick operator view of which symbols are market snapshots, evaluated runtime decisions, accepted signals, or open positions.",
+      "portfolioHistoryTitle": "Portfolio history",
+      "portfolioHistoryDescription": "Bot-scoped value progression with reset and wallet-capital markers."
     },
     "notionalLabel": "Notional",
     "marginLabel": "Margin",

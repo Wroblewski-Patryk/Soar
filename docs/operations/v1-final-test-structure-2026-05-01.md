@@ -80,6 +80,20 @@ Conclusion:
   `activationAudit:stale`, `activationPlan:stale`, and
   `backupRestoreDrill:failed`.
 
+Current target refresh on 2026-05-01:
+
+- Production public smoke still PASS.
+- Production web build-info now reports
+  `662ce9b48fac6a48963a62f8d3bc4ac2f645cac6` on `main`.
+- That production SHA is an ancestor of local `HEAD`
+  `ef37fca0c4a3c47605986a815b5323fd535a37fa`.
+- Production is behind the newest local commits:
+  `ca430aa5`, `1e20b6df`, and `ef37fca0`.
+- Stage public smoke still FAILS with `503` for API `/health`, API `/ready`,
+  and web `/`.
+- Evidence:
+  `docs/operations/v1gate-01-current-target-freshness-2026-05-01.md`.
+
 Stage check:
 
 ```powershell

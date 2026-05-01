@@ -89,11 +89,13 @@ Out of scope:
 
 ## 8. Test Coverage and Evidence
 - Primary tests:
+  - `app/dashboard/wallets/[id]/preview/page.test.tsx`
   - `WalletsListTable.test.tsx`
   - `WalletCreateEditForm.test.tsx`
+  - `WalletPreviewPanel.test.tsx`
 - Suggested validation command:
 ```powershell
-pnpm --filter web test -- src/features/wallets/components/WalletsListTable.test.tsx src/features/wallets/components/WalletCreateEditForm.test.tsx
+pnpm --filter web test -- src/app/dashboard/wallets/[id]/preview/page.test.tsx src/features/wallets/components/WalletsListTable.test.tsx src/features/wallets/components/WalletCreateEditForm.test.tsx src/features/wallets/components/WalletPreviewPanel.test.tsx
 ```
 
 ## 9. Open Issues and Follow-Ups

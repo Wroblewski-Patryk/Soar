@@ -44,6 +44,7 @@ Out of scope:
   - create/update bot payload with `walletId`, `strategyId`, `marketGroupId`, `isActive`, `liveOptIn`, consent version.
 - Runtime read contracts:
   - runtime sessions, symbol stats, positions, trades, runtime graph.
+  - bot portfolio history for monitoring (`summary + points + markers`).
 - Assistant contracts:
   - read/update assistant main config
   - read/update/delete subagent slots
@@ -58,7 +59,8 @@ Out of scope:
 - Monitoring flow:
   1. Select bot/session and load runtime data sections.
   2. Apply filters for symbol/status/view mode.
-  3. Support operator actions (close position) with explicit confirmations.
+  3. Load bot portfolio history with reset/capital markers alongside runtime monitoring.
+  4. Support operator actions (close position) with explicit confirmations.
 - Assistant flow:
   1. Load current assistant config for selected bot.
   2. Save main config and subagent slots.
@@ -79,17 +81,21 @@ Out of scope:
 
 ## 7. Observability and Operations
 - Monitoring views include heartbeat/session status badges and stale-data warnings.
+- Monitoring also exposes bot-scoped portfolio history with explicit partial-state messaging when only the latest open PnL snapshot is authoritative.
 - Assistant tab exposes per-slot status, latency, and message traces for operator diagnostics.
 
 ## 8. Test Coverage and Evidence
 - Primary tests:
+  - `app/dashboard/bots/[id]/preview/page.test.tsx`
+  - `app/dashboard/bots/[id]/assistant/page.test.tsx`
   - `BotCreateEditForm.test.tsx`
   - `BotsListTable.test.tsx`
   - `BotsManagement.test.tsx`
+  - `BotsManagement.portfolio-history.test.tsx`
   - `trailingStopDisplay.test.ts`
 - Suggested validation command:
 ```powershell
-pnpm --filter web test -- src/features/bots/components/BotCreateEditForm.test.tsx src/features/bots/components/BotsListTable.test.tsx src/features/bots/components/BotsManagement.test.tsx src/features/bots/utils/trailingStopDisplay.test.ts
+pnpm --filter web test -- src/app/dashboard/bots/[id]/preview/page.test.tsx src/app/dashboard/bots/[id]/assistant/page.test.tsx src/features/bots/components/BotCreateEditForm.test.tsx src/features/bots/components/BotsListTable.test.tsx src/features/bots/components/BotsManagement.test.tsx src/features/bots/utils/trailingStopDisplay.test.ts
 ```
 
 ## 9. Open Issues and Follow-Ups

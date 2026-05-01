@@ -11,24 +11,54 @@ import { SubscriptionEntitlementsSchema } from '../subscriptions/subscriptionEnt
 
 const walletIdByMarketGroupId = new Map<string, string>();
 
-const createWalletForContext = async (email: string) => {
+const createWalletForContext = async (
+  email: string,
+  context: {
+    mode?: 'PAPER' | 'LIVE';
+    apiKeyId?: string | null;
+  } = {},
+) => {
   const user = await prisma.user.findUniqueOrThrow({
     where: { email },
     select: { id: true },
   });
+  const mode = context.mode ?? 'PAPER';
   const created = await prisma.wallet.create({
     data: {
       userId: user.id,
-      name: `Entitlements Wallet ${Date.now()}`,
-      mode: 'PAPER',
+      name: `Entitlements Wallet ${mode} ${Date.now()}`,
+      mode,
       exchange: 'BINANCE',
       marketType: 'FUTURES',
       baseCurrency: 'USDT',
       paperInitialBalance: 10_000,
+      liveAllocationMode: mode === 'LIVE' ? 'PERCENT' : null,
+      liveAllocationValue: mode === 'LIVE' ? 100 : null,
+      apiKeyId: mode === 'LIVE' ? (context.apiKeyId ?? null) : null,
     },
     select: { id: true },
   });
   return created.id;
+};
+
+const createLiveApiKeyForUser = async (email: string) => {
+  const user = await prisma.user.findUniqueOrThrow({
+    where: { email },
+    select: { id: true },
+  });
+  const apiKey = await prisma.apiKey.create({
+    data: {
+      userId: user.id,
+      label: `Entitlements LIVE ${Date.now()}`,
+      exchange: 'BINANCE',
+      apiKey: 'test-live-key',
+      apiSecret: 'test-live-secret',
+      syncExternalPositions: true,
+      manageExternalPositions: false,
+    },
+    select: { id: true },
+  });
+  return apiKey.id;
 };
 
 const registerAndLogin = async (email: string) => {
@@ -81,6 +111,22 @@ const createMarketGroup = async (email: string) => {
   walletIdByMarketGroupId.set(marketUniverse.id, walletId);
 
   return symbolGroup.id;
+};
+
+const updateFreePlanEntitlements = async (
+  patch: (entitlements: ReturnType<typeof SubscriptionEntitlementsSchema.parse>) => Prisma.InputJsonValue,
+) => {
+  const freePlan = await prisma.subscriptionPlan.findUniqueOrThrow({
+    where: { code: 'FREE' },
+    select: { entitlements: true },
+  });
+  const entitlements = SubscriptionEntitlementsSchema.parse(freePlan.entitlements);
+  await prisma.subscriptionPlan.update({
+    where: { code: 'FREE' },
+    data: {
+      entitlements: patch(entitlements),
+    },
+  });
 };
 
 const createPayload = (refs: { strategyId: string; marketGroupId: string; walletId?: string }) => {
@@ -198,28 +244,17 @@ describe('Bots subscription entitlements', () => {
   });
 
   it('enforces updated FREE plan limits from catalog (no hardcoded cap)', async () => {
-    const freePlan = await prisma.subscriptionPlan.findUniqueOrThrow({
-      where: { code: 'FREE' },
-      select: { entitlements: true },
-    });
-    const entitlements = SubscriptionEntitlementsSchema.parse(freePlan.entitlements);
-
-    await prisma.subscriptionPlan.update({
-      where: { code: 'FREE' },
-      data: {
-        entitlements: {
-          ...entitlements,
-          limits: {
-            ...entitlements.limits,
-            maxBotsTotal: 2,
-            maxBotsByMode: {
-              PAPER: 2,
-              LIVE: 0,
-            },
-          },
-        } as Prisma.InputJsonValue,
+    await updateFreePlanEntitlements((entitlements) => ({
+      ...entitlements,
+      limits: {
+        ...entitlements.limits,
+        maxBotsTotal: 2,
+        maxBotsByMode: {
+          PAPER: 2,
+          LIVE: 0,
+        },
       },
-    });
+    } as Prisma.InputJsonValue));
 
     const email = 'bots-subscription-updated-free-plan@example.com';
     const agent = await registerAndLogin(email);
@@ -242,5 +277,103 @@ describe('Bots subscription entitlements', () => {
       name: 'Second bot allowed by updated FREE plan',
     });
     expect(secondCreate.status).toBe(201);
+  });
+
+  it('blocks LIVE bot create when plan exposes LIVE pool but liveTrading feature is disabled', async () => {
+    await updateFreePlanEntitlements((entitlements) => ({
+      ...entitlements,
+      limits: {
+        ...entitlements.limits,
+        maxBotsTotal: 1,
+        maxBotsByMode: {
+          PAPER: 1,
+          LIVE: 1,
+        },
+      },
+      features: {
+        ...entitlements.features,
+        liveTrading: false,
+      },
+    } as Prisma.InputJsonValue));
+
+    const email = 'bots-subscription-live-feature-create-block@example.com';
+    const agent = await registerAndLogin(email);
+    const strategyId = await createStrategy(agent, 'Entitlements Live Feature Create Block');
+    const marketGroupId = await createMarketGroup(email);
+    const liveApiKeyId = await createLiveApiKeyForUser(email);
+    const liveWalletId = await createWalletForContext(email, {
+      mode: 'LIVE',
+      apiKeyId: liveApiKeyId,
+    });
+
+    const createLiveBot = await agent.post('/dashboard/bots').send({
+      ...createPayload({
+        strategyId,
+        marketGroupId,
+        walletId: liveWalletId,
+      }),
+      liveOptIn: true,
+      consentTextVersion: 'v1-live-risk',
+    });
+
+    expect(createLiveBot.status).toBe(403);
+    expect(createLiveBot.body.error.message).toBe(
+      'live trading is not available on the active subscription plan'
+    );
+    expect(createLiveBot.body.error.details).toMatchObject({
+      feature: 'liveTrading',
+      planCode: 'FREE',
+    });
+  });
+
+  it('blocks PAPER to LIVE bot switch when plan lacks liveTrading entitlement', async () => {
+    await updateFreePlanEntitlements((entitlements) => ({
+      ...entitlements,
+      limits: {
+        ...entitlements.limits,
+        maxBotsTotal: 1,
+        maxBotsByMode: {
+          PAPER: 1,
+          LIVE: 1,
+        },
+      },
+      features: {
+        ...entitlements.features,
+        liveTrading: false,
+      },
+    } as Prisma.InputJsonValue));
+
+    const email = 'bots-subscription-live-feature-update-block@example.com';
+    const agent = await registerAndLogin(email);
+    const strategyId = await createStrategy(agent, 'Entitlements Live Feature Update Block');
+    const marketGroupId = await createMarketGroup(email);
+    const liveApiKeyId = await createLiveApiKeyForUser(email);
+    const liveWalletId = await createWalletForContext(email, {
+      mode: 'LIVE',
+      apiKeyId: liveApiKeyId,
+    });
+
+    const createdPaperBot = await agent.post('/dashboard/bots').send(
+      createPayload({
+        strategyId,
+        marketGroupId,
+      }),
+    );
+    expect(createdPaperBot.status).toBe(201);
+
+    const switchToLive = await agent.put(`/dashboard/bots/${createdPaperBot.body.id}`).send({
+      walletId: liveWalletId,
+      liveOptIn: true,
+      consentTextVersion: 'v1-live-risk',
+    });
+
+    expect(switchToLive.status).toBe(403);
+    expect(switchToLive.body.error.message).toBe(
+      'live trading is not available on the active subscription plan'
+    );
+    expect(switchToLive.body.error.details).toMatchObject({
+      feature: 'liveTrading',
+      planCode: 'FREE',
+    });
   });
 });

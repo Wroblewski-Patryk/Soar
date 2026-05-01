@@ -6,6 +6,7 @@ import { createMarketStreamEventSource } from "../../../lib/marketStream";
 import { getAxiosMessage } from '@/lib/getAxiosMessage';
 import { normalizeSymbol } from "@/lib/symbols";
 import {
+  getBotPortfolioHistory,
   getBotRuntimeSession,
   listBotRuntimeSessionPositions,
   listBotRuntimeSessions,
@@ -15,6 +16,7 @@ import {
 import { loadBotMonitoringAggregate } from "../services/botsMonitoringAggregate.service";
 import {
   Bot,
+  BotPortfolioHistoryResponse,
   BotRuntimePositionsResponse,
   BotRuntimeSessionDetail,
   BotRuntimeSessionListItem,
@@ -64,6 +66,7 @@ export const useBotsMonitoringController = ({
   const [monitorSymbolStats, setMonitorSymbolStats] = useState<BotRuntimeSymbolStatsResponse | null>(null);
   const [monitorPositions, setMonitorPositions] = useState<BotRuntimePositionsResponse | null>(null);
   const [monitorTrades, setMonitorTrades] = useState<BotRuntimeTradesResponse | null>(null);
+  const [monitorPortfolioHistory, setMonitorPortfolioHistory] = useState<BotPortfolioHistoryResponse | null>(null);
   const [monitorLoading, setMonitorLoading] = useState(false);
   const [monitorSessionLoading, setMonitorSessionLoading] = useState(false);
   const [monitorError, setMonitorError] = useState<string | null>(null);
@@ -99,6 +102,7 @@ export const useBotsMonitoringController = ({
         setMonitorSymbolStats(null);
         setMonitorPositions(null);
         setMonitorTrades(null);
+        setMonitorPortfolioHistory(null);
         setMonitorLastUpdatedAt(null);
         return [];
       }
@@ -124,6 +128,7 @@ export const useBotsMonitoringController = ({
           setMonitorSymbolStats(null);
           setMonitorPositions(null);
           setMonitorTrades(null);
+          setMonitorPortfolioHistory(null);
         }
         setMonitorLastUpdatedAt(new Date().toISOString());
         return sessions;
@@ -154,6 +159,7 @@ export const useBotsMonitoringController = ({
         setMonitorSymbolStats(null);
         setMonitorPositions(null);
         setMonitorTrades(null);
+        setMonitorPortfolioHistory(null);
         setMonitorLastUpdatedAt(null);
         return;
       }
@@ -211,6 +217,7 @@ export const useBotsMonitoringController = ({
         setMonitorSymbolStats(null);
         setMonitorPositions(null);
         setMonitorTrades(null);
+        setMonitorPortfolioHistory(null);
         setMonitorLastUpdatedAt(null);
         return;
       }
@@ -272,6 +279,14 @@ export const useBotsMonitoringController = ({
           monitorAppliedSymbolFilter,
           options
         );
+        try {
+          const history = await getBotPortfolioHistory(monitorBotId);
+          setMonitorPortfolioHistory(history);
+        } catch (err: unknown) {
+          if (!(options?.silent ?? false)) {
+            setMonitorError(getAxiosMessage(err) ?? t("dashboard.bots.errors.loadPortfolioHistory"));
+          }
+        }
         return;
       }
       const effectiveSessionId = monitorSessionId || sessions[0]?.id;
@@ -280,9 +295,18 @@ export const useBotsMonitoringController = ({
         setMonitorSymbolStats(null);
         setMonitorPositions(null);
         setMonitorTrades(null);
+        setMonitorPortfolioHistory(null);
         return;
       }
       await loadMonitorSessionData(monitorBotId, effectiveSessionId, monitorAppliedSymbolFilter, options);
+      try {
+        const history = await getBotPortfolioHistory(monitorBotId);
+        setMonitorPortfolioHistory(history);
+      } catch (err: unknown) {
+        if (!(options?.silent ?? false)) {
+          setMonitorError(getAxiosMessage(err) ?? t("dashboard.bots.errors.loadPortfolioHistory"));
+        }
+      }
     },
     [
       loadMonitorAggregateData,
@@ -293,6 +317,7 @@ export const useBotsMonitoringController = ({
       monitorSessionId,
       monitorStatus,
       monitorViewMode,
+      t,
     ]
   );
 
@@ -457,6 +482,7 @@ export const useBotsMonitoringController = ({
     monitorLiveTickerPrices,
     monitorLoading,
     monitorPositions,
+    monitorPortfolioHistory,
     monitorSessionDetail,
     monitorSessionId,
     monitorSessionLoading,

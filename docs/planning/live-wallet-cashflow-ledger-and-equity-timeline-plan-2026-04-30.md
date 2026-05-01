@@ -1,6 +1,6 @@
 # LIVE Wallet Cashflow Ledger and Equity Timeline Plan
 
-Status: queued (`WLEDGER-01..WLEDGER-06` closed)
+Status: partially closed (`WLEDGER-01..WLEDGER-09` closed, bot-history follow-up queued)
 Date: 2026-04-30
 Owner: Frontend Builder + Backend Builder + Exchange Integration
 
@@ -120,10 +120,10 @@ ledger-backed value once the API exposes `contributedCapital` and `botPnl`.
    fees/funding, and bot lifecycle PnL.
 6. `[x] WLEDGER-06 api-read`: expose performance summary and equity timeline
    endpoints with completeness state.
-7. `[ ] WLEDGER-07 web-summary`: add wallet performance summary cards and explain
+7. `[x] WLEDGER-07 web-summary`: add wallet performance summary cards and explain
    unclassified adjustments.
-8. `[ ] WLEDGER-08 web-chart`: add equity timeline chart with cashflow markers.
-9. `[ ] WLEDGER-09 dashboard`: switch dashboard wallet delta to ledger-backed
+8. `[x] WLEDGER-08 web-chart`: add equity timeline chart with cashflow markers.
+9. `[x] WLEDGER-09 dashboard`: switch dashboard wallet delta to ledger-backed
    `botPnl / contributedCapital`.
 10. `[ ] WLEDGER-10 verification`: run exchange-history backfill tests, web chart
     tests, typecheck/build, and guardrails.
@@ -193,6 +193,32 @@ Closed on 2026-04-30 by adding wallet analytics read endpoints:
 The first read model exposes current balance, contributed capital, bot PnL
 fields, fees/funding, unclassified adjustment, wallet delta percent, timeline
 points, cashflow markers, and completeness state.
+
+## WLEDGER-07..09 Closure
+Closed on 2026-04-30 by wiring the wallet preview UI to the prepared ledger
+APIs:
+- wallet list rows now include a preview action,
+- `/dashboard/wallets/:id/preview` renders performance summary, equity
+  timeline, and cashflow events,
+- dashboard wallet delta now prefers the ledger-backed semantics instead of the
+  older web-only baseline math when the richer wallet analytics are available.
+
+## Post-WLEDGER Follow-up
+Wallet history is now covered, but a distinct operator request remains queued:
+bot-scoped portfolio history from active bot start to now, with explicit
+markers for:
+- `PAPER_RESET`,
+- LIVE deposits/withdrawals and transfers affecting the linked wallet,
+- other approved wallet-capital events that explain value jumps without being
+  counted as bot PnL.
+
+That follow-up must reuse:
+- wallet-ledger cashflow events for LIVE,
+- runtime/session trade truth for bot lifecycle performance,
+- wallet `paperResetAt` for PAPER checkpoint markers.
+
+Canonical follow-up packet:
+- `docs/planning/bhist-01-bot-portfolio-history-and-capital-events-task-2026-05-01.md`
 
 ## Acceptance Criteria
 - User deposits and withdrawals do not change bot PnL.

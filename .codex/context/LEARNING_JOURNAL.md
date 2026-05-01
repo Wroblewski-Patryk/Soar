@@ -44,8 +44,37 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Avoid: defaulting to `docker compose down -v` or declaring the repo broken when the real problem is only local migration bookkeeping drift.
 - Evidence:
   - 2026-04-29 `V1EXCEL-02`: local umbrella smoke became green after resolving the historical rows for `20260424094500_add_single_context_bot_refs`, `20260426003000_scope_open_position_uniqueness_by_wallet_or_bot`, `20260427103000_add_position_close_attribution`, and `20260428113000_add_position_restart_continuity_state`.
+  - 2026-05-01 V1 deploy-prep smoke became green after the same verified
+    non-destructive pattern for `20260430153000_add_position_margin_used`,
+    `20260430190000_move_external_management_to_bot`, and
+    `20260430200000_add_live_wallet_cashflow_ledger`; each resolve was applied
+    only after checking the expected local schema objects already existed.
 
 ## Entries
+
+### 2026-05-01 - Go-live smoke migration guidance must name the actual failed migration
+- Context: V1 deploy-prep reran `pnpm run test:go-live:smoke` on a workstation
+  with several historical local Prisma failed rows.
+- Symptom: the wrapper detected migration failure correctly, but initially
+  printed a hardcoded older migration name even when Prisma reported newer
+  failures such as `20260430153000_add_position_margin_used`.
+- Root cause: `scripts/goLiveSmoke.mjs` treated one known drift as the only
+  known drift and did not parse Prisma's actual failed migration from stdout or
+  stderr.
+- Guardrail: smoke wrappers must report the exact failed migration emitted by
+  the tool, and keep recovery guidance generic unless the schema object check is
+  migration-specific.
+- Preferred pattern:
+```text
+1) Parse Prisma P3009/P3018 output for the migration name.
+2) Inspect that migration's schema objects locally.
+3) Use `prisma migrate resolve --applied <failed_migration>` only when objects
+   already exist.
+4) Rerun the smoke wrapper and keep the command output as evidence.
+```
+- Avoid: hardcoding a historical migration id in generic recovery guidance.
+- Evidence: 2026-05-01 deploy-prep fixed
+  `scripts/goLiveSmoke.mjs`, then `pnpm run test:go-live:smoke` passed.
 
 ### 2026-05-01 - OPS proof artifacts must not persist auth command arguments
 - Context: while refreshing `V1EXCEL-05`, the production rollback-proof wrapper

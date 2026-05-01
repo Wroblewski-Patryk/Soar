@@ -60,13 +60,13 @@ Out of scope:
 
 ## 8. Test Coverage and Evidence
 - Primary tests:
+  - `app/dashboard/logs/page.test.tsx`
   - `AuditTrailView.test.tsx`
 - Suggested validation command:
 ```powershell
-pnpm --filter web test -- src/features/logs/components/AuditTrailView.test.tsx
+pnpm --filter web test -- src/app/dashboard/logs/page.test.tsx src/features/logs/components/AuditTrailView.test.tsx
 ```
 
 ## 9. Open Issues and Follow-Ups
 - Add pagination controls once backend log volume exceeds current client limit usage.
 - Add saved filter presets for recurring operator investigations.
-

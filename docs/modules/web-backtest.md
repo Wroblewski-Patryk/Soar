@@ -5,7 +5,7 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/backtest`
 - Owner: frontend/trading-analysis
-- Last updated: 2026-04-22
+- Last updated: 2026-05-01
 - Related planning task: `SCALE-17`
 
 ## Canonical Architecture Linkage
@@ -97,6 +97,9 @@ Out of scope:
 
 ## 8. Test Coverage and Evidence
 - Primary tests:
+  - `app/dashboard/backtests/list/page.test.tsx`
+  - `app/dashboard/backtests/create/page.test.tsx`
+  - `app/dashboard/backtests/[id]/page.test.tsx`
   - `BacktestCreateForm.test.tsx`
   - `BacktestRunDetails.test.tsx`
   - `BacktestsList.test.tsx`
@@ -104,7 +107,7 @@ Out of scope:
   - `useBacktestRunCoreData.test.tsx`
 - Suggested validation command:
 ```powershell
-pnpm --filter web test -- src/features/backtest/components/BacktestCreateForm.test.tsx src/features/backtest/components/BacktestRunDetails.test.tsx src/features/backtest/components/BacktestsList.test.tsx src/features/backtest/components/BacktestsListView.test.tsx src/features/backtest/hooks/useBacktestRunCoreData.test.tsx
+pnpm --filter web test -- src/app/dashboard/backtests/list/page.test.tsx src/app/dashboard/backtests/create/page.test.tsx src/app/dashboard/backtests/[id]/page.test.tsx src/features/backtest/components/BacktestCreateForm.test.tsx src/features/backtest/components/BacktestRunDetails.test.tsx src/features/backtest/components/BacktestsList.test.tsx src/features/backtest/components/BacktestsListView.test.tsx src/features/backtest/hooks/useBacktestRunCoreData.test.tsx
 ```
 
 ## 9. Open Issues and Follow-Ups

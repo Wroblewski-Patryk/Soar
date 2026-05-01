@@ -49,6 +49,25 @@ Operational queue for one-task execution runs.
     `docs/planning/v1cover-04-model-function-ledger-standard-task-2026-05-01.md`,
     `docs/governance/function-coverage-ledger-standard.md`,
     `docs/governance/function-coverage-ledger-template.csv`.
+- [x] `V1SCOPE-01 planning(scope): classify lower-priority not-verified surfaces`
+  - 2026-05-01: Closed the first `V1SCOPE-A` pass by classifying ambiguous
+    lower-priority rows into explicit launch-scope buckets. `POST_V1`:
+    admin users/subscriptions, profile subscription, strategy import/export,
+    and assistant config/dry-run. `WAIVED_FOR_V1`: cross-mode reports,
+    avatar upload, and orphan-repair command. `IN_V1`: subscription
+    entitlement enforcement remains in scope because it still gates bot/runtime
+    behavior. Evidence:
+    `docs/planning/v1scope-01-launch-scope-decision-task-2026-05-01.md`,
+    `docs/operations/v1-function-implementation-readiness-audit-2026-05-01.md`.
+- [x] `V1SUBS-01 fix(api-entitlements): fail closed on LIVE bot writes without live-trading entitlement`
+  - 2026-05-01: Closed the remaining local `SUBS-ENTITLEMENTS-001` V1 slice.
+    Added one shared `assertSubscriptionAllowsLiveTrading(...)` guard, enforced
+    it on LIVE bot create and `PAPER -> LIVE` mode switch, and added focused
+    entitlement e2e coverage proving FREE-plan LIVE pool edits cannot bypass
+    `features.liveTrading=false`. Validation: API typecheck PASS, focused
+    entitlement e2e PASS (`5/5`), API build PASS, repository guardrails PASS.
+    Evidence:
+    `docs/planning/v1subs-01-live-entitlement-bot-write-guard-task-2026-05-01.md`.
 - [ ] `V1FINAL-01 qa(prod): verify deployed DOGE runtime hardening and run final V1 gates`
   - 2026-05-01 preflight: production public smoke is green, but build-info
     still reports `c081f224134fedb65de2ecad716274b92593c373`, while repository
@@ -72,6 +91,13 @@ Operational queue for one-task execution runs.
     context, manual operator matrix is not complete, and stage remains `503`.
     Evidence:
     `docs/planning/v1final-01-prod-gate-execution-task-2026-05-01.md`.
+  - 2026-05-01 target refresh: production public smoke still PASS and
+    build-info now reports `662ce9b48fac6a48963a62f8d3bc4ac2f645cac6`, which
+    is an ancestor of local `HEAD` `ef37fca0c4a3c47605986a815b5323fd535a37fa`.
+    Production is behind the newest local commits
+    `ca430aa5`/`1e20b6df`/`ef37fca0`. Stage public smoke still fails with
+    three `503` checks. Evidence:
+    `docs/planning/v1gate-01-current-target-freshness-sync-task-2026-05-01.md`.
 - [ ] `V1EXCEL-04 ops(stage-refresh): restore stage target before authenticated gate rerun`
   - 2026-05-01 refresh: stage public smoke now fails before auth. `stage-api`
     and `stage` both return `503 no available server` for health/ready/root and
@@ -86,6 +112,9 @@ Operational queue for one-task execution runs.
     blocked until the account has access to the real Soar resources or an API
     token is provided. Evidence:
     `docs/operations/v1excel-04-stage-coolify-access-refresh-2026-05-01.md`.
+  - 2026-05-01 target refresh: public stage smoke still fails before auth with
+    `503` for API `/health`, API `/ready`, and web `/`. Evidence:
+    `docs/operations/v1gate-01-current-target-freshness-2026-05-01.md`.
 - [ ] `V1EXCEL-05 ops(prod-refresh): finish broader production evidence families`
   - 2026-05-01 refresh: executable production subset is green on the current
     deployed runtime candidate. Public smoke PASS, protected runtime freshness
@@ -100,6 +129,27 @@ Operational queue for one-task execution runs.
     artifacts. The sign-off record itself remains `BLOCKED` because approver
     fields are blank. The fresh prod restore drill artifact is `FAIL` until
     prod DB container settings or VPS/Coolify execution context are available.
+- [x] `V1GATE-01 release(docs+ops): refresh current target freshness and stage availability`
+  - 2026-05-01: Closed a public preflight sync after production and stage target
+    truth changed again. Production public smoke PASS and build-info reports
+    `662ce9b48fac6a48963a62f8d3bc4ac2f645cac6`; stage public smoke still FAILS
+    with three `503` checks; production SHA is an ancestor of local `HEAD`, but
+    lacks the newest local commits `ca430aa5`, `1e20b6df`, and `ef37fca0`.
+    Evidence:
+    `docs/planning/v1gate-01-current-target-freshness-sync-task-2026-05-01.md`,
+    `docs/operations/v1gate-01-current-target-freshness-2026-05-01.md`.
+- [x] `V1SMOKE-01 test(local): restore go-live smoke after entitlement and ownership fixture drift`
+  - 2026-05-01: Closed the local deploy-prep smoke recovery. Non-destructively
+    repaired local Prisma migration-history drift only after verifying expected
+    schema objects existed, aligned `backtests.e2e` with bot-level
+    external-position authority and live-trading subscription entitlement, and
+    aligned `BotsManagement` test expectations with the canonical
+    `manageExternalPositions` payload. `goLiveSmoke.mjs` now reports the actual
+    failed migration instead of a hardcoded historical id. Validation PASS:
+    focused backtests e2e (`14/14`), focused web smoke pack (`17/17`), bot
+    portfolio-history web test (`1/1`), and full `pnpm run test:go-live:smoke`
+    (API `38/38`, web `17/17`). Evidence:
+    `docs/planning/v1smoke-01-go-live-smoke-recovery-task-2026-05-01.md`.
 - [x] `DOCSYNC-2026-05-01-WALLET-PREVIEW fix(docs+web-route): sync canonical wallet preview route inventory`
   - 2026-05-01: Closed a local docs-parity slice after reviewing the active V1
     queue and confirming the current executable work is blocked on external
@@ -119,6 +169,57 @@ Operational queue for one-task execution runs.
     empty state and hiding summary cards, equity timeline, and cashflow events.
     Added focused regression coverage and synced wallet module docs. Evidence:
     `docs/planning/wpreview-10-wallet-preview-unavailable-fail-closed-task-2026-05-01.md`.
+- [x] `V1UX-01 qa(web-route): lock operational route smoke for profile, logs, exchanges, and wallet preview`
+  - 2026-05-01: Closed a local `V1UX-A` parity slice after rechecking the
+    active queue and confirming the remaining `NOW` blockers are still
+    stage/prod evidence tasks. Added focused route tests for the canonical
+    `/dashboard/profile` shell (including `#api` hash entry), `/dashboard/logs`,
+    `/dashboard/exchanges -> /dashboard/profile#api` redirect, and the wallet
+    preview page shell. Extended route-locale smoke to cover logs and wallet
+    preview, and synced affected module docs. Validation: focused route-smoke
+    pack PASS (`18/18` files, `19/19` tests), `web` typecheck PASS, `web`
+    build PASS, repository guardrails PASS. Evidence:
+    `docs/planning/v1ux-01-operational-route-smoke-task-2026-05-01.md`.
+- [x] `V1UX-REPORTS-01 qa(web-route): lock canonical reports route shell smoke`
+  - 2026-05-01: Closed a follow-up local route-parity slice while external
+    V1 gates remained blocked on stage/prod evidence. Added a focused shell
+    test for `/dashboard/reports` that proves heading, breadcrumb navigation,
+    and reports-view mount, and synced the reports module doc with the new
+    coverage. Validation: focused route-smoke pack PASS (`18/18` files,
+    `19/19` tests), `web` typecheck PASS, `web` build PASS, repository
+    guardrails PASS. Evidence:
+    `docs/planning/v1ux-reports-01-route-shell-smoke-task-2026-05-01.md`.
+- [x] `V1UX-ROUTES-02 qa(web-route): lock canonical CRUD/detail route shells for markets, strategies, and backtests`
+  - 2026-05-01: Closed a second local route-parity slice while external V1
+    blockers remained stage/prod evidence tasks. Added dedicated App Router
+    shell tests for `markets` list/create/edit, `strategies` list/create/edit
+    plus `/:id -> /edit` redirect, and `backtests` list/create/detail.
+    Synced the module docs so these routes are now first-class evidence in the
+    web deep-dives. Validation: focused route-smoke pack PASS (`18/18` files,
+    `19/19` tests), `web` typecheck PASS, `web` build PASS, repository
+    guardrails PASS. Evidence:
+    `docs/planning/v1ux-routes-02-canonical-crud-route-shell-smoke-task-2026-05-01.md`.
+- [x] `V1UX-BOTS-03 qa(web-route): lock canonical bot preview and assistant route shells`
+  - 2026-05-01: Closed a narrow follow-up bot route-parity slice while the
+    executable V1 blockers remained external stage/prod/manual evidence work.
+    Added dedicated App Router shell tests for `/dashboard/bots/:id/preview`
+    and `/dashboard/bots/:id/assistant`, asserting breadcrumb shell stability
+    plus canonical `BotsManagement` tab locks and `preferredBotId` forwarding.
+    Synced `web-bots` evidence. Validation: focused route-smoke pack PASS
+    (`18/18` files, `19/19` tests), `web` typecheck PASS, `web` build PASS,
+    repository guardrails PASS. Evidence:
+    `docs/planning/v1ux-bots-03-canonical-bot-preview-assistant-route-shell-task-2026-05-01.md`.
+- [x] `BHIST-01 feature(bot-history): add bot-scoped portfolio history with reset and wallet-capital markers`
+  - 2026-05-01: Closed a local product slice while stage/prod release gates
+    remained externally blocked. Added `GET /dashboard/bots/:id/portfolio-history`
+    plus a new monitoring section showing bot-scoped value progression,
+    `PAPER_RESET` markers for PAPER, and wallet-ledger capital-event markers
+    for LIVE. The UI is explicit about partial truth when open PnL is only
+    known from the latest runtime snapshot. Validation: `api` typecheck PASS,
+    `web` typecheck PASS, focused API portfolio-history e2e PASS (`2/2`),
+    focused web portfolio-history test PASS (`1/1`), API build PASS, web build
+    PASS, repository guardrails PASS. Evidence:
+    `docs/planning/bhist-01-bot-portfolio-history-and-capital-events-task-2026-05-01.md`.
 - [x] `V1DCA-01 fix(api-runtime-read): preserve DCA visibility after exchange-sync position replacement`
   - 2026-05-01: Closed after protected production inspection showed the `LIVE`
     DOGEUSDT DCA fill existed in the trade ledger but the current dashboard
@@ -296,19 +397,28 @@ Operational queue for one-task execution runs.
   - 2026-04-29: Closed by publishing `docs/operations/v1excel-gap-map-audit-2026-04-29.md` plus `docs/planning/v1excel-01-gap-map-audit-task-2026-04-29.md`. The audit freezes one explicit answer: no open core implementation or architecture gap remains for `V1`; the remaining blockers are fresh manual evidence, honest local full-confidence reproducibility, fresh stage/prod activation evidence, and one final operator-facing `GO / NO-GO` decision.
 - [x] `V1EXCEL-02 qa(local-infra): restore fully reproducible local confidence path or classify the exact external blocker`
   - 2026-04-29: Closed by repairing local Prisma migration-history drift non-destructively with `migrate resolve`, documenting the recovery in engineering docs, and rerunning `pnpm run test:go-live:smoke` successfully. Canonical closure: `docs/operations/v1excel-local-confidence-path-closure-2026-04-29.md`.
-- [ ] `V1EXCEL-03 qa(manual-matrix): execute the full critical manual UI/API/operator matrix`
+Historical carryover snapshot, superseded by the active `NOW` entries above:
+
+- Historical `V1EXCEL-03 qa(manual-matrix): execute the full critical manual UI/API/operator matrix`
   - 2026-04-29 status: IN_PROGRESS. Authenticated Soar production operator access is now available and the first production `PAPER` API/operator pass is recorded in `docs/operations/v1excel-paper-operator-verification-2026-04-29.md`. That evidence is now stronger than before: same-side add is truthful, post-deploy `PAPER` manual close now passes truthfully through the protected production API (`200`, open row removed, closed row preserved in runtime history, realized PnL reflected in free cash), and the authenticated dashboard UI now also shows the aligned `PAPER` state (`No open positions`, updated capital, `History` row `Close / Manual / User in app`). The remaining incomplete scope is browser-side action proof if desired plus the `LIVE` exchange-authority, mixed-origin, and restart/recovery scenarios. Canonical matrix: `docs/operations/v1excel-manual-verification-matrix-2026-04-29.md`.
-- [ ] `V1EXCEL-04 ops(stage-refresh): rerun the latest authenticated stage release gate and smoke on the current candidate`
+- Historical `V1EXCEL-04 ops(stage-refresh): rerun the latest authenticated stage release gate and smoke on the current candidate`
   - 2026-04-29 status: BLOCKED by missing stage OPS/private-route auth. Public stage smoke PASS and dry-run rehearsal artifacts were refreshed: `docs/operations/v1excel-stage-refresh-2026-04-29.md`.
-- [ ] `V1EXCEL-05 ops(prod-refresh): rerun fresh production release-gate evidence families on the current candidate`
+- Historical `V1EXCEL-05 ops(prod-refresh): rerun fresh production release-gate evidence families on the current candidate`
   - 2026-04-29 status: BLOCKED by stale prod evidence plus missing OPS/private-route auth. Public prod smoke PASS and prod gate dry-run was refreshed: `docs/operations/v1excel-prod-refresh-2026-04-29.md`.
-- [ ] `V1EXCEL-06 ops(runtime-observability): verify active LIVE worker/runtime diagnostics under current production truth`
+- Historical `V1EXCEL-06 ops(runtime-observability): verify active LIVE worker/runtime diagnostics under current production truth`
   - 2026-04-29 status: BLOCKED by protected-route `401` on stage and prod runtime observability probes without OPS auth. Canonical status: `docs/operations/v1excel-runtime-observability-2026-04-29.md`.
   - 2026-05-01 production refresh: production runtime observability is now green with authenticated access. `ops:deploy:runtime-freshness` PASS, `ops:deploy:rollback-guard` PASS with `shouldRollback=false`, no reasons, no alerts, and `runningCount=4`. Stage runtime observability still needs separate authenticated evidence, so the broader V1 confidence gate remains open. Task packet: `docs/planning/v1excel-06-prod-runtime-observability-task-2026-05-01.md`.
 - [x] `V1EXCEL-07 release(go-no-go): rebuild RC status/sign-off/checklist and publish final V1 excellence decision`
   - 2026-04-29: Closed with `NO-GO` for candidate `51acd9c445227a3ca8cc8b781564d14b55fda43f`. Canonical decision: `docs/operations/v1excel-final-go-no-go-2026-04-29.md`.
 - [x] `V1EXCEL-08 docs(closure): sync canonical queue/context and freeze the final post-V1 handoff`
   - 2026-04-29: Closed by syncing queue/context and freezing the current truth: local confidence is green, but the final operational blockers are still `V1EXCEL-03..06`.
+- [x] `DOCSYNC-2026-05-01-V1EXCEL-HISTORICAL-CARRYOVER docs(queue): mark older V1EXCEL carryover checkboxes non-active`
+  - 2026-05-01: Closed a queue hygiene slice after `V1GATE-01` proved the
+    active stage/prod truth had moved on from the 2026-04-29 carryover block.
+    Older duplicate `V1EXCEL-03..06` entries in this historical section are now
+    rendered as non-checkbox historical notes, so the only executable queue
+    remains the current `NOW`/`BLOCKED` entries. Evidence:
+    `docs/planning/docsync-2026-05-01-v1excel-historical-carryover-task.md`.
 - [x] `V1TRUTH-05 test(api+web-red): lock pending external order versus position truth`
   - 2026-04-29: Closed by adding a focused `orders-positions.e2e` proof for the reported real-money baseline: one open `LIVE` position plus one pending external/manual exchange `DCA` order on the same symbol. Runtime session positions and dashboard aggregate both stay truthful: the position keeps its original quantity/notional, while the pending exchange order remains visible only in `openOrders` until fill confirmation arrives.
 - [x] `V1TRUTH-06 fix(api+reads+web): harden order/position merge and operator presentation`

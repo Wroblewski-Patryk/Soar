@@ -5,7 +5,7 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/markets`
 - Owner: frontend/market-universe
-- Last updated: 2026-04-20
+- Last updated: 2026-05-01
 - Related planning task: `MURC-09`
 
 ## 1. Purpose and Scope
@@ -69,10 +69,13 @@ Out of scope:
 
 ## 8. Test Coverage and Evidence
 - Primary tests:
+  - `app/dashboard/markets/list/page.test.tsx`
+  - `app/dashboard/markets/create/page.test.tsx`
+  - `app/dashboard/markets/[id]/edit/page.test.tsx`
   - `MarketUniverseForm.test.tsx`
 - Suggested validation command:
 ```powershell
-pnpm --filter web test -- src/features/markets/components/MarketUniverseForm.test.tsx
+pnpm --filter web test -- src/app/dashboard/markets/list/page.test.tsx src/app/dashboard/markets/create/page.test.tsx src/app/dashboard/markets/[id]/edit/page.test.tsx src/features/markets/components/MarketUniverseForm.test.tsx
 ```
 
 ## 9. Open Issues and Follow-Ups

@@ -68,6 +68,16 @@ Last updated: 2026-05-01
     `docs/governance/function-coverage-ledger-standard.md`,
     `docs/governance/function-coverage-ledger-template.csv`.
 
+- [x] `V1SUBS-01 fix(api-entitlements): fail closed on LIVE bot writes without live-trading entitlement`
+  - Scope: close the remaining local `SUBS-ENTITLEMENTS-001` V1 implementation
+    slice by enforcing `features.liveTrading=true` on LIVE bot create and
+    `PAPER -> LIVE` mode switch.
+  - 2026-05-01: Closed with one shared
+    `assertSubscriptionAllowsLiveTrading(...)` guard and focused e2e coverage
+    for FREE-plan LIVE-pool drift. Validation PASS: API typecheck, focused
+    entitlement e2e (`5/5`), API build, repository guardrails. Evidence:
+    `docs/planning/v1subs-01-live-entitlement-bot-write-guard-task-2026-05-01.md`.
+
 - [ ] `V1FINAL-01 qa(prod): verify deployed DOGE runtime hardening and run final V1 gates`
   - Scope: execute the final V1 gate structure after production deploys
     `fba29a96` or later. Gate order: deploy freshness, DOGE close/reopen
@@ -128,6 +138,42 @@ Last updated: 2026-05-01
     `FAIL` because this context lacks production DB container settings. Latest
     release-gate blockers: `activationAudit:stale`, `activationPlan:stale`,
     `backupRestoreDrill:failed`.
+
+- [x] `V1GATE-01 release(docs+ops): refresh current target freshness and stage availability`
+  - Scope: refresh public production/stage deploy smoke, production build-info,
+    and deployed SHA ancestry before further final V1 gate claims.
+  - 2026-05-01: Closed with production public smoke PASS on
+    `662ce9b48fac6a48963a62f8d3bc4ac2f645cac6`, stage public smoke FAIL with
+    `503` on API `/health`, API `/ready`, and web `/`, and a git ancestry check
+    showing production is an ancestor of local `HEAD` but lacks
+    `ca430aa5`, `1e20b6df`, and `ef37fca0`. Evidence:
+    `docs/planning/v1gate-01-current-target-freshness-sync-task-2026-05-01.md`.
+
+- [x] `V1SMOKE-01 test(local): restore go-live smoke after entitlement and ownership fixture drift`
+  - Scope: recover the local umbrella go-live smoke path after verified local
+    Prisma migration-history drift and stale API/web fixtures from approved V1
+    entitlement and bot-authority changes.
+  - 2026-05-01: Closed with non-destructive local migration-history recovery,
+    `backtests.e2e` fixture alignment, `BotsManagement` payload expectation
+    alignment, and generic failed-migration guidance in `goLiveSmoke.mjs`.
+    Validation PASS: focused backtests e2e (`14/14`), focused web smoke pack
+    (`17/17`), bot portfolio-history web test (`1/1`), and full
+    `pnpm run test:go-live:smoke` (API `38/38`, web `17/17`). Evidence:
+    `docs/planning/v1smoke-01-go-live-smoke-recovery-task-2026-05-01.md`.
+
+- [x] `BHIST-01 feature(bot-history): add bot-scoped portfolio history with reset and wallet-capital markers`
+  - Scope: extend selected-bot monitoring with one portfolio-history view from
+    active bot start to now, reusing wallet-ledger LIVE cashflow events and
+    PAPER reset checkpoint truth instead of creating a parallel accounting
+    system.
+  - 2026-05-01: Closed by adding
+    `GET /dashboard/bots/:id/portfolio-history` and a selected-bot monitoring
+    section with summary cards, chart, recent points, and capital-event
+    markers. Validation PASS: API typecheck, web typecheck, focused API
+    portfolio-history e2e (`2/2`), focused web portfolio-history test (`1/1`),
+    API build, web build, repository guardrails.
+    Evidence:
+    `docs/planning/bhist-01-bot-portfolio-history-and-capital-events-task-2026-05-01.md`.
 
 - [x] `V1DCA-01 fix(api-runtime-read): preserve DCA visibility after exchange-sync position replacement`
   - Scope: keep dashboard runtime `Positions` DCA truth aligned with the
@@ -395,20 +441,23 @@ Last updated: 2026-05-01
   - Scope: resolve or strictly classify the remaining `test:go-live:smoke` local blocker around migration-history debt and reusable infra so another engineer can reproduce the local confidence path honestly.
   - 2026-04-29: Closed by non-destructively repairing drifted local Prisma migration history with `migrate resolve`, updating the local-development and smoke-wrapper guidance, and rerunning the umbrella local pack successfully. Fresh evidence: `pnpm run test:go-live:smoke` => PASS with `35/35` API and `17/17` web checks. Canonical closure: `docs/operations/v1excel-local-confidence-path-closure-2026-04-29.md`.
 
-- [ ] `V1EXCEL-03 qa(manual-matrix): execute the full critical manual UI/API/operator matrix`
+Historical carryover snapshot, superseded by active `READY` and `BLOCKED`
+entries above:
+
+- Historical `V1EXCEL-03 qa(manual-matrix): execute the full critical manual UI/API/operator matrix`
   - Scope: run and record the real critical `PAPER` and `LIVE` operator scenarios, including manual order/close, pending external order truth, DCA/close protection behavior, and restart/recovery truth.
   - 2026-04-29 status: IN_PROGRESS. The full matrix remains incomplete, but authenticated Soar production operator access is now available and the first `PAPER` API/operator pass has been executed. Evidence: `docs/operations/v1excel-paper-operator-verification-2026-04-29.md`. That evidence now confirms truthful same-side add behavior for an existing managed `PAPER` position, truthful post-deploy manual close through the protected production API, and aligned authenticated dashboard UI truth for the resulting paper-bot state and history. The remaining incomplete scope is browser-side action proof if required plus the `LIVE` exchange-authority, mixed-origin, and restart/recovery scenarios.
 
-- [ ] `V1EXCEL-04 ops(stage-refresh): rerun the latest authenticated stage release gate and smoke on the current candidate`
+- Historical `V1EXCEL-04 ops(stage-refresh): rerun the latest authenticated stage release gate and smoke on the current candidate`
   - Scope: refresh stage rehearsal and smoke artifacts against the newest repository candidate instead of inheriting older activation evidence.
   - 2026-04-29 status: BLOCKED. Public stage smoke is green, and dry-run rehearsal artifacts were regenerated, but authenticated stage OPS/private-route evidence remains blocked by missing credentials. Canonical status: `docs/operations/v1excel-stage-refresh-2026-04-29.md`.
 
-- [ ] `V1EXCEL-05 ops(prod-refresh): rerun fresh production release-gate evidence families on the current candidate`
+- Historical `V1EXCEL-05 ops(prod-refresh): rerun fresh production release-gate evidence families on the current candidate`
   - Scope: refresh prod release gate, post-deploy smoke, rollback proof, restore-drill proof, and related candidate-day artifacts.
   - 2026-04-29 status: BLOCKED. Public prod smoke is green, but the prod release-gate dry-run still reports stale evidence families and protected OPS routes remain auth-gated from this session. Canonical status: `docs/operations/v1excel-prod-refresh-2026-04-29.md`.
   - 2026-04-29 post-redeploy check: public prod smoke passed again on candidate `4514894127ad07cbe95415043658e10b8c0cf75d`; protected runtime and rollback probes still fail at the same `401` auth boundary. Follow-up note: `docs/operations/v1excel-prod-post-deploy-check-2026-04-29.md`.
 
-- [ ] `V1EXCEL-06 ops(runtime-observability): verify active LIVE worker/runtime diagnostics under current production truth`
+- Historical `V1EXCEL-06 ops(runtime-observability): verify active LIVE worker/runtime diagnostics under current production truth`
   - Scope: confirm worker health, runtime freshness, event visibility, and operator diagnostics remain healthy under the current hardened `LIVE` candidate.
   - 2026-04-29 status: BLOCKED. Stage and prod runtime observability probes both hit protected-route `401` boundaries without OPS auth; this proves the endpoint boundary but not current worker/runtime health. Canonical status: `docs/operations/v1excel-runtime-observability-2026-04-29.md`.
   - 2026-05-01 production refresh: production runtime observability is green with authenticated evidence. Runtime freshness PASS, rollback guard PASS with `shouldRollback=false`, no reasons, no alerts, and `runningCount=4`. Stage runtime observability remains open. Task packet: `docs/planning/v1excel-06-prod-runtime-observability-task-2026-05-01.md`.
@@ -424,6 +473,16 @@ Last updated: 2026-05-01
 - [x] `V1EXCEL-08 docs(closure): sync canonical queue/context and freeze the final post-V1 handoff`
   - Scope: if `GO`, close the wave and point future work to `BOTMULTI-A`; if `NO-GO`, open only the smallest missing fix packet(s).
   - 2026-04-29: Closed as a docs/context sync slice. Canonical truth is now frozen: `V1EXCEL-02` is green locally, `V1EXCEL-03..06` remain external-evidence blockers, and the latest candidate stays `NO-GO` until authenticated manual and OPS evidence is rerun.
+
+- [x] `DOCSYNC-2026-05-01-V1EXCEL-HISTORICAL-CARRYOVER docs(queue): mark older V1EXCEL carryover checkboxes non-active`
+  - Scope: prevent stale 2026-04-29 V1EXCEL carryover entries from appearing
+    as separately executable unchecked work after newer 2026-05-01 target
+    evidence superseded them.
+  - 2026-05-01: Closed by converting the duplicate historical
+    `V1EXCEL-03..06` checklist rows in this older section into non-checkbox
+    historical notes. Active execution truth remains in current `READY` and
+    `BLOCKED` sections. Evidence:
+    `docs/planning/docsync-2026-05-01-v1excel-historical-carryover-task.md`.
 
 - [x] `V1TRUTH-00 planning(queue): publish final LIVE exchange-truth packet`
   - 2026-04-29: Closed as the next planning-only slice after the new real-account notes review. Published `docs/planning/v1truth-live-exchange-truth-hardening-plan-2026-04-29.md` plus `docs/planning/v1truth-00-planning-task-2026-04-29.md`, freezing one final `V1` hardening wave around truthful `LIVE` money paths: leverage-aware futures manual-order sizing, exchange-backed manual close, pending external order versus position truth, and the final explicit `DCA/TTP/TSL` rule. The user-approved staged direction is now canonical: keep the singular bot architecture through this wave and defer multi-strategy-per-bot to post-`V1`.

@@ -11,8 +11,10 @@ import {
   MonitoringQuickNavSection,
 } from "./BotsMonitoringSections";
 import { MonitoringFutureSignalsSection } from "./MonitoringFutureSignalsSection";
+import { BotsPortfolioHistorySection } from "./BotsPortfolioHistorySection";
 import {
   Bot,
+  BotPortfolioHistoryResponse,
   BotRuntimeSessionDetail,
   BotRuntimeSessionListItem,
   BotRuntimeSessionStatus,
@@ -132,6 +134,7 @@ type BotsMonitoringTabProps = {
     }>;
     closedCount?: number;
   } | null;
+  monitorPortfolioHistory: BotPortfolioHistoryResponse | null;
   monitorOpenMarginSummary: {
     totalNotional: number;
     totalMarginUsed: number;
@@ -258,6 +261,7 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
     monitorChecklistItems,
     monitorSessionLoading,
     monitorPositions,
+    monitorPortfolioHistory,
     monitorOpenMarginSummary,
     monitorCapitalKpis,
     monitorWinRate,
@@ -564,6 +568,17 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                         </div>
                       </div>
                     </div>
+                  ) : null}
+
+                  {monitorPortfolioHistory ? (
+                    <BotsPortfolioHistorySection
+                      t={t}
+                      history={monitorPortfolioHistory}
+                      formatDateTime={formatDateTime}
+                      formatNumber={formatNumber}
+                      formatCurrency={formatCurrency}
+                      interpolateTemplate={interpolateTemplate}
+                    />
                   ) : null}
 
                   <div id="monitor-now" className="scroll-mt-24 rounded-lg border border-base-300 bg-base-100 p-3">

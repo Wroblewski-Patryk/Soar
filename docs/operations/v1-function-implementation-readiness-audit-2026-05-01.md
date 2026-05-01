@@ -130,25 +130,25 @@ explicitly deferred.
 | `BACKTEST-REPORT-001` | `backtests` | `P1` | `NEEDS_PROD_UI_CHECK` | Verify known run details render. |
 | `LOGS-AUDIT-001` | `logs` | `P1` | `NEEDS_PROD_UI_CHECK` | Verify read-only audit trail. |
 | `MARKETSTREAM-SSE-001` | `market-stream` | `P1` | `PARTIAL` | Add small production SSE smoke if live UI stream confidence matters for V1. |
-| `POSITIONS-REPAIR-001` | `positions` | `P1` | `NOT_VERIFIED` | Keep fixture/stage-only unless incident plan requires it. |
+| `POSITIONS-REPAIR-001` | `positions` | `P1` | `NOT_VERIFIED` | `WAIVED_FOR_V1`: incident-only repair command; keep fixture/stage-only unless an active incident requires it. |
 | `PROFILE-BASIC-001` | `profile` | `P1` | `NEEDS_PROD_UI_CHECK` | Verify non-destructive read/update smoke. |
 | `PROFILE-SECURITY-001` | `profile` | `P1` | `NEEDS_PROD_UI_CHECK` | Verify only on test account or stage. |
-| `REPORTS-CROSSMODE-001` | `reports` | `P1` | `NOT_VERIFIED` | Decide whether reports are V1 launch scope. |
+| `REPORTS-CROSSMODE-001` | `reports` | `P1` | `NOT_VERIFIED` | `WAIVED_FOR_V1`: useful analytics surface, but not part of the current runtime-replacement gate. |
 | `STRAT-ADV-TTP-002` | `strategies` | `P1` | `NEEDS_PROD_SAMPLE` | Keep as opportunistic production evidence unless TTP incident repeats. |
 | `STRAT-IND-001` | `strategies` | `P1` | `PARTIAL` | Capture production indicator metadata endpoint sample. |
-| `STRAT-IO-001` | `strategies` | `P1` | `NOT_VERIFIED` | Add import/export smoke if config portability is launch scope. |
-| `SUBS-ENTITLEMENTS-001` | `subscriptions` | `P1` | `NOT_VERIFIED` | Decide commercial entitlement scope before GO. |
+| `STRAT-IO-001` | `strategies` | `P1` | `NOT_VERIFIED` | `POST_V1`: strategy JSON portability remains planned after MVP/V1. |
+| `SUBS-ENTITLEMENTS-001` | `subscriptions` | `P1` | `PASS` | `IN_V1` local implementation evidence is closed by `V1SUBS-01`: LIVE create and `PAPER -> LIVE` switch fail closed when `features.liveTrading=false`. |
 | `WALLET-LIVE-LEDGER-001` | `wallets` | `P1` | `NEEDS_PROD_SAMPLE` | Capture wallet preview after next live ledger refresh. |
 | `WALLET-LIVE-LEDGER-002` | `wallets` | `P1` | `NEEDS_PROD_SAMPLE` | Run controlled cashflow-history ingestion proof. |
 | `WALLET-PREVIEW-001` | `wallets` | `P1` | `NEEDS_PROD_UI_CHECK` | Browser-check wallet preview on production. |
-| `ADMIN-SUBS-001` | `admin` | `P2` | `NOT_VERIFIED` | Defer unless admin billing is V1 scope. |
-| `ADMIN-USERS-001` | `admin` | `P2` | `NOT_VERIFIED` | Defer unless admin user ops are V1 scope. |
-| `BOTS-ASSISTANT-001` | `bots` | `P2` | `NOT_VERIFIED` | Defer or run AI testing protocol before launch-scoping. |
-| `BOTS-ASSISTANT-002` | `bots` | `P2` | `NOT_VERIFIED` | Defer or run AI testing protocol before launch-scoping. |
+| `ADMIN-SUBS-001` | `admin` | `P2` | `NOT_VERIFIED` | `POST_V1`: admin billing surface is planning-only for current V1 closure. |
+| `ADMIN-USERS-001` | `admin` | `P2` | `NOT_VERIFIED` | `POST_V1`: admin user operations are not part of the current V1 replacement gate. |
+| `BOTS-ASSISTANT-001` | `bots` | `P2` | `NOT_VERIFIED` | `POST_V1`: assistant config is implemented, but assistant launch scope is deferred until a dedicated AI evidence pass. |
+| `BOTS-ASSISTANT-002` | `bots` | `P2` | `NOT_VERIFIED` | `POST_V1`: assistant dry-run remains outside current V1 launch closure. |
 | `ICONS-LOOKUP-001` | `icons` | `P2` | `NEEDS_PROD_UI_CHECK` | Include in visual smoke only. |
-| `PROFILE-SUBS-001` | `profile` | `P2` | `NOT_VERIFIED` | Defer unless billing UX is V1 scope. |
-| `REPORTS-PNL-001` | `reports` | `P2` | `NOT_VERIFIED` | Superseded by cross-mode report row; keep as low-priority reporting confidence. |
-| `UPLOAD-AVATAR-001` | `upload` | `P2` | `NOT_VERIFIED` | Defer unless profile avatar is V1 scope. |
+| `PROFILE-SUBS-001` | `profile` | `P2` | `NOT_VERIFIED` | `POST_V1`: profile subscription/checkout UX stays with the deferred billing surface. |
+| `REPORTS-PNL-001` | `reports` | `P2` | `NOT_VERIFIED` | `WAIVED_FOR_V1`: superseded low-priority reporting confidence row, not a launch blocker. |
+| `UPLOAD-AVATAR-001` | `upload` | `P2` | `NOT_VERIFIED` | `WAIVED_FOR_V1`: convenience profile-media feature, not part of the current runtime-replacement gate. |
 
 ## Recommended V1 Execution Plan
 
@@ -237,6 +237,32 @@ Plan:
 2. If `IN_V1`, add a focused verification task.
 3. If `POST_V1`, update the matrix and product/planning docs so it stops
    creating false V1 pressure.
+
+2026-05-01 decision pass (`V1SCOPE-01`):
+
+- `IN_V1`:
+  - `SUBS-ENTITLEMENTS-001` - closed locally by `V1SUBS-01`; production smoke remains part of the broader release-gate evidence wave.
+- `POST_V1`:
+  - `ADMIN-USERS-001`
+  - `ADMIN-SUBS-001`
+  - `PROFILE-SUBS-001`
+  - `STRAT-IO-001`
+  - `BOTS-ASSISTANT-001`
+  - `BOTS-ASSISTANT-002`
+- `WAIVED_FOR_V1`:
+  - `REPORTS-CROSSMODE-001`
+  - `REPORTS-PNL-001`
+  - `UPLOAD-AVATAR-001`
+  - `POSITIONS-REPAIR-001`
+
+Effect:
+
+- current V1 scope pressure now excludes admin, billing, assistant, and
+  strategy portability surfaces;
+- current V1 release is not blocked on convenience profile media, reports, or
+  incident-only repair tooling;
+- the only remaining lower-priority scope-decision row still inside V1 is one
+  focused entitlement verification pass.
 
 ## Result
 

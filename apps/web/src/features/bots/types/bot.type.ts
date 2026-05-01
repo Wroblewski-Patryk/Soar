@@ -512,6 +512,51 @@ export type BotRuntimeMonitoringAggregateResponse = {
   trades: BotRuntimeTradesResponse;
 };
 
+export type BotPortfolioHistoryResponse = {
+  botId: string;
+  walletId: string | null;
+  mode: BotMode;
+  baseCurrency: string | null;
+  completeness: "COMPLETE" | "PARTIAL" | "UNAVAILABLE";
+  completenessReasons: string[];
+  window: {
+    startedAt: string;
+    finishedAt: string;
+  };
+  summary: {
+    startBalance: number | null;
+    currentBalance: number | null;
+    realizedPnl: number;
+    unrealizedPnl: number;
+    totalPnl: number;
+    capitalSource?:
+      | "PAPER_INITIAL_BALANCE"
+      | "PAPER_RESET_CHECKPOINT"
+      | "LIVE_EXCHANGE_BALANCE"
+      | null;
+    paperResetAt: string | null;
+    openPositionCount: number;
+    closedPositionCount: number;
+  };
+  points: Array<{
+    timestamp: string;
+    balance: number | null;
+    realizedPnl: number;
+    type: "START" | "CLOSE" | "CURRENT";
+    label: string;
+    symbol: string | null;
+  }>;
+  markers: Array<{
+    id: string;
+    timestamp: string;
+    type: string;
+    label: string;
+    amount: number | null;
+    currency: string | null;
+    direction: "IN" | "OUT" | "NEUTRAL" | null;
+  }>;
+};
+
 export type CreateBotInput = {
   name: string;
   walletId: string;

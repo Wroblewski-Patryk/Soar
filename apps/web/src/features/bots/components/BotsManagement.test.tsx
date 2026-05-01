@@ -19,6 +19,7 @@ const listRuntimeSymbolStatsMock = vi.hoisted(() => vi.fn());
 const listRuntimePositionsMock = vi.hoisted(() => vi.fn());
 const listRuntimeTradesMock = vi.hoisted(() => vi.fn());
 const loadBotMonitoringAggregateMock = vi.hoisted(() => vi.fn());
+const getBotPortfolioHistoryMock = vi.hoisted(() => vi.fn());
 const listStrategiesMock = vi.hoisted(() => vi.fn());
 const listMarketUniversesMock = vi.hoisted(() => vi.fn());
 const listWalletsMock = vi.hoisted(() =>
@@ -50,6 +51,7 @@ vi.mock("../services/bots.service", () => ({
   listBotRuntimeSessionSymbolStats: listRuntimeSymbolStatsMock,
   listBotRuntimeSessionPositions: listRuntimePositionsMock,
   listBotRuntimeSessionTrades: listRuntimeTradesMock,
+  getBotPortfolioHistory: getBotPortfolioHistoryMock,
 }));
 
 vi.mock("../../strategies/api/strategies.api", () => ({
@@ -86,6 +88,7 @@ afterEach(() => {
   listRuntimePositionsMock.mockReset();
   listRuntimeTradesMock.mockReset();
   loadBotMonitoringAggregateMock.mockReset();
+  getBotPortfolioHistoryMock.mockReset();
   listWalletsMock.mockClear();
   window.history.pushState({}, "", "/");
 });
@@ -302,6 +305,7 @@ describe("BotsManagement", () => {
         isActive: true,
         liveOptIn: false,
         consentTextVersion: null,
+        manageExternalPositions: false,
       });
     });
   });

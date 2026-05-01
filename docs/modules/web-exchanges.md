@@ -53,13 +53,13 @@ Out of scope:
 
 ## 8. Test Coverage and Evidence
 - Primary tests:
+  - `app/dashboard/exchanges/page.test.tsx`
   - `ExchangeConnectionsView.test.tsx`
 - Suggested validation command:
 ```powershell
-pnpm --filter web test -- src/features/exchanges/components/ExchangeConnectionsView.test.tsx
+pnpm --filter web test -- src/app/dashboard/exchanges/page.test.tsx src/features/exchanges/components/ExchangeConnectionsView.test.tsx
 ```
 
 ## 9. Open Issues and Follow-Ups
 - Expand capability source to shared API/web contract to avoid client-only drift.
 - Add dedicated exchange page once integrations diverge from profile API-key scope.
-

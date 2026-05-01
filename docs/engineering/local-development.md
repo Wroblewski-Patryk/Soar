@@ -80,10 +80,16 @@ If the smoke wrapper reports Prisma `P3009`, the blocker is the target local
 database state rather than the wrapper itself. Resolve the failed local
 migration first, then rerun the smoke command.
 
-Known local blocker on this workstation/repo history:
-- failed migration: `20260424094500_add_single_context_bot_refs`
-- observed failure shape: duplicate-column drift
-  (`column "strategyId" of relation "Bot" already exists`)
+Known local blocker pattern on this workstation/repo history:
+- failed migration rows may refer to older migrations whose schema objects are
+  already present in the shared local database;
+- observed failure shapes include duplicate columns, duplicate enum types, or
+  Prisma `P3009`/`P3018` after a previous partial local migration attempt;
+- examples seen locally:
+  - `20260424094500_add_single_context_bot_refs`
+  - `20260430153000_add_position_margin_used`
+  - `20260430190000_move_external_management_to_bot`
+  - `20260430200000_add_live_wallet_cashflow_ledger`
 
 Safe local recovery options:
 
@@ -94,11 +100,11 @@ docker compose up -d postgres redis
 pnpm run test:go-live:smoke
 ```
 
-2. Non-destructive recovery when the schema already contains
-`Bot.strategyId` and `Bot.symbolGroupId` and only migration history is dirty:
+2. Non-destructive recovery when the schema already contains the failed
+migration's expected objects and only migration history is dirty:
 ```powershell
 Set-Location apps/api
-.\node_modules\.bin\prisma.CMD migrate resolve --applied 20260424094500_add_single_context_bot_refs
+.\node_modules\.bin\prisma.CMD migrate resolve --applied <failed_migration>
 Set-Location ../..
 pnpm run test:go-live:smoke
 ```

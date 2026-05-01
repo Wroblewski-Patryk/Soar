@@ -8,6 +8,7 @@ export const SUBSCRIPTION_ERROR_CODES = {
   paymentProviderStripeNotConfigured: 'PAYMENT_PROVIDER_STRIPE_NOT_CONFIGURED',
   paymentProviderStripePriceNotConfigured: 'PAYMENT_PROVIDER_STRIPE_PRICE_NOT_CONFIGURED',
   freeSubscriptionEntitlementsMissing: 'FREE_SUBSCRIPTION_ENTITLEMENTS_MISSING',
+  subscriptionFeatureNotAvailable: 'SUBSCRIPTION_FEATURE_NOT_AVAILABLE',
 } as const;
 
 type SubscriptionErrorCode =
@@ -42,4 +43,13 @@ export const subscriptionErrors = {
     new SubscriptionDomainError(SUBSCRIPTION_ERROR_CODES.paymentProviderStripePriceNotConfigured, 503),
   freeSubscriptionEntitlementsMissing: () =>
     new SubscriptionDomainError(SUBSCRIPTION_ERROR_CODES.freeSubscriptionEntitlementsMissing, 500),
+  subscriptionFeatureNotAvailable: (feature: string, details?: Record<string, unknown>) =>
+    new SubscriptionDomainError(
+      SUBSCRIPTION_ERROR_CODES.subscriptionFeatureNotAvailable,
+      403,
+      {
+        feature,
+        ...(details ?? {}),
+      }
+    ),
 };

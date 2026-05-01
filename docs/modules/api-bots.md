@@ -5,7 +5,7 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/bots`
 - Owner: backend/trading-domain
-- Last updated: 2026-04-21
+- Last updated: 2026-05-01
 - Related planning task: `ARCCON-12`
 
 ## Canonical Architecture Linkage
@@ -41,11 +41,14 @@ Out of scope:
 - Runtime read contracts:
   - sessions, symbol stats, positions, trades, runtime graph.
   - aggregate monitoring payload (`sessionDetail + symbolStats + positions + trades`).
+  - bot portfolio history payload (`window + summary + points + markers`).
 - Assistant contracts:
   - get/upsert config, subagent slot operations, dry-run decision trace.
 - Key invariants:
   - wallet-market context compatibility.
   - LIVE consent + opt-in requirements.
+  - LIVE create and `PAPER -> LIVE` mode switch require
+    `entitlements.features.liveTrading=true`.
   - activation capability checks and duplicate active-bot protections.
 
 ## 4. Runtime Flows
@@ -57,6 +60,7 @@ Out of scope:
   5. For market-universe-backed auto-groups, resolve symbols using shared contract.
 - Runtime read:
   - aggregate session telemetry, symbol stats, position/trade enrichment, fallback market data.
+  - bot-scoped portfolio history with PAPER reset and LIVE wallet-capital markers.
 - Assistant dry-run:
   - load bot assistant config/subagents and execute deterministic orchestration trace.
 
@@ -65,6 +69,7 @@ Out of scope:
   - `GET/POST/PUT/DELETE /dashboard/bots`
   - `GET /dashboard/bots/:id/runtime-graph`
   - `GET /dashboard/bots/:id/runtime-monitoring/aggregate`
+  - `GET /dashboard/bots/:id/portfolio-history`
   - `GET /dashboard/bots/:id/runtime-sessions*`
   - `GET /dashboard/bots/strategy-drift`
   - `POST /dashboard/bots/strategy-drift/repair`
@@ -75,6 +80,8 @@ Out of scope:
 ## 6. Security and Risk Guardrails
 - Dashboard auth + ownership checks on all bot/runtime/assistant paths.
 - LIVE activation requires explicit consent and capability validation.
+- LIVE capability also requires active-plan `liveTrading` entitlement on bot
+  create and `PAPER -> LIVE` transition paths.
 - Mode-switch guard prevents unsafe PAPER->LIVE transitions with open managed positions.
 
 ## 7. Observability and Operations

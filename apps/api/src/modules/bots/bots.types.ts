@@ -151,6 +151,8 @@ export const GetBotRuntimeMonitoringAggregateQuerySchema = z.object({
   perSessionLimit: z.coerce.number().int().min(1).max(500).default(200),
 });
 
+export const GetBotPortfolioHistoryQuerySchema = z.object({});
+
 export const CloseBotRuntimePositionSchema = z.object({
   riskAck: z.boolean().default(true),
 });
@@ -173,4 +175,5 @@ export type ListBotRuntimeSymbolStatsQueryDto = z.infer<typeof ListBotRuntimeSym
 export type ListBotRuntimeTradesQueryDto = z.infer<typeof ListBotRuntimeTradesQuerySchema>;
 export type ListBotRuntimePositionsQueryDto = z.infer<typeof ListBotRuntimePositionsQuerySchema>;
 export type GetBotRuntimeMonitoringAggregateQueryDto = z.infer<typeof GetBotRuntimeMonitoringAggregateQuerySchema>;
+export type GetBotPortfolioHistoryQueryDto = z.infer<typeof GetBotPortfolioHistoryQuerySchema>;
 export type CloseBotRuntimePositionDto = z.infer<typeof CloseBotRuntimePositionSchema>;

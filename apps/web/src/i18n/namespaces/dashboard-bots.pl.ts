@@ -125,7 +125,8 @@ export const dashboardBotsPl = {
     "loadBots": "Nie udalo sie pobrac botow.",
     "loadRuntimeSessions": "Nie udalo sie pobrac sesji runtime.",
     "loadRuntimeSessionData": "Nie udalo sie pobrac danych sesji runtime.",
-    "loadAggregateMonitoring": "Nie udalo sie pobrac danych monitoringu zbiorczego."
+    "loadAggregateMonitoring": "Nie udalo sie pobrac danych monitoringu zbiorczego.",
+    "loadPortfolioHistory": "Nie udalo sie pobrac historii portfela bota."
   },
   "confirms": {
     "confirmLabel": "Zastosuj",
@@ -241,6 +242,13 @@ export const dashboardBotsPl = {
     "capitalSourcePaperReset": "Paper reset checkpoint",
     "capitalSourceLiveExchange": "Authenticated exchange balance",
     "paperResetAtLabel": "Reset paper",
+    "portfolioHistoryUnavailableTitle": "Historia portfela niedostepna",
+    "portfolioHistoryUnavailableDescription": "Biezaca prawda kapitalu runtime jest niedostepna dla tego bota.",
+    "portfolioHistoryPartial": "Historia jest event-driven. Open PnL jest gwarantowany tylko dla ostatniego snapshotu.",
+    "portfolioHistoryStartLabel": "Saldo startowe",
+    "portfolioHistoryCurrentLabel": "Saldo biezace",
+    "portfolioHistoryMarkersTitle": "Zdarzenia kapitalowe",
+    "portfolioHistoryNoMarkers": "Brak markerow resetu lub kapitalu portfela w tym oknie.",
     "marketStatePositionOpen": "Pozycja otwarta",
     "marketStateSignalActive": "Sygnal aktywny",
     "marketStateEvaluatedNoTrade": "Sprawdzone / bez wejscia",
@@ -266,7 +274,9 @@ export const dashboardBotsPl = {
       "historyPositionsDescription": "Weryfikacja tego, co juz sie wydarzylo: wynik, tempo i jakosc wykonania.",
       "historyTradesTitle": "Historia - log operacyjny trade'ow",
       "futureSignalsTitle": "3. Co bedzie - live check sygnalow",
-      "futureSignalsDescription": "Szybki widok operatora: ktore symbole sa tylko snapshotem rynku, ktore maja decyzje runtime, zaakceptowany sygnal albo otwarta pozycje."
+      "futureSignalsDescription": "Szybki widok operatora: ktore symbole sa tylko snapshotem rynku, ktore maja decyzje runtime, zaakceptowany sygnal albo otwarta pozycje.",
+      "portfolioHistoryTitle": "Historia portfela",
+      "portfolioHistoryDescription": "Bot-scoped progres wartosci z markerami resetu i zdarzen kapitalowych portfela."
     },
     "notionalLabel": "Notional",
     "marginLabel": "Margin",

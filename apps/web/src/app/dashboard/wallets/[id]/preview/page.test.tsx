@@ -30,7 +30,8 @@ describe('Wallet preview page', () => {
       </I18nProvider>
     );
 
-    expect(screen.getByText('Wallet preview')).toBeInTheDocument();
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+    expect(screen.getByRole('navigation', { name: 'Breadcrumb navigation' })).toBeInTheDocument();
     expect(screen.getByTestId('wallet-preview-panel')).toHaveTextContent('wallet-789');
     expect(walletPreviewPanelMock).toHaveBeenCalledWith({ walletId: 'wallet-789' });
   });

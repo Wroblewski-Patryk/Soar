@@ -11,6 +11,7 @@ import {
   detachMarketGroupStrategy,
   getBot,
   getBotAssistantConfig,
+  getBotPortfolioHistory,
   getBotRuntimeGraph,
   getBotRuntimeMonitoringAggregate,
   getBotRuntimeSession,
@@ -42,6 +43,7 @@ botsRouter.get('/strategy-drift', tradingReadLimiter, listBotStrategyProjectionD
 botsRouter.post('/strategy-drift/repair', tradingWriteLimiter, repairBotStrategyProjectionDrift);
 botsRouter.get('/:id', tradingReadLimiter, getBot);
 botsRouter.get('/:id/runtime-graph', tradingReadLimiter, getBotRuntimeGraph);
+botsRouter.get('/:id/portfolio-history', tradingReadLimiter, getBotPortfolioHistory);
 botsRouter.get('/:id/runtime-monitoring/aggregate', tradingReadLimiter, getBotRuntimeMonitoringAggregate);
 botsRouter.get('/:id/runtime-sessions', tradingReadLimiter, listBotRuntimeSessions);
 botsRouter.get('/:id/runtime-sessions/:sessionId', tradingReadLimiter, getBotRuntimeSession);

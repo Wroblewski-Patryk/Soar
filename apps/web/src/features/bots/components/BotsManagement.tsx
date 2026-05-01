@@ -178,6 +178,7 @@ export default function BotsManagement({
     monitorLiveTickerPrices,
     monitorLoading,
     monitorPositions,
+    monitorPortfolioHistory,
     monitorSessionDetail,
     monitorSessionId,
     monitorSessionLoading,
@@ -871,6 +872,7 @@ export default function BotsManagement({
           monitorChecklistItems={monitorChecklistItems}
           monitorSessionLoading={monitorSessionLoading}
           monitorPositions={monitorPositions}
+          monitorPortfolioHistory={monitorPortfolioHistory}
           monitorOpenMarginSummary={monitorOpenMarginSummary}
           monitorWinRate={monitorWinRate}
           monitorShowOpenOrders={monitorShowOpenOrders}

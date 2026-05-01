@@ -5,7 +5,7 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/strategies`
 - Owner: frontend/strategy-builder
-- Last updated: 2026-04-12
+- Last updated: 2026-05-01
 - Related planning task: `DCP-09`
 
 ## 1. Purpose and Scope
@@ -65,6 +65,10 @@ Out of scope:
 
 ## 8. Test Coverage and Evidence
 - Primary tests:
+  - `app/dashboard/strategies/list/page.test.tsx`
+  - `app/dashboard/strategies/create/page.test.tsx`
+  - `app/dashboard/strategies/[id]/page.test.tsx`
+  - `app/dashboard/strategies/[id]/edit/page.test.tsx`
   - `StrategyPresetPicker.test.tsx`
   - `StrategyFormSections/Indicators.test.tsx`
   - `strategyPresets.test.ts`
@@ -72,10 +76,9 @@ Out of scope:
   - `strategyNumericInput.test.ts`
 - Suggested validation command:
 ```powershell
-pnpm --filter web test -- src/features/strategies/components/StrategyPresetPicker.test.tsx src/features/strategies/components/StrategyFormSections/Indicators.test.tsx src/features/strategies/presets/strategyPresets.test.ts src/features/strategies/utils/StrategyForm.map.test.ts src/features/strategies/utils/strategyNumericInput.test.ts
+pnpm --filter web test -- src/app/dashboard/strategies/list/page.test.tsx src/app/dashboard/strategies/create/page.test.tsx src/app/dashboard/strategies/[id]/page.test.tsx src/app/dashboard/strategies/[id]/edit/page.test.tsx src/features/strategies/components/StrategyPresetPicker.test.tsx src/features/strategies/components/StrategyFormSections/Indicators.test.tsx src/features/strategies/presets/strategyPresets.test.ts src/features/strategies/utils/StrategyForm.map.test.ts src/features/strategies/utils/strategyNumericInput.test.ts
 ```
 
 ## 9. Open Issues and Follow-Ups
 - Migrate remaining static labels to full i18n coverage for complete locale parity.
 - Add richer form-level dirty-state and conflict handling for concurrent edits.
-

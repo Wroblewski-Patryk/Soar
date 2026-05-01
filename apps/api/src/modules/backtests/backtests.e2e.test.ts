@@ -4,6 +4,7 @@ import { app } from '../../index';
 import { analyzePreTrade } from '../engine/preTrade.service';
 import { prisma } from '../../prisma/client';
 import { reconcileExternalPositionsFromExchange } from '../positions/livePositionReconciliation.service';
+import { setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 
 const originalApiKeyEncryptionKeys = process.env.API_KEY_ENCRYPTION_KEYS;
 const originalApiKeyEncryptionActiveVersion = process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
@@ -636,8 +637,8 @@ describe('Backtests runs contract', () => {
     expect(listRes.body[0].origin).toBe('EXCHANGE_SYNC');
     expect(listRes.body[0].managementMode).toBe('MANUAL_MANAGED');
 
-    await prisma.wallet.update({
-      where: { id: liveWallet.id },
+    await prisma.bot.update({
+      where: { id: bot.id },
       data: { manageExternalPositions: true },
     });
 
@@ -721,6 +722,13 @@ describe('Backtests runs contract', () => {
     const marketUniverseId = universeRes.body.id as string;
 
     const userId = await getUserIdByEmail(email);
+    await setActiveSubscriptionForUser(prisma, {
+      userId,
+      planCode: 'PROFESSIONAL',
+      source: 'ADMIN_OVERRIDE',
+      metadata: { reason: 'backtests-venue-live-path-e2e' },
+    });
+
     const wallet = await createWalletForUser({
       userId,
       name: 'Venue consistency wallet',
