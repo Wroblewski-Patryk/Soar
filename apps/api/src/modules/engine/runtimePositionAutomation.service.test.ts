@@ -303,6 +303,7 @@ describe('RuntimePositionAutomationService', () => {
       executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
       closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
       resolveDcaFundsExhausted: vi.fn(async () => true),
+      recordRuntimeEvent: vi.fn(async () => undefined),
       nowMs: vi.fn(() => Date.now()),
     };
 
@@ -319,6 +320,23 @@ describe('RuntimePositionAutomationService', () => {
 
     expect(deps.resolveDcaFundsExhausted).toHaveBeenCalledTimes(1);
     expect(deps.executeDca).not.toHaveBeenCalled();
+    expect(deps.recordRuntimeEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'user-3b',
+        botId: 'bot-3b',
+        mode: 'PAPER',
+        eventType: 'PRETRADE_BLOCKED',
+        level: 'WARN',
+        symbol: 'SOLUSDT',
+        strategyId: 'strat-3b',
+        message: 'Runtime DCA funds exhausted; close protections may execute',
+        payload: expect.objectContaining({
+          reason: 'dca_funds_exhausted',
+          currentAdds: 0,
+          dcaLevelCount: 2,
+        }),
+      })
+    );
   });
 
   it('keeps LIVE DCA idle when exchange-style margin truth says drawdown is still above the threshold', async () => {
@@ -1270,6 +1288,7 @@ describe('RuntimePositionAutomationService', () => {
         userId: 'user-live-import-ttp',
         botId: 'bot-live-import-ttp',
         walletId: 'wallet-live-import-ttp',
+        strategyId: 'strat-live-import-ttp',
         symbol: 'DOGEUSDT',
         mode: 'LIVE',
         reason: 'trailing_take_profit',
@@ -1374,6 +1393,7 @@ describe('RuntimePositionAutomationService', () => {
     process.env.RUNTIME_DCA_ENABLED = 'false';
 
     const closeByExitSignal = vi.fn(async () => ({ status: 'closed' as const }));
+    const recordRuntimeEvent = vi.fn(async () => undefined);
     const deps: any = {
       listOpenPositionsBySymbol: vi.fn(async () => [
         {
@@ -1418,6 +1438,7 @@ describe('RuntimePositionAutomationService', () => {
       executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
       closeByExitSignal,
       resolveDcaFundsExhausted: vi.fn(async () => false),
+      recordRuntimeEvent,
       nowMs: vi.fn(() => Date.now()),
     };
 
@@ -1470,6 +1491,7 @@ describe('RuntimePositionAutomationService', () => {
     });
 
     const closeByExitSignal = vi.fn(async () => ({ status: 'closed' as const }));
+    const recordRuntimeEvent = vi.fn(async () => undefined);
     const deps: any = {
       listOpenPositionsBySymbol: vi.fn(async () => [
         {
@@ -1514,6 +1536,7 @@ describe('RuntimePositionAutomationService', () => {
       executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
       closeByExitSignal,
       resolveDcaFundsExhausted: vi.fn(async () => false),
+      recordRuntimeEvent,
       nowMs: vi.fn(() => Date.now()),
     };
 
@@ -1557,9 +1580,32 @@ describe('RuntimePositionAutomationService', () => {
         userId: 'user-live-reopen-ttp',
         botId: 'bot-live-reopen-ttp',
         walletId: 'wallet-live-reopen-ttp',
+        strategyId: 'strat-live-reopen-ttp',
         symbol: 'DOGEUSDT',
         mode: 'LIVE',
         reason: 'trailing_take_profit',
+      }),
+    );
+    expect(recordRuntimeEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'user-live-reopen-ttp',
+        botId: 'bot-live-reopen-ttp',
+        mode: 'LIVE',
+        eventType: 'SIGNAL_DECISION',
+        level: 'INFO',
+        symbol: 'DOGEUSDT',
+        strategyId: 'strat-live-reopen-ttp',
+        signalDirection: 'EXIT',
+        message: 'Runtime protection close decision',
+        payload: expect.objectContaining({
+          positionId: 'pos-live-reopen-ttp',
+          reason: 'trailing_take_profit',
+          currentAdds: 0,
+          dcaLevelCount: 2,
+          dcaFundsExhausted: false,
+          markPrice: 0.115,
+          leverage: 10,
+        }),
       }),
     );
     expect(service.getPositionStateSnapshot('pos-live-reopen-old')).toBeNull();

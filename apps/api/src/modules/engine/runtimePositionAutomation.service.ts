@@ -1,4 +1,4 @@
-import { BotMode, Exchange, Position, PositionSide, Prisma, TradeMarket } from '@prisma/client';
+import { Position, PositionSide, Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import { StreamTickerEvent } from '../market-stream/binanceStream.types';
 import { orchestrateRuntimeSignal } from './executionOrchestrator.service';
@@ -27,161 +27,11 @@ import {
 } from './runtimePositionAutomation.helpers';
 import { hasMaterialCanonicalBasisDrift } from './runtimePositionAutomationStateRebase';
 import { hydrateImportedRuntimePositionOwnership } from './runtimeImportedPositionOwnership';
-
-type RuntimeManagedPosition = Pick<
-  Position,
-  | 'id'
-  | 'userId'
-  | 'botId'
-  | 'walletId'
-  | 'strategyId'
-  | 'symbol'
-  | 'side'
-  | 'entryPrice'
-  | 'quantity'
-  | 'leverage'
-  | 'stopLoss'
-  | 'takeProfit'
-  | 'managementMode'
-  | 'origin'
-  | 'continuityState'
-> & {
-  marginUsed?: number | null;
-  bot:
-    | {
-        walletId: string | null;
-        liveOptIn: boolean;
-        wallet:
-          | {
-              mode: BotMode;
-              exchange: Exchange;
-              marketType: TradeMarket;
-              baseCurrency: string;
-              paperInitialBalance: number;
-            }
-          | null;
-        symbolGroup:
-          | {
-              marketUniverse: {
-                exchange: Exchange;
-                marketType: TradeMarket;
-                baseCurrency: string;
-              } | null;
-            }
-          | null;
-      }
-    | null;
-};
-
-type RuntimePositionAutomationDeps = {
-  listOpenPositionsBySymbol: (
-    symbol: string
-  ) => Promise<RuntimeManagedPosition[]>;
-  getStrategyConfigById: (strategyId: string) => Promise<Record<string, unknown> | null>;
-  getCanonicalPositionState: (positionId: string) => Promise<{
-    quantity: number;
-    averageEntryPrice: number;
-  } | null>;
-  executeDca: (input: {
-    userId: string;
-    botId?: string | null;
-    walletId?: string | null;
-    strategyId?: string | null;
-    positionId: string;
-    symbol: string;
-    positionSide: PositionSide;
-    dcaLevelIndex: number;
-    markPrice: number;
-    mode: 'PAPER' | 'LIVE';
-    addedQuantity: number;
-    currentQuantity: number;
-    currentEntryPrice: number;
-  }) => Promise<{
-    feePaid: number;
-    executed: boolean;
-    nextQuantity?: number;
-    nextEntryPrice?: number;
-  }>;
-  closeByExitSignal: (input: {
-    userId: string;
-    botId?: string;
-    walletId?: string | null;
-    symbol: string;
-    markPrice: number;
-    mode: 'PAPER' | 'LIVE';
-    quantity: number;
-    reason?: 'take_profit' | 'trailing_take_profit' | 'stop_loss' | 'trailing_stop';
-  }) => Promise<{ status: 'submitted' | 'closed' }>;
-  resolveDcaFundsExhausted: (input: {
-    userId: string;
-    botId?: string | null;
-    walletId?: string | null;
-    mode: 'PAPER' | 'LIVE';
-    exchange: Exchange;
-    marketType: TradeMarket;
-    paperStartBalance: number;
-    markPrice: number;
-    addedQuantity: number;
-    leverage: number;
-    nowMs: number;
-  }) => Promise<boolean>;
-  recordRuntimeEvent?: (params: {
-    userId: string;
-    botId: string;
-    mode: 'PAPER' | 'LIVE';
-    eventType:
-      | 'SESSION_STARTED'
-      | 'SESSION_STOPPED'
-      | 'HEARTBEAT'
-      | 'SIGNAL_DECISION'
-      | 'PRETRADE_BLOCKED'
-      | 'ORDER_SUBMITTED'
-      | 'ORDER_FILLED'
-      | 'POSITION_OPENED'
-      | 'POSITION_CLOSED'
-      | 'DCA_EXECUTED'
-      | 'ERROR';
-    level?: 'DEBUG' | 'INFO' | 'WARN' | 'ERROR';
-    symbol?: string;
-    strategyId?: string;
-    signalDirection?: 'LONG' | 'SHORT' | 'EXIT';
-    message?: string;
-    payload?: Record<string, unknown>;
-    eventAt?: Date;
-  }) => Promise<void>;
-  upsertRuntimeSymbolStat?: (params: {
-    userId: string;
-    botId: string;
-    mode?: 'PAPER' | 'LIVE';
-    symbol: string;
-    increments?: {
-      totalSignals?: number;
-      longEntries?: number;
-      shortEntries?: number;
-      exits?: number;
-      dcaCount?: number;
-      closedTrades?: number;
-      winningTrades?: number;
-      losingTrades?: number;
-      realizedPnl?: number;
-      grossProfit?: number;
-      grossLoss?: number;
-      feesPaid?: number;
-    };
-    lastPrice?: number;
-    lastSignalAt?: Date;
-    lastTradeAt?: Date;
-    openPositionCount?: number;
-    openPositionQty?: number;
-  }) => Promise<void>;
-  resolveLifecyclePrice?: (input: {
-    exchange: Exchange;
-    marketType: TradeMarket;
-    symbol: string;
-    fallbackPrice: number;
-  }) => Promise<number | null> | number | null;
-  nowMs: () => number;
-};
+import {
+  recordRuntimeDcaFundsExhaustedTelemetry,
+  recordRuntimeProtectionCloseDecisionTelemetry,
+} from './runtimePositionAutomationTelemetry';
+import { RuntimeManagedPosition, RuntimePositionAutomationDeps } from './runtimePositionAutomation.types';
 
 export type RuntimeFallbackConfig = {
   dcaEnabled: boolean;
@@ -504,6 +354,7 @@ const defaultDeps: RuntimePositionAutomationDeps = {
       userId: input.userId,
       botId: input.botId,
       walletId: input.walletId ?? undefined,
+      strategyId: input.strategyId ?? undefined,
       symbol: input.symbol,
       direction: 'EXIT',
       quantity: input.quantity,
@@ -869,6 +720,23 @@ export class RuntimePositionAutomationService {
             nowMs: this.deps.nowMs(),
           })
         : false;
+    if (dcaFundsExhausted) {
+      await recordRuntimeDcaFundsExhaustedTelemetry({
+        recordRuntimeEvent: this.deps.recordRuntimeEvent,
+        userId: position.userId,
+        botId: position.botId,
+        mode,
+        symbol: position.symbol,
+        strategyId: position.strategyId,
+        side: position.side,
+        eventAt: new Date(event.eventTime),
+        currentAdds: previousState.currentAdds,
+        dcaLevelCount,
+        estimatedAddedQuantity,
+        markPrice: effectiveLifecyclePrice,
+        leverage: Math.max(1, position.leverage || 1),
+      });
+    }
 
     const managementInput: PositionManagementInput = dcaFundsExhausted
       ? {
@@ -964,10 +832,29 @@ export class RuntimePositionAutomationService {
     this.positionStates.set(position.id, effectiveState);
 
     if (result.shouldClose) {
+      await recordRuntimeProtectionCloseDecisionTelemetry({
+        recordRuntimeEvent: this.deps.recordRuntimeEvent,
+        userId: position.userId,
+        botId: position.botId,
+        mode,
+        positionId: position.id,
+        symbol: position.symbol,
+        strategyId: position.strategyId,
+        eventAt: new Date(event.eventTime),
+        closeReason: result.closeReason,
+        currentAdds: previousState.currentAdds,
+        dcaLevelCount,
+        dcaFundsExhausted,
+        estimatedAddedQuantity,
+        markPrice: effectiveLifecyclePrice,
+        leverage: Math.max(1, position.leverage || 1),
+        currentPnlFraction,
+      });
       const closeResult = await this.deps.closeByExitSignal({
         userId: position.userId,
         botId: position.botId ?? undefined,
         walletId: inheritedExecutionContext.walletId ?? position.walletId ?? position.bot?.walletId ?? null,
+        strategyId: position.strategyId ?? undefined,
         symbol: position.symbol,
         markPrice: effectiveLifecyclePrice,
         mode,

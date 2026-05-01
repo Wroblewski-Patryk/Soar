@@ -458,6 +458,128 @@ describe('position management', () => {
     expect(closed.closeReason).toBeUndefined();
   });
 
+  it('keeps stop loss blocked while pending DCA remains financially possible', () => {
+    const result = evaluatePositionManagement(
+      {
+        side: 'LONG',
+        currentPrice: 98.5,
+        leverage: 10,
+        stopLossPrice: 99,
+        dcaFundsExhausted: false,
+        dca: {
+          enabled: true,
+          maxAdds: 3,
+          levelPercents: [-0.2, -0.4, -0.6],
+          addSizeFractions: [1, 1, 1],
+          stepPercent: 0.2,
+          addSizeFraction: 1,
+        },
+      },
+      {
+        averageEntryPrice: 100,
+        quantity: 4,
+        currentAdds: 2,
+      }
+    );
+
+    expect(result.shouldClose).toBe(false);
+    expect(result.closeReason).toBeUndefined();
+  });
+
+  it('allows stop loss when pending DCA is explicitly funds-exhausted', () => {
+    const result = evaluatePositionManagement(
+      {
+        side: 'LONG',
+        currentPrice: 98.5,
+        leverage: 10,
+        stopLossPrice: 99,
+        dcaFundsExhausted: true,
+        dca: {
+          enabled: true,
+          maxAdds: 3,
+          levelPercents: [-0.2, -0.4, -0.6],
+          addSizeFractions: [1, 1, 1],
+          stepPercent: 0.2,
+          addSizeFraction: 1,
+        },
+      },
+      {
+        averageEntryPrice: 100,
+        quantity: 4,
+        currentAdds: 2,
+      }
+    );
+
+    expect(result.shouldClose).toBe(true);
+    expect(result.closeReason).toBe('stop_loss');
+  });
+
+  it('keeps trailing loss blocked while pending DCA remains financially possible', () => {
+    const result = evaluatePositionManagement(
+      {
+        side: 'LONG',
+        currentPrice: 98.5,
+        leverage: 10,
+        dcaFundsExhausted: false,
+        trailingLoss: {
+          enabled: true,
+          startPercent: -0.2,
+          stepPercent: 0.1,
+        },
+        dca: {
+          enabled: true,
+          maxAdds: 3,
+          levelPercents: [-0.2, -0.4, -0.6],
+          addSizeFractions: [1, 1, 1],
+          stepPercent: 0.2,
+          addSizeFraction: 1,
+        },
+      },
+      {
+        averageEntryPrice: 100,
+        quantity: 4,
+        currentAdds: 2,
+        trailingLossLimitPercent: -0.1,
+      }
+    );
+
+    expect(result.shouldClose).toBe(false);
+    expect(result.closeReason).toBeUndefined();
+  });
+
+  it('allows trailing loss when pending DCA is explicitly funds-exhausted', () => {
+    const result = evaluatePositionManagement(
+      {
+        side: 'LONG',
+        currentPrice: 98.5,
+        leverage: 10,
+        dcaFundsExhausted: true,
+        trailingLoss: {
+          enabled: true,
+          startPercent: -0.2,
+          stepPercent: 0.1,
+        },
+        dca: {
+          enabled: true,
+          maxAdds: 3,
+          levelPercents: [-0.2, -0.4, -0.6],
+          addSizeFractions: [1, 1, 1],
+          stepPercent: 0.2,
+          addSizeFraction: 1,
+        },
+      },
+      {
+        averageEntryPrice: 100,
+        quantity: 4,
+        currentAdds: 2,
+        trailingLossLimitPercent: -0.1,
+      }
+    );
+
+    expect(result.shouldClose).toBe(true);
+    expect(result.closeReason).toBe('trailing_stop');
+  });
+
   it('applies legacy trailing-loss on profit percent after DCA completion', () => {
     const activated = evaluatePositionManagement(
       {

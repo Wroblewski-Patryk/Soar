@@ -164,6 +164,17 @@ const tradeBelongsToRuntimePositionIdentity = (
   return true;
 };
 
+const tradeBelongsToRuntimePositionContinuityBoundary = (
+  position: RuntimeManagedPositionRow,
+  trade: RuntimePositionTradeRow,
+) => {
+  if (trade.symbol !== position.symbol) return false;
+  if (!nullableIdentityMatches(position.botId, trade.botId)) return false;
+  if (!nullableIdentityMatches(position.walletId, trade.walletId)) return false;
+  if (!position.strategyId) return true;
+  return trade.strategyId === position.strategyId || trade.strategyId == null;
+};
+
 const resolveRuntimePositionContinuityStart = (
   position: RuntimeManagedPositionRow,
   lifecycleTrades: RuntimePositionTradeRow[],
@@ -173,14 +184,17 @@ const resolveRuntimePositionContinuityStart = (
 ) => {
   if (position.status !== 'OPEN') return position.openedAt;
 
+  const sameLifecycleBoundaryTrades = sortRuntimePositionTrades(
+    lifecycleTrades.filter((trade) => tradeBelongsToRuntimePositionContinuityBoundary(position, trade))
+  );
   const sameIdentityTrades = sortRuntimePositionTrades(
     lifecycleTrades.filter((trade) => tradeBelongsToRuntimePositionIdentity(position, trade))
   );
-  const latestExitBeforeCurrentOpen = sameIdentityTrades
+  const latestExitBeforeCurrentOpen = sameLifecycleBoundaryTrades
     .filter((trade) => trade.side !== entrySide && trade.executedAt <= position.openedAt)
     .at(-1);
   const cutoff = latestExitBeforeCurrentOpen?.executedAt ?? sessionStartedAt;
-  const firstOpenAfterCutoff = sameIdentityTrades.find(
+  const firstOpenAfterCutoff = sameLifecycleBoundaryTrades.find(
     (trade) =>
       trade.lifecycleAction === 'OPEN' &&
       trade.side === entrySide &&

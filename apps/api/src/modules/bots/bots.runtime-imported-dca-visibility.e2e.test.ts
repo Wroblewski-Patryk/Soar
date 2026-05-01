@@ -455,4 +455,237 @@ describe('Bots runtime imported DCA visibility', () => {
     expect(positionsRes.body.openItems[0].tradesCount).toBe(3);
     expect(positionsRes.body.openItems[0].lastTradeAt).toBe('2026-05-01T01:05:20.250Z');
   });
+
+  it('does not carry stale DCA into a same-symbol reopen after a legacy close without strategy id', async () => {
+    const ownerEmail = 'bot-runtime-reopen-stale-dca-owner@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
+
+    const strategyId = await createStrategy(
+      owner,
+      'Reopen Stale DCA Strategy',
+      DCA_ADVANCED_STRATEGY_CONFIG
+    );
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+
+    const createRes = await owner
+      .post('/dashboard/bots')
+      .send(createPayload({ strategyId, marketGroupId }));
+    expect(createRes.status).toBe(201);
+    const botId = createRes.body.id as string;
+    const walletId = createRes.body.walletId as string;
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'LIVE',
+        status: 'RUNNING',
+        startedAt: new Date('2026-05-01T00:00:00.000Z'),
+        lastHeartbeatAt: new Date('2026-05-01T02:00:00.000Z'),
+      },
+    });
+
+    const firstPosition = await prisma.position.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        walletId,
+        strategyId,
+        externalId: `reopen:first:${Date.now()}`,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        continuityState: 'EXTERNAL_CLOSE_CONFIRMED',
+        symbol: 'DOGEUSDT',
+        side: 'SHORT',
+        status: 'CLOSED',
+        entryPrice: 0.10589,
+        quantity: 75,
+        leverage: 15,
+        openedAt: new Date('2026-05-01T00:00:04.270Z'),
+        closedAt: new Date('2026-05-01T00:18:49.555Z'),
+        marginUsed: 0.53,
+      },
+    });
+    const secondPosition = await prisma.position.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        walletId,
+        strategyId,
+        externalId: `reopen:second:${Date.now()}`,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        continuityState: 'EXTERNAL_CLOSE_CONFIRMED',
+        symbol: 'DOGEUSDT',
+        side: 'SHORT',
+        status: 'CLOSED',
+        entryPrice: 0.1073875,
+        quantity: 300,
+        leverage: 15,
+        openedAt: new Date('2026-05-01T01:05:19.346Z'),
+        closedAt: new Date('2026-05-01T01:42:47.177Z'),
+        closeReason: 'TSL',
+        closeInitiator: 'BOT_APP',
+        marginUsed: 2.15,
+        realizedPnl: -0.35,
+      },
+    });
+    const reopenedPosition = await prisma.position.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        walletId,
+        strategyId,
+        externalId: `reopen:fresh:${Date.now()}`,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        continuityState: 'CONFIRMED',
+        symbol: 'DOGEUSDT',
+        side: 'SHORT',
+        status: 'OPEN',
+        entryPrice: 0.10867,
+        quantity: 70,
+        leverage: 15,
+        openedAt: new Date('2026-05-01T01:50:55.213Z'),
+        marginUsed: 0.51,
+      },
+    });
+
+    await prisma.trade.createMany({
+      data: [
+        {
+          userId: ownerUser.id,
+          botId,
+          walletId,
+          strategyId,
+          positionId: firstPosition.id,
+          symbol: 'DOGEUSDT',
+          side: 'SELL',
+          lifecycleAction: 'OPEN',
+          price: 0.10589,
+          quantity: 75,
+          fee: 0,
+          realizedPnl: 0,
+          origin: 'EXCHANGE_SYNC',
+          managementMode: 'BOT_MANAGED',
+          executedAt: new Date('2026-05-01T00:00:04.270Z'),
+        },
+        {
+          userId: ownerUser.id,
+          botId,
+          walletId,
+          strategyId,
+          positionId: firstPosition.id,
+          symbol: 'DOGEUSDT',
+          side: 'SELL',
+          lifecycleAction: 'DCA',
+          price: 0.10738,
+          quantity: 75,
+          fee: 0.004,
+          realizedPnl: 0,
+          origin: 'BOT',
+          managementMode: 'BOT_MANAGED',
+          executedAt: new Date('2026-05-01T00:18:37.400Z'),
+        },
+        {
+          userId: ownerUser.id,
+          botId,
+          walletId,
+          strategyId,
+          positionId: secondPosition.id,
+          symbol: 'DOGEUSDT',
+          side: 'SELL',
+          lifecycleAction: 'OPEN',
+          price: 0.1073875,
+          quantity: 300,
+          fee: 0,
+          realizedPnl: 0,
+          origin: 'EXCHANGE_SYNC',
+          managementMode: 'BOT_MANAGED',
+          executedAt: new Date('2026-05-01T01:05:19.346Z'),
+        },
+        {
+          userId: ownerUser.id,
+          botId,
+          walletId,
+          strategyId,
+          positionId: secondPosition.id,
+          symbol: 'DOGEUSDT',
+          side: 'SELL',
+          lifecycleAction: 'DCA',
+          price: 0.10814,
+          quantity: 150,
+          fee: 0.008,
+          realizedPnl: 0,
+          origin: 'BOT',
+          managementMode: 'BOT_MANAGED',
+          executedAt: new Date('2026-05-01T01:05:20.250Z'),
+        },
+        {
+          userId: ownerUser.id,
+          botId,
+          walletId,
+          strategyId: null,
+          positionId: secondPosition.id,
+          symbol: 'DOGEUSDT',
+          side: 'BUY',
+          lifecycleAction: 'CLOSE',
+          price: 0.1085,
+          quantity: 300,
+          fee: 0.016,
+          realizedPnl: -0.35,
+          origin: 'BOT',
+          closeReason: 'TSL',
+          closeInitiator: 'BOT_APP',
+          managementMode: 'BOT_MANAGED',
+          executedAt: new Date('2026-05-01T01:42:50.861Z'),
+        },
+        {
+          userId: ownerUser.id,
+          botId,
+          walletId,
+          strategyId,
+          positionId: reopenedPosition.id,
+          symbol: 'DOGEUSDT',
+          side: 'SELL',
+          lifecycleAction: 'OPEN',
+          price: 0.10867,
+          quantity: 70,
+          fee: 0,
+          realizedPnl: 0,
+          origin: 'EXCHANGE_SYNC',
+          managementMode: 'BOT_MANAGED',
+          executedAt: new Date('2026-05-01T01:50:55.213Z'),
+        },
+      ],
+    });
+
+    const positionsRes = await owner.get(
+      `/dashboard/bots/${botId}/runtime-sessions/${session.id}/positions?symbol=DOGEUSDT`
+    );
+
+    expect(positionsRes.status).toBe(200);
+    expect(positionsRes.body.openItems).toHaveLength(1);
+    expect(positionsRes.body.openItems[0]).toEqual(
+      expect.objectContaining({
+        id: reopenedPosition.id,
+        symbol: 'DOGEUSDT',
+        dcaCount: 0,
+        dcaExecutedLevels: [],
+        tradesCount: 1,
+        lastTradeAt: '2026-05-01T01:50:55.213Z',
+      })
+    );
+    expect(positionsRes.body.historyItems[0]).toEqual(
+      expect.objectContaining({
+        id: secondPosition.id,
+        closeReason: 'TSL',
+        dcaCount: 1,
+      })
+    );
+  });
 });

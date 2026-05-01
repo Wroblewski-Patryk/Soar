@@ -369,3 +369,42 @@ LIVE futures positions not sufficiently explainable.
 
 No hidden bypass should be added. The fix should strengthen the existing
 canonical lifecycle/protection contracts.
+
+## 2026-05-01 Local Implementation Closure
+
+Task:
+
+- `docs/planning/v1doge-02-runtime-close-reopen-hardening-task-2026-05-01.md`
+
+Implemented:
+
+- Runtime automated closes now pass `strategyId` through
+  `runtimePositionAutomation` into the existing execution orchestrator, so new
+  bot-managed close orders/trades retain strategy identity.
+- Runtime `Positions` continuity now uses same bot/wallet/symbol lifecycle
+  close boundaries to cut off stale DCA for fresh same-symbol opens, while
+  strict current-lifecycle matching still governs supplemental DCA attachment.
+  This handles legacy close rows that already lack `strategyId` without
+  allowing unrelated strategy DCA rows to attach.
+- `SL` and `TSL` close authority now has focused DCA-first regression coverage:
+  pending affordable DCA blocks the close; explicit DCA funds exhaustion allows
+  protections to execute.
+- Runtime telemetry now records:
+  - `PRETRADE_BLOCKED` when the next DCA level is explicitly funds-exhausted.
+  - `SIGNAL_DECISION` before an automated protection close, with
+    `positionId`, close reason, current DCA count, DCA level count, DCA funds
+    exhaustion flag, estimated next DCA quantity, mark price, leverage, and
+    current PnL fraction.
+
+Validation:
+
+- `pnpm --filter api exec vitest run src/modules/engine/runtimePositionAutomation.service.test.ts`
+- `pnpm --filter api exec vitest run src/modules/engine/positionManagement.service.test.ts`
+- `pnpm --filter api exec vitest run src/modules/bots/bots.runtime-imported-dca-visibility.e2e.test.ts`
+- `pnpm --filter api exec vitest run src/modules/engine/runtimeSignalMarketDataGateway.test.ts`
+
+Residual production requirement:
+
+- After deployment, run protected production verification against the active
+  `DOGEUSDT`/same-symbol lifecycle payload and runtime events. Local closure is
+  not a substitute for deployed-candidate evidence on the live-money path.

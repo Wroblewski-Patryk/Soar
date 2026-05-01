@@ -12,16 +12,6 @@ Operational queue for one-task execution runs.
   blockers are `V1EXCEL-03..06` authenticated manual operator and OPS evidence.
   `BOTMULTI-*` remains in `PIPELINE` until those post-V1 confidence gates are
   green.
-- [ ] `V1DOGE-02 fix(api-runtime): harden DOGE-style LIVE close/reopen lifecycle state`
-  - 2026-05-01 audit: protected production inspection confirmed the reported
-    `DOGEUSDT` loss close was an app-side `BOT_APP` `TSL` close. The next
-    fresh `DOGEUSDT` open row then displayed stale `dcaCount=2` and executed
-    levels `[-20,-40]` from the previous lifecycle, despite having only a new
-    open anchor after the close. The implementation target is to preserve
-    strategy identity on bot-managed closes, make same-symbol close/reopen
-    lifecycle cutoff robust, and add DCA-first close-authority coverage before
-    any real-money trust claim. Audit evidence:
-    `docs/operations/v1doge-live-close-and-reopen-audit-2026-05-01.md`.
 - [ ] `V1EXCEL-04 ops(stage-refresh): restore stage target before authenticated gate rerun`
   - 2026-05-01 refresh: stage public smoke now fails before auth. `stage-api`
     and `stage` both return `503 no available server` for health/ready/root and
@@ -71,6 +61,21 @@ Operational queue for one-task execution runs.
     imported DCA visibility e2e (`3/3`), lint, API typecheck, API build,
     repository guardrails. Task packet:
     `docs/planning/v1dca-02-multi-replacement-dca-count-task-2026-05-01.md`.
+- [x] `V1DOGE-02 fix(api-runtime): harden DOGE-style LIVE close/reopen lifecycle state`
+  - 2026-05-01: Closed the P0 DOGE-style runtime hardening slice after the
+    audit confirmed a bot-managed `TSL` close and stale DCA on the next fresh
+    same-symbol open. Runtime automated closes now preserve `strategyId`,
+    runtime `Positions` continuity cuts off stale DCA at same bot/wallet/symbol
+    close boundaries even for legacy close rows without strategy id, and DCA
+    attachment remains strict to the current lifecycle. Added DCA-first close
+    authority coverage for `SL/TSL` affordable-vs-exhausted cases and
+    operator-visible `PRETRADE_BLOCKED` / `SIGNAL_DECISION` telemetry for DCA
+    exhaustion and automated close rationale. Validation PASS: focused runtime
+    automation, position-management, imported DCA visibility, and futures
+    market-data gateway packs. Task packet:
+    `docs/planning/v1doge-02-runtime-close-reopen-hardening-task-2026-05-01.md`.
+    Post-deploy protected production verification remains the next evidence
+    step.
 - [x] `WLEDGER-07..09 web-wallet-preview: expose ledger-backed wallet preview from wallet list`
   - 2026-04-30: Closed the wallet preview UI slice. Wallet rows now expose a shared `preview` table action linking to `/dashboard/wallets/:id/preview`, and the new preview page loads the ledger-backed performance summary, equity timeline, and cashflow events APIs. The UI separates contributed capital from bot PnL, keeps unclassified adjustments visible, handles loading/error/empty/partial/success states, and avoids ISO-currency assumptions for crypto symbols such as `USDT`. Validation PASS: focused wallet web tests, web typecheck, web build, route-reachable i18n audit, repository guardrails.
 - [x] `WLEDGER-06 api-read: expose wallet performance summary, timeline, and cashflow APIs`

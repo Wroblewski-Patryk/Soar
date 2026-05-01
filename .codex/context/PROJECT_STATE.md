@@ -111,6 +111,18 @@ Last updated: 2026-05-01
   orders/trades, and make same-symbol close/reopen DCA/protection continuity
   fail closed. Evidence:
   `docs/operations/v1doge-live-close-and-reopen-audit-2026-05-01.md`.
+- 2026-05-01: closed local implementation for `V1DOGE-02` after the DOGE audit.
+  Runtime automated close now passes `strategyId` into the execution
+  orchestrator, same-symbol runtime `Positions` continuity cuts stale DCA at
+  close boundaries even when legacy close trades lack `strategyId`, and
+  supplemental DCA remains scoped to the current bot/wallet/strategy/symbol
+  lifecycle. DCA-first `SL/TSL` authority is now covered for affordable pending
+  DCA versus explicitly exhausted DCA, and runtime telemetry records
+  operator-visible DCA exhaustion plus close-decision snapshots. Validation
+  PASS: focused runtime automation, position-management, imported DCA
+  visibility, and futures market-data gateway packs. Task packet:
+  `docs/planning/v1doge-02-runtime-close-reopen-hardening-task-2026-05-01.md`.
+  Protected production verification is still required after deploy.
 - 2026-04-30: `V1ROE-04` was explicitly blocked on protected production evidence rather than local implementation. The local `V1ROE`, `V1OWN`, and `V1AUTO` slices closed the known repository-side margin-basis, stale read-model, imported ownership, runtime-state rebase, and prospective imported automation hydration gaps. The remaining acceptance signal was authenticated deployed-candidate verification on the real `LIVE DOGEUSDT` flow, documented in `docs/planning/v1roe-04-production-verification-task-2026-04-30.md`; local tests alone could not close it.
   - 2026-04-30 partial production check: deployed web build-info now confirms `522e1d95` on `main`, public deploy smoke passes, and the remaining blocker is strictly protected auth for runtime evidence (`401 Missing token` on runtime freshness and dashboard runtime probes). Evidence: `docs/operations/v1roe-04-prod-verification-partial-2026-04-30.md`.
 - 2026-05-01: queue/context sync normalized `V1ROE-04` after the deploy freshness check. The stale duplicate `READY` wording in `.codex/context/TASK_BOARD.md` was removed, and the task stayed blocked until authenticated production evidence could be captured with a token, email/password smoke credentials, or an authenticated browser/session cookie. Canonical sync task: `docs/planning/docsync-2026-05-01-queue-auth-blocker-task.md`.
