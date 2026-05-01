@@ -33,7 +33,8 @@ export const dashboardShellPl = {
     "timeZoneAuto": "Auto (system)",
     "english": "Angielski",
     "polish": "Polski",
-    "portuguese": "Portugalski"
+    "portuguese": "Portugalski",
+    "swissGerman": "Niemiecki szwajcarski"
   },
   "shared": {
     "genericError": "Wystapil blad",

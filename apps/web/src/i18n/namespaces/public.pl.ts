@@ -3,6 +3,7 @@ export const publicPl = {
     en: "Angielski",
     pl: "Polski",
     pt: "Portugalski",
+    deCH: "Niemiecki szwajcarski",
   },
   a11y: {
     skipToMainContent: "Przejdz do glownej tresci",

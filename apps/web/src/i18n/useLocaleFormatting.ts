@@ -9,6 +9,7 @@ const localeToIntl: Record<Locale, string> = {
   en: "en-US",
   pl: "pl-PL",
   pt: "pt-PT",
+  "de-CH": "de-CH",
 };
 
 const toNumber = (value: number | null | undefined) => (value == null ? null : Number(value));

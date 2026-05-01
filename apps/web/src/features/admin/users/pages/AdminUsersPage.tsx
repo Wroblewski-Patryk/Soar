@@ -7,10 +7,10 @@ import { getAdminUsers, updateAdminUser } from "../services/adminUsers.service";
 import { AdminSubscriptionPlanCode, AdminUser, AdminUserRole } from "../types/adminUser.type";
 import { useI18n } from "@/i18n/I18nProvider";
 
-const formatDate = (value: string, locale: "en" | "pl" | "pt") => {
+const formatDate = (value: string, locale: "en" | "pl" | "pt" | "de-CH") => {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "-";
-  const dateLocale = locale === "pl" ? "pl-PL" : locale === "pt" ? "pt-PT" : "en-US";
+  const dateLocale = locale === "pl" ? "pl-PL" : locale === "pt" ? "pt-PT" : locale === "de-CH" ? "de-CH" : "en-US";
 
   return new Intl.DateTimeFormat(dateLocale, {
     dateStyle: "medium",

@@ -17,8 +17,11 @@ type PlanFormState = {
   maxConcurrentBacktests: string;
 };
 
-const priceFormatter = (currency: string, locale: "en" | "pl" | "pt") =>
-  new Intl.NumberFormat(locale === "pl" ? "pl-PL" : locale === "pt" ? "pt-PT" : "en-US", {
+const adminIntlLocale = (locale: "en" | "pl" | "pt" | "de-CH") =>
+  locale === "pl" ? "pl-PL" : locale === "pt" ? "pt-PT" : locale === "de-CH" ? "de-CH" : "en-US";
+
+const priceFormatter = (currency: string, locale: "en" | "pl" | "pt" | "de-CH") =>
+  new Intl.NumberFormat(adminIntlLocale(locale), {
     style: "currency",
     currency,
     minimumFractionDigits: 2,

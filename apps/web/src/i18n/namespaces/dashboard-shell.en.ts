@@ -33,7 +33,8 @@ export const dashboardShellEn = {
     "timeZoneAuto": "Auto (System)",
     "english": "English",
     "polish": "Polish",
-    "portuguese": "Portuguese"
+    "portuguese": "Portuguese",
+    "swissGerman": "Swiss German"
   },
   "shared": {
     "genericError": "Something went wrong",

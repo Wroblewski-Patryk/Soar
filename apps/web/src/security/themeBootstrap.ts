@@ -30,7 +30,7 @@ export const themeBootstrapScript = `(() => {
   document.documentElement.setAttribute('data-theme', resolvedTheme);
 
   const locale = getStorageItem('cryptosparrow-locale');
-  if (locale && ['en', 'pl', 'pt'].includes(locale)) {
+  if (locale && ['en', 'pl', 'pt', 'de-CH'].includes(locale)) {
     document.documentElement.lang = locale;
   }
 })();`;

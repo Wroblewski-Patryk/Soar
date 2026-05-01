@@ -45,22 +45,27 @@ describe("namespaceRegistry", () => {
     expect(read(marketsRoute, "dashboard.backtests.createLabel")).toBeUndefined();
   });
 
-  it("keeps en/pl/pt key parity for every namespace with explicit missing-key report", () => {
+  it("keeps en/pl/pt/de-CH key parity for every namespace with explicit missing-key report", () => {
     const report: string[] = [];
 
     for (const namespace of ALL_I18N_NAMESPACES) {
       const enKeys = collectKeys(I18N_NAMESPACE_REGISTRY[namespace].en).sort();
       const plKeys = new Set(collectKeys(I18N_NAMESPACE_REGISTRY[namespace].pl));
       const ptKeys = new Set(collectKeys(I18N_NAMESPACE_REGISTRY[namespace].pt));
+      const deChKeys = new Set(collectKeys(I18N_NAMESPACE_REGISTRY[namespace]["de-CH"]));
 
       const missingInPl = enKeys.filter((key) => !plKeys.has(key));
       const missingInPt = enKeys.filter((key) => !ptKeys.has(key));
+      const missingInDeCh = enKeys.filter((key) => !deChKeys.has(key));
 
       if (missingInPl.length > 0) {
         report.push(`[${namespace}] missing in pl: ${missingInPl.join(", ")}`);
       }
       if (missingInPt.length > 0) {
         report.push(`[${namespace}] missing in pt: ${missingInPt.join(", ")}`);
+      }
+      if (missingInDeCh.length > 0) {
+        report.push(`[${namespace}] missing in de-CH: ${missingInDeCh.join(", ")}`);
       }
     }
 

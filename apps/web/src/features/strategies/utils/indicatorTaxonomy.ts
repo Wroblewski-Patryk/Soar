@@ -19,7 +19,9 @@ const indicatorGroupOrder: IndicatorGroupKey[] = [
   "DERIVATIVES",
 ];
 
-const groupLabels: Record<IndicatorGroupKey, { en: string; pl: string; pt?: string }> = {
+type LocalizedGroupLabel = { en: string } & Partial<Record<Locale, string>>;
+
+const groupLabels: Record<IndicatorGroupKey, LocalizedGroupLabel> = {
   TREND: {
     en: "Trend",
     pl: "Trend",

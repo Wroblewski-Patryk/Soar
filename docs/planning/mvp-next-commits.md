@@ -12,6 +12,16 @@ Operational queue for one-task execution runs.
   blockers are `V1EXCEL-03..06` authenticated manual operator and OPS evidence.
   `BOTMULTI-*` remains in `PIPELINE` until those post-V1 confidence gates are
   green.
+- [x] `V1I18N-01 feat(web-i18n): add Swiss German locale`
+  - 2026-05-02: Closed the operator-requested Swiss German/German Switzerland
+    locale rollout. Implemented the request as standards-compliant `de-CH`
+    across supported locales, provider hydration, storage validation, Intl
+    formatting, security bootstrap allow-list, route namespace registry, all
+    namespace translation files, shared language switcher CH flag option, and
+    focused tests. Validation PASS: focused i18n/UI tests (`22/22`), web
+    typecheck, web build, repository guardrails, and route-reachable i18n audit
+    with `findings=0`. Evidence:
+    `docs/planning/v1i18n-01-swiss-german-locale-task-2026-05-02.md`.
 - [x] `V1UI-FLAG-01 fix(web-footer): restore language switcher flags`
   - 2026-05-01: Closed an operator-reported footer language switcher flag
     regression. Commit review from `2026-05-01 09:00` found no post-09:00

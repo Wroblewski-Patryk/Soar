@@ -7,7 +7,7 @@ import { useDetailsDropdown } from '../../hooks/useDetailsDropdown';
 import { getHeaderDropdownLinkClass, getHeaderDropdownMenuClass, headerMenuItemClass } from './headerControlStyles';
 
 type LocaleCode = Locale;
-type FlagId = 'gb' | 'pl' | 'pt';
+type FlagId = 'gb' | 'pl' | 'pt' | 'ch';
 type LanguageOption = {
   locale: LocaleCode;
   labelKey: string;
@@ -47,12 +47,29 @@ const LANGUAGES: LanguageOption[] = [
     countryCode: 'pt',
     flag: 'pt',
   },
+  {
+    locale: 'de-CH',
+    labelKey: 'public.localeNames.deCH',
+    shortLabel: 'CH',
+    countryCode: 'ch',
+    flag: 'ch',
+  },
 ];
 
 const getLanguage = (locale: LocaleCode) =>
   LANGUAGES.find((item) => item.locale === locale) ?? LANGUAGES[0];
 
 function FlagSvg({ flag }: { flag: FlagId }) {
+  if (flag === 'ch') {
+    return (
+      <>
+        <rect width="30" height="20" fill="#d52b1e" />
+        <rect x="12" y="4" width="6" height="12" fill="#fff" />
+        <rect x="8" y="8" width="14" height="4" fill="#fff" />
+      </>
+    );
+  }
+
   if (flag === 'pl') {
     return (
       <>

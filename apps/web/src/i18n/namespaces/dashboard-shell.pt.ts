@@ -33,7 +33,8 @@
     "timeZoneAuto": "Auto (Sistema)",
     "english": "Ingles",
     "polish": "Polaco",
-    "portuguese": "Portugues"
+    "portuguese": "Portugues",
+    "swissGerman": "Alemao suico"
   },
   "shared": {
     "genericError": "Ocorreu um erro",

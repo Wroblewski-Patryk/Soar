@@ -1,5 +1,5 @@
 import { buildTranslationsForLocale } from "./namespaceRegistry";
-export const SUPPORTED_LOCALES = ["en", "pl", "pt"] as const;
+export const SUPPORTED_LOCALES = ["en", "pl", "pt", "de-CH"] as const;
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
 
 type TranslationSchema = {
@@ -42,6 +42,7 @@ type TranslationSchema = {
       english: string;
       polish: string;
       portuguese: string;
+      swissGerman: string;
     };
     shared: {
       genericError: string;
@@ -333,6 +334,7 @@ export const translations: Record<Locale, TranslationSchema> = {
   en: buildTranslationsForLocale("en") as TranslationSchema,
   pl: buildTranslationsForLocale("pl") as TranslationSchema,
   pt: buildTranslationsForLocale("pt") as TranslationSchema,
+  "de-CH": buildTranslationsForLocale("de-CH") as TranslationSchema,
 };
 
 export const DEFAULT_LOCALE: Locale = "en";

@@ -22,13 +22,15 @@ const readNested = (source: Record<string, unknown>, keyPath: string): unknown =
   }, source);
 
 describe("translations", () => {
-  it("keeps EN, PL and PT translation keys in sync", () => {
+  it("keeps EN, PL, PT and de-CH translation keys in sync", () => {
     const enKeys = collectKeys(translations.en).sort();
     const plKeys = collectKeys(translations.pl).sort();
     const ptKeys = collectKeys(translations.pt).sort();
+    const deChKeys = collectKeys(translations["de-CH"]).sort();
 
     expect(plKeys).toEqual(enKeys);
     expect(ptKeys).toEqual(enKeys);
+    expect(deChKeys).toEqual(enKeys);
   });
 
   it("contains non-empty localized strings for critical nav and runtime keys", () => {
@@ -48,13 +50,16 @@ describe("translations", () => {
       const enValue = readNested(translations.en as unknown as Record<string, unknown>, key);
       const plValue = readNested(translations.pl as unknown as Record<string, unknown>, key);
       const ptValue = readNested(translations.pt as unknown as Record<string, unknown>, key);
+      const deChValue = readNested(translations["de-CH"] as unknown as Record<string, unknown>, key);
 
       expect(enValue, `Missing EN key: ${key}`).toEqual(expect.any(String));
       expect(plValue, `Missing PL key: ${key}`).toEqual(expect.any(String));
       expect(ptValue, `Missing PT key: ${key}`).toEqual(expect.any(String));
+      expect(deChValue, `Missing de-CH key: ${key}`).toEqual(expect.any(String));
       expect(String(enValue).trim().length, `Empty EN translation: ${key}`).toBeGreaterThan(0);
       expect(String(plValue).trim().length, `Empty PL translation: ${key}`).toBeGreaterThan(0);
       expect(String(ptValue).trim().length, `Empty PT translation: ${key}`).toBeGreaterThan(0);
+      expect(String(deChValue).trim().length, `Empty de-CH translation: ${key}`).toBeGreaterThan(0);
     }
   });
 
@@ -110,13 +115,35 @@ describe("translations", () => {
       const enValue = readNested(translations.en as unknown as Record<string, unknown>, key);
       const plValue = readNested(translations.pl as unknown as Record<string, unknown>, key);
       const ptValue = readNested(translations.pt as unknown as Record<string, unknown>, key);
+      const deChValue = readNested(translations["de-CH"] as unknown as Record<string, unknown>, key);
 
       expect(enValue, `Missing EN key: ${key}`).toEqual(expect.any(String));
       expect(plValue, `Missing PL key: ${key}`).toEqual(expect.any(String));
       expect(ptValue, `Missing PT key: ${key}`).toEqual(expect.any(String));
+      expect(deChValue, `Missing de-CH key: ${key}`).toEqual(expect.any(String));
       expect(String(enValue).trim().length, `Empty EN translation: ${key}`).toBeGreaterThan(0);
       expect(String(plValue).trim().length, `Empty PL translation: ${key}`).toBeGreaterThan(0);
       expect(String(ptValue).trim().length, `Empty PT translation: ${key}`).toBeGreaterThan(0);
+      expect(String(deChValue).trim().length, `Empty de-CH translation: ${key}`).toBeGreaterThan(0);
+    }
+  });
+
+  it("uses de-CH localized copy for selected shell and public keys", () => {
+    const localizedDeChKeys = [
+      "public.localeNames.deCH",
+      "public.offline.title",
+      "dashboard.common.language",
+      "dashboard.nav.markets",
+      "dashboard.profileBasic.saveChanges",
+    ];
+
+    for (const key of localizedDeChKeys) {
+      const enValue = readNested(translations.en as unknown as Record<string, unknown>, key);
+      const deChValue = readNested(translations["de-CH"] as unknown as Record<string, unknown>, key);
+
+      expect(deChValue, `Missing de-CH key: ${key}`).toEqual(expect.any(String));
+      expect(String(deChValue).trim().length, `Empty de-CH translation: ${key}`).toBeGreaterThan(0);
+      expect(deChValue, `de-CH translation should not be EN placeholder for key: ${key}`).not.toEqual(enValue);
     }
   });
 

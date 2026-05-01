@@ -27,9 +27,9 @@ describe("strategyPresets", () => {
     );
   });
 
-  it("provides localized preset presentation for en/pl/pt locales", () => {
+  it("provides localized preset presentation for en/pl/pt/de-CH locales", () => {
     for (const preset of strategyPresets) {
-      for (const locale of ["en", "pl", "pt"] as const) {
+      for (const locale of ["en", "pl", "pt", "de-CH"] as const) {
         const presentation = getStrategyPresetPresentation(preset, locale);
         expect(presentation.name).toBeTruthy();
         expect(presentation.description).toBeTruthy();

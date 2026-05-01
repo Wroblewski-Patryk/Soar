@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useI18n } from "@/i18n/I18nProvider";
+import type { Locale } from "@/i18n/translations";
 import { getStrategyPresetPresentation, StrategyPreset } from "../presets/strategyPresets";
 
 type StrategyPresetPickerProps = {
@@ -9,6 +10,29 @@ type StrategyPresetPickerProps = {
   selectedPresetId: string | null;
   onSelect: (presetId: string) => void;
   onClear: () => void;
+};
+
+const pickerCopy: Record<Locale, { title: string; description: string; clear: string }> = {
+  en: {
+    title: "Strategy presets",
+    description: "MVP: presets are read-only and versioned in code.",
+    clear: "Clear preset",
+  },
+  pl: {
+    title: "Presety strategii",
+    description: "MVP: presety sa tylko do odczytu i sa wersjonowane w kodzie.",
+    clear: "Wyczysc preset",
+  },
+  pt: {
+    title: "Presets de estrategia",
+    description: "MVP: os presets sao apenas leitura e versionados no codigo.",
+    clear: "Limpar preset",
+  },
+  "de-CH": {
+    title: "Strategie-Presets",
+    description: "MVP: Presets sind schreibgeschuetzt und im Code versioniert.",
+    clear: "Preset leeren",
+  },
 };
 
 export default function StrategyPresetPicker({
@@ -19,24 +43,7 @@ export default function StrategyPresetPicker({
 }: StrategyPresetPickerProps) {
   const { locale } = useI18n();
   const copy = useMemo(
-    () =>
-      ({
-        en: {
-          title: "Strategy presets",
-          description: "MVP: presets are read-only and versioned in code.",
-          clear: "Clear preset",
-        },
-        pl: {
-          title: "Presety strategii",
-          description: "MVP: presety sa tylko do odczytu i sa wersjonowane w kodzie.",
-          clear: "Wyczysc preset",
-        },
-        pt: {
-          title: "Presets de estrategia",
-          description: "MVP: os presets sao apenas leitura e versionados no codigo.",
-          clear: "Limpar preset",
-        },
-      } as const)[locale],
+    () => pickerCopy[locale],
     [locale],
   );
 

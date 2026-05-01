@@ -8,7 +8,7 @@ describe("I18nProvider", () => {
     vi.restoreAllMocks();
   });
 
-  it("uses EN by default and allows switching to PL and PT", async () => {
+  it("uses EN by default and allows switching to PL, PT and de-CH", async () => {
     window.localStorage.removeItem("cryptosparrow-locale");
     window.localStorage.removeItem("cryptosparrow-timezone");
 
@@ -39,10 +39,19 @@ describe("I18nProvider", () => {
       expect(window.localStorage.getItem("cryptosparrow-locale")).toBe("pt");
       expect(screen.getByLabelText(/language|jezyk|idioma/i)).toHaveTextContent("Portugues");
     });
+
+    fireEvent.click(screen.getByLabelText(/language|jezyk|idioma/i));
+    fireEvent.click(screen.getByRole("button", { name: /alemao suico|deutsch/i }));
+
+    await waitFor(() => {
+      expect(document.documentElement.lang).toBe("de-CH");
+      expect(window.localStorage.getItem("cryptosparrow-locale")).toBe("de-CH");
+      expect(screen.getByLabelText(/language|sprache|jezyk|idioma/i)).toHaveTextContent("Deutsch (CH)");
+    });
   });
 
   it("hydrates locale from storage on first render without act warnings", async () => {
-    window.localStorage.setItem("cryptosparrow-locale", "pt");
+    window.localStorage.setItem("cryptosparrow-locale", "de-CH");
     window.localStorage.removeItem("cryptosparrow-timezone");
     const errorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
 
@@ -53,8 +62,8 @@ describe("I18nProvider", () => {
     );
 
     await waitFor(() => {
-      expect(document.documentElement.lang).toBe("pt");
-      expect(screen.getByLabelText(/language|jezyk|idioma/i)).toHaveTextContent("Portugues");
+      expect(document.documentElement.lang).toBe("de-CH");
+      expect(screen.getByLabelText(/language|sprache|jezyk|idioma/i)).toHaveTextContent("Deutsch (CH)");
     });
 
     const actWarnings = errorSpy.mock.calls.filter(([message]) =>

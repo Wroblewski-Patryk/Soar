@@ -62,7 +62,7 @@ const TRUTH_A_MONITORED_FILES = [
   "features/dashboard-home/components/home-live-widgets/RuntimeDataSection.tsx",
 ];
 
-const LOCAL_COPY_PATTERN = /const\s+\w+\s*=\s*{[\s\S]*?\b(?:en|pl|pt)\s*:/i;
+const LOCAL_COPY_PATTERN = /const\s+\w+\s*=\s*{[\s\S]*?\b(?:en|pl|pt|deCH|de-CH)\s*:/i;
 const FALLBACK_PL_PATTERN = /(?:\?\?|\|\|)\s*['"]pl['"]/;
 const HARD_CODED_ATTRIBUTE_PATTERN =
   /\b(?:title|placeholder|aria-label|aria-placeholder)\s*=\s*['"][^'"{][^'"]*['"]/g;

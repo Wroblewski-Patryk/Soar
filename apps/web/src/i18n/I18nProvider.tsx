@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { DEFAULT_LOCALE, Locale, TranslationKey, translations } from "./translations";
+import { DEFAULT_LOCALE, Locale, SUPPORTED_LOCALES, TranslationKey, translations } from "./translations";
 import { getLocalStorageItem, setLocalStorageItem } from "@/lib/storage";
 import { buildTranslationsForRoute, resolveNamespacesForRoute } from "./namespaceRegistry";
 
@@ -47,7 +47,7 @@ const normalizeTimeZonePreference = (value: string | null | undefined) => {
 
 const readStoredLocale = (): Locale => {
   const raw = getLocalStorageItem(LOCALE_STORAGE_KEY);
-  return raw === "en" || raw === "pl" || raw === "pt" ? raw : DEFAULT_LOCALE;
+  return raw && (SUPPORTED_LOCALES as readonly string[]).includes(raw) ? (raw as Locale) : DEFAULT_LOCALE;
 };
 
 const readStoredTimeZonePreference = (): string =>

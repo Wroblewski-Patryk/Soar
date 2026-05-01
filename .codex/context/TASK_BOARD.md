@@ -17,6 +17,18 @@ Last updated: 2026-05-01
 
 ## READY
 
+- [x] `V1I18N-01 feat(web-i18n): add Swiss German locale`
+  - Scope: added German (Switzerland) as standard locale code `de-CH` across
+    the existing web i18n architecture, including supported locale storage,
+    provider hydration, Intl formatting, security bootstrap allow-list, route
+    namespace registry, all translation namespace files, language switcher CH
+    flag option, and focused parity tests. The work also fixed existing
+    Portuguese dashboard-home namespace drift exposed by stronger parity
+    checks. Validation PASS: focused i18n/UI tests (`22/22`), web typecheck,
+    web build, repository guardrails, and route-reachable i18n audit
+    (`findings=0`). Evidence:
+    `docs/planning/v1i18n-01-swiss-german-locale-task-2026-05-02.md`.
+
 - [x] `V1UI-FLAG-01 fix(web-footer): restore language switcher flags`
   - Scope: after an operator-reported UI regression, reviewed commits from
     `2026-05-01 09:00` and confirmed no post-09:00 commit directly touched the

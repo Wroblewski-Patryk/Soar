@@ -126,7 +126,7 @@ const resolveRouteKey = (locale: Locale, route: string, key: string): string => 
 
 describe("route locale smoke", () => {
   it("resolves route-critical keys for en/pl/pt without raw fallback key leakage", () => {
-    for (const locale of ["en", "pl", "pt"] as const) {
+    for (const locale of ["en", "pl", "pt", "de-CH"] as const) {
       for (const testCase of ROUTE_SMOKE_CASES) {
         for (const key of testCase.keys) {
           const resolved = resolveRouteKey(locale, testCase.route, key);

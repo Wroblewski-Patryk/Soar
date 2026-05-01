@@ -4,7 +4,7 @@ import { I18nProvider } from "../../../i18n/I18nProvider";
 import LanguageSwitcher from "./LanguageSwitcher";
 
 describe("LanguageSwitcher visual contract", () => {
-  it("renders EN option and switches to PL then PT", async () => {
+  it("renders EN option and switches through PL, PT and de-CH", async () => {
     window.localStorage.removeItem("cryptosparrow-locale");
     window.localStorage.removeItem("cryptosparrow-timezone");
 
@@ -32,6 +32,14 @@ describe("LanguageSwitcher visual contract", () => {
     await waitFor(() => {
       expect(screen.getAllByTestId("flag-pt").length).toBeGreaterThan(0);
       expect(screen.getAllByText("Portugues").length).toBeGreaterThan(0);
+    });
+
+    fireEvent.click(screen.getByLabelText(/language|jezyk|idioma/i));
+    fireEvent.click(screen.getByRole("button", { name: /alemao suico|deutsch/i }));
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId("flag-de-CH").length).toBeGreaterThan(0);
+      expect(screen.getAllByText("Deutsch (CH)").length).toBeGreaterThan(0);
     });
   });
 });

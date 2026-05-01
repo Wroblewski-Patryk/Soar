@@ -9,8 +9,8 @@ export type StrategyPreset = {
   form: StrategyFormState;
 };
 
-type LocalizedText = { en: string; pl: string; pt: string };
-type LocalizedTags = { en: string[]; pl: string[]; pt: string[] };
+type LocalizedText = { en: string } & Partial<Record<Locale, string>>;
+type LocalizedTags = { en: string[] } & Partial<Record<Locale, string[]>>;
 export type StrategyPresetPresentation = {
   name: string;
   description: string;

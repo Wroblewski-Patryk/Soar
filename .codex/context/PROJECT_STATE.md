@@ -1,6 +1,6 @@
 # PROJECT_STATE
 
-Last updated: 2026-05-01
+Last updated: 2026-05-02
 
 ## Product Snapshot
 - Name: CryptoSparrow / Soar
@@ -100,6 +100,17 @@ Last updated: 2026-05-01
   of reconstructing it from `syncState` or audit logs.
 
 ## Product Decisions (Confirmed)
+- 2026-05-02: added `V1I18N-01`, a complete Swiss German/German Switzerland
+  locale rollout using the standards-compliant `de-CH` locale code for the
+  operator-requested `CH_BE` language. The shared web i18n contract now
+  supports `de-CH` in locale storage, provider hydration, namespace registry,
+  route loading, Intl formatting, security bootstrap allow-list, all namespace
+  translation files, and the shared language switcher with a CH flag option.
+  Existing stronger parity checks also exposed and fixed Portuguese
+  dashboard-home namespace drift. Validation PASS: focused i18n/UI tests
+  (`22/22`), web typecheck, web build, repository guardrails, and
+  route-reachable i18n audit with `findings=0`. Evidence:
+  `docs/planning/v1i18n-01-swiss-german-locale-task-2026-05-02.md`.
 - 2026-05-01: fixed `V1UI-FLAG-01`, an operator-reported footer language
   switcher flag regression. Commit review from `2026-05-01 09:00` found no
   post-09:00 commit directly touching footer or language switcher ownership, so

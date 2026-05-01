@@ -3,8 +3,9 @@ import { renderHook } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { I18nContext, I18nContextValue } from "./I18nProvider";
 import { useLocaleFormatting } from "./useLocaleFormatting";
+import type { Locale } from "./translations";
 
-const createWrapper = (locale: "en" | "pl" | "pt", timeZone = "UTC") => {
+const createWrapper = (locale: Locale, timeZone = "UTC") => {
   const context: I18nContextValue = {
     locale,
     setLocale: () => undefined,
@@ -22,14 +23,16 @@ const createWrapper = (locale: "en" | "pl" | "pt", timeZone = "UTC") => {
 };
 
 describe("useLocaleFormatting", () => {
-  it("formats numbers differently for EN, PL and PT locales", () => {
+  it("formats numbers differently for EN, PL, PT and de-CH locales", () => {
     const en = renderHook(() => useLocaleFormatting(), { wrapper: createWrapper("en") });
     const pl = renderHook(() => useLocaleFormatting(), { wrapper: createWrapper("pl") });
     const pt = renderHook(() => useLocaleFormatting(), { wrapper: createWrapper("pt") });
+    const deCh = renderHook(() => useLocaleFormatting(), { wrapper: createWrapper("de-CH") });
 
     expect(en.result.current.formatNumber(1234.56)).toBe("1,234.56");
     expect(pl.result.current.formatNumber(1234.56)).toBe("1234,56");
     expect(pt.result.current.formatNumber(1234.56)).toBe("1234,56");
+    expect(deCh.result.current.formatNumber(1234.56)).toBe("1’234.56");
   });
 
   it("formats currency and percent with locale conventions", () => {

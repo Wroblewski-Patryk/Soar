@@ -35,7 +35,9 @@ const allConditionOptions: StrategyConditionOperator[] = [
   ...crossConditions,
   ...rangeConditions,
 ];
-const conditionLabelMap: Record<StrategyConditionOperator, { en: string; pl: string; pt: string }> = {
+type LocalizedConditionLabel = { en: string } & Partial<Record<Locale, string>>;
+
+const conditionLabelMap: Record<StrategyConditionOperator, LocalizedConditionLabel> = {
   ">": { en: "Greater than (>)", pl: "Wieksze niz (>)", pt: "Maior que (>)" },
   ">=": { en: "Greater than or equal (>=)", pl: "Wieksze lub rowne (>=)", pt: "Maior ou igual (>=)" },
   "<": { en: "Less than (<)", pl: "Mniejsze niz (<)", pt: "Menor que (<)" },
@@ -75,7 +77,7 @@ const resolveConditionOptions = (
 };
 
 const resolveConditionLabel = (condition: StrategyConditionOperator, locale: Locale) =>
-  conditionLabelMap[condition][locale];
+  conditionLabelMap[condition][locale] ?? conditionLabelMap[condition].en;
 
 const isRangeCondition = (condition: StrategyConditionOperator) =>
   condition === "IN_RANGE" || condition === "OUT_OF_RANGE";

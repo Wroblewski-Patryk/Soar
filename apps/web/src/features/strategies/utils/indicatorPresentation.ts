@@ -1,7 +1,9 @@
 import { normalizeUppercaseToken } from "@/lib/text";
 import type { Locale } from "@/i18n/translations";
 
-const indicatorLabels: Record<string, { en: string; pl: string; pt?: string }> = {
+type LocalizedIndicatorText = { en: string } & Partial<Record<Locale, string>>;
+
+const indicatorLabels: Record<string, LocalizedIndicatorText> = {
   EMA: { en: "EMA(Exponential Moving Average)", pl: "EMA(wykladnicza srednia kroczaca)" },
   SMA: { en: "SMA(Simple Moving Average)", pl: "SMA(prosta srednia kroczaca)" },
   RSI: { en: "RSI(Relative Strength Index)", pl: "RSI(wzgledna sila)" },
@@ -35,7 +37,7 @@ const indicatorLabels: Record<string, { en: string; pl: string; pt?: string }> =
   OUTSIDE_BAR: { en: "Outside Bar", pl: "Outside Bar" },
 };
 
-const paramLabels: Record<string, { en: string; pl: string; pt?: string }> = {
+const paramLabels: Record<string, LocalizedIndicatorText> = {
   fast: { en: "Fast period", pl: "Szybki okres" },
   slow: { en: "Slow period", pl: "Wolny okres" },
   period: { en: "Period", pl: "Okres" },
