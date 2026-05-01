@@ -24,10 +24,11 @@ Last updated: 2026-05-01
     continuing lifecycle with DCA rows from the prior session. Runtime
     `Positions` now fetches and reconstructs lifecycle DCA from the earlier of
     bot creation and session start, keeps bot/wallet/symbol/management filters,
-    includes pre-wallet `walletId=null` bot-scoped legacy trades, and preserves
-    close/reopen boundaries. Validation PASS: focused imported DCA API e2e
-    (`6/6`), API typecheck, API build, repository guardrails, diff check.
-    Evidence:
+    bridges through same-ownership historical position ids for legacy DCA rows
+    that lost both bot and wallet refs, includes pre-wallet `walletId=null`
+    bot-scoped legacy trades, and preserves close/reopen boundaries. Validation
+    PASS: focused imported DCA API e2e (`6/6`), API typecheck, API build,
+    repository guardrails, diff check. Evidence:
     `docs/planning/v1dca-05-restarted-session-imported-dca-read-model-task-2026-05-01.md`.
 
 - [x] `V1DCA-04 fix(api-runtime-read): restore wallet-scoped imported DCA in Positions`

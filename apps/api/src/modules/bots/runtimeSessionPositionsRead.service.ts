@@ -486,13 +486,33 @@ export const listBotRuntimeSessionPositions = async (
     resolveBotTrailingTakeProfitLevelsBySymbol(userId, botId, symbols),
     runtimePositionStateStore.getPositionRuntimeStates(positionIds),
   ]);
+  const continuityPositions = await listRuntimeManagedPositions({
+    where: {
+      userId,
+      managementMode: 'BOT_MANAGED',
+      symbol: { in: symbols },
+      openedAt: {
+        gte: lifecycleTradeWindowStart,
+        lte: windowEnd,
+      },
+      AND: [
+        {
+          OR: [botScopedPositionWhere, ...externalOwnedWhere],
+        },
+      ],
+    },
+    limit: Math.max(query.limit, 500),
+  });
+  const continuityPositionIds = [
+    ...new Set([...positionIds, ...continuityPositions.map((position) => position.id)]),
+  ];
 
   const [trades, lastSymbolPrices, openOrders, strategyConfigs] = await Promise.all([
     listRuntimePositionTradeRows({
       userId,
       OR: [
         {
-          positionId: { in: positionIds },
+          positionId: { in: continuityPositionIds },
         },
         {
           ...botScopedTradeWhere,

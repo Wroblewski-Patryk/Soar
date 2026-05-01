@@ -67,15 +67,18 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
   restarts.
 - Guardrail: runtime `Positions` DCA reconstruction for open imported
   lifecycles must use a bot-lifetime window bounded by strict
-  bot/wallet/symbol/management filters, then rely on the existing close/reopen
-  boundary to prevent stale carryover.
+  bot/wallet/symbol/management filters, bridge through same-ownership
+  historical position ids when legacy DCA rows lost both bot and wallet refs,
+  then rely on the existing close/reopen boundary to prevent stale carryover.
 - Preferred pattern:
 ```text
 1) Fetch visible-symbol lifecycle trade rows from min(bot.createdAt, session.startedAt).
 2) Include legacy LIVE bot-scoped rows with walletId=null when wallet migration
    may have happened after the trade.
-3) Feed the same widened window into continuity reconstruction.
-4) Keep same-symbol close/reopen stale-DCA regressions in the focused pack.
+3) Fetch same-ownership historical position ids for visible symbols and include
+   their direct trades before matching supplemental DCA.
+4) Feed the same widened window into continuity reconstruction.
+5) Keep same-symbol close/reopen stale-DCA regressions in the focused pack.
 ```
 - Avoid: anchoring open-position DCA continuity only to the current runtime
   session start or current exchange-sync replacement row's openedAt.

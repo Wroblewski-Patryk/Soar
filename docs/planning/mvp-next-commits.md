@@ -18,10 +18,12 @@ Operational queue for one-task execution runs.
     runtime session started after the imported ETH lifecycle had already
     executed two DCA adds, so `Positions` filtered the DCA rows out by
     `session.startedAt`. The read model now uses the earlier of bot creation
-    and session start for lifecycle trade reconstruction, includes legacy
-    bot-scoped `walletId=null` LIVE rows, and keeps close/reopen boundaries
-    intact. Validation PASS: focused imported DCA API e2e (`6/6`), API
-    typecheck, API build, repository guardrails, diff check. Evidence:
+    and session start for lifecycle trade reconstruction, bridges through
+    same-ownership historical position ids for legacy DCA rows that lost both
+    bot and wallet refs, includes legacy bot-scoped `walletId=null` LIVE rows,
+    and keeps close/reopen boundaries intact. Validation PASS: focused imported
+    DCA API e2e (`6/6`), API typecheck, API build, repository guardrails, diff
+    check. Evidence:
     `docs/planning/v1dca-05-restarted-session-imported-dca-read-model-task-2026-05-01.md`.
 - [x] `V1DCA-04 fix(api-runtime-read): restore wallet-scoped imported DCA in Positions`
   - 2026-05-01: Closed the remaining operator-reported ETH DCA regression after

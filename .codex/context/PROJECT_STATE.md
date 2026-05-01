@@ -107,10 +107,11 @@ Last updated: 2026-05-01
   imported ETH lifecycle had DCA rows in the prior session at
   `2026-05-01T03:20:19.592Z` and `2026-05-01T13:13:43.493Z`. Runtime
   `Positions` now reconstructs open imported lifecycle DCA from the earlier of
-  bot creation and session start, includes legacy `LIVE` bot-scoped
-  `walletId=null` trades, and preserves close/reopen stale-DCA boundaries.
-  Validation PASS: focused imported DCA API e2e (`6/6`), API typecheck, API
-  build, repository guardrails, diff check. Evidence:
+  bot creation and session start, bridges through same-ownership historical
+  position ids for legacy DCA rows that lost both bot and wallet refs, includes
+  legacy `LIVE` bot-scoped `walletId=null` trades, and preserves close/reopen
+  stale-DCA boundaries. Validation PASS: focused imported DCA API e2e (`6/6`),
+  API typecheck, API build, repository guardrails, diff check. Evidence:
   `docs/planning/v1dca-05-restarted-session-imported-dca-read-model-task-2026-05-01.md`.
 - 2026-05-01: fixed `V1DCA-04` after the operator confirmed ETH still showed
   `DCA=0` despite two real DCA adds after the web monitoring hotfix. The

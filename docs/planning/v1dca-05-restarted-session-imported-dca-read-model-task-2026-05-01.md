@@ -58,8 +58,11 @@ bot/wallet/symbol/management filters and without migrating data.
    query.
 4. Include legacy `LIVE` bot-scoped trade rows with `walletId=null` so
    pre-wallet-migration DCA rows remain visible.
-5. Keep existing close/reopen boundary logic unchanged.
-6. Add a focused ETH-like regression where DCA happened before the current
+5. Fetch same-ownership historical position ids for visible symbols and include
+   their direct trades, so DCA rows that lost both bot and wallet refs can still
+   be recovered through owned superseded positions.
+6. Keep existing close/reopen boundary logic unchanged.
+7. Add a focused ETH-like regression where DCA happened before the current
    session and the current open row is a later exchange-sync replacement.
 
 ## Acceptance Criteria
@@ -75,7 +78,8 @@ bot/wallet/symbol/management filters and without migrating data.
 - [x] `NO_TEMPORARY_SOLUTIONS.md` reviewed.
 - [x] `DEPLOYMENT_GATE.md` reviewed.
 - [x] Read-model fix implemented.
-- [x] Regression coverage added.
+- [x] Regression coverage added for restarted sessions and fully nullable
+  legacy DCA trade refs.
 - [x] Focused tests and build checks passed.
 - [x] Source-of-truth docs updated.
 
@@ -104,7 +108,7 @@ bot/wallet/symbol/management filters and without migrating data.
     returned `dcaCount=0`, `tradesCount=1`, current session start
     `2026-05-01T17:11:21.540Z`, position open
     `2026-05-01T16:00:03.313Z`.
-  - Authenticated prior-session trades showed ETHUSDT DCA rows at
+  - Authenticated prior-session trades/positions showed ETHUSDT DCA rows at
     `2026-05-01T03:20:19.592Z` and `2026-05-01T13:13:43.493Z`.
 - Screenshots/logs: API JSON evidence collected in this execution.
 - High-risk checks: same-symbol close/reopen stale-DCA test remains in the
@@ -150,12 +154,15 @@ bot/wallet/symbol/management filters and without migrating data.
 ### 3. Plan Implementation
 - Files or surfaces to modify: API read model, focused API regression, docs.
 - Logic: widen lifecycle trade query and reconstruction start to bot lifetime
-  for this runtime read, while keeping filters strict.
-- Edge cases: pre-wallet `walletId=null` trade rows and stale close/reopen DCA.
+  for this runtime read, fetch same-ownership historical position ids for
+  visible symbols, while keeping filters strict.
+- Edge cases: pre-wallet fully nullable DCA trade refs and stale close/reopen
+  DCA.
 
 ### 4. Execute Implementation
 - Implementation notes: selected `bot.createdAt`, derived
-  `lifecycleTradeWindowStart`, reused existing continuity and dedupe logic.
+  `lifecycleTradeWindowStart`, added a same-ownership historical position-id
+  bridge, and reused existing continuity and dedupe logic.
 
 ### 5. Verify and Test
 - Validation performed: focused API e2e, API typecheck, API build, guardrails,
@@ -217,7 +224,8 @@ bot/wallet/symbol/management filters and without migrating data.
 ## Result Report
 - Task summary: runtime Positions can now recover imported DCA rows from before
   the current runtime session when the open exchange-sync row is a continuing
-  bot lifecycle.
+  bot lifecycle, including legacy DCA rows that are only recoverable through
+  owned superseded position ids.
 - Files changed:
   - `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts`
   - `apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts`

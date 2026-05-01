@@ -785,7 +785,7 @@ describe('Bots runtime imported DCA visibility', () => {
         },
         {
           userId: ownerUser.id,
-          botId,
+          botId: null,
           walletId: null,
           strategyId: null,
           positionId: firstImportedRow.id,
@@ -819,8 +819,8 @@ describe('Bots runtime imported DCA visibility', () => {
         },
         {
           userId: ownerUser.id,
-          botId,
-          walletId,
+          botId: null,
+          walletId: null,
           strategyId: null,
           positionId: secondImportedRow.id,
           symbol: 'ETHUSDT',
