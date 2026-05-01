@@ -12,6 +12,15 @@ Operational queue for one-task execution runs.
   blockers are `V1EXCEL-03..06` authenticated manual operator and OPS evidence.
   `BOTMULTI-*` remains in `PIPELINE` until those post-V1 confidence gates are
   green.
+- [ ] `V1FINAL-01 qa(prod): verify deployed DOGE runtime hardening and run final V1 gates`
+  - 2026-05-01 preflight: production public smoke is green, but build-info
+    still reports `c081f224134fedb65de2ecad716274b92593c373`, while repository
+    head is `577c45a8`. Stage still returns `503 no available server`.
+    Therefore the next executable final-V1 slice starts only after production
+    deploys `577c45a8` or later. Execute the gate order in
+    `docs/operations/v1-final-test-structure-2026-05-01.md`: deploy freshness,
+    DOGE close/reopen regression, production V1EXCEL evidence, manual matrix,
+    and final GO/NO-GO.
 - [ ] `V1EXCEL-04 ops(stage-refresh): restore stage target before authenticated gate rerun`
   - 2026-05-01 refresh: stage public smoke now fails before auth. `stage-api`
     and `stage` both return `503 no available server` for health/ready/root and
@@ -76,6 +85,14 @@ Operational queue for one-task execution runs.
     `docs/planning/v1doge-02-runtime-close-reopen-hardening-task-2026-05-01.md`.
     Post-deploy protected production verification remains the next evidence
     step.
+- [x] `V1FINAL-00 release(planning): freeze final V1 test structure after DOGE runtime hardening`
+  - 2026-05-01: Closed the planning slice requested after checking active
+    queues. Production public smoke PASS, production build-info reports stale
+    `c081f224`, stage public smoke FAIL with `503`, and the final V1 test
+    structure now prevents claiming DOGE/V1 closure until the latest runtime
+    hardening commit `577c45a8` or later is deployed. Evidence:
+    `docs/operations/v1-final-test-structure-2026-05-01.md`. Task packet:
+    `docs/planning/v1final-00-final-test-structure-task-2026-05-01.md`.
 - [x] `WLEDGER-07..09 web-wallet-preview: expose ledger-backed wallet preview from wallet list`
   - 2026-04-30: Closed the wallet preview UI slice. Wallet rows now expose a shared `preview` table action linking to `/dashboard/wallets/:id/preview`, and the new preview page loads the ledger-backed performance summary, equity timeline, and cashflow events APIs. The UI separates contributed capital from bot PnL, keeps unclassified adjustments visible, handles loading/error/empty/partial/success states, and avoids ISO-currency assumptions for crypto symbols such as `USDT`. Validation PASS: focused wallet web tests, web typecheck, web build, route-reachable i18n audit, repository guardrails.
 - [x] `WLEDGER-06 api-read: expose wallet performance summary, timeline, and cashflow APIs`

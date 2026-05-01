@@ -17,6 +17,17 @@ Last updated: 2026-05-01
 
 ## READY
 
+- [ ] `V1FINAL-01 qa(prod): verify deployed DOGE runtime hardening and run final V1 gates`
+  - Scope: execute the final V1 gate structure after production deploys
+    `577c45a8` or later. Gate order: deploy freshness, DOGE close/reopen
+    runtime regression, production V1EXCEL evidence, manual operator matrix,
+    final GO/NO-GO.
+  - 2026-05-01 preflight: production public smoke passes, but build-info still
+    reports `c081f224134fedb65de2ecad716274b92593c373`, so production does not
+    yet include `V1DOGE-02` (`577c45a8`). Stage still returns `503`.
+    Test structure:
+    `docs/operations/v1-final-test-structure-2026-05-01.md`. Planning task:
+    `docs/planning/v1final-00-final-test-structure-task-2026-05-01.md`.
 - [ ] `V1EXCEL-04 ops(stage-refresh): restore stage target before authenticated gate rerun`
   - Scope: stage release-gate evidence cannot proceed while the stage web/API
     targets are unavailable.
@@ -91,6 +102,16 @@ Last updated: 2026-05-01
     futures market-data gateway packs. Task packet:
     `docs/planning/v1doge-02-runtime-close-reopen-hardening-task-2026-05-01.md`.
     Post-deploy protected production verification is still required.
+
+- [x] `V1FINAL-00 release(planning): freeze final V1 test structure after DOGE runtime hardening`
+  - Scope: audit active V1 queues, re-check production/stage public targets,
+    compare deployed SHA with repository head, and publish one gate-ordered V1
+    test structure.
+  - 2026-05-01: Closed as planning. Production public smoke PASS, production
+    build-info reports stale `c081f224`, stage public smoke FAIL with `503`,
+    and the final V1 structure now blocks DOGE post-deploy verification until
+    `577c45a8` or later is deployed. Evidence:
+    `docs/operations/v1-final-test-structure-2026-05-01.md`.
 
 - [x] `WLEDGER-07..09 web-wallet-preview: expose ledger-backed wallet preview from wallet list`
   - Scope: add a wallets table preview action and `/dashboard/wallets/:id/preview` surface for ledger-backed summary, equity timeline, and cashflow events.
