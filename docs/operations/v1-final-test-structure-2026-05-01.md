@@ -32,13 +32,28 @@ Production build-info:
 
 Current repository head:
 
-- `577c45a8 fix(api-runtime): harden live close reopen state`
+- `fba29a96 docs(release): freeze final v1 test structure`
+- Runtime hardening commit included in current `main` history:
+  `577c45a8 fix(api-runtime): harden live close reopen state`
 
 Conclusion:
 
 - Production is healthy but stale for the latest money-path runtime fix.
 - `V1DOGE-02` post-deploy verification must not be claimed until production
   build-info reports `577c45a8` or a later commit that includes it.
+
+Follow-up recheck on 2026-05-01:
+
+- Production build-info still reports
+  `c081f224134fedb65de2ecad716274b92593c373`.
+- Latest GitHub `Promote PROD` workflow run is old
+  (`0f122ed4cc38e443c4dc58a038cd413a4d8447c6`, 2026-04-25) and failed.
+- No current `Promote PROD` run exists for `577c45a8`/`fba29a96`.
+
+Conclusion:
+
+- Final V1 execution is blocked on an operational production deploy trigger,
+  not on a newly discovered code task.
 
 Stage check:
 
@@ -64,7 +79,8 @@ Conclusion:
 Pass condition:
 
 - production build-info `gitSha` is `577c45a8` or later and includes
-  `V1DOGE-02`.
+  `V1DOGE-02`; preferred current target is `fba29a96` or later because it also
+  includes this final test structure.
 - production public smoke passes.
 - stage either passes or remains explicitly documented as an environment
   blocker, not a product-code blocker.

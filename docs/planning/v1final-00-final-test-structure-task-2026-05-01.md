@@ -16,6 +16,11 @@ production build-info still reports `c081f224`. Stage remains unavailable with
 `503 no available server`. V1 must therefore continue as an evidence and
 deployment-freshness problem, not as an ungrounded declaration of completion.
 
+2026-05-01 follow-up recheck: production still reports `c081f224`, current
+`main` head is `fba29a96`, and no current `Promote PROD` workflow run exists
+for `577c45a8`/`fba29a96`. The blocker is an operational production deploy
+trigger, not a new code task.
+
 ## Goal
 Create one final V1 test structure that defines exactly what must be executed
 after the latest runtime hardening reaches production.
@@ -81,7 +86,8 @@ Planning artifact:
   - `pnpm run ops:deploy:smoke -- --api-base-url https://stage-api.soar.luckysparrow.ch --web-base-url https://stage.soar.luckysparrow.ch --no-workers` -> FAIL with `503`
 - Manual checks:
   - production build-info reports `c081f224134fedb65de2ecad716274b92593c373`
-  - local/repository head is `577c45a8`
+  - local/repository head is `fba29a96`
+  - latest `Promote PROD` workflow run is old (`0f122ed4`, 2026-04-25) and failed
 - Screenshots/logs: command summaries captured in the operations artifact.
 - High-risk checks: deployment freshness gate blocks DOGE post-deploy claims.
 
@@ -155,6 +161,6 @@ Planning artifact:
   - `docs/operations/v1-final-test-structure-2026-05-01.md`
   - queue/context files
 - How tested: production public smoke PASS, production build-info checked, stage public smoke FAIL with known `503`.
-- What is incomplete: post-deploy DOGE verification, stage restore, manual LIVE matrix, restore drill, RC rebuild, final GO/NO-GO.
-- Next steps: deploy `577c45a8` or later to production, then execute Gate 0 and Gate 1 from the final test structure.
+- What is incomplete: production deploy trigger for `fba29a96` or later, post-deploy DOGE verification, stage restore, manual LIVE matrix, restore drill, RC rebuild, final GO/NO-GO.
+- Next steps: deploy `fba29a96` or later to production, then execute Gate 0 and Gate 1 from the final test structure.
 - Decisions made: V1 cannot be closed until deployed SHA includes the latest DOGE runtime hardening.

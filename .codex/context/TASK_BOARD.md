@@ -19,12 +19,15 @@ Last updated: 2026-05-01
 
 - [ ] `V1FINAL-01 qa(prod): verify deployed DOGE runtime hardening and run final V1 gates`
   - Scope: execute the final V1 gate structure after production deploys
-    `577c45a8` or later. Gate order: deploy freshness, DOGE close/reopen
+    `fba29a96` or later. Gate order: deploy freshness, DOGE close/reopen
     runtime regression, production V1EXCEL evidence, manual operator matrix,
     final GO/NO-GO.
   - 2026-05-01 preflight: production public smoke passes, but build-info still
     reports `c081f224134fedb65de2ecad716274b92593c373`, so production does not
-    yet include `V1DOGE-02` (`577c45a8`). Stage still returns `503`.
+    yet include `V1DOGE-02` (`577c45a8`) or the final test structure
+    (`fba29a96`). Stage still returns `503`. GitHub workflow recheck shows the
+    latest `Promote PROD` run is old (`0f122ed4`, 2026-04-25) and failed; no
+    current production promotion run exists for `577c45a8`/`fba29a96`.
     Test structure:
     `docs/operations/v1-final-test-structure-2026-05-01.md`. Planning task:
     `docs/planning/v1final-00-final-test-structure-task-2026-05-01.md`.

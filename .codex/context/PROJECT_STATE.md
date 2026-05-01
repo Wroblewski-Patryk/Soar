@@ -126,9 +126,12 @@ Last updated: 2026-05-01
 - 2026-05-01: published the final V1 test structure after rechecking active
   queues and target freshness. Production public smoke passes, but production
   build-info still reports `c081f224134fedb65de2ecad716274b92593c373` while
-  repository head is `577c45a8`, so the latest DOGE runtime hardening is not
-  yet deployed and cannot be verified on production. Stage public smoke still
-  fails with `503`. The final structure now freezes gate order: deploy
+  repository head is now `fba29a96`, including DOGE runtime hardening commit
+  `577c45a8`, so the latest hardening is not yet deployed and cannot be
+  verified on production. Stage public smoke still fails with `503`. GitHub
+  workflow recheck shows the latest `Promote PROD` run is old (`0f122ed4`,
+  2026-04-25) and failed; no current production promotion run exists for
+  `577c45a8`/`fba29a96`. The final structure now freezes gate order: deploy
   freshness, DOGE close/reopen runtime regression, production V1EXCEL evidence,
   manual operator matrix, and final GO/NO-GO. Evidence:
   `docs/operations/v1-final-test-structure-2026-05-01.md`; task packet:

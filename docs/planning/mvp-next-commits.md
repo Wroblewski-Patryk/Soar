@@ -15,12 +15,16 @@ Operational queue for one-task execution runs.
 - [ ] `V1FINAL-01 qa(prod): verify deployed DOGE runtime hardening and run final V1 gates`
   - 2026-05-01 preflight: production public smoke is green, but build-info
     still reports `c081f224134fedb65de2ecad716274b92593c373`, while repository
-    head is `577c45a8`. Stage still returns `503 no available server`.
+    head is now `fba29a96` and includes runtime hardening commit `577c45a8`.
+    Stage still returns `503 no available server`.
     Therefore the next executable final-V1 slice starts only after production
-    deploys `577c45a8` or later. Execute the gate order in
+    deploys `fba29a96` or later. Execute the gate order in
     `docs/operations/v1-final-test-structure-2026-05-01.md`: deploy freshness,
     DOGE close/reopen regression, production V1EXCEL evidence, manual matrix,
     and final GO/NO-GO.
+  - 2026-05-01 workflow recheck: latest GitHub `Promote PROD` run is old
+    (`0f122ed4`, 2026-04-25) and failed; no current production promotion run
+    exists for `577c45a8`/`fba29a96`.
 - [ ] `V1EXCEL-04 ops(stage-refresh): restore stage target before authenticated gate rerun`
   - 2026-05-01 refresh: stage public smoke now fails before auth. `stage-api`
     and `stage` both return `503 no available server` for health/ready/root and
