@@ -13,6 +13,7 @@ Translate Soar decisions and documentation into an actionable execution queue.
 - `docs/planning/`
 
 ## Rules
+- Before creating or refreshing the queue, run the process self-audit from `docs/governance/autonomous-engineering-loop.md` and record iteration number, operation mode, and one-task scope.
 
 - keep tasks small enough for one focused implementation session
 - use the existing task IDs and planning wave names where they already exist

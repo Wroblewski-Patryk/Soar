@@ -100,6 +100,16 @@ Last updated: 2026-05-01
   of reconstructing it from `syncState` or audit logs.
 
 ## Product Decisions (Confirmed)
+- 2026-05-01: queued `BHIST-01` as the next product follow-up after the closed
+  wallet-ledger preview wave. Current repository truth already covers
+  wallet-level performance summary, equity timeline, and cashflow markers for
+  LIVE wallets, but it still lacks a dedicated bot-scoped portfolio history
+  surface that shows progress from active bot start to now with explicit
+  `PAPER_RESET` and wallet-capital event markers. The queued packet freezes one
+  architecture-aligned direction: reuse wallet-ledger events for LIVE markers,
+  reuse `paperResetAt` for PAPER checkpoint markers, and do not create a
+  parallel accounting path. Evidence:
+  `docs/planning/bhist-01-bot-portfolio-history-and-capital-events-task-2026-05-01.md`.
 - 2026-05-01: introduced and expanded the V1 function coverage ledger so
   module-level confidence can be tracked without repeated ad-hoc retesting.
   The matrix records module, submodule, mode, layer, parent capability, child
@@ -1300,6 +1310,12 @@ Last updated: 2026-05-01
     `docs/planning/mvp-execution-plan.md` plus current architecture/context
     truth.
 
+## Autonomous Iteration State
+- Current iteration:
+- Current operation mode: BUILDER | ARCHITECT | TESTER
+- Last completed iteration:
+- Last completed task:
+- Next required mode:
 ## Recent Progress
 - 2026-04-22: queued `SAFEV1-A` in
   `docs/planning/safev1-a-live-paper-runtime-safety-plan-2026-04-22.md` after
@@ -2163,7 +2179,7 @@ Last updated: 2026-05-01
 - Communicate with users in their language.
 - Delegate with explicit ownership and avoid overlapping subagent write scope.
 - Use the default loop:
-  `plan -> implement -> test -> architecture review -> sync context`.
+  `analyze -> select one task -> plan -> implement -> verify -> self-review -> sync knowledge`.
 - Treat deployment docs and smoke checks as part of done-state for runtime
   changes.
 

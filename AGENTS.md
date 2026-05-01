@@ -178,6 +178,25 @@ Run the commands relevant to the touched scope.
 - Go-live smoke for risky runtime or deployment work:
   `pnpm run test:go-live:smoke`
 
+## Autonomous Engineering Loop
+
+Follow `docs/governance/autonomous-engineering-loop.md` for every autonomous iteration:
+
+1. analyze current state
+2. select exactly one priority task
+3. plan implementation
+4. execute implementation
+5. verify and test
+6. self-review
+7. update documentation and knowledge
+
+Before starting an iteration, perform the process self-audit from that document. Do not continue until all seven steps, one-task scope, and the correct operation mode are represented in the task contract.
+
+Operation mode rotates by iteration number:
+
+- `BUILDER`: default mode
+- `ARCHITECT`: every third iteration, unless the iteration is also a tester iteration
+- `TESTER`: every fifth iteration
 ## Agent Catalog
 
 - Planner: `.agents/prompts/planner.md` or `.claude/agents/planner.agent.md`
