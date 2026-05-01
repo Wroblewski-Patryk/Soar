@@ -47,6 +47,29 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-05-01 - OPS scripts use command-specific auth environment prefixes
+- Context: `V1EXCEL-06-PROD` needed authenticated production runtime freshness
+  and rollback guard evidence without writing secrets to disk.
+- Symptom: `ops:deploy:runtime-freshness` passed with `DEPLOY_FRESHNESS_*`
+  environment variables, while `ops:deploy:rollback-guard` still returned
+  `runtime_freshness_endpoint_http_401` and `alerts_endpoint_http_401` when the
+  same prefix was reused.
+- Root cause: the rollback guard script intentionally reads
+  `ROLLBACK_GUARD_*`, not `DEPLOY_FRESHNESS_*`.
+- Guardrail: set the auth prefix that matches the exact OPS script being run
+  before classifying a protected-route `401` as missing access.
+- Preferred pattern:
+```text
+1) For runtime freshness, use DEPLOY_FRESHNESS_AUTH_*.
+2) For rollback guard, use ROLLBACK_GUARD_AUTH_*.
+3) Keep credentials in process/session environment only.
+4) Record command shape and result, never secret values.
+```
+- Avoid: reusing one OPS auth prefix across all scripts and treating the
+  resulting `401` as a production access failure.
+- Evidence: 2026-05-01 `V1EXCEL-06-PROD` production runtime freshness and
+  rollback guard verification.
+
 ### 2026-04-30 - Imported owned LIVE rows can still be skipped if runtime keys only on persisted botId
 - Context: after `V1ROE` price-truth fixes and `V1AUTO` state rebase, protected production verification still showed an imported `DOGEUSDT` row visible as bot-managed while `DCA/TTP` looked dormant.
 - Symptom: runtime read surfaces could present an imported `EXCHANGE_SYNC` row as owned/actionable, yet runtime automation and bot-scope open-position counting behaved as if no canonical bot-owned open position existed.

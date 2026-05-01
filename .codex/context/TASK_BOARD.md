@@ -245,6 +245,7 @@ Last updated: 2026-05-01
 - [ ] `V1EXCEL-06 ops(runtime-observability): verify active LIVE worker/runtime diagnostics under current production truth`
   - Scope: confirm worker health, runtime freshness, event visibility, and operator diagnostics remain healthy under the current hardened `LIVE` candidate.
   - 2026-04-29 status: BLOCKED. Stage and prod runtime observability probes both hit protected-route `401` boundaries without OPS auth; this proves the endpoint boundary but not current worker/runtime health. Canonical status: `docs/operations/v1excel-runtime-observability-2026-04-29.md`.
+  - 2026-05-01 production refresh: production runtime observability is green with authenticated evidence. Runtime freshness PASS, rollback guard PASS with `shouldRollback=false`, no reasons, no alerts, and `runningCount=4`. Stage runtime observability remains open. Task packet: `docs/planning/v1excel-06-prod-runtime-observability-task-2026-05-01.md`.
 
 - [ ] `V1EXCEL-UNBLOCK ops(runbook): execute the final authenticated unblock sequence for GO readiness`
   - Scope: use the prepared operator runbook to clear the remaining external blockers `V1EXCEL-03..06` once Soar operator auth, OPS/private-route auth, and exchange authority are available.
@@ -507,7 +508,7 @@ Last updated: 2026-05-01
 
 - [ ] `V1EXCEL-03..06 confidence gates: finish authenticated manual operator, stage/prod, and runtime observability evidence`
   - Scope: execute the remaining V1 excellence evidence wave: full manual matrix, authenticated stage refresh, authenticated prod refresh, and runtime observability closure on the current candidate.
-  - 2026-05-01: `V1ROE-04` is no longer blocked; it is closed by authenticated production evidence. The remaining blocked or incomplete confidence work belongs to `V1EXCEL-03..06`, and `BOTMULTI-*` remains deferred until those gates are green.
+  - 2026-05-01: `V1ROE-04` is no longer blocked; it is closed by authenticated production evidence. Production runtime observability under `V1EXCEL-06` is also green with auth. The remaining blocked or incomplete confidence work belongs to manual matrix, stage refresh, broader prod refresh evidence families, and stage runtime observability; `BOTMULTI-*` remains deferred until those gates are green.
 
 ## REVIEW
 

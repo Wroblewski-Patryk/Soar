@@ -148,6 +148,7 @@ Operational queue for one-task execution runs.
   - 2026-04-29 status: BLOCKED by stale prod evidence plus missing OPS/private-route auth. Public prod smoke PASS and prod gate dry-run was refreshed: `docs/operations/v1excel-prod-refresh-2026-04-29.md`.
 - [ ] `V1EXCEL-06 ops(runtime-observability): verify active LIVE worker/runtime diagnostics under current production truth`
   - 2026-04-29 status: BLOCKED by protected-route `401` on stage and prod runtime observability probes without OPS auth. Canonical status: `docs/operations/v1excel-runtime-observability-2026-04-29.md`.
+  - 2026-05-01 production refresh: production runtime observability is now green with authenticated access. `ops:deploy:runtime-freshness` PASS, `ops:deploy:rollback-guard` PASS with `shouldRollback=false`, no reasons, no alerts, and `runningCount=4`. Stage runtime observability still needs separate authenticated evidence, so the broader V1 confidence gate remains open. Task packet: `docs/planning/v1excel-06-prod-runtime-observability-task-2026-05-01.md`.
 - [x] `V1EXCEL-07 release(go-no-go): rebuild RC status/sign-off/checklist and publish final V1 excellence decision`
   - 2026-04-29: Closed with `NO-GO` for candidate `51acd9c445227a3ca8cc8b781564d14b55fda43f`. Canonical decision: `docs/operations/v1excel-final-go-no-go-2026-04-29.md`.
 - [x] `V1EXCEL-08 docs(closure): sync canonical queue/context and freeze the final post-V1 handoff`
@@ -520,7 +521,7 @@ Operational queue for one-task execution runs.
 - [x] `L10NQ-C (commits 12-15): route-level namespace loading + English docs normalization`
 ## BLOCKED
 - [ ] `V1EXCEL-03..06 confidence gates: finish authenticated manual operator, stage/prod, and runtime observability evidence`
-  - 2026-05-01: `V1ROE-04` is no longer blocked; it is closed by authenticated production evidence. The remaining blocked or incomplete V1 confidence scope is the separate `V1EXCEL` evidence wave: full manual matrix, authenticated stage refresh, authenticated prod refresh, and runtime observability closure on the current candidate.
+  - 2026-05-01: `V1ROE-04` is no longer blocked; it is closed by authenticated production evidence. Production runtime observability under `V1EXCEL-06` is also green with auth. The remaining blocked or incomplete V1 confidence scope is the separate `V1EXCEL` evidence wave: full manual matrix, authenticated stage refresh, broader prod refresh evidence families, and stage runtime observability closure on the current candidate.
 
 ## DONE
 - [x] `V1ROE-04 qa(prod-manual): verify exchange-aligned LIVE PnL truth and imported automation on protected DOGEUSDT`
