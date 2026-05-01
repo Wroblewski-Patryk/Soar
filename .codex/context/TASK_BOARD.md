@@ -33,10 +33,11 @@ Last updated: 2026-05-01
   - 2026-05-01 refresh: executable production subset PASS on the current
     deployed runtime candidate. Public smoke passed, protected runtime
     freshness passed, and rollback guard returned `shouldRollback=false`, no
-    reasons, no alerts, `runningCount=4`. Evidence:
+    reasons, no alerts, `runningCount=4`. Production rollback-proof artifact
+    also PASS with secret-safe command recording. Evidence:
     `docs/operations/v1excel-05-prod-refresh-2026-05-01.md`. Remaining work:
-    restore drill, secret-safe rollback-proof artifact, RC
-    status/sign-off/checklist rebuild, and remaining manual matrix items.
+    restore drill, RC status/sign-off/checklist rebuild, and remaining manual
+    matrix items.
 
 - [x] `V1DCA-01 fix(api-runtime-read): preserve DCA visibility after exchange-sync position replacement`
   - Scope: keep dashboard runtime `Positions` DCA truth aligned with the

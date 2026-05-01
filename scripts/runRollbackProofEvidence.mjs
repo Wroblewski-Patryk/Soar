@@ -48,12 +48,15 @@ const printUsage = () => {
 
 const nowStamp = () => new Date().toISOString().replace(/[:.]/g, '-');
 
-const run = (command, args) =>
+const run = (command, args, envOverrides = {}) =>
   spawnSync(command, args, {
     stdio: ['ignore', 'pipe', 'pipe'],
     encoding: 'utf8',
     shell: process.platform === 'win32',
-    env: process.env,
+    env: {
+      ...process.env,
+      ...envOverrides,
+    },
   });
 
 const renderMarkdown = (payload, jsonPath) => `# V1 Rollback Proof (${payload.profile})
@@ -91,16 +94,18 @@ const main = async () => {
   }
 
   const commandArgs = ['scripts/evaluateRollbackGuard.mjs', '--base-url', options.baseUrl.trim()];
-  if (options.authToken.trim()) commandArgs.push('--auth-token', options.authToken.trim());
-  if (options.authEmail.trim()) commandArgs.push('--auth-email', options.authEmail.trim());
-  if (options.authPassword.trim()) commandArgs.push('--auth-password', options.authPassword.trim());
-  if (options.opsBasicUser.trim()) commandArgs.push('--ops-basic-user', options.opsBasicUser.trim());
-  if (options.opsBasicPassword.trim()) commandArgs.push('--ops-basic-password', options.opsBasicPassword.trim());
-  if (options.opsAuthHeaderName.trim()) commandArgs.push('--ops-auth-header-name', options.opsAuthHeaderName.trim());
-  if (options.opsAuthHeaderValue.trim()) commandArgs.push('--ops-auth-header-value', options.opsAuthHeaderValue.trim());
+  const authEnv = {
+    ROLLBACK_GUARD_AUTH_TOKEN: options.authToken.trim(),
+    ROLLBACK_GUARD_AUTH_EMAIL: options.authEmail.trim(),
+    ROLLBACK_GUARD_AUTH_PASSWORD: options.authPassword.trim(),
+    ROLLBACK_GUARD_OPS_BASIC_USER: options.opsBasicUser.trim(),
+    ROLLBACK_GUARD_OPS_BASIC_PASSWORD: options.opsBasicPassword.trim(),
+    ROLLBACK_GUARD_OPS_AUTH_HEADER_NAME: options.opsAuthHeaderName.trim(),
+    ROLLBACK_GUARD_OPS_AUTH_HEADER_VALUE: options.opsAuthHeaderValue.trim(),
+  };
 
   const startedAt = new Date().toISOString();
-  const result = run('node', commandArgs);
+  const result = run('node', commandArgs, authEnv);
   const endedAt = new Date().toISOString();
 
   const stdout = String(result.stdout ?? '').trim();

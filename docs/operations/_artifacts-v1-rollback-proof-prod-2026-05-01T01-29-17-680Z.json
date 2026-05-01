@@ -1,0 +1,63 @@
+{
+  "status": "PASS",
+  "profile": "prod",
+  "baseUrl": "https://api.soar.luckysparrow.ch",
+  "startedAt": "2026-05-01T01:29:16.921Z",
+  "endedAt": "2026-05-01T01:29:17.678Z",
+  "command": "node scripts/evaluateRollbackGuard.mjs --base-url https://api.soar.luckysparrow.ch",
+  "checks": {
+    "commandExitCodeZero": true,
+    "shouldRollbackFalse": true,
+    "noCriticalReasons": true,
+    "freshnessStatusPass": true,
+    "alertsClear": true
+  },
+  "decision": {
+    "checkedAt": "2026-05-01T01:29:17.264Z",
+    "shouldRollback": false,
+    "reasons": [],
+    "freshness": {
+      "status": "PASS",
+      "checks": {
+        "workerHeartbeat": {
+          "status": "PASS",
+          "thresholdMs": 60000,
+          "ageMs": 501,
+          "detail": "worker heartbeat freshness within threshold"
+        },
+        "marketData": {
+          "status": "PASS",
+          "thresholdMs": 120000,
+          "ageMs": 501,
+          "detail": "market data freshness within threshold"
+        },
+        "runtimeSignalLag": {
+          "status": "PASS",
+          "thresholdMs": 90000,
+          "ageMs": 0,
+          "detail": "runtime signal lag within threshold"
+        },
+        "runtimeSessions": {
+          "status": "PASS",
+          "thresholdMs": 120000,
+          "ageMs": null,
+          "runningCount": 4,
+          "staleSessionIds": [],
+          "detail": "runtime sessions heartbeat healthy"
+        },
+        "runtimeDecisionActivity": {
+          "status": "SKIP",
+          "thresholdMs": 300000,
+          "ageMs": null,
+          "required": false,
+          "runningCount": 4,
+          "staleSessionIds": [],
+          "detail": "runtime decision activity freshness check disabled for running sessions"
+        }
+      }
+    },
+    "alerts": []
+  },
+  "stdoutPreview": "{\n  \"checkedAt\": \"2026-05-01T01:29:17.264Z\",\n  \"shouldRollback\": false,\n  \"reasons\": [],\n  \"freshness\": {\n    \"status\": \"PASS\",\n    \"checks\": {\n      \"workerHeartbeat\": {\n        \"status\": \"PASS\",\n        \"thresholdMs\": 60000,\n        \"ageMs\": 501,\n        \"detail\": \"worker heartbeat freshness within threshold\"\n      },\n      \"marketData\": {\n        \"status\": \"PASS\",\n        \"thresholdMs\": 120000,\n        \"ageMs\": 501,\n        \"detail\": \"market data freshness within threshold\"\n      },\n      \"runtimeSignalLag\": {\n        \"status\": \"PASS\",\n        \"thresholdMs\": 90000,\n        \"ageMs\": 0,\n        \"detail\": \"runtime signal lag within threshold\"\n      },\n      \"runtimeSessions\": {\n        \"status\": \"PASS\",\n        \"thresholdMs\": 120000,\n        \"ageMs\": null,\n        \"runningCount\": 4,\n        \"staleSessionIds\": [],\n        \"detail\": \"runtime sessions heartbeat healthy\"\n      },\n      \"runtimeDecisionActivity\": {\n        \"status\": \"SKIP\",\n        \"thresholdMs\": 300000,\n        \"ageMs\": null,\n        \"required\": false,\n        \"runningCount\": 4,\n        \"staleSessionIds\": [],\n        \"detail\": \"runtime decision activity freshness check disabled for running sessions\"\n      }\n    }\n  },\n  \"alerts\": []\n}",
+  "stderrPreview": ""
+}

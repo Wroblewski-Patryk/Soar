@@ -204,11 +204,11 @@ Rule: fix/cleanup/update first, then feature delivery.
 - 2026-05-01: Refreshed the executable production subset of `V1EXCEL-05`.
   Production public smoke, protected runtime freshness, and rollback guard are
   green on the current deployed runtime candidate (`shouldRollback=false`,
-  no reasons, no alerts, `runningCount=4`). Evidence:
+  no reasons, no alerts, `runningCount=4`), and production rollback-proof
+  artifact is PASS with secret-safe command recording. Evidence:
   `docs/operations/v1excel-05-prod-refresh-2026-05-01.md`. The task remains
-  open for broader release evidence families: restore drill, secret-safe
-  rollback-proof artifact, RC status/sign-off/checklist rebuild, and remaining
-  manual matrix items.
+  open for broader release evidence families: restore drill, RC
+  status/sign-off/checklist rebuild, and remaining manual matrix items.
 - 2026-04-29: Closed `V1EXCEL-07` with a final `NO-GO` decision for candidate `51acd9c445227a3ca8cc8b781564d14b55fda43f`. Current evidence still supports the engineering answer "no known implementation gap remains", but the repository's own completion and activation contracts are not yet satisfied because the authenticated manual operator matrix and protected stage/prod OPS evidence were not executed in this session. Canonical decision: `docs/operations/v1excel-final-go-no-go-2026-04-29.md`.
 - 2026-04-29: Closed `V1TRUTH-03` and `V1TRUTH-04` as one architecture-aligned API slice. App-driven `LIVE` manual close now stays inside the canonical `openOrder -> exchange boundary -> live adapter` flow with explicit `reduceOnly` propagation for close intent, live pretrade exposure guards no longer block that reduce-only close path, and runtime session close no longer hard-fails only because a transient lifecycle mark price is missing. For `LIVE`, the close command now degrades to persisted `entryPrice` as reference context while the actual exchange authority remains the submitted reduce-only market order; `PAPER` still fails closed when no canonical close price exists. Validation PASS: focused `runtimeSessionPositionCommand`, focused `executionOrchestrator`, focused `exchangeAdapterBoundary`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 - 2026-04-29: Closed `V1TRUTH-05` by freezing the reported pending external/manual exchange order truth into end-to-end API proof. Added a focused `orders-positions.e2e` scenario for one open `LIVE` position plus one pending external `DCA` order on the same symbol, and verified that both runtime session positions and dashboard aggregate views keep `openCount=1`, `openOrdersCount=1`, unchanged position quantity/notional, and the external order visible only in `openOrders` until exchange fill confirms it. The strongest remaining work under `V1TRUTH-06` is therefore narrower than the generic read model: if the user still sees inflation live, the drift likely sits in a more specific reconcile/event/UI path than the canonical pending-order baseline now proven green.

@@ -47,6 +47,34 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-05-01 - OPS proof artifacts must not persist auth command arguments
+- Context: while refreshing `V1EXCEL-05`, the production rollback-proof wrapper
+  needed authenticated rollback-guard access and also writes the executed
+  command into markdown and JSON artifacts.
+- Symptom: using auth fields from environment still caused the wrapper to build
+  child-process CLI args such as `--auth-email` and `--auth-password`, which
+  would have been copied into the generated proof artifact command string.
+- Root cause: `runRollbackProofEvidence.mjs` normalized auth into command-line
+  arguments before spawning `evaluateRollbackGuard.mjs`, instead of keeping
+  auth in process environment variables for the child script.
+- Guardrail: proof/evidence wrappers that write command strings must pass
+  secret-bearing auth through environment variables and record only the
+  non-sensitive command shape.
+- Preferred pattern:
+```text
+1) Read auth from environment or CLI input at the wrapper boundary.
+2) Pass auth to child OPS scripts through child process env.
+3) Record command strings without auth flags.
+4) grep generated markdown/json artifacts for known secret markers before
+   committing evidence.
+```
+- Avoid: constructing child command arrays with secret values when the wrapper
+  also records the command into durable evidence.
+- Evidence: 2026-05-01 `V1EXCEL-05` rollback-proof refresh
+  (`scripts/runRollbackProofEvidence.mjs`,
+  `docs/operations/v1-rollback-proof-prod-2026-05-01T01-29-17-680Z.md`,
+  `docs/operations/_artifacts-v1-rollback-proof-prod-2026-05-01T01-29-17-680Z.json`).
+
 ### 2026-05-01 - DCA visibility must survive exchange-sync position replacement
 - Context: protected production inspection of the selected `LIVE` DOGEUSDT bot
   showed a real DCA fill in the trade ledger while the dashboard runtime

@@ -13,8 +13,8 @@ healthy.
 
 This artifact does not claim full `V1EXCEL-05` closure because stage remains
 blocked and broader production release evidence families such as restore drill,
-rollback proof artifact, RC status/sign-off/checklist rebuild, and any required
-manual matrix items still need their own current evidence.
+RC status/sign-off/checklist rebuild, restore drill, and any required manual
+matrix items still need their own current evidence.
 
 No secrets, session tokens, API keys, or account credentials are recorded in
 this artifact.
@@ -83,15 +83,35 @@ Result: PASS
 - `alerts`: none
 - `runningCount`: `4`
 
+## Rollback Proof Artifact
+
+Command shape:
+
+```powershell
+pnpm run ops:deploy:rollback-proof -- --profile prod --base-url https://api.soar.luckysparrow.ch
+```
+
+Auth was supplied through the process environment and was not written to disk
+or into the generated artifacts.
+
+Result: PASS
+
+- Report:
+  `docs/operations/v1-rollback-proof-prod-2026-05-01T01-29-17-680Z.md`
+- Raw JSON:
+  `docs/operations/_artifacts-v1-rollback-proof-prod-2026-05-01T01-29-17-680Z.json`
+- `commandExitCodeZero`: PASS
+- `shouldRollbackFalse`: PASS
+- `noCriticalReasons`: PASS
+- `freshnessStatusPass`: PASS
+- `alertsClear`: PASS
+
 ## Remaining Evidence Gaps
 
 - Stage is not available: `stage-api` and `stage` return
   `503 no available server`.
 - Full authenticated stage gates must wait for stage service restore/redeploy.
 - Production restore-drill evidence was not regenerated in this pass.
-- Production rollback-proof artifact was not regenerated because the existing
-  wrapper records command arguments into an artifact; it should be adjusted or
-  run with a non-sensitive token handling path before use.
 - RC external gate status, sign-off, and checklist were not rebuilt in this
   pass.
 - Manual operator matrix remains open for the unexecuted `LIVE` and recovery
@@ -99,6 +119,7 @@ Result: PASS
 
 ## Result
 
-Production public smoke, protected runtime freshness, and rollback guard are
-fresh and green for the current deployed runtime candidate. `V1EXCEL-05`
-remains open for the broader release evidence families listed above.
+Production public smoke, protected runtime freshness, rollback guard, and
+rollback proof artifact are fresh and green for the current deployed runtime
+candidate. `V1EXCEL-05` remains open for the broader release evidence families
+listed above.

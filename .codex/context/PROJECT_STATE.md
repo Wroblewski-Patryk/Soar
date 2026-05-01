@@ -117,11 +117,11 @@ Last updated: 2026-05-01
 - 2026-05-01: refreshed the executable production subset of `V1EXCEL-05`.
   Production public smoke, protected runtime freshness, and rollback guard are
   green on the current deployed runtime candidate: `shouldRollback=false`, no
-  reasons, no alerts, `runningCount=4`. Evidence:
+  reasons, no alerts, `runningCount=4`. Production rollback-proof artifact is
+  also PASS with secret-safe command recording. Evidence:
   `docs/operations/v1excel-05-prod-refresh-2026-05-01.md`. Broader production
-  release evidence remains open for restore drill, secret-safe rollback-proof
-  artifact, RC status/sign-off/checklist rebuild, and remaining manual matrix
-  items.
+  release evidence remains open for restore drill, RC
+  status/sign-off/checklist rebuild, and remaining manual matrix items.
 - 2026-05-01: closed `V1DCA-01` for runtime `Positions` DCA visibility after
   exchange-sync position replacement. Protected production inspection showed
   the `LIVE` DOGEUSDT DCA fill existed as a persisted `BOT` `DCA` trade, but it

@@ -23,10 +23,11 @@ Operational queue for one-task execution runs.
   - 2026-05-01 refresh: executable production subset is green on the current
     deployed runtime candidate. Public smoke PASS, protected runtime freshness
     PASS, rollback guard PASS (`shouldRollback=false`, no reasons, no alerts,
-    `runningCount=4`). Evidence:
+    `runningCount=4`), and production rollback-proof artifact PASS with
+    secret-safe command recording. Evidence:
     `docs/operations/v1excel-05-prod-refresh-2026-05-01.md`. Still open:
-    restore drill, secret-safe rollback-proof artifact, RC
-    status/sign-off/checklist rebuild, and remaining manual matrix items.
+    restore drill, RC status/sign-off/checklist rebuild, and remaining manual
+    matrix items.
 - [x] `V1DCA-01 fix(api-runtime-read): preserve DCA visibility after exchange-sync position replacement`
   - 2026-05-01: Closed after protected production inspection showed the `LIVE`
     DOGEUSDT DCA fill existed in the trade ledger but the current dashboard

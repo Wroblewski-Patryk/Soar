@@ -66,6 +66,12 @@ Fresh production-status evidence separating:
     - `shouldRollback=false`
     - `reasons=[]`
     - `alerts=[]`
+  - 2026-05-01 production rollback-proof artifact PASS:
+    - `commandExitCodeZero`: PASS
+    - `shouldRollbackFalse`: PASS
+    - `noCriticalReasons`: PASS
+    - `freshnessStatusPass`: PASS
+    - `alertsClear`: PASS
   - prod public smoke PASS
   - prod release gate dry-run executed
   - unauthenticated runtime freshness probe returned `401`
@@ -109,9 +115,9 @@ is not generic uncertainty, but stale prod artifacts plus missing private-route
 auth for the protected proofs.
 
 2026-05-01 refresh: production protected auth is now available for the core
-runtime gates. Public production smoke, runtime freshness, and rollback guard
-are green on the current deployed runtime candidate. The task remains open for
-broader release evidence families: restore drill, rollback-proof artifact, RC
+runtime gates. Public production smoke, runtime freshness, rollback guard, and
+rollback-proof artifact are green on the current deployed runtime candidate.
+The task remains open for broader release evidence families: restore drill, RC
 status/sign-off/checklist rebuild, and remaining manual matrix scenarios.
 Evidence: `docs/operations/v1excel-05-prod-refresh-2026-05-01.md`.
 
@@ -161,9 +167,8 @@ candidate.
   - rollback guard `401`-driven failure
 - What is incomplete:
   - fresh authenticated prod evidence families beyond public smoke, runtime
-    freshness, and rollback guard
+    freshness, rollback guard, and rollback proof
   - production restore-drill evidence
-  - production rollback-proof artifact with secret-safe command recording
   - RC external gate status/sign-off/checklist rebuild
   - remaining manual operator matrix items
 - Next steps:
