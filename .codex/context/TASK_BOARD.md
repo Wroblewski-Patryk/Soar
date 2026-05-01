@@ -17,6 +17,18 @@ Last updated: 2026-05-01
 
 ## READY
 
+- [ ] `V1DOGE-02 fix(api-runtime): harden DOGE-style LIVE close/reopen lifecycle state`
+  - Scope: prevent stale same-symbol DCA/protection state from crossing a
+    closed lifecycle into a new `LIVE` open row, preserve strategy identity on
+    bot-managed close orders/trades, and make the runtime/read-model cutoff
+    robust for legacy close rows that lack strategy id.
+  - 2026-05-01 audit: protected production inspection confirmed the `DOGEUSDT`
+    loss close was an app-side `BOT_APP` `TSL` close, and the subsequent fresh
+    open row `eb03...` displayed stale `dcaCount=2` from the previous
+    lifecycle. Planning evidence:
+    `docs/operations/v1doge-live-close-and-reopen-audit-2026-05-01.md`.
+    Task packet:
+    `docs/planning/v1doge-01-live-doge-close-and-reopen-audit-task-2026-05-01.md`.
 - [ ] `V1EXCEL-04 ops(stage-refresh): restore stage target before authenticated gate rerun`
   - Scope: stage release-gate evidence cannot proceed while the stage web/API
     targets are unavailable.

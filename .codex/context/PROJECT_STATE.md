@@ -100,6 +100,17 @@ Last updated: 2026-05-01
   of reconstructing it from `syncState` or audit logs.
 
 ## Product Decisions (Confirmed)
+- 2026-05-01: published `V1DOGE-01` after the operator reported a real-money
+  `LIVE DOGEUSDT` loss close and stale DCA on the next same-symbol open row.
+  Protected production inspection confirmed the incident close was app-side
+  automation (`closeReason=TSL`, `closeInitiator=BOT_APP`, realized PnL
+  `-0.3500250000000007`) and the subsequent fresh `DOGEUSDT` open row showed
+  stale `dcaCount=2` / executed levels `[-20,-40]` from the previous lifecycle.
+  The audit identified two P0 implementation targets before further live-money
+  confidence claims: preserve strategy identity on bot-managed close
+  orders/trades, and make same-symbol close/reopen DCA/protection continuity
+  fail closed. Evidence:
+  `docs/operations/v1doge-live-close-and-reopen-audit-2026-05-01.md`.
 - 2026-04-30: `V1ROE-04` was explicitly blocked on protected production evidence rather than local implementation. The local `V1ROE`, `V1OWN`, and `V1AUTO` slices closed the known repository-side margin-basis, stale read-model, imported ownership, runtime-state rebase, and prospective imported automation hydration gaps. The remaining acceptance signal was authenticated deployed-candidate verification on the real `LIVE DOGEUSDT` flow, documented in `docs/planning/v1roe-04-production-verification-task-2026-04-30.md`; local tests alone could not close it.
   - 2026-04-30 partial production check: deployed web build-info now confirms `522e1d95` on `main`, public deploy smoke passes, and the remaining blocker is strictly protected auth for runtime evidence (`401 Missing token` on runtime freshness and dashboard runtime probes). Evidence: `docs/operations/v1roe-04-prod-verification-partial-2026-04-30.md`.
 - 2026-05-01: queue/context sync normalized `V1ROE-04` after the deploy freshness check. The stale duplicate `READY` wording in `.codex/context/TASK_BOARD.md` was removed, and the task stayed blocked until authenticated production evidence could be captured with a token, email/password smoke credentials, or an authenticated browser/session cookie. Canonical sync task: `docs/planning/docsync-2026-05-01-queue-auth-blocker-task.md`.

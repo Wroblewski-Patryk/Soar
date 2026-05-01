@@ -12,6 +12,16 @@ Operational queue for one-task execution runs.
   blockers are `V1EXCEL-03..06` authenticated manual operator and OPS evidence.
   `BOTMULTI-*` remains in `PIPELINE` until those post-V1 confidence gates are
   green.
+- [ ] `V1DOGE-02 fix(api-runtime): harden DOGE-style LIVE close/reopen lifecycle state`
+  - 2026-05-01 audit: protected production inspection confirmed the reported
+    `DOGEUSDT` loss close was an app-side `BOT_APP` `TSL` close. The next
+    fresh `DOGEUSDT` open row then displayed stale `dcaCount=2` and executed
+    levels `[-20,-40]` from the previous lifecycle, despite having only a new
+    open anchor after the close. The implementation target is to preserve
+    strategy identity on bot-managed closes, make same-symbol close/reopen
+    lifecycle cutoff robust, and add DCA-first close-authority coverage before
+    any real-money trust claim. Audit evidence:
+    `docs/operations/v1doge-live-close-and-reopen-audit-2026-05-01.md`.
 - [ ] `V1EXCEL-04 ops(stage-refresh): restore stage target before authenticated gate rerun`
   - 2026-05-01 refresh: stage public smoke now fails before auth. `stage-api`
     and `stage` both return `503 no available server` for health/ready/root and
