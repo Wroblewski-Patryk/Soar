@@ -55,6 +55,8 @@ describe("Dashboard footer mobile layout", () => {
 
     expect(activeFlag).toBeTruthy();
     expect(activeFlag).toHaveTextContent("");
-    expect(activeFlag).toHaveClass("overflow-hidden", "border", "bg-[#012169]");
+    expect(activeFlag?.tagName.toLowerCase()).toBe("svg");
+    expect(activeFlag).toHaveAttribute("viewBox", "0 0 30 20");
+    expect(activeFlag).toHaveClass("overflow-hidden", "border");
   });
 });

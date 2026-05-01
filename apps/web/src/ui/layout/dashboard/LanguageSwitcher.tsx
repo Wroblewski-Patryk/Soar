@@ -1,19 +1,19 @@
 'use client';
 
-import { useRef, type CSSProperties } from 'react';
+import { useRef } from 'react';
 import { useI18n } from '../../../i18n/I18nProvider';
 import type { Locale } from '../../../i18n/translations';
 import { useDetailsDropdown } from '../../hooks/useDetailsDropdown';
 import { getHeaderDropdownLinkClass, getHeaderDropdownMenuClass, headerMenuItemClass } from './headerControlStyles';
 
 type LocaleCode = Locale;
+type FlagId = 'gb' | 'pl' | 'pt';
 type LanguageOption = {
   locale: LocaleCode;
   labelKey: string;
   shortLabel: string;
   countryCode: string;
-  flagClassName: string;
-  flagStyle?: CSSProperties;
+  flag: FlagId;
 };
 
 type DropdownPlacement = 'top' | 'bottom';
@@ -31,40 +31,72 @@ const LANGUAGES: LanguageOption[] = [
     labelKey: 'public.localeNames.en',
     shortLabel: 'EN',
     countryCode: 'gb',
-    flagClassName: 'bg-[#012169]',
-    flagStyle: {
-      backgroundImage:
-        'linear-gradient(28deg, transparent 0 39%, #fff 39% 45%, #c8102e 45% 50%, #fff 50% 56%, transparent 56% 100%), linear-gradient(152deg, transparent 0 39%, #fff 39% 45%, #c8102e 45% 50%, #fff 50% 56%, transparent 56% 100%), linear-gradient(90deg, transparent 0 42%, #fff 42% 58%, transparent 58% 100%), linear-gradient(0deg, transparent 0 35%, #fff 35% 65%, transparent 65% 100%), linear-gradient(90deg, transparent 0 46%, #c8102e 46% 54%, transparent 54% 100%), linear-gradient(0deg, transparent 0 41%, #c8102e 41% 59%, transparent 59% 100%)',
-    },
+    flag: 'gb',
   },
   {
     locale: 'pl',
     labelKey: 'public.localeNames.pl',
     shortLabel: 'PL',
     countryCode: 'pl',
-    flagClassName: 'bg-[linear-gradient(to_bottom,#ffffff_0_50%,#dc143c_50%_100%)]',
+    flag: 'pl',
   },
   {
     locale: 'pt',
     labelKey: 'public.localeNames.pt',
     shortLabel: 'PT',
     countryCode: 'pt',
-    flagClassName: 'bg-[linear-gradient(to_right,#046a38_0_42%,#da291c_42%_100%)]',
+    flag: 'pt',
   },
 ];
 
 const getLanguage = (locale: LocaleCode) =>
   LANGUAGES.find((item) => item.locale === locale) ?? LANGUAGES[0];
 
+function FlagSvg({ flag }: { flag: FlagId }) {
+  if (flag === 'pl') {
+    return (
+      <>
+        <rect width="30" height="10" fill="#fff" />
+        <rect y="10" width="30" height="10" fill="#dc143c" />
+      </>
+    );
+  }
+
+  if (flag === 'pt') {
+    return (
+      <>
+        <rect width="12" height="20" fill="#046a38" />
+        <rect x="12" width="18" height="20" fill="#da291c" />
+        <circle cx="12" cy="10" r="3.7" fill="#ffcd00" />
+        <circle cx="12" cy="10" r="2.4" fill="#fff" />
+        <path d="M10.7 8.4h2.6v3.4a1.9 1.9 0 0 1-2.6 0z" fill="#c8102e" />
+        <path d="M11.2 8.9h1.6v2.5a1.15 1.15 0 0 1-1.6 0z" fill="#003399" />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <rect width="30" height="20" fill="#012169" />
+      <path d="M0 0l30 20M30 0L0 20" stroke="#fff" strokeWidth="4" />
+      <path d="M0 0l30 20M30 0L0 20" stroke="#c8102e" strokeWidth="2.4" />
+      <path d="M15 0v20M0 10h30" stroke="#fff" strokeWidth="6" />
+      <path d="M15 0v20M0 10h30" stroke="#c8102e" strokeWidth="3.6" />
+    </>
+  );
+}
+
 function FlagIcon({ option }: { option: LanguageOption }) {
   return (
-    <span
+    <svg
       aria-hidden
-      className={`inline-flex h-4 w-6 shrink-0 overflow-hidden rounded-[2px] border border-base-content/20 shadow-sm ${option.flagClassName}`}
+      className="h-4 w-6 shrink-0 overflow-hidden rounded-[2px] border border-base-content/20 shadow-sm"
       data-testid={`flag-${option.locale}`}
-      style={option.flagStyle}
-      title={option.countryCode.toUpperCase()}
-    />
+      focusable="false"
+      viewBox="0 0 30 20"
+    >
+      <FlagSvg flag={option.flag} />
+    </svg>
   );
 }
 

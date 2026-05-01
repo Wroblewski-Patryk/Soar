@@ -38,7 +38,7 @@ loss through focused tests.
 
 ## Implementation Plan
 1. Review post-09:00 commits and current footer/language switcher ownership.
-2. Preserve the flag visual output without depending on emoji font support.
+2. Preserve the flag icon output without depending on emoji font support.
 3. Add footer layout regressions proving the active language flag remains
    rendered in both public and dashboard footers.
 4. Run focused web tests, typecheck, web build, and repository guardrails.
@@ -77,8 +77,10 @@ loss through focused tests.
 - Accessibility checks: existing `aria-label` and hidden flag semantics retained
 - Parity evidence: dashboard and public footer tests assert the active GB flag
   is present in the footer switcher without text content. Browser verification
-  on `http://127.0.0.1:3004/` confirmed CSS flag badges render with empty text
-  and computed flag backgrounds. Production verification on
+  on `http://127.0.0.1:3004/` first confirmed CSS flag badges rendered with
+  empty text and computed flag backgrounds; the follow-up correction replaced
+  those badges with inline SVG flag icons to restore an icon-based contract.
+  Production verification on
   `https://soar.luckysparrow.ch/` still showed deployed `a9a586e...` serving
   the old emoji/text-dependent implementation.
 
@@ -106,13 +108,13 @@ loss through focused tests.
 
 ### 3. Plan Implementation
 - Files or surfaces to modify: shared language switcher and footer layout tests.
-- Logic: render flag badges with CSS instead of font-dependent flag text.
+- Logic: render inline SVG flag icons instead of font-dependent flag text.
 - Edge cases: browser or OS rendering regional-indicator text instead of flag
   emoji; both public and dashboard footers.
 
 ### 4. Execute Implementation
-- Implementation notes: replaced font-dependent flag text with visual CSS flag
-  badges and added footer flag assertions.
+- Implementation notes: replaced font-dependent flag text with inline SVG flag
+  icons and added footer flag assertions.
 
 ### 5. Verify and Test
 - Validation performed:
@@ -124,7 +126,8 @@ loss through focused tests.
     reported `gitSha=a9a586e5957ae1aac211f5ae11f3b6f4051ddca7`, and the
     footer still used the old `text-sm leading-none` flag implementation.
   - Browser check on local built/dev surface: `http://127.0.0.1:3004/`
-    rendered CSS flag badges with empty text and visible computed backgrounds.
+    rendered non-text flag visuals; follow-up code now uses inline SVG flag
+    icons rather than CSS-only approximations.
 - Result: PASS.
 
 ### 6. Self-Review
@@ -132,7 +135,8 @@ loss through focused tests.
 - Technical debt introduced: no
 - Scalability assessment: no new locale mechanism; the existing array remains
   the only language option source for this component.
-- Refinements made: flag rendering no longer relies on emoji font support.
+- Refinements made: flag rendering no longer relies on emoji font support or
+  CSS-only approximations.
 
 ### 7. Update Documentation and Knowledge
 - Docs updated: this planning task, MVP next queue, task board, project state.
@@ -156,7 +160,7 @@ loss through focused tests.
 - [x] Learning journal was updated if a recurring pitfall was confirmed.
 
 ## Result Report
-- Task summary: footer language flags now render as visual CSS flag badges and
+- Task summary: footer language flags now render as inline SVG flag icons and
   are locked by public and dashboard footer tests.
 - Files changed:
   - `apps/web/src/ui/layout/dashboard/LanguageSwitcher.tsx`
@@ -168,6 +172,6 @@ loss through focused tests.
   - `docs/planning/mvp-next-commits.md`
 - How tested: focused footer/language switcher tests, web typecheck, web build,
   repository guardrails.
-- What is incomplete: production is still on a build that predates this fix.
-- Next steps: commit and deploy this diff, then recheck production build-info
-  and footer rendering.
+- What is incomplete: production must deploy the follow-up SVG-icon commit.
+- Next steps: deploy the SVG-icon fix, then recheck production build-info and
+  footer rendering.
