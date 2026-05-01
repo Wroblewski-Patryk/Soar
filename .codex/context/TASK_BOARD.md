@@ -25,7 +25,9 @@ Last updated: 2026-05-01
     that commit is now fail-soft and cannot set the global monitoring error
     state that hides otherwise-valid positions/DCA content. Validation PASS:
     focused `BotsManagement` web test (`13/13`) with portfolio-history mocked
-    as failing while DCA ladder output remains asserted. Evidence:
+    as failing while DCA ladder output remains asserted; production web
+    build-info reports `19a62b8d20f7e14d2489bbd8a842ca9c0c558efb`; public
+    production deploy smoke passed. Evidence:
     `docs/planning/v1dca-03-monitoring-dca-visibility-regression-task-2026-05-01.md`.
 
 - [x] `V1COVER-01 qa(release): create V1 module function coverage ledger`

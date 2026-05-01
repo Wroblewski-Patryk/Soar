@@ -47,6 +47,7 @@ when the optional bot portfolio-history endpoint fails.
 - [x] Regression coverage proves DCA remains visible when portfolio history
   fails.
 - [x] Focused validation passed.
+- [x] Hotfix deployed to production VPS and public smoke passed.
 
 ## Forbidden
 - Do not create a parallel positions/DCA read path.
@@ -62,6 +63,9 @@ when the optional bot portfolio-history endpoint fails.
     `.next/types`
   - `pnpm run quality:guardrails` -> PASS
   - `git diff --check` -> PASS
+  - `GET https://soar.luckysparrow.ch/api/build-info` -> PASS,
+    `gitSha=19a62b8d20f7e14d2489bbd8a842ca9c0c558efb`
+  - `pnpm run ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers` -> PASS
 - Manual checks:
   - `git log --since="2026-05-01 09:00"` identified `fbeae8f0` as the only
     commit after 09:00 touching bot runtime/web monitoring files.
@@ -79,7 +83,7 @@ when the optional bot portfolio-history endpoint fails.
 - Follow-up architecture doc updates: none
 
 ## Deployment / Ops Evidence
-- Deploy impact: web-only hotfix candidate.
+- Deploy impact: web-only hotfix deployed to production VPS.
 - Env or secret changes: none
 - Health-check impact: none
 - Smoke steps updated: no
@@ -111,7 +115,8 @@ when the optional bot portfolio-history endpoint fails.
   - web typecheck PASS after generated `.next/types` existed
   - repository guardrails PASS
 - What is incomplete:
-  - production verification after deploy of this hotfix
+  - authenticated dashboard visual verification still requires an application
+    operator session; public deploy freshness and smoke are green
 - Next steps:
-  - run web typecheck/build, then deploy the hotfix and verify DCA in the
-    dashboard `Positions` table.
+  - verify DCA visually in the dashboard `Positions` table from an authenticated
+    operator session.

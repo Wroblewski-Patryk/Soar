@@ -106,7 +106,10 @@ Last updated: 2026-05-01
   bot runtime/web monitoring. Its new portfolio-history refresh was coupled to
   the global monitoring error state; that optional panel now fails soft so it
   cannot mask valid runtime `Positions` DCA ladder content. Validation PASS:
-  focused `BotsManagement` web test (`13/13`). Evidence:
+  focused `BotsManagement` web test (`13/13`), web build, web typecheck,
+  repository guardrails, production build-info on
+  `19a62b8d20f7e14d2489bbd8a842ca9c0c558efb`, and public production deploy
+  smoke. Evidence:
   `docs/planning/v1dca-03-monitoring-dca-visibility-regression-task-2026-05-01.md`.
 - 2026-05-01: closed `BHIST-01` as the bot-scoped product follow-up after the
   wallet-ledger preview wave. Current repository truth now covers
