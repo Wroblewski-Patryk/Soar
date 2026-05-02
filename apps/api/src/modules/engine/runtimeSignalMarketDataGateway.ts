@@ -61,6 +61,26 @@ const runtimeSignalWarmupLockTtlMs = Math.max(
   5_000,
   Number.parseInt(process.env.RUNTIME_SIGNAL_WARMUP_LOCK_TTL_MS ?? '45000', 10),
 );
+const runtimeSignalDecisionRecoveryEnabled =
+  process.env.RUNTIME_SIGNAL_DECISION_RECOVERY_ENABLED !== 'false';
+const runtimeSignalDecisionRecoveryCandles = Math.max(
+  20,
+  Number.parseInt(
+    process.env.RUNTIME_SIGNAL_DECISION_RECOVERY_CANDLES ??
+      process.env.RUNTIME_SIGNAL_WARMUP_CANDLES ??
+      '150',
+    10,
+  ),
+);
+const runtimeSignalDecisionRecoveryRetryMs = Math.max(
+  10_000,
+  Number.parseInt(
+    process.env.RUNTIME_SIGNAL_DECISION_RECOVERY_RETRY_MS ??
+      process.env.RUNTIME_SIGNAL_WARMUP_RETRY_MS ??
+      '60000',
+    10,
+  ),
+);
 const runtimeFundingRefreshMs = Math.max(
   30_000,
   Number.parseInt(process.env.RUNTIME_FUNDING_REFRESH_MS ?? '180000', 10),
@@ -128,9 +148,33 @@ export const clearRuntimeSignalMarketDataStore = () => {
   runtimeCandleSeriesStore.clear();
 };
 
+export const mergeRuntimeSignalCandles = (
+  runtimeCandles: RuntimeCandle[],
+  fallbackCandles: RuntimeCandle[],
+  limit = maxCandlesPerSeries,
+) => {
+  const deduped = new Map<number, RuntimeCandle>();
+  for (const candle of fallbackCandles) deduped.set(candle.openTime, candle);
+  for (const candle of runtimeCandles) deduped.set(candle.openTime, candle);
+  const merged = [...deduped.values()]
+    .filter(
+      (item): item is RuntimeCandle =>
+        Number.isFinite(item.openTime) &&
+        Number.isFinite(item.closeTime) &&
+        Number.isFinite(item.open) &&
+        Number.isFinite(item.high) &&
+        Number.isFinite(item.low) &&
+        Number.isFinite(item.close) &&
+        Number.isFinite(item.volume),
+    )
+    .sort((left, right) => left.openTime - right.openTime);
+  return merged.slice(-Math.max(1, Math.floor(limit)));
+};
+
 export class RuntimeSignalMarketDataGateway {
   private readonly candleSeries = runtimeCandleSeriesStore;
   private readonly warmupLastAttemptAt = new Map<string, number>();
+  private readonly decisionRecoveryLastAttemptAt = new Map<string, number>();
   private readonly fundingRatePoints = new Map<string, FundingRatePoint[]>();
   private readonly fundingLastFetchAt = new Map<string, number>();
   private readonly openInterestPoints = new Map<string, OpenInterestPoint[]>();
@@ -210,6 +254,47 @@ export class RuntimeSignalMarketDataGateway {
       ? Math.max(1, Math.floor(input.limit as number))
       : closes.length;
     return closes.slice(-limit);
+  }
+
+  async ensureIndicatorReadySeries(input: {
+    marketType: 'FUTURES' | 'SPOT';
+    symbol: string;
+    interval?: string | null;
+    endTimeMs?: number;
+    minCandles?: number;
+  }) {
+    const normalizedInterval = normalizeInterval(input.interval);
+    const key = this.getSeriesKey(input.marketType, input.symbol, normalizedInterval);
+    const currentSeries = this.candleSeries.get(key) ?? [];
+    const minCandles = Math.max(
+      20,
+      Math.floor(input.minCandles ?? runtimeSignalDecisionRecoveryCandles),
+    );
+    if (currentSeries.length >= minCandles) return currentSeries;
+    if (!runtimeSignalDecisionRecoveryEnabled) return currentSeries;
+
+    const now = this.deps.nowMs();
+    const lastAttemptAt = this.decisionRecoveryLastAttemptAt.get(key);
+    if (
+      typeof lastAttemptAt === 'number' &&
+      now - lastAttemptAt < runtimeSignalDecisionRecoveryRetryMs
+    ) {
+      return currentSeries;
+    }
+    this.decisionRecoveryLastAttemptAt.set(key, now);
+
+    const fetched = await this.fetchWarmupCandles(
+      input.marketType,
+      input.symbol,
+      normalizedInterval,
+      minCandles,
+      input.endTimeMs,
+    );
+    if (fetched.length === 0) return currentSeries;
+
+    const merged = mergeRuntimeSignalCandles(currentSeries, fetched, maxCandlesPerSeries);
+    this.candleSeries.set(key, merged);
+    return merged;
   }
 
   resolveFundingRateSeriesForCandles(
@@ -402,14 +487,7 @@ export class RuntimeSignalMarketDataGateway {
       );
       if (fetched.length === 0) return;
 
-      const deduped = new Map<number, RuntimeCandle>();
-      for (const candle of fetched) deduped.set(candle.openTime, candle);
-      for (const candle of currentSeries) deduped.set(candle.openTime, candle);
-
-      const merged = [...deduped.values()].sort((left, right) => left.openTime - right.openTime);
-      if (merged.length > maxCandlesPerSeries) {
-        merged.splice(0, merged.length - maxCandlesPerSeries);
-      }
+      const merged = mergeRuntimeSignalCandles(currentSeries, fetched, maxCandlesPerSeries);
       this.candleSeries.set(key, merged);
     } finally {
       await warmupLock.release().catch(() => undefined);

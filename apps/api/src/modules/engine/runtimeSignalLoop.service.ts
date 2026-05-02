@@ -714,6 +714,12 @@ export class RuntimeSignalLoop {
   private async handleCandleEvent(event: StreamCandleEvent) {
     if (!event.isFinal) return;
     await this.marketDataGateway.ingestCandleEvent(event);
+    await this.marketDataGateway.ensureIndicatorReadySeries({
+      marketType: event.marketType,
+      symbol: event.symbol,
+      interval: event.interval,
+      endTimeMs: event.closeTime,
+    });
     await this.processPositionAutomationFallbackFromCandle(event);
     await processRuntimeFinalCandleDecision(event, {
       nowMs: () => this.deps.nowMs(),

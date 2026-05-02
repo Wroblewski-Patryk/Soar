@@ -3,6 +3,19 @@
 Last updated: 2026-05-02
 
 ## 2026-05-02 V1 Prod-Only Release Scope Update
+- 2026-05-02 runtime signal vote recovery slice
+  `RUNTIME-SIGNAL-VOTES-01` is closed locally and ready for production deploy
+  verification. The final-candle runtime decision path now asks the engine
+  market-data gateway for an indicator-ready candle series before strategy
+  evaluation, so short runtime buffers can be topped up from the approved
+  exchange-owned Binance public kline recovery path before a strategy vote is
+  merged. Runtime candles remain authoritative on fallback overlap, the
+  dashboard/read-model path reuses the same merge helper, and no pre-trade,
+  wallet, max-position, exchange-min-order, or orchestrator guardrail was
+  bypassed. Validation PASS: focused runtime market-data/runtime loop/read
+  model tests (`3` files / `51` tests), API typecheck, API build, and
+  repository guardrails. Evidence:
+  `docs/planning/runtime-signal-vote-recovery-audit-plan-2026-05-02.md`.
 - 2026-05-02 operator-reported runtime signal vote audit queued
   `RUNTIME-SIGNAL-VOTES-01` as P0. Authenticated production read-only evidence
   showed active PAPER `Peper bot` rows with concrete matched RSI conditions but

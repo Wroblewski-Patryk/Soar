@@ -1,7 +1,24 @@
-import { describe, expect, it, vi } from 'vitest';
-import { RuntimeSignalMarketDataGateway } from './runtimeSignalMarketDataGateway';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  RuntimeSignalMarketDataGateway,
+  clearRuntimeSignalMarketDataStore,
+} from './runtimeSignalMarketDataGateway';
+
+const klineRow = (index: number, close: number) => [
+  index * 60_000,
+  String(close - 1),
+  String(close + 1),
+  String(close - 2),
+  String(close),
+  '1000',
+  index * 60_000 + 59_000,
+];
 
 describe('RuntimeSignalMarketDataGateway', () => {
+  beforeEach(() => {
+    clearRuntimeSignalMarketDataStore();
+  });
+
   it('ingests final candles with dedupe/sort and returns recent closes', async () => {
     const gateway = new RuntimeSignalMarketDataGateway({
       nowMs: () => 1_000,
@@ -223,6 +240,64 @@ describe('RuntimeSignalMarketDataGateway', () => {
 
       expect(acquireWarmupLock).toHaveBeenCalledTimes(1);
       expect(releaseWarmupLock).toHaveBeenCalledTimes(1);
+    } finally {
+      fetchSpy.mockRestore();
+      process.env.NODE_ENV = originalNodeEnv;
+    }
+  });
+
+  it('recovers an indicator-ready decision series even when background warmup is disabled', async () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      json: async () =>
+        Array.from({ length: 20 }, (_, index) =>
+          klineRow(index, index === 19 ? 119 : 100 + index)
+        ),
+    } as any);
+
+    try {
+      const gateway = new RuntimeSignalMarketDataGateway({
+        nowMs: () => 1_000,
+        warmupEnabled: false,
+      });
+
+      await gateway.ingestCandleEvent({
+        type: 'candle',
+        exchange: 'BINANCE',
+        marketType: 'SPOT',
+        symbol: 'BTCUSDT',
+        interval: '1m',
+        eventTime: 20 * 60_000,
+        openTime: 19 * 60_000,
+        closeTime: 19 * 60_000 + 59_000,
+        open: 120,
+        high: 126,
+        low: 119,
+        close: 125,
+        volume: 2_500,
+        isFinal: true,
+      });
+
+      const recovered = await gateway.ensureIndicatorReadySeries({
+        marketType: 'SPOT',
+        symbol: 'BTCUSDT',
+        interval: '1m',
+        endTimeMs: 19 * 60_000 + 59_000,
+        minCandles: 20,
+      });
+
+      expect(fetchSpy).toHaveBeenCalledTimes(1);
+      expect(String(fetchSpy.mock.calls[0][0])).toContain('/api/v3/klines');
+      expect(recovered).toHaveLength(20);
+      expect(recovered.at(-1)).toEqual(
+        expect.objectContaining({
+          openTime: 19 * 60_000,
+          close: 125,
+          volume: 2_500,
+        })
+      );
     } finally {
       fetchSpy.mockRestore();
       process.env.NODE_ENV = originalNodeEnv;

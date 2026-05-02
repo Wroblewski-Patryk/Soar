@@ -4,8 +4,8 @@
 - ID: RUNTIME-SIGNAL-VOTES-01
 - Title: Recover runtime strategy votes when indicator conditions are already matched
 - Task Type: fix
-- Current Stage: planning
-- Status: READY
+- Current Stage: release
+- Status: READY_FOR_DEPLOY_SMOKE
 - Owner: Backend Builder
 - Depends on: DASHSIGNALS-02
 - Priority: P0
@@ -64,9 +64,9 @@ pre-trade/orchestration guardrails.
 - Post-launch learning needed: yes.
 
 ## Deliverable For This Stage
-This planning artifact, synchronized into canonical queue/context, with
-production evidence, suspected root cause, implementation tasks, validation
-commands, and rollout/smoke expectations.
+Closed implementation evidence, synchronized into canonical queue/context, with
+production evidence, root cause, code changes, validation commands, and
+post-deploy smoke expectations.
 
 ## Scope
 - `apps/api/src/modules/engine/runtimeSignalMarketDataGateway.ts`
@@ -126,14 +126,14 @@ commands, and rollout/smoke expectations.
   `matched=true` + `lastSignalReason=No votes` for the same final decision.
 
 ## Definition of Done
-- [ ] `DEFINITION_OF_DONE.md` is satisfied for this runtime slice.
-- [ ] Focused regression fails before the fix and passes after the fix.
-- [ ] Runtime and dashboard condition truth are parity-locked.
-- [ ] API typecheck, API build, and repository guardrails pass.
+- [x] `DEFINITION_OF_DONE.md` is satisfied for this runtime slice.
+- [x] Focused regression fails before the fix and passes after the fix.
+- [x] Runtime and dashboard condition truth are parity-locked.
+- [x] API typecheck, API build, and repository guardrails pass.
 - [ ] Production read-only smoke evidence is recorded after deploy.
-- [ ] `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`, and
+- [x] `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`, and
   relevant planning docs are updated with result evidence.
-- [ ] `.codex/context/LEARNING_JOURNAL.md` records the recurring pitfall if
+- [x] `.codex/context/LEARNING_JOURNAL.md` records the recurring pitfall if
   the root cause is confirmed as read-model/runtime recovery drift.
 
 ## Stage Exit Criteria
@@ -151,7 +151,13 @@ commands, and rollout/smoke expectations.
   validation guardrails.
 
 ## Validation Evidence
-- Tests: not run for implementation yet; this is a planning-stage artifact.
+- Tests:
+  - PASS:
+    `pnpm --filter api run test -- src/modules/engine/runtimeSignalMarketDataGateway.test.ts src/modules/engine/runtimeSignalLoop.service.test.ts src/modules/bots/runtimeSessionSymbolStatsRead.service.test.ts --run`
+    (`3` files / `51` tests).
+  - PASS: `pnpm --filter api run typecheck`.
+  - PASS: `pnpm --filter api run build`.
+  - PASS: `pnpm run quality:guardrails`.
 - Manual checks:
   - production API read-only session inspection confirmed `DOGEUSDT`
     `matched=true` with `lastSignalReason=No votes` and `totalSignals=0`;
@@ -159,7 +165,14 @@ commands, and rollout/smoke expectations.
     the same `RSI 45/55` strategy returned `LONG`.
 - Screenshots/logs: operator-provided dashboard DOM showed `Signals: 0` with
   concrete RSI values; production API readback captured the same contradiction.
-- High-risk checks: no runtime mutation performed during analysis.
+- Regression evidence: focused runtime loop test now proves a short
+  in-memory SPOT candle series is topped up from exchange-owned Binance public
+  REST candles before strategy evaluation, and the same final candle produces
+  a real `LONG` vote through existing signal/orchestrator calls instead of
+  merging to `No votes`.
+- High-risk checks: implementation keeps signal creation behind existing
+  runtime strategy merge, pre-trade, wallet, max-position, exchange-min-order,
+  and orchestrator guardrails.
 
 ## Architecture Evidence
 - Architecture source reviewed:
@@ -178,8 +191,8 @@ commands, and rollout/smoke expectations.
 ## Deployment / Ops Evidence
 - Deploy impact: high, because this touches automated paper/live signal
   generation before order orchestration.
-- Env or secret changes: none expected.
-- Health-check impact: none expected.
+- Env or secret changes: none.
+- Health-check impact: none.
 - Smoke steps updated: production runtime signal smoke should explicitly assert
   `matched=true` cannot coexist with `No votes` for the same strategy context.
 - Rollback note: revert the implementation commit if signal volume becomes
@@ -187,8 +200,32 @@ commands, and rollout/smoke expectations.
   operational disable path.
 - Observability or alerting impact: add or preserve runtime event diagnostics
   for unavailable indicator input.
-- Staged rollout or feature flag: production-only environment; use PAPER
-  read-only verification first, then LIVE read-only parity.
+- Staged rollout or feature flag: production-only environment; the new
+  decision recovery path can be disabled with
+  `RUNTIME_SIGNAL_DECISION_RECOVERY_ENABLED=false` if rollback is needed
+  without reverting the whole deploy. Use PAPER read-only verification first,
+  then LIVE read-only parity.
+
+## Result Report
+- Root cause confirmed: `DASHSIGNALS-02` had made dashboard/read-model
+  snapshots indicator-ready, but the final-candle runtime decision could still
+  evaluate a short in-memory candle buffer and return no strategy vote.
+- Code change: `RuntimeSignalMarketDataGateway` now owns shared candle merging
+  via `mergeRuntimeSignalCandles` and exposes
+  `ensureIndicatorReadySeries`, which fetches exchange-owned fallback klines
+  for decision input when the runtime series is too short. Runtime candles
+  remain authoritative on overlapping `openTime`.
+- Runtime change: `RuntimeSignalLoop` calls `ensureIndicatorReadySeries`
+  immediately after final-candle ingestion and before
+  `processRuntimeFinalCandleDecision`, so strategy evaluation sees the
+  recovered series while all existing execution guardrails remain unchanged.
+- Read-model parity: `runtimeSessionSymbolStatsRead.service.ts` now reuses the
+  engine-owned merge helper instead of carrying a dashboard-local duplicate.
+- Production follow-up: after push/deploy, verify API freshness directly,
+  `/health`, `/ready`, and the active PAPER bot session. The expected outcome
+  is no same-strategy row with concrete `matched=true` and
+  `lastSignalReason=No votes`; a later explicit pre-trade/orchestration block
+  remains acceptable evidence that vote recovery works.
 
 ## Autonomous Loop Evidence
 
@@ -219,29 +256,33 @@ commands, and rollout/smoke expectations.
   existing open positions, max-position cap, LIVE exchange constraints.
 
 ### 4. Execute Implementation
-- Implementation notes: pending next stage.
+- Implementation notes: added engine-owned indicator-ready candle recovery,
+  called it from the final-candle runtime path before strategy evaluation, and
+  moved dashboard/read-model candle merge reuse onto the same helper.
 
 ### 5. Verify and Test
-- Validation performed: planning-stage read-only production checks and local
-  non-mutating engine probe.
-- Result: bug confirmed as likely runtime/read-model parity drift.
+- Validation performed: focused runtime market-data, runtime loop, and
+  read-model regression tests; API typecheck; API build; repository guardrails.
+- Result: local validation is green. Production read-only smoke remains the
+  post-deploy evidence step.
 
 ### 6. Self-Review
 - Simpler option considered: make UI mark cards active from `matched=true`
   lines. Rejected because it would hide the execution bug and could claim
   actionable signals that runtime did not accept.
-- Technical debt introduced: no.
+- Technical debt introduced: no. The dashboard duplicate merge implementation
+  was removed in favor of engine-owned reuse.
 - Scalability assessment: a shared indicator-ready series contract prevents
   future indicator families from drifting between dashboard and runtime.
 - Refinements made: task focuses on runtime vote recovery first; UI polish is
   explicitly deferred.
 
 ### 7. Update Documentation and Knowledge
-- Docs updated: this planning artifact.
-- Context updated: task board and project state should reference this P0 once
-  committed.
-- Learning journal updated: not yet; update after root cause is fixed and
-  confirmed.
+- Docs updated: this planning artifact, task board, MVP next queue, project
+  state, and learning journal.
+- Context updated: `RUNTIME-SIGNAL-VOTES-01` marked closed with validation
+  evidence.
+- Learning journal updated: runtime/read-model recovery drift pitfall recorded.
 
 ## Review Checklist
 - [x] Process self-audit completed before implementation.
@@ -254,19 +295,8 @@ commands, and rollout/smoke expectations.
 - [x] Existing systems were reused where applicable.
 - [x] No workaround paths were introduced.
 - [x] No logic duplication was introduced.
-- [x] Definition of Done expectations are attached for implementation.
-- [x] Relevant planning-stage validations were run.
-- [x] Docs/context update is planned.
-- [x] Learning journal update is deferred until confirmed root cause.
-
-## Result Report
-- Task summary: production audit confirmed matched indicator conditions can
-  currently end as `No votes`; the next fix must move candle recovery into the
-  runtime decision path, not only the dashboard read path.
-- Files changed: this planning artifact.
-- How tested: production read-only API inspection and local engine probe.
-- What is incomplete: implementation, automated regression, deploy, and
-  production post-deploy smoke.
-- Next steps: implement `RUNTIME-SIGNAL-VOTES-01` as the next P0 runtime slice.
-- Decisions made: do not fix by UI-only activation; fix runtime vote input
-  parity first.
+- [x] Definition of Done expectations are attached and checked for local
+  closure.
+- [x] Relevant implementation validations were run.
+- [x] Docs/context update is complete.
+- [x] Learning journal update is complete.

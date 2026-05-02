@@ -18,14 +18,19 @@ Last updated: 2026-05-02
 ## READY
 
 - [ ] `RUNTIME-SIGNAL-VOTES-01 fix(api-runtime): recover runtime strategy votes when matched indicators exist`
-  - Scope: P0 production-reported PAPER/LIVE risk. Production read-only
-    evidence showed `Peper bot` exposing concrete matched RSI conditions
-    (`DOGEUSDT RSI(14) 78.6959 > 51`, `matched=true`) while the same runtime
-    row still reported `lastSignalDirection=null`, `lastSignalReason=No votes`,
-    and `totalSignals=0`. The next implementation slice must move the approved
-    indicator-ready candle recovery contract into the actual final-candle
-    runtime decision path, keep existing pre-trade/orchestration guardrails,
-    and prove PAPER then LIVE read-only parity after deploy. Plan:
+  - Scope: implementation is locally verified and ready for deploy smoke for
+    the production-reported PAPER/LIVE runtime signal-vote risk.
+    `RuntimeSignalLoop` now makes the final-candle decision path request an
+    indicator-ready candle series before strategy evaluation, using the
+    engine-owned Binance public REST recovery contract when the in-memory
+    runtime series is too short. Runtime candles remain authoritative on
+    fallback overlap, dashboard/read-model recovery reuses the same merge
+    helper, and all signal execution still flows through the existing strategy
+    merge, pre-trade, wallet, max-position, exchange-min-order, and
+    orchestrator guardrails. Validation PASS: focused runtime market-data,
+    runtime loop, and read-model tests (`3` files / `51` tests), API
+    typecheck, API build, and repository guardrails. Post-deploy production
+    smoke remains the release evidence step before final closure. Evidence:
     `docs/planning/runtime-signal-vote-recovery-audit-plan-2026-05-02.md`.
 
 - [x] `DOCSYNC-V1EXCEL-01 docs(planning): close superseded V1EXCEL evidence gates`

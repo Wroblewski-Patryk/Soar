@@ -2,7 +2,10 @@ import { alignTimedNumericPointsToCandles } from '../engine/sharedDerivativesSer
 import { StrategySignalDerivativesSeries } from '../engine/strategySignalEvaluator';
 import { runtimeSignalLoop } from '../engine/runtimeSignalLoop.service';
 import { getRuntimeTicker } from '../engine/runtimeTickerStore';
-import { RuntimeCandle } from '../engine/runtimeSignalMarketDataGateway';
+import {
+  RuntimeCandle,
+  mergeRuntimeSignalCandles,
+} from '../engine/runtimeSignalMarketDataGateway';
 import { normalizeSymbol } from '../../lib/symbols';
 import { ListBotRuntimeSymbolStatsQueryDto } from './bots.types';
 import {
@@ -43,28 +46,7 @@ const runtimeSignalReadSnapshotMinCandles = Number.isFinite(runtimeSignalReadSna
   ? Math.max(20, runtimeSignalReadSnapshotMinCandlesRaw)
   : 150;
 
-export const mergeRuntimeCandlesForIndicatorRecovery = (
-  runtimeCandles: RuntimeCandle[],
-  fallbackCandles: RuntimeCandle[],
-  limit = 300,
-) => {
-  const deduped = new Map<number, RuntimeCandle>();
-  for (const candle of fallbackCandles) deduped.set(candle.openTime, candle);
-  for (const candle of runtimeCandles) deduped.set(candle.openTime, candle);
-  const merged = [...deduped.values()]
-    .filter(
-      (item): item is RuntimeCandle =>
-        Number.isFinite(item.openTime) &&
-        Number.isFinite(item.closeTime) &&
-        Number.isFinite(item.open) &&
-        Number.isFinite(item.high) &&
-        Number.isFinite(item.low) &&
-        Number.isFinite(item.close) &&
-        Number.isFinite(item.volume),
-    )
-    .sort((left, right) => left.openTime - right.openTime);
-  return merged.slice(-Math.max(1, Math.floor(limit)));
-};
+export const mergeRuntimeCandlesForIndicatorRecovery = mergeRuntimeSignalCandles;
 
 const resolveFallbackDerivatives = async (params: {
   marketType: 'FUTURES' | 'SPOT';

@@ -8,16 +8,19 @@ Operational queue for one-task execution runs.
 
 ## NOW
 - [ ] `RUNTIME-SIGNAL-VOTES-01 fix(api-runtime): recover runtime strategy votes when matched indicators exist`
-  - 2026-05-02 production audit: the active PAPER `Peper bot` running session
-    had `eventsCount=213`, `lastSignalAt=null`, and `summary.totalSignals=0`
-    while its symbol rows showed concrete matched strategy conditions. The
-    sharpest case was `DOGEUSDT`: `RSI(14) 78.6959 > 51` with `matched=true`,
-    but `lastSignalDirection=null`, `lastSignalReason=No votes`, and
-    `totalSignals=0`. Local engine probing with the same `RSI 45/55` strategy
-    and 150 fresh Binance Futures `DOGEUSDT` `5m` candles returns `LONG`, so
-    the next P0 fix must bring the dashboard/read-model candle recovery
-    contract into final-candle runtime decision evaluation instead of changing
-    only UI state. Plan:
+  - 2026-05-02: Implementation is locally verified and ready for deploy smoke
+    for the production-reported runtime signal-vote drift where dashboard rows
+    could show recovered `matched=true` RSI conditions while final-candle
+    runtime evaluation still merged `No votes` from a short in-memory candle
+    series. The engine now owns shared runtime/fallback candle merging,
+    `RuntimeSignalLoop` recovers an indicator-ready series before final-candle
+    strategy evaluation, and the dashboard/read-model path reuses the same
+    merge helper. Runtime candles remain authoritative on overlap, and no
+    pre-trade, wallet, max-position, exchange-min-order, or orchestrator
+    guardrail was bypassed. Validation PASS: focused runtime/read-model tests
+    (`3` files / `51` tests), API typecheck, API build, and repository
+    guardrails. Post-deploy production smoke remains required before final
+    closure. Evidence:
     `docs/planning/runtime-signal-vote-recovery-audit-plan-2026-05-02.md`.
 - [x] `DASHSIGNALS-02 fix(api-runtime): recover indicator candles before unavailable signal values`
   - 2026-05-02: Closed the deeper follow-up from `DASHSIGNALS-01`. Runtime

@@ -94,6 +94,21 @@ const strategyOpenInterestShort = {
   weight: 1,
 };
 
+const strategyRecoveredRsiLong = {
+  strategyId: 'strategy-recovered-rsi-long',
+  strategyInterval: '5m',
+  strategyLeverage: 3,
+  walletRisk: 5,
+  strategyConfig: {
+    open: {
+      indicatorsLong: [{ name: 'RSI', params: { period: 14 }, condition: '>', value: 51 }],
+      indicatorsShort: [],
+    },
+  },
+  priority: 10,
+  weight: 1,
+};
+
 const strategyOrderBookLong = {
   strategyId: 'strategy-orderbook-long',
   strategyInterval: '1m',
@@ -222,6 +237,24 @@ const emitFinalCandleSeries = async (
     });
   }
 };
+
+const buildKlineRows = (
+  points: number,
+  intervalMs: number,
+  closeForIndex: (index: number) => number,
+) =>
+  Array.from({ length: points }, (_, index) => {
+    const close = closeForIndex(index);
+    return [
+      index * intervalMs,
+      String(close - 1),
+      String(close + 2),
+      String(close - 2),
+      String(close),
+      '1000',
+      index * intervalMs + intervalMs - 1,
+    ];
+  });
 
 describe('RuntimeSignalLoop', () => {
   beforeEach(() => {
@@ -635,6 +668,79 @@ describe('RuntimeSignalLoop', () => {
         direction: 'LONG',
       })
     );
+  });
+
+  it('recovers indicator candles before final-candle strategy votes are evaluated', async () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    const intervalMs = 5 * 60_000;
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      json: async () =>
+        buildKlineRows(20, intervalMs, (index) => (index === 19 ? 119 : 100 + index)),
+    } as any);
+
+    const { deps, emit } = createDeps();
+    deps.warmupEnabled = false;
+    withStrategyBot(deps, {
+      marketType: 'SPOT',
+      symbols: ['DOGEUSDT'],
+      strategies: [strategyRecoveredRsiLong],
+    });
+    deps.recordRuntimeEvent = vi.fn(async () => undefined);
+    const loop = new RuntimeSignalLoop(deps);
+
+    try {
+      await loop.start();
+      await emit({
+        type: 'candle',
+        exchange: 'BINANCE',
+        marketType: 'SPOT',
+        symbol: 'DOGEUSDT',
+        interval: '5m',
+        eventTime: 20 * intervalMs,
+        openTime: 19 * intervalMs,
+        closeTime: 20 * intervalMs - 1,
+        open: 120,
+        high: 126,
+        low: 119,
+        close: 125,
+        volume: 2_500,
+        isFinal: true,
+      });
+
+      expect(fetchSpy).toHaveBeenCalledWith(
+        expect.stringContaining('/api/v3/klines'),
+        expect.any(Object)
+      );
+      expect(deps.createSignal).toHaveBeenCalledWith(
+        expect.objectContaining({
+          botId: 'bot-1',
+          strategyId: 'strategy-recovered-rsi-long',
+          symbol: 'DOGEUSDT',
+          timeframe: '5m',
+          direction: 'LONG',
+        })
+      );
+      expect(deps.orchestrateFn).toHaveBeenCalledWith(
+        expect.objectContaining({
+          botId: 'bot-1',
+          strategyId: 'strategy-recovered-rsi-long',
+          symbol: 'DOGEUSDT',
+          direction: 'LONG',
+        })
+      );
+      expect(deps.recordRuntimeEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventType: 'SIGNAL_DECISION',
+          signalDirection: 'LONG',
+        })
+      );
+    } finally {
+      await loop.stop();
+      fetchSpy.mockRestore();
+      process.env.NODE_ENV = originalNodeEnv;
+    }
   });
 
   it('evaluates direction on the just-closed candle even when series contains a newer candle', () => {

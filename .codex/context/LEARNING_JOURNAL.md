@@ -52,6 +52,38 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-05-02 - Runtime execution and read-model recovery must share one indicator-ready series contract
+- Context: an active PAPER runtime bot showed concrete recovered dashboard
+  conditions for `RSI(14)` while the same runtime session still recorded
+  `lastSignalDirection=null`, `lastSignalReason=No votes`, and
+  `totalSignals=0`.
+- Symptom: dashboard/read-model recovery could display `matched=true` strategy
+  condition lines from fallback candles, but final-candle runtime strategy
+  evaluation still used a short in-memory series and merged no vote.
+- Root cause: indicator candle recovery was implemented in read-model
+  ownership first, so display truth and execution input could diverge.
+- Guardrail: runtime signal execution must request an engine-owned
+  indicator-ready candle series before strategy evaluation, and read models
+  must reuse the same runtime/fallback candle merge helper rather than carrying
+  a local duplicate.
+- Preferred pattern:
+```text
+1) Ingest the final runtime candle.
+2) Ask RuntimeSignalMarketDataGateway for an indicator-ready series.
+3) Merge fallback and runtime candles by openTime with runtime authoritative.
+4) Evaluate strategy votes only through the existing runtime decision engine.
+5) Keep all pre-trade, wallet, max-position, exchange, and orchestrator guards
+   unchanged after a real vote is produced.
+6) Lock parity with both gateway-level and runtime-loop regression tests.
+```
+- Avoid: fixing signal-card display without making the final-candle execution
+  path use the same recovered indicator input, or using dashboard snapshot
+  truth as an execution shortcut.
+- Evidence: 2026-05-02 `RUNTIME-SIGNAL-VOTES-01`
+  (`runtimeSignalMarketDataGateway.ts`, `runtimeSignalLoop.service.ts`,
+  `runtimeSessionSymbolStatsRead.service.ts`, focused runtime/read-model
+  regression pack `51/51`).
+
 ### 2026-05-02 - Do not run web typecheck in parallel with Next build
 - Context: `V1SURF-02` validation attempted to rerun `pnpm --filter web run typecheck`
   and `pnpm --filter web run build` in parallel after a frontend runtime
