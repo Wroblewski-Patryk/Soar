@@ -100,6 +100,32 @@ Last updated: 2026-05-02
   of reconstructing it from `syncState` or audit logs.
 
 ## Product Decisions (Confirmed)
+- 2026-05-02: closed `V1CLOSEOUT-08..10` from the V1 closeout audit
+  remediation queue. RC artifacts now agree with blocked signoff truth:
+  Gate 1, Gate 2, and Gate 3 are PASS, while Gate 4 is OPEN until final
+  approver names and approval are present. Fresh closeout evidence records an
+  explicit operational `NO-GO`: local restore drill PASS, stage/prod restore
+  wrappers FAIL because target DB container env vars are unavailable in the
+  current execution context, and stage/prod release gates remain dry-run
+  `not_ready`. Exchange-boundary conformance for the audited surfaces is
+  remediated by moving Binance public REST URL/fetch ownership and Binance
+  API-key probe client bootstrap into `modules/exchange`; backtest, runtime
+  fallback, runtime signal market-data, and profile API-key probe consumers now
+  use exchange-owned seams. Evidence:
+  `docs/operations/v1-closeout-evidence-refresh-2026-05-02.md`; focused
+  exchange/backtest/runtime/profile tests PASS (`15/15`), runtime loop/pnl
+  pack PASS (`45/45`), and API typecheck PASS. Remaining closeout work is
+  `V1CLOSEOUT-11`: publish the final V1 go/no-go closure pack, currently
+  expected to remain `NO-GO` unless missing Gate 4 approvals and stage/prod
+  target evidence are provided.
+- 2026-05-02: closed `V1CLOSEOUT-11` with final V1 closeout status `NO-GO`.
+  Repository validation is green after remediation (`quality:guardrails`,
+  `docs:parity:check`, `lint`, `typecheck`, full API tests, full web tests,
+  and `build` all PASS), but V1 cannot be honestly closed or promoted as final
+  because Gate 4 approval is still missing, stage/prod restore drills lack
+  target DB container env configuration, and stage/prod release gates remain
+  dry-run `not_ready`. Evidence:
+  `docs/operations/v1-final-go-no-go-closure-2026-05-02.md`.
 - 2026-05-02: closed `V1CLOSEOUT-01..07` from the V1 closeout audit
   remediation queue. The API closeout packet is green again after aligning
   stale external-management fixtures to the canonical `Bot.manageExternalPositions`

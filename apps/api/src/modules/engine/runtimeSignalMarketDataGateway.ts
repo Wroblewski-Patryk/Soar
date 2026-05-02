@@ -11,6 +11,7 @@ import {
 } from './runtimeSignalSeriesTypes';
 import { normalizeInterval } from './runtimeSignalLoopDefaults';
 import { normalizeSymbol } from '../../lib/symbols';
+import { fetchBinancePublicRestJson } from '../exchange/binancePublicRest.service';
 
 export type RuntimeCandle = {
   openTime: number;
@@ -281,17 +282,14 @@ export class RuntimeSignalMarketDataGateway {
     };
   }
 
-  private warmupUrl(
+  private async fetchWarmupCandles(
     marketType: 'FUTURES' | 'SPOT',
     symbol: string,
     interval: string,
     limit: number,
     endTimeMs?: number,
-  ) {
-    const base =
-      marketType === 'SPOT'
-        ? process.env.BINANCE_SPOT_REST_URL ?? 'https://api.binance.com'
-        : process.env.BINANCE_FUTURES_REST_URL ?? 'https://fapi.binance.com';
+  ): Promise<RuntimeCandle[]> {
+    if (process.env.NODE_ENV === 'test') return [];
     const endpoint = marketType === 'SPOT' ? '/api/v3/klines' : '/fapi/v1/klines';
     const params = new URLSearchParams({
       symbol: normalizeSymbol(symbol),
@@ -301,22 +299,12 @@ export class RuntimeSignalMarketDataGateway {
     if (Number.isFinite(endTimeMs)) {
       params.set('endTime', String(Math.floor(endTimeMs as number)));
     }
-    return `${base}${endpoint}?${params.toString()}`;
-  }
-
-  private async fetchWarmupCandles(
-    marketType: 'FUTURES' | 'SPOT',
-    symbol: string,
-    interval: string,
-    limit: number,
-    endTimeMs?: number,
-  ): Promise<RuntimeCandle[]> {
-    if (process.env.NODE_ENV === 'test') return [];
-    const url = this.warmupUrl(marketType, symbol, interval, limit, endTimeMs);
     try {
-      const response = await fetch(url, { method: 'GET' });
-      if (!response.ok) return [];
-      const payload = (await response.json()) as unknown;
+      const payload = await fetchBinancePublicRestJson({
+        marketType,
+        path: endpoint,
+        searchParams: params,
+      });
       if (!Array.isArray(payload)) return [];
       const now = Date.now();
       const closeTimeCutoff = Number.isFinite(endTimeMs) ? Math.floor(endTimeMs as number) : now;
@@ -456,7 +444,6 @@ export class RuntimeSignalMarketDataGateway {
     endTimeMs?: number,
   ): Promise<FundingRatePoint[]> {
     if (process.env.NODE_ENV === 'test') return [];
-    const base = process.env.BINANCE_FUTURES_REST_URL ?? 'https://fapi.binance.com';
     const params = new URLSearchParams({
       symbol: normalizeSymbol(symbol),
       limit: String(Math.min(1000, Math.max(20, runtimeFundingHistoryLimit))),
@@ -464,12 +451,13 @@ export class RuntimeSignalMarketDataGateway {
     if (Number.isFinite(endTimeMs)) {
       params.set('endTime', String(Math.floor(endTimeMs as number)));
     }
-    const url = `${base}/fapi/v1/fundingRate?${params.toString()}`;
 
     try {
-      const response = await fetch(url, { method: 'GET' });
-      if (!response.ok) return [];
-      const payload = (await response.json()) as unknown;
+      const payload = await fetchBinancePublicRestJson({
+        marketType: 'FUTURES',
+        path: '/fapi/v1/fundingRate',
+        searchParams: params,
+      });
       if (!Array.isArray(payload)) return [];
       return payload
         .map((item) => {
@@ -489,14 +477,14 @@ export class RuntimeSignalMarketDataGateway {
 
   private async fetchFundingRateSnapshot(symbol: string): Promise<FundingRatePoint | null> {
     if (process.env.NODE_ENV === 'test') return null;
-    const base = process.env.BINANCE_FUTURES_REST_URL ?? 'https://fapi.binance.com';
     const params = new URLSearchParams({ symbol: normalizeSymbol(symbol) });
-    const url = `${base}/fapi/v1/premiumIndex?${params.toString()}`;
 
     try {
-      const response = await fetch(url, { method: 'GET' });
-      if (!response.ok) return null;
-      const payload = (await response.json()) as unknown;
+      const payload = await fetchBinancePublicRestJson({
+        marketType: 'FUTURES',
+        path: '/fapi/v1/premiumIndex',
+        searchParams: params,
+      });
       if (!payload || typeof payload !== 'object') return null;
       const row = payload as { time?: unknown; lastFundingRate?: unknown };
       const timestamp = Number(row.time);
@@ -559,7 +547,6 @@ export class RuntimeSignalMarketDataGateway {
     endTimeMs?: number,
   ): Promise<OpenInterestPoint[]> {
     if (process.env.NODE_ENV === 'test') return [];
-    const base = process.env.BINANCE_FUTURES_REST_URL ?? 'https://fapi.binance.com';
     const params = new URLSearchParams({
       symbol: normalizeSymbol(symbol),
       period: this.openInterestPeriodForInterval(interval),
@@ -568,12 +555,13 @@ export class RuntimeSignalMarketDataGateway {
     if (Number.isFinite(endTimeMs)) {
       params.set('endTime', String(Math.floor(endTimeMs as number)));
     }
-    const url = `${base}/futures/data/openInterestHist?${params.toString()}`;
 
     try {
-      const response = await fetch(url, { method: 'GET' });
-      if (!response.ok) return [];
-      const payload = (await response.json()) as unknown;
+      const payload = await fetchBinancePublicRestJson({
+        marketType: 'FUTURES',
+        path: '/futures/data/openInterestHist',
+        searchParams: params,
+      });
       if (!Array.isArray(payload)) return [];
       return payload
         .map((item) => {
@@ -593,14 +581,14 @@ export class RuntimeSignalMarketDataGateway {
 
   private async fetchOpenInterestSnapshot(symbol: string): Promise<OpenInterestPoint | null> {
     if (process.env.NODE_ENV === 'test') return null;
-    const base = process.env.BINANCE_FUTURES_REST_URL ?? 'https://fapi.binance.com';
     const params = new URLSearchParams({ symbol: normalizeSymbol(symbol) });
-    const url = `${base}/fapi/v1/openInterest?${params.toString()}`;
 
     try {
-      const response = await fetch(url, { method: 'GET' });
-      if (!response.ok) return null;
-      const payload = (await response.json()) as unknown;
+      const payload = await fetchBinancePublicRestJson({
+        marketType: 'FUTURES',
+        path: '/fapi/v1/openInterest',
+        searchParams: params,
+      });
       if (!payload || typeof payload !== 'object') return null;
       const row = payload as { time?: unknown; openInterest?: unknown };
       const timestamp = Number(row.time);
@@ -661,17 +649,17 @@ export class RuntimeSignalMarketDataGateway {
 
   private async fetchOrderBookSnapshot(symbol: string): Promise<OrderBookPoint | null> {
     if (process.env.NODE_ENV === 'test') return null;
-    const base = process.env.BINANCE_FUTURES_REST_URL ?? 'https://fapi.binance.com';
     const params = new URLSearchParams({
       symbol: normalizeSymbol(symbol),
       limit: '100',
     });
-    const url = `${base}/fapi/v1/depth?${params.toString()}`;
 
     try {
-      const response = await fetch(url, { method: 'GET' });
-      if (!response.ok) return null;
-      const payload = (await response.json()) as unknown;
+      const payload = await fetchBinancePublicRestJson({
+        marketType: 'FUTURES',
+        path: '/fapi/v1/depth',
+        searchParams: params,
+      });
       if (!payload || typeof payload !== 'object') return null;
       const row = payload as {
         bids?: unknown;

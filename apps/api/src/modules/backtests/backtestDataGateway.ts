@@ -1,4 +1,5 @@
 import { prisma } from '../../prisma/client';
+import { fetchBinancePublicRestJson } from '../exchange/binancePublicRest.service';
 import { getTimeframeIntervalMs, normalizeTimeframe } from './backtestTimeframe';
 
 export type BacktestMarketType = 'SPOT' | 'FUTURES';
@@ -213,7 +214,7 @@ const parseKlinePayload = (payload: unknown): BacktestKlineCandle[] => {
 };
 
 const fetchKlineChunk = async (input: {
-  endpoint: string;
+  path: string;
   symbol: string;
   normalizedTimeframe: string;
   chunkLimit: number;
@@ -228,11 +229,13 @@ const fetchKlineChunk = async (input: {
     startTime: String(input.startTime),
     endTime: String(input.endTime),
   });
-  const primaryResponse = await fetch(`${input.endpoint}?${primaryQuery.toString()}`);
-  if (primaryResponse.ok) {
-    const primaryParsed = parseKlinePayload(await primaryResponse.json());
-    if (primaryParsed.length > 0) return primaryParsed;
-  }
+  const primaryPayload = await fetchBinancePublicRestJson({
+    marketType: input.marketType,
+    path: input.path,
+    searchParams: primaryQuery,
+  });
+  const primaryParsed = parseKlinePayload(primaryPayload);
+  if (primaryParsed.length > 0) return primaryParsed;
 
   if (input.marketType !== 'FUTURES') return [];
 
@@ -244,12 +247,12 @@ const fetchKlineChunk = async (input: {
     startTime: String(input.startTime),
     endTime: String(input.endTime),
   });
-  const continuousResponse = await fetch(
-    `https://fapi.binance.com/fapi/v1/continuousKlines?${continuousQuery.toString()}`,
-  );
-  if (!continuousResponse.ok) return [];
-
-  return parseKlinePayload(await continuousResponse.json());
+  const continuousPayload = await fetchBinancePublicRestJson({
+    marketType: 'FUTURES',
+    path: '/fapi/v1/continuousKlines',
+    searchParams: continuousQuery,
+  });
+  return parseKlinePayload(continuousPayload);
 };
 
 export const fetchKlines = async (
@@ -308,10 +311,7 @@ export const fetchKlines = async (
     }
   }
 
-  const endpoint =
-    marketType === 'FUTURES'
-      ? 'https://fapi.binance.com/fapi/v1/klines'
-      : 'https://api.binance.com/api/v3/klines';
+  const path = marketType === 'FUTURES' ? '/fapi/v1/klines' : '/api/v3/klines';
 
   const intervalMs = getTimeframeIntervalMs(timeframe);
   const candles: BacktestKlineCandle[] = [];
@@ -324,7 +324,7 @@ export const fetchKlines = async (
     guard += 1;
     const chunkLimit = Math.min(1000, remaining);
     const parsed = await fetchKlineChunk({
-      endpoint,
+      path,
       symbol,
       normalizedTimeframe,
       chunkLimit,
@@ -416,12 +416,20 @@ export const fetchSupplementalSeries = async (
     limit: String(limit),
   });
 
-  let fundingResponse: Response | null = null;
-  let openInterestResponse: Response | null = null;
+  let fundingResponse: unknown = null;
+  let openInterestResponse: unknown = null;
   try {
     [fundingResponse, openInterestResponse] = await Promise.all([
-      fetch(`https://fapi.binance.com/fapi/v1/fundingRate?${fundingQuery.toString()}`),
-      fetch(`https://fapi.binance.com/futures/data/openInterestHist?${oiQuery.toString()}`),
+      fetchBinancePublicRestJson({
+        marketType: 'FUTURES',
+        path: '/fapi/v1/fundingRate',
+        searchParams: fundingQuery,
+      }),
+      fetchBinancePublicRestJson({
+        marketType: 'FUTURES',
+        path: '/futures/data/openInterestHist',
+        searchParams: oiQuery,
+      }),
     ]);
   } catch {
     const empty = { fundingRates: [], openInterest: [], orderBook: [] };
@@ -429,8 +437,8 @@ export const fetchSupplementalSeries = async (
     return empty;
   }
 
-  const fundingRates: BacktestFundingRatePoint[] = fundingResponse?.ok
-    ? (((await fundingResponse.json()) as unknown[]) ?? [])
+  const fundingRates: BacktestFundingRatePoint[] = Array.isArray(fundingResponse)
+    ? fundingResponse
         .map((item) => {
           if (!item || typeof item !== 'object') return null;
           const row = item as { fundingTime?: unknown; fundingRate?: unknown };
@@ -443,8 +451,8 @@ export const fetchSupplementalSeries = async (
         .sort((a, b) => a.timestamp - b.timestamp)
     : [];
 
-  const openInterest: BacktestOpenInterestPoint[] = openInterestResponse?.ok
-    ? (((await openInterestResponse.json()) as unknown[]) ?? [])
+  const openInterest: BacktestOpenInterestPoint[] = Array.isArray(openInterestResponse)
+    ? openInterestResponse
         .map((item) => {
           if (!item || typeof item !== 'object') return null;
           const row = item as { timestamp?: unknown; sumOpenInterest?: unknown };

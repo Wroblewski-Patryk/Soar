@@ -1,9 +1,14 @@
-type BinanceMarketType = "spot" | "future";
+import type {
+  BinanceApiKeyProbeClientFactory,
+  BinanceApiKeyProbeClientLike,
+  BinanceApiKeyProbeInput,
+  BinanceApiKeyProbeMarketType,
+} from "../../exchange/binanceApiKeyProbeClient.service";
+import {
+  createBinanceApiKeyProbeClient,
+} from "../../exchange/binanceApiKeyProbeClient.service";
 
-export type BinanceApiKeyProbeInput = {
-  apiKey: string;
-  apiSecret: string;
-};
+type BinanceMarketType = BinanceApiKeyProbeMarketType;
 
 export type BinanceApiKeyTestCode =
   | "OK"
@@ -25,15 +30,9 @@ export type BinanceApiKeyProbeResult = {
   };
 };
 
-export interface BinanceClientLike {
-  fetchBalance: (params?: Record<string, unknown>) => Promise<unknown>;
-  close?: () => Promise<void>;
-}
+export type BinanceClientLike = BinanceApiKeyProbeClientLike;
 
-type BinanceClientFactory = (
-  marketType: BinanceMarketType,
-  input: BinanceApiKeyProbeInput
-) => Promise<BinanceClientLike>;
+type BinanceClientFactory = BinanceApiKeyProbeClientFactory;
 
 const toErrorMessage = (error: unknown) => {
   if (error instanceof Error) return error.message.toLowerCase();
@@ -109,21 +108,6 @@ const formatProbeMessage = (code: BinanceApiKeyTestCode) => {
   }
 };
 
-const defaultClientFactory: BinanceClientFactory = async (marketType, input) => {
-  const ccxtModule = (await import("ccxt")) as unknown as {
-    binance: new (config: Record<string, unknown>) => BinanceClientLike;
-  };
-  const client = new ccxtModule.binance({
-    apiKey: input.apiKey,
-    secret: input.apiSecret,
-    enableRateLimit: true,
-    options: {
-      defaultType: marketType,
-    },
-  });
-  return client;
-};
-
 const probeScope = async (
   marketType: BinanceMarketType,
   input: BinanceApiKeyProbeInput,
@@ -141,7 +125,7 @@ const probeScope = async (
 
 export const probeBinanceApiKeyPermissions = async (
   input: BinanceApiKeyProbeInput,
-  clientFactory: BinanceClientFactory = defaultClientFactory
+  clientFactory: BinanceClientFactory = createBinanceApiKeyProbeClient
 ): Promise<BinanceApiKeyProbeResult> => {
   const permissions = {
     spot: false,

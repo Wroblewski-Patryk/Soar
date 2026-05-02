@@ -1,0 +1,20 @@
+{
+  "status": "FAIL",
+  "profile": "stage",
+  "startedAt": "2026-05-02T16:25:14.818Z",
+  "endedAt": "2026-05-02T16:25:14.888Z",
+  "command": "node scripts/runBackupVerificationProfile.mjs --profile stage --",
+  "checks": {
+    "commandExitCodeZero": false,
+    "rawArtifactPresent": true,
+    "markdownReportPresent": true,
+    "backupRestoreResultPass": true
+  },
+  "backupRestore": {
+    "result": "PASS",
+    "rawArtifact": "docs\\operations\\_artifacts-db-restore-check-2026-05-02T16-25-02-128Z.txt",
+    "reportArtifact": "docs\\operations\\v1-db-restore-check-2026-05-02T16-25-02-128Z.md"
+  },
+  "stdoutPreview": "",
+  "stderrPreview": "[ops:db:backup-verify] failed: Missing container for profile \"stage\". Set --container or one of: STAGE_DB_CHECK_CONTAINER."
+}

@@ -152,9 +152,11 @@ describe('backtestDataGateway', () => {
     expect(fetchMock).toHaveBeenCalledTimes(2);
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringContaining('/fapi/v1/klines?symbol=BTCUSDT'),
+      expect.objectContaining({ method: 'GET' }),
     );
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringContaining('/fapi/v1/continuousKlines?pair=BTCUSDT&contractType=PERPETUAL'),
+      expect.objectContaining({ method: 'GET' }),
     );
     expect(candles.map((item) => item.openTime)).toEqual([
       baseTime,

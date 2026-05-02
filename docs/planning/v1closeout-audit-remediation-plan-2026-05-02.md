@@ -105,6 +105,31 @@ advance toward a final V1 go/no-go without losing any audit finding.
 - Remaining release closeout work starts at `V1CLOSEOUT-08`: RC signoff,
   release-gate evidence, production restore drill, stage/prod evidence, and
   exchange-boundary architecture remediation remain open.
+- `V1CLOSEOUT-08..10` are implemented and verified as closeout remediation
+  slices. RC status/checklist now agree with blocked signoff truth
+  (`G4=OPEN`), restore/release evidence has been refreshed with a current
+  explicit `NO-GO`, and the audited direct Binance REST/`ccxt` access has been
+  moved behind `modules/exchange` ownership seams.
+- Current release blockers are external or approval-bound, not hidden code
+  gaps found by this audit: Gate 4 approver names/final approval are missing,
+  stage/prod restore drill target DB container env vars are unavailable in the
+  current execution context, and stage/prod release gates were dry-run only and
+  remain `not_ready`.
+- Verification evidence added:
+  - `pnpm run ops:rc:gates:status` => PASS.
+  - `pnpm run ops:rc:checklist:sync` => PASS.
+  - `pnpm run ops:rc:gates:summary` => PASS with G4 OPEN.
+  - `pnpm run ops:rc:gates:evidence:check -- --strict` => expected FAIL
+    because approver names and Gate 4 approval are still missing.
+  - `pnpm run ops:db:restore-drill:local` => PASS.
+  - `pnpm run ops:db:restore-drill:stage` => FAIL, missing
+    `STAGE_DB_CHECK_CONTAINER`.
+  - `pnpm run ops:db:restore-drill:prod` => FAIL, missing
+    `PROD_DB_CHECK_CONTAINER` or `PRODUCTION_DB_CHECK_CONTAINER`.
+  - prod/stage release-gate dry-runs => command PASS, readiness `not_ready`.
+  - focused exchange/backtest/runtime/profile pack => PASS, `15/15`.
+  - runtime loop/pnl pack => PASS, `45/45`.
+  - `pnpm --filter api run typecheck` => PASS.
 
 ## Confirmed Findings
 
@@ -368,7 +393,7 @@ decision.
 - Type: release
 - Priority: P0
 - Owner: Ops/Release
-- Current Stage: READY
+- Current Stage: DONE
 - Depends on: V1CLOSEOUT-06, V1CLOSEOUT-07
 - Scope:
   - `docs/operations/v1-rc-signoff-record.md`
@@ -397,7 +422,7 @@ decision.
 - Type: release
 - Priority: P0
 - Owner: Ops/Release
-- Current Stage: READY
+- Current Stage: DONE
 - Depends on: V1CLOSEOUT-08
 - Scope:
   - production backup/restore drill wrapper configuration
@@ -427,7 +452,7 @@ decision.
 - Type: refactor
 - Priority: P1
 - Owner: Backend Builder + Architecture
-- Current Stage: READY
+- Current Stage: DONE
 - Depends on: V1CLOSEOUT-06
 - Scope:
   - `apps/api/src/modules/backtests/backtestDataGateway.ts`
@@ -459,7 +484,7 @@ decision.
 - Type: release
 - Priority: P0
 - Owner: QA/Test + Ops/Release
-- Current Stage: READY
+- Current Stage: DONE
 - Depends on: V1CLOSEOUT-01 through V1CLOSEOUT-09
 - Scope:
   - final validation commands
@@ -502,9 +527,8 @@ decision.
 7. `V1CLOSEOUT-07`
 8. `V1CLOSEOUT-08`
 9. `V1CLOSEOUT-09`
-10. `V1CLOSEOUT-11`
-11. `V1CLOSEOUT-10`, unless P1 architecture conformance is promoted to a
-    launch blocker by user decision.
+10. `V1CLOSEOUT-10`
+11. `V1CLOSEOUT-11`
 
 ## Constraints
 - Use existing systems and approved mechanisms.

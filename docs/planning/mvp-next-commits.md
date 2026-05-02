@@ -49,6 +49,36 @@ Operational queue for one-task execution runs.
     `docs/architecture/reference/dashboard-route-map.md` and publishing the
     missing `web-shared` module inventory/deep-dive entry. Validation:
     `pnpm run docs:parity:check` PASS and `pnpm run quality:guardrails` PASS.
+- [x] `V1CLOSEOUT-08 release(ops): resolve RC signoff and release-gate evidence drift`
+  - 2026-05-02: Closed truth-sync scope. RC external-gate status and checklist
+    now agree with blocked signoff truth: `G1=PASS`, `G2=PASS`, `G3=PASS`,
+    `G4=OPEN`. Strict evidence check still fails intentionally because
+    Engineering/Product/Operations/RC-owner names are missing and Gate 4 is not
+    approved.
+- [x] `V1CLOSEOUT-09 release(ops): refresh production restore drill and activation evidence`
+  - 2026-05-02: Closed evidence-refresh scope with an explicit `NO-GO`.
+    Local restore drill PASS. Stage/prod restore drill wrappers produced fresh
+    FAIL artifacts because required DB container env vars are unavailable in
+    this context. Stage/prod release gates were rerun in dry-run mode and
+    remain `not_ready`. Evidence:
+    `docs/operations/v1-closeout-evidence-refresh-2026-05-02.md`.
+- [x] `V1CLOSEOUT-10 refactor(api-exchange): decide and remediate direct exchange boundary access`
+  - 2026-05-02: Closed exchange-boundary conformance for the audited surfaces.
+    Public Binance REST host/fetch ownership moved to
+    `apps/api/src/modules/exchange/binancePublicRest.service.ts`; Binance API
+    key probe client bootstrap moved to
+    `apps/api/src/modules/exchange/binanceApiKeyProbeClient.service.ts`.
+    Backtest, runtime fallback, runtime signal market-data, and profile
+    API-key probe consumers now use exchange-owned seams. Validation PASS:
+    focused exchange/backtest/runtime/profile pack (`15/15`), runtime loop/pnl
+    pack (`45/45`), API typecheck.
+- [x] `V1CLOSEOUT-11 release(qa): run final V1 go/no-go closure pack`
+  - 2026-05-02: Closed with final `NO-GO` in
+    `docs/operations/v1-final-go-no-go-closure-2026-05-02.md`. Repository
+    validation baseline is green (`guardrails`, `docs parity`, `lint`,
+    `typecheck`, full API tests, full web tests, `build`), but release cannot
+    be approved until Gate 4 approvers, stage/prod restore target env, and
+    non-dry-run release evidence are present.
 - 2026-05-01 execution status: `V1ROE-04` protected production verification is
   closed with authenticated API/browser evidence. Remaining non-deferred V1
   blockers are `V1EXCEL-03..06` authenticated manual operator and OPS evidence.

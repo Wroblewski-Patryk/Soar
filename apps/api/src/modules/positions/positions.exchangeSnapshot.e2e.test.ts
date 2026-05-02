@@ -1,7 +1,10 @@
 import request from "supertest";
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { app } from "../../index";
 import { prisma } from "../../prisma/client";
+
+const originalApiKeyEncryptionKeys = process.env.API_KEY_ENCRYPTION_KEYS;
+const originalApiKeyEncryptionActiveVersion = process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
 
 const registerAndLogin = async (email: string) => {
   const agent = request.agent(app);
@@ -14,6 +17,22 @@ const registerAndLogin = async (email: string) => {
 };
 
 describe("Positions exchange snapshot API", () => {
+  beforeAll(() => {
+    process.env.API_KEY_ENCRYPTION_KEYS = "v1:test-exchange-snapshot-keyring";
+    process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION = "v1";
+  });
+
+  afterAll(() => {
+    if (originalApiKeyEncryptionKeys === undefined) delete process.env.API_KEY_ENCRYPTION_KEYS;
+    else process.env.API_KEY_ENCRYPTION_KEYS = originalApiKeyEncryptionKeys;
+
+    if (originalApiKeyEncryptionActiveVersion === undefined) {
+      delete process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
+    } else {
+      process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION = originalApiKeyEncryptionActiveVersion;
+    }
+  });
+
   beforeEach(async () => {
     await prisma.trade.deleteMany();
     await prisma.order.deleteMany();

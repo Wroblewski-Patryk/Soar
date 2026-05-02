@@ -1,4 +1,5 @@
 import { normalizeSymbols } from '../../lib/symbols';
+import { fetchBinancePublicRestJson } from '../exchange/binancePublicRest.service';
 
 const normalizeKlineInterval = (value?: string | null) => {
   if (!value) return '1m';
@@ -14,11 +15,6 @@ const normalizeKlineInterval = (value?: string | null) => {
   };
   return aliases[normalized] ?? normalized;
 };
-
-const resolveBinanceBaseUrl = (marketType: 'FUTURES' | 'SPOT') =>
-  marketType === 'SPOT'
-    ? process.env.BINANCE_SPOT_REST_URL ?? 'https://api.binance.com'
-    : process.env.BINANCE_FUTURES_REST_URL ?? 'https://fapi.binance.com';
 
 const klineFallbackCache = new Map<
   string,
@@ -88,14 +84,18 @@ export const fetchFallbackKlines = async (params: {
   }
 
   const endpoint = params.marketType === 'SPOT' ? '/api/v3/klines' : '/fapi/v1/klines';
-  const url = `${resolveBinanceBaseUrl(params.marketType)}${endpoint}?symbol=${encodeURIComponent(
-    params.symbol.toUpperCase(),
-  )}&interval=${encodeURIComponent(normalizedInterval)}&limit=${limit}`;
+  const searchParams = new URLSearchParams({
+    symbol: params.symbol.toUpperCase(),
+    interval: normalizedInterval,
+    limit: String(limit),
+  });
 
   try {
-    const response = await fetch(url, { method: 'GET' });
-    if (!response.ok) return [];
-    const payload = (await response.json()) as unknown;
+    const payload = await fetchBinancePublicRestJson({
+      marketType: params.marketType,
+      path: endpoint,
+      searchParams,
+    });
     if (!Array.isArray(payload)) return [];
     const currentTime = Date.now();
     const candles = payload
@@ -175,12 +175,11 @@ export const fetchFallbackFundingRateHistory = async (params: {
   }
 
   try {
-    const response = await fetch(
-      `${resolveBinanceBaseUrl('FUTURES')}/fapi/v1/fundingRate?${searchParams.toString()}`,
-      { method: 'GET' },
-    );
-    if (!response.ok) return [];
-    const payload = (await response.json()) as unknown;
+    const payload = await fetchBinancePublicRestJson({
+      marketType: 'FUTURES',
+      path: '/fapi/v1/fundingRate',
+      searchParams,
+    });
     if (!Array.isArray(payload)) return [];
     const points = payload
       .map((item) => {
@@ -210,12 +209,11 @@ export const fetchFallbackFundingRateSnapshot = async (symbol: string) => {
   }
 
   try {
-    const response = await fetch(
-      `${resolveBinanceBaseUrl('FUTURES')}/fapi/v1/premiumIndex?symbol=${encodeURIComponent(symbol.toUpperCase())}`,
-      { method: 'GET' },
-    );
-    if (!response.ok) return null;
-    const payload = (await response.json()) as unknown;
+    const payload = await fetchBinancePublicRestJson({
+      marketType: 'FUTURES',
+      path: '/fapi/v1/premiumIndex',
+      searchParams: new URLSearchParams({ symbol: symbol.toUpperCase() }),
+    });
     if (!payload || typeof payload !== 'object') return null;
     const row = payload as { time?: unknown; lastFundingRate?: unknown };
     const timestamp = Number(row.time);
@@ -263,12 +261,11 @@ export const fetchFallbackOpenInterestHistory = async (params: {
   }
 
   try {
-    const response = await fetch(
-      `${resolveBinanceBaseUrl('FUTURES')}/futures/data/openInterestHist?${searchParams.toString()}`,
-      { method: 'GET' },
-    );
-    if (!response.ok) return [];
-    const payload = (await response.json()) as unknown;
+    const payload = await fetchBinancePublicRestJson({
+      marketType: 'FUTURES',
+      path: '/futures/data/openInterestHist',
+      searchParams,
+    });
     if (!Array.isArray(payload)) return [];
     const points = payload
       .map((item) => {
@@ -298,12 +295,11 @@ export const fetchFallbackOpenInterestSnapshot = async (symbol: string) => {
   }
 
   try {
-    const response = await fetch(
-      `${resolveBinanceBaseUrl('FUTURES')}/fapi/v1/openInterest?symbol=${encodeURIComponent(symbol.toUpperCase())}`,
-      { method: 'GET' },
-    );
-    if (!response.ok) return null;
-    const payload = (await response.json()) as unknown;
+    const payload = await fetchBinancePublicRestJson({
+      marketType: 'FUTURES',
+      path: '/fapi/v1/openInterest',
+      searchParams: new URLSearchParams({ symbol: symbol.toUpperCase() }),
+    });
     if (!payload || typeof payload !== 'object') return null;
     const row = payload as { time?: unknown; openInterest?: unknown };
     const timestamp = Number(row.time);
@@ -329,12 +325,11 @@ export const fetchFallbackOrderBookSnapshot = async (symbol: string) => {
   }
 
   try {
-    const response = await fetch(
-      `${resolveBinanceBaseUrl('FUTURES')}/fapi/v1/depth?symbol=${encodeURIComponent(symbol.toUpperCase())}&limit=100`,
-      { method: 'GET' },
-    );
-    if (!response.ok) return null;
-    const payload = (await response.json()) as unknown;
+    const payload = await fetchBinancePublicRestJson({
+      marketType: 'FUTURES',
+      path: '/fapi/v1/depth',
+      searchParams: new URLSearchParams({ symbol: symbol.toUpperCase(), limit: '100' }),
+    });
     if (!payload || typeof payload !== 'object') return null;
     const row = payload as {
       bids?: unknown;
@@ -404,12 +399,11 @@ export const fetchFallbackTickerPrices = async (params: {
   }
 
   const endpoint = params.marketType === 'SPOT' ? '/api/v3/ticker/price' : '/fapi/v1/ticker/price';
-  const url = `${resolveBinanceBaseUrl(params.marketType)}${endpoint}`;
-
   try {
-    const response = await fetch(url, { method: 'GET' });
-    if (!response.ok) return new Map<string, number>();
-    const payload = (await response.json()) as unknown;
+    const payload = await fetchBinancePublicRestJson({
+      marketType: params.marketType,
+      path: endpoint,
+    });
     const allPrices = new Map<string, number>();
     const rows = Array.isArray(payload) ? payload : [payload];
     for (const row of rows) {

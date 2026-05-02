@@ -25,10 +25,10 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `V1CLOSEOUT-05 fix(api-positions): restore orphan repair canonical rebinding`
 - [x] `V1CLOSEOUT-06 qa(api): restore full API suite green after closeout fixes`
 - [x] `V1CLOSEOUT-07 fix(docs): repair docs parity route-map path drift`
-- [ ] `V1CLOSEOUT-08 release(ops): resolve RC signoff and release-gate evidence drift`
-- [ ] `V1CLOSEOUT-09 release(ops): refresh production restore drill and activation evidence`
-- [ ] `V1CLOSEOUT-10 refactor(api-exchange): decide and remediate direct exchange boundary access`
-- [ ] `V1CLOSEOUT-11 release(qa): run final V1 go/no-go closure pack`
+- [x] `V1CLOSEOUT-08 release(ops): resolve RC signoff and release-gate evidence drift`
+- [x] `V1CLOSEOUT-09 release(ops): refresh production restore drill and activation evidence`
+- [x] `V1CLOSEOUT-10 refactor(api-exchange): decide and remediate direct exchange boundary access`
+- [x] `V1CLOSEOUT-11 release(qa): run final V1 go/no-go closure pack`
 
 ### Progress Log (Phase V1CLOSEOUT-AUDIT-2026-05-02 - Final V1 Audit Remediation)
 - 2026-05-02: Published
@@ -46,6 +46,20 @@ Rule: fix/cleanup/update first, then feature delivery.
   route-map path and publishing the `web-shared` module deep-dive/index row.
   Guardrails PASS. Remaining phase work starts at release evidence and
   exchange-boundary remediation (`V1CLOSEOUT-08..11`).
+- 2026-05-02: Closed `V1CLOSEOUT-08..10`. RC artifacts now honestly show
+  Gate 4 OPEN while signoff remains BLOCKED. Restore/release evidence was
+  refreshed with an explicit `NO-GO`: local restore drill PASS, stage/prod
+  restore wrappers FAIL due missing DB container env configuration, and
+  stage/prod release gates remain dry-run `not_ready`. Exchange-boundary
+  conformance was remediated for audited surfaces by moving Binance public
+  REST and API-key probe client bootstrap ownership into `modules/exchange`.
+  Validation PASS: focused exchange/backtest/runtime/profile pack (`15/15`),
+  runtime loop/pnl pack (`45/45`), and API typecheck.
+- 2026-05-02: Closed `V1CLOSEOUT-11` with final
+  `docs/operations/v1-final-go-no-go-closure-2026-05-02.md`. Repository
+  validation baseline is green, but final V1 remains `NO-GO` until Gate 4
+  approval, stage/prod restore target env, and non-dry-run release evidence are
+  supplied.
 
 ## Audit Remediation Gate (Must Be Done Before Any New Feature Work)
 - [x] `P0 security(upload): protect upload endpoint with auth + MIME and size validation + abuse limits`

@@ -67,32 +67,44 @@ Last updated: 2026-05-02
     the stale root architecture path. Required validation:
     `pnpm run docs:parity:check` and repository guardrails.
 
-- [ ] `V1CLOSEOUT-08 release(ops): resolve RC signoff and release-gate evidence drift`
-  - Scope: synchronize RC signoff, checklist, and external gate status from
-    current truth. Gate 4 must not be approved while
-    `v1-rc-signoff-record.md` says `BLOCKED`. Required validation: existing RC
-    gate/checklist/signoff commands and repository guardrails.
+- [x] `V1CLOSEOUT-08 release(ops): resolve RC signoff and release-gate evidence drift`
+  - Scope: synchronized RC checklist and external gate status from current
+    signoff truth. Gate 4 is no longer presented as approved while
+    `v1-rc-signoff-record.md` remains `BLOCKED`; current generated status is
+    `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=OPEN`. Validation:
+    `pnpm run ops:rc:gates:status` PASS,
+    `pnpm run ops:rc:checklist:sync` PASS,
+    `pnpm run ops:rc:gates:summary` PASS with G4 OPEN, and
+    `pnpm run ops:rc:gates:evidence:check -- --strict` fails as expected
+    because approver names and Gate 4 approval are still missing.
 
-- [ ] `V1CLOSEOUT-09 release(ops): refresh production restore drill and activation evidence`
-  - Scope: configure the production DB container context required by the
-    restore drill wrapper, rerun backup/restore evidence, refresh activation
-    audit and plan evidence, rerun release-gate classification, and keep stage
-    explicit as restored or waived by decision. Required validation: production
-    restore drill, release gate, and relevant production smoke.
+- [x] `V1CLOSEOUT-09 release(ops): refresh production restore drill and activation evidence`
+  - Scope: refreshed local/stage/prod restore and activation evidence without
+    inventing missing target access. Local restore drill PASS; stage/prod
+    restore drills produced fresh FAIL artifacts because the required DB
+    container env vars are not configured in this execution context. Stage and
+    prod release gates were rerun in dry-run mode and remain `not_ready`.
+    Current evidence packet:
+    `docs/operations/v1-closeout-evidence-refresh-2026-05-02.md`.
 
-- [ ] `V1CLOSEOUT-10 refactor(api-exchange): decide and remediate direct exchange boundary access`
-  - Scope: classify and remediate direct Binance endpoint or `ccxt` access
-    outside `modules/exchange` in backtests, bots fallback market data, runtime
-    signal market data, and API-key probing. If safe refactor is not possible,
-    stop for an explicit architecture decision. Required validation: focused
-    exchange/backtest/runtime/profile tests, API typecheck, and guardrails.
+- [x] `V1CLOSEOUT-10 refactor(api-exchange): decide and remediate direct exchange boundary access`
+  - Scope: remediated direct Binance REST host/fetch ownership and direct
+    `ccxt` client bootstrap outside `modules/exchange`. Public Binance REST
+    URL/fetch ownership now lives in `binancePublicRest.service.ts`, API-key
+    probe client bootstrap lives in `binanceApiKeyProbeClient.service.ts`, and
+    backtests/runtime/profile consumers use the exchange-owned seams. Static
+    audit no longer finds Binance host/env or direct `ccxt` access outside
+    `modules/exchange`; remaining `Ccxt...` references outside exchange are
+    type imports only. Validation PASS: focused exchange/backtest/runtime/
+    profile pack (`15/15`), runtime loop/pnl pack (`45/45`), and API typecheck.
 
-- [ ] `V1CLOSEOUT-11 release(qa): run final V1 go/no-go closure pack`
+- [x] `V1CLOSEOUT-11 release(qa): run final V1 go/no-go closure pack`
   - Scope: after P0 fixes and evidence refresh, run the complete validation
-    baseline, update V1 coverage statuses, synchronize RC artifacts, and
-    publish final GO or NO-GO with exact evidence. Required validation:
-    guardrails, docs parity, lint, typecheck, full API tests, full web tests,
-    build, and go-live smoke when target access is available.
+    baseline, synchronize RC artifacts, and publish final GO or NO-GO with
+    exact evidence. Closed with final `NO-GO` in
+    `docs/operations/v1-final-go-no-go-closure-2026-05-02.md`. Repository
+    validation baseline is green, but Gate 4 approval, stage/prod restore
+    target env, and non-dry-run release evidence remain missing.
 
 - [x] `V1PRICE-04 fix(api-runtime): propagate fallback ticker price into position markPrice candidates`
   - Scope: closed as part of `V1RUNTIME-TRUST-03`. Runtime Positions now feeds

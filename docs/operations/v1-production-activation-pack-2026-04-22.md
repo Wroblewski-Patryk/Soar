@@ -1,6 +1,12 @@
 # V1 Production Activation Pack (2026-04-22)
 
-Status: `APPROVED`
+Status: `SUPERSEDED_FOR_CURRENT_CANDIDATE`
+
+> 2026-05-02 update: this historical activation pack is no longer current
+> release approval. The active closeout evidence refresh is
+> `docs/operations/v1-closeout-evidence-refresh-2026-05-02.md`, which records
+> the current status as `NO-GO` until RC sign-off, stage/prod restore drills,
+> production rollback proof, and authenticated release gates are refreshed.
 
 ## Purpose
 
@@ -70,12 +76,18 @@ after `REVIEW-D`, `V1FACT-A2`, `V1FACT-07B`, and `V1FACT-A3`.
 
 ## Explicit Blockers
 
-- none
+- Superseded for the current candidate by
+  `docs/operations/v1-closeout-evidence-refresh-2026-05-02.md`.
+  Current blockers are Gate 4 sign-off, stage/prod restore-drill
+  configuration, stale prod rollback proof, and authenticated stage/prod gate
+  evidence.
 
 ## Activation Decision
 
-V1 is **approved for formal production activation sign-off** from the current
-repository evidence set after the `2026-04-25` sign-off refresh.
+V1 was approved for the historical candidate represented by this pack. For the
+current `2026-05-02` candidate, use
+`docs/operations/v1-closeout-evidence-refresh-2026-05-02.md`; the current
+decision is `NO-GO` until the listed blockers are cleared.
 
 Current canonical gate truth:
 

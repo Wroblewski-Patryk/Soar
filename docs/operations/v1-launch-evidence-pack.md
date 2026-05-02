@@ -41,9 +41,16 @@ Purpose: single reference index for launch-readiness documentation and evidence 
 Open production-dependent items are tracked in:
 - `docs/operations/v1-release-candidate-checklist.md` -> `Outstanding External Gates`
 
-## 6) Current Readiness Snapshot (2026-03-21)
-- Code/test/build/security/load documentation evidence is compiled and linked in this pack.
-- Remaining blockers are environment/organization gates:
-  - backup + restore validation on target release environment,
-  - queue-lag observation window in production-like telemetry,
-  - incident-contact confirmation and formal sign-offs.
+## 6) Current Readiness Snapshot (2026-05-02)
+- API closeout, docs parity, and repository guardrails are green for the
+  current closeout packet.
+- Active current evidence refresh:
+  - `docs/operations/v1-closeout-evidence-refresh-2026-05-02.md`
+- Current status: `NO-GO`.
+- Remaining blockers:
+  - Gate 4 formal RC sign-offs are missing and sign-off record is `BLOCKED`,
+  - stage/prod restore drills cannot run without target DB container
+    configuration,
+  - prod rollback proof is stale for the current candidate,
+  - authenticated stage/prod release gates were not executed in this local
+    context.

@@ -1,6 +1,11 @@
 # V1 Production Activation Closure (2026-04-22)
 
-Status: `CLOSED`
+Status: `CLOSED_HISTORICAL`
+
+> 2026-05-02 update: this closure remains a historical record for `V1FACT-A`,
+> but it is not current V1 release approval. Current closeout truth lives in
+> `docs/operations/v1-closeout-evidence-refresh-2026-05-02.md` and is `NO-GO`
+> until fresh stage/prod evidence and named RC sign-offs are available.
 
 ## Scope Closed
 
@@ -64,8 +69,10 @@ This closes the planned `V1FACT-A` execution wave:
 
 `V1FACT-A` is closed as an implementation and documentation wave.
 
-`V1` itself is **approved for final production activation sign-off** from the
-current repository evidence set.
+`V1` was approved for final production activation sign-off from the historical
+repository evidence set captured by this closure. The current `2026-05-02`
+candidate must use the newer closeout evidence refresh before any approval
+claim.
 
 The final `2026-04-25` sign-off refresh resolved the only remaining drift in
 the canonical activation artifacts. There is no open engineering blocker and no
