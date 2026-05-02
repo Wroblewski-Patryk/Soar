@@ -132,9 +132,16 @@ Last updated: 2026-05-02
   snapshots can distinguish `PASS`/`MISS` from accepted runtime signals. The
   market-stream Redis publisher also resets failed memoized connection state
   after connect/publish failures so a transient Redis startup miss cannot
-  permanently mute market events until worker restart. Validation so far:
-  focused market-stream/runtime read-model tests (`50/50`), API typecheck, and
-  web typecheck. Evidence:
+  permanently mute market events until worker restart. Follow-up websocket
+  smoke found the remaining production-equivalent blocker: Binance USD-M
+  Futures no longer delivers regular market streams from legacy
+  `wss://fstream.binance.com/ws`; the worker now uses the routed
+  `wss://fstream.binance.com/market/ws` endpoint that emitted futures kline
+  data in local vendor smoke. Validation so far: focused market-stream/runtime
+  read-model tests (`50/50`), focused Binance stream/fanout/subscription tests
+  (`15/15`), API typecheck, web typecheck, API build, and repository
+  guardrails. Production SSE event smoke remains required after deploy.
+  Evidence:
   `docs/planning/v1bot-signals-runtime-truth-2026-05-02.md`.
 - 2026-05-02: closed `V1BACKTEST-01`, an operator-reported production
   backtest investigation after recent PAPER/LIVE runtime changes. Safe

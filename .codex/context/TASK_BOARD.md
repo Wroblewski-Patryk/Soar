@@ -52,9 +52,15 @@ Last updated: 2026-05-02
     adds canonical per-rule `matched` truth, the dashboard keeps the same
     table structure while rendering `PASS`/`MISS`, and market-stream Redis
     publisher failures reset memoized connection state so transient Redis
-    startup/publish failures do not permanently mute events. Validation so
-    far: focused market-stream/runtime read-model tests (`50/50`), API
-    typecheck, web typecheck. Evidence:
+    startup/publish failures do not permanently mute events. Follow-up
+    websocket smoke identified the deeper remaining blocker: Binance USD-M
+    Futures no longer pushes regular market streams from the legacy unrouted
+    `wss://fstream.binance.com/ws` endpoint, so the worker now uses
+    `wss://fstream.binance.com/market/ws`. Validation so far: focused
+    market-stream/runtime read-model tests (`50/50`), focused Binance
+    stream/fanout/subscription tests (`15/15`), API typecheck, web typecheck,
+    API build, and repository guardrails. Production SSE event smoke remains
+    required after deploy. Evidence:
     `docs/planning/v1bot-signals-runtime-truth-2026-05-02.md`.
 
 - [x] `V1BACKTEST-01 fix(api-backtests): recover futures candles when primary kline endpoint is unavailable`

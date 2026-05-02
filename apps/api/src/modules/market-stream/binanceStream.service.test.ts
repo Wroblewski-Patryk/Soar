@@ -125,7 +125,7 @@ describe('normalizeBinanceStreamEvent', () => {
 
 describe('BinanceMarketStreamWorker', () => {
   it('uses futures websocket by default for FUTURES market type', () => {
-    expect(resolveBinanceStreamUrl('FUTURES')).toBe('wss://fstream.binance.com/ws');
+    expect(resolveBinanceStreamUrl('FUTURES')).toBe('wss://fstream.binance.com/market/ws');
   });
 
   it('uses spot websocket by default for SPOT market type', () => {
@@ -178,7 +178,7 @@ describe('BinanceMarketStreamWorker', () => {
 
     worker.start();
 
-    expect(socketFactory).toHaveBeenCalledWith('wss://fstream.binance.com/ws');
+    expect(socketFactory).toHaveBeenCalledWith('wss://fstream.binance.com/market/ws');
   });
 
   it('does not subscribe to futures mark-price streams for spot workers', () => {

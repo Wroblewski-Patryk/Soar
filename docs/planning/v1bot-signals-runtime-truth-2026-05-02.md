@@ -2,9 +2,9 @@
 
 ## Header
 - ID: V1BOT-SIGNALS-02
-- Title: fix(api-runtime): expose condition match truth and recover market-stream publishing
+- Title: fix(api-runtime): expose condition match truth and recover Binance futures market-stream routing
 - Task Type: fix
-- Current Stage: verification
+- Current Stage: implementation
 - Status: REVIEW
 - Owner: Backend Builder
 - Depends on: V1BOT-CONDITIONS-01
@@ -34,17 +34,24 @@ connected but emitted no ticker/candle events for active bot symbols or the
 default stream symbols during a short smoke window. Code review found that a
 market-stream worker Redis publisher startup failure could be memoized as
 `null`, silently dropping all future market events until process restart.
+Follow-up websocket smoke found the remaining root cause: Binance USD-M
+Futures no longer pushes regular market streams from the legacy unrouted
+`wss://fstream.binance.com/ws` endpoint. The connection opens and accepts
+subscriptions, but ticker, mark price, and kline streams require the routed
+`/market` endpoint.
 
 ## Goal
 Make the dashboard condition display reflect canonical runtime rule-match truth
-and prevent a transient Redis startup failure in the market-stream worker from
-permanently muting market events.
+and restore futures ticker/candle ingestion so PAPER and LIVE runtime decisions
+are driven by fresh Binance market events.
 
 ## Scope
 - `apps/api/src/modules/engine/strategySignalEvaluator.ts`
 - `apps/api/src/modules/engine/strategySignalAnalysis.ts`
 - `apps/api/src/modules/engine/runtimeSignalEvaluationTypes.ts`
 - `apps/api/src/modules/bots/runtimeSignalConditionLines.service.ts`
+- `apps/api/src/modules/market-stream/binanceStream.service.ts`
+- `apps/api/src/modules/market-stream/binanceStream.service.test.ts`
 - `apps/api/src/modules/market-stream/marketStreamFanout.ts`
 - `apps/api/src/modules/market-stream/marketStreamFanout.test.ts`
 - `apps/api/src/modules/bots/runtimeSymbolStatsReadModel.service.test.ts`
@@ -61,8 +68,10 @@ permanently muting market events.
    changing the module layout.
 4. Reset the market-stream Redis publisher memoization after connect or publish
    failure so later market events retry publishing.
-5. Add focused tests for condition match truth and Redis publisher recovery.
-6. Run focused API tests, API/web typecheck, build, and guardrails.
+5. Route the default Binance USD-M Futures websocket through `/market/ws`.
+6. Add focused tests for condition match truth, Redis publisher recovery, and
+   the futures websocket route.
+7. Run focused API tests, API/web typecheck, build, and guardrails.
 
 ## Acceptance Criteria
 - [x] Condition lines carry `matched=true|false|null` from the canonical rule
@@ -71,6 +80,9 @@ permanently muting market events.
 - [x] The dashboard can distinguish `PASS` and `MISS` conditions while keeping
   the same table structure.
 - [x] Market-stream publisher retries after an initial Redis connection failure.
+- [x] Futures market-stream worker uses Binance's routed `/market/ws` endpoint
+  for ticker, mark-price, and kline streams.
+- [ ] Production SSE emits real ticker/candle events after deployment.
 - [ ] Full validation gates complete.
 
 ## Definition of Done
@@ -79,19 +91,28 @@ permanently muting market events.
 - [x] No duplicate strategy comparison logic is introduced.
 - [x] Runtime market event publishing fails recoverably after transient Redis
   startup failure.
+- [x] Binance futures websocket route is aligned to the current vendor
+  contract.
 - [x] Focused regression tests pass.
-- [ ] Repository guardrails pass.
+- [x] Repository guardrails pass.
 
 ## Validation Evidence
 - Tests:
   - `pnpm --filter api run test -- src/modules/market-stream/marketStreamFanout.test.ts src/modules/bots/runtimeSymbolStatsReadModel.service.test.ts src/modules/engine/runtimeSignalLoop.service.test.ts --run` PASS (`50/50`).
+  - `pnpm --filter api run test -- src/modules/market-stream/binanceStream.service.test.ts src/modules/market-stream/marketStreamFanout.test.ts src/workers/marketStreamSubscriptions.service.test.ts --run` PASS (`15/15`).
   - `pnpm --filter api run typecheck` PASS.
   - `pnpm --filter web run typecheck` PASS.
+  - `pnpm --filter api run build` PASS.
+  - `pnpm run quality:guardrails` PASS.
 - Manual checks:
   - Authenticated production read-only smoke found PAPER current session
     `eventsCount=1`, `symbolsTracked=0`.
   - Authenticated production SSE smoke connected but received no market events
     for sampled symbols within the smoke window.
+  - Local vendor smoke against `wss://fstream.binance.com/ws` opened but
+    emitted no futures ticker/mark-price/kline events in the sample window.
+  - Local vendor smoke against `wss://fstream.binance.com/market/ws` emitted
+    futures kline data after subscription.
 - Screenshots/logs: not applicable.
 - High-risk checks:
   - LIVE bot was read-only inspected only; no LIVE write was performed.
@@ -100,7 +121,9 @@ permanently muting market events.
 - Architecture source reviewed:
   `docs/architecture/reference/runtime-signal-merge-contract.md`.
 - Fits approved architecture: yes.
-- Mismatch discovered: no.
+- Mismatch discovered: yes. The implementation still used Binance's legacy
+  unrouted futures websocket URL, while the current Binance USD-M Futures
+  contract requires the routed `/market` endpoint for regular market streams.
 - Decision required from user: no.
 - Follow-up architecture doc updates: not required; this preserves the existing
   shared evaluator and market-stream fanout architecture.
@@ -123,7 +146,8 @@ permanently muting market events.
 - Rollback note: revert this commit to return to previous condition payload and
   publisher memoization behavior.
 - Observability or alerting impact: market-stream Redis connect/publish
-  failures now log explicit errors and retry on future events.
+  failures now log explicit errors and retry on future events; futures stream
+  bootstrap now connects to the endpoint that actually emits market events.
 - Staged rollout or feature flag: not applicable.
 
 ## Autonomous Loop Evidence
@@ -133,7 +157,8 @@ permanently muting market events.
   production events during authenticated SSE smoke.
 - Gaps: dashboard fallback snapshots could visually look like signals.
 - Inconsistencies: Redis publisher startup failure was permanent until process
-  restart.
+  restart; the futures websocket URL still pointed at Binance's legacy
+  unrouted endpoint, which now opens without delivering regular market streams.
 - Architecture constraints: signal truth must reuse the shared runtime
   evaluator.
 
@@ -146,20 +171,24 @@ permanently muting market events.
 
 ### 3. Plan Implementation
 - Files or surfaces to modify: runtime evaluator, signal analysis, runtime
-  read-model parser, web type/display, market-stream fanout.
-- Logic: expose rule match truth from the canonical evaluator and reset failed
-  Redis publisher state.
+  read-model parser, web type/display, market-stream fanout, Binance stream
+  endpoint resolver.
+- Logic: expose rule match truth from the canonical evaluator, reset failed
+  Redis publisher state, and route futures websocket traffic through Binance's
+  current `/market` endpoint.
 - Edge cases: older runtime event payloads without `matched`; Redis unavailable
   during worker startup; publish failure after initial connection.
 
 ### 4. Execute Implementation
 - Implementation notes: added `evaluateStrategyRuleAtIndex(...)` wrapper and
   reused it from `buildStrategySignalAnalysis(...)`; added recoverable
-  publisher memoization.
+  publisher memoization; switched the default futures websocket URL to
+  `wss://fstream.binance.com/market/ws`.
 
 ### 5. Verify and Test
-- Validation performed: focused API tests plus API/web typecheck.
-- Result: PASS so far.
+- Validation performed: focused API tests, API/web typecheck from the previous
+  slice, API build, guardrails, and direct Binance websocket smoke.
+- Result: PASS locally; production SSE validation pending after deploy.
 
 ### 6. Self-Review
 - Simpler option considered: infer match state in the dashboard from formatted
@@ -172,7 +201,7 @@ permanently muting market events.
 ### 7. Update Documentation and Knowledge
 - Docs updated: this task file plus context/planning files.
 - Context updated: pending.
-- Learning journal updated: not applicable.
+- Learning journal updated: pending.
 
 ## Review Checklist
 - [x] Process self-audit completed before implementation.
@@ -187,7 +216,7 @@ permanently muting market events.
 - [x] No logic duplication was introduced.
 - [x] Definition of Done evidence is attached.
 - [x] Relevant validations were run.
-- [ ] Docs or context were updated if repository truth changed.
+- [x] Docs or context were updated if repository truth changed.
 - [x] Learning journal was updated if a recurring pitfall is confirmed.
 
 ## Production-Grade Required Contract
@@ -205,7 +234,8 @@ permanently muting market events.
 - DB schema and migrations verified: no DB schema change.
 - Loading state verified: not applicable.
 - Error state verified: Redis startup failure covered by unit test.
-- Refresh/restart behavior verified: publisher retries on subsequent events.
+- Refresh/restart behavior verified: publisher retries on subsequent events;
+  worker restart will create futures sockets against the routed endpoint.
 - Regression check performed: focused runtime and market-stream tests.
 
 ## Security / Privacy Evidence
@@ -220,14 +250,18 @@ permanently muting market events.
 - Fail-closed behavior: signal execution remains unchanged; stream publishing
   retries instead of silently staying disabled.
 - Residual risk: production worker restart/deploy is required for the
-  publisher recovery fix to take effect.
+  futures websocket route and publisher recovery fixes to take effect.
 
 ## Result Report
-- Task summary: condition lines now include canonical match truth and
-  market-stream Redis publisher failures recover on future events.
+- Task summary: condition lines now include canonical match truth,
+  market-stream Redis publisher failures recover on future events, and
+  Binance futures stream workers use the routed `/market/ws` endpoint that
+  emits ticker/candle data.
 - Files changed: pending final diff.
-- How tested: focused tests and typecheck so far.
-- What is incomplete: build, guardrails, deploy/smoke.
-- Next steps: finish validation and deploy to production.
+- How tested: focused market-stream tests, runtime read-model tests, API/web
+  typecheck, API build, guardrails, and direct Binance websocket smoke.
+- What is incomplete: deploy/smoke.
+- Next steps: deploy to production and confirm SSE emits real ticker/candle
+  events.
 - Decisions made: keep dashboard layout unchanged and add explicit textual
   `PASS` / `MISS` state inside existing condition text.

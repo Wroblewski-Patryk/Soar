@@ -21,8 +21,14 @@ Operational queue for one-task execution runs.
     evaluator, and the dashboard keeps its existing `Markets / Signals` table
     while showing `PASS`/`MISS` for condition lines. Market-stream Redis
     publisher startup/publish failures now reset memoized connection state and
-    retry on later events. Validation so far: focused market-stream/runtime
-    read-model tests (`50/50`), API typecheck, web typecheck. Evidence:
+    retry on later events. Follow-up websocket smoke identified the deeper
+    remaining blocker: Binance USD-M Futures no longer pushes regular market
+    streams from the legacy unrouted `wss://fstream.binance.com/ws` endpoint,
+    so the worker now uses `wss://fstream.binance.com/market/ws`. Validation
+    so far: focused market-stream/runtime read-model tests (`50/50`), focused
+    Binance stream/fanout/subscription tests (`15/15`), API typecheck, web
+    typecheck, API build, and repository guardrails. Production SSE event
+    smoke remains required after deploy. Evidence:
     `docs/planning/v1bot-signals-runtime-truth-2026-05-02.md`.
 - [x] `V1BACKTEST-01 fix(api-backtests): recover futures candles when primary kline endpoint is unavailable`
   - 2026-05-02: Closed an operator-reported production backtest investigation

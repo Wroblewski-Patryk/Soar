@@ -220,7 +220,7 @@ export const resolveBinanceStreamUrl = (marketType: TradeMarketType = 'FUTURES')
   if (marketType === 'SPOT') {
     return 'wss://stream.binance.com:9443/ws';
   }
-  return 'wss://fstream.binance.com/ws';
+  return 'wss://fstream.binance.com/market/ws';
 };
 
 export class BinanceMarketStreamWorker {

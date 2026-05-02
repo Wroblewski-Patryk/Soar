@@ -1421,3 +1421,36 @@ promise = connect().catch((error) => {
     events for sampled active/default symbols.
   - `marketStreamFanout.test.ts` now covers retry after initial Redis connect
     failure.
+
+### 2026-05-02 - Binance USD-M futures market streams require routed websocket endpoints
+- Context: `V1BOT-SIGNALS-02` follow-up after production SSE still emitted
+  only health/ping even after Redis publisher retry recovery deployed.
+- Symptom: `wss://fstream.binance.com/ws` opened and accepted subscriptions,
+  but emitted no `ticker`, `markPrice`, or `kline` data in the smoke window;
+  PAPER runtime stayed at `symbolsTracked=0` because no final candles reached
+  the runtime loop.
+- Root cause: Binance USD-M Futures moved regular market streams to routed
+  websocket endpoints. The legacy unrouted futures endpoint can still accept
+  a websocket connection, which masks the failure unless event delivery is
+  tested.
+- Guardrail: futures market-stream workers must use
+  `wss://fstream.binance.com/market/ws` for regular market streams and closure
+  evidence must assert at least one real market event, not only websocket
+  `open` or subscription acknowledgement.
+- Preferred pattern:
+```text
+1) Smoke the vendor websocket until a real ticker/candle event is received.
+2) Use Binance's routed `/market` endpoint for USD-M Futures ticker, mark
+   price, and kline streams.
+3) Keep `/public`/unrouted endpoint assumptions out of regular market stream
+   code unless the stream mapping explicitly requires it.
+4) Lock the default URL with `binanceStream.service.test.ts`.
+```
+- Avoid: treating websocket `open` or `{"result":null}` subscription ack as
+  proof that market data is flowing.
+- Evidence:
+  - Local smoke: `wss://fstream.binance.com/ws` opened but emitted no sampled
+    futures market events.
+  - Local smoke: `wss://fstream.binance.com/market/ws` emitted futures kline
+    data after subscription.
+  - `binanceStream.service.test.ts` now asserts the routed futures default.
