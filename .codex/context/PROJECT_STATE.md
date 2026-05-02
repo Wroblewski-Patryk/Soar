@@ -100,6 +100,14 @@ Last updated: 2026-05-02
   of reconstructing it from `syncState` or audit logs.
 
 ## Product Decisions (Confirmed)
+- 2026-05-02: closed `DPL-PROD-BUILDINFO-01`, a production promotion hardening
+  fix after an observed Coolify push deploy lag required an empty retrigger
+  commit. The canonical `Promote PROD` workflow now waits for public web
+  `/api/build-info` to expose the promoted `github.sha` before runtime
+  freshness gates run. Direct push-driven Coolify redeploys remain convenience
+  behavior, not release evidence. Validation PASS: wait script help,
+  production readback against active SHA, and repository guardrails. Evidence:
+  `docs/operations/prod-web-build-info-gate-2026-05-02.md`.
 - 2026-05-02: closed `V1BOT-CONDITIONS-01`, an operator-reported production
   dashboard/runtime read-model fix. After a stopped bot changes strategy and
   starts again, `Markets / Signals` no longer lets a superseded historical

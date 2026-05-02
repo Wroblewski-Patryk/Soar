@@ -69,6 +69,7 @@
     "ops:release:v1:gate": "node scripts/runV1ReleaseGate.mjs",
     "ops:release:v1:stage-rehearsal": "node scripts/runV1StageRehearsal.mjs",
     "ops:deploy:smoke": "node scripts/deploySmokeCheck.mjs",
+    "ops:deploy:wait-web-build-info": "node scripts/waitForWebBuildInfo.mjs",
     "ops:deploy:runtime-freshness": "node scripts/checkPostDeployRuntimeFreshness.mjs",
     "ops:deploy:rollback-guard": "node scripts/evaluateRollbackGuard.mjs",
     "ops:deploy:rollback-proof": "node scripts/runRollbackProofEvidence.mjs",

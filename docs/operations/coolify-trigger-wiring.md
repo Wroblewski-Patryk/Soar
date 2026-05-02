@@ -20,6 +20,9 @@ Configure repository secrets:
    - consumed by: `.github/workflows/promote-prod.yml`
 2. `COOLIFY_PROD_ROLLBACK_HOOK_URL`
    - consumed by: `.github/workflows/prod-rollback.yml`
+3. `PROD_WEB_BASE_URL` (optional)
+   - consumed by: `.github/workflows/promote-prod.yml`
+   - default: `https://soar.luckysparrow.ch`
 
 ## Coolify Side Setup
 For each target service/app in Coolify:
@@ -39,6 +42,8 @@ Stage cleanup checklist:
 1. `promote-prod.yml`
    - trigger: manual `workflow_dispatch`
    - action: deploy the selected SHA to PROD
+   - proof: wait until `https://soar.luckysparrow.ch/api/build-info` exposes
+     the promoted `github.sha` before runtime freshness gates run
 2. `prod-rollback.yml`
    - trigger: failed `Promote PROD`
    - action: trigger rollback webhook to previous stable release
@@ -53,7 +58,9 @@ Coolify may ignore extra fields, but they are preserved for future custom automa
 ## Smoke Validation After Wiring
 1. Trigger manual `Promote PROD` workflow_dispatch in a controlled window.
 2. Validate PROD deployment appears in Coolify.
-3. Simulate failed promotion path only in a controlled maintenance window and verify rollback webhook fires.
+3. Validate the workflow build-info gate observes the target SHA before later
+   runtime gates continue.
+4. Simulate failed promotion path only in a controlled maintenance window and verify rollback webhook fires.
 
 ## Security Notes
 - Webhook URLs are secrets; never store in repo.

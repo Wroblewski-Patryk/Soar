@@ -62,6 +62,19 @@ jobs:
             exit 1
           fi
 
+      - name: Wait for web build-info to expose promoted SHA
+        env:
+          PROD_WEB_BASE_URL: ${{ secrets.PROD_WEB_BASE_URL }}
+          GIT_SHA: ${{ github.sha }}
+        run: |
+          WEB_BASE_URL="${PROD_WEB_BASE_URL:-https://soar.luckysparrow.ch}"
+
+          pnpm run ops:deploy:wait-web-build-info -- \
+            --web-base-url "$WEB_BASE_URL" \
+            --expected-sha "$GIT_SHA" \
+            --timeout-seconds 900 \
+            --interval-seconds 15
+
       - name: Mandatory post-deploy runtime freshness gate
         env:
           PROD_API_BASE_URL: ${{ secrets.PROD_API_BASE_URL }}

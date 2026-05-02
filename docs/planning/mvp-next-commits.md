@@ -12,6 +12,14 @@ Operational queue for one-task execution runs.
   blockers are `V1EXCEL-03..06` authenticated manual operator and OPS evidence.
   `BOTMULTI-*` remains in `PIPELINE` until those post-V1 confidence gates are
   green.
+- [x] `DPL-PROD-BUILDINFO-01 fix(ops): fail promotion when web build-info stays on old SHA`
+  - 2026-05-02: Closed production deploy-proof hardening after a Coolify push
+    deploy lag required an empty retrigger commit. `Promote PROD` now waits for
+    public web `/api/build-info` to expose the promoted `github.sha` before
+    runtime freshness gates run. Added `ops:deploy:wait-web-build-info` and
+    updated Coolify/post-deploy runbooks. Validation PASS: script help,
+    production readback against active SHA, repository guardrails. Evidence:
+    `docs/operations/prod-web-build-info-gate-2026-05-02.md`.
 - [x] `V1BOT-CONDITIONS-01 fix(api-runtime-read): prevent stale signal conditions after bot context edits`
   - 2026-05-02: Closed the operator-reported dashboard/runtime drift where
     `Markets / Signals` could keep showing old strategy indicators after stop

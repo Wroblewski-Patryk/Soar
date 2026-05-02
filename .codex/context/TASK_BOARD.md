@@ -17,6 +17,16 @@ Last updated: 2026-05-01
 
 ## READY
 
+- [x] `DPL-PROD-BUILDINFO-01 fix(ops): fail promotion when web build-info stays on old SHA`
+  - Scope: hardened the canonical production promotion workflow after a
+    production deploy lag required an empty retrigger commit. `Promote PROD`
+    now polls the public web `/api/build-info` endpoint after the Coolify
+    deploy webhook and fails unless the endpoint exposes the promoted
+    `github.sha`. Added the reusable `ops:deploy:wait-web-build-info` script
+    and updated Coolify/post-deploy runbooks. Validation PASS: script help,
+    production readback against active SHA, and repository guardrails.
+    Evidence: `docs/operations/prod-web-build-info-gate-2026-05-02.md`.
+
 - [x] `V1BOT-CONDITIONS-01 fix(api-runtime-read): prevent stale signal conditions after bot context edits`
   - Scope: fixed operator-reported runtime monitoring drift where `Markets /
     Signals` could keep displaying old strategy condition indicators after a
