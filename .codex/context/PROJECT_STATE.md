@@ -100,6 +100,18 @@ Last updated: 2026-05-02
   of reconstructing it from `syncState` or audit logs.
 
 ## Product Decisions (Confirmed)
+- 2026-05-02: production Redis investigation for `V1BOT-SIGNALS-02` confirmed
+  the Soar Redis resource in Coolify is `restarting:unhealthy` because Redis
+  repeatedly fails to load a corrupted append-only increment file. This
+  explains the post-deploy authenticated smoke blocker where login timed out or
+  returned rate-limit degradation while public `/health` and `/ready` still
+  looked green. API readiness now includes required Redis `PING` in production,
+  and operations docs now include Redis AOF recovery plus Redis-aware
+  post-deploy smoke criteria. The production Redis volume was backed up and
+  repaired with `redis-check-aof --fix`; Redis returned to `running:healthy`,
+  authenticated login passed, and production SSE emitted real Binance FUTURES
+  ticker/candle events. Readiness hardening deploy/readback remains the final
+  closure gate for `V1BOT-SIGNALS-02`.
 - 2026-05-02: closed `V1MARKET-02`, an operator-reported follow-up to the
   deactivated-bot market edit fix. The market universe form no longer uses the
   volume-filtered automatic result as the source for whitelist/blacklist

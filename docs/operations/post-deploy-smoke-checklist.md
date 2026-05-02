@@ -22,6 +22,8 @@ Quickly confirm that the deployed revision is operational for critical user flow
 ### 1) API baseline
 - `GET /health` returns `200`.
 - `GET /ready` returns `200`.
+- `GET /ready` implicitly verifies required runtime dependencies, including
+  production Redis reachability.
 - response time is within expected budget (no severe timeout).
 
 ### 2) Web baseline
@@ -32,6 +34,8 @@ Quickly confirm that the deployed revision is operational for critical user flow
 
 ### 3) Auth baseline
 - valid login works,
+- login must not return `Rate limit temporarily unavailable`; that indicates a
+  Redis dependency failure and the rollout is degraded.
 - protected route access works with active session,
 - logout returns to expected public route.
 
@@ -52,6 +56,8 @@ Quickly confirm that the deployed revision is operational for critical user flow
 - workers health/readiness is green,
 - no crash-loop in worker logs,
 - market/signal updates visible in runtime within expected interval.
+- Coolify Redis resource is `running:healthy`; Redis restart-count growth or
+  AOF corruption logs fail the smoke.
 
 ### 7) Data write baseline (paper-safe)
 - create one controlled paper bot/backtest action,

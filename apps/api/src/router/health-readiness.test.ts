@@ -2,6 +2,7 @@ import request from 'supertest';
 import { afterEach, describe, expect, it } from 'vitest';
 import { app } from '../index';
 import { prisma } from '../prisma/client';
+import { __runtimeDependencyReadinessInternals } from '../config/runtimeDependencyReadiness';
 
 const originalJwtSecret = process.env.JWT_SECRET;
 const originalJwtSecretPrevious = process.env.JWT_SECRET_PREVIOUS;
@@ -9,6 +10,8 @@ const originalJwtSecretPreviousUntil = process.env.JWT_SECRET_PREVIOUS_UNTIL;
 const originalApiKeyEncryptionKeys = process.env.API_KEY_ENCRYPTION_KEYS;
 const originalApiKeyEncryption = process.env.API_KEY_ENCRYPTION;
 const originalApiKeyEncryptionActiveVersion = process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
+const originalRedisRequired = process.env.REDIS_REQUIRED;
+const originalRedisUrl = process.env.REDIS_URL;
 
 afterEach(async () => {
   const restoreEnv = (key: string, value: string | undefined) => {
@@ -21,6 +24,9 @@ afterEach(async () => {
   restoreEnv('API_KEY_ENCRYPTION_KEYS', originalApiKeyEncryptionKeys);
   restoreEnv('API_KEY_ENCRYPTION', originalApiKeyEncryption);
   restoreEnv('API_KEY_ENCRYPTION_ACTIVE_VERSION', originalApiKeyEncryptionActiveVersion);
+  restoreEnv('REDIS_REQUIRED', originalRedisRequired);
+  restoreEnv('REDIS_URL', originalRedisUrl);
+  __runtimeDependencyReadinessInternals.setPingRedisForTests(null);
   await prisma.user.deleteMany({
     where: {
       email: {
@@ -80,6 +86,22 @@ describe('health and readiness endpoints', () => {
     expect(res.body.service).toBe('api');
   });
 
+  it('returns not_ready when Redis is required but unavailable', async () => {
+    process.env.JWT_SECRET = 'ready-test-secret';
+    process.env.API_KEY_ENCRYPTION_KEYS = 'v1:ready-key';
+    process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION = 'v1';
+    process.env.REDIS_REQUIRED = 'true';
+    __runtimeDependencyReadinessInternals.setPingRedisForTests(async () => ({
+      ok: false,
+      reason: 'connection refused',
+    }));
+
+    const res = await request(app).get('/ready');
+    expect(res.status).toBe(503);
+    expect(res.body.status).toBe('not_ready');
+    expect(res.body).not.toHaveProperty('issues');
+  });
+
   it('returns not_ready when only legacy API-key encryption fallback is configured', async () => {
     process.env.JWT_SECRET = 'ready-test-secret';
     delete process.env.API_KEY_ENCRYPTION_KEYS;
@@ -127,6 +149,31 @@ describe('health and readiness endpoints', () => {
       expect.arrayContaining([
         expect.objectContaining({
           key: 'JWT_SECRET_PREVIOUS_UNTIL',
+        }),
+      ])
+    );
+  });
+
+  it('returns detailed Redis dependency diagnostics on protected endpoint for admin', async () => {
+    process.env.JWT_SECRET = 'ready-test-secret';
+    process.env.API_KEY_ENCRYPTION_KEYS = 'v1:ready-key';
+    process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION = 'v1';
+    process.env.REDIS_REQUIRED = 'true';
+    __runtimeDependencyReadinessInternals.setPingRedisForTests(async () => ({
+      ok: false,
+      reason: 'bad append-only file',
+    }));
+    const adminAgent = await createAdminAgent();
+
+    const res = await adminAgent.get('/ready/details');
+
+    expect(res.status).toBe(503);
+    expect(res.body.status).toBe('not_ready');
+    expect(res.body.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          key: 'REDIS_URL',
+          reason: expect.stringContaining('redis unavailable'),
         }),
       ])
     );

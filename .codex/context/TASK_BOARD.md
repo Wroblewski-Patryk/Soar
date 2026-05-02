@@ -56,11 +56,19 @@ Last updated: 2026-05-02
     websocket smoke identified the deeper remaining blocker: Binance USD-M
     Futures no longer pushes regular market streams from the legacy unrouted
     `wss://fstream.binance.com/ws` endpoint, so the worker now uses
-    `wss://fstream.binance.com/market/ws`. Validation so far: focused
+    `wss://fstream.binance.com/market/ws`. Post-deploy smoke then exposed a
+    separate production Redis infrastructure failure: Coolify shows Redis
+    `restarting:unhealthy` with corrupted AOF logs, blocking authenticated
+    login/rate-limit and likely market-stream fanout. API readiness now fails
+    closed on required Redis `PING` failure, and the Redis AOF recovery runbook
+    plus smoke checklist were updated. Redis AOF was backed up and repaired on
+    production, Redis returned to `running:healthy`, authenticated login passed,
+    and production SSE emitted real Binance FUTURES ticker/candle events.
+    Validation so far: focused
     market-stream/runtime read-model tests (`50/50`), focused Binance
-    stream/fanout/subscription tests (`15/15`), API typecheck, web typecheck,
-    API build, and repository guardrails. Production SSE event smoke remains
-    required after deploy. Evidence:
+    stream/fanout/subscription tests (`15/15`), readiness test (`9/9`), API
+    typecheck, web typecheck, API build, and repository guardrails. Readiness
+    hardening deploy/readback remains required. Evidence:
     `docs/planning/v1bot-signals-runtime-truth-2026-05-02.md`.
 
 - [x] `V1BACKTEST-01 fix(api-backtests): recover futures candles when primary kline endpoint is unavailable`

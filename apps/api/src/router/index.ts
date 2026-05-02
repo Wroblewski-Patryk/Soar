@@ -10,6 +10,7 @@ import { requireRole } from '../middleware/requireRole';
 import { requireOpsNetwork } from '../middleware/requireOpsNetwork';
 import { applyNoStoreHeaders } from '../middleware/noStoreHeaders';
 import { evaluateCriticalSecretsReadiness } from '../config/criticalSecretsReadiness';
+import { evaluateRuntimeDependencyReadiness } from '../config/runtimeDependencyReadiness';
 import { buildRuntimeFreshnessSnapshot } from '../observability/runtimeFreshness';
 import { resolveWorkerTopologySnapshot } from '../workers/workerOwnership';
 
@@ -31,9 +32,10 @@ router.get('/health', (_req, res) => {
   });
 });
 
-router.get('/ready', (_req, res) => {
+router.get('/ready', async (_req, res) => {
   const readiness = evaluateCriticalSecretsReadiness();
-  if (!readiness.ready) {
+  const dependencies = await evaluateRuntimeDependencyReadiness();
+  if (!readiness.ready || !dependencies.ready) {
     return res.status(503).json({
       status: 'not_ready',
       service: 'api',
@@ -48,14 +50,15 @@ router.get('/ready', (_req, res) => {
 
 const requireOpsAccess = [requireAuth, requireRole('ADMIN'), requireOpsNetwork] as const;
 
-router.get('/ready/details', ...requireOpsAccess, (_req, res) => {
+router.get('/ready/details', ...requireOpsAccess, async (_req, res) => {
   const readiness = evaluateCriticalSecretsReadiness();
-  if (!readiness.ready) {
+  const dependencies = await evaluateRuntimeDependencyReadiness();
+  if (!readiness.ready || !dependencies.ready) {
     return res.status(503).json({
       status: 'not_ready',
       service: 'api',
       missing: readiness.missing,
-      issues: readiness.issues,
+      issues: [...readiness.issues, ...dependencies.issues],
     });
   }
 

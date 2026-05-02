@@ -1454,3 +1454,32 @@ promise = connect().catch((error) => {
   - Local smoke: `wss://fstream.binance.com/market/ws` emitted futures kline
     data after subscription.
   - `binanceStream.service.test.ts` now asserts the routed futures default.
+
+### 2026-05-02 - Production readiness must include Redis dependency health
+- Context: `V1BOT-SIGNALS-02` post-deploy production smoke could not complete
+  authenticated auth/SSE validation even after the futures websocket route fix.
+- Symptom: public `/health` and `/ready` stayed green, but login timed out or
+  returned `Rate limit temporarily unavailable`; Coolify showed Redis
+  `restarting:unhealthy` with repeated restarts.
+- Root cause: Redis was crash-looping on a corrupted append-only file
+  (`Bad file format reading the append only file ... redis-check-aof --fix`),
+  while API readiness checked critical secrets but not Redis reachability.
+- Guardrail: production `/ready` must fail closed on Redis `PING` failure, and
+  deploy smoke must treat auth rate-limit degradation or Redis crash-loop as a
+  failed rollout.
+- Preferred pattern:
+```text
+1) Check Coolify Redis status and logs when auth/rate-limit or runtime fanout degrades.
+2) Require API `/ready` to cover Redis reachability in production.
+3) Recover corrupted AOF from a backed-up volume before restarting dependent services.
+4) Verify authenticated login and real market-stream SSE events after Redis recovery.
+```
+- Avoid: declaring deployment healthy from public `/health`, web build-info,
+  or websocket subscription acknowledgements while Redis-dependent auth/fanout
+  paths have not been exercised.
+- Evidence:
+  - 2026-05-02 Coolify Redis status: `restarting:unhealthy`, 42 restarts.
+  - Redis logs repeatedly reported a bad `appendonly.aof.4.incr.aof` file and
+    recommended `redis-check-aof --fix`.
+  - `runtimeDependencyReadiness.ts` now adds Redis `PING` to production
+    readiness, with regression coverage in `health-readiness.test.ts`.

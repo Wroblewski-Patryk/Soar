@@ -4,7 +4,7 @@
 - ID: V1BOT-SIGNALS-02
 - Title: fix(api-runtime): expose condition match truth and recover Binance futures market-stream routing
 - Task Type: fix
-- Current Stage: implementation
+- Current Stage: verification
 - Status: REVIEW
 - Owner: Backend Builder
 - Depends on: V1BOT-CONDITIONS-01
@@ -40,6 +40,14 @@ Futures no longer pushes regular market streams from the legacy unrouted
 subscriptions, but ticker, mark price, and kline streams require the routed
 `/market` endpoint.
 
+After deploying the futures route fix to production, authenticated smoke was
+blocked by a separate Redis infrastructure failure: Coolify showed the Soar
+production `redis` resource as `restarting:unhealthy` with 42 restarts, and
+Redis logs repeatedly reported a corrupted AOF increment file. Public API
+readiness was still green because `/ready` checked critical secrets only, so
+this slice now also hardens readiness against required Redis dependency
+failure.
+
 ## Goal
 Make the dashboard condition display reflect canonical runtime rule-match truth
 and restore futures ticker/candle ingestion so PAPER and LIVE runtime decisions
@@ -54,6 +62,9 @@ are driven by fresh Binance market events.
 - `apps/api/src/modules/market-stream/binanceStream.service.test.ts`
 - `apps/api/src/modules/market-stream/marketStreamFanout.ts`
 - `apps/api/src/modules/market-stream/marketStreamFanout.test.ts`
+- `apps/api/src/config/runtimeDependencyReadiness.ts`
+- `apps/api/src/router/index.ts`
+- `apps/api/src/router/health-readiness.test.ts`
 - `apps/api/src/modules/bots/runtimeSymbolStatsReadModel.service.test.ts`
 - `apps/web/src/features/bots/types/bot.type.ts`
 - `apps/web/src/features/bots/components/bots-management/MonitoringFutureSignalsSection.tsx`
@@ -69,9 +80,11 @@ are driven by fresh Binance market events.
 4. Reset the market-stream Redis publisher memoization after connect or publish
    failure so later market events retry publishing.
 5. Route the default Binance USD-M Futures websocket through `/market/ws`.
-6. Add focused tests for condition match truth, Redis publisher recovery, and
+6. Fail production readiness when required Redis `PING` fails, so deploy smoke
+   does not pass while auth/fanout dependencies are degraded.
+7. Add focused tests for condition match truth, Redis publisher recovery, and
    the futures websocket route.
-7. Run focused API tests, API/web typecheck, build, and guardrails.
+8. Run focused API tests, API/web typecheck, build, and guardrails.
 
 ## Acceptance Criteria
 - [x] Condition lines carry `matched=true|false|null` from the canonical rule
@@ -82,8 +95,10 @@ are driven by fresh Binance market events.
 - [x] Market-stream publisher retries after an initial Redis connection failure.
 - [x] Futures market-stream worker uses Binance's routed `/market/ws` endpoint
   for ticker, mark-price, and kline streams.
-- [ ] Production SSE emits real ticker/candle events after deployment.
-- [ ] Full validation gates complete.
+- [x] Production API readiness fails closed when required Redis is unavailable.
+- [x] Production Redis AOF is repaired from a backed-up volume.
+- [x] Production SSE emits real ticker/candle events after Redis recovery.
+- [x] Full validation gates complete for this hardening slice.
 
 ## Definition of Done
 - [x] Implementation is vertical through runtime evaluator, API read model, web
@@ -93,6 +108,7 @@ are driven by fresh Binance market events.
   startup failure.
 - [x] Binance futures websocket route is aligned to the current vendor
   contract.
+- [x] API readiness covers required Redis reachability in production.
 - [x] Focused regression tests pass.
 - [x] Repository guardrails pass.
 
@@ -101,6 +117,9 @@ are driven by fresh Binance market events.
   - `pnpm --filter api run test -- src/modules/market-stream/marketStreamFanout.test.ts src/modules/bots/runtimeSymbolStatsReadModel.service.test.ts src/modules/engine/runtimeSignalLoop.service.test.ts --run` PASS (`50/50`).
   - `pnpm --filter api run test -- src/modules/market-stream/binanceStream.service.test.ts src/modules/market-stream/marketStreamFanout.test.ts src/workers/marketStreamSubscriptions.service.test.ts --run` PASS (`15/15`).
   - `pnpm --filter api run typecheck` PASS.
+  - `pnpm --filter api run test -- src/router/health-readiness.test.ts --run`
+    PASS (`9/9`).
+  - `pnpm --filter api run typecheck` PASS after Redis readiness hardening.
   - `pnpm --filter web run typecheck` PASS.
   - `pnpm --filter api run build` PASS.
   - `pnpm run quality:guardrails` PASS.
@@ -113,6 +132,20 @@ are driven by fresh Binance market events.
     emitted no futures ticker/mark-price/kline events in the sample window.
   - Local vendor smoke against `wss://fstream.binance.com/market/ws` emitted
     futures kline data after subscription.
+  - Coolify production Redis check: `redis` resource is
+    `restarting:unhealthy`, restart count `42`, with logs showing corrupted
+    `appendonly.aof.4.incr.aof` and `redis-check-aof --fix` guidance.
+  - Production Redis recovery: backed up
+    `/var/lib/docker/volumes/redis-data-tsij579cy1kfcuxs8onbbxll/_data` to
+    `/root/soar-redis-backups/redis-data-tsij579cy1kfcuxs8onbbxll-20260502T035021Z.tgz`,
+    then ran `redis-check-aof --fix` against
+    `/data/appendonlydir/appendonly.aof.manifest`.
+  - Post-recovery Redis status: Coolify reports `running:healthy`; Docker
+    status reported `Up ... (healthy)`.
+  - Post-recovery authenticated login: PASS.
+  - Post-recovery production SSE: PASS, emitted real `candle` and `ticker`
+    events for Binance FUTURES symbols including `BTCUSDT`, `ETHUSDT`,
+    `1000PEPEUSDT`, and `1000BONKUSDT`.
 - Screenshots/logs: not applicable.
 - High-risk checks:
   - LIVE bot was read-only inspected only; no LIVE write was performed.
@@ -141,13 +174,17 @@ are driven by fresh Binance market events.
 ## Deployment / Ops Evidence
 - Deploy impact: medium.
 - Env or secret changes: none.
-- Health-check impact: none.
-- Smoke steps updated: pending.
+- Health-check impact: production `/ready` now checks Redis `PING` when Redis
+  is required.
+- Smoke steps updated: `docs/operations/post-deploy-smoke-checklist.md` now
+  treats Redis readiness, auth rate-limit degradation, and Redis crash-loop/AOF
+  logs as smoke failures.
 - Rollback note: revert this commit to return to previous condition payload and
   publisher memoization behavior.
 - Observability or alerting impact: market-stream Redis connect/publish
   failures now log explicit errors and retry on future events; futures stream
-  bootstrap now connects to the endpoint that actually emits market events.
+  bootstrap now connects to the endpoint that actually emits market events;
+  API readiness now exposes required Redis dependency failure to deploy gates.
 - Staged rollout or feature flag: not applicable.
 
 ## Autonomous Loop Evidence
@@ -187,8 +224,10 @@ are driven by fresh Binance market events.
 
 ### 5. Verify and Test
 - Validation performed: focused API tests, API/web typecheck from the previous
-  slice, API build, guardrails, and direct Binance websocket smoke.
-- Result: PASS locally; production SSE validation pending after deploy.
+  slice, API build, guardrails, direct Binance websocket smoke, Coolify Redis
+  read-only inspection, and focused readiness test/typecheck after Redis
+  readiness hardening.
+- Result: PASS locally and post-recovery production SSE is flowing again.
 
 ### 6. Self-Review
 - Simpler option considered: infer match state in the dashboard from formatted
@@ -199,9 +238,10 @@ are driven by fresh Binance market events.
 - Refinements made: parser stores `matched=null` for legacy payloads.
 
 ### 7. Update Documentation and Knowledge
-- Docs updated: this task file plus context/planning files.
+- Docs updated: this task file, post-deploy smoke checklist, Redis AOF recovery
+  runbook, context/planning files.
 - Context updated: pending.
-- Learning journal updated: pending.
+- Learning journal updated: Redis AOF/readiness guardrail captured.
 
 ## Review Checklist
 - [x] Process self-audit completed before implementation.
