@@ -70,6 +70,11 @@ edit behavior for inactive paper/live bots.
 - `pnpm --filter api run typecheck` => PASS.
 - `pnpm --filter api run build` => PASS.
 - `pnpm run quality:guardrails` => PASS.
+- Production pre-smoke edge case found after first deploy attempt: switching
+  to an already-existing older strategy must still treat pre-restart signal
+  context as stale. Follow-up local validation after the aggregate merge
+  hardening remained PASS for the same focused bots/markets e2e, API
+  typecheck, API build, and guardrails.
 
 ## Architecture Evidence
 - Architecture source reviewed:
@@ -106,6 +111,9 @@ edit behavior for inactive paper/live bots.
 ### 4. Execute Implementation
 - Runtime condition context now ignores superseded signal strategy payloads and
   edited-strategy stale payloads, falling back to current configured strategy.
+- Runtime monitoring aggregate now keeps current configured fallback context
+  ahead of superseded historical signal context when a fresh restarted session
+  has no accepted signal yet.
 - Market tests were expanded without changing market save logic.
 
 ### 5. Verify and Test

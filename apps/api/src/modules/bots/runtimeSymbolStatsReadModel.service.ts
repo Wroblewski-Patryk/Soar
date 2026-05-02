@@ -107,13 +107,15 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
     const signalStrategy =
       signalStrategyId != null ? params.strategiesById.get(signalStrategyId) ?? null : null;
     const latestSignalAtMs = latestSignal?.eventAt?.getTime() ?? null;
+    const sessionStartedAtMs = params.sessionStartedAt.getTime();
     const configuredStrategyUpdatedAtMs = configuredStrategy?.updatedAt?.getTime() ?? 0;
     const signalStrategyUpdatedAtMs = signalStrategy?.updatedAt?.getTime() ?? 0;
     const signalUsesSupersededStrategy =
       signalStrategyId != null &&
       fallbackStrategyId != null &&
       signalStrategyId !== fallbackStrategyId &&
-      configuredStrategyUpdatedAtMs > signalStrategyUpdatedAtMs;
+      ((latestSignalAtMs != null && latestSignalAtMs < sessionStartedAtMs) ||
+        configuredStrategyUpdatedAtMs > signalStrategyUpdatedAtMs);
     const signalUsesEditedStrategyConfig =
       signalStrategyId != null &&
       fallbackStrategyId != null &&

@@ -17,7 +17,9 @@ Operational queue for one-task execution runs.
     `Markets / Signals` could keep showing old strategy indicators after stop
     -> strategy edit -> start. Runtime symbol-stats now ignores superseded or
     pre-edit signal condition payloads for display context and falls back to
-    the current configured strategy until fresh runtime evaluation arrives.
+    the current configured strategy until fresh runtime evaluation arrives;
+    aggregate merge keeps that configured fallback ahead of superseded
+    historical signal context after restart.
     Market edits for inactive PAPER and LIVE linked bots were regression-locked
     and continue to sync linked symbol groups. Validation PASS: focused bots
     runtime-scope e2e (`10/10`), markets e2e (`13/13`), API typecheck, API

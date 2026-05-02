@@ -24,11 +24,13 @@ Last updated: 2026-05-01
     symbol-stats now treats superseded signal-strategy payloads and signal
     payloads predating a same-strategy config edit as stale for displayed
     condition context, falling back to the current configured strategy until a
-    fresh runtime decision arrives. The market edit question was regression
-    checked without changing UI: inactive PAPER and LIVE bots can save market
-    universe symbol edits and linked symbol groups sync correctly. Validation
-    PASS: focused bots runtime-scope e2e (`10/10`), markets e2e (`13/13`),
-    API typecheck, API build, and repository guardrails.
+    fresh runtime decision arrives. Aggregate merge also preserves current
+    configured fallback context over superseded historical signal context after
+    restart. The market edit question was regression checked without changing
+    UI: inactive PAPER and LIVE bots can save market universe symbol edits and
+    linked symbol groups sync correctly. Validation PASS: focused bots
+    runtime-scope e2e (`10/10`), markets e2e (`13/13`), API typecheck, API
+    build, and repository guardrails.
     Evidence:
     `docs/planning/v1bot-conditions-market-sync-2026-05-02.md`.
 

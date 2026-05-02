@@ -107,9 +107,12 @@ Last updated: 2026-05-02
   signal context now falls back to the current configured strategy until a
   fresh runtime decision exists. The related market-universe concern was
   regression-locked: inactive PAPER and LIVE bots both allow market edits and
-  linked symbol-group sync. Validation PASS: focused bots runtime-scope e2e
-  (`10/10`), markets e2e (`13/13`), API typecheck, API build, and repository
-  guardrails. Evidence:
+  linked symbol-group sync. Production pre-smoke exposed an additional
+  existing-older-strategy switch edge case; aggregate merge now keeps current
+  configured fallback context ahead of superseded historical signal context
+  when the restarted session has not emitted a fresh accepted signal yet.
+  Validation PASS: focused bots runtime-scope e2e (`10/10`), markets e2e
+  (`13/13`), API typecheck, API build, and repository guardrails. Evidence:
   `docs/planning/v1bot-conditions-market-sync-2026-05-02.md`.
 - 2026-05-02: added `V1I18N-01`, a complete Swiss German/German Switzerland
   locale rollout using the standards-compliant `de-CH` locale code for the

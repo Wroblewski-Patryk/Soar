@@ -660,19 +660,19 @@ describe('Bots runtime scope remediation contract', () => {
     const owner = await registerAndLogin(ownerEmail);
     const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
 
-    const oldStrategyId = await createStrategy(owner, 'Runtime Old RSI Strategy', {
+    const newStrategyId = await createStrategy(owner, 'Runtime New Momentum Strategy', {
       open: {
         indicatorsLong: [
-          { name: 'RSI', condition: '<', value: 30, params: { period: 14 } },
+          { name: 'MOMENTUM', condition: '>', value: 0, params: { period: 10 } },
         ],
         indicatorsShort: [],
       },
       close: { mode: 'basic', tp: 2, sl: 1 },
     });
-    const newStrategyId = await createStrategy(owner, 'Runtime New Momentum Strategy', {
+    const oldStrategyId = await createStrategy(owner, 'Runtime Old RSI Strategy', {
       open: {
         indicatorsLong: [
-          { name: 'MOMENTUM', condition: '>', value: 0, params: { period: 10 } },
+          { name: 'RSI', condition: '<', value: 30, params: { period: 14 } },
         ],
         indicatorsShort: [],
       },

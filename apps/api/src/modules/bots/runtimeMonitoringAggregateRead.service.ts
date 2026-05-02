@@ -279,7 +279,19 @@ export const getBotRuntimeMonitoringAggregate = async (
       );
       const currentTradeTs = toTimestamp(item.lastTradeAt);
       const existingTradeTs = toTimestamp(existing.lastTradeAt);
-      const shouldUseCurrentSignalContext = currentSignalTs >= existingSignalTs;
+      const currentConfiguredFallbackReplacesSupersededSignal =
+        item.lastSignalContextSource === 'configured_fallback' &&
+        item.configuredStrategyId != null &&
+        existing.lastSignalStrategyId != null &&
+        existing.lastSignalStrategyId !== item.configuredStrategyId;
+      const existingConfiguredFallbackReplacesSupersededSignal =
+        existing.lastSignalContextSource === 'configured_fallback' &&
+        existing.configuredStrategyId != null &&
+        item.lastSignalStrategyId != null &&
+        item.lastSignalStrategyId !== existing.configuredStrategyId;
+      const shouldUseCurrentSignalContext =
+        currentConfiguredFallbackReplacesSupersededSignal ||
+        (!existingConfiguredFallbackReplacesSupersededSignal && currentSignalTs >= existingSignalTs);
 
       symbolMap.set(item.symbol, {
         ...existing,
