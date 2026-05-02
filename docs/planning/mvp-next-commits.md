@@ -7,6 +7,17 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `DASHSIGNALS-02 fix(api-runtime): recover indicator candles before unavailable signal values`
+  - 2026-05-02: Closed the deeper follow-up from `DASHSIGNALS-01`. Runtime
+    symbol stats now tops up short in-memory candle histories from the approved
+    fallback kline path before running shared indicator analysis, then
+    deduplicates fallback/runtime candles by `openTime` with runtime candles
+    authoritative on overlap. This keeps `n/a` as a final fail-closed display
+    state only when recovery still cannot produce a valid indicator value. No
+    trading execution behavior changed. Validation PASS: focused backend
+    signal recovery/read-model tests (`7/7`), API typecheck, repository
+    guardrails, and API build. Evidence:
+    `docs/planning/dashsignals-02-indicator-recovery-before-unavailable-task-2026-05-02.md`.
 - [x] `DASHSIGNALS-01 fix(runtime+web): clarify unavailable indicator signal values`
   - 2026-05-02: Closed the operator-reported production dashboard signal-card
     inconsistency where unavailable RSI values rendered as `n/a < 20` and

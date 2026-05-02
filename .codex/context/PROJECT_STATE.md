@@ -3,6 +3,17 @@
 Last updated: 2026-05-02
 
 ## 2026-05-02 V1 Prod-Only Release Scope Update
+- 2026-05-02 production dashboard signal recovery follow-up `DASHSIGNALS-02`
+  is closed. The runtime symbol-stats read path now attempts indicator data
+  recovery before emitting unavailable values: short in-memory candle histories
+  are topped up from the approved fallback kline path, merged by `openTime`,
+  and runtime candles remain authoritative on overlap. This means `n/a`
+  remains only a final fail-closed display state when recovery still cannot
+  produce a valid indicator value. No order execution, position automation, or
+  trading mutation behavior changed. Validation PASS: focused backend signal
+  recovery/read-model tests (`7/7`), API typecheck, repository guardrails, and
+  API build. Evidence:
+  `docs/planning/dashsignals-02-indicator-recovery-before-unavailable-task-2026-05-02.md`.
 - 2026-05-02 production dashboard signal-card follow-up `DASHSIGNALS-01` is
   closed. Authenticated production evidence showed runtime condition cards
   rendering unavailable RSI operands as misleading expressions such as

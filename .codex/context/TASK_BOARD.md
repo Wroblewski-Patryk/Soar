@@ -17,6 +17,19 @@ Last updated: 2026-05-02
 
 ## READY
 
+- [x] `DASHSIGNALS-02 fix(api-runtime): recover indicator candles before unavailable signal values`
+  - Scope: closed the deeper follow-up from `DASHSIGNALS-01`. Runtime symbol
+    stats now treats a short in-memory candle series as insufficient for
+    indicator presentation and tops it up from the approved fallback kline path
+    before running the shared indicator analysis. Fallback and runtime candles
+    are deduplicated by `openTime`, with runtime candles authoritative on
+    overlap. `n/a` remains a final fail-closed display state only when recovery
+    cannot produce a valid value. No order execution, position automation, or
+    trading mutation behavior changed. Validation PASS: focused backend signal
+    recovery/read-model tests (`7/7`), API typecheck, repository guardrails,
+    and API build. Evidence:
+    `docs/planning/dashsignals-02-indicator-recovery-before-unavailable-task-2026-05-02.md`.
+
 - [x] `DASHSIGNALS-01 fix(runtime+web): clarify unavailable indicator signal values`
   - Scope: remediated the operator-reported production dashboard signal-card
     drift where unavailable RSI values rendered as misleading expressions such

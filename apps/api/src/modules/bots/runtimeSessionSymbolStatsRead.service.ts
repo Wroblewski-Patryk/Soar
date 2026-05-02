@@ -35,6 +35,37 @@ import {
 } from './botsRuntimeRead.repository';
 import { resolvePreferredRuntimeOrExchangeSyncedPrice } from './runtimeExchangeSyncedPositionPrice';
 
+const runtimeSignalReadSnapshotMinCandlesRaw = Number.parseInt(
+  process.env.RUNTIME_SIGNAL_READ_SNAPSHOT_MIN_CANDLES ?? '150',
+  10,
+);
+const runtimeSignalReadSnapshotMinCandles = Number.isFinite(runtimeSignalReadSnapshotMinCandlesRaw)
+  ? Math.max(20, runtimeSignalReadSnapshotMinCandlesRaw)
+  : 150;
+
+export const mergeRuntimeCandlesForIndicatorRecovery = (
+  runtimeCandles: RuntimeCandle[],
+  fallbackCandles: RuntimeCandle[],
+  limit = 300,
+) => {
+  const deduped = new Map<number, RuntimeCandle>();
+  for (const candle of fallbackCandles) deduped.set(candle.openTime, candle);
+  for (const candle of runtimeCandles) deduped.set(candle.openTime, candle);
+  const merged = [...deduped.values()]
+    .filter(
+      (item): item is RuntimeCandle =>
+        Number.isFinite(item.openTime) &&
+        Number.isFinite(item.closeTime) &&
+        Number.isFinite(item.open) &&
+        Number.isFinite(item.high) &&
+        Number.isFinite(item.low) &&
+        Number.isFinite(item.close) &&
+        Number.isFinite(item.volume),
+    )
+    .sort((left, right) => left.openTime - right.openTime);
+  return merged.slice(-Math.max(1, Math.floor(limit)));
+};
+
 const resolveFallbackDerivatives = async (params: {
   marketType: 'FUTURES' | 'SPOT';
   symbol: string;
@@ -150,15 +181,20 @@ const loadMarketSnapshot = async (params: {
       )
       .reverse();
 
-  const resolvedCandles =
-    runtimeCandles.length > 0
-      ? runtimeCandles
+  const fallbackCandles =
+    runtimeCandles.length >= runtimeSignalReadSnapshotMinCandles
+      ? []
       : await fetchFallbackKlines({
           marketType: params.marketType,
           symbol: params.symbol,
           interval: params.interval,
           limit: 300,
         });
+  const resolvedCandles = mergeRuntimeCandlesForIndicatorRecovery(
+    runtimeCandles,
+    fallbackCandles,
+    300,
+  );
 
   if (resolvedCandles.length === 0) return null;
 
