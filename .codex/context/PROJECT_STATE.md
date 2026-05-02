@@ -12,7 +12,9 @@ Last updated: 2026-05-02
   produce a valid indicator value. No order execution, position automation, or
   trading mutation behavior changed. Validation PASS: focused backend signal
   recovery/read-model tests (`7/7`), API typecheck, repository guardrails, and
-  API build. Evidence:
+  API build. Production readback after deploy confirmed no raw `n/a`, no
+  pending indicator labels, and concrete visible `RSI(14)` values for active
+  dashboard signal cards. Evidence:
   `docs/planning/dashsignals-02-indicator-recovery-before-unavailable-task-2026-05-02.md`.
 - 2026-05-02 production dashboard signal-card follow-up `DASHSIGNALS-01` is
   closed. Authenticated production evidence showed runtime condition cards

@@ -16,7 +16,9 @@ Operational queue for one-task execution runs.
     state only when recovery still cannot produce a valid indicator value. No
     trading execution behavior changed. Validation PASS: focused backend
     signal recovery/read-model tests (`7/7`), API typecheck, repository
-    guardrails, and API build. Evidence:
+    guardrails, and API build. Production readback after deploy confirmed no
+    raw `n/a`, no pending indicator labels, and concrete visible `RSI(14)`
+    values for active dashboard signal cards. Evidence:
     `docs/planning/dashsignals-02-indicator-recovery-before-unavailable-task-2026-05-02.md`.
 - [x] `DASHSIGNALS-01 fix(runtime+web): clarify unavailable indicator signal values`
   - 2026-05-02: Closed the operator-reported production dashboard signal-card

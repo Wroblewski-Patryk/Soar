@@ -74,7 +74,9 @@ fallback path.
   - `pnpm --filter api run typecheck`
   - `pnpm run quality:guardrails`
   - `pnpm --filter api run build`
-- Manual checks: pending until production deploy/readback
+- Manual checks: PASS. Production dashboard readback after deploy confirmed no
+  raw `n/a`, no pending indicator labels, and concrete visible `RSI(14)`
+  values for the active signal cards.
 - High-risk checks: no trading mutation performed
 
 ## Architecture Evidence
@@ -139,8 +141,8 @@ fallback path.
   canonical context/planning docs.
 - How tested: focused backend tests, API typecheck, repository guardrails, and
   API build all PASS.
-- What is incomplete: production post-deploy readback remains to be collected.
-- Next steps: push the fix, wait for production build-info, and verify the
-  dashboard read path after deploy.
+- What is incomplete: nothing known in this scope.
+- Next steps: continue monitoring runtime signal freshness during normal
+  operator use.
 - Decisions made: preserve `n/a` as a final fail-closed state only after
   recovery cannot produce a valid indicator value.
