@@ -17,6 +17,17 @@ Last updated: 2026-05-02
 
 ## READY
 
+- [ ] `RUNTIME-SIGNAL-VOTES-01 fix(api-runtime): recover runtime strategy votes when matched indicators exist`
+  - Scope: P0 production-reported PAPER/LIVE risk. Production read-only
+    evidence showed `Peper bot` exposing concrete matched RSI conditions
+    (`DOGEUSDT RSI(14) 78.6959 > 51`, `matched=true`) while the same runtime
+    row still reported `lastSignalDirection=null`, `lastSignalReason=No votes`,
+    and `totalSignals=0`. The next implementation slice must move the approved
+    indicator-ready candle recovery contract into the actual final-candle
+    runtime decision path, keep existing pre-trade/orchestration guardrails,
+    and prove PAPER then LIVE read-only parity after deploy. Plan:
+    `docs/planning/runtime-signal-vote-recovery-audit-plan-2026-05-02.md`.
+
 - [x] `DOCSYNC-V1EXCEL-01 docs(planning): close superseded V1EXCEL evidence gates`
   - Scope: synchronized stale `V1EXCEL-03..06`, `V1EXCEL-04`, and
     `V1EXCEL-05` active queue entries after `V1CLOSEOUT-11` published final V1

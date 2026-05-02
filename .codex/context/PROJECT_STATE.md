@@ -3,6 +3,18 @@
 Last updated: 2026-05-02
 
 ## 2026-05-02 V1 Prod-Only Release Scope Update
+- 2026-05-02 operator-reported runtime signal vote audit queued
+  `RUNTIME-SIGNAL-VOTES-01` as P0. Authenticated production read-only evidence
+  showed active PAPER `Peper bot` rows with concrete matched RSI conditions but
+  no accepted runtime signal: `DOGEUSDT` exposed `RSI(14) 78.6959 > 51` with
+  `matched=true`, yet the same row reported `lastSignalDirection=null`,
+  `lastSignalReason=No votes`, and `totalSignals=0`; session
+  `122f6846-2f8c-4ee6-bfee-9d2621f29c96` had `eventsCount=213` and
+  `lastSignalAt=null`. Local probing with 150 fresh Binance Futures
+  `DOGEUSDT` `5m` candles and the same `RSI 45/55` strategy returned `LONG`,
+  so the suspected root is parity drift between dashboard/read-model candle
+  recovery and the actual final-candle runtime decision path. Plan:
+  `docs/planning/runtime-signal-vote-recovery-audit-plan-2026-05-02.md`.
 - 2026-05-02 runtime signal and market-stream recovery slice
   `V1BOT-SIGNALS-02` is closed. Condition lines now expose canonical
   `matched=true|false|null` truth for operator display, Redis market-stream
