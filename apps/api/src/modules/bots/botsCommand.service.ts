@@ -441,11 +441,12 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
         if (existingTargetGroup) {
           targetGroup = existingTargetGroup;
         } else if (primaryGroup) {
+          const targetLifecycleStatus = nextIsActive ? 'ACTIVE' : primaryGroup.lifecycleStatus;
           targetGroup = await tx.botMarketGroup.update({
             where: { id: primaryGroup.id },
             data: {
               symbolGroupId: requestedSymbolGroup.id,
-              lifecycleStatus: 'ACTIVE',
+              lifecycleStatus: targetLifecycleStatus,
               isEnabled: true,
             },
             select: {
@@ -480,12 +481,12 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
         }
       }
 
-      if (targetGroup && (!targetGroup.isEnabled || targetGroup.lifecycleStatus !== 'ACTIVE')) {
+      if (targetGroup && (!targetGroup.isEnabled || (nextIsActive && targetGroup.lifecycleStatus !== 'ACTIVE'))) {
         await tx.botMarketGroup.update({
           where: { id: targetGroup.id },
           data: {
             isEnabled: true,
-            lifecycleStatus: 'ACTIVE',
+            ...(nextIsActive ? { lifecycleStatus: 'ACTIVE' as const } : {}),
           },
         });
       }
@@ -540,6 +541,20 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
           });
         }
       }
+    }
+
+    if (nextIsActive !== existing.isActive) {
+      await tx.botMarketGroup.updateMany({
+        where: {
+          userId,
+          botId: existing.id,
+          isEnabled: true,
+          lifecycleStatus: { not: 'ARCHIVED' },
+        },
+        data: {
+          lifecycleStatus: nextIsActive ? 'ACTIVE' : 'PAUSED',
+        },
+      });
     }
 
     return updatedBot;

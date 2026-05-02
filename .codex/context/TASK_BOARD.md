@@ -17,6 +17,19 @@ Last updated: 2026-05-02
 
 ## READY
 
+- [x] `V1MARKET-01 fix(api-bots+markets): allow market edits after linked bot deactivation`
+  - Scope: fixed the operator-reported blocker where a linked market universe
+    could still behave as used by an active bot after that bot was disabled.
+    `PUT /dashboard/bots/:id` now synchronizes enabled non-archived canonical
+    bot market groups to `PAUSED` on deactivation and back to `ACTIVE` on
+    reactivation, while preserving existing inactive-bot runtime graph mapping
+    behavior for bots created inactive. Added regression coverage for active
+    block -> bot deactivate -> market universe symbol edit/sync -> bot
+    reactivate -> active block. Validation PASS: markets e2e (`14/14`), bots
+    runtime-scope e2e (`10/10`), bots duplicate guard e2e (`4/4`), API
+    typecheck, and repository guardrails. Evidence:
+    `docs/planning/v1market-01-deactivated-bot-market-edit-task-2026-05-02.md`.
+
 - [ ] `V1BOT-SIGNALS-02 fix(api-runtime): expose condition match truth and recover market-stream publishing`
   - Scope: follow-up for the production `Dashboard -> Markets / Signals`
     signal-count/display concern. Authenticated read-only production smoke

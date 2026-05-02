@@ -100,6 +100,17 @@ Last updated: 2026-05-02
   of reconstructing it from `syncState` or audit logs.
 
 ## Product Decisions (Confirmed)
+- 2026-05-02: closed `V1MARKET-01`, an operator-reported market-edit
+  regression after the earlier inactive-bot market sync fix. Deactivating a
+  bot now also moves its enabled non-archived canonical market groups to
+  `PAUSED`, and reactivating restores them to `ACTIVE`, so stale canonical
+  group lifecycle state can no longer behave like a second active-bot guard
+  against editing linked market universes. The existing inactive-bot runtime
+  graph mapping behavior is preserved for bots that were created inactive and
+  did not go through a deactivation transition. Validation PASS: focused
+  markets e2e (`14/14`), bots runtime-scope e2e (`10/10`), bots duplicate
+  guard e2e (`4/4`), API typecheck, and repository guardrails. Evidence:
+  `docs/planning/v1market-01-deactivated-bot-market-edit-task-2026-05-02.md`.
 - 2026-05-02: added `V1BOT-SIGNALS-02` after an operator-reported production
   concern that `Dashboard -> Markets / Signals` appeared to show satisfied
   conditions while the PAPER bot did not open positions. Authenticated

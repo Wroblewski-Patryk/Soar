@@ -121,6 +121,8 @@ const createActiveBotUsingUniverse = async (params: {
       isEnabled: true,
     }
   });
+
+  return bot.id;
 };
 
 describe('Markets module contract', () => {
@@ -485,6 +487,75 @@ describe('Markets module contract', () => {
     });
     expect(linkedGroups).not.toHaveLength(0);
     expect(linkedGroups.every((group) => group.symbols.join(',') === 'ADAUSDT,SOLUSDT')).toBe(true);
+  });
+
+  it('allows universe symbol edits after the linked bot is deactivated through the bot API', async () => {
+    const agent = await registerAndLogin(uniqueEmail('markets-deactivated-bot-symbol-sync'));
+
+    const createRes = await agent.post('/dashboard/markets/universes').send(createPayload());
+    expect(createRes.status).toBe(201);
+    const universeId = createRes.body.id as string;
+    const universe = await prisma.marketUniverse.findUniqueOrThrow({
+      where: { id: universeId },
+      select: { userId: true },
+    });
+
+    const botId = await createActiveBotUsingUniverse({
+      userId: universe.userId,
+      universeId,
+      isActive: true,
+      mode: 'PAPER',
+    });
+
+    const blockedUpdateRes = await agent.put(`/dashboard/markets/universes/${universeId}`).send({
+      name: 'Blocked before deactivation',
+    });
+    expect(blockedUpdateRes.status).toBe(409);
+
+    const deactivateRes = await agent.put(`/dashboard/bots/${botId}`).send({
+      isActive: false,
+    });
+    expect(deactivateRes.status).toBe(200);
+    expect(deactivateRes.body.isActive).toBe(false);
+
+    const groupsAfterDeactivate = await prisma.botMarketGroup.findMany({
+      where: { botId },
+      select: { lifecycleStatus: true },
+    });
+    expect(groupsAfterDeactivate.map((group) => group.lifecycleStatus)).toEqual(['PAUSED']);
+
+    const updateRes = await agent.put(`/dashboard/markets/universes/${universeId}`).send({
+      whitelist: ['SOLUSDT'],
+      blacklist: ['BTCUSDT'],
+      filterRules: {
+        minQuoteVolumeEnabled: false,
+      },
+    });
+    expect(updateRes.status).toBe(200);
+
+    const linkedGroups = await prisma.symbolGroup.findMany({
+      where: { userId: universe.userId, marketUniverseId: universeId },
+      select: { symbols: true },
+    });
+    expect(linkedGroups).not.toHaveLength(0);
+    expect(linkedGroups.every((group) => group.symbols.join(',') === 'SOLUSDT')).toBe(true);
+
+    const reactivateRes = await agent.put(`/dashboard/bots/${botId}`).send({
+      isActive: true,
+    });
+    expect(reactivateRes.status).toBe(200);
+    expect(reactivateRes.body.isActive).toBe(true);
+
+    const groupsAfterReactivate = await prisma.botMarketGroup.findMany({
+      where: { botId },
+      select: { lifecycleStatus: true },
+    });
+    expect(groupsAfterReactivate.map((group) => group.lifecycleStatus)).toEqual(['ACTIVE']);
+
+    const blockedAfterReactivateRes = await agent.put(`/dashboard/markets/universes/${universeId}`).send({
+      name: 'Blocked after reactivation',
+    });
+    expect(blockedAfterReactivateRes.status).toBe(409);
   });
 
   it('blocks universe update/delete when active primary bot still points at the universe even if group links drifted', async () => {
