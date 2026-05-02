@@ -8,6 +8,7 @@ import {
   resolveRuntimeFreeFunds,
   resolveRuntimePortfolio,
 } from "@/features/bots/utils/runtimeSurfaceTruth";
+import { sumRuntimeOpenPositionUnrealized } from "@/features/bots/utils/runtimeOpenPositionDerivations";
 import {
   buildLiveOpenPositions,
   maxDrawdown,
@@ -39,28 +40,31 @@ export const useRuntimeSelectionViewModel = ({
     const usedMargin = snapshots.reduce((acc, x) => acc + resolveUsedMargin(x.positions), 0);
     const realized = snapshots.reduce((acc, x) => acc + (x.session?.summary.realizedPnl ?? 0), 0);
     const streamMap = new Map<string, number>(Object.entries(liveTickerPrices));
-    const unrealized = snapshots.reduce((acc, x) => {
-      const openRows = buildLiveOpenPositions(
-        x.positions,
-        x.symbolStats,
-        x.bot.id === selected?.bot.id ? streamMap : new Map<string, number>()
+    const buildSnapshotOpenRows = (snapshot: RuntimeSnapshot) =>
+      buildLiveOpenPositions(
+        snapshot.positions,
+        snapshot.symbolStats,
+        snapshot.bot.id === selected?.bot.id ? streamMap : new Map<string, number>()
       );
+    const resolveSnapshotUnrealized = (snapshot: RuntimeSnapshot) => {
+      const openRows = buildSnapshotOpenRows(snapshot);
       if (openRows.length > 0) {
-        return acc + openRows.reduce((sum, row) => sum + row.liveUnrealizedPnl, 0);
+        return sumRuntimeOpenPositionUnrealized(openRows);
       }
-      return acc + resolveUnrealized(x);
-    }, 0);
+      return resolveUnrealized(snapshot);
+    };
+    const unrealized = snapshots.reduce((acc, x) => acc + resolveSnapshotUnrealized(x), 0);
     const totalSignals = snapshots.reduce((acc, x) => acc + (x.session?.summary.totalSignals ?? 0), 0);
     const dcaCount = snapshots.reduce((acc, x) => acc + (x.session?.summary.dcaCount ?? 0), 0);
 
     const paper = snapshots.filter((x) => x.bot.mode === "PAPER");
     const paperStart = paper.reduce((acc, x) => acc + (resolvePaperConfigBaseline(x.bot) ?? 0), 0);
     const paperDelta = paper.reduce((acc, x) => {
-      const net = (x.session?.summary.realizedPnl ?? 0) + resolveUnrealized(x);
+      const net = (x.session?.summary.realizedPnl ?? 0) + resolveSnapshotUnrealized(x);
       return acc + net;
     }, 0);
     const paperEquity = paper.reduce((acc, x) => {
-      const net = (x.session?.summary.realizedPnl ?? 0) + resolveUnrealized(x);
+      const net = (x.session?.summary.realizedPnl ?? 0) + resolveSnapshotUnrealized(x);
       return (
         acc +
         (resolveRuntimePortfolio({
@@ -123,7 +127,7 @@ export const useRuntimeSelectionViewModel = ({
     const usedMargin = resolveUsedMargin(selected.positions);
     const unrealized =
       openWithProtectedFallback.length > 0
-        ? openWithProtectedFallback.reduce((sum, row) => sum + row.liveUnrealizedPnl, 0)
+        ? sumRuntimeOpenPositionUnrealized(openWithProtectedFallback)
         : resolveUnrealized(selected);
     const realized = session?.summary.realizedPnl ?? 0;
     const net = realized + unrealized;

@@ -467,6 +467,10 @@ export const useHomeLiveWidgetsController = ({
   const streamSymbolsKey = useMemo(() => streamSymbols.join(","), [streamSymbols]);
 
   useEffect(() => {
+    setLiveTickerPrices({});
+  }, [selected?.bot.id, selected?.session?.id, selected?.session?.status, streamSymbolsKey]);
+
+  useEffect(() => {
     const streamEligible = Boolean(
       selected?.session?.id &&
       selected.session.status === "RUNNING" &&

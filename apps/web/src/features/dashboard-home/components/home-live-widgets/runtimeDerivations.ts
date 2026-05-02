@@ -1,4 +1,3 @@
-import { normalizeSymbol } from '@/lib/symbols';
 import { toTimestamp } from '@/lib/time';
 import type {
   BotRuntimePositionsResponse,
@@ -6,8 +5,9 @@ import type {
   BotRuntimeTrade,
 } from '@/features/bots/types/bot.type';
 import {
-  toProtectedPnlPercentFromStopPrice,
-} from '@/features/bots/utils/trailingStopDisplay';
+  buildRuntimeOpenPositionRows,
+  sumRuntimeOpenPositionUnrealized,
+} from '@/features/bots/utils/runtimeOpenPositionDerivations';
 import type { OpenPositionWithLive, RuntimeSnapshot } from './types';
 
 export const resolveUsedMargin = (positions: BotRuntimePositionsResponse | null) =>
@@ -20,81 +20,25 @@ export const resolveUsedMargin = (positions: BotRuntimePositionsResponse | null)
   }, 0);
 
 export const resolveDynamicTtpDisplay = (position: OpenPositionWithLive) =>
-  toProtectedPnlPercentFromStopPrice({
-    side: position.side,
-    entryPrice: position.entryPrice,
-    leverage: position.leverage,
-    quantity: position.quantity,
-    marginUsed: position.marginUsed,
-    stopPrice: position.dynamicTtpStopLoss,
-  }) ?? null;
+  position.ttpProtectedPercent ?? null;
 
 export const resolveDynamicTslDisplay = (position: OpenPositionWithLive) => {
   if (resolveDynamicTtpDisplay(position) != null) return null;
-  return toProtectedPnlPercentFromStopPrice({
-    side: position.side,
-    entryPrice: position.entryPrice,
-    leverage: position.leverage,
-    quantity: position.quantity,
-    marginUsed: position.marginUsed,
-    stopPrice: position.dynamicTslStopLoss,
-  });
+  return position.tslProtectedPercent ?? null;
 };
 
 export const buildLiveOpenPositions = (
   positions: BotRuntimePositionsResponse | null,
   symbolStats: BotRuntimeSymbolStatsResponse | null,
   streamPrices: Map<string, number>
-): OpenPositionWithLive[] => {
-  const priceBySymbol = new Map<string, number>();
-  for (const item of symbolStats?.items ?? []) {
-    if (typeof item.lastPrice === 'number' && Number.isFinite(item.lastPrice) && item.lastPrice > 0) {
-      priceBySymbol.set(normalizeSymbol(item.symbol), item.lastPrice);
-    }
-  }
-
-  return (positions?.openItems ?? []).map((position) => {
-    const symbolKey = normalizeSymbol(position.symbol);
-    const leverage = Number.isFinite(position.leverage) && position.leverage > 0 ? position.leverage : 1;
-    const marginNotional = position.marginUsed ?? position.entryNotional / leverage;
-    const candidateMark =
-      streamPrices.get(symbolKey) ?? position.markPrice ?? priceBySymbol.get(symbolKey) ?? null;
-    const liveMarkPrice = typeof candidateMark === 'number' && Number.isFinite(candidateMark) ? candidateMark : null;
-    const computedUnrealizedPnl =
-      liveMarkPrice == null
-        ? null
-        : position.side === 'LONG'
-          ? (liveMarkPrice - position.entryPrice) * position.quantity
-          : (position.entryPrice - liveMarkPrice) * position.quantity;
-    const liveUnrealizedPnl =
-      computedUnrealizedPnl ??
-      (typeof position.unrealizedPnl === "number" && Number.isFinite(position.unrealizedPnl)
-        ? position.unrealizedPnl
-        : 0);
-    const livePnlPct =
-      liveMarkPrice == null &&
-      typeof position.unrealizedPnlPercent === "number" &&
-      Number.isFinite(position.unrealizedPnlPercent)
-        ? position.unrealizedPnlPercent
-        : marginNotional > 0
-          ? (liveUnrealizedPnl / marginNotional) * 100
-          : 0;
-
-    return {
-      ...position,
-      liveMarkPrice,
-      liveUnrealizedPnl,
-      livePnlPct,
-      marginNotional,
-    };
-  });
-};
+): OpenPositionWithLive[] =>
+  buildRuntimeOpenPositionRows({ positions, symbolStats, streamPrices });
 
 export const resolveUnrealized = (snapshot: RuntimeSnapshot | null) => {
   if (!snapshot) return 0;
   const liveOpen = buildLiveOpenPositions(snapshot.positions, snapshot.symbolStats, new Map<string, number>());
   if (liveOpen.length > 0) {
-    return liveOpen.reduce((sum, row) => sum + row.liveUnrealizedPnl, 0);
+    return sumRuntimeOpenPositionUnrealized(liveOpen);
   }
   if (typeof snapshot.symbolStats?.summary.unrealizedPnl === 'number') {
     return snapshot.symbolStats.summary.unrealizedPnl;

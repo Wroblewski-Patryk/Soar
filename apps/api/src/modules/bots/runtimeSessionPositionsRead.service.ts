@@ -652,6 +652,13 @@ export const listBotRuntimeSessionPositions = async (
   const lastPriceBySymbol = new Map(
     [...runtimeStatPriceBySymbol.entries()].map(([symbol, candidate]) => [symbol, candidate.price])
   );
+  const fallbackRuntimePriceBySymbol = new Map<
+    string,
+    {
+      price: number | null;
+      observedAtMs: number | null;
+    }
+  >();
   const missingPriceSymbols = symbols.filter((symbol) => {
     const current = lastPriceBySymbol.get(symbol);
     return !Number.isFinite(current) || (current as number) <= 0;
@@ -665,6 +672,10 @@ export const listBotRuntimeSessionPositions = async (
       for (const [symbol, price] of fallbackPrices) {
         if (Number.isFinite(price) && price > 0) {
           lastPriceBySymbol.set(symbol, price);
+          fallbackRuntimePriceBySymbol.set(symbol, {
+            price,
+            observedAtMs: null,
+          });
         }
       }
     }
@@ -714,6 +725,10 @@ export const listBotRuntimeSessionPositions = async (
       lastExchangeSyncAt: position.lastExchangeSyncAt,
       runtimePriceCandidates: [
         runtimeStatPriceBySymbol.get(position.symbol) ?? {
+          price: null,
+          observedAtMs: null,
+        },
+        fallbackRuntimePriceBySymbol.get(position.symbol) ?? {
           price: null,
           observedAtMs: null,
         },

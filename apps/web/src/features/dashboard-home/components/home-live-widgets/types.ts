@@ -12,6 +12,7 @@ import type {
   BotRuntimeTrade,
   BotRuntimeTradesResponse,
 } from "../../../../features/bots/types/bot.type";
+import type { RuntimeOpenPositionDisplayRow } from "../../../../features/bots/utils/runtimeOpenPositionDerivations";
 
 export type RuntimeSnapshot = {
   bot: Bot;
@@ -24,11 +25,7 @@ export type RuntimeSnapshot = {
   loadError?: string;
 };
 
-export type OpenPositionWithLive = BotRuntimePositionItem & {
-  liveMarkPrice: number | null;
-  liveUnrealizedPnl: number;
-  livePnlPct: number | null;
-  marginNotional: number;
+export type OpenPositionWithLive = RuntimeOpenPositionDisplayRow & {
   fallbackTtpProtectedPercent?: number | null;
   runtimeBotId?: string;
   runtimeSessionId?: string | null;

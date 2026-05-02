@@ -17,6 +17,44 @@ Last updated: 2026-05-02
 
 ## READY
 
+- [x] `V1PRICE-04 fix(api-runtime): propagate fallback ticker price into position markPrice candidates`
+  - Scope: closed as part of `V1RUNTIME-TRUST-03`. Runtime Positions now feeds
+    valid fallback ticker prices into the existing preferred price resolver for
+    open-position `markPrice` when runtime/stat price truth is missing, without
+    changing live close command semantics and while preserving exchange-sync
+    freshness precedence. Focused API regression PASS. Evidence:
+    `docs/planning/v1runtime-operator-trust-hardening-task-2026-05-02.md`.
+
+- [x] `V1SURF-03 fix(web-runtime): reset live ticker state on runtime context changes`
+  - Scope: closed as part of `V1RUNTIME-TRUST-03`. Dashboard Home and Bot
+    Monitoring now clear symbol-keyed stream prices on runtime context
+    boundaries, and Bot Monitoring opens market SSE only for `RUNNING`
+    contexts. Focused web regression PASS for same-symbol selected-bot stream
+    reset. Evidence:
+    `docs/planning/v1runtime-operator-trust-hardening-task-2026-05-02.md`.
+
+- [x] `V1BOT-AUDIT-02 qa(runtime+web): audit runtime freshness, action context, and operator trust`
+  - Scope: completed a second operator-trust audit after `V1SURF-02`.
+    Findings: Runtime Positions fetches fallback ticker prices but does not
+    feed them into open-position `markPrice` candidates; web stream ticker
+    state is not reset on all runtime context changes; Bot Monitoring stream
+    eligibility is broader than Dashboard Home; runtime price source/freshness
+    remains hidden from the web contract; close/cancel paths are backend
+    guarded but UI affordances can improve later. Evidence:
+    `docs/planning/v1bot-runtime-operator-trust-audit-2026-05-02.md`.
+
+- [x] `V1SURF-02 fix(web-runtime): share live open-position derivation across Bot Runtime and Dashboard`
+  - Scope: follow-up from `V1BOT-AUDIT-01`. Consolidated the duplicated open
+    runtime position display derivations currently split between
+    `BotsManagement.tsx` and dashboard-home `runtimeDerivations.ts`, so both
+    surfaces use the same stream/API price precedence, `LONG`/`SHORT` PnL,
+    margin-percent, DCA, and `TTP`/`TSL` display contract. Also fixed dashboard
+    summary KPI drift by reusing the same selected live unrealized value for
+    `summary.unrealized`, `paperDelta`, `paperEquity`, selected `net`, and the
+    open-position table. Validation PASS: focused web derivation/component
+    tests (`9/9`), web typecheck, web build, and guardrails. Evidence:
+    `docs/planning/v1surf-02-shared-runtime-position-derivation-task-2026-05-02.md`.
+
 - [x] `V1DOGE-03 fix(api-runtime+web): align imported LIVE protection and dashboard price truth`
   - Scope: fixed an operator-reported `LIVE DOGEUSDT SHORT` protection concern
     where dashboard PnL had fallen below visible `TTP` while the position

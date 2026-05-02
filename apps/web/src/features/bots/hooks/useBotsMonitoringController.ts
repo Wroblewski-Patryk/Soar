@@ -408,21 +408,31 @@ export const useBotsMonitoringController = ({
 
   useEffect(() => {
     setMonitorLiveTickerPrices({});
-  }, [monitorBotId, monitorSessionId, monitorViewMode]);
+  }, [
+    monitorAppliedSymbolFilter,
+    monitorBotId,
+    monitorSessionDetail?.status,
+    monitorSessionId,
+    monitorStatus,
+    monitorStreamSymbolsKey,
+    monitorViewMode,
+  ]);
 
   useEffect(() => {
     const streamEligible = activeTab === "monitoring" &&
       Boolean(monitorBotId) &&
+      monitorSessionDetail?.status === "RUNNING" &&
       Boolean(monitorStreamSymbolsKey);
     monitorStreamEligibleRef.current = streamEligible;
     if (streamEligible) return;
     monitorStreamConnectedRef.current = false;
     monitorLastSseTickerAtRef.current = null;
     monitorLastSseDrivenRefreshAtRef.current = 0;
-  }, [activeTab, monitorBotId, monitorStreamSymbolsKey]);
+  }, [activeTab, monitorBotId, monitorSessionDetail?.status, monitorStreamSymbolsKey]);
 
   useEffect(() => {
     if (activeTab !== "monitoring" || !monitorBotId) return;
+    if (monitorSessionDetail?.status !== "RUNNING") return;
     if (!monitorStreamSymbolsKey) return;
     if (typeof window === "undefined" || typeof window.EventSource === "undefined") return;
 
@@ -462,6 +472,7 @@ export const useBotsMonitoringController = ({
   }, [
     activeTab,
     monitorBotId,
+    monitorSessionDetail?.status,
     monitorStreamSymbols,
     monitorStreamSymbolsKey,
     triggerSseDrivenMonitorRefresh,

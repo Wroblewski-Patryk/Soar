@@ -52,6 +52,30 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-05-02 - Do not run web typecheck in parallel with Next build
+- Context: `V1SURF-02` validation attempted to rerun `pnpm --filter web run typecheck`
+  and `pnpm --filter web run build` in parallel after a frontend runtime
+  derivation refactor.
+- Symptom: the parallel `typecheck` failed with many `TS6053` missing-file
+  errors under `apps/web/.next/types/**`, while the concurrent `next build`
+  completed successfully and a sequential typecheck immediately after build
+  passed.
+- Root cause: `next build` regenerates `.next/types` while `tsc --noEmit`
+  includes `.next/types/**/*.ts`, so concurrent execution can make TypeScript
+  observe a half-regenerated generated-types tree.
+- Guardrail: run `web typecheck` and `web build` sequentially when validating
+  frontend changes in this repo.
+- Preferred pattern:
+```text
+pnpm --filter web run typecheck
+pnpm --filter web run build
+```
+- Avoid: parallelizing `pnpm --filter web run typecheck` with
+  `pnpm --filter web run build`.
+- Evidence: 2026-05-02 `V1SURF-02`; parallel run produced `.next/types`
+  `TS6053` errors, followed by PASS from `pnpm --filter web run build` and
+  sequential PASS from `pnpm --filter web run typecheck`.
+
 ### 2026-05-02 - Imported LIVE protections must use the freshest exchange-sync price truth
 - Context: an operator reported that `LIVE DOGEUSDT SHORT` stayed open even
   though dashboard PnL had fallen below the visible `TTP` protected level.

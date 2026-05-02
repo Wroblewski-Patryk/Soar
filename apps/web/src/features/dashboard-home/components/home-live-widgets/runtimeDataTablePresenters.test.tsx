@@ -31,6 +31,13 @@ const openPositionRow = {
   liveUnrealizedPnl: 0.1,
   livePnlPct: 10,
   marginNotional: 1,
+  openPnl: 0.1,
+  marginUsed: 1,
+  pnlNotionalPct: 10,
+  pnlMarginPct: 10,
+  marginInitPct: null,
+  ttpProtectedPercent: null,
+  tslProtectedPercent: null,
 } satisfies OpenPositionWithLive;
 
 describe("createOpenPositionsColumns", () => {

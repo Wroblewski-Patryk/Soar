@@ -12,6 +12,46 @@ Operational queue for one-task execution runs.
   blockers are `V1EXCEL-03..06` authenticated manual operator and OPS evidence.
   `BOTMULTI-*` remains in `PIPELINE` until those post-V1 confidence gates are
   green.
+- [x] `V1PRICE-04 fix(api-runtime): propagate fallback ticker price into position markPrice candidates`
+  - 2026-05-02: Closed as part of `V1RUNTIME-TRUST-03`. Runtime Positions now
+    feeds valid fallback ticker prices into the existing preferred price
+    resolver for open-position `markPrice` when runtime/stat price truth is
+    missing, while preserving exchange-sync freshness precedence. Focused API
+    coverage proves a missing runtime ticker plus fallback price returns
+    `markPrice`, `unrealizedPnl`, and margin percent from the fallback
+    candidate. Evidence:
+    `docs/planning/v1runtime-operator-trust-hardening-task-2026-05-02.md`.
+- [x] `V1SURF-03 fix(web-runtime): reset live ticker state on runtime context changes`
+  - 2026-05-02: Closed as part of `V1RUNTIME-TRUST-03`. Dashboard Home now
+    clears stream prices when selected bot/session/status/symbol context
+    changes, and Bot Monitoring clears stream prices when bot/session/view
+    mode/status/filter/symbol context changes. Bot Monitoring also opens SSE
+    only for `RUNNING` runtime contexts, matching Dashboard Home's live versus
+    snapshot distinction. Focused web hook coverage proves same-symbol
+    selected-bot switching clears stale stream prices. Evidence:
+    `docs/planning/v1runtime-operator-trust-hardening-task-2026-05-02.md`.
+- [x] `V1BOT-AUDIT-02 qa(runtime+web): audit runtime freshness, action context, and operator trust`
+  - 2026-05-02: Completed the second audit after `V1SURF-02`. Highest-risk
+    finding: `runtimeSessionPositionsRead.service.ts` fetches fallback ticker
+    prices for missing symbols but does not pass those fallback candidates into
+    the position `markPrice` resolver. Web follow-up: stream ticker maps are
+    symbol-keyed and not reset on all selected runtime/status/filter changes,
+    while Bot Monitoring stream eligibility is broader than Dashboard Home.
+    Close/cancel paths remain backend guarded with `riskAck`; UI affordances
+    can improve later. Evidence:
+    `docs/planning/v1bot-runtime-operator-trust-audit-2026-05-02.md`.
+- [x] `V1SURF-02 fix(web-runtime): share live open-position derivation across Bot Runtime and Dashboard`
+  - 2026-05-02: Closed follow-up from `V1BOT-AUDIT-01`. The audit found the
+    next V1 confidence risk is duplicated frontend runtime derivation, not
+    another independent backend close path. `Dashboard -> Bots -> Monitoring`
+    and `Dashboard Home -> Runtime` now compute live open-position mark price,
+    PnL, margin percent, DCA, and `TTP`/`TSL` display through one shared web
+    helper. Dashboard summary cards now reuse the same selected-bot stream PnL
+    as the open-position table for `summary.unrealized`, `paperDelta`,
+    `paperEquity`, and selected `net`. Validation PASS: focused web
+    derivation/component tests (`9/9`), web typecheck, web build, and
+    guardrails. Evidence:
+    `docs/planning/v1surf-02-shared-runtime-position-derivation-task-2026-05-02.md`.
 - [x] `V1DOGE-03 fix(api-runtime+web): align imported LIVE protection and dashboard price truth`
   - 2026-05-02: Closed an operator-reported `LIVE DOGEUSDT SHORT` protection
     concern where dashboard PnL had fallen below visible `TTP` while the

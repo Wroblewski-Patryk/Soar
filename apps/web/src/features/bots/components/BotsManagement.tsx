@@ -16,9 +16,6 @@ import {
 } from "../types/bot.type";
 import { supportsExchangeCapability } from "../../exchanges/exchangeCapabilities";
 import {
-  toProtectedPnlPercentFromStopPrice,
-} from "../utils/trailingStopDisplay";
-import {
   countRuntimeMarketStates,
   deriveStrategyMaxOpenPositions,
   resolveBotVenueContext,
@@ -28,11 +25,11 @@ import {
   resolveRuntimeMarketState,
   resolveRuntimePortfolio,
 } from "../utils/runtimeSurfaceTruth";
+import { buildRuntimeOpenPositionRows } from "../utils/runtimeOpenPositionDerivations";
 import { renderDcaLadderCell } from "../../shared/dcaLadderCell";
 import { useBotsListController } from "../hooks/useBotsListController";
 import { useBotsAssistantController } from "../hooks/useBotsAssistantController";
 import { useBotsMonitoringController } from "../hooks/useBotsMonitoringController";
-import { normalizeSymbol } from "@/lib/symbols";
 import { toTimestamp } from "@/lib/time";
 import {
   FIELD_WRAPPER_CLASS,
@@ -260,67 +257,16 @@ export default function BotsManagement({
       usedMargin: 0,
     });
     const initBalance = runtimePortfolio ?? resolvePaperConfigBaseline(selectedMonitorBot);
-    const openItems = monitorPositions?.openItems ?? [];
-    return openItems.map((position) => {
-      const liveMarkPrice =
-        monitorLiveTickerPrices[normalizeSymbol(position.symbol)] ?? position.markPrice ?? null;
-      const openPnl =
-        typeof liveMarkPrice === "number" && Number.isFinite(liveMarkPrice)
-          ? (liveMarkPrice - position.entryPrice) *
-            position.quantity *
-            (position.side === "LONG" ? 1 : -1)
-          : (position.unrealizedPnl ?? 0);
-      const entryNotional = position.entryNotional;
-      const marginUsed =
-        position.marginUsed ??
-        (position.leverage > 0 ? entryNotional / position.leverage : entryNotional);
-      const pnlNotionalPct = entryNotional > 0 ? (openPnl / entryNotional) * 100 : 0;
-      const pnlMarginPct =
-        typeof position.unrealizedPnlPercent === "number" && liveMarkPrice == null
-          ? position.unrealizedPnlPercent
-          : marginUsed > 0
-            ? (openPnl / marginUsed) * 100
-            : 0;
-      const marginInitPct = initBalance && initBalance > 0 ? (marginUsed / initBalance) * 100 : null;
-      const ttpProtectedPercentFromStopPrice =
-        toProtectedPnlPercentFromStopPrice({
-          side: position.side,
-          entryPrice: position.entryPrice,
-          leverage: position.leverage,
-          quantity: position.quantity,
-          marginUsed,
-          stopPrice: position.dynamicTtpStopLoss,
-        }) ?? null;
-      const ttpProtectedPercent = ttpProtectedPercentFromStopPrice ?? null;
-      const tslProtectedPercent =
-        ttpProtectedPercent != null
-          ? null
-          : toProtectedPnlPercentFromStopPrice({
-              side: position.side,
-              entryPrice: position.entryPrice,
-              leverage: position.leverage,
-              quantity: position.quantity,
-              marginUsed,
-              stopPrice: position.dynamicTslStopLoss,
-            }) ?? null;
-
-      return {
-        ...position,
-        markPrice: liveMarkPrice,
-        openPnl,
-        entryNotional,
-        marginUsed,
-        pnlNotionalPct,
-        pnlMarginPct,
-        marginInitPct,
-        ttpProtectedPercent,
-        tslProtectedPercent,
-      };
+    return buildRuntimeOpenPositionRows({
+      positions: monitorPositions,
+      symbolStats: monitorSymbolStats,
+      streamPrices: monitorLiveTickerPrices,
+      initBalance,
     });
   }, [
     monitorLiveTickerPrices,
-    monitorPositions?.openItems,
-    monitorPositions?.summary,
+    monitorPositions,
+    monitorSymbolStats,
     monitorSessionDetail?.summary.realizedPnl,
     selectedMonitorBot,
   ]);
