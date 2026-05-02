@@ -100,6 +100,18 @@ Last updated: 2026-05-02
   of reconstructing it from `syncState` or audit logs.
 
 ## Product Decisions (Confirmed)
+- 2026-05-02: closed `V1MARKET-03`, the remaining operator-reported market edit
+  blocker for a `LIVE` bot-linked market universe. Production smoke with user
+  approval proved that disabling `live` moved its canonical `ETH` market group
+  to `PAUSED`, but editing `ETH` still failed because active `Peper bot` had a
+  stale legacy `BotStrategy` row pointing at `ETH Group` while its current
+  canonical market scope is `Meme coins`. The market universe active-use guard
+  now follows singular bot truth and blocks only active current primary or
+  canonical bot market scope; stale legacy `BotStrategy` links no longer block
+  edits after the real linked bot is deactivated. Validation PASS: markets e2e
+  (`15/15`), bots runtime-scope e2e (`10/10`), API typecheck, and repository
+  guardrails. Evidence:
+  `docs/planning/v1market-03-ignore-stale-legacy-market-guard-task-2026-05-02.md`.
 - 2026-05-02: production Redis investigation for `V1BOT-SIGNALS-02` confirmed
   the Soar Redis resource in Coolify is `restarting:unhealthy` because Redis
   repeatedly fails to load a corrupted append-only increment file. This

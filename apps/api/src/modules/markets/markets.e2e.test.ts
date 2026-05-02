@@ -558,6 +558,84 @@ describe('Markets module contract', () => {
     expect(blockedAfterReactivateRes.status).toBe(409);
   });
 
+  it('ignores stale legacy bot strategy links when the current active bot scope moved to another universe', async () => {
+    const agent = await registerAndLogin(uniqueEmail('markets-stale-legacy-bot-strategy'));
+
+    const sourceUniverseRes = await agent.post('/dashboard/markets/universes').send({
+      ...createPayload(),
+      name: 'Legacy Source Universe',
+      whitelist: ['ETHUSDT'],
+      blacklist: [],
+    });
+    expect(sourceUniverseRes.status).toBe(201);
+    const sourceUniverseId = sourceUniverseRes.body.id as string;
+
+    const currentUniverseRes = await agent.post('/dashboard/markets/universes').send({
+      ...createPayload(),
+      name: 'Current Bot Universe',
+      whitelist: ['DOGEUSDT'],
+      blacklist: [],
+    });
+    expect(currentUniverseRes.status).toBe(201);
+    const currentUniverseId = currentUniverseRes.body.id as string;
+
+    const sourceUniverse = await prisma.marketUniverse.findUniqueOrThrow({
+      where: { id: sourceUniverseId },
+      select: { userId: true },
+    });
+
+    const disabledLinkedBotId = await createActiveBotUsingUniverse({
+      userId: sourceUniverse.userId,
+      universeId: sourceUniverseId,
+      isActive: true,
+      mode: 'PAPER',
+    });
+    expect(disabledLinkedBotId).toBeDefined();
+    const deactivateRes = await agent.put(`/dashboard/bots/${disabledLinkedBotId}`).send({
+      isActive: false,
+    });
+    expect(deactivateRes.status).toBe(200);
+
+    const activeCurrentBotId = await createActiveBotUsingUniverse({
+      userId: sourceUniverse.userId,
+      universeId: currentUniverseId,
+      isActive: true,
+      mode: 'PAPER',
+    });
+    expect(activeCurrentBotId).toBeDefined();
+
+    const activeCurrentBot = await prisma.bot.findUniqueOrThrow({
+      where: { id: activeCurrentBotId! },
+      select: { strategyId: true },
+    });
+    const staleSourceGroup = await prisma.symbolGroup.findFirstOrThrow({
+      where: {
+        userId: sourceUniverse.userId,
+        marketUniverseId: sourceUniverseId,
+      },
+      select: { id: true },
+    });
+
+    await prisma.botStrategy.create({
+      data: {
+        botId: activeCurrentBotId!,
+        strategyId: activeCurrentBot.strategyId!,
+        symbolGroupId: staleSourceGroup.id,
+        isEnabled: true,
+      },
+    });
+
+    const updateRes = await agent.put(`/dashboard/markets/universes/${sourceUniverseId}`).send({
+      whitelist: ['ETHUSDT', 'BTCUSDT'],
+      blacklist: [],
+      filterRules: {
+        minQuoteVolumeEnabled: false,
+      },
+    });
+    expect(updateRes.status).toBe(200);
+    expect(updateRes.body.whitelist).toEqual(['ETHUSDT', 'BTCUSDT']);
+  });
+
   it('blocks universe update/delete when active primary bot still points at the universe even if group links drifted', async () => {
     const agent = await registerAndLogin(uniqueEmail('markets-primary-guard'));
 

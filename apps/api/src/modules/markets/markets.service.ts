@@ -135,32 +135,9 @@ const assertUniverseNotUsedByActiveBot = async (params: { userId: string; market
     },
   });
 
-  const usedByActiveLegacyBot = await prisma.botStrategy.findFirst({
-    where: {
-      isEnabled: true,
-      bot: {
-        userId,
-        isActive: true,
-      },
-      symbolGroup: {
-        marketUniverseId,
-      },
-    },
-    select: {
-      id: true,
-      bot: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-    },
-  });
-
   const blockingBot =
     usedByActivePrimaryBot ??
     usedByActiveCanonicalBot?.bot ??
-    usedByActiveLegacyBot?.bot ??
     null;
 
   if (blockingBot) {

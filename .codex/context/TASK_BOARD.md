@@ -17,6 +17,19 @@ Last updated: 2026-05-02
 
 ## READY
 
+- [x] `V1MARKET-03 fix(api-markets): ignore stale legacy bot-strategy market links`
+  - Scope: reproduced the operator-reported production `LIVE` blocker with
+    explicit approval. Disabling `live` correctly moved its canonical `ETH`
+    market group to `PAUSED`, but editing `ETH` still failed because the active
+    `Peper bot` had a stale legacy `BotStrategy` row pointing at `ETH Group`
+    even though its current canonical market scope is `Meme coins`. The market
+    universe active-use guard now blocks only active current primary/canonical
+    bot market scope and ignores stale legacy `BotStrategy` links. Added a
+    regression for this drift shape. Validation PASS: markets e2e (`15/15`),
+    bots runtime-scope e2e (`10/10`), API typecheck, and repository guardrails.
+    Evidence:
+    `docs/planning/v1market-03-ignore-stale-legacy-market-guard-task-2026-05-02.md`.
+
 - [x] `V1MARKET-02 fix(web-markets): keep Binance catalog symbols selectable for whitelist`
   - Scope: fixed the operator-reported follow-up where market whitelist
     dropdowns only showed symbols that survived the current volume filter,
