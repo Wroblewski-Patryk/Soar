@@ -225,7 +225,7 @@ export const listBotRuntimeSessionSymbolStats = async (
   userId: string,
   botId: string,
   sessionId: string,
-  query: ListBotRuntimeSymbolStatsQueryDto
+  query: ListBotRuntimeSymbolStatsQueryDto & { preferConfiguredStrategyContext?: boolean }
 ) => {
   const session = await getOwnedBotRuntimeSession(userId, botId, sessionId);
   if (!session) return null;
@@ -440,7 +440,11 @@ export const listBotRuntimeSessionSymbolStats = async (
   const strategySeriesKeys = new Map<string, { symbol: string; interval: string }>();
   for (const symbol of symbols) {
     const latestSignal = latestSignalBySymbol.get(symbol);
-    const strategyId = latestSignal?.strategyId ?? configuredStrategyBySymbol.get(symbol) ?? null;
+    const configuredStrategyId = configuredStrategyBySymbol.get(symbol) ?? null;
+    const strategyId =
+      query.preferConfiguredStrategyContext === true
+        ? configuredStrategyId ?? latestSignal?.strategyId ?? null
+        : latestSignal?.strategyId ?? configuredStrategyId;
     if (!strategyId) continue;
     const strategy = strategiesById.get(strategyId);
     if (!strategy?.interval) continue;
@@ -511,6 +515,7 @@ export const listBotRuntimeSessionSymbolStats = async (
     configuredStrategyBySymbol,
     strategiesById,
     marketSnapshotsBySeries,
+    preferConfiguredStrategyContext: query.preferConfiguredStrategyContext,
   });
 
   return {

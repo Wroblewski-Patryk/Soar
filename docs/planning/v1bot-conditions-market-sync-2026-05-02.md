@@ -75,6 +75,11 @@ edit behavior for inactive paper/live bots.
   context as stale. Follow-up local validation after the aggregate merge
   hardening remained PASS for the same focused bots/markets e2e, API
   typecheck, API build, and guardrails.
+- Production paper smoke found a second aggregate-only race: if the bot is
+  restarted before workers create a new running session, aggregate rows may
+  still come entirely from historical sessions. Aggregate symbol stats now
+  request configured-strategy-preferred context, while session-specific stats
+  preserve explicit runtime event strategy attribution.
 
 ## Architecture Evidence
 - Architecture source reviewed:
@@ -114,6 +119,9 @@ edit behavior for inactive paper/live bots.
 - Runtime monitoring aggregate now keeps current configured fallback context
   ahead of superseded historical signal context when a fresh restarted session
   has no accepted signal yet.
+- Aggregate reads use configured strategy context as the display source for
+  stopped/just-restarted bot monitoring; session-specific reads keep historical
+  event truth.
 - Market tests were expanded without changing market save logic.
 
 ### 5. Verify and Test

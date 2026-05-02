@@ -26,8 +26,9 @@ Last updated: 2026-05-01
     condition context, falling back to the current configured strategy until a
     fresh runtime decision arrives. Aggregate merge also preserves current
     configured fallback context over superseded historical signal context after
-    restart. The market edit question was regression checked without changing
-    UI: inactive PAPER and LIVE bots can save market universe symbol edits and
+    restart, including the no-new-session-yet race seen in production paper
+    smoke. The market edit question was regression checked without changing UI:
+    inactive PAPER and LIVE bots can save market universe symbol edits and
     linked symbol groups sync correctly. Validation PASS: focused bots
     runtime-scope e2e (`10/10`), markets e2e (`13/13`), API typecheck, API
     build, and repository guardrails.

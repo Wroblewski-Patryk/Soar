@@ -183,6 +183,7 @@ export const getBotRuntimeMonitoringAggregate = async (
         listBotRuntimeSessionSymbolStats(userId, botId, session.id, {
           symbol: query.symbol,
           limit: query.perSessionLimit,
+          preferConfiguredStrategyContext: true,
         }),
         listBotRuntimeSessionPositions(userId, botId, session.id, {
           symbol: query.symbol,

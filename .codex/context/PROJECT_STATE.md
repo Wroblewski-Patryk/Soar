@@ -111,6 +111,9 @@ Last updated: 2026-05-02
   existing-older-strategy switch edge case; aggregate merge now keeps current
   configured fallback context ahead of superseded historical signal context
   when the restarted session has not emitted a fresh accepted signal yet.
+  Production paper smoke also exposed the no-new-session-yet aggregate race;
+  aggregate reads now prefer configured strategy display context, while
+  session-specific reads preserve explicit runtime event attribution.
   Validation PASS: focused bots runtime-scope e2e (`10/10`), markets e2e
   (`13/13`), API typecheck, API build, and repository guardrails. Evidence:
   `docs/planning/v1bot-conditions-market-sync-2026-05-02.md`.

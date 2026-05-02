@@ -92,6 +92,7 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
     string,
     { candles: RuntimeCandle[]; derivatives?: StrategySignalDerivativesSeries }
   >;
+  preferConfiguredStrategyContext?: boolean;
 }) => {
   const items = params.symbols.map((symbol) => {
     const stat = params.statBySymbol.get(symbol) ?? null;
@@ -114,7 +115,8 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
       signalStrategyId != null &&
       fallbackStrategyId != null &&
       signalStrategyId !== fallbackStrategyId &&
-      ((latestSignalAtMs != null && latestSignalAtMs < sessionStartedAtMs) ||
+      (params.preferConfiguredStrategyContext === true ||
+        (latestSignalAtMs != null && latestSignalAtMs < sessionStartedAtMs) ||
         configuredStrategyUpdatedAtMs > signalStrategyUpdatedAtMs);
     const signalUsesEditedStrategyConfig =
       signalStrategyId != null &&
