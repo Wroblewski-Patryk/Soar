@@ -179,13 +179,20 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
         : hasConcreteConditionValue(snapshotAnalysis.conditionLines)
           ? snapshotAnalysis
           : signalAnalysis ?? snapshotAnalysis;
+    const snapshotReplacesNoVoteDecision =
+      conditionLineSource === snapshotAnalysis &&
+      hasConcreteConditionValue(snapshotAnalysis.conditionLines) &&
+      effectiveLatestSignal?.signalDirection == null &&
+      effectiveLatestSignal?.mergeReason != null;
+    const displaySignalContextSource: RuntimeSignalContextSource =
+      snapshotReplacesNoVoteDecision ? 'configured_fallback' : signalContextSource;
     const indicatorSummary =
       conditionLineSource === signalAnalysis
         ? signalAnalysis?.indicatorSummary ?? snapshotAnalysis.indicatorSummary
         : snapshotAnalysis.indicatorSummary ?? signalAnalysis?.indicatorSummary ?? null;
     const runtimeMarketState: RuntimeMarketTruthState = resolveRuntimeMarketTruthState({
       openPositionCount: openCount ?? stat?.openPositionCount ?? 0,
-      signalContextSource,
+      signalContextSource: displaySignalContextSource,
       signalDirection: effectiveSignalDirection,
     });
     const signalScoreSummary =
@@ -221,12 +228,14 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
       lastSignalAt: stat?.lastSignalAt ?? null,
       lastTradeAt: stat?.lastTradeAt ?? params.latestTradeAtBySymbol.get(symbol) ?? null,
       lastSignalDirection: effectiveSignalDirection,
-      lastSignalDecisionAt: effectiveLatestSignal?.eventAt ?? stat?.lastSignalAt ?? null,
-      lastSignalMessage: effectiveLatestSignal?.message ?? null,
-      lastSignalReason: effectiveLatestSignal?.mergeReason ?? null,
+      lastSignalDecisionAt: snapshotReplacesNoVoteDecision
+        ? stat?.lastSignalAt ?? null
+        : effectiveLatestSignal?.eventAt ?? stat?.lastSignalAt ?? null,
+      lastSignalMessage: snapshotReplacesNoVoteDecision ? null : effectiveLatestSignal?.message ?? null,
+      lastSignalReason: snapshotReplacesNoVoteDecision ? null : effectiveLatestSignal?.mergeReason ?? null,
       lastSignalStrategyId: effectiveSignalStrategyId,
       lastSignalStrategyName: effectiveSignalStrategy?.name ?? null,
-      lastSignalContextSource: signalContextSource,
+      lastSignalContextSource: displaySignalContextSource,
       runtimeMarketState,
       configuredStrategyId: fallbackStrategyId,
       configuredStrategyName: configuredStrategy?.name ?? null,

@@ -153,8 +153,8 @@ post-deploy smoke expectations.
 ## Validation Evidence
 - Tests:
   - PASS:
-    `pnpm --filter api run test -- src/modules/engine/runtimeSignalMarketDataGateway.test.ts src/modules/engine/runtimeSignalLoop.service.test.ts src/modules/bots/runtimeSessionSymbolStatsRead.service.test.ts --run`
-    (`3` files / `51` tests).
+    `pnpm --filter api run test -- src/modules/bots/runtimeSymbolStatsReadModel.service.test.ts src/modules/engine/runtimeSignalMarketDataGateway.test.ts src/modules/engine/runtimeSignalLoop.service.test.ts src/modules/bots/runtimeSessionSymbolStatsRead.service.test.ts --run`
+    (`4` files / `56` tests).
   - PASS: `pnpm --filter api run typecheck`.
   - PASS: `pnpm --filter api run build`.
   - PASS: `pnpm run quality:guardrails`.
@@ -221,6 +221,10 @@ post-deploy smoke expectations.
   recovered series while all existing execution guardrails remain unchanged.
 - Read-model parity: `runtimeSessionSymbolStatsRead.service.ts` now reuses the
   engine-owned merge helper instead of carrying a dashboard-local duplicate.
+- Read-model stale-decision guard: when a recovered configured snapshot
+  replaces an unavailable/no-vote latest decision for display, the row now
+  reports `configured_fallback` / `CONFIGURED_ONLY` instead of attaching a
+  stale `No votes` reason to the recovered snapshot match.
 - Production follow-up: after push/deploy, verify API freshness directly,
   `/health`, `/ready`, and the active PAPER bot session. The expected outcome
   is no same-strategy row with concrete `matched=true` and

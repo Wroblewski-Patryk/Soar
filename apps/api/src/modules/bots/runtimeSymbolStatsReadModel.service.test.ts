@@ -296,4 +296,79 @@ describe('runtimeSymbolStatsReadModel.service', () => {
     expect(lines.every((line) => line.value !== 'n/a')).toBe(true);
     expect(readModel.items[0].lastSignalIndicatorSummary).not.toContain('n/a');
   });
+
+  it('does not attach stale No votes reason to recovered snapshot condition matches', () => {
+    const readModel = composeRuntimeSymbolStatsReadModel({
+      ...baseParams,
+      latestSignalBySymbol: new Map([
+        [
+          'BTCUSDT',
+          {
+            signalDirection: null,
+            eventAt: new Date('2026-04-23T10:04:00.000Z'),
+            message: 'No trade decision after strategy merge',
+            mergeReason: 'No votes',
+            strategyId: 'strategy-rsi',
+            scoreLong: null,
+            scoreShort: null,
+            analysisByStrategy: {
+              'strategy-rsi': {
+                indicatorSummary: 'RSI(2)=n/a',
+                conditionLines: [
+                  {
+                    scope: 'LONG',
+                    left: 'RSI(2)',
+                    value: 'n/a',
+                    operator: '>',
+                    right: '60',
+                    matched: false,
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      ]),
+      configuredStrategyBySymbol: new Map([['BTCUSDT', 'strategy-rsi']]),
+      strategiesById: new Map([
+        [
+          'strategy-rsi',
+          {
+            name: 'RSI 40/60',
+            interval: '5m',
+            config: {
+              open: {
+                indicatorsLong: [
+                  {
+                    name: 'RSI',
+                    condition: '>',
+                    value: 60,
+                    params: { period: 2 },
+                  },
+                ],
+                indicatorsShort: [],
+              },
+            },
+          },
+        ],
+      ]),
+    });
+
+    expect(readModel.items[0]).toEqual(
+      expect.objectContaining({
+        lastSignalContextSource: 'configured_fallback',
+        runtimeMarketState: 'CONFIGURED_ONLY',
+        lastSignalMessage: null,
+        lastSignalReason: null,
+      })
+    );
+    expect(readModel.items[0].lastSignalConditionLines).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          scope: 'LONG',
+          matched: true,
+        }),
+      ])
+    );
+  });
 });

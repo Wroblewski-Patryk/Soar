@@ -17,8 +17,10 @@ Operational queue for one-task execution runs.
     strategy evaluation, and the dashboard/read-model path reuses the same
     merge helper. Runtime candles remain authoritative on overlap, and no
     pre-trade, wallet, max-position, exchange-min-order, or orchestrator
-    guardrail was bypassed. Validation PASS: focused runtime/read-model tests
-    (`3` files / `51` tests), API typecheck, API build, and repository
+    guardrail was bypassed. Stale no-vote decisions no longer donate their
+    `No votes` reason to recovered configured snapshots. Validation PASS:
+    focused runtime/read-model tests
+    (`4` files / `56` tests), API typecheck, API build, and repository
     guardrails. Post-deploy production smoke remains required before final
     closure. Evidence:
     `docs/planning/runtime-signal-vote-recovery-audit-plan-2026-05-02.md`.

@@ -27,8 +27,10 @@ Last updated: 2026-05-02
     fallback overlap, dashboard/read-model recovery reuses the same merge
     helper, and all signal execution still flows through the existing strategy
     merge, pre-trade, wallet, max-position, exchange-min-order, and
-    orchestrator guardrails. Validation PASS: focused runtime market-data,
-    runtime loop, and read-model tests (`3` files / `51` tests), API
+    orchestrator guardrails. Stale no-vote decisions no longer donate their
+    `No votes` reason to recovered configured snapshots. Validation PASS:
+    focused runtime market-data, runtime loop, and read-model tests
+    (`4` files / `56` tests), API
     typecheck, API build, and repository guardrails. Post-deploy production
     smoke remains the release evidence step before final closure. Evidence:
     `docs/planning/runtime-signal-vote-recovery-audit-plan-2026-05-02.md`.
