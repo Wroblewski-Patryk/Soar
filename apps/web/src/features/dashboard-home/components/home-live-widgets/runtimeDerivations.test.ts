@@ -60,7 +60,7 @@ describe("runtimeDerivations", () => {
     expect(result[0]?.marginNotional).toBeCloseTo(52.6315789474, 8);
   });
 
-  it("prefers backend unrealized pnl truth over stale stream recomputation for imported live positions", () => {
+  it("falls back to backend unrealized pnl truth when no stream price is available", () => {
     const result = buildLiveOpenPositions(
       {
         sessionId: "session-1",
@@ -157,12 +157,70 @@ describe("runtimeDerivations", () => {
           feesPaid: 0,
         },
       },
-      new Map([["XRPUSDT", 1.95223]])
+      new Map()
     );
 
     expect(result).toHaveLength(1);
     expect(result[0]?.liveMarkPrice).toBeCloseTo(2.00054, 8);
     expect(result[0]?.liveUnrealizedPnl).toBeCloseTo(0.54, 8);
     expect(result[0]?.livePnlPct).toBeCloseTo(0.54, 8);
+  });
+
+  it("prefers stream market data over API position snapshots for live dashboard refresh", () => {
+    const result = buildLiveOpenPositions(
+      {
+        sessionId: "session-1",
+        total: 1,
+        openCount: 1,
+        closedCount: 0,
+        openOrdersCount: 0,
+        window: {
+          startedAt: "2026-04-30T10:00:00.000Z",
+          finishedAt: "2026-04-30T10:05:00.000Z",
+        },
+        summary: {
+          realizedPnl: 0,
+          unrealizedPnl: 0.54,
+          feesPaid: 0,
+        },
+        openOrders: [],
+        openItems: [
+          {
+            id: "pos-3",
+            symbol: "DOGEUSDT",
+            side: "SHORT",
+            status: "OPEN",
+            quantity: 1000,
+            leverage: 10,
+            marginUsed: 100,
+            entryPrice: 1,
+            entryNotional: 1000,
+            exitPrice: null,
+            stopLoss: null,
+            takeProfit: null,
+            openedAt: "2026-04-30T10:00:00.000Z",
+            closedAt: null,
+            holdMs: 0,
+            dcaCount: 0,
+            feesPaid: 0,
+            realizedPnl: 0,
+            unrealizedPnl: 6.68,
+            unrealizedPnlPercent: 6.68,
+            markPrice: 0.99332,
+            firstTradeAt: null,
+            lastTradeAt: null,
+            tradesCount: 0,
+          },
+        ],
+        historyItems: [],
+      },
+      null,
+      new Map([["DOGEUSDT", 0.992]])
+    );
+
+    expect(result).toHaveLength(1);
+    expect(result[0]?.liveMarkPrice).toBeCloseTo(0.992, 8);
+    expect(result[0]?.liveUnrealizedPnl).toBeCloseTo(8, 8);
+    expect(result[0]?.livePnlPct).toBeCloseTo(8, 8);
   });
 });

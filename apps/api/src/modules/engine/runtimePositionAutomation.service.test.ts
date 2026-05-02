@@ -5,6 +5,10 @@ import { runtimePositionStateStore } from './runtimePositionState.store';
 afterEach(async () => {
   await runtimePositionStateStore.deletePositionRuntimeState('pos-replay-1');
   await runtimePositionStateStore.deletePositionRuntimeState('pos-live-import-ttp');
+  await runtimePositionStateStore.deletePositionRuntimeState('pos-live-import-ttp-exchange-sync-price');
+  await runtimePositionStateStore.deletePositionRuntimeState('pos-live-import-tp-exchange-sync-price');
+  await runtimePositionStateStore.deletePositionRuntimeState('pos-live-import-sl-exchange-sync-price');
+  await runtimePositionStateStore.deletePositionRuntimeState('pos-live-import-tsl-exchange-sync-price');
   await runtimePositionStateStore.deletePositionRuntimeState('pos-live-reopen-ttp');
   await runtimePositionStateStore.deletePositionRuntimeState('pos-live-reopen-old');
   await runtimePositionStateStore.deletePositionRuntimeState('pos-live-import-rebase');
@@ -1293,6 +1297,312 @@ describe('RuntimePositionAutomationService', () => {
         mode: 'LIVE',
         reason: 'trailing_take_profit',
       })
+    );
+  });
+
+  it('uses fresher exchange-sync PnL truth for imported LIVE TTP close decisions', async () => {
+    process.env.RUNTIME_TRAILING_ENABLED = 'false';
+    process.env.RUNTIME_DCA_ENABLED = 'false';
+
+    await runtimePositionStateStore.setPositionRuntimeState('pos-live-import-ttp-exchange-sync-price', {
+      quantity: 1000,
+      averageEntryPrice: 1,
+      currentAdds: 0,
+      trailingAnchorPrice: 0.9896,
+      trailingTakeProfitHighPercent: 0.104,
+      trailingTakeProfitStepPercent: 0.02,
+    });
+
+    const closeByExitSignal = vi.fn(async () => ({ status: 'closed' as const }));
+    const deps: any = {
+      listOpenPositionsBySymbol: vi.fn(async () => [
+        {
+          id: 'pos-live-import-ttp-exchange-sync-price',
+          userId: 'user-live-import-ttp-exchange-sync-price',
+          botId: 'bot-live-import-ttp-exchange-sync-price',
+          walletId: 'wallet-live-import-ttp-exchange-sync-price',
+          strategyId: 'strat-live-import-ttp-exchange-sync-price',
+          symbol: 'DOGEUSDT',
+          side: 'SHORT' as const,
+          status: 'OPEN' as const,
+          entryPrice: 1,
+          quantity: 1000,
+          leverage: 10,
+          marginUsed: 100,
+          unrealizedPnl: 6.68,
+          lastExchangeSyncAt: new Date(20_000),
+          stopLoss: null,
+          takeProfit: null,
+          managementMode: 'BOT_MANAGED' as const,
+          origin: 'EXCHANGE_SYNC' as const,
+          continuityState: 'CONFIRMED' as const,
+          bot: buildBotExecutionContext({
+            wallet: { mode: 'LIVE' },
+          }),
+        },
+      ]),
+      getStrategyConfigById: vi.fn(async () => ({
+        close: {
+          mode: 'advanced',
+          tp: null,
+          sl: null,
+          ttp: [{ percent: 10, arm: 2 }],
+          tsl: [],
+        },
+        additional: { dcaEnabled: false, dcaTimes: 0, dcaLevels: [] },
+      })),
+      executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
+      closeByExitSignal,
+      resolveDcaFundsExhausted: vi.fn(async () => false),
+      resolveLifecyclePrice: vi.fn(async () => 0.99),
+      recordRuntimeEvent: vi.fn(async () => undefined),
+      nowMs: vi.fn(() => Date.now()),
+    };
+
+    const service = new RuntimePositionAutomationService(deps);
+
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'DOGEUSDT',
+      eventTime: 19_000,
+      lastPrice: 0.99,
+      priceChangePercent24h: -0.5,
+    });
+
+    expect(closeByExitSignal).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'user-live-import-ttp-exchange-sync-price',
+        botId: 'bot-live-import-ttp-exchange-sync-price',
+        walletId: 'wallet-live-import-ttp-exchange-sync-price',
+        strategyId: 'strat-live-import-ttp-exchange-sync-price',
+        symbol: 'DOGEUSDT',
+        mode: 'LIVE',
+        markPrice: 0.99332,
+        reason: 'trailing_take_profit',
+      }),
+    );
+  });
+
+  it('uses fresher exchange-sync PnL truth for imported LIVE take-profit decisions', async () => {
+    process.env.RUNTIME_TRAILING_ENABLED = 'false';
+    process.env.RUNTIME_DCA_ENABLED = 'false';
+
+    const closeByExitSignal = vi.fn(async () => ({ status: 'closed' as const }));
+    const deps: any = {
+      listOpenPositionsBySymbol: vi.fn(async () => [
+        {
+          id: 'pos-live-import-tp-exchange-sync-price',
+          userId: 'user-live-import-tp-exchange-sync-price',
+          botId: 'bot-live-import-tp-exchange-sync-price',
+          walletId: 'wallet-live-import-tp-exchange-sync-price',
+          strategyId: 'strat-live-import-tp-exchange-sync-price',
+          symbol: 'DOGEUSDT',
+          side: 'SHORT' as const,
+          status: 'OPEN' as const,
+          entryPrice: 1,
+          quantity: 1000,
+          leverage: 10,
+          marginUsed: 100,
+          unrealizedPnl: 8.4,
+          lastExchangeSyncAt: new Date(20_000),
+          stopLoss: null,
+          takeProfit: null,
+          managementMode: 'BOT_MANAGED' as const,
+          origin: 'EXCHANGE_SYNC' as const,
+          continuityState: 'CONFIRMED' as const,
+          bot: buildBotExecutionContext({
+            wallet: { mode: 'LIVE' },
+          }),
+        },
+      ]),
+      getStrategyConfigById: vi.fn(async () => ({
+        close: {
+          mode: 'basic',
+          tp: 8,
+          sl: 20,
+          ttp: [],
+          tsl: [],
+        },
+        additional: { dcaEnabled: false, dcaTimes: 0, dcaLevels: [] },
+      })),
+      executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
+      closeByExitSignal,
+      resolveDcaFundsExhausted: vi.fn(async () => false),
+      resolveLifecyclePrice: vi.fn(async () => 0.993),
+      nowMs: vi.fn(() => Date.now()),
+    };
+
+    const service = new RuntimePositionAutomationService(deps);
+
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'DOGEUSDT',
+      eventTime: 19_000,
+      lastPrice: 0.993,
+      priceChangePercent24h: -0.4,
+    });
+
+    expect(closeByExitSignal).toHaveBeenCalledWith(
+      expect.objectContaining({
+        symbol: 'DOGEUSDT',
+        mode: 'LIVE',
+        markPrice: 0.9916,
+        reason: 'take_profit',
+      }),
+    );
+  });
+
+  it('uses fresher exchange-sync PnL truth for imported LIVE stop-loss decisions', async () => {
+    process.env.RUNTIME_TRAILING_ENABLED = 'false';
+    process.env.RUNTIME_DCA_ENABLED = 'false';
+
+    const closeByExitSignal = vi.fn(async () => ({ status: 'closed' as const }));
+    const deps: any = {
+      listOpenPositionsBySymbol: vi.fn(async () => [
+        {
+          id: 'pos-live-import-sl-exchange-sync-price',
+          userId: 'user-live-import-sl-exchange-sync-price',
+          botId: 'bot-live-import-sl-exchange-sync-price',
+          walletId: 'wallet-live-import-sl-exchange-sync-price',
+          strategyId: 'strat-live-import-sl-exchange-sync-price',
+          symbol: 'DOGEUSDT',
+          side: 'LONG' as const,
+          status: 'OPEN' as const,
+          entryPrice: 1,
+          quantity: 1000,
+          leverage: 10,
+          marginUsed: 100,
+          unrealizedPnl: -8.4,
+          lastExchangeSyncAt: new Date(20_000),
+          stopLoss: null,
+          takeProfit: null,
+          managementMode: 'BOT_MANAGED' as const,
+          origin: 'EXCHANGE_SYNC' as const,
+          continuityState: 'CONFIRMED' as const,
+          bot: buildBotExecutionContext({
+            wallet: { mode: 'LIVE' },
+          }),
+        },
+      ]),
+      getStrategyConfigById: vi.fn(async () => ({
+        close: {
+          mode: 'basic',
+          tp: 20,
+          sl: 8,
+          ttp: [],
+          tsl: [],
+        },
+        additional: { dcaEnabled: false, dcaTimes: 0, dcaLevels: [] },
+      })),
+      executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
+      closeByExitSignal,
+      resolveDcaFundsExhausted: vi.fn(async () => false),
+      resolveLifecyclePrice: vi.fn(async () => 0.993),
+      nowMs: vi.fn(() => Date.now()),
+    };
+
+    const service = new RuntimePositionAutomationService(deps);
+
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'DOGEUSDT',
+      eventTime: 19_000,
+      lastPrice: 0.993,
+      priceChangePercent24h: -0.4,
+    });
+
+    expect(closeByExitSignal).toHaveBeenCalledWith(
+      expect.objectContaining({
+        symbol: 'DOGEUSDT',
+        mode: 'LIVE',
+        markPrice: 0.9916,
+        reason: 'stop_loss',
+      }),
+    );
+  });
+
+  it('uses fresher exchange-sync PnL truth for imported LIVE trailing-stop decisions', async () => {
+    process.env.RUNTIME_TRAILING_ENABLED = 'false';
+    process.env.RUNTIME_DCA_ENABLED = 'false';
+
+    await runtimePositionStateStore.setPositionRuntimeState('pos-live-import-tsl-exchange-sync-price', {
+      quantity: 1000,
+      averageEntryPrice: 1,
+      currentAdds: 0,
+      trailingAnchorPrice: 0.99,
+      trailingLossLimitPercent: 0.084,
+    });
+
+    const closeByExitSignal = vi.fn(async () => ({ status: 'closed' as const }));
+    const deps: any = {
+      listOpenPositionsBySymbol: vi.fn(async () => [
+        {
+          id: 'pos-live-import-tsl-exchange-sync-price',
+          userId: 'user-live-import-tsl-exchange-sync-price',
+          botId: 'bot-live-import-tsl-exchange-sync-price',
+          walletId: 'wallet-live-import-tsl-exchange-sync-price',
+          strategyId: 'strat-live-import-tsl-exchange-sync-price',
+          symbol: 'DOGEUSDT',
+          side: 'SHORT' as const,
+          status: 'OPEN' as const,
+          entryPrice: 1,
+          quantity: 1000,
+          leverage: 10,
+          marginUsed: 100,
+          unrealizedPnl: 6.68,
+          lastExchangeSyncAt: new Date(20_000),
+          stopLoss: null,
+          takeProfit: null,
+          managementMode: 'BOT_MANAGED' as const,
+          origin: 'EXCHANGE_SYNC' as const,
+          continuityState: 'CONFIRMED' as const,
+          bot: buildBotExecutionContext({
+            wallet: { mode: 'LIVE' },
+          }),
+        },
+      ]),
+      getStrategyConfigById: vi.fn(async () => ({
+        close: {
+          mode: 'advanced',
+          tp: null,
+          sl: null,
+          ttp: [],
+          tsl: [{ percent: -2, arm: 1 }],
+        },
+        additional: { dcaEnabled: false, dcaTimes: 0, dcaLevels: [] },
+      })),
+      executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
+      closeByExitSignal,
+      resolveDcaFundsExhausted: vi.fn(async () => false),
+      resolveLifecyclePrice: vi.fn(async () => 0.991),
+      nowMs: vi.fn(() => Date.now()),
+    };
+
+    const service = new RuntimePositionAutomationService(deps);
+
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'DOGEUSDT',
+      eventTime: 19_000,
+      lastPrice: 0.991,
+      priceChangePercent24h: -0.4,
+    });
+
+    expect(closeByExitSignal).toHaveBeenCalledWith(
+      expect.objectContaining({
+        symbol: 'DOGEUSDT',
+        mode: 'LIVE',
+        markPrice: 0.99332,
+        reason: 'trailing_stop',
+      }),
     );
   });
 

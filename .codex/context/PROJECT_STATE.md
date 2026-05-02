@@ -100,6 +100,24 @@ Last updated: 2026-05-02
   of reconstructing it from `syncState` or audit logs.
 
 ## Product Decisions (Confirmed)
+- 2026-05-02: closed `V1DOGE-03`, an operator-reported `LIVE DOGEUSDT SHORT`
+  protection hotfix. The dashboard could show exchange-sync PnL already below
+  the visible `TTP` protected floor while runtime automation still evaluated a
+  stale runtime price candidate. The runtime close path now reuses the same
+  runtime-versus-exchange-sync price preference contract as the dashboard read
+  model: imported `LIVE EXCHANGE_SYNC` positions prefer exchange-derived price
+  from fresh `unrealizedPnl` whenever reconciliation is newer than the runtime
+  tick. Focused regression coverage proves DOGE `SHORT` closes through
+  `closeByExitSignal` with `trailing_take_profit` under that freshness shape,
+  and also locks `TP`, `SL`, and `TSL` on the same price-truth contract.
+  A follow-up dashboard-home derivation fix restores live market-stream
+  precedence over API snapshots for visible open-position PnL, so percentages
+  refresh when market data arrives. Validation PASS: focused runtime
+  regression, related runtime/read-model pack (`40/40`), API typecheck,
+  focused web derivation test (`3/3`), web typecheck, web build, and
+  guardrails. Production deploy/readback remains the next
+  operational evidence step. Evidence:
+  `docs/planning/v1doge-ttp-exchange-sync-price-task-2026-05-02.md`.
 - 2026-05-02: closed `V1MARKET-03`, the remaining operator-reported market edit
   blocker for a `LIVE` bot-linked market universe. Production smoke with user
   approval proved that disabling `live` moved its canonical `ETH` market group

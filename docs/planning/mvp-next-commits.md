@@ -12,6 +12,21 @@ Operational queue for one-task execution runs.
   blockers are `V1EXCEL-03..06` authenticated manual operator and OPS evidence.
   `BOTMULTI-*` remains in `PIPELINE` until those post-V1 confidence gates are
   green.
+- [x] `V1DOGE-03 fix(api-runtime+web): align imported LIVE protection and dashboard price truth`
+  - 2026-05-02: Closed an operator-reported `LIVE DOGEUSDT SHORT` protection
+    concern where dashboard PnL had fallen below visible `TTP` while the
+    position stayed open. Runtime automation now reuses the same
+    runtime-versus-exchange-sync price preference contract as the dashboard
+    read model, so imported `LIVE EXCHANGE_SYNC` protection decisions prefer
+    exchange-derived price from fresh `unrealizedPnl` when reconciliation is
+    newer than the runtime tick. Focused regressions lock `TTP`, `TP`, `SL`,
+    and `TSL` on the same freshness contract. A follow-up dashboard-home
+    derivation fix restores live market-stream precedence over API snapshots
+    for visible open-position PnL, so percentages refresh when market data
+    arrives. Validation PASS: focused runtime regression, related
+    runtime/read-model pack (`40/40`), API typecheck, focused web derivation
+    test (`3/3`), web typecheck, web build, and guardrails. Evidence:
+    `docs/planning/v1doge-ttp-exchange-sync-price-task-2026-05-02.md`.
 - [ ] `V1BOT-SIGNALS-02 fix(api-runtime): expose condition match truth and recover market-stream publishing`
   - 2026-05-02: In progress after authenticated production read-only evidence
     showed the current PAPER session was `RUNNING` with `eventsCount=1` and

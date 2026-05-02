@@ -27,6 +27,7 @@ import {
 } from './runtimePositionAutomation.helpers';
 import { hasMaterialCanonicalBasisDrift } from './runtimePositionAutomationStateRebase';
 import { hydrateImportedRuntimePositionOwnership } from './runtimeImportedPositionOwnership';
+import { resolvePreferredRuntimeOrExchangeSyncedPrice } from './runtimeExchangeSyncedPositionPrice';
 import {
   recordRuntimeDcaFundsExhaustedTelemetry,
   recordRuntimeProtectionCloseDecisionTelemetry,
@@ -309,6 +310,9 @@ const defaultDeps: RuntimePositionAutomationDeps = {
         managementMode: true,
         origin: true,
         continuityState: true,
+        status: true,
+        unrealizedPnl: true,
+        lastExchangeSyncAt: true,
           bot: {
             select: {
               walletId: true,
@@ -679,7 +683,24 @@ export class RuntimePositionAutomationService {
         fallbackPrice: event.lastPrice,
       })) ?? event.lastPrice;
     const effectiveLifecyclePrice =
-      Number.isFinite(lifecyclePrice) && lifecyclePrice > 0 ? lifecyclePrice : event.lastPrice;
+      resolvePreferredRuntimeOrExchangeSyncedPrice({
+        origin: position.origin,
+        status: position.status,
+        side: position.side,
+        entryPrice: position.entryPrice,
+        quantity: position.quantity,
+        unrealizedPnl: position.unrealizedPnl ?? null,
+        lastExchangeSyncAt: position.lastExchangeSyncAt ?? null,
+        runtimePriceCandidates: [
+          {
+            price: Number.isFinite(lifecyclePrice) && lifecyclePrice > 0 ? lifecyclePrice : event.lastPrice,
+            observedAtMs:
+              typeof event.eventTime === 'number' && Number.isFinite(event.eventTime)
+                ? event.eventTime
+                : null,
+          },
+        ],
+      }) ?? (Number.isFinite(lifecyclePrice) && lifecyclePrice > 0 ? lifecyclePrice : event.lastPrice);
     const input = buildPositionManagementInput(position, effectiveLifecyclePrice, strategyConfig, runtimeConfig);
     const defaultState = {
       quantity: position.quantity,

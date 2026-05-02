@@ -17,6 +17,9 @@ export type RuntimeManagedPosition = Pick<
   | 'managementMode'
   | 'origin'
   | 'continuityState'
+  | 'status'
+  | 'unrealizedPnl'
+  | 'lastExchangeSyncAt'
 > & {
   marginUsed?: number | null;
   bot:

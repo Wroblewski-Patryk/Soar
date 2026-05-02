@@ -58,7 +58,7 @@ export const buildLiveOpenPositions = (
     const leverage = Number.isFinite(position.leverage) && position.leverage > 0 ? position.leverage : 1;
     const marginNotional = position.marginUsed ?? position.entryNotional / leverage;
     const candidateMark =
-      position.markPrice ?? streamPrices.get(symbolKey) ?? priceBySymbol.get(symbolKey) ?? null;
+      streamPrices.get(symbolKey) ?? position.markPrice ?? priceBySymbol.get(symbolKey) ?? null;
     const liveMarkPrice = typeof candidateMark === 'number' && Number.isFinite(candidateMark) ? candidateMark : null;
     const computedUnrealizedPnl =
       liveMarkPrice == null
@@ -67,11 +67,14 @@ export const buildLiveOpenPositions = (
           ? (liveMarkPrice - position.entryPrice) * position.quantity
           : (position.entryPrice - liveMarkPrice) * position.quantity;
     const liveUnrealizedPnl =
-      typeof position.unrealizedPnl === "number" && Number.isFinite(position.unrealizedPnl)
+      computedUnrealizedPnl ??
+      (typeof position.unrealizedPnl === "number" && Number.isFinite(position.unrealizedPnl)
         ? position.unrealizedPnl
-        : computedUnrealizedPnl ?? 0;
+        : 0);
     const livePnlPct =
-      typeof position.unrealizedPnlPercent === "number" && Number.isFinite(position.unrealizedPnlPercent)
+      liveMarkPrice == null &&
+      typeof position.unrealizedPnlPercent === "number" &&
+      Number.isFinite(position.unrealizedPnlPercent)
         ? position.unrealizedPnlPercent
         : marginNotional > 0
           ? (liveUnrealizedPnl / marginNotional) * 100

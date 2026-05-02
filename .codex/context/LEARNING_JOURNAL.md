@@ -52,6 +52,39 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-05-02 - Imported LIVE protections must use the freshest exchange-sync price truth
+- Context: an operator reported that `LIVE DOGEUSDT SHORT` stayed open even
+  though dashboard PnL had fallen below the visible `TTP` protected level.
+- Symptom: dashboard read models could prefer fresh exchange-sync
+  `unrealizedPnl`, while runtime automation evaluated a stale runtime
+  ticker/mark/candle price candidate. The dashboard-home live rows could also
+  look frozen when display derivation preferred API `position.markPrice` before
+  stream prices.
+- Root cause: the runtime-versus-exchange-sync price preference contract lived
+  in bots read-model ownership and was not reused by
+  `RuntimePositionAutomationService`.
+- Guardrail: imported `LIVE EXCHANGE_SYNC` runtime protection decisions must
+  compare runtime price freshness against `lastExchangeSyncAt` and prefer
+  exchange-derived price from `unrealizedPnl` when reconciliation is fresher;
+  this applies to `TTP`, `TP`, `SL`, and `TSL`.
+- Preferred pattern:
+```text
+1) Keep one shared exchange-sync price preference helper in engine ownership.
+2) Feed runtime automation both runtime price candidates and exchange-sync
+   position truth (`unrealizedPnl`, `lastExchangeSyncAt`).
+3) Preserve runtime candidate authority when it is newer than exchange sync.
+4) For operator display refresh, prefer live market-stream price over API
+   snapshots when stream data is available.
+5) Lock DOGE/SHORT protection regressions at `RuntimePositionAutomationService`
+   and dashboard refresh precedence in `runtimeDerivations.test.ts`.
+```
+- Avoid: letting dashboard/runtime read models and live protection automation
+  choose different price authority for the same imported position lifecycle.
+- Evidence: 2026-05-02 `V1DOGE-03`
+  (`runtimeExchangeSyncedPositionPrice.ts`,
+  `runtimePositionAutomation.service.ts`,
+  `runtimePositionAutomation.service.test.ts`).
+
 ### 2026-05-02 - Web build-info does not prove API deploy freshness
 - Context: post-deploy verification for a backend market-edit hotfix on the
   production Coolify VPS.
