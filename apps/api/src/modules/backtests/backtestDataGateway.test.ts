@@ -116,5 +116,50 @@ describe('backtestDataGateway', () => {
     ]);
     expect(createMany).toHaveBeenCalledTimes(1);
   });
-});
 
+  it('falls back to futures continuous klines when symbol klines are unavailable', async () => {
+    const baseTime = 1_710_000_000_000;
+    const findMany = vi.fn(async () => []);
+    const createMany = vi.fn(async () => ({ count: 2 }));
+    setDbCandleDelegateForTests({ findMany, createMany });
+
+    const fetchMock = vi.fn(async (url: string) => {
+      if (url.includes('/fapi/v1/klines?')) {
+        return new Response(JSON.stringify({ message: 'temporarily unavailable' }), {
+          status: 503,
+          headers: { 'content-type': 'application/json' },
+        });
+      }
+      return new Response(
+        JSON.stringify([
+          buildBinanceKlinePayloadRow(baseTime),
+          buildBinanceKlinePayloadRow(baseTime + ONE_MINUTE_MS),
+        ]),
+        { status: 200, headers: { 'content-type': 'application/json' } },
+      );
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    const candles = await fetchKlines(
+      'BTCUSDT',
+      '1m',
+      'FUTURES',
+      2,
+      baseTime + ONE_MINUTE_MS * 2,
+      baseTime,
+    );
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining('/fapi/v1/klines?symbol=BTCUSDT'),
+    );
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining('/fapi/v1/continuousKlines?pair=BTCUSDT&contractType=PERPETUAL'),
+    );
+    expect(candles.map((item) => item.openTime)).toEqual([
+      baseTime,
+      baseTime + ONE_MINUTE_MS,
+    ]);
+    expect(createMany).toHaveBeenCalledTimes(1);
+  });
+});

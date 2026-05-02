@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-05-01
+Last updated: 2026-05-02
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -16,6 +16,23 @@ Last updated: 2026-05-01
     needed
 
 ## READY
+
+- [x] `V1BACKTEST-01 fix(api-backtests): recover futures candles when primary kline endpoint is unavailable`
+  - Scope: investigated the operator-reported production backtest details/run
+    issue after recent PAPER/LIVE changes. Production smoke reproduced a
+    mode-specific failure: `FUTURES` run
+    `d92219d3-ae5a-480f-ae35-1293e87339bf` failed with
+    `NO_CANDLES_AVAILABLE_FOR_SYMBOL` and `totalTrades=0`, while comparable
+    `SPOT` run `553a5c1a-66a9-4c70-be20-6c044cb11010` completed with
+    `totalTrades=2`. Added a futures-only `/fapi/v1/continuousKlines`
+    fallback in `backtestDataGateway` when the primary `/fapi/v1/klines`
+    response is unavailable or empty, preserving SPOT behavior and avoiding
+    hidden SPOT/FUTURES substitution. Also aligned stale replay-core TSL test
+    data to the current negative-start plus positive-step contract introduced
+    by recent strategy changes. Validation PASS: gateway test (`3/3`), replay
+    core (`25/25`), backtests e2e (`14/14`), API typecheck, API build, and
+    repository guardrails. Evidence:
+    `docs/planning/v1backtest-01-futures-kline-fallback-task-2026-05-02.md`.
 
 - [x] `DPL-PROD-BUILDINFO-01 fix(ops): fail promotion when web build-info stays on old SHA`
   - Scope: hardened the canonical production promotion workflow after a

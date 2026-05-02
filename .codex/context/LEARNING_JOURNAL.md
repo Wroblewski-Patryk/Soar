@@ -52,6 +52,33 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-05-02 - Futures backtest candles need a futures-market fallback
+- Context: an operator-reported production backtest issue was reproduced with
+  safe production backtest-only smoke runs.
+- Symptom: a `FUTURES` `BTCUSDT` backtest failed with
+  `NO_CANDLES_AVAILABLE_FOR_SYMBOL` and `totalTrades=0`, while a comparable
+  `SPOT` backtest completed and produced trades.
+- Root cause: the backtest candle gateway treated an unavailable or empty
+  primary `/fapi/v1/klines` response as no candle data and had no futures
+  datasource fallback, even though Binance futures `continuousKlines` could
+  provide the same perpetual-market candle shape.
+- Guardrail: when recovering Binance USD-M futures backtest candle loading,
+  retry with a futures endpoint (`/fapi/v1/continuousKlines` with
+  `contractType=PERPETUAL`) before classifying the symbol as candle-empty.
+- Preferred pattern:
+```text
+1) Keep `/fapi/v1/klines` as the primary symbol endpoint.
+2) If it is unavailable or returns no usable rows, retry the same chunk through
+   `/fapi/v1/continuousKlines`.
+3) Preserve SPOT behavior and never substitute SPOT candles for FUTURES.
+4) Lock the fallback with `backtestDataGateway.test.ts`.
+```
+- Avoid: silently treating futures kline endpoint failures as empty historical
+  data, or fixing futures backtests by using spot candles.
+- Evidence: 2026-05-02 `V1BACKTEST-01`
+  (`backtestDataGateway.ts`, `backtestDataGateway.test.ts`, production smoke
+  run `d92219d3-ae5a-480f-ae35-1293e87339bf`).
+
 ### 2026-05-02 - DB-backed e2e files must not run in parallel when they share global cleanup
 - Context: `V1BOT-CONDITIONS-01` validated focused bots runtime-scope e2e and
   markets e2e after a runtime monitoring read-model fix.

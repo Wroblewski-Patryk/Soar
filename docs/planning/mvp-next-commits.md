@@ -12,6 +12,21 @@ Operational queue for one-task execution runs.
   blockers are `V1EXCEL-03..06` authenticated manual operator and OPS evidence.
   `BOTMULTI-*` remains in `PIPELINE` until those post-V1 confidence gates are
   green.
+- [x] `V1BACKTEST-01 fix(api-backtests): recover futures candles when primary kline endpoint is unavailable`
+  - 2026-05-02: Closed an operator-reported production backtest investigation
+    after safe production smoke showed `FUTURES` backtest
+    `d92219d3-ae5a-480f-ae35-1293e87339bf` failed with
+    `NO_CANDLES_AVAILABLE_FOR_SYMBOL` and `totalTrades=0`, while comparable
+    `SPOT` backtest `553a5c1a-66a9-4c70-be20-6c044cb11010` completed with
+    `totalTrades=2`. The API backtest gateway now retries Binance USD-M
+    futures candle chunks through `/fapi/v1/continuousKlines` when primary
+    `/fapi/v1/klines` returns no usable rows, without substituting SPOT data
+    for FUTURES. Recent commit review also identified `a7c0a357` as directly
+    touching backtest TSL parsing, so stale replay-core regression data was
+    aligned to the current negative-start plus positive-step TSL contract.
+    Validation PASS: gateway test (`3/3`), replay core (`25/25`), backtests
+    e2e (`14/14`), API typecheck, API build, repository guardrails. Evidence:
+    `docs/planning/v1backtest-01-futures-kline-fallback-task-2026-05-02.md`.
 - [x] `DPL-PROD-BUILDINFO-01 fix(ops): fail promotion when web build-info stays on old SHA`
   - 2026-05-02: Closed production deploy-proof hardening after a Coolify push
     deploy lag required an empty retrigger commit. `Promote PROD` now waits for

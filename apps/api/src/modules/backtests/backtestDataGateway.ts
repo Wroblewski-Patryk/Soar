@@ -176,6 +176,82 @@ const openInterestPeriodForTimeframe = (timeframe: string) => {
   return '5m';
 };
 
+const parseKlinePayload = (payload: unknown): BacktestKlineCandle[] => {
+  if (!Array.isArray(payload) || payload.length === 0) return [];
+
+  return payload
+    .map((row) => {
+      if (!Array.isArray(row) || row.length < 7) return null;
+      const openTime = safeFloat(row[0]);
+      const open = safeFloat(row[1]);
+      const high = safeFloat(row[2]);
+      const low = safeFloat(row[3]);
+      const closePrice = safeFloat(row[4]);
+      const volume = safeFloat(row[5]);
+      const closeTime = safeFloat(row[6]);
+      if (
+        openTime <= 0 ||
+        closeTime <= 0 ||
+        closePrice <= 0 ||
+        open <= 0 ||
+        high <= 0 ||
+        low <= 0
+      ) {
+        return null;
+      }
+      return {
+        openTime,
+        closeTime,
+        open,
+        high,
+        low,
+        close: closePrice,
+        volume,
+      } satisfies BacktestKlineCandle;
+    })
+    .filter((row): row is BacktestKlineCandle => Boolean(row));
+};
+
+const fetchKlineChunk = async (input: {
+  endpoint: string;
+  symbol: string;
+  normalizedTimeframe: string;
+  chunkLimit: number;
+  startTime: number;
+  endTime: number;
+  marketType: BacktestMarketType;
+}): Promise<BacktestKlineCandle[]> => {
+  const primaryQuery = new URLSearchParams({
+    symbol: input.symbol,
+    interval: input.normalizedTimeframe,
+    limit: String(input.chunkLimit),
+    startTime: String(input.startTime),
+    endTime: String(input.endTime),
+  });
+  const primaryResponse = await fetch(`${input.endpoint}?${primaryQuery.toString()}`);
+  if (primaryResponse.ok) {
+    const primaryParsed = parseKlinePayload(await primaryResponse.json());
+    if (primaryParsed.length > 0) return primaryParsed;
+  }
+
+  if (input.marketType !== 'FUTURES') return [];
+
+  const continuousQuery = new URLSearchParams({
+    pair: input.symbol,
+    contractType: 'PERPETUAL',
+    interval: input.normalizedTimeframe,
+    limit: String(input.chunkLimit),
+    startTime: String(input.startTime),
+    endTime: String(input.endTime),
+  });
+  const continuousResponse = await fetch(
+    `https://fapi.binance.com/fapi/v1/continuousKlines?${continuousQuery.toString()}`,
+  );
+  if (!continuousResponse.ok) return [];
+
+  return parseKlinePayload(await continuousResponse.json());
+};
+
 export const fetchKlines = async (
   symbol: string,
   timeframe: string,
@@ -247,50 +323,15 @@ export const fetchKlines = async (
   while (remaining > 0 && guard < maxIterations) {
     guard += 1;
     const chunkLimit = Math.min(1000, remaining);
-    const query = new URLSearchParams({
+    const parsed = await fetchKlineChunk({
+      endpoint,
       symbol,
-      interval: normalizedTimeframe,
-      limit: String(chunkLimit),
-      startTime: String(nextStartTime),
-      endTime: String(endTime),
+      normalizedTimeframe,
+      chunkLimit,
+      startTime: nextStartTime,
+      endTime,
+      marketType,
     });
-    const response = await fetch(`${endpoint}?${query.toString()}`);
-    if (!response.ok) break;
-
-    const payload = (await response.json()) as unknown;
-    if (!Array.isArray(payload) || payload.length === 0) break;
-
-    const parsed = payload
-      .map((row) => {
-        if (!Array.isArray(row) || row.length < 7) return null;
-        const openTime = safeFloat(row[0]);
-        const open = safeFloat(row[1]);
-        const high = safeFloat(row[2]);
-        const low = safeFloat(row[3]);
-        const closePrice = safeFloat(row[4]);
-        const volume = safeFloat(row[5]);
-        const closeTime = safeFloat(row[6]);
-        if (
-          openTime <= 0 ||
-          closeTime <= 0 ||
-          closePrice <= 0 ||
-          open <= 0 ||
-          high <= 0 ||
-          low <= 0
-        ) {
-          return null;
-        }
-        return {
-          openTime,
-          closeTime,
-          open,
-          high,
-          low,
-          close: closePrice,
-          volume,
-        } satisfies BacktestKlineCandle;
-      })
-      .filter((row): row is BacktestKlineCandle => Boolean(row));
 
     if (parsed.length === 0) break;
 

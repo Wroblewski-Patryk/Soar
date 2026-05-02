@@ -404,9 +404,10 @@ describe('simulateTradesForSymbolReplay', () => {
     const candles = [
       candle(0, 100),
       candle(1, 101.5), // open LONG
-      candle(2, 101.2), // small pullback
-      candle(3, 103.0), // favorable move (arms trailing)
-      candle(4, 102.0), // trailing exit
+      candle(2, 101.2), // indicator warmup opens LONG here
+      candle(3, 100.2), // negative-start TSL arms
+      candle(4, 103.0), // recovery lifts trailing loss limit
+      candle(5, 102.0), // pullback crosses trailing loss limit
     ];
 
     const result = simulateTradesForSymbolReplay({
@@ -435,7 +436,7 @@ describe('simulateTradesForSymbolReplay', () => {
         close: {
           mode: 'advanced',
           tp: 4,
-          tsl: [{ percent: 0.5 }],
+          tsl: [{ percent: -0.5, arm: 0.1 }],
         },
       },
     });

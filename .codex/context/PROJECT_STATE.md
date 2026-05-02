@@ -100,6 +100,22 @@ Last updated: 2026-05-02
   of reconstructing it from `syncState` or audit logs.
 
 ## Product Decisions (Confirmed)
+- 2026-05-02: closed `V1BACKTEST-01`, an operator-reported production
+  backtest investigation after recent PAPER/LIVE runtime changes. Safe
+  production smoke reproduced a mode-specific data problem: `FUTURES` run
+  `d92219d3-ae5a-480f-ae35-1293e87339bf` failed with
+  `NO_CANDLES_AVAILABLE_FOR_SYMBOL` and `totalTrades=0`, while comparable
+  `SPOT` run `553a5c1a-66a9-4c70-be20-6c044cb11010` completed with
+  `totalTrades=2`. The backtest gateway now keeps `/fapi/v1/klines` as primary
+  but retries Binance USD-M futures chunks through `/fapi/v1/continuousKlines`
+  before classifying a futures symbol as candle-empty, preserving venue truth
+  and avoiding hidden SPOT/FUTURES substitution. Commit review from the last
+  three days found direct backtest impact in `a7c0a357` (TSL negative-start
+  plus step semantics) and `fbeae8f0` (backtest e2e V1 alignment); stale replay
+  test data was aligned to the new TSL contract. Validation PASS: backtest
+  gateway test (`3/3`), replay core (`25/25`), backtests e2e (`14/14`), API
+  typecheck, API build, and repository guardrails. Evidence:
+  `docs/planning/v1backtest-01-futures-kline-fallback-task-2026-05-02.md`.
 - 2026-05-02: closed `DPL-PROD-BUILDINFO-01`, a production promotion hardening
   fix after an observed Coolify push deploy lag required an empty retrigger
   commit. The canonical `Promote PROD` workflow now waits for public web
