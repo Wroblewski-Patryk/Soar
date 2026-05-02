@@ -3,6 +3,17 @@
 Last updated: 2026-05-02
 
 ## 2026-05-02 V1 Prod-Only Release Scope Update
+- 2026-05-02 production dashboard display follow-up `DASHDISPLAY-01` is
+  closed. Authenticated read-only review of
+  `https://soar.luckysparrow.ch/dashboard` found two visible dashboard polish
+  regressions plus one hidden DOM text leak: Manual Order `Min qty` and
+  `Qty slider` could visually collide, long runtime History/trade pills could
+  wrap into tall badges, and the hidden dashboard breadcrumb spacer exposed
+  `__dashboard-spacer__` in rendered text. The fix is presentation-only and
+  does not change trading/runtime/API behavior. Validation PASS: focused web
+  dashboard/title pack (`29/29`), web typecheck, repository guardrails, and web
+  build. Evidence:
+  `docs/planning/dashdisplay-01-prod-dashboard-display-polish-task-2026-05-02.md`.
 - Operator decision: V1 release evidence is production-only for now; a separate
   stage environment is deferred to V2 when a dedicated VPS is available.
 - Stage absence is no longer a V1 blocker. Gate 4 signoff is approved with

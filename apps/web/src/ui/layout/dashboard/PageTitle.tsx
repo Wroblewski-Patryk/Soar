@@ -115,7 +115,7 @@ export function PageTitle({
               if (item.hidden) {
                 return (
                   <li key={key} aria-hidden className="w-0 overflow-hidden opacity-0 pointer-events-none select-none">
-                    <span className="inline-block w-0">{item.label}</span>
+                    <span className="inline-block w-0" />
                   </li>
                 );
               }

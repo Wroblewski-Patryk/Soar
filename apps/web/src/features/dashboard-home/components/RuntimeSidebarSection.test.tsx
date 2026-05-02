@@ -484,4 +484,19 @@ describe("RuntimeSidebarSection strategy edge behavior", () => {
     expect(screen.queryByText("KRAKEN")).not.toBeInTheDocument();
     expect(screen.queryByText("Spot")).not.toBeInTheDocument();
   });
+
+  it("keeps manual order min-quantity helper separate from the quantity slider label", () => {
+    const props = createProps();
+
+    render(<RuntimeSidebarSection {...props} />);
+
+    const quantityInput = screen.getByTestId("manual-order-quantity-input");
+    const minQtyHelper = screen.getByTestId("manual-order-min-qty-helper");
+    const slider = screen.getByRole("slider", { name: "Slider" });
+
+    expect(quantityInput.closest("label")).toHaveTextContent("Quantity");
+    expect(quantityInput.closest("label")).not.toHaveTextContent("Min:");
+    expect(minQtyHelper).toHaveTextContent("Min: 0,001");
+    expect(minQtyHelper.compareDocumentPosition(slider)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+  });
 });

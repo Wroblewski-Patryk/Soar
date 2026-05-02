@@ -92,4 +92,11 @@ describe("PageTitle accessibility contract", () => {
     expect(actionContainer).not.toBeNull();
     expect(actionContainer?.className).toContain("gap-3");
   });
+
+  it("does not expose the dashboard landing spacer label in rendered text", () => {
+    renderWithI18n(<PageTitle title="Dashboard" breadcrumb={[{ label: "Dashboard", href: "/dashboard" }]} variant="flat" />);
+
+    expect(document.body).not.toHaveTextContent("__dashboard-spacer__");
+    expect(screen.getByRole("heading", { level: 1, name: "Dashboard" })).toBeInTheDocument();
+  });
 });

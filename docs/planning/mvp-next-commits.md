@@ -7,6 +7,15 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `DASHDISPLAY-01 fix(web-dashboard): repair production dashboard display polish`
+  - 2026-05-02: Closed authenticated production dashboard display follow-up.
+    Fixed the Manual Order `Min qty`/`Qty slider` visual collision, kept long
+    runtime History/trade pills on one line, and removed the hidden
+    `__dashboard-spacer__` placeholder from rendered DOM text. No API,
+    runtime, persistence, or trading behavior changed. Validation PASS:
+    focused web dashboard/title pack (`29/29`), web typecheck, repository
+    guardrails, and web build. Evidence:
+    `docs/planning/dashdisplay-01-prod-dashboard-display-polish-task-2026-05-02.md`.
 - [x] `AWESOME-FIX-01 test(api-positions): isolate imported position history hydrator fixtures`
   - 2026-05-02: Closed the first follow-up from the completed post-V1 quality
     audit. Fixed the cleanup/fixture isolation gap in

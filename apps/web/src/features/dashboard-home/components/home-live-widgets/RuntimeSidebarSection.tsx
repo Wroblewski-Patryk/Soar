@@ -643,25 +643,27 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
                     </button>
                   </div>
                 </label>
-                <label className="form-control gap-1">
-                  <span className="label-text text-xs">{props.manualOrder.quantityLabel}</span>
-                  <input
-                    type="number"
-                    inputMode="decimal"
-                    min={props.manualOrder.minExecutableQty ?? 0}
-                    step="0.000001"
-                    className="input input-bordered input-sm"
-                    data-testid="manual-order-quantity-input"
-                    value={props.manualOrder.quantity}
-                    disabled={props.manualOrder.isSubmitting}
-                    onChange={(event) => props.manualOrder.onQuantityChange(event.target.value)}
-                  />
-                  <span className="text-[10px] opacity-70">
+                <div className="space-y-1.5">
+                  <label className="form-control gap-1">
+                    <span className="label-text text-xs">{props.manualOrder.quantityLabel}</span>
+                    <input
+                      type="number"
+                      inputMode="decimal"
+                      min={props.manualOrder.minExecutableQty ?? 0}
+                      step="0.000001"
+                      className="input input-bordered input-sm"
+                      data-testid="manual-order-quantity-input"
+                      value={props.manualOrder.quantity}
+                      disabled={props.manualOrder.isSubmitting}
+                      onChange={(event) => props.manualOrder.onQuantityChange(event.target.value)}
+                    />
+                  </label>
+                  <p className="min-h-4 text-[10px] leading-4 opacity-70" data-testid="manual-order-min-qty-helper">
                     {props.manualOrder.minQtyLabel}: {props.manualOrder.minExecutableQty != null ? props.formatNumber(props.manualOrder.minExecutableQty, { maximumFractionDigits: 8 }) : "-"}
-                  </span>
-                </label>
-                <label className="form-control gap-1">
-                  <span className="label-text text-xs">{props.manualOrder.sliderLabel}</span>
+                  </p>
+                </div>
+                <div className="space-y-1.5 pt-1">
+                  <p className="label-text text-xs">{props.manualOrder.sliderLabel}</p>
                   <input
                     type="range"
                     min={0}
@@ -670,13 +672,14 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
                     onChange={(event) => props.manualOrder.onSliderChange(Number(event.target.value))}
                     className="range range-xs"
                     data-testid="manual-order-quantity-slider"
+                    aria-label={props.manualOrder.sliderLabel}
                     disabled={props.manualOrder.isSubmitting || props.manualOrder.maxExecutableQty == null}
                   />
-                  <span className="flex items-center justify-between text-[10px] opacity-70">
+                  <p className="flex items-center justify-between text-[10px] leading-4 opacity-70">
                     <span>{props.manualOrder.sliderMinLabel}</span>
                     <span>{props.manualOrder.sliderMaxLabel}</span>
-                  </span>
-                </label>
+                  </p>
+                </div>
                 <label className="form-control gap-1">
                   <span className="label-text text-xs">{props.manualOrder.budgetLabel}</span>
                   <input

@@ -17,6 +17,17 @@ Last updated: 2026-05-02
 
 ## READY
 
+- [x] `DASHDISPLAY-01 fix(web-dashboard): repair production dashboard display polish`
+  - Scope: remediated authenticated production dashboard display findings from
+    2026-05-02 without changing trading/runtime/API behavior. Manual Order
+    quantity helper text is structurally separate from the quantity slider,
+    runtime history/trade pills stay on one line in horizontally scrollable
+    tables, and the dashboard breadcrumb spacer no longer exposes
+    `__dashboard-spacer__` in rendered DOM text. Validation PASS: focused web
+    dashboard/title pack (`29/29`), web typecheck, repository guardrails, and
+    web build. Evidence:
+    `docs/planning/dashdisplay-01-prod-dashboard-display-polish-task-2026-05-02.md`.
+
 - [x] `AWESOME-FIX-01 test(api-positions): isolate imported position history hydrator fixtures`
   - Scope: remediated the only confirmed follow-up from
     `docs/operations/awesome-audit-execution-report-2026-05-02.md`.

@@ -489,7 +489,7 @@ export const createHistoryPositionsColumns = ({
       const initiator = row.closeInitiator as CloseInitiatorValue | null | undefined;
       if (!initiator) return "-";
       return (
-        <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${closeInitiatorPillClass(initiator)}`}>
+        <span className={`inline-flex items-center whitespace-nowrap rounded-full border px-2 py-0.5 text-xs font-medium ${closeInitiatorPillClass(initiator)}`}>
           {t(closeInitiatorLabelKey(initiator))}
         </span>
       );
@@ -558,7 +558,7 @@ export const createTradesColumns = ({
         lifecycleAction: row.lifecycleAction,
       });
       return (
-        <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${presentation.className}`}>
+        <span className={`inline-flex items-center whitespace-nowrap rounded-full border px-2 py-0.5 text-xs font-medium ${presentation.className}`}>
           {t(presentation.labelKey)}
         </span>
       );
@@ -577,7 +577,7 @@ export const createTradesColumns = ({
       });
       if (!presentation) return "-";
       return (
-        <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${presentation.className}`}>
+        <span className={`inline-flex items-center whitespace-nowrap rounded-full border px-2 py-0.5 text-xs font-medium ${presentation.className}`}>
           {t(presentation.labelKey)}
         </span>
       );

@@ -1,8 +1,13 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
+import type { BotRuntimeTrade } from "@/features/bots/types/bot.type";
 import type { OpenPositionWithLive } from "./types";
-import { createHistoryPositionsColumns, createOpenPositionsColumns } from "./runtimeDataTablePresenters";
+import {
+  createHistoryPositionsColumns,
+  createOpenPositionsColumns,
+  createTradesColumns,
+} from "./runtimeDataTablePresenters";
 
 const openPositionRow = {
   id: "position-open-1",
@@ -39,6 +44,30 @@ const openPositionRow = {
   ttpProtectedPercent: null,
   tslProtectedPercent: null,
 } satisfies OpenPositionWithLive;
+
+const tradeRow = {
+  id: "trade-1",
+  symbol: "BTCUSDT",
+  side: "BUY",
+  lifecycleAction: "OPEN",
+  actionReason: "SIGNAL_ENTRY",
+  closeInitiator: null,
+  price: 100,
+  quantity: 1,
+  fee: 0,
+  feeSource: "ESTIMATED",
+  feePending: false,
+  feeCurrency: "USDT",
+  realizedPnl: 0,
+  executedAt: "2026-05-02T10:00:00.000Z",
+  orderId: "order-1",
+  positionId: "position-1",
+  strategyId: "strategy-1",
+  origin: "BOT",
+  managementMode: "BOT",
+  notional: 100,
+  margin: 10,
+} satisfies BotRuntimeTrade;
 
 describe("createOpenPositionsColumns", () => {
   it("renders position action buttons with shared table action tones", () => {
@@ -210,5 +239,52 @@ describe("createHistoryPositionsColumns", () => {
     render(<div>{columns[1]?.render?.(row)}</div>);
 
     expect(screen.getByText("-")).toBeInTheDocument();
+  });
+});
+
+describe("createTradesColumns", () => {
+  it("keeps long trade reason and actor pills on one line", () => {
+    const columns = createTradesColumns({
+      t: (key) =>
+        ({
+          "dashboard.home.runtime.reasonPositionLifecycleOpen": "Position lifecycle open",
+          "dashboard.home.runtime.openByBotApp": "Bot app",
+          "dashboard.home.runtime.filterAction": "Action",
+          "dashboard.home.runtime.reason": "Reason",
+          "dashboard.home.runtime.openedClosedBy": "Opened / closed by",
+          "dashboard.home.runtime.time": "Time",
+          "dashboard.home.runtime.symbol": "Symbol",
+          "dashboard.home.runtime.side": "Side",
+          "dashboard.home.runtime.qty": "Qty",
+          "dashboard.home.runtime.price": "Price",
+          "dashboard.home.runtime.margin": "Margin",
+          "dashboard.home.runtime.realizedPnl": "Realized PnL",
+        })[key] ?? key,
+      formatNumber: (value) => String(value),
+      formatRuntimeAmount: (value) => String(value),
+      withRuntimeUnit: (label) => label,
+      resolveRuntimeIcon: () => null,
+      runtimeIconsLoading: false,
+      runtimeIconsError: null,
+      formatDateTime: (value) => value ?? "-",
+    });
+    const reasonColumn = columns.find((column) => column.key === "actionReason");
+    const actorColumn = columns.find((column) => column.key === "closeInitiator");
+
+    expect(reasonColumn).toBeTruthy();
+    expect(actorColumn).toBeTruthy();
+
+    render(
+      <>
+        {reasonColumn?.render?.({
+          ...tradeRow,
+          actionReason: "POSITION_LIFETIME",
+        })}
+        {actorColumn?.render?.(tradeRow)}
+      </>
+    );
+
+    expect(screen.getByText("Position lifecycle open")).toHaveClass("whitespace-nowrap");
+    expect(screen.getByText("Bot app")).toHaveClass("whitespace-nowrap");
   });
 });
