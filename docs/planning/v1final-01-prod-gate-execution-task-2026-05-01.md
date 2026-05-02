@@ -4,8 +4,8 @@
 - ID: V1FINAL-01
 - Title: Verify deployed DOGE runtime hardening and run final V1 production gates
 - Task Type: release
-- Current Stage: verification
-- Status: BLOCKED
+- Current Stage: post-release
+- Status: DONE
 - Owner: Ops/Release
 - Depends on: `V1DOGE-02`, production deploy freshness
 - Priority: P0
@@ -15,6 +15,13 @@ Production deployed `6a8ded9333eabced5e8461362e9e9237a9bf4e4d` on 2026-05-01,
 which includes the DOGE close/reopen lifecycle hardening. This task executed
 the planned post-deploy V1 gate sequence against production and classified the
 remaining GO/NO-GO blockers.
+
+## 2026-05-02 Supersession Note
+This 2026-05-01 `NO-GO/BLOCKED` task is closed as superseded by
+`V1CLOSEOUT-11`, which refreshed the missing production-only release evidence
+and published final V1 status `GO` in
+`docs/operations/v1-final-go-no-go-closure-2026-05-02.md`. Stage is deferred
+to V2 by operator decision and is no longer a V1 blocker.
 
 ## Goal
 Confirm the deployed production candidate contains the DOGE runtime hardening,
@@ -55,9 +62,9 @@ release evidence.
 - [x] DOGE runtime read verification captured.
 - [x] Rollback-proof artifact regenerated for 2026-05-01.
 - [x] RC status/checklist/sign-off refreshed.
-- [ ] Production restore drill PASS evidence exists for the current candidate.
-- [ ] Activation audit/plan are fresh for the current candidate.
-- [ ] Manual operator/live exchange matrix is completed or explicitly waived.
+- [x] Superseded by `V1CLOSEOUT-11` production restore drill PASS evidence.
+- [x] Superseded by `V1CLOSEOUT-11` final V1 production-only release gate.
+- [x] Superseded by operator decision and `V1CLOSEOUT-11` Gate 4 approval.
 
 ## Validation Evidence
 - Tests:
@@ -119,17 +126,14 @@ release evidence.
 ## Result Report
 - Task summary: executable production gates passed for deploy freshness, DOGE
   stale-DCA regression, runtime freshness, rollback guard, rollback proof, and
-  RC status/checklist refresh. Final V1 GO remains blocked.
+  RC status/checklist refresh. The originally blocked final V1 GO is now
+  superseded by `V1CLOSEOUT-11`, which closed V1 production-only release as
+  `GO`.
 - Files changed: planning/context/operations evidence docs.
 - How tested: commands listed in Validation Evidence.
-- What is incomplete: production restore drill PASS, fresh activation audit/plan,
-  manual operator/live exchange matrix, and stage restore.
-- Next steps:
-  1. provide or set production DB restore-drill container config
-     (`PROD_DB_CHECK_CONTAINER`, `PROD_DB_CHECK_USER`, `PROD_DB_CHECK_NAME`) or
-     run the drill from the VPS/Coolify context;
-  2. regenerate activation audit/plan for `6a8ded93`;
-  3. complete or explicitly waive the manual operator matrix;
-  4. rerun release-gate without blockers.
-- Decisions made: final V1 remains `NO-GO/BLOCKED` until the above evidence is
-  current and passing.
+- What is incomplete: nothing for current V1 production-only release status;
+  this task remains as historical evidence of the 2026-05-01 blocker state.
+- Next steps: use `docs/operations/v1-final-go-no-go-closure-2026-05-02.md`
+  as current release status source.
+- Decisions made: `V1CLOSEOUT-11` supersedes this task's earlier
+  `NO-GO/BLOCKED` classification.

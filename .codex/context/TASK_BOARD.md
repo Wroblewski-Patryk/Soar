@@ -17,6 +17,16 @@ Last updated: 2026-05-02
 
 ## READY
 
+- [x] `DOCSYNC-V1FINAL-01 docs(planning): close superseded V1FINAL-01 gate`
+  - Scope: synchronized stale 2026-05-01 final-gate queue truth after
+    `V1CLOSEOUT-11` published the current 2026-05-02 V1 production-only `GO`.
+    `V1FINAL-01` is now marked closed as superseded by
+    `docs/operations/v1-final-go-no-go-closure-2026-05-02.md`, and
+    `PROJECT_STATE` no longer describes the current phase as the older
+    `V1EXCEL` / `V1FINAL-01` `NO-GO`. Validation PASS: repository guardrails.
+    Evidence:
+    `docs/planning/docsync-v1final-01-superseded-gate-status-task-2026-05-02.md`.
+
 - [x] `DASHSIGNALS-02 fix(api-runtime): recover indicator candles before unavailable signal values`
   - Scope: closed the deeper follow-up from `DASHSIGNALS-01`. Runtime symbol
     stats now treats a short in-memory candle series as insufficient for

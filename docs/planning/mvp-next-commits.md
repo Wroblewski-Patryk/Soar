@@ -363,7 +363,7 @@ Operational queue for one-task execution runs.
     entitlement e2e PASS (`5/5`), API build PASS, repository guardrails PASS.
     Evidence:
     `docs/planning/v1subs-01-live-entitlement-bot-write-guard-task-2026-05-01.md`.
-- [ ] `V1FINAL-01 qa(prod): verify deployed DOGE runtime hardening and run final V1 gates`
+- [x] `V1FINAL-01 qa(prod): verify deployed DOGE runtime hardening and run final V1 gates`
   - 2026-05-01 preflight: production public smoke is green, but build-info
     still reports `c081f224134fedb65de2ecad716274b92593c373`, while repository
     head is now `fba29a96` and includes runtime hardening commit `577c45a8`.
@@ -401,6 +401,11 @@ Operational queue for one-task execution runs.
     the production backup/restore drill artifact is failed. Stage still returns
     `503`. Evidence:
     `docs/operations/v1-release-gate-prod-2026-05-01T18-20-00-000Z.md`.
+  - 2026-05-02 supersession: closed as superseded by `V1CLOSEOUT-11`, which
+    refreshed production restore, rollback, Gate 4 approval, and non-dry-run
+    production release evidence and published final V1 production-only status
+    `GO` in `docs/operations/v1-final-go-no-go-closure-2026-05-02.md`. Stage
+    is deferred to V2 by operator decision.
 - [ ] `V1EXCEL-04 ops(stage-refresh): restore stage target before authenticated gate rerun`
   - 2026-05-01 refresh: stage public smoke now fails before auth. `stage-api`
     and `stage` both return `503 no available server` for health/ready/root and

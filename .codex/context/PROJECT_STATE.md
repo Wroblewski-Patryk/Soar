@@ -88,14 +88,11 @@ Last updated: 2026-05-02
   live execution support, operator dashboards, and a path toward assistant or
   agent-driven workflows
 - Commercial model: SaaS-style subscription product with staged entitlements
-- Current phase: V1 engineering scope is complete and the newest `LIVE`
-  hardening waves remain green, but the latest `V1EXCEL` evidence pass ends in
-  an explicit operational `NO-GO` until fresh authenticated manual operator and
-  protected stage/prod OPS evidence are rerun on the current candidate. Active
-  focus has shifted away from code-gap hunting and toward final confidence
-  closure, real operator verification, and target-environment evidence
-  freshness after the closed `V1CONF-A`, `V1SIG-A`, `V1CAP-A`, `V1ALIGN-A`,
-  fully closed `V1BOT-A`, and fully closed `V1TRUTH-A` wave. The current repository truth is that the
+- Current phase: V1 production-only release evidence is `GO` as of
+  `V1CLOSEOUT-11` on 2026-05-02. Stage is intentionally deferred to V2 by
+  operator decision, and the older `V1FINAL-01` / `V1EXCEL` `NO-GO` wording is
+  historical pre-closeout evidence rather than current release status. The
+  current repository truth is that the
   deployed worker contract is frozen to `split`, runtime symbol scope and
   signal interval truth now fail closed and persist honestly, runtime
   freshness authority is scoped to active sessions, operator diagnostics are
