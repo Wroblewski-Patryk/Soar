@@ -198,7 +198,7 @@ Operational queue for one-task execution runs.
     runtime/read-model pack (`40/40`), API typecheck, focused web derivation
     test (`3/3`), web typecheck, web build, and guardrails. Evidence:
     `docs/planning/v1doge-ttp-exchange-sync-price-task-2026-05-02.md`.
-- [ ] `V1BOT-SIGNALS-02 fix(api-runtime): expose condition match truth and recover market-stream publishing`
+- [x] `V1BOT-SIGNALS-02 fix(api-runtime): expose condition match truth and recover market-stream publishing`
   - 2026-05-02: In progress after authenticated production read-only evidence
     showed the current PAPER session was `RUNNING` with `eventsCount=1` and
     `symbolsTracked=0`, while the market-stream SSE endpoint connected but did
@@ -210,11 +210,13 @@ Operational queue for one-task execution runs.
     retry on later events. Follow-up websocket smoke identified the deeper
     remaining blocker: Binance USD-M Futures no longer pushes regular market
     streams from the legacy unrouted `wss://fstream.binance.com/ws` endpoint,
-    so the worker now uses `wss://fstream.binance.com/market/ws`. Validation
-    so far: focused market-stream/runtime read-model tests (`50/50`), focused
-    Binance stream/fanout/subscription tests (`15/15`), API typecheck, web
-    typecheck, API build, and repository guardrails. Production SSE event
-    smoke remains required after deploy. Evidence:
+    so the worker now uses `wss://fstream.binance.com/market/ws`. The slice is
+    closed after Redis AOF recovery, Redis readiness hardening, and
+    post-recovery production SSE PASS with real candle/ticker events.
+    Validation PASS: focused market-stream/runtime read-model tests (`50/50`),
+    focused Binance stream/fanout/subscription tests (`15/15`), readiness
+    tests (`9/9`), API typecheck, web typecheck, API build, and repository
+    guardrails. Evidence:
     `docs/planning/v1bot-signals-runtime-truth-2026-05-02.md`.
 - [x] `V1BACKTEST-01 fix(api-backtests): recover futures candles when primary kline endpoint is unavailable`
   - 2026-05-02: Closed an operator-reported production backtest investigation

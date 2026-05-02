@@ -32,6 +32,21 @@ Last updated: 2026-05-02
     dashboard signal cards. Evidence:
     `docs/planning/dashsignals-02-indicator-recovery-before-unavailable-task-2026-05-02.md`.
 
+- [x] `V1BOT-SIGNALS-02 fix(api-runtime): expose condition match truth and recover market-stream publishing`
+  - Scope: closed the runtime signal truth and market-stream recovery slice.
+    Condition lines now carry canonical `matched=true|false|null` truth,
+    dashboard/bot monitoring surfaces can distinguish `PASS` and `MISS`,
+    market-stream Redis publisher failures retry instead of memoizing a dead
+    publisher, Binance USD-M Futures market streams use the routed
+    `/market/ws` endpoint, and production readiness now fails closed when
+    required Redis is unreachable. Production Redis AOF was recovered from a
+    backed-up volume and post-recovery authenticated SSE emitted real
+    candle/ticker events. Validation PASS: focused market-stream/runtime
+    read-model tests (`50/50`), focused Binance stream/fanout/subscription
+    tests (`15/15`), readiness tests (`9/9`), API typecheck, web typecheck,
+    API build, and repository guardrails. Evidence:
+    `docs/planning/v1bot-signals-runtime-truth-2026-05-02.md`.
+
 - [x] `DASHSIGNALS-01 fix(runtime+web): clarify unavailable indicator signal values`
   - Scope: remediated the operator-reported production dashboard signal-card
     drift where unavailable RSI values rendered as misleading expressions such

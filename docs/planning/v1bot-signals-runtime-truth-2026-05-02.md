@@ -4,8 +4,8 @@
 - ID: V1BOT-SIGNALS-02
 - Title: fix(api-runtime): expose condition match truth and recover Binance futures market-stream routing
 - Task Type: fix
-- Current Stage: verification
-- Status: REVIEW
+- Current Stage: post-release
+- Status: DONE
 - Owner: Backend Builder
 - Depends on: V1BOT-CONDITIONS-01
 - Priority: P0
@@ -240,7 +240,9 @@ are driven by fresh Binance market events.
 ### 7. Update Documentation and Knowledge
 - Docs updated: this task file, post-deploy smoke checklist, Redis AOF recovery
   runbook, context/planning files.
-- Context updated: pending.
+- Context updated: `.codex/context/TASK_BOARD.md`,
+  `.codex/context/PROJECT_STATE.md`, and
+  `docs/planning/mvp-next-commits.md`.
 - Learning journal updated: Redis AOF/readiness guardrail captured.
 
 ## Review Checklist

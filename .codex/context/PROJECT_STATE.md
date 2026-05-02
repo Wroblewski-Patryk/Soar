@@ -3,6 +3,18 @@
 Last updated: 2026-05-02
 
 ## 2026-05-02 V1 Prod-Only Release Scope Update
+- 2026-05-02 runtime signal and market-stream recovery slice
+  `V1BOT-SIGNALS-02` is closed. Condition lines now expose canonical
+  `matched=true|false|null` truth for operator display, Redis market-stream
+  publisher failures retry instead of permanently dropping events, Binance
+  USD-M Futures market streams use the routed `/market/ws` endpoint, and
+  production readiness fails closed when required Redis is unreachable.
+  Production Redis AOF recovery completed from a backed-up volume, and
+  post-recovery authenticated SSE emitted real candle/ticker events. Validation
+  PASS: focused market-stream/runtime read-model tests (`50/50`), focused
+  Binance stream/fanout/subscription tests (`15/15`), readiness tests (`9/9`),
+  API typecheck, web typecheck, API build, and repository guardrails. Evidence:
+  `docs/planning/v1bot-signals-runtime-truth-2026-05-02.md`.
 - 2026-05-02 production dashboard signal recovery follow-up `DASHSIGNALS-02`
   is closed. The runtime symbol-stats read path now attempts indicator data
   recovery before emitting unavailable values: short in-memory candle histories
