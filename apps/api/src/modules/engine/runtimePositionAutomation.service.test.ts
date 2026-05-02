@@ -1606,6 +1606,108 @@ describe('RuntimePositionAutomationService', () => {
     );
   });
 
+  it('blocks LIVE trailing-stop close when durable DCA progress shows a pending affordable level', async () => {
+    process.env.RUNTIME_TRAILING_ENABLED = 'false';
+    process.env.RUNTIME_DCA_ENABLED = 'false';
+
+    const closeByExitSignal = vi.fn(async () => ({ status: 'closed' as const }));
+    const resolveDcaFundsExhausted = vi.fn(async () => false);
+    const deps: any = {
+      listOpenPositionsBySymbol: vi.fn(async () => [
+        {
+          id: 'pos-live-eth-pending-dca-tsl',
+          userId: 'user-live-eth-pending-dca-tsl',
+          botId: 'bot-live-eth-pending-dca-tsl',
+          walletId: 'wallet-live-eth-pending-dca-tsl',
+          strategyId: 'strat-live-eth-pending-dca-tsl',
+          symbol: 'ETHUSDT',
+          side: 'SHORT' as const,
+          status: 'OPEN' as const,
+          entryPrice: 2291.37,
+          quantity: 0.036,
+          leverage: 15,
+          marginUsed: 5.49,
+          unrealizedPnl: -1.71,
+          lastExchangeSyncAt: new Date(22_000),
+          stopLoss: null,
+          takeProfit: null,
+          managementMode: 'BOT_MANAGED' as const,
+          origin: 'EXCHANGE_SYNC' as const,
+          continuityState: 'CONFIRMED' as const,
+          bot: buildBotExecutionContext({
+            wallet: { mode: 'LIVE' },
+          }),
+        },
+      ]),
+      getStrategyConfigById: vi.fn(async () => ({
+        close: {
+          mode: 'advanced',
+          tp: null,
+          sl: null,
+          ttp: [],
+          tsl: [{ percent: -2, arm: 1 }],
+        },
+        additional: {
+          dcaEnabled: true,
+          dcaMode: 'advanced',
+          dcaTimes: 3,
+          dcaLevels: [
+            { percent: -10, multiplier: 1 },
+            { percent: -20, multiplier: 1 },
+            { percent: -45, multiplier: 1 },
+          ],
+        },
+      })),
+      getDurableDcaProgress: vi.fn(async () => ({
+        currentAdds: 2,
+        lastDcaPrice: 2310.26,
+      })),
+      executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
+      closeByExitSignal,
+      resolveDcaFundsExhausted,
+      resolveLifecyclePrice: vi.fn(async () => 2338.9),
+      nowMs: vi.fn(() => Date.now()),
+    };
+
+    const service = new RuntimePositionAutomationService(deps);
+
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'ETHUSDT',
+      eventTime: 23_000,
+      lastPrice: 2338.9,
+      priceChangePercent24h: 1.1,
+    });
+
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'ETHUSDT',
+      eventTime: 24_000,
+      lastPrice: 2338.9,
+      priceChangePercent24h: 1.1,
+    });
+
+    expect(resolveDcaFundsExhausted).toHaveBeenCalledWith(
+      expect.objectContaining({
+        addedQuantity: 0.036,
+        markPrice: 2338.9,
+        mode: 'LIVE',
+      }),
+    );
+    expect(deps.executeDca).not.toHaveBeenCalled();
+    expect(closeByExitSignal).not.toHaveBeenCalled();
+    expect(service.getPositionStateSnapshot('pos-live-eth-pending-dca-tsl')).toEqual(
+      expect.objectContaining({
+        currentAdds: 2,
+        lastDcaPrice: 2310.26,
+      }),
+    );
+  });
+
   it('rebases imported LIVE runtime state when canonical exchange-sync basis changed in place', async () => {
     process.env.RUNTIME_TRAILING_ENABLED = 'false';
     process.env.RUNTIME_DCA_ENABLED = 'false';

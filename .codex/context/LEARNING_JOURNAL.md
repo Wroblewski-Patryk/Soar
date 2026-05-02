@@ -52,6 +52,37 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-05-02 - LIVE DCA-first gating must prefer durable DCA progress over volatile runtime state
+- Context: an operator reported that a `LIVE ETHUSDT` isolated short appeared
+  to close by `TSL` at a loss after two visible DCA adds while the live
+  strategy was expected to have three DCA levels.
+- Symptom: runtime protection state can be absent, expired, or rebased while
+  persisted trade lifecycle rows still prove executed DCA adds; the operator
+  table could also hide finite negative trailing-loss `TSL` state.
+- Root cause: runtime automation evaluated protection closes primarily from
+  volatile runtime position state (`currentAdds`) and did not explicitly
+  hydrate durable same-lifecycle DCA progress before DCA-first close gating.
+- Guardrail: before evaluating `TSL` / `SL`, runtime automation must merge
+  stronger durable DCA progress from persisted lifecycle trades into the
+  current management state. Operator serialization must render finite negative
+  trailing-loss limits as valid dynamic `TSL` state.
+- Preferred pattern:
+```text
+1) Load volatile runtime state.
+2) Load durable current-position and same-context lifecycle trade progress.
+3) Merge durable currentAdds upward when it is stronger.
+4) Evaluate DCA-first management through the shared lifecycle evaluator.
+5) Keep pending affordable DCA blocking TSL/SL.
+6) Render finite positive or negative trailing-loss limits honestly.
+```
+- Avoid: using Redis/runtime-memory `currentAdds=0` as authoritative when
+  persisted lifecycle trades prove prior DCA adds, or hiding negative
+  trailing-loss TSL state from operator tables.
+- Evidence: 2026-05-02 `ETHDCA-01`
+  (`runtimePositionAutomation.service.ts`,
+  `runtimePositionSerialization.service.ts`, focused runtime/serialization
+  tests `38/38`).
+
 ### 2026-05-02 - Runtime execution and read-model recovery must share one indicator-ready series contract
 - Context: an active PAPER runtime bot showed concrete recovered dashboard
   conditions for `RSI(14)` while the same runtime session still recorded

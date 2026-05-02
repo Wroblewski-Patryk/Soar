@@ -16,6 +16,22 @@ Rule: fix/cleanup/update first, then feature delivery.
 - Preferred order: `fix` / `refactor` / `test` / `chore` before `feat`.
 - No mixed commits (for example feature + refactor together).
 
+## Phase ETHDCA-2026-05-02 - LIVE DCA-First TSL Hardening (Closed 2026-05-02)
+- [x] `ETHDCA-01 fix(api-runtime): preserve LIVE DCA-first gating for trailing-stop close decisions`
+
+### Progress Log (Phase ETHDCA-2026-05-02 - LIVE DCA-First TSL Hardening)
+- 2026-05-02: Closed `ETHDCA-01` after operator-reported ETHUSDT screenshots
+  suggested a LIVE short may have closed by `TSL` while a third configured DCA
+  level was expected to remain pending. Runtime automation now hydrates durable
+  DCA progress from persisted `Trade` lifecycle rows before DCA-first
+  protection close evaluation, including current-position rows and same
+  bot/wallet/strategy/symbol replacement lifecycles cut off by the latest
+  opposite-side close. Runtime position serialization now renders finite
+  negative trailing-loss `TSL` state instead of hiding it. Validation PASS:
+  focused runtime automation and position serialization tests (`38/38`), API
+  typecheck, API build, and repository guardrails. Evidence:
+  `docs/planning/ethdca-01-live-dca-first-tsl-hardening-task-2026-05-02.md`.
+
 ## Phase V1CLOSEOUT-AUDIT-2026-05-02 - Final V1 Audit Remediation (Queued 2026-05-02)
 - [x] `V1CLOSEOUT-00 planning(release): publish full audit remediation packet`
 - [x] `V1CLOSEOUT-01 fix(api-wallets/bots): resolve LIVE external management ownership persistence`

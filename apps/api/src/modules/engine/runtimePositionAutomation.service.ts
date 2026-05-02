@@ -106,6 +106,69 @@ const loadCanonicalPositionExecutionState = async (positionId: string) => {
   };
 };
 
+const loadDurableDcaProgress = async (input: {
+  userId: string;
+  positionId: string;
+  botId?: string | null;
+  walletId?: string | null;
+  strategyId?: string | null;
+  symbol: string;
+  positionSide: PositionSide;
+}) => {
+  const entrySide = input.positionSide === 'LONG' ? 'BUY' : 'SELL';
+  const scopedLifecycleWhere =
+    input.botId || input.walletId || input.strategyId
+      ? {
+          AND: [
+            {
+              userId: input.userId,
+              symbol: input.symbol,
+              managementMode: 'BOT_MANAGED' as const,
+            },
+            ...(input.botId ? [{ botId: input.botId }] : []),
+            ...(input.walletId ? [{ OR: [{ walletId: input.walletId }, { walletId: null }] }] : []),
+            ...(input.strategyId ? [{ OR: [{ strategyId: input.strategyId }, { strategyId: null }] }] : []),
+          ],
+        }
+      : null;
+  const trades = await prisma.trade.findMany({
+    where: {
+      lifecycleAction: { in: ['OPEN', 'DCA', 'CLOSE'] },
+      OR: [
+        { positionId: input.positionId },
+        ...(scopedLifecycleWhere ? [scopedLifecycleWhere] : []),
+      ],
+    },
+    select: {
+      id: true,
+      lifecycleAction: true,
+      price: true,
+      side: true,
+      executedAt: true,
+    },
+    orderBy: { executedAt: 'asc' },
+  });
+  const dedupedTrades = [...new Map(trades.map((trade) => [trade.id, trade])).values()]
+    .sort((left, right) => left.executedAt.getTime() - right.executedAt.getTime());
+  const latestCloseIndex = dedupedTrades.findLastIndex(
+    (trade) => trade.side !== entrySide && trade.lifecycleAction === 'CLOSE'
+  );
+  const lifecycleTrades = latestCloseIndex >= 0
+    ? dedupedTrades.slice(latestCloseIndex + 1)
+    : dedupedTrades;
+  const entryTrades = lifecycleTrades.filter(
+    (trade) => trade.side === entrySide && (trade.lifecycleAction === 'OPEN' || trade.lifecycleAction === 'DCA')
+  );
+  const entryLegAdds = Math.max(0, entryTrades.length - 1);
+  const dcaTrades = entryTrades.filter((trade) => trade.lifecycleAction === 'DCA');
+  const explicitDcaAdds = dcaTrades.length;
+  const lastDcaTrade = dcaTrades.at(-1);
+  return {
+    currentAdds: Math.max(entryLegAdds, explicitDcaAdds),
+    lastDcaPrice: lastDcaTrade?.price,
+  };
+};
+
 export const executeRuntimeDca = async (input: {
   userId: string;
   botId?: string | null;
@@ -352,6 +415,7 @@ const defaultDeps: RuntimePositionAutomationDeps = {
     return strategy.config as Record<string, unknown>;
   },
   getCanonicalPositionState: (positionId) => loadCanonicalPositionExecutionState(positionId),
+  getDurableDcaProgress: (input) => loadDurableDcaProgress(input),
   executeDca: executeRuntimeDca,
   closeByExitSignal: async (input) => {
     const result = await orchestrateRuntimeSignal({
@@ -553,6 +617,7 @@ export class RuntimePositionAutomationService {
         : {
             ...defaultDeps,
             getCanonicalPositionState: async () => null,
+            getDurableDcaProgress: async () => null,
             recordRuntimeEvent: async () => undefined,
             upsertRuntimeSymbolStat: async () => undefined,
           };
@@ -710,8 +775,25 @@ export class RuntimePositionAutomationService {
       lastDcaPrice: undefined,
     } as PositionManagementState;
     const persistedState = this.positionStates.get(position.id) ?? (await runtimePositionStateStore.getPositionRuntimeState(position.id));
+    const durableDcaProgress = await this.deps.getDurableDcaProgress({
+      userId: position.userId,
+      positionId: position.id,
+      botId: position.botId,
+      walletId: inheritedExecutionContext.walletId ?? position.walletId ?? position.bot?.walletId ?? null,
+      strategyId: position.strategyId,
+      symbol: position.symbol,
+      positionSide: position.side,
+    });
     const stateRebasedToCanonical = hasMaterialCanonicalBasisDrift({ position, state: persistedState ?? null });
-    const previousState = stateRebasedToCanonical ? defaultState : persistedState ?? defaultState;
+    const basePreviousState = stateRebasedToCanonical ? defaultState : persistedState ?? defaultState;
+    const previousState =
+      durableDcaProgress && durableDcaProgress.currentAdds > basePreviousState.currentAdds
+        ? {
+            ...basePreviousState,
+            currentAdds: durableDcaProgress.currentAdds,
+            lastDcaPrice: durableDcaProgress.lastDcaPrice ?? basePreviousState.lastDcaPrice,
+          }
+        : basePreviousState;
     const previousStateSnapshot = this.cloneState(previousState);
     const currentPnlFraction = resolveRuntimeCurrentPnlFraction({
       side: position.side,

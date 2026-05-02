@@ -57,6 +57,18 @@ export type RuntimePositionAutomationDeps = {
     quantity: number;
     averageEntryPrice: number;
   } | null>;
+  getDurableDcaProgress: (input: {
+    userId: string;
+    positionId: string;
+    botId?: string | null;
+    walletId?: string | null;
+    strategyId?: string | null;
+    symbol: string;
+    positionSide: PositionSide;
+  }) => Promise<{
+    currentAdds: number;
+    lastDcaPrice?: number;
+  } | null>;
   executeDca: (input: {
     userId: string;
     botId?: string | null;

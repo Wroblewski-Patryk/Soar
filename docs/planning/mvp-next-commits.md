@@ -7,6 +7,21 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `ETHDCA-01 fix(api-runtime): preserve LIVE DCA-first gating for trailing-stop close decisions`
+  - 2026-05-02: Closed the operator-reported ETHUSDT DCA-first protection
+    hardening slice. Runtime position automation now hydrates durable DCA
+    progress from persisted `Trade` lifecycle rows before protection close
+    evaluation, including current-position rows and same
+    bot/wallet/strategy/symbol replacement lifecycles cut off by the latest
+    opposite-side close. Volatile runtime state loss or exchange-sync rebase
+    can no longer undercount executed adds when a pending affordable DCA level
+    should still block `TSL` / `SL`. Runtime position serialization now
+    renders finite negative trailing-loss `TSL` state instead of hiding an
+    armed loss-side stop. Validation PASS: focused runtime automation and position
+    serialization tests (`38/38`), API typecheck, API build, and repository
+    guardrails.
+    Evidence:
+    `docs/planning/ethdca-01-live-dca-first-tsl-hardening-task-2026-05-02.md`.
 - [ ] `RUNTIME-SIGNAL-VOTES-01 fix(api-runtime): recover runtime strategy votes when matched indicators exist`
   - 2026-05-02: Implementation is locally verified and ready for deploy smoke
     for the production-reported runtime signal-vote drift where dashboard rows

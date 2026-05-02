@@ -17,6 +17,22 @@ Last updated: 2026-05-02
 
 ## READY
 
+- [x] `ETHDCA-01 fix(api-runtime): preserve LIVE DCA-first gating for trailing-stop close decisions`
+  - Scope: closed the operator-reported ETHUSDT investigation slice. Runtime
+    position automation now hydrates durable DCA progress from persisted
+    `Trade` lifecycle rows before DCA-first protection close evaluation,
+    including current-position rows and same bot/wallet/strategy/symbol
+    replacement lifecycles cut off by the latest opposite-side close. This
+    prevents volatile runtime state loss or exchange-sync rebase from
+    undercounting executed adds when a pending affordable DCA level should
+    block `TSL` / `SL`. Runtime position serialization now renders finite
+    negative trailing-loss `TSL` state instead of hiding an armed loss-side
+    stop. Validation PASS: focused runtime automation and position
+    serialization tests (`38/38`), API typecheck, API build, and repository
+    guardrails.
+    Evidence:
+    `docs/planning/ethdca-01-live-dca-first-tsl-hardening-task-2026-05-02.md`.
+
 - [ ] `RUNTIME-SIGNAL-VOTES-01 fix(api-runtime): recover runtime strategy votes when matched indicators exist`
   - Scope: implementation is locally verified and ready for deploy smoke for
     the production-reported PAPER/LIVE runtime signal-vote risk.

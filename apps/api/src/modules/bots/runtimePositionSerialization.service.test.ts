@@ -166,4 +166,31 @@ describe('runtimePositionSerialization', () => {
     expect(result.dynamicTtpStopLoss).toBeCloseTo(102.5, 8);
     expect(result.dynamicTslStopLoss).toBeCloseTo(102, 8);
   });
+
+  it('renders negative trailing-loss TSL state instead of hiding an armed loss-side stop', () => {
+    const result = resolveRuntimePositionDynamicStops({
+      positionSide: 'SHORT',
+      entryPrice: 2291.37,
+      quantity: 0.036,
+      leverage: 15,
+      marginUsed: 5.49,
+      unrealizedPnl: -1.71,
+      marketPrice: 2338.9,
+      stateEntryPrice: 2291.37,
+      runtimeState: {
+        averageEntryPrice: 2291.37,
+        quantity: 0.036,
+        currentAdds: 2,
+        trailingAnchorPrice: 2291.37,
+        trailingLossLimitPercent: -0.03,
+        lastDcaPrice: 2310.26,
+      },
+      trailingTakeProfitLevels: [],
+      trailingStopLevels: [],
+      allowStrategyProtectionFallback: true,
+    });
+
+    expect(result.dynamicTtpStopLoss).toBeNull();
+    expect(result.dynamicTslStopLoss).toBeCloseTo(2295.945, 6);
+  });
 });

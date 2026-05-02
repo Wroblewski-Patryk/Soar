@@ -207,7 +207,7 @@ export const resolveRuntimePositionDynamicStops = (
       ? favorableMovePercentForFallback - activeTtpLevel.trailPercent
       : null;
   const tslTriggerPercent =
-    hasRuntimeTslState && (runtimeState.trailingLossLimitPercent as number) > 0
+    hasRuntimeTslState && Number.isFinite(runtimeState.trailingLossLimitPercent)
       ? (runtimeState.trailingLossLimitPercent as number)
       : null;
   const stickyFallbackTtpLevel =

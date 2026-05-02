@@ -3,6 +3,20 @@
 Last updated: 2026-05-02
 
 ## 2026-05-02 V1 Prod-Only Release Scope Update
+- 2026-05-02 operator-reported LIVE ETHUSDT DCA-first protection hardening
+  `ETHDCA-01` is closed locally. Runtime position automation now hydrates
+  durable DCA progress from persisted `Trade` lifecycle rows before evaluating
+  DCA-first protection closes, including current-position rows and same
+  bot/wallet/strategy/symbol replacement lifecycles cut off by the latest
+  opposite-side close. Volatile runtime state loss or rebase can no longer
+  undercount executed adds when a pending affordable DCA level should still
+  block `TSL` / `SL`. Runtime position serialization now renders finite
+  negative trailing-loss `TSL` state instead of hiding an armed loss-side stop.
+  Validation PASS: focused runtime automation and position
+  serialization tests (`38/38`), API typecheck, API build, and repository
+  guardrails.
+  Evidence:
+  `docs/planning/ethdca-01-live-dca-first-tsl-hardening-task-2026-05-02.md`.
 - 2026-05-02 runtime signal vote recovery slice
   `RUNTIME-SIGNAL-VOTES-01` is closed locally and ready for production deploy
   verification. The final-candle runtime decision path now asks the engine
