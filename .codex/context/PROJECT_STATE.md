@@ -18,6 +18,19 @@ Last updated: 2026-05-02
   `docs/operations/v1-restore-drill-prod-2026-05-02T17-49-41-000Z.md`,
   `docs/operations/v1-rollback-proof-prod-2026-05-02T17-54-13-498Z.md`, and
   `docs/operations/v1-release-gate-prod-2026-05-02T17-56-17-239Z.md`.
+- 2026-05-02 post-V1 quality follow-up: `AWESOME-01` is queued as the master
+  product-quality audit program. It will verify every user-facing workflow,
+  frontend-backend contract, runtime truth surface, data invariant, security
+  boundary, UX state, and production-runtime check before any further polish
+  fixes are planned. Master plan:
+  `docs/planning/awesome-audit-master-plan-2026-05-02.md`.
+- 2026-05-02 post-V1 quality audit result: `AWESOME-01` completed with
+  `docs/operations/awesome-audit-execution-report-2026-05-02.md`. No
+  user-facing product/runtime/security/production public-smoke blocker was
+  found. The only QA reliability follow-up, `AWESOME-FIX-01`, is now closed:
+  `apps/api/src/modules/positions/importedPositionHistoryHydrator.service.test.ts`
+  cleanup removes dependent rows before users, restoring a clean focused test
+  signal for imported position history hydration and a green full API suite.
 
 ## Product Snapshot
 - Name: CryptoSparrow / Soar

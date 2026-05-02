@@ -100,15 +100,29 @@ describe('deriveImportedLifecycleTrades', () => {
 
 describe('hydrateImportedPositionHistory', () => {
   beforeEach(async () => {
+    await prisma.log.deleteMany();
+    await prisma.backtestReport.deleteMany();
+    await prisma.backtestTrade.deleteMany();
+    await prisma.backtestRun.deleteMany();
     await prisma.trade.deleteMany();
+    await prisma.order.deleteMany();
     await prisma.position.deleteMany();
+    await prisma.signal.deleteMany();
+    await prisma.botStrategy.deleteMany();
+    await prisma.botSubagentConfig.deleteMany();
+    await prisma.botAssistantConfig.deleteMany();
+    await prisma.marketGroupStrategyLink.deleteMany();
+    await prisma.botMarketGroup.deleteMany();
+    await prisma.runtimeExecutionDedupe.deleteMany();
     await prisma.botRuntimeEvent.deleteMany();
+    await prisma.botRuntimeSymbolStat.deleteMany();
     await prisma.botRuntimeSession.deleteMany();
     await prisma.bot.deleteMany();
     await prisma.symbolGroup.deleteMany();
     await prisma.marketUniverse.deleteMany();
     await prisma.strategy.deleteMany();
     await prisma.wallet.deleteMany();
+    await prisma.apiKey.deleteMany();
     await prisma.user.deleteMany();
   });
 

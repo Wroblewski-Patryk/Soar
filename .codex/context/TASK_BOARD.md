@@ -17,6 +17,26 @@ Last updated: 2026-05-02
 
 ## READY
 
+- [x] `AWESOME-FIX-01 test(api-positions): isolate imported position history hydrator fixtures`
+  - Scope: remediated the only confirmed follow-up from
+    `docs/operations/awesome-audit-execution-report-2026-05-02.md`.
+    `apps/api/src/modules/positions/importedPositionHistoryHydrator.service.test.ts`
+    now cleans dependent rows before users. Validation PASS: affected test file
+    (`6` tests), adjacent focused API slices (`58` tests across `7` files),
+    full API suite, API typecheck, and repository guardrails.
+
+- [x] `AWESOME-01 qa(product): execute full post-V1 quality audit program`
+  - Scope: executed the master audit program from
+    `docs/planning/awesome-audit-master-plan-2026-05-02.md`. Start with
+    architecture truth and route/API contract audits, then proceed through
+    auth/session, frontend-backend integration, dashboard runtime truth, bots,
+    orders/positions, wallets/exchange keys, strategies/markets, backtests,
+    UX states, security, production runtime, data integrity, and final user
+    acceptance matrix. Closed with
+    `docs/operations/awesome-audit-execution-report-2026-05-02.md`.
+    Result: no product/runtime/security/production public-smoke blocker found;
+    the only QA test-isolation follow-up is closed as `AWESOME-FIX-01`.
+
 - [x] `V1CLOSEOUT-01 fix(api-wallets/bots): resolve LIVE external management ownership persistence`
   - Scope: first execution slice from
     `docs/planning/v1closeout-audit-remediation-plan-2026-05-02.md`.

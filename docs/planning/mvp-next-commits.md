@@ -7,6 +7,18 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `AWESOME-FIX-01 test(api-positions): isolate imported position history hydrator fixtures`
+  - 2026-05-02: Closed the first follow-up from the completed post-V1 quality
+    audit. Fixed the cleanup/fixture isolation gap in
+    `apps/api/src/modules/positions/importedPositionHistoryHydrator.service.test.ts`
+    so it passes when run alone on a non-empty local DB. Validation PASS:
+    affected file (`6` tests), adjacent focused API slices (`58` tests across
+    `7` files), full API suite, API typecheck, and guardrails.
+- [x] `AWESOME-01 qa(product): execute full post-V1 quality audit program`
+  - 2026-05-02: Completed with
+    `docs/operations/awesome-audit-execution-report-2026-05-02.md`. Result:
+    no user-facing product/runtime/security/production public-smoke blocker
+    found. The one QA reliability follow-up is now closed in `AWESOME-FIX-01`.
 - 2026-05-02 audit remediation status: full V1 closeout audit found confirmed
   P0 API/runtime failures, docs parity drift, release-gate evidence blockers,
   and RC signoff/checklist disagreement. Canonical remediation packet:
