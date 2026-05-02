@@ -7,6 +7,39 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- 2026-05-02 audit remediation status: full V1 closeout audit found confirmed
+  P0 API/runtime failures, docs parity drift, release-gate evidence blockers,
+  and RC signoff/checklist disagreement. Canonical remediation packet:
+  `docs/planning/v1closeout-audit-remediation-plan-2026-05-02.md`.
+- [ ] `V1CLOSEOUT-01 fix(api-wallets/bots): resolve LIVE external management ownership persistence`
+  - Scope: reconcile the failing LIVE wallet `manageExternalPositions`
+    assertion with the current singular-bot architecture, especially the
+    `V1TAKE-10` decision that moved imported-position management authority
+    from wallet to bot. Fix the contract or stale test without duplicating
+    ownership. Validation: focused wallets e2e, related takeover/runtime tests
+    if semantics change, API typecheck.
+- [ ] `V1CLOSEOUT-02 fix(api-engine/backtests): restore advanced TSL close parity`
+  - Scope: repair the `advanced-tsl` lifecycle parity failure where backtest
+    returns no close reason while the golden contract expects
+    `trailing_stop`. Reuse shared lifecycle logic; no backtest-only workaround.
+    Validation: lifecycle close parity golden test, focused replay/runtime
+    lifecycle tests, API typecheck.
+- [ ] `V1CLOSEOUT-03 fix(api-bots-runtime): repair monitoring trades and dynamic TSL serialization`
+  - Scope: restore deterministic runtime monitoring totals, symbol filters,
+    and pre-arm TSL truth in `bots.e2e.test.ts`. Dynamic TSL stop values must
+    remain `null` until the runtime trailing state is actually armed.
+    Validation: focused bots e2e and API typecheck.
+- [ ] `V1CLOSEOUT-04 fix(api-orders/positions): restore exchange-synced LIVE visibility and close flow`
+  - Scope: fix selected-bot LIVE runtime truth for manual LIVE MARKET
+    adoption, `EXCHANGE_SYNC BOT_MANAGED` visibility when PAPER shares the
+    symbol, dashboard close returning `closed`, and deterministic fixture setup
+    in `orders-positions.e2e.test.ts`. Validation: focused orders/positions
+    e2e, related runtime/takeover tests, API typecheck.
+- [ ] `V1CLOSEOUT-05 fix(api-positions): restore orphan repair canonical rebinding`
+  - Scope: make orphan repair re-import exchange truth with deterministic
+    `botId` and `walletId` when evidence is sufficient, while preserving
+    fail-closed behavior for ambiguous ownership. Validation: focused orphan
+    repair e2e, related restart continuity tests if touched, API typecheck.
 - 2026-05-01 execution status: `V1ROE-04` protected production verification is
   closed with authenticated API/browser evidence. Remaining non-deferred V1
   blockers are `V1EXCEL-03..06` authenticated manual operator and OPS evidence.

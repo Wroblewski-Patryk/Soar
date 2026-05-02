@@ -100,6 +100,17 @@ Last updated: 2026-05-02
   of reconstructing it from `syncState` or audit logs.
 
 ## Product Decisions (Confirmed)
+- 2026-05-02: queued `V1CLOSEOUT-AUDIT-A` after a full V1 closeout audit
+  requested before implementation. The audit confirms V1 is not ready to close
+  yet: full web tests, typecheck, build, guardrails, and route-reachable i18n
+  are green, but docs parity fails on a stale dashboard route-map path and the
+  API suite has focused-reproducible runtime/LIVE failures in wallets,
+  lifecycle close parity, bots runtime monitoring, orders/positions
+  exchange-sync visibility and close flow, and orphan repair rebinding. Release
+  gates also remain blocked by stale activation evidence, failed production
+  restore-drill wrapper configuration, stage target uncertainty, and RC
+  signoff/checklist disagreement. Canonical remediation packet:
+  `docs/planning/v1closeout-audit-remediation-plan-2026-05-02.md`.
 - 2026-05-02: closed `V1RUNTIME-TRUST-03`, implementing the two immediate
   follow-ups from `V1BOT-AUDIT-02`. Runtime Positions now passes valid
   fallback ticker prices into the existing preferred price resolver for
