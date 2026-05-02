@@ -70,6 +70,15 @@ type RuntimeSymbolAggregateSummary = {
   feesPaid: number | null;
 };
 
+const hasConcreteConditionValue = (
+  lines: Array<{ value: string }> | null | undefined,
+) =>
+  Array.isArray(lines) &&
+  lines.some((line) => {
+    const value = line.value.trim().toLowerCase();
+    return value.length > 0 && value !== 'n/a';
+  });
+
 export const composeRuntimeSymbolStatsReadModel = (params: {
   userId: string;
   botId: string;
@@ -164,6 +173,16 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
       decisionIndex: marketSnapshot?.candles.length ? marketSnapshot.candles.length - 1 : null,
       derivatives: marketSnapshot?.derivatives,
     });
+    const conditionLineSource =
+      signalAnalysis?.conditionLines && hasConcreteConditionValue(signalAnalysis.conditionLines)
+        ? signalAnalysis
+        : hasConcreteConditionValue(snapshotAnalysis.conditionLines)
+          ? snapshotAnalysis
+          : signalAnalysis ?? snapshotAnalysis;
+    const indicatorSummary =
+      conditionLineSource === signalAnalysis
+        ? signalAnalysis?.indicatorSummary ?? snapshotAnalysis.indicatorSummary
+        : snapshotAnalysis.indicatorSummary ?? signalAnalysis?.indicatorSummary ?? null;
     const runtimeMarketState: RuntimeMarketTruthState = resolveRuntimeMarketTruthState({
       openPositionCount: openCount ?? stat?.openPositionCount ?? 0,
       signalContextSource,
@@ -212,10 +231,8 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
       configuredStrategyId: fallbackStrategyId,
       configuredStrategyName: configuredStrategy?.name ?? null,
       lastSignalConditionSummary: signalConditionSummary,
-      lastSignalIndicatorSummary:
-        signalAnalysis?.indicatorSummary ?? snapshotAnalysis.indicatorSummary,
-      lastSignalConditionLines:
-        signalAnalysis?.conditionLines ?? snapshotAnalysis.conditionLines,
+      lastSignalIndicatorSummary: indicatorSummary,
+      lastSignalConditionLines: conditionLineSource.conditionLines,
       lastSignalScoreSummary: signalScoreSummary,
       snapshotAt: stat?.snapshotAt ?? params.sessionStartedAt,
       createdAt: stat?.createdAt ?? params.sessionCreatedAt,

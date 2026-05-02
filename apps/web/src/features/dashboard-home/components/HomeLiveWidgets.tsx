@@ -818,6 +818,7 @@ export default function HomeLiveWidgets() {
                 longLabel={t("dashboard.home.runtime.long")}
                 shortLabel={t("dashboard.home.runtime.short")}
                 noSignalDataLabel={t("dashboard.home.runtime.noSignalData")}
+                conditionValueUnavailableLabel={t("dashboard.home.runtime.conditionValueUnavailable")}
                 marketsLabel={t("dashboard.home.runtime.markets")}
                 signalsLabel={t("dashboard.home.runtime.signals")}
                 marketsCount={signalHeaderStats.marketsCount}

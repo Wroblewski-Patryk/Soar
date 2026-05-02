@@ -272,6 +272,7 @@ export const dashboardHomeEn = {
     "signalRailNext": "Next",
     "noSignalConditions": "No signal, conditions not met.",
     "noSignalData": "No signal data.",
+    "conditionValueUnavailable": "Waiting for indicator data",
     "long": "LONG",
     "short": "SHORT",
     "runtimeRiskTitle": "Bot runtime and risk",

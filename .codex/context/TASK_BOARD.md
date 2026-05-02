@@ -17,6 +17,21 @@ Last updated: 2026-05-02
 
 ## READY
 
+- [x] `DASHSIGNALS-01 fix(runtime+web): clarify unavailable indicator signal values`
+  - Scope: remediated the operator-reported production dashboard signal-card
+    drift where unavailable RSI values rendered as misleading expressions such
+    as `n/a < 20` and `n/a > 80`. Runtime analysis now treats unavailable
+    indicator operands as unknown display truth instead of normal failed
+    matches, the runtime read model prefers concrete snapshot condition values
+    when latest-decision payloads contain only unavailable values, and
+    Dashboard Home / Bot Monitoring render localized pending-data text while
+    preserving thresholds. No order execution, position automation, or trading
+    mutation semantics changed. Validation PASS: focused API signal/read-model
+    tests (`5/5`), focused web dashboard/bot signal tests (`32/32`), API
+    typecheck, web typecheck, repository guardrails, lint, route-reachable
+    i18n audit, API build, and web build. Evidence:
+    `docs/planning/dashsignals-01-indicator-value-pending-display-task-2026-05-02.md`.
+
 - [x] `DASHDISPLAY-01 fix(web-dashboard): repair production dashboard display polish`
   - Scope: remediated authenticated production dashboard display findings from
     2026-05-02 without changing trading/runtime/API behavior. Manual Order

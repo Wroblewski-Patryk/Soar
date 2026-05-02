@@ -223,4 +223,77 @@ describe('runtimeSymbolStatsReadModel.service', () => {
     );
     expect(lines.every((line) => line.value !== 'n/a')).toBe(true);
   });
+
+  it('uses concrete snapshot analysis when latest decision analysis only has unavailable indicator values', () => {
+    const readModel = composeRuntimeSymbolStatsReadModel({
+      ...baseParams,
+      latestSignalBySymbol: new Map([
+        [
+          'BTCUSDT',
+          {
+            signalDirection: null,
+            eventAt: new Date('2026-04-23T10:04:00.000Z'),
+            message: 'No trade decision after strategy merge',
+            mergeReason: 'No votes',
+            strategyId: 'strategy-rsi',
+            scoreLong: null,
+            scoreShort: null,
+            analysisByStrategy: {
+              'strategy-rsi': {
+                indicatorSummary: 'RSI(2)=n/a',
+                conditionLines: [
+                  {
+                    scope: 'LONG',
+                    left: 'RSI(2)',
+                    value: 'n/a',
+                    operator: '>',
+                    right: '60',
+                    matched: false,
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      ]),
+      configuredStrategyBySymbol: new Map([['BTCUSDT', 'strategy-rsi']]),
+      strategiesById: new Map([
+        [
+          'strategy-rsi',
+          {
+            name: 'RSI 40/60',
+            interval: '5m',
+            config: {
+              open: {
+                indicatorsLong: [
+                  {
+                    name: 'RSI',
+                    condition: '>',
+                    value: 60,
+                    params: { period: 2 },
+                  },
+                ],
+                indicatorsShort: [],
+              },
+            },
+          },
+        ],
+      ]),
+    });
+
+    const lines = readModel.items[0].lastSignalConditionLines ?? [];
+    expect(lines).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          scope: 'LONG',
+          left: 'RSI(2)',
+          operator: '>',
+          right: '60',
+          matched: true,
+        }),
+      ]),
+    );
+    expect(lines.every((line) => line.value !== 'n/a')).toBe(true);
+    expect(readModel.items[0].lastSignalIndicatorSummary).not.toContain('n/a');
+  });
 });

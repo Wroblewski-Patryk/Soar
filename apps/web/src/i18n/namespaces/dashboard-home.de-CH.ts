@@ -272,6 +272,7 @@ export const dashboardHomeDeCh = {
     "signalRailNext": "Nächste",
     "noSignalConditions": "Kein Signal, Bedingungen nicht erfüllt.",
     "noSignalData": "Keine Signaldaten.",
+    "conditionValueUnavailable": "Warten auf Indikatordaten",
     "long": "LONG",
     "short": "SHORT",
     "runtimeRiskTitle": "Bot-Laufzeit und Risiko",

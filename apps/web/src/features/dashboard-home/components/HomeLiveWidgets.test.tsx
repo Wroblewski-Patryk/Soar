@@ -837,7 +837,9 @@ describe("HomeLiveWidgets", () => {
       expect(openOrdersTab.compareDocumentPosition(tradeHistoryTab) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     }
 
-    expect(lookupCoinIconsMock).toHaveBeenCalledWith(expect.arrayContaining(["BTCUSDT", "ETHUSDT"]));
+    await waitFor(() => {
+      expect(lookupCoinIconsMock).toHaveBeenCalledWith(expect.arrayContaining(["BTCUSDT", "ETHUSDT"]));
+    });
 
     fireEvent.click(screen.getByRole("tab", { name: /Historia|History/i }));
     await waitFor(() => {

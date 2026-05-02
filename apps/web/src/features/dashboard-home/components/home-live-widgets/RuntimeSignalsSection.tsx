@@ -14,6 +14,7 @@ type RuntimeSignalsSectionProps = {
   longLabel: string;
   shortLabel: string;
   noSignalDataLabel: string;
+  conditionValueUnavailableLabel: string;
   marketsLabel: string;
   signalsLabel: string;
   marketsCount: number;
@@ -58,6 +59,9 @@ const scopeLabelClass = (scope: "LONG" | "SHORT") =>
     : "border-error/40 bg-error/10 text-error";
 
 export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps) {
+  const isUnavailableValue = (value: string | null | undefined) =>
+    value?.trim().toLowerCase() === "n/a";
+
   const sortedSignalSymbols = useMemo(() => {
     const stateRank = (state: string | null | undefined) => {
       if (state === "POSITION_OPEN") return 0;
@@ -165,11 +169,21 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
                         longLines.map((line, index) => (
                           <div key={`${signal.id}-long-${index}`} className="space-y-1 font-mono text-[10px] leading-4">
                             <p className="opacity-75">{line.left}</p>
-                            <p className="font-semibold">
-                              <span>{line.value}</span>
-                              <span className="mx-1">{line.operator}</span>
-                              <span>{line.right}</span>
-                            </p>
+                            {isUnavailableValue(line.value) ? (
+                              <div className="font-sans">
+                                <p className="font-medium text-warning">{props.conditionValueUnavailableLabel}</p>
+                                <p className="font-mono font-semibold opacity-70">
+                                  <span>{line.operator}</span>
+                                  <span className="ml-1">{line.right}</span>
+                                </p>
+                              </div>
+                            ) : (
+                              <p className="font-semibold">
+                                <span>{line.value}</span>
+                                <span className="mx-1">{line.operator}</span>
+                                <span>{line.right}</span>
+                              </p>
+                            )}
                           </div>
                         ))
                       )}
@@ -199,11 +213,21 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
                         shortLines.map((line, index) => (
                           <div key={`${signal.id}-short-${index}`} className="space-y-1 font-mono text-[10px] leading-4">
                             <p className="opacity-75">{line.left}</p>
-                            <p className="font-semibold">
-                              <span>{line.value}</span>
-                              <span className="mx-1">{line.operator}</span>
-                              <span>{line.right}</span>
-                            </p>
+                            {isUnavailableValue(line.value) ? (
+                              <div className="font-sans">
+                                <p className="font-medium text-warning">{props.conditionValueUnavailableLabel}</p>
+                                <p className="font-mono font-semibold opacity-70">
+                                  <span>{line.operator}</span>
+                                  <span className="ml-1">{line.right}</span>
+                                </p>
+                              </div>
+                            ) : (
+                              <p className="font-semibold">
+                                <span>{line.value}</span>
+                                <span className="mx-1">{line.operator}</span>
+                                <span>{line.right}</span>
+                              </p>
+                            )}
                           </div>
                         ))
                       )}

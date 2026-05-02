@@ -162,7 +162,7 @@ export const buildStrategySignalAnalysis = (input: {
     const pushConditionLine = (line: Omit<RuntimeSignalConditionLine, 'matched'>) => {
       conditionLines.push({
         ...line,
-        matched,
+        matched: line.value === 'n/a' ? null : matched,
       });
     };
     if (indicator.includes('FUNDING_RATE_ZSCORE')) {

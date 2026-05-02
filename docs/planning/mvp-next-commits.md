@@ -7,6 +7,19 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `DASHSIGNALS-01 fix(runtime+web): clarify unavailable indicator signal values`
+  - 2026-05-02: Closed the operator-reported production dashboard signal-card
+    inconsistency where unavailable RSI values rendered as `n/a < 20` and
+    `n/a > 80`. Runtime condition analysis now marks unavailable operands as
+    unknown display truth, the read model prefers concrete snapshot condition
+    values when latest-decision lines only contain unavailable values, and
+    Dashboard Home / Bot Monitoring show localized pending-data text while
+    keeping thresholds visible. No trading execution behavior changed.
+    Validation PASS: focused API signal/read-model tests (`5/5`), focused web
+    dashboard/bot signal tests (`32/32`), API typecheck, web typecheck,
+    repository guardrails, lint, route-reachable i18n audit, API build, and
+    web build. Evidence:
+    `docs/planning/dashsignals-01-indicator-value-pending-display-task-2026-05-02.md`.
 - [x] `DASHDISPLAY-01 fix(web-dashboard): repair production dashboard display polish`
   - 2026-05-02: Closed authenticated production dashboard display follow-up.
     Fixed the Manual Order `Min qty`/`Qty slider` visual collision, kept long

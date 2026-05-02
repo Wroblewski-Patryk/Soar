@@ -286,6 +286,7 @@ type TranslationSchema = {
         signalRailNext: string;
         noSignalConditions: string;
         noSignalData: string;
+        conditionValueUnavailable: string;
         long: string;
         short: string;
         runtimeRiskTitle: string;

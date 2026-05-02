@@ -79,6 +79,9 @@ export function MonitoringFutureSignalsSection(props: MonitoringFutureSignalsSec
     right: string;
     matched?: boolean | null;
   }) => {
+    if (line.value.trim().toLowerCase() === "n/a") {
+      return `${line.left} | ${t("dashboard.home.runtime.conditionValueUnavailable")} (${line.operator} ${line.right})`;
+    }
     const status =
       typeof line.matched === "boolean" ? ` ${line.matched ? "PASS" : "MISS"}` : "";
     return `${line.left} | ${line.value} ${line.operator} ${line.right}${status}`;

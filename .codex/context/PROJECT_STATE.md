@@ -3,6 +3,20 @@
 Last updated: 2026-05-02
 
 ## 2026-05-02 V1 Prod-Only Release Scope Update
+- 2026-05-02 production dashboard signal-card follow-up `DASHSIGNALS-01` is
+  closed. Authenticated production evidence showed runtime condition cards
+  rendering unavailable RSI operands as misleading expressions such as
+  `n/a < 20` and `n/a > 80`. The fix keeps runtime fail-closed behavior while
+  separating unavailable indicator input from normal false condition matches:
+  unavailable operands are display-unknown, concrete snapshot values are
+  preferred over stale latest-decision `n/a` payloads when available, and
+  Dashboard Home / Bot Monitoring render localized pending-data text instead
+  of raw `n/a` math. No order execution, position automation, persistence, or
+  trading mutation behavior changed. Validation PASS: focused API
+  signal/read-model tests (`5/5`), focused web dashboard/bot signal tests
+  (`32/32`), API typecheck, web typecheck, repository guardrails, lint,
+  route-reachable i18n audit, API build, and web build. Evidence:
+  `docs/planning/dashsignals-01-indicator-value-pending-display-task-2026-05-02.md`.
 - 2026-05-02 production dashboard display follow-up `DASHDISPLAY-01` is
   closed. Authenticated read-only review of
   `https://soar.luckysparrow.ch/dashboard` found two visible dashboard polish

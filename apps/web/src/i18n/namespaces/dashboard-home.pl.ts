@@ -272,6 +272,7 @@ export const dashboardHomePl = {
     "signalRailNext": "Dalej",
     "noSignalConditions": "Brak sygnalu, warunki niespelnione.",
     "noSignalData": "Brak danych sygnalowych.",
+    "conditionValueUnavailable": "Oczekiwanie na dane wskaznika",
     "long": "LONG",
     "short": "SHORT",
     "runtimeRiskTitle": "Bot runtime i ryzyko",
