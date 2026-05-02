@@ -53,6 +53,25 @@ const runtimeSignalReadSnapshotMinCandles = Number.isFinite(runtimeSignalReadSna
 
 export const mergeRuntimeCandlesForIndicatorRecovery = mergeRuntimeSignalCandles;
 
+const firstRuntimeBlockReason = (payload: Record<string, unknown> | null) => {
+  if (typeof payload?.reason === 'string' && payload.reason.trim().length > 0) {
+    return payload.reason.trim();
+  }
+  if (
+    typeof payload?.constraintReason === 'string' &&
+    payload.constraintReason.trim().length > 0
+  ) {
+    return payload.constraintReason.trim();
+  }
+  if (Array.isArray(payload?.reasons)) {
+    const firstReason = payload.reasons.find(
+      (reason): reason is string => typeof reason === 'string' && reason.trim().length > 0,
+    );
+    return firstReason?.trim() ?? null;
+  }
+  return null;
+};
+
 const resolveFallbackDerivatives = async (params: {
   marketType: 'FUTURES' | 'SPOT';
   symbol: string;
@@ -403,12 +422,7 @@ export const listBotRuntimeSessionSymbolStats = async (
       typeof merge?.reason === 'string' && merge.reason.trim().length > 0
         ? merge.reason.trim()
         : null;
-    const blockReasonRaw =
-      typeof payload?.reason === 'string' && payload.reason.trim().length > 0
-        ? payload.reason.trim()
-        : typeof payload?.constraintReason === 'string' && payload.constraintReason.trim().length > 0
-          ? payload.constraintReason.trim()
-          : null;
+    const blockReasonRaw = firstRuntimeBlockReason(payload);
     const winnerStrategyId =
       typeof winner?.strategyId === 'string' && winner.strategyId.trim().length > 0
         ? winner.strategyId.trim()
