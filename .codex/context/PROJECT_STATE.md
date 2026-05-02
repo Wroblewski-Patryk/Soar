@@ -13,10 +13,13 @@ Last updated: 2026-05-02
   dashboard/read-model path reuses the same merge helper, and no pre-trade,
   wallet, max-position, exchange-min-order, or orchestrator guardrail was
   bypassed. Stale no-vote decisions no longer donate their `No votes` reason
-  to recovered configured snapshots. Validation PASS: focused runtime
-  market-data/runtime loop/read model tests (`4` files / `56` tests), API
-  typecheck, API build, and
-  repository guardrails. Evidence:
+  to recovered configured snapshots. A follow-up guardrail-visibility patch now
+  includes latest `PRETRADE_BLOCKED` events in symbol-stats so matched
+  conditions stopped by runtime guardrails show a concrete block reason instead
+  of degrading to configured fallback. Validation PASS: focused runtime
+  market-data/runtime loop/read model tests (`4` files / `56` tests), focused
+  blocked-decision read-model tests (`2` files / `8` tests), API typecheck,
+  API build, and repository guardrails. Evidence:
   `docs/planning/runtime-signal-vote-recovery-audit-plan-2026-05-02.md`.
 - 2026-05-02 operator-reported runtime signal vote audit queued
   `RUNTIME-SIGNAL-VOTES-01` as P0. Authenticated production read-only evidence

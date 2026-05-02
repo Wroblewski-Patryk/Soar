@@ -155,9 +155,16 @@ post-deploy smoke expectations.
   - PASS:
     `pnpm --filter api run test -- src/modules/bots/runtimeSymbolStatsReadModel.service.test.ts src/modules/engine/runtimeSignalMarketDataGateway.test.ts src/modules/engine/runtimeSignalLoop.service.test.ts src/modules/bots/runtimeSessionSymbolStatsRead.service.test.ts --run`
     (`4` files / `56` tests).
+  - PASS:
+    `pnpm --filter api run test -- src/modules/bots/runtimeSymbolStatsReadModel.service.test.ts src/modules/bots/runtimeSessionSymbolStatsRead.service.test.ts --run`
+    (`2` files / `8` tests) for guardrail-blocked read-model visibility.
+  - PASS:
+    `pnpm --filter api run test -- src/modules/bots/runtimeSymbolStatsReadModel.service.test.ts src/modules/bots/runtimeSessionSymbolStatsRead.service.test.ts src/modules/engine/runtimeSignalMarketDataGateway.test.ts src/modules/engine/runtimeSignalLoop.service.test.ts --run`
+    (`4` files / `57` tests).
   - PASS: `pnpm --filter api run typecheck`.
   - PASS: `pnpm --filter api run build`.
   - PASS: `pnpm run quality:guardrails`.
+  - PASS: `pnpm run lint`.
 - Manual checks:
   - production API read-only session inspection confirmed `DOGEUSDT`
     `matched=true` with `lastSignalReason=No votes` and `totalSignals=0`;
@@ -225,11 +232,19 @@ post-deploy smoke expectations.
   replaces an unavailable/no-vote latest decision for display, the row now
   reports `configured_fallback` / `CONFIGURED_ONLY` instead of attaching a
   stale `No votes` reason to the recovered snapshot match.
+- Runtime block visibility: production smoke after the stale no-vote fix
+  exposed a second operator-truth gap. Runtime writes explicit
+  `PRETRADE_BLOCKED` events when a strategy vote is stopped by guardrails, but
+  symbol-stats previously read only `SIGNAL_DECISION` events. The read model
+  now includes the latest `PRETRADE_BLOCKED` outcome per symbol, keeps
+  accepted-signal counters unchanged, and attaches the concrete block reason
+  instead of falling back to `configured_fallback`.
 - Production follow-up: after push/deploy, verify API freshness directly,
   `/health`, `/ready`, and the active PAPER bot session. The expected outcome
   is no same-strategy row with concrete `matched=true` and
   `lastSignalReason=No votes`; a later explicit pre-trade/orchestration block
-  remains acceptable evidence that vote recovery works.
+  must be visible on the affected symbol row as latest evaluated runtime
+  context.
 
 ## Autonomous Loop Evidence
 

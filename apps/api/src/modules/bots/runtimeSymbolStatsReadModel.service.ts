@@ -79,6 +79,9 @@ const hasConcreteConditionValue = (
     return value.length > 0 && value !== 'n/a';
   });
 
+const isReplaceableNoVoteReason = (reason: string | null | undefined) =>
+  reason === 'No votes' || reason === 'Weak consensus' || reason === 'Tie';
+
 export const composeRuntimeSymbolStatsReadModel = (params: {
   userId: string;
   botId: string;
@@ -183,7 +186,7 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
       conditionLineSource === snapshotAnalysis &&
       hasConcreteConditionValue(snapshotAnalysis.conditionLines) &&
       effectiveLatestSignal?.signalDirection == null &&
-      effectiveLatestSignal?.mergeReason != null;
+      isReplaceableNoVoteReason(effectiveLatestSignal?.mergeReason);
     const displaySignalContextSource: RuntimeSignalContextSource =
       snapshotReplacesNoVoteDecision ? 'configured_fallback' : signalContextSource;
     const indicatorSummary =

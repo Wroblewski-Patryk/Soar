@@ -371,4 +371,65 @@ describe('runtimeSymbolStatsReadModel.service', () => {
       ])
     );
   });
+
+  it('keeps explicit runtime block reasons attached to recovered snapshot condition matches', () => {
+    const readModel = composeRuntimeSymbolStatsReadModel({
+      ...baseParams,
+      latestSignalBySymbol: new Map([
+        [
+          'BTCUSDT',
+          {
+            signalDirection: null,
+            eventAt: new Date('2026-04-23T10:04:00.000Z'),
+            message: 'Signal blocked because bot runtime context reached max open positions',
+            mergeReason: 'Bot max open positions reached',
+            strategyId: 'strategy-rsi',
+            scoreLong: null,
+            scoreShort: null,
+            analysisByStrategy: {},
+          },
+        ],
+      ]),
+      configuredStrategyBySymbol: new Map([['BTCUSDT', 'strategy-rsi']]),
+      strategiesById: new Map([
+        [
+          'strategy-rsi',
+          {
+            name: 'RSI 40/60',
+            interval: '5m',
+            config: {
+              open: {
+                indicatorsLong: [
+                  {
+                    name: 'RSI',
+                    condition: '>',
+                    value: 60,
+                    params: { period: 2 },
+                  },
+                ],
+                indicatorsShort: [],
+              },
+            },
+          },
+        ],
+      ]),
+    });
+
+    expect(readModel.items[0]).toEqual(
+      expect.objectContaining({
+        lastSignalContextSource: 'latest_decision',
+        runtimeMarketState: 'EVALUATED_NO_TRADE',
+        lastSignalMessage: 'Signal blocked because bot runtime context reached max open positions',
+        lastSignalReason: 'Bot max open positions reached',
+      })
+    );
+    expect(readModel.items[0].lastSignalConditionLines).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          scope: 'LONG',
+          matched: true,
+        }),
+      ])
+    );
+  });
 });

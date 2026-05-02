@@ -149,11 +149,12 @@ export const getRuntimeSymbolLiveRows = async (params: {
     prisma.botRuntimeEvent.findMany({
       where: {
         sessionId: params.sessionId,
-        eventType: 'SIGNAL_DECISION',
+        eventType: { in: ['SIGNAL_DECISION', 'PRETRADE_BLOCKED'] },
         symbol: { in: params.symbols },
       },
       orderBy: [{ eventAt: 'desc' }, { createdAt: 'desc' }],
       select: {
+        eventType: true,
         symbol: true,
         signalDirection: true,
         eventAt: true,

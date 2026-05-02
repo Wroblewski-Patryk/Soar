@@ -1595,3 +1595,35 @@ promise = connect().catch((error) => {
     recommended `redis-check-aof --fix`.
   - `runtimeDependencyReadiness.ts` now adds Redis `PING` to production
     readiness, with regression coverage in `health-readiness.test.ts`.
+
+### 2026-05-02 - Runtime signal surfaces must include guardrail-blocked outcomes
+- Context: `RUNTIME-SIGNAL-VOTES-01` production smoke after indicator-ready
+  final-candle recovery.
+- Symptom: active PAPER bot rows could still show recovered matched snapshot
+  conditions with `Signals: 0` and `configured_fallback` even when runtime had
+  evaluated the symbol and stopped execution through a pre-trade or
+  orchestration guardrail.
+- Root cause: symbol-stats read models queried only `SIGNAL_DECISION` events,
+  while runtime writes guardrail stops as `PRETRADE_BLOCKED` events. The
+  dashboard therefore lost the concrete runtime block reason and fell back to
+  configured strategy context.
+- Guardrail: operator signal surfaces must treat `PRETRADE_BLOCKED` as a
+  first-class latest evaluated runtime outcome. It must not increment accepted
+  signal counters, but it must preserve the block message/reason so `0`
+  signals is explainable.
+- Preferred pattern:
+```text
+1) Query latest `SIGNAL_DECISION` and `PRETRADE_BLOCKED` events together for
+   symbol runtime context.
+2) Keep `PRETRADE_BLOCKED` non-actionable: no accepted signal direction and no
+   counter increment.
+3) Display the concrete block reason instead of downgrading to configured
+   fallback when recovered condition snapshots are concrete.
+```
+- Avoid: hiding guardrail stops behind configured fallback or treating blocked
+  runtime votes as accepted signals.
+- Evidence:
+  - Production PAPER smoke showed matched configured snapshots with no latest
+    decision on several symbols while the session had runtime events.
+  - `runtimeSymbolStatsReadModel.service.test.ts` now locks explicit block
+    reasons against stale no-vote snapshot replacement.

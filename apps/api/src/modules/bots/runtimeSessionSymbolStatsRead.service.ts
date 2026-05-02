@@ -14,7 +14,12 @@ import {
 } from './runtimeSignalConditionLines.service';
 import { normalizeSymbols } from './runtimeSymbolUniverse.service';
 import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from './runtimeSymbolCatalogResolver.service';
-import { asRecord, humanizeMergeReason, toFiniteNumber } from './runtimeSignalStatsFormatting.service';
+import {
+  asRecord,
+  humanizeMergeReason,
+  humanizeRuntimeBlockReason,
+  toFiniteNumber,
+} from './runtimeSignalStatsFormatting.service';
 import {
   fetchFallbackFundingRateHistory,
   fetchFallbackFundingRateSnapshot,
@@ -398,6 +403,12 @@ export const listBotRuntimeSessionSymbolStats = async (
       typeof merge?.reason === 'string' && merge.reason.trim().length > 0
         ? merge.reason.trim()
         : null;
+    const blockReasonRaw =
+      typeof payload?.reason === 'string' && payload.reason.trim().length > 0
+        ? payload.reason.trim()
+        : typeof payload?.constraintReason === 'string' && payload.constraintReason.trim().length > 0
+          ? payload.constraintReason.trim()
+          : null;
     const winnerStrategyId =
       typeof winner?.strategyId === 'string' && winner.strategyId.trim().length > 0
         ? winner.strategyId.trim()
@@ -409,14 +420,17 @@ export const listBotRuntimeSessionSymbolStats = async (
     if (strategyId) latestSignalStrategyIds.add(strategyId);
     latestSignalBySymbol.set(event.symbol, {
       signalDirection:
-        event.signalDirection === 'LONG' ||
-        event.signalDirection === 'SHORT' ||
-        event.signalDirection === 'EXIT'
-          ? event.signalDirection
-          : null,
+        event.eventType === 'PRETRADE_BLOCKED'
+          ? null
+          : event.signalDirection === 'LONG' ||
+              event.signalDirection === 'SHORT' ||
+              event.signalDirection === 'EXIT'
+            ? event.signalDirection
+            : null,
       eventAt: event.eventAt ?? null,
       message: event.message ?? null,
-      mergeReason: humanizeMergeReason(mergeReasonRaw),
+      mergeReason:
+        humanizeRuntimeBlockReason(blockReasonRaw) ?? humanizeMergeReason(mergeReasonRaw),
       strategyId,
       scoreLong: toFiniteNumber(scores?.longScore),
       scoreShort: toFiniteNumber(scores?.shortScore),
