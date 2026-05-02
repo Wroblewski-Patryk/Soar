@@ -56,6 +56,7 @@ Status legend:
 | web | reports | `apps/web/src/features/reports` | `docs/modules/web-reports.md` | Published | DCP-09 |
 | web | logs | `apps/web/src/features/logs` | `docs/modules/web-logs.md` | Published | DCP-09 |
 | web | icons | `apps/web/src/features/icons` | `docs/modules/web-icons.md` | Published | DCP-09 |
+| web | shared | `apps/web/src/features/shared` | `docs/modules/web-shared.md` | Published | V1CLOSEOUT-07 |
 
 ## Governance Notes
 - Use `docs/modules/module-deep-dive-template.md` for every new deep-dive file listed above.

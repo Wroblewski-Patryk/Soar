@@ -141,6 +141,7 @@ describe('Positions orphan repair API', () => {
         isActive: true,
         liveOptIn: true,
         consentTextVersion: 'mvp-v1',
+        manageExternalPositions: true,
         apiKeyId,
         walletId: wallet.id,
         strategyId: strategy.id,

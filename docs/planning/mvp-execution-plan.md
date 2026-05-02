@@ -18,13 +18,13 @@ Rule: fix/cleanup/update first, then feature delivery.
 
 ## Phase V1CLOSEOUT-AUDIT-2026-05-02 - Final V1 Audit Remediation (Queued 2026-05-02)
 - [x] `V1CLOSEOUT-00 planning(release): publish full audit remediation packet`
-- [ ] `V1CLOSEOUT-01 fix(api-wallets/bots): resolve LIVE external management ownership persistence`
-- [ ] `V1CLOSEOUT-02 fix(api-engine/backtests): restore advanced TSL close parity`
-- [ ] `V1CLOSEOUT-03 fix(api-bots-runtime): repair monitoring trades and dynamic TSL serialization`
-- [ ] `V1CLOSEOUT-04 fix(api-orders/positions): restore exchange-synced LIVE visibility and close flow`
-- [ ] `V1CLOSEOUT-05 fix(api-positions): restore orphan repair canonical rebinding`
-- [ ] `V1CLOSEOUT-06 qa(api): restore full API suite green after closeout fixes`
-- [ ] `V1CLOSEOUT-07 fix(docs): repair docs parity route-map path drift`
+- [x] `V1CLOSEOUT-01 fix(api-wallets/bots): resolve LIVE external management ownership persistence`
+- [x] `V1CLOSEOUT-02 fix(api-engine/backtests): restore advanced TSL close parity`
+- [x] `V1CLOSEOUT-03 fix(api-bots-runtime): repair monitoring trades and dynamic TSL serialization`
+- [x] `V1CLOSEOUT-04 fix(api-orders/positions): restore exchange-synced LIVE visibility and close flow`
+- [x] `V1CLOSEOUT-05 fix(api-positions): restore orphan repair canonical rebinding`
+- [x] `V1CLOSEOUT-06 qa(api): restore full API suite green after closeout fixes`
+- [x] `V1CLOSEOUT-07 fix(docs): repair docs parity route-map path drift`
 - [ ] `V1CLOSEOUT-08 release(ops): resolve RC signoff and release-gate evidence drift`
 - [ ] `V1CLOSEOUT-09 release(ops): refresh production restore drill and activation evidence`
 - [ ] `V1CLOSEOUT-10 refactor(api-exchange): decide and remediate direct exchange boundary access`
@@ -40,6 +40,12 @@ Rule: fix/cleanup/update first, then feature delivery.
   disagreement. The phase queues P0 runtime/API fixes first, then full API
   closure, docs parity, release evidence refresh, final go/no-go, and a P1
   exchange-boundary conformance decision/refactor.
+- 2026-05-02: Closed `V1CLOSEOUT-01..07`. API closeout is green again:
+  focused closeout pack PASS (`8` files / `91` tests), full API suite PASS,
+  and API typecheck PASS. Docs parity is also green after correcting the
+  route-map path and publishing the `web-shared` module deep-dive/index row.
+  Guardrails PASS. Remaining phase work starts at release evidence and
+  exchange-boundary remediation (`V1CLOSEOUT-08..11`).
 
 ## Audit Remediation Gate (Must Be Done Before Any New Feature Work)
 - [x] `P0 security(upload): protect upload endpoint with auth + MIME and size validation + abuse limits`

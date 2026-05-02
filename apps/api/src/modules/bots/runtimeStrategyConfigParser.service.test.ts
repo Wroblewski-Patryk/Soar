@@ -35,8 +35,8 @@ describe('runtimeStrategyConfigParser.service', () => {
       close: {
         mode: 'advanced',
         tsl: [
-          { percent: -10, arm: 4 },
-          { percent: -5, arm: 2 },
+          { percent: 10, arm: 4 },
+          { percent: 5, arm: 2 },
         ],
       },
     });
@@ -47,7 +47,7 @@ describe('runtimeStrategyConfigParser.service', () => {
     ]);
   });
 
-  it('drops only truly invalid trailing protection levels', () => {
+  it('drops invalid or wrong-signed trailing protection levels', () => {
     expect(
       resolveTrailingTakeProfitLevelsFromStrategyConfig({
         close: {
@@ -61,7 +61,7 @@ describe('runtimeStrategyConfigParser.service', () => {
       resolveTrailingStopLevelsFromStrategyConfig({
         close: {
           mode: 'advanced',
-          tsl: [{ percent: 20, arm: 10 }],
+          tsl: [{ percent: -20, arm: 10 }],
         },
       })
     ).toEqual([]);

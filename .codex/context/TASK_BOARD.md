@@ -17,7 +17,7 @@ Last updated: 2026-05-02
 
 ## READY
 
-- [ ] `V1CLOSEOUT-01 fix(api-wallets/bots): resolve LIVE external management ownership persistence`
+- [x] `V1CLOSEOUT-01 fix(api-wallets/bots): resolve LIVE external management ownership persistence`
   - Scope: first execution slice from
     `docs/planning/v1closeout-audit-remediation-plan-2026-05-02.md`.
     Reconcile the failing LIVE wallet `manageExternalPositions` assertion with
@@ -26,7 +26,7 @@ Last updated: 2026-05-02
     authority. Required validation: focused wallets e2e, related takeover or
     runtime tests if semantics change, and API typecheck.
 
-- [ ] `V1CLOSEOUT-02 fix(api-engine/backtests): restore advanced TSL close parity`
+- [x] `V1CLOSEOUT-02 fix(api-engine/backtests): restore advanced TSL close parity`
   - Scope: repair the confirmed `advanced-tsl` parity failure where backtest
     returns no close reason while the golden BACKTEST/PAPER/LIVE contract
     expects `trailing_stop`. Reuse shared lifecycle logic and avoid a
@@ -34,13 +34,13 @@ Last updated: 2026-05-02
     golden test, focused replay/runtime lifecycle tests if touched, and API
     typecheck.
 
-- [ ] `V1CLOSEOUT-03 fix(api-bots-runtime): repair monitoring trades and dynamic TSL serialization`
+- [x] `V1CLOSEOUT-03 fix(api-bots-runtime): repair monitoring trades and dynamic TSL serialization`
   - Scope: restore deterministic runtime monitoring totals, symbol filters,
     and pre-arm dynamic TSL truth in `bots.e2e.test.ts`. Dynamic TSL stop
     values must remain `null` until the runtime trailing state is actually
     armed. Required validation: focused bots e2e and API typecheck.
 
-- [ ] `V1CLOSEOUT-04 fix(api-orders/positions): restore exchange-synced LIVE visibility and close flow`
+- [x] `V1CLOSEOUT-04 fix(api-orders/positions): restore exchange-synced LIVE visibility and close flow`
   - Scope: fix selected-bot LIVE runtime truth for manual LIVE MARKET adoption,
     `EXCHANGE_SYNC BOT_MANAGED` visibility when PAPER shares the symbol,
     dashboard close returning `closed`, and deterministic fixture setup in
@@ -48,20 +48,20 @@ Last updated: 2026-05-02
     orders/positions e2e, related runtime/takeover tests if touched, and API
     typecheck.
 
-- [ ] `V1CLOSEOUT-05 fix(api-positions): restore orphan repair canonical rebinding`
+- [x] `V1CLOSEOUT-05 fix(api-positions): restore orphan repair canonical rebinding`
   - Scope: make orphan repair re-import exchange truth with deterministic
     `botId` and `walletId` when evidence is sufficient, while preserving
     fail-closed behavior for ambiguous ownership. Required validation: focused
     orphan repair e2e, related restart continuity tests if touched, and API
     typecheck.
 
-- [ ] `V1CLOSEOUT-06 qa(api): restore full API suite green after closeout fixes`
+- [x] `V1CLOSEOUT-06 qa(api): restore full API suite green after closeout fixes`
   - Scope: after `V1CLOSEOUT-01..05`, rerun every previously failing focused
     API file and then the full API suite. Classify any remaining failure before
     changing code. Required validation: `pnpm --filter api run test -- --run`
     and API typecheck.
 
-- [ ] `V1CLOSEOUT-07 fix(docs): repair docs parity route-map path drift`
+- [x] `V1CLOSEOUT-07 fix(docs): repair docs parity route-map path drift`
   - Scope: make docs parity resolve the canonical route map at
     `docs/architecture/reference/dashboard-route-map.md` instead of looking for
     the stale root architecture path. Required validation:

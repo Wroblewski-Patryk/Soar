@@ -34,6 +34,8 @@ const shouldIncludeOpenAnchor = (input: {
   normalizedSide?: 'BUY' | 'SELL';
   normalizedAction?: 'OPEN' | 'DCA' | 'CLOSE' | 'UNKNOWN';
 }) => {
+  if (input.position.status !== 'OPEN') return false;
+  if (input.position.origin !== 'EXCHANGE_SYNC') return false;
   if (input.normalizedAction && input.normalizedAction !== 'OPEN') return false;
 
   const side = toOpenAnchorTradeSide(input.position.side);
@@ -161,45 +163,36 @@ export const listBotRuntimeSessionTrades = async (
   });
   const shouldIncludeCarryOverPositions = !query.from && !query.to;
 
-  if (scopedPositionIds.length === 0) {
-    return {
-      sessionId,
-      total: 0,
-      meta: {
-        page,
-        pageSize,
-        total: 0,
-        totalPages: 0,
-        hasPrev: page > 1,
-        hasNext: false,
-      },
-      window: {
-        startedAt: session.startedAt,
-        finishedAt: windowEnd,
-      },
-      items: [],
-    };
-  }
-
   const where: Prisma.TradeWhereInput = {
     userId,
-    positionId: { in: scopedPositionIds },
     ...(normalizedSymbol ? { symbol: normalizedSymbol } : {}),
     ...(normalizedSide ? { side: normalizedSide } : {}),
-    AND: shouldIncludeCarryOverPositions
-      ? [
-          {
-            OR: [
-              windowClause,
-              {
-                executedAt: {
-                  lte: rangeEnd,
-                },
-              },
-            ],
-          },
-        ]
-      : [windowClause],
+    OR: [
+      ...(scopedPositionIds.length > 0
+        ? [
+            {
+              positionId: { in: scopedPositionIds },
+              ...(shouldIncludeCarryOverPositions
+                ? {
+                    OR: [
+                      windowClause,
+                      {
+                        executedAt: {
+                          lte: rangeEnd,
+                        },
+                      },
+                    ],
+                  }
+                : windowClause),
+            },
+          ]
+        : []),
+      {
+        botId,
+        positionId: null,
+        ...windowClause,
+      },
+    ],
   };
 
   const rows = await listRuntimeTradeRows(where);

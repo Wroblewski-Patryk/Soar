@@ -294,9 +294,8 @@ export const parseStrategyRiskConfig = (strategyConfig?: Record<string, unknown>
     .map((level) => ({
       arm: Math.abs(asSignedPercent((level as { percent?: unknown })?.percent, Number.NaN)),
       percent: asPercent((level as { arm?: unknown })?.arm, Number.NaN),
-      rawStart: Number((level as { percent?: unknown })?.percent),
     }))
-    .filter((level) => Number.isFinite(level.percent) && level.percent > 0 && level.rawStart < 0)
+    .filter((level) => Number.isFinite(level.arm) && level.arm > 0 && Number.isFinite(level.percent) && level.percent > 0)
     .map(({ arm, percent }) => ({ arm, percent }))
     .sort((left, right) => left.arm - right.arm);
   const trailingLossRawPercent = Number((Array.isArray(close.tsl) ? close.tsl : [])[0]?.percent);

@@ -86,6 +86,7 @@ export const listRuntimeTradeAnchorPositionRows = async (
     where,
     select: {
       id: true,
+      status: true,
       symbol: true,
       side: true,
       quantity: true,

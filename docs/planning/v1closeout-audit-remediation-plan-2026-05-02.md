@@ -4,8 +4,8 @@
 - ID: V1CLOSEOUT-AUDIT-A
 - Title: planning(release): plan remediation from full V1 closeout audits
 - Task Type: release
-- Current Stage: planning
-- Status: READY
+- Current Stage: verification
+- Status: IN_PROGRESS
 - Owner: Planning Agent
 - Depends on: V1RUNTIME-TRUST-03, V1COVER-03, V1FINAL-01
 - Priority: P0
@@ -82,6 +82,29 @@ advance toward a final V1 go/no-go without losing any audit finding.
   - `src/modules/bots/bots.e2e.test.ts`
   - `src/modules/orders/orders-positions.e2e.test.ts`
   - `src/modules/positions/positions.orphan-repair.e2e.test.ts`
+
+## Execution Update - 2026-05-02
+- `V1CLOSEOUT-01..06` are implemented and verified. The P0 API failures were
+  resolved by aligning stale external-management fixtures to the canonical
+  `Bot.manageExternalPositions` authority, fixing positive advanced TSL
+  parsing parity in backtests, tightening runtime trades open-anchor scoping,
+  allowing direct bot trade rows without `positionId`, and preserving pre-arm
+  dynamic TSL truth.
+- `V1CLOSEOUT-07` is implemented and verified. Docs parity now reads the
+  canonical dashboard route map from
+  `docs/architecture/reference/dashboard-route-map.md`, and the missing
+  `apps/web/src/features/shared` module inventory/deep-dive entry is
+  published.
+- Verification evidence:
+  - `pnpm --filter api run typecheck` => PASS.
+  - focused API closeout pack => PASS, `8` files / `91` tests.
+  - `pnpm --filter api run test -- --run` => PASS.
+  - `pnpm run docs:parity:check` => PASS, API `22/22`, Web `16/16`, Routes
+    `38/38`.
+  - `pnpm run quality:guardrails` => PASS.
+- Remaining release closeout work starts at `V1CLOSEOUT-08`: RC signoff,
+  release-gate evidence, production restore drill, stage/prod evidence, and
+  exchange-boundary architecture remediation remain open.
 
 ## Confirmed Findings
 

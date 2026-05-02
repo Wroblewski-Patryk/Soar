@@ -100,6 +100,20 @@ Last updated: 2026-05-02
   of reconstructing it from `syncState` or audit logs.
 
 ## Product Decisions (Confirmed)
+- 2026-05-02: closed `V1CLOSEOUT-01..07` from the V1 closeout audit
+  remediation queue. The API closeout packet is green again after aligning
+  stale external-management fixtures to the canonical `Bot.manageExternalPositions`
+  authority, fixing positive advanced TSL parser parity for backtests/runtime
+  display, repairing runtime session trade scoping for direct bot trades and
+  imported open anchors, and keeping pre-arm dynamic TSL display fail-closed.
+  Docs parity now resolves the canonical dashboard route map under
+  `docs/architecture/reference/dashboard-route-map.md` and includes the
+  `web-shared` feature deep-dive. Evidence: `pnpm --filter api run typecheck`
+  PASS; focused API closeout pack PASS (`8` files / `91` tests);
+  `pnpm --filter api run test -- --run` PASS; `pnpm run docs:parity:check`
+  PASS; `pnpm run quality:guardrails` PASS. Remaining closeout blockers start
+  at `V1CLOSEOUT-08`: RC/release evidence, production restore drill, stage/prod
+  evidence freshness, and exchange-boundary architecture remediation.
 - 2026-05-02: queued `V1CLOSEOUT-AUDIT-A` after a full V1 closeout audit
   requested before implementation. The audit confirms V1 is not ready to close
   yet: full web tests, typecheck, build, guardrails, and route-reachable i18n

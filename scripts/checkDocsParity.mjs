@@ -162,7 +162,13 @@ const main = async () => {
   }
 
   const moduleIndexPath = path.resolve(repoRoot, 'docs', 'modules', 'module-doc-status-index.md');
-  const routeMapPath = path.resolve(repoRoot, 'docs', 'architecture', 'dashboard-route-map.md');
+  const routeMapPath = path.resolve(
+    repoRoot,
+    'docs',
+    'architecture',
+    'reference',
+    'dashboard-route-map.md'
+  );
   const apiModulesPath = path.resolve(repoRoot, 'apps', 'api', 'src', 'modules');
   const webFeaturesPath = path.resolve(repoRoot, 'apps', 'web', 'src', 'features');
   const webAppPath = path.resolve(repoRoot, 'apps', 'web', 'src', 'app');

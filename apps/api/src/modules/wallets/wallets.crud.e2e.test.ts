@@ -80,7 +80,7 @@ describe('Wallet CRUD and ownership contract', () => {
     });
   });
 
-  it('persists external takeover flag on LIVE wallet', async () => {
+  it('keeps external takeover management out of LIVE wallet authority', async () => {
     const agent = await registerAndLogin(uniqueEmail('wallet-crud-live-manage'));
     const apiKeyId = await createApiKey(agent, {
       label: 'binance-live-manage',
@@ -103,7 +103,7 @@ describe('Wallet CRUD and ownership contract', () => {
     expect(response.body).toMatchObject({
       mode: 'LIVE',
       apiKeyId,
-      manageExternalPositions: true,
+      manageExternalPositions: false,
     });
   });
 

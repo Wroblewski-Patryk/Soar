@@ -67,7 +67,7 @@ export const resolveTrailingStopLevelsFromStrategyConfig = (
         Number.isFinite(item.trailPercent) &&
         item.armPercent > 0 &&
         item.trailPercent > 0 &&
-        item.rawStartPercent < 0
+        item.rawStartPercent > 0
     )
     .map(({ armPercent, trailPercent }) => ({ armPercent, trailPercent }))
     .sort((left, right) => left.armPercent - right.armPercent);
