@@ -17,6 +17,19 @@ Last updated: 2026-05-02
 
 ## READY
 
+- [x] `V1MARKET-02 fix(web-markets): keep Binance catalog symbols selectable for whitelist`
+  - Scope: fixed the operator-reported follow-up where market whitelist
+    dropdowns only showed symbols that survived the current volume filter,
+    preventing manual selection of lower-volume Binance catalog symbols.
+    Manual whitelist/blacklist selection now uses the full current Binance
+    catalog for the selected exchange, market type, and base currency, while
+    the preview/result contract remains `(volume-filtered catalog U whitelist)
+    - blacklist`. Added accessible checkbox labels for market option
+    selection and a focused regression covering a below-threshold `SOLUSDT`
+    selection. Validation PASS: focused market form component test (`8/8`)
+    web typecheck, web build, and repository guardrails. Evidence:
+    `docs/planning/v1market-02-whitelist-catalog-selection-task-2026-05-02.md`.
+
 - [x] `V1MARKET-01 fix(api-bots+markets): allow market edits after linked bot deactivation`
   - Scope: fixed the operator-reported blocker where a linked market universe
     could still behave as used by an active bot after that bot was disabled.

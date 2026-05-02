@@ -122,6 +122,7 @@ export default function SearchableMultiSelect({
                 <label className="cursor-pointer justify-start gap-2">
                   <input
                     type="checkbox"
+                    aria-label={option.value}
                     className="checkbox checkbox-xs"
                     checked={selectedSet.has(option.value)}
                     onChange={() => toggleValue(option.value)}

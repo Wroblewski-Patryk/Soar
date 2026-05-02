@@ -100,6 +100,16 @@ Last updated: 2026-05-02
   of reconstructing it from `syncState` or audit logs.
 
 ## Product Decisions (Confirmed)
+- 2026-05-02: closed `V1MARKET-02`, an operator-reported follow-up to the
+  deactivated-bot market edit fix. The market universe form no longer uses the
+  volume-filtered automatic result as the source for whitelist/blacklist
+  dropdown options. Manual selection now uses the full Binance catalog for the
+  selected exchange, market type, and base currency, while the preview/result
+  contract remains `(volume-filtered catalog U whitelist) - blacklist`.
+  Market option checkboxes also expose symbol labels for accessible selection.
+  Validation PASS: focused market form component test (`8/8`), web typecheck,
+  web build, and repository guardrails. Evidence:
+  `docs/planning/v1market-02-whitelist-catalog-selection-task-2026-05-02.md`.
 - 2026-05-02: closed `V1MARKET-01`, an operator-reported market-edit
   regression after the earlier inactive-bot market sync fix. Deactivating a
   bot now also moves its enabled non-archived canonical market groups to

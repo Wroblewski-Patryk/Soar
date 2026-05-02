@@ -146,6 +146,78 @@ describe('MarketUniverseForm', () => {
     });
   });
 
+  it('keeps Binance catalog symbols selectable for whitelist even when volume filter hides them from automatic result', async () => {
+    fetchCatalogMock.mockResolvedValue({
+      source: 'BINANCE_PUBLIC',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      baseCurrencies: ['USDT'],
+      totalAvailable: 3,
+      totalForBaseCurrency: 3,
+      markets: [
+        {
+          symbol: 'BTCUSDT',
+          displaySymbol: 'BTC/USDT',
+          baseAsset: 'BTC',
+          quoteAsset: 'USDT',
+          quoteVolume24h: 2000,
+          lastPrice: 68000,
+        },
+        {
+          symbol: 'ETHUSDT',
+          displaySymbol: 'ETH/USDT',
+          baseAsset: 'ETH',
+          quoteAsset: 'USDT',
+          quoteVolume24h: 1800,
+          lastPrice: 3600,
+        },
+        {
+          symbol: 'SOLUSDT',
+          displaySymbol: 'SOL/USDT',
+          baseAsset: 'SOL',
+          quoteAsset: 'USDT',
+          quoteVolume24h: 100,
+          lastPrice: 150,
+        },
+      ],
+    });
+
+    renderWithI18n({
+      mode: 'edit',
+      initial: {
+        id: 'u-volume-filter-selectable',
+        name: 'Volume Filter Contract',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        filterRules: { minQuoteVolumeEnabled: true, minQuoteVolume24h: 1500 },
+        whitelist: [],
+        blacklist: [],
+      },
+      submitting: false,
+      onSubmit: async () => undefined,
+    });
+
+    await waitFor(() => {
+      expect(fetchCatalogMock).toHaveBeenCalled();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Dostepnych po filtrze: 2')).toBeInTheDocument();
+      expect(screen.getByText('Liczba rynkow: 2')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getAllByText('Wybierz...')[0].closest('summary') as HTMLElement);
+
+    const selectableLists = screen.getAllByRole('list', { name: 'Selekcja' });
+    expect(within(selectableLists[0]).getByText('SOLUSDT')).toBeInTheDocument();
+
+    fireEvent.click(within(selectableLists[0]).getByLabelText('SOLUSDT'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Liczba rynkow: 3')).toBeInTheDocument();
+    });
+  });
+
   it('keeps preview empty and still allows submit when filter is off and whitelist is empty', async () => {
     fetchCatalogMock.mockResolvedValue({
       source: 'BINANCE_PUBLIC',

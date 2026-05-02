@@ -250,6 +250,15 @@ export default function MarketUniverseForm({
     [catalogMarkets, minQuoteVolume, minQuoteVolumeEnabled]
   );
 
+  const catalogOptions = useMemo<MultiSelectOption[]>(
+    () =>
+      catalogMarkets.map((market) => ({
+        value: market.symbol,
+        label: market.displaySymbol,
+        description: formatVolumeLabel(market.quoteVolume24h, labels.volumeLabelTemplate),
+      })),
+    [catalogMarkets, labels.volumeLabelTemplate]
+  );
   const marketOptions = useMemo<MultiSelectOption[]>(
     () =>
       filteredCatalogMarkets.map((market) => ({
@@ -260,8 +269,8 @@ export default function MarketUniverseForm({
     [filteredCatalogMarkets, labels.volumeLabelTemplate]
   );
   const marketOptionSymbols = useMemo(
-    () => new Set(marketOptions.map((option) => option.value)),
-    [marketOptions]
+    () => new Set(catalogOptions.map((option) => option.value)),
+    [catalogOptions]
   );
   const persistedSelectionOptions = useMemo<MultiSelectOption[]>(() => {
     const savedSymbols = uniqueSortedSymbols([...whitelistSymbols, ...blacklistSymbols]);
@@ -274,19 +283,20 @@ export default function MarketUniverseForm({
       }));
   }, [blacklistSymbols, labels.legacySymbolDescription, marketOptionSymbols, whitelistSymbols]);
   const selectionOptions = useMemo<MultiSelectOption[]>(
-    () => [...marketOptions, ...persistedSelectionOptions],
-    [marketOptions, persistedSelectionOptions]
+    () => [...catalogOptions, ...persistedSelectionOptions],
+    [catalogOptions, persistedSelectionOptions]
   );
 
   useEffect(() => {
     if (catalogLoading) return;
     if (shouldPreserveInitialSelections) return;
-    const valid = new Set(marketOptions.map((item) => item.value));
+    const valid = new Set(catalogOptions.map((item) => item.value));
     setWhitelistSymbols((prev) => prev.filter((item) => valid.has(item)));
     setBlacklistSymbols((prev) => prev.filter((item) => valid.has(item)));
-  }, [catalogLoading, marketOptions, shouldPreserveInitialSelections]);
+  }, [catalogLoading, catalogOptions, shouldPreserveInitialSelections]);
 
   const availableSymbols = useMemo(() => marketOptions.map((option) => option.value), [marketOptions]);
+  const selectableSymbols = useMemo(() => catalogOptions.map((option) => option.value), [catalogOptions]);
 
   const previewSymbols = useMemo(
     () =>
@@ -372,7 +382,7 @@ export default function MarketUniverseForm({
   };
 
   const selectAllFromBaseCurrency = () => {
-    setWhitelistSymbols(availableSymbols);
+    setWhitelistSymbols(selectableSymbols);
   };
 
   const clearAllSelections = () => {
@@ -523,7 +533,7 @@ export default function MarketUniverseForm({
                 type='button'
                 className='btn btn-xs btn-outline'
                 onClick={selectAllFromBaseCurrency}
-                disabled={availableSymbols.length === 0}
+                disabled={selectableSymbols.length === 0}
               >
                 {labels.selectAll}
               </button>
