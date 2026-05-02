@@ -101,10 +101,23 @@ Last updated: 2026-05-02
 - [x] `V1CLOSEOUT-11 release(qa): run final V1 go/no-go closure pack`
   - Scope: after P0 fixes and evidence refresh, run the complete validation
     baseline, synchronize RC artifacts, and publish final GO or NO-GO with
-    exact evidence. Closed with final `NO-GO` in
+    exact evidence. Closed with final `GO` in
     `docs/operations/v1-final-go-no-go-closure-2026-05-02.md`. Repository
-    validation baseline is green, but Gate 4 approval, stage/prod restore
-    target env, and non-dry-run release evidence remain missing.
+    validation baseline is green, and Gate 4 is now approved with Patryk
+    Wroblewski as Engineering, Product, Operations, and RC owner. Production
+    restore evidence PASS, rollback proof PASS, and the non-dry-run production
+    release gate is `ready`. Stage is deferred to V2 per operator decision.
+
+- [x] `V1SEC-01 fix(deps+ops): clear dependency audit and record V1 prod-only release scope`
+  - Scope: remediated the confidence-sweep dependency audit findings without
+    runtime behavior changes. Updated Next/Tailwind/Vitest-related web
+    toolchain dependencies, patched vulnerable transitive packages with
+    centralized `pnpm.overrides`, kept `next` and `axios` as production
+    dependencies, and recorded the V1 prod-only release decision with stage
+    deferred to V2. Validation PASS: `pnpm audit`, `quality:guardrails`,
+    `lint`, `typecheck`, full web tests (`139` files / `394` tests), full API
+    tests, `build`, and `docs:parity:check`. Evidence:
+    `docs/planning/v1sec-01-prod-only-dependency-hardening-task-2026-05-02.md`.
 
 - [x] `V1PRICE-04 fix(api-runtime): propagate fallback ticker price into position markPrice candidates`
   - Scope: closed as part of `V1RUNTIME-TRUST-03`. Runtime Positions now feeds

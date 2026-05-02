@@ -37,6 +37,36 @@ test('buildSteps passes api and web targets into deploy smoke gate', () => {
   ]);
 });
 
+test('buildSteps passes release auth through step env instead of command args', () => {
+  const steps = buildSteps({
+    baseUrl: 'https://api.example.com',
+    webBaseUrl: 'https://web.example.com',
+    authToken: 'secret-token',
+    authEmail: 'ops@example.com',
+    authPassword: 'secret-password',
+    opsBasicUser: '',
+    opsBasicPassword: '',
+    opsAuthHeaderName: '',
+    opsAuthHeaderValue: '',
+    skipLocalQuality: true,
+    skipGoLiveSmoke: true,
+    skipDeploySmoke: false,
+    skipRuntimeFreshness: false,
+    skipRollbackGuard: false,
+  });
+
+  for (const step of steps) {
+    assert.equal(step.args.includes('secret-token'), false);
+    assert.equal(step.args.includes('secret-password'), false);
+    assert.equal(step.args.includes('--auth-token'), false);
+    assert.equal(step.args.includes('--auth-password'), false);
+  }
+
+  assert.equal(steps[0].env.SMOKE_AUTH_TOKEN, 'secret-token');
+  assert.equal(steps[1].env.DEPLOY_FRESHNESS_AUTH_TOKEN, 'secret-token');
+  assert.equal(steps[2].env.ROLLBACK_GUARD_AUTH_TOKEN, 'secret-token');
+});
+
 test('evaluateEvidenceReadiness marks missing stage evidence as not ready', async () => {
   const tempRoot = await mkdtemp(path.join(os.tmpdir(), 'v1-release-gate-missing-'));
   const operationsDir = path.join(tempRoot, 'operations');

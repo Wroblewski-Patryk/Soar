@@ -2,6 +2,23 @@
 
 Last updated: 2026-05-02
 
+## 2026-05-02 V1 Prod-Only Release Scope Update
+- Operator decision: V1 release evidence is production-only for now; a separate
+  stage environment is deferred to V2 when a dedicated VPS is available.
+- Stage absence is no longer a V1 blocker. Gate 4 signoff is approved with
+  Patryk Wroblewski as Engineering, Product, Operations, and RC owner.
+  Production restore evidence and non-dry-run production release/post-deploy
+  smoke evidence are now fresh and passing.
+- Dependency audit hardening closed in `V1SEC-01`; `pnpm audit` reports no
+  known vulnerabilities after Next/Tailwind/Vitest toolchain updates and
+  centralized patched transitive dependency overrides.
+- 2026-05-02 final prod evidence: Coolify production DB restore drill PASS in
+  Postgres container `x11cfnz1dd9x0yzccftqzcoe`; rollback proof PASS; final
+  non-dry-run production release gate PASS with readiness `ready`. Evidence:
+  `docs/operations/v1-restore-drill-prod-2026-05-02T17-49-41-000Z.md`,
+  `docs/operations/v1-rollback-proof-prod-2026-05-02T17-54-13-498Z.md`, and
+  `docs/operations/v1-release-gate-prod-2026-05-02T17-56-17-239Z.md`.
+
 ## Product Snapshot
 - Name: CryptoSparrow / Soar
 - Goal: deliver a crypto-trading operations platform with backtest, paper, and
@@ -118,13 +135,13 @@ Last updated: 2026-05-02
   `V1CLOSEOUT-11`: publish the final V1 go/no-go closure pack, currently
   expected to remain `NO-GO` unless missing Gate 4 approvals and stage/prod
   target evidence are provided.
-- 2026-05-02: closed `V1CLOSEOUT-11` with final V1 closeout status `NO-GO`.
+- 2026-05-02: closed `V1CLOSEOUT-11` with final V1 closeout status `GO`.
   Repository validation is green after remediation (`quality:guardrails`,
   `docs:parity:check`, `lint`, `typecheck`, full API tests, full web tests,
-  and `build` all PASS), but V1 cannot be honestly closed or promoted as final
-  because Gate 4 approval is still missing, stage/prod restore drills lack
-  target DB container env configuration, and stage/prod release gates remain
-  dry-run `not_ready`. Evidence:
+  and `build` all PASS). Follow-up production evidence cleared the remaining
+  V1 blockers: Gate 4 is approved, production restore drill is PASS, rollback
+  proof is PASS, and the non-dry-run production release gate is `ready`. Stage
+  is deferred to V2 by operator decision. Evidence:
   `docs/operations/v1-final-go-no-go-closure-2026-05-02.md`.
 - 2026-05-02: closed `V1CLOSEOUT-01..07` from the V1 closeout audit
   remediation queue. The API closeout packet is green again after aligning

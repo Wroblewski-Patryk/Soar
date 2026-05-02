@@ -149,20 +149,27 @@ const printUsage = () => {
   );
 };
 
-const buildAuthArgs = (options) => {
-  const args = [];
-  if (options.authToken.trim()) args.push('--auth-token', options.authToken.trim());
-  if (options.authEmail.trim()) args.push('--auth-email', options.authEmail.trim());
-  if (options.authPassword.trim()) args.push('--auth-password', options.authPassword.trim());
-  if (options.opsBasicUser.trim()) args.push('--ops-basic-user', options.opsBasicUser.trim());
-  if (options.opsBasicPassword.trim()) args.push('--ops-basic-password', options.opsBasicPassword.trim());
-  if (options.opsAuthHeaderName.trim()) args.push('--ops-auth-header-name', options.opsAuthHeaderName.trim());
-  if (options.opsAuthHeaderValue.trim()) args.push('--ops-auth-header-value', options.opsAuthHeaderValue.trim());
-  return args;
+const buildAuthEnv = (options, prefix) => {
+  const env = {};
+  const mappings = [
+    ['AUTH_TOKEN', options.authToken],
+    ['AUTH_EMAIL', options.authEmail],
+    ['AUTH_PASSWORD', options.authPassword],
+    ['OPS_BASIC_USER', options.opsBasicUser],
+    ['OPS_BASIC_PASSWORD', options.opsBasicPassword],
+    ['OPS_AUTH_HEADER_NAME', options.opsAuthHeaderName],
+    ['OPS_AUTH_HEADER_VALUE', options.opsAuthHeaderValue],
+  ];
+
+  for (const [key, value] of mappings) {
+    const normalized = String(value ?? '').trim();
+    if (normalized) env[`${prefix}_${key}`] = normalized;
+  }
+
+  return env;
 };
 
 export const buildSteps = (options) => {
-  const authArgs = buildAuthArgs(options);
   const steps = [];
 
   if (!options.skipLocalQuality) {
@@ -175,7 +182,7 @@ export const buildSteps = (options) => {
   }
 
   if (!options.skipDeploySmoke) {
-    const stepArgs = ['run', 'ops:deploy:smoke', '--', '--base-url', options.baseUrl, ...authArgs];
+    const stepArgs = ['run', 'ops:deploy:smoke', '--', '--base-url', options.baseUrl];
     if (options.webBaseUrl.trim()) {
       stepArgs.push('--web-base-url', options.webBaseUrl.trim());
     }
@@ -183,6 +190,7 @@ export const buildSteps = (options) => {
       label: 'post-deploy smoke gate',
       command: 'pnpm',
       args: stepArgs,
+      env: buildAuthEnv(options, 'SMOKE'),
     });
   }
 
@@ -190,7 +198,8 @@ export const buildSteps = (options) => {
     steps.push({
       label: 'runtime freshness gate',
       command: 'pnpm',
-      args: ['run', 'ops:deploy:runtime-freshness', '--', '--base-url', options.baseUrl, ...authArgs],
+      args: ['run', 'ops:deploy:runtime-freshness', '--', '--base-url', options.baseUrl],
+      env: buildAuthEnv(options, 'DEPLOY_FRESHNESS'),
     });
   }
 
@@ -198,7 +207,8 @@ export const buildSteps = (options) => {
     steps.push({
       label: 'rollback guard gate',
       command: 'pnpm',
-      args: ['run', 'ops:deploy:rollback-guard', '--', '--base-url', options.baseUrl, ...authArgs],
+      args: ['run', 'ops:deploy:rollback-guard', '--', '--base-url', options.baseUrl],
+      env: buildAuthEnv(options, 'ROLLBACK_GUARD'),
     });
   }
 
@@ -332,9 +342,14 @@ const runStep = (step, dryRun) => {
   const startedAt = new Date().toISOString();
   console.log(`[ops:release:v1:gate] ${step.label}`);
   console.log(`  ${formatCommand(step.command, step.args)}`);
+  const reportStep = {
+    label: step.label,
+    command: step.command,
+    args: step.args,
+  };
   if (dryRun) {
     return {
-      ...step,
+      ...reportStep,
       startedAt,
       endedAt: startedAt,
       durationMs: 0,
@@ -347,12 +362,15 @@ const runStep = (step, dryRun) => {
   const result = spawnSync(step.command, step.args, {
     stdio: 'inherit',
     shell: process.platform === 'win32',
-    env: process.env,
+    env: {
+      ...process.env,
+      ...(step.env ?? {}),
+    },
   });
   const endedAt = new Date().toISOString();
   const exitCode = typeof result.status === 'number' ? result.status : 1;
   return {
-    ...step,
+    ...reportStep,
     startedAt,
     endedAt,
     durationMs: Date.now() - startedMs,

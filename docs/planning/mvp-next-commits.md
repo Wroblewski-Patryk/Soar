@@ -73,12 +73,24 @@ Operational queue for one-task execution runs.
     focused exchange/backtest/runtime/profile pack (`15/15`), runtime loop/pnl
     pack (`45/45`), API typecheck.
 - [x] `V1CLOSEOUT-11 release(qa): run final V1 go/no-go closure pack`
-  - 2026-05-02: Closed with final `NO-GO` in
+  - 2026-05-02: Closed with final `GO` in
     `docs/operations/v1-final-go-no-go-closure-2026-05-02.md`. Repository
     validation baseline is green (`guardrails`, `docs parity`, `lint`,
-    `typecheck`, full API tests, full web tests, `build`), but release cannot
-    be approved until Gate 4 approvers, stage/prod restore target env, and
-    non-dry-run release evidence are present.
+    `typecheck`, full API tests, full web tests, `build`). Gate 4 is approved
+    with Patryk Wroblewski as Engineering, Product, Operations, and RC owner.
+    Production restore evidence PASS, rollback proof PASS, and the non-dry-run
+    production release gate is `ready`. Stage is deferred to V2 per operator
+    decision.
+- [x] `V1SEC-01 fix(deps+ops): clear dependency audit and record V1 prod-only release scope`
+  - 2026-05-02: Closed dependency hardening after the confidence sweep found
+    high/moderate dependency audit findings. Updated direct web toolchain
+    packages and centralized patched transitive versions through
+    `pnpm.overrides`; `pnpm audit` now reports no known vulnerabilities.
+    Operator clarified that V1 is production-only and stage moves to V2 when a
+    dedicated VPS exists. Validation PASS: `quality:guardrails`, `lint`,
+    `typecheck`, full web tests (`139` files / `394` tests), full API tests,
+    `build`, and `docs:parity:check`. Evidence:
+    `docs/planning/v1sec-01-prod-only-dependency-hardening-task-2026-05-02.md`.
 - 2026-05-01 execution status: `V1ROE-04` protected production verification is
   closed with authenticated API/browser evidence. Remaining non-deferred V1
   blockers are `V1EXCEL-03..06` authenticated manual operator and OPS evidence.

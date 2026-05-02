@@ -1,11 +1,11 @@
 {
   "version": "1.0.0",
-  "generatedAtUtc": "2026-05-01T23:39:20.653Z",
+  "generatedAtUtc": "2026-05-02T16:51:58.975Z",
   "rootDir": ".",
   "scope": {
-    "scannedSourceFiles": 295,
+    "scannedSourceFiles": 296,
     "routePages": 38,
-    "routeReachableFiles": 282
+    "routeReachableFiles": 283
   },
   "summary": {
     "filesWithFindings": 0,
@@ -126,7 +126,7 @@
     },
     {
       "routePage": "apps/web/src/app/dashboard/bots/[id]/assistant/page.tsx",
-      "reachableFilesCount": 114,
+      "reachableFilesCount": 115,
       "issueFilesCount": 0,
       "moduleIssueFilesCount": 0,
       "sharedIssueFilesCount": 0,
@@ -162,7 +162,7 @@
     },
     {
       "routePage": "apps/web/src/app/dashboard/bots/[id]/preview/page.tsx",
-      "reachableFilesCount": 114,
+      "reachableFilesCount": 115,
       "issueFilesCount": 0,
       "moduleIssueFilesCount": 0,
       "sharedIssueFilesCount": 0,
@@ -306,7 +306,7 @@
     },
     {
       "routePage": "apps/web/src/app/dashboard/page.tsx",
-      "reachableFilesCount": 121,
+      "reachableFilesCount": 122,
       "issueFilesCount": 0,
       "moduleIssueFilesCount": 0,
       "sharedIssueFilesCount": 0,

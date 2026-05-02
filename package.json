@@ -85,6 +85,23 @@
     "eslint": "^9.31.0",
     "prettier": "^3.6.2",
     "typescript": "^5.8.3"
+  },
+  "pnpm": {
+    "overrides": {
+      "ajv": "6.14.0",
+      "flatted": "3.4.2",
+      "follow-redirects": "1.16.0",
+      "js-yaml": "4.1.1",
+      "lodash": "4.18.1",
+      "minimatch@<3.1.4": "3.1.5",
+      "picomatch@^2.0.0": "2.3.2",
+      "picomatch@^4.0.0": "4.0.4",
+      "postcss": "8.5.13",
+      "rollup": "4.60.2",
+      "tar": "7.5.13",
+      "vite": "7.3.2",
+      "yaml": "2.8.3"
+    }
   }
 }
 

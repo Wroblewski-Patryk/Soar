@@ -3,8 +3,8 @@
 ## Header
 - ID: V1CLOSEOUT-11
 - Title: release(qa): final V1 go/no-go closure pack
-- Current Stage: verification
-- Status: NO-GO
+- Current Stage: release
+- Status: GO
 - Owner: QA/Test + Ops/Release
 - Date: 2026-05-02
 
@@ -13,12 +13,12 @@ This closure pack follows the full V1 closeout audit remediation queue:
 `V1CLOSEOUT-01..10`.
 
 The code and documentation remediation work is green. The release decision is
-still `NO-GO` because the current candidate lacks required external approval
-and target-environment evidence.
+now `GO` for the V1 production-only target because required approval,
+production restore evidence, and non-dry-run production release evidence are
+fresh and passing.
 
 ## Goal
-Publish the final V1 go/no-go result with exact validation evidence and the
-remaining blockers needed before V1 can be closed.
+Publish the final V1 go/no-go result with exact validation evidence.
 
 ## Scope
 - Technical validation baseline.
@@ -29,14 +29,14 @@ remaining blockers needed before V1 can be closed.
 ## Implementation Plan
 1. Verify repository guardrails, docs parity, lint, typecheck, tests, and build.
 2. Verify RC status/checklist/signoff consistency.
-3. Verify stage/prod restore and release-gate evidence.
+3. Verify production restore and release-gate evidence.
 4. Publish a final GO or NO-GO result.
 
 ## Acceptance Criteria
 - Repository validation evidence is fresh.
 - Release blockers are explicit and not hidden in stale artifacts.
-- The final result is either GO with all required approvals/evidence, or NO-GO
-  with exact next actions.
+- The final result is GO with all required approvals/evidence, or NO-GO with
+  exact next actions.
 
 ## Validation Evidence
 
@@ -61,55 +61,57 @@ remaining blockers needed before V1 can be closed.
 ### RC And Release Evidence
 - `pnpm run ops:rc:gates:status` => PASS.
 - `pnpm run ops:rc:checklist:sync` => PASS.
-- `pnpm run ops:rc:gates:summary` => PASS with Gate 4 OPEN.
-- `pnpm run ops:rc:gates:evidence:check -- --strict` => FAIL as expected:
-  missing Engineering, Product, Operations, and RC owner names; Gate 4 is not
-  approved.
+- `pnpm run ops:rc:gates:summary` => PASS with Gate 4 approved.
+- `pnpm run ops:rc:gates:evidence:check -- --strict` => PASS.
 - `pnpm run ops:db:restore-drill:local` => PASS.
-- `pnpm run ops:db:restore-drill:stage` => FAIL because
-  `STAGE_DB_CHECK_CONTAINER` is missing.
-- `pnpm run ops:db:restore-drill:prod` => FAIL because
-  `PROD_DB_CHECK_CONTAINER` or `PRODUCTION_DB_CHECK_CONTAINER` is missing.
-- Stage release-gate dry-run => command PASS, readiness `not_ready`.
-- Prod release-gate dry-run => command PASS, readiness `not_ready`.
+- Production restore drill in Coolify Postgres container
+  `x11cfnz1dd9x0yzccftqzcoe` => PASS:
+  `docs/operations/v1-restore-drill-prod-2026-05-02T17-49-41-000Z.md`.
+- Production rollback proof => PASS:
+  `docs/operations/v1-rollback-proof-prod-2026-05-02T17-54-13-498Z.md`.
+- Non-dry-run production release gate => PASS / readiness `ready`:
+  `docs/operations/v1-release-gate-prod-2026-05-02T17-56-17-239Z.md`.
 
 ## Result
-Final V1 status: `NO-GO`.
+Final V1 status: `GO`.
 
 The application codebase and repo validation baseline are green after the
-closeout remediation queue. V1 cannot be honestly closed yet because the
-release gate still lacks required human approvals and fresh target-environment
-evidence.
+closeout remediation queue. V1 production-only release evidence is fresh and
+the production release gate passed without `--dry-run`.
+
+## 2026-05-02 Prod-Only And Sign-Off Amendment
+The operator confirmed that V1 will not maintain a separate stage environment
+because there is no dedicated VPS capacity for it yet. Stage is therefore
+deferred to V2 infrastructure planning and is no longer treated as a V1 blocker.
+The V1 release gate remains production-only. Production restore evidence and
+non-dry-run production smoke/release evidence were captured on 2026-05-02.
+
+The operator also confirmed that Patryk Wroblewski is the approver for
+Engineering, Product, Operations, and RC ownership. Gate 4 sign-off was rebuilt
+from that decision and now passes strict evidence validation.
+
+Dependency-audit remediation was completed in
+`docs/planning/v1sec-01-prod-only-dependency-hardening-task-2026-05-02.md`.
+`pnpm audit` now reports no known vulnerabilities.
 
 ## Remaining Blockers
-- Gate 4 final signoff is missing:
-  - Engineering approver name.
-  - Product approver name.
-  - Operations approver name.
-  - RC owner name.
-  - final `APPROVED` status.
-- Stage restore drill cannot run without `STAGE_DB_CHECK_CONTAINER`.
-- Production restore drill cannot run without `PROD_DB_CHECK_CONTAINER` or
-  `PRODUCTION_DB_CHECK_CONTAINER`.
-- Stage and production release gates are dry-run only and remain `not_ready`.
-- Non-dry-run post-deploy or go-live smoke evidence is still required on the
-  target environments.
+- none for V1 production release evidence.
 
 ## Definition of Done
 - [x] Technical code/documentation remediation is verified.
 - [x] RC evidence drift is corrected.
+- [x] Gate 4 final signoff is approved.
 - [x] Restore and release evidence is refreshed.
 - [x] Exchange-boundary conformance is remediated for audited surfaces.
 - [x] Final status is explicit.
-- [ ] V1 is approved for launch.
+- [x] V1 is approved for launch.
 
 ## Result Report
 - Task summary: closed the V1 closeout remediation cycle with a final
-  evidence-backed `NO-GO`.
+  evidence-backed `GO`.
 - Files changed: exchange-boundary services/tests, API test fixtures, release
   evidence artifacts, and canonical planning/context docs.
-- Deployment impact: no deploy should be promoted as V1 final until the
-  remaining release blockers are cleared.
-- Next tiny task: provide target DB container env values and approver names,
-  rerun stage/prod restore drills, rerun release gates non-dry-run, then
-  update this pack to `GO` if all evidence passes.
+- Deployment impact: V1 production release evidence is green for the current
+  production target.
+- Next tiny task: commit and push the evidence/hardening changes so the
+  deployment pipeline can run.
