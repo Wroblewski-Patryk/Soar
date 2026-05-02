@@ -52,6 +52,7 @@ export const getRuntimeSymbolStatsBaseData = async (params: {
               name: true,
               interval: true,
               config: true,
+              updatedAt: true,
             },
           },
           symbolGroup: {
@@ -177,6 +178,7 @@ export const listStrategiesByIds = async (params: {
       name: true,
       interval: true,
       config: true,
+      updatedAt: true,
     },
   });
 

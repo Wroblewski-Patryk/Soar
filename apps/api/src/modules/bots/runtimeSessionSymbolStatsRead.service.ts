@@ -337,7 +337,7 @@ export const listBotRuntimeSessionSymbolStats = async (
   >();
   const strategiesById = new Map<
     string,
-    { name: string; interval: string; config: Record<string, unknown> | null }
+    { name: string; interval: string; config: Record<string, unknown> | null; updatedAt?: Date | null }
   >();
   if (botContext?.strategy) {
     const strategy = botContext.strategy;
@@ -345,6 +345,7 @@ export const listBotRuntimeSessionSymbolStats = async (
       name: strategy.name,
       interval: strategy.interval,
       config: asRecord(strategy.config) ?? null,
+      updatedAt: strategy.updatedAt ?? null,
     });
   }
   const latestSignalStrategyIds = new Set<string>();
@@ -417,6 +418,7 @@ export const listBotRuntimeSessionSymbolStats = async (
         name: strategy.name,
         interval: strategy.interval,
         config: asRecord(strategy.config) ?? null,
+        updatedAt: strategy.updatedAt ?? null,
       });
     }
   }

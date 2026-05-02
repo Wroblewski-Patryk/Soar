@@ -52,6 +52,27 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-05-02 - DB-backed e2e files must not run in parallel when they share global cleanup
+- Context: `V1BOT-CONDITIONS-01` validated focused bots runtime-scope e2e and
+  markets e2e after a runtime monitoring read-model fix.
+- Symptom: running those two files in parallel produced false failures such as
+  `401`, `500`, and Prisma foreign-key cleanup errors, while each file passed
+  when rerun sequentially.
+- Root cause: both e2e files mutate and clean the same shared test database
+  tables, so parallel execution interleaves auth/session fixtures and cleanup.
+- Guardrail: run DB-backed e2e files that use broad `deleteMany` cleanup
+  sequentially unless the suite is explicitly isolated by database/schema or
+  per-test ownership.
+- Preferred pattern:
+```text
+pnpm --filter api run test -- src/modules/bots/bots.runtime-scope.e2e.test.ts --run
+pnpm --filter api run test -- src/modules/markets/markets.e2e.test.ts --run
+```
+- Avoid: using parallel shell/tool execution for shared-database e2e files
+  during closure evidence collection.
+- Evidence: 2026-05-02 `V1BOT-CONDITIONS-01`; parallel run failed, sequential
+  reruns passed (`bots.runtime-scope` `10/10`, `markets` `13/13`).
+
 ### 2026-05-01 - Imported DCA continuity can cross runtime session restarts
 - Context: after wallet-scoped imported DCA recovery deployed, the production
   `LIVE ETHUSDT` dashboard row still showed `dcaCount=0` even though the trade

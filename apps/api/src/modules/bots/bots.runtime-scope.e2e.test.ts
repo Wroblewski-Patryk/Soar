@@ -655,6 +655,147 @@ describe('Bots runtime scope remediation contract', () => {
     expect(btc?.lastSignalContextSource).toBe('latest_signal');
   });
 
+  it('ignores stale pre-update signal context after bot strategy changes while stopped', async () => {
+    const ownerEmail = 'bot-runtime-stale-signal-after-strategy-change@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
+
+    const oldStrategyId = await createStrategy(owner, 'Runtime Old RSI Strategy', {
+      open: {
+        indicatorsLong: [
+          { name: 'RSI', condition: '<', value: 30, params: { period: 14 } },
+        ],
+        indicatorsShort: [],
+      },
+      close: { mode: 'basic', tp: 2, sl: 1 },
+    });
+    const newStrategyId = await createStrategy(owner, 'Runtime New Momentum Strategy', {
+      open: {
+        indicatorsLong: [
+          { name: 'MOMENTUM', condition: '>', value: 0, params: { period: 10 } },
+        ],
+        indicatorsShort: [],
+      },
+      close: { mode: 'basic', tp: 2, sl: 1 },
+    });
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    await prisma.symbolGroup.update({
+      where: { id: marketGroupId },
+      data: { symbols: ['BTCUSDT'] },
+    });
+
+    const botRes = await owner.post('/dashboard/bots').send(
+      createPayload({
+        strategyId: oldStrategyId,
+        marketGroupId,
+      })
+    );
+    expect(botRes.status).toBe(201);
+    const botId = botRes.body.id as string;
+
+    const oldSession = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'CANCELED',
+        startedAt: new Date('2026-04-06T11:00:00.000Z'),
+        finishedAt: new Date('2026-04-06T11:10:00.000Z'),
+      },
+    });
+    await prisma.botRuntimeSymbolStat.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        sessionId: oldSession.id,
+        symbol: 'BTCUSDT',
+        totalSignals: 1,
+        longEntries: 1,
+        snapshotAt: new Date('2026-04-06T11:04:00.000Z'),
+      },
+    });
+    await prisma.botRuntimeEvent.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        sessionId: oldSession.id,
+        eventType: 'SIGNAL_DECISION',
+        level: 'INFO',
+        symbol: 'BTCUSDT',
+        signalDirection: 'LONG',
+        strategyId: oldStrategyId,
+        payload: {
+          analysis: {
+            byStrategy: {
+              [oldStrategyId]: {
+                conditionLines: [
+                  {
+                    scope: 'LONG',
+                    left: 'RSI(14)',
+                    value: '25',
+                    operator: '<',
+                    right: '30',
+                  },
+                ],
+                indicatorSummary: 'RSI(14)=25',
+              },
+            },
+          },
+        },
+        eventAt: new Date('2026-04-06T11:05:00.000Z'),
+      },
+    });
+
+    const updateRes = await owner.put(`/dashboard/bots/${botId}`).send({
+      strategyId: newStrategyId,
+      isActive: true,
+    });
+    expect(updateRes.status).toBe(200);
+
+    const runningSession = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-06T11:20:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-06T11:21:00.000Z'),
+      },
+    });
+    await prisma.botRuntimeSymbolStat.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        sessionId: runningSession.id,
+        symbol: 'BTCUSDT',
+        snapshotAt: new Date('2026-04-06T11:21:00.000Z'),
+      },
+    });
+
+    const aggregateRes = await owner.get(`/dashboard/bots/${botId}/runtime-monitoring/aggregate`);
+    expect(aggregateRes.status).toBe(200);
+    const btc = (
+      aggregateRes.body.symbolStats.items as Array<{
+        symbol: string;
+        lastSignalDirection?: string | null;
+        lastSignalStrategyId?: string | null;
+        lastSignalContextSource?: string | null;
+        configuredStrategyName?: string | null;
+        lastSignalConditionSummary?: string | null;
+        lastSignalConditionLines?: Array<{ left: string }> | null;
+      }>
+    ).find((item) => item.symbol === 'BTCUSDT');
+
+    expect(btc).toBeTruthy();
+    expect(btc?.lastSignalDirection).toBeNull();
+    expect(btc?.lastSignalStrategyId).toBeNull();
+    expect(btc?.lastSignalContextSource).toBe('configured_fallback');
+    expect(btc?.configuredStrategyName).toBe('Runtime New Momentum Strategy');
+    expect(btc?.lastSignalConditionSummary).toContain('MOMENTUM(10)');
+    expect(btc?.lastSignalConditionSummary).not.toContain('RSI(14)');
+    expect(btc?.lastSignalConditionLines?.some((line) => line.left.includes('RSI'))).toBe(false);
+  });
+
   it('marks symbol context as latest_decision when runtime evaluated the symbol without accepting a directional signal', async () => {
     const ownerEmail = 'bot-runtime-latest-decision-context-source@example.com';
     const owner = await registerAndLogin(ownerEmail);

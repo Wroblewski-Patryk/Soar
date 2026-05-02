@@ -34,6 +34,7 @@ const createActiveBotUsingUniverse = async (params: {
   universeId: string;
   isActive?: boolean;
   createCanonicalLinksOnly?: boolean;
+  mode?: 'PAPER' | 'LIVE';
 }) => {
   const symbolGroup = await prisma.symbolGroup.create({
     data: {
@@ -59,7 +60,7 @@ const createActiveBotUsingUniverse = async (params: {
     data: {
       userId: params.userId,
       name: `Guard wallet ${Date.now()}`,
-      mode: 'PAPER',
+      mode: params.mode ?? 'PAPER',
       exchange: 'BINANCE',
       marketType: 'FUTURES',
       baseCurrency: 'USDT',
@@ -74,7 +75,7 @@ const createActiveBotUsingUniverse = async (params: {
       strategyId: strategy.id,
       symbolGroupId: symbolGroup.id,
       walletId: wallet.id,
-      mode: 'PAPER',
+      mode: params.mode ?? 'PAPER',
       isActive: params.isActive ?? true,
       paperStartBalance: 10_000,
       exchange: 'BINANCE',
@@ -414,6 +415,76 @@ describe('Markets module contract', () => {
       select: { id: true },
     });
     expect(deletedUniverse).toBeNull();
+  });
+
+  it('syncs linked symbols when a PAPER bot using the universe is inactive', async () => {
+    const agent = await registerAndLogin(uniqueEmail('markets-inactive-paper-symbol-sync'));
+
+    const createRes = await agent.post('/dashboard/markets/universes').send(createPayload());
+    expect(createRes.status).toBe(201);
+    const universeId = createRes.body.id as string;
+    const universe = await prisma.marketUniverse.findUniqueOrThrow({
+      where: { id: universeId },
+      select: { userId: true },
+    });
+
+    await createActiveBotUsingUniverse({
+      userId: universe.userId,
+      universeId,
+      isActive: false,
+      mode: 'PAPER',
+    });
+
+    const updateRes = await agent.put(`/dashboard/markets/universes/${universeId}`).send({
+      whitelist: ['SOLUSDT'],
+      blacklist: ['BTCUSDT'],
+      filterRules: {
+        minQuoteVolumeEnabled: false,
+      },
+    });
+    expect(updateRes.status).toBe(200);
+
+    const linkedGroups = await prisma.symbolGroup.findMany({
+      where: { userId: universe.userId, marketUniverseId: universeId },
+      select: { symbols: true },
+    });
+    expect(linkedGroups).not.toHaveLength(0);
+    expect(linkedGroups.every((group) => group.symbols.join(',') === 'SOLUSDT')).toBe(true);
+  });
+
+  it('syncs linked symbols when a LIVE bot using the universe is inactive', async () => {
+    const agent = await registerAndLogin(uniqueEmail('markets-inactive-live-symbol-sync'));
+
+    const createRes = await agent.post('/dashboard/markets/universes').send(createPayload());
+    expect(createRes.status).toBe(201);
+    const universeId = createRes.body.id as string;
+    const universe = await prisma.marketUniverse.findUniqueOrThrow({
+      where: { id: universeId },
+      select: { userId: true },
+    });
+
+    await createActiveBotUsingUniverse({
+      userId: universe.userId,
+      universeId,
+      isActive: false,
+      mode: 'LIVE',
+    });
+
+    const updateRes = await agent.put(`/dashboard/markets/universes/${universeId}`).send({
+      whitelist: ['ADAUSDT', 'SOLUSDT'],
+      blacklist: ['ETHUSDT'],
+      filterRules: {
+        minQuoteVolumeEnabled: false,
+      },
+    });
+    expect(updateRes.status).toBe(200);
+
+    const linkedGroups = await prisma.symbolGroup.findMany({
+      where: { userId: universe.userId, marketUniverseId: universeId },
+      select: { symbols: true },
+    });
+    expect(linkedGroups).not.toHaveLength(0);
+    expect(linkedGroups.every((group) => group.symbols.join(',') === 'ADAUSDT,SOLUSDT')).toBe(true);
   });
 
   it('blocks universe update/delete when active primary bot still points at the universe even if group links drifted', async () => {

@@ -52,6 +52,7 @@ type RuntimeStrategyProjection = {
   name: string;
   interval: string;
   config: Record<string, unknown> | null;
+  updatedAt?: Date | null;
 };
 
 type RuntimeSymbolAggregateSummary = {
@@ -101,21 +102,42 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
     const lastPrice = params.lastPriceBySymbol.get(symbol) ?? null;
     const fallbackStrategyId = params.configuredStrategyBySymbol.get(symbol) ?? null;
     const signalStrategyId = latestSignal?.strategyId ?? null;
+    const configuredStrategy =
+      fallbackStrategyId != null ? params.strategiesById.get(fallbackStrategyId) ?? null : null;
+    const signalStrategy =
+      signalStrategyId != null ? params.strategiesById.get(signalStrategyId) ?? null : null;
+    const latestSignalAtMs = latestSignal?.eventAt?.getTime() ?? null;
+    const configuredStrategyUpdatedAtMs = configuredStrategy?.updatedAt?.getTime() ?? 0;
+    const signalStrategyUpdatedAtMs = signalStrategy?.updatedAt?.getTime() ?? 0;
+    const signalUsesSupersededStrategy =
+      signalStrategyId != null &&
+      fallbackStrategyId != null &&
+      signalStrategyId !== fallbackStrategyId &&
+      configuredStrategyUpdatedAtMs > signalStrategyUpdatedAtMs;
+    const signalUsesEditedStrategyConfig =
+      signalStrategyId != null &&
+      fallbackStrategyId != null &&
+      signalStrategyId === fallbackStrategyId &&
+      latestSignalAtMs != null &&
+      configuredStrategyUpdatedAtMs > 0 &&
+      latestSignalAtMs < configuredStrategyUpdatedAtMs;
+    const signalPredatesCurrentContext =
+      signalUsesSupersededStrategy || signalUsesEditedStrategyConfig;
+    const effectiveLatestSignal = signalPredatesCurrentContext ? undefined : latestSignal;
+    const effectiveSignalStrategyId = signalPredatesCurrentContext ? null : signalStrategyId;
     const signalContextSource: RuntimeSignalContextSource =
-      latestSignal?.signalDirection != null
+      effectiveLatestSignal?.signalDirection != null
         ? 'latest_signal'
-        : latestSignal != null
+        : effectiveLatestSignal != null
           ? 'latest_decision'
           : fallbackStrategyId != null
           ? 'configured_fallback'
           : 'unresolved';
-    const signalStrategy =
-      signalStrategyId != null ? params.strategiesById.get(signalStrategyId) ?? null : null;
-    const configuredStrategy =
-      fallbackStrategyId != null ? params.strategiesById.get(fallbackStrategyId) ?? null : null;
-    const effectiveContextStrategyId = signalStrategyId ?? fallbackStrategyId;
+    const effectiveSignalStrategy =
+      effectiveSignalStrategyId != null ? params.strategiesById.get(effectiveSignalStrategyId) ?? null : null;
+    const effectiveContextStrategyId = effectiveSignalStrategyId ?? fallbackStrategyId;
     const effectiveContextStrategy =
-      signalStrategyId != null ? signalStrategy : configuredStrategy;
+      effectiveSignalStrategyId != null ? effectiveSignalStrategy : configuredStrategy;
     const signalSeriesKey =
       effectiveContextStrategy?.interval != null
         ? `${symbol}|${effectiveContextStrategy.interval.trim().toLowerCase()}`
@@ -123,14 +145,14 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
     const marketSnapshot = signalSeriesKey
       ? params.marketSnapshotsBySeries.get(signalSeriesKey) ?? null
       : null;
-    const effectiveSignalDirection = latestSignal?.signalDirection ?? null;
+    const effectiveSignalDirection = effectiveLatestSignal?.signalDirection ?? null;
     const signalConditionSummary = buildSignalConditionSummary(
       effectiveContextStrategy?.config ?? null,
       effectiveSignalDirection
     );
     const signalAnalysis =
       effectiveContextStrategyId != null
-        ? latestSignal?.analysisByStrategy?.[effectiveContextStrategyId] ?? null
+        ? effectiveLatestSignal?.analysisByStrategy?.[effectiveContextStrategyId] ?? null
         : null;
     const snapshotAnalysis = buildStrategySignalAnalysis({
       strategyConfig: effectiveContextStrategy?.config ?? null,
@@ -176,11 +198,11 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
       lastSignalAt: stat?.lastSignalAt ?? null,
       lastTradeAt: stat?.lastTradeAt ?? params.latestTradeAtBySymbol.get(symbol) ?? null,
       lastSignalDirection: effectiveSignalDirection,
-      lastSignalDecisionAt: latestSignal?.eventAt ?? stat?.lastSignalAt ?? null,
-      lastSignalMessage: latestSignal?.message ?? null,
-      lastSignalReason: latestSignal?.mergeReason ?? null,
-      lastSignalStrategyId: latestSignal?.strategyId ?? null,
-      lastSignalStrategyName: signalStrategy?.name ?? null,
+      lastSignalDecisionAt: effectiveLatestSignal?.eventAt ?? stat?.lastSignalAt ?? null,
+      lastSignalMessage: effectiveLatestSignal?.message ?? null,
+      lastSignalReason: effectiveLatestSignal?.mergeReason ?? null,
+      lastSignalStrategyId: effectiveSignalStrategyId,
+      lastSignalStrategyName: effectiveSignalStrategy?.name ?? null,
       lastSignalContextSource: signalContextSource,
       runtimeMarketState,
       configuredStrategyId: fallbackStrategyId,

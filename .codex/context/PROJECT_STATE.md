@@ -100,6 +100,17 @@ Last updated: 2026-05-02
   of reconstructing it from `syncState` or audit logs.
 
 ## Product Decisions (Confirmed)
+- 2026-05-02: closed `V1BOT-CONDITIONS-01`, an operator-reported production
+  dashboard/runtime read-model fix. After a stopped bot changes strategy and
+  starts again, `Markets / Signals` no longer lets a superseded historical
+  `SIGNAL_DECISION` payload dictate the displayed condition indicators; stale
+  signal context now falls back to the current configured strategy until a
+  fresh runtime decision exists. The related market-universe concern was
+  regression-locked: inactive PAPER and LIVE bots both allow market edits and
+  linked symbol-group sync. Validation PASS: focused bots runtime-scope e2e
+  (`10/10`), markets e2e (`13/13`), API typecheck, API build, and repository
+  guardrails. Evidence:
+  `docs/planning/v1bot-conditions-market-sync-2026-05-02.md`.
 - 2026-05-02: added `V1I18N-01`, a complete Swiss German/German Switzerland
   locale rollout using the standards-compliant `de-CH` locale code for the
   operator-requested `CH_BE` language. The shared web i18n contract now

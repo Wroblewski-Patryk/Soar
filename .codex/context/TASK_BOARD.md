@@ -17,6 +17,21 @@ Last updated: 2026-05-01
 
 ## READY
 
+- [x] `V1BOT-CONDITIONS-01 fix(api-runtime-read): prevent stale signal conditions after bot context edits`
+  - Scope: fixed operator-reported runtime monitoring drift where `Markets /
+    Signals` could keep displaying old strategy condition indicators after a
+    bot was stopped, edited to another strategy, and started again. Runtime
+    symbol-stats now treats superseded signal-strategy payloads and signal
+    payloads predating a same-strategy config edit as stale for displayed
+    condition context, falling back to the current configured strategy until a
+    fresh runtime decision arrives. The market edit question was regression
+    checked without changing UI: inactive PAPER and LIVE bots can save market
+    universe symbol edits and linked symbol groups sync correctly. Validation
+    PASS: focused bots runtime-scope e2e (`10/10`), markets e2e (`13/13`),
+    API typecheck, API build, and repository guardrails.
+    Evidence:
+    `docs/planning/v1bot-conditions-market-sync-2026-05-02.md`.
+
 - [x] `V1I18N-01 feat(web-i18n): add Swiss German locale`
   - Scope: added German (Switzerland) as standard locale code `de-CH` across
     the existing web i18n architecture, including supported locale storage,

@@ -12,6 +12,17 @@ Operational queue for one-task execution runs.
   blockers are `V1EXCEL-03..06` authenticated manual operator and OPS evidence.
   `BOTMULTI-*` remains in `PIPELINE` until those post-V1 confidence gates are
   green.
+- [x] `V1BOT-CONDITIONS-01 fix(api-runtime-read): prevent stale signal conditions after bot context edits`
+  - 2026-05-02: Closed the operator-reported dashboard/runtime drift where
+    `Markets / Signals` could keep showing old strategy indicators after stop
+    -> strategy edit -> start. Runtime symbol-stats now ignores superseded or
+    pre-edit signal condition payloads for display context and falls back to
+    the current configured strategy until fresh runtime evaluation arrives.
+    Market edits for inactive PAPER and LIVE linked bots were regression-locked
+    and continue to sync linked symbol groups. Validation PASS: focused bots
+    runtime-scope e2e (`10/10`), markets e2e (`13/13`), API typecheck, API
+    build, and repository guardrails. Evidence:
+    `docs/planning/v1bot-conditions-market-sync-2026-05-02.md`.
 - [x] `V1I18N-01 feat(web-i18n): add Swiss German locale`
   - 2026-05-02: Closed the operator-requested Swiss German/German Switzerland
     locale rollout. Implemented the request as standards-compliant `de-CH`
