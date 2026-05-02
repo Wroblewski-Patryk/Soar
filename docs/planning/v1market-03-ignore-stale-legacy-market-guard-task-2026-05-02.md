@@ -61,6 +61,18 @@ current symbol group.
   - `pnpm --filter api run test -- src/modules/bots/bots.runtime-scope.e2e.test.ts --run`
   - `pnpm --filter api run typecheck`
   - `pnpm run quality:guardrails`
+- Post-deploy production smoke:
+  - Web build-info exposed `8a433e076f1f92701dc0b7ddf1ced41ad1af58e4`.
+  - VPS Docker initially showed `soar-api` still running `6bc7840a`, while web
+    was already on `8a433e07`; `soar-api` was redeployed through Coolify to
+    `8a433e07`.
+  - `GET https://api.soar.luckysparrow.ch/health` returned `200`.
+  - `GET https://api.soar.luckysparrow.ch/ready` returned `200`.
+  - `live` LIVE smoke with user approval: disable `live` -> edit linked `ETH`
+    whitelist by adding `BTCUSDT` -> restore original whitelist -> re-enable
+    `live`, all `200 OK`.
+  - Final production state: `live.isActive=true`; `ETH` whitelist restored to
+    `BNBUSDT,DOGEUSDT,ETHUSDT,XRPUSDT`.
 
 ## Architecture Evidence
 - Architecture source reviewed: singular bot truth in project state and runtime
@@ -71,7 +83,8 @@ current symbol group.
 - Decision required from user: no
 
 ## Deployment / Ops Evidence
-- Deploy impact: low
+- Deploy impact: low; API hotfix deployed to production after web-only
+  build-info freshness was not enough to prove backend freshness.
 - Env or secret changes: none
 - Health-check impact: none
 - Rollback note: revert this commit to restore legacy guard behavior.
@@ -130,7 +143,8 @@ current symbol group.
 - Task summary: active market edit guard no longer treats stale legacy
   `BotStrategy` rows as current bot market usage.
 - Files changed: market service guard, focused market e2e, project context docs.
-- How tested: production reproduction plus local focused validation.
-- What is incomplete: production must be redeployed before retesting the `LIVE`
-  flow successfully end-to-end.
-- Next steps: commit, push, deploy, and rerun `live` disable/edit/enable smoke.
+- How tested: production reproduction, local focused validation, production API
+  deploy, and post-deploy `LIVE` disable/edit/restore/enable smoke.
+- What is incomplete: no known issue for this slice.
+- Next steps: add an API deploy-freshness proof so future backend hotfixes do
+  not rely on web build-info as the only deployed-SHA signal.

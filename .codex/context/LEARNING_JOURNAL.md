@@ -52,6 +52,29 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-05-02 - Web build-info does not prove API deploy freshness
+- Context: post-deploy verification for a backend market-edit hotfix on the
+  production Coolify VPS.
+- Symptom: `https://soar.luckysparrow.ch/api/build-info` showed the target
+  SHA, but the live API still returned the pre-fix
+  `MARKET_UNIVERSE_USED_BY_ACTIVE_BOT` response.
+- Root cause: the web service had deployed to the target SHA while the
+  `soar-api` container was still running the previous image.
+- Guardrail: after backend hotfixes, verify API service freshness directly
+  before declaring production fixed.
+- Preferred pattern:
+```text
+1) Check web build-info for the frontend deploy signal.
+2) Check the VPS/Coolify `soar-api` container image or an API-owned build-info
+   endpoint for backend freshness.
+3) Run `/health` and `/ready` after the API container changes.
+4) Re-run the exact protected production flow that previously failed.
+```
+- Avoid: treating web build-info alone as proof that backend code is live.
+- Evidence: 2026-05-02 `V1MARKET-03`; web build-info reached `8a433e07`,
+  `soar-api` was still on `6bc7840a`, then the API was redeployed to
+  `8a433e07` and the approved `LIVE` disable/edit/restore/enable smoke passed.
+
 ### 2026-05-02 - Futures backtest candles need a futures-market fallback
 - Context: an operator-reported production backtest issue was reproduced with
   safe production backtest-only smoke runs.

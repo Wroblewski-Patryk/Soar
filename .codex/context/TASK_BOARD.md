@@ -27,6 +27,12 @@ Last updated: 2026-05-02
     bot market scope and ignores stale legacy `BotStrategy` links. Added a
     regression for this drift shape. Validation PASS: markets e2e (`15/15`),
     bots runtime-scope e2e (`10/10`), API typecheck, and repository guardrails.
+    Post-deploy evidence: web build-info reached `8a433e07`, VPS inspection
+    then showed `soar-api` was still on `6bc7840a`; `soar-api` was redeployed
+    to `8a433e07`, `/health` and `/ready` returned `200`, and the approved
+    `LIVE` smoke passed end-to-end (`live` disable -> linked `ETH` edit ->
+    whitelist restore -> `live` re-enable, all `200 OK`; final `live` active
+    and `ETH` whitelist unchanged).
     Evidence:
     `docs/planning/v1market-03-ignore-stale-legacy-market-guard-task-2026-05-02.md`.
 

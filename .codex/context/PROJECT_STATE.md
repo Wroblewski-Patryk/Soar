@@ -110,7 +110,14 @@ Last updated: 2026-05-02
   canonical bot market scope; stale legacy `BotStrategy` links no longer block
   edits after the real linked bot is deactivated. Validation PASS: markets e2e
   (`15/15`), bots runtime-scope e2e (`10/10`), API typecheck, and repository
-  guardrails. Evidence:
+  guardrails. Post-deploy verification found that web build-info had advanced
+  to `8a433e07` while the `soar-api` container was still serving `6bc7840a`;
+  after redeploying `soar-api` to `8a433e07`, `/health` and `/ready` returned
+  `200` and the approved `LIVE` smoke passed end-to-end: disable `live`, edit
+  linked `ETH` by adding `BTCUSDT`, restore the original whitelist, and
+  re-enable `live`, all `200 OK`. Final production state: `live.isActive=true`
+  and `ETH` whitelist restored to `BNBUSDT,DOGEUSDT,ETHUSDT,XRPUSDT`.
+  Evidence:
   `docs/planning/v1market-03-ignore-stale-legacy-market-guard-task-2026-05-02.md`.
 - 2026-05-02: production Redis investigation for `V1BOT-SIGNALS-02` confirmed
   the Soar Redis resource in Coolify is `restarting:unhealthy` because Redis
