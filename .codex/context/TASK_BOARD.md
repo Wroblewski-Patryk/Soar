@@ -17,6 +17,17 @@ Last updated: 2026-05-03
 
 ## READY
 
+- [x] `DOCMAP-01 docs(architecture): create engineering documentation system map foundation`
+  - Scope: created the first traceable technical documentation map without
+    rewriting existing architecture/module docs. Added central docs entrypoint,
+    documentation inventory, codebase map, traceability matrix, pipeline
+    registry with core flow docs, module registry, drift report, and docs
+    maintenance rules. This links core features across frontend routes, API
+    routes, services/modules, Prisma models, workers, tests, deployment docs,
+    and known gaps. Runtime behavior unchanged. Validation: docs-focused
+    parity/guardrail commands. Evidence:
+    `docs/planning/docmap-01-engineering-documentation-system-map-task-2026-05-03.md`.
+
 - [x] `LIVEIMPORT-01 fix(api-runtime): restore wallet-first LIVE imported position ownership`
   - Scope: closed the operator-reported LIVE imported-position ownership
     investigation. The external takeover ownership index now resolves the

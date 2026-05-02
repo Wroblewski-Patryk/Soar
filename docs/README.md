@@ -2,9 +2,16 @@
 
 This folder contains canonical project documentation grouped by responsibility.
 
+## Engineering System Map
+- `index.md` is the central engineering documentation entrypoint. Start there
+  when you need traceability across architecture, modules, pipelines, routes,
+  data models, tests, deployment, and drift reports.
+
 ## Structure
 - `architecture/`: canonical description of how Soar works
+- `analysis/`: documentation inventory and drift reports
 - `engineering/`: local development and testing workflow
+- `pipelines/`: end-to-end system flow registry
 - `planning/`: active queue, execution plans, and unresolved decisions
 - `product/`: mission, scope, glossary, limits, and product intent
 - `operations/`: runbooks, smoke checks, deployment, rollback, and evidence
@@ -27,22 +34,26 @@ This folder contains canonical project documentation grouped by responsibility.
 2. `product/overview.md`
 3. `product/product.md`
 4. `architecture/README.md`
-5. `architecture/01_overview-and-principles.md`
-6. `architecture/02_system-topology.md`
-7. `architecture/03_domain-model.md`
-8. `architecture/04_runtime-contexts.md`
-9. `architecture/05_strategy-signal-and-decision-flow.md`
-10. `architecture/06_execution-lifecycle.md`
-11. `architecture/07_modes-parity-and-data.md`
-12. `architecture/08_operator-surfaces-and-routing.md`
-13. `architecture/09_integrations-deployment-and-runtime-services.md`
-14. `architecture/10_safety-entitlements-and-risk.md`
-15. `architecture/11_assistant-runtime.md`
-16. `architecture/12_documentation-governance.md`
-17. `modules/system-modules.md`
-18. `planning/mvp-execution-plan.md`
-19. `planning/mvp-next-commits.md`
-20. `planning/open-decisions.md`
+5. `architecture/codebase-map.md`
+6. `architecture/traceability-matrix.md`
+7. `pipelines/index.md`
+8. `modules/index.md`
+9. `architecture/01_overview-and-principles.md`
+10. `architecture/02_system-topology.md`
+11. `architecture/03_domain-model.md`
+12. `architecture/04_runtime-contexts.md`
+13. `architecture/05_strategy-signal-and-decision-flow.md`
+14. `architecture/06_execution-lifecycle.md`
+15. `architecture/07_modes-parity-and-data.md`
+16. `architecture/08_operator-surfaces-and-routing.md`
+17. `architecture/09_integrations-deployment-and-runtime-services.md`
+18. `architecture/10_safety-entitlements-and-risk.md`
+19. `architecture/11_assistant-runtime.md`
+20. `architecture/12_documentation-governance.md`
+21. `modules/system-modules.md`
+22. `planning/mvp-execution-plan.md`
+23. `planning/mvp-next-commits.md`
+24. `planning/open-decisions.md`
 
 ## Source-of-Truth Rule
 - Architecture truth belongs in `docs/architecture/`.

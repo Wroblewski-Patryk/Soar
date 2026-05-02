@@ -25,18 +25,20 @@ Those belong elsewhere:
 
 ## Reading Order
 1. `architecture-source-of-truth.md`
-2. `01_overview-and-principles.md`
-3. `02_system-topology.md`
-4. `03_domain-model.md`
-5. `04_runtime-contexts.md`
-6. `05_strategy-signal-and-decision-flow.md`
-7. `06_execution-lifecycle.md`
-8. `07_modes-parity-and-data.md`
-9. `08_operator-surfaces-and-routing.md`
-10. `09_integrations-deployment-and-runtime-services.md`
-11. `10_safety-entitlements-and-risk.md`
-12. `11_assistant-runtime.md`
-13. `12_documentation-governance.md`
+2. `codebase-map.md`
+3. `traceability-matrix.md`
+4. `01_overview-and-principles.md`
+5. `02_system-topology.md`
+6. `03_domain-model.md`
+7. `04_runtime-contexts.md`
+8. `05_strategy-signal-and-decision-flow.md`
+9. `06_execution-lifecycle.md`
+10. `07_modes-parity-and-data.md`
+11. `08_operator-surfaces-and-routing.md`
+12. `09_integrations-deployment-and-runtime-services.md`
+13. `10_safety-entitlements-and-risk.md`
+14. `11_assistant-runtime.md`
+15. `12_documentation-governance.md`
 
 ## Architecture Rules
 - One file = one responsibility.
@@ -47,6 +49,10 @@ Those belong elsewhere:
 
 ## Supporting References
 - `reference/` contains active supporting contracts for deeper detail.
+- `codebase-map.md` maps current implementation surfaces to architecture and
+  module docs.
+- `traceability-matrix.md` maps core features across frontend, API, services,
+  data, pipelines, tests, and docs.
 - maintainability and quality remediation invariants live in
   `reference/maintainability-remediation-contract.md`.
 - canonical exchange-access ownership for API modules lives in

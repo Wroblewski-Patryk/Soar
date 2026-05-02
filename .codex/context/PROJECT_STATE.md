@@ -3,6 +3,18 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 engineering documentation system-map foundation `DOCMAP-01` is
+  closed locally. Existing architecture/module docs were preserved as the
+  source of truth, while new traceability docs now connect product features to
+  frontend routes, API routes, services/modules, Prisma models, workers,
+  pipelines, tests, deployment docs, and known documentation drift. New
+  entrypoints: `docs/index.md`,
+  `docs/analysis/documentation-inventory.md`,
+  `docs/architecture/codebase-map.md`,
+  `docs/architecture/traceability-matrix.md`, `docs/pipelines/index.md`,
+  `docs/modules/index.md`, `docs/analysis/documentation-drift.md`, and
+  `docs/CONTRIBUTING-DOCS.md`. No runtime behavior changed. Evidence:
+  `docs/planning/docmap-01-engineering-documentation-system-map-task-2026-05-03.md`.
 - 2026-05-03 operator-reported LIVE imported-position ownership slice
   `LIVEIMPORT-01` is closed locally. The external takeover ownership index now
   follows the wallet-first bot contract by resolving the canonical LIVE API key
