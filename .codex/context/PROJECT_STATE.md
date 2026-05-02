@@ -621,6 +621,8 @@ Last updated: 2026-05-02
     reads return `401` without a bearer token. Automated restore/deploy remains
     blocked on proper Coolify resource/API access. Evidence:
     `docs/operations/v1excel-04-stage-coolify-access-refresh-2026-05-01.md`.
+  - 2026-05-02 supersession: stage refresh is deferred to V2 by operator
+    decision in `V1CLOSEOUT-11` and is no longer a V1 production-only blocker.
 - 2026-05-01: refreshed the executable production subset of `V1EXCEL-05`.
   Production public smoke, protected runtime freshness, and rollback guard are
   green on the current deployed runtime candidate: `shouldRollback=false`, no
@@ -629,6 +631,9 @@ Last updated: 2026-05-02
   `docs/operations/v1excel-05-prod-refresh-2026-05-01.md`. Broader production
   release evidence remains open for restore drill, RC
   status/sign-off/checklist rebuild, and remaining manual matrix items.
+  - 2026-05-02 supersession: production restore drill, rollback proof, Gate 4
+    approval, and non-dry-run production release gate are fresh/pass in
+    `V1CLOSEOUT-11`; this older production refresh blocker is no longer active.
 - 2026-05-01: closed `V1DCA-01` for runtime `Positions` DCA visibility after
   exchange-sync position replacement. Protected production inspection showed
   the `LIVE` DOGEUSDT DCA fill existed as a persisted `BOT` `DCA` trade, but it

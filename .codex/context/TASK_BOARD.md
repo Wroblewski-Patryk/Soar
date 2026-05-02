@@ -17,6 +17,15 @@ Last updated: 2026-05-02
 
 ## READY
 
+- [x] `DOCSYNC-V1EXCEL-01 docs(planning): close superseded V1EXCEL evidence gates`
+  - Scope: synchronized stale `V1EXCEL-03..06`, `V1EXCEL-04`, and
+    `V1EXCEL-05` active queue entries after `V1CLOSEOUT-11` published final V1
+    production-only `GO`. Stage refresh is explicitly deferred to V2 by
+    operator decision, while production restore/rollback/signoff/release-gate
+    evidence is superseded by the 2026-05-02 closeout pack. Validation PASS:
+    repository guardrails. Evidence:
+    `docs/planning/docsync-v1excel-superseded-gates-task-2026-05-02.md`.
+
 - [x] `DOCSYNC-V1FINAL-01 docs(planning): close superseded V1FINAL-01 gate`
   - Scope: synchronized stale 2026-05-01 final-gate queue truth after
     `V1CLOSEOUT-11` published the current 2026-05-02 V1 production-only `GO`.
@@ -537,7 +546,7 @@ Last updated: 2026-05-02
     because activation audit/plan are stale and the production backup/restore
     drill artifact is still failed. Evidence:
     `docs/operations/v1-release-gate-prod-2026-05-01T18-20-00-000Z.md`.
-- [ ] `V1EXCEL-04 ops(stage-refresh): restore stage target before authenticated gate rerun`
+- [x] `V1EXCEL-04 ops(stage-refresh): restore stage target before authenticated gate rerun`
   - Scope: stage release-gate evidence cannot proceed while the stage web/API
     targets are unavailable.
   - 2026-05-01 refresh: public stage smoke now fails before auth with `503 no
@@ -560,7 +569,9 @@ Last updated: 2026-05-02
     rendered Livewire team switch returned `500`. No stage restore action was
     attempted. Evidence:
     `docs/operations/v1excel-04-stage-coolify-access-refresh-2026-05-01.md`.
-- [ ] `V1EXCEL-05 ops(prod-refresh): finish broader production evidence families`
+  - 2026-05-02: closed for V1 as deferred to V2 by operator decision in
+    `V1CLOSEOUT-11`; stage restoration remains a V2 infrastructure task.
+- [x] `V1EXCEL-05 ops(prod-refresh): finish broader production evidence families`
   - Scope: production public smoke and protected runtime rollback gates are
     green, but full production release evidence is not yet complete.
   - 2026-05-01 refresh: executable production subset PASS on the current
@@ -577,6 +588,9 @@ Last updated: 2026-05-02
     `FAIL` because this context lacks production DB container settings. Latest
     release-gate blockers: `activationAudit:stale`, `activationPlan:stale`,
     `backupRestoreDrill:failed`.
+  - 2026-05-02: closed as superseded by `V1CLOSEOUT-11`; production restore
+    drill, rollback proof, Gate 4 approval, and non-dry-run production release
+    gate are all fresh/pass for the V1 production-only target.
 
 - [x] `V1GATE-01 release(docs+ops): refresh current target freshness and stage availability`
   - Scope: refresh public production/stage deploy smoke, production build-info,
@@ -1170,9 +1184,12 @@ entries above:
 
 ## BLOCKED
 
-- [ ] `V1EXCEL-03..06 confidence gates: finish authenticated manual operator, stage/prod, and runtime observability evidence`
+- Historical `V1EXCEL-03..06 confidence gates: finish authenticated manual operator, stage/prod, and runtime observability evidence`
   - Scope: execute the remaining V1 excellence evidence wave: full manual matrix, authenticated stage refresh, authenticated prod refresh, and runtime observability closure on the current candidate.
-  - 2026-05-01: `V1ROE-04` is no longer blocked; it is closed by authenticated production evidence. Production runtime observability under `V1EXCEL-06` is also green with auth. The remaining blocked or incomplete confidence work belongs to manual matrix, stage refresh, broader prod refresh evidence families, and stage runtime observability; `BOTMULTI-*` remains deferred until those gates are green.
+  - 2026-05-01: `V1ROE-04` is no longer blocked; it is closed by authenticated production evidence. Production runtime observability under `V1EXCEL-06` is also green with auth. The remaining blocked or incomplete confidence work belonged to manual matrix, stage refresh, broader prod refresh evidence families, and stage runtime observability.
+  - 2026-05-02 supersession: no longer an active V1 blocker after
+    `V1CLOSEOUT-11` published final production-only `GO`; stage moves to V2 by
+    operator decision.
 
 ## REVIEW
 

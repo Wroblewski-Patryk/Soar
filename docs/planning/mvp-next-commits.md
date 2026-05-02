@@ -406,7 +406,7 @@ Operational queue for one-task execution runs.
     production release evidence and published final V1 production-only status
     `GO` in `docs/operations/v1-final-go-no-go-closure-2026-05-02.md`. Stage
     is deferred to V2 by operator decision.
-- [ ] `V1EXCEL-04 ops(stage-refresh): restore stage target before authenticated gate rerun`
+- [x] `V1EXCEL-04 ops(stage-refresh): restore stage target before authenticated gate rerun`
   - 2026-05-01 refresh: stage public smoke now fails before auth. `stage-api`
     and `stage` both return `503 no available server` for health/ready/root and
     web build-info preflight. Evidence:
@@ -429,7 +429,10 @@ Operational queue for one-task execution runs.
   - 2026-05-01 target refresh: public stage smoke still fails before auth with
     `503` for API `/health`, API `/ready`, and web `/`. Evidence:
     `docs/operations/v1gate-01-current-target-freshness-2026-05-01.md`.
-- [ ] `V1EXCEL-05 ops(prod-refresh): finish broader production evidence families`
+  - 2026-05-02 supersession: closed for V1 as deferred to V2 by operator
+    decision in `V1CLOSEOUT-11`. Stage restoration remains a V2 infrastructure
+    task, not a V1 production-only blocker.
+- [x] `V1EXCEL-05 ops(prod-refresh): finish broader production evidence families`
   - 2026-05-01 refresh: executable production subset is green on the current
     deployed runtime candidate. Public smoke PASS, protected runtime freshness
     PASS, rollback guard PASS (`shouldRollback=false`, no reasons, no alerts,
@@ -443,6 +446,10 @@ Operational queue for one-task execution runs.
     artifacts. The sign-off record itself remains `BLOCKED` because approver
     fields are blank. The fresh prod restore drill artifact is `FAIL` until
     prod DB container settings or VPS/Coolify execution context are available.
+  - 2026-05-02 supersession: closed by `V1CLOSEOUT-11`, which refreshed
+    production restore drill PASS, rollback proof PASS, Gate 4 approval, and
+    non-dry-run production release gate `ready` for V1 production-only status
+    `GO`.
 - [x] `V1GATE-01 release(docs+ops): refresh current target freshness and stage availability`
   - 2026-05-01: Closed a public preflight sync after production and stage target
     truth changed again. Production public smoke PASS and build-info reports
@@ -1100,8 +1107,9 @@ Historical carryover snapshot, superseded by the active `NOW` entries above:
 - [x] `L10NQ-B (commits 06-11): per-module namespace split + parity/guardrail tests`
 - [x] `L10NQ-C (commits 12-15): route-level namespace loading + English docs normalization`
 ## BLOCKED
-- [ ] `V1EXCEL-03..06 confidence gates: finish authenticated manual operator, stage/prod, and runtime observability evidence`
-  - 2026-05-01: `V1ROE-04` is no longer blocked; it is closed by authenticated production evidence. Production runtime observability under `V1EXCEL-06` is also green with auth. The remaining blocked or incomplete V1 confidence scope is the separate `V1EXCEL` evidence wave: full manual matrix, authenticated stage refresh, broader prod refresh evidence families, and stage runtime observability closure on the current candidate.
+- Historical `V1EXCEL-03..06 confidence gates: finish authenticated manual operator, stage/prod, and runtime observability evidence`
+  - 2026-05-01: `V1ROE-04` is no longer blocked; it is closed by authenticated production evidence. Production runtime observability under `V1EXCEL-06` is also green with auth. The remaining blocked or incomplete V1 confidence scope was the separate `V1EXCEL` evidence wave: full manual matrix, authenticated stage refresh, broader prod refresh evidence families, and stage runtime observability closure on the current candidate.
+  - 2026-05-02 supersession: no longer an active V1 blocker after `V1CLOSEOUT-11` published final production-only `GO`; stage moves to V2 by operator decision.
 
 ## DONE
 - [x] `V1ROE-04 qa(prod-manual): verify exchange-aligned LIVE PnL truth and imported automation on protected DOGEUSDT`
