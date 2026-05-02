@@ -1392,3 +1392,32 @@ pnpm --filter api run test -- --run
 - Guardrail: Use .agents/workflows/world-class-delivery.md for substantial
   work and apply reliability/security/UX evidence only when the scope warrants
   it, rather than adding ceremony to tiny safe changes.
+
+### 2026-05-02 - Worker Redis publisher failures must be retryable
+
+- Context: `V1BOT-SIGNALS-02` production read-only smoke found the market-stream
+  SSE endpoint connected but emitted no ticker/candle events while active
+  PAPER runtime showed `eventsCount=1` and `symbolsTracked=0`.
+- Symptom: runtime sessions can stay running without fresh symbol stats or
+  signal decisions because market-stream events never reach Redis subscribers.
+- Root cause: `marketStreamFanout` memoized a failed Redis publisher connection
+  as `null`; if the worker started before Redis was reachable, later market
+  events were silently dropped until process restart.
+- Guardrail: Redis publisher/client startup failures in long-running workers
+  must reset memoized connection state and retry on later work instead of
+  caching a terminal `null`.
+- Preferred pattern:
+```ts
+promise = connect().catch((error) => {
+  logger.error(error);
+  promise = null;
+  return null;
+});
+```
+- Avoid: one-shot connection memoization that permanently disables a worker
+  event path after transient Redis startup or publish failure.
+- Evidence:
+  - 2026-05-02 authenticated production SSE smoke returned only health/ping
+    events for sampled active/default symbols.
+  - `marketStreamFanout.test.ts` now covers retry after initial Redis connect
+    failure.

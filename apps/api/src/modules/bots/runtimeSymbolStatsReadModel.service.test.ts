@@ -210,12 +210,14 @@ describe('runtimeSymbolStatsReadModel.service', () => {
           left: 'RSI(2)',
           operator: '>',
           right: '60',
+          matched: true,
         }),
         expect.objectContaining({
           scope: 'SHORT',
           left: 'RSI(2)',
           operator: '<',
           right: '40',
+          matched: false,
         }),
       ]),
     );

@@ -18,10 +18,15 @@ const getPublisher = async () => {
       const client = createClient({ url: redisUrl });
       client.on('error', (error) => {
         console.error('Market stream publisher redis error:', error);
+        publisherPromise = null;
       });
       await client.connect();
       return client;
-    })().catch(() => null);
+    })().catch((error) => {
+      console.error('Market stream publisher redis connect failed:', error);
+      publisherPromise = null;
+      return null;
+    });
   }
 
   return publisherPromise;
@@ -101,13 +106,18 @@ export const publishMarketStreamEvent = async (event: MarketStreamEvent) => {
   const publisher = await getPublisher();
   if (!publisher) return;
 
-  await publisher.publish(
-    marketStreamChannel,
-    JSON.stringify({
-      ...event,
-      publishedAt: Date.now(),
-    })
-  );
+  try {
+    await publisher.publish(
+      marketStreamChannel,
+      JSON.stringify({
+        ...event,
+        publishedAt: Date.now(),
+      })
+    );
+  } catch (error) {
+    console.error('Market stream publisher redis publish failed:', error);
+    publisherPromise = null;
+  }
 };
 
 export const subscribeMarketStreamEvents = async (

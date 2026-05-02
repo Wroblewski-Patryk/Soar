@@ -24,6 +24,7 @@ type MonitoringFutureSignalsSectionProps = {
       value: string;
       operator: string;
       right: string;
+      matched?: boolean | null;
     }> | null;
     totalSignals: number;
     longEntries: number;
@@ -71,6 +72,17 @@ export function MonitoringFutureSignalsSection(props: MonitoringFutureSignalsSec
     formatCurrency,
     interpolateTemplate,
   } = props;
+  const formatConditionLine = (line: {
+    left: string;
+    value: string;
+    operator: string;
+    right: string;
+    matched?: boolean | null;
+  }) => {
+    const status =
+      typeof line.matched === "boolean" ? ` ${line.matched ? "PASS" : "MISS"}` : "";
+    return `${line.left} | ${line.value} ${line.operator} ${line.right}${status}`;
+  };
 
   return (
     <div id="monitor-future" className="scroll-mt-24 rounded-lg border border-base-300 bg-base-100 p-3">
@@ -172,7 +184,7 @@ export function MonitoringFutureSignalsSection(props: MonitoringFutureSignalsSec
                             <span className="mr-1 font-semibold text-success">LONG</span>
                             <span className="opacity-80">
                               {longLines
-                                .map((line) => `${line.left} | ${line.value} ${line.operator} ${line.right}`)
+                                .map(formatConditionLine)
                                 .join(" ; ")}
                             </span>
                           </div>
@@ -182,7 +194,7 @@ export function MonitoringFutureSignalsSection(props: MonitoringFutureSignalsSec
                             <span className="mr-1 font-semibold text-error">SHORT</span>
                             <span className="opacity-80">
                               {shortLines
-                                .map((line) => `${line.left} | ${line.value} ${line.operator} ${line.right}`)
+                                .map(formatConditionLine)
                                 .join(" ; ")}
                             </span>
                           </div>

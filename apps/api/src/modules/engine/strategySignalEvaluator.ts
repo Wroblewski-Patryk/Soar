@@ -414,6 +414,36 @@ const evaluateRuleAtIndex = (
   return compare(leftValue, rule.condition, rightValue);
 };
 
+export const evaluateStrategyRuleAtIndex = (params: {
+  rule: StrategyIndicatorRule;
+  candles: SignalCandle[];
+  index: number;
+  cache: Map<string, Array<number | null>>;
+  context?: StrategySignalEvaluationContext;
+}) => {
+  const opens = params.candles.map((candle) =>
+    typeof candle.open === 'number' && Number.isFinite(candle.open) ? candle.open : candle.close
+  );
+  const closes = params.candles.map((candle) => candle.close);
+  const highs = params.candles.map((candle) =>
+    typeof candle.high === 'number' && Number.isFinite(candle.high) ? candle.high : candle.close
+  );
+  const lows = params.candles.map((candle) =>
+    typeof candle.low === 'number' && Number.isFinite(candle.low) ? candle.low : candle.close
+  );
+
+  return evaluateRuleAtIndex(
+    params.rule,
+    closes,
+    opens,
+    highs,
+    lows,
+    params.index,
+    params.cache,
+    params.context?.derivatives
+  );
+};
+
 export const evaluateStrategySignalAtIndex = (
   rules: StrategySignalRules,
   candles: SignalCandle[],

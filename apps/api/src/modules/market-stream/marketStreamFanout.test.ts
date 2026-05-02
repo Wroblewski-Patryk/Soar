@@ -69,6 +69,36 @@ describe('marketStreamFanout', () => {
     expect(subscriberClient.disconnect).toHaveBeenCalledTimes(1);
   });
 
+  it('retries publisher connection after an initial redis startup failure', async () => {
+    process.env.NODE_ENV = 'development';
+    const failedPublisher = buildRedisClientMock();
+    failedPublisher.connect.mockRejectedValueOnce(new Error('redis_booting'));
+    const recoveredPublisher = buildRedisClientMock();
+    createClientMock
+      .mockReturnValueOnce(failedPublisher as any)
+      .mockReturnValueOnce(recoveredPublisher as any);
+
+    const { publishMarketStreamEvent } = await import('./marketStreamFanout');
+    const event: MarketStreamEvent = {
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'BTCUSDT',
+      eventTime: 120_000,
+      lastPrice: 100.5,
+      priceChangePercent24h: 0.4,
+    };
+
+    await publishMarketStreamEvent(event);
+    await publishMarketStreamEvent(event);
+
+    expect(failedPublisher.publish).not.toHaveBeenCalled();
+    expect(recoveredPublisher.publish).toHaveBeenCalledWith(
+      'market_stream.events',
+      expect.stringContaining('"symbol":"BTCUSDT"')
+    );
+  });
+
   it('acquires and releases warmup lock with NX/PX semantics', async () => {
     process.env.NODE_ENV = 'development';
     const lockClient = buildRedisClientMock();

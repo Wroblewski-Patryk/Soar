@@ -100,6 +100,21 @@ Last updated: 2026-05-02
   of reconstructing it from `syncState` or audit logs.
 
 ## Product Decisions (Confirmed)
+- 2026-05-02: added `V1BOT-SIGNALS-02` after an operator-reported production
+  concern that `Dashboard -> Markets / Signals` appeared to show satisfied
+  conditions while the PAPER bot did not open positions. Authenticated
+  production read-only evidence showed the current PAPER session was `RUNNING`
+  but had only `eventsCount=1` and `symbolsTracked=0`; market-stream SSE also
+  connected but emitted no sampled ticker/candle events during the smoke
+  window. The dashboard condition payload now carries per-rule `matched`
+  truth from the canonical runtime strategy evaluator, so configured fallback
+  snapshots can distinguish `PASS`/`MISS` from accepted runtime signals. The
+  market-stream Redis publisher also resets failed memoized connection state
+  after connect/publish failures so a transient Redis startup miss cannot
+  permanently mute market events until worker restart. Validation so far:
+  focused market-stream/runtime read-model tests (`50/50`), API typecheck, and
+  web typecheck. Evidence:
+  `docs/planning/v1bot-signals-runtime-truth-2026-05-02.md`.
 - 2026-05-02: closed `V1BACKTEST-01`, an operator-reported production
   backtest investigation after recent PAPER/LIVE runtime changes. Safe
   production smoke reproduced a mode-specific data problem: `FUTURES` run

@@ -1,8 +1,10 @@
 import { clampPeriod } from './sharedIndicatorSeries';
 import { resolveCandlePatternName } from './sharedCandlePatternSeries';
 import {
+  evaluateStrategyRuleAtIndex,
   parseStrategySignalRules,
   SignalCandle,
+  type StrategyIndicatorRule,
   type StrategySignalDerivativesSeries,
 } from './strategySignalEvaluator';
 import { resolveStrategyIndicatorSeries } from './strategyIndicatorKernel';
@@ -147,9 +149,22 @@ export const buildStrategySignalAnalysis = (input: {
   };
   const pushRule = (
     scope: 'LONG' | 'SHORT',
-    rule: { name: string; condition: string; value: number; params: Record<string, unknown> },
+    rule: StrategyIndicatorRule,
   ) => {
     const indicator = rule.name.toUpperCase();
+    const matched = evaluateStrategyRuleAtIndex({
+      rule,
+      candles: input.candles,
+      index: decisionIndex,
+      cache: indicatorCache,
+      context: input.derivatives ? { derivatives: input.derivatives } : undefined,
+    });
+    const pushConditionLine = (line: Omit<RuntimeSignalConditionLine, 'matched'>) => {
+      conditionLines.push({
+        ...line,
+        matched,
+      });
+    };
     if (indicator.includes('FUNDING_RATE_ZSCORE')) {
       const period = clampPeriod(
         rule.params.zScorePeriod ?? rule.params.period ?? rule.params.length,
@@ -157,7 +172,7 @@ export const buildStrategySignalAnalysis = (input: {
       );
       const value = ensureFundingRateZScore(period)[decisionIndex];
       const formatted = formatAnalysisValue(value);
-      conditionLines.push({
+      pushConditionLine({
         scope,
         left: `FUNDING_RATE_ZSCORE(${period})`,
         value: formatted,
@@ -171,7 +186,7 @@ export const buildStrategySignalAnalysis = (input: {
     if (indicator.includes('FUNDING_RATE')) {
       const value = ensureFundingRate()[decisionIndex];
       const formatted = formatAnalysisValue(value);
-      conditionLines.push({
+      pushConditionLine({
         scope,
         left: 'FUNDING_RATE',
         value: formatted,
@@ -189,7 +204,7 @@ export const buildStrategySignalAnalysis = (input: {
       );
       const value = ensureOpenInterestZScore(period)[decisionIndex];
       const formatted = formatAnalysisValue(value);
-      conditionLines.push({
+      pushConditionLine({
         scope,
         left: `OPEN_INTEREST_ZSCORE(${period})`,
         value: formatted,
@@ -204,7 +219,7 @@ export const buildStrategySignalAnalysis = (input: {
       const period = clampPeriod(rule.params.period ?? rule.params.length, 20);
       const value = ensureOpenInterestMa(period)[decisionIndex];
       const formatted = formatAnalysisValue(value);
-      conditionLines.push({
+      pushConditionLine({
         scope,
         left: `OPEN_INTEREST_MA(${period})`,
         value: formatted,
@@ -218,7 +233,7 @@ export const buildStrategySignalAnalysis = (input: {
     if (indicator.includes('OPEN_INTEREST_DELTA')) {
       const value = ensureOpenInterestDelta()[decisionIndex];
       const formatted = formatAnalysisValue(value);
-      conditionLines.push({
+      pushConditionLine({
         scope,
         left: 'OPEN_INTEREST_DELTA',
         value: formatted,
@@ -232,7 +247,7 @@ export const buildStrategySignalAnalysis = (input: {
     if (indicator.includes('OPEN_INTEREST')) {
       const value = ensureOpenInterest()[decisionIndex];
       const formatted = formatAnalysisValue(value);
-      conditionLines.push({
+      pushConditionLine({
         scope,
         left: 'OPEN_INTEREST',
         value: formatted,
@@ -246,7 +261,7 @@ export const buildStrategySignalAnalysis = (input: {
     if (indicator.includes('ORDER_BOOK_IMBALANCE')) {
       const value = ensureOrderBookImbalance()[decisionIndex];
       const formatted = formatAnalysisValue(value);
-      conditionLines.push({
+      pushConditionLine({
         scope,
         left: 'ORDER_BOOK_IMBALANCE',
         value: formatted,
@@ -260,7 +275,7 @@ export const buildStrategySignalAnalysis = (input: {
     if (indicator.includes('ORDER_BOOK_SPREAD_BPS')) {
       const value = ensureOrderBookSpreadBps()[decisionIndex];
       const formatted = formatAnalysisValue(value);
-      conditionLines.push({
+      pushConditionLine({
         scope,
         left: 'ORDER_BOOK_SPREAD_BPS',
         value: formatted,
@@ -274,7 +289,7 @@ export const buildStrategySignalAnalysis = (input: {
     if (indicator.includes('ORDER_BOOK_DEPTH_RATIO')) {
       const value = ensureOrderBookDepthRatio()[decisionIndex];
       const formatted = formatAnalysisValue(value);
-      conditionLines.push({
+      pushConditionLine({
         scope,
         left: 'ORDER_BOOK_DEPTH_RATIO',
         value: formatted,
@@ -290,7 +305,7 @@ export const buildStrategySignalAnalysis = (input: {
       const slow = clampPeriod(rule.params.slow, 21);
       const fastValue = formatAnalysisValue(ensureEma(fast)[decisionIndex]);
       const slowValue = formatAnalysisValue(ensureEma(slow)[decisionIndex]);
-      conditionLines.push({
+      pushConditionLine({
         scope,
         left: `EMA(${fast})`,
         value: fastValue,
@@ -305,7 +320,7 @@ export const buildStrategySignalAnalysis = (input: {
     if (indicator.includes('RSI') && !indicator.includes('STOCHRSI')) {
       const period = clampPeriod(rule.params.period ?? rule.params.length, 14);
       const formatted = formatAnalysisValue(ensureRsi(period)[decisionIndex]);
-      conditionLines.push({
+      pushConditionLine({
         scope,
         left: `RSI(${period})`,
         value: formatted,
@@ -319,7 +334,7 @@ export const buildStrategySignalAnalysis = (input: {
     if (indicator.includes('SMA')) {
       const period = clampPeriod(rule.params.period ?? rule.params.length, 14);
       const formatted = formatAnalysisValue(ensureSma(period)[decisionIndex]);
-      conditionLines.push({
+      pushConditionLine({
         scope,
         left: `SMA(${period})`,
         value: formatted,
@@ -333,7 +348,7 @@ export const buildStrategySignalAnalysis = (input: {
     if (indicator.includes('MOMENTUM')) {
       const period = clampPeriod(rule.params.period ?? rule.params.length, 14);
       const formatted = formatAnalysisValue(ensureMomentum(period)[decisionIndex]);
-      conditionLines.push({
+      pushConditionLine({
         scope,
         left: `MOMENTUM(${period})`,
         value: formatted,
@@ -347,7 +362,7 @@ export const buildStrategySignalAnalysis = (input: {
     if (indicator.includes('ROC')) {
       const period = clampPeriod(rule.params.period ?? rule.params.length, 14);
       const formatted = formatAnalysisValue(ensureRoc(period)[decisionIndex]);
-      conditionLines.push({
+      pushConditionLine({
         scope,
         left: `ROC(${period})`,
         value: formatted,
@@ -361,7 +376,7 @@ export const buildStrategySignalAnalysis = (input: {
     if (indicator.includes('ATR')) {
       const period = clampPeriod(rule.params.period ?? rule.params.length, 14);
       const formatted = formatAnalysisValue(ensureAtr(period)[decisionIndex]);
-      conditionLines.push({
+      pushConditionLine({
         scope,
         left: `ATR(${period})`,
         value: formatted,
@@ -375,7 +390,7 @@ export const buildStrategySignalAnalysis = (input: {
     if (indicator.includes('CCI')) {
       const period = clampPeriod(rule.params.period ?? rule.params.length, 20);
       const formatted = formatAnalysisValue(ensureCci(period)[decisionIndex]);
-      conditionLines.push({
+      pushConditionLine({
         scope,
         left: `CCI(${period})`,
         value: formatted,
@@ -392,7 +407,7 @@ export const buildStrategySignalAnalysis = (input: {
       const adxValue = formatAnalysisValue(adx.adx[decisionIndex]);
       const plusValue = formatAnalysisValue(adx.plusDi[decisionIndex]);
       const minusValue = formatAnalysisValue(adx.minusDi[decisionIndex]);
-      conditionLines.push({
+      pushConditionLine({
         scope,
         left: `ADX(${period})`,
         value: adxValue,
@@ -412,7 +427,7 @@ export const buildStrategySignalAnalysis = (input: {
       const stochastic = ensureStochastic(period, smoothK, smoothD);
       const kValue = formatAnalysisValue(stochastic.k[decisionIndex]);
       const dValue = formatAnalysisValue(stochastic.d[decisionIndex]);
-      conditionLines.push({
+      pushConditionLine({
         scope,
         left: `STOCHASTIC_K(${period},${smoothK},${smoothD})`,
         value: kValue,
@@ -432,7 +447,7 @@ export const buildStrategySignalAnalysis = (input: {
       const stochRsi = ensureStochRsi(period, stochPeriod, smoothK, smoothD);
       const kValue = formatAnalysisValue(stochRsi.k[decisionIndex]);
       const dValue = formatAnalysisValue(stochRsi.d[decisionIndex]);
-      conditionLines.push({
+      pushConditionLine({
         scope,
         left: `STOCHRSI(${period},${stochPeriod},${smoothK},${smoothD})`,
         value: kValue,
@@ -460,7 +475,7 @@ export const buildStrategySignalAnalysis = (input: {
       const lower = formatAnalysisValue(bollinger.lower[decisionIndex]);
       const bandwidth = formatAnalysisValue(bollinger.bandwidth[decisionIndex]);
       const percentB = formatAnalysisValue(bollinger.percentB[decisionIndex]);
-      conditionLines.push({
+      pushConditionLine({
         scope,
         left: `BOLLINGER_PERCENT_B(${period},${stdDev})`,
         value: percentB,
@@ -481,7 +496,7 @@ export const buildStrategySignalAnalysis = (input: {
       const upper = formatAnalysisValue(donchian.upper[decisionIndex]);
       const middle = formatAnalysisValue(donchian.middle[decisionIndex]);
       const lower = formatAnalysisValue(donchian.lower[decisionIndex]);
-      conditionLines.push({
+      pushConditionLine({
         scope,
         left: `DONCHIAN_MIDDLE(${period})`,
         value: middle,
@@ -509,7 +524,7 @@ export const buildStrategySignalAnalysis = (input: {
     ) {
       const patternValues = ensurePattern(indicator, resolvePatternParams(rule.params));
       const formatted = formatAnalysisValue(patternValues ? patternValues[decisionIndex] : null);
-      conditionLines.push({
+      pushConditionLine({
         scope,
         left: pattern,
         value: formatted,
@@ -528,7 +543,7 @@ export const buildStrategySignalAnalysis = (input: {
       const line = formatAnalysisValue(macd.line[decisionIndex]);
       const signalValue = formatAnalysisValue(macd.signal[decisionIndex]);
       const histogram = formatAnalysisValue(macd.histogram[decisionIndex]);
-      conditionLines.push({
+      pushConditionLine({
         scope,
         left: `MACD(${fast},${slow},${signal})`,
         value: line,
@@ -541,7 +556,7 @@ export const buildStrategySignalAnalysis = (input: {
       return;
     }
 
-    conditionLines.push({
+    pushConditionLine({
       scope,
       left: indicator,
       value: 'n/a',

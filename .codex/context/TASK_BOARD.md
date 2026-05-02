@@ -17,6 +17,20 @@ Last updated: 2026-05-02
 
 ## READY
 
+- [ ] `V1BOT-SIGNALS-02 fix(api-runtime): expose condition match truth and recover market-stream publishing`
+  - Scope: follow-up for the production `Dashboard -> Markets / Signals`
+    signal-count/display concern. Authenticated read-only production smoke
+    showed the current PAPER session is `RUNNING` but has only `eventsCount=1`
+    and `symbolsTracked=0`, while the market-stream SSE endpoint connects but
+    does not emit sampled ticker/candle events. Runtime condition analysis now
+    adds canonical per-rule `matched` truth, the dashboard keeps the same
+    table structure while rendering `PASS`/`MISS`, and market-stream Redis
+    publisher failures reset memoized connection state so transient Redis
+    startup/publish failures do not permanently mute events. Validation so
+    far: focused market-stream/runtime read-model tests (`50/50`), API
+    typecheck, web typecheck. Evidence:
+    `docs/planning/v1bot-signals-runtime-truth-2026-05-02.md`.
+
 - [x] `V1BACKTEST-01 fix(api-backtests): recover futures candles when primary kline endpoint is unavailable`
   - Scope: investigated the operator-reported production backtest details/run
     issue after recent PAPER/LIVE changes. Production smoke reproduced a

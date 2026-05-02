@@ -6,6 +6,7 @@ export type RuntimeSignalConditionLine = {
   value: string;
   operator: string;
   right: string;
+  matched?: boolean | null;
 };
 
 export type StrategyEvaluation = {

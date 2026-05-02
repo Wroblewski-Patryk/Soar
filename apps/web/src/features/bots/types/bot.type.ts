@@ -271,6 +271,7 @@ export type BotRuntimeSymbolStat = {
     value: string;
     operator: string;
     right: string;
+    matched?: boolean | null;
   }> | null;
   lastSignalScoreSummary?: {
     longScore: number;

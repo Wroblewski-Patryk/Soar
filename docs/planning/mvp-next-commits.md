@@ -12,6 +12,18 @@ Operational queue for one-task execution runs.
   blockers are `V1EXCEL-03..06` authenticated manual operator and OPS evidence.
   `BOTMULTI-*` remains in `PIPELINE` until those post-V1 confidence gates are
   green.
+- [ ] `V1BOT-SIGNALS-02 fix(api-runtime): expose condition match truth and recover market-stream publishing`
+  - 2026-05-02: In progress after authenticated production read-only evidence
+    showed the current PAPER session was `RUNNING` with `eventsCount=1` and
+    `symbolsTracked=0`, while the market-stream SSE endpoint connected but did
+    not emit sampled events for active/default symbols. Runtime condition
+    analysis now exposes canonical per-rule `matched` truth from the shared
+    evaluator, and the dashboard keeps its existing `Markets / Signals` table
+    while showing `PASS`/`MISS` for condition lines. Market-stream Redis
+    publisher startup/publish failures now reset memoized connection state and
+    retry on later events. Validation so far: focused market-stream/runtime
+    read-model tests (`50/50`), API typecheck, web typecheck. Evidence:
+    `docs/planning/v1bot-signals-runtime-truth-2026-05-02.md`.
 - [x] `V1BACKTEST-01 fix(api-backtests): recover futures candles when primary kline endpoint is unavailable`
   - 2026-05-02: Closed an operator-reported production backtest investigation
     after safe production smoke showed `FUTURES` backtest

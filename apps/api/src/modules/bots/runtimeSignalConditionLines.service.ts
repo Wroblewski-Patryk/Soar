@@ -4,6 +4,7 @@ export type SignalConditionLine = {
   value: string;
   operator: string;
   right: string;
+  matched: boolean | null;
 };
 
 export const parseSignalConditionLines = (value: unknown): SignalConditionLine[] | null => {
@@ -17,6 +18,7 @@ export const parseSignalConditionLines = (value: unknown): SignalConditionLine[]
       const lineValue = typeof row.value === 'string' ? row.value.trim() : '';
       const operator = typeof row.operator === 'string' ? row.operator.trim() : '';
       const right = typeof row.right === 'string' ? row.right.trim() : '';
+      const matched = typeof row.matched === 'boolean' ? row.matched : null;
       if (!scope || !left || !operator || !right) return null;
       return {
         scope,
@@ -24,6 +26,7 @@ export const parseSignalConditionLines = (value: unknown): SignalConditionLine[]
         value: lineValue.length > 0 ? lineValue : 'n/a',
         operator,
         right,
+        matched,
       } satisfies SignalConditionLine;
     })
     .filter((item): item is SignalConditionLine => Boolean(item));
