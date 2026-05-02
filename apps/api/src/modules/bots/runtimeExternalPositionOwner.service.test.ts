@@ -118,6 +118,87 @@ describe('resolveExternalPositionOwnershipIndex', () => {
     });
   });
 
+  it('uses the wallet api key as canonical LIVE ownership proof when bot api key is legacy-null', async () => {
+    mocks.prisma.bot.findMany.mockResolvedValue([
+      {
+        id: 'bot-wallet-key',
+        manageExternalPositions: true,
+        walletId: 'wallet-wallet-key',
+        apiKeyId: null,
+        wallet: {
+          apiKeyId: 'wallet-key-1',
+        },
+        symbolGroup: {
+          symbols: ['BTCUSDT'],
+          marketUniverse: null,
+        },
+        botMarketGroups: [],
+      },
+    ]);
+
+    const result = await resolveExternalPositionOwnershipIndex('user-wallet-key', 'LIVE');
+
+    expect(
+      getExternalPositionOwnership(result, {
+        apiKeyId: 'wallet-key-1',
+        symbol: 'BTCUSDT',
+      })
+    ).toEqual({
+      status: 'OWNED',
+      botId: 'bot-wallet-key',
+      walletId: 'wallet-wallet-key',
+    });
+  });
+
+  it('includes active canonical bot market groups in imported position ownership scope', async () => {
+    mocks.prisma.bot.findMany.mockResolvedValue([
+      {
+        id: 'bot-canonical-groups',
+        manageExternalPositions: true,
+        walletId: 'wallet-canonical-groups',
+        apiKeyId: null,
+        wallet: {
+          apiKeyId: 'wallet-key-groups',
+        },
+        symbolGroup: {
+          symbols: ['BTCUSDT'],
+          marketUniverse: null,
+        },
+        botMarketGroups: [
+          {
+            symbolGroup: {
+              symbols: ['ETHUSDT'],
+              marketUniverse: null,
+            },
+          },
+        ],
+      },
+    ]);
+
+    const result = await resolveExternalPositionOwnershipIndex('user-canonical-groups', 'LIVE');
+
+    expect(
+      getExternalPositionOwnership(result, {
+        apiKeyId: 'wallet-key-groups',
+        symbol: 'BTCUSDT',
+      })
+    ).toEqual({
+      status: 'OWNED',
+      botId: 'bot-canonical-groups',
+      walletId: 'wallet-canonical-groups',
+    });
+    expect(
+      getExternalPositionOwnership(result, {
+        apiKeyId: 'wallet-key-groups',
+        symbol: 'ETHUSDT',
+      })
+    ).toEqual({
+      status: 'OWNED',
+      botId: 'bot-canonical-groups',
+      walletId: 'wallet-canonical-groups',
+    });
+  });
+
   it('returns manual-only when linked live scope exists but wallet takeover is disabled', async () => {
     mocks.prisma.bot.findMany.mockResolvedValue([
       {

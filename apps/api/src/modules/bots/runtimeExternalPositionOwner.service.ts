@@ -30,6 +30,18 @@ type Candidate = {
   managed: boolean;
 };
 
+type SymbolGroupScope = {
+  symbols: string[];
+  marketUniverse: {
+    exchange?: unknown;
+    marketType?: unknown;
+    baseCurrency?: string | null;
+    filterRules?: unknown;
+    whitelist?: string[] | null;
+    blacklist?: string[] | null;
+  } | null;
+};
+
 const addCandidate = (
   candidateByExternalOwnershipKey: Map<string, Map<string, Candidate>>,
   ownershipKey: string,
@@ -169,6 +181,11 @@ export const resolveExternalPositionOwnershipIndex = async (
       manageExternalPositions: true,
       walletId: true,
       apiKeyId: true,
+      wallet: {
+        select: {
+          apiKeyId: true,
+        },
+      },
       symbolGroup: {
         select: {
           symbols: true,
@@ -184,13 +201,39 @@ export const resolveExternalPositionOwnershipIndex = async (
           },
         },
       },
+      botMarketGroups: {
+        where: {
+          isEnabled: true,
+          lifecycleStatus: 'ACTIVE',
+        },
+        select: {
+          symbolGroup: {
+            select: {
+              symbols: true,
+              marketUniverse: {
+                select: {
+                  exchange: true,
+                  marketType: true,
+                  baseCurrency: true,
+                  filterRules: true,
+                  whitelist: true,
+                  blacklist: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   });
 
   const candidateByExternalOwnershipKey = new Map<string, Map<string, Candidate>>();
 
   for (const bot of bots) {
-    if (mode === 'LIVE' && !bot.apiKeyId) {
+    const effectiveApiKeyId =
+      mode === 'LIVE' ? (bot.wallet?.apiKeyId ?? bot.apiKeyId) : (bot.apiKeyId ?? 'paper');
+
+    if (mode === 'LIVE' && !effectiveApiKeyId) {
       continue;
     }
     if (!bot.walletId) {
@@ -200,24 +243,33 @@ export const resolveExternalPositionOwnershipIndex = async (
     const candidate = {
       botId: bot.id,
       walletId: bot.walletId,
-      apiKeyId: bot.apiKeyId ?? 'paper',
+      apiKeyId: effectiveApiKeyId ?? 'paper',
       managed: mode === 'LIVE' ? bot.manageExternalPositions === true : true,
     };
 
-    if (bot.symbolGroup) {
+    const symbolScopes: SymbolGroupScope[] = [
+      ...(bot.symbolGroup ? [bot.symbolGroup] : []),
+      ...(bot.botMarketGroups ?? []).map((group) => group.symbolGroup),
+    ];
+    const resolvedSymbols = new Set<string>();
+    for (const scope of symbolScopes) {
       for (const symbol of resolveEffectiveSymbolGroupSymbols({
-        symbols: bot.symbolGroup.symbols,
-        marketUniverse: bot.symbolGroup.marketUniverse,
+        symbols: scope.symbols,
+        marketUniverse: scope.marketUniverse,
       })) {
-        addCandidate(
-          candidateByExternalOwnershipKey,
-          buildExternalPositionOwnershipKey({
-            apiKeyId: candidate.apiKeyId,
-            symbol,
-          }),
-          candidate
-        );
+        resolvedSymbols.add(symbol);
       }
+    }
+
+    for (const symbol of resolvedSymbols) {
+      addCandidate(
+        candidateByExternalOwnershipKey,
+        buildExternalPositionOwnershipKey({
+          apiKeyId: candidate.apiKeyId,
+          symbol,
+        }),
+        candidate
+      );
     }
   }
 

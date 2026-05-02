@@ -505,6 +505,112 @@ describe('Positions takeover status API', () => {
     expect(bySymbol.get('ADAUSDT')?.takeoverStatus).toBe('UNOWNED');
   });
 
+  it('rebinds exchange-synced positions from wallet-first api key and active bot market groups', async () => {
+    const email = 'positions-takeover-wallet-first-groups@example.com';
+    const agent = await registerAndLogin(email);
+    const owner = await prisma.user.findUniqueOrThrow({
+      where: { email },
+      select: { id: true },
+    });
+
+    const createApiKeyRes = await agent.post('/dashboard/profile/apiKeys').send({
+      label: 'wallet-first-groups',
+      exchange: 'BINANCE',
+      apiKey: `APIKEY_WALLET_FIRST_GROUPS_${Date.now()}`,
+      apiSecret: `APISECRET_WALLET_FIRST_GROUPS_${Date.now()}`,
+    });
+    expect(createApiKeyRes.status).toBe(201);
+    const apiKeyId = createApiKeyRes.body.id as string;
+
+    const primaryScopeId = await createLiveSymbolGroup(owner.id, 'Wallet First Primary Scope', [
+      'BTCUSDT',
+    ]);
+    const addedScopeId = await createLiveSymbolGroup(owner.id, 'Wallet First Added Scope', [
+      'ETHUSDT',
+    ]);
+
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId: owner.id,
+        name: 'wallet-first-groups-wallet',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        paperInitialBalance: 10_000,
+        liveAllocationMode: 'PERCENT',
+        liveAllocationValue: 100,
+        apiKeyId,
+        manageExternalPositions: true,
+      },
+      select: { id: true },
+    });
+
+    const bot = await prisma.bot.create({
+      data: {
+        userId: owner.id,
+        name: 'wallet-first-groups-bot',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        liveOptIn: true,
+        manageExternalPositions: true,
+        apiKeyId: null,
+        walletId: wallet.id,
+        symbolGroupId: primaryScopeId,
+      },
+      select: { id: true },
+    });
+
+    await prisma.botMarketGroup.create({
+      data: {
+        userId: owner.id,
+        botId: bot.id,
+        symbolGroupId: addedScopeId,
+        lifecycleStatus: 'ACTIVE',
+        isEnabled: true,
+      },
+    });
+
+    await prisma.position.create({
+      data: {
+        userId: owner.id,
+        externalId: `${apiKeyId}:ETHUSDT:LONG`,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'DRIFT',
+        symbol: 'ETHUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 3000,
+        quantity: 0.1,
+        leverage: 3,
+      },
+    });
+
+    const rebindRes = await agent.post('/dashboard/positions/takeover-rebind');
+    expect(rebindRes.status).toBe(200);
+    expect(rebindRes.body).toMatchObject({
+      scanned: 1,
+      rebound: 1,
+      ambiguous: 0,
+      unowned: 0,
+      skippedOwned: 0,
+    });
+
+    const statusRes = await agent.get('/dashboard/positions/takeover-status');
+    expect(statusRes.status).toBe(200);
+    expect(statusRes.body.items[0]).toMatchObject({
+      symbol: 'ETHUSDT',
+      takeoverStatus: 'OWNED_AND_MANAGED',
+      managementMode: 'BOT_MANAGED',
+      botId: bot.id,
+      walletId: wallet.id,
+    });
+  });
+
   it('keeps BOT-origin orphan positions unresolved without explicit ownership proof', async () => {
     const email = 'positions-bot-origin-rebind@example.com';
     const agent = await registerAndLogin(email);

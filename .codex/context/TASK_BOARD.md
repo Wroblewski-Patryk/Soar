@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-05-02
+Last updated: 2026-05-03
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -16,6 +16,19 @@ Last updated: 2026-05-02
     needed
 
 ## READY
+
+- [x] `LIVEIMPORT-01 fix(api-runtime): restore wallet-first LIVE imported position ownership`
+  - Scope: closed the operator-reported LIVE imported-position ownership
+    investigation. The external takeover ownership index now resolves the
+    canonical LIVE API key from the assigned wallet first, falling back to
+    legacy `Bot.apiKeyId` only for old rows, and includes both the legacy
+    primary symbol group and active canonical `BotMarketGroup` scopes. This
+    lets `EXCHANGE_SYNC` positions on old and newly attached bot markets rebind
+    deterministically by exact `apiKeyId:symbol` proof while preserving
+    fail-closed `AMBIGUOUS`, `MANUAL_ONLY`, and `UNOWNED` outcomes. Validation
+    PASS: focused ownership/takeover tests (`14/14`), API typecheck, API build,
+    and repository guardrails. Evidence:
+    `docs/planning/live-import-ownership-wallet-scope-task-2026-05-03.md`.
 
 - [x] `ETHDCA-01 fix(api-runtime): preserve LIVE DCA-first gating for trailing-stop close decisions`
   - Scope: closed the operator-reported ETHUSDT investigation slice. Runtime

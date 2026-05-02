@@ -1,6 +1,19 @@
 # PROJECT_STATE
 
-Last updated: 2026-05-02
+Last updated: 2026-05-03
+
+## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 operator-reported LIVE imported-position ownership slice
+  `LIVEIMPORT-01` is closed locally. The external takeover ownership index now
+  follows the wallet-first bot contract by resolving the canonical LIVE API key
+  from the assigned wallet before falling back to legacy `Bot.apiKeyId`, and it
+  includes active canonical `BotMarketGroup` scopes in addition to the legacy
+  primary symbol group. `EXCHANGE_SYNC` positions on old and newly attached
+  markets can now rebind by exact `apiKeyId:symbol` proof without symbol-only
+  guessing, while `AMBIGUOUS`, `MANUAL_ONLY`, and `UNOWNED` outcomes remain
+  fail-closed. Validation PASS: focused ownership/takeover tests (`14/14`), API
+  typecheck, API build, and repository guardrails. Evidence:
+  `docs/planning/live-import-ownership-wallet-scope-task-2026-05-03.md`.
 
 ## 2026-05-02 V1 Prod-Only Release Scope Update
 - 2026-05-02 operator-reported LIVE ETHUSDT DCA-first protection hardening

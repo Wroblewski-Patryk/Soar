@@ -52,6 +52,33 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-05-03 - Imported LIVE ownership must use wallet-first API key and canonical market groups
+- Context: an operator reported that LIVE exchange-side positions were not
+  pulled under bot management after adding markets and also after opening a
+  position on an older managed market.
+- Symptom: `EXCHANGE_SYNC` positions could remain unowned even when the bot was
+  active, opted into LIVE, and configured to manage external positions.
+- Root cause: imported-position ownership still relied on legacy `Bot.apiKeyId`
+  and the legacy primary `symbolGroup`, while bot creation/update now derives
+  execution context from the assigned wallet and canonical market scope can live
+  in active `BotMarketGroup` rows.
+- Guardrail: imported-position ownership must build deterministic proof from
+  wallet-first `apiKeyId` plus the full active bot market scope, then keep the
+  existing fail-closed states for ambiguous or manual-only ownership.
+- Preferred pattern:
+```text
+1) Load active LIVE opted-in bots.
+2) Resolve effective API key from bot.wallet.apiKeyId before legacy Bot.apiKeyId.
+3) Enumerate primary symbolGroup plus active BotMarketGroup symbol groups.
+4) Build ownership only by exact apiKeyId:symbol.
+5) Rebind EXCHANGE_SYNC rows only when ownership status is OWNED.
+```
+- Avoid: skipping LIVE bots because `Bot.apiKeyId` is null, or treating the
+  legacy primary symbol group as the whole current bot market scope.
+- Evidence: 2026-05-03 `LIVEIMPORT-01` focused ownership unit tests and
+  takeover-status e2e regression cover wallet-first and added-market-group
+  imported position rebind.
+
 ### 2026-05-02 - LIVE DCA-first gating must prefer durable DCA progress over volatile runtime state
 - Context: an operator reported that a `LIVE ETHUSDT` isolated short appeared
   to close by `TSL` at a loss after two visible DCA adds while the live
