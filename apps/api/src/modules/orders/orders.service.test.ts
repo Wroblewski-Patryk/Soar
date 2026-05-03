@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { prisma } from '../../prisma/client';
 import {
+  cancelOrder,
   closeOrder,
   getManualOrderContext,
   listOrders,
@@ -2453,6 +2454,81 @@ describe('closeOrder close attribution', () => {
     expect(closedPosition.status).toBe('CLOSED');
     expect(closedPosition.closeReason).toBe('MANUAL');
     expect(closedPosition.closeInitiator).toBe('USER_APP');
+  });
+});
+
+describe('manual order action active sync-state contract', () => {
+  beforeEach(async () => {
+    await cleanupDb();
+  });
+
+  it('does not cancel stale local open-status orders', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-stale-cancel@example.com', password: 'hashed' },
+    });
+    const order = await prisma.order.create({
+      data: {
+        userId: user.id,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'ORPHAN_LOCAL',
+        symbol: 'ETHUSDT',
+        side: 'BUY',
+        type: 'LIMIT',
+        status: 'OPEN',
+        quantity: 0.5,
+        price: 2400,
+      },
+    });
+
+    await expect(cancelOrder(user.id, order.id, { riskAck: true })).rejects.toMatchObject({
+      code: ORDER_ERROR_CODES.orderNotCancelable,
+    });
+
+    const unchangedOrder = await prisma.order.findUniqueOrThrow({ where: { id: order.id } });
+    expect(unchangedOrder.status).toBe('OPEN');
+    expect(unchangedOrder.canceledAt).toBeNull();
+  });
+
+  it('does not close stale local open-status orders or linked positions', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-stale-close@example.com', password: 'hashed' },
+    });
+    const position = await prisma.position.create({
+      data: {
+        userId: user.id,
+        symbol: 'ETHUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 2400,
+        quantity: 0.5,
+      },
+    });
+    const order = await prisma.order.create({
+      data: {
+        userId: user.id,
+        positionId: position.id,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'ORPHAN_LOCAL',
+        symbol: 'ETHUSDT',
+        side: 'SELL',
+        type: 'LIMIT',
+        status: 'OPEN',
+        quantity: 0.5,
+        price: 2450,
+      },
+    });
+
+    await expect(closeOrder(user.id, order.id, { riskAck: true })).rejects.toMatchObject({
+      code: ORDER_ERROR_CODES.orderNotClosable,
+    });
+
+    const unchangedOrder = await prisma.order.findUniqueOrThrow({ where: { id: order.id } });
+    expect(unchangedOrder.status).toBe('OPEN');
+    expect(unchangedOrder.filledAt).toBeNull();
+    const unchangedPosition = await prisma.position.findUniqueOrThrow({ where: { id: position.id } });
+    expect(unchangedPosition.status).toBe('OPEN');
   });
 });
 

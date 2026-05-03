@@ -101,6 +101,13 @@ Rule: fix/cleanup/update first, then feature delivery.
   unfiltered history and terminal status filters remain available.
   Validation PASS: orders service suite (`29/29`), API typecheck, repository
   guardrails, lint, and diff review.
+- 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-74` with
+  `docs/planning/runtime-audit-74-order-actions-active-sync-state-task-2026-05-04.md`.
+  Manual `cancelOrder` and `closeOrder` now require `syncState=IN_SYNC`, so
+  stale `ORPHAN_LOCAL` open-status rows cannot be canceled, filled, or used to
+  close linked positions through direct API actions after runtime/dashboard has
+  stopped treating them as active. Validation PASS: orders service suite
+  (`31/31`), API typecheck, repository guardrails, lint, and diff review.
 - 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-15` with
   `docs/planning/runtime-audit-15-close-fee-position-scope-task-2026-05-03.md`.
   Runtime close realized-PnL now aggregates entry fees by owned position

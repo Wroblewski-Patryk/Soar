@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 manual order action active-sync-state slice `RUNTIME-AUDIT-74`
+  is closed locally. Manual `cancelOrder` and `closeOrder` now require
+  `syncState=IN_SYNC`, so stale `ORPHAN_LOCAL` open-status rows cannot be
+  canceled, filled, or used to close linked positions through direct API
+  actions after runtime/dashboard has stopped treating them as active.
+  Validation PASS: orders service suite (`31/31`), API typecheck, repository
+  guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-74-order-actions-active-sync-state-task-2026-05-04.md`.
 - 2026-05-04 orders list active-sync-state slice `RUNTIME-AUDIT-73` is closed
   locally. Dashboard/order list active-status queries now require
   `syncState=IN_SYNC` for `PENDING`, `OPEN`, and `PARTIALLY_FILLED`, so stale

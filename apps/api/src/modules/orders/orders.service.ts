@@ -672,6 +672,9 @@ export const cancelOrder = async (userId: string, id: string, payload: CancelOrd
   if (existing.status === 'CANCELED' || existing.status === 'FILLED') {
     throw orderErrors.orderNotCancelable();
   }
+  if (existing.syncState !== 'IN_SYNC') {
+    throw orderErrors.orderNotCancelable();
+  }
 
   if (!payload.riskAck) {
     throw orderErrors.orderCancelRiskAckRequired();
@@ -710,6 +713,9 @@ export const closeOrder = async (userId: string, id: string, payload: CloseOrder
   }
 
   if (existing.status !== 'OPEN' && existing.status !== 'PARTIALLY_FILLED') {
+    throw orderErrors.orderNotClosable();
+  }
+  if (existing.syncState !== 'IN_SYNC') {
     throw orderErrors.orderNotClosable();
   }
 

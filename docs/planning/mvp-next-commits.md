@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-74 fix(api-orders): require active sync state for order actions`
+  - 2026-05-04: Closed a BUILDER-mode manual order lifecycle parity drift.
+    Manual `cancelOrder` and `closeOrder` now require `syncState=IN_SYNC`, so
+    stale `ORPHAN_LOCAL` open-status rows cannot be canceled, filled, or used
+    to close linked positions through direct API actions after runtime/dashboard
+    has stopped treating them as active. Validation PASS: orders service suite
+    (`31/31`), API typecheck, repository guardrails, lint, and diff review.
+    Evidence:
+    `docs/planning/runtime-audit-74-order-actions-active-sync-state-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-73 fix(api-orders): align active order lists with sync state`
   - 2026-05-04: Closed a BUILDER-mode dashboard/order-list parity drift.
     Orders list active-status queries now require `syncState=IN_SYNC` for
