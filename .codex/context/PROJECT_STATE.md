@@ -3,6 +3,16 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 wallet equity timeline open-PnL slice `RUNTIME-AUDIT-19` is
+  closed locally. Wallet equity timeline now reuses the selected wallet
+  open-PnL scope for the latest point, so owned imported `LIVE` positions with
+  `walletId=null` are reflected in current `botOpenPnl` / `botPnl` consistently
+  with wallet performance summary. Earlier timeline points remain historical
+  snapshot/cashflow points and do not receive current open PnL. Validation
+  PASS: failing-then-passing wallet timeline regression, focused wallets e2e
+  (`16/16`), API typecheck, repository guardrails, lint, and diff review.
+  Evidence:
+  `docs/planning/runtime-audit-19-wallet-timeline-open-pnl-task-2026-05-03.md`.
 - 2026-05-03 wallet owned-import open-PnL slice `RUNTIME-AUDIT-18` is closed
   locally. Wallet performance summary now includes selected `LIVE` wallet
   imported open positions with `walletId=null` when their `externalId` is

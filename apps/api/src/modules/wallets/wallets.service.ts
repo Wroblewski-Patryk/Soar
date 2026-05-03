@@ -730,7 +730,7 @@ export const getWalletEquityTimeline = async (
   const wallet = await getWallet(userId, id);
   if (!wallet) return null;
 
-  const [snapshots, events] = await Promise.all([
+  const [snapshots, events, openPnlAggregate] = await Promise.all([
     prisma.walletBalanceSnapshot.findMany({
       where: {
         userId,
@@ -753,9 +753,22 @@ export const getWalletEquityTimeline = async (
       },
       orderBy: { occurredAt: 'asc' },
     }),
+    prisma.position.aggregate({
+      where: buildWalletOpenPnlWhere({
+        userId,
+        walletId: id,
+        mode: wallet.mode,
+        apiKeyId: wallet.apiKeyId,
+      }),
+      _sum: {
+        unrealizedPnl: true,
+      },
+    }),
   ]);
 
-  const points = snapshots.map((snapshot) => {
+  const currentOpenPnl = Number(openPnlAggregate._sum.unrealizedPnl ?? 0);
+  const latestSnapshotIndex = snapshots.length - 1;
+  const points = snapshots.map((snapshot, index) => {
     const eventsUntilPoint = events.filter((event) => event.occurredAt <= snapshot.fetchedAt);
     const contributedCapital = eventsUntilPoint
       .filter((event) => contributedCapitalSources.has(event.source))
@@ -769,6 +782,7 @@ export const getWalletEquityTimeline = async (
     const unclassifiedAdjustment = eventsUntilPoint
       .filter((event) => event.source === WalletCashflowSource.UNKNOWN_EXTERNAL_ADJUSTMENT)
       .reduce((sum, event) => sum + signedCashflowAmount(event), 0);
+    const botOpenPnl = index === latestSnapshotIndex ? currentOpenPnl : 0;
 
     return {
       timestamp: snapshot.fetchedAt.toISOString(),
@@ -777,9 +791,9 @@ export const getWalletEquityTimeline = async (
       freeBalance: snapshot.freeBalance,
       contributedCapital,
       botRealizedPnl,
-      botOpenPnl: 0,
+      botOpenPnl,
       feesFunding,
-      botPnl: botRealizedPnl + feesFunding,
+      botPnl: botRealizedPnl + botOpenPnl + feesFunding,
       unclassifiedAdjustment,
     };
   });

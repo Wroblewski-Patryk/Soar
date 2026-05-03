@@ -9,6 +9,16 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-19 fix(api-wallets): align latest wallet timeline open PnL`
+  - 2026-05-03: Closed the next wallet preview parity drift. Wallet equity
+    timeline now reuses the selected wallet open-PnL scope for the latest
+    point, so owned imported `LIVE` positions with `walletId=null` are
+    reflected in current `botOpenPnl` / `botPnl` consistently with wallet
+    performance summary. Earlier timeline points remain historical
+    snapshot/cashflow points. Validation PASS: failing-then-passing wallet
+    timeline regression, focused wallets e2e (`16/16`), API typecheck,
+    repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-19-wallet-timeline-open-pnl-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-18 fix(api-wallets): include owned imported LIVE open PnL`
   - 2026-05-03: Closed the next wallet/dashboard capital drift. Wallet
     performance summary now includes selected `LIVE` wallet imported open

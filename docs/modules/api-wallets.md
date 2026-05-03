@@ -6,7 +6,7 @@
 - Source path: `apps/api/src/modules/wallets`
 - Owner: backend/trading-domain
 - Last updated: 2026-05-03
-- Related planning task: `RUNTIME-AUDIT-18`
+- Related planning task: `RUNTIME-AUDIT-19`
 
 ## Canonical Architecture Linkage
 Canonical wallet and execution-context rules live in:
@@ -85,7 +85,11 @@ Out of scope:
      prefixed by the selected wallet API key id.
   3. Keep another user's, another API key's, or unlinked imported positions
      excluded from wallet performance summary.
-  4. Do not alter wallet balance snapshots, cashflow events, or equity
+  4. Reuse the same scope for the latest equity timeline point's current
+     `botOpenPnl` / `botPnl` fields.
+  5. Earlier timeline points remain historical snapshot/cashflow points and
+     must not receive current open PnL without persisted historical evidence.
+  6. Do not alter wallet balance snapshots, cashflow events, or equity
      timeline markers from this derived open-PnL read.
 
 ## 5. API and UI Integration
