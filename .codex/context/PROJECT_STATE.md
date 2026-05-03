@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 orders list active-sync-state slice `RUNTIME-AUDIT-73` is closed
+  locally. Dashboard/order list active-status queries now require
+  `syncState=IN_SYNC` for `PENDING`, `OPEN`, and `PARTIALLY_FILLED`, so stale
+  `ORPHAN_LOCAL` open-status rows no longer appear as active order-list truth
+  while unfiltered history and terminal status filters remain available.
+  Validation PASS: orders service suite (`29/29`), API typecheck, repository
+  guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-73-orders-list-active-sync-state-task-2026-05-04.md`.
 - 2026-05-04 runtime order lifetime active-sync-state slice
   `RUNTIME-AUDIT-72` is closed locally. Runtime order lifetime cancellation
   candidates now require `syncState=IN_SYNC`, so stale `ORPHAN_LOCAL`

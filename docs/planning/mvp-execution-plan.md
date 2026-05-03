@@ -93,6 +93,14 @@ Rule: fix/cleanup/update first, then feature delivery.
   page, web build-info, and protected API unauthenticated `401 Missing token`.
   Authenticated production dashboard/runtime smoke remains unavailable without
   credentials and was not claimed.
+- 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-73` with
+  `docs/planning/runtime-audit-73-orders-list-active-sync-state-task-2026-05-04.md`.
+  Orders list active-status queries now require `syncState=IN_SYNC` for
+  `PENDING`, `OPEN`, and `PARTIALLY_FILLED`, so stale `ORPHAN_LOCAL`
+  open-status rows no longer appear as active order-list truth while
+  unfiltered history and terminal status filters remain available.
+  Validation PASS: orders service suite (`29/29`), API typecheck, repository
+  guardrails, lint, and diff review.
 - 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-15` with
   `docs/planning/runtime-audit-15-close-fee-position-scope-task-2026-05-03.md`.
   Runtime close realized-PnL now aggregates entry fees by owned position

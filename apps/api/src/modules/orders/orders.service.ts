@@ -43,11 +43,20 @@ type OpenOrderInput = OpenOrderDto & {
   origin?: 'USER' | 'BOT';
 };
 
+const ACTIVE_LIST_ORDER_STATUSES = new Set<OrderStatus>([
+  'PENDING',
+  'OPEN',
+  'PARTIALLY_FILLED',
+]);
+
 export const listOrders = async (userId: string, query: ListOrdersQuery) => {
   const skip = (query.page - 1) * query.limit;
-  const where = {
+  const where: Prisma.OrderWhereInput = {
     userId,
     ...(query.status ? { status: query.status } : {}),
+    ...(query.status && ACTIVE_LIST_ORDER_STATUSES.has(query.status)
+      ? { syncState: 'IN_SYNC' }
+      : {}),
     ...(query.symbol ? { symbol: query.symbol } : {}),
   };
 

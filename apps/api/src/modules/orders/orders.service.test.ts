@@ -1,6 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { prisma } from '../../prisma/client';
-import { closeOrder, getManualOrderContext, openOrder, resolveLiveExecutionApiKey } from './orders.service';
+import {
+  closeOrder,
+  getManualOrderContext,
+  listOrders,
+  openOrder,
+  resolveLiveExecutionApiKey,
+} from './orders.service';
 import { ORDER_ERROR_CODES } from './orders.errors';
 
 const cleanupDb = async () => {
@@ -102,6 +108,61 @@ const createLiveScopedBotContext = async (params: {
 
   return { bot, strategy, wallet, universe, symbolGroup };
 };
+
+describe('listOrders active order contract', () => {
+  beforeEach(async () => {
+    await cleanupDb();
+  });
+
+  it('excludes stale local rows from active status lists while preserving history access', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-list-active-sync-state@example.com', password: 'hashed' },
+    });
+
+    const activeOpenOrder = await prisma.order.create({
+      data: {
+        userId: user.id,
+        symbol: 'ETHUSDT',
+        side: 'BUY',
+        type: 'LIMIT',
+        status: 'OPEN',
+        syncState: 'IN_SYNC',
+        quantity: 0.5,
+        price: 2500,
+        createdAt: new Date('2026-05-04T10:00:00.000Z'),
+      },
+    });
+    const staleOpenOrder = await prisma.order.create({
+      data: {
+        userId: user.id,
+        symbol: 'ETHUSDT',
+        side: 'BUY',
+        type: 'LIMIT',
+        status: 'OPEN',
+        syncState: 'ORPHAN_LOCAL',
+        quantity: 0.5,
+        price: 2400,
+        createdAt: new Date('2026-05-04T10:01:00.000Z'),
+      },
+    });
+
+    const activeOpenOrders = await listOrders(user.id, {
+      status: 'OPEN',
+      limit: 50,
+      page: 1,
+    });
+    expect(activeOpenOrders.map((order) => order.id)).toEqual([activeOpenOrder.id]);
+
+    const allOrders = await listOrders(user.id, {
+      limit: 50,
+      page: 1,
+    });
+    expect(allOrders.map((order) => order.id)).toEqual([
+      staleOpenOrder.id,
+      activeOpenOrder.id,
+    ]);
+  });
+});
 
 describe('openOrder live execution contract', () => {
   beforeEach(async () => {
