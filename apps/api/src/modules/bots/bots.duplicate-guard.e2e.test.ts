@@ -242,6 +242,51 @@ describe('Bots duplicate active guard', () => {
     );
   });
 
+  it('blocks activating duplicate bot using canonical scope when direct projection is stale', async () => {
+    const email = 'bots-duplicate-update-canonical-scope@example.com';
+    const agent = await registerAndLogin(email);
+    const strategyId = await createStrategy(agent, 'Duplicate Update Canonical Strategy');
+    const staleStrategyId = await createStrategy(agent, 'Duplicate Update Stale Direct Strategy');
+    const marketGroupId = await createMarketGroup(email, ['BTCUSDT']);
+    const staleMarketGroupId = await createMarketGroup(email, ['SOLUSDT']);
+
+    const firstCreate = await agent.post('/dashboard/bots').send({
+      name: 'Primary Canonical Active',
+      strategyId,
+      marketGroupId,
+      walletId: walletIdByMarketGroupId.get(marketGroupId),
+      isActive: true,
+      liveOptIn: false,
+    });
+    expect(firstCreate.status).toBe(201);
+
+    const secondCreate = await agent.post('/dashboard/bots').send({
+      name: 'Secondary Canonical Draft',
+      strategyId,
+      marketGroupId,
+      walletId: walletIdByMarketGroupId.get(marketGroupId),
+      isActive: false,
+      liveOptIn: false,
+    });
+    expect(secondCreate.status).toBe(201);
+
+    await prisma.bot.update({
+      where: { id: secondCreate.body.id as string },
+      data: {
+        strategyId: staleStrategyId,
+        symbolGroupId: staleMarketGroupId,
+      },
+    });
+
+    const activateSecondary = await agent.put(`/dashboard/bots/${secondCreate.body.id}`).send({
+      isActive: true,
+    });
+    expect(activateSecondary.status).toBe(409);
+    expect(activateSecondary.body.error.message).toBe(
+      'active bot already exists for this wallet + strategy + market group tuple'
+    );
+  });
+
   it('blocks creating active LIVE bot when selected market group overlaps symbols owned by another active LIVE bot', async () => {
     const email = 'bots-live-symbol-overlap-create@example.com';
     const agent = await registerAndLogin(email);

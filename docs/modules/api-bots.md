@@ -6,7 +6,7 @@
 - Source path: `apps/api/src/modules/bots`
 - Owner: backend/trading-domain
 - Last updated: 2026-05-03
-- Related planning task: `BOTDRIFT-01`
+- Related planning task: `BOTDRIFT-02`
 
 ## Canonical Architecture Linkage
 Canonical runtime topology and ownership rules live in:
@@ -148,6 +148,13 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
     `strategyId`, `strategy`, `symbolGroupId`, and `symbolGroup`,
   - direct `Bot.strategy` / `Bot.symbolGroup` remains compatibility fallback
     only when canonical market-group topology is unavailable.
+- Bot update guard precedence:
+  - when update payload does not explicitly replace strategy or market group,
+    duplicate-active validation and LIVE overlap validation derive their target
+    from active canonical `BotMarketGroup` and enabled
+    `MarketGroupStrategyLink` rows,
+  - direct `Bot.strategyId` / `Bot.symbolGroupId` remains compatibility
+    fallback only when canonical market-group topology is unavailable.
 - Drift policy:
   - legacy link state may exist for backward compatibility, but it cannot override canonical runtime topology in dashboard strategy contexts.
   - module should expose deterministic diagnostics/repair path for legacy-canonical divergence to support operations closure.

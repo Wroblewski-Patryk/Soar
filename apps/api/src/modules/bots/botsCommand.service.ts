@@ -36,6 +36,7 @@ import {
   assertWalletContextMatchesExistingBotMarketGroups,
   isWalletContextCompatibleWithMarketUniverse,
 } from './botContextValidation.service';
+import { resolveExistingCanonicalUpdateScope } from './botCanonicalUpdateScope.service';
 export {
   listBotStrategyProjectionDrift,
   repairBotStrategyProjectionDrift,
@@ -451,16 +452,19 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
   }
 
   if (nextIsActive) {
+    const existingCanonicalScope = resolveExistingCanonicalUpdateScope(existing);
     const targetStrategyId =
       requestedStrategyLinkSet?.primaryStrategyId ??
-      (requestedStrategyId !== undefined ? requestedStrategyId : (existing.strategyId ?? null));
-    const targetSymbolGroupId = requestedSymbolGroup?.id ?? existing.symbolGroupId ?? null;
+      (requestedStrategyId !== undefined ? requestedStrategyId : existingCanonicalScope.primaryStrategyId);
+    const targetSymbolGroupId = requestedSymbolGroup?.id ?? existingCanonicalScope.symbolGroupId;
 
     const targetStrategyIds = requestedStrategyLinkSet
       ? requestedStrategyLinkSet.enabledLinks.map((link) => link.strategyId)
-      : targetStrategyId
-        ? [targetStrategyId]
-        : [];
+      : requestedStrategyId !== undefined
+        ? targetStrategyId
+          ? [targetStrategyId]
+          : []
+        : existingCanonicalScope.enabledStrategyIds;
 
     if (targetStrategyIds.length > 0 && targetSymbolGroupId) {
       const targetWalletId = targetWallet?.id ?? existing.walletId ?? null;
@@ -477,7 +481,8 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
     }
   }
   if (nextMode === 'LIVE' && nextIsActive && nextLiveOptIn) {
-    const targetSymbolGroupId = requestedSymbolGroup?.id ?? existing.symbolGroupId ?? null;
+    const existingCanonicalScope = resolveExistingCanonicalUpdateScope(existing);
+    const targetSymbolGroupId = requestedSymbolGroup?.id ?? existingCanonicalScope.symbolGroupId;
     if (targetSymbolGroupId) {
       await assertNoActiveLiveBotSymbolOverlap({
         userId,
@@ -495,6 +500,7 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
     ...botData
   } = data;
   const updated = await prisma.$transaction(async (tx) => {
+    const existingCanonicalScope = resolveExistingCanonicalUpdateScope(existing);
     const updatedBot = await tx.bot.update({
       where: { id: existing.id },
       data: {
@@ -505,8 +511,8 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
           requestedStrategyLinkSet?.primaryStrategyId ??
           (typeof requestedStrategyId === 'string' && requestedStrategyId.length > 0
             ? requestedStrategyId
-            : existing.strategyId ?? null),
-        symbolGroupId: requestedSymbolGroup?.id ?? existing.symbolGroupId ?? null,
+            : existingCanonicalScope.primaryStrategyId),
+        symbolGroupId: requestedSymbolGroup?.id ?? existingCanonicalScope.symbolGroupId,
         paperStartBalance: targetPaperStartBalance,
         exchange: targetExchange,
         marketType: targetMarketType,

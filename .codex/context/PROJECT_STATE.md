@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 bot update safety guard slice `BOTDRIFT-02` is closed locally.
+  Bot activation/update duplicate guard and LIVE overlap guard now derive
+  default target strategy/market scope from active canonical `BotMarketGroup`
+  and enabled `MarketGroupStrategyLink` rows before direct legacy bot fields.
+  Stale direct `Bot.strategyId` / `Bot.symbolGroupId` can no longer let update
+  activation bypass canonical duplicate checks. Validation PASS: focused
+  duplicate guard (`6/6`) and wider bot write/runtime pack (`43/43`).
+  Evidence:
+  `docs/planning/botdrift-02-bot-update-canonical-guard-task-2026-05-03.md`.
 - 2026-05-03 bot read projection slice `BOTDRIFT-01` is closed locally.
   `GET /dashboard/bots` and `GET /dashboard/bots/:id` now overlay canonical
   primary `BotMarketGroup` / `MarketGroupStrategyLink` context onto response

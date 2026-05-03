@@ -20,6 +20,17 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `BOTDRIFT-02 fix(api-bots): keep bot update safety guards canonical-context scoped`
+  - Scope: closed the next bot-management safety drift. Bot activation/update
+    duplicate guard and LIVE overlap guard now derive default target
+    strategy/market scope from active canonical `BotMarketGroup` and enabled
+    `MarketGroupStrategyLink` rows before direct legacy bot fields. Stale
+    direct `Bot.strategyId` / `Bot.symbolGroupId` can no longer let update
+    activation bypass canonical duplicate checks. Validation PASS: focused
+    duplicate guard (`6/6`) and wider bot write/runtime pack (`43/43`).
+    Evidence:
+    `docs/planning/botdrift-02-bot-update-canonical-guard-task-2026-05-03.md`.
+
 - [x] `BOTDRIFT-01 fix(api-bots): keep bot list/get projection canonical-context scoped`
   - Scope: closed the next upstream dashboard/runtime drift. `GET
     /dashboard/bots` and `GET /dashboard/bots/:id` now overlay canonical
