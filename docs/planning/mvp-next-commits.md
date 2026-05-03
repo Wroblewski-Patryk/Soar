@@ -9,6 +9,16 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-54 fix(api-bots): prevent aggregate open-position overlap double counts`
+  - 2026-05-03: Closed an ARCHITECT-mode current-state dashboard drift.
+    Runtime monitoring aggregate now takes current open-position count,
+    quantity, and unrealized PnL from the freshest session positions read model
+    instead of summing overlapping session projections, so duplicate running
+    sessions do not double-count the same open position. Historical
+    closed/trade metrics remain session-window sums. Validation PASS:
+    overlapping-session aggregate e2e (`14/14`), runtime-scope e2e (`13/13`),
+    API typecheck, repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-54-aggregate-open-position-overlap-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-53 fix(api-bots): preserve portfolio close points under monitoring row caps`
   - 2026-05-03: Closed a BUILDER-mode portfolio dashboard history drift. Bot
     portfolio history now composes close points from full scoped closed-position

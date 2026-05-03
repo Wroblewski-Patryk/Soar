@@ -699,6 +699,92 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     expect(aggregateRes.body.positions.summary.freeCash).toBe(700);
   });
 
+  it('does not double-count current open positions across overlapping running sessions', async () => {
+    const ownerEmail = 'bots-monitoring-aggregate-open-overlap@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({
+      where: { email: ownerEmail },
+      select: { id: true },
+    });
+
+    const strategyId = await createStrategy(owner, 'Monitoring Aggregate Open Overlap');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    const walletId = await createWalletForContext(ownerEmail, {
+      mode: 'PAPER',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+    });
+    await prisma.wallet.update({
+      where: { id: walletId },
+      data: {
+        paperInitialBalance: 1_000,
+      },
+    });
+    const createRes = await owner.post('/dashboard/bots').send(
+      createPayload({
+        strategyId,
+        marketGroupId,
+        walletId,
+      })
+    );
+    expect(createRes.status).toBe(201);
+    const botId = createRes.body.id as string;
+
+    await prisma.botRuntimeSession.createMany({
+      data: [
+        {
+          userId: ownerUser.id,
+          botId,
+          mode: 'PAPER',
+          status: 'RUNNING',
+          startedAt: new Date('2026-04-19T16:00:00.000Z'),
+          lastHeartbeatAt: new Date('2026-04-19T16:05:00.000Z'),
+        },
+        {
+          userId: ownerUser.id,
+          botId,
+          mode: 'PAPER',
+          status: 'RUNNING',
+          startedAt: new Date('2026-04-19T16:01:00.000Z'),
+          lastHeartbeatAt: new Date('2026-04-19T16:06:00.000Z'),
+        },
+      ],
+    });
+
+    await prisma.position.create({
+      data: {
+        id: 'aggregate-overlap-btc-open',
+        userId: ownerUser.id,
+        botId,
+        walletId,
+        strategyId,
+        symbol: 'BTCUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 60_000,
+        quantity: 0.01,
+        leverage: 2,
+        marginUsed: 300,
+        unrealizedPnl: -7,
+        openedAt: new Date('2026-04-19T16:02:00.000Z'),
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+      },
+    });
+
+    const aggregateRes = await owner.get(`/dashboard/bots/${botId}/runtime-monitoring/aggregate`);
+    expect(aggregateRes.status).toBe(200);
+    expect(aggregateRes.body.sessionDetail.metadata.sessionsCount).toBe(2);
+    expect(aggregateRes.body.positions.openItems).toHaveLength(1);
+    expect(aggregateRes.body.positions.openCount).toBe(1);
+    expect(aggregateRes.body.sessionDetail.summary.openPositionCount).toBe(1);
+    expect(aggregateRes.body.sessionDetail.summary.openPositionQty).toBeCloseTo(0.01);
+    expect(aggregateRes.body.positions.summary.openPositionQty).toBeCloseTo(0.01);
+    expect(aggregateRes.body.positions.summary.unrealizedPnl).toBeCloseTo(-7);
+  });
+
   it('keeps aggregate open order counts truthful when visible open orders are limited', async () => {
     const ownerEmail = 'bots-monitoring-aggregate-open-orders-limit@example.com';
     const owner = await registerAndLogin(ownerEmail);

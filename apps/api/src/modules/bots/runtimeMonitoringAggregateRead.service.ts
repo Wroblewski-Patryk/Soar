@@ -484,6 +484,10 @@ export const getBotRuntimeMonitoringAggregate = async (
       const freeCash = readFiniteNumber(summary.freeCash);
       return referenceBalance != null || freeCash != null;
     });
+  const latestPositionResponse = sortedBySessionFreshness[0]?.positions ?? null;
+  const latestOpenPositionCount = latestPositionResponse?.openCount ?? 0;
+  const latestOpenPositionQty = latestPositionResponse?.summary.openPositionQty ?? 0;
+  const latestUnrealizedPnl = latestPositionResponse?.summary.unrealizedPnl ?? 0;
   const usedMargin = openItems.reduce((sum, position) => {
     const leverage = Math.max(1, position.leverage || 1);
     return sum + position.entryNotional / leverage;
@@ -499,12 +503,9 @@ export const getBotRuntimeMonitoringAggregate = async (
         : null;
   const positionsSummary = {
     realizedPnl: positionResponses.reduce((acc, response) => acc + response.summary.realizedPnl, 0),
-    unrealizedPnl: positionResponses.reduce((acc, response) => acc + response.summary.unrealizedPnl, 0),
+    unrealizedPnl: latestUnrealizedPnl,
     feesPaid: positionResponses.reduce((acc, response) => acc + response.summary.feesPaid, 0),
-    openPositionQty: positionResponses.reduce(
-      (acc, response) => acc + (response.summary.openPositionQty ?? 0),
-      0
-    ),
+    openPositionQty: latestOpenPositionQty,
     referenceBalance,
     freeCash,
     accountBalance: readFiniteNumber(latestCapitalSummary?.accountBalance),
@@ -534,7 +535,7 @@ export const getBotRuntimeMonitoringAggregate = async (
       )
   );
   const totalPositions = positionResponses.reduce((acc, response) => acc + response.total, 0);
-  const totalOpenPositions = positionResponses.reduce((acc, response) => acc + response.openCount, 0);
+  const totalOpenPositions = latestOpenPositionCount;
   const totalClosedPositions = positionResponses.reduce((acc, response) => acc + response.closedCount, 0);
   const totalOpenOrders = Math.max(0, ...positionResponses.map((response) => response.openOrdersCount));
   const totalTrades = completePayloadRows.reduce((acc, row) => acc + row.trades.total, 0);

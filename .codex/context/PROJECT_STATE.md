@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 aggregate open-position overlap slice `RUNTIME-AUDIT-54` is
+  closed locally. Runtime monitoring aggregate now treats current open-position
+  count, open quantity, and unrealized PnL as freshest session current-state
+  truth instead of summing overlapping session read models, so one open
+  position does not appear as two positions or doubled unrealized PnL when two
+  running sessions overlap. Validation PASS: overlapping-session aggregate e2e
+  (`14/14`), runtime-scope e2e (`13/13`), API typecheck, repository guardrails,
+  lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-54-aggregate-open-position-overlap-task-2026-05-03.md`.
 - 2026-05-03 portfolio close-point history limit slice `RUNTIME-AUDIT-53`
   is closed locally. Bot portfolio history now composes chart close points from
   full scoped closed-position DB truth instead of capped monitoring aggregate
