@@ -3,6 +3,17 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 manual LIVE reverse-open imported-ownership slice
+  `RUNTIME-AUDIT-12` is closed locally. Manual selected-bot `LIVE` opens now
+  check deterministically owned exchange-synced `EXCHANGE_SYNC` /
+  `BOT_MANAGED` imported open positions before exchange submission, including
+  legacy imported rows persisted as `botId=null/walletId=null` after ownership
+  proof succeeds. Opposite-side owned imports now fail closed with
+  `OPEN_POSITION_SIDE_CONFLICT`; unowned, ambiguous, manual-only, or
+  other-wallet imports remain non-blocking. Validation PASS: focused orders
+  pack (`27/27`), broader orders/pre-trade/final-candle/defaults pack
+  (`69/69`), typecheck, guardrails, lint, and diff check. Evidence:
+  `docs/planning/runtime-audit-12-live-manual-reverse-owned-import-task-2026-05-03.md`.
 - 2026-05-03 final-candle external-position guard slice `RUNTIME-AUDIT-11`
   is closed locally. `EXTERNAL_POSITION_ALREADY_OPEN` runtime blocking now
   keys managed external positions by deterministic owner bot

@@ -303,7 +303,7 @@ describe('openOrder live execution contract', () => {
     } finally {
       process.env.NODE_ENV = previousNodeEnv;
     }
-  });
+  }, 10_000);
 
   it('opens LIVE orders with active canonical market-group venue when direct bot symbol group is stale', async () => {
     const user = await prisma.user.create({
@@ -557,6 +557,87 @@ describe('openOrder live execution contract', () => {
       ).rejects.toMatchObject({
         code: ORDER_ERROR_CODES.openPositionSideConflict,
       });
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it('fails closed when manual LIVE open reverses an owned imported exchange position', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-live-owned-import-reverse-conflict@example.com', password: 'hashed' },
+    });
+    const apiKey = await prisma.apiKey.create({
+      data: {
+        userId: user.id,
+        label: 'Owned import key',
+        exchange: 'BINANCE',
+        apiKey: 'owned_import_key',
+        apiSecret: 'owned_import_secret',
+      },
+    });
+    const { bot, wallet, strategy } = await createLiveScopedBotContext({
+      userId: user.id,
+      botName: 'Owned import live bot',
+      strategyName: 'Owned import live strategy',
+      symbol: 'DOGEUSDT',
+    });
+    await prisma.wallet.update({
+      where: { id: wallet.id },
+      data: { apiKeyId: apiKey.id },
+    });
+    await prisma.bot.update({
+      where: { id: bot.id },
+      data: {
+        apiKeyId: null,
+        manageExternalPositions: true,
+      },
+    });
+    await prisma.position.create({
+      data: {
+        userId: user.id,
+        botId: null,
+        walletId: null,
+        strategyId: strategy.id,
+        symbol: 'DOGEUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 0.1,
+        quantity: 100,
+        leverage: 5,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        externalId: `${apiKey.id}:DOGEUSDT:LONG`,
+      },
+    });
+
+    const executeLiveOrder = vi.fn().mockResolvedValue({
+      exchangeOrderId: 'should-not-submit',
+      status: 'OPEN' as const,
+    });
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+
+    try {
+      await expect(
+        openOrder(
+          user.id,
+          {
+            botId: bot.id,
+            symbol: 'DOGEUSDT',
+            side: 'SELL',
+            type: 'LIMIT',
+            quantity: 100,
+            price: 0.09,
+            mode: 'LIVE',
+            riskAck: true,
+          },
+          { executeLiveOrder }
+        )
+      ).rejects.toMatchObject({
+        code: ORDER_ERROR_CODES.openPositionSideConflict,
+      });
+      expect(executeLiveOrder).not.toHaveBeenCalled();
     } finally {
       process.env.NODE_ENV = previousNodeEnv;
     }

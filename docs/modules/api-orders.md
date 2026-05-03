@@ -207,3 +207,19 @@ pnpm --filter api test -- src/modules/orders/orders.service.test.ts src/modules/
   - margin-mode semantics.
 - Ambiguous canonical venue input is fail-closed and must not silently fall
   back to duplicated bot fields.
+
+## 17. Manual LIVE Reverse-Open Imported-Ownership Contract (`RUNTIME-AUDIT-12`)
+- Manual dashboard `LIVE` open commands with selected `botId` must check direct
+  scoped open positions and deterministically owned imported exchange
+  positions before submitting an exchange order.
+- Imported position conflict checks reuse the shared external-position
+  ownership proof:
+  - wallet-bound API key before legacy bot API key,
+  - API-key + symbol ownership,
+  - `OWNED` status for the same selected bot and wallet.
+- The guard may consider exchange-synced `BOT_MANAGED` rows persisted as
+  `botId=null` and `walletId=null` only after ownership proof succeeds.
+- Ambiguous, manual-only, unowned, or other-wallet imported rows must not block
+  the selected bot's manual open.
+- Opposite-side owned imported rows fail closed with the existing
+  `OPEN_POSITION_SIDE_CONFLICT` typed error before exchange submission.

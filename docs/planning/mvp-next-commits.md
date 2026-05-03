@@ -9,6 +9,18 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-12 fix(api-orders): fail closed manual LIVE reverse opens against owned imports`
+  - 2026-05-03: Closed the next LIVE manual command guard drift. Manual
+    selected-bot `LIVE` opens now check deterministically owned
+    exchange-synced `EXCHANGE_SYNC` / `BOT_MANAGED` imported open positions
+    before exchange submission, including legacy imported rows persisted as
+    `botId=null/walletId=null` after ownership proof succeeds. Opposite-side
+    owned imports now fail closed with `OPEN_POSITION_SIDE_CONFLICT`; unowned,
+    ambiguous, manual-only, or other-wallet imports remain non-blocking.
+    Validation PASS: focused orders pack (`27/27`), broader
+    orders/pre-trade/final-candle/defaults pack (`69/69`), typecheck,
+    guardrails, lint, and diff check. Evidence:
+    `docs/planning/runtime-audit-12-live-manual-reverse-owned-import-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-11 fix(api-runtime): scope final-candle external-position guard to owner bot`
   - 2026-05-03: Closed the next final-candle false-block drift.
     `EXTERNAL_POSITION_ALREADY_OPEN` runtime blocking now keys managed

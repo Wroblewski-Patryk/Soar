@@ -28,6 +28,10 @@ import {
 import {
   resolveUserAppManualCloseAttribution,
 } from '../positions/positionCloseAttribution';
+import {
+  getExternalPositionOwnership,
+  resolveExternalPositionOwnershipIndex,
+} from '../bots/runtimeExternalPositionOwner.service';
 export { resolveLiveExecutionApiKey } from '../exchange/exchangeAdapterBoundary.service';
 
 type OpenOrderInput = OpenOrderDto & {
@@ -71,6 +75,7 @@ type CanonicalOrderBotContext = {
   mode: 'PAPER' | 'LIVE';
   positionMode: 'ONE_WAY' | 'HEDGE';
   apiKeyId: string | null;
+  walletApiKeyId: string | null;
   walletId: string | null;
   strategyId: string | null;
   liveOptIn: boolean;
@@ -139,6 +144,7 @@ const resolveCanonicalBotContext = async (userId: string, payload: OpenOrderInpu
           marketType: true,
           baseCurrency: true,
           paperInitialBalance: true,
+          apiKeyId: true,
         },
       },
       symbolGroup: {
@@ -193,6 +199,7 @@ const resolveCanonicalBotContext = async (userId: string, payload: OpenOrderInpu
     mode: bot.mode,
     positionMode: bot.positionMode,
     apiKeyId: bot.apiKeyId,
+    walletApiKeyId: bot.wallet?.apiKeyId ?? null,
     walletId: bot.walletId,
     strategyId: bot.strategyId ?? null,
     liveOptIn: bot.liveOptIn,
@@ -367,11 +374,61 @@ const resolvePaperImmediateFillPrice = async (params: {
 const resolveRequestedPositionSide = (side: OpenOrderInput['side']): PositionSide =>
   side === 'BUY' ? 'LONG' : 'SHORT';
 
+const findOwnedLiveImportedOpenPositionForOrderConflict = async (params: {
+  userId: string;
+  payload: OpenOrderInput;
+  botContext: CanonicalOrderBotContext | null;
+}) => {
+  if (params.payload.mode !== 'LIVE') return null;
+  if (!params.payload.botId || !params.payload.walletId || !params.botContext) return null;
+  if (params.botContext.id !== params.payload.botId) return null;
+
+  const effectiveApiKeyId = params.botContext.walletApiKeyId ?? params.botContext.apiKeyId;
+  if (!effectiveApiKeyId) return null;
+
+  const ownershipIndex = await resolveExternalPositionOwnershipIndex(params.userId, 'LIVE');
+  const ownership = getExternalPositionOwnership(ownershipIndex, {
+    apiKeyId: effectiveApiKeyId,
+    symbol: params.payload.symbol,
+  });
+  if (
+    ownership.status !== 'OWNED' ||
+    ownership.botId !== params.payload.botId ||
+    ownership.walletId !== params.payload.walletId
+  ) {
+    return null;
+  }
+
+  return prisma.position.findFirst({
+    where: {
+      userId: params.userId,
+      botId: null,
+      symbol: params.payload.symbol.toUpperCase(),
+      status: 'OPEN',
+      origin: 'EXCHANGE_SYNC',
+      managementMode: 'BOT_MANAGED',
+      externalId: {
+        startsWith: `${effectiveApiKeyId}:`,
+      },
+      OR: [{ walletId: params.payload.walletId }, { walletId: null }],
+    },
+    select: {
+      id: true,
+      side: true,
+    },
+    orderBy: {
+      openedAt: 'desc',
+    },
+  });
+};
+
 const assertNoImplicitReverseOpenConflict = async (params: {
   userId: string;
   payload: OpenOrderInput;
+  botContext: CanonicalOrderBotContext | null;
 }) => {
   if (params.payload.positionId) return;
+  const requestedSide = resolveRequestedPositionSide(params.payload.side);
 
   const existingOpenPosition = await prisma.position.findFirst({
     where: resolveOpenPositionScopeWhere({
@@ -389,10 +446,14 @@ const assertNoImplicitReverseOpenConflict = async (params: {
     },
   });
 
-  if (!existingOpenPosition) return;
-  if (existingOpenPosition.side === resolveRequestedPositionSide(params.payload.side)) return;
+  if (existingOpenPosition && existingOpenPosition.side !== requestedSide) {
+    throw orderErrors.openPositionSideConflict();
+  }
 
-  throw orderErrors.openPositionSideConflict();
+  const ownedImportedPosition = await findOwnedLiveImportedOpenPositionForOrderConflict(params);
+  if (ownedImportedPosition && ownedImportedPosition.side !== requestedSide) {
+    throw orderErrors.openPositionSideConflict();
+  }
 };
 
 const writeOrderAudit = async (params: {
@@ -430,6 +491,7 @@ export const openOrder = async (
   await assertNoImplicitReverseOpenConflict({
     userId,
     payload: canonicalPayload,
+    botContext,
   });
   const liveBot = ensureLiveOrderAllowed(canonicalPayload, botContext);
 
