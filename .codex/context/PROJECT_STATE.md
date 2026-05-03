@@ -3,6 +3,16 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 runtime open-order count limit slice `RUNTIME-AUDIT-48` is
+  closed locally. Runtime session positions now return a full deduped
+  `openOrdersCount` separately from limited visible `openOrders`, so dashboard
+  open-order counts remain truthful when `limit` hides older scoped orders.
+  Duplicate local/exchange open orders still dedupe through the existing
+  preference rules. Validation PASS: failing-then-passing `limit=1`
+  open-order count regression, runtime-scope e2e (`12/12`), monitoring
+  aggregate e2e (`11/11`), API typecheck, repository guardrails, lint, and
+  diff review. Evidence:
+  `docs/planning/runtime-audit-48-open-orders-count-limit-task-2026-05-03.md`.
 - 2026-05-03 aggregate position-fee limit slice `RUNTIME-AUDIT-47` is
   closed locally. Runtime monitoring aggregate `positions.summary.feesPaid`
   now composes per-session positions summaries instead of limited visible

@@ -141,8 +141,9 @@ const dedupeRuntimeOpenOrders = (orders: RuntimeOpenOrderRow[]) => {
   });
 };
 
-const selectVisibleRuntimeOpenOrders = (orders: RuntimeOpenOrderRow[], limit: number) =>
-  dedupeRuntimeOpenOrders(orders).slice(0, limit);
+const selectRuntimeOpenOrders = (orders: RuntimeOpenOrderRow[], limit: number) => {
+  const items = dedupeRuntimeOpenOrders(orders); return { count: items.length, items: items.slice(0, limit) };
+};
 
 const resolveRuntimePositionDcaCount = (input: {
   entryLegsCount: number;
@@ -524,14 +525,14 @@ export const listBotRuntimeSessionPositions = async (
       },
       limit: RUNTIME_OPEN_ORDER_DEDUPE_CANDIDATE_LIMIT,
     });
-    const visibleOpenOrders = selectVisibleRuntimeOpenOrders(openOrders, query.limit);
+    const visibleOpenOrders = selectRuntimeOpenOrders(openOrders, query.limit);
 
     return {
       sessionId,
       total: openPositionCount + closedPositionCount,
       openCount: openPositionCount,
       closedCount: closedPositionCount,
-      openOrdersCount: visibleOpenOrders.length,
+      openOrdersCount: visibleOpenOrders.count,
       showDynamicStopColumns: showDynamicStopColumnsFromStrategyMode,
       window: {
         startedAt: session.startedAt,
@@ -544,7 +545,7 @@ export const listBotRuntimeSessionPositions = async (
         openPositionQty: totalOpenPositionQty,
         ...(await resolveRuntimeCapitalSummary(0)),
       },
-      openOrders: visibleOpenOrders,
+      openOrders: visibleOpenOrders.items,
       openItems: [],
       historyItems: [],
     };
@@ -664,7 +665,7 @@ export const listBotRuntimeSessionPositions = async (
         })
       : Promise.resolve([]),
   ]);
-  const visibleOpenOrders = selectVisibleRuntimeOpenOrders(openOrders, query.limit);
+  const visibleOpenOrders = selectRuntimeOpenOrders(openOrders, query.limit);
 
   const dcaPlanByStrategyId = new Map<string, number[]>();
   const trailingStopLevelsByStrategyId = new Map<string, TrailingStopDisplayLevel[]>();
@@ -978,7 +979,7 @@ export const listBotRuntimeSessionPositions = async (
     total: openPositionCount + closedPositionCount,
     openCount: openPositionCount,
     closedCount: closedPositionCount,
-    openOrdersCount: visibleOpenOrders.length,
+    openOrdersCount: visibleOpenOrders.count,
     showDynamicStopColumns,
     window: {
       startedAt: session.startedAt,
@@ -991,7 +992,7 @@ export const listBotRuntimeSessionPositions = async (
       openPositionQty: totalOpenPositionQty,
       ...capitalSummary,
     },
-    openOrders: visibleOpenOrders,
+    openOrders: visibleOpenOrders.items,
     openItems,
     historyItems,
   };

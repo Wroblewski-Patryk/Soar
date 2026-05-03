@@ -20,6 +20,18 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-48 fix(api-bots): preserve runtime open-order counts under row limits`
+  - Scope: closed an ARCHITECT-mode dashboard management-state drift. Runtime
+    session positions now return a full deduped `openOrdersCount` separately
+    from limited visible `openOrders`, so dashboard open-order counts remain
+    truthful when `limit` hides older scoped orders. Duplicate local/exchange
+    open orders still dedupe through the existing preference rules.
+    Validation PASS: failing-then-passing `limit=1` open-order count
+    regression, runtime-scope e2e (`12/12`), monitoring aggregate e2e
+    (`11/11`), API typecheck, repository guardrails, lint, and diff review.
+    Evidence:
+    `docs/planning/runtime-audit-48-open-orders-count-limit-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-47 fix(api-bots): preserve aggregate position fees under row limits`
   - Scope: closed a TESTER-mode dashboard accounting summary drift. Runtime
     monitoring aggregate `positions.summary.feesPaid` now composes

@@ -213,14 +213,13 @@ describe('Bots runtime scope remediation contract', () => {
 
     const positionsRes = await agent
       .get(`/dashboard/bots/${botId}/runtime-sessions/${session.id}/positions`)
-      .query({ limit: 2 });
+      .query({ limit: 1 });
     expect(positionsRes.status).toBe(200);
     expect(positionsRes.body.total).toBe(0);
     expect(positionsRes.body.openOrdersCount).toBe(2);
-    expect(positionsRes.body.openOrders).toHaveLength(2);
+    expect(positionsRes.body.openOrders).toHaveLength(1);
     expect(positionsRes.body.openOrders.map((order: { exchangeOrderId: string }) => order.exchangeOrderId)).toEqual([
       'shared-open-order',
-      'distinct-open-order',
     ]);
     expect(
       positionsRes.body.openOrders.find(
