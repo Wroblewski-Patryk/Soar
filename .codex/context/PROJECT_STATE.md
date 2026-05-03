@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 runtime symbol live-row active-sync slice `RUNTIME-AUDIT-83`
+  is closed locally. Runtime symbol live-row reads now require
+  `syncState=IN_SYNC`, so scoped `ORPHAN_LOCAL` open-position rows no longer
+  inflate symbol-stats open count, quantity, unrealized PnL, or derived market
+  state while active synced rows remain included. Validation PASS:
+  runtime-scope e2e (`15/15`), API typecheck, repository guardrails, lint, and
+  diff review. Evidence:
+  `docs/planning/runtime-audit-83-symbol-live-rows-sync-state-task-2026-05-04.md`.
 - 2026-05-04 wallet open-PnL active-sync slice `RUNTIME-AUDIT-82` is closed
   locally. Wallet current open-PnL aggregation now requires
   `syncState=IN_SYNC` in the shared helper used by performance summary and

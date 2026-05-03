@@ -170,6 +170,13 @@ Rule: fix/cleanup/update first, then feature delivery.
   wallet dashboard PnL while active imported `IN_SYNC` rows remain included.
   Validation PASS: wallets e2e (`20/20`), API typecheck, repository
   guardrails, lint, and diff review.
+- 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-83` with
+  `docs/planning/runtime-audit-83-symbol-live-rows-sync-state-task-2026-05-04.md`.
+  Runtime symbol live-row reads now require `syncState=IN_SYNC`, so scoped
+  `ORPHAN_LOCAL` open-position rows no longer inflate symbol-stats open count,
+  quantity, unrealized PnL, or derived market state while active synced rows
+  remain included. Validation PASS: runtime-scope e2e (`15/15`), API
+  typecheck, repository guardrails, lint, and diff review.
 - 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-15` with
   `docs/planning/runtime-audit-15-close-fee-position-scope-task-2026-05-03.md`.
   Runtime close realized-PnL now aggregates entry fees by owned position

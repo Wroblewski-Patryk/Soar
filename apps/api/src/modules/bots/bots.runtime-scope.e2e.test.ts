@@ -423,6 +423,10 @@ describe('Bots runtime scope remediation contract', () => {
 
     const strategyId = await createStrategy(agent, 'Runtime Symbol Stats Open Summary Limit');
     const marketGroupId = await createMarketGroup(email, 'FUTURES');
+    await prisma.symbolGroup.update({
+      where: { id: marketGroupId },
+      data: { symbols: ['BTCUSDT', 'ETHUSDT', 'DOGEUSDT'] },
+    });
     const botRes = await agent.post('/dashboard/bots').send(createPayload({ strategyId, marketGroupId }));
     expect(botRes.status).toBe(201);
     const botId = botRes.body.id as string;
@@ -457,7 +461,7 @@ describe('Bots runtime scope remediation contract', () => {
           userId: ownerUser.id,
           botId,
           strategyId,
-          symbol: 'ETHUSDT',
+          symbol: 'DOGEUSDT',
           side: 'LONG',
           status: 'OPEN',
           entryPrice: 3_000,
@@ -465,6 +469,22 @@ describe('Bots runtime scope remediation contract', () => {
           leverage: 1,
           unrealizedPnl: 7,
           openedAt: new Date('2026-04-12T01:06:00.000Z'),
+          managementMode: 'BOT_MANAGED',
+        },
+        {
+          userId: ownerUser.id,
+          botId,
+          strategyId,
+          symbol: 'ETHUSDT',
+          side: 'LONG',
+          status: 'OPEN',
+          syncState: 'ORPHAN_LOCAL',
+          continuityState: 'REPAIR_ONLY_CLEANUP',
+          entryPrice: 3_100,
+          quantity: 0.3,
+          leverage: 1,
+          unrealizedPnl: 99,
+          openedAt: new Date('2026-04-12T01:07:00.000Z'),
           managementMode: 'BOT_MANAGED',
         },
       ],

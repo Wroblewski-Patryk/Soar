@@ -9,6 +9,14 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-83 fix(api-bots): align symbol live rows with sync state`
+  - 2026-05-04: Closed a BUILDER-mode runtime symbol KPI drift. Runtime symbol
+    live-row reads now require `syncState=IN_SYNC`, so scoped `ORPHAN_LOCAL`
+    open-position rows no longer inflate symbol-stats open count, quantity,
+    unrealized PnL, or derived market state while active synced rows remain
+    included. Validation PASS: runtime-scope e2e (`15/15`), API typecheck,
+    repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-83-symbol-live-rows-sync-state-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-82 fix(api-wallets): align open PnL with sync state`
   - 2026-05-04: Closed a BUILDER-mode wallet KPI/timeline parity drift. Wallet
     current open-PnL aggregation now requires `syncState=IN_SYNC` in the shared

@@ -171,6 +171,7 @@ export const getRuntimeSymbolLiveRows = async (params: {
         userId: params.userId,
         botId: params.botId,
         status: 'OPEN',
+        syncState: 'IN_SYNC',
         managementMode: 'BOT_MANAGED',
         symbol: { in: params.symbols },
         openedAt: {
