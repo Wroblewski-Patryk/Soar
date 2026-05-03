@@ -3,6 +3,16 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 planned dynamic-stop API visibility slice `RUNTIME-AUDIT-62`
+  is closed locally. Runtime session positions now expose
+  `showDynamicStopColumns=true` when an open row has planned trailing
+  take-profit or trailing stop levels before the dynamic stop is armed, keeping
+  the API contract aligned with dashboard row truth and avoiding hidden pre-arm
+  TTP/TSL management columns. Focused operator-truth tests were also adjusted
+  to use symbols inside the assigned bot market group, matching production
+  scoping rules. Validation PASS: dynamic-stop operator truth e2e (`3/3`), API
+  typecheck, repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-62-planned-dynamic-stop-columns-task-2026-05-03.md`.
 - 2026-05-03 dashboard dynamic-stop plan visibility slice
   `RUNTIME-AUDIT-61` is closed locally. Dashboard home and Bots monitoring now
   share `hasRuntimeDynamicStopRowTruth`, so TTP/TSL columns stay visible when

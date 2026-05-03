@@ -48,7 +48,7 @@ describe('Bots dynamic stop operator truth contract', () => {
         userId: ownerUser.id,
         botId,
         strategyId: dynamicStopStrategyId,
-        symbol: 'DOGEUSDT',
+        symbol: 'ETHUSDT',
         side: 'LONG',
         status: 'OPEN',
         managementMode: 'BOT_MANAGED',
@@ -65,7 +65,7 @@ describe('Bots dynamic stop operator truth contract', () => {
         botId,
         positionId: position.id,
         strategyId: dynamicStopStrategyId,
-        symbol: 'DOGEUSDT',
+        symbol: 'ETHUSDT',
         side: 'BUY',
         lifecycleAction: 'OPEN',
         price: 100,
@@ -81,7 +81,7 @@ describe('Bots dynamic stop operator truth contract', () => {
         userId: ownerUser.id,
         botId,
         sessionId: session.id,
-        symbol: 'DOGEUSDT',
+        symbol: 'ETHUSDT',
         lastPrice: 102,
         snapshotAt: new Date('2026-04-02T12:04:30.000Z'),
       },
@@ -93,18 +93,116 @@ describe('Bots dynamic stop operator truth contract', () => {
     expect(positionsRes.status).toBe(200);
     expect(positionsRes.body.showDynamicStopColumns).toBe(true);
 
-    const doge = (
+    const eth = (
       positionsRes.body.openItems as Array<{
         symbol: string;
         dynamicTtpStopLoss: number | null;
         dynamicTslStopLoss: number | null;
       }>
-    ).find((item) => item.symbol === 'DOGEUSDT');
+    ).find((item) => item.symbol === 'ETHUSDT');
 
-    expect(doge).toBeDefined();
-    if (!doge) throw new Error('Expected DOGEUSDT operator-truth item');
-    expect(doge.dynamicTtpStopLoss).toBeCloseTo(101.5, 6);
-    expect(doge.dynamicTslStopLoss).toBeNull();
+    expect(eth).toBeDefined();
+    if (!eth) throw new Error('Expected ETHUSDT operator-truth item');
+    expect(eth.dynamicTtpStopLoss).toBeCloseTo(101.5, 6);
+    expect(eth.dynamicTslStopLoss).toBeNull();
+  });
+
+  it('keeps dynamic-stop columns visible for planned pre-arm trailing levels', async () => {
+    const ownerEmail = 'bot-runtime-dynamic-stop-pre-arm-planned-levels@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
+
+    const downgradedStrategyId = await createStrategy(owner, 'Runtime Basic Pre-Arm Strategy');
+    const dynamicStopStrategyId = await createStrategy(
+      owner,
+      'Runtime Dynamic Stop Pre-Arm Legacy Strategy',
+      DYNAMIC_STOP_STRATEGY_CONFIG
+    );
+
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    const createRes = await owner
+      .post('/dashboard/bots')
+      .send(createPayload({ strategyId: downgradedStrategyId, marketGroupId }));
+    expect(createRes.status).toBe(201);
+    const botId = createRes.body.id as string;
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-02T12:10:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-02T12:15:00.000Z'),
+      },
+    });
+
+    const position = await prisma.position.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        strategyId: dynamicStopStrategyId,
+        symbol: 'ETHUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        managementMode: 'BOT_MANAGED',
+        entryPrice: 100,
+        quantity: 1,
+        leverage: 2,
+        openedAt: new Date('2026-04-02T12:11:00.000Z'),
+      },
+    });
+
+    await prisma.trade.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        positionId: position.id,
+        strategyId: dynamicStopStrategyId,
+        symbol: 'ETHUSDT',
+        side: 'BUY',
+        lifecycleAction: 'OPEN',
+        price: 100,
+        quantity: 1,
+        fee: 0,
+        realizedPnl: 0,
+        executedAt: new Date('2026-04-02T12:11:05.000Z'),
+      },
+    });
+
+    await prisma.botRuntimeSymbolStat.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        sessionId: session.id,
+        symbol: 'ETHUSDT',
+        lastPrice: 100.1,
+        snapshotAt: new Date('2026-04-02T12:14:30.000Z'),
+      },
+    });
+
+    const positionsRes = await owner.get(
+      `/dashboard/bots/${botId}/runtime-sessions/${session.id}/positions`
+    );
+    expect(positionsRes.status).toBe(200);
+    expect(positionsRes.body.showDynamicStopColumns).toBe(true);
+
+    const eth = (
+      positionsRes.body.openItems as Array<{
+        symbol: string;
+        trailingTakeProfitLevels: Array<{ armPercent: number; trailPercent: number }>;
+        trailingStopLevels: Array<{ armPercent: number; trailPercent: number }>;
+        dynamicTtpStopLoss: number | null;
+        dynamicTslStopLoss: number | null;
+      }>
+    ).find((item) => item.symbol === 'ETHUSDT');
+
+    expect(eth).toBeDefined();
+    if (!eth) throw new Error('Expected ETHUSDT pre-arm planned-level item');
+    expect(eth.trailingTakeProfitLevels).toEqual([{ armPercent: 0.04, trailPercent: 0.01 }]);
+    expect(eth.trailingStopLevels).toEqual([]);
+    expect(eth.dynamicTtpStopLoss).toBeNull();
+    expect(eth.dynamicTslStopLoss).toBeNull();
   });
 
   it('keeps imported LIVE TTP visible from canonical position truth when stale runtime state drifts below the arm threshold', async () => {
@@ -142,7 +240,7 @@ describe('Bots dynamic stop operator truth contract', () => {
         botId,
         strategyId: null,
         walletId: createRes.body.walletId as string,
-        symbol: 'XRPUSDT',
+        symbol: 'ETHUSDT',
         side: 'LONG',
         status: 'OPEN',
         origin: 'EXCHANGE_SYNC',
@@ -163,7 +261,7 @@ describe('Bots dynamic stop operator truth contract', () => {
         walletId: createRes.body.walletId as string,
         positionId: position.id,
         strategyId: dynamicStopStrategyId,
-        symbol: 'XRPUSDT',
+        symbol: 'ETHUSDT',
         side: 'BUY',
         lifecycleAction: 'OPEN',
         price: 100,
@@ -179,7 +277,7 @@ describe('Bots dynamic stop operator truth contract', () => {
         userId: ownerUser.id,
         botId,
         sessionId: session.id,
-        symbol: 'XRPUSDT',
+        symbol: 'ETHUSDT',
         lastPrice: 103,
         snapshotAt: new Date('2026-04-30T16:01:00.000Z'),
       },
@@ -199,18 +297,18 @@ describe('Bots dynamic stop operator truth contract', () => {
     );
     expect(positionsRes.status).toBe(200);
 
-    const xrp = (
+    const eth = (
       positionsRes.body.openItems as Array<{
         symbol: string;
         dynamicTtpStopLoss: number | null;
         actionable: boolean;
       }>
-    ).find((item) => item.symbol === 'XRPUSDT');
+    ).find((item) => item.symbol === 'ETHUSDT');
 
-    expect(xrp).toBeDefined();
-    if (!xrp) throw new Error('Expected XRPUSDT operator-truth item');
-    expect(xrp.actionable).toBe(true);
-    expect(xrp.dynamicTtpStopLoss).toBeCloseTo(102.5, 6);
+    expect(eth).toBeDefined();
+    if (!eth) throw new Error('Expected ETHUSDT operator-truth item');
+    expect(eth.actionable).toBe(true);
+    expect(eth.dynamicTtpStopLoss).toBeCloseTo(102.5, 6);
 
     await runtimePositionStateStore.deletePositionRuntimeState(position.id);
   });

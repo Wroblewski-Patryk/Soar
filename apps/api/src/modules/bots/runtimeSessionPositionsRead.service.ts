@@ -963,10 +963,10 @@ export const listBotRuntimeSessionPositions = async (
     .sort((left, right) => (right.closedAt?.getTime() ?? 0) - (left.closedAt?.getTime() ?? 0));
   const showDynamicStopColumns =
     showDynamicStopColumnsFromStrategyMode ||
-    openItems.some(
-      (position) =>
-        position.dynamicTtpStopLoss != null || position.dynamicTslStopLoss != null
-    );
+    openItems.some((position) => {
+      return position.dynamicTtpStopLoss != null || position.dynamicTslStopLoss != null ||
+        position.trailingTakeProfitLevels.length > 0 || position.trailingStopLevels.length > 0;
+    });
   const visibleOpenItemsMargin = openItems.reduce((sum, position) => {
     return sum + Math.max(0, position.marginUsed ?? 0);
   }, 0);

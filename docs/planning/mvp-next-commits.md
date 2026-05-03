@@ -9,6 +9,17 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-62 fix(api-bots): show planned dynamic-stop columns`
+  - 2026-05-03: Closed a TESTER-mode API display-contract drift. Runtime
+    session positions now return `showDynamicStopColumns=true` when an open row
+    has planned trailing take-profit or trailing stop levels before a dynamic
+    stop is armed, so dashboard visibility matches canonical row truth instead
+    of waiting for `dynamicTtpStopLoss` / `dynamicTslStopLoss` to become
+    non-null. Focused operator-truth tests were also aligned to symbols inside
+    the bot's assigned market group. Validation PASS: dynamic-stop operator
+    truth e2e (`3/3`), API typecheck, repository guardrails, lint, and diff
+    review. Evidence:
+    `docs/planning/runtime-audit-62-planned-dynamic-stop-columns-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-61 fix(web-runtime): align dashboard dynamic-stop plan visibility`
   - 2026-05-03: Closed a BUILDER-mode dashboard/Bots surface drift. Dashboard
     home and Bots monitoring now share `hasRuntimeDynamicStopRowTruth`, so
