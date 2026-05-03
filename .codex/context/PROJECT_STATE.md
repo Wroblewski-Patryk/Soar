@@ -3,6 +3,14 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 wallet update market-scope slice `POSDRIFT-08` is closed locally.
+  Existing-bot wallet update validation now checks active canonical
+  `BotMarketGroup.symbolGroup.marketUniverse` scope before falling back to
+  direct legacy `Bot.symbolGroup`. A stale direct bot market projection can no
+  longer allow a wallet whose venue mismatches the bot's real assigned
+  canonical market group. Validation PASS: focused bot context validation test
+  (`2/2`). Evidence:
+  `docs/planning/posdrift-08-wallet-update-canonical-market-scope-task-2026-05-03.md`.
 - 2026-05-03 LIVE market-overlap guard slice `POSDRIFT-07` is closed locally.
   Active LIVE bot create/update validation now checks candidate bots through
   active canonical `BotMarketGroup.symbolGroup` symbols before falling back to

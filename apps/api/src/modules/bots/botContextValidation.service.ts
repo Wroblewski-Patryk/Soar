@@ -53,30 +53,69 @@ export const assertWalletContextMatchesExistingBotMarketGroups = async (params: 
           },
         },
       },
+      botMarketGroups: {
+        where: {
+          isEnabled: true,
+          lifecycleStatus: 'ACTIVE',
+        },
+        orderBy: [{ executionOrder: 'asc' }, { createdAt: 'asc' }],
+        select: {
+          symbolGroupId: true,
+          symbolGroup: {
+            select: {
+              marketUniverse: {
+                select: {
+                  id: true,
+                  exchange: true,
+                  marketType: true,
+                  baseCurrency: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   });
 
-  const universe = bot?.symbolGroup?.marketUniverse;
-  if (!universe) {
+  const marketScopes =
+    bot?.botMarketGroups.length
+      ? bot.botMarketGroups
+          .map((group) => ({
+            symbolGroupId: group.symbolGroupId,
+            universe: group.symbolGroup.marketUniverse,
+          }))
+          .filter((scope) => scope.universe != null)
+      : bot?.symbolGroup?.marketUniverse
+        ? [
+            {
+              symbolGroupId: bot.symbolGroupId,
+              universe: bot.symbolGroup.marketUniverse,
+            },
+          ]
+        : [];
+  if (marketScopes.length === 0) {
     return;
   }
 
-  const mismatch = !isWalletContextCompatibleWithMarketUniverse({
-    wallet: params.wallet,
-    marketUniverse: {
-      exchange: universe.exchange,
-      marketType: universe.marketType,
-      baseCurrency: universe.baseCurrency,
-    },
-  });
+  for (const scope of marketScopes) {
+    const universe = scope.universe;
+    const mismatch = !isWalletContextCompatibleWithMarketUniverse({
+      wallet: params.wallet,
+      marketUniverse: {
+        exchange: universe.exchange,
+        marketType: universe.marketType,
+        baseCurrency: universe.baseCurrency,
+      },
+    });
 
-  if (mismatch) {
+    if (!mismatch) continue;
     throw botErrors.walletMarketContextMismatch({
       walletId: params.wallet.id,
       walletExchange: params.wallet.exchange,
       walletMarketType: params.wallet.marketType,
       walletBaseCurrency: normalizeWalletContextValue(params.wallet.baseCurrency),
-      symbolGroupId: bot?.symbolGroupId ?? null,
+      symbolGroupId: scope.symbolGroupId ?? null,
       marketUniverseId: universe.id,
       marketUniverseExchange: universe.exchange,
       marketUniverseMarketType: universe.marketType,

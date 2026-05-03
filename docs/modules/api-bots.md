@@ -219,6 +219,10 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
   group against other active LIVE bots through active canonical
   `BotMarketGroup.symbolGroup` scope first. Direct legacy `Bot.symbolGroup`
   is fallback only for bots without canonical groups.
+- Existing-bot wallet update validation must compare the target wallet against
+  active canonical `BotMarketGroup.symbolGroup.marketUniverse` scope first.
+  Direct legacy `Bot.symbolGroup` is fallback only for bots without canonical
+  groups.
 
 ## 18. Runtime Position Execution Venue Contract (`POSDRIFT-05`)
 - Runtime signal-loop topology, runtime position reads, and position automation

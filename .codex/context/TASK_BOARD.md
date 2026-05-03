@@ -20,6 +20,16 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `POSDRIFT-08 fix(api-bots): keep wallet update validation canonical-market scoped`
+  - Scope: closed the next confirmed wallet/market write safety drift.
+    Existing-bot wallet update validation now checks target wallets against
+    active canonical `BotMarketGroup.symbolGroup.marketUniverse` scope before
+    falling back to direct legacy `Bot.symbolGroup`. Stale direct projections
+    can no longer allow a wallet venue mismatch against the bot's real assigned
+    market group. Validation PASS: focused bot context validation test (`2/2`).
+    Evidence:
+    `docs/planning/posdrift-08-wallet-update-canonical-market-scope-task-2026-05-03.md`.
+
 - [x] `POSDRIFT-07 fix(api-bots): keep active LIVE overlap guard canonical-market scoped`
   - Scope: closed the next confirmed LIVE market-assignment safety drift.
     Active LIVE bot create/update validation now checks other active LIVE bots
