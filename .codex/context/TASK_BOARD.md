@@ -20,6 +20,16 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `ORDDRIFT-01 fix(api-orders): block direct fallback when canonical manual scope exists`
+  - Scope: closed the next manual-order strategy-context drift. Manual-order
+    strategy context now evaluates active canonical groups first and blocks
+    direct/legacy strategy fallback whenever such groups exist but do not
+    resolve the requested symbol. Stale direct bot strategy projections can no
+    longer alter manual-order preview leverage, margin mode, or order type
+    after canonical market reassignment. Validation PASS: focused orders
+    service test (`26/26`) and broader orders/manual pack (`49/49`). Evidence:
+    `docs/planning/orddrift-01-manual-context-canonical-group-no-direct-fallback-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-02 fix(api-runtime): fail closed empty canonical strategy-link topology`
   - Scope: closed the next execution/display topology drift. Runtime
     signal-loop topology and symbol-stats configured context now use direct

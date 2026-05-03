@@ -1816,6 +1816,142 @@ describe('getManualOrderContext', () => {
     expect(context?.leverage).toBe(1);
   });
 
+  it('does not fall back to stale direct strategy for manual context when canonical groups exist', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-manual-context-no-direct-fallback@example.com', password: 'hashed' },
+    });
+    const canonicalStrategy = await prisma.strategy.create({
+      data: {
+        userId: user.id,
+        name: 'Canonical direct fallback guard strategy',
+        description: null,
+        interval: '5m',
+        leverage: 12,
+        walletRisk: 1,
+        config: {
+          additional: {
+            marginMode: 'ISOLATED',
+            orderType: 'LIMIT',
+          },
+        },
+      },
+    });
+    const staleDirectStrategy = await prisma.strategy.create({
+      data: {
+        userId: user.id,
+        name: 'Stale direct fallback guard strategy',
+        description: null,
+        interval: '15m',
+        leverage: 8,
+        walletRisk: 1,
+        config: {
+          additional: {
+            marginMode: 'ISOLATED',
+            orderType: 'STOP',
+          },
+        },
+      },
+    });
+    const canonicalUniverse = await prisma.marketUniverse.create({
+      data: {
+        userId: user.id,
+        name: 'Manual context direct fallback canonical universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: ['ETHUSDT'],
+        blacklist: [],
+      },
+    });
+    const staleUniverse = await prisma.marketUniverse.create({
+      data: {
+        userId: user.id,
+        name: 'Manual context direct fallback stale universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: ['SOLUSDT'],
+        blacklist: [],
+      },
+    });
+    const canonicalSymbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: user.id,
+        marketUniverseId: canonicalUniverse.id,
+        name: 'Manual context direct fallback canonical group',
+        symbols: ['ETHUSDT'],
+      },
+    });
+    const staleSymbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: user.id,
+        marketUniverseId: staleUniverse.id,
+        name: 'Manual context direct fallback stale group',
+        symbols: ['SOLUSDT'],
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'Manual context direct fallback guard bot',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        strategyId: staleDirectStrategy.id,
+        symbolGroupId: staleSymbolGroup.id,
+        isActive: true,
+      },
+    });
+    const botGroup = await prisma.botMarketGroup.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        symbolGroupId: canonicalSymbolGroup.id,
+        lifecycleStatus: 'ACTIVE',
+        executionOrder: 1,
+        maxOpenPositions: 2,
+        isEnabled: true,
+      },
+    });
+    await prisma.marketGroupStrategyLink.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        botMarketGroupId: botGroup.id,
+        strategyId: canonicalStrategy.id,
+        priority: 1,
+        weight: 1,
+        isEnabled: true,
+      },
+    });
+
+    const context = await getManualOrderContext(
+      user.id,
+      {
+        botId: bot.id,
+        symbol: 'SOLUSDT',
+        side: 'BUY',
+      },
+      {
+        createPublicConnector: () => ({
+          getSymbolTradingRules: async () => ({
+            minAmount: 0.001,
+            minNotional: 100,
+            amountPrecision: 0.001,
+          }),
+          fetchMarkPrice: async () => 100,
+          disconnect: async () => undefined,
+        }),
+      }
+    );
+
+    expect(context).not.toBeNull();
+    expect(context?.orderType).toBe('MARKET');
+    expect(context?.marginMode).toBe('CROSSED');
+    expect(context?.leverage).toBe(1);
+  });
+
   it('derives min executable quantity from minAmount/minNotional and precision', async () => {
     const user = await prisma.user.create({
       data: { email: 'orders-manual-context-minqty@example.com', password: 'hashed' },

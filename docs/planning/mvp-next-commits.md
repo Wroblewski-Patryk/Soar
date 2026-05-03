@@ -147,6 +147,15 @@ Operational queue for one-task execution runs.
     focused defaults/symbol-stats tests (`11/11`) and broader
     runtime/symbol-stats pack (`78/78`). Evidence:
     `docs/planning/runtime-audit-02-empty-canonical-strategy-links-task-2026-05-03.md`.
+- [x] `ORDDRIFT-01 fix(api-orders): block direct fallback when canonical manual scope exists`
+  - 2026-05-03: Closed the next manual-order strategy-context drift.
+    Manual-order strategy context now evaluates active canonical groups first
+    and blocks direct/legacy strategy fallback whenever such groups exist but
+    do not resolve the requested symbol. Stale direct bot strategy projections
+    can no longer alter manual-order preview leverage, margin mode, or order
+    type after canonical market reassignment. Validation PASS: focused orders
+    service test (`26/26`) and broader orders/manual pack (`49/49`). Evidence:
+    `docs/planning/orddrift-01-manual-context-canonical-group-no-direct-fallback-task-2026-05-03.md`.
 - [ ] `LIVEIMPORT-03 release(prod): promote imported-position provenance fix and read back ETH/DOGE`
   - Scope: promote commit `39146d2e` through the approved production workflow,
     verify API freshness directly, then use authenticated read-only dashboard

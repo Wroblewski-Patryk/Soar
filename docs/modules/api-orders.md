@@ -5,8 +5,8 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/orders`
 - Owner: backend/trading-domain
-- Last updated: 2026-04-21
-- Related planning task: `ARCCON-12`
+- Last updated: 2026-05-03
+- Related planning task: `ORDDRIFT-01`
 
 ## Canonical Architecture Linkage
 Canonical order and lifecycle rules live in:
@@ -175,8 +175,12 @@ pnpm --filter api test -- src/modules/orders/orders.service.test.ts src/modules/
 - Fallback policy:
   - explicit unresolved strategy context can still provide safe defaults for
     operator inputs (`MARKET`, `CROSSED`, `1x`).
+  - when active canonical market groups exist, direct legacy `Bot.strategyId`
+    and `Bot.symbolGroupId` cannot be used as fallback for symbols outside
+    canonical scope.
   - compatibility reads from legacy links are allowed only for exact
-    symbol-match resolution, never as non-symbol fallback.
+    symbol-match resolution when canonical market-group topology is absent,
+    never as non-symbol fallback.
 
 ## 15. Canonical Execution Venue Contract (`POSDRIFT-05`)
 - Manual order open uses the same canonical venue precedence as runtime

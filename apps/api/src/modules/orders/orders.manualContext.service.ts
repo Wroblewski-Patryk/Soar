@@ -160,6 +160,7 @@ export const resolveManualOrderStrategyContext = async (params: {
       }
       return null;
     }
+    if (groupLinks.length > 0) return null;
 
     if (
       botDirectContext.strategyId &&
