@@ -745,6 +745,50 @@ describe('Wallets balance preview contract', () => {
     expect(resetRes.body.error.message).toBe('paper reset is blocked while active open orders exist');
   });
 
+  it('allows paper reset when only orphaned stale open orders exist in wallet scope', async () => {
+    const email = 'wallet-reset-orphan-open-order-owner@example.com';
+    const agent = await registerAndLogin(email);
+    const userId = await resolveUserIdByEmail(email);
+
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId,
+        name: 'Paper wallet',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        paperInitialBalance: 10_000,
+      },
+    });
+
+    const staleOrder = await prisma.order.create({
+      data: {
+        userId,
+        walletId: wallet.id,
+        symbol: 'BTCUSDT',
+        side: 'BUY',
+        type: 'LIMIT',
+        status: 'OPEN',
+        syncState: 'ORPHAN_LOCAL',
+        quantity: 1,
+        price: 100,
+      },
+    });
+
+    const resetRes = await agent.post(`/dashboard/wallets/${wallet.id}/reset-paper`);
+
+    expect(resetRes.status).toBe(200);
+    expect(resetRes.body.id).toBe(wallet.id);
+    expect(typeof resetRes.body.paperResetAt).toBe('string');
+
+    const persistedOrder = await prisma.order.findUnique({
+      where: { id: staleOrder.id },
+      select: { status: true, syncState: true },
+    });
+    expect(persistedOrder).toEqual({ status: 'OPEN', syncState: 'ORPHAN_LOCAL' });
+  });
+
   it('sets paper reset checkpoint and keeps historical lifecycle rows', async () => {
     const email = 'wallet-reset-history-owner@example.com';
     const agent = await registerAndLogin(email);

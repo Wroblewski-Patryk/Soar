@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 paper wallet reset active-order blocker slice `RUNTIME-AUDIT-71`
+  is closed locally. Paper wallet reset now counts active open-order blockers
+  only when `syncState=IN_SYNC`, so stale `ORPHAN_LOCAL` open-order rows no
+  longer block reset after runtime/dashboard has stopped treating them as
+  active. Active `IN_SYNC` open orders still block reset. Validation PASS:
+  wallet e2e (`19/19`), API typecheck, repository guardrails, lint, and diff
+  review. Evidence:
+  `docs/planning/runtime-audit-71-wallet-reset-active-order-sync-state-task-2026-05-04.md`.
 - 2026-05-04 stale synced open-order visibility slice `RUNTIME-AUDIT-70` is
   closed locally. Runtime open-order reads now require `syncState=IN_SYNC`, so
   existing `ORPHAN_LOCAL` exchange-synced rows no longer inflate dashboard

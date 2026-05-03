@@ -20,6 +20,16 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-71 fix(api-wallets): align reset open-order blocker with sync state`
+  - Scope: closed a BUILDER-mode wallet/runtime lifecycle parity drift. Paper
+    wallet reset now counts active open-order blockers only when
+    `syncState=IN_SYNC`, so stale `ORPHAN_LOCAL` open-order rows no longer
+    block reset after runtime/dashboard has stopped treating them as active.
+    Active `IN_SYNC` open orders still block reset. Validation PASS: wallet e2e
+    (`19/19`), API typecheck, repository guardrails, lint, and diff review.
+    Evidence:
+    `docs/planning/runtime-audit-71-wallet-reset-active-order-sync-state-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-70 fix(api-runtime): hide stale synced open orders`
   - Scope: closed a TESTER-mode dashboard/reconciliation lifecycle drift.
     Runtime open-order reads now require `syncState=IN_SYNC`, so existing

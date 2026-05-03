@@ -395,6 +395,7 @@ export const resetPaperWallet = async (userId: string, id: string) => {
           userId,
           walletId: existing.id,
           status: { in: ACTIVE_OPEN_ORDER_STATUSES },
+          syncState: 'IN_SYNC',
         },
       }),
     ]);
