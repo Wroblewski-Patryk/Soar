@@ -9,6 +9,14 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-76 fix(api-positions): align active position lists with sync state`
+  - 2026-05-04: Closed a BUILDER-mode dashboard positions-list parity drift.
+    Generic dashboard positions list now requires `syncState=IN_SYNC` when
+    filtering `status=OPEN`, so stale `ORPHAN_LOCAL` open-position rows no
+    longer appear as active list truth while unfiltered history remains
+    available for audit. Validation PASS: positions list e2e (`2/2`), API
+    typecheck, repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-76-positions-list-active-sync-state-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-75 fix(api-runtime): require synced state for runtime close`
   - 2026-05-04: Closed a TESTER-mode runtime manual-close parity drift.
     Dashboard/runtime manual close-position command now requires

@@ -116,6 +116,13 @@ Rule: fix/cleanup/update first, then feature delivery.
   ignored as `no_open_position` before close orchestration. Validation PASS:
   runtime position command suite (`10/10`), API typecheck, repository
   guardrails, lint, and diff review.
+- 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-76` with
+  `docs/planning/runtime-audit-76-positions-list-active-sync-state-task-2026-05-04.md`.
+  Generic dashboard positions list now requires `syncState=IN_SYNC` when
+  filtering `status=OPEN`, so stale `ORPHAN_LOCAL` open-position rows no
+  longer appear as active list truth while unfiltered history remains available
+  for audit. Validation PASS: positions list e2e (`2/2`), API typecheck,
+  repository guardrails, lint, and diff review.
 - 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-15` with
   `docs/planning/runtime-audit-15-close-fee-position-scope-task-2026-05-03.md`.
   Runtime close realized-PnL now aggregates entry fees by owned position

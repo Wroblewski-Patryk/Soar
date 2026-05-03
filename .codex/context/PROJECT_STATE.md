@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 positions list active-sync-state slice `RUNTIME-AUDIT-76` is
+  closed locally. Generic dashboard positions list now requires
+  `syncState=IN_SYNC` when filtering `status=OPEN`, so stale `ORPHAN_LOCAL`
+  open-position rows no longer appear as active list truth while unfiltered
+  history remains available for audit. Validation PASS: positions list e2e
+  (`2/2`), API typecheck, repository guardrails, lint, and diff review.
+  Evidence:
+  `docs/planning/runtime-audit-76-positions-list-active-sync-state-task-2026-05-04.md`.
 - 2026-05-04 runtime manual close active-position slice `RUNTIME-AUDIT-75`
   is closed locally. Dashboard/runtime manual close-position command now
   requires `syncState=IN_SYNC` for the selected open position and for the

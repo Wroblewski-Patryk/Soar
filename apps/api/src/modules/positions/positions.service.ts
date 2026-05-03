@@ -301,9 +301,10 @@ const buildOpenOrdersSnapshotForApiKey = async (
 
 export const listPositions = async (userId: string, query: ListPositionsQuery) => {
   const skip = (query.page - 1) * query.limit;
-  const where = {
+  const where: Prisma.PositionWhereInput = {
     userId,
     ...(query.status ? { status: query.status } : {}),
+    ...(query.status === 'OPEN' ? { syncState: 'IN_SYNC' } : {}),
     ...(query.symbol ? { symbol: query.symbol } : {}),
   };
 

@@ -81,4 +81,58 @@ describe('Positions list contract', () => {
       }),
     ]);
   });
+
+  it('excludes stale local rows from active status lists while preserving history access', async () => {
+    const email = 'positions-list-active-sync-state@example.com';
+    const agent = await registerAndLogin(email);
+    const userId = await resolveUserIdByEmail(email);
+
+    const activeOpenPosition = await prisma.position.create({
+      data: {
+        userId,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        continuityState: 'CONFIRMED',
+        symbol: 'BTCUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 60_000,
+        quantity: 0.1,
+        leverage: 3,
+        openedAt: new Date('2026-05-04T10:00:00.000Z'),
+      },
+    });
+    const staleOpenPosition = await prisma.position.create({
+      data: {
+        userId,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'ORPHAN_LOCAL',
+        continuityState: 'REPAIR_ONLY_CLEANUP',
+        symbol: 'ETHUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 2500,
+        quantity: 0.2,
+        leverage: 2,
+        openedAt: new Date('2026-05-04T10:01:00.000Z'),
+      },
+    });
+
+    const activeRes = await agent.get('/dashboard/positions').query({ status: 'OPEN' });
+
+    expect(activeRes.status).toBe(200);
+    expect(activeRes.body.map((position: { id: string }) => position.id)).toEqual([
+      activeOpenPosition.id,
+    ]);
+
+    const historyRes = await agent.get('/dashboard/positions');
+
+    expect(historyRes.status).toBe(200);
+    expect(historyRes.body.map((position: { id: string }) => position.id)).toEqual([
+      staleOpenPosition.id,
+      activeOpenPosition.id,
+    ]);
+  });
 });
