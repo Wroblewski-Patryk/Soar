@@ -155,6 +155,13 @@ Rule: fix/cleanup/update first, then feature delivery.
   close, and exchange re-import behavior remain covered. Validation PASS:
   orphan-repair e2e (`1/1`), API typecheck, repository guardrails, lint, and
   diff review.
+- 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-81` with
+  `docs/planning/runtime-audit-81-wallet-reset-active-position-sync-state-task-2026-05-04.md`.
+  Paper wallet reset now counts open-position blockers only when
+  `syncState=IN_SYNC`, matching the existing open-order blocker and active
+  position-list/runtime semantics, so stale `ORPHAN_LOCAL` open-position rows
+  no longer deny reset. Validation PASS: wallets e2e (`20/20`), API typecheck,
+  repository guardrails, lint, and diff review.
 - 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-15` with
   `docs/planning/runtime-audit-15-close-fee-position-scope-task-2026-05-03.md`.
   Runtime close realized-PnL now aggregates entry fees by owned position

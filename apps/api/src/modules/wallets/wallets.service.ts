@@ -388,6 +388,7 @@ export const resetPaperWallet = async (userId: string, id: string) => {
           userId,
           walletId: existing.id,
           status: PositionStatus.OPEN,
+          syncState: 'IN_SYNC',
         },
       }),
       tx.order.count({

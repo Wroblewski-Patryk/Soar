@@ -20,6 +20,15 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-81 fix(api-wallets): align reset open-position blocker with sync state`
+  - Scope: closed an ARCHITECT-mode paper wallet reset parity drift. Paper
+    wallet reset now counts open-position blockers only when
+    `syncState=IN_SYNC`, matching the existing open-order blocker and active
+    position-list/runtime semantics, so stale `ORPHAN_LOCAL` open-position
+    rows no longer deny reset. Validation PASS: wallets e2e (`20/20`), API
+    typecheck, repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-81-wallet-reset-active-position-sync-state-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-80 fix(api-positions): ignore local orphans in legacy repair`
   - Scope: closed a TESTER-mode legacy open-position repair drift. Local
     legacy repair now excludes `syncState=ORPHAN_LOCAL` from candidate scans

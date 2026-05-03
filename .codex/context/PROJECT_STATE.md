@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 paper wallet reset open-position blocker slice
+  `RUNTIME-AUDIT-81` is closed locally. Paper wallet reset now counts
+  open-position blockers only when `syncState=IN_SYNC`, matching the existing
+  open-order blocker and active position-list/runtime semantics, so stale
+  `ORPHAN_LOCAL` open-position rows no longer deny reset. Validation PASS:
+  wallets e2e (`20/20`), API typecheck, repository guardrails, lint, and diff
+  review. Evidence:
+  `docs/planning/runtime-audit-81-wallet-reset-active-position-sync-state-task-2026-05-04.md`.
 - 2026-05-04 legacy local-orphan repair exclusion slice `RUNTIME-AUDIT-80`
   is closed locally. Local legacy open-position repair now excludes
   `syncState=ORPHAN_LOCAL` from candidate scans and from both guarded repair
