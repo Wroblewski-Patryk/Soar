@@ -20,6 +20,16 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `DASHDRIFT-04 fix(api-bots): keep symbol-level dynamic-stop plans canonical-context scoped`
+  - Scope: closed the next dashboard runtime row-data drift. Runtime TTP/TSL
+    plan maps by symbol now keep active canonical `BotMarketGroup` /
+    `MarketGroupStrategyLink` entries authoritative and let legacy
+    `BotStrategy` rows fill only symbols without canonical entries. Stale
+    legacy advanced-close rows can no longer overwrite canonical basic-close
+    symbol plans. Validation PASS: focused runtime strategy-context e2e
+    (`4/4`) and broader bot runtime/dynamic-stop pack (`40/40`). Evidence:
+    `docs/planning/dashdrift-04-symbol-dynamic-stop-plans-canonical-task-2026-05-03.md`.
+
 - [x] `DASHDRIFT-03 fix(api-bots): keep dynamic-stop column visibility canonical-context scoped`
   - Scope: closed the next dashboard runtime display drift. Runtime position
     payload `showDynamicStopColumns` now evaluates active canonical

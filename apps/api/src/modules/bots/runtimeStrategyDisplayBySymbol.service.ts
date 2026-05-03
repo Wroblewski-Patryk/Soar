@@ -229,10 +229,11 @@ export const resolveBotTrailingStopLevelsBySymbol = async (
     }),
   ]);
 
-  const assignLevelsToSymbols = (targetSymbols: string[], config: unknown) => {
+  const assignLevelsToSymbols = (targetSymbols: string[], config: unknown, allowExistingOverride: boolean) => {
     const levels = resolveTrailingStopLevelsFromStrategyConfig(config);
     for (const symbol of targetSymbols) {
       if (!normalizedSymbols.includes(symbol)) continue;
+      if (!allowExistingOverride && trailingLevelsBySymbol.has(symbol)) continue;
       const existing = trailingLevelsBySymbol.get(symbol) ?? [];
       if (levels.length > 0 || existing.length === 0) {
         trailingLevelsBySymbol.set(symbol, levels);
@@ -243,13 +244,13 @@ export const resolveBotTrailingStopLevelsBySymbol = async (
   for (const link of groupLinks) {
     const assignedSymbols = resolveEffectiveSymbolGroupSymbols(link.botMarketGroup.symbolGroup);
     const targetSymbols = assignedSymbols.length > 0 ? assignedSymbols : normalizedSymbols;
-    assignLevelsToSymbols(targetSymbols, link.strategy.config);
+    assignLevelsToSymbols(targetSymbols, link.strategy.config, true);
   }
 
   for (const link of legacyLinks) {
     const assignedSymbols = resolveEffectiveSymbolGroupSymbols(link.symbolGroup);
     const targetSymbols = assignedSymbols.length > 0 ? assignedSymbols : normalizedSymbols;
-    assignLevelsToSymbols(targetSymbols, link.strategy.config);
+    assignLevelsToSymbols(targetSymbols, link.strategy.config, false);
   }
 
   return trailingLevelsBySymbol;
@@ -329,10 +330,11 @@ export const resolveBotTrailingTakeProfitLevelsBySymbol = async (
     }),
   ]);
 
-  const assignLevelsToSymbols = (targetSymbols: string[], config: unknown) => {
+  const assignLevelsToSymbols = (targetSymbols: string[], config: unknown, allowExistingOverride: boolean) => {
     const levels = resolveTrailingTakeProfitLevelsFromStrategyConfig(config);
     for (const symbol of targetSymbols) {
       if (!normalizedSymbols.includes(symbol)) continue;
+      if (!allowExistingOverride && trailingLevelsBySymbol.has(symbol)) continue;
       const existing = trailingLevelsBySymbol.get(symbol) ?? [];
       if (levels.length > 0 || existing.length === 0) {
         trailingLevelsBySymbol.set(symbol, levels);
@@ -343,13 +345,13 @@ export const resolveBotTrailingTakeProfitLevelsBySymbol = async (
   for (const link of groupLinks) {
     const assignedSymbols = resolveEffectiveSymbolGroupSymbols(link.botMarketGroup.symbolGroup);
     const targetSymbols = assignedSymbols.length > 0 ? assignedSymbols : normalizedSymbols;
-    assignLevelsToSymbols(targetSymbols, link.strategy.config);
+    assignLevelsToSymbols(targetSymbols, link.strategy.config, true);
   }
 
   for (const link of legacyLinks) {
     const assignedSymbols = resolveEffectiveSymbolGroupSymbols(link.symbolGroup);
     const targetSymbols = assignedSymbols.length > 0 ? assignedSymbols : normalizedSymbols;
-    assignLevelsToSymbols(targetSymbols, link.strategy.config);
+    assignLevelsToSymbols(targetSymbols, link.strategy.config, false);
   }
 
   return trailingLevelsBySymbol;

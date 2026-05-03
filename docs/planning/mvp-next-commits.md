@@ -118,6 +118,15 @@ Operational queue for one-task execution runs.
     runtime strategy-context e2e (`3/3`) and broader bot runtime/dynamic-stop
     pack (`31/31`). Evidence:
     `docs/planning/dashdrift-03-dynamic-stop-columns-canonical-task-2026-05-03.md`.
+- [x] `DASHDRIFT-04 fix(api-bots): keep symbol-level dynamic-stop plans canonical-context scoped`
+  - 2026-05-03: Closed the next dashboard runtime row-data drift. Runtime
+    TTP/TSL plan maps by symbol now keep active canonical `BotMarketGroup` /
+    `MarketGroupStrategyLink` entries authoritative and let legacy
+    `BotStrategy` rows fill only symbols without canonical entries. Stale
+    legacy advanced-close rows can no longer overwrite canonical basic-close
+    symbol plans. Validation PASS: focused runtime strategy-context e2e
+    (`4/4`) and broader bot runtime/dynamic-stop pack (`40/40`). Evidence:
+    `docs/planning/dashdrift-04-symbol-dynamic-stop-plans-canonical-task-2026-05-03.md`.
 - [ ] `LIVEIMPORT-03 release(prod): promote imported-position provenance fix and read back ETH/DOGE`
   - Scope: promote commit `39146d2e` through the approved production workflow,
     verify API freshness directly, then use authenticated read-only dashboard

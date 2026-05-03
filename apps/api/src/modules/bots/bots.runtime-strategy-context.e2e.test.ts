@@ -2,6 +2,10 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { prisma } from '../../prisma/client';
 import { DCA_ADVANCED_STRATEGY_CONFIG, DYNAMIC_STOP_STRATEGY_CONFIG } from './bots.e2e.fixtures';
 import { createStrategy, registerAndLogin, resetBotsE2eState } from './bots.e2e.shared';
+import {
+  resolveBotTrailingStopLevelsBySymbol,
+  resolveBotTrailingTakeProfitLevelsBySymbol,
+} from './runtimeStrategyDisplayBySymbol.service';
 
 describe('Bots runtime strategy context contract', () => {
   beforeEach(resetBotsE2eState);
@@ -378,5 +382,100 @@ describe('Bots runtime strategy context contract', () => {
 
     expect(positionsRes.status).toBe(200);
     expect(positionsRes.body.showDynamicStopColumns).toBe(false);
+  });
+
+  it('keeps symbol-level dynamic-stop plans canonical when legacy strategy links are stale', async () => {
+    const ownerEmail = 'bot-runtime-dynamic-plan-canonical-owner@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
+
+    const canonicalStrategyId = await createStrategy(owner, 'Runtime Canonical Symbol Basic Close');
+    const staleLegacyStrategyId = await createStrategy(
+      owner,
+      'Runtime Stale Symbol Advanced Close',
+      DYNAMIC_STOP_STRATEGY_CONFIG
+    );
+    const universe = await prisma.marketUniverse.create({
+      data: {
+        userId: ownerUser.id,
+        name: `Dynamic Plan Canonical Universe ${Date.now()}`,
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: [],
+        blacklist: [],
+      },
+    });
+    const group = await prisma.symbolGroup.create({
+      data: {
+        userId: ownerUser.id,
+        marketUniverseId: universe.id,
+        name: 'Dynamic Plan Canonical Group',
+        symbols: ['ETHUSDT'],
+      },
+    });
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId: ownerUser.id,
+        name: 'Dynamic Plan Canonical Wallet',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        paperInitialBalance: 10_000,
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: ownerUser.id,
+        name: 'Dynamic Plan Canonical Bot',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        walletId: wallet.id,
+        strategyId: canonicalStrategyId,
+        symbolGroupId: group.id,
+        isActive: true,
+      },
+    });
+    const botMarketGroup = await prisma.botMarketGroup.create({
+      data: {
+        userId: ownerUser.id,
+        botId: bot.id,
+        symbolGroupId: group.id,
+        lifecycleStatus: 'ACTIVE',
+        executionOrder: 1,
+        maxOpenPositions: 2,
+        isEnabled: true,
+      },
+    });
+    await prisma.marketGroupStrategyLink.create({
+      data: {
+        userId: ownerUser.id,
+        botId: bot.id,
+        botMarketGroupId: botMarketGroup.id,
+        strategyId: canonicalStrategyId,
+        priority: 1,
+        weight: 1,
+        isEnabled: true,
+      },
+    });
+    await prisma.botStrategy.create({
+      data: {
+        botId: bot.id,
+        strategyId: staleLegacyStrategyId,
+        symbolGroupId: group.id,
+        isEnabled: true,
+      },
+    });
+
+    const [trailingStopLevelsBySymbol, trailingTakeProfitLevelsBySymbol] = await Promise.all([
+      resolveBotTrailingStopLevelsBySymbol(ownerUser.id, bot.id, ['ETHUSDT']),
+      resolveBotTrailingTakeProfitLevelsBySymbol(ownerUser.id, bot.id, ['ETHUSDT']),
+    ]);
+
+    expect(trailingStopLevelsBySymbol.get('ETHUSDT')).toEqual([]);
+    expect(trailingTakeProfitLevelsBySymbol.get('ETHUSDT')).toEqual([]);
   });
 });

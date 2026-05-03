@@ -163,6 +163,12 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
     strategy-link topology is unavailable,
   - stale legacy advanced-close rows must not turn on TTP/TSL columns for a
     canonical basic-close selected-bot view.
+- Runtime position symbol-level dynamic-stop plans:
+  - TTP/TSL plan maps by symbol keep active canonical entries authoritative,
+  - legacy `BotStrategy` rows can fill only symbols without canonical plan
+    entries,
+  - stale legacy advanced-close rows must not overwrite canonical basic-close
+    TTP/TSL symbol plans.
 - Drift policy:
   - legacy link state may exist for backward compatibility, but it cannot override canonical runtime topology in dashboard strategy contexts.
   - module should expose deterministic diagnostics/repair path for legacy-canonical divergence to support operations closure.

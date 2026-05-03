@@ -3,6 +3,14 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 symbol-level dynamic-stop plan slice `DASHDRIFT-04` is closed
+  locally. Runtime TTP/TSL plan maps by symbol now keep active canonical
+  `BotMarketGroup` / `MarketGroupStrategyLink` entries authoritative and let
+  legacy `BotStrategy` rows fill only symbols without canonical entries. Stale
+  legacy advanced-close rows can no longer overwrite canonical basic-close
+  symbol plans. Validation PASS: focused runtime strategy-context e2e (`4/4`)
+  and broader bot runtime/dynamic-stop pack (`40/40`). Evidence:
+  `docs/planning/dashdrift-04-symbol-dynamic-stop-plans-canonical-task-2026-05-03.md`.
 - 2026-05-03 dashboard dynamic-stop column slice `DASHDRIFT-03` is closed
   locally. Runtime position dashboard `showDynamicStopColumns` now evaluates
   active canonical `BotMarketGroup` / `MarketGroupStrategyLink` strategy
