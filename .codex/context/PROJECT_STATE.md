@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 bot read projection slice `BOTDRIFT-01` is closed locally.
+  `GET /dashboard/bots` and `GET /dashboard/bots/:id` now overlay canonical
+  primary `BotMarketGroup` / `MarketGroupStrategyLink` context onto response
+  `strategyId`, `strategy`, `symbolGroupId`, and `symbolGroup` before direct
+  legacy bot projections. Stale direct `Bot.strategyId` can no longer feed
+  dashboard and bot-management read models when canonical topology exists.
+  Validation PASS: bot runtime-scope e2e (`10/10`) and wider bot pack
+  (`41/41`). Evidence:
+  `docs/planning/botdrift-01-bot-read-projection-canonical-context-task-2026-05-03.md`.
 - 2026-05-03 dashboard position-edit strategy display slice `DASHDRIFT-02`
   is closed locally. The position edit modal in `HomeLiveWidgets` now resolves
   strategy labels from selected bot `runtime-graph` market groups and strategy

@@ -5,8 +5,8 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/bots`
 - Owner: backend/trading-domain
-- Last updated: 2026-05-01
-- Related planning task: `ARCCON-12`
+- Last updated: 2026-05-03
+- Related planning task: `BOTDRIFT-01`
 
 ## Canonical Architecture Linkage
 Canonical runtime topology and ownership rules live in:
@@ -143,6 +143,11 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
 - Strategy projection precedence for dashboard-facing read model:
   - canonical active+enabled `marketGroupStrategyLinks` first,
   - legacy `botStrategies` as compatibility fallback only.
+- Bot list/get read projection precedence:
+  - canonical `BotMarketGroup` primary scope overlays response
+    `strategyId`, `strategy`, `symbolGroupId`, and `symbolGroup`,
+  - direct `Bot.strategy` / `Bot.symbolGroup` remains compatibility fallback
+    only when canonical market-group topology is unavailable.
 - Drift policy:
   - legacy link state may exist for backward compatibility, but it cannot override canonical runtime topology in dashboard strategy contexts.
   - module should expose deterministic diagnostics/repair path for legacy-canonical divergence to support operations closure.

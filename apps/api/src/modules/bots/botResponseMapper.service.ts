@@ -21,20 +21,68 @@ type DirectBotProjection = {
       baseCurrency: string;
     } | null;
   } | null;
+  botMarketGroups?: Array<{
+    symbolGroupId: string;
+    lifecycleStatus: string;
+    executionOrder?: number;
+    isEnabled: boolean;
+    createdAt?: Date | string;
+    symbolGroup: NonNullable<DirectBotProjection['symbolGroup']>;
+    strategyLinks: Array<{
+      strategyId: string;
+      isEnabled: boolean;
+      priority?: number;
+      createdAt?: Date | string;
+      strategy: NonNullable<DirectBotProjection['strategy']>;
+    }>;
+  }>;
 };
-
-export const mapBotResponse = <T extends object>(bot: T & Partial<DirectBotProjection>) => ({
-  ...bot,
-  strategyId: bot.strategyId ?? null,
-  symbolGroupId: bot.symbolGroupId ?? null,
-  strategy: bot.strategy ?? null,
-  symbolGroup: bot.symbolGroup ?? null,
-});
 
 const toTimestamp = (value?: Date | string) => {
   if (!value) return Number.MAX_SAFE_INTEGER;
   const timestamp = Date.parse(String(value));
   return Number.isFinite(timestamp) ? timestamp : Number.MAX_SAFE_INTEGER;
+};
+
+const resolveCanonicalBotResponseContext = (bot: Partial<DirectBotProjection>) => {
+  const groups = [...(bot.botMarketGroups ?? [])].sort((left, right) => {
+    const orderDiff =
+      (left.executionOrder ?? Number.MAX_SAFE_INTEGER) -
+      (right.executionOrder ?? Number.MAX_SAFE_INTEGER);
+    if (orderDiff !== 0) return orderDiff;
+    return toTimestamp(left.createdAt) - toTimestamp(right.createdAt);
+  });
+  const primaryGroup =
+    groups.find((group) => group.isEnabled && group.lifecycleStatus === 'ACTIVE') ??
+    groups[0] ??
+    null;
+  const strategyLinks = [...(primaryGroup?.strategyLinks ?? [])].sort((left, right) => {
+    const priorityDiff =
+      (left.priority ?? Number.MAX_SAFE_INTEGER) - (right.priority ?? Number.MAX_SAFE_INTEGER);
+    if (priorityDiff !== 0) return priorityDiff;
+    return toTimestamp(left.createdAt) - toTimestamp(right.createdAt);
+  });
+  const primaryStrategy = strategyLinks.find((strategy) => strategy.isEnabled) ?? strategyLinks[0] ?? null;
+
+  return {
+    strategyId: primaryStrategy?.strategyId ?? null,
+    symbolGroupId: primaryGroup?.symbolGroupId ?? null,
+    strategy: primaryStrategy?.strategy ?? null,
+    symbolGroup: primaryGroup?.symbolGroup ?? null,
+  };
+};
+
+export const mapBotResponse = <T extends object>(bot: T & Partial<DirectBotProjection>) => {
+  const { botMarketGroups: _botMarketGroups, ...response } = bot;
+  const canonicalContext = resolveCanonicalBotResponseContext(bot);
+
+  return {
+    ...response,
+    strategyId: canonicalContext.strategyId ?? bot.strategyId ?? null,
+    symbolGroupId: canonicalContext.symbolGroupId ?? bot.symbolGroupId ?? null,
+    strategy: canonicalContext.strategy ?? bot.strategy ?? null,
+    symbolGroup: canonicalContext.symbolGroup ?? bot.symbolGroup ?? null,
+  };
 };
 
 export const resolveLegacyPrimaryBotContext = (bot: {

@@ -20,6 +20,17 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `BOTDRIFT-01 fix(api-bots): keep bot list/get projection canonical-context scoped`
+  - Scope: closed the next upstream dashboard/runtime drift. `GET
+    /dashboard/bots` and `GET /dashboard/bots/:id` now overlay canonical
+    primary `BotMarketGroup` / `MarketGroupStrategyLink` context onto response
+    `strategyId`, `strategy`, `symbolGroupId`, and `symbolGroup` before direct
+    legacy bot projections. Stale direct `Bot.strategyId` can no longer feed
+    dashboard and bot-management read models when canonical topology exists.
+    Validation PASS: bot runtime-scope e2e (`10/10`) and wider bot pack
+    (`41/41`). Evidence:
+    `docs/planning/botdrift-01-bot-read-projection-canonical-context-task-2026-05-03.md`.
+
 - [x] `DASHDRIFT-02 fix(web-dashboard): keep position edit strategy display runtime-graph scoped`
   - Scope: closed the next dashboard display drift. The position edit modal in
     `HomeLiveWidgets` now resolves strategy labels from selected bot

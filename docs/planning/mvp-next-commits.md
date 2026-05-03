@@ -78,6 +78,16 @@ Operational queue for one-task execution runs.
     modal. Validation PASS: focused HomeLiveWidgets regression (`18/18`).
     Evidence:
     `docs/planning/dashdrift-02-position-edit-strategy-display-task-2026-05-03.md`.
+- [x] `BOTDRIFT-01 fix(api-bots): keep bot list/get projection canonical-context scoped`
+  - 2026-05-03: Closed the next upstream dashboard/runtime drift. `GET
+    /dashboard/bots` and `GET /dashboard/bots/:id` now overlay canonical
+    primary `BotMarketGroup` / `MarketGroupStrategyLink` context onto response
+    `strategyId`, `strategy`, `symbolGroupId`, and `symbolGroup` before direct
+    legacy bot projections. Stale direct `Bot.strategyId` can no longer feed
+    dashboard and bot-management read models when canonical topology exists.
+    Validation PASS: bot runtime-scope e2e (`10/10`) and wider bot pack
+    (`41/41`). Evidence:
+    `docs/planning/botdrift-01-bot-read-projection-canonical-context-task-2026-05-03.md`.
 - [ ] `LIVEIMPORT-03 release(prod): promote imported-position provenance fix and read back ETH/DOGE`
   - Scope: promote commit `39146d2e` through the approved production workflow,
     verify API freshness directly, then use authenticated read-only dashboard

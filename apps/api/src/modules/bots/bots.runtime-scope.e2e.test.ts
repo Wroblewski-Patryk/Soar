@@ -84,6 +84,13 @@ describe('Bots runtime scope remediation contract', () => {
     expect(createRes.status).toBe(201);
     const botId = createRes.body.id as string;
 
+    await prisma.bot.update({
+      where: { id: botId },
+      data: {
+        strategyId: legacyStrategyId,
+      },
+    });
+
     await prisma.botStrategy.create({
       data: {
         botId,
@@ -123,6 +130,7 @@ describe('Bots runtime scope remediation contract', () => {
     expect(listed?.strategyId).toBe(primaryStrategy?.strategyId);
     expect(getRes.body.strategyId).toBe(primaryStrategy?.strategyId);
     expect(getRes.body.symbolGroupId).toBe(marketGroupId);
+    expect(getRes.body.strategy.name).toBe('Canonical Primary Strategy');
     expect(getRes.body.strategyId).not.toBe(legacyStrategyId);
     expect(listed?.strategyId).not.toBe(legacyStrategyId);
 
