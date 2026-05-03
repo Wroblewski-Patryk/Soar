@@ -288,8 +288,8 @@ export const getBotRuntimeMonitoringAggregate = async (
   const symbolsTracked = activeSessions.reduce((acc, session) => acc + session.symbolsTracked, 0);
 
   const symbolMap = new Map<string, RuntimeSymbolStatsResponse['items'][number]>();
-  for (const response of completePayloadRows.map((row) => row.symbolStats)) {
-    for (const item of response.items) {
+  for (const row of completePayloadRows) {
+    for (const item of row.symbolStats.items) {
       const existing = symbolMap.get(item.symbol);
       if (!existing) {
         symbolMap.set(item.symbol, {
@@ -317,6 +317,8 @@ export const getBotRuntimeMonitoringAggregate = async (
       );
       const currentTradeTs = toTimestamp(item.lastTradeAt);
       const existingTradeTs = toTimestamp(existing.lastTradeAt);
+      const currentSnapshotTs = toTimestamp(item.snapshotAt);
+      const existingSnapshotTs = toTimestamp(existing.snapshotAt);
       const currentConfiguredFallbackReplacesSupersededSignal =
         item.lastSignalContextSource === 'configured_fallback' &&
         item.configuredStrategyId != null &&
@@ -345,9 +347,12 @@ export const getBotRuntimeMonitoringAggregate = async (
         grossProfit: existing.grossProfit + item.grossProfit,
         grossLoss: existing.grossLoss + item.grossLoss,
         feesPaid: existing.feesPaid + item.feesPaid,
-        openPositionCount: existing.openPositionCount + item.openPositionCount,
-        openPositionQty: existing.openPositionQty + item.openPositionQty,
-        unrealizedPnl: (existing.unrealizedPnl ?? 0) + (item.unrealizedPnl ?? 0),
+        openPositionCount:
+          currentSnapshotTs >= existingSnapshotTs ? item.openPositionCount : existing.openPositionCount,
+        openPositionQty:
+          currentSnapshotTs >= existingSnapshotTs ? item.openPositionQty : existing.openPositionQty,
+        unrealizedPnl:
+          currentSnapshotTs >= existingSnapshotTs ? item.unrealizedPnl : existing.unrealizedPnl,
         lastPrice: shouldUseCurrentSignalContext ? item.lastPrice : existing.lastPrice,
         lastSignalAt: shouldUseCurrentSignalContext ? item.lastSignalAt : existing.lastSignalAt,
         lastSignalDirection:
@@ -407,10 +412,7 @@ export const getBotRuntimeMonitoringAggregate = async (
             ? item.lastSignalScoreSummary
             : existing.lastSignalScoreSummary,
         lastTradeAt: currentTradeTs >= existingTradeTs ? item.lastTradeAt : existing.lastTradeAt,
-        snapshotAt:
-          toTimestamp(item.snapshotAt) >= toTimestamp(existing.snapshotAt)
-            ? item.snapshotAt
-            : existing.snapshotAt,
+        snapshotAt: currentSnapshotTs >= existingSnapshotTs ? item.snapshotAt : existing.snapshotAt,
       });
       const merged = symbolMap.get(item.symbol);
       if (merged) {
@@ -424,7 +426,19 @@ export const getBotRuntimeMonitoringAggregate = async (
   }
 
   const symbolItems = [...symbolMap.values()].sort((left, right) => left.symbol.localeCompare(right.symbol));
-  const symbolSummary = completePayloadRows.reduce(
+  const symbolCurrentSummary = symbolItems.reduce(
+    (acc, item) => ({
+      openPositionCount: acc.openPositionCount + item.openPositionCount,
+      openPositionQty: acc.openPositionQty + item.openPositionQty,
+      unrealizedPnl: acc.unrealizedPnl + (item.unrealizedPnl ?? 0),
+    }),
+    {
+      openPositionCount: 0,
+      openPositionQty: 0,
+      unrealizedPnl: 0,
+    }
+  );
+  const historicalSymbolSummary = completePayloadRows.reduce(
     (acc, row) => ({
       totalSignals: acc.totalSignals + row.symbolStats.summary.totalSignals,
       longEntries: acc.longEntries + row.symbolStats.summary.longEntries,
@@ -435,13 +449,9 @@ export const getBotRuntimeMonitoringAggregate = async (
       winningTrades: acc.winningTrades + row.symbolStats.summary.winningTrades,
       losingTrades: acc.losingTrades + row.symbolStats.summary.losingTrades,
       realizedPnl: acc.realizedPnl + row.symbolStats.summary.realizedPnl,
-      unrealizedPnl: acc.unrealizedPnl + row.symbolStats.summary.unrealizedPnl,
-      totalPnl: acc.totalPnl + row.symbolStats.summary.totalPnl,
       grossProfit: acc.grossProfit + row.symbolStats.summary.grossProfit,
       grossLoss: acc.grossLoss + row.symbolStats.summary.grossLoss,
       feesPaid: acc.feesPaid + row.symbolStats.summary.feesPaid,
-      openPositionCount: acc.openPositionCount + row.symbolStats.summary.openPositionCount,
-      openPositionQty: acc.openPositionQty + row.symbolStats.summary.openPositionQty,
     }),
     {
       totalSignals: 0,
@@ -453,15 +463,18 @@ export const getBotRuntimeMonitoringAggregate = async (
       winningTrades: 0,
       losingTrades: 0,
       realizedPnl: 0,
-      unrealizedPnl: 0,
-      totalPnl: 0,
       grossProfit: 0,
       grossLoss: 0,
       feesPaid: 0,
-      openPositionCount: 0,
-      openPositionQty: 0,
     }
   );
+  const symbolSummary = {
+    ...historicalSymbolSummary,
+    unrealizedPnl: symbolCurrentSummary.unrealizedPnl,
+    totalPnl: historicalSymbolSummary.realizedPnl + symbolCurrentSummary.unrealizedPnl,
+    openPositionCount: symbolCurrentSummary.openPositionCount,
+    openPositionQty: symbolCurrentSummary.openPositionQty,
+  };
 
   const positionResponses = completePayloadRows.map((row) => row.positions);
   const openItems = uniqueById(positionResponses.flatMap((response) => response.openItems)).sort(

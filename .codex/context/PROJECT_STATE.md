@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 aggregate symbol open-state overlap slice `RUNTIME-AUDIT-57`
+  is closed locally. Runtime monitoring aggregate symbol items and summary now
+  keep historical symbol counters summed while taking current open-position
+  count, quantity, and unrealized PnL from the newest per-symbol snapshot, so
+  overlapping RUNNING sessions no longer make market/signal summaries disagree
+  with positions current-state truth. Validation PASS: aggregate e2e (`15/15`),
+  runtime-scope e2e (`13/13`), API typecheck, repository guardrails, lint, and
+  diff review. Evidence:
+  `docs/planning/runtime-audit-57-aggregate-symbol-open-overlap-task-2026-05-03.md`.
 - 2026-05-03 aggregate running-trade overlap slice `RUNTIME-AUDIT-56` is
   closed locally. Runtime monitoring aggregate trade totals and fees now sum
   all non-running historical session totals plus only the freshest RUNNING

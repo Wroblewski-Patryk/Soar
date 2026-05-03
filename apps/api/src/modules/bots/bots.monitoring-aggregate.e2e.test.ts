@@ -731,23 +731,50 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     expect(createRes.status).toBe(201);
     const botId = createRes.body.id as string;
 
-    await prisma.botRuntimeSession.createMany({
+    const firstRunningSession = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-19T16:00:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-19T16:05:00.000Z'),
+      },
+    });
+    const secondRunningSession = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-19T16:01:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-19T16:06:00.000Z'),
+      },
+    });
+
+    await prisma.botRuntimeSymbolStat.createMany({
       data: [
         {
           userId: ownerUser.id,
           botId,
-          mode: 'PAPER',
-          status: 'RUNNING',
-          startedAt: new Date('2026-04-19T16:00:00.000Z'),
-          lastHeartbeatAt: new Date('2026-04-19T16:05:00.000Z'),
+          sessionId: firstRunningSession.id,
+          symbol: 'BTCUSDT',
+          totalSignals: 1,
+          longEntries: 1,
+          openPositionCount: 1,
+          openPositionQty: 0.01,
+          snapshotAt: new Date('2026-04-19T16:05:00.000Z'),
         },
         {
           userId: ownerUser.id,
           botId,
-          mode: 'PAPER',
-          status: 'RUNNING',
-          startedAt: new Date('2026-04-19T16:01:00.000Z'),
-          lastHeartbeatAt: new Date('2026-04-19T16:06:00.000Z'),
+          sessionId: secondRunningSession.id,
+          symbol: 'BTCUSDT',
+          totalSignals: 1,
+          longEntries: 1,
+          openPositionCount: 1,
+          openPositionQty: 0.01,
+          snapshotAt: new Date('2026-04-19T16:06:00.000Z'),
         },
       ],
     });
@@ -783,6 +810,12 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     expect(aggregateRes.body.positions.closedCount).toBe(0);
     expect(aggregateRes.body.sessionDetail.summary.openPositionCount).toBe(1);
     expect(aggregateRes.body.sessionDetail.summary.openPositionQty).toBeCloseTo(0.01);
+    expect(aggregateRes.body.symbolStats.items[0].openPositionCount).toBe(1);
+    expect(aggregateRes.body.symbolStats.items[0].openPositionQty).toBeCloseTo(0.01);
+    expect(aggregateRes.body.symbolStats.items[0].unrealizedPnl).toBeCloseTo(-7);
+    expect(aggregateRes.body.symbolStats.summary.openPositionCount).toBe(1);
+    expect(aggregateRes.body.symbolStats.summary.openPositionQty).toBeCloseTo(0.01);
+    expect(aggregateRes.body.symbolStats.summary.unrealizedPnl).toBeCloseTo(-7);
     expect(aggregateRes.body.positions.summary.openPositionQty).toBeCloseTo(0.01);
     expect(aggregateRes.body.positions.summary.unrealizedPnl).toBeCloseTo(-7);
   });
