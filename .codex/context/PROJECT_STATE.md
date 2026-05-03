@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 LIVE reconciliation continuity strategy slice `POSDRIFT-12` is
+  closed locally. LIVE exchange reconciliation now resolves recovered/imported
+  bot continuity strategy through active canonical `BotMarketGroup` and enabled
+  `MarketGroupStrategyLink` rows before direct legacy `Bot.strategyId`. Stale
+  direct strategy projection can no longer label imported/recovered LIVE
+  exchange-synced rows when canonical topology exists. Validation PASS:
+  focused reconciliation test (`23/23`) and wider
+  position/reconciliation/automation pack (`29/29`). Evidence:
+  `docs/planning/posdrift-12-live-continuity-canonical-strategy-task-2026-05-03.md`.
 - 2026-05-03 bot update safety guard slice `BOTDRIFT-02` is closed locally.
   Bot activation/update duplicate guard and LIVE overlap guard now derive
   default target strategy/market scope from active canonical `BotMarketGroup`

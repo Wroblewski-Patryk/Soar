@@ -40,11 +40,53 @@ import {
   ReconciliationStatus,
 } from './livePositionReconciliation.types';
 import { runtimePositionAutomationService } from '../engine/runtimePositionAutomation.service';
+import { resolveExistingCanonicalUpdateScope } from '../bots/botCanonicalUpdateScope.service';
 
 const STALE_LOCAL_MANAGED_LIVE_POSITION_GRACE_MS = 10 * 60 * 1000;
 const STALE_LOCAL_MANAGED_LIVE_POSITION_FALLBACK_GRACE_MS = 60 * 60 * 1000;
 const EXTERNAL_POSITION_MISSING_CONFIRMATION_THRESHOLD = 2;
 const buildOwnerIdentity = (botId: string, walletId: string) => `${botId}:${walletId}`;
+
+export const resolveCanonicalBotContinuityContext = async (
+  botId: string
+): Promise<CanonicalBotContinuityContext | null> => {
+  const bot = await prisma.bot.findUnique({
+    where: { id: botId },
+    select: {
+      id: true,
+      walletId: true,
+      strategyId: true,
+      symbolGroupId: true,
+      botMarketGroups: {
+        select: {
+          symbolGroupId: true,
+          lifecycleStatus: true,
+          executionOrder: true,
+          isEnabled: true,
+          createdAt: true,
+          strategyLinks: {
+            select: {
+              strategyId: true,
+              isEnabled: true,
+              priority: true,
+              createdAt: true,
+            },
+            orderBy: [{ priority: 'asc' }, { createdAt: 'asc' }],
+          },
+        },
+        orderBy: [{ executionOrder: 'asc' }, { createdAt: 'asc' }],
+      },
+    },
+  });
+  if (!bot) return null;
+
+  const canonicalScope = resolveExistingCanonicalUpdateScope(bot);
+  return {
+    botId: bot.id,
+    walletId: bot.walletId,
+    strategyId: canonicalScope.primaryStrategyId,
+  };
+};
 
 const defaultDeps: ReconcileDeps = {
   listSyncedApiKeys: async () => {
@@ -96,23 +138,7 @@ const defaultDeps: ReconcileDeps = {
         openedAt: true,
       },
     }),
-  resolveCanonicalBotContinuityContext: async (botId) =>
-    prisma.bot.findUnique({
-      where: { id: botId },
-      select: {
-        id: true,
-        walletId: true,
-        strategyId: true,
-      },
-    }).then((bot) =>
-      bot
-        ? {
-            botId: bot.id,
-            walletId: bot.walletId,
-            strategyId: bot.strategyId,
-          }
-        : null
-    ),
+  resolveCanonicalBotContinuityContext,
   updateSyncedPosition: async (positionId, input) => {
     await prisma.position.update({
       where: { id: positionId },

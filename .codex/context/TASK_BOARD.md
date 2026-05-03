@@ -20,6 +20,16 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `POSDRIFT-12 fix(api-positions): keep LIVE reconciliation continuity strategy canonical`
+  - Scope: closed the TESTER continuity edge. LIVE exchange reconciliation now
+    resolves recovered/imported bot continuity strategy through active
+    canonical `BotMarketGroup` and enabled `MarketGroupStrategyLink` rows
+    before direct legacy `Bot.strategyId`. Stale direct strategy projection can
+    no longer label imported/recovered LIVE exchange-synced rows when canonical
+    topology exists. Validation PASS: focused reconciliation test (`23/23`) and
+    wider position/reconciliation/automation pack (`29/29`). Evidence:
+    `docs/planning/posdrift-12-live-continuity-canonical-strategy-task-2026-05-03.md`.
+
 - [x] `BOTDRIFT-02 fix(api-bots): keep bot update safety guards canonical-context scoped`
   - Scope: closed the next bot-management safety drift. Bot activation/update
     duplicate guard and LIVE overlap guard now derive default target

@@ -6,7 +6,7 @@
 - Source path: `apps/api/src/modules/positions`
 - Owner: backend/trading-domain
 - Last updated: 2026-05-03
-- Related planning task: `POSDRIFT-11`
+- Related planning task: `POSDRIFT-12`
 
 ## 1. Purpose and Scope
 - Owns position read and external reconciliation surfaces for dashboard operations.
@@ -62,6 +62,12 @@ Out of scope:
   - uses direct `Bot.symbolGroup` / `Bot.strategyId` only as compatibility
     fallback for legacy bots without active canonical market groups,
   - leaves ambiguous strategy provenance unresolved instead of guessing.
+- LIVE reconciliation continuity flow:
+  - resolves recovered/imported bot continuity context from active canonical
+    `BotMarketGroup` and enabled `MarketGroupStrategyLink` rows before direct
+    legacy `Bot.strategyId`,
+  - uses direct strategy only as compatibility fallback when canonical
+    topology is unavailable.
 
 ## 5. API and UI Integration
 - Routes:

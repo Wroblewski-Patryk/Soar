@@ -2,7 +2,9 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   LivePositionReconciliationLoop,
   reconcileExternalPositionsFromExchange,
+  resolveCanonicalBotContinuityContext,
 } from './livePositionReconciliation.service';
+import { prisma } from '../../prisma/client';
 
 afterEach(() => {
   vi.useRealTimers();
@@ -1697,5 +1699,141 @@ describe('reconcileExternalPositionsFromExchange', () => {
         managementMode: 'BOT_MANAGED',
       })
     );
+  });
+});
+
+describe('resolveCanonicalBotContinuityContext', () => {
+  it('resolves strategy from canonical bot market-group links before stale direct bot projection', async () => {
+    await prisma.trade.deleteMany();
+    await prisma.order.deleteMany();
+    await prisma.position.deleteMany();
+    await prisma.signal.deleteMany();
+    await prisma.runtimeExecutionDedupe.deleteMany();
+    await prisma.botRuntimeSymbolStat.deleteMany();
+    await prisma.botRuntimeEvent.deleteMany();
+    await prisma.botRuntimeSession.deleteMany();
+    await prisma.log.deleteMany();
+    await prisma.botStrategy.deleteMany();
+    await prisma.botSubagentConfig.deleteMany();
+    await prisma.botAssistantConfig.deleteMany();
+    await prisma.marketGroupStrategyLink.deleteMany();
+    await prisma.botMarketGroup.deleteMany();
+    await prisma.bot.deleteMany();
+    await prisma.symbolGroup.deleteMany();
+    await prisma.marketUniverse.deleteMany();
+    await prisma.wallet.deleteMany();
+    await prisma.apiKey.deleteMany();
+    await prisma.strategy.deleteMany();
+    await prisma.user.deleteMany();
+
+    const user = await prisma.user.create({
+      data: {
+        email: 'live-continuity-canonical-context@example.com',
+        password: 'test-password',
+      },
+      select: { id: true },
+    });
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'Continuity Wallet',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+      select: { id: true },
+    });
+    const marketUniverse = await prisma.marketUniverse.create({
+      data: {
+        userId: user.id,
+        name: 'Continuity Universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: ['BTCUSDT', 'ETHUSDT'],
+        blacklist: [],
+      },
+      select: { id: true },
+    });
+    const symbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: user.id,
+        marketUniverseId: marketUniverse.id,
+        name: 'Continuity Group',
+        symbols: ['BTCUSDT'],
+      },
+      select: { id: true },
+    });
+    const [canonicalStrategy, staleDirectStrategy] = await Promise.all([
+      prisma.strategy.create({
+        data: {
+          userId: user.id,
+          name: 'Continuity Canonical Strategy',
+          interval: '5m',
+          leverage: 3,
+          walletRisk: 1,
+          config: {},
+        },
+        select: { id: true },
+      }),
+      prisma.strategy.create({
+        data: {
+          userId: user.id,
+          name: 'Continuity Stale Direct Strategy',
+          interval: '15m',
+          leverage: 7,
+          walletRisk: 1,
+          config: {},
+        },
+        select: { id: true },
+      }),
+    ]);
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'Continuity Bot',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'mvp-v1',
+        walletId: wallet.id,
+        strategyId: staleDirectStrategy.id,
+        symbolGroupId: symbolGroup.id,
+      },
+      select: { id: true },
+    });
+    const botMarketGroup = await prisma.botMarketGroup.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        symbolGroupId: symbolGroup.id,
+        lifecycleStatus: 'ACTIVE',
+        executionOrder: 1,
+        isEnabled: true,
+      },
+      select: { id: true },
+    });
+    await prisma.marketGroupStrategyLink.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        botMarketGroupId: botMarketGroup.id,
+        strategyId: canonicalStrategy.id,
+        priority: 1,
+        isEnabled: true,
+      },
+    });
+
+    const context = await resolveCanonicalBotContinuityContext(bot.id);
+
+    expect(context).toEqual({
+      botId: bot.id,
+      walletId: wallet.id,
+      strategyId: canonicalStrategy.id,
+    });
   });
 });
