@@ -3,6 +3,16 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 market-scoped imported external ID slice `RUNTIME-AUDIT-65` is
+  closed locally. LIVE reconciliation now writes imported position external IDs
+  as `apiKey:marketType:symbol:side` whenever the synced API-key work item
+  carries market type, and helper parsing/stale-symbol extraction remain
+  compatible with legacy `apiKey:symbol:side` rows. Reconciliation checks the
+  legacy ID before creating a new row, so old imports can be upgraded to the
+  canonical ID instead of duplicated. Validation PASS: live reconciliation
+  suite (`26/26`), API typecheck, repository guardrails, lint, and diff review.
+  Evidence:
+  `docs/planning/runtime-audit-65-market-scoped-external-position-id-task-2026-05-03.md`.
 - 2026-05-03 external ownership market-type slice `RUNTIME-AUDIT-64` is closed
   locally. External takeover ownership now scopes by
   `apiKey + marketType + symbol`, with candidate market type resolved from

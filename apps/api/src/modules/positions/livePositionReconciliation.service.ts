@@ -11,6 +11,7 @@ import {
 import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
 import {
   buildPositionIdentity,
+  buildImportedExternalPositionIds,
   extractSymbolFromExternalId,
   normalizeImportedLeverage,
   normalizeSymbol,
@@ -476,8 +477,14 @@ export const reconcileExternalPositionsFromExchange = async (
         if (!normalizedSymbol) continue;
 
         openPositionsSeen += 1;
-        const externalId = `${apiKey.id}:${normalizedSymbol}:${side}`;
+        const { externalId, legacyExternalId } = buildImportedExternalPositionIds({
+          apiKeyId: apiKey.id,
+          marketType: apiKey.marketType,
+          symbol: normalizedSymbol,
+          side,
+        });
         seenExternalIds.add(externalId);
+        seenExternalIds.add(legacyExternalId);
         seenExternalSymbols.add(normalizedSymbol);
         const canonicalEntryPrice = resolveCanonicalEntryPrice(position);
         if (canonicalEntryPrice == null) {
@@ -487,10 +494,11 @@ export const reconcileExternalPositionsFromExchange = async (
           continue;
         }
 
-        const existing = await deps.findOpenSyncedPositionByExternalId({
-          userId: apiKey.userId,
-          externalId,
-        });
+        const existing =
+          (await deps.findOpenSyncedPositionByExternalId({ userId: apiKey.userId, externalId })) ??
+          (legacyExternalId !== externalId
+            ? await deps.findOpenSyncedPositionByExternalId({ userId: apiKey.userId, externalId: legacyExternalId })
+            : null);
         const ownership = getExternalPositionOwnership(ownershipIndex, {
           apiKeyId: apiKey.id,
           marketType: apiKey.marketType ?? 'FUTURES',

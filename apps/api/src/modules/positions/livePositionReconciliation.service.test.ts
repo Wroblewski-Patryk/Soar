@@ -4,6 +4,11 @@ import {
   reconcileExternalPositionsFromExchange,
   resolveCanonicalBotContinuityContext,
 } from './livePositionReconciliation.service';
+import {
+  buildImportedExternalPositionId,
+  extractSymbolFromExternalId,
+  parseImportedExternalPositionId,
+} from './livePositionReconciliation.helpers';
 import { prisma } from '../../prisma/client';
 
 afterEach(() => {
@@ -40,8 +45,40 @@ describe('LivePositionReconciliationLoop', () => {
   });
 });
 
+describe('imported external position id helpers', () => {
+  it('builds market-scoped external ids and still parses legacy ids', () => {
+    expect(
+      buildImportedExternalPositionId({
+        apiKeyId: 'key-1',
+        marketType: 'SPOT',
+        symbol: 'ETH/USDT',
+        side: 'LONG',
+      })
+    ).toBe('key-1:SPOT:ETHUSDT:LONG');
+
+    expect(parseImportedExternalPositionId('key-1:SPOT:ETHUSDT:LONG')).toEqual({
+      apiKeyId: 'key-1',
+      marketType: 'SPOT',
+      symbol: 'ETHUSDT',
+      side: 'LONG',
+    });
+    expect(parseImportedExternalPositionId('key-1:ETHUSDT:LONG')).toEqual({
+      apiKeyId: 'key-1',
+      marketType: null,
+      symbol: 'ETHUSDT',
+      side: 'LONG',
+    });
+    expect(extractSymbolFromExternalId('key-1:FUTURES:DOGEUSDT:SHORT')).toBe('DOGEUSDT');
+    expect(extractSymbolFromExternalId('key-1:DOGEUSDT:SHORT')).toBe('DOGEUSDT');
+  });
+});
+
 describe('reconcileExternalPositionsFromExchange', () => {
   it('propagates synced api-key market type through LIVE reconciliation snapshots', async () => {
+    let created = false;
+    const createSyncedPosition = vi.fn(async () => {
+      created = true;
+    });
     const fetchPositionsForApiKey = vi.fn(async (apiKey) => {
       expect(apiKey.marketType).toBe('SPOT');
       return {
@@ -69,28 +106,20 @@ describe('reconcileExternalPositionsFromExchange', () => {
     });
     const processOwnedSyncedPositionAutomation = vi.fn(async () => undefined);
 
-    const findOpenSyncedPositionByExternalId = vi
-      .fn(async () => null as {
-        id: string;
-        botId: string;
-        walletId: string;
-        strategyId: string;
-        openedAt: Date;
-        managementMode: 'BOT_MANAGED';
-        continuityState: 'CONFIRMED';
-        missingSyncCount: number;
-      } | null)
-      .mockResolvedValueOnce(null)
-      .mockResolvedValueOnce({
-        id: 'spot-position-created',
-        botId: 'bot-spot-1',
-        walletId: 'wallet-spot-1',
-        strategyId: 'strategy-spot-1',
-        openedAt: new Date('2026-05-03T10:00:00.000Z'),
-        managementMode: 'BOT_MANAGED' as const,
-        continuityState: 'CONFIRMED' as const,
-        missingSyncCount: 0,
-      });
+    const findOpenSyncedPositionByExternalId = vi.fn(async ({ externalId }) =>
+      created && externalId === 'key-spot-1:SPOT:ETHUSDT:LONG'
+        ? {
+            id: 'spot-position-created',
+            botId: 'bot-spot-1',
+            walletId: 'wallet-spot-1',
+            strategyId: 'strategy-spot-1',
+            openedAt: new Date('2026-05-03T10:00:00.000Z'),
+            managementMode: 'BOT_MANAGED' as const,
+            continuityState: 'CONFIRMED' as const,
+            missingSyncCount: 0,
+          }
+        : null
+    );
 
     await reconcileExternalPositionsFromExchange({
       listSyncedApiKeys: vi.fn(async () => [
@@ -123,7 +152,7 @@ describe('reconcileExternalPositionsFromExchange', () => {
         strategyId: 'strategy-spot-1',
       })),
       updateSyncedPosition: vi.fn(async () => undefined),
-      createSyncedPosition: vi.fn(async () => undefined),
+      createSyncedPosition,
       listOpenSyncedPositionsForApiKey: vi.fn(async () => []),
       markMissingSyncedPosition: vi.fn(async () => undefined),
       closeStaleSyncedPosition: vi.fn(async () => undefined),
@@ -141,6 +170,19 @@ describe('reconcileExternalPositionsFromExchange', () => {
     expect(fetchPositionsForApiKey).toHaveBeenCalledOnce();
     expect(fetchOpenOrdersForApiKey).toHaveBeenCalledOnce();
     expect(fetchTradeHistoryForApiKeySymbol).toHaveBeenCalledOnce();
+    expect(createSyncedPosition).toHaveBeenCalledWith(
+      expect.objectContaining({
+        externalId: 'key-spot-1:SPOT:ETHUSDT:LONG',
+      })
+    );
+    expect(findOpenSyncedPositionByExternalId).toHaveBeenCalledWith({
+      userId: 'user-spot-1',
+      externalId: 'key-spot-1:SPOT:ETHUSDT:LONG',
+    });
+    expect(findOpenSyncedPositionByExternalId).toHaveBeenCalledWith({
+      userId: 'user-spot-1',
+      externalId: 'key-spot-1:ETHUSDT:LONG',
+    });
     expect(processOwnedSyncedPositionAutomation).toHaveBeenCalledWith(
       expect.objectContaining({
         marketType: 'SPOT',

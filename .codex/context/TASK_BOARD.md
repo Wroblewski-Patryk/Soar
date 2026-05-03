@@ -20,6 +20,18 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-65 fix(api-positions): market-scope imported external IDs`
+  - Scope: closed a BUILDER-mode persisted identity drift after market-scoped
+    ownership. LIVE reconciliation now builds imported position external IDs
+    as `apiKey:marketType:symbol:side` whenever the synced API-key work item
+    carries market type, while helper parsing and stale-symbol extraction stay
+    compatible with legacy `apiKey:symbol:side` rows. Reconciliation also
+    looks up legacy IDs before creating a fresh row, so existing legacy imports
+    can be upgraded instead of duplicated. Validation PASS: live reconciliation
+    suite (`26/26`), API typecheck, repository guardrails, lint, and diff
+    review. Evidence:
+    `docs/planning/runtime-audit-65-market-scoped-external-position-id-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-64 fix(api-bots): scope external ownership by market type`
   - Scope: closed a BUILDER-mode LIVE import ownership drift. External
     takeover ownership now keys by `apiKey + marketType + symbol`, resolves

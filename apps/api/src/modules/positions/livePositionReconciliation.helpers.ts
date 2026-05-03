@@ -1,3 +1,5 @@
+import { TradeMarket } from '@prisma/client';
+
 const EXTERNAL_POSITION_REOPEN_DISCONTINUITY_GRACE_MS = 60 * 1000;
 
 export const normalizeSymbol = (symbol: string) => {
@@ -40,11 +42,66 @@ export const toPositionSideFromOrderSide = (side: 'BUY' | 'SELL'): 'LONG' | 'SHO
 export const buildPositionIdentity = (symbol: string, side: 'LONG' | 'SHORT') =>
   `${normalizeSymbol(symbol)}:${side}`;
 
-export const extractSymbolFromExternalId = (externalId: string | null) => {
+export const buildImportedExternalPositionId = (params: {
+  apiKeyId: string;
+  marketType?: TradeMarket | null;
+  symbol: string;
+  side: 'LONG' | 'SHORT';
+}) => {
+  const apiKeyId = params.apiKeyId.trim();
+  const symbol = normalizeSymbol(params.symbol);
+  return params.marketType
+    ? `${apiKeyId}:${params.marketType}:${symbol}:${params.side}`
+    : `${apiKeyId}:${symbol}:${params.side}`;
+};
+
+export const buildLegacyImportedExternalPositionId = (params: {
+  apiKeyId: string;
+  symbol: string;
+  side: 'LONG' | 'SHORT';
+}) =>
+  buildImportedExternalPositionId({
+    apiKeyId: params.apiKeyId,
+    symbol: params.symbol,
+    side: params.side,
+  });
+
+export const buildImportedExternalPositionIds = (params: {
+  apiKeyId: string;
+  marketType?: TradeMarket | null;
+  symbol: string;
+  side: 'LONG' | 'SHORT';
+}) => ({
+  externalId: buildImportedExternalPositionId(params),
+  legacyExternalId: buildLegacyImportedExternalPositionId(params),
+});
+
+export const parseImportedExternalPositionId = (externalId: string | null) => {
   if (!externalId) return null;
   const parts = externalId.split(':');
   if (parts.length < 3) return null;
-  return normalizeSymbol(parts[1] ?? '');
+  const [apiKeyId, maybeMarketType, maybeSymbol, maybeSide] = parts;
+  if (!apiKeyId?.trim()) return null;
+
+  if ((maybeMarketType === 'FUTURES' || maybeMarketType === 'SPOT') && parts.length >= 4) {
+    return {
+      apiKeyId: apiKeyId.trim(),
+      marketType: maybeMarketType,
+      symbol: normalizeSymbol(maybeSymbol ?? ''),
+      side: maybeSide === 'LONG' || maybeSide === 'SHORT' ? maybeSide : null,
+    };
+  }
+
+  return {
+    apiKeyId: apiKeyId.trim(),
+    marketType: null,
+    symbol: normalizeSymbol(maybeMarketType ?? ''),
+    side: maybeSymbol === 'LONG' || maybeSymbol === 'SHORT' ? maybeSymbol : null,
+  };
+};
+
+export const extractSymbolFromExternalId = (externalId: string | null) => {
+  return parseImportedExternalPositionId(externalId)?.symbol ?? null;
 };
 
 export const shouldTreatAsLifecycleReplacement = (input: {
