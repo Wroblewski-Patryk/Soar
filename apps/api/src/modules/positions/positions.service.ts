@@ -351,6 +351,7 @@ export const updatePositionManualParams = async (
       botId: true,
       strategyId: true,
       status: true,
+      syncState: true,
       side: true,
       entryPrice: true,
       takeProfit: true,
@@ -359,6 +360,12 @@ export const updatePositionManualParams = async (
   });
   if (!existing) return null;
   if (existing.status !== 'OPEN') {
+    throw new PositionManualUpdateError(
+      'POSITION_NOT_OPEN',
+      'Only OPEN positions can be manually updated.'
+    );
+  }
+  if (existing.syncState !== 'IN_SYNC') {
     throw new PositionManualUpdateError(
       'POSITION_NOT_OPEN',
       'Only OPEN positions can be manually updated.'
@@ -378,13 +385,25 @@ export const updatePositionManualParams = async (
   let updatedPosition: Awaited<ReturnType<typeof getPosition>> = null;
   const hasStopUpdate = input.takeProfit !== undefined || input.stopLoss !== undefined;
   if (hasStopUpdate) {
-    const data: Prisma.PositionUpdateInput = {};
+    const data: Prisma.PositionUpdateManyMutationInput = {};
     if (input.takeProfit !== undefined) data.takeProfit = input.takeProfit;
     if (input.stopLoss !== undefined) data.stopLoss = input.stopLoss;
-    updatedPosition = await prisma.position.update({
-      where: { id: existing.id },
+    const updated = await prisma.position.updateMany({
+      where: {
+        id: existing.id,
+        userId,
+        status: 'OPEN',
+        syncState: 'IN_SYNC',
+      },
       data,
     });
+    if (updated.count === 0) {
+      throw new PositionManualUpdateError(
+        'POSITION_NOT_OPEN',
+        'Only OPEN positions can be manually updated.'
+      );
+    }
+    updatedPosition = await getPosition(userId, existing.id);
   } else {
     updatedPosition = await getPosition(userId, existing.id);
   }

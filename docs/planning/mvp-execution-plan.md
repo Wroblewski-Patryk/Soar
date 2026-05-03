@@ -123,6 +123,14 @@ Rule: fix/cleanup/update first, then feature delivery.
   longer appear as active list truth while unfiltered history remains available
   for audit. Validation PASS: positions list e2e (`2/2`), API typecheck,
   repository guardrails, lint, and diff review.
+- 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-77` with
+  `docs/planning/runtime-audit-77-position-manual-update-sync-state-task-2026-05-04.md`.
+  Manual TP/SL updates now require `syncState=IN_SYNC` in addition to
+  `status=OPEN`, and the mutation uses a guarded `updateMany` predicate so
+  stale `ORPHAN_LOCAL` open-position rows cannot be changed after active
+  list/runtime close paths stop treating them as active. Validation PASS:
+  positions service suite (`2/2`), API typecheck, repository guardrails, lint,
+  and diff review.
 - 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-15` with
   `docs/planning/runtime-audit-15-close-fee-position-scope-task-2026-05-03.md`.
   Runtime close realized-PnL now aggregates entry fees by owned position

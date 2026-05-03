@@ -1,7 +1,11 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { prisma } from '../../prisma/client';
-import { repairLegacyOpenPositions } from './positions.service';
+import {
+  PositionManualUpdateError,
+  repairLegacyOpenPositions,
+  updatePositionManualParams,
+} from './positions.service';
 
 describe('positions service legacy open-position repair', () => {
   beforeEach(async () => {
@@ -216,6 +220,82 @@ describe('positions service legacy open-position repair', () => {
       botId: null,
       walletId: wallet.id,
       strategyId: staleDirectStrategy.id,
+    });
+  });
+});
+
+describe('positions service manual update active-state guard', () => {
+  beforeEach(async () => {
+    await prisma.trade.deleteMany();
+    await prisma.order.deleteMany();
+    await prisma.position.deleteMany();
+    await prisma.signal.deleteMany();
+    await prisma.runtimeExecutionDedupe.deleteMany();
+    await prisma.botRuntimeSymbolStat.deleteMany();
+    await prisma.botRuntimeEvent.deleteMany();
+    await prisma.botRuntimeSession.deleteMany();
+    await prisma.backtestTrade.deleteMany();
+    await prisma.backtestReport.deleteMany();
+    await prisma.backtestRun.deleteMany();
+    await prisma.log.deleteMany();
+    await prisma.botStrategy.deleteMany();
+    await prisma.botSubagentConfig.deleteMany();
+    await prisma.botAssistantConfig.deleteMany();
+    await prisma.marketGroupStrategyLink.deleteMany();
+    await prisma.botMarketGroup.deleteMany();
+    await prisma.bot.deleteMany();
+    await prisma.symbolGroup.deleteMany();
+    await prisma.marketUniverse.deleteMany();
+    await prisma.wallet.deleteMany();
+    await prisma.apiKey.deleteMany();
+    await prisma.strategy.deleteMany();
+    await prisma.user.deleteMany();
+  });
+
+  it('rejects stale local open positions before applying manual TP or SL changes', async () => {
+    const user = await prisma.user.create({
+      data: {
+        email: 'positions-service-manual-update-stale@example.com',
+        password: 'test-password',
+      },
+      select: { id: true },
+    });
+    const position = await prisma.position.create({
+      data: {
+        userId: user.id,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'ORPHAN_LOCAL',
+        continuityState: 'REPAIR_ONLY_CLEANUP',
+        symbol: 'BTCUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 60_000,
+        quantity: 0.1,
+        leverage: 3,
+        takeProfit: null,
+        stopLoss: null,
+      },
+    });
+
+    await expect(
+      updatePositionManualParams(user.id, position.id, {
+        takeProfit: 61_000,
+        stopLoss: 59_000,
+        notes: null,
+        lockRules: false,
+      })
+    ).rejects.toMatchObject({
+      code: 'POSITION_NOT_OPEN',
+    } satisfies Partial<PositionManualUpdateError>);
+
+    const unchanged = await prisma.position.findUniqueOrThrow({
+      where: { id: position.id },
+      select: { takeProfit: true, stopLoss: true },
+    });
+    expect(unchanged).toEqual({
+      takeProfit: null,
+      stopLoss: null,
     });
   });
 });

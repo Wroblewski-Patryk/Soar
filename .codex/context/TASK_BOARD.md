@@ -20,6 +20,16 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-77 fix(api-positions): require synced state for manual updates`
+  - Scope: closed a BUILDER-mode manual position update parity drift. Manual
+    TP/SL updates now require `syncState=IN_SYNC` in addition to `status=OPEN`,
+    and the mutation uses a guarded `updateMany` predicate so stale
+    `ORPHAN_LOCAL` open-position rows cannot be changed after active
+    list/runtime close paths stop treating them as active. Validation PASS:
+    positions service suite (`2/2`), API typecheck, repository guardrails,
+    lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-77-position-manual-update-sync-state-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-76 fix(api-positions): align active position lists with sync state`
   - Scope: closed a BUILDER-mode dashboard positions-list parity drift.
     Generic dashboard positions list now requires `syncState=IN_SYNC` when

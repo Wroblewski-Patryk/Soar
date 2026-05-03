@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 position manual-update active-state slice `RUNTIME-AUDIT-77`
+  is closed locally. Manual TP/SL updates now require `syncState=IN_SYNC` in
+  addition to `status=OPEN`, and the mutation uses a guarded
+  `updateMany` predicate so stale `ORPHAN_LOCAL` open-position rows cannot be
+  changed after active list/runtime close paths stop treating them as active.
+  Validation PASS: positions service suite (`2/2`), API typecheck, repository
+  guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-77-position-manual-update-sync-state-task-2026-05-04.md`.
 - 2026-05-04 positions list active-sync-state slice `RUNTIME-AUDIT-76` is
   closed locally. Generic dashboard positions list now requires
   `syncState=IN_SYNC` when filtering `status=OPEN`, so stale `ORPHAN_LOCAL`
