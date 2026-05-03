@@ -557,7 +557,7 @@ export const getBotRuntimeMonitoringAggregate = async (
         closedTrades: symbolSummary.closedTrades,
         winningTrades: symbolSummary.winningTrades,
         losingTrades: symbolSummary.losingTrades,
-        realizedPnl: tradeItems.reduce((acc, item) => acc + item.realizedPnl, 0),
+        realizedPnl: positionsSummary.realizedPnl,
         grossProfit: symbolSummary.grossProfit,
         grossLoss: symbolSummary.grossLoss,
         feesPaid: tradeItems.reduce((acc, item) => acc + item.fee, 0),

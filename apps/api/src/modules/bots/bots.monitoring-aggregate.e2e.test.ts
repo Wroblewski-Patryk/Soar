@@ -309,6 +309,90 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     expect(aggregateRes.body.trades.total).toBe(0);
   });
 
+  it('keeps aggregate header PnL aligned with imported closed position summary when trades are missing', async () => {
+    const ownerEmail = 'bots-monitoring-aggregate-imported-position-pnl@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({
+      where: { email: ownerEmail },
+      select: { id: true },
+    });
+
+    const strategyId = await createStrategy(owner, 'Monitoring Aggregate Imported Position PnL');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    const walletId = await createWalletForContext(ownerEmail, {
+      mode: 'LIVE',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: ownerUser.id,
+        name: 'imported-position-pnl-aggregate-bot',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'mvp-v1',
+        walletId,
+        strategyId,
+        symbolGroupId: marketGroupId,
+      },
+      select: { id: true },
+    });
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId: bot.id,
+        mode: 'LIVE',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-19T12:00:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-19T12:10:00.000Z'),
+      },
+    });
+    await prisma.botRuntimeSymbolStat.create({
+      data: {
+        userId: ownerUser.id,
+        botId: bot.id,
+        sessionId: session.id,
+        symbol: 'BTCUSDT',
+        snapshotAt: new Date('2026-04-19T12:08:00.000Z'),
+      },
+    });
+    await prisma.position.create({
+      data: {
+        userId: ownerUser.id,
+        botId: bot.id,
+        walletId,
+        strategyId,
+        externalId: 'api-key-1:BTCUSDT:LONG',
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'ORPHAN_LOCAL',
+        continuityState: 'EXTERNAL_CLOSE_CONFIRMED',
+        symbol: 'BTCUSDT',
+        side: 'LONG',
+        status: 'CLOSED',
+        entryPrice: 60000,
+        quantity: 0.01,
+        leverage: 2,
+        realizedPnl: 37.5,
+        openedAt: new Date('2026-04-19T11:55:00.000Z'),
+        closedAt: new Date('2026-04-19T12:05:00.000Z'),
+        closeReason: 'EXTERNAL_SYNC_MISSING',
+        closeInitiator: 'USER_EXCHANGE',
+      },
+    });
+
+    const aggregateRes = await owner.get(`/dashboard/bots/${bot.id}/runtime-monitoring/aggregate`);
+    expect(aggregateRes.status).toBe(200);
+    expect(aggregateRes.body.positions.summary.realizedPnl).toBe(37.5);
+    expect(aggregateRes.body.sessionDetail.summary.realizedPnl).toBe(37.5);
+    expect(aggregateRes.body.trades.total).toBe(0);
+  });
+
   it('uses paper reset checkpoint as the active capital baseline in runtime monitoring summary', async () => {
     const ownerEmail = 'bots-monitoring-aggregate-paper-reset@example.com';
     const owner = await registerAndLogin(ownerEmail);

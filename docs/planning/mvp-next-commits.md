@@ -9,6 +9,17 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-36 fix(api-bots): align aggregate header PnL with positions`
+  - 2026-05-03: Closed an ARCHITECT-mode duplicate-summary truth drift.
+    Runtime monitoring aggregate header `sessionDetail.summary.realizedPnl`
+    now reuses the scoped positions summary, so imported or externally closed
+    positions with canonical position PnL but no local trade rows no longer
+    disappear from the dashboard aggregate header. Trade-backed fee behavior
+    is unchanged. Validation PASS: failing-then-passing imported closed
+    position PnL regression, full monitoring aggregate e2e (`8/8`), runtime
+    history parity e2e (`6/6`), API typecheck, repository guardrails, lint, and
+    diff review. Evidence:
+    `docs/planning/runtime-audit-36-aggregate-position-summary-pnl-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-35 fix(api-bots): keep empty running aggregate unfinished`
   - 2026-05-03: Closed a BUILDER-mode runtime dashboard empty-state timestamp
     drift. Empty runtime monitoring aggregate payloads now set

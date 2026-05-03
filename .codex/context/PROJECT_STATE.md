@@ -3,6 +3,16 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 aggregate header position-PnL parity slice
+  `RUNTIME-AUDIT-36` is closed locally. Runtime monitoring aggregate header
+  `sessionDetail.summary.realizedPnl` now reuses the scoped positions summary,
+  so imported or externally closed positions with canonical position PnL but no
+  local trade rows no longer disappear from the dashboard aggregate header.
+  Trade-backed fee behavior is unchanged. Validation PASS:
+  failing-then-passing imported closed position PnL regression, full monitoring
+  aggregate e2e (`8/8`), runtime history parity e2e (`6/6`), API typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-36-aggregate-position-summary-pnl-task-2026-05-03.md`.
 - 2026-05-03 empty running aggregate timestamp slice `RUNTIME-AUDIT-35`
   is closed locally. Empty runtime monitoring aggregate payloads now set
   `sessionDetail.finishedAt: null` when the effective empty aggregate status is
