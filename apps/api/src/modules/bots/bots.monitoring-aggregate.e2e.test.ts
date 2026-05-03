@@ -463,6 +463,7 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     expect(aggregateRes.status).toBe(200);
     expect(aggregateRes.body.trades.items).toHaveLength(1);
     expect(aggregateRes.body.trades.total).toBe(2);
+    expect(aggregateRes.body.sessionDetail.summary.feesPaid).toBeCloseTo(1.1);
     expect(aggregateRes.body.trades.meta).toEqual(
       expect.objectContaining({
         page: 1,

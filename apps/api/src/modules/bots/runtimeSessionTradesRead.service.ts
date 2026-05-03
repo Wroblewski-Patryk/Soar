@@ -79,6 +79,7 @@ const emptyRuntimeTradesResponse = (params: {
 }) => ({
   sessionId: params.sessionId,
   total: 0,
+  feesPaid: 0,
   meta: {
     page: params.page,
     pageSize: params.pageSize,
@@ -194,6 +195,7 @@ export const listBotRuntimeSessionTrades = async (
     return {
       sessionId,
       total: 0,
+      feesPaid: 0,
       meta: {
         page,
         pageSize,
@@ -470,6 +472,7 @@ export const listBotRuntimeSessionTrades = async (
   });
 
   const total = sortedRows.length;
+  const feesPaid = sortedRows.reduce((acc, trade) => acc + trade.fee, 0);
   const totalPages = total === 0 ? 0 : Math.ceil(total / pageSize);
   const safePage = totalPages === 0 ? 1 : Math.min(page, totalPages);
   const offset = (safePage - 1) * pageSize;
@@ -478,6 +481,7 @@ export const listBotRuntimeSessionTrades = async (
   return {
     sessionId,
     total,
+    feesPaid,
     meta: {
       page: safePage,
       pageSize,

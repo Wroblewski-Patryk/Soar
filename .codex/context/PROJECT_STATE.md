@@ -3,6 +3,16 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 aggregate trade-fee limit slice `RUNTIME-AUDIT-44` is
+  closed locally. Runtime session trades now expose unpaginated scoped
+  `feesPaid`, and monitoring aggregate `sessionDetail.summary.feesPaid`
+  composes those session fee totals instead of limited visible trade rows.
+  Dashboard fee summaries now remain truthful when `perSessionLimit` hides
+  older trades while visible trade rows remain limited. Validation PASS:
+  failing-then-passing `perSessionLimit=1` trade-fee regression,
+  runtime-scope e2e (`12/12`), monitoring aggregate e2e (`11/11`), API
+  typecheck, repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-44-aggregate-trade-fees-limit-task-2026-05-03.md`.
 - 2026-05-03 runtime free-cash hidden-margin slice `RUNTIME-AUDIT-43` is
   closed locally. Runtime session positions now use scoped persisted
   open-position `marginUsed` as the primary used-margin input for capital

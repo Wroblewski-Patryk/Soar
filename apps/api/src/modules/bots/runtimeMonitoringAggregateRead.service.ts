@@ -148,6 +148,7 @@ const buildEmptyAggregatePayload = (params: {
     trades: {
       sessionId: 'AGGREGATE',
       total: 0,
+      feesPaid: 0,
       meta: {
         page: 1,
         pageSize: 1,
@@ -535,6 +536,7 @@ export const getBotRuntimeMonitoringAggregate = async (
   const totalOpenPositions = positionResponses.reduce((acc, response) => acc + response.openCount, 0);
   const totalClosedPositions = positionResponses.reduce((acc, response) => acc + response.closedCount, 0);
   const totalTrades = completePayloadRows.reduce((acc, row) => acc + row.trades.total, 0);
+  const totalTradeFeesPaid = completePayloadRows.reduce((acc, row) => acc + row.trades.feesPaid, 0);
   const windowFinishedAt = finishedAt ?? new Date();
   const pageSize = tradeItems.length || 1;
   const totalPages = totalTrades === 0 ? 0 : Math.ceil(totalTrades / pageSize);
@@ -571,7 +573,7 @@ export const getBotRuntimeMonitoringAggregate = async (
         realizedPnl: positionsSummary.realizedPnl,
         grossProfit: symbolSummary.grossProfit,
         grossLoss: symbolSummary.grossLoss,
-        feesPaid: tradeItems.reduce((acc, item) => acc + item.fee, 0),
+        feesPaid: totalTradeFeesPaid,
         openPositionCount: totalOpenPositions,
         openPositionQty: positionsSummary.openPositionQty,
       },
@@ -600,6 +602,7 @@ export const getBotRuntimeMonitoringAggregate = async (
     trades: {
       sessionId: 'AGGREGATE',
       total: totalTrades,
+      feesPaid: totalTradeFeesPaid,
       meta: {
         page: 1,
         pageSize,
