@@ -1,8 +1,16 @@
 # PROJECT_STATE
 
-Last updated: 2026-05-03
+Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 LIVE open-order upsert owner-scope slice `RUNTIME-AUDIT-69` is
+  closed locally. Exchange-synced open-order upsert now searches existing rows
+  only within the same bot or same botless wallet context before updating or
+  blocking, so an unrelated wallet-null/botless `exchangeOrderId` collision
+  cannot steal the update or prevent the owning bot/wallet row from being
+  created. Validation PASS: live reconciliation suite (`27/27`), API
+  typecheck, repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-69-open-order-upsert-owner-scope-task-2026-05-04.md`.
 - 2026-05-03 LIVE botless open-order wallet-proof slice
   `RUNTIME-AUDIT-68` is closed locally. Runtime session positions now require
   exact wallet proof before including botless LIVE `EXCHANGE_SYNC` open orders

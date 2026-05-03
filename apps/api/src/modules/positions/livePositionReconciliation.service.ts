@@ -49,7 +49,7 @@ const STALE_LOCAL_MANAGED_LIVE_POSITION_FALLBACK_GRACE_MS = 60 * 60 * 1000;
 const EXTERNAL_POSITION_MISSING_CONFIRMATION_THRESHOLD = 2;
 const buildOwnerIdentity = (botId: string, walletId: string) => `${botId}:${walletId}`;
 
-const defaultDeps: ReconcileDeps = {
+export const livePositionReconciliationDefaultDeps: ReconcileDeps = {
   listSyncedApiKeys: async () => {
     const apiKeys = await prisma.apiKey.findMany({
       where: {
@@ -242,6 +242,7 @@ const defaultDeps: ReconcileDeps = {
       where: {
         userId: input.userId,
         exchangeOrderId: input.exchangeOrderId,
+        OR: [{ botId: input.botId }, { botId: null, walletId: input.walletId }],
       },
       orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
       select: {
@@ -388,7 +389,7 @@ const shouldTriggerOwnedSyncedPositionAutomation = (input: {
   input.markPrice > 0;
 
 export const reconcileExternalPositionsFromExchange = async (
-  deps: ReconcileDeps = defaultDeps
+  deps: ReconcileDeps = livePositionReconciliationDefaultDeps
 ): Promise<{ openPositionsSeen: number }> => {
   const apiKeys = await deps.listSyncedApiKeys();
   let openPositionsSeen = 0;

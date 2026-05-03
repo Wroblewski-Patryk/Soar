@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-05-03
+Last updated: 2026-05-04
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -19,6 +19,16 @@ Last updated: 2026-05-03
 
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+
+- [x] `RUNTIME-AUDIT-69 fix(api-positions): scope open-order upsert by owner`
+  - Scope: closed an ARCHITECT-mode LIVE open-order write-path ownership
+    drift. Exchange-synced open-order upsert now searches existing rows only
+    within the same bot or same botless wallet context before updating or
+    blocking, so an unrelated wallet-null/botless `exchangeOrderId` collision
+    cannot steal the update or prevent the owning bot/wallet row from being
+    created. Validation PASS: live reconciliation suite (`27/27`), API
+    typecheck, repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-69-open-order-upsert-owner-scope-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-68 fix(api-runtime): require wallet proof for botless LIVE open orders`
   - Scope: closed a BUILDER-mode dashboard management-state ownership drift.

@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   LivePositionReconciliationLoop,
+  livePositionReconciliationDefaultDeps,
   reconcileExternalPositionsFromExchange,
   resolveCanonicalBotContinuityContext,
 } from './livePositionReconciliation.service';
@@ -1933,6 +1934,153 @@ describe('reconcileExternalPositionsFromExchange', () => {
         walletId: 'wallet-eth',
         strategyId: 'strategy-eth',
         managementMode: 'BOT_MANAGED',
+      })
+    );
+  });
+});
+
+describe('livePositionReconciliationDefaultDeps', () => {
+  it('does not update unrelated botless exchange-synced open orders when exchange ids collide', async () => {
+    await prisma.trade.deleteMany();
+    await prisma.order.deleteMany();
+    await prisma.position.deleteMany();
+    await prisma.signal.deleteMany();
+    await prisma.runtimeExecutionDedupe.deleteMany();
+    await prisma.botRuntimeSymbolStat.deleteMany();
+    await prisma.botRuntimeEvent.deleteMany();
+    await prisma.botRuntimeSession.deleteMany();
+    await prisma.log.deleteMany();
+    await prisma.botStrategy.deleteMany();
+    await prisma.botSubagentConfig.deleteMany();
+    await prisma.botAssistantConfig.deleteMany();
+    await prisma.marketGroupStrategyLink.deleteMany();
+    await prisma.botMarketGroup.deleteMany();
+    await prisma.bot.deleteMany();
+    await prisma.symbolGroup.deleteMany();
+    await prisma.marketUniverse.deleteMany();
+    await prisma.wallet.deleteMany();
+    await prisma.apiKey.deleteMany();
+    await prisma.strategy.deleteMany();
+    await prisma.user.deleteMany();
+
+    const user = await prisma.user.create({
+      data: { email: 'live-order-upsert-owner-scope@example.com', password: 'test-password' },
+      select: { id: true },
+    });
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'Order Scope Wallet',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+      select: { id: true },
+    });
+    const marketUniverse = await prisma.marketUniverse.create({
+      data: {
+        userId: user.id,
+        name: 'Order Scope Universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: ['BTCUSDT'],
+        blacklist: [],
+      },
+      select: { id: true },
+    });
+    const symbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: user.id,
+        marketUniverseId: marketUniverse.id,
+        name: 'Order Scope Group',
+        symbols: ['BTCUSDT'],
+      },
+      select: { id: true },
+    });
+    const strategy = await prisma.strategy.create({
+      data: {
+        userId: user.id,
+        name: 'Order Scope Strategy',
+        interval: '5m',
+        leverage: 2,
+        walletRisk: 1,
+        config: {},
+      },
+      select: { id: true },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'Order Scope Bot',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'mvp-v1',
+        walletId: wallet.id,
+        strategyId: strategy.id,
+        symbolGroupId: symbolGroup.id,
+      },
+      select: { id: true },
+    });
+
+    const collidingOrder = await prisma.order.create({
+      data: {
+        userId: user.id,
+        botId: null,
+        walletId: null,
+        strategyId: null,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        exchangeOrderId: 'shared-exchange-order',
+        symbol: 'ETHUSDT',
+        side: 'SELL',
+        type: 'LIMIT',
+        status: 'OPEN',
+        quantity: 0.2,
+        price: 3100,
+        submittedAt: new Date('2026-05-04T08:00:00.000Z'),
+      },
+    });
+
+    await livePositionReconciliationDefaultDeps.upsertSyncedOpenOrder?.({
+      userId: user.id,
+      exchangeOrderId: 'shared-exchange-order',
+      botId: bot.id,
+      walletId: wallet.id,
+      symbol: 'BTCUSDT',
+      side: 'BUY',
+      type: 'LIMIT',
+      status: 'OPEN',
+      quantity: 0.01,
+      filledQuantity: 0,
+      price: 67000,
+      submittedAt: new Date('2026-05-04T08:01:00.000Z'),
+    });
+
+    const orders = await prisma.order.findMany({
+      where: { userId: user.id, exchangeOrderId: 'shared-exchange-order' },
+      orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+      select: { id: true, botId: true, walletId: true, symbol: true, quantity: true },
+    });
+    expect(orders).toHaveLength(2);
+    expect(orders.find((order) => order.id === collidingOrder.id)).toEqual({
+      id: collidingOrder.id,
+      botId: null,
+      walletId: null,
+      symbol: 'ETHUSDT',
+      quantity: 0.2,
+    });
+    expect(orders.find((order) => order.id !== collidingOrder.id)).toEqual(
+      expect.objectContaining({
+        botId: bot.id,
+        walletId: wallet.id,
+        symbol: 'BTCUSDT',
+        quantity: 0.01,
       })
     );
   });
