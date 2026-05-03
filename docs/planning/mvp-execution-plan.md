@@ -108,6 +108,14 @@ Rule: fix/cleanup/update first, then feature delivery.
   close linked positions through direct API actions after runtime/dashboard has
   stopped treating them as active. Validation PASS: orders service suite
   (`31/31`), API typecheck, repository guardrails, lint, and diff review.
+- 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-75` with
+  `docs/planning/runtime-audit-75-runtime-close-position-sync-state-task-2026-05-04.md`.
+  Dashboard/runtime manual close-position command now requires
+  `syncState=IN_SYNC` for the selected open position and for the
+  ownership-claim update guard, so stale `ORPHAN_LOCAL` open-position rows are
+  ignored as `no_open_position` before close orchestration. Validation PASS:
+  runtime position command suite (`10/10`), API typecheck, repository
+  guardrails, lint, and diff review.
 - 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-15` with
   `docs/planning/runtime-audit-15-close-fee-position-scope-task-2026-05-03.md`.
   Runtime close realized-PnL now aggregates entry fees by owned position

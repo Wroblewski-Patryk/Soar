@@ -169,6 +169,7 @@ export const closeBotRuntimeSessionPosition = async (
       id: positionId,
       userId,
       status: 'OPEN',
+      syncState: 'IN_SYNC',
       managementMode: 'BOT_MANAGED',
     },
     select: {
@@ -245,6 +246,7 @@ export const closeBotRuntimeSessionPosition = async (
         id: position.id,
         userId,
         status: 'OPEN',
+        syncState: 'IN_SYNC',
         managementMode: 'BOT_MANAGED',
       },
       data: update,

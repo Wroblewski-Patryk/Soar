@@ -229,6 +229,37 @@ describe('closeBotRuntimeSessionPosition', () => {
     expect(mocks.orchestrateRuntimeSignal).not.toHaveBeenCalled();
   });
 
+  it('fails closed for stale local open-position rows before close orchestration', async () => {
+    mocks.prisma.position.findFirst
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(null);
+
+    const result = await closeBotRuntimeSessionPosition(
+      'user-1',
+      'bot-1',
+      'session-1',
+      'position-orphan-local-1',
+      { riskAck: true }
+    );
+
+    expect(mocks.prisma.position.findFirst).toHaveBeenNthCalledWith(1, {
+      where: {
+        id: 'position-orphan-local-1',
+        userId: 'user-1',
+        status: 'OPEN',
+        syncState: 'IN_SYNC',
+        managementMode: 'BOT_MANAGED',
+      },
+      select: expect.any(Object),
+    });
+    expect(result).toEqual({
+      status: 'ignored',
+      reason: 'no_open_position',
+    });
+    expect(mocks.prisma.position.updateMany).not.toHaveBeenCalled();
+    expect(mocks.orchestrateRuntimeSignal).not.toHaveBeenCalled();
+  });
+
   it('falls back to entry price for LIVE manual close when runtime lifecycle price is unavailable', async () => {
     mocks.prisma.position.findFirst.mockResolvedValue({
       id: 'position-1',
@@ -459,6 +490,7 @@ describe('closeBotRuntimeSessionPosition', () => {
         id: 'position-1',
         userId: 'user-1',
         status: 'OPEN',
+        syncState: 'IN_SYNC',
         managementMode: 'BOT_MANAGED',
       },
       data: {
@@ -533,6 +565,7 @@ describe('closeBotRuntimeSessionPosition', () => {
         id: 'position-1',
         userId: 'user-1',
         status: 'OPEN',
+        syncState: 'IN_SYNC',
         managementMode: 'BOT_MANAGED',
       },
       data: {

@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 runtime manual close active-position slice `RUNTIME-AUDIT-75`
+  is closed locally. Dashboard/runtime manual close-position command now
+  requires `syncState=IN_SYNC` for the selected open position and for the
+  ownership-claim update guard, so stale `ORPHAN_LOCAL` open-position rows are
+  ignored as `no_open_position` before close orchestration. Validation PASS:
+  runtime position command suite (`10/10`), API typecheck, repository
+  guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-75-runtime-close-position-sync-state-task-2026-05-04.md`.
 - 2026-05-04 manual order action active-sync-state slice `RUNTIME-AUDIT-74`
   is closed locally. Manual `cancelOrder` and `closeOrder` now require
   `syncState=IN_SYNC`, so stale `ORPHAN_LOCAL` open-status rows cannot be
