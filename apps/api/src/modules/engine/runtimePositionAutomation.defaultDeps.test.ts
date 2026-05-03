@@ -47,7 +47,7 @@ describe('RuntimePositionAutomationService default ownership hydration', () => {
         userId: 'user-1',
         botId: null,
         walletId: null,
-        strategyId: 'strat-1',
+        strategyId: null,
         externalId: 'key-1:DOGEUSDT:SHORT',
         symbol: 'DOGEUSDT',
         side: 'SHORT',
@@ -89,6 +89,11 @@ describe('RuntimePositionAutomationService default ownership hydration', () => {
             baseCurrency: 'USDT',
           },
         },
+        botMarketGroups: [
+          {
+            strategyLinks: [{ strategyId: 'strat-1' }],
+          },
+        ],
       },
     ]);
 

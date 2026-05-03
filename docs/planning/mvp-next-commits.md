@@ -7,9 +7,28 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- No active feature `NOW` task remains after `BOTMULTI-08` closure.
-  `BOTMULTI-09` is blocked only at the manual production workflow-dispatch
-  boundary.
+- Operator-reported LIVE/PAPER runtime follow-ups are now queued after
+  `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [ ] `LIVEIMPORT-03 release(prod): promote imported-position provenance fix and read back ETH/DOGE`
+  - Scope: promote commit `39146d2e` through the approved production workflow,
+    verify API freshness directly, then use authenticated read-only dashboard
+    evidence for the reported LIVE ETH/DOGE rows: ownership, `strategyId` or
+    single-strategy provenance recovery, TTP visibility, actionable state, and
+    import completeness across assigned bot markets. Deployment impact:
+    medium. Validation: production `/health`, `/ready`, API freshness,
+    authenticated runtime positions readback, and rollback note.
+- [ ] `PAPERSIGNAL-01 fix(api-runtime): audit PAPER signal display-to-execution parity`
+  - Scope: reproduce the reported paper bot condition where signal data is
+    visible or expected but no position opens, compare symbol-stats conditions,
+    final-candle strategy decisions, `PRETRADE_BLOCKED` reasons, capital/max
+    position guards, and order lifecycle writes. Convert the first confirmed
+    mismatch into a tiny fix with regression tests.
+- [ ] `WALLETBAL-01 fix(api-web): stabilize dashboard wallet account-balance display`
+  - Scope: audit the dashboard wallet account-balance source chain and
+    intermittent empty state: live balance fetch, snapshot persistence,
+    aggregate positions summary, web refresh/error handling, and stale/null
+    fallback display. Implement only the first confirmed defect with focused
+    API/web tests.
 - [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production`
   - 2026-05-03: Release task opened after operator request. Confirmed API
     redeploy runs migrations automatically through
@@ -217,6 +236,16 @@ Operational queue for one-task execution runs.
     guardrails.
     Evidence:
     `docs/planning/ethdca-01-live-dca-first-tsl-hardening-task-2026-05-02.md`.
+- [x] `LIVEIMPORT-02 fix(api-runtime): recover single-strategy provenance for imported LIVE protection`
+  - 2026-05-03: Closed the operator-reported follow-up where owned
+    `EXCHANGE_SYNC` LIVE positions could still lack `strategyId`, leaving TTP
+    invisible or inactive for imported ETH/DOGE rows. Runtime automation and
+    runtime positions read models now use the bot's single enabled canonical
+    strategy link only when unambiguous; multi-strategy missing provenance
+    remains fail-closed. Validation PASS: focused runtime automation tests
+    (`33/33`), focused dynamic-stop operator truth e2e (`2/2`), API
+    typecheck, and repository guardrails. Evidence:
+    `docs/planning/live-import-single-strategy-provenance-task-2026-05-03.md`.
 - [x] `RUNTIME-SIGNAL-VOTES-01 fix(api-runtime): recover runtime strategy votes when matched indicators exist`
   - 2026-05-02: Implementation is verified and production-smoked
     for the production-reported runtime signal-vote drift where dashboard rows

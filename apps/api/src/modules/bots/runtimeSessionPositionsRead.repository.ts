@@ -8,6 +8,7 @@ export const getRuntimePositionBotContext = async (userId: string, botId: string
       id: true,
       apiKeyId: true,
       walletId: true,
+      strategyId: true,
       createdAt: true,
       paperStartBalance: true,
       wallet: {
@@ -29,6 +30,15 @@ export const getRuntimePositionBotContext = async (userId: string, botId: string
               marketType: true,
               baseCurrency: true,
             },
+          },
+        },
+      },
+      botMarketGroups: {
+        where: { isEnabled: true, lifecycleStatus: 'ACTIVE' },
+        select: {
+          strategyLinks: {
+            where: { isEnabled: true },
+            select: { strategyId: true },
           },
         },
       },

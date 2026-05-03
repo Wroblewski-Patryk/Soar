@@ -27,6 +27,11 @@ type RuntimeManagedPositionContext = {
               } | null;
             }
           | null;
+        botMarketGroups?: Array<{
+          strategyLinks: Array<{
+            strategyId: string;
+          }>;
+        }>;
       }
     | null;
 };
@@ -39,6 +44,20 @@ export const resolveInheritedPositionExecutionContext = (
     wallet: position.bot?.wallet,
     venueContext: position.bot?.symbolGroup?.marketUniverse,
   });
+
+export const resolveEffectivePositionStrategyId = (
+  position: { strategyId: string | null } & RuntimeManagedPositionContext
+) => {
+  if (position.strategyId) return position.strategyId;
+  const enabledCanonicalStrategyIds = [
+    ...new Set(
+      (position.bot?.botMarketGroups ?? []).flatMap((group) =>
+        group.strategyLinks.map((link) => link.strategyId)
+      )
+    ),
+  ];
+  return enabledCanonicalStrategyIds.length === 1 ? enabledCanonicalStrategyIds[0] : null;
+};
 
 export const resolveDcaLevelCount = (input: PositionManagementInput) => {
   if (!input.dca?.enabled) return 0;

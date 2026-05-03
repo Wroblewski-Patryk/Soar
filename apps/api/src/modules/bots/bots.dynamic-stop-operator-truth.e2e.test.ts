@@ -140,7 +140,7 @@ describe('Bots dynamic stop operator truth contract', () => {
       data: {
         userId: ownerUser.id,
         botId,
-        strategyId: dynamicStopStrategyId,
+        strategyId: null,
         walletId: createRes.body.walletId as string,
         symbol: 'XRPUSDT',
         side: 'LONG',
@@ -203,11 +203,13 @@ describe('Bots dynamic stop operator truth contract', () => {
       positionsRes.body.openItems as Array<{
         symbol: string;
         dynamicTtpStopLoss: number | null;
+        actionable: boolean;
       }>
     ).find((item) => item.symbol === 'XRPUSDT');
 
     expect(xrp).toBeDefined();
     if (!xrp) throw new Error('Expected XRPUSDT operator-truth item');
+    expect(xrp.actionable).toBe(true);
     expect(xrp.dynamicTtpStopLoss).toBeCloseTo(102.5, 6);
 
     await runtimePositionStateStore.deletePositionRuntimeState(position.id);

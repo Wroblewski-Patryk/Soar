@@ -80,6 +80,20 @@ const resolveRuntimePositionActionable = (input: {
 const resolveRuntimeStrategyAutomationContext = (strategyId: string | null) =>
   typeof strategyId === 'string' && strategyId.length > 0;
 
+const resolveSingleBotStrategyContext = (botContext: Awaited<ReturnType<typeof getRuntimePositionBotContext>>) => {
+  if (!botContext) return null;
+  const enabledCanonicalStrategyIds = [
+    ...new Set(
+      (botContext.botMarketGroups ?? []).flatMap((group) =>
+        group.strategyLinks.map((link) => link.strategyId)
+      )
+    ),
+  ];
+  if (enabledCanonicalStrategyIds.length === 1) return enabledCanonicalStrategyIds[0];
+  if (enabledCanonicalStrategyIds.length > 1) return null;
+  return botContext.strategyId ?? null;
+};
+
 const selectPreferredRuntimeOpenOrder = (
   current: RuntimeOpenOrderRow,
   candidate: RuntimeOpenOrderRow
@@ -473,11 +487,15 @@ export const listBotRuntimeSessionPositions = async (
   const symbols = [...new Set(positions.map((position) => position.symbol))];
   const lifecycleTradeWindowStart =
     botContext.createdAt < session.startedAt ? botContext.createdAt : session.startedAt;
+  const singleBotStrategyContextId = resolveSingleBotStrategyContext(botContext);
   const strategyIds = [
     ...new Set(
-      positions
-        .map((position) => position.strategyId)
-        .filter((strategyId): strategyId is string => typeof strategyId === 'string' && strategyId.length > 0)
+      [
+        ...positions
+          .map((position) => position.strategyId)
+          .filter((strategyId): strategyId is string => typeof strategyId === 'string' && strategyId.length > 0),
+        ...(singleBotStrategyContextId ? [singleBotStrategyContextId] : []),
+      ]
     ),
   ];
   const [dcaPlanBySymbol, trailingStopLevelsBySymbol, trailingTakeProfitLevelsBySymbol, persistedRuntimeStatesByPositionId] = await Promise.all([
@@ -700,20 +718,27 @@ export const listBotRuntimeSessionPositions = async (
     const tradeRealizedPnl = positionTrades.reduce((acc, trade) => acc + (trade.realizedPnl ?? 0), 0);
     const entryTrade = entryLegs[0] ?? positionTrades[0] ?? null;
     const exitTrade = exitLegs.at(-1) ?? (position.status === 'CLOSED' ? positionTrades.at(-1) ?? null : null);
-    const strategyAutomationContextResolved = resolveRuntimeStrategyAutomationContext(position.strategyId);
+    const effectiveStrategyId = position.strategyId ?? singleBotStrategyContextId;
+    const strategyAutomationContextResolved = resolveRuntimeStrategyAutomationContext(effectiveStrategyId);
     const dcaPlannedLevels =
       strategyAutomationContextResolved
-        ? ((position.strategyId ? dcaPlanByStrategyId.get(position.strategyId) : null) ?? [])
+        ? ((effectiveStrategyId ? dcaPlanByStrategyId.get(effectiveStrategyId) : null) ??
+          dcaPlanBySymbol.get(position.symbol) ??
+          [])
         : [];
     const trailingStopLevels =
       strategyAutomationContextResolved
-        ? ((position.strategyId ? trailingStopLevelsByStrategyId.get(position.strategyId) : null) ?? [])
+        ? ((effectiveStrategyId ? trailingStopLevelsByStrategyId.get(effectiveStrategyId) : null) ??
+          trailingStopLevelsBySymbol.get(position.symbol) ??
+          [])
         : [];
     const trailingTakeProfitLevels =
       strategyAutomationContextResolved
-        ? ((position.strategyId
-            ? trailingTakeProfitLevelsByStrategyId.get(position.strategyId)
-            : null) ?? [])
+        ? ((effectiveStrategyId
+            ? trailingTakeProfitLevelsByStrategyId.get(effectiveStrategyId)
+            : null) ??
+          trailingTakeProfitLevelsBySymbol.get(position.symbol) ??
+          [])
         : [];
     const marketPrice = resolvePreferredRuntimeOrExchangeSyncedPrice({
       origin: position.origin,
@@ -827,7 +852,7 @@ export const listBotRuntimeSessionPositions = async (
       actionable: resolveRuntimePositionActionable({
         continuityState: position.continuityState,
         botId: position.botId,
-        strategyId: position.strategyId,
+        strategyId: effectiveStrategyId,
       }),
       entryPrice: position.entryPrice,
       entryNotional: position.entryPrice * position.quantity,

@@ -110,6 +110,21 @@ Rule: fix/cleanup/update first, then feature delivery.
   typecheck, API build, and repository guardrails. Evidence:
   `docs/planning/ethdca-01-live-dca-first-tsl-hardening-task-2026-05-02.md`.
 
+## Phase LIVEIMPORT-2026-05-03 - LIVE Imported Position Ownership And Provenance (Closed 2026-05-03)
+- [x] `LIVEIMPORT-01 fix(api-runtime): restore wallet-first LIVE imported position ownership`
+- [x] `LIVEIMPORT-02 fix(api-runtime): recover single-strategy provenance for imported LIVE protection`
+
+### Progress Log (Phase LIVEIMPORT-2026-05-03 - LIVE Imported Position Ownership And Provenance)
+- 2026-05-03: Closed `LIVEIMPORT-01` by restoring wallet-first imported
+  ownership proof and active canonical market-group scope for LIVE
+  `EXCHANGE_SYNC` positions. Evidence:
+  `docs/planning/live-import-ownership-wallet-scope-task-2026-05-03.md`.
+- 2026-05-03: Closed `LIVEIMPORT-02` by allowing imported LIVE positions with
+  missing persisted `strategyId` to recover the owning bot's single enabled
+  canonical strategy link for TTP/DCA display and automation, while
+  multi-strategy ambiguity remains fail-closed. Evidence:
+  `docs/planning/live-import-single-strategy-provenance-task-2026-05-03.md`.
+
 ## Phase V1CLOSEOUT-AUDIT-2026-05-02 - Final V1 Audit Remediation (Queued 2026-05-02)
 - [x] `V1CLOSEOUT-00 planning(release): publish full audit remediation packet`
 - [x] `V1CLOSEOUT-01 fix(api-wallets/bots): resolve LIVE external management ownership persistence`

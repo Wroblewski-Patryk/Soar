@@ -21,6 +21,7 @@ import { resolveRuntimeLifecycleMarkPrice } from './runtimeLifecycleMarkPrice.se
 import {
   computePriceFromPercent,
   estimateNextDcaAddedQuantity,
+  resolveEffectivePositionStrategyId,
   resolveDcaLevelCount,
   resolveInheritedPositionExecutionContext,
   resolveRuntimeCurrentPnlFraction,
@@ -33,7 +34,6 @@ import {
   recordRuntimeProtectionCloseDecisionTelemetry,
 } from './runtimePositionAutomationTelemetry';
 import { RuntimeManagedPosition, RuntimePositionAutomationDeps } from './runtimePositionAutomation.types';
-
 export type RuntimeFallbackConfig = {
   dcaEnabled: boolean;
   dcaMaxAdds: number;
@@ -441,8 +441,7 @@ const defaultDeps: RuntimePositionAutomationDeps = {
   nowMs: () => Date.now(),
 };
 
-const resolveEnabledCanonicalStrategyLinkIds = (position: RuntimeManagedPosition) =>
-  Array.from(new Set((position.bot?.botMarketGroups ?? []).flatMap((group) => group.strategyLinks.map((link) => link.strategyId))));
+const resolveEnabledCanonicalStrategyLinkIds = (position: RuntimeManagedPosition) => Array.from(new Set((position.bot?.botMarketGroups ?? []).flatMap((group) => group.strategyLinks.map((link) => link.strategyId))));
 const toPercent = (value: unknown, fallback = 0) => {
   const num = Number(value);
   if (!Number.isFinite(num)) return fallback;
@@ -736,7 +735,8 @@ export class RuntimePositionAutomationService {
       return;
     }
     const enabledCanonicalStrategyLinkIds = resolveEnabledCanonicalStrategyLinkIds(position);
-    if (position.botId && !position.strategyId && enabledCanonicalStrategyLinkIds.length > 1) {
+    const effectiveStrategyId = resolveEffectivePositionStrategyId(position);
+    if (position.botId && !effectiveStrategyId && enabledCanonicalStrategyLinkIds.length > 1) {
       console.warn(`[RuntimePositionAutomation] position=${position.id} symbol=${position.symbol} skipped: missing strategy ownership for multi-strategy bot`);
       await recordRuntimeAutomationSkipTelemetry({
         recordRuntimeEvent: this.deps.recordRuntimeEvent,
@@ -756,7 +756,7 @@ export class RuntimePositionAutomationService {
     if (event.exchange !== exchange || event.marketType !== marketType) return;
 
     const runtimeConfig = getRuntimeConfig();
-    const strategyConfig = await this.getStrategyConfig(position.strategyId ?? null);
+    const strategyConfig = await this.getStrategyConfig(effectiveStrategyId);
     const lifecyclePrice =
       (await this.deps.resolveLifecyclePrice?.({
         exchange,
@@ -797,7 +797,7 @@ export class RuntimePositionAutomationService {
       positionId: position.id,
       botId: position.botId,
       walletId: inheritedExecutionContext.walletId ?? position.walletId ?? position.bot?.walletId ?? null,
-      strategyId: position.strategyId,
+      strategyId: effectiveStrategyId,
       symbol: position.symbol,
       positionSide: position.side,
     });
@@ -883,7 +883,7 @@ export class RuntimePositionAutomationService {
           userId: position.userId,
           botId: position.botId,
           walletId: inheritedExecutionContext.walletId ?? position.walletId ?? position.bot?.walletId ?? null,
-          strategyId: position.strategyId,
+          strategyId: effectiveStrategyId,
           positionId: position.id,
           symbol: position.symbol,
           positionSide: position.side,
@@ -923,7 +923,7 @@ export class RuntimePositionAutomationService {
             eventType: 'DCA_EXECUTED',
             level: 'INFO',
             symbol: position.symbol,
-            strategyId: position.strategyId ?? undefined,
+            strategyId: effectiveStrategyId ?? undefined,
             signalDirection: position.side === 'LONG' ? 'LONG' : 'SHORT',
             message: 'Runtime DCA executed',
             payload: {
@@ -959,7 +959,7 @@ export class RuntimePositionAutomationService {
         mode,
         positionId: position.id,
         symbol: position.symbol,
-        strategyId: position.strategyId,
+        strategyId: effectiveStrategyId,
         eventAt: new Date(event.eventTime),
         closeReason: result.closeReason,
         currentAdds: previousState.currentAdds,
@@ -974,7 +974,7 @@ export class RuntimePositionAutomationService {
         userId: position.userId,
         botId: position.botId ?? undefined,
         walletId: inheritedExecutionContext.walletId ?? position.walletId ?? position.bot?.walletId ?? null,
-        strategyId: position.strategyId ?? undefined,
+        strategyId: effectiveStrategyId ?? undefined,
         symbol: position.symbol,
         markPrice: effectiveLifecyclePrice,
         mode,

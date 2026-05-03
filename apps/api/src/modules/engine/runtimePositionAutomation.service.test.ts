@@ -6,6 +6,7 @@ afterEach(async () => {
   await runtimePositionStateStore.deletePositionRuntimeState('pos-replay-1');
   await runtimePositionStateStore.deletePositionRuntimeState('pos-live-import-ttp');
   await runtimePositionStateStore.deletePositionRuntimeState('pos-live-import-ttp-exchange-sync-price');
+  await runtimePositionStateStore.deletePositionRuntimeState('pos-live-import-single-strategy-ttp');
   await runtimePositionStateStore.deletePositionRuntimeState('pos-live-import-tp-exchange-sync-price');
   await runtimePositionStateStore.deletePositionRuntimeState('pos-live-import-sl-exchange-sync-price');
   await runtimePositionStateStore.deletePositionRuntimeState('pos-live-import-tsl-exchange-sync-price');
@@ -189,6 +190,89 @@ describe('RuntimePositionAutomationService', () => {
           skipReason: 'multi_strategy_position_provenance_missing',
           enabledStrategyLinkCount: 2,
         }),
+      })
+    );
+  });
+
+  it('uses the single enabled bot strategy for imported LIVE TTP automation when position provenance is missing', async () => {
+    process.env.RUNTIME_TRAILING_ENABLED = 'false';
+    process.env.RUNTIME_DCA_ENABLED = 'false';
+    const closeByExitSignal = vi.fn(async () => ({ status: 'closed' as const }));
+    const deps: any = {
+      listOpenPositionsBySymbol: vi.fn(async () => [
+        {
+          id: 'pos-live-import-single-strategy-ttp',
+          userId: 'user-live-import-single-strategy-ttp',
+          botId: 'bot-live-import-single-strategy-ttp',
+          walletId: 'wallet-live-import-single-strategy-ttp',
+          strategyId: null,
+          symbol: 'ETHUSDT',
+          side: 'LONG' as const,
+          entryPrice: 100,
+          quantity: 1,
+          leverage: 1,
+          marginUsed: 100,
+          stopLoss: null,
+          takeProfit: null,
+          managementMode: 'BOT_MANAGED' as const,
+          origin: 'EXCHANGE_SYNC' as const,
+          continuityState: 'CONFIRMED' as const,
+          status: 'OPEN' as const,
+          unrealizedPnl: null,
+          lastExchangeSyncAt: null,
+          bot: buildBotExecutionContext({
+            wallet: { mode: 'LIVE' },
+            botMarketGroups: [
+              {
+                strategyLinks: [{ strategyId: 'strategy-live-import-single' }],
+              },
+            ],
+          }),
+        },
+      ]),
+      getStrategyConfigById: vi.fn(async () => ({
+        close: {
+          mode: 'advanced',
+          ttp: [{ percent: 10, arm: 5 }],
+          tsl: [],
+        },
+        additional: { dcaEnabled: false },
+      })),
+      executeDca: vi.fn(async () => ({ feePaid: 0, executed: false })),
+      closeByExitSignal,
+      resolveDcaFundsExhausted: vi.fn(async () => false),
+      nowMs: vi.fn(() => Date.now()),
+    };
+
+    const service = new RuntimePositionAutomationService(deps);
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'ETHUSDT',
+      eventTime: 2_000,
+      lastPrice: 112,
+      priceChangePercent24h: 12,
+    });
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'ETHUSDT',
+      eventTime: 3_000,
+      lastPrice: 106,
+      priceChangePercent24h: 6,
+    });
+
+    expect(deps.getStrategyConfigById).toHaveBeenCalledWith('strategy-live-import-single');
+    expect(closeByExitSignal).toHaveBeenCalledWith(
+      expect.objectContaining({
+        botId: 'bot-live-import-single-strategy-ttp',
+        walletId: 'wallet-live-import-single-strategy-ttp',
+        strategyId: 'strategy-live-import-single',
+        symbol: 'ETHUSDT',
+        mode: 'LIVE',
+        reason: 'trailing_take_profit',
       })
     );
   });

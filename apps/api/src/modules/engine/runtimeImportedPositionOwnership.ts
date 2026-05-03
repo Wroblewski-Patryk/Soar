@@ -27,6 +27,11 @@ export type RuntimeImportedPositionBotContext = {
         } | null;
       }
     | null;
+  botMarketGroups?: Array<{
+    strategyLinks: Array<{
+      strategyId: string;
+    }>;
+  }>;
 };
 
 type RuntimeImportedPositionOwnershipRow = {
@@ -100,6 +105,15 @@ export const hydrateImportedRuntimePositionOwnership = async <
                     marketType: true,
                     baseCurrency: true,
                   },
+                },
+              },
+            },
+            botMarketGroups: {
+              where: { isEnabled: true, lifecycleStatus: 'ACTIVE' },
+              select: {
+                strategyLinks: {
+                  where: { isEnabled: true },
+                  select: { strategyId: true },
                 },
               },
             },

@@ -52,6 +52,39 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-05-03 - Imported LIVE protection needs unambiguous strategy provenance
+- Context: an operator reported that LIVE ETH/DOGE imported positions were
+  inconsistent: one row showed TTP while another did not, even though the bot
+  owned the market and the strategy had advanced TTP configured.
+- Symptom: an `EXCHANGE_SYNC` position can be deterministically owned by a bot
+  through wallet-first API-key plus symbol proof, but still lack persisted
+  `position.strategyId`; read models then hide TTP/DCA strategy settings and
+  automation evaluates without the intended close configuration.
+- Root cause: imported-position ownership recovery restored bot/wallet context,
+  but runtime protection paths still treated missing `position.strategyId` as
+  missing strategy context even when the owning bot had exactly one enabled
+  canonical strategy link.
+- Guardrail: imported LIVE protection may recover strategy provenance only when
+  the owning bot has exactly one enabled canonical strategy link; if multiple
+  links exist, keep the existing fail-closed
+  `multi_strategy_position_provenance_missing` behavior.
+- Preferred pattern:
+```text
+1) Prefer persisted position.strategyId.
+2) If absent, inspect the owning bot's enabled ACTIVE canonical strategy links.
+3) Use the single link only when there is exactly one.
+4) Keep multi-strategy missing provenance non-actionable.
+5) Feed the effective strategy into read-model display, DCA continuity, TTP/SL/TSL automation, and telemetry.
+```
+- Avoid: guessing by symbol, falling back to a primary strategy when multiple
+  links are enabled, or fixing only display while leaving automation without
+  strategy config.
+- Evidence: 2026-05-03 `LIVEIMPORT-02`
+  (`runtimePositionAutomation.service.ts`,
+  `runtimePositionAutomation.helpers.ts`,
+  `runtimeSessionPositionsRead.service.ts`, focused runtime/default-deps and
+  dynamic-stop e2e tests).
+
 ### 2026-05-03 - Imported LIVE ownership must use wallet-first API key and canonical market groups
 - Context: an operator reported that LIVE exchange-side positions were not
   pulled under bot management after adding markets and also after opening a

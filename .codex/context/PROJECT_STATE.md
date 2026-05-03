@@ -3,6 +3,26 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 operator-reported LIVE imported-position protection provenance
+  follow-up `LIVEIMPORT-02` is closed locally. Owned `EXCHANGE_SYNC` LIVE
+  positions that lack persisted `position.strategyId` can now recover the
+  owning bot's single enabled canonical strategy link for TTP/DCA read-model
+  display and runtime protection automation. Multi-strategy missing provenance
+  remains fail-closed through the existing
+  `multi_strategy_position_provenance_missing` skip telemetry. Public
+  production `/health` and `/ready` are healthy, but production web build-info
+  still reports deployed SHA `26962ea1dbb0981d3885779d01e58485d7e9fd6c`, so
+  this local fix requires promotion before authenticated ETH/DOGE readback.
+  Validation PASS: focused runtime automation tests (`33/33`), focused
+  dynamic-stop operator truth e2e (`2/2`), API typecheck, and repository
+  guardrails. Evidence:
+  `docs/planning/live-import-single-strategy-provenance-task-2026-05-03.md`.
+- 2026-05-03 operator-reported follow-up queue is active after
+  `LIVEIMPORT-02`: `LIVEIMPORT-03` for production promotion and authenticated
+  ETH/DOGE readback, `PAPERSIGNAL-01` for PAPER signal display-to-execution
+  parity, and `WALLETBAL-01` for intermittent dashboard wallet account-balance
+  display. These are separate one-task iterations; `BOTMULTI-09` remains
+  blocked at manual production workflow dispatch.
 - 2026-05-03 engineering documentation system-map foundation `DOCMAP-01` is
   closed locally. Existing architecture/module docs were preserved as the
   source of truth, while new traceability docs now connect product features to
