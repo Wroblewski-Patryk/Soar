@@ -3,6 +3,18 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 operator-requested LIVE/PAPER runtime audit slice
+  `RUNTIME-AUDIT-01` is closed locally. Runtime signal-loop open-position
+  counting now follows the wallet-first imported-position ownership contract by
+  resolving the effective LIVE API key from `wallet.apiKeyId` before legacy
+  `Bot.apiKeyId`. This prevents wallet-first bots from undercounting imported
+  `EXCHANGE_SYNC` LIVE positions in max-open/external-position guards when the
+  legacy bot API-key projection is null. Validation PASS: focused
+  runtime/defaults and ownership tests (`13/13`), runtime
+  final-candle/live-reconciliation/dynamic-stop tests (`75/75`), paper-live
+  equivalence (`2/2`), API typecheck, repository guardrails, and docs parity.
+  Evidence:
+  `docs/planning/live-paper-runtime-prod-audit-wallet-first-count-task-2026-05-03.md`.
 - 2026-05-03 operator-reported LIVE imported-position protection provenance
   follow-up `LIVEIMPORT-02` is closed locally. Owned `EXCHANGE_SYNC` LIVE
   positions that lack persisted `position.strategyId` can now recover the

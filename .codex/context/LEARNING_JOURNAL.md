@@ -52,6 +52,33 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-05-03 - Runtime guards must count imported LIVE positions with wallet-first API-key proof
+- Context: an operator reported that LIVE exchange-side positions were still
+  missing or inconsistently represented for bots whose assigned markets should
+  include manual exchange positions.
+- Symptom: imported-position ownership had been updated to use
+  `wallet.apiKeyId`, but runtime signal-loop open-position counting still
+  resolved external position scope from legacy `Bot.apiKeyId`.
+- Root cause: the wallet-first import ownership fix did not cover the separate
+  max-open/external-position guard counter in `runtimeSignalLoopDefaults`.
+- Guardrail: every runtime path that counts or scopes imported LIVE positions
+  must resolve the effective API key as `wallet.apiKeyId ?? Bot.apiKeyId` and
+  pass that same key into ownership index lookups and `externalId` prefix
+  filters.
+- Preferred pattern:
+```text
+1) Count directly bot-linked positions first.
+2) For LIVE only, resolve the effective API key from the wallet before legacy bot projection.
+3) Ask the existing ownership index for owned external symbols with that key.
+4) Count open unbound EXCHANGE_SYNC rows by the same key prefix plus bot wallet scope.
+5) Return direct + imported count without symbol-only guessing.
+```
+- Avoid: using `Bot.apiKeyId` as the only LIVE ownership proof after bot
+  runtime moved to wallet-first context.
+- Evidence: 2026-05-03 `RUNTIME-AUDIT-01`
+  (`runtimeSignalLoopDefaults.ts`,
+  `runtimeSignalLoopDefaults.test.ts`, focused runtime/import tests).
+
 ### 2026-05-03 - Imported LIVE protection needs unambiguous strategy provenance
 - Context: an operator reported that LIVE ETH/DOGE imported positions were
   inconsistent: one row showed TTP while another did not, even though the bot

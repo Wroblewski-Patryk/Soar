@@ -298,6 +298,9 @@ describe('listActiveRuntimeBots', () => {
       mode: 'LIVE',
       walletId: 'wallet-1',
       apiKeyId: 'key-1',
+      wallet: {
+        apiKeyId: null,
+      },
     } as any);
     vi.mocked(resolveExternalPositionOwnershipIndex).mockResolvedValue(new Map() as any);
     vi.mocked(listOwnedExternalSymbolsForBot).mockReturnValue(['DOGEUSDT']);
@@ -319,6 +322,43 @@ describe('listActiveRuntimeBots', () => {
           managementMode: 'BOT_MANAGED',
           symbol: { in: ['DOGEUSDT'] },
           externalId: { startsWith: 'key-1:' },
+        }),
+      })
+    );
+  });
+
+  it('uses the wallet api key when counting owned imported LIVE positions for wallet-first bots', async () => {
+    vi.mocked(countOpenPositionsForBotAndSymbolsRaw).mockResolvedValue(0);
+    vi.mocked(prisma.bot.findUnique).mockResolvedValue({
+      mode: 'LIVE',
+      walletId: 'wallet-1',
+      apiKeyId: null,
+      wallet: {
+        apiKeyId: 'wallet-key-1',
+      },
+    } as any);
+    vi.mocked(resolveExternalPositionOwnershipIndex).mockResolvedValue(new Map() as any);
+    vi.mocked(listOwnedExternalSymbolsForBot).mockReturnValue(['ETHUSDT']);
+    vi.mocked(prisma.position.count).mockResolvedValue(1);
+
+    const count = await countOpenPositionsForBotAndSymbols({
+      userId: 'user-1',
+      botId: 'bot-1',
+      symbols: ['ETHUSDT', 'DOGEUSDT'],
+    });
+
+    expect(count).toBe(1);
+    expect(listOwnedExternalSymbolsForBot).toHaveBeenCalledWith(expect.any(Map), {
+      apiKeyId: 'wallet-key-1',
+      botId: 'bot-1',
+      walletId: 'wallet-1',
+    });
+    expect(prisma.position.count).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          externalId: { startsWith: 'wallet-key-1:' },
+          symbol: { in: ['ETHUSDT'] },
+          OR: [{ walletId: 'wallet-1' }, { walletId: null }],
         }),
       })
     );

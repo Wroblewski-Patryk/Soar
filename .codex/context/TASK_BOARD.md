@@ -20,6 +20,17 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-01 fix(api-runtime): align LIVE open-position counts with wallet-first ownership proof`
+  - Scope: closed the first confirmed drift from the operator-requested
+    production audit. Runtime signal-loop max-open/external-position counting
+    now resolves the effective LIVE API key from `wallet.apiKeyId` before
+    legacy `Bot.apiKeyId`, matching imported-position ownership proof for
+    wallet-first bots. Validation PASS: focused runtime/defaults and ownership
+    tests (`13/13`), runtime final-candle/live reconciliation/dynamic-stop
+    pack (`75/75`), paper-live equivalence (`2/2`), API typecheck, repository
+    guardrails, and docs parity. Evidence:
+    `docs/planning/live-paper-runtime-prod-audit-wallet-first-count-task-2026-05-03.md`.
+
 - [ ] `LIVEIMPORT-03 release(prod): promote imported-position provenance fix and read back ETH/DOGE`
   - Scope: promote commit `39146d2e` through the approved production workflow,
     verify API freshness directly, then use authenticated read-only dashboard

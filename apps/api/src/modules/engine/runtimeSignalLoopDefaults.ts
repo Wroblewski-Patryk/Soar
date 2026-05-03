@@ -225,20 +225,26 @@ export const countOpenPositionsForBotAndSymbols = async ({
       mode: true,
       walletId: true,
       apiKeyId: true,
+      wallet: {
+        select: {
+          apiKeyId: true,
+        },
+      },
     },
   });
+  const effectiveApiKeyId = botScope?.wallet?.apiKeyId ?? botScope?.apiKeyId ?? null;
   if (
     !botScope ||
     botScope.mode !== 'LIVE' ||
     !botScope.walletId ||
-    !botScope.apiKeyId
+    !effectiveApiKeyId
   ) {
     return directCount;
   }
 
   const ownershipIndex = await resolveExternalPositionOwnershipIndex(userId, 'LIVE');
   const ownedExternalSymbols = listOwnedExternalSymbolsForBot(ownershipIndex, {
-    apiKeyId: botScope.apiKeyId,
+    apiKeyId: effectiveApiKeyId,
     botId,
     walletId: botScope.walletId,
   });
@@ -258,7 +264,7 @@ export const countOpenPositionsForBotAndSymbols = async ({
       origin: 'EXCHANGE_SYNC',
       managementMode: 'BOT_MANAGED',
       externalId: {
-        startsWith: `${botScope.apiKeyId}:`,
+        startsWith: `${effectiveApiKeyId}:`,
       },
       symbol: {
         in: scopedOwnedExternalSymbols,
