@@ -49,6 +49,7 @@ const compareTimestampDescThenIdAsc = (
 
 const buildEmptyAggregatePayload = (params: {
   botId: string;
+  mode: 'PAPER' | 'LIVE';
   status: RuntimeSessionListItem['status'] | undefined;
 }) => {
   const now = new Date();
@@ -56,7 +57,7 @@ const buildEmptyAggregatePayload = (params: {
     sessionDetail: {
       id: 'AGGREGATE',
       botId: params.botId,
-      mode: 'PAPER' as const,
+      mode: params.mode,
       status: params.status ?? 'COMPLETED',
       startedAt: now,
       finishedAt: now,
@@ -174,7 +175,7 @@ export const getBotRuntimeMonitoringAggregate = async (
     limit: query.sessionsLimit,
   });
   if (sessions.length === 0) {
-    return buildEmptyAggregatePayload({ botId, status: query.status });
+    return buildEmptyAggregatePayload({ botId, mode: bot.mode, status: query.status });
   }
 
   const payloadRows = await Promise.all(
@@ -216,7 +217,7 @@ export const getBotRuntimeMonitoringAggregate = async (
   );
 
   if (completePayloadRows.length === 0) {
-    return buildEmptyAggregatePayload({ botId, status: query.status });
+    return buildEmptyAggregatePayload({ botId, mode: bot.mode, status: query.status });
   }
 
   const activeSessions = completePayloadRows.map((row) => row.session);

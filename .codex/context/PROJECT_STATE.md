@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 empty runtime monitoring aggregate mode slice
+  `RUNTIME-AUDIT-34` is closed locally. Empty runtime monitoring aggregate
+  payloads now preserve the selected bot's persisted mode instead of
+  hardcoding `PAPER`, so LIVE bots without runtime sessions no longer render
+  misleading paper-mode aggregate metadata. Non-empty aggregate mode
+  resolution remains session-derived. Validation PASS: failing-then-passing
+  LIVE empty aggregate mode regression, full monitoring aggregate e2e (`6/6`),
+  API typecheck, repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-34-empty-aggregate-mode-task-2026-05-03.md`.
 - 2026-05-03 imported open trade anchor effective-strategy slice
   `RUNTIME-AUDIT-33` is closed locally. Runtime trade synthetic
   `position-open:*` anchors now resolve the single canonical strategy from

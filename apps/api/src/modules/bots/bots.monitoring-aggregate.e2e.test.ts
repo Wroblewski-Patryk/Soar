@@ -240,6 +240,49 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     expect(aggregateRes.body.trades.total).toBe(0);
   });
 
+  it('keeps LIVE bot mode in empty aggregate payload when no sessions are available', async () => {
+    const ownerEmail = 'bots-monitoring-aggregate-empty-live@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({
+      where: { email: ownerEmail },
+      select: { id: true },
+    });
+
+    const strategyId = await createStrategy(owner, 'Monitoring Aggregate Empty Live Strategy');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    const walletId = await createWalletForContext(ownerEmail, {
+      mode: 'LIVE',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: ownerUser.id,
+        name: 'empty-live-aggregate-bot',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: false,
+        liveOptIn: true,
+        consentTextVersion: 'mvp-v1',
+        walletId,
+        strategyId,
+        symbolGroupId: marketGroupId,
+      },
+      select: { id: true },
+    });
+
+    const aggregateRes = await owner.get(`/dashboard/bots/${bot.id}/runtime-monitoring/aggregate`);
+    expect(aggregateRes.status).toBe(200);
+    expect(aggregateRes.body.sessionDetail.id).toBe('AGGREGATE');
+    expect(aggregateRes.body.sessionDetail.mode).toBe('LIVE');
+    expect(aggregateRes.body.sessionDetail.metadata.sessionsCount).toBe(0);
+    expect(aggregateRes.body.positions.total).toBe(0);
+    expect(aggregateRes.body.trades.total).toBe(0);
+  });
+
   it('uses paper reset checkpoint as the active capital baseline in runtime monitoring summary', async () => {
     const ownerEmail = 'bots-monitoring-aggregate-paper-reset@example.com';
     const owner = await registerAndLogin(ownerEmail);

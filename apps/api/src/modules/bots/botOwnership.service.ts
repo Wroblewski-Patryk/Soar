@@ -6,6 +6,7 @@ export const getOwnedBot = async (userId: string, botId: string) =>
     where: { id: botId, userId },
     select: {
       id: true,
+      mode: true,
       marketType: true,
       exchange: true,
       apiKeyId: true,

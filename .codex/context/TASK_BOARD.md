@@ -20,6 +20,17 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-34 fix(api-bots): preserve empty aggregate bot mode`
+  - Scope: closed a BUILDER-mode runtime dashboard empty-state truth drift.
+    Empty runtime monitoring aggregate payloads now preserve the selected
+    bot's persisted mode instead of hardcoding `PAPER`, so LIVE bots without
+    runtime sessions no longer render misleading paper-mode aggregate metadata.
+    Non-empty aggregate mode resolution remains session-derived. Validation
+    PASS: failing-then-passing LIVE empty aggregate mode regression, full
+    monitoring aggregate e2e (`6/6`), API typecheck, repository guardrails,
+    lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-34-empty-aggregate-mode-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-33 fix(api-bots): attribute imported open trade anchors to effective strategy`
   - Scope: closed an ARCHITECT-mode runtime dashboard provenance drift.
     Runtime trade synthetic `position-open:*` anchors now resolve the single
