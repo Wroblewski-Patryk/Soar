@@ -223,3 +223,19 @@ pnpm --filter api test -- src/modules/orders/orders.service.test.ts src/modules/
   the selected bot's manual open.
 - Opposite-side owned imported rows fail closed with the existing
   `OPEN_POSITION_SIDE_CONFLICT` typed error before exchange submission.
+
+## 18. Filled LIVE Order Imported-Position Reuse Contract (`RUNTIME-AUDIT-13`)
+- Filled selected-bot `LIVE` orders must reuse a same-side imported open
+  position before creating a new local position when:
+  - the direct wallet/bot scoped position lookup finds no reusable row,
+  - the selected bot resolves to a LIVE wallet,
+  - wallet-first API-key ownership proof marks the symbol as `OWNED` by that
+    selected bot and wallet,
+  - the imported row is `EXCHANGE_SYNC` / `BOT_MANAGED` and open.
+- Legacy imported rows with `botId=null` and `walletId=null` may be reused only
+  after ownership proof succeeds.
+- Reuse must attach the filled order and subsequent order fills to the existing
+  imported position id, update quantity and weighted entry price through the
+  shared fill math, and avoid creating a duplicate open position.
+- Opposite-side reusable rows continue to fail closed through
+  `OPEN_POSITION_SIDE_CONFLICT`.

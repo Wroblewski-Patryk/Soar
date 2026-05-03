@@ -643,6 +643,118 @@ describe('openOrder live execution contract', () => {
     }
   });
 
+  it('reuses owned imported LIVE position when a same-side manual fill confirms', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-live-owned-import-fill-reuse@example.com', password: 'hashed' },
+    });
+    const apiKey = await prisma.apiKey.create({
+      data: {
+        userId: user.id,
+        label: 'Owned import fill key',
+        exchange: 'BINANCE',
+        apiKey: 'owned_import_fill_key',
+        apiSecret: 'owned_import_fill_secret',
+      },
+    });
+    const { bot, wallet, strategy } = await createLiveScopedBotContext({
+      userId: user.id,
+      botName: 'Owned import fill live bot',
+      strategyName: 'Owned import fill live strategy',
+      symbol: 'DOGEUSDT',
+    });
+    await prisma.wallet.update({
+      where: { id: wallet.id },
+      data: { apiKeyId: apiKey.id },
+    });
+    await prisma.bot.update({
+      where: { id: bot.id },
+      data: {
+        apiKeyId: null,
+        manageExternalPositions: true,
+      },
+    });
+    const importedPosition = await prisma.position.create({
+      data: {
+        userId: user.id,
+        botId: null,
+        walletId: null,
+        strategyId: strategy.id,
+        symbol: 'DOGEUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 0.1,
+        quantity: 100,
+        leverage: 5,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        externalId: `${apiKey.id}:DOGEUSDT:LONG`,
+      },
+    });
+
+    const executeLiveOrder = vi.fn().mockResolvedValue({
+      exchangeOrderId: 'owned-import-fill-order',
+      status: 'FILLED' as const,
+      fills: [
+        {
+          exchangeTradeId: 'owned-import-fill-trade',
+          exchangeOrderId: 'owned-import-fill-order',
+          symbol: 'DOGEUSDT',
+          side: 'buy',
+          price: 0.2,
+          quantity: 50,
+          notional: 10,
+          feeCost: 0.01,
+          feeCurrency: 'USDT',
+          feeRate: 0.001,
+          executedAt: new Date('2026-05-03T12:00:00.000Z'),
+          raw: {},
+        },
+      ],
+    });
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+
+    try {
+      const order = await openOrder(
+        user.id,
+        {
+          botId: bot.id,
+          symbol: 'DOGEUSDT',
+          side: 'BUY',
+          type: 'MARKET',
+          quantity: 50,
+          price: 0.2,
+          mode: 'LIVE',
+          riskAck: true,
+        },
+        { executeLiveOrder }
+      );
+
+      expect(order.status).toBe('FILLED');
+      expect(order.positionId).toBe(importedPosition.id);
+
+      const openPositions = await prisma.position.findMany({
+        where: {
+          userId: user.id,
+          symbol: 'DOGEUSDT',
+          status: 'OPEN',
+        },
+      });
+      expect(openPositions).toHaveLength(1);
+      expect(openPositions[0]?.id).toBe(importedPosition.id);
+      expect(openPositions[0]?.quantity).toBeCloseTo(150, 10);
+      expect(openPositions[0]?.entryPrice).toBeCloseTo(0.1333333333, 10);
+
+      const fill = await prisma.orderFill.findFirstOrThrow({
+        where: { orderId: order.id },
+      });
+      expect(fill.positionId).toBe(importedPosition.id);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
   it('allows manual open when the same symbol is already open on a different wallet scope', async () => {
     const user = await prisma.user.create({
       data: { email: 'orders-wallet-scoped-open@example.com', password: 'hashed' },

@@ -1,9 +1,13 @@
-import { OrderStatus, PositionSide } from '@prisma/client';
+import { OrderStatus, PositionSide, Prisma } from '@prisma/client';
 
 import { prisma } from '../../prisma/client';
 import { orderErrors } from './orders.errors';
 import { resolveOpenPositionScopeWhere } from './orders.positionScope';
 import { computePositionAddUpdate } from './positionFillMath';
+import {
+  getExternalPositionOwnership,
+  resolveExternalPositionOwnershipIndex,
+} from '../bots/runtimeExternalPositionOwner.service';
 
 type ApplyOrderFillLifecycleInput = {
   userId: string;
@@ -42,6 +46,129 @@ const resolveOrderPositionLeverage = async (params: {
 
 const resolvePositionSideFromOrderSide = (side: 'BUY' | 'SELL'): PositionSide =>
   side === 'BUY' ? 'LONG' : 'SHORT';
+
+type ReusableOpenPosition = {
+  id: string;
+  side: PositionSide;
+  entryPrice: number;
+  quantity: number;
+};
+
+const findOwnedLiveImportedOpenPositionForFill = async (
+  tx: Prisma.TransactionClient,
+  params: {
+    userId: string;
+    order: {
+      botId: string | null;
+      walletId: string | null;
+      symbol: string;
+    };
+  }
+): Promise<ReusableOpenPosition | null> => {
+  if (!params.order.botId || !params.order.walletId) return null;
+
+  const botScope = await tx.bot.findFirst({
+    where: {
+      id: params.order.botId,
+      userId: params.userId,
+    },
+    select: {
+      mode: true,
+      walletId: true,
+      apiKeyId: true,
+      wallet: {
+        select: {
+          mode: true,
+          apiKeyId: true,
+        },
+      },
+    },
+  });
+  if (!botScope || botScope.mode !== 'LIVE' || botScope.wallet?.mode !== 'LIVE') return null;
+  if (botScope.walletId !== params.order.walletId) return null;
+
+  const effectiveApiKeyId = botScope.wallet.apiKeyId ?? botScope.apiKeyId;
+  if (!effectiveApiKeyId) return null;
+
+  const ownershipIndex = await resolveExternalPositionOwnershipIndex(params.userId, 'LIVE');
+  const ownership = getExternalPositionOwnership(ownershipIndex, {
+    apiKeyId: effectiveApiKeyId,
+    symbol: params.order.symbol,
+  });
+  if (
+    ownership.status !== 'OWNED' ||
+    ownership.botId !== params.order.botId ||
+    ownership.walletId !== params.order.walletId
+  ) {
+    return null;
+  }
+
+  return tx.position.findFirst({
+    where: {
+      userId: params.userId,
+      botId: null,
+      symbol: params.order.symbol.toUpperCase(),
+      status: 'OPEN',
+      origin: 'EXCHANGE_SYNC',
+      managementMode: 'BOT_MANAGED',
+      externalId: {
+        startsWith: `${effectiveApiKeyId}:`,
+      },
+      OR: [{ walletId: params.order.walletId }, { walletId: null }],
+    },
+    orderBy: {
+      openedAt: 'desc',
+    },
+    select: {
+      id: true,
+      side: true,
+      entryPrice: true,
+      quantity: true,
+    },
+  });
+};
+
+const applyFillToReusableOpenPosition = async (
+  tx: Prisma.TransactionClient,
+  params: {
+    orderId: string;
+    position: ReusableOpenPosition;
+    targetPositionSide: PositionSide;
+    targetQuantity: number;
+    fillPrice: number;
+  }
+) => {
+  if (params.position.side !== params.targetPositionSide) {
+    throw orderErrors.openPositionSideConflict();
+  }
+
+  const { nextQuantity, nextEntryPrice } = computePositionAddUpdate({
+    currentQuantity: params.position.quantity,
+    currentEntryPrice: params.position.entryPrice,
+    addedQuantity: params.targetQuantity,
+    fillPrice: params.fillPrice,
+  });
+
+  await tx.position.update({
+    where: { id: params.position.id },
+    data: {
+      quantity: nextQuantity,
+      entryPrice: nextEntryPrice,
+    },
+  });
+
+  const orderWithExistingPosition = await tx.order.update({
+    where: { id: params.orderId },
+    data: {
+      positionId: params.position.id,
+    },
+  });
+
+  return {
+    order: orderWithExistingPosition,
+    positionId: params.position.id,
+  };
+};
 
 export const applyOrderFillLifecycle = async (params: ApplyOrderFillLifecycleInput) => {
   return prisma.$transaction(async (tx) => {
@@ -117,36 +244,31 @@ export const applyOrderFillLifecycle = async (params: ApplyOrderFillLifecycleInp
     });
 
     if (existingOpenPosition) {
-      if (existingOpenPosition.side !== targetPositionSide) {
-        throw orderErrors.openPositionSideConflict();
-      }
-
-      const { nextQuantity, nextEntryPrice } = computePositionAddUpdate({
-        currentQuantity: existingOpenPosition.quantity,
-        currentEntryPrice: existingOpenPosition.entryPrice,
-        addedQuantity: targetQuantity,
+      return applyFillToReusableOpenPosition(tx, {
+        orderId: updatedOrder.id,
+        position: existingOpenPosition,
+        targetPositionSide,
+        targetQuantity,
         fillPrice,
       });
+    }
 
-      await tx.position.update({
-        where: { id: existingOpenPosition.id },
-        data: {
-          quantity: nextQuantity,
-          entryPrice: nextEntryPrice,
-        },
+    const ownedImportedPosition = await findOwnedLiveImportedOpenPositionForFill(tx, {
+      userId: params.userId,
+      order: {
+        botId: updatedOrder.botId,
+        walletId: updatedOrder.walletId,
+        symbol: updatedOrder.symbol,
+      },
+    });
+    if (ownedImportedPosition) {
+      return applyFillToReusableOpenPosition(tx, {
+        orderId: updatedOrder.id,
+        position: ownedImportedPosition,
+        targetPositionSide,
+        targetQuantity,
+        fillPrice,
       });
-
-      const orderWithExistingPosition = await tx.order.update({
-        where: { id: updatedOrder.id },
-        data: {
-          positionId: existingOpenPosition.id,
-        },
-      });
-
-      return {
-        order: orderWithExistingPosition,
-        positionId: existingOpenPosition.id,
-      };
     }
 
     const leverage = await resolveOrderPositionLeverage({

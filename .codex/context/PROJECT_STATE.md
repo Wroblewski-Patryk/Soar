@@ -3,6 +3,17 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 filled LIVE order imported-position reuse slice
+  `RUNTIME-AUDIT-13` is closed locally. Filled selected-bot `LIVE` orders now
+  reuse same-side deterministically owned `EXCHANGE_SYNC` / `BOT_MANAGED`
+  imported open positions when no direct scoped position exists, including
+  legacy `botId=null/walletId=null` rows after ownership proof succeeds. The
+  filled order and order fills attach to the imported position, quantity and
+  weighted entry price update through existing fill math, and no duplicate
+  open position is created. Validation PASS: focused orders pack (`28/28`),
+  broader orders/e2e/pre-trade/final-candle/defaults pack (`90/90`),
+  typecheck, guardrails, lint, and diff check. Evidence:
+  `docs/planning/runtime-audit-13-fill-lifecycle-owned-import-reuse-task-2026-05-03.md`.
 - 2026-05-03 manual LIVE reverse-open imported-ownership slice
   `RUNTIME-AUDIT-12` is closed locally. Manual selected-bot `LIVE` opens now
   check deterministically owned exchange-synced `EXCHANGE_SYNC` /

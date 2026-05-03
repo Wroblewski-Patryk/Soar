@@ -9,6 +9,18 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-13 fix(api-orders): reuse owned LIVE imports during fill lifecycle`
+  - 2026-05-03: Closed the next LIVE fill lifecycle duplication drift. Filled
+    selected-bot `LIVE` orders now reuse same-side deterministically owned
+    `EXCHANGE_SYNC` / `BOT_MANAGED` imported open positions when no direct
+    scoped position exists, including legacy `botId=null/walletId=null` rows
+    after ownership proof succeeds. The filled order and order fills attach to
+    the imported position, quantity and weighted entry price update through
+    existing fill math, and no duplicate open position is created. Validation
+    PASS: focused orders pack (`28/28`), broader orders/e2e/pre-trade/
+    final-candle/defaults pack (`90/90`), typecheck, guardrails, lint, and
+    diff check. Evidence:
+    `docs/planning/runtime-audit-13-fill-lifecycle-owned-import-reuse-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-12 fix(api-orders): fail closed manual LIVE reverse opens against owned imports`
   - 2026-05-03: Closed the next LIVE manual command guard drift. Manual
     selected-bot `LIVE` opens now check deterministically owned
