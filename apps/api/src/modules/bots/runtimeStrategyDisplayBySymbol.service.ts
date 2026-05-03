@@ -52,10 +52,10 @@ export const resolveBotAdvancedCloseMode = async (userId: string, botId: string)
     }),
   ]);
 
-  const configs = [
-    ...groupLinks.map((item) => item.strategy.config),
-    ...legacyLinks.map((item) => item.strategy.config),
-  ];
+  const configs =
+    groupLinks.length > 0
+      ? groupLinks.map((item) => item.strategy.config)
+      : legacyLinks.map((item) => item.strategy.config);
 
   return configs.some((config) => hasAdvancedCloseMode(config));
 };

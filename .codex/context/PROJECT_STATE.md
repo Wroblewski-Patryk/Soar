@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 dashboard dynamic-stop column slice `DASHDRIFT-03` is closed
+  locally. Runtime position dashboard `showDynamicStopColumns` now evaluates
+  active canonical `BotMarketGroup` / `MarketGroupStrategyLink` strategy
+  configs when present, using legacy `BotStrategy` rows only as compatibility
+  fallback when no canonical topology exists. Stale legacy advanced-close rows
+  can no longer turn on TTP/TSL columns for a canonical basic-close bot view.
+  Validation PASS: focused runtime strategy-context e2e (`3/3`) and broader
+  bot runtime/dynamic-stop pack (`31/31`). Evidence:
+  `docs/planning/dashdrift-03-dynamic-stop-columns-canonical-task-2026-05-03.md`.
 - 2026-05-03 LIVE reconciliation continuity strategy slice `POSDRIFT-12` is
   closed locally. LIVE exchange reconciliation now resolves recovered/imported
   bot continuity strategy through active canonical `BotMarketGroup` and enabled

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { prisma } from '../../prisma/client';
-import { DCA_ADVANCED_STRATEGY_CONFIG } from './bots.e2e.fixtures';
+import { DCA_ADVANCED_STRATEGY_CONFIG, DYNAMIC_STOP_STRATEGY_CONFIG } from './bots.e2e.fixtures';
 import { createStrategy, registerAndLogin, resetBotsE2eState } from './bots.e2e.shared';
 
 describe('Bots runtime strategy context contract', () => {
@@ -274,5 +274,109 @@ describe('Bots runtime strategy context contract', () => {
     expect(item.dcaPlannedLevels).toEqual([]);
     expect(item.trailingStopLevels).toEqual([]);
     expect(item.trailingTakeProfitLevels).toEqual([]);
+  });
+
+  it('keeps dynamic-stop column visibility canonical when legacy strategy links are stale', async () => {
+    const ownerEmail = 'bot-runtime-dynamic-columns-canonical-owner@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
+
+    const canonicalStrategyId = await createStrategy(owner, 'Runtime Canonical Basic Close');
+    const staleLegacyStrategyId = await createStrategy(
+      owner,
+      'Runtime Stale Legacy Advanced Close',
+      DYNAMIC_STOP_STRATEGY_CONFIG
+    );
+    const universe = await prisma.marketUniverse.create({
+      data: {
+        userId: ownerUser.id,
+        name: `Dynamic Columns Canonical Universe ${Date.now()}`,
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: [],
+        blacklist: [],
+      },
+    });
+    const group = await prisma.symbolGroup.create({
+      data: {
+        userId: ownerUser.id,
+        marketUniverseId: universe.id,
+        name: 'Dynamic Columns Canonical Group',
+        symbols: ['ETHUSDT'],
+      },
+    });
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId: ownerUser.id,
+        name: 'Dynamic Columns Canonical Wallet',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        paperInitialBalance: 10_000,
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: ownerUser.id,
+        name: 'Dynamic Columns Canonical Bot',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        walletId: wallet.id,
+        strategyId: canonicalStrategyId,
+        symbolGroupId: group.id,
+        isActive: true,
+      },
+    });
+    const botMarketGroup = await prisma.botMarketGroup.create({
+      data: {
+        userId: ownerUser.id,
+        botId: bot.id,
+        symbolGroupId: group.id,
+        lifecycleStatus: 'ACTIVE',
+        executionOrder: 1,
+        maxOpenPositions: 2,
+        isEnabled: true,
+      },
+    });
+    await prisma.marketGroupStrategyLink.create({
+      data: {
+        userId: ownerUser.id,
+        botId: bot.id,
+        botMarketGroupId: botMarketGroup.id,
+        strategyId: canonicalStrategyId,
+        priority: 1,
+        weight: 1,
+        isEnabled: true,
+      },
+    });
+    await prisma.botStrategy.create({
+      data: {
+        botId: bot.id,
+        strategyId: staleLegacyStrategyId,
+        symbolGroupId: group.id,
+        isEnabled: true,
+      },
+    });
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId: bot.id,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-29T14:00:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-29T14:01:00.000Z'),
+      },
+    });
+
+    const positionsRes = await owner.get(
+      `/dashboard/bots/${bot.id}/runtime-sessions/${session.id}/positions`
+    );
+
+    expect(positionsRes.status).toBe(200);
+    expect(positionsRes.body.showDynamicStopColumns).toBe(false);
   });
 });

@@ -20,6 +20,17 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `DASHDRIFT-03 fix(api-bots): keep dynamic-stop column visibility canonical-context scoped`
+  - Scope: closed the next dashboard runtime display drift. Runtime position
+    payload `showDynamicStopColumns` now evaluates active canonical
+    `BotMarketGroup` / `MarketGroupStrategyLink` strategy configs when present
+    and uses legacy `BotStrategy` rows only as compatibility fallback. Stale
+    legacy advanced-close rows can no longer turn on TTP/TSL columns for a
+    canonical basic-close selected-bot view. Validation PASS: focused runtime
+    strategy-context e2e (`3/3`) and broader bot runtime/dynamic-stop pack
+    (`31/31`). Evidence:
+    `docs/planning/dashdrift-03-dynamic-stop-columns-canonical-task-2026-05-03.md`.
+
 - [x] `POSDRIFT-12 fix(api-positions): keep LIVE reconciliation continuity strategy canonical`
   - Scope: closed the TESTER continuity edge. LIVE exchange reconciliation now
     resolves recovered/imported bot continuity strategy through active

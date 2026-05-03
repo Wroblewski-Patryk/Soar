@@ -108,6 +108,16 @@ Operational queue for one-task execution runs.
     focused reconciliation test (`23/23`) and wider
     position/reconciliation/automation pack (`29/29`). Evidence:
     `docs/planning/posdrift-12-live-continuity-canonical-strategy-task-2026-05-03.md`.
+- [x] `DASHDRIFT-03 fix(api-bots): keep dynamic-stop column visibility canonical-context scoped`
+  - 2026-05-03: Closed the next dashboard runtime display drift. Runtime
+    position payload `showDynamicStopColumns` now evaluates active canonical
+    `BotMarketGroup` / `MarketGroupStrategyLink` strategy configs when
+    present and uses legacy `BotStrategy` rows only as compatibility fallback.
+    Stale legacy advanced-close rows can no longer turn on TTP/TSL columns for
+    a canonical basic-close selected-bot view. Validation PASS: focused
+    runtime strategy-context e2e (`3/3`) and broader bot runtime/dynamic-stop
+    pack (`31/31`). Evidence:
+    `docs/planning/dashdrift-03-dynamic-stop-columns-canonical-task-2026-05-03.md`.
 - [ ] `LIVEIMPORT-03 release(prod): promote imported-position provenance fix and read back ETH/DOGE`
   - Scope: promote commit `39146d2e` through the approved production workflow,
     verify API freshness directly, then use authenticated read-only dashboard
