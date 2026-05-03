@@ -6,7 +6,7 @@ import { fetchSupportedExchangeBalanceRaw } from '../exchange/exchangeAdapterBou
 import { recordLiveWalletBalanceSnapshot } from '../wallets/walletLedger.service';
 
 const liveBalanceCacheTtlMs = Number.parseInt(process.env.RUNTIME_LIVE_BALANCE_CACHE_TTL_MS ?? '30000', 10);
-const liveBalanceCache = new Map<string, { value: number; fetchedAt: number }>();
+const liveBalanceCache = new Map<string, { referenceBalance: number; accountBalance: number; fetchedAt: number }>();
 
 type RuntimeCapitalContextDeps = {
   getWalletContext: (input: {
@@ -294,12 +294,12 @@ const resolveLiveRuntimeCapitalSnapshot = async (
       const leverage = Math.max(1, position.leverage || 1);
       return sum + (position.entryPrice * position.quantity) / leverage;
     }, 0);
-    const freeCash = Math.max(0, cached.value - reservedMargin);
+    const freeCash = Math.max(0, cached.referenceBalance - reservedMargin);
     return {
-      referenceBalance: cached.value,
+      referenceBalance: cached.referenceBalance,
       freeCash,
       reservedMargin,
-      accountBalance: cached.value,
+      accountBalance: cached.accountBalance,
       baseCurrency,
       capitalSource: 'LIVE_EXCHANGE_BALANCE',
       allocationMode: wallet?.liveAllocationMode ?? null,
@@ -359,7 +359,7 @@ const resolveLiveRuntimeCapitalSnapshot = async (
     });
   }
 
-  liveBalanceCache.set(cacheKey, { value: referenceBalance, fetchedAt: input.nowMs });
+  liveBalanceCache.set(cacheKey, { referenceBalance, accountBalance, fetchedAt: input.nowMs });
 
   const openPositions = await deps.listOpenBotManagedPositions({
     userId: input.userId,

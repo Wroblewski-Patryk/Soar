@@ -52,12 +52,15 @@ Last updated: 2026-05-03
     (`60/60`), and API typecheck. Evidence:
     `docs/planning/papersignal-01-canonical-symbol-stats-parity-task-2026-05-03.md`.
 
-- [ ] `WALLETBAL-01 fix(api-web): stabilize dashboard wallet account-balance display`
-  - Scope: audit the dashboard wallet account-balance source chain and
-    intermittent empty state: live balance fetch, snapshot persistence,
-    aggregate positions summary, web refresh/error handling, and stale/null
-    fallback display. Implement only the first confirmed defect with focused
-    API/web tests.
+- [x] `WALLETBAL-01 fix(api-runtime): stabilize LIVE wallet account-balance cache display semantics`
+  - Scope: closed the first confirmed dashboard wallet account-balance drift.
+    Runtime LIVE balance cache now stores raw exchange `accountBalance`
+    separately from allocated `referenceBalance`, so cache hits no longer show
+    FIXED/PERCENT allocation values as account balance while preserving
+    `freeCash` from allocated trading capital. Validation PASS: focused
+    runtime capital test (`15/15`), monitoring aggregate plus wallet e2e tests
+    (`19/19`), API typecheck, repository guardrails, and docs parity. Evidence:
+    `docs/planning/walletbal-01-live-account-balance-cache-task-2026-05-03.md`.
 
 - [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production`
   - Scope: release the locally verified BOTMULTI multi-strategy topology

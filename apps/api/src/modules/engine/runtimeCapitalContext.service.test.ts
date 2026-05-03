@@ -177,6 +177,45 @@ describe('runtimeCapitalContext', () => {
     expect(snapshot.allocationValue).toBe(1_000);
   });
 
+  it('keeps cached LIVE account balance distinct from allocated reference balance', async () => {
+    const fetchLiveBalance = vi.fn(async () => 4_000);
+    const deps = buildDeps({
+      getWalletContext: async () => ({
+        id: 'wallet-live-fixed-cache',
+        mode: 'LIVE',
+        paperInitialBalance: 0,
+        paperResetAt: null,
+        liveAllocationMode: 'FIXED',
+        liveAllocationValue: 1_000,
+        baseCurrency: 'USDT',
+        exchange: 'BINANCE',
+        apiKey: null,
+      }),
+      getLiveApiKeyContext: async () => ({ apiKey: 'k', apiSecret: 's' }),
+      fetchLiveBalance,
+    });
+
+    const input = {
+      userId: 'u-wallet-live-fixed-cache',
+      botId: 'b-wallet-live-fixed-cache',
+      walletId: 'wallet-live-fixed-cache',
+      mode: 'LIVE' as const,
+      exchange: 'BINANCE' as const,
+      marketType: 'FUTURES' as const,
+      paperStartBalance: 0,
+      nowMs: 5_700,
+    };
+
+    const freshSnapshot = await resolveRuntimeCapitalSnapshot(input, deps);
+    const cachedSnapshot = await resolveRuntimeCapitalSnapshot({ ...input, nowMs: 5_701 }, deps);
+
+    expect(fetchLiveBalance).toHaveBeenCalledTimes(1);
+    expect(freshSnapshot.accountBalance).toBe(4_000);
+    expect(freshSnapshot.referenceBalance).toBe(1_000);
+    expect(cachedSnapshot.accountBalance).toBe(4_000);
+    expect(cachedSnapshot.referenceBalance).toBe(1_000);
+  });
+
   it('uses refreshed full exchange balance when LIVE wallet has no explicit allocation rule', async () => {
     const snapshot = await resolveRuntimeCapitalSnapshot(
       {

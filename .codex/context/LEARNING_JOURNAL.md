@@ -52,6 +52,31 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-05-03 - Runtime balance caches must preserve semantic fields
+- Context: an operator reported intermittent dashboard wallet account-balance
+  display drift while LIVE runtime fixes were being audited.
+- Symptom: fresh LIVE runtime capital reads showed the raw exchange account
+  balance, but cache hits could show the allocated trading balance as
+  `accountBalance`.
+- Root cause: the LIVE balance cache stored a single numeric `value` for the
+  allocated `referenceBalance` and reused it for `accountBalance` on cache
+  reads.
+- Guardrail: cache runtime financial snapshots by named semantic fields, not by
+  generic numeric values, whenever product surfaces distinguish raw account
+  balance from allocated/reference trading capital.
+- Preferred pattern:
+```text
+1) Store accountBalance and referenceBalance separately.
+2) Derive freeCash from referenceBalance, not raw account balance.
+3) Add a cache-hit regression whenever fresh reads and cached reads can diverge.
+4) Keep dashboard display fields aligned with the runtime snapshot contract.
+```
+- Avoid: collapsing financial cache values into a generic `value` when
+  downstream UI labels use different accounting semantics.
+- Evidence: 2026-05-03 `WALLETBAL-01`
+  (`runtimeCapitalContext.service.ts`,
+  `runtimeCapitalContext.service.test.ts`).
+
 ### 2026-05-03 - Runtime monitoring must use canonical bot market strategy topology
 - Context: after BOTMULTI, final-candle execution uses active
   `BotMarketGroup` rows and enabled `MarketGroupStrategyLink` rows, while an

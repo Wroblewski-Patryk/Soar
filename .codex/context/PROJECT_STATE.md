@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 operator-reported dashboard wallet balance slice
+  `WALLETBAL-01` is closed locally. Runtime LIVE balance cache now preserves
+  separate semantic fields for raw exchange `accountBalance` and allocated
+  `referenceBalance`, so cache hits no longer collapse FIXED/PERCENT allocation
+  values into the dashboard account-balance field. `freeCash` continues to use
+  allocated trading capital. Validation PASS: focused runtime capital tests
+  (`15/15`), monitoring aggregate plus wallet e2e tests (`19/19`), and API
+  typecheck. Evidence:
+  `docs/planning/walletbal-01-live-account-balance-cache-task-2026-05-03.md`.
 - 2026-05-03 operator-reported PAPER signal parity slice `PAPERSIGNAL-01` is
   closed locally. Runtime symbol-stats read models now use active canonical
   `BotMarketGroup` and enabled `MarketGroupStrategyLink` rows as their
