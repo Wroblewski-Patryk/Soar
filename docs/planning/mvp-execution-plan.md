@@ -131,6 +131,13 @@ Rule: fix/cleanup/update first, then feature delivery.
   list/runtime close paths stop treating them as active. Validation PASS:
   positions service suite (`2/2`), API typecheck, repository guardrails, lint,
   and diff review.
+- 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-78` with
+  `docs/planning/runtime-audit-78-position-management-mode-active-state-task-2026-05-04.md`.
+  Dashboard/API management-mode updates now require `status=OPEN` and
+  `syncState=IN_SYNC`, so stale `ORPHAN_LOCAL` open-position rows cannot be
+  switched between `BOT_MANAGED` and `MANUAL_MANAGED` after active lists and
+  runtime paths stop treating them as live. Validation PASS: positions service
+  suite (`3/3`), API typecheck, repository guardrails, lint, and diff review.
 - 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-15` with
   `docs/planning/runtime-audit-15-close-fee-position-scope-task-2026-05-03.md`.
   Runtime close realized-PnL now aggregates entry fees by owned position

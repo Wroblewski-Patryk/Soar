@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 position management-mode active-state slice `RUNTIME-AUDIT-78`
+  is closed locally. Dashboard/API management-mode updates now require
+  `status=OPEN` and `syncState=IN_SYNC`, so stale `ORPHAN_LOCAL`
+  open-position rows cannot be switched between `BOT_MANAGED` and
+  `MANUAL_MANAGED` after active lists and runtime paths stop treating them as
+  live. Validation PASS: positions service suite (`3/3`), API typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-78-position-management-mode-active-state-task-2026-05-04.md`.
 - 2026-05-04 position manual-update active-state slice `RUNTIME-AUDIT-77`
   is closed locally. Manual TP/SL updates now require `syncState=IN_SYNC` in
   addition to `status=OPEN`, and the mutation uses a guarded

@@ -20,6 +20,16 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-78 fix(api-positions): reject stale management-mode toggles`
+  - Scope: closed an ARCHITECT-mode position management-state drift.
+    Dashboard/API management-mode updates now require `status=OPEN` and
+    `syncState=IN_SYNC`, so stale `ORPHAN_LOCAL` open-position rows cannot be
+    switched between `BOT_MANAGED` and `MANUAL_MANAGED` after active lists and
+    runtime paths stop treating them as live. Validation PASS: positions
+    service suite (`3/3`), API typecheck, repository guardrails, lint, and diff
+    review. Evidence:
+    `docs/planning/runtime-audit-78-position-management-mode-active-state-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-77 fix(api-positions): require synced state for manual updates`
   - Scope: closed a BUILDER-mode manual position update parity drift. Manual
     TP/SL updates now require `syncState=IN_SYNC` in addition to `status=OPEN`,

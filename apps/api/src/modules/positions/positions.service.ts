@@ -328,7 +328,12 @@ export const updatePositionManagementMode = async (
   managementMode: 'BOT_MANAGED' | 'MANUAL_MANAGED'
 ) => {
   const updated = await prisma.position.updateMany({
-    where: { id, userId },
+    where: {
+      id,
+      userId,
+      status: 'OPEN',
+      syncState: 'IN_SYNC',
+    },
     data: { managementMode },
   });
 

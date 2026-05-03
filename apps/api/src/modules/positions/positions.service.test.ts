@@ -4,6 +4,7 @@ import { prisma } from '../../prisma/client';
 import {
   PositionManualUpdateError,
   repairLegacyOpenPositions,
+  updatePositionManagementMode,
   updatePositionManualParams,
 } from './positions.service';
 
@@ -297,5 +298,68 @@ describe('positions service manual update active-state guard', () => {
       takeProfit: null,
       stopLoss: null,
     });
+  });
+});
+
+describe('positions service management-mode active-state guard', () => {
+  beforeEach(async () => {
+    await prisma.trade.deleteMany();
+    await prisma.order.deleteMany();
+    await prisma.position.deleteMany();
+    await prisma.signal.deleteMany();
+    await prisma.runtimeExecutionDedupe.deleteMany();
+    await prisma.botRuntimeSymbolStat.deleteMany();
+    await prisma.botRuntimeEvent.deleteMany();
+    await prisma.botRuntimeSession.deleteMany();
+    await prisma.backtestTrade.deleteMany();
+    await prisma.backtestReport.deleteMany();
+    await prisma.backtestRun.deleteMany();
+    await prisma.log.deleteMany();
+    await prisma.botStrategy.deleteMany();
+    await prisma.botSubagentConfig.deleteMany();
+    await prisma.botAssistantConfig.deleteMany();
+    await prisma.marketGroupStrategyLink.deleteMany();
+    await prisma.botMarketGroup.deleteMany();
+    await prisma.bot.deleteMany();
+    await prisma.symbolGroup.deleteMany();
+    await prisma.marketUniverse.deleteMany();
+    await prisma.wallet.deleteMany();
+    await prisma.apiKey.deleteMany();
+    await prisma.strategy.deleteMany();
+    await prisma.user.deleteMany();
+  });
+
+  it('does not change management mode for stale local open positions', async () => {
+    const user = await prisma.user.create({
+      data: {
+        email: 'positions-service-management-mode-stale@example.com',
+        password: 'test-password',
+      },
+      select: { id: true },
+    });
+    const position = await prisma.position.create({
+      data: {
+        userId: user.id,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'ORPHAN_LOCAL',
+        continuityState: 'REPAIR_ONLY_CLEANUP',
+        symbol: 'ETHUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 3_000,
+        quantity: 0.5,
+        leverage: 2,
+      },
+    });
+
+    const result = await updatePositionManagementMode(user.id, position.id, 'MANUAL_MANAGED');
+
+    expect(result).toBeNull();
+    const unchanged = await prisma.position.findUniqueOrThrow({
+      where: { id: position.id },
+      select: { managementMode: true },
+    });
+    expect(unchanged.managementMode).toBe('BOT_MANAGED');
   });
 });
