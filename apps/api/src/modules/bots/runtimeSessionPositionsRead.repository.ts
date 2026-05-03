@@ -126,6 +126,18 @@ export const sumRuntimeManagedPositionMarginUsed = async (where: Prisma.Position
     },
   });
 
+export const sumRuntimeManagedPositionTradeFees = async (where: Prisma.PositionWhereInput) =>
+  prisma.trade.aggregate({
+    where: {
+      position: {
+        is: where,
+      },
+    },
+    _sum: {
+      fee: true,
+    },
+  });
+
 export const listRuntimeOpenOrders = async (params: {
   where: Prisma.OrderWhereInput;
   limit: number;

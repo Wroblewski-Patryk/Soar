@@ -41,6 +41,7 @@ import {
   sumRuntimeManagedPositionMarginUsed,
   sumRuntimeManagedPositionQuantity,
   sumRuntimeManagedPositionRealizedPnl,
+  sumRuntimeManagedPositionTradeFees,
 } from './runtimeSessionPositionsRead.repository';
 import {
   resolveCanonicalRuntimeVenueContext,
@@ -320,7 +321,6 @@ export const listBotRuntimeSessionPositions = async (
   const session = await getOwnedBotRuntimeSession(userId, botId, sessionId);
   if (!session) return null;
   const showDynamicStopColumnsFromStrategyMode = await resolveBotAdvancedCloseMode(userId, botId);
-
   const normalizedSymbol = normalizeSymbol(query.symbol) || undefined;
   const windowEnd = resolveSessionWindowEnd(session);
   const botContext = await getRuntimePositionBotContext(userId, botId);
@@ -475,6 +475,10 @@ export const listBotRuntimeSessionPositions = async (
     status: 'CLOSED',
     closedAt: { gte: session.startedAt },
   };
+  const feePositionWhere: Prisma.PositionWhereInput = {
+    ...runtimePositionBaseWhere,
+    OR: [{ status: 'OPEN', closedAt: null }, { status: 'CLOSED', closedAt: { gte: session.startedAt } }],
+  };
   const [
     openPositions,
     closedPositions,
@@ -483,6 +487,7 @@ export const listBotRuntimeSessionPositions = async (
     openPositionMarginUsed,
     openPositionQuantity,
     closedPositionRealizedPnl,
+    positionTradeFees,
   ] = await Promise.all([
     listRuntimeManagedPositions({
       where: openPositionWhere,
@@ -497,12 +502,13 @@ export const listBotRuntimeSessionPositions = async (
     sumRuntimeManagedPositionMarginUsed(openPositionWhere),
     sumRuntimeManagedPositionQuantity(openPositionWhere),
     sumRuntimeManagedPositionRealizedPnl(closedPositionWhere),
+    sumRuntimeManagedPositionTradeFees(feePositionWhere),
   ]);
   const totalOpenPositionMarginUsed = openPositionMarginUsed._sum.marginUsed ?? 0;
   const totalOpenPositionQty = openPositionQuantity._sum.quantity ?? 0;
   const totalRealizedPnl = closedPositionRealizedPnl._sum.realizedPnl ?? 0;
+  const totalPositionFeesPaid = positionTradeFees._sum.fee ?? 0;
   const positions = [...openPositions, ...closedPositions];
-
   if (positions.length === 0) {
     const openOrders = await listRuntimeOpenOrders({
       where: {
@@ -535,7 +541,7 @@ export const listBotRuntimeSessionPositions = async (
       summary: {
         realizedPnl: totalRealizedPnl,
         unrealizedPnl: 0,
-        feesPaid: 0,
+        feesPaid: totalPositionFeesPaid,
         openPositionQty: totalOpenPositionQty,
         ...(await resolveRuntimeCapitalSummary(0)),
       },
@@ -982,7 +988,7 @@ export const listBotRuntimeSessionPositions = async (
     summary: {
       realizedPnl: totalRealizedPnl,
       unrealizedPnl: openItems.reduce((acc, position) => acc + (position.unrealizedPnl ?? 0), 0),
-      feesPaid: mappedPositions.reduce((acc, position) => acc + position.feesPaid, 0),
+      feesPaid: totalPositionFeesPaid,
       openPositionQty: totalOpenPositionQty,
       ...capitalSummary,
     },

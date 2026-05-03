@@ -3,6 +3,16 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 runtime position-fee limit slice `RUNTIME-AUDIT-45` is
+  closed locally. Runtime session positions now aggregate direct trade fees
+  through the full scoped position set instead of limited visible position
+  rows, so dashboard `positions.summary.feesPaid` remains truthful when
+  `limit` / `perSessionLimit` hides older positions. Visible `openItems` and
+  `historyItems` remain limited. Validation PASS: failing-then-passing
+  `limit=1` position-fee regression, runtime-scope e2e (`12/12`),
+  monitoring aggregate e2e (`11/11`), API typecheck, repository guardrails,
+  lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-45-position-fees-limit-task-2026-05-03.md`.
 - 2026-05-03 aggregate trade-fee limit slice `RUNTIME-AUDIT-44` is
   closed locally. Runtime session trades now expose unpaginated scoped
   `feesPaid`, and monitoring aggregate `sessionDetail.summary.feesPaid`

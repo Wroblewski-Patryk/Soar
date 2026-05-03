@@ -9,6 +9,17 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-45 fix(api-bots): preserve runtime position fees under row limits`
+  - 2026-05-03: Closed an ARCHITECT-mode dashboard accounting summary drift.
+    Runtime session positions now aggregate direct trade fees through the full
+    scoped position set instead of limited visible position rows, so dashboard
+    `positions.summary.feesPaid` remains truthful when `limit` /
+    `perSessionLimit` hides older positions. Visible `openItems` and
+    `historyItems` remain limited. Validation PASS: failing-then-passing
+    `limit=1` position-fee regression, runtime-scope e2e (`12/12`),
+    monitoring aggregate e2e (`11/11`), API typecheck, repository guardrails,
+    lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-45-position-fees-limit-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-44 fix(api-bots): preserve aggregate trade fees under row limits`
   - 2026-05-03: Closed a BUILDER-mode dashboard accounting summary drift.
     Runtime session trades now expose unpaginated scoped `feesPaid`, and

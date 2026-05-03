@@ -35,6 +35,7 @@ describe('Bots runtime scope remediation contract', () => {
     await prisma.position.createMany({
       data: [
         {
+          id: 'runtime-limit-eth-closed',
           userId: ownerUser.id,
           botId,
           strategyId,
@@ -50,6 +51,7 @@ describe('Bots runtime scope remediation contract', () => {
           syncState: 'IN_SYNC',
         },
         {
+          id: 'runtime-limit-btc-closed',
           userId: ownerUser.id,
           botId,
           strategyId,
@@ -85,6 +87,40 @@ describe('Bots runtime scope remediation contract', () => {
         },
       ],
     });
+    await prisma.trade.createMany({
+      data: [
+        {
+          userId: ownerUser.id,
+          botId,
+          positionId: 'runtime-limit-eth-closed',
+          strategyId,
+          symbol: 'ETHUSDT',
+          side: 'SELL',
+          lifecycleAction: 'CLOSE',
+          price: 3340,
+          quantity: 0.1,
+          fee: 0.5,
+          realizedPnl: 4,
+          executedAt: new Date('2026-04-11T00:03:00.000Z'),
+          managementMode: 'BOT_MANAGED',
+        },
+        {
+          userId: ownerUser.id,
+          botId,
+          positionId: 'runtime-limit-btc-closed',
+          strategyId,
+          symbol: 'BTCUSDT',
+          side: 'SELL',
+          lifecycleAction: 'CLOSE',
+          price: 0.21,
+          quantity: 100,
+          fee: 0.6,
+          realizedPnl: 6,
+          executedAt: new Date('2026-04-11T00:05:00.000Z'),
+          managementMode: 'BOT_MANAGED',
+        },
+      ],
+    });
 
     const positionsRes = await agent
       .get(`/dashboard/bots/${botId}/runtime-sessions/${session.id}/positions`)
@@ -94,6 +130,7 @@ describe('Bots runtime scope remediation contract', () => {
     expect(positionsRes.body.openCount).toBe(1);
     expect(positionsRes.body.closedCount).toBe(2);
     expect(positionsRes.body.summary.realizedPnl).toBe(10);
+    expect(positionsRes.body.summary.feesPaid).toBeCloseTo(1.1);
     expect(positionsRes.body.openItems).toHaveLength(1);
     expect(positionsRes.body.historyItems).toHaveLength(1);
     expect(positionsRes.body.openItems[0].symbol).toBe('BTCUSDT');
