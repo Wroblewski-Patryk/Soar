@@ -20,6 +20,17 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `POSDRIFT-11 fix(api-positions): keep legacy open-position repair canonical-market scoped`
+  - Scope: closed the next confirmed position-management drift. Local repair
+    of open `BOT` / `USER` positions without `botId` now matches candidate bots
+    through active canonical `BotMarketGroup.symbolGroup` symbols before direct
+    legacy `Bot.symbolGroup`, and persists strategy provenance from existing
+    position provenance or one enabled canonical `MarketGroupStrategyLink`.
+    Stale direct bot market/strategy projections can no longer claim or
+    mislabel repaired orphan rows when canonical groups exist. Validation PASS:
+    focused position repair regression (`1/1`). Evidence:
+    `docs/planning/posdrift-11-legacy-position-repair-canonical-scope-task-2026-05-03.md`.
+
 - [x] `POSDRIFT-10 fix(api-orders): fail closed for manual-order multi-strategy ambiguity`
   - Scope: closed the TESTER edge-case for LIVE manual opens. Manual-order
     strategy context now resolves a canonical strategy only when exactly one

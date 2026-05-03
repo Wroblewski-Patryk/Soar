@@ -97,6 +97,20 @@ type CanonicalBotRepairCandidate = {
   symbolGroup: {
     symbols: string[];
   } | null;
+  botMarketGroups: Array<{
+    symbolGroup: {
+      symbols: string[];
+    };
+    strategyLinks: Array<{
+      strategyId: string;
+    }>;
+  }>;
+};
+
+type BotPositionRepairMatch = {
+  botId: string;
+  walletId: string | null;
+  strategyId: string | null;
 };
 
 export class ExchangeSnapshotError extends Error {
@@ -561,7 +575,9 @@ export const fetchExchangeTradeHistorySnapshotByApiKeyId = async (
 
 const normalizeRepairSymbol = (symbol: string) => symbol.trim().toUpperCase();
 
-const canBotRepairPosition = (
+const getCanonicalRepairGroups = (bot: CanonicalBotRepairCandidate) => bot.botMarketGroups ?? [];
+
+const resolveBotRepairMatch = (
   bot: CanonicalBotRepairCandidate,
   position: {
     symbol: string;
@@ -569,19 +585,45 @@ const canBotRepairPosition = (
     strategyId: string | null;
   }
 ) => {
-  if (bot.mode === 'LIVE' && !bot.liveOptIn) return false;
-  const botSymbols = bot.symbolGroup?.symbols?.map(normalizeRepairSymbol) ?? [];
-  if (!botSymbols.includes(normalizeRepairSymbol(position.symbol))) return false;
+  if (bot.mode === 'LIVE' && !bot.liveOptIn) return null;
+
+  const canonicalGroups = getCanonicalRepairGroups(bot);
+  const hasCanonicalGroups = canonicalGroups.length > 0;
+  const botSymbols = (
+    hasCanonicalGroups
+      ? canonicalGroups.flatMap((group) => group.symbolGroup.symbols)
+      : bot.symbolGroup?.symbols ?? []
+  ).map(normalizeRepairSymbol);
+  if (!botSymbols.includes(normalizeRepairSymbol(position.symbol))) return null;
+
+  const canonicalStrategyIds = hasCanonicalGroups
+    ? canonicalGroups.flatMap((group) => group.strategyLinks.map((link) => link.strategyId))
+    : bot.strategyId
+      ? [bot.strategyId]
+      : [];
+  const uniqueStrategyIds = [...new Set(canonicalStrategyIds)];
 
   const walletMatches = Boolean(position.walletId && bot.walletId && position.walletId === bot.walletId);
   const strategyMatches = Boolean(
     position.strategyId &&
-      bot.strategyId &&
-      position.strategyId === bot.strategyId &&
+      uniqueStrategyIds.includes(position.strategyId) &&
       (!position.walletId || !bot.walletId || position.walletId === bot.walletId)
   );
 
-  return walletMatches || strategyMatches;
+  if (!walletMatches && !strategyMatches) return null;
+
+  const repairStrategyId =
+    position.strategyId && strategyMatches
+      ? position.strategyId
+      : uniqueStrategyIds.length === 1
+        ? uniqueStrategyIds[0]
+        : null;
+
+  return {
+    botId: bot.id,
+    walletId: bot.walletId,
+    strategyId: repairStrategyId,
+  } satisfies BotPositionRepairMatch;
 };
 
 export const repairLegacyOpenPositions = async (
@@ -623,6 +665,29 @@ export const repairLegacyOpenPositions = async (
             symbols: true,
           },
         },
+        botMarketGroups: {
+          where: {
+            isEnabled: true,
+            lifecycleStatus: 'ACTIVE',
+          },
+          orderBy: [{ executionOrder: 'asc' }, { createdAt: 'asc' }],
+          select: {
+            symbolGroup: {
+              select: {
+                symbols: true,
+              },
+            },
+            strategyLinks: {
+              where: {
+                isEnabled: true,
+              },
+              orderBy: [{ priority: 'asc' }, { createdAt: 'asc' }],
+              select: {
+                strategyId: true,
+              },
+            },
+          },
+        },
       },
     }),
   ]);
@@ -635,7 +700,9 @@ export const repairLegacyOpenPositions = async (
   };
 
   for (const position of positions) {
-    const candidates = activeBots.filter((bot) => canBotRepairPosition(bot, position));
+    const candidates = activeBots
+      .map((bot) => resolveBotRepairMatch(bot, position))
+      .filter((match): match is BotPositionRepairMatch => match != null);
 
     if (candidates.length === 1) {
       const owner = candidates[0];
@@ -647,7 +714,7 @@ export const repairLegacyOpenPositions = async (
           status: 'OPEN',
         },
         data: {
-          botId: owner.id,
+          botId: owner.botId,
           walletId: owner.walletId,
           strategyId: owner.strategyId,
         },

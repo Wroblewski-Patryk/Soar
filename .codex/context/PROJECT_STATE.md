@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 legacy open-position repair slice `POSDRIFT-11` is closed
+  locally. Local repair of open `BOT` / `USER` positions without `botId` now
+  matches candidate bots through active canonical `BotMarketGroup.symbolGroup`
+  symbols before direct legacy `Bot.symbolGroup`, and writes strategy
+  provenance from existing position provenance or one enabled canonical
+  `MarketGroupStrategyLink`. Stale direct bot market/strategy projections can
+  no longer claim or mislabel repaired orphan rows when canonical groups exist.
+  Validation PASS: focused position repair regression (`1/1`). Evidence:
+  `docs/planning/posdrift-11-legacy-position-repair-canonical-scope-task-2026-05-03.md`.
 - 2026-05-03 manual-order multi-strategy ambiguity slice `POSDRIFT-10` is
   closed locally. Manual-order strategy context now resolves a canonical
   strategy only when exactly one enabled strategy link matches the requested

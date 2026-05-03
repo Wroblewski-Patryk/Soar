@@ -60,6 +60,15 @@ Operational queue for one-task execution runs.
     LIVE manual open fails closed instead of silently selecting the first link.
     Validation PASS: focused LIVE ambiguous manual-order regression. Evidence:
     `docs/planning/posdrift-10-manual-order-multistrategy-ambiguity-task-2026-05-03.md`.
+- [x] `POSDRIFT-11 fix(api-positions): keep legacy open-position repair canonical-market scoped`
+  - 2026-05-03: Closed the next confirmed position-management drift. Local
+    repair of open `BOT` / `USER` positions without `botId` now uses active
+    canonical `BotMarketGroup.symbolGroup` and enabled
+    `MarketGroupStrategyLink` rows before direct legacy bot projections. Stale
+    direct market/strategy fields can no longer claim or mislabel repaired
+    orphan rows when canonical groups exist. Validation PASS: focused position
+    repair regression (`1/1`). Evidence:
+    `docs/planning/posdrift-11-legacy-position-repair-canonical-scope-task-2026-05-03.md`.
 - [ ] `LIVEIMPORT-03 release(prod): promote imported-position provenance fix and read back ETH/DOGE`
   - Scope: promote commit `39146d2e` through the approved production workflow,
     verify API freshness directly, then use authenticated read-only dashboard

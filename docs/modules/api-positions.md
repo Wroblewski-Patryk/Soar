@@ -5,8 +5,8 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/positions`
 - Owner: backend/trading-domain
-- Last updated: 2026-04-12
-- Related planning task: `DCP-06`
+- Last updated: 2026-05-03
+- Related planning task: `POSDRIFT-11`
 
 ## 1. Purpose and Scope
 - Owns position read and external reconciliation surfaces for dashboard operations.
@@ -53,6 +53,15 @@ Out of scope:
       not decide takeover ownership.
 - Rebind flow:
   - attempts deterministic rebind of candidate external positions to owned bot context.
+- Local orphan repair flow:
+  - scans open local `BOT` / `USER` positions without `botId`,
+  - matches candidate bots through active enabled canonical
+    `BotMarketGroup.symbolGroup` rows before direct legacy `Bot.symbolGroup`,
+  - resolves repaired `strategyId` from existing position provenance or a
+    single enabled canonical `MarketGroupStrategyLink`,
+  - uses direct `Bot.symbolGroup` / `Bot.strategyId` only as compatibility
+    fallback for legacy bots without active canonical market groups,
+  - leaves ambiguous strategy provenance unresolved instead of guessing.
 
 ## 5. API and UI Integration
 - Routes:
@@ -76,12 +85,13 @@ Out of scope:
 ## 8. Test Coverage and Evidence
 - Primary tests:
   - `livePositionReconciliation.service.test.ts`
+  - `positions.service.test.ts`
   - `positions-live-status.e2e.test.ts`
   - `positions.exchangeSnapshot.e2e.test.ts`
   - `positions.takeover-status.e2e.test.ts`
 - Suggested validation command:
 ```powershell
-pnpm --filter api test -- src/modules/positions/livePositionReconciliation.service.test.ts src/modules/positions/positions-live-status.e2e.test.ts src/modules/positions/positions.exchangeSnapshot.e2e.test.ts src/modules/positions/positions.takeover-status.e2e.test.ts
+pnpm --filter api test -- src/modules/positions/positions.service.test.ts src/modules/positions/livePositionReconciliation.service.test.ts src/modules/positions/positions-live-status.e2e.test.ts src/modules/positions/positions.exchangeSnapshot.e2e.test.ts src/modules/positions/positions.takeover-status.e2e.test.ts --run --sequence.concurrent=false
 ```
 
 ## 9. Open Issues and Follow-Ups
