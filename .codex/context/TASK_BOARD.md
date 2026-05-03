@@ -20,6 +20,16 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-82 fix(api-wallets): align open PnL with sync state`
+  - Scope: closed a BUILDER-mode wallet KPI/timeline parity drift. Wallet
+    current open-PnL aggregation now requires `syncState=IN_SYNC` in the shared
+    helper used by performance summary and equity timeline, so same-API-key
+    `ORPHAN_LOCAL` imported open-position rows no longer inflate wallet
+    dashboard PnL while active imported `IN_SYNC` rows remain included.
+    Validation PASS: wallets e2e (`20/20`), API typecheck, repository
+    guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-82-wallet-open-pnl-sync-state-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-81 fix(api-wallets): align reset open-position blocker with sync state`
   - Scope: closed an ARCHITECT-mode paper wallet reset parity drift. Paper
     wallet reset now counts open-position blockers only when

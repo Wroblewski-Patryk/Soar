@@ -608,6 +608,7 @@ const buildWalletOpenPnlWhere = (input: {
 }): Prisma.PositionWhereInput => ({
   userId: input.userId,
   status: PositionStatus.OPEN,
+  syncState: 'IN_SYNC',
   unrealizedPnl: { not: null },
   OR: [
     { walletId: input.walletId },

@@ -162,6 +162,14 @@ Rule: fix/cleanup/update first, then feature delivery.
   position-list/runtime semantics, so stale `ORPHAN_LOCAL` open-position rows
   no longer deny reset. Validation PASS: wallets e2e (`20/20`), API typecheck,
   repository guardrails, lint, and diff review.
+- 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-82` with
+  `docs/planning/runtime-audit-82-wallet-open-pnl-sync-state-task-2026-05-04.md`.
+  Wallet current open-PnL aggregation now requires `syncState=IN_SYNC` in the
+  shared helper used by performance summary and equity timeline, so
+  same-API-key `ORPHAN_LOCAL` imported open-position rows no longer inflate
+  wallet dashboard PnL while active imported `IN_SYNC` rows remain included.
+  Validation PASS: wallets e2e (`20/20`), API typecheck, repository
+  guardrails, lint, and diff review.
 - 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-15` with
   `docs/planning/runtime-audit-15-close-fee-position-scope-task-2026-05-03.md`.
   Runtime close realized-PnL now aggregates entry fees by owned position

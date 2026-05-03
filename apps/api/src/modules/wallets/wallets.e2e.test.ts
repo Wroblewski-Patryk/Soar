@@ -393,6 +393,25 @@ describe('Wallets balance preview contract', () => {
         botId: null,
         origin: 'EXCHANGE_SYNC',
         managementMode: 'BOT_MANAGED',
+        syncState: 'ORPHAN_LOCAL',
+        continuityState: 'REPAIR_ONLY_CLEANUP',
+        externalId: `${apiKey.id}:ADAUSDT:LONG`,
+        symbol: 'ADAUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 100,
+        quantity: 1,
+        leverage: 5,
+        unrealizedPnl: 88,
+      },
+    });
+    await prisma.position.create({
+      data: {
+        userId,
+        walletId: null,
+        botId: null,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
         syncState: 'IN_SYNC',
         continuityState: 'CONFIRMED',
         externalId: 'other-api-key:BTCUSDT:LONG',
@@ -502,6 +521,25 @@ describe('Wallets balance preview contract', () => {
         quantity: 1,
         leverage: 5,
         unrealizedPnl: 12.5,
+      },
+    });
+    await prisma.position.create({
+      data: {
+        userId,
+        walletId: null,
+        botId: null,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'ORPHAN_LOCAL',
+        continuityState: 'REPAIR_ONLY_CLEANUP',
+        externalId: `${apiKey.id}:ADAUSDT:LONG`,
+        symbol: 'ADAUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 100,
+        quantity: 1,
+        leverage: 5,
+        unrealizedPnl: 88,
       },
     });
     await prisma.position.create({
