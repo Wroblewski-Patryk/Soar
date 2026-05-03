@@ -132,6 +132,13 @@ Rule: fix/cleanup/update first, then feature delivery.
   historical. Validation PASS: failing-then-passing wallet timeline
   regression, focused wallets e2e (`16/16`), API typecheck, guardrails, lint,
   and diff review.
+- 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-20` with
+  `docs/planning/runtime-audit-20-wallet-timeline-filtered-open-pnl-task-2026-05-03.md`.
+  Wallet equity timeline now attaches current owned-import open PnL only to
+  the latest overall wallet snapshot point, so filtered historical responses
+  remain historical instead of inheriting current open PnL. Validation PASS:
+  failing-then-passing filtered timeline regression, focused wallets e2e
+  (`16/16`), API typecheck, guardrails, lint, and diff review.
 
 ## Phase ETHDCA-2026-05-02 - LIVE DCA-First TSL Hardening (Closed 2026-05-02)
 - [x] `ETHDCA-01 fix(api-runtime): preserve LIVE DCA-first gating for trailing-stop close decisions`

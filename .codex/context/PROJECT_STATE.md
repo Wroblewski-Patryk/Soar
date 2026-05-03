@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 wallet filtered timeline open-PnL slice `RUNTIME-AUDIT-20` is
+  closed locally. Wallet equity timeline now attaches current owned-import
+  open PnL only to the latest overall wallet snapshot point, not to the latest
+  point of a filtered historical response. This keeps current wallet preview
+  parity with performance summary without overstating past filtered timeline
+  windows. Validation PASS: failing-then-passing filtered timeline regression,
+  focused wallets e2e (`16/16`), API typecheck, repository guardrails, lint,
+  and diff review. Evidence:
+  `docs/planning/runtime-audit-20-wallet-timeline-filtered-open-pnl-task-2026-05-03.md`.
 - 2026-05-03 wallet equity timeline open-PnL slice `RUNTIME-AUDIT-19` is
   closed locally. Wallet equity timeline now reuses the selected wallet
   open-PnL scope for the latest point, so owned imported `LIVE` positions with

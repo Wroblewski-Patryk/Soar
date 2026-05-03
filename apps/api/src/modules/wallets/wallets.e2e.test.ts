@@ -536,6 +536,17 @@ describe('Wallets balance preview contract', () => {
       botOpenPnl: 12.5,
       botPnl: 12.5,
     });
+
+    const historicalTimelineRes = await agent
+      .get(`/dashboard/wallets/${wallet.id}/equity-timeline`)
+      .query({ to: '2026-05-03T11:30:00.000Z' });
+
+    expect(historicalTimelineRes.status).toBe(200);
+    expect(historicalTimelineRes.body.points).toHaveLength(1);
+    expect(historicalTimelineRes.body.points[0]).toMatchObject({
+      botOpenPnl: 0,
+      botPnl: 0,
+    });
   });
 
   it('returns 404 when selected API key does not belong to current user', async () => {
