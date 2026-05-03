@@ -93,6 +93,14 @@ Rule: fix/cleanup/update first, then feature delivery.
   page, web build-info, and protected API unauthenticated `401 Missing token`.
   Authenticated production dashboard/runtime smoke remains unavailable without
   credentials and was not claimed.
+- 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-15` with
+  `docs/planning/runtime-audit-15-close-fee-position-scope-task-2026-05-03.md`.
+  Runtime close realized-PnL now aggregates entry fees by owned position
+  lifecycle (`userId + positionId + entry side`) instead of mutable
+  `botId`/`walletId` projections, preserving correct fee/PnL attribution for
+  imported LIVE positions closed through a selected bot wallet. Validation
+  PASS: focused execution orchestrator pack (`17/17`), broader runtime/order/
+  automation pack (`90/90`), API typecheck, guardrails, lint, and diff review.
 
 ## Phase ETHDCA-2026-05-02 - LIVE DCA-First TSL Hardening (Closed 2026-05-02)
 - [x] `ETHDCA-01 fix(api-runtime): preserve LIVE DCA-first gating for trailing-stop close decisions`

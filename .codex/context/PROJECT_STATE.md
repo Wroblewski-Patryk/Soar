@@ -3,6 +3,16 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 runtime close fee attribution slice `RUNTIME-AUDIT-15` is
+  closed locally. Runtime close realized-PnL now aggregates entry-leg fees by
+  the owned position lifecycle (`userId + positionId + entry side`) instead of
+  mutable `botId` / `walletId` projections. Imported or recovered LIVE
+  positions with `botId=null` / `walletId=null` can now close through the
+  selected bot wallet while still subtracting entry fees attached to the same
+  position. Validation PASS: focused execution orchestrator pack (`17/17`),
+  broader runtime/order/automation pack (`90/90`), API typecheck, repository
+  guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-15-close-fee-position-scope-task-2026-05-03.md`.
 - 2026-05-03 runtime EXIT owned-import lookup slice `RUNTIME-AUDIT-14` is
   closed locally. Runtime execution default open-position lookup now keeps the
   direct scoped query first, then resolves selected-bot owned `EXCHANGE_SYNC` /

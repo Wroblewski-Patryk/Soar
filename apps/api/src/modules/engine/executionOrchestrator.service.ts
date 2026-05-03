@@ -688,8 +688,6 @@ export const orchestrateRuntimeSignal = async (
     const entryFeeAggregate = await prisma.trade.aggregate({
       where: {
         userId: input.userId,
-        botId: input.botId,
-        walletId: openPosition.walletId,
         positionId: openPosition.id,
         side: entryLegSide,
       },

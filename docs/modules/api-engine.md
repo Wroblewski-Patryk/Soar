@@ -6,7 +6,7 @@
 - Source path: `apps/api/src/modules/engine`
 - Owner: backend/trading-runtime
 - Last updated: 2026-05-03
-- Related planning task: `RUNTIME-AUDIT-14`
+- Related planning task: `RUNTIME-AUDIT-15`
 
 ## Canonical Architecture Linkage
 Canonical behavior and invariants live in `docs/architecture/`, especially:
@@ -57,6 +57,10 @@ Out of scope:
     `EXCHANGE_SYNC` / `BOT_MANAGED` rows through wallet-first API-key
     ownership proof; legacy `walletId=null` imported rows can be selected only
     after the proof confirms the same bot and wallet own the symbol.
+  - runtime close realized-PnL fee attribution aggregates entry-leg fees by
+    `userId + positionId + entry side`, not by projected `botId` / `walletId`,
+    because imported or recovered LIVE lifecycle rows may carry different
+    identity projections while still belonging to the same owned position.
 - Runtime mode contracts:
   - explicit `PAPER`/`LIVE` path branching with parity checks.
 

@@ -9,6 +9,7 @@ import {
   RuntimeExecutionEventGateway,
   RuntimeTradeGateway,
 } from './executionOrchestrator.service';
+import { runtimeTelemetryService } from './runtimeTelemetry.service';
 
 vi.spyOn(prisma.trade, 'aggregate').mockResolvedValue({
   _sum: { fee: 0 },
@@ -624,6 +625,128 @@ describe('orchestrateRuntimeSignal', () => {
         side: 'SELL',
         price: 110,
         realizedPnl: 9.956,
+      })
+    );
+  });
+
+  it('aggregates entry fees by owned position id when closing an imported LIVE position', async () => {
+    const orderGateway = createOrderGateway();
+    const positionGateway = createPositionGateway();
+    const eventGateway = createEventGateway();
+    const tradeGateway = createTradeGateway();
+    const dedupeGateway = createDedupeGateway();
+    vi.spyOn(runtimeTelemetryService, 'upsertRuntimeSymbolStat').mockResolvedValue(undefined);
+    vi.mocked(prisma.trade.aggregate).mockClear();
+    vi.mocked(prisma.trade.aggregate).mockResolvedValueOnce({
+      _sum: { fee: 1.5 },
+      _avg: { fee: null },
+      _count: { fee: 1 },
+      _min: { fee: 1.5 },
+      _max: { fee: 1.5 },
+    });
+    (positionGateway.getOpenPositionBySymbol as ReturnType<typeof vi.fn>).mockResolvedValue({
+      id: 'position-imported-live',
+      userId: 'u1',
+      externalId: 'binance:key-live:ETHUSDT',
+      origin: 'EXCHANGE_SYNC',
+      managementMode: 'BOT_MANAGED',
+      syncState: 'IN_SYNC',
+      symbol: 'ETHUSDT',
+      side: 'LONG',
+      status: 'OPEN',
+      entryPrice: 100,
+      quantity: 1,
+      leverage: 1,
+      openedAt: new Date(),
+      closedAt: null,
+      realizedPnl: null,
+      unrealizedPnl: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      botId: null,
+      walletId: null,
+      strategyId: null,
+      stopLoss: null,
+      takeProfit: null,
+    });
+    (orderGateway.openOrder as ReturnType<typeof vi.fn>).mockResolvedValue({
+      id: 'order-imported-close',
+      userId: 'u1',
+      symbol: 'ETHUSDT',
+      side: 'SELL',
+      type: 'MARKET',
+      status: 'FILLED',
+      quantity: 1,
+      filledQuantity: 1,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      submittedAt: new Date(),
+      filledAt: new Date(),
+      botId: 'bot-live',
+      walletId: 'wallet-live',
+      strategyId: 'strategy-live',
+      positionId: 'position-imported-live',
+      price: null,
+      stopPrice: null,
+      averageFillPrice: 110,
+      fee: null,
+      feeSource: 'ESTIMATED',
+      feePending: false,
+      feeCurrency: null,
+      effectiveFeeRate: null,
+      exchangeOrderId: null,
+      exchangeTradeId: null,
+      canceledAt: null,
+    });
+
+    await orchestrateRuntimeSignal(
+      {
+        userId: 'u1',
+        botId: 'bot-live',
+        walletId: 'wallet-live',
+        strategyId: 'strategy-live',
+        symbol: 'ETHUSDT',
+        direction: 'EXIT',
+        quantity: 1,
+        markPrice: 110,
+        mode: 'LIVE',
+      },
+      orderGateway,
+      positionGateway,
+      eventGateway,
+      tradeGateway,
+      dedupeGateway
+    );
+
+    expect(prisma.trade.aggregate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: {
+          userId: 'u1',
+          positionId: 'position-imported-live',
+          side: 'BUY',
+        },
+      })
+    );
+    expect(orderGateway.openOrder).toHaveBeenCalledWith(
+      'u1',
+      expect.objectContaining({
+        walletId: 'wallet-live',
+        positionId: 'position-imported-live',
+        reduceOnly: true,
+      })
+    );
+    expect(positionGateway.closePosition).toHaveBeenCalledWith(
+      'position-imported-live',
+      'u1',
+      expect.objectContaining({
+        realizedPnl: 8.456,
+      })
+    );
+    expect(tradeGateway.createTrade).toHaveBeenCalledWith(
+      expect.objectContaining({
+        positionId: 'position-imported-live',
+        walletId: 'wallet-live',
+        realizedPnl: 8.456,
       })
     );
   });
