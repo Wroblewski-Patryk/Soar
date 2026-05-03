@@ -3,6 +3,16 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 runtime EXIT owned-import lookup slice `RUNTIME-AUDIT-14` is
+  closed locally. Runtime execution default open-position lookup now keeps the
+  direct scoped query first, then resolves selected-bot owned `EXCHANGE_SYNC` /
+  `BOT_MANAGED` imported open positions through wallet-first API-key ownership
+  proof when the direct LIVE lookup misses. Legacy `walletId=null` imports can
+  now be found for the same bot/wallet/symbol instead of producing incorrect
+  `no_open_position`, while unowned imports remain invisible. Validation PASS:
+  focused orchestrator pack (`18/18`), broader runtime/orders pack
+  (`111/111`), typecheck, guardrails, lint, and diff check. Evidence:
+  `docs/planning/runtime-audit-14-exit-owned-import-lookup-task-2026-05-03.md`.
 - 2026-05-03 filled LIVE order imported-position reuse slice
   `RUNTIME-AUDIT-13` is closed locally. Filled selected-bot `LIVE` orders now
   reuse same-side deterministically owned `EXCHANGE_SYNC` / `BOT_MANAGED`

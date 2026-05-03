@@ -20,6 +20,18 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-14 fix(api-engine): resolve owned LIVE imports for runtime EXIT lookup`
+  - Scope: closed the next LIVE close/automation lookup drift. Runtime
+    execution default open-position lookup now keeps the direct scoped query
+    first, then resolves selected-bot owned `EXCHANGE_SYNC` / `BOT_MANAGED`
+    imported open positions through wallet-first API-key ownership proof when
+    the direct LIVE lookup misses. Legacy `walletId=null` imports can now be
+    found for the same bot/wallet/symbol instead of producing incorrect
+    `no_open_position`, while unowned imports remain invisible. Validation
+    PASS: focused orchestrator pack (`18/18`), broader runtime/orders pack
+    (`111/111`), typecheck, guardrails, lint, and diff check. Evidence:
+    `docs/planning/runtime-audit-14-exit-owned-import-lookup-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-13 fix(api-orders): reuse owned LIVE imports during fill lifecycle`
   - Scope: closed the next LIVE fill lifecycle duplication drift. Filled
     selected-bot `LIVE` orders now reuse same-side deterministically owned

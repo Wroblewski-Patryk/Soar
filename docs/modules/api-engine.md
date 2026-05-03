@@ -6,7 +6,7 @@
 - Source path: `apps/api/src/modules/engine`
 - Owner: backend/trading-runtime
 - Last updated: 2026-05-03
-- Related planning task: `RUNTIME-AUDIT-11`
+- Related planning task: `RUNTIME-AUDIT-14`
 
 ## Canonical Architecture Linkage
 Canonical behavior and invariants live in `docs/architecture/`, especially:
@@ -52,6 +52,11 @@ Out of scope:
   - final-candle external-position guard keys managed `EXCHANGE_SYNC` rows by
     deterministic owner bot, not only by user+symbol; an imported position for
     one bot must not block another bot's signal on the same symbol.
+  - runtime execution open-position lookup checks direct scoped positions
+    first, then for selected `LIVE` bots may resolve owned imported
+    `EXCHANGE_SYNC` / `BOT_MANAGED` rows through wallet-first API-key
+    ownership proof; legacy `walletId=null` imported rows can be selected only
+    after the proof confirms the same bot and wallet own the symbol.
 - Runtime mode contracts:
   - explicit `PAPER`/`LIVE` path branching with parity checks.
 
@@ -72,6 +77,8 @@ Out of scope:
     strategy projection.
 - Execution orchestration:
   - resolves open/close/ignore action.
+  - `EXIT`/close decisions must see selected-bot owned imported LIVE positions
+    consistently with dashboard/runtime reads.
   - writes order/position/trade side effects through gateways.
   - emits runtime execution events and updates dedupe state.
 - Runtime position automation:

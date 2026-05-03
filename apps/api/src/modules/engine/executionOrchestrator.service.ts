@@ -14,6 +14,10 @@ import {
   PositionCloseAttribution,
   resolveRuntimeCloseAttribution,
 } from '../positions/positionCloseAttribution';
+import {
+  getExternalPositionOwnership,
+  resolveExternalPositionOwnershipIndex,
+} from '../bots/runtimeExternalPositionOwner.service';
 
 export type RuntimeSignalDirection = 'LONG' | 'SHORT' | 'EXIT';
 export type RuntimeExecutionMode = 'PAPER' | 'LIVE';
@@ -142,6 +146,73 @@ export const buildOpenPositionLookupWhere = (input: {
   return baseWhere;
 };
 
+export const resolveRuntimeOpenPositionBySymbol = async (input: {
+  userId: string;
+  symbol: string;
+  mode: RuntimeExecutionMode;
+  botId?: string;
+  walletId?: string;
+}) => {
+  const directPosition = await prisma.position.findFirst({
+    where: buildOpenPositionLookupWhere(input),
+    orderBy: { openedAt: 'desc' },
+  });
+  if (directPosition) return directPosition;
+  if (input.mode !== 'LIVE' || !input.botId || !input.walletId) return null;
+
+  const botScope = await prisma.bot.findFirst({
+    where: {
+      id: input.botId,
+      userId: input.userId,
+    },
+    select: {
+      mode: true,
+      walletId: true,
+      apiKeyId: true,
+      wallet: {
+        select: {
+          mode: true,
+          apiKeyId: true,
+        },
+      },
+    },
+  });
+  if (!botScope || botScope.mode !== 'LIVE' || botScope.wallet?.mode !== 'LIVE') return null;
+  if (botScope.walletId !== input.walletId) return null;
+
+  const effectiveApiKeyId = botScope.wallet.apiKeyId ?? botScope.apiKeyId;
+  if (!effectiveApiKeyId) return null;
+
+  const ownershipIndex = await resolveExternalPositionOwnershipIndex(input.userId, 'LIVE');
+  const ownership = getExternalPositionOwnership(ownershipIndex, {
+    apiKeyId: effectiveApiKeyId,
+    symbol: input.symbol,
+  });
+  if (
+    ownership.status !== 'OWNED' ||
+    ownership.botId !== input.botId ||
+    ownership.walletId !== input.walletId
+  ) {
+    return null;
+  }
+
+  return prisma.position.findFirst({
+    where: {
+      userId: input.userId,
+      botId: null,
+      symbol: normalizeSymbol(input.symbol),
+      status: 'OPEN',
+      origin: 'EXCHANGE_SYNC',
+      managementMode: 'BOT_MANAGED',
+      externalId: {
+        startsWith: `${effectiveApiKeyId}:`,
+      },
+      OR: [{ walletId: input.walletId }, { walletId: null }],
+    },
+    orderBy: { openedAt: 'desc' },
+  });
+};
+
 export interface RuntimeExecutionEventGateway {
   writeEvent(input: {
     userId: string;
@@ -258,11 +329,7 @@ const defaultOrderGateway: OrderFlowGateway = {
 };
 
 const defaultPositionGateway: PositionFlowGateway = {
-  getOpenPositionBySymbol: (input) =>
-    prisma.position.findFirst({
-      where: buildOpenPositionLookupWhere(input),
-      orderBy: { openedAt: 'desc' },
-    }),
+  getOpenPositionBySymbol: (input) => resolveRuntimeOpenPositionBySymbol(input),
   createPosition: (input) => prisma.position.create({ data: input }),
   closePosition: async (positionId, userId, payload) => {
     const closedAt = payload?.closedAt ?? new Date();
