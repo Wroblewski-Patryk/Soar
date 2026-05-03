@@ -9,6 +9,16 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-68 fix(api-runtime): require wallet proof for botless LIVE open orders`
+  - 2026-05-03: Closed a BUILDER-mode dashboard management-state ownership
+    drift. Runtime session positions now require exact wallet proof before
+    including botless LIVE `EXCHANGE_SYNC` open orders through the
+    external-owned order fallback, so stale/global wallet-null rows cannot be
+    counted only because they share an owned symbol. Bot-scoped wallet-null
+    orders remain visible through the existing bot-scoped filter. Validation
+    PASS: runtime-scope e2e (`14/14`), API typecheck, repository guardrails,
+    lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-68-live-open-order-wallet-proof-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-67 fix(api-runtime): scope imported external-id query filters`
   - 2026-05-03: Closed a TESTER-mode DB candidate-filter drift after
     market-scoped imported IDs. Market-known imported-position queries now

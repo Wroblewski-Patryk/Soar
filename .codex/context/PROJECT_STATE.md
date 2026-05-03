@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 LIVE botless open-order wallet-proof slice
+  `RUNTIME-AUDIT-68` is closed locally. Runtime session positions now require
+  exact wallet proof before including botless LIVE `EXCHANGE_SYNC` open orders
+  through the external-owned order fallback, so stale/global wallet-null rows
+  cannot be counted on the dashboard only because they share an owned symbol.
+  Bot-scoped wallet-null orders remain visible through the existing bot-scoped
+  filter. Validation PASS: runtime-scope e2e (`14/14`), API typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-68-live-open-order-wallet-proof-task-2026-05-03.md`.
 - 2026-05-03 market-scoped imported external ID query-filter slice
   `RUNTIME-AUDIT-67` is closed locally. Market-known imported-position queries
   now filter canonical rows by `apiKey:marketType:` and legacy rows by

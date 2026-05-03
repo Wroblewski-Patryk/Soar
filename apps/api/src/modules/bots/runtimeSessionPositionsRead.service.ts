@@ -400,7 +400,7 @@ export const listBotRuntimeSessionPositions = async (
             symbol: { in: ownedExternalSymbols },
             ...(inheritedExecutionContext.mode === 'LIVE' && botContext.walletId
               ? {
-                  OR: [{ walletId: botContext.walletId }, { walletId: null }],
+                  walletId: botContext.walletId,
                 }
               : {}),
           },

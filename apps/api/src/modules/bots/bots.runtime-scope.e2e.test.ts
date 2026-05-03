@@ -4,6 +4,7 @@ import {
   createMarketGroup,
   createPayload,
   createStrategy,
+  createWalletForContext,
   registerAndLogin,
   resetBotsE2eState,
 } from './bots.e2e.shared';
@@ -227,6 +228,113 @@ describe('Bots runtime scope remediation contract', () => {
           order.exchangeOrderId === 'shared-open-order'
       )?.origin
     ).toBe('EXCHANGE_SYNC');
+  });
+
+  it('excludes botless LIVE exchange-synced open orders without wallet proof', async () => {
+    const email = 'bot-runtime-live-open-orders-wallet-proof@example.com';
+    const agent = await registerAndLogin(email);
+    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email } });
+
+    const apiKey = await prisma.apiKey.create({
+      data: {
+        userId: ownerUser.id,
+        label: 'Runtime Open Order Wallet Proof Key',
+        exchange: 'BINANCE',
+        apiKey: 'runtime_open_order_wallet_proof_key',
+        apiSecret: 'runtime_open_order_wallet_proof_secret',
+        syncExternalPositions: true,
+        manageExternalPositions: true,
+      },
+      select: { id: true },
+    });
+    const walletId = await createWalletForContext(email, {
+      mode: 'LIVE',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      apiKeyId: apiKey.id,
+    });
+    const strategyId = await createStrategy(agent, 'Runtime Open Order Wallet Proof Strategy');
+    const marketGroupId = await createMarketGroup(email, 'FUTURES');
+    await prisma.symbolGroup.update({
+      where: { id: marketGroupId },
+      data: { symbols: ['BTCUSDT'] },
+    });
+    const botRes = await agent.post('/dashboard/bots').send({
+      ...createPayload({ strategyId, marketGroupId, walletId }),
+      name: 'Runtime Open Order Wallet Proof Bot',
+      isActive: true,
+      liveOptIn: true,
+      manageExternalPositions: true,
+      consentTextVersion: 'mvp-v1',
+    });
+    expect(botRes.status).toBe(201);
+    const botId = botRes.body.id as string;
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'LIVE',
+        status: 'RUNNING',
+        startedAt: new Date('2026-05-03T11:00:00.000Z'),
+      },
+    });
+
+    const walletOwnedOrder = await prisma.order.create({
+      data: {
+        userId: ownerUser.id,
+        botId: null,
+        walletId,
+        strategyId: null,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        exchangeOrderId: 'wallet-owned-open-order',
+        symbol: 'BTCUSDT',
+        side: 'BUY',
+        type: 'LIMIT',
+        status: 'OPEN',
+        quantity: 0.01,
+        price: 67000,
+        submittedAt: new Date('2026-05-03T11:01:00.000Z'),
+      },
+    });
+    await prisma.order.create({
+      data: {
+        userId: ownerUser.id,
+        botId: null,
+        walletId: null,
+        strategyId: null,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        exchangeOrderId: 'wallet-null-open-order',
+        symbol: 'BTCUSDT',
+        side: 'BUY',
+        type: 'LIMIT',
+        status: 'OPEN',
+        quantity: 0.02,
+        price: 66000,
+        submittedAt: new Date('2026-05-03T11:02:00.000Z'),
+      },
+    });
+
+    const positionsRes = await agent.get(
+      `/dashboard/bots/${botId}/runtime-sessions/${session.id}/positions`
+    );
+    expect(positionsRes.status).toBe(200);
+    expect(positionsRes.body.total).toBe(0);
+    expect(positionsRes.body.openOrdersCount).toBe(1);
+    expect(positionsRes.body.openOrders).toEqual([
+      expect.objectContaining({
+        id: walletOwnedOrder.id,
+        exchangeOrderId: 'wallet-owned-open-order',
+      }),
+    ]);
+    expect(
+      (positionsRes.body.openOrders as Array<{ exchangeOrderId: string }>).map(
+        (order) => order.exchangeOrderId
+      )
+    ).not.toContain('wallet-null-open-order');
   });
 
   it('keeps runtime symbol-stats open-position summary truthful when visible symbols are limited', async () => {
