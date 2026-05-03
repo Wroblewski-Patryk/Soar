@@ -69,6 +69,15 @@ Operational queue for one-task execution runs.
     orphan rows when canonical groups exist. Validation PASS: focused position
     repair regression (`1/1`). Evidence:
     `docs/planning/posdrift-11-legacy-position-repair-canonical-scope-task-2026-05-03.md`.
+- [x] `DASHDRIFT-02 fix(web-dashboard): keep position edit strategy display runtime-graph scoped`
+  - 2026-05-03: Closed the next dashboard display drift. The position edit
+    modal in `HomeLiveWidgets` now resolves strategy labels from selected bot
+    `runtime-graph` market groups and strategy links before direct legacy
+    `Bot.strategy`. Stale direct bot strategy projections can no longer
+    override canonical runtime strategy display in that position-management
+    modal. Validation PASS: focused HomeLiveWidgets regression (`18/18`).
+    Evidence:
+    `docs/planning/dashdrift-02-position-edit-strategy-display-task-2026-05-03.md`.
 - [ ] `LIVEIMPORT-03 release(prod): promote imported-position provenance fix and read back ETH/DOGE`
   - Scope: promote commit `39146d2e` through the approved production workflow,
     verify API freshness directly, then use authenticated read-only dashboard

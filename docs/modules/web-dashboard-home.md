@@ -5,8 +5,8 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/dashboard-home`
 - Owner: frontend/runtime-observability
-- Last updated: 2026-04-22
-- Related planning task: `SCALE-17`
+- Last updated: 2026-05-03
+- Related planning task: `DASHDRIFT-02`
 
 ## Canonical Architecture Linkage
 Canonical surface and routing rules live in:
@@ -213,6 +213,11 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
 - Signals/context contract:
   - `signals` symbols and strategy context are selected-bot scoped only.
   - strategy context in selected-bot panel must refresh immediately after bot switch.
+  - position-management modal labels resolve strategy context from selected
+    bot `runtime-graph` market groups and strategy links before direct
+    `Bot.strategy` projection.
+  - direct bot strategy display is compatibility fallback only when runtime
+    graph strategy context is unavailable.
 - Selected-bot panel layout contract:
   - KPI/status row remains first.
   - selected-bot selector row is placed between KPI row and market/strategy context row.

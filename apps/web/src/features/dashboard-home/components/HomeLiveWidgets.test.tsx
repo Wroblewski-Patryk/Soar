@@ -2,7 +2,7 @@ import { act, fireEvent, render, screen, waitFor, within } from "@testing-librar
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { I18nProvider } from "../../../i18n/I18nProvider";
-import HomeLiveWidgets from "./HomeLiveWidgets";
+import HomeLiveWidgets, { resolveSelectedStrategyDisplay } from "./HomeLiveWidgets";
 import { buildMonitoringAggregateFromSessionMocks } from "./HomeLiveWidgets.test-helpers";
 
 const listBotsMock = vi.hoisted(() => vi.fn());
@@ -2885,4 +2885,96 @@ describe("HomeLiveWidgets", () => {
     expect((screen.getAllByLabelText("Side").at(-1) as HTMLSelectElement).value).toBe("SELL");
     expect((screen.getByLabelText("Action") as HTMLSelectElement).value).toBe("CLOSE");
   }, 15_000);
+});
+
+describe("resolveSelectedStrategyDisplay", () => {
+  const t = (key: string) => (key === "dashboard.home.runtime.reasonUnknown" ? "Unknown" : key);
+
+  it("prefers canonical runtime graph strategy over stale direct bot strategy projection", () => {
+    const strategyName = resolveSelectedStrategyDisplay(
+      {
+        bot: {
+          id: "bot-1",
+          name: "Runtime bot",
+          mode: "PAPER",
+          paperStartBalance: 10_000,
+          exchange: "BINANCE",
+          marketType: "FUTURES",
+          positionMode: "ONE_WAY",
+          strategyId: "legacy-strategy",
+          isActive: true,
+          liveOptIn: false,
+          manageExternalPositions: false,
+          maxOpenPositions: 1,
+          strategy: {
+            id: "legacy-strategy",
+            name: "Legacy Strategy",
+            interval: "15m",
+            leverage: 5,
+            walletRisk: 1,
+          },
+        },
+        session: null,
+        symbolStats: null,
+        positions: null,
+        trades: null,
+        runtimeGraph: {
+          bot: {
+            id: "bot-1",
+            userId: "user-1",
+            name: "Runtime bot",
+            mode: "PAPER",
+            marketType: "FUTURES",
+            positionMode: "ONE_WAY",
+            strategyId: "legacy-strategy",
+            isActive: true,
+            liveOptIn: false,
+            manageExternalPositions: false,
+            maxOpenPositions: 1,
+            createdAt: "2026-05-03T00:00:00.000Z",
+            updatedAt: "2026-05-03T00:00:00.000Z",
+          },
+          marketGroups: [
+            {
+              id: "bot-market-group-1",
+              botId: "bot-1",
+              symbolGroupId: "canonical-group",
+              lifecycleStatus: "ACTIVE",
+              executionOrder: 1,
+              isEnabled: true,
+              createdAt: "2026-05-03T00:00:00.000Z",
+              updatedAt: "2026-05-03T00:00:00.000Z",
+              symbolGroup: {
+                id: "canonical-group",
+                name: "Canonical group",
+                symbols: ["BTCUSDT"],
+                marketUniverseId: "market-universe-1",
+              },
+              strategies: [
+                {
+                  id: "strategy-link-1",
+                  strategyId: "canonical-strategy",
+                  priority: 1,
+                  weight: 1,
+                  isEnabled: true,
+                  createdAt: "2026-05-03T00:00:00.000Z",
+                  updatedAt: "2026-05-03T00:00:00.000Z",
+                  strategy: {
+                    id: "canonical-strategy",
+                    name: "Canonical Strategy",
+                    interval: "5m",
+                    leverage: 10,
+                  },
+                },
+              ],
+            },
+          ],
+          legacyBotStrategies: [],
+        },
+      },
+      t
+    );
+
+    expect(strategyName).toBe("Canonical Strategy");
+  });
 });

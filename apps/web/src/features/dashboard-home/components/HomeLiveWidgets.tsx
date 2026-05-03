@@ -98,27 +98,49 @@ const resolvePositionOriginLabel = (
   return t("dashboard.home.runtime.reasonUnknown");
 };
 
-const resolveSelectedStrategyDisplay = (
+export const resolveSelectedStrategyDisplay = (
   selected: RuntimeSnapshot | null,
   t: (key: string) => string
 ) => {
   if (!selected) return t("dashboard.home.runtime.reasonUnknown");
 
-  if (selected.bot.strategy?.name) return selected.bot.strategy.name;
-
-  const runtimeGraphBotStrategyId = selected.runtimeGraph?.bot.strategyId ?? null;
-  const runtimeGraphBotStrategyName =
-    runtimeGraphBotStrategyId != null
-      ? selected.runtimeGraph?.marketGroups
-          .flatMap((marketGroup) => marketGroup.strategies)
-          .find((strategyBinding) => strategyBinding.strategy.id === runtimeGraphBotStrategyId)?.strategy.name
+  const runtimeGroups = [...(selected.runtimeGraph?.marketGroups ?? [])].sort((left, right) => {
+    if (left.executionOrder !== right.executionOrder) return left.executionOrder - right.executionOrder;
+    return Date.parse(left.createdAt) - Date.parse(right.createdAt);
+  });
+  const runtimeStrategyBindings = runtimeGroups.flatMap((marketGroup) =>
+    [...marketGroup.strategies]
+      .sort((left, right) => {
+        if (left.priority !== right.priority) return left.priority - right.priority;
+        return Date.parse(left.createdAt) - Date.parse(right.createdAt);
+      })
+      .map((strategyBinding) => ({ marketGroup, strategyBinding }))
+  );
+  const preferredRuntimeStrategyId = selected.runtimeGraph?.bot.strategyId ?? selected.bot.strategyId ?? null;
+  const preferredRuntimeStrategyName =
+    preferredRuntimeStrategyId != null
+      ? runtimeStrategyBindings.find(
+          ({ strategyBinding, marketGroup }) =>
+            marketGroup.isEnabled &&
+            marketGroup.lifecycleStatus === "ACTIVE" &&
+            strategyBinding.isEnabled &&
+            strategyBinding.strategyId === preferredRuntimeStrategyId
+        )?.strategyBinding.strategy.name
       : null;
-  if (runtimeGraphBotStrategyName) return runtimeGraphBotStrategyName;
+  if (preferredRuntimeStrategyName) return preferredRuntimeStrategyName;
 
-  const runtimeGraphStrategyName = selected.runtimeGraph?.marketGroups
-    .flatMap((marketGroup) => marketGroup.strategies)
-    .find((strategyBinding) => strategyBinding.strategy.id === selected.bot.strategyId)?.strategy.name;
-  if (runtimeGraphStrategyName) return runtimeGraphStrategyName;
+  const primaryRuntimeStrategyName =
+    runtimeStrategyBindings.find(
+      ({ strategyBinding, marketGroup }) =>
+        marketGroup.isEnabled && marketGroup.lifecycleStatus === "ACTIVE" && strategyBinding.isEnabled
+    )?.strategyBinding.strategy.name ??
+    runtimeStrategyBindings.find(({ marketGroup }) => marketGroup.isEnabled && marketGroup.lifecycleStatus === "ACTIVE")
+      ?.strategyBinding.strategy.name ??
+    runtimeStrategyBindings[0]?.strategyBinding.strategy.name ??
+    null;
+  if (primaryRuntimeStrategyName) return primaryRuntimeStrategyName;
+
+  if (selected.bot.strategy?.name) return selected.bot.strategy.name;
 
   const legacyStrategyName = selected.runtimeGraph?.legacyBotStrategies.find(
     (strategyBinding) => strategyBinding.strategyId === selected.bot.strategyId

@@ -3,6 +3,14 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 dashboard position-edit strategy display slice `DASHDRIFT-02`
+  is closed locally. The position edit modal in `HomeLiveWidgets` now resolves
+  strategy labels from selected bot `runtime-graph` market groups and strategy
+  links before direct legacy `Bot.strategy`. Stale direct bot strategy
+  projections can no longer override canonical runtime strategy display in
+  that position-management modal. Validation PASS: focused HomeLiveWidgets
+  regression (`18/18`). Evidence:
+  `docs/planning/dashdrift-02-position-edit-strategy-display-task-2026-05-03.md`.
 - 2026-05-03 legacy open-position repair slice `POSDRIFT-11` is closed
   locally. Local repair of open `BOT` / `USER` positions without `botId` now
   matches candidate bots through active canonical `BotMarketGroup.symbolGroup`

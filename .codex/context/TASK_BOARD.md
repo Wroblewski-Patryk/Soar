@@ -20,6 +20,16 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `DASHDRIFT-02 fix(web-dashboard): keep position edit strategy display runtime-graph scoped`
+  - Scope: closed the next dashboard display drift. The position edit modal in
+    `HomeLiveWidgets` now resolves strategy labels from selected bot
+    `runtime-graph` market groups and strategy links before direct legacy
+    `Bot.strategy`. Stale direct bot strategy projections can no longer
+    override canonical runtime strategy display in that position-management
+    modal. Validation PASS: focused HomeLiveWidgets regression (`18/18`).
+    Evidence:
+    `docs/planning/dashdrift-02-position-edit-strategy-display-task-2026-05-03.md`.
+
 - [x] `POSDRIFT-11 fix(api-positions): keep legacy open-position repair canonical-market scoped`
   - Scope: closed the next confirmed position-management drift. Local repair
     of open `BOT` / `USER` positions without `botId` now matches candidate bots
