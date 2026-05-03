@@ -97,7 +97,7 @@ describe('Positions orphan repair API', () => {
         exchange: 'BINANCE',
         marketType: 'FUTURES',
         baseCurrency: 'USDT',
-        whitelist: ['BTCUSDT', 'DOGEUSDT'],
+        whitelist: ['BTCUSDT', 'DOGEUSDT', 'ADAUSDT'],
         blacklist: [],
       },
       select: { id: true },
@@ -108,7 +108,7 @@ describe('Positions orphan repair API', () => {
         userId: owner.id,
         marketUniverseId: marketUniverse.id,
         name: 'Repair group',
-        symbols: ['BTCUSDT', 'DOGEUSDT'],
+        symbols: ['BTCUSDT', 'DOGEUSDT', 'ADAUSDT'],
       },
       select: { id: true },
     });
@@ -159,11 +159,31 @@ describe('Positions orphan repair API', () => {
         origin: 'BOT',
         managementMode: 'BOT_MANAGED',
         syncState: 'IN_SYNC',
-        symbol: 'DOGEUSDT',
+        symbol: 'ADAUSDT',
         side: 'SHORT',
         status: 'OPEN',
         entryPrice: 0.12,
         quantity: 100,
+        leverage: 5,
+      },
+      select: { id: true },
+    });
+
+    const staleLocalOrphan = await prisma.position.create({
+      data: {
+        userId: owner.id,
+        botId: null,
+        walletId: wallet.id,
+        strategyId: strategy.id,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'ORPHAN_LOCAL',
+        continuityState: 'REPAIR_ONLY_CLEANUP',
+        symbol: 'DOGEUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 0.1,
+        quantity: 50,
         leverage: 5,
       },
       select: { id: true },
@@ -250,6 +270,26 @@ describe('Positions orphan repair API', () => {
       walletId: wallet.id,
       side: 'LONG',
     });
-    expect(syncedExchangePosition?.externalId).toBe(`${apiKeyId}:BTCUSDT:LONG`);
+    expect(syncedExchangePosition?.externalId).toBe(`${apiKeyId}:FUTURES:BTCUSDT:LONG`);
+
+    const ignoredLocalOrphan = await prisma.position.findUniqueOrThrow({
+      where: { id: staleLocalOrphan.id },
+      select: {
+        botId: true,
+        walletId: true,
+        strategyId: true,
+        status: true,
+        syncState: true,
+        continuityState: true,
+      },
+    });
+    expect(ignoredLocalOrphan).toEqual({
+      botId: null,
+      walletId: wallet.id,
+      strategyId: strategy.id,
+      status: 'OPEN',
+      syncState: 'ORPHAN_LOCAL',
+      continuityState: 'REPAIR_ONLY_CLEANUP',
+    });
   });
 });

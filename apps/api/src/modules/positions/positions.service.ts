@@ -668,6 +668,7 @@ export const repairLegacyOpenPositions = async (
         userId,
         status: 'OPEN',
         botId: null,
+        syncState: { not: 'ORPHAN_LOCAL' },
         origin: { in: ['BOT', 'USER'] },
       },
       orderBy: [{ openedAt: 'asc' }, { createdAt: 'asc' }, { id: 'asc' }],
@@ -741,9 +742,8 @@ export const repairLegacyOpenPositions = async (
       const update = await prisma.position.updateMany({
         where: {
           id: position.id,
-          userId,
-          botId: null,
-          status: 'OPEN',
+          userId, botId: null,
+          status: 'OPEN', syncState: { not: 'ORPHAN_LOCAL' },
         },
         data: {
           botId: owner.botId,
@@ -764,9 +764,9 @@ export const repairLegacyOpenPositions = async (
       const update = await prisma.position.updateMany({
         where: {
           id: position.id,
-          userId,
-          botId: null,
+          userId, botId: null,
           status: 'OPEN',
+          syncState: { not: 'ORPHAN_LOCAL' },
         },
         data: {
           status: 'CLOSED',

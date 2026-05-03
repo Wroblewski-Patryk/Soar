@@ -3,6 +3,15 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 legacy local-orphan repair exclusion slice `RUNTIME-AUDIT-80`
+  is closed locally. Local legacy open-position repair now excludes
+  `syncState=ORPHAN_LOCAL` from candidate scans and from both guarded repair
+  update predicates, so a scope-matching local orphan cannot be rebound to a
+  canonical bot or closed again by this repair path. Valid `IN_SYNC` legacy
+  rebind, detached-blocker close, and exchange re-import behavior remain
+  covered. Validation PASS: orphan-repair e2e (`1/1`), API typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-80-orphan-repair-ignore-local-orphans-task-2026-05-04.md`.
 - 2026-05-04 takeover local-orphan exclusion slice `RUNTIME-AUDIT-79` is
   closed locally. Takeover status and rebind candidate scans now exclude
   `syncState=ORPHAN_LOCAL`, and the rebind update predicate repeats the

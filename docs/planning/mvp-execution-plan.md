@@ -146,6 +146,15 @@ Rule: fix/cleanup/update first, then feature delivery.
   takeover-active or rebound back to `IN_SYNC`. `DRIFT` repair behavior remains
   intact. Validation PASS: takeover-status e2e (`6/6`), API typecheck,
   repository guardrails, lint, and diff review.
+- 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-80` with
+  `docs/planning/runtime-audit-80-orphan-repair-ignore-local-orphans-task-2026-05-04.md`.
+  Local legacy open-position repair now excludes `syncState=ORPHAN_LOCAL` from
+  candidate scans and from both guarded repair update predicates, so a
+  scope-matching local orphan cannot be rebound to a canonical bot or closed
+  again by this repair path. Valid `IN_SYNC` legacy rebind, detached-blocker
+  close, and exchange re-import behavior remain covered. Validation PASS:
+  orphan-repair e2e (`1/1`), API typecheck, repository guardrails, lint, and
+  diff review.
 - 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-15` with
   `docs/planning/runtime-audit-15-close-fee-position-scope-task-2026-05-03.md`.
   Runtime close realized-PnL now aggregates entry fees by owned position
