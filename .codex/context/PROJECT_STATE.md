@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 wallet owned-import open-PnL slice `RUNTIME-AUDIT-18` is closed
+  locally. Wallet performance summary now includes selected `LIVE` wallet
+  imported open positions with `walletId=null` when their `externalId` is
+  owned by the wallet API key, while excluding other API keys and leaving
+  balance snapshot, cashflow, and equity timeline contracts unchanged.
+  Validation PASS: failing-then-passing wallet performance regression,
+  focused wallets e2e (`15/15`), API typecheck, repository guardrails, lint,
+  and diff review. Evidence:
+  `docs/planning/runtime-audit-18-wallet-owned-import-open-pnl-task-2026-05-03.md`.
 - 2026-05-03 exchange-fill close fee attribution slice `RUNTIME-AUDIT-17` is
   closed locally. LIVE exchange order-trade close confirmation now aggregates
   entry-leg fees by the owned position lifecycle (`userId + positionId + entry

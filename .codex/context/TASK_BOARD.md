@@ -20,6 +20,16 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-18 fix(api-wallets): include owned imported LIVE open PnL`
+  - Scope: closed the next wallet/dashboard capital drift. Wallet performance
+    summary now includes selected `LIVE` wallet imported open positions with
+    `walletId=null` when their `externalId` is owned by the wallet API key,
+    while excluding other API keys and leaving balance snapshot, cashflow, and
+    equity timeline contracts unchanged. Validation PASS: failing-then-passing
+    wallet performance regression, focused wallets e2e (`15/15`), API
+    typecheck, repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-18-wallet-owned-import-open-pnl-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-17 fix(api-orders): scope exchange-fill close fees by position lifecycle`
   - Scope: closed the next TESTER close-PnL parity drift. LIVE exchange
     order-trade close confirmation now aggregates entry-leg fees by the owned

@@ -324,6 +324,98 @@ describe('Wallets balance preview contract', () => {
     ]);
   });
 
+  it('includes wallet-owned imported LIVE open positions in performance summary open PnL', async () => {
+    const email = 'wallet-performance-owned-import-open-pnl@example.com';
+    const agent = await registerAndLogin(email);
+    const userId = await resolveUserIdByEmail(email);
+
+    const apiKey = await prisma.apiKey.create({
+      data: {
+        userId,
+        label: 'Wallet imported open pnl key',
+        exchange: 'BINANCE',
+        apiKey: 'encrypted-key',
+        apiSecret: 'encrypted-secret',
+        syncExternalPositions: true,
+        manageExternalPositions: true,
+      },
+    });
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId,
+        name: 'Wallet imported open pnl',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        apiKeyId: apiKey.id,
+        liveAllocationMode: 'PERCENT',
+        liveAllocationValue: 100,
+      },
+    });
+    await prisma.walletBalanceSnapshot.create({
+      data: {
+        userId,
+        walletId: wallet.id,
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        accountBalance: 1000,
+        freeBalance: 900,
+        allocatedBalance: 1000,
+        source: 'EXCHANGE_BALANCE',
+        fetchedAt: new Date('2026-05-03T12:00:00.000Z'),
+      },
+    });
+    await prisma.position.create({
+      data: {
+        userId,
+        walletId: null,
+        botId: null,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        continuityState: 'CONFIRMED',
+        externalId: `${apiKey.id}:ETHUSDT:LONG`,
+        symbol: 'ETHUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 100,
+        quantity: 1,
+        leverage: 5,
+        unrealizedPnl: 12.5,
+      },
+    });
+    await prisma.position.create({
+      data: {
+        userId,
+        walletId: null,
+        botId: null,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        continuityState: 'CONFIRMED',
+        externalId: 'other-api-key:BTCUSDT:LONG',
+        symbol: 'BTCUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 100,
+        quantity: 1,
+        leverage: 5,
+        unrealizedPnl: 99,
+      },
+    });
+
+    const summaryRes = await agent.get(`/dashboard/wallets/${wallet.id}/performance-summary`);
+
+    expect(summaryRes.status).toBe(200);
+    expect(summaryRes.body).toMatchObject({
+      walletId: wallet.id,
+      botOpenPnl: 12.5,
+      botPnl: 12.5,
+    });
+  });
+
   it('returns 404 when selected API key does not belong to current user', async () => {
     const owner = await registerAndLogin('wallet-preview-owner-2@example.com');
     const other = await registerAndLogin('wallet-preview-other@example.com');

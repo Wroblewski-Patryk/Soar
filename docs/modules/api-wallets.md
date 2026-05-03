@@ -5,8 +5,8 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/wallets`
 - Owner: backend/trading-domain
-- Last updated: 2026-04-23
-- Related planning task: `DCP-07`, `WAPR-10`, `V1CAP-A`
+- Last updated: 2026-05-03
+- Related planning task: `RUNTIME-AUDIT-18`
 
 ## Canonical Architecture Linkage
 Canonical wallet and execution-context rules live in:
@@ -78,6 +78,15 @@ Out of scope:
   2. Keep `PAPER` active capital scoped to wallet baseline + realized PnL since `paperResetAt`.
   3. Keep `LIVE` active capital exchange-authoritative and then map it through allocation mode/value.
   4. Return explicit capital-source/allocation/reset metadata to monitoring read models.
+- Wallet performance open-PnL flow:
+  1. Aggregate direct selected-wallet open positions by `userId + walletId`.
+  2. For `LIVE` wallets with an API key, also aggregate imported open
+     positions with `walletId=null`, `origin=EXCHANGE_SYNC`, and `externalId`
+     prefixed by the selected wallet API key id.
+  3. Keep another user's, another API key's, or unlinked imported positions
+     excluded from wallet performance summary.
+  4. Do not alter wallet balance snapshots, cashflow events, or equity
+     timeline markers from this derived open-PnL read.
 
 ## 5. API and UI Integration
 - Representative routes:

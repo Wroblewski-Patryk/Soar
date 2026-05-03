@@ -598,6 +598,29 @@ const buildCashflowWindowWhere = (
     : {}),
 });
 
+const buildWalletOpenPnlWhere = (input: {
+  userId: string;
+  walletId: string;
+  mode: 'PAPER' | 'LIVE';
+  apiKeyId?: string | null;
+}): Prisma.PositionWhereInput => ({
+  userId: input.userId,
+  status: PositionStatus.OPEN,
+  unrealizedPnl: { not: null },
+  OR: [
+    { walletId: input.walletId },
+    ...(input.mode === 'LIVE' && input.apiKeyId
+      ? [
+          {
+            walletId: null,
+            origin: 'EXCHANGE_SYNC' as const,
+            externalId: { startsWith: `${input.apiKeyId}:` },
+          },
+        ]
+      : []),
+  ],
+});
+
 export const getWalletPerformanceSummary = async (
   userId: string,
   id: string,
@@ -619,12 +642,12 @@ export const getWalletPerformanceSummary = async (
       orderBy: { occurredAt: 'asc' },
     }),
     prisma.position.aggregate({
-      where: {
+      where: buildWalletOpenPnlWhere({
         userId,
         walletId: id,
-        status: PositionStatus.OPEN,
-        unrealizedPnl: { not: null },
-      },
+        mode: wallet.mode,
+        apiKeyId: wallet.apiKeyId,
+      }),
       _sum: {
         unrealizedPnl: true,
       },

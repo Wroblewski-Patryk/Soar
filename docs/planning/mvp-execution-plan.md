@@ -116,6 +116,14 @@ Rule: fix/cleanup/update first, then feature delivery.
   `botId`/`walletId` projections differ. Validation PASS: focused
   exchange-events pack (`6/6`), broader orders/runtime PnL pack (`75/75`),
   API typecheck, guardrails, lint, and diff review.
+- 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-18` with
+  `docs/planning/runtime-audit-18-wallet-owned-import-open-pnl-task-2026-05-03.md`.
+  Wallet performance summary now includes selected `LIVE` wallet imported
+  open positions with `walletId=null` when their `externalId` is owned by the
+  wallet API key, while excluding other API keys and preserving wallet balance
+  snapshot/cashflow/equity timeline contracts. Validation PASS:
+  failing-then-passing wallet performance regression, focused wallets e2e
+  (`15/15`), API typecheck, guardrails, lint, and diff review.
 
 ## Phase ETHDCA-2026-05-02 - LIVE DCA-First TSL Hardening (Closed 2026-05-02)
 - [x] `ETHDCA-01 fix(api-runtime): preserve LIVE DCA-first gating for trailing-stop close decisions`
