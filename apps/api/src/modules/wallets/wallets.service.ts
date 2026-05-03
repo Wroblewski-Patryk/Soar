@@ -25,6 +25,7 @@ import {
 import { assertAuthenticatedExchangeReadSupport } from '../exchange/exchangeAuthenticatedReadContract.service';
 import { recordLiveWalletBalanceSnapshot } from './walletLedger.service';
 import { recordInitialBalanceCashflowForSnapshot } from './walletCashflowClassifier.service';
+import { buildImportedExternalPositionMarketPrefix } from '../positions/livePositionReconciliation.helpers';
 
 const normalizeWalletInput = (payload: CreateWalletDto | UpdateWalletDto) => {
   const mode = payload.mode;
@@ -604,6 +605,7 @@ const buildWalletOpenPnlWhere = (input: {
   userId: string;
   walletId: string;
   mode: 'PAPER' | 'LIVE';
+  marketType: ExchangeMarketType;
   apiKeyId?: string | null;
 }): Prisma.PositionWhereInput => ({
   userId: input.userId,
@@ -617,7 +619,12 @@ const buildWalletOpenPnlWhere = (input: {
           {
             walletId: null,
             origin: 'EXCHANGE_SYNC' as const,
-            externalId: { startsWith: `${input.apiKeyId}:` },
+            externalId: {
+              startsWith: buildImportedExternalPositionMarketPrefix({
+                apiKeyId: input.apiKeyId,
+                marketType: input.marketType,
+              }),
+            },
           },
         ]
       : []),
@@ -649,6 +656,7 @@ export const getWalletPerformanceSummary = async (
         userId,
         walletId: id,
         mode: wallet.mode,
+        marketType: wallet.marketType,
         apiKeyId: wallet.apiKeyId,
       }),
       _sum: {
@@ -769,6 +777,7 @@ export const getWalletEquityTimeline = async (
         userId,
         walletId: id,
         mode: wallet.mode,
+        marketType: wallet.marketType,
         apiKeyId: wallet.apiKeyId,
       }),
       _sum: {

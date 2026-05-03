@@ -376,7 +376,7 @@ describe('Wallets balance preview contract', () => {
         managementMode: 'BOT_MANAGED',
         syncState: 'IN_SYNC',
         continuityState: 'CONFIRMED',
-        externalId: `${apiKey.id}:ETHUSDT:LONG`,
+        externalId: `${apiKey.id}:FUTURES:ETHUSDT:LONG`,
         symbol: 'ETHUSDT',
         side: 'LONG',
         status: 'OPEN',
@@ -403,6 +403,25 @@ describe('Wallets balance preview contract', () => {
         quantity: 1,
         leverage: 5,
         unrealizedPnl: 88,
+      },
+    });
+    await prisma.position.create({
+      data: {
+        userId,
+        walletId: null,
+        botId: null,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        continuityState: 'CONFIRMED',
+        externalId: `${apiKey.id}:SPOT:SOLUSDT:LONG`,
+        symbol: 'SOLUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 100,
+        quantity: 1,
+        leverage: 5,
+        unrealizedPnl: 77,
       },
     });
     await prisma.position.create({
@@ -513,7 +532,7 @@ describe('Wallets balance preview contract', () => {
         managementMode: 'BOT_MANAGED',
         syncState: 'IN_SYNC',
         continuityState: 'CONFIRMED',
-        externalId: `${apiKey.id}:ETHUSDT:LONG`,
+        externalId: `${apiKey.id}:FUTURES:ETHUSDT:LONG`,
         symbol: 'ETHUSDT',
         side: 'LONG',
         status: 'OPEN',
@@ -540,6 +559,25 @@ describe('Wallets balance preview contract', () => {
         quantity: 1,
         leverage: 5,
         unrealizedPnl: 88,
+      },
+    });
+    await prisma.position.create({
+      data: {
+        userId,
+        walletId: null,
+        botId: null,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        continuityState: 'CONFIRMED',
+        externalId: `${apiKey.id}:SPOT:SOLUSDT:LONG`,
+        symbol: 'SOLUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 100,
+        quantity: 1,
+        leverage: 5,
+        unrealizedPnl: 77,
       },
     });
     await prisma.position.create({

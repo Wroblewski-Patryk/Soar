@@ -3,6 +3,15 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 wallet imported open-PnL market-scope slice `RUNTIME-AUDIT-86`
+  is closed locally. Wallet performance summary and equity timeline now match
+  botless LIVE imported open positions by canonical `apiKeyId:marketType:`
+  external ID prefix instead of broad `apiKeyId:`, so a FUTURES wallet no
+  longer includes SPOT open PnL from the same API key while same-market
+  `IN_SYNC` imported PnL remains included. Validation PASS: wallets e2e
+  (`20/20`), API typecheck, repository guardrails, lint, and diff review.
+  Evidence:
+  `docs/planning/runtime-audit-86-wallet-open-pnl-market-scope-task-2026-05-04.md`.
 - 2026-05-04 runtime closed-position history sync slice `RUNTIME-AUDIT-85`
   is closed locally. Runtime closed-position reads, portfolio close-point
   reads, and runtime paper capital open/closed position queries now require

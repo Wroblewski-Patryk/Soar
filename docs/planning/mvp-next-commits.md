@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-86 fix(api-wallets): scope imported open PnL by market type`
+  - 2026-05-04: Closed a BUILDER-mode wallet analytics market-scope drift.
+    Wallet performance summary and equity timeline now match botless LIVE
+    imported open positions by canonical `apiKeyId:marketType:` external ID
+    prefix instead of broad `apiKeyId:`, so a FUTURES wallet no longer includes
+    SPOT open PnL from the same API key while same-market `IN_SYNC` imported
+    PnL remains included. Validation PASS: wallets e2e (`20/20`), API
+    typecheck, repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-86-wallet-open-pnl-market-scope-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-85 fix(api-bots): align runtime closed history with sync state`
   - 2026-05-04: Closed a TESTER-mode runtime/portfolio closed-history drift.
     Runtime closed-position reads, portfolio close-point reads, and runtime

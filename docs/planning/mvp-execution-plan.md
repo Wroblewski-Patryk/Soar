@@ -193,6 +193,14 @@ Rule: fix/cleanup/update first, then feature delivery.
   realized PnL, portfolio CLOSE points, reference balance, or free cash.
   Validation PASS: portfolio-history e2e (`3/3`), runtime-scope e2e
   (`16/16`), API typecheck, repository guardrails, lint, and diff review.
+- 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-86` with
+  `docs/planning/runtime-audit-86-wallet-open-pnl-market-scope-task-2026-05-04.md`.
+  Wallet performance summary and equity timeline now match botless LIVE
+  imported open positions by canonical `apiKeyId:marketType:` external ID
+  prefix instead of broad `apiKeyId:`, so a FUTURES wallet no longer includes
+  SPOT open PnL from the same API key while same-market `IN_SYNC` imported PnL
+  remains included. Validation PASS: wallets e2e (`20/20`), API typecheck,
+  repository guardrails, lint, and diff review.
 - 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-15` with
   `docs/planning/runtime-audit-15-close-fee-position-scope-task-2026-05-03.md`.
   Runtime close realized-PnL now aggregates entry fees by owned position
