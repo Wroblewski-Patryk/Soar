@@ -227,6 +227,14 @@ Rule: fix/cleanup/update first, then feature delivery.
   through caps or same-symbol guard while active rows remain blocking.
   Validation PASS: focused pre-trade e2e/unit pack (`25/25`), API typecheck,
   repository guardrails, lint, and diff review.
+- 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-90` with
+  `docs/planning/runtime-audit-90-runtime-loop-repository-sync-state-task-2026-05-04.md`.
+  Runtime signal loop repository reads now require `syncState=IN_SYNC` when
+  hydrating managed external open positions and counting bot-symbol open
+  positions for caps, so stale `ORPHAN_LOCAL` open rows no longer inflate
+  runtime cap or managed-import truth. Validation PASS: focused runtime
+  repository/defaults pack (`12/12`), API typecheck, repository guardrails,
+  lint, and diff review.
 - 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-15` with
   `docs/planning/runtime-audit-15-close-fee-position-scope-task-2026-05-03.md`.
   Runtime close realized-PnL now aggregates entry fees by owned position

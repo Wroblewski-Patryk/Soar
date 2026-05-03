@@ -20,6 +20,16 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-90 fix(api-engine): align runtime loop repository with sync state`
+  - Scope: closed a TESTER-mode runtime loop active-truth drift. Runtime signal
+    loop repository reads now require `syncState=IN_SYNC` when hydrating
+    managed external open positions and counting bot-symbol open positions for
+    caps, so stale `ORPHAN_LOCAL` open rows no longer inflate runtime cap or
+    managed-import truth. Validation PASS: focused runtime repository/defaults
+    pack (`12/12`), API typecheck, repository guardrails, lint, and diff
+    review. Evidence:
+    `docs/planning/runtime-audit-90-runtime-loop-repository-sync-state-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-89 fix(api-engine): align pre-trade open guards with sync state`
   - Scope: closed a BUILDER-mode pre-trade/runtime active-truth drift.
     Pre-trade user open-position counts, bot open-position counts,

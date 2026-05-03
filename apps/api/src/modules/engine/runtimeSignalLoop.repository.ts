@@ -150,6 +150,7 @@ export const listRuntimeManagedExternalPositionsRaw = () =>
   prisma.position.findMany({
     where: {
       status: 'OPEN',
+      syncState: 'IN_SYNC',
       origin: 'EXCHANGE_SYNC',
       managementMode: 'BOT_MANAGED',
     },
@@ -177,6 +178,7 @@ export const countOpenPositionsForBotAndSymbolsRaw = (params: {
       userId: params.userId,
       botId: params.botId,
       status: 'OPEN',
+      syncState: 'IN_SYNC',
       ...(params.normalizedSymbols.length > 0 ? { symbol: { in: params.normalizedSymbols } } : {}),
     },
   });

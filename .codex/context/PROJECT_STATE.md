@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 runtime loop repository active-sync slice `RUNTIME-AUDIT-90` is
+  closed locally. Runtime signal loop repository reads now require
+  `syncState=IN_SYNC` when hydrating managed external open positions and
+  counting bot-symbol open positions for caps, so stale `ORPHAN_LOCAL` open
+  rows no longer inflate runtime cap or managed-import truth. Validation PASS:
+  focused runtime repository/defaults pack (`12/12`), API typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-90-runtime-loop-repository-sync-state-task-2026-05-04.md`.
 - 2026-05-04 pre-trade active-sync open-guard slice `RUNTIME-AUDIT-89` is
   closed locally. Pre-trade user open-position counts, bot open-position
   counts, same-symbol checks, and LIVE imported fallback reads now require
