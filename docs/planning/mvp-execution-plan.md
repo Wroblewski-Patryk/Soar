@@ -147,6 +147,13 @@ Rule: fix/cleanup/update first, then feature delivery.
   `500`. Validation PASS: failing-then-passing invalid source regression,
   focused wallets e2e (`17/17`), API typecheck, guardrails, lint, and diff
   review.
+- 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-22` with
+  `docs/planning/runtime-audit-22-wallet-analytics-date-range-task-2026-05-03.md`.
+  Wallet analytics `from` / `to` filters now fail closed at the DTO boundary
+  when `from` is later than `to`, so invalid dashboard/URL ranges return
+  `400` instead of misleading empty analytics responses. Validation PASS:
+  failing-then-passing inverted date-range regression, focused wallets e2e
+  (`18/18`), API typecheck, guardrails, lint, and diff review.
 
 ## Phase ETHDCA-2026-05-02 - LIVE DCA-First TSL Hardening (Closed 2026-05-02)
 - [x] `ETHDCA-01 fix(api-runtime): preserve LIVE DCA-first gating for trailing-stop close decisions`

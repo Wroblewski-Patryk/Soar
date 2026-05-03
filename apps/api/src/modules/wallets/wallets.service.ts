@@ -587,7 +587,7 @@ const buildCashflowWindowWhere = (
   query: WalletAnalyticsQueryDto = {}
 ): Prisma.WalletCashflowEventWhereInput => ({
   walletId,
-  ...(query.source ? { source: query.source as WalletCashflowSource } : {}),
+  ...(query.source ? { source: query.source } : {}),
   ...(query.from || query.to
     ? {
         occurredAt: {

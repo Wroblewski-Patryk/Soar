@@ -20,6 +20,17 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-22 fix(api-wallets): validate analytics date ranges`
+  - Scope: closed a TESTER-mode wallet analytics API-boundary drift. Wallet
+    analytics `from` / `to` filters now fail closed when `from` is later than
+    `to`, preventing invalid operator-supplied ranges from rendering
+    misleading empty dashboard wallet analytics. The service now relies on the
+    typed DTO filter instead of a manual cashflow source cast. Validation
+    PASS: failing-then-passing inverted date-range regression, focused wallets
+    e2e (`18/18`), API typecheck, repository guardrails, lint, and diff
+    review. Evidence:
+    `docs/planning/runtime-audit-22-wallet-analytics-date-range-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-21 fix(api-wallets): validate analytics source filters`
   - Scope: closed a wallet analytics API-boundary drift. Wallet analytics
     `source` filters now validate against the canonical `WalletCashflowSource`

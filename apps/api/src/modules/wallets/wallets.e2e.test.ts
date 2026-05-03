@@ -598,6 +598,33 @@ describe('Wallets balance preview contract', () => {
     expect(res.status).toBe(400);
   });
 
+  it('rejects inverted wallet analytics date ranges at the API boundary', async () => {
+    const email = 'wallet-analytics-inverted-range@example.com';
+    const agent = await registerAndLogin(email);
+    const userId = await resolveUserIdByEmail(email);
+
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId,
+        name: 'Analytics date range wallet',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        paperInitialBalance: 1000,
+      },
+    });
+
+    const res = await agent
+      .get(`/dashboard/wallets/${wallet.id}/equity-timeline`)
+      .query({
+        from: '2026-05-03T12:00:00.000Z',
+        to: '2026-05-03T11:00:00.000Z',
+      });
+
+    expect(res.status).toBe(400);
+  });
+
   it('fails closed for placeholder exchanges', async () => {
     const agent = await registerAndLogin('wallet-preview-placeholder@example.com');
 

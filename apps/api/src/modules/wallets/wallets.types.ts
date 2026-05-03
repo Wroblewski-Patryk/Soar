@@ -132,12 +132,23 @@ export const WalletBalancePreviewSchema = z
     }
   });
 
-export const WalletAnalyticsQuerySchema = z.object({
-  from: z.string().datetime().optional(),
-  to: z.string().datetime().optional(),
-  bucket: z.enum(['raw', 'hour', 'day']).default('raw').optional(),
-  source: z.nativeEnum(WalletCashflowSource).optional(),
-});
+export const WalletAnalyticsQuerySchema = z
+  .object({
+    from: z.string().datetime().optional(),
+    to: z.string().datetime().optional(),
+    bucket: z.enum(['raw', 'hour', 'day']).default('raw').optional(),
+    source: z.nativeEnum(WalletCashflowSource).optional(),
+  })
+  .refine(
+    (value) => {
+      if (!value.from || !value.to) return true;
+      return new Date(value.from).getTime() <= new Date(value.to).getTime();
+    },
+    {
+      message: 'from must be before or equal to to',
+      path: ['from'],
+    }
+  );
 
 export type CreateWalletDto = z.infer<typeof CreateWalletSchema>;
 export type UpdateWalletDto = z.infer<typeof UpdateWalletSchema>;
