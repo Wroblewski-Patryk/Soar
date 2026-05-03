@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 runtime positions open/history limit slice `RUNTIME-AUDIT-28`
+  is closed locally. Runtime session positions now read open and closed
+  bot-managed rows as separate scoped collections before serialization, so a
+  newer history row cannot hide an older open position from the dashboard when
+  the request uses a small `limit`. Validation PASS: failing-then-passing
+  `limit=1` open/history regression, focused runtime-scope e2e (`11/11`),
+  broader bots e2e (`26/26`), API typecheck, repository guardrails, lint, and
+  diff review. Evidence:
+  `docs/planning/runtime-audit-28-runtime-positions-open-history-limit-task-2026-05-03.md`.
 - 2026-05-03 runtime symbol-stats configured-limit slice `RUNTIME-AUDIT-27`
   is closed locally. Unfiltered selected-bot symbol-stats now select display
   rows from configured symbol order and then hydrate persisted stats for that

@@ -447,21 +447,34 @@ export const listBotRuntimeSessionPositions = async (
     }
   };
 
-  const positions = await listRuntimeManagedPositions({
-    where: {
-      userId,
-      managementMode: 'BOT_MANAGED',
-      symbol: { in: scopedSymbols },
-      openedAt: {
-        lte: windowEnd,
-      },
-      AND: [
-        { OR: [botScopedPositionWhere, ...externalOwnedWhere] },
-        { OR: [{ closedAt: null }, { closedAt: { gte: session.startedAt } }] },
-      ],
+  const runtimePositionBaseWhere: Prisma.PositionWhereInput = {
+    userId,
+    managementMode: 'BOT_MANAGED',
+    symbol: { in: scopedSymbols },
+    openedAt: {
+      lte: windowEnd,
     },
-    limit: query.limit,
-  });
+    AND: [{ OR: [botScopedPositionWhere, ...externalOwnedWhere] }],
+  };
+  const [openPositions, closedPositions] = await Promise.all([
+    listRuntimeManagedPositions({
+      where: {
+        ...runtimePositionBaseWhere,
+        status: 'OPEN',
+        closedAt: null,
+      },
+      limit: query.limit,
+    }),
+    listRuntimeManagedPositions({
+      where: {
+        ...runtimePositionBaseWhere,
+        status: 'CLOSED',
+        closedAt: { gte: session.startedAt },
+      },
+      limit: query.limit,
+    }),
+  ]);
+  const positions = [...openPositions, ...closedPositions];
 
   if (positions.length === 0) {
     const openOrders = await listRuntimeOpenOrders({

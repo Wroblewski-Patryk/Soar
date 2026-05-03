@@ -9,6 +9,16 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-28 fix(api-bots): keep runtime open positions visible under history limits`
+  - 2026-05-03: Closed a dashboard runtime positions drift. Runtime session
+    positions now read open and closed bot-managed rows as separate scoped
+    collections before serialization, so a newer history row cannot hide an
+    older open position from the dashboard when the request uses a small
+    `limit`. Validation PASS: failing-then-passing `limit=1` open/history
+    regression, focused runtime-scope e2e (`11/11`), broader bots e2e
+    (`26/26`), API typecheck, repository guardrails, lint, and diff review.
+    Evidence:
+    `docs/planning/runtime-audit-28-runtime-positions-open-history-limit-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-27 fix(api-bots): hydrate limited symbol stats by configured order`
   - 2026-05-03: Closed a TESTER-mode dashboard signal truth drift. Unfiltered
     selected-bot symbol-stats now select display rows from configured symbol
