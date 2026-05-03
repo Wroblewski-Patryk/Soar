@@ -5,7 +5,7 @@
 - Title: Promote multi-strategy runtime topology to production
 - Task Type: release
 - Current Stage: release
-- Status: IN_PROGRESS
+- Status: BLOCKED
 - Owner: Ops/Release
 - Depends on: BOTMULTI-08
 - Priority: P0
@@ -84,12 +84,12 @@ candidate commit prepared for the approved workflow.
 
 ## Definition of Done
 - [ ] `DEFINITION_OF_DONE.md` release expectations are satisfied with evidence.
-- [ ] Candidate SHA is committed and pushed or a concrete push blocker is
+- [x] Candidate SHA is committed and pushed or a concrete push blocker is
   recorded.
-- [ ] Production workflow is triggered or a concrete workflow-dispatch blocker
+- [x] Production workflow is triggered or a concrete workflow-dispatch blocker
   is recorded.
-- [ ] Migration behavior, rollback path, and smoke gates are recorded.
-- [ ] Canonical context and planning files are synchronized.
+- [x] Migration behavior, rollback path, and smoke gates are recorded.
+- [x] Canonical context and planning files are synchronized.
 
 ## Stage Exit Criteria
 - [ ] The output matches the declared `Current Stage`.
@@ -107,9 +107,24 @@ candidate commit prepared for the approved workflow.
 
 ## Validation Evidence
 - Tests:
-  - Pending release build validation.
+  - PASS: `pnpm run build`
+  - PASS: `pnpm run quality:guardrails`
+  - PASS: `pnpm run docs:parity:check`
 - Manual checks:
-  - Pending migration and deployment path confirmation.
+  - PASS: API runtime image command is `node scripts/start-with-migrate.mjs`.
+  - PASS: `start-with-migrate.mjs` runs `prisma migrate deploy` unless
+    `API_AUTO_MIGRATE=false` and exits before API boot on migration failure.
+  - PASS: candidate commit `f3aaa3dca6cf4d4b199372563886165638391a77`
+    was pushed to `origin/main`.
+  - BLOCKED: local environment has no `gh` CLI, no deploy hook environment
+    variable, and the available GitHub connector tools do not expose
+    `workflow_dispatch`.
+  - BLOCKED: production build-info still reports
+    `26962ea1dbb0981d3885779d01e58485d7e9fd6c` after post-push polling, so
+    push alone did not trigger Coolify redeploy.
+  - BLOCKED: GitHub Actions readback shows the latest `Promote PROD` run is
+    still the older manual run for `0f122ed4cc38e443c4dc58a038cd413a4d8447c6`
+    from 2026-04-25.
 - Screenshots/logs:
   - Not applicable.
 - High-risk checks:
@@ -164,22 +179,32 @@ candidate commit prepared for the approved workflow.
   preflight failure on dirty production data.
 
 ### 4. Execute Implementation
-- Implementation notes: pending.
+- Implementation notes: candidate commit
+  `f3aaa3dca6cf4d4b199372563886165638391a77` was created and pushed to
+  `origin/main`. Production dispatch could not be executed from this
+  environment because no dispatch-capable tool or secret is available.
 
 ### 5. Verify and Test
-- Validation performed: pending.
-- Result: pending.
+- Validation performed: build, guardrails, docs parity, production build-info
+  polling, and GitHub Actions workflow readback.
+- Result: local release candidate is green and pushed. Production remains on
+  `26962ea1dbb0981d3885779d01e58485d7e9fd6c` until the approved
+  `Promote PROD` workflow is manually dispatched for `main` /
+  `f3aaa3dca6cf4d4b199372563886165638391a77`.
 
 ### 6. Self-Review
 - Simpler option considered: direct production migration command; rejected
   because the approved deployment path already owns migration execution.
 - Technical debt introduced: no
 - Scalability assessment: uses existing release workflow.
-- Refinements made: pending.
+- Refinements made: deployment blocker is recorded instead of bypassing
+  workflow governance or running direct production database commands.
 
 ### 7. Update Documentation and Knowledge
 - Docs updated: this task.
-- Context updated: pending.
+- Context updated: `.codex/context/TASK_BOARD.md`,
+  `.codex/context/PROJECT_STATE.md`, and
+  `docs/planning/mvp-next-commits.md`.
 - Learning journal updated: not applicable.
 
 ## Review Checklist (mandatory)
@@ -188,14 +213,14 @@ candidate commit prepared for the approved workflow.
 - [x] Exactly one priority task was selected in this iteration.
 - [x] Operation mode was selected according to iteration rotation.
 - [x] Current stage is declared and respected.
-- [ ] Deliverable for the current stage is complete.
-- [ ] Architecture alignment confirmed.
+- [x] Deliverable for the current stage is complete.
+- [x] Architecture alignment confirmed.
 - [x] Existing systems were reused where applicable.
 - [x] No workaround paths were introduced.
 - [x] No logic duplication was introduced.
-- [ ] Definition of Done evidence is attached.
-- [ ] Relevant validations were run.
-- [ ] Docs or context were updated if repository truth changed.
+- [x] Definition of Done evidence is attached.
+- [x] Relevant validations were run.
+- [x] Docs or context were updated if repository truth changed.
 - [x] Learning journal was updated if a recurring pitfall was confirmed.
 
 ## Notes
@@ -228,7 +253,7 @@ Runtime tasks must be delivered as a vertical slice: UI -> logic -> API -> DB ->
 - Post-launch feedback or metric check: production smoke gates.
 
 ## Reliability / Observability Evidence
-- `docs/operations/service-reliability-and-observability.md` reviewed: pending
+- `docs/operations/service-reliability-and-observability.md` reviewed: yes
 - Critical user journey: production API boot and runtime loop freshness.
 - SLI: health, readiness, web build-info SHA, runtime freshness.
 - SLO: existing production gate expectations.
@@ -242,11 +267,14 @@ Runtime tasks must be delivered as a vertical slice: UI -> logic -> API -> DB ->
 - `INTEGRATION_CHECKLIST.md` reviewed: pending
 - Real API/service path used: yes
 - Endpoint and client contract match: yes
-- DB schema and migrations verified: pending release validation
+- DB schema and migrations verified: migration file exists and startup deploy
+  path is confirmed; target production application is pending manual workflow
+  dispatch.
 - Loading state verified: not applicable
 - Error state verified: not applicable
 - Refresh/restart behavior verified: pending deployment
-- Regression check performed: pending
+- Regression check performed: local build, guardrails, docs parity, and prior
+  BOTMULTI closure regression pack.
 
 ## AI Testing Evidence (required for AI features)
 
@@ -274,9 +302,20 @@ Runtime tasks must be delivered as a vertical slice: UI -> logic -> API -> DB ->
 
 ## Result Report
 
-- Task summary: Pending.
-- Files changed: Pending.
-- How tested: Pending.
-- What is incomplete: Pending.
-- Next steps: Pending.
-- Decisions made: Use approved startup migration and production workflow.
+- Task summary: Prepared and pushed the BOTMULTI production release candidate,
+  then confirmed deployment cannot be triggered from the current local/tool
+  environment without manual GitHub workflow dispatch access.
+- Files changed: release task evidence plus BOTMULTI implementation and
+  source-of-truth files in commit
+  `f3aaa3dca6cf4d4b199372563886165638391a77`.
+- How tested: `pnpm run build`, `pnpm run quality:guardrails`,
+  `pnpm run docs:parity:check`, production build-info polling, and GitHub
+  Actions workflow readback.
+- What is incomplete: production `Promote PROD` workflow dispatch and
+  post-deploy smoke remain blocked from this environment.
+- Next steps: manually run GitHub Actions workflow `Promote PROD` on `main`
+  for candidate `f3aaa3dca6cf4d4b199372563886165638391a77`, then verify
+  build-info, `/health`, `/ready`, and runtime freshness gates.
+- Decisions made: Use approved startup migration and production workflow; do
+  not run direct production migration commands or bypass Coolify/GitHub release
+  governance.

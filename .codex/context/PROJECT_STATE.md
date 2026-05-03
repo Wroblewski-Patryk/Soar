@@ -175,7 +175,14 @@ Last updated: 2026-05-03
   when `API_AUTO_MIGRATE` is not `false`: `apps/api/Dockerfile` starts
   `node scripts/start-with-migrate.mjs`, which runs `prisma migrate deploy`
   before API boot and fails closed if migration execution fails. Local
-  pre-release build PASS. Deployment trigger/push evidence remains pending.
+  pre-release build, repository guardrails, and docs parity PASS. Candidate
+  `f3aaa3dca6cf4d4b199372563886165638391a77` is committed and pushed to
+  `origin/main`. Production promotion is blocked at workflow dispatch from the
+  current environment: no `gh` CLI, no deploy hook secret, and the available
+  GitHub connector tools do not expose `workflow_dispatch`. Production
+  build-info still reports previous deployed SHA
+  `26962ea1dbb0981d3885779d01e58485d7e9fd6c`; manual `Promote PROD`
+  workflow dispatch is required to redeploy and run the migration startup path.
   Evidence:
   `docs/planning/botmulti-09-production-deploy-task-2026-05-03.md`.
 - 2026-05-03 operator-reported LIVE imported-position ownership slice

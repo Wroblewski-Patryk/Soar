@@ -8,13 +8,19 @@ Operational queue for one-task execution runs.
 
 ## NOW
 - No active feature `NOW` task remains after `BOTMULTI-08` closure.
-  `BOTMULTI-09` is an operator-requested production release task currently in
-  progress.
+  `BOTMULTI-09` is blocked only at the manual production workflow-dispatch
+  boundary.
 - [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production`
   - 2026-05-03: Release task opened after operator request. Confirmed API
     redeploy runs migrations automatically through
     `scripts/start-with-migrate.mjs` when `API_AUTO_MIGRATE` is not `false`.
-    Local pre-release build PASS. Deployment trigger/push evidence is pending.
+    Local pre-release build, guardrails, and docs parity PASS. Candidate
+    `f3aaa3dca6cf4d4b199372563886165638391a77` is committed and pushed to
+    `origin/main`. BLOCKED: local environment has no `gh` CLI, no deploy hook
+    secret, and available GitHub connector tools do not expose
+    `workflow_dispatch`; production build-info still reports the previous
+    `26962ea1dbb0981d3885779d01e58485d7e9fd6c`. Manual `Promote PROD`
+    workflow dispatch remains required.
     Evidence:
     `docs/planning/botmulti-09-production-deploy-task-2026-05-03.md`.
 - [x] `BOTMULTI-08 qa(closure): run architecture-to-runtime closure pack and publish evidence`

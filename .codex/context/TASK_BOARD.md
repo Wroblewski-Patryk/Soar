@@ -17,9 +17,9 @@ Last updated: 2026-05-03
 
 ## READY
 
-- No active `READY` task remains after `BOTMULTI-08` closure. `BOTMULTI-09`
-  is an operator-requested production release task currently in progress, not
-  a new product backlog item.
+- No active feature `READY` task remains after `BOTMULTI-08` closure.
+  `BOTMULTI-09` is blocked only at the manual production workflow-dispatch
+  boundary.
 
 - [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production`
   - Scope: release the locally verified BOTMULTI multi-strategy topology
@@ -27,7 +27,15 @@ Last updated: 2026-05-03
     startup migration contract is confirmed: the container command runs
     `node scripts/start-with-migrate.mjs`, which executes `prisma migrate
     deploy` unless `API_AUTO_MIGRATE=false` and fails closed before API boot if
-    migration cannot run. Local pre-release build PASS. Evidence:
+    migration cannot run. Local pre-release build, guardrails, and docs parity
+    PASS. Candidate
+    `f3aaa3dca6cf4d4b199372563886165638391a77` is committed and pushed to
+    `origin/main`. BLOCKED: this environment has no `gh` CLI, no deploy hook
+    secret, and the available GitHub connector tools do not expose
+    `workflow_dispatch`; production build-info still reports
+    `26962ea1dbb0981d3885779d01e58485d7e9fd6c`, and the latest public
+    `Promote PROD` workflow run is older. Manual `Promote PROD` dispatch is
+    required. Evidence:
     `docs/planning/botmulti-09-production-deploy-task-2026-05-03.md`.
 
 - [x] `BOTMULTI-08 qa(closure): run architecture-to-runtime closure pack and publish evidence`
