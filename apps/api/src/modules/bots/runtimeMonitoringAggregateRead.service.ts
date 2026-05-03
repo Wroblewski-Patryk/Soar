@@ -496,7 +496,7 @@ export const getBotRuntimeMonitoringAggregate = async (
         ? Math.max(0, referenceBalance - Math.max(0, usedMargin))
         : null;
   const positionsSummary = {
-    realizedPnl: historyItems.reduce((acc, item) => acc + item.realizedPnl, 0),
+    realizedPnl: positionResponses.reduce((acc, response) => acc + response.summary.realizedPnl, 0),
     unrealizedPnl: openItems.reduce((acc, item) => acc + (item.unrealizedPnl ?? 0), 0),
     feesPaid: [...openItems, ...historyItems].reduce((acc, item) => acc + item.feesPaid, 0),
     referenceBalance,

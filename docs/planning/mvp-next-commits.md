@@ -9,6 +9,17 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-41 fix(api-bots): preserve runtime position realized PnL under row limits`
+  - 2026-05-03: Closed a BUILDER-mode dashboard read-model summary drift.
+    Runtime session positions now aggregate realized PnL from all scoped
+    closed positions instead of only visible history rows, and monitoring
+    aggregate summaries compose those session position summaries. This keeps
+    dashboard realized PnL truthful when `limit` / `perSessionLimit` hides
+    older closed positions while visible row lists remain limited. Validation
+    PASS: failing-then-passing `limit=1` realized-PnL regression,
+    runtime-scope e2e (`12/12`), monitoring aggregate e2e (`10/10`), API
+    typecheck, repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-41-position-realized-pnl-limit-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-40 fix(api-bots): preserve runtime position counts under row limits`
   - 2026-05-03: Closed a BUILDER-mode dashboard read-model count drift.
     Runtime session positions and monitoring aggregate position metadata now

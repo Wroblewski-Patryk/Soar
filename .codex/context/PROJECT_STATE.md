@@ -3,6 +3,16 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 runtime position realized-PnL limit slice `RUNTIME-AUDIT-41`
+  is closed locally. Runtime session positions now aggregate realized PnL from
+  all scoped closed positions instead of only visible history rows, and
+  monitoring aggregate summaries compose those session position summaries. This
+  keeps dashboard realized PnL truthful when `limit` / `perSessionLimit` hides
+  older closed positions while visible row lists remain limited. Validation
+  PASS: failing-then-passing `limit=1` realized-PnL regression, runtime-scope
+  e2e (`12/12`), monitoring aggregate e2e (`10/10`), API typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-41-position-realized-pnl-limit-task-2026-05-03.md`.
 - 2026-05-03 runtime position count limit slice `RUNTIME-AUDIT-40` is
   closed locally. Runtime session positions and monitoring aggregate position
   metadata now use true scoped open/closed position counts instead of limited

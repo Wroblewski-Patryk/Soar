@@ -59,6 +59,7 @@ describe('Bots runtime scope remediation contract', () => {
           entryPrice: 3300,
           quantity: 0.1,
           leverage: 2,
+          realizedPnl: 4,
           openedAt: new Date('2026-04-11T00:02:00.000Z'),
           closedAt: new Date('2026-04-11T00:03:00.000Z'),
           origin: 'BOT',
@@ -75,6 +76,7 @@ describe('Bots runtime scope remediation contract', () => {
           entryPrice: 0.15,
           quantity: 100,
           leverage: 2,
+          realizedPnl: 6,
           openedAt: new Date('2026-04-11T00:04:00.000Z'),
           closedAt: new Date('2026-04-11T00:05:00.000Z'),
           origin: 'BOT',
@@ -91,6 +93,7 @@ describe('Bots runtime scope remediation contract', () => {
     expect(positionsRes.body.total).toBe(3);
     expect(positionsRes.body.openCount).toBe(1);
     expect(positionsRes.body.closedCount).toBe(2);
+    expect(positionsRes.body.summary.realizedPnl).toBe(10);
     expect(positionsRes.body.openItems).toHaveLength(1);
     expect(positionsRes.body.historyItems).toHaveLength(1);
     expect(positionsRes.body.openItems[0].symbol).toBe('BTCUSDT');
