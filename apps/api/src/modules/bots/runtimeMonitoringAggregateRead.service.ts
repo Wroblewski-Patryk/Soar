@@ -255,6 +255,7 @@ export const getBotRuntimeMonitoringAggregate = async (
     activeSessions.reduce((acc, session) => acc + Math.max(0, session.durationMs), 0)
   );
   const eventsCount = activeSessions.reduce((acc, session) => acc + session.eventsCount, 0);
+  const symbolsTracked = activeSessions.reduce((acc, session) => acc + session.symbolsTracked, 0);
 
   const symbolMap = new Map<string, RuntimeSymbolStatsResponse['items'][number]>();
   for (const response of completePayloadRows.map((row) => row.symbolStats)) {
@@ -561,7 +562,7 @@ export const getBotRuntimeMonitoringAggregate = async (
       updatedAt: lastHeartbeatAt ?? finishedAt ?? startedAt,
       durationMs,
       eventsCount,
-      symbolsTracked: symbolItems.length,
+      symbolsTracked,
       summary: {
         totalSignals: symbolSummary.totalSignals,
         longEntries: symbolSummary.longEntries,

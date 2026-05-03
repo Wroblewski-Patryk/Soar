@@ -20,6 +20,17 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-52 fix(api-bots): preserve aggregate symbols-tracked under item limits`
+  - Scope: closed a TESTER-mode dashboard aggregate metadata drift. Runtime
+    monitoring aggregate `sessionDetail.symbolsTracked` now composes full
+    session metadata instead of visible aggregate symbol rows, so
+    `perSessionLimit` no longer makes aggregate metadata understate how many
+    markets the bot tracked. Validation PASS: failing-then-passing
+    `perSessionLimit=1` symbols-tracked regression, monitoring aggregate e2e
+    (`13/13`), runtime-scope e2e (`13/13`), API typecheck, repository
+    guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-52-aggregate-symbols-tracked-limit-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-51 fix(api-bots): preserve aggregate symbol-stats summaries under item limits`
   - Scope: closed an ARCHITECT-mode dashboard aggregate summary drift. Runtime
     monitoring aggregate now keeps visible `symbolStats.items` limited while

@@ -557,6 +557,7 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     });
     expect(aggregateRes.status).toBe(200);
     expect(aggregateRes.body.symbolStats.items).toHaveLength(1);
+    expect(aggregateRes.body.sessionDetail.symbolsTracked).toBe(2);
     expect(aggregateRes.body.symbolStats.summary.totalSignals).toBe(5);
     expect(aggregateRes.body.symbolStats.summary.longEntries).toBe(3);
     expect(aggregateRes.body.symbolStats.summary.realizedPnl).toBe(8);

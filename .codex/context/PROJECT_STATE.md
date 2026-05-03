@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 aggregate symbols-tracked limit slice `RUNTIME-AUDIT-52` is
+  closed locally. Runtime monitoring aggregate `sessionDetail.symbolsTracked`
+  now composes full session metadata instead of visible aggregate symbol rows,
+  so `perSessionLimit` no longer makes dashboard aggregate metadata understate
+  how many markets the bot tracked. Validation PASS: failing-then-passing
+  `perSessionLimit=1` symbols-tracked regression, monitoring aggregate e2e
+  (`13/13`), runtime-scope e2e (`13/13`), API typecheck, repository
+  guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-52-aggregate-symbols-tracked-limit-task-2026-05-03.md`.
 - 2026-05-03 aggregate symbol-stats summary limit slice `RUNTIME-AUDIT-51`
   is closed locally. Runtime monitoring aggregate now keeps visible
   `symbolStats.items` limited while composing `symbolStats.summary` and
