@@ -535,6 +535,7 @@ export const getBotRuntimeMonitoringAggregate = async (
   const totalPositions = positionResponses.reduce((acc, response) => acc + response.total, 0);
   const totalOpenPositions = positionResponses.reduce((acc, response) => acc + response.openCount, 0);
   const totalClosedPositions = positionResponses.reduce((acc, response) => acc + response.closedCount, 0);
+  const totalOpenOrders = Math.max(0, ...positionResponses.map((response) => response.openOrdersCount));
   const totalTrades = completePayloadRows.reduce((acc, row) => acc + row.trades.total, 0);
   const totalTradeFeesPaid = completePayloadRows.reduce((acc, row) => acc + row.trades.feesPaid, 0);
   const windowFinishedAt = finishedAt ?? new Date();
@@ -588,7 +589,7 @@ export const getBotRuntimeMonitoringAggregate = async (
       total: totalPositions,
       openCount: totalOpenPositions,
       closedCount: totalClosedPositions,
-      openOrdersCount: openOrders.length,
+      openOrdersCount: totalOpenOrders,
       showDynamicStopColumns: positionResponses.some((response) => response.showDynamicStopColumns === true),
       window: {
         startedAt,

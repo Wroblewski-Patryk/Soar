@@ -3,6 +3,17 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 aggregate open-order count limit slice `RUNTIME-AUDIT-49` is
+  closed locally. Runtime monitoring aggregate `positions.openOrdersCount`
+  now composes full current-state session open-order count truth using the
+  maximum session count instead of limited visible aggregate rows, so the
+  dashboard count stays truthful when `perSessionLimit` hides older open
+  orders without double-counting the same current open orders across multiple
+  sessions. Validation PASS: failing-then-passing `perSessionLimit=1`
+  aggregate open-order count regression, monitoring aggregate e2e (`12/12`),
+  runtime-scope e2e (`12/12`), API typecheck, repository guardrails, lint, and
+  diff review. Evidence:
+  `docs/planning/runtime-audit-49-aggregate-open-orders-count-limit-task-2026-05-03.md`.
 - 2026-05-03 runtime open-order count limit slice `RUNTIME-AUDIT-48` is
   closed locally. Runtime session positions now return a full deduped
   `openOrdersCount` separately from limited visible `openOrders`, so dashboard

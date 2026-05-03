@@ -20,6 +20,19 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-49 fix(api-bots): preserve aggregate open-order counts under row limits`
+  - Scope: closed a BUILDER-mode dashboard management-state drift. Runtime
+    monitoring aggregate `positions.openOrdersCount` now uses full
+    current-state session open-order count truth via the maximum session count
+    instead of limited visible aggregate rows, so `perSessionLimit` no longer
+    hides older open orders from the dashboard count and multiple sessions do
+    not double-count the same current open order. Validation PASS:
+    failing-then-passing `perSessionLimit=1` aggregate open-order count
+    regression, monitoring aggregate e2e (`12/12`), runtime-scope e2e
+    (`12/12`), API typecheck, repository guardrails, lint, and diff review.
+    Evidence:
+    `docs/planning/runtime-audit-49-aggregate-open-orders-count-limit-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-48 fix(api-bots): preserve runtime open-order counts under row limits`
   - Scope: closed an ARCHITECT-mode dashboard management-state drift. Runtime
     session positions now return a full deduped `openOrdersCount` separately

@@ -609,6 +609,82 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     expect(aggregateRes.body.positions.summary.freeCash).toBe(700);
   });
 
+  it('keeps aggregate open order counts truthful when visible open orders are limited', async () => {
+    const ownerEmail = 'bots-monitoring-aggregate-open-orders-limit@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({
+      where: { email: ownerEmail },
+      select: { id: true },
+    });
+
+    const strategyId = await createStrategy(owner, 'Monitoring Aggregate Open Orders Limit');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    const createRes = await owner.post('/dashboard/bots').send(
+      createPayload({
+        strategyId,
+        marketGroupId,
+      })
+    );
+    expect(createRes.status).toBe(201);
+    const botId = createRes.body.id as string;
+
+    await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-19T16:00:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-19T16:10:00.000Z'),
+      },
+    });
+
+    await prisma.order.createMany({
+      data: [
+        {
+          id: 'aggregate-open-order-newer',
+          userId: ownerUser.id,
+          botId,
+          strategyId,
+          symbol: 'BTCUSDT',
+          side: 'BUY',
+          type: 'LIMIT',
+          status: 'OPEN',
+          quantity: 0.01,
+          price: 60_000,
+          submittedAt: new Date('2026-04-19T16:06:00.000Z'),
+          createdAt: new Date('2026-04-19T16:06:00.000Z'),
+          managementMode: 'BOT_MANAGED',
+        },
+        {
+          id: 'aggregate-open-order-older',
+          userId: ownerUser.id,
+          botId,
+          strategyId,
+          symbol: 'ETHUSDT',
+          side: 'BUY',
+          type: 'LIMIT',
+          status: 'OPEN',
+          quantity: 0.2,
+          price: 3_000,
+          submittedAt: new Date('2026-04-19T16:04:00.000Z'),
+          createdAt: new Date('2026-04-19T16:04:00.000Z'),
+          managementMode: 'BOT_MANAGED',
+        },
+      ],
+    });
+
+    const aggregateRes = await owner.get(`/dashboard/bots/${botId}/runtime-monitoring/aggregate`).query({
+      perSessionLimit: 1,
+    });
+    expect(aggregateRes.status).toBe(200);
+    expect(aggregateRes.body.positions.openOrders).toHaveLength(1);
+    expect(aggregateRes.body.positions.openOrdersCount).toBe(2);
+    expect(aggregateRes.body.positions.openOrders.map((order: { id: string }) => order.id)).toEqual([
+      'aggregate-open-order-newer',
+    ]);
+  });
+
   it('uses last heartbeat as aggregate finish time for non-running sessions without finishedAt', async () => {
     const ownerEmail = 'bots-monitoring-aggregate-failed-window-end@example.com';
     const owner = await registerAndLogin(ownerEmail);
