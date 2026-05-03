@@ -394,6 +394,58 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     expect(aggregateRes.body.trades.total).toBe(0);
   });
 
+  it('uses last heartbeat as aggregate finish time for non-running sessions without finishedAt', async () => {
+    const ownerEmail = 'bots-monitoring-aggregate-failed-window-end@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({
+      where: { email: ownerEmail },
+      select: { id: true },
+    });
+
+    const strategyId = await createStrategy(owner, 'Monitoring Aggregate Failed Window End');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    const createRes = await owner.post('/dashboard/bots').send(
+      createPayload({
+        strategyId,
+        marketGroupId,
+      })
+    );
+    expect(createRes.status).toBe(201);
+    const botId = createRes.body.id as string;
+    const heartbeatAt = new Date('2026-04-19T13:07:00.000Z');
+
+    const failedSession = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'FAILED',
+        startedAt: new Date('2026-04-19T13:00:00.000Z'),
+        lastHeartbeatAt: heartbeatAt,
+        errorMessage: 'runtime stopped after unrecoverable test error',
+      },
+    });
+    await prisma.botRuntimeSymbolStat.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        sessionId: failedSession.id,
+        symbol: 'BTCUSDT',
+        totalSignals: 1,
+        snapshotAt: new Date('2026-04-19T13:05:00.000Z'),
+      },
+    });
+
+    const aggregateRes = await owner
+      .get(`/dashboard/bots/${botId}/runtime-monitoring/aggregate`)
+      .query({ status: 'FAILED' });
+    expect(aggregateRes.status).toBe(200);
+    expect(aggregateRes.body.sessionDetail.status).toBe('FAILED');
+    expect(aggregateRes.body.sessionDetail.finishedAt).toBe(heartbeatAt.toISOString());
+    expect(aggregateRes.body.positions.window.finishedAt).toBe(heartbeatAt.toISOString());
+    expect(aggregateRes.body.trades.window.finishedAt).toBe(heartbeatAt.toISOString());
+  });
+
   it('uses paper reset checkpoint as the active capital baseline in runtime monitoring summary', async () => {
     const ownerEmail = 'bots-monitoring-aggregate-paper-reset@example.com';
     const owner = await registerAndLogin(ownerEmail);

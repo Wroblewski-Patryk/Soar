@@ -9,6 +9,17 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-38 fix(api-bots): align non-running aggregate end time`
+  - 2026-05-03: Closed a BUILDER-mode runtime dashboard timestamp drift.
+    Runtime monitoring aggregate `sessionDetail.finishedAt` now uses the same
+    non-running session window-end fallback as nested runtime reads
+    (`finishedAt ?? lastHeartbeatAt ?? startedAt`), so failed/canceled
+    aggregate metadata no longer shows `finishedAt: null` while
+    positions/trades windows have a concrete end. RUNNING aggregate still
+    reports `finishedAt: null`. Validation PASS: failing-then-passing
+    failed-session end-time regression, full monitoring aggregate e2e (`9/9`),
+    API typecheck, repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-38-aggregate-non-running-window-end-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-37 fix(api-bots): do not invent empty aggregate heartbeat`
   - 2026-05-03: Closed a TESTER-mode false-freshness empty-state bug. Empty
     runtime monitoring aggregate payloads now return

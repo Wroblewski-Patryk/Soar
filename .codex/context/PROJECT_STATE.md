@@ -3,6 +3,16 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 non-running aggregate end-time slice `RUNTIME-AUDIT-38`
+  is closed locally. Runtime monitoring aggregate `sessionDetail.finishedAt`
+  now uses the same non-running session window-end fallback as nested runtime
+  reads (`finishedAt ?? lastHeartbeatAt ?? startedAt`), so failed/canceled
+  aggregate metadata no longer shows `finishedAt: null` while positions/trades
+  windows have a concrete end. RUNNING aggregate still reports
+  `finishedAt: null`. Validation PASS: failing-then-passing failed-session
+  end-time regression, full monitoring aggregate e2e (`9/9`), API typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-38-aggregate-non-running-window-end-task-2026-05-03.md`.
 - 2026-05-03 empty aggregate heartbeat slice `RUNTIME-AUDIT-37` is
   closed locally. Empty runtime monitoring aggregate payloads now return
   `sessionDetail.lastHeartbeatAt: null` when no runtime sessions exist, so the

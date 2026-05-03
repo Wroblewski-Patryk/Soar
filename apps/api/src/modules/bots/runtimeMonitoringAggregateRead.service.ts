@@ -47,6 +47,9 @@ const compareTimestampDescThenIdAsc = (
   return leftId.localeCompare(rightId);
 };
 
+const resolveAggregateSessionWindowEnd = (session: RuntimeSessionListItem) =>
+  session.finishedAt ?? session.lastHeartbeatAt ?? session.startedAt;
+
 const buildEmptyAggregatePayload = (params: {
   botId: string;
   mode: 'PAPER' | 'LIVE';
@@ -239,8 +242,7 @@ export const getBotRuntimeMonitoringAggregate = async (
   const finishedAt = hasRunningSession
     ? null
     : activeSessions
-        .map((session) => session.finishedAt)
-        .filter((value): value is Date => value instanceof Date)
+        .map(resolveAggregateSessionWindowEnd)
         .sort((left, right) => right.getTime() - left.getTime())[0] ?? null;
   const lastHeartbeatAt =
     activeSessions
