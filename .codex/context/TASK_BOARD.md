@@ -20,6 +20,17 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-02 fix(api-runtime): fail closed empty canonical strategy-link topology`
+  - Scope: closed the next execution/display topology drift. Runtime
+    signal-loop topology and symbol-stats configured context now use direct
+    legacy `Bot.strategyId` only when no active canonical market group exists.
+    If an active canonical `BotMarketGroup` exists with no enabled
+    `MarketGroupStrategyLink` rows, runtime context is non-actionable and
+    dashboard configured strategy context remains empty. Validation PASS:
+    focused defaults/symbol-stats tests (`11/11`) and broader
+    runtime/symbol-stats pack (`78/78`). Evidence:
+    `docs/planning/runtime-audit-02-empty-canonical-strategy-links-task-2026-05-03.md`.
+
 - [x] `DASHDRIFT-05 fix(api-bots): keep runtime symbol-stats symbol filters canonical-scope locked`
   - Scope: closed the next selected-bot signal/market stats drift. Explicit
     `symbol` filters on runtime symbol-stats now intersect with the selected

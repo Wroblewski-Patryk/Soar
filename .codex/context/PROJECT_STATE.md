@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 empty canonical strategy-link topology slice
+  `RUNTIME-AUDIT-02` is closed locally. Runtime signal-loop topology and
+  symbol-stats configured context now use direct legacy `Bot.strategyId` only
+  when no active canonical market group exists. If an active canonical
+  `BotMarketGroup` exists with no enabled `MarketGroupStrategyLink` rows,
+  runtime context is non-actionable and dashboard configured strategy context
+  remains empty. Validation PASS: focused defaults/symbol-stats tests
+  (`11/11`) and broader runtime/symbol-stats pack (`78/78`). Evidence:
+  `docs/planning/runtime-audit-02-empty-canonical-strategy-links-task-2026-05-03.md`.
 - 2026-05-03 symbol-stats filter scope slice `DASHDRIFT-05` is closed
   locally. Explicit `symbol` filters on runtime symbol-stats now intersect
   with the selected bot's active canonical configured symbols and return an

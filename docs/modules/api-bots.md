@@ -139,6 +139,9 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
     zero-summary read model instead of stale persisted stats.
 - Strategy context precedence:
   - canonical mapping is authoritative.
+  - when an active canonical market group exists but has no enabled strategy
+    links, configured strategy context remains empty instead of falling back to
+    direct legacy `Bot.strategyId`.
   - legacy mapping is compatibility fallback only when canonical mapping is missing for selected bot/symbol, and cannot override canonical mapping.
 
 ## 12. Sidebar Strategy Projection Parity Contract (`SBSC`)

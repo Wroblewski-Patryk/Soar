@@ -5,8 +5,8 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/engine`
 - Owner: backend/trading-runtime
-- Last updated: 2026-04-12
-- Related planning task: `DCP-05`
+- Last updated: 2026-05-03
+- Related planning task: `RUNTIME-AUDIT-02`
 
 ## Canonical Architecture Linkage
 Canonical behavior and invariants live in `docs/architecture/`, especially:
@@ -51,6 +51,14 @@ Out of scope:
   3. Evaluate strategy signals and pre-trade constraints.
   4. Route allowed signals to execution orchestrator.
   5. Persist telemetry/session/runtime stats.
+- Runtime topology source-of-truth:
+  - active canonical `BotMarketGroup` and enabled
+    `MarketGroupStrategyLink` rows are authoritative when present,
+  - direct legacy `Bot.strategyId` / `Bot.symbolGroupId` fallback is allowed
+    only when canonical topology is absent,
+  - an active canonical market group with no enabled strategy links produces a
+    non-actionable runtime context instead of falling back to stale legacy
+    strategy projection.
 - Execution orchestration:
   - resolves open/close/ignore action.
   - writes order/position/trade side effects through gateways.

@@ -138,4 +138,49 @@ describe('runtimeSessionSymbolStatsRead.service', () => {
       'canonical-secondary',
     ]);
   });
+
+  it('does not fall back to legacy strategy when canonical market group has no enabled links', () => {
+    const context = resolveRuntimeSymbolStatsConfiguredContext({
+      strategyId: 'legacy-strategy',
+      symbolGroupId: 'legacy-group',
+      strategy: {
+        id: 'legacy-strategy',
+        name: 'Legacy Strategy',
+        interval: '1m',
+        config: {},
+        updatedAt: new Date('2026-05-01T00:00:00.000Z'),
+      },
+      symbolGroup: {
+        symbols: ['BTCUSDT'],
+        marketUniverse: {
+          exchange: 'BINANCE',
+          marketType: 'FUTURES',
+          baseCurrency: 'USDT',
+          filterRules: null,
+          whitelist: [],
+          blacklist: [],
+        },
+      },
+      botMarketGroups: [
+        {
+          symbolGroup: {
+            symbols: ['ETHUSDT'],
+            marketUniverse: {
+              exchange: 'BINANCE',
+              marketType: 'FUTURES',
+              baseCurrency: 'USDT',
+              filterRules: null,
+              whitelist: [],
+              blacklist: [],
+            },
+          },
+          strategyLinks: [],
+        },
+      ],
+    } as any);
+
+    expect(context.symbolGroup?.symbols).toEqual(['ETHUSDT']);
+    expect(context.strategies).toEqual([]);
+    expect(context.strategyAssignments).toEqual([]);
+  });
 });

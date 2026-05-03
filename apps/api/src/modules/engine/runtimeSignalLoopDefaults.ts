@@ -144,7 +144,7 @@ export const listActiveRuntimeBots = async (): Promise<ActiveBot[]> => {
         marketGroupStrategyLinkId: link.id,
       } satisfies ActiveBotStrategy));
       const directRuntimeStrategy =
-        bot.strategy && bot.strategyId
+        !canonicalGroup && bot.strategy && bot.strategyId
           ? ({
               strategyId: bot.strategyId,
               strategyInterval: bot.strategy.interval,

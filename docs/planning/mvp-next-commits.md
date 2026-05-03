@@ -137,6 +137,16 @@ Operational queue for one-task execution runs.
     (`10/10`) and broader symbol-stats/market-universe/PnL pack (`25/25`).
     Evidence:
     `docs/planning/dashdrift-05-symbol-stats-filter-canonical-scope-task-2026-05-03.md`.
+- [x] `RUNTIME-AUDIT-02 fix(api-runtime): fail closed empty canonical strategy-link topology`
+  - 2026-05-03: Closed the next execution/display topology drift. Runtime
+    signal-loop topology and symbol-stats configured context now use direct
+    legacy `Bot.strategyId` only when no active canonical market group exists.
+    If an active canonical `BotMarketGroup` exists with no enabled
+    `MarketGroupStrategyLink` rows, runtime context is non-actionable and
+    dashboard configured strategy context remains empty. Validation PASS:
+    focused defaults/symbol-stats tests (`11/11`) and broader
+    runtime/symbol-stats pack (`78/78`). Evidence:
+    `docs/planning/runtime-audit-02-empty-canonical-strategy-links-task-2026-05-03.md`.
 - [ ] `LIVEIMPORT-03 release(prod): promote imported-position provenance fix and read back ETH/DOGE`
   - Scope: promote commit `39146d2e` through the approved production workflow,
     verify API freshness directly, then use authenticated read-only dashboard

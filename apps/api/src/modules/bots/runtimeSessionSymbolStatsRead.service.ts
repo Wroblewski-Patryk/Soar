@@ -64,13 +64,13 @@ export const resolveRuntimeSymbolStatsConfiguredContext = (
   const symbolGroup = canonicalGroup?.symbolGroup ?? botContext?.symbolGroup ?? null;
   const strategyLinks = canonicalGroup?.strategyLinks ?? [];
   const strategies =
-    strategyLinks.length > 0
+    canonicalGroup
       ? strategyLinks.map((link) => link.strategy)
       : botContext?.strategy
         ? [botContext.strategy]
         : [];
   const strategyAssignments =
-    strategyLinks.length > 0
+    canonicalGroup
       ? strategyLinks.map((link) => ({
           strategyId: link.strategyId,
           symbols: [] as string[],

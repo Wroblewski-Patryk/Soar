@@ -472,4 +472,74 @@ describe('listActiveRuntimeBots', () => {
       })
     );
   });
+
+  it('does not fall back to legacy strategy when canonical market group has no enabled links', async () => {
+    vi.mocked(listActiveRuntimeBotsRaw).mockResolvedValue([
+      {
+        id: 'bot-empty-canonical-links',
+        userId: 'user-1',
+        walletId: 'wallet-1',
+        mode: 'PAPER',
+        liveOptIn: false,
+        exchange: 'BINANCE',
+        paperStartBalance: 1000,
+        marketType: 'FUTURES',
+        maxOpenPositions: 9,
+        strategyId: 'legacy-primary',
+        symbolGroupId: 'legacy-group',
+        strategy: {
+          id: 'legacy-primary',
+          interval: '1m',
+          config: { open: {} },
+          leverage: 2,
+          walletRisk: 1,
+        },
+        symbolGroup: {
+          id: 'legacy-group',
+          symbols: ['BTCUSDT'],
+          marketUniverse: {
+            exchange: 'BINANCE',
+            marketType: 'FUTURES',
+            baseCurrency: 'USDT',
+            filterRules: null,
+            whitelist: [],
+            blacklist: [],
+          },
+        },
+        botMarketGroups: [
+          {
+            id: 'market-group-1',
+            symbolGroupId: 'symbol-group-1',
+            maxOpenPositions: 3,
+            symbolGroup: {
+              id: 'symbol-group-1',
+              symbols: ['ETHUSDT'],
+              marketUniverse: {
+                exchange: 'BINANCE',
+                marketType: 'FUTURES',
+                baseCurrency: 'USDT',
+                filterRules: null,
+                whitelist: [],
+                blacklist: [],
+              },
+            },
+            strategyLinks: [],
+          },
+        ],
+        wallet: {
+          id: 'wallet-1',
+          mode: 'PAPER',
+          exchange: 'BINANCE',
+          marketType: 'FUTURES',
+          baseCurrency: 'USDT',
+          paperInitialBalance: 1000,
+        },
+      },
+    ] as any);
+
+    const topology = await listActiveRuntimeBots();
+
+    expect(topology).toHaveLength(1);
+    expect(topology[0].runtimeContext).toBeNull();
+  });
 });
