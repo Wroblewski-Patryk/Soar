@@ -1228,6 +1228,77 @@ describe('RuntimePositionAutomationService', () => {
     );
   });
 
+  it('records skip telemetry with effective strategy for imported strategy-null positions', async () => {
+    const recordRuntimeEvent = vi.fn(async () => undefined);
+    const deps: any = {
+      listOpenPositionsBySymbol: vi.fn(async () => [
+        {
+          id: 'pos-imported-skip-effective-strategy',
+          userId: 'user-imported-skip-effective-strategy',
+          botId: 'bot-imported-skip-effective-strategy',
+          strategyId: null,
+          symbol: 'DOGEUSDT',
+          side: 'LONG' as const,
+          entryPrice: 0.11,
+          quantity: 5000,
+          leverage: 5,
+          stopLoss: null,
+          takeProfit: null,
+          managementMode: 'BOT_MANAGED' as const,
+          continuityState: 'RECOVERED_UNACTIONABLE' as const,
+          origin: 'EXCHANGE_SYNC' as const,
+          bot: buildBotExecutionContext({
+            wallet: { mode: 'LIVE' },
+            botMarketGroups: [
+              {
+                strategyLinks: [{ strategyId: 'strategy-imported-skip-effective' }],
+              },
+            ],
+          }),
+        },
+      ]),
+      getStrategyConfigById: vi.fn(async () => null),
+      executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
+      closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
+      resolveDcaFundsExhausted: vi.fn(async () => false),
+      recordRuntimeEvent,
+      nowMs: vi.fn(() => Date.now()),
+    };
+
+    const service = new RuntimePositionAutomationService(deps);
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'DOGEUSDT',
+      eventTime: 7_750,
+      lastPrice: 0.109,
+      priceChangePercent24h: -1.5,
+    });
+
+    expect(deps.getStrategyConfigById).not.toHaveBeenCalled();
+    expect(deps.resolveDcaFundsExhausted).not.toHaveBeenCalled();
+    expect(deps.executeDca).not.toHaveBeenCalled();
+    expect(deps.closeByExitSignal).not.toHaveBeenCalled();
+    expect(recordRuntimeEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'user-imported-skip-effective-strategy',
+        botId: 'bot-imported-skip-effective-strategy',
+        mode: 'LIVE',
+        eventType: 'PRETRADE_BLOCKED',
+        level: 'WARN',
+        symbol: 'DOGEUSDT',
+        strategyId: 'strategy-imported-skip-effective',
+        payload: expect.objectContaining({
+          positionId: 'pos-imported-skip-effective-strategy',
+          continuityState: 'RECOVERED_UNACTIONABLE',
+          skipReason: 'continuity_state_unconfirmed',
+          actionable: false,
+        }),
+      })
+    );
+  });
+
   it('uses the lifecycle price resolver instead of raw ticker lastPrice for LIVE protection evaluation', async () => {
     process.env.RUNTIME_TRAILING_ENABLED = 'false';
     process.env.RUNTIME_DCA_ENABLED = 'false';

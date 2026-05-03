@@ -618,6 +618,8 @@ export class RuntimePositionAutomationService {
     position: RuntimeManagedPosition
   ) {
     if (position.managementMode !== 'BOT_MANAGED') return;
+    const enabledCanonicalStrategyLinkIds = resolveEnabledCanonicalStrategyLinkIds(position);
+    const effectiveStrategyId = resolveEffectivePositionStrategyId(position);
     if (position.continuityState !== 'CONFIRMED') {
       console.warn(
         `[RuntimePositionAutomation] position=${position.id} symbol=${position.symbol} skipped: continuity_state=${position.continuityState}`
@@ -626,6 +628,7 @@ export class RuntimePositionAutomationService {
         recordRuntimeEvent: this.deps.recordRuntimeEvent,
         event,
         position,
+        strategyId: effectiveStrategyId,
         reason: 'continuity_state_unconfirmed',
         message: `Runtime automation skipped because continuity state is ${position.continuityState}`,
         extraPayload: {
@@ -656,6 +659,7 @@ export class RuntimePositionAutomationService {
         event,
         position,
         inheritedExecutionContext,
+        strategyId: effectiveStrategyId,
         reason: 'canonical_execution_context_unresolved',
         message: 'Runtime automation skipped because canonical LIVE execution context is unresolved',
       });
@@ -676,6 +680,7 @@ export class RuntimePositionAutomationService {
         event,
         position,
         inheritedExecutionContext,
+        strategyId: effectiveStrategyId,
         reason: 'live_opt_in_disabled',
         message: 'Runtime automation skipped because LIVE bot has no active live opt-in',
       });
@@ -691,14 +696,13 @@ export class RuntimePositionAutomationService {
         event,
         position,
         inheritedExecutionContext,
+        strategyId: effectiveStrategyId,
         reason: 'position_symbol_outside_configured_scope',
         message: 'Runtime automation skipped because position symbol is outside configured bot scope',
         extraPayload: { configuredSymbols },
       });
       return;
     }
-    const enabledCanonicalStrategyLinkIds = resolveEnabledCanonicalStrategyLinkIds(position);
-    const effectiveStrategyId = resolveEffectivePositionStrategyId(position);
     if (position.botId && !effectiveStrategyId && enabledCanonicalStrategyLinkIds.length > 1) {
       console.warn(`[RuntimePositionAutomation] position=${position.id} symbol=${position.symbol} skipped: missing strategy ownership for multi-strategy bot`);
       await recordRuntimeAutomationSkipTelemetry({
@@ -706,6 +710,7 @@ export class RuntimePositionAutomationService {
         event,
         position,
         inheritedExecutionContext,
+        strategyId: effectiveStrategyId,
         reason: 'multi_strategy_position_provenance_missing',
         message: 'Runtime automation skipped because multi-strategy position strategy provenance is missing',
         extraPayload: { enabledStrategyLinkCount: enabledCanonicalStrategyLinkIds.length },

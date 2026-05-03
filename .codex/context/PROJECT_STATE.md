@@ -3,6 +3,17 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 runtime automation skip effective-strategy telemetry slice
+  `RUNTIME-AUDIT-32` is closed locally. Runtime automation
+  `PRETRADE_BLOCKED` skip telemetry now accepts the same effective strategy
+  provenance used by lifecycle decisions, so imported or strategy-null LIVE
+  positions with one canonical strategy link keep fail-closed dashboard event
+  attribution aligned with their configured strategy. Ambiguous multi-strategy
+  provenance remains unassigned. Validation PASS: failing-then-passing
+  imported strategy-null skip telemetry regression, full runtime position
+  automation service tests (`36/36`), API typecheck, repository guardrails,
+  lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-32-skip-telemetry-effective-strategy-task-2026-05-03.md`.
 - 2026-05-03 DCA block effective-strategy telemetry slice
   `RUNTIME-AUDIT-31` is closed locally. Runtime DCA funds-exhausted
   `PRETRADE_BLOCKED` telemetry now uses the same effective strategy provenance

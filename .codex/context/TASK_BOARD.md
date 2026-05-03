@@ -20,6 +20,18 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-32 fix(api-engine): attribute automation skip telemetry to effective strategy`
+  - Scope: closed a TESTER-mode dashboard/runtime event provenance drift.
+    Runtime automation `PRETRADE_BLOCKED` skip telemetry now accepts the same
+    effective strategy provenance used by lifecycle decisions, so imported or
+    strategy-null LIVE positions with one canonical strategy link keep
+    fail-closed event attribution aligned with their configured strategy.
+    Ambiguous multi-strategy provenance remains unassigned. Validation PASS:
+    failing-then-passing imported strategy-null skip telemetry regression, full
+    runtime position automation service tests (`36/36`), API typecheck,
+    repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-32-skip-telemetry-effective-strategy-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-31 fix(api-engine): attribute DCA block telemetry to effective strategy`
   - Scope: closed a dashboard/runtime event provenance drift. Runtime DCA
     funds-exhausted `PRETRADE_BLOCKED` telemetry now uses the same effective

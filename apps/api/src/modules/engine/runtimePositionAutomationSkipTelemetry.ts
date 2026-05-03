@@ -67,6 +67,7 @@ export const recordRuntimeAutomationSkipTelemetry = async (input: {
   inheritedExecutionContext?: RuntimeAutomationTelemetryContext;
   reason: RuntimeAutomationSkipReason;
   message: string;
+  strategyId?: string | null;
   extraPayload?: Record<string, unknown>;
 }) => {
   if (!input.position.botId) return;
@@ -82,7 +83,7 @@ export const recordRuntimeAutomationSkipTelemetry = async (input: {
     eventType: 'PRETRADE_BLOCKED',
     level: 'WARN',
     symbol: input.position.symbol,
-    strategyId: input.position.strategyId ?? undefined,
+    strategyId: input.strategyId ?? input.position.strategyId ?? undefined,
     signalDirection: input.position.side === 'LONG' ? 'LONG' : 'SHORT',
     message: input.message,
     payload: {
