@@ -800,6 +800,7 @@ export const rebindExternalTakeoverOwnership = async (
         userId,
         status: 'OPEN',
         managementMode: 'BOT_MANAGED',
+        syncState: { not: 'ORPHAN_LOCAL' },
         origin: { in: ['EXCHANGE_SYNC', 'BOT'] },
       },
       select: {
@@ -877,9 +878,10 @@ export const rebindExternalTakeoverOwnership = async (
     const owner = owners[0];
     const update = await prisma.position.updateMany({
       where: {
-        id: position.id,
-        userId,
+        id: position.id, userId,
         botId: null,
+        status: 'OPEN',
+        syncState: { not: 'ORPHAN_LOCAL' },
       },
       data: {
         botId: owner.botId,
@@ -912,6 +914,7 @@ export const listExternalTakeoverStatuses = async (
       where: {
         userId,
         status: 'OPEN',
+        syncState: { not: 'ORPHAN_LOCAL' },
         origin: 'EXCHANGE_SYNC',
       },
       orderBy: [{ openedAt: 'desc' }, { createdAt: 'desc' }],

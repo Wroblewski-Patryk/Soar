@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 takeover local-orphan exclusion slice `RUNTIME-AUDIT-79` is
+  closed locally. Takeover status and rebind candidate scans now exclude
+  `syncState=ORPHAN_LOCAL`, and the rebind update predicate repeats the
+  stale-local guard so a scope-matching local orphan cannot be shown as
+  takeover-active or rebound back to `IN_SYNC`. `DRIFT` repair behavior remains
+  intact. Validation PASS: takeover-status e2e (`6/6`), API typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-79-takeover-ignore-local-orphans-task-2026-05-04.md`.
 - 2026-05-04 position management-mode active-state slice `RUNTIME-AUDIT-78`
   is closed locally. Dashboard/API management-mode updates now require
   `status=OPEN` and `syncState=IN_SYNC`, so stale `ORPHAN_LOCAL`

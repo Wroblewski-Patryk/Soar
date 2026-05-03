@@ -138,6 +138,14 @@ Rule: fix/cleanup/update first, then feature delivery.
   switched between `BOT_MANAGED` and `MANUAL_MANAGED` after active lists and
   runtime paths stop treating them as live. Validation PASS: positions service
   suite (`3/3`), API typecheck, repository guardrails, lint, and diff review.
+- 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-79` with
+  `docs/planning/runtime-audit-79-takeover-ignore-local-orphans-task-2026-05-04.md`.
+  Takeover status and rebind candidate scans now exclude
+  `syncState=ORPHAN_LOCAL`, and the rebind update predicate repeats the
+  stale-local guard so a scope-matching local orphan cannot be shown as
+  takeover-active or rebound back to `IN_SYNC`. `DRIFT` repair behavior remains
+  intact. Validation PASS: takeover-status e2e (`6/6`), API typecheck,
+  repository guardrails, lint, and diff review.
 - 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-15` with
   `docs/planning/runtime-audit-15-close-fee-position-scope-task-2026-05-03.md`.
   Runtime close realized-PnL now aggregates entry fees by owned position

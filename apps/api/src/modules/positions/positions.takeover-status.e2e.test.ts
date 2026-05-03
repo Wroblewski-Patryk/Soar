@@ -333,7 +333,10 @@ describe('Positions takeover status API', () => {
     const keyOwned = await createApiKey('owned-rebind');
     const keyAmbiguous = await createApiKey('ambiguous-rebind');
     const keyUnowned = await createApiKey('unowned-rebind');
-    const ownedScopeId = await createLiveSymbolGroup(owner.id, 'Owned Rebind Scope', ['SOLUSDT']);
+    const ownedScopeId = await createLiveSymbolGroup(owner.id, 'Owned Rebind Scope', [
+      'SOLUSDT',
+      'MATICUSDT',
+    ]);
     const ambiguousScopeAId = await createLiveSymbolGroup(owner.id, 'Ambiguous Rebind Scope A', ['BNBUSDT']);
     const ambiguousScopeBId = await createLiveSymbolGroup(owner.id, 'Ambiguous Rebind Scope B', ['BNBUSDT']);
 
@@ -478,6 +481,20 @@ describe('Positions takeover status API', () => {
           quantity: 100,
           leverage: 1,
         },
+        {
+          userId: owner.id,
+          externalId: `${keyOwned}:MATICUSDT:LONG`,
+          origin: 'EXCHANGE_SYNC',
+          managementMode: 'BOT_MANAGED',
+          syncState: 'ORPHAN_LOCAL',
+          continuityState: 'REPAIR_ONLY_CLEANUP',
+          symbol: 'MATICUSDT',
+          side: 'LONG',
+          status: 'OPEN',
+          entryPrice: 1,
+          quantity: 100,
+          leverage: 1,
+        },
       ],
     });
 
@@ -503,6 +520,24 @@ describe('Positions takeover status API', () => {
     expect(bySymbol.get('SOLUSDT')?.botId).toBeTruthy();
     expect(bySymbol.get('BNBUSDT')?.takeoverStatus).toBe('AMBIGUOUS');
     expect(bySymbol.get('ADAUSDT')?.takeoverStatus).toBe('UNOWNED');
+    expect(bySymbol.has('MATICUSDT')).toBe(false);
+
+    const staleLocal = await prisma.position.findFirstOrThrow({
+      where: {
+        userId: owner.id,
+        symbol: 'MATICUSDT',
+      },
+      select: {
+        botId: true,
+        syncState: true,
+        continuityState: true,
+      },
+    });
+    expect(staleLocal).toEqual({
+      botId: null,
+      syncState: 'ORPHAN_LOCAL',
+      continuityState: 'REPAIR_ONLY_CLEANUP',
+    });
   });
 
   it('rebinds exchange-synced positions from wallet-first api key and active bot market groups', async () => {

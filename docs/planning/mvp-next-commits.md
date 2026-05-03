@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-79 fix(api-positions): ignore local orphans in takeover repair`
+  - 2026-05-04: Closed a BUILDER-mode LIVE takeover repair drift. Takeover
+    status and rebind candidate scans now exclude `syncState=ORPHAN_LOCAL`,
+    and the rebind update predicate repeats the stale-local guard so a
+    scope-matching local orphan cannot be shown as takeover-active or rebound
+    back to `IN_SYNC`. `DRIFT` repair behavior remains intact. Validation PASS:
+    takeover-status e2e (`6/6`), API typecheck, repository guardrails, lint,
+    and diff review. Evidence:
+    `docs/planning/runtime-audit-79-takeover-ignore-local-orphans-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-78 fix(api-positions): reject stale management-mode toggles`
   - 2026-05-04: Closed an ARCHITECT-mode position management-state drift.
     Dashboard/API management-mode updates now require `status=OPEN` and
