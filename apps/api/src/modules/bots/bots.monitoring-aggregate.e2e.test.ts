@@ -223,6 +223,7 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     const aggregateRes = await owner.get(`/dashboard/bots/${botId}/runtime-monitoring/aggregate`);
     expect(aggregateRes.status).toBe(200);
     expect(aggregateRes.body.sessionDetail.id).toBe('AGGREGATE');
+    expect(aggregateRes.body.sessionDetail.lastHeartbeatAt).toBeNull();
     expect(aggregateRes.body.sessionDetail.metadata).toEqual(
       expect.objectContaining({
         aggregate: true,

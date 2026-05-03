@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 empty aggregate heartbeat slice `RUNTIME-AUDIT-37` is
+  closed locally. Empty runtime monitoring aggregate payloads now return
+  `sessionDetail.lastHeartbeatAt: null` when no runtime sessions exist, so the
+  dashboard no longer receives a false fresh-heartbeat timestamp alongside
+  `sessionsCount: 0`. Non-empty aggregate heartbeat behavior remains
+  session-derived. Validation PASS: failing-then-passing empty aggregate
+  heartbeat regression, full monitoring aggregate e2e (`8/8`), API typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-37-empty-aggregate-heartbeat-task-2026-05-03.md`.
 - 2026-05-03 aggregate header position-PnL parity slice
   `RUNTIME-AUDIT-36` is closed locally. Runtime monitoring aggregate header
   `sessionDetail.summary.realizedPnl` now reuses the scoped positions summary,

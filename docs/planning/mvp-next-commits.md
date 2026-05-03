@@ -9,6 +9,16 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-37 fix(api-bots): do not invent empty aggregate heartbeat`
+  - 2026-05-03: Closed a TESTER-mode false-freshness empty-state bug. Empty
+    runtime monitoring aggregate payloads now return
+    `sessionDetail.lastHeartbeatAt: null` when no runtime sessions exist, so
+    the dashboard no longer receives a fresh synthetic heartbeat timestamp
+    alongside `sessionsCount: 0`. Non-empty aggregate heartbeat behavior
+    remains session-derived. Validation PASS: failing-then-passing empty
+    aggregate heartbeat regression, full monitoring aggregate e2e (`8/8`), API
+    typecheck, repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-37-empty-aggregate-heartbeat-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-36 fix(api-bots): align aggregate header PnL with positions`
   - 2026-05-03: Closed an ARCHITECT-mode duplicate-summary truth drift.
     Runtime monitoring aggregate header `sessionDetail.summary.realizedPnl`

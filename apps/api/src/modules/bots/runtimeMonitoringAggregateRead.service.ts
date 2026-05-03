@@ -63,7 +63,7 @@ const buildEmptyAggregatePayload = (params: {
       status,
       startedAt: now,
       finishedAt,
-      lastHeartbeatAt: now,
+      lastHeartbeatAt: null,
       stopReason: null,
       errorMessage: null,
       metadata: {
