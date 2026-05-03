@@ -47,6 +47,36 @@ const compareTimestampDescThenIdAsc = (
   return leftId.localeCompare(rightId);
 };
 
+const selectTradeTotalRows = <
+  T extends {
+    session: RuntimeSessionListItem;
+    trades: RuntimeTradesResponse;
+  },
+>(
+  rows: T[]
+) => {
+  const runningRows = rows.filter((row) => row.session.status === 'RUNNING');
+  if (runningRows.length === 0) return rows;
+  const nonRunningRows = rows.filter((row) => row.session.status !== 'RUNNING');
+  const latestRunningRow = [...runningRows].sort((left, right) =>
+    compareTimestampDescThenIdAsc(
+      Math.max(
+        toTimestamp(left.session.lastHeartbeatAt),
+        toTimestamp(left.session.finishedAt),
+        toTimestamp(left.session.startedAt)
+      ),
+      Math.max(
+        toTimestamp(right.session.lastHeartbeatAt),
+        toTimestamp(right.session.finishedAt),
+        toTimestamp(right.session.startedAt)
+      ),
+      left.session.id,
+      right.session.id
+    )
+  )[0];
+  return latestRunningRow ? [...nonRunningRows, latestRunningRow] : nonRunningRows;
+};
+
 const resolveAggregateSessionWindowEnd = (session: RuntimeSessionListItem) =>
   session.finishedAt ?? session.lastHeartbeatAt ?? session.startedAt;
 
@@ -538,8 +568,9 @@ export const getBotRuntimeMonitoringAggregate = async (
   const totalClosedPositions = positionResponses.reduce((acc, response) => acc + response.closedCount, 0);
   const totalPositions = totalOpenPositions + totalClosedPositions;
   const totalOpenOrders = Math.max(0, ...positionResponses.map((response) => response.openOrdersCount));
-  const totalTrades = completePayloadRows.reduce((acc, row) => acc + row.trades.total, 0);
-  const totalTradeFeesPaid = completePayloadRows.reduce((acc, row) => acc + row.trades.feesPaid, 0);
+  const tradeTotalRows = selectTradeTotalRows(completePayloadRows);
+  const totalTrades = tradeTotalRows.reduce((acc, row) => acc + row.trades.total, 0);
+  const totalTradeFeesPaid = tradeTotalRows.reduce((acc, row) => acc + row.trades.feesPaid, 0);
   const windowFinishedAt = finishedAt ?? new Date();
   const pageSize = tradeItems.length || 1;
   const totalPages = totalTrades === 0 ? 0 : Math.ceil(totalTrades / pageSize);

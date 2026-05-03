@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-56 fix(api-bots): prevent aggregate running trade overlap double counts`
+  - 2026-05-03: Closed a BUILDER-mode aggregate trade/fee drift. Runtime
+    monitoring aggregate trade totals and fees now sum non-running historical
+    session totals plus only the freshest RUNNING session projection, so
+    overlapping running sessions no longer show one visible trade row with
+    doubled `trades.total` or fee summary. Validation PASS: aggregate e2e
+    (`15/15`), runtime-scope e2e (`13/13`), API typecheck, repository
+    guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-56-aggregate-running-trade-overlap-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-55 fix(api-bots): align aggregate total positions with final counts`
   - 2026-05-03: Closed a BUILDER-mode aggregate count consistency drift.
     Runtime monitoring aggregate `positions.total` now derives from final

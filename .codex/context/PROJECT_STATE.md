@@ -3,6 +3,14 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 aggregate running-trade overlap slice `RUNTIME-AUDIT-56` is
+  closed locally. Runtime monitoring aggregate trade totals and fees now sum
+  all non-running historical session totals plus only the freshest RUNNING
+  session projection, so overlapping running sessions no longer show one
+  visible trade row with doubled `trades.total` or fee summary. Validation
+  PASS: aggregate e2e (`15/15`), runtime-scope e2e (`13/13`), API typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-56-aggregate-running-trade-overlap-task-2026-05-03.md`.
 - 2026-05-03 aggregate total-position overlap slice `RUNTIME-AUDIT-55` is
   closed locally. Runtime monitoring aggregate `positions.total` now derives
   from the final aggregate `openCount + closedCount` after current open-count
