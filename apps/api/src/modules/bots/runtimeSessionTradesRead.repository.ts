@@ -13,6 +13,45 @@ export const getRuntimeTradeBotContext = async (userId: string, botId: string) =
           apiKeyId: true,
         },
       },
+      botMarketGroups: {
+        where: {
+          isEnabled: true,
+          lifecycleStatus: 'ACTIVE',
+        },
+        orderBy: [{ executionOrder: 'asc' }, { createdAt: 'asc' }, { id: 'asc' }],
+        select: {
+          symbolGroup: {
+            select: {
+              symbols: true,
+              marketUniverse: {
+                select: {
+                  exchange: true,
+                  marketType: true,
+                  baseCurrency: true,
+                  filterRules: true,
+                  whitelist: true,
+                  blacklist: true,
+                },
+              },
+            },
+          },
+        },
+      },
+      symbolGroup: {
+        select: {
+          symbols: true,
+          marketUniverse: {
+            select: {
+              exchange: true,
+              marketType: true,
+              baseCurrency: true,
+              filterRules: true,
+              whitelist: true,
+              blacklist: true,
+            },
+          },
+        },
+      },
     },
   });
 

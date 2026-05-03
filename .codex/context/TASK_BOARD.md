@@ -20,6 +20,17 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-04 fix(api-bots): keep runtime trade history canonical-symbol scoped`
+  - Scope: closed the next selected-bot dashboard-history drift. Runtime
+    trade history now resolves selected-bot configured symbols from active
+    canonical `BotMarketGroup` scope through the shared catalog-aware resolver
+    before honoring explicit `symbol` filters. Stale persisted `Trade.botId`
+    rows for off-scope symbols can no longer appear in runtime trades or
+    monitoring aggregate history after market reassignment. Validation PASS:
+    focused runtime-scope regression (`1/1`) and broader monitoring pack
+    (`45/45`). Evidence:
+    `docs/planning/runtime-audit-04-runtime-trades-canonical-symbol-scope-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-03 fix(api-bots): fail closed canonical update scope and symbol-filter pagination`
   - Scope: closed the next residual selected-bot topology drift. Bot update
     defaults now treat existing canonical market-group scope with no enabled

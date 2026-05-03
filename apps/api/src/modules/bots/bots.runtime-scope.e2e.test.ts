@@ -353,6 +353,20 @@ describe('Bots runtime scope remediation contract', () => {
         eventAt: new Date('2026-04-05T10:05:00.000Z'),
       },
     });
+    await prisma.trade.create({
+      data: {
+        userId: ownerUser.id,
+        botId: botAId,
+        symbol: 'SOLUSDT',
+        side: 'BUY',
+        lifecycleAction: 'OPEN',
+        price: 150,
+        quantity: 1,
+        fee: 0.1,
+        realizedPnl: 0,
+        executedAt: new Date('2026-04-05T10:06:00.000Z'),
+      },
+    });
 
     const statsRes = await owner.get(`/dashboard/bots/${botAId}/runtime-sessions/${sessionA.id}/symbol-stats`);
     expect(statsRes.status).toBe(200);
@@ -371,6 +385,13 @@ describe('Bots runtime scope remediation contract', () => {
     expect(staleSymbolStatsRes.body.items).toEqual([]);
     expect(staleSymbolStatsRes.body.summary.totalSignals).toBe(0);
     expect(staleSymbolStatsRes.body.summary.realizedPnl).toBe(0);
+
+    const staleSymbolTradesRes = await owner.get(
+      `/dashboard/bots/${botAId}/runtime-sessions/${sessionA.id}/trades?symbol=SOLUSDT`
+    );
+    expect(staleSymbolTradesRes.status).toBe(200);
+    expect(staleSymbolTradesRes.body.items).toEqual([]);
+    expect(staleSymbolTradesRes.body.total).toBe(0);
   });
 
   it('excludes paused legacy botStrategy symbol groups from selected-bot symbol-stats scope', async () => {

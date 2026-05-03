@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 runtime trade-history symbol-scope slice
+  `RUNTIME-AUDIT-04` is closed locally. Runtime trade history now resolves
+  selected-bot configured symbols from active canonical `BotMarketGroup`
+  scope through the shared catalog-aware resolver before honoring explicit
+  `symbol` filters. Stale persisted `Trade.botId` rows for off-scope symbols
+  can no longer appear in runtime trades or monitoring aggregate history after
+  market reassignment. Validation PASS: focused runtime-scope regression
+  (`1/1`) and broader monitoring pack (`45/45`). Evidence:
+  `docs/planning/runtime-audit-04-runtime-trades-canonical-symbol-scope-task-2026-05-03.md`.
 - 2026-05-03 canonical update/symbol-filter scope slice
   `RUNTIME-AUDIT-03` is closed locally. Bot update defaults now treat an
   existing canonical market group with no enabled strategy links as

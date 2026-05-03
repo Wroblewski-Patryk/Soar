@@ -6,7 +6,7 @@
 - Source path: `apps/api/src/modules/bots`
 - Owner: backend/trading-domain
 - Last updated: 2026-05-03
-- Related planning task: `RUNTIME-AUDIT-03`
+- Related planning task: `RUNTIME-AUDIT-04`
 
 ## Canonical Architecture Linkage
 Canonical runtime topology and ownership rules live in:
@@ -140,6 +140,9 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
   - explicit `symbol` filters must validate against the full configured
     selected-bot symbol scope before response pagination/`limit` is applied,
     so configured symbols later in the market list remain queryable.
+  - explicit `symbol` filters on runtime trade history are intersected with
+    the same selected-bot active scope; off-scope symbols return an empty
+    paginated trade response instead of stale persisted `Trade.botId` rows.
 - Strategy context precedence:
   - canonical mapping is authoritative.
   - when an active canonical market group exists but has no enabled strategy

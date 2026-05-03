@@ -2,6 +2,8 @@ import { Prisma } from '@prisma/client';
 import { normalizeSymbol } from '../../lib/symbols';
 import { getOwnedBotRuntimeSession, resolveSessionWindowEnd } from './botOwnership.service';
 import { ListBotRuntimeTradesQueryDto } from './bots.types';
+import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from './runtimeSymbolCatalogResolver.service';
+import { normalizeSymbols } from './runtimeSymbolUniverse.service';
 import {
   listOwnedExternalSymbolsForBot,
   resolveExternalPositionOwnershipIndex,
@@ -55,6 +57,30 @@ const isPersistedImportedOpenAnchorTrade = (trade: {
   exchangeTradeId: string | null;
 }) => trade.origin === 'EXCHANGE_SYNC' && trade.lifecycleAction === 'OPEN' && trade.exchangeTradeId == null;
 
+const emptyRuntimeTradesResponse = (params: {
+  sessionId: string;
+  page: number;
+  pageSize: number;
+  windowStart: Date;
+  windowEnd: Date;
+}) => ({
+  sessionId: params.sessionId,
+  total: 0,
+  meta: {
+    page: params.page,
+    pageSize: params.pageSize,
+    total: 0,
+    totalPages: 0,
+    hasPrev: params.page > 1,
+    hasNext: false,
+  },
+  window: {
+    startedAt: params.windowStart,
+    finishedAt: params.windowEnd,
+  },
+  items: [],
+});
+
 export const listBotRuntimeSessionTrades = async (
   userId: string,
   botId: string,
@@ -101,6 +127,22 @@ export const listBotRuntimeSessionTrades = async (
   const rangeEnd = query.to
     ? new Date(Math.min(query.to.getTime(), windowEnd.getTime()))
     : windowEnd;
+  const configuredSymbolGroup =
+    botContext.botMarketGroups[0]?.symbolGroup ?? botContext.symbolGroup ?? null;
+  const configuredSymbols = normalizeSymbols(
+    configuredSymbolGroup
+      ? await resolveEffectiveSymbolGroupSymbolsWithCatalog(configuredSymbolGroup, new Map<string, string[]>())
+      : []
+  );
+  if (normalizedSymbol && !configuredSymbols.includes(normalizedSymbol)) {
+    return emptyRuntimeTradesResponse({
+      sessionId,
+      page,
+      pageSize,
+      windowStart: rangeStart,
+      windowEnd: rangeEnd,
+    });
+  }
   const ownershipIndex = await resolveExternalPositionOwnershipIndex(userId, botContext.mode);
   const botApiKeyId = botContext.wallet?.apiKeyId ?? botContext.apiKeyId ?? null;
   const ownedExternalSymbols = listOwnedExternalSymbolsForBot(ownershipIndex, {
