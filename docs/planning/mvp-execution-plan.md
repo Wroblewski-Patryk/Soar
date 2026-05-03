@@ -188,6 +188,16 @@ Rule: fix/cleanup/update first, then feature delivery.
   failing-then-passing canonical strategy-null TTP regression and focused
   runtime strategy context e2e (`5/5`), broader bot runtime/read pack
   (`37/37`), API typecheck, repository guardrails, lint, and diff review.
+- 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-27` with
+  `docs/planning/runtime-audit-27-symbol-stats-configured-limit-task-2026-05-03.md`.
+  Unfiltered selected-bot symbol-stats now select display rows from configured
+  symbol order and then hydrate persisted stats for that exact symbol set,
+  preventing top-PnL DB ordering from rendering a configured dashboard signal
+  row with zero totals when its stat row exists. Explicit symbol filters and
+  off-scope empty behavior remain unchanged. Validation PASS:
+  failing-then-passing configured-order `limit=1` regression, focused bots
+  e2e (`26/26`), broader runtime/read pack (`42/42`), API typecheck,
+  repository guardrails, lint, and diff review.
 
 ## Phase ETHDCA-2026-05-02 - LIVE DCA-First TSL Hardening (Closed 2026-05-02)
 - [x] `ETHDCA-01 fix(api-runtime): preserve LIVE DCA-first gating for trailing-stop close decisions`

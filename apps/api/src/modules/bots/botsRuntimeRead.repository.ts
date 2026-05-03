@@ -141,6 +141,22 @@ export const listRuntimeFallbackSymbolsFromEvents = async (params: {
     take: params.limit,
   });
 
+export const listRuntimeSymbolStatsRowsForSymbols = async (params: {
+  userId: string;
+  botId: string;
+  sessionId: string;
+  symbols: string[];
+}) =>
+  prisma.botRuntimeSymbolStat.findMany({
+    where: {
+      userId: params.userId,
+      botId: params.botId,
+      sessionId: params.sessionId,
+      symbol: { in: params.symbols },
+    },
+    orderBy: [{ symbol: 'asc' }],
+  });
+
 export const getRuntimeSymbolLiveRows = async (params: {
   userId: string;
   botId: string;

@@ -6,7 +6,7 @@
 - Source path: `apps/api/src/modules/bots`
 - Owner: backend/trading-domain
 - Last updated: 2026-05-03
-- Related planning task: `RUNTIME-AUDIT-26`
+- Related planning task: `RUNTIME-AUDIT-27`
 
 ## Canonical Architecture Linkage
 Canonical runtime topology and ownership rules live in:
@@ -151,6 +151,10 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
   - explicit `symbol` filters must validate against the full configured
     selected-bot symbol scope before response pagination/`limit` is applied,
     so configured symbols later in the market list remain queryable.
+  - unfiltered runtime symbol-stats `limit` selects display rows from
+    configured selected-bot symbol order, then hydrates persisted stat rows for
+    that exact symbol set; top-PnL database ordering cannot cause a displayed
+    configured symbol to render zero totals when its stat row exists.
   - explicit `symbol` filters on runtime trade history are intersected with
     the same selected-bot active scope; off-scope symbols return an empty
     paginated trade response instead of stale persisted `Trade.botId` rows.

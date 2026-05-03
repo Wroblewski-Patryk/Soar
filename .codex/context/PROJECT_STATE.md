@@ -3,6 +3,16 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 runtime symbol-stats configured-limit slice `RUNTIME-AUDIT-27`
+  is closed locally. Unfiltered selected-bot symbol-stats now select display
+  rows from configured symbol order and then hydrate persisted stats for that
+  exact symbol set, preventing top-PnL DB ordering from rendering a configured
+  dashboard signal row with zero totals when its stat row exists. Explicit
+  symbol filters and off-scope empty behavior remain unchanged. Validation
+  PASS: failing-then-passing configured-order `limit=1` regression, focused
+  bots e2e (`26/26`), broader runtime/read pack (`42/42`), API typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-27-symbol-stats-configured-limit-task-2026-05-03.md`.
 - 2026-05-03 runtime position symbol-level strategy display slice
   `RUNTIME-AUDIT-26` is closed locally. Runtime position reads now surface
   canonical symbol-level DCA/TTP/TSL display plans for strategy-null positions

@@ -1760,6 +1760,15 @@ describe('Bots module contract', () => {
     expect(runningListRes.body).toHaveLength(1);
     expect(runningListRes.body[0].id).toBe(runningSession.id);
 
+    const configuredOrderStatsRes = await owner
+      .get(`/dashboard/bots/${botId}/runtime-sessions/${runningSession.id}/symbol-stats`)
+      .query({ limit: 1 });
+    expect(configuredOrderStatsRes.status).toBe(200);
+    expect(configuredOrderStatsRes.body.items).toHaveLength(1);
+    expect(configuredOrderStatsRes.body.items[0].symbol).toBe('BTCUSDT');
+    expect(configuredOrderStatsRes.body.items[0].totalSignals).toBe(3);
+    expect(configuredOrderStatsRes.body.items[0].realizedPnl).toBe(-7.5);
+
     const ethStatsRes = await owner
       .get(`/dashboard/bots/${botId}/runtime-sessions/${runningSession.id}/symbol-stats`)
       .query({ symbol: 'ethusdt', limit: 1 });

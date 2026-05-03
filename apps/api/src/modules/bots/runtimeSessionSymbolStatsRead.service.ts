@@ -39,6 +39,7 @@ import {
   getRuntimeSymbolLiveRows,
   getRuntimeSymbolStatsBaseData,
   listMarketCandles,
+  listRuntimeSymbolStatsRowsForSymbols,
   listStrategiesByIds,
 } from './botsRuntimeRead.repository';
 import { resolvePreferredRuntimeOrExchangeSyncedPrice } from './runtimeExchangeSyncedPositionPrice';
@@ -359,6 +360,15 @@ export const listBotRuntimeSessionSymbolStats = async (
     return emptyRuntimeSymbolStatsResponse(sessionId);
   }
   const symbols = normalizedSymbol ? [normalizedSymbol] : configuredSymbols.slice(0, query.limit);
+  const statItems =
+    !normalizedSymbol && symbols.length > 0
+      ? await listRuntimeSymbolStatsRowsForSymbols({
+          userId,
+          botId,
+          sessionId,
+          symbols,
+        })
+      : items;
   const [openPositions, latestTradeBySymbolRows, latestSignalEvents] = symbols.length
     ? await getRuntimeSymbolLiveRows({
         userId,
@@ -371,10 +381,10 @@ export const listBotRuntimeSessionSymbolStats = async (
     : [[], [], []];
 
   const lastPriceBySymbol = new Map<string, number | null>(
-    items.map((item) => [item.symbol, item.lastPrice])
+    statItems.map((item) => [item.symbol, item.lastPrice])
   );
   const lastPriceObservedAtBySymbol = new Map<string, number | null>(
-    items.map((item) => [item.symbol, item.snapshotAt?.getTime() ?? null])
+    statItems.map((item) => [item.symbol, item.snapshotAt?.getTime() ?? null])
   );
   for (const symbol of symbols) {
     const ticker = getRuntimeTicker(symbol, {
@@ -588,7 +598,7 @@ export const listBotRuntimeSessionSymbolStats = async (
       lastPriceBySymbol,
       lastPriceObservedAtBySymbol,
     });
-  const statBySymbol = new Map(items.map((item) => [item.symbol, item]));
+  const statBySymbol = new Map(statItems.map((item) => [item.symbol, item]));
   const readModel = composeRuntimeSymbolStatsReadModel({
     userId,
     botId,
