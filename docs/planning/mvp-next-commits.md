@@ -9,6 +9,16 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-29 fix(api-bots): keep runtime open orders visible after dedupe`
+  - 2026-05-03: Closed a dashboard runtime open-order drift. Runtime session
+    `openOrders` now read a bounded candidate set before exchange/local dedupe
+    and apply the dashboard `limit` after dedupe, so duplicate rows sharing an
+    `exchangeOrderId` cannot hide distinct open orders from the dashboard.
+    Validation PASS: failing-then-passing `limit=2` duplicate-order
+    regression, focused runtime-scope e2e (`12/12`), broader bots e2e
+    (`26/26`), API typecheck, repository guardrails, lint, and diff review.
+    Evidence:
+    `docs/planning/runtime-audit-29-runtime-open-orders-dedupe-limit-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-28 fix(api-bots): keep runtime open positions visible under history limits`
   - 2026-05-03: Closed a dashboard runtime positions drift. Runtime session
     positions now read open and closed bot-managed rows as separate scoped

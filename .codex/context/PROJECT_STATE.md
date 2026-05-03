@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 runtime open-order dedupe limit slice `RUNTIME-AUDIT-29` is
+  closed locally. Runtime session `openOrders` now read a bounded candidate set
+  before exchange/local dedupe and apply the dashboard `limit` after dedupe, so
+  duplicate rows sharing an `exchangeOrderId` cannot hide distinct open orders
+  from the dashboard. Validation PASS: failing-then-passing `limit=2`
+  duplicate-order regression, focused runtime-scope e2e (`12/12`), broader
+  bots e2e (`26/26`), API typecheck, repository guardrails, lint, and diff
+  review. Evidence:
+  `docs/planning/runtime-audit-29-runtime-open-orders-dedupe-limit-task-2026-05-03.md`.
 - 2026-05-03 runtime positions open/history limit slice `RUNTIME-AUDIT-28`
   is closed locally. Runtime session positions now read open and closed
   bot-managed rows as separate scoped collections before serialization, so a

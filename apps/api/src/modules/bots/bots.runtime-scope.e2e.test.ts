@@ -81,6 +81,99 @@ describe('Bots runtime scope remediation contract', () => {
     expect(positionsRes.body.historyItems[0].symbol).toBe('ETHUSDT');
   });
 
+  it('keeps distinct runtime open orders visible after duplicate exchange-order dedupe', async () => {
+    const email = 'bot-runtime-open-orders-dedupe-limit@example.com';
+    const agent = await registerAndLogin(email);
+    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email } });
+
+    const strategyId = await createStrategy(agent, 'Runtime Open Orders Dedupe Strategy');
+    const marketGroupId = await createMarketGroup(email, 'FUTURES');
+    const botRes = await agent.post('/dashboard/bots').send(createPayload({ strategyId, marketGroupId }));
+    expect(botRes.status).toBe(201);
+    const botId = botRes.body.id as string;
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-12T00:00:00.000Z'),
+      },
+    });
+
+    await prisma.order.createMany({
+      data: [
+        {
+          userId: ownerUser.id,
+          botId,
+          strategyId,
+          origin: 'BOT',
+          managementMode: 'BOT_MANAGED',
+          exchangeOrderId: 'shared-open-order',
+          symbol: 'BTCUSDT',
+          side: 'BUY',
+          type: 'LIMIT',
+          status: 'OPEN',
+          quantity: 0.01,
+          price: 67000,
+          submittedAt: new Date('2026-04-12T00:01:00.000Z'),
+          createdAt: new Date('2026-04-12T00:03:00.000Z'),
+        },
+        {
+          userId: ownerUser.id,
+          botId,
+          strategyId,
+          origin: 'EXCHANGE_SYNC',
+          managementMode: 'BOT_MANAGED',
+          exchangeOrderId: 'shared-open-order',
+          symbol: 'BTCUSDT',
+          side: 'BUY',
+          type: 'LIMIT',
+          status: 'OPEN',
+          quantity: 0.01,
+          price: 67000,
+          submittedAt: new Date('2026-04-12T00:01:30.000Z'),
+          createdAt: new Date('2026-04-12T00:02:00.000Z'),
+        },
+        {
+          userId: ownerUser.id,
+          botId,
+          strategyId,
+          origin: 'BOT',
+          managementMode: 'BOT_MANAGED',
+          exchangeOrderId: 'distinct-open-order',
+          symbol: 'ETHUSDT',
+          side: 'BUY',
+          type: 'LIMIT',
+          status: 'OPEN',
+          quantity: 0.2,
+          price: 3200,
+          submittedAt: new Date('2026-04-12T00:01:00.000Z'),
+          createdAt: new Date('2026-04-12T00:01:00.000Z'),
+        },
+      ],
+    });
+
+    const positionsRes = await agent
+      .get(`/dashboard/bots/${botId}/runtime-sessions/${session.id}/positions`)
+      .query({ limit: 2 });
+    expect(positionsRes.status).toBe(200);
+    expect(positionsRes.body.total).toBe(0);
+    expect(positionsRes.body.openOrdersCount).toBe(2);
+    expect(positionsRes.body.openOrders).toHaveLength(2);
+    expect(positionsRes.body.openOrders.map((order: { exchangeOrderId: string }) => order.exchangeOrderId)).toEqual([
+      'shared-open-order',
+      'distinct-open-order',
+    ]);
+    expect(
+      positionsRes.body.openOrders.find(
+        (order: { exchangeOrderId: string; origin: string }) =>
+          order.exchangeOrderId === 'shared-open-order'
+      )?.origin
+    ).toBe('EXCHANGE_SYNC');
+  });
+
   it('updates canonical runtime graph mapping when strategyId and marketGroupId are changed via PUT', async () => {
     const email = 'bots-canonical-update-drift@example.com';
     const agent = await registerAndLogin(email);

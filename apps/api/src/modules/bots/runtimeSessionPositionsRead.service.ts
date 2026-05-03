@@ -54,6 +54,8 @@ type RuntimeOpenOrderRow = Awaited<ReturnType<typeof listRuntimeOpenOrders>>[num
 type RuntimeManagedPositionRow = Awaited<ReturnType<typeof listRuntimeManagedPositions>>[number];
 type RuntimePositionTradeRow = Awaited<ReturnType<typeof listRuntimePositionTradeRows>>[number];
 
+const RUNTIME_OPEN_ORDER_DEDUPE_CANDIDATE_LIMIT = 500;
+
 const resolveRuntimeTakeoverStatus = (input: {
   origin: string;
   managementMode: 'BOT_MANAGED' | 'MANUAL_MANAGED';
@@ -132,6 +134,9 @@ const dedupeRuntimeOpenOrders = (orders: RuntimeOpenOrderRow[]) => {
     return right.updatedAt.getTime() - left.updatedAt.getTime();
   });
 };
+
+const selectVisibleRuntimeOpenOrders = (orders: RuntimeOpenOrderRow[], limit: number) =>
+  dedupeRuntimeOpenOrders(orders).slice(0, limit);
 
 const resolveRuntimePositionDcaCount = (input: {
   entryLegsCount: number;
@@ -490,9 +495,9 @@ export const listBotRuntimeSessionPositions = async (
           },
         ],
       },
-      limit: query.limit,
+      limit: RUNTIME_OPEN_ORDER_DEDUPE_CANDIDATE_LIMIT,
     });
-    const visibleOpenOrders = dedupeRuntimeOpenOrders(openOrders);
+    const visibleOpenOrders = selectVisibleRuntimeOpenOrders(openOrders, query.limit);
 
     return {
       sessionId,
@@ -622,7 +627,7 @@ export const listBotRuntimeSessionPositions = async (
           },
         ],
       },
-      limit: query.limit,
+      limit: RUNTIME_OPEN_ORDER_DEDUPE_CANDIDATE_LIMIT,
     }),
     strategyIds.length > 0
       ? listRuntimePositionStrategies({
@@ -631,7 +636,7 @@ export const listBotRuntimeSessionPositions = async (
         })
       : Promise.resolve([]),
   ]);
-  const visibleOpenOrders = dedupeRuntimeOpenOrders(openOrders);
+  const visibleOpenOrders = selectVisibleRuntimeOpenOrders(openOrders, query.limit);
 
   const dcaPlanByStrategyId = new Map<string, number[]>();
   const trailingStopLevelsByStrategyId = new Map<string, TrailingStopDisplayLevel[]>();
