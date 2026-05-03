@@ -485,10 +485,23 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
 
     const strategyId = await createStrategy(owner, 'Monitoring Aggregate Open Qty Limit');
     const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    const walletId = await createWalletForContext(ownerEmail, {
+      mode: 'PAPER',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+    });
+    await prisma.wallet.update({
+      where: { id: walletId },
+      data: {
+        paperInitialBalance: 1_000,
+      },
+    });
     const createRes = await owner.post('/dashboard/bots').send(
       createPayload({
         strategyId,
         marketGroupId,
+        walletId,
       })
     );
     expect(createRes.status).toBe(201);
@@ -510,6 +523,7 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
         {
           userId: ownerUser.id,
           botId,
+          walletId,
           strategyId,
           symbol: 'BTCUSDT',
           side: 'LONG',
@@ -517,6 +531,7 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
           entryPrice: 60_000,
           quantity: 0.01,
           leverage: 2,
+          marginUsed: 100,
           openedAt: new Date('2026-04-19T15:02:00.000Z'),
           origin: 'BOT',
           managementMode: 'BOT_MANAGED',
@@ -525,6 +540,7 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
         {
           userId: ownerUser.id,
           botId,
+          walletId,
           strategyId,
           symbol: 'ETHUSDT',
           side: 'LONG',
@@ -532,6 +548,7 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
           entryPrice: 3_000,
           quantity: 0.2,
           leverage: 2,
+          marginUsed: 200,
           openedAt: new Date('2026-04-19T15:04:00.000Z'),
           origin: 'BOT',
           managementMode: 'BOT_MANAGED',
@@ -548,6 +565,8 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     expect(aggregateRes.body.positions.openCount).toBe(2);
     expect(aggregateRes.body.sessionDetail.summary.openPositionCount).toBe(2);
     expect(aggregateRes.body.sessionDetail.summary.openPositionQty).toBeCloseTo(0.21);
+    expect(aggregateRes.body.positions.summary.referenceBalance).toBe(1_000);
+    expect(aggregateRes.body.positions.summary.freeCash).toBe(700);
   });
 
   it('uses last heartbeat as aggregate finish time for non-running sessions without finishedAt', async () => {

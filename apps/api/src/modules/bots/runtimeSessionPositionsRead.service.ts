@@ -38,6 +38,7 @@ import {
   listRuntimePositionLastPrices,
   listRuntimePositionStrategies,
   listRuntimePositionTradeRows,
+  sumRuntimeManagedPositionMarginUsed,
   sumRuntimeManagedPositionQuantity,
   sumRuntimeManagedPositionRealizedPnl,
 } from './runtimeSessionPositionsRead.repository';
@@ -479,6 +480,7 @@ export const listBotRuntimeSessionPositions = async (
     closedPositions,
     openPositionCount,
     closedPositionCount,
+    openPositionMarginUsed,
     openPositionQuantity,
     closedPositionRealizedPnl,
   ] = await Promise.all([
@@ -492,9 +494,11 @@ export const listBotRuntimeSessionPositions = async (
     }),
     countRuntimeManagedPositions(openPositionWhere),
     countRuntimeManagedPositions(closedPositionWhere),
+    sumRuntimeManagedPositionMarginUsed(openPositionWhere),
     sumRuntimeManagedPositionQuantity(openPositionWhere),
     sumRuntimeManagedPositionRealizedPnl(closedPositionWhere),
   ]);
+  const totalOpenPositionMarginUsed = openPositionMarginUsed._sum.marginUsed ?? 0;
   const totalOpenPositionQty = openPositionQuantity._sum.quantity ?? 0;
   const totalRealizedPnl = closedPositionRealizedPnl._sum.realizedPnl ?? 0;
   const positions = [...openPositions, ...closedPositions];
@@ -957,9 +961,11 @@ export const listBotRuntimeSessionPositions = async (
       (position) =>
         position.dynamicTtpStopLoss != null || position.dynamicTslStopLoss != null
     );
-  const usedMargin = openItems.reduce((sum, position) => {
+  const visibleOpenItemsMargin = openItems.reduce((sum, position) => {
     return sum + Math.max(0, position.marginUsed ?? 0);
   }, 0);
+  const usedMargin =
+    totalOpenPositionMarginUsed > 0 ? totalOpenPositionMarginUsed : visibleOpenItemsMargin;
   const capitalSummary = await resolveRuntimeCapitalSummary(usedMargin);
 
   return {

@@ -9,6 +9,18 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-43 fix(api-bots): preserve free cash under hidden open-position margin`
+  - 2026-05-03: Closed a BUILDER-mode money-impacting dashboard read-model
+    drift. Runtime session positions now use scoped persisted open-position
+    `marginUsed` as the primary used-margin input for capital summary, so
+    dashboard `positions.summary.freeCash` no longer overstates available cash
+    when `limit` / `perSessionLimit` hides older open rows. Visible open rows
+    remain limited, with visible-row modeled margin retained as fallback when
+    no persisted margin exists. Validation PASS: failing-then-passing
+    hidden-margin free-cash regression, runtime-scope e2e (`12/12`),
+    monitoring aggregate e2e (`11/11`), API typecheck, repository guardrails,
+    lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-43-free-cash-open-margin-limit-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-42 fix(api-bots): preserve aggregate open-position quantity under row limits`
   - 2026-05-03: Closed an ARCHITECT-mode dashboard read-model quantity drift.
     Runtime session positions now expose scoped `summary.openPositionQty`, and
