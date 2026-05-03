@@ -83,6 +83,7 @@ export const getBotPortfolioHistory = async (userId: string, botId: string) => {
       userId,
       managementMode: 'BOT_MANAGED',
       status: 'CLOSED',
+      syncState: 'IN_SYNC',
       closedAt: {
         gte: startedAt,
         lte: finishedAt,

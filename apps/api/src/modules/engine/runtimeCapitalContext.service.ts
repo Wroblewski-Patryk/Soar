@@ -99,6 +99,7 @@ const defaultDeps: RuntimeCapitalContextDeps = {
         userId,
         status: PositionStatus.OPEN,
         managementMode: PositionManagementMode.BOT_MANAGED,
+        syncState: 'IN_SYNC',
         ...(walletId
           ? mode === 'PAPER' && botId
             ? { walletId, botId }
@@ -119,6 +120,7 @@ const defaultDeps: RuntimeCapitalContextDeps = {
         userId,
         status: { not: PositionStatus.OPEN },
         managementMode: PositionManagementMode.BOT_MANAGED,
+        syncState: 'IN_SYNC',
         realizedPnl: { not: null },
         ...(realizedSince
           ? {

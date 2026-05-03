@@ -9,6 +9,16 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-85 fix(api-bots): align runtime closed history with sync state`
+  - 2026-05-04: Closed a TESTER-mode runtime/portfolio closed-history drift.
+    Runtime closed-position reads, portfolio close-point reads, and runtime
+    paper capital open/closed position queries now require `syncState=IN_SYNC`,
+    so scoped `ORPHAN_LOCAL` cleanup rows no longer inflate closed counts,
+    realized PnL, portfolio CLOSE points, reference balance, or free cash.
+    Validation PASS: portfolio-history e2e (`3/3`), runtime-scope e2e
+    (`16/16`), API typecheck, repository guardrails, lint, and diff review.
+    Evidence:
+    `docs/planning/runtime-audit-85-runtime-closed-positions-sync-state-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-84 fix(api-bots): align runtime open positions with sync state`
   - 2026-05-04: Closed an ARCHITECT-mode runtime dashboard active-position
     drift. Bot runtime session positions now require `syncState=IN_SYNC` for

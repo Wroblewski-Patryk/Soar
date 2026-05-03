@@ -3,6 +3,15 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 runtime closed-position history sync slice `RUNTIME-AUDIT-85`
+  is closed locally. Runtime closed-position reads, portfolio close-point
+  reads, and runtime paper capital open/closed position queries now require
+  `syncState=IN_SYNC`, so scoped `ORPHAN_LOCAL` cleanup rows no longer inflate
+  closed counts, realized PnL, portfolio CLOSE points, reference balance, or
+  free cash. Validation PASS: portfolio-history e2e (`3/3`), runtime-scope
+  e2e (`16/16`), API typecheck, repository guardrails, lint, and diff review.
+  Evidence:
+  `docs/planning/runtime-audit-85-runtime-closed-positions-sync-state-task-2026-05-04.md`.
 - 2026-05-04 runtime open-position active-sync slice `RUNTIME-AUDIT-84` is
   closed locally. Bot runtime session positions now require
   `syncState=IN_SYNC` for active open-position truth, including open-count,

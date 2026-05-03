@@ -475,12 +475,12 @@ export const listBotRuntimeSessionPositions = async (
   };
   const closedPositionWhere: Prisma.PositionWhereInput = {
     ...runtimePositionBaseWhere,
-    status: 'CLOSED',
+    status: 'CLOSED', syncState: 'IN_SYNC',
     closedAt: { gte: session.startedAt },
   };
   const feePositionWhere: Prisma.PositionWhereInput = {
     ...runtimePositionBaseWhere,
-    OR: [{ status: 'OPEN', closedAt: null, syncState: 'IN_SYNC' }, { status: 'CLOSED', closedAt: { gte: session.startedAt } }],
+    OR: [{ status: 'OPEN', closedAt: null, syncState: 'IN_SYNC' }, { status: 'CLOSED', syncState: 'IN_SYNC', closedAt: { gte: session.startedAt } }],
   };
   const [
     openPositions, closedPositions, openPositionCount, closedPositionCount,
@@ -586,7 +586,7 @@ export const listBotRuntimeSessionPositions = async (
           OR: [botScopedPositionWhere, ...externalOwnedWhere],
         },
       ],
-      OR: [{ status: 'OPEN', closedAt: null, syncState: 'IN_SYNC' }, { status: 'CLOSED' }],
+      OR: [{ status: 'OPEN', closedAt: null, syncState: 'IN_SYNC' }, { status: 'CLOSED', syncState: 'IN_SYNC' }],
     },
     limit: Math.max(query.limit, 500),
   });

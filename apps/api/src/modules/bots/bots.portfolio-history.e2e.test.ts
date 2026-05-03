@@ -42,6 +42,10 @@ describe('Bots portfolio history endpoint', () => {
 
     const strategyId = await createStrategy(owner, 'Portfolio History Paper Strategy');
     const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    await prisma.symbolGroup.update({
+      where: { id: marketGroupId },
+      data: { symbols: ['BTCUSDT', 'ETHUSDT', 'DOGEUSDT'] },
+    });
     const walletId = await createWalletForContext(ownerEmail, {
       mode: 'PAPER',
       exchange: 'BINANCE',
@@ -123,6 +127,24 @@ describe('Bots portfolio history endpoint', () => {
           openedAt: new Date('2026-05-01T10:40:00.000Z'),
           managementMode: 'BOT_MANAGED',
         },
+        {
+          userId: ownerUser.id,
+          botId,
+          walletId,
+          strategyId,
+          symbol: 'DOGEUSDT',
+          side: 'LONG',
+          status: 'CLOSED',
+          syncState: 'ORPHAN_LOCAL',
+          continuityState: 'REPAIR_ONLY_CLEANUP',
+          entryPrice: 0.1,
+          quantity: 100,
+          leverage: 1,
+          realizedPnl: 999,
+          openedAt: new Date('2026-05-01T10:25:00.000Z'),
+          closedAt: new Date('2026-05-01T10:30:00.000Z'),
+          managementMode: 'BOT_MANAGED',
+        },
       ],
     });
 
@@ -168,6 +190,16 @@ describe('Bots portfolio history endpoint', () => {
         }),
       ])
     );
+    expect(
+      (historyRes.body.points as Array<{ type: string; symbol: string | null }>).filter(
+        (point) => point.type === 'CLOSE'
+      )
+    ).toEqual([
+      expect.objectContaining({
+        symbol: 'BTCUSDT',
+        realizedPnl: 40,
+      }),
+    ]);
   });
 
   it('keeps PAPER close points complete when monitoring rows are capped', async () => {
