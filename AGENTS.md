@@ -101,7 +101,9 @@ Supported stages:
 
 Rules:
 - Do not skip stages implicitly.
-- Do not implement during `analysis` or `planning` unless explicitly requested.
+- Do not implement during `analysis` or `planning` unless the user directly
+  asked for implementation; in that case, move through the needed stages in one
+  iteration and keep evidence current.
 - Do not declare a task complete without `verification` evidence.
 - If missing information materially affects quality or risk, stop at the
   current stage and surface the gap.

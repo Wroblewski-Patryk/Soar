@@ -74,8 +74,9 @@ description: Workspace rules for this project
 - Keep planning docs and task board synchronized.
 - Declare the current delivery stage in each task and keep output aligned to
   that stage only.
-- Do not skip from analysis or planning straight to implementation unless
-  explicitly requested.
+- Do not silently skip analysis or planning. When the user directly asks for
+  implementation, move through the needed stages in one iteration and keep the
+  task contract, validation evidence, and result report current.
 - Follow the default loop:
   `analyze -> select one task -> plan -> implement -> verify -> self-review -> sync knowledge -> repeat`.
 - Apply the validation commands from `.codex/context/PROJECT_STATE.md` before
