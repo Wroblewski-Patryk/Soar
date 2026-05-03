@@ -3,6 +3,17 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 runtime unrealized-PnL limit slice `RUNTIME-AUDIT-46` is
+  closed locally. Runtime session positions now aggregate scoped persisted
+  open-position `unrealizedPnl`, and monitoring aggregate composes
+  unrealized PnL from per-session position summaries instead of limited
+  visible open rows. Dashboard PnL summaries now remain truthful when
+  `limit` / `perSessionLimit` hides older open positions while visible rows
+  keep their existing dynamic display behavior. Validation PASS:
+  failing-then-passing `perSessionLimit=1` unrealized-PnL regression,
+  runtime-scope e2e (`12/12`), monitoring aggregate e2e (`11/11`), API
+  typecheck, repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-46-position-unrealized-pnl-limit-task-2026-05-03.md`.
 - 2026-05-03 runtime position-fee limit slice `RUNTIME-AUDIT-45` is
   closed locally. Runtime session positions now aggregate direct trade fees
   through the full scoped position set instead of limited visible position

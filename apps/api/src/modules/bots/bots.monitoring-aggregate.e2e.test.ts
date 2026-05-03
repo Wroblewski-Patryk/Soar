@@ -533,6 +533,7 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
           quantity: 0.01,
           leverage: 2,
           marginUsed: 100,
+          unrealizedPnl: 7,
           openedAt: new Date('2026-04-19T15:02:00.000Z'),
           origin: 'BOT',
           managementMode: 'BOT_MANAGED',
@@ -550,6 +551,7 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
           quantity: 0.2,
           leverage: 2,
           marginUsed: 200,
+          unrealizedPnl: 11,
           openedAt: new Date('2026-04-19T15:04:00.000Z'),
           origin: 'BOT',
           managementMode: 'BOT_MANAGED',
@@ -566,6 +568,7 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     expect(aggregateRes.body.positions.openCount).toBe(2);
     expect(aggregateRes.body.sessionDetail.summary.openPositionCount).toBe(2);
     expect(aggregateRes.body.sessionDetail.summary.openPositionQty).toBeCloseTo(0.21);
+    expect(aggregateRes.body.positions.summary.unrealizedPnl).toBeCloseTo(18);
     expect(aggregateRes.body.positions.summary.referenceBalance).toBe(1_000);
     expect(aggregateRes.body.positions.summary.freeCash).toBe(700);
   });

@@ -42,6 +42,7 @@ import {
   sumRuntimeManagedPositionQuantity,
   sumRuntimeManagedPositionRealizedPnl,
   sumRuntimeManagedPositionTradeFees,
+  sumRuntimeManagedPositionUnrealizedPnl,
 } from './runtimeSessionPositionsRead.repository';
 import {
   resolveCanonicalRuntimeVenueContext,
@@ -480,12 +481,8 @@ export const listBotRuntimeSessionPositions = async (
     OR: [{ status: 'OPEN', closedAt: null }, { status: 'CLOSED', closedAt: { gte: session.startedAt } }],
   };
   const [
-    openPositions,
-    closedPositions,
-    openPositionCount,
-    closedPositionCount,
-    openPositionMarginUsed,
-    openPositionQuantity,
+    openPositions, closedPositions, openPositionCount, closedPositionCount,
+    openPositionMarginUsed, openPositionQuantity, openPositionUnrealizedPnl,
     closedPositionRealizedPnl,
     positionTradeFees,
   ] = await Promise.all([
@@ -501,11 +498,13 @@ export const listBotRuntimeSessionPositions = async (
     countRuntimeManagedPositions(closedPositionWhere),
     sumRuntimeManagedPositionMarginUsed(openPositionWhere),
     sumRuntimeManagedPositionQuantity(openPositionWhere),
+    sumRuntimeManagedPositionUnrealizedPnl(openPositionWhere),
     sumRuntimeManagedPositionRealizedPnl(closedPositionWhere),
     sumRuntimeManagedPositionTradeFees(feePositionWhere),
   ]);
   const totalOpenPositionMarginUsed = openPositionMarginUsed._sum.marginUsed ?? 0;
   const totalOpenPositionQty = openPositionQuantity._sum.quantity ?? 0;
+  const totalUnrealizedPnl = openPositionUnrealizedPnl._sum.unrealizedPnl ?? 0;
   const totalRealizedPnl = closedPositionRealizedPnl._sum.realizedPnl ?? 0;
   const totalPositionFeesPaid = positionTradeFees._sum.fee ?? 0;
   const positions = [...openPositions, ...closedPositions];
@@ -540,7 +539,7 @@ export const listBotRuntimeSessionPositions = async (
       },
       summary: {
         realizedPnl: totalRealizedPnl,
-        unrealizedPnl: 0,
+        unrealizedPnl: totalUnrealizedPnl,
         feesPaid: totalPositionFeesPaid,
         openPositionQty: totalOpenPositionQty,
         ...(await resolveRuntimeCapitalSummary(0)),
@@ -987,7 +986,7 @@ export const listBotRuntimeSessionPositions = async (
     },
     summary: {
       realizedPnl: totalRealizedPnl,
-      unrealizedPnl: openItems.reduce((acc, position) => acc + (position.unrealizedPnl ?? 0), 0),
+      unrealizedPnl: totalUnrealizedPnl,
       feesPaid: totalPositionFeesPaid,
       openPositionQty: totalOpenPositionQty,
       ...capitalSummary,

@@ -20,6 +20,19 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-46 fix(api-bots): preserve runtime unrealized PnL under row limits`
+  - Scope: closed a BUILDER-mode money-impacting dashboard summary drift.
+    Runtime session positions now aggregate scoped persisted open-position
+    `unrealizedPnl`, and monitoring aggregate composes unrealized PnL from
+    per-session position summaries instead of limited visible open rows.
+    Dashboard PnL summaries now remain truthful when `limit` /
+    `perSessionLimit` hides older open positions while visible rows keep their
+    existing dynamic display behavior. Validation PASS: failing-then-passing
+    `perSessionLimit=1` unrealized-PnL regression, runtime-scope e2e
+    (`12/12`), monitoring aggregate e2e (`11/11`), API typecheck, repository
+    guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-46-position-unrealized-pnl-limit-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-45 fix(api-bots): preserve runtime position fees under row limits`
   - Scope: closed an ARCHITECT-mode dashboard accounting summary drift.
     Runtime session positions now aggregate direct trade fees through the full
