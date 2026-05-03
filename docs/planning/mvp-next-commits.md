@@ -9,6 +9,17 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-60 fix(api-bots): prevent aggregate running session metadata overlap double counts`
+  - 2026-05-03: Closed an ARCHITECT-mode aggregate status metadata drift.
+    Runtime monitoring aggregate `sessionDetail.durationMs` and
+    `sessionDetail.eventsCount` now sum all non-running historical session rows
+    plus only the freshest RUNNING session projection, so overlapping running
+    sessions no longer double-count active runtime duration or active event
+    count. `sessionsCount` and `symbolsTracked` remain unchanged as
+    diagnostic/configured-scope metadata. Validation PASS: aggregate e2e
+    (`18/18`), runtime-scope e2e (`13/13`), API typecheck, repository
+    guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-60-aggregate-running-session-metadata-overlap-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-59 fix(api-bots): prevent aggregate running symbol-summary overlap double counts`
   - 2026-05-03: Closed a BUILDER-mode aggregate market/signal summary drift.
     Runtime monitoring aggregate symbol items and `symbolStats.summary` now

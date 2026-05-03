@@ -928,6 +928,74 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     expect(aggregateRes.body.sessionDetail.summary.grossProfit).toBe(12);
   });
 
+  it('does not double-count running session metadata across overlapping running sessions', async () => {
+    const ownerEmail = 'bots-monitoring-aggregate-session-metadata-overlap@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({
+      where: { email: ownerEmail },
+      select: { id: true },
+    });
+
+    const strategyId = await createStrategy(owner, 'Monitoring Aggregate Session Metadata Overlap');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    const createRes = await owner.post('/dashboard/bots').send(
+      createPayload({
+        strategyId,
+        marketGroupId,
+      })
+    );
+    expect(createRes.status).toBe(201);
+    const botId = createRes.body.id as string;
+
+    const firstRunningSession = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-19T16:40:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-19T16:45:00.000Z'),
+      },
+    });
+    const secondRunningSession = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-19T16:41:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-19T16:46:00.000Z'),
+      },
+    });
+
+    await prisma.botRuntimeEvent.createMany({
+      data: [
+        {
+          userId: ownerUser.id,
+          botId,
+          sessionId: firstRunningSession.id,
+          eventType: 'HEARTBEAT',
+          level: 'INFO',
+          eventAt: new Date('2026-04-19T16:45:00.000Z'),
+        },
+        {
+          userId: ownerUser.id,
+          botId,
+          sessionId: secondRunningSession.id,
+          eventType: 'HEARTBEAT',
+          level: 'INFO',
+          eventAt: new Date('2026-04-19T16:46:00.000Z'),
+        },
+      ],
+    });
+
+    const aggregateRes = await owner.get(`/dashboard/bots/${botId}/runtime-monitoring/aggregate`);
+    expect(aggregateRes.status).toBe(200);
+    expect(aggregateRes.body.sessionDetail.metadata.sessionsCount).toBe(2);
+    expect(aggregateRes.body.sessionDetail.durationMs).toBe(5 * 60 * 1000);
+    expect(aggregateRes.body.sessionDetail.eventsCount).toBe(1);
+  });
+
   it('does not double-count running trade totals across overlapping running sessions', async () => {
     const ownerEmail = 'bots-monitoring-aggregate-trade-overlap@example.com';
     const owner = await registerAndLogin(ownerEmail);

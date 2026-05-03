@@ -3,6 +3,16 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 aggregate running session metadata overlap slice
+  `RUNTIME-AUDIT-60` is closed locally. Runtime monitoring aggregate
+  `sessionDetail.durationMs` and `sessionDetail.eventsCount` now sum all
+  non-running historical session rows plus only the freshest RUNNING session
+  projection, so overlapping running sessions no longer double-count active
+  runtime duration or active event count. `sessionsCount` and `symbolsTracked`
+  remain unchanged as diagnostic/configured-scope metadata. Validation PASS:
+  aggregate e2e (`18/18`), runtime-scope e2e (`13/13`), API typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-60-aggregate-running-session-metadata-overlap-task-2026-05-03.md`.
 - 2026-05-03 aggregate running symbol-summary overlap slice
   `RUNTIME-AUDIT-59` is closed locally. Runtime monitoring aggregate
   symbol items and `symbolStats.summary` now sum all non-running historical

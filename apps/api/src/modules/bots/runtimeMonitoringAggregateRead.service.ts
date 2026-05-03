@@ -279,11 +279,12 @@ export const getBotRuntimeMonitoringAggregate = async (
       .map((session) => session.lastHeartbeatAt)
       .filter((value): value is Date => value instanceof Date)
       .sort((left, right) => right.getTime() - left.getTime())[0] ?? null;
+  const sessionMetadataRows = selectLatestRunningProjectionRows(completePayloadRows);
   const durationMs = Math.max(
     0,
-    activeSessions.reduce((acc, session) => acc + Math.max(0, session.durationMs), 0)
+    sessionMetadataRows.reduce((acc, row) => acc + Math.max(0, row.session.durationMs), 0)
   );
-  const eventsCount = activeSessions.reduce((acc, session) => acc + session.eventsCount, 0);
+  const eventsCount = sessionMetadataRows.reduce((acc, row) => acc + row.session.eventsCount, 0);
   const symbolsTracked = activeSessions.reduce((acc, session) => acc + session.symbolsTracked, 0);
   const symbolProjectionRows = selectLatestRunningProjectionRows(completePayloadRows);
 
