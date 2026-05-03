@@ -778,7 +778,9 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     expect(aggregateRes.status).toBe(200);
     expect(aggregateRes.body.sessionDetail.metadata.sessionsCount).toBe(2);
     expect(aggregateRes.body.positions.openItems).toHaveLength(1);
+    expect(aggregateRes.body.positions.total).toBe(1);
     expect(aggregateRes.body.positions.openCount).toBe(1);
+    expect(aggregateRes.body.positions.closedCount).toBe(0);
     expect(aggregateRes.body.sessionDetail.summary.openPositionCount).toBe(1);
     expect(aggregateRes.body.sessionDetail.summary.openPositionQty).toBeCloseTo(0.01);
     expect(aggregateRes.body.positions.summary.openPositionQty).toBeCloseTo(0.01);

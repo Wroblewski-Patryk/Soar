@@ -534,9 +534,9 @@ export const getBotRuntimeMonitoringAggregate = async (
         right.id
       )
   );
-  const totalPositions = positionResponses.reduce((acc, response) => acc + response.total, 0);
   const totalOpenPositions = latestOpenPositionCount;
   const totalClosedPositions = positionResponses.reduce((acc, response) => acc + response.closedCount, 0);
+  const totalPositions = totalOpenPositions + totalClosedPositions;
   const totalOpenOrders = Math.max(0, ...positionResponses.map((response) => response.openOrdersCount));
   const totalTrades = completePayloadRows.reduce((acc, row) => acc + row.trades.total, 0);
   const totalTradeFeesPaid = completePayloadRows.reduce((acc, row) => acc + row.trades.feesPaid, 0);
