@@ -155,9 +155,11 @@ export const listRuntimeManagedExternalPositionsRaw = () =>
     },
     select: {
       userId: true,
+      botId: true,
+      walletId: true,
+      externalId: true,
       symbol: true,
     },
-    distinct: ['userId', 'symbol'],
   });
 
 export const countOpenPositionsForBotAndSymbolsRaw = (params: {

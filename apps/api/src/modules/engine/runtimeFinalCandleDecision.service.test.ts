@@ -109,7 +109,9 @@ const createContext = (options?: {
       processedDecisionWindows: new Map<string, number>(),
       listActiveBotsFromTopologyCacheWithMetrics: async () => [bot],
       closeInactiveRuntimeSessions: async () => undefined,
-      listRuntimeManagedExternalPositions: async () => [],
+      listRuntimeManagedExternalPositions: async (): Promise<
+        Array<{ userId: string; symbol: string; botId?: string | null; walletId?: string | null }>
+      > => [],
       resolveRuntimeRoutesForEvent: () => [{ bot }],
       ensureRuntimeSession: async () => 'runtime-session-1',
       recordRuntimeEvent,
@@ -177,6 +179,61 @@ describe('runtimeFinalCandleDecision.service', () => {
           reason: 'BOT_MAX_OPEN_POSITIONS_REACHED',
           openPositionsInBotScope: 2,
           maxOpenPositions: 2,
+        }),
+      })
+    );
+  });
+
+  it('does not block a bot when a managed external position belongs to another bot on the same symbol', async () => {
+    const { context, createSignal, orchestrateFn, recordRuntimeEvent } = createContext({
+      direction: 'LONG',
+    });
+    context.listRuntimeManagedExternalPositions = vi.fn(async () => [
+      {
+        userId: 'user-1',
+        botId: 'other-bot',
+        walletId: 'wallet-other',
+        symbol: 'BTCUSDT',
+      },
+    ]);
+
+    await processRuntimeFinalCandleDecision(baseEvent, context as any);
+
+    expect(createSignal).toHaveBeenCalledTimes(1);
+    expect(orchestrateFn).toHaveBeenCalledTimes(1);
+    expect(recordRuntimeEvent).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: 'PRETRADE_BLOCKED',
+        payload: expect.objectContaining({
+          reason: 'EXTERNAL_POSITION_ALREADY_OPEN',
+        }),
+      })
+    );
+  });
+
+  it('blocks only the bot that owns a managed external position on the signal symbol', async () => {
+    const { context, createSignal, orchestrateFn, recordRuntimeEvent } = createContext({
+      direction: 'LONG',
+    });
+    context.listRuntimeManagedExternalPositions = vi.fn(async () => [
+      {
+        userId: 'user-1',
+        botId: 'bot-1',
+        walletId: 'wallet-1',
+        symbol: 'BTCUSDT',
+      },
+    ]);
+
+    await processRuntimeFinalCandleDecision(baseEvent, context as any);
+
+    expect(createSignal).not.toHaveBeenCalled();
+    expect(orchestrateFn).not.toHaveBeenCalled();
+    expect(recordRuntimeEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        botId: 'bot-1',
+        eventType: 'PRETRADE_BLOCKED',
+        payload: expect.objectContaining({
+          reason: 'EXTERNAL_POSITION_ALREADY_OPEN',
         }),
       })
     );

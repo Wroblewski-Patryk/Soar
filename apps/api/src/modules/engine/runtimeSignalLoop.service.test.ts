@@ -1098,7 +1098,7 @@ describe('RuntimeSignalLoop', () => {
     const { deps, emit } = createDeps();
     withStrategyBot(deps, { maxOpenPositions: 5 });
     deps.listRuntimeManagedExternalPositions = vi.fn(async () => [
-      { userId: 'user-1', symbol: 'BTCUSDT' },
+      { userId: 'user-1', botId: 'bot-1', walletId: 'wallet-1', symbol: 'BTCUSDT' },
     ]);
     deps.recordRuntimeEvent = vi.fn(async () => undefined);
     const loop = new RuntimeSignalLoop(deps);

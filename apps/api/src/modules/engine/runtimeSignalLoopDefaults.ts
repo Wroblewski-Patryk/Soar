@@ -12,7 +12,9 @@ import {
 import { normalizeSymbols } from '../../lib/symbols';
 import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from '../bots/runtimeSymbolCatalogResolver.service';
 import {
+  getExternalPositionOwnership,
   listOwnedExternalSymbolsForBot,
+  parseApiKeyIdFromExternalPositionId,
   resolveExternalPositionOwnershipIndex,
 } from '../bots/runtimeExternalPositionOwner.service';
 import {
@@ -200,10 +202,41 @@ export const listActiveRuntimeBots = async (): Promise<ActiveBot[]> => {
 
 export const listRuntimeManagedExternalPositions = async () => {
   const positions = await listRuntimeManagedExternalPositionsRaw();
-  return positions.map((position) => ({
-    userId: position.userId,
-    symbol: position.symbol,
-  }));
+  const ownershipIndexByUserId = new Map<
+    string,
+    Awaited<ReturnType<typeof resolveExternalPositionOwnershipIndex>>
+  >();
+
+  return Promise.all(
+    positions.map(async (position) => {
+      if (position.botId) {
+        return {
+          userId: position.userId,
+          botId: position.botId,
+          walletId: position.walletId,
+          symbol: position.symbol,
+        };
+      }
+
+      const apiKeyId = parseApiKeyIdFromExternalPositionId(position.externalId);
+      let ownershipIndex = ownershipIndexByUserId.get(position.userId);
+      if (!ownershipIndex) {
+        ownershipIndex = await resolveExternalPositionOwnershipIndex(position.userId, 'LIVE');
+        ownershipIndexByUserId.set(position.userId, ownershipIndex);
+      }
+      const ownership = getExternalPositionOwnership(ownershipIndex, {
+        apiKeyId,
+        symbol: position.symbol,
+      });
+
+      return {
+        userId: position.userId,
+        botId: ownership.status === 'OWNED' ? ownership.botId : null,
+        walletId: ownership.status === 'OWNED' ? ownership.walletId : position.walletId,
+        symbol: position.symbol,
+      };
+    })
+  );
 };
 
 export const countOpenPositionsForBotAndSymbols = async ({

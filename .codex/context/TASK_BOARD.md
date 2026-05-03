@@ -20,6 +20,17 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-11 fix(api-runtime): scope final-candle external-position guard to owner bot`
+  - Scope: closed the next final-candle false-block drift.
+    `EXTERNAL_POSITION_ALREADY_OPEN` runtime blocking now keys managed
+    external positions by deterministic owner bot (`userId:botId:symbol`)
+    instead of user-wide `userId:symbol`. Imported `botId=null` LIVE rows are
+    owner-hydrated through the shared external-position ownership index, so
+    one bot's exchange-synced position no longer blocks another bot's signal on
+    the same symbol. Validation PASS: focused final-candle/defaults pack
+    (`18/18`). Evidence:
+    `docs/planning/runtime-audit-11-final-candle-owned-external-bot-scope-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-10 fix(api-engine): count owned LIVE imports in pre-trade bot caps`
   - Scope: closed the next LIVE pre-trade exposure-count drift.
     `maxOpenPositionsPerBot` now counts direct selected-bot open positions plus

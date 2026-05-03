@@ -25,24 +25,39 @@ vi.mock('../../prisma/client', () => ({
 vi.mock('../bots/runtimeExternalPositionOwner.service', () => ({
   resolveExternalPositionOwnershipIndex: vi.fn(),
   listOwnedExternalSymbolsForBot: vi.fn(),
+  getExternalPositionOwnership: vi.fn(),
+  parseApiKeyIdFromExternalPositionId: vi.fn((externalId: string | null) =>
+    externalId ? externalId.split(':')[0] : null
+  ),
 }));
 
 import { prisma } from '../../prisma/client';
 import {
+  getExternalPositionOwnership,
   listOwnedExternalSymbolsForBot,
   resolveExternalPositionOwnershipIndex,
 } from '../bots/runtimeExternalPositionOwner.service';
-import { countOpenPositionsForBotAndSymbols, listActiveRuntimeBots } from './runtimeSignalLoopDefaults';
-import { countOpenPositionsForBotAndSymbolsRaw, listActiveRuntimeBotsRaw } from './runtimeSignalLoop.repository';
+import {
+  countOpenPositionsForBotAndSymbols,
+  listActiveRuntimeBots,
+  listRuntimeManagedExternalPositions,
+} from './runtimeSignalLoopDefaults';
+import {
+  countOpenPositionsForBotAndSymbolsRaw,
+  listActiveRuntimeBotsRaw,
+  listRuntimeManagedExternalPositionsRaw,
+} from './runtimeSignalLoop.repository';
 
 describe('listActiveRuntimeBots', () => {
   beforeEach(() => {
     vi.mocked(listActiveRuntimeBotsRaw).mockReset();
+    vi.mocked(listRuntimeManagedExternalPositionsRaw).mockReset();
     vi.mocked(countOpenPositionsForBotAndSymbolsRaw).mockReset();
     vi.mocked(prisma.bot.findUnique).mockReset();
     vi.mocked(prisma.position.count).mockReset();
     vi.mocked(resolveExternalPositionOwnershipIndex).mockReset();
     vi.mocked(listOwnedExternalSymbolsForBot).mockReset();
+    vi.mocked(getExternalPositionOwnership).mockReset();
   });
 
   it('excludes LIVE bots without liveOptIn from runtime topology', async () => {
@@ -434,6 +449,69 @@ describe('listActiveRuntimeBots', () => {
         }),
       })
     );
+  });
+
+  it('hydrates runtime managed external positions with deterministic owner bot scope', async () => {
+    vi.mocked(listRuntimeManagedExternalPositionsRaw).mockResolvedValue([
+      {
+        userId: 'user-1',
+        botId: null,
+        walletId: null,
+        externalId: 'key-1:BTCUSDT:LONG',
+        symbol: 'BTCUSDT',
+      },
+    ] as any);
+    vi.mocked(resolveExternalPositionOwnershipIndex).mockResolvedValue(new Map() as any);
+    vi.mocked(getExternalPositionOwnership).mockReturnValue({
+      status: 'OWNED',
+      botId: 'bot-1',
+      walletId: 'wallet-1',
+    });
+
+    const positions = await listRuntimeManagedExternalPositions();
+
+    expect(resolveExternalPositionOwnershipIndex).toHaveBeenCalledWith('user-1', 'LIVE');
+    expect(getExternalPositionOwnership).toHaveBeenCalledWith(expect.any(Map), {
+      apiKeyId: 'key-1',
+      symbol: 'BTCUSDT',
+    });
+    expect(positions).toEqual([
+      {
+        userId: 'user-1',
+        botId: 'bot-1',
+        walletId: 'wallet-1',
+        symbol: 'BTCUSDT',
+      },
+    ]);
+  });
+
+  it('keeps unresolved runtime managed external positions unowned for bot-scoped guards', async () => {
+    vi.mocked(listRuntimeManagedExternalPositionsRaw).mockResolvedValue([
+      {
+        userId: 'user-1',
+        botId: null,
+        walletId: null,
+        externalId: 'key-1:BTCUSDT:LONG',
+        symbol: 'BTCUSDT',
+      },
+    ] as any);
+    vi.mocked(resolveExternalPositionOwnershipIndex).mockResolvedValue(new Map() as any);
+    vi.mocked(getExternalPositionOwnership).mockReturnValue({
+      status: 'UNOWNED',
+      botId: null,
+      walletId: null,
+    });
+
+    const positions = await listRuntimeManagedExternalPositions();
+
+    expect(positions).toEqual([
+      {
+        userId: 'user-1',
+        botId: null,
+        walletId: null,
+        symbol: 'BTCUSDT',
+      },
+    ]);
   });
 
   it('uses the wallet api key when counting owned imported LIVE positions for wallet-first bots', async () => {

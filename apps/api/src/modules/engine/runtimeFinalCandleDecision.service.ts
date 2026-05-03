@@ -22,7 +22,9 @@ type RuntimeFinalCandleDecisionContext = {
   processedDecisionWindows: Map<string, number>;
   listActiveBotsFromTopologyCacheWithMetrics: () => Promise<ActiveBot[]>;
   closeInactiveRuntimeSessions?: (activeBotIds: string[]) => Promise<void> | void;
-  listRuntimeManagedExternalPositions: () => Promise<Array<{ userId: string; symbol: string }>>;
+  listRuntimeManagedExternalPositions: () => Promise<
+    Array<{ userId: string; symbol: string; botId?: string | null; walletId?: string | null }>
+  >;
   resolveRuntimeRoutesForEvent: (
     event: StreamCandleEvent,
     topology: ActiveBot[]
@@ -189,7 +191,8 @@ export const processRuntimeFinalCandleDecision = async (
     for (const position of managedExternalPositions) {
       const normalizedSymbol = normalizeSymbol(position.symbol);
       if (!normalizedSymbol) continue;
-      managedExternalSymbolKeys.add(`${position.userId}:${normalizedSymbol}`);
+      if (!position.botId) continue;
+      managedExternalSymbolKeys.add(`${position.userId}:${position.botId}:${normalizedSymbol}`);
     }
   } catch (error) {
     console.error('RuntimeSignalLoop managed external positions lookup failed:', error);
@@ -340,7 +343,7 @@ export const processRuntimeFinalCandleDecision = async (
       context.processedDecisionWindows.set(decisionWindowKey, now);
 
       if (direction === 'LONG' || direction === 'SHORT') {
-        const managedExternalKey = `${bot.userId}:${normalizeSymbol(event.symbol)}`;
+        const managedExternalKey = `${bot.userId}:${bot.id}:${normalizeSymbol(event.symbol)}`;
         if (managedExternalSymbolKeys.has(managedExternalKey)) {
           await context.recordRuntimeEvent?.({
             userId: bot.userId,
