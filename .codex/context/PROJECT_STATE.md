@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 market universe input normalization slice `RUNTIME-AUDIT-25` is
+  closed locally. Market universe create/update DTOs now normalize
+  `baseCurrency`, `whitelist`, and `blacklist` at the API boundary, so
+  dashboard/source-of-truth market scopes persist canonical uppercase values
+  while preserving operator-provided first occurrence order for symbol lists.
+  Validation PASS: failing-then-passing lowercase market universe regression,
+  focused markets e2e (`16/16`), API typecheck, repository guardrails, lint,
+  and diff review. Evidence:
+  `docs/planning/runtime-audit-25-market-universe-symbol-normalization-task-2026-05-03.md`.
 - 2026-05-03 order list symbol normalization slice `RUNTIME-AUDIT-24` is
   closed locally. Dashboard order list `symbol` filters now normalize to
   uppercase at the DTO boundary, so operator/API requests such as

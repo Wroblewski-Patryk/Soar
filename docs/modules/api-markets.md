@@ -5,8 +5,8 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/markets`
 - Owner: backend/trading-domain
-- Last updated: 2026-04-20
-- Related planning task: `MURC-12`
+- Last updated: 2026-05-03
+- Related planning task: `RUNTIME-AUDIT-25`
 
 ## Canonical Architecture Linkage
 Canonical market-scope and context rules live in:
@@ -36,6 +36,10 @@ Out of scope:
 - Universe contracts:
   - `CreateMarketUniverseDto`
   - `UpdateMarketUniverseDto`
+- Input normalization contract:
+  - `baseCurrency` is normalized to uppercase at the DTO boundary.
+  - `whitelist` and `blacklist` entries are trimmed, normalized to uppercase,
+    deduped, and keep the operator-provided first occurrence order.
 - Canonical symbol-composition edge rules:
   - `filter_result` exists only when `minQuoteVolumeEnabled=true`.
   - `filter off + empty whitelist` => empty result.

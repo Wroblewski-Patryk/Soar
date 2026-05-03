@@ -6,6 +6,11 @@ import {
   EXCHANGE_MARKET_TYPES,
   EXCHANGE_OPTIONS,
 } from '@cryptosparrow/shared';
+import { normalizeBaseCurrency, normalizeSymbol } from '../../lib/symbols';
+
+const normalizeSymbolListPreservingOrder = (symbols: string[]) => [
+  ...new Set(symbols.map((symbol) => normalizeSymbol(symbol)).filter(Boolean)),
+];
 
 const MarketFilterRulesSchema = z
   .object({
@@ -26,10 +31,22 @@ export const MarketUniverseCreateSchema = z.object({
   name: z.string().trim().min(1),
   exchange: z.enum(EXCHANGE_OPTIONS).default(DEFAULT_EXCHANGE),
   marketType: z.enum(EXCHANGE_MARKET_TYPES).default(DEFAULT_MARKET_TYPE),
-  baseCurrency: z.string().trim().min(2).max(16).default(DEFAULT_BASE_CURRENCY),
+  baseCurrency: z
+    .string()
+    .trim()
+    .min(2)
+    .max(16)
+    .default(DEFAULT_BASE_CURRENCY)
+    .transform((value) => normalizeBaseCurrency(value, DEFAULT_BASE_CURRENCY)),
   filterRules: MarketFilterRulesSchema.optional(),
-  whitelist: z.array(z.string().trim().min(1)).default([]),
-  blacklist: z.array(z.string().trim().min(1)).default([]),
+  whitelist: z
+    .array(z.string().trim().min(1))
+    .default([])
+    .transform(normalizeSymbolListPreservingOrder),
+  blacklist: z
+    .array(z.string().trim().min(1))
+    .default([])
+    .transform(normalizeSymbolListPreservingOrder),
   autoExcludeRules: z.any().optional(),
 });
 

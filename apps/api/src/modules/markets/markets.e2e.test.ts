@@ -208,6 +208,22 @@ describe('Markets module contract', () => {
     expect(getDeletedRes.body.error.message).toBe('Not found');
   });
 
+  it('normalizes market universe base currency and symbol lists at the API boundary', async () => {
+    const agent = await registerAndLogin(uniqueEmail('markets-normalized-input'));
+
+    const createRes = await agent.post('/dashboard/markets/universes').send({
+      ...createPayload(),
+      baseCurrency: 'usdt',
+      whitelist: [' ethusdt ', 'btcusdt', 'ETHUSDT'],
+      blacklist: ['usdcusdt'],
+    });
+
+    expect(createRes.status).toBe(201);
+    expect(createRes.body.baseCurrency).toBe('USDT');
+    expect(createRes.body.whitelist).toEqual(['ETHUSDT', 'BTCUSDT']);
+    expect(createRes.body.blacklist).toEqual(['USDCUSDT']);
+  });
+
   it('syncs linked symbol groups with composed universe contract (volume U whitelist) - blacklist', async () => {
     const agent = await registerAndLogin(uniqueEmail('markets-sync'));
 

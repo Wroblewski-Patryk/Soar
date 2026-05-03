@@ -20,6 +20,17 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-25 fix(api-markets): normalize universe symbols`
+  - Scope: closed a market-configuration source-of-truth drift. Market
+    universe create/update DTOs now normalize `baseCurrency`, `whitelist`, and
+    `blacklist` at the API boundary, so dashboard and bot market scopes persist
+    canonical uppercase values while preserving operator-provided first
+    occurrence order for symbol lists. Validation PASS:
+    failing-then-passing lowercase market universe regression, focused markets
+    e2e (`16/16`), API typecheck, repository guardrails, lint, and diff
+    review. Evidence:
+    `docs/planning/runtime-audit-25-market-universe-symbol-normalization-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-24 fix(api-orders): normalize list symbol filters`
   - Scope: closed the sibling dashboard order read drift after
     `RUNTIME-AUDIT-23`. Order list `symbol` filters now normalize to uppercase

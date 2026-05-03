@@ -170,6 +170,14 @@ Rule: fix/cleanup/update first, then feature delivery.
   Validation PASS: failing-then-passing lowercase symbol filter regression,
   focused orders/positions read e2e (`21/21`), API typecheck, guardrails,
   lint, and diff review.
+- 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-25` with
+  `docs/planning/runtime-audit-25-market-universe-symbol-normalization-task-2026-05-03.md`.
+  Market universe create/update DTOs now normalize `baseCurrency`, `whitelist`,
+  and `blacklist` at the API boundary, so dashboard and bot market scopes
+  persist canonical uppercase values while preserving operator-provided first
+  occurrence order for symbol lists. Validation PASS: failing-then-passing
+  lowercase market universe regression, focused markets e2e (`16/16`), API
+  typecheck, guardrails, lint, and diff review.
 
 ## Phase ETHDCA-2026-05-02 - LIVE DCA-First TSL Hardening (Closed 2026-05-02)
 - [x] `ETHDCA-01 fix(api-runtime): preserve LIVE DCA-first gating for trailing-stop close decisions`
