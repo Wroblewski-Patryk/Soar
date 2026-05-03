@@ -6,7 +6,7 @@
 - Source path: `apps/api/src/modules/engine`
 - Owner: backend/trading-runtime
 - Last updated: 2026-05-03
-- Related planning task: `RUNTIME-AUDIT-07`
+- Related planning task: `RUNTIME-AUDIT-09`
 
 ## Canonical Architecture Linkage
 Canonical behavior and invariants live in `docs/architecture/`, especially:
@@ -41,6 +41,10 @@ Out of scope:
 - Decision contracts:
   - weighted multi-strategy merge, no-trade on tie/weak consensus.
   - no-flip and dedupe rules in execution path.
+  - pre-trade one-position-per-symbol checks are user-global only for no-bot
+    checks; runtime decisions with `botId` are scoped to direct positions for
+    that bot plus deterministically owned LIVE exchange-synced imports for the
+    same bot/wallet.
 - Runtime mode contracts:
   - explicit `PAPER`/`LIVE` path branching with parity checks.
 

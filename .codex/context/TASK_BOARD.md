@@ -20,6 +20,17 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-09 fix(api-engine): scope pre-trade same-symbol guard to runtime bot`
+  - Scope: closed the next PAPER/LIVE false-block drift. Pre-trade
+    one-position-per-symbol checks now remain user-global only when no
+    `botId` is provided; runtime bot decisions with `botId` check direct
+    positions for that bot and owned LIVE exchange-synced imports for that
+    bot/wallet. Another bot's open same-symbol position can no longer block a
+    selected PAPER/LIVE bot from opening. Validation PASS: focused pre-trade
+    pack (`23/23`), broader runtime/backtest decision pack (`88/88`), and API
+    typecheck. Evidence:
+    `docs/planning/runtime-audit-09-pretrade-bot-scoped-symbol-uniqueness-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-08 fix(api-bots): resolve imported LIVE ownership with catalog scope`
   - Scope: closed the next LIVE import ownership drift. External-position
     ownership proof now resolves active canonical bot market groups through

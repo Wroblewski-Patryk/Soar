@@ -337,6 +337,79 @@ describe('preTrade e2e smoke (paper/live critical paths)', () => {
     expect(log.action).toBe('trade.precheck.blocked');
     expect(log.level).toBe('WARN');
   });
+
+  it('allows bot-scoped PAPER pre-trade when another bot owns an open position on the same symbol', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'pretrade-paper-other-bot-symbol@example.com', password: 'hashed-pass' },
+    });
+    const marketUniverse = await prisma.marketUniverse.create({
+      data: {
+        userId: user.id,
+        name: 'Paper universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const symbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: user.id,
+        marketUniverseId: marketUniverse.id,
+        name: 'Paper group',
+        symbols: ['SOLUSDT'],
+      },
+    });
+    const ownerBot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'Owner paper bot',
+        symbolGroupId: symbolGroup.id,
+        mode: 'PAPER',
+        marketType: 'FUTURES',
+        isActive: true,
+      },
+    });
+    const targetBot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'Target paper bot',
+        symbolGroupId: symbolGroup.id,
+        mode: 'PAPER',
+        marketType: 'FUTURES',
+        isActive: true,
+      },
+    });
+
+    await prisma.position.create({
+      data: {
+        userId: user.id,
+        botId: ownerBot.id,
+        symbol: 'SOLUSDT',
+        side: 'LONG',
+        entryPrice: 100,
+        quantity: 1,
+        status: 'OPEN',
+        managementMode: 'BOT_MANAGED',
+      },
+    });
+
+    const botScopedDecision = await analyzePreTrade({
+      userId: user.id,
+      botId: targetBot.id,
+      symbol: 'SOLUSDT',
+      mode: 'PAPER',
+    });
+    const globalDecision = await analyzePreTrade({
+      userId: user.id,
+      symbol: 'SOLUSDT',
+      mode: 'PAPER',
+    });
+
+    expect(botScopedDecision.allowed).toBe(true);
+    expect(botScopedDecision.reasons).not.toContain('open_position_on_symbol_exists');
+    expect(globalDecision.allowed).toBe(false);
+    expect(globalDecision.reasons).toContain('open_position_on_symbol_exists');
+  });
 });
 
 

@@ -10,11 +10,20 @@ import {
 import { evaluatePreTradeRiskReasons } from './preTradeRisk.service';
 import { runtimeMetricsService } from './runtimeMetrics.service';
 import { resolveCanonicalRuntimeVenueContext } from './runtimeBotExecutionContext';
+import {
+  getExternalPositionOwnership,
+  resolveExternalPositionOwnershipIndex,
+} from '../bots/runtimeExternalPositionOwner.service';
 
 export interface PositionReadStore {
   countOpenByUser(userId: string): Promise<number>;
   countOpenByBot(userId: string, botId: string): Promise<number>;
-  hasOpenPositionOnSymbol(userId: string, symbol: string): Promise<boolean>;
+  hasOpenPositionOnSymbol(input: {
+    userId: string;
+    symbol: string;
+    botId?: string;
+    mode: 'PAPER' | 'LIVE';
+  }): Promise<boolean>;
 }
 
 type PreTradeAuditEntry = {
@@ -133,12 +142,71 @@ class PrismaPreTradeReadStore implements PreTradeReadStore {
     });
   }
 
-  async hasOpenPositionOnSymbol(userId: string, symbol: string) {
-    const found = await prisma.position.findFirst({
-      where: { userId, symbol, status: 'OPEN' },
+  async hasOpenPositionOnSymbol(input: {
+    userId: string;
+    symbol: string;
+    botId?: string;
+    mode: 'PAPER' | 'LIVE';
+  }) {
+    if (!input.botId) {
+      const found = await prisma.position.findFirst({
+        where: { userId: input.userId, symbol: input.symbol, status: 'OPEN' },
+        select: { id: true },
+      });
+      return Boolean(found);
+    }
+
+    const directFound = await prisma.position.findFirst({
+      where: { userId: input.userId, botId: input.botId, symbol: input.symbol, status: 'OPEN' },
       select: { id: true },
     });
-    return Boolean(found);
+    if (directFound) return true;
+    if (input.mode !== 'LIVE') return false;
+
+    const botScope = await prisma.bot.findFirst({
+      where: { id: input.botId, userId: input.userId },
+      select: {
+        walletId: true,
+        apiKeyId: true,
+        wallet: {
+          select: {
+            apiKeyId: true,
+          },
+        },
+      },
+    });
+    const effectiveApiKeyId = botScope?.wallet?.apiKeyId ?? botScope?.apiKeyId ?? null;
+    if (!botScope?.walletId || !effectiveApiKeyId) return false;
+
+    const ownershipIndex = await resolveExternalPositionOwnershipIndex(input.userId, 'LIVE');
+    const ownership = getExternalPositionOwnership(ownershipIndex, {
+      apiKeyId: effectiveApiKeyId,
+      symbol: input.symbol,
+    });
+    if (
+      ownership.status !== 'OWNED' ||
+      ownership.botId !== input.botId ||
+      ownership.walletId !== botScope.walletId
+    ) {
+      return false;
+    }
+
+    const importedFound = await prisma.position.findFirst({
+      where: {
+        userId: input.userId,
+        botId: null,
+        symbol: input.symbol,
+        status: 'OPEN',
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        externalId: {
+          startsWith: `${effectiveApiKeyId}:`,
+        },
+        OR: [{ walletId: botScope.walletId }, { walletId: null }],
+      },
+      select: { id: true },
+    });
+    return Boolean(importedFound);
   }
 
   async getBotExecutionConfig(userId: string, botId: string) {
@@ -244,7 +312,12 @@ export const analyzePreTrade = async (
       ? await resolveCachedBotOpenPositions(readStore, parsed.userId, parsed.botId)
       : null;
     const hasOpenPositionOnSymbol = parsed.enforceOnePositionPerSymbol
-      ? await readStore.hasOpenPositionOnSymbol(parsed.userId, parsed.symbol)
+      ? await readStore.hasOpenPositionOnSymbol({
+          userId: parsed.userId,
+          symbol: parsed.symbol,
+          botId: parsed.botId,
+          mode: parsed.mode,
+        })
       : false;
     const botLiveConfig = parsed.botId
       ? await readStore.getBotExecutionConfig(parsed.userId, parsed.botId)
