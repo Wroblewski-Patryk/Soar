@@ -5,6 +5,7 @@ import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from '../bots/runtimeSy
 import { computeMinExecutableQuantity, normalizeAmountFixed, type SymbolTradingRules } from './orders.quantityRules';
 import type { ManualOrderContextQuery, OpenOrderDto } from './orders.types';
 import { resolveSymbolTradingRulesMetadata } from '../exchange/exchangeMetadataContract.service';
+import { resolveCanonicalRuntimeVenueContext } from '../engine/runtimeBotExecutionContext';
 
 type ManualOrderContextConnector = {
   getSymbolTradingRules?: (symbol: string) => Promise<SymbolTradingRules>;
@@ -242,21 +243,61 @@ export const getManualOrderContext = async (
       exchange: true,
       marketType: true,
       maxOpenPositions: true,
+      symbolGroup: {
+        select: {
+          marketUniverse: {
+            select: {
+              exchange: true,
+              marketType: true,
+              baseCurrency: true,
+            },
+          },
+        },
+      },
+      botMarketGroups: {
+        where: {
+          isEnabled: true,
+          lifecycleStatus: 'ACTIVE',
+        },
+        select: {
+          symbolGroup: {
+            select: {
+              marketUniverse: {
+                select: {
+                  exchange: true,
+                  marketType: true,
+                  baseCurrency: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   });
 
   if (!bot) return null;
 
   const normalizedSymbol = query.symbol.toUpperCase();
+  const canonicalVenueContext = resolveCanonicalRuntimeVenueContext(bot);
+  if (!canonicalVenueContext && bot.botMarketGroups.length > 0) return null;
+  const venueContext = canonicalVenueContext ?? {
+    exchange: bot.exchange,
+    marketType: bot.marketType,
+    baseCurrency: 'USDT',
+  };
   const strategyContext = await resolveManualOrderStrategyContext({
     userId,
     botId: bot.id,
     symbol: normalizedSymbol,
   });
   const resolvedLeverage =
-    bot.marketType === 'SPOT' ? 1 : Math.max(1, Math.floor(strategyContext?.leverage ?? 1));
+    venueContext.marketType === 'SPOT' ? 1 : Math.max(1, Math.floor(strategyContext?.leverage ?? 1));
   const resolvedOrderType = resolveOrderTypeFromStrategyConfig(strategyContext?.config ?? null) ?? 'MARKET';
-  const resolvedMarginMode = resolveMarginModeFromStrategyConfig(strategyContext?.config ?? null, bot.marketType);
+  const resolvedMarginMode = resolveMarginModeFromStrategyConfig(
+    strategyContext?.config ?? null,
+    venueContext.marketType
+  );
 
   let rules: SymbolTradingRules = {
     minAmount: null,
@@ -266,15 +307,15 @@ export const getManualOrderContext = async (
   let markPrice: number | null = null;
 
   const connector = deps.createPublicConnector({
-    exchange: bot.exchange,
-    marketType: bot.marketType,
+    exchange: venueContext.exchange,
+    marketType: venueContext.marketType,
   });
   const resolveRulesPromise =
     typeof connector.getSymbolTradingRules === 'function'
       ? connector.getSymbolTradingRules(normalizedSymbol)
       : resolveSymbolTradingRulesMetadata({
-          exchange: bot.exchange,
-          marketType: bot.marketType,
+          exchange: venueContext.exchange,
+          marketType: venueContext.marketType,
           symbol: normalizedSymbol,
         });
   try {

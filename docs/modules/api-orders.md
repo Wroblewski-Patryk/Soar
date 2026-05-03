@@ -184,3 +184,19 @@ pnpm --filter api test -- src/modules/orders/orders.service.test.ts src/modules/
 - LIVE manual open remains fail-closed when wallet and resolved venue mismatch.
 - Stale direct bot projections cannot override active canonical market scope
   for exchange execution context, strategy attribution, or pre-trade checks.
+
+## 16. Manual-Order Context Venue Contract (`POSDRIFT-09`)
+- Manual-order context read models use the same canonical venue precedence as
+  manual open execution:
+  - active enabled `BotMarketGroup.symbolGroup.marketUniverse` first,
+  - direct legacy `Bot.symbolGroup.marketUniverse` only when no canonical group
+    exists,
+  - duplicated `Bot.exchange/marketType` only as legacy fallback when no
+    market-universe scope is available.
+- Venue-dependent preview fields must use the resolved venue:
+  - public connector selection,
+  - exchange metadata fallback,
+  - leverage semantics,
+  - margin-mode semantics.
+- Ambiguous canonical venue input is fail-closed and must not silently fall
+  back to duplicated bot fields.

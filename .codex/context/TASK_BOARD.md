@@ -20,6 +20,15 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `POSDRIFT-09 fix(api-orders): keep manual-order context venue canonical`
+  - Scope: closed the next confirmed dashboard/manual-order drift.
+    Manual-order context now resolves venue from active canonical
+    `BotMarketGroup.symbolGroup.marketUniverse` before duplicated bot
+    `exchange/marketType`, then uses that venue for connector selection,
+    exchange metadata fallback, leverage, and margin-mode semantics. Validation
+    PASS: focused manual-order context tests (`5` tests). Evidence:
+    `docs/planning/posdrift-09-manual-context-canonical-venue-task-2026-05-03.md`.
+
 - [x] `POSDRIFT-08 fix(api-bots): keep wallet update validation canonical-market scoped`
   - Scope: closed the next confirmed wallet/market write safety drift.
     Existing-bot wallet update validation now checks target wallets against

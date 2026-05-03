@@ -44,6 +44,14 @@ Operational queue for one-task execution runs.
     market group. Validation PASS: focused bot context validation test (`2/2`).
     Evidence:
     `docs/planning/posdrift-08-wallet-update-canonical-market-scope-task-2026-05-03.md`.
+- [x] `POSDRIFT-09 fix(api-orders): keep manual-order context venue canonical`
+  - 2026-05-03: Closed the next confirmed dashboard/manual-order drift.
+    Manual-order context now resolves venue from active canonical
+    `BotMarketGroup.symbolGroup.marketUniverse` before duplicated bot
+    `exchange/marketType`, and uses that venue for connector selection,
+    exchange metadata fallback, leverage, and margin-mode semantics. Validation
+    PASS: focused manual-order context tests (`5` tests). Evidence:
+    `docs/planning/posdrift-09-manual-context-canonical-venue-task-2026-05-03.md`.
 - [ ] `LIVEIMPORT-03 release(prod): promote imported-position provenance fix and read back ETH/DOGE`
   - Scope: promote commit `39146d2e` through the approved production workflow,
     verify API freshness directly, then use authenticated read-only dashboard

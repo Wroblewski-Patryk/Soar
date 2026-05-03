@@ -1482,7 +1482,7 @@ describe('getManualOrderContext', () => {
         name: 'Canonical-first manual context bot',
         mode: 'PAPER',
         exchange: 'BINANCE',
-        marketType: 'FUTURES',
+        marketType: 'SPOT',
         positionMode: 'ONE_WAY',
         strategyId: staleStrategy.id,
         symbolGroupId: staleSymbolGroup.id,
@@ -1512,6 +1512,15 @@ describe('getManualOrderContext', () => {
       },
     });
 
+    const connectorFactory = vi.fn(() => ({
+      getSymbolTradingRules: async () => ({
+        minAmount: 1,
+        minNotional: 5,
+        amountPrecision: 1,
+      }),
+      fetchMarkPrice: async () => 0.1,
+      disconnect: async () => undefined,
+    }));
     const context = await getManualOrderContext(
       user.id,
       {
@@ -1520,15 +1529,7 @@ describe('getManualOrderContext', () => {
         side: 'BUY',
       },
       {
-        createPublicConnector: () => ({
-          getSymbolTradingRules: async () => ({
-            minAmount: 1,
-            minNotional: 5,
-            amountPrecision: 1,
-          }),
-          fetchMarkPrice: async () => 0.1,
-          disconnect: async () => undefined,
-        }),
+        createPublicConnector: connectorFactory,
       }
     );
 
@@ -1537,6 +1538,10 @@ describe('getManualOrderContext', () => {
     expect(context?.orderType).toBe('LIMIT');
     expect(context?.marginMode).toBe('ISOLATED');
     expect(context?.leverage).toBe(12);
+    expect(connectorFactory).toHaveBeenCalledWith({
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+    });
   });
 
   it('fails closed when selected bot has no strategy matching requested symbol', async () => {

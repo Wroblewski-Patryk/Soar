@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 manual-order context venue slice `POSDRIFT-09` is closed locally.
+  Manual-order context now resolves venue from active canonical
+  `BotMarketGroup.symbolGroup.marketUniverse` before duplicated bot
+  `exchange/marketType`, and uses that venue for connector selection, exchange
+  metadata fallback, leverage, and margin-mode semantics. Stale direct bot
+  projections can no longer make dashboard manual-order preview show `SPOT`
+  semantics for a canonical `FUTURES` bot scope. Validation PASS: focused
+  manual-order context tests (`5` tests). Evidence:
+  `docs/planning/posdrift-09-manual-context-canonical-venue-task-2026-05-03.md`.
 - 2026-05-03 wallet update market-scope slice `POSDRIFT-08` is closed locally.
   Existing-bot wallet update validation now checks active canonical
   `BotMarketGroup.symbolGroup.marketUniverse` scope before falling back to
