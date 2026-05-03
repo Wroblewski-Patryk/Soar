@@ -203,7 +203,6 @@ const findActiveLiveBotSymbolOverlap = async (params: {
       mode: 'LIVE',
       isActive: true,
       liveOptIn: true,
-      symbolGroupId: { not: null },
       ...(params.excludeBotId ? { id: { not: params.excludeBotId } } : {}),
     },
     select: {
@@ -214,14 +213,35 @@ const findActiveLiveBotSymbolOverlap = async (params: {
           symbols: true,
         },
       },
+      botMarketGroups: {
+        where: {
+          isEnabled: true,
+          lifecycleStatus: 'ACTIVE',
+        },
+        orderBy: [{ executionOrder: 'asc' }, { createdAt: 'asc' }],
+        select: {
+          symbolGroup: {
+            select: {
+              symbols: true,
+            },
+          },
+        },
+      },
     },
     orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
   });
 
   const conflicts: LiveBotSymbolOverlapConflict[] = [];
   for (const bot of activeLiveBots) {
+    const candidateSymbolGroups =
+      bot.botMarketGroups.length > 0
+        ? bot.botMarketGroups.map((group) => group.symbolGroup)
+        : bot.symbolGroup
+          ? [bot.symbolGroup]
+          : [];
     const overlappingSymbols = [...new Set(
-      (bot.symbolGroup?.symbols ?? [])
+      candidateSymbolGroups
+        .flatMap((symbolGroup) => symbolGroup.symbols ?? [])
         .map((symbol) => normalizeTrackedSymbol(symbol))
         .filter((symbol) => targetSymbols.has(symbol))
     )].sort((left, right) => left.localeCompare(right));

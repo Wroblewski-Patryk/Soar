@@ -27,6 +27,14 @@ Operational queue for one-task execution runs.
     only as shared legacy fallback. Validation PASS: focused runtime
     signal-loop defaults test (`6/6`). Evidence:
     `docs/planning/posdrift-06-runtime-signal-loop-canonical-venue-task-2026-05-03.md`.
+- [x] `POSDRIFT-07 fix(api-bots): keep active LIVE overlap guard canonical-market scoped`
+  - 2026-05-03: Closed the next confirmed LIVE market-assignment safety drift.
+    Active LIVE bot create/update validation now checks other active LIVE bots
+    through active canonical `BotMarketGroup.symbolGroup` symbols before
+    falling back to direct legacy `Bot.symbolGroup`. Stale direct projections
+    can no longer allow shared symbols in real assigned canonical market
+    scope. Validation PASS: focused duplicate guard e2e (`5/5`). Evidence:
+    `docs/planning/posdrift-07-live-overlap-canonical-market-scope-task-2026-05-03.md`.
 - [ ] `LIVEIMPORT-03 release(prod): promote imported-position provenance fix and read back ETH/DOGE`
   - Scope: promote commit `39146d2e` through the approved production workflow,
     verify API freshness directly, then use authenticated read-only dashboard

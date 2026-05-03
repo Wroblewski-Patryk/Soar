@@ -20,6 +20,16 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `POSDRIFT-07 fix(api-bots): keep active LIVE overlap guard canonical-market scoped`
+  - Scope: closed the next confirmed LIVE market-assignment safety drift.
+    Active LIVE bot create/update validation now checks other active LIVE bots
+    through active canonical `BotMarketGroup.symbolGroup` symbols before
+    falling back to direct legacy `Bot.symbolGroup`. Stale direct market
+    projections can no longer allow shared symbols in real assigned canonical
+    market scope. Validation PASS: focused duplicate guard e2e (`5/5`).
+    Evidence:
+    `docs/planning/posdrift-07-live-overlap-canonical-market-scope-task-2026-05-03.md`.
+
 - [x] `POSDRIFT-06 fix(api-runtime): keep runtime signal-loop venue on shared canonical resolver`
   - Scope: closed the next architecture drift in the PAPER/LIVE open pipeline.
     Runtime signal-loop inherited execution context now uses the shared

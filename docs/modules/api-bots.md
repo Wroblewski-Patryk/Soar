@@ -215,6 +215,10 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
     compatibility.
   - new validation and runtime ownership decisions must not silently prefer
     legacy topology over canonical links.
+- Active LIVE symbol-overlap validation must compare the selected target market
+  group against other active LIVE bots through active canonical
+  `BotMarketGroup.symbolGroup` scope first. Direct legacy `Bot.symbolGroup`
+  is fallback only for bots without canonical groups.
 
 ## 18. Runtime Position Execution Venue Contract (`POSDRIFT-05`)
 - Runtime signal-loop topology, runtime position reads, and position automation

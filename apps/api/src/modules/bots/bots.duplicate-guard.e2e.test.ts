@@ -286,6 +286,57 @@ describe('Bots duplicate active guard', () => {
     );
   });
 
+  it('blocks active LIVE overlap using canonical market group when direct projection is stale', async () => {
+    const email = 'bots-live-symbol-overlap-canonical@example.com';
+    const agent = await registerAndLogin(email);
+    const strategyId = await createStrategy(agent, 'Live Overlap Canonical Strategy');
+    const primaryMarketGroupId = await createMarketGroup(email, ['BTCUSDT', 'ETHUSDT']);
+    const staleDirectMarketGroupId = await createMarketGroup(email, ['SOLUSDT']);
+    const overlappingMarketGroupId = await createMarketGroup(email, ['ETHUSDT', 'DOGEUSDT']);
+
+    const firstCreate = await agent.post('/dashboard/bots').send({
+      name: 'Primary Canonical Live Bot',
+      strategyId,
+      marketGroupId: primaryMarketGroupId,
+      walletId: liveWalletIdByMarketGroupId.get(primaryMarketGroupId),
+      isActive: true,
+      liveOptIn: true,
+      consentTextVersion: 'mvp-v1',
+    });
+    expect(firstCreate.status).toBe(201);
+
+    await prisma.bot.update({
+      where: { id: firstCreate.body.id as string },
+      data: { symbolGroupId: staleDirectMarketGroupId },
+    });
+
+    const overlappingCreate = await agent.post('/dashboard/bots').send({
+      name: 'Overlapping Canonical Live Bot',
+      strategyId,
+      marketGroupId: overlappingMarketGroupId,
+      walletId: liveWalletIdByMarketGroupId.get(overlappingMarketGroupId),
+      isActive: true,
+      liveOptIn: true,
+      consentTextVersion: 'mvp-v1',
+    });
+
+    expect(overlappingCreate.status).toBe(409);
+    expect(overlappingCreate.body.error.message).toBe(
+      'remove ETHUSDT from selected market group because it is already used by active LIVE bot Primary Canonical Live Bot'
+    );
+    expect(overlappingCreate.body.error.details).toEqual(
+      expect.objectContaining({
+        conflictingSymbols: ['ETHUSDT'],
+        conflictingBots: [
+          expect.objectContaining({
+            botName: 'Primary Canonical Live Bot',
+            symbols: ['ETHUSDT'],
+          }),
+        ],
+      })
+    );
+  });
+
   it('blocks activating LIVE bot when update introduces overlap with another active LIVE bot', async () => {
     const email = 'bots-live-symbol-overlap-update@example.com';
     const agent = await registerAndLogin(email);

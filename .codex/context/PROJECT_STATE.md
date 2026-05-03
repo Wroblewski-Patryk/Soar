@@ -3,6 +3,14 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 LIVE market-overlap guard slice `POSDRIFT-07` is closed locally.
+  Active LIVE bot create/update validation now checks candidate bots through
+  active canonical `BotMarketGroup.symbolGroup` symbols before falling back to
+  direct legacy `Bot.symbolGroup`. Stale direct market projections can no
+  longer let two active LIVE bots share a symbol in their real assigned
+  canonical market scope, nor block from the wrong legacy scope. Validation
+  PASS: focused duplicate guard e2e (`5/5`). Evidence:
+  `docs/planning/posdrift-07-live-overlap-canonical-market-scope-task-2026-05-03.md`.
 - 2026-05-03 runtime signal-loop venue drift slice `POSDRIFT-06` is closed
   locally. Runtime signal-loop inherited execution context now uses the shared
   canonical runtime venue resolver instead of a local
