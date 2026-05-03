@@ -6,7 +6,7 @@
 - Source path: `apps/api/src/modules/positions`
 - Owner: backend/trading-domain
 - Last updated: 2026-05-03
-- Related planning task: `RUNTIME-AUDIT-03`
+- Related planning task: `RUNTIME-AUDIT-23`
 
 ## 1. Purpose and Scope
 - Owns position read and external reconciliation surfaces for dashboard operations.
@@ -30,9 +30,13 @@ Out of scope:
 
 ## 3. Data and Contract Surface
 - Contracts include:
+  - `ListPositionsQuerySchema`
   - `ExternalTakeoverStatusResponse`
   - `ExchangePositionSnapshot` / `ExchangeOpenOrderSnapshot`
   - management mode update payloads.
+- List/read contract:
+  - dashboard `symbol` filters are trimmed and normalized to uppercase at the
+    DTO boundary before Prisma filters are built.
 - Status model:
   - `OWNED_AND_MANAGED`, `UNOWNED`, `AMBIGUOUS`, `MANUAL_ONLY`.
 - Error contract:

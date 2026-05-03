@@ -3,6 +3,14 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 position list symbol normalization slice `RUNTIME-AUDIT-23` is
+  closed locally. Dashboard position list `symbol` filters now normalize to
+  uppercase at the DTO boundary, so operator/API requests such as
+  `symbol=ethusdt` find owned persisted `ETHUSDT` positions instead of
+  rendering an empty positions table. Validation PASS: failing-then-passing
+  lowercase symbol filter regression, focused positions list e2e, API
+  typecheck, repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-23-position-list-symbol-normalization-task-2026-05-03.md`.
 - 2026-05-03 wallet analytics date-range validation slice `RUNTIME-AUDIT-22`
   is closed locally. Wallet analytics `from` / `to` filters now fail closed at
   the DTO boundary when `from` is later than `to`, preventing misleading empty

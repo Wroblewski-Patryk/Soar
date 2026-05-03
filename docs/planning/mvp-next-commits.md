@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-23 fix(api-positions): normalize list symbol filters`
+  - 2026-05-03: Closed a dashboard position read drift. Position list `symbol`
+    filters now normalize to uppercase at the DTO boundary, so operator/API
+    requests such as `symbol=ethusdt` find owned persisted `ETHUSDT` positions
+    instead of rendering an empty positions table. Validation PASS:
+    failing-then-passing lowercase symbol filter regression, focused positions
+    list e2e, API typecheck, repository guardrails, lint, and diff review.
+    Evidence:
+    `docs/planning/runtime-audit-23-position-list-symbol-normalization-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-22 fix(api-wallets): validate analytics date ranges`
   - 2026-05-03: Closed a TESTER-mode wallet analytics API-boundary drift.
     Wallet analytics `from` / `to` filters now fail closed when `from` is
