@@ -99,6 +99,9 @@ export const listRuntimeManagedPositions = async (params: {
     },
   });
 
+export const countRuntimeManagedPositions = async (where: Prisma.PositionWhereInput) =>
+  prisma.position.count({ where });
+
 export const listRuntimeOpenOrders = async (params: {
   where: Prisma.OrderWhereInput;
   limit: number;

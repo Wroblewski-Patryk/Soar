@@ -3,6 +3,16 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 runtime position count limit slice `RUNTIME-AUDIT-40` is
+  closed locally. Runtime session positions and monitoring aggregate position
+  metadata now use true scoped open/closed position counts instead of limited
+  visible row counts, so dashboard `positions.total`, `openCount`, and
+  `closedCount` stay truthful when `limit` / `perSessionLimit` hides older
+  rows. Visible `openItems` / `historyItems` remain limited. Validation PASS:
+  failing-then-passing `limit=1` regression, runtime-scope e2e (`12/12`),
+  monitoring aggregate e2e (`10/10`), API typecheck, repository guardrails,
+  lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-40-position-count-limit-task-2026-05-03.md`.
 - 2026-05-03 aggregate trade-total limit slice `RUNTIME-AUDIT-39` is
   closed locally. Runtime monitoring aggregate `trades.total` and
   `trades.meta.total` now sum the true per-session trade totals instead of the

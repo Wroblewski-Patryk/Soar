@@ -527,6 +527,9 @@ export const getBotRuntimeMonitoringAggregate = async (
         right.id
       )
   );
+  const totalPositions = positionResponses.reduce((acc, response) => acc + response.total, 0);
+  const totalOpenPositions = positionResponses.reduce((acc, response) => acc + response.openCount, 0);
+  const totalClosedPositions = positionResponses.reduce((acc, response) => acc + response.closedCount, 0);
   const totalTrades = completePayloadRows.reduce((acc, row) => acc + row.trades.total, 0);
   const windowFinishedAt = finishedAt ?? new Date();
   const pageSize = tradeItems.length || 1;
@@ -565,7 +568,7 @@ export const getBotRuntimeMonitoringAggregate = async (
         grossProfit: symbolSummary.grossProfit,
         grossLoss: symbolSummary.grossLoss,
         feesPaid: tradeItems.reduce((acc, item) => acc + item.fee, 0),
-        openPositionCount: openItems.length,
+        openPositionCount: totalOpenPositions,
         openPositionQty: openItems.reduce((acc, item) => acc + item.quantity, 0),
       },
     },
@@ -576,9 +579,9 @@ export const getBotRuntimeMonitoringAggregate = async (
     },
     positions: {
       sessionId: 'AGGREGATE',
-      total: openItems.length + historyItems.length,
-      openCount: openItems.length,
-      closedCount: historyItems.length,
+      total: totalPositions,
+      openCount: totalOpenPositions,
+      closedCount: totalClosedPositions,
       openOrdersCount: openOrders.length,
       showDynamicStopColumns: positionResponses.some((response) => response.showDynamicStopColumns === true),
       window: {

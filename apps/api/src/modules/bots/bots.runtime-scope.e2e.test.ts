@@ -65,6 +65,22 @@ describe('Bots runtime scope remediation contract', () => {
           managementMode: 'BOT_MANAGED',
           syncState: 'IN_SYNC',
         },
+        {
+          userId: ownerUser.id,
+          botId,
+          strategyId,
+          symbol: 'BTCUSDT',
+          side: 'LONG',
+          status: 'CLOSED',
+          entryPrice: 0.15,
+          quantity: 100,
+          leverage: 2,
+          openedAt: new Date('2026-04-11T00:04:00.000Z'),
+          closedAt: new Date('2026-04-11T00:05:00.000Z'),
+          origin: 'BOT',
+          managementMode: 'BOT_MANAGED',
+          syncState: 'IN_SYNC',
+        },
       ],
     });
 
@@ -72,13 +88,13 @@ describe('Bots runtime scope remediation contract', () => {
       .get(`/dashboard/bots/${botId}/runtime-sessions/${session.id}/positions`)
       .query({ limit: 1 });
     expect(positionsRes.status).toBe(200);
-    expect(positionsRes.body.total).toBe(2);
+    expect(positionsRes.body.total).toBe(3);
     expect(positionsRes.body.openCount).toBe(1);
-    expect(positionsRes.body.closedCount).toBe(1);
+    expect(positionsRes.body.closedCount).toBe(2);
     expect(positionsRes.body.openItems).toHaveLength(1);
     expect(positionsRes.body.historyItems).toHaveLength(1);
     expect(positionsRes.body.openItems[0].symbol).toBe('BTCUSDT');
-    expect(positionsRes.body.historyItems[0].symbol).toBe('ETHUSDT');
+    expect(positionsRes.body.historyItems[0].symbol).toBe('BTCUSDT');
   });
 
   it('keeps distinct runtime open orders visible after duplicate exchange-order dedupe', async () => {

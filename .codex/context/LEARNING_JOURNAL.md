@@ -73,6 +73,10 @@ pnpm --filter api exec vitest run <db-e2e-files> --run --sequence.concurrent=fal
 - Evidence: 2026-05-03 POSDRIFT validation produced FK/missing-row false
   failures in parallel, then the same six-file pack passed sequentially
   (`74/74`).
+  Reconfirmed during `RUNTIME-AUDIT-40`: running
+  `bots.runtime-scope.e2e.test.ts` and `bots.monitoring-aggregate.e2e.test.ts`
+  in parallel produced FK, 401/404, and empty aggregate false failures; the
+  same suites passed when rerun one after another (`12/12`, then `10/10`).
 
 ### 2026-05-03 - Runtime position reads must inherit canonical venue and strategy context
 - Context: continued operator audit of LIVE/PAPER position management and

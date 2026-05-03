@@ -31,6 +31,7 @@ import {
   resolveExternalPositionOwnershipIndex,
 } from './runtimeExternalPositionOwner.service';
 import {
+  countRuntimeManagedPositions,
   getRuntimePositionBotContext,
   listRuntimeManagedPositions,
   listRuntimeOpenOrders,
@@ -461,23 +462,27 @@ export const listBotRuntimeSessionPositions = async (
     },
     AND: [{ OR: [botScopedPositionWhere, ...externalOwnedWhere] }],
   };
-  const [openPositions, closedPositions] = await Promise.all([
+  const openPositionWhere: Prisma.PositionWhereInput = {
+    ...runtimePositionBaseWhere,
+    status: 'OPEN',
+    closedAt: null,
+  };
+  const closedPositionWhere: Prisma.PositionWhereInput = {
+    ...runtimePositionBaseWhere,
+    status: 'CLOSED',
+    closedAt: { gte: session.startedAt },
+  };
+  const [openPositions, closedPositions, openPositionCount, closedPositionCount] = await Promise.all([
     listRuntimeManagedPositions({
-      where: {
-        ...runtimePositionBaseWhere,
-        status: 'OPEN',
-        closedAt: null,
-      },
+      where: openPositionWhere,
       limit: query.limit,
     }),
     listRuntimeManagedPositions({
-      where: {
-        ...runtimePositionBaseWhere,
-        status: 'CLOSED',
-        closedAt: { gte: session.startedAt },
-      },
+      where: closedPositionWhere,
       limit: query.limit,
     }),
+    countRuntimeManagedPositions(openPositionWhere),
+    countRuntimeManagedPositions(closedPositionWhere),
   ]);
   const positions = [...openPositions, ...closedPositions];
 
@@ -501,9 +506,9 @@ export const listBotRuntimeSessionPositions = async (
 
     return {
       sessionId,
-      total: 0,
-      openCount: 0,
-      closedCount: 0,
+      total: openPositionCount + closedPositionCount,
+      openCount: openPositionCount,
+      closedCount: closedPositionCount,
       openOrdersCount: visibleOpenOrders.length,
       showDynamicStopColumns: showDynamicStopColumnsFromStrategyMode,
       window: {
@@ -945,9 +950,9 @@ export const listBotRuntimeSessionPositions = async (
 
   return {
     sessionId,
-    total: mappedPositions.length,
-    openCount: openItems.length,
-    closedCount: historyItems.length,
+    total: openPositionCount + closedPositionCount,
+    openCount: openPositionCount,
+    closedCount: closedPositionCount,
     openOrdersCount: visibleOpenOrders.length,
     showDynamicStopColumns,
     window: {

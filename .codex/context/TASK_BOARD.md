@@ -20,6 +20,18 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-40 fix(api-bots): preserve runtime position counts under row limits`
+  - Scope: closed a BUILDER-mode dashboard read-model count drift. Runtime
+    session positions and monitoring aggregate position metadata now use true
+    scoped open/closed position counts instead of limited visible row counts,
+    so dashboard `positions.total`, `openCount`, and `closedCount` stay
+    truthful when `limit` / `perSessionLimit` hides older rows. Visible
+    `openItems` / `historyItems` remain limited. Validation PASS:
+    failing-then-passing `limit=1` regression, runtime-scope e2e (`12/12`),
+    monitoring aggregate e2e (`10/10`), API typecheck, repository guardrails,
+    lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-40-position-count-limit-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-39 fix(api-bots): preserve aggregate trade totals under row limits`
   - Scope: closed an ARCHITECT-mode dashboard read-model count drift. Runtime
     monitoring aggregate `trades.total` and `trades.meta.total` now sum the
