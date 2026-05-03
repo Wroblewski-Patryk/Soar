@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 execution-venue drift slice `POSDRIFT-05` is closed locally.
+  Pre-trade LIVE bot config, manual order open context, runtime position reads,
+  and runtime position automation now resolve venue from active canonical
+  `BotMarketGroup` market universe before direct legacy `Bot.symbolGroup`.
+  This prevents stale direct bot market projections from blocking or routing
+  TTP/DCA/close/manual-open behavior away from the bot's assigned canonical
+  market scope after market changes. Validation PASS: focused
+  runtime/order/position pack (`6` files / `74` tests). Evidence:
+  `docs/planning/posdrift-05-canonical-execution-venue-task-2026-05-03.md`.
 - 2026-05-03 runtime position read drift slice `POSDRIFT-04` is closed locally.
   Runtime position reads now resolve inherited execution venue from active
   canonical `BotMarketGroup` market universe when available, and use direct

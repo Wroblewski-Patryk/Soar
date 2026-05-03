@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { RuntimePositionAutomationService } from './runtimePositionAutomation.service';
+import { resolveInheritedPositionExecutionContext } from './runtimePositionAutomation.helpers';
 import { runtimePositionStateStore } from './runtimePositionState.store';
 
 afterEach(async () => {
@@ -34,6 +35,13 @@ const buildBotExecutionContext = (
       }> | null;
     } | null;
     botMarketGroups: Array<{
+      symbolGroup?: {
+        marketUniverse: Partial<{
+          exchange: 'BINANCE' | 'BYBIT';
+          marketType: 'FUTURES' | 'SPOT';
+          baseCurrency: string;
+        }> | null;
+      } | null;
       strategyLinks: Array<{ strategyId: string }>;
     }>;
   }>
@@ -65,10 +73,71 @@ const buildBotExecutionContext = (
                   ...(overrides?.symbolGroup?.marketUniverse ?? {}),
                 },
         },
-  botMarketGroups: overrides?.botMarketGroups,
+  botMarketGroups: overrides?.botMarketGroups?.map((group) => ({
+    ...group,
+    symbolGroup:
+      group.symbolGroup === undefined
+        ? undefined
+        : group.symbolGroup === null
+          ? null
+          : {
+              marketUniverse:
+                group.symbolGroup.marketUniverse === null
+                  ? null
+                  : {
+                      exchange: 'BINANCE' as const,
+                      marketType: 'FUTURES' as const,
+                      baseCurrency: 'USDT',
+                      ...group.symbolGroup.marketUniverse,
+                    },
+            },
+  })),
 });
 
 describe('RuntimePositionAutomationService', () => {
+  it('resolves position execution venue from active canonical market group before stale direct bot group', () => {
+    const context = resolveInheritedPositionExecutionContext({
+      walletId: 'wallet-live-canonical',
+      bot: buildBotExecutionContext({
+        walletId: 'wallet-live-canonical',
+        wallet: {
+          mode: 'LIVE',
+          exchange: 'BINANCE',
+          marketType: 'FUTURES',
+          baseCurrency: 'USDT',
+        },
+        symbolGroup: {
+          marketUniverse: {
+            exchange: 'BINANCE',
+            marketType: 'SPOT',
+            baseCurrency: 'USDT',
+          },
+        },
+        botMarketGroups: [
+          {
+            symbolGroup: {
+              marketUniverse: {
+                exchange: 'BINANCE',
+                marketType: 'FUTURES',
+                baseCurrency: 'USDT',
+              },
+            },
+            strategyLinks: [{ strategyId: 'strategy-canonical' }],
+          },
+        ],
+      }),
+    });
+
+    expect(context).toEqual(
+      expect.objectContaining({
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        walletId: 'wallet-live-canonical',
+      })
+    );
+  });
+
   it('closes position when take-profit is hit', async () => {
     const deps: any = {
       listOpenPositionsBySymbol: vi.fn(async () => [

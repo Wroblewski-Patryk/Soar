@@ -38,7 +38,10 @@ import {
   listRuntimePositionStrategies,
   listRuntimePositionTradeRows,
 } from './runtimeSessionPositionsRead.repository';
-import { resolveInheritedRuntimeExecutionContext } from '../engine/runtimeBotExecutionContext';
+import {
+  resolveCanonicalRuntimeVenueContext,
+  resolveInheritedRuntimeExecutionContext,
+} from '../engine/runtimeBotExecutionContext';
 import { resolveModeledMarginUsed, resolvePositionPnlFraction } from '../engine/positionPnlSemantics';
 import { resolvePreferredRuntimeOrExchangeSyncedPrice } from './runtimeExchangeSyncedPositionPrice';
 import { hasMaterialCanonicalBasisDrift } from '../engine/runtimePositionAutomationStateRebase';
@@ -92,26 +95,6 @@ const resolveSingleBotStrategyContext = (botContext: Awaited<ReturnType<typeof g
   if (enabledCanonicalStrategyIds.length === 1) return enabledCanonicalStrategyIds[0];
   if (enabledCanonicalStrategyIds.length > 1) return null;
   return null;
-};
-
-const resolveRuntimePositionVenueContext = (
-  botContext: Awaited<ReturnType<typeof getRuntimePositionBotContext>>
-) => {
-  if (!botContext) return null;
-  const activeCanonicalVenues = [
-    ...new Map(
-      (botContext.botMarketGroups ?? [])
-        .map((group) => group.symbolGroup.marketUniverse)
-        .filter((venue): venue is NonNullable<typeof venue> => venue != null)
-        .map((venue) => [
-          `${venue.exchange}:${venue.marketType}:${venue.baseCurrency}`,
-          venue,
-        ])
-    ).values(),
-  ];
-  if (activeCanonicalVenues.length === 1) return activeCanonicalVenues[0];
-  if (activeCanonicalVenues.length > 1) return null;
-  return botContext.symbolGroup?.marketUniverse ?? null;
 };
 
 const selectPreferredRuntimeOpenOrder = (
@@ -334,7 +317,7 @@ export const listBotRuntimeSessionPositions = async (
   const inheritedExecutionContext = resolveInheritedRuntimeExecutionContext({
     walletId: botContext.walletId,
     wallet: botContext.wallet,
-    venueContext: resolveRuntimePositionVenueContext(botContext),
+    venueContext: resolveCanonicalRuntimeVenueContext(botContext),
   });
   if (!inheritedExecutionContext) return null;
 

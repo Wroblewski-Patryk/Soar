@@ -15,6 +15,17 @@ type RuntimeExecutionVenueContext = {
   baseCurrency: string;
 };
 
+type RuntimeExecutionBotVenueInput = {
+  botMarketGroups?: Array<{
+    symbolGroup?: {
+      marketUniverse?: RuntimeExecutionVenueContext | null;
+    } | null;
+  }> | null;
+  symbolGroup?: {
+    marketUniverse?: RuntimeExecutionVenueContext | null;
+  } | null;
+};
+
 export type InheritedRuntimeExecutionContext = {
   mode: 'PAPER' | 'LIVE';
   exchange: Exchange;
@@ -47,4 +58,26 @@ export const resolveInheritedRuntimeExecutionContext = (input: {
       : 10_000,
     walletId: input.walletId ?? null,
   };
+};
+
+export const resolveCanonicalRuntimeVenueContext = (
+  input: RuntimeExecutionBotVenueInput | null | undefined
+): RuntimeExecutionVenueContext | null => {
+  if (!input) return null;
+
+  const activeCanonicalVenues = [
+    ...new Map(
+      (input.botMarketGroups ?? [])
+        .map((group) => group.symbolGroup?.marketUniverse ?? null)
+        .filter((venue): venue is RuntimeExecutionVenueContext => venue != null)
+        .map((venue) => [
+          `${venue.exchange}:${venue.marketType}:${normalizeBaseCurrency(venue.baseCurrency)}`,
+          venue,
+        ])
+    ).values(),
+  ];
+
+  if (activeCanonicalVenues.length === 1) return activeCanonicalVenues[0];
+  if (activeCanonicalVenues.length > 1) return null;
+  return input.symbolGroup?.marketUniverse ?? null;
 };

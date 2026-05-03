@@ -9,6 +9,7 @@ import {
 } from './preTrade.types';
 import { evaluatePreTradeRiskReasons } from './preTradeRisk.service';
 import { runtimeMetricsService } from './runtimeMetrics.service';
+import { resolveCanonicalRuntimeVenueContext } from './runtimeBotExecutionContext';
 
 export interface PositionReadStore {
   countOpenByUser(userId: string): Promise<number>;
@@ -166,10 +167,29 @@ class PrismaPreTradeReadStore implements PreTradeReadStore {
             },
           },
         },
+        botMarketGroups: {
+          where: {
+            isEnabled: true,
+            lifecycleStatus: 'ACTIVE',
+          },
+          select: {
+            symbolGroup: {
+              select: {
+                marketUniverse: {
+                  select: {
+                    exchange: true,
+                    marketType: true,
+                    baseCurrency: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
     const wallet = bot?.wallet;
-    const marketUniverse = bot?.symbolGroup?.marketUniverse;
+    const marketUniverse = resolveCanonicalRuntimeVenueContext(bot);
     if (!bot || !wallet || !marketUniverse) return null;
     if (
       wallet.exchange !== marketUniverse.exchange ||

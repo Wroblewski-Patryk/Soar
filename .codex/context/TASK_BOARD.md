@@ -20,6 +20,17 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `POSDRIFT-05 fix(api-runtime): keep execution venue canonical across pre-trade/manual-open/automation`
+  - Scope: closed the next confirmed position-management drift. Pre-trade LIVE
+    bot config, manual order open context, runtime position reads, and runtime
+    position automation now resolve execution venue from the active canonical
+    `BotMarketGroup` market universe before direct legacy `Bot.symbolGroup`.
+    Stale direct bot market projections can no longer block or route
+    TTP/DCA/close/manual-open behavior away from the assigned canonical market
+    scope. Validation PASS: focused runtime/order/position pack (`74/74`).
+    Evidence:
+    `docs/planning/posdrift-05-canonical-execution-venue-task-2026-05-03.md`.
+
 - [x] `POSDRIFT-04 fix(api-runtime): keep runtime position reads canonical-context aligned`
   - Scope: closed the next dashboard position drift. Runtime position reads now
     resolve inherited execution venue from active canonical `BotMarketGroup`

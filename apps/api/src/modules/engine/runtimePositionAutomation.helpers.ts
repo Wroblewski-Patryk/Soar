@@ -1,6 +1,9 @@
 import { PositionSide, TradeMarket, Exchange } from '@prisma/client';
 
-import { resolveInheritedRuntimeExecutionContext } from './runtimeBotExecutionContext';
+import {
+  resolveCanonicalRuntimeVenueContext,
+  resolveInheritedRuntimeExecutionContext,
+} from './runtimeBotExecutionContext';
 import { PositionManagementInput, PositionManagementState } from './positionManagement.types';
 import { resolvePositionPnlFraction } from './positionPnlSemantics';
 
@@ -28,6 +31,13 @@ type RuntimeManagedPositionContext = {
             }
           | null;
         botMarketGroups?: Array<{
+          symbolGroup?: {
+            marketUniverse: {
+              exchange: Exchange;
+              marketType: TradeMarket;
+              baseCurrency: string;
+            } | null;
+          } | null;
           strategyLinks: Array<{
             strategyId: string;
           }>;
@@ -42,7 +52,7 @@ export const resolveInheritedPositionExecutionContext = (
   resolveInheritedRuntimeExecutionContext({
     walletId: position.walletId ?? position.bot?.walletId ?? null,
     wallet: position.bot?.wallet,
-    venueContext: position.bot?.symbolGroup?.marketUniverse,
+    venueContext: resolveCanonicalRuntimeVenueContext(position.bot),
   });
 
 export const resolveEffectivePositionStrategyId = (

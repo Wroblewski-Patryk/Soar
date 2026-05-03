@@ -17,7 +17,10 @@ import {
 } from './orders.manualContext.service';
 import { applyOrderFillLifecycle } from './orders.lifecycle.service';
 import { resolveOpenPositionScopeWhere } from './orders.positionScope';
-import { resolveInheritedRuntimeExecutionContext } from '../engine/runtimeBotExecutionContext';
+import {
+  resolveCanonicalRuntimeVenueContext,
+  resolveInheritedRuntimeExecutionContext,
+} from '../engine/runtimeBotExecutionContext';
 import {
   resolveLiveExecutionApiKey,
   submitLiveOrderThroughBoundary,
@@ -149,6 +152,25 @@ const resolveCanonicalBotContext = async (userId: string, payload: OpenOrderInpu
           },
         },
       },
+      botMarketGroups: {
+        where: {
+          isEnabled: true,
+          lifecycleStatus: 'ACTIVE',
+        },
+        select: {
+          symbolGroup: {
+            select: {
+              marketUniverse: {
+                select: {
+                  exchange: true,
+                  marketType: true,
+                  baseCurrency: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   });
   if (!bot) {
@@ -158,7 +180,7 @@ const resolveCanonicalBotContext = async (userId: string, payload: OpenOrderInpu
   const inheritedExecutionContext = resolveInheritedRuntimeExecutionContext({
     walletId: bot.walletId,
     wallet: bot.wallet,
-    venueContext: bot.symbolGroup?.marketUniverse,
+    venueContext: resolveCanonicalRuntimeVenueContext(bot),
   });
   const manualStrategyContext = await resolveManualOrderStrategyContext({
     userId,

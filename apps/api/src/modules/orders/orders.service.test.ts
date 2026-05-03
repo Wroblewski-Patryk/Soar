@@ -305,6 +305,109 @@ describe('openOrder live execution contract', () => {
     }
   });
 
+  it('opens LIVE orders with active canonical market-group venue when direct bot symbol group is stale', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-live-canonical-venue@example.com', password: 'hashed' },
+    });
+    const { bot, strategy, symbolGroup } = await createLiveScopedBotContext({
+      userId: user.id,
+      botName: 'Live canonical venue bot',
+      strategyName: 'Live canonical venue strategy',
+      symbol: 'BTCUSDT',
+    });
+    const staleSpotUniverse = await prisma.marketUniverse.create({
+      data: {
+        userId: user.id,
+        name: 'Orders stale spot universe',
+        exchange: 'BINANCE',
+        marketType: 'SPOT',
+        baseCurrency: 'USDT',
+        whitelist: ['BTCUSDT'],
+        blacklist: [],
+      },
+    });
+    const staleSpotGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: user.id,
+        marketUniverseId: staleSpotUniverse.id,
+        name: 'Orders stale spot group',
+        symbols: ['BTCUSDT'],
+      },
+    });
+    await prisma.bot.update({
+      where: { id: bot.id },
+      data: {
+        symbolGroupId: staleSpotGroup.id,
+        marketType: 'SPOT',
+      },
+    });
+    const botGroup = await prisma.botMarketGroup.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        symbolGroupId: symbolGroup.id,
+        lifecycleStatus: 'ACTIVE',
+        executionOrder: 1,
+        maxOpenPositions: 3,
+        isEnabled: true,
+      },
+    });
+    await prisma.marketGroupStrategyLink.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        botMarketGroupId: botGroup.id,
+        strategyId: strategy.id,
+        priority: 1,
+        weight: 1,
+        isEnabled: true,
+      },
+    });
+
+    const executeLiveOrder = vi.fn(async () => ({
+      exchangeOrderId: 'canonical-venue-order',
+      status: 'OPEN' as const,
+    }));
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+
+    try {
+      const order = await openOrder(
+        user.id,
+        {
+          botId: bot.id,
+          symbol: 'BTCUSDT',
+          side: 'BUY',
+          type: 'LIMIT',
+          quantity: 0.01,
+          price: 60_000,
+          mode: 'LIVE',
+          riskAck: true,
+        },
+        { executeLiveOrder }
+      );
+
+      expect(order.status).toBe('OPEN');
+      expect(order.exchangeOrderId).toBe('canonical-venue-order');
+      expect(order.strategyId).toBe(strategy.id);
+      expect(executeLiveOrder).toHaveBeenCalledWith(
+        expect.objectContaining({
+          bot: expect.objectContaining({
+            id: bot.id,
+            marketType: 'FUTURES',
+            walletId: expect.any(String),
+          }),
+          payload: expect.objectContaining({
+            mode: 'LIVE',
+            strategyId: strategy.id,
+          }),
+        })
+      );
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
   it('reuses and reprices existing same-symbol open position for manual PAPER MARKET add', async () => {
     const user = await prisma.user.create({
       data: { email: 'orders-paper-manual-add-existing-position@example.com', password: 'hashed' },

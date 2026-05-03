@@ -221,6 +221,91 @@ describe('preTrade e2e smoke (paper/live critical paths)', () => {
     expect(decision.reasons).toContain('bot_market_type_mismatch');
   });
 
+  it('prefers active canonical market-group venue over stale direct bot symbol group', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'pretrade-live-canonical-venue@example.com', password: 'hashed-pass' },
+    });
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'Canonical venue wallet',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const staleSpotUniverse = await prisma.marketUniverse.create({
+      data: {
+        userId: user.id,
+        name: 'Stale spot universe',
+        exchange: 'BINANCE',
+        marketType: 'SPOT',
+        baseCurrency: 'USDT',
+      },
+    });
+    const canonicalFuturesUniverse = await prisma.marketUniverse.create({
+      data: {
+        userId: user.id,
+        name: 'Canonical futures universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const staleSpotGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: user.id,
+        marketUniverseId: staleSpotUniverse.id,
+        name: 'Stale spot group',
+        symbols: ['BTCUSDT'],
+      },
+    });
+    const canonicalFuturesGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: user.id,
+        marketUniverseId: canonicalFuturesUniverse.id,
+        name: 'Canonical futures group',
+        symbols: ['BTCUSDT'],
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'Canonical venue live bot',
+        walletId: wallet.id,
+        symbolGroupId: staleSpotGroup.id,
+        mode: 'PAPER',
+        marketType: 'SPOT',
+        liveOptIn: true,
+        consentTextVersion: 'mvp-v1',
+        isActive: true,
+      },
+    });
+    await prisma.botMarketGroup.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        symbolGroupId: canonicalFuturesGroup.id,
+        lifecycleStatus: 'ACTIVE',
+        executionOrder: 1,
+        isEnabled: true,
+      },
+    });
+
+    const decision = await analyzePreTrade({
+      userId: user.id,
+      botId: bot.id,
+      symbol: 'BTCUSDT',
+      mode: 'LIVE',
+      marketType: 'FUTURES',
+    });
+
+    expect(decision.allowed).toBe(true);
+    expect(decision.reasons).not.toContain('live_bot_not_found');
+    expect(decision.reasons).not.toContain('bot_market_type_mismatch');
+  });
+
   it('blocks PAPER pre-trade on open symbol position and writes WARN audit log', async () => {
     const user = await prisma.user.create({
       data: { email: 'pretrade-paper-block@example.com', password: 'hashed-pass' },

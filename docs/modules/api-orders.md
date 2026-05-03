@@ -174,3 +174,13 @@ pnpm --filter api test -- src/modules/orders/orders.service.test.ts src/modules/
     operator inputs (`MARKET`, `CROSSED`, `1x`).
   - compatibility reads from legacy links are allowed only for exact
     symbol-match resolution, never as non-symbol fallback.
+
+## 15. Canonical Execution Venue Contract (`POSDRIFT-05`)
+- Manual order open uses the same canonical venue precedence as runtime
+  monitoring and automation:
+  - active enabled `BotMarketGroup.symbolGroup.marketUniverse` first,
+  - direct legacy `Bot.symbolGroup.marketUniverse` only when no canonical group
+    exists.
+- LIVE manual open remains fail-closed when wallet and resolved venue mismatch.
+- Stale direct bot projections cannot override active canonical market scope
+  for exchange execution context, strategy attribution, or pre-trade checks.

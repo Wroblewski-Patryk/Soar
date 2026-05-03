@@ -52,6 +52,28 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-05-03 - DB-backed e2e packs with global cleanup must run sequentially
+- Context: continued POSDRIFT runtime/order validation on a shared local test
+  database.
+- Symptom: focused e2e packs passed in isolation, but parallel execution
+  produced false failures such as foreign-key cleanup errors and missing rows
+  during order lifecycle updates.
+- Root cause: several API e2e files use broad `deleteMany()` cleanup in
+  `beforeEach`; running those files in parallel lets one suite delete global
+  rows while another suite is still executing.
+- Guardrail: DB-backed API e2e packs that reset shared global tables must be
+  run in one Vitest invocation with `--sequence.concurrent=false` when used as
+  closure evidence.
+- Preferred pattern:
+```powershell
+pnpm --filter api exec vitest run <db-e2e-files> --run --sequence.concurrent=false
+```
+- Avoid: launching multiple DB-backed e2e `vitest run` commands in parallel
+  when the suites share global cleanup tables.
+- Evidence: 2026-05-03 POSDRIFT validation produced FK/missing-row false
+  failures in parallel, then the same six-file pack passed sequentially
+  (`74/74`).
+
 ### 2026-05-03 - Runtime position reads must inherit canonical venue and strategy context
 - Context: continued operator audit of LIVE/PAPER position management and
   dashboard truth after imported ownership and manual close fixes.

@@ -380,27 +380,15 @@ const defaultDeps: RuntimePositionAutomationDeps = {
             select: {
               walletId: true,
               liveOptIn: true,
-              wallet: {
+              wallet: { select: { mode: true, exchange: true, marketType: true, baseCurrency: true, paperInitialBalance: true } },
+              symbolGroup: { select: { marketUniverse: { select: { exchange: true, marketType: true, baseCurrency: true } } } },
+              botMarketGroups: {
+                where: { isEnabled: true, lifecycleStatus: 'ACTIVE' },
                 select: {
-                  mode: true,
-                  exchange: true,
-                  marketType: true,
-                  baseCurrency: true,
-                  paperInitialBalance: true,
+                  symbolGroup: { select: { marketUniverse: { select: { exchange: true, marketType: true, baseCurrency: true } } } },
+                  strategyLinks: { where: { isEnabled: true }, select: { strategyId: true } },
                 },
               },
-              symbolGroup: {
-                select: {
-                  marketUniverse: {
-                    select: {
-                      exchange: true,
-                      marketType: true,
-                      baseCurrency: true,
-                    },
-                  },
-                },
-              },
-              botMarketGroups: { where: { isEnabled: true, lifecycleStatus: 'ACTIVE' }, select: { strategyLinks: { where: { isEnabled: true }, select: { strategyId: true } } } },
             },
           },
         },

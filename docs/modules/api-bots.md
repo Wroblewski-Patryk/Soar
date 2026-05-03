@@ -215,3 +215,13 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
     compatibility.
   - new validation and runtime ownership decisions must not silently prefer
     legacy topology over canonical links.
+
+## 18. Runtime Position Execution Venue Contract (`POSDRIFT-05`)
+- Runtime position reads and position automation resolve inherited execution
+  venue through the shared canonical runtime venue resolver:
+  - active enabled `BotMarketGroup.symbolGroup.marketUniverse` first,
+  - direct legacy `Bot.symbolGroup.marketUniverse` only when no canonical group
+    exists.
+- TTP, TSL, DCA, close automation, and selected-bot monitoring must not use a
+  stale direct bot market projection when the bot has an active canonical
+  market group.
