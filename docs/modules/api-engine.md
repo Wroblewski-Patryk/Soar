@@ -6,7 +6,7 @@
 - Source path: `apps/api/src/modules/engine`
 - Owner: backend/trading-runtime
 - Last updated: 2026-05-03
-- Related planning task: `RUNTIME-AUDIT-09`
+- Related planning task: `RUNTIME-AUDIT-10`
 
 ## Canonical Architecture Linkage
 Canonical behavior and invariants live in `docs/architecture/`, especially:
@@ -45,6 +45,10 @@ Out of scope:
     checks; runtime decisions with `botId` are scoped to direct positions for
     that bot plus deterministically owned LIVE exchange-synced imports for the
     same bot/wallet.
+  - pre-trade bot open-position limits use the same LIVE ownership proof:
+    direct `Position.botId` rows plus owned `EXCHANGE_SYNC` / `BOT_MANAGED`
+    imports for the same bot/wallet/API key are counted for
+    `maxOpenPositionsPerBot`.
 - Runtime mode contracts:
   - explicit `PAPER`/`LIVE` path branching with parity checks.
 

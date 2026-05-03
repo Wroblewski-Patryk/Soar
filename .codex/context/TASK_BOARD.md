@@ -20,6 +20,15 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-10 fix(api-engine): count owned LIVE imports in pre-trade bot caps`
+  - Scope: closed the next LIVE pre-trade exposure-count drift.
+    `maxOpenPositionsPerBot` now counts direct selected-bot open positions plus
+    deterministically owned LIVE `EXCHANGE_SYNC` / `BOT_MANAGED` imports for
+    the same bot/wallet/API key. PAPER remains direct-bot scoped, and
+    ambiguous/manual-only/unowned imports are not counted as bot exposure.
+    Validation PASS: focused pre-trade pack (`24/24`). Evidence:
+    `docs/planning/runtime-audit-10-pretrade-bot-open-count-owned-imports-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-09 fix(api-engine): scope pre-trade same-symbol guard to runtime bot`
   - Scope: closed the next PAPER/LIVE false-block drift. Pre-trade
     one-position-per-symbol checks now remain user-global only when no

@@ -410,6 +410,95 @@ describe('preTrade e2e smoke (paper/live critical paths)', () => {
     expect(globalDecision.allowed).toBe(false);
     expect(globalDecision.reasons).toContain('open_position_on_symbol_exists');
   });
+
+  it('counts owned LIVE exchange-synced imports for bot open-position limits', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'pretrade-live-imported-count@example.com', password: 'hashed-pass' },
+    });
+    const apiKey = await prisma.apiKey.create({
+      data: {
+        userId: user.id,
+        label: 'Pre-trade imported count key',
+        exchange: 'BINANCE',
+        apiKey: 'PRETRADE_IMPORTED_COUNT_KEY',
+        apiSecret: 'PRETRADE_IMPORTED_COUNT_SECRET',
+        syncExternalPositions: true,
+        manageExternalPositions: true,
+      },
+    });
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'Pre-trade imported count wallet',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        apiKeyId: apiKey.id,
+        manageExternalPositions: true,
+      },
+    });
+    const marketUniverse = await prisma.marketUniverse.create({
+      data: {
+        userId: user.id,
+        name: 'Pre-trade imported count universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const symbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: user.id,
+        marketUniverseId: marketUniverse.id,
+        name: 'Pre-trade imported count group',
+        symbols: ['BTCUSDT', 'ETHUSDT'],
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'Pre-trade imported count bot',
+        walletId: wallet.id,
+        symbolGroupId: symbolGroup.id,
+        mode: 'LIVE',
+        marketType: 'FUTURES',
+        liveOptIn: true,
+        manageExternalPositions: true,
+        consentTextVersion: 'mvp-v1',
+        isActive: true,
+      },
+    });
+
+    await prisma.position.create({
+      data: {
+        userId: user.id,
+        botId: null,
+        walletId: null,
+        externalId: `${apiKey.id}:BTCUSDT:LONG`,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        symbol: 'BTCUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 100,
+        quantity: 1,
+      },
+    });
+
+    const decision = await analyzePreTrade({
+      userId: user.id,
+      botId: bot.id,
+      symbol: 'ETHUSDT',
+      mode: 'LIVE',
+      maxOpenPositionsPerBot: 1,
+    });
+
+    expect(decision.allowed).toBe(false);
+    expect(decision.metrics.botOpenPositions).toBe(1);
+    expect(decision.reasons).toContain('bot_open_positions_limit_reached');
+    expect(decision.reasons).not.toContain('open_position_on_symbol_exists');
+  });
 });
 
 

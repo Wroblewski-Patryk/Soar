@@ -3,6 +3,13 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 pre-trade bot open-position cap slice `RUNTIME-AUDIT-10` is
+  closed locally. `maxOpenPositionsPerBot` now counts direct selected-bot open
+  positions plus deterministically owned LIVE `EXCHANGE_SYNC` / `BOT_MANAGED`
+  imports for the same bot/wallet/API key. PAPER remains direct-bot scoped,
+  and ambiguous/manual-only/unowned imports are not counted as bot exposure.
+  Validation PASS: focused pre-trade pack (`24/24`). Evidence:
+  `docs/planning/runtime-audit-10-pretrade-bot-open-count-owned-imports-task-2026-05-03.md`.
 - 2026-05-03 pre-trade bot-scoped symbol-uniqueness slice
   `RUNTIME-AUDIT-09` is closed locally. Pre-trade one-position-per-symbol
   checks now remain user-global only when no `botId` is provided; runtime bot

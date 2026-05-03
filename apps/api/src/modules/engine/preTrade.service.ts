@@ -12,12 +12,13 @@ import { runtimeMetricsService } from './runtimeMetrics.service';
 import { resolveCanonicalRuntimeVenueContext } from './runtimeBotExecutionContext';
 import {
   getExternalPositionOwnership,
+  listOwnedExternalSymbolsForBot,
   resolveExternalPositionOwnershipIndex,
 } from '../bots/runtimeExternalPositionOwner.service';
 
 export interface PositionReadStore {
   countOpenByUser(userId: string): Promise<number>;
-  countOpenByBot(userId: string, botId: string): Promise<number>;
+  countOpenByBot(userId: string, botId: string, mode: 'PAPER' | 'LIVE'): Promise<number>;
   hasOpenPositionOnSymbol(input: {
     userId: string;
     symbol: string;
@@ -62,7 +63,8 @@ const preTradeUserOpenCountCache = new Map<string, PreTradeCountCacheEntry>();
 const preTradeBotOpenCountCache = new Map<string, PreTradeCountCacheEntry>();
 
 const buildPreTradeUserCountKey = (userId: string) => userId;
-const buildPreTradeBotCountKey = (userId: string, botId: string) => `${userId}|${botId}`;
+const buildPreTradeBotCountKey = (userId: string, botId: string, mode: 'PAPER' | 'LIVE') =>
+  `${userId}|${botId}|${mode}`;
 
 const resolveCachedPreTradeCount = async (
   cache: Map<string, PreTradeCountCacheEntry>,
@@ -98,10 +100,13 @@ const resolveCachedUserOpenPositions = (readStore: PositionReadStore, userId: st
 const resolveCachedBotOpenPositions = (
   readStore: PositionReadStore,
   userId: string,
-  botId: string
+  botId: string,
+  mode: 'PAPER' | 'LIVE'
 ) =>
-  resolveCachedPreTradeCount(preTradeBotOpenCountCache, buildPreTradeBotCountKey(userId, botId), () =>
-    readStore.countOpenByBot(userId, botId)
+  resolveCachedPreTradeCount(
+    preTradeBotOpenCountCache,
+    buildPreTradeBotCountKey(userId, botId, mode),
+    () => readStore.countOpenByBot(userId, botId, mode)
   );
 
 export const invalidatePreTradeOpenPositionCountCache = (input?: { userId?: string; botId?: string }) => {
@@ -116,13 +121,14 @@ export const invalidatePreTradeOpenPositionCountCache = (input?: { userId?: stri
   }
 
   if (input.userId && input.botId) {
-    preTradeBotOpenCountCache.delete(buildPreTradeBotCountKey(input.userId, input.botId));
+    preTradeBotOpenCountCache.delete(buildPreTradeBotCountKey(input.userId, input.botId, 'PAPER'));
+    preTradeBotOpenCountCache.delete(buildPreTradeBotCountKey(input.userId, input.botId, 'LIVE'));
     return;
   }
 
   if (input.botId) {
     for (const cacheKey of preTradeBotOpenCountCache.keys()) {
-      if (cacheKey.endsWith(`|${input.botId}`)) {
+      if (cacheKey.includes(`|${input.botId}|`)) {
         preTradeBotOpenCountCache.delete(cacheKey);
       }
     }
@@ -136,10 +142,62 @@ class PrismaPreTradeReadStore implements PreTradeReadStore {
     });
   }
 
-  async countOpenByBot(userId: string, botId: string) {
-    return prisma.position.count({
+  private async getLiveBotExternalOwnershipScope(userId: string, botId: string) {
+    const botScope = await prisma.bot.findFirst({
+      where: { id: botId, userId },
+      select: {
+        walletId: true,
+        apiKeyId: true,
+        wallet: {
+          select: {
+            apiKeyId: true,
+          },
+        },
+      },
+    });
+    const effectiveApiKeyId = botScope?.wallet?.apiKeyId ?? botScope?.apiKeyId ?? null;
+    if (!botScope?.walletId || !effectiveApiKeyId) return null;
+
+    const ownershipIndex = await resolveExternalPositionOwnershipIndex(userId, 'LIVE');
+    return {
+      walletId: botScope.walletId,
+      effectiveApiKeyId,
+      ownershipIndex,
+      ownedSymbols: listOwnedExternalSymbolsForBot(ownershipIndex, {
+        apiKeyId: effectiveApiKeyId,
+        botId,
+        walletId: botScope.walletId,
+      }),
+    };
+  }
+
+  async countOpenByBot(userId: string, botId: string, mode: 'PAPER' | 'LIVE') {
+    const directCount = await prisma.position.count({
       where: { userId, botId, status: 'OPEN' },
     });
+    if (mode !== 'LIVE') return directCount;
+
+    const ownershipScope = await this.getLiveBotExternalOwnershipScope(userId, botId);
+    if (!ownershipScope || ownershipScope.ownedSymbols.length === 0) return directCount;
+
+    const importedOwnedCount = await prisma.position.count({
+      where: {
+        userId,
+        botId: null,
+        symbol: {
+          in: ownershipScope.ownedSymbols,
+        },
+        status: 'OPEN',
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        externalId: {
+          startsWith: `${ownershipScope.effectiveApiKeyId}:`,
+        },
+        OR: [{ walletId: ownershipScope.walletId }, { walletId: null }],
+      },
+    });
+
+    return directCount + importedOwnedCount;
   }
 
   async hasOpenPositionOnSymbol(input: {
@@ -163,30 +221,17 @@ class PrismaPreTradeReadStore implements PreTradeReadStore {
     if (directFound) return true;
     if (input.mode !== 'LIVE') return false;
 
-    const botScope = await prisma.bot.findFirst({
-      where: { id: input.botId, userId: input.userId },
-      select: {
-        walletId: true,
-        apiKeyId: true,
-        wallet: {
-          select: {
-            apiKeyId: true,
-          },
-        },
-      },
-    });
-    const effectiveApiKeyId = botScope?.wallet?.apiKeyId ?? botScope?.apiKeyId ?? null;
-    if (!botScope?.walletId || !effectiveApiKeyId) return false;
+    const ownershipScope = await this.getLiveBotExternalOwnershipScope(input.userId, input.botId);
+    if (!ownershipScope) return false;
 
-    const ownershipIndex = await resolveExternalPositionOwnershipIndex(input.userId, 'LIVE');
-    const ownership = getExternalPositionOwnership(ownershipIndex, {
-      apiKeyId: effectiveApiKeyId,
+    const ownership = getExternalPositionOwnership(ownershipScope.ownershipIndex, {
+      apiKeyId: ownershipScope.effectiveApiKeyId,
       symbol: input.symbol,
     });
     if (
       ownership.status !== 'OWNED' ||
       ownership.botId !== input.botId ||
-      ownership.walletId !== botScope.walletId
+      ownership.walletId !== ownershipScope.walletId
     ) {
       return false;
     }
@@ -200,9 +245,9 @@ class PrismaPreTradeReadStore implements PreTradeReadStore {
         origin: 'EXCHANGE_SYNC',
         managementMode: 'BOT_MANAGED',
         externalId: {
-          startsWith: `${effectiveApiKeyId}:`,
+          startsWith: `${ownershipScope.effectiveApiKeyId}:`,
         },
-        OR: [{ walletId: botScope.walletId }, { walletId: null }],
+        OR: [{ walletId: ownershipScope.walletId }, { walletId: null }],
       },
       select: { id: true },
     });
@@ -309,7 +354,7 @@ export const analyzePreTrade = async (
 
     const userOpenPositions = await resolveCachedUserOpenPositions(readStore, parsed.userId);
     const botOpenPositions = parsed.botId
-      ? await resolveCachedBotOpenPositions(readStore, parsed.userId, parsed.botId)
+      ? await resolveCachedBotOpenPositions(readStore, parsed.userId, parsed.botId, parsed.mode)
       : null;
     const hasOpenPositionOnSymbol = parsed.enforceOnePositionPerSymbol
       ? await readStore.hasOpenPositionOnSymbol({
