@@ -807,6 +807,7 @@ describe('reconcileExternalPositionsFromExchange', () => {
     expect(listOpenSyncedPositionsForApiKey).toHaveBeenCalledWith({
       userId: 'user-2',
       apiKeyId: 'key-healthy',
+      marketType: undefined,
     });
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       '[LivePositionReconciliation] apiKey=key-failing user=user-1 failed: exchange_timeout'
@@ -1940,6 +1941,93 @@ describe('reconcileExternalPositionsFromExchange', () => {
 });
 
 describe('livePositionReconciliationDefaultDeps', () => {
+  it('lists stale synced positions only for the reconciled market type', async () => {
+    await prisma.trade.deleteMany();
+    await prisma.order.deleteMany();
+    await prisma.position.deleteMany();
+    await prisma.signal.deleteMany();
+    await prisma.runtimeExecutionDedupe.deleteMany();
+    await prisma.botRuntimeSymbolStat.deleteMany();
+    await prisma.botRuntimeEvent.deleteMany();
+    await prisma.botRuntimeSession.deleteMany();
+    await prisma.log.deleteMany();
+    await prisma.botStrategy.deleteMany();
+    await prisma.botSubagentConfig.deleteMany();
+    await prisma.botAssistantConfig.deleteMany();
+    await prisma.marketGroupStrategyLink.deleteMany();
+    await prisma.botMarketGroup.deleteMany();
+    await prisma.bot.deleteMany();
+    await prisma.symbolGroup.deleteMany();
+    await prisma.marketUniverse.deleteMany();
+    await prisma.wallet.deleteMany();
+    await prisma.apiKey.deleteMany();
+    await prisma.strategy.deleteMany();
+    await prisma.user.deleteMany();
+
+    const user = await prisma.user.create({
+      data: { email: 'live-position-stale-market-scope@example.com', password: 'test-password' },
+      select: { id: true },
+    });
+
+    await prisma.position.createMany({
+      data: [
+        {
+          userId: user.id,
+          externalId: 'key-market:FUTURES:BTCUSDT:LONG',
+          origin: 'EXCHANGE_SYNC',
+          managementMode: 'BOT_MANAGED',
+          syncState: 'IN_SYNC',
+          continuityState: 'CONFIRMED',
+          symbol: 'BTCUSDT',
+          side: 'LONG',
+          status: 'OPEN',
+          entryPrice: 60_000,
+          quantity: 0.01,
+          leverage: 2,
+        },
+        {
+          userId: user.id,
+          externalId: 'key-market:SPOT:ETHUSDT:LONG',
+          origin: 'EXCHANGE_SYNC',
+          managementMode: 'BOT_MANAGED',
+          syncState: 'IN_SYNC',
+          continuityState: 'CONFIRMED',
+          symbol: 'ETHUSDT',
+          side: 'LONG',
+          status: 'OPEN',
+          entryPrice: 3_000,
+          quantity: 0.1,
+          leverage: 1,
+        },
+        {
+          userId: user.id,
+          externalId: 'key-market:DOGEUSDT:LONG',
+          origin: 'EXCHANGE_SYNC',
+          managementMode: 'BOT_MANAGED',
+          syncState: 'IN_SYNC',
+          continuityState: 'CONFIRMED',
+          symbol: 'DOGEUSDT',
+          side: 'LONG',
+          status: 'OPEN',
+          entryPrice: 0.1,
+          quantity: 100,
+          leverage: 1,
+        },
+      ],
+    });
+
+    const rows = await livePositionReconciliationDefaultDeps.listOpenSyncedPositionsForApiKey({
+      userId: user.id,
+      apiKeyId: 'key-market',
+      marketType: 'FUTURES',
+    });
+
+    expect(rows.map((row) => row.externalId).sort()).toEqual([
+      'key-market:DOGEUSDT:LONG',
+      'key-market:FUTURES:BTCUSDT:LONG',
+    ]);
+  });
+
   it('does not update unrelated botless exchange-synced open orders when exchange ids collide', async () => {
     await prisma.trade.deleteMany();
     await prisma.order.deleteMany();

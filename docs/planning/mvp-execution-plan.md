@@ -201,6 +201,15 @@ Rule: fix/cleanup/update first, then feature delivery.
   SPOT open PnL from the same API key while same-market `IN_SYNC` imported PnL
   remains included. Validation PASS: wallets e2e (`20/20`), API typecheck,
   repository guardrails, lint, and diff review.
+- 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-87` with
+  `docs/planning/runtime-audit-87-reconciliation-stale-scan-market-scope-task-2026-05-04.md`.
+  LIVE position reconciliation stale synced-position scans now receive the
+  synced API-key market type and include only the current canonical market
+  prefix plus legacy unscoped imported IDs, excluding other canonical market
+  prefixes from missing/close cleanup. This prevents a FUTURES reconciliation
+  pass from marking same-api-key SPOT rows stale. Validation PASS: live
+  position reconciliation suite (`29/29`), API typecheck, repository
+  guardrails, lint, and diff review.
 - 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-15` with
   `docs/planning/runtime-audit-15-close-fee-position-scope-task-2026-05-03.md`.
   Runtime close realized-PnL now aggregates entry fees by owned position

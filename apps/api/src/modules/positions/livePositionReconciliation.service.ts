@@ -11,6 +11,7 @@ import {
 import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
 import {
   buildPositionIdentity,
+  buildImportedExternalPositionMarketPrefix,
   buildImportedExternalPositionIds,
   extractSymbolFromExternalId,
   normalizeImportedLeverage,
@@ -184,13 +185,14 @@ export const livePositionReconciliationDefaultDeps: ReconcileDeps = {
       },
     });
   },
-  listOpenSyncedPositionsForApiKey: async ({ userId, apiKeyId }) =>
+  listOpenSyncedPositionsForApiKey: async ({ userId, apiKeyId, marketType }) =>
     prisma.position.findMany({
       where: {
-        userId,
-        origin: 'EXCHANGE_SYNC',
-        status: 'OPEN',
-        externalId: { startsWith: `${apiKeyId}:` },
+        userId, origin: 'EXCHANGE_SYNC', status: 'OPEN',
+        OR: [{ externalId: { startsWith: buildImportedExternalPositionMarketPrefix({ apiKeyId, marketType: marketType ?? 'FUTURES' }) } }, {
+          externalId: { startsWith: `${apiKeyId}:` },
+          NOT: [{ externalId: { startsWith: buildImportedExternalPositionMarketPrefix({ apiKeyId, marketType: 'FUTURES' }) } }, { externalId: { startsWith: buildImportedExternalPositionMarketPrefix({ apiKeyId, marketType: 'SPOT' }) } }],
+        }],
       },
       select: {
         id: true,
@@ -728,6 +730,7 @@ export const reconcileExternalPositionsFromExchange = async (
       const currentOpen = await deps.listOpenSyncedPositionsForApiKey({
         userId: apiKey.userId,
         apiKeyId: apiKey.id,
+        marketType: apiKey.marketType,
       });
 
       for (const stale of currentOpen) {

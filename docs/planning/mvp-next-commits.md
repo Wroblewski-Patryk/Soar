@@ -9,6 +9,16 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-87 fix(api-positions): scope stale reconciliation scans by market`
+  - 2026-05-04: Closed an ARCHITECT-mode LIVE reconciliation write-path drift.
+    LIVE position reconciliation stale synced-position scans now receive the
+    synced API-key market type and include only the current canonical market
+    prefix plus legacy unscoped imported IDs, excluding other canonical market
+    prefixes from missing/close cleanup. This prevents a FUTURES reconciliation
+    pass from marking same-api-key SPOT rows stale. Validation PASS: live
+    position reconciliation suite (`29/29`), API typecheck, repository
+    guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-87-reconciliation-stale-scan-market-scope-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-86 fix(api-wallets): scope imported open PnL by market type`
   - 2026-05-04: Closed a BUILDER-mode wallet analytics market-scope drift.
     Wallet performance summary and equity timeline now match botless LIVE

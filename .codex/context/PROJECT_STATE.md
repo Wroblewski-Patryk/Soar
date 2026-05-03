@@ -3,6 +3,15 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 reconciliation stale-position market-scope slice
+  `RUNTIME-AUDIT-87` is closed locally. LIVE position reconciliation stale
+  synced-position scans now receive the synced API-key market type and include
+  only the current canonical market prefix plus legacy unscoped imported IDs,
+  excluding other canonical market prefixes from missing/close cleanup. This
+  prevents a FUTURES reconciliation pass from marking same-api-key SPOT rows
+  stale. Validation PASS: live position reconciliation suite (`29/29`), API
+  typecheck, repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-87-reconciliation-stale-scan-market-scope-task-2026-05-04.md`.
 - 2026-05-04 wallet imported open-PnL market-scope slice `RUNTIME-AUDIT-86`
   is closed locally. Wallet performance summary and equity timeline now match
   botless LIVE imported open positions by canonical `apiKeyId:marketType:`
