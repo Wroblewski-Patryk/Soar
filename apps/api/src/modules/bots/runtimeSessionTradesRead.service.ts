@@ -25,8 +25,21 @@ import {
 } from './runtimeSessionTradesRead.repository';
 
 type RuntimeTradeAnchorPositionRow = Awaited<ReturnType<typeof listRuntimeTradeAnchorPositionRows>>[number];
+type RuntimeTradeBotContext = NonNullable<Awaited<ReturnType<typeof getRuntimeTradeBotContext>>>;
 
 const toOpenAnchorTradeSide = (side: 'LONG' | 'SHORT') => (side === 'LONG' ? 'BUY' : 'SELL');
+
+const resolveSingleCanonicalStrategyId = (botContext: RuntimeTradeBotContext) => {
+  const strategyIds = [
+    ...new Set(
+      (botContext.botMarketGroups ?? []).flatMap((group) =>
+        group.strategyLinks.map((link) => link.strategyId)
+      )
+    ),
+  ];
+  if (strategyIds.length === 1) return strategyIds[0];
+  return strategyIds.length === 0 ? botContext.strategyId ?? null : null;
+};
 
 const shouldIncludeOpenAnchor = (input: {
   position: RuntimeTradeAnchorPositionRow;
@@ -129,6 +142,7 @@ export const listBotRuntimeSessionTrades = async (
     : windowEnd;
   const configuredSymbolGroup =
     botContext.botMarketGroups[0]?.symbolGroup ?? botContext.symbolGroup ?? null;
+  const anchorEffectiveStrategyId = resolveSingleCanonicalStrategyId(botContext);
   const configuredSymbols = normalizeSymbols(
     configuredSymbolGroup
       ? await resolveEffectiveSymbolGroupSymbolsWithCatalog(configuredSymbolGroup, new Map<string, string[]>())
@@ -405,7 +419,7 @@ export const listBotRuntimeSessionTrades = async (
         createdAt: position.openedAt,
         orderId: '',
         positionId: position.id,
-        strategyId: position.strategyId ?? '',
+        strategyId: position.strategyId ?? anchorEffectiveStrategyId ?? '',
         origin: position.origin,
         managementMode: position.managementMode,
         closeReason: null,

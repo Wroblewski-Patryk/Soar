@@ -9,6 +9,18 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-33 fix(api-bots): attribute imported open trade anchors to effective strategy`
+  - 2026-05-03: Closed an ARCHITECT-mode runtime dashboard provenance drift.
+    Runtime trade synthetic `position-open:*` anchors now resolve the single
+    canonical strategy from active bot market-group links when an imported
+    open position has `strategyId: null`, keeping runtime trades and aggregate
+    strategy attribution aligned with the selected bot configuration.
+    Ambiguous multi-strategy provenance remains unassigned. Validation PASS:
+    failing-then-passing imported strategy-null open anchor regression, full
+    runtime history parity e2e (`6/6`), runtime-scope e2e (`12/12`),
+    runtime-strategy-context e2e (`5/5`), API typecheck, repository
+    guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-33-trade-anchor-effective-strategy-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-32 fix(api-engine): attribute automation skip telemetry to effective strategy`
   - 2026-05-03: Closed a TESTER-mode dashboard/runtime event provenance drift.
     Runtime automation `PRETRADE_BLOCKED` skip telemetry now accepts the same

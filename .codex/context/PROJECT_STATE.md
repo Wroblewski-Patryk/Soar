@@ -3,6 +3,18 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 imported open trade anchor effective-strategy slice
+  `RUNTIME-AUDIT-33` is closed locally. Runtime trade synthetic
+  `position-open:*` anchors now resolve the single canonical strategy from
+  active bot market-group links when an imported open position has
+  `strategyId: null`, so dashboard runtime trades and aggregate telemetry keep
+  strategy provenance aligned with the bot configuration. Ambiguous
+  multi-strategy provenance remains unassigned. Validation PASS:
+  failing-then-passing imported strategy-null open anchor regression, full
+  runtime history parity e2e (`6/6`), runtime-scope e2e (`12/12`),
+  runtime-strategy-context e2e (`5/5`), API typecheck, repository guardrails,
+  lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-33-trade-anchor-effective-strategy-task-2026-05-03.md`.
 - 2026-05-03 runtime automation skip effective-strategy telemetry slice
   `RUNTIME-AUDIT-32` is closed locally. Runtime automation
   `PRETRADE_BLOCKED` skip telemetry now accepts the same effective strategy

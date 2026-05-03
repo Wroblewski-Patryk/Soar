@@ -6,6 +6,7 @@ export const getRuntimeTradeBotContext = async (userId: string, botId: string) =
     where: { id: botId, userId },
     select: {
       apiKeyId: true,
+      strategyId: true,
       mode: true,
       walletId: true,
       wallet: {
@@ -20,6 +21,13 @@ export const getRuntimeTradeBotContext = async (userId: string, botId: string) =
         },
         orderBy: [{ executionOrder: 'asc' }, { createdAt: 'asc' }, { id: 'asc' }],
         select: {
+          strategyLinks: {
+            where: { isEnabled: true },
+            orderBy: [{ priority: 'asc' }, { createdAt: 'asc' }, { id: 'asc' }],
+            select: {
+              strategyId: true,
+            },
+          },
           symbolGroup: {
             select: {
               symbols: true,

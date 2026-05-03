@@ -191,12 +191,12 @@ describe('Bots runtime history parity contract', () => {
         botId,
         walletId,
         strategyId,
-        externalId: 'api-key-1:DOGEUSDT:LONG',
+        externalId: 'api-key-1:BTCUSDT:LONG',
         origin: 'EXCHANGE_SYNC',
         managementMode: 'BOT_MANAGED',
         syncState: 'ORPHAN_LOCAL',
         continuityState: 'EXTERNAL_CLOSE_CONFIRMED',
-        symbol: 'DOGEUSDT',
+        symbol: 'BTCUSDT',
         side: 'LONG',
         status: 'CLOSED',
         entryPrice: 0.1,
@@ -216,7 +216,7 @@ describe('Bots runtime history parity contract', () => {
     expect(positionsRes.body.historyItems).toHaveLength(1);
     expect(positionsRes.body.historyItems[0]).toEqual(
       expect.objectContaining({
-        symbol: 'DOGEUSDT',
+        symbol: 'BTCUSDT',
         origin: 'EXCHANGE_SYNC',
         managementMode: 'BOT_MANAGED',
         closeInitiator: 'USER_EXCHANGE',
@@ -275,12 +275,12 @@ describe('Bots runtime history parity contract', () => {
         botId,
         walletId,
         strategyId,
-        externalId: 'api-key-1:BNBUSDT:SHORT',
+        externalId: 'api-key-1:BTCUSDT:SHORT',
         origin: 'EXCHANGE_SYNC',
         managementMode: 'BOT_MANAGED',
         syncState: 'IN_SYNC',
         continuityState: 'CONFIRMED',
-        symbol: 'BNBUSDT',
+        symbol: 'BTCUSDT',
         side: 'SHORT',
         status: 'OPEN',
         entryPrice: 618.46,
@@ -298,7 +298,7 @@ describe('Bots runtime history parity contract', () => {
       expect.arrayContaining([
         expect.objectContaining({
           id: `position-open:${position.id}`,
-          symbol: 'BNBUSDT',
+          symbol: 'BTCUSDT',
           side: 'SELL',
           lifecycleAction: 'OPEN',
           actionReason: 'POSITION_LIFETIME',
@@ -316,7 +316,7 @@ describe('Bots runtime history parity contract', () => {
       expect.arrayContaining([
         expect.objectContaining({
           id: position.id,
-          symbol: 'BNBUSDT',
+          symbol: 'BTCUSDT',
           tradesCount: 0,
           firstTradeAt: null,
           lastTradeAt: null,
@@ -330,9 +330,114 @@ describe('Bots runtime history parity contract', () => {
       expect.arrayContaining([
         expect.objectContaining({
           id: `position-open:${position.id}`,
-          symbol: 'BNBUSDT',
+          symbol: 'BTCUSDT',
           lifecycleAction: 'OPEN',
           actionReason: 'POSITION_LIFETIME',
+        }),
+      ])
+    );
+  });
+
+  it('uses canonical strategy for imported OPEN trade anchors when position strategy is missing', async () => {
+    const ownerEmail = 'bot-history-imported-open-anchor-strategy@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
+
+    const strategyId = await createStrategy(owner, 'Imported Open Anchor Strategy Context');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    const walletId = await createWalletForContext(ownerEmail, {
+      mode: 'LIVE',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: ownerUser.id,
+        name: 'Imported open anchor strategy context live bot',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'mvp-v1',
+        walletId,
+        symbolGroupId: marketGroupId,
+        strategyId,
+      },
+      select: { id: true },
+    });
+    const botId = bot.id;
+    const botMarketGroup = await prisma.botMarketGroup.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        symbolGroupId: marketGroupId,
+        lifecycleStatus: 'ACTIVE',
+        executionOrder: 1,
+        maxOpenPositions: 1,
+        isEnabled: true,
+      },
+      select: { id: true },
+    });
+    await prisma.marketGroupStrategyLink.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        botMarketGroupId: botMarketGroup.id,
+        strategyId,
+        priority: 100,
+        weight: 1,
+        isEnabled: true,
+      },
+    });
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'LIVE',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-10T07:00:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-10T07:10:00.000Z'),
+      },
+      select: { id: true },
+    });
+
+    const position = await prisma.position.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        walletId,
+        strategyId: null,
+        externalId: 'api-key-1:BTCUSDT:SHORT',
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        continuityState: 'CONFIRMED',
+        symbol: 'BTCUSDT',
+        side: 'SHORT',
+        status: 'OPEN',
+        entryPrice: 618.46,
+        quantity: 0.01,
+        leverage: 15,
+        marginUsed: 0.40921438,
+        openedAt: new Date('2026-04-10T07:03:00.000Z'),
+      },
+      select: { id: true },
+    });
+
+    const tradesRes = await owner.get(`/dashboard/bots/${botId}/runtime-sessions/${session.id}/trades`);
+    expect(tradesRes.status).toBe(200);
+    expect(tradesRes.body.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: `position-open:${position.id}`,
+          symbol: 'BTCUSDT',
+          lifecycleAction: 'OPEN',
+          actionReason: 'POSITION_LIFETIME',
+          positionId: position.id,
+          strategyId,
         }),
       ])
     );
@@ -387,12 +492,12 @@ describe('Bots runtime history parity contract', () => {
         botId,
         walletId,
         strategyId,
-        externalId: 'api-key-1:XRPUSDT:SHORT',
+        externalId: 'api-key-1:BTCUSDT:SHORT',
         origin: 'EXCHANGE_SYNC',
         managementMode: 'BOT_MANAGED',
         syncState: 'IN_SYNC',
         continuityState: 'CONFIRMED',
-        symbol: 'XRPUSDT',
+        symbol: 'BTCUSDT',
         side: 'SHORT',
         status: 'OPEN',
         entryPrice: 2.15,
@@ -411,7 +516,7 @@ describe('Bots runtime history parity contract', () => {
         walletId,
         strategyId,
         positionId: position.id,
-        symbol: 'XRPUSDT',
+        symbol: 'BTCUSDT',
         side: 'SELL',
         lifecycleAction: 'OPEN',
         price: 2.15,
@@ -433,7 +538,7 @@ describe('Bots runtime history parity contract', () => {
       expect.arrayContaining([
         expect.objectContaining({
           id: position.id,
-          symbol: 'XRPUSDT',
+          symbol: 'BTCUSDT',
           tradesCount: 1,
           firstTradeAt: '2026-04-10T07:04:00.000Z',
           lastTradeAt: '2026-04-10T07:04:00.000Z',
@@ -446,7 +551,7 @@ describe('Bots runtime history parity contract', () => {
     expect(tradesRes.body.items).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          symbol: 'XRPUSDT',
+          symbol: 'BTCUSDT',
           lifecycleAction: 'OPEN',
           actionReason: 'POSITION_LIFETIME',
           positionId: position.id,
