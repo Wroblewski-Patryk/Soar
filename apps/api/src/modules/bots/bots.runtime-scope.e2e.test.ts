@@ -416,6 +416,95 @@ describe('Bots runtime scope remediation contract', () => {
     ).toEqual(['confirmed-open-order']);
   });
 
+  it('excludes stale orphaned open positions from runtime position truth', async () => {
+    const email = 'bot-runtime-stale-open-positions-hidden@example.com';
+    const agent = await registerAndLogin(email);
+    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email } });
+
+    const strategyId = await createStrategy(agent, 'Runtime Stale Open Position Strategy');
+    const marketGroupId = await createMarketGroup(email, 'FUTURES');
+    await prisma.symbolGroup.update({
+      where: { id: marketGroupId },
+      data: { symbols: ['BTCUSDT', 'ETHUSDT'] },
+    });
+    const botRes = await agent.post('/dashboard/bots').send(
+      createPayload({
+        strategyId,
+        marketGroupId,
+      })
+    );
+    expect(botRes.status).toBe(201);
+    const botId = botRes.body.id as string;
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-13T10:00:00.000Z'),
+      },
+    });
+
+    await prisma.position.createMany({
+      data: [
+        {
+          id: 'confirmed-runtime-open-position',
+          userId: ownerUser.id,
+          botId,
+          strategyId,
+          origin: 'BOT',
+          managementMode: 'BOT_MANAGED',
+          syncState: 'IN_SYNC',
+          symbol: 'BTCUSDT',
+          side: 'LONG',
+          status: 'OPEN',
+          entryPrice: 60_000,
+          quantity: 0.01,
+          leverage: 2,
+          marginUsed: 300,
+          unrealizedPnl: 5,
+          openedAt: new Date('2026-04-13T10:01:00.000Z'),
+        },
+        {
+          id: 'stale-runtime-open-position',
+          userId: ownerUser.id,
+          botId,
+          strategyId,
+          origin: 'EXCHANGE_SYNC',
+          managementMode: 'BOT_MANAGED',
+          syncState: 'ORPHAN_LOCAL',
+          continuityState: 'REPAIR_ONLY_CLEANUP',
+          symbol: 'ETHUSDT',
+          side: 'LONG',
+          status: 'OPEN',
+          entryPrice: 3_000,
+          quantity: 0.2,
+          leverage: 2,
+          marginUsed: 300,
+          unrealizedPnl: 99,
+          openedAt: new Date('2026-04-13T10:02:00.000Z'),
+        },
+      ],
+    });
+
+    const positionsRes = await agent.get(
+      `/dashboard/bots/${botId}/runtime-sessions/${session.id}/positions`
+    );
+    expect(positionsRes.status).toBe(200);
+    expect(positionsRes.body.total).toBe(1);
+    expect(positionsRes.body.openCount).toBe(1);
+    expect(positionsRes.body.closedCount).toBe(0);
+    expect(positionsRes.body.summary.openPositionQty).toBeCloseTo(0.01);
+    expect(positionsRes.body.summary.unrealizedPnl).toBeCloseTo(5);
+    expect(positionsRes.body.summary.freeCash).toBeCloseTo(9_700);
+    expect(
+      (positionsRes.body.openItems as Array<{ id: string; symbol: string }>).map(
+        (position) => `${position.id}:${position.symbol}`
+      )
+    ).toEqual(['confirmed-runtime-open-position:BTCUSDT']);
+  });
+
   it('keeps runtime symbol-stats open-position summary truthful when visible symbols are limited', async () => {
     const email = 'bot-runtime-symbol-stats-open-summary-limit@example.com';
     const agent = await registerAndLogin(email);

@@ -20,6 +20,16 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-84 fix(api-bots): align runtime open positions with sync state`
+  - Scope: closed an ARCHITECT-mode runtime dashboard active-position drift.
+    Bot runtime session positions now require `syncState=IN_SYNC` for active
+    open-position truth, including open-count, open quantity, unrealized PnL,
+    margin/free-cash, fee aggregation, and continuity candidate reads, so stale
+    scoped `ORPHAN_LOCAL` open rows no longer appear as live bot positions.
+    Validation PASS: runtime-scope e2e (`16/16`), API typecheck, repository
+    guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-84-runtime-open-positions-sync-state-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-83 fix(api-bots): align symbol live rows with sync state`
   - Scope: closed a BUILDER-mode runtime symbol KPI drift. Runtime symbol live
     row reads now require `syncState=IN_SYNC`, so scoped `ORPHAN_LOCAL`

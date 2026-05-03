@@ -3,6 +3,15 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 runtime open-position active-sync slice `RUNTIME-AUDIT-84` is
+  closed locally. Bot runtime session positions now require
+  `syncState=IN_SYNC` for active open-position truth, including open-count,
+  open quantity, unrealized PnL, margin/free-cash, fee aggregation, and
+  continuity candidate reads, so stale scoped `ORPHAN_LOCAL` open rows no
+  longer appear as live bot positions. Validation PASS: runtime-scope e2e
+  (`16/16`), API typecheck, repository guardrails, lint, and diff review.
+  Evidence:
+  `docs/planning/runtime-audit-84-runtime-open-positions-sync-state-task-2026-05-04.md`.
 - 2026-05-04 runtime symbol live-row active-sync slice `RUNTIME-AUDIT-83`
   is closed locally. Runtime symbol live-row reads now require
   `syncState=IN_SYNC`, so scoped `ORPHAN_LOCAL` open-position rows no longer

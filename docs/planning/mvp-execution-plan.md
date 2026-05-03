@@ -177,6 +177,14 @@ Rule: fix/cleanup/update first, then feature delivery.
   quantity, unrealized PnL, or derived market state while active synced rows
   remain included. Validation PASS: runtime-scope e2e (`15/15`), API
   typecheck, repository guardrails, lint, and diff review.
+- 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-84` with
+  `docs/planning/runtime-audit-84-runtime-open-positions-sync-state-task-2026-05-04.md`.
+  Bot runtime session positions now require `syncState=IN_SYNC` for active
+  open-position truth, including open-count, open quantity, unrealized PnL,
+  margin/free-cash, fee aggregation, and continuity candidate reads, so stale
+  scoped `ORPHAN_LOCAL` open rows no longer appear as live bot positions.
+  Validation PASS: runtime-scope e2e (`16/16`), API typecheck, repository
+  guardrails, lint, and diff review.
 - 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-15` with
   `docs/planning/runtime-audit-15-close-fee-position-scope-task-2026-05-03.md`.
   Runtime close realized-PnL now aggregates entry fees by owned position
