@@ -499,6 +499,10 @@ export const getBotRuntimeMonitoringAggregate = async (
     realizedPnl: positionResponses.reduce((acc, response) => acc + response.summary.realizedPnl, 0),
     unrealizedPnl: openItems.reduce((acc, item) => acc + (item.unrealizedPnl ?? 0), 0),
     feesPaid: [...openItems, ...historyItems].reduce((acc, item) => acc + item.feesPaid, 0),
+    openPositionQty: positionResponses.reduce(
+      (acc, response) => acc + (response.summary.openPositionQty ?? 0),
+      0
+    ),
     referenceBalance,
     freeCash,
     accountBalance: readFiniteNumber(latestCapitalSummary?.accountBalance),
@@ -569,7 +573,7 @@ export const getBotRuntimeMonitoringAggregate = async (
         grossLoss: symbolSummary.grossLoss,
         feesPaid: tradeItems.reduce((acc, item) => acc + item.fee, 0),
         openPositionCount: totalOpenPositions,
-        openPositionQty: openItems.reduce((acc, item) => acc + item.quantity, 0),
+        openPositionQty: positionsSummary.openPositionQty,
       },
     },
     symbolStats: {

@@ -20,6 +20,18 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-42 fix(api-bots): preserve aggregate open-position quantity under row limits`
+  - Scope: closed an ARCHITECT-mode dashboard read-model quantity drift.
+    Runtime session positions now expose scoped `summary.openPositionQty`, and
+    monitoring aggregate `sessionDetail.summary.openPositionQty` composes that
+    session truth instead of limited visible open rows. Dashboard open-position
+    quantity now remains truthful when `perSessionLimit` hides older open
+    positions while visible row lists remain limited. Validation PASS:
+    failing-then-passing `perSessionLimit=1` open-quantity regression,
+    runtime-scope e2e (`12/12`), monitoring aggregate e2e (`11/11`), API
+    typecheck, repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-42-open-position-qty-limit-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-41 fix(api-bots): preserve runtime position realized PnL under row limits`
   - Scope: closed a BUILDER-mode dashboard read-model summary drift. Runtime
     session positions now aggregate realized PnL from all scoped closed

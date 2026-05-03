@@ -3,6 +3,17 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 aggregate open-position quantity limit slice
+  `RUNTIME-AUDIT-42` is closed locally. Runtime session positions now expose
+  scoped `summary.openPositionQty`, and monitoring aggregate
+  `sessionDetail.summary.openPositionQty` composes that session truth instead
+  of limited visible open rows. Dashboard open-position quantity now remains
+  truthful when `perSessionLimit` hides older open positions while visible row
+  lists remain limited. Validation PASS: failing-then-passing
+  `perSessionLimit=1` open-quantity regression, runtime-scope e2e (`12/12`),
+  monitoring aggregate e2e (`11/11`), API typecheck, repository guardrails,
+  lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-42-open-position-qty-limit-task-2026-05-03.md`.
 - 2026-05-03 runtime position realized-PnL limit slice `RUNTIME-AUDIT-41`
   is closed locally. Runtime session positions now aggregate realized PnL from
   all scoped closed positions instead of only visible history rows, and

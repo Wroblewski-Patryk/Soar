@@ -38,6 +38,7 @@ import {
   listRuntimePositionLastPrices,
   listRuntimePositionStrategies,
   listRuntimePositionTradeRows,
+  sumRuntimeManagedPositionQuantity,
   sumRuntimeManagedPositionRealizedPnl,
 } from './runtimeSessionPositionsRead.repository';
 import {
@@ -478,6 +479,7 @@ export const listBotRuntimeSessionPositions = async (
     closedPositions,
     openPositionCount,
     closedPositionCount,
+    openPositionQuantity,
     closedPositionRealizedPnl,
   ] = await Promise.all([
     listRuntimeManagedPositions({
@@ -490,8 +492,10 @@ export const listBotRuntimeSessionPositions = async (
     }),
     countRuntimeManagedPositions(openPositionWhere),
     countRuntimeManagedPositions(closedPositionWhere),
+    sumRuntimeManagedPositionQuantity(openPositionWhere),
     sumRuntimeManagedPositionRealizedPnl(closedPositionWhere),
   ]);
+  const totalOpenPositionQty = openPositionQuantity._sum.quantity ?? 0;
   const totalRealizedPnl = closedPositionRealizedPnl._sum.realizedPnl ?? 0;
   const positions = [...openPositions, ...closedPositions];
 
@@ -528,6 +532,7 @@ export const listBotRuntimeSessionPositions = async (
         realizedPnl: totalRealizedPnl,
         unrealizedPnl: 0,
         feesPaid: 0,
+        openPositionQty: totalOpenPositionQty,
         ...(await resolveRuntimeCapitalSummary(0)),
       },
       openOrders: visibleOpenOrders,
@@ -972,6 +977,7 @@ export const listBotRuntimeSessionPositions = async (
       realizedPnl: totalRealizedPnl,
       unrealizedPnl: openItems.reduce((acc, position) => acc + (position.unrealizedPnl ?? 0), 0),
       feesPaid: mappedPositions.reduce((acc, position) => acc + position.feesPaid, 0),
+      openPositionQty: totalOpenPositionQty,
       ...capitalSummary,
     },
     openOrders: visibleOpenOrders,
