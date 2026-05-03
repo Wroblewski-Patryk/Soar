@@ -3,6 +3,18 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 runtime position read drift slice `POSDRIFT-04` is closed locally.
+  Runtime position reads now resolve inherited execution venue from active
+  canonical `BotMarketGroup` market universe when available, and use direct
+  `Bot.symbolGroup` only as legacy fallback. Position protection/actionable
+  display no longer falls back to direct `Bot.strategyId` when
+  position/canonical strategy provenance is missing. This prevents stale direct
+  venue from hiding dashboard positions and stale direct strategy projection
+  from making protection display look actionable. Validation PASS: runtime
+  strategy-context e2e (`2/2`), dynamic-stop/serialization/automation pack
+  (`42/42`), runtime-scope/orders/market-universe pack (`34/34`), web
+  history/manual pack (`13/13`), and API typecheck. Evidence:
+  `docs/planning/posdrift-04-runtime-position-read-canonical-context-task-2026-05-03.md`.
 - 2026-05-03 imported-position ownership scope slice `POSDRIFT-03` is closed
   locally. External-position ownership now builds bot symbol scope from active
   canonical `BotMarketGroup` rows when they exist, and uses direct legacy

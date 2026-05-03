@@ -52,6 +52,30 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-05-03 - Runtime position reads must inherit canonical venue and strategy context
+- Context: continued operator audit of LIVE/PAPER position management and
+  dashboard truth after imported ownership and manual close fixes.
+- Symptom: runtime position reads could still validate wallet venue against
+  direct legacy `Bot.symbolGroup.marketUniverse`, and protection/actionable
+  display could use direct `Bot.strategyId` when position/canonical strategy
+  provenance was missing.
+- Root cause: the position read-model had not fully adopted the canonical-first
+  runtime graph contract used by runtime automation and ownership resolution.
+- Guardrail: dashboard position read-models must use active canonical market
+  group venue and position or single canonical strategy provenance before any
+  direct projection fallback.
+- Preferred pattern:
+```text
+1) Resolve active enabled BotMarketGroup market-universe venue first.
+2) Use direct Bot.symbolGroup venue only when no canonical venue exists.
+3) Treat direct Bot.strategyId as insufficient for protection/actionable state.
+4) Keep missing canonical strategy context non-actionable and fail-closed.
+```
+- Avoid: letting stale direct venue hide positions or stale direct strategy
+  projection make protection state look actionable.
+- Evidence: 2026-05-03 `POSDRIFT-04`
+  (`runtimeSessionPositionsRead.service.ts`).
+
 ### 2026-05-03 - Imported ownership scope must not merge stale direct bot markets
 - Context: the operator reported LIVE bots not consistently reflecting manual
   exchange positions across assigned markets after market changes.

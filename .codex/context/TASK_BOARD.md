@@ -20,6 +20,18 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `POSDRIFT-04 fix(api-runtime): keep runtime position reads canonical-context aligned`
+  - Scope: closed the next dashboard position drift. Runtime position reads now
+    resolve inherited execution venue from active canonical `BotMarketGroup`
+    market universe when available, using direct `Bot.symbolGroup` only as
+    legacy fallback. Position protection/actionable display no longer falls
+    back to direct `Bot.strategyId` when position/canonical strategy provenance
+    is missing. Validation PASS: runtime strategy-context e2e (`2/2`),
+    dynamic-stop/serialization/automation pack (`42/42`),
+    runtime-scope/orders/market-universe pack (`34/34`), web history/manual
+    pack (`13/13`), and API typecheck. Evidence:
+    `docs/planning/posdrift-04-runtime-position-read-canonical-context-task-2026-05-03.md`.
+
 - [x] `POSDRIFT-03 fix(api-runtime): keep imported ownership canonical-market scoped`
   - Scope: closed the next imported-position ownership drift. External-position
     ownership now builds bot symbol scope from active canonical

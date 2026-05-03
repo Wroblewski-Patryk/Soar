@@ -36,6 +36,17 @@ export const getRuntimePositionBotContext = async (userId: string, botId: string
       botMarketGroups: {
         where: { isEnabled: true, lifecycleStatus: 'ACTIVE' },
         select: {
+          symbolGroup: {
+            select: {
+              marketUniverse: {
+                select: {
+                  exchange: true,
+                  marketType: true,
+                  baseCurrency: true,
+                },
+              },
+            },
+          },
           strategyLinks: {
             where: { isEnabled: true },
             select: { strategyId: true },
