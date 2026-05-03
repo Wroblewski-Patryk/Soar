@@ -37,14 +37,29 @@ export type RuntimeManagedPosition = Pick<
           | null;
         symbolGroup:
           | {
+              symbols?: string[] | null;
               marketUniverse: {
                 exchange: Exchange;
                 marketType: TradeMarket;
                 baseCurrency: string;
+                filterRules?: Prisma.JsonValue | null;
+                whitelist?: string[] | null;
+                blacklist?: string[] | null;
               } | null;
             }
           | null;
         botMarketGroups?: Array<{
+          symbolGroup?: {
+            symbols?: string[] | null;
+            marketUniverse: {
+              exchange: Exchange;
+              marketType: TradeMarket;
+              baseCurrency: string;
+              filterRules?: Prisma.JsonValue | null;
+              whitelist?: string[] | null;
+              blacklist?: string[] | null;
+            } | null;
+          } | null;
           strategyLinks: Array<{
             strategyId: string;
           }>;

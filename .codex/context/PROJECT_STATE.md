@@ -3,6 +3,17 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 runtime position automation symbol-scope slice
+  `RUNTIME-AUDIT-07` is closed locally. Runtime position automation now
+  resolves an owned position's configured bot symbol scope from active
+  canonical market assignment before strategy config loading, DCA funds
+  checks, DCA execution, lifecycle price evaluation, or protection close
+  orchestration. Stale directly owned positions outside the bot's active
+  market scope are skipped with LIVE `PRETRADE_BLOCKED` telemetry reason
+  `position_symbol_outside_configured_scope`. Validation PASS: focused
+  automation/default-deps pack (`35/35`), broader close/ownership
+  automation pack (`52/52`), and API typecheck. Evidence:
+  `docs/planning/runtime-audit-07-position-automation-canonical-symbol-scope-task-2026-05-03.md`.
 - 2026-05-03 dashboard close command symbol-scope slice
   `RUNTIME-AUDIT-06` is closed locally. Dashboard runtime position close now
   resolves selected-bot configured symbols from active canonical market scope

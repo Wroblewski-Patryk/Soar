@@ -6,7 +6,7 @@
 - Source path: `apps/api/src/modules/engine`
 - Owner: backend/trading-runtime
 - Last updated: 2026-05-03
-- Related planning task: `RUNTIME-AUDIT-02`
+- Related planning task: `RUNTIME-AUDIT-07`
 
 ## Canonical Architecture Linkage
 Canonical behavior and invariants live in `docs/architecture/`, especially:
@@ -63,6 +63,15 @@ Out of scope:
   - resolves open/close/ignore action.
   - writes order/position/trade side effects through gateways.
   - emits runtime execution events and updates dedupe state.
+- Runtime position automation:
+  - resolves owned position configured symbol scope through the shared
+    catalog-aware resolver before strategy loading, DCA checks, DCA execution,
+    lifecycle price evaluation, or protection close orchestration,
+  - stale directly owned positions outside active configured bot market scope
+    fail closed and emit LIVE `PRETRADE_BLOCKED` telemetry with
+    `position_symbol_outside_configured_scope`,
+  - imported ownership hydration must load symbol-group metadata required by
+    the same scope resolver.
 - Assistant orchestration:
   - planner step -> subagent fan-out (timeouts/errors tracked) -> deterministic merge -> policy gate.
 

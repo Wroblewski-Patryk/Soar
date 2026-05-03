@@ -27,12 +27,14 @@ import {
   resolveRuntimeCurrentPnlFraction,
 } from './runtimePositionAutomation.helpers';
 import { hasMaterialCanonicalBasisDrift } from './runtimePositionAutomationStateRebase';
-import { hydrateImportedRuntimePositionOwnership } from './runtimeImportedPositionOwnership';
 import { resolvePreferredRuntimeOrExchangeSyncedPrice } from './runtimeExchangeSyncedPositionPrice';
 import {
   recordRuntimeDcaFundsExhaustedTelemetry,
   recordRuntimeProtectionCloseDecisionTelemetry,
 } from './runtimePositionAutomationTelemetry';
+import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from '../bots/runtimeSymbolCatalogResolver.service';
+import { normalizeSymbols } from '../bots/runtimeSymbolUniverse.service';
+import { listRuntimeAutomationOpenPositionsBySymbol } from './runtimePositionAutomationDefaultPositionDeps';
 import { RuntimeManagedPosition, RuntimePositionAutomationDeps } from './runtimePositionAutomation.types';
 export type RuntimeFallbackConfig = {
   dcaEnabled: boolean;
@@ -340,61 +342,7 @@ export const executeRuntimeDca = async (input: {
 };
 
 const defaultDeps: RuntimePositionAutomationDeps = {
-  listOpenPositionsBySymbol: async (symbol) => {
-    const positions = await prisma.position.findMany({
-      where: {
-        status: 'OPEN',
-        symbol,
-        managementMode: 'BOT_MANAGED',
-        OR: [
-          { botId: null },
-          {
-            bot: {
-              isActive: true,
-            },
-          },
-        ],
-      },
-      select: {
-        id: true,
-        userId: true,
-        botId: true,
-        walletId: true,
-        strategyId: true,
-        externalId: true,
-        symbol: true,
-        side: true,
-        entryPrice: true,
-        quantity: true,
-        leverage: true,
-        marginUsed: true,
-        stopLoss: true,
-        takeProfit: true,
-        managementMode: true,
-        origin: true,
-        continuityState: true,
-        status: true,
-        unrealizedPnl: true,
-        lastExchangeSyncAt: true,
-          bot: {
-            select: {
-              walletId: true,
-              liveOptIn: true,
-              wallet: { select: { mode: true, exchange: true, marketType: true, baseCurrency: true, paperInitialBalance: true } },
-              symbolGroup: { select: { marketUniverse: { select: { exchange: true, marketType: true, baseCurrency: true } } } },
-              botMarketGroups: {
-                where: { isEnabled: true, lifecycleStatus: 'ACTIVE' },
-                select: {
-                  symbolGroup: { select: { marketUniverse: { select: { exchange: true, marketType: true, baseCurrency: true } } } },
-                  strategyLinks: { where: { isEnabled: true }, select: { strategyId: true } },
-                },
-              },
-            },
-          },
-        },
-    });
-    return hydrateImportedRuntimePositionOwnership(positions);
-  },
+  listOpenPositionsBySymbol: listRuntimeAutomationOpenPositionsBySymbol,
   getStrategyConfigById: async (strategyId) => {
     const strategy = await prisma.strategy.findUnique({
       where: { id: strategyId },
@@ -430,6 +378,17 @@ const defaultDeps: RuntimePositionAutomationDeps = {
 };
 
 const resolveEnabledCanonicalStrategyLinkIds = (position: RuntimeManagedPosition) => Array.from(new Set((position.bot?.botMarketGroups ?? []).flatMap((group) => group.strategyLinks.map((link) => link.strategyId))));
+const resolveConfiguredPositionSymbols = async (position: RuntimeManagedPosition) => {
+  const configuredSymbolGroup =
+    position.bot?.botMarketGroups?.[0]?.symbolGroup ?? position.bot?.symbolGroup ?? null;
+  if (!configuredSymbolGroup) return [];
+  return normalizeSymbols(
+    await resolveEffectiveSymbolGroupSymbolsWithCatalog(
+      configuredSymbolGroup,
+      new Map<string, string[]>()
+    )
+  );
+};
 const toPercent = (value: unknown, fallback = 0) => {
   const num = Number(value);
   if (!Number.isFinite(num)) return fallback;
@@ -719,6 +678,22 @@ export class RuntimePositionAutomationService {
         inheritedExecutionContext,
         reason: 'live_opt_in_disabled',
         message: 'Runtime automation skipped because LIVE bot has no active live opt-in',
+      });
+      return;
+    }
+    const configuredSymbols = position.botId ? await resolveConfiguredPositionSymbols(position) : [];
+    if (position.botId && !configuredSymbols.includes(position.symbol)) {
+      console.warn(
+        `[RuntimePositionAutomation] position=${position.id} symbol=${position.symbol} skipped: symbol outside configured bot scope`
+      );
+      await recordRuntimeAutomationSkipTelemetry({
+        recordRuntimeEvent: this.deps.recordRuntimeEvent,
+        event,
+        position,
+        inheritedExecutionContext,
+        reason: 'position_symbol_outside_configured_scope',
+        message: 'Runtime automation skipped because position symbol is outside configured bot scope',
+        extraPayload: { configuredSymbols },
       });
       return;
     }

@@ -28,6 +28,7 @@ const buildBotExecutionContext = (
       paperInitialBalance: number;
     }> | null;
     symbolGroup: {
+      symbols?: string[] | null;
       marketUniverse: Partial<{
         exchange: 'BINANCE' | 'BYBIT';
         marketType: 'FUTURES' | 'SPOT';
@@ -36,6 +37,7 @@ const buildBotExecutionContext = (
     } | null;
     botMarketGroups: Array<{
       symbolGroup?: {
+        symbols?: string[] | null;
         marketUniverse: Partial<{
           exchange: 'BINANCE' | 'BYBIT';
           marketType: 'FUTURES' | 'SPOT';
@@ -63,6 +65,13 @@ const buildBotExecutionContext = (
     overrides?.symbolGroup === null
       ? null
       : {
+          symbols: overrides?.symbolGroup?.symbols ?? [
+            'BTCUSDT',
+            'ETHUSDT',
+            'DOGEUSDT',
+            'ADAUSDT',
+            'SOLUSDT',
+          ],
           marketUniverse:
             overrides?.symbolGroup?.marketUniverse === null
               ? null
@@ -81,6 +90,13 @@ const buildBotExecutionContext = (
         : group.symbolGroup === null
           ? null
           : {
+              symbols: group.symbolGroup.symbols ?? [
+                'BTCUSDT',
+                'ETHUSDT',
+                'DOGEUSDT',
+                'ADAUSDT',
+                'SOLUSDT',
+              ],
               marketUniverse:
                 group.symbolGroup.marketUniverse === null
                   ? null
@@ -185,6 +201,91 @@ describe('RuntimePositionAutomationService', () => {
       })
     );
     expect(deps.executeDca).not.toHaveBeenCalled();
+  });
+
+  it('fails closed when an owned position symbol is outside the active bot market scope', async () => {
+    const recordRuntimeEvent = vi.fn(async () => undefined);
+    const deps: any = {
+      listOpenPositionsBySymbol: vi.fn(async () => [
+        {
+          id: 'pos-offscope-automation',
+          userId: 'user-offscope-automation',
+          botId: 'bot-offscope-automation',
+          walletId: 'wallet-offscope-automation',
+          strategyId: 'strat-offscope-automation',
+          symbol: 'SOLUSDT',
+          side: 'LONG' as const,
+          entryPrice: 100,
+          quantity: 1,
+          leverage: 5,
+          stopLoss: 95,
+          takeProfit: 110,
+          managementMode: 'BOT_MANAGED' as const,
+          origin: 'BOT' as const,
+          continuityState: 'CONFIRMED' as const,
+          status: 'OPEN' as const,
+          unrealizedPnl: null,
+          lastExchangeSyncAt: null,
+          bot: buildBotExecutionContext({
+            wallet: { mode: 'LIVE' },
+            botMarketGroups: [
+              {
+                symbolGroup: {
+                  symbols: ['BTCUSDT'],
+                  marketUniverse: {
+                    exchange: 'BINANCE',
+                    marketType: 'FUTURES',
+                    baseCurrency: 'USDT',
+                  },
+                },
+                strategyLinks: [{ strategyId: 'strat-offscope-automation' }],
+              },
+            ],
+          }),
+        },
+      ]),
+      getStrategyConfigById: vi.fn(async () => ({
+        close: { tp: 1, sl: 1 },
+        additional: { dcaEnabled: true, dcaTimes: 1, dcaLevels: [{ percent: -1, multiplier: 1 }] },
+      })),
+      executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
+      closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
+      resolveDcaFundsExhausted: vi.fn(async () => false),
+      recordRuntimeEvent,
+      nowMs: vi.fn(() => Date.now()),
+    };
+
+    const service = new RuntimePositionAutomationService(deps);
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'SOLUSDT',
+      eventTime: 1_250,
+      lastPrice: 112,
+      priceChangePercent24h: 1.6,
+    });
+
+    expect(deps.getStrategyConfigById).not.toHaveBeenCalled();
+    expect(deps.resolveDcaFundsExhausted).not.toHaveBeenCalled();
+    expect(deps.executeDca).not.toHaveBeenCalled();
+    expect(deps.closeByExitSignal).not.toHaveBeenCalled();
+    expect(recordRuntimeEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'user-offscope-automation',
+        botId: 'bot-offscope-automation',
+        mode: 'LIVE',
+        eventType: 'PRETRADE_BLOCKED',
+        level: 'WARN',
+        symbol: 'SOLUSDT',
+        message: 'Runtime automation skipped because position symbol is outside configured bot scope',
+        payload: expect.objectContaining({
+          positionId: 'pos-offscope-automation',
+          skipReason: 'position_symbol_outside_configured_scope',
+          configuredSymbols: ['BTCUSDT'],
+        }),
+      })
+    );
   });
 
   it('fails closed when a multi-strategy bot-managed position has no strategy provenance', async () => {

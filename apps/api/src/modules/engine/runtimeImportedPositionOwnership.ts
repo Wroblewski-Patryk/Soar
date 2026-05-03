@@ -20,14 +20,29 @@ export type RuntimeImportedPositionBotContext = {
     | null;
   symbolGroup:
     | {
+        symbols?: string[] | null;
         marketUniverse: {
           exchange: Exchange;
           marketType: TradeMarket;
           baseCurrency: string;
+          filterRules?: unknown;
+          whitelist?: string[] | null;
+          blacklist?: string[] | null;
         } | null;
       }
     | null;
   botMarketGroups?: Array<{
+    symbolGroup?: {
+      symbols?: string[] | null;
+      marketUniverse: {
+        exchange: Exchange;
+        marketType: TradeMarket;
+        baseCurrency: string;
+        filterRules?: unknown;
+        whitelist?: string[] | null;
+        blacklist?: string[] | null;
+      } | null;
+    } | null;
     strategyLinks: Array<{
       strategyId: string;
     }>;
@@ -99,11 +114,15 @@ export const hydrateImportedRuntimePositionOwnership = async <
             },
             symbolGroup: {
               select: {
+                symbols: true,
                 marketUniverse: {
                   select: {
                     exchange: true,
                     marketType: true,
                     baseCurrency: true,
+                    filterRules: true,
+                    whitelist: true,
+                    blacklist: true,
                   },
                 },
               },
@@ -111,6 +130,21 @@ export const hydrateImportedRuntimePositionOwnership = async <
             botMarketGroups: {
               where: { isEnabled: true, lifecycleStatus: 'ACTIVE' },
               select: {
+                symbolGroup: {
+                  select: {
+                    symbols: true,
+                    marketUniverse: {
+                      select: {
+                        exchange: true,
+                        marketType: true,
+                        baseCurrency: true,
+                        filterRules: true,
+                        whitelist: true,
+                        blacklist: true,
+                      },
+                    },
+                  },
+                },
                 strategyLinks: {
                   where: { isEnabled: true },
                   select: { strategyId: true },

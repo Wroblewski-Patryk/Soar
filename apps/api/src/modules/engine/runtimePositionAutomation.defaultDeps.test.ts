@@ -83,14 +83,29 @@ describe('RuntimePositionAutomationService default ownership hydration', () => {
           paperInitialBalance: 1000,
         },
         symbolGroup: {
+          symbols: ['DOGEUSDT'],
           marketUniverse: {
             exchange: 'BINANCE',
             marketType: 'FUTURES',
             baseCurrency: 'USDT',
+            filterRules: null,
+            whitelist: [],
+            blacklist: [],
           },
         },
         botMarketGroups: [
           {
+            symbolGroup: {
+              symbols: ['DOGEUSDT'],
+              marketUniverse: {
+                exchange: 'BINANCE',
+                marketType: 'FUTURES',
+                baseCurrency: 'USDT',
+                filterRules: null,
+                whitelist: [],
+                blacklist: [],
+              },
+            },
             strategyLinks: [{ strategyId: 'strat-1' }],
           },
         ],

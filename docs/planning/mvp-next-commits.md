@@ -9,6 +9,18 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-07 fix(api-engine): fail closed off-scope runtime position automation`
+  - 2026-05-03: Closed the next money-impacting automation/read parity drift.
+    Runtime position automation now resolves an owned position's configured
+    bot symbol scope from active canonical market assignment before strategy
+    config loading, DCA funds checks, DCA execution, lifecycle price
+    evaluation, or protection close orchestration. Stale directly owned
+    positions outside the bot's active market scope are skipped with LIVE
+    `PRETRADE_BLOCKED` telemetry reason
+    `position_symbol_outside_configured_scope`. Validation PASS: focused
+    automation/default-deps pack (`35/35`), broader close/ownership
+    automation pack (`52/52`), and API typecheck. Evidence:
+    `docs/planning/runtime-audit-07-position-automation-canonical-symbol-scope-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-06 fix(api-bots): fail closed off-scope dashboard position close`
   - 2026-05-03: Closed the next money-impacting command/read parity drift.
     Dashboard runtime position close now resolves selected-bot configured

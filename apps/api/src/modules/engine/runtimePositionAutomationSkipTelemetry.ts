@@ -8,6 +8,7 @@ export type RuntimeAutomationSkipReason =
   | 'canonical_execution_context_unresolved'
   | 'execution_context_unresolved'
   | 'live_opt_in_disabled'
+  | 'position_symbol_outside_configured_scope'
   | 'multi_strategy_position_provenance_missing';
 
 type RuntimeAutomationTelemetryPosition = {
