@@ -12,6 +12,8 @@ import {
   parseApiKeyIdFromExternalPositionId,
   resolveExternalPositionOwnershipIndex,
 } from './runtimeExternalPositionOwner.service';
+import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from './runtimeSymbolCatalogResolver.service';
+import { normalizeSymbols } from './runtimeSymbolUniverse.service';
 
 const resolveSingleCanonicalStrategyId = (bot: {
   botMarketGroups?: Array<{
@@ -112,12 +114,42 @@ export const closeBotRuntimeSessionPosition = async (
           apiKeyId: true,
         },
       },
+      symbolGroup: {
+        select: {
+          symbols: true,
+          marketUniverse: {
+            select: {
+              exchange: true,
+              marketType: true,
+              baseCurrency: true,
+              filterRules: true,
+              whitelist: true,
+              blacklist: true,
+            },
+          },
+        },
+      },
       botMarketGroups: {
         where: {
           isEnabled: true,
           lifecycleStatus: 'ACTIVE',
         },
         select: {
+          symbolGroup: {
+            select: {
+              symbols: true,
+              marketUniverse: {
+                select: {
+                  exchange: true,
+                  marketType: true,
+                  baseCurrency: true,
+                  filterRules: true,
+                  whitelist: true,
+                  blacklist: true,
+                },
+              },
+            },
+          },
           strategyLinks: {
             where: {
               isEnabled: true,
@@ -183,6 +215,16 @@ export const closeBotRuntimeSessionPosition = async (
   }
   if (position.continuityState !== 'CONFIRMED') {
     return { status: 'ignored', reason: 'no_open_position' };
+  }
+  const configuredSymbolGroup =
+    botContext.botMarketGroups[0]?.symbolGroup ?? botContext.symbolGroup ?? null;
+  if (configuredSymbolGroup) {
+    const configuredSymbols = normalizeSymbols(
+      await resolveEffectiveSymbolGroupSymbolsWithCatalog(configuredSymbolGroup, new Map<string, string[]>())
+    );
+    if (!configuredSymbols.includes(position.symbol)) {
+      return { status: 'ignored', reason: 'no_open_position' };
+    }
   }
 
   const shouldClaimOwnership = !position.botId && externallyOwnedByBot;

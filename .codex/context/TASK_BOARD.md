@@ -20,6 +20,17 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-06 fix(api-bots): fail closed off-scope dashboard position close`
+  - Scope: closed the next money-impacting command/read parity drift.
+    Dashboard runtime position close now resolves selected-bot configured
+    symbols from active canonical market scope before ownership claim,
+    strategy/wallet backfill, or close orchestration. Stale directly owned
+    positions outside the bot's active market scope return the existing
+    ignored `no_open_position` result instead of being closed. Validation
+    PASS: focused close command regression (`9/9`) and broader
+    close/runtime/imported-position pack (`74/74`). Evidence:
+    `docs/planning/runtime-audit-06-close-position-canonical-symbol-scope-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-05 fix(api-bots): keep selected-bot runtime rows canonical-symbol scoped`
   - Scope: closed the next default dashboard row drift. Runtime trade history
     and runtime positions now apply selected-bot active canonical configured

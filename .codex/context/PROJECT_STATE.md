@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 dashboard close command symbol-scope slice
+  `RUNTIME-AUDIT-06` is closed locally. Dashboard runtime position close now
+  resolves selected-bot configured symbols from active canonical market scope
+  before ownership claim, strategy/wallet backfill, or close orchestration.
+  Stale directly owned positions outside the bot's active market scope return
+  the existing ignored `no_open_position` result instead of being closed.
+  Validation PASS: focused close command regression (`9/9`) and broader
+  close/runtime/imported-position pack (`74/74`). Evidence:
+  `docs/planning/runtime-audit-06-close-position-canonical-symbol-scope-task-2026-05-03.md`.
 - 2026-05-03 selected-bot runtime row symbol-scope slice
   `RUNTIME-AUDIT-05` is closed locally. Runtime trade history and runtime
   positions now apply selected-bot active canonical configured symbols to

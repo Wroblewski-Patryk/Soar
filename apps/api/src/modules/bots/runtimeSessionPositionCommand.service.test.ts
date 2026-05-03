@@ -177,6 +177,58 @@ describe('closeBotRuntimeSessionPosition', () => {
     });
   });
 
+  it('fails closed for directly owned positions outside the selected bot configured symbol scope', async () => {
+    mocks.prisma.bot.findFirst.mockResolvedValue({
+      mode: 'PAPER',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      walletId: 'wallet-paper-1',
+      wallet: {
+        apiKeyId: null,
+      },
+      symbolGroup: {
+        symbols: ['BTCUSDT'],
+        marketUniverse: null,
+      },
+      botMarketGroups: [
+        {
+          symbolGroup: {
+            symbols: ['BTCUSDT'],
+            marketUniverse: null,
+          },
+          strategyLinks: [{ strategyId: 'strategy-1' }],
+        },
+      ],
+    });
+    mocks.prisma.position.findFirst.mockResolvedValue({
+      id: 'position-off-scope-1',
+      botId: 'bot-1',
+      walletId: 'wallet-paper-1',
+      strategyId: 'strategy-1',
+      symbol: 'SOLUSDT',
+      quantity: 1,
+      entryPrice: 150,
+      origin: 'BOT',
+      externalId: null,
+      continuityState: 'CONFIRMED',
+    });
+
+    const result = await closeBotRuntimeSessionPosition(
+      'user-1',
+      'bot-1',
+      'session-1',
+      'position-off-scope-1',
+      { riskAck: true }
+    );
+
+    expect(result).toEqual({
+      status: 'ignored',
+      reason: 'no_open_position',
+    });
+    expect(mocks.prisma.position.updateMany).not.toHaveBeenCalled();
+    expect(mocks.orchestrateRuntimeSignal).not.toHaveBeenCalled();
+  });
+
   it('falls back to entry price for LIVE manual close when runtime lifecycle price is unavailable', async () => {
     mocks.prisma.position.findFirst.mockResolvedValue({
       id: 'position-1',

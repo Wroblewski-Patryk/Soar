@@ -6,7 +6,7 @@
 - Source path: `apps/api/src/modules/bots`
 - Owner: backend/trading-domain
 - Last updated: 2026-05-03
-- Related planning task: `RUNTIME-AUDIT-05`
+- Related planning task: `RUNTIME-AUDIT-06`
 
 ## Canonical Architecture Linkage
 Canonical runtime topology and ownership rules live in:
@@ -119,6 +119,8 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
   - lexical bot id tie-break.
 - Close action (`closeBotRuntimeSessionPosition`) is fail-closed:
   - allowed only for `OPEN + BOT_MANAGED + wallet-compatible` rows owned directly or through external deterministic mapping,
+  - allowed only when the target symbol belongs to the selected bot's active
+    configured symbol scope when a symbol group is available,
   - all other paths return `status=ignored`, `reason=no_open_position`.
 - External takeover audit statuses from positions module are non-actionable in dashboard close flow:
   - `UNOWNED`, `AMBIGUOUS`, `MANUAL_ONLY`.

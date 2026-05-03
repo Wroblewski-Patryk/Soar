@@ -25,6 +25,10 @@ describe('Bots runtime imported DCA visibility', () => {
       DCA_ADVANCED_STRATEGY_CONFIG
     );
     const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    await prisma.symbolGroup.update({
+      where: { id: marketGroupId },
+      data: { symbols: ['DOGEUSDT'] },
+    });
 
     const createRes = await owner
       .post('/dashboard/bots')
@@ -108,6 +112,10 @@ describe('Bots runtime imported DCA visibility', () => {
       DCA_ADVANCED_STRATEGY_CONFIG
     );
     const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    await prisma.symbolGroup.update({
+      where: { id: marketGroupId },
+      data: { symbols: ['DOGEUSDT'] },
+    });
 
     const createRes = await owner
       .post('/dashboard/bots')
@@ -251,6 +259,10 @@ describe('Bots runtime imported DCA visibility', () => {
       DCA_ADVANCED_STRATEGY_CONFIG
     );
     const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    await prisma.symbolGroup.update({
+      where: { id: marketGroupId },
+      data: { symbols: ['DOGEUSDT'] },
+    });
 
     const createRes = await owner
       .post('/dashboard/bots')
@@ -467,6 +479,10 @@ describe('Bots runtime imported DCA visibility', () => {
       DCA_ADVANCED_STRATEGY_CONFIG
     );
     const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    await prisma.symbolGroup.update({
+      where: { id: marketGroupId },
+      data: { symbols: ['ETHUSDT'] },
+    });
 
     const createRes = await owner
       .post('/dashboard/bots')
@@ -672,6 +688,10 @@ describe('Bots runtime imported DCA visibility', () => {
       DCA_ADVANCED_STRATEGY_CONFIG
     );
     const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    await prisma.symbolGroup.update({
+      where: { id: marketGroupId },
+      data: { symbols: ['ETHUSDT'] },
+    });
 
     const createRes = await owner
       .post('/dashboard/bots')
@@ -884,6 +904,10 @@ describe('Bots runtime imported DCA visibility', () => {
       DCA_ADVANCED_STRATEGY_CONFIG
     );
     const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    await prisma.symbolGroup.update({
+      where: { id: marketGroupId },
+      data: { symbols: ['DOGEUSDT'] },
+    });
 
     const createRes = await owner
       .post('/dashboard/bots')
