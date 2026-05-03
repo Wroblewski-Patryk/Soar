@@ -285,9 +285,10 @@ export const getBotRuntimeMonitoringAggregate = async (
   );
   const eventsCount = activeSessions.reduce((acc, session) => acc + session.eventsCount, 0);
   const symbolsTracked = activeSessions.reduce((acc, session) => acc + session.symbolsTracked, 0);
+  const symbolProjectionRows = selectLatestRunningProjectionRows(completePayloadRows);
 
   const symbolMap = new Map<string, RuntimeSymbolStatsResponse['items'][number]>();
-  for (const row of completePayloadRows) {
+  for (const row of symbolProjectionRows) {
     for (const item of row.symbolStats.items) {
       const existing = symbolMap.get(item.symbol);
       if (!existing) {
@@ -437,7 +438,7 @@ export const getBotRuntimeMonitoringAggregate = async (
       unrealizedPnl: 0,
     }
   );
-  const historicalSymbolSummary = completePayloadRows.reduce(
+  const historicalSymbolSummary = symbolProjectionRows.reduce(
     (acc, row) => ({
       totalSignals: acc.totalSignals + row.symbolStats.summary.totalSignals,
       longEntries: acc.longEntries + row.symbolStats.summary.longEntries,

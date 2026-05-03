@@ -20,6 +20,17 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-59 fix(api-bots): prevent aggregate running symbol-summary overlap double counts`
+  - Scope: closed a BUILDER-mode aggregate market/signal summary drift.
+    Runtime monitoring aggregate symbol items and `symbolStats.summary` now
+    sum all non-running historical session rows plus only the freshest RUNNING
+    session projection, so overlapping running sessions no longer double-count
+    signal counters, closed-trade counters, gross PnL, or symbol fees in
+    dashboard market/header summaries. Validation PASS: aggregate e2e
+    (`17/17`), runtime-scope e2e (`13/13`), API typecheck, repository
+    guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-59-aggregate-running-symbol-summary-overlap-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-58 fix(api-bots): prevent aggregate running closed-position overlap double counts`
   - Scope: closed a BUILDER-mode aggregate closed-position history drift.
     Runtime monitoring aggregate closed-position counts, realized PnL, and

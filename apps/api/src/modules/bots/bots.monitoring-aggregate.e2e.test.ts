@@ -820,6 +820,114 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     expect(aggregateRes.body.positions.summary.unrealizedPnl).toBeCloseTo(-7);
   });
 
+  it('does not double-count running symbol summary counters across overlapping running sessions', async () => {
+    const ownerEmail = 'bots-monitoring-aggregate-symbol-summary-overlap@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({
+      where: { email: ownerEmail },
+      select: { id: true },
+    });
+
+    const strategyId = await createStrategy(owner, 'Monitoring Aggregate Symbol Summary Overlap');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    const createRes = await owner.post('/dashboard/bots').send(
+      createPayload({
+        strategyId,
+        marketGroupId,
+      })
+    );
+    expect(createRes.status).toBe(201);
+    const botId = createRes.body.id as string;
+
+    const firstRunningSession = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-19T16:30:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-19T16:35:00.000Z'),
+      },
+    });
+    const secondRunningSession = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-19T16:31:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-19T16:36:00.000Z'),
+      },
+    });
+
+    await prisma.botRuntimeSymbolStat.createMany({
+      data: [
+        {
+          userId: ownerUser.id,
+          botId,
+          sessionId: firstRunningSession.id,
+          symbol: 'BTCUSDT',
+          totalSignals: 2,
+          longEntries: 1,
+          shortEntries: 1,
+          exits: 1,
+          dcaCount: 1,
+          closedTrades: 1,
+          winningTrades: 1,
+          losingTrades: 0,
+          realizedPnl: 12,
+          grossProfit: 12,
+          grossLoss: 0,
+          feesPaid: 0.5,
+          snapshotAt: new Date('2026-04-19T16:35:00.000Z'),
+        },
+        {
+          userId: ownerUser.id,
+          botId,
+          sessionId: secondRunningSession.id,
+          symbol: 'BTCUSDT',
+          totalSignals: 2,
+          longEntries: 1,
+          shortEntries: 1,
+          exits: 1,
+          dcaCount: 1,
+          closedTrades: 1,
+          winningTrades: 1,
+          losingTrades: 0,
+          realizedPnl: 12,
+          grossProfit: 12,
+          grossLoss: 0,
+          feesPaid: 0.5,
+          snapshotAt: new Date('2026-04-19T16:36:00.000Z'),
+        },
+      ],
+    });
+
+    const aggregateRes = await owner.get(`/dashboard/bots/${botId}/runtime-monitoring/aggregate`);
+    expect(aggregateRes.status).toBe(200);
+    expect(aggregateRes.body.sessionDetail.metadata.sessionsCount).toBe(2);
+    const btcStats = aggregateRes.body.symbolStats.items.find((item: { symbol: string }) => item.symbol === 'BTCUSDT');
+    expect(btcStats).toBeDefined();
+    expect(btcStats.totalSignals).toBe(2);
+    expect(btcStats.closedTrades).toBe(1);
+    expect(btcStats.realizedPnl).toBe(12);
+    expect(aggregateRes.body.symbolStats.summary.totalSignals).toBe(2);
+    expect(aggregateRes.body.symbolStats.summary.longEntries).toBe(1);
+    expect(aggregateRes.body.symbolStats.summary.shortEntries).toBe(1);
+    expect(aggregateRes.body.symbolStats.summary.exits).toBe(1);
+    expect(aggregateRes.body.symbolStats.summary.dcaCount).toBe(1);
+    expect(aggregateRes.body.symbolStats.summary.closedTrades).toBe(1);
+    expect(aggregateRes.body.symbolStats.summary.winningTrades).toBe(1);
+    expect(aggregateRes.body.symbolStats.summary.losingTrades).toBe(0);
+    expect(aggregateRes.body.symbolStats.summary.realizedPnl).toBe(12);
+    expect(aggregateRes.body.symbolStats.summary.grossProfit).toBe(12);
+    expect(aggregateRes.body.symbolStats.summary.grossLoss).toBe(0);
+    expect(aggregateRes.body.symbolStats.summary.feesPaid).toBeCloseTo(0.5);
+    expect(aggregateRes.body.sessionDetail.summary.totalSignals).toBe(2);
+    expect(aggregateRes.body.sessionDetail.summary.closedTrades).toBe(1);
+    expect(aggregateRes.body.sessionDetail.summary.grossProfit).toBe(12);
+  });
+
   it('does not double-count running trade totals across overlapping running sessions', async () => {
     const ownerEmail = 'bots-monitoring-aggregate-trade-overlap@example.com';
     const owner = await registerAndLogin(ownerEmail);
