@@ -1446,6 +1446,92 @@ describe('reconcileExternalPositionsFromExchange', () => {
     );
   });
 
+  it('keeps stale-looking local managed live position open while same-symbol exchange order is open', async () => {
+    const closeStaleLocalManagedPosition = vi.fn(async () => undefined);
+
+    await reconcileExternalPositionsFromExchange({
+      listSyncedApiKeys: vi.fn(async () => [
+        {
+          id: 'key-open-order-protect-1',
+          userId: 'user-open-order-protect-1',
+        },
+      ]),
+      resolveOwnershipIndexForUser: vi.fn(async () =>
+        new Map([
+          [
+            'key-open-order-protect-1:BTCUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-open-order-protect-1',
+              walletId: 'wallet-open-order-protect-1',
+            },
+          ],
+          [
+            'key-open-order-protect-1:ETHUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-open-order-protect-1',
+              walletId: 'wallet-open-order-protect-1',
+            },
+          ],
+        ])
+      ),
+      fetchPositionsForApiKey: vi.fn(async () => ({
+        positions: [],
+      })),
+      fetchOpenOrdersForApiKey: vi.fn(async () => [
+        {
+          exchangeOrderId: 'btc-pending-close',
+          symbol: 'BTC/USDT:USDT',
+          side: 'sell',
+          type: 'market',
+          status: 'open',
+          amount: 0.01,
+          filled: 0,
+          remaining: 0.01,
+          price: null,
+          timestamp: '2026-03-23T01:00:00.000Z',
+        },
+      ]),
+      findOpenSyncedPositionByExternalId: vi.fn(async () => null),
+      resolveCanonicalBotContinuityContext: vi.fn(async () => ({
+        botId: 'bot-open-order-protect-1',
+        walletId: 'wallet-open-order-protect-1',
+        strategyId: 'strategy-open-order-protect-1',
+      })),
+      updateSyncedPosition: vi.fn(async () => undefined),
+      createSyncedPosition: vi.fn(async () => undefined),
+      listOpenSyncedPositionsForApiKey: vi.fn(async () => []),
+      markMissingSyncedPosition: vi.fn(async () => undefined),
+      closeStaleSyncedPosition: vi.fn(async () => undefined),
+      upsertSyncedOpenOrder: vi.fn(async () => undefined),
+      listOpenSyncedOrdersForOwner: vi.fn(async () => []),
+      markStaleSyncedOrderUnresolved: vi.fn(async () => undefined),
+      listOpenLocalManagedPositionsForOwner: vi.fn(async () => [
+        {
+          id: 'pos-live-btc-pending-close',
+          symbol: 'BTCUSDT',
+          side: 'LONG' as const,
+          openedAt: new Date('2026-03-23T00:30:00.000Z'),
+        },
+        {
+          id: 'pos-live-eth-stale',
+          symbol: 'ETHUSDT',
+          side: 'LONG' as const,
+          openedAt: new Date('2026-03-23T00:30:00.000Z'),
+        },
+      ]),
+      closeStaleLocalManagedPosition,
+      now: () => new Date('2026-03-23T01:10:00.000Z'),
+    });
+
+    expect(closeStaleLocalManagedPosition).toHaveBeenCalledTimes(1);
+    expect(closeStaleLocalManagedPosition).toHaveBeenCalledWith(
+      'pos-live-eth-stale',
+      new Date('2026-03-23T01:10:00.000Z')
+    );
+  });
+
   it('closes stale opposite-side local managed lifecycle immediately when the same symbol reopens on the other side', async () => {
     const closeStaleLocalManagedPosition = vi.fn(async () => undefined);
     const deleteRuntimePositionState = vi.fn(async () => undefined);

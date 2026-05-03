@@ -3,6 +3,17 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 live reconciliation open-order protection slice
+  `RUNTIME-AUDIT-30` is closed locally. Owned exchange open orders now protect
+  both possible local position sides for the same symbol during stale local
+  LIVE position reconciliation, so a pending same-symbol close/order lifecycle
+  cannot let the bot close local state before the exchange order resolves.
+  Unrelated stale local positions still close after the grace window.
+  Validation PASS: failing-then-passing same-symbol open-order protection
+  regression, full live reconciliation service tests (`24/24`), sequential
+  runtime takeover e2e (`4/4`), sequential runtime-scope e2e (`12/12`), API
+  typecheck, repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-30-live-reconcile-open-order-symbol-protection-task-2026-05-03.md`.
 - 2026-05-03 runtime open-order dedupe limit slice `RUNTIME-AUDIT-29` is
   closed locally. Runtime session `openOrders` now read a bounded candidate set
   before exchange/local dedupe and apply the dashboard `limit` after dedupe, so

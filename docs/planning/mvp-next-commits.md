@@ -9,6 +9,18 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-30 fix(api-positions): protect live positions while same-symbol orders are open`
+  - 2026-05-03: Closed a LIVE stale-close lifecycle drift. Owned exchange open
+    orders now protect both possible local position sides for the same symbol
+    during stale local LIVE position reconciliation, so a pending same-symbol
+    close/order lifecycle cannot let the bot close local state before the
+    exchange order resolves. Unrelated stale local positions still close after
+    the grace window. Validation PASS: failing-then-passing same-symbol
+    open-order protection regression, full live reconciliation service tests
+    (`24/24`), sequential runtime takeover e2e (`4/4`), sequential
+    runtime-scope e2e (`12/12`), API typecheck, repository guardrails, lint,
+    and diff review. Evidence:
+    `docs/planning/runtime-audit-30-live-reconcile-open-order-symbol-protection-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-29 fix(api-bots): keep runtime open orders visible after dedupe`
   - 2026-05-03: Closed a dashboard runtime open-order drift. Runtime session
     `openOrders` now read a bounded candidate set before exchange/local dedupe

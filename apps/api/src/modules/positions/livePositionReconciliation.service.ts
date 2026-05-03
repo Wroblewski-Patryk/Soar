@@ -22,7 +22,6 @@ import {
   toOrderSide,
   toOrderType,
   toPositionSide,
-  toPositionSideFromOrderSide,
 } from './livePositionReconciliation.helpers';
 import {
   backfillClosedImportedPositionHistory,
@@ -827,9 +826,8 @@ export const reconcileExternalPositionsFromExchange = async (
 
             const ownerOpenPositionKeys =
               openOrderPositionKeysByOwner.get(ownerKey) ?? new Set<string>();
-            ownerOpenPositionKeys.add(
-              buildPositionIdentity(normalizedSymbol, toPositionSideFromOrderSide(side))
-            );
+            ownerOpenPositionKeys.add(buildPositionIdentity(normalizedSymbol, 'LONG'));
+            ownerOpenPositionKeys.add(buildPositionIdentity(normalizedSymbol, 'SHORT'));
             openOrderPositionKeysByOwner.set(ownerKey, ownerOpenPositionKeys);
 
             const quantity = Number.isFinite(order.amount) ? Math.max(0, order.amount) : 0;
