@@ -3,6 +3,16 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 aggregate symbol-stats summary limit slice `RUNTIME-AUDIT-51`
+  is closed locally. Runtime monitoring aggregate now keeps visible
+  `symbolStats.items` limited while composing `symbolStats.summary` and
+  aggregate header signal counters from per-session summary truth, so
+  `perSessionLimit` no longer hides assigned symbols from aggregate signal and
+  PnL totals. Validation PASS: failing-then-passing `perSessionLimit=1`
+  aggregate symbol-stats summary regression, monitoring aggregate e2e
+  (`13/13`), runtime-scope e2e (`13/13`), API typecheck, repository
+  guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-51-aggregate-symbol-stats-summary-limit-task-2026-05-03.md`.
 - 2026-05-03 symbol-stats open-summary limit slice `RUNTIME-AUDIT-50` is
   closed locally. Runtime session symbol-stats now keep visible `items`
   limited while composing live open-position summary metrics from the full

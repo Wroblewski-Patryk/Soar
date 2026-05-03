@@ -9,6 +9,17 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-51 fix(api-bots): preserve aggregate symbol-stats summaries under item limits`
+  - 2026-05-03: Closed an ARCHITECT-mode dashboard aggregate summary drift.
+    Runtime monitoring aggregate now keeps visible `symbolStats.items` limited
+    while composing `symbolStats.summary` and aggregate header signal counters
+    from per-session summary truth, so hidden assigned symbols no longer
+    disappear from aggregate signal and PnL totals under `perSessionLimit`.
+    Validation PASS: failing-then-passing `perSessionLimit=1` aggregate
+    symbol-stats summary regression, monitoring aggregate e2e (`13/13`),
+    runtime-scope e2e (`13/13`), API typecheck, repository guardrails, lint,
+    and diff review. Evidence:
+    `docs/planning/runtime-audit-51-aggregate-symbol-stats-summary-limit-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-50 fix(api-bots): preserve symbol-stats open summary under item limits`
   - 2026-05-03: Closed a BUILDER-mode dashboard market/signal summary drift.
     Runtime session symbol-stats now keep visible `items` limited while

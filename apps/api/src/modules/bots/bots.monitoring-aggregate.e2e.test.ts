@@ -475,6 +475,95 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     );
   });
 
+  it('keeps aggregate symbol-stats summaries truthful when visible symbols are limited', async () => {
+    const ownerEmail = 'bots-monitoring-aggregate-symbol-summary-limit@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({
+      where: { email: ownerEmail },
+      select: { id: true },
+    });
+
+    const strategyId = await createStrategy(owner, 'Monitoring Aggregate Symbol Summary Limit');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    const createRes = await owner.post('/dashboard/bots').send(
+      createPayload({
+        strategyId,
+        marketGroupId,
+      })
+    );
+    expect(createRes.status).toBe(201);
+    const botId = createRes.body.id as string;
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-19T14:30:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-19T14:40:00.000Z'),
+      },
+    });
+
+    await prisma.botRuntimeSymbolStat.createMany({
+      data: [
+        {
+          userId: ownerUser.id,
+          botId,
+          sessionId: session.id,
+          symbol: 'BTCUSDT',
+          totalSignals: 2,
+          longEntries: 1,
+          shortEntries: 1,
+          exits: 0,
+          dcaCount: 0,
+          closedTrades: 0,
+          winningTrades: 0,
+          losingTrades: 0,
+          realizedPnl: 5,
+          grossProfit: 5,
+          grossLoss: 0,
+          feesPaid: 0.2,
+          openPositionCount: 0,
+          openPositionQty: 0,
+          snapshotAt: new Date('2026-04-19T14:35:00.000Z'),
+        },
+        {
+          userId: ownerUser.id,
+          botId,
+          sessionId: session.id,
+          symbol: 'ETHUSDT',
+          totalSignals: 3,
+          longEntries: 2,
+          shortEntries: 1,
+          exits: 1,
+          dcaCount: 1,
+          closedTrades: 1,
+          winningTrades: 1,
+          losingTrades: 0,
+          realizedPnl: 3,
+          grossProfit: 4,
+          grossLoss: 1,
+          feesPaid: 0.3,
+          openPositionCount: 0,
+          openPositionQty: 0,
+          snapshotAt: new Date('2026-04-19T14:36:00.000Z'),
+        },
+      ],
+    });
+
+    const aggregateRes = await owner.get(`/dashboard/bots/${botId}/runtime-monitoring/aggregate`).query({
+      perSessionLimit: 1,
+    });
+    expect(aggregateRes.status).toBe(200);
+    expect(aggregateRes.body.symbolStats.items).toHaveLength(1);
+    expect(aggregateRes.body.symbolStats.summary.totalSignals).toBe(5);
+    expect(aggregateRes.body.symbolStats.summary.longEntries).toBe(3);
+    expect(aggregateRes.body.symbolStats.summary.realizedPnl).toBe(8);
+    expect(aggregateRes.body.sessionDetail.summary.totalSignals).toBe(5);
+    expect(aggregateRes.body.sessionDetail.summary.longEntries).toBe(3);
+  });
+
   it('keeps aggregate open position quantity truthful when visible open rows are limited', async () => {
     const ownerEmail = 'bots-monitoring-aggregate-open-qty-limit@example.com';
     const owner = await registerAndLogin(ownerEmail);

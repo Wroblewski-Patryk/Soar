@@ -393,24 +393,24 @@ export const getBotRuntimeMonitoringAggregate = async (
   }
 
   const symbolItems = [...symbolMap.values()].sort((left, right) => left.symbol.localeCompare(right.symbol));
-  const symbolSummary = symbolItems.reduce(
-    (acc, item) => ({
-      totalSignals: acc.totalSignals + item.totalSignals,
-      longEntries: acc.longEntries + item.longEntries,
-      shortEntries: acc.shortEntries + item.shortEntries,
-      exits: acc.exits + item.exits,
-      dcaCount: acc.dcaCount + item.dcaCount,
-      closedTrades: acc.closedTrades + item.closedTrades,
-      winningTrades: acc.winningTrades + item.winningTrades,
-      losingTrades: acc.losingTrades + item.losingTrades,
-      realizedPnl: acc.realizedPnl + item.realizedPnl,
-      unrealizedPnl: acc.unrealizedPnl + (item.unrealizedPnl ?? 0),
-      totalPnl: acc.totalPnl + item.realizedPnl + (item.unrealizedPnl ?? 0),
-      grossProfit: acc.grossProfit + item.grossProfit,
-      grossLoss: acc.grossLoss + item.grossLoss,
-      feesPaid: acc.feesPaid + item.feesPaid,
-      openPositionCount: acc.openPositionCount + item.openPositionCount,
-      openPositionQty: acc.openPositionQty + item.openPositionQty,
+  const symbolSummary = completePayloadRows.reduce(
+    (acc, row) => ({
+      totalSignals: acc.totalSignals + row.symbolStats.summary.totalSignals,
+      longEntries: acc.longEntries + row.symbolStats.summary.longEntries,
+      shortEntries: acc.shortEntries + row.symbolStats.summary.shortEntries,
+      exits: acc.exits + row.symbolStats.summary.exits,
+      dcaCount: acc.dcaCount + row.symbolStats.summary.dcaCount,
+      closedTrades: acc.closedTrades + row.symbolStats.summary.closedTrades,
+      winningTrades: acc.winningTrades + row.symbolStats.summary.winningTrades,
+      losingTrades: acc.losingTrades + row.symbolStats.summary.losingTrades,
+      realizedPnl: acc.realizedPnl + row.symbolStats.summary.realizedPnl,
+      unrealizedPnl: acc.unrealizedPnl + row.symbolStats.summary.unrealizedPnl,
+      totalPnl: acc.totalPnl + row.symbolStats.summary.totalPnl,
+      grossProfit: acc.grossProfit + row.symbolStats.summary.grossProfit,
+      grossLoss: acc.grossLoss + row.symbolStats.summary.grossLoss,
+      feesPaid: acc.feesPaid + row.symbolStats.summary.feesPaid,
+      openPositionCount: acc.openPositionCount + row.symbolStats.summary.openPositionCount,
+      openPositionQty: acc.openPositionQty + row.symbolStats.summary.openPositionQty,
     }),
     {
       totalSignals: 0,
