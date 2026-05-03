@@ -6,7 +6,7 @@
 - Source path: `apps/api/src/modules/orders`
 - Owner: backend/trading-domain
 - Last updated: 2026-05-03
-- Related planning task: `RUNTIME-AUDIT-17`
+- Related planning task: `RUNTIME-AUDIT-24`
 
 ## Canonical Architecture Linkage
 Canonical order and lifecycle rules live in:
@@ -35,9 +35,13 @@ Out of scope:
 
 ## 3. Data and Contract Surface
 - Input DTOs:
-  - `OpenOrderDto`, `CancelOrderDto`, `CloseOrderDto`, list query DTO.
+  - `OpenOrderDto`, `CancelOrderDto`, `CloseOrderDto`,
+    `ListOrdersQuerySchema`, manual-order context query DTO.
 - Output:
   - persisted order records with LIVE metadata (exchange order ids/fills/fees where available).
+- List/read contract:
+  - dashboard `symbol` filters are trimmed and normalized to uppercase at the
+    DTO boundary before Prisma filters are built.
 - LIVE invariants:
   - requires `riskAck`, LIVE bot mode, active opt-in, compatible API key.
   - enforces symbol trading rules and quantity/notional checks.

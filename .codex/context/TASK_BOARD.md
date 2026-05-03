@@ -20,6 +20,16 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-24 fix(api-orders): normalize list symbol filters`
+  - Scope: closed the sibling dashboard order read drift after
+    `RUNTIME-AUDIT-23`. Order list `symbol` filters now normalize to uppercase
+    at the DTO boundary, so operator/API requests such as `symbol=ethusdt`
+    find owned persisted `ETHUSDT` orders instead of rendering an empty orders
+    table. Validation PASS: failing-then-passing lowercase symbol filter
+    regression, focused orders/positions read e2e (`21/21`), API typecheck,
+    repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-24-order-list-symbol-normalization-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-23 fix(api-positions): normalize list symbol filters`
   - Scope: closed a dashboard position read drift. Position list `symbol`
     filters now normalize to uppercase at the DTO boundary, so operator/API

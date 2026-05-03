@@ -173,6 +173,33 @@ describe('Orders and positions read contract', () => {
     expect(getOrderRes.body.id).toBe(ownerOrder.id);
   });
 
+  it('normalizes symbol filters before listing owned orders', async () => {
+    const ownerAgent = await registerAndLogin('orders-list-symbol-normalization@example.com');
+    const ownerId = await getUserId('orders-list-symbol-normalization@example.com');
+
+    const ownerOrder = await prisma.order.create({
+      data: {
+        userId: ownerId,
+        symbol: 'ETHUSDT',
+        side: 'BUY',
+        type: 'LIMIT',
+        status: 'OPEN',
+        quantity: 0.2,
+        price: 2500,
+      },
+    });
+
+    const listOrdersRes = await ownerAgent.get('/dashboard/orders').query({ symbol: 'ethusdt' });
+
+    expect(listOrdersRes.status).toBe(200);
+    expect(listOrdersRes.body).toEqual([
+      expect.objectContaining({
+        id: ownerOrder.id,
+        symbol: 'ETHUSDT',
+      }),
+    ]);
+  });
+
   it('enforces ownership isolation for get by id', async () => {
     const ownerAgent = await registerAndLogin('read-owner-2@example.com');
     const otherAgent = await registerAndLogin('read-other-2@example.com');

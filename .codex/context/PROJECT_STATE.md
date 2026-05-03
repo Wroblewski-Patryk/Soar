@@ -3,6 +3,14 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 order list symbol normalization slice `RUNTIME-AUDIT-24` is
+  closed locally. Dashboard order list `symbol` filters now normalize to
+  uppercase at the DTO boundary, so operator/API requests such as
+  `symbol=ethusdt` find owned persisted `ETHUSDT` orders instead of rendering
+  an empty orders table. Validation PASS: failing-then-passing lowercase
+  symbol filter regression, focused orders/positions read e2e (`21/21`), API
+  typecheck, repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-24-order-list-symbol-normalization-task-2026-05-03.md`.
 - 2026-05-03 position list symbol normalization slice `RUNTIME-AUDIT-23` is
   closed locally. Dashboard position list `symbol` filters now normalize to
   uppercase at the DTO boundary, so operator/API requests such as
