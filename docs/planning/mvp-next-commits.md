@@ -9,6 +9,16 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-35 fix(api-bots): keep empty running aggregate unfinished`
+  - 2026-05-03: Closed a BUILDER-mode runtime dashboard empty-state timestamp
+    drift. Empty runtime monitoring aggregate payloads now set
+    `sessionDetail.finishedAt: null` when the effective empty aggregate status
+    is `RUNNING`, preventing dashboard metadata from saying an empty running
+    view is already finished. Default empty completed metadata remains
+    deterministic. Validation PASS: failing-then-passing empty
+    `status=RUNNING` regression, full monitoring aggregate e2e (`7/7`), API
+    typecheck, repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-35-empty-aggregate-running-finished-at-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-34 fix(api-bots): preserve empty aggregate bot mode`
   - 2026-05-03: Closed a BUILDER-mode runtime dashboard empty-state truth
     drift. Empty runtime monitoring aggregate payloads now preserve the

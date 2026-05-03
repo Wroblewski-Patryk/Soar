@@ -240,6 +240,32 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     expect(aggregateRes.body.trades.total).toBe(0);
   });
 
+  it('keeps empty RUNNING aggregate metadata unfinished when no sessions are available', async () => {
+    const ownerEmail = 'bots-monitoring-aggregate-empty-running@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+
+    const strategyId = await createStrategy(owner, 'Monitoring Aggregate Empty Running Strategy');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    const createRes = await owner.post('/dashboard/bots').send(
+      createPayload({
+        strategyId,
+        marketGroupId,
+      })
+    );
+    expect(createRes.status).toBe(201);
+    const botId = createRes.body.id as string;
+
+    const aggregateRes = await owner
+      .get(`/dashboard/bots/${botId}/runtime-monitoring/aggregate`)
+      .query({ status: 'RUNNING' });
+    expect(aggregateRes.status).toBe(200);
+    expect(aggregateRes.body.sessionDetail.status).toBe('RUNNING');
+    expect(aggregateRes.body.sessionDetail.finishedAt).toBeNull();
+    expect(aggregateRes.body.sessionDetail.metadata.sessionsCount).toBe(0);
+    expect(aggregateRes.body.positions.total).toBe(0);
+    expect(aggregateRes.body.trades.total).toBe(0);
+  });
+
   it('keeps LIVE bot mode in empty aggregate payload when no sessions are available', async () => {
     const ownerEmail = 'bots-monitoring-aggregate-empty-live@example.com';
     const owner = await registerAndLogin(ownerEmail);

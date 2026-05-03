@@ -53,14 +53,16 @@ const buildEmptyAggregatePayload = (params: {
   status: RuntimeSessionListItem['status'] | undefined;
 }) => {
   const now = new Date();
+  const status = params.status ?? 'COMPLETED';
+  const finishedAt = status === 'RUNNING' ? null : now;
   return {
     sessionDetail: {
       id: 'AGGREGATE',
       botId: params.botId,
       mode: params.mode,
-      status: params.status ?? 'COMPLETED',
+      status,
       startedAt: now,
-      finishedAt: now,
+      finishedAt,
       lastHeartbeatAt: now,
       stopReason: null,
       errorMessage: null,

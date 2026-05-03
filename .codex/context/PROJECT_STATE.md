@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 empty running aggregate timestamp slice `RUNTIME-AUDIT-35`
+  is closed locally. Empty runtime monitoring aggregate payloads now set
+  `sessionDetail.finishedAt: null` when the effective empty aggregate status is
+  `RUNNING`, preventing dashboard metadata from saying an empty running view is
+  already finished. Default empty completed metadata remains deterministic.
+  Validation PASS: failing-then-passing empty `status=RUNNING` regression,
+  full monitoring aggregate e2e (`7/7`), API typecheck, repository guardrails,
+  lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-35-empty-aggregate-running-finished-at-task-2026-05-03.md`.
 - 2026-05-03 empty runtime monitoring aggregate mode slice
   `RUNTIME-AUDIT-34` is closed locally. Empty runtime monitoring aggregate
   payloads now preserve the selected bot's persisted mode instead of
