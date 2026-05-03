@@ -456,7 +456,6 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
         },
       ],
     });
-
     const aggregateRes = await owner.get(`/dashboard/bots/${botId}/runtime-monitoring/aggregate`).query({
       perSessionLimit: 1,
     });
@@ -522,6 +521,7 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     await prisma.position.createMany({
       data: [
         {
+          id: 'aggregate-limit-btc-open',
           userId: ownerUser.id,
           botId,
           walletId,
@@ -540,6 +540,7 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
           syncState: 'IN_SYNC',
         },
         {
+          id: 'aggregate-limit-eth-open',
           userId: ownerUser.id,
           botId,
           walletId,
@@ -559,6 +560,40 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
         },
       ],
     });
+    await prisma.trade.createMany({
+      data: [
+        {
+          userId: ownerUser.id,
+          botId,
+          walletId,
+          positionId: 'aggregate-limit-btc-open',
+          strategyId,
+          symbol: 'BTCUSDT',
+          side: 'BUY',
+          lifecycleAction: 'OPEN',
+          price: 60_000,
+          quantity: 0.01,
+          fee: 0.5,
+          executedAt: new Date('2026-04-19T15:02:00.000Z'),
+          managementMode: 'BOT_MANAGED',
+        },
+        {
+          userId: ownerUser.id,
+          botId,
+          walletId,
+          positionId: 'aggregate-limit-eth-open',
+          strategyId,
+          symbol: 'ETHUSDT',
+          side: 'BUY',
+          lifecycleAction: 'OPEN',
+          price: 3_000,
+          quantity: 0.2,
+          fee: 0.6,
+          executedAt: new Date('2026-04-19T15:04:00.000Z'),
+          managementMode: 'BOT_MANAGED',
+        },
+      ],
+    });
 
     const aggregateRes = await owner.get(`/dashboard/bots/${botId}/runtime-monitoring/aggregate`).query({
       perSessionLimit: 1,
@@ -569,6 +604,7 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     expect(aggregateRes.body.sessionDetail.summary.openPositionCount).toBe(2);
     expect(aggregateRes.body.sessionDetail.summary.openPositionQty).toBeCloseTo(0.21);
     expect(aggregateRes.body.positions.summary.unrealizedPnl).toBeCloseTo(18);
+    expect(aggregateRes.body.positions.summary.feesPaid).toBeCloseTo(1.1);
     expect(aggregateRes.body.positions.summary.referenceBalance).toBe(1_000);
     expect(aggregateRes.body.positions.summary.freeCash).toBe(700);
   });
