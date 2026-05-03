@@ -20,6 +20,17 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `DASHDRIFT-01 fix(api+web): keep dashboard sidebar runtime context canonical-first`
+  - Scope: closed the first confirmed drift from the dashboard-wide audit.
+    `runtime-graph` now includes strategy leverage, web types reflect that
+    contract, and the dashboard sidebar renders canonical runtime graph
+    market/strategy/interval/leverage before direct legacy `Bot.strategy` or
+    `Bot.symbolGroup` projections. Validation PASS: sidebar regression
+    (`8/8`), runtime-scope API e2e (`10/10`), dashboard aggregate/runtime
+    presenter pack (`11/11`), API aggregate/symbol-stats pack (`14/14`),
+    API/web typechecks, repository guardrails, and docs parity. Evidence:
+    `docs/planning/dashdrift-01-dashboard-runtime-context-parity-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-01 fix(api-runtime): align LIVE open-position counts with wallet-first ownership proof`
   - Scope: closed the first confirmed drift from the operator-requested
     production audit. Runtime signal-loop max-open/external-position counting

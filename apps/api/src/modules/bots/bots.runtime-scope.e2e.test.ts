@@ -46,7 +46,12 @@ describe('Bots runtime scope remediation contract', () => {
       isEnabled: boolean;
       lifecycleStatus: string;
       executionOrder: number;
-      strategies: Array<{ strategyId: string; isEnabled: boolean; priority: number }>;
+      strategies: Array<{
+        strategyId: string;
+        isEnabled: boolean;
+        priority: number;
+        strategy: { leverage?: number };
+      }>;
     }>)
       .filter((group) => group.isEnabled && group.lifecycleStatus === 'ACTIVE')
       .sort((left, right) => left.executionOrder - right.executionOrder)[0];
@@ -55,6 +60,10 @@ describe('Bots runtime scope remediation contract', () => {
     expect(
       activePrimaryGroup.strategies.some((strategy) => strategy.isEnabled && strategy.strategyId === strategyBId)
     ).toBe(true);
+    const activeStrategy = activePrimaryGroup.strategies.find(
+      (strategy) => strategy.isEnabled && strategy.strategyId === strategyBId
+    );
+    expect(activeStrategy?.strategy.leverage).toBe(2);
   });
 
   it('keeps list/get strategyId aligned with runtime-graph primary strategy when legacy link diverges', async () => {

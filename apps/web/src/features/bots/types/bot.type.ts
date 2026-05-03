@@ -102,6 +102,7 @@ export type BotRuntimeGraph = {
         id: string;
         name: string;
         interval: string;
+        leverage: number;
       };
     }>;
   }>;
@@ -116,6 +117,7 @@ export type BotRuntimeGraph = {
       id: string;
       name: string;
       interval: string;
+      leverage: number;
     };
     symbolGroup: {
       id: string;

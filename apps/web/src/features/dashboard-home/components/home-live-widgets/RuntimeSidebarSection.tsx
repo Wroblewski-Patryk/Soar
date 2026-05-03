@@ -275,14 +275,6 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
     return typeof raw === "number" && Number.isFinite(raw) ? raw : null;
   };
   const selectedStrategyContext = (() => {
-    if (directSymbolGroup || directStrategy) {
-      return {
-        marketGroupName: directSymbolGroup?.name ?? null,
-        strategyName: directStrategy?.name ?? null,
-        strategyInterval: directStrategy?.interval ?? null,
-        strategyLeverage: readStrategyLeverage(directStrategy),
-      };
-    }
     if (canonicalPreferredEnabled) {
       return {
         marketGroupName: canonicalPreferredEnabled.group.symbolGroup?.name ?? null,
@@ -321,6 +313,14 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
         strategyName: null,
         strategyInterval: null,
         strategyLeverage: null,
+      };
+    }
+    if (directSymbolGroup || directStrategy) {
+      return {
+        marketGroupName: directSymbolGroup?.name ?? null,
+        strategyName: directStrategy?.name ?? null,
+        strategyInterval: directStrategy?.interval ?? null,
+        strategyLeverage: readStrategyLeverage(directStrategy),
       };
     }
     return {

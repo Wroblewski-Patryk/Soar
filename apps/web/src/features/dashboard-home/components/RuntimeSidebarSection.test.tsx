@@ -275,6 +275,44 @@ describe("RuntimeSidebarSection strategy edge behavior", () => {
     expect(screen.queryByText("Legacy Strategy")).not.toBeInTheDocument();
   });
 
+  it("keeps canonical sidebar context when direct bot projections are stale", () => {
+    const base = createProps();
+    const props = createProps({
+      selected: {
+        ...base.selected!,
+        bot: {
+          ...base.selected!.bot,
+          strategyId: "str-canonical",
+          symbolGroupId: "sg-canonical",
+          strategy: {
+            id: "str-stale-direct",
+            name: "Stale Direct Strategy",
+            interval: "1m",
+            leverage: 2,
+            walletRisk: 1,
+          },
+          symbolGroup: {
+            id: "sg-stale-direct",
+            name: "Stale Direct Market",
+            symbols: ["DOGEUSDT"],
+            marketUniverseId: "mu-stale-direct",
+          },
+        },
+      },
+    });
+
+    render(<RuntimeSidebarSection {...props} />);
+
+    expect(screen.getByText("Canonical Market")).toBeInTheDocument();
+    expect(screen.getByText("Canonical Strategy")).toBeInTheDocument();
+    expect(screen.getByText("15m")).toBeInTheDocument();
+    expect(screen.getByText("12x")).toBeInTheDocument();
+    expect(screen.queryByText("Stale Direct Market")).not.toBeInTheDocument();
+    expect(screen.queryByText("Stale Direct Strategy")).not.toBeInTheDocument();
+    expect(screen.queryByText("1m")).not.toBeInTheDocument();
+    expect(screen.queryByText("2x")).not.toBeInTheDocument();
+  });
+
   it("keeps canonical strategy context when selected bot strategyId is null and legacy fallback exists", () => {
     const base = createProps();
     const selectedSnapshot = base.selected;

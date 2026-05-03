@@ -3,6 +3,17 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 dashboard-wide runtime drift slice `DASHDRIFT-01` is closed
+  locally. The dashboard sidebar now treats `runtime-graph` as the canonical
+  source for selected bot market/strategy context before falling back to direct
+  legacy `Bot.strategy` / `Bot.symbolGroup` projections, and the API
+  `runtime-graph` payload now includes strategy `leverage` so the sidebar can
+  explain the same strategy context runtime uses. Validation PASS: sidebar
+  regression (`8/8`), runtime-scope API e2e (`10/10`), dashboard aggregate and
+  runtime presenter tests (`11/11`), API aggregate/symbol-stats tests
+  (`14/14`), API/web typechecks, repository guardrails, and docs parity.
+  Evidence:
+  `docs/planning/dashdrift-01-dashboard-runtime-context-parity-task-2026-05-03.md`.
 - 2026-05-03 operator-reported dashboard wallet balance slice
   `WALLETBAL-01` is closed locally. Runtime LIVE balance cache now preserves
   separate semantic fields for raw exchange `accountBalance` and allocated

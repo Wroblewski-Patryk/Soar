@@ -52,6 +52,33 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-05-03 - Dashboard runtime context must be canonical-first end to end
+- Context: the operator requested a dashboard-wide drift audit after PAPER/LIVE
+  runtime fixes.
+- Symptom: the dashboard sidebar could show stale market, strategy, interval, or
+  leverage context after bot market/strategy changes even when runtime and
+  symbol-stats already used the canonical `BotMarketGroup` and
+  `MarketGroupStrategyLink` topology.
+- Root cause: the sidebar preferred direct legacy `Bot.strategy` /
+  `Bot.symbolGroup` projections when present, and the `runtime-graph` API did
+  not include strategy `leverage`.
+- Guardrail: operator runtime surfaces must prefer canonical runtime graph data
+  over compatibility projections, and the graph contract must include every
+  field needed to explain the displayed runtime context.
+- Preferred pattern:
+```text
+1) Use runtime-graph market groups and strategy links as the dashboard source of truth.
+2) Include strategy name, interval, leverage, priority, and weight in canonical graph payloads.
+3) Keep legacy Bot.strategy / Bot.symbolGroup as fallback only when no canonical graph exists.
+4) Add stale direct-projection fixtures to web tests whenever a runtime display uses bot compatibility fields.
+```
+- Avoid: letting browser UI prefer direct bot projections simply because they
+  are already present in a list/get response.
+- Evidence: 2026-05-03 `DASHDRIFT-01`
+  (`botsCommand.service.ts`,
+  `RuntimeSidebarSection.tsx`,
+  `RuntimeSidebarSection.test.tsx`).
+
 ### 2026-05-03 - Runtime balance caches must preserve semantic fields
 - Context: an operator reported intermittent dashboard wallet account-balance
   display drift while LIVE runtime fixes were being audited.
