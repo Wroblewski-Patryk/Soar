@@ -20,6 +20,16 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `DASHDRIFT-05 fix(api-bots): keep runtime symbol-stats symbol filters canonical-scope locked`
+  - Scope: closed the next selected-bot signal/market stats drift. Explicit
+    `symbol` filters on runtime symbol-stats now intersect with the selected
+    bot's active canonical configured symbols and return an empty zero-summary
+    response when the requested symbol is outside scope. Stale persisted stats
+    for old/off-scope markets can no longer appear through direct symbol
+    queries. Validation PASS: focused runtime-scope e2e (`10/10`) and broader
+    symbol-stats/market-universe/PnL pack (`25/25`). Evidence:
+    `docs/planning/dashdrift-05-symbol-stats-filter-canonical-scope-task-2026-05-03.md`.
+
 - [x] `DASHDRIFT-04 fix(api-bots): keep symbol-level dynamic-stop plans canonical-context scoped`
   - Scope: closed the next dashboard runtime row-data drift. Runtime TTP/TSL
     plan maps by symbol now keep active canonical `BotMarketGroup` /

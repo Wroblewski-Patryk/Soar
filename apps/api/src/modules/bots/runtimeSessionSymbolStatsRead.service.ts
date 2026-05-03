@@ -91,6 +91,30 @@ export const resolveRuntimeSymbolStatsConfiguredContext = (
   };
 };
 
+const emptyRuntimeSymbolStatsResponse = (sessionId: string) => ({
+  sessionId,
+  items: [],
+  summary: {
+    totalSignals: 0,
+    longEntries: 0,
+    shortEntries: 0,
+    exits: 0,
+    dcaCount: 0,
+    closedTrades: 0,
+    winningTrades: 0,
+    losingTrades: 0,
+    realizedPnl: 0,
+    unrealizedPnl: 0,
+    totalPnl: 0,
+    grossProfit: 0,
+    grossLoss: 0,
+    feesPaid: 0,
+    openPositionCount: 0,
+    openPositionQty: 0,
+  },
+});
+
+
 const firstRuntimeBlockReason = (payload: Record<string, unknown> | null) => {
   if (typeof payload?.reason === 'string' && payload.reason.trim().length > 0) {
     return payload.reason.trim();
@@ -331,6 +355,9 @@ export const listBotRuntimeSessionSymbolStats = async (
       ? await resolveEffectiveSymbolGroupSymbolsWithCatalog(configuredContext.symbolGroup, catalogSymbolsCache)
       : []
   ).slice(0, query.limit);
+  if (normalizedSymbol && !configuredSymbols.includes(normalizedSymbol)) {
+    return emptyRuntimeSymbolStatsResponse(sessionId);
+  }
   const symbols = normalizedSymbol ? [normalizedSymbol] : configuredSymbols;
   const [openPositions, latestTradeBySymbolRows, latestSignalEvents] = symbols.length
     ? await getRuntimeSymbolLiveRows({

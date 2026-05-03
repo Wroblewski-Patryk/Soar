@@ -134,6 +134,9 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
 - Scope enrichment boundaries:
   - session stats and runtime-event fallback can enrich canonical selected-bot symbols only.
   - fallback paths cannot add symbols outside canonical selected-bot active scope.
+  - explicit `symbol` filters on runtime symbol-stats are intersected with
+    canonical selected-bot active scope; off-scope symbols return an empty
+    zero-summary read model instead of stale persisted stats.
 - Strategy context precedence:
   - canonical mapping is authoritative.
   - legacy mapping is compatibility fallback only when canonical mapping is missing for selected bot/symbol, and cannot override canonical mapping.

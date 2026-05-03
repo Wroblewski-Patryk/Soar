@@ -363,6 +363,14 @@ describe('Bots runtime scope remediation contract', () => {
     expect(symbols).not.toContain('SOLUSDT');
     expect(symbols).not.toContain('XRPUSDT');
     expect(symbols).not.toContain('BNBUSDT');
+
+    const staleSymbolStatsRes = await owner.get(
+      `/dashboard/bots/${botAId}/runtime-sessions/${sessionA.id}/symbol-stats?symbol=SOLUSDT`
+    );
+    expect(staleSymbolStatsRes.status).toBe(200);
+    expect(staleSymbolStatsRes.body.items).toEqual([]);
+    expect(staleSymbolStatsRes.body.summary.totalSignals).toBe(0);
+    expect(staleSymbolStatsRes.body.summary.realizedPnl).toBe(0);
   });
 
   it('excludes paused legacy botStrategy symbol groups from selected-bot symbol-stats scope', async () => {

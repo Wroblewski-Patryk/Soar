@@ -127,6 +127,16 @@ Operational queue for one-task execution runs.
     symbol plans. Validation PASS: focused runtime strategy-context e2e
     (`4/4`) and broader bot runtime/dynamic-stop pack (`40/40`). Evidence:
     `docs/planning/dashdrift-04-symbol-dynamic-stop-plans-canonical-task-2026-05-03.md`.
+- [x] `DASHDRIFT-05 fix(api-bots): keep runtime symbol-stats symbol filters canonical-scope locked`
+  - 2026-05-03: Closed the next selected-bot signal/market stats drift.
+    Explicit `symbol` filters on runtime symbol-stats now intersect with the
+    selected bot's active canonical configured symbols and return an empty
+    zero-summary response when the requested symbol is outside scope. Stale
+    persisted stats for old/off-scope markets can no longer appear through
+    direct symbol queries. Validation PASS: focused runtime-scope e2e
+    (`10/10`) and broader symbol-stats/market-universe/PnL pack (`25/25`).
+    Evidence:
+    `docs/planning/dashdrift-05-symbol-stats-filter-canonical-scope-task-2026-05-03.md`.
 - [ ] `LIVEIMPORT-03 release(prod): promote imported-position provenance fix and read back ETH/DOGE`
   - Scope: promote commit `39146d2e` through the approved production workflow,
     verify API freshness directly, then use authenticated read-only dashboard

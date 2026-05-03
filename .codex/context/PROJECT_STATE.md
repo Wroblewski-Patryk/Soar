@@ -3,6 +3,14 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 symbol-stats filter scope slice `DASHDRIFT-05` is closed
+  locally. Explicit `symbol` filters on runtime symbol-stats now intersect
+  with the selected bot's active canonical configured symbols and return an
+  empty zero-summary response when the requested symbol is outside scope.
+  Stale persisted stats for old/off-scope markets can no longer appear through
+  a direct symbol query. Validation PASS: focused runtime-scope e2e (`10/10`)
+  and broader symbol-stats/market-universe/PnL pack (`25/25`). Evidence:
+  `docs/planning/dashdrift-05-symbol-stats-filter-canonical-scope-task-2026-05-03.md`.
 - 2026-05-03 symbol-level dynamic-stop plan slice `DASHDRIFT-04` is closed
   locally. Runtime TTP/TSL plan maps by symbol now keep active canonical
   `BotMarketGroup` / `MarketGroupStrategyLink` entries authoritative and let
