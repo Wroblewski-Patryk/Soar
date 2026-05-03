@@ -52,6 +52,31 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-05-03 - Imported manual close must preserve recovered strategy provenance
+- Context: the operator requested continued LIVE/PAPER position-management
+  hardening after imported-position and manual-order fixes.
+- Symptom: dashboard manual close could claim an imported `EXCHANGE_SYNC`
+  bot-managed position by bot and wallet, but still call runtime close
+  orchestration without a strategy id when the position row had missing
+  provenance.
+- Root cause: manual close ownership claim did not reuse the single-strategy
+  canonical provenance recovery rule already applied to runtime protection
+  automation and read models.
+- Guardrail: every money-impacting position lifecycle command must preserve
+  strategy provenance when it can be recovered unambiguously from exactly one
+  active canonical strategy link, and must avoid guessing otherwise.
+- Preferred pattern:
+```text
+1) Prefer position.strategyId when present.
+2) If missing, inspect active enabled BotMarketGroup strategy links.
+3) Recover only when the distinct enabled strategy id count is exactly one.
+4) Persist recovered provenance before writing close orders/trades/history.
+```
+- Avoid: closing imported bot-managed positions with `strategyId=null` when a
+  single canonical owner strategy is available.
+- Evidence: 2026-05-03 `POSDRIFT-02`
+  (`runtimeSessionPositionCommand.service.ts`).
+
 ### 2026-05-03 - Manual-order scope must follow canonical runtime graph before direct bot projections
 - Context: the operator requested a LIVE/PAPER position-management and dashboard
   drift audit after canonical runtime topology fixes.

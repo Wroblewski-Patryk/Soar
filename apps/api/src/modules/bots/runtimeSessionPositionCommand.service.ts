@@ -13,6 +13,21 @@ import {
   resolveExternalPositionOwnershipIndex,
 } from './runtimeExternalPositionOwner.service';
 
+const resolveSingleCanonicalStrategyId = (bot: {
+  botMarketGroups?: Array<{
+    strategyLinks: Array<{ strategyId: string }>;
+  }>;
+}) => {
+  const strategyIds = [
+    ...new Set(
+      (bot.botMarketGroups ?? []).flatMap((group) =>
+        group.strategyLinks.map((link) => link.strategyId)
+      )
+    ),
+  ];
+  return strategyIds.length === 1 ? strategyIds[0] : null;
+};
+
 export const closeBotRuntimeSessionPosition = async (
   userId: string,
   botId: string,
@@ -97,6 +112,22 @@ export const closeBotRuntimeSessionPosition = async (
           apiKeyId: true,
         },
       },
+      botMarketGroups: {
+        where: {
+          isEnabled: true,
+          lifecycleStatus: 'ACTIVE',
+        },
+        select: {
+          strategyLinks: {
+            where: {
+              isEnabled: true,
+            },
+            select: {
+              strategyId: true,
+            },
+          },
+        },
+      },
     },
   });
   if (!botContext) return null;
@@ -156,11 +187,15 @@ export const closeBotRuntimeSessionPosition = async (
 
   const shouldClaimOwnership = !position.botId && externallyOwnedByBot;
   const shouldBackfillWallet = !position.walletId && Boolean(botContext.walletId);
-  if (shouldClaimOwnership || shouldBackfillWallet) {
+  const effectiveStrategyId =
+    position.strategyId ?? resolveSingleCanonicalStrategyId(botContext);
+  const shouldBackfillStrategy = !position.strategyId && Boolean(effectiveStrategyId);
+  if (shouldClaimOwnership || shouldBackfillWallet || shouldBackfillStrategy) {
     const update: Prisma.PositionUpdateManyMutationInput = {
       syncState: 'IN_SYNC',
       ...(shouldClaimOwnership ? { botId } : {}),
       ...(shouldBackfillWallet && botContext.walletId ? { walletId: botContext.walletId } : {}),
+      ...(shouldBackfillStrategy && effectiveStrategyId ? { strategyId: effectiveStrategyId } : {}),
     };
     const claimed = await prisma.position.updateMany({
       where: {
@@ -224,7 +259,7 @@ export const closeBotRuntimeSessionPosition = async (
     botId,
     walletId: botContext.walletId ?? undefined,
     runtimeSessionId: session.id,
-    strategyId: position.strategyId ?? undefined,
+    strategyId: effectiveStrategyId ?? undefined,
     symbol: position.symbol,
     direction: 'EXIT',
     quantity: Math.max(0, position.quantity),

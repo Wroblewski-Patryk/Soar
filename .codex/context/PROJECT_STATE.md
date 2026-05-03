@@ -3,6 +3,17 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 position-management drift slice `POSDRIFT-02` is closed locally.
+  Dashboard manual close now loads active canonical bot market-group strategy
+  links and recovers/persists `strategyId` for imported `EXCHANGE_SYNC`
+  bot-managed positions when the selected bot has exactly one active canonical
+  strategy. The recovered strategy is passed into runtime close orchestration,
+  keeping close order/trade/history provenance aligned with runtime protection
+  ownership. Multi-strategy missing provenance remains non-guessed. Validation
+  PASS: focused command test (`8/8`), API order/position + dynamic-stop +
+  automation pack (`62/62`), web manual close/history pack (`13/13`), and API
+  typecheck. Evidence:
+  `docs/planning/posdrift-02-manual-close-strategy-provenance-task-2026-05-03.md`.
 - 2026-05-03 dashboard/manual-order runtime drift slice `POSDRIFT-01` is
   closed locally. Manual-order API context now resolves active canonical
   `BotMarketGroup` and enabled `MarketGroupStrategyLink` rows before direct

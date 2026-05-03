@@ -20,6 +20,17 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `POSDRIFT-02 fix(api-runtime): preserve strategy provenance on imported manual close`
+  - Scope: closed the next confirmed position-management drift. Dashboard
+    manual close now loads active canonical bot market-group strategy links and
+    recovers/persists `strategyId` for imported `EXCHANGE_SYNC` bot-managed
+    positions when the selected bot has exactly one active canonical strategy.
+    Multi-strategy missing provenance remains non-guessed. Validation PASS:
+    focused command test (`8/8`), API order/position + dynamic-stop +
+    automation pack (`62/62`), web manual close/history pack (`13/13`), and
+    API typecheck. Evidence:
+    `docs/planning/posdrift-02-manual-close-strategy-provenance-task-2026-05-03.md`.
+
 - [x] `POSDRIFT-01 fix(api+web): keep manual-order scope canonical-first`
   - Scope: closed the next confirmed dashboard/runtime drift from the
     operator audit. Manual-order API context now resolves active enabled

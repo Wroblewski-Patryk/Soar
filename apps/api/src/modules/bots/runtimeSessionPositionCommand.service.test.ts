@@ -78,6 +78,7 @@ describe('closeBotRuntimeSessionPosition', () => {
       wallet: {
         apiKeyId: 'key-live-1',
       },
+      botMarketGroups: [],
     });
     mocks.resolveRuntimeLifecycleMarkPrice.mockReturnValue(50_100);
     mocks.fetchFallbackTickerPrices.mockResolvedValue(new Map());
@@ -221,6 +222,7 @@ describe('closeBotRuntimeSessionPosition', () => {
       wallet: {
         apiKeyId: null,
       },
+      botMarketGroups: [],
     });
     mocks.prisma.position.findFirst.mockResolvedValue({
       id: 'position-1',
@@ -255,6 +257,7 @@ describe('closeBotRuntimeSessionPosition', () => {
       wallet: {
         apiKeyId: null,
       },
+      botMarketGroups: [],
     });
     mocks.prisma.position.findFirst.mockResolvedValue({
       id: 'position-1',
@@ -309,6 +312,7 @@ describe('closeBotRuntimeSessionPosition', () => {
       wallet: {
         apiKeyId: null,
       },
+      botMarketGroups: [],
     });
     mocks.prisma.position.findFirst.mockResolvedValue({
       id: 'position-1',
@@ -411,6 +415,88 @@ describe('closeBotRuntimeSessionPosition', () => {
         walletId: 'wallet-live-1',
       },
     });
+    expect(result).toEqual({
+      status: 'closed',
+      orderId: 'order-1',
+      positionId: 'position-1',
+    });
+  });
+
+  it('recovers single canonical strategy provenance when manually closing an imported bot-managed position', async () => {
+    mocks.prisma.bot.findFirst.mockResolvedValue({
+      mode: 'LIVE',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      walletId: 'wallet-live-1',
+      wallet: {
+        apiKeyId: 'key-live-1',
+      },
+      botMarketGroups: [
+        {
+          strategyLinks: [{ strategyId: 'strategy-canonical-1' }],
+        },
+      ],
+    });
+    mocks.prisma.position.findFirst.mockResolvedValue({
+      id: 'position-1',
+      botId: null,
+      walletId: null,
+      strategyId: null,
+      symbol: 'DOGEUSDT',
+      quantity: 54,
+      entryPrice: 0.09791,
+      origin: 'EXCHANGE_SYNC',
+      externalId: 'key-live-1:DOGEUSDT:SHORT',
+      continuityState: 'CONFIRMED',
+    });
+    mocks.resolveExternalPositionOwnershipIndex.mockResolvedValue(
+      new Map([
+        [
+          'key-live-1:DOGEUSDT',
+          {
+            status: 'OWNED',
+            botId: 'bot-1',
+            walletId: 'wallet-live-1',
+          },
+        ],
+      ])
+    );
+    mocks.prisma.position.updateMany.mockResolvedValue({ count: 1 });
+    mocks.orchestrateRuntimeSignal.mockResolvedValue({
+      status: 'closed',
+      orderId: 'order-1',
+      positionId: 'position-1',
+    });
+
+    const result = await closeBotRuntimeSessionPosition(
+      'user-1',
+      'bot-1',
+      'session-1',
+      'position-1',
+      { riskAck: true }
+    );
+
+    expect(mocks.prisma.position.updateMany).toHaveBeenCalledWith({
+      where: {
+        id: 'position-1',
+        userId: 'user-1',
+        status: 'OPEN',
+        managementMode: 'BOT_MANAGED',
+      },
+      data: {
+        syncState: 'IN_SYNC',
+        botId: 'bot-1',
+        walletId: 'wallet-live-1',
+        strategyId: 'strategy-canonical-1',
+      },
+    });
+    expect(mocks.orchestrateRuntimeSignal).toHaveBeenCalledWith(
+      expect.objectContaining({
+        strategyId: 'strategy-canonical-1',
+        symbol: 'DOGEUSDT',
+        direction: 'EXIT',
+      })
+    );
     expect(result).toEqual({
       status: 'closed',
       orderId: 'order-1',
