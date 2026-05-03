@@ -371,7 +371,7 @@ export const listBotRuntimeSessionPositions = async (
   );
   const botApiKeyId = botContext.wallet?.apiKeyId ?? botContext.apiKeyId ?? null;
   const ownedExternalSymbols = listOwnedExternalSymbolsForBot(ownershipIndex, {
-    apiKeyId: botApiKeyId,
+    apiKeyId: botApiKeyId, marketType: inheritedExecutionContext.marketType,
     botId,
     walletId: botContext.walletId,
   });

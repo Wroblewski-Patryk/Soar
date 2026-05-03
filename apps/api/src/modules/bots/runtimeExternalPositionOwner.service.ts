@@ -28,6 +28,7 @@ type Candidate = {
   botId: string;
   walletId: string;
   apiKeyId: string;
+  marketType: TradeMarket;
   managed: boolean;
 };
 
@@ -98,6 +99,13 @@ const buildOwnershipIndex = (
 
 export const buildExternalPositionOwnershipKey = (params: {
   apiKeyId: string;
+  marketType?: TradeMarket | null;
+  symbol: string;
+}) =>
+  `${params.apiKeyId.trim()}:${params.marketType ?? 'FUTURES'}:${params.symbol.trim().toUpperCase()}`;
+
+const buildLegacyExternalPositionOwnershipKey = (params: {
+  apiKeyId: string;
   symbol: string;
 }) => `${params.apiKeyId.trim()}:${params.symbol.trim().toUpperCase()}`;
 
@@ -112,6 +120,7 @@ export const getExternalPositionOwnership = (
   ownershipIndex: ExternalPositionOwnershipIndex,
   params: {
     apiKeyId: string | null;
+    marketType?: TradeMarket | null;
     symbol: string;
   }
 ): ExternalPositionOwnership => {
@@ -123,13 +132,19 @@ export const getExternalPositionOwnership = (
     };
   }
 
+  const ownershipKey = buildExternalPositionOwnershipKey({
+    apiKeyId: params.apiKeyId,
+    marketType: params.marketType ?? 'FUTURES',
+    symbol: params.symbol,
+  });
+  const legacyOwnershipKey = buildLegacyExternalPositionOwnershipKey({
+    apiKeyId: params.apiKeyId,
+    symbol: params.symbol,
+  });
+
   return (
-    ownershipIndex.get(
-      buildExternalPositionOwnershipKey({
-        apiKeyId: params.apiKeyId,
-        symbol: params.symbol,
-      })
-    ) ?? {
+    ownershipIndex.get(ownershipKey) ??
+    ownershipIndex.get(legacyOwnershipKey) ?? {
       status: 'UNOWNED',
       botId: null,
       walletId: null,
@@ -141,19 +156,26 @@ export const listOwnedExternalSymbolsForBot = (
   ownershipIndex: ExternalPositionOwnershipIndex,
   params: {
     apiKeyId: string | null;
+    marketType?: TradeMarket | null;
     botId: string;
     walletId: string | null;
   }
 ) => {
   if (!params.apiKeyId || !params.walletId) return [];
 
-  const prefix = `${params.apiKeyId.trim()}:`;
+  const prefix = `${params.apiKeyId.trim()}:${params.marketType ?? 'FUTURES'}:`;
+  const legacyPrefix = `${params.apiKeyId.trim()}:`;
   const ownedSymbols: string[] = [];
   for (const [ownershipKey, ownership] of ownershipIndex.entries()) {
-    if (!ownershipKey.startsWith(prefix)) continue;
+    const isMarketScopedKey = ownershipKey.startsWith(prefix);
+    const isLegacyKey =
+      !ownershipKey.startsWith(`${params.apiKeyId.trim()}:FUTURES:`) &&
+      !ownershipKey.startsWith(`${params.apiKeyId.trim()}:SPOT:`) &&
+      ownershipKey.startsWith(legacyPrefix);
+    if (!isMarketScopedKey && !isLegacyKey) continue;
     if (ownership.status !== 'OWNED') continue;
     if (ownership.botId !== params.botId || ownership.walletId !== params.walletId) continue;
-    ownedSymbols.push(ownershipKey.slice(prefix.length));
+    ownedSymbols.push(ownershipKey.slice(isMarketScopedKey ? prefix.length : legacyPrefix.length));
   }
   return ownedSymbols;
 };
@@ -182,9 +204,11 @@ export const resolveExternalPositionOwnershipIndex = async (
       manageExternalPositions: true,
       walletId: true,
       apiKeyId: true,
+      marketType: true,
       wallet: {
         select: {
           apiKeyId: true,
+          marketType: true,
         },
       },
       symbolGroup: {
@@ -242,10 +266,12 @@ export const resolveExternalPositionOwnershipIndex = async (
       continue;
     }
 
+    const candidateMarketType = bot.wallet?.marketType ?? bot.marketType ?? 'FUTURES';
     const candidate = {
       botId: bot.id,
       walletId: bot.walletId,
       apiKeyId: effectiveApiKeyId ?? 'paper',
+      marketType: candidateMarketType,
       managed: mode === 'LIVE' ? bot.manageExternalPositions === true : true,
     };
 
@@ -256,8 +282,9 @@ export const resolveExternalPositionOwnershipIndex = async (
         : bot.symbolGroup
           ? [bot.symbolGroup]
           : [];
-    const resolvedSymbols = new Set<string>();
+    const resolvedSymbolMarketTypes = new Map<string, TradeMarket>();
     for (const scope of symbolScopes) {
+      const marketType = scope.marketUniverse?.marketType ?? candidate.marketType;
       for (const symbol of await resolveEffectiveSymbolGroupSymbolsWithCatalog(
         {
           symbols: scope.symbols,
@@ -265,18 +292,19 @@ export const resolveExternalPositionOwnershipIndex = async (
         },
         catalogSymbolsCache
       )) {
-        resolvedSymbols.add(symbol);
+        resolvedSymbolMarketTypes.set(symbol, marketType);
       }
     }
 
-    for (const symbol of resolvedSymbols) {
+    for (const [symbol, marketType] of resolvedSymbolMarketTypes.entries()) {
       addCandidate(
         candidateByExternalOwnershipKey,
         buildExternalPositionOwnershipKey({
           apiKeyId: candidate.apiKeyId,
+          marketType,
           symbol,
         }),
-        candidate
+        { ...candidate, marketType }
       );
     }
   }
@@ -292,7 +320,7 @@ export const resolveExternalPositionOwnerBySymbol = async (
   const ownershipBySymbol = new Map<string, ExternalPositionOwnership>();
 
   for (const [ownershipKey, ownership] of ownershipIndex.entries()) {
-    const symbol = ownershipKey.split(':').slice(1).join(':');
+    const symbol = ownershipKey.split(':').slice(2).join(':');
     const current = ownershipBySymbol.get(symbol);
     if (!current) {
       ownershipBySymbol.set(symbol, ownership);

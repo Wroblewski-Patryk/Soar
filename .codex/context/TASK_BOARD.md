@@ -20,6 +20,18 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-64 fix(api-bots): scope external ownership by market type`
+  - Scope: closed a BUILDER-mode LIVE import ownership drift. External
+    takeover ownership now keys by `apiKey + marketType + symbol`, resolves
+    market type from wallet/bot/active market-group scope, and passes known
+    market type through reconciliation, runtime dashboard reads, pre-trade,
+    order conflict/fill, and runtime loop call sites. Legacy FUTURES fallback
+    and legacy injected ownership maps remain read-compatible. Validation
+    PASS: ownership regression suite (`10/10`), live reconciliation suite
+    (`25/25`), runtime loop defaults suite (`9/9`), API typecheck, repository
+    guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-64-external-ownership-market-type-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-63 fix(api-positions): use market type in live reconciliation`
   - Scope: closed an ARCHITECT-mode LIVE import scope drift. The exchange
     reconciliation worker now expands synced API keys into one work item per

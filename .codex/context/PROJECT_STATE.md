@@ -3,6 +3,17 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 external ownership market-type slice `RUNTIME-AUDIT-64` is closed
+  locally. External takeover ownership now scopes by
+  `apiKey + marketType + symbol`, with candidate market type resolved from
+  wallet/bot/active market-group context and known market type propagated from
+  reconciliation, runtime dashboard reads, pre-trade, order conflict/fill, and
+  runtime loop call sites. Legacy callers without market type keep FUTURES
+  semantics, and legacy injected ownership maps remain read-compatible.
+  Validation PASS: ownership regression suite (`10/10`), live reconciliation
+  suite (`25/25`), runtime loop defaults suite (`9/9`), API typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-64-external-ownership-market-type-task-2026-05-03.md`.
 - 2026-05-03 LIVE reconciliation market-type slice `RUNTIME-AUDIT-63` is
   closed locally. The exchange reconciliation worker now derives synced API-key
   work items from LIVE wallets and active LIVE bots, preserving one work item

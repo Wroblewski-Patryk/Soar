@@ -173,6 +173,7 @@ export const resolveRuntimeOpenPositionBySymbol = async (input: {
         select: {
           mode: true,
           apiKeyId: true,
+          marketType: true,
         },
       },
     },
@@ -186,6 +187,7 @@ export const resolveRuntimeOpenPositionBySymbol = async (input: {
   const ownershipIndex = await resolveExternalPositionOwnershipIndex(input.userId, 'LIVE');
   const ownership = getExternalPositionOwnership(ownershipIndex, {
     apiKeyId: effectiveApiKeyId,
+    marketType: botScope.wallet.marketType,
     symbol: input.symbol,
   });
   if (

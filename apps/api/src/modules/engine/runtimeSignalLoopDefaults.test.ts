@@ -473,6 +473,7 @@ describe('listActiveRuntimeBots', () => {
     expect(resolveExternalPositionOwnershipIndex).toHaveBeenCalledWith('user-1', 'LIVE');
     expect(getExternalPositionOwnership).toHaveBeenCalledWith(expect.any(Map), {
       apiKeyId: 'key-1',
+      marketType: 'FUTURES',
       symbol: 'BTCUSDT',
     });
     expect(positions).toEqual([
@@ -522,6 +523,7 @@ describe('listActiveRuntimeBots', () => {
       apiKeyId: null,
       wallet: {
         apiKeyId: 'wallet-key-1',
+        marketType: 'FUTURES',
       },
     } as any);
     vi.mocked(resolveExternalPositionOwnershipIndex).mockResolvedValue(new Map() as any);
@@ -537,6 +539,7 @@ describe('listActiveRuntimeBots', () => {
     expect(count).toBe(1);
     expect(listOwnedExternalSymbolsForBot).toHaveBeenCalledWith(expect.any(Map), {
       apiKeyId: 'wallet-key-1',
+      marketType: 'FUTURES',
       botId: 'bot-1',
       walletId: 'wallet-1',
     });

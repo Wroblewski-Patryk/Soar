@@ -157,6 +157,11 @@ export const listRuntimeManagedExternalPositionsRaw = () =>
       userId: true,
       botId: true,
       walletId: true,
+      wallet: {
+        select: {
+          marketType: true,
+        },
+      },
       externalId: true,
       symbol: true,
     },

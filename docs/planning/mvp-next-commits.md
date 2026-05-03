@@ -9,6 +9,18 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-64 fix(api-bots): scope external ownership by market type`
+  - 2026-05-03: Closed a BUILDER-mode LIVE import ownership drift. External
+    takeover ownership now scopes by `apiKey + marketType + symbol`, resolves
+    market type from wallet/bot/active market-group context, and passes known
+    market type through reconciliation, runtime dashboard reads, pre-trade,
+    order conflict/fill, and runtime loop call sites. Legacy callers without
+    market type keep FUTURES semantics, and legacy injected ownership maps
+    remain read-compatible. Validation PASS: ownership regression suite
+    (`10/10`), live reconciliation suite (`25/25`), runtime loop defaults
+    suite (`9/9`), API typecheck, repository guardrails, lint, and diff review.
+    Evidence:
+    `docs/planning/runtime-audit-64-external-ownership-market-type-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-63 fix(api-positions): use market type in live reconciliation`
   - 2026-05-03: Closed an ARCHITECT-mode LIVE import scope drift. The exchange
     reconciliation worker now expands synced API keys into one work item per

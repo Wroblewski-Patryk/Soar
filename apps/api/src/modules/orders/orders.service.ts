@@ -389,6 +389,7 @@ const findOwnedLiveImportedOpenPositionForOrderConflict = async (params: {
   const ownershipIndex = await resolveExternalPositionOwnershipIndex(params.userId, 'LIVE');
   const ownership = getExternalPositionOwnership(ownershipIndex, {
     apiKeyId: effectiveApiKeyId,
+    marketType: params.botContext.inheritedExecutionContext?.marketType ?? 'FUTURES',
     symbol: params.payload.symbol,
   });
   if (

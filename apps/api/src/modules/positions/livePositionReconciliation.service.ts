@@ -493,6 +493,7 @@ export const reconcileExternalPositionsFromExchange = async (
         });
         const ownership = getExternalPositionOwnership(ownershipIndex, {
           apiKeyId: apiKey.id,
+          marketType: apiKey.marketType ?? 'FUTURES',
           symbol: normalizedSymbol,
         });
         const managedByBot = ownership.status === 'OWNED';
@@ -803,6 +804,7 @@ export const reconcileExternalPositionsFromExchange = async (
 
             const ownership = getExternalPositionOwnership(ownershipIndex, {
               apiKeyId: apiKey.id,
+              marketType: apiKey.marketType ?? 'FUTURES',
               symbol: normalizedSymbol,
             });
             if (ownership.status !== 'OWNED') continue;

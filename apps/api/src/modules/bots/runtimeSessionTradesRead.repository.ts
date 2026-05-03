@@ -12,6 +12,7 @@ export const getRuntimeTradeBotContext = async (userId: string, botId: string) =
       wallet: {
         select: {
           apiKeyId: true,
+          marketType: true,
         },
       },
       botMarketGroups: {

@@ -80,6 +80,7 @@ const findOwnedLiveImportedOpenPositionForFill = async (
         select: {
           mode: true,
           apiKeyId: true,
+          marketType: true,
         },
       },
     },
@@ -93,6 +94,7 @@ const findOwnedLiveImportedOpenPositionForFill = async (
   const ownershipIndex = await resolveExternalPositionOwnershipIndex(params.userId, 'LIVE');
   const ownership = getExternalPositionOwnership(ownershipIndex, {
     apiKeyId: effectiveApiKeyId,
+    marketType: botScope.wallet.marketType,
     symbol: params.order.symbol,
   });
   if (

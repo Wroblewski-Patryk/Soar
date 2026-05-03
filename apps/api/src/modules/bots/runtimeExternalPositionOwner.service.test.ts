@@ -335,6 +335,72 @@ describe('resolveExternalPositionOwnershipIndex', () => {
     });
   });
 
+  it('keeps ownership isolated across market types for the same api key and symbol', async () => {
+    mocks.prisma.bot.findMany.mockResolvedValue([
+      {
+        id: 'bot-futures',
+        manageExternalPositions: true,
+        walletId: 'wallet-futures',
+        apiKeyId: 'key-shared-market',
+        marketType: 'FUTURES',
+        wallet: {
+          apiKeyId: 'key-shared-market',
+          marketType: 'FUTURES',
+        },
+        symbolGroup: {
+          symbols: ['ETHUSDT'],
+          marketUniverse: {
+            marketType: 'FUTURES',
+          },
+        },
+        botMarketGroups: [],
+      },
+      {
+        id: 'bot-spot',
+        manageExternalPositions: true,
+        walletId: 'wallet-spot',
+        apiKeyId: 'key-shared-market',
+        marketType: 'SPOT',
+        wallet: {
+          apiKeyId: 'key-shared-market',
+          marketType: 'SPOT',
+        },
+        symbolGroup: {
+          symbols: ['ETHUSDT'],
+          marketUniverse: {
+            marketType: 'SPOT',
+          },
+        },
+        botMarketGroups: [],
+      },
+    ]);
+
+    const result = await resolveExternalPositionOwnershipIndex('user-market-scope', 'LIVE');
+
+    expect(
+      getExternalPositionOwnership(result, {
+        apiKeyId: 'key-shared-market',
+        marketType: 'FUTURES',
+        symbol: 'ETHUSDT',
+      })
+    ).toEqual({
+      status: 'OWNED',
+      botId: 'bot-futures',
+      walletId: 'wallet-futures',
+    });
+    expect(
+      getExternalPositionOwnership(result, {
+        apiKeyId: 'key-shared-market',
+        marketType: 'SPOT',
+        symbol: 'ETHUSDT',
+      })
+    ).toEqual({
+      status: 'OWNED',
+      botId: 'bot-spot',
+      walletId: 'wallet-spot',
+    });
+  });
+
   it('lists exact owned symbols for a bot within one api key scope', async () => {
     mocks.prisma.bot.findMany.mockResolvedValue([
       {

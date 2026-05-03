@@ -203,6 +203,7 @@ export const closeBotRuntimeSessionPosition = async (
         parseApiKeyIdFromExternalPositionId(position.externalId) ??
         botContext.wallet?.apiKeyId ??
         null,
+      marketType: botContext.marketType,
       symbol: position.symbol,
     });
     externallyOwnedByBot =

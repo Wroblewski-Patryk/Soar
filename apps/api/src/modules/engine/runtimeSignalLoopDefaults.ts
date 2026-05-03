@@ -226,6 +226,7 @@ export const listRuntimeManagedExternalPositions = async () => {
       }
       const ownership = getExternalPositionOwnership(ownershipIndex, {
         apiKeyId,
+        marketType: position.wallet?.marketType ?? 'FUTURES',
         symbol: position.symbol,
       });
 
@@ -264,6 +265,7 @@ export const countOpenPositionsForBotAndSymbols = async ({
       wallet: {
         select: {
           apiKeyId: true,
+          marketType: true,
         },
       },
     },
@@ -281,6 +283,7 @@ export const countOpenPositionsForBotAndSymbols = async ({
   const ownershipIndex = await resolveExternalPositionOwnershipIndex(userId, 'LIVE');
   const ownedExternalSymbols = listOwnedExternalSymbolsForBot(ownershipIndex, {
     apiKeyId: effectiveApiKeyId,
+    marketType: botScope.wallet?.marketType ?? 'FUTURES',
     botId,
     walletId: botScope.walletId,
   });

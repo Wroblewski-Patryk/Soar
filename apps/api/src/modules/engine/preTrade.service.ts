@@ -151,6 +151,7 @@ class PrismaPreTradeReadStore implements PreTradeReadStore {
         wallet: {
           select: {
             apiKeyId: true,
+            marketType: true,
           },
         },
       },
@@ -162,9 +163,11 @@ class PrismaPreTradeReadStore implements PreTradeReadStore {
     return {
       walletId: botScope.walletId,
       effectiveApiKeyId,
+      marketType: botScope.wallet?.marketType ?? 'FUTURES',
       ownershipIndex,
       ownedSymbols: listOwnedExternalSymbolsForBot(ownershipIndex, {
         apiKeyId: effectiveApiKeyId,
+        marketType: botScope.wallet?.marketType ?? 'FUTURES',
         botId,
         walletId: botScope.walletId,
       }),
@@ -226,6 +229,7 @@ class PrismaPreTradeReadStore implements PreTradeReadStore {
 
     const ownership = getExternalPositionOwnership(ownershipScope.ownershipIndex, {
       apiKeyId: ownershipScope.effectiveApiKeyId,
+      marketType: ownershipScope.marketType,
       symbol: input.symbol,
     });
     if (
