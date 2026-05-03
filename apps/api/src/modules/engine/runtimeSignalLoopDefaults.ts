@@ -14,9 +14,9 @@ import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from '../bots/runtimeSy
 import {
   getExternalPositionOwnership,
   listOwnedExternalSymbolsForBot,
-  parseApiKeyIdFromExternalPositionId,
   resolveExternalPositionOwnershipIndex,
 } from '../bots/runtimeExternalPositionOwner.service';
+import { parseImportedExternalPositionId } from '../positions/livePositionReconciliation.helpers';
 import {
   resolveCanonicalRuntimeVenueContext,
   resolveInheritedRuntimeExecutionContext,
@@ -218,7 +218,8 @@ export const listRuntimeManagedExternalPositions = async () => {
         };
       }
 
-      const apiKeyId = parseApiKeyIdFromExternalPositionId(position.externalId);
+      const externalPositionId = parseImportedExternalPositionId(position.externalId);
+      const apiKeyId = externalPositionId?.apiKeyId ?? null;
       let ownershipIndex = ownershipIndexByUserId.get(position.userId);
       if (!ownershipIndex) {
         ownershipIndex = await resolveExternalPositionOwnershipIndex(position.userId, 'LIVE');
@@ -226,7 +227,7 @@ export const listRuntimeManagedExternalPositions = async () => {
       }
       const ownership = getExternalPositionOwnership(ownershipIndex, {
         apiKeyId,
-        marketType: position.wallet?.marketType ?? 'FUTURES',
+        marketType: externalPositionId?.marketType ?? position.wallet?.marketType ?? 'FUTURES',
         symbol: position.symbol,
       });
 

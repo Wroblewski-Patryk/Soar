@@ -11,7 +11,6 @@ import {
 import { ExchangeExecutionCapabilityUnsupportedError } from '../exchange/exchangeExecutionCapabilityContract.service';
 import {
   getExternalPositionOwnership,
-  parseApiKeyIdFromExternalPositionId,
   resolveExternalPositionOwnershipIndex,
 } from '../bots/runtimeExternalPositionOwner.service';
 import { resolveSystemRepairCloseAttribution } from './positionCloseAttribution';
@@ -25,6 +24,7 @@ import {
   normalizeExchangePosition,
   normalizeExchangeTradeHistoryItem,
 } from './positions.exchangeSnapshotNormalization';
+import { parseImportedExternalPositionId } from './livePositionReconciliation.helpers';
 
 export type ExternalTakeoverStatus =
   | 'OWNED_AND_MANAGED'
@@ -818,8 +818,10 @@ export const rebindExternalTakeoverOwnership = async (
 
     let owners: Array<{ botId: string; walletId: string }> = [];
     if (position.origin === 'EXCHANGE_SYNC') {
+      const externalPositionId = parseImportedExternalPositionId(position.externalId);
       const ownership = getExternalPositionOwnership(ownershipIndex, {
-        apiKeyId: parseApiKeyIdFromExternalPositionId(position.externalId),
+        apiKeyId: externalPositionId?.apiKeyId ?? null,
+        marketType: externalPositionId?.marketType,
         symbol: position.symbol,
       });
       if (ownership.status === 'OWNED') {
@@ -905,9 +907,11 @@ export const listExternalTakeoverStatuses = async (
   ]);
 
   const items: ExternalTakeoverStatusItem[] = positions.map((position) => {
-    const apiKeyId = parseApiKeyIdFromExternalPositionId(position.externalId);
+    const externalPositionId = parseImportedExternalPositionId(position.externalId);
+    const apiKeyId = externalPositionId?.apiKeyId ?? null;
     const ownership = getExternalPositionOwnership(ownershipIndex, {
       apiKeyId,
+      marketType: externalPositionId?.marketType,
       symbol: position.symbol,
     });
 

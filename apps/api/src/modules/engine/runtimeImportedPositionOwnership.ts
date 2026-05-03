@@ -2,9 +2,9 @@ import { Exchange, TradeMarket } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import {
   getExternalPositionOwnership,
-  parseApiKeyIdFromExternalPositionId,
   resolveExternalPositionOwnershipIndex,
 } from '../bots/runtimeExternalPositionOwner.service';
+import { parseImportedExternalPositionId } from '../positions/livePositionReconciliation.helpers';
 
 export type RuntimeImportedPositionBotContext = {
   walletId: string | null;
@@ -82,8 +82,10 @@ export const hydrateImportedRuntimePositionOwnership = async <
   for (const position of importedCandidates) {
     const ownershipIndex = ownershipIndexByUserId.get(position.userId);
     if (!ownershipIndex) continue;
+    const externalPositionId = parseImportedExternalPositionId(position.externalId);
     const ownership = getExternalPositionOwnership(ownershipIndex, {
-      apiKeyId: parseApiKeyIdFromExternalPositionId(position.externalId),
+      apiKeyId: externalPositionId?.apiKeyId ?? null,
+      marketType: externalPositionId?.marketType,
       symbol: position.symbol,
     });
     if (ownership.status !== 'OWNED') continue;

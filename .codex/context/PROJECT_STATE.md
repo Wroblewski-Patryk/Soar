@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 external-ID market ownership read slice `RUNTIME-AUDIT-66` is
+  closed locally. Takeover rebind/status, imported runtime ownership hydration,
+  and runtime loop managed-external guards now parse canonical
+  `apiKey:marketType:symbol:side` IDs and pass the parsed market type into
+  ownership lookup instead of defaulting SPOT rows to FUTURES. Legacy
+  `apiKey:symbol:side` fallback remains intact. Validation PASS: runtime loop
+  defaults suite (`10/10`), live reconciliation suite (`26/26`), API typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-66-parse-external-id-market-ownership-task-2026-05-03.md`.
 - 2026-05-03 market-scoped imported external ID slice `RUNTIME-AUDIT-65` is
   closed locally. LIVE reconciliation now writes imported position external IDs
   as `apiKey:marketType:symbol:side` whenever the synced API-key work item

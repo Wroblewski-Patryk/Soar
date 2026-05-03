@@ -486,6 +486,41 @@ describe('listActiveRuntimeBots', () => {
     ]);
   });
 
+  it('uses canonical external-id market type when hydrating runtime managed external positions', async () => {
+    vi.mocked(listRuntimeManagedExternalPositionsRaw).mockResolvedValue([
+      {
+        userId: 'user-spot',
+        botId: null,
+        walletId: null,
+        wallet: null,
+        externalId: 'key-spot:SPOT:ETHUSDT:LONG',
+        symbol: 'ETHUSDT',
+      },
+    ] as any);
+    vi.mocked(resolveExternalPositionOwnershipIndex).mockResolvedValue(new Map() as any);
+    vi.mocked(getExternalPositionOwnership).mockReturnValue({
+      status: 'OWNED',
+      botId: 'bot-spot',
+      walletId: 'wallet-spot',
+    });
+
+    const positions = await listRuntimeManagedExternalPositions();
+
+    expect(getExternalPositionOwnership).toHaveBeenCalledWith(expect.any(Map), {
+      apiKeyId: 'key-spot',
+      marketType: 'SPOT',
+      symbol: 'ETHUSDT',
+    });
+    expect(positions).toEqual([
+      {
+        userId: 'user-spot',
+        botId: 'bot-spot',
+        walletId: 'wallet-spot',
+        symbol: 'ETHUSDT',
+      },
+    ]);
+  });
+
   it('keeps unresolved runtime managed external positions unowned for bot-scoped guards', async () => {
     vi.mocked(listRuntimeManagedExternalPositionsRaw).mockResolvedValue([
       {

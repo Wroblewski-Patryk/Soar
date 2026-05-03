@@ -2,6 +2,13 @@ import { TradeMarket } from '@prisma/client';
 
 const EXTERNAL_POSITION_REOPEN_DISCONTINUITY_GRACE_MS = 60 * 1000;
 
+type ParsedImportedExternalPositionId = {
+  apiKeyId: string;
+  marketType: TradeMarket | null;
+  symbol: string;
+  side: 'LONG' | 'SHORT' | null;
+};
+
 export const normalizeSymbol = (symbol: string) => {
   const trimmed = symbol.trim().toUpperCase();
   if (!trimmed) return '';
@@ -76,7 +83,9 @@ export const buildImportedExternalPositionIds = (params: {
   legacyExternalId: buildLegacyImportedExternalPositionId(params),
 });
 
-export const parseImportedExternalPositionId = (externalId: string | null) => {
+export const parseImportedExternalPositionId = (
+  externalId: string | null
+): ParsedImportedExternalPositionId | null => {
   if (!externalId) return null;
   const parts = externalId.split(':');
   if (parts.length < 3) return null;

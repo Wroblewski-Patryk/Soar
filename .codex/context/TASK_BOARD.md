@@ -20,6 +20,16 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-66 fix(api-runtime): parse external-id market for ownership reads`
+  - Scope: closed an ARCHITECT-mode read-path drift after market-scoped
+    imported IDs. Takeover rebind/status, imported runtime ownership hydration,
+    and runtime loop managed-external guards now parse `apiKey:marketType:symbol:side`
+    IDs and pass the parsed market type into ownership lookup, with legacy
+    `apiKey:symbol:side` fallback preserved. Validation PASS: runtime loop
+    defaults suite (`10/10`), live reconciliation suite (`26/26`), API
+    typecheck, repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-66-parse-external-id-market-ownership-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-65 fix(api-positions): market-scope imported external IDs`
   - Scope: closed a BUILDER-mode persisted identity drift after market-scoped
     ownership. LIVE reconciliation now builds imported position external IDs
