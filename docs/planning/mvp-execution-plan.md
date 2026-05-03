@@ -108,6 +108,14 @@ Rule: fix/cleanup/update first, then feature delivery.
   `botId` ownership and configured symbol scope. Validation PASS: focused
   runtime takeover e2e (`4/4`), broader runtime positions/read pack (`33/33`),
   API typecheck, guardrails, lint, and diff review.
+- 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-17` with
+  `docs/planning/runtime-audit-17-exchange-fill-close-fee-scope-task-2026-05-03.md`.
+  LIVE exchange-fill close PnL now uses the same position-lifecycle fee
+  boundary as synchronous runtime close (`userId + positionId + entry side`),
+  so imported LIVE close confirmations subtract entry fees even when
+  `botId`/`walletId` projections differ. Validation PASS: focused
+  exchange-events pack (`6/6`), broader orders/runtime PnL pack (`75/75`),
+  API typecheck, guardrails, lint, and diff review.
 
 ## Phase ETHDCA-2026-05-02 - LIVE DCA-First TSL Hardening (Closed 2026-05-02)
 - [x] `ETHDCA-01 fix(api-runtime): preserve LIVE DCA-first gating for trailing-stop close decisions`

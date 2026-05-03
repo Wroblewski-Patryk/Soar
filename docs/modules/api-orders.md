@@ -6,7 +6,7 @@
 - Source path: `apps/api/src/modules/orders`
 - Owner: backend/trading-domain
 - Last updated: 2026-05-03
-- Related planning task: `ORDDRIFT-01`
+- Related planning task: `RUNTIME-AUDIT-17`
 
 ## Canonical Architecture Linkage
 Canonical order and lifecycle rules live in:
@@ -239,3 +239,22 @@ pnpm --filter api test -- src/modules/orders/orders.service.test.ts src/modules/
   shared fill math, and avoid creating a duplicate open position.
 - Opposite-side reusable rows continue to fail closed through
   `OPEN_POSITION_SIDE_CONFLICT`.
+
+## 19. Exchange-Fill Close Fee Attribution Contract (`RUNTIME-AUDIT-17`)
+- Exchange-confirmed `LIVE` close PnL must use the same entry-fee attribution
+  boundary as synchronous runtime orchestrator close PnL.
+- Entry-leg fees for close realized PnL are aggregated by:
+  - `userId`,
+  - exact `positionId`,
+  - entry side (`BUY` for closing `LONG`, `SELL` for closing `SHORT`).
+- `botId` and `walletId` projections are not part of the entry-fee lookup,
+  because imported or recovered `LIVE` lifecycle rows can legitimately carry
+  `botId=null` / `walletId=null` while still being the owned position closed by
+  a selected bot wallet.
+- The boundary remains fail-closed against unrelated data:
+  - another user's trades cannot be included,
+  - same-symbol unrelated trades cannot be included,
+  - trades without the exact position id remain excluded.
+- This contract keeps asynchronous exchange fill confirmation aligned with the
+  synchronous runtime close path and prevents dashboard PnL drift between the
+  two legitimate close finalization flows.

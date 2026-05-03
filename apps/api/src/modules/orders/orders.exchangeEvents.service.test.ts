@@ -271,6 +271,137 @@ describe('orders.exchangeEvents.service', () => {
     expect(closeTrade.closeInitiator).toBe('BOT_APP');
   });
 
+  it('aggregates close PnL entry fees by position id for imported LIVE fill confirmations', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'exchange-event-imported-close-fee@example.com', password: 'hashed' },
+    });
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'live-wallet-imported-close-fee',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'live-bot-imported-close-fee',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        walletId: wallet.id,
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'v1',
+      },
+    });
+    const position = await prisma.position.create({
+      data: {
+        userId: user.id,
+        botId: null,
+        walletId: null,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        continuityState: 'CONFIRMED',
+        symbol: 'ETHUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 100,
+        quantity: 1,
+        leverage: 5,
+        externalId: 'api-key-imported:ETHUSDT:LONG',
+      },
+    });
+    await prisma.trade.create({
+      data: {
+        userId: user.id,
+        botId: null,
+        walletId: null,
+        orderId: null,
+        positionId: position.id,
+        symbol: 'ETHUSDT',
+        side: 'BUY',
+        lifecycleAction: 'OPEN',
+        price: 100,
+        quantity: 1,
+        fee: 1.5,
+        feeSource: 'EXCHANGE_FILL',
+        feePending: false,
+        feeCurrency: 'USDT',
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+      },
+    });
+    const order = await prisma.order.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        walletId: wallet.id,
+        positionId: position.id,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        symbol: 'ETHUSDT',
+        side: 'SELL',
+        type: 'MARKET',
+        status: 'OPEN',
+        quantity: 1,
+        filledQuantity: 0,
+        exchangeOrderId: 'event-order-imported-close-fee',
+        submittedAt: new Date('2026-05-03T10:10:00.000Z'),
+      },
+    });
+
+    const result = await applyLiveExchangeOrderTradeUpdateEvent({
+      userId: user.id,
+      event: {
+        eventType: 'ORDER_TRADE_UPDATE',
+        marketType: 'FUTURES',
+        eventTime: 2_000,
+        transactionTime: 2_001,
+        symbol: 'ETHUSDT',
+        side: 'SELL',
+        orderType: 'MARKET',
+        orderStatus: 'FILLED',
+        executionType: 'TRADE',
+        exchangeOrderId: 'event-order-imported-close-fee',
+        clientOrderId: 'client-imported-close-fee',
+        averagePrice: 110,
+        cumulativeFilledQuantity: 1,
+        lastFilledQuantity: 1,
+        lastFilledPrice: 110,
+        fee: 0.08,
+        feeCurrency: 'USDT',
+        exchangeTradeId: 'trade-imported-close-fee',
+        raw: {},
+      },
+    });
+
+    expect(result).toEqual(
+      expect.objectContaining({
+        status: 'applied',
+        orderId: order.id,
+        positionId: position.id,
+        orderStatus: 'FILLED',
+      })
+    );
+    const closedPosition = await prisma.position.findUniqueOrThrow({
+      where: { id: position.id },
+    });
+    expect(closedPosition.status).toBe('CLOSED');
+    expect(closedPosition.realizedPnl).toBeCloseTo(8.42, 6);
+    const closeTrade = await prisma.trade.findFirstOrThrow({
+      where: { orderId: order.id },
+    });
+    expect(closeTrade.lifecycleAction).toBe('CLOSE');
+    expect(closeTrade.walletId).toBe(wallet.id);
+    expect(closeTrade.realizedPnl).toBeCloseTo(8.42, 6);
+  });
+
   it('applies Binance order-trade update to reprice and extend an existing LIVE position as DCA', async () => {
     const user = await prisma.user.create({
       data: { email: 'exchange-event-dca@example.com', password: 'hashed' },

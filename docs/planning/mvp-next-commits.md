@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-17 fix(api-orders): scope exchange-fill close fees by position lifecycle`
+  - 2026-05-03: Closed the next TESTER close-PnL parity drift. LIVE exchange
+    order-trade close confirmation now aggregates entry-leg fees by the owned
+    position lifecycle (`userId + positionId + entry side`) instead of mutable
+    `botId` / `walletId` projections, matching the synchronous runtime
+    orchestrator close contract. Validation PASS: focused exchange-events pack
+    (`6/6`), broader orders/runtime PnL pack (`75/75`), API typecheck,
+    repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-17-exchange-fill-close-fee-scope-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-16 fix(api-bots): show selected LIVE bot legacy wallet-null open orders`
   - 2026-05-03: Closed the next dashboard open-order visibility drift. Runtime
     positions dashboard reads now include direct selected-bot `BOT_MANAGED`

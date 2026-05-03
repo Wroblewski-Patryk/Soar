@@ -40,8 +40,6 @@ const isClosingOrderForPosition = (input: {
 
 const computeCloseRealizedPnl = async (input: {
   userId: string;
-  botId: string | null;
-  walletId: string | null;
   positionId: string;
   positionSide: 'LONG' | 'SHORT';
   entryPrice: number;
@@ -53,8 +51,6 @@ const computeCloseRealizedPnl = async (input: {
   const entryFeeAggregate = await prisma.trade.aggregate({
     where: {
       userId: input.userId,
-      botId: input.botId,
-      walletId: input.walletId,
       positionId: input.positionId,
       side: entryLegSide,
     },
@@ -363,8 +359,6 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
         const exitFee = typeof fee === 'number' && Number.isFinite(fee) ? fee : 0;
         const realizedPnl = await computeCloseRealizedPnl({
           userId: input.userId,
-          botId: updatedOrder.botId,
-          walletId: updatedOrder.walletId,
           positionId: updatedOrder.position.id,
           positionSide: updatedOrder.position.side,
           entryPrice: updatedOrder.position.entryPrice,

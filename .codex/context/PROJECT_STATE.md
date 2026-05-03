@@ -3,6 +3,17 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 exchange-fill close fee attribution slice `RUNTIME-AUDIT-17` is
+  closed locally. LIVE exchange order-trade close confirmation now aggregates
+  entry-leg fees by the owned position lifecycle (`userId + positionId + entry
+  side`) instead of mutable `botId` / `walletId` projections, matching the
+  synchronous runtime orchestrator close contract. Imported or recovered LIVE
+  positions with null identity projections now keep correct close PnL when the
+  exchange fill confirms through a selected bot wallet. Validation PASS:
+  focused exchange-events pack (`6/6`), broader orders/runtime PnL pack
+  (`75/75`), API typecheck, repository guardrails, lint, and diff review.
+  Evidence:
+  `docs/planning/runtime-audit-17-exchange-fill-close-fee-scope-task-2026-05-03.md`.
 - 2026-05-03 selected LIVE bot open-order visibility slice
   `RUNTIME-AUDIT-16` is closed locally. Runtime positions dashboard reads now
   include direct selected-bot `BOT_MANAGED` open orders with legacy
