@@ -3,6 +3,17 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 imported-position ownership scope slice `POSDRIFT-03` is closed
+  locally. External-position ownership now builds bot symbol scope from active
+  canonical `BotMarketGroup` rows when they exist, and uses direct legacy
+  `Bot.symbolGroup` only as fallback for bots without active canonical groups.
+  This prevents stale direct bot market projections from claiming/importing
+  exchange positions outside the currently assigned markets while preserving
+  canonical assigned-market imports. Validation PASS: focused ownership test
+  (`8/8`), takeover and reconciliation pack (`34/34`),
+  runtime-scope/market-universe/orders pack (`34/34`), and API typecheck.
+  Evidence:
+  `docs/planning/posdrift-03-import-ownership-canonical-market-scope-task-2026-05-03.md`.
 - 2026-05-03 position-management drift slice `POSDRIFT-02` is closed locally.
   Dashboard manual close now loads active canonical bot market-group strategy
   links and recovers/persists `strategyId` for imported `EXCHANGE_SYNC`

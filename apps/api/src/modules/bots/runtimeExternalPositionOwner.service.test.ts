@@ -150,7 +150,7 @@ describe('resolveExternalPositionOwnershipIndex', () => {
     });
   });
 
-  it('includes active canonical bot market groups in imported position ownership scope', async () => {
+  it('uses active canonical bot market groups before stale direct ownership scope', async () => {
     mocks.prisma.bot.findMany.mockResolvedValue([
       {
         id: 'bot-canonical-groups',
@@ -183,9 +183,9 @@ describe('resolveExternalPositionOwnershipIndex', () => {
         symbol: 'BTCUSDT',
       })
     ).toEqual({
-      status: 'OWNED',
-      botId: 'bot-canonical-groups',
-      walletId: 'wallet-canonical-groups',
+      status: 'UNOWNED',
+      botId: null,
+      walletId: null,
     });
     expect(
       getExternalPositionOwnership(result, {

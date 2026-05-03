@@ -247,10 +247,13 @@ export const resolveExternalPositionOwnershipIndex = async (
       managed: mode === 'LIVE' ? bot.manageExternalPositions === true : true,
     };
 
-    const symbolScopes: SymbolGroupScope[] = [
-      ...(bot.symbolGroup ? [bot.symbolGroup] : []),
-      ...(bot.botMarketGroups ?? []).map((group) => group.symbolGroup),
-    ];
+    const activeCanonicalScopes = (bot.botMarketGroups ?? []).map((group) => group.symbolGroup);
+    const symbolScopes: SymbolGroupScope[] =
+      activeCanonicalScopes.length > 0
+        ? activeCanonicalScopes
+        : bot.symbolGroup
+          ? [bot.symbolGroup]
+          : [];
     const resolvedSymbols = new Set<string>();
     for (const scope of symbolScopes) {
       for (const symbol of resolveEffectiveSymbolGroupSymbols({

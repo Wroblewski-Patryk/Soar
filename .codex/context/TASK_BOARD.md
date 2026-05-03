@@ -20,6 +20,17 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `POSDRIFT-03 fix(api-runtime): keep imported ownership canonical-market scoped`
+  - Scope: closed the next imported-position ownership drift. External-position
+    ownership now builds bot symbol scope from active canonical
+    `BotMarketGroup` rows when they exist, using direct legacy
+    `Bot.symbolGroup` only as fallback. This prevents stale direct bot market
+    projections from claiming/importing exchange positions outside the current
+    assigned markets. Validation PASS: focused ownership test (`8/8`), takeover
+    and reconciliation pack (`34/34`), runtime-scope/market-universe/orders
+    pack (`34/34`), and API typecheck. Evidence:
+    `docs/planning/posdrift-03-import-ownership-canonical-market-scope-task-2026-05-03.md`.
+
 - [x] `POSDRIFT-02 fix(api-runtime): preserve strategy provenance on imported manual close`
   - Scope: closed the next confirmed position-management drift. Dashboard
     manual close now loads active canonical bot market-group strategy links and

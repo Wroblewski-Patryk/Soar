@@ -52,6 +52,29 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-05-03 - Imported ownership scope must not merge stale direct bot markets
+- Context: the operator reported LIVE bots not consistently reflecting manual
+  exchange positions across assigned markets after market changes.
+- Symptom: imported-position ownership used direct legacy `Bot.symbolGroup`
+  together with active canonical `BotMarketGroup` rows, so stale direct symbols
+  could still be treated as owned by a bot after its assigned market changed.
+- Root cause: ownership-index scope had not adopted the canonical-first rule
+  already used by runtime graph, manual-order context, and dashboard surfaces.
+- Guardrail: when active canonical market groups exist, imported-position
+  ownership must treat them as the selected bot market scope and use direct
+  projections only as legacy fallback.
+- Preferred pattern:
+```text
+1) Resolve active enabled BotMarketGroup symbol scopes first.
+2) If at least one canonical scope exists, ignore direct Bot.symbolGroup.
+3) Use direct Bot.symbolGroup only for legacy bots without canonical groups.
+4) Test stale direct symbols as UNOWNED while canonical symbols remain OWNED.
+```
+- Avoid: unioning compatibility projections with canonical market groups for
+  money-impacting ownership decisions.
+- Evidence: 2026-05-03 `POSDRIFT-03`
+  (`runtimeExternalPositionOwner.service.ts`).
+
 ### 2026-05-03 - Imported manual close must preserve recovered strategy provenance
 - Context: the operator requested continued LIVE/PAPER position-management
   hardening after imported-position and manual-order fixes.
