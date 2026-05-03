@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 runtime order lifetime active-sync-state slice
+  `RUNTIME-AUDIT-72` is closed locally. Runtime order lifetime cancellation
+  candidates now require `syncState=IN_SYNC`, so stale `ORPHAN_LOCAL`
+  open-status order rows no longer generate cancel attempts or dedupe noise
+  while stale confirmed active rows remain cancelable. Validation PASS:
+  runtime order lifetime suite (`5/5`), API typecheck, repository guardrails,
+  lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-72-order-lifetime-active-sync-state-task-2026-05-04.md`.
 - 2026-05-04 paper wallet reset active-order blocker slice `RUNTIME-AUDIT-71`
   is closed locally. Paper wallet reset now counts active open-order blockers
   only when `syncState=IN_SYNC`, so stale `ORPHAN_LOCAL` open-order rows no

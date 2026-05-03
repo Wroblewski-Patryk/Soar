@@ -36,7 +36,7 @@ type RuntimeOrderLifetimeDeps = {
 
 const CANCELABLE_ORDER_STATUSES: RuntimeCancelableOrderStatus[] = ['PENDING', 'OPEN', 'PARTIALLY_FILLED'];
 
-const defaultDeps: Required<RuntimeOrderLifetimeDeps> = {
+export const runtimeOrderLifetimeDefaultDeps: Required<RuntimeOrderLifetimeDeps> = {
   now: () => new Date(),
   listStaleOrders: async ({ userId, botId, olderThanMs, now }) => {
     const cutoff = new Date(now.getTime() - olderThanMs);
@@ -45,6 +45,7 @@ const defaultDeps: Required<RuntimeOrderLifetimeDeps> = {
         userId,
         botId,
         status: { in: CANCELABLE_ORDER_STATUSES },
+        syncState: 'IN_SYNC',
         OR: [
           { submittedAt: { lte: cutoff } },
           {
@@ -142,10 +143,10 @@ const cancelStaleOrder = async (
 
 export const enforceRuntimeOrderLifetimes = async (
   activeBots: ActiveBot[],
-  deps: RuntimeOrderLifetimeDeps = defaultDeps
+  deps: RuntimeOrderLifetimeDeps = runtimeOrderLifetimeDefaultDeps
 ) => {
   const resolvedDeps = {
-    ...defaultDeps,
+    ...runtimeOrderLifetimeDefaultDeps,
     ...deps,
   };
   const now = resolvedDeps.now();

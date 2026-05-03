@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { ORDER_ERROR_CODES, OrderDomainError } from '../orders/orders.errors';
-import { enforceRuntimeOrderLifetimes } from './runtimeOrderLifetime.service';
+import { prisma } from '../../prisma/client';
+import { enforceRuntimeOrderLifetimes, runtimeOrderLifetimeDefaultDeps } from './runtimeOrderLifetime.service';
 
 const createActiveBot = (overrides?: {
   userId?: string;
@@ -190,5 +191,99 @@ describe('enforceRuntimeOrderLifetimes', () => {
     });
 
     expect(cancelOrder).not.toHaveBeenCalled();
+  });
+
+  it('lists only in-sync stale open orders from the default candidate query', async () => {
+    await prisma.trade.deleteMany();
+    await prisma.order.deleteMany();
+    await prisma.position.deleteMany();
+    await prisma.signal.deleteMany();
+    await prisma.runtimeExecutionDedupe.deleteMany();
+    await prisma.botRuntimeSymbolStat.deleteMany();
+    await prisma.botRuntimeEvent.deleteMany();
+    await prisma.botRuntimeSession.deleteMany();
+    await prisma.log.deleteMany();
+    await prisma.botStrategy.deleteMany();
+    await prisma.botSubagentConfig.deleteMany();
+    await prisma.botAssistantConfig.deleteMany();
+    await prisma.marketGroupStrategyLink.deleteMany();
+    await prisma.botMarketGroup.deleteMany();
+    await prisma.bot.deleteMany();
+    await prisma.symbolGroup.deleteMany();
+    await prisma.marketUniverse.deleteMany();
+    await prisma.wallet.deleteMany();
+    await prisma.apiKey.deleteMany();
+    await prisma.strategy.deleteMany();
+    await prisma.user.deleteMany();
+
+    const user = await prisma.user.create({
+      data: { email: 'runtime-order-lifetime-sync-state@example.com', password: 'test-password' },
+      select: { id: true },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'Lifetime Candidate Bot',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+      },
+      select: { id: true },
+    });
+    const staleSubmittedAt = new Date('2026-05-04T10:00:00.000Z');
+    const freshSubmittedAt = new Date('2026-05-04T10:20:00.000Z');
+    await prisma.order.createMany({
+      data: [
+        {
+          userId: user.id,
+          botId: bot.id,
+          symbol: 'BTCUSDT',
+          side: 'BUY',
+          type: 'LIMIT',
+          status: 'OPEN',
+          syncState: 'IN_SYNC',
+          quantity: 1,
+          price: 100,
+          submittedAt: staleSubmittedAt,
+          createdAt: staleSubmittedAt,
+        },
+        {
+          userId: user.id,
+          botId: bot.id,
+          symbol: 'ETHUSDT',
+          side: 'BUY',
+          type: 'LIMIT',
+          status: 'OPEN',
+          syncState: 'ORPHAN_LOCAL',
+          quantity: 1,
+          price: 100,
+          submittedAt: staleSubmittedAt,
+          createdAt: staleSubmittedAt,
+        },
+        {
+          userId: user.id,
+          botId: bot.id,
+          symbol: 'SOLUSDT',
+          side: 'BUY',
+          type: 'LIMIT',
+          status: 'OPEN',
+          syncState: 'IN_SYNC',
+          quantity: 1,
+          price: 100,
+          submittedAt: freshSubmittedAt,
+          createdAt: freshSubmittedAt,
+        },
+      ],
+    });
+
+    const candidates = await runtimeOrderLifetimeDefaultDeps.listStaleOrders({
+      userId: user.id,
+      botId: bot.id,
+      olderThanMs: 15 * 60 * 1000,
+      now: new Date('2026-05-04T10:30:00.000Z'),
+    });
+
+    expect(candidates.map((candidate) => candidate.symbol)).toEqual(['BTCUSDT']);
   });
 });

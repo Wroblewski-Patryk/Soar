@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-72 fix(api-engine): align order lifetime with sync state`
+  - 2026-05-04: Closed an ARCHITECT-mode runtime lifecycle parity drift.
+    Runtime order lifetime cancellation candidates now require
+    `syncState=IN_SYNC`, so stale `ORPHAN_LOCAL` open-status order rows no
+    longer generate cancel attempts or dedupe noise while stale confirmed
+    active rows remain cancelable. Validation PASS: runtime order lifetime
+    suite (`5/5`), API typecheck, repository guardrails, lint, and diff review.
+    Evidence:
+    `docs/planning/runtime-audit-72-order-lifetime-active-sync-state-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-71 fix(api-wallets): align reset open-order blocker with sync state`
   - 2026-05-04: Closed a BUILDER-mode wallet/runtime lifecycle parity drift.
     Paper wallet reset now counts active open-order blockers only when
