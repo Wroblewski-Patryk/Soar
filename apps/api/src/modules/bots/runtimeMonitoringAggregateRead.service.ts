@@ -47,10 +47,9 @@ const compareTimestampDescThenIdAsc = (
   return leftId.localeCompare(rightId);
 };
 
-const selectTradeTotalRows = <
+const selectLatestRunningProjectionRows = <
   T extends {
     session: RuntimeSessionListItem;
-    trades: RuntimeTradesResponse;
   },
 >(
   rows: T[]
@@ -544,10 +543,11 @@ export const getBotRuntimeMonitoringAggregate = async (
       : referenceBalance != null
         ? Math.max(0, referenceBalance - Math.max(0, usedMargin))
         : null;
+  const historicalPositionRows = selectLatestRunningProjectionRows(completePayloadRows);
   const positionsSummary = {
-    realizedPnl: positionResponses.reduce((acc, response) => acc + response.summary.realizedPnl, 0),
+    realizedPnl: historicalPositionRows.reduce((acc, row) => acc + row.positions.summary.realizedPnl, 0),
     unrealizedPnl: latestUnrealizedPnl,
-    feesPaid: positionResponses.reduce((acc, response) => acc + response.summary.feesPaid, 0),
+    feesPaid: historicalPositionRows.reduce((acc, row) => acc + row.positions.summary.feesPaid, 0),
     openPositionQty: latestOpenPositionQty,
     referenceBalance,
     freeCash,
@@ -578,10 +578,10 @@ export const getBotRuntimeMonitoringAggregate = async (
       )
   );
   const totalOpenPositions = latestOpenPositionCount;
-  const totalClosedPositions = positionResponses.reduce((acc, response) => acc + response.closedCount, 0);
+  const totalClosedPositions = historicalPositionRows.reduce((acc, row) => acc + row.positions.closedCount, 0);
   const totalPositions = totalOpenPositions + totalClosedPositions;
   const totalOpenOrders = Math.max(0, ...positionResponses.map((response) => response.openOrdersCount));
-  const tradeTotalRows = selectTradeTotalRows(completePayloadRows);
+  const tradeTotalRows = selectLatestRunningProjectionRows(completePayloadRows);
   const totalTrades = tradeTotalRows.reduce((acc, row) => acc + row.trades.total, 0);
   const totalTradeFeesPaid = tradeTotalRows.reduce((acc, row) => acc + row.trades.feesPaid, 0);
   const windowFinishedAt = finishedAt ?? new Date();

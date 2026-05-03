@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 aggregate running closed-position overlap slice
+  `RUNTIME-AUDIT-58` is closed locally. Runtime monitoring aggregate
+  closed-position counts, realized PnL, and position fees now sum all
+  non-running historical session rows plus only the freshest RUNNING session
+  projection, so overlapping running sessions no longer show one visible
+  history row with doubled closed totals. Validation PASS: aggregate e2e
+  (`16/16`), runtime-scope e2e (`13/13`), API typecheck, repository
+  guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-58-aggregate-running-closed-position-overlap-task-2026-05-03.md`.
 - 2026-05-03 aggregate symbol open-state overlap slice `RUNTIME-AUDIT-57`
   is closed locally. Runtime monitoring aggregate symbol items and summary now
   keep historical symbol counters summed while taking current open-position

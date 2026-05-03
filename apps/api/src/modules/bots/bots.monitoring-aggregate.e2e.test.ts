@@ -886,6 +886,75 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     expect(aggregateRes.body.sessionDetail.summary.feesPaid).toBeCloseTo(0.75);
   });
 
+  it('does not double-count running closed-position totals across overlapping running sessions', async () => {
+    const ownerEmail = 'bots-monitoring-aggregate-closed-overlap@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({
+      where: { email: ownerEmail },
+      select: { id: true },
+    });
+
+    const strategyId = await createStrategy(owner, 'Monitoring Aggregate Closed Overlap');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    const createRes = await owner.post('/dashboard/bots').send(
+      createPayload({
+        strategyId,
+        marketGroupId,
+      })
+    );
+    expect(createRes.status).toBe(201);
+    const botId = createRes.body.id as string;
+
+    await prisma.botRuntimeSession.createMany({
+      data: [
+        {
+          userId: ownerUser.id,
+          botId,
+          mode: 'PAPER',
+          status: 'RUNNING',
+          startedAt: new Date('2026-04-19T18:00:00.000Z'),
+          lastHeartbeatAt: new Date('2026-04-19T18:05:00.000Z'),
+        },
+        {
+          userId: ownerUser.id,
+          botId,
+          mode: 'PAPER',
+          status: 'RUNNING',
+          startedAt: new Date('2026-04-19T18:01:00.000Z'),
+          lastHeartbeatAt: new Date('2026-04-19T18:06:00.000Z'),
+        },
+      ],
+    });
+
+    await prisma.position.create({
+      data: {
+        id: 'aggregate-overlap-closed-position',
+        userId: ownerUser.id,
+        botId,
+        strategyId,
+        symbol: 'BTCUSDT',
+        side: 'LONG',
+        status: 'CLOSED',
+        entryPrice: 60_000,
+        quantity: 0.01,
+        leverage: 1,
+        realizedPnl: 12,
+        openedAt: new Date('2026-04-19T18:01:30.000Z'),
+        closedAt: new Date('2026-04-19T18:02:00.000Z'),
+        managementMode: 'BOT_MANAGED',
+      },
+    });
+
+    const aggregateRes = await owner.get(`/dashboard/bots/${botId}/runtime-monitoring/aggregate`);
+    expect(aggregateRes.status).toBe(200);
+    expect(aggregateRes.body.sessionDetail.metadata.sessionsCount).toBe(2);
+    expect(aggregateRes.body.positions.historyItems).toHaveLength(1);
+    expect(aggregateRes.body.positions.total).toBe(1);
+    expect(aggregateRes.body.positions.closedCount).toBe(1);
+    expect(aggregateRes.body.positions.summary.realizedPnl).toBe(12);
+    expect(aggregateRes.body.sessionDetail.summary.realizedPnl).toBe(12);
+  });
+
   it('keeps aggregate open order counts truthful when visible open orders are limited', async () => {
     const ownerEmail = 'bots-monitoring-aggregate-open-orders-limit@example.com';
     const owner = await registerAndLogin(ownerEmail);
