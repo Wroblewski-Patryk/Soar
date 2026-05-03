@@ -4,8 +4,8 @@
 - ID: RUNTIME-SIGNAL-VOTES-01
 - Title: Recover runtime strategy votes when indicator conditions are already matched
 - Task Type: fix
-- Current Stage: release
-- Status: READY_FOR_DEPLOY_SMOKE
+- Current Stage: post-release
+- Status: DONE
 - Owner: Backend Builder
 - Depends on: DASHSIGNALS-02
 - Priority: P0
@@ -64,9 +64,9 @@ pre-trade/orchestration guardrails.
 - Post-launch learning needed: yes.
 
 ## Deliverable For This Stage
-Closed implementation evidence, synchronized into canonical queue/context, with
-production evidence, root cause, code changes, validation commands, and
-post-deploy smoke expectations.
+Closed implementation and production evidence, synchronized into canonical
+queue/context, with root cause, code changes, validation commands, and
+post-deploy smoke result.
 
 ## Scope
 - `apps/api/src/modules/engine/runtimeSignalMarketDataGateway.ts`
@@ -130,7 +130,7 @@ post-deploy smoke expectations.
 - [x] Focused regression fails before the fix and passes after the fix.
 - [x] Runtime and dashboard condition truth are parity-locked.
 - [x] API typecheck, API build, and repository guardrails pass.
-- [ ] Production read-only smoke evidence is recorded after deploy.
+- [x] Production read-only smoke evidence is recorded after deploy.
 - [x] `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`, and
   relevant planning docs are updated with result evidence.
 - [x] `.codex/context/LEARNING_JOURNAL.md` records the recurring pitfall if
@@ -180,6 +180,17 @@ post-deploy smoke expectations.
 - High-risk checks: implementation keeps signal creation behind existing
   runtime strategy merge, pre-trade, wallet, max-position, exchange-min-order,
   and orchestrator guardrails.
+- Production smoke:
+  - PASS: production `soar-api` was redeployed to
+    `26962ea1dbb0981d3885779d01e58485d7e9fd6c`.
+  - PASS: `/health=ok` and `/ready=ready`.
+  - PASS: active bot `Peper bot` session
+    `122f6846-2f8c-4ee6-bfee-9d2621f29c96` remained `RUNNING`.
+  - PASS: matched rows no longer degrade to unexplained stale `No votes`;
+    guardrail-blocked rows show concrete reasons such as
+    `Open position on symbol exists` or `External position already open`.
+  - PASS: accepted signal counter stays `0` when all matched votes are blocked
+    by guardrails, which is expected and not a hidden vote-generation failure.
 
 ## Architecture Evidence
 - Architecture source reviewed:
@@ -239,12 +250,11 @@ post-deploy smoke expectations.
   now includes the latest `PRETRADE_BLOCKED` outcome per symbol, keeps
   accepted-signal counters unchanged, and attaches the concrete block reason
   instead of falling back to `configured_fallback`.
-- Production follow-up: after push/deploy, verify API freshness directly,
-  `/health`, `/ready`, and the active PAPER bot session. The expected outcome
-  is no same-strategy row with concrete `matched=true` and
-  `lastSignalReason=No votes`; a later explicit pre-trade/orchestration block
-  must be visible on the affected symbol row as latest evaluated runtime
-  context.
+- Production follow-up: complete. API freshness, `/health`, `/ready`, and the
+  active PAPER bot session were verified after deploy. Rows with concrete
+  matched runtime conditions now expose explicit pre-trade/orchestration block
+  reasons as latest evaluated runtime context instead of falling back to stale
+  `No votes`.
 
 ## Autonomous Loop Evidence
 
@@ -282,8 +292,7 @@ post-deploy smoke expectations.
 ### 5. Verify and Test
 - Validation performed: focused runtime market-data, runtime loop, and
   read-model regression tests; API typecheck; API build; repository guardrails.
-- Result: local validation is green. Production read-only smoke remains the
-  post-deploy evidence step.
+- Result: local validation and production read-only smoke are green.
 
 ### 6. Self-Review
 - Simpler option considered: make UI mark cards active from `matched=true`

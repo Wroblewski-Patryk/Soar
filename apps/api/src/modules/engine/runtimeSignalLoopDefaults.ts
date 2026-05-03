@@ -23,6 +23,9 @@ export type ActiveBotStrategy = {
   strategyConfig: Record<string, unknown> | null;
   strategyLeverage: number;
   walletRisk: number;
+  priority?: number;
+  weight?: number;
+  marketGroupStrategyLinkId?: string;
 };
 
 export type ActiveBotRuntimeContext = {
@@ -31,6 +34,7 @@ export type ActiveBotRuntimeContext = {
   maxOpenPositions: number;
   symbols: string[];
   strategy: ActiveBotStrategy;
+  strategies?: ActiveBotStrategy[];
 };
 
 export type ActiveBot = {
@@ -52,7 +56,7 @@ const resolveInheritedExecutionContext = (
   const resolved = resolveInheritedRuntimeExecutionContext({
     walletId: bot.walletId,
     wallet: bot.wallet,
-    venueContext: bot.symbolGroup?.marketUniverse,
+    venueContext: bot.botMarketGroups?.[0]?.symbolGroup.marketUniverse ?? bot.symbolGroup?.marketUniverse,
   });
   if (!resolved) return null;
   return resolved;
@@ -125,7 +129,18 @@ export const listActiveRuntimeBots = async (): Promise<ActiveBot[]> => {
 
   return Promise.all(
     activeBots.map(async ({ raw: bot, executionContext }) => {
-      const runtimeStrategy =
+      const canonicalGroup = (bot.botMarketGroups ?? [])[0] ?? null;
+      const canonicalStrategies = (canonicalGroup?.strategyLinks ?? []).map((link) => ({
+        strategyId: link.strategyId,
+        strategyInterval: link.strategy.interval,
+        strategyConfig: (link.strategy.config as Record<string, unknown> | undefined) ?? null,
+        strategyLeverage: link.strategy.leverage,
+        walletRisk: normalizeWalletRiskPercent(link.strategy.walletRisk, 1),
+        priority: link.priority,
+        weight: link.weight,
+        marketGroupStrategyLinkId: link.id,
+      } satisfies ActiveBotStrategy));
+      const directRuntimeStrategy =
         bot.strategy && bot.strategyId
           ? ({
               strategyId: bot.strategyId,
@@ -133,23 +148,36 @@ export const listActiveRuntimeBots = async (): Promise<ActiveBot[]> => {
               strategyConfig: (bot.strategy.config as Record<string, unknown> | undefined) ?? null,
               strategyLeverage: bot.strategy.leverage,
               walletRisk: normalizeWalletRiskPercent(bot.strategy.walletRisk, 1),
+              priority: 100,
+              weight: 1,
             } satisfies ActiveBotStrategy)
           : null;
-      const runtimeSymbols =
-        bot.symbolGroup && bot.symbolGroupId
-          ? await resolveEffectiveSymbolGroupSymbolsWithCatalog(bot.symbolGroup, catalogSymbolsCache)
-          : [];
+      const runtimeStrategies =
+        canonicalStrategies.length > 0
+          ? canonicalStrategies
+          : directRuntimeStrategy
+            ? [directRuntimeStrategy]
+            : [];
+      const runtimeSymbolGroup = canonicalGroup?.symbolGroup ?? bot.symbolGroup ?? null;
+      const runtimeSymbolGroupId = canonicalGroup?.symbolGroupId ?? bot.symbolGroupId ?? null;
+      const runtimeSymbols = runtimeSymbolGroup
+        ? await resolveEffectiveSymbolGroupSymbolsWithCatalog(runtimeSymbolGroup, catalogSymbolsCache)
+        : [];
+      const primaryRuntimeStrategy = runtimeStrategies[0] ?? null;
       const runtimeContext =
-        runtimeStrategy && bot.symbolGroupId
+        primaryRuntimeStrategy && runtimeSymbolGroupId
           ? ({
-              symbolGroupId: bot.symbolGroupId,
-              strategyId: runtimeStrategy.strategyId,
+              symbolGroupId: runtimeSymbolGroupId,
+              strategyId: primaryRuntimeStrategy.strategyId,
               maxOpenPositions: deriveRuntimeGroupMaxOpenPositions({
-                configuredGroupMaxOpenPositions: bot.maxOpenPositions,
-                strategies: [{ strategyConfig: runtimeStrategy.strategyConfig }],
+                configuredGroupMaxOpenPositions: canonicalGroup?.maxOpenPositions ?? bot.maxOpenPositions,
+                strategies: runtimeStrategies.map((strategy) => ({
+                  strategyConfig: strategy.strategyConfig,
+                })),
               }),
               symbols: runtimeSymbols,
-              strategy: runtimeStrategy,
+              strategy: primaryRuntimeStrategy,
+              strategies: runtimeStrategies,
             } satisfies ActiveBotRuntimeContext)
           : null;
 

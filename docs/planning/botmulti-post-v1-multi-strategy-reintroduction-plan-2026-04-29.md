@@ -1,9 +1,9 @@
 # BOTMULTI-A - Post-V1 Multi-Strategy Bot Reintroduction Plan
 
-Status: Deferred
+Status: Closed locally
 Owner: Codex Planning Agent
 Stage: planning
-Last Updated: 2026-04-29
+Last Updated: 2026-05-03
 
 ## Context
 
@@ -61,34 +61,57 @@ Required decisions to freeze:
    - Done in this planning stage.
 
 2. `BOTMULTI-01 docs(decision): freeze post-V1 multi-strategy bot contract`
+   - Done 2026-05-03.
    - Replace the singular contract in architecture only after `V1TRUTH-A`
      closure confirms the current baseline is stable.
 
 3. `BOTMULTI-02 audit(data+runtime): inventory legacy compatibility remnants and migration debt`
-   - Classify what still exists from older multi-entity topology and what must
-     be removed, reused, or migrated.
+   - Done 2026-05-03.
+   - Classified what still exists from older multi-entity topology and what
+     must be removed, reused, or migrated.
+   - Lower numeric strategy-link priority is canonical; `1` is higher priority
+     than `100`.
 
 4. `BOTMULTI-03 db(schema): finalize canonical multi-strategy topology and migration path`
+   - Done 2026-05-03.
    - Ensure one canonical persistence model instead of compatibility-layer
-     overlap.
+     overlap. The database must enforce at most one enabled `ACTIVE`
+     `BotMarketGroup` per bot with a fail-closed migration preflight.
 
 5. `BOTMULTI-04 api(write): support bot create/update with multiple strategies`
+   - Done 2026-05-03.
    - Fail closed on invalid mixes and unsupported symbol-group/strategy
      combinations.
+   - Bot create/update accepts optional ordered `strategies` payloads while
+     keeping `strategyId` as primary compatibility projection.
 
 6. `BOTMULTI-05 runtime(signal-merge): execute deterministic multi-strategy evaluation per bot`
-   - Reuse one canonical merge contract.
+   - Done 2026-05-03.
+   - Runtime topology reads enabled canonical `MarketGroupStrategyLink` rows
+     under the one active `BotMarketGroup`.
+   - Final-candle decision evaluates all interval-eligible strategies and
+     reuses the one canonical merge contract with link priority/weight and
+     winner provenance.
 
 7. `BOTMULTI-06 runtime(risk+lifecycle): align DCA/TTP/TSL and ownership across multiple strategies`
+   - Done 2026-05-03.
    - Keep one position lifecycle truth even when multiple strategies can
      participate.
+   - Runtime protection automation fails closed when a bot-managed position has
+     no `position.strategyId` while multiple enabled canonical strategy links
+     exist.
 
 8. `BOTMULTI-07 web(ui+operator): expose multi-strategy bot management and runtime truth`
-   - Bot forms, runtime widgets, monitoring, and manual-order context must all
-     remain honest about strategy provenance.
+   - Done 2026-05-03.
+   - Bot create/edit exposes primary plus additional enabled strategies,
+     submits ordered canonical `strategies[]`, and prefills edit mode from
+     canonical runtime graph links.
 
 9. `BOTMULTI-08 qa(closure): run architecture-to-runtime closure pack and publish evidence`
-   - Include adversarial `LIVE` and restart/recovery scenarios.
+   - Done 2026-05-03.
+   - Closure validation passed across API write, runtime topology/merge,
+     lifecycle fail-closed safety, web bot form, typecheck, i18n, docs parity,
+     and repository guardrails.
 
 ## Acceptance Criteria
 
@@ -118,8 +141,26 @@ Required decisions to freeze:
 
 ## Result Report
 
-- Task summary: deferred post-`V1` execution roadmap only
-- Files changed: planning packet only
-- How tested: `pnpm run quality:guardrails`
-- What is incomplete: architecture updates, code, tests, closure evidence
-- Next steps: keep deferred until `V1TRUTH-A` is closed and stable
+- Task summary: post-`V1` execution roadmap activated after `SYSFINAL-09`
+  closed the current V1 confidence pass. `BOTMULTI-01` froze the architecture
+  target as one bot with one wallet, one active symbol-group market scope, and
+  an ordered strategy set. `BOTMULTI-02` closed the compatibility/migration
+  debt audit and resolved priority semantics. `BOTMULTI-03` added the
+  fail-closed database invariant for one active market scope per bot.
+  `BOTMULTI-04` added API write support for ordered multi-strategy links.
+  `BOTMULTI-05` wired runtime topology and final-candle decision to execute
+  canonical enabled strategy links through the deterministic merge contract.
+  `BOTMULTI-06` made runtime DCA/TTP/SL/TSL automation fail closed for
+  ambiguous multi-strategy position ownership.
+  `BOTMULTI-07` exposed ordered multi-strategy bot management in the web form.
+  `BOTMULTI-08` closed the wave locally with focused architecture-to-runtime
+  evidence.
+- Files changed: planning packet and architecture source-of-truth docs.
+- How tested: `pnpm run quality:guardrails`, `pnpm run docs:parity:check`,
+  focused API merge regression, API typecheck, Prisma schema validation, and
+  focused bot API e2e/runtime coverage.
+- What is incomplete: no active BOTMULTI implementation task remains. The
+  database migration from `BOTMULTI-03` still needs normal deployment
+  application before release promotion.
+- Next steps: cross-check active planning docs before selecting any new
+  non-BOTMULTI task.

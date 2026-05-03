@@ -129,12 +129,14 @@ const createRuntimeContext = (input?: {
   maxOpenPositions?: number;
   symbols?: string[];
   strategy?: any | null;
+  strategies?: any[];
 }) => ({
   symbolGroupId: input?.symbolGroupId ?? 'symbol-group-1',
   strategyId: input?.strategy?.strategyId ?? strategyLong.strategyId,
   maxOpenPositions: input?.maxOpenPositions ?? 1,
   symbols: input?.symbols ?? ['BTCUSDT'],
   strategy: input?.strategy ?? strategyLong,
+  strategies: input?.strategies ?? [input?.strategy ?? strategyLong],
 });
 
 const createDeps = () => {
@@ -195,6 +197,7 @@ const withStrategyBot = (
         maxOpenPositions: options?.maxOpenPositions ?? 1,
         symbols: options?.symbols ?? ['BTCUSDT'],
         strategy: options?.strategies?.[0] ?? strategyLong,
+        strategies: options?.strategies ?? [strategyLong],
       }),
     },
   ]);

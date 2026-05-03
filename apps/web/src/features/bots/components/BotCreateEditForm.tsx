@@ -31,6 +31,7 @@ import {
 import {
   createBot,
   getBot,
+  getBotRuntimeGraph,
   updateBot,
 } from '../services/bots.service';
 
@@ -55,6 +56,7 @@ type BotFormState = {
   name: string;
   walletId: string;
   strategyId: string;
+  strategyIds: string[];
   marketGroupId: string;
   isActive: boolean;
   liveOptIn: boolean;
@@ -69,6 +71,7 @@ const buildDefaultForm = (params: {
   name: '',
   walletId: params.wallets[0]?.id ?? '',
   strategyId: params.strategies[0]?.id ?? '',
+  strategyIds: params.strategies[0]?.id ? [params.strategies[0].id] : [],
   marketGroupId: params.marketGroups[0]?.id ?? '',
   isActive: true,
   liveOptIn: false,
@@ -102,6 +105,7 @@ export default function BotCreateEditForm({
     name: '',
     walletId: '',
     strategyId: '',
+    strategyIds: [],
     marketGroupId: '',
     isActive: true,
     liveOptIn: false,
@@ -130,12 +134,18 @@ export default function BotCreateEditForm({
         return;
       }
 
-      const bot = await getBot(editId);
+      const [bot, runtimeGraph] = await Promise.all([getBot(editId), getBotRuntimeGraph(editId)]);
       const selectedGroupId =
         bot.symbolGroup?.marketUniverseId ??
         marketGroupRows[0]?.id ??
         '';
+      const graphStrategyIds =
+        runtimeGraph.marketGroups
+          .find((group) => group.isEnabled && group.lifecycleStatus === 'ACTIVE')
+          ?.strategies.filter((link) => link.isEnabled)
+          .map((link) => link.strategyId) ?? [];
       const selectedStrategyId =
+        graphStrategyIds[0] ??
         bot.strategy?.id ??
         bot.strategyId ??
         strategyRows[0]?.id ??
@@ -146,6 +156,7 @@ export default function BotCreateEditForm({
         name: bot.name,
         walletId: selectedWalletId,
         strategyId: selectedStrategyId,
+        strategyIds: graphStrategyIds.length > 0 ? graphStrategyIds : selectedStrategyId ? [selectedStrategyId] : [],
         marketGroupId: selectedGroupId,
         isActive: bot.isActive,
         liveOptIn: bot.liveOptIn,
@@ -190,6 +201,10 @@ export default function BotCreateEditForm({
       })),
     [strategies]
   );
+  const orderedStrategyIds = useMemo(() => {
+    const ids = [form.strategyId, ...form.strategyIds].filter(Boolean);
+    return Array.from(new Set(ids));
+  }, [form.strategyId, form.strategyIds]);
   const marketGroupOptions = useMemo(
     () =>
       marketGroups.map((group) => ({
@@ -239,11 +254,14 @@ export default function BotCreateEditForm({
     if (!form.strategyId) {
       errors.strategyId = t('dashboard.bots.create.strategyRequiredValidation');
     }
+    if (orderedStrategyIds.length === 0) {
+      errors.strategyId = t('dashboard.bots.create.strategyRequiredValidation');
+    }
     if (!form.marketGroupId) {
       errors.marketGroupId = t('dashboard.bots.create.marketGroupRequiredValidation');
     }
     return errors;
-  }, [form.marketGroupId, form.name, form.strategyId, form.walletId, t]);
+  }, [form.marketGroupId, form.name, form.strategyId, form.walletId, orderedStrategyIds.length, t]);
   const hasValidationErrors = Object.keys(fieldErrors).length > 0;
   const validationSummaryErrors = useMemo(
     () => toValidationSummaryErrors(fieldErrors),
@@ -254,6 +272,7 @@ export default function BotCreateEditForm({
       name: 'bot-name',
       walletId: 'bot-wallet',
       strategyId: 'bot-strategy',
+      strategyIds: 'bot-strategy',
       marketGroupId: 'bot-market-group',
       isActive: 'bot-active',
       liveOptIn: 'bot-live-opt-in',
@@ -303,6 +322,12 @@ export default function BotCreateEditForm({
         name: form.name.trim(),
         walletId: form.walletId,
         strategyId: form.strategyId,
+        strategies: orderedStrategyIds.map((strategyId, index) => ({
+          strategyId,
+          priority: index + 1,
+          weight: 1,
+          isEnabled: true,
+        })),
         marketGroupId: form.marketGroupId,
         isActive: form.isActive,
         liveOptIn: selectedMode === 'LIVE' ? form.liveOptIn : false,
@@ -497,7 +522,13 @@ export default function BotCreateEditForm({
                 label={t('dashboard.bots.create.strategyLabel')}
                 value={form.strategyId}
                 options={strategyOptions}
-                onChange={(value) => setForm((prev) => ({ ...prev, strategyId: value }))}
+                onChange={(value) =>
+                  setForm((prev) => ({
+                    ...prev,
+                    strategyId: value,
+                    strategyIds: Array.from(new Set([value, ...prev.strategyIds].filter(Boolean))),
+                  }))
+                }
                 error={showValidation ? fieldErrors.strategyId : undefined}
               />
 
@@ -510,6 +541,46 @@ export default function BotCreateEditForm({
                 </div>
               ) : null}
             </FormGrid>
+            <div className='space-y-2'>
+              <div className='text-xs font-semibold uppercase tracking-wide text-base-content/60'>
+                {t('dashboard.bots.create.additionalStrategiesLabel')}
+              </div>
+              <div className='grid gap-2 md:grid-cols-2'>
+                {strategies.map((strategy) => {
+                  const checked = orderedStrategyIds.includes(strategy.id);
+                  const isPrimary = strategy.id === form.strategyId;
+                  return (
+                    <label
+                      key={strategy.id}
+                      className='flex items-start gap-2 rounded-md border border-base-300/60 bg-base-100/70 px-3 py-2 text-sm'
+                    >
+                      <input
+                        type='checkbox'
+                        className='checkbox checkbox-primary checkbox-sm mt-0.5'
+                        checked={checked}
+                        disabled={isPrimary}
+                        onChange={(event) =>
+                          setForm((prev) => ({
+                            ...prev,
+                            strategyIds: event.target.checked
+                              ? Array.from(new Set([...prev.strategyIds, strategy.id]))
+                              : prev.strategyIds.filter((id) => id !== strategy.id),
+                          }))
+                        }
+                        aria-label={`${t('dashboard.bots.create.additionalStrategyAria')} ${strategy.name}`}
+                      />
+                      <span>
+                        <span className='font-medium'>{strategy.name}</span>
+                        <span className='block text-xs text-base-content/60'>
+                          {strategy.interval.toUpperCase()}
+                          {isPrimary ? ` · ${t('dashboard.bots.create.primaryStrategyBadge')}` : ''}
+                        </span>
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
           </FormSectionCard>
         </fieldset>
       </form>

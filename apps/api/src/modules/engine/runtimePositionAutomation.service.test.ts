@@ -32,6 +32,9 @@ const buildBotExecutionContext = (
         baseCurrency: string;
       }> | null;
     } | null;
+    botMarketGroups: Array<{
+      strategyLinks: Array<{ strategyId: string }>;
+    }>;
   }>
 ) => ({
   walletId: overrides?.walletId ?? 'wallet-1',
@@ -61,6 +64,7 @@ const buildBotExecutionContext = (
                   ...(overrides?.symbolGroup?.marketUniverse ?? {}),
                 },
         },
+  botMarketGroups: overrides?.botMarketGroups,
 });
 
 describe('RuntimePositionAutomationService', () => {
@@ -111,6 +115,82 @@ describe('RuntimePositionAutomationService', () => {
       })
     );
     expect(deps.executeDca).not.toHaveBeenCalled();
+  });
+
+  it('fails closed when a multi-strategy bot-managed position has no strategy provenance', async () => {
+    const recordRuntimeEvent = vi.fn(async () => undefined);
+    const deps: any = {
+      listOpenPositionsBySymbol: vi.fn(async () => [
+        {
+          id: 'pos-multi-missing-strategy',
+          userId: 'user-multi-missing-strategy',
+          botId: 'bot-multi-missing-strategy',
+          strategyId: null,
+          symbol: 'BTCUSDT',
+          side: 'LONG' as const,
+          entryPrice: 60_000,
+          quantity: 0.5,
+          leverage: 5,
+          stopLoss: 58_000,
+          takeProfit: 61_000,
+          managementMode: 'BOT_MANAGED' as const,
+          origin: 'BOT' as const,
+          continuityState: 'CONFIRMED' as const,
+          status: 'OPEN' as const,
+          unrealizedPnl: null,
+          lastExchangeSyncAt: null,
+          bot: buildBotExecutionContext({
+            wallet: { mode: 'LIVE' },
+            botMarketGroups: [
+              {
+                strategyLinks: [{ strategyId: 'strat-primary' }, { strategyId: 'strat-secondary' }],
+              },
+            ],
+          }),
+        },
+      ]),
+      getStrategyConfigById: vi.fn(async () => ({
+        close: { tp: 1, sl: 1 },
+        additional: { dcaEnabled: true, dcaTimes: 1, dcaLevels: [{ percent: -1, multiplier: 1 }] },
+      })),
+      executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
+      closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
+      resolveDcaFundsExhausted: vi.fn(async () => false),
+      recordRuntimeEvent,
+      nowMs: vi.fn(() => Date.now()),
+    };
+
+    const service = new RuntimePositionAutomationService(deps);
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'BTCUSDT',
+      eventTime: 1_500,
+      lastPrice: 61_500,
+      priceChangePercent24h: 1.6,
+    });
+
+    expect(deps.getStrategyConfigById).not.toHaveBeenCalled();
+    expect(deps.resolveDcaFundsExhausted).not.toHaveBeenCalled();
+    expect(deps.executeDca).not.toHaveBeenCalled();
+    expect(deps.closeByExitSignal).not.toHaveBeenCalled();
+    expect(recordRuntimeEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'user-multi-missing-strategy',
+        botId: 'bot-multi-missing-strategy',
+        mode: 'LIVE',
+        eventType: 'PRETRADE_BLOCKED',
+        level: 'WARN',
+        symbol: 'BTCUSDT',
+        message: 'Runtime automation skipped because multi-strategy position strategy provenance is missing',
+        payload: expect.objectContaining({
+          positionId: 'pos-multi-missing-strategy',
+          skipReason: 'multi_strategy_position_provenance_missing',
+          enabledStrategyLinkCount: 2,
+        }),
+      })
+    );
   });
 
   it('does not force close position when only DCA fallback config is active', async () => {

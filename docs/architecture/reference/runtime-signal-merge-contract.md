@@ -1,9 +1,11 @@
-# Runtime Signal Merge Contract (V1)
+# Runtime Signal Merge Contract (Post-V1 BOTMULTI)
 
-Status: canonical, locked for Phase 12 (`MBA-03`) on 2026-03-23.
+Status: canonical, refreshed for `BOTMULTI-01` on 2026-05-03.
 
 ## Purpose
-Define deterministic action resolution when multiple strategies attached to one bot market-group emit conflicting signals for the same symbol and evaluation window.
+Define deterministic action resolution when multiple strategies attached to one
+bot market-group emit conflicting signals for the same symbol and evaluation
+window.
 
 ## Scope
 - Applies to runtime modes: `BACKTEST`, `PAPER`, `LIVE`.
@@ -13,7 +15,7 @@ Define deterministic action resolution when multiple strategies attached to one 
 ## Preconditions
 - Runtime evaluates only enabled entities:
   - enabled bot
-  - enabled bot market-group
+  - exactly one enabled active bot market-group for the selected bot
   - enabled market-group strategy links
 - Signal timestamps are normalized to one interval window.
 - All signals in one resolution unit are evaluated in one merge pass.
@@ -29,7 +31,8 @@ Define deterministic action resolution when multiple strategies attached to one 
 ## Deterministic Merge Order
 1. `EXIT` priority:
    - if any enabled strategy emits `EXIT`, choose `EXIT`.
-   - tie-break for `EXIT` metadata uses highest `priority`, then lowest `strategyLinkId`.
+   - tie-break for `EXIT` metadata uses lowest numeric `priority`, then lowest
+     `strategyLinkId`.
 2. Directional vote:
    - compute weighted score for `LONG` and `SHORT`:
      - `directionScore = sum(link.weight)` over strategies voting this direction.
@@ -39,7 +42,7 @@ Define deterministic action resolution when multiple strategies attached to one 
 
 ## Tie-Break Rules
 Order is always deterministic:
-1. Higher `priority` wins.
+1. Lower numeric `priority` wins. `1` is higher priority than `100`.
 2. If same priority, higher `weight` wins.
 3. If still tied, lower lexical `strategyId` wins.
 4. If still tied, lower lexical `marketGroupStrategyLinkId` wins.
@@ -56,6 +59,19 @@ For each resolution unit store merge trace:
 - applied guardrails
 - directional scores and threshold
 - final action and tie-break path
+- primary strategy provenance for downstream order and position lifecycle
+  ownership
+
+## Lifecycle Boundary
+The merge contract decides the accepted proposal; it does not bypass execution
+or lifecycle guardrails. Accepted `OPEN`, `DCA`, `CLOSE`, and `EXIT` intents
+must still pass wallet, ownership, pre-trade, no-flip, exchange-min-order,
+continuity, and LIVE entitlement checks.
+
+For directional merges where several strategies contribute to the winning
+direction, the primary strategy provenance is selected by the deterministic
+tie-break sequence. That provenance owns the resulting order/position lifecycle
+configuration unless a later explicit transfer contract is implemented.
 
 ## Backtest/Paper/Live Parity Rule
 - Same merge algorithm and tie-break sequence in all three modes.
@@ -64,5 +80,5 @@ For each resolution unit store merge trace:
 ## Config Defaults (V1)
 - `minDirectionalScore`: `1.0`
 - default `weight`: `1.0`
-- default `priority`: `100`
+- default `priority`: `100` (normal priority; lower numbers are more urgent)
 - if no explicit config found for a link, runtime applies defaults above.

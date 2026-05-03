@@ -562,6 +562,7 @@ export type CreateBotInput = {
   name: string;
   walletId: string;
   strategyId: string;
+  strategies?: BotStrategyLinkInput[];
   marketGroupId: string;
   isActive: boolean;
   liveOptIn: boolean;
@@ -569,10 +570,18 @@ export type CreateBotInput = {
   consentTextVersion?: string | null;
 };
 
+export type BotStrategyLinkInput = {
+  strategyId: string;
+  priority?: number;
+  weight?: number;
+  isEnabled?: boolean;
+};
+
 export type UpdateBotInput = Partial<{
   name: string;
   walletId: string | null;
   strategyId: string | null;
+  strategies: BotStrategyLinkInput[];
   marketGroupId: string | null;
   isActive: boolean;
   liveOptIn: boolean;

@@ -15,7 +15,6 @@ import {
   assertNoActiveLiveBotSymbolOverlap,
   assertNoDuplicateActiveBotByStrategyAndSymbolGroup,
   deriveMaxOpenPositionsFromStrategy,
-  getOwnedStrategy,
   resolveCreateMarketGroupToSymbolGroup,
 } from './botWriteValidation.service';
 import {
@@ -58,6 +57,83 @@ export class BotModeSwitchBlockedError extends Error {
   }
 }
 
+type BotStrategyLinkInput = NonNullable<CreateBotDto['strategies']>[number];
+type OwnedStrategyMap = Map<string, { id: string; config: unknown }>;
+
+const orderStrategyLinks = (items: BotStrategyLinkInput[]) =>
+  [...items].sort((left, right) => {
+    const priorityDiff = left.priority - right.priority;
+    if (priorityDiff !== 0) return priorityDiff;
+    return left.strategyId.localeCompare(right.strategyId);
+  });
+
+const buildStrategyLinkSet = (
+  primaryStrategyId: string | null,
+  strategyLinks?: BotStrategyLinkInput[]
+) => {
+  const links = orderStrategyLinks(
+    strategyLinks ?? (primaryStrategyId
+      ? [{ strategyId: primaryStrategyId, priority: 100, weight: 1, isEnabled: true }]
+      : [])
+  );
+  const enabledLinks = links.filter((link) => link.isEnabled);
+  const primaryLink =
+    (primaryStrategyId
+      ? enabledLinks.find((link) => link.strategyId === primaryStrategyId) ?? null
+      : null) ??
+    enabledLinks[0] ??
+    links[0] ??
+    null;
+
+  return {
+    links,
+    enabledLinks,
+    primaryStrategyId: primaryLink?.strategyId ?? null,
+  };
+};
+
+const getOwnedStrategiesById = async (
+  userId: string,
+  strategyIds: string[]
+): Promise<OwnedStrategyMap> => {
+  const uniqueStrategyIds = [...new Set(strategyIds)];
+  if (uniqueStrategyIds.length === 0) return new Map();
+
+  const strategies = await prisma.strategy.findMany({
+    where: {
+      userId,
+      id: { in: uniqueStrategyIds },
+    },
+    select: {
+      id: true,
+      config: true,
+    },
+  });
+  const byId = new Map(strategies.map((strategy) => [strategy.id, strategy]));
+  if (byId.size !== uniqueStrategyIds.length) {
+    throw botErrors.botStrategyNotFound();
+  }
+  return byId;
+};
+
+const assertNoDuplicateActiveBotForStrategyLinks = async (params: {
+  userId: string;
+  strategyIds: string[];
+  symbolGroupId: string;
+  walletId: string;
+  excludeBotId?: string;
+}) => {
+  for (const strategyId of [...new Set(params.strategyIds)]) {
+    await assertNoDuplicateActiveBotByStrategyAndSymbolGroup({
+      userId: params.userId,
+      strategyId,
+      symbolGroupId: params.symbolGroupId,
+      walletId: params.walletId,
+      excludeBotId: params.excludeBotId,
+    });
+  }
+};
+
 export const listBots = async (userId: string, query: ListBotsQueryDto = {}) => {
   const bots = await listOwnedBotsWithStrategyProjection({
     userId,
@@ -78,9 +154,18 @@ export const getBot = async (userId: string, id: string) => {
 
 
 export const createBot = async (userId: string, data: CreateBotDto) => {
-  const { strategyId, marketGroupId, walletId, ...botData } = data;
-  const strategy = await getOwnedStrategy(userId, strategyId);
-  if (!strategy) throw botErrors.botStrategyNotFound();
+  const { strategyId, strategies, marketGroupId, walletId, ...botData } = data;
+  const strategyLinkSet = buildStrategyLinkSet(strategyId, strategies);
+  const strategiesById = await getOwnedStrategiesById(
+    userId,
+    strategyLinkSet.links.map((link) => link.strategyId)
+  );
+  const primaryStrategy = strategyLinkSet.primaryStrategyId
+    ? strategiesById.get(strategyLinkSet.primaryStrategyId)
+    : null;
+  if (!primaryStrategy || !strategyLinkSet.primaryStrategyId) {
+    throw botErrors.botStrategyNotFound();
+  }
 
   const symbolGroup = await resolveCreateMarketGroupToSymbolGroup(userId, marketGroupId);
   if (!symbolGroup) throw botErrors.symbolGroupNotFound();
@@ -119,7 +204,7 @@ export const createBot = async (userId: string, data: CreateBotDto) => {
   };
   validateLiveConsentState(nextState);
 
-  const derivedMaxOpenPositions = deriveMaxOpenPositionsFromStrategy(strategy.config);
+  const derivedMaxOpenPositions = deriveMaxOpenPositionsFromStrategy(primaryStrategy.config);
   if (botData.isActive) {
     assertBotActivationExchangeCapability({
       exchange: derivedExchange,
@@ -128,9 +213,9 @@ export const createBot = async (userId: string, data: CreateBotDto) => {
   }
 
   if (botData.isActive) {
-    await assertNoDuplicateActiveBotByStrategyAndSymbolGroup({
+    await assertNoDuplicateActiveBotForStrategyLinks({
       userId,
-      strategyId,
+      strategyIds: strategyLinkSet.enabledLinks.map((link) => link.strategyId),
       symbolGroupId: symbolGroup.id,
       walletId: wallet.id,
     });
@@ -152,7 +237,7 @@ export const createBot = async (userId: string, data: CreateBotDto) => {
       data: {
         userId,
         name: botData.name,
-        strategyId,
+        strategyId: strategyLinkSet.primaryStrategyId,
         symbolGroupId: symbolGroup.id,
         mode: derivedMode,
         walletId: wallet.id,
@@ -190,20 +275,22 @@ export const createBot = async (userId: string, data: CreateBotDto) => {
       },
     });
 
-    await tx.marketGroupStrategyLink.create({
-      data: {
-        userId,
-        botId: createdBot.id,
-        botMarketGroupId: createdBotMarketGroup.id,
-        strategyId,
-        priority: 100,
-        weight: 1,
-        isEnabled: true,
-      },
-      select: {
-        id: true,
-      },
-    });
+    await Promise.all(
+      strategyLinkSet.links.map((strategyLink) =>
+        tx.marketGroupStrategyLink.create({
+          data: {
+            userId,
+            botId: createdBot.id,
+            botMarketGroupId: createdBotMarketGroup.id,
+            strategyId: strategyLink.strategyId,
+            priority: strategyLink.priority,
+            weight: strategyLink.weight,
+            isEnabled: strategyLink.isEnabled,
+          },
+          select: { id: true },
+        })
+      )
+    );
 
     return createdBot.id;
   });
@@ -231,6 +318,15 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
 
   const strategyIdUpdateRequested = Object.prototype.hasOwnProperty.call(data, 'strategyId');
   const requestedStrategyId = strategyIdUpdateRequested ? (data.strategyId ?? null) : undefined;
+  const strategyLinksUpdateRequested = Object.prototype.hasOwnProperty.call(data, 'strategies');
+  const requestedStrategyLinkSet = strategyLinksUpdateRequested
+    ? buildStrategyLinkSet(
+        typeof requestedStrategyId === 'string' && requestedStrategyId.length > 0
+          ? requestedStrategyId
+          : null,
+        data.strategies
+      )
+    : null;
   const marketGroupIdUpdateRequested = Object.prototype.hasOwnProperty.call(data, 'marketGroupId');
   const requestedMarketGroupId = marketGroupIdUpdateRequested ? (data.marketGroupId ?? null) : undefined;
   const walletIdUpdateRequested = Object.prototype.hasOwnProperty.call(data, 'walletId');
@@ -311,13 +407,12 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
     }
   }
 
-  const requestedStrategy =
-    requestedStrategyId && strategyIdUpdateRequested
-      ? await getOwnedStrategy(userId, requestedStrategyId)
-      : null;
-  if (requestedStrategyId && strategyIdUpdateRequested && !requestedStrategy) {
-    throw botErrors.botStrategyNotFound();
-  }
+  const requestedStrategyIds = requestedStrategyLinkSet
+    ? requestedStrategyLinkSet.links.map((link) => link.strategyId)
+    : requestedStrategyId && strategyIdUpdateRequested
+      ? [requestedStrategyId]
+      : [];
+  await getOwnedStrategiesById(userId, requestedStrategyIds);
 
   const requestedSymbolGroup = requestedMarketGroupId
     ? await resolveCreateMarketGroupToSymbolGroup(userId, requestedMarketGroupId)
@@ -357,17 +452,24 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
 
   if (nextIsActive) {
     const targetStrategyId =
-      requestedStrategyId !== undefined ? requestedStrategyId : (existing.strategyId ?? null);
+      requestedStrategyLinkSet?.primaryStrategyId ??
+      (requestedStrategyId !== undefined ? requestedStrategyId : (existing.strategyId ?? null));
     const targetSymbolGroupId = requestedSymbolGroup?.id ?? existing.symbolGroupId ?? null;
 
-    if (targetStrategyId && targetSymbolGroupId) {
+    const targetStrategyIds = requestedStrategyLinkSet
+      ? requestedStrategyLinkSet.enabledLinks.map((link) => link.strategyId)
+      : targetStrategyId
+        ? [targetStrategyId]
+        : [];
+
+    if (targetStrategyIds.length > 0 && targetSymbolGroupId) {
       const targetWalletId = targetWallet?.id ?? existing.walletId ?? null;
       if (!targetWalletId) {
         throw botErrors.walletNotFound();
       }
-      await assertNoDuplicateActiveBotByStrategyAndSymbolGroup({
+      await assertNoDuplicateActiveBotForStrategyLinks({
         userId,
-        strategyId: targetStrategyId,
+        strategyIds: targetStrategyIds,
         symbolGroupId: targetSymbolGroupId,
         walletId: targetWalletId,
         excludeBotId: existing.id,
@@ -387,6 +489,7 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
 
   const {
     strategyId: _ignoredStrategyId,
+    strategies: _ignoredStrategies,
     marketGroupId: _ignoredMarketGroupId,
     walletId: _ignoredWalletId,
     ...botData
@@ -399,9 +502,10 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
         mode: nextMode,
         walletId: targetWallet?.id ?? existing.walletId ?? null,
         strategyId:
-          typeof requestedStrategyId === 'string' && requestedStrategyId.length > 0
+          requestedStrategyLinkSet?.primaryStrategyId ??
+          (typeof requestedStrategyId === 'string' && requestedStrategyId.length > 0
             ? requestedStrategyId
-            : existing.strategyId ?? null,
+            : existing.strategyId ?? null),
         symbolGroupId: requestedSymbolGroup?.id ?? existing.symbolGroupId ?? null,
         paperStartBalance: targetPaperStartBalance,
         exchange: targetExchange,
@@ -415,6 +519,7 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
 
     const shouldSyncCanonicalMapping =
       requestedSymbolGroup !== null ||
+      strategyLinksUpdateRequested ||
       (strategyIdUpdateRequested && typeof requestedStrategyId === 'string' && requestedStrategyId.length > 0);
     if (shouldSyncCanonicalMapping) {
       const orderedGroups = await tx.botMarketGroup.findMany({
@@ -491,12 +596,57 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
         });
       }
 
-      const targetCanonicalStrategyId =
-        typeof requestedStrategyId === 'string' && requestedStrategyId.length > 0
+      const targetCanonicalStrategyId = requestedStrategyLinkSet?.primaryStrategyId ??
+        (typeof requestedStrategyId === 'string' && requestedStrategyId.length > 0
           ? requestedStrategyId
-          : null;
+          : null);
 
-      if (targetGroup && targetCanonicalStrategyId) {
+      if (targetGroup && requestedStrategyLinkSet) {
+        const requestedStrategyIds = requestedStrategyLinkSet.links.map((link) => link.strategyId);
+        await tx.marketGroupStrategyLink.updateMany({
+          where: {
+            botId: existing.id,
+            botMarketGroupId: targetGroup.id,
+            strategyId: { notIn: requestedStrategyIds },
+          },
+          data: {
+            isEnabled: false,
+          },
+        });
+
+        for (const strategyLink of requestedStrategyLinkSet.links) {
+          const existingTargetLink = await tx.marketGroupStrategyLink.findFirst({
+            where: {
+              botId: existing.id,
+              botMarketGroupId: targetGroup.id,
+              strategyId: strategyLink.strategyId,
+            },
+            select: { id: true },
+          });
+          if (existingTargetLink) {
+            await tx.marketGroupStrategyLink.update({
+              where: { id: existingTargetLink.id },
+              data: {
+                isEnabled: strategyLink.isEnabled,
+                priority: strategyLink.priority,
+                weight: strategyLink.weight,
+              },
+            });
+          } else {
+            await tx.marketGroupStrategyLink.create({
+              data: {
+                userId,
+                botId: existing.id,
+                botMarketGroupId: targetGroup.id,
+                strategyId: strategyLink.strategyId,
+                priority: strategyLink.priority,
+                weight: strategyLink.weight,
+                isEnabled: strategyLink.isEnabled,
+              },
+            });
+          }
+        }
+      } else if (targetGroup && targetCanonicalStrategyId) {
         await tx.marketGroupStrategyLink.updateMany({
           where: {
             botId: existing.id,
@@ -560,7 +710,7 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
     return updatedBot;
   });
 
-  if (strategyIdUpdateRequested) {
+  if (strategyIdUpdateRequested && !strategyLinksUpdateRequested) {
     await upsertBotStrategy({
       userId,
       botId: updated.id,

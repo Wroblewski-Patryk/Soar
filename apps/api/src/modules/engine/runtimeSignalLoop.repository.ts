@@ -43,6 +43,55 @@ export const listActiveRuntimeBotsRaw = () =>
           },
         },
       },
+      botMarketGroups: {
+        where: {
+          isEnabled: true,
+          lifecycleStatus: 'ACTIVE',
+        },
+        orderBy: [{ executionOrder: 'asc' }, { createdAt: 'asc' }, { id: 'asc' }],
+        select: {
+          id: true,
+          symbolGroupId: true,
+          maxOpenPositions: true,
+          symbolGroup: {
+            select: {
+              id: true,
+              symbols: true,
+              marketUniverse: {
+                select: {
+                  exchange: true,
+                  marketType: true,
+                  baseCurrency: true,
+                  filterRules: true,
+                  whitelist: true,
+                  blacklist: true,
+                },
+              },
+            },
+          },
+          strategyLinks: {
+            where: {
+              isEnabled: true,
+            },
+            orderBy: [{ priority: 'asc' }, { createdAt: 'asc' }, { id: 'asc' }],
+            select: {
+              id: true,
+              strategyId: true,
+              priority: true,
+              weight: true,
+              strategy: {
+                select: {
+                  id: true,
+                  interval: true,
+                  config: true,
+                  leverage: true,
+                  walletRisk: true,
+                },
+              },
+            },
+          },
+        },
+      },
       wallet: {
         select: {
           id: true,

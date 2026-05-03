@@ -6,11 +6,72 @@ export const TradeMarketSchema = z.enum(EXCHANGE_MARKET_TYPES);
 export const BotMarketGroupStatusSchema = z.enum(['DRAFT', 'ACTIVE', 'PAUSED', 'ARCHIVED']);
 export const AssistantSafetyModeSchema = z.enum(['STRICT', 'BALANCED', 'EXPERIMENTAL']);
 
+export const BotStrategyLinkInputSchema = z.object({
+  strategyId: z.string().trim().min(1),
+  priority: z.number().int().min(0).max(10_000).default(100),
+  weight: z.number().min(0).max(1000).default(1),
+  isEnabled: z.boolean().default(true),
+});
+
+const validateBotStrategyLinkSet = (value: {
+  strategyId?: string | null;
+  strategies?: Array<z.infer<typeof BotStrategyLinkInputSchema>>;
+}, ctx: z.RefinementCtx) => {
+  if (!value.strategies) return;
+
+  const seen = new Set<string>();
+  let enabledCount = 0;
+  let primaryIsEnabled = value.strategyId == null;
+
+  for (const [index, item] of value.strategies.entries()) {
+    if (seen.has(item.strategyId)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'strategy ids must be unique',
+        path: ['strategies', index, 'strategyId'],
+      });
+    }
+    seen.add(item.strategyId);
+
+    if (item.isEnabled) {
+      enabledCount += 1;
+    }
+    if (value.strategyId === item.strategyId && item.isEnabled) {
+      primaryIsEnabled = true;
+    }
+  }
+
+  if (enabledCount === 0) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'at least one strategy link must be enabled',
+      path: ['strategies'],
+    });
+  }
+
+  if (value.strategyId && !seen.has(value.strategyId)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'strategyId must be included in strategies',
+      path: ['strategyId'],
+    });
+  }
+
+  if (!primaryIsEnabled) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'strategyId must reference an enabled strategy link',
+      path: ['strategyId'],
+    });
+  }
+};
+
 export const CreateBotSchema = z.object({
   name: z.string().trim().min(1),
   walletId: z.string().trim().min(1),
   strategyId: z.string().trim().min(1),
   marketGroupId: z.string().trim().min(1),
+  strategies: z.array(BotStrategyLinkInputSchema).min(1).max(25).optional(),
   isActive: z.boolean().default(false),
   liveOptIn: z.boolean().default(false),
   manageExternalPositions: z.boolean().default(false),
@@ -23,6 +84,7 @@ export const CreateBotSchema = z.object({
       path: ['consentTextVersion'],
     });
   }
+  validateBotStrategyLinkSet(value, ctx);
 });
 
 export const UpdateBotSchema = CreateBotSchema.partial().extend({

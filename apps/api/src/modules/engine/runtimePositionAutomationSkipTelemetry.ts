@@ -7,7 +7,8 @@ export type RuntimeAutomationSkipReason =
   | 'missing_bot_origin_ownership'
   | 'canonical_execution_context_unresolved'
   | 'execution_context_unresolved'
-  | 'live_opt_in_disabled';
+  | 'live_opt_in_disabled'
+  | 'multi_strategy_position_provenance_missing';
 
 type RuntimeAutomationTelemetryPosition = {
   id: string;

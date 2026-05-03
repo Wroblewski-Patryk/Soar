@@ -397,6 +397,10 @@ model BotMarketGroup {
   symbolGroup   SymbolGroup               @relation(fields: [symbolGroupId], references: [id])
   strategyLinks MarketGroupStrategyLink[]
 
+  /// BOTMULTI-03: PostgreSQL partial unique index
+  /// BotMarketGroup_one_active_scope_per_bot_idx enforces at most one enabled
+  /// ACTIVE market scope per bot. Prisma cannot express partial indexes in the
+  /// schema DSL, so the invariant is owned by the manual migration.
   @@unique([botId, symbolGroupId])
   @@index([userId])
   @@index([botId])

@@ -400,6 +400,7 @@ const defaultDeps: RuntimePositionAutomationDeps = {
                   },
                 },
               },
+              botMarketGroups: { where: { isEnabled: true, lifecycleStatus: 'ACTIVE' }, select: { strategyLinks: { where: { isEnabled: true }, select: { strategyId: true } } } },
             },
           },
         },
@@ -440,6 +441,8 @@ const defaultDeps: RuntimePositionAutomationDeps = {
   nowMs: () => Date.now(),
 };
 
+const resolveEnabledCanonicalStrategyLinkIds = (position: RuntimeManagedPosition) =>
+  Array.from(new Set((position.bot?.botMarketGroups ?? []).flatMap((group) => group.strategyLinks.map((link) => link.strategyId))));
 const toPercent = (value: unknown, fallback = 0) => {
   const num = Number(value);
   if (!Number.isFinite(num)) return fallback;
@@ -729,6 +732,20 @@ export class RuntimePositionAutomationService {
         inheritedExecutionContext,
         reason: 'live_opt_in_disabled',
         message: 'Runtime automation skipped because LIVE bot has no active live opt-in',
+      });
+      return;
+    }
+    const enabledCanonicalStrategyLinkIds = resolveEnabledCanonicalStrategyLinkIds(position);
+    if (position.botId && !position.strategyId && enabledCanonicalStrategyLinkIds.length > 1) {
+      console.warn(`[RuntimePositionAutomation] position=${position.id} symbol=${position.symbol} skipped: missing strategy ownership for multi-strategy bot`);
+      await recordRuntimeAutomationSkipTelemetry({
+        recordRuntimeEvent: this.deps.recordRuntimeEvent,
+        event,
+        position,
+        inheritedExecutionContext,
+        reason: 'multi_strategy_position_provenance_missing',
+        message: 'Runtime automation skipped because multi-strategy position strategy provenance is missing',
+        extraPayload: { enabledStrategyLinkCount: enabledCanonicalStrategyLinkIds.length },
       });
       return;
     }

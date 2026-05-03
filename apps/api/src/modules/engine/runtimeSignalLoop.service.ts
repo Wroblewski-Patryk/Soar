@@ -520,25 +520,30 @@ export class RuntimeSignalLoop {
       const symbolKeys = runtimeContext.symbols
         .map((symbol) => normalizeSymbol(symbol))
         .filter((symbol): symbol is string => symbol.length > 0);
-      const intervalKey = runtimeContext.strategy.strategyInterval
-        ? normalizeInterval(runtimeContext.strategy.strategyInterval)
-        : '*';
+      const runtimeStrategies = runtimeContext.strategies ?? [runtimeContext.strategy];
+      const intervalKeys = [...new Set(
+        runtimeStrategies.map((strategy) =>
+          strategy.strategyInterval ? normalizeInterval(strategy.strategyInterval) : '*'
+        )
+      )];
 
       if (symbolKeys.length === 0) {
         continue;
       }
 
       for (const symbolKey of symbolKeys) {
-        const routeKey = this.buildRuntimeSeriesRouteKey({
-          marketKey,
-          symbol: symbolKey,
-          interval: intervalKey,
-        });
-        const routeEntries = this.routeEntriesBySeriesKey.get(routeKey);
-        if (routeEntries) {
-          routeEntries.push({ bot });
-        } else {
-          this.routeEntriesBySeriesKey.set(routeKey, [{ bot }]);
+        for (const intervalKey of intervalKeys) {
+          const routeKey = this.buildRuntimeSeriesRouteKey({
+            marketKey,
+            symbol: symbolKey,
+            interval: intervalKey,
+          });
+          const routeEntries = this.routeEntriesBySeriesKey.get(routeKey);
+          if (routeEntries) {
+            routeEntries.push({ bot });
+          } else {
+            this.routeEntriesBySeriesKey.set(routeKey, [{ bot }]);
+          }
         }
       }
     }

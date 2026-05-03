@@ -11,6 +11,7 @@ const fetchApiKeysMock = vi.hoisted(() => vi.fn());
 const createBotMock = vi.hoisted(() => vi.fn());
 const updateBotMock = vi.hoisted(() => vi.fn());
 const getBotMock = vi.hoisted(() => vi.fn());
+const getBotRuntimeGraphMock = vi.hoisted(() => vi.fn());
 const routerReplaceMock = vi.hoisted(() => vi.fn());
 const routerPushMock = vi.hoisted(() => vi.fn());
 const toastErrorMock = vi.hoisted(() => vi.fn());
@@ -43,6 +44,7 @@ vi.mock("../services/bots.service", () => ({
   createBot: createBotMock,
   updateBot: updateBotMock,
   getBot: getBotMock,
+  getBotRuntimeGraph: getBotRuntimeGraphMock,
 }));
 
 vi.mock("sonner", () => ({
@@ -107,6 +109,7 @@ afterEach(() => {
   createBotMock.mockReset();
   updateBotMock.mockReset();
   getBotMock.mockReset();
+  getBotRuntimeGraphMock.mockReset();
   routerReplaceMock.mockReset();
   routerPushMock.mockReset();
   toastErrorMock.mockReset();
@@ -159,7 +162,7 @@ describe("BotCreateEditForm", () => {
     expect(screen.getByText("Linked")).toBeInTheDocument();
     expect(screen.queryByText("Missing")).not.toBeInTheDocument();
     expect(screen.getByLabelText("Import and manage external exchange positions")).toBeInTheDocument();
-    expect(screen.getAllByRole("checkbox")).toHaveLength(3);
+    expect(screen.getAllByRole("checkbox")).toHaveLength(4);
   });
 
   it("shows validation copy and blocks create when active LIVE has no compatible key", async () => {
@@ -279,6 +282,7 @@ describe("BotCreateEditForm", () => {
         name: "Wallet payload bot",
         walletId: "w1",
         strategyId: "s4",
+        strategies: [{ strategyId: "s4", priority: 1, weight: 1, isEnabled: true }],
         marketGroupId: "g4",
         isActive: true,
         liveOptIn: false,
@@ -290,6 +294,51 @@ describe("BotCreateEditForm", () => {
     expect(payload).not.toHaveProperty("paperStartBalance");
     expect(payload).not.toHaveProperty("apiKeyId");
     expect(routerReplaceMock).toHaveBeenCalledWith("/dashboard/bots/bot-created/edit");
+  });
+
+  it("submits ordered canonical strategy links with primary strategy first", async () => {
+    listStrategiesMock.mockResolvedValue([
+      { id: "s-primary", name: "Primary Momentum", interval: "5m", leverage: 2, config: {} },
+      { id: "s-secondary", name: "Secondary Exit", interval: "15m", leverage: 1, config: {} },
+    ]);
+    listMarketUniversesMock.mockResolvedValue([
+      {
+        id: "g-multi",
+        name: "Binance Futures",
+        exchange: "BINANCE",
+        marketType: "FUTURES",
+        baseCurrency: "USDT",
+        whitelist: ["BTCUSDT"],
+        blacklist: [],
+      },
+    ]);
+    listWalletsMock.mockResolvedValue([baseWallet]);
+    createBotMock.mockResolvedValue({ id: "bot-multi" });
+
+    const { container } = await renderWithI18n();
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("Name")).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByLabelText("Toggle strategy Secondary Exit"));
+    fireEvent.change(screen.getByLabelText("Name"), { target: { value: "Multi strategy bot" } });
+    const form = container.querySelector("form");
+    expect(form).not.toBeNull();
+    fireEvent.submit(form as HTMLFormElement);
+
+    await waitFor(() => {
+      expect(createBotMock).toHaveBeenCalledTimes(1);
+    });
+    expect(createBotMock.mock.calls[0][0]).toEqual(
+      expect.objectContaining({
+        strategyId: "s-primary",
+        strategies: [
+          { strategyId: "s-primary", priority: 1, weight: 1, isEnabled: true },
+          { strategyId: "s-secondary", priority: 2, weight: 1, isEnabled: true },
+        ],
+      })
+    );
   });
 
   it("prefills edit mode from direct bot context without runtime graph fallback", async () => {
@@ -347,6 +396,11 @@ describe("BotCreateEditForm", () => {
         },
       },
     });
+    getBotRuntimeGraphMock.mockResolvedValue({
+      bot: { id: "bot-edit" },
+      marketGroups: [],
+      legacyBotStrategies: [],
+    });
 
     await renderWithI18n({ editId: "bot-edit" });
 
@@ -357,5 +411,74 @@ describe("BotCreateEditForm", () => {
     expect(screen.getByDisplayValue("Direct wallet (PAPER / BINANCE / FUTURES / USDT)")).toBeInTheDocument();
     expect(screen.getByDisplayValue("Direct universe (BINANCE - FUTURES/USDT)")).toBeInTheDocument();
     expect(screen.getByDisplayValue("Direct strategy")).toBeInTheDocument();
+  });
+
+  it("prefills edit mode from canonical runtime graph strategy links", async () => {
+    listStrategiesMock.mockResolvedValue([
+      { id: "s-graph-primary", name: "Graph primary", interval: "5m", leverage: 3, config: {} },
+      { id: "s-graph-secondary", name: "Graph secondary", interval: "15m", leverage: 2, config: {} },
+    ]);
+    listMarketUniversesMock.mockResolvedValue([
+      {
+        id: "g-graph",
+        name: "Graph universe",
+        exchange: "BINANCE",
+        marketType: "FUTURES",
+        baseCurrency: "USDT",
+        whitelist: ["ETHUSDT"],
+        blacklist: [],
+      },
+    ]);
+    listWalletsMock.mockResolvedValue([{ ...baseWallet, id: "w-graph", name: "Graph wallet" }]);
+    getBotMock.mockResolvedValue({
+      id: "bot-graph",
+      name: "Graph context bot",
+      walletId: "w-graph",
+      strategyId: "legacy-direct",
+      symbolGroupId: "sg-graph",
+      mode: "PAPER",
+      paperStartBalance: 10000,
+      exchange: "BINANCE",
+      marketType: "FUTURES",
+      positionMode: "ONE_WAY",
+      isActive: true,
+      liveOptIn: false,
+      manageExternalPositions: false,
+      maxOpenPositions: 1,
+      wallet: { ...baseWallet, id: "w-graph", name: "Graph wallet" },
+      strategy: null,
+      symbolGroup: {
+        id: "sg-graph",
+        name: "Graph group",
+        symbols: ["ETHUSDT"],
+        marketUniverseId: "g-graph",
+        marketUniverse: null,
+      },
+    });
+    getBotRuntimeGraphMock.mockResolvedValue({
+      bot: { id: "bot-graph" },
+      marketGroups: [
+        {
+          id: "bmg-graph",
+          isEnabled: true,
+          lifecycleStatus: "ACTIVE",
+          strategies: [
+            { id: "link-1", strategyId: "s-graph-primary", isEnabled: true },
+            { id: "link-2", strategyId: "s-graph-secondary", isEnabled: true },
+          ],
+        },
+      ],
+      legacyBotStrategies: [],
+    });
+
+    await renderWithI18n({ editId: "bot-graph" });
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue("Graph context bot")).toBeInTheDocument();
+    });
+
+    expect(screen.getByDisplayValue("Graph primary")).toBeInTheDocument();
+    expect(screen.getByLabelText("Toggle strategy Graph primary")).toBeChecked();
+    expect(screen.getByLabelText("Toggle strategy Graph secondary")).toBeChecked();
   });
 });

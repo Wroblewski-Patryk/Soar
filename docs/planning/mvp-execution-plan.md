@@ -16,6 +16,84 @@ Rule: fix/cleanup/update first, then feature delivery.
 - Preferred order: `fix` / `refactor` / `test` / `chore` before `feat`.
 - No mixed commits (for example feature + refactor together).
 
+## Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation (Active 2026-05-03)
+- [x] `SYSFINAL-00 docs(planning): synchronize active planning truth before final function audit`
+- [x] `SYSFINAL-01 qa(planning): build current route API function inventory`
+- [x] `SYSFINAL-02 qa(repo): run repository baseline gates and classify failures`
+- [x] `SYSFINAL-03 qa(security): audit auth session security and permissions`
+- [x] `SYSFINAL-04 qa(runtime): audit dashboard and bot runtime truth end to end`
+- [x] `SYSFINAL-05 qa(trading): audit order and position workflows`
+- [x] `SYSFINAL-06 qa(config): audit wallets markets strategies and bot setup`
+- [x] `SYSFINAL-07 qa(product): audit backtests reports logs i18n and UX states`
+- [x] `SYSFINAL-08 planning(fixes): convert findings into tiny SYSFIX tasks`
+- [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
+
+### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-03: Published
+  `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`
+  and closed `SYSFINAL-00`. Active planning truth now points to the final
+  audit sequence: `RUNTIME-SIGNAL-VOTES-01` is closed with production smoke,
+  duplicate `V1BOT-SIGNALS-02` and older `V1FINAL/V1EXCEL` open-looking items
+  are historical/superseded carryover, stage remains deferred to V2, and
+  `BOTMULTI-*` remains deferred pipeline. Next executable task:
+  `SYSFINAL-01`.
+- 2026-05-03: Closed `SYSFINAL-01` with
+  `docs/planning/sysfinal-01-current-function-inventory-task-2026-05-03.md`.
+  Current web route families and API families are mapped to backend owners,
+  data sources, expected UI states, auth boundaries, validation methods,
+  redirect-only compatibility routes, and explicit V2/deferred exclusions.
+  Validation PASS: repository guardrails. Next executable task:
+  `SYSFINAL-02`.
+- 2026-05-03: Closed `SYSFINAL-02` with
+  `docs/planning/sysfinal-02-repository-baseline-gates-task-2026-05-03.md`.
+  Validation PASS: repository guardrails, docs parity, lint, API+web
+  typecheck, full API tests, full web tests (`141` files / `399` tests), and
+  workspace build. No `SYSFIX-*` task is required from the baseline. Next
+  executable task: `SYSFINAL-03`.
+- 2026-05-03: Closed `SYSFINAL-03` with
+  `docs/planning/sysfinal-03-auth-session-security-audit-task-2026-05-03.md`.
+  Validation PASS: focused API security pack (`14` files / `75` tests),
+  focused web auth/profile/admin pack (`8` files / `28` tests), `pnpm audit`,
+  and repository guardrails. No `SYSFIX-*` task is required. Next executable
+  task: `SYSFINAL-04`.
+- 2026-05-03: Closed `SYSFINAL-04` with
+  `docs/planning/sysfinal-04-dashboard-bot-runtime-truth-audit-task-2026-05-03.md`.
+  Validation PASS: focused API runtime/readiness pack (`14` files / `113`
+  tests), sequential DB runtime e2e pack (`7` files / `33` tests), focused web
+  runtime pack (`14` files / `59` tests), and repository guardrails. No
+  `SYSFIX-*` task is required. Next executable task: `SYSFINAL-05`.
+- 2026-05-03: Closed `SYSFINAL-05` with
+  `docs/planning/sysfinal-05-order-position-workflows-audit-task-2026-05-03.md`.
+  Validation PASS: lifecycle/pre-trade pack (`14` files / `116` tests),
+  sequential DB order/position e2e pack (`7` files / `42` tests), focused web
+  trading workflow pack (`8` files / `24` tests), and repository guardrails.
+  No `SYSFIX-*` task is required. Next executable task: `SYSFINAL-06`.
+- 2026-05-03: Closed `SYSFINAL-06` with
+  `docs/planning/sysfinal-06-configuration-workflows-audit-task-2026-05-03.md`.
+  Validation PASS: API config pack (`16` files / `130` tests), web config pack
+  (`11` files / `52` tests), and repository guardrails. No `SYSFIX-*` task is
+  required. Next executable task: `SYSFINAL-07`.
+- 2026-05-03: Closed `SYSFINAL-07` with
+  `docs/planning/sysfinal-07-backtests-reports-logs-i18n-ux-audit-task-2026-05-03.md`.
+  Validation PASS: API backtest/report pack (`13` files / `94` tests), DB
+  backtest/logs e2e pack (`2` files / `17` tests), web product/UX/i18n/
+  a11y/responsive pack (`12` files / `33` tests), route-reachable i18n audit
+  (`0` findings), and repository guardrails. No `SYSFIX-*` task is required.
+  Next executable task: `SYSFINAL-08`.
+- 2026-05-03: Closed `SYSFINAL-08` with
+  `docs/planning/sysfinal-08-empty-sysfix-queue-task-2026-05-03.md`. Review of
+  `SYSFINAL-02..07` found no confirmed discrepancies requiring implementation.
+  Current `SYSFIX-*` queue is intentionally empty. Next executable task:
+  `SYSFINAL-09`.
+- 2026-05-03: Closed `SYSFINAL-09` with
+  `docs/planning/sysfinal-09-final-regression-production-smoke-closure-task-2026-05-03.md`.
+  Validation PASS: repository guardrails, docs parity, lint, typecheck, full
+  API tests, full web tests (`141` files / `399` tests), workspace build, and
+  public production smoke for API `/health`, API `/ready`, web root, login
+  page, web build-info, and protected API unauthenticated `401 Missing token`.
+  Authenticated production dashboard/runtime smoke remains unavailable without
+  credentials and was not claimed.
+
 ## Phase ETHDCA-2026-05-02 - LIVE DCA-First TSL Hardening (Closed 2026-05-02)
 - [x] `ETHDCA-01 fix(api-runtime): preserve LIVE DCA-first gating for trailing-stop close decisions`
 
@@ -263,15 +341,15 @@ Rule: fix/cleanup/update first, then feature delivery.
 - 2026-04-30: Published the execution packet after protected production verification on the active `LIVE DOGEUSDT` flow showed that the stale runtime-price seam is closed, but imported runtime automation can still look dormant even when exchange-synced position truth is fresh. The strongest remaining hypothesis is not missing symbol ownership or missing price truth, but stale persisted runtime continuity surviving an in-place exchange-sync basis update on the same imported row. Canonical packet: `docs/planning/v1auto-runtime-state-rebase-plan-2026-04-30.md`.
 - 2026-04-30: Closed the wave with one narrow runtime seam and one focused regression. Imported `EXCHANGE_SYNC` positions now rebase stale persisted runtime state to canonical exchange-synced `quantity + entryPrice` truth before `DCA/TTP/TSL` evaluation when the basis drift is material, and the regression pack proves stale `currentAdds` can no longer suppress the first valid DCA after same-row basis drift. Closure evidence: `docs/operations/v1auto-runtime-state-rebase-closure-2026-04-30.md`. Validation PASS: `pnpm --filter api exec vitest run src/modules/engine/runtimePositionAutomation.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 
-## Phase V1EXCEL-2026-04-29 - Full V1 Excellence And Production Confidence Closure (Active 2026-04-29)
+## Phase V1EXCEL-2026-04-29 - Full V1 Excellence And Production Confidence Closure (Superseded 2026-05-02)
 - [x] `V1EXCEL-00 planning(queue): publish full V1 excellence and production-confidence packet`
 - [x] `V1EXCEL-01 audit(v1-gap-map): freeze the exact remaining gap map against DoD, integration, deployment, and activation contracts`
 - [x] `V1EXCEL-02 qa(local-infra): restore fully reproducible local confidence path or classify the exact external blocker`
-- [ ] `V1EXCEL-03 qa(manual-matrix): execute the full critical manual UI/API/operator matrix`
+- [x] `V1EXCEL-03 qa(manual-matrix): execute the full critical manual UI/API/operator matrix`
   - 2026-04-29 status: IN_PROGRESS. Authenticated Soar production operator access is now available and the first `PAPER` API/operator pass is captured in `docs/operations/v1excel-paper-operator-verification-2026-04-29.md`. That evidence now proves two truthful protected production flows: same-side `PAPER` add on an active managed position and post-deploy `PAPER` manual close with correct runtime-history and capital-summary effects. Authenticated dashboard UI verification is now also green for the resulting paper-bot state and history. The remaining incomplete scope is browser-side action proof if required plus the `LIVE` exchange-authority, mixed-origin, and restart/recovery scenarios.
-- [ ] `V1EXCEL-04 ops(stage-refresh): rerun the latest authenticated stage release gate and smoke on the current candidate`
-- [ ] `V1EXCEL-05 ops(prod-refresh): rerun fresh production release-gate evidence families on the current candidate`
-- [ ] `V1EXCEL-06 ops(runtime-observability): verify active LIVE worker/runtime diagnostics under current production truth`
+- [x] `V1EXCEL-04 ops(stage-refresh): rerun the latest authenticated stage release gate and smoke on the current candidate`
+- [x] `V1EXCEL-05 ops(prod-refresh): rerun fresh production release-gate evidence families on the current candidate`
+- [x] `V1EXCEL-06 ops(runtime-observability): verify active LIVE worker/runtime diagnostics under current production truth`
   - 2026-05-01 production refresh: production runtime observability is green with authenticated evidence (`runtime-freshness` PASS, rollback guard `shouldRollback=false`, no reasons, no alerts, `runningCount=4`). Stage runtime observability remains open.
 - [x] `V1EXCEL-07 release(go-no-go): rebuild RC status/sign-off/checklist and publish final V1 excellence decision`
 - [x] `V1EXCEL-08 docs(closure): sync canonical queue/context and freeze the final post-V1 handoff`
@@ -301,6 +379,13 @@ Rule: fix/cleanup/update first, then feature delivery.
   `docs/operations/v1excel-05-prod-refresh-2026-05-01.md`. The task remains
   open for broader release evidence families: restore drill, RC
   status/sign-off/checklist rebuild, and remaining manual matrix items.
+- 2026-05-03: Synchronized stale phase truth after `V1CLOSEOUT-11` and the
+  current production-only V1 `GO` closure. The older `V1EXCEL-03..06` evidence
+  checklist is preserved as historical context, not active current V1 work.
+  Stage remains explicitly deferred to V2 by operator decision, production
+  restore/rollback/release evidence is superseded by the 2026-05-02 closeout
+  pack, and final current confidence work now continues through
+  `SYSFINAL-2026-05-03`.
 - 2026-04-29: Closed `V1EXCEL-07` with a final `NO-GO` decision for candidate `51acd9c445227a3ca8cc8b781564d14b55fda43f`. Current evidence still supports the engineering answer "no known implementation gap remains", but the repository's own completion and activation contracts are not yet satisfied because the authenticated manual operator matrix and protected stage/prod OPS evidence were not executed in this session. Canonical decision: `docs/operations/v1excel-final-go-no-go-2026-04-29.md`.
 - 2026-04-29: Closed `V1TRUTH-03` and `V1TRUTH-04` as one architecture-aligned API slice. App-driven `LIVE` manual close now stays inside the canonical `openOrder -> exchange boundary -> live adapter` flow with explicit `reduceOnly` propagation for close intent, live pretrade exposure guards no longer block that reduce-only close path, and runtime session close no longer hard-fails only because a transient lifecycle mark price is missing. For `LIVE`, the close command now degrades to persisted `entryPrice` as reference context while the actual exchange authority remains the submitted reduce-only market order; `PAPER` still fails closed when no canonical close price exists. Validation PASS: focused `runtimeSessionPositionCommand`, focused `executionOrchestrator`, focused `exchangeAdapterBoundary`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 - 2026-04-29: Closed `V1TRUTH-05` by freezing the reported pending external/manual exchange order truth into end-to-end API proof. Added a focused `orders-positions.e2e` scenario for one open `LIVE` position plus one pending external `DCA` order on the same symbol, and verified that both runtime session positions and dashboard aggregate views keep `openCount=1`, `openOrdersCount=1`, unchanged position quantity/notional, and the external order visible only in `openOrders` until exchange fill confirms it. The strongest remaining work under `V1TRUTH-06` is therefore narrower than the generic read model: if the user still sees inflation live, the drift likely sits in a more specific reconcile/event/UI path than the canonical pending-order baseline now proven green.
@@ -349,19 +434,89 @@ Rule: fix/cleanup/update first, then feature delivery.
 - 2026-04-30: Closed `V1HIST-09` after a fresh protected production plus browser audit confirmed that `Positions` and `Orders` were truthful while dashboard `History` still rendered only persisted trade rows. `runtimeSessionTradesRead` now emits one operational `OPEN` anchor row from canonical `Position` truth whenever a scoped imported lifecycle has no local trade rows yet, reusing `POSITION_LIFETIME` semantics instead of inventing exchange fills.
 - 2026-04-30: Closed `V1HIST-10` by finishing the canonical ledger slice under that operator fix. `importedPositionHistoryHydrator` now persists one local `EXCHANGE_SYNC OPEN` anchor trade from canonical `Position` truth whenever imported trade history is not yet derivable, removes that synthetic anchor automatically when later canonical exchange trades can be reconstructed, and runtime trade reads classify persisted imported anchors as `POSITION_LIFETIME` instead of `SIGNAL_ENTRY`. Validation PASS: focused imported-history hydrator suite, focused runtime history parity e2e, API typecheck, repository guardrails.
 
-## Phase BOTMULTI-POSTV1-2026-04-29 - Post-V1 Multi-Strategy Bot Reintroduction (Deferred 2026-04-29)
+## Phase BOTMULTI-POSTV1-2026-04-29 - Post-V1 Multi-Strategy Bot Reintroduction (Active 2026-05-03)
 - [x] `BOTMULTI-00 planning(post-v1): publish deferred multi-strategy reintroduction packet`
-- [ ] `BOTMULTI-01 docs(decision): freeze post-V1 multi-strategy bot contract`
-- [ ] `BOTMULTI-02 audit(data+runtime): inventory legacy compatibility remnants and migration debt`
-- [ ] `BOTMULTI-03 db(schema): finalize canonical multi-strategy topology and migration path`
-- [ ] `BOTMULTI-04 api(write): support bot create/update with multiple strategies`
-- [ ] `BOTMULTI-05 runtime(signal-merge): execute deterministic multi-strategy evaluation per bot`
-- [ ] `BOTMULTI-06 runtime(risk+lifecycle): align DCA/TTP/TSL and ownership across multiple strategies`
-- [ ] `BOTMULTI-07 web(ui+operator): expose multi-strategy bot management and runtime truth`
-- [ ] `BOTMULTI-08 qa(closure): run architecture-to-runtime closure pack and publish evidence`
+- [x] `BOTMULTI-01 docs(decision): freeze post-V1 multi-strategy bot contract`
+- [x] `BOTMULTI-02 audit(data+runtime): inventory legacy compatibility remnants and migration debt`
+- [x] `BOTMULTI-03 db(schema): finalize canonical multi-strategy topology and migration path`
+- [x] `BOTMULTI-04 api(write): support bot create/update with multiple strategies`
+- [x] `BOTMULTI-05 runtime(signal-merge): execute deterministic multi-strategy evaluation per bot`
+- [x] `BOTMULTI-06 runtime(risk+lifecycle): align DCA/TTP/TSL and ownership across multiple strategies`
+- [x] `BOTMULTI-07 web(ui+operator): expose multi-strategy bot management and runtime truth`
+- [x] `BOTMULTI-08 qa(closure): run architecture-to-runtime closure pack and publish evidence`
 
 ### Progress Log (Phase BOTMULTI-POSTV1-2026-04-29 - Post-V1 Multi-Strategy Bot Reintroduction)
 - 2026-04-29: Published the deferred post-`V1` roadmap after the user approved the staged direction. This wave is intentionally not active yet: the repository keeps the singular bot architecture as canonical truth until `V1TRUTH-A` is fully closed and production verification remains stable. The deferred packet freezes the future execution order, architecture prerequisites, and closure expectations for reintroducing `1 bot = 1 wallet + 1 symbol-group + N strategies` without mixing that architecture change into the final `LIVE` money-path hardening wave. Canonical packet: `docs/planning/botmulti-post-v1-multi-strategy-reintroduction-plan-2026-04-29.md`.
+- 2026-05-03: Activated `BOTMULTI-A` after `SYSFINAL-09` closed the current V1
+  confidence pass. Closed `BOTMULTI-01` with
+  `docs/planning/botmulti-01-post-v1-multi-strategy-contract-task-2026-05-03.md`.
+  Architecture now freezes the post-V1 target as `1 bot = 1 wallet + 1 active
+  symbol-group market scope + N enabled strategies`, keeps multi-market-group
+  bots out of scope, requires manual-order ambiguity to fail closed, requires
+  runtime merge trace to preserve primary strategy provenance, and keeps
+  DCA/TTP/SL/TSL ownership position-scoped. Validation PASS: repository
+  guardrails. Next executable task: `BOTMULTI-02`.
+- 2026-05-03: Published `BOTMULTI-02` audit evidence in
+  `docs/planning/botmulti-02-legacy-compatibility-migration-audit-task-2026-05-03.md`.
+  Inventory found canonical candidates (`BotMarketGroup`,
+  `MarketGroupStrategyLink`, merge helper) and migration debt across direct
+  bot strategy fields, legacy `BotStrategy`, create/update DTOs, runtime
+  topology, manual-order context, read projections, and web bot form/list
+  surfaces. The user selected lower numeric strategy-link priority as canonical;
+  the merge reference now states that `1` is higher priority than `100`, and a
+  focused runtime merge regression locks exit and directional tie-break
+  behavior. Validation PASS: focused API merge test and API typecheck. Next
+  executable task: `BOTMULTI-03`.
+- 2026-05-03: Closed `BOTMULTI-03` with
+  `docs/planning/botmulti-03-canonical-topology-migration-task-2026-05-03.md`.
+  Added fail-closed migration
+  `20260503013000_enforce_single_active_bot_market_group`, which rejects
+  existing duplicate enabled `ACTIVE` market scopes before creating partial
+  unique index `BotMarketGroup_one_active_scope_per_bot_idx`. Prisma schema and
+  architecture docs now document that the partial-index invariant is owned by
+  migration SQL. Validation PASS: Prisma validate, API typecheck, docs parity,
+  repository guardrails. Next executable task: `BOTMULTI-04`.
+- 2026-05-03: Closed `BOTMULTI-04` with
+  `docs/planning/botmulti-04-api-write-multi-strategy-task-2026-05-03.md`.
+  Bot create/update writes now accept optional ordered `strategies` arrays,
+  persist multiple canonical strategy links under one active market group, keep
+  `Bot.strategyId` as primary compatibility projection, and avoid legacy
+  `BotStrategy` writes for multi-strategy payloads. Validation PASS: focused
+  multi-strategy e2e, existing bots e2e, API typecheck, docs parity, repository
+  guardrails. Next executable task: `BOTMULTI-05`.
+- 2026-05-03: Closed `BOTMULTI-05` with
+  `docs/planning/botmulti-05-runtime-signal-merge-task-2026-05-03.md`.
+  Runtime topology now loads enabled canonical strategy links under the one
+  active market group, final-candle decision evaluates every interval-eligible
+  strategy, and `mergeRuntimeStrategyVotes` resolves link priority/weight while
+  preserving winner provenance for downstream execution context. Validation
+  PASS: focused runtime tests (`3` files / `50` tests), API typecheck, docs
+  parity, repository guardrails. Next executable task: `BOTMULTI-06`.
+- 2026-05-03: Closed `BOTMULTI-06` with
+  `docs/planning/botmulti-06-runtime-risk-lifecycle-ownership-task-2026-05-03.md`.
+  Runtime position automation now fails closed when a bot-managed position has
+  no `position.strategyId` while multiple enabled canonical strategy links
+  exist. The guard reuses existing runtime skip telemetry and prevents fallback
+  DCA/TTP/SL/TSL settings from acting on ambiguous position ownership.
+  Validation PASS: focused runtime position automation regression, full runtime
+  position automation test file (`31` tests), API typecheck, docs parity,
+  repository guardrails. Next executable task: `BOTMULTI-07`.
+- 2026-05-03: Closed `BOTMULTI-07` with
+  `docs/planning/botmulti-07-web-operator-multi-strategy-truth-task-2026-05-03.md`.
+  Bot create/edit now exposes primary plus additional enabled strategies,
+  submits ordered canonical `strategies[]` with primary-first priority, and
+  prefills edit mode from canonical runtime graph links. Validation PASS:
+  focused bot form tests (`7` tests), web typecheck, route-reachable i18n audit
+  (`0` findings), docs parity, repository guardrails. Next executable task:
+  `BOTMULTI-08`.
+- 2026-05-03: Closed `BOTMULTI-08` with
+  `docs/planning/botmulti-08-architecture-runtime-closure-task-2026-05-03.md`,
+  completing the post-V1 BOTMULTI wave locally. Closure validation PASS:
+  focused API multi-strategy write and runtime topology/merge tests (`4` files
+  / `51` tests), runtime lifecycle fail-closed tests (`31` tests), web bot form
+  tests (`7` tests), API/web typecheck, route-reachable i18n audit (`0`
+  findings), docs parity, and repository guardrails. No active BOTMULTI task
+  remains.
 
 ## Phase BOTLIVE-2026-04-28 - Active LIVE Symbol-Overlap Guard (Closed 2026-04-28)
 - [x] `BOTLIVE-2026-04-28-A api(bot-guard): block active LIVE bot market-group overlap against other active LIVE bot scopes`

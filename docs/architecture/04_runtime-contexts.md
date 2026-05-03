@@ -49,7 +49,13 @@ The system must not widen, merge, or substitute one side of that pair:
   "botId": "uuid",
   "walletId": "uuid",
   "symbolGroupId": "uuid",
-  "strategyId": "uuid",
+  "strategyLinks": [
+    {
+      "strategyId": "uuid",
+      "priority": 100,
+      "weight": 1.0
+    }
+  ],
   "selectedScope": "strict bot-scoped runtime surface"
 }
 ```
@@ -77,7 +83,7 @@ silently normalizing to a Binance-only or spot-only assumption.
 ### Bot owns runtime unit identity
 - activation state
 - strict runtime identity over one linked wallet, one linked symbol group,
-  and one linked strategy
+  and one enabled ordered strategy set
 - selected-bot operator scope
 
 ### Strategy owns logic context
@@ -95,7 +101,10 @@ silently normalizing to a Binance-only or spot-only assumption.
   commands must all resolve from the same inherited `(exchange, marketType)`
   pair
 - selected-bot reads and writes are strict and fail-closed
-- a bot cannot own more than one symbol-group market scope or more than one strategy
+- a bot cannot own more than one active symbol-group market scope in the
+  post-V1 `BOTMULTI` wave
+- a bot may own multiple enabled strategy links inside that one active market
+  scope only when the canonical strategy-link contract is present
 
 ## Capital Context
 ### PAPER
@@ -131,13 +140,13 @@ The approved runtime context assembly is:
 Bot
   -> WalletExecutionContext
   -> SymbolGroup / MarketUniverse venue context
-  -> Strategy logic + risk context
+  -> ordered Strategy links for logic + risk context
 ```
 
 The bot may persist denormalized snapshots for read performance or runtime
 stability, but those snapshots must be derived from the linked wallet,
-symbol group, and strategy rather than acting as independent source-of-truth
-fields.
+symbol group, and enabled strategy links rather than acting as independent
+source-of-truth fields.
 
 For recovered `LIVE` exchange-synced positions, restart continuity must either:
 
@@ -148,11 +157,43 @@ The system must not regain post-restart strategy or bot context by guessing
 from the first compatible symbol or first active bot.
 
 Operator read models may display degraded continuity states, but they must not
-upgrade missing canonical strategy truth into actionable runtime semantics.
+upgrade missing canonical strategy-link truth into actionable runtime semantics.
 
-If runtime automation requires canonical `position.strategyId` for DCA or
-strategy-derived exit logic, read models must not present symbol-only fallback
-as if that same automation is safely executable.
+If runtime automation requires canonical `position.strategyId` or accepted
+strategy provenance for DCA or strategy-derived exit logic, read models must not
+present symbol-only fallback as if that same automation is safely executable.
+
+## Post-V1 Multi-Strategy Contract
+The post-V1 `BOTMULTI` target is:
+
+```text
+1 bot = 1 wallet + 1 active symbol-group market scope + N enabled strategies
+```
+
+The enabled strategy set is ordered and weighted by canonical
+`MarketGroupStrategyLink` rows. `Bot.strategyId`, `Bot.symbolGroupId`, and
+legacy `BotStrategy` rows are compatibility/projection fields only and cannot
+override canonical strategy links once the `BOTMULTI` migration is active.
+
+The one-active-market-scope invariant is enforced at persistence level by a
+manual PostgreSQL partial unique index on `BotMarketGroup(botId)` for enabled
+`ACTIVE` rows. This lets later API/runtime code rely on one canonical
+symbol-group market scope per bot and fail closed when a write would create a
+second active scope.
+
+Bot create/update API writes may submit an optional ordered `strategies` set
+inside that one market scope. The legacy `strategyId` field remains the primary
+compatibility projection and must reference an enabled link when both are
+provided; it must not create a separate `BotStrategy` ownership path.
+
+Manual order context must stay fail-closed:
+
+- if exactly one enabled strategy link is available, it may be selected as the
+  default strategy context;
+- if multiple enabled strategy links are available, the operator command must
+  either provide an explicit strategy context or the API must reject with an
+  actionable ambiguity error;
+- no write path may silently choose the first linked strategy.
 
 ## Out of Scope
 - strategy evaluation semantics

@@ -7,6 +7,195 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- No active feature `NOW` task remains after `BOTMULTI-08` closure.
+  `BOTMULTI-09` is an operator-requested production release task currently in
+  progress.
+- [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production`
+  - 2026-05-03: Release task opened after operator request. Confirmed API
+    redeploy runs migrations automatically through
+    `scripts/start-with-migrate.mjs` when `API_AUTO_MIGRATE` is not `false`.
+    Local pre-release build PASS. Deployment trigger/push evidence is pending.
+    Evidence:
+    `docs/planning/botmulti-09-production-deploy-task-2026-05-03.md`.
+- [x] `BOTMULTI-08 qa(closure): run architecture-to-runtime closure pack and publish evidence`
+  - 2026-05-03: Closed with
+    `docs/planning/botmulti-08-architecture-runtime-closure-task-2026-05-03.md`.
+    Closure validation PASS across focused API/runtime/lifecycle/web tests,
+    API/web typecheck, route-reachable i18n audit, docs parity, and repository
+    guardrails.
+- [x] `BOTMULTI-07 web(ui+operator): expose multi-strategy bot management and runtime truth`
+  - 2026-05-03: Closed with
+    `docs/planning/botmulti-07-web-operator-multi-strategy-truth-task-2026-05-03.md`.
+    Bot create/edit now exposes primary plus additional enabled strategies,
+    submits ordered canonical `strategies[]`, and prefills edit mode from
+    canonical runtime graph links.
+- [x] `BOTMULTI-06 runtime(risk+lifecycle): align DCA/TTP/SL/TSL and ownership across multiple strategies`
+  - 2026-05-03: Closed with
+    `docs/planning/botmulti-06-runtime-risk-lifecycle-ownership-task-2026-05-03.md`.
+    Runtime position automation now fails closed when a bot-managed position
+    lacks `position.strategyId` while multiple enabled canonical strategy
+    links exist, reusing existing skip telemetry and preventing fallback
+    DCA/TTP/SL/TSL execution on ambiguous ownership.
+- [x] `BOTMULTI-05 runtime(signal-merge): execute deterministic multi-strategy evaluation per bot`
+  - 2026-05-03: Closed with
+    `docs/planning/botmulti-05-runtime-signal-merge-task-2026-05-03.md`.
+    Runtime topology now reads enabled canonical strategy links under the one
+    active market group, final-candle decision evaluates all interval-eligible
+    strategies, and the existing merge helper resolves votes with link
+    priority/weight and winner provenance.
+- [x] `BOTMULTI-04 api(write): support bot create/update with multiple strategies`
+  - 2026-05-03: Closed with
+    `docs/planning/botmulti-04-api-write-multi-strategy-task-2026-05-03.md`.
+    Create/update now accepts optional ordered `strategies` payloads and
+    persists multiple canonical `MarketGroupStrategyLink` rows under one active
+    `BotMarketGroup`.
+- [x] `BOTMULTI-03 db(schema): finalize canonical multi-strategy topology and migration path`
+  - 2026-05-03: Closed with
+    `docs/planning/botmulti-03-canonical-topology-migration-task-2026-05-03.md`.
+    Added migration
+    `20260503013000_enforce_single_active_bot_market_group` with fail-closed
+    duplicate-active-scope preflight and partial unique index
+    `BotMarketGroup_one_active_scope_per_bot_idx`.
+- [x] `BOTMULTI-02 audit(data+runtime): inventory legacy compatibility remnants and migration debt`
+  - 2026-05-03: Closed with
+    `docs/planning/botmulti-02-legacy-compatibility-migration-audit-task-2026-05-03.md`.
+    User selected lower numeric priority as canonical; architecture reference
+    and focused runtime merge regression now lock that semantics.
+- [x] `BOTMULTI-01 docs(decision): freeze post-V1 multi-strategy bot contract`
+  - 2026-05-03: Closed with
+    `docs/planning/botmulti-01-post-v1-multi-strategy-contract-task-2026-05-03.md`.
+    Architecture now freezes the post-V1 target as one bot with one wallet, one
+    active symbol-group market scope, and an ordered enabled strategy set.
+    Manual-order ambiguity must fail closed, runtime merge must preserve
+    primary strategy provenance, and DCA/TTP/SL/TSL ownership remains
+    position-scoped. Validation PASS: repository guardrails.
+- [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
+  - 2026-05-03: Next executable slice from
+    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+    No `SYSFIX-*` implementation tasks were produced by `SYSFINAL-02..08`, so
+    this closure slice should run final local regression/guardrail checks and
+    publish final closure or explicitly classify unavailable production smoke
+    evidence.
+  - 2026-05-03: Closed with
+    `docs/planning/sysfinal-09-final-regression-production-smoke-closure-task-2026-05-03.md`.
+    Validation PASS: guardrails, docs parity, lint, typecheck, full API tests,
+    full web tests (`141` files / `399` tests), build, and public production
+    smoke for API health/readiness, web root, login page, web build-info, and
+    protected API unauthenticated fail-closed behavior. Authenticated
+    production dashboard/runtime smoke remains unavailable without credentials.
+- [x] `SYSFINAL-08 planning(fixes): convert findings into tiny SYSFIX tasks`
+  - 2026-05-03: Next executable slice from
+    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+    Convert confirmed findings from `SYSFINAL-02..07` into scoped `SYSFIX-*`
+    tasks with reproduction, expected behavior, affected files, validation,
+    deployment impact, rollback path, and acceptance criteria. If the audit
+    found no defects, publish explicit empty fix-queue closure evidence.
+  - 2026-05-03: Closed with
+    `docs/planning/sysfinal-08-empty-sysfix-queue-task-2026-05-03.md`.
+    Review of `SYSFINAL-02..07` found no confirmed discrepancies requiring
+    implementation. Current `SYSFIX-*` queue is intentionally empty.
+- [x] `SYSFINAL-07 qa(product): audit backtests reports logs i18n and UX states`
+  - 2026-05-03: Next executable slice from
+    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+    Audit backtest create/list/detail for SPOT and FUTURES, reports and parity
+    diagnostics states, logs/audit filtering, route-reachable i18n, and key
+    dashboard responsive/accessibility state coverage.
+  - 2026-05-03: Closed with
+    `docs/planning/sysfinal-07-backtests-reports-logs-i18n-ux-audit-task-2026-05-03.md`.
+    Validation PASS: API backtest/report pack (`13` files / `94` tests), DB
+    backtest/logs e2e pack (`2` files / `17` tests), web product/UX/i18n/
+    a11y/responsive pack (`12` files / `33` tests), route-reachable i18n audit
+    (`0` findings), and repository guardrails. No `SYSFIX-*` task required.
+- [x] `SYSFINAL-06 qa(config): audit wallets markets strategies and bot setup`
+  - 2026-05-03: Next executable slice from
+    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+    Audit wallet create/edit/API-key attach/test constraints, market universe
+    and symbol-group create/edit/delete guards, strategy create/edit indicator
+    metadata and validation, and bot create/edit/start/stop canonical
+    wallet-first market/strategy runtime scope.
+  - 2026-05-03: Closed with
+    `docs/planning/sysfinal-06-configuration-workflows-audit-task-2026-05-03.md`.
+    Validation PASS: API config pack (`16` files / `130` tests), web config
+    pack (`11` files / `52` tests), and repository guardrails. No `SYSFIX-*`
+    task required.
+- [x] `SYSFINAL-05 qa(trading): audit order and position workflows`
+  - 2026-05-03: Next executable slice from
+    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+    Audit PAPER manual market order open/fill/position visibility, PAPER
+    runtime signal path through pre-trade/order/position/history, manual close,
+    bot close, cancel order, history attribution, LIVE read-only imported
+    position ownership/protection state, and visible guardrail explanations.
+  - 2026-05-03: Closed with
+    `docs/planning/sysfinal-05-order-position-workflows-audit-task-2026-05-03.md`.
+    Validation PASS: lifecycle/pre-trade pack (`14` files / `116` tests),
+    sequential DB order/position e2e pack (`7` files / `42` tests), focused
+    web trading workflow pack (`8` files / `24` tests), and repository
+    guardrails. No `SYSFIX-*` task required.
+- [x] `SYSFINAL-04 qa(runtime): audit dashboard and bot runtime truth end to end`
+  - 2026-05-03: Next executable slice from
+    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+    Audit Dashboard Home and Bot Monitoring against selected bot runtime truth:
+    sessions, symbol stats, positions, history, signal cards, indicator value
+    display, guardrail-blocked outcomes, Redis market-stream readiness, and
+    PAPER/read-only LIVE runtime rows. Any confirmed discrepancy becomes a
+    scoped `SYSFIX-*` task.
+  - 2026-05-03: Closed with
+    `docs/planning/sysfinal-04-dashboard-bot-runtime-truth-audit-task-2026-05-03.md`.
+    Validation PASS: focused API runtime/readiness pack (`14` files / `113`
+    tests), sequential DB runtime e2e pack (`7` files / `33` tests), focused
+    web runtime pack (`14` files / `59` tests), and repository guardrails. No
+    `SYSFIX-*` task required.
+- [x] `SYSFINAL-03 qa(security): audit auth session security and permissions`
+  - 2026-05-03: Next executable slice from
+    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+    Audit login/logout, failed login, expired/invalid session, protected route
+    redirect, cross-user ownership denial, API-key masking/encryption behavior,
+    connection-test error states, and LIVE write entitlement/consent fail-closed
+    behavior. Any confirmed discrepancy becomes a scoped `SYSFIX-*` task.
+  - 2026-05-03: Closed with
+    `docs/planning/sysfinal-03-auth-session-security-audit-task-2026-05-03.md`.
+    Validation PASS: focused API security pack (`14` files / `75` tests),
+    focused web auth/profile/admin pack (`8` files / `28` tests),
+    `pnpm audit`, and repository guardrails. No `SYSFIX-*` task required.
+- [x] `SYSFINAL-02 qa(repo): run repository baseline gates and classify failures`
+  - 2026-05-03: Next executable slice from
+    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+    Run repository guardrails, docs parity if required, lint, typecheck, full
+    API/web tests, and build. Classify every failure before any fix starts;
+    confirmed product failures become scoped `SYSFIX-*` tasks.
+  - 2026-05-03: Closed with
+    `docs/planning/sysfinal-02-repository-baseline-gates-task-2026-05-03.md`.
+    Validation PASS: repository guardrails, docs parity, lint, API+web
+    typecheck, full API tests, full web tests (`141` files / `399` tests), and
+    workspace build. No `SYSFIX-*` task required from the baseline.
+- [x] `SYSFINAL-01 qa(planning): build current route API function inventory`
+  - 2026-05-03: Next executable slice from
+    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+    Build the current user-facing function inventory and route/API matrix
+    before running browser/API audits. Output must map every current route and
+    major user function to its backend contract, data source, UI states, auth
+    boundary, validation method, and explicit V2/deferred exclusions.
+  - 2026-05-03: Closed with
+    `docs/planning/sysfinal-01-current-function-inventory-task-2026-05-03.md`.
+    The artifact maps current web routes and API families to backend owners,
+    data sources, expected UI states, auth boundaries, validation methods,
+    redirect-only compatibility routes, and explicit V2/deferred exclusions.
+    Validation PASS: repository guardrails.
+- [x] `SYSFINAL-00 docs(planning): synchronize active planning truth before final function audit`
+  - 2026-05-03: Start the consolidated final system functionality remediation
+    plan in
+    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+    First slice: reconcile stale active/open-looking queue entries against
+    current production evidence, especially `RUNTIME-SIGNAL-VOTES-01`,
+    duplicate/historical `V1BOT-SIGNALS-02`, `V1FINAL-01`, and
+    `V1EXCEL-*` entries. Keep stage deferred to V2 and keep `BOTMULTI-*` in
+    deferred pipeline until the current V1 production system is fully
+    re-audited. Validation: repository guardrails.
+  - 2026-05-03: Closed by synchronizing current queue truth. Runtime signal
+    recovery is production-smoked and no longer waiting for deploy evidence;
+    duplicate `V1BOT-SIGNALS-02` and older `V1FINAL/V1EXCEL` carryover entries
+    are preserved only as historical/superseded context; `BOTMULTI-*` remains
+    deferred pipeline.
 - [x] `ETHDCA-01 fix(api-runtime): preserve LIVE DCA-first gating for trailing-stop close decisions`
   - 2026-05-02: Closed the operator-reported ETHUSDT DCA-first protection
     hardening slice. Runtime position automation now hydrates durable DCA
@@ -22,8 +211,8 @@ Operational queue for one-task execution runs.
     guardrails.
     Evidence:
     `docs/planning/ethdca-01-live-dca-first-tsl-hardening-task-2026-05-02.md`.
-- [ ] `RUNTIME-SIGNAL-VOTES-01 fix(api-runtime): recover runtime strategy votes when matched indicators exist`
-  - 2026-05-02: Implementation is locally verified and ready for deploy smoke
+- [x] `RUNTIME-SIGNAL-VOTES-01 fix(api-runtime): recover runtime strategy votes when matched indicators exist`
+  - 2026-05-02: Implementation is verified and production-smoked
     for the production-reported runtime signal-vote drift where dashboard rows
     could show recovered `matched=true` RSI conditions while final-candle
     runtime evaluation still merged `No votes` from a short in-memory candle
@@ -40,7 +229,11 @@ Operational queue for one-task execution runs.
     Validation PASS: focused runtime/read-model tests (`4` files / `56`
     tests), focused blocked-decision read-model tests (`2` files / `8`
     tests), API typecheck, API build, and repository guardrails. Post-deploy
-    production smoke remains required before final closure. Evidence:
+    production smoke confirmed API freshness on
+    `26962ea1dbb0981d3885779d01e58485d7e9fd6c`, `/health=ok`,
+    `/ready=ready`, active session `RUNNING`, concrete runtime block reasons
+    for matched rows, and no unexplained `matched=true` + `No votes`
+    contradiction for guardrail-blocked symbols. Evidence:
     `docs/planning/runtime-signal-vote-recovery-audit-plan-2026-05-02.md`.
 - [x] `DASHSIGNALS-02 fix(api-runtime): recover indicator candles before unavailable signal values`
   - 2026-05-02: Closed the deeper follow-up from `DASHSIGNALS-01`. Runtime
@@ -837,17 +1030,34 @@ Historical carryover snapshot, superseded by the active `NOW` entries above:
 - [x] `V1CLOSE-08 fix(api+web): expose close attribution on operator surfaces`
 - [x] `V1CLOSE-09 qa(closure): run focused close-attribution pack and sync docs/context`
 ## PIPELINE
-- [ ] `BOTMULTI-01 docs(decision): freeze post-V1 multi-strategy bot contract`
-  - 2026-05-01 status: DEFERRED, not executable as a fallback while
-    `V1EXCEL-03..06` remain open. The approved BOTMULTI packet requires stable
-    post-V1 production confidence gates before architecture changes start.
-- [ ] `BOTMULTI-02 audit(data+runtime): inventory legacy compatibility remnants and migration debt`
-- [ ] `BOTMULTI-03 db(schema): finalize canonical multi-strategy topology and migration path`
-- [ ] `BOTMULTI-04 api(write): support bot create/update with multiple strategies`
-- [ ] `BOTMULTI-05 runtime(signal-merge): execute deterministic multi-strategy evaluation per bot`
-- [ ] `BOTMULTI-06 runtime(risk+lifecycle): align DCA/TTP/TSL and ownership across multiple strategies`
-- [ ] `BOTMULTI-07 web(ui+operator): expose multi-strategy bot management and runtime truth`
-- [ ] `BOTMULTI-08 qa(closure): run architecture-to-runtime closure pack and publish evidence`
+- [x] `BOTMULTI-01 docs(decision): freeze post-V1 multi-strategy bot contract`
+  - 2026-05-03: Closed after `SYSFINAL-09` satisfied the stable post-V1
+    confidence prerequisite. Evidence:
+    `docs/planning/botmulti-01-post-v1-multi-strategy-contract-task-2026-05-03.md`.
+- [x] `BOTMULTI-02 audit(data+runtime): inventory legacy compatibility remnants and migration debt`
+  - 2026-05-03: Closed after the user selected lower numeric strategy-link
+    priority as canonical. Evidence:
+    `docs/planning/botmulti-02-legacy-compatibility-migration-audit-task-2026-05-03.md`.
+- [x] `BOTMULTI-03 db(schema): finalize canonical multi-strategy topology and migration path`
+  - 2026-05-03: Closed with a fail-closed migration preflight and partial
+    unique index enforcing at most one enabled `ACTIVE` `BotMarketGroup` per
+    bot. Evidence:
+    `docs/planning/botmulti-03-canonical-topology-migration-task-2026-05-03.md`.
+- [x] `BOTMULTI-04 api(write): support bot create/update with multiple strategies`
+  - 2026-05-03: Closed with focused API e2e coverage and typecheck. Evidence:
+    `docs/planning/botmulti-04-api-write-multi-strategy-task-2026-05-03.md`.
+- [x] `BOTMULTI-05 runtime(signal-merge): execute deterministic multi-strategy evaluation per bot`
+  - 2026-05-03: Closed with
+    `docs/planning/botmulti-05-runtime-signal-merge-task-2026-05-03.md`.
+- [x] `BOTMULTI-06 runtime(risk+lifecycle): align DCA/TTP/TSL and ownership across multiple strategies`
+  - 2026-05-03: Closed with
+    `docs/planning/botmulti-06-runtime-risk-lifecycle-ownership-task-2026-05-03.md`.
+- [x] `BOTMULTI-07 web(ui+operator): expose multi-strategy bot management and runtime truth`
+  - 2026-05-03: Closed with
+    `docs/planning/botmulti-07-web-operator-multi-strategy-truth-task-2026-05-03.md`.
+- [x] `BOTMULTI-08 qa(closure): run architecture-to-runtime closure pack and publish evidence`
+  - 2026-05-03: Closed with
+    `docs/planning/botmulti-08-architecture-runtime-closure-task-2026-05-03.md`.
 - [x] `V1LIVE-01 audit(api+docs): publish canonical live-execution and takeover regression packet`
 - [x] `V1LIVE-02 test(api-exchange-red): lock adapter selection to exact user/bot exchange context`
 - [x] `V1LIVE-03 fix(api-exchange): make adapter selection strictly follow user-selected exchange settings`

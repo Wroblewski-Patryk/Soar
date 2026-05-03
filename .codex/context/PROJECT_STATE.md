@@ -15,6 +15,169 @@ Last updated: 2026-05-03
   `docs/modules/index.md`, `docs/analysis/documentation-drift.md`, and
   `docs/CONTRIBUTING-DOCS.md`. No runtime behavior changed. Evidence:
   `docs/planning/docmap-01-engineering-documentation-system-map-task-2026-05-03.md`.
+- 2026-05-03 final system functionality remediation planning is queued as
+  `SYSFINAL-2026-05-03`. The consolidated master plan is now the execution
+  path for final confidence: first synchronize stale active planning truth,
+  then build the current route/API/function inventory, run repository and
+  production confidence gates, audit every current user-facing workflow, convert
+  evidence-backed discrepancies into tiny `SYSFIX-*` tasks, and close with
+  production smoke. Stage remains deferred to V2 by operator decision, and
+  `BOTMULTI-*` stays deferred until the current V1 production system is fully
+  re-audited. Plan:
+  `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+- 2026-05-03 `SYSFINAL-00` is closed. Active planning truth is synchronized
+  before the final function audit: `RUNTIME-SIGNAL-VOTES-01` is no longer
+  waiting for deploy smoke because production evidence confirmed API freshness
+  on `26962ea1dbb0981d3885779d01e58485d7e9fd6c`, `/health=ok`,
+  `/ready=ready`, active runtime session `RUNNING`, and concrete guardrail
+  reasons instead of unexplained `matched=true` + `No votes` drift. Duplicate
+  `V1BOT-SIGNALS-02` and older `V1FINAL/V1EXCEL` open-looking entries are
+  historical/superseded carryover, not current V1 blockers. `SYSFINAL-01`
+  is now the next executable task.
+- 2026-05-03 `SYSFINAL-01` is closed locally. The current route/API/function
+  inventory now maps V1 web route families and API families to backend owners,
+  data sources, expected UI states, auth boundaries, validation methods,
+  redirect-only compatibility routes, and explicit V2/deferred exclusions.
+  Evidence:
+  `docs/planning/sysfinal-01-current-function-inventory-task-2026-05-03.md`.
+  `SYSFINAL-02` is now the next executable task.
+- 2026-05-03 `SYSFINAL-02` is closed locally. Repository baseline gates are
+  green before product/security/runtime audits: guardrails, docs parity, lint,
+  API+web typecheck, full API tests, full web tests (`141` files / `399`
+  tests), and workspace build all passed. No `SYSFIX-*` task is required from
+  the baseline. Evidence:
+  `docs/planning/sysfinal-02-repository-baseline-gates-task-2026-05-03.md`.
+  `SYSFINAL-03` is now the next executable task.
+- 2026-05-03 `SYSFINAL-03` is closed locally. Auth/session/security and
+  permission surfaces are green across focused API and web verification:
+  API security pack (`14` files / `75` tests), web auth/profile/admin pack
+  (`8` files / `28` tests), `pnpm audit`, and repository guardrails all passed.
+  No `SYSFIX-*` task is required. Evidence:
+  `docs/planning/sysfinal-03-auth-session-security-audit-task-2026-05-03.md`.
+  `SYSFINAL-04` is now the next executable task.
+- 2026-05-03 `SYSFINAL-04` is closed locally. Dashboard and bot runtime truth
+  are green across focused API runtime/readiness tests, sequential DB-backed
+  runtime e2e tests, and focused web runtime parity tests. Validation PASS:
+  API runtime/readiness pack (`14` files / `113` tests), DB runtime e2e pack
+  (`7` files / `33` tests), web runtime pack (`14` files / `59` tests), and
+  repository guardrails. No `SYSFIX-*` task is required. Evidence:
+  `docs/planning/sysfinal-04-dashboard-bot-runtime-truth-audit-task-2026-05-03.md`.
+  `SYSFINAL-05` is now the next executable task.
+- 2026-05-03 `SYSFINAL-05` is closed locally. Order and position workflows are
+  green across focused lifecycle/pre-trade tests, sequential DB-backed
+  order/position e2e tests, and focused web manual-order/open-order/close
+  tests. Validation PASS: lifecycle/pre-trade pack (`14` files / `116`
+  tests), DB order/position e2e pack (`7` files / `42` tests), web trading
+  workflow pack (`8` files / `24` tests), and repository guardrails. No
+  `SYSFIX-*` task is required. Evidence:
+  `docs/planning/sysfinal-05-order-position-workflows-audit-task-2026-05-03.md`.
+  `SYSFINAL-06` is now the next executable task.
+- 2026-05-03 `SYSFINAL-06` is closed locally. Configuration workflows are green
+  across focused API and web validation for API keys, wallets, markets,
+  strategies, and bot wallet-first setup/runtime scope. Validation PASS: API
+  config pack (`16` files / `130` tests), web config pack (`11` files / `52`
+  tests), and repository guardrails. No `SYSFIX-*` task is required. Evidence:
+  `docs/planning/sysfinal-06-configuration-workflows-audit-task-2026-05-03.md`.
+  `SYSFINAL-07` is now the next executable task.
+- 2026-05-03 `SYSFINAL-07` is closed locally. Backtests, reports, logs,
+  route-reachable i18n, and key UX/a11y/responsive coverage are green across
+  focused API and web validation. Validation PASS: API backtest/report pack
+  (`13` files / `94` tests), DB backtest/logs e2e pack (`2` files / `17`
+  tests), web product/UX/i18n/a11y/responsive pack (`12` files / `33` tests),
+  route-reachable i18n audit (`0` findings), and repository guardrails. No
+  `SYSFIX-*` task is required. Evidence:
+  `docs/planning/sysfinal-07-backtests-reports-logs-i18n-ux-audit-task-2026-05-03.md`.
+  `SYSFINAL-08` is now the next executable task.
+- 2026-05-03 `SYSFINAL-08` is closed locally. Review of `SYSFINAL-02..07`
+  found no confirmed discrepancies requiring implementation, so the current
+  `SYSFIX-*` queue is intentionally empty. Evidence:
+  `docs/planning/sysfinal-08-empty-sysfix-queue-task-2026-05-03.md`.
+  `SYSFINAL-09` is now the next executable task.
+- 2026-05-03 `SYSFINAL-09` is closed locally, completing
+  `SYSFINAL-2026-05-03`. No `SYSFIX-*` implementation tasks were required.
+  Final validation PASS: repository guardrails, docs parity, lint, typecheck,
+  full API tests, full web tests (`141` files / `399` tests), and workspace
+  build. Public production smoke PASS: API `/health=ok`, `/ready=ready`, web
+  root `200`, login page `200`, web build-info reports deployed
+  `main@26962ea1dbb0981d3885779d01e58485d7e9fd6c`, and protected
+  `/dashboard/bots` without token returns `401 Missing token`. Authenticated
+  production dashboard/runtime smoke was unavailable without credentials and is
+  not claimed. Evidence:
+  `docs/planning/sysfinal-09-final-regression-production-smoke-closure-task-2026-05-03.md`.
+- 2026-05-03 `BOTMULTI-A` is now active after `SYSFINAL-09` satisfied the
+  stable post-V1 confidence prerequisite. `BOTMULTI-01` is closed locally:
+  architecture now freezes the post-V1 target as `1 bot = 1 wallet + 1 active
+  symbol-group market scope + N enabled strategies`, keeps multi-market-group
+  bots out of scope, requires manual-order ambiguity to fail closed, requires
+  runtime merge trace to preserve primary strategy provenance, and keeps
+  DCA/TTP/SL/TSL ownership position-scoped. Evidence:
+  `docs/planning/botmulti-01-post-v1-multi-strategy-contract-task-2026-05-03.md`.
+- 2026-05-03 `BOTMULTI-02` audit is closed. The inventory found canonical
+  candidates (`BotMarketGroup`, `MarketGroupStrategyLink`, and the merge
+  helper) plus migration debt across direct `Bot.strategyId` /
+  `Bot.symbolGroupId`, legacy `BotStrategy`, create/update DTOs, runtime
+  topology, final-candle strategy evaluation, manual-order context, read
+  projections, and web bot form/list surfaces. The user selected lower numeric
+  strategy-link priority as canonical, the runtime merge reference now states
+  that `1` is higher priority than `100`, and focused merge tests lock exit
+  and directional tie-break behavior. `BOTMULTI-03` is now the next executable
+  task. Evidence:
+  `docs/planning/botmulti-02-legacy-compatibility-migration-audit-task-2026-05-03.md`.
+- 2026-05-03 `BOTMULTI-03` is closed. The canonical topology now has a
+  database-level persistence boundary: migration
+  `20260503013000_enforce_single_active_bot_market_group` fails closed if a bot
+  already has multiple enabled `ACTIVE` `BotMarketGroup` rows, then creates the
+  partial unique index `BotMarketGroup_one_active_scope_per_bot_idx` on
+  `BotMarketGroup(botId)` for enabled `ACTIVE` rows. Prisma schema comments and
+  architecture docs record that Prisma cannot express this partial index in the
+  DSL, so the invariant is owned by manual migration SQL. `BOTMULTI-04` is now
+  the next executable task. Evidence:
+  `docs/planning/botmulti-03-canonical-topology-migration-task-2026-05-03.md`.
+- 2026-05-03 `BOTMULTI-04` is closed. Bot create/update API writes now accept
+  optional ordered `strategies` payloads, validate duplicate/unknown/disabled
+  primary strategy mixes fail-closed, persist multiple canonical
+  `MarketGroupStrategyLink` rows under the single active `BotMarketGroup`, and
+  keep `Bot.strategyId` as the primary compatibility projection without
+  reviving legacy `BotStrategy` writes for multi-strategy payloads.
+  `BOTMULTI-05` is now the next executable task. Evidence:
+  `docs/planning/botmulti-04-api-write-multi-strategy-task-2026-05-03.md`.
+- 2026-05-03 `BOTMULTI-05` is closed. Runtime topology now loads the enabled
+  canonical `MarketGroupStrategyLink` set under the one active
+  `BotMarketGroup`, final-candle decision evaluates all interval-eligible
+  strategies, and votes are merged through the existing deterministic runtime
+  merge contract using link priority/weight. Direct `Bot.strategyId` remains a
+  fallback only when no canonical enabled links exist. `BOTMULTI-06` is now the
+  next executable task. Evidence:
+  `docs/planning/botmulti-05-runtime-signal-merge-task-2026-05-03.md`.
+- 2026-05-03 `BOTMULTI-06` is closed. Runtime position automation now exposes
+  the owning bot's enabled canonical strategy links and fails closed when a
+  bot-managed position has no `position.strategyId` while multiple enabled
+  links exist. This prevents fallback DCA/TTP/SL/TSL settings from acting on
+  ambiguous multi-strategy position ownership, while reusing existing runtime
+  skip telemetry. `BOTMULTI-07` is now the next executable task. Evidence:
+  `docs/planning/botmulti-06-runtime-risk-lifecycle-ownership-task-2026-05-03.md`.
+- 2026-05-03 `BOTMULTI-07` is closed. Web bot create/edit now exposes primary
+  strategy plus enabled additional strategies, submits canonical ordered
+  `strategies[]` with primary-first priority, and prefills edit mode from
+  runtime graph canonical strategy links when available. `BOTMULTI-08` is now
+  the next executable task. Evidence:
+  `docs/planning/botmulti-07-web-operator-multi-strategy-truth-task-2026-05-03.md`.
+- 2026-05-03 `BOTMULTI-08` is closed, completing the post-V1 BOTMULTI
+  reintroduction wave locally. Closure validation PASS: API multi-strategy
+  write and runtime topology/merge tests (`4` files / `51` tests), runtime
+  lifecycle fail-closed tests (`31` tests), web bot form tests (`7` tests),
+  API/web typecheck, route-reachable i18n audit (`0` findings), docs parity,
+  and repository guardrails. No authenticated production smoke was claimed.
+  Evidence:
+  `docs/planning/botmulti-08-architecture-runtime-closure-task-2026-05-03.md`.
+- 2026-05-03 `BOTMULTI-09` production release is in progress by operator
+  request. Migration behavior is confirmed to be automatic on API redeploy
+  when `API_AUTO_MIGRATE` is not `false`: `apps/api/Dockerfile` starts
+  `node scripts/start-with-migrate.mjs`, which runs `prisma migrate deploy`
+  before API boot and fails closed if migration execution fails. Local
+  pre-release build PASS. Deployment trigger/push evidence remains pending.
+  Evidence:
+  `docs/planning/botmulti-09-production-deploy-task-2026-05-03.md`.
 - 2026-05-03 operator-reported LIVE imported-position ownership slice
   `LIVEIMPORT-01` is closed locally. The external takeover ownership index now
   follows the wallet-first bot contract by resolving the canonical LIVE API key
@@ -43,8 +206,8 @@ Last updated: 2026-05-03
   Evidence:
   `docs/planning/ethdca-01-live-dca-first-tsl-hardening-task-2026-05-02.md`.
 - 2026-05-02 runtime signal vote recovery slice
-  `RUNTIME-SIGNAL-VOTES-01` is closed locally and ready for production deploy
-  verification. The final-candle runtime decision path now asks the engine
+  `RUNTIME-SIGNAL-VOTES-01` is closed with production verification. The
+  final-candle runtime decision path now asks the engine
   market-data gateway for an indicator-ready candle series before strategy
   evaluation, so short runtime buffers can be topped up from the approved
   exchange-owned Binance public kline recovery path before a strategy vote is
@@ -55,7 +218,10 @@ Last updated: 2026-05-03
   to recovered configured snapshots. A follow-up guardrail-visibility patch now
   includes latest `PRETRADE_BLOCKED` events in symbol-stats so matched
   conditions stopped by runtime guardrails show a concrete block reason instead
-  of degrading to configured fallback. Validation PASS: focused runtime
+  of degrading to configured fallback. Production smoke confirmed API freshness
+  on `26962ea1dbb0981d3885779d01e58485d7e9fd6c`, `/health=ok`,
+  `/ready=ready`, active session `RUNNING`, and concrete guardrail reasons for
+  matched rows instead of unexplained `No votes`. Validation PASS: focused runtime
   market-data/runtime loop/read model tests (`4` files / `56` tests), focused
   blocked-decision read-model tests (`2` files / `8` tests), API typecheck,
   API build, and repository guardrails. Evidence:

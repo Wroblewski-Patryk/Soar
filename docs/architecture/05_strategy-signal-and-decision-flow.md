@@ -73,8 +73,8 @@ The canonical evaluation unit is:
 ```
 
 The bot's single linked symbol-group market scope defines whether the symbol is
-in scope for that evaluation unit. The linked strategy defines the interval and
-decision schema for the bot.
+in scope for that evaluation unit. The enabled strategy links under that market
+scope define the ordered evaluation set for the bot.
 
 ## Signal Output Domain
 - `LONG`
@@ -92,6 +92,24 @@ When several strategies attached to the same runtime partition emit outputs for 
 4. resolve ties or weak consensus as `NO_TRADE`
 
 Runtime must never guess randomly.
+
+Final-candle runtime evaluation must use the enabled canonical
+`MarketGroupStrategyLink` set under the bot's single active `BotMarketGroup`.
+Only strategies whose configured interval matches the closed window contribute
+votes. Link `priority` and `weight` feed the merge contract, and the merge
+winner supplies the primary strategy provenance used downstream for signal,
+sizing, order, and position lifecycle context.
+
+The merge trace must retain strategy provenance for each participating strategy
+and for the final accepted proposal. If a directional merge uses several
+strategies, the deterministic tie-break rules in
+`reference/runtime-signal-merge-contract.md` select the primary strategy
+provenance used for downstream order and position lifecycle ownership.
+
+Direct strategy `EXIT` proposals are decision inputs, not a bypass around the
+lifecycle manager. Any close intent produced by merge must still pass the
+approved lifecycle, ownership, pre-trade, and exchange guardrails before it can
+mutate an order or position.
 
 ## Guardrails Before Merge
 - kill switch

@@ -31,7 +31,7 @@ Define the canonical entities of Soar, their responsibilities, and their relatio
 ### Bot
 - explicit runtime unit
 - binds operator intent to exactly one wallet, one symbol-group-derived market scope,
-  and one strategy
+  and one ordered strategy set
 - owns activation state and runtime identity, but does not invent venue,
   execution, or strategy logic context that already belongs to linked modules
 
@@ -61,7 +61,7 @@ Define the canonical entities of Soar, their responsibilities, and their relatio
 - `User 1 -> N Bot`
 - `Bot N -> 1 Wallet`
 - `Bot N -> 1 SymbolGroup`
-- `Bot N -> 1 Strategy`
+- `Bot 1 -> N Strategy through MarketGroupStrategyLink`
 - `Bot 1 -> N runtime events/orders/positions/trades/signals`
 
 ## Runtime Unit
@@ -71,7 +71,7 @@ The canonical runtime unit is:
 User
   -> Bot
     -> SymbolGroup-derived market scope
-    -> Strategy evaluation
+    -> ordered Strategy evaluation set
 ```
 
 ## Entity Boundaries
@@ -80,7 +80,7 @@ User
 - `SymbolGroup` owns selected symbol scope and inherits venue context from its parent market universe.
 - `Bot` owns runtime activation and operator-facing execution scope, while inheriting
   execution context from `Wallet`, venue/symbol scope from `SymbolGroup`, and logic/risk
-  schema from `Strategy`.
+  schema from enabled strategy links.
 - `Strategy` owns logic and risk schema, not wallet or venue context.
 - `Order` does not directly equal `Position`.
 - `Position` becomes visible only through fill/lifecycle authority.
@@ -90,7 +90,7 @@ When multiple entities can imply context, the canonical priority is:
 1. Market universe for venue context
 2. Wallet for execution mode and capital context
 3. Symbol group for selected symbol scope inside the inherited venue context
-4. Strategy for logic and risk rules
+4. Enabled strategy links for logic and risk rules
 5. Bot for runtime identity, activation, and operator scope only
 
 ## MVP vs Future
@@ -98,16 +98,28 @@ When multiple entities can imply context, the canonical priority is:
 - one exchange family in production scope
 - multi-bot runtime model
 - assistant configuration attached to bots
-- one wallet + one symbol-group market scope + one strategy per bot
+- one wallet + one symbol-group market scope + one ordered strategy set per bot
 
 ## Migration Note
-Legacy compatibility structures such as `BotMarketGroup` and `MarketGroupStrategyLink`
-may remain temporarily during migration, but they are no longer canonical domain
-ownership. The approved target contract is singular bot context:
+Legacy compatibility structures such as `Bot.strategyId`, `Bot.symbolGroupId`,
+and `BotStrategy` may remain temporarily during migration, but they are no
+longer canonical domain ownership. The approved post-V1 target contract is a
+single bot runtime context with an ordered strategy set:
 
 ```text
-Bot = Wallet + SymbolGroup + Strategy + Activation/Runtime Identity
+Bot = Wallet + SymbolGroup + Ordered Strategy Links + Activation/Runtime Identity
 ```
+
+`BotMarketGroup` remains constrained to one canonical active market scope per
+bot in this wave. Multi-market-group bots are not part of the post-V1
+`BOTMULTI` target unless a later architecture decision explicitly reopens that
+scope.
+
+The persistence boundary is database-enforced by the
+`BotMarketGroup_one_active_scope_per_bot_idx` partial unique index: a bot may
+have at most one `BotMarketGroup` row where `isEnabled = true` and
+`lifecycleStatus = ACTIVE`. Migration must fail closed if existing data violates
+that invariant; it must not silently pause, archive, or choose one market scope.
 
 ### Future extensions
 - more exchange adapters

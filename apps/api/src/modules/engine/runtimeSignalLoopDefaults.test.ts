@@ -199,6 +199,99 @@ describe('listActiveRuntimeBots', () => {
     expect(topology).toEqual([]);
   });
 
+  it('builds runtime context from canonical enabled strategy links', async () => {
+    vi.mocked(listActiveRuntimeBotsRaw).mockResolvedValue([
+      {
+        id: 'bot-multi',
+        userId: 'user-1',
+        walletId: 'wallet-1',
+        mode: 'PAPER',
+        liveOptIn: false,
+        exchange: 'BINANCE',
+        paperStartBalance: 1000,
+        marketType: 'FUTURES',
+        maxOpenPositions: 9,
+        strategyId: 'legacy-primary',
+        symbolGroupId: 'legacy-group',
+        strategy: null,
+        symbolGroup: null,
+        botMarketGroups: [
+          {
+            id: 'market-group-1',
+            symbolGroupId: 'symbol-group-1',
+            maxOpenPositions: 3,
+            symbolGroup: {
+              id: 'symbol-group-1',
+              symbols: ['BTCUSDT'],
+              marketUniverse: {
+                exchange: 'BINANCE',
+                marketType: 'FUTURES',
+                baseCurrency: 'USDT',
+                filterRules: null,
+                whitelist: [],
+                blacklist: [],
+              },
+            },
+            strategyLinks: [
+              {
+                id: 'link-primary',
+                strategyId: 'strategy-primary',
+                priority: 5,
+                weight: 2,
+                strategy: {
+                  id: 'strategy-primary',
+                  interval: '1m',
+                  config: { open: {} },
+                  leverage: 3,
+                  walletRisk: 2,
+                },
+              },
+              {
+                id: 'link-secondary',
+                strategyId: 'strategy-secondary',
+                priority: 20,
+                weight: 0.5,
+                strategy: {
+                  id: 'strategy-secondary',
+                  interval: '1m',
+                  config: { open: {} },
+                  leverage: 1,
+                  walletRisk: 1,
+                },
+              },
+            ],
+          },
+        ],
+        wallet: {
+          id: 'wallet-1',
+          mode: 'PAPER',
+          exchange: 'BINANCE',
+          marketType: 'FUTURES',
+          baseCurrency: 'USDT',
+          paperInitialBalance: 1000,
+        },
+      },
+    ] as any);
+
+    const topology = await listActiveRuntimeBots();
+
+    expect(topology).toHaveLength(1);
+    expect(topology[0]!.runtimeContext).toMatchObject({
+      symbolGroupId: 'symbol-group-1',
+      strategyId: 'strategy-primary',
+      maxOpenPositions: 3,
+      symbols: ['BTCUSDT'],
+    });
+    expect(topology[0]!.runtimeContext?.strategies?.map((strategy) => ({
+      strategyId: strategy.strategyId,
+      priority: strategy.priority,
+      weight: strategy.weight,
+    }))).toEqual([
+      { strategyId: 'strategy-primary', priority: 5, weight: 2 },
+      { strategyId: 'strategy-secondary', priority: 20, weight: 0.5 },
+    ]);
+  });
+
   it('counts owned imported LIVE positions in bot scope even when canonical row botId is null', async () => {
     vi.mocked(countOpenPositionsForBotAndSymbolsRaw).mockResolvedValue(0);
     vi.mocked(prisma.bot.findUnique).mockResolvedValue({

@@ -124,6 +124,20 @@ Per-position evaluation order is:
 
 If a DCA level is still valid and affordable, the runtime must not bypass it by guessing a different close path.
 
+In the post-V1 multi-strategy bot model, DCA and protection ownership remains
+position-scoped, not bot-wide. The strategy provenance that opened or
+canonically adopted the position owns that position's DCA/TTP/SL/TSL lifecycle
+configuration until the position closes or an explicit supported ownership
+transfer is implemented. Other linked strategies may contribute future signal
+or close-intent context through the merge contract, but they must not silently
+rewrite the active position's protection ladder.
+
+If a bot has multiple enabled canonical strategy links and an open
+bot-managed position lacks `position.strategyId`, runtime DCA/TTP/SL/TSL
+automation must fail closed. Runtime must not choose the first linked strategy
+or fall back to bot-wide environment protection settings for that ambiguous
+position.
+
 For `LIVE`, when a confirmed fill adds to an already open position and the
 semantic action is an add-leg, persistence and telemetry must preserve explicit
 `DCA` meaning rather than collapsing it into generic `OPEN`.

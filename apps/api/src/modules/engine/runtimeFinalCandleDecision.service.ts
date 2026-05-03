@@ -206,7 +206,9 @@ export const processRuntimeFinalCandleDecision = async (
         if (
           !runtimeContext ||
           runtimeContext.symbols.length > 0 ||
-          !strategyMatchesCandleInterval(runtimeContext.strategy.strategyInterval, event.interval)
+          !(runtimeContext.strategies ?? [runtimeContext.strategy]).some((strategy) =>
+            strategyMatchesCandleInterval(strategy.strategyInterval, event.interval)
+          )
         ) {
           return;
         }
@@ -228,7 +230,9 @@ export const processRuntimeFinalCandleDecision = async (
           payload: {
             reason: 'EMPTY_SYMBOL_SCOPE',
             symbolGroupId: runtimeContext.symbolGroupId,
-            strategyInterval: runtimeContext.strategy.strategyInterval ?? '*',
+            strategyIntervals: (runtimeContext.strategies ?? [runtimeContext.strategy]).map(
+              (strategy) => strategy.strategyInterval ?? '*'
+            ),
           },
           eventAt: new Date(event.eventTime),
         });
@@ -258,7 +262,8 @@ export const processRuntimeFinalCandleDecision = async (
         string,
         { conditionLines: RuntimeSignalConditionLine[]; indicatorSummary: string | null }
       > = {};
-      const eligibleStrategies = [runtimeContext.strategy].filter((strategy) =>
+      const runtimeStrategies = runtimeContext.strategies ?? [runtimeContext.strategy];
+      const eligibleStrategies = runtimeStrategies.filter((strategy) =>
         strategyMatchesCandleInterval(strategy.strategyInterval, event.interval)
       );
       const strategyVotes: StrategyVote[] = eligibleStrategies
@@ -278,8 +283,8 @@ export const processRuntimeFinalCandleDecision = async (
           return {
             strategyId: strategy.strategyId,
             direction,
-            priority: 1,
-            weight: 1,
+            priority: strategy.priority ?? 100,
+            weight: strategy.weight ?? 1,
           } satisfies StrategyVote;
         })
         .filter((vote): vote is StrategyVote => Boolean(vote));
@@ -299,7 +304,7 @@ export const processRuntimeFinalCandleDecision = async (
           eventType: 'SIGNAL_DECISION',
           level: 'DEBUG',
           symbol: event.symbol,
-          strategyId: runtimeContext.strategyId,
+          strategyId: merged.strategyId ?? runtimeContext.strategyId,
           message: 'No trade decision after strategy merge',
           payload: {
             merge: merged.metadata,
@@ -501,7 +506,8 @@ export const processRuntimeFinalCandleDecision = async (
       }
 
       const selectedStrategy =
-        runtimeContext.strategy.strategyId === merged.strategyId ? runtimeContext.strategy : undefined;
+        runtimeStrategies.find((strategy) => strategy.strategyId === merged.strategyId) ??
+        undefined;
       const referenceBalance = await resolveRuntimeReferenceBalance({
         userId: bot.userId,
         botId: bot.id,

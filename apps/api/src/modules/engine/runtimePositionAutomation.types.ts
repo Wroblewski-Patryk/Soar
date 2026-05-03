@@ -44,6 +44,11 @@ export type RuntimeManagedPosition = Pick<
               } | null;
             }
           | null;
+        botMarketGroups?: Array<{
+          strategyLinks: Array<{
+            strategyId: string;
+          }>;
+        }>;
       }
     | null;
 };

@@ -17,6 +17,80 @@ Last updated: 2026-05-03
 
 ## READY
 
+- No active `READY` task remains after `BOTMULTI-08` closure. `BOTMULTI-09`
+  is an operator-requested production release task currently in progress, not
+  a new product backlog item.
+
+- [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production`
+  - Scope: release the locally verified BOTMULTI multi-strategy topology
+    through the approved GitHub/Coolify production workflow. The API image
+    startup migration contract is confirmed: the container command runs
+    `node scripts/start-with-migrate.mjs`, which executes `prisma migrate
+    deploy` unless `API_AUTO_MIGRATE=false` and fails closed before API boot if
+    migration cannot run. Local pre-release build PASS. Evidence:
+    `docs/planning/botmulti-09-production-deploy-task-2026-05-03.md`.
+
+- [x] `BOTMULTI-08 qa(closure): run architecture-to-runtime closure pack and publish evidence`
+  - Scope: closed the post-V1 BOTMULTI wave with focused API/runtime/lifecycle
+    and web validation, API/web typechecks, i18n route audit, docs parity, and
+    repository guardrails. Evidence:
+    `docs/planning/botmulti-08-architecture-runtime-closure-task-2026-05-03.md`.
+
+- [x] `BOTMULTI-07 web(ui+operator): expose multi-strategy bot management and runtime truth`
+  - Scope: bot create/edit now exposes explicit primary strategy plus enabled
+    additional strategies, submits ordered canonical `strategies[]`, and
+    prefills edit mode from canonical runtime graph strategy links. Evidence:
+    `docs/planning/botmulti-07-web-operator-multi-strategy-truth-task-2026-05-03.md`.
+
+- [x] `BOTMULTI-06 runtime(risk+lifecycle): align DCA/TTP/TSL and ownership across multiple strategies`
+  - Scope: runtime position automation now fails closed when a bot-managed
+    position has no `position.strategyId` while its bot has multiple enabled
+    canonical strategy links. The guard reuses existing skip telemetry and
+    prevents fallback DCA/TTP/SL/TSL settings from acting on ambiguous
+    multi-strategy position ownership. Evidence:
+    `docs/planning/botmulti-06-runtime-risk-lifecycle-ownership-task-2026-05-03.md`.
+
+- [x] `BOTMULTI-05 runtime(signal-merge): execute deterministic multi-strategy evaluation per bot`
+  - Scope: runtime topology and final-candle decision now consume the enabled
+    canonical `MarketGroupStrategyLink` set under the one active
+    `BotMarketGroup`, evaluate all interval-eligible strategies, merge votes
+    with existing deterministic priority/weight semantics, and preserve winner
+    provenance for downstream execution context. Evidence:
+    `docs/planning/botmulti-05-runtime-signal-merge-task-2026-05-03.md`.
+
+- [x] `BOTMULTI-04 api(write): support bot create/update with multiple strategies`
+  - Scope: extended bot create/update API writes with optional ordered
+    `strategies` payloads. Writes now persist multiple canonical
+    `MarketGroupStrategyLink` rows under one active `BotMarketGroup`, keep
+    `Bot.strategyId` as primary compatibility projection, and avoid legacy
+    `BotStrategy` writes for multi-strategy payloads. Evidence:
+    `docs/planning/botmulti-04-api-write-multi-strategy-task-2026-05-03.md`.
+
+- [x] `BOTMULTI-03 db(schema): finalize canonical multi-strategy topology and migration path`
+  - Scope: finalized the persistence boundary for one bot with one wallet, one
+    active symbol-group market scope, and an ordered enabled strategy set.
+    Added fail-closed migration preflight plus partial unique index
+    `BotMarketGroup_one_active_scope_per_bot_idx` so a bot cannot have more
+    than one enabled `ACTIVE` `BotMarketGroup`. Evidence:
+    `docs/planning/botmulti-03-canonical-topology-migration-task-2026-05-03.md`.
+
+- [x] `BOTMULTI-02 audit(data+runtime): inventory legacy compatibility remnants and migration debt`
+  - Scope: inventoried current schema, API, runtime, tests, and module docs
+    against the frozen `BOTMULTI-01` contract. Closed after the user selected
+    lower numeric strategy-link priority as canonical; architecture reference
+    wording and focused runtime merge regression now lock that semantics.
+    Evidence:
+    `docs/planning/botmulti-02-legacy-compatibility-migration-audit-task-2026-05-03.md`.
+
+- [x] `BOTMULTI-01 docs(decision): freeze post-V1 multi-strategy bot contract`
+  - Scope: first executable post-V1 BOTMULTI slice after `SYSFINAL-09` closed
+    V1 confidence. Froze architecture target as one bot with one wallet, one
+    active symbol-group market scope, and an ordered enabled strategy set.
+    Manual-order ambiguity must fail closed, runtime merge must preserve
+    primary strategy provenance, and DCA/TTP/SL/TSL ownership remains
+    position-scoped. Evidence:
+    `docs/planning/botmulti-01-post-v1-multi-strategy-contract-task-2026-05-03.md`.
+
 - [x] `DOCMAP-01 docs(architecture): create engineering documentation system map foundation`
   - Scope: created the first traceable technical documentation map without
     rewriting existing architecture/module docs. Added central docs entrypoint,
@@ -27,6 +101,157 @@ Last updated: 2026-05-03
     and known gaps. Runtime behavior unchanged. Validation: docs-focused
     parity/guardrail commands. Evidence:
     `docs/planning/docmap-01-engineering-documentation-system-map-task-2026-05-03.md`.
+
+- [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
+  - Scope: final executable slice from the consolidated final system
+    functionality remediation master plan. Because `SYSFINAL-02..08` produced
+    no `SYSFIX-*` implementation tasks, run the final closure checks and
+    publish residual-risk evidence. Production-impacting smoke must use real
+    available credentials/environment; if unavailable, classify the external
+    blocker instead of inventing evidence. Evidence plan:
+    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+  - 2026-05-03: Closed with
+    `docs/planning/sysfinal-09-final-regression-production-smoke-closure-task-2026-05-03.md`.
+    Validation PASS: guardrails, docs parity, lint, typecheck, full API tests,
+    full web tests (`141` files / `399` tests), build, public production
+    `/health`, `/ready`, web root, login page, web build-info, and protected
+    API unauthenticated `401 Missing token`. Authenticated production
+    dashboard/runtime smoke remains unavailable without credentials and was not
+    claimed.
+
+- [x] `SYSFINAL-08 planning(fixes): convert findings into tiny SYSFIX tasks`
+  - Scope: ninth executable slice from the consolidated final system
+    functionality remediation master plan. Convert every confirmed finding from
+    `SYSFINAL-02..07` into a tiny, scoped `SYSFIX-*` task with reproduction,
+    expected behavior, affected files, validation, deployment impact, rollback
+    path, and acceptance criteria. If no findings exist, publish explicit empty
+    fix-queue closure evidence. Evidence plan:
+    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+  - 2026-05-03: Closed with
+    `docs/planning/sysfinal-08-empty-sysfix-queue-task-2026-05-03.md`.
+    Review of `SYSFINAL-02..07` found no confirmed discrepancies requiring
+    implementation. Current `SYSFIX-*` queue is intentionally empty.
+
+- [x] `SYSFINAL-07 qa(product): audit backtests reports logs i18n and UX states`
+  - Scope: eighth executable slice from the consolidated final system
+    functionality remediation master plan. Audit backtest create/list/detail
+    for SPOT and FUTURES, reports and parity diagnostics states, logs/audit
+    filtering, route-reachable i18n, and key dashboard responsive/accessibility
+    state coverage. Any confirmed discrepancy becomes a scoped `SYSFIX-*`
+    task. Evidence plan:
+    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+  - 2026-05-03: Closed with
+    `docs/planning/sysfinal-07-backtests-reports-logs-i18n-ux-audit-task-2026-05-03.md`.
+    Validation PASS: focused API backtest/report pack (`13` files / `94`
+    tests), sequential DB backtest/logs e2e pack (`2` files / `17` tests),
+    focused web product/UX/i18n/a11y/responsive pack (`12` files / `33`
+    tests), route-reachable i18n audit (`0` findings), and repository
+    guardrails. No `SYSFIX-*` task required.
+
+- [x] `SYSFINAL-06 qa(config): audit wallets markets strategies and bot setup`
+  - Scope: seventh executable slice from the consolidated final system
+    functionality remediation master plan. Audit wallet create/edit/API-key
+    attach/test constraints, market universe and symbol-group
+    create/edit/delete guards, strategy create/edit indicator metadata and
+    validation, and bot create/edit/start/stop canonical wallet-first
+    market/strategy runtime scope. Any confirmed discrepancy becomes a scoped
+    `SYSFIX-*` task. Evidence plan:
+    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+  - 2026-05-03: Closed with
+    `docs/planning/sysfinal-06-configuration-workflows-audit-task-2026-05-03.md`.
+    Validation PASS: API config pack (`16` files / `130` tests), web config
+    pack (`11` files / `52` tests), and repository guardrails. No `SYSFIX-*`
+    task required.
+
+- [x] `SYSFINAL-05 qa(trading): audit order and position workflows`
+  - Scope: sixth executable slice from the consolidated final system
+    functionality remediation master plan. Audit PAPER manual market order
+    open/fill/position visibility, PAPER runtime signal path through
+    pre-trade/order/position/history, manual close, bot close, cancel order,
+    history attribution, LIVE read-only imported position ownership/protection
+    state, and visible guardrail explanations. Any confirmed discrepancy
+    becomes a scoped `SYSFIX-*` task. Evidence plan:
+    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+  - 2026-05-03: Closed with
+    `docs/planning/sysfinal-05-order-position-workflows-audit-task-2026-05-03.md`.
+    Validation PASS: lifecycle/pre-trade pack (`14` files / `116` tests),
+    sequential DB order/position e2e pack (`7` files / `42` tests), focused
+    web trading workflow pack (`8` files / `24` tests), and repository
+    guardrails. No `SYSFIX-*` task required.
+
+- [x] `SYSFINAL-04 qa(runtime): audit dashboard and bot runtime truth end to end`
+  - Scope: fifth executable slice from the consolidated final system
+    functionality remediation master plan. Audit Dashboard Home and Bot
+    Monitoring against selected bot runtime truth: sessions, symbol stats,
+    positions, history, signal cards, indicator value display,
+    guardrail-blocked outcomes, Redis market-stream readiness, and
+    PAPER/read-only LIVE runtime rows. Any confirmed discrepancy becomes a
+    scoped `SYSFIX-*` task. Evidence plan:
+    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+  - 2026-05-03: Closed with
+    `docs/planning/sysfinal-04-dashboard-bot-runtime-truth-audit-task-2026-05-03.md`.
+    Validation PASS: focused API runtime/readiness pack (`14` files / `113`
+    tests), sequential DB runtime e2e pack (`7` files / `33` tests), focused
+    web runtime pack (`14` files / `59` tests), and repository guardrails. No
+    `SYSFIX-*` task required.
+
+- [x] `SYSFINAL-03 qa(security): audit auth session security and permissions`
+  - Scope: fourth executable slice from the consolidated final system
+    functionality remediation master plan. Audit login/logout, failed login,
+    expired/invalid session, protected route redirect, cross-user ownership
+    denial, API-key masking/encryption behavior, connection-test error states,
+    and LIVE write entitlement/consent fail-closed behavior. Any confirmed
+    discrepancy becomes a scoped `SYSFIX-*` task. Evidence plan:
+    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+  - 2026-05-03: Closed with
+    `docs/planning/sysfinal-03-auth-session-security-audit-task-2026-05-03.md`.
+    Validation PASS: focused API security pack (`14` files / `75` tests),
+    focused web auth/profile/admin pack (`8` files / `28` tests),
+    `pnpm audit`, and repository guardrails. No `SYSFIX-*` task required.
+
+- [x] `SYSFINAL-02 qa(repo): run repository baseline gates and classify failures`
+  - Scope: third executable slice from the consolidated final system
+    functionality remediation master plan. Run the repository baseline gates
+    before browser/API product audits: guardrails, docs parity when required,
+    lint, typecheck, full API/web tests, and build. Every failure must be
+    classified before implementation; confirmed product failures become scoped
+    `SYSFIX-*` tasks. Evidence plan:
+    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+  - 2026-05-03: Closed with
+    `docs/planning/sysfinal-02-repository-baseline-gates-task-2026-05-03.md`.
+    Validation PASS: repository guardrails, docs parity, lint, API+web
+    typecheck, full API tests, full web tests (`141` files / `399` tests), and
+    workspace build. No `SYSFIX-*` task required from the baseline.
+
+- [x] `SYSFINAL-01 qa(planning): build current route API function inventory`
+  - Scope: second executable slice from the consolidated final system
+    functionality remediation master plan. Build the current user-facing
+    function inventory and route/API matrix before running browser/API audits.
+    Output must map every current route and major user function to its backend
+    contract, data source, UI states, auth boundary, validation method, and
+    explicit V2/deferred exclusions. Evidence plan:
+    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+  - 2026-05-03: Closed with
+    `docs/planning/sysfinal-01-current-function-inventory-task-2026-05-03.md`.
+    Current web route families and API families are mapped to backend owners,
+    data sources, expected UI states, auth boundaries, validation methods,
+    redirect-only compatibility routes, and explicit V2/deferred exclusions.
+    Validation PASS: repository guardrails.
+
+- [x] `SYSFINAL-00 docs(planning): synchronize active planning truth before final function audit`
+  - Scope: first executable slice from the consolidated final system
+    functionality remediation master plan. Reconcile stale active/open-looking
+    queue entries against current production evidence, then make the active
+    NOW/NEXT queue point to the final audit sequence instead of historical
+    carryover checkboxes. Stage remains deferred to V2, and `BOTMULTI-*`
+    remains deferred pipeline until the current V1 production system is fully
+    re-audited. Evidence plan:
+    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+  - 2026-05-03: Closed by synchronizing current queue truth. Runtime signal
+    recovery is production-smoked and no longer waiting for deploy evidence;
+    duplicate `V1BOT-SIGNALS-02` and older `V1FINAL/V1EXCEL` carryover entries
+    are preserved only as historical/superseded context; `BOTMULTI-*` remains
+    deferred pipeline. Validation PASS: repository guardrails.
 
 - [x] `LIVEIMPORT-01 fix(api-runtime): restore wallet-first LIVE imported position ownership`
   - Scope: closed the operator-reported LIVE imported-position ownership
@@ -57,8 +282,8 @@ Last updated: 2026-05-03
     Evidence:
     `docs/planning/ethdca-01-live-dca-first-tsl-hardening-task-2026-05-02.md`.
 
-- [ ] `RUNTIME-SIGNAL-VOTES-01 fix(api-runtime): recover runtime strategy votes when matched indicators exist`
-  - Scope: implementation is locally verified and ready for deploy smoke for
+- [x] `RUNTIME-SIGNAL-VOTES-01 fix(api-runtime): recover runtime strategy votes when matched indicators exist`
+  - Scope: implementation is locally verified and production-smoked for
     the production-reported PAPER/LIVE runtime signal-vote risk.
     `RuntimeSignalLoop` now makes the final-candle decision path request an
     indicator-ready candle series before strategy evaluation, using the
@@ -71,12 +296,15 @@ Last updated: 2026-05-03
     `No votes` reason to recovered configured snapshots. A follow-up
     guardrail-visibility patch now includes latest `PRETRADE_BLOCKED` events
     in symbol-stats so matched conditions stopped by runtime guardrails show a
-    concrete block reason instead of degrading to configured fallback. Validation
+    concrete block reason instead of degrading to configured fallback. Production
+    smoke confirmed API freshness on `26962ea1dbb0981d3885779d01e58485d7e9fd6c`,
+    `/health=ok`, `/ready=ready`, active session `RUNNING`, concrete runtime
+    block reasons for matched rows, and no unexplained `matched=true` +
+    `No votes` contradiction for guardrail-blocked symbols. Validation
     PASS: focused runtime market-data, runtime loop, and read-model tests
     (`4` files / `56` tests), focused blocked-decision read-model tests
     (`2` files / `8` tests), API typecheck, API build, and repository
-    guardrails. Post-deploy production smoke remains the release evidence step
-    before final closure. Evidence:
+    guardrails. Evidence:
     `docs/planning/runtime-signal-vote-recovery-audit-plan-2026-05-02.md`.
 
 - [x] `DOCSYNC-V1EXCEL-01 docs(planning): close superseded V1EXCEL evidence gates`
@@ -379,7 +607,7 @@ Last updated: 2026-05-03
     typecheck, and repository guardrails. Evidence:
     `docs/planning/v1market-01-deactivated-bot-market-edit-task-2026-05-02.md`.
 
-- [ ] `V1BOT-SIGNALS-02 fix(api-runtime): expose condition match truth and recover market-stream publishing`
+- [x] `V1BOT-SIGNALS-02 fix(api-runtime): expose condition match truth and recover market-stream publishing`
   - Scope: follow-up for the production `Dashboard -> Markets / Signals`
     signal-count/display concern. Authenticated read-only production smoke
     showed the current PAPER session is `RUNNING` but has only `eventsCount=1`
@@ -404,7 +632,9 @@ Last updated: 2026-05-03
     market-stream/runtime read-model tests (`50/50`), focused Binance
     stream/fanout/subscription tests (`15/15`), readiness test (`9/9`), API
     typecheck, web typecheck, API build, and repository guardrails. Readiness
-    hardening deploy/readback remains required. Evidence:
+    hardening deploy/readback was superseded by the later closed entry above
+    and by production smoke confirming Redis readiness, real market-stream
+    events, and runtime signal guardrail visibility. Evidence:
     `docs/planning/v1bot-signals-runtime-truth-2026-05-02.md`.
 
 - [x] `V1BACKTEST-01 fix(api-backtests): recover futures candles when primary kline endpoint is unavailable`
@@ -575,7 +805,7 @@ Last updated: 2026-05-03
     entitlement e2e (`5/5`), API build, repository guardrails. Evidence:
     `docs/planning/v1subs-01-live-entitlement-bot-write-guard-task-2026-05-01.md`.
 
-- [ ] `V1FINAL-01 qa(prod): verify deployed DOGE runtime hardening and run final V1 gates`
+- [x] `V1FINAL-01 qa(prod): verify deployed DOGE runtime hardening and run final V1 gates`
   - Scope: execute the final V1 gate structure after production deploys
     `fba29a96` or later. Gate order: deploy freshness, DOGE close/reopen
     runtime regression, production V1EXCEL evidence, manual operator matrix,
@@ -608,6 +838,9 @@ Last updated: 2026-05-03
     because activation audit/plan are stale and the production backup/restore
     drill artifact is still failed. Evidence:
     `docs/operations/v1-release-gate-prod-2026-05-01T18-20-00-000Z.md`.
+  - 2026-05-03 sync: this older final-gate item is preserved as historical
+    evidence and is no longer active V1 work. It is superseded by
+    `V1CLOSEOUT-11` and the 2026-05-02 production-only final `GO` closure.
 - [x] `V1EXCEL-04 ops(stage-refresh): restore stage target before authenticated gate rerun`
   - Scope: stage release-gate evidence cannot proceed while the stage web/API
     targets are unavailable.
@@ -977,9 +1210,13 @@ entries above:
   - 2026-04-29 status: BLOCKED. Stage and prod runtime observability probes both hit protected-route `401` boundaries without OPS auth; this proves the endpoint boundary but not current worker/runtime health. Canonical status: `docs/operations/v1excel-runtime-observability-2026-04-29.md`.
   - 2026-05-01 production refresh: production runtime observability is green with authenticated evidence. Runtime freshness PASS, rollback guard PASS with `shouldRollback=false`, no reasons, no alerts, and `runningCount=4`. Stage runtime observability remains open. Task packet: `docs/planning/v1excel-06-prod-runtime-observability-task-2026-05-01.md`.
 
-- [ ] `V1EXCEL-UNBLOCK ops(runbook): execute the final authenticated unblock sequence for GO readiness`
+- [x] `V1EXCEL-UNBLOCK ops(runbook): execute the final authenticated unblock sequence for GO readiness`
   - Scope: use the prepared operator runbook to clear the remaining external blockers `V1EXCEL-03..06` once Soar operator auth, OPS/private-route auth, and exchange authority are available.
   - 2026-04-29: Ready as an execution handoff only. Canonical runbook: `docs/operations/v1excel-final-unblock-runbook-2026-04-29.md`.
+  - 2026-05-03 sync: closed as superseded for current V1 planning. The final
+    authenticated unblock sequence was replaced by the later
+    `V1CLOSEOUT-11` production-only `GO` path, with stage explicitly deferred
+    to V2 by operator decision.
 
 - [x] `V1EXCEL-07 release(go-no-go): rebuild RC status/sign-off/checklist and publish final V1 excellence decision`
   - Scope: produce one final operator-facing `GO / NO-GO` answer for the current candidate with exact residual risks or blockers.
@@ -1245,6 +1482,11 @@ entries above:
 - [ ] (none)
 
 ## BLOCKED
+
+- No active BOTMULTI blocker remains. The earlier `BOTMULTI-02` priority
+  semantics blocker was resolved on 2026-05-03 when lower numeric
+  strategy-link priority was selected as canonical and the BOTMULTI wave
+  closed through `BOTMULTI-08`.
 
 - Historical `V1EXCEL-03..06 confidence gates: finish authenticated manual operator, stage/prod, and runtime observability evidence`
   - Scope: execute the remaining V1 excellence evidence wave: full manual matrix, authenticated stage refresh, authenticated prod refresh, and runtime observability closure on the current candidate.
