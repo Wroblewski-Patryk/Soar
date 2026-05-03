@@ -574,6 +574,30 @@ describe('Wallets balance preview contract', () => {
     expect(previewRes.body.error.message).toBe('api key not found for selected exchange context');
   });
 
+  it('rejects invalid wallet analytics source filters at the API boundary', async () => {
+    const email = 'wallet-analytics-invalid-source@example.com';
+    const agent = await registerAndLogin(email);
+    const userId = await resolveUserIdByEmail(email);
+
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId,
+        name: 'Analytics source wallet',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        paperInitialBalance: 1000,
+      },
+    });
+
+    const res = await agent
+      .get(`/dashboard/wallets/${wallet.id}/cashflow-events`)
+      .query({ source: 'NOT_A_SOURCE' });
+
+    expect(res.status).toBe(400);
+  });
+
   it('fails closed for placeholder exchanges', async () => {
     const agent = await registerAndLogin('wallet-preview-placeholder@example.com');
 

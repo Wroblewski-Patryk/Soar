@@ -6,7 +6,7 @@
 - Source path: `apps/api/src/modules/wallets`
 - Owner: backend/trading-domain
 - Last updated: 2026-05-03
-- Related planning task: `RUNTIME-AUDIT-20`
+- Related planning task: `RUNTIME-AUDIT-21`
 
 ## Canonical Architecture Linkage
 Canonical wallet and execution-context rules live in:
@@ -39,6 +39,8 @@ Out of scope:
   - `ListWalletsQuerySchema`
   - `WalletMetadataQuerySchema`
   - `WalletBalancePreviewSchema`
+  - `WalletAnalyticsQuerySchema` validates `source` against the canonical
+    `WalletCashflowSource` enum.
 - Key invariants:
   - LIVE wallet requires compatible API key from same exchange.
   - mode/exchange must be supported by capability map.

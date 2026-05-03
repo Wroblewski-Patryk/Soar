@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-21 fix(api-wallets): validate analytics source filters`
+  - 2026-05-03: Closed a wallet analytics API-boundary drift. Wallet analytics
+    `source` filters now validate against the canonical `WalletCashflowSource`
+    enum at the DTO boundary, so invalid dashboard/URL filter values fail
+    closed with `400` instead of reaching Prisma and returning `500`.
+    Validation PASS: failing-then-passing invalid source regression, focused
+    wallets e2e (`17/17`), API typecheck, repository guardrails, lint, and
+    diff review. Evidence:
+    `docs/planning/runtime-audit-21-wallet-analytics-source-validation-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-20 fix(api-wallets): keep filtered wallet timeline historical`
   - 2026-05-03: Closed a follow-up wallet timeline edge drift. Wallet equity
     timeline now attaches current owned-import open PnL only to the latest

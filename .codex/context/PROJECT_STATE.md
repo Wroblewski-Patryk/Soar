@@ -3,6 +3,14 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 wallet analytics source validation slice `RUNTIME-AUDIT-21` is
+  closed locally. Wallet analytics `source` filters now validate against the
+  canonical `WalletCashflowSource` enum at the DTO boundary, so invalid
+  dashboard/URL filter values fail closed with `400` instead of reaching
+  Prisma and returning `500`. Validation PASS: failing-then-passing invalid
+  source regression, focused wallets e2e (`17/17`), API typecheck, repository
+  guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-21-wallet-analytics-source-validation-task-2026-05-03.md`.
 - 2026-05-03 wallet filtered timeline open-PnL slice `RUNTIME-AUDIT-20` is
   closed locally. Wallet equity timeline now attaches current owned-import
   open PnL only to the latest overall wallet snapshot point, not to the latest

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { WalletCashflowSource } from '@prisma/client';
 import {
   DEFAULT_BASE_CURRENCY,
   DEFAULT_EXCHANGE,
@@ -135,7 +136,7 @@ export const WalletAnalyticsQuerySchema = z.object({
   from: z.string().datetime().optional(),
   to: z.string().datetime().optional(),
   bucket: z.enum(['raw', 'hour', 'day']).default('raw').optional(),
-  source: z.string().trim().min(1).optional(),
+  source: z.nativeEnum(WalletCashflowSource).optional(),
 });
 
 export type CreateWalletDto = z.infer<typeof CreateWalletSchema>;

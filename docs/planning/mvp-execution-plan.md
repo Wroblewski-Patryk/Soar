@@ -139,6 +139,14 @@ Rule: fix/cleanup/update first, then feature delivery.
   remain historical instead of inheriting current open PnL. Validation PASS:
   failing-then-passing filtered timeline regression, focused wallets e2e
   (`16/16`), API typecheck, guardrails, lint, and diff review.
+- 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-21` with
+  `docs/planning/runtime-audit-21-wallet-analytics-source-validation-task-2026-05-03.md`.
+  Wallet analytics `source` filters now validate against the canonical
+  `WalletCashflowSource` enum at the DTO boundary, so invalid dashboard/URL
+  values fail closed with `400` instead of reaching Prisma and returning
+  `500`. Validation PASS: failing-then-passing invalid source regression,
+  focused wallets e2e (`17/17`), API typecheck, guardrails, lint, and diff
+  review.
 
 ## Phase ETHDCA-2026-05-02 - LIVE DCA-First TSL Hardening (Closed 2026-05-02)
 - [x] `ETHDCA-01 fix(api-runtime): preserve LIVE DCA-first gating for trailing-stop close decisions`
