@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 dashboard dynamic-stop plan visibility slice
+  `RUNTIME-AUDIT-61` is closed locally. Dashboard home and Bots monitoring now
+  share `hasRuntimeDynamicStopRowTruth`, so TTP/TSL columns stay visible when
+  an open row has dynamic stop prices, derived protected percentages, or
+  planned trailing levels before arm. This prevents dashboard home from hiding
+  pre-arm TTP/TSL plans that Bots monitoring already treats as row truth.
+  Validation PASS: focused web regression pack (`33/33`), web typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-61-dashboard-dynamic-stop-plan-visibility-task-2026-05-03.md`.
 - 2026-05-03 aggregate running session metadata overlap slice
   `RUNTIME-AUDIT-60` is closed locally. Runtime monitoring aggregate
   `sessionDetail.durationMs` and `sessionDetail.eventsCount` now sum all

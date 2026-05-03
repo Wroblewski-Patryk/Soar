@@ -9,6 +9,14 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-61 fix(web-runtime): align dashboard dynamic-stop plan visibility`
+  - 2026-05-03: Closed a BUILDER-mode dashboard/Bots surface drift. Dashboard
+    home and Bots monitoring now share `hasRuntimeDynamicStopRowTruth`, so
+    TTP/TSL columns stay visible when an open row has dynamic stop prices,
+    derived protected percentages, or planned trailing levels before arm.
+    Validation PASS: focused web regression pack (`33/33`), web typecheck,
+    repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-61-dashboard-dynamic-stop-plan-visibility-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-60 fix(api-bots): prevent aggregate running session metadata overlap double counts`
   - 2026-05-03: Closed an ARCHITECT-mode aggregate status metadata drift.
     Runtime monitoring aggregate `sessionDetail.durationMs` and

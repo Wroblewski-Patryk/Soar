@@ -3,6 +3,7 @@ import { normalizeSymbol } from "@/lib/symbols";
 import { toTimestamp } from "@/lib/time";
 import type { BotRuntimeTradesResponse } from "@/features/bots/types/bot.type";
 import {
+  hasRuntimeDynamicStopRowTruth,
   resolvePaperConfigBaseline,
   resolveRuntimeDynamicStopColumnVisibility,
   resolveRuntimeFreeFunds,
@@ -179,9 +180,7 @@ export const useRuntimeSelectionViewModel = ({
 
   const showDynamicStopColumns = useMemo(() => {
     const fromStrategyMode = selected?.positions?.showDynamicStopColumns;
-    const hasRowTruth = (selectedData?.open ?? []).some(
-      (row) => row.dynamicTtpStopLoss != null || row.dynamicTslStopLoss != null
-    );
+    const hasRowTruth = (selectedData?.open ?? []).some(hasRuntimeDynamicStopRowTruth);
     return resolveRuntimeDynamicStopColumnVisibility(fromStrategyMode, hasRowTruth);
   }, [selected?.positions?.showDynamicStopColumns, selectedData?.open]);
 

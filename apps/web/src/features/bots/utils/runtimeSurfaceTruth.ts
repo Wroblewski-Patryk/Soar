@@ -147,3 +147,18 @@ export const resolveRuntimeDynamicStopColumnVisibility = (
   fromStrategyMode: boolean | null | undefined,
   hasRowTruth: boolean
 ) => fromStrategyMode === true || hasRowTruth;
+
+export const hasRuntimeDynamicStopRowTruth = (row: {
+  dynamicTtpStopLoss?: unknown;
+  dynamicTslStopLoss?: unknown;
+  ttpProtectedPercent?: unknown;
+  tslProtectedPercent?: unknown;
+  trailingTakeProfitLevels?: unknown[] | null;
+  trailingStopLevels?: unknown[] | null;
+}) =>
+  row.dynamicTtpStopLoss != null ||
+  row.dynamicTslStopLoss != null ||
+  row.ttpProtectedPercent != null ||
+  row.tslProtectedPercent != null ||
+  (row.trailingTakeProfitLevels?.length ?? 0) > 0 ||
+  (row.trailingStopLevels?.length ?? 0) > 0;

@@ -21,6 +21,7 @@ import {
   resolveBotVenueContext,
   resolveRuntimeDynamicStopColumnVisibility,
   resolvePaperConfigBaseline,
+  hasRuntimeDynamicStopRowTruth,
   resolveRuntimeFreeFunds,
   resolveRuntimeMarketState,
   resolveRuntimePortfolio,
@@ -274,13 +275,7 @@ export default function BotsManagement({
   const monitorShowDynamicStopColumns = useMemo(
     () => {
       const fromStrategyMode = monitorPositions?.showDynamicStopColumns;
-      const hasRowTruth = monitorOpenPositionRows.some(
-        (position) =>
-          position.ttpProtectedPercent != null ||
-          position.tslProtectedPercent != null ||
-          (position.trailingTakeProfitLevels?.length ?? 0) > 0 ||
-          (position.trailingStopLevels?.length ?? 0) > 0
-      );
+      const hasRowTruth = monitorOpenPositionRows.some(hasRuntimeDynamicStopRowTruth);
       return resolveRuntimeDynamicStopColumnVisibility(fromStrategyMode, hasRowTruth);
     },
     [monitorOpenPositionRows, monitorPositions?.showDynamicStopColumns]
