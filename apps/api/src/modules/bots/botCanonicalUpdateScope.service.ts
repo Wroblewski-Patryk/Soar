@@ -39,20 +39,16 @@ export const resolveExistingCanonicalUpdateScope = (bot: {
     return toTimestamp(left.createdAt) - toTimestamp(right.createdAt);
   });
   const enabledStrategyIds = sortedLinks.filter((link) => link.isEnabled).map((link) => link.strategyId);
-  const primaryStrategyId = enabledStrategyIds[0] ?? sortedLinks[0]?.strategyId ?? null;
+  const primaryStrategyId = enabledStrategyIds[0] ?? null;
   const hasCanonicalScope = primaryGroup != null;
 
   return {
     hasCanonicalScope,
     symbolGroupId: primaryGroup?.symbolGroupId ?? bot.symbolGroupId ?? null,
-    primaryStrategyId: primaryStrategyId ?? bot.strategyId ?? null,
+    primaryStrategyId: hasCanonicalScope ? primaryStrategyId : bot.strategyId ?? null,
     enabledStrategyIds:
       hasCanonicalScope
-        ? enabledStrategyIds.length > 0
-          ? enabledStrategyIds
-          : primaryStrategyId
-            ? [primaryStrategyId]
-            : []
+        ? enabledStrategyIds
         : bot.strategyId
           ? [bot.strategyId]
           : [],

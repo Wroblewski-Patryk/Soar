@@ -20,6 +20,18 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-03 fix(api-bots): fail closed canonical update scope and symbol-filter pagination`
+  - Scope: closed the next residual selected-bot topology drift. Bot update
+    defaults now treat existing canonical market-group scope with no enabled
+    strategy links as non-actionable instead of selecting disabled links or
+    direct legacy `Bot.strategyId`. Runtime symbol-stats now validates
+    explicit `symbol` filters against the full configured selected-bot symbol
+    scope before applying `limit`, so later configured symbols such as ETH do
+    not disappear from dashboard reads when `limit=1`. Validation PASS:
+    focused helper/reconciliation pack (`31/31`), focused monitoring filter
+    e2e (`1/1`), and broader bot/runtime/position pack (`68/68`). Evidence:
+    `docs/planning/runtime-audit-03-canonical-update-and-symbol-filter-scope-task-2026-05-03.md`.
+
 - [x] `ORDDRIFT-01 fix(api-orders): block direct fallback when canonical manual scope exists`
   - Scope: closed the next manual-order strategy-context drift. Manual-order
     strategy context now evaluates active canonical groups first and blocks

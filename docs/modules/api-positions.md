@@ -6,7 +6,7 @@
 - Source path: `apps/api/src/modules/positions`
 - Owner: backend/trading-domain
 - Last updated: 2026-05-03
-- Related planning task: `POSDRIFT-12`
+- Related planning task: `RUNTIME-AUDIT-03`
 
 ## 1. Purpose and Scope
 - Owns position read and external reconciliation surfaces for dashboard operations.
@@ -68,6 +68,10 @@ Out of scope:
     legacy `Bot.strategyId`,
   - uses direct strategy only as compatibility fallback when canonical
     topology is unavailable.
+  - `RUNTIME-AUDIT-03` revalidated this continuity contract while closing the
+    shared bot update-scope helper edge where canonical topology without
+    enabled links must stay non-actionable instead of falling back to legacy
+    strategy ids.
 
 ## 5. API and UI Integration
 - Routes:

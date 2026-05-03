@@ -3,6 +3,17 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 canonical update/symbol-filter scope slice
+  `RUNTIME-AUDIT-03` is closed locally. Bot update defaults now treat an
+  existing canonical market group with no enabled strategy links as
+  non-actionable instead of falling back to disabled canonical links or direct
+  legacy `Bot.strategyId`. Runtime symbol-stats now validates explicit
+  `symbol` filters against the full selected-bot configured symbol scope
+  before applying `limit`, preventing configured symbols later in the market
+  list from disappearing in dashboard reads. Validation PASS: focused
+  helper/reconciliation pack (`31/31`), focused monitoring filter e2e (`1/1`),
+  and broader bot/runtime/position pack (`68/68`). Evidence:
+  `docs/planning/runtime-audit-03-canonical-update-and-symbol-filter-scope-task-2026-05-03.md`.
 - 2026-05-03 manual-order canonical group fallback slice `ORDDRIFT-01` is
   closed locally. Manual-order strategy context now evaluates active canonical
   groups first and blocks direct/legacy strategy fallback whenever such groups

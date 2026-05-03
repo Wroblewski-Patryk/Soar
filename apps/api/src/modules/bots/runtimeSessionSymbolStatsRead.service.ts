@@ -354,11 +354,11 @@ export const listBotRuntimeSessionSymbolStats = async (
     configuredContext.symbolGroup
       ? await resolveEffectiveSymbolGroupSymbolsWithCatalog(configuredContext.symbolGroup, catalogSymbolsCache)
       : []
-  ).slice(0, query.limit);
+  );
   if (normalizedSymbol && !configuredSymbols.includes(normalizedSymbol)) {
     return emptyRuntimeSymbolStatsResponse(sessionId);
   }
-  const symbols = normalizedSymbol ? [normalizedSymbol] : configuredSymbols;
+  const symbols = normalizedSymbol ? [normalizedSymbol] : configuredSymbols.slice(0, query.limit);
   const [openPositions, latestTradeBySymbolRows, latestSignalEvents] = symbols.length
     ? await getRuntimeSymbolLiveRows({
         userId,

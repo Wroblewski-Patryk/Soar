@@ -9,6 +9,17 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-03 fix(api-bots): fail closed canonical update scope and symbol-filter pagination`
+  - 2026-05-03: Closed the next residual selected-bot topology drift. Bot
+    update defaults now treat canonical market-group scope with no enabled
+    strategy links as non-actionable instead of selecting disabled links or
+    direct legacy `Bot.strategyId`. Runtime symbol-stats now validates
+    explicit `symbol` filters against the full configured selected-bot symbol
+    scope before applying `limit`, so later configured symbols such as ETH do
+    not disappear when `limit=1`. Validation PASS: focused
+    helper/reconciliation pack (`31/31`), focused monitoring filter e2e
+    (`1/1`), and broader bot/runtime/position pack (`68/68`). Evidence:
+    `docs/planning/runtime-audit-03-canonical-update-and-symbol-filter-scope-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-01 fix(api-runtime): align LIVE open-position counts with wallet-first ownership proof`
   - 2026-05-03: Closed the first confirmed code drift found during the
     operator-requested runtime audit. Runtime signal-loop open-position

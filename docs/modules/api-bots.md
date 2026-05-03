@@ -6,7 +6,7 @@
 - Source path: `apps/api/src/modules/bots`
 - Owner: backend/trading-domain
 - Last updated: 2026-05-03
-- Related planning task: `BOTDRIFT-02`
+- Related planning task: `RUNTIME-AUDIT-03`
 
 ## Canonical Architecture Linkage
 Canonical runtime topology and ownership rules live in:
@@ -137,6 +137,9 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
   - explicit `symbol` filters on runtime symbol-stats are intersected with
     canonical selected-bot active scope; off-scope symbols return an empty
     zero-summary read model instead of stale persisted stats.
+  - explicit `symbol` filters must validate against the full configured
+    selected-bot symbol scope before response pagination/`limit` is applied,
+    so configured symbols later in the market list remain queryable.
 - Strategy context precedence:
   - canonical mapping is authoritative.
   - when an active canonical market group exists but has no enabled strategy
@@ -159,6 +162,9 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
     duplicate-active validation and LIVE overlap validation derive their target
     from active canonical `BotMarketGroup` and enabled
     `MarketGroupStrategyLink` rows,
+  - when canonical market-group topology exists but has no enabled strategy
+    links, update defaults keep strategy scope empty/non-actionable instead of
+    selecting disabled links or direct legacy `Bot.strategyId`,
   - direct `Bot.strategyId` / `Bot.symbolGroupId` remains compatibility
     fallback only when canonical market-group topology is unavailable.
 - Runtime position dynamic-stop visibility:
