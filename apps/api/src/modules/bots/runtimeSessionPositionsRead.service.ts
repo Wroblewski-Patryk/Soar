@@ -513,9 +513,8 @@ export const listBotRuntimeSessionPositions = async (
     const openOrders = await listRuntimeOpenOrders({
       where: {
         managementMode: 'BOT_MANAGED',
-        status: {
-          in: ['PENDING', 'OPEN', 'PARTIALLY_FILLED'],
-        },
+        status: { in: ['PENDING', 'OPEN', 'PARTIALLY_FILLED'] },
+        syncState: 'IN_SYNC',
         symbol: { in: scopedSymbols },
         AND: [
           {
@@ -646,9 +645,8 @@ export const listBotRuntimeSessionPositions = async (
     listRuntimeOpenOrders({
       where: {
         managementMode: 'BOT_MANAGED',
-        status: {
-          in: ['PENDING', 'OPEN', 'PARTIALLY_FILLED'],
-        },
+        status: { in: ['PENDING', 'OPEN', 'PARTIALLY_FILLED'] },
+        syncState: 'IN_SYNC',
         symbol: { in: scopedSymbols },
         AND: [
           {

@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-70 fix(api-runtime): hide stale synced open orders`
+  - 2026-05-04: Closed a TESTER-mode dashboard/reconciliation lifecycle drift.
+    Runtime open-order reads now require `syncState=IN_SYNC`, so existing
+    `ORPHAN_LOCAL` exchange-synced rows no longer inflate dashboard
+    `openOrdersCount`; reconciliation stale-order marking now also moves stale
+    synced orders to non-open `CANCELED`. Validation PASS: runtime-scope e2e
+    (`15/15`), live reconciliation suite (`28/28`), API typecheck, repository
+    guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-70-hide-stale-open-orders-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-69 fix(api-positions): scope open-order upsert by owner`
   - 2026-05-04: Closed an ARCHITECT-mode LIVE open-order write-path ownership
     drift. Exchange-synced open-order upsert now searches existing rows only

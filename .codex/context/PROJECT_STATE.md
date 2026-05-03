@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 stale synced open-order visibility slice `RUNTIME-AUDIT-70` is
+  closed locally. Runtime open-order reads now require `syncState=IN_SYNC`, so
+  existing `ORPHAN_LOCAL` exchange-synced rows no longer inflate dashboard
+  `openOrdersCount`; reconciliation stale-order marking now also moves stale
+  synced orders to non-open `CANCELED`. Validation PASS: runtime-scope e2e
+  (`15/15`), live reconciliation suite (`28/28`), API typecheck, repository
+  guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-70-hide-stale-open-orders-task-2026-05-04.md`.
 - 2026-05-04 LIVE open-order upsert owner-scope slice `RUNTIME-AUDIT-69` is
   closed locally. Exchange-synced open-order upsert now searches existing rows
   only within the same bot or same botless wallet context before updating or

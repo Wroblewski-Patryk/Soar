@@ -2084,6 +2084,66 @@ describe('livePositionReconciliationDefaultDeps', () => {
       })
     );
   });
+
+  it('moves stale synced open orders out of active open status', async () => {
+    await prisma.trade.deleteMany();
+    await prisma.order.deleteMany();
+    await prisma.position.deleteMany();
+    await prisma.signal.deleteMany();
+    await prisma.runtimeExecutionDedupe.deleteMany();
+    await prisma.botRuntimeSymbolStat.deleteMany();
+    await prisma.botRuntimeEvent.deleteMany();
+    await prisma.botRuntimeSession.deleteMany();
+    await prisma.log.deleteMany();
+    await prisma.botStrategy.deleteMany();
+    await prisma.botSubagentConfig.deleteMany();
+    await prisma.botAssistantConfig.deleteMany();
+    await prisma.marketGroupStrategyLink.deleteMany();
+    await prisma.botMarketGroup.deleteMany();
+    await prisma.bot.deleteMany();
+    await prisma.symbolGroup.deleteMany();
+    await prisma.marketUniverse.deleteMany();
+    await prisma.wallet.deleteMany();
+    await prisma.apiKey.deleteMany();
+    await prisma.strategy.deleteMany();
+    await prisma.user.deleteMany();
+
+    const user = await prisma.user.create({
+      data: { email: 'live-order-stale-status@example.com', password: 'test-password' },
+      select: { id: true },
+    });
+    const order = await prisma.order.create({
+      data: {
+        userId: user.id,
+        botId: null,
+        walletId: null,
+        strategyId: null,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        exchangeOrderId: 'stale-open-order',
+        symbol: 'BTCUSDT',
+        side: 'BUY',
+        type: 'LIMIT',
+        status: 'OPEN',
+        quantity: 0.01,
+        price: 67000,
+        submittedAt: new Date('2026-05-04T09:30:00.000Z'),
+      },
+      select: { id: true },
+    });
+
+    await livePositionReconciliationDefaultDeps.markStaleSyncedOrderUnresolved?.(order.id);
+
+    const updated = await prisma.order.findUniqueOrThrow({
+      where: { id: order.id },
+      select: { status: true, syncState: true },
+    });
+    expect(updated).toEqual({
+      status: 'CANCELED',
+      syncState: 'ORPHAN_LOCAL',
+    });
+  });
 });
 
 describe('resolveCanonicalBotContinuityContext', () => {

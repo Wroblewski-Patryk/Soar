@@ -308,10 +308,7 @@ export const livePositionReconciliationDefaultDeps: ReconcileDeps = {
   markStaleSyncedOrderUnresolved: async (orderId) => {
     await prisma.order.update({
       where: { id: orderId },
-      data: {
-        syncState: 'ORPHAN_LOCAL',
-        canceledAt: null,
-      },
+      data: { status: 'CANCELED', syncState: 'ORPHAN_LOCAL', canceledAt: null },
     });
   },
   listOpenLocalManagedPositionsForOwner: async ({ userId, botId, walletId }) =>

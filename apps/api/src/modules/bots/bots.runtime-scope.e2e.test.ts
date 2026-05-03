@@ -337,6 +337,85 @@ describe('Bots runtime scope remediation contract', () => {
     ).not.toContain('wallet-null-open-order');
   });
 
+  it('excludes stale orphaned exchange-synced open orders from runtime open-order counts', async () => {
+    const email = 'bot-runtime-stale-open-orders-hidden@example.com';
+    const agent = await registerAndLogin(email);
+    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email } });
+
+    const strategyId = await createStrategy(agent, 'Runtime Stale Open Order Strategy');
+    const marketGroupId = await createMarketGroup(email, 'FUTURES');
+    await prisma.symbolGroup.update({
+      where: { id: marketGroupId },
+      data: { symbols: ['BTCUSDT'] },
+    });
+    const botRes = await agent.post('/dashboard/bots').send(
+      createPayload({
+        strategyId,
+        marketGroupId,
+      })
+    );
+    expect(botRes.status).toBe(201);
+    const botId = botRes.body.id as string;
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-05-04T09:00:00.000Z'),
+      },
+    });
+
+    await prisma.order.createMany({
+      data: [
+        {
+          userId: ownerUser.id,
+          botId,
+          strategyId,
+          origin: 'EXCHANGE_SYNC',
+          managementMode: 'BOT_MANAGED',
+          syncState: 'IN_SYNC',
+          exchangeOrderId: 'confirmed-open-order',
+          symbol: 'BTCUSDT',
+          side: 'BUY',
+          type: 'LIMIT',
+          status: 'OPEN',
+          quantity: 0.01,
+          price: 67000,
+          submittedAt: new Date('2026-05-04T09:01:00.000Z'),
+        },
+        {
+          userId: ownerUser.id,
+          botId,
+          strategyId,
+          origin: 'EXCHANGE_SYNC',
+          managementMode: 'BOT_MANAGED',
+          syncState: 'ORPHAN_LOCAL',
+          exchangeOrderId: 'stale-open-order',
+          symbol: 'BTCUSDT',
+          side: 'BUY',
+          type: 'LIMIT',
+          status: 'OPEN',
+          quantity: 0.02,
+          price: 66000,
+          submittedAt: new Date('2026-05-04T09:02:00.000Z'),
+        },
+      ],
+    });
+
+    const positionsRes = await agent.get(
+      `/dashboard/bots/${botId}/runtime-sessions/${session.id}/positions`
+    );
+    expect(positionsRes.status).toBe(200);
+    expect(positionsRes.body.openOrdersCount).toBe(1);
+    expect(
+      (positionsRes.body.openOrders as Array<{ exchangeOrderId: string }>).map(
+        (order) => order.exchangeOrderId
+      )
+    ).toEqual(['confirmed-open-order']);
+  });
+
   it('keeps runtime symbol-stats open-position summary truthful when visible symbols are limited', async () => {
     const email = 'bot-runtime-symbol-stats-open-summary-limit@example.com';
     const agent = await registerAndLogin(email);
