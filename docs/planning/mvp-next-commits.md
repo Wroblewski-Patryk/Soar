@@ -9,6 +9,17 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-39 fix(api-bots): preserve aggregate trade totals under row limits`
+  - 2026-05-03: Closed an ARCHITECT-mode dashboard read-model count drift.
+    Runtime monitoring aggregate `trades.total` and `trades.meta.total` now
+    sum the true per-session trade totals instead of the limited visible
+    aggregate row count, so dashboard trade activity counts stay truthful when
+    `perSessionLimit` hides older rows. Visible `trades.items` remain limited,
+    with pagination metadata exposing hidden rows via `hasNext`. Validation
+    PASS: failing-then-passing `perSessionLimit=1` regression, full monitoring
+    aggregate e2e (`10/10`), API typecheck, repository guardrails, lint, and
+    diff review. Evidence:
+    `docs/planning/runtime-audit-39-aggregate-trade-total-limit-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-38 fix(api-bots): align non-running aggregate end time`
   - 2026-05-03: Closed a BUILDER-mode runtime dashboard timestamp drift.
     Runtime monitoring aggregate `sessionDetail.finishedAt` now uses the same

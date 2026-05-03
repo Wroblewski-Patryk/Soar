@@ -527,8 +527,10 @@ export const getBotRuntimeMonitoringAggregate = async (
         right.id
       )
   );
+  const totalTrades = completePayloadRows.reduce((acc, row) => acc + row.trades.total, 0);
   const windowFinishedAt = finishedAt ?? new Date();
   const pageSize = tradeItems.length || 1;
+  const totalPages = totalTrades === 0 ? 0 : Math.ceil(totalTrades / pageSize);
 
   return {
     sessionDetail: {
@@ -590,14 +592,14 @@ export const getBotRuntimeMonitoringAggregate = async (
     },
     trades: {
       sessionId: 'AGGREGATE',
-      total: tradeItems.length,
+      total: totalTrades,
       meta: {
         page: 1,
         pageSize,
-        total: tradeItems.length,
-        totalPages: tradeItems.length === 0 ? 0 : 1,
+        total: totalTrades,
+        totalPages,
         hasPrev: false,
-        hasNext: false,
+        hasNext: totalTrades > tradeItems.length,
       },
       window: {
         startedAt,

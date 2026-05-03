@@ -3,6 +3,16 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 aggregate trade-total limit slice `RUNTIME-AUDIT-39` is
+  closed locally. Runtime monitoring aggregate `trades.total` and
+  `trades.meta.total` now sum the true per-session trade totals instead of the
+  limited visible aggregate row count, so dashboard trade activity counts stay
+  truthful when `perSessionLimit` hides older rows. Visible `trades.items`
+  remain limited, with pagination metadata exposing hidden rows via
+  `hasNext`. Validation PASS: failing-then-passing `perSessionLimit=1`
+  regression, full monitoring aggregate e2e (`10/10`), API typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-39-aggregate-trade-total-limit-task-2026-05-03.md`.
 - 2026-05-03 non-running aggregate end-time slice `RUNTIME-AUDIT-38`
   is closed locally. Runtime monitoring aggregate `sessionDetail.finishedAt`
   now uses the same non-running session window-end fallback as nested runtime

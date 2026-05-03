@@ -394,6 +394,87 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     expect(aggregateRes.body.trades.total).toBe(0);
   });
 
+  it('keeps aggregate trade totals truthful when visible trade rows are limited', async () => {
+    const ownerEmail = 'bots-monitoring-aggregate-trade-total-limit@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({
+      where: { email: ownerEmail },
+      select: { id: true },
+    });
+
+    const strategyId = await createStrategy(owner, 'Monitoring Aggregate Trade Total Limit');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    const createRes = await owner.post('/dashboard/bots').send(
+      createPayload({
+        strategyId,
+        marketGroupId,
+      })
+    );
+    expect(createRes.status).toBe(201);
+    const botId = createRes.body.id as string;
+
+    await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'COMPLETED',
+        startedAt: new Date('2026-04-19T14:00:00.000Z'),
+        finishedAt: new Date('2026-04-19T14:10:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-19T14:10:00.000Z'),
+      },
+    });
+
+    await prisma.trade.createMany({
+      data: [
+        {
+          userId: ownerUser.id,
+          botId,
+          strategyId,
+          symbol: 'BTCUSDT',
+          side: 'BUY',
+          lifecycleAction: 'OPEN',
+          price: 60_000,
+          quantity: 0.01,
+          fee: 0.5,
+          executedAt: new Date('2026-04-19T14:02:00.000Z'),
+          managementMode: 'BOT_MANAGED',
+        },
+        {
+          userId: ownerUser.id,
+          botId,
+          strategyId,
+          symbol: 'BTCUSDT',
+          side: 'SELL',
+          lifecycleAction: 'CLOSE',
+          price: 60_500,
+          quantity: 0.01,
+          fee: 0.6,
+          realizedPnl: 5,
+          executedAt: new Date('2026-04-19T14:05:00.000Z'),
+          managementMode: 'BOT_MANAGED',
+        },
+      ],
+    });
+
+    const aggregateRes = await owner.get(`/dashboard/bots/${botId}/runtime-monitoring/aggregate`).query({
+      perSessionLimit: 1,
+    });
+    expect(aggregateRes.status).toBe(200);
+    expect(aggregateRes.body.trades.items).toHaveLength(1);
+    expect(aggregateRes.body.trades.total).toBe(2);
+    expect(aggregateRes.body.trades.meta).toEqual(
+      expect.objectContaining({
+        page: 1,
+        pageSize: 1,
+        total: 2,
+        totalPages: 2,
+        hasPrev: false,
+        hasNext: true,
+      })
+    );
+  });
+
   it('uses last heartbeat as aggregate finish time for non-running sessions without finishedAt', async () => {
     const ownerEmail = 'bots-monitoring-aggregate-failed-window-end@example.com';
     const owner = await registerAndLogin(ownerEmail);
