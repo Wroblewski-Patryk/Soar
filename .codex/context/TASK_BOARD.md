@@ -20,6 +20,16 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-16 fix(api-bots): show selected LIVE bot legacy wallet-null open orders`
+  - Scope: closed the next dashboard open-order visibility drift. Runtime
+    positions dashboard reads now include direct selected-bot `BOT_MANAGED`
+    open orders with legacy `walletId=null` rows in LIVE mode, matching the
+    existing selected-bot compatibility scope for positions/trades while
+    keeping `botId` ownership mandatory. Validation PASS: focused runtime
+    takeover e2e (`4/4`), broader runtime positions/read pack (`33/33`), API
+    typecheck, repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-16-live-open-order-wallet-null-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-15 fix(api-engine): scope close entry fees by position lifecycle`
   - Scope: closed the next close-PnL attribution drift. Runtime close
     realized-PnL now aggregates entry-leg fees by the owned position lifecycle

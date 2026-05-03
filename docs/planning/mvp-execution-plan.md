@@ -101,6 +101,13 @@ Rule: fix/cleanup/update first, then feature delivery.
   imported LIVE positions closed through a selected bot wallet. Validation
   PASS: focused execution orchestrator pack (`17/17`), broader runtime/order/
   automation pack (`90/90`), API typecheck, guardrails, lint, and diff review.
+- 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-16` with
+  `docs/planning/runtime-audit-16-live-open-order-wallet-null-task-2026-05-03.md`.
+  Selected LIVE bot runtime positions reads now include direct bot-owned open
+  orders persisted with legacy `walletId=null`, while preserving selected
+  `botId` ownership and configured symbol scope. Validation PASS: focused
+  runtime takeover e2e (`4/4`), broader runtime positions/read pack (`33/33`),
+  API typecheck, guardrails, lint, and diff review.
 
 ## Phase ETHDCA-2026-05-02 - LIVE DCA-First TSL Hardening (Closed 2026-05-02)
 - [x] `ETHDCA-01 fix(api-runtime): preserve LIVE DCA-first gating for trailing-stop close decisions`

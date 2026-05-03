@@ -12,6 +12,97 @@ import {
 describe('Bots runtime takeover visibility', () => {
   beforeEach(resetBotsE2eState);
 
+  it('keeps selected LIVE bot open orders visible when legacy rows have no wallet projection', async () => {
+    const ownerEmail = 'bot-runtime-live-open-order-wallet-null@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
+
+    const apiKey = await prisma.apiKey.create({
+      data: {
+        userId: ownerUser.id,
+        label: 'Runtime Live Open Order Wallet Null Key',
+        exchange: 'BINANCE',
+        apiKey: 'runtime_live_open_order_wallet_null_key',
+        apiSecret: 'runtime_live_open_order_wallet_null_secret',
+        syncExternalPositions: true,
+        manageExternalPositions: false,
+      },
+      select: { id: true },
+    });
+    const walletId = await createWalletForContext(ownerEmail, {
+      mode: 'LIVE',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      apiKeyId: apiKey.id,
+    });
+    const strategyId = await createStrategy(owner, 'Runtime Live Open Order Wallet Null Strategy');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    await prisma.symbolGroup.update({
+      where: { id: marketGroupId },
+      data: { symbols: ['BTCUSDT'] },
+    });
+
+    const botRes = await owner.post('/dashboard/bots').send({
+      ...createPayload({
+        strategyId,
+        marketGroupId,
+      }),
+      name: 'Live Open Order Wallet Null Bot',
+      walletId,
+      isActive: true,
+      liveOptIn: true,
+      manageExternalPositions: true,
+      consentTextVersion: 'mvp-v1',
+    });
+    expect(botRes.status).toBe(201);
+    const botId = botRes.body.id as string;
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'LIVE',
+        status: 'RUNNING',
+        startedAt: new Date('2026-05-03T08:00:00.000Z'),
+        lastHeartbeatAt: new Date('2026-05-03T08:05:00.000Z'),
+      },
+    });
+
+    const order = await prisma.order.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        walletId: null,
+        strategyId,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        symbol: 'BTCUSDT',
+        side: 'BUY',
+        type: 'MARKET',
+        status: 'OPEN',
+        quantity: 0.01,
+        filledQuantity: 0,
+        submittedAt: new Date('2026-05-03T08:01:00.000Z'),
+      },
+    });
+
+    const positionsRes = await owner.get(
+      `/dashboard/bots/${botId}/runtime-sessions/${session.id}/positions`
+    );
+
+    expect(positionsRes.status).toBe(200);
+    expect(positionsRes.body.total).toBe(0);
+    expect(positionsRes.body.openOrdersCount).toBe(1);
+    expect(positionsRes.body.openOrders).toEqual([
+      expect.objectContaining({
+        id: order.id,
+        symbol: 'BTCUSDT',
+        status: 'OPEN',
+      }),
+    ]);
+  });
+
   it('shows owned exchange-synced LIVE positions only for the owning LIVE bot when a PAPER bot shares the same symbol', async () => {
     const ownerEmail = 'bot-runtime-live-paper-shared-symbol@example.com';
     const owner = await registerAndLogin(ownerEmail);

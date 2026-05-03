@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 selected LIVE bot open-order visibility slice
+  `RUNTIME-AUDIT-16` is closed locally. Runtime positions dashboard reads now
+  include direct selected-bot `BOT_MANAGED` open orders with legacy
+  `walletId=null` rows in LIVE mode, matching the existing selected-bot
+  compatibility scope for positions/trades while keeping `botId` ownership
+  mandatory. Validation PASS: focused runtime takeover e2e (`4/4`), broader
+  runtime positions/read pack (`33/33`), API typecheck, repository guardrails,
+  lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-16-live-open-order-wallet-null-task-2026-05-03.md`.
 - 2026-05-03 runtime close fee attribution slice `RUNTIME-AUDIT-15` is
   closed locally. Runtime close realized-PnL now aggregates entry-leg fees by
   the owned position lifecycle (`userId + positionId + entry side`) instead of

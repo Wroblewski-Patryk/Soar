@@ -345,7 +345,10 @@ export const listBotRuntimeSessionPositions = async (
       : { botId };
   const botScopedOrderWhere: Prisma.OrderWhereInput =
     inheritedExecutionContext.mode === 'LIVE' && botContext.walletId
-      ? { botId, walletId: botContext.walletId }
+      ? {
+          botId,
+          OR: [{ walletId: botContext.walletId }, { walletId: null }],
+        }
       : { botId };
   const botScopedTradeWhere: Prisma.TradeWhereInput =
     inheritedExecutionContext.mode === 'LIVE' && botContext.walletId

@@ -6,7 +6,7 @@
 - Source path: `apps/api/src/modules/bots`
 - Owner: backend/trading-domain
 - Last updated: 2026-05-03
-- Related planning task: `RUNTIME-AUDIT-08`
+- Related planning task: `RUNTIME-AUDIT-16`
 
 ## Canonical Architecture Linkage
 Canonical runtime topology and ownership rules live in:
@@ -132,6 +132,10 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
 - Dashboard `orders` contract for this module:
   - tab is always visible in LIVE and PAPER contexts,
   - rows are bot/wallet-scoped `BOT_MANAGED` open-order states (`PENDING`, `OPEN`, `PARTIALLY_FILLED`),
+  - selected LIVE bot direct open orders include legacy rows with
+    `walletId=null` when `botId` matches the selected bot; wallet-only rows
+    without selected bot ownership remain excluded unless the existing
+    external-owned path proves ownership,
   - empty list is valid runtime state (tab must stay visible).
 
 ## 11. Selected-Bot Runtime Symbol Scope Contract (`BRS-01`)
