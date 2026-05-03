@@ -365,4 +365,96 @@ describe("useManualOrderController", () => {
     expect(toast.error).toHaveBeenCalledWith("exceeds-free-funds");
     expect(openDashboardManualOrderMock).toHaveBeenCalledTimes(1);
   });
+
+  it("uses active canonical market groups for manual-order symbols before stale direct projections", async () => {
+    getDashboardManualOrderContextMock.mockResolvedValue({
+      botId: "bot-canonical-manual-symbols",
+      symbol: "BNBUSDT",
+      mode: "PAPER",
+      orderType: "MARKET",
+      marginMode: "CROSSED",
+      leverage: 8,
+      priceReference: {
+        markPrice: 300,
+        source: "exchange_mark",
+      },
+      quantityConstraints: {
+        minAmount: 0.01,
+        amountPrecision: 0.01,
+        minNotional: 5,
+        minExecutableQty: 0.02,
+      },
+    });
+
+    const labels = {
+      invalidSymbol: "invalid-symbol",
+      invalidQuantity: "invalid-quantity",
+      invalidPrice: "invalid-price",
+      requiredPrice: "required-price",
+      marketPriceUnavailable: "market-price-unavailable",
+      minQuantity: "min-quantity {value}",
+      exceedsFreeFunds: "exceeds-free-funds",
+      success: "success",
+      error: "error",
+    };
+
+    const selected = {
+      bot: {
+        id: "bot-canonical-manual-symbols",
+        mode: "PAPER",
+        marketType: "FUTURES",
+        exchange: "BINANCE",
+        symbolGroup: {
+          id: "group-stale-direct",
+          name: "Stale direct group",
+          symbols: ["ETHUSDT"],
+        },
+      },
+      runtimeGraph: {
+        marketGroups: [
+          {
+            id: "group-active",
+            lifecycleStatus: "ACTIVE",
+            isEnabled: true,
+            symbolGroup: {
+              symbols: ["BNBUSDT"],
+            },
+          },
+          {
+            id: "group-paused",
+            lifecycleStatus: "PAUSED",
+            isEnabled: true,
+            symbolGroup: {
+              symbols: ["SOLUSDT"],
+            },
+          },
+        ],
+      },
+    } as unknown as RuntimeSnapshot;
+
+    const selectedData = {
+      free: 1000,
+      symbols: [
+        { symbol: "BNBUSDT", liveLastPrice: 300 },
+        { symbol: "ETHUSDT", liveLastPrice: 1800 },
+        { symbol: "SOLUSDT", liveLastPrice: 150 },
+      ],
+      open: [],
+    } as unknown as RuntimeSelectedData;
+
+    const { result } = renderHook(() =>
+      useManualOrderController({
+        selected,
+        selectedData,
+        load: vi.fn().mockResolvedValue(undefined),
+        labels,
+      })
+    );
+
+    await waitFor(() => {
+      expect(result.current.manualOrderSymbol).toBe("BNBUSDT");
+      expect(result.current.manualOrderSymbolOptions).toEqual(["BNBUSDT"]);
+      expect(result.current.manualOrderLeverageForEstimate).toBe(8);
+    });
+  });
 });

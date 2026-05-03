@@ -52,6 +52,31 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-05-03 - Manual-order scope must follow canonical runtime graph before direct bot projections
+- Context: the operator requested a LIVE/PAPER position-management and dashboard
+  drift audit after canonical runtime topology fixes.
+- Symptom: manual-order API context and dashboard symbol options could still use
+  stale direct `Bot.strategy` / `Bot.symbolGroup` projections even when the
+  active runtime graph had already moved to another market group or strategy.
+- Root cause: manual-order code treated compatibility projections as primary
+  input instead of fallback, while other runtime surfaces had already moved to
+  `BotMarketGroup` plus `MarketGroupStrategyLink`.
+- Guardrail: money-impacting dashboard actions must resolve the same canonical
+  active runtime graph as automated PAPER/LIVE execution before reading legacy
+  bot projections.
+- Preferred pattern:
+```text
+1) Resolve active enabled BotMarketGroup rows for the selected bot.
+2) Resolve enabled MarketGroupStrategyLink rows for strategy context.
+3) Use direct Bot.strategy / Bot.symbolGroup only when no canonical graph applies.
+4) Add stale direct-projection fixtures to API and web tests.
+```
+- Avoid: using direct bot projections just because they are convenient in a
+  dashboard list response.
+- Evidence: 2026-05-03 `POSDRIFT-01`
+  (`orders.manualContext.service.ts`,
+  `useManualOrderController.ts`).
+
 ### 2026-05-03 - Dashboard runtime context must be canonical-first end to end
 - Context: the operator requested a dashboard-wide drift audit after PAPER/LIVE
   runtime fixes.

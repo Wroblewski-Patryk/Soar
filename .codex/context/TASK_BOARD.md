@@ -20,6 +20,17 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `POSDRIFT-01 fix(api+web): keep manual-order scope canonical-first`
+  - Scope: closed the next confirmed dashboard/runtime drift from the
+    operator audit. Manual-order API context now resolves active enabled
+    `BotMarketGroup` and enabled `MarketGroupStrategyLink` rows before direct
+    legacy `Bot.strategy` / `Bot.symbolGroup` projections, and the dashboard
+    manual-order hook lists symbols from active canonical runtime graph groups
+    before any legacy fallback. Validation PASS: API focused manual-order test
+    (`23/23`), web hook test (`3/3`), API positions/market-universe/runtime
+    pack (`34/34`), and web manual-order widget pack (`13/13`). Evidence:
+    `docs/planning/posdrift-01-manual-order-canonical-context-task-2026-05-03.md`.
+
 - [x] `DASHDRIFT-01 fix(api+web): keep dashboard sidebar runtime context canonical-first`
   - Scope: closed the first confirmed drift from the dashboard-wide audit.
     `runtime-graph` now includes strategy leverage, web types reflect that

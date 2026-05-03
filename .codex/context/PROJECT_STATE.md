@@ -3,6 +3,17 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 dashboard/manual-order runtime drift slice `POSDRIFT-01` is
+  closed locally. Manual-order API context now resolves active canonical
+  `BotMarketGroup` and enabled `MarketGroupStrategyLink` rows before direct
+  legacy `Bot.strategy` / `Bot.symbolGroup` projections, and the dashboard
+  manual-order hook uses active runtime graph groups for symbol options before
+  fallback. This prevents stale direct bot projections or paused groups from
+  steering PAPER/LIVE manual openings. Validation PASS: API focused
+  manual-order test (`23/23`), web hook test (`3/3`), API
+  positions/market-universe/runtime pack (`34/34`), and web manual-order widget
+  pack (`13/13`). Evidence:
+  `docs/planning/posdrift-01-manual-order-canonical-context-task-2026-05-03.md`.
 - 2026-05-03 dashboard-wide runtime drift slice `DASHDRIFT-01` is closed
   locally. The dashboard sidebar now treats `runtime-graph` as the canonical
   source for selected bot market/strategy context before falling back to direct

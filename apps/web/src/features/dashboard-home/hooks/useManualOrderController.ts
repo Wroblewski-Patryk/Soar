@@ -65,16 +65,44 @@ export const useManualOrderController = ({
 
   const manualOrderSymbolOptions = useMemo(() => {
     const options = new Set<string>();
-    for (const symbol of selected?.bot.symbolGroup?.symbols ?? []) {
-      options.add(normalizeSymbol(symbol));
-    }
-    for (const marketGroup of selected?.runtimeGraph?.marketGroups ?? []) {
-      for (const symbol of marketGroup.symbolGroup?.symbols ?? []) {
+    const activeMarketGroups = (selected?.runtimeGraph?.marketGroups ?? []).filter(
+      (marketGroup) => marketGroup.isEnabled && marketGroup.lifecycleStatus === "ACTIVE"
+    );
+    const activeGraphSymbols = new Set<string>();
+    const inactiveGraphSymbols = new Set<string>();
+    if (activeMarketGroups.length > 0) {
+      for (const marketGroup of activeMarketGroups) {
+        for (const symbol of marketGroup.symbolGroup?.symbols ?? []) {
+          const normalized = normalizeSymbol(symbol);
+          activeGraphSymbols.add(normalized);
+          options.add(normalized);
+        }
+      }
+    } else {
+      for (const symbol of selected?.bot.symbolGroup?.symbols ?? []) {
         options.add(normalizeSymbol(symbol));
       }
     }
-    for (const item of selectedData?.symbols ?? []) options.add(normalizeSymbol(item.symbol));
-    for (const item of selectedData?.open ?? []) options.add(normalizeSymbol(item.symbol));
+    for (const marketGroup of selected?.runtimeGraph?.marketGroups ?? []) {
+      if (marketGroup.isEnabled && marketGroup.lifecycleStatus === "ACTIVE") continue;
+      for (const symbol of marketGroup.symbolGroup?.symbols ?? []) {
+        const normalized = normalizeSymbol(symbol);
+        if (activeGraphSymbols.has(normalized)) continue;
+        inactiveGraphSymbols.add(normalized);
+        options.delete(normalized);
+      }
+    }
+    const canUseRuntimeSymbol = (normalizedSymbol: string) =>
+      activeMarketGroups.length > 0 ? activeGraphSymbols.has(normalizedSymbol) : !inactiveGraphSymbols.has(normalizedSymbol);
+
+    for (const item of selectedData?.symbols ?? []) {
+      const normalized = normalizeSymbol(item.symbol);
+      if (canUseRuntimeSymbol(normalized)) options.add(normalized);
+    }
+    for (const item of selectedData?.open ?? []) {
+      const normalized = normalizeSymbol(item.symbol);
+      if (canUseRuntimeSymbol(normalized)) options.add(normalized);
+    }
     return [...options].sort((left, right) => left.localeCompare(right));
   }, [selected?.bot.symbolGroup?.symbols, selected?.runtimeGraph?.marketGroups, selectedData?.open, selectedData?.symbols]);
 

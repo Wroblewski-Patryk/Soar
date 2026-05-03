@@ -102,126 +102,128 @@ export const resolveManualOrderStrategyContext = async (params: {
     },
   });
 
-  if (
-    botDirectContext?.strategyId &&
-    botDirectContext.symbolGroupId &&
-    botDirectContext.strategy &&
-    botDirectContext.symbolGroup
-  ) {
-    const directSymbols = await resolveEffectiveSymbolGroupSymbolsWithCatalog(
-      botDirectContext.symbolGroup,
-      catalogSymbolsCache
-    );
-    if (directSymbols.includes(normalizedSymbol)) {
+  if (botDirectContext) {
+    const groupLinks = await prisma.botMarketGroup.findMany({
+      where: {
+        userId: params.userId,
+        botId: params.botId,
+        isEnabled: true,
+        lifecycleStatus: 'ACTIVE',
+      },
+      orderBy: [{ executionOrder: 'asc' }, { createdAt: 'asc' }],
+      select: {
+        symbolGroup: {
+          select: {
+            symbols: true,
+            marketUniverse: {
+              select: {
+                exchange: true,
+                marketType: true,
+                baseCurrency: true,
+                filterRules: true,
+                whitelist: true,
+                blacklist: true,
+              },
+            },
+          },
+        },
+        strategyLinks: {
+          where: { isEnabled: true },
+          orderBy: [{ priority: 'asc' }, { createdAt: 'asc' }],
+          select: {
+            strategy: {
+              select: {
+                id: true,
+                leverage: true,
+                config: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    for (const group of groupLinks) {
+      const symbols = await resolveEffectiveSymbolGroupSymbolsWithCatalog(
+        group.symbolGroup,
+        catalogSymbolsCache
+      );
+      if (!symbols.includes(normalizedSymbol)) continue;
+      const selected = group.strategyLinks[0]?.strategy;
+      if (selected) {
+        return {
+          strategyId: selected.id,
+          leverage: selected.leverage,
+          config: (selected.config as Record<string, unknown> | null | undefined) ?? null,
+        };
+      }
+    }
+
+    if (
+      botDirectContext.strategyId &&
+      botDirectContext.symbolGroupId &&
+      botDirectContext.strategy &&
+      botDirectContext.symbolGroup
+    ) {
+      const directSymbols = await resolveEffectiveSymbolGroupSymbolsWithCatalog(
+        botDirectContext.symbolGroup,
+        catalogSymbolsCache
+      );
+      if (directSymbols.includes(normalizedSymbol)) {
+        return {
+          strategyId: botDirectContext.strategyId,
+          leverage: botDirectContext.strategy.leverage,
+          config: (botDirectContext.strategy.config as Record<string, unknown> | null | undefined) ?? null,
+        };
+      }
+      return null;
+    }
+
+    const legacyLinks = await prisma.botStrategy.findMany({
+      where: {
+        botId: params.botId,
+        isEnabled: true,
+        bot: { userId: params.userId },
+      },
+      orderBy: [{ createdAt: 'asc' }],
+      select: {
+        symbolGroup: {
+          select: {
+            symbols: true,
+            marketUniverse: {
+              select: {
+                exchange: true,
+                marketType: true,
+                baseCurrency: true,
+                filterRules: true,
+                whitelist: true,
+                blacklist: true,
+              },
+            },
+          },
+        },
+        strategy: {
+          select: {
+            id: true,
+            leverage: true,
+            config: true,
+          },
+        },
+      },
+    });
+
+    for (const link of legacyLinks) {
+      const symbols = await resolveEffectiveSymbolGroupSymbolsWithCatalog(
+        link.symbolGroup,
+        catalogSymbolsCache
+      );
+      if (!symbols.includes(normalizedSymbol)) continue;
       return {
-        strategyId: botDirectContext.strategyId,
-        leverage: botDirectContext.strategy.leverage,
-        config: (botDirectContext.strategy.config as Record<string, unknown> | null | undefined) ?? null,
+        strategyId: link.strategy.id,
+        leverage: link.strategy.leverage,
+        config: (link.strategy.config as Record<string, unknown> | null | undefined) ?? null,
       };
     }
-    return null;
-  }
-
-  const groupLinks = await prisma.botMarketGroup.findMany({
-    where: {
-      userId: params.userId,
-      botId: params.botId,
-      isEnabled: true,
-      lifecycleStatus: 'ACTIVE',
-    },
-    orderBy: [{ executionOrder: 'asc' }, { createdAt: 'asc' }],
-    select: {
-      symbolGroup: {
-        select: {
-          symbols: true,
-          marketUniverse: {
-            select: {
-              exchange: true,
-              marketType: true,
-              baseCurrency: true,
-              filterRules: true,
-              whitelist: true,
-              blacklist: true,
-            },
-          },
-        },
-      },
-      strategyLinks: {
-        where: { isEnabled: true },
-        orderBy: [{ priority: 'asc' }, { createdAt: 'asc' }],
-        select: {
-          strategy: {
-            select: {
-              id: true,
-              leverage: true,
-              config: true,
-            },
-          },
-        },
-      },
-    },
-  });
-
-  for (const group of groupLinks) {
-    const symbols = await resolveEffectiveSymbolGroupSymbolsWithCatalog(
-      group.symbolGroup,
-      catalogSymbolsCache
-    );
-    if (!symbols.includes(normalizedSymbol)) continue;
-    const selected = group.strategyLinks[0]?.strategy;
-    if (selected) {
-      return {
-        strategyId: selected.id,
-        leverage: selected.leverage,
-        config: (selected.config as Record<string, unknown> | null | undefined) ?? null,
-      };
-    }
-  }
-
-  const legacyLinks = await prisma.botStrategy.findMany({
-    where: {
-      botId: params.botId,
-      isEnabled: true,
-      bot: { userId: params.userId },
-    },
-    orderBy: [{ createdAt: 'asc' }],
-    select: {
-      symbolGroup: {
-        select: {
-          symbols: true,
-          marketUniverse: {
-            select: {
-              exchange: true,
-              marketType: true,
-              baseCurrency: true,
-              filterRules: true,
-              whitelist: true,
-              blacklist: true,
-            },
-          },
-        },
-      },
-      strategy: {
-        select: {
-          id: true,
-          leverage: true,
-          config: true,
-        },
-      },
-    },
-  });
-
-  for (const link of legacyLinks) {
-    const symbols = await resolveEffectiveSymbolGroupSymbolsWithCatalog(
-      link.symbolGroup,
-      catalogSymbolsCache
-    );
-    if (!symbols.includes(normalizedSymbol)) continue;
-    return {
-      strategyId: link.strategy.id,
-      leverage: link.strategy.leverage,
-      config: (link.strategy.config as Record<string, unknown> | null | undefined) ?? null,
-    };
   }
 
   return null;

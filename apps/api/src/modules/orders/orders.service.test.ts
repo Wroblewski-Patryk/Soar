@@ -1299,6 +1299,143 @@ describe('getManualOrderContext', () => {
     expect(context?.leverage).toBe(7);
   });
 
+  it('prefers canonical bot market group strategy over stale direct projections', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-manual-context-canonical-first@example.com', password: 'hashed' },
+    });
+    const canonicalStrategy = await prisma.strategy.create({
+      data: {
+        userId: user.id,
+        name: 'Canonical manual order strategy',
+        description: null,
+        interval: '5m',
+        leverage: 12,
+        walletRisk: 2,
+        config: {
+          additional: {
+            marginMode: 'ISOLATED',
+            orderType: 'LIMIT',
+          },
+        },
+      },
+    });
+    const staleStrategy = await prisma.strategy.create({
+      data: {
+        userId: user.id,
+        name: 'Stale direct manual order strategy',
+        description: null,
+        interval: '1m',
+        leverage: 3,
+        walletRisk: 1,
+        config: {
+          additional: {
+            marginMode: 'CROSSED',
+            orderType: 'MARKET',
+          },
+        },
+      },
+    });
+    const canonicalUniverse = await prisma.marketUniverse.create({
+      data: {
+        userId: user.id,
+        name: 'Canonical manual order universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: ['DOGEUSDT'],
+        blacklist: [],
+      },
+    });
+    const staleUniverse = await prisma.marketUniverse.create({
+      data: {
+        userId: user.id,
+        name: 'Stale direct manual order universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: ['ETHUSDT'],
+        blacklist: [],
+      },
+    });
+    const canonicalSymbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: user.id,
+        marketUniverseId: canonicalUniverse.id,
+        name: 'Canonical manual order group',
+        symbols: ['DOGEUSDT'],
+      },
+    });
+    const staleSymbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: user.id,
+        marketUniverseId: staleUniverse.id,
+        name: 'Stale direct manual order group',
+        symbols: ['ETHUSDT'],
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'Canonical-first manual context bot',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        strategyId: staleStrategy.id,
+        symbolGroupId: staleSymbolGroup.id,
+        isActive: true,
+      },
+    });
+    const botGroup = await prisma.botMarketGroup.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        symbolGroupId: canonicalSymbolGroup.id,
+        lifecycleStatus: 'ACTIVE',
+        executionOrder: 1,
+        maxOpenPositions: 2,
+        isEnabled: true,
+      },
+    });
+    await prisma.marketGroupStrategyLink.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        botMarketGroupId: botGroup.id,
+        strategyId: canonicalStrategy.id,
+        priority: 1,
+        weight: 1,
+        isEnabled: true,
+      },
+    });
+
+    const context = await getManualOrderContext(
+      user.id,
+      {
+        botId: bot.id,
+        symbol: 'DOGEUSDT',
+        side: 'BUY',
+      },
+      {
+        createPublicConnector: () => ({
+          getSymbolTradingRules: async () => ({
+            minAmount: 1,
+            minNotional: 5,
+            amountPrecision: 1,
+          }),
+          fetchMarkPrice: async () => 0.1,
+          disconnect: async () => undefined,
+        }),
+      }
+    );
+
+    expect(context).not.toBeNull();
+    expect(context?.symbol).toBe('DOGEUSDT');
+    expect(context?.orderType).toBe('LIMIT');
+    expect(context?.marginMode).toBe('ISOLATED');
+    expect(context?.leverage).toBe(12);
+  });
+
   it('fails closed when selected bot has no strategy matching requested symbol', async () => {
     const user = await prisma.user.create({
       data: { email: 'orders-manual-context-no-symbol-match@example.com', password: 'hashed' },
