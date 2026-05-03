@@ -3,6 +3,17 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 operator-reported PAPER signal parity slice `PAPERSIGNAL-01` is
+  closed locally. Runtime symbol-stats read models now use active canonical
+  `BotMarketGroup` and enabled `MarketGroupStrategyLink` rows as their
+  configured market/strategy context before falling back to legacy
+  `Bot.symbolGroup` / `Bot.strategy`. This aligns dashboard signal cards with
+  the topology used by PAPER/LIVE final-candle execution and avoids stale
+  legacy configured-context display after strategy or market changes.
+  Validation PASS: focused symbol-stats/final-candle/paper-live tests
+  (`18/18`), bot runtime scope/market-universe/dynamic-stop/runtime-loop tests
+  (`60/60`), and API typecheck. Evidence:
+  `docs/planning/papersignal-01-canonical-symbol-stats-parity-task-2026-05-03.md`.
 - 2026-05-03 operator-requested LIVE/PAPER runtime audit slice
   `RUNTIME-AUDIT-01` is closed locally. Runtime signal-loop open-position
   counting now follows the wallet-first imported-position ownership contract by

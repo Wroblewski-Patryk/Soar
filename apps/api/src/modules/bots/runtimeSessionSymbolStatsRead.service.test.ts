@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { buildStrategySignalAnalysis } from '../engine/strategySignalAnalysis';
 import {
   mergeRuntimeCandlesForIndicatorRecovery,
+  resolveRuntimeSymbolStatsConfiguredContext,
 } from './runtimeSessionSymbolStatsRead.service';
 import type { RuntimeCandle } from '../engine/runtimeSignalMarketDataGateway';
 
@@ -64,5 +65,77 @@ describe('runtimeSessionSymbolStatsRead.service', () => {
     );
 
     expect(recoveredCandles.map((item) => item.close)).toEqual([100, 250, 300]);
+  });
+
+  it('prefers canonical active bot market group and strategy links over legacy bot projections', () => {
+    const context = resolveRuntimeSymbolStatsConfiguredContext({
+      strategyId: 'legacy-strategy',
+      symbolGroupId: 'legacy-group',
+      strategy: {
+        id: 'legacy-strategy',
+        name: 'Legacy Strategy',
+        interval: '1m',
+        config: {},
+        updatedAt: new Date('2026-05-01T00:00:00.000Z'),
+      },
+      symbolGroup: {
+        symbols: ['BTCUSDT'],
+        marketUniverse: {
+          exchange: 'BINANCE',
+          marketType: 'FUTURES',
+          baseCurrency: 'USDT',
+          filterRules: null,
+          whitelist: [],
+          blacklist: [],
+        },
+      },
+      botMarketGroups: [
+        {
+          symbolGroup: {
+            symbols: ['ETHUSDT', 'DOGEUSDT'],
+            marketUniverse: {
+              exchange: 'BINANCE',
+              marketType: 'FUTURES',
+              baseCurrency: 'USDT',
+              filterRules: null,
+              whitelist: [],
+              blacklist: [],
+            },
+          },
+          strategyLinks: [
+            {
+              strategyId: 'canonical-primary',
+              strategy: {
+                id: 'canonical-primary',
+                name: 'Canonical Primary',
+                interval: '5m',
+                config: {},
+                updatedAt: new Date('2026-05-02T00:00:00.000Z'),
+              },
+            },
+            {
+              strategyId: 'canonical-secondary',
+              strategy: {
+                id: 'canonical-secondary',
+                name: 'Canonical Secondary',
+                interval: '1m',
+                config: {},
+                updatedAt: new Date('2026-05-02T00:00:00.000Z'),
+              },
+            },
+          ],
+        },
+      ],
+    } as any);
+
+    expect(context.symbolGroup?.symbols).toEqual(['ETHUSDT', 'DOGEUSDT']);
+    expect(context.strategies.map((strategy) => strategy.id)).toEqual([
+      'canonical-primary',
+      'canonical-secondary',
+    ]);
+    expect(context.strategyAssignments.map((assignment) => assignment.strategyId)).toEqual([
+      'canonical-primary',
+      'canonical-secondary',
+    ]);
   });
 });

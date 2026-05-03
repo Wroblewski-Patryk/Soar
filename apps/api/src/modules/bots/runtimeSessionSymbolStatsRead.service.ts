@@ -53,6 +53,44 @@ const runtimeSignalReadSnapshotMinCandles = Number.isFinite(runtimeSignalReadSna
 
 export const mergeRuntimeCandlesForIndicatorRecovery = mergeRuntimeSignalCandles;
 
+type RuntimeSymbolStatsBotContext = NonNullable<
+  Awaited<ReturnType<typeof getRuntimeSymbolStatsBaseData>>['botContext']
+>;
+
+export const resolveRuntimeSymbolStatsConfiguredContext = (
+  botContext: RuntimeSymbolStatsBotContext | null
+) => {
+  const canonicalGroup = botContext?.botMarketGroups?.[0] ?? null;
+  const symbolGroup = canonicalGroup?.symbolGroup ?? botContext?.symbolGroup ?? null;
+  const strategyLinks = canonicalGroup?.strategyLinks ?? [];
+  const strategies =
+    strategyLinks.length > 0
+      ? strategyLinks.map((link) => link.strategy)
+      : botContext?.strategy
+        ? [botContext.strategy]
+        : [];
+  const strategyAssignments =
+    strategyLinks.length > 0
+      ? strategyLinks.map((link) => ({
+          strategyId: link.strategyId,
+          symbols: [] as string[],
+        }))
+      : botContext?.strategyId
+        ? [
+            {
+              strategyId: botContext.strategyId,
+              symbols: [] as string[],
+            },
+          ]
+        : [];
+
+  return {
+    symbolGroup,
+    strategies,
+    strategyAssignments,
+  };
+};
+
 const firstRuntimeBlockReason = (payload: Record<string, unknown> | null) => {
   if (typeof payload?.reason === 'string' && payload.reason.trim().length > 0) {
     return payload.reason.trim();
@@ -282,14 +320,15 @@ export const listBotRuntimeSessionSymbolStats = async (
     normalizedSymbol,
     limit: query.limit,
   });
-  const inheritedVenueContext = botContext?.symbolGroup?.marketUniverse ?? null;
+  const configuredContext = resolveRuntimeSymbolStatsConfiguredContext(botContext);
+  const inheritedVenueContext = configuredContext.symbolGroup?.marketUniverse ?? null;
   const botExchange = inheritedVenueContext?.exchange ?? 'BINANCE';
   const botMarketType = inheritedVenueContext?.marketType ?? 'FUTURES';
 
   const catalogSymbolsCache = new Map<string, string[]>();
   const configuredSymbols = normalizeSymbols(
-    botContext?.symbolGroup
-      ? await resolveEffectiveSymbolGroupSymbolsWithCatalog(botContext.symbolGroup, catalogSymbolsCache)
+    configuredContext.symbolGroup
+      ? await resolveEffectiveSymbolGroupSymbolsWithCatalog(configuredContext.symbolGroup, catalogSymbolsCache)
       : []
   ).slice(0, query.limit);
   const symbols = normalizedSymbol ? [normalizedSymbol] : configuredSymbols;
@@ -381,8 +420,7 @@ export const listBotRuntimeSessionSymbolStats = async (
     string,
     { name: string; interval: string; config: Record<string, unknown> | null; updatedAt?: Date | null }
   >();
-  if (botContext?.strategy) {
-    const strategy = botContext.strategy;
+  for (const strategy of configuredContext.strategies) {
     strategiesById.set(strategy.id, {
       name: strategy.name,
       interval: strategy.interval,
@@ -470,15 +508,10 @@ export const listBotRuntimeSessionSymbolStats = async (
   }
 
   const configuredStrategyBySymbol = buildConfiguredStrategyBySymbol({
-    configuredStrategyAssignments:
-      botContext?.strategyId != null
-        ? [
-            {
-              strategyId: botContext.strategyId,
-              symbols: configuredSymbols,
-            },
-          ]
-        : [],
+    configuredStrategyAssignments: configuredContext.strategyAssignments.map((assignment) => ({
+      ...assignment,
+      symbols: configuredSymbols,
+    })),
     symbols,
     strategiesById,
   });

@@ -55,6 +55,48 @@ export const getRuntimeSymbolStatsBaseData = async (params: {
               updatedAt: true,
             },
           },
+          botMarketGroups: {
+            where: {
+              isEnabled: true,
+              lifecycleStatus: 'ACTIVE',
+            },
+            orderBy: [{ executionOrder: 'asc' }, { createdAt: 'asc' }, { id: 'asc' }],
+            select: {
+              symbolGroup: {
+                select: {
+                  symbols: true,
+                  marketUniverse: {
+                    select: {
+                      exchange: true,
+                      marketType: true,
+                      baseCurrency: true,
+                      filterRules: true,
+                      whitelist: true,
+                      blacklist: true,
+                    },
+                  },
+                },
+              },
+              strategyLinks: {
+                where: {
+                  isEnabled: true,
+                },
+                orderBy: [{ priority: 'asc' }, { createdAt: 'asc' }, { id: 'asc' }],
+                select: {
+                  strategyId: true,
+                  strategy: {
+                    select: {
+                      id: true,
+                      name: true,
+                      interval: true,
+                      config: true,
+                      updatedAt: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
           symbolGroup: {
             select: {
               symbols: true,

@@ -52,6 +52,35 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-05-03 - Runtime monitoring must use canonical bot market strategy topology
+- Context: after BOTMULTI, final-candle execution uses active
+  `BotMarketGroup` rows and enabled `MarketGroupStrategyLink` rows, while an
+  operator still saw PAPER signal data that did not match expected runtime
+  behavior.
+- Symptom: runtime symbol-stats configured context could still be derived from
+  legacy `Bot.symbolGroup` and `Bot.strategy`, so dashboard signal cards could
+  describe stale market/strategy data after bot strategy or market changes.
+- Root cause: the read-model query for symbol stats had not been moved to the
+  canonical BOTMULTI topology even though execution topology had.
+- Guardrail: every runtime monitoring read model that explains configured
+  market or strategy context must prefer the active canonical bot market group
+  and enabled strategy links, then fall back to legacy bot projections only for
+  old rows.
+- Preferred pattern:
+```text
+1) Load active enabled BotMarketGroup rows ordered by execution order.
+2) Load enabled MarketGroupStrategyLink rows ordered by priority.
+3) Resolve symbols, venue, configured strategies, and strategy assignments from that canonical group.
+4) Use legacy Bot.symbolGroup / Bot.strategy only when no canonical group or links exist.
+5) Keep execution and monitoring parity tests together.
+```
+- Avoid: fixing final-candle execution while leaving dashboard configured
+  context on legacy bot projections.
+- Evidence: 2026-05-03 `PAPERSIGNAL-01`
+  (`botsRuntimeRead.repository.ts`,
+  `runtimeSessionSymbolStatsRead.service.ts`, focused symbol-stats and
+  bot-runtime tests).
+
 ### 2026-05-03 - Runtime guards must count imported LIVE positions with wallet-first API-key proof
 - Context: an operator reported that LIVE exchange-side positions were still
   missing or inconsistently represented for bots whose assigned markets should

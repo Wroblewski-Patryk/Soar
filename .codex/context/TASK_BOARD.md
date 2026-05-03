@@ -40,12 +40,17 @@ Last updated: 2026-05-03
     medium. Validation: production `/health`, `/ready`, API freshness,
     authenticated runtime positions readback, and rollback note.
 
-- [ ] `PAPERSIGNAL-01 fix(api-runtime): audit PAPER signal display-to-execution parity`
-  - Scope: reproduce the reported paper bot condition where signal data is
-    visible or expected but no position opens, compare symbol-stats conditions,
-    final-candle strategy decisions, `PRETRADE_BLOCKED` reasons, capital/max
-    position guards, and order lifecycle writes. Convert the first confirmed
-    mismatch into a tiny fix with regression tests.
+- [x] `PAPERSIGNAL-01 fix(api-runtime): audit PAPER signal display-to-execution parity`
+  - Scope: closed the first confirmed PAPER display-to-execution drift. Runtime
+    symbol-stats read models now load active canonical `BotMarketGroup` and
+    enabled `MarketGroupStrategyLink` rows, then prefer that configured
+    market/strategy context over legacy `Bot.symbolGroup` / `Bot.strategy`
+    projections. This aligns dashboard signal cards with the topology used by
+    PAPER/LIVE final-candle execution while preserving legacy fallback.
+    Validation PASS: focused symbol-stats/final-candle/paper-live pack
+    (`18/18`), bot runtime scope/market-universe/dynamic-stop/runtime-loop pack
+    (`60/60`), and API typecheck. Evidence:
+    `docs/planning/papersignal-01-canonical-symbol-stats-parity-task-2026-05-03.md`.
 
 - [ ] `WALLETBAL-01 fix(api-web): stabilize dashboard wallet account-balance display`
   - Scope: audit the dashboard wallet account-balance source chain and
