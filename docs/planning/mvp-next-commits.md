@@ -52,6 +52,14 @@ Operational queue for one-task execution runs.
     exchange metadata fallback, leverage, and margin-mode semantics. Validation
     PASS: focused manual-order context tests (`5` tests). Evidence:
     `docs/planning/posdrift-09-manual-context-canonical-venue-task-2026-05-03.md`.
+- [x] `POSDRIFT-10 fix(api-orders): fail closed for manual-order multi-strategy ambiguity`
+  - 2026-05-03: Closed the TESTER edge-case for LIVE manual opens.
+    Manual-order strategy context now resolves a canonical strategy only when
+    exactly one enabled strategy link matches the requested symbol. Matching
+    canonical groups with multiple enabled strategies remain unresolved, so
+    LIVE manual open fails closed instead of silently selecting the first link.
+    Validation PASS: focused LIVE ambiguous manual-order regression. Evidence:
+    `docs/planning/posdrift-10-manual-order-multistrategy-ambiguity-task-2026-05-03.md`.
 - [ ] `LIVEIMPORT-03 release(prod): promote imported-position provenance fix and read back ETH/DOGE`
   - Scope: promote commit `39146d2e` through the approved production workflow,
     verify API freshness directly, then use authenticated read-only dashboard

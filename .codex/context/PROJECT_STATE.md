@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 manual-order multi-strategy ambiguity slice `POSDRIFT-10` is
+  closed locally. Manual-order strategy context now resolves a canonical
+  strategy only when exactly one enabled strategy link matches the requested
+  symbol. Matching canonical groups with multiple enabled strategies remain
+  unresolved, so LIVE manual open fails closed with the existing
+  `LIVE_MANUAL_SCOPE_UNRESOLVED` path instead of silently selecting the first
+  link. Validation PASS: focused LIVE ambiguous manual-order regression.
+  Evidence:
+  `docs/planning/posdrift-10-manual-order-multistrategy-ambiguity-task-2026-05-03.md`.
 - 2026-05-03 manual-order context venue slice `POSDRIFT-09` is closed locally.
   Manual-order context now resolves venue from active canonical
   `BotMarketGroup.symbolGroup.marketUniverse` before duplicated bot

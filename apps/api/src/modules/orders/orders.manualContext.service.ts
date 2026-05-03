@@ -150,14 +150,15 @@ export const resolveManualOrderStrategyContext = async (params: {
         catalogSymbolsCache
       );
       if (!symbols.includes(normalizedSymbol)) continue;
-      const selected = group.strategyLinks[0]?.strategy;
-      if (selected) {
+      if (group.strategyLinks.length === 1) {
+        const selected = group.strategyLinks[0].strategy;
         return {
           strategyId: selected.id,
           leverage: selected.leverage,
           config: (selected.config as Record<string, unknown> | null | undefined) ?? null,
         };
       }
+      return null;
     }
 
     if (

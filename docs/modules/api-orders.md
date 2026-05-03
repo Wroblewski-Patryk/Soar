@@ -168,6 +168,9 @@ pnpm --filter api test -- src/modules/orders/orders.service.test.ts src/modules/
   fail-closed:
   - when selected bot has no strategy matching requested symbol, strategy
     context stays unresolved.
+  - when the matching canonical market group has multiple enabled strategy
+    links and no explicit strategy selection exists, strategy context stays
+    unresolved.
   - hidden fallback to first canonical/legacy strategy is forbidden.
 - Fallback policy:
   - explicit unresolved strategy context can still provide safe defaults for

@@ -20,6 +20,15 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `POSDRIFT-10 fix(api-orders): fail closed for manual-order multi-strategy ambiguity`
+  - Scope: closed the TESTER edge-case for LIVE manual opens. Manual-order
+    strategy context now resolves a canonical strategy only when exactly one
+    enabled strategy link matches the requested symbol. Matching canonical
+    groups with multiple enabled strategies remain unresolved, so LIVE manual
+    open fails closed instead of silently selecting the first link. Validation
+    PASS: focused LIVE ambiguous manual-order regression. Evidence:
+    `docs/planning/posdrift-10-manual-order-multistrategy-ambiguity-task-2026-05-03.md`.
+
 - [x] `POSDRIFT-09 fix(api-orders): keep manual-order context venue canonical`
   - Scope: closed the next confirmed dashboard/manual-order drift.
     Manual-order context now resolves venue from active canonical

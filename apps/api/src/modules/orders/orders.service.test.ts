@@ -1056,6 +1056,136 @@ describe('openOrder live execution contract', () => {
     }
   });
 
+  it('fails closed for LIVE order when canonical symbol scope has multiple enabled strategies', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-live-manual-scope-ambiguous@example.com', password: 'hashed' },
+    });
+    const primaryStrategy = await prisma.strategy.create({
+      data: {
+        userId: user.id,
+        name: 'Live ambiguous primary strategy',
+        interval: '5m',
+        leverage: 7,
+        walletRisk: 1,
+        config: { additional: { orderType: 'MARKET', marginMode: 'ISOLATED' } },
+      },
+    });
+    const secondaryStrategy = await prisma.strategy.create({
+      data: {
+        userId: user.id,
+        name: 'Live ambiguous secondary strategy',
+        interval: '15m',
+        leverage: 3,
+        walletRisk: 1,
+        config: { additional: { orderType: 'LIMIT', marginMode: 'CROSSED' } },
+      },
+    });
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'Live ambiguous wallet',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const universe = await prisma.marketUniverse.create({
+      data: {
+        userId: user.id,
+        name: 'Live ambiguous universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: ['BTCUSDT'],
+        blacklist: [],
+      },
+    });
+    const symbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: user.id,
+        marketUniverseId: universe.id,
+        name: 'Live ambiguous symbols',
+        symbols: ['BTCUSDT'],
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'Live ambiguous bot',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'mvp-v1',
+        walletId: wallet.id,
+        strategyId: primaryStrategy.id,
+        symbolGroupId: symbolGroup.id,
+      },
+    });
+    const botGroup = await prisma.botMarketGroup.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        symbolGroupId: symbolGroup.id,
+        lifecycleStatus: 'ACTIVE',
+        executionOrder: 1,
+        maxOpenPositions: 2,
+        isEnabled: true,
+      },
+    });
+    await prisma.marketGroupStrategyLink.createMany({
+      data: [
+        {
+          userId: user.id,
+          botId: bot.id,
+          botMarketGroupId: botGroup.id,
+          strategyId: primaryStrategy.id,
+          priority: 1,
+          weight: 1,
+          isEnabled: true,
+        },
+        {
+          userId: user.id,
+          botId: bot.id,
+          botMarketGroupId: botGroup.id,
+          strategyId: secondaryStrategy.id,
+          priority: 2,
+          weight: 1,
+          isEnabled: true,
+        },
+      ],
+    });
+
+    const executeLiveOrder = vi.fn();
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+
+    try {
+      await expect(
+        openOrder(
+          user.id,
+          {
+            botId: bot.id,
+            symbol: 'BTCUSDT',
+            side: 'BUY',
+            type: 'MARKET',
+            quantity: 0.1,
+            mode: 'LIVE',
+            riskAck: true,
+          },
+          { executeLiveOrder }
+        )
+      ).rejects.toMatchObject({ code: 'LIVE_MANUAL_SCOPE_UNRESOLVED' });
+
+      expect(executeLiveOrder).not.toHaveBeenCalled();
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
   it('fails closed for LIVE order when wallet and market-universe venue context drift', async () => {
     const user = await prisma.user.create({
       data: { email: 'orders-live-context-mismatch@example.com', password: 'hashed' },
