@@ -367,6 +367,21 @@ describe('Bots runtime scope remediation contract', () => {
         executedAt: new Date('2026-04-05T10:06:00.000Z'),
       },
     });
+    await prisma.position.create({
+      data: {
+        userId: ownerUser.id,
+        botId: botAId,
+        symbol: 'SOLUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        entryPrice: 150,
+        quantity: 1,
+        leverage: 1,
+        openedAt: new Date('2026-04-05T10:06:30.000Z'),
+      },
+    });
 
     const statsRes = await owner.get(`/dashboard/bots/${botAId}/runtime-sessions/${sessionA.id}/symbol-stats`);
     expect(statsRes.status).toBe(200);
@@ -392,6 +407,18 @@ describe('Bots runtime scope remediation contract', () => {
     expect(staleSymbolTradesRes.status).toBe(200);
     expect(staleSymbolTradesRes.body.items).toEqual([]);
     expect(staleSymbolTradesRes.body.total).toBe(0);
+
+    const tradesRes = await owner.get(`/dashboard/bots/${botAId}/runtime-sessions/${sessionA.id}/trades`);
+    expect(tradesRes.status).toBe(200);
+    expect(
+      (tradesRes.body.items as Array<{ symbol: string }>).map((item) => item.symbol)
+    ).not.toContain('SOLUSDT');
+
+    const positionsRes = await owner.get(`/dashboard/bots/${botAId}/runtime-sessions/${sessionA.id}/positions`);
+    expect(positionsRes.status).toBe(200);
+    expect(
+      (positionsRes.body.openItems as Array<{ symbol: string }>).map((item) => item.symbol)
+    ).not.toContain('SOLUSDT');
   });
 
   it('excludes paused legacy botStrategy symbol groups from selected-bot symbol-stats scope', async () => {

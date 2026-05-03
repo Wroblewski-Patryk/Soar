@@ -45,6 +45,8 @@ import {
 import { resolveModeledMarginUsed, resolvePositionPnlFraction } from '../engine/positionPnlSemantics';
 import { resolvePreferredRuntimeOrExchangeSyncedPrice } from './runtimeExchangeSyncedPositionPrice';
 import { hasMaterialCanonicalBasisDrift } from '../engine/runtimePositionAutomationStateRebase';
+import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from './runtimeSymbolCatalogResolver.service';
+import { normalizeSymbols } from './runtimeSymbolUniverse.service';
 
 type RuntimeTakeoverStatus = 'OWNED_AND_MANAGED' | 'UNOWNED' | 'AMBIGUOUS' | 'MANUAL_ONLY';
 
@@ -320,6 +322,19 @@ export const listBotRuntimeSessionPositions = async (
     venueContext: resolveCanonicalRuntimeVenueContext(botContext),
   });
   if (!inheritedExecutionContext) return null;
+  const configuredSymbolGroup =
+    botContext.botMarketGroups[0]?.symbolGroup ?? botContext.symbolGroup ?? null;
+  const configuredSymbols = normalizeSymbols(
+    configuredSymbolGroup
+      ? await resolveEffectiveSymbolGroupSymbolsWithCatalog(configuredSymbolGroup, new Map<string, string[]>())
+      : []
+  );
+  const scopedSymbols =
+    normalizedSymbol && configuredSymbols.includes(normalizedSymbol)
+      ? [normalizedSymbol]
+      : normalizedSymbol
+        ? []
+        : configuredSymbols;
 
   const botScopedPositionWhere: Prisma.PositionWhereInput =
     inheritedExecutionContext.mode === 'LIVE' && botContext.walletId
@@ -433,7 +448,7 @@ export const listBotRuntimeSessionPositions = async (
     where: {
       userId,
       managementMode: 'BOT_MANAGED',
-      ...(normalizedSymbol ? { symbol: normalizedSymbol } : {}),
+      symbol: { in: scopedSymbols },
       openedAt: {
         lte: windowEnd,
       },
@@ -452,7 +467,7 @@ export const listBotRuntimeSessionPositions = async (
         status: {
           in: ['PENDING', 'OPEN', 'PARTIALLY_FILLED'],
         },
-        ...(normalizedSymbol ? { symbol: normalizedSymbol } : {}),
+        symbol: { in: scopedSymbols },
         AND: [
           {
             OR: [botScopedOrderWhere, ...externalOwnedOrderWhere],
@@ -584,7 +599,7 @@ export const listBotRuntimeSessionPositions = async (
         status: {
           in: ['PENDING', 'OPEN', 'PARTIALLY_FILLED'],
         },
-        ...(normalizedSymbol ? { symbol: normalizedSymbol } : {}),
+        symbol: { in: scopedSymbols },
         AND: [
           {
             OR: [botScopedOrderWhere, ...externalOwnedOrderWhere],

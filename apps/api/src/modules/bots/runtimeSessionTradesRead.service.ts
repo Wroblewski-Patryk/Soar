@@ -143,6 +143,16 @@ export const listBotRuntimeSessionTrades = async (
       windowEnd: rangeEnd,
     });
   }
+  const scopedSymbols = normalizedSymbol ? [normalizedSymbol] : configuredSymbols;
+  if (scopedSymbols.length === 0) {
+    return emptyRuntimeTradesResponse({
+      sessionId,
+      page,
+      pageSize,
+      windowStart: rangeStart,
+      windowEnd: rangeEnd,
+    });
+  }
   const ownershipIndex = await resolveExternalPositionOwnershipIndex(userId, botContext.mode);
   const botApiKeyId = botContext.wallet?.apiKeyId ?? botContext.apiKeyId ?? null;
   const ownedExternalSymbols = listOwnedExternalSymbolsForBot(ownershipIndex, {
@@ -194,7 +204,7 @@ export const listBotRuntimeSessionTrades = async (
   const scopedPositionIds = await listRuntimeTradeCarryOverPositionIds({
     userId,
     managementMode: 'BOT_MANAGED',
-    ...(normalizedSymbol ? { symbol: normalizedSymbol } : {}),
+    symbol: { in: scopedSymbols },
     openedAt: {
       lte: windowEnd,
     },
@@ -207,7 +217,7 @@ export const listBotRuntimeSessionTrades = async (
 
   const where: Prisma.TradeWhereInput = {
     userId,
-    ...(normalizedSymbol ? { symbol: normalizedSymbol } : {}),
+    symbol: { in: scopedSymbols },
     ...(normalizedSide ? { side: normalizedSide } : {}),
     OR: [
       ...(scopedPositionIds.length > 0

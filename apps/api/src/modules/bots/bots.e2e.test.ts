@@ -2176,7 +2176,7 @@ describe('Bots module contract', () => {
     const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
     await prisma.symbolGroup.update({
       where: { id: marketGroupId },
-      data: { symbols: ['BTCUSDT', 'ETHUSDT'] },
+      data: { symbols: ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'XRPUSDT'] },
     });
     const createRes = await owner
       .post('/dashboard/bots')

@@ -29,6 +29,9 @@ export const getRuntimePositionBotContext = async (userId: string, botId: string
               exchange: true,
               marketType: true,
               baseCurrency: true,
+              filterRules: true,
+              whitelist: true,
+              blacklist: true,
             },
           },
         },
@@ -38,11 +41,15 @@ export const getRuntimePositionBotContext = async (userId: string, botId: string
         select: {
           symbolGroup: {
             select: {
+              symbols: true,
               marketUniverse: {
                 select: {
                   exchange: true,
                   marketType: true,
                   baseCurrency: true,
+                  filterRules: true,
+                  whitelist: true,
+                  blacklist: true,
                 },
               },
             },

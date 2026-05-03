@@ -3,6 +3,16 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 selected-bot runtime row symbol-scope slice
+  `RUNTIME-AUDIT-05` is closed locally. Runtime trade history and runtime
+  positions now apply selected-bot active canonical configured symbols to
+  filtered and unfiltered reads, reusing the shared catalog-aware resolver.
+  Stale persisted `Trade.botId` and `Position.botId` rows for off-scope
+  symbols can no longer appear in selected-bot dashboard history/open
+  positions after market reassignment. Validation PASS: focused runtime-scope
+  regression (`1/1`) and broader monitoring/positions pack (`57/57`).
+  Evidence:
+  `docs/planning/runtime-audit-05-runtime-rows-canonical-symbol-scope-task-2026-05-03.md`.
 - 2026-05-03 runtime trade-history symbol-scope slice
   `RUNTIME-AUDIT-04` is closed locally. Runtime trade history now resolves
   selected-bot configured symbols from active canonical `BotMarketGroup`
