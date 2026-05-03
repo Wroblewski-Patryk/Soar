@@ -1,4 +1,4 @@
-import { Exchange, Prisma } from '@prisma/client';
+import { Exchange, Prisma, TradeMarket } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import { ListPositionsQuery, UpdatePositionManualParamsInput } from './positions.types';
 import {
@@ -187,7 +187,10 @@ const validateDirectionalStops = (params: {
   }
 };
 
-const buildSnapshotForApiKey = async (apiKey: ApiKeyRecordForSnapshot): Promise<ExchangePositionSnapshot> => {
+const buildSnapshotForApiKey = async (
+  apiKey: ApiKeyRecordForSnapshot,
+  marketType: TradeMarket = 'FUTURES'
+): Promise<ExchangePositionSnapshot> => {
   try {
     if (process.env.NODE_ENV === 'test') {
       if (process.env.POSITIONS_SNAPSHOT_FORCE_ERROR === '1') {
@@ -221,7 +224,7 @@ const buildSnapshotForApiKey = async (apiKey: ApiKeyRecordForSnapshot): Promise<
 
     const rawPositions = await fetchSupportedExchangePositionsRaw({
       exchange: apiKey.exchange,
-      marketType: 'FUTURES',
+      marketType,
       apiKey: apiKey.apiKey,
       apiSecret: apiKey.apiSecret,
     });
@@ -244,7 +247,8 @@ const buildSnapshotForApiKey = async (apiKey: ApiKeyRecordForSnapshot): Promise<
 };
 
 const buildOpenOrdersSnapshotForApiKey = async (
-  apiKey: ApiKeyRecordForSnapshot
+  apiKey: ApiKeyRecordForSnapshot,
+  marketType: TradeMarket = 'FUTURES'
 ): Promise<ExchangeOpenOrderSnapshot> => {
   if (process.env.NODE_ENV === 'test') {
     await prisma.apiKey.update({
@@ -275,7 +279,7 @@ const buildOpenOrdersSnapshotForApiKey = async (
   try {
     const rawOrders = await fetchSupportedExchangeOpenOrdersRaw({
       exchange: apiKey.exchange,
-      marketType: 'FUTURES',
+      marketType,
       apiKey: apiKey.apiKey,
       apiSecret: apiKey.apiSecret,
     });
@@ -460,7 +464,8 @@ export const fetchExchangePositionsSnapshot = async (userId: string): Promise<Ex
 
 export const fetchExchangePositionsSnapshotByApiKeyId = async (
   userId: string,
-  apiKeyId: string
+  apiKeyId: string,
+  input?: { marketType?: TradeMarket | null }
 ): Promise<ExchangePositionSnapshot> => {
   const apiKey = await prisma.apiKey.findFirst({
     where: {
@@ -479,12 +484,13 @@ export const fetchExchangePositionsSnapshotByApiKeyId = async (
     throw new ExchangeSnapshotError('API_KEY_NOT_FOUND', 'No supported exchange API key configured.');
   }
 
-  return buildSnapshotForApiKey(apiKey);
+  return buildSnapshotForApiKey(apiKey, input?.marketType ?? 'FUTURES');
 };
 
 export const fetchExchangeOpenOrdersSnapshotByApiKeyId = async (
   userId: string,
-  apiKeyId: string
+  apiKeyId: string,
+  input?: { marketType?: TradeMarket | null }
 ): Promise<ExchangeOpenOrderSnapshot> => {
   const apiKey = await prisma.apiKey.findFirst({
     where: {
@@ -503,7 +509,7 @@ export const fetchExchangeOpenOrdersSnapshotByApiKeyId = async (
     throw new ExchangeSnapshotError('API_KEY_NOT_FOUND', 'No supported exchange API key configured.');
   }
 
-  return buildOpenOrdersSnapshotForApiKey(apiKey);
+  return buildOpenOrdersSnapshotForApiKey(apiKey, input?.marketType ?? 'FUTURES');
 };
 
 export const fetchExchangeTradeHistorySnapshotByApiKeyId = async (
@@ -513,6 +519,7 @@ export const fetchExchangeTradeHistorySnapshotByApiKeyId = async (
     symbol: string;
     since?: Date;
     limit?: number;
+    marketType?: TradeMarket | null;
   }
 ): Promise<ExchangeTradeHistorySnapshot> => {
   const apiKey = await prisma.apiKey.findFirst({
@@ -549,7 +556,7 @@ export const fetchExchangeTradeHistorySnapshotByApiKeyId = async (
   try {
     const rawTrades = await fetchSupportedExchangeTradeHistoryRaw({
       exchange: apiKey.exchange,
-      marketType: 'FUTURES',
+      marketType: input.marketType ?? 'FUTURES',
       apiKey: apiKey.apiKey,
       apiSecret: apiKey.apiSecret,
       symbol: input.symbol,

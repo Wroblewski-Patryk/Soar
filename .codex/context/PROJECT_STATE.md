@@ -3,6 +3,16 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 LIVE reconciliation market-type slice `RUNTIME-AUDIT-63` is
+  closed locally. The exchange reconciliation worker now derives synced API-key
+  work items from LIVE wallets and active LIVE bots, preserving one work item
+  per required market type, and passes that market type into exchange position,
+  open-order, trade-history, and owned automation snapshot paths. This removes
+  the previous FUTURES-only snapshot assumption that could hide SPOT
+  assigned-market manual positions from import. Validation PASS: live position
+  reconciliation unit suite (`25/25`), API typecheck, repository guardrails,
+  lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-63-live-reconciliation-market-type-task-2026-05-03.md`.
 - 2026-05-03 planned dynamic-stop API visibility slice `RUNTIME-AUDIT-62`
   is closed locally. Runtime session positions now expose
   `showDynamicStopColumns=true` when an open row has planned trailing

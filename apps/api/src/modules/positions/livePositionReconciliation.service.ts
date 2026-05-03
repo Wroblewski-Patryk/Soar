@@ -38,58 +38,19 @@ import {
   ReconcileFn,
   ReconciliationStatus,
 } from './livePositionReconciliation.types';
+import { expandSyncedApiKeyMarketTypes } from './livePositionReconciliationApiKeys';
 import { runtimePositionAutomationService } from '../engine/runtimePositionAutomation.service';
-import { resolveExistingCanonicalUpdateScope } from '../bots/botCanonicalUpdateScope.service';
+import { resolveCanonicalBotContinuityContext } from './livePositionReconciliationContext';
+export { resolveCanonicalBotContinuityContext } from './livePositionReconciliationContext';
 
 const STALE_LOCAL_MANAGED_LIVE_POSITION_GRACE_MS = 10 * 60 * 1000;
 const STALE_LOCAL_MANAGED_LIVE_POSITION_FALLBACK_GRACE_MS = 60 * 60 * 1000;
 const EXTERNAL_POSITION_MISSING_CONFIRMATION_THRESHOLD = 2;
 const buildOwnerIdentity = (botId: string, walletId: string) => `${botId}:${walletId}`;
 
-export const resolveCanonicalBotContinuityContext = async (
-  botId: string
-): Promise<CanonicalBotContinuityContext | null> => {
-  const bot = await prisma.bot.findUnique({
-    where: { id: botId },
-    select: {
-      id: true,
-      walletId: true,
-      strategyId: true,
-      symbolGroupId: true,
-      botMarketGroups: {
-        select: {
-          symbolGroupId: true,
-          lifecycleStatus: true,
-          executionOrder: true,
-          isEnabled: true,
-          createdAt: true,
-          strategyLinks: {
-            select: {
-              strategyId: true,
-              isEnabled: true,
-              priority: true,
-              createdAt: true,
-            },
-            orderBy: [{ priority: 'asc' }, { createdAt: 'asc' }],
-          },
-        },
-        orderBy: [{ executionOrder: 'asc' }, { createdAt: 'asc' }],
-      },
-    },
-  });
-  if (!bot) return null;
-
-  const canonicalScope = resolveExistingCanonicalUpdateScope(bot);
-  return {
-    botId: bot.id,
-    walletId: bot.walletId,
-    strategyId: canonicalScope.primaryStrategyId,
-  };
-};
-
 const defaultDeps: ReconcileDeps = {
   listSyncedApiKeys: async () => {
-    return prisma.apiKey.findMany({
+    const apiKeys = await prisma.apiKey.findMany({
       where: {
         exchange: 'BINANCE',
         syncExternalPositions: true,
@@ -98,9 +59,34 @@ const defaultDeps: ReconcileDeps = {
         id: true,
         userId: true,
         exchange: true,
+        wallets: {
+          where: {
+            mode: 'LIVE',
+          },
+          select: {
+            marketType: true,
+          },
+        },
+        bots: {
+          where: {
+            mode: 'LIVE',
+            isActive: true,
+            liveOptIn: true,
+          },
+          select: {
+            marketType: true,
+            wallet: {
+              select: {
+                marketType: true,
+              },
+            },
+          },
+        },
       },
       orderBy: [{ userId: 'asc' }, { updatedAt: 'desc' }],
     });
+
+    return expandSyncedApiKeyMarketTypes(apiKeys);
   },
   resolveOwnershipIndexForUser: async ({ userId }) => {
     const { resolveExternalPositionOwnershipIndex } = await import(
@@ -109,9 +95,13 @@ const defaultDeps: ReconcileDeps = {
     return resolveExternalPositionOwnershipIndex(userId, 'LIVE');
   },
   fetchPositionsForApiKey: async (apiKey) =>
-    fetchExchangePositionsSnapshotByApiKeyId(apiKey.userId, apiKey.id),
+    fetchExchangePositionsSnapshotByApiKeyId(apiKey.userId, apiKey.id, {
+      marketType: apiKey.marketType ?? 'FUTURES',
+    }),
   fetchOpenOrdersForApiKey: async (apiKey) => {
-    const snapshot = await fetchExchangeOpenOrdersSnapshotByApiKeyId(apiKey.userId, apiKey.id);
+    const snapshot = await fetchExchangeOpenOrdersSnapshotByApiKeyId(apiKey.userId, apiKey.id, {
+      marketType: apiKey.marketType ?? 'FUTURES',
+    });
     return snapshot.orders;
   },
   fetchTradeHistoryForApiKeySymbol: async ({ apiKey, symbol, since, limit }) => {
@@ -119,6 +109,7 @@ const defaultDeps: ReconcileDeps = {
       symbol,
       since,
       limit,
+      marketType: apiKey.marketType ?? 'FUTURES',
     });
     return snapshot.trades;
   },
@@ -657,7 +648,7 @@ export const reconcileExternalPositionsFromExchange = async (
           ) {
             await deps.processOwnedSyncedPositionAutomation({
               exchange: 'BINANCE',
-              marketType: 'FUTURES',
+              marketType: apiKey.marketType ?? 'FUTURES',
               symbol: normalizedSymbol,
               markPrice: position.markPrice as number,
               eventTime: syncedAt,
@@ -718,7 +709,7 @@ export const reconcileExternalPositionsFromExchange = async (
           ) {
             await deps.processOwnedSyncedPositionAutomation({
               exchange: 'BINANCE',
-              marketType: 'FUTURES',
+              marketType: apiKey.marketType ?? 'FUTURES',
               symbol: normalizedSymbol,
               markPrice: position.markPrice as number,
               eventTime: syncedAt,

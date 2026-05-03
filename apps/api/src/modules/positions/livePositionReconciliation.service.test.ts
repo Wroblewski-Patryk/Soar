@@ -41,6 +41,114 @@ describe('LivePositionReconciliationLoop', () => {
 });
 
 describe('reconcileExternalPositionsFromExchange', () => {
+  it('propagates synced api-key market type through LIVE reconciliation snapshots', async () => {
+    const fetchPositionsForApiKey = vi.fn(async (apiKey) => {
+      expect(apiKey.marketType).toBe('SPOT');
+      return {
+        positions: [
+          {
+            symbol: 'ETH/USDT',
+            side: 'long',
+            contracts: 0.25,
+            entryPrice: 3200,
+            markPrice: 3210,
+            unrealizedPnl: 2.5,
+            leverage: 1,
+            timestamp: '2026-05-03T10:00:00.000Z',
+          },
+        ],
+      };
+    });
+    const fetchOpenOrdersForApiKey = vi.fn(async (apiKey) => {
+      expect(apiKey.marketType).toBe('SPOT');
+      return [];
+    });
+    const fetchTradeHistoryForApiKeySymbol = vi.fn(async ({ apiKey }) => {
+      expect(apiKey.marketType).toBe('SPOT');
+      return [];
+    });
+    const processOwnedSyncedPositionAutomation = vi.fn(async () => undefined);
+
+    const findOpenSyncedPositionByExternalId = vi
+      .fn(async () => null as {
+        id: string;
+        botId: string;
+        walletId: string;
+        strategyId: string;
+        openedAt: Date;
+        managementMode: 'BOT_MANAGED';
+        continuityState: 'CONFIRMED';
+        missingSyncCount: number;
+      } | null)
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce({
+        id: 'spot-position-created',
+        botId: 'bot-spot-1',
+        walletId: 'wallet-spot-1',
+        strategyId: 'strategy-spot-1',
+        openedAt: new Date('2026-05-03T10:00:00.000Z'),
+        managementMode: 'BOT_MANAGED' as const,
+        continuityState: 'CONFIRMED' as const,
+        missingSyncCount: 0,
+      });
+
+    await reconcileExternalPositionsFromExchange({
+      listSyncedApiKeys: vi.fn(async () => [
+        {
+          id: 'key-spot-1',
+          userId: 'user-spot-1',
+          exchange: 'BINANCE' as const,
+          marketType: 'SPOT' as const,
+        },
+      ]),
+      resolveOwnershipIndexForUser: vi.fn(async () =>
+        new Map([
+          [
+            'key-spot-1:ETHUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-spot-1',
+              walletId: 'wallet-spot-1',
+            },
+          ],
+        ])
+      ),
+      fetchPositionsForApiKey,
+      fetchOpenOrdersForApiKey,
+      fetchTradeHistoryForApiKeySymbol,
+      findOpenSyncedPositionByExternalId,
+      resolveCanonicalBotContinuityContext: vi.fn(async () => ({
+        botId: 'bot-spot-1',
+        walletId: 'wallet-spot-1',
+        strategyId: 'strategy-spot-1',
+      })),
+      updateSyncedPosition: vi.fn(async () => undefined),
+      createSyncedPosition: vi.fn(async () => undefined),
+      listOpenSyncedPositionsForApiKey: vi.fn(async () => []),
+      markMissingSyncedPosition: vi.fn(async () => undefined),
+      closeStaleSyncedPosition: vi.fn(async () => undefined),
+      hydrateImportedPositionHistory: vi.fn(async () => ({
+        hydrated: true,
+        openedAt: new Date('2026-05-03T10:00:00.000Z'),
+      })),
+      upsertSyncedOpenOrder: vi.fn(async () => undefined),
+      listOpenSyncedOrdersForOwner: vi.fn(async () => []),
+      markStaleSyncedOrderUnresolved: vi.fn(async () => undefined),
+      processOwnedSyncedPositionAutomation,
+      now: () => new Date('2026-05-03T10:00:01.000Z'),
+    });
+
+    expect(fetchPositionsForApiKey).toHaveBeenCalledOnce();
+    expect(fetchOpenOrdersForApiKey).toHaveBeenCalledOnce();
+    expect(fetchTradeHistoryForApiKeySymbol).toHaveBeenCalledOnce();
+    expect(processOwnedSyncedPositionAutomation).toHaveBeenCalledWith(
+      expect.objectContaining({
+        marketType: 'SPOT',
+        symbol: 'ETHUSDT',
+      })
+    );
+  });
+
   it('creates/updates synced positions and marks first stale miss as recovering instead of closing', async () => {
     const createSyncedPosition = vi.fn(async () => undefined);
     const updateSyncedPosition = vi.fn(async () => undefined);

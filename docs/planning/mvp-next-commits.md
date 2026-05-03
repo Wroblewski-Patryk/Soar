@@ -9,6 +9,16 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-63 fix(api-positions): use market type in live reconciliation`
+  - 2026-05-03: Closed an ARCHITECT-mode LIVE import scope drift. The exchange
+    reconciliation worker now expands synced API keys into one work item per
+    LIVE wallet/active bot market type and passes that market type through
+    position, open-order, trade-history, and owned automation snapshot paths.
+    This removes the previous FUTURES-only snapshot assumption while preserving
+    FUTURES fallback for legacy API-key-only contexts. Validation PASS: live
+    position reconciliation unit suite (`25/25`), API typecheck, repository
+    guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-63-live-reconciliation-market-type-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-62 fix(api-bots): show planned dynamic-stop columns`
   - 2026-05-03: Closed a TESTER-mode API display-contract drift. Runtime
     session positions now return `showDynamicStopColumns=true` when an open row
