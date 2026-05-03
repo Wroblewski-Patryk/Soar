@@ -3,6 +3,16 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 DCA block effective-strategy telemetry slice
+  `RUNTIME-AUDIT-31` is closed locally. Runtime DCA funds-exhausted
+  `PRETRADE_BLOCKED` telemetry now uses the same effective strategy provenance
+  resolved for lifecycle decisions, so imported or strategy-null bot positions
+  with one canonical strategy link keep dashboard/runtime event attribution
+  aligned with their configured strategy. Validation PASS:
+  failing-then-passing imported strategy-null DCA block telemetry regression,
+  full runtime position automation service tests (`35/35`), API typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-31-dca-block-effective-strategy-telemetry-task-2026-05-03.md`.
 - 2026-05-03 live reconciliation open-order protection slice
   `RUNTIME-AUDIT-30` is closed locally. Owned exchange open orders now protect
   both possible local position sides for the same symbol during stale local

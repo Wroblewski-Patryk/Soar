@@ -810,7 +810,7 @@ export class RuntimePositionAutomationService {
         botId: position.botId,
         mode,
         symbol: position.symbol,
-        strategyId: position.strategyId,
+        strategyId: effectiveStrategyId,
         side: position.side,
         eventAt: new Date(event.eventTime),
         currentAdds: previousState.currentAdds,

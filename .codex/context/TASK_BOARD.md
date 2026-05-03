@@ -20,6 +20,17 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-31 fix(api-engine): attribute DCA block telemetry to effective strategy`
+  - Scope: closed a dashboard/runtime event provenance drift. Runtime DCA
+    funds-exhausted `PRETRADE_BLOCKED` telemetry now uses the same effective
+    strategy provenance resolved for lifecycle decisions, so imported or
+    strategy-null bot positions with one canonical strategy link keep event
+    attribution aligned with their configured strategy. Validation PASS:
+    failing-then-passing imported strategy-null DCA block telemetry regression,
+    full runtime position automation service tests (`35/35`), API typecheck,
+    repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-31-dca-block-effective-strategy-telemetry-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-30 fix(api-positions): protect live positions while same-symbol orders are open`
   - Scope: closed a LIVE stale-close lifecycle drift. Owned exchange open
     orders now protect both possible local position sides for the same symbol

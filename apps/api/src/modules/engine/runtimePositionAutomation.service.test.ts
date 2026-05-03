@@ -677,6 +677,91 @@ describe('RuntimePositionAutomationService', () => {
     );
   });
 
+  it('records DCA funds-exhausted telemetry with effective strategy for imported strategy-null positions', async () => {
+    process.env.RUNTIME_TRAILING_ENABLED = 'false';
+    process.env.RUNTIME_DCA_ENABLED = 'false';
+
+    const recordRuntimeEvent = vi.fn(async () => undefined);
+    const deps: any = {
+      listOpenPositionsBySymbol: vi.fn(async () => [
+        {
+          id: 'pos-imported-dca-funds-effective-strategy',
+          userId: 'user-imported-dca-funds-effective-strategy',
+          botId: 'bot-imported-dca-funds-effective-strategy',
+          walletId: 'wallet-imported-dca-funds-effective-strategy',
+          strategyId: null,
+          symbol: 'ETHUSDT',
+          side: 'LONG' as const,
+          status: 'OPEN' as const,
+          entryPrice: 100,
+          quantity: 1,
+          leverage: 5,
+          marginUsed: 20,
+          stopLoss: null,
+          takeProfit: null,
+          managementMode: 'BOT_MANAGED' as const,
+          origin: 'EXCHANGE_SYNC' as const,
+          continuityState: 'CONFIRMED' as const,
+          bot: buildBotExecutionContext({
+            wallet: { mode: 'LIVE' },
+            botMarketGroups: [
+              {
+                strategyLinks: [{ strategyId: 'strategy-imported-dca-funds-effective' }],
+              },
+            ],
+          }),
+        },
+      ]),
+      getStrategyConfigById: vi.fn(async () => ({
+        close: { mode: 'advanced', tp: 0, sl: 0, ttp: [], tsl: [] },
+        additional: {
+          dcaEnabled: true,
+          dcaMode: 'advanced',
+          dcaTimes: 1,
+          dcaLevels: [{ percent: -1, multiplier: 1 }],
+        },
+      })),
+      executeDca: vi.fn(async () => ({ feePaid: 0, executed: true })),
+      closeByExitSignal: vi.fn(async () => ({ status: 'closed' as const })),
+      resolveDcaFundsExhausted: vi.fn(async () => true),
+      recordRuntimeEvent,
+      nowMs: vi.fn(() => Date.now()),
+    };
+
+    const service = new RuntimePositionAutomationService(deps);
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'ETHUSDT',
+      eventTime: 2_750,
+      lastPrice: 98.8,
+      priceChangePercent24h: -0.6,
+    });
+
+    expect(deps.getStrategyConfigById).toHaveBeenCalledWith(
+      'strategy-imported-dca-funds-effective'
+    );
+    expect(deps.executeDca).not.toHaveBeenCalled();
+    expect(recordRuntimeEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'user-imported-dca-funds-effective-strategy',
+        botId: 'bot-imported-dca-funds-effective-strategy',
+        mode: 'LIVE',
+        eventType: 'PRETRADE_BLOCKED',
+        level: 'WARN',
+        symbol: 'ETHUSDT',
+        strategyId: 'strategy-imported-dca-funds-effective',
+        message: 'Runtime DCA funds exhausted; close protections may execute',
+        payload: expect.objectContaining({
+          reason: 'dca_funds_exhausted',
+          currentAdds: 0,
+          dcaLevelCount: 1,
+        }),
+      })
+    );
+  });
+
   it('keeps LIVE DCA idle when exchange-style margin truth says drawdown is still above the threshold', async () => {
     process.env.RUNTIME_TRAILING_ENABLED = 'false';
     process.env.RUNTIME_DCA_ENABLED = 'false';
