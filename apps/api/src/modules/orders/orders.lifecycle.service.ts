@@ -8,6 +8,10 @@ import {
   getExternalPositionOwnership,
   resolveExternalPositionOwnershipIndex,
 } from '../bots/runtimeExternalPositionOwner.service';
+import {
+  buildImportedExternalPositionMarketPrefix,
+  buildLegacyImportedExternalPositionSymbolPrefix,
+} from '../positions/livePositionReconciliation.helpers';
 
 type ApplyOrderFillLifecycleInput = {
   userId: string;
@@ -113,10 +117,15 @@ const findOwnedLiveImportedOpenPositionForFill = async (
       status: 'OPEN',
       origin: 'EXCHANGE_SYNC',
       managementMode: 'BOT_MANAGED',
-      externalId: {
-        startsWith: `${effectiveApiKeyId}:`,
-      },
-      OR: [{ walletId: params.order.walletId }, { walletId: null }],
+      AND: [
+        {
+          OR: [
+            { externalId: { startsWith: buildImportedExternalPositionMarketPrefix({ apiKeyId: effectiveApiKeyId, marketType: botScope.wallet.marketType }) } },
+            { externalId: { startsWith: buildLegacyImportedExternalPositionSymbolPrefix({ apiKeyId: effectiveApiKeyId, symbol: params.order.symbol }) } },
+          ],
+        },
+        { OR: [{ walletId: params.order.walletId }, { walletId: null }] },
+      ],
     },
     orderBy: {
       openedAt: 'desc',

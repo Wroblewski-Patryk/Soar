@@ -15,6 +15,10 @@ import {
   listOwnedExternalSymbolsForBot,
   resolveExternalPositionOwnershipIndex,
 } from '../bots/runtimeExternalPositionOwner.service';
+import {
+  buildImportedExternalPositionMarketPrefix,
+  buildLegacyImportedExternalPositionSymbolPrefix,
+} from '../positions/livePositionReconciliation.helpers';
 
 export interface PositionReadStore {
   countOpenByUser(userId: string): Promise<number>;
@@ -193,10 +197,17 @@ class PrismaPreTradeReadStore implements PreTradeReadStore {
         status: 'OPEN',
         origin: 'EXCHANGE_SYNC',
         managementMode: 'BOT_MANAGED',
-        externalId: {
-          startsWith: `${ownershipScope.effectiveApiKeyId}:`,
-        },
-        OR: [{ walletId: ownershipScope.walletId }, { walletId: null }],
+        AND: [
+          {
+            OR: [
+              { externalId: { startsWith: buildImportedExternalPositionMarketPrefix({ apiKeyId: ownershipScope.effectiveApiKeyId, marketType: ownershipScope.marketType }) } },
+              ...ownershipScope.ownedSymbols.map((symbol) => ({
+                externalId: { startsWith: buildLegacyImportedExternalPositionSymbolPrefix({ apiKeyId: ownershipScope.effectiveApiKeyId, symbol }) },
+              })),
+            ],
+          },
+          { OR: [{ walletId: ownershipScope.walletId }, { walletId: null }] },
+        ],
       },
     });
 
@@ -248,10 +259,15 @@ class PrismaPreTradeReadStore implements PreTradeReadStore {
         status: 'OPEN',
         origin: 'EXCHANGE_SYNC',
         managementMode: 'BOT_MANAGED',
-        externalId: {
-          startsWith: `${ownershipScope.effectiveApiKeyId}:`,
-        },
-        OR: [{ walletId: ownershipScope.walletId }, { walletId: null }],
+        AND: [
+          {
+            OR: [
+              { externalId: { startsWith: buildImportedExternalPositionMarketPrefix({ apiKeyId: ownershipScope.effectiveApiKeyId, marketType: ownershipScope.marketType }) } },
+              { externalId: { startsWith: buildLegacyImportedExternalPositionSymbolPrefix({ apiKeyId: ownershipScope.effectiveApiKeyId, symbol: input.symbol }) } },
+            ],
+          },
+          { OR: [{ walletId: ownershipScope.walletId }, { walletId: null }] },
+        ],
       },
       select: { id: true },
     });

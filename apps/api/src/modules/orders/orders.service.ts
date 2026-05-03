@@ -32,6 +32,10 @@ import {
   getExternalPositionOwnership,
   resolveExternalPositionOwnershipIndex,
 } from '../bots/runtimeExternalPositionOwner.service';
+import {
+  buildImportedExternalPositionMarketPrefix,
+  buildLegacyImportedExternalPositionSymbolPrefix,
+} from '../positions/livePositionReconciliation.helpers';
 export { resolveLiveExecutionApiKey } from '../exchange/exchangeAdapterBoundary.service';
 
 type OpenOrderInput = OpenOrderDto & {
@@ -408,10 +412,15 @@ const findOwnedLiveImportedOpenPositionForOrderConflict = async (params: {
       status: 'OPEN',
       origin: 'EXCHANGE_SYNC',
       managementMode: 'BOT_MANAGED',
-      externalId: {
-        startsWith: `${effectiveApiKeyId}:`,
-      },
-      OR: [{ walletId: params.payload.walletId }, { walletId: null }],
+      AND: [
+        {
+          OR: [
+            { externalId: { startsWith: buildImportedExternalPositionMarketPrefix({ apiKeyId: effectiveApiKeyId, marketType: params.botContext.inheritedExecutionContext?.marketType ?? 'FUTURES' }) } },
+            { externalId: { startsWith: buildLegacyImportedExternalPositionSymbolPrefix({ apiKeyId: effectiveApiKeyId, symbol: params.payload.symbol }) } },
+          ],
+        },
+        { OR: [{ walletId: params.payload.walletId }, { walletId: null }] },
+      ],
     },
     select: {
       id: true,

@@ -3,6 +3,17 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 market-scoped imported external ID query-filter slice
+  `RUNTIME-AUDIT-67` is closed locally. Market-known imported-position queries
+  now filter canonical rows by `apiKey:marketType:` and legacy rows by
+  `apiKey:symbol:` instead of broad `apiKey:` prefixes. This covers runtime
+  dashboard position/trade reads, pre-trade guards, runtime loop open-count
+  guards, execution no-flip reuse, and order conflict/fill reuse. Validation
+  PASS: runtime loop defaults (`10/10`), live reconciliation (`26/26`),
+  pre-trade service (`17/17`), orders service (`28/28`), runtime position
+  command (`9/9`), API typecheck, repository guardrails, lint, and diff review.
+  Evidence:
+  `docs/planning/runtime-audit-67-market-scoped-external-id-query-filters-task-2026-05-03.md`.
 - 2026-05-03 external-ID market ownership read slice `RUNTIME-AUDIT-66` is
   closed locally. Takeover rebind/status, imported runtime ownership hydration,
   and runtime loop managed-external guards now parse canonical

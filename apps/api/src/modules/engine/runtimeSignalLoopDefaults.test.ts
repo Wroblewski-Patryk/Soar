@@ -445,7 +445,15 @@ describe('listActiveRuntimeBots', () => {
           origin: 'EXCHANGE_SYNC',
           managementMode: 'BOT_MANAGED',
           symbol: { in: ['DOGEUSDT'] },
-          externalId: { startsWith: 'key-1:' },
+          AND: [
+            {
+              OR: [
+                { externalId: { startsWith: 'key-1:FUTURES:' } },
+                { externalId: { startsWith: 'key-1:DOGEUSDT:' } },
+              ],
+            },
+            { OR: [{ walletId: 'wallet-1' }, { walletId: null }] },
+          ],
         }),
       })
     );
@@ -581,9 +589,16 @@ describe('listActiveRuntimeBots', () => {
     expect(prisma.position.count).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({
-          externalId: { startsWith: 'wallet-key-1:' },
           symbol: { in: ['ETHUSDT'] },
-          OR: [{ walletId: 'wallet-1' }, { walletId: null }],
+          AND: [
+            {
+              OR: [
+                { externalId: { startsWith: 'wallet-key-1:FUTURES:' } },
+                { externalId: { startsWith: 'wallet-key-1:ETHUSDT:' } },
+              ],
+            },
+            { OR: [{ walletId: 'wallet-1' }, { walletId: null }] },
+          ],
         }),
       })
     );

@@ -83,6 +83,16 @@ export const buildImportedExternalPositionIds = (params: {
   legacyExternalId: buildLegacyImportedExternalPositionId(params),
 });
 
+export const buildImportedExternalPositionMarketPrefix = (params: {
+  apiKeyId: string;
+  marketType: TradeMarket;
+}) => `${params.apiKeyId.trim()}:${params.marketType}:`;
+
+export const buildLegacyImportedExternalPositionSymbolPrefix = (params: {
+  apiKeyId: string;
+  symbol: string;
+}) => `${params.apiKeyId.trim()}:${normalizeSymbol(params.symbol)}:`;
+
 export const parseImportedExternalPositionId = (
   externalId: string | null
 ): ParsedImportedExternalPositionId | null => {

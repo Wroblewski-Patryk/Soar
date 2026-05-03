@@ -9,6 +9,18 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-67 fix(api-runtime): scope imported external-id query filters`
+  - 2026-05-03: Closed a TESTER-mode DB candidate-filter drift after
+    market-scoped imported IDs. Market-known imported-position queries now
+    filter canonical rows by `apiKey:marketType:` and legacy rows by
+    `apiKey:symbol:` instead of broad `apiKey:` prefixes, covering runtime
+    dashboard position/trade reads, pre-trade guards, runtime loop open-count
+    guards, execution no-flip reuse, and order conflict/fill reuse. Validation
+    PASS: runtime loop defaults (`10/10`), live reconciliation (`26/26`),
+    pre-trade service (`17/17`), orders service (`28/28`), runtime position
+    command (`9/9`), API typecheck, repository guardrails, lint, and diff
+    review. Evidence:
+    `docs/planning/runtime-audit-67-market-scoped-external-id-query-filters-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-66 fix(api-runtime): parse external-id market for ownership reads`
   - 2026-05-03: Closed an ARCHITECT-mode read-path drift after market-scoped
     imported IDs. Takeover rebind/status, imported runtime ownership hydration,

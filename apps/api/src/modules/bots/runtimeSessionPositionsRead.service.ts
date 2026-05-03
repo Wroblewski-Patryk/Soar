@@ -30,6 +30,7 @@ import {
   listOwnedExternalSymbolsForBot,
   resolveExternalPositionOwnershipIndex,
 } from './runtimeExternalPositionOwner.service';
+import { buildImportedExternalPositionMarketPrefix, buildLegacyImportedExternalPositionSymbolPrefix } from '../positions/livePositionReconciliation.helpers';
 import {
   countRuntimeManagedPositions,
   getRuntimePositionBotContext,
@@ -365,12 +366,8 @@ export const listBotRuntimeSessionPositions = async (
     inheritedExecutionContext.mode === 'LIVE' && botContext.walletId
       ? { botId, walletId: botContext.walletId }
       : { botId };
-  const ownershipIndex = await resolveExternalPositionOwnershipIndex(
-    userId,
-    inheritedExecutionContext.mode
-  );
-  const botApiKeyId = botContext.wallet?.apiKeyId ?? botContext.apiKeyId ?? null;
-  const ownedExternalSymbols = listOwnedExternalSymbolsForBot(ownershipIndex, {
+  const ownershipIndex = await resolveExternalPositionOwnershipIndex(userId, inheritedExecutionContext.mode);
+  const botApiKeyId = botContext.wallet?.apiKeyId ?? botContext.apiKeyId ?? null, ownedExternalSymbols = listOwnedExternalSymbolsForBot(ownershipIndex, {
     apiKeyId: botApiKeyId, marketType: inheritedExecutionContext.marketType,
     botId,
     walletId: botContext.walletId,
@@ -381,13 +378,16 @@ export const listBotRuntimeSessionPositions = async (
           {
             botId: null,
             origin: 'EXCHANGE_SYNC',
-            externalId: { startsWith: `${botApiKeyId}:` },
             symbol: { in: ownedExternalSymbols },
-            ...(inheritedExecutionContext.mode === 'LIVE' && botContext.walletId
-              ? {
-                  OR: [{ walletId: botContext.walletId }, { walletId: null }],
-                }
-              : {}),
+            AND: [
+              {
+                OR: [
+                  { externalId: { startsWith: buildImportedExternalPositionMarketPrefix({ apiKeyId: botApiKeyId, marketType: inheritedExecutionContext.marketType }) } },
+                  ...ownedExternalSymbols.map((symbol) => ({ externalId: { startsWith: buildLegacyImportedExternalPositionSymbolPrefix({ apiKeyId: botApiKeyId, symbol }) } })),
+                ],
+              },
+              ...(inheritedExecutionContext.mode === 'LIVE' && botContext.walletId ? [{ OR: [{ walletId: botContext.walletId }, { walletId: null }] }] : []),
+            ],
           },
         ]
       : [];

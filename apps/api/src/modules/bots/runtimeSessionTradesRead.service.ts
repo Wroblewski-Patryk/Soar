@@ -9,6 +9,10 @@ import {
   resolveExternalPositionOwnershipIndex,
 } from './runtimeExternalPositionOwner.service';
 import {
+  buildImportedExternalPositionMarketPrefix,
+  buildLegacyImportedExternalPositionSymbolPrefix,
+} from '../positions/livePositionReconciliation.helpers';
+import {
   buildCloseReasonLookup,
   normalizeCloseReason,
   RuntimeTradeActionReason,
@@ -182,13 +186,20 @@ export const listBotRuntimeSessionTrades = async (
           {
             botId: null,
             origin: 'EXCHANGE_SYNC',
-            externalId: { startsWith: `${botApiKeyId}:` },
             symbol: { in: ownedExternalSymbols },
-            ...(botContext.mode === 'LIVE' && botContext.walletId
-              ? {
-                  OR: [{ walletId: botContext.walletId }, { walletId: null }],
-                }
-              : {}),
+            AND: [
+              {
+                OR: [
+                  { externalId: { startsWith: buildImportedExternalPositionMarketPrefix({ apiKeyId: botApiKeyId, marketType: botContext.wallet?.marketType ?? 'FUTURES' }) } },
+                  ...ownedExternalSymbols.map((symbol) => ({
+                    externalId: { startsWith: buildLegacyImportedExternalPositionSymbolPrefix({ apiKeyId: botApiKeyId, symbol }) },
+                  })),
+                ],
+              },
+              ...(botContext.mode === 'LIVE' && botContext.walletId
+                ? [{ OR: [{ walletId: botContext.walletId }, { walletId: null }] }]
+                : []),
+            ],
           },
         ]
       : [];

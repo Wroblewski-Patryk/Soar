@@ -18,6 +18,10 @@ import {
   getExternalPositionOwnership,
   resolveExternalPositionOwnershipIndex,
 } from '../bots/runtimeExternalPositionOwner.service';
+import {
+  buildImportedExternalPositionMarketPrefix,
+  buildLegacyImportedExternalPositionSymbolPrefix,
+} from '../positions/livePositionReconciliation.helpers';
 
 export type RuntimeSignalDirection = 'LONG' | 'SHORT' | 'EXIT';
 export type RuntimeExecutionMode = 'PAPER' | 'LIVE';
@@ -206,10 +210,15 @@ export const resolveRuntimeOpenPositionBySymbol = async (input: {
       status: 'OPEN',
       origin: 'EXCHANGE_SYNC',
       managementMode: 'BOT_MANAGED',
-      externalId: {
-        startsWith: `${effectiveApiKeyId}:`,
-      },
-      OR: [{ walletId: input.walletId }, { walletId: null }],
+      AND: [
+        {
+          OR: [
+            { externalId: { startsWith: buildImportedExternalPositionMarketPrefix({ apiKeyId: effectiveApiKeyId, marketType: botScope.wallet.marketType }) } },
+            { externalId: { startsWith: buildLegacyImportedExternalPositionSymbolPrefix({ apiKeyId: effectiveApiKeyId, symbol: input.symbol }) } },
+          ],
+        },
+        { OR: [{ walletId: input.walletId }, { walletId: null }] },
+      ],
     },
     orderBy: { openedAt: 'desc' },
   });

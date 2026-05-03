@@ -16,7 +16,11 @@ import {
   listOwnedExternalSymbolsForBot,
   resolveExternalPositionOwnershipIndex,
 } from '../bots/runtimeExternalPositionOwner.service';
-import { parseImportedExternalPositionId } from '../positions/livePositionReconciliation.helpers';
+import {
+  buildImportedExternalPositionMarketPrefix,
+  buildLegacyImportedExternalPositionSymbolPrefix,
+  parseImportedExternalPositionId,
+} from '../positions/livePositionReconciliation.helpers';
 import {
   resolveCanonicalRuntimeVenueContext,
   resolveInheritedRuntimeExecutionContext,
@@ -303,13 +307,20 @@ export const countOpenPositionsForBotAndSymbols = async ({
       status: 'OPEN',
       origin: 'EXCHANGE_SYNC',
       managementMode: 'BOT_MANAGED',
-      externalId: {
-        startsWith: `${effectiveApiKeyId}:`,
-      },
       symbol: {
         in: scopedOwnedExternalSymbols,
       },
-      OR: [{ walletId: botScope.walletId }, { walletId: null }],
+      AND: [
+        {
+          OR: [
+            { externalId: { startsWith: buildImportedExternalPositionMarketPrefix({ apiKeyId: effectiveApiKeyId, marketType: botScope.wallet?.marketType ?? 'FUTURES' }) } },
+            ...scopedOwnedExternalSymbols.map((symbol) => ({
+              externalId: { startsWith: buildLegacyImportedExternalPositionSymbolPrefix({ apiKeyId: effectiveApiKeyId, symbol }) },
+            })),
+          ],
+        },
+        { OR: [{ walletId: botScope.walletId }, { walletId: null }] },
+      ],
     },
   });
 
