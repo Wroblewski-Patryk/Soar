@@ -3,6 +3,15 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 pre-trade active-sync open-guard slice `RUNTIME-AUDIT-89` is
+  closed locally. Pre-trade user open-position counts, bot open-position
+  counts, same-symbol checks, and LIVE imported fallback reads now require
+  `syncState=IN_SYNC`, so stale `ORPHAN_LOCAL` open cleanup rows no longer
+  block PAPER/LIVE opens through caps or same-symbol guard while active rows
+  remain blocking. Validation PASS: focused pre-trade e2e/unit pack
+  (`25/25`), API typecheck, repository guardrails, lint, and diff review.
+  Evidence:
+  `docs/planning/runtime-audit-89-pretrade-sync-state-open-guards-task-2026-05-04.md`.
 - 2026-05-04 reconciliation owner cleanup market-scope slice
   `RUNTIME-AUDIT-88` is closed locally. Owner cleanup candidates for open
   synced orders and local managed positions are now seeded only from the

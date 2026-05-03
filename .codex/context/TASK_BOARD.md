@@ -20,6 +20,17 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-89 fix(api-engine): align pre-trade open guards with sync state`
+  - Scope: closed a BUILDER-mode pre-trade/runtime active-truth drift.
+    Pre-trade user open-position counts, bot open-position counts,
+    same-symbol checks, and LIVE imported fallback reads now require
+    `syncState=IN_SYNC`, so stale `ORPHAN_LOCAL` open cleanup rows no longer
+    block PAPER/LIVE opens through caps or same-symbol guard while active rows
+    remain blocking. Validation PASS: focused pre-trade e2e/unit pack
+    (`25/25`), API typecheck, repository guardrails, lint, and diff review.
+    Evidence:
+    `docs/planning/runtime-audit-89-pretrade-sync-state-open-guards-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-88 fix(api-positions): scope reconciliation owner cleanup by market`
   - Scope: closed a BUILDER-mode LIVE reconciliation cleanup ownership drift.
     Owner cleanup candidates for open synced orders and local managed positions

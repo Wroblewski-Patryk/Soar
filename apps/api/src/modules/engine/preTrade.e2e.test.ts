@@ -411,6 +411,74 @@ describe('preTrade e2e smoke (paper/live critical paths)', () => {
     expect(globalDecision.reasons).toContain('open_position_on_symbol_exists');
   });
 
+  it('ignores stale local open positions in PAPER pre-trade caps and same-symbol guard', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'pretrade-paper-orphan-open@example.com', password: 'hashed-pass' },
+    });
+    const marketUniverse = await prisma.marketUniverse.create({
+      data: {
+        userId: user.id,
+        name: 'Paper orphan universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const symbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: user.id,
+        marketUniverseId: marketUniverse.id,
+        name: 'Paper orphan group',
+        symbols: ['BTCUSDT'],
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'Paper orphan bot',
+        symbolGroupId: symbolGroup.id,
+        mode: 'PAPER',
+        marketType: 'FUTURES',
+        isActive: true,
+      },
+    });
+
+    await prisma.position.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        symbol: 'BTCUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        syncState: 'ORPHAN_LOCAL',
+        continuityState: 'REPAIR_ONLY_CLEANUP',
+        entryPrice: 60_000,
+        quantity: 0.1,
+        leverage: 3,
+        managementMode: 'BOT_MANAGED',
+      },
+    });
+
+    const decision = await analyzePreTrade({
+      userId: user.id,
+      botId: bot.id,
+      symbol: 'BTCUSDT',
+      mode: 'PAPER',
+      maxOpenPositionsPerUser: 1,
+      maxOpenPositionsPerBot: 1,
+    });
+
+    expect(decision.allowed).toBe(true);
+    expect(decision.metrics).toEqual({
+      userOpenPositions: 0,
+      botOpenPositions: 0,
+      hasOpenPositionOnSymbol: false,
+    });
+    expect(decision.reasons).not.toContain('user_open_positions_limit_reached');
+    expect(decision.reasons).not.toContain('bot_open_positions_limit_reached');
+    expect(decision.reasons).not.toContain('open_position_on_symbol_exists');
+  });
+
   it('counts owned LIVE exchange-synced imports for bot open-position limits', async () => {
     const user = await prisma.user.create({
       data: { email: 'pretrade-live-imported-count@example.com', password: 'hashed-pass' },

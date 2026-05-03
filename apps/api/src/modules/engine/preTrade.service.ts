@@ -142,7 +142,7 @@ export const invalidatePreTradeOpenPositionCountCache = (input?: { userId?: stri
 class PrismaPreTradeReadStore implements PreTradeReadStore {
   async countOpenByUser(userId: string) {
     return prisma.position.count({
-      where: { userId, status: 'OPEN' },
+      where: { userId, status: 'OPEN', syncState: 'IN_SYNC' },
     });
   }
 
@@ -180,7 +180,7 @@ class PrismaPreTradeReadStore implements PreTradeReadStore {
 
   async countOpenByBot(userId: string, botId: string, mode: 'PAPER' | 'LIVE') {
     const directCount = await prisma.position.count({
-      where: { userId, botId, status: 'OPEN' },
+      where: { userId, botId, status: 'OPEN', syncState: 'IN_SYNC' },
     });
     if (mode !== 'LIVE') return directCount;
 
@@ -195,6 +195,7 @@ class PrismaPreTradeReadStore implements PreTradeReadStore {
           in: ownershipScope.ownedSymbols,
         },
         status: 'OPEN',
+        syncState: 'IN_SYNC',
         origin: 'EXCHANGE_SYNC',
         managementMode: 'BOT_MANAGED',
         AND: [
@@ -222,14 +223,14 @@ class PrismaPreTradeReadStore implements PreTradeReadStore {
   }) {
     if (!input.botId) {
       const found = await prisma.position.findFirst({
-        where: { userId: input.userId, symbol: input.symbol, status: 'OPEN' },
+        where: { userId: input.userId, symbol: input.symbol, status: 'OPEN', syncState: 'IN_SYNC' },
         select: { id: true },
       });
       return Boolean(found);
     }
 
     const directFound = await prisma.position.findFirst({
-      where: { userId: input.userId, botId: input.botId, symbol: input.symbol, status: 'OPEN' },
+      where: { userId: input.userId, botId: input.botId, symbol: input.symbol, status: 'OPEN', syncState: 'IN_SYNC' },
       select: { id: true },
     });
     if (directFound) return true;
@@ -257,6 +258,7 @@ class PrismaPreTradeReadStore implements PreTradeReadStore {
         botId: null,
         symbol: input.symbol,
         status: 'OPEN',
+        syncState: 'IN_SYNC',
         origin: 'EXCHANGE_SYNC',
         managementMode: 'BOT_MANAGED',
         AND: [
