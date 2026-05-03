@@ -75,8 +75,8 @@ Additional cross-project standards synced from `!template`:
 - `docs/security/secure-development-lifecycle.md`
 - `docs/ux/evidence-driven-ux-review.md`
 
-## Governance Addendum
+## Existing Project Adoption
 
-## Governance Addendum
-
-## Governance Addendum
+- `governance/existing-project-adoption-playbook.md`
+- `governance/agent-readiness-checklist.md`
+- `governance/template-adoption-decision-log.md` (optional for existing repos)

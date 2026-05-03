@@ -208,3 +208,7 @@ Useful overrides:
 - Added Binance API-key onboarding and troubleshooting runbook: `docs/operations/binance-api-key-onboarding-runbook.md`.
 
 
+
+## Existing Project Adoption
+
+When applying the shared agent template to this project, preserve current project truth and use `docs/governance/existing-project-adoption-playbook.md`. Before autonomous implementation starts, run `docs/governance/agent-readiness-checklist.md` and track any gaps in `docs/governance/template-adoption-decision-log.md` or the task board.

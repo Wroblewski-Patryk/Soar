@@ -19,3 +19,9 @@ This repository uses local, manual bootstrap artifacts.
 - Keep changes small and auditable in each new repo.
 - Keep subagent rules aligned with `docs/governance/subagent-delegation-policy.md`.
 
+
+## Existing Repository Adoption
+
+For an established project, use `docs/governance/existing-project-adoption-playbook.md` instead of treating the template as a clean-room bootstrap. Preserve current project truth, install the minimum agent context first, and turn mismatches into tracked tasks.
+
+Run `docs/governance/agent-readiness-checklist.md` before allowing autonomous implementation loops.
