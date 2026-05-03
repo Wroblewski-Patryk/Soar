@@ -6,15 +6,15 @@ const mocks = vi.hoisted(() => ({
       findMany: vi.fn(),
     },
   },
-  resolveEffectiveSymbolGroupSymbols: vi.fn(),
+  resolveEffectiveSymbolGroupSymbolsWithCatalog: vi.fn(),
 }));
 
 vi.mock('../../prisma/client', () => ({
   prisma: mocks.prisma,
 }));
 
-vi.mock('./runtimeSymbolUniverse.service', () => ({
-  resolveEffectiveSymbolGroupSymbols: mocks.resolveEffectiveSymbolGroupSymbols,
+vi.mock('./runtimeSymbolCatalogResolver.service', () => ({
+  resolveEffectiveSymbolGroupSymbolsWithCatalog: mocks.resolveEffectiveSymbolGroupSymbolsWithCatalog,
 }));
 
 import { resolveExternalPositionOwnerBySymbol } from './runtimeExternalPositionOwner.service';
@@ -27,7 +27,7 @@ import {
 describe('resolveExternalPositionOwnershipIndex', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mocks.resolveEffectiveSymbolGroupSymbols.mockImplementation(
+    mocks.resolveEffectiveSymbolGroupSymbolsWithCatalog.mockImplementation(
       ({ symbols }: { symbols?: string[] | null }) => symbols ?? []
     );
   });
@@ -199,6 +199,66 @@ describe('resolveExternalPositionOwnershipIndex', () => {
     });
   });
 
+  it('resolves ownership from canonical market-universe symbols through the catalog-aware scope resolver', async () => {
+    mocks.resolveEffectiveSymbolGroupSymbolsWithCatalog.mockImplementation(
+      async ({ symbols, marketUniverse }: { symbols?: string[] | null; marketUniverse?: { whitelist?: string[] | null } | null }) =>
+        symbols && symbols.length > 0 ? symbols : marketUniverse?.whitelist ?? []
+    );
+    mocks.prisma.bot.findMany.mockResolvedValue([
+      {
+        id: 'bot-catalog-universe',
+        manageExternalPositions: true,
+        walletId: 'wallet-catalog-universe',
+        apiKeyId: null,
+        wallet: {
+          apiKeyId: 'wallet-key-catalog',
+        },
+        symbolGroup: {
+          symbols: ['BTCUSDT'],
+          marketUniverse: null,
+        },
+        botMarketGroups: [
+          {
+            symbolGroup: {
+              symbols: [],
+              marketUniverse: {
+                exchange: 'BINANCE',
+                marketType: 'FUTURES',
+                baseCurrency: 'USDT',
+                filterRules: null,
+                whitelist: ['ETHUSDT', 'DOGEUSDT'],
+                blacklist: [],
+              },
+            },
+          },
+        ],
+      },
+    ]);
+
+    const result = await resolveExternalPositionOwnershipIndex('user-catalog-universe', 'LIVE');
+
+    expect(
+      getExternalPositionOwnership(result, {
+        apiKeyId: 'wallet-key-catalog',
+        symbol: 'DOGEUSDT',
+      })
+    ).toEqual({
+      status: 'OWNED',
+      botId: 'bot-catalog-universe',
+      walletId: 'wallet-catalog-universe',
+    });
+    expect(
+      getExternalPositionOwnership(result, {
+        apiKeyId: 'wallet-key-catalog',
+        symbol: 'BTCUSDT',
+      })
+    ).toEqual({
+      status: 'UNOWNED',
+      botId: null,
+      walletId: null,
+    });
+  });
+
   it('returns manual-only when linked live scope exists but wallet takeover is disabled', async () => {
     mocks.prisma.bot.findMany.mockResolvedValue([
       {
@@ -314,7 +374,7 @@ describe('resolveExternalPositionOwnershipIndex', () => {
 describe('resolveExternalPositionOwnerBySymbol', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mocks.resolveEffectiveSymbolGroupSymbols.mockImplementation(
+    mocks.resolveEffectiveSymbolGroupSymbolsWithCatalog.mockImplementation(
       ({ symbols }: { symbols?: string[] | null }) => symbols ?? []
     );
   });

@@ -3,6 +3,16 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 external-position ownership catalog-scope slice
+  `RUNTIME-AUDIT-08` is closed locally. External-position ownership proof now
+  resolves active canonical bot market groups through the shared
+  catalog-aware symbol resolver before building API-key+symbol ownership keys.
+  Market-universe-backed groups with empty direct `symbols` but
+  whitelist/filter catalog scope can now own and import all assigned exchange
+  positions consistently with dashboard/runtime reads. Validation PASS:
+  focused ownership regression (`9/9`), broader reconciliation/takeover pack
+  (`41/41`), and API typecheck. Evidence:
+  `docs/planning/runtime-audit-08-external-position-ownership-catalog-scope-task-2026-05-03.md`.
 - 2026-05-03 runtime position automation symbol-scope slice
   `RUNTIME-AUDIT-07` is closed locally. Runtime position automation now
   resolves an owned position's configured bot symbol scope from active

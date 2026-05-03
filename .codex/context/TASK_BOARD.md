@@ -20,6 +20,17 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-08 fix(api-bots): resolve imported LIVE ownership with catalog scope`
+  - Scope: closed the next LIVE import ownership drift. External-position
+    ownership proof now resolves active canonical bot market groups through
+    the shared catalog-aware symbol resolver before building API-key+symbol
+    ownership keys. Market-universe-backed groups with empty direct `symbols`
+    but whitelist/filter catalog scope can now own and import all assigned
+    exchange positions consistently with dashboard/runtime reads. Validation
+    PASS: focused ownership regression (`9/9`), broader
+    reconciliation/takeover pack (`41/41`), and API typecheck. Evidence:
+    `docs/planning/runtime-audit-08-external-position-ownership-catalog-scope-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-07 fix(api-engine): fail closed off-scope runtime position automation`
   - Scope: closed the next money-impacting automation/read parity drift.
     Runtime position automation now resolves an owned position's configured

@@ -1,5 +1,6 @@
 import { prisma } from '../../prisma/client';
-import { resolveEffectiveSymbolGroupSymbols } from './runtimeSymbolUniverse.service';
+import { Exchange, TradeMarket } from '@prisma/client';
+import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from './runtimeSymbolCatalogResolver.service';
 
 export type ExternalPositionOwnership =
   | {
@@ -33,8 +34,8 @@ type Candidate = {
 type SymbolGroupScope = {
   symbols: string[];
   marketUniverse: {
-    exchange?: unknown;
-    marketType?: unknown;
+    exchange?: Exchange | null;
+    marketType?: TradeMarket | null;
     baseCurrency?: string | null;
     filterRules?: unknown;
     whitelist?: string[] | null;
@@ -228,6 +229,7 @@ export const resolveExternalPositionOwnershipIndex = async (
   });
 
   const candidateByExternalOwnershipKey = new Map<string, Map<string, Candidate>>();
+  const catalogSymbolsCache = new Map<string, string[]>();
 
   for (const bot of bots) {
     const effectiveApiKeyId =
@@ -256,10 +258,13 @@ export const resolveExternalPositionOwnershipIndex = async (
           : [];
     const resolvedSymbols = new Set<string>();
     for (const scope of symbolScopes) {
-      for (const symbol of resolveEffectiveSymbolGroupSymbols({
-        symbols: scope.symbols,
-        marketUniverse: scope.marketUniverse,
-      })) {
+      for (const symbol of await resolveEffectiveSymbolGroupSymbolsWithCatalog(
+        {
+          symbols: scope.symbols,
+          marketUniverse: scope.marketUniverse,
+        },
+        catalogSymbolsCache
+      )) {
         resolvedSymbols.add(symbol);
       }
     }

@@ -6,7 +6,7 @@
 - Source path: `apps/api/src/modules/bots`
 - Owner: backend/trading-domain
 - Last updated: 2026-05-03
-- Related planning task: `RUNTIME-AUDIT-06`
+- Related planning task: `RUNTIME-AUDIT-08`
 
 ## Canonical Architecture Linkage
 Canonical runtime topology and ownership rules live in:
@@ -117,6 +117,11 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
   - lower market-group `executionOrder`,
   - earlier bot `createdAt`,
   - lexical bot id tie-break.
+- External-position ownership proof (`resolveExternalPositionOwnershipIndex`)
+  must resolve active canonical bot market groups through the shared
+  catalog-aware configured symbol resolver before building API-key+symbol
+  ownership keys. Market-universe-backed groups with empty direct `symbols`
+  but whitelist/filter catalog scope are valid ownership scope.
 - Close action (`closeBotRuntimeSessionPosition`) is fail-closed:
   - allowed only for `OPEN + BOT_MANAGED + wallet-compatible` rows owned directly or through external deterministic mapping,
   - allowed only when the target symbol belongs to the selected bot's active
