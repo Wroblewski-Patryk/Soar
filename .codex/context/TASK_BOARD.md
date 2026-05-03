@@ -20,6 +20,17 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-88 fix(api-positions): scope reconciliation owner cleanup by market`
+  - Scope: closed a BUILDER-mode LIVE reconciliation cleanup ownership drift.
+    Owner cleanup candidates for open synced orders and local managed positions
+    are now seeded only from the reconciled canonical market prefix plus legacy
+    unscoped ownership keys, excluding other canonical market prefixes on the
+    same API key. This prevents a FUTURES reconciliation pass from checking or
+    closing SPOT-only owner cleanup targets. Validation PASS: live position
+    reconciliation suite (`30/30`), API typecheck, repository guardrails, lint,
+    and diff review. Evidence:
+    `docs/planning/runtime-audit-88-reconciliation-owner-market-scope-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-87 fix(api-positions): scope stale reconciliation scans by market`
   - Scope: closed an ARCHITECT-mode LIVE reconciliation write-path drift. LIVE
     position reconciliation stale synced-position scans now receive the synced

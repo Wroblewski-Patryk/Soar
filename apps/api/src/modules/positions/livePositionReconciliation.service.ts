@@ -5,15 +5,14 @@ import {
   fetchExchangeTradeHistorySnapshotByApiKeyId,
 } from './positions.service';
 import { getExternalPositionOwnership } from '../bots/runtimeExternalPositionOwner.service';
-import {
-  resolveExternalSyncMissingCloseAttribution,
-} from './positionCloseAttribution';
+import { resolveExternalSyncMissingCloseAttribution } from './positionCloseAttribution';
 import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
 import {
   buildPositionIdentity,
   buildImportedExternalPositionMarketPrefix,
   buildImportedExternalPositionIds,
   extractSymbolFromExternalId,
+  isImportedExternalPositionKeyInMarketScope,
   normalizeImportedLeverage,
   normalizeSymbol,
   resolveCanonicalEntryPrice,
@@ -418,7 +417,7 @@ export const reconcileExternalPositionsFromExchange = async (
       };
       const ownedOwnersByKey = new Map<string, { botId: string; walletId: string }>();
       for (const [ownershipKey, ownership] of ownershipIndex.entries()) {
-        if (!ownershipKey.startsWith(`${apiKey.id}:`)) continue;
+        if (!isImportedExternalPositionKeyInMarketScope({ externalId: ownershipKey, apiKeyId: apiKey.id, marketType: apiKey.marketType ?? 'FUTURES' })) continue;
         if (ownership.status !== 'OWNED') continue;
         ownedOwnersByKey.set(buildOwnerIdentity(ownership.botId, ownership.walletId), {
           botId: ownership.botId,

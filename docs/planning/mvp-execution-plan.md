@@ -210,6 +210,15 @@ Rule: fix/cleanup/update first, then feature delivery.
   pass from marking same-api-key SPOT rows stale. Validation PASS: live
   position reconciliation suite (`29/29`), API typecheck, repository
   guardrails, lint, and diff review.
+- 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-88` with
+  `docs/planning/runtime-audit-88-reconciliation-owner-market-scope-task-2026-05-04.md`.
+  Owner cleanup candidates for open synced orders and local managed positions
+  are now seeded only from the reconciled canonical market prefix plus legacy
+  unscoped ownership keys, excluding other canonical market prefixes on the
+  same API key. This prevents a FUTURES reconciliation pass from checking or
+  closing SPOT-only owner cleanup targets. Validation PASS: live position
+  reconciliation suite (`30/30`), API typecheck, repository guardrails, lint,
+  and diff review.
 - 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-15` with
   `docs/planning/runtime-audit-15-close-fee-position-scope-task-2026-05-03.md`.
   Runtime close realized-PnL now aggregates entry fees by owned position

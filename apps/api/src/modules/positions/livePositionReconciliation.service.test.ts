@@ -8,6 +8,7 @@ import {
 import {
   buildImportedExternalPositionId,
   extractSymbolFromExternalId,
+  isImportedExternalPositionKeyInMarketScope,
   parseImportedExternalPositionId,
 } from './livePositionReconciliation.helpers';
 import { prisma } from '../../prisma/client';
@@ -71,6 +72,21 @@ describe('imported external position id helpers', () => {
     });
     expect(extractSymbolFromExternalId('key-1:FUTURES:DOGEUSDT:SHORT')).toBe('DOGEUSDT');
     expect(extractSymbolFromExternalId('key-1:DOGEUSDT:SHORT')).toBe('DOGEUSDT');
+    expect(isImportedExternalPositionKeyInMarketScope({
+      externalId: 'key-1:FUTURES:BTCUSDT',
+      apiKeyId: 'key-1',
+      marketType: 'FUTURES',
+    })).toBe(true);
+    expect(isImportedExternalPositionKeyInMarketScope({
+      externalId: 'key-1:ETHUSDT',
+      apiKeyId: 'key-1',
+      marketType: 'FUTURES',
+    })).toBe(true);
+    expect(isImportedExternalPositionKeyInMarketScope({
+      externalId: 'key-1:SPOT:ETHUSDT',
+      apiKeyId: 'key-1',
+      marketType: 'FUTURES',
+    })).toBe(false);
   });
 });
 
@@ -1845,6 +1861,80 @@ describe('reconcileExternalPositionsFromExchange', () => {
       'pos-live-stale-bnb-fallback',
       new Date('2026-03-23T02:00:00.000Z')
     );
+  });
+
+  it('ignores other-market owners when seeding reconciliation cleanup candidates', async () => {
+    const listOpenSyncedOrdersForOwner = vi.fn(async () => []);
+    const listOpenLocalManagedPositionsForOwner = vi.fn(async () => []);
+
+    await reconcileExternalPositionsFromExchange({
+      listSyncedApiKeys: vi.fn(async () => [
+        {
+          id: 'key-owner-market-scope-1',
+          userId: 'user-owner-market-scope-1',
+          marketType: 'FUTURES' as const,
+        },
+      ]),
+      resolveOwnershipIndexForUser: vi.fn(async () =>
+        new Map([
+          [
+            'key-owner-market-scope-1:FUTURES:BTCUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-owner-futures-1',
+              walletId: 'wallet-owner-futures-1',
+            },
+          ],
+          [
+            'key-owner-market-scope-1:SPOT:ETHUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-owner-spot-1',
+              walletId: 'wallet-owner-spot-1',
+            },
+          ],
+          [
+            'key-owner-market-scope-1:DOGEUSDT',
+            {
+              status: 'OWNED' as const,
+              botId: 'bot-owner-legacy-1',
+              walletId: 'wallet-owner-legacy-1',
+            },
+          ],
+        ])
+      ),
+      fetchPositionsForApiKey: vi.fn(async () => ({ positions: [] })),
+      fetchOpenOrdersForApiKey: vi.fn(async () => []),
+      findOpenSyncedPositionByExternalId: vi.fn(async () => null),
+      updateSyncedPosition: vi.fn(async () => undefined),
+      createSyncedPosition: vi.fn(async () => undefined),
+      listOpenSyncedPositionsForApiKey: vi.fn(async () => []),
+      markMissingSyncedPosition: vi.fn(async () => undefined),
+      closeStaleSyncedPosition: vi.fn(async () => undefined),
+      upsertSyncedOpenOrder: vi.fn(async () => undefined),
+      listOpenSyncedOrdersForOwner,
+      markStaleSyncedOrderUnresolved: vi.fn(async () => undefined),
+      listOpenLocalManagedPositionsForOwner,
+      closeStaleLocalManagedPosition: vi.fn(async () => undefined),
+      now: () => new Date('2026-03-23T02:00:00.000Z'),
+    });
+
+    expect(listOpenSyncedOrdersForOwner).toHaveBeenCalledTimes(2);
+    expect(listOpenSyncedOrdersForOwner).toHaveBeenCalledWith({
+      userId: 'user-owner-market-scope-1',
+      botId: 'bot-owner-futures-1',
+      walletId: 'wallet-owner-futures-1',
+    });
+    expect(listOpenSyncedOrdersForOwner).toHaveBeenCalledWith({
+      userId: 'user-owner-market-scope-1',
+      botId: 'bot-owner-legacy-1',
+      walletId: 'wallet-owner-legacy-1',
+    });
+    expect(listOpenLocalManagedPositionsForOwner).not.toHaveBeenCalledWith({
+      userId: 'user-owner-market-scope-1',
+      botId: 'bot-owner-spot-1',
+      walletId: 'wallet-owner-spot-1',
+    });
   });
 
   it('assigns different exact owners for different symbols under the same api key', async () => {

@@ -3,6 +3,16 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 reconciliation owner cleanup market-scope slice
+  `RUNTIME-AUDIT-88` is closed locally. Owner cleanup candidates for open
+  synced orders and local managed positions are now seeded only from the
+  reconciled canonical market prefix plus legacy unscoped ownership keys,
+  excluding other canonical market prefixes on the same API key. This prevents
+  a FUTURES reconciliation pass from checking or closing SPOT-only owner
+  cleanup targets. Validation PASS: live position reconciliation suite
+  (`30/30`), API typecheck, repository guardrails, lint, and diff review.
+  Evidence:
+  `docs/planning/runtime-audit-88-reconciliation-owner-market-scope-task-2026-05-04.md`.
 - 2026-05-04 reconciliation stale-position market-scope slice
   `RUNTIME-AUDIT-87` is closed locally. LIVE position reconciliation stale
   synced-position scans now receive the synced API-key market type and include

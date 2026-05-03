@@ -88,6 +88,18 @@ export const buildImportedExternalPositionMarketPrefix = (params: {
   marketType: TradeMarket;
 }) => `${params.apiKeyId.trim()}:${params.marketType}:`;
 
+export const isImportedExternalPositionKeyInMarketScope = (params: {
+  externalId: string;
+  apiKeyId: string;
+  marketType: TradeMarket;
+}) => {
+  const apiKeyPrefix = `${params.apiKeyId.trim()}:`;
+  if (!params.externalId.startsWith(apiKeyPrefix)) return false;
+  if (params.externalId.startsWith(buildImportedExternalPositionMarketPrefix(params))) return true;
+  return !params.externalId.startsWith(buildImportedExternalPositionMarketPrefix({ ...params, marketType: 'FUTURES' })) &&
+    !params.externalId.startsWith(buildImportedExternalPositionMarketPrefix({ ...params, marketType: 'SPOT' }));
+};
+
 export const buildLegacyImportedExternalPositionSymbolPrefix = (params: {
   apiKeyId: string;
   symbol: string;
