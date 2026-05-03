@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-53 fix(api-bots): preserve portfolio close points under monitoring row caps`
+  - 2026-05-03: Closed a BUILDER-mode portfolio dashboard history drift. Bot
+    portfolio history now composes close points from full scoped closed-position
+    DB truth instead of capped monitoring aggregate visible rows, so a bot with
+    more than 500 closed positions still shows close-point history aligned with
+    closed-count and realized-PnL summaries. Validation PASS: 501-close
+    portfolio history e2e (`3/3`), API typecheck, repository guardrails, lint,
+    and diff review. Evidence:
+    `docs/planning/runtime-audit-53-portfolio-history-close-points-limit-task-2026-05-03.md`.
 - [x] `RUNTIME-AUDIT-52 fix(api-bots): preserve aggregate symbols-tracked under item limits`
   - 2026-05-03: Closed a TESTER-mode dashboard aggregate metadata drift.
     Runtime monitoring aggregate `sessionDetail.symbolsTracked` now composes

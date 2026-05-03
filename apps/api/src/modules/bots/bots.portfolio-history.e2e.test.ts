@@ -170,6 +170,98 @@ describe('Bots portfolio history endpoint', () => {
     );
   });
 
+  it('keeps PAPER close points complete when monitoring rows are capped', async () => {
+    const ownerEmail = 'bots-portfolio-history-paper-full-close@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({
+      where: { email: ownerEmail },
+      select: { id: true },
+    });
+
+    const strategyId = await createStrategy(owner, 'Portfolio History Full Close Strategy');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    const walletId = await createWalletForContext(ownerEmail, {
+      mode: 'PAPER',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+    });
+    await prisma.wallet.update({
+      where: { id: walletId },
+      data: {
+        paperInitialBalance: 1_000,
+        paperResetAt: new Date('2026-05-01T09:00:00.000Z'),
+      },
+    });
+
+    const createRes = await owner.post('/dashboard/bots').send(
+      createPayload({
+        strategyId,
+        marketGroupId,
+        walletId,
+      })
+    );
+    expect(createRes.status).toBe(201);
+    const botId = createRes.body.id as string;
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-05-01T09:00:00.000Z'),
+        lastHeartbeatAt: new Date('2026-05-01T20:00:00.000Z'),
+      },
+    });
+
+    await prisma.botRuntimeSymbolStat.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        sessionId: session.id,
+        symbol: 'BTCUSDT',
+        totalSignals: 501,
+        longEntries: 501,
+        closedTrades: 501,
+        snapshotAt: new Date('2026-05-01T20:00:00.000Z'),
+      },
+    });
+
+    await prisma.position.createMany({
+      data: Array.from({ length: 501 }, (_, index) => ({
+        userId: ownerUser.id,
+        botId,
+        walletId,
+        strategyId,
+        symbol: index % 2 === 0 ? 'BTCUSDT' : 'ETHUSDT',
+        side: 'LONG' as const,
+        status: 'CLOSED' as const,
+        entryPrice: 60_000,
+        quantity: 0.01,
+        leverage: 1,
+        realizedPnl: 1,
+        openedAt: new Date(Date.UTC(2026, 4, 1, 9, index)),
+        closedAt: new Date(Date.UTC(2026, 4, 1, 9, index, 30)),
+        managementMode: 'BOT_MANAGED' as const,
+      })),
+    });
+
+    const historyRes = await owner.get(`/dashboard/bots/${botId}/portfolio-history`);
+    expect(historyRes.status).toBe(200);
+    expect(historyRes.body.summary.closedPositionCount).toBe(501);
+    expect(historyRes.body.summary.realizedPnl).toBe(501);
+    expect(
+      (historyRes.body.points as Array<{ type: string }>).filter((point) => point.type === 'CLOSE')
+    ).toHaveLength(501);
+    expect(historyRes.body.points.at(-1)).toEqual(
+      expect.objectContaining({
+        type: 'CURRENT',
+        realizedPnl: 501,
+      })
+    );
+  });
+
   it('returns LIVE history with wallet capital markers and ownership isolation', async () => {
     const ownerEmail = 'bots-portfolio-history-live@example.com';
     const owner = await registerAndLogin(ownerEmail);

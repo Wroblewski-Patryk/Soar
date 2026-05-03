@@ -2,6 +2,8 @@ import { WalletCashflowSource } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import { getOwnedBotWithStrategyProjection } from './bots.repository';
 import { getBotRuntimeMonitoringAggregate } from './runtimeMonitoringAggregateRead.service';
+import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from './runtimeSymbolCatalogResolver.service';
+import { normalizeSymbols } from './runtimeSymbolUniverse.service';
 
 const liveMarkerSources = new Set<WalletCashflowSource>([
   WalletCashflowSource.DEPOSIT,
@@ -67,7 +69,47 @@ export const getBotPortfolioHistory = async (userId: string, botId: string) => {
       ? aggregate.positions.summary.unrealizedPnl
       : 0;
   const startBalance = referenceBalance != null ? Math.max(0, referenceBalance - realizedPnl) : null;
-  const historyItems = [...(aggregate?.positions.historyItems ?? [])].sort((left, right) => {
+  const configuredSymbolGroup =
+    bot.botMarketGroups.find((link) => link.isEnabled && link.lifecycleStatus === 'ACTIVE')?.symbolGroup ??
+    bot.symbolGroup ??
+    null;
+  const scopedSymbols = normalizeSymbols(
+    configuredSymbolGroup
+      ? await resolveEffectiveSymbolGroupSymbolsWithCatalog(configuredSymbolGroup, new Map<string, string[]>())
+      : []
+  );
+  const historyItems = await prisma.position.findMany({
+    where: {
+      userId,
+      managementMode: 'BOT_MANAGED',
+      status: 'CLOSED',
+      closedAt: {
+        gte: startedAt,
+        lte: finishedAt,
+      },
+      ...(scopedSymbols.length > 0 ? { symbol: { in: scopedSymbols } } : {}),
+      OR: [
+        { botId: bot.id },
+        ...(bot.mode === 'LIVE' && bot.walletId
+          ? [
+              {
+                botId: null,
+                walletId: bot.walletId,
+              },
+            ]
+          : []),
+      ],
+    },
+    orderBy: [{ closedAt: 'asc' }, { id: 'asc' }],
+    select: {
+      id: true,
+      symbol: true,
+      realizedPnl: true,
+      closedAt: true,
+      closeReason: true,
+    },
+  });
+  const sortedHistoryItems = [...historyItems].sort((left, right) => {
     const leftTs = toDate(left.closedAt)?.getTime() ?? 0;
     const rightTs = toDate(right.closedAt)?.getTime() ?? 0;
     if (leftTs !== rightTs) return leftTs - rightTs;
@@ -87,7 +129,7 @@ export const getBotPortfolioHistory = async (userId: string, botId: string) => {
             label: 'Lifecycle start',
             symbol: null,
           },
-          ...historyItems.map((item) => {
+          ...sortedHistoryItems.map((item) => {
             cumulativeRealizedPnl += item.realizedPnl ?? 0;
             return {
               timestamp: toIsoString(item.closedAt) ?? finishedAt.toISOString(),

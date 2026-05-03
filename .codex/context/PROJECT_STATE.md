@@ -3,6 +3,14 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 portfolio close-point history limit slice `RUNTIME-AUDIT-53`
+  is closed locally. Bot portfolio history now composes chart close points from
+  full scoped closed-position DB truth instead of capped monitoring aggregate
+  visible rows, so `points`, closed-position count, and realized PnL remain
+  aligned when a bot has more than 500 closed positions. Validation PASS:
+  501-close portfolio history e2e (`3/3`), API typecheck, repository
+  guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-53-portfolio-history-close-points-limit-task-2026-05-03.md`.
 - 2026-05-03 aggregate symbols-tracked limit slice `RUNTIME-AUDIT-52` is
   closed locally. Runtime monitoring aggregate `sessionDetail.symbolsTracked`
   now composes full session metadata instead of visible aggregate symbol rows,
