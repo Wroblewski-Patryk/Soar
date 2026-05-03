@@ -3,6 +3,17 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 runtime position symbol-level strategy display slice
+  `RUNTIME-AUDIT-26` is closed locally. Runtime position reads now surface
+  canonical symbol-level DCA/TTP/TSL display plans for strategy-null positions
+  when active `BotMarketGroup` / `MarketGroupStrategyLink` scope resolves the
+  selected symbol, while keeping `actionable` fail-closed without an
+  executable strategy identity and preserving the stale legacy fallback guard.
+  Validation PASS: failing-then-passing canonical strategy-null TTP regression
+  and focused runtime strategy context e2e (`5/5`), broader bot runtime/read
+  pack (`37/37`), API typecheck, repository guardrails, lint, and diff review.
+  Evidence:
+  `docs/planning/runtime-audit-26-runtime-position-symbol-strategy-display-task-2026-05-03.md`.
 - 2026-05-03 market universe input normalization slice `RUNTIME-AUDIT-25` is
   closed locally. Market universe create/update DTOs now normalize
   `baseCurrency`, `whitelist`, and `blacklist` at the API boundary, so

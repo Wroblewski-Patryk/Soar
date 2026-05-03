@@ -178,6 +178,16 @@ Rule: fix/cleanup/update first, then feature delivery.
   occurrence order for symbol lists. Validation PASS: failing-then-passing
   lowercase market universe regression, focused markets e2e (`16/16`), API
   typecheck, guardrails, lint, and diff review.
+- 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-26` with
+  `docs/planning/runtime-audit-26-runtime-position-symbol-strategy-display-task-2026-05-03.md`.
+  Runtime position reads now surface canonical symbol-level DCA/TTP/TSL
+  display plans for strategy-null positions when active `BotMarketGroup` /
+  `MarketGroupStrategyLink` scope resolves the selected symbol, while keeping
+  `actionable` fail-closed without an executable strategy identity and
+  preserving the stale legacy fallback guard. Validation PASS:
+  failing-then-passing canonical strategy-null TTP regression and focused
+  runtime strategy context e2e (`5/5`), broader bot runtime/read pack
+  (`37/37`), API typecheck, repository guardrails, lint, and diff review.
 
 ## Phase ETHDCA-2026-05-02 - LIVE DCA-First TSL Hardening (Closed 2026-05-02)
 - [x] `ETHDCA-01 fix(api-runtime): preserve LIVE DCA-first gating for trailing-stop close decisions`

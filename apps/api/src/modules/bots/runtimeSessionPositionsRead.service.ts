@@ -740,7 +740,13 @@ export const listBotRuntimeSessionPositions = async (
     const entryTrade = entryLegs[0] ?? positionTrades[0] ?? null;
     const exitTrade = exitLegs.at(-1) ?? (position.status === 'CLOSED' ? positionTrades.at(-1) ?? null : null);
     const effectiveStrategyId = position.strategyId ?? singleBotStrategyContextId;
-    const strategyAutomationContextResolved = resolveRuntimeStrategyAutomationContext(effectiveStrategyId);
+    const executableStrategyContextResolved = resolveRuntimeStrategyAutomationContext(effectiveStrategyId);
+    const symbolLevelStrategyContextResolved =
+      dcaPlanBySymbol.has(position.symbol) ||
+      trailingStopLevelsBySymbol.has(position.symbol) ||
+      trailingTakeProfitLevelsBySymbol.has(position.symbol);
+    const strategyAutomationContextResolved =
+      executableStrategyContextResolved || symbolLevelStrategyContextResolved;
     const dcaPlannedLevels =
       strategyAutomationContextResolved
         ? ((effectiveStrategyId ? dcaPlanByStrategyId.get(effectiveStrategyId) : null) ??
@@ -873,7 +879,7 @@ export const listBotRuntimeSessionPositions = async (
       actionable: resolveRuntimePositionActionable({
         continuityState: position.continuityState,
         botId: position.botId,
-        strategyId: effectiveStrategyId,
+        strategyId: executableStrategyContextResolved ? effectiveStrategyId : null,
       }),
       entryPrice: position.entryPrice,
       entryNotional: position.entryPrice * position.quantity,

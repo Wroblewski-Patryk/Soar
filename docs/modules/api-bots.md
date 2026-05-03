@@ -6,7 +6,7 @@
 - Source path: `apps/api/src/modules/bots`
 - Owner: backend/trading-domain
 - Last updated: 2026-05-03
-- Related planning task: `RUNTIME-AUDIT-16`
+- Related planning task: `RUNTIME-AUDIT-26`
 
 ## Canonical Architecture Linkage
 Canonical runtime topology and ownership rules live in:
@@ -199,6 +199,11 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
     entries,
   - stale legacy advanced-close rows must not overwrite canonical basic-close
     TTP/TSL symbol plans.
+  - strategy-null runtime positions may display canonical symbol-level
+    DCA/TTP/TSL plans when active `BotMarketGroup` /
+    `MarketGroupStrategyLink` scope resolves the selected symbol, but this
+    display context does not make the position executable; `actionable`
+    remains fail-closed until an executable strategy identity is available.
 - Drift policy:
   - legacy link state may exist for backward compatibility, but it cannot override canonical runtime topology in dashboard strategy contexts.
   - module should expose deterministic diagnostics/repair path for legacy-canonical divergence to support operations closure.
