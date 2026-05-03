@@ -217,11 +217,16 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
     legacy topology over canonical links.
 
 ## 18. Runtime Position Execution Venue Contract (`POSDRIFT-05`)
-- Runtime position reads and position automation resolve inherited execution
-  venue through the shared canonical runtime venue resolver:
+- Runtime signal-loop topology, runtime position reads, and position automation
+  resolve inherited execution venue through the shared canonical runtime venue
+  resolver:
   - active enabled `BotMarketGroup.symbolGroup.marketUniverse` first,
   - direct legacy `Bot.symbolGroup.marketUniverse` only when no canonical group
     exists.
+- Multiple canonical venues in a runtime topology input are ambiguous and must
+  fail closed instead of silently selecting one.
 - TTP, TSL, DCA, close automation, and selected-bot monitoring must not use a
   stale direct bot market projection when the bot has an active canonical
   market group.
+- PAPER/LIVE signal-loop open decisions must use the same venue contract as
+  pre-trade, manual order open, and position-management automation.

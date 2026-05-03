@@ -3,6 +3,15 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 runtime signal-loop venue drift slice `POSDRIFT-06` is closed
+  locally. Runtime signal-loop inherited execution context now uses the shared
+  canonical runtime venue resolver instead of a local
+  `botMarketGroups[0] ?? bot.symbolGroup` expression. PAPER/LIVE open topology
+  now fails closed when raw topology exposes multiple canonical venues and
+  preserves direct `Bot.symbolGroup` fallback only through the shared legacy
+  compatibility path. Validation PASS: focused runtime signal-loop defaults
+  test (`6/6`). Evidence:
+  `docs/planning/posdrift-06-runtime-signal-loop-canonical-venue-task-2026-05-03.md`.
 - 2026-05-03 execution-venue drift slice `POSDRIFT-05` is closed locally.
   Pre-trade LIVE bot config, manual order open context, runtime position reads,
   and runtime position automation now resolve venue from active canonical

@@ -19,6 +19,14 @@ Operational queue for one-task execution runs.
     equivalence (`2/2`), API typecheck, repository guardrails, and docs parity.
     Evidence:
     `docs/planning/live-paper-runtime-prod-audit-wallet-first-count-task-2026-05-03.md`.
+- [x] `POSDRIFT-06 fix(api-runtime): keep runtime signal-loop venue on shared canonical resolver`
+  - 2026-05-03: Closed the next architecture drift in the PAPER/LIVE open
+    pipeline. Runtime signal-loop inherited execution context now uses the
+    shared canonical runtime venue resolver, fails closed on multiple
+    canonical venues in raw topology, and preserves direct `Bot.symbolGroup`
+    only as shared legacy fallback. Validation PASS: focused runtime
+    signal-loop defaults test (`6/6`). Evidence:
+    `docs/planning/posdrift-06-runtime-signal-loop-canonical-venue-task-2026-05-03.md`.
 - [ ] `LIVEIMPORT-03 release(prod): promote imported-position provenance fix and read back ETH/DOGE`
   - Scope: promote commit `39146d2e` through the approved production workflow,
     verify API freshness directly, then use authenticated read-only dashboard
@@ -36,12 +44,15 @@ Operational queue for one-task execution runs.
     scope/market-universe/dynamic-stop/runtime-loop pack (`60/60`), and API
     typecheck. Evidence:
     `docs/planning/papersignal-01-canonical-symbol-stats-parity-task-2026-05-03.md`.
-- [ ] `WALLETBAL-01 fix(api-web): stabilize dashboard wallet account-balance display`
-  - Scope: audit the dashboard wallet account-balance source chain and
-    intermittent empty state: live balance fetch, snapshot persistence,
-    aggregate positions summary, web refresh/error handling, and stale/null
-    fallback display. Implement only the first confirmed defect with focused
-    API/web tests.
+- [x] `WALLETBAL-01 fix(api-runtime): stabilize LIVE wallet account-balance cache display semantics`
+  - 2026-05-03: Closed the confirmed dashboard wallet account-balance drift.
+    Runtime LIVE balance cache now stores raw exchange `accountBalance`
+    separately from allocated `referenceBalance`, so cache hits no longer show
+    FIXED/PERCENT allocation values as account balance while preserving
+    `freeCash` from allocated trading capital. Validation PASS: focused
+    runtime capital test (`15/15`), monitoring aggregate plus wallet e2e tests
+    (`19/19`), API typecheck, repository guardrails, and docs parity. Evidence:
+    `docs/planning/walletbal-01-live-account-balance-cache-task-2026-05-03.md`.
 - [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production`
   - 2026-05-03: Release task opened after operator request. Confirmed API
     redeploy runs migrations automatically through

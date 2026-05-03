@@ -20,6 +20,17 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `POSDRIFT-06 fix(api-runtime): keep runtime signal-loop venue on shared canonical resolver`
+  - Scope: closed the next architecture drift in the PAPER/LIVE open pipeline.
+    Runtime signal-loop inherited execution context now uses the shared
+    canonical runtime venue resolver instead of a local
+    `botMarketGroups[0] ?? bot.symbolGroup` expression. Ambiguous multiple
+    canonical venues fail closed in runtime topology, and direct legacy
+    `Bot.symbolGroup` remains fallback only through the shared resolver.
+    Validation PASS: focused runtime signal-loop defaults test (`6/6`).
+    Evidence:
+    `docs/planning/posdrift-06-runtime-signal-loop-canonical-venue-task-2026-05-03.md`.
+
 - [x] `POSDRIFT-05 fix(api-runtime): keep execution venue canonical across pre-trade/manual-open/automation`
   - Scope: closed the next confirmed position-management drift. Pre-trade LIVE
     bot config, manual order open context, runtime position reads, and runtime

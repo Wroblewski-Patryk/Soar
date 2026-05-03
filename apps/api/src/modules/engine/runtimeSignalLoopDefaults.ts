@@ -15,7 +15,10 @@ import {
   listOwnedExternalSymbolsForBot,
   resolveExternalPositionOwnershipIndex,
 } from '../bots/runtimeExternalPositionOwner.service';
-import { resolveInheritedRuntimeExecutionContext } from './runtimeBotExecutionContext';
+import {
+  resolveCanonicalRuntimeVenueContext,
+  resolveInheritedRuntimeExecutionContext,
+} from './runtimeBotExecutionContext';
 
 export type ActiveBotStrategy = {
   strategyId: string;
@@ -56,7 +59,7 @@ const resolveInheritedExecutionContext = (
   const resolved = resolveInheritedRuntimeExecutionContext({
     walletId: bot.walletId,
     wallet: bot.wallet,
-    venueContext: bot.botMarketGroups?.[0]?.symbolGroup.marketUniverse ?? bot.symbolGroup?.marketUniverse,
+    venueContext: resolveCanonicalRuntimeVenueContext(bot),
   });
   if (!resolved) return null;
   return resolved;

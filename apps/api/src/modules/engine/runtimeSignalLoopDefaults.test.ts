@@ -199,6 +199,115 @@ describe('listActiveRuntimeBots', () => {
     expect(topology).toEqual([]);
   });
 
+  it('fails closed when runtime topology exposes multiple canonical venues', async () => {
+    vi.mocked(listActiveRuntimeBotsRaw).mockResolvedValue([
+      {
+        id: 'bot-ambiguous-venues',
+        userId: 'user-1',
+        walletId: 'wallet-1',
+        mode: 'LIVE',
+        liveOptIn: true,
+        exchange: 'BINANCE',
+        paperStartBalance: 1000,
+        marketType: 'FUTURES',
+        maxOpenPositions: 1,
+        strategyId: 'legacy-strategy',
+        symbolGroupId: 'legacy-group',
+        strategy: null,
+        symbolGroup: {
+          id: 'legacy-group',
+          symbols: ['BTCUSDT'],
+          marketUniverse: {
+            exchange: 'BINANCE',
+            marketType: 'FUTURES',
+            baseCurrency: 'USDT',
+            filterRules: null,
+            whitelist: [],
+            blacklist: [],
+          },
+        },
+        botMarketGroups: [
+          {
+            id: 'canonical-futures',
+            symbolGroupId: 'canonical-futures-group',
+            maxOpenPositions: 1,
+            symbolGroup: {
+              id: 'canonical-futures-group',
+              symbols: ['BTCUSDT'],
+              marketUniverse: {
+                exchange: 'BINANCE',
+                marketType: 'FUTURES',
+                baseCurrency: 'USDT',
+                filterRules: null,
+                whitelist: [],
+                blacklist: [],
+              },
+            },
+            strategyLinks: [
+              {
+                id: 'link-futures',
+                strategyId: 'strategy-futures',
+                priority: 1,
+                weight: 1,
+                strategy: {
+                  id: 'strategy-futures',
+                  interval: '1m',
+                  config: { open: {} },
+                  leverage: 3,
+                  walletRisk: 1,
+                },
+              },
+            ],
+          },
+          {
+            id: 'canonical-spot',
+            symbolGroupId: 'canonical-spot-group',
+            maxOpenPositions: 1,
+            symbolGroup: {
+              id: 'canonical-spot-group',
+              symbols: ['ETHUSDT'],
+              marketUniverse: {
+                exchange: 'BINANCE',
+                marketType: 'SPOT',
+                baseCurrency: 'USDT',
+                filterRules: null,
+                whitelist: [],
+                blacklist: [],
+              },
+            },
+            strategyLinks: [
+              {
+                id: 'link-spot',
+                strategyId: 'strategy-spot',
+                priority: 2,
+                weight: 1,
+                strategy: {
+                  id: 'strategy-spot',
+                  interval: '1m',
+                  config: { open: {} },
+                  leverage: 1,
+                  walletRisk: 1,
+                },
+              },
+            ],
+          },
+        ],
+        wallet: {
+          id: 'wallet-1',
+          mode: 'LIVE',
+          exchange: 'BINANCE',
+          marketType: 'FUTURES',
+          baseCurrency: 'USDT',
+          paperInitialBalance: 1000,
+        },
+      },
+    ] as any);
+
+    const topology = await listActiveRuntimeBots();
+
+    expect(topology).toEqual([]);
+  });
+
   it('builds runtime context from canonical enabled strategy links', async () => {
     vi.mocked(listActiveRuntimeBotsRaw).mockResolvedValue([
       {
