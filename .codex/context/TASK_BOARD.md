@@ -20,6 +20,18 @@ Last updated: 2026-05-03
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-50 fix(api-bots): preserve symbol-stats open summary under item limits`
+  - Scope: closed a BUILDER-mode dashboard market/signal summary drift.
+    Runtime session symbol-stats now keep visible `items` limited while
+    composing live open-position summary metrics from the full configured
+    symbol scope, so hidden assigned symbols no longer disappear from
+    `summary.openPositionCount`, `summary.openPositionQty`, or persisted
+    `summary.unrealizedPnl`. Validation PASS: failing-then-passing `limit=1`
+    symbol-stats open summary regression, runtime-scope e2e (`13/13`),
+    monitoring aggregate e2e (`12/12`), API typecheck, repository guardrails,
+    lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-50-symbol-stats-open-summary-limit-task-2026-05-03.md`.
+
 - [x] `RUNTIME-AUDIT-49 fix(api-bots): preserve aggregate open-order counts under row limits`
   - Scope: closed a BUILDER-mode dashboard management-state drift. Runtime
     monitoring aggregate `positions.openOrdersCount` now uses full

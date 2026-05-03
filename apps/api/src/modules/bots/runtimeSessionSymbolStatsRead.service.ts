@@ -360,6 +360,7 @@ export const listBotRuntimeSessionSymbolStats = async (
     return emptyRuntimeSymbolStatsResponse(sessionId);
   }
   const symbols = normalizedSymbol ? [normalizedSymbol] : configuredSymbols.slice(0, query.limit);
+  const liveMetricSymbols = normalizedSymbol ? symbols : configuredSymbols;
   const statItems =
     !normalizedSymbol && symbols.length > 0
       ? await listRuntimeSymbolStatsRowsForSymbols({
@@ -369,22 +370,31 @@ export const listBotRuntimeSessionSymbolStats = async (
           symbols,
         })
       : items;
-  const [openPositions, latestTradeBySymbolRows, latestSignalEvents] = symbols.length
+  const liveMetricStatItems =
+    !normalizedSymbol && liveMetricSymbols.length > symbols.length
+      ? await listRuntimeSymbolStatsRowsForSymbols({
+          userId,
+          botId,
+          sessionId,
+          symbols: liveMetricSymbols,
+        })
+      : statItems;
+  const [openPositions, latestTradeBySymbolRows, latestSignalEvents] = liveMetricSymbols.length
     ? await getRuntimeSymbolLiveRows({
         userId,
         botId,
         sessionId,
-        symbols,
+        symbols: liveMetricSymbols,
         windowStart: session.startedAt,
         windowEnd,
       })
     : [[], [], []];
 
   const lastPriceBySymbol = new Map<string, number | null>(
-    statItems.map((item) => [item.symbol, item.lastPrice])
+    liveMetricStatItems.map((item) => [item.symbol, item.lastPrice])
   );
   const lastPriceObservedAtBySymbol = new Map<string, number | null>(
-    statItems.map((item) => [item.symbol, item.snapshotAt?.getTime() ?? null])
+    liveMetricStatItems.map((item) => [item.symbol, item.snapshotAt?.getTime() ?? null])
   );
   for (const symbol of symbols) {
     const ticker = getRuntimeTicker(symbol, {
@@ -598,6 +608,11 @@ export const listBotRuntimeSessionSymbolStats = async (
       lastPriceBySymbol,
       lastPriceObservedAtBySymbol,
     });
+  const aggregateLiveSummary = {
+    openPositionCount: [...openPositionCountBySymbol.values()].reduce((acc, value) => acc + value, 0),
+    openPositionQty: [...openPositionQtyBySymbol.values()].reduce((acc, value) => acc + value, 0),
+    unrealizedPnl: [...unrealizedPnlBySymbol.values()].reduce((acc, value) => acc + value, 0),
+  };
   const statBySymbol = new Map(statItems.map((item) => [item.symbol, item]));
   const readModel = composeRuntimeSymbolStatsReadModel({
     userId,
@@ -625,6 +640,7 @@ export const listBotRuntimeSessionSymbolStats = async (
     openPositionCountBySymbol,
     openPositionQtyBySymbol,
     unrealizedPnlBySymbol,
+    aggregateLiveSummary,
     lastPriceBySymbol,
     latestTradeAtBySymbol,
     latestSignalBySymbol,

@@ -229,6 +229,70 @@ describe('Bots runtime scope remediation contract', () => {
     ).toBe('EXCHANGE_SYNC');
   });
 
+  it('keeps runtime symbol-stats open-position summary truthful when visible symbols are limited', async () => {
+    const email = 'bot-runtime-symbol-stats-open-summary-limit@example.com';
+    const agent = await registerAndLogin(email);
+    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email } });
+
+    const strategyId = await createStrategy(agent, 'Runtime Symbol Stats Open Summary Limit');
+    const marketGroupId = await createMarketGroup(email, 'FUTURES');
+    const botRes = await agent.post('/dashboard/bots').send(createPayload({ strategyId, marketGroupId }));
+    expect(botRes.status).toBe(201);
+    const botId = botRes.body.id as string;
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-12T01:00:00.000Z'),
+      },
+    });
+
+    await prisma.position.createMany({
+      data: [
+        {
+          userId: ownerUser.id,
+          botId,
+          strategyId,
+          symbol: 'BTCUSDT',
+          side: 'LONG',
+          status: 'OPEN',
+          entryPrice: 60_000,
+          quantity: 0.01,
+          leverage: 1,
+          unrealizedPnl: 5,
+          openedAt: new Date('2026-04-12T01:05:00.000Z'),
+          managementMode: 'BOT_MANAGED',
+        },
+        {
+          userId: ownerUser.id,
+          botId,
+          strategyId,
+          symbol: 'ETHUSDT',
+          side: 'LONG',
+          status: 'OPEN',
+          entryPrice: 3_000,
+          quantity: 0.2,
+          leverage: 1,
+          unrealizedPnl: 7,
+          openedAt: new Date('2026-04-12T01:06:00.000Z'),
+          managementMode: 'BOT_MANAGED',
+        },
+      ],
+    });
+
+    const statsRes = await agent
+      .get(`/dashboard/bots/${botId}/runtime-sessions/${session.id}/symbol-stats`)
+      .query({ limit: 1 });
+    expect(statsRes.status).toBe(200);
+    expect(statsRes.body.items).toHaveLength(1);
+    expect(statsRes.body.summary.openPositionCount).toBe(2);
+    expect(statsRes.body.summary.openPositionQty).toBeCloseTo(0.21);
+    expect(statsRes.body.summary.unrealizedPnl).toBeCloseTo(12);
+  });
+
   it('updates canonical runtime graph mapping when strategyId and marketGroupId are changed via PUT', async () => {
     const email = 'bots-canonical-update-drift@example.com';
     const agent = await registerAndLogin(email);

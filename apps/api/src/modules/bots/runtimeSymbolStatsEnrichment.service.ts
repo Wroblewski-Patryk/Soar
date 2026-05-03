@@ -78,6 +78,11 @@ export const buildOpenPositionSymbolMetrics = (params: {
         position.symbol,
         (unrealizedPnlBySymbol.get(position.symbol) ?? 0) + pnl
       );
+    } else if (typeof position.unrealizedPnl === 'number' && Number.isFinite(position.unrealizedPnl)) {
+      unrealizedPnlBySymbol.set(
+        position.symbol,
+        (unrealizedPnlBySymbol.get(position.symbol) ?? 0) + position.unrealizedPnl
+      );
     }
     openPositionCountBySymbol.set(
       position.symbol,

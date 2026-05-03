@@ -3,6 +3,16 @@
 Last updated: 2026-05-03
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-03 symbol-stats open-summary limit slice `RUNTIME-AUDIT-50` is
+  closed locally. Runtime session symbol-stats now keep visible `items`
+  limited while composing live open-position summary metrics from the full
+  configured symbol scope, so dashboard market/signal summaries no longer hide
+  open positions, quantities, or persisted unrealized PnL from assigned symbols
+  outside the visible page. Validation PASS: failing-then-passing `limit=1`
+  symbol-stats open summary regression, runtime-scope e2e (`13/13`),
+  monitoring aggregate e2e (`12/12`), API typecheck, repository guardrails,
+  lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-50-symbol-stats-open-summary-limit-task-2026-05-03.md`.
 - 2026-05-03 aggregate open-order count limit slice `RUNTIME-AUDIT-49` is
   closed locally. Runtime monitoring aggregate `positions.openOrdersCount`
   now composes full current-state session open-order count truth using the

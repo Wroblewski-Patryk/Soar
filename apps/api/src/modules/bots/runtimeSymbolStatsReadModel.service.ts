@@ -95,6 +95,11 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
   openPositionCountBySymbol: Map<string, number>;
   openPositionQtyBySymbol: Map<string, number>;
   unrealizedPnlBySymbol: Map<string, number>;
+  aggregateLiveSummary?: {
+    openPositionCount: number;
+    openPositionQty: number;
+    unrealizedPnl: number;
+  };
   lastPriceBySymbol: Map<string, number | null>;
   latestTradeAtBySymbol: Map<string, Date | null>;
   latestSignalBySymbol: Map<string, RuntimeSymbolSignal>;
@@ -252,12 +257,15 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
     };
   });
 
-  const summaryUnrealizedPnl = items.reduce(
-    (acc, item) => acc + (Number.isFinite(item.unrealizedPnl) ? item.unrealizedPnl : 0),
-    0
-  );
-  const summaryOpenPositionCount = items.reduce((acc, item) => acc + item.openPositionCount, 0);
-  const summaryOpenPositionQty = items.reduce((acc, item) => acc + item.openPositionQty, 0);
+  const summaryUnrealizedPnl =
+    params.aggregateLiveSummary?.unrealizedPnl ??
+    items.reduce((acc, item) => acc + (Number.isFinite(item.unrealizedPnl) ? item.unrealizedPnl : 0), 0);
+  const summaryOpenPositionCount =
+    params.aggregateLiveSummary?.openPositionCount ??
+    items.reduce((acc, item) => acc + item.openPositionCount, 0);
+  const summaryOpenPositionQty =
+    params.aggregateLiveSummary?.openPositionQty ??
+    items.reduce((acc, item) => acc + item.openPositionQty, 0);
   const summaryRealizedPnl = params.aggregateSummary.realizedPnl ?? 0;
 
   return {
