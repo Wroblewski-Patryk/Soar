@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { buildRuntimeSymbolLiveOpenPositionScopes } from './botsRuntimeRead.repository';
 import {
+  buildRuntimeAggregateProjectedTradeItems,
   selectLatestRunningProjectionRows,
   sumRuntimeAggregateProjectedSymbolsTracked,
 } from './runtimeMonitoringAggregateRead.service';
@@ -231,6 +232,71 @@ describe('runtime aggregate projection helpers', () => {
 
     expect(projectedRows.map((item) => item.session.id)).toEqual(['completed', 'running-new']);
     expect(sumRuntimeAggregateProjectedSymbolsTracked(projectedRows)).toBe(5);
+  });
+
+  it('uses only projected rows for aggregate trade items', () => {
+    const rows = [
+      {
+        session: {
+          id: 'completed',
+          status: 'COMPLETED',
+          startedAt: new Date('2026-05-04T09:00:00.000Z'),
+          lastHeartbeatAt: null,
+          finishedAt: new Date('2026-05-04T09:30:00.000Z'),
+        },
+        trades: {
+          items: [
+            {
+              id: 'completed-trade',
+              executedAt: '2026-05-04T09:20:00.000Z',
+            },
+          ],
+        },
+      },
+      {
+        session: {
+          id: 'running-old',
+          status: 'RUNNING',
+          startedAt: new Date('2026-05-04T10:00:00.000Z'),
+          lastHeartbeatAt: new Date('2026-05-04T10:05:00.000Z'),
+          finishedAt: null,
+        },
+        trades: {
+          items: [
+            {
+              id: 'stale-running-trade',
+              executedAt: '2026-05-04T10:04:00.000Z',
+            },
+          ],
+        },
+      },
+      {
+        session: {
+          id: 'running-new',
+          status: 'RUNNING',
+          startedAt: new Date('2026-05-04T10:10:00.000Z'),
+          lastHeartbeatAt: new Date('2026-05-04T10:20:00.000Z'),
+          finishedAt: null,
+        },
+        trades: {
+          items: [
+            {
+              id: 'latest-running-trade',
+              executedAt: '2026-05-04T10:18:00.000Z',
+            },
+            {
+              id: 'completed-trade',
+              executedAt: '2026-05-04T09:20:00.000Z',
+            },
+          ],
+        },
+      },
+    ] as any[];
+
+    const projectedRows = selectLatestRunningProjectionRows(rows);
+    const tradeItems = buildRuntimeAggregateProjectedTradeItems(projectedRows);
+
+    expect(tradeItems.map((item) => item.id)).toEqual(['latest-running-trade', 'completed-trade']);
   });
 });
 

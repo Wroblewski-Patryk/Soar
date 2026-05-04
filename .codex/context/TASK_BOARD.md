@@ -20,6 +20,16 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-119 fix(api-bots): align aggregate running trade items`
+  - Scope: closed a BUILDER-mode runtime aggregate dashboard table/counter
+    drift. Aggregate trade table items now use the same latest-running
+    projection rows as trade totals and fees, so stale older RUNNING session
+    trade rows no longer remain visible after counters project to the newer
+    RUNNING session. Validation PASS: focused runtime session position unit
+    suite (`12/12`), API typecheck, repository guardrails, lint, and diff
+    review. Evidence:
+    `docs/planning/runtime-audit-119-aggregate-running-trade-items-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-118 fix(api-bots): align aggregate running symbols`
   - Scope: closed a BUILDER-mode runtime aggregate dashboard metadata drift.
     Aggregate `symbolsTracked` now uses the same latest-running projection rows

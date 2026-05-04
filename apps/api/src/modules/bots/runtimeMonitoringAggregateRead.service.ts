@@ -84,6 +84,27 @@ export const sumRuntimeAggregateProjectedSymbolsTracked = <
   rows: T[]
 ) => rows.reduce((acc, row) => acc + row.session.symbolsTracked, 0);
 
+export const buildRuntimeAggregateProjectedTradeItems = <
+  T extends {
+    trades: {
+      items: Array<{
+        id: string;
+        executedAt: Date | string | null;
+      }>;
+    };
+  },
+>(
+  rows: T[]
+) =>
+  uniqueById(rows.flatMap((row) => row.trades.items)).sort((left, right) =>
+    compareTimestampDescThenIdAsc(
+      toTimestamp(left.executedAt),
+      toTimestamp(right.executedAt),
+      left.id,
+      right.id
+    )
+  );
+
 const resolveAggregateSessionWindowEnd = (session: RuntimeSessionListItem) =>
   session.finishedAt ?? session.lastHeartbeatAt ?? session.startedAt;
 
@@ -578,20 +599,12 @@ export const getBotRuntimeMonitoringAggregate = async (
     paperResetAt: toDate(latestCapitalSummary?.paperResetAt),
   };
 
-  const tradeItems = uniqueById(completePayloadRows.flatMap((row) => row.trades.items)).sort(
-    (left, right) =>
-      compareTimestampDescThenIdAsc(
-        toTimestamp(left.executedAt),
-        toTimestamp(right.executedAt),
-        left.id,
-        right.id
-      )
-  );
   const totalOpenPositions = latestOpenPositionCount;
   const totalClosedPositions = historicalPositionRows.reduce((acc, row) => acc + row.positions.closedCount, 0);
   const totalPositions = totalOpenPositions + totalClosedPositions;
   const totalOpenOrders = Math.max(0, ...positionResponses.map((response) => response.openOrdersCount));
   const tradeTotalRows = selectLatestRunningProjectionRows(completePayloadRows);
+  const tradeItems = buildRuntimeAggregateProjectedTradeItems(tradeTotalRows);
   const totalTrades = tradeTotalRows.reduce((acc, row) => acc + row.trades.total, 0);
   const totalTradeFeesPaid = tradeTotalRows.reduce((acc, row) => acc + row.trades.feesPaid, 0);
   const windowFinishedAt = finishedAt ?? new Date();

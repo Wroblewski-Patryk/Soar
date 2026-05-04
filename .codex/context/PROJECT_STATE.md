@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 runtime aggregate trade item projection slice
+  `RUNTIME-AUDIT-119` is closed locally. Aggregate trade table items now use
+  the same latest-running projection rows as trade totals and fees, so stale
+  older RUNNING session trade rows no longer remain visible after counters
+  project to the newer RUNNING session. Validation PASS: focused runtime
+  session position unit suite (`12/12`), API typecheck, repository guardrails,
+  lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-119-aggregate-running-trade-items-task-2026-05-04.md`.
 - 2026-05-04 runtime aggregate symbols metadata slice `RUNTIME-AUDIT-118` is
   closed locally. Aggregate `symbolsTracked` now uses the same latest-running
   projection rows as duration and event metadata, so overlapping RUNNING
