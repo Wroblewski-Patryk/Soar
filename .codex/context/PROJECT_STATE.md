@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 LIVE order-trade update synced-market scope slice
+  `RUNTIME-AUDIT-95` is closed locally. Binance order-trade updates now resolve
+  local orders only when `syncState=IN_SYNC` and the order belongs to the
+  event's LIVE Binance market through wallet or bot scope, so stale
+  same-exchange-id local rows cannot receive fills or steal lifecycle updates
+  from the valid active order. Validation PASS: exchange-events suite (`6/6`),
+  API typecheck, repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-95-order-trade-update-order-scope-task-2026-05-04.md`.
 - 2026-05-04 LIVE account-update active-sync slice `RUNTIME-AUDIT-94` is
   closed locally. Binance account-update scope resolution now requires
   `syncState=IN_SYNC` beside `status=OPEN`, so stale same-symbol local rows

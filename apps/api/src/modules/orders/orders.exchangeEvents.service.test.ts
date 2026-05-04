@@ -86,6 +86,24 @@ describe('orders.exchangeEvents.service', () => {
         submittedAt: new Date('2026-04-26T20:00:00.000Z'),
       },
     });
+    const staleLocalOrder = await prisma.order.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        walletId: wallet.id,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'ORPHAN_LOCAL',
+        symbol: 'BTCUSDT',
+        side: 'BUY',
+        type: 'MARKET',
+        status: 'OPEN',
+        quantity: 0.1,
+        filledQuantity: 0,
+        exchangeOrderId: 'event-order-open-1',
+        submittedAt: new Date('2026-04-26T20:01:00.000Z'),
+      },
+    });
 
     const result = await applyLiveExchangeOrderTradeUpdateEvent({
       userId: user.id,
@@ -124,6 +142,12 @@ describe('orders.exchangeEvents.service', () => {
     });
     expect(updatedOrder.positionId).toBeTruthy();
     expect(updatedOrder.averageFillPrice).toBe(63_000);
+    const staleOrderAfterEvent = await prisma.order.findUniqueOrThrow({
+      where: { id: staleLocalOrder.id },
+    });
+    expect(staleOrderAfterEvent.status).toBe('OPEN');
+    expect(staleOrderAfterEvent.filledQuantity).toBe(0);
+    expect(staleOrderAfterEvent.positionId).toBeNull();
     const position = await prisma.position.findUniqueOrThrow({
       where: { id: updatedOrder.positionId! },
     });

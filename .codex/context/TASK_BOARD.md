@@ -20,6 +20,16 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-95 fix(api-orders): scope trade updates to synced live orders`
+  - Scope: closed a TESTER-mode LIVE order-trade update scope drift. Binance
+    order-trade updates now resolve local orders only when `syncState=IN_SYNC`
+    and the order belongs to the event's LIVE Binance market through wallet or
+    bot scope, so stale same-exchange-id local rows cannot receive fills or
+    steal lifecycle updates from the valid active order. Validation PASS:
+    exchange-events suite (`6/6`), API typecheck, repository guardrails, lint,
+    and diff review. Evidence:
+    `docs/planning/runtime-audit-95-order-trade-update-order-scope-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-94 fix(api-orders): scope account updates to synced positions`
   - Scope: closed a BUILDER-mode LIVE account-update active-truth drift.
     Binance account-update scope resolution now requires `syncState=IN_SYNC`

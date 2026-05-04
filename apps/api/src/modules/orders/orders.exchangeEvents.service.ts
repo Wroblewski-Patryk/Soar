@@ -265,6 +265,23 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
       userId: input.userId,
       exchangeOrderId: input.event.exchangeOrderId,
       symbol: normalizeSymbol(input.event.symbol),
+      syncState: 'IN_SYNC',
+      OR: [
+        {
+          wallet: {
+            mode: 'LIVE',
+            exchange: 'BINANCE',
+            marketType: input.event.marketType,
+          },
+        },
+        {
+          bot: {
+            mode: 'LIVE',
+            exchange: 'BINANCE',
+            marketType: input.event.marketType,
+          },
+        },
+      ],
     },
     orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
     include: {
