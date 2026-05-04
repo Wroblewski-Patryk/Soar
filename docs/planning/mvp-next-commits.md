@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-130 fix(web-ui): preserve empty manual pagination meta`
+  - 2026-05-04: Closed a TESTER-mode shared dashboard pagination contract
+    drift. `DataTable` manual pagination now preserves explicit external
+    `totalPages=0` for empty runtime metadata while keeping page callbacks
+    one-based, so empty dashboard trade history no longer gets normalized to a
+    fake page count. Validation PASS: focused `DataTable` suite (`4/4`),
+    focused dashboard component suite (`20/20`), web typecheck, repository
+    guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-130-manual-pagination-empty-meta-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-129 refactor(web-dashboard): share runtime trade meta builder`
   - 2026-05-04: Closed an ARCHITECT-mode dashboard runtime source-of-truth
     cleanup. Runtime trade metadata construction now lives in one shared

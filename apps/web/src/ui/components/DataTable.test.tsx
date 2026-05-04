@@ -63,6 +63,41 @@ describe("DataTable", () => {
     expect(screen.getByText("Rows: 1")).toBeInTheDocument();
   });
 
+  it("preserves zero total pages for empty manual pagination metadata", () => {
+    const columns: DataTableColumn<Row>[] = [
+      {
+        key: "name",
+        label: "Name",
+        accessor: (row) => row.name,
+      },
+    ];
+
+    render(
+      <I18nProvider>
+        <DataTable<Row>
+          rows={[]}
+          columns={columns}
+          getRowId={(row) => row.id}
+          emptyText="No trades"
+          paginationEnabled
+          manualPagination
+          page={1}
+          pageSize={10}
+          totalRows={0}
+          totalPages={0}
+          hasPrev={false}
+          hasNext={false}
+          paginationSummary={({ page, totalPages }) => `Page ${page}/${totalPages}`}
+        />
+      </I18nProvider>
+    );
+
+    expect(screen.getByText("Rows: 0")).toBeInTheDocument();
+    expect(screen.getByText("Page 1/0")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Previous" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Next" })).not.toBeInTheDocument();
+  });
+
   it("keeps columns dropdown open on checkbox toggle and closes only via trigger/outside/Escape", () => {
     const columns: DataTableColumn<Row & { exchange: string }>[] = [
       {

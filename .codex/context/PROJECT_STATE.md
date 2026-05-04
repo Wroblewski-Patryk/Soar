@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 empty manual pagination metadata slice `RUNTIME-AUDIT-130` is
+  closed locally. `DataTable` manual pagination now preserves explicit
+  external `totalPages=0` for empty runtime metadata while keeping page
+  callbacks one-based, so empty dashboard trade history no longer gets
+  normalized to a fake page count. Validation PASS: focused `DataTable` suite
+  (`4/4`), focused dashboard component suite (`20/20`), web typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-130-manual-pagination-empty-meta-task-2026-05-04.md`.
 - 2026-05-04 shared runtime trade metadata builder slice
   `RUNTIME-AUDIT-129` is closed locally. Runtime trade metadata construction
   now lives in one shared `home-live-widgets` helper used by both component

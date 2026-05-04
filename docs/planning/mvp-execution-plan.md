@@ -29,6 +29,14 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-130` with
+  `docs/planning/runtime-audit-130-manual-pagination-empty-meta-task-2026-05-04.md`.
+  `DataTable` manual pagination now preserves explicit external
+  `totalPages=0` for empty runtime metadata while keeping page callbacks
+  one-based, so empty dashboard trade history no longer gets normalized to a
+  fake page count. Validation PASS: focused `DataTable` suite (`4/4`),
+  focused dashboard component suite (`20/20`), web typecheck, repository
+  guardrails, lint, and diff review.
 - 2026-05-04: Closed `RUNTIME-AUDIT-129` with
   `docs/planning/runtime-audit-129-shared-trade-meta-builder-task-2026-05-04.md`.
   Runtime trade metadata construction now lives in one shared

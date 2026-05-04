@@ -241,12 +241,13 @@ export default function DataTable<T>({
     : Math.max(1, internalPageSize);
   const computedTotalPages = Math.max(1, Math.ceil(Math.max(totalRowsCount, 0) / effectivePageSize));
   const totalPages = manualPagination
-    ? Math.max(1, externalTotalPages ?? computedTotalPages)
+    ? Math.max(0, externalTotalPages ?? computedTotalPages)
     : computedTotalPages;
-  const effectivePage = Math.min(
-    Math.max(1, manualPagination ? externalPage ?? 1 : internalPage),
-    totalPages
-  );
+  const effectivePage = manualPagination
+    ? totalPages === 0
+      ? Math.max(1, externalPage ?? 1)
+      : Math.min(Math.max(1, externalPage ?? 1), totalPages)
+    : Math.min(Math.max(1, internalPage), totalPages);
   const pagedRows = effectivePaginationEnabled
     ? manualPagination
       ? sortedRows
@@ -295,7 +296,7 @@ export default function DataTable<T>({
 
   const goToPage = (nextPage: number) => {
     if (manualPagination) {
-      onPageChange?.(Math.min(Math.max(1, nextPage), totalPages));
+      onPageChange?.(Math.min(Math.max(1, nextPage), Math.max(1, totalPages)));
       return;
     }
     setInternalPage(Math.min(Math.max(1, nextPage), totalPages));
@@ -307,7 +308,7 @@ export default function DataTable<T>({
       setPageInputValue(String(effectivePage));
       return;
     }
-    const clampedPage = Math.min(Math.max(1, Math.trunc(parsed)), totalPages);
+    const clampedPage = Math.min(Math.max(1, Math.trunc(parsed)), Math.max(1, totalPages));
     goToPage(clampedPage);
     setPageInputValue(String(clampedPage));
   };
@@ -316,7 +317,7 @@ export default function DataTable<T>({
     setPageInputValue(nextRawValue);
     const parsed = Number(nextRawValue.trim());
     if (!Number.isFinite(parsed)) return;
-    const clampedPage = Math.min(Math.max(1, Math.trunc(parsed)), totalPages);
+    const clampedPage = Math.min(Math.max(1, Math.trunc(parsed)), Math.max(1, totalPages));
     goToPage(clampedPage);
     setPageInputValue(String(clampedPage));
   };
