@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 runtime aggregate account-balance capital summary slice
+  `RUNTIME-AUDIT-122` is closed locally. Aggregate capital summary selection
+  now treats finite `accountBalance` as usable evidence, so
+  account-balance-only latest snapshots are preserved instead of falling back
+  to older/null capital summaries. Validation PASS: focused runtime session
+  position unit suite (`15/15`), API typecheck, repository guardrails, lint,
+  and diff review. Evidence:
+  `docs/planning/runtime-audit-122-aggregate-account-balance-summary-task-2026-05-04.md`.
 - 2026-05-04 runtime aggregate dynamic-stop flag slice `RUNTIME-AUDIT-121` is
   closed locally. Aggregate `positions.showDynamicStopColumns` now comes from
   the freshest position response, matching current open position/open-order row

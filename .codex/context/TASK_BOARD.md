@@ -20,6 +20,16 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-122 fix(api-bots): preserve aggregate account balance`
+  - Scope: closed a BUILDER-mode runtime aggregate wallet/capital visibility
+    drift. Aggregate capital summary selection now treats finite
+    `accountBalance` as usable evidence, so account-balance-only latest
+    snapshots are preserved instead of falling back to older/null capital
+    summaries. Validation PASS: focused runtime session position unit suite
+    (`15/15`), API typecheck, repository guardrails, lint, and diff review.
+    Evidence:
+    `docs/planning/runtime-audit-122-aggregate-account-balance-summary-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-121 fix(api-bots): align aggregate dynamic stop flag`
   - Scope: closed a BUILDER-mode runtime aggregate dashboard display-flag
     drift. Aggregate `positions.showDynamicStopColumns` now comes from the

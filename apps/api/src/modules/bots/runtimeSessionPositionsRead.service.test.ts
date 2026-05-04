@@ -7,6 +7,7 @@ import {
   buildRuntimeAggregateProjectedHistoryItems,
   buildRuntimeAggregateProjectedTradeItems,
   resolveRuntimeAggregateCurrentDynamicStopColumns,
+  selectRuntimeAggregateLatestCapitalSummary,
   selectLatestRunningProjectionRows,
   sumRuntimeAggregateProjectedSymbolsTracked,
 } from './runtimeMonitoringAggregateRead.service';
@@ -416,6 +417,31 @@ describe('runtime aggregate projection helpers', () => {
       })
     ).toBe(true);
     expect(resolveRuntimeAggregateCurrentDynamicStopColumns(null)).toBe(false);
+  });
+
+  it('keeps account-balance-only capital summaries usable for aggregate reads', () => {
+    const summary = selectRuntimeAggregateLatestCapitalSummary([
+      {
+        positions: {
+          summary: {
+            referenceBalance: null,
+            freeCash: null,
+            accountBalance: 512.34,
+          },
+        },
+      },
+      {
+        positions: {
+          summary: {
+            referenceBalance: 1000,
+            freeCash: 900,
+            accountBalance: 1000,
+          },
+        },
+      },
+    ]);
+
+    expect(summary?.accountBalance).toBe(512.34);
   });
 });
 

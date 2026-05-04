@@ -175,6 +175,33 @@ export const resolveRuntimeAggregateCurrentDynamicStopColumns = <
   response: T | null
 ) => response?.showDynamicStopColumns === true;
 
+export const selectRuntimeAggregateLatestCapitalSummary = <
+  T extends {
+    positions: {
+      summary: {
+        referenceBalance?: unknown;
+        freeCash?: unknown;
+        accountBalance?: unknown;
+        baseCurrency?: unknown;
+        capitalSource?: unknown;
+        allocationMode?: unknown;
+        allocationValue?: unknown;
+        paperResetAt?: Date | string | null;
+      };
+    };
+  },
+>(
+  rows: T[]
+) =>
+  rows
+    .map((row) => row.positions.summary)
+    .find((summary) => {
+      const referenceBalance = readFiniteNumber(summary.referenceBalance);
+      const freeCash = readFiniteNumber(summary.freeCash);
+      const accountBalance = readFiniteNumber(summary.accountBalance);
+      return referenceBalance != null || freeCash != null || accountBalance != null;
+    });
+
 const resolveAggregateSessionWindowEnd = (session: RuntimeSessionListItem) =>
   session.finishedAt ?? session.lastHeartbeatAt ?? session.startedAt;
 
@@ -593,13 +620,7 @@ export const getBotRuntimeMonitoringAggregate = async (
       right.session.id
     )
   );
-  const latestCapitalSummary = sortedBySessionFreshness
-    .map((row) => row.positions.summary)
-    .find((summary) => {
-      const referenceBalance = readFiniteNumber(summary.referenceBalance);
-      const freeCash = readFiniteNumber(summary.freeCash);
-      return referenceBalance != null || freeCash != null;
-    });
+  const latestCapitalSummary = selectRuntimeAggregateLatestCapitalSummary(sortedBySessionFreshness);
   const latestPositionResponse = sortedBySessionFreshness[0]?.positions ?? null;
   const historicalPositionRows = selectLatestRunningProjectionRows(completePayloadRows);
   const openItems = buildRuntimeAggregateCurrentOpenItems(latestPositionResponse);
