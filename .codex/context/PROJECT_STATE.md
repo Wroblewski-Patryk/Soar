@@ -3,6 +3,13 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 fallback TTP sticky-state scope slice `RUNTIME-AUDIT-141` is
+  closed locally. Fallback TTP sticky favorable-move state is now keyed by bot
+  id, runtime session id, and position id, with regression coverage preventing
+  cross-runtime leakage. Validation PASS: focused runtime selection view-model
+  suite (`8/8`), web typecheck, repository guardrails, lint, and diff review.
+  Evidence:
+  `docs/planning/runtime-audit-141-scope-fallback-ttp-sticky-state-task-2026-05-04.md`.
 - 2026-05-04 fallback TTP disarm regression slice `RUNTIME-AUDIT-140` is
   closed locally. Selected runtime view-model coverage now proves fallback TTP
   protection clears when live PnL drops below the first trailing take-profit

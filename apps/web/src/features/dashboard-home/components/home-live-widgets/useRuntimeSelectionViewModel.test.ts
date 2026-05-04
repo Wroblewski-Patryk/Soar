@@ -250,6 +250,73 @@ describe("useRuntimeSelectionViewModel", () => {
     expect(resolveDynamicTtpDisplay(result.current.selectedData!.open[0]!)).toBeNull();
     expect(result.current.showDynamicStopColumns).toBe(true);
   });
+
+  it("does not leak sticky fallback TTP state across runtime bot/session identity", () => {
+    const positions = snapshot.positions;
+    expect(positions).not.toBeNull();
+    const armedSnapshot = {
+      ...snapshot,
+      positions: {
+        ...positions,
+        openItems: [
+          {
+            ...positions!.openItems[0],
+            id: "pos-shared",
+            trailingTakeProfitLevels: [{ armPercent: 5, trailPercent: 2 }],
+            dynamicTtpStopLoss: null,
+          },
+        ],
+      },
+    } as unknown as RuntimeSnapshot;
+    const noLivePnlSnapshot = {
+      ...armedSnapshot,
+      bot: {
+        ...armedSnapshot.bot,
+        id: "bot-other",
+      },
+      session: {
+        ...armedSnapshot.session!,
+        id: "session-2",
+        botId: "bot-other",
+      },
+      actionSessionId: "session-2",
+      positions: {
+        ...armedSnapshot.positions!,
+        sessionId: "session-2",
+        openItems: [
+          {
+            ...armedSnapshot.positions!.openItems[0],
+            markPrice: null,
+            unrealizedPnl: 4,
+            unrealizedPnlPercent: null,
+          },
+        ],
+      },
+    } as unknown as RuntimeSnapshot;
+
+    const { result, rerender } = renderHook(
+      ({ selected, prices }: { selected: RuntimeSnapshot; prices: Record<string, number> }) =>
+        useRuntimeSelectionViewModel({
+          snapshots: [selected],
+          selected,
+          selectedTrades: null,
+          liveTickerPrices: prices,
+        }),
+      {
+        initialProps: {
+          selected: armedSnapshot,
+          prices: { DOGEUSDT: 0.991 } as Record<string, number>,
+        },
+      }
+    );
+
+    expect(resolveDynamicTtpDisplay(result.current.selectedData!.open[0]!)).toBeCloseTo(7, 8);
+
+    rerender({ selected: noLivePnlSnapshot, prices: {} });
+
+    expect(result.current.selectedData?.open[0]?.fallbackTtpProtectedPercent).toBeNull();
+    expect(resolveDynamicTtpDisplay(result.current.selectedData!.open[0]!)).toBeNull();
+  });
 });
 
 describe("resolveSelectedRuntimeTradeRows", () => {

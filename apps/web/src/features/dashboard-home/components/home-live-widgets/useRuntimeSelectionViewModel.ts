@@ -118,20 +118,23 @@ export const useRuntimeSelectionViewModel = ({
     );
     const streamPrices = new Map<string, number>(Object.entries(liveTickerPrices));
     const open = buildLiveOpenPositions(selected.positions, selected.symbolStats, streamPrices);
+    const runtimeSessionId = selected.actionSessionId ?? selected.session?.id ?? null;
+    const runtimeStickyKey = (positionId: string) =>
+      `${selected.bot.id}:${runtimeSessionId ?? "no-session"}:${positionId}`;
     pruneStickyFavorableMoveMap(
       stickyTtpFavorableMoveByPosition.current,
-      new Set(open.map((position) => position.id))
+      new Set(open.map((position) => runtimeStickyKey(position.id)))
     );
     const openWithProtectedFallback = open.map((position) => ({
       ...position,
       fallbackTtpProtectedPercent: resolveFallbackTtpProtectedPercent({
-        positionId: position.id,
+        positionId: runtimeStickyKey(position.id),
         livePnlPercent: position.livePnlPct,
         trailingTakeProfitLevels: position.trailingTakeProfitLevels,
         stickyFavorableMoveByPosition: stickyTtpFavorableMoveByPosition.current,
       }),
       runtimeBotId: selected.bot.id,
-      runtimeSessionId: selected.actionSessionId ?? selected.session?.id ?? null,
+      runtimeSessionId,
     }));
     const openQtyBySymbol = new Map<string, number>();
     const openUnrealizedBySymbol = new Map<string, number>();

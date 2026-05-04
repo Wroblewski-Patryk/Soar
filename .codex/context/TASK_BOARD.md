@@ -20,6 +20,15 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-141 fix(web-dashboard): scope fallback TTP sticky state`
+  - Scope: closed an ARCHITECT-mode money-impacting runtime display boundary
+    fix. Fallback TTP sticky favorable-move state is now keyed by bot id,
+    runtime session id, and position id, with regression coverage preventing
+    cross-runtime leakage. Validation PASS: focused runtime selection
+    view-model suite (`8/8`), web typecheck, repository guardrails, lint, and
+    diff review. Evidence:
+    `docs/planning/runtime-audit-141-scope-fallback-ttp-sticky-state-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-140 test(web-dashboard): lock fallback TTP disarm behavior`
   - Scope: closed a TESTER-mode money-impacting dashboard regression gap.
     Selected runtime view-model coverage now proves fallback TTP protection

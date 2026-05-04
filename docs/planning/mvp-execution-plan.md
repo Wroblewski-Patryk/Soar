@@ -29,6 +29,12 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-141` with
+  `docs/planning/runtime-audit-141-scope-fallback-ttp-sticky-state-task-2026-05-04.md`.
+  Fallback TTP sticky favorable-move state is now keyed by bot id, runtime
+  session id, and position id, with regression coverage preventing
+  cross-runtime leakage. Validation PASS: focused runtime selection view-model
+  suite (`8/8`), web typecheck, repository guardrails, lint, and diff review.
 - 2026-05-04: Closed `RUNTIME-AUDIT-140` with
   `docs/planning/runtime-audit-140-fallback-ttp-disarm-regression-task-2026-05-04.md`.
   Selected runtime view-model coverage now proves fallback TTP protection
