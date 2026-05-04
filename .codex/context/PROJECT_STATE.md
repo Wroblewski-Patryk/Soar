@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 LIVE imported symbol-stats open-position slice
+  `RUNTIME-AUDIT-116` is closed locally. Runtime symbol-stats live
+  open-position rows now include direct bot positions and owned LIVE imported
+  positions via the existing external ownership index, including market-aware
+  and legacy external IDs with wallet/null-wallet recovery scope. Validation
+  PASS: focused runtime session position unit suite (`8/8`), API typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-116-symbol-stats-live-imported-open-position-task-2026-05-04.md`.
 - 2026-05-04 runtime symbol-stats carried open-position slice
   `RUNTIME-AUDIT-115` is closed locally. Runtime symbol-stats live
   open-position reads now include positions opened before session start when

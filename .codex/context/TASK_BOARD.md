@@ -20,6 +20,16 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-116 fix(api-bots): include live imported open positions in symbol stats`
+  - Scope: closed a BUILDER-mode LIVE dashboard parity drift. Runtime
+    symbol-stats live open-position rows now include direct bot positions and
+    owned LIVE imported positions via the existing external ownership index,
+    including market-aware and legacy external IDs with wallet/null-wallet
+    recovery scope. Validation PASS: focused runtime session position unit
+    suite (`8/8`), API typecheck, repository guardrails, lint, and diff review.
+    Evidence:
+    `docs/planning/runtime-audit-116-symbol-stats-live-imported-open-position-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-115 fix(api-bots): include carried open positions in symbol stats`
   - Scope: closed a TESTER-mode runtime dashboard parity drift. Runtime
     symbol-stats live open-position reads now include positions opened before

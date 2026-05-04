@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { buildRuntimeSymbolLiveOpenPositionScopes } from './botsRuntimeRead.repository';
 import { resolveRuntimePositionDcaCount } from './runtimeSessionPositionDcaCount';
 import {
   buildRuntimeSessionClosedPositionWindow,
@@ -66,6 +67,63 @@ describe('buildRuntimeSessionOpenPositionWindow', () => {
     expect(buildRuntimeSessionOpenPositionWindow({ windowEnd })).toEqual({
       lte: windowEnd,
     });
+  });
+});
+
+describe('buildRuntimeSymbolLiveOpenPositionScopes', () => {
+  it('includes direct bot and owned LIVE imported open-position scopes', () => {
+    expect(
+      buildRuntimeSymbolLiveOpenPositionScopes({
+        botId: 'bot-1',
+        walletId: 'wallet-1',
+        apiKeyId: 'api-key-1',
+        marketType: 'FUTURES',
+        ownedExternalSymbols: ['ETHUSDT', 'DOGEUSDT'],
+      })
+    ).toEqual([
+      { botId: 'bot-1' },
+      {
+        botId: null,
+        origin: 'EXCHANGE_SYNC',
+        symbol: { in: ['ETHUSDT', 'DOGEUSDT'] },
+        AND: [
+          {
+            OR: [
+              {
+                externalId: {
+                  startsWith: 'api-key-1:FUTURES:',
+                },
+              },
+              {
+                externalId: {
+                  startsWith: 'api-key-1:ETHUSDT:',
+                },
+              },
+              {
+                externalId: {
+                  startsWith: 'api-key-1:DOGEUSDT:',
+                },
+              },
+            ],
+          },
+          {
+            OR: [{ walletId: 'wallet-1' }, { walletId: null }],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('falls back to direct bot scope when imported ownership is incomplete', () => {
+    expect(
+      buildRuntimeSymbolLiveOpenPositionScopes({
+        botId: 'bot-1',
+        walletId: 'wallet-1',
+        apiKeyId: null,
+        marketType: 'FUTURES',
+        ownedExternalSymbols: ['ETHUSDT'],
+      })
+    ).toEqual([{ botId: 'bot-1' }]);
   });
 });
 

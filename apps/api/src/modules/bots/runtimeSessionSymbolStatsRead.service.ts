@@ -41,8 +41,13 @@ import {
   listMarketCandles,
   listRuntimeSymbolStatsRowsForSymbols,
   listStrategiesByIds,
+  buildRuntimeSymbolLiveOpenPositionScopes,
 } from './botsRuntimeRead.repository';
 import { resolvePreferredRuntimeOrExchangeSyncedPrice } from './runtimeExchangeSyncedPositionPrice';
+import {
+  listOwnedExternalSymbolsForBot,
+  resolveExternalPositionOwnershipIndex,
+} from './runtimeExternalPositionOwner.service';
 
 const runtimeSignalReadSnapshotMinCandlesRaw = Number.parseInt(
   process.env.RUNTIME_SIGNAL_READ_SNAPSHOT_MIN_CANDLES ?? '150',
@@ -349,6 +354,8 @@ export const listBotRuntimeSessionSymbolStats = async (
   const inheritedVenueContext = configuredContext.symbolGroup?.marketUniverse ?? null;
   const botExchange = inheritedVenueContext?.exchange ?? 'BINANCE';
   const botMarketType = inheritedVenueContext?.marketType ?? 'FUTURES';
+  const botWalletId = botContext?.walletId ?? null;
+  const botApiKeyId = botContext?.wallet?.apiKeyId ?? botContext?.apiKeyId ?? null;
 
   const catalogSymbolsCache = new Map<string, string[]>();
   const configuredSymbols = normalizeSymbols(
@@ -379,6 +386,15 @@ export const listBotRuntimeSessionSymbolStats = async (
           symbols: liveMetricSymbols,
         })
       : statItems;
+  const ownedExternalSymbols =
+    liveMetricSymbols.length && botContext?.mode === 'LIVE'
+      ? listOwnedExternalSymbolsForBot(await resolveExternalPositionOwnershipIndex(userId, 'LIVE'), {
+          apiKeyId: botApiKeyId,
+          marketType: botMarketType,
+          botId,
+          walletId: botWalletId,
+        }).filter((symbol) => liveMetricSymbols.includes(symbol))
+      : [];
   const [openPositions, latestTradeBySymbolRows, latestSignalEvents] = liveMetricSymbols.length
     ? await getRuntimeSymbolLiveRows({
         userId,
@@ -387,6 +403,13 @@ export const listBotRuntimeSessionSymbolStats = async (
         symbols: liveMetricSymbols,
         windowStart: session.startedAt,
         windowEnd,
+        openPositionScopes: buildRuntimeSymbolLiveOpenPositionScopes({
+          botId,
+          walletId: botWalletId,
+          apiKeyId: botApiKeyId,
+          marketType: botMarketType,
+          ownedExternalSymbols,
+        }),
       })
     : [[], [], []];
 

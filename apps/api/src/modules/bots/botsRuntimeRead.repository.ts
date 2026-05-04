@@ -1,5 +1,10 @@
+import { Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import { buildRuntimeSessionOpenPositionWindow } from './runtimeSessionPositionWindow';
+import {
+  buildImportedExternalPositionMarketPrefix,
+  buildLegacyImportedExternalPositionSymbolPrefix,
+} from '../positions/livePositionReconciliation.helpers';
 
 export const getRuntimeSymbolStatsBaseData = async (params: {
   userId: string;
@@ -47,6 +52,16 @@ export const getRuntimeSymbolStatsBaseData = async (params: {
         select: {
           strategyId: true,
           symbolGroupId: true,
+          mode: true,
+          walletId: true,
+          apiKeyId: true,
+          marketType: true,
+          wallet: {
+            select: {
+              apiKeyId: true,
+              marketType: true,
+            },
+          },
           strategy: {
             select: {
               id: true,
@@ -158,6 +173,55 @@ export const listRuntimeSymbolStatsRowsForSymbols = async (params: {
     orderBy: [{ symbol: 'asc' }],
   });
 
+export const buildRuntimeSymbolLiveOpenPositionScopes = (params: {
+  botId: string;
+  walletId?: string | null;
+  apiKeyId?: string | null;
+  marketType: 'FUTURES' | 'SPOT';
+  ownedExternalSymbols: string[];
+}): Prisma.PositionWhereInput[] => {
+  const directScope = { botId: params.botId };
+  if (!params.walletId || !params.apiKeyId || params.ownedExternalSymbols.length === 0) {
+    return [directScope];
+  }
+
+  const walletId = params.walletId;
+  const apiKeyId = params.apiKeyId;
+  return [
+    directScope,
+    {
+      botId: null,
+      origin: 'EXCHANGE_SYNC',
+      symbol: { in: params.ownedExternalSymbols },
+      AND: [
+        {
+          OR: [
+            {
+              externalId: {
+                startsWith: buildImportedExternalPositionMarketPrefix({
+                  apiKeyId,
+                  marketType: params.marketType,
+                }),
+              },
+            },
+            ...params.ownedExternalSymbols.map((symbol) => ({
+              externalId: {
+                startsWith: buildLegacyImportedExternalPositionSymbolPrefix({
+                  apiKeyId,
+                  symbol,
+                }),
+              },
+            })),
+          ],
+        },
+        {
+          OR: [{ walletId }, { walletId: null }],
+        },
+      ],
+    },
+  ];
+};
+
 export const getRuntimeSymbolLiveRows = async (params: {
   userId: string;
   botId: string;
@@ -165,12 +229,12 @@ export const getRuntimeSymbolLiveRows = async (params: {
   symbols: string[];
   windowStart: Date;
   windowEnd: Date;
+  openPositionScopes?: Prisma.PositionWhereInput[];
 }) =>
   Promise.all([
     prisma.position.findMany({
       where: {
         userId: params.userId,
-        botId: params.botId,
         status: 'OPEN',
         syncState: 'IN_SYNC',
         managementMode: 'BOT_MANAGED',
@@ -178,6 +242,14 @@ export const getRuntimeSymbolLiveRows = async (params: {
         openedAt: buildRuntimeSessionOpenPositionWindow({
           windowEnd: params.windowEnd,
         }),
+        AND: [
+          {
+            OR:
+              params.openPositionScopes && params.openPositionScopes.length > 0
+                ? params.openPositionScopes
+                : [{ botId: params.botId }],
+          },
+        ],
       },
       select: {
         symbol: true,
