@@ -369,6 +369,23 @@ const ACTIVE_OPEN_ORDER_STATUSES: OrderStatus[] = [
   OrderStatus.PARTIALLY_FILLED,
 ];
 
+export const buildPaperResetOpenPositionsWhere = (input: {
+  userId: string;
+  walletId: string;
+}): Prisma.PositionWhereInput => ({
+  userId: input.userId,
+  status: PositionStatus.OPEN,
+  syncState: 'IN_SYNC',
+  OR: [
+    { walletId: input.walletId },
+    {
+      bot: {
+        walletId: input.walletId,
+      },
+    },
+  ],
+});
+
 export const resetPaperWallet = async (userId: string, id: string) => {
   const existing = await getWallet(userId, id);
   if (!existing) return null;
@@ -385,12 +402,10 @@ export const resetPaperWallet = async (userId: string, id: string) => {
   return prisma.$transaction(async (tx) => {
     const [openPositionsCount, openOrdersCount] = await Promise.all([
       tx.position.count({
-        where: {
+        where: buildPaperResetOpenPositionsWhere({
           userId,
           walletId: existing.id,
-          status: PositionStatus.OPEN,
-          syncState: 'IN_SYNC',
-        },
+        }),
       }),
       tx.order.count({
         where: {

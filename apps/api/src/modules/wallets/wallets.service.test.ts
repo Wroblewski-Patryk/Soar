@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildWalletOpenPnlWhere } from './wallets.service';
+import { buildPaperResetOpenPositionsWhere, buildWalletOpenPnlWhere } from './wallets.service';
 
 describe('buildWalletOpenPnlWhere', () => {
   it('includes PAPER bot-owned positions through the bot wallet relation', () => {
@@ -47,6 +47,29 @@ describe('buildWalletOpenPnlWhere', () => {
           origin: 'EXCHANGE_SYNC',
           externalId: {
             startsWith: 'api-key-1:FUTURES:',
+          },
+        },
+      ],
+    });
+  });
+});
+
+describe('buildPaperResetOpenPositionsWhere', () => {
+  it('blocks reset on direct wallet and PAPER bot-owned open positions', () => {
+    expect(
+      buildPaperResetOpenPositionsWhere({
+        userId: 'user-1',
+        walletId: 'wallet-paper',
+      })
+    ).toEqual({
+      userId: 'user-1',
+      status: 'OPEN',
+      syncState: 'IN_SYNC',
+      OR: [
+        { walletId: 'wallet-paper' },
+        {
+          bot: {
+            walletId: 'wallet-paper',
           },
         },
       ],

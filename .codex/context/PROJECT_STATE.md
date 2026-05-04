@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 PAPER wallet reset bot-position guard slice `RUNTIME-AUDIT-109`
+  is closed locally. PAPER wallet reset now counts active `OPEN` + `IN_SYNC`
+  positions directly assigned to the wallet and positions owned by bots that
+  use the wallet, preserving fail-closed reset behavior after PAPER bot
+  positions moved to bot-scoped persistence. Validation PASS: focused wallet
+  service unit suite (`3/3`), API typecheck, repository guardrails, lint, and
+  diff review. Evidence:
+  `docs/planning/runtime-audit-109-paper-reset-bot-position-scope-task-2026-05-04.md`.
 - 2026-05-04 PAPER position DB-scope slice `RUNTIME-AUDIT-108` is closed
   locally. PAPER bot positions now persist with `Position.walletId=null`, so
   they use the existing bot-scoped DB uniqueness lane instead of colliding with
