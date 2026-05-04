@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-127 fix(web-dashboard): preserve aggregate trade totals`
+  - 2026-05-04: Closed a BUILDER-mode dashboard aggregate trade-history
+    counter drift. The main dashboard now preserves API aggregate
+    `trades.total` before local trade filters or sort are applied, so the
+    unfiltered trade-history count no longer collapses to the returned
+    item-window length. Validation PASS: focused dashboard controller suite
+    (`2/2`), web typecheck, repository guardrails, lint, and diff review.
+    Evidence:
+    `docs/planning/runtime-audit-127-dashboard-aggregate-trade-total-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-126 fix(web-bots): align empty aggregate trade meta fallback`
   - 2026-05-04: Closed an ARCHITECT-mode dashboard aggregate fallback contract
     drift. The web no-session aggregate fallback now reports

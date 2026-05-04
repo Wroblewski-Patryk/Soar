@@ -29,6 +29,13 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-127` with
+  `docs/planning/runtime-audit-127-dashboard-aggregate-trade-total-task-2026-05-04.md`.
+  The main dashboard now preserves API aggregate `trades.total` before local
+  trade filters or sort are applied, so the unfiltered trade-history count no
+  longer collapses to the returned item-window length. Validation PASS:
+  focused dashboard controller suite (`2/2`), web typecheck, repository
+  guardrails, lint, and diff review.
 - 2026-05-04: Closed `RUNTIME-AUDIT-126` with
   `docs/planning/runtime-audit-126-web-empty-aggregate-trade-meta-task-2026-05-04.md`.
   The web no-session aggregate fallback now reports

@@ -5,6 +5,7 @@ import { useHomeLiveWidgetsController } from "./useHomeLiveWidgetsController";
 import type { TranslationKey } from "../../../i18n/translations";
 import type {
   Bot,
+  BotRuntimeTrade,
   BotRuntimeMonitoringAggregateResponse,
   BotRuntimeSessionListItem,
 } from "../../bots/types/bot.type";
@@ -83,6 +84,28 @@ const createSession = (
       realizedPnl: 0,
     },
   });
+
+const createTrade = (id: string): BotRuntimeTrade => ({
+  id,
+  symbol: "ETHUSDT",
+  side: "BUY",
+  lifecycleAction: "OPEN",
+  price: 100,
+  quantity: 1,
+  fee: 0.1,
+  feeSource: "ESTIMATED",
+  feePending: false,
+  feeCurrency: "USDT",
+  realizedPnl: 0,
+  executedAt: nowIso,
+  orderId: `${id}-order`,
+  positionId: `${id}-position`,
+  strategyId: "strategy-runtime",
+  origin: "BOT",
+  managementMode: "BOT_MANAGED",
+  notional: 100,
+  margin: 50,
+});
 
 const createAggregate = (
   botId: string,
@@ -266,5 +289,39 @@ describe("useHomeLiveWidgetsController", () => {
 
     await waitFor(() => expect(result.current.selected?.bot.id).toBe("bot-b"));
     await waitFor(() => expect(result.current.liveTickerPrices).toEqual({}));
+  });
+
+  it("preserves API aggregate trade total before local filters are applied", async () => {
+    const createMarketStreamEventSource = vi.fn(() => new FakeEventSource() as unknown as EventSource);
+    const bots = [createBot("bot-a")];
+    const sessionsByBot = new Map([["bot-a", [createSession("bot-a", "session-a")]]]);
+    const aggregate = createAggregate("bot-a", "session-a");
+    aggregate.trades = {
+      sessionId: "AGGREGATE",
+      total: 3,
+      meta: { page: 1, pageSize: 200, total: 3, totalPages: 1, hasPrev: false, hasNext: false },
+      window: { startedAt: nowIso, finishedAt: nowIso },
+      items: [createTrade("trade-1"), createTrade("trade-2")],
+    };
+    const getBotRuntimeGraph = vi.fn().mockResolvedValue(null);
+    const getBotRuntimeMonitoringAggregate = vi.fn().mockResolvedValue(aggregate);
+    const listBotRuntimeSessions = vi.fn(async (botId: string) => sessionsByBot.get(botId) ?? []);
+    const listBots = vi.fn().mockResolvedValue(bots);
+    const t = (key: TranslationKey) => key;
+
+    const { result } = renderHook(() =>
+      useHomeLiveWidgetsController({
+        createMarketStreamEventSource,
+        getBotRuntimeGraph,
+        getBotRuntimeMonitoringAggregate,
+        listBotRuntimeSessions,
+        listBots,
+        t,
+      })
+    );
+
+    await waitFor(() => expect(result.current.selectedTrades?.total).toBe(3));
+    expect(result.current.selectedTrades?.meta.total).toBe(3);
+    expect(result.current.selectedTrades?.items).toHaveLength(2);
   });
 });

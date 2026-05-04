@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 dashboard aggregate trade total slice `RUNTIME-AUDIT-127` is
+  closed locally. The main dashboard now preserves API aggregate
+  `trades.total` before local trade filters or sort are applied, so the
+  unfiltered trade-history count no longer collapses to the returned
+  item-window length. Validation PASS: focused dashboard controller suite
+  (`2/2`), web typecheck, repository guardrails, lint, and diff review.
+  Evidence:
+  `docs/planning/runtime-audit-127-dashboard-aggregate-trade-total-task-2026-05-04.md`.
 - 2026-05-04 web empty aggregate trade meta fallback slice
   `RUNTIME-AUDIT-126` is closed locally. The web no-session aggregate fallback
   now reports `trades.meta.pageSize` from the requested `perSessionLimit`,

@@ -44,6 +44,13 @@ const EMPTY_TRADE_FILTERS: TradeFiltersState = {
   to: "",
 };
 
+const hasActiveTradeFilters = (filters: TradeFiltersState) =>
+  Boolean(filters.symbol.trim()) ||
+  filters.side !== "ALL" ||
+  filters.action !== "ALL" ||
+  Boolean(filters.from.trim()) ||
+  Boolean(filters.to.trim());
+
 const readStoredTradeSortPreference = (): {
   sortBy: TradeSortBy | null;
   sortDir: TradeSortDir;
@@ -168,7 +175,10 @@ const applyAggregateTradeQuery = ({
   }
 
   const pageSize = Math.max(1, tradePageSize);
-  const total = sorted.length;
+  const total =
+    !hasActiveTradeFilters(tradeAppliedFilters) && !tradeSortBy
+      ? Math.max(baseTrades.total, sorted.length)
+      : sorted.length;
   const totalPages = total === 0 ? 0 : Math.ceil(total / pageSize);
   const normalizedPage =
     totalPages === 0 ? 1 : Math.min(Math.max(1, tradePage), totalPages);
