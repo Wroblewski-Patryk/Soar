@@ -29,6 +29,14 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-110` with
+  `docs/planning/runtime-audit-110-paper-manual-close-wallet-backfill-task-2026-05-04.md`.
+  Manual dashboard close now backfills missing position `walletId` only in
+  LIVE recovery paths, so PAPER bot-scoped positions remain in the
+  `Position.walletId=null` persistence lane while close orchestration still
+  receives wallet context from the bot. Validation PASS: focused runtime
+  session position command suite (`11/11`), API typecheck, repository
+  guardrails, lint, and diff review.
 - 2026-05-04: Closed `RUNTIME-AUDIT-109` with
   `docs/planning/runtime-audit-109-paper-reset-bot-position-scope-task-2026-05-04.md`.
   PAPER wallet reset now counts active `OPEN` + `IN_SYNC` positions directly

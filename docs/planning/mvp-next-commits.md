@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-110 fix(api-bots): preserve paper close bot scope`
+  - 2026-05-04: Closed a TESTER-mode PAPER manual-close ownership drift.
+    Manual dashboard close now backfills missing position `walletId` only in
+    LIVE recovery paths, so PAPER bot-scoped positions remain in the
+    `Position.walletId=null` persistence lane while close orchestration still
+    receives wallet context from the bot. Validation PASS: focused runtime
+    session position command suite (`11/11`), API typecheck, repository
+    guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-110-paper-manual-close-wallet-backfill-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-109 fix(api-wallets): block paper reset on bot-owned positions`
   - 2026-05-04: Closed a BUILDER-mode PAPER wallet reset safety drift. PAPER
     wallet reset now counts active `OPEN` + `IN_SYNC` positions directly

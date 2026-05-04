@@ -384,6 +384,55 @@ describe('closeBotRuntimeSessionPosition', () => {
     });
   });
 
+  it('preserves PAPER bot-scoped wallet null ownership during manual close', async () => {
+    mocks.prisma.bot.findFirst.mockResolvedValue({
+      mode: 'PAPER',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      walletId: 'wallet-paper-1',
+      wallet: {
+        apiKeyId: null,
+      },
+      botMarketGroups: [],
+    });
+    mocks.prisma.position.findFirst.mockResolvedValue({
+      id: 'position-1',
+      botId: 'bot-1',
+      walletId: null,
+      strategyId: 'strategy-1',
+      symbol: 'BTCUSDT',
+      quantity: 0.5,
+      entryPrice: 50_000,
+      origin: 'BOT',
+      externalId: null,
+      continuityState: 'CONFIRMED',
+    });
+    mocks.orchestrateRuntimeSignal.mockResolvedValue({
+      status: 'closed',
+      orderId: 'order-1',
+      positionId: 'position-1',
+    });
+
+    const result = await closeBotRuntimeSessionPosition('user-1', 'bot-1', 'session-1', 'position-1', {
+      riskAck: true,
+    });
+
+    expect(mocks.prisma.position.updateMany).not.toHaveBeenCalled();
+    expect(mocks.orchestrateRuntimeSignal).toHaveBeenCalledWith(
+      expect.objectContaining({
+        walletId: 'wallet-paper-1',
+        mode: 'PAPER',
+        symbol: 'BTCUSDT',
+        direction: 'EXIT',
+      })
+    );
+    expect(result).toEqual({
+      status: 'closed',
+      orderId: 'order-1',
+      positionId: 'position-1',
+    });
+  });
+
   it('uses public connector mark price for PAPER manual close when ticker fallback is unavailable', async () => {
     const fetchMarkPrice = vi.fn(async () => 50_275);
     const disconnect = vi.fn(async () => undefined);

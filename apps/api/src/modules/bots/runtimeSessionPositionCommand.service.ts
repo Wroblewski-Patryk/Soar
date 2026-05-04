@@ -230,7 +230,8 @@ export const closeBotRuntimeSessionPosition = async (
   }
 
   const shouldClaimOwnership = !position.botId && externallyOwnedByBot;
-  const shouldBackfillWallet = !position.walletId && Boolean(botContext.walletId);
+  const shouldBackfillWallet =
+    botContext.mode === 'LIVE' && !position.walletId && Boolean(botContext.walletId);
   const effectiveStrategyId =
     position.strategyId ?? resolveSingleCanonicalStrategyId(botContext);
   const shouldBackfillStrategy = !position.strategyId && Boolean(effectiveStrategyId);

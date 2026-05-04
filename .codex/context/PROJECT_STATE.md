@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 PAPER manual-close wallet-backfill slice `RUNTIME-AUDIT-110`
+  is closed locally. Manual dashboard close now backfills missing position
+  `walletId` only in LIVE recovery paths, so PAPER bot-scoped positions remain
+  in the `Position.walletId=null` persistence lane while close orchestration
+  still receives wallet context from the bot. Validation PASS: focused runtime
+  session position command suite (`11/11`), API typecheck, repository
+  guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-110-paper-manual-close-wallet-backfill-task-2026-05-04.md`.
 - 2026-05-04 PAPER wallet reset bot-position guard slice `RUNTIME-AUDIT-109`
   is closed locally. PAPER wallet reset now counts active `OPEN` + `IN_SYNC`
   positions directly assigned to the wallet and positions owned by bots that
