@@ -3,6 +3,12 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 manual total display clamp slice `RUNTIME-AUDIT-137` is closed
+  locally. Manual-pagination footer totals now clamp against visible rows even
+  when callers provide only `totalRows` metadata and no `reportedTotalRows`.
+  Validation PASS: focused `DataTable` suite (`8/8`), web typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-137-manual-total-display-clamp-task-2026-05-04.md`.
 - 2026-05-04 manual reported table total clamp slice `RUNTIME-AUDIT-136` is
   closed locally. Manual pagination reported totals now clamp against visible
   rows as well as external metadata, so stale zero metadata cannot contradict

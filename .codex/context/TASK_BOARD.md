@@ -20,6 +20,14 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-137 fix(web-ui): clamp manual table totals without reported totals`
+  - Scope: closed a BUILDER-mode shared table display invariant follow-up.
+    Manual-pagination footer totals now clamp against visible rows even when
+    callers provide only `totalRows` metadata and no `reportedTotalRows`.
+    Validation PASS: focused `DataTable` suite (`8/8`), web typecheck,
+    repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-137-manual-total-display-clamp-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-136 fix(web-ui): clamp manual reported table totals`
   - Scope: closed a BUILDER-mode follow-up to the shared table display
     invariant. Manual pagination reported totals now clamp against visible

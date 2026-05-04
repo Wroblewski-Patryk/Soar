@@ -180,6 +180,35 @@ describe("DataTable", () => {
     expect(screen.getByText("Rows: 1")).toBeInTheDocument();
   });
 
+  it("clamps manual pagination metadata to visible rows without reported totals", () => {
+    const columns: DataTableColumn<Row>[] = [
+      {
+        key: "name",
+        label: "Name",
+        accessor: (row) => row.name,
+      },
+    ];
+
+    render(
+      <I18nProvider>
+        <DataTable<Row>
+          rows={[{ id: "1", name: "Alpha" }]}
+          columns={columns}
+          getRowId={(row) => row.id}
+          paginationEnabled
+          manualPagination
+          page={1}
+          pageSize={10}
+          totalRows={0}
+          totalPages={0}
+        />
+      </I18nProvider>
+    );
+
+    expect(screen.getByText("Alpha")).toBeInTheDocument();
+    expect(screen.getByText("Rows: 1")).toBeInTheDocument();
+  });
+
   it("keeps columns dropdown open on checkbox toggle and closes only via trigger/outside/Escape", () => {
     const columns: DataTableColumn<Row & { exchange: string }>[] = [
       {
