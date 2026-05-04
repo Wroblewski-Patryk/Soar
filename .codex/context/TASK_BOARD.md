@@ -20,6 +20,15 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-123 refactor(api-bots): remove stale aggregate position source`
+  - Scope: closed an ARCHITECT-mode runtime aggregate source-clarity cleanup.
+    Removed the unused all-session `positionResponses` collection after current
+    open rows, open orders, history rows, and display flags moved to their
+    canonical current/projection sources. Validation PASS: focused runtime
+    session position unit suite (`15/15`), API typecheck, repository
+    guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-123-remove-stale-position-response-aggregate-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-122 fix(api-bots): preserve aggregate account balance`
   - Scope: closed a BUILDER-mode runtime aggregate wallet/capital visibility
     drift. Aggregate capital summary selection now treats finite

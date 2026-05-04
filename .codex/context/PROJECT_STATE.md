@@ -3,6 +3,13 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 runtime aggregate position source cleanup slice
+  `RUNTIME-AUDIT-123` is closed locally. Removed the unused all-session
+  `positionResponses` collection after current open rows, open orders, history
+  rows, and display flags moved to their canonical current/projection sources.
+  Validation PASS: focused runtime session position unit suite (`15/15`), API
+  typecheck, repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-123-remove-stale-position-response-aggregate-task-2026-05-04.md`.
 - 2026-05-04 runtime aggregate account-balance capital summary slice
   `RUNTIME-AUDIT-122` is closed locally. Aggregate capital summary selection
   now treats finite `accountBalance` as usable evidence, so

@@ -603,7 +603,6 @@ export const getBotRuntimeMonitoringAggregate = async (
     openPositionQty: symbolCurrentSummary.openPositionQty,
   };
 
-  const positionResponses = completePayloadRows.map((row) => row.positions);
   const sortedBySessionFreshness = [...completePayloadRows].sort((left, right) =>
     compareTimestampDescThenIdAsc(
       Math.max(
