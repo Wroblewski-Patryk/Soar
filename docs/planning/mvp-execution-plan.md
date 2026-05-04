@@ -29,6 +29,13 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-128` with
+  `docs/planning/runtime-audit-128-dashboard-trade-meta-fallback-task-2026-05-04.md`.
+  The home runtime widget now builds fallback trade metadata with runtime API
+  empty-state semantics, so empty local trade-history fallback reports
+  `totalPages=0` and non-empty fallback pages are clamped to the local page
+  range. Validation PASS: focused dashboard component suite (`20/20`), web
+  typecheck, repository guardrails, lint, and diff review.
 - 2026-05-04: Closed `RUNTIME-AUDIT-127` with
   `docs/planning/runtime-audit-127-dashboard-aggregate-trade-total-task-2026-05-04.md`.
   The main dashboard now preserves API aggregate `trades.total` before local

@@ -58,6 +58,7 @@ import type {
   RuntimeDataTab,
   RuntimeSnapshot,
   RuntimeTabItem,
+  RuntimeTradeMeta,
 } from "./home-live-widgets/types";
 import {
   parseOptionalPositivePriceInput,
@@ -74,6 +75,26 @@ const DASHBOARD_OPEN_ORDERS_COLUMNS_STORAGE_KEY = "dashboard.home.openOrders.col
 const DASHBOARD_TRADE_HISTORY_COLUMNS_STORAGE_KEY = "dashboard.home.tradeHistory.columns.v1";
 const TRADE_PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
 const OPEN_POSITIONS_PAGE_SIZE_OPTIONS = [10, 25, 50] as const;
+
+export const buildFallbackRuntimeTradeMeta = (params: {
+  page: number;
+  pageSize: number;
+  total: number;
+}): RuntimeTradeMeta => {
+  const pageSize = Math.max(1, params.pageSize);
+  const total = Math.max(0, params.total);
+  const totalPages = total === 0 ? 0 : Math.ceil(total / pageSize);
+  const page = totalPages === 0 ? 1 : Math.min(Math.max(1, params.page), totalPages);
+
+  return {
+    page,
+    pageSize,
+    total,
+    totalPages,
+    hasPrev: totalPages > 0 && page > 1,
+    hasNext: totalPages > 0 && page < totalPages,
+  };
+};
 
 const RUNTIME_DATA_TABS: {
   key: RuntimeDataTab;
@@ -326,14 +347,13 @@ export default function HomeLiveWidgets() {
     node.scrollBy({ left: direction === "next" ? delta : -delta, behavior: "smooth" });
   };
 
-  const tradeMeta = selectedTrades?.meta ?? {
-    page: tradePage,
-    pageSize: tradePageSize,
-    total: selectedData?.trades.length ?? 0,
-    totalPages: 1,
-    hasPrev: false,
-    hasNext: false,
-  };
+  const tradeMeta =
+    selectedTrades?.meta ??
+    buildFallbackRuntimeTradeMeta({
+      page: tradePage,
+      pageSize: tradePageSize,
+      total: selectedData?.trades.length ?? 0,
+    });
   const closePositionButtonLabel = t("dashboard.home.runtime.closePositionButton");
   const closePositionPendingLabel = t("dashboard.home.runtime.closePositionPending");
   const closePositionActionColumnLabel = t("dashboard.home.runtime.filterAction");

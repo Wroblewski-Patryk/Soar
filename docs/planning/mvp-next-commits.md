@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-128 fix(web-dashboard): align fallback trade metadata`
+  - 2026-05-04: Closed a BUILDER-mode dashboard runtime fallback metadata
+    drift. The home runtime widget now builds fallback trade metadata with
+    runtime API empty-state semantics, so empty local trade-history fallback
+    reports `totalPages=0` and non-empty fallback pages are clamped to the
+    local page range. Validation PASS: focused dashboard component suite
+    (`20/20`), web typecheck, repository guardrails, lint, and diff review.
+    Evidence:
+    `docs/planning/runtime-audit-128-dashboard-trade-meta-fallback-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-127 fix(web-dashboard): preserve aggregate trade totals`
   - 2026-05-04: Closed a BUILDER-mode dashboard aggregate trade-history
     counter drift. The main dashboard now preserves API aggregate

@@ -3,6 +3,13 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 dashboard fallback trade metadata slice `RUNTIME-AUDIT-128` is
+  closed locally. The home runtime widget now builds fallback trade metadata
+  with runtime API empty-state semantics, so empty local trade-history fallback
+  reports `totalPages=0` and non-empty fallback pages are clamped to the local
+  page range. Validation PASS: focused dashboard component suite (`20/20`),
+  web typecheck, repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-128-dashboard-trade-meta-fallback-task-2026-05-04.md`.
 - 2026-05-04 dashboard aggregate trade total slice `RUNTIME-AUDIT-127` is
   closed locally. The main dashboard now preserves API aggregate
   `trades.total` before local trade filters or sort are applied, so the

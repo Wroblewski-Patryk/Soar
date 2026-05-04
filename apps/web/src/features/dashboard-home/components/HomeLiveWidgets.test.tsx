@@ -2,7 +2,10 @@ import { act, fireEvent, render, screen, waitFor, within } from "@testing-librar
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { I18nProvider } from "../../../i18n/I18nProvider";
-import HomeLiveWidgets, { resolveSelectedStrategyDisplay } from "./HomeLiveWidgets";
+import HomeLiveWidgets, {
+  buildFallbackRuntimeTradeMeta,
+  resolveSelectedStrategyDisplay,
+} from "./HomeLiveWidgets";
 import { buildMonitoringAggregateFromSessionMocks } from "./HomeLiveWidgets.test-helpers";
 
 const listBotsMock = vi.hoisted(() => vi.fn());
@@ -2976,5 +2979,29 @@ describe("resolveSelectedStrategyDisplay", () => {
     );
 
     expect(strategyName).toBe("Canonical Strategy");
+  });
+});
+
+describe("buildFallbackRuntimeTradeMeta", () => {
+  it("keeps empty fallback pagination aligned with runtime API metadata", () => {
+    expect(buildFallbackRuntimeTradeMeta({ page: 1, pageSize: 10, total: 0 })).toEqual({
+      page: 1,
+      pageSize: 10,
+      total: 0,
+      totalPages: 0,
+      hasPrev: false,
+      hasNext: false,
+    });
+  });
+
+  it("clamps fallback page metadata for non-empty local rows", () => {
+    expect(buildFallbackRuntimeTradeMeta({ page: 4, pageSize: 10, total: 25 })).toEqual({
+      page: 3,
+      pageSize: 10,
+      total: 25,
+      totalPages: 3,
+      hasPrev: true,
+      hasNext: false,
+    });
   });
 });
