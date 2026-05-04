@@ -17,6 +17,7 @@ import { resolveSystemRepairCloseAttribution } from '../positions/positionCloseA
 type ApplyOrderFillLifecycleInput = {
   userId: string;
   orderId: string;
+  mode?: 'PAPER' | 'LIVE' | null;
   fillPrice: number | null;
   fillQuantity: number | null;
   filledAt?: Date;
@@ -62,6 +63,7 @@ type ReusableOpenPosition = {
 type PositionScopeOrder = {
   userId: string;
   symbol: string;
+  mode?: 'PAPER' | 'LIVE' | null;
   walletId: string | null;
   botId: string | null;
 };
@@ -75,6 +77,14 @@ const resolveStaleOpenPositionBlockerWhere = (
     status: 'OPEN',
     syncState: 'ORPHAN_LOCAL',
   } satisfies Prisma.PositionWhereInput;
+
+  if (order.mode === 'PAPER' && order.botId) {
+    return {
+      ...baseWhere,
+      walletId: null,
+      botId: order.botId,
+    };
+  }
 
   if (order.walletId) {
     return {
@@ -303,6 +313,7 @@ export const applyOrderFillLifecycle = async (params: ApplyOrderFillLifecycleInp
       where: resolveOpenPositionScopeWhere({
         userId: updatedOrder.userId,
         symbol: updatedOrder.symbol,
+        mode: params.mode,
         walletId: updatedOrder.walletId ?? null,
         botId: updatedOrder.botId ?? null,
       }),
@@ -355,6 +366,7 @@ export const applyOrderFillLifecycle = async (params: ApplyOrderFillLifecycleInp
       order: {
         userId: updatedOrder.userId,
         symbol: updatedOrder.symbol,
+        mode: params.mode,
         walletId: updatedOrder.walletId,
         botId: updatedOrder.botId,
       },

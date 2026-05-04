@@ -587,6 +587,152 @@ describe('openOrder live execution contract', () => {
     }
   });
 
+  it('keeps PAPER MARKET fill bot-scoped when another bot shares the same wallet and symbol', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-paper-shared-wallet-bot-scope@example.com', password: 'hashed' },
+    });
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'Paper shared wallet',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const strategy = await prisma.strategy.create({
+      data: {
+        userId: user.id,
+        name: 'Paper shared wallet strategy',
+        interval: '5m',
+        leverage: 5,
+        walletRisk: 1,
+        config: {
+          additional: {
+            marginMode: 'ISOLATED',
+            orderType: 'MARKET',
+          },
+        },
+      },
+    });
+    const universe = await prisma.marketUniverse.create({
+      data: {
+        userId: user.id,
+        name: 'Paper shared wallet universe',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: ['DOGEUSDT'],
+        blacklist: [],
+      },
+    });
+    const symbolGroup = await prisma.symbolGroup.create({
+      data: {
+        userId: user.id,
+        marketUniverseId: universe.id,
+        name: 'Paper shared wallet symbols',
+        symbols: ['DOGEUSDT'],
+      },
+    });
+    const firstBot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'Paper shared wallet first bot',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        walletId: wallet.id,
+        strategyId: strategy.id,
+        symbolGroupId: symbolGroup.id,
+      },
+    });
+    const secondBot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'Paper shared wallet second bot',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        walletId: wallet.id,
+        strategyId: strategy.id,
+        symbolGroupId: symbolGroup.id,
+      },
+    });
+    const firstBotPosition = await prisma.position.create({
+      data: {
+        userId: user.id,
+        botId: firstBot.id,
+        walletId: wallet.id,
+        strategyId: strategy.id,
+        symbol: 'DOGEUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 100,
+        quantity: 2,
+        leverage: 5,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+      },
+    });
+
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+
+    try {
+      const order = await openOrder(user.id, {
+        botId: secondBot.id,
+        symbol: 'DOGEUSDT',
+        side: 'BUY',
+        type: 'MARKET',
+        quantity: 1,
+        price: 130,
+        mode: 'PAPER',
+        riskAck: false,
+      });
+
+      expect(order.status).toBe('FILLED');
+      expect(order.positionId).toBeTruthy();
+      expect(order.positionId).not.toBe(firstBotPosition.id);
+
+      const firstPositionAfterFill = await prisma.position.findUniqueOrThrow({
+        where: { id: firstBotPosition.id },
+      });
+      expect(firstPositionAfterFill.quantity).toBe(2);
+      expect(firstPositionAfterFill.entryPrice).toBe(100);
+
+      const secondBotPosition = await prisma.position.findUniqueOrThrow({
+        where: { id: order.positionId ?? '' },
+      });
+      expect(secondBotPosition.botId).toBe(secondBot.id);
+      expect(secondBotPosition.walletId).toBe(wallet.id);
+      expect(secondBotPosition.side).toBe('LONG');
+      expect(secondBotPosition.quantity).toBe(1);
+      expect(secondBotPosition.entryPrice).toBe(130);
+
+      const openPositions = await prisma.position.findMany({
+        where: {
+          userId: user.id,
+          walletId: wallet.id,
+          symbol: 'DOGEUSDT',
+          status: 'OPEN',
+        },
+        orderBy: { createdAt: 'asc' },
+      });
+      expect(openPositions.map((position) => position.botId)).toEqual([
+        firstBot.id,
+        secondBot.id,
+      ]);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
   it('fails closed when manual open tries to reverse an already open symbol direction', async () => {
     const user = await prisma.user.create({
       data: { email: 'orders-paper-manual-reverse-conflict@example.com', password: 'hashed' },

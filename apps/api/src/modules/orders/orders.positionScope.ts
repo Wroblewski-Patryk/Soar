@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 type OpenPositionScopeParams = {
   userId: string;
   symbol: string;
+  mode?: 'PAPER' | 'LIVE' | null;
   walletId?: string | null;
   botId?: string | null;
 };
@@ -16,6 +17,14 @@ export const resolveOpenPositionScopeWhere = (
     status: 'OPEN',
     syncState: 'IN_SYNC',
   };
+
+  if (params.mode === 'PAPER' && params.botId) {
+    return {
+      ...baseWhere,
+      walletId: null,
+      botId: params.botId,
+    };
+  }
 
   if (params.walletId) {
     return {

@@ -454,6 +454,7 @@ const assertNoImplicitReverseOpenConflict = async (params: {
     where: resolveOpenPositionScopeWhere({
       userId: params.userId,
       symbol: params.payload.symbol,
+      mode: params.payload.mode,
       walletId: params.payload.walletId ?? null,
       botId: params.payload.botId ?? null,
     }),
@@ -609,6 +610,7 @@ export const openOrder = async (
       ? await applyOrderFillLifecycle({
           userId,
           orderId: order.id,
+          mode: canonicalPayload.mode,
           fillPrice: fillPriceFromExchange,
           fillQuantity: filledQuantityFromExchange ?? canonicalPayload.quantity,
           filledAt: now,

@@ -29,6 +29,16 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-107` with
+  `docs/planning/runtime-audit-107-paper-order-fill-bot-scope-task-2026-05-04.md`.
+  Order open-position scope is now mode-aware: PAPER orders with a bot id use
+  bot scope even when a shared wallet id is present, while LIVE remains
+  wallet-scoped. This prevents a PAPER fill from reusing or conflicting with
+  another bot's same-symbol position on the same paper wallet, so the active
+  bot gets its own dashboard-visible position. Validation PASS: focused
+  order-scope unit suite (`2/2`), API typecheck, repository guardrails, lint,
+  and diff review. A DB-backed order-service regression was added but local
+  execution was blocked by unavailable PostgreSQL on `localhost:5432`.
 - 2026-05-04: Closed `RUNTIME-AUDIT-106` with
   `docs/planning/runtime-audit-106-bot-open-dca-display-dedupe-task-2026-05-04.md`.
   Runtime position reads now include `orderId` and infer DCA progress from

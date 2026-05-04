@@ -3,6 +3,17 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 PAPER order fill bot-scope slice `RUNTIME-AUDIT-107` is closed
+  locally. Order open-position scope is now mode-aware: PAPER orders with a
+  bot id use bot scope even when a shared wallet id is present, while LIVE
+  remains wallet-scoped. This prevents a PAPER fill from reusing or conflicting
+  with another bot's same-symbol position on the same paper wallet, so the
+  active bot gets its own dashboard-visible position. Validation PASS: focused
+  order-scope unit suite (`2/2`), API typecheck, repository guardrails, lint,
+  and diff review. A DB-backed order-service regression was added but local
+  execution was blocked by unavailable PostgreSQL on `localhost:5432`.
+  Evidence:
+  `docs/planning/runtime-audit-107-paper-order-fill-bot-scope-task-2026-05-04.md`.
 - 2026-05-04 bot-open DCA display dedupe slice `RUNTIME-AUDIT-106` is closed
   locally. Runtime position reads now include `orderId` and infer DCA progress
   from unique entry lifecycle units, so duplicate same-order `OPEN` rows from

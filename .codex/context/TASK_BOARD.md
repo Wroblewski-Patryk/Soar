@@ -20,6 +20,19 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-107 fix(api-orders): scope PAPER fills by bot`
+  - Scope: closed a BUILDER-mode PAPER execution scope drift. Order
+    open-position scope is now mode-aware: PAPER orders with a bot id use bot
+    scope even when a shared wallet id is present, while LIVE remains
+    wallet-scoped. This prevents a PAPER fill from reusing or conflicting with
+    another bot's same-symbol position on the same paper wallet, so the active
+    bot gets its own dashboard-visible position. Validation PASS: focused
+    order-scope unit suite (`2/2`), API typecheck, repository guardrails, lint,
+    and diff review. A DB-backed order-service regression was added but local
+    execution was blocked by unavailable PostgreSQL on `localhost:5432`.
+    Evidence:
+    `docs/planning/runtime-audit-107-paper-order-fill-bot-scope-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-106 fix(api-bots): dedupe bot-open DCA display`
   - Scope: closed a BUILDER-mode dashboard DCA display drift reported by the
     operator. Runtime position reads now include `orderId` and infer DCA
