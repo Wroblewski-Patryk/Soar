@@ -587,6 +587,20 @@ describe('orders.exchangeEvents.service', () => {
         unrealizedPnl: 0,
       },
     });
+    const liveBot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'account-update-live-bot',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        walletId: liveWallet.id,
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'v1',
+      },
+    });
     const paperWallet = await prisma.wallet.create({
       data: {
         userId: user.id,
@@ -610,6 +624,23 @@ describe('orders.exchangeEvents.service', () => {
         quantity: 0.25,
         leverage: 3,
         unrealizedPnl: 7,
+      },
+    });
+    const staleLocalPosition = await prisma.position.create({
+      data: {
+        userId: user.id,
+        botId: liveBot.id,
+        walletId: null,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'ORPHAN_LOCAL',
+        symbol: 'BTCUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 58_000,
+        quantity: 0.2,
+        leverage: 10,
+        unrealizedPnl: 99,
       },
     });
 
@@ -644,6 +675,12 @@ describe('orders.exchangeEvents.service', () => {
     expect(updatedPosition.quantity).toBe(0.15);
     expect(updatedPosition.entryPrice).toBe(62_500);
     expect(updatedPosition.unrealizedPnl).toBe(12.34);
+    const stalePositionAfterUpdate = await prisma.position.findUniqueOrThrow({
+      where: { id: staleLocalPosition.id },
+    });
+    expect(stalePositionAfterUpdate.quantity).toBe(0.2);
+    expect(stalePositionAfterUpdate.entryPrice).toBe(58_000);
+    expect(stalePositionAfterUpdate.unrealizedPnl).toBe(99);
     const paperPositionAfterUpdate = await prisma.position.findUniqueOrThrow({
       where: { id: untouchedPaperPosition.id },
     });

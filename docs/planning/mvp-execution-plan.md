@@ -93,6 +93,13 @@ Rule: fix/cleanup/update first, then feature delivery.
   page, web build-info, and protected API unauthenticated `401 Missing token`.
   Authenticated production dashboard/runtime smoke remains unavailable without
   credentials and was not claimed.
+- 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-94` with
+  `docs/planning/runtime-audit-94-account-update-scope-sync-state-task-2026-05-04.md`.
+  Binance account-update scope resolution now requires `syncState=IN_SYNC`
+  beside `status=OPEN`, so stale same-symbol local rows from another live
+  bot/wallet scope cannot create false ambiguity or receive quantity, entry,
+  PnL, or external-close updates. Validation PASS: exchange-events suite
+  (`6/6`), API typecheck, repository guardrails, lint, and diff review.
 - 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-93` with
   `docs/planning/runtime-audit-93-dedupe-success-order-state-task-2026-05-04.md`.
   Runtime execution dedupe success-by-order now requires the linked order to be

@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-94 fix(api-orders): scope account updates to synced positions`
+  - 2026-05-04: Closed a BUILDER-mode LIVE account-update active-truth drift.
+    Binance account-update scope resolution now requires `syncState=IN_SYNC`
+    beside `status=OPEN`, so stale same-symbol local rows from another live
+    bot/wallet scope cannot create false ambiguity or receive quantity, entry,
+    PnL, or external-close updates. Validation PASS: exchange-events suite
+    (`6/6`), API typecheck, repository guardrails, lint, and diff review.
+    Evidence:
+    `docs/planning/runtime-audit-94-account-update-scope-sync-state-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-93 fix(api-engine): guard dedupe success by order state`
   - 2026-05-04: Closed an ARCHITECT-mode runtime DCA completion drift. Runtime
     execution dedupe success-by-order now requires the linked order to be

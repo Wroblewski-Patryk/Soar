@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 LIVE account-update active-sync slice `RUNTIME-AUDIT-94` is
+  closed locally. Binance account-update scope resolution now requires
+  `syncState=IN_SYNC` beside `status=OPEN`, so stale same-symbol local rows
+  from another live bot/wallet scope cannot create false ambiguity or receive
+  quantity, entry, PnL, or external-close updates. Validation PASS:
+  exchange-events suite (`6/6`), API typecheck, repository guardrails, lint,
+  and diff review. Evidence:
+  `docs/planning/runtime-audit-94-account-update-scope-sync-state-task-2026-05-04.md`.
 - 2026-05-04 runtime execution dedupe success-by-order slice
   `RUNTIME-AUDIT-93` is closed locally. Runtime execution dedupe now marks
   success by `orderId` only when the linked order is `status=FILLED` and

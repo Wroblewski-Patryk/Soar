@@ -189,6 +189,7 @@ const resolveLiveAccountUpdateScope = async (input: {
       symbol: input.symbol,
       side: input.side,
       status: 'OPEN',
+      syncState: 'IN_SYNC',
       OR: [
         {
           wallet: {
