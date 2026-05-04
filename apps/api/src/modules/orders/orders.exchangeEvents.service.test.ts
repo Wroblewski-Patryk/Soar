@@ -581,6 +581,145 @@ describe('orders.exchangeEvents.service', () => {
     await runtimePositionStateStore.deletePositionRuntimeState(position.id);
   });
 
+  it('does not apply linked-position DCA lifecycle to local orphan positions', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'exchange-event-stale-linked-dca@example.com', password: 'hashed' },
+    });
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'live-wallet-stale-linked-dca',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'live-bot-stale-linked-dca',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        walletId: wallet.id,
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'v1',
+      },
+    });
+    const position = await prisma.position.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        walletId: wallet.id,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'ORPHAN_LOCAL',
+        symbol: 'BTCUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 62_000,
+        quantity: 0.1,
+        leverage: 5,
+      },
+    });
+    const order = await prisma.order.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        walletId: wallet.id,
+        positionId: position.id,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        symbol: 'BTCUSDT',
+        side: 'BUY',
+        type: 'MARKET',
+        status: 'OPEN',
+        quantity: 0.05,
+        filledQuantity: 0,
+        exchangeOrderId: 'event-order-stale-linked-dca-1',
+        submittedAt: new Date('2026-04-29T11:00:00.000Z'),
+      },
+    });
+    const dedupeKey = buildDcaExecutionDedupeKey({
+      userId: user.id,
+      botId: bot.id,
+      symbol: 'BTCUSDT',
+      positionId: position.id,
+      dcaLevelIndex: 0,
+      positionSide: 'LONG',
+    });
+    await prisma.runtimeExecutionDedupe.create({
+      data: {
+        dedupeKey,
+        dedupeVersion: 'v1',
+        commandType: 'DCA',
+        userId: user.id,
+        botId: bot.id,
+        symbol: 'BTCUSDT',
+        status: 'PENDING',
+        commandFingerprint: {
+          positionId: position.id,
+          dcaLevelIndex: 0,
+          positionSide: 'LONG',
+        },
+        orderId: order.id,
+        positionId: position.id,
+        ttlExpiresAt: new Date('2026-04-30T11:00:00.000Z'),
+      },
+    });
+
+    const result = await applyLiveExchangeOrderTradeUpdateEvent({
+      userId: user.id,
+      event: {
+        eventType: 'ORDER_TRADE_UPDATE',
+        marketType: 'FUTURES',
+        eventTime: 5_500,
+        transactionTime: 5_501,
+        symbol: 'BTCUSDT',
+        side: 'BUY',
+        orderType: 'MARKET',
+        orderStatus: 'FILLED',
+        executionType: 'TRADE',
+        exchangeOrderId: 'event-order-stale-linked-dca-1',
+        clientOrderId: 'client-stale-linked-dca-1',
+        averagePrice: 63_500,
+        cumulativeFilledQuantity: 0.05,
+        lastFilledQuantity: 0.05,
+        lastFilledPrice: 63_500,
+        fee: 0.03,
+        feeCurrency: 'USDT',
+        exchangeTradeId: 'trade-stale-linked-dca-1',
+        raw: {},
+      },
+    });
+
+    expect(result).toEqual(
+      expect.objectContaining({
+        status: 'applied',
+        orderId: order.id,
+        positionId: position.id,
+        orderStatus: 'FILLED',
+      })
+    );
+    const unchangedPosition = await prisma.position.findUniqueOrThrow({
+      where: { id: position.id },
+    });
+    expect(unchangedPosition.quantity).toBe(0.1);
+    expect(unchangedPosition.entryPrice).toBe(62_000);
+    expect(unchangedPosition.syncState).toBe('ORPHAN_LOCAL');
+    const dcaTrade = await prisma.trade.findFirst({
+      where: { orderId: order.id, lifecycleAction: 'DCA' },
+    });
+    expect(dcaTrade).toBeNull();
+    const updatedDedupe = await prisma.runtimeExecutionDedupe.findUniqueOrThrow({
+      where: { dedupeKey },
+    });
+    expect(updatedDedupe.status).toBe('PENDING');
+  });
+
   it('applies account update to refresh canonical open-position quantities and pnl', async () => {
     const user = await prisma.user.create({
       data: { email: 'exchange-event-account@example.com', password: 'hashed' },

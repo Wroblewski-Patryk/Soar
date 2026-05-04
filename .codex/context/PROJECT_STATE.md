@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 LIVE linked-position fill lifecycle active-sync slice
+  `RUNTIME-AUDIT-96` is closed locally. LIVE exchange order-trade fills now
+  apply linked-position close/DCA lifecycle only when the linked position is
+  `status=OPEN` and `syncState=IN_SYNC`, so stale local linked positions can no
+  longer receive DCA/close position updates, DCA trades, or runtime DCA dedupe
+  completion. Validation PASS: exchange-events suite (`7/7`), API typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-96-linked-position-fill-sync-state-task-2026-05-04.md`.
 - 2026-05-04 LIVE order-trade update synced-market scope slice
   `RUNTIME-AUDIT-95` is closed locally. Binance order-trade updates now resolve
   local orders only when `syncState=IN_SYNC` and the order belongs to the

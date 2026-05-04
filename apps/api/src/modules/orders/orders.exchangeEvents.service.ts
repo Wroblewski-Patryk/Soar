@@ -361,9 +361,13 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
     isPositiveFiniteNumber(averageFillPrice) &&
     isPositiveFiniteNumber(cumulativeFilledQuantity)
   ) {
-    if (updatedOrder.positionId && updatedOrder.position) {
+    if (
+      updatedOrder.positionId &&
+      updatedOrder.position &&
+      updatedOrder.position.status === 'OPEN' &&
+      updatedOrder.position.syncState === 'IN_SYNC'
+    ) {
       if (
-        updatedOrder.position.status === 'OPEN' &&
         isClosingOrderForPosition({
           orderSide: updatedOrder.side,
           positionSide: updatedOrder.position.side,

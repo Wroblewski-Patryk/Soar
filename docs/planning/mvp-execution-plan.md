@@ -93,6 +93,14 @@ Rule: fix/cleanup/update first, then feature delivery.
   page, web build-info, and protected API unauthenticated `401 Missing token`.
   Authenticated production dashboard/runtime smoke remains unavailable without
   credentials and was not claimed.
+- 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-96` with
+  `docs/planning/runtime-audit-96-linked-position-fill-sync-state-task-2026-05-04.md`.
+  LIVE exchange order-trade fills now apply linked-position close/DCA lifecycle
+  only when the linked position is `status=OPEN` and `syncState=IN_SYNC`, so
+  stale local linked positions can no longer receive DCA/close position
+  updates, DCA trades, or runtime DCA dedupe completion. Validation PASS:
+  exchange-events suite (`7/7`), API typecheck, repository guardrails, lint,
+  and diff review.
 - 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-95` with
   `docs/planning/runtime-audit-95-order-trade-update-order-scope-task-2026-05-04.md`.
   Binance order-trade updates now resolve local orders only when

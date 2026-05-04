@@ -20,6 +20,16 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-96 fix(api-orders): guard linked position fill lifecycle`
+  - Scope: closed an ARCHITECT-mode linked-position lifecycle drift. LIVE
+    exchange order-trade fills now apply linked-position close/DCA lifecycle
+    only when the linked position is `status=OPEN` and `syncState=IN_SYNC`, so
+    stale local linked positions can no longer receive DCA/close position
+    updates, DCA trades, or runtime DCA dedupe completion. Validation PASS:
+    exchange-events suite (`7/7`), API typecheck, repository guardrails, lint,
+    and diff review. Evidence:
+    `docs/planning/runtime-audit-96-linked-position-fill-sync-state-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-95 fix(api-orders): scope trade updates to synced live orders`
   - Scope: closed a TESTER-mode LIVE order-trade update scope drift. Binance
     order-trade updates now resolve local orders only when `syncState=IN_SYNC`
