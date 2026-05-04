@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 fallback TTP dashboard display slice `RUNTIME-AUDIT-139` is
+  closed locally. Selected runtime open-position rows now compute fallback TTP
+  protected percent from existing trailing take-profit levels and live PnL, and
+  the TTP display resolver uses that fallback before backend dynamic stop price
+  arrives. Validation PASS: focused runtime selection view-model suite
+  (`6/6`), runtime table presenter suite, web typecheck, repository guardrails,
+  lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-139-dashboard-fallback-ttp-display-task-2026-05-04.md`.
 - 2026-05-04 manual total-pages visible-row clamp slice `RUNTIME-AUDIT-138`
   is closed locally. Manual pagination now preserves `totalPages=0` for empty
   tables only and reports at least one page when rows are visible, preventing

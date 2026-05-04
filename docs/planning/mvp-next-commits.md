@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-139 fix(web-dashboard): show fallback TTP protection`
+  - 2026-05-04: Closed a BUILDER-mode dashboard TTP display drift. Selected
+    runtime open-position rows now compute fallback TTP protected percent from
+    existing trailing take-profit levels and live PnL, and the TTP display
+    resolver uses that fallback before backend dynamic stop price arrives.
+    Validation PASS: focused runtime selection view-model suite (`6/6`),
+    runtime table presenter suite, web typecheck, repository guardrails, lint,
+    and diff review. Evidence:
+    `docs/planning/runtime-audit-139-dashboard-fallback-ttp-display-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-138 fix(web-ui): clamp manual total pages with visible rows`
   - 2026-05-04: Closed an ARCHITECT-mode shared table pagination contract
     drift. Manual pagination now preserves `totalPages=0` for empty tables

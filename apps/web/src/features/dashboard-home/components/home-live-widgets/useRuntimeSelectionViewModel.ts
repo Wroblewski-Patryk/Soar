@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { normalizeSymbol } from "@/lib/symbols";
 import { toTimestamp } from "@/lib/time";
 import type { BotRuntimeTrade, BotRuntimeTradesResponse } from "@/features/bots/types/bot.type";
@@ -10,6 +10,10 @@ import {
   resolveRuntimePortfolio,
 } from "@/features/bots/utils/runtimeSurfaceTruth";
 import { sumRuntimeOpenPositionUnrealized } from "@/features/bots/utils/runtimeOpenPositionDerivations";
+import {
+  pruneStickyFavorableMoveMap,
+  resolveFallbackTtpProtectedPercent,
+} from "@/features/bots/utils/trailingStopDisplay";
 import {
   buildLiveOpenPositions,
   maxDrawdown,
@@ -48,6 +52,7 @@ export const useRuntimeSelectionViewModel = ({
   selectedTrades,
   liveTickerPrices,
 }: UseRuntimeSelectionViewModelArgs) => {
+  const stickyTtpFavorableMoveByPosition = useRef(new Map<string, number>());
   const summary = useMemo<RuntimeSummary>(() => {
     const openPositions = snapshots.reduce((acc, x) => acc + (x.positions?.openCount ?? 0), 0);
     const usedMargin = snapshots.reduce((acc, x) => acc + resolveUsedMargin(x.positions), 0);
@@ -113,9 +118,18 @@ export const useRuntimeSelectionViewModel = ({
     );
     const streamPrices = new Map<string, number>(Object.entries(liveTickerPrices));
     const open = buildLiveOpenPositions(selected.positions, selected.symbolStats, streamPrices);
+    pruneStickyFavorableMoveMap(
+      stickyTtpFavorableMoveByPosition.current,
+      new Set(open.map((position) => position.id))
+    );
     const openWithProtectedFallback = open.map((position) => ({
       ...position,
-      fallbackTtpProtectedPercent: null,
+      fallbackTtpProtectedPercent: resolveFallbackTtpProtectedPercent({
+        positionId: position.id,
+        livePnlPercent: position.livePnlPct,
+        trailingTakeProfitLevels: position.trailingTakeProfitLevels,
+        stickyFavorableMoveByPosition: stickyTtpFavorableMoveByPosition.current,
+      }),
       runtimeBotId: selected.bot.id,
       runtimeSessionId: selected.actionSessionId ?? selected.session?.id ?? null,
     }));

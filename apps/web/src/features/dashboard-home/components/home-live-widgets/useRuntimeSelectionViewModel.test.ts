@@ -1,6 +1,7 @@
 import { renderHook } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
+import { resolveDynamicTtpDisplay } from "./runtimeDerivations";
 import {
   resolveSelectedRuntimeTradeRows,
   useRuntimeSelectionViewModel,
@@ -179,6 +180,38 @@ describe("useRuntimeSelectionViewModel", () => {
 
     expect(result.current.selectedData?.trades).toHaveLength(1);
     expect(result.current.selectedData?.trades[0]?.id).toBe("trade-1");
+  });
+
+  it("shows fallback TTP protection when trailing take-profit is armed before stop price arrives", () => {
+    const positions = snapshot.positions;
+    expect(positions).not.toBeNull();
+    const snapshotWithTrailingTtp = {
+      ...snapshot,
+      positions: {
+        ...positions,
+        openItems: [
+          {
+            ...positions!.openItems[0],
+            trailingTakeProfitLevels: [{ armPercent: 5, trailPercent: 2 }],
+            dynamicTtpStopLoss: null,
+          },
+        ],
+      },
+    } as unknown as RuntimeSnapshot;
+
+    const { result } = renderHook(() =>
+      useRuntimeSelectionViewModel({
+        snapshots: [snapshotWithTrailingTtp],
+        selected: snapshotWithTrailingTtp,
+        selectedTrades: null,
+        liveTickerPrices: { DOGEUSDT: 0.991 },
+      })
+    );
+
+    const row = result.current.selectedData?.open[0];
+    expect(row?.fallbackTtpProtectedPercent).toBeCloseTo(7, 8);
+    expect(resolveDynamicTtpDisplay(row!)).toBeCloseTo(7, 8);
+    expect(result.current.showDynamicStopColumns).toBe(true);
   });
 });
 

@@ -29,6 +29,14 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-139` with
+  `docs/planning/runtime-audit-139-dashboard-fallback-ttp-display-task-2026-05-04.md`.
+  Selected runtime open-position rows now compute fallback TTP protected
+  percent from existing trailing take-profit levels and live PnL, and the TTP
+  display resolver uses that fallback before backend dynamic stop price
+  arrives. Validation PASS: focused runtime selection view-model suite
+  (`6/6`), runtime table presenter suite, web typecheck, repository guardrails,
+  lint, and diff review.
 - 2026-05-04: Closed `RUNTIME-AUDIT-138` with
   `docs/planning/runtime-audit-138-manual-total-pages-visible-rows-task-2026-05-04.md`.
   Manual pagination now preserves `totalPages=0` for empty tables only and
