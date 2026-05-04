@@ -111,6 +111,7 @@ describe('buildOpenPositionLookupWhere', () => {
       userId: 'u1',
       symbol: 'BTCUSDT',
       status: 'OPEN',
+      syncState: 'IN_SYNC',
       walletId: 'wallet-live',
     });
   });
@@ -128,6 +129,7 @@ describe('buildOpenPositionLookupWhere', () => {
       userId: 'u1',
       symbol: 'ETHUSDT',
       status: 'OPEN',
+      syncState: 'IN_SYNC',
       botId: 'bot-paper',
     });
   });

@@ -235,6 +235,14 @@ Rule: fix/cleanup/update first, then feature delivery.
   runtime cap or managed-import truth. Validation PASS: focused runtime
   repository/defaults pack (`12/12`), API typecheck, repository guardrails,
   lint, and diff review.
+- 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-91` with
+  `docs/planning/runtime-audit-91-execution-open-lookup-sync-state-task-2026-05-04.md`.
+  Runtime execution open-position lookup now requires `syncState=IN_SYNC` for
+  direct and LIVE imported fallback reads, so stale `ORPHAN_LOCAL` open rows no
+  longer drive `already_open_same_side`, no-flip, or EXIT close decisions after
+  dashboard/pre-trade/runtime loop has stopped treating them as active.
+  Validation PASS: focused execution orchestrator suite (`17/17`), API
+  typecheck, repository guardrails, lint, and diff review.
 - 2026-05-03: Closed operator follow-up `RUNTIME-AUDIT-15` with
   `docs/planning/runtime-audit-15-close-fee-position-scope-task-2026-05-03.md`.
   Runtime close realized-PnL now aggregates entry fees by owned position

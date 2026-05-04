@@ -117,6 +117,7 @@ export const buildOpenPositionLookupWhere = (input: {
     userId: input.userId,
     symbol: normalizedSymbol,
     status: 'OPEN',
+    syncState: 'IN_SYNC',
   };
 
   if (input.mode === 'LIVE') {
@@ -208,6 +209,7 @@ export const resolveRuntimeOpenPositionBySymbol = async (input: {
       botId: null,
       symbol: normalizeSymbol(input.symbol),
       status: 'OPEN',
+      syncState: 'IN_SYNC',
       origin: 'EXCHANGE_SYNC',
       managementMode: 'BOT_MANAGED',
       AND: [

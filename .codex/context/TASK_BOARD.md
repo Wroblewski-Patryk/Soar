@@ -20,6 +20,16 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-91 fix(api-engine): align execution open lookup with sync state`
+  - Scope: closed a BUILDER-mode runtime execution active-truth drift. Runtime
+    execution open-position lookup now requires `syncState=IN_SYNC` for direct
+    and LIVE imported fallback reads, so stale `ORPHAN_LOCAL` open rows no
+    longer drive `already_open_same_side`, no-flip, or EXIT close decisions
+    after dashboard/pre-trade/runtime loop has stopped treating them as active.
+    Validation PASS: focused execution orchestrator suite (`17/17`), API
+    typecheck, repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-91-execution-open-lookup-sync-state-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-90 fix(api-engine): align runtime loop repository with sync state`
   - Scope: closed a TESTER-mode runtime loop active-truth drift. Runtime signal
     loop repository reads now require `syncState=IN_SYNC` when hydrating

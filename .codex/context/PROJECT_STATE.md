@@ -3,6 +3,15 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 runtime execution open-lookup active-sync slice
+  `RUNTIME-AUDIT-91` is closed locally. Runtime execution open-position lookup
+  now requires `syncState=IN_SYNC` for direct and LIVE imported fallback reads,
+  so stale `ORPHAN_LOCAL` open rows no longer drive `already_open_same_side`,
+  no-flip, or EXIT close decisions after dashboard/pre-trade/runtime loop has
+  stopped treating them as active. Validation PASS: focused execution
+  orchestrator suite (`17/17`), API typecheck, repository guardrails, lint, and
+  diff review. Evidence:
+  `docs/planning/runtime-audit-91-execution-open-lookup-sync-state-task-2026-05-04.md`.
 - 2026-05-04 runtime loop repository active-sync slice `RUNTIME-AUDIT-90` is
   closed locally. Runtime signal loop repository reads now require
   `syncState=IN_SYNC` when hydrating managed external open positions and
