@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-120 fix(api-bots): align aggregate position items`
+  - 2026-05-04: Closed a TESTER-mode runtime aggregate dashboard table/counter
+    drift. Aggregate current open position rows and open order rows now come
+    from the freshest position response, while historical position rows use the
+    latest-running projection rows, so stale older RUNNING snapshots no longer
+    stay visible after counters move to the newer snapshot. Validation PASS:
+    focused runtime session position unit suite (`13/13`), API typecheck,
+    repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-120-aggregate-position-items-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-119 fix(api-bots): align aggregate running trade items`
   - 2026-05-04: Closed a BUILDER-mode runtime aggregate dashboard
     table/counter drift. Aggregate trade table items now use the same

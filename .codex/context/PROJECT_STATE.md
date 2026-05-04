@@ -3,6 +3,15 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 runtime aggregate position item projection slice
+  `RUNTIME-AUDIT-120` is closed locally. Aggregate current open position rows
+  and open order rows now come from the freshest position response, while
+  historical position rows use the latest-running projection rows, so stale
+  older RUNNING snapshots no longer stay visible after counters move to the
+  newer snapshot. Validation PASS: focused runtime session position unit suite
+  (`13/13`), API typecheck, repository guardrails, lint, and diff review.
+  Evidence:
+  `docs/planning/runtime-audit-120-aggregate-position-items-task-2026-05-04.md`.
 - 2026-05-04 runtime aggregate trade item projection slice
   `RUNTIME-AUDIT-119` is closed locally. Aggregate trade table items now use
   the same latest-running projection rows as trade totals and fees, so stale

@@ -2,6 +2,9 @@ import { describe, expect, it } from 'vitest';
 
 import { buildRuntimeSymbolLiveOpenPositionScopes } from './botsRuntimeRead.repository';
 import {
+  buildRuntimeAggregateCurrentOpenItems,
+  buildRuntimeAggregateCurrentOpenOrders,
+  buildRuntimeAggregateProjectedHistoryItems,
   buildRuntimeAggregateProjectedTradeItems,
   selectLatestRunningProjectionRows,
   sumRuntimeAggregateProjectedSymbolsTracked,
@@ -297,6 +300,107 @@ describe('runtime aggregate projection helpers', () => {
     const tradeItems = buildRuntimeAggregateProjectedTradeItems(projectedRows);
 
     expect(tradeItems.map((item) => item.id)).toEqual(['latest-running-trade', 'completed-trade']);
+  });
+
+  it('uses current and projected rows for aggregate position tables', () => {
+    const olderResponse = {
+      openItems: [
+        {
+          id: 'stale-open-position',
+          openedAt: '2026-05-04T10:03:00.000Z',
+          entryNotional: 100,
+          leverage: 2,
+        },
+      ],
+      openOrders: [
+        {
+          id: 'stale-open-order',
+          submittedAt: '2026-05-04T10:04:00.000Z',
+          createdAt: '2026-05-04T10:04:00.000Z',
+        },
+      ],
+      historyItems: [
+        {
+          id: 'stale-history',
+          closedAt: '2026-05-04T10:04:30.000Z',
+        },
+      ],
+    };
+    const latestResponse = {
+      openItems: [
+        {
+          id: 'latest-open-position',
+          openedAt: '2026-05-04T10:18:00.000Z',
+          entryNotional: 200,
+          leverage: 2,
+        },
+      ],
+      openOrders: [
+        {
+          id: 'latest-open-order',
+          submittedAt: '2026-05-04T10:19:00.000Z',
+          createdAt: '2026-05-04T10:19:00.000Z',
+        },
+      ],
+      historyItems: [
+        {
+          id: 'latest-history',
+          closedAt: '2026-05-04T10:17:00.000Z',
+        },
+      ],
+    };
+    const rows = [
+      {
+        session: {
+          id: 'completed',
+          status: 'COMPLETED',
+          startedAt: new Date('2026-05-04T09:00:00.000Z'),
+          lastHeartbeatAt: null,
+          finishedAt: new Date('2026-05-04T09:30:00.000Z'),
+        },
+        positions: {
+          historyItems: [
+            {
+              id: 'completed-history',
+              closedAt: '2026-05-04T09:20:00.000Z',
+            },
+          ],
+        },
+      },
+      {
+        session: {
+          id: 'running-old',
+          status: 'RUNNING',
+          startedAt: new Date('2026-05-04T10:00:00.000Z'),
+          lastHeartbeatAt: new Date('2026-05-04T10:05:00.000Z'),
+          finishedAt: null,
+        },
+        positions: olderResponse,
+      },
+      {
+        session: {
+          id: 'running-new',
+          status: 'RUNNING',
+          startedAt: new Date('2026-05-04T10:10:00.000Z'),
+          lastHeartbeatAt: new Date('2026-05-04T10:20:00.000Z'),
+          finishedAt: null,
+        },
+        positions: latestResponse,
+      },
+    ] as any[];
+
+    const projectedRows = selectLatestRunningProjectionRows(rows);
+
+    expect(buildRuntimeAggregateCurrentOpenItems(latestResponse).map((item) => item.id)).toEqual([
+      'latest-open-position',
+    ]);
+    expect(buildRuntimeAggregateCurrentOpenOrders(latestResponse).map((item) => item.id)).toEqual([
+      'latest-open-order',
+    ]);
+    expect(buildRuntimeAggregateProjectedHistoryItems(projectedRows).map((item) => item.id)).toEqual([
+      'latest-history',
+      'completed-history',
+    ]);
   });
 });
 

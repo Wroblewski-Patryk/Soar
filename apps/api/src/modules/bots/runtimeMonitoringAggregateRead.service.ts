@@ -105,6 +105,68 @@ export const buildRuntimeAggregateProjectedTradeItems = <
     )
   );
 
+export const buildRuntimeAggregateCurrentOpenItems = <
+  T extends {
+    openItems: Array<{
+      id: string;
+      openedAt: Date | string | null;
+      entryNotional: number;
+      leverage: number;
+    }>;
+  },
+>(
+  response: T | null
+) =>
+  uniqueById(response?.openItems ?? []).sort((left, right) =>
+    compareTimestampDescThenIdAsc(
+      toTimestamp(left.openedAt),
+      toTimestamp(right.openedAt),
+      left.id,
+      right.id
+    )
+  );
+
+export const buildRuntimeAggregateCurrentOpenOrders = <
+  T extends {
+    openOrders: Array<{
+      id: string;
+      submittedAt?: Date | string | null;
+      createdAt: Date | string | null;
+    }>;
+  },
+>(
+  response: T | null
+) =>
+  uniqueById(response?.openOrders ?? []).sort((left, right) =>
+    compareTimestampDescThenIdAsc(
+      toTimestamp(left.submittedAt ?? left.createdAt),
+      toTimestamp(right.submittedAt ?? right.createdAt),
+      left.id,
+      right.id
+    )
+  );
+
+export const buildRuntimeAggregateProjectedHistoryItems = <
+  T extends {
+    positions: {
+      historyItems: Array<{
+        id: string;
+        closedAt: Date | string | null;
+      }>;
+    };
+  },
+>(
+  rows: T[]
+) =>
+  uniqueById(rows.flatMap((row) => row.positions.historyItems)).sort((left, right) =>
+    compareTimestampDescThenIdAsc(
+      toTimestamp(left.closedAt),
+      toTimestamp(right.closedAt),
+      left.id,
+      right.id
+    )
+  );
+
 const resolveAggregateSessionWindowEnd = (session: RuntimeSessionListItem) =>
   session.finishedAt ?? session.lastHeartbeatAt ?? session.startedAt;
 
@@ -507,33 +569,6 @@ export const getBotRuntimeMonitoringAggregate = async (
   };
 
   const positionResponses = completePayloadRows.map((row) => row.positions);
-  const openItems = uniqueById(positionResponses.flatMap((response) => response.openItems)).sort(
-    (left, right) =>
-      compareTimestampDescThenIdAsc(
-        toTimestamp(left.openedAt),
-        toTimestamp(right.openedAt),
-        left.id,
-        right.id
-      )
-  );
-  const historyItems = uniqueById(positionResponses.flatMap((response) => response.historyItems)).sort(
-    (left, right) =>
-      compareTimestampDescThenIdAsc(
-        toTimestamp(left.closedAt),
-        toTimestamp(right.closedAt),
-        left.id,
-        right.id
-      )
-  );
-  const openOrders = uniqueById(positionResponses.flatMap((response) => response.openOrders)).sort(
-    (left, right) =>
-      compareTimestampDescThenIdAsc(
-        toTimestamp(left.submittedAt ?? left.createdAt),
-        toTimestamp(right.submittedAt ?? right.createdAt),
-        left.id,
-        right.id
-      )
-  );
   const sortedBySessionFreshness = [...completePayloadRows].sort((left, right) =>
     compareTimestampDescThenIdAsc(
       Math.max(
@@ -558,6 +593,10 @@ export const getBotRuntimeMonitoringAggregate = async (
       return referenceBalance != null || freeCash != null;
     });
   const latestPositionResponse = sortedBySessionFreshness[0]?.positions ?? null;
+  const historicalPositionRows = selectLatestRunningProjectionRows(completePayloadRows);
+  const openItems = buildRuntimeAggregateCurrentOpenItems(latestPositionResponse);
+  const historyItems = buildRuntimeAggregateProjectedHistoryItems(historicalPositionRows);
+  const openOrders = buildRuntimeAggregateCurrentOpenOrders(latestPositionResponse);
   const latestOpenPositionCount = latestPositionResponse?.openCount ?? 0;
   const latestOpenPositionQty = latestPositionResponse?.summary.openPositionQty ?? 0;
   const latestUnrealizedPnl = latestPositionResponse?.summary.unrealizedPnl ?? 0;
@@ -574,7 +613,6 @@ export const getBotRuntimeMonitoringAggregate = async (
       : referenceBalance != null
         ? Math.max(0, referenceBalance - Math.max(0, usedMargin))
         : null;
-  const historicalPositionRows = selectLatestRunningProjectionRows(completePayloadRows);
   const positionsSummary = {
     realizedPnl: historicalPositionRows.reduce((acc, row) => acc + row.positions.summary.realizedPnl, 0),
     unrealizedPnl: latestUnrealizedPnl,
@@ -602,7 +640,7 @@ export const getBotRuntimeMonitoringAggregate = async (
   const totalOpenPositions = latestOpenPositionCount;
   const totalClosedPositions = historicalPositionRows.reduce((acc, row) => acc + row.positions.closedCount, 0);
   const totalPositions = totalOpenPositions + totalClosedPositions;
-  const totalOpenOrders = Math.max(0, ...positionResponses.map((response) => response.openOrdersCount));
+  const totalOpenOrders = latestPositionResponse?.openOrdersCount ?? 0;
   const tradeTotalRows = selectLatestRunningProjectionRows(completePayloadRows);
   const tradeItems = buildRuntimeAggregateProjectedTradeItems(tradeTotalRows);
   const totalTrades = tradeTotalRows.reduce((acc, row) => acc + row.trades.total, 0);
