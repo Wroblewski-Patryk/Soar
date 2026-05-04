@@ -20,6 +20,15 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-115 fix(api-bots): include carried open positions in symbol stats`
+  - Scope: closed a TESTER-mode runtime dashboard parity drift. Runtime
+    symbol-stats live open-position reads now include positions opened before
+    session start when they remain active by the session window end, matching
+    the session positions endpoint's carried-position semantics. Validation
+    PASS: focused runtime session position unit suite (`6/6`), API typecheck,
+    repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-115-symbol-stats-carried-open-position-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-114 fix(api-bots): bound session closed positions by window`
   - Scope: closed an ARCHITECT-mode runtime session dashboard window drift.
     Closed-position history and fee aggregation now bound `closedAt` by both

@@ -1,4 +1,5 @@
 import { prisma } from '../../prisma/client';
+import { buildRuntimeSessionOpenPositionWindow } from './runtimeSessionPositionWindow';
 
 export const getRuntimeSymbolStatsBaseData = async (params: {
   userId: string;
@@ -174,10 +175,9 @@ export const getRuntimeSymbolLiveRows = async (params: {
         syncState: 'IN_SYNC',
         managementMode: 'BOT_MANAGED',
         symbol: { in: params.symbols },
-        openedAt: {
-          gte: params.windowStart,
-          lte: params.windowEnd,
-        },
+        openedAt: buildRuntimeSessionOpenPositionWindow({
+          windowEnd: params.windowEnd,
+        }),
       },
       select: {
         symbol: true,

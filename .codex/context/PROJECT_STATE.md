@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 runtime symbol-stats carried open-position slice
+  `RUNTIME-AUDIT-115` is closed locally. Runtime symbol-stats live
+  open-position reads now include positions opened before session start when
+  they remain active by the session window end, matching the session positions
+  endpoint's carried-position semantics. Validation PASS: focused runtime
+  session position unit suite (`6/6`), API typecheck, repository guardrails,
+  lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-115-symbol-stats-carried-open-position-task-2026-05-04.md`.
 - 2026-05-04 runtime session closed-position window slice `RUNTIME-AUDIT-114`
   is closed locally. Closed-position history and fee aggregation now bound
   `closedAt` by both session start and resolved window end, so completed

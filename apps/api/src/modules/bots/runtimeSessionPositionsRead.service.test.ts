@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
 import { resolveRuntimePositionDcaCount } from './runtimeSessionPositionDcaCount';
-import { buildRuntimeSessionClosedPositionWindow } from './runtimeSessionPositionWindow';
+import {
+  buildRuntimeSessionClosedPositionWindow,
+  buildRuntimeSessionOpenPositionWindow,
+} from './runtimeSessionPositionWindow';
 import { buildBotlessWalletTradeFallbackWhere } from './runtimeSessionTradeFallbackScope';
 
 describe('buildBotlessWalletTradeFallbackWhere', () => {
@@ -51,6 +54,16 @@ describe('buildRuntimeSessionClosedPositionWindow', () => {
 
     expect(buildRuntimeSessionClosedPositionWindow({ startedAt, windowEnd })).toEqual({
       gte: startedAt,
+      lte: windowEnd,
+    });
+  });
+});
+
+describe('buildRuntimeSessionOpenPositionWindow', () => {
+  it('includes carried open positions opened before the session start', () => {
+    const windowEnd = new Date('2026-05-04T11:00:00.000Z');
+
+    expect(buildRuntimeSessionOpenPositionWindow({ windowEnd })).toEqual({
       lte: windowEnd,
     });
   });

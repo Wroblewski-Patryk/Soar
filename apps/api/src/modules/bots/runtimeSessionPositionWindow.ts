@@ -7,3 +7,9 @@ export const buildRuntimeSessionClosedPositionWindow = (input: {
   gte: input.startedAt,
   lte: input.windowEnd,
 });
+
+export const buildRuntimeSessionOpenPositionWindow = (input: {
+  windowEnd: Date;
+}): Prisma.DateTimeFilter => ({
+  lte: input.windowEnd,
+});
