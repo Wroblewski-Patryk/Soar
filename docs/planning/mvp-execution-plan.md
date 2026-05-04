@@ -29,6 +29,15 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-106` with
+  `docs/planning/runtime-audit-106-bot-open-dca-display-dedupe-task-2026-05-04.md`.
+  Runtime position reads now include `orderId` and infer DCA progress from
+  unique entry lifecycle units, so duplicate same-order `OPEN` rows from bot
+  runtime and exchange fill handling display DCA `0` until a real `DCA` row or
+  runtime progress exists. Validation PASS: focused DCA count unit suite
+  (`2/2`), API typecheck, repository guardrails, lint, and diff review.
+  Integration e2e scenario was added but local execution was blocked by
+  unavailable PostgreSQL on `localhost:5432`.
 - 2026-05-04: Closed `RUNTIME-AUDIT-105` with
   `docs/planning/runtime-audit-105-runtime-external-count-sync-state-task-2026-05-04.md`.
   LIVE owned imported fallback open-position counts now require

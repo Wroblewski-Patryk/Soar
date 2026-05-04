@@ -3,6 +3,15 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 bot-open DCA display dedupe slice `RUNTIME-AUDIT-106` is closed
+  locally. Runtime position reads now include `orderId` and infer DCA progress
+  from unique entry lifecycle units, so duplicate same-order `OPEN` rows from
+  bot runtime and exchange fill handling display DCA `0` until a real `DCA`
+  row or runtime progress exists. Validation PASS: focused DCA count unit
+  suite (`2/2`), API typecheck, repository guardrails, lint, and diff review.
+  Integration e2e scenario was added but local execution was blocked by
+  unavailable PostgreSQL on `localhost:5432`. Evidence:
+  `docs/planning/runtime-audit-106-bot-open-dca-display-dedupe-task-2026-05-04.md`.
 - 2026-05-04 runtime owned imported count active-sync slice
   `RUNTIME-AUDIT-105` is closed locally. LIVE owned imported fallback
   open-position counts now require `syncState=IN_SYNC`, so stale

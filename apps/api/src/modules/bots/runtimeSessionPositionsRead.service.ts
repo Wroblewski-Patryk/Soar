@@ -54,6 +54,7 @@ import { resolvePreferredRuntimeOrExchangeSyncedPrice } from './runtimeExchangeS
 import { hasMaterialCanonicalBasisDrift } from '../engine/runtimePositionAutomationStateRebase';
 import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from './runtimeSymbolCatalogResolver.service';
 import { normalizeSymbols } from './runtimeSymbolUniverse.service';
+import { resolveRuntimePositionDcaCount } from './runtimeSessionPositionDcaCount';
 
 type RuntimeTakeoverStatus = 'OWNED_AND_MANAGED' | 'UNOWNED' | 'AMBIGUOUS' | 'MANUAL_ONLY';
 
@@ -144,20 +145,6 @@ const dedupeRuntimeOpenOrders = (orders: RuntimeOpenOrderRow[]) => {
 
 const selectRuntimeOpenOrders = (orders: RuntimeOpenOrderRow[], limit: number) => {
   const items = dedupeRuntimeOpenOrders(orders); return { count: items.length, items: items.slice(0, limit) };
-};
-
-const resolveRuntimePositionDcaCount = (input: {
-  entryLegsCount: number;
-  explicitDcaTradeCount: number;
-  runtimeStateCurrentAdds: number | null;
-}) => {
-  const inferredFromEntryLegs = Math.max(0, input.entryLegsCount - 1);
-  const inferredFromTrades = Math.max(0, input.explicitDcaTradeCount);
-  const inferredFromRuntimeState =
-    typeof input.runtimeStateCurrentAdds === 'number' && Number.isFinite(input.runtimeStateCurrentAdds)
-      ? Math.max(0, Math.trunc(input.runtimeStateCurrentAdds))
-      : 0;
-  return Math.max(inferredFromEntryLegs, inferredFromTrades, inferredFromRuntimeState);
 };
 
 const sortRuntimePositionTrades = (trades: RuntimePositionTradeRow[]) =>
@@ -842,7 +829,7 @@ export const listBotRuntimeSessionPositions = async (
       (trade) => trade.lifecycleAction === 'DCA'
     ).length;
     const dcaCount = resolveRuntimePositionDcaCount({
-      entryLegsCount: entryLegs.length,
+      entryLegs,
       explicitDcaTradeCount,
       runtimeStateCurrentAdds: runtimeState?.currentAdds ?? null,
     });

@@ -20,6 +20,17 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-106 fix(api-bots): dedupe bot-open DCA display`
+  - Scope: closed a BUILDER-mode dashboard DCA display drift reported by the
+    operator. Runtime position reads now include `orderId` and infer DCA
+    progress from unique entry lifecycle units, so duplicate same-order `OPEN`
+    rows from bot runtime and exchange fill handling display DCA `0` until a
+    real `DCA` row or runtime progress exists. Validation PASS: focused DCA
+    count unit suite (`2/2`), API typecheck, repository guardrails, lint, and
+    diff review. Integration e2e scenario was added but local execution was
+    blocked by unavailable PostgreSQL on `localhost:5432`. Evidence:
+    `docs/planning/runtime-audit-106-bot-open-dca-display-dedupe-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-105 fix(api-engine): scope runtime external count to synced rows`
   - Scope: closed a TESTER-mode runtime cap active-truth drift. LIVE owned
     imported fallback open-position counts now require `syncState=IN_SYNC`,

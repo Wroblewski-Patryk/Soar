@@ -101,6 +101,137 @@ describe('Bots runtime imported DCA visibility', () => {
     expect(positionsRes.body.openItems[0].dcaExecutedLevels).toEqual([-10]);
   });
 
+  it('does not count duplicate same-order bot OPEN trade rows as DCA', async () => {
+    const ownerEmail = 'bot-runtime-duplicate-open-dca-owner@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
+
+    const strategyId = await createStrategy(
+      owner,
+      'Duplicate Open DCA Display Strategy',
+      DCA_ADVANCED_STRATEGY_CONFIG
+    );
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    await prisma.symbolGroup.update({
+      where: { id: marketGroupId },
+      data: { symbols: ['DOGEUSDT'] },
+    });
+
+    const createRes = await owner
+      .post('/dashboard/bots')
+      .send(createPayload({ strategyId, marketGroupId }));
+    expect(createRes.status).toBe(201);
+    const botId = createRes.body.id as string;
+    const walletId = createRes.body.walletId as string;
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'LIVE',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-03T10:00:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-03T10:10:00.000Z'),
+      },
+    });
+    const position = await prisma.position.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        walletId,
+        strategyId,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        continuityState: 'CONFIRMED',
+        symbol: 'DOGEUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 0.105,
+        quantity: 100,
+        leverage: 15,
+        openedAt: new Date('2026-04-03T10:01:00.000Z'),
+        marginUsed: 0.7,
+      },
+    });
+    const order = await prisma.order.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        walletId,
+        strategyId,
+        positionId: position.id,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        symbol: 'DOGEUSDT',
+        side: 'BUY',
+        type: 'MARKET',
+        status: 'FILLED',
+        quantity: 100,
+        filledQuantity: 100,
+        averageFillPrice: 0.105,
+        filledAt: new Date('2026-04-03T10:01:00.000Z'),
+      },
+    });
+    await prisma.trade.createMany({
+      data: [
+        {
+          userId: ownerUser.id,
+          botId,
+          walletId,
+          strategyId,
+          orderId: order.id,
+          positionId: position.id,
+          symbol: 'DOGEUSDT',
+          side: 'BUY',
+          lifecycleAction: 'OPEN',
+          price: 0.105,
+          quantity: 100,
+          fee: 0,
+          realizedPnl: 0,
+          origin: 'BOT',
+          managementMode: 'BOT_MANAGED',
+          executedAt: new Date('2026-04-03T10:01:00.000Z'),
+        },
+        {
+          userId: ownerUser.id,
+          botId,
+          walletId,
+          strategyId,
+          orderId: order.id,
+          positionId: position.id,
+          symbol: 'DOGEUSDT',
+          side: 'BUY',
+          lifecycleAction: 'OPEN',
+          price: 0.105,
+          quantity: 100,
+          fee: 0,
+          realizedPnl: 0,
+          origin: 'EXCHANGE_SYNC',
+          managementMode: 'BOT_MANAGED',
+          executedAt: new Date('2026-04-03T10:01:01.000Z'),
+        },
+      ],
+    });
+
+    const positionsRes = await owner.get(
+      `/dashboard/bots/${botId}/runtime-sessions/${session.id}/positions`
+    );
+
+    expect(positionsRes.status).toBe(200);
+    expect(positionsRes.body.openItems).toHaveLength(1);
+    expect(positionsRes.body.openItems[0]).toEqual(
+      expect.objectContaining({
+        id: position.id,
+        symbol: 'DOGEUSDT',
+        dcaCount: 0,
+        dcaExecutedLevels: [],
+        tradesCount: 2,
+      })
+    );
+  });
+
   it('keeps DCA visible when exchange sync replaces the local position row after an add fill', async () => {
     const ownerEmail = 'bot-runtime-replaced-dca-owner@example.com';
     const owner = await registerAndLogin(ownerEmail);
