@@ -9,6 +9,14 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-135 fix(web-ui): clamp reported table totals`
+  - 2026-05-04: Closed a TESTER-mode shared table display invariant gap.
+    Display-only reported totals now remain at least the effective table row
+    count, so a stale or inconsistent runtime counter cannot show `Rows: 0`
+    while rows are visible. Validation PASS: focused `DataTable` suite
+    (`6/6`), web typecheck, repository guardrails, lint, and diff review.
+    Evidence:
+    `docs/planning/runtime-audit-135-clamp-reported-table-totals-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-134 fix(web-dashboard): include open-order icon symbols`
   - 2026-05-04: Closed a BUILDER-mode dashboard open-orders display drift.
     Runtime icon lookup now includes symbols that appear only in open orders,

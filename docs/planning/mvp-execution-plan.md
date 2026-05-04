@@ -29,6 +29,12 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-135` with
+  `docs/planning/runtime-audit-135-clamp-reported-table-totals-task-2026-05-04.md`.
+  Display-only reported totals now remain at least the effective table row
+  count, so a stale or inconsistent runtime counter cannot show `Rows: 0`
+  while rows are visible. Validation PASS: focused `DataTable` suite (`6/6`),
+  web typecheck, repository guardrails, lint, and diff review.
 - 2026-05-04: Closed `RUNTIME-AUDIT-134` with
   `docs/planning/runtime-audit-134-open-orders-icon-symbols-task-2026-05-04.md`.
   Runtime icon lookup now includes symbols that appear only in open orders,
