@@ -246,8 +246,11 @@ export default function DataTable<T>({
     ? Math.max(1, externalPageSize ?? resolvedDefaultPageSize)
     : Math.max(1, internalPageSize);
   const computedTotalPages = Math.max(1, Math.ceil(Math.max(totalRowsCount, 0) / effectivePageSize));
+  const externalTotalPagesValue = externalTotalPages ?? computedTotalPages;
   const totalPages = manualPagination
-    ? Math.max(0, externalTotalPages ?? computedTotalPages)
+    ? sortedRows.length > 0
+      ? Math.max(1, externalTotalPagesValue)
+      : Math.max(0, externalTotalPagesValue)
     : computedTotalPages;
   const effectivePage = manualPagination
     ? totalPages === 0

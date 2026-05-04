@@ -3,6 +3,13 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 manual total-pages visible-row clamp slice `RUNTIME-AUDIT-138`
+  is closed locally. Manual pagination now preserves `totalPages=0` for empty
+  tables only and reports at least one page when rows are visible, preventing
+  `Page 1/0` summaries with rendered runtime rows. Validation PASS: focused
+  `DataTable` suite (`9/9`), web typecheck, repository guardrails, lint, and
+  diff review. Evidence:
+  `docs/planning/runtime-audit-138-manual-total-pages-visible-rows-task-2026-05-04.md`.
 - 2026-05-04 manual total display clamp slice `RUNTIME-AUDIT-137` is closed
   locally. Manual-pagination footer totals now clamp against visible rows even
   when callers provide only `totalRows` metadata and no `reportedTotalRows`.

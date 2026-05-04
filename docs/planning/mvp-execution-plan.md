@@ -29,6 +29,12 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-138` with
+  `docs/planning/runtime-audit-138-manual-total-pages-visible-rows-task-2026-05-04.md`.
+  Manual pagination now preserves `totalPages=0` for empty tables only and
+  reports at least one page when rows are visible, preventing `Page 1/0`
+  summaries with rendered runtime rows. Validation PASS: focused `DataTable`
+  suite (`9/9`), web typecheck, repository guardrails, lint, and diff review.
 - 2026-05-04: Closed `RUNTIME-AUDIT-137` with
   `docs/planning/runtime-audit-137-manual-total-display-clamp-task-2026-05-04.md`.
   Manual-pagination footer totals now clamp against visible rows even when

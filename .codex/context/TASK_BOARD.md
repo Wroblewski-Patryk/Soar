@@ -20,6 +20,15 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-138 fix(web-ui): clamp manual total pages with visible rows`
+  - Scope: closed an ARCHITECT-mode shared table pagination contract drift.
+    Manual pagination now preserves `totalPages=0` for empty tables only and
+    reports at least one page when rows are visible, preventing `Page 1/0`
+    summaries with rendered runtime rows. Validation PASS: focused `DataTable`
+    suite (`9/9`), web typecheck, repository guardrails, lint, and diff
+    review. Evidence:
+    `docs/planning/runtime-audit-138-manual-total-pages-visible-rows-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-137 fix(web-ui): clamp manual table totals without reported totals`
   - Scope: closed a BUILDER-mode shared table display invariant follow-up.
     Manual-pagination footer totals now clamp against visible rows even when
