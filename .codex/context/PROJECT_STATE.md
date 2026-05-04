@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 runtime aggregate dynamic-stop flag slice `RUNTIME-AUDIT-121` is
+  closed locally. Aggregate `positions.showDynamicStopColumns` now comes from
+  the freshest position response, matching current open position/open-order row
+  projection and preventing stale older RUNNING snapshots from enabling unused
+  dynamic-stop columns. Validation PASS: focused runtime session position unit
+  suite (`14/14`), API typecheck, repository guardrails, lint, and diff review.
+  Evidence:
+  `docs/planning/runtime-audit-121-aggregate-dynamic-stop-flag-task-2026-05-04.md`.
 - 2026-05-04 runtime aggregate position item projection slice
   `RUNTIME-AUDIT-120` is closed locally. Aggregate current open position rows
   and open order rows now come from the freshest position response, while

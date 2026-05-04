@@ -6,6 +6,7 @@ import {
   buildRuntimeAggregateCurrentOpenOrders,
   buildRuntimeAggregateProjectedHistoryItems,
   buildRuntimeAggregateProjectedTradeItems,
+  resolveRuntimeAggregateCurrentDynamicStopColumns,
   selectLatestRunningProjectionRows,
   sumRuntimeAggregateProjectedSymbolsTracked,
 } from './runtimeMonitoringAggregateRead.service';
@@ -401,6 +402,20 @@ describe('runtime aggregate projection helpers', () => {
       'latest-history',
       'completed-history',
     ]);
+  });
+
+  it('uses only the current position response for aggregate dynamic stop columns', () => {
+    expect(
+      resolveRuntimeAggregateCurrentDynamicStopColumns({
+        showDynamicStopColumns: false,
+      })
+    ).toBe(false);
+    expect(
+      resolveRuntimeAggregateCurrentDynamicStopColumns({
+        showDynamicStopColumns: true,
+      })
+    ).toBe(true);
+    expect(resolveRuntimeAggregateCurrentDynamicStopColumns(null)).toBe(false);
   });
 });
 

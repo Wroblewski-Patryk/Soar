@@ -167,6 +167,14 @@ export const buildRuntimeAggregateProjectedHistoryItems = <
     )
   );
 
+export const resolveRuntimeAggregateCurrentDynamicStopColumns = <
+  T extends {
+    showDynamicStopColumns?: boolean;
+  },
+>(
+  response: T | null
+) => response?.showDynamicStopColumns === true;
+
 const resolveAggregateSessionWindowEnd = (session: RuntimeSessionListItem) =>
   session.finishedAt ?? session.lastHeartbeatAt ?? session.startedAt;
 
@@ -597,6 +605,8 @@ export const getBotRuntimeMonitoringAggregate = async (
   const openItems = buildRuntimeAggregateCurrentOpenItems(latestPositionResponse);
   const historyItems = buildRuntimeAggregateProjectedHistoryItems(historicalPositionRows);
   const openOrders = buildRuntimeAggregateCurrentOpenOrders(latestPositionResponse);
+  const showDynamicStopColumns =
+    resolveRuntimeAggregateCurrentDynamicStopColumns(latestPositionResponse);
   const latestOpenPositionCount = latestPositionResponse?.openCount ?? 0;
   const latestOpenPositionQty = latestPositionResponse?.summary.openPositionQty ?? 0;
   const latestUnrealizedPnl = latestPositionResponse?.summary.unrealizedPnl ?? 0;
@@ -697,7 +707,7 @@ export const getBotRuntimeMonitoringAggregate = async (
       openCount: totalOpenPositions,
       closedCount: totalClosedPositions,
       openOrdersCount: totalOpenOrders,
-      showDynamicStopColumns: positionResponses.some((response) => response.showDynamicStopColumns === true),
+      showDynamicStopColumns,
       window: {
         startedAt,
         finishedAt: windowFinishedAt,

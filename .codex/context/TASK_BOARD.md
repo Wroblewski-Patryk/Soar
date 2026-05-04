@@ -20,6 +20,16 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-121 fix(api-bots): align aggregate dynamic stop flag`
+  - Scope: closed a BUILDER-mode runtime aggregate dashboard display-flag
+    drift. Aggregate `positions.showDynamicStopColumns` now comes from the
+    freshest position response, matching current open position/open-order row
+    projection and preventing stale older RUNNING snapshots from enabling
+    unused dynamic-stop columns. Validation PASS: focused runtime session
+    position unit suite (`14/14`), API typecheck, repository guardrails, lint,
+    and diff review. Evidence:
+    `docs/planning/runtime-audit-121-aggregate-dynamic-stop-flag-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-120 fix(api-bots): align aggregate position items`
   - Scope: closed a TESTER-mode runtime aggregate dashboard table/counter
     drift. Aggregate current open position rows and open order rows now come
