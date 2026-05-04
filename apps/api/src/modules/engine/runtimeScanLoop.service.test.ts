@@ -1,7 +1,10 @@
+import { randomUUID } from 'node:crypto';
 import { describe, expect, it, vi } from 'vitest';
+import { prisma } from '../../prisma/client';
 import {
   deriveRuntimeWatchdogTargets,
   deriveRuntimeWatchdogSymbols,
+  listRuntimeWatchdogScanTargets,
   RuntimeScanLoop,
   isRuntimeScanWatchdogEnabled,
   supportsRuntimeWatchdogPositionContext,
@@ -72,6 +75,72 @@ describe('RuntimeScanLoop', () => {
         },
       ])
     ).toEqual(['BTCUSDT']);
+  });
+
+  it('derives default watchdog targets only from synced open positions', async () => {
+    const suffix = randomUUID().replace(/-/g, '').slice(0, 8).toUpperCase();
+    const syncedSymbol = `ZX${suffix}USDT`;
+    const staleSymbol = `ZY${suffix}USDT`;
+    const user = await prisma.user.create({
+      data: {
+        email: `runtime-scan-sync-state-${suffix.toLowerCase()}@example.com`,
+        password: 'hashed',
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'Runtime scan sync-state bot',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        isActive: true,
+      },
+    });
+    await prisma.position.createMany({
+      data: [
+        {
+          userId: user.id,
+          botId: bot.id,
+          symbol: syncedSymbol,
+          side: 'LONG',
+          status: 'OPEN',
+          syncState: 'IN_SYNC',
+          entryPrice: 100,
+          quantity: 1,
+        },
+        {
+          userId: user.id,
+          botId: bot.id,
+          symbol: staleSymbol,
+          side: 'LONG',
+          status: 'OPEN',
+          syncState: 'ORPHAN_LOCAL',
+          continuityState: 'REPAIR_ONLY_CLEANUP',
+          entryPrice: 100,
+          quantity: 1,
+        },
+      ],
+    });
+
+    const targets = await listRuntimeWatchdogScanTargets();
+
+    expect(targets).toEqual(
+      expect.arrayContaining([
+        {
+          symbol: syncedSymbol,
+          exchange: 'BINANCE',
+          marketType: 'FUTURES',
+        },
+      ])
+    );
+    expect(targets).not.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          symbol: staleSymbol,
+        }),
+      ])
+    );
   });
 
   it('keeps watchdog auto-loop disabled by default', async () => {

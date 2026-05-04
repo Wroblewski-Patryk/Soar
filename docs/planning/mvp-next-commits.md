@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-102 fix(api-engine): scope scan watchdog to synced rows`
+  - 2026-05-04: Closed an ARCHITECT-mode runtime scan target drift. Default
+    runtime scan watchdog target discovery now derives ticker targets only from
+    `OPEN` + `IN_SYNC` supported position contexts, so stale local
+    `ORPHAN_LOCAL` rows no longer create inferred watchdog ticker processing
+    while explicit `RUNTIME_SCAN_SYMBOLS` remains operator-owned. Validation
+    PASS: focused runtime scan suite (`6/6`), API typecheck, repository
+    guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-102-runtime-scan-watchdog-sync-state-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-101 fix(api-engine): scope position automation to synced rows`
   - 2026-05-04: Closed a BUILDER-mode runtime automation active-truth drift.
     Ticker-driven runtime position automation now hydrates only `OPEN` +

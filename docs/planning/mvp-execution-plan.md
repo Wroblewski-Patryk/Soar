@@ -29,6 +29,14 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-102` with
+  `docs/planning/runtime-audit-102-runtime-scan-watchdog-sync-state-task-2026-05-04.md`.
+  Default runtime scan watchdog target discovery now derives ticker targets
+  only from `OPEN` + `IN_SYNC` supported position contexts, so stale local
+  `ORPHAN_LOCAL` rows no longer create inferred watchdog ticker processing
+  while explicit `RUNTIME_SCAN_SYMBOLS` remains operator-owned. Validation
+  PASS: focused runtime scan suite (`6/6`), API typecheck, repository
+  guardrails, lint, and diff review.
 - 2026-05-04: Closed `RUNTIME-AUDIT-101` with
   `docs/planning/runtime-audit-101-position-automation-sync-state-task-2026-05-04.md`.
   Ticker-driven runtime position automation now hydrates only `OPEN` +

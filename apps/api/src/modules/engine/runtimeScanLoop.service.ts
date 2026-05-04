@@ -81,6 +81,31 @@ export const deriveRuntimeWatchdogTargets = (
   return [...targets.values()];
 };
 
+export const listRuntimeWatchdogScanTargets = async () => {
+  const positions = await prisma.position.findMany({
+    where: {
+      status: 'OPEN',
+      syncState: 'IN_SYNC',
+    },
+    select: {
+      symbol: true,
+      bot: {
+        select: {
+          exchange: true,
+          marketType: true,
+        },
+      },
+      wallet: {
+        select: {
+          exchange: true,
+          marketType: true,
+        },
+      },
+    },
+  });
+  return deriveRuntimeWatchdogTargets(positions);
+};
+
 const defaultDeps: RuntimeScanDeps = {
   listScanTargets: async () => {
     const envSymbols = parseEnvSymbols(process.env.RUNTIME_SCAN_SYMBOLS);
@@ -92,25 +117,7 @@ const defaultDeps: RuntimeScanDeps = {
       }));
     }
 
-    const positions = await prisma.position.findMany({
-      where: { status: 'OPEN' },
-      select: {
-        symbol: true,
-        bot: {
-          select: {
-            exchange: true,
-            marketType: true,
-          },
-        },
-        wallet: {
-          select: {
-            exchange: true,
-            marketType: true,
-          },
-        },
-      },
-    });
-    return deriveRuntimeWatchdogTargets(positions);
+    return listRuntimeWatchdogScanTargets();
   },
   getTickerSnapshot: async (target) => {
     const ticker = getRuntimeTicker(target.symbol, {

@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 runtime scan watchdog active-sync slice `RUNTIME-AUDIT-102` is
+  closed locally. Default runtime scan watchdog target discovery now derives
+  ticker targets only from `OPEN` + `IN_SYNC` supported position contexts, so
+  stale local `ORPHAN_LOCAL` rows no longer create inferred watchdog ticker
+  processing while explicit `RUNTIME_SCAN_SYMBOLS` remains operator-owned.
+  Validation PASS: focused runtime scan suite (`6/6`), API typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-102-runtime-scan-watchdog-sync-state-task-2026-05-04.md`.
 - 2026-05-04 runtime position automation active-sync slice
   `RUNTIME-AUDIT-101` is closed locally. Ticker-driven runtime position
   automation now hydrates only `OPEN` + `IN_SYNC` bot-managed positions, so
