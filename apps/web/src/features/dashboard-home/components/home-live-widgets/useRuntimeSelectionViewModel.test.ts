@@ -118,4 +118,57 @@ describe("useRuntimeSelectionViewModel", () => {
     expect(result.current.summary.paperDelta).toBeCloseTo(9, 8);
     expect(result.current.summary.paperEquity).toBeCloseTo(1009, 8);
   });
+
+  it("keeps snapshot trade rows visible before selected trade query is ready", () => {
+    const snapshotWithTrades = {
+      ...snapshot,
+      trades: {
+        ...snapshot.trades,
+        total: 1,
+        meta: {
+          page: 1,
+          pageSize: 10,
+          total: 1,
+          totalPages: 1,
+          hasPrev: false,
+          hasNext: false,
+        },
+        items: [
+          {
+            id: "trade-1",
+            symbol: "DOGEUSDT",
+            side: "SELL",
+            lifecycleAction: "OPEN",
+            price: 1,
+            quantity: 1000,
+            fee: 0.1,
+            feeSource: "ESTIMATED",
+            feePending: false,
+            feeCurrency: "USDT",
+            realizedPnl: 0,
+            executedAt: "2026-05-02T10:00:00.000Z",
+            orderId: "order-1",
+            positionId: "pos-doge",
+            strategyId: "strategy-runtime",
+            origin: "BOT",
+            managementMode: "BOT_MANAGED",
+            notional: 1000,
+            margin: 100,
+          },
+        ],
+      },
+    } as unknown as RuntimeSnapshot;
+
+    const { result } = renderHook(() =>
+      useRuntimeSelectionViewModel({
+        snapshots: [snapshotWithTrades],
+        selected: snapshotWithTrades,
+        selectedTrades: null,
+        liveTickerPrices: {},
+      })
+    );
+
+    expect(result.current.selectedData?.trades).toHaveLength(1);
+    expect(result.current.selectedData?.trades[0]?.id).toBe("trade-1");
+  });
 });

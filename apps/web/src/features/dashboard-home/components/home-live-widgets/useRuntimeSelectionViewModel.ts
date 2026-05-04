@@ -156,6 +156,8 @@ export const useRuntimeSelectionViewModel = ({
     const trades =
       runtimeTradesSessionId && selectedTrades?.sessionId === runtimeTradesSessionId
         ? selectedTrades.items
+        : runtimeTradesSessionId && selected.trades?.sessionId === runtimeTradesSessionId
+          ? selected.trades.items
         : [];
 
     return {

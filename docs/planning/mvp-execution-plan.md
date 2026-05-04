@@ -29,6 +29,14 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-131` with
+  `docs/planning/runtime-audit-131-snapshot-trade-rows-fallback-task-2026-05-04.md`.
+  Runtime selected-data projection now falls back to matching
+  `selected.trades.items` until the derived `selectedTrades` query projection
+  is ready, while keeping query projection precedence and session-id guards.
+  Validation PASS: focused runtime selection view-model suite (`2/2`), focused
+  dashboard component suite (`20/20`), web typecheck, repository guardrails,
+  lint, and diff review.
 - 2026-05-04: Closed `RUNTIME-AUDIT-130` with
   `docs/planning/runtime-audit-130-manual-pagination-empty-meta-task-2026-05-04.md`.
   `DataTable` manual pagination now preserves explicit external

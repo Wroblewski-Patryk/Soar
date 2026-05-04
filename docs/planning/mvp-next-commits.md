@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-131 fix(web-dashboard): preserve snapshot trade rows`
+  - 2026-05-04: Closed a BUILDER-mode dashboard trade-history visibility
+    drift. Runtime selected-data projection now falls back to matching
+    `selected.trades.items` until the derived `selectedTrades` query projection
+    is ready, while keeping query projection precedence and session-id guards.
+    Validation PASS: focused runtime selection view-model suite (`2/2`),
+    focused dashboard component suite (`20/20`), web typecheck, repository
+    guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-131-snapshot-trade-rows-fallback-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-130 fix(web-ui): preserve empty manual pagination meta`
   - 2026-05-04: Closed a TESTER-mode shared dashboard pagination contract
     drift. `DataTable` manual pagination now preserves explicit external
