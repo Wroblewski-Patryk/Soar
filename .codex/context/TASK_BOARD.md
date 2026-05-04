@@ -20,6 +20,15 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-112 fix(api-bots): scope runtime trade wallet fallback to live`
+  - Scope: closed a BUILDER-mode runtime read-model drift. Runtime position
+    trade reads now include botless wallet-scoped trade fallback only for LIVE
+    recovery/import visibility, so PAPER bot dashboards no longer risk mixing
+    unrelated botless wallet-scoped trades into bot-scoped position rows.
+    Validation PASS: focused runtime positions read unit suite (`4/4`), API
+    typecheck, repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-112-paper-runtime-trade-wallet-fallback-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-111 test(api-orders): align paper position bot-scope expectations`
   - Scope: closed a BUILDER-mode test-contract drift. DB-backed order tests
     now expect bot-created PAPER positions to persist with

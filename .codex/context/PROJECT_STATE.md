@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 PAPER runtime trade fallback slice `RUNTIME-AUDIT-112` is closed
+  locally. Runtime position trade reads now include botless wallet-scoped trade
+  fallback only for LIVE recovery/import visibility, so PAPER bot dashboards
+  no longer risk mixing unrelated botless wallet-scoped trades into bot-scoped
+  position rows. Validation PASS: focused runtime positions read unit suite
+  (`4/4`), API typecheck, repository guardrails, lint, and diff review.
+  Evidence:
+  `docs/planning/runtime-audit-112-paper-runtime-trade-wallet-fallback-task-2026-05-04.md`.
 - 2026-05-04 PAPER position test-contract slice `RUNTIME-AUDIT-111` is closed
   locally. DB-backed order tests now expect bot-created PAPER positions to
   persist with `Position.walletId=null`, while LIVE remains wallet-scoped,

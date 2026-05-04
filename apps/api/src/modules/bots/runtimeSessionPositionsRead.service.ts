@@ -64,6 +64,23 @@ type RuntimePositionTradeRow = Awaited<ReturnType<typeof listRuntimePositionTrad
 
 const RUNTIME_OPEN_ORDER_DEDUPE_CANDIDATE_LIMIT = 500;
 
+export const buildBotlessWalletTradeFallbackWhere = (input: {
+  mode: 'PAPER' | 'LIVE';
+  walletId?: string | null;
+  symbols: string[];
+  windowStart: Date;
+  windowEnd: Date;
+}): Prisma.TradeWhereInput[] =>
+  input.mode === 'LIVE' && input.walletId
+    ? [{
+        botId: null,
+        walletId: input.walletId,
+        managementMode: 'BOT_MANAGED',
+        symbol: { in: input.symbols },
+        executedAt: { gte: input.windowStart, lte: input.windowEnd },
+      }]
+    : [];
+
 const resolveRuntimeTakeoverStatus = (input: {
   origin: string;
   managementMode: 'BOT_MANAGED' | 'MANUAL_MANAGED';
@@ -611,20 +628,13 @@ export const listBotRuntimeSessionPositions = async (
               },
             ]
           : []),
-        ...(botContext.walletId
-          ? [
-              {
-                botId: null,
-                walletId: botContext.walletId,
-                managementMode: 'BOT_MANAGED' as const,
-                symbol: { in: symbols },
-                executedAt: {
-                  gte: lifecycleTradeWindowStart,
-                  lte: windowEnd,
-                },
-              },
-            ]
-          : []),
+        ...buildBotlessWalletTradeFallbackWhere({
+          mode: inheritedExecutionContext.mode,
+          walletId: botContext.walletId,
+          symbols,
+          windowStart: lifecycleTradeWindowStart,
+          windowEnd,
+        }),
       ],
     }),
     listRuntimePositionLastPrices({
