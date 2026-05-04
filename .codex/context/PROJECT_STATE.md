@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 runtime owned imported count active-sync slice
+  `RUNTIME-AUDIT-105` is closed locally. LIVE owned imported fallback
+  open-position counts now require `syncState=IN_SYNC`, so stale
+  `ORPHAN_LOCAL` imported rows cannot inflate bot open-position caps or block
+  expected runtime opens after dashboard truth has already ignored them.
+  Validation PASS: runtime signal-loop defaults suite (`10/10`), API
+  typecheck, repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-105-runtime-external-count-sync-state-task-2026-05-04.md`.
 - 2026-05-04 close mutation active-sync slice `RUNTIME-AUDIT-104` is closed
   locally. Manual order close and runtime execution default close mutations
   now require the linked position to be `OPEN` + `IN_SYNC`, so an

@@ -29,6 +29,14 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-105` with
+  `docs/planning/runtime-audit-105-runtime-external-count-sync-state-task-2026-05-04.md`.
+  LIVE owned imported fallback open-position counts now require
+  `syncState=IN_SYNC`, so stale `ORPHAN_LOCAL` imported rows cannot inflate
+  bot open-position caps or block expected runtime opens after dashboard truth
+  has already ignored them. Validation PASS: runtime signal-loop defaults
+  suite (`10/10`), API typecheck, repository guardrails, lint, and diff
+  review.
 - 2026-05-04: Closed `RUNTIME-AUDIT-104` with
   `docs/planning/runtime-audit-104-close-position-mutation-sync-state-task-2026-05-04.md`.
   Manual order close and runtime execution default close mutations now require

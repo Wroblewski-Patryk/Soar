@@ -20,6 +20,16 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-105 fix(api-engine): scope runtime external count to synced rows`
+  - Scope: closed a TESTER-mode runtime cap active-truth drift. LIVE owned
+    imported fallback open-position counts now require `syncState=IN_SYNC`,
+    so stale `ORPHAN_LOCAL` imported rows cannot inflate bot open-position
+    caps or block expected runtime opens after dashboard truth has already
+    ignored them. Validation PASS: runtime signal-loop defaults suite
+    (`10/10`), API typecheck, repository guardrails, lint, and diff review.
+    Evidence:
+    `docs/planning/runtime-audit-105-runtime-external-count-sync-state-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-104 fix(api-runtime): guard close mutations by sync state`
   - Scope: closed a BUILDER-mode close mutation active-truth drift. Manual
     order close and runtime execution default close mutations now require the

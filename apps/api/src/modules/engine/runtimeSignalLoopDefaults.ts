@@ -305,6 +305,7 @@ export const countOpenPositionsForBotAndSymbols = async ({
       userId,
       botId: null,
       status: 'OPEN',
+      syncState: 'IN_SYNC',
       origin: 'EXCHANGE_SYNC',
       managementMode: 'BOT_MANAGED',
       symbol: {

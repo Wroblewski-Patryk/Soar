@@ -442,6 +442,8 @@ describe('listActiveRuntimeBots', () => {
         where: expect.objectContaining({
           userId: 'user-1',
           botId: null,
+          status: 'OPEN',
+          syncState: 'IN_SYNC',
           origin: 'EXCHANGE_SYNC',
           managementMode: 'BOT_MANAGED',
           symbol: { in: ['DOGEUSDT'] },
@@ -589,6 +591,12 @@ describe('listActiveRuntimeBots', () => {
     expect(prisma.position.count).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({
+          userId: 'user-1',
+          botId: null,
+          status: 'OPEN',
+          syncState: 'IN_SYNC',
+          origin: 'EXCHANGE_SYNC',
+          managementMode: 'BOT_MANAGED',
           symbol: { in: ['ETHUSDT'] },
           AND: [
             {
