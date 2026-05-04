@@ -9,6 +9,18 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-108 fix(api-orders): persist paper positions in bot scope`
+  - 2026-05-04: Closed an ARCHITECT-mode PAPER persistence/DB uniqueness drift.
+    PAPER bot positions now persist with `Position.walletId=null`, so they use
+    the existing bot-scoped DB uniqueness lane instead of colliding with
+    wallet-scoped open-position uniqueness. Order/trade wallet attribution is
+    preserved, runtime capital reads use bot scope for PAPER, and wallet
+    open-PnL reads include PAPER bot positions through the existing bot-wallet
+    relation. Validation PASS: focused unit pack (`23/23`), API typecheck,
+    repository guardrails, lint, and diff review. DB-backed order-service
+    regression remains locally blocked by unavailable PostgreSQL on
+    `localhost:5432`. Evidence:
+    `docs/planning/runtime-audit-108-paper-position-db-scope-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-107 fix(api-orders): scope PAPER fills by bot`
   - 2026-05-04: Closed a BUILDER-mode PAPER execution scope drift. Order
     open-position scope is now mode-aware: PAPER orders with a bot id use bot

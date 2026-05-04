@@ -710,7 +710,7 @@ describe('openOrder live execution contract', () => {
         where: { id: order.positionId ?? '' },
       });
       expect(secondBotPosition.botId).toBe(secondBot.id);
-      expect(secondBotPosition.walletId).toBe(wallet.id);
+      expect(secondBotPosition.walletId).toBeNull();
       expect(secondBotPosition.side).toBe('LONG');
       expect(secondBotPosition.quantity).toBe(1);
       expect(secondBotPosition.entryPrice).toBe(130);
@@ -718,9 +718,9 @@ describe('openOrder live execution contract', () => {
       const openPositions = await prisma.position.findMany({
         where: {
           userId: user.id,
-          walletId: wallet.id,
           symbol: 'DOGEUSDT',
           status: 'OPEN',
+          OR: [{ walletId: wallet.id }, { bot: { walletId: wallet.id } }],
         },
         orderBy: { createdAt: 'asc' },
       });

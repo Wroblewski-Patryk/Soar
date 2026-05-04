@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   resolvePaperRuntimeCapitalSnapshot,
   resolveRuntimeCapitalSnapshot,
+  resolveRuntimeCapitalPositionOwnerWhere,
   resolveRuntimeDcaFundsExhausted,
   resolveRuntimeWalletFundsExhausted,
   resolveRuntimeReferenceBalance,
@@ -15,6 +16,26 @@ describe('runtimeCapitalContext', () => {
     getLiveApiKeyContext: async () => null,
     fetchLiveBalance: async () => null,
     ...overrides,
+  });
+
+  it('uses bot ownership for PAPER capital position scope even when wallet id is present', () => {
+    expect(
+      resolveRuntimeCapitalPositionOwnerWhere({
+        mode: 'PAPER',
+        botId: 'bot-paper',
+        walletId: 'wallet-paper',
+      })
+    ).toEqual({ botId: 'bot-paper' });
+  });
+
+  it('uses wallet ownership for LIVE capital position scope when wallet id is present', () => {
+    expect(
+      resolveRuntimeCapitalPositionOwnerWhere({
+        mode: 'LIVE',
+        botId: 'bot-live',
+        walletId: 'wallet-live',
+      })
+    ).toEqual({ walletId: 'wallet-live' });
   });
 
   it('computes paper reference/free cash from start balance, realized pnl and reserved margin', async () => {

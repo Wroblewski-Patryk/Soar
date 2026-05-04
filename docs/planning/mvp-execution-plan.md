@@ -29,6 +29,17 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-108` with
+  `docs/planning/runtime-audit-108-paper-position-db-scope-task-2026-05-04.md`.
+  PAPER bot positions now persist with `Position.walletId=null`, so they use
+  the existing bot-scoped DB uniqueness lane instead of colliding with
+  wallet-scoped open-position uniqueness. Order/trade wallet attribution is
+  preserved, runtime capital reads use bot scope for PAPER, and wallet
+  open-PnL reads include PAPER bot positions through the existing bot-wallet
+  relation. Validation PASS: focused unit pack (`23/23`), API typecheck,
+  repository guardrails, lint, and diff review. DB-backed order-service
+  regression remains locally blocked by unavailable PostgreSQL on
+  `localhost:5432`.
 - 2026-05-04: Closed `RUNTIME-AUDIT-107` with
   `docs/planning/runtime-audit-107-paper-order-fill-bot-scope-task-2026-05-04.md`.
   Order open-position scope is now mode-aware: PAPER orders with a bot id use

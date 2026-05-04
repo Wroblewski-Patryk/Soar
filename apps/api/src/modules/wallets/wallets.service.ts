@@ -601,7 +601,7 @@ const buildCashflowWindowWhere = (
     : {}),
 });
 
-const buildWalletOpenPnlWhere = (input: {
+export const buildWalletOpenPnlWhere = (input: {
   userId: string;
   walletId: string;
   mode: 'PAPER' | 'LIVE';
@@ -614,6 +614,15 @@ const buildWalletOpenPnlWhere = (input: {
   unrealizedPnl: { not: null },
   OR: [
     { walletId: input.walletId },
+    ...(input.mode === 'PAPER'
+      ? [
+          {
+            bot: {
+              walletId: input.walletId,
+            },
+          },
+        ]
+      : []),
     ...(input.mode === 'LIVE' && input.apiKeyId
       ? [
           {

@@ -67,6 +67,23 @@ const extractBalanceForCurrency = (payload: unknown, baseCurrency: string) => {
   return null;
 };
 
+export const resolveRuntimeCapitalPositionOwnerWhere = (input: {
+  botId?: string | null;
+  walletId?: string | null;
+  mode?: BotMode | 'PAPER' | 'LIVE';
+}) => {
+  if (input.mode === 'PAPER' && input.botId) {
+    return { botId: input.botId };
+  }
+  if (input.walletId) {
+    return { walletId: input.walletId };
+  }
+  if (input.botId) {
+    return { botId: input.botId };
+  }
+  return { botId: null };
+};
+
 const defaultDeps: RuntimeCapitalContextDeps = {
   getWalletContext: async ({ userId, walletId }) => {
     if (!walletId) return null;
@@ -100,13 +117,7 @@ const defaultDeps: RuntimeCapitalContextDeps = {
         status: PositionStatus.OPEN,
         managementMode: PositionManagementMode.BOT_MANAGED,
         syncState: 'IN_SYNC',
-        ...(walletId
-          ? mode === 'PAPER' && botId
-            ? { walletId, botId }
-            : { walletId }
-          : botId
-            ? { botId }
-            : { botId: null }),
+        ...resolveRuntimeCapitalPositionOwnerWhere({ botId, walletId, mode }),
       },
       select: {
         entryPrice: true,
@@ -139,13 +150,7 @@ const defaultDeps: RuntimeCapitalContextDeps = {
               ],
             }
           : {}),
-        ...(walletId
-          ? mode === 'PAPER' && botId
-            ? { walletId, botId }
-            : { walletId }
-          : botId
-            ? { botId }
-            : { botId: null }),
+        ...resolveRuntimeCapitalPositionOwnerWhere({ botId, walletId, mode }),
       },
       _sum: {
         realizedPnl: true,

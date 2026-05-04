@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { resolveCreatedPositionWalletId } from './orders.lifecycle.service';
 import { resolveOpenPositionScopeWhere } from './orders.positionScope';
 
 describe('resolveOpenPositionScopeWhere', () => {
@@ -37,5 +38,27 @@ describe('resolveOpenPositionScopeWhere', () => {
       syncState: 'IN_SYNC',
       walletId: 'wallet-live',
     });
+  });
+});
+
+describe('resolveCreatedPositionWalletId', () => {
+  it('stores PAPER bot positions in the bot-scoped DB uniqueness lane', () => {
+    expect(
+      resolveCreatedPositionWalletId({
+        mode: 'PAPER',
+        botId: 'bot-paper',
+        walletId: 'wallet-paper',
+      })
+    ).toBeNull();
+  });
+
+  it('preserves wallet id for LIVE positions', () => {
+    expect(
+      resolveCreatedPositionWalletId({
+        mode: 'LIVE',
+        botId: 'bot-live',
+        walletId: 'wallet-live',
+      })
+    ).toBe('wallet-live');
   });
 });

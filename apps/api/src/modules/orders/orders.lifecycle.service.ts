@@ -68,6 +68,12 @@ type PositionScopeOrder = {
   botId: string | null;
 };
 
+export const resolveCreatedPositionWalletId = (input: {
+  mode?: 'PAPER' | 'LIVE' | null;
+  botId?: string | null;
+  walletId?: string | null;
+}) => (input.mode === 'PAPER' && input.botId ? null : input.walletId ?? null);
+
 const resolveStaleOpenPositionBlockerWhere = (
   order: PositionScopeOrder
 ): Prisma.PositionWhereInput => {
@@ -377,7 +383,11 @@ export const applyOrderFillLifecycle = async (params: ApplyOrderFillLifecycleInp
       data: {
         userId: updatedOrder.userId,
         botId: updatedOrder.botId,
-        walletId: updatedOrder.walletId,
+        walletId: resolveCreatedPositionWalletId({
+          mode: params.mode,
+          botId: updatedOrder.botId,
+          walletId: updatedOrder.walletId,
+        }),
         strategyId: updatedOrder.strategyId,
         symbol: updatedOrder.symbol,
         side: resolvePositionSideFromOrderSide(updatedOrder.side),

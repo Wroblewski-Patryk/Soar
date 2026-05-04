@@ -3,6 +3,16 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 PAPER position DB-scope slice `RUNTIME-AUDIT-108` is closed
+  locally. PAPER bot positions now persist with `Position.walletId=null`, so
+  they use the existing bot-scoped DB uniqueness lane instead of colliding with
+  wallet-scoped open-position uniqueness. Order/trade wallet attribution is
+  preserved, runtime capital reads use bot scope for PAPER, and wallet open-PnL
+  reads include PAPER bot positions through the existing bot-wallet relation.
+  Validation PASS: focused unit pack (`23/23`), API typecheck, repository
+  guardrails, lint, and diff review. DB-backed order-service regression remains
+  locally blocked by unavailable PostgreSQL on `localhost:5432`. Evidence:
+  `docs/planning/runtime-audit-108-paper-position-db-scope-task-2026-05-04.md`.
 - 2026-05-04 PAPER order fill bot-scope slice `RUNTIME-AUDIT-107` is closed
   locally. Order open-position scope is now mode-aware: PAPER orders with a
   bot id use bot scope even when a shared wallet id is present, while LIVE
