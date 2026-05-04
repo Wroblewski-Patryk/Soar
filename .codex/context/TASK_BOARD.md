@@ -20,6 +20,16 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-104 fix(api-runtime): guard close mutations by sync state`
+  - Scope: closed a BUILDER-mode close mutation active-truth drift. Manual
+    order close and runtime execution default close mutations now require the
+    linked position to be `OPEN` + `IN_SYNC`, so an `ORPHAN_LOCAL` stale row
+    cannot be closed through a valid order or runtime EXIT path. Validation
+    PASS: orders service suite (`35/35`), execution orchestrator suite
+    (`17/17`), API typecheck, repository guardrails, lint, and diff review.
+    Evidence:
+    `docs/planning/runtime-audit-104-close-position-mutation-sync-state-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-103 fix(api-positions): scope reconciliation synced lookups`
   - Scope: closed a BUILDER-mode LIVE reconciliation active-truth drift.
     Default open-synced position lookup and API-key stale-position scan now

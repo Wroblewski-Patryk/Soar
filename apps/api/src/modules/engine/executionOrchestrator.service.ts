@@ -347,7 +347,7 @@ const defaultPositionGateway: PositionFlowGateway = {
   closePosition: async (positionId, userId, payload) => {
     const closedAt = payload?.closedAt ?? new Date();
     await prisma.position.updateMany({
-      where: { id: positionId, userId, status: 'OPEN' },
+      where: { id: positionId, userId, status: 'OPEN', syncState: 'IN_SYNC' },
       data: {
         status: 'CLOSED',
         closedAt,

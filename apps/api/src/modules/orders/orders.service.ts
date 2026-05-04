@@ -739,6 +739,7 @@ export const closeOrder = async (userId: string, id: string, payload: CloseOrder
         id: existing.positionId,
         userId,
         status: 'OPEN',
+        syncState: 'IN_SYNC',
       },
       data: {
         status: 'CLOSED',

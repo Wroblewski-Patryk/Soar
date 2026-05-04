@@ -29,6 +29,13 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-104` with
+  `docs/planning/runtime-audit-104-close-position-mutation-sync-state-task-2026-05-04.md`.
+  Manual order close and runtime execution default close mutations now require
+  the linked position to be `OPEN` + `IN_SYNC`, so an `ORPHAN_LOCAL` stale row
+  cannot be closed through a valid order or runtime EXIT path. Validation
+  PASS: orders service suite (`35/35`), execution orchestrator suite
+  (`17/17`), API typecheck, repository guardrails, lint, and diff review.
 - 2026-05-04: Closed `RUNTIME-AUDIT-103` with
   `docs/planning/runtime-audit-103-reconciliation-open-synced-scope-task-2026-05-04.md`.
   Default open-synced position lookup and API-key stale-position scan now

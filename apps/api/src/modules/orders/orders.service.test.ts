@@ -2711,6 +2711,48 @@ describe('manual order action active sync-state contract', () => {
     const unchangedPosition = await prisma.position.findUniqueOrThrow({ where: { id: position.id } });
     expect(unchangedPosition.status).toBe('OPEN');
   });
+
+  it('does not close a stale local linked position from a synced open order', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-synced-order-stale-linked-position@example.com', password: 'hashed' },
+    });
+    const position = await prisma.position.create({
+      data: {
+        userId: user.id,
+        symbol: 'ETHUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        syncState: 'ORPHAN_LOCAL',
+        entryPrice: 2400,
+        quantity: 0.5,
+      },
+    });
+    const order = await prisma.order.create({
+      data: {
+        userId: user.id,
+        positionId: position.id,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        symbol: 'ETHUSDT',
+        side: 'SELL',
+        type: 'LIMIT',
+        status: 'OPEN',
+        quantity: 0.5,
+        price: 2450,
+      },
+    });
+
+    const result = await closeOrder(user.id, order.id, { riskAck: true });
+
+    expect(result?.status).toBe('FILLED');
+    const unchangedPosition = await prisma.position.findUniqueOrThrow({ where: { id: position.id } });
+    expect(unchangedPosition.status).toBe('OPEN');
+    expect(unchangedPosition.syncState).toBe('ORPHAN_LOCAL');
+    expect(unchangedPosition.closedAt).toBeNull();
+    expect(unchangedPosition.closeReason).toBeNull();
+    expect(unchangedPosition.closeInitiator).toBeNull();
+  });
 });
 
 describe('resolveLiveExecutionApiKey', () => {

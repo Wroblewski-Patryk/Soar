@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 close mutation active-sync slice `RUNTIME-AUDIT-104` is closed
+  locally. Manual order close and runtime execution default close mutations
+  now require the linked position to be `OPEN` + `IN_SYNC`, so an
+  `ORPHAN_LOCAL` stale row cannot be closed through a valid order or runtime
+  EXIT path. Validation PASS: orders service suite (`35/35`), execution
+  orchestrator suite (`17/17`), API typecheck, repository guardrails, lint,
+  and diff review. Evidence:
+  `docs/planning/runtime-audit-104-close-position-mutation-sync-state-task-2026-05-04.md`.
 - 2026-05-04 live reconciliation open-synced lookup slice
   `RUNTIME-AUDIT-103` is closed locally. Default open-synced position lookup
   and API-key stale-position scan now exclude `ORPHAN_LOCAL` rows while
