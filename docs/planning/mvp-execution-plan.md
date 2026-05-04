@@ -93,6 +93,14 @@ Rule: fix/cleanup/update first, then feature delivery.
   page, web build-info, and protected API unauthenticated `401 Missing token`.
   Authenticated production dashboard/runtime smoke remains unavailable without
   credentials and was not claimed.
+- 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-92` with
+  `docs/planning/runtime-audit-92-runtime-dedupe-linked-order-sync-state-task-2026-05-04.md`.
+  Runtime execution dedupe now reuses linked submitted/completed orders only
+  when `syncState=IN_SYNC`; a linked `ORPHAN_LOCAL` order resets the dedupe row
+  for a fresh execution attempt instead of blocking PAPER/LIVE execution as
+  submitted or inflight. Validation PASS: runtime execution dedupe suite
+  (`9/9`), execution orchestrator suite (`17/17`), API typecheck, repository
+  guardrails, lint, and diff review.
 - 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-73` with
   `docs/planning/runtime-audit-73-orders-list-active-sync-state-task-2026-05-04.md`.
   Orders list active-status queries now require `syncState=IN_SYNC` for

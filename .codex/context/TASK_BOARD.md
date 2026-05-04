@@ -20,6 +20,16 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-92 fix(api-engine): align dedupe linked orders with sync state`
+  - Scope: closed a BUILDER-mode runtime execution dedupe active-truth drift.
+    Linked orders are now reused as submitted or completed only when
+    `syncState=IN_SYNC`; a linked `ORPHAN_LOCAL` order immediately resets the
+    dedupe row for a fresh execution attempt instead of keeping the intent
+    submitted or inflight. Validation PASS: runtime execution dedupe suite
+    (`9/9`), execution orchestrator suite (`17/17`), API typecheck,
+    repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-92-runtime-dedupe-linked-order-sync-state-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-91 fix(api-engine): align execution open lookup with sync state`
   - Scope: closed a BUILDER-mode runtime execution active-truth drift. Runtime
     execution open-position lookup now requires `syncState=IN_SYNC` for direct

@@ -292,12 +292,14 @@ export class RuntimeExecutionDedupeService {
           select: {
             id: true,
             status: true,
+            syncState: true,
             positionId: true,
           },
         });
+        const linkedOrderIsStale = linkedOrder && linkedOrder.syncState !== 'IN_SYNC';
         if (linkedOrder) {
           const resolvedPositionId = linkedOrder.positionId ?? existing.positionId;
-          if (linkedOrder.status === 'FILLED') {
+          if (linkedOrder.syncState === 'IN_SYNC' && linkedOrder.status === 'FILLED') {
             await prisma.runtimeExecutionDedupe.update({
               where: { dedupeKey: input.dedupeKey },
               data: {
@@ -318,9 +320,10 @@ export class RuntimeExecutionDedupeService {
           }
 
           if (
-            linkedOrder.status === 'PENDING' ||
-            linkedOrder.status === 'OPEN' ||
-            linkedOrder.status === 'PARTIALLY_FILLED'
+            linkedOrder.syncState === 'IN_SYNC' &&
+            (linkedOrder.status === 'PENDING' ||
+              linkedOrder.status === 'OPEN' ||
+              linkedOrder.status === 'PARTIALLY_FILLED')
           ) {
             await prisma.runtimeExecutionDedupe.update({
               where: { dedupeKey: input.dedupeKey },
@@ -338,6 +341,26 @@ export class RuntimeExecutionDedupeService {
               positionId: resolvedPositionId,
             };
           }
+        }
+        if (linkedOrderIsStale) {
+          await prisma.runtimeExecutionDedupe.update({
+            where: { dedupeKey: input.dedupeKey },
+            data: {
+              status: 'PENDING',
+              dedupeVersion,
+              commandType: input.commandType,
+              userId: input.userId,
+              botId: input.botId ?? null,
+              symbol: input.symbol ? normalizeSymbol(input.symbol) : null,
+              commandFingerprint: toPrismaJson(input.commandFingerprint),
+              lastSeenAt: now,
+              ttlExpiresAt,
+              orderId: null,
+              positionId: null,
+              errorClass: null,
+            },
+          });
+          return { outcome: 'execute', dedupeKey: input.dedupeKey };
         }
       }
 

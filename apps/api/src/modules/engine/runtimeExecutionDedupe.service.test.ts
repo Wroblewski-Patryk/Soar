@@ -195,6 +195,7 @@ describe('runtimeExecutionDedupe retryability gate', () => {
     vi.spyOn(prisma.order, 'findUnique').mockResolvedValue({
       id: 'order-open-1',
       status: 'OPEN',
+      syncState: 'IN_SYNC',
       positionId: null,
     } as never);
     const updateSpy = vi.spyOn(prisma.runtimeExecutionDedupe, 'update').mockResolvedValue({} as never);
@@ -250,6 +251,62 @@ describe('runtimeExecutionDedupe retryability gate', () => {
     vi.spyOn(prisma.order, 'findUnique').mockResolvedValue({
       id: 'order-canceled-1',
       status: 'CANCELED',
+      syncState: 'IN_SYNC',
+      positionId: null,
+    } as never);
+    const updateSpy = vi.spyOn(prisma.runtimeExecutionDedupe, 'update').mockResolvedValue({} as never);
+
+    const result = await service.acquire({
+      dedupeKey: 'v1|OPEN|u1|bot-1|BTCUSDT|group-1|1m|1000|59000|LONG',
+      commandType: 'OPEN',
+      userId: 'u1',
+      botId: 'bot-1',
+      symbol: 'BTCUSDT',
+      commandFingerprint: { test: true },
+      now: new Date('2026-04-16T10:05:00.000Z'),
+    });
+
+    expect(result).toEqual({
+      outcome: 'execute',
+      dedupeKey: 'v1|OPEN|u1|bot-1|BTCUSDT|group-1|1m|1000|59000|LONG',
+    });
+    expect(updateSpy).toHaveBeenCalledWith({
+      where: { dedupeKey: 'v1|OPEN|u1|bot-1|BTCUSDT|group-1|1m|1000|59000|LONG' },
+      data: expect.objectContaining({
+        status: 'PENDING',
+        orderId: null,
+        positionId: null,
+        errorClass: null,
+      }),
+    });
+  });
+
+  it('allows execution when linked submitted order is a local orphan', async () => {
+    const service = new RuntimeExecutionDedupeService();
+    vi.spyOn(prisma.runtimeExecutionDedupe, 'create').mockRejectedValue({ code: 'P2002' });
+    vi.spyOn(prisma.runtimeExecutionDedupe, 'findUnique').mockResolvedValue({
+      id: 'dedupe-5',
+      dedupeKey: 'v1|OPEN|u1|bot-1|BTCUSDT|group-1|1m|1000|59000|LONG',
+      dedupeVersion: 'v1',
+      commandType: 'OPEN',
+      userId: 'u1',
+      botId: 'bot-1',
+      symbol: 'BTCUSDT',
+      status: 'PENDING',
+      commandFingerprint: {},
+      firstSeenAt: new Date('2026-04-16T10:00:00.000Z'),
+      lastSeenAt: new Date('2026-04-16T10:04:30.000Z'),
+      ttlExpiresAt: new Date('2026-04-17T10:00:00.000Z'),
+      orderId: 'order-orphan-1',
+      positionId: null,
+      errorClass: null,
+      createdAt: new Date('2026-04-16T10:00:00.000Z'),
+      updatedAt: new Date('2026-04-16T10:04:30.000Z'),
+    } as never);
+    vi.spyOn(prisma.order, 'findUnique').mockResolvedValue({
+      id: 'order-orphan-1',
+      status: 'OPEN',
+      syncState: 'ORPHAN_LOCAL',
       positionId: null,
     } as never);
     const updateSpy = vi.spyOn(prisma.runtimeExecutionDedupe, 'update').mockResolvedValue({} as never);

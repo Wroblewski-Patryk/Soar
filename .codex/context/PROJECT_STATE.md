@@ -3,6 +3,15 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 runtime execution dedupe linked-order active-sync slice
+  `RUNTIME-AUDIT-92` is closed locally. Runtime execution dedupe now reuses
+  linked submitted/completed orders only when `syncState=IN_SYNC`; a linked
+  `ORPHAN_LOCAL` order resets the dedupe row for a fresh execution attempt
+  instead of blocking PAPER/LIVE execution as submitted or inflight.
+  Validation PASS: runtime execution dedupe suite (`9/9`), execution
+  orchestrator suite (`17/17`), API typecheck, repository guardrails, lint, and
+  diff review. Evidence:
+  `docs/planning/runtime-audit-92-runtime-dedupe-linked-order-sync-state-task-2026-05-04.md`.
 - 2026-05-04 runtime execution open-lookup active-sync slice
   `RUNTIME-AUDIT-91` is closed locally. Runtime execution open-position lookup
   now requires `syncState=IN_SYNC` for direct and LIVE imported fallback reads,
