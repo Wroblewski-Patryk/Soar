@@ -251,6 +251,38 @@ describe("useRuntimeSelectionViewModel", () => {
     expect(result.current.showDynamicStopColumns).toBe(true);
   });
 
+  it("prefers backend dynamic TTP protection over fallback TTP display", () => {
+    const positions = snapshot.positions;
+    expect(positions).not.toBeNull();
+    const snapshotWithBackendTtp = {
+      ...snapshot,
+      positions: {
+        ...positions,
+        openItems: [
+          {
+            ...positions!.openItems[0],
+            trailingTakeProfitLevels: [{ armPercent: 5, trailPercent: 2 }],
+            dynamicTtpStopLoss: 0.995,
+          },
+        ],
+      },
+    } as unknown as RuntimeSnapshot;
+
+    const { result } = renderHook(() =>
+      useRuntimeSelectionViewModel({
+        snapshots: [snapshotWithBackendTtp],
+        selected: snapshotWithBackendTtp,
+        selectedTrades: null,
+        liveTickerPrices: { DOGEUSDT: 0.991 },
+      })
+    );
+
+    const row = result.current.selectedData!.open[0]!;
+    expect(row.ttpProtectedPercent).toBeCloseTo(5, 8);
+    expect(row.fallbackTtpProtectedPercent).toBeCloseTo(7, 8);
+    expect(resolveDynamicTtpDisplay(row)).toBeCloseTo(5, 8);
+  });
+
   it("does not leak sticky fallback TTP state across runtime bot/session identity", () => {
     const positions = snapshot.positions;
     expect(positions).not.toBeNull();

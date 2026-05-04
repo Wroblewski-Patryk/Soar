@@ -3,6 +3,12 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 backend TTP precedence regression slice `RUNTIME-AUDIT-142` is
+  closed locally. Runtime view-model coverage now proves backend dynamic TTP
+  protection wins over fallback TTP display when both values exist. Validation
+  PASS: focused runtime selection view-model suite (`9/9`), web typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-142-backend-ttp-precedence-regression-task-2026-05-04.md`.
 - 2026-05-04 fallback TTP sticky-state scope slice `RUNTIME-AUDIT-141` is
   closed locally. Fallback TTP sticky favorable-move state is now keyed by bot
   id, runtime session id, and position id, with regression coverage preventing

@@ -9,6 +9,13 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-142 test(web-dashboard): lock backend TTP precedence`
+  - 2026-05-04: Closed a money-impacting dashboard regression gap. Runtime
+    view-model coverage now proves backend dynamic TTP protection wins over
+    fallback TTP display when both values exist. Validation PASS: focused
+    runtime selection view-model suite (`9/9`), web typecheck, repository
+    guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-142-backend-ttp-precedence-regression-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-141 fix(web-dashboard): scope fallback TTP sticky state`
   - 2026-05-04: Closed an ARCHITECT-mode money-impacting runtime display
     boundary fix. Fallback TTP sticky favorable-move state is now keyed by bot
