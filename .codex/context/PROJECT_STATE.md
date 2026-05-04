@@ -3,6 +3,15 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 PAPER position test-contract slice `RUNTIME-AUDIT-111` is closed
+  locally. DB-backed order tests now expect bot-created PAPER positions to
+  persist with `Position.walletId=null`, while LIVE remains wallet-scoped,
+  aligning the regression suite with the RUNTIME-AUDIT-108 bot-scoped
+  persistence contract. Validation PASS: API typecheck, repository guardrails,
+  lint, and diff review. Targeted DB-backed order tests were attempted but
+  timed out locally after 120s because the local PostgreSQL-backed suite did
+  not complete in this environment. Evidence:
+  `docs/planning/runtime-audit-111-paper-position-test-contract-task-2026-05-04.md`.
 - 2026-05-04 PAPER manual-close wallet-backfill slice `RUNTIME-AUDIT-110`
   is closed locally. Manual dashboard close now backfills missing position
   `walletId` only in LIVE recovery paths, so PAPER bot-scoped positions remain

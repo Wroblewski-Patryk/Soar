@@ -230,7 +230,7 @@ describe('Orders manual PAPER market truth', () => {
     expect(persistedOpenPositions).toHaveLength(2);
     expect(persistedOpenPositions.map((position) => position.walletId)).toEqual([
       liveWallet.id,
-      paperWallet.id,
+      null,
     ]);
   });
 });

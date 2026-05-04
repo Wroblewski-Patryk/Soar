@@ -1260,7 +1260,7 @@ describe('openOrder live execution contract', () => {
       expect(openPositions).toHaveLength(2);
       expect(openPositions.map((position) => position.walletId)).toEqual([
         liveWallet.id,
-        paperWallet.id,
+        null,
       ]);
       expect(openPositions.map((position) => position.side)).toEqual(['SHORT', 'LONG']);
     } finally {

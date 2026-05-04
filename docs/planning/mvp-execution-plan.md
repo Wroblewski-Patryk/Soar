@@ -29,6 +29,15 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-111` with
+  `docs/planning/runtime-audit-111-paper-position-test-contract-task-2026-05-04.md`.
+  DB-backed order tests now expect bot-created PAPER positions to persist with
+  `Position.walletId=null`, while LIVE remains wallet-scoped, aligning the
+  regression suite with the RUNTIME-AUDIT-108 bot-scoped persistence contract.
+  Validation PASS: API typecheck, repository guardrails, lint, and diff
+  review. Targeted DB-backed order tests were attempted but timed out locally
+  after 120s because the local PostgreSQL-backed suite did not complete in this
+  environment.
 - 2026-05-04: Closed `RUNTIME-AUDIT-110` with
   `docs/planning/runtime-audit-110-paper-manual-close-wallet-backfill-task-2026-05-04.md`.
   Manual dashboard close now backfills missing position `walletId` only in

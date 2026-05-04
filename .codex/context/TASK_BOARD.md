@@ -20,6 +20,17 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-111 test(api-orders): align paper position bot-scope expectations`
+  - Scope: closed a BUILDER-mode test-contract drift. DB-backed order tests
+    now expect bot-created PAPER positions to persist with
+    `Position.walletId=null`, while LIVE remains wallet-scoped, aligning the
+    regression suite with the RUNTIME-AUDIT-108 bot-scoped persistence
+    contract. Validation PASS: API typecheck, repository guardrails, lint, and
+    diff review. Targeted DB-backed order tests were attempted but timed out
+    locally after 120s because the local PostgreSQL-backed suite did not
+    complete in this environment. Evidence:
+    `docs/planning/runtime-audit-111-paper-position-test-contract-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-110 fix(api-bots): preserve paper close bot scope`
   - Scope: closed a TESTER-mode PAPER manual-close ownership drift. Manual
     dashboard close now backfills missing position `walletId` only in LIVE
