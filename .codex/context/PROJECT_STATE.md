@@ -3,6 +3,15 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 shared runtime trade metadata builder slice
+  `RUNTIME-AUDIT-129` is closed locally. Runtime trade metadata construction
+  now lives in one shared `home-live-widgets` helper used by both component
+  fallback and aggregate controller paths, preserving empty `totalPages=0` and
+  page clamping without duplicated formulas. Validation PASS: focused
+  dashboard component suite (`20/20`), focused dashboard controller suite
+  (`2/2`), web typecheck, repository guardrails, lint, and diff review.
+  Evidence:
+  `docs/planning/runtime-audit-129-shared-trade-meta-builder-task-2026-05-04.md`.
 - 2026-05-04 dashboard fallback trade metadata slice `RUNTIME-AUDIT-128` is
   closed locally. The home runtime widget now builds fallback trade metadata
   with runtime API empty-state semantics, so empty local trade-history fallback

@@ -2,11 +2,9 @@ import { act, fireEvent, render, screen, waitFor, within } from "@testing-librar
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { I18nProvider } from "../../../i18n/I18nProvider";
-import HomeLiveWidgets, {
-  buildFallbackRuntimeTradeMeta,
-  resolveSelectedStrategyDisplay,
-} from "./HomeLiveWidgets";
+import HomeLiveWidgets, { resolveSelectedStrategyDisplay } from "./HomeLiveWidgets";
 import { buildMonitoringAggregateFromSessionMocks } from "./HomeLiveWidgets.test-helpers";
+import { buildRuntimeTradeMeta } from "./home-live-widgets/runtimeTradeMeta";
 
 const listBotsMock = vi.hoisted(() => vi.fn());
 const getBotRuntimeGraphMock = vi.hoisted(() => vi.fn());
@@ -2982,9 +2980,9 @@ describe("resolveSelectedStrategyDisplay", () => {
   });
 });
 
-describe("buildFallbackRuntimeTradeMeta", () => {
+describe("buildRuntimeTradeMeta", () => {
   it("keeps empty fallback pagination aligned with runtime API metadata", () => {
-    expect(buildFallbackRuntimeTradeMeta({ page: 1, pageSize: 10, total: 0 })).toEqual({
+    expect(buildRuntimeTradeMeta({ page: 1, pageSize: 10, total: 0 })).toEqual({
       page: 1,
       pageSize: 10,
       total: 0,
@@ -2995,7 +2993,7 @@ describe("buildFallbackRuntimeTradeMeta", () => {
   });
 
   it("clamps fallback page metadata for non-empty local rows", () => {
-    expect(buildFallbackRuntimeTradeMeta({ page: 4, pageSize: 10, total: 25 })).toEqual({
+    expect(buildRuntimeTradeMeta({ page: 4, pageSize: 10, total: 25 })).toEqual({
       page: 3,
       pageSize: 10,
       total: 25,

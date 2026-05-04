@@ -29,6 +29,14 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-129` with
+  `docs/planning/runtime-audit-129-shared-trade-meta-builder-task-2026-05-04.md`.
+  Runtime trade metadata construction now lives in one shared
+  `home-live-widgets` helper used by both component fallback and aggregate
+  controller paths, preserving empty `totalPages=0` and page clamping without
+  duplicated formulas. Validation PASS: focused dashboard component suite
+  (`20/20`), focused dashboard controller suite (`2/2`), web typecheck,
+  repository guardrails, lint, and diff review.
 - 2026-05-04: Closed `RUNTIME-AUDIT-128` with
   `docs/planning/runtime-audit-128-dashboard-trade-meta-fallback-task-2026-05-04.md`.
   The home runtime widget now builds fallback trade metadata with runtime API

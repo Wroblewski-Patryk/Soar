@@ -27,6 +27,7 @@ import type {
   TradeSortBy,
   TradeSortDir,
 } from "../components/home-live-widgets/types";
+import { buildRuntimeTradeMeta } from "../components/home-live-widgets/runtimeTradeMeta";
 
 const MAX_DASHBOARD_BOTS = 8;
 const AUTO_REFRESH_VISIBLE_INTERVAL_MS = 10_000;
@@ -179,23 +180,14 @@ const applyAggregateTradeQuery = ({
     !hasActiveTradeFilters(tradeAppliedFilters) && !tradeSortBy
       ? Math.max(baseTrades.total, sorted.length)
       : sorted.length;
-  const totalPages = total === 0 ? 0 : Math.ceil(total / pageSize);
-  const normalizedPage =
-    totalPages === 0 ? 1 : Math.min(Math.max(1, tradePage), totalPages);
-  const start = (normalizedPage - 1) * pageSize;
+  const meta = buildRuntimeTradeMeta({ page: tradePage, pageSize, total });
+  const start = (meta.page - 1) * pageSize;
   const items = sorted.slice(start, start + pageSize);
 
   return {
     sessionId: baseTrades.sessionId,
     total,
-    meta: {
-      page: normalizedPage,
-      pageSize,
-      total,
-      totalPages,
-      hasPrev: totalPages > 0 && normalizedPage > 1,
-      hasNext: totalPages > 0 && normalizedPage < totalPages,
-    },
+    meta,
     window: baseTrades.window,
     items,
   };

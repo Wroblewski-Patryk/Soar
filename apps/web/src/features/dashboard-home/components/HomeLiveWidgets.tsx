@@ -58,8 +58,8 @@ import type {
   RuntimeDataTab,
   RuntimeSnapshot,
   RuntimeTabItem,
-  RuntimeTradeMeta,
 } from "./home-live-widgets/types";
+import { buildRuntimeTradeMeta } from "./home-live-widgets/runtimeTradeMeta";
 import {
   parseOptionalPositivePriceInput,
   PositionEditDraft,
@@ -75,26 +75,6 @@ const DASHBOARD_OPEN_ORDERS_COLUMNS_STORAGE_KEY = "dashboard.home.openOrders.col
 const DASHBOARD_TRADE_HISTORY_COLUMNS_STORAGE_KEY = "dashboard.home.tradeHistory.columns.v1";
 const TRADE_PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
 const OPEN_POSITIONS_PAGE_SIZE_OPTIONS = [10, 25, 50] as const;
-
-export const buildFallbackRuntimeTradeMeta = (params: {
-  page: number;
-  pageSize: number;
-  total: number;
-}): RuntimeTradeMeta => {
-  const pageSize = Math.max(1, params.pageSize);
-  const total = Math.max(0, params.total);
-  const totalPages = total === 0 ? 0 : Math.ceil(total / pageSize);
-  const page = totalPages === 0 ? 1 : Math.min(Math.max(1, params.page), totalPages);
-
-  return {
-    page,
-    pageSize,
-    total,
-    totalPages,
-    hasPrev: totalPages > 0 && page > 1,
-    hasNext: totalPages > 0 && page < totalPages,
-  };
-};
 
 const RUNTIME_DATA_TABS: {
   key: RuntimeDataTab;
@@ -349,7 +329,7 @@ export default function HomeLiveWidgets() {
 
   const tradeMeta =
     selectedTrades?.meta ??
-    buildFallbackRuntimeTradeMeta({
+    buildRuntimeTradeMeta({
       page: tradePage,
       pageSize: tradePageSize,
       total: selectedData?.trades.length ?? 0,
