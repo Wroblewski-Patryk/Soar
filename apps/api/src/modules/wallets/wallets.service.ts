@@ -655,6 +655,30 @@ export const buildWalletOpenPnlWhere = (input: {
   ],
 });
 
+export const buildWalletClosedPaperPositionPnlWhere = (input: {
+  userId: string;
+  walletId: string;
+  query?: WalletAnalyticsQueryDto;
+}): Prisma.PositionWhereInput => ({
+  userId: input.userId,
+  status: { not: PositionStatus.OPEN },
+  syncState: 'IN_SYNC',
+  realizedPnl: { not: null },
+  closedAt: {
+    not: null,
+    ...(input.query?.from ? { gte: parseOptionalDate(input.query.from) } : {}),
+    ...(input.query?.to ? { lte: parseOptionalDate(input.query.to) } : {}),
+  },
+  OR: [
+    { walletId: input.walletId },
+    {
+      bot: {
+        walletId: input.walletId,
+      },
+    },
+  ],
+});
+
 export const getWalletPerformanceSummary = async (
   userId: string,
   id: string,
@@ -663,38 +687,57 @@ export const getWalletPerformanceSummary = async (
   const wallet = await getWallet(userId, id);
   if (!wallet) return null;
 
-  const [latestSnapshot, cashflowEvents, openPnlAggregate] = await Promise.all([
-    prisma.walletBalanceSnapshot.findFirst({
-      where: { userId, walletId: id },
-      orderBy: { fetchedAt: 'desc' },
-    }),
-    prisma.walletCashflowEvent.findMany({
-      where: {
-        userId,
-        ...buildCashflowWindowWhere(id, query),
-      },
-      orderBy: { occurredAt: 'asc' },
-    }),
-    prisma.position.aggregate({
-      where: buildWalletOpenPnlWhere({
-        userId,
-        walletId: id,
-        mode: wallet.mode,
-        marketType: wallet.marketType,
-        apiKeyId: wallet.apiKeyId,
+  const closedPaperPnlWhere =
+    wallet.mode === 'PAPER'
+      ? buildWalletClosedPaperPositionPnlWhere({
+          userId,
+          walletId: id,
+          query,
+        })
+      : null;
+
+  const [latestSnapshot, cashflowEvents, openPnlAggregate, closedPaperPnlAggregate] =
+    await Promise.all([
+      prisma.walletBalanceSnapshot.findFirst({
+        where: { userId, walletId: id },
+        orderBy: { fetchedAt: 'desc' },
       }),
-      _sum: {
-        unrealizedPnl: true,
-      },
-    }),
-  ]);
+      prisma.walletCashflowEvent.findMany({
+        where: {
+          userId,
+          ...buildCashflowWindowWhere(id, query),
+        },
+        orderBy: { occurredAt: 'asc' },
+      }),
+      prisma.position.aggregate({
+        where: buildWalletOpenPnlWhere({
+          userId,
+          walletId: id,
+          mode: wallet.mode,
+          marketType: wallet.marketType,
+          apiKeyId: wallet.apiKeyId,
+        }),
+        _sum: {
+          unrealizedPnl: true,
+        },
+      }),
+      closedPaperPnlWhere
+        ? prisma.position.aggregate({
+            where: closedPaperPnlWhere,
+            _sum: {
+              realizedPnl: true,
+            },
+          })
+        : Promise.resolve(null),
+    ]);
 
   const contributedCapital = cashflowEvents
     .filter((event) => contributedCapitalSources.has(event.source))
     .reduce((sum, event) => sum + signedCashflowAmount(event), 0);
   const botRealizedPnl = cashflowEvents
     .filter((event) => botPnlSources.has(event.source))
-    .reduce((sum, event) => sum + signedCashflowAmount(event), 0);
+    .reduce((sum, event) => sum + signedCashflowAmount(event), 0) +
+    Number(closedPaperPnlAggregate?._sum.realizedPnl ?? 0);
   const feesFunding = cashflowEvents
     .filter((event) => feesFundingSources.has(event.source))
     .reduce((sum, event) => sum + signedCashflowAmount(event), 0);
@@ -765,50 +808,70 @@ export const getWalletEquityTimeline = async (
   const wallet = await getWallet(userId, id);
   if (!wallet) return null;
 
-  const [snapshots, latestSnapshot, events, openPnlAggregate] = await Promise.all([
-    prisma.walletBalanceSnapshot.findMany({
-      where: {
-        userId,
-        walletId: id,
-        ...(query.from || query.to
-          ? {
-              fetchedAt: {
-                ...(query.from ? { gte: parseOptionalDate(query.from) } : {}),
-                ...(query.to ? { lte: parseOptionalDate(query.to) } : {}),
-              },
-            }
-          : {}),
-      },
-      orderBy: { fetchedAt: 'asc' },
-    }),
-    prisma.walletBalanceSnapshot.findFirst({
-      where: {
-        userId,
-        walletId: id,
-      },
-      orderBy: { fetchedAt: 'desc' },
-      select: { id: true },
-    }),
-    prisma.walletCashflowEvent.findMany({
-      where: {
-        userId,
-        ...buildCashflowWindowWhere(id, query),
-      },
-      orderBy: { occurredAt: 'asc' },
-    }),
-    prisma.position.aggregate({
-      where: buildWalletOpenPnlWhere({
-        userId,
-        walletId: id,
-        mode: wallet.mode,
-        marketType: wallet.marketType,
-        apiKeyId: wallet.apiKeyId,
+  const closedPaperPnlWhere =
+    wallet.mode === 'PAPER'
+      ? buildWalletClosedPaperPositionPnlWhere({
+          userId,
+          walletId: id,
+          query,
+        })
+      : null;
+
+  const [snapshots, latestSnapshot, events, openPnlAggregate, closedPaperPnlPositions] =
+    await Promise.all([
+      prisma.walletBalanceSnapshot.findMany({
+        where: {
+          userId,
+          walletId: id,
+          ...(query.from || query.to
+            ? {
+                fetchedAt: {
+                  ...(query.from ? { gte: parseOptionalDate(query.from) } : {}),
+                  ...(query.to ? { lte: parseOptionalDate(query.to) } : {}),
+                },
+              }
+            : {}),
+        },
+        orderBy: { fetchedAt: 'asc' },
       }),
-      _sum: {
-        unrealizedPnl: true,
-      },
-    }),
-  ]);
+      prisma.walletBalanceSnapshot.findFirst({
+        where: {
+          userId,
+          walletId: id,
+        },
+        orderBy: { fetchedAt: 'desc' },
+        select: { id: true },
+      }),
+      prisma.walletCashflowEvent.findMany({
+        where: {
+          userId,
+          ...buildCashflowWindowWhere(id, query),
+        },
+        orderBy: { occurredAt: 'asc' },
+      }),
+      prisma.position.aggregate({
+        where: buildWalletOpenPnlWhere({
+          userId,
+          walletId: id,
+          mode: wallet.mode,
+          marketType: wallet.marketType,
+          apiKeyId: wallet.apiKeyId,
+        }),
+        _sum: {
+          unrealizedPnl: true,
+        },
+      }),
+      closedPaperPnlWhere
+        ? prisma.position.findMany({
+            where: closedPaperPnlWhere,
+            select: {
+              closedAt: true,
+              realizedPnl: true,
+            },
+            orderBy: { closedAt: 'asc' },
+          })
+        : Promise.resolve([]),
+    ]);
 
   const currentOpenPnl = Number(openPnlAggregate._sum.unrealizedPnl ?? 0);
   const points = snapshots.map((snapshot) => {
@@ -818,7 +881,10 @@ export const getWalletEquityTimeline = async (
       .reduce((sum, event) => sum + signedCashflowAmount(event), 0);
     const botRealizedPnl = eventsUntilPoint
       .filter((event) => botPnlSources.has(event.source))
-      .reduce((sum, event) => sum + signedCashflowAmount(event), 0);
+      .reduce((sum, event) => sum + signedCashflowAmount(event), 0) +
+      closedPaperPnlPositions
+        .filter((position) => position.closedAt && position.closedAt <= snapshot.fetchedAt)
+        .reduce((sum, position) => sum + Number(position.realizedPnl ?? 0), 0);
     const feesFunding = eventsUntilPoint
       .filter((event) => feesFundingSources.has(event.source))
       .reduce((sum, event) => sum + signedCashflowAmount(event), 0);

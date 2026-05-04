@@ -3,6 +3,13 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 PAPER wallet realized-PnL slice `RUNTIME-AUDIT-113` is closed
+  locally. Wallet performance summary and equity timeline now include realized
+  PnL from closed `IN_SYNC` PAPER positions owned directly by the wallet or by
+  bots using the wallet, while LIVE wallet realized PnL remains cashflow-based.
+  Validation PASS: focused wallet service unit suite (`5/5`), API typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-113-paper-wallet-realized-pnl-task-2026-05-04.md`.
 - 2026-05-04 PAPER runtime trade fallback slice `RUNTIME-AUDIT-112` is closed
   locally. Runtime position trade reads now include botless wallet-scoped trade
   fallback only for LIVE recovery/import visibility, so PAPER bot dashboards
