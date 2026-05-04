@@ -9,6 +9,14 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-99 fix(api-bots): scope PAPER LIVE switch guard`
+  - 2026-05-04: Closed an ARCHITECT-mode bot management active-truth drift.
+    PAPER to LIVE mode switch guard now counts only `OPEN` + `IN_SYNC`
+    `BOT_MANAGED` paper positions, so stale local `ORPHAN_LOCAL` rows no
+    longer block a bot configuration switch while real active paper positions
+    remain fail-closed. Validation PASS: focused bot e2e pack (`27/27`), API
+    typecheck, repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-99-paper-live-switch-active-position-scope-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-98 fix(api-orders): release stale fill blockers`
   - 2026-05-04: Closed a BUILDER-mode immediate-fill DB blocker drift. Order
     fill lifecycle now repair-closes exact-scope `ORPHAN_LOCAL` open position

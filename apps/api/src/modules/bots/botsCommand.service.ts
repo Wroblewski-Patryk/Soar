@@ -400,6 +400,7 @@ export const updateBot = async (userId: string, id: string, data: UpdateBotDto) 
         userId,
         botId: existing.id,
         status: 'OPEN',
+        syncState: 'IN_SYNC',
         managementMode: 'BOT_MANAGED',
       },
     });

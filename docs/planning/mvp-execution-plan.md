@@ -29,6 +29,13 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-99` with
+  `docs/planning/runtime-audit-99-paper-live-switch-active-position-scope-task-2026-05-04.md`.
+  PAPER to LIVE mode switch guard now counts only `OPEN` + `IN_SYNC`
+  `BOT_MANAGED` paper positions, so stale local `ORPHAN_LOCAL` rows no longer
+  block a bot configuration switch while real active paper positions remain
+  fail-closed. Validation PASS: focused bot e2e pack (`27/27`), API typecheck,
+  repository guardrails, lint, and diff review.
 - 2026-05-04: Closed `RUNTIME-AUDIT-98` with
   `docs/planning/runtime-audit-98-immediate-fill-stale-position-blocker-task-2026-05-04.md`.
   Order fill lifecycle now repair-closes exact-scope `ORPHAN_LOCAL` open

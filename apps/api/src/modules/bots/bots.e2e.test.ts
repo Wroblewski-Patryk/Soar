@@ -407,6 +407,7 @@ describe('Bots module contract', () => {
         quantity: 0.01,
         origin: 'BOT',
         managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
       },
     });
 

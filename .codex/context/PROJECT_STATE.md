@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 PAPER to LIVE switch active-position scope slice
+  `RUNTIME-AUDIT-99` is closed locally. PAPER to LIVE mode switch guard now
+  counts only `OPEN` + `IN_SYNC` `BOT_MANAGED` paper positions, so stale local
+  `ORPHAN_LOCAL` rows no longer block a bot configuration switch while real
+  active paper positions remain fail-closed. Validation PASS: focused bot e2e
+  pack (`27/27`), API typecheck, repository guardrails, lint, and diff review.
+  Evidence:
+  `docs/planning/runtime-audit-99-paper-live-switch-active-position-scope-task-2026-05-04.md`.
 - 2026-05-04 immediate fill stale-position blocker slice `RUNTIME-AUDIT-98`
   is closed locally. Order fill lifecycle now repair-closes exact-scope
   `ORPHAN_LOCAL` open position blockers with `SYSTEM_REPAIR` /
