@@ -7,6 +7,7 @@ export const listRuntimeAutomationOpenPositionsBySymbol: RuntimePositionAutomati
     const positions = await prisma.position.findMany({
       where: {
         status: 'OPEN',
+        syncState: 'IN_SYNC',
         symbol,
         managementMode: 'BOT_MANAGED',
         OR: [

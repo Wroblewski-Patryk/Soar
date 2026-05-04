@@ -20,6 +20,16 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-101 fix(api-engine): scope position automation to synced rows`
+  - Scope: closed a BUILDER-mode runtime automation active-truth drift.
+    Ticker-driven runtime position automation now hydrates only `OPEN` +
+    `IN_SYNC` bot-managed positions, so stale local `ORPHAN_LOCAL` rows cannot
+    receive DCA, TP, TTP, SL, or TSL automation decisions while synced
+    exchange-imported ownership hydration remains covered. Validation PASS:
+    focused automation default-deps suite (`1/1`), API typecheck, repository
+    guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-101-position-automation-sync-state-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-100 fix(api-engine): scope position lifetime to synced rows`
   - Scope: closed a TESTER-mode runtime lifetime active-truth drift. Runtime
     position lifetime scanning now selects only stale `OPEN` + `IN_SYNC`

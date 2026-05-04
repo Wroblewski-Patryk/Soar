@@ -157,6 +157,16 @@ describe('RuntimePositionAutomationService default ownership hydration', () => {
       priceChangePercent24h: 1,
     });
 
+    expect(mocks.positionFindMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          status: 'OPEN',
+          syncState: 'IN_SYNC',
+          symbol: 'DOGEUSDT',
+          managementMode: 'BOT_MANAGED',
+        }),
+      })
+    );
     expect(executeDca).toHaveBeenCalledWith(
       expect.objectContaining({
         botId: 'bot-1',

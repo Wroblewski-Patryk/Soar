@@ -3,6 +3,15 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 runtime position automation active-sync slice
+  `RUNTIME-AUDIT-101` is closed locally. Ticker-driven runtime position
+  automation now hydrates only `OPEN` + `IN_SYNC` bot-managed positions, so
+  stale local `ORPHAN_LOCAL` rows cannot receive DCA, TP, TTP, SL, or TSL
+  automation decisions while synced exchange-imported ownership hydration
+  remains covered. Validation PASS: focused automation default-deps suite
+  (`1/1`), API typecheck, repository guardrails, lint, and diff review.
+  Evidence:
+  `docs/planning/runtime-audit-101-position-automation-sync-state-task-2026-05-04.md`.
 - 2026-05-04 runtime position lifetime active-sync slice `RUNTIME-AUDIT-100`
   is closed locally. Runtime position lifetime scanning now selects only stale
   `OPEN` + `IN_SYNC` positions, so stale local `ORPHAN_LOCAL` rows cannot

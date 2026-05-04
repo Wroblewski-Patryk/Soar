@@ -29,6 +29,14 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-101` with
+  `docs/planning/runtime-audit-101-position-automation-sync-state-task-2026-05-04.md`.
+  Ticker-driven runtime position automation now hydrates only `OPEN` +
+  `IN_SYNC` bot-managed positions, so stale local `ORPHAN_LOCAL` rows cannot
+  receive DCA, TP, TTP, SL, or TSL automation decisions while synced
+  exchange-imported ownership hydration remains covered. Validation PASS:
+  focused automation default-deps suite (`1/1`), API typecheck, repository
+  guardrails, lint, and diff review.
 - 2026-05-04: Closed `RUNTIME-AUDIT-100` with
   `docs/planning/runtime-audit-100-position-lifetime-sync-state-task-2026-05-04.md`.
   Runtime position lifetime scanning now selects only stale `OPEN` + `IN_SYNC`
