@@ -228,10 +228,16 @@ const buildEmptyAggregatePayload = (params: {
   botId: string;
   mode: 'PAPER' | 'LIVE';
   status: RuntimeSessionListItem['status'] | undefined;
+  perSessionLimit: number;
 }) => {
   const now = new Date();
   const status = params.status ?? 'COMPLETED';
   const finishedAt = status === 'RUNNING' ? null : now;
+  const tradeMeta = buildRuntimeAggregateTradesMeta({
+    totalTrades: 0,
+    returnedItemsCount: 0,
+    pageSize: params.perSessionLimit,
+  });
   return {
     sessionDetail: {
       id: 'AGGREGATE',
@@ -323,14 +329,7 @@ const buildEmptyAggregatePayload = (params: {
       sessionId: 'AGGREGATE',
       total: 0,
       feesPaid: 0,
-      meta: {
-        page: 1,
-        pageSize: 1,
-        total: 0,
-        totalPages: 0,
-        hasPrev: false,
-        hasNext: false,
-      },
+      meta: tradeMeta,
       window: {
         startedAt: now,
         finishedAt: now,
@@ -355,7 +354,12 @@ export const getBotRuntimeMonitoringAggregate = async (
     limit: query.sessionsLimit,
   });
   if (sessions.length === 0) {
-    return buildEmptyAggregatePayload({ botId, mode: bot.mode, status: query.status });
+    return buildEmptyAggregatePayload({
+      botId,
+      mode: bot.mode,
+      status: query.status,
+      perSessionLimit: query.perSessionLimit,
+    });
   }
 
   const payloadRows = await Promise.all(
@@ -397,7 +401,12 @@ export const getBotRuntimeMonitoringAggregate = async (
   );
 
   if (completePayloadRows.length === 0) {
-    return buildEmptyAggregatePayload({ botId, mode: bot.mode, status: query.status });
+    return buildEmptyAggregatePayload({
+      botId,
+      mode: bot.mode,
+      status: query.status,
+      perSessionLimit: query.perSessionLimit,
+    });
   }
 
   const activeSessions = completePayloadRows.map((row) => row.session);

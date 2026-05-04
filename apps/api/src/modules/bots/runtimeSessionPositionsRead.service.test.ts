@@ -460,6 +460,21 @@ describe('runtime aggregate projection helpers', () => {
       hasPrev: false,
       hasNext: true,
     });
+
+    expect(
+      buildRuntimeAggregateTradesMeta({
+        totalTrades: 0,
+        returnedItemsCount: 0,
+        pageSize: 200,
+      })
+    ).toEqual({
+      page: 1,
+      pageSize: 200,
+      total: 0,
+      totalPages: 0,
+      hasPrev: false,
+      hasNext: false,
+    });
   });
 });
 

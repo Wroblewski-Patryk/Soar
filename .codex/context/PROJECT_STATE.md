@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 runtime aggregate empty trade meta slice `RUNTIME-AUDIT-125` is
+  closed locally. Empty aggregate trades now reuse the aggregate trade meta
+  helper with the caller's `perSessionLimit`, so `meta.pageSize` matches the
+  same contract as non-empty aggregate reads while `total=0`, `totalPages=0`,
+  and `hasNext=false` remain unchanged. Validation PASS: focused runtime
+  session position unit suite (`16/16`), API typecheck, repository guardrails,
+  lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-125-empty-aggregate-trade-meta-task-2026-05-04.md`.
 - 2026-05-04 runtime aggregate trade meta page-size slice
   `RUNTIME-AUDIT-124` is closed locally. Aggregate trades `meta.pageSize` now
   reports the requested `perSessionLimit` instead of the deduped returned item

@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-125 fix(api-bots): align empty aggregate trade meta`
+  - 2026-05-04: Closed a TESTER-mode runtime aggregate empty-state metadata
+    drift. Empty aggregate trades now reuse the aggregate trade meta helper
+    with the caller's `perSessionLimit`, so `meta.pageSize` matches the same
+    contract as non-empty aggregate reads while `total=0`, `totalPages=0`, and
+    `hasNext=false` remain unchanged. Validation PASS: focused runtime session
+    position unit suite (`16/16`), API typecheck, repository guardrails, lint,
+    and diff review. Evidence:
+    `docs/planning/runtime-audit-125-empty-aggregate-trade-meta-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-124 fix(api-bots): align aggregate trade meta page size`
   - 2026-05-04: Closed a BUILDER-mode runtime aggregate trade metadata drift.
     Aggregate trades `meta.pageSize` now reports the requested
