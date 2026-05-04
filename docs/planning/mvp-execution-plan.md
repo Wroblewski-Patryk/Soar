@@ -29,6 +29,14 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-98` with
+  `docs/planning/runtime-audit-98-immediate-fill-stale-position-blocker-task-2026-05-04.md`.
+  Order fill lifecycle now repair-closes exact-scope `ORPHAN_LOCAL` open
+  position blockers with `SYSTEM_REPAIR` / `REPAIR_ONLY_CLEANUP` before
+  creating a fresh `IN_SYNC` position, so stale local rows no longer block
+  PAPER/LIVE filled orders at the partial unique index layer. Validation PASS:
+  orders service suite (`34/34`), API typecheck, repository guardrails, lint,
+  and diff review.
 - 2026-05-03: Published
   `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`
   and closed `SYSFINAL-00`. Active planning truth now points to the final

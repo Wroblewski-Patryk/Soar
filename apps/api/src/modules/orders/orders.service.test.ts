@@ -661,6 +661,71 @@ describe('openOrder live execution contract', () => {
     }
   });
 
+  it('releases stale local blockers before PAPER MARKET fill creates a new position', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-paper-stale-blocker-release@example.com', password: 'hashed' },
+    });
+    const staleLocalPosition = await prisma.position.create({
+      data: {
+        userId: user.id,
+        symbol: 'DOGEUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        syncState: 'ORPHAN_LOCAL',
+        continuityState: 'REPAIR_ONLY_CLEANUP',
+        entryPrice: 100,
+        quantity: 2,
+      },
+    });
+
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+
+    try {
+      const order = await openOrder(user.id, {
+        symbol: 'DOGEUSDT',
+        side: 'SELL',
+        type: 'MARKET',
+        quantity: 1,
+        price: 90,
+        mode: 'PAPER',
+        riskAck: false,
+      });
+
+      expect(order.status).toBe('FILLED');
+      expect(order.positionId).toBeTruthy();
+
+      const createdPosition = await prisma.position.findUniqueOrThrow({
+        where: { id: order.positionId ?? '' },
+      });
+      expect(createdPosition.side).toBe('SHORT');
+      expect(createdPosition.status).toBe('OPEN');
+      expect(createdPosition.syncState).toBe('IN_SYNC');
+
+      const repairedStalePosition = await prisma.position.findUniqueOrThrow({
+        where: { id: staleLocalPosition.id },
+      });
+      expect(repairedStalePosition.status).toBe('CLOSED');
+      expect(repairedStalePosition.syncState).toBe('ORPHAN_LOCAL');
+      expect(repairedStalePosition.continuityState).toBe('REPAIR_ONLY_CLEANUP');
+      expect(repairedStalePosition.closeReason).toBe('SYSTEM_REPAIR');
+      expect(repairedStalePosition.closeInitiator).toBe('SYSTEM_REPAIR');
+      expect(repairedStalePosition.unrealizedPnl).toBe(0);
+      expect(repairedStalePosition.closedAt).toBeTruthy();
+
+      const openPositions = await prisma.position.findMany({
+        where: {
+          userId: user.id,
+          symbol: 'DOGEUSDT',
+          status: 'OPEN',
+        },
+      });
+      expect(openPositions.map((position) => position.id)).toEqual([createdPosition.id]);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
   it('fails closed when manual LIVE open reverses an owned imported exchange position', async () => {
     const user = await prisma.user.create({
       data: { email: 'orders-live-owned-import-reverse-conflict@example.com', password: 'hashed' },

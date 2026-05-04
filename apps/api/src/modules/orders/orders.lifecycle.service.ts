@@ -12,6 +12,7 @@ import {
   buildImportedExternalPositionMarketPrefix,
   buildLegacyImportedExternalPositionSymbolPrefix,
 } from '../positions/livePositionReconciliation.helpers';
+import { resolveSystemRepairCloseAttribution } from '../positions/positionCloseAttribution';
 
 type ApplyOrderFillLifecycleInput = {
   userId: string;
@@ -56,6 +57,67 @@ type ReusableOpenPosition = {
   side: PositionSide;
   entryPrice: number;
   quantity: number;
+};
+
+type PositionScopeOrder = {
+  userId: string;
+  symbol: string;
+  walletId: string | null;
+  botId: string | null;
+};
+
+const resolveStaleOpenPositionBlockerWhere = (
+  order: PositionScopeOrder
+): Prisma.PositionWhereInput => {
+  const baseWhere = {
+    userId: order.userId,
+    symbol: order.symbol.toUpperCase(),
+    status: 'OPEN',
+    syncState: 'ORPHAN_LOCAL',
+  } satisfies Prisma.PositionWhereInput;
+
+  if (order.walletId) {
+    return {
+      ...baseWhere,
+      walletId: order.walletId,
+    };
+  }
+
+  if (order.botId) {
+    return {
+      ...baseWhere,
+      walletId: null,
+      botId: order.botId,
+    };
+  }
+
+  return {
+    ...baseWhere,
+    walletId: null,
+    botId: null,
+  };
+};
+
+const releaseStaleOpenPositionBlockers = async (
+  tx: Prisma.TransactionClient,
+  params: {
+    order: PositionScopeOrder;
+    closedAt: Date;
+  }
+) => {
+  const closeAttribution = resolveSystemRepairCloseAttribution();
+
+  await tx.position.updateMany({
+    where: resolveStaleOpenPositionBlockerWhere(params.order),
+    data: {
+      status: 'CLOSED',
+      closedAt: params.closedAt,
+      continuityState: 'REPAIR_ONLY_CLEANUP',
+      unrealizedPnl: 0,
+      closeReason: closeAttribution.closeReason,
+      closeInitiator: closeAttribution.closeInitiator,
+    },
+  });
 };
 
 const findOwnedLiveImportedOpenPositionForFill = async (
@@ -287,6 +349,16 @@ export const applyOrderFillLifecycle = async (params: ApplyOrderFillLifecycleInp
       userId: params.userId,
       strategyId: updatedOrder.strategyId,
       fallbackLeverage: params.leverage,
+    });
+
+    await releaseStaleOpenPositionBlockers(tx, {
+      order: {
+        userId: updatedOrder.userId,
+        symbol: updatedOrder.symbol,
+        walletId: updatedOrder.walletId,
+        botId: updatedOrder.botId,
+      },
+      closedAt: filledAt,
     });
 
     const createdPosition = await tx.position.create({

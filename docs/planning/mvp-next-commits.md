@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-98 fix(api-orders): release stale fill blockers`
+  - 2026-05-04: Closed a BUILDER-mode immediate-fill DB blocker drift. Order
+    fill lifecycle now repair-closes exact-scope `ORPHAN_LOCAL` open position
+    blockers with `SYSTEM_REPAIR` / `REPAIR_ONLY_CLEANUP` before creating a
+    fresh `IN_SYNC` position, so stale local rows no longer block PAPER/LIVE
+    filled orders at the partial unique index layer. Validation PASS: orders
+    service suite (`34/34`), API typecheck, repository guardrails, lint, and
+    diff review. Evidence:
+    `docs/planning/runtime-audit-98-immediate-fill-stale-position-blocker-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-97 fix(api-orders): require synced open position scope`
   - 2026-05-04: Closed a BUILDER-mode shared order open-position scope drift.
     Shared order open-position scope and LIVE imported-position fallbacks now
