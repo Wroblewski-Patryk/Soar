@@ -20,6 +20,16 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-93 fix(api-engine): guard dedupe success by order state`
+  - Scope: closed an ARCHITECT-mode runtime DCA completion drift. Runtime
+    execution dedupe success-by-order now requires the linked order to be
+    `status=FILLED` and `syncState=IN_SYNC` before writing `SUCCEEDED`, so a
+    stale local order cannot complete runtime DCA dedupe or update runtime DCA
+    state after exchange-event handling. Validation PASS: runtime execution
+    dedupe suite (`11/11`), exchange-events suite (`6/6`), API typecheck,
+    repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-93-dedupe-success-order-state-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-92 fix(api-engine): align dedupe linked orders with sync state`
   - Scope: closed a BUILDER-mode runtime execution dedupe active-truth drift.
     Linked orders are now reused as submitted or completed only when

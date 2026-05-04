@@ -3,6 +3,15 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 runtime execution dedupe success-by-order slice
+  `RUNTIME-AUDIT-93` is closed locally. Runtime execution dedupe now marks
+  success by `orderId` only when the linked order is `status=FILLED` and
+  `syncState=IN_SYNC`, preventing stale local orders from completing runtime
+  DCA dedupe or runtime DCA state after exchange-event handling. Validation
+  PASS: runtime execution dedupe suite (`11/11`), exchange-events suite
+  (`6/6`), API typecheck, repository guardrails, lint, and diff review.
+  Evidence:
+  `docs/planning/runtime-audit-93-dedupe-success-order-state-task-2026-05-04.md`.
 - 2026-05-04 runtime execution dedupe linked-order active-sync slice
   `RUNTIME-AUDIT-92` is closed locally. Runtime execution dedupe now reuses
   linked submitted/completed orders only when `syncState=IN_SYNC`; a linked

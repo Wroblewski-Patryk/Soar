@@ -445,6 +445,17 @@ export class RuntimeExecutionDedupeService {
 
   async markSucceededByOrderId(input: MarkSuccessByOrderIdInput) {
     const now = input.now ?? new Date();
+    const order = await prisma.order.findUnique({
+      where: { id: input.orderId },
+      select: {
+        status: true,
+        syncState: true,
+      },
+    });
+    if (!order || order.status !== 'FILLED' || order.syncState !== 'IN_SYNC') {
+      return null;
+    }
+
     const existing = await prisma.runtimeExecutionDedupe.findFirst({
       where: {
         orderId: input.orderId,

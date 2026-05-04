@@ -335,4 +335,63 @@ describe('runtimeExecutionDedupe retryability gate', () => {
       }),
     });
   });
+
+  it('marks succeeded by order id only for filled synced orders', async () => {
+    const service = new RuntimeExecutionDedupeService();
+    vi.spyOn(prisma.order, 'findUnique').mockResolvedValue({
+      status: 'FILLED',
+      syncState: 'IN_SYNC',
+    } as never);
+    vi.spyOn(prisma.runtimeExecutionDedupe, 'findFirst').mockResolvedValue({
+      dedupeKey: 'v1|DCA|u1|bot-1|BTCUSDT|position-1|level:0|LONG',
+      commandType: 'DCA',
+      positionId: 'position-1',
+      commandFingerprint: { dcaLevelIndex: 0 },
+    } as never);
+    const updateSpy = vi.spyOn(prisma.runtimeExecutionDedupe, 'update').mockResolvedValue({} as never);
+
+    const result = await service.markSucceededByOrderId({
+      orderId: 'order-filled-1',
+      commandType: 'DCA',
+      positionId: 'position-1',
+      now: new Date('2026-04-16T10:05:00.000Z'),
+    });
+
+    expect(result).toEqual({
+      dedupeKey: 'v1|DCA|u1|bot-1|BTCUSDT|position-1|level:0|LONG',
+      commandType: 'DCA',
+      positionId: 'position-1',
+      commandFingerprint: { dcaLevelIndex: 0 },
+    });
+    expect(updateSpy).toHaveBeenCalledWith({
+      where: { dedupeKey: 'v1|DCA|u1|bot-1|BTCUSDT|position-1|level:0|LONG' },
+      data: expect.objectContaining({
+        status: 'SUCCEEDED',
+        orderId: 'order-filled-1',
+        positionId: 'position-1',
+        errorClass: null,
+      }),
+    });
+  });
+
+  it('does not mark succeeded by order id for local orphan orders', async () => {
+    const service = new RuntimeExecutionDedupeService();
+    vi.spyOn(prisma.order, 'findUnique').mockResolvedValue({
+      status: 'FILLED',
+      syncState: 'ORPHAN_LOCAL',
+    } as never);
+    const findDedupeSpy = vi.spyOn(prisma.runtimeExecutionDedupe, 'findFirst');
+    const updateSpy = vi.spyOn(prisma.runtimeExecutionDedupe, 'update');
+
+    const result = await service.markSucceededByOrderId({
+      orderId: 'order-orphan-filled-1',
+      commandType: 'DCA',
+      positionId: 'position-1',
+      now: new Date('2026-04-16T10:05:00.000Z'),
+    });
+
+    expect(result).toBeNull();
+    expect(findDedupeSpy).not.toHaveBeenCalled();
+    expect(updateSpy).not.toHaveBeenCalled();
+  });
 });

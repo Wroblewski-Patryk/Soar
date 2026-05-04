@@ -93,6 +93,14 @@ Rule: fix/cleanup/update first, then feature delivery.
   page, web build-info, and protected API unauthenticated `401 Missing token`.
   Authenticated production dashboard/runtime smoke remains unavailable without
   credentials and was not claimed.
+- 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-93` with
+  `docs/planning/runtime-audit-93-dedupe-success-order-state-task-2026-05-04.md`.
+  Runtime execution dedupe success-by-order now requires the linked order to be
+  `status=FILLED` and `syncState=IN_SYNC` before writing `SUCCEEDED`, so a
+  stale local order cannot complete runtime DCA dedupe or update runtime DCA
+  state after exchange-event handling. Validation PASS: runtime execution
+  dedupe suite (`11/11`), exchange-events suite (`6/6`), API typecheck,
+  repository guardrails, lint, and diff review.
 - 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-92` with
   `docs/planning/runtime-audit-92-runtime-dedupe-linked-order-sync-state-task-2026-05-04.md`.
   Runtime execution dedupe now reuses linked submitted/completed orders only
