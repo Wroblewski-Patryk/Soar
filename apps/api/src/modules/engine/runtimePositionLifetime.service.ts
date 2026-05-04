@@ -37,6 +37,7 @@ const defaultDeps: Required<RuntimePositionLifetimeDeps> = {
         userId,
         botId,
         status: 'OPEN',
+        syncState: 'IN_SYNC',
         openedAt: { lte: cutoff },
       },
       select: {

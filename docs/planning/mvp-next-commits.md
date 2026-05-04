@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-100 fix(api-engine): scope position lifetime to synced rows`
+  - 2026-05-04: Closed a TESTER-mode runtime lifetime active-truth drift.
+    Runtime position lifetime scanning now selects only stale `OPEN` +
+    `IN_SYNC` positions, so stale local `ORPHAN_LOCAL` rows cannot trigger
+    automated close orchestration while synced stale positions still close
+    through the canonical runtime path. Validation PASS: focused lifetime
+    suite (`4/4`), API typecheck, repository guardrails, lint, and diff
+    review. Evidence:
+    `docs/planning/runtime-audit-100-position-lifetime-sync-state-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-99 fix(api-bots): scope PAPER LIVE switch guard`
   - 2026-05-04: Closed an ARCHITECT-mode bot management active-truth drift.
     PAPER to LIVE mode switch guard now counts only `OPEN` + `IN_SYNC`

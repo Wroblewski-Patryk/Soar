@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 runtime position lifetime active-sync slice `RUNTIME-AUDIT-100`
+  is closed locally. Runtime position lifetime scanning now selects only stale
+  `OPEN` + `IN_SYNC` positions, so stale local `ORPHAN_LOCAL` rows cannot
+  trigger automated close orchestration while synced stale positions still
+  close through the canonical runtime path. Validation PASS: focused lifetime
+  suite (`4/4`), API typecheck, repository guardrails, lint, and diff review.
+  Evidence:
+  `docs/planning/runtime-audit-100-position-lifetime-sync-state-task-2026-05-04.md`.
 - 2026-05-04 PAPER to LIVE switch active-position scope slice
   `RUNTIME-AUDIT-99` is closed locally. PAPER to LIVE mode switch guard now
   counts only `OPEN` + `IN_SYNC` `BOT_MANAGED` paper positions, so stale local

@@ -29,6 +29,13 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-100` with
+  `docs/planning/runtime-audit-100-position-lifetime-sync-state-task-2026-05-04.md`.
+  Runtime position lifetime scanning now selects only stale `OPEN` + `IN_SYNC`
+  positions, so stale local `ORPHAN_LOCAL` rows cannot trigger automated close
+  orchestration while synced stale positions still close through the canonical
+  runtime path. Validation PASS: focused lifetime suite (`4/4`), API
+  typecheck, repository guardrails, lint, and diff review.
 - 2026-05-04: Closed `RUNTIME-AUDIT-99` with
   `docs/planning/runtime-audit-99-paper-live-switch-active-position-scope-task-2026-05-04.md`.
   PAPER to LIVE mode switch guard now counts only `OPEN` + `IN_SYNC`
