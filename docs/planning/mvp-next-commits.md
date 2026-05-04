@@ -9,6 +9,14 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-132 refactor(web-dashboard): centralize runtime trade-row selector`
+  - 2026-05-04: Closed an ARCHITECT-mode dashboard runtime truth cleanup.
+    Selected runtime trade-row resolution now lives in one helper with branch
+    coverage for selected query precedence, matching snapshot fallback, and
+    mismatched session blocking. Validation PASS: focused runtime selection
+    view-model suite (`5/5`), focused dashboard component suite (`20/20`), web
+    typecheck, repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-132-runtime-trade-row-selector-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-131 fix(web-dashboard): preserve snapshot trade rows`
   - 2026-05-04: Closed a BUILDER-mode dashboard trade-history visibility
     drift. Runtime selected-data projection now falls back to matching

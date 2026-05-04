@@ -1,7 +1,10 @@
 import { renderHook } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { useRuntimeSelectionViewModel } from "./useRuntimeSelectionViewModel";
+import {
+  resolveSelectedRuntimeTradeRows,
+  useRuntimeSelectionViewModel,
+} from "./useRuntimeSelectionViewModel";
 import type { RuntimeSnapshot } from "./types";
 
 const snapshot = {
@@ -101,6 +104,46 @@ const snapshot = {
   runtimeGraph: null,
 } as unknown as RuntimeSnapshot;
 
+const trade = {
+  id: "trade-1",
+  symbol: "DOGEUSDT",
+  side: "SELL",
+  lifecycleAction: "OPEN",
+  price: 1,
+  quantity: 1000,
+  fee: 0.1,
+  feeSource: "ESTIMATED",
+  feePending: false,
+  feeCurrency: "USDT",
+  realizedPnl: 0,
+  executedAt: "2026-05-02T10:00:00.000Z",
+  orderId: "order-1",
+  positionId: "pos-doge",
+  strategyId: "strategy-runtime",
+  origin: "BOT",
+  managementMode: "BOT_MANAGED",
+  notional: 1000,
+  margin: 100,
+} as const;
+
+const tradeResponse = (sessionId: string, id: string) => ({
+  sessionId,
+  total: 1,
+  meta: {
+    page: 1,
+    pageSize: 10,
+    total: 1,
+    totalPages: 1,
+    hasPrev: false,
+    hasNext: false,
+  },
+  window: {
+    startedAt: "2026-05-02T10:00:00.000Z",
+    finishedAt: "2026-05-02T10:05:00.000Z",
+  },
+  items: [{ ...trade, id }],
+});
+
 describe("useRuntimeSelectionViewModel", () => {
   it("uses selected stream PnL consistently for dashboard summary and selected table", () => {
     const { result } = renderHook(() =>
@@ -122,41 +165,7 @@ describe("useRuntimeSelectionViewModel", () => {
   it("keeps snapshot trade rows visible before selected trade query is ready", () => {
     const snapshotWithTrades = {
       ...snapshot,
-      trades: {
-        ...snapshot.trades,
-        total: 1,
-        meta: {
-          page: 1,
-          pageSize: 10,
-          total: 1,
-          totalPages: 1,
-          hasPrev: false,
-          hasNext: false,
-        },
-        items: [
-          {
-            id: "trade-1",
-            symbol: "DOGEUSDT",
-            side: "SELL",
-            lifecycleAction: "OPEN",
-            price: 1,
-            quantity: 1000,
-            fee: 0.1,
-            feeSource: "ESTIMATED",
-            feePending: false,
-            feeCurrency: "USDT",
-            realizedPnl: 0,
-            executedAt: "2026-05-02T10:00:00.000Z",
-            orderId: "order-1",
-            positionId: "pos-doge",
-            strategyId: "strategy-runtime",
-            origin: "BOT",
-            managementMode: "BOT_MANAGED",
-            notional: 1000,
-            margin: 100,
-          },
-        ],
-      },
+      trades: tradeResponse("session-1", "trade-1"),
     } as unknown as RuntimeSnapshot;
 
     const { result } = renderHook(() =>
@@ -170,5 +179,37 @@ describe("useRuntimeSelectionViewModel", () => {
 
     expect(result.current.selectedData?.trades).toHaveLength(1);
     expect(result.current.selectedData?.trades[0]?.id).toBe("trade-1");
+  });
+});
+
+describe("resolveSelectedRuntimeTradeRows", () => {
+  it("prefers selected trade query rows over matching snapshot rows", () => {
+    expect(
+      resolveSelectedRuntimeTradeRows({
+        runtimeTradesSessionId: "session-1",
+        selectedTrades: tradeResponse("session-1", "query-trade"),
+        snapshotTrades: tradeResponse("session-1", "snapshot-trade"),
+      }).map((item) => item.id)
+    ).toEqual(["query-trade"]);
+  });
+
+  it("falls back to matching snapshot rows when selected trade query is not ready", () => {
+    expect(
+      resolveSelectedRuntimeTradeRows({
+        runtimeTradesSessionId: "session-1",
+        selectedTrades: null,
+        snapshotTrades: tradeResponse("session-1", "snapshot-trade"),
+      }).map((item) => item.id)
+    ).toEqual(["snapshot-trade"]);
+  });
+
+  it("hides mismatched session rows", () => {
+    expect(
+      resolveSelectedRuntimeTradeRows({
+        runtimeTradesSessionId: "session-1",
+        selectedTrades: tradeResponse("session-2", "query-trade"),
+        snapshotTrades: tradeResponse("session-3", "snapshot-trade"),
+      })
+    ).toEqual([]);
   });
 });

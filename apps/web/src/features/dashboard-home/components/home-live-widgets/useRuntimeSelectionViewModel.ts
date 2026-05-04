@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { normalizeSymbol } from "@/lib/symbols";
 import { toTimestamp } from "@/lib/time";
-import type { BotRuntimeTradesResponse } from "@/features/bots/types/bot.type";
+import type { BotRuntimeTrade, BotRuntimeTradesResponse } from "@/features/bots/types/bot.type";
 import {
   hasRuntimeDynamicStopRowTruth,
   resolvePaperConfigBaseline,
@@ -28,6 +28,18 @@ type UseRuntimeSelectionViewModelArgs = {
   selected: RuntimeSnapshot | null;
   selectedTrades: BotRuntimeTradesResponse | null;
   liveTickerPrices: Record<string, number>;
+};
+
+export const resolveSelectedRuntimeTradeRows = (params: {
+  runtimeTradesSessionId: string | null;
+  selectedTrades: BotRuntimeTradesResponse | null;
+  snapshotTrades: BotRuntimeTradesResponse | null;
+}): BotRuntimeTrade[] => {
+  const { runtimeTradesSessionId, selectedTrades, snapshotTrades } = params;
+  if (!runtimeTradesSessionId) return [];
+  if (selectedTrades?.sessionId === runtimeTradesSessionId) return selectedTrades.items;
+  if (snapshotTrades?.sessionId === runtimeTradesSessionId) return snapshotTrades.items;
+  return [];
 };
 
 export const useRuntimeSelectionViewModel = ({
@@ -153,12 +165,11 @@ export const useRuntimeSelectionViewModel = ({
     });
     const exposurePct = equity && equity > 0 ? (usedMargin / equity) * 100 : null;
     const runtimeTradesSessionId = selected.trades?.sessionId ?? selected.session?.id ?? null;
-    const trades =
-      runtimeTradesSessionId && selectedTrades?.sessionId === runtimeTradesSessionId
-        ? selectedTrades.items
-        : runtimeTradesSessionId && selected.trades?.sessionId === runtimeTradesSessionId
-          ? selected.trades.items
-        : [];
+    const trades = resolveSelectedRuntimeTradeRows({
+      runtimeTradesSessionId,
+      selectedTrades,
+      snapshotTrades: selected.trades,
+    });
 
     return {
       session,

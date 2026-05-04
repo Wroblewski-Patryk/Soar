@@ -29,6 +29,13 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-132` with
+  `docs/planning/runtime-audit-132-runtime-trade-row-selector-task-2026-05-04.md`.
+  Selected runtime trade-row resolution now lives in one helper with branch
+  coverage for selected query precedence, matching snapshot fallback, and
+  mismatched session blocking. Validation PASS: focused runtime selection
+  view-model suite (`5/5`), focused dashboard component suite (`20/20`), web
+  typecheck, repository guardrails, lint, and diff review.
 - 2026-05-04: Closed `RUNTIME-AUDIT-131` with
   `docs/planning/runtime-audit-131-snapshot-trade-rows-fallback-task-2026-05-04.md`.
   Runtime selected-data projection now falls back to matching

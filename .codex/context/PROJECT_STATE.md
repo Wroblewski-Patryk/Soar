@@ -3,6 +3,13 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 runtime trade-row selector slice `RUNTIME-AUDIT-132` is closed
+  locally. Selected runtime trade-row resolution now lives in one helper with
+  branch coverage for selected query precedence, matching snapshot fallback,
+  and mismatched session blocking. Validation PASS: focused runtime selection
+  view-model suite (`5/5`), focused dashboard component suite (`20/20`), web
+  typecheck, repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-132-runtime-trade-row-selector-task-2026-05-04.md`.
 - 2026-05-04 snapshot trade rows fallback slice `RUNTIME-AUDIT-131` is closed
   locally. Runtime selected-data projection now falls back to matching
   `selected.trades.items` until the derived `selectedTrades` query projection
