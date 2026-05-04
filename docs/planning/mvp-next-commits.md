@@ -9,6 +9,14 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-97 fix(api-orders): require synced open position scope`
+  - 2026-05-04: Closed a BUILDER-mode shared order open-position scope drift.
+    Shared order open-position scope and LIVE imported-position fallbacks now
+    require `syncState=IN_SYNC`, so stale local or imported open rows no longer
+    drive manual reverse-conflict checks or unlinked fill reusable-position
+    lookup. Validation PASS: orders service suite (`33/33`), API typecheck,
+    repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-97-open-position-scope-sync-state-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-96 fix(api-orders): guard linked position fill lifecycle`
   - 2026-05-04: Closed an ARCHITECT-mode linked-position lifecycle drift. LIVE
     exchange order-trade fills now apply linked-position close/DCA lifecycle

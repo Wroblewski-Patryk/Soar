@@ -115,6 +115,7 @@ const findOwnedLiveImportedOpenPositionForFill = async (
       botId: null,
       symbol: params.order.symbol.toUpperCase(),
       status: 'OPEN',
+      syncState: 'IN_SYNC',
       origin: 'EXCHANGE_SYNC',
       managementMode: 'BOT_MANAGED',
       AND: [

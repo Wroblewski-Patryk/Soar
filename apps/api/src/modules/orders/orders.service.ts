@@ -419,6 +419,7 @@ const findOwnedLiveImportedOpenPositionForOrderConflict = async (params: {
       botId: null,
       symbol: params.payload.symbol.toUpperCase(),
       status: 'OPEN',
+      syncState: 'IN_SYNC',
       origin: 'EXCHANGE_SYNC',
       managementMode: 'BOT_MANAGED',
       AND: [

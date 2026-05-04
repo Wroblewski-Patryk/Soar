@@ -624,6 +624,43 @@ describe('openOrder live execution contract', () => {
     }
   });
 
+  it('ignores stale local positions when checking manual reverse conflicts', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-paper-manual-stale-reverse-conflict@example.com', password: 'hashed' },
+    });
+    await prisma.position.create({
+      data: {
+        userId: user.id,
+        symbol: 'DOGEUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        syncState: 'ORPHAN_LOCAL',
+        entryPrice: 100,
+        quantity: 2,
+      },
+    });
+
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+
+    try {
+      const order = await openOrder(user.id, {
+        symbol: 'DOGEUSDT',
+        side: 'SELL',
+        type: 'LIMIT',
+        quantity: 1,
+        price: 90,
+        mode: 'PAPER',
+        riskAck: false,
+      });
+
+      expect(order.status).toBe('OPEN');
+      expect(order.positionId).toBeNull();
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
   it('fails closed when manual LIVE open reverses an owned imported exchange position', async () => {
     const user = await prisma.user.create({
       data: { email: 'orders-live-owned-import-reverse-conflict@example.com', password: 'hashed' },
@@ -700,6 +737,85 @@ describe('openOrder live execution contract', () => {
         code: ORDER_ERROR_CODES.openPositionSideConflict,
       });
       expect(executeLiveOrder).not.toHaveBeenCalled();
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it('ignores stale owned imported positions when checking LIVE reverse conflicts', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-live-owned-import-stale-reverse-conflict@example.com', password: 'hashed' },
+    });
+    const apiKey = await prisma.apiKey.create({
+      data: {
+        userId: user.id,
+        label: 'Stale owned import key',
+        exchange: 'BINANCE',
+        apiKey: 'stale_owned_import_key',
+        apiSecret: 'stale_owned_import_secret',
+      },
+    });
+    const { bot, wallet, strategy } = await createLiveScopedBotContext({
+      userId: user.id,
+      botName: 'Stale owned import live bot',
+      strategyName: 'Stale owned import live strategy',
+      symbol: 'DOGEUSDT',
+    });
+    await prisma.wallet.update({
+      where: { id: wallet.id },
+      data: { apiKeyId: apiKey.id },
+    });
+    await prisma.bot.update({
+      where: { id: bot.id },
+      data: {
+        apiKeyId: null,
+        manageExternalPositions: true,
+      },
+    });
+    await prisma.position.create({
+      data: {
+        userId: user.id,
+        botId: null,
+        walletId: null,
+        strategyId: strategy.id,
+        symbol: 'DOGEUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 0.1,
+        quantity: 100,
+        leverage: 5,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'ORPHAN_LOCAL',
+        externalId: `${apiKey.id}:DOGEUSDT:LONG`,
+      },
+    });
+
+    const executeLiveOrder = vi.fn().mockResolvedValue({
+      exchangeOrderId: 'live-stale-import-sell',
+      status: 'OPEN' as const,
+    });
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+
+    try {
+      const order = await openOrder(
+        user.id,
+        {
+          botId: bot.id,
+          symbol: 'DOGEUSDT',
+          side: 'SELL',
+          type: 'LIMIT',
+          quantity: 10,
+          price: 0.09,
+          mode: 'LIVE',
+          riskAck: true,
+        },
+        { executeLiveOrder }
+      );
+
+      expect(order.exchangeOrderId).toBe('live-stale-import-sell');
+      expect(executeLiveOrder).toHaveBeenCalledTimes(1);
     } finally {
       process.env.NODE_ENV = previousNodeEnv;
     }

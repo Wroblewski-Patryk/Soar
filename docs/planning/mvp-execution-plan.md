@@ -93,6 +93,13 @@ Rule: fix/cleanup/update first, then feature delivery.
   page, web build-info, and protected API unauthenticated `401 Missing token`.
   Authenticated production dashboard/runtime smoke remains unavailable without
   credentials and was not claimed.
+- 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-97` with
+  `docs/planning/runtime-audit-97-open-position-scope-sync-state-task-2026-05-04.md`.
+  Shared order open-position scope and LIVE imported-position fallbacks now
+  require `syncState=IN_SYNC`, so stale local or imported open rows no longer
+  drive manual reverse-conflict checks or unlinked fill reusable-position
+  lookup. Validation PASS: orders service suite (`33/33`), API typecheck,
+  repository guardrails, lint, and diff review.
 - 2026-05-04: Closed operator follow-up `RUNTIME-AUDIT-96` with
   `docs/planning/runtime-audit-96-linked-position-fill-sync-state-task-2026-05-04.md`.
   LIVE exchange order-trade fills now apply linked-position close/DCA lifecycle

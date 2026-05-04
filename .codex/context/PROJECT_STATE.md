@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 shared order open-position active-sync slice `RUNTIME-AUDIT-97`
+  is closed locally. Shared order open-position scope and LIVE
+  imported-position fallbacks now require `syncState=IN_SYNC`, so stale local
+  or imported open rows no longer drive manual reverse-conflict checks or
+  unlinked fill reusable-position lookup. Validation PASS: orders service
+  suite (`33/33`), API typecheck, repository guardrails, lint, and diff review.
+  Evidence:
+  `docs/planning/runtime-audit-97-open-position-scope-sync-state-task-2026-05-04.md`.
 - 2026-05-04 LIVE linked-position fill lifecycle active-sync slice
   `RUNTIME-AUDIT-96` is closed locally. LIVE exchange order-trade fills now
   apply linked-position close/DCA lifecycle only when the linked position is

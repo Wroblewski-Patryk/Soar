@@ -14,6 +14,7 @@ export const resolveOpenPositionScopeWhere = (
     userId: params.userId,
     symbol: params.symbol.toUpperCase(),
     status: 'OPEN',
+    syncState: 'IN_SYNC',
   };
 
   if (params.walletId) {
