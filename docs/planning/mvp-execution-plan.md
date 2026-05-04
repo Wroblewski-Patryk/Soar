@@ -29,6 +29,12 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-136` with
+  `docs/planning/runtime-audit-136-manual-reported-table-total-clamp-task-2026-05-04.md`.
+  Manual pagination reported totals now clamp against visible rows as well as
+  external metadata, so stale zero metadata cannot contradict rendered rows.
+  Validation PASS: focused `DataTable` suite (`7/7`), web typecheck,
+  repository guardrails, lint, and diff review.
 - 2026-05-04: Closed `RUNTIME-AUDIT-135` with
   `docs/planning/runtime-audit-135-clamp-reported-table-totals-task-2026-05-04.md`.
   Display-only reported totals now remain at least the effective table row

@@ -240,7 +240,7 @@ export default function DataTable<T>({
   const totalRowsCount = manualPagination ? externalTotalRows ?? sortedRows.length : sortedRows.length;
   const reportedRowsCount =
     typeof externalReportedTotalRows === 'number' && Number.isFinite(externalReportedTotalRows)
-      ? Math.max(totalRowsCount, externalReportedTotalRows)
+      ? Math.max(sortedRows.length, totalRowsCount, externalReportedTotalRows)
       : totalRowsCount;
   const effectivePageSize = manualPagination
     ? Math.max(1, externalPageSize ?? resolvedDefaultPageSize)

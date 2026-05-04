@@ -3,6 +3,12 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 manual reported table total clamp slice `RUNTIME-AUDIT-136` is
+  closed locally. Manual pagination reported totals now clamp against visible
+  rows as well as external metadata, so stale zero metadata cannot contradict
+  rendered rows. Validation PASS: focused `DataTable` suite (`7/7`), web
+  typecheck, repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-136-manual-reported-table-total-clamp-task-2026-05-04.md`.
 - 2026-05-04 reported table total clamp slice `RUNTIME-AUDIT-135` is closed
   locally. Display-only reported totals now remain at least the effective
   table row count, so a stale or inconsistent runtime counter cannot show

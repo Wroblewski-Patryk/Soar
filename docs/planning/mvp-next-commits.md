@@ -9,6 +9,13 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-136 fix(web-ui): clamp manual reported table totals`
+  - 2026-05-04: Closed a BUILDER-mode follow-up to the shared table display
+    invariant. Manual pagination reported totals now clamp against visible rows
+    as well as external metadata, so stale zero metadata cannot contradict
+    rendered rows. Validation PASS: focused `DataTable` suite (`7/7`), web
+    typecheck, repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-136-manual-reported-table-total-clamp-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-135 fix(web-ui): clamp reported table totals`
   - 2026-05-04: Closed a TESTER-mode shared table display invariant gap.
     Display-only reported totals now remain at least the effective table row
