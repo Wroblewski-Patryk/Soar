@@ -20,6 +20,14 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-134 fix(web-dashboard): include open-order icon symbols`
+  - Scope: closed a BUILDER-mode dashboard open-orders display drift.
+    Runtime icon lookup now includes symbols that appear only in open orders,
+    reusing the existing shared icon hook and resolver. Validation PASS:
+    focused dashboard open-orders source suite (`1/1`), web typecheck,
+    repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-134-open-orders-icon-symbols-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-133 fix(web-dashboard): preserve position row totals`
   - Scope: closed a BUILDER-mode dashboard position/open-order counter drift.
     `DataTable` now supports display-only reported totals, and the runtime

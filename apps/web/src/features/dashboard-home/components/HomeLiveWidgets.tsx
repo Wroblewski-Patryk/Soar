@@ -291,10 +291,11 @@ export default function HomeLiveWidgets() {
     const symbols = new Set<string>();
     for (const item of signalSymbols) symbols.add(normalizeSymbol(item.symbol));
     for (const item of selectedData?.open ?? []) symbols.add(normalizeSymbol(item.symbol));
+    for (const item of selected?.positions?.openOrders ?? []) symbols.add(normalizeSymbol(item.symbol));
     for (const item of selectedData?.trades ?? []) symbols.add(normalizeSymbol(item.symbol));
     if (runtimeBaseCurrencyCode) symbols.add(runtimeBaseCurrencyCode);
     return [...symbols];
-  }, [runtimeBaseCurrencyCode, selectedData?.open, selectedData?.trades, signalSymbols]);
+  }, [runtimeBaseCurrencyCode, selected?.positions?.openOrders, selectedData?.open, selectedData?.trades, signalSymbols]);
   const { iconMap: runtimeIconMap, loading: runtimeIconsLoading, error: runtimeIconsError } =
     useCoinIconLookup(runtimeIconSymbols);
   const resolveRuntimeIcon = useCallback(

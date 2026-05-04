@@ -3,6 +3,12 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 dashboard open-order icon symbol slice `RUNTIME-AUDIT-134` is
+  closed locally. Runtime icon lookup now includes symbols that appear only in
+  open orders, reusing the existing shared icon hook and resolver. Validation
+  PASS: focused dashboard open-orders source suite (`1/1`), web typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-134-open-orders-icon-symbols-task-2026-05-04.md`.
 - 2026-05-04 dashboard position/open-order row-total slice
   `RUNTIME-AUDIT-133` is closed locally. `DataTable` now supports
   display-only reported totals, and the runtime open-position/open-order

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { I18nProvider } from "../../../i18n/I18nProvider";
@@ -273,5 +273,8 @@ describe("HomeLiveWidgets open-orders source column", () => {
     expect(within(table).getByText("Bot")).toBeInTheDocument();
     expect(within(table).getByText("Imported")).toBeInTheDocument();
     expect(screen.getByText("Rows: 7")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(lookupCoinIconsMock).toHaveBeenCalledWith(["ADAUSDT", "BTCUSDT", "ETHUSDT"]);
+    });
   });
 });
