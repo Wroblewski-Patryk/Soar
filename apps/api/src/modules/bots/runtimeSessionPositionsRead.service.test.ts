@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import { buildBotlessWalletTradeFallbackWhere } from './runtimeSessionPositionsRead.service';
 import { resolveRuntimePositionDcaCount } from './runtimeSessionPositionDcaCount';
+import { buildRuntimeSessionClosedPositionWindow } from './runtimeSessionPositionWindow';
+import { buildBotlessWalletTradeFallbackWhere } from './runtimeSessionTradeFallbackScope';
 
 describe('buildBotlessWalletTradeFallbackWhere', () => {
   it('does not include botless wallet trades for PAPER runtime position reads', () => {
@@ -40,6 +41,18 @@ describe('buildBotlessWalletTradeFallbackWhere', () => {
         },
       },
     ]);
+  });
+});
+
+describe('buildRuntimeSessionClosedPositionWindow', () => {
+  it('bounds closed positions by session start and window end', () => {
+    const startedAt = new Date('2026-05-04T10:00:00.000Z');
+    const windowEnd = new Date('2026-05-04T11:00:00.000Z');
+
+    expect(buildRuntimeSessionClosedPositionWindow({ startedAt, windowEnd })).toEqual({
+      gte: startedAt,
+      lte: windowEnd,
+    });
   });
 });
 

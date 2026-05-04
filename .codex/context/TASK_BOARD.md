@@ -20,6 +20,17 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-114 fix(api-bots): bound session closed positions by window`
+  - Scope: closed an ARCHITECT-mode runtime session dashboard window drift.
+    Closed-position history and fee aggregation now bound `closedAt` by both
+    session start and resolved window end, so completed sessions cannot include
+    later closes or fees. The slice also extracted two small pure helpers out
+    of the runtime session position read monolith to keep repository guardrails
+    green. Validation PASS: focused runtime session position unit suite
+    (`5/5`), API typecheck, repository guardrails, lint, and diff review.
+    Evidence:
+    `docs/planning/runtime-audit-114-session-closed-position-window-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-113 fix(api-wallets): include paper closed position realized PnL`
   - Scope: closed a BUILDER-mode PAPER wallet analytics drift. Wallet
     performance summary and equity timeline now include realized PnL from

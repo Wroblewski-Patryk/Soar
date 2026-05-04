@@ -55,6 +55,8 @@ import { hasMaterialCanonicalBasisDrift } from '../engine/runtimePositionAutomat
 import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from './runtimeSymbolCatalogResolver.service';
 import { normalizeSymbols } from './runtimeSymbolUniverse.service';
 import { resolveRuntimePositionDcaCount } from './runtimeSessionPositionDcaCount';
+import { buildRuntimeSessionClosedPositionWindow } from './runtimeSessionPositionWindow';
+import { buildBotlessWalletTradeFallbackWhere } from './runtimeSessionTradeFallbackScope';
 
 type RuntimeTakeoverStatus = 'OWNED_AND_MANAGED' | 'UNOWNED' | 'AMBIGUOUS' | 'MANUAL_ONLY';
 
@@ -63,23 +65,6 @@ type RuntimeManagedPositionRow = Awaited<ReturnType<typeof listRuntimeManagedPos
 type RuntimePositionTradeRow = Awaited<ReturnType<typeof listRuntimePositionTradeRows>>[number];
 
 const RUNTIME_OPEN_ORDER_DEDUPE_CANDIDATE_LIMIT = 500;
-
-export const buildBotlessWalletTradeFallbackWhere = (input: {
-  mode: 'PAPER' | 'LIVE';
-  walletId?: string | null;
-  symbols: string[];
-  windowStart: Date;
-  windowEnd: Date;
-}): Prisma.TradeWhereInput[] =>
-  input.mode === 'LIVE' && input.walletId
-    ? [{
-        botId: null,
-        walletId: input.walletId,
-        managementMode: 'BOT_MANAGED',
-        symbol: { in: input.symbols },
-        executedAt: { gte: input.windowStart, lte: input.windowEnd },
-      }]
-    : [];
 
 const resolveRuntimeTakeoverStatus = (input: {
   origin: string;
@@ -477,14 +462,26 @@ export const listBotRuntimeSessionPositions = async (
     closedAt: null,
     syncState: 'IN_SYNC',
   };
+  const closedPositionWindow = buildRuntimeSessionClosedPositionWindow({
+    startedAt: session.startedAt,
+    windowEnd,
+  });
   const closedPositionWhere: Prisma.PositionWhereInput = {
     ...runtimePositionBaseWhere,
-    status: 'CLOSED', syncState: 'IN_SYNC',
-    closedAt: { gte: session.startedAt },
+    status: 'CLOSED',
+    syncState: 'IN_SYNC',
+    closedAt: closedPositionWindow,
   };
   const feePositionWhere: Prisma.PositionWhereInput = {
     ...runtimePositionBaseWhere,
-    OR: [{ status: 'OPEN', closedAt: null, syncState: 'IN_SYNC' }, { status: 'CLOSED', syncState: 'IN_SYNC', closedAt: { gte: session.startedAt } }],
+    OR: [
+      { status: 'OPEN', closedAt: null, syncState: 'IN_SYNC' },
+      {
+        status: 'CLOSED',
+        syncState: 'IN_SYNC',
+        closedAt: closedPositionWindow,
+      },
+    ],
   };
   const [
     openPositions, closedPositions, openPositionCount, closedPositionCount,

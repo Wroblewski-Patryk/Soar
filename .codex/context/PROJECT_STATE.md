@@ -3,6 +3,15 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 runtime session closed-position window slice `RUNTIME-AUDIT-114`
+  is closed locally. Closed-position history and fee aggregation now bound
+  `closedAt` by both session start and resolved window end, so completed
+  sessions cannot include later closes or fees. The slice also extracted two
+  small pure helpers out of the runtime session position read monolith to keep
+  repository guardrails green. Validation PASS: focused runtime session
+  position unit suite (`5/5`), API typecheck, repository guardrails, lint, and
+  diff review. Evidence:
+  `docs/planning/runtime-audit-114-session-closed-position-window-task-2026-05-04.md`.
 - 2026-05-04 PAPER wallet realized-PnL slice `RUNTIME-AUDIT-113` is closed
   locally. Wallet performance summary and equity timeline now include realized
   PnL from closed `IN_SYNC` PAPER positions owned directly by the wallet or by
