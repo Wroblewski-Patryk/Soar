@@ -98,6 +98,33 @@ describe("DataTable", () => {
     expect(screen.queryByRole("button", { name: "Next" })).not.toBeInTheDocument();
   });
 
+  it("reports an external row total without creating client-side pages", () => {
+    const columns: DataTableColumn<Row>[] = [
+      {
+        key: "name",
+        label: "Name",
+        accessor: (row) => row.name,
+      },
+    ];
+
+    render(
+      <I18nProvider>
+        <DataTable<Row>
+          rows={[{ id: "1", name: "Alpha" }]}
+          columns={columns}
+          getRowId={(row) => row.id}
+          paginationEnabled
+          defaultPageSize={10}
+          reportedTotalRows={3}
+        />
+      </I18nProvider>
+    );
+
+    expect(screen.getByText("Rows: 3")).toBeInTheDocument();
+    expect(screen.queryByText("Page")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Next" })).not.toBeInTheDocument();
+  });
+
   it("keeps columns dropdown open on checkbox toggle and closes only via trigger/outside/Escape", () => {
     const columns: DataTableColumn<Row & { exchange: string }>[] = [
       {

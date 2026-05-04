@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-133 fix(web-dashboard): preserve position row totals`
+  - 2026-05-04: Closed a BUILDER-mode dashboard position/open-order counter
+    drift. `DataTable` now supports display-only reported totals, and the
+    runtime open-position/open-order tables pass API `openCount` and
+    `openOrdersCount` without creating fake client-side pages. Validation
+    PASS: focused `DataTable` suite (`5/5`), focused dashboard open-orders
+    source suite (`1/1`), web typecheck, repository guardrails, lint, and diff
+    review. Evidence:
+    `docs/planning/runtime-audit-133-dashboard-position-row-totals-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-132 refactor(web-dashboard): centralize runtime trade-row selector`
   - 2026-05-04: Closed an ARCHITECT-mode dashboard runtime truth cleanup.
     Selected runtime trade-row resolution now lives in one helper with branch

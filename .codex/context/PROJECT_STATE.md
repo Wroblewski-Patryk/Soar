@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 dashboard position/open-order row-total slice
+  `RUNTIME-AUDIT-133` is closed locally. `DataTable` now supports
+  display-only reported totals, and the runtime open-position/open-order
+  tables pass API `openCount` and `openOrdersCount` without creating fake
+  client-side pages. Validation PASS: focused `DataTable` suite (`5/5`),
+  focused dashboard open-orders source suite (`1/1`), web typecheck,
+  repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-133-dashboard-position-row-totals-task-2026-05-04.md`.
 - 2026-05-04 runtime trade-row selector slice `RUNTIME-AUDIT-132` is closed
   locally. Selected runtime trade-row resolution now lives in one helper with
   branch coverage for selected query precedence, matching snapshot fallback,

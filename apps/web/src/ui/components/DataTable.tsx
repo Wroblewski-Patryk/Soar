@@ -62,6 +62,7 @@ type DataTableProps<T> = {
   page?: number;
   pageSize?: number;
   totalRows?: number;
+  reportedTotalRows?: number;
   totalPages?: number;
   hasPrev?: boolean;
   hasNext?: boolean;
@@ -130,6 +131,7 @@ export default function DataTable<T>({
   page: externalPage,
   pageSize: externalPageSize,
   totalRows: externalTotalRows,
+  reportedTotalRows: externalReportedTotalRows,
   totalPages: externalTotalPages,
   hasPrev: externalHasPrev,
   hasNext: externalHasNext,
@@ -236,6 +238,10 @@ export default function DataTable<T>({
   const visibleColumnCount = visibleColumns.length;
 
   const totalRowsCount = manualPagination ? externalTotalRows ?? sortedRows.length : sortedRows.length;
+  const reportedRowsCount =
+    typeof externalReportedTotalRows === 'number' && Number.isFinite(externalReportedTotalRows)
+      ? Math.max(0, externalReportedTotalRows)
+      : totalRowsCount;
   const effectivePageSize = manualPagination
     ? Math.max(1, externalPageSize ?? resolvedDefaultPageSize)
     : Math.max(1, internalPageSize);
@@ -599,7 +605,7 @@ export default function DataTable<T>({
 
           <div className={`min-w-0 w-full lg:w-auto text-xs text-base-content/75 ${showSettingsControls ? '' : 'col-span-2'} lg:col-span-1`}>
             <div className='flex items-center justify-end gap-6 lg:justify-start'>
-              <span>{resolvedRowsTotalLabel}: {totalRowsCount}</span>
+              <span>{resolvedRowsTotalLabel}: {reportedRowsCount}</span>
               <span className='inline-flex items-center gap-2'>
                 <span>{resolvedRowsPerPageLabel}</span>
                 <select
@@ -618,7 +624,7 @@ export default function DataTable<T>({
             </div>
             {paginationSummary ? (
               <p className='mt-1 text-[11px] opacity-70'>
-                {paginationSummary({ totalRows: totalRowsCount, page: effectivePage, totalPages })}
+                {paginationSummary({ totalRows: reportedRowsCount, page: effectivePage, totalPages })}
               </p>
             ) : null}
           </div>

@@ -334,6 +334,8 @@ export default function HomeLiveWidgets() {
       pageSize: tradePageSize,
       total: selectedData?.trades.length ?? 0,
     });
+  const openPositionsTotalRows = selected?.positions?.openCount ?? selectedData?.open.length ?? 0;
+  const openOrdersTotalRows = selected?.positions?.openOrdersCount ?? selected?.positions?.openOrders.length ?? 0;
   const closePositionButtonLabel = t("dashboard.home.runtime.closePositionButton");
   const closePositionPendingLabel = t("dashboard.home.runtime.closePositionPending");
   const closePositionActionColumnLabel = t("dashboard.home.runtime.filterAction");
@@ -782,6 +784,7 @@ export default function HomeLiveWidgets() {
                 onRuntimeDataTabChange={setRuntimeDataTab}
                 tabItems={runtimeTabItems}
                 openRows={selectedData?.open ?? []}
+                openPositionsTotalRows={openPositionsTotalRows}
                 openPositionsColumns={openPositionsColumns}
                 openPositionsSortStorageKey={DASHBOARD_OPEN_POSITIONS_SORT_STORAGE_KEY}
                 openPositionsColumnVisibilityKey={DASHBOARD_OPEN_POSITIONS_COLUMNS_STORAGE_KEY}
@@ -791,6 +794,7 @@ export default function HomeLiveWidgets() {
                 nextLabel={t("dashboard.home.runtime.next")}
                 noOpenPositionsLabel={t("dashboard.home.runtime.noOpenPositions")}
                 openOrdersRows={selected?.positions?.openOrders ?? []}
+                openOrdersTotalRows={openOrdersTotalRows}
                 openOrdersColumns={openOrdersColumns}
                 openOrdersSortStorageKey={DASHBOARD_OPEN_ORDERS_SORT_STORAGE_KEY}
                 openOrdersColumnVisibilityKey={DASHBOARD_OPEN_ORDERS_COLUMNS_STORAGE_KEY}

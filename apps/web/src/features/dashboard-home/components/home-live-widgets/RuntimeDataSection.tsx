@@ -24,6 +24,7 @@ type RuntimeDataSectionProps = {
   onRuntimeDataTabChange: (tab: RuntimeDataTab) => void;
   tabItems: RuntimeTabItem[];
   openRows: OpenPositionWithLive[];
+  openPositionsTotalRows: number;
   openPositionsColumns: OpenPositionsTableColumn[];
   openPositionsSortStorageKey: string;
   openPositionsColumnVisibilityKey: string;
@@ -33,6 +34,7 @@ type RuntimeDataSectionProps = {
   nextLabel: string;
   noOpenPositionsLabel: string;
   openOrdersRows: BotRuntimeOpenOrderItem[];
+  openOrdersTotalRows: number;
   openOrdersColumns: OpenOrdersTableColumn[];
   openOrdersSortStorageKey: string;
   openOrdersColumnVisibilityKey: string;
@@ -91,6 +93,7 @@ export default function RuntimeDataSection(props: RuntimeDataSectionProps) {
               rows={props.openRows}
               columns={props.openPositionsColumns}
               getRowId={(row) => row.id}
+              reportedTotalRows={props.openPositionsTotalRows}
               defaultSortKey="pnlPercent"
               defaultSortDirection="desc"
               persistSortKey={props.openPositionsSortStorageKey}
@@ -119,6 +122,7 @@ export default function RuntimeDataSection(props: RuntimeDataSectionProps) {
               rows={props.openOrdersRows}
               columns={props.openOrdersColumns}
               getRowId={(row) => row.id}
+              reportedTotalRows={props.openOrdersTotalRows}
               defaultSortKey="submittedAt"
               defaultSortDirection="desc"
               persistSortKey={props.openOrdersSortStorageKey}

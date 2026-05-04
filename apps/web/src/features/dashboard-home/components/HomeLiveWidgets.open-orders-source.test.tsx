@@ -213,7 +213,7 @@ describe("HomeLiveWidgets open-orders source column", () => {
       total: 0,
       openCount: 0,
       closedCount: 0,
-      openOrdersCount: 3,
+      openOrdersCount: 7,
       showDynamicStopColumns: false,
       window: runtimeWindow,
       summary: { realizedPnl: 0, unrealizedPnl: 0, feesPaid: 0 },
@@ -272,5 +272,6 @@ describe("HomeLiveWidgets open-orders source column", () => {
     expect(within(table).getByText("Manual")).toBeInTheDocument();
     expect(within(table).getByText("Bot")).toBeInTheDocument();
     expect(within(table).getByText("Imported")).toBeInTheDocument();
+    expect(screen.getByText("Rows: 7")).toBeInTheDocument();
   });
 });
