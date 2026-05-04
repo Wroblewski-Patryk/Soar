@@ -213,6 +213,43 @@ describe("useRuntimeSelectionViewModel", () => {
     expect(resolveDynamicTtpDisplay(row!)).toBeCloseTo(7, 8);
     expect(result.current.showDynamicStopColumns).toBe(true);
   });
+
+  it("clears fallback TTP protection when live PnL drops below the disarm floor", () => {
+    const positions = snapshot.positions;
+    expect(positions).not.toBeNull();
+    const snapshotWithTrailingTtp = {
+      ...snapshot,
+      positions: {
+        ...positions,
+        openItems: [
+          {
+            ...positions!.openItems[0],
+            trailingTakeProfitLevels: [{ armPercent: 5, trailPercent: 2 }],
+            dynamicTtpStopLoss: null,
+          },
+        ],
+      },
+    } as unknown as RuntimeSnapshot;
+
+    const { result, rerender } = renderHook(
+      ({ price }: { price: number }) =>
+        useRuntimeSelectionViewModel({
+          snapshots: [snapshotWithTrailingTtp],
+          selected: snapshotWithTrailingTtp,
+          selectedTrades: null,
+          liveTickerPrices: { DOGEUSDT: price },
+        }),
+      { initialProps: { price: 0.991 } }
+    );
+
+    expect(resolveDynamicTtpDisplay(result.current.selectedData!.open[0]!)).toBeCloseTo(7, 8);
+
+    rerender({ price: 0.9985 });
+
+    expect(result.current.selectedData?.open[0]?.fallbackTtpProtectedPercent).toBeNull();
+    expect(resolveDynamicTtpDisplay(result.current.selectedData!.open[0]!)).toBeNull();
+    expect(result.current.showDynamicStopColumns).toBe(true);
+  });
 });
 
 describe("resolveSelectedRuntimeTradeRows", () => {

@@ -29,6 +29,13 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-140` with
+  `docs/planning/runtime-audit-140-fallback-ttp-disarm-regression-task-2026-05-04.md`.
+  Selected runtime view-model coverage now proves fallback TTP protection
+  clears when live PnL drops below the first trailing take-profit disarm floor,
+  while planned TTP row truth can keep dynamic stop columns visible.
+  Validation PASS: focused runtime selection view-model suite (`7/7`), web
+  typecheck, repository guardrails, lint, and diff review.
 - 2026-05-04: Closed `RUNTIME-AUDIT-139` with
   `docs/planning/runtime-audit-139-dashboard-fallback-ttp-display-task-2026-05-04.md`.
   Selected runtime open-position rows now compute fallback TTP protected

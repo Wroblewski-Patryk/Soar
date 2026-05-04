@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 fallback TTP disarm regression slice `RUNTIME-AUDIT-140` is
+  closed locally. Selected runtime view-model coverage now proves fallback TTP
+  protection clears when live PnL drops below the first trailing take-profit
+  disarm floor, while planned TTP row truth can keep dynamic stop columns
+  visible. Validation PASS: focused runtime selection view-model suite
+  (`7/7`), web typecheck, repository guardrails, lint, and diff review.
+  Evidence:
+  `docs/planning/runtime-audit-140-fallback-ttp-disarm-regression-task-2026-05-04.md`.
 - 2026-05-04 fallback TTP dashboard display slice `RUNTIME-AUDIT-139` is
   closed locally. Selected runtime open-position rows now compute fallback TTP
   protected percent from existing trailing take-profit levels and live PnL, and

@@ -20,6 +20,15 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-140 test(web-dashboard): lock fallback TTP disarm behavior`
+  - Scope: closed a TESTER-mode money-impacting dashboard regression gap.
+    Selected runtime view-model coverage now proves fallback TTP protection
+    clears when live PnL drops below the first trailing take-profit disarm
+    floor, while planned TTP row truth can keep dynamic stop columns visible.
+    Validation PASS: focused runtime selection view-model suite (`7/7`), web
+    typecheck, repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-140-fallback-ttp-disarm-regression-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-139 fix(web-dashboard): show fallback TTP protection`
   - Scope: closed a BUILDER-mode dashboard TTP display drift. Selected runtime
     open-position rows now compute fallback TTP protected percent from existing
