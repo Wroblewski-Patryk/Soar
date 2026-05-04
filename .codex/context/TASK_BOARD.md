@@ -20,6 +20,16 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-103 fix(api-positions): scope reconciliation synced lookups`
+  - Scope: closed a BUILDER-mode LIVE reconciliation active-truth drift.
+    Default open-synced position lookup and API-key stale-position scan now
+    exclude `ORPHAN_LOCAL` rows while preserving recoverable `DRIFT`, so stale
+    local imported rows no longer steal LIVE exchange updates or receive stale
+    close handling after they leave active truth. Validation PASS: focused
+    reconciliation suite (`31/31`), API typecheck, repository guardrails, lint,
+    and diff review. Evidence:
+    `docs/planning/runtime-audit-103-reconciliation-open-synced-scope-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-102 fix(api-engine): scope scan watchdog to synced rows`
   - Scope: closed an ARCHITECT-mode runtime scan target drift. Default runtime
     scan watchdog target discovery now derives ticker targets only from

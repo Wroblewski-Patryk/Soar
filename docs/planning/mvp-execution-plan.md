@@ -29,6 +29,14 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-103` with
+  `docs/planning/runtime-audit-103-reconciliation-open-synced-scope-task-2026-05-04.md`.
+  Default open-synced position lookup and API-key stale-position scan now
+  exclude `ORPHAN_LOCAL` rows while preserving recoverable `DRIFT`, so stale
+  local imported rows no longer steal LIVE exchange updates or receive stale
+  close handling after they leave active truth. Validation PASS: focused
+  reconciliation suite (`31/31`), API typecheck, repository guardrails, lint,
+  and diff review.
 - 2026-05-04: Closed `RUNTIME-AUDIT-102` with
   `docs/planning/runtime-audit-102-runtime-scan-watchdog-sync-state-task-2026-05-04.md`.
   Default runtime scan watchdog target discovery now derives ticker targets

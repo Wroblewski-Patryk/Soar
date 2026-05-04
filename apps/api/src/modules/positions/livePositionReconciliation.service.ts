@@ -116,7 +116,7 @@ export const livePositionReconciliationDefaultDeps: ReconcileDeps = {
   },
   findOpenSyncedPositionByExternalId: async ({ userId, externalId }) =>
     prisma.position.findFirst({
-      where: { userId, externalId, status: 'OPEN' },
+      where: { userId, externalId, status: 'OPEN', syncState: { not: 'ORPHAN_LOCAL' } },
       orderBy: { openedAt: 'desc' },
       select: {
         id: true,
@@ -188,6 +188,7 @@ export const livePositionReconciliationDefaultDeps: ReconcileDeps = {
     prisma.position.findMany({
       where: {
         userId, origin: 'EXCHANGE_SYNC', status: 'OPEN',
+        syncState: { not: 'ORPHAN_LOCAL' },
         OR: [{ externalId: { startsWith: buildImportedExternalPositionMarketPrefix({ apiKeyId, marketType: marketType ?? 'FUTURES' }) } }, {
           externalId: { startsWith: `${apiKeyId}:` },
           NOT: [{ externalId: { startsWith: buildImportedExternalPositionMarketPrefix({ apiKeyId, marketType: 'FUTURES' }) } }, { externalId: { startsWith: buildImportedExternalPositionMarketPrefix({ apiKeyId, marketType: 'SPOT' }) } }],

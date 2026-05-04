@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 live reconciliation open-synced lookup slice
+  `RUNTIME-AUDIT-103` is closed locally. Default open-synced position lookup
+  and API-key stale-position scan now exclude `ORPHAN_LOCAL` rows while
+  preserving recoverable `DRIFT`, so stale local imported rows no longer steal
+  LIVE exchange updates or receive stale close handling after they leave active
+  truth. Validation PASS: focused reconciliation suite (`31/31`), API
+  typecheck, repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-103-reconciliation-open-synced-scope-task-2026-05-04.md`.
 - 2026-05-04 runtime scan watchdog active-sync slice `RUNTIME-AUDIT-102` is
   closed locally. Default runtime scan watchdog target discovery now derives
   ticker targets only from `OPEN` + `IN_SYNC` supported position contexts, so

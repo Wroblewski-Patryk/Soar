@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { randomUUID } from 'node:crypto';
 import {
   LivePositionReconciliationLoop,
   livePositionReconciliationDefaultDeps,
@@ -91,6 +92,60 @@ describe('imported external position id helpers', () => {
 });
 
 describe('reconcileExternalPositionsFromExchange', () => {
+  it('keeps orphan local rows out of default open synced external-id lookup', async () => {
+    const user = await prisma.user.create({
+      data: {
+        email: `live-reconcile-open-synced-scope-${randomUUID()}@example.com`,
+        password: 'hashed',
+      },
+    });
+    const orphanExternalId = `key-scope-${randomUUID()}:BTCUSDT:LONG`;
+    const driftExternalId = `key-scope-${randomUUID()}:ETHUSDT:LONG`;
+    await prisma.position.createMany({
+      data: [
+        {
+          userId: user.id,
+          externalId: orphanExternalId,
+          origin: 'EXCHANGE_SYNC',
+          managementMode: 'BOT_MANAGED',
+          symbol: 'BTCUSDT',
+          side: 'LONG',
+          status: 'OPEN',
+          syncState: 'ORPHAN_LOCAL',
+          continuityState: 'REPAIR_ONLY_CLEANUP',
+          entryPrice: 100,
+          quantity: 1,
+        },
+        {
+          userId: user.id,
+          externalId: driftExternalId,
+          origin: 'EXCHANGE_SYNC',
+          managementMode: 'BOT_MANAGED',
+          symbol: 'ETHUSDT',
+          side: 'LONG',
+          status: 'OPEN',
+          syncState: 'DRIFT',
+          continuityState: 'RECOVERING',
+          entryPrice: 100,
+          quantity: 1,
+        },
+      ],
+    });
+
+    await expect(
+      livePositionReconciliationDefaultDeps.findOpenSyncedPositionByExternalId({
+        userId: user.id,
+        externalId: orphanExternalId,
+      })
+    ).resolves.toBeNull();
+    await expect(
+      livePositionReconciliationDefaultDeps.findOpenSyncedPositionByExternalId({
+        userId: user.id,
+        externalId: driftExternalId,
+      })
+    ).resolves.toEqual(expect.objectContaining({ continuityState: 'RECOVERING' }));
+  });
+
   it('propagates synced api-key market type through LIVE reconciliation snapshots', async () => {
     let created = false;
     const createSyncedPosition = vi.fn(async () => {
