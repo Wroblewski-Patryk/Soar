@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 web empty aggregate trade meta fallback slice
+  `RUNTIME-AUDIT-126` is closed locally. The web no-session aggregate fallback
+  now reports `trades.meta.pageSize` from the requested `perSessionLimit`,
+  matching the API empty aggregate contract while preserving zero totals and
+  `hasNext=false`. Validation PASS: focused web aggregate service suite
+  (`3/3`), web typecheck, repository guardrails, lint, and diff review.
+  Evidence:
+  `docs/planning/runtime-audit-126-web-empty-aggregate-trade-meta-task-2026-05-04.md`.
 - 2026-05-04 runtime aggregate empty trade meta slice `RUNTIME-AUDIT-125` is
   closed locally. Empty aggregate trades now reuse the aggregate trade meta
   helper with the caller's `perSessionLimit`, so `meta.pageSize` matches the

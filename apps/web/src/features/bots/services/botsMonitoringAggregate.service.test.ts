@@ -91,4 +91,19 @@ describe("loadBotMonitoringAggregate", () => {
       })
     ).rejects.toThrow("endpoint unavailable");
   });
+
+  it("keeps empty aggregate trade meta aligned with requested per-session limit", async () => {
+    const result = await loadBotMonitoringAggregate({
+      botId: "bot-empty",
+      sessions: [],
+      status: "ALL",
+      perSessionLimit: 50,
+    });
+
+    expect(getBotRuntimeMonitoringAggregate).not.toHaveBeenCalled();
+    expect(result.trades.meta.pageSize).toBe(50);
+    expect(result.trades.meta.total).toBe(0);
+    expect(result.trades.meta.totalPages).toBe(0);
+    expect(result.trades.meta.hasNext).toBe(false);
+  });
 });

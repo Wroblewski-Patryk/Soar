@@ -29,6 +29,13 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-126` with
+  `docs/planning/runtime-audit-126-web-empty-aggregate-trade-meta-task-2026-05-04.md`.
+  The web no-session aggregate fallback now reports
+  `trades.meta.pageSize` from the requested `perSessionLimit`, matching the API
+  empty aggregate contract while preserving zero totals and `hasNext=false`.
+  Validation PASS: focused web aggregate service suite (`3/3`), web typecheck,
+  repository guardrails, lint, and diff review.
 - 2026-05-04: Closed `RUNTIME-AUDIT-112` with
   `docs/planning/runtime-audit-112-paper-runtime-trade-wallet-fallback-task-2026-05-04.md`.
   Runtime position trade reads now include botless wallet-scoped trade fallback

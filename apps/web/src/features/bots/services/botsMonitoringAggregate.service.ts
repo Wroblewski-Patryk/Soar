@@ -109,7 +109,7 @@ export const loadBotMonitoringAggregate = async ({
         total: 0,
         meta: {
           page: 1,
-          pageSize: 1,
+          pageSize: perSessionLimit,
           total: 0,
           totalPages: 0,
           hasPrev: false,
