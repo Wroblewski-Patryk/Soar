@@ -47,7 +47,7 @@ const compareTimestampDescThenIdAsc = (
   return leftId.localeCompare(rightId);
 };
 
-const selectLatestRunningProjectionRows = <
+export const selectLatestRunningProjectionRows = <
   T extends {
     session: RuntimeSessionListItem;
   },
@@ -75,6 +75,14 @@ const selectLatestRunningProjectionRows = <
   )[0];
   return latestRunningRow ? [...nonRunningRows, latestRunningRow] : nonRunningRows;
 };
+
+export const sumRuntimeAggregateProjectedSymbolsTracked = <
+  T extends {
+    session: Pick<RuntimeSessionListItem, 'symbolsTracked'>;
+  },
+>(
+  rows: T[]
+) => rows.reduce((acc, row) => acc + row.session.symbolsTracked, 0);
 
 const resolveAggregateSessionWindowEnd = (session: RuntimeSessionListItem) =>
   session.finishedAt ?? session.lastHeartbeatAt ?? session.startedAt;
@@ -285,7 +293,7 @@ export const getBotRuntimeMonitoringAggregate = async (
     sessionMetadataRows.reduce((acc, row) => acc + Math.max(0, row.session.durationMs), 0)
   );
   const eventsCount = sessionMetadataRows.reduce((acc, row) => acc + row.session.eventsCount, 0);
-  const symbolsTracked = activeSessions.reduce((acc, session) => acc + session.symbolsTracked, 0);
+  const symbolsTracked = sumRuntimeAggregateProjectedSymbolsTracked(sessionMetadataRows);
   const symbolProjectionRows = selectLatestRunningProjectionRows(completePayloadRows);
 
   const symbolMap = new Map<string, RuntimeSymbolStatsResponse['items'][number]>();

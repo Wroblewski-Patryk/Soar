@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
 import { buildRuntimeSymbolLiveOpenPositionScopes } from './botsRuntimeRead.repository';
+import {
+  selectLatestRunningProjectionRows,
+  sumRuntimeAggregateProjectedSymbolsTracked,
+} from './runtimeMonitoringAggregateRead.service';
 import { buildRuntimeTradeCarryOverWindowClause } from './runtimeSessionTradesRead.service';
 import { resolveRuntimePositionDcaCount } from './runtimeSessionPositionDcaCount';
 import {
@@ -175,6 +179,58 @@ describe('buildRuntimeTradeCarryOverWindowClause', () => {
         },
       ],
     });
+  });
+});
+
+describe('runtime aggregate projection helpers', () => {
+  const row = (input: {
+    id: string;
+    status: 'RUNNING' | 'COMPLETED';
+    startedAt: string;
+    lastHeartbeatAt?: string | null;
+    finishedAt?: string | null;
+    symbolsTracked: number;
+  }) =>
+    ({
+      session: {
+        id: input.id,
+        status: input.status,
+        startedAt: new Date(input.startedAt),
+        lastHeartbeatAt: input.lastHeartbeatAt ? new Date(input.lastHeartbeatAt) : null,
+        finishedAt: input.finishedAt ? new Date(input.finishedAt) : null,
+        symbolsTracked: input.symbolsTracked,
+      },
+    }) as any;
+
+  it('uses only the latest running row for projected aggregate symbols', () => {
+    const rows = [
+      row({
+        id: 'completed',
+        status: 'COMPLETED',
+        startedAt: '2026-05-04T09:00:00.000Z',
+        finishedAt: '2026-05-04T09:30:00.000Z',
+        symbolsTracked: 2,
+      }),
+      row({
+        id: 'running-old',
+        status: 'RUNNING',
+        startedAt: '2026-05-04T10:00:00.000Z',
+        lastHeartbeatAt: '2026-05-04T10:05:00.000Z',
+        symbolsTracked: 9,
+      }),
+      row({
+        id: 'running-new',
+        status: 'RUNNING',
+        startedAt: '2026-05-04T10:10:00.000Z',
+        lastHeartbeatAt: '2026-05-04T10:20:00.000Z',
+        symbolsTracked: 3,
+      }),
+    ];
+
+    const projectedRows = selectLatestRunningProjectionRows(rows);
+
+    expect(projectedRows.map((item) => item.session.id)).toEqual(['completed', 'running-new']);
+    expect(sumRuntimeAggregateProjectedSymbolsTracked(projectedRows)).toBe(5);
   });
 });
 

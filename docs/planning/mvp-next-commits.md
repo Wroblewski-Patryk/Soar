@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-118 fix(api-bots): align aggregate running symbols`
+  - 2026-05-04: Closed a BUILDER-mode runtime aggregate dashboard metadata
+    drift. Aggregate `symbolsTracked` now uses the same latest-running
+    projection rows as duration and event metadata, so overlapping RUNNING
+    sessions no longer inflate the aggregate header while
+    completed/non-running rows still contribute normally. Validation PASS:
+    focused runtime session position unit suite (`11/11`), API typecheck,
+    repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-118-aggregate-running-symbols-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-117 fix(api-bots): restrict carry-over session trades`
   - 2026-05-04: Closed an ARCHITECT-mode runtime trades dashboard window
     drift. Carry-over position trade reads now include normal in-window trades
