@@ -6,6 +6,7 @@ import {
   buildRuntimeAggregateCurrentOpenOrders,
   buildRuntimeAggregateProjectedHistoryItems,
   buildRuntimeAggregateProjectedTradeItems,
+  buildRuntimeAggregateTradesMeta,
   resolveRuntimeAggregateCurrentDynamicStopColumns,
   selectRuntimeAggregateLatestCapitalSummary,
   selectLatestRunningProjectionRows,
@@ -442,6 +443,23 @@ describe('runtime aggregate projection helpers', () => {
     ]);
 
     expect(summary?.accountBalance).toBe(512.34);
+  });
+
+  it('uses requested page size for aggregate trade metadata', () => {
+    expect(
+      buildRuntimeAggregateTradesMeta({
+        totalTrades: 250,
+        returnedItemsCount: 75,
+        pageSize: 200,
+      })
+    ).toEqual({
+      page: 1,
+      pageSize: 200,
+      total: 250,
+      totalPages: 2,
+      hasPrev: false,
+      hasNext: true,
+    });
   });
 });
 

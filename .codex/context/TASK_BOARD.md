@@ -20,6 +20,15 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-124 fix(api-bots): align aggregate trade meta page size`
+  - Scope: closed a BUILDER-mode runtime aggregate trade metadata drift.
+    Aggregate trades `meta.pageSize` now reports the requested
+    `perSessionLimit` instead of the deduped returned item count, while
+    `hasNext` remains based on `totalTrades > returnedItems`. Validation PASS:
+    focused runtime session position unit suite (`16/16`), API typecheck,
+    repository guardrails, lint, and diff review. Evidence:
+    `docs/planning/runtime-audit-124-aggregate-trade-meta-page-size-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-123 refactor(api-bots): remove stale aggregate position source`
   - Scope: closed an ARCHITECT-mode runtime aggregate source-clarity cleanup.
     Removed the unused all-session `positionResponses` collection after current

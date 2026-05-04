@@ -202,6 +202,25 @@ export const selectRuntimeAggregateLatestCapitalSummary = <
       return referenceBalance != null || freeCash != null || accountBalance != null;
     });
 
+export const buildRuntimeAggregateTradesMeta = (params: {
+  totalTrades: number;
+  returnedItemsCount: number;
+  pageSize: number;
+}) => {
+  const pageSize = Math.max(1, params.pageSize);
+  const total = Math.max(0, params.totalTrades);
+  const returnedItemsCount = Math.max(0, params.returnedItemsCount);
+  const totalPages = total === 0 ? 0 : Math.ceil(total / pageSize);
+  return {
+    page: 1,
+    pageSize,
+    total,
+    totalPages,
+    hasPrev: false,
+    hasNext: total > returnedItemsCount,
+  };
+};
+
 const resolveAggregateSessionWindowEnd = (session: RuntimeSessionListItem) =>
   session.finishedAt ?? session.lastHeartbeatAt ?? session.startedAt;
 
@@ -676,8 +695,11 @@ export const getBotRuntimeMonitoringAggregate = async (
   const totalTrades = tradeTotalRows.reduce((acc, row) => acc + row.trades.total, 0);
   const totalTradeFeesPaid = tradeTotalRows.reduce((acc, row) => acc + row.trades.feesPaid, 0);
   const windowFinishedAt = finishedAt ?? new Date();
-  const pageSize = tradeItems.length || 1;
-  const totalPages = totalTrades === 0 ? 0 : Math.ceil(totalTrades / pageSize);
+  const tradeMeta = buildRuntimeAggregateTradesMeta({
+    totalTrades,
+    returnedItemsCount: tradeItems.length,
+    pageSize: query.perSessionLimit,
+  });
 
   return {
     sessionDetail: {
@@ -741,14 +763,7 @@ export const getBotRuntimeMonitoringAggregate = async (
       sessionId: 'AGGREGATE',
       total: totalTrades,
       feesPaid: totalTradeFeesPaid,
-      meta: {
-        page: 1,
-        pageSize,
-        total: totalTrades,
-        totalPages,
-        hasPrev: false,
-        hasNext: totalTrades > tradeItems.length,
-      },
+      meta: tradeMeta,
       window: {
         startedAt,
         finishedAt: windowFinishedAt,

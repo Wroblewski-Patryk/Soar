@@ -3,6 +3,13 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 runtime aggregate trade meta page-size slice
+  `RUNTIME-AUDIT-124` is closed locally. Aggregate trades `meta.pageSize` now
+  reports the requested `perSessionLimit` instead of the deduped returned item
+  count, while `hasNext` remains based on `totalTrades > returnedItems`.
+  Validation PASS: focused runtime session position unit suite (`16/16`), API
+  typecheck, repository guardrails, lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-124-aggregate-trade-meta-page-size-task-2026-05-04.md`.
 - 2026-05-04 runtime aggregate position source cleanup slice
   `RUNTIME-AUDIT-123` is closed locally. Removed the unused all-session
   `positionResponses` collection after current open rows, open orders, history
