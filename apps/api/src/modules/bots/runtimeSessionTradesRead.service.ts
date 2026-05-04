@@ -74,6 +74,33 @@ const isPersistedImportedOpenAnchorTrade = (trade: {
   exchangeTradeId: string | null;
 }) => trade.origin === 'EXCHANGE_SYNC' && trade.lifecycleAction === 'OPEN' && trade.exchangeTradeId == null;
 
+export const buildRuntimeTradeCarryOverWindowClause = (input: {
+  rangeStart: Date;
+  rangeEnd: Date;
+  shouldIncludeCarryOverPositions: boolean;
+}): Prisma.TradeWhereInput => {
+  const windowClause = {
+    executedAt: {
+      gte: input.rangeStart,
+      lte: input.rangeEnd,
+    },
+  };
+  if (!input.shouldIncludeCarryOverPositions) return windowClause;
+  return {
+    OR: [
+      windowClause,
+      {
+        origin: 'EXCHANGE_SYNC',
+        lifecycleAction: 'OPEN',
+        exchangeTradeId: null,
+        executedAt: {
+          lte: input.rangeEnd,
+        },
+      },
+    ],
+  };
+};
+
 const emptyRuntimeTradesResponse = (params: {
   sessionId: string;
   page: number;
@@ -242,6 +269,11 @@ export const listBotRuntimeSessionTrades = async (
     ],
   });
   const shouldIncludeCarryOverPositions = !query.from && !query.to;
+  const positionTradeWindowClause = buildRuntimeTradeCarryOverWindowClause({
+    rangeStart,
+    rangeEnd,
+    shouldIncludeCarryOverPositions,
+  });
 
   const where: Prisma.TradeWhereInput = {
     userId,
@@ -252,18 +284,7 @@ export const listBotRuntimeSessionTrades = async (
         ? [
             {
               positionId: { in: scopedPositionIds },
-              ...(shouldIncludeCarryOverPositions
-                ? {
-                    OR: [
-                      windowClause,
-                      {
-                        executedAt: {
-                          lte: rangeEnd,
-                        },
-                      },
-                    ],
-                  }
-                : windowClause),
+              ...positionTradeWindowClause,
             },
           ]
         : []),

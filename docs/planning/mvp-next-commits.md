@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `RUNTIME-AUDIT-117 fix(api-bots): restrict carry-over session trades`
+  - 2026-05-04: Closed an ARCHITECT-mode runtime trades dashboard window
+    drift. Carry-over position trade reads now include normal in-window trades
+    plus only persisted imported `OPEN` anchors outside the window, so
+    pre-window DCA/CLOSE/fee rows no longer leak into current session trade
+    history or fees. Validation PASS: focused runtime session position unit
+    suite (`10/10`), API typecheck, repository guardrails, lint, and diff
+    review. Evidence:
+    `docs/planning/runtime-audit-117-trades-carryover-window-task-2026-05-04.md`.
 - [x] `RUNTIME-AUDIT-116 fix(api-bots): include live imported open positions in symbol stats`
   - 2026-05-04: Closed a BUILDER-mode LIVE dashboard parity drift. Runtime
     symbol-stats live open-position rows now include direct bot positions and

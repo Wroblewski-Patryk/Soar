@@ -3,6 +3,14 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 runtime trades carry-over window slice `RUNTIME-AUDIT-117` is
+  closed locally. Carry-over position trade reads now include normal in-window
+  trades plus only persisted imported `OPEN` anchors outside the window, so
+  pre-window DCA/CLOSE/fee rows no longer leak into current session trade
+  history or fees. Validation PASS: focused runtime session position unit
+  suite (`10/10`), API typecheck, repository guardrails, lint, and diff review.
+  Evidence:
+  `docs/planning/runtime-audit-117-trades-carryover-window-task-2026-05-04.md`.
 - 2026-05-04 LIVE imported symbol-stats open-position slice
   `RUNTIME-AUDIT-116` is closed locally. Runtime symbol-stats live
   open-position rows now include direct bot positions and owned LIVE imported

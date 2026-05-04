@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { buildRuntimeSymbolLiveOpenPositionScopes } from './botsRuntimeRead.repository';
+import { buildRuntimeTradeCarryOverWindowClause } from './runtimeSessionTradesRead.service';
 import { resolveRuntimePositionDcaCount } from './runtimeSessionPositionDcaCount';
 import {
   buildRuntimeSessionClosedPositionWindow,
@@ -124,6 +125,56 @@ describe('buildRuntimeSymbolLiveOpenPositionScopes', () => {
         ownedExternalSymbols: ['ETHUSDT'],
       })
     ).toEqual([{ botId: 'bot-1' }]);
+  });
+});
+
+describe('buildRuntimeTradeCarryOverWindowClause', () => {
+  it('uses a strict executedAt window when carry-over positions are disabled', () => {
+    const rangeStart = new Date('2026-05-04T10:00:00.000Z');
+    const rangeEnd = new Date('2026-05-04T11:00:00.000Z');
+
+    expect(
+      buildRuntimeTradeCarryOverWindowClause({
+        rangeStart,
+        rangeEnd,
+        shouldIncludeCarryOverPositions: false,
+      })
+    ).toEqual({
+      executedAt: {
+        gte: rangeStart,
+        lte: rangeEnd,
+      },
+    });
+  });
+
+  it('adds only persisted imported OPEN anchors for carry-over positions', () => {
+    const rangeStart = new Date('2026-05-04T10:00:00.000Z');
+    const rangeEnd = new Date('2026-05-04T11:00:00.000Z');
+
+    expect(
+      buildRuntimeTradeCarryOverWindowClause({
+        rangeStart,
+        rangeEnd,
+        shouldIncludeCarryOverPositions: true,
+      })
+    ).toEqual({
+      OR: [
+        {
+          executedAt: {
+            gte: rangeStart,
+            lte: rangeEnd,
+          },
+        },
+        {
+          origin: 'EXCHANGE_SYNC',
+          lifecycleAction: 'OPEN',
+          exchangeTradeId: null,
+          executedAt: {
+            lte: rangeEnd,
+          },
+        },
+      ],
+    });
   });
 });
 
