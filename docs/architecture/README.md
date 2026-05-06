@@ -57,6 +57,9 @@ Those belong elsewhere:
   `reference/maintainability-remediation-contract.md`.
 - canonical exchange-access ownership for API modules lives in
   `reference/exchange-access-ownership-matrix.md`.
+- PnL/ROI-percent position management behavior for DCA, `TP`, `SL`, `TTP`,
+  and `TSL` lives in
+  `reference/position-management-pnl-lifecycle-contract.md`.
 - `archive/` contains historical, superseded, and compatibility-only files.
 
 The numbered files above remain the canonical architecture flow.

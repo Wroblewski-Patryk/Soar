@@ -103,6 +103,8 @@ They must share:
 
 - the same add-update position math,
 - the same semantic distinction between `OPEN`, `DCA`, and `CLOSE`,
+- the same PnL/ROI percent position-management semantics from
+  `position-management-pnl-lifecycle-contract.md`,
 - the same strategy-context requirements for automation,
 - the same operator-visible degraded-state semantics when canonical truth is
   missing.
@@ -125,6 +127,21 @@ Forbidden:
 - read-model sticky-high fallback acting as if it were execution truth for
   imported or recovered `LIVE` positions
 
+## Canonical Rule 8: Imported Positions Start At Adoption Point
+
+When a user opens or changes a position directly on the exchange, Soar must
+reconcile the exchange position with local state before claiming lifecycle
+authority.
+
+Imported positions may become bot-managed only when ownership, wallet/execution
+context, and strategy provenance are canonical. Once adopted:
+
+- the current exchange position becomes the starting open lifecycle state
+- previous DCA, TTP, or TSL history must not be invented from a snapshot
+- prospective DCA/TTP/TSL management may start from the adoption point onward
+- missing provenance must be visible as degraded telemetry rather than hidden
+  behind normal automation display
+
 ## Required Validation For This Contract
 
 Any implementation wave touching this area must include:
@@ -134,6 +151,8 @@ Any implementation wave touching this area must include:
 - focused tests for account-update scope isolation,
 - focused tests for runtime/read-model strategy-context parity,
 - focused tests or telemetry assertions for fail-closed runtime skip visibility.
+- focused tests for imported exchange-position adoption without invented
+  trailing or DCA history when reconciliation scope is touched.
 
 ## Forbidden Patterns
 
@@ -143,5 +162,7 @@ Any implementation wave touching this area must include:
 - broad account-update mutation over all `userId + symbol + side` rows
 - read-model fallback that visually upgrades a non-canonical strategy context
   into actionable runtime truth
+- importing exchange positions as if Soar knew pre-adoption DCA or trailing
+  history
 - money-impacting runtime skips that are diagnosable only through local
   `console.warn`

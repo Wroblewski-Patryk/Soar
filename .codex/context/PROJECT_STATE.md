@@ -1,8 +1,17 @@
 # PROJECT_STATE
 
-Last updated: 2026-05-04
+Last updated: 2026-05-06
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-06 PnL-based position management architecture contract
+  `PMPLC-01` is closed locally. Added the canonical DCA/TP/SL/TTP/TSL
+  lifecycle contract covering positive and negative DCA lanes, DCA-first
+  close gating, basic-mode unreachable DCA warnings, advanced TTP/TSL
+  activation-versus-trail semantics, unaffordable-DCA policy, live
+  order/position reconciliation, and imported exchange-position adoption
+  points. Validation PASS: repository guardrails and architecture diff review.
+  Evidence:
+  `docs/planning/position-management-pnl-lifecycle-contract-task-2026-05-06.md`.
 - 2026-05-04 dynamic stop display precedence slice `RUNTIME-AUDIT-143` is
   closed locally. Resolver-level tests now lock TSL display only when TTP is
   inactive, backend TTP suppression of TSL, fallback TTP suppression of TSL,

@@ -29,6 +29,14 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-06: Closed `PMPLC-01` with
+  `docs/planning/position-management-pnl-lifecycle-contract-task-2026-05-06.md`.
+  Added canonical PnL/ROI-percent position-management architecture for
+  positive and negative DCA lanes, DCA-first close gating, basic-mode
+  unreachable DCA warnings, advanced TTP/TSL activation-versus-trail semantics,
+  unaffordable-DCA policy, live order/position reconciliation,
+  imported-position adoption-point rules, and backtest parity requirements.
+  Validation PASS: repository guardrails and architecture diff review.
 - 2026-05-04: Closed `RUNTIME-AUDIT-143` with
   `docs/planning/runtime-audit-143-dynamic-stop-display-contract-task-2026-05-04.md`.
   Resolver-level tests now lock TSL display only when TTP is inactive,

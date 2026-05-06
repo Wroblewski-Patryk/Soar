@@ -37,6 +37,7 @@ venue-side stop authorities for the same lifecycle.
 Runtime remains the canonical owner of:
 
 - DCA progression
+- DCA-first gating before close protection is allowed to close
 - trailing activation and ratcheting
 - semantic reason for the current floor
 
@@ -44,6 +45,8 @@ Exchange order ownership is execution-only:
 
 - the exchange order mirrors the currently active floor
 - it does not replace runtime as the source of why that floor exists
+- it must not make a DCA level appear executable if a venue-side `TP` or `SL`
+  would close the position before that level can be reached
 
 ## Core Rule 3: Venue Protection Order Must Tighten, Never Loosen
 
@@ -84,6 +87,25 @@ Forbidden:
 - silently resetting armed protection
 - presenting a new weaker floor as if the prior protection was never breached
 
+## Core Rule 6: Basic TP/SL Must Respect DCA Reachability
+
+In `basic` mode, hard `TP` and `SL` should use exchange-backed protection where
+the venue supports it, but they must remain consistent with the DCA-first
+lifecycle contract.
+
+If DCA is enabled:
+
+- positive DCA levels above the configured `TP` are unreachable before
+  take-profit close
+- negative DCA levels below the configured `SL` are unreachable before
+  stop-loss close
+- runtime, validation, or UI must warn or block this configuration instead of
+  silently presenting those DCA levels as executable
+
+If the implementation chooses to delay, amend, or reshape venue-side protection
+to preserve DCA-first semantics, that behavior must be explicit in runtime
+state and operator telemetry.
+
 ## Required Future Implementation Areas
 
 - exchange boundary support for native reduce-only stop order lifecycle
@@ -91,11 +113,14 @@ Forbidden:
 - reconciliation between runtime floor and exchange order state
 - close-attribution and history materialization on exchange-backed stop fill
 - operator surfaces for active protected percent and order state
+- validation and telemetry for DCA reachability versus venue-side `TP`/`SL`
 
 ## Forbidden Patterns
 
 - separate parallel stop orders for `SL`, `TTP`, and `TSL` on one lifecycle
   without one canonical effective-floor owner
+- venue-side hard `TP`/`SL` that silently bypasses pending valid DCA while the
+  app still reports the DCA ladder as executable
 - UI-only protection truth with no exchange or runtime execution authority
 - backfilling close history from guesswork instead of proven fill or canonical
   reconciliation

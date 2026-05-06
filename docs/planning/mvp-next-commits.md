@@ -9,6 +9,16 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `PMPLC-01 docs(architecture): freeze PnL position-management lifecycle contract`
+  - 2026-05-06: Closed an ARCHITECT-mode source-of-truth update for
+    operator-clarified DCA/TP/SL/TTP/TSL behavior. Added canonical positive
+    and negative DCA lanes, DCA-first close gating, basic-mode unreachable DCA
+    warnings, advanced TTP/TSL activation-versus-trail semantics,
+    unaffordable-DCA policy, live order/position reconciliation,
+    imported-position adoption-point rules, and backtest parity requirements.
+    Validation PASS: repository guardrails and architecture diff review.
+    Evidence:
+    `docs/planning/position-management-pnl-lifecycle-contract-task-2026-05-06.md`.
 - [x] `RUNTIME-AUDIT-143 test(web-dashboard): lock dynamic stop display precedence`
   - 2026-05-04: Closed a money-impacting dynamic stop display coverage gap.
     Resolver-level tests now lock TSL display only when TTP is inactive,

@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-05-04
+Last updated: 2026-05-06
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -19,6 +19,16 @@ Last updated: 2026-05-04
 
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+
+- [x] `PMPLC-01 docs(architecture): freeze PnL position-management lifecycle contract`
+  - Scope: closed an ARCHITECT-mode docs-only source-of-truth update for
+    operator-clarified DCA/TP/SL/TTP/TSL behavior. Added canonical positive
+    and negative DCA lanes, DCA-first close gating, unreachable DCA warnings
+    for basic TP/SL, TTP/TSL activation-versus-trail semantics, unaffordable
+    DCA policy, live order/position reconciliation, imported-position
+    adoption-point rules, and backtest parity requirements. Validation PASS:
+    repository guardrails and architecture diff review. Evidence:
+    `docs/planning/position-management-pnl-lifecycle-contract-task-2026-05-06.md`.
 
 - [x] `RUNTIME-AUDIT-143 test(web-dashboard): lock dynamic stop display precedence`
   - Scope: closed a money-impacting dynamic stop display coverage gap.

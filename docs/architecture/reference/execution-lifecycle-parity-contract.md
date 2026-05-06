@@ -123,6 +123,10 @@ final state.
 - trade ledger entries must use canonical fill price and quantity.
 - trade lifecycle semantics must distinguish initial `OPEN` from add-leg `DCA`
   when an existing position receives additional entry quantity.
+- DCA, hard `TP`/`SL`, and advanced `TTP`/`TSL` must follow
+  `position-management-pnl-lifecycle-contract.md`, including positive and
+  negative DCA lanes, DCA-first close gating, unaffordable-DCA policy behavior,
+  and monotonic trailing protection.
 - realized PnL must be computed from canonical entry and exit fill truth plus
   canonical fees.
 - runtime telemetry may display signal/reference price, but must not confuse it
@@ -183,6 +187,8 @@ without a tight boundary, it must be split first.
 - writing runtime trades with signal `markPrice` instead of canonical fill
   price
 - implementing separate position-flow semantics for `PAPER` and `LIVE`
+- letting backtest, paper, and live disagree on DCA-first PnL lifecycle
+  behavior or trailing ratchet semantics
 - generic runtime or watchdog exchange contracts that still hardcode
   `BINANCE`
 - regression tests that only cover happy-path `FILLED` flows while omitting

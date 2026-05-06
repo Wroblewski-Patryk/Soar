@@ -124,6 +124,11 @@ Per-position evaluation order is:
 
 If a DCA level is still valid and affordable, the runtime must not bypass it by guessing a different close path.
 
+The detailed PnL/ROI percent behavior for positive/negative DCA lanes, hard
+`TP`/`SL`, trailing `TTP`/`TSL`, DCA-funds policy, unreachable DCA warnings, and
+runtime/backtest loop ordering is canonical in
+`reference/position-management-pnl-lifecycle-contract.md`.
+
 In the post-V1 multi-strategy bot model, DCA and protection ownership remains
 position-scoped, not bot-wide. The strategy provenance that opened or
 canonically adopted the position owns that position's DCA/TTP/SL/TSL lifecycle
@@ -191,6 +196,7 @@ LONG accepted
 - `reference/live-futures-lifecycle-price-contract.md`
 - `reference/live-protection-state-parity-contract.md`
 - `reference/live-exchange-protection-order-contract.md`
+- `reference/position-management-pnl-lifecycle-contract.md`
 - `reference/position-lifecycle-parity-matrix.md`
 - `reference/position-close-attribution-contract.md`
 
