@@ -29,6 +29,16 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-06: Closed `PMPLC-44` with
+  `docs/planning/portfolio-history-pending-fee-completeness-task-2026-05-06.md`.
+  Portfolio history now marks LIVE history as `PARTIAL` with
+  `FEE_RECONCILIATION_PENDING` when any scoped trade in the history window has
+  `feePending=true`, so provisional fee-adjusted PnL is not presented as fully
+  complete. Validation PASS: pre-fix e2e regression failed as expected
+  (`completeness=COMPLETE` received vs `PARTIAL` expected), focused
+  regression, portfolio-history e2e (`4/4`), API typecheck, repository
+  guardrails, and lint. Follow-up queued as `PMPLC-45` for imported
+  externally closed positions missing from aggregate PnL.
 - 2026-05-06: Closed `PMPLC-43` with
   `docs/planning/position-management-exchange-partial-backfill-still-pending-task-2026-05-06.md`.
   Exchange-event fee finality now refuses to treat a filled order's existing

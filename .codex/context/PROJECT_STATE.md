@@ -3,6 +3,17 @@
 Last updated: 2026-05-06
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-06 portfolio history pending-fee completeness slice `PMPLC-44` is
+  closed locally. Portfolio history now marks LIVE history as `PARTIAL` with
+  `FEE_RECONCILIATION_PENDING` when any scoped trade in the history window has
+  `feePending=true`, so provisional fee-adjusted PnL is not presented as fully
+  complete. Validation PASS: pre-fix e2e regression failed as expected
+  (`completeness=COMPLETE` received vs `PARTIAL` expected), focused
+  regression, portfolio-history e2e (`4/4`), API typecheck, repository
+  guardrails, and lint. Evidence:
+  `docs/planning/portfolio-history-pending-fee-completeness-task-2026-05-06.md`.
+  Follow-up queued: `PMPLC-45` for imported closed-position aggregate PnL
+  visibility when no trade rows exist.
 - 2026-05-06 incomplete partial fee backfill pending slice `PMPLC-43` is
   closed locally. Exchange-event fee finality now refuses to treat a filled
   order's existing exchange fee as settled while another known `OrderFill`

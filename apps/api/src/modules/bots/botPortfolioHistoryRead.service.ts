@@ -116,6 +116,29 @@ export const getBotPortfolioHistory = async (userId: string, botId: string) => {
     if (leftTs !== rightTs) return leftTs - rightTs;
     return left.id.localeCompare(right.id);
   });
+  const pendingFeeTrade = await prisma.trade.findFirst({
+    where: {
+      userId,
+      feePending: true,
+      executedAt: {
+        gte: startedAt,
+        lte: finishedAt,
+      },
+      ...(scopedSymbols.length > 0 ? { symbol: { in: scopedSymbols } } : {}),
+      OR: [
+        { botId: bot.id },
+        ...(bot.mode === 'LIVE' && bot.walletId
+          ? [
+              {
+                botId: null,
+                walletId: bot.walletId,
+              },
+            ]
+          : []),
+      ],
+    },
+    select: { id: true },
+  });
 
   let cumulativeRealizedPnl = 0;
   const points =
@@ -194,9 +217,15 @@ export const getBotPortfolioHistory = async (userId: string, botId: string) => {
   if (referenceBalance == null) {
     completeness = 'UNAVAILABLE';
     completenessReasons.push('NO_RUNTIME_CAPITAL_SNAPSHOT');
-  } else if ((aggregate?.positions.openCount ?? 0) > 0 || Math.abs(unrealizedPnl) > 0) {
-    completeness = 'PARTIAL';
-    completenessReasons.push('OPEN_PNL_LATEST_ONLY');
+  } else {
+    if ((aggregate?.positions.openCount ?? 0) > 0 || Math.abs(unrealizedPnl) > 0) {
+      completeness = 'PARTIAL';
+      completenessReasons.push('OPEN_PNL_LATEST_ONLY');
+    }
+    if (pendingFeeTrade) {
+      completeness = 'PARTIAL';
+      completenessReasons.push('FEE_RECONCILIATION_PENDING');
+    }
   }
 
   return {

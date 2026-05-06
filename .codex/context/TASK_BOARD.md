@@ -20,6 +20,25 @@ Last updated: 2026-05-06
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [ ] `PMPLC-45 fix(api-bots): include imported externally closed positions in aggregate PnL`
+  - Scope: discovered during PMPLC-44 adjacent validation. Existing
+    `bots.monitoring-aggregate.e2e.test.ts` regression
+    `keeps aggregate header PnL aligned with imported closed position summary when trades are missing`
+    currently receives `positions.summary.realizedPnl=0` instead of `37.5` for
+    an imported `ORPHAN_LOCAL` / `EXTERNAL_CLOSE_CONFIRMED` closed position
+    with no trade rows. Execute as the next tiny money-read-model slice.
+
+- [x] `PMPLC-44 fix(api-bots): mark portfolio history partial for pending fees`
+  - Scope: closed a BUILDER-mode LIVE portfolio completeness slice. Portfolio
+    history now marks LIVE history as `PARTIAL` with
+    `FEE_RECONCILIATION_PENDING` when any scoped trade in the history window
+    has `feePending=true`, so provisional fee-adjusted PnL is not presented as
+    fully complete. Validation PASS: pre-fix e2e regression failed as expected
+    (`completeness=COMPLETE` received vs `PARTIAL` expected), focused
+    regression, portfolio-history e2e (`4/4`), API typecheck, repository
+    guardrails, and lint. Evidence:
+    `docs/planning/portfolio-history-pending-fee-completeness-task-2026-05-06.md`.
+
 - [x] `PMPLC-43 fix(api-orders): keep pending after incomplete partial fee backfill`
   - Scope: closed a BUILDER-mode LIVE fee reconciliation finality slice.
     Exchange-event fee finality now refuses to treat a filled order's existing

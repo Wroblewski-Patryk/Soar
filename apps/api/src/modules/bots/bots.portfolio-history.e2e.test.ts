@@ -437,4 +437,113 @@ describe('Bots portfolio history endpoint', () => {
     const otherRes = await other.get(`/dashboard/bots/${botId}/portfolio-history`);
     expect(otherRes.status).toBe(404);
   });
+
+  it('marks LIVE history partial while scoped trade fees are pending reconciliation', async () => {
+    const ownerEmail = 'bots-portfolio-history-live-fee-pending@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({
+      where: { email: ownerEmail },
+      select: { id: true },
+    });
+
+    const strategyId = await createStrategy(owner, 'Portfolio History Live Fee Pending Strategy');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    const liveApiKeyId = await createLiveApiKeyForUser(ownerEmail);
+    const walletId = await createWalletForContext(ownerEmail, {
+      mode: 'LIVE',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      apiKeyId: liveApiKeyId,
+    });
+
+    const createRes = await owner.post('/dashboard/bots').send({
+      ...createPayload({
+        strategyId,
+        marketGroupId,
+        walletId,
+      }),
+      liveOptIn: true,
+      consentTextVersion: 'v1-live-risk',
+    });
+    expect(createRes.status).toBe(201);
+    const botId = createRes.body.id as string;
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'LIVE',
+        status: 'COMPLETED',
+        startedAt: new Date('2026-05-01T08:00:00.000Z'),
+        finishedAt: new Date('2026-05-01T09:00:00.000Z'),
+        lastHeartbeatAt: new Date('2026-05-01T09:00:00.000Z'),
+      },
+    });
+
+    await prisma.walletBalanceSnapshot.create({
+      data: {
+        userId: ownerUser.id,
+        walletId,
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        accountBalance: 130,
+        freeBalance: 130,
+        allocatedBalance: 130,
+        allocationMode: 'PERCENT',
+        allocationValue: 100,
+        fetchedAt: new Date('2026-05-01T09:00:00.000Z'),
+      },
+    });
+
+    const position = await prisma.position.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        walletId,
+        strategyId,
+        symbol: 'BTCUSDT',
+        side: 'LONG',
+        status: 'CLOSED',
+        entryPrice: 60_000,
+        quantity: 0.01,
+        leverage: 1,
+        realizedPnl: 30,
+        openedAt: new Date('2026-05-01T08:10:00.000Z'),
+        closedAt: new Date('2026-05-01T08:40:00.000Z'),
+        managementMode: 'BOT_MANAGED',
+      },
+      select: { id: true },
+    });
+    await prisma.trade.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        walletId,
+        strategyId,
+        positionId: position.id,
+        symbol: 'BTCUSDT',
+        side: 'SELL',
+        lifecycleAction: 'CLOSE',
+        price: 63_000,
+        quantity: 0.01,
+        fee: 0.2,
+        feeSource: 'EXCHANGE_FILL',
+        feePending: true,
+        feeCurrency: 'USDT',
+        realizedPnl: 30,
+        executedAt: new Date('2026-05-01T08:40:00.000Z'),
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+      },
+    });
+
+    const historyRes = await owner.get(`/dashboard/bots/${botId}/portfolio-history`);
+    expect(historyRes.status).toBe(200);
+    expect(historyRes.body.mode).toBe('LIVE');
+    expect(historyRes.body.summary.realizedPnl).toBe(30);
+    expect(historyRes.body.completeness).toBe('PARTIAL');
+    expect(historyRes.body.completenessReasons).toContain('FEE_RECONCILIATION_PENDING');
+  });
 });
