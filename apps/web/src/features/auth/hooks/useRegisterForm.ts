@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { RegisterFormData, registerSchema } from '../types/form.types';
@@ -14,6 +15,7 @@ export const useRegisterForm = () => {
   const router = useRouter();
   const { refetchUser } = useAuth();
   const { t } = useI18n();
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const {
     register,
@@ -25,6 +27,7 @@ export const useRegisterForm = () => {
   });
 
   const submitHandler = async (data: RegisterFormData) => {
+    setServerError(null);
     try {
       await registerUser(data);
       const hasActiveSession = await refetchUser();
@@ -40,10 +43,11 @@ export const useRegisterForm = () => {
       });
     } catch (err) {
       const message = handleError(err, { fallback: t('auth.toasts.register.failedFallback') });
+      setServerError(message);
       toast.error(`${t('auth.toasts.register.failedPrefix')} ${message}`);
     }
   };
 
   const onFormSubmit = handleSubmit(submitHandler);
-  return { register, onFormSubmit, errors, isSubmitting };
+  return { register, onFormSubmit, errors, isSubmitting, serverError };
 };

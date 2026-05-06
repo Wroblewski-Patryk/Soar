@@ -13,6 +13,7 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({
     replace: mockReplace,
   }),
+  usePathname: () => (typeof window === 'undefined' ? '/' : window.location.pathname || '/'),
 }));
 
 vi.mock('../../../context/AuthContext', () => ({

@@ -9,7 +9,7 @@ vi.mock('next/navigation', () => ({
     refresh: vi.fn(),
     prefetch: vi.fn(),
   }),
-  usePathname: () => '/',
+  usePathname: () => (typeof window === 'undefined' ? '/' : window.location.pathname || '/'),
   useSearchParams: () => new URLSearchParams(),
   useParams: () => ({}),
 }));

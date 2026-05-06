@@ -20,6 +20,17 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `V1UI-02 fix(web-auth): persist register errors and seed auth i18n route`
+  - Scope: closed a BUILDER-mode auth register UI/i18n slice. Registration
+    failures now persist inline in the form with `role="alert"` while
+    preserving existing toast feedback and auth behavior. `I18nProvider` now
+    seeds route-scoped dictionaries from Next's `usePathname`, removing
+    first-render auth namespace warning noise seen in rendered `/auth/register`
+    smoke. Validation PASS: focused i18n/register tests (`13/13`), Web
+    typecheck, local desktop/mobile rendered smoke, route-reachable i18n audit
+    (`findings=0`), guardrails, and diff check. Evidence:
+    `docs/planning/v1ui-02-auth-register-error-i18n-task-2026-05-07.md`.
+
 - [x] `V1UI-01 fix(web-auth): announce login server errors`
   - Scope: closed a BUILDER-mode auth UI accessibility slice. Rendered
     public/protected route smoke confirmed unauthenticated `/dashboard`

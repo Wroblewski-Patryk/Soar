@@ -6,7 +6,7 @@ import { useI18n } from '@/i18n/I18nProvider';
 import type { TranslationKey } from '@/i18n/translations';
 
 export default function RegisterForm() {
-  const { register, onFormSubmit, errors, isSubmitting } = useRegisterForm();
+  const { register, onFormSubmit, errors, isSubmitting, serverError } = useRegisterForm();
   const [showPassword, setShowPassword] = useState(false);
   const { t } = useI18n();
   const resolveFieldError = (value: unknown) =>
@@ -67,6 +67,12 @@ export default function RegisterForm() {
         </label>
         {errors.terms && (
           <div className='text-error text-sm mt-1'>{resolveFieldError(errors.terms.message)}</div>
+        )}
+
+        {serverError && (
+          <div className='alert alert-error mt-2 text-sm' role='alert'>
+            {serverError}
+          </div>
         )}
 
         <button type='submit' className='btn btn-primary mt-4 mb-4' disabled={isSubmitting}>

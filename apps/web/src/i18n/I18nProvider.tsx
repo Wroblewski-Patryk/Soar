@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { usePathname } from "next/navigation";
 import { DEFAULT_LOCALE, Locale, SUPPORTED_LOCALES, TranslationKey, translations } from "./translations";
 import { getLocalStorageItem, setLocalStorageItem } from "@/lib/storage";
 import { buildTranslationsForRoute, resolveNamespacesForRoute } from "./namespaceRegistry";
@@ -92,11 +93,12 @@ const reportMissingTranslation = (
 };
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
   const [locale, setLocaleState] = useState<Locale>(() => readStoredLocale());
   const [timeZonePreference, setTimeZonePreferenceState] = useState<string>(() =>
     readStoredTimeZonePreference()
   );
-  const [routePath, setRoutePath] = useState<string>(detectRoutePath);
+  const [routePath, setRoutePath] = useState<string>(() => pathname || detectRoutePath());
   const timeZone = useMemo(() => resolveTimeZone(timeZonePreference), [timeZonePreference]);
 
   useEffect(() => {
@@ -107,6 +109,13 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setLocalStorageItem(TIMEZONE_STORAGE_KEY, timeZonePreference);
   }, [timeZonePreference]);
+
+  useEffect(() => {
+    const nextRoutePath = pathname || detectRoutePath();
+    setRoutePath((currentRoutePath) =>
+      currentRoutePath === nextRoutePath ? currentRoutePath : nextRoutePath
+    );
+  }, [pathname]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;

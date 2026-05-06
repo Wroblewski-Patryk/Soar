@@ -36,6 +36,7 @@ describe('RegisterForm', () => {
       onFormSubmit: vi.fn(),
       errors: {},
       isSubmitting: false,
+      serverError: null,
     });
 
     await renderWithI18n();
@@ -51,6 +52,7 @@ describe('RegisterForm', () => {
       onFormSubmit: vi.fn(),
       errors: {},
       isSubmitting: false,
+      serverError: null,
     });
 
     await renderWithI18n();
@@ -65,6 +67,20 @@ describe('RegisterForm', () => {
     expect(passwordInput).toHaveAttribute('type', 'password');
   });
 
+  it('announces server registration errors as an alert', async () => {
+    mockUseRegisterForm.mockReturnValue({
+      register: () => ({ name: 'field', onChange: vi.fn(), onBlur: vi.fn(), ref: vi.fn() }),
+      onFormSubmit: vi.fn(),
+      errors: {},
+      isSubmitting: false,
+      serverError: 'Registration failed. Please try again.',
+    });
+
+    await renderWithI18n();
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Registration failed. Please try again.');
+  });
+
   it('uses Polish auth namespace copy when locale is pl', async () => {
     window.localStorage.setItem('cryptosparrow-locale', 'pl');
     mockUseRegisterForm.mockReturnValue({
@@ -72,6 +88,7 @@ describe('RegisterForm', () => {
       onFormSubmit: vi.fn(),
       errors: {},
       isSubmitting: false,
+      serverError: null,
     });
 
     await renderWithI18n();
