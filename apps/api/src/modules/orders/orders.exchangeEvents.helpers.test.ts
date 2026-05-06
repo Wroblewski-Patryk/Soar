@@ -1,0 +1,222 @@
+import { describe, expect, it } from 'vitest';
+import {
+  isExchangeCloseFillComplete,
+  resolveExchangeOrderFillProgress,
+} from './orders.exchangeEvents.helpers';
+
+describe('orders.exchangeEvents close-fill helpers', () => {
+  it('treats an underfilled close as incomplete even when the exchange status is FILLED', () => {
+    expect(
+      isExchangeCloseFillComplete({
+        filledQuantity: 0.1,
+        positionQuantity: 0.2,
+      }),
+    ).toBe(false);
+  });
+
+  it('allows tiny rounding tolerance around full close quantity', () => {
+    expect(
+      isExchangeCloseFillComplete({
+        filledQuantity: 0.199999999999,
+        positionQuantity: 0.2,
+      }),
+    ).toBe(true);
+  });
+});
+
+describe('resolveExchangeOrderFillProgress', () => {
+  it('allows first-time FILLED exchange event lifecycle for an open order', () => {
+    expect(
+      resolveExchangeOrderFillProgress({
+        existingStatus: 'OPEN',
+        existingFilledQuantity: 0,
+        incomingStatus: 'FILLED',
+        incomingCumulativeFilledQuantity: 0.5,
+      }),
+    ).toEqual({
+      filledQuantity: 0.5,
+      persistedStatus: 'FILLED',
+      shouldApplyFilledLifecycle: true,
+      shouldRefreshTerminalFillDetails: true,
+    });
+  });
+
+  it('keeps duplicate FILLED exchange event from reapplying lifecycle', () => {
+    expect(
+      resolveExchangeOrderFillProgress({
+        existingStatus: 'FILLED',
+        existingFilledQuantity: 0.5,
+        incomingStatus: 'FILLED',
+        incomingCumulativeFilledQuantity: 0.5,
+      }),
+    ).toEqual({
+      filledQuantity: 0.5,
+      persistedStatus: 'FILLED',
+      shouldApplyFilledLifecycle: false,
+      shouldRefreshTerminalFillDetails: false,
+    });
+  });
+
+  it('does not reduce local fill progress for stale lower cumulative quantity', () => {
+    expect(
+      resolveExchangeOrderFillProgress({
+        existingStatus: 'FILLED',
+        existingFilledQuantity: 0.5,
+        incomingStatus: 'PARTIALLY_FILLED',
+        incomingCumulativeFilledQuantity: 0.25,
+      }),
+    ).toEqual({
+      filledQuantity: 0.5,
+      persistedStatus: 'FILLED',
+      shouldApplyFilledLifecycle: false,
+      shouldRefreshTerminalFillDetails: false,
+    });
+  });
+
+  it('allows terminal fill details to refresh when cumulative progress advances', () => {
+    expect(
+      resolveExchangeOrderFillProgress({
+        existingStatus: 'FILLED',
+        existingFilledQuantity: 0.5,
+        incomingStatus: 'FILLED',
+        incomingCumulativeFilledQuantity: 0.75,
+      }),
+    ).toEqual({
+      filledQuantity: 0.75,
+      persistedStatus: 'FILLED',
+      shouldApplyFilledLifecycle: false,
+      shouldRefreshTerminalFillDetails: true,
+    });
+  });
+
+  it('does not regress PARTIALLY_FILLED status to OPEN on stale exchange open event', () => {
+    expect(
+      resolveExchangeOrderFillProgress({
+        existingStatus: 'PARTIALLY_FILLED',
+        existingFilledQuantity: 0.25,
+        incomingStatus: 'OPEN',
+        incomingCumulativeFilledQuantity: null,
+      }),
+    ).toEqual({
+      filledQuantity: 0.25,
+      persistedStatus: 'PARTIALLY_FILLED',
+      shouldApplyFilledLifecycle: false,
+      shouldRefreshTerminalFillDetails: true,
+    });
+  });
+
+  it('keeps positive fill progress visible as partial when a stale OPEN event arrives', () => {
+    expect(
+      resolveExchangeOrderFillProgress({
+        existingStatus: 'OPEN',
+        existingFilledQuantity: 0.25,
+        incomingStatus: 'OPEN',
+        incomingCumulativeFilledQuantity: null,
+      }),
+    ).toEqual({
+      filledQuantity: 0.25,
+      persistedStatus: 'PARTIALLY_FILLED',
+      shouldApplyFilledLifecycle: false,
+      shouldRefreshTerminalFillDetails: true,
+    });
+  });
+
+  it('fails closed when FILLED arrives for an open order without cumulative quantity', () => {
+    expect(
+      resolveExchangeOrderFillProgress({
+        existingStatus: 'OPEN',
+        existingFilledQuantity: 0,
+        incomingStatus: 'FILLED',
+        incomingCumulativeFilledQuantity: null,
+      }),
+    ).toEqual({
+      filledQuantity: 0,
+      persistedStatus: 'OPEN',
+      shouldApplyFilledLifecycle: false,
+      shouldRefreshTerminalFillDetails: false,
+    });
+  });
+
+  it('keeps partial truth when FILLED arrives without cumulative quantity after partial progress', () => {
+    expect(
+      resolveExchangeOrderFillProgress({
+        existingStatus: 'PARTIALLY_FILLED',
+        existingFilledQuantity: 0.25,
+        incomingStatus: 'FILLED',
+        incomingCumulativeFilledQuantity: null,
+      }),
+    ).toEqual({
+      filledQuantity: 0.25,
+      persistedStatus: 'PARTIALLY_FILLED',
+      shouldApplyFilledLifecycle: false,
+      shouldRefreshTerminalFillDetails: false,
+    });
+  });
+
+  it('keeps known underfilled FILLED exchange event partial until requested quantity is complete', () => {
+    expect(
+      resolveExchangeOrderFillProgress({
+        existingStatus: 'OPEN',
+        existingFilledQuantity: 0,
+        incomingStatus: 'FILLED',
+        incomingCumulativeFilledQuantity: 1.25,
+        requestedQuantity: 2,
+      }),
+    ).toEqual({
+      filledQuantity: 1.25,
+      persistedStatus: 'PARTIALLY_FILLED',
+      shouldApplyFilledLifecycle: false,
+      shouldRefreshTerminalFillDetails: true,
+    });
+  });
+
+  it('caps over-reported exchange cumulative quantity to requested order quantity', () => {
+    expect(
+      resolveExchangeOrderFillProgress({
+        existingStatus: 'OPEN',
+        existingFilledQuantity: 0,
+        incomingStatus: 'FILLED',
+        incomingCumulativeFilledQuantity: 2.5,
+        requestedQuantity: 2,
+      }),
+    ).toEqual({
+      filledQuantity: 2,
+      persistedStatus: 'FILLED',
+      shouldApplyFilledLifecycle: true,
+      shouldRefreshTerminalFillDetails: true,
+    });
+  });
+
+  it('caps previously over-reported local fill progress to requested order quantity', () => {
+    expect(
+      resolveExchangeOrderFillProgress({
+        existingStatus: 'FILLED',
+        existingFilledQuantity: 2.5,
+        incomingStatus: 'FILLED',
+        incomingCumulativeFilledQuantity: 2.5,
+        requestedQuantity: 2,
+      }),
+    ).toEqual({
+      filledQuantity: 2,
+      persistedStatus: 'FILLED',
+      shouldApplyFilledLifecycle: false,
+      shouldRefreshTerminalFillDetails: false,
+    });
+  });
+
+  it('preserves terminal cancellation status after partial progress', () => {
+    expect(
+      resolveExchangeOrderFillProgress({
+        existingStatus: 'PARTIALLY_FILLED',
+        existingFilledQuantity: 0.25,
+        incomingStatus: 'CANCELED',
+        incomingCumulativeFilledQuantity: null,
+      }),
+    ).toEqual({
+      filledQuantity: 0.25,
+      persistedStatus: 'CANCELED',
+      shouldApplyFilledLifecycle: false,
+      shouldRefreshTerminalFillDetails: true,
+    });
+  });
+});

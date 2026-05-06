@@ -241,6 +241,75 @@ const resolveCanonicalBotContext = async (userId: string, payload: OpenOrderInpu
   };
 };
 
+export const resolvePersistedLiveOrderFill = (input: {
+  requestedQuantity: number;
+  liveStatus: 'OPEN' | 'FILLED';
+  exchangeFilledQuantity: number | null;
+}) => {
+  const requestedQuantity = Math.max(0, Number(input.requestedQuantity));
+  const exchangeFilledQuantity =
+    typeof input.exchangeFilledQuantity === 'number' && Number.isFinite(input.exchangeFilledQuantity)
+      ? Math.max(0, input.exchangeFilledQuantity)
+      : null;
+  if (input.liveStatus !== 'FILLED') {
+    return {
+      status: 'OPEN' as OrderStatus,
+      filledQuantity: exchangeFilledQuantity ?? 0,
+      complete: false,
+    };
+  }
+  if (exchangeFilledQuantity == null) {
+    return {
+      status: 'FILLED' as OrderStatus,
+      filledQuantity: requestedQuantity,
+      complete: true,
+    };
+  }
+
+  const cappedFilledQuantity = Math.min(requestedQuantity, exchangeFilledQuantity);
+  const tolerance = Math.max(1e-9, requestedQuantity * 1e-8);
+  const complete = cappedFilledQuantity + tolerance >= requestedQuantity;
+  return {
+    status: complete ? ('FILLED' as OrderStatus) : ('PARTIALLY_FILLED' as OrderStatus),
+    filledQuantity: cappedFilledQuantity,
+    complete,
+  };
+};
+
+export const resolveOpenOrderPersistenceDecision = (input: {
+  mode: OpenOrderInput['mode'];
+  requestedQuantity: number;
+  status: 'OPEN' | 'FILLED';
+  fillPriceResolved: boolean;
+  liveFillResolution?: ReturnType<typeof resolvePersistedLiveOrderFill> | null;
+}) => {
+  const shouldApplyImmediateFillLifecycle =
+    input.mode === 'PAPER'
+      ? input.status === 'FILLED' && input.fillPriceResolved
+      : input.liveFillResolution?.complete === true && input.fillPriceResolved;
+  const persistedStatus: OrderStatus =
+    input.mode === 'LIVE'
+      ? (input.liveFillResolution?.status ?? 'OPEN')
+      : shouldApplyImmediateFillLifecycle
+        ? 'FILLED'
+        : 'OPEN';
+
+  return {
+    persistedStatus,
+    persistedFilledQuantity:
+      input.mode === 'LIVE'
+        ? (input.liveFillResolution?.filledQuantity ?? 0)
+        : persistedStatus === 'FILLED'
+          ? input.requestedQuantity
+          : 0,
+    shouldApplyImmediateFillLifecycle,
+    lifecycleFillQuantity:
+      input.mode === 'LIVE'
+        ? (input.liveFillResolution?.filledQuantity ?? input.requestedQuantity)
+        : input.requestedQuantity,
+  };
+};
+
 const ensureLiveOrderAllowed = (
   payload: OpenOrderInput,
   botContext: CanonicalOrderBotContext | null
@@ -573,8 +642,21 @@ export const openOrder = async (
   ) {
     throw orderErrors.paperMarketPriceUnavailable();
   }
-  const shouldApplyImmediateFillLifecycle = status === 'FILLED' && isPositiveFiniteNumber(fillPriceFromExchange);
-  const persistedStatus: 'OPEN' | 'FILLED' = shouldApplyImmediateFillLifecycle ? 'FILLED' : 'OPEN';
+  const liveFillResolution =
+    canonicalPayload.mode === 'LIVE'
+      ? resolvePersistedLiveOrderFill({
+          requestedQuantity: canonicalPayload.quantity,
+          liveStatus: status,
+          exchangeFilledQuantity: filledQuantityFromExchange,
+        })
+      : null;
+  const orderPersistenceDecision = resolveOpenOrderPersistenceDecision({
+    mode: canonicalPayload.mode,
+    requestedQuantity: canonicalPayload.quantity,
+    status,
+    fillPriceResolved: isPositiveFiniteNumber(fillPriceFromExchange),
+    liveFillResolution,
+  });
 
   const order = await prisma.order.create({
     data: {
@@ -589,9 +671,9 @@ export const openOrder = async (
       type: canonicalPayload.type,
       closeReason: null,
       closeInitiator: null,
-      status: persistedStatus,
+      status: orderPersistenceDecision.persistedStatus,
       quantity: canonicalPayload.quantity,
-      filledQuantity: persistedStatus === 'FILLED' ? canonicalPayload.quantity : 0,
+      filledQuantity: orderPersistenceDecision.persistedFilledQuantity,
       price: canonicalPayload.price,
       fee,
       feeSource,
@@ -601,18 +683,18 @@ export const openOrder = async (
       exchangeOrderId,
       exchangeTradeId,
       submittedAt: now,
-      filledAt: persistedStatus === 'FILLED' ? now : null,
+      filledAt: orderPersistenceDecision.persistedStatus === 'FILLED' ? now : null,
     },
   });
 
   const lifecycleResult =
-    shouldApplyImmediateFillLifecycle
+    orderPersistenceDecision.shouldApplyImmediateFillLifecycle
       ? await applyOrderFillLifecycle({
           userId,
           orderId: order.id,
           mode: canonicalPayload.mode,
           fillPrice: fillPriceFromExchange,
-          fillQuantity: filledQuantityFromExchange ?? canonicalPayload.quantity,
+          fillQuantity: orderPersistenceDecision.lifecycleFillQuantity,
           filledAt: now,
         })
       : null;

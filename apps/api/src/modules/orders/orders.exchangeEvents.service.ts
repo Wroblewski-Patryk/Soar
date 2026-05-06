@@ -14,6 +14,10 @@ import { applyOrderFillLifecycle } from './orders.lifecycle.service';
 import { computePositionAddUpdate } from './positionFillMath';
 import { runtimeExecutionDedupeService } from '../engine/runtimeExecutionDedupe.service';
 import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
+import {
+  isExchangeCloseFillComplete,
+  resolveExchangeOrderFillProgress,
+} from './orders.exchangeEvents.helpers';
 
 const isPositiveFiniteNumber = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value) && value > 0;
@@ -112,6 +116,59 @@ const ensureOrderFillRecord = async (input: {
       raw: input.raw,
     },
   });
+};
+
+const resolveRecordableExchangeFillDetails = (input: {
+  orderQuantity: number;
+  existingFilledQuantity: number;
+  currentFilledQuantity: number;
+  lastFillQuantity: number | null;
+  fee: number | null;
+}): { quantity: number | null; fee: number | null } => {
+  if (!isPositiveFiniteNumber(input.lastFillQuantity)) {
+    return {
+      quantity: null,
+      fee:
+        typeof input.fee === 'number' && Number.isFinite(input.fee)
+          ? input.fee
+          : null,
+    };
+  }
+
+  const orderQuantity = isPositiveFiniteNumber(input.orderQuantity) ? input.orderQuantity : null;
+  const previousFilledQuantity =
+    typeof input.existingFilledQuantity === 'number' &&
+    Number.isFinite(input.existingFilledQuantity)
+      ? Math.max(0, input.existingFilledQuantity)
+      : 0;
+  const boundedPreviousFilledQuantity =
+    orderQuantity == null
+      ? previousFilledQuantity
+      : Math.min(orderQuantity, previousFilledQuantity);
+  const currentFilledQuantity =
+    typeof input.currentFilledQuantity === 'number' &&
+    Number.isFinite(input.currentFilledQuantity)
+      ? Math.max(0, input.currentFilledQuantity)
+      : boundedPreviousFilledQuantity;
+  const fillProgressDelta = Math.max(
+    0,
+    currentFilledQuantity - boundedPreviousFilledQuantity
+  );
+  const quantity =
+    fillProgressDelta > 0 ? Math.min(input.lastFillQuantity, fillProgressDelta) : null;
+
+  if (typeof input.fee !== 'number' || !Number.isFinite(input.fee)) {
+    return { quantity, fee: null };
+  }
+
+  if (!isPositiveFiniteNumber(quantity) || quantity >= input.lastFillQuantity) {
+    return { quantity, fee: input.fee };
+  }
+
+  return {
+    quantity,
+    fee: input.fee * (quantity / input.lastFillQuantity),
+  };
 };
 
 const ensureTradeRecord = async (input: {
@@ -293,10 +350,16 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
   }
 
   const nextStatus = mapExchangeOrderStatus(input.event.orderStatus);
-  const cumulativeFilledQuantity =
-    isPositiveFiniteNumber(input.event.cumulativeFilledQuantity)
+  const fillProgress = resolveExchangeOrderFillProgress({
+    existingStatus: existingOrder.status,
+    existingFilledQuantity: existingOrder.filledQuantity,
+    incomingStatus: nextStatus,
+    incomingCumulativeFilledQuantity: isPositiveFiniteNumber(input.event.cumulativeFilledQuantity)
       ? input.event.cumulativeFilledQuantity
-      : existingOrder.filledQuantity;
+      : null,
+    requestedQuantity: existingOrder.quantity,
+  });
+  const cumulativeFilledQuantity = fillProgress.filledQuantity;
   const averageFillPrice =
     isPositiveFiniteNumber(input.event.averagePrice)
       ? input.event.averagePrice
@@ -308,25 +371,82 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
     ? input.event.lastFilledPrice
     : averageFillPrice;
   const eventAt = new Date(input.event.transactionTime ?? input.event.eventTime);
-  const fee = typeof input.event.fee === 'number' && Number.isFinite(input.event.fee)
-    ? input.event.fee
-    : existingOrder.fee;
+  const eventFee =
+    typeof input.event.fee === 'number' && Number.isFinite(input.event.fee)
+      ? input.event.fee
+      : null;
+  const recordableFillDetails = resolveRecordableExchangeFillDetails({
+    orderQuantity: existingOrder.quantity,
+    existingFilledQuantity: existingOrder.filledQuantity,
+    currentFilledQuantity: cumulativeFilledQuantity,
+    lastFillQuantity,
+    fee: eventFee,
+  });
+  const recordableLastFillQuantity = recordableFillDetails.quantity;
+  const recordableEventFee = recordableFillDetails.fee;
+  const hasRecordableEventFee =
+    typeof recordableEventFee === 'number' && Number.isFinite(recordableEventFee);
+  const existingRecordableEventFill = input.event.exchangeTradeId
+    ? await prisma.orderFill.findFirst({
+        where: {
+          orderId: existingOrder.id,
+          exchangeTradeId: input.event.exchangeTradeId,
+        },
+        select: { id: true, feeCost: true },
+      })
+    : null;
+  const existingRecordableEventFillHasFee =
+    typeof existingRecordableEventFill?.feeCost === 'number' &&
+    Number.isFinite(existingRecordableEventFill.feeCost);
+  const existingFillFeeAggregate = hasRecordableEventFee
+    ? await prisma.orderFill.aggregate({
+        where: { orderId: existingOrder.id },
+        _sum: { feeCost: true },
+      })
+    : null;
+  const aggregateRecordableEventFee = hasRecordableEventFee
+    ? (existingFillFeeAggregate?._sum.feeCost ?? 0) +
+      (existingRecordableEventFillHasFee ? 0 : recordableEventFee)
+    : null;
+  const hasSettledExchangeFee =
+    existingOrder.feeSource === 'EXCHANGE_FILL' &&
+    typeof existingOrder.fee === 'number' &&
+    Number.isFinite(existingOrder.fee);
+  const shouldKeepFeePending = !hasRecordableEventFee && !hasSettledExchangeFee;
+  const fee = aggregateRecordableEventFee ?? existingOrder.fee;
+  const shouldRefreshFeeDetails =
+    fillProgress.shouldRefreshTerminalFillDetails ||
+    (hasRecordableEventFee &&
+      existingRecordableEventFill != null &&
+      !existingRecordableEventFillHasFee);
 
   let updatedOrder = await prisma.order.update({
     where: { id: existingOrder.id },
     data: {
-      status: nextStatus,
+      status: fillProgress.persistedStatus,
       filledQuantity: cumulativeFilledQuantity,
-      averageFillPrice,
-      filledAt: nextStatus === 'FILLED' ? eventAt : existingOrder.filledAt,
-      exchangeTradeId: input.event.exchangeTradeId ?? existingOrder.exchangeTradeId,
-      fee,
+      averageFillPrice: fillProgress.shouldRefreshTerminalFillDetails
+        ? averageFillPrice
+        : existingOrder.averageFillPrice,
+      filledAt:
+        fillProgress.persistedStatus === 'FILLED' && fillProgress.shouldRefreshTerminalFillDetails
+          ? eventAt
+          : existingOrder.filledAt,
+      exchangeTradeId: fillProgress.shouldRefreshTerminalFillDetails
+        ? input.event.exchangeTradeId ?? existingOrder.exchangeTradeId
+        : existingOrder.exchangeTradeId,
+      fee: shouldRefreshFeeDetails ? fee : existingOrder.fee,
       feeSource:
-        typeof input.event.fee === 'number' && Number.isFinite(input.event.fee)
+        shouldRefreshFeeDetails && hasRecordableEventFee
           ? 'EXCHANGE_FILL'
           : existingOrder.feeSource,
-      feePending: nextStatus === 'FILLED' ? false : existingOrder.feePending,
-      feeCurrency: input.event.feeCurrency ?? existingOrder.feeCurrency,
+      feePending:
+        fillProgress.persistedStatus === 'FILLED' && hasRecordableEventFee
+          ? false
+          : shouldKeepFeePending || existingOrder.feePending,
+      feeCurrency: shouldRefreshFeeDetails
+        ? input.event.feeCurrency ?? existingOrder.feeCurrency
+        : existingOrder.feeCurrency,
     },
     include: {
       position: true,
@@ -335,7 +455,7 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
 
   if (
     input.event.exchangeTradeId &&
-    isPositiveFiniteNumber(lastFillQuantity) &&
+    isPositiveFiniteNumber(recordableLastFillQuantity) &&
     isPositiveFiniteNumber(lastFillPrice)
   ) {
     await ensureOrderFillRecord({
@@ -348,8 +468,8 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
       side: updatedOrder.side,
       exchangeTradeId: input.event.exchangeTradeId,
       price: lastFillPrice,
-      quantity: lastFillQuantity,
-      feeCost: typeof input.event.fee === 'number' ? input.event.fee : null,
+      quantity: recordableLastFillQuantity,
+      feeCost: recordableEventFee,
       feeCurrency: input.event.feeCurrency,
       executedAt: eventAt,
       raw: input.event.raw as Prisma.InputJsonValue,
@@ -357,7 +477,38 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
   }
 
   if (
-    nextStatus === 'FILLED' &&
+    existingRecordableEventFill &&
+    !existingRecordableEventFillHasFee &&
+    hasRecordableEventFee
+  ) {
+    await prisma.orderFill.update({
+      where: { id: existingRecordableEventFill.id },
+      data: {
+        feeCost: recordableEventFee,
+        feeCurrency: input.event.feeCurrency ?? updatedOrder.feeCurrency,
+      },
+    });
+    await prisma.trade.updateMany({
+      where: {
+        orderId: updatedOrder.id,
+        exchangeTradeId: input.event.exchangeTradeId,
+        OR: [
+          { fee: null },
+          { feeSource: 'ESTIMATED' },
+          { feePending: true },
+        ],
+      },
+      data: {
+        fee: typeof fee === 'number' && Number.isFinite(fee) ? fee : recordableEventFee,
+        feeSource: 'EXCHANGE_FILL',
+        feePending: false,
+        feeCurrency: input.event.feeCurrency ?? updatedOrder.feeCurrency,
+      },
+    });
+  }
+
+  if (
+    fillProgress.shouldApplyFilledLifecycle &&
     isPositiveFiniteNumber(averageFillPrice) &&
     isPositiveFiniteNumber(cumulativeFilledQuantity)
   ) {
@@ -373,6 +524,19 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
           positionSide: updatedOrder.position.side,
         })
       ) {
+        if (
+          !isExchangeCloseFillComplete({
+            filledQuantity: cumulativeFilledQuantity,
+            positionQuantity: updatedOrder.position.quantity,
+          })
+        ) {
+          return {
+            status: 'applied' as const,
+            orderId: updatedOrder.id,
+            positionId: updatedOrder.positionId ?? null,
+            orderStatus: updatedOrder.status,
+          };
+        }
         const closeAttribution = resolveExchangeConfirmedCloseAttribution({
           orderCloseReason: updatedOrder.closeReason,
           orderCloseInitiator: updatedOrder.closeInitiator,
@@ -414,7 +578,7 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
           quantity: cumulativeFilledQuantity,
           fee: typeof fee === 'number' ? fee : null,
           feeSource: updatedOrder.feeSource,
-          feePending: false,
+          feePending: updatedOrder.feePending,
           feeCurrency: updatedOrder.feeCurrency,
           effectiveFeeRate: updatedOrder.effectiveFeeRate,
           exchangeTradeId: input.event.exchangeTradeId ?? null,
@@ -457,7 +621,7 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
           quantity: cumulativeFilledQuantity,
           fee: typeof fee === 'number' ? fee : null,
           feeSource: updatedOrder.feeSource,
-          feePending: false,
+          feePending: updatedOrder.feePending,
           feeCurrency: updatedOrder.feeCurrency,
           effectiveFeeRate: updatedOrder.effectiveFeeRate,
           exchangeTradeId: input.event.exchangeTradeId ?? null,
@@ -486,6 +650,12 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
         fillQuantity: cumulativeFilledQuantity,
         filledAt: eventAt,
       });
+      if (shouldKeepFeePending) {
+        await prisma.order.update({
+          where: { id: updatedOrder.id },
+          data: { feePending: true },
+        });
+      }
       updatedOrder = await prisma.order.findUniqueOrThrow({
         where: { id: updatedOrder.id },
         include: { position: true },
@@ -513,7 +683,7 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
           quantity: cumulativeFilledQuantity,
           fee: typeof fee === 'number' ? fee : null,
           feeSource: updatedOrder.feeSource,
-          feePending: false,
+          feePending: updatedOrder.feePending,
           feeCurrency: updatedOrder.feeCurrency,
           effectiveFeeRate: updatedOrder.effectiveFeeRate,
           exchangeTradeId: input.event.exchangeTradeId ?? null,
