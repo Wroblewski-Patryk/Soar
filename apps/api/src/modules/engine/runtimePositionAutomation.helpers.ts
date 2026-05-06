@@ -79,10 +79,51 @@ export const resolveDcaLevelCount = (input: PositionManagementInput) => {
 
 export const estimateNextDcaAddedQuantity = (
   input: PositionManagementInput,
-  state: PositionManagementState
+  state: PositionManagementState,
+  currentPnlFraction?: number
 ) => {
   if (!input.dca?.enabled) return 0;
-  const index = Math.max(0, state.currentAdds);
+  const levels =
+    Array.isArray(input.dca.levelPercents) && input.dca.levelPercents.length > 0
+      ? input.dca.levelPercents
+      : Array.from({ length: input.dca.maxAdds ?? 0 }, () => -(input.dca?.stepPercent ?? 0.01));
+  const executedIndices = new Set(
+    (state.executedDcaLevelIndices ?? [])
+      .filter((index) => Number.isInteger(index) && index >= 0 && index < levels.length),
+  );
+  if (executedIndices.size === 0 && state.currentAdds > 0) {
+    levels
+      .map((level, index) => ({ index, level }))
+      .filter(({ level }) => Number.isFinite(level))
+      .sort((left, right) => {
+        const leftPositive = left.level >= 0;
+        const rightPositive = right.level >= 0;
+        if (leftPositive !== rightPositive) return leftPositive ? -1 : 1;
+        return leftPositive ? left.level - right.level : right.level - left.level;
+      })
+      .slice(0, Math.max(0, Math.min(state.currentAdds, levels.length)))
+      .forEach(({ index }) => executedIndices.add(index));
+  }
+  const candidates =
+    typeof currentPnlFraction === 'number' && Number.isFinite(currentPnlFraction)
+      ? levels
+          .map((level, index) => ({ index, level }))
+          .filter(({ index, level }) => {
+            if (executedIndices.has(index) || !Number.isFinite(level)) return false;
+            return level >= 0 ? currentPnlFraction >= level : currentPnlFraction <= level;
+          })
+      : [];
+  const sameDirectionCandidates = candidates.filter(({ level }) =>
+    (currentPnlFraction ?? 0) >= 0 ? level >= 0 : level < 0,
+  );
+  const orderedCandidates = sameDirectionCandidates.length > 0 ? sameDirectionCandidates : candidates;
+  orderedCandidates.sort((left, right) => {
+    const leftDistance = Math.abs(left.level);
+    const rightDistance = Math.abs(right.level);
+    if (leftDistance !== rightDistance) return leftDistance - rightDistance;
+    return left.index - right.index;
+  });
+  const index = orderedCandidates[0]?.index ?? Math.max(0, state.currentAdds);
   const addFraction = input.dca.addSizeFractions?.[index] ?? input.dca.addSizeFraction ?? 0;
   if (!Number.isFinite(addFraction) || addFraction <= 0) return 0;
   return state.quantity * addFraction;

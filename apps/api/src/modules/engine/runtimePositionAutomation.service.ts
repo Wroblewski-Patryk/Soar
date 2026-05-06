@@ -581,6 +581,7 @@ export class RuntimePositionAutomationService {
       quantity: state.quantity,
       averageEntryPrice: state.averageEntryPrice,
       currentAdds: state.currentAdds,
+      executedDcaLevelIndices: state.executedDcaLevelIndices ? [...state.executedDcaLevelIndices] : undefined,
       trailingAnchorPrice: state.trailingAnchorPrice,
       trailingLossLimitPercent: state.trailingLossLimitPercent,
       trailingTakeProfitHighPercent: state.trailingTakeProfitHighPercent,
@@ -594,6 +595,7 @@ export class RuntimePositionAutomationService {
       left.quantity === right.quantity &&
       left.averageEntryPrice === right.averageEntryPrice &&
       left.currentAdds === right.currentAdds &&
+      JSON.stringify(left.executedDcaLevelIndices ?? []) === JSON.stringify(right.executedDcaLevelIndices ?? []) &&
       left.trailingAnchorPrice === right.trailingAnchorPrice &&
       left.trailingLossLimitPercent === right.trailingLossLimitPercent &&
       left.trailingTakeProfitHighPercent === right.trailingTakeProfitHighPercent &&
@@ -756,6 +758,7 @@ export class RuntimePositionAutomationService {
       quantity: position.quantity,
       averageEntryPrice: position.entryPrice,
       currentAdds: 0,
+      executedDcaLevelIndices: undefined,
       trailingAnchorPrice: position.entryPrice,
       lastDcaPrice: undefined,
     } as PositionManagementState;
@@ -776,6 +779,7 @@ export class RuntimePositionAutomationService {
         ? {
             ...basePreviousState,
             currentAdds: durableDcaProgress.currentAdds,
+            executedDcaLevelIndices: undefined,
             lastDcaPrice: durableDcaProgress.lastDcaPrice ?? basePreviousState.lastDcaPrice,
           }
         : basePreviousState;
@@ -790,8 +794,11 @@ export class RuntimePositionAutomationService {
 
     const paperStartBalance = inheritedExecutionContext.paperStartBalance;
     const dcaLevelCount = resolveDcaLevelCount(input);
-    const hasPendingDca = input.dca?.enabled && previousState.currentAdds < dcaLevelCount;
-    const estimatedAddedQuantity = hasPendingDca ? estimateNextDcaAddedQuantity(input, previousState) : 0;
+    const executedDcaLevelCount = previousState.executedDcaLevelIndices?.length ?? previousState.currentAdds;
+    const hasPendingDca = input.dca?.enabled && executedDcaLevelCount < dcaLevelCount;
+    const estimatedAddedQuantity = hasPendingDca
+      ? estimateNextDcaAddedQuantity(input, previousState, currentPnlFraction ?? undefined)
+      : 0;
     const dcaFundsExhausted =
       hasPendingDca && estimatedAddedQuantity > 0
         ? await this.deps.resolveDcaFundsExhausted({
@@ -855,7 +862,7 @@ export class RuntimePositionAutomationService {
           positionId: position.id,
           symbol: position.symbol,
           positionSide: position.side,
-          dcaLevelIndex: previousState.currentAdds,
+          dcaLevelIndex: result.dcaLevelIndex ?? previousState.currentAdds,
           markPrice: effectiveLifecyclePrice,
           mode,
           addedQuantity: dcaAddedQuantity,

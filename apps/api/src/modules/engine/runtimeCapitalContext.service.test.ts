@@ -237,6 +237,65 @@ describe('runtimeCapitalContext', () => {
     expect(cachedSnapshot.referenceBalance).toBe(1_000);
   });
 
+  it('caps LIVE free cash by exchange free balance even when total balance is higher', async () => {
+    const deps = buildDeps({
+      getWalletContext: async () => ({
+        id: 'wallet-live-free-cash',
+        mode: 'LIVE',
+        paperInitialBalance: 0,
+        paperResetAt: null,
+        liveAllocationMode: null,
+        liveAllocationValue: null,
+        baseCurrency: 'USDT',
+        exchange: 'BINANCE',
+        apiKey: null,
+      }),
+      getLiveApiKeyContext: async () => ({ apiKey: 'k', apiSecret: 's' }),
+      fetchLiveBalance: async () => ({ accountBalance: 1_000, freeBalance: 100 }),
+      listOpenBotManagedPositions: async () => [
+        { entryPrice: 100, quantity: 1, leverage: 1 }, // local reserved 100
+      ],
+    });
+
+    const snapshot = await resolveRuntimeCapitalSnapshot(
+      {
+        userId: 'u-wallet-live-free-cash',
+        botId: 'b-wallet-live-free-cash',
+        walletId: 'wallet-live-free-cash',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        paperStartBalance: 0,
+        nowMs: 5_710,
+      },
+      deps,
+    );
+
+    expect(snapshot.accountBalance).toBe(1_000);
+    expect(snapshot.referenceBalance).toBe(1_000);
+    expect(snapshot.reservedMargin).toBe(100);
+    expect(snapshot.freeCash).toBe(100);
+
+    const exhausted = await resolveRuntimeDcaFundsExhausted(
+      {
+        userId: 'u-wallet-live-free-cash',
+        botId: 'b-wallet-live-free-cash',
+        walletId: 'wallet-live-free-cash',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        paperStartBalance: 0,
+        markPrice: 100,
+        addedQuantity: 2,
+        leverage: 1,
+        nowMs: 5_711,
+      },
+      deps,
+    );
+
+    expect(exhausted).toBe(true);
+  });
+
   it('uses refreshed full exchange balance when LIVE wallet has no explicit allocation rule', async () => {
     const snapshot = await resolveRuntimeCapitalSnapshot(
       {

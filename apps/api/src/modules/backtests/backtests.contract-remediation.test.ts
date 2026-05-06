@@ -99,6 +99,75 @@ describe('backtest parity remediation contracts', () => {
     ).toBe(false);
   });
 
+  it('does not double-count reserved margin after final-candle portfolio close', () => {
+    const symbol = 'BTCUSDT';
+    const initialBalance = 1_000;
+    const simulation = simulateInterleavedPortfolio({
+      symbols: [symbol],
+      candlesBySymbol: new Map([[symbol, makeCandles([100, 102, 103, 104])]]),
+      marketType: 'FUTURES',
+      leverage: 1,
+      marginMode: 'CROSSED',
+      strategyConfig: null,
+      walletRiskPercent: 25,
+      initialBalance,
+    });
+
+    const trades = simulation.perSymbol[symbol].trades;
+    const totalPnl = trades.reduce((sum, trade) => sum + trade.pnl, 0);
+
+    expect(trades.length).toBeGreaterThan(0);
+    expect(simulation.finalBalance).toBeCloseTo(initialBalance + totalPnl, 8);
+  });
+
+  it('uses DCA fill price for portfolio reserve accounting before opening another symbol', () => {
+    const baseTime = 1_710_000_000_000;
+    const candles = (rows: Array<{ close: number; high?: number; low?: number }>) =>
+      rows.map((row, index) => ({
+        openTime: baseTime + index * 60_000,
+        closeTime: baseTime + index * 60_000 + 30_000,
+        open: row.close,
+        high: row.high ?? row.close,
+        low: row.low ?? row.close,
+        close: row.close,
+        volume: 1_000 + index,
+      }));
+
+    const simulation = simulateInterleavedPortfolio({
+      symbols: ['BTCUSDT', 'ETHUSDT'],
+      candlesBySymbol: new Map([
+        [
+          'BTCUSDT',
+          candles([
+            { close: 100 },
+            { close: 102, high: 102.5, low: 101.5 },
+            { close: 76, high: 102, low: 50 },
+            { close: 76 },
+          ]),
+        ],
+        [
+          'ETHUSDT',
+          candles([
+            { close: 100 },
+            { close: 100 },
+            { close: 104, high: 104.5, low: 103.5 },
+            { close: 104 },
+          ]),
+        ],
+      ]),
+      marketType: 'FUTURES',
+      leverage: 1,
+      marginMode: 'CROSSED',
+      strategyConfig: null,
+      walletRiskPercent: 40,
+      initialBalance: 1_000,
+    });
+
+    const btcDca = simulation.perSymbol.BTCUSDT.events.find((event) => event.type === 'DCA');
+    expect(btcDca?.price).toBe(50);
+    expect(simulation.perSymbol.ETHUSDT.eventCounts.ENTRY).toBe(1);
+  });
+
   it('defaults timeline replay context to isolated and keeps portfolio mode explicit', () => {
     const targetSymbol = 'BTCUSDT';
     const runSymbols = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT'];

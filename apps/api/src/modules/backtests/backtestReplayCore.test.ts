@@ -569,6 +569,59 @@ describe('simulateTradesForSymbolReplay', () => {
     expect(result.eventCounts.DCA).toBeGreaterThanOrEqual(1);
   });
 
+  it('preserves mixed DCA lane progress across adverse and favorable intrabar moves', () => {
+    const candles = [
+      candle(0, 100),
+      candle(1, 101),
+      candle(2, 102), // open LONG after indicator warmup
+      {
+        ...candle(3, 95),
+        low: 75, // negative DCA lane
+        high: 102,
+      },
+      {
+        ...candle(4, 110),
+        low: 109,
+        high: 130, // positive DCA lane after the negative lane
+      },
+      candle(5, 111), // final close
+    ];
+
+    const result = simulateTradesForSymbolReplay({
+      symbol: 'BTCUSDT',
+      candles,
+      marketType: 'FUTURES',
+      leverage: 1,
+      marginMode: 'CROSSED',
+      strategyConfig: {
+        openConditions: {
+          direction: 'long',
+          indicatorsLong: [
+            { name: 'MOMENTUM', condition: '>', value: -999, params: { period: 1 } },
+          ],
+          indicatorsShort: [],
+        },
+        close: {
+          tp: 99,
+          sl: 99,
+        },
+        additional: {
+          dcaEnabled: true,
+          dcaMode: 'advanced',
+          dcaTimes: 0,
+          dcaLevels: [
+            { percent: -20, multiplier: 1 },
+            { percent: 20, multiplier: 1 },
+          ],
+        },
+      },
+    });
+
+    expect(result.eventCounts.DCA).toBe(2);
+    expect(result.trades.length).toBeGreaterThan(0);
+    expect(result.trades[0].quantity).toBeCloseTo(4, 5);
+  });
+
   it('uses strategy rules to suppress fallback threshold signals when indicators do not match', () => {
     const candles = [
       candle(0, 100),
@@ -913,5 +966,167 @@ describe('simulateTradesForSymbolReplay', () => {
 
     const totalPnl = result.trades.reduce((acc, trade) => acc + trade.pnl, 0);
     expect(totalPnl).toBeGreaterThanOrEqual(-initialBalance);
+  });
+
+  it('does not execute DCA when tracked wallet balance cannot fund the add', () => {
+    const candles = [
+      candle(0, 100),
+      candle(1, 101),
+      candle(2, 102), // open LONG after indicator warmup
+      {
+        ...candle(3, 99),
+        low: 80, // would trigger DCA if funds were available
+      },
+      candle(4, 110), // TP may close after DCA is classified funds-exhausted
+    ];
+
+    const result = simulateTradesForSymbolReplay({
+      symbol: 'BTCUSDT',
+      candles,
+      marketType: 'FUTURES',
+      leverage: 1,
+      marginMode: 'CROSSED',
+      strategyConfig: {
+        openConditions: {
+          direction: 'long',
+          indicatorsLong: [
+            { name: 'MOMENTUM', condition: '>', value: -999, params: { period: 1 } },
+          ],
+          indicatorsShort: [],
+        },
+        close: {
+          mode: 'basic',
+          tp: 5,
+          sl: 99,
+        },
+        additional: {
+          dcaEnabled: true,
+          dcaTimes: 1,
+          dcaLevels: [{ percent: -20, multiplier: 1 }],
+        },
+      },
+      positionSizing: {
+        mode: 'fixed',
+        fixedQuantity: 10,
+        referenceBalance: 1_500,
+      },
+    });
+
+    expect(result.eventCounts.DCA).toBe(0);
+    expect(result.eventCounts.TP).toBeGreaterThanOrEqual(1);
+    expect(result.trades[0]?.quantity).toBeCloseTo(10, 5);
+  });
+
+  it('reserves entry margin before checking tracked wallet funds for DCA', () => {
+    const candles = [
+      candle(0, 100),
+      candle(1, 101),
+      {
+        ...candle(2, 90),
+        low: 80,
+      },
+      candle(3, 110),
+    ];
+
+    const result = simulateTradesForSymbolReplay({
+      symbol: 'BTCUSDT',
+      candles,
+      marketType: 'FUTURES',
+      leverage: 1,
+      marginMode: 'CROSSED',
+      strategyConfig: {
+        openConditions: {
+          direction: 'long',
+          indicatorsLong: [
+            { name: 'MOMENTUM', condition: '>', value: -999, params: { period: 1 } },
+          ],
+          indicatorsShort: [],
+        },
+        close: {
+          mode: 'basic',
+          tp: 5,
+          sl: 99,
+        },
+        additional: {
+          dcaEnabled: true,
+          dcaTimes: 1,
+          dcaLevels: [{ percent: -20, multiplier: 1 }],
+        },
+      },
+      positionSizing: {
+        mode: 'fixed',
+        fixedQuantity: 1,
+        referenceBalance: 180,
+      },
+    });
+
+    expect(result.eventCounts.ENTRY).toBe(1);
+    expect(result.eventCounts.DCA).toBe(0);
+    expect(result.eventCounts.TP).toBeGreaterThanOrEqual(1);
+  });
+
+  it('uses selected DCA level size for funds exhaustion after mixed-lane progress', () => {
+    const candles = [
+      candle(0, 100),
+      candle(1, 101),
+      candle(2, 102), // open LONG after indicator warmup
+      {
+        ...candle(3, 90),
+        low: 80, // executes negative DCA level at index 1
+        high: 103,
+      },
+      {
+        ...candle(4, 120),
+        low: 118,
+        high: 125, // selected positive DCA level at index 0 is too large to fund
+      },
+      {
+        ...candle(5, 113),
+        low: 112,
+        high: 114, // TTP should release because selected DCA add is funds-exhausted
+      },
+    ];
+
+    const result = simulateTradesForSymbolReplay({
+      symbol: 'BTCUSDT',
+      candles,
+      marketType: 'FUTURES',
+      leverage: 1,
+      marginMode: 'CROSSED',
+      strategyConfig: {
+        openConditions: {
+          direction: 'long',
+          indicatorsLong: [
+            { name: 'MOMENTUM', condition: '>', value: -999, params: { period: 1 } },
+          ],
+          indicatorsShort: [],
+        },
+        close: {
+          mode: 'advanced',
+          tp: 99,
+          sl: 99,
+          ttp: [{ percent: 10, arm: 5 }],
+          tsl: [],
+        },
+        additional: {
+          dcaEnabled: true,
+          dcaMode: 'advanced',
+          dcaTimes: 0,
+          dcaLevels: [
+            { percent: 20, multiplier: 2 },
+            { percent: -20, multiplier: 1 },
+          ],
+        },
+      },
+      positionSizing: {
+        mode: 'fixed',
+        fixedQuantity: 1,
+        referenceBalance: 350,
+      },
+    });
+
+    expect(result.eventCounts.DCA).toBe(1);
+    expect(result.eventCounts.TTP).toBeGreaterThanOrEqual(1);
+    expect(result.trades[0]?.quantity).toBeCloseTo(2, 5);
   });
 });

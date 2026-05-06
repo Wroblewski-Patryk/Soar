@@ -416,7 +416,7 @@ describe('orchestrateRuntimeSignal', () => {
     );
   });
 
-  it('closes open position on EXIT signal', async () => {
+  it('closes open LIVE position with runtime-owned reduce-only market order only', async () => {
     const orderGateway = createOrderGateway();
     const positionGateway = createPositionGateway();
     const eventGateway = createEventGateway();
@@ -502,6 +502,7 @@ describe('orchestrateRuntimeSignal', () => {
       'u1',
       expect.objectContaining({
         side: 'SELL',
+        type: 'MARKET',
         quantity: 0.2,
         price: 43000,
         mode: 'LIVE',
@@ -509,6 +510,13 @@ describe('orchestrateRuntimeSignal', () => {
         reduceOnly: true,
       })
     );
+    const closeOrderPayload = (orderGateway.openOrder as ReturnType<typeof vi.fn>).mock.calls[0]?.[1] as Record<
+      string,
+      unknown
+    >;
+    expect(closeOrderPayload).not.toHaveProperty('stopPrice');
+    expect(closeOrderPayload).not.toHaveProperty('stopLoss');
+    expect(closeOrderPayload).not.toHaveProperty('takeProfit');
     expect(positionGateway.closePosition).toHaveBeenCalledWith(
       'position-open',
       'u1',
@@ -954,6 +962,106 @@ describe('orchestrateRuntimeSignal', () => {
         dedupeKey: expect.any(String),
         orderId: 'order-close-pending',
         positionId: 'position-open',
+      })
+    );
+  });
+
+  it('does not close a position when a FILLED close order reports less than the open quantity', async () => {
+    const orderGateway = createOrderGateway();
+    const positionGateway = createPositionGateway();
+    const eventGateway = createEventGateway();
+    const tradeGateway = createTradeGateway();
+    const dedupeGateway = createDedupeGateway();
+    (positionGateway.getOpenPositionBySymbol as ReturnType<typeof vi.fn>).mockResolvedValue({
+      id: 'position-underfilled-close',
+      userId: 'u1',
+      externalId: null,
+      origin: 'BOT',
+      managementMode: 'BOT_MANAGED',
+      syncState: 'IN_SYNC',
+      symbol: 'BTCUSDT',
+      side: 'LONG',
+      status: 'OPEN',
+      entryPrice: 43000,
+      quantity: 0.2,
+      leverage: 1,
+      openedAt: new Date(),
+      closedAt: null,
+      realizedPnl: null,
+      unrealizedPnl: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      botId: null,
+      walletId: 'wallet-underfilled',
+      strategyId: null,
+      stopLoss: null,
+      takeProfit: null,
+    });
+    (orderGateway.openOrder as ReturnType<typeof vi.fn>).mockResolvedValue({
+      id: 'order-underfilled-close',
+      userId: 'u1',
+      symbol: 'BTCUSDT',
+      side: 'SELL',
+      type: 'MARKET',
+      status: 'FILLED',
+      quantity: 0.2,
+      filledQuantity: 0.1,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      submittedAt: new Date(),
+      filledAt: new Date(),
+      botId: null,
+      walletId: 'wallet-underfilled',
+      strategyId: null,
+      positionId: 'position-underfilled-close',
+      price: 43100,
+      stopPrice: null,
+      averageFillPrice: 43100,
+      fee: null,
+      feeSource: 'ESTIMATED',
+      feePending: false,
+      feeCurrency: null,
+      effectiveFeeRate: null,
+      exchangeOrderId: 'exchange-underfilled-close',
+      exchangeTradeId: null,
+      canceledAt: null,
+    });
+
+    const result = await orchestrateRuntimeSignal(
+      {
+        userId: 'u1',
+        walletId: 'wallet-underfilled',
+        symbol: 'BTCUSDT',
+        direction: 'EXIT',
+        quantity: 0.1,
+        markPrice: 43100,
+        mode: 'LIVE',
+      },
+      orderGateway,
+      positionGateway,
+      eventGateway,
+      tradeGateway,
+      dedupeGateway
+    );
+
+    expect(result).toEqual({
+      status: 'submitted',
+      orderId: 'order-underfilled-close',
+    });
+    expect(positionGateway.closePosition).not.toHaveBeenCalled();
+    expect(tradeGateway.createTrade).not.toHaveBeenCalled();
+    expect(dedupeGateway.markSubmitted).toHaveBeenCalledWith(
+      expect.objectContaining({
+        orderId: 'order-underfilled-close',
+        positionId: 'position-underfilled-close',
+      })
+    );
+    expect(eventGateway.writeEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: 'submitted',
+        reason: 'waiting_fill',
+        positionId: 'position-underfilled-close',
+        positionQty: 0.1,
       })
     );
   });

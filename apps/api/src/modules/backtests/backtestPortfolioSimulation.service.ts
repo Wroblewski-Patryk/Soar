@@ -17,6 +17,7 @@ import {
   buildReplayPositionManagementInput,
   closeReasonToEventType,
   parseStrategyRiskConfig,
+  resolveReplayDcaProbePrice,
 } from './backtestReplayCore';
 import {
   BacktestFillModelConfig,
@@ -168,6 +169,7 @@ export const simulateInterleavedPortfolio = (input: {
     lastDcaPrice: number;
     bestPrice: number;
     marginUsed: number;
+    executedDcaLevelIndices?: number[];
     trailingLossLimit?: number;
     trailingTakeProfitHigh?: number;
     trailingTakeProfitStep?: number;
@@ -301,6 +303,7 @@ export const simulateInterleavedPortfolio = (input: {
           lastDcaPrice: entryPrice,
           bestPrice: entryPrice,
           marginUsed: marginRequired,
+          executedDcaLevelIndices: undefined,
         });
         pushEvent(symbol, 'ENTRY', decision.positionSide as PositionSide, new Date(current.openTime), entryPrice, null, index, sequence);
       }
@@ -326,12 +329,20 @@ export const simulateInterleavedPortfolio = (input: {
       trailingTakeProfitHighPercent: position.trailingTakeProfitHigh,
       trailingTakeProfitStepPercent: position.trailingTakeProfitStep,
       lastDcaPrice: position.lastDcaPrice,
+      executedDcaLevelIndices: position.executedDcaLevelIndices,
     };
 
     const dcaProbeInput: PositionManagementInput = {
       ...buildReplayPositionManagementInput({
         side: position.side,
-        currentPrice: position.side === 'LONG' ? current.low : current.high,
+        currentPrice: resolveReplayDcaProbePrice({
+          side: position.side,
+          candle: current,
+          entryPrice: position.entryPrice,
+          leverage: effectiveLeverage,
+          riskConfig,
+          executedDcaLevelIndices: position.executedDcaLevelIndices,
+        }),
         entryPrice: position.entryPrice,
         leverage: effectiveLeverage,
         riskConfig,
@@ -346,12 +357,11 @@ export const simulateInterleavedPortfolio = (input: {
     };
     const dcaProbeResult = evaluatePositionManagement(dcaProbeInput, baseState);
     const hasPendingDcaLevels = position.dcaCount < riskConfig.maxDcaPerTrade;
-    const nextDcaMultiplier =
-      riskConfig.dcaMultipliers[position.dcaCount] ??
-      riskConfig.dcaMultipliers[riskConfig.dcaMultipliers.length - 1] ??
-      1;
-    const estimatedNextDcaAddedQty = Math.max(0, position.quantity * Math.max(0, nextDcaMultiplier));
-    const estimatedNextDcaMargin = (current.close * estimatedNextDcaAddedQty) / Math.max(1, effectiveLeverage);
+    const estimatedNextDcaAddedQty = dcaProbeResult.dcaExecuted
+      ? Math.max(0, dcaProbeResult.dcaAddedQuantity)
+      : 0;
+    const dcaFillPrice = dcaProbeResult.nextState.lastDcaPrice ?? dcaProbeInput.currentPrice ?? current.close;
+    const estimatedNextDcaMargin = (dcaFillPrice * estimatedNextDcaAddedQty) / Math.max(1, effectiveLeverage);
     const dcaFundsExhausted =
       hasPendingDcaLevels && estimatedNextDcaAddedQty > 0
         ? estimatedNextDcaMargin > cashBalance
@@ -360,7 +370,7 @@ export const simulateInterleavedPortfolio = (input: {
 
     if (dcaProbeResult.dcaExecuted) {
       const addedQty = Math.max(0, dcaProbeResult.nextState.quantity - position.quantity);
-      const addMargin = (current.close * addedQty) / Math.max(1, effectiveLeverage);
+      const addMargin = (dcaFillPrice * addedQty) / Math.max(1, effectiveLeverage);
       if (addMargin > cashBalance) {
         const managementWithoutDca: PositionManagementInput = {
           ...dcaProbeInput,
@@ -377,13 +387,14 @@ export const simulateInterleavedPortfolio = (input: {
         position.quantity = dcaProbeResult.nextState.quantity;
         position.entryPrice = dcaProbeResult.nextState.averageEntryPrice;
         position.dcaCount = dcaProbeResult.nextState.currentAdds;
-        position.lastDcaPrice = current.close;
+        position.executedDcaLevelIndices = dcaProbeResult.nextState.executedDcaLevelIndices;
+        position.lastDcaPrice = dcaFillPrice;
         pushEvent(
           symbol,
           'DCA',
           position.side as PositionSide,
           new Date(current.openTime),
-          current.close,
+          dcaFillPrice,
           null,
           index,
           tradeSequenceBySymbol.get(symbol) ?? 1,
@@ -411,6 +422,7 @@ export const simulateInterleavedPortfolio = (input: {
       trailingTakeProfitHighPercent: position.trailingTakeProfitHigh,
       trailingTakeProfitStepPercent: position.trailingTakeProfitStep,
       lastDcaPrice: position.lastDcaPrice,
+      executedDcaLevelIndices: position.executedDcaLevelIndices,
     });
 
     position.trailingLossLimit = managementResult.nextState.trailingLossLimitPercent;
@@ -558,6 +570,7 @@ export const simulateInterleavedPortfolio = (input: {
       trigger: 'FINAL_CANDLE',
       mismatchReason: null,
     });
+    openPositions.delete(symbol);
   }
 
   return {

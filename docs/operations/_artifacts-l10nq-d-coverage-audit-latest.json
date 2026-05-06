@@ -1,11 +1,11 @@
 {
   "version": "1.0.0",
-  "generatedAtUtc": "2026-05-03T00:51:39.587Z",
+  "generatedAtUtc": "2026-05-06T17:56:03.430Z",
   "rootDir": ".",
   "scope": {
-    "scannedSourceFiles": 296,
+    "scannedSourceFiles": 297,
     "routePages": 38,
-    "routeReachableFiles": 283
+    "routeReachableFiles": 284
   },
   "summary": {
     "filesWithFindings": 0,
@@ -306,7 +306,7 @@
     },
     {
       "routePage": "apps/web/src/app/dashboard/page.tsx",
-      "reachableFilesCount": 122,
+      "reachableFilesCount": 123,
       "issueFilesCount": 0,
       "moduleIssueFilesCount": 0,
       "sharedIssueFilesCount": 0,

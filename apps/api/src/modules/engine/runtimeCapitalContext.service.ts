@@ -6,7 +6,12 @@ import { fetchSupportedExchangeBalanceRaw } from '../exchange/exchangeAdapterBou
 import { recordLiveWalletBalanceSnapshot } from '../wallets/walletLedger.service';
 
 const liveBalanceCacheTtlMs = Number.parseInt(process.env.RUNTIME_LIVE_BALANCE_CACHE_TTL_MS ?? '30000', 10);
-const liveBalanceCache = new Map<string, { referenceBalance: number; accountBalance: number; fetchedAt: number }>();
+const liveBalanceCache = new Map<string, { referenceBalance: number; accountBalance: number; freeBalance: number | null; fetchedAt: number }>();
+
+type LiveBalanceSnapshot = {
+  accountBalance: number;
+  freeBalance: number | null;
+};
 
 type RuntimeCapitalContextDeps = {
   getWalletContext: (input: {
@@ -52,7 +57,7 @@ type RuntimeCapitalContextDeps = {
     apiSecret: string;
     marketType: TradeMarket;
     baseCurrency: string;
-  }) => Promise<number | null>;
+  }) => Promise<LiveBalanceSnapshot | number | null>;
   recordLiveWalletBalanceSnapshot?: typeof recordLiveWalletBalanceSnapshot;
 };
 
@@ -61,10 +66,38 @@ const extractBalanceForCurrency = (payload: unknown, baseCurrency: string) => {
   const normalizedBaseCurrency = normalizeBaseCurrency(baseCurrency);
   const withTotal = payload as { total?: Record<string, unknown>; free?: Record<string, unknown> };
   const total = Number(withTotal.total?.[normalizedBaseCurrency]);
-  if (Number.isFinite(total) && total > 0) return total;
   const free = Number(withTotal.free?.[normalizedBaseCurrency]);
-  if (Number.isFinite(free) && free > 0) return free;
-  return null;
+  const accountBalance = Number.isFinite(total) && total >= 0 ? total : null;
+  const freeBalance = Number.isFinite(free) && free >= 0 ? free : null;
+  if (accountBalance == null && freeBalance == null) return null;
+  return {
+    accountBalance: accountBalance ?? freeBalance ?? 0,
+    freeBalance: freeBalance ?? accountBalance,
+  };
+};
+
+const normalizeLiveBalanceSnapshot = (value: LiveBalanceSnapshot | number | null): LiveBalanceSnapshot | null => {
+  if (typeof value === 'number') {
+    return Number.isFinite(value) && value > 0 ? { accountBalance: value, freeBalance: value } : null;
+  }
+  if (!value) return null;
+  const accountBalance = Number(value.accountBalance);
+  const freeBalance = Number(value.freeBalance);
+  if (!Number.isFinite(accountBalance) || accountBalance <= 0) return null;
+  return {
+    accountBalance,
+    freeBalance: Number.isFinite(freeBalance) && freeBalance >= 0 ? Math.min(freeBalance, accountBalance) : null,
+  };
+};
+
+const resolveLiveFreeCash = (input: {
+  referenceBalance: number;
+  reservedMargin: number;
+  exchangeFreeBalance: number | null;
+}) => {
+  const allocationFreeCash = Math.max(0, input.referenceBalance - input.reservedMargin);
+  if (input.exchangeFreeBalance == null) return allocationFreeCash;
+  return Math.min(allocationFreeCash, Math.max(0, input.exchangeFreeBalance));
 };
 
 export const resolveRuntimeCapitalPositionOwnerWhere = (input: {
@@ -301,7 +334,11 @@ const resolveLiveRuntimeCapitalSnapshot = async (
       const leverage = Math.max(1, position.leverage || 1);
       return sum + (position.entryPrice * position.quantity) / leverage;
     }, 0);
-    const freeCash = Math.max(0, cached.referenceBalance - reservedMargin);
+    const freeCash = resolveLiveFreeCash({
+      referenceBalance: cached.referenceBalance,
+      reservedMargin,
+      exchangeFreeBalance: cached.freeBalance,
+    });
     return {
       referenceBalance: cached.referenceBalance,
       freeCash,
@@ -324,6 +361,7 @@ const resolveLiveRuntimeCapitalSnapshot = async (
   });
 
   let accountBalance = 0;
+  let exchangeFreeBalance: number | null = null;
   if (apiKey) {
     const fetched = await deps.fetchLiveBalance({
       exchange: input.exchange,
@@ -332,8 +370,10 @@ const resolveLiveRuntimeCapitalSnapshot = async (
       marketType: input.marketType,
       baseCurrency,
     });
-    if (Number.isFinite(fetched) && (fetched as number) > 0) {
-      accountBalance = fetched as number;
+    const normalized = normalizeLiveBalanceSnapshot(fetched);
+    if (normalized) {
+      accountBalance = normalized.accountBalance;
+      exchangeFreeBalance = normalized.freeBalance;
     }
   }
 
@@ -355,7 +395,7 @@ const resolveLiveRuntimeCapitalSnapshot = async (
       marketType: input.marketType,
       baseCurrency,
       accountBalance,
-      freeBalance: accountBalance,
+      freeBalance: exchangeFreeBalance ?? accountBalance,
       allocationMode: wallet.liveAllocationMode,
       allocationValue: wallet.liveAllocationValue,
       fetchedAt: new Date(input.nowMs),
@@ -366,7 +406,7 @@ const resolveLiveRuntimeCapitalSnapshot = async (
     });
   }
 
-  liveBalanceCache.set(cacheKey, { referenceBalance, accountBalance, fetchedAt: input.nowMs });
+  liveBalanceCache.set(cacheKey, { referenceBalance, accountBalance, freeBalance: exchangeFreeBalance, fetchedAt: input.nowMs });
 
   const openPositions = await deps.listOpenBotManagedPositions({
     userId: input.userId,
@@ -378,7 +418,11 @@ const resolveLiveRuntimeCapitalSnapshot = async (
     const leverage = Math.max(1, position.leverage || 1);
     return sum + (position.entryPrice * position.quantity) / leverage;
   }, 0);
-  const freeCash = Math.max(0, referenceBalance - reservedMargin);
+  const freeCash = resolveLiveFreeCash({
+    referenceBalance,
+    reservedMargin,
+    exchangeFreeBalance,
+  });
 
   return {
     referenceBalance,

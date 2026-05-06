@@ -7,7 +7,7 @@ import Tabs from "@/ui/components/Tabs";
 import { focusFirstInvalidField, FormPageShell, FormValidationSummary, toValidationSummaryErrors } from "@/ui/forms";
 import { useStrategyForm } from "../hooks/useStrategyForm";
 import { StrategyFormProps } from "../types/StrategyForm.type";
-import { hasInvalidTrailingCloseThresholds } from "../utils/strategyCloseValidation";
+import { hasInvalidTrailingCloseThresholds, hasUnreachableBasicDcaLevels } from "../utils/strategyCloseValidation";
 import { Additional } from "./StrategyFormSections/Additional";
 import { Basic } from "./StrategyFormSections/Basic";
 import { Close } from "./StrategyFormSections/Close";
@@ -43,6 +43,7 @@ export default function StrategyForm({
     nameRequiredValidation: t("dashboard.strategies.form.basic.nameRequiredValidation"),
     intervalRequiredValidation: t("dashboard.strategies.form.basic.intervalRequiredValidation"),
     closeThresholdValidation: t("dashboard.strategies.form.close.trailingThresholdValidation"),
+    basicDcaReachabilityValidation: t("dashboard.strategies.form.close.basicDcaReachabilityValidation"),
   }), [t]);
 
   const steps = useMemo(
@@ -55,7 +56,7 @@ export default function StrategyForm({
     [copy.steps],
   );
   const fieldErrors = useMemo(() => {
-    const errors: { name?: string; interval?: string; closeThresholds?: string } = {};
+    const errors: { name?: string; interval?: string; closeThresholds?: string; dcaReachability?: string } = {};
     if (!form.name.trim()) {
       errors.name = copy.nameRequiredValidation;
     }
@@ -65,12 +66,17 @@ export default function StrategyForm({
     if (hasInvalidTrailingCloseThresholds(form.closeConditions)) {
       errors.closeThresholds = copy.closeThresholdValidation;
     }
+    if (hasUnreachableBasicDcaLevels(form.closeConditions, form.additional)) {
+      errors.dcaReachability = copy.basicDcaReachabilityValidation;
+    }
     return errors;
   }, [
+    copy.basicDcaReachabilityValidation,
     copy.closeThresholdValidation,
     copy.intervalRequiredValidation,
     copy.nameRequiredValidation,
     form.closeConditions,
+    form.additional,
     form.interval,
     form.name,
   ]);
@@ -97,7 +103,7 @@ export default function StrategyForm({
     if (submitting) return;
     setShowValidation(true);
     if (hasValidationErrors) {
-      setCurrentStep(fieldErrors.closeThresholds ? "close" : "basic");
+      setCurrentStep(fieldErrors.closeThresholds ? "close" : fieldErrors.dcaReachability ? "additional" : "basic");
       requestAnimationFrame(() => {
         if (!fieldErrors.closeThresholds) {
           focusFirstInvalidControl();

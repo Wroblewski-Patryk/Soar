@@ -243,6 +243,55 @@ describe('position management', () => {
     expect(result.closeReason).toBe('take_profit');
   });
 
+  it('executes positive and negative DCA lanes independently from closest threshold', () => {
+    const profitAdd = evaluatePositionManagement(
+      {
+        side: 'LONG',
+        currentPrice: 120,
+        leverage: 1,
+        dca: {
+          enabled: true,
+          maxAdds: 4,
+          levelPercents: [0.2, 0.4, -0.2, -0.4],
+          addSizeFractions: [1, 1, 1, 1],
+          stepPercent: 0.2,
+          addSizeFraction: 1,
+        },
+      },
+      {
+        averageEntryPrice: 100,
+        quantity: 1,
+        currentAdds: 0,
+      }
+    );
+
+    const lossAdd = evaluatePositionManagement(
+      {
+        side: 'LONG',
+        currentPrice: 75,
+        leverage: 1,
+        currentPnlFraction: -0.25,
+        dca: {
+          enabled: true,
+          maxAdds: 4,
+          levelPercents: [0.2, 0.4, -0.2, -0.4],
+          addSizeFractions: [1, 1, 1, 1],
+          stepPercent: 0.2,
+          addSizeFraction: 1,
+        },
+      },
+      profitAdd.nextState
+    );
+
+    expect(profitAdd.dcaExecuted).toBe(true);
+    expect(profitAdd.dcaLevelIndex).toBe(0);
+    expect(profitAdd.nextState.executedDcaLevelIndices).toEqual([0]);
+    expect(lossAdd.dcaExecuted).toBe(true);
+    expect(lossAdd.dcaLevelIndex).toBe(2);
+    expect(lossAdd.nextState.currentAdds).toBe(2);
+    expect(lossAdd.nextState.executedDcaLevelIndices).toEqual([0, 2]);
+  });
+
   it('keeps trailing take-profit blocked until profit-side DCA sequence is completed (or funds exhausted)', () => {
     const armed = evaluatePositionManagement(
       {

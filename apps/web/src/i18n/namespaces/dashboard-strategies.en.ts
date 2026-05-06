@@ -100,6 +100,8 @@ export const dashboardStrategiesEn = {
       arm: "Arm",
       trailingThresholdValidation:
         "Trailing TTP/TSL cannot retrace more than its activation threshold.",
+      basicDcaReachabilityValidation:
+        "In Basic TP/SL mode, DCA levels must be reachable before Take Profit or Stop Loss closes the position.",
       removeThreshold: "Remove threshold",
       addThreshold: "+ Add threshold",
     },

@@ -187,11 +187,11 @@ describe('StrategyForm', () => {
     const multiplierInputs = () =>
       Array.from(container.querySelectorAll('input[id^="strategy-dca-level-multiplier-"]')) as HTMLInputElement[];
 
-    fireEvent.change(percentInputs()[0], { target: { value: '-20' } });
+    fireEvent.change(percentInputs()[0], { target: { value: '-1' } });
     fireEvent.change(multiplierInputs()[0], { target: { value: '10' } });
-    fireEvent.change(percentInputs()[1], { target: { value: '-40' } });
+    fireEvent.change(percentInputs()[1], { target: { value: '-1.5' } });
     fireEvent.change(multiplierInputs()[1], { target: { value: '20' } });
-    fireEvent.change(percentInputs()[2], { target: { value: '-10' } });
+    fireEvent.change(percentInputs()[2], { target: { value: '-0.5' } });
     fireEvent.change(multiplierInputs()[2], { target: { value: '5' } });
 
     fireEvent.click(screen.getAllByRole('button', { name: 'Wyzej' })[2]);
@@ -210,9 +210,45 @@ describe('StrategyForm', () => {
       percent: level.percent,
       multiplier: level.multiplier,
     }))).toEqual([
-      { percent: -10, multiplier: 5 },
-      { percent: -20, multiplier: 10 },
-      { percent: -40, multiplier: 20 },
+      { percent: -0.5, multiplier: 5 },
+      { percent: -1, multiplier: 10 },
+      { percent: -1.5, multiplier: 20 },
     ]);
+  });
+
+  it('blocks submit when basic TP/SL makes a DCA level unreachable', async () => {
+    window.localStorage.setItem('cryptosparrow-locale', 'pl');
+    window.history.pushState({}, '', '/dashboard/strategies/create');
+    const onSubmit = vi.fn().mockResolvedValue(undefined);
+    const { container } = await renderWithI18n(onSubmit);
+
+    fireEvent.change(screen.getByLabelText('Nazwa'), { target: { value: 'Unreachable DCA strat' } });
+    fireEvent.click(screen.getByRole('tab', { name: 'Warunki zamkniecia' }));
+
+    const tpInput = container.querySelector('#strategy-close-tp') as HTMLInputElement | null;
+    const slInput = container.querySelector('#strategy-close-sl') as HTMLInputElement | null;
+    expect(tpInput).not.toBeNull();
+    expect(slInput).not.toBeNull();
+    fireEvent.change(tpInput as HTMLInputElement, { target: { value: '10' } });
+    fireEvent.change(slInput as HTMLInputElement, { target: { value: '10' } });
+
+    fireEvent.click(screen.getByRole('tab', { name: 'Dodatkowe ustawienia' }));
+    const dcaPercentInput = container.querySelector(
+      '#strategy-dca-level-percent-0'
+    ) as HTMLInputElement | null;
+    expect(dcaPercentInput).not.toBeNull();
+    fireEvent.change(dcaPercentInput as HTMLInputElement, { target: { value: '-20' } });
+
+    const form = container.querySelector('form');
+    expect(form).not.toBeNull();
+    fireEvent.submit(form as HTMLFormElement);
+
+    expect(onSubmit).not.toHaveBeenCalled();
+    expect(screen.getByTestId('form-validation-summary')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'W trybie podstawowym TP/SL poziomy DCA musza byc osiagalne zanim Take Profit albo Stop Loss zamknie pozycje.'
+      )
+    ).toBeInTheDocument();
   });
 });

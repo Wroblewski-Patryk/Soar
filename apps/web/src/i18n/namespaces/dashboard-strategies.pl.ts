@@ -100,6 +100,8 @@ export const dashboardStrategiesPl = {
       arm: "Ramie",
       trailingThresholdValidation:
         "Trailing TTP/TSL nie moze cofana bardziej niz prog aktywacji.",
+      basicDcaReachabilityValidation:
+        "W trybie podstawowym TP/SL poziomy DCA musza byc osiagalne zanim Take Profit albo Stop Loss zamknie pozycje.",
       removeThreshold: "Usun prog",
       addThreshold: "+ Dodaj prog",
     },

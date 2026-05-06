@@ -8,6 +8,7 @@ export type PersistedRuntimePositionState = Pick<
   | 'quantity'
   | 'averageEntryPrice'
   | 'currentAdds'
+  | 'executedDcaLevelIndices'
   | 'trailingAnchorPrice'
   | 'trailingLossLimitPercent'
   | 'trailingTakeProfitHighPercent'
@@ -37,6 +38,19 @@ const toFiniteNonNegativeInt = (value: unknown, fallback = 0) => {
   return Math.max(0, Math.floor(parsed));
 };
 
+const toFiniteNonNegativeIntArray = (value: unknown): number[] | undefined => {
+  if (!Array.isArray(value)) return undefined;
+  const normalized = [
+    ...new Set(
+      value
+        .map((item) => toFiniteNumber(item))
+        .filter((item): item is number => item != null)
+        .map((item) => Math.max(0, Math.floor(item))),
+    ),
+  ].sort((left, right) => left - right);
+  return normalized.length > 0 ? normalized : undefined;
+};
+
 const normalizeState = (value: unknown): PersistedRuntimePositionState | null => {
   if (!value || typeof value !== 'object') return null;
   const raw = value as Record<string, unknown>;
@@ -55,6 +69,7 @@ const normalizeState = (value: unknown): PersistedRuntimePositionState | null =>
     quantity,
     averageEntryPrice,
     currentAdds: toFiniteNonNegativeInt(raw.currentAdds),
+    executedDcaLevelIndices: toFiniteNonNegativeIntArray(raw.executedDcaLevelIndices),
     trailingAnchorPrice,
     trailingLossLimitPercent:
       trailingLossLimitPercent != null ? trailingLossLimitPercent : undefined,
@@ -70,6 +85,7 @@ const cloneState = (state: PersistedRuntimePositionState): PersistedRuntimePosit
   quantity: state.quantity,
   averageEntryPrice: state.averageEntryPrice,
   currentAdds: state.currentAdds,
+  executedDcaLevelIndices: state.executedDcaLevelIndices ? [...state.executedDcaLevelIndices] : undefined,
   trailingAnchorPrice: state.trailingAnchorPrice,
   trailingLossLimitPercent: state.trailingLossLimitPercent,
   trailingTakeProfitHighPercent: state.trailingTakeProfitHighPercent,

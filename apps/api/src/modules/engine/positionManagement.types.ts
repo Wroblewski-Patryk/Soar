@@ -61,6 +61,7 @@ export const PositionManagementStateSchema = z.object({
   averageEntryPrice: z.number().positive(),
   quantity: z.number().positive(),
   currentAdds: z.number().int().min(0).default(0),
+  executedDcaLevelIndices: z.array(z.number().int().min(0)).optional(),
   trailingAnchorPrice: z.number().positive().optional(),
   trailingLossLimitPercent: z.number().optional(),
   trailingTakeProfitHighPercent: z.number().optional(),
@@ -76,5 +77,6 @@ export type PositionManagementResult = {
   closeReason?: 'take_profit' | 'trailing_take_profit' | 'stop_loss' | 'trailing_stop';
   dcaExecuted: boolean;
   dcaAddedQuantity: number;
+  dcaLevelIndex?: number;
   nextState: PositionManagementState;
 };

@@ -105,10 +105,74 @@ const selectActiveTrailingStop = (
 const hasRemainingProfitSideDcaLevels = (
   dcaEnabled: boolean,
   dcaLevels: number[],
-  currentAdds: number,
+  executedDcaLevelIndices: Set<number>,
 ) => {
   if (!dcaEnabled || dcaLevels.length === 0) return false;
-  return dcaLevels.slice(currentAdds).some((level) => Number.isFinite(level) && level >= 0);
+  return dcaLevels.some((level, index) => (
+    !executedDcaLevelIndices.has(index) && Number.isFinite(level) && level >= 0
+  ));
+};
+
+const resolveExecutedDcaLevelIndices = (
+  state: PositionManagementState,
+  dcaLevels: number[],
+) => {
+  if (Array.isArray(state.executedDcaLevelIndices) && state.executedDcaLevelIndices.length > 0) {
+    return new Set(
+      state.executedDcaLevelIndices.filter(
+        (index) => Number.isInteger(index) && index >= 0 && index < dcaLevels.length,
+      ),
+    );
+  }
+
+  const fallbackOrder = dcaLevels
+    .map((level, index) => ({ index, level }))
+    .filter(({ level }) => Number.isFinite(level))
+    .sort((left, right) => {
+      const leftPositive = left.level >= 0;
+      const rightPositive = right.level >= 0;
+      if (leftPositive !== rightPositive) return leftPositive ? -1 : 1;
+      return leftPositive ? left.level - right.level : right.level - left.level;
+    });
+
+  return new Set(
+    fallbackOrder
+      .slice(0, Math.max(0, Math.min(state.currentAdds, dcaLevels.length)))
+      .map(({ index }) => index),
+  );
+};
+
+const selectNextDcaLevelIndex = (
+  currentPnlFraction: number | null,
+  dcaLevels: number[],
+  executedDcaLevelIndices: Set<number>,
+) => {
+  if (typeof currentPnlFraction !== 'number' || !Number.isFinite(currentPnlFraction)) {
+    return null;
+  }
+
+  const candidates = dcaLevels
+    .map((level, index) => ({ index, level }))
+    .filter(
+      ({ index, level }) =>
+        !executedDcaLevelIndices.has(index) &&
+        Number.isFinite(level) &&
+        shouldDca(currentPnlFraction, level),
+    );
+  if (candidates.length === 0) return null;
+
+  const sameDirectionCandidates = candidates.filter(({ level }) =>
+    currentPnlFraction >= 0 ? level >= 0 : level < 0,
+  );
+  const orderedCandidates = sameDirectionCandidates.length > 0 ? sameDirectionCandidates : candidates;
+  orderedCandidates.sort((left, right) => {
+    const leftDistance = Math.abs(left.level);
+    const rightDistance = Math.abs(right.level);
+    if (leftDistance !== rightDistance) return leftDistance - rightDistance;
+    return left.index - right.index;
+  });
+
+  return orderedCandidates[0]?.index ?? null;
 };
 
 export const evaluatePositionManagement = (
@@ -135,6 +199,9 @@ export const evaluatePositionManagement = (
         ? Array.from({ length: parsedInput.dca?.maxAdds ?? 0 }, () => parsedInput.dca?.addSizeFraction ?? 0.5)
         : [];
   const dcaLevelsRequired = dcaLevels.length;
+  const executedDcaLevelIndices = resolveExecutedDcaLevelIndices(parsedState, dcaLevels);
+  nextState.executedDcaLevelIndices =
+    executedDcaLevelIndices.size > 0 ? [...executedDcaLevelIndices].sort((left, right) => left - right) : undefined;
   const currentPnlFraction =
     typeof parsedInput.currentPnlFraction === 'number' && Number.isFinite(parsedInput.currentPnlFraction)
       ? parsedInput.currentPnlFraction
@@ -147,13 +214,13 @@ export const evaluatePositionManagement = (
         });
 
   // Legacy parity order: DCA -> TP -> TTP -> SL -> TSL.
-  if (dcaEnabled && nextState.currentAdds < dcaLevelsRequired) {
-    const nextLevelPercent = dcaLevels[nextState.currentAdds] ?? -(parsedInput.dca?.stepPercent ?? 0.01);
-    const trigger = shouldDca(currentPnlFraction, nextLevelPercent);
+  let dcaLevelIndex: number | undefined;
+  if (dcaEnabled && executedDcaLevelIndices.size < dcaLevelsRequired) {
+    const nextLevelIndex = selectNextDcaLevelIndex(currentPnlFraction, dcaLevels, executedDcaLevelIndices);
 
-    if (trigger) {
+    if (nextLevelIndex != null) {
       const nextAddSizeFraction =
-        dcaAddFractions[nextState.currentAdds] ?? parsedInput.dca?.addSizeFraction ?? 0.5;
+        dcaAddFractions[nextLevelIndex] ?? parsedInput.dca?.addSizeFraction ?? 0.5;
       const addedQuantity = nextState.quantity * nextAddSizeFraction;
       const newQuantity = nextState.quantity + addedQuantity;
       const newAverage =
@@ -162,18 +229,21 @@ export const evaluatePositionManagement = (
 
       nextState.quantity = round(newQuantity);
       nextState.averageEntryPrice = round(newAverage);
-      nextState.currentAdds += 1;
+      executedDcaLevelIndices.add(nextLevelIndex);
+      nextState.currentAdds = executedDcaLevelIndices.size;
+      nextState.executedDcaLevelIndices = [...executedDcaLevelIndices].sort((left, right) => left - right);
       nextState.lastDcaPrice = parsedInput.currentPrice;
       dcaExecuted = true;
       dcaAddedQuantity = round(addedQuantity);
+      dcaLevelIndex = nextLevelIndex;
     }
   }
 
-  const dcaSequenceCompleted = !dcaEnabled || dcaLevelsRequired === 0 || nextState.currentAdds >= dcaLevelsRequired;
+  const dcaSequenceCompleted = !dcaEnabled || dcaLevelsRequired === 0 || executedDcaLevelIndices.size >= dcaLevelsRequired;
   const dcaProtectionSatisfied = dcaSequenceCompleted || parsedInput.dcaFundsExhausted === true;
   const ttpDcaProtectionSatisfied =
     dcaProtectionSatisfied ||
-    !hasRemainingProfitSideDcaLevels(dcaEnabled, dcaLevels, nextState.currentAdds);
+    !hasRemainingProfitSideDcaLevels(dcaEnabled, dcaLevels, executedDcaLevelIndices);
 
   if (
     typeof parsedInput.takeProfitPrice === 'number' &&
@@ -184,6 +254,7 @@ export const evaluatePositionManagement = (
       closeReason: 'take_profit',
       dcaExecuted,
       dcaAddedQuantity,
+      dcaLevelIndex,
       nextState,
     };
   }
@@ -260,6 +331,7 @@ export const evaluatePositionManagement = (
           closeReason: 'trailing_take_profit',
           dcaExecuted,
           dcaAddedQuantity,
+          dcaLevelIndex,
           nextState,
         };
       }
@@ -286,6 +358,7 @@ export const evaluatePositionManagement = (
       closeReason: 'stop_loss',
       dcaExecuted,
       dcaAddedQuantity,
+      dcaLevelIndex,
       nextState,
     };
   }
@@ -310,6 +383,7 @@ export const evaluatePositionManagement = (
             closeReason: 'trailing_stop',
             dcaExecuted,
             dcaAddedQuantity,
+            dcaLevelIndex,
             nextState,
           };
         }
@@ -341,6 +415,7 @@ export const evaluatePositionManagement = (
         closeReason: 'trailing_stop',
         dcaExecuted,
         dcaAddedQuantity,
+        dcaLevelIndex,
         nextState,
       };
     }
@@ -350,6 +425,7 @@ export const evaluatePositionManagement = (
     shouldClose: false,
     dcaExecuted,
     dcaAddedQuantity,
+    dcaLevelIndex,
     nextState,
   };
 };

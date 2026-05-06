@@ -1,7 +1,7 @@
 import { PositionSide } from '@prisma/client';
 import { decideExecutionAction } from '../engine/sharedExecutionCore';
 import { evaluatePositionManagement } from '../engine/positionManagement.service';
-import { PositionManagementInput } from '../engine/positionManagement.types';
+import { PositionManagementInput, PositionManagementState } from '../engine/positionManagement.types';
 import {
   evaluateStrategySignalAtIndex,
   parseStrategySignalRules,
@@ -221,6 +221,60 @@ export const buildReplayPositionManagementInput = (args: {
   };
 };
 
+const resolveReplayPnlFraction = (
+  side: 'LONG' | 'SHORT',
+  entryPrice: number,
+  currentPrice: number,
+  leverage: number,
+) => {
+  if (!Number.isFinite(entryPrice) || entryPrice <= 0 || !Number.isFinite(currentPrice)) return null;
+  const move =
+    side === 'LONG'
+      ? (currentPrice - entryPrice) / entryPrice
+      : (entryPrice - currentPrice) / entryPrice;
+  const pnl = move * Math.max(1, leverage);
+  return Number.isFinite(pnl) ? pnl : null;
+};
+
+export const resolveReplayDcaProbePrice = (args: {
+  side: 'LONG' | 'SHORT';
+  candle: { high: number; low: number; close: number };
+  entryPrice: number;
+  leverage: number;
+  riskConfig: Pick<StrategyRiskConfig, 'dcaLevels'>;
+  executedDcaLevelIndices?: number[];
+}) => {
+  const executed = new Set(
+    (args.executedDcaLevelIndices ?? []).filter(
+      (index) => Number.isInteger(index) && index >= 0 && index < args.riskConfig.dcaLevels.length,
+    ),
+  );
+  const favorablePrice = args.side === 'LONG' ? args.candle.high : args.candle.low;
+  const adversePrice = args.side === 'LONG' ? args.candle.low : args.candle.high;
+
+  const candidates = args.riskConfig.dcaLevels
+    .map((level, index) => {
+      const price = level >= 0 ? favorablePrice : adversePrice;
+      const pnl = resolveReplayPnlFraction(args.side, args.entryPrice, price, args.leverage);
+      const reached =
+        typeof pnl === 'number' && Number.isFinite(pnl)
+          ? level >= 0
+            ? pnl >= level
+            : pnl <= level
+          : false;
+      return { index, level, price, reached };
+    })
+    .filter(({ index, level, reached }) => !executed.has(index) && Number.isFinite(level) && reached)
+    .sort((left, right) => {
+      const leftDistance = Math.abs(left.level);
+      const rightDistance = Math.abs(right.level);
+      if (leftDistance !== rightDistance) return leftDistance - rightDistance;
+      return left.index - right.index;
+    });
+
+  return candidates[0]?.price ?? args.candle.close;
+};
+
 const defaultConfig: ReplayRuntimeConfig = {
   longThresholdPct: 1,
   shortThresholdPct: -1,
@@ -428,6 +482,8 @@ export const simulateTradesForSymbolReplay = (input: {
         dcaCount: number;
         lastDcaPrice: number;
         bestPrice: number;
+        marginUsed: number;
+        executedDcaLevelIndices?: number[];
         trailingLossLimit?: number;
         trailingTakeProfitHigh?: number;
         trailingTakeProfitStep?: number;
@@ -456,10 +512,11 @@ export const simulateTradesForSymbolReplay = (input: {
     eventCounts[type] += 1;
   };
 
-  const settleToAccount = (proposedPnl: number) => {
+  const settleToAccount = (proposedPnl: number, returnedMargin = 0) => {
     if (!Number.isFinite(accountBalance)) return proposedPnl;
-    const bounded = Math.max(-accountBalance, proposedPnl);
-    accountBalance = Math.max(0, accountBalance + bounded);
+    const availableForSettlement = accountBalance + Math.max(0, returnedMargin);
+    const bounded = Math.max(-availableForSettlement, proposedPnl);
+    accountBalance = Math.max(0, accountBalance + Math.max(0, returnedMargin) + bounded);
     return bounded;
   };
 
@@ -517,7 +574,6 @@ export const simulateTradesForSymbolReplay = (input: {
       if (accountBalance <= 0) {
         continue;
       }
-      tradeSequence += 1;
       const effectiveEntryPrice = fillModel.entryPrice(current.close, decision.positionSide as PositionSide);
       const initialQuantity =
         positionSizingMode === 'wallet_risk'
@@ -529,6 +585,14 @@ export const simulateTradesForSymbolReplay = (input: {
               minQuantity: fixedQuantity,
             })
           : fixedQuantity;
+      const initialMargin = (effectiveEntryPrice * initialQuantity) / Math.max(1, effectiveLeverage);
+      if (Number.isFinite(accountBalance) && initialMargin > accountBalance) {
+        continue;
+      }
+      if (Number.isFinite(accountBalance)) {
+        accountBalance = Math.max(0, accountBalance - initialMargin);
+      }
+      tradeSequence += 1;
       openPosition = {
         side: decision.positionSide,
         entryPrice: effectiveEntryPrice,
@@ -537,6 +601,8 @@ export const simulateTradesForSymbolReplay = (input: {
         dcaCount: 0,
         lastDcaPrice: effectiveEntryPrice,
         bestPrice: effectiveEntryPrice,
+        marginUsed: initialMargin,
+        executedDcaLevelIndices: undefined,
       };
       pushEvent('ENTRY', decision.positionSide as PositionSide, new Date(current.openTime), effectiveEntryPrice, null, index, tradeSequence);
       continue;
@@ -561,12 +627,20 @@ export const simulateTradesForSymbolReplay = (input: {
       trailingTakeProfitHighPercent: openPosition.trailingTakeProfitHigh,
       trailingTakeProfitStepPercent: openPosition.trailingTakeProfitStep,
       lastDcaPrice: openPosition.lastDcaPrice,
-    };
+      executedDcaLevelIndices: openPosition.executedDcaLevelIndices,
+    } satisfies PositionManagementState;
 
     const dcaProbeInput: PositionManagementInput = {
       ...buildReplayPositionManagementInput({
         side: openPosition.side,
-        currentPrice: openPosition.side === 'LONG' ? current.low : current.high,
+        currentPrice: resolveReplayDcaProbePrice({
+          side: openPosition.side,
+          candle: current,
+          entryPrice: openPosition.entryPrice,
+          leverage: effectiveLeverage,
+          riskConfig,
+          executedDcaLevelIndices: openPosition.executedDcaLevelIndices,
+        }),
         entryPrice: openPosition.entryPrice,
         leverage: effectiveLeverage,
         riskConfig,
@@ -581,22 +655,39 @@ export const simulateTradesForSymbolReplay = (input: {
     };
     const dcaProbeResult = evaluatePositionManagement(dcaProbeInput, baseState);
     const hasPendingDcaLevels = openPosition.dcaCount < riskConfig.maxDcaPerTrade;
-    const dcaFundsExhausted = trackedBalanceEnabled ? accountBalance <= 0 : false;
+    const estimatedNextDcaAddedQty = dcaProbeResult.dcaExecuted
+      ? Math.max(0, dcaProbeResult.dcaAddedQuantity)
+      : 0;
+    const dcaFillPrice = dcaProbeResult.nextState.lastDcaPrice ?? dcaProbeInput.currentPrice ?? current.close;
+    const estimatedNextDcaMargin = (dcaFillPrice * estimatedNextDcaAddedQty) / Math.max(1, effectiveLeverage);
+    const dcaFundsExhausted =
+      trackedBalanceEnabled && hasPendingDcaLevels && estimatedNextDcaAddedQty > 0
+        ? estimatedNextDcaMargin > accountBalance
+        : false;
     const lockTrailingByPendingDca = hasPendingDcaLevels && !dcaFundsExhausted;
     if (dcaProbeResult.dcaExecuted) {
-      openPosition.quantity = dcaProbeResult.nextState.quantity;
-      openPosition.entryPrice = dcaProbeResult.nextState.averageEntryPrice;
-      openPosition.dcaCount = dcaProbeResult.nextState.currentAdds;
-      openPosition.lastDcaPrice = current.close;
-      pushEvent(
-        'DCA',
-        openPosition.side as PositionSide,
-        new Date(current.openTime),
-        current.close,
-        null,
-        index,
-        tradeSequence
-      );
+      const addedQty = Math.max(0, dcaProbeResult.nextState.quantity - openPosition.quantity);
+      const addMargin = (dcaFillPrice * addedQty) / Math.max(1, effectiveLeverage);
+      if (!trackedBalanceEnabled || addMargin <= accountBalance) {
+        if (Number.isFinite(accountBalance)) {
+          accountBalance = Math.max(0, accountBalance - addMargin);
+        }
+        openPosition.quantity = dcaProbeResult.nextState.quantity;
+        openPosition.entryPrice = dcaProbeResult.nextState.averageEntryPrice;
+        openPosition.dcaCount = dcaProbeResult.nextState.currentAdds;
+        openPosition.marginUsed += addMargin;
+        openPosition.executedDcaLevelIndices = dcaProbeResult.nextState.executedDcaLevelIndices;
+        openPosition.lastDcaPrice = dcaFillPrice;
+        pushEvent(
+          'DCA',
+          openPosition.side as PositionSide,
+          new Date(current.openTime),
+          dcaFillPrice,
+          null,
+          index,
+          tradeSequence
+        );
+      }
     }
 
     const managementInput: PositionManagementInput = {
@@ -621,6 +712,7 @@ export const simulateTradesForSymbolReplay = (input: {
       trailingTakeProfitHighPercent: openPosition.trailingTakeProfitHigh,
       trailingTakeProfitStepPercent: openPosition.trailingTakeProfitStep,
       lastDcaPrice: openPosition.lastDcaPrice,
+      executedDcaLevelIndices: openPosition.executedDcaLevelIndices,
     });
     openPosition.trailingLossLimit = managementResult.nextState.trailingLossLimitPercent;
     openPosition.trailingTakeProfitHigh = managementResult.nextState.trailingTakeProfitHighPercent;
@@ -677,9 +769,9 @@ export const simulateTradesForSymbolReplay = (input: {
     }
 
     const pnlBeforeAccountBounds = isIsolatedLiquidated
-      ? -(openPosition.entryPrice * openPosition.quantity) / Math.max(1, effectiveLeverage)
+      ? -openPosition.marginUsed
       : rawPnl - fee;
-    const pnl = settleToAccount(pnlBeforeAccountBounds);
+    const pnl = settleToAccount(pnlBeforeAccountBounds, openPosition.marginUsed);
 
     const closeType: ReplayEventType = isIsolatedLiquidated
       ? 'LIQUIDATION'
@@ -724,7 +816,7 @@ export const simulateTradesForSymbolReplay = (input: {
     });
     const fee = settlement.fees;
     const rawPnl = settlement.grossPnl;
-    const finalPnl = settleToAccount(rawPnl - fee);
+    const finalPnl = settleToAccount(rawPnl - fee, openPosition.marginUsed);
     trades.push({
       symbol,
       side: openPosition.side as PositionSide,

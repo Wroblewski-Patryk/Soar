@@ -100,6 +100,8 @@ export const dashboardStrategiesPt = {
       arm: "Arm",
       trailingThresholdValidation:
         "O trailing TTP/TSL nao pode recuar mais do que o seu limiar de ativacao.",
+      basicDcaReachabilityValidation:
+        "No modo basico TP/SL, os niveis DCA tem de ser alcancaveis antes de Take Profit ou Stop Loss fechar a posicao.",
       removeThreshold: "Remover limiar",
       addThreshold: "+ Adicionar limiar",
     },

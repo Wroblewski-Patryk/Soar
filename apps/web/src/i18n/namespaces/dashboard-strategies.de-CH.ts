@@ -98,6 +98,7 @@ export const dashboardStrategiesDeCh = {
       "percent": "Prozent (%)",
       "arm": "Arm",
       "trailingThresholdValidation": "Nachfolgendes TTP/TSL kann nicht mehr als seinen Aktivierungsschwellenwert zurückverfolgen.",
+      "basicDcaReachabilityValidation": "Im Basic-TP/SL-Modus muessen DCA-Level erreichbar sein, bevor Take Profit oder Stop Loss die Position schliesst.",
       "removeThreshold": "Schwelle entfernen",
       "addThreshold": "+ Schwelle hinzufügen"
     },
