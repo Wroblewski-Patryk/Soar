@@ -3,6 +3,14 @@
 Last updated: 2026-05-06
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-06 local main app-function sweep `APPCHECK-01` is closed locally on
+  branch `codex/v1-app-function-check` after `codex/v1-pmplc-hardening` was
+  fast-forward merged into `main` and pushed at `6a7c9889`. Validation PASS:
+  repository guardrails, API typecheck, Web typecheck, lint, focused
+  runtime/order API pack (`90/90`), focused dashboard/strategy Web pack
+  (`32/32`), and full workspace build. No executable local regression was
+  isolated in this sweep. Evidence:
+  `docs/planning/app-function-check-main-sweep-task-2026-05-06.md`.
 - 2026-05-06 imported closed-position aggregate PnL slice `PMPLC-45` is closed
   locally. Runtime aggregate positions now include imported `ORPHAN_LOCAL` /
   `EXTERNAL_CLOSE_CONFIRMED` closed positions in closed-position realized PnL,

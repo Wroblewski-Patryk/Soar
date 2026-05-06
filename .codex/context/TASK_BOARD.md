@@ -20,6 +20,16 @@ Last updated: 2026-05-06
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `APPCHECK-01 qa(app): verify main after PMPLC merge with local function sweep`
+  - Scope: closed a BUILDER-mode local post-merge app-function sweep on branch
+    `codex/v1-app-function-check` after `codex/v1-pmplc-hardening` was
+    fast-forward merged into `main` and pushed at `6a7c9889`. Validation PASS:
+    repository guardrails, API typecheck, Web typecheck, lint, focused
+    runtime/order API pack (`90/90`), focused dashboard/strategy Web pack
+    (`32/32`), and full workspace build. No executable local regression was
+    isolated in this sweep. Evidence:
+    `docs/planning/app-function-check-main-sweep-task-2026-05-06.md`.
+
 - [x] `PMPLC-46 docs(planning): clear stale PMPLC-45 follow-up after closure`
   - Scope: closed a BUILDER-mode planning truth sync slice after PMPLC-45.
     Canonical PMPLC planning truth no longer lists `PMPLC-45` as a queued

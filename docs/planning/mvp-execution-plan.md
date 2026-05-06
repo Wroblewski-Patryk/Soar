@@ -29,6 +29,13 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-06: Closed `APPCHECK-01` with
+  `docs/planning/app-function-check-main-sweep-task-2026-05-06.md`. After
+  `codex/v1-pmplc-hardening` was fast-forward merged into `main` and pushed at
+  `6a7c9889`, a fresh local app-function sweep passed: repository guardrails,
+  API typecheck, Web typecheck, lint, focused runtime/order API pack (`90/90`),
+  focused dashboard/strategy Web pack (`32/32`), and full workspace build. No
+  executable local regression was isolated in this sweep.
 - 2026-05-06: Closed `PMPLC-46` with
   `docs/planning/pmplc-queue-sync-task-2026-05-06.md`. Canonical PMPLC planning
   truth no longer lists `PMPLC-45` as a queued follow-up after it was
