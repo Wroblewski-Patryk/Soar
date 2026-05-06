@@ -3,6 +3,16 @@
 Last updated: 2026-05-06
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-06 stale rejected exchange fee pending recovery slice `PMPLC-35` is
+  closed locally. Exchange order-trade event handling now bases pending
+  recovery on accepted fee truth rather than raw event fee and restores
+  `feePending=true` on unresolved estimated lifecycle trades for the order, so
+  rejected stale unknown `exchangeTradeId` fees cannot hide reconciliation
+  drift. Validation PASS: pre-fix DB-backed regression failed as expected
+  (`feePending=false` received vs `true` expected), DB-backed exchange-event
+  suite (`15/15`), focused runtime/order suites (`92/92`), API typecheck,
+  repository guardrails, lint, and diff check. Evidence:
+  `docs/planning/position-management-exchange-stale-fee-pending-recovery-task-2026-05-06.md`.
 - 2026-05-06 stale unknown exchange fee pending guard slice `PMPLC-34` is
   closed locally. Exchange order-trade event handling now clears
   `feePending` from finite event fee only when that fee is actually accepted by

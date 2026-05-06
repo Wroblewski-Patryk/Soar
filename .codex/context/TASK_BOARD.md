@@ -20,6 +20,18 @@ Last updated: 2026-05-06
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `PMPLC-35 fix(api-orders): recover pending truth when rejected fee leaves estimate unresolved`
+  - Scope: closed a TESTER-mode LIVE fee reconciliation recovery slice.
+    Exchange order-trade event handling now bases pending recovery on accepted
+    fee truth rather than raw event fee and restores `feePending=true` on
+    unresolved estimated lifecycle trades for the order, so rejected stale
+    unknown `exchangeTradeId` fees cannot hide reconciliation drift. Validation
+    PASS: pre-fix DB-backed regression failed as expected (`feePending=false`
+    received vs `true` expected), DB-backed exchange-event suite (`15/15`),
+    focused runtime/order suites (`92/92`), API typecheck, repository
+    guardrails, lint, and diff check. Evidence:
+    `docs/planning/position-management-exchange-stale-fee-pending-recovery-task-2026-05-06.md`.
+
 - [x] `PMPLC-34 fix(api-orders): keep fee pending when stale unknown fee is rejected`
   - Scope: closed a BUILDER-mode LIVE fee reconciliation visibility guard.
     Exchange order-trade event handling now clears `feePending` from finite

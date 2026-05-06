@@ -409,18 +409,20 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
     ? (existingFillFeeAggregate?._sum.feeCost ?? 0) +
       (existingRecordableEventFillHasFee ? 0 : recordableEventFee)
     : null;
-  const hasSettledExchangeFee =
-    existingOrder.feeSource === 'EXCHANGE_FILL' &&
-    typeof existingOrder.fee === 'number' &&
-    Number.isFinite(existingOrder.fee);
-  const shouldKeepFeePending = !hasRecordableEventFee && !hasSettledExchangeFee;
-  const fee = aggregateRecordableEventFee ?? existingOrder.fee;
   const feeRefreshDecision = resolveExchangeFeeRefreshDecision({
     shouldRefreshTerminalFillDetails: fillProgress.shouldRefreshTerminalFillDetails,
     hasRecordableEventFee,
     hasExistingRecordableEventFill: existingRecordableEventFill != null,
     existingRecordableEventFillHasFee,
   });
+  const hasSettledExchangeFee =
+    existingOrder.feeSource === 'EXCHANGE_FILL' &&
+    typeof existingOrder.fee === 'number' &&
+    Number.isFinite(existingOrder.fee);
+  const hasAcceptedRecordableEventFee =
+    hasRecordableEventFee && feeRefreshDecision.shouldRefreshFeeDetails;
+  const shouldKeepFeePending = !hasAcceptedRecordableEventFee && !hasSettledExchangeFee;
+  const fee = aggregateRecordableEventFee ?? existingOrder.fee;
 
   let updatedOrder = await prisma.order.update({
     where: { id: existingOrder.id },
@@ -444,8 +446,7 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
           : existingOrder.feeSource,
       feePending:
         fillProgress.persistedStatus === 'FILLED' &&
-        hasRecordableEventFee &&
-        feeRefreshDecision.shouldRefreshFeeDetails
+        hasAcceptedRecordableEventFee
           ? false
           : shouldKeepFeePending || existingOrder.feePending,
       feeCurrency: feeRefreshDecision.shouldRefreshFeeDetails
@@ -507,6 +508,17 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
         feePending: false,
         feeCurrency: input.event.feeCurrency ?? updatedOrder.feeCurrency,
       },
+    });
+  }
+
+  if (shouldKeepFeePending) {
+    await prisma.trade.updateMany({
+      where: {
+        orderId: updatedOrder.id,
+        feeSource: 'ESTIMATED',
+        feePending: false,
+      },
+      data: { feePending: true },
     });
   }
 

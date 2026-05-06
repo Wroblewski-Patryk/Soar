@@ -1053,6 +1053,159 @@ describe('orders.exchangeEvents.service', () => {
     expect(trade.feePending).toBe(true);
   });
 
+  it('restores fee pending when stale unknown exchange fill fee is rejected after local drift', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'exchange-event-stale-fee-pending-recovery@example.com', password: 'hashed' },
+    });
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'live-wallet-stale-fee-pending-recovery',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'live-bot-stale-fee-pending-recovery',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        walletId: wallet.id,
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'v1',
+      },
+    });
+    const position = await prisma.position.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        walletId: wallet.id,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        symbol: 'ETHUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 3_000,
+        quantity: 1,
+        leverage: 5,
+      },
+    });
+    const order = await prisma.order.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        walletId: wallet.id,
+        positionId: position.id,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        symbol: 'ETHUSDT',
+        side: 'BUY',
+        type: 'MARKET',
+        status: 'FILLED',
+        quantity: 1,
+        filledQuantity: 1,
+        averageFillPrice: 3_000,
+        fee: 0.04,
+        feeSource: 'ESTIMATED',
+        feePending: false,
+        feeCurrency: 'USDT',
+        exchangeOrderId: 'event-stale-fee-pending-recovery-1',
+        exchangeTradeId: 'trade-stale-fee-pending-recovery-known-1',
+        submittedAt: new Date('2026-04-26T20:09:00.000Z'),
+        filledAt: new Date('2026-04-26T20:09:01.000Z'),
+      },
+    });
+    await prisma.orderFill.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        orderId: order.id,
+        positionId: position.id,
+        symbol: 'ETHUSDT',
+        side: 'BUY',
+        exchangeTradeId: 'trade-stale-fee-pending-recovery-known-1',
+        price: 3_000,
+        quantity: 1,
+        notional: 3_000,
+        feeCost: null,
+        feeCurrency: null,
+        feeRate: null,
+        executedAt: new Date('2026-04-26T20:09:01.000Z'),
+        raw: {},
+      },
+    });
+    await prisma.trade.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        walletId: wallet.id,
+        orderId: order.id,
+        positionId: position.id,
+        symbol: 'ETHUSDT',
+        side: 'BUY',
+        lifecycleAction: 'OPEN',
+        price: 3_000,
+        quantity: 1,
+        fee: 0.04,
+        feeSource: 'ESTIMATED',
+        feePending: false,
+        feeCurrency: 'USDT',
+        exchangeTradeId: 'trade-stale-fee-pending-recovery-known-1',
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+      },
+    });
+
+    await applyLiveExchangeOrderTradeUpdateEvent({
+      userId: user.id,
+      event: {
+        eventType: 'ORDER_TRADE_UPDATE',
+        marketType: 'FUTURES',
+        eventTime: 1_900,
+        transactionTime: 1_901,
+        symbol: 'ETHUSDT',
+        side: 'BUY',
+        orderType: 'MARKET',
+        orderStatus: 'FILLED',
+        executionType: 'TRADE',
+        exchangeOrderId: 'event-stale-fee-pending-recovery-1',
+        clientOrderId: 'client-stale-fee-pending-recovery-1',
+        averagePrice: 3_000,
+        cumulativeFilledQuantity: 1,
+        lastFilledQuantity: 1,
+        lastFilledPrice: 3_000,
+        fee: 0.09,
+        feeCurrency: 'USDT',
+        exchangeTradeId: 'trade-stale-fee-pending-recovery-unknown-1',
+        raw: {},
+      },
+    });
+
+    const updatedOrder = await prisma.order.findUniqueOrThrow({
+      where: { id: order.id },
+    });
+    expect(updatedOrder.fee).toBeCloseTo(0.04, 10);
+    expect(updatedOrder.feeSource).toBe('ESTIMATED');
+    expect(updatedOrder.feePending).toBe(true);
+    const fills = await prisma.orderFill.findMany({
+      where: { orderId: order.id },
+    });
+    expect(fills).toHaveLength(1);
+    expect(fills[0]?.exchangeTradeId).toBe('trade-stale-fee-pending-recovery-known-1');
+    expect(fills[0]?.feeCost).toBeNull();
+    const trade = await prisma.trade.findFirstOrThrow({
+      where: { orderId: order.id },
+    });
+    expect(trade.feeSource).toBe('ESTIMATED');
+    expect(trade.feePending).toBe(true);
+  });
+
   it('applies Binance order-trade update to close an existing LIVE position from a close order', async () => {
     const user = await prisma.user.create({
       data: { email: 'exchange-event-close@example.com', password: 'hashed' },
