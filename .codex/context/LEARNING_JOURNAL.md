@@ -104,6 +104,10 @@ pnpm --filter api exec vitest run <db-e2e-files> --run --sequence.concurrent=fal
   `orders.exchangeEvents.service.test.ts` case in parallel with the same full
   DB-backed file produced a false empty-fill assertion; the focused case and
   the full file both passed when rerun sequentially.
+  Reconfirmed during `PMPLC-43`: running
+  `orders.exchangeEvents.feeBackfill.test.ts` in parallel with
+  `orders.exchangeEvents.service.test.ts` produced false foreign-key cleanup
+  failures; the same suites passed when rerun sequentially.
 
 ### 2026-05-03 - Runtime position reads must inherit canonical venue and strategy context
 - Context: continued operator audit of LIVE/PAPER position management and

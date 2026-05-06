@@ -20,6 +20,20 @@ Last updated: 2026-05-06
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `PMPLC-43 fix(api-orders): keep pending after incomplete partial fee backfill`
+  - Scope: closed a BUILDER-mode LIVE fee reconciliation finality slice.
+    Exchange-event fee finality now refuses to treat a filled order's existing
+    exchange fee as settled while another known `OrderFill` still has missing
+    fee truth, and lifecycle trade fee backfill now preserves the computed
+    pending decision instead of unconditionally clearing pending. Validation
+    PASS: pre-fix DB-backed regression failed as expected
+    (`Order.feePending=false` received vs `true` expected), focused
+    regression, helper suite (`24/24`), DB-backed exchange-event suite
+    (`21/21`), dedicated fee-backfill suite (`1/1`), focused runtime/order
+    suites (`105/105`), API typecheck, repository guardrails, lint, and diff
+    check. Evidence:
+    `docs/planning/position-management-exchange-partial-backfill-still-pending-task-2026-05-06.md`.
+
 - [x] `PMPLC-42 fix(api-orders): refresh close PnL after missing partial close fee backfill`
   - Scope: closed an ARCHITECT-mode LIVE fee/PnL reconciliation slice.
     Exchange-event fee backfill now refreshes close lifecycle

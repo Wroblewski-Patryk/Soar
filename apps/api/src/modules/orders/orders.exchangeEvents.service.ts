@@ -495,7 +495,8 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
     existingOrder.status === 'FILLED' &&
     existingOrder.feeSource === 'EXCHANGE_FILL' &&
     typeof existingOrder.fee === 'number' &&
-    Number.isFinite(existingOrder.fee);
+    Number.isFinite(existingOrder.fee) &&
+    unresolvedExistingFillFee == null;
   const hasAcceptedRecordableEventFee =
     hasRecordableEventFee &&
     feeRefreshDecision.shouldRefreshFeeDetails &&
@@ -584,7 +585,7 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
       data: {
         fee: typeof fee === 'number' && Number.isFinite(fee) ? fee : recordableEventFee,
         feeSource: 'EXCHANGE_FILL',
-        feePending: false,
+        feePending: feePendingDecision.feePending,
         feeCurrency: input.event.feeCurrency ?? updatedOrder.feeCurrency,
       },
     });

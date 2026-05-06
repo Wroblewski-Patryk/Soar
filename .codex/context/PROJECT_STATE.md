@@ -3,6 +3,17 @@
 Last updated: 2026-05-06
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-06 incomplete partial fee backfill pending slice `PMPLC-43` is
+  closed locally. Exchange-event fee finality now refuses to treat a filled
+  order's existing exchange fee as settled while another known `OrderFill`
+  still has missing fee truth, and lifecycle trade fee backfill now preserves
+  the computed pending decision instead of unconditionally clearing pending.
+  Validation PASS: pre-fix DB-backed regression failed as expected
+  (`Order.feePending=false` received vs `true` expected), focused regression,
+  helper suite (`24/24`), DB-backed exchange-event suite (`21/21`), dedicated
+  fee-backfill suite (`1/1`), focused runtime/order suites (`105/105`), API
+  typecheck, repository guardrails, lint, and diff check. Evidence:
+  `docs/planning/position-management-exchange-partial-backfill-still-pending-task-2026-05-06.md`.
 - 2026-05-06 close PnL fee backfill slice `PMPLC-42` is closed locally.
   Exchange-event fee backfill now refreshes close lifecycle `Trade.realizedPnl`
   and linked `Position.realizedPnl` after a delayed missing partial close fee
