@@ -510,7 +510,6 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
     await prisma.trade.updateMany({
       where: {
         orderId: updatedOrder.id,
-        exchangeTradeId: input.event.exchangeTradeId,
         OR: [
           { fee: null },
           { feeSource: 'ESTIMATED' },

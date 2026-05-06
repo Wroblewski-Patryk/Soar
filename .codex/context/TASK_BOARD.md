@@ -20,6 +20,18 @@ Last updated: 2026-05-06
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `PMPLC-41 fix(api-orders): settle lifecycle fee after missing partial fee backfill`
+  - Scope: closed a BUILDER-mode LIVE fee reconciliation backfill slice. Fee
+    backfill propagation now updates unresolved lifecycle trades by `orderId`
+    when the aggregate exchange fee becomes complete, so order, `OrderFill`,
+    and lifecycle `Trade` fee truth settle together after a delayed
+    partial-fill fee arrives. Validation PASS: pre-fix DB-backed regression
+    failed as expected (`0.02` lifecycle fee received vs `0.03` expected),
+    helper suite (`24/24`), DB-backed exchange-event suite (`20/20`), focused
+    runtime/order suites (`103/103`), API typecheck, repository guardrails,
+    lint, and diff check. Evidence:
+    `docs/planning/position-management-exchange-missing-partial-fee-backfill-task-2026-05-06.md`.
+
 - [x] `PMPLC-40 fix(api-orders): keep pending when earlier partial fill fee is missing`
   - Scope: closed a TESTER-mode LIVE fee reconciliation finality slice.
     Exchange-event reconciliation now refuses to clear pending from a terminal

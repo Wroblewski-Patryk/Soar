@@ -917,6 +917,153 @@ describe('orders.exchangeEvents.service', () => {
     expect(trade.feePending).toBe(true);
   });
 
+  it('settles lifecycle trade fee when a missing earlier partial fee is backfilled', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'exchange-event-missing-partial-fee-backfilled@example.com', password: 'hashed' },
+    });
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'live-wallet-missing-partial-fee-backfilled',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'live-bot-missing-partial-fee-backfilled',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        walletId: wallet.id,
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'v1',
+      },
+    });
+    const order = await prisma.order.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        walletId: wallet.id,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        symbol: 'ETHUSDT',
+        side: 'BUY',
+        type: 'MARKET',
+        status: 'OPEN',
+        quantity: 1,
+        filledQuantity: 0,
+        averageFillPrice: null,
+        fee: null,
+        feeSource: 'ESTIMATED',
+        feePending: false,
+        exchangeOrderId: 'event-missing-partial-fee-backfilled-1',
+        submittedAt: new Date('2026-04-26T20:08:55.000Z'),
+      },
+    });
+
+    await applyLiveExchangeOrderTradeUpdateEvent({
+      userId: user.id,
+      event: {
+        eventType: 'ORDER_TRADE_UPDATE',
+        marketType: 'FUTURES',
+        eventTime: 1_700,
+        transactionTime: 1_701,
+        symbol: 'ETHUSDT',
+        side: 'BUY',
+        orderType: 'MARKET',
+        orderStatus: 'PARTIALLY_FILLED',
+        executionType: 'TRADE',
+        exchangeOrderId: 'event-missing-partial-fee-backfilled-1',
+        clientOrderId: 'client-missing-partial-fee-backfilled-1',
+        averagePrice: 3_000,
+        cumulativeFilledQuantity: 0.5,
+        lastFilledQuantity: 0.5,
+        lastFilledPrice: 3_000,
+        fee: null,
+        feeCurrency: null,
+        exchangeTradeId: 'trade-missing-partial-fee-backfilled-1',
+        raw: {},
+      },
+    });
+
+    await applyLiveExchangeOrderTradeUpdateEvent({
+      userId: user.id,
+      event: {
+        eventType: 'ORDER_TRADE_UPDATE',
+        marketType: 'FUTURES',
+        eventTime: 1_710,
+        transactionTime: 1_711,
+        symbol: 'ETHUSDT',
+        side: 'BUY',
+        orderType: 'MARKET',
+        orderStatus: 'FILLED',
+        executionType: 'TRADE',
+        exchangeOrderId: 'event-missing-partial-fee-backfilled-1',
+        clientOrderId: 'client-missing-partial-fee-backfilled-1',
+        averagePrice: 3_000,
+        cumulativeFilledQuantity: 1,
+        lastFilledQuantity: 0.5,
+        lastFilledPrice: 3_000,
+        fee: 0.02,
+        feeCurrency: 'USDT',
+        exchangeTradeId: 'trade-missing-partial-fee-backfilled-2',
+        raw: {},
+      },
+    });
+
+    await applyLiveExchangeOrderTradeUpdateEvent({
+      userId: user.id,
+      event: {
+        eventType: 'ORDER_TRADE_UPDATE',
+        marketType: 'FUTURES',
+        eventTime: 1_720,
+        transactionTime: 1_721,
+        symbol: 'ETHUSDT',
+        side: 'BUY',
+        orderType: 'MARKET',
+        orderStatus: 'FILLED',
+        executionType: 'TRADE',
+        exchangeOrderId: 'event-missing-partial-fee-backfilled-1',
+        clientOrderId: 'client-missing-partial-fee-backfilled-1',
+        averagePrice: 3_000,
+        cumulativeFilledQuantity: 1,
+        lastFilledQuantity: 0.5,
+        lastFilledPrice: 3_000,
+        fee: 0.01,
+        feeCurrency: 'USDT',
+        exchangeTradeId: 'trade-missing-partial-fee-backfilled-1',
+        raw: {},
+      },
+    });
+
+    const updatedOrder = await prisma.order.findUniqueOrThrow({
+      where: { id: order.id },
+    });
+    expect(updatedOrder.fee).toBeCloseTo(0.03, 10);
+    expect(updatedOrder.feeSource).toBe('EXCHANGE_FILL');
+    expect(updatedOrder.feePending).toBe(false);
+    const fills = await prisma.orderFill.findMany({
+      where: { orderId: order.id },
+      orderBy: { exchangeTradeId: 'asc' },
+    });
+    expect(fills).toHaveLength(2);
+    expect(fills[0]?.feeCost).toBeCloseTo(0.01, 10);
+    expect(fills[1]?.feeCost).toBeCloseTo(0.02, 10);
+    const trade = await prisma.trade.findFirstOrThrow({
+      where: { orderId: order.id },
+    });
+    expect(trade.exchangeTradeId).toBe('trade-missing-partial-fee-backfilled-2');
+    expect(trade.fee).toBeCloseTo(0.03, 10);
+    expect(trade.feeSource).toBe('EXCHANGE_FILL');
+    expect(trade.feePending).toBe(false);
+  });
+
   it('backfills missing fee truth for an already recorded exchange fill', async () => {
     const user = await prisma.user.create({
       data: { email: 'exchange-event-fill-fee-backfill@example.com', password: 'hashed' },
