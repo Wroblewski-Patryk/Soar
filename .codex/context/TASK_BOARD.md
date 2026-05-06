@@ -20,6 +20,16 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `V1MONEY-01 qa(money): build local and paper-safe V1 money scenario matrix`
+  - Scope: closed a TESTER-mode local/paper-safe V1 money matrix. The matrix
+    routes `V1MONEY-A` rows through local, paper-safe, read-only production, or
+    explicit operator/live-money evidence paths. Focused API money-engine
+    validation passed (`49/49`) across order types, pre-trade allow/block/audit,
+    position/order lifetime, strategy lifetime policy, lifecycle mark-price,
+    and close parity. This does not close production-only TP/SL/TSL/live-close
+    rows; it defines the next safe evidence path. Evidence:
+    `docs/planning/v1money-local-paper-safe-matrix-task-2026-05-07.md`.
+
 - [x] `LIVEIMPORT-03A qa(planning): triage stale imported-position release candidate against current main`
   - Scope: closed a BUILDER-mode release-candidate triage. The old
     `LIVEIMPORT-03` promotion candidate `39146d2e` is not an ancestor of

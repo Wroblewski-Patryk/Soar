@@ -29,6 +29,15 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-07: Closed `V1MONEY-01` with
+  `docs/planning/v1money-local-paper-safe-matrix-task-2026-05-07.md`. A
+  TESTER-mode local/paper-safe V1 money matrix now routes `V1MONEY-A` rows
+  through local, paper-safe, read-only production, or explicit
+  operator/live-money evidence paths. Focused API money-engine validation
+  passed (`49/49`) across order types, pre-trade allow/block/audit,
+  position/order lifetime, strategy lifetime policy, lifecycle mark-price, and
+  close parity. Production-only TP/SL/TSL/live-close rows remain open for
+  authenticated or operator-approved evidence.
 - 2026-05-07: Closed `LIVEIMPORT-03A` with
   `docs/planning/liveimport-03-current-main-candidate-triage-task-2026-05-07.md`.
   The old `LIVEIMPORT-03` promotion candidate `39146d2e` is not an ancestor of

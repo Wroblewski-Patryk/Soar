@@ -3,6 +3,15 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 V1 money-engine scenario matrix `V1MONEY-01` is closed locally on
+  branch `codex/v1-app-function-check`. A TESTER-mode local/paper-safe matrix
+  now routes `V1MONEY-A` rows through local, paper-safe, read-only production,
+  or explicit operator/live-money evidence paths. Focused API money-engine
+  validation passed (`49/49`) across order types, pre-trade allow/block/audit,
+  position/order lifetime, strategy lifetime policy, lifecycle mark-price, and
+  close parity. This does not close production-only TP/SL/TSL/live-close rows;
+  it defines the next safe evidence path. Evidence:
+  `docs/planning/v1money-local-paper-safe-matrix-task-2026-05-07.md`.
 - 2026-05-07 stale imported-position release candidate triage `LIVEIMPORT-03A`
   is closed locally on branch `codex/v1-app-function-check`. The old
   `LIVEIMPORT-03` promotion candidate `39146d2e` is not an ancestor of deployed
