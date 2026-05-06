@@ -26,6 +26,14 @@ Minimum local endpoints:
 - Postgres: `localhost:5432`
 - Redis: `localhost:6379`
 
+Minimum API secret-readiness keys for local runtime startup:
+- `JWT_SECRET`
+- `API_KEY_ENCRYPTION_KEYS`
+- `API_KEY_ENCRYPTION_ACTIVE_VERSION`
+
+`API_KEY_ENCRYPTION` is a compatibility alias only. Local API startup fails
+closed when `API_KEY_ENCRYPTION_KEYS` is missing.
+
 ## A) Local DEV Startup (watch mode)
 
 Local worker-ownership note:

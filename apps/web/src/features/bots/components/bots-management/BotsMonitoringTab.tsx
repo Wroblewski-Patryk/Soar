@@ -19,6 +19,10 @@ import {
   BotRuntimeSessionListItem,
   BotRuntimeSessionStatus,
 } from "../../types/bot.type";
+import {
+  resolveRuntimeOpenPositionMarkPriceSourceLabelKey,
+  type RuntimeOpenPositionMarkPriceSource,
+} from "../../utils/runtimeOpenPositionDerivations";
 
 type MonitorChecklistItem = {
   key: string;
@@ -35,6 +39,7 @@ type MonitorOpenPositionRow = {
   quantity: number;
   entryPrice: number;
   markPrice: number | null;
+  liveMarkPriceSource: RuntimeOpenPositionMarkPriceSource;
   entryNotional: number;
   marginUsed: number;
   marginInitPct: number | null;
@@ -643,7 +648,18 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                               <td>{position.side}</td>
                               <td>{formatNumber(position.quantity, 6)}</td>
                               <td>{formatNumber(position.entryPrice, 4)}</td>
-                              <td>{position.markPrice != null ? formatNumber(position.markPrice, 4) : "-"}</td>
+                              <td>
+                                <div className="flex flex-col leading-tight">
+                                  <span>{position.markPrice != null ? formatNumber(position.markPrice, 4) : "-"}</span>
+                                  <span className="text-[10px] uppercase tracking-wide opacity-60">
+                                    {t(
+                                      resolveRuntimeOpenPositionMarkPriceSourceLabelKey(
+                                        position.liveMarkPriceSource
+                                      ) as TranslationKey
+                                    )}
+                                  </span>
+                                </div>
+                              </td>
                               <td>{formatCurrency(position.entryNotional)}</td>
                               <td>{formatCurrency(position.marginUsed)}</td>
                               <td>

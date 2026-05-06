@@ -8,6 +8,7 @@ import { toProtectedPnlPercentFromStopPrice } from "./trailingStopDisplay";
 
 export type RuntimeOpenPositionDisplayRow = BotRuntimePositionItem & {
   liveMarkPrice: number | null;
+  liveMarkPriceSource: RuntimeOpenPositionMarkPriceSource;
   liveUnrealizedPnl: number;
   livePnlPct: number | null;
   marginNotional: number;
@@ -19,6 +20,22 @@ export type RuntimeOpenPositionDisplayRow = BotRuntimePositionItem & {
   marginInitPct: number | null;
   ttpProtectedPercent: number | null;
   tslProtectedPercent: number | null;
+};
+
+export type RuntimeOpenPositionMarkPriceSource =
+  | NonNullable<BotRuntimePositionItem["markPriceSource"]>
+  | "runtime_stream";
+
+export const resolveRuntimeOpenPositionMarkPriceSourceLabelKey = (
+  source: RuntimeOpenPositionMarkPriceSource
+) => {
+  if (source === "runtime_stream") return "dashboard.bots.monitoring.markPriceSourceStream";
+  if (source === "runtime_symbol_stat") return "dashboard.bots.monitoring.markPriceSourceRuntimeStat";
+  if (source === "runtime_ticker") return "dashboard.bots.monitoring.markPriceSourceRuntimeTicker";
+  if (source === "fallback_ticker") return "dashboard.bots.monitoring.markPriceSourceFallbackTicker";
+  if (source === "exchange_unrealized_pnl") return "dashboard.bots.monitoring.markPriceSourceExchangePnl";
+  if (source === "runtime_candidate") return "dashboard.bots.monitoring.markPriceSourceRuntimeCandidate";
+  return "dashboard.bots.monitoring.markPriceSourceUnavailable";
 };
 
 type StreamPricesInput = Map<string, number> | Record<string, number>;
@@ -62,6 +79,11 @@ export const resolveRuntimeOpenPositionMargin = (
   return position.marginUsed ?? position.entryNotional / leverage;
 };
 
+const resolveApiMarkPriceSource = (
+  position: BotRuntimePositionItem
+): RuntimeOpenPositionMarkPriceSource =>
+  position.markPriceSource ?? "unavailable";
+
 export const buildRuntimeOpenPositionRows = (params: {
   positions: BotRuntimePositionsResponse | null;
   symbolStats: BotRuntimeSymbolStatsResponse | null;
@@ -73,11 +95,21 @@ export const buildRuntimeOpenPositionRows = (params: {
   return (params.positions?.openItems ?? []).map((position) => {
     const symbolKey = normalizeSymbol(position.symbol);
     const marginUsed = resolveRuntimeOpenPositionMargin(position);
+    const streamPrice = readStreamPrice(params.streamPrices, symbolKey);
+    const symbolStatPrice = priceBySymbol.get(symbolKey) ?? null;
     const candidateMark =
-      readStreamPrice(params.streamPrices, symbolKey) ??
+      streamPrice ??
       position.markPrice ??
-      priceBySymbol.get(symbolKey) ??
+      symbolStatPrice ??
       null;
+    const liveMarkPriceSource: RuntimeOpenPositionMarkPriceSource =
+      streamPrice != null
+        ? "runtime_stream"
+        : position.markPrice != null
+          ? resolveApiMarkPriceSource(position)
+          : symbolStatPrice != null
+            ? "runtime_symbol_stat"
+            : "unavailable";
     const liveMarkPrice =
       typeof candidateMark === "number" && Number.isFinite(candidateMark)
         ? candidateMark
@@ -133,6 +165,7 @@ export const buildRuntimeOpenPositionRows = (params: {
       ...position,
       markPrice: liveMarkPrice,
       liveMarkPrice,
+      liveMarkPriceSource,
       liveUnrealizedPnl: openPnl,
       livePnlPct: pnlMarginPct,
       marginNotional: marginUsed,

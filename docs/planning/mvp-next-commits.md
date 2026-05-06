@@ -4721,6 +4721,18 @@ Historical carryover snapshot, superseded by the active `NOW` entries above:
 - [x] `PAR-23 fix(ui-backtest): normalized timeline payload (`events`/`indicatorSeries`) before filtering/merging to avoid runtime crashes`
 - [x] `PAR-24 fix(web-build): added `public/favicon.ico` asset to prevent Next.js page-data build failure`
 
+## 2026-05-07 V1 UI Runtime Parity Slice
+- [x] `V1UI-04 feat(web-runtime): surface runtime mark-price source in monitoring`
+  - Closed the backend-to-Web mark-price source reflection gap after
+    `MARKETDATA-FUT-01`. Shared Web derivation now carries
+    `liveMarkPriceSource`, Bots monitoring and Dashboard home render compact
+    source labels beside mark prices, and i18n coverage is complete. Validation
+    PASS: focused Web runtime tests (`26/26`), Web/API typecheck, Web lint,
+    Web build, route-reachable i18n audit (`findings=0`), guardrails, diff
+    check. Local API rendered smoke is blocked by missing
+    `API_KEY_ENCRYPTION_KEYS` in workstation `.env`; Postgres itself is healthy
+    and local migrations are applied.
+
 ## Queue Rules
 - Keep `NOW` at max 5 tasks.
 - Keep one logical change per task.

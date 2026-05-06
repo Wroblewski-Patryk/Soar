@@ -3,6 +3,20 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 runtime mark-price source Web parity slice `V1UI-04` is closed
+  locally on branch `codex/v1-app-function-check`. Web now carries
+  `liveMarkPriceSource` through the shared open-position derivation and renders
+  compact source labels beside mark prices in both `/dashboard` open positions
+  and `/dashboard/bots` monitoring, preserving stream-first mark-price
+  enrichment while exposing backend `markPriceSource` truth when API mark price
+  is used. Validation PASS: focused Web runtime tests (`26/26`), Web
+  typecheck, API typecheck, Web lint, production Web build, route-reachable
+  i18n audit (`findings=0`), guardrails, and diff check. Local Postgres was
+  healthy and the pending migration
+  `20260503013000_enforce_single_active_bot_market_group` was applied; API
+  rendered smoke is blocked by local `.env` missing
+  `API_KEY_ENCRYPTION_KEYS`. Evidence:
+  `docs/planning/v1ui-04-runtime-mark-price-source-web-parity-task-2026-05-07.md`.
 - 2026-05-07 public access header/i18n route slice `V1UI-03` is closed locally
   on branch `codex/v1-app-function-check`. Public header auth CTAs now render
   only after auth loading resolves with no user, preventing logged-out

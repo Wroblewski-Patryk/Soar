@@ -20,6 +20,36 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Evidence:
 ```
 
+### 2026-05-07 - Local API smoke requires current encryption key env names
+- Context: `V1UI-04` attempted an authenticated runtime UI smoke after
+  verifying local Docker Postgres/Redis and applying the pending local
+  migration.
+- Symptom: `pnpm --filter api run dev` exited before binding HTTP with
+  `Critical secret readiness check failed: missing=[API_KEY_ENCRYPTION_KEYS]`.
+- Root cause: workstation `apps/api/.env` still used the legacy
+  `API_KEY_ENCRYPTION` alias while runtime readiness now requires
+  `API_KEY_ENCRYPTION_KEYS` plus an active version.
+- Guardrail: before declaring local API smoke impossible, check Docker infra,
+  migration status, and current secret-readiness key names from
+  `apps/api/.env.example`.
+- Preferred pattern:
+```text
+1) Confirm Postgres/Redis are running.
+2) Run `pnpm --filter api exec prisma migrate status` or `migrate deploy` for
+   local-only pending migrations.
+3) Ensure local `.env` uses `API_KEY_ENCRYPTION_KEYS` and
+   `API_KEY_ENCRYPTION_ACTIVE_VERSION`.
+4) Start API with `pnpm --filter api run dev`.
+```
+- Avoid: treating a local API startup failure as a Postgres failure when the
+  critical-secret guard failed first.
+- Evidence:
+  - Docker containers `cryptosparrow-postgres-1` and `cryptosparrow-redis-1`
+    were running.
+  - Migration `20260503013000_enforce_single_active_bot_market_group` applied
+    successfully.
+  - API startup then failed only on missing `API_KEY_ENCRYPTION_KEYS`.
+
 ### 2026-04-26 - Drifted local Prisma replay can block focused DB validation
 - Context: a production hotfix needed one new partial unique-index contract for open positions, but local validation also had to keep moving on the shared dev Postgres.
 - Symptom: `pnpm --filter api exec prisma migrate deploy` failed locally on an older migration with `column "strategyId" of relation "Bot" already exists`, even though the repository change under test was a later index-only migration.

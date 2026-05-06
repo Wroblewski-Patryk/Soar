@@ -704,6 +704,7 @@ describe("BotsManagement", () => {
           realizedPnl: 0,
           unrealizedPnl: 15,
           markPrice: 71500,
+          markPriceSource: "fallback_ticker",
           dynamicTtpStopLoss: null,
           dynamicTslStopLoss: null,
           firstTradeAt: "2026-03-31T10:04:30.000Z",
@@ -732,6 +733,7 @@ describe("BotsManagement", () => {
           realizedPnl: 0,
           unrealizedPnl: 1.2,
           markPrice: 2520,
+          markPriceSource: "exchange_unrealized_pnl",
           dynamicTtpStopLoss: 2508.4321,
           dynamicTslStopLoss: 2496.5555,
           firstTradeAt: "2026-03-31T10:03:00.000Z",
@@ -812,6 +814,8 @@ describe("BotsManagement", () => {
       expect(screen.getByTitle(/1:-15(\.00)?%, 2:-30(\.00)?%/)).toBeInTheDocument();
       expect(screen.getByText("TTP")).toBeInTheDocument();
       expect(screen.getByText("TSL")).toBeInTheDocument();
+      expect(screen.getByText("Ticker fallback")).toBeInTheDocument();
+      expect(screen.getByText("PnL z gieldy")).toBeInTheDocument();
       expect(
         screen.getByText((content) => /0[.,]3[34]%/.test(content.replace(/\u00a0/g, " ")))
       ).toBeInTheDocument();

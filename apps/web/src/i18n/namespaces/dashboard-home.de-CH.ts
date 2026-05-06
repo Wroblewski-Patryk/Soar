@@ -114,6 +114,7 @@ export const dashboardHomeDeCh = {
     "margin": "Marge",
     "pnl": "PnL",
     "pnlPercent": "PnL %",
+    "markPrice": "Mark",
     "dca": "DCA",
     "slTtp": "TTP",
     "slTsl": "TSL",

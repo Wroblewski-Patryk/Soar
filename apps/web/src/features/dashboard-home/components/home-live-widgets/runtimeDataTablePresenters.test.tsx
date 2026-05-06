@@ -33,6 +33,7 @@ const openPositionRow = {
   lastTradeAt: null,
   tradesCount: 0,
   liveMarkPrice: 0.11,
+  liveMarkPriceSource: "exchange_unrealized_pnl",
   liveUnrealizedPnl: 0.1,
   livePnlPct: 10,
   marginNotional: 1,
@@ -81,10 +82,13 @@ describe("createOpenPositionsColumns", () => {
           "dashboard.home.runtime.margin": "Margin",
           "dashboard.home.runtime.pnl": "PnL",
           "dashboard.home.runtime.pnlPercent": "PnL%",
+          "dashboard.home.runtime.markPrice": "Mark",
+          "dashboard.bots.monitoring.markPriceSourceExchangePnl": "Exchange PnL",
           "dashboard.home.runtime.dca": "DCA",
           "dashboard.home.runtime.continuityConfirmed": "Confirmed",
         })[key] ?? key,
       formatDateTimeWithSeconds: (value) => value ?? "-",
+      formatNumber: (value) => String(value),
       formatPercent: (value) => `${value}%`,
       formatRuntimeAmount: (value) => String(value),
       formatDcaPercent: (value) => `${value}%`,
@@ -117,6 +121,52 @@ describe("createOpenPositionsColumns", () => {
       "text-error"
     );
     expect(screen.getByRole("button", { name: "Close position" })).not.toHaveClass("btn-outline");
+  });
+
+  it("renders mark price source from shared runtime derivation", () => {
+    const columns = createOpenPositionsColumns({
+      t: (key) =>
+        ({
+          "dashboard.home.runtime.timeOpened": "Time opened",
+          "dashboard.home.runtime.symbol": "Symbol",
+          "dashboard.home.runtime.side": "Side",
+          "dashboard.home.runtime.status": "Status",
+          "dashboard.home.runtime.margin": "Margin",
+          "dashboard.home.runtime.pnl": "PnL",
+          "dashboard.home.runtime.pnlPercent": "PnL%",
+          "dashboard.home.runtime.markPrice": "Mark",
+          "dashboard.bots.monitoring.markPriceSourceExchangePnl": "Exchange PnL",
+          "dashboard.home.runtime.dca": "DCA",
+          "dashboard.home.runtime.continuityConfirmed": "Confirmed",
+        })[key] ?? key,
+      formatDateTimeWithSeconds: (value) => value ?? "-",
+      formatNumber: (value) => String(value),
+      formatPercent: (value) => `${value}%`,
+      formatRuntimeAmount: (value) => String(value),
+      formatDcaPercent: (value) => `${value}%`,
+      withRuntimeUnit: (label) => label,
+      resolveRuntimeIcon: () => null,
+      runtimeIconsLoading: false,
+      runtimeIconsError: null,
+      showDynamicStopColumns: false,
+      closePositionActionColumnLabel: "Action",
+      closePositionPendingLabel: "Closing...",
+      closePositionButtonLabel: "Close position",
+      editPositionButtonLabel: "Edit position",
+      positionActionsUnavailableLabel: "Unavailable",
+      isClosingPosition: () => false,
+      onOpenPositionEdit: vi.fn(),
+      onCloseRuntimePosition: vi.fn(),
+    });
+
+    const markColumn = columns.find((column) => column.key === "markPrice");
+
+    expect(markColumn?.label).toBe("Mark");
+
+    render(<div>{markColumn?.render?.(openPositionRow)}</div>);
+
+    expect(screen.getByText("0.11")).toBeInTheDocument();
+    expect(screen.getByText("Exchange PnL")).toHaveClass("uppercase");
   });
 });
 

@@ -5,6 +5,7 @@ import AssetSymbol from "@/ui/components/AssetSymbol";
 import { TableIconButtonAction } from "@/ui/components/TableUi";
 import type { BotRuntimeTrade } from "@/features/bots/types/bot.type";
 import { renderDcaLadderCell } from "@/features/shared/dcaLadderCell";
+import { resolveRuntimeOpenPositionMarkPriceSourceLabelKey } from "@/features/bots/utils/runtimeOpenPositionDerivations";
 import { resolveDynamicTslDisplay, resolveDynamicTtpDisplay } from "./runtimeDerivations";
 import type { HistoryPositionsTableColumn, OpenOrdersTableColumn, OpenPositionWithLive } from "./types";
 import {
@@ -64,6 +65,7 @@ const resolveContinuityStateLabel = (
 type OpenPositionsColumnsArgs = {
   t: Translate;
   formatDateTimeWithSeconds: (value?: string | null) => string;
+  formatNumber: (value: number, options?: Intl.NumberFormatOptions) => string;
   formatPercent: (value: number) => string;
   formatRuntimeAmount: (value: number) => string;
   formatDcaPercent: (value: number) => string;
@@ -85,6 +87,7 @@ type OpenPositionsColumnsArgs = {
 export const createOpenPositionsColumns = ({
   t,
   formatDateTimeWithSeconds,
+  formatNumber,
   formatPercent,
   formatRuntimeAmount,
   formatDcaPercent,
@@ -173,6 +176,27 @@ export const createOpenPositionsColumns = ({
         <span className={row.liveUnrealizedPnl >= 0 ? "text-success" : "text-error"}>
           {row.livePnlPct == null ? "-" : formatPercent(row.livePnlPct)}
         </span>
+      ),
+    },
+    {
+      key: "markPrice",
+      label: t("dashboard.home.runtime.markPrice"),
+      sortable: true,
+      accessor: (row) => row.liveMarkPrice ?? null,
+      render: (row) => (
+        <div className="flex flex-col leading-tight">
+          <span>
+            {row.liveMarkPrice == null
+              ? "-"
+              : formatNumber(row.liveMarkPrice, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 6,
+                })}
+          </span>
+          <span className="text-[10px] uppercase tracking-wide opacity-60">
+            {t(resolveRuntimeOpenPositionMarkPriceSourceLabelKey(row.liveMarkPriceSource))}
+          </span>
+        </div>
       ),
     },
     {

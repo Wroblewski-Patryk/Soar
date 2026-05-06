@@ -5,7 +5,7 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/dashboard-home`
 - Owner: frontend/runtime-observability
-- Last updated: 2026-05-03
+- Last updated: 2026-05-07
 - Related planning task: `DASHDRIFT-02`
 
 ## Canonical Architecture Linkage
@@ -68,6 +68,9 @@ Out of scope:
   1. Poll runtime snapshots every 5 seconds (silent refresh).
   2. Subscribe to ticker stream for visible symbols.
   3. Merge stream prices into open-position pnl calculations.
+  4. Carry the selected mark-price source through the shared open-position
+     derivation so `/dashboard` and `/dashboard/bots` expose the same source
+     truth beside the mark value.
 - Onboarding flow:
   - No bots: ordered steps start from wallet setup (`/dashboard/wallets/list`) before market/strategy/backtest/bot steps.
   - No active bots: same chain + activation step (`/dashboard/bots`).

@@ -32,6 +32,7 @@ const dynamicStopRow = {
   lastTradeAt: null,
   tradesCount: 0,
   liveMarkPrice: 1.1,
+  liveMarkPriceSource: "exchange_unrealized_pnl",
   liveUnrealizedPnl: 10,
   livePnlPct: 10,
   marginNotional: 100,

@@ -47,6 +47,7 @@ const basePositions = (overrides?: Partial<BotRuntimePositionsResponse["openItem
       unrealizedPnl: 6.68,
       unrealizedPnlPercent: 6.68,
       markPrice: 0.99332,
+      markPriceSource: "exchange_unrealized_pnl",
       dynamicTtpStopLoss: 0.992,
       dynamicTslStopLoss: 0.99,
       firstTradeAt: null,
@@ -120,6 +121,7 @@ describe("buildRuntimeOpenPositionRows", () => {
     expect(rows).toHaveLength(1);
     expect(rows[0]?.markPrice).toBeCloseTo(0.991, 8);
     expect(rows[0]?.liveMarkPrice).toBeCloseTo(0.991, 8);
+    expect(rows[0]?.liveMarkPriceSource).toBe("runtime_stream");
     expect(rows[0]?.openPnl).toBeCloseTo(9, 8);
     expect(rows[0]?.liveUnrealizedPnl).toBeCloseTo(9, 8);
     expect(rows[0]?.pnlMarginPct).toBeCloseTo(9, 8);
@@ -140,7 +142,28 @@ describe("buildRuntimeOpenPositionRows", () => {
     });
 
     expect(rows[0]?.markPrice).toBeCloseTo(0.99332, 8);
+    expect(rows[0]?.liveMarkPriceSource).toBe("exchange_unrealized_pnl");
     expect(rows[0]?.openPnl).toBeCloseTo(6.68, 8);
     expect(rows[0]?.pnlMarginPct).toBeCloseTo(6.68, 8);
+  });
+
+  it("keeps symbol-stat and unavailable source labels explicit", () => {
+    const symbolStatRows = buildRuntimeOpenPositionRows({
+      positions: basePositions({ markPrice: null, markPriceSource: "unavailable" }),
+      symbolStats,
+      streamPrices: new Map(),
+    });
+
+    expect(symbolStatRows[0]?.markPrice).toBeCloseTo(0.995, 8);
+    expect(symbolStatRows[0]?.liveMarkPriceSource).toBe("runtime_symbol_stat");
+
+    const unavailableRows = buildRuntimeOpenPositionRows({
+      positions: basePositions({ markPrice: null, markPriceSource: "unavailable" }),
+      symbolStats: { ...symbolStats, items: [] },
+      streamPrices: new Map(),
+    });
+
+    expect(unavailableRows[0]?.markPrice).toBeNull();
+    expect(unavailableRows[0]?.liveMarkPriceSource).toBe("unavailable");
   });
 });

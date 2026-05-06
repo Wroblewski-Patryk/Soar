@@ -4281,6 +4281,16 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - [x] `V1SUBS-01 fix(api-entitlements): fail closed on LIVE bot writes without live-trading entitlement`
 
 ### Progress Log (Phase V1SUBS-2026-05-01 - LIVE Entitlement Write Guard)
+- 2026-05-07: Closed `V1UI-04` by surfacing backend/runtime mark-price source
+  truth in Web runtime open-position tables. The shared Web derivation now
+  carries `liveMarkPriceSource` with stream-first precedence, `/dashboard/bots`
+  monitoring and `/dashboard` open positions both render localized source
+  labels beside mark prices, and unavailable source truth remains explicit.
+  Validation PASS: focused Web runtime tests (`26/26`), Web typecheck, API
+  typecheck, Web lint, production Web build, route-reachable i18n audit
+  (`findings=0`), guardrails, and diff check. Local Postgres is healthy and the
+  pending local migration was applied; authenticated rendered runtime smoke is
+  blocked until local `.env` includes `API_KEY_ENCRYPTION_KEYS`.
 - 2026-05-01: Closed `V1SUBS-01` by adding one shared
   `assertSubscriptionAllowsLiveTrading(...)` guard and enforcing it on LIVE
   bot create plus `PAPER -> LIVE` bot updates. The focused entitlement e2e now

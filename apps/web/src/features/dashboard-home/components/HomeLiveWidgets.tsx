@@ -503,6 +503,7 @@ export default function HomeLiveWidgets() {
       createOpenPositionsColumns({
         t,
         formatDateTimeWithSeconds,
+        formatNumber,
         formatPercent,
         formatRuntimeAmount,
         formatDcaPercent,
@@ -527,6 +528,7 @@ export default function HomeLiveWidgets() {
       editPositionButtonLabel,
       formatDateTimeWithSeconds,
       formatDcaPercent,
+      formatNumber,
       formatPercent,
       formatRuntimeAmount,
       handleCloseRuntimePosition,

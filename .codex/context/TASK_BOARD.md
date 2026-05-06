@@ -20,6 +20,21 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `V1UI-04 feat(web-runtime): surface runtime mark-price source in monitoring`
+  - Scope: closed a BUILDER-mode backend-to-Web runtime parity slice. Web now
+    carries `liveMarkPriceSource` through the shared open-position derivation
+    and renders compact source labels beside mark prices in both `/dashboard`
+    open positions and `/dashboard/bots` monitoring. Stream-enriched prices
+    show stream truth, API mark prices preserve backend `markPriceSource`, and
+    missing truth stays explicit as unavailable. Validation PASS: focused Web
+    runtime tests (`26/26`), Web typecheck, API typecheck, Web lint,
+    production Web build, route-reachable i18n audit (`findings=0`),
+    guardrails, and diff check. Local Postgres migration status was repaired by
+    applying `20260503013000_enforce_single_active_bot_market_group`; rendered
+    authenticated runtime smoke remains blocked by missing local
+    `API_KEY_ENCRYPTION_KEYS`. Evidence:
+    `docs/planning/v1ui-04-runtime-mark-price-source-web-parity-task-2026-05-07.md`.
+
 - [x] `V1UI-03 fix(web-public): hide auth CTAs while session state is loading`
   - Scope: closed an ARCHITECT-mode public access shell/i18n route slice.
     Public header auth CTAs now render only after auth loading resolves with no
