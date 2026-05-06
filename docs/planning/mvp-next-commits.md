@@ -9,6 +9,16 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `LIVEIMPORT-03A qa(planning): triage stale imported-position release candidate against current main`
+  - 2026-05-07: Closed a BUILDER-mode release-candidate triage. The old
+    `LIVEIMPORT-03` promotion candidate `39146d2e` is not an ancestor of
+    deployed production `6a7c9889` and is not patch-equivalent to deployed
+    `main`, while a focused current-main imported-position/runtime strategy
+    regression pack passed (`51/51`). `LIVEIMPORT-03` remains open only for
+    authenticated ETH/DOGE production readback on current `main`; do not
+    promote stale `39146d2e`. BOTMULTI stale build-info blocker text was also
+    refreshed because production now contains `f3aaa3d`. Evidence:
+    `docs/planning/liveimport-03-current-main-candidate-triage-task-2026-05-07.md`.
 - [x] `V1GATE-02 release(ops): refresh public production and stage target truth after PMPLC merge`
   - 2026-05-07: Closed an ARCHITECT-mode public target refresh after the PMPLC
     hardening merge reached `main`. Production public API/Web smoke is healthy
@@ -1996,14 +2006,16 @@ Operational queue for one-task execution runs.
     type after canonical market reassignment. Validation PASS: focused orders
     service test (`26/26`) and broader orders/manual pack (`49/49`). Evidence:
     `docs/planning/orddrift-01-manual-context-canonical-group-no-direct-fallback-task-2026-05-03.md`.
-- [ ] `LIVEIMPORT-03 release(prod): promote imported-position provenance fix and read back ETH/DOGE`
-  - Scope: promote commit `39146d2e` through the approved production workflow,
-    verify API freshness directly, then use authenticated read-only dashboard
-    evidence for the reported LIVE ETH/DOGE rows: ownership, `strategyId` or
-    single-strategy provenance recovery, TTP visibility, actionable state, and
-    import completeness across assigned bot markets. Deployment impact:
-    medium. Validation: production `/health`, `/ready`, API freshness,
-    authenticated runtime positions readback, and rollback note.
+- [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production`
+  - Scope: use authenticated read-only dashboard/API evidence on current
+    production `main` (`6a7c9889` or later) for the reported LIVE ETH/DOGE rows:
+    ownership, `strategyId` or single-strategy provenance recovery, TTP
+    visibility, actionable state, and import completeness across assigned bot
+    markets. Do not promote stale candidate `39146d2e`; `LIVEIMPORT-03A`
+    confirmed it is not the current production candidate and focused
+    current-main imported-position/runtime strategy tests pass (`51/51`).
+    Validation still required: authenticated runtime positions readback and
+    redacted evidence.
 - [x] `PAPERSIGNAL-01 fix(api-runtime): audit PAPER signal display-to-execution parity`
   - 2026-05-03: Closed the first confirmed drift. Runtime symbol-stats read
     models now prefer active canonical `BotMarketGroup` and enabled
@@ -2028,11 +2040,11 @@ Operational queue for one-task execution runs.
     `scripts/start-with-migrate.mjs` when `API_AUTO_MIGRATE` is not `false`.
     Local pre-release build, guardrails, and docs parity PASS. Candidate
     `f3aaa3dca6cf4d4b199372563886165638391a77` is committed and pushed to
-    `origin/main`. BLOCKED: local environment has no `gh` CLI, no deploy hook
-    secret, and available GitHub connector tools do not expose
-    `workflow_dispatch`; production build-info still reports the previous
-    `26962ea1dbb0981d3885779d01e58485d7e9fd6c`. Manual `Promote PROD`
-    workflow dispatch remains required.
+    `origin/main`. 2026-05-07 refresh: production build-info now reports
+    `6a7c9889d24a55c870b32aa10cb284ede6db1c59`, which contains
+    `f3aaa3dca6cf4d4b199372563886165638391a77`; the old public build-info
+    blocker is resolved. Remaining blocker: authenticated/protected runtime
+    readback and broader V1 release gate evidence are still required.
     Evidence:
     `docs/planning/botmulti-09-production-deploy-task-2026-05-03.md`.
 - [x] `BOTMULTI-08 qa(closure): run architecture-to-runtime closure pack and publish evidence`

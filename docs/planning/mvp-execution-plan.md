@@ -29,6 +29,15 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-07: Closed `LIVEIMPORT-03A` with
+  `docs/planning/liveimport-03-current-main-candidate-triage-task-2026-05-07.md`.
+  The old `LIVEIMPORT-03` promotion candidate `39146d2e` is not an ancestor of
+  deployed production `6a7c9889` and is not patch-equivalent to deployed
+  `main`, while a focused current-main imported-position/runtime strategy pack
+  passed (`51/51`). `LIVEIMPORT-03` remains open only for authenticated
+  ETH/DOGE production readback on current `main`; do not promote stale
+  `39146d2e`. BOTMULTI stale build-info blocker text was also refreshed because
+  production now contains `f3aaa3d`.
 - 2026-05-07: Closed `V1GATE-02` with
   `docs/planning/v1gate-02-public-target-refresh-task-2026-05-07.md`.
   Production public API/Web smoke is healthy and build-info reports

@@ -3,6 +3,16 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 stale imported-position release candidate triage `LIVEIMPORT-03A`
+  is closed locally on branch `codex/v1-app-function-check`. The old
+  `LIVEIMPORT-03` promotion candidate `39146d2e` is not an ancestor of deployed
+  production `6a7c9889` and is not patch-equivalent to deployed `main`, while a
+  focused current-main imported-position/runtime strategy regression pack passed
+  (`51/51`). `LIVEIMPORT-03` remains open only for authenticated ETH/DOGE
+  production readback on current `main`; do not promote stale `39146d2e`.
+  BOTMULTI stale build-info blocker text was also refreshed because production
+  now contains `f3aaa3d`. Evidence:
+  `docs/planning/liveimport-03-current-main-candidate-triage-task-2026-05-07.md`.
 - 2026-05-07 public target refresh `V1GATE-02` is closed locally on branch
   `codex/v1-app-function-check`. Production public API/Web smoke is healthy and
   build-info reports `gitSha=6a7c9889d24a55c870b32aa10cb284ede6db1c59`,
