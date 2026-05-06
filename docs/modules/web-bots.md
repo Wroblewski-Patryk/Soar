@@ -82,6 +82,10 @@ Out of scope:
 ## 7. Observability and Operations
 - Monitoring views include heartbeat/session status badges and stale-data warnings.
 - Monitoring also exposes bot-scoped portfolio history with explicit partial-state messaging when only the latest open PnL snapshot is authoritative.
+- Monitoring open-position rows expose backend continuity/actionability truth
+  (`continuityState`, `actionable`, and `strategyAutomationContextResolved`)
+  so recovered, recovering, externally closed, repair-only, and unresolved
+  strategy-context states do not look like normal actionable rows.
 - Monitoring history tables expose backend close attribution (`closeReason` and
   `closeInitiator`) for closed positions and close trades.
 - Assistant tab exposes per-slot status, latency, and message traces for operator diagnostics.

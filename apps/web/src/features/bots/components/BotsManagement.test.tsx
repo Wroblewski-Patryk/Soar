@@ -716,6 +716,9 @@ describe("BotsManagement", () => {
           symbol: "ETHUSDT",
           side: "LONG",
           status: "OPEN",
+          continuityState: "RECOVERED_UNACTIONABLE",
+          actionable: false,
+          strategyAutomationContextResolved: false,
           quantity: 0.02,
           leverage: 1,
           entryPrice: 2500,
@@ -871,6 +874,9 @@ describe("BotsManagement", () => {
       expect(screen.getByText("TSL")).toBeInTheDocument();
       expect(screen.getByText("Ticker fallback")).toBeInTheDocument();
       expect(screen.getByText("PnL z gieldy")).toBeInTheDocument();
+      expect(screen.getByText("Odzyskana, bez akcji")).toBeInTheDocument();
+      expect(screen.getByText("Akcja zablokowana")).toBeInTheDocument();
+      expect(screen.getByText("Kontekst strategii nierozwiazany")).toBeInTheDocument();
       expect(screen.getAllByText("Manualnie").length).toBeGreaterThan(0);
       expect(screen.getAllByText("User w app").length).toBeGreaterThan(0);
       expect(

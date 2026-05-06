@@ -3,6 +3,20 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 bot monitoring continuity/actionability Web parity slice
+  `V1UI-06` is closed locally on branch `codex/v1-app-function-check`.
+  `/dashboard/bots` monitoring open-position rows now render backend
+  `continuityState`, `actionable`, and
+  `strategyAutomationContextResolved` truth, so recovered non-actionable and
+  unresolved strategy-context rows are explicit instead of looking normal.
+  Validation PASS: focused `BotsManagement.test.tsx` (`13/13`), Web
+  typecheck, Web lint, Web build, route-reachable i18n audit (`findings=0`),
+  repository guardrails, diff check, and authenticated rendered smoke for
+  `/dashboard/bots` with no console errors. Browser plugin validation was
+  blocked by local `node_repl` resolving Node `v22.13.0` while requiring
+  `>= v22.22.0`, so the smoke used bundled Codex Node plus Playwright.
+  Evidence:
+  `docs/planning/v1ui-06-bot-monitoring-continuity-state-web-parity-task-2026-05-07.md`.
 - 2026-05-07 bot monitoring close-attribution Web parity slice `V1UI-05` is
   closed locally on branch `codex/v1-app-function-check`. `/dashboard/bots`
   monitoring history now renders backend `closeReason` and `closeInitiator`

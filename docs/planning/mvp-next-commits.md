@@ -4722,6 +4722,15 @@ Historical carryover snapshot, superseded by the active `NOW` entries above:
 - [x] `PAR-24 fix(web-build): added `public/favicon.ico` asset to prevent Next.js page-data build failure`
 
 ## 2026-05-07 V1 UI Runtime Parity Slice
+- [x] `V1UI-06 fix(web-runtime): surface continuity state in bot monitoring positions`
+  - Closed the `/dashboard/bots` open-position continuity/actionability gap.
+    Bot monitoring now renders backend `continuityState`, `actionable`, and
+    `strategyAutomationContextResolved` truth, including recovered
+    non-actionable and unresolved strategy-context labels. Validation PASS:
+    focused `BotsManagement` test (`13/13`), Web typecheck, Web lint, Web
+    build, route-reachable i18n audit (`findings=0`), guardrails, diff check,
+    and authenticated rendered `/dashboard/bots` smoke with no console errors.
+
 - [x] `V1UI-05 fix(web-runtime): surface close attribution in bot monitoring history`
   - Closed the `/dashboard/bots` runtime history attribution gap. Bot
     monitoring now renders backend `closeReason` and `closeInitiator` for

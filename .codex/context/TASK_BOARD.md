@@ -20,6 +20,18 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `V1UI-06 fix(web-runtime): surface continuity state in bot monitoring positions`
+  - Scope: closed an ARCHITECT-mode backend-to-Web runtime parity slice. Bot
+    monitoring open-position rows now render backend `continuityState`,
+    `actionable`, and `strategyAutomationContextResolved` truth, making
+    recovered non-actionable rows and unresolved strategy-context rows explicit
+    in the detailed operator route. Validation PASS: focused
+    `BotsManagement.test.tsx` (`13/13`), Web typecheck, Web lint, Web build,
+    route-reachable i18n audit (`findings=0`), guardrails, diff check, and
+    authenticated rendered `/dashboard/bots` smoke with no console errors.
+    Evidence:
+    `docs/planning/v1ui-06-bot-monitoring-continuity-state-web-parity-task-2026-05-07.md`.
+
 - [x] `V1UI-05 fix(web-runtime): surface close attribution in bot monitoring history`
   - Scope: closed a TESTER-mode backend-to-Web runtime parity slice. Bot
     monitoring history now renders backend `closeReason` and `closeInitiator`

@@ -395,6 +395,7 @@ export type BotRuntimePositionItem = {
     | "REPAIR_ONLY_CLEANUP";
   takeoverStatus?: "OWNED_AND_MANAGED" | "UNOWNED" | "AMBIGUOUS" | "MANUAL_ONLY" | null;
   actionable?: boolean;
+  strategyAutomationContextResolved?: boolean;
   symbol: string;
   side: "LONG" | "SHORT";
   status: "OPEN" | "CLOSED";

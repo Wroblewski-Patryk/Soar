@@ -29,6 +29,15 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-07: Closed `V1UI-06` with
+  `docs/planning/v1ui-06-bot-monitoring-continuity-state-web-parity-task-2026-05-07.md`.
+  Bot monitoring open-position rows now render backend `continuityState`,
+  `actionable`, and `strategyAutomationContextResolved` truth, including
+  recovered non-actionable and unresolved strategy-context labels. Validation
+  PASS: focused `BotsManagement.test.tsx` (`13/13`), Web typecheck, Web lint,
+  Web build, route-reachable i18n audit (`findings=0`), repository guardrails,
+  diff check, and authenticated rendered `/dashboard/bots` smoke with no
+  console errors.
 - 2026-05-07: Closed `V1UI-03` with
   `docs/planning/v1ui-03-public-access-header-route-contract-task-2026-05-07.md`.
   Public header auth CTAs now render only after auth loading resolves with no

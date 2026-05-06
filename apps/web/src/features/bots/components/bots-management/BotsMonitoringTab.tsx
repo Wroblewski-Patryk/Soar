@@ -39,6 +39,9 @@ type MonitorOpenPositionRow = {
   openedAt?: string | null;
   symbol: string;
   side: string;
+  continuityState?: BotRuntimePositionItem["continuityState"];
+  actionable?: boolean;
+  strategyAutomationContextResolved?: boolean;
   quantity: number;
   entryPrice: number;
   markPrice: number | null;
@@ -55,6 +58,16 @@ type MonitorOpenPositionRow = {
   dcaPlannedLevels?: number[] | null;
   ttpProtectedPercent: number | null;
   tslProtectedPercent: number | null;
+};
+
+const runtimeStateLabelKey = (
+  continuityState: BotRuntimePositionItem["continuityState"] | null | undefined
+): TranslationKey => {
+  if (continuityState === "RECOVERING") return "dashboard.bots.monitoring.runtimeStateRecovering";
+  if (continuityState === "RECOVERED_UNACTIONABLE") return "dashboard.bots.monitoring.runtimeStateRecoveredUnactionable";
+  if (continuityState === "EXTERNAL_CLOSE_CONFIRMED") return "dashboard.bots.monitoring.runtimeStateExternalCloseConfirmed";
+  if (continuityState === "REPAIR_ONLY_CLEANUP") return "dashboard.bots.monitoring.runtimeStateRepairOnlyCleanup";
+  return "dashboard.bots.monitoring.runtimeStateConfirmed";
 };
 
 type MonitorOperationalTradeRow = {
@@ -302,6 +315,29 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
     toTradeLifecycleLabelKey,
     formatTradeFeeMeta,
   } = props;
+
+  const renderRuntimeState = (position: MonitorOpenPositionRow) => {
+    const isActionBlocked = position.actionable === false;
+    const strategyContextUnresolved = position.strategyAutomationContextResolved === false;
+
+    return (
+      <div className="flex flex-col gap-1 leading-tight">
+        <span className={`badge badge-sm ${isActionBlocked ? "badge-warning" : "badge-success"}`}>
+          {t(runtimeStateLabelKey(position.continuityState))}
+        </span>
+        {isActionBlocked ? (
+          <span className="text-[10px] uppercase tracking-wide text-warning">
+            {t("dashboard.bots.monitoring.runtimeStateActionBlocked")}
+          </span>
+        ) : null}
+        {strategyContextUnresolved ? (
+          <span className="text-[10px] uppercase tracking-wide opacity-60">
+            {t("dashboard.bots.monitoring.runtimeStateStrategyContextUnresolved")}
+          </span>
+        ) : null}
+      </div>
+    );
+  };
 
   return (
     <div className="space-y-4 rounded-box border border-base-300/60 bg-base-200/60 p-4">
@@ -633,6 +669,7 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                             <th>{t("dashboard.bots.monitoring.table.timeOpened")}</th>
                             <th>{t("dashboard.bots.monitoring.table.symbol")}</th>
                             <th>{t("dashboard.bots.monitoring.table.side")}</th>
+                            <th>{t("dashboard.bots.monitoring.table.runtimeState")}</th>
                             <th>{t("dashboard.bots.monitoring.table.qty")}</th>
                             <th>{t("dashboard.bots.monitoring.table.entry")}</th>
                             <th>{t("dashboard.bots.monitoring.table.mark")}</th>
@@ -654,6 +691,7 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                               <td>{formatDateTime(position.openedAt)}</td>
                               <td className="font-medium">{position.symbol}</td>
                               <td>{position.side}</td>
+                              <td>{renderRuntimeState(position)}</td>
                               <td>{formatNumber(position.quantity, 6)}</td>
                               <td>{formatNumber(position.entryPrice, 4)}</td>
                               <td>
@@ -712,7 +750,7 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                           {monitorOpenPositionRows.length === 0 ? (
                             <tr>
                               <td
-                                colSpan={monitorShowDynamicStopColumns ? 16 : 14}
+                                colSpan={monitorShowDynamicStopColumns ? 17 : 15}
                                 className="text-center text-xs opacity-70"
                               >
                                 {t("dashboard.bots.monitoring.emptyOpenPositions")}
