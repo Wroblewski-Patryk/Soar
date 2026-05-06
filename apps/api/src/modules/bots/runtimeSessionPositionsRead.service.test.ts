@@ -158,7 +158,7 @@ describe('buildRuntimeTradeCarryOverWindowClause', () => {
     });
   });
 
-  it('adds only persisted imported OPEN anchors for carry-over positions', () => {
+  it('adds only persisted OPEN lifetime anchors for carry-over positions', () => {
     const rangeStart = new Date('2026-05-04T10:00:00.000Z');
     const rangeEnd = new Date('2026-05-04T11:00:00.000Z');
 
@@ -177,9 +177,7 @@ describe('buildRuntimeTradeCarryOverWindowClause', () => {
           },
         },
         {
-          origin: 'EXCHANGE_SYNC',
           lifecycleAction: 'OPEN',
-          exchangeTradeId: null,
           executedAt: {
             lte: rangeEnd,
           },

@@ -466,21 +466,20 @@ export const listBotRuntimeSessionPositions = async (
     startedAt: session.startedAt,
     windowEnd,
   });
+  const runtimeClosedPositionSyncWhere: Prisma.PositionWhereInput = {
+    OR: [{ syncState: 'IN_SYNC' }, { syncState: 'ORPHAN_LOCAL', continuityState: 'EXTERNAL_CLOSE_CONFIRMED' }],
+  };
   const closedPositionWhere: Prisma.PositionWhereInput = {
     ...runtimePositionBaseWhere,
     status: 'CLOSED',
-    syncState: 'IN_SYNC',
     closedAt: closedPositionWindow,
+    ...runtimeClosedPositionSyncWhere,
   };
   const feePositionWhere: Prisma.PositionWhereInput = {
     ...runtimePositionBaseWhere,
     OR: [
       { status: 'OPEN', closedAt: null, syncState: 'IN_SYNC' },
-      {
-        status: 'CLOSED',
-        syncState: 'IN_SYNC',
-        closedAt: closedPositionWindow,
-      },
+      { status: 'CLOSED', closedAt: closedPositionWindow, ...runtimeClosedPositionSyncWhere },
     ],
   };
   const [
@@ -557,6 +556,9 @@ export const listBotRuntimeSessionPositions = async (
   const lifecycleTradeWindowStart =
     botContext.createdAt < session.startedAt ? botContext.createdAt : session.startedAt;
   const singleBotStrategyContextId = resolveSingleBotStrategyContext(botContext);
+  const legacyWalletScopedContinuityWhere: Prisma.PositionWhereInput[] = botContext.walletId
+    ? [{ botId: null, walletId: botContext.walletId, origin: 'EXCHANGE_SYNC' }]
+    : [];
   const strategyIds = [
     ...new Set(
       [
@@ -584,10 +586,13 @@ export const listBotRuntimeSessionPositions = async (
       },
       AND: [
         {
-          OR: [botScopedPositionWhere, ...externalOwnedWhere],
+          OR: [botScopedPositionWhere, ...externalOwnedWhere, ...legacyWalletScopedContinuityWhere],
         },
       ],
-      OR: [{ status: 'OPEN', closedAt: null, syncState: 'IN_SYNC' }, { status: 'CLOSED', syncState: 'IN_SYNC' }],
+      OR: [
+        { status: 'OPEN', closedAt: null, syncState: 'IN_SYNC' },
+        { status: 'CLOSED', ...runtimeClosedPositionSyncWhere },
+      ],
     },
     limit: Math.max(query.limit, 500),
   });

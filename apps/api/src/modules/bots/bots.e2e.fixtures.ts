@@ -1,6 +1,6 @@
 export const DCA_BASIC_STRATEGY_CONFIG = {
   open: { indicatorsLong: [], indicatorsShort: [] },
-  close: { mode: 'basic', tp: 2, sl: 1 },
+  close: { mode: 'basic', tp: 40, sl: 40 },
   additional: {
     dcaEnabled: true,
     dcaMode: 'basic',
@@ -11,7 +11,7 @@ export const DCA_BASIC_STRATEGY_CONFIG = {
 
 export const DCA_ADVANCED_STRATEGY_CONFIG = {
   open: { indicatorsLong: [], indicatorsShort: [] },
-  close: { mode: 'basic', tp: 2, sl: 1 },
+  close: { mode: 'basic', tp: 40, sl: 40 },
   additional: {
     dcaEnabled: true,
     dcaMode: 'advanced',

@@ -90,9 +90,7 @@ export const buildRuntimeTradeCarryOverWindowClause = (input: {
     OR: [
       windowClause,
       {
-        origin: 'EXCHANGE_SYNC',
         lifecycleAction: 'OPEN',
-        exchangeTradeId: null,
         executedAt: {
           lte: input.rangeEnd,
         },

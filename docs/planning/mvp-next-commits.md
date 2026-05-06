@@ -9,13 +9,19 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
-- [ ] `PMPLC-45 fix(api-bots): include imported externally closed positions in aggregate PnL`
-  - 2026-05-06: Discovered during PMPLC-44 adjacent validation. Existing
-    `bots.monitoring-aggregate.e2e.test.ts` regression
-    `keeps aggregate header PnL aligned with imported closed position summary when trades are missing`
-    currently receives `positions.summary.realizedPnl=0` instead of `37.5` for
-    an imported `ORPHAN_LOCAL` / `EXTERNAL_CLOSE_CONFIRMED` closed position
-    with no trade rows. Execute next as a focused money-read-model fix.
+- [x] `PMPLC-45 fix(api-bots): include imported externally closed positions in aggregate PnL`
+  - 2026-05-06: Closed a TESTER-mode runtime read-model money-truth slice.
+    Runtime aggregate positions now include imported `ORPHAN_LOCAL` /
+    `EXTERNAL_CLOSE_CONFIRMED` closed positions in closed-position realized
+    PnL, while stale open orphans remain excluded. Runtime history also keeps
+    carry-over bot-managed `OPEN` trades and legacy wallet-scoped imported DCA
+    continuity visible without broadening the primary aggregate ownership
+    filter. Validation PASS: pre-fix aggregate regression failed as expected
+    (`realizedPnl=0` received vs `37.5` expected), focused aggregate
+    regression, focused external-close history regression, runtime/portfolio
+    pack (`51/51`), helper unit suite (`16/16`), API typecheck, repository
+    guardrails, and lint. Evidence:
+    `docs/planning/runtime-aggregate-imported-closed-position-pnl-task-2026-05-06.md`.
 - [x] `PMPLC-44 fix(api-bots): mark portfolio history partial for pending fees`
   - 2026-05-06: Closed a BUILDER-mode LIVE portfolio completeness slice.
     Portfolio history now marks LIVE history as `PARTIAL` with

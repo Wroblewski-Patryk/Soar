@@ -3,6 +3,18 @@
 Last updated: 2026-05-06
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-06 imported closed-position aggregate PnL slice `PMPLC-45` is closed
+  locally. Runtime aggregate positions now include imported `ORPHAN_LOCAL` /
+  `EXTERNAL_CLOSE_CONFIRMED` closed positions in closed-position realized PnL,
+  while stale open orphans remain excluded. Runtime history also keeps
+  carry-over bot-managed `OPEN` trades and legacy wallet-scoped imported DCA
+  continuity visible without broadening the primary aggregate ownership filter.
+  Validation PASS: pre-fix aggregate regression failed as expected
+  (`realizedPnl=0` received vs `37.5` expected), focused aggregate regression,
+  focused external-close history regression, runtime/portfolio pack (`51/51`),
+  helper unit suite (`16/16`), API typecheck, repository guardrails, and lint.
+  Evidence:
+  `docs/planning/runtime-aggregate-imported-closed-position-pnl-task-2026-05-06.md`.
 - 2026-05-06 portfolio history pending-fee completeness slice `PMPLC-44` is
   closed locally. Portfolio history now marks LIVE history as `PARTIAL` with
   `FEE_RECONCILIATION_PENDING` when any scoped trade in the history window has

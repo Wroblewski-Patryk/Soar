@@ -29,6 +29,17 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-06: Closed `PMPLC-45` with
+  `docs/planning/runtime-aggregate-imported-closed-position-pnl-task-2026-05-06.md`.
+  Runtime aggregate positions now include imported `ORPHAN_LOCAL` /
+  `EXTERNAL_CLOSE_CONFIRMED` closed positions in closed-position realized PnL,
+  while stale open orphans remain excluded. Runtime history also keeps
+  carry-over bot-managed `OPEN` trades and legacy wallet-scoped imported DCA
+  continuity visible without broadening the primary aggregate ownership filter.
+  Validation PASS: pre-fix aggregate regression failed as expected
+  (`realizedPnl=0` received vs `37.5` expected), focused aggregate regression,
+  focused external-close history regression, runtime/portfolio pack (`51/51`),
+  helper unit suite (`16/16`), API typecheck, repository guardrails, and lint.
 - 2026-05-06: Closed `PMPLC-44` with
   `docs/planning/portfolio-history-pending-fee-completeness-task-2026-05-06.md`.
   Portfolio history now marks LIVE history as `PARTIAL` with
