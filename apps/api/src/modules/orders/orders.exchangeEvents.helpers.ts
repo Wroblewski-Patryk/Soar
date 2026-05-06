@@ -136,14 +136,16 @@ export const resolveExchangeFeePendingDecision = (input: {
   hasSettledExchangeFee: boolean;
   existingFeePending: boolean;
 }) => {
-  if (input.persistedStatus === 'FILLED' && input.hasAcceptedRecordableEventFee) {
+  const isFilled = input.persistedStatus === 'FILLED';
+
+  if (isFilled && input.hasAcceptedRecordableEventFee) {
     return {
       feePending: false,
       shouldKeepFeePending: false,
     };
   }
 
-  if (input.hasSettledExchangeFee) {
+  if (isFilled && input.hasSettledExchangeFee) {
     return {
       feePending: false,
       shouldKeepFeePending: false,
@@ -151,7 +153,7 @@ export const resolveExchangeFeePendingDecision = (input: {
   }
 
   const shouldKeepFeePending =
-    !input.hasAcceptedRecordableEventFee && !input.hasSettledExchangeFee;
+    !isFilled || (!input.hasAcceptedRecordableEventFee && !input.hasSettledExchangeFee);
 
   return {
     feePending: shouldKeepFeePending || input.existingFeePending,

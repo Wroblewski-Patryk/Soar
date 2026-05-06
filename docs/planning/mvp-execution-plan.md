@@ -29,6 +29,16 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-06: Closed `PMPLC-38` with
+  `docs/planning/position-management-exchange-partial-fee-pending-task-2026-05-06.md`.
+  Exchange fee-pending decisions now require terminal `FILLED` status before
+  accepted or settled exact exchange fee truth clears final reconciliation
+  pending, so non-terminal partial fills can persist exact current-fill fee
+  truth without falsely appearing final. Validation PASS: pre-fix helper and
+  DB-backed regressions failed as expected (`feePending=false` received vs
+  `true` expected), helper suite (`24/24`), DB-backed exchange-event suite
+  (`17/17`), focused runtime/order suites (`100/100`), API typecheck,
+  repository guardrails, lint, and diff check.
 - 2026-05-06: Closed `PMPLC-37` with
   `docs/planning/position-management-exchange-settled-fee-pending-recovery-task-2026-05-06.md`.
   Exchange fee-pending decisions now give already-settled exact `EXCHANGE_FILL`

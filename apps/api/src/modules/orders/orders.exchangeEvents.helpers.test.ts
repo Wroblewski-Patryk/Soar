@@ -324,6 +324,20 @@ describe('resolveExchangeFeePendingDecision', () => {
     });
   });
 
+  it('keeps pending while an accepted exchange fee belongs to a non-terminal partial fill', () => {
+    expect(
+      resolveExchangeFeePendingDecision({
+        persistedStatus: 'PARTIALLY_FILLED',
+        hasAcceptedRecordableEventFee: true,
+        hasSettledExchangeFee: false,
+        existingFeePending: false,
+      }),
+    ).toEqual({
+      feePending: true,
+      shouldKeepFeePending: true,
+    });
+  });
+
   it('does not re-open pending when exact exchange fee is already settled', () => {
     expect(
       resolveExchangeFeePendingDecision({
