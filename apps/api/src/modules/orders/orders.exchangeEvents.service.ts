@@ -72,6 +72,71 @@ const computeCloseRealizedPnl = async (input: {
   return grossPnl - entryFees - input.exitFee;
 };
 
+const refreshCloseRealizedPnlForOrder = async (input: {
+  userId: string;
+  orderId: string;
+  exitFee: number;
+}) => {
+  if (!Number.isFinite(input.exitFee)) return;
+
+  const closeTrades = await prisma.trade.findMany({
+    where: {
+      userId: input.userId,
+      orderId: input.orderId,
+      lifecycleAction: 'CLOSE',
+      positionId: { not: null },
+    },
+    select: {
+      id: true,
+      positionId: true,
+      price: true,
+      quantity: true,
+    },
+  });
+
+  for (const closeTrade of closeTrades) {
+    if (
+      !closeTrade.positionId ||
+      !Number.isFinite(closeTrade.price) ||
+      !Number.isFinite(closeTrade.quantity)
+    ) {
+      continue;
+    }
+
+    const position = await prisma.position.findFirst({
+      where: {
+        id: closeTrade.positionId,
+        userId: input.userId,
+      },
+      select: {
+        id: true,
+        side: true,
+        entryPrice: true,
+      },
+    });
+    if (!position) continue;
+
+    const realizedPnl = await computeCloseRealizedPnl({
+      userId: input.userId,
+      positionId: position.id,
+      positionSide: position.side,
+      entryPrice: position.entryPrice,
+      closePrice: closeTrade.price,
+      closeQuantity: closeTrade.quantity,
+      exitFee: input.exitFee,
+    });
+
+    await prisma.trade.update({
+      where: { id: closeTrade.id },
+      data: { realizedPnl },
+    });
+    await prisma.position.update({
+      where: { id: position.id },
+      data: { realizedPnl },
+    });
+  }
+};
+
 const ensureOrderFillRecord = async (input: {
   userId: string;
   botId: string | null;
@@ -523,6 +588,13 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
         feeCurrency: input.event.feeCurrency ?? updatedOrder.feeCurrency,
       },
     });
+    if (typeof fee === 'number' && Number.isFinite(fee)) {
+      await refreshCloseRealizedPnlForOrder({
+        userId: input.userId,
+        orderId: updatedOrder.id,
+        exitFee: fee,
+      });
+    }
   }
 
   if (feePendingDecision.shouldKeepFeePending) {

@@ -3,6 +3,16 @@
 Last updated: 2026-05-06
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-06 close PnL fee backfill slice `PMPLC-42` is closed locally.
+  Exchange-event fee backfill now refreshes close lifecycle `Trade.realizedPnl`
+  and linked `Position.realizedPnl` after a delayed missing partial close fee
+  settles aggregate exchange fee truth, preventing closed-position PnL from
+  remaining overstated after fee reconciliation. Validation PASS: pre-fix
+  DB-backed regression failed as expected (`8.8` close PnL received vs `8.7`
+  expected), focused regression, helper suite (`24/24`), DB-backed
+  exchange-event suite (`21/21`), focused runtime/order suites (`104/104`),
+  API typecheck, repository guardrails, lint, and diff check. Evidence:
+  `docs/planning/position-management-exchange-close-pnl-fee-backfill-task-2026-05-06.md`.
 - 2026-05-06 missing partial exchange fee backfill slice `PMPLC-41` is closed
   locally. Fee backfill propagation now updates unresolved lifecycle trades by
   `orderId` when the aggregate exchange fee becomes complete, so order,

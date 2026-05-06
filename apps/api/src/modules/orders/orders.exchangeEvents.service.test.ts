@@ -2081,6 +2081,189 @@ describe('orders.exchangeEvents.service', () => {
     expect(closeTrade.realizedPnl).toBeCloseTo(8.42, 6);
   });
 
+  it('refreshes close PnL after a missing partial close fee is backfilled', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'exchange-event-close-fee-backfill@example.com', password: 'hashed' },
+    });
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'live-wallet-close-fee-backfill',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'live-bot-close-fee-backfill',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        walletId: wallet.id,
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'v1',
+      },
+    });
+    const position = await prisma.position.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        walletId: wallet.id,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        symbol: 'ETHUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 100,
+        quantity: 1,
+        leverage: 5,
+      },
+    });
+    await prisma.trade.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        walletId: wallet.id,
+        orderId: null,
+        positionId: position.id,
+        symbol: 'ETHUSDT',
+        side: 'BUY',
+        lifecycleAction: 'OPEN',
+        price: 100,
+        quantity: 1,
+        fee: 1,
+        feeSource: 'EXCHANGE_FILL',
+        feePending: false,
+        feeCurrency: 'USDT',
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+      },
+    });
+    const order = await prisma.order.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        walletId: wallet.id,
+        positionId: position.id,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        symbol: 'ETHUSDT',
+        side: 'SELL',
+        type: 'MARKET',
+        status: 'OPEN',
+        quantity: 1,
+        filledQuantity: 0,
+        exchangeOrderId: 'event-order-close-fee-backfill',
+        submittedAt: new Date('2026-05-06T10:10:00.000Z'),
+      },
+    });
+
+    await applyLiveExchangeOrderTradeUpdateEvent({
+      userId: user.id,
+      event: {
+        eventType: 'ORDER_TRADE_UPDATE',
+        marketType: 'FUTURES',
+        eventTime: 2_000,
+        transactionTime: 2_001,
+        symbol: 'ETHUSDT',
+        side: 'SELL',
+        orderType: 'MARKET',
+        orderStatus: 'PARTIALLY_FILLED',
+        executionType: 'TRADE',
+        exchangeOrderId: 'event-order-close-fee-backfill',
+        clientOrderId: 'client-close-fee-backfill',
+        averagePrice: 110,
+        cumulativeFilledQuantity: 0.5,
+        lastFilledQuantity: 0.5,
+        lastFilledPrice: 110,
+        fee: null,
+        feeCurrency: 'USDT',
+        exchangeTradeId: 'trade-close-fee-backfill-1',
+        raw: {},
+      },
+    });
+
+    await applyLiveExchangeOrderTradeUpdateEvent({
+      userId: user.id,
+      event: {
+        eventType: 'ORDER_TRADE_UPDATE',
+        marketType: 'FUTURES',
+        eventTime: 3_000,
+        transactionTime: 3_001,
+        symbol: 'ETHUSDT',
+        side: 'SELL',
+        orderType: 'MARKET',
+        orderStatus: 'FILLED',
+        executionType: 'TRADE',
+        exchangeOrderId: 'event-order-close-fee-backfill',
+        clientOrderId: 'client-close-fee-backfill',
+        averagePrice: 110,
+        cumulativeFilledQuantity: 1,
+        lastFilledQuantity: 0.5,
+        lastFilledPrice: 110,
+        fee: 0.2,
+        feeCurrency: 'USDT',
+        exchangeTradeId: 'trade-close-fee-backfill-2',
+        raw: {},
+      },
+    });
+
+    const pendingCloseTrade = await prisma.trade.findFirstOrThrow({
+      where: { orderId: order.id },
+    });
+    expect(pendingCloseTrade.lifecycleAction).toBe('CLOSE');
+    expect(pendingCloseTrade.fee).toBeCloseTo(0.2, 10);
+    expect(pendingCloseTrade.feePending).toBe(true);
+    expect(pendingCloseTrade.realizedPnl).toBeCloseTo(8.8, 6);
+
+    await applyLiveExchangeOrderTradeUpdateEvent({
+      userId: user.id,
+      event: {
+        eventType: 'ORDER_TRADE_UPDATE',
+        marketType: 'FUTURES',
+        eventTime: 4_000,
+        transactionTime: 4_001,
+        symbol: 'ETHUSDT',
+        side: 'SELL',
+        orderType: 'MARKET',
+        orderStatus: 'FILLED',
+        executionType: 'TRADE',
+        exchangeOrderId: 'event-order-close-fee-backfill',
+        clientOrderId: 'client-close-fee-backfill',
+        averagePrice: 110,
+        cumulativeFilledQuantity: 1,
+        lastFilledQuantity: 0.5,
+        lastFilledPrice: 110,
+        fee: 0.1,
+        feeCurrency: 'USDT',
+        exchangeTradeId: 'trade-close-fee-backfill-1',
+        raw: {},
+      },
+    });
+
+    const settledOrder = await prisma.order.findUniqueOrThrow({
+      where: { id: order.id },
+    });
+    expect(settledOrder.fee).toBeCloseTo(0.3, 10);
+    expect(settledOrder.feePending).toBe(false);
+    const closeTrade = await prisma.trade.findFirstOrThrow({
+      where: { orderId: order.id },
+    });
+    expect(closeTrade.fee).toBeCloseTo(0.3, 10);
+    expect(closeTrade.feePending).toBe(false);
+    expect(closeTrade.realizedPnl).toBeCloseTo(8.7, 6);
+    const closedPosition = await prisma.position.findUniqueOrThrow({
+      where: { id: position.id },
+    });
+    expect(closedPosition.status).toBe('CLOSED');
+    expect(closedPosition.realizedPnl).toBeCloseTo(8.7, 6);
+  });
+
   it('applies Binance order-trade update to reprice and extend an existing LIVE position as DCA', async () => {
     const user = await prisma.user.create({
       data: { email: 'exchange-event-dca@example.com', password: 'hashed' },

@@ -9,6 +9,18 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `PMPLC-42 fix(api-orders): refresh close PnL after missing partial close fee backfill`
+  - 2026-05-06: Closed an ARCHITECT-mode LIVE fee/PnL reconciliation slice.
+    Exchange-event fee backfill now refreshes close lifecycle
+    `Trade.realizedPnl` and linked `Position.realizedPnl` after a delayed
+    missing partial close fee settles aggregate exchange fee truth, preventing
+    closed-position PnL from remaining overstated after fee reconciliation.
+    Validation PASS: pre-fix DB-backed regression failed as expected (`8.8`
+    close PnL received vs `8.7` expected), focused regression, helper suite
+    (`24/24`), DB-backed exchange-event suite (`21/21`), focused runtime/order
+    suites (`104/104`), API typecheck, repository guardrails, lint, and diff
+    check. Evidence:
+    `docs/planning/position-management-exchange-close-pnl-fee-backfill-task-2026-05-06.md`.
 - [x] `PMPLC-41 fix(api-orders): settle lifecycle fee after missing partial fee backfill`
   - 2026-05-06: Closed a BUILDER-mode LIVE fee reconciliation backfill slice.
     Fee backfill propagation now updates unresolved lifecycle trades by

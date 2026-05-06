@@ -29,6 +29,17 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-06: Closed `PMPLC-42` with
+  `docs/planning/position-management-exchange-close-pnl-fee-backfill-task-2026-05-06.md`.
+  Exchange-event fee backfill now refreshes close lifecycle
+  `Trade.realizedPnl` and linked `Position.realizedPnl` after a delayed
+  missing partial close fee settles aggregate exchange fee truth, preventing
+  closed-position PnL from remaining overstated after fee reconciliation.
+  Validation PASS: pre-fix DB-backed regression failed as expected (`8.8`
+  close PnL received vs `8.7` expected), focused regression, helper suite
+  (`24/24`), DB-backed exchange-event suite (`21/21`), focused runtime/order
+  suites (`104/104`), API typecheck, repository guardrails, lint, and diff
+  check.
 - 2026-05-06: Closed `PMPLC-41` with
   `docs/planning/position-management-exchange-missing-partial-fee-backfill-task-2026-05-06.md`.
   Fee backfill propagation now updates unresolved lifecycle trades by `orderId`
