@@ -29,6 +29,12 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-06: Closed `PMPLC-46` with
+  `docs/planning/pmplc-queue-sync-task-2026-05-06.md`. Canonical PMPLC planning
+  truth no longer lists `PMPLC-45` as a queued follow-up after it was
+  implemented and pushed. Runtime/order discovery pack remained green
+  (`64/64` plus exchange-event pack `46/46`) before the docs-only sync, so no
+  new executable money-runtime regression was isolated in this iteration.
 - 2026-05-06: Closed `PMPLC-45` with
   `docs/planning/runtime-aggregate-imported-closed-position-pnl-task-2026-05-06.md`.
   Runtime aggregate positions now include imported `ORPHAN_LOCAL` /
@@ -48,8 +54,7 @@ Rule: fix/cleanup/update first, then feature delivery.
   complete. Validation PASS: pre-fix e2e regression failed as expected
   (`completeness=COMPLETE` received vs `PARTIAL` expected), focused
   regression, portfolio-history e2e (`4/4`), API typecheck, repository
-  guardrails, and lint. Follow-up queued as `PMPLC-45` for imported
-  externally closed positions missing from aggregate PnL.
+  guardrails, and lint.
 - 2026-05-06: Closed `PMPLC-43` with
   `docs/planning/position-management-exchange-partial-backfill-still-pending-task-2026-05-06.md`.
   Exchange-event fee finality now refuses to treat a filled order's existing

@@ -9,6 +9,14 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `PMPLC-46 docs(planning): clear stale PMPLC-45 follow-up after closure`
+  - 2026-05-06: Closed a BUILDER-mode planning truth sync slice after
+    PMPLC-45. Canonical PMPLC planning truth no longer lists `PMPLC-45` as a
+    queued follow-up after it was implemented and pushed. Runtime/order
+    discovery pack remained green (`64/64` plus exchange-event pack `46/46`)
+    before the docs-only sync, so no new executable money-runtime regression
+    was isolated in this iteration.
+    Evidence: `docs/planning/pmplc-queue-sync-task-2026-05-06.md`.
 - [x] `PMPLC-45 fix(api-bots): include imported externally closed positions in aggregate PnL`
   - 2026-05-06: Closed a TESTER-mode runtime read-model money-truth slice.
     Runtime aggregate positions now include imported `ORPHAN_LOCAL` /

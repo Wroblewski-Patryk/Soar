@@ -15,6 +15,13 @@ Last updated: 2026-05-06
   helper unit suite (`16/16`), API typecheck, repository guardrails, and lint.
   Evidence:
   `docs/planning/runtime-aggregate-imported-closed-position-pnl-task-2026-05-06.md`.
+- 2026-05-06 PMPLC queue sync slice `PMPLC-46` is closed locally. Canonical
+  PMPLC planning truth no longer lists `PMPLC-45` as a queued follow-up after
+  it was implemented and pushed. Runtime/order discovery pack remained green
+  (`64/64` plus exchange-event pack `46/46`) before the docs-only sync, so no
+  new executable money-runtime regression was isolated in this iteration.
+  Evidence:
+  `docs/planning/pmplc-queue-sync-task-2026-05-06.md`.
 - 2026-05-06 portfolio history pending-fee completeness slice `PMPLC-44` is
   closed locally. Portfolio history now marks LIVE history as `PARTIAL` with
   `FEE_RECONCILIATION_PENDING` when any scoped trade in the history window has
@@ -24,8 +31,6 @@ Last updated: 2026-05-06
   regression, portfolio-history e2e (`4/4`), API typecheck, repository
   guardrails, and lint. Evidence:
   `docs/planning/portfolio-history-pending-fee-completeness-task-2026-05-06.md`.
-  Follow-up queued: `PMPLC-45` for imported closed-position aggregate PnL
-  visibility when no trade rows exist.
 - 2026-05-06 incomplete partial fee backfill pending slice `PMPLC-43` is
   closed locally. Exchange-event fee finality now refuses to treat a filled
   order's existing exchange fee as settled while another known `OrderFill`
