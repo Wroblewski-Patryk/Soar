@@ -9,6 +9,14 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `V1MONEY-02 qa(money): capture paper-safe close evidence for TP SL TTP TSL and DCA guards`
+  - 2026-05-07: Closed a BUILDER-mode paper-safe close evidence slice. Focused
+    API close validation passed (`45/45`) across runtime position automation,
+    lifecycle close parity, paper lifecycle, and dynamic stop operator truth.
+    Evidence now maps TP, SL, TTP, TSL, DCA-first, and DCA-exhausted rows to
+    covered local behavior and remaining production/paper-sample proof. No
+    live-money mutations were run. Evidence:
+    `docs/planning/v1money-paper-safe-close-evidence-task-2026-05-07.md`.
 - [x] `MARKETDATA-FUT-01 feat(api-runtime): expose runtime mark-price source for futures evidence`
   - 2026-05-07: Closed a BUILDER-mode futures market-data evidence slice.
     Runtime position rows now include additive `markPriceSource` metadata beside

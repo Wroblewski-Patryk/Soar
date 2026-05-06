@@ -29,6 +29,13 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-07: Closed `V1MONEY-02` with
+  `docs/planning/v1money-paper-safe-close-evidence-task-2026-05-07.md`.
+  Focused API close validation passed (`45/45`) across runtime position
+  automation, lifecycle close parity, paper lifecycle, and dynamic stop operator
+  truth. Evidence now maps TP, SL, TTP, TSL, DCA-first, and DCA-exhausted rows
+  to covered local behavior and remaining production/paper-sample proof. No
+  live-money mutations were run.
 - 2026-05-07: Closed `MARKETDATA-FUT-01` with
   `docs/planning/marketdata-fut-runtime-mark-price-source-task-2026-05-07.md`.
   Runtime position rows now include additive `markPriceSource` metadata beside

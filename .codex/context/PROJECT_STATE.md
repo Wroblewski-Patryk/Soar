@@ -3,6 +3,13 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 paper-safe close evidence slice `V1MONEY-02` is closed locally on
+  branch `codex/v1-app-function-check`. Focused API close validation passed
+  (`45/45`) across runtime position automation, lifecycle close parity, paper
+  lifecycle, and dynamic stop operator truth. Evidence now maps TP, SL, TTP,
+  TSL, DCA-first, and DCA-exhausted rows to covered local behavior and remaining
+  production/paper-sample proof. No live-money mutations were run. Evidence:
+  `docs/planning/v1money-paper-safe-close-evidence-task-2026-05-07.md`.
 - 2026-05-07 futures market-data source field slice `MARKETDATA-FUT-01` is
   closed locally on branch `codex/v1-app-function-check`. Runtime position
   rows now include additive `markPriceSource` metadata beside `markPrice`, with
