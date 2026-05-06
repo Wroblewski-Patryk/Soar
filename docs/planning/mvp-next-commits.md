@@ -4722,6 +4722,14 @@ Historical carryover snapshot, superseded by the active `NOW` entries above:
 - [x] `PAR-24 fix(web-build): added `public/favicon.ico` asset to prevent Next.js page-data build failure`
 
 ## 2026-05-07 V1 UI Runtime Parity Slice
+- [x] `V1UI-05 fix(web-runtime): surface close attribution in bot monitoring history`
+  - Closed the `/dashboard/bots` runtime history attribution gap. Bot
+    monitoring now renders backend `closeReason` and `closeInitiator` for
+    closed positions and close trades, with bot-owned i18n labels and shared
+    attribution tone helpers. Validation PASS: focused `BotsManagement` test
+    (`13/13`), Web typecheck, Web lint, Web build, route-reachable i18n audit
+    (`findings=0`), guardrails, diff check.
+
 - [x] `V1UI-04 feat(web-runtime): surface runtime mark-price source in monitoring`
   - Closed the backend-to-Web mark-price source reflection gap after
     `MARKETDATA-FUT-01`. Shared Web derivation now carries

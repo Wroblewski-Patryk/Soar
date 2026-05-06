@@ -1,7 +1,12 @@
 import type { TranslationKey } from "@/i18n/translations";
 
 import type { OpenPositionWithLive } from "./types";
-import { toRuntimeDirectionPillClass, toRuntimeTradeLifecyclePillClass } from "../../../shared/runtimeMonitoringFormatters";
+import {
+  toRuntimeCloseInitiatorPillClass,
+  toRuntimeDirectionPillClass,
+  toRuntimeTradeLifecyclePillClass,
+  type RuntimeCloseInitiatorValue,
+} from "../../../shared/runtimeMonitoringFormatters";
 
 export type DirectionPillValue = "LONG" | "SHORT" | "BUY" | "SELL";
 export type TradeActionValue = "OPEN" | "DCA" | "CLOSE" | "UNKNOWN";
@@ -20,12 +25,7 @@ export type TradeActionReasonValue =
   | "SYSTEM_REPAIR"
   | "UNKNOWN";
 
-export type CloseInitiatorValue =
-  | "BOT_APP"
-  | "USER_APP"
-  | "USER_EXCHANGE"
-  | "EXCHANGE"
-  | "SYSTEM_REPAIR";
+export type CloseInitiatorValue = RuntimeCloseInitiatorValue;
 
 export type TradeActorValue =
   | CloseInitiatorValue
@@ -174,11 +174,7 @@ export const tradeReasonPresentation = ({
 };
 
 export const closeInitiatorPillClass = (value: CloseInitiatorValue) => {
-  if (value === "USER_APP") return "border-secondary/40 bg-secondary/10 text-secondary";
-  if (value === "BOT_APP") return "border-primary/40 bg-primary/10 text-primary";
-  if (value === "USER_EXCHANGE") return "border-info/40 bg-info/10 text-info";
-  if (value === "EXCHANGE") return "border-error/40 bg-error/10 text-error";
-  return "border-warning/40 bg-warning/10 text-warning";
+  return toRuntimeCloseInitiatorPillClass(value);
 };
 
 export const closeInitiatorLabelKey = (value: CloseInitiatorValue): TranslationKey => {

@@ -3,6 +3,15 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 bot monitoring close-attribution Web parity slice `V1UI-05` is
+  closed locally on branch `codex/v1-app-function-check`. `/dashboard/bots`
+  monitoring history now renders backend `closeReason` and `closeInitiator`
+  truth for closed positions and close trades, using bot-route i18n keys and
+  shared runtime attribution tone helpers. Validation PASS: focused
+  `BotsManagement.test.tsx` (`13/13`), Web typecheck, Web lint, Web build,
+  route-reachable i18n audit (`findings=0`), repository guardrails, and diff
+  check. Evidence:
+  `docs/planning/v1ui-05-bot-monitoring-close-attribution-web-parity-task-2026-05-07.md`.
 - 2026-05-07 runtime mark-price source Web parity slice `V1UI-04` is closed
   locally on branch `codex/v1-app-function-check`. Web now carries
   `liveMarkPriceSource` through the shared open-position derivation and renders

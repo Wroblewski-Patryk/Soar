@@ -15,14 +15,17 @@ import { BotsPortfolioHistorySection } from "./BotsPortfolioHistorySection";
 import {
   Bot,
   BotPortfolioHistoryResponse,
+  BotRuntimePositionItem,
   BotRuntimeSessionDetail,
   BotRuntimeSessionListItem,
   BotRuntimeSessionStatus,
+  BotRuntimeTrade,
 } from "../../types/bot.type";
 import {
   resolveRuntimeOpenPositionMarkPriceSourceLabelKey,
   type RuntimeOpenPositionMarkPriceSource,
 } from "../../utils/runtimeOpenPositionDerivations";
+import { renderMonitoringCloseInitiator, renderMonitoringCloseReason } from "./BotsMonitoringAttributionPills";
 
 type MonitorChecklistItem = {
   key: string;
@@ -61,6 +64,9 @@ type MonitorOperationalTradeRow = {
   symbol: string;
   side: string;
   lifecycleAction: "OPEN" | "DCA" | "CLOSE" | "UNKNOWN";
+  actionReason?: BotRuntimeTrade["actionReason"];
+  closeReason?: BotRuntimeTrade["closeReason"];
+  closeInitiator?: BotRuntimeTrade["closeInitiator"];
   quantity: number;
   price: number;
   margin: number;
@@ -125,6 +131,8 @@ type BotsMonitoringTabProps = {
       id: string;
       symbol: string;
       side: string;
+      closeReason?: BotRuntimePositionItem["closeReason"];
+      closeInitiator?: BotRuntimePositionItem["closeInitiator"];
       openedAt?: string | null;
       closedAt?: string | null;
       holdMs: number;
@@ -792,6 +800,8 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                             <th>{t("dashboard.bots.monitoring.table.side")}</th>
                             <th>{t("dashboard.bots.monitoring.table.open")}</th>
                             <th>{t("dashboard.bots.monitoring.table.close")}</th>
+                            <th>{t("dashboard.bots.monitoring.table.closeReason")}</th>
+                            <th>{t("dashboard.bots.monitoring.table.closeBy")}</th>
                             <th>{t("dashboard.bots.monitoring.table.duration")}</th>
                             <th>{t("dashboard.bots.monitoring.table.qty")}</th>
                             <th>{t("dashboard.bots.monitoring.table.entry")}</th>
@@ -808,6 +818,8 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                               <td>{position.side}</td>
                               <td>{formatDateTime(position.openedAt)}</td>
                               <td>{formatDateTime(position.closedAt)}</td>
+                              <td>{renderMonitoringCloseReason(position.closeReason, t)}</td>
+                              <td>{renderMonitoringCloseInitiator(position.closeInitiator, t)}</td>
                               <td>{formatDuration(position.holdMs)}</td>
                               <td>{formatNumber(position.quantity, 6)}</td>
                               <td>{formatNumber(position.entryPrice, 4)}</td>
@@ -828,7 +840,7 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                           ))}
                           {(monitorPositions?.historyItems.length ?? 0) === 0 ? (
                             <tr>
-                              <td colSpan={11} className="text-center text-xs opacity-70">
+                              <td colSpan={13} className="text-center text-xs opacity-70">
                                 {t("dashboard.bots.monitoring.emptyClosedPositions")}
                               </td>
                             </tr>
@@ -857,6 +869,8 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                             <th>{t("dashboard.bots.monitoring.table.symbol")}</th>
                             <th>{t("dashboard.bots.monitoring.table.side")}</th>
                             <th>{t("dashboard.bots.monitoring.table.action")}</th>
+                            <th>{t("dashboard.bots.monitoring.table.closeReason")}</th>
+                            <th>{t("dashboard.bots.monitoring.table.closeBy")}</th>
                             <th>{t("dashboard.bots.monitoring.table.qty")}</th>
                             <th>{t("dashboard.bots.monitoring.table.price")}</th>
                             <th>{t("dashboard.bots.monitoring.table.margin")}</th>
@@ -884,6 +898,8 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                                   {t(toTradeLifecycleLabelKey(trade.lifecycleAction))}
                                 </span>
                               </td>
+                              <td>{trade.lifecycleAction === "CLOSE" ? renderMonitoringCloseReason(trade.closeReason, t) : "-"}</td>
+                              <td>{trade.lifecycleAction === "CLOSE" ? renderMonitoringCloseInitiator(trade.closeInitiator, t) : "-"}</td>
                               <td>{formatNumber(trade.quantity, 6)}</td>
                               <td>{formatNumber(trade.price, 4)}</td>
                               <td>{formatCurrency(trade.margin)}</td>
@@ -912,7 +928,7 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                           ))}
                           {monitorOperationalTrades.length === 0 ? (
                             <tr>
-                              <td colSpan={16} className="text-center text-xs opacity-70">
+                              <td colSpan={18} className="text-center text-xs opacity-70">
                                 {t("dashboard.bots.monitoring.emptyTrades")}
                               </td>
                             </tr>

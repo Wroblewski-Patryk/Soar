@@ -5,7 +5,7 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/bots`
 - Owner: frontend/trading-runtime
-- Last updated: 2026-04-21
+- Last updated: 2026-05-07
 - Related planning task: `ARCCON-12`
 
 ## Canonical Architecture Linkage
@@ -82,6 +82,8 @@ Out of scope:
 ## 7. Observability and Operations
 - Monitoring views include heartbeat/session status badges and stale-data warnings.
 - Monitoring also exposes bot-scoped portfolio history with explicit partial-state messaging when only the latest open PnL snapshot is authoritative.
+- Monitoring history tables expose backend close attribution (`closeReason` and
+  `closeInitiator`) for closed positions and close trades.
 - Assistant tab exposes per-slot status, latency, and message traces for operator diagnostics.
 
 ## 8. Test Coverage and Evidence

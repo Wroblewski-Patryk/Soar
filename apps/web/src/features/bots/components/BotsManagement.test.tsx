@@ -668,7 +668,7 @@ describe("BotsManagement", () => {
       sessionId: "session-1",
       total: 2,
       openCount: 2,
-      closedCount: 0,
+      closedCount: 1,
       openOrdersCount: 0,
       showDynamicStopColumns: false,
       window: {
@@ -741,16 +741,47 @@ describe("BotsManagement", () => {
           tradesCount: 1,
         },
       ],
-      historyItems: [],
+      historyItems: [
+        {
+          id: "p-closed-1",
+          symbol: "ETHUSDT",
+          side: "LONG",
+          status: "CLOSED",
+          quantity: 0.02,
+          leverage: 1,
+          entryPrice: 2500,
+          entryNotional: 50,
+          exitPrice: 2600,
+          stopLoss: null,
+          takeProfit: null,
+          openedAt: "2026-03-31T09:00:00.000Z",
+          closedAt: "2026-03-31T10:00:00.000Z",
+          holdMs: 3600000,
+          dcaCount: 0,
+          dcaPlannedLevels: [],
+          dcaExecutedLevels: [],
+          feesPaid: 0.15,
+          realizedPnl: 2,
+          unrealizedPnl: null,
+          markPrice: null,
+          closeReason: "MANUAL",
+          closeInitiator: "USER_APP",
+          dynamicTtpStopLoss: null,
+          dynamicTslStopLoss: null,
+          firstTradeAt: "2026-03-31T09:00:00.000Z",
+          lastTradeAt: "2026-03-31T10:00:00.000Z",
+          tradesCount: 2,
+        },
+      ],
     };
 
     const tradesResponse = {
       sessionId: "session-1",
-      total: 1,
+      total: 2,
       meta: {
         page: 1,
         pageSize: 25,
-        total: 1,
+        total: 2,
         totalPages: 1,
         hasPrev: false,
         hasNext: false,
@@ -780,6 +811,30 @@ describe("BotsManagement", () => {
           managementMode: "BOT",
           notional: 700,
           margin: 700,
+        },
+        {
+          id: "trade-close-1",
+          symbol: "ETHUSDT",
+          side: "SELL",
+          lifecycleAction: "CLOSE",
+          actionReason: "MANUAL",
+          closeReason: "MANUAL",
+          closeInitiator: "USER_APP",
+          price: 2600,
+          quantity: 0.02,
+          fee: 0.15,
+          feeSource: "EXCHANGE_FILL",
+          feePending: false,
+          feeCurrency: "USDT",
+          realizedPnl: 2,
+          executedAt: "2026-03-31T10:00:00.000Z",
+          orderId: "o-close-1",
+          positionId: "p-closed-1",
+          strategyId: "s-monitor",
+          origin: "MANUAL",
+          managementMode: "MANUAL",
+          notional: 52,
+          margin: 50,
         },
       ],
     };
@@ -816,6 +871,8 @@ describe("BotsManagement", () => {
       expect(screen.getByText("TSL")).toBeInTheDocument();
       expect(screen.getByText("Ticker fallback")).toBeInTheDocument();
       expect(screen.getByText("PnL z gieldy")).toBeInTheDocument();
+      expect(screen.getAllByText("Manualnie").length).toBeGreaterThan(0);
+      expect(screen.getAllByText("User w app").length).toBeGreaterThan(0);
       expect(
         screen.getByText((content) => /0[.,]3[34]%/.test(content.replace(/\u00a0/g, " ")))
       ).toBeInTheDocument();

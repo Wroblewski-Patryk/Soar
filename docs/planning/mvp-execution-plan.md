@@ -4281,6 +4281,13 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - [x] `V1SUBS-01 fix(api-entitlements): fail closed on LIVE bot writes without live-trading entitlement`
 
 ### Progress Log (Phase V1SUBS-2026-05-01 - LIVE Entitlement Write Guard)
+- 2026-05-07: Closed `V1UI-05` by surfacing backend close-attribution truth in
+  `/dashboard/bots` monitoring history. Closed-position rows and close-trade
+  rows now render localized `closeReason` and `closeInitiator` labels, while
+  shared runtime helpers own the attribution tone classes and bot-route copy
+  remains under `dashboard.bots.*`. Validation PASS: focused
+  `BotsManagement.test.tsx` (`13/13`), Web typecheck, Web lint, production Web
+  build, route-reachable i18n audit (`findings=0`), guardrails, and diff check.
 - 2026-05-07: Closed `V1UI-04` by surfacing backend/runtime mark-price source
   truth in Web runtime open-position tables. The shared Web derivation now
   carries `liveMarkPriceSource` with stream-first precedence, `/dashboard/bots`

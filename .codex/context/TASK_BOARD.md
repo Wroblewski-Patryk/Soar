@@ -20,6 +20,16 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `V1UI-05 fix(web-runtime): surface close attribution in bot monitoring history`
+  - Scope: closed a TESTER-mode backend-to-Web runtime parity slice. Bot
+    monitoring history now renders backend `closeReason` and `closeInitiator`
+    for closed positions and close trades, preserving bot-route i18n ownership
+    while sharing attribution tone helpers. Validation PASS: focused
+    `BotsManagement.test.tsx` (`13/13`), Web typecheck, Web lint, Web build,
+    route-reachable i18n audit (`findings=0`), guardrails, and diff check.
+    Evidence:
+    `docs/planning/v1ui-05-bot-monitoring-close-attribution-web-parity-task-2026-05-07.md`.
+
 - [x] `V1UI-04 feat(web-runtime): surface runtime mark-price source in monitoring`
   - Scope: closed a BUILDER-mode backend-to-Web runtime parity slice. Web now
     carries `liveMarkPriceSource` through the shared open-position derivation
