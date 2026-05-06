@@ -3,6 +3,15 @@
 Last updated: 2026-05-06
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-06 settled exchange fee pending recovery slice `PMPLC-37` is closed
+  locally. Exchange fee-pending decisions now give already-settled exact
+  `EXCHANGE_FILL` fee truth precedence over local `feePending=true` drift, so
+  exact fee availability reliably clears pending reconciliation state.
+  Validation PASS: pre-fix helper regression failed as expected
+  (`feePending=true` received vs `false` expected), DB-backed exchange-event
+  suite (`16/16`), focused runtime/order suites (`98/98`), API typecheck,
+  repository guardrails, lint, and diff check. Evidence:
+  `docs/planning/position-management-exchange-settled-fee-pending-recovery-task-2026-05-06.md`.
 - 2026-05-06 exchange fee pending helper slice `PMPLC-36` is closed locally.
   Exchange fee-pending decisions now live in the pure
   `orders.exchangeEvents.helpers` boundary with no-DB coverage for accepted

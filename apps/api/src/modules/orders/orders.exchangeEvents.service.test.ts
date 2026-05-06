@@ -1206,6 +1206,132 @@ describe('orders.exchangeEvents.service', () => {
     expect(trade.feePending).toBe(true);
   });
 
+  it('clears drifted fee pending when exact exchange fee is already settled', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'exchange-event-settled-fee-pending-drift@example.com', password: 'hashed' },
+    });
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'live-wallet-settled-fee-pending-drift',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'live-bot-settled-fee-pending-drift',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        walletId: wallet.id,
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'v1',
+      },
+    });
+    const position = await prisma.position.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        walletId: wallet.id,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        symbol: 'ETHUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 3_000,
+        quantity: 1,
+        leverage: 5,
+      },
+    });
+    const order = await prisma.order.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        walletId: wallet.id,
+        positionId: position.id,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        symbol: 'ETHUSDT',
+        side: 'BUY',
+        type: 'MARKET',
+        status: 'FILLED',
+        quantity: 1,
+        filledQuantity: 1,
+        averageFillPrice: 3_000,
+        fee: 0.04,
+        feeSource: 'EXCHANGE_FILL',
+        feePending: true,
+        feeCurrency: 'USDT',
+        exchangeOrderId: 'event-settled-fee-pending-drift-1',
+        exchangeTradeId: 'trade-settled-fee-pending-drift-1',
+        submittedAt: new Date('2026-04-26T20:09:00.000Z'),
+        filledAt: new Date('2026-04-26T20:09:01.000Z'),
+      },
+    });
+    await prisma.orderFill.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        orderId: order.id,
+        positionId: position.id,
+        symbol: 'ETHUSDT',
+        side: 'BUY',
+        exchangeTradeId: 'trade-settled-fee-pending-drift-1',
+        price: 3_000,
+        quantity: 1,
+        notional: 3_000,
+        feeCost: 0.04,
+        feeCurrency: 'USDT',
+        feeRate: null,
+        executedAt: new Date('2026-04-26T20:09:01.000Z'),
+        raw: {},
+      },
+    });
+
+    await applyLiveExchangeOrderTradeUpdateEvent({
+      userId: user.id,
+      event: {
+        eventType: 'ORDER_TRADE_UPDATE',
+        marketType: 'FUTURES',
+        eventTime: 2_000,
+        transactionTime: 2_001,
+        symbol: 'ETHUSDT',
+        side: 'BUY',
+        orderType: 'MARKET',
+        orderStatus: 'FILLED',
+        executionType: 'TRADE',
+        exchangeOrderId: 'event-settled-fee-pending-drift-1',
+        clientOrderId: 'client-settled-fee-pending-drift-1',
+        averagePrice: 3_000,
+        cumulativeFilledQuantity: 1,
+        lastFilledQuantity: 1,
+        lastFilledPrice: 3_000,
+        fee: null,
+        feeCurrency: null,
+        exchangeTradeId: 'trade-settled-fee-pending-drift-1',
+        raw: {},
+      },
+    });
+
+    const updatedOrder = await prisma.order.findUniqueOrThrow({
+      where: { id: order.id },
+    });
+    expect(updatedOrder.fee).toBeCloseTo(0.04, 10);
+    expect(updatedOrder.feeSource).toBe('EXCHANGE_FILL');
+    expect(updatedOrder.feePending).toBe(false);
+    const fills = await prisma.orderFill.findMany({
+      where: { orderId: order.id },
+    });
+    expect(fills).toHaveLength(1);
+    expect(fills[0]?.feeCost).toBeCloseTo(0.04, 10);
+  });
+
   it('applies Binance order-trade update to close an existing LIVE position from a close order', async () => {
     const user = await prisma.user.create({
       data: { email: 'exchange-event-close@example.com', password: 'hashed' },

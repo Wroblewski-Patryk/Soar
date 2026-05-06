@@ -20,6 +20,17 @@ Last updated: 2026-05-06
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `PMPLC-37 fix(api-orders): clear pending drift when exchange fee is settled`
+  - Scope: closed a BUILDER-mode LIVE fee reconciliation drift recovery slice.
+    Exchange fee-pending decisions now give already-settled exact
+    `EXCHANGE_FILL` fee truth precedence over local `feePending=true` drift, so
+    exact fee availability reliably clears pending reconciliation state.
+    Validation PASS: pre-fix helper regression failed as expected
+    (`feePending=true` received vs `false` expected), DB-backed exchange-event
+    suite (`16/16`), focused runtime/order suites (`98/98`), API typecheck,
+    repository guardrails, lint, and diff check. Evidence:
+    `docs/planning/position-management-exchange-settled-fee-pending-recovery-task-2026-05-06.md`.
+
 - [x] `PMPLC-36 refactor(api-orders): centralize exchange fee pending decision`
   - Scope: closed an ARCHITECT-mode exchange fee-pending decision boundary
     slice. Exchange fee-pending decisions now live in the pure

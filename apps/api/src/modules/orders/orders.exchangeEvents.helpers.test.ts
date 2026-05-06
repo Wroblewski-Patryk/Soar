@@ -337,4 +337,18 @@ describe('resolveExchangeFeePendingDecision', () => {
       shouldKeepFeePending: false,
     });
   });
+
+  it('recovers false pending when exact exchange fee is already settled', () => {
+    expect(
+      resolveExchangeFeePendingDecision({
+        persistedStatus: 'FILLED',
+        hasAcceptedRecordableEventFee: false,
+        hasSettledExchangeFee: true,
+        existingFeePending: true,
+      }),
+    ).toEqual({
+      feePending: false,
+      shouldKeepFeePending: false,
+    });
+  });
 });

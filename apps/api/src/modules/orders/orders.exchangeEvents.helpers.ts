@@ -143,6 +143,13 @@ export const resolveExchangeFeePendingDecision = (input: {
     };
   }
 
+  if (input.hasSettledExchangeFee) {
+    return {
+      feePending: false,
+      shouldKeepFeePending: false,
+    };
+  }
+
   const shouldKeepFeePending =
     !input.hasAcceptedRecordableEventFee && !input.hasSettledExchangeFee;
 
