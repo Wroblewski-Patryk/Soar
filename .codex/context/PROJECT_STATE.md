@@ -3,6 +3,17 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 auth login UI accessibility slice `V1UI-01` is closed locally on
+  branch `codex/v1-app-function-check`. Rendered public/protected route smoke
+  confirmed unauthenticated `/dashboard` redirects to `/auth/login`, and the
+  login fail state now announces the inline server error with `role="alert"`
+  while preserving the existing visual alert styling and auth behavior. Browser
+  plugin validation was blocked by an old Node REPL runtime, so the rendered
+  smoke used bundled Codex Node `v24.14.0` plus bundled Playwright without
+  changing project dependencies. Validation PASS: focused LoginForm tests
+  (`4/4`), Web typecheck, local desktop/mobile rendered smoke, guardrails, and
+  diff check. Evidence:
+  `docs/planning/v1ui-01-auth-login-error-alert-task-2026-05-07.md`.
 - 2026-05-07 release-gate plan summary fix `V1GATE-04` is closed locally on
   branch `codex/v1-app-function-check`. `scripts/runV1ReleaseGate.mjs` now
   reports `goLiveSmoke: skipped` whenever `--skip-local-quality` is used,

@@ -9,6 +9,17 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `V1UI-01 fix(web-auth): announce login server errors`
+  - 2026-05-07: Closed a BUILDER-mode auth UI accessibility slice. Rendered
+    public/protected route smoke confirmed unauthenticated `/dashboard`
+    redirects to `/auth/login`, and the login fail state now announces the
+    inline server error with `role="alert"` while preserving the existing
+    visual alert styling and auth behavior. Browser plugin validation was
+    blocked by an old Node REPL runtime, so the rendered smoke used bundled
+    Codex Node `v24.14.0` plus bundled Playwright without changing project
+    dependencies. Validation PASS: focused LoginForm tests (`4/4`), Web
+    typecheck, local desktop/mobile rendered smoke, guardrails, and diff check.
+    Evidence: `docs/planning/v1ui-01-auth-login-error-alert-task-2026-05-07.md`.
 - [x] `V1GATE-04 fix(ops): report skipped go-live smoke when local quality is skipped`
   - 2026-05-07: Closed a BUILDER-mode release-gate tooling fix. The V1 release
     gate now reports `goLiveSmoke: skipped` whenever `--skip-local-quality` is

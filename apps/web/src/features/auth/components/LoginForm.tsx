@@ -63,7 +63,11 @@ export default function LoginForm() {
           <span className='pt-4'>{t('auth.forms.login.rememberDevice')}</span>
         </label>
 
-        {serverError && <div className='alert alert-error mt-2 text-sm'>{serverError}</div>}
+        {serverError && (
+          <div className='alert alert-error mt-2 text-sm' role='alert'>
+            {serverError}
+          </div>
+        )}
 
         <button type='submit' className='btn btn-primary mt-4 mb-4' disabled={isSubmitting}>
           {isSubmitting ? t('auth.forms.login.submitPending') : t('auth.forms.login.submitIdle')}

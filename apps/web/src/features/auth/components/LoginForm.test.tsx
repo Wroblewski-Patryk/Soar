@@ -67,6 +67,20 @@ describe('LoginForm', () => {
     expect(passwordInput).toHaveAttribute('type', 'password');
   });
 
+  it('announces server login errors as an alert', async () => {
+    mockUseLoginForm.mockReturnValue({
+      register: () => ({ name: 'field', onChange: vi.fn(), onBlur: vi.fn(), ref: vi.fn() }),
+      onFormSubmit: vi.fn(),
+      errors: {},
+      isSubmitting: false,
+      serverError: 'Invalid email or password',
+    });
+
+    await renderWithI18n();
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Invalid email or password');
+  });
+
   it('uses Portuguese auth namespace copy when locale is pt', async () => {
     window.localStorage.setItem('cryptosparrow-locale', 'pt');
     mockUseLoginForm.mockReturnValue({
