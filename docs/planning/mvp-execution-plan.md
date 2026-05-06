@@ -29,6 +29,15 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-06: Closed `PMPLC-36` with
+  `docs/planning/position-management-exchange-fee-pending-helper-task-2026-05-06.md`.
+  Exchange fee-pending decisions now live in the pure
+  `orders.exchangeEvents.helpers` boundary with no-DB coverage for accepted
+  exact fee, rejected raw event fee, existing pending preservation, and
+  already-settled exact fee cases, while DB-backed PMPLC-34/35 behavior remains
+  unchanged. Validation PASS: helper suite (`22/22`), DB-backed exchange-event
+  suite (`15/15`), focused runtime/order suites (`96/96`), API typecheck,
+  repository guardrails, lint, and diff check.
 - 2026-05-06: Closed `PMPLC-35` with
   `docs/planning/position-management-exchange-stale-fee-pending-recovery-task-2026-05-06.md`.
   Exchange order-trade event handling now bases pending recovery on accepted

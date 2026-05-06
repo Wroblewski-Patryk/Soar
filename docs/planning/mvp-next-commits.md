@@ -9,6 +9,16 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `PMPLC-36 refactor(api-orders): centralize exchange fee pending decision`
+  - 2026-05-06: Closed an ARCHITECT-mode exchange fee-pending decision
+    boundary slice. Exchange fee-pending decisions now live in the pure
+    `orders.exchangeEvents.helpers` boundary with no-DB coverage for accepted
+    exact fee, rejected raw event fee, existing pending preservation, and
+    already-settled exact fee cases, while DB-backed PMPLC-34/35 behavior
+    remains unchanged. Validation PASS: helper suite (`22/22`), DB-backed
+    exchange-event suite (`15/15`), focused runtime/order suites (`96/96`),
+    API typecheck, repository guardrails, lint, and diff check. Evidence:
+    `docs/planning/position-management-exchange-fee-pending-helper-task-2026-05-06.md`.
 - [x] `PMPLC-35 fix(api-orders): recover pending truth when rejected fee leaves estimate unresolved`
   - 2026-05-06: Closed a TESTER-mode LIVE fee reconciliation recovery slice.
     Exchange order-trade event handling now bases pending recovery on accepted

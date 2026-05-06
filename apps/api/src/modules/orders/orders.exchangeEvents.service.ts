@@ -16,6 +16,7 @@ import { runtimeExecutionDedupeService } from '../engine/runtimeExecutionDedupe.
 import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
 import {
   isExchangeCloseFillComplete,
+  resolveExchangeFeePendingDecision,
   resolveExchangeFeeRefreshDecision,
   resolveExchangeOrderFillProgress,
 } from './orders.exchangeEvents.helpers';
@@ -421,7 +422,12 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
     Number.isFinite(existingOrder.fee);
   const hasAcceptedRecordableEventFee =
     hasRecordableEventFee && feeRefreshDecision.shouldRefreshFeeDetails;
-  const shouldKeepFeePending = !hasAcceptedRecordableEventFee && !hasSettledExchangeFee;
+  const feePendingDecision = resolveExchangeFeePendingDecision({
+    persistedStatus: fillProgress.persistedStatus,
+    hasAcceptedRecordableEventFee,
+    hasSettledExchangeFee,
+    existingFeePending: existingOrder.feePending,
+  });
   const fee = aggregateRecordableEventFee ?? existingOrder.fee;
 
   let updatedOrder = await prisma.order.update({
@@ -444,11 +450,7 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
         feeRefreshDecision.shouldRefreshFeeDetails && hasRecordableEventFee
           ? 'EXCHANGE_FILL'
           : existingOrder.feeSource,
-      feePending:
-        fillProgress.persistedStatus === 'FILLED' &&
-        hasAcceptedRecordableEventFee
-          ? false
-          : shouldKeepFeePending || existingOrder.feePending,
+      feePending: feePendingDecision.feePending,
       feeCurrency: feeRefreshDecision.shouldRefreshFeeDetails
         ? input.event.feeCurrency ?? existingOrder.feeCurrency
         : existingOrder.feeCurrency,
@@ -511,7 +513,7 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
     });
   }
 
-  if (shouldKeepFeePending) {
+  if (feePendingDecision.shouldKeepFeePending) {
     await prisma.trade.updateMany({
       where: {
         orderId: updatedOrder.id,
@@ -665,7 +667,7 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
         fillQuantity: cumulativeFilledQuantity,
         filledAt: eventAt,
       });
-      if (shouldKeepFeePending) {
+      if (feePendingDecision.shouldKeepFeePending) {
         await prisma.order.update({
           where: { id: updatedOrder.id },
           data: { feePending: true },

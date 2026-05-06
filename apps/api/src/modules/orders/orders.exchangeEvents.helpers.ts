@@ -129,3 +129,25 @@ export const resolveExchangeFeeRefreshDecision = (input: {
     shouldBackfillExistingFillFee,
   };
 };
+
+export const resolveExchangeFeePendingDecision = (input: {
+  persistedStatus: OrderStatus;
+  hasAcceptedRecordableEventFee: boolean;
+  hasSettledExchangeFee: boolean;
+  existingFeePending: boolean;
+}) => {
+  if (input.persistedStatus === 'FILLED' && input.hasAcceptedRecordableEventFee) {
+    return {
+      feePending: false,
+      shouldKeepFeePending: false,
+    };
+  }
+
+  const shouldKeepFeePending =
+    !input.hasAcceptedRecordableEventFee && !input.hasSettledExchangeFee;
+
+  return {
+    feePending: shouldKeepFeePending || input.existingFeePending,
+    shouldKeepFeePending,
+  };
+};

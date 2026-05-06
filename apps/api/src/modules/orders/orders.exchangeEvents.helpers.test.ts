@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   isExchangeCloseFillComplete,
   resolveExchangeFeeRefreshDecision,
+  resolveExchangeFeePendingDecision,
   resolveExchangeOrderFillProgress,
 } from './orders.exchangeEvents.helpers';
 
@@ -276,6 +277,64 @@ describe('resolveExchangeFeeRefreshDecision', () => {
     ).toEqual({
       shouldRefreshFeeDetails: false,
       shouldBackfillExistingFillFee: false,
+    });
+  });
+});
+
+describe('resolveExchangeFeePendingDecision', () => {
+  it('clears pending when a filled order accepts exact exchange fee truth', () => {
+    expect(
+      resolveExchangeFeePendingDecision({
+        persistedStatus: 'FILLED',
+        hasAcceptedRecordableEventFee: true,
+        hasSettledExchangeFee: false,
+        existingFeePending: true,
+      }),
+    ).toEqual({
+      feePending: false,
+      shouldKeepFeePending: false,
+    });
+  });
+
+  it('keeps pending when event fee was rejected and no settled exchange fee exists', () => {
+    expect(
+      resolveExchangeFeePendingDecision({
+        persistedStatus: 'FILLED',
+        hasAcceptedRecordableEventFee: false,
+        hasSettledExchangeFee: false,
+        existingFeePending: false,
+      }),
+    ).toEqual({
+      feePending: true,
+      shouldKeepFeePending: true,
+    });
+  });
+
+  it('preserves existing pending while unresolved even before terminal status', () => {
+    expect(
+      resolveExchangeFeePendingDecision({
+        persistedStatus: 'PARTIALLY_FILLED',
+        hasAcceptedRecordableEventFee: false,
+        hasSettledExchangeFee: false,
+        existingFeePending: true,
+      }),
+    ).toEqual({
+      feePending: true,
+      shouldKeepFeePending: true,
+    });
+  });
+
+  it('does not re-open pending when exact exchange fee is already settled', () => {
+    expect(
+      resolveExchangeFeePendingDecision({
+        persistedStatus: 'FILLED',
+        hasAcceptedRecordableEventFee: false,
+        hasSettledExchangeFee: true,
+        existingFeePending: false,
+      }),
+    ).toEqual({
+      feePending: false,
+      shouldKeepFeePending: false,
     });
   });
 });

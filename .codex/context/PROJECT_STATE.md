@@ -3,6 +3,15 @@
 Last updated: 2026-05-06
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-06 exchange fee pending helper slice `PMPLC-36` is closed locally.
+  Exchange fee-pending decisions now live in the pure
+  `orders.exchangeEvents.helpers` boundary with no-DB coverage for accepted
+  exact fee, rejected raw event fee, existing pending preservation, and
+  already-settled exact fee cases, while DB-backed PMPLC-34/35 behavior remains
+  unchanged. Validation PASS: helper suite (`22/22`), DB-backed exchange-event
+  suite (`15/15`), focused runtime/order suites (`96/96`), API typecheck,
+  repository guardrails, lint, and diff check. Evidence:
+  `docs/planning/position-management-exchange-fee-pending-helper-task-2026-05-06.md`.
 - 2026-05-06 stale rejected exchange fee pending recovery slice `PMPLC-35` is
   closed locally. Exchange order-trade event handling now bases pending
   recovery on accepted fee truth rather than raw event fee and restores
