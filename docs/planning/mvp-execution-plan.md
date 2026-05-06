@@ -29,6 +29,14 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-07: Closed `MARKETDATA-FUT-01` with
+  `docs/planning/marketdata-fut-runtime-mark-price-source-task-2026-05-07.md`.
+  Runtime position rows now include additive `markPriceSource` metadata beside
+  `markPrice`, with source labels for runtime symbol stats, runtime ticker,
+  fallback ticker, exchange-unrealized-PnL derived price, runtime candidate,
+  and unavailable states. Existing numeric price helper remains compatible.
+  Validation PASS: focused runtime lifecycle/position PnL tests (`8/8`), API
+  typecheck, Web typecheck, guardrails, and diff check.
 - 2026-05-07: Closed `V1MONEY-01` with
   `docs/planning/v1money-local-paper-safe-matrix-task-2026-05-07.md`. A
   TESTER-mode local/paper-safe V1 money matrix now routes `V1MONEY-A` rows

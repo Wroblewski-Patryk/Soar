@@ -1,1 +1,4 @@
-export { resolvePreferredRuntimeOrExchangeSyncedPrice } from '../engine/runtimeExchangeSyncedPositionPrice';
+export {
+  resolvePreferredRuntimeOrExchangeSyncedPrice,
+  resolvePreferredRuntimeOrExchangeSyncedPriceWithSource,
+} from '../engine/runtimeExchangeSyncedPositionPrice';

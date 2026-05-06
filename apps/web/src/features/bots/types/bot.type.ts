@@ -445,6 +445,13 @@ export type BotRuntimePositionItem = {
   unrealizedPnl: number | null;
   unrealizedPnlPercent?: number | null;
   markPrice: number | null;
+  markPriceSource?:
+    | "runtime_symbol_stat"
+    | "runtime_ticker"
+    | "fallback_ticker"
+    | "exchange_unrealized_pnl"
+    | "runtime_candidate"
+    | "unavailable";
   dynamicTtpStopLoss?: number | null;
   dynamicTslStopLoss?: number | null;
   firstTradeAt: string | null;

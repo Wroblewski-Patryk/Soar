@@ -3,6 +3,15 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 futures market-data source field slice `MARKETDATA-FUT-01` is
+  closed locally on branch `codex/v1-app-function-check`. Runtime position
+  rows now include additive `markPriceSource` metadata beside `markPrice`, with
+  source labels for runtime symbol stats, runtime ticker, fallback ticker,
+  exchange-unrealized-PnL derived price, runtime candidate, and unavailable
+  states. Existing numeric price helper remains compatible. Validation PASS:
+  focused runtime lifecycle/position PnL tests (`8/8`), API typecheck, Web
+  typecheck, guardrails, and diff check. Evidence:
+  `docs/planning/marketdata-fut-runtime-mark-price-source-task-2026-05-07.md`.
 - 2026-05-07 V1 money-engine scenario matrix `V1MONEY-01` is closed locally on
   branch `codex/v1-app-function-check`. A TESTER-mode local/paper-safe matrix
   now routes `V1MONEY-A` rows through local, paper-safe, read-only production,

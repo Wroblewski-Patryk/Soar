@@ -20,6 +20,16 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `MARKETDATA-FUT-01 feat(api-runtime): expose runtime mark-price source for futures evidence`
+  - Scope: closed a BUILDER-mode futures market-data evidence slice. Runtime
+    position rows now include additive `markPriceSource` metadata beside
+    `markPrice`, with source labels for runtime symbol stats, runtime ticker,
+    fallback ticker, exchange-unrealized-PnL derived price, runtime candidate,
+    and unavailable states. Existing numeric price helper remains compatible.
+    Validation PASS: focused runtime lifecycle/position PnL tests (`8/8`), API
+    typecheck, Web typecheck, guardrails, and diff check. Evidence:
+    `docs/planning/marketdata-fut-runtime-mark-price-source-task-2026-05-07.md`.
+
 - [x] `V1MONEY-01 qa(money): build local and paper-safe V1 money scenario matrix`
   - Scope: closed a TESTER-mode local/paper-safe V1 money matrix. The matrix
     routes `V1MONEY-A` rows through local, paper-safe, read-only production, or

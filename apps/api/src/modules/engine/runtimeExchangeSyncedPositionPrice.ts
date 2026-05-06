@@ -1,6 +1,7 @@
 type RuntimePriceCandidate = {
   price: number | null | undefined;
   observedAtMs?: number | null;
+  source?: string | null;
 };
 
 type ExchangeSyncedPositionPriceInput = {
@@ -49,15 +50,24 @@ const selectFreshestRuntimeCandidate = (candidates: RuntimePriceCandidate[]) => 
   }, null);
 };
 
-export const resolvePreferredRuntimeOrExchangeSyncedPrice = (
+export const resolvePreferredRuntimeOrExchangeSyncedPriceWithSource = (
   input: ExchangeSyncedPositionPriceInput
-) => {
+): { price: number | null; source: string } => {
   const freshestRuntimeCandidate = selectFreshestRuntimeCandidate(
     input.runtimePriceCandidates ?? []
   );
+  const runtimeCandidateResult = freshestRuntimeCandidate
+    ? {
+        price: freshestRuntimeCandidate.price ?? null,
+        source: freshestRuntimeCandidate.source ?? 'runtime_candidate',
+      }
+    : {
+        price: null,
+        source: 'unavailable',
+      };
 
   if (input.origin !== 'EXCHANGE_SYNC' || input.status !== 'OPEN') {
-    return freshestRuntimeCandidate?.price ?? null;
+    return runtimeCandidateResult;
   }
 
   const exchangeSyncAtMs = input.lastExchangeSyncAt?.getTime() ?? null;
@@ -72,11 +82,13 @@ export const resolvePreferredRuntimeOrExchangeSyncedPrice = (
       : null;
 
   if (derivedExchangePrice == null) {
-    return freshestRuntimeCandidate?.price ?? null;
+    return runtimeCandidateResult;
   }
 
   if (exchangeSyncAtMs == null) {
-    return freshestRuntimeCandidate?.price ?? derivedExchangePrice;
+    return freshestRuntimeCandidate
+      ? runtimeCandidateResult
+      : { price: derivedExchangePrice, source: 'exchange_unrealized_pnl' };
   }
 
   const freshestRuntimeObservedAtMs = freshestRuntimeCandidate?.observedAtMs ?? null;
@@ -85,8 +97,12 @@ export const resolvePreferredRuntimeOrExchangeSyncedPrice = (
     freshestRuntimeObservedAtMs != null &&
     freshestRuntimeObservedAtMs >= exchangeSyncAtMs
   ) {
-    return freshestRuntimeCandidate.price ?? derivedExchangePrice;
+    return runtimeCandidateResult;
   }
 
-  return derivedExchangePrice;
+  return { price: derivedExchangePrice, source: 'exchange_unrealized_pnl' };
 };
+
+export const resolvePreferredRuntimeOrExchangeSyncedPrice = (
+  input: ExchangeSyncedPositionPriceInput
+) => resolvePreferredRuntimeOrExchangeSyncedPriceWithSource(input).price;

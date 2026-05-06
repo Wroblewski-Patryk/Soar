@@ -50,7 +50,7 @@ import {
   resolveInheritedRuntimeExecutionContext,
 } from '../engine/runtimeBotExecutionContext';
 import { resolveModeledMarginUsed, resolvePositionPnlFraction } from '../engine/positionPnlSemantics';
-import { resolvePreferredRuntimeOrExchangeSyncedPrice } from './runtimeExchangeSyncedPositionPrice';
+import { resolvePreferredRuntimeOrExchangeSyncedPriceWithSource } from './runtimeExchangeSyncedPositionPrice';
 import { hasMaterialCanonicalBasisDrift } from '../engine/runtimePositionAutomationStateRebase';
 import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from './runtimeSymbolCatalogResolver.service';
 import { normalizeSymbols } from './runtimeSymbolUniverse.service';
@@ -696,19 +696,10 @@ export const listBotRuntimeSessionPositions = async (
     }
   }
 
-  const runtimeStatPriceBySymbol = new Map<
-    string,
-    {
-      price: number | null;
-      observedAtMs: number | null;
-    }
-  >(
+  const runtimeStatPriceBySymbol = new Map<string, { price: number | null; observedAtMs: number | null; source: string }>(
     lastSymbolPrices.map((row) => [
       row.symbol,
-      {
-        price: row.lastPrice,
-        observedAtMs: row.snapshotAt.getTime(),
-      },
+      { price: row.lastPrice, observedAtMs: row.snapshotAt.getTime(), source: 'runtime_symbol_stat' },
     ])
   );
   for (const symbol of symbols) {
@@ -724,6 +715,7 @@ export const listBotRuntimeSessionPositions = async (
           typeof ticker.eventTime === 'number' && Number.isFinite(ticker.eventTime)
             ? ticker.eventTime
             : null,
+        source: 'runtime_ticker',
       };
       if (
         !current ||
@@ -737,13 +729,7 @@ export const listBotRuntimeSessionPositions = async (
   const lastPriceBySymbol = new Map(
     [...runtimeStatPriceBySymbol.entries()].map(([symbol, candidate]) => [symbol, candidate.price])
   );
-  const fallbackRuntimePriceBySymbol = new Map<
-    string,
-    {
-      price: number | null;
-      observedAtMs: number | null;
-    }
-  >();
+  const fallbackRuntimePriceBySymbol = new Map<string, { price: number | null; observedAtMs: number | null; source: string }>();
   const missingPriceSymbols = symbols.filter((symbol) => {
     const current = lastPriceBySymbol.get(symbol);
     return !Number.isFinite(current) || (current as number) <= 0;
@@ -760,6 +746,7 @@ export const listBotRuntimeSessionPositions = async (
           fallbackRuntimePriceBySymbol.set(symbol, {
             price,
             observedAtMs: null,
+            source: 'fallback_ticker',
           });
         }
       }
@@ -813,7 +800,7 @@ export const listBotRuntimeSessionPositions = async (
           trailingTakeProfitLevelsBySymbol.get(position.symbol) ??
           [])
         : [];
-    const marketPrice = resolvePreferredRuntimeOrExchangeSyncedPrice({
+    const marketPriceResult = resolvePreferredRuntimeOrExchangeSyncedPriceWithSource({
       origin: position.origin,
       status: position.status,
       side: position.side,
@@ -822,16 +809,11 @@ export const listBotRuntimeSessionPositions = async (
       unrealizedPnl: position.unrealizedPnl ?? null,
       lastExchangeSyncAt: position.lastExchangeSyncAt,
       runtimePriceCandidates: [
-        runtimeStatPriceBySymbol.get(position.symbol) ?? {
-          price: null,
-          observedAtMs: null,
-        },
-        fallbackRuntimePriceBySymbol.get(position.symbol) ?? {
-          price: null,
-          observedAtMs: null,
-        },
+        runtimeStatPriceBySymbol.get(position.symbol) ?? { price: null, observedAtMs: null, source: null },
+        fallbackRuntimePriceBySymbol.get(position.symbol) ?? { price: null, observedAtMs: null, source: null },
       ],
     });
+    const marketPrice = marketPriceResult.price;
     const runtimeState = selectRuntimeDisplayState({
       position,
       runtimeSnapshot: runtimePositionAutomationService.getPositionStateSnapshot(position.id),
@@ -946,6 +928,7 @@ export const listBotRuntimeSessionPositions = async (
       unrealizedPnlPercent:
         unrealizedPnlPercentFraction != null ? unrealizedPnlPercentFraction * 100 : null,
       markPrice: typeof marketPrice === 'number' && Number.isFinite(marketPrice) ? marketPrice : null,
+      markPriceSource: typeof marketPrice === 'number' && Number.isFinite(marketPrice) ? marketPriceResult.source : 'unavailable',
       dynamicTtpStopLoss,
       dynamicTslStopLoss,
       firstTradeAt: entryTrade?.executedAt ?? null,

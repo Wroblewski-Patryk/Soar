@@ -152,6 +152,7 @@ describe('Bots runtime pnl parity contract', () => {
         symbol: 'ETHUSDT',
         marginUsed: 25,
         markPrice: 108,
+        markPriceSource: 'exchange_unrealized_pnl',
         unrealizedPnl: -8,
         unrealizedPnlPercent: -32,
       })
@@ -277,6 +278,7 @@ describe('Bots runtime pnl parity contract', () => {
       expect.objectContaining({
         symbol: 'SOLUSDT',
         markPrice: 125,
+        markPriceSource: 'fallback_ticker',
         unrealizedPnl: 50,
         unrealizedPnlPercent: 125,
       })
