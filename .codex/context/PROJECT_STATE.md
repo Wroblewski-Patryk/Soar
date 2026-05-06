@@ -3,6 +3,16 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 V1 manual evidence route sync `V1MANUAL-01` is closed locally on
+  branch `codex/v1-app-function-check`. The V1 orders/positions evidence rows
+  now distinguish authenticated API `/dashboard/orders*` and
+  `/dashboard/positions*` read-only proof from web legacy redirect proof,
+  matching the canonical dashboard route map. Added a focused web middleware
+  regression for `/dashboard/orders -> /dashboard/bots/runtime?legacy=orders`,
+  `/dashboard/positions -> /dashboard/bots/runtime?legacy=positions`, and
+  unauthenticated fail-closed redirect to `/auth/login`. Validation PASS:
+  focused middleware test (`3/3`). Evidence:
+  `docs/planning/v1manual-web-legacy-route-evidence-sync-task-2026-05-07.md`.
 - 2026-05-07 paper-safe close evidence slice `V1MONEY-02` is closed locally on
   branch `codex/v1-app-function-check`. Focused API close validation passed
   (`45/45`) across runtime position automation, lifecycle close parity, paper

@@ -9,6 +9,15 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `V1MANUAL-01 qa(web): align V1 manual route evidence with runtime IA`
+  - 2026-05-07: Closed an ARCHITECT-mode V1 manual evidence sync. The V1
+    orders/positions rows now distinguish authenticated API
+    `/dashboard/orders*` and `/dashboard/positions*` read-only proof from web
+    legacy redirect proof, matching the canonical dashboard route map. Added a
+    focused web middleware regression for legacy orders/positions redirects and
+    unauthenticated fail-closed login behavior. Validation PASS: focused
+    middleware test (`3/3`). Evidence:
+    `docs/planning/v1manual-web-legacy-route-evidence-sync-task-2026-05-07.md`.
 - [x] `V1MONEY-02 qa(money): capture paper-safe close evidence for TP SL TTP TSL and DCA guards`
   - 2026-05-07: Closed a BUILDER-mode paper-safe close evidence slice. Focused
     API close validation passed (`45/45`) across runtime position automation,

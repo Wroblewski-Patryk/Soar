@@ -88,9 +88,9 @@ production proof before they should be treated as V1-complete.
 | `MANUAL-LIVE-ORDER-001` | `orders` | `PARTIAL` | Final manual LIVE open matrix on current deployed SHA. |
 | `MANUAL-LIVE-ORDER-002` | `orders` | `PARTIAL` | Same-direction manual fill verification or explicit live-risk waiver. |
 | `ORDERS-CANCEL-CLOSE-001` | `orders` | `NEEDS_PROD_SAMPLE` | Safe cancel/close sample on non-filled pending order or stage once restored. |
-| `ORDERS-LIST-001` | `orders` | `PARTIAL` | Production orders read for active live bot or wallet without mutation. |
+| `ORDERS-LIST-001` | `orders` | `PARTIAL` | Production authenticated API orders read for active live bot or wallet without mutation; web `/dashboard/orders` must only prove the legacy redirect to runtime view. |
 | `ORDERS-MANUAL-CONTEXT-001` | `orders` | `PARTIAL` | Production manual-context payload for selected bot and symbol. |
-| `POSITIONS-LIST-001` | `positions` | `PARTIAL` | Production `/dashboard/positions` read-only smoke. |
+| `POSITIONS-LIST-001` | `positions` | `PARTIAL` | Production authenticated API `GET /dashboard/positions` read-only smoke plus web legacy redirect proof from `/dashboard/positions` to `/dashboard/bots/runtime?legacy=positions`. |
 | `POSITIONS-SNAPSHOT-001` | `positions` | `PARTIAL` | Production authenticated exchange snapshot check for futures wallet. |
 | `POSITIONS-TAKEOVER-001` | `positions` | `PARTIAL` | Production takeover-status read-only proof plus manual matrix scenario. |
 | `PROFILE-APIKEY-001` | `profile` | `PARTIAL` | API-key list/test proof without exposing or destructively rotating the live key. |
