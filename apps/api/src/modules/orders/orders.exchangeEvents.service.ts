@@ -443,7 +443,9 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
           ? 'EXCHANGE_FILL'
           : existingOrder.feeSource,
       feePending:
-        fillProgress.persistedStatus === 'FILLED' && hasRecordableEventFee
+        fillProgress.persistedStatus === 'FILLED' &&
+        hasRecordableEventFee &&
+        feeRefreshDecision.shouldRefreshFeeDetails
           ? false
           : shouldKeepFeePending || existingOrder.feePending,
       feeCurrency: feeRefreshDecision.shouldRefreshFeeDetails

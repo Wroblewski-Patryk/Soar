@@ -3,6 +3,16 @@
 Last updated: 2026-05-06
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-06 stale unknown exchange fee pending guard slice `PMPLC-34` is
+  closed locally. Exchange order-trade event handling now clears
+  `feePending` from finite event fee only when that fee is actually accepted by
+  the fee refresh/backfill decision, so a rejected stale unknown
+  `exchangeTradeId` cannot hide unresolved LIVE fee reconciliation. Validation
+  PASS: pre-fix DB-backed regression failed as expected (`feePending=false`
+  received vs `true` expected), DB-backed exchange-event suite (`14/14`),
+  focused runtime/order suites (`91/91`), API typecheck, repository
+  guardrails, lint, and diff check. Evidence:
+  `docs/planning/position-management-exchange-stale-fee-pending-guard-task-2026-05-06.md`.
 - 2026-05-06 exchange fee refresh helper slice `PMPLC-33` is closed locally.
   Exchange fee refresh/backfill decisions now live in the pure
   `orders.exchangeEvents.helpers` boundary with no-DB coverage for normal

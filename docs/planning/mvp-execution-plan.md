@@ -29,6 +29,16 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-06: Closed `PMPLC-34` with
+  `docs/planning/position-management-exchange-stale-fee-pending-guard-task-2026-05-06.md`.
+  Exchange order-trade event handling now clears `feePending` from finite event
+  fee only when that fee is actually accepted by the fee refresh/backfill
+  decision, so a rejected stale unknown `exchangeTradeId` cannot hide
+  unresolved LIVE fee reconciliation. Validation PASS: pre-fix DB-backed
+  regression failed as expected (`feePending=false` received vs `true`
+  expected), DB-backed exchange-event suite (`14/14`), focused runtime/order
+  suites (`91/91`), API typecheck, repository guardrails, lint, and diff
+  check.
 - 2026-05-06: Closed `PMPLC-33` with
   `docs/planning/position-management-exchange-fee-refresh-helper-task-2026-05-06.md`.
   Exchange fee refresh/backfill decisions now live in the pure
