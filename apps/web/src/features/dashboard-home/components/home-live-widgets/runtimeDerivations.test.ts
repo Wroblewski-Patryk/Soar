@@ -1,8 +1,78 @@
 import { describe, expect, it } from "vitest";
 
-import { buildLiveOpenPositions } from "./runtimeDerivations";
+import type { OpenPositionWithLive } from "./types";
+import {
+  buildLiveOpenPositions,
+  resolveDynamicTslDisplay,
+  resolveDynamicTtpDisplay,
+} from "./runtimeDerivations";
+
+const dynamicStopRow = {
+  id: "pos-dynamic",
+  symbol: "DOGEUSDT",
+  side: "LONG",
+  status: "OPEN",
+  quantity: 1,
+  leverage: 10,
+  marginUsed: 100,
+  entryPrice: 1,
+  entryNotional: 100,
+  exitPrice: null,
+  stopLoss: null,
+  takeProfit: null,
+  openedAt: "2026-04-30T10:00:00.000Z",
+  closedAt: null,
+  holdMs: 0,
+  dcaCount: 0,
+  feesPaid: 0,
+  realizedPnl: 0,
+  unrealizedPnl: 0,
+  markPrice: 1.1,
+  firstTradeAt: null,
+  lastTradeAt: null,
+  tradesCount: 0,
+  liveMarkPrice: 1.1,
+  liveUnrealizedPnl: 10,
+  livePnlPct: 10,
+  marginNotional: 100,
+  openPnl: 10,
+  pnlNotionalPct: 10,
+  pnlMarginPct: 10,
+  marginInitPct: null,
+  ttpProtectedPercent: null,
+  fallbackTtpProtectedPercent: null,
+  tslProtectedPercent: null,
+} satisfies OpenPositionWithLive;
 
 describe("runtimeDerivations", () => {
+  it("shows TSL display only when no TTP display is active", () => {
+    expect(resolveDynamicTslDisplay({ ...dynamicStopRow, tslProtectedPercent: 4 })).toBe(4);
+    expect(
+      resolveDynamicTslDisplay({
+        ...dynamicStopRow,
+        ttpProtectedPercent: 5,
+        tslProtectedPercent: 4,
+      })
+    ).toBeNull();
+    expect(
+      resolveDynamicTslDisplay({
+        ...dynamicStopRow,
+        fallbackTtpProtectedPercent: 6,
+        tslProtectedPercent: 4,
+      })
+    ).toBeNull();
+  });
+
+  it("prefers backend TTP over fallback TTP in the display resolver", () => {
+    expect(
+      resolveDynamicTtpDisplay({
+        ...dynamicStopRow,
+        ttpProtectedPercent: 5,
+        fallbackTtpProtectedPercent: 7,
+      })
+    ).toBe(5);
+  });
+
   it("uses persisted marginUsed when deriving live pnl percent", () => {
     const result = buildLiveOpenPositions(
       {

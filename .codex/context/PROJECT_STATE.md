@@ -3,6 +3,13 @@
 Last updated: 2026-05-04
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-04 dynamic stop display precedence slice `RUNTIME-AUDIT-143` is
+  closed locally. Resolver-level tests now lock TSL display only when TTP is
+  inactive, backend TTP suppression of TSL, fallback TTP suppression of TSL,
+  and backend TTP precedence over fallback TTP. Validation PASS: focused
+  runtime derivations suite (`5/5`), web typecheck, repository guardrails,
+  lint, and diff review. Evidence:
+  `docs/planning/runtime-audit-143-dynamic-stop-display-contract-task-2026-05-04.md`.
 - 2026-05-04 backend TTP precedence regression slice `RUNTIME-AUDIT-142` is
   closed locally. Runtime view-model coverage now proves backend dynamic TTP
   protection wins over fallback TTP display when both values exist. Validation

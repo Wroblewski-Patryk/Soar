@@ -29,6 +29,13 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-04: Closed `RUNTIME-AUDIT-143` with
+  `docs/planning/runtime-audit-143-dynamic-stop-display-contract-task-2026-05-04.md`.
+  Resolver-level tests now lock TSL display only when TTP is inactive,
+  backend TTP suppression of TSL, fallback TTP suppression of TSL, and
+  backend TTP precedence over fallback TTP. Validation PASS: focused runtime
+  derivations suite (`5/5`), web typecheck, repository guardrails, lint, and
+  diff review.
 - 2026-05-04: Closed `RUNTIME-AUDIT-142` with
   `docs/planning/runtime-audit-142-backend-ttp-precedence-regression-task-2026-05-04.md`.
   Runtime view-model coverage now proves backend dynamic TTP protection wins

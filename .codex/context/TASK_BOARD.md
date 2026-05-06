@@ -20,6 +20,15 @@ Last updated: 2026-05-04
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `RUNTIME-AUDIT-143 test(web-dashboard): lock dynamic stop display precedence`
+  - Scope: closed a money-impacting dynamic stop display coverage gap.
+    Resolver-level tests now lock TSL display only when TTP is inactive,
+    backend TTP suppression of TSL, fallback TTP suppression of TSL, and
+    backend TTP precedence over fallback TTP. Validation PASS: focused runtime
+    derivations suite (`5/5`), web typecheck, repository guardrails, lint, and
+    diff review. Evidence:
+    `docs/planning/runtime-audit-143-dynamic-stop-display-contract-task-2026-05-04.md`.
+
 - [x] `RUNTIME-AUDIT-142 test(web-dashboard): lock backend TTP precedence`
   - Scope: closed a money-impacting dashboard regression gap. Runtime
     view-model coverage now proves backend dynamic TTP protection wins over
