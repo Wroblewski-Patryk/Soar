@@ -20,6 +20,16 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `V1GATE-03 release(ops): refresh OPS deploy freshness ledger row`
+  - Scope: closed a BUILDER-mode deploy freshness ledger sync. Re-read
+    production public `/api/build-info` and confirmed
+    `gitSha=6a7c9889d24a55c870b32aa10cb284ede6db1c59`, `gitRef=main`, matching
+    `origin/main`. `OPS-DEPLOY-001` in the V1 function coverage matrix now
+    references the current `V1GATE-02` public target refresh instead of the
+    older 2026-05-01 SHA. This does not close restore, stage, GO/NO-GO,
+    protected/manual, or live-money evidence blockers. Evidence:
+    `docs/planning/v1gate-03-deploy-ledger-refresh-task-2026-05-07.md`.
+
 - [x] `V1MANUAL-01 qa(web): align V1 manual route evidence with runtime IA`
   - Scope: closed an ARCHITECT-mode V1 manual evidence sync. The V1
     orders/positions rows now distinguish authenticated API

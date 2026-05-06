@@ -3,6 +3,14 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 deploy freshness ledger sync `V1GATE-03` is closed locally on
+  branch `codex/v1-app-function-check`. Re-read production public
+  `/api/build-info` and confirmed `gitSha=6a7c9889d24a55c870b32aa10cb284ede6db1c59`,
+  `gitRef=main`, matching `origin/main`. `OPS-DEPLOY-001` in the V1 function
+  coverage matrix now references the current `V1GATE-02` public target refresh
+  instead of the older 2026-05-01 SHA. This does not close restore, stage,
+  GO/NO-GO, protected/manual, or live-money evidence blockers. Evidence:
+  `docs/planning/v1gate-03-deploy-ledger-refresh-task-2026-05-07.md`.
 - 2026-05-07 V1 manual evidence route sync `V1MANUAL-01` is closed locally on
   branch `codex/v1-app-function-check`. The V1 orders/positions evidence rows
   now distinguish authenticated API `/dashboard/orders*` and
