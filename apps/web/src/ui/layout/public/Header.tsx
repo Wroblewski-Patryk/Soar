@@ -11,6 +11,7 @@ export default function Header() {
   const { t } = useI18n();
   const showDashboardCta = !loading && Boolean(user);
   const showAdminCta = showDashboardCta && user?.role === 'ADMIN';
+  const showAuthCtas = !loading && !user;
   const headerActionPrimaryClass =
     'btn btn-xs h-7 min-h-7 border transition-colors duration-150 border-primary/45 bg-primary/10 text-primary hover:border-primary/70 hover:bg-primary/20';
   const headerActionSecondaryClass =
@@ -36,7 +37,7 @@ export default function Header() {
                 </Link>
               ) : null}
             </div>
-          ) : (
+          ) : showAuthCtas ? (
             <div className="flex items-center gap-2">
               <Link href="/auth/login" className={headerActionSecondaryClass}>
                 {t('public.shell.login')}
@@ -45,7 +46,7 @@ export default function Header() {
                 {t('public.shell.register')}
               </Link>
             </div>
-          )}
+          ) : null}
         </div>
       </div>
     </header>

@@ -100,6 +100,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   );
   const [routePath, setRoutePath] = useState<string>(() => pathname || detectRoutePath());
   const timeZone = useMemo(() => resolveTimeZone(timeZonePreference), [timeZonePreference]);
+  const currentRoutePath = pathname || routePath;
 
   useEffect(() => {
     setLocalStorageItem(LOCALE_STORAGE_KEY, locale);
@@ -160,12 +161,12 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const routeTranslations = useMemo(
-    () => buildTranslationsForRoute(locale, routePath),
-    [locale, routePath]
+    () => buildTranslationsForRoute(locale, currentRoutePath),
+    [currentRoutePath, locale]
   );
   const routeFallbackTranslations = useMemo(
-    () => buildTranslationsForRoute(DEFAULT_LOCALE, routePath),
-    [routePath]
+    () => buildTranslationsForRoute(DEFAULT_LOCALE, currentRoutePath),
+    [currentRoutePath]
   );
 
   const t = useCallback((key: TranslationKey) => {
@@ -173,14 +174,14 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     if (localized) return localized;
     const routeFallback = resolveKey(routeFallbackTranslations, key);
     if (routeFallback) {
-      reportMissingTranslation(locale, key, true, routePath);
+      reportMissingTranslation(locale, key, true, currentRoutePath);
       return routeFallback;
     }
 
     const globalFallback = resolveKey(translations[DEFAULT_LOCALE], key);
-    reportMissingTranslation(locale, key, Boolean(globalFallback), routePath);
+    reportMissingTranslation(locale, key, Boolean(globalFallback), currentRoutePath);
     return globalFallback ?? key;
-  }, [locale, routeFallbackTranslations, routePath, routeTranslations]);
+  }, [currentRoutePath, locale, routeFallbackTranslations, routeTranslations]);
 
   const value = useMemo(
     () => ({

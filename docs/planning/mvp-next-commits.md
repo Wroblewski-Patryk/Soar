@@ -9,6 +9,17 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `V1UI-03 fix(web-public): hide auth CTAs while session state is loading`
+  - 2026-05-07: Closed an ARCHITECT-mode public access shell/i18n route slice.
+    Public header auth CTAs now render only after auth loading resolves with no
+    user, preventing logged-out login/register CTAs from flashing while session
+    truth is unknown. Route translations now use the current Next pathname
+    during render, eliminating public-to-auth client navigation i18n
+    missing-key warnings seen when clicking Login from `/`. Validation PASS:
+    focused header/i18n tests (`7/7`), Web typecheck, lint, production build,
+    local desktop/mobile rendered smoke, route-reachable i18n audit
+    (`findings=0`), guardrails, and diff check. Evidence:
+    `docs/planning/v1ui-03-public-access-header-route-contract-task-2026-05-07.md`.
 - [x] `V1UI-02 fix(web-auth): persist register errors and seed auth i18n route`
   - 2026-05-07: Closed a BUILDER-mode auth register UI/i18n slice.
     Registration failures now persist inline in the form with `role="alert"`

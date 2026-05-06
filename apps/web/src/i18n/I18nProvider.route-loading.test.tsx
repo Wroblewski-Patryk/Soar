@@ -17,6 +17,15 @@ function RouteScopeProbe() {
   );
 }
 
+function PublicToAuthProbe() {
+  const { t } = useI18n();
+  const key = window.location.pathname.startsWith("/auth/login")
+    ? "auth.page.login.title"
+    : "public.landing.badge";
+
+  return <span data-testid="route-value">{t(key)}</span>;
+}
+
 describe("I18nProvider route loading", () => {
   beforeEach(() => {
     window.localStorage.removeItem("cryptosparrow-locale");
@@ -46,6 +55,39 @@ describe("I18nProvider route loading", () => {
     });
 
     expect(screen.getByTestId("value").textContent ?? "").not.toContain("dashboard.");
+    expect(warnSpy).not.toHaveBeenCalled();
+
+    warnSpy.mockRestore();
+  });
+
+  it("uses the current pathname dictionary during public to auth client navigation", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+
+    act(() => {
+      window.history.replaceState({}, "", "/");
+    });
+
+    const view = render(
+      <I18nProvider>
+        <PublicToAuthProbe />
+      </I18nProvider>
+    );
+
+    expect(screen.getByTestId("route-value")).toHaveTextContent(
+      "Trading bot and strategy execution platform"
+    );
+
+    act(() => {
+      window.history.pushState({}, "", "/auth/login");
+    });
+
+    view.rerender(
+      <I18nProvider>
+        <PublicToAuthProbe />
+      </I18nProvider>
+    );
+
+    expect(screen.getByTestId("route-value")).toHaveTextContent("Sign in to Soar");
     expect(warnSpy).not.toHaveBeenCalled();
 
     warnSpy.mockRestore();

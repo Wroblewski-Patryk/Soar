@@ -29,6 +29,16 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-07: Closed `V1UI-03` with
+  `docs/planning/v1ui-03-public-access-header-route-contract-task-2026-05-07.md`.
+  Public header auth CTAs now render only after auth loading resolves with no
+  user, preventing logged-out login/register CTAs from flashing while session
+  truth is unknown. Route translations now use the current Next pathname during
+  render, eliminating public-to-auth client navigation i18n missing-key
+  warnings seen when clicking Login from `/`. Validation PASS: focused
+  header/i18n tests (`7/7`), Web typecheck, lint, production build, local
+  desktop/mobile rendered smoke, route-reachable i18n audit (`findings=0`),
+  guardrails, and diff check.
 - 2026-05-07: Closed `V1MONEY-02` with
   `docs/planning/v1money-paper-safe-close-evidence-task-2026-05-07.md`.
   Focused API close validation passed (`45/45`) across runtime position

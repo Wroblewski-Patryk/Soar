@@ -40,6 +40,36 @@ describe('Public Header', () => {
     expect(screen.getByRole('link', { name: 'Admin' })).toHaveAttribute('href', '/admin');
   });
 
+  it('shows canonical auth route buttons for logged-out users', () => {
+    useAuthMock.mockReturnValue({
+      user: null,
+      loading: false,
+    });
+    useI18nMock.mockReturnValue({ t });
+
+    render(<Header />);
+
+    expect(screen.getByRole('link', { name: 'Login' })).toHaveAttribute('href', '/auth/login');
+    expect(screen.getByRole('link', { name: 'Register' })).toHaveAttribute('href', '/auth/register');
+    expect(screen.queryByRole('link', { name: 'Dashboard' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument();
+  });
+
+  it('does not show auth or dashboard buttons while auth state is loading', () => {
+    useAuthMock.mockReturnValue({
+      user: null,
+      loading: true,
+    });
+    useI18nMock.mockReturnValue({ t });
+
+    render(<Header />);
+
+    expect(screen.queryByRole('link', { name: 'Login' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Register' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Dashboard' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument();
+  });
+
   it('does not show admin button for non-admin logged-in user', () => {
     useAuthMock.mockReturnValue({
       user: { email: 'user@example.com', userId: 'u2', role: 'USER' },

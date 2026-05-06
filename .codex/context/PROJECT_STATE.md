@@ -3,6 +3,17 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 public access header/i18n route slice `V1UI-03` is closed locally
+  on branch `codex/v1-app-function-check`. Public header auth CTAs now render
+  only after auth loading resolves with no user, preventing logged-out
+  login/register CTAs from flashing while session truth is unknown. Route
+  translations now use the current Next pathname during render, eliminating
+  public-to-auth client navigation i18n missing-key warnings seen when clicking
+  Login from `/`. Validation PASS: focused header/i18n tests (`7/7`), Web
+  typecheck, lint, production build, local desktop/mobile rendered smoke,
+  route-reachable i18n audit (`findings=0`), guardrails, and diff check.
+  Evidence:
+  `docs/planning/v1ui-03-public-access-header-route-contract-task-2026-05-07.md`.
 - 2026-05-07 auth register UI/i18n slice `V1UI-02` is closed locally on branch
   `codex/v1-app-function-check`. Registration failures now persist inline in
   the form with `role="alert"` while preserving existing toast feedback and
