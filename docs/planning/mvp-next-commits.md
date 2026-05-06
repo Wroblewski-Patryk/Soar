@@ -9,6 +9,17 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `PMPLC-40 fix(api-orders): keep pending when earlier partial fill fee is missing`
+  - 2026-05-06: Closed a TESTER-mode LIVE fee reconciliation finality slice.
+    Exchange-event reconciliation now refuses to clear pending from a terminal
+    current-fill exact fee while any earlier `OrderFill` for the order still
+    has missing fee truth, preserving final fee-total visibility without
+    downgrading the current exact fee. Validation PASS: pre-fix DB-backed
+    regression failed as expected (`feePending=false` received vs `true`
+    expected), helper suite (`24/24`), DB-backed exchange-event suite
+    (`19/19`), focused runtime/order suites (`102/102`), API typecheck,
+    repository guardrails, lint, and diff check. Evidence:
+    `docs/planning/position-management-exchange-missing-partial-fee-pending-task-2026-05-06.md`.
 - [x] `PMPLC-39 fix(api-orders): keep final fill pending after partial fee truth`
   - 2026-05-06: Closed an ARCHITECT-mode LIVE fee reconciliation finality
     slice. Exchange-event reconciliation now treats an existing exact exchange

@@ -3,6 +3,16 @@
 Last updated: 2026-05-06
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-06 missing partial exchange fee pending slice `PMPLC-40` is closed
+  locally. Exchange-event reconciliation now refuses to clear pending from a
+  terminal current-fill exact fee while any earlier `OrderFill` for the order
+  still has missing fee truth, preserving final fee-total visibility without
+  downgrading the current exact fee. Validation PASS: pre-fix DB-backed
+  regression failed as expected (`feePending=false` received vs `true`
+  expected), helper suite (`24/24`), DB-backed exchange-event suite (`19/19`),
+  focused runtime/order suites (`102/102`), API typecheck, repository
+  guardrails, lint, and diff check. Evidence:
+  `docs/planning/position-management-exchange-missing-partial-fee-pending-task-2026-05-06.md`.
 - 2026-05-06 final exchange fee pending slice `PMPLC-39` is closed locally.
   Exchange-event reconciliation now treats an existing exact exchange fee as
   final settled truth only when the order was already terminal `FILLED` before

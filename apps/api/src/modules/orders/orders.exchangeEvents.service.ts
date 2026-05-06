@@ -400,6 +400,16 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
   const existingRecordableEventFillHasFee =
     typeof existingRecordableEventFill?.feeCost === 'number' &&
     Number.isFinite(existingRecordableEventFill.feeCost);
+  const unresolvedExistingFillFee = await prisma.orderFill.findFirst({
+    where: {
+      orderId: existingOrder.id,
+      feeCost: null,
+      ...(input.event.exchangeTradeId
+        ? { NOT: { exchangeTradeId: input.event.exchangeTradeId } }
+        : {}),
+    },
+    select: { id: true },
+  });
   const existingFillFeeAggregate = hasRecordableEventFee
     ? await prisma.orderFill.aggregate({
         where: { orderId: existingOrder.id },
@@ -422,7 +432,9 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
     typeof existingOrder.fee === 'number' &&
     Number.isFinite(existingOrder.fee);
   const hasAcceptedRecordableEventFee =
-    hasRecordableEventFee && feeRefreshDecision.shouldRefreshFeeDetails;
+    hasRecordableEventFee &&
+    feeRefreshDecision.shouldRefreshFeeDetails &&
+    unresolvedExistingFillFee == null;
   const feePendingDecision = resolveExchangeFeePendingDecision({
     persistedStatus: fillProgress.persistedStatus,
     hasAcceptedRecordableEventFee,

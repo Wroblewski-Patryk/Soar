@@ -794,6 +794,129 @@ describe('orders.exchangeEvents.service', () => {
     expect(trade.feePending).toBe(true);
   });
 
+  it('keeps fee pending when a final exact fee leaves an earlier partial fill without fee', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'exchange-event-final-fee-after-missing-partial@example.com', password: 'hashed' },
+    });
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'live-wallet-final-fee-after-missing-partial',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'live-bot-final-fee-after-missing-partial',
+        mode: 'LIVE',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        walletId: wallet.id,
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'v1',
+      },
+    });
+    const order = await prisma.order.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        walletId: wallet.id,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        symbol: 'ETHUSDT',
+        side: 'BUY',
+        type: 'MARKET',
+        status: 'OPEN',
+        quantity: 1,
+        filledQuantity: 0,
+        averageFillPrice: null,
+        fee: null,
+        feeSource: 'ESTIMATED',
+        feePending: false,
+        exchangeOrderId: 'event-final-fee-after-missing-partial-1',
+        submittedAt: new Date('2026-04-26T20:08:50.000Z'),
+      },
+    });
+
+    await applyLiveExchangeOrderTradeUpdateEvent({
+      userId: user.id,
+      event: {
+        eventType: 'ORDER_TRADE_UPDATE',
+        marketType: 'FUTURES',
+        eventTime: 1_680,
+        transactionTime: 1_681,
+        symbol: 'ETHUSDT',
+        side: 'BUY',
+        orderType: 'MARKET',
+        orderStatus: 'PARTIALLY_FILLED',
+        executionType: 'TRADE',
+        exchangeOrderId: 'event-final-fee-after-missing-partial-1',
+        clientOrderId: 'client-final-fee-after-missing-partial-1',
+        averagePrice: 3_000,
+        cumulativeFilledQuantity: 0.5,
+        lastFilledQuantity: 0.5,
+        lastFilledPrice: 3_000,
+        fee: null,
+        feeCurrency: null,
+        exchangeTradeId: 'trade-final-fee-after-missing-partial-1',
+        raw: {},
+      },
+    });
+
+    await applyLiveExchangeOrderTradeUpdateEvent({
+      userId: user.id,
+      event: {
+        eventType: 'ORDER_TRADE_UPDATE',
+        marketType: 'FUTURES',
+        eventTime: 1_690,
+        transactionTime: 1_691,
+        symbol: 'ETHUSDT',
+        side: 'BUY',
+        orderType: 'MARKET',
+        orderStatus: 'FILLED',
+        executionType: 'TRADE',
+        exchangeOrderId: 'event-final-fee-after-missing-partial-1',
+        clientOrderId: 'client-final-fee-after-missing-partial-1',
+        averagePrice: 3_000,
+        cumulativeFilledQuantity: 1,
+        lastFilledQuantity: 0.5,
+        lastFilledPrice: 3_000,
+        fee: 0.02,
+        feeCurrency: 'USDT',
+        exchangeTradeId: 'trade-final-fee-after-missing-partial-2',
+        raw: {},
+      },
+    });
+
+    const updatedOrder = await prisma.order.findUniqueOrThrow({
+      where: { id: order.id },
+    });
+    expect(updatedOrder.status).toBe('FILLED');
+    expect(updatedOrder.filledQuantity).toBeCloseTo(1, 10);
+    expect(updatedOrder.fee).toBeCloseTo(0.02, 10);
+    expect(updatedOrder.feeSource).toBe('EXCHANGE_FILL');
+    expect(updatedOrder.feePending).toBe(true);
+    const fills = await prisma.orderFill.findMany({
+      where: { orderId: order.id },
+      orderBy: { exchangeTradeId: 'asc' },
+    });
+    expect(fills).toHaveLength(2);
+    expect(fills[0]?.feeCost).toBeNull();
+    expect(fills[1]?.feeCost).toBeCloseTo(0.02, 10);
+    const trade = await prisma.trade.findFirstOrThrow({
+      where: { orderId: order.id },
+    });
+    expect(trade.fee).toBeCloseTo(0.02, 10);
+    expect(trade.feeSource).toBe('EXCHANGE_FILL');
+    expect(trade.feePending).toBe(true);
+  });
+
   it('backfills missing fee truth for an already recorded exchange fill', async () => {
     const user = await prisma.user.create({
       data: { email: 'exchange-event-fill-fee-backfill@example.com', password: 'hashed' },
