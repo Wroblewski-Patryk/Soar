@@ -3,6 +3,16 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 release-gate plan summary fix `V1GATE-04` is closed locally on
+  branch `codex/v1-app-function-check`. `scripts/runV1ReleaseGate.mjs` now
+  reports `goLiveSmoke: skipped` whenever `--skip-local-quality` is used,
+  matching the actual step plan because go-live smoke is nested under local
+  quality execution. Added focused regression coverage. Production dry-run
+  artifacts were regenerated with readiness `not_ready`; current blockers
+  remain stale activation, RC, restore, and rollback evidence plus the broader
+  stage/protected/manual/live-money gates. Validation PASS: release-gate tests
+  (`8/8`). Evidence:
+  `docs/planning/v1gate-04-release-gate-plan-summary-task-2026-05-07.md`.
 - 2026-05-07 deploy freshness ledger sync `V1GATE-03` is closed locally on
   branch `codex/v1-app-function-check`. Re-read production public
   `/api/build-info` and confirmed `gitSha=6a7c9889d24a55c870b32aa10cb284ede6db1c59`,

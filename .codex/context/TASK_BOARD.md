@@ -20,6 +20,17 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `V1GATE-04 fix(ops): report skipped go-live smoke when local quality is skipped`
+  - Scope: closed a BUILDER-mode release-gate tooling fix. The V1 release gate
+    now reports `goLiveSmoke: skipped` whenever `--skip-local-quality` is used,
+    matching the actual step plan because go-live smoke is nested under local
+    quality execution. Added focused regression coverage. Production dry-run
+    artifacts were regenerated with readiness `not_ready`; current blockers
+    remain stale activation, RC, restore, and rollback evidence plus the
+    broader stage/protected/manual/live-money gates. Validation PASS:
+    release-gate tests (`8/8`). Evidence:
+    `docs/planning/v1gate-04-release-gate-plan-summary-task-2026-05-07.md`.
+
 - [x] `V1GATE-03 release(ops): refresh OPS deploy freshness ledger row`
   - Scope: closed a BUILDER-mode deploy freshness ledger sync. Re-read
     production public `/api/build-info` and confirmed

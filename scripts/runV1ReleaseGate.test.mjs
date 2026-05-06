@@ -4,7 +4,11 @@ import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 
-import { buildSteps, evaluateEvidenceReadiness } from './runV1ReleaseGate.mjs';
+import {
+  buildExecutionPlanSummary,
+  buildSteps,
+  evaluateEvidenceReadiness,
+} from './runV1ReleaseGate.mjs';
 
 test('buildSteps passes api and web targets into deploy smoke gate', () => {
   const steps = buildSteps({
@@ -65,6 +69,23 @@ test('buildSteps passes release auth through step env instead of command args', 
   assert.equal(steps[0].env.SMOKE_AUTH_TOKEN, 'secret-token');
   assert.equal(steps[1].env.DEPLOY_FRESHNESS_AUTH_TOKEN, 'secret-token');
   assert.equal(steps[2].env.ROLLBACK_GUARD_AUTH_TOKEN, 'secret-token');
+});
+
+test('buildExecutionPlanSummary marks go-live smoke skipped when local quality is skipped', () => {
+  const summary = buildExecutionPlanSummary({
+    environment: 'prod',
+    baseUrl: 'https://api.example.com',
+    webBaseUrl: '',
+    dryRun: true,
+    skipLocalQuality: true,
+    skipGoLiveSmoke: false,
+    skipDeploySmoke: true,
+    skipRuntimeFreshness: true,
+    skipRollbackGuard: true,
+  });
+
+  assert.equal(summary.localQuality, 'skipped');
+  assert.equal(summary.goLiveSmoke, 'skipped');
 });
 
 test('evaluateEvidenceReadiness marks missing stage evidence as not ready', async () => {

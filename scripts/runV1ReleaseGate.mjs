@@ -215,6 +215,18 @@ export const buildSteps = (options) => {
   return steps;
 };
 
+export const buildExecutionPlanSummary = (options) => ({
+  environment: options.environment,
+  baseUrl: options.baseUrl,
+  webBaseUrl: options.webBaseUrl || '-',
+  dryRun: options.dryRun ? 'true' : 'false',
+  localQuality: options.skipLocalQuality ? 'skipped' : 'enabled',
+  goLiveSmoke: options.skipLocalQuality || options.skipGoLiveSmoke ? 'skipped' : 'enabled',
+  deploySmoke: options.skipDeploySmoke ? 'skipped' : 'enabled',
+  runtimeFreshness: options.skipRuntimeFreshness ? 'skipped' : 'enabled',
+  rollbackGuard: options.skipRollbackGuard ? 'skipped' : 'enabled',
+});
+
 const formatCommand = (command, args) =>
   [command, ...args.map((value) => (/\s/.test(value) ? `"${value}"` : value))].join(' ');
 
@@ -444,16 +456,17 @@ const main = async () => {
     today: options.today,
   });
   const steps = buildSteps(options);
+  const summary = buildExecutionPlanSummary(options);
   console.log('[ops:release:v1:gate] execution plan');
-  console.log(`- environment: ${options.environment}`);
-  console.log(`- baseUrl: ${options.baseUrl}`);
-  console.log(`- webBaseUrl: ${options.webBaseUrl || '-'}`);
-  console.log(`- dryRun: ${options.dryRun ? 'true' : 'false'}`);
-  console.log(`- localQuality: ${options.skipLocalQuality ? 'skipped' : 'enabled'}`);
-  console.log(`- goLiveSmoke: ${options.skipGoLiveSmoke ? 'skipped' : 'enabled'}`);
-  console.log(`- deploySmoke: ${options.skipDeploySmoke ? 'skipped' : 'enabled'}`);
-  console.log(`- runtimeFreshness: ${options.skipRuntimeFreshness ? 'skipped' : 'enabled'}`);
-  console.log(`- rollbackGuard: ${options.skipRollbackGuard ? 'skipped' : 'enabled'}`);
+  console.log(`- environment: ${summary.environment}`);
+  console.log(`- baseUrl: ${summary.baseUrl}`);
+  console.log(`- webBaseUrl: ${summary.webBaseUrl}`);
+  console.log(`- dryRun: ${summary.dryRun}`);
+  console.log(`- localQuality: ${summary.localQuality}`);
+  console.log(`- goLiveSmoke: ${summary.goLiveSmoke}`);
+  console.log(`- deploySmoke: ${summary.deploySmoke}`);
+  console.log(`- runtimeFreshness: ${summary.runtimeFreshness}`);
+  console.log(`- rollbackGuard: ${summary.rollbackGuard}`);
   console.log('[ops:release:v1:gate] evidence');
   for (const row of evidence.evidence) {
     console.log(`- ${row.state.toUpperCase()} ${row.label}${row.path ? ` -> ${row.path}` : ''}`);
