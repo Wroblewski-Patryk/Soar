@@ -1,8 +1,19 @@
 # PROJECT_STATE
 
-Last updated: 2026-05-06
+Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 public target refresh `V1GATE-02` is closed locally on branch
+  `codex/v1-app-function-check`. Production public API/Web smoke is healthy and
+  build-info reports `gitSha=6a7c9889d24a55c870b32aa10cb284ede6db1c59`,
+  matching `origin/main`. Unauthenticated `/dashboard` redirects fail-closed to
+  `/auth/login`, and the post-deploy smoke checklist now names `/auth/login` as
+  the canonical login page. Stage remains blocked (`503` on
+  `stage-api.soar.luckysparrow.ch` and `stage.soar.luckysparrow.ch`; DNS miss on
+  `stage-soar.luckysparrow.ch`). V1 is still not GO because restore drill,
+  stage restoration or waiver, sign-off, protected/manual matrix, and
+  live-money proof rows remain open. Evidence:
+  `docs/planning/v1gate-02-public-target-refresh-task-2026-05-07.md`.
 - 2026-05-06 local main app-function sweep `APPCHECK-01` is closed locally on
   branch `codex/v1-app-function-check` after `codex/v1-pmplc-hardening` was
   fast-forward merged into `main` and pushed at `6a7c9889`. Validation PASS:

@@ -29,6 +29,16 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-07: Closed `V1GATE-02` with
+  `docs/planning/v1gate-02-public-target-refresh-task-2026-05-07.md`.
+  Production public API/Web smoke is healthy and build-info reports
+  `gitSha=6a7c9889d24a55c870b32aa10cb284ede6db1c59`, matching `origin/main`.
+  Unauthenticated `/dashboard` redirects fail-closed to `/auth/login`, and the
+  post-deploy smoke checklist now names `/auth/login` as the canonical login
+  page. Stage remains blocked (`503` on `stage-api.soar.luckysparrow.ch` and
+  `stage.soar.luckysparrow.ch`; DNS miss on `stage-soar.luckysparrow.ch`), so
+  V1 remains NO-GO pending restore drill, stage restoration or waiver, sign-off,
+  protected/manual matrix, and live-money proof rows.
 - 2026-05-06: Closed `APPCHECK-01` with
   `docs/planning/app-function-check-main-sweep-task-2026-05-06.md`. After
   `codex/v1-pmplc-hardening` was fast-forward merged into `main` and pushed at

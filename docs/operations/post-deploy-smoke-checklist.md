@@ -28,7 +28,7 @@ Quickly confirm that the deployed revision is operational for critical user flow
 
 ### 2) Web baseline
 - root page returns `200`.
-- login page loads without runtime error.
+- canonical login page `/auth/login` loads without runtime error.
 - static assets load correctly (no broken chunks).
 - `/api/build-info` exposes the deployed candidate SHA.
 

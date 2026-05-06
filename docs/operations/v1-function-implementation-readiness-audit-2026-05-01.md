@@ -50,6 +50,19 @@ decisions for lower-priority modules.
 | `OPS-STAGE-001` | `ops` | `BLOCKED` | Restore/redeploy stage or record an explicit release-owner waiver for stage rehearsal. |
 | `OPS-GO-NOGO-001` | `ops` | `BLOCKED` | Resolve stale activation evidence, restore drill failure, sign-off gaps, and manual matrix gaps, then rerun the release gate. |
 
+### 2026-05-07 Public Target Refresh
+
+`V1GATE-02` refreshed public target status after the PMPLC hardening branch was
+merged into `main`. Production public API/Web smoke passes and production
+build-info reports `gitSha=6a7c9889d24a55c870b32aa10cb284ede6db1c59`, matching
+`origin/main`. Unauthenticated `/dashboard` still redirects fail-closed to the
+canonical `/auth/login` route. Stage remains unavailable: stage API and
+`stage.soar.luckysparrow.ch` return `503`, while the alternate
+`stage-soar.luckysparrow.ch` host does not resolve. This refresh does not close
+`OPS-RESTORE-001`, `OPS-STAGE-001`, or `OPS-GO-NOGO-001`; it only replaces stale
+public target freshness assumptions with current evidence. Evidence:
+`docs/operations/v1gate-02-public-target-refresh-2026-05-07.md`.
+
 ## P0 Implemented But Not V1-Proven
 
 These functions look implemented from local evidence, but they still need

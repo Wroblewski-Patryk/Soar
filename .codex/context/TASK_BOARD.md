@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-05-06
+Last updated: 2026-05-07
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -19,6 +19,19 @@ Last updated: 2026-05-06
 
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+
+- [x] `V1GATE-02 release(ops): refresh public production and stage target truth after PMPLC merge`
+  - Scope: closed an ARCHITECT-mode public target refresh after the PMPLC
+    hardening merge reached `main`. Production public API/Web smoke is healthy
+    and build-info reports `gitSha=6a7c9889d24a55c870b32aa10cb284ede6db1c59`,
+    matching `origin/main`. Unauthenticated `/dashboard` redirects fail-closed
+    to `/auth/login`, and the post-deploy smoke checklist now names
+    `/auth/login` as the canonical login page. Stage remains blocked (`503` on
+    `stage-api.soar.luckysparrow.ch` and `stage.soar.luckysparrow.ch`; DNS miss
+    on `stage-soar.luckysparrow.ch`). V1 remains NO-GO until restore drill,
+    stage restoration or waiver, sign-off, protected/manual matrix, and
+    live-money proof rows are closed. Evidence:
+    `docs/planning/v1gate-02-public-target-refresh-task-2026-05-07.md`.
 
 - [x] `APPCHECK-01 qa(app): verify main after PMPLC merge with local function sweep`
   - Scope: closed a BUILDER-mode local post-merge app-function sweep on branch
