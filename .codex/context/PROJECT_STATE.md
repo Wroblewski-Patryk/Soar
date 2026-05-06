@@ -3,6 +3,281 @@
 Last updated: 2026-05-06
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-06 stale terminal exchange fee guard slice `PMPLC-32` is closed
+  locally. Exchange order-trade event handling now keeps fee-only refreshes
+  limited to known `OrderFill` rows with missing fee truth, so a stale
+  terminal event with an unknown `exchangeTradeId`, no local fill progress, and
+  finite fee cannot inflate settled `Order.fee`. Validation PASS: pre-fix
+  DB-backed regression failed as expected (`0.13` received vs `0.04`
+  expected), DB-backed exchange-event suite (`13/13`), focused runtime/order
+  suites (`86/86`), API typecheck, repository guardrails, lint, and diff
+  check. Evidence:
+  `docs/planning/position-management-exchange-stale-fee-event-guard-task-2026-05-06.md`.
+- 2026-05-06 exchange fill fee backfill slice `PMPLC-31` is closed locally.
+  Exchange order-trade event handling now treats a later finite exchange fee
+  for an already recorded `exchangeTradeId` as a monotonic fee-truth upgrade,
+  backfilling `Order.fee`, `OrderFill.feeCost`, and unresolved lifecycle
+  `Trade.fee` without duplicating fill/trade rows or reapplying terminal
+  lifecycle. Validation PASS: focused DB-backed regression, DB-backed
+  exchange-event suite (`12/12`), focused runtime/order suites (`85/85`), API
+  typecheck, repository guardrails, lint, and diff check. Evidence:
+  `docs/planning/position-management-exchange-fill-fee-backfill-task-2026-05-06.md`.
+- 2026-05-06 exchange fill fee aggregation slice `PMPLC-30` is closed
+  locally. Exchange order-trade event handling now aggregates accepted
+  per-fill `OrderFill.feeCost` values across partial and final fills, adding
+  the current event fee only when its `exchangeTradeId` is not already
+  recorded, so `Order.fee` and lifecycle `Trade.fee` represent total exchange
+  fee truth instead of the latest fill fee. Validation PASS: pre-fix DB-backed
+  regression failed as expected (`0.02` received vs `0.03` expected),
+  DB-backed exchange-event suite (`11/11`), focused runtime/order suites
+  (`84/84`), API typecheck, repository guardrails, lint, and diff check.
+  Evidence:
+  `docs/planning/position-management-exchange-fill-fee-aggregation-task-2026-05-06.md`.
+- 2026-05-06 exchange fee pending recovery slice `PMPLC-29` is closed
+  locally. Exchange order-trade event handling now restores `feePending=true`
+  for filled LIVE orders and generated lifecycle trades when fee truth remains
+  unresolved (`feeSource=ESTIMATED`, no finite fee, and no finite event fee),
+  even if the local row previously drifted to `feePending=false`. Validation
+  PASS: pre-fix DB-backed regression failed as expected, DB-backed
+  exchange-event suite (`10/10`), focused runtime/order suites (`83/83`), API
+  typecheck, repository guardrails, lint, and diff check. Evidence:
+  `docs/planning/position-management-exchange-fee-pending-recovery-task-2026-05-06.md`.
+- 2026-05-06 exchange fee pending truth slice `PMPLC-28` is closed locally.
+  Exchange order-trade event handling now keeps `feePending=true` on filled
+  LIVE orders and generated lifecycle trades when the exchange event confirms
+  fill quantity but provides no finite fee truth, preserving operator-visible
+  reconciliation state instead of hiding missing fees as settled. Validation
+  PASS: pre-fix DB-backed regression failed as expected, DB-backed
+  exchange-event suite (`10/10`), focused runtime/order suites (`83/83`), API
+  typecheck, repository guardrails, lint, and diff check. Evidence:
+  `docs/planning/position-management-exchange-fee-pending-truth-task-2026-05-06.md`.
+- 2026-05-06 exchange recordable fill details slice `PMPLC-27` is closed
+  locally. Exchange order-trade event handling now resolves recordable fill
+  quantity and proportional fee through one private decision helper, keeping
+  order-fill quantity and fee parity centralized without behavior changes.
+  Validation PASS: local Postgres availability check, DB-backed exchange-event
+  suite (`9/9`), focused runtime/order suites (`82/82`), API typecheck,
+  repository guardrails, lint, and diff check. Evidence:
+  `docs/planning/position-management-exchange-recordable-fill-details-task-2026-05-06.md`.
+- 2026-05-06 exchange fill fee cap slice `PMPLC-26` is closed locally.
+  Exchange order-trade event handling now scales finite event fee by accepted
+  local last-fill quantity when exchange `lastFilledQuantity` is capped, so
+  order, order-fill, and trade fee truth stays proportional to accepted local
+  quantity under over-reported fills. Validation PASS: DB-backed
+  exchange-event suite (`9/9`), focused runtime/order suites (`82/82`), API
+  typecheck, repository guardrails, lint, and diff check. Evidence:
+  `docs/planning/position-management-exchange-fill-fee-cap-task-2026-05-06.md`.
+- 2026-05-06 exchange order-fill row quantity cap slice `PMPLC-25` is closed
+  locally. Exchange order-trade event handling now records `OrderFill.quantity`
+  from accepted local fill progress instead of raw exchange `lastFilledQuantity`,
+  so over-reported last-fill events cannot inflate child fill rows above the
+  locally capped order, trade, or position quantity. Validation PASS:
+  DB-backed exchange-event suite (`9/9`), focused runtime/order suites
+  (`82/82`), API typecheck, repository guardrails, lint, and diff check.
+  Evidence:
+  `docs/planning/position-management-exchange-orderfill-quantity-cap-task-2026-05-06.md`.
+- 2026-05-06 exchange fill quantity normalizer slice `PMPLC-24` is closed
+  locally. Exchange fill progress now uses one private quantity normalizer for
+  both existing local fill progress and incoming exchange cumulative fill
+  quantity, keeping local order-quantity caps centralized without behavior
+  changes. Validation PASS: helper plus DB-backed exchange-event suite
+  (`22/22`), focused runtime/order suites (`81/81`), API typecheck, repository
+  guardrails, lint, and diff check. Evidence:
+  `docs/planning/position-management-exchange-fill-quantity-normalizer-task-2026-05-06.md`.
+- 2026-05-06 exchange existing fill cap slice `PMPLC-23` is closed locally.
+  Exchange fill progress now caps both incoming cumulative fill quantity and
+  previously persisted local filled quantity to the local order quantity when
+  requested quantity truth is available, preventing inherited over-reported
+  fill progress from inflating lifecycle truth. Validation PASS: no-DB helper
+  regression (`14/14`), DB-backed exchange-event suite (`8/8`), focused
+  runtime/order suites (`81/81`), API typecheck, repository guardrails, lint,
+  and diff check. Evidence:
+  `docs/planning/position-management-exchange-existing-fill-cap-task-2026-05-06.md`.
+- 2026-05-06 exchange-event known underfill guard slice `PMPLC-22` is closed
+  locally. Exchange order-trade event reconciliation now passes local requested
+  order quantity into the fill-progress helper, caps over-reported cumulative
+  fill quantity to local order truth, and keeps known below-request `FILLED`
+  events as `PARTIALLY_FILLED` without applying filled lifecycle. Validation
+  PASS: no-DB helper regression (`13/13`), focused runtime/order suites
+  (`72/72`), API typecheck, repository guardrails, lint, and diff check.
+  Evidence:
+  `docs/planning/position-management-exchange-event-underfilled-entry-task-2026-05-06.md`.
+- 2026-05-06 exchange persisted status helper refactor slice `PMPLC-21` is
+  closed locally. Exchange fill progress now resolves persisted order status
+  through an explicit pure decision helper instead of nested inline branching,
+  keeping terminal-filled, malformed-filled, stale-open, partial-progress, and
+  terminal-cancel semantics visible and no-DB testable without behavior
+  changes. Validation PASS: no-DB helper regression (`11/11`), focused
+  runtime/order suites (`70/70`), API typecheck, repository guardrails, lint,
+  and diff check. Evidence:
+  `docs/planning/position-management-exchange-fill-status-helper-refactor-task-2026-05-06.md`.
+- 2026-05-06 exchange `FILLED` without quantity fail-closed slice `PMPLC-20`
+  is closed locally. Exchange fill progress now refuses to terminalize
+  non-terminal local orders when a `FILLED` event arrives without positive
+  cumulative fill quantity, preserving `OPEN` or `PARTIALLY_FILLED` truth and
+  skipping lifecycle/detail refresh until quantity truth is present. Validation
+  PASS: no-DB helper regression (`10/10`), focused runtime/order suites
+  (`69/69`), API typecheck, repository guardrails, lint, and diff check.
+  Evidence:
+  `docs/planning/position-management-exchange-filled-without-quantity-task-2026-05-06.md`.
+- 2026-05-06 exchange partial status monotonicity slice `PMPLC-19` is closed
+  locally. Exchange fill progress now preserves `PARTIALLY_FILLED` when stale
+  `OPEN` events arrive after local partial progress, preventing known partial
+  execution from being hidden as a plain open order. Validation PASS: no-DB
+  helper regression (`8/8`), focused runtime/order suites (`67/67`), API
+  typecheck, repository guardrails, lint, and diff check. Evidence:
+  `docs/planning/position-management-exchange-partial-status-monotonicity-task-2026-05-06.md`.
+- 2026-05-06 exchange fill helper boundary slice `PMPLC-18` is closed locally.
+  Pure exchange close-fill completeness and fill-progress/idempotency decisions
+  now live in `orders.exchangeEvents.helpers.ts`, while the DB-backed exchange
+  event service imports them. The no-DB helper regression now imports only the
+  pure helper module, reducing coupling to Prisma/runtime orchestration without
+  behavior changes. Validation PASS: no-DB helper regression (`6/6`), focused
+  runtime/order suites (`65/65`), API typecheck, repository guardrails, lint,
+  and diff check. Evidence:
+  `docs/planning/position-management-exchange-fill-helper-boundary-task-2026-05-06.md`.
+- 2026-05-06 terminal exchange fill-detail idempotency slice `PMPLC-17` is
+  closed locally. Exchange order-trade updates now refresh terminal fill
+  details only before completion or when cumulative fill progress advances, so
+  stale or duplicate events for already-`FILLED` orders cannot rewrite average
+  fill price, filled timestamp, fee, fee currency, or exchange trade id while
+  still preserving monotonic fill quantity. Validation PASS: no-DB exchange
+  fill-progress helper regression (`6/6`), focused runtime/order suites
+  (`65/65`), API typecheck, repository guardrails, lint, and diff check.
+  DB-backed exchange-event lifecycle suites remain pending because local
+  Postgres at `localhost:5432` is unavailable. Evidence:
+  `docs/planning/position-management-exchange-terminal-fill-details-idempotency-task-2026-05-06.md`.
+- 2026-05-06 exchange filled-event idempotency slice `PMPLC-16` is closed
+  locally. Exchange order-trade fill progress now stays monotonic and
+  already-`FILLED` local orders do not reapply position lifecycle when a
+  duplicate or stale exchange `FILLED` event arrives, preventing double-add or
+  double-close exposure drift. Validation PASS: no-DB exchange fill-progress
+  helper regression (`5/5`), focused runtime/order suites (`64/64`), API
+  typecheck, repository guardrails, lint, and diff check. DB-backed
+  exchange-event lifecycle suites remain pending because local Postgres at
+  `localhost:5432` is unavailable. Evidence:
+  `docs/planning/position-management-exchange-filled-event-idempotency-task-2026-05-06.md`.
+- 2026-05-06 LIVE entry lifecycle gate regression slice `PMPLC-15` is closed
+  locally. Open-order persistence and immediate lifecycle decisions now share a
+  pure helper that keeps underfilled LIVE entry orders `PARTIALLY_FILLED`,
+  persists the confirmed exchange fill quantity, and blocks immediate position
+  lifecycle until a complete fill is resolved, while preserving PAPER and
+  no-fill-row LIVE compatibility. Validation PASS: no-DB lifecycle gate
+  regression (`5/5`), focused runtime/order suites (`61/61`), API typecheck,
+  repository guardrails, lint, and diff check. DB-backed order lifecycle suites
+  remain pending because local Postgres at `localhost:5432` is unavailable.
+  Evidence:
+  `docs/planning/position-management-live-entry-lifecycle-gate-task-2026-05-06.md`.
+- 2026-05-06 LIVE entry underfill safety slice `PMPLC-14` is closed locally.
+  LIVE order creation now derives persisted status and filled quantity from
+  exchange fill rows when available, persists below-request `FILLED` responses
+  as `PARTIALLY_FILLED`, and skips immediate position lifecycle until the fill
+  is complete, preventing local position quantity inflation. Validation PASS:
+  no-DB live fill resolver and focused runtime/order suites (`58/58`), API
+  typecheck, repository guardrails, lint, and diff check. DB-backed order
+  lifecycle suites remain pending because local Postgres at `localhost:5432`
+  is unavailable. Evidence:
+  `docs/planning/position-management-live-entry-underfill-task-2026-05-06.md`.
+- 2026-05-06 exchange-event underfilled close safety slice `PMPLC-13` is
+  closed locally. Exchange order-trade close reconciliation now returns before
+  full local close settlement when cumulative close fill quantity is below the
+  local open position quantity, preventing local `CLOSED` state and close trade
+  creation while residual exposure may remain. Validation PASS: no-DB exchange
+  helper and focused runtime suites (`56/56`), API typecheck, repository
+  guardrails, lint, and diff check. Full DB-backed exchange-events suite remains
+  pending because local Postgres at `localhost:5432` is unavailable. Evidence:
+  `docs/planning/position-management-exchange-event-underfilled-close-task-2026-05-06.md`.
+- 2026-05-06 underfilled runtime close safety slice `PMPLC-12` is closed
+  locally. Runtime close orchestration now keeps an underfilled close
+  confirmation in submitted/waiting state when the reported filled quantity is
+  below local open position quantity, preventing local `CLOSED` state and close
+  trade creation while residual exposure may remain. Validation PASS: focused
+  runtime orchestrator suite (`18/18`), focused runtime orchestrator/automation
+  suites (`54/54`), API typecheck, repository guardrails, lint, and diff
+  check. DB-backed exchange-events suite was blocked by unavailable local
+  Postgres at `localhost:5432`. Evidence:
+  `docs/planning/position-management-underfilled-close-fail-closed-task-2026-05-06.md`.
+- 2026-05-06 LIVE free-balance cap slice `PMPLC-11` is closed locally. Runtime
+  capital now preserves exchange account and free balances separately, keeps
+  allocation/reference balance based on account total, caps LIVE free cash by
+  exchange free balance when present, and records wallet snapshots with the
+  actual free balance. Validation PASS: focused runtime capital suite
+  (`18/18`), focused runtime DCA/position suites (`76/76`), API typecheck,
+  repository guardrails, lint, and diff check. Evidence:
+  `docs/planning/position-management-live-free-balance-cap-task-2026-05-06.md`.
+- 2026-05-06 tracked replay balance reserve slice `PMPLC-10` is closed
+  locally. Single-symbol replay now reserves entry margin, accumulates DCA
+  margin in open position state, returns reserved margin during close/final
+  settlement, and checks DCA affordability against remaining free cash.
+  Validation PASS: focused backtest replay suite (`29/29`), focused
+  backtest/runtime DCA suites (`61/61`), API typecheck, repository guardrails,
+  lint, and diff check. Evidence:
+  `docs/planning/position-management-replay-tracked-balance-reserve-task-2026-05-06.md`.
+- 2026-05-06 DCA fill-price reserve accounting slice `PMPLC-09` is closed
+  locally. Backtest replay now uses the selected DCA fill price for DCA event
+  price, affordability checks, and interleaved portfolio reserved-margin
+  accounting, preventing false cash exhaustion after wick-priced DCA fills.
+  Validation PASS: focused contract remediation suite (`10/10`), focused
+  backtest/runtime DCA suites (`60/60`), API typecheck, repository guardrails,
+  lint, and diff check. Evidence:
+  `docs/planning/position-management-portfolio-dca-fill-margin-task-2026-05-06.md`.
+- 2026-05-06 portfolio final margin release slice `PMPLC-08` is closed
+  locally. Interleaved portfolio simulation now removes positions closed in
+  the final-candle loop from `openPositions`, so returned margin is not
+  counted again in `finalBalance`. Validation PASS: focused contract
+  remediation suite (`9/9`), focused backtest/runtime DCA suites (`59/59`),
+  API typecheck, repository guardrails, lint, and diff check. Evidence:
+  `docs/planning/position-management-portfolio-final-margin-release-task-2026-05-06.md`.
+- 2026-05-06 selected DCA funds parity slice `PMPLC-07` is closed locally.
+  Backtest replay and interleaved portfolio simulation now estimate DCA funds
+  from the core-selected `dcaAddedQuantity` instead of guessing the multiplier
+  from aggregate add count, preventing mixed-lane selected-level affordability
+  drift. Validation PASS: focused backtest replay suite (`28/28`), focused
+  backtest/runtime DCA suites (`50/50`), API typecheck, repository guardrails,
+  lint, and diff check. Evidence:
+  `docs/planning/position-management-backtest-selected-dca-funds-task-2026-05-06.md`.
+- 2026-05-06 backtest DCA funds parity slice `PMPLC-06` is closed locally.
+  Single-symbol replay now estimates the next DCA add margin against tracked
+  wallet balance before mutating position state, skips unaffordable DCA events,
+  and still releases close protection when DCA is funds-exhausted. Validation
+  PASS: focused backtest replay suite (`27/27`), focused backtest/runtime DCA
+  suites (`49/49`), API typecheck, repository guardrails, lint, and diff
+  check. Evidence:
+  `docs/planning/position-management-backtest-dca-funds-parity-task-2026-05-06.md`.
+- 2026-05-06 backtest mixed DCA lane parity slice `PMPLC-05` is closed
+  locally. Backtest replay now chooses DCA probe prices from the candle extreme
+  that matches the pending DCA lane direction, carries
+  `executedDcaLevelIndices` across replay state, and interleaved portfolio
+  simulation reuses the same resolver so adverse and favorable DCA lanes stay
+  aligned with runtime. Validation PASS: focused backtest replay suite
+  (`26/26`), focused backtest/runtime DCA suites (`48/48`), API typecheck,
+  repository guardrails, lint, and diff check. Evidence:
+  `docs/planning/position-management-backtest-mixed-dca-parity-task-2026-05-06.md`.
+- 2026-05-06 LIVE close order contract slice `PMPLC-04` is closed locally.
+  Runtime close coverage now explicitly locks the current LIVE close payload as
+  a runtime-owned reduce-only `MARKET` order and asserts no hidden `stopPrice`,
+  `stopLoss`, or `takeProfit` fields are sent before the future exchange-backed
+  protection-order vertical slice exists. Validation PASS: focused runtime
+  orchestrator suite (`17/17`), API typecheck, repository guardrails, lint, and
+  diff check. Evidence:
+  `docs/planning/position-management-live-close-order-contract-task-2026-05-06.md`.
+- 2026-05-06 basic TP/SL DCA reachability slice `PMPLC-03` is closed
+  locally. Strategy create/update/import validation now rejects basic-mode
+  configs where positive DCA levels sit above hard `TP` or negative DCA levels
+  sit below hard `SL`, and the strategy form blocks the same invalid payload
+  with localized validation feedback. Validation PASS: focused API strategy
+  config validation suite (`5/5`), focused web strategy validation/form suite
+  (`12/12`), API/web typecheck, route-reachable i18n audit, repository
+  guardrails, lint, and diff review. Evidence:
+  `docs/planning/position-management-basic-dca-reachability-task-2026-05-06.md`.
+- 2026-05-06 mixed DCA lane runtime slice `PMPLC-02` is closed locally.
+  Runtime position-management state now records executed DCA level indices so
+  positive and negative DCA lanes can execute independently while `currentAdds`
+  remains the compatibility count. Validation PASS: focused position
+  management suite (`22/22`), runtime automation suite (`36/36`), runtime
+  serialization suite (`8/8`), API typecheck, repository guardrails, lint, and
+  diff review. Evidence:
+  `docs/planning/position-management-dca-lane-state-task-2026-05-06.md`.
 - 2026-05-06 PnL-based position management architecture contract
   `PMPLC-01` is closed locally. Added the canonical DCA/TP/SL/TTP/TSL
   lifecycle contract covering positive and negative DCA lanes, DCA-first

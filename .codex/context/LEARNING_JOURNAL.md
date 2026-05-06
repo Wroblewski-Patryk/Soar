@@ -52,6 +52,29 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 
 ## Entries
 
+### 2026-05-06 - Verify local Postgres before declaring DB-backed suites blocked
+- Context: continued PMPLC exchange/order lifecycle hardening on a local Docker
+  development stack.
+- Symptom: earlier PMPLC task reports treated DB-backed exchange-event suites
+  as blocked by unavailable Postgres, but a later direct check showed Docker
+  Postgres was running and `localhost:5432` accepted connections.
+- Root cause: DB availability was assumed from previous iterations instead of
+  being rechecked immediately before deciding the validation scope.
+- Guardrail: before marking a DB-backed validation blocked, check the current
+  local port and Docker container state in the same task, then run the DB suite
+  when the service is available.
+- Preferred pattern:
+```powershell
+Test-NetConnection -ComputerName localhost -Port 5432
+docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Ports}}\t{{.Status}}"
+pnpm --filter api exec vitest run <db-backed-test-file> --run
+```
+- Avoid: carrying forward a stale "Postgres unavailable" assumption without a
+  fresh connectivity check.
+- Evidence: 2026-05-06 `PMPLC-23` found `cryptosparrow-postgres-1` running on
+  `0.0.0.0:5432->5432/tcp`; `orders.exchangeEvents.service.test.ts` then
+  passed (`8/8`) and the focused runtime/order pack passed (`81/81`).
+
 ### 2026-05-03 - DB-backed e2e packs with global cleanup must run sequentially
 - Context: continued POSDRIFT runtime/order validation on a shared local test
   database.
@@ -1372,17 +1395,19 @@ if ($LASTEXITCODE -eq 0) { pnpm -r build }
 
 ### 2026-04-15 - ripgrep access denied in this workspace
 - Context: repository exploration on Windows PowerShell in Codex desktop environment.
-- Symptom: `rg --files <path>` fails with `Program 'rg.exe' failed to run: Access denied`.
-- Root cause: environment-level execution restriction for `rg.exe` in this session.
-- Guardrail: fallback to PowerShell-native discovery commands when `rg` is unavailable or blocked.
+- Symptom: `rg --files <path>` fails with `Program 'rg.exe' failed to run: Access denied`; repeated retries waste iteration time.
+- Root cause: environment-level execution restriction for the bundled `rg.exe` in this Codex desktop session.
+- Guardrail: in this repository session, start with PowerShell-native discovery/search commands instead of `rg`; only retry `rg` after explicitly verifying the executable is usable in the current shell.
 - Preferred pattern:
 ```powershell
 Get-ChildItem -Recurse -File <path> | ForEach-Object { $_.FullName }
+Get-ChildItem -Recurse -File <path> | Select-String -Pattern '<pattern>'
 ```
-- Avoid: retry loops with `rg` after first deterministic `Access denied` failure.
+- Avoid: retry loops with `rg` after first deterministic `Access denied` failure, or using `rg` as the default search tool in this known-blocked desktop environment.
 - Evidence:
   - Observed on 2026-04-15 while inspecting `apps/web/src/features/*` directories in this repository.
   - Reconfirmed on 2026-04-16 while triaging `apps/api/src/modules/engine/*` and `apps/api/src/modules/market-stream/*`; `Select-String` fallback worked without retries.
+  - Reconfirmed by operator feedback on 2026-05-06 after the same `rg.exe` access-denied pattern recurred across multiple iterations; `Get-Command rg.exe` resolves to the bundled Codex desktop executable at `C:\Program Files\WindowsApps\OpenAI.Codex_26.429.8261.0_x64__2p2nqsd0c76g0\app\resources\rg.exe`.
 
 ### 2026-04-15 - PowerShell 5.1 UTC timestamp compatibility
 - Context: generating timestamped evidence artifact names in Windows PowerShell shell scripts.
