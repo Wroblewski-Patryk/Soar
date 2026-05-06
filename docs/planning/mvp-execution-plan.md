@@ -29,6 +29,15 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-06: Closed `PMPLC-33` with
+  `docs/planning/position-management-exchange-fee-refresh-helper-task-2026-05-06.md`.
+  Exchange fee refresh/backfill decisions now live in the pure
+  `orders.exchangeEvents.helpers` boundary with no-DB coverage for normal
+  refresh, known-fill missing-fee backfill, stale unknown-fill blocking, and
+  already-settled fill fee cases, while DB-backed PMPLC-31/32 behavior remains
+  unchanged. Validation PASS: helper suite (`18/18`), DB-backed
+  exchange-event suite (`13/13`), focused runtime/order suites (`90/90`), API
+  typecheck, repository guardrails, lint, and diff check.
 - 2026-05-06: Closed `PMPLC-32` with
   `docs/planning/position-management-exchange-stale-fee-event-guard-task-2026-05-06.md`.
   Exchange order-trade event handling now keeps fee-only refreshes limited to

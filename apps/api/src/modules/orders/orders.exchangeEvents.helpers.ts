@@ -111,3 +111,21 @@ export const resolveExchangeOrderFillProgress = (input: {
     shouldRefreshTerminalFillDetails,
   };
 };
+
+export const resolveExchangeFeeRefreshDecision = (input: {
+  shouldRefreshTerminalFillDetails: boolean;
+  hasRecordableEventFee: boolean;
+  hasExistingRecordableEventFill: boolean;
+  existingRecordableEventFillHasFee: boolean;
+}) => {
+  const shouldBackfillExistingFillFee =
+    input.hasRecordableEventFee &&
+    input.hasExistingRecordableEventFill &&
+    !input.existingRecordableEventFillHasFee;
+
+  return {
+    shouldRefreshFeeDetails:
+      input.shouldRefreshTerminalFillDetails || shouldBackfillExistingFillFee,
+    shouldBackfillExistingFillFee,
+  };
+};

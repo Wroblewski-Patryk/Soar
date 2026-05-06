@@ -16,6 +16,7 @@ import { runtimeExecutionDedupeService } from '../engine/runtimeExecutionDedupe.
 import { runtimePositionStateStore } from '../engine/runtimePositionState.store';
 import {
   isExchangeCloseFillComplete,
+  resolveExchangeFeeRefreshDecision,
   resolveExchangeOrderFillProgress,
 } from './orders.exchangeEvents.helpers';
 
@@ -414,11 +415,12 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
     Number.isFinite(existingOrder.fee);
   const shouldKeepFeePending = !hasRecordableEventFee && !hasSettledExchangeFee;
   const fee = aggregateRecordableEventFee ?? existingOrder.fee;
-  const shouldRefreshFeeDetails =
-    fillProgress.shouldRefreshTerminalFillDetails ||
-    (hasRecordableEventFee &&
-      existingRecordableEventFill != null &&
-      !existingRecordableEventFillHasFee);
+  const feeRefreshDecision = resolveExchangeFeeRefreshDecision({
+    shouldRefreshTerminalFillDetails: fillProgress.shouldRefreshTerminalFillDetails,
+    hasRecordableEventFee,
+    hasExistingRecordableEventFill: existingRecordableEventFill != null,
+    existingRecordableEventFillHasFee,
+  });
 
   let updatedOrder = await prisma.order.update({
     where: { id: existingOrder.id },
@@ -435,16 +437,16 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
       exchangeTradeId: fillProgress.shouldRefreshTerminalFillDetails
         ? input.event.exchangeTradeId ?? existingOrder.exchangeTradeId
         : existingOrder.exchangeTradeId,
-      fee: shouldRefreshFeeDetails ? fee : existingOrder.fee,
+      fee: feeRefreshDecision.shouldRefreshFeeDetails ? fee : existingOrder.fee,
       feeSource:
-        shouldRefreshFeeDetails && hasRecordableEventFee
+        feeRefreshDecision.shouldRefreshFeeDetails && hasRecordableEventFee
           ? 'EXCHANGE_FILL'
           : existingOrder.feeSource,
       feePending:
         fillProgress.persistedStatus === 'FILLED' && hasRecordableEventFee
           ? false
           : shouldKeepFeePending || existingOrder.feePending,
-      feeCurrency: shouldRefreshFeeDetails
+      feeCurrency: feeRefreshDecision.shouldRefreshFeeDetails
         ? input.event.feeCurrency ?? existingOrder.feeCurrency
         : existingOrder.feeCurrency,
     },
@@ -478,8 +480,7 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
 
   if (
     existingRecordableEventFill &&
-    !existingRecordableEventFillHasFee &&
-    hasRecordableEventFee
+    feeRefreshDecision.shouldBackfillExistingFillFee
   ) {
     await prisma.orderFill.update({
       where: { id: existingRecordableEventFill.id },

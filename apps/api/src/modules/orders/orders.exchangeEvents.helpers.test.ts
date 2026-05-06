@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   isExchangeCloseFillComplete,
+  resolveExchangeFeeRefreshDecision,
   resolveExchangeOrderFillProgress,
 } from './orders.exchangeEvents.helpers';
 
@@ -217,6 +218,64 @@ describe('resolveExchangeOrderFillProgress', () => {
       persistedStatus: 'CANCELED',
       shouldApplyFilledLifecycle: false,
       shouldRefreshTerminalFillDetails: true,
+    });
+  });
+});
+
+describe('resolveExchangeFeeRefreshDecision', () => {
+  it('refreshes fee details when terminal fill details are allowed to refresh', () => {
+    expect(
+      resolveExchangeFeeRefreshDecision({
+        shouldRefreshTerminalFillDetails: true,
+        hasRecordableEventFee: true,
+        hasExistingRecordableEventFill: false,
+        existingRecordableEventFillHasFee: false,
+      }),
+    ).toEqual({
+      shouldRefreshFeeDetails: true,
+      shouldBackfillExistingFillFee: false,
+    });
+  });
+
+  it('allows fee-only backfill for a known fill that still has no fee', () => {
+    expect(
+      resolveExchangeFeeRefreshDecision({
+        shouldRefreshTerminalFillDetails: false,
+        hasRecordableEventFee: true,
+        hasExistingRecordableEventFill: true,
+        existingRecordableEventFillHasFee: false,
+      }),
+    ).toEqual({
+      shouldRefreshFeeDetails: true,
+      shouldBackfillExistingFillFee: true,
+    });
+  });
+
+  it('blocks fee-only refresh for stale unknown fills', () => {
+    expect(
+      resolveExchangeFeeRefreshDecision({
+        shouldRefreshTerminalFillDetails: false,
+        hasRecordableEventFee: true,
+        hasExistingRecordableEventFill: false,
+        existingRecordableEventFillHasFee: false,
+      }),
+    ).toEqual({
+      shouldRefreshFeeDetails: false,
+      shouldBackfillExistingFillFee: false,
+    });
+  });
+
+  it('does not backfill fee when the known fill already has fee truth', () => {
+    expect(
+      resolveExchangeFeeRefreshDecision({
+        shouldRefreshTerminalFillDetails: false,
+        hasRecordableEventFee: true,
+        hasExistingRecordableEventFill: true,
+        existingRecordableEventFillHasFee: true,
+      }),
+    ).toEqual({
+      shouldRefreshFeeDetails: false,
+      shouldBackfillExistingFillFee: false,
     });
   });
 });

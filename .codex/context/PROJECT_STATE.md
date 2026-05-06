@@ -3,6 +3,15 @@
 Last updated: 2026-05-06
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-06 exchange fee refresh helper slice `PMPLC-33` is closed locally.
+  Exchange fee refresh/backfill decisions now live in the pure
+  `orders.exchangeEvents.helpers` boundary with no-DB coverage for normal
+  refresh, known-fill missing-fee backfill, stale unknown-fill blocking, and
+  already-settled fill fee cases, while DB-backed PMPLC-31/32 behavior remains
+  unchanged. Validation PASS: helper suite (`18/18`), DB-backed exchange-event
+  suite (`13/13`), focused runtime/order suites (`90/90`), API typecheck,
+  repository guardrails, lint, and diff check. Evidence:
+  `docs/planning/position-management-exchange-fee-refresh-helper-task-2026-05-06.md`.
 - 2026-05-06 stale terminal exchange fee guard slice `PMPLC-32` is closed
   locally. Exchange order-trade event handling now keeps fee-only refreshes
   limited to known `OrderFill` rows with missing fee truth, so a stale
