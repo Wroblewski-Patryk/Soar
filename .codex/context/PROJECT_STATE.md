@@ -3,6 +3,16 @@
 Last updated: 2026-05-06
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-06 final exchange fee pending slice `PMPLC-39` is closed locally.
+  Exchange-event reconciliation now treats an existing exact exchange fee as
+  final settled truth only when the order was already terminal `FILLED` before
+  the incoming event, so a terminal fill without fee after a partial exact fee
+  cannot falsely clear reconciliation pending. Validation PASS: pre-fix
+  DB-backed regression failed as expected (`feePending=false` received vs
+  `true` expected), helper suite (`24/24`), DB-backed exchange-event suite
+  (`18/18`), focused runtime/order suites (`101/101`), API typecheck,
+  repository guardrails, lint, and diff check. Evidence:
+  `docs/planning/position-management-exchange-final-fee-pending-task-2026-05-06.md`.
 - 2026-05-06 partial exchange fee pending slice `PMPLC-38` is closed locally.
   Exchange fee-pending decisions now require terminal `FILLED` status before
   accepted or settled exact exchange fee truth clears final reconciliation

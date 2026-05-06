@@ -75,7 +75,7 @@ pnpm --filter api exec vitest run <db-backed-test-file> --run
   `0.0.0.0:5432->5432/tcp`; `orders.exchangeEvents.service.test.ts` then
   passed (`8/8`) and the focused runtime/order pack passed (`81/81`).
 
-### 2026-05-03 - DB-backed e2e packs with global cleanup must run sequentially
+### 2026-05-03 - DB-backed API packs with global cleanup must run sequentially
 - Context: continued POSDRIFT runtime/order validation on a shared local test
   database.
 - Symptom: focused e2e packs passed in isolation, but parallel execution
@@ -84,14 +84,14 @@ pnpm --filter api exec vitest run <db-backed-test-file> --run
 - Root cause: several API e2e files use broad `deleteMany()` cleanup in
   `beforeEach`; running those files in parallel lets one suite delete global
   rows while another suite is still executing.
-- Guardrail: DB-backed API e2e packs that reset shared global tables must be
+- Guardrail: DB-backed API packs that reset shared global tables must be
   run in one Vitest invocation with `--sequence.concurrent=false` when used as
   closure evidence.
 - Preferred pattern:
 ```powershell
 pnpm --filter api exec vitest run <db-e2e-files> --run --sequence.concurrent=false
 ```
-- Avoid: launching multiple DB-backed e2e `vitest run` commands in parallel
+- Avoid: launching multiple DB-backed `vitest run` commands in parallel
   when the suites share global cleanup tables.
 - Evidence: 2026-05-03 POSDRIFT validation produced FK/missing-row false
   failures in parallel, then the same six-file pack passed sequentially
@@ -100,6 +100,10 @@ pnpm --filter api exec vitest run <db-e2e-files> --run --sequence.concurrent=fal
   `bots.runtime-scope.e2e.test.ts` and `bots.monitoring-aggregate.e2e.test.ts`
   in parallel produced FK, 401/404, and empty aggregate false failures; the
   same suites passed when rerun one after another (`12/12`, then `10/10`).
+  Reconfirmed during `PMPLC-39`: running a focused
+  `orders.exchangeEvents.service.test.ts` case in parallel with the same full
+  DB-backed file produced a false empty-fill assertion; the focused case and
+  the full file both passed when rerun sequentially.
 
 ### 2026-05-03 - Runtime position reads must inherit canonical venue and strategy context
 - Context: continued operator audit of LIVE/PAPER position management and

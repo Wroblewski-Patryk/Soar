@@ -417,6 +417,7 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
     existingRecordableEventFillHasFee,
   });
   const hasSettledExchangeFee =
+    existingOrder.status === 'FILLED' &&
     existingOrder.feeSource === 'EXCHANGE_FILL' &&
     typeof existingOrder.fee === 'number' &&
     Number.isFinite(existingOrder.fee);
