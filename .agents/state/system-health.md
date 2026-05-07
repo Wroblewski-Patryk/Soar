@@ -22,6 +22,11 @@ Last updated: 2026-05-07
 
 ## Latest Validation
 
+- `LIVEIMPORT-03-COLLECTOR-2026-05-07` ops collector validation PASS:
+  `ops:liveimport:readback -- --help`, dry-run with expected production SHA,
+  and missing-auth fail-closed path all behaved as expected. The fail-closed
+  run did not access protected API without credentials and did not print
+  secret values.
 - `PROD-PROMOTE-PREQ-2026-05-07` production promotion prerequisite sweep:
   remote `main` check PASS for `1f816362c93e117e47cfe52a35e0fec93bd0b37d`.
   First public web build-info wait timed out on stale
@@ -71,6 +76,7 @@ runtime contracts are changed.
 
 ## Deployment Impact
 
-None from this state sync. Production is fresh for
+None until the collector commit is pushed; the added script is ops tooling and
+does not change runtime/API behavior. Production is fresh for
 `1f816362c93e117e47cfe52a35e0fec93bd0b37d`; the next executable release task
 requires authenticated read-only production evidence.

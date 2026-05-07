@@ -2,6 +2,21 @@
 
 Last updated: 2026-05-07
 
+## 2026-05-07 LIVEIMPORT-03 Readback Collector
+- 2026-05-07 `LIVEIMPORT-03-COLLECTOR-2026-05-07` added
+  `ops:liveimport:readback`, a read-only, redacted production runtime evidence
+  collector for the active `LIVEIMPORT-03` blocker. It reuses existing ops auth
+  helpers, can verify production web build-info against an expected SHA,
+  discovers LIVE bots and latest RUNNING runtime sessions or accepts explicit
+  bot/session ids, and reads protected runtime positions for
+  `ETHUSDT,DOGEUSDT` by default. The output redacts ids and records only the
+  required runtime truth: symbol visibility, management/ownership state,
+  sync/continuity/takeover state, strategy/TTP/DCA context presence, and
+  actionable state. Validation PASS: help, dry-run, and missing-auth
+  fail-closed paths. Actual `LIVEIMPORT-03` evidence remains blocked until
+  production read-only auth is available. Evidence:
+  `docs/planning/liveimport-03-readback-collector-task-2026-05-07.md`.
+
 ## 2026-05-07 Production Promotion Prerequisite Sweep
 - 2026-05-07 `PROD-PROMOTE-PREQ-2026-05-07` captured the post-push production
   blocker. Local `main` and `origin/main` are synchronized at

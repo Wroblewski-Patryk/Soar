@@ -7,6 +7,19 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `LIVEIMPORT-03-COLLECTOR-2026-05-07 release(ops): add redacted live-import readback collector`
+  - 2026-05-07: Added `ops:liveimport:readback`, a read-only production
+    evidence collector that reuses existing ops auth helpers, optionally checks
+    web build-info against the expected SHA, discovers LIVE bots and the latest
+    RUNNING session or accepts explicit bot/session ids, and reads only
+    protected runtime positions for target symbols (`ETHUSDT,DOGEUSDT` by
+    default). Output redacts ids with hashes and records only the runtime truth
+    needed by `LIVEIMPORT-03`: visibility, ownership/management state,
+    continuity/sync/takeover state, strategy/TTP/DCA context presence, and
+    actionable state. Validation PASS: help path, dry-run path, and
+    missing-auth fail-closed path. Actual production readback remains blocked
+    until read-only auth is available. Evidence:
+    `docs/planning/liveimport-03-readback-collector-task-2026-05-07.md`.
 - [x] `PROD-PROMOTE-PREQ-2026-05-07 release: recheck production promotion prerequisites after validated push`
   - 2026-05-07: After validated local audit commits were pushed to
     `origin/main` at `1f816362c93e117e47cfe52a35e0fec93bd0b37d`, public

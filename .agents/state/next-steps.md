@@ -11,10 +11,16 @@ ownership, `strategyId` or single-strategy provenance recovery, TTP visibility,
 actionable state, and import completeness across assigned bot markets. Do not
 run live-money or destructive production actions.
 
+Canonical command once auth is available:
+
+```powershell
+pnpm run ops:liveimport:readback -- --expected-sha 1f816362c93e117e47cfe52a35e0fec93bd0b37d --output docs/operations/liveimport-03-prod-readback-2026-05-07.json
+```
+
 ## Candidate Backlog
 
 1. If production credentials or ops auth are available, execute
-   `LIVEIMPORT-03` readback and record redacted evidence. The latest
+   `ops:liveimport:readback` and record redacted `LIVEIMPORT-03` evidence. The latest
    names-only prerequisite sweep after `FULLARCH-FIX-11` found no production
    auth variable names in this shell.
 2. If authenticated readback remains unavailable, keep `LIVEIMPORT-03` open and

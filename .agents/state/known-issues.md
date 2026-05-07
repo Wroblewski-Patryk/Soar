@@ -60,6 +60,8 @@ Last updated: 2026-05-07
   runtime positions readback for the reported LIVE ETH/DOGE rows has not been
   captured on current production `main`
   (`1f816362c93e117e47cfe52a35e0fec93bd0b37d` or later).
+  `ops:liveimport:readback` is now the canonical read-only collector once
+  credentials are available.
 - `BOTMULTI-09` remains open for protected runtime readback and broader V1
   release gate evidence, even though public build-info now contains the
   original BOTMULTI candidate.

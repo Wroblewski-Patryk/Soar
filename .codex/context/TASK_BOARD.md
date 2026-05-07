@@ -17,6 +17,16 @@ Last updated: 2026-05-07
 
 ## READY
 
+- [x] `LIVEIMPORT-03-COLLECTOR-2026-05-07 release(ops): add redacted live-import readback collector`
+  - Scope: added `ops:liveimport:readback`, a read-only helper for the active
+    `LIVEIMPORT-03` blocker. The script reuses existing ops auth helpers,
+    performs optional build-info freshness checks, reads existing protected
+    bot runtime session position endpoints, redacts ids, and fails closed when
+    production auth is missing. No API route, DB schema, exchange adapter,
+    runtime execution, deployment, or live-money behavior changed. Validation
+    PASS: help path, dry-run path, and missing-auth fail-closed path. Evidence:
+    `docs/planning/liveimport-03-readback-collector-task-2026-05-07.md`.
+
 - [x] `PROD-PROMOTE-PREQ-2026-05-07 release: recheck production promotion prerequisites after validated push`
   - Scope: after the validated local audit closure commits were pushed to
     `origin/main` at `1f816362c93e117e47cfe52a35e0fec93bd0b37d`, checked

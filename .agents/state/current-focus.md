@@ -25,6 +25,9 @@ lag. The latest names-only prerequisite scan still found no production
 credentials or ops auth headers in the current shell, so future continuation
 should resume with authenticated read-only evidence collection.
 
+`LIVEIMPORT-03` now has one canonical read-only evidence command:
+`pnpm run ops:liveimport:readback -- --expected-sha 1f816362c93e117e47cfe52a35e0fec93bd0b37d`.
+
 ## Current Priority Order
 
 1. Stability
