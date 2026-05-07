@@ -4,12 +4,12 @@ Last updated: 2026-05-07
 
 ## Latest Health Snapshot
 
-- Local and remote `main` are synchronized at
-  `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3` after the readback collector
-  hardening push, and public production web build-info now reports
-  `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`. Production API `/health` and
-  API `/ready` are healthy. Local docs-only evidence commits are intentionally
-  unpushed, so they are not production deploy targets.
+- `origin/main` and public production web build-info are aligned at
+  `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`, the latest pushed code/tooling
+  commit. The local branch is ahead with docs/evidence-only commits that are
+  intentionally not pushed yet, so they are not production deploy targets.
+  Production API `/health` and API `/ready` are healthy in the latest public
+  checks.
 - Canonical queue check found two open production-evidence items:
   `LIVEIMPORT-03` and `BOTMULTI-09`.
 - The local full-architecture repair and validation chain is closed through
@@ -18,9 +18,11 @@ Last updated: 2026-05-07
 - The current shell exposes no production admin token, operator login, ops
   basic auth, or ops header environment variables. Authenticated production
   readback is therefore blocked in this session.
-- Public production baseline is not revalidated in this docs-only state sync;
-  the latest recorded production readiness evidence remains the 2026-05-07
-  Redis recovery (`/health` 200, `/ready` 200, web `/auth/login` 200).
+- Latest V1 release-gate dry-run
+  `docs/operations/v1-release-gate-prod-2026-05-07T18-04-30-000Z.md` reports
+  `readiness=not_ready`: activation plan/audit and RC artifacts are fresh;
+  backup/restore drill and rollback proof are fresh but failed; protected
+  non-dry-run release execution is still missing.
 
 ## Latest Validation
 
@@ -31,8 +33,7 @@ Last updated: 2026-05-07
   families as `FAILED`.
 - `V1-RC-BLOCKED-REFRESH-2026-05-07` PASS: RC status/sign-off/checklist were
   refreshed as blocked/open evidence. Follow-up production release-gate dry-run
-  reports RC families fresh and readiness still `not_ready` due to stale
-  backup/restore drill, stale rollback proof, and dry-run mode.
+  reports RC families fresh and readiness still `not_ready`.
 - `V1-PROD-ACTIVATION-REFRESH-2026-05-07` PASS: fresh production activation
   plan and activation audit were created as `NO-GO` artifacts. Follow-up
   production release-gate dry-run reports activation plan/audit `fresh` and
@@ -111,8 +112,9 @@ runtime contracts are changed.
 
 ## Deployment Impact
 
-The collector/docs commits are pushed, but production build-info has not moved
-past `1f816362c93e117e47cfe52a35e0fec93bd0b37d`. This is acceptable for the
-runtime readback gate because `1f816362` contains the required runtime fixes
-and `ops:liveimport:readback` runs from the local/repo workspace. The next
-executable release task requires authenticated read-only production evidence.
+Production build-info now exposes `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`,
+which contains the live-import collector and fail-closed hardening. Local
+docs/evidence commits are ahead of `origin/main` and intentionally unpushed to
+avoid creating new production deploy targets for documentation-only changes.
+The next executable release task requires authenticated read-only production
+evidence and protected production recovery proof.

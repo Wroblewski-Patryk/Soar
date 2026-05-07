@@ -7,6 +7,14 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-CONTINUATION-STATE-SYNC-2026-05-07 release: sync continuation state after recovery blockers`
+  - 2026-05-07: Synchronized continuation state after the recovery-proof
+    blocker refresh. The canonical `LIVEIMPORT-03` command now targets
+    production build-info SHA
+    `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`. System health now clearly
+    distinguishes pushed/deployed code-tooling from local docs/evidence-only
+    commits that are intentionally unpushed. Evidence:
+    `docs/planning/v1-continuation-state-sync-task-2026-05-07.md`.
 - [x] `V1-PROD-RECOVERY-PROOF-BLOCKED-REFRESH-2026-05-07 release: refresh restore and rollback blockers`
   - 2026-05-07: Replaced stale 2026-05-02 recovery proof blockers with fresh
     2026-05-07 failed/blocked evidence. Rollback proof was executed through

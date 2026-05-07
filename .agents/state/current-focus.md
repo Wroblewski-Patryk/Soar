@@ -54,6 +54,9 @@ Backup/restore drill and rollback proof are also current for 2026-05-07 but
 and rollback proof failed closed on protected `401` responses. V1 remains
 NO-GO.
 
+The canonical `LIVEIMPORT-03` command now targets production SHA
+`21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`, matching public build-info.
+
 ## Current Priority Order
 
 1. Stability

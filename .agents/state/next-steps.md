@@ -17,7 +17,7 @@ release evidence.
 Canonical command once auth is available:
 
 ```powershell
-pnpm run ops:liveimport:readback -- --expected-sha 1f816362c93e117e47cfe52a35e0fec93bd0b37d --output docs/operations/liveimport-03-prod-readback-2026-05-07.json
+pnpm run ops:liveimport:readback -- --expected-sha 21bb52f1e4b8865aab0dbb83ecffe698061fd7a3 --output docs/operations/liveimport-03-prod-readback-2026-05-07.json
 ```
 
 ## Candidate Backlog
@@ -36,6 +36,9 @@ pnpm run ops:liveimport:readback -- --expected-sha 1f816362c93e117e47cfe52a35e0f
    in the latest dry-run report. Activation audit, activation plan, RC status,
    RC sign-off, and RC checklist are fresh blocked/NO-GO artifacts for
    2026-05-07.
+   - Restore drill needs approved production DB/Coolify access.
+   - Rollback proof and runtime freshness need protected OPS auth.
+   - Final release gate must run without `--dry-run`.
 5. If the active queue is empty, run a planning-status sweep before saying
    nothing is planned.
 

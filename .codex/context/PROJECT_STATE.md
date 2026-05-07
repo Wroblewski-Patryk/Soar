@@ -2,6 +2,15 @@
 
 Last updated: 2026-05-07
 
+## 2026-05-07 V1 Continuation State Sync
+- 2026-05-07 `V1-CONTINUATION-STATE-SYNC-2026-05-07` synchronized the
+  continuation state after the recovery-proof blocker refresh. The canonical
+  `LIVEIMPORT-03` command now targets production build-info SHA
+  `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`. System health now distinguishes
+  the pushed/deployed code-tooling SHA from local docs/evidence-only commits
+  that are intentionally unpushed. Evidence:
+  `docs/planning/v1-continuation-state-sync-task-2026-05-07.md`.
+
 ## 2026-05-07 V1 Production Recovery Proof Blocked Refresh
 - 2026-05-07 `V1-PROD-RECOVERY-PROOF-BLOCKED-REFRESH-2026-05-07` refreshed
   production backup/restore and rollback proof blockers as current failed

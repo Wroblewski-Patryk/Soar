@@ -17,6 +17,13 @@ Last updated: 2026-05-07
 
 ## READY
 
+- [x] `V1-CONTINUATION-STATE-SYNC-2026-05-07 release: sync continuation state after recovery blockers`
+  - Scope: updated V1 continuation state so future runs target production SHA
+    `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3` for `LIVEIMPORT-03`, and state
+    docs no longer describe local docs-only commits as deployed or synced.
+    Evidence:
+    `docs/planning/v1-continuation-state-sync-task-2026-05-07.md`.
+
 - [x] `V1-PROD-RECOVERY-PROOF-BLOCKED-REFRESH-2026-05-07 release: refresh restore and rollback blockers`
   - Scope: generated current failed/blocked production recovery evidence.
     Rollback proof failed closed on protected `401` responses, and restore
