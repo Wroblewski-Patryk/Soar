@@ -269,6 +269,11 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
     Web runtime formatter, matching bot monitoring so estimated,
     exchange-final, and pending fee truth stays visible on the primary
     runtime surface.
+- Closed-position close-reason parity note (2026-05-07):
+  - Dashboard home closed-position history renders backend `closeReason`
+    beside the existing close initiator. Close-reason label suffix and pill
+    semantics are derived from the shared Web runtime formatter while route
+    namespaces remain owned by each surface.
 
 ## 20. Sidebar Strategy Source-of-Truth Contract (`SBSC`)
 - Sidebar `Market` and `Strategy` cards use runtime topology (`runtime-graph`) as canonical context source.

@@ -2,10 +2,13 @@ import type { TranslationKey } from "@/i18n/translations";
 
 import type { OpenPositionWithLive } from "./types";
 import {
+  runtimeCloseReasonLabelSuffix,
   toRuntimeCloseInitiatorPillClass,
+  toRuntimeCloseReasonPillClass,
   toRuntimeDirectionPillClass,
   toRuntimeTradeLifecyclePillClass,
   type RuntimeCloseInitiatorValue,
+  type RuntimeCloseReasonValue,
 } from "../../../shared/runtimeMonitoringFormatters";
 
 export type DirectionPillValue = "LONG" | "SHORT" | "BUY" | "SELL";
@@ -26,6 +29,7 @@ export type TradeActionReasonValue =
   | "UNKNOWN";
 
 export type CloseInitiatorValue = RuntimeCloseInitiatorValue;
+export type CloseReasonValue = RuntimeCloseReasonValue;
 
 export type TradeActorValue =
   | CloseInitiatorValue
@@ -183,6 +187,14 @@ export const closeInitiatorLabelKey = (value: CloseInitiatorValue): TranslationK
   if (value === "USER_EXCHANGE") return "dashboard.home.runtime.closeByUserExchange";
   if (value === "EXCHANGE") return "dashboard.home.runtime.closeByExchange";
   return "dashboard.home.runtime.closeBySystemRepair";
+};
+
+export const closeReasonPillClass = (value: CloseReasonValue) => {
+  return toRuntimeCloseReasonPillClass(value);
+};
+
+export const closeReasonLabelKey = (value: CloseReasonValue): TranslationKey => {
+  return `dashboard.home.runtime.${runtimeCloseReasonLabelSuffix(value)}` as TranslationKey;
 };
 
 const openActorLabelKey = (value: TradeActorValue): TranslationKey => {

@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import {
   formatRuntimeTradeFeeMeta,
+  isRuntimeCloseReasonValue,
   resolveRuntimePositionProvenanceKind,
+  runtimeCloseReasonLabelSuffix,
   runtimeContinuityLabelSuffix,
   runtimeOpenOrderStatusLabelSuffix,
   runtimeOrderSourceLabelSuffix,
@@ -86,6 +88,15 @@ describe("resolveRuntimePositionProvenanceKind", () => {
     expect(runtimeOpenOrderStatusLabelSuffix("FILLED")).toBe("openOrderStatusFilled");
     expect(runtimeOpenOrderStatusLabelSuffix("CANCELED")).toBeNull();
     expect(runtimeOpenOrderStatusLabelSuffix(null)).toBeNull();
+  });
+
+  it("maps runtime close reasons to shared i18n suffixes", () => {
+    expect(isRuntimeCloseReasonValue("TP")).toBe(true);
+    expect(isRuntimeCloseReasonValue("EXTERNAL_SYNC_MISSING")).toBe(true);
+    expect(isRuntimeCloseReasonValue("unexpected")).toBe(false);
+    expect(runtimeCloseReasonLabelSuffix("TP")).toBe("closeReasonTp");
+    expect(runtimeCloseReasonLabelSuffix("ACCOUNT_FLOOR")).toBe("closeReasonAccountFloor");
+    expect(runtimeCloseReasonLabelSuffix("SYSTEM_REPAIR")).toBe("closeReasonSystemRepair");
   });
 
   it("formats runtime trade fee reconciliation metadata", () => {

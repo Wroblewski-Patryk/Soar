@@ -18,6 +18,18 @@ export type RuntimeCloseReasonValue =
   | "POSITION_LIFETIME"
   | "EXTERNAL_SYNC_MISSING"
   | "SYSTEM_REPAIR";
+export type RuntimeCloseReasonLabelSuffix =
+  | "closeReasonTp"
+  | "closeReasonTtp"
+  | "closeReasonSl"
+  | "closeReasonTsl"
+  | "closeReasonLiquidation"
+  | "closeReasonAccountFloor"
+  | "closeReasonManual"
+  | "closeReasonSignalExit"
+  | "closeReasonPositionLifetime"
+  | "closeReasonExternalSyncMissing"
+  | "closeReasonSystemRepair";
 export type RuntimeContinuityStateValue =
   | "CONFIRMED"
   | "RECOVERING"
@@ -112,6 +124,35 @@ export const toRuntimeCloseReasonPillClass = (value: RuntimeCloseReasonValue) =>
   }
   if (value === "MANUAL") return "border-secondary/40 bg-secondary/10 text-secondary";
   return "border-warning/40 bg-warning/10 text-warning";
+};
+
+export const isRuntimeCloseReasonValue = (value: unknown): value is RuntimeCloseReasonValue =>
+  value === "TP" ||
+  value === "TTP" ||
+  value === "SL" ||
+  value === "TSL" ||
+  value === "LIQUIDATION" ||
+  value === "ACCOUNT_FLOOR" ||
+  value === "MANUAL" ||
+  value === "SIGNAL_EXIT" ||
+  value === "POSITION_LIFETIME" ||
+  value === "EXTERNAL_SYNC_MISSING" ||
+  value === "SYSTEM_REPAIR";
+
+export const runtimeCloseReasonLabelSuffix = (
+  value: RuntimeCloseReasonValue
+): RuntimeCloseReasonLabelSuffix => {
+  if (value === "TP") return "closeReasonTp";
+  if (value === "TTP") return "closeReasonTtp";
+  if (value === "SL") return "closeReasonSl";
+  if (value === "TSL") return "closeReasonTsl";
+  if (value === "LIQUIDATION") return "closeReasonLiquidation";
+  if (value === "ACCOUNT_FLOOR") return "closeReasonAccountFloor";
+  if (value === "MANUAL") return "closeReasonManual";
+  if (value === "SIGNAL_EXIT") return "closeReasonSignalExit";
+  if (value === "POSITION_LIFETIME") return "closeReasonPositionLifetime";
+  if (value === "EXTERNAL_SYNC_MISSING") return "closeReasonExternalSyncMissing";
+  return "closeReasonSystemRepair";
 };
 
 export const toRuntimeCloseInitiatorPillClass = (value: RuntimeCloseInitiatorValue) => {

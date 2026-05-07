@@ -530,6 +530,7 @@ describe("createHistoryPositionsColumns", () => {
           "dashboard.bots.monitoring.table.entry": "Entry",
           "dashboard.bots.monitoring.table.exit": "Exit",
           "dashboard.home.runtime.realizedPnl": "Realized PnL",
+          "dashboard.home.runtime.closeReason": "Close reason",
           "dashboard.home.runtime.closeBy": "Closed by",
         })[key] ?? key,
       formatNumber: (value) => String(value),
@@ -597,6 +598,7 @@ describe("createHistoryPositionsColumns", () => {
           "dashboard.bots.monitoring.table.entry": "Entry",
           "dashboard.bots.monitoring.table.exit": "Exit",
           "dashboard.home.runtime.realizedPnl": "Realized PnL",
+          "dashboard.home.runtime.closeReason": "Close reason",
           "dashboard.home.runtime.closeBy": "Closed by",
         })[key] ?? key,
       formatNumber: (value) => String(value),
@@ -636,6 +638,69 @@ describe("createHistoryPositionsColumns", () => {
     render(<div>{columns[1]?.render?.(row)}</div>);
 
     expect(screen.getByText("-")).toBeInTheDocument();
+  });
+
+  it("renders close reason from runtime history-position payload", () => {
+    const columns = createHistoryPositionsColumns({
+      t: (key) =>
+        ({
+          "dashboard.home.runtime.timeOpened": "Time opened",
+          "dashboard.home.runtime.timeClosed": "Time closed",
+          "dashboard.home.runtime.symbol": "Symbol",
+          "dashboard.home.runtime.side": "Side",
+          "dashboard.home.runtime.qty": "Qty",
+          "dashboard.bots.monitoring.table.entry": "Entry",
+          "dashboard.bots.monitoring.table.exit": "Exit",
+          "dashboard.home.runtime.realizedPnl": "Realized PnL",
+          "dashboard.home.runtime.closeReason": "Close reason",
+          "dashboard.home.runtime.closeReasonTtp": "TTP",
+          "dashboard.home.runtime.closeBy": "Closed by",
+        })[key] ?? key,
+      formatNumber: (value) => String(value),
+      formatRuntimeAmount: (value) => String(value),
+      withRuntimeUnit: (label) => label,
+      resolveRuntimeIcon: () => null,
+      runtimeIconsLoading: false,
+      runtimeIconsError: null,
+      formatDateTime: (value) => value ?? "-",
+    });
+
+    const closeReasonColumn = columns.find((column) => column.key === "closeReason");
+
+    expect(closeReasonColumn?.label).toBe("Close reason");
+
+    render(
+      <div>
+        {closeReasonColumn?.render?.({
+          id: "position-ttp",
+          symbol: "ETHUSDT",
+          side: "SHORT",
+          status: "CLOSED",
+          closeReason: "TTP",
+          closeInitiator: "BOT_APP",
+          quantity: 2,
+          leverage: 3,
+          entryPrice: 2500,
+          entryNotional: 5000,
+          exitPrice: 2450,
+          stopLoss: null,
+          takeProfit: null,
+          openedAt: "2026-04-29T10:00:00.000Z",
+          closedAt: "2026-04-29T10:15:00.000Z",
+          holdMs: 900000,
+          dcaCount: 0,
+          feesPaid: 0,
+          realizedPnl: 100,
+          unrealizedPnl: 0,
+          markPrice: null,
+          firstTradeAt: null,
+          lastTradeAt: null,
+          tradesCount: 0,
+        })}
+      </div>
+    );
+
+    expect(screen.getByText("TTP")).toHaveClass("border-success/40");
   });
 });
 

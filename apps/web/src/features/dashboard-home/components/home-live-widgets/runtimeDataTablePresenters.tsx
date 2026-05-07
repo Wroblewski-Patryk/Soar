@@ -25,6 +25,9 @@ import {
   closeInitiatorLabelKey,
   closeInitiatorPillClass,
   CloseInitiatorValue,
+  closeReasonLabelKey,
+  closeReasonPillClass,
+  CloseReasonValue,
   DirectionPill,
   tradeActorPresentation,
   tradeReasonPresentation,
@@ -567,6 +570,21 @@ export const createHistoryPositionsColumns = ({
         {formatRuntimeAmount(row.realizedPnl)}
       </span>
     ),
+  },
+  {
+    key: "closeReason",
+    label: t("dashboard.home.runtime.closeReason"),
+    sortable: false,
+    accessor: (row) => row.closeReason ?? "",
+    render: (row) => {
+      const reason = row.closeReason as CloseReasonValue | null | undefined;
+      if (!reason) return "-";
+      return (
+        <span className={`inline-flex items-center whitespace-nowrap rounded-full border px-2 py-0.5 text-xs font-medium ${closeReasonPillClass(reason)}`}>
+          {t(closeReasonLabelKey(reason))}
+        </span>
+      );
+    },
   },
   {
     key: "closeInitiator",

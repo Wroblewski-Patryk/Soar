@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 
 import type { TranslationKey } from "../../../../i18n/translations";
 import {
+  isRuntimeCloseReasonValue,
+  runtimeCloseReasonLabelSuffix,
   toRuntimeCloseInitiatorPillClass,
   toRuntimeCloseReasonPillClass,
   type RuntimeCloseInitiatorValue,
@@ -11,17 +13,7 @@ import {
 type Translate = (key: TranslationKey) => string;
 
 const closeReasonLabelKey = (value: RuntimeCloseReasonValue): TranslationKey => {
-  if (value === "TP") return "dashboard.bots.monitoring.closeReasonTp";
-  if (value === "TTP") return "dashboard.bots.monitoring.closeReasonTtp";
-  if (value === "SL") return "dashboard.bots.monitoring.closeReasonSl";
-  if (value === "TSL") return "dashboard.bots.monitoring.closeReasonTsl";
-  if (value === "LIQUIDATION") return "dashboard.bots.monitoring.closeReasonLiquidation";
-  if (value === "ACCOUNT_FLOOR") return "dashboard.bots.monitoring.closeReasonAccountFloor";
-  if (value === "MANUAL") return "dashboard.bots.monitoring.closeReasonManual";
-  if (value === "SIGNAL_EXIT") return "dashboard.bots.monitoring.closeReasonSignalExit";
-  if (value === "POSITION_LIFETIME") return "dashboard.bots.monitoring.closeReasonPositionLifetime";
-  if (value === "EXTERNAL_SYNC_MISSING") return "dashboard.bots.monitoring.closeReasonExternalSyncMissing";
-  return "dashboard.bots.monitoring.closeReasonSystemRepair";
+  return `dashboard.bots.monitoring.${runtimeCloseReasonLabelSuffix(value)}` as TranslationKey;
 };
 
 const closeInitiatorLabelKey = (value: RuntimeCloseInitiatorValue): TranslationKey => {
@@ -31,19 +23,6 @@ const closeInitiatorLabelKey = (value: RuntimeCloseInitiatorValue): TranslationK
   if (value === "EXCHANGE") return "dashboard.bots.monitoring.closeByExchange";
   return "dashboard.bots.monitoring.closeBySystemRepair";
 };
-
-const isCloseReasonValue = (value: unknown): value is RuntimeCloseReasonValue =>
-  value === "TP" ||
-  value === "TTP" ||
-  value === "SL" ||
-  value === "TSL" ||
-  value === "LIQUIDATION" ||
-  value === "ACCOUNT_FLOOR" ||
-  value === "MANUAL" ||
-  value === "SIGNAL_EXIT" ||
-  value === "POSITION_LIFETIME" ||
-  value === "EXTERNAL_SYNC_MISSING" ||
-  value === "SYSTEM_REPAIR";
 
 const isCloseInitiatorValue = (value: unknown): value is RuntimeCloseInitiatorValue =>
   value === "BOT_APP" ||
@@ -59,7 +38,7 @@ const renderPill = (children: ReactNode, className: string) => (
 );
 
 export const renderMonitoringCloseReason = (value: unknown, t: Translate) => {
-  if (!isCloseReasonValue(value)) return "-";
+  if (!isRuntimeCloseReasonValue(value)) return "-";
   return renderPill(t(closeReasonLabelKey(value)), toRuntimeCloseReasonPillClass(value));
 };
 

@@ -3,6 +3,17 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 dashboard closed-position close-reason slice `V1UI-19` is closed
+  on `main`. Dashboard home Closed Positions history now renders
+  backend `closeReason` with the same shared close-reason label suffix and
+  pill semantics used by bot monitoring, while missing values still render
+  `-`. Focused shared formatter plus dashboard presenter tests passed
+  (`22/22`), dashboard widget plus bot monitoring regressions passed
+  (`33/33`), Web typecheck, Web lint, route-reachable i18n audit
+  (`findings=0`), repository guardrails, full workspace build, and
+  authenticated rendered `/dashboard` smoke passed with no console warnings,
+  console errors, or page errors. Evidence:
+  `docs/planning/v1ui-19-dashboard-history-close-reason-task-2026-05-07.md`.
 - 2026-05-07 dashboard trade-fee parity slice `V1UI-18` is closed on `main`.
   Dashboard home Trade History now renders backend `fee` amount plus
   `feeSource`, `feePending`, and `feeCurrency` metadata via a shared Web
