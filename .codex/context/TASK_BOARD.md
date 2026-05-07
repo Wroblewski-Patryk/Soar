@@ -20,6 +20,21 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `V1UI-21 fix(web-runtime): keep aggregate wallet capital strict`
+  - Scope: closed an ARCHITECT-mode aggregate wallet source-of-truth slice.
+    Dashboard Home now uses strict aggregate capital helpers for selected
+    `AGGREGATE` snapshots, so missing aggregate `referenceBalance/freeCash`
+    remains visible as unresolved instead of being masked by compatibility
+    fields such as `accountBalance` or `availableBalance`. Non-aggregate
+    fallback reads still support compatibility capital fields. Validation
+    PASS: focused runtime helper, aggregate wallet, and sidebar tests
+    (`13/13`), broader Dashboard Home regression (`20/20`), Web typecheck,
+    Web lint, route-reachable i18n audit (`findings=0`), repository
+    guardrails, full workspace build, and authenticated rendered `/dashboard`
+    smoke on desktop and mobile with no console warnings, console errors, or
+    page errors. Evidence:
+    `docs/planning/v1ui-21-dashboard-aggregate-wallet-strict-capital-task-2026-05-07.md`.
+
 - [x] `V1UI-20 fix(web-runtime): show dashboard closed-position history`
   - Scope: closed a TESTER-mode architecture-to-Web runtime history parity
     slice. Dashboard Home now renders aggregate `positions.historyItems` as a

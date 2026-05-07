@@ -5,6 +5,8 @@ import type { BotRuntimeTrade, BotRuntimeTradesResponse } from "@/features/bots/
 import {
   hasRuntimeDynamicStopRowTruth,
   resolvePaperConfigBaseline,
+  resolveRuntimeAggregateFreeFunds,
+  resolveRuntimeAggregatePortfolio,
   resolveRuntimeDynamicStopColumnVisibility,
   resolveRuntimeFreeFunds,
   resolveRuntimePortfolio,
@@ -169,17 +171,27 @@ export const useRuntimeSelectionViewModel = ({
         ? selected.bot.wallet?.paperInitialBalance ?? selected.bot.paperStartBalance
         : null;
     const runtimeCapitalSummary = (selected.positions?.summary ?? {}) as Record<string, unknown>;
-    const equity = resolveRuntimePortfolio({
-      bot: selected.bot,
-      summary: runtimeCapitalSummary,
-      net,
-      usedMargin,
-    });
-    const free = resolveRuntimeFreeFunds({
-      summary: runtimeCapitalSummary,
-      portfolio: equity,
-      usedMargin,
-    });
+    const isAggregateRuntime = selected.positions?.sessionId === "AGGREGATE";
+    const equity = isAggregateRuntime
+      ? resolveRuntimeAggregatePortfolio({
+          summary: runtimeCapitalSummary,
+          usedMargin,
+        })
+      : resolveRuntimePortfolio({
+          bot: selected.bot,
+          summary: runtimeCapitalSummary,
+          net,
+          usedMargin,
+        });
+    const free = isAggregateRuntime
+      ? resolveRuntimeAggregateFreeFunds({
+          summary: runtimeCapitalSummary,
+        })
+      : resolveRuntimeFreeFunds({
+          summary: runtimeCapitalSummary,
+          portfolio: equity,
+          usedMargin,
+        });
     const exposurePct = equity && equity > 0 ? (usedMargin / equity) * 100 : null;
     const runtimeTradesSessionId = selected.trades?.sessionId ?? selected.session?.id ?? null;
     const trades = resolveSelectedRuntimeTradeRows({

@@ -3,6 +3,8 @@ import { normalizeSymbol } from "@/lib/symbols";
 import {
   resolveBotVenueContext,
   resolvePaperConfigBaseline,
+  resolveRuntimeAggregateFreeFunds,
+  resolveRuntimeAggregatePortfolio,
   resolveRuntimeFreeFunds,
   resolveRuntimePortfolio,
 } from "@/features/bots/utils/runtimeSurfaceTruth";
@@ -130,6 +132,7 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
   const selectedUsedMargin = Math.max(0, props.selectedData?.usedMargin ?? 0);
   const selectedNet = props.selectedData?.net ?? 0;
   const paperStartBalance = resolvePaperConfigBaseline(props.selected?.bot);
+  const isAggregateRuntime = props.selected?.positions?.sessionId === "AGGREGATE";
   const liveFixedAllocation =
     selectedWalletMode === "LIVE" && selectedWallet?.liveAllocationMode === "FIXED"
       ? selectedWallet.liveAllocationValue ?? null
@@ -137,12 +140,17 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
   const walletBaseline = paperStartBalance ?? liveFixedAllocation;
   const runtimeWalletTotal =
     props.selectedData?.equity ??
-    resolveRuntimePortfolio({
-      bot: props.selected?.bot,
-      summary: capitalSummary,
-      net: selectedNet,
-      usedMargin: selectedUsedMargin,
-    });
+    (isAggregateRuntime
+      ? resolveRuntimeAggregatePortfolio({
+          summary: capitalSummary,
+          usedMargin: selectedUsedMargin,
+        })
+      : resolveRuntimePortfolio({
+          bot: props.selected?.bot,
+          summary: capitalSummary,
+          net: selectedNet,
+          usedMargin: selectedUsedMargin,
+        }));
   const walletTotal =
     selectedWalletMode === "LIVE"
       ? runtimeWalletTotal
@@ -155,11 +163,15 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
   })();
   const walletFree =
     props.selectedData?.free ??
-    resolveRuntimeFreeFunds({
-      summary: capitalSummary,
-      portfolio: walletTotal,
-      usedMargin: selectedUsedMargin,
-    });
+    (isAggregateRuntime
+      ? resolveRuntimeAggregateFreeFunds({
+          summary: capitalSummary,
+        })
+      : resolveRuntimeFreeFunds({
+          summary: capitalSummary,
+          portfolio: walletTotal,
+          usedMargin: selectedUsedMargin,
+        }));
   const canCalculatePortfolioSplit = walletTotal != null && walletFree != null;
   const walletDenominator = canCalculatePortfolioSplit
     ? Math.max(walletTotal, walletFree + selectedUsedMargin, 1)

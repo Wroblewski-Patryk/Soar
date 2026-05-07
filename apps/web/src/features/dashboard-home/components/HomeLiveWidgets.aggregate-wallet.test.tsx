@@ -214,6 +214,8 @@ describe("HomeLiveWidgets aggregate wallet contract", () => {
           feesPaid: 0,
           referenceBalance: null,
           freeCash: null,
+          accountBalance: 512,
+          availableBalance: 502,
         },
         openOrders: [],
         openItems: [

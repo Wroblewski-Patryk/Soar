@@ -3,6 +3,21 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 dashboard aggregate wallet strict-capital slice `V1UI-21` is
+  closed on `main`. ARCHITECT-mode review found that the shared Web runtime
+  capital helper allowed compatibility fields such as `accountBalance` and
+  `availableBalance` to participate in all wallet reads, which is valid for
+  non-aggregate fallback paths but can mask missing aggregate
+  `referenceBalance/freeCash` under `DAWR`. Dashboard Home now uses strict
+  aggregate capital helpers for selected `AGGREGATE` snapshots, while keeping
+  compatibility capital fallback available for non-aggregate/session fallback
+  reads. Focused helper, aggregate wallet, and sidebar tests passed (`13/13`);
+  broader Dashboard Home regression passed (`20/20`), as did Web typecheck,
+  Web lint, route-reachable i18n audit (`findings=0`), repository guardrails,
+  full workspace build, and authenticated rendered `/dashboard` smoke on
+  desktop and mobile with no console warnings, console errors, or page errors.
+  Evidence:
+  `docs/planning/v1ui-21-dashboard-aggregate-wallet-strict-capital-task-2026-05-07.md`.
 - 2026-05-07 dashboard closed-position history table slice `V1UI-20` is
   closed on `main`. TESTER-mode review found that `DAGG` promised two
   `/dashboard` history tables, but Web rendered only trade history while

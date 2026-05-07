@@ -37,6 +37,16 @@ export const resolveRuntimeFreeCash = (summary: RuntimeCapitalSummary): number |
   );
 };
 
+export const resolveRuntimeAggregateReferenceBalance = (summary: RuntimeCapitalSummary): number | null => {
+  if (!summary || typeof summary !== "object") return null;
+  return readFiniteNumber((summary as Record<string, unknown>).referenceBalance);
+};
+
+export const resolveRuntimeAggregateFreeCash = (summary: RuntimeCapitalSummary): number | null => {
+  if (!summary || typeof summary !== "object") return null;
+  return readFiniteNumber((summary as Record<string, unknown>).freeCash);
+};
+
 export const resolvePaperConfigBaseline = (bot: Bot | null | undefined): number | null => {
   if (!bot || bot.mode !== "PAPER") return null;
   return bot.wallet?.paperInitialBalance ?? bot.paperStartBalance ?? null;
@@ -88,6 +98,21 @@ export const resolveRuntimePortfolio = (params: {
   return null;
 };
 
+export const resolveRuntimeAggregatePortfolio = (params: {
+  summary: RuntimeCapitalSummary;
+  usedMargin: number;
+}): number | null => {
+  const referenceBalance = resolveRuntimeAggregateReferenceBalance(params.summary);
+  if (referenceBalance != null) return Math.max(0, referenceBalance);
+
+  const freeCash = resolveRuntimeAggregateFreeCash(params.summary);
+  if (freeCash != null) {
+    return Math.max(0, freeCash + Math.max(0, params.usedMargin));
+  }
+
+  return null;
+};
+
 export const resolveRuntimeFreeFunds = (params: {
   summary: RuntimeCapitalSummary;
   portfolio: number | null;
@@ -97,6 +122,13 @@ export const resolveRuntimeFreeFunds = (params: {
   if (freeCash != null) return Math.max(0, freeCash);
   if (params.portfolio == null) return null;
   return Math.max(0, params.portfolio - Math.max(0, params.usedMargin));
+};
+
+export const resolveRuntimeAggregateFreeFunds = (params: {
+  summary: RuntimeCapitalSummary;
+}): number | null => {
+  const freeCash = resolveRuntimeAggregateFreeCash(params.summary);
+  return freeCash != null ? Math.max(0, freeCash) : null;
 };
 
 export const resolveRuntimeMarketState = (item: {
