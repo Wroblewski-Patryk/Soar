@@ -24,7 +24,9 @@ Operational queue for one-task execution runs.
     still reported `6bf5de83b8ed285410ecc10ecc50a2567ac68ee1`. Public API
     `/health` and `/ready` passed. This is a deploy-freshness lag for the
     latest ops-tooling/docs hardening commit, not `LIVEIMPORT-03` completion
-    evidence and not a live-money/runtime API change. Evidence:
+    evidence and not a live-money/runtime API change. A later recheck passed
+    for `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`, so the deploy-lag note is
+    closed for the code/tooling commit. Evidence:
     `docs/planning/prod-build-info-lag-after-collector-hardening-task-2026-05-07.md`.
 - [x] `LIVEIMPORT-03-COLLECTOR-HARDENING-2026-05-07 fix(ops): fail closed empty runtime readback`
   - 2026-05-07: Hardened `ops:liveimport:readback` so a discovered LIVE bot

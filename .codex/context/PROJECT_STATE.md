@@ -23,8 +23,10 @@ Last updated: 2026-05-07
   `6bf5de83b8ed285410ecc10ecc50a2567ac68ee1`. Public API `/health` returned
   `status=ok` and `/ready` returned `status=ready`. No runtime, API, DB,
   exchange, deployment, or live-money behavior changed. `LIVEIMPORT-03` remains
-  blocked by missing authenticated read-only production runtime evidence.
-  Evidence:
+  blocked by missing authenticated read-only production runtime evidence. A
+  later canonical wait passed on attempt 1 for
+  `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`, so production now exposes the
+  collector hardening code/tooling commit. Evidence:
   `docs/planning/prod-build-info-lag-after-collector-hardening-task-2026-05-07.md`.
 
 ## 2026-05-07 LIVEIMPORT-03 Readback Collector

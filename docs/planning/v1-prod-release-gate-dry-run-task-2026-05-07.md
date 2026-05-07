@@ -250,3 +250,11 @@ Dry-run production release-gate artifacts plus synchronized planning/state docs.
   non-dry-run execution, starting with `LIVEIMPORT-03`.
 - Decisions made: dry-run evidence is preserved as blocker inventory only, not
   release approval.
+
+## Post-Task Build-Info Note
+- 2026-05-07: Production web build-info later passed for
+  `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`. This confirms the collector
+  hardening code/tooling commit is deployed. It does not change the dry-run
+  release-gate result: production V1 remains `not_ready` until stale RC,
+  backup/restore, rollback, activation, and authenticated runtime readback
+  evidence are refreshed with non-dry-run execution.

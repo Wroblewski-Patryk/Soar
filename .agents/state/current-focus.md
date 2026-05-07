@@ -20,12 +20,10 @@ contracts synchronized.
 Release verification is blocked on authenticated production readback for the
 first open queue item, `LIVEIMPORT-03`. Local audit gates are closed through
 `FULLARCH-FIX-11`, and public production web build-info now reports the pushed
-ops-tooling collector commit `6bf5de83b8ed285410ecc10ecc50a2567ac68ee1`, while
-the latest pushed `origin/main` is
-`21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`. The post-hardening build-info wait
-timed out on `6bf5de83`; that does not block the runtime readback because the
-live-import fixes are already deployed and the collector runs locally. The
-latest names-only prerequisite scan still found no
+collector hardening commit `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`. The
+latest local docs-only evidence commits are not pushed, by design, to avoid
+creating another build-info target. The latest names-only prerequisite scan
+still found no
 production credentials or ops auth headers in the current shell, so future
 continuation should resume with authenticated read-only evidence collection.
 

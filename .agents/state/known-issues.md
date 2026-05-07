@@ -16,7 +16,8 @@ Last updated: 2026-05-07
   remained on `6bf5de83b8ed285410ecc10ecc50a2567ac68ee1` after a 180-second
   canonical wait. Public API `/health` and `/ready` are healthy. Treat this as
   another ops-tooling deploy-lag note, not authenticated runtime readback
-  evidence.
+  evidence. A later canonical wait passed for `21bb52f1...`, so this deploy
+  lag is closed for the code/tooling commit.
 - `FULLARCH-FIX-01` fixed the confirmed bot runtime visibility regression for
   recovered imported LIVE positions with
   `continuityState=RECOVERED_UNACTIONABLE` and `syncState=DRIFT`. Remaining

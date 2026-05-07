@@ -253,3 +253,10 @@ Production freshness evidence and updated source-of-truth state.
   if production deploy proof for `21bb52f1...` becomes necessary.
 - Decisions made: no retrigger commit was created from this evidence-only
   task.
+
+## Post-Task Recheck
+- 2026-05-07: A later canonical wait passed on attempt 1 for
+  `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`; production web build-info now
+  exposes the collector hardening commit. This closes the deploy-lag note for
+  the code/tooling commit, but does not close authenticated `LIVEIMPORT-03`
+  runtime readback or the broader stale V1 production evidence blockers.
