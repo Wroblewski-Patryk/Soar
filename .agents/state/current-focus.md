@@ -74,6 +74,10 @@ current `main` at `2b0056c0`; run `25514674413` also failed before any steps
 executed because GitHub reported: `The job was not started because your
 account is locked due to a billing issue.`
 
+`pnpm run ops:prod:promote` is now the canonical local helper for retrying and
+inspecting `Promote PROD` without `gh` once GitHub Actions billing/account
+status is restored.
+
 ## Current Priority Order
 
 1. Stability

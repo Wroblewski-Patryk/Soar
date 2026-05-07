@@ -7,6 +7,15 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-PROD-PROMOTE-HELPER-2026-05-07 release: add repeatable production promote helper`
+  - 2026-05-07: Added `pnpm run ops:prod:promote`, a secret-safe local helper
+    for dispatching and inspecting the official `promote-prod.yml` GitHub
+    Actions workflow without requiring `gh`. The helper uses `GITHUB_TOKEN`,
+    `GH_TOKEN`, or Git Credential Manager, never prints token values, supports
+    dry-run, and reports latest run/job/check-run annotations. Validation
+    PASS: syntax, help, dry-run, and status-only readback of the current
+    billing-lock failure. Evidence:
+    `docs/planning/v1-prod-promote-helper-task-2026-05-07.md`.
 - [x] `V1-PROD-PROMOTE-GITHUB-BILLING-BLOCKER-2026-05-07 release: capture GitHub Actions billing blocker`
   - 2026-05-07: Dispatched `promote-prod.yml` through GitHub API for `main` at
     `92955a1cb09f3c473da856369e5f607fbc1fe5a1` without printing credentials.

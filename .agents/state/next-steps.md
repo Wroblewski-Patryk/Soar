@@ -8,7 +8,7 @@ Resolve the GitHub Actions account billing lock, then rerun the official
 production promote workflow on `main`:
 
 ```powershell
-gh workflow run promote-prod.yml --ref main
+pnpm run ops:prod:promote -- --dispatch --ref main --wait-seconds 60
 ```
 
 Latest dispatch evidence: `promote-prod.yml` run `25514674413` for current
@@ -52,8 +52,9 @@ pnpm run ops:liveimport:readback -- --expected-sha 21bb52f1e4b8865aab0dbb83ecffe
 0. Follow the final blocker execution pack:
    `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
 0a. Unblock GitHub Actions billing/account status, then rerun the manual
-   `Promote PROD` workflow on `main` and wait for build-info, runtime
-   freshness, and rollback guard to pass.
+   `Promote PROD` workflow on `main` with
+   `pnpm run ops:prod:promote -- --dispatch --ref main --wait-seconds 60`.
+   Wait for build-info, runtime freshness, and rollback guard to pass.
 1. If production credentials or ops auth are available, execute
    `ops:liveimport:readback` and record redacted `LIVEIMPORT-03` evidence. The latest
    names-only prerequisite sweep after `FULLARCH-FIX-11` found no production

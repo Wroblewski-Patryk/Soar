@@ -17,6 +17,13 @@ Last updated: 2026-05-07
 
 ## READY
 
+- [x] `V1-PROD-PROMOTE-HELPER-2026-05-07 release: add repeatable production promote helper`
+  - Scope: added `pnpm run ops:prod:promote`, a local helper that dispatches
+    and inspects the official `promote-prod.yml` workflow through GitHub API
+    without printing credentials or bypassing the approved Coolify/rollback
+    path. Evidence:
+    `docs/planning/v1-prod-promote-helper-task-2026-05-07.md`.
+
 - [x] `V1-PROD-PROMOTE-GITHUB-BILLING-BLOCKER-2026-05-07 release: capture GitHub Actions billing blocker`
   - Scope: dispatched the official `Promote PROD` workflow for
     `92955a1cb09f3c473da856369e5f607fbc1fe5a1` through GitHub API, then

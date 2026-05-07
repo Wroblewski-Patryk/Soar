@@ -37,6 +37,10 @@ Last updated: 2026-05-07
   job `74882472170` failed before any steps executed; check-run annotation
   says `The job was not started because your account is locked due to a
   billing issue.`
+- `V1-PROD-PROMOTE-HELPER-2026-05-07` PASS: added
+  `pnpm run ops:prod:promote` for secret-safe local GitHub workflow
+  dispatch/status without `gh`. Validation PASS: syntax, help, dry-run, and
+  status-only readback of the current billing-lock workflow failure.
 - `V1-PROD-PROMOTE-DISPATCH-BLOCKER-2026-05-07` PASS as deploy-path
   classification: local/remote `main` is pushed at
   `9bdd1c1a101603e872099f205f3e9b21904e2b0a`; production build-info timed out

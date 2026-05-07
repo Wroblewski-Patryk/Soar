@@ -3,6 +3,14 @@
 Last updated: 2026-05-07
 
 ## 2026-05-07 V1 Final Blocker Execution Pack
+- 2026-05-07 `V1-PROD-PROMOTE-HELPER-2026-05-07` added
+  `pnpm run ops:prod:promote`, a local helper for dispatching and inspecting
+  the official `promote-prod.yml` workflow through GitHub API without
+  requiring `gh` and without printing token values. The helper does not call
+  Coolify directly; the approved workflow remains the only deploy entrypoint.
+  Validation PASS: syntax, help, dry-run, and status-only readback of the
+  current GitHub Actions billing-lock failure. Evidence:
+  `docs/planning/v1-prod-promote-helper-task-2026-05-07.md`.
 - 2026-05-07 `V1-PROD-PROMOTE-GITHUB-BILLING-BLOCKER-2026-05-07` dispatched
   the official `Promote PROD` workflow through GitHub API for `main` at
   `92955a1cb09f3c473da856369e5f607fbc1fe5a1`. The dispatch was accepted, but
