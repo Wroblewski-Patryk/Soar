@@ -7,6 +7,15 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `PROD-BUILDINFO-LAG-2026-05-07 release: record build-info lag after collector hardening push`
+  - 2026-05-07: Rechecked public production freshness after `origin/main`
+    advanced to `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`. The canonical
+    build-info wait command timed out after six HTTP 200 polls; production web
+    still reported `6bf5de83b8ed285410ecc10ecc50a2567ac68ee1`. Public API
+    `/health` and `/ready` passed. This is a deploy-freshness lag for the
+    latest ops-tooling/docs hardening commit, not `LIVEIMPORT-03` completion
+    evidence and not a live-money/runtime API change. Evidence:
+    `docs/planning/prod-build-info-lag-after-collector-hardening-task-2026-05-07.md`.
 - [x] `LIVEIMPORT-03-COLLECTOR-HARDENING-2026-05-07 fix(ops): fail closed empty runtime readback`
   - 2026-05-07: Hardened `ops:liveimport:readback` so a discovered LIVE bot
     with no RUNNING runtime session can no longer produce a successful

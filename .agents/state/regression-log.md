@@ -8,6 +8,10 @@ No open regression was identified in the agent operating system slice.
 
 ## Fixed Or Prevented In This Slice
 
+- 2026-05-07: Monitored production web build-info freshness after the collector
+  hardening push. Latest pushed `main` is `21bb52f1...`, while production
+  still reports `6bf5de83...` after the canonical wait. This is tracked as
+  deploy lag for ops tooling, not a runtime regression.
 - 2026-05-07: Prevented a false-positive `LIVEIMPORT-03` release evidence
   path in `ops:liveimport:readback`; the collector now fails closed when no
   RUNNING runtime session produced a positions payload. Validation: local

@@ -17,6 +17,15 @@ Last updated: 2026-05-07
 
 ## READY
 
+- [x] `PROD-BUILDINFO-LAG-2026-05-07 release: record build-info lag after collector hardening push`
+  - Scope: rechecked production build-info after `origin/main` advanced to
+    `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`. The canonical wait command
+    timed out after six HTTP 200 polls with production still reporting
+    `6bf5de83b8ed285410ecc10ecc50a2567ac68ee1`. Public API `/health` and
+    `/ready` passed. No runtime, API, DB, exchange, deployment, or live-money
+    behavior changed. Evidence:
+    `docs/planning/prod-build-info-lag-after-collector-hardening-task-2026-05-07.md`.
+
 - [x] `LIVEIMPORT-03-COLLECTOR-HARDENING-2026-05-07 fix(ops): fail closed empty runtime readback`
   - Scope: hardened the read-only live-import collector so no-session output
     cannot be mistaken for V1 runtime evidence. The collector now records

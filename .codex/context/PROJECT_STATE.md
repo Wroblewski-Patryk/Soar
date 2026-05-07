@@ -2,6 +2,18 @@
 
 Last updated: 2026-05-07
 
+## 2026-05-07 Production Build-Info Lag After Collector Hardening
+- 2026-05-07 `PROD-BUILDINFO-LAG-2026-05-07` rechecked public production
+  freshness after `origin/main` advanced to
+  `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`. The canonical build-info wait
+  timed out after six HTTP 200 polls; production web still reported
+  `6bf5de83b8ed285410ecc10ecc50a2567ac68ee1`. Public API `/health` returned
+  `status=ok` and `/ready` returned `status=ready`. No runtime, API, DB,
+  exchange, deployment, or live-money behavior changed. `LIVEIMPORT-03` remains
+  blocked by missing authenticated read-only production runtime evidence.
+  Evidence:
+  `docs/planning/prod-build-info-lag-after-collector-hardening-task-2026-05-07.md`.
+
 ## 2026-05-07 LIVEIMPORT-03 Readback Collector
 - 2026-05-07 `LIVEIMPORT-03-COLLECTOR-HARDENING-2026-05-07` hardened the
   read-only collector so a discovered LIVE bot with no RUNNING session cannot

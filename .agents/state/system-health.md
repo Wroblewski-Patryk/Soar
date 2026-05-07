@@ -5,12 +5,12 @@ Last updated: 2026-05-07
 ## Latest Health Snapshot
 
 - Local and remote `main` are synchronized at
-  `6bf5de83a482eda08543138d8518e0aa23ccb3c6` after the readback collector
-  push, while public production web build-info still reports runtime candidate
-  `1f816362c93e117e47cfe52a35e0fec93bd0b37d`. Production API `/health`, API
-  `/ready`, and web `/auth/login` are healthy. The runtime candidate contains
-  the live-import fixes required for `LIVEIMPORT-03`; the newer pushed commits
-  are docs/ops-tooling only.
+  `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3` after the readback collector
+  hardening push, while public production web build-info still reports
+  `6bf5de83b8ed285410ecc10ecc50a2567ac68ee1`. Production API `/health` and
+  API `/ready` are healthy. The deployed runtime candidate contains the
+  live-import fixes required for `LIVEIMPORT-03`; the newer pushed commit is
+  docs/ops-tooling hardening only.
 - Canonical queue check found two open production-evidence items:
   `LIVEIMPORT-03` and `BOTMULTI-09`.
 - The local full-architecture repair and validation chain is closed through
@@ -25,6 +25,11 @@ Last updated: 2026-05-07
 
 ## Latest Validation
 
+- `PROD-BUILDINFO-LAG-2026-05-07` production freshness recheck: canonical
+  build-info wait for `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3` timed out
+  after six HTTP 200 polls with last seen SHA
+  `6bf5de83b8ed285410ecc10ecc50a2567ac68ee1`. Public API `/health` and
+  `/ready` passed.
 - `LIVEIMPORT-03-COLLECTOR-HARDENING-2026-05-07` collector hardening PASS:
   syntax check, help path, dry-run path, missing-auth fail-closed path, and a
   local no-running-session harness. The collector now exits non-zero when no
