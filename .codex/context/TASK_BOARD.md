@@ -20,6 +20,18 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `V1UI-16 fix(web-runtime): show dashboard open-order execution terms`
+  - Scope: closed a BUILDER-mode backend-to-Web runtime order parity slice.
+    Dashboard home Open Orders now renders backend `type` and `stopPrice`
+    beside existing price/fill fields, matching the detailed bot monitoring
+    table so conditional execution terms stay visible on the primary runtime
+    surface. Validation PASS: focused Web presenter test (`10/10`),
+    dashboard open-order regression tests (`3/3`), Web typecheck, Web lint,
+    route-reachable i18n audit (`findings=0`), repository guardrails, full
+    workspace build, and authenticated rendered `/dashboard` smoke with no
+    post-auth console errors. Evidence:
+    `docs/planning/v1ui-16-dashboard-open-order-execution-terms-task-2026-05-07.md`.
+
 - [x] `V1UI-15 fix(web-runtime): show dashboard open-order filled quantity`
   - Scope: closed a TESTER-mode backend-to-Web runtime order parity slice.
     Dashboard home Open Orders now renders backend `filledQuantity` beside

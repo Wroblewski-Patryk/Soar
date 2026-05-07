@@ -327,6 +327,9 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
   - Dashboard home Open Orders rows render backend `filledQuantity` beside
     total `quantity`, matching the detailed bot monitoring order table and
     keeping partial-fill progress visible in the primary runtime surface.
+  - Dashboard home Open Orders rows render backend `type` and `stopPrice`
+    beside limit `price`, matching the detailed bot monitoring order table and
+    keeping conditional execution terms visible in the primary runtime surface.
 - Active-only visibility remains unchanged:
   - `PENDING`,
   - `OPEN`,

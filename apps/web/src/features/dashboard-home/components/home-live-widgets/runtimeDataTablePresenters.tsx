@@ -400,6 +400,13 @@ export const createOpenOrdersColumns = ({
     render: (row) => <span className="font-semibold">{resolveOpenOrderStatusLabel(t, row.status)}</span>,
   },
   {
+    key: "type",
+    label: t("dashboard.home.runtime.type"),
+    sortable: true,
+    accessor: (row) => row.type,
+    render: (row) => row.type,
+  },
+  {
     key: "quantity",
     label: t("dashboard.home.runtime.qty"),
     sortable: true,
@@ -420,6 +427,14 @@ export const createOpenOrdersColumns = ({
     accessor: (row) => row.price ?? null,
     render: (row) =>
       row.price == null ? "-" : formatNumber(row.price, { minimumFractionDigits: 2, maximumFractionDigits: 6 }),
+  },
+  {
+    key: "stopPrice",
+    label: t("dashboard.home.runtime.stop"),
+    sortable: true,
+    accessor: (row) => row.stopPrice ?? null,
+    render: (row) =>
+      row.stopPrice == null ? "-" : formatNumber(row.stopPrice, { minimumFractionDigits: 2, maximumFractionDigits: 6 }),
   },
   {
     key: "action",

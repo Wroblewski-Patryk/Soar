@@ -82,7 +82,7 @@ const openOrderRow = {
   quantity: 0.03,
   filledQuantity: 0.01,
   price: 68000,
-  stopPrice: null,
+  stopPrice: 67000,
   submittedAt: "2026-03-31T10:01:00.000Z",
   createdAt: "2026-03-31T10:01:00.000Z",
   updatedAt: "2026-03-31T10:02:00.000Z",
@@ -100,9 +100,11 @@ describe("createOpenOrdersColumns", () => {
           "dashboard.home.runtime.side": "Side",
           "dashboard.home.runtime.status": "Status",
           "dashboard.home.runtime.openOrderStatusPartiallyFilled": "Partially filled",
+          "dashboard.home.runtime.type": "Type",
           "dashboard.home.runtime.qty": "Qty",
           "dashboard.home.runtime.filled": "Filled",
           "dashboard.home.runtime.price": "Price",
+          "dashboard.home.runtime.stop": "Stop",
         })[key] ?? key,
       formatDateTimeWithSeconds: (value) => value ?? "-",
       formatNumber: (value) => String(value),
@@ -118,19 +120,27 @@ describe("createOpenOrdersColumns", () => {
 
     const quantityColumn = columns.find((column) => column.key === "quantity");
     const filledColumn = columns.find((column) => column.key === "filledQuantity");
+    const typeColumn = columns.find((column) => column.key === "type");
+    const stopColumn = columns.find((column) => column.key === "stopPrice");
 
+    expect(typeColumn?.label).toBe("Type");
     expect(quantityColumn?.label).toBe("Qty");
     expect(filledColumn?.label).toBe("Filled");
+    expect(stopColumn?.label).toBe("Stop");
 
     render(
       <div>
+        <span data-testid="type">{typeColumn?.render?.(openOrderRow)}</span>
         <span data-testid="quantity">{quantityColumn?.render?.(openOrderRow)}</span>
         <span data-testid="filled">{filledColumn?.render?.(openOrderRow)}</span>
+        <span data-testid="stop">{stopColumn?.render?.(openOrderRow)}</span>
       </div>
     );
 
+    expect(screen.getByTestId("type")).toHaveTextContent("LIMIT");
     expect(screen.getByTestId("quantity")).toHaveTextContent("0.03");
     expect(screen.getByTestId("filled")).toHaveTextContent("0.01");
+    expect(screen.getByTestId("stop")).toHaveTextContent("67000");
   });
 });
 
