@@ -3,6 +3,23 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 Dashboard Home runtime market state badge slice `V1UI-37` is
+  closed on `main`. BUILDER-mode review found that the operator surface
+  architecture requires runtime market surfaces to distinguish open-position,
+  accepted-signal, evaluated/no-trade, configured-only snapshot, and
+  unresolved states. Dashboard Home signal cards now render a compact badge
+  from the backend `runtimeMarketState` field using route-owned
+  `dashboard.home.runtime.marketState*` labels, while keeping existing context
+  source, score, detail, and condition rendering intact. Validation PASS:
+  focused RuntimeSignalsSection tests (`5/5`), route-reachable i18n audit
+  (`findings=0`), Web typecheck, Web lint, repository guardrails,
+  `git diff --check`, full workspace build, and authenticated rendered
+  `/dashboard` smoke after dev-server restart with no visible framework
+  overlay, console warnings/errors, page errors, or 5xx responses. Browser
+  plugin validation was attempted first but local `node_repl` resolved Node
+  `v22.13.0` while requiring `>=22.22.0`, so rendered validation used bundled
+  Codex Node plus Playwright. Evidence:
+  `docs/planning/v1ui-37-dashboard-signal-market-state-badge-task-2026-05-07.md`.
 - 2026-05-07 German-Swiss exchange order ID i18n parity slice `V1UI-36` is
   closed on `main`. ARCHITECT-mode review found that runtime order surfaces
   already render backend `exchangeOrderId` in Dashboard Home and Bots

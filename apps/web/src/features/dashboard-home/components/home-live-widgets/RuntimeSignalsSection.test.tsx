@@ -56,6 +56,11 @@ describe("RuntimeSignalsSection", () => {
         signalContextSourceLatestDecisionLabel="Latest decision"
         signalContextSourceConfiguredFallbackLabel="Closed-candle snapshot"
         signalContextSourceUnresolvedLabel="Unresolved"
+        marketStatePositionOpenLabel="Position open"
+        marketStateSignalActiveLabel="Accepted signal"
+        marketStateEvaluatedNoTradeLabel="Evaluated / no trade"
+        marketStateConfiguredOnlyLabel="Market snapshot"
+        marketStateUnresolvedLabel="Unresolved state"
         marketsCount={1}
         actionableSignalsCount={0}
         formatSignalScore={(value) => String(value)}
@@ -109,6 +114,11 @@ describe("RuntimeSignalsSection", () => {
         signalContextSourceLatestDecisionLabel="Latest decision"
         signalContextSourceConfiguredFallbackLabel="Closed-candle snapshot"
         signalContextSourceUnresolvedLabel="Unresolved"
+        marketStatePositionOpenLabel="Position open"
+        marketStateSignalActiveLabel="Accepted signal"
+        marketStateEvaluatedNoTradeLabel="Evaluated / no trade"
+        marketStateConfiguredOnlyLabel="Market snapshot"
+        marketStateUnresolvedLabel="Unresolved state"
         marketsCount={2}
         actionableSignalsCount={1}
         formatSignalScore={(value) => String(value)}
@@ -156,6 +166,11 @@ describe("RuntimeSignalsSection", () => {
         signalContextSourceLatestDecisionLabel="Latest decision"
         signalContextSourceConfiguredFallbackLabel="Closed-candle snapshot"
         signalContextSourceUnresolvedLabel="Unresolved"
+        marketStatePositionOpenLabel="Position open"
+        marketStateSignalActiveLabel="Accepted signal"
+        marketStateEvaluatedNoTradeLabel="Evaluated / no trade"
+        marketStateConfiguredOnlyLabel="Market snapshot"
+        marketStateUnresolvedLabel="Unresolved state"
         marketsCount={1}
         actionableSignalsCount={0}
         formatSignalScore={(value) => String(value)}
@@ -220,6 +235,11 @@ describe("RuntimeSignalsSection", () => {
         signalContextSourceLatestDecisionLabel="Latest decision"
         signalContextSourceConfiguredFallbackLabel="Closed-candle snapshot"
         signalContextSourceUnresolvedLabel="Unresolved"
+        marketStatePositionOpenLabel="Position open"
+        marketStateSignalActiveLabel="Accepted signal"
+        marketStateEvaluatedNoTradeLabel="Evaluated / no trade"
+        marketStateConfiguredOnlyLabel="Market snapshot"
+        marketStateUnresolvedLabel="Unresolved state"
         marketsCount={3}
         actionableSignalsCount={0}
         formatSignalScore={(value) => String(value)}
@@ -230,5 +250,83 @@ describe("RuntimeSignalsSection", () => {
     expect(screen.queryByText("Bot max open positions reached")).not.toBeInTheDocument();
     expect(screen.getByText("No votes")).toBeInTheDocument();
     expect(screen.queryByText("Runtime detail")).not.toBeInTheDocument();
+  });
+
+  it("renders explicit backend runtime market state labels", () => {
+    render(
+      <RuntimeSignalsSection
+        signalSymbols={[
+          ({
+            id: "state-open",
+            symbol: "BTCUSDT",
+            runtimeMarketState: "POSITION_OPEN",
+            lastSignalContextSource: "latest_decision",
+            lastSignalConditionLines: [],
+          } as unknown as RuntimeSymbolWithLive),
+          ({
+            id: "state-active",
+            symbol: "ETHUSDT",
+            runtimeMarketState: "SIGNAL_ACTIVE",
+            lastSignalContextSource: "latest_signal",
+            lastSignalConditionLines: [],
+          } as unknown as RuntimeSymbolWithLive),
+          ({
+            id: "state-no-trade",
+            symbol: "ADAUSDT",
+            runtimeMarketState: "EVALUATED_NO_TRADE",
+            lastSignalContextSource: "latest_decision",
+            lastSignalConditionLines: [],
+          } as unknown as RuntimeSymbolWithLive),
+          ({
+            id: "state-snapshot",
+            symbol: "SOLUSDT",
+            runtimeMarketState: "CONFIGURED_ONLY",
+            lastSignalContextSource: "configured_fallback",
+            lastSignalConditionLines: [],
+          } as unknown as RuntimeSymbolWithLive),
+          ({
+            id: "state-null",
+            symbol: "XRPUSDT",
+            runtimeMarketState: null,
+            lastSignalContextSource: "unresolved",
+            lastSignalConditionLines: [],
+          } as unknown as RuntimeSymbolWithLive),
+        ]}
+        hasSignalOverflow={false}
+        signalRailRef={createRef<HTMLDivElement>()}
+        onScrollPrevious={vi.fn()}
+        onScrollNext={vi.fn()}
+        previousLabel="Prev"
+        nextLabel="Next"
+        longLabel="LONG"
+        shortLabel="SHORT"
+        noSignalDataLabel="No signal data"
+        conditionValueUnavailableLabel="Waiting for indicator data"
+        marketsLabel="Markets"
+        signalsLabel="Signals"
+        signalScoreLabel="Score"
+        signalScoreLongLabel="LONG"
+        signalScoreShortLabel="SHORT"
+        signalContextSourceLabel="Context source"
+        signalContextSourceLatestSignalLabel="Latest signal"
+        signalContextSourceLatestDecisionLabel="Latest decision"
+        signalContextSourceConfiguredFallbackLabel="Closed-candle snapshot"
+        signalContextSourceUnresolvedLabel="Unresolved"
+        marketStatePositionOpenLabel="Position open"
+        marketStateSignalActiveLabel="Accepted signal"
+        marketStateEvaluatedNoTradeLabel="Evaluated / no trade"
+        marketStateConfiguredOnlyLabel="Market snapshot"
+        marketStateUnresolvedLabel="Unresolved state"
+        marketsCount={5}
+        actionableSignalsCount={1}
+        formatSignalScore={(value) => String(value)}
+      />
+    );
+
+    expect(screen.getByText("Position open")).toBeInTheDocument();
+    expect(screen.getByText("Accepted signal")).toBeInTheDocument();
+    expect(screen.getByText("Evaluated / no trade")).toBeInTheDocument();
+    expect(screen.getByText("Market snapshot")).toBeInTheDocument();
+    expect(screen.getByText("Unresolved state")).toBeInTheDocument();
   });
 });

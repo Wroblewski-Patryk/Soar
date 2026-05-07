@@ -25,6 +25,11 @@ type RuntimeSignalsSectionProps = {
   signalContextSourceLatestDecisionLabel: string;
   signalContextSourceConfiguredFallbackLabel: string;
   signalContextSourceUnresolvedLabel: string;
+  marketStatePositionOpenLabel: string;
+  marketStateSignalActiveLabel: string;
+  marketStateEvaluatedNoTradeLabel: string;
+  marketStateConfiguredOnlyLabel: string;
+  marketStateUnresolvedLabel: string;
   marketsCount: number;
   actionableSignalsCount: number;
   formatSignalScore: (value: number) => string;
@@ -75,6 +80,13 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
     if (source === "latest_decision") return props.signalContextSourceLatestDecisionLabel;
     if (source === "configured_fallback") return props.signalContextSourceConfiguredFallbackLabel;
     return props.signalContextSourceUnresolvedLabel;
+  };
+  const resolveMarketStateLabel = (state: RuntimeSymbolWithLive["runtimeMarketState"]) => {
+    if (state === "POSITION_OPEN") return props.marketStatePositionOpenLabel;
+    if (state === "SIGNAL_ACTIVE") return props.marketStateSignalActiveLabel;
+    if (state === "EVALUATED_NO_TRADE") return props.marketStateEvaluatedNoTradeLabel;
+    if (state === "CONFIGURED_ONLY") return props.marketStateConfiguredOnlyLabel;
+    return props.marketStateUnresolvedLabel;
   };
 
   const sortedSignalSymbols = useMemo(() => {
@@ -147,6 +159,7 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
               signal.runtimeMarketState === "CONFIGURED_ONLY" ||
               signal.lastSignalContextSource === "configured_fallback";
             const contextSourceLabel = resolveContextSourceLabel(signal.lastSignalContextSource);
+            const marketStateLabel = resolveMarketStateLabel(signal.runtimeMarketState);
             const scoreSummary = signal.lastSignalScoreSummary;
             const runtimeDetail = signal.lastSignalMessage?.trim() || signal.lastSignalReason?.trim() || null;
 
@@ -156,10 +169,13 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
                 className="w-[calc((100%_-_0.75rem_-_1px)/2)] shrink-0 rounded-box border-b-[3px] border-secondary/70 bg-base-100 bg-gradient-to-br from-primary/70 to-secondary/70 p-px md:w-[calc((100%_-_1rem_-_1px)/3)] xl:w-[calc((100%_-_1.5rem_-_1px)/4)]"
               >
                 <div className="rounded-box bg-base-100/85 px-3.5 py-2.5">
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex flex-wrap items-center gap-2">
                     <p className="min-w-0 font-semibold tracking-wide">
                       {props.renderSymbolLabel ? props.renderSymbolLabel(signal.symbol) : signal.symbol}
                     </p>
+                    <span className="badge badge-outline badge-xs shrink-0">
+                      {marketStateLabel}
+                    </span>
                     <span
                       className="badge badge-ghost badge-xs shrink-0"
                       title={`${props.signalContextSourceLabel}: ${contextSourceLabel}`}

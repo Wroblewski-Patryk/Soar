@@ -20,6 +20,24 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `V1UI-37 feat(web-runtime): show dashboard signal market state`
+  - Scope: closed a BUILDER-mode Dashboard Home runtime-state parity slice.
+    The operator surface architecture requires runtime market surfaces to
+    distinguish open-position, accepted-signal, evaluated/no-trade,
+    configured-only snapshot, and unresolved states. Dashboard Home signal
+    cards now render a compact badge from the backend `runtimeMarketState`
+    field using route-owned `dashboard.home.runtime.marketState*` labels,
+    while keeping existing context source, score, detail, and condition
+    rendering intact. Validation PASS: focused RuntimeSignalsSection tests
+    (`5/5`), route-reachable i18n audit (`findings=0`), Web typecheck, Web
+    lint, repository guardrails, `git diff --check`, full workspace build, and
+    authenticated rendered `/dashboard` smoke after dev-server restart with no
+    visible framework overlay, console warnings/errors, page errors, or 5xx
+    responses. Browser plugin validation was attempted first but local
+    `node_repl` resolved Node `v22.13.0` while requiring `>=22.22.0`, so
+    rendered validation used bundled Codex Node plus Playwright. Evidence:
+    `docs/planning/v1ui-37-dashboard-signal-market-state-badge-task-2026-05-07.md`.
+
 - [x] `V1UI-36 fix(web-i18n): restore de-CH exchange order id parity`
   - Scope: closed an ARCHITECT-mode i18n structure slice. Runtime order
     surfaces already render backend `exchangeOrderId` in Dashboard Home and

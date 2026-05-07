@@ -918,6 +918,11 @@ export default function HomeLiveWidgets() {
                   "dashboard.home.runtime.signalContextSourceConfiguredFallback"
                 )}
                 signalContextSourceUnresolvedLabel={t("dashboard.home.runtime.signalContextSourceUnresolved")}
+                marketStatePositionOpenLabel={t("dashboard.home.runtime.marketStatePositionOpen")}
+                marketStateSignalActiveLabel={t("dashboard.home.runtime.marketStateSignalActive")}
+                marketStateEvaluatedNoTradeLabel={t("dashboard.home.runtime.marketStateEvaluatedNoTrade")}
+                marketStateConfiguredOnlyLabel={t("dashboard.home.runtime.marketStateConfiguredOnly")}
+                marketStateUnresolvedLabel={t("dashboard.home.runtime.marketStateUnresolved")}
                 marketsCount={signalHeaderStats.marketsCount}
                 actionableSignalsCount={signalHeaderStats.actionableSignalsCount}
                 formatSignalScore={(value) => formatNumber(value, { maximumFractionDigits: 2 })}
