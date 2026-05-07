@@ -18,6 +18,15 @@ export type RuntimeCloseReasonValue =
   | "POSITION_LIFETIME"
   | "EXTERNAL_SYNC_MISSING"
   | "SYSTEM_REPAIR";
+export type RuntimePositionProvenanceKind =
+  | "exchange_adopted"
+  | "exchange_unowned"
+  | "exchange_ambiguous"
+  | "exchange_manual_only"
+  | "exchange_synced"
+  | "sync_drift"
+  | "sync_orphan_local"
+  | "sync_orphan_exchange";
 
 export const formatAgeCompact = (ms: number) => {
   if (!Number.isFinite(ms) || ms <= 0) return "0s";
@@ -80,4 +89,20 @@ export const toRuntimeCloseInitiatorPillClass = (value: RuntimeCloseInitiatorVal
   if (value === "USER_EXCHANGE") return "border-info/40 bg-info/10 text-info";
   if (value === "EXCHANGE") return "border-error/40 bg-error/10 text-error";
   return "border-warning/40 bg-warning/10 text-warning";
+};
+
+export const resolveRuntimePositionProvenanceKind = (input: {
+  origin?: string | null;
+  syncState?: string | null;
+  takeoverStatus?: string | null;
+}): RuntimePositionProvenanceKind | null => {
+  if (input.syncState === "DRIFT") return "sync_drift";
+  if (input.syncState === "ORPHAN_LOCAL") return "sync_orphan_local";
+  if (input.syncState === "ORPHAN_EXCHANGE") return "sync_orphan_exchange";
+  if (input.origin !== "EXCHANGE_SYNC") return null;
+  if (input.takeoverStatus === "OWNED_AND_MANAGED") return "exchange_adopted";
+  if (input.takeoverStatus === "UNOWNED") return "exchange_unowned";
+  if (input.takeoverStatus === "AMBIGUOUS") return "exchange_ambiguous";
+  if (input.takeoverStatus === "MANUAL_ONLY") return "exchange_manual_only";
+  return "exchange_synced";
 };

@@ -13,6 +13,7 @@ import {
 import { MonitoringFutureSignalsSection } from "./MonitoringFutureSignalsSection";
 import { BotsPortfolioHistorySection } from "./BotsPortfolioHistorySection";
 import { BotsMonitoringProtectionCell } from "./BotsMonitoringProtectionCell";
+import { BotsMonitoringRuntimeStateCell } from "./BotsMonitoringRuntimeStateCell";
 import {
   Bot,
   BotPortfolioHistoryResponse,
@@ -40,6 +41,9 @@ type MonitorOpenPositionRow = {
   openedAt?: string | null;
   symbol: string;
   side: string;
+  origin?: BotRuntimePositionItem["origin"];
+  syncState?: BotRuntimePositionItem["syncState"];
+  takeoverStatus?: BotRuntimePositionItem["takeoverStatus"];
   continuityState?: BotRuntimePositionItem["continuityState"];
   actionable?: boolean;
   strategyAutomationContextResolved?: boolean;
@@ -60,16 +64,6 @@ type MonitorOpenPositionRow = {
   ttpProtectedPercent: number | null;
   ttpProtectedSource: "backend" | "prospective" | null;
   tslProtectedPercent: number | null;
-};
-
-const runtimeStateLabelKey = (
-  continuityState: BotRuntimePositionItem["continuityState"] | null | undefined
-): TranslationKey => {
-  if (continuityState === "RECOVERING") return "dashboard.bots.monitoring.runtimeStateRecovering";
-  if (continuityState === "RECOVERED_UNACTIONABLE") return "dashboard.bots.monitoring.runtimeStateRecoveredUnactionable";
-  if (continuityState === "EXTERNAL_CLOSE_CONFIRMED") return "dashboard.bots.monitoring.runtimeStateExternalCloseConfirmed";
-  if (continuityState === "REPAIR_ONLY_CLEANUP") return "dashboard.bots.monitoring.runtimeStateRepairOnlyCleanup";
-  return "dashboard.bots.monitoring.runtimeStateConfirmed";
 };
 
 type MonitorOperationalTradeRow = {
@@ -317,29 +311,6 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
     toTradeLifecycleLabelKey,
     formatTradeFeeMeta,
   } = props;
-
-  const renderRuntimeState = (position: MonitorOpenPositionRow) => {
-    const isActionBlocked = position.actionable === false;
-    const strategyContextUnresolved = position.strategyAutomationContextResolved === false;
-
-    return (
-      <div className="flex flex-col gap-1 leading-tight">
-        <span className={`badge badge-sm ${isActionBlocked ? "badge-warning" : "badge-success"}`}>
-          {t(runtimeStateLabelKey(position.continuityState))}
-        </span>
-        {isActionBlocked ? (
-          <span className="text-[10px] uppercase tracking-wide text-warning">
-            {t("dashboard.bots.monitoring.runtimeStateActionBlocked")}
-          </span>
-        ) : null}
-        {strategyContextUnresolved ? (
-          <span className="text-[10px] uppercase tracking-wide opacity-60">
-            {t("dashboard.bots.monitoring.runtimeStateStrategyContextUnresolved")}
-          </span>
-        ) : null}
-      </div>
-    );
-  };
 
   return (
     <div className="space-y-4 rounded-box border border-base-300/60 bg-base-200/60 p-4">
@@ -693,7 +664,9 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                               <td>{formatDateTime(position.openedAt)}</td>
                               <td className="font-medium">{position.symbol}</td>
                               <td>{position.side}</td>
-                              <td>{renderRuntimeState(position)}</td>
+                              <td>
+                                <BotsMonitoringRuntimeStateCell position={position} t={t} />
+                              </td>
                               <td>{formatNumber(position.quantity, 6)}</td>
                               <td>{formatNumber(position.entryPrice, 4)}</td>
                               <td>

@@ -226,6 +226,59 @@ describe("createOpenPositionsColumns", () => {
     expect(screen.getByText("Strategy context unresolved")).toBeInTheDocument();
   });
 
+  it("renders exchange-adopted provenance from runtime position payload", () => {
+    const columns = createOpenPositionsColumns({
+      t: (key) =>
+        ({
+          "dashboard.home.runtime.timeOpened": "Time opened",
+          "dashboard.home.runtime.symbol": "Symbol",
+          "dashboard.home.runtime.side": "Side",
+          "dashboard.home.runtime.status": "Status",
+          "dashboard.home.runtime.margin": "Margin",
+          "dashboard.home.runtime.pnl": "PnL",
+          "dashboard.home.runtime.pnlPercent": "PnL%",
+          "dashboard.home.runtime.markPrice": "Mark",
+          "dashboard.bots.monitoring.markPriceSourceExchangePnl": "Exchange PnL",
+          "dashboard.home.runtime.dca": "DCA",
+          "dashboard.home.runtime.continuityConfirmed": "Confirmed",
+          "dashboard.home.runtime.provenanceExchangeAdopted": "Exchange adopted",
+        })[key] ?? key,
+      formatDateTimeWithSeconds: (value) => value ?? "-",
+      formatNumber: (value) => String(value),
+      formatPercent: (value) => `${value}%`,
+      formatRuntimeAmount: (value) => String(value),
+      formatDcaPercent: (value) => `${value}%`,
+      withRuntimeUnit: (label) => label,
+      resolveRuntimeIcon: () => null,
+      runtimeIconsLoading: false,
+      runtimeIconsError: null,
+      showDynamicStopColumns: false,
+      closePositionActionColumnLabel: "Action",
+      closePositionPendingLabel: "Closing...",
+      closePositionButtonLabel: "Close position",
+      editPositionButtonLabel: "Edit position",
+      positionActionsUnavailableLabel: "Unavailable",
+      isClosingPosition: () => false,
+      onOpenPositionEdit: vi.fn(),
+      onCloseRuntimePosition: vi.fn(),
+    });
+
+    const statusColumn = columns.find((column) => column.key === "status");
+
+    render(
+      <div>
+        {statusColumn?.render?.({
+          ...openPositionRow,
+          origin: "EXCHANGE_SYNC",
+          syncState: "IN_SYNC",
+          takeoverStatus: "OWNED_AND_MANAGED",
+        })}
+      </div>
+    );
+
+    expect(screen.getByText("Exchange adopted")).toHaveClass("uppercase");
+  });
+
   it("labels fallback TTP protection as prospective in open-position rows", () => {
     const columns = createOpenPositionsColumns({
       t: (key) =>

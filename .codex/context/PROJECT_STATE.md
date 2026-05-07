@@ -3,6 +3,19 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 runtime position provenance label slice `V1UI-10` is closed on
+  `main`. Web now maps backend `origin`, `syncState`, and `takeoverStatus`
+  fields into explicit open-position provenance labels in both `/dashboard`
+  and `/dashboard/bots`, so imported/adopted exchange-sync rows, drift, and
+  orphan states no longer look like ordinary bot-managed runtime rows.
+  Validation PASS: focused Web runtime/dashboard/bot monitoring tests
+  (`25/25`), Web typecheck, route-reachable i18n audit (`findings=0`), Web
+  lint, repository guardrails, Web build, and authenticated rendered
+  `/dashboard` plus `/dashboard/bots` smoke with no console errors. Browser
+  plugin validation was blocked by local `node_repl` resolving Node `v22.13.0`
+  while requiring `>= v22.22.0`, so the smoke used bundled Codex Node plus
+  Playwright. Evidence:
+  `docs/planning/v1ui-10-runtime-position-provenance-label-task-2026-05-07.md`.
 - 2026-05-07 runtime TTP source parity slice `V1UI-09` is closed locally on
   branch `codex/v1-app-function-check`. API runtime position reads now expose
   additive `dynamicTtpStopLossSource` metadata (`runtime_state` or

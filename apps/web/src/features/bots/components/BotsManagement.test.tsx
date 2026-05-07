@@ -717,6 +717,9 @@ describe("BotsManagement", () => {
           symbol: "ETHUSDT",
           side: "LONG",
           status: "OPEN",
+          origin: "EXCHANGE_SYNC",
+          syncState: "IN_SYNC",
+          takeoverStatus: "OWNED_AND_MANAGED",
           continuityState: "RECOVERED_UNACTIONABLE",
           actionable: false,
           strategyAutomationContextResolved: false,
@@ -878,6 +881,7 @@ describe("BotsManagement", () => {
       expect(screen.getByText("Ticker fallback")).toBeInTheDocument();
       expect(screen.getByText("PnL z gieldy")).toBeInTheDocument();
       expect(screen.getByText("Odzyskana, bez akcji")).toBeInTheDocument();
+      expect(screen.getByText("Zaadoptowana z gieldy")).toBeInTheDocument();
       expect(screen.getByText("Akcja zablokowana")).toBeInTheDocument();
       expect(screen.getByText("Kontekst strategii nierozwiazany")).toBeInTheDocument();
       expect(screen.getByText("Prospektywna")).toBeInTheDocument();

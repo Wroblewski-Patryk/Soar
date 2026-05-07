@@ -29,6 +29,15 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-07: Closed `V1UI-10` with
+  `docs/planning/v1ui-10-runtime-position-provenance-label-task-2026-05-07.md`.
+  Dashboard home and bot monitoring open-position status cells now render
+  backend `origin`, `syncState`, and `takeoverStatus` provenance truth, making
+  imported/adopted exchange-sync rows, drift, and orphan states
+  operator-visible. Validation PASS: focused Web runtime/dashboard/bot
+  monitoring tests (`25/25`), Web typecheck, route-reachable i18n audit
+  (`findings=0`), Web lint, repository guardrails, Web build, and authenticated
+  rendered `/dashboard` plus `/dashboard/bots` smoke with no console errors.
 - 2026-05-07: Closed `V1UI-09` with
   `docs/planning/v1ui-09-runtime-ttp-source-parity-task-2026-05-07.md`.
   API runtime position reads now expose additive `dynamicTtpStopLossSource`

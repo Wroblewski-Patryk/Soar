@@ -5,6 +5,10 @@ import AssetSymbol from "@/ui/components/AssetSymbol";
 import { TableIconButtonAction } from "@/ui/components/TableUi";
 import type { BotRuntimeTrade } from "@/features/bots/types/bot.type";
 import { renderDcaLadderCell } from "@/features/shared/dcaLadderCell";
+import {
+  resolveRuntimePositionProvenanceKind,
+  type RuntimePositionProvenanceKind,
+} from "@/features/shared/runtimeMonitoringFormatters";
 import { resolveRuntimeOpenPositionMarkPriceSourceLabelKey } from "@/features/bots/utils/runtimeOpenPositionDerivations";
 import {
   resolveDynamicTslDisplay,
@@ -64,6 +68,19 @@ const resolveContinuityStateLabel = (
     default:
       return t("dashboard.home.runtime.continuityConfirmed");
   }
+};
+
+const runtimePositionProvenanceLabelKey = (
+  kind: RuntimePositionProvenanceKind
+) => {
+  if (kind === "exchange_adopted") return "dashboard.home.runtime.provenanceExchangeAdopted";
+  if (kind === "exchange_unowned") return "dashboard.home.runtime.provenanceExchangeUnowned";
+  if (kind === "exchange_ambiguous") return "dashboard.home.runtime.provenanceExchangeAmbiguous";
+  if (kind === "exchange_manual_only") return "dashboard.home.runtime.provenanceExchangeManualOnly";
+  if (kind === "sync_drift") return "dashboard.home.runtime.provenanceSyncDrift";
+  if (kind === "sync_orphan_local") return "dashboard.home.runtime.provenanceSyncOrphanLocal";
+  if (kind === "sync_orphan_exchange") return "dashboard.home.runtime.provenanceSyncOrphanExchange";
+  return "dashboard.home.runtime.provenanceExchangeSynced";
 };
 
 type OpenPositionsColumnsArgs = {
@@ -147,23 +164,31 @@ export const createOpenPositionsColumns = ({
       label: t("dashboard.home.runtime.status"),
       sortable: true,
       accessor: (row) => row.continuityState ?? "CONFIRMED",
-      render: (row) => (
-        <div className="flex flex-col gap-1 leading-tight">
-          <span className={row.actionable === false ? "badge badge-warning badge-sm" : "badge badge-success badge-sm"}>
-            {resolveContinuityStateLabel(t, row.continuityState)}
-          </span>
-          {row.actionable === false ? (
-            <span className="text-[10px] uppercase tracking-wide text-warning">
-              {t("dashboard.home.runtime.runtimeStateActionBlocked")}
+      render: (row) => {
+        const provenanceKind = resolveRuntimePositionProvenanceKind(row);
+        return (
+          <div className="flex flex-col gap-1 leading-tight">
+            <span className={row.actionable === false ? "badge badge-warning badge-sm" : "badge badge-success badge-sm"}>
+              {resolveContinuityStateLabel(t, row.continuityState)}
             </span>
-          ) : null}
-          {row.strategyAutomationContextResolved === false ? (
-            <span className="text-[10px] uppercase tracking-wide opacity-60">
-              {t("dashboard.home.runtime.runtimeStateStrategyContextUnresolved")}
-            </span>
-          ) : null}
-        </div>
-      ),
+            {provenanceKind ? (
+              <span className="text-[10px] uppercase tracking-wide opacity-60">
+                {t(runtimePositionProvenanceLabelKey(provenanceKind))}
+              </span>
+            ) : null}
+            {row.actionable === false ? (
+              <span className="text-[10px] uppercase tracking-wide text-warning">
+                {t("dashboard.home.runtime.runtimeStateActionBlocked")}
+              </span>
+            ) : null}
+            {row.strategyAutomationContextResolved === false ? (
+              <span className="text-[10px] uppercase tracking-wide opacity-60">
+                {t("dashboard.home.runtime.runtimeStateStrategyContextUnresolved")}
+              </span>
+            ) : null}
+          </div>
+        );
+      },
     },
     {
       key: "margin",

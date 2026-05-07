@@ -20,6 +20,18 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `V1UI-10 fix(web-runtime): show position provenance labels`
+  - Scope: closed a TESTER-mode backend-to-Web runtime provenance parity
+    slice. Dashboard home and bot monitoring open-position status cells now
+    render backend `origin`, `syncState`, and `takeoverStatus` truth, so
+    imported/adopted exchange-sync rows, drift, and orphan states remain
+    operator-visible. Validation PASS: focused Web runtime/dashboard/bot
+    monitoring tests (`25/25`), Web typecheck, route-reachable i18n audit
+    (`findings=0`), Web lint, repository guardrails, Web build, and
+    authenticated rendered `/dashboard` plus `/dashboard/bots` smoke with no
+    console errors. Evidence:
+    `docs/planning/v1ui-10-runtime-position-provenance-label-task-2026-05-07.md`.
+
 - [x] `V1UI-09 fix(web-runtime): label API fallback TTP protection source`
   - Scope: closed an ARCHITECT-mode runtime protection-truth parity slice.
     API runtime position reads now expose additive `dynamicTtpStopLossSource`

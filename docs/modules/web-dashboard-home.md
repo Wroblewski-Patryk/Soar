@@ -92,6 +92,10 @@ Out of scope:
 - Open-position status cells expose continuity, actionability, and unresolved
   strategy-context truth from backend runtime payloads so fail-closed rows are
   text-visible on the primary operator surface.
+- Open-position status cells also expose imported/adopted exchange provenance
+  from backend `origin`, `syncState`, and `takeoverStatus` fields, so
+  `EXCHANGE_SYNC` rows and sync drift/orphan states do not look like ordinary
+  bot-managed runtime rows.
 - Open-position dynamic TTP cells label config-derived fallback protection as
   prospective, including API `strategy_fallback` source metadata and
   web-computed display fallback, preserving the distinction between backend

@@ -4722,6 +4722,17 @@ Historical carryover snapshot, superseded by the active `NOW` entries above:
 - [x] `PAR-24 fix(web-build): added `public/favicon.ico` asset to prevent Next.js page-data build failure`
 
 ## 2026-05-07 V1 UI Runtime Parity Slice
+- [x] `V1UI-10 fix(web-runtime): show position provenance labels`
+  - Closed the runtime position provenance parity gap. Web now maps backend
+    `origin`, `syncState`, and `takeoverStatus` fields into explicit
+    open-position provenance labels in both `/dashboard` and
+    `/dashboard/bots`, so imported/adopted exchange-sync rows, drift, and
+    orphan states do not look like ordinary bot-managed runtime rows.
+    Validation PASS: focused Web runtime/dashboard/bot monitoring tests
+    (`25/25`), Web typecheck, route-reachable i18n audit (`findings=0`), Web
+    lint, repository guardrails, Web build, and authenticated rendered
+    `/dashboard` plus `/dashboard/bots` smoke with no console errors.
+
 - [x] `V1UI-09 fix(web-runtime): label API fallback TTP protection source`
   - Closed the runtime protection-source parity gap. API runtime position
     reads now expose additive `dynamicTtpStopLossSource` metadata and Web
