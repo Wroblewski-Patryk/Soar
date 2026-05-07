@@ -24,6 +24,10 @@ import { supportsExchangeCapability } from "../../../features/exchanges/exchange
 import { useCoinIconLookup } from "../../../features/icons/hooks/useCoinIconLookup";
 import { updatePositionManualParams } from "../../../features/positions/services/positions.service";
 import { resolveBotVenueContext } from "../../../features/bots/utils/runtimeSurfaceTruth";
+import {
+  resolveRuntimePositionProvenanceKind,
+  runtimePositionProvenanceLabelSuffix,
+} from "@/features/shared/runtimeMonitoringFormatters";
 import RuntimeDataSection from "./home-live-widgets/RuntimeDataSection";
 import RuntimeOnboardingSection from "./home-live-widgets/RuntimeOnboardingSection";
 import RuntimeSidebarSection from "./home-live-widgets/RuntimeSidebarSection";
@@ -97,6 +101,16 @@ const resolvePositionOriginLabel = (
   if (origin === "BOT") return t("dashboard.home.runtime.sourceBot");
   if (origin === "EXCHANGE_SYNC" || origin === "BACKTEST") return t("dashboard.home.runtime.sourceImported");
   return t("dashboard.home.runtime.reasonUnknown");
+};
+
+const resolvePositionProvenanceLabel = (
+  position: OpenPositionWithLive,
+  t: (key: string) => string
+) => {
+  const provenanceKind = resolveRuntimePositionProvenanceKind(position);
+  return provenanceKind
+    ? t(`dashboard.home.runtime.${runtimePositionProvenanceLabelSuffix(provenanceKind)}`)
+    : null;
 };
 
 export const resolveSelectedStrategyDisplay = (
@@ -915,8 +929,15 @@ export default function HomeLiveWidgets() {
                 </p>
                 <p>
                   <span className="opacity-70">{t("dashboard.home.runtime.reason")}:</span>{" "}
-                  <span className="font-semibold">
-                    {resolvePositionOriginLabel(positionEditDraft.position.origin, t)}
+                  <span className="inline-flex flex-col align-top leading-tight">
+                    <span className="font-semibold">
+                      {resolvePositionOriginLabel(positionEditDraft.position.origin, t)}
+                    </span>
+                    {resolvePositionProvenanceLabel(positionEditDraft.position, t) ? (
+                      <span className="text-[10px] uppercase tracking-wide opacity-60">
+                        {resolvePositionProvenanceLabel(positionEditDraft.position, t)}
+                      </span>
+                    ) : null}
                   </span>
                 </p>
                 <p>

@@ -87,9 +87,10 @@ Out of scope:
   so recovered, recovering, externally closed, repair-only, and unresolved
   strategy-context states do not look like normal actionable rows.
 - Monitoring open-position rows also expose backend provenance/adoption truth
-  (`origin`, `syncState`, and `takeoverStatus`) so imported, adopted,
-  ambiguous, manual-only, drifted, and orphaned exchange-sync rows remain
-  visible as non-ordinary runtime states.
+  (`origin`, `syncState`, and `takeoverStatus`) through the shared Web
+  provenance label helper so imported, adopted, ambiguous, manual-only,
+  drifted, and orphaned exchange-sync rows remain visible as non-ordinary
+  runtime states.
 - Monitoring open-position TTP cells label API `strategy_fallback`
   protection as prospective, preserving the distinction between canonical
   runtime TTP state and read-model assistance from strategy configuration.

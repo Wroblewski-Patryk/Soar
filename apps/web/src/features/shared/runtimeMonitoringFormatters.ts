@@ -27,6 +27,15 @@ export type RuntimePositionProvenanceKind =
   | "sync_drift"
   | "sync_orphan_local"
   | "sync_orphan_exchange";
+export type RuntimePositionProvenanceLabelSuffix =
+  | "provenanceExchangeAdopted"
+  | "provenanceExchangeUnowned"
+  | "provenanceExchangeAmbiguous"
+  | "provenanceExchangeManualOnly"
+  | "provenanceExchangeSynced"
+  | "provenanceSyncDrift"
+  | "provenanceSyncOrphanLocal"
+  | "provenanceSyncOrphanExchange";
 
 export const formatAgeCompact = (ms: number) => {
   if (!Number.isFinite(ms) || ms <= 0) return "0s";
@@ -105,4 +114,17 @@ export const resolveRuntimePositionProvenanceKind = (input: {
   if (input.takeoverStatus === "AMBIGUOUS") return "exchange_ambiguous";
   if (input.takeoverStatus === "MANUAL_ONLY") return "exchange_manual_only";
   return "exchange_synced";
+};
+
+export const runtimePositionProvenanceLabelSuffix = (
+  kind: RuntimePositionProvenanceKind
+): RuntimePositionProvenanceLabelSuffix => {
+  if (kind === "exchange_adopted") return "provenanceExchangeAdopted";
+  if (kind === "exchange_unowned") return "provenanceExchangeUnowned";
+  if (kind === "exchange_ambiguous") return "provenanceExchangeAmbiguous";
+  if (kind === "exchange_manual_only") return "provenanceExchangeManualOnly";
+  if (kind === "sync_drift") return "provenanceSyncDrift";
+  if (kind === "sync_orphan_local") return "provenanceSyncOrphanLocal";
+  if (kind === "sync_orphan_exchange") return "provenanceSyncOrphanExchange";
+  return "provenanceExchangeSynced";
 };

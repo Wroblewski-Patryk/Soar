@@ -7,6 +7,7 @@ import type { BotRuntimeTrade } from "@/features/bots/types/bot.type";
 import { renderDcaLadderCell } from "@/features/shared/dcaLadderCell";
 import {
   resolveRuntimePositionProvenanceKind,
+  runtimePositionProvenanceLabelSuffix,
   type RuntimePositionProvenanceKind,
 } from "@/features/shared/runtimeMonitoringFormatters";
 import { resolveRuntimeOpenPositionMarkPriceSourceLabelKey } from "@/features/bots/utils/runtimeOpenPositionDerivations";
@@ -73,14 +74,7 @@ const resolveContinuityStateLabel = (
 const runtimePositionProvenanceLabelKey = (
   kind: RuntimePositionProvenanceKind
 ) => {
-  if (kind === "exchange_adopted") return "dashboard.home.runtime.provenanceExchangeAdopted";
-  if (kind === "exchange_unowned") return "dashboard.home.runtime.provenanceExchangeUnowned";
-  if (kind === "exchange_ambiguous") return "dashboard.home.runtime.provenanceExchangeAmbiguous";
-  if (kind === "exchange_manual_only") return "dashboard.home.runtime.provenanceExchangeManualOnly";
-  if (kind === "sync_drift") return "dashboard.home.runtime.provenanceSyncDrift";
-  if (kind === "sync_orphan_local") return "dashboard.home.runtime.provenanceSyncOrphanLocal";
-  if (kind === "sync_orphan_exchange") return "dashboard.home.runtime.provenanceSyncOrphanExchange";
-  return "dashboard.home.runtime.provenanceExchangeSynced";
+  return `dashboard.home.runtime.${runtimePositionProvenanceLabelSuffix(kind)}`;
 };
 
 type OpenPositionsColumnsArgs = {

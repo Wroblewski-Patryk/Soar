@@ -96,6 +96,9 @@ Out of scope:
   from backend `origin`, `syncState`, and `takeoverStatus` fields, so
   `EXCHANGE_SYNC` rows and sync drift/orphan states do not look like ordinary
   bot-managed runtime rows.
+- The dashboard position edit modal repeats noteworthy imported/adopted
+  provenance from the same backend fields, preserving source truth at the
+  action/edit decision point without changing command authority.
 - Open-position dynamic TTP cells label config-derived fallback protection as
   prospective, including API `strategy_fallback` source metadata and
   web-computed display fallback, preserving the distinction between backend

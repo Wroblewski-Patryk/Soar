@@ -4722,6 +4722,17 @@ Historical carryover snapshot, superseded by the active `NOW` entries above:
 - [x] `PAR-24 fix(web-build): added `public/favicon.ico` asset to prevent Next.js page-data build failure`
 
 ## 2026-05-07 V1 UI Runtime Parity Slice
+- [x] `V1UI-11 fix(web-runtime): show provenance in dashboard position modal`
+  - Closed the dashboard action-context provenance gap. `/dashboard` position
+    edit modal now repeats backend `origin`, `syncState`, and
+    `takeoverStatus` provenance truth, so imported/adopted exchange context is
+    visible at the edit/action decision point as well as in the table. Web also
+    reuses one shared provenance label suffix helper across dashboard and bot
+    monitoring presenters. Validation PASS: focused Web runtime/dashboard/bot
+    monitoring tests (`46/46`), Web typecheck, Web lint, route-reachable i18n
+    audit (`findings=0`), repository guardrails, Web build, and authenticated
+    rendered `/dashboard` smoke with no console errors.
+
 - [x] `V1UI-10 fix(web-runtime): show position provenance labels`
   - Closed the runtime position provenance parity gap. Web now maps backend
     `origin`, `syncState`, and `takeoverStatus` fields into explicit

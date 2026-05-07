@@ -1,6 +1,7 @@
 import type { TranslationKey } from "@/i18n/translations";
 import {
   resolveRuntimePositionProvenanceKind,
+  runtimePositionProvenanceLabelSuffix,
   type RuntimePositionProvenanceKind,
 } from "@/features/shared/runtimeMonitoringFormatters";
 import type { BotRuntimePositionItem } from "../../types/bot.type";
@@ -27,14 +28,7 @@ const runtimeStateLabelKey = (
 const runtimePositionProvenanceLabelKey = (
   kind: RuntimePositionProvenanceKind
 ): TranslationKey => {
-  if (kind === "exchange_adopted") return "dashboard.bots.monitoring.provenanceExchangeAdopted";
-  if (kind === "exchange_unowned") return "dashboard.bots.monitoring.provenanceExchangeUnowned";
-  if (kind === "exchange_ambiguous") return "dashboard.bots.monitoring.provenanceExchangeAmbiguous";
-  if (kind === "exchange_manual_only") return "dashboard.bots.monitoring.provenanceExchangeManualOnly";
-  if (kind === "sync_drift") return "dashboard.bots.monitoring.provenanceSyncDrift";
-  if (kind === "sync_orphan_local") return "dashboard.bots.monitoring.provenanceSyncOrphanLocal";
-  if (kind === "sync_orphan_exchange") return "dashboard.bots.monitoring.provenanceSyncOrphanExchange";
-  return "dashboard.bots.monitoring.provenanceExchangeSynced";
+  return `dashboard.bots.monitoring.${runtimePositionProvenanceLabelSuffix(kind)}` as TranslationKey;
 };
 
 export function BotsMonitoringRuntimeStateCell({

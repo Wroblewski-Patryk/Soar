@@ -20,6 +20,18 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `V1UI-11 fix(web-runtime): show provenance in dashboard position modal`
+  - Scope: closed a BUILDER-mode dashboard action-context parity slice.
+    `/dashboard` position edit modal now repeats backend provenance from
+    `origin`, `syncState`, and `takeoverStatus`, keeping exchange-adopted and
+    imported context visible at the action/edit decision point. Web also reuses
+    one shared provenance label suffix helper across dashboard and bot
+    monitoring presenters. Validation PASS: focused Web runtime/dashboard/bot
+    monitoring tests (`46/46`), Web typecheck, Web lint, route-reachable i18n
+    audit (`findings=0`), repository guardrails, Web build, and authenticated
+    rendered `/dashboard` smoke with no console errors. Evidence:
+    `docs/planning/v1ui-11-dashboard-position-modal-provenance-task-2026-05-07.md`.
+
 - [x] `V1UI-10 fix(web-runtime): show position provenance labels`
   - Scope: closed a TESTER-mode backend-to-Web runtime provenance parity
     slice. Dashboard home and bot monitoring open-position status cells now

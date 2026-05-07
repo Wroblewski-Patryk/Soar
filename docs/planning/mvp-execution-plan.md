@@ -29,6 +29,14 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-07: Closed `V1UI-11` with
+  `docs/planning/v1ui-11-dashboard-position-modal-provenance-task-2026-05-07.md`.
+  Dashboard position edit modal now repeats backend `origin`, `syncState`, and
+  `takeoverStatus` provenance truth, keeping imported/adopted exchange context
+  visible at the action/edit decision point. Validation PASS: focused Web
+  runtime/dashboard/bot monitoring tests (`46/46`), Web typecheck, Web lint,
+  route-reachable i18n audit (`findings=0`), repository guardrails, Web build,
+  and authenticated rendered `/dashboard` smoke with no console errors.
 - 2026-05-07: Closed `V1UI-10` with
   `docs/planning/v1ui-10-runtime-position-provenance-label-task-2026-05-07.md`.
   Dashboard home and bot monitoring open-position status cells now render

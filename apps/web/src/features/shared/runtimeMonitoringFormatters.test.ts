@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { resolveRuntimePositionProvenanceKind } from "./runtimeMonitoringFormatters";
+import {
+  resolveRuntimePositionProvenanceKind,
+  runtimePositionProvenanceLabelSuffix,
+} from "./runtimeMonitoringFormatters";
 
 describe("resolveRuntimePositionProvenanceKind", () => {
   it("keeps ordinary bot-origin positions unlabeled", () => {
@@ -38,5 +41,12 @@ describe("resolveRuntimePositionProvenanceKind", () => {
         takeoverStatus: "OWNED_AND_MANAGED",
       })
     ).toBe("sync_orphan_local");
+  });
+
+  it("maps provenance kinds to shared i18n suffixes", () => {
+    expect(runtimePositionProvenanceLabelSuffix("exchange_adopted")).toBe(
+      "provenanceExchangeAdopted"
+    );
+    expect(runtimePositionProvenanceLabelSuffix("sync_drift")).toBe("provenanceSyncDrift");
   });
 });

@@ -2230,7 +2230,7 @@ describe("HomeLiveWidgets", () => {
       openItems: [
         {
           id: "pos-close-1",
-          origin: "BOT",
+          origin: "EXCHANGE_SYNC",
           managementMode: "BOT_MANAGED",
           syncState: "IN_SYNC",
           takeoverStatus: "OWNED_AND_MANAGED",
@@ -2287,6 +2287,9 @@ describe("HomeLiveWidgets", () => {
     fireEvent.click(openPositionsTab);
     const editButton = await screen.findByRole("button", { name: /Edytuj pozycje|Edit position/i });
     fireEvent.click(editButton);
+    await waitFor(() => {
+      expect(screen.getAllByText(/Exchange adopted|Zaadoptowana z gieldy/i).length).toBeGreaterThanOrEqual(2);
+    });
     expect(await screen.findByLabelText(/Take profit \(TP\)/i)).toBeInTheDocument();
     expect(await screen.findByLabelText(/Stop loss \(SL\)/i)).toBeInTheDocument();
     expect(await screen.findByLabelText(/Notes|Notatki|Notas/i)).toBeInTheDocument();

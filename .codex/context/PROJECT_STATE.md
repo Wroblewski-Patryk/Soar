@@ -3,6 +3,20 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 dashboard position modal provenance slice `V1UI-11` is closed on
+  `main`. The `/dashboard` position edit modal now repeats noteworthy backend
+  provenance from `origin`, `syncState`, and `takeoverStatus`, so
+  exchange-adopted/imported context is visible at the action/edit decision
+  point as well as in the open-position table. Web also now reuses one shared
+  provenance label suffix helper across dashboard and bot monitoring
+  presenters. Validation PASS: focused Web runtime/dashboard/bot monitoring
+  tests (`46/46`), Web typecheck, Web lint, route-reachable i18n audit
+  (`findings=0`), repository guardrails, Web build, and authenticated rendered
+  `/dashboard` smoke with no console errors. Browser plugin validation was
+  blocked by local `node_repl` resolving Node `v22.13.0` while requiring
+  `>= v22.22.0`, so the smoke used bundled Codex Node plus Playwright.
+  Evidence:
+  `docs/planning/v1ui-11-dashboard-position-modal-provenance-task-2026-05-07.md`.
 - 2026-05-07 runtime position provenance label slice `V1UI-10` is closed on
   `main`. Web now maps backend `origin`, `syncState`, and `takeoverStatus`
   fields into explicit open-position provenance labels in both `/dashboard`
