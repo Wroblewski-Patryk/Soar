@@ -223,6 +223,7 @@ describe("HomeLiveWidgets open-orders source column", () => {
           ...baseOrder,
           id: "order-source-bot",
           origin: "BOT",
+          exchangeOrderId: "binance-order-eth-1",
           symbol: "ETHUSDT",
           side: "SELL",
           quantity: 0.2,
@@ -269,9 +270,11 @@ describe("HomeLiveWidgets open-orders source column", () => {
     const table = await screen.findByRole("table");
 
     expect(within(table).getByRole("columnheader", { name: /Source/i })).toBeInTheDocument();
+    expect(within(table).getByRole("columnheader", { name: /Exchange ID/i })).toBeInTheDocument();
     expect(within(table).getByText("Manual")).toBeInTheDocument();
     expect(within(table).getByText("Bot")).toBeInTheDocument();
     expect(within(table).getByText("Imported")).toBeInTheDocument();
+    expect(within(table).getByText("binance-order-eth-1")).toBeInTheDocument();
     expect(screen.getByText("Rows: 7")).toBeInTheDocument();
     await waitFor(() => {
       expect(lookupCoinIconsMock).toHaveBeenCalledWith(["ADAUSDT", "BTCUSDT", "ETHUSDT"]);

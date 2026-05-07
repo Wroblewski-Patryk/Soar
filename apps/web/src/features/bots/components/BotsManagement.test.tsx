@@ -684,6 +684,7 @@ describe("BotsManagement", () => {
         {
           id: "order-exchange-sync-1",
           origin: "EXCHANGE_SYNC",
+          exchangeOrderId: "binance-order-monitor-1",
           symbol: "ETHUSDT",
           side: "BUY",
           type: "LIMIT",
@@ -899,6 +900,7 @@ describe("BotsManagement", () => {
       expect(screen.getByText("Odzyskana, bez akcji")).toBeInTheDocument();
       expect(screen.getByText("Zaadoptowana z gieldy")).toBeInTheDocument();
       expect(screen.getByText("Importowane")).toBeInTheDocument();
+      expect(screen.getByText("binance-order-monitor-1")).toBeInTheDocument();
       expect(screen.getByText("Oczekuje na fill")).toBeInTheDocument();
       expect(screen.getByText("Akcja zablokowana")).toBeInTheDocument();
       expect(screen.getByText("Kontekst strategii nierozwiazany")).toBeInTheDocument();

@@ -262,6 +262,7 @@ export const dashboardHomePl = {
     "realizedPnl": "Realized PnL",
     "origin": "Origin",
     "source": "Zrodlo",
+    "exchangeOrderId": "ID gieldy",
     "sourceManual": "Manualne",
     "sourceBot": "Bot",
     "sourceImported": "Importowane",

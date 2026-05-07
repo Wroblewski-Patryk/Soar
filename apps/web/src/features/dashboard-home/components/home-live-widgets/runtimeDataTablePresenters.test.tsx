@@ -75,6 +75,7 @@ const tradeRow = {
 const openOrderRow = {
   id: "order-partial-1",
   origin: "USER",
+  exchangeOrderId: "binance-order-123",
   symbol: "BTCUSDT",
   side: "BUY",
   type: "LIMIT",
@@ -96,6 +97,7 @@ describe("createOpenOrdersColumns", () => {
           "dashboard.home.runtime.time": "Time",
           "dashboard.home.runtime.symbol": "Symbol",
           "dashboard.home.runtime.source": "Source",
+          "dashboard.home.runtime.exchangeOrderId": "Exchange ID",
           "dashboard.home.runtime.sourceManual": "Manual",
           "dashboard.home.runtime.side": "Side",
           "dashboard.home.runtime.status": "Status",
@@ -122,8 +124,10 @@ describe("createOpenOrdersColumns", () => {
     const filledColumn = columns.find((column) => column.key === "filledQuantity");
     const typeColumn = columns.find((column) => column.key === "type");
     const stopColumn = columns.find((column) => column.key === "stopPrice");
+    const exchangeOrderColumn = columns.find((column) => column.key === "exchangeOrderId");
 
     expect(typeColumn?.label).toBe("Type");
+    expect(exchangeOrderColumn?.label).toBe("Exchange ID");
     expect(quantityColumn?.label).toBe("Qty");
     expect(filledColumn?.label).toBe("Filled");
     expect(stopColumn?.label).toBe("Stop");
@@ -131,6 +135,7 @@ describe("createOpenOrdersColumns", () => {
     render(
       <div>
         <span data-testid="type">{typeColumn?.render?.(openOrderRow)}</span>
+        <span data-testid="exchange-order">{exchangeOrderColumn?.render?.(openOrderRow)}</span>
         <span data-testid="quantity">{quantityColumn?.render?.(openOrderRow)}</span>
         <span data-testid="filled">{filledColumn?.render?.(openOrderRow)}</span>
         <span data-testid="stop">{stopColumn?.render?.(openOrderRow)}</span>
@@ -138,6 +143,7 @@ describe("createOpenOrdersColumns", () => {
     );
 
     expect(screen.getByTestId("type")).toHaveTextContent("LIMIT");
+    expect(screen.getByTestId("exchange-order")).toHaveTextContent("binance-order-123");
     expect(screen.getByTestId("quantity")).toHaveTextContent("0.03");
     expect(screen.getByTestId("filled")).toHaveTextContent("0.01");
     expect(screen.getByTestId("stop")).toHaveTextContent("67000");

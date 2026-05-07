@@ -470,6 +470,7 @@ export type BotRuntimePositionItem = {
 export type BotRuntimeOpenOrderItem = {
   id: string;
   origin?: "BOT" | "USER" | "EXCHANGE_SYNC" | "BACKTEST";
+  exchangeOrderId?: string | null;
   symbol: string;
   side: string;
   type: string;

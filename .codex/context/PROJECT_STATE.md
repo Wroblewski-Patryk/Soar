@@ -3,6 +3,17 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 dashboard open-order exchange-id parity slice `V1UI-26` is
+  closed on `main`. BUILDER-mode review found that runtime open-order API
+  reads already carry backend `exchangeOrderId` for LIVE and exchange-synced
+  rows, but Dashboard Home and Bot Monitoring did not type or render it. Web
+  now adds an Exchange ID column to both Open Orders surfaces and renders `-`
+  when the backend value is absent. Focused Web regressions passed (`28/28`),
+  as did Web typecheck, Web lint, route-reachable i18n audit (`findings=0`),
+  repository guardrails, full workspace build, and authenticated rendered
+  `/dashboard` smoke on desktop and mobile with no console warnings, console
+  errors, or page errors. Evidence:
+  `docs/planning/v1ui-26-open-order-exchange-id-parity-task-2026-05-07.md`.
 - 2026-05-07 dashboard submitted manual-order state slice `V1UI-25` is closed
   on `main`. TESTER-mode review found that `UOLF` listed
   `order submitted` as an operator-facing lifecycle state, but Dashboard Home

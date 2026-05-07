@@ -131,6 +131,7 @@ type BotsMonitoringTabProps = {
     openOrders?: Array<{
       id: string;
       origin?: BotRuntimeOpenOrderItem["origin"];
+      exchangeOrderId?: string | null;
       symbol: string;
       side: string;
       type: string;
@@ -769,6 +770,7 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                             <tr>
                               <th>{t("dashboard.bots.monitoring.table.symbol")}</th>
                               <th>{t("dashboard.bots.monitoring.table.origin")}</th>
+                              <th>{t("dashboard.bots.monitoring.table.exchangeOrderId")}</th>
                               <th>{t("dashboard.bots.monitoring.table.side")}</th>
                               <th>{t("dashboard.bots.monitoring.table.type")}</th>
                               <th>{t("dashboard.bots.monitoring.table.status")}</th>
@@ -784,6 +786,7 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                               <tr key={order.id}>
                                 <td className="font-medium">{order.symbol}</td>
                                 <td>{resolveOpenOrderSourceLabel(order.origin)}</td>
+                                <td>{order.exchangeOrderId ?? "-"}</td>
                                 <td>{order.side}</td>
                                 <td>{order.type}</td>
                                 <td>{resolveOpenOrderStatusLabel(order.status)}</td>
@@ -796,7 +799,7 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                             ))}
                             {(monitorPositions?.openOrders?.length ?? 0) === 0 ? (
                               <tr>
-                                <td colSpan={10} className="text-center text-xs opacity-70">
+                                <td colSpan={11} className="text-center text-xs opacity-70">
                                   {t("dashboard.bots.monitoring.emptyOpenOrders")}
                                 </td>
                               </tr>

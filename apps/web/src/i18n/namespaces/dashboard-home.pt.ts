@@ -262,6 +262,7 @@ export const dashboardHomePt = {
     "realizedPnl": "Realized PnL",
     "origin": "Origin",
     "source": "Origem",
+    "exchangeOrderId": "ID da exchange",
     "sourceManual": "Manual",
     "sourceBot": "Bot",
     "sourceImported": "Importado",

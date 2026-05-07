@@ -411,6 +411,13 @@ export const createOpenOrdersColumns = ({
     render: (row) => <span className="font-semibold">{resolveOpenOrderSourceLabel(t, row.origin)}</span>,
   },
   {
+    key: "exchangeOrderId",
+    label: t("dashboard.home.runtime.exchangeOrderId"),
+    sortable: true,
+    accessor: (row) => row.exchangeOrderId ?? "",
+    render: (row) => row.exchangeOrderId ?? "-",
+  },
+  {
     key: "side",
     label: t("dashboard.home.runtime.side"),
     sortable: true,

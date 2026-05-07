@@ -9,6 +9,18 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `V1UI-26 fix(web-runtime): show open-order exchange id`
+  - 2026-05-07: Closed a BUILDER-mode backend-to-Web parity slice. Runtime
+    open-order reads already carry backend `exchangeOrderId` for LIVE and
+    exchange-synced rows, but Dashboard Home and Bot Monitoring did not type
+    or render it. Web now adds an Exchange ID column to both Open Orders
+    surfaces and renders `-` when the backend value is absent. Validation
+    PASS: focused Web regressions (`28/28`), Web typecheck, Web lint,
+    route-reachable i18n audit (`findings=0`), repository guardrails, full
+    workspace build, and authenticated rendered `/dashboard` smoke on desktop
+    and mobile with no console warnings, console errors, or page errors.
+    Evidence:
+    `docs/planning/v1ui-26-open-order-exchange-id-parity-task-2026-05-07.md`.
 - [x] `V1UI-25 fix(web-runtime): show submitted manual-order state`
   - 2026-05-07: Closed a TESTER-mode UOLF lifecycle visibility slice.
     Dashboard Home now renders the localized `order submitted` action state in

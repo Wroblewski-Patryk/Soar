@@ -364,6 +364,7 @@ export const dashboardBotsEn = {
       "slTsl": "TSL",
       "status": "Status",
       "type": "Type",
+      "exchangeOrderId": "Exchange ID",
       "filled": "Filled",
       "stop": "Stop",
       "submitted": "Submitted",

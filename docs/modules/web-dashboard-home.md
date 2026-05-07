@@ -378,6 +378,9 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
   - Dashboard home Open Orders rows render backend `type` and `stopPrice`
     beside limit `price`, matching the detailed bot monitoring order table and
     keeping conditional execution terms visible in the primary runtime surface.
+  - Dashboard home and bot monitoring Open Orders rows render backend
+    `exchangeOrderId` when available, keeping exchange-side order identity
+    visible for LIVE reconciliation and imported-order review.
 - Active-only visibility remains unchanged:
   - `PENDING`,
   - `OPEN`,
