@@ -48,6 +48,9 @@ describe("RuntimeSignalsSection", () => {
         conditionValueUnavailableLabel="Waiting for indicator data"
         marketsLabel="Markets"
         signalsLabel="Signals"
+        signalScoreLabel="Score"
+        signalScoreLongLabel="LONG"
+        signalScoreShortLabel="SHORT"
         signalContextSourceLabel="Context source"
         signalContextSourceLatestSignalLabel="Latest signal"
         signalContextSourceLatestDecisionLabel="Latest decision"
@@ -55,6 +58,7 @@ describe("RuntimeSignalsSection", () => {
         signalContextSourceUnresolvedLabel="Unresolved"
         marketsCount={1}
         actionableSignalsCount={0}
+        formatSignalScore={(value) => String(value)}
       />
     );
 
@@ -73,6 +77,7 @@ describe("RuntimeSignalsSection", () => {
             lastSignalDirection: "LONG",
             runtimeMarketState: "SIGNAL_ACTIVE",
             lastSignalContextSource: "latest_signal",
+            lastSignalScoreSummary: { longScore: 2.5, shortScore: 1 },
             lastSignalConditionLines: [],
           } as unknown as RuntimeSymbolWithLive),
           ({
@@ -96,6 +101,9 @@ describe("RuntimeSignalsSection", () => {
         conditionValueUnavailableLabel="Waiting for indicator data"
         marketsLabel="Markets"
         signalsLabel="Signals"
+        signalScoreLabel="Score"
+        signalScoreLongLabel="LONG"
+        signalScoreShortLabel="SHORT"
         signalContextSourceLabel="Context source"
         signalContextSourceLatestSignalLabel="Latest signal"
         signalContextSourceLatestDecisionLabel="Latest decision"
@@ -103,10 +111,57 @@ describe("RuntimeSignalsSection", () => {
         signalContextSourceUnresolvedLabel="Unresolved"
         marketsCount={2}
         actionableSignalsCount={1}
+        formatSignalScore={(value) => String(value)}
       />
     );
 
     expect(screen.getByText("Latest signal")).toBeInTheDocument();
     expect(screen.getByText("Closed-candle snapshot")).toBeInTheDocument();
+    expect(screen.getByText("Score")).toBeInTheDocument();
+    expect(screen.getByText("LONG 2.5")).toBeInTheDocument();
+    expect(screen.getByText("SHORT 1")).toBeInTheDocument();
+  });
+
+  it("does not render score summary when backend score data is absent", () => {
+    render(
+      <RuntimeSignalsSection
+        signalSymbols={[
+          ({
+            id: "signal-xrp",
+            symbol: "XRPUSDT",
+            lastSignalDirection: null,
+            runtimeMarketState: "UNRESOLVED",
+            lastSignalContextSource: "unresolved",
+            lastSignalScoreSummary: null,
+            lastSignalConditionLines: [],
+          } as unknown as RuntimeSymbolWithLive),
+        ]}
+        hasSignalOverflow={false}
+        signalRailRef={createRef<HTMLDivElement>()}
+        onScrollPrevious={vi.fn()}
+        onScrollNext={vi.fn()}
+        previousLabel="Prev"
+        nextLabel="Next"
+        longLabel="LONG"
+        shortLabel="SHORT"
+        noSignalDataLabel="No signal data"
+        conditionValueUnavailableLabel="Waiting for indicator data"
+        marketsLabel="Markets"
+        signalsLabel="Signals"
+        signalScoreLabel="Score"
+        signalScoreLongLabel="LONG"
+        signalScoreShortLabel="SHORT"
+        signalContextSourceLabel="Context source"
+        signalContextSourceLatestSignalLabel="Latest signal"
+        signalContextSourceLatestDecisionLabel="Latest decision"
+        signalContextSourceConfiguredFallbackLabel="Closed-candle snapshot"
+        signalContextSourceUnresolvedLabel="Unresolved"
+        marketsCount={1}
+        actionableSignalsCount={0}
+        formatSignalScore={(value) => String(value)}
+      />
+    );
+
+    expect(screen.queryByText("Score")).not.toBeInTheDocument();
   });
 });

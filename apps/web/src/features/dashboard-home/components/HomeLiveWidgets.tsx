@@ -908,6 +908,9 @@ export default function HomeLiveWidgets() {
                 conditionValueUnavailableLabel={t("dashboard.home.runtime.conditionValueUnavailable")}
                 marketsLabel={t("dashboard.home.runtime.markets")}
                 signalsLabel={t("dashboard.home.runtime.signals")}
+                signalScoreLabel={t("dashboard.home.runtime.signalScore")}
+                signalScoreLongLabel={t("dashboard.home.runtime.signalScoreLong")}
+                signalScoreShortLabel={t("dashboard.home.runtime.signalScoreShort")}
                 signalContextSourceLabel={t("dashboard.home.runtime.signalContextSource")}
                 signalContextSourceLatestSignalLabel={t("dashboard.home.runtime.signalContextSourceLatestSignal")}
                 signalContextSourceLatestDecisionLabel={t("dashboard.home.runtime.signalContextSourceLatestDecision")}
@@ -917,6 +920,7 @@ export default function HomeLiveWidgets() {
                 signalContextSourceUnresolvedLabel={t("dashboard.home.runtime.signalContextSourceUnresolved")}
                 marketsCount={signalHeaderStats.marketsCount}
                 actionableSignalsCount={signalHeaderStats.actionableSignalsCount}
+                formatSignalScore={(value) => formatNumber(value, { maximumFractionDigits: 2 })}
                 renderSymbolLabel={renderRuntimeSymbol}
               />
               {runtimeDataIsStale ? (

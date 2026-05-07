@@ -3,6 +3,21 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 Dashboard Home signal score summary slice `V1UI-34` is closed on
+  `main`. BUILDER-mode review found that API runtime symbol stats already
+  expose `lastSignalScoreSummary.longScore/shortScore`, and Web types include
+  the field, but the primary dashboard signal cards did not render it.
+  Dashboard Home now renders the backend LONG/SHORT score summary when present
+  and renders no score row when the backend summary is absent, avoiding
+  invented fallback scores. Validation PASS: focused RuntimeSignalsSection
+  tests (`3/3`), route-reachable i18n audit (`findings=0`), Web typecheck,
+  Web lint, repository guardrails, `git diff --check`, full workspace build,
+  and authenticated rendered `/dashboard` smoke with reload and account-menu
+  interaction with no visible framework overlay, console errors, page errors,
+  or 5xx responses. Browser plugin validation was attempted first but local
+  `node_repl` resolved Node `v22.13.0` while requiring `>=22.22.0`, so
+  rendered validation used bundled Codex Node plus Playwright. Evidence:
+  `docs/planning/v1ui-34-dashboard-signal-score-summary-task-2026-05-07.md`.
 - 2026-05-07 shared mark-price source suffix slice `V1UI-33` is closed on
   `main`. ARCHITECT-mode review found that V1UI-32 correctly restored
   Dashboard Home route-owned copy, but left the mark-price source kind switch

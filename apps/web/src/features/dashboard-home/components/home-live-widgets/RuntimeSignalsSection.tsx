@@ -17,6 +17,9 @@ type RuntimeSignalsSectionProps = {
   conditionValueUnavailableLabel: string;
   marketsLabel: string;
   signalsLabel: string;
+  signalScoreLabel: string;
+  signalScoreLongLabel: string;
+  signalScoreShortLabel: string;
   signalContextSourceLabel: string;
   signalContextSourceLatestSignalLabel: string;
   signalContextSourceLatestDecisionLabel: string;
@@ -24,6 +27,7 @@ type RuntimeSignalsSectionProps = {
   signalContextSourceUnresolvedLabel: string;
   marketsCount: number;
   actionableSignalsCount: number;
+  formatSignalScore: (value: number) => string;
   renderSymbolLabel?: (symbol: string) => ReactNode;
 };
 
@@ -143,6 +147,7 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
               signal.runtimeMarketState === "CONFIGURED_ONLY" ||
               signal.lastSignalContextSource === "configured_fallback";
             const contextSourceLabel = resolveContextSourceLabel(signal.lastSignalContextSource);
+            const scoreSummary = signal.lastSignalScoreSummary;
 
             return (
               <article
@@ -161,6 +166,17 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
                       {contextSourceLabel}
                     </span>
                   </div>
+                  {scoreSummary ? (
+                    <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[10px] uppercase tracking-wide opacity-70">
+                      <span>{props.signalScoreLabel}</span>
+                      <span className="rounded-full bg-success/10 px-1.5 py-0.5 text-success">
+                        {props.signalScoreLongLabel} {props.formatSignalScore(scoreSummary.longScore)}
+                      </span>
+                      <span className="rounded-full bg-error/10 px-1.5 py-0.5 text-error">
+                        {props.signalScoreShortLabel} {props.formatSignalScore(scoreSummary.shortScore)}
+                      </span>
+                    </div>
+                  ) : null}
                   <div className="mt-3 grid grid-cols-2 gap-2.5 text-[11px] leading-4">
                     <div
                       className={`space-y-1.5 rounded-box transition-opacity duration-150 ${

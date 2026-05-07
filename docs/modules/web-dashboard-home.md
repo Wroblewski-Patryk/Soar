@@ -325,6 +325,9 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
   - signal cards are selected-bot scoped only and must not reuse cross-bot fallback context.
   - condition-line strategy context prefers latest signal strategy when available; configured strategy fallback is allowed only for missing latest-signal strategy context.
   - signal rows/cards must expose deterministic source tagging from API read model (`latest_signal`, `configured_fallback`, `unresolved`) for operator clarity.
+  - signal cards render API read-model `lastSignalScoreSummary` long/short
+    scores when present, so runtime merge score truth is visible on the
+    primary dashboard surface without inventing fallback scores.
   - Web market-state fallback classification treats both `latest_signal` and
     legacy `latest_decision` as evaluated runtime signal context when no
     explicit `runtimeMarketState` is provided.

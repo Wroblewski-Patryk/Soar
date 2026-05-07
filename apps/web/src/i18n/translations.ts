@@ -312,6 +312,9 @@ type TranslationSchema = {
         heartbeat: string;
         openPositions: string;
         signalsDca: string;
+        signalScore: string;
+        signalScoreLong: string;
+        signalScoreShort: string;
         netPnl: string;
         noSession: string;
         noActiveSessionWarning: string;
