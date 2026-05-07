@@ -9,6 +9,17 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `V1UI-15 fix(web-runtime): show dashboard open-order filled quantity`
+  - 2026-05-07: Closed a TESTER-mode backend-to-Web runtime order parity
+    slice. Dashboard home Open Orders now renders backend `filledQuantity`
+    beside total `quantity`, matching the detailed bot monitoring table so
+    partial fill progress stays visible on the primary runtime surface.
+    Validation PASS: focused Web presenter test (`10/10`), dashboard
+    open-order regression tests (`3/3`), Web typecheck, Web lint,
+    route-reachable i18n audit (`findings=0`), repository guardrails, full
+    workspace build, and authenticated rendered `/dashboard` smoke with no
+    post-auth console errors. Evidence:
+    `docs/planning/v1ui-15-dashboard-open-order-fill-quantity-task-2026-05-07.md`.
 - [x] `V1UI-14 fix(web-runtime): align open-order status labels`
   - 2026-05-07: Closed a BUILDER-mode runtime order lifecycle label parity
     slice. Dashboard home and bot monitoring now share open-order status suffix

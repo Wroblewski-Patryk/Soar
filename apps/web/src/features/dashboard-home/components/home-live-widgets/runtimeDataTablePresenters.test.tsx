@@ -1,10 +1,11 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import type { BotRuntimeTrade } from "@/features/bots/types/bot.type";
+import type { BotRuntimeOpenOrderItem, BotRuntimeTrade } from "@/features/bots/types/bot.type";
 import type { OpenPositionWithLive } from "./types";
 import {
   createHistoryPositionsColumns,
+  createOpenOrdersColumns,
   createOpenPositionsColumns,
   createTradesColumns,
 } from "./runtimeDataTablePresenters";
@@ -70,6 +71,68 @@ const tradeRow = {
   notional: 100,
   margin: 10,
 } satisfies BotRuntimeTrade;
+
+const openOrderRow = {
+  id: "order-partial-1",
+  origin: "USER",
+  symbol: "BTCUSDT",
+  side: "BUY",
+  type: "LIMIT",
+  status: "PARTIALLY_FILLED",
+  quantity: 0.03,
+  filledQuantity: 0.01,
+  price: 68000,
+  stopPrice: null,
+  submittedAt: "2026-03-31T10:01:00.000Z",
+  createdAt: "2026-03-31T10:01:00.000Z",
+  updatedAt: "2026-03-31T10:02:00.000Z",
+} satisfies BotRuntimeOpenOrderItem;
+
+describe("createOpenOrdersColumns", () => {
+  it("renders filled quantity from the runtime open-order payload", () => {
+    const columns = createOpenOrdersColumns({
+      t: (key) =>
+        ({
+          "dashboard.home.runtime.time": "Time",
+          "dashboard.home.runtime.symbol": "Symbol",
+          "dashboard.home.runtime.source": "Source",
+          "dashboard.home.runtime.sourceManual": "Manual",
+          "dashboard.home.runtime.side": "Side",
+          "dashboard.home.runtime.status": "Status",
+          "dashboard.home.runtime.openOrderStatusPartiallyFilled": "Partially filled",
+          "dashboard.home.runtime.qty": "Qty",
+          "dashboard.home.runtime.filled": "Filled",
+          "dashboard.home.runtime.price": "Price",
+        })[key] ?? key,
+      formatDateTimeWithSeconds: (value) => value ?? "-",
+      formatNumber: (value) => String(value),
+      resolveRuntimeIcon: () => null,
+      runtimeIconsLoading: false,
+      runtimeIconsError: null,
+      actionColumnLabel: "Action",
+      cancelOpenOrderLabel: "Cancel order",
+      cancelOpenOrderPendingLabel: "Canceling order...",
+      isCancelingOpenOrder: () => false,
+      onCancelOpenOrder: vi.fn(),
+    });
+
+    const quantityColumn = columns.find((column) => column.key === "quantity");
+    const filledColumn = columns.find((column) => column.key === "filledQuantity");
+
+    expect(quantityColumn?.label).toBe("Qty");
+    expect(filledColumn?.label).toBe("Filled");
+
+    render(
+      <div>
+        <span data-testid="quantity">{quantityColumn?.render?.(openOrderRow)}</span>
+        <span data-testid="filled">{filledColumn?.render?.(openOrderRow)}</span>
+      </div>
+    );
+
+    expect(screen.getByTestId("quantity")).toHaveTextContent("0.03");
+    expect(screen.getByTestId("filled")).toHaveTextContent("0.01");
+  });
+});
 
 describe("createOpenPositionsColumns", () => {
   it("renders position action buttons with shared table action tones", () => {

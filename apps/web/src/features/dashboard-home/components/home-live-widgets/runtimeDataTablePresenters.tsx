@@ -407,6 +407,13 @@ export const createOpenOrdersColumns = ({
     render: (row) => formatNumber(row.quantity, { maximumFractionDigits: 6 }),
   },
   {
+    key: "filledQuantity",
+    label: t("dashboard.home.runtime.filled"),
+    sortable: true,
+    accessor: (row) => row.filledQuantity,
+    render: (row) => formatNumber(row.filledQuantity, { maximumFractionDigits: 6 }),
+  },
+  {
     key: "price",
     label: t("dashboard.home.runtime.price"),
     sortable: true,

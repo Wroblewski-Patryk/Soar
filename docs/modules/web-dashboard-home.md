@@ -324,6 +324,9 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
     status suffixes from the shared Web runtime formatter, keeping
     waiting-for-fill, partially-filled, and filled labels aligned while unknown
     statuses remain visible as raw backend values.
+  - Dashboard home Open Orders rows render backend `filledQuantity` beside
+    total `quantity`, matching the detailed bot monitoring order table and
+    keeping partial-fill progress visible in the primary runtime surface.
 - Active-only visibility remains unchanged:
   - `PENDING`,
   - `OPEN`,

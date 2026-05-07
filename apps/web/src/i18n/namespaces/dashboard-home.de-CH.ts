@@ -238,6 +238,7 @@ export const dashboardHomeDeCh = {
     "openByBacktest": "Backtest",
     "time": "Zeit",
     "qty": "Menge",
+    "filled": "Gefüllt",
     "price": "Preis",
     "fee": "Gebühr",
     "realizedPnl": "Realisierte Gewinn- und Verlustrechnung",

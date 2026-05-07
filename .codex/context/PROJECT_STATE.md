@@ -3,6 +3,17 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 dashboard open-order filled quantity slice `V1UI-15` is closed
+  on `main`. Dashboard home Open Orders now renders backend `filledQuantity`
+  beside total `quantity`, matching bot monitoring and keeping partial-fill
+  progress visible on the primary runtime surface. Validation PASS: focused
+  Web presenter test (`10/10`), dashboard open-order regression tests
+  (`3/3`), Web typecheck, Web lint, route-reachable i18n audit
+  (`findings=0`), repository guardrails, full workspace build, and
+  authenticated rendered `/dashboard` smoke with no post-auth console errors.
+  Browser plugin was not exposed by tool discovery in this session, so the
+  rendered smoke used bundled Codex Node plus Playwright. Evidence:
+  `docs/planning/v1ui-15-dashboard-open-order-fill-quantity-task-2026-05-07.md`.
 - 2026-05-07 runtime open-order status label slice `V1UI-14` is closed on
   `main`. Dashboard home and bot monitoring now share
   `runtimeOpenOrderStatusLabelSuffix`, while bot monitoring renders route-owned
@@ -4129,11 +4140,11 @@ Last updated: 2026-05-07
     truth.
 
 ## Autonomous Iteration State
-- Current iteration:
-- Current operation mode: BUILDER | ARCHITECT | TESTER
-- Last completed iteration:
-- Last completed task:
-- Next required mode:
+- Current iteration: 15
+- Current operation mode: TESTER
+- Last completed iteration: 15
+- Last completed task: V1UI-15 dashboard open-order filled quantity parity
+- Next required mode: BUILDER
 ## Recent Progress
 - 2026-04-22: queued `SAFEV1-A` in
   `docs/planning/safev1-a-live-paper-runtime-safety-plan-2026-04-22.md` after

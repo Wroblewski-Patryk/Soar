@@ -238,6 +238,7 @@ export const dashboardHomeEn = {
     "openByBacktest": "Backtest",
     "time": "Time",
     "qty": "Qty",
+    "filled": "Filled",
     "price": "Price",
     "fee": "Fee",
     "realizedPnl": "Realized PnL",
