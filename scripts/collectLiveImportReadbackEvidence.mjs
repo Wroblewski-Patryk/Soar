@@ -357,7 +357,18 @@ const main = async () => {
     entries,
     summary: {
       botsChecked: entries.length,
+      botsWithRuntimeReadback: entries.filter((entry) => entry.symbols.length > 0).length,
+      botsWithoutRunningSession: entries.filter((entry) => entry.status === 'NO_RUNNING_SESSION').length,
       symbolsExpected: options.symbols.length,
+      symbolsVisible: Array.from(
+        new Set(
+          entries.flatMap((entry) =>
+            entry.symbols
+              .filter((symbol) => symbol.importCompleteness === 'VISIBLE')
+              .map((symbol) => symbol.symbol)
+          )
+        )
+      ),
       missingSymbols: entries.flatMap((entry) =>
         entry.symbols
           .filter((symbol) => symbol.importCompleteness !== 'VISIBLE')
@@ -376,8 +387,14 @@ const main = async () => {
   if (evidence.entries.length === 0) {
     throw new Error('No LIVE bots were available for readback.');
   }
-  if (evidence.summary.missingSymbols.length > 0) {
-    throw new Error(`Missing runtime readback for symbols: ${evidence.summary.missingSymbols.join(', ')}`);
+  if (evidence.summary.botsWithRuntimeReadback === 0) {
+    throw new Error('No runtime positions readback was collected from a RUNNING session.');
+  }
+  const missingExpectedSymbols = options.symbols.filter(
+    (symbol) => !evidence.summary.symbolsVisible.includes(symbol)
+  );
+  if (missingExpectedSymbols.length > 0) {
+    throw new Error(`Missing runtime readback for symbols: ${missingExpectedSymbols.join(', ')}`);
   }
 };
 

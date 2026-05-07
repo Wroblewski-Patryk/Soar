@@ -3,6 +3,16 @@
 Last updated: 2026-05-07
 
 ## 2026-05-07 LIVEIMPORT-03 Readback Collector
+- 2026-05-07 `LIVEIMPORT-03-COLLECTOR-HARDENING-2026-05-07` hardened the
+  read-only collector so a discovered LIVE bot with no RUNNING session cannot
+  produce a false-positive release artifact. The collector now summarizes
+  bots with runtime readback, bots without a running session, and unique
+  visible symbols, then fails closed if no runtime positions payload was
+  collected or if expected symbols are absent from collected readback.
+  Validation PASS: syntax check, help, dry-run, missing-auth fail-closed, and
+  a local no-running-session harness. Authenticated `LIVEIMPORT-03` production
+  evidence remains blocked until read-only auth is available. Evidence:
+  `docs/planning/liveimport-03-readback-collector-hardening-task-2026-05-07.md`.
 - 2026-05-07 `LIVEIMPORT-03-COLLECTOR-2026-05-07` added
   `ops:liveimport:readback`, a read-only, redacted production runtime evidence
   collector for the active `LIVEIMPORT-03` blocker. It reuses existing ops auth

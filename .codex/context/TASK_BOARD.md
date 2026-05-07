@@ -17,6 +17,16 @@ Last updated: 2026-05-07
 
 ## READY
 
+- [x] `LIVEIMPORT-03-COLLECTOR-HARDENING-2026-05-07 fix(ops): fail closed empty runtime readback`
+  - Scope: hardened the read-only live-import collector so no-session output
+    cannot be mistaken for V1 runtime evidence. The collector now records
+    bots-with-readback, bots-without-running-session, and unique visible
+    symbols, then exits non-zero when no runtime positions payload was
+    collected or when requested symbols are not visible in collected runtime
+    readback. Validation PASS: syntax check, help, dry-run, missing-auth
+    fail-closed, and a local no-running-session harness. Evidence:
+    `docs/planning/liveimport-03-readback-collector-hardening-task-2026-05-07.md`.
+
 - [x] `LIVEIMPORT-03-COLLECTOR-2026-05-07 release(ops): add redacted live-import readback collector`
   - Scope: added `ops:liveimport:readback`, a read-only helper for the active
     `LIVEIMPORT-03` blocker. The script reuses existing ops auth helpers,

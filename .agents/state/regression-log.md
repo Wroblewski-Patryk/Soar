@@ -8,6 +8,10 @@ No open regression was identified in the agent operating system slice.
 
 ## Fixed Or Prevented In This Slice
 
+- 2026-05-07: Prevented a false-positive `LIVEIMPORT-03` release evidence
+  path in `ops:liveimport:readback`; the collector now fails closed when no
+  RUNNING runtime session produced a positions payload. Validation: local
+  no-running-session harness exits non-zero with the expected error.
 - Added durable anti-regression instructions in
   `.agents/core/anti-regression.md`.
 - Added quality gate mapping in `.agents/core/quality-gates.md`.

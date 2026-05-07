@@ -65,7 +65,9 @@ Last updated: 2026-05-07
   captured on current production `main`
   (`1f816362c93e117e47cfe52a35e0fec93bd0b37d` or later).
   `ops:liveimport:readback` is now the canonical read-only collector once
-  credentials are available.
+  credentials are available. It is hardened to fail closed when no RUNNING
+  session produces runtime positions readback, so a no-session artifact cannot
+  satisfy the release gate.
 - `BOTMULTI-09` remains open for protected runtime readback and broader V1
   release gate evidence, even though public build-info now contains the
   original BOTMULTI candidate.

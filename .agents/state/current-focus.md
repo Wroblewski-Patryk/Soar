@@ -30,6 +30,9 @@ continuation should resume with authenticated read-only evidence collection.
 
 `LIVEIMPORT-03` now has one canonical read-only evidence command:
 `pnpm run ops:liveimport:readback -- --expected-sha 1f816362c93e117e47cfe52a35e0fec93bd0b37d`.
+The collector is hardened to fail closed when no RUNNING session produces a
+runtime positions payload, so no-session output cannot be treated as V1
+evidence.
 
 ## Current Priority Order
 

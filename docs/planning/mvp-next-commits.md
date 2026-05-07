@@ -7,6 +7,17 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `LIVEIMPORT-03-COLLECTOR-HARDENING-2026-05-07 fix(ops): fail closed empty runtime readback`
+  - 2026-05-07: Hardened `ops:liveimport:readback` so a discovered LIVE bot
+    with no RUNNING runtime session can no longer produce a successful
+    evidence run. The collector now summarizes bots with runtime readback, bots
+    without a running session, and unique visible symbols, then fails closed if
+    no runtime positions payload was collected or if expected symbols are not
+    visible in any collected readback. Validation PASS: syntax check, help
+    path, dry-run path, missing-auth fail-closed path, and a local no-running
+    session harness. Authenticated production ETH/DOGE readback remains the
+    next blocker. Evidence:
+    `docs/planning/liveimport-03-readback-collector-hardening-task-2026-05-07.md`.
 - [x] `LIVEIMPORT-03-COLLECTOR-2026-05-07 release(ops): add redacted live-import readback collector`
   - 2026-05-07: Added `ops:liveimport:readback`, a read-only production
     evidence collector that reuses existing ops auth helpers, optionally checks

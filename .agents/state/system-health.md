@@ -25,6 +25,10 @@ Last updated: 2026-05-07
 
 ## Latest Validation
 
+- `LIVEIMPORT-03-COLLECTOR-HARDENING-2026-05-07` collector hardening PASS:
+  syntax check, help path, dry-run path, missing-auth fail-closed path, and a
+  local no-running-session harness. The collector now exits non-zero when no
+  runtime positions payload was collected from a RUNNING session.
 - `LIVEIMPORT-03-COLLECTOR-2026-05-07` ops collector validation PASS:
   `ops:liveimport:readback -- --help`, dry-run with expected production SHA,
   and missing-auth fail-closed path all behaved as expected. The fail-closed

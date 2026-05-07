@@ -10,6 +10,9 @@ redacted ETH/DOGE runtime positions evidence on current production `main`
 ownership, `strategyId` or single-strategy provenance recovery, TTP visibility,
 actionable state, and import completeness across assigned bot markets. Do not
 run live-money or destructive production actions.
+The collector is hardened to fail closed when no RUNNING session produces a
+runtime positions payload, so no-session output must not be accepted as
+release evidence.
 
 Canonical command once auth is available:
 
@@ -22,7 +25,8 @@ pnpm run ops:liveimport:readback -- --expected-sha 1f816362c93e117e47cfe52a35e0f
 1. If production credentials or ops auth are available, execute
    `ops:liveimport:readback` and record redacted `LIVEIMPORT-03` evidence. The latest
    names-only prerequisite sweep after `FULLARCH-FIX-11` found no production
-   auth variable names in this shell.
+   auth variable names in this shell. The evidence run must include actual
+   protected runtime positions payloads for the requested symbols.
 2. If authenticated readback remains unavailable, keep `LIVEIMPORT-03` open and
    do not downgrade it to public health/build-info evidence.
 3. After `LIVEIMPORT-03`, continue `BOTMULTI-09` protected runtime readback and
