@@ -285,6 +285,8 @@ export const dashboardHomePt = {
     "continuityRecoveredUnactionable": "Visivel / bloqueada",
     "continuityExternalCloseConfirmed": "Fechada externamente",
     "continuityRepairOnlyCleanup": "Limpeza de reparacao",
+    "runtimeStateActionBlocked": "Acao bloqueada",
+    "runtimeStateStrategyContextUnresolved": "Contexto da estrategia nao resolvido",
     "mode": "Mode",
     "marketContextTitle": "Mercado",
     "strategyContextTitle": "Estrategia",

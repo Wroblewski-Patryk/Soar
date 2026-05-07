@@ -89,6 +89,9 @@ Out of scope:
 - Dashboard page checks session and redirects unauthenticated user to `/auth/login`.
 - Close-position action is explicit and routed through protected API.
 - Runtime stale data warning is surfaced when refresh age threshold is exceeded.
+- Open-position status cells expose continuity, actionability, and unresolved
+  strategy-context truth from backend runtime payloads so fail-closed rows are
+  text-visible on the primary operator surface.
 
 ## 7. Observability and Operations
 - Stores selected bot and table preferences in local storage for operator continuity.

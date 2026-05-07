@@ -168,6 +168,62 @@ describe("createOpenPositionsColumns", () => {
     expect(screen.getByText("0.11")).toBeInTheDocument();
     expect(screen.getByText("Exchange PnL")).toHaveClass("uppercase");
   });
+
+  it("renders actionability details from runtime position payload", () => {
+    const columns = createOpenPositionsColumns({
+      t: (key) =>
+        ({
+          "dashboard.home.runtime.timeOpened": "Time opened",
+          "dashboard.home.runtime.symbol": "Symbol",
+          "dashboard.home.runtime.side": "Side",
+          "dashboard.home.runtime.status": "Status",
+          "dashboard.home.runtime.margin": "Margin",
+          "dashboard.home.runtime.pnl": "PnL",
+          "dashboard.home.runtime.pnlPercent": "PnL%",
+          "dashboard.home.runtime.markPrice": "Mark",
+          "dashboard.bots.monitoring.markPriceSourceExchangePnl": "Exchange PnL",
+          "dashboard.home.runtime.dca": "DCA",
+          "dashboard.home.runtime.continuityRecoveredUnactionable": "Visible / blocked",
+          "dashboard.home.runtime.runtimeStateActionBlocked": "Action blocked",
+          "dashboard.home.runtime.runtimeStateStrategyContextUnresolved": "Strategy context unresolved",
+        })[key] ?? key,
+      formatDateTimeWithSeconds: (value) => value ?? "-",
+      formatNumber: (value) => String(value),
+      formatPercent: (value) => `${value}%`,
+      formatRuntimeAmount: (value) => String(value),
+      formatDcaPercent: (value) => `${value}%`,
+      withRuntimeUnit: (label) => label,
+      resolveRuntimeIcon: () => null,
+      runtimeIconsLoading: false,
+      runtimeIconsError: null,
+      showDynamicStopColumns: false,
+      closePositionActionColumnLabel: "Action",
+      closePositionPendingLabel: "Closing...",
+      closePositionButtonLabel: "Close position",
+      editPositionButtonLabel: "Edit position",
+      positionActionsUnavailableLabel: "Unavailable",
+      isClosingPosition: () => false,
+      onOpenPositionEdit: vi.fn(),
+      onCloseRuntimePosition: vi.fn(),
+    });
+
+    const statusColumn = columns.find((column) => column.key === "status");
+
+    render(
+      <div>
+        {statusColumn?.render?.({
+          ...openPositionRow,
+          continuityState: "RECOVERED_UNACTIONABLE",
+          actionable: false,
+          strategyAutomationContextResolved: false,
+        })}
+      </div>
+    );
+
+    expect(screen.getByText("Visible / blocked")).toHaveClass("badge-warning");
+    expect(screen.getByText("Action blocked")).toBeInTheDocument();
+    expect(screen.getByText("Strategy context unresolved")).toBeInTheDocument();
+  });
 });
 
 describe("createHistoryPositionsColumns", () => {

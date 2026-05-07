@@ -20,6 +20,18 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `V1UI-07 fix(web-runtime): show actionability details in dashboard open positions`
+  - Scope: closed a BUILDER-mode dashboard runtime parity slice. Dashboard home
+    open-position status cells now render backend `actionable=false` and
+    `strategyAutomationContextResolved=false` detail labels below the existing
+    continuity badge, keeping the primary operator surface aligned with bot
+    monitoring fail-closed diagnostics. Validation PASS: focused dashboard
+    presenter test (`6/6`), dashboard integration test (`20/20`), Web
+    typecheck, Web lint, Web build, route-reachable i18n audit (`findings=0`),
+    guardrails, diff check, and authenticated rendered `/dashboard` smoke with
+    no console errors. Evidence:
+    `docs/planning/v1ui-07-dashboard-home-actionability-status-parity-task-2026-05-07.md`.
+
 - [x] `V1UI-06 fix(web-runtime): surface continuity state in bot monitoring positions`
   - Scope: closed an ARCHITECT-mode backend-to-Web runtime parity slice. Bot
     monitoring open-position rows now render backend `continuityState`,

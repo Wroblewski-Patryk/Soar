@@ -285,6 +285,8 @@ export const dashboardHomeDeCh = {
     "continuityRecoveredUnactionable": "Sichtbar / blockiert",
     "continuityExternalCloseConfirmed": "Außen geschlossen",
     "continuityRepairOnlyCleanup": "Bereinigung reparieren",
+    "runtimeStateActionBlocked": "Aktion blockiert",
+    "runtimeStateStrategyContextUnresolved": "Strategiekontext ungeklaert",
     "mode": "Modus",
     "marketContextTitle": "Markt",
     "strategyContextTitle": "Strategie",

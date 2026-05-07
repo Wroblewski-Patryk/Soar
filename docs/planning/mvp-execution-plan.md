@@ -29,6 +29,16 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-07: Closed `V1UI-07` with
+  `docs/planning/v1ui-07-dashboard-home-actionability-status-parity-task-2026-05-07.md`.
+  Dashboard home open-position status cells now render backend
+  `actionable=false` and `strategyAutomationContextResolved=false` detail
+  labels below the existing continuity badge, matching bot monitoring
+  fail-closed diagnostic visibility. Validation PASS: focused dashboard
+  presenter test (`6/6`), dashboard integration test (`20/20`), Web typecheck,
+  Web lint, Web build, route-reachable i18n audit (`findings=0`), repository
+  guardrails, diff check, and authenticated rendered `/dashboard` smoke with no
+  console errors.
 - 2026-05-07: Closed `V1UI-06` with
   `docs/planning/v1ui-06-bot-monitoring-continuity-state-web-parity-task-2026-05-07.md`.
   Bot monitoring open-position rows now render backend `continuityState`,

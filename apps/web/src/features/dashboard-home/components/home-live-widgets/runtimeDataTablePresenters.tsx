@@ -144,9 +144,21 @@ export const createOpenPositionsColumns = ({
       sortable: true,
       accessor: (row) => row.continuityState ?? "CONFIRMED",
       render: (row) => (
-        <span className={row.actionable === false ? "badge badge-warning badge-sm" : "badge badge-success badge-sm"}>
-          {resolveContinuityStateLabel(t, row.continuityState)}
-        </span>
+        <div className="flex flex-col gap-1 leading-tight">
+          <span className={row.actionable === false ? "badge badge-warning badge-sm" : "badge badge-success badge-sm"}>
+            {resolveContinuityStateLabel(t, row.continuityState)}
+          </span>
+          {row.actionable === false ? (
+            <span className="text-[10px] uppercase tracking-wide text-warning">
+              {t("dashboard.home.runtime.runtimeStateActionBlocked")}
+            </span>
+          ) : null}
+          {row.strategyAutomationContextResolved === false ? (
+            <span className="text-[10px] uppercase tracking-wide opacity-60">
+              {t("dashboard.home.runtime.runtimeStateStrategyContextUnresolved")}
+            </span>
+          ) : null}
+        </div>
       ),
     },
     {

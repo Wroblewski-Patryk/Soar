@@ -4722,6 +4722,16 @@ Historical carryover snapshot, superseded by the active `NOW` entries above:
 - [x] `PAR-24 fix(web-build): added `public/favicon.ico` asset to prevent Next.js page-data build failure`
 
 ## 2026-05-07 V1 UI Runtime Parity Slice
+- [x] `V1UI-07 fix(web-runtime): show actionability details in dashboard open positions`
+  - Closed the dashboard-home actionability detail gap. `/dashboard`
+    open-position status cells now render backend `actionable=false` and
+    `strategyAutomationContextResolved=false` detail labels below the existing
+    continuity badge, matching the bot monitoring fail-closed diagnostic
+    visibility. Validation PASS: focused dashboard presenter test (`6/6`),
+    dashboard integration test (`20/20`), Web typecheck, Web lint, Web build,
+    route-reachable i18n audit (`findings=0`), guardrails, diff check, and
+    authenticated rendered `/dashboard` smoke with no console errors.
+
 - [x] `V1UI-06 fix(web-runtime): surface continuity state in bot monitoring positions`
   - Closed the `/dashboard/bots` open-position continuity/actionability gap.
     Bot monitoring now renders backend `continuityState`, `actionable`, and
