@@ -17,12 +17,13 @@ restoration task.
 2. CI builds/tests candidate SHA through normal repository checks.
 3. Operator triggers production deployment for the selected SHA.
 4. PROD post-deploy gates run.
-5. If PROD gates fail, automatic rollback moves services to previous stable release.
+5. If PROD gates fail, the operator rolls services back in Coolify to the
+   previous stable release.
 
-## Production Promotion Automation Entry Point
-- Workflow: `.github/workflows/promote-prod.yml`
-- Trigger: manual `workflow_dispatch`
-- Required secret: `COOLIFY_PROD_DEPLOY_HOOK_URL`
+## Production Promotion Entry Point
+- Tool: Coolify/manual operator deployment for the selected SHA.
+- GitHub Actions is not used for production deployment in the active setup.
+- Required secrets and deployment controls remain outside repository workflows.
 
 ## Immutable SHA Invariants
 The following are non-negotiable:
@@ -52,13 +53,14 @@ After immutable SHA promotion:
    - workers readiness + queue heartbeat.
 3. Record rollout status and timestamps in deployment evidence log.
 
-## Automatic Rollback Contract
+## Rollback Contract
 Rollback is triggered when any required PROD post-deploy gate fails.
 
 Rollback behavior:
 1. Revert to previous stable deployment artifact/tag for affected services.
 2. Keep failed SHA and gate failure details in incident evidence.
-3. Mark candidate as `ROLLBACK_REQUIRED` and block automatic re-promotion until a new eligible SHA is validated.
+3. Mark candidate as `ROLLBACK_REQUIRED` and block re-promotion until a new
+   eligible SHA is validated.
 
 ## Evidence and Audit Contract
 Each promotion attempt must emit machine-readable evidence (JSON/Markdown) with:
@@ -71,7 +73,7 @@ Each promotion attempt must emit machine-readable evidence (JSON/Markdown) with:
 Evidence artifacts are mandatory for operational traceability and release audits.
 
 ## Ownership
-- CI pipeline owns gate execution and promotion decisioning.
+- Repository-local validation scripts own gate evidence where possible.
 - Ops owner owns Coolify deployment wiring and runtime health policy.
 - Release owner signs off blocked/rollback incidents before reopening promotion flow.
 

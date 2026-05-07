@@ -4,21 +4,16 @@ Last updated: 2026-05-07
 
 ## Next Tiny Task
 
-Resolve the GitHub Actions account billing lock, then rerun the official
-production promote workflow on `main`:
+Deploy the pushed `main` through the accepted Coolify operator path, not
+GitHub Actions. GitHub Actions production promote/rollback entrypoints have
+been removed because the project does not use paid GitHub Actions and workflow
+attempts create unwanted email noise.
 
 ```powershell
-pnpm run ops:prod:promote -- --dispatch --ref main --wait-seconds 60
+pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha 27440d3a9bba762b06d212e4c837a28ac25b7153 --timeout-seconds 900 --interval-seconds 15
 ```
 
-Latest dispatch evidence: `promote-prod.yml` run `25514674413` for current
-`main` at `2b0056c0c08af9ed3c05803c05f18df1b30c0103` failed before any steps
-executed because GitHub reported: `The job was not started because your account
-is locked due to a billing issue.`
-
-After billing/Actions is restored, wait for production build-info to expose the
-promoted SHA and let the workflow runtime freshness and rollback guard decide
-whether the deploy stands. If promote is already complete, use
+After Coolify deploy exposes the promoted SHA, continue with
 `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md` once
 production auth and DB/Coolify access are available. Start with
 `LIVEIMPORT-03` authenticated read-only production runtime readback on current
@@ -35,11 +30,9 @@ build-info is current, but the current shell still lacks the required Soar
 production auth/access. A no-auth collector attempt failed closed before
 runtime readback, which is the expected safe result.
 
-Post-push check: local `main` is pushed to `origin/main` at
-`2b0056c0c08af9ed3c05803c05f18df1b30c0103`; production still reports
-`21bb52f1...` until `Promote PROD` completes successfully. This shell did
-dispatch and retry the workflow through GitHub API, but GitHub Actions could
-not start the job due to account billing lock.
+Post-cleanup check: local `main` is pushed to `origin/main`; production still
+reports `21bb52f1...` until a Coolify operator deploy completes. Do not use
+GitHub Actions for production deployment.
 
 Canonical command once auth is available:
 
@@ -51,10 +44,8 @@ pnpm run ops:liveimport:readback -- --expected-sha 21bb52f1e4b8865aab0dbb83ecffe
 
 0. Follow the final blocker execution pack:
    `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
-0a. Unblock GitHub Actions billing/account status, then rerun the manual
-   `Promote PROD` workflow on `main` with
-   `pnpm run ops:prod:promote -- --dispatch --ref main --wait-seconds 60`.
-   Wait for build-info, runtime freshness, and rollback guard to pass.
+0a. Deploy current `main` through Coolify/manual operator controls, then wait
+   for build-info to expose the deployed SHA. Do not use GitHub Actions.
 1. If production credentials or ops auth are available, execute
    `ops:liveimport:readback` and record redacted `LIVEIMPORT-03` evidence. The latest
    names-only prerequisite sweep after `FULLARCH-FIX-11` found no production

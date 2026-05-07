@@ -17,30 +17,12 @@ Last updated: 2026-05-07
 
 ## READY
 
-- [x] `V1-PROD-PROMOTE-HELPER-2026-05-07 release: add repeatable production promote helper`
-  - Scope: added `pnpm run ops:prod:promote`, a local helper that dispatches
-    and inspects the official `promote-prod.yml` workflow through GitHub API
-    without printing credentials or bypassing the approved Coolify/rollback
-    path. Evidence:
-    `docs/planning/v1-prod-promote-helper-task-2026-05-07.md`.
-
-- [x] `V1-PROD-PROMOTE-GITHUB-BILLING-BLOCKER-2026-05-07 release: capture GitHub Actions billing blocker`
-  - Scope: dispatched the official `Promote PROD` workflow for
-    `92955a1cb09f3c473da856369e5f607fbc1fe5a1` through GitHub API, then
-    retried it for current `main` at
-    `2b0056c0c08af9ed3c05803c05f18df1b30c0103`. Both runs failed before any
-    steps executed because GitHub Actions reported the account is locked due to
-    a billing issue. Evidence:
-    `docs/planning/v1-prod-promote-github-billing-blocker-task-2026-05-07.md`.
-
-- [x] `V1-PROD-PROMOTE-DISPATCH-BLOCKER-2026-05-07 release: record production promote dispatch blocker`
-  - Scope: recorded that local/remote `main` is pushed at
-    `9bdd1c1a101603e872099f205f3e9b21904e2b0a` while production build-info
-    still reports `21bb52f1...`. The official production deploy path is the
-    manual GitHub Actions workflow `Promote PROD`; this shell cannot dispatch
-    it because `gh` is unavailable and the GitHub connector cannot create a
-    new workflow run. Evidence:
-    `docs/planning/v1-prod-promote-dispatch-blocker-task-2026-05-07.md`.
+- [x] `V1-PROD-GITHUB-ACTIONS-REGRESSION-CLEANUP-2026-05-07 release: remove GitHub Actions production path`
+  - Scope: removed the invalid GitHub Actions production promotion/rollback
+    path and the local helper that dispatched it. Active deployment state now
+    points to Coolify/manual operator deployment plus repository-local
+    verification gates. Evidence:
+    `docs/planning/v1-prod-github-actions-regression-cleanup-task-2026-05-07.md`.
 
 - [x] `V1-FINAL-BLOCKER-PREREQ-RECHECK-2026-05-07 release: recheck final blocker prerequisites`
   - Scope: rechecked the current shell against the final blocker execution

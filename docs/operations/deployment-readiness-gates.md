@@ -11,10 +11,11 @@ entry point has been removed so unused stage resources do not redeploy on push.
 
 ## Gate Categories
 
-Automation entry point:
-- Workflow: `.github/workflows/promote-prod.yml`
-- Required production secrets: `COOLIFY_PROD_DEPLOY_HOOK_URL`,
-  `PROD_API_BASE_URL`, `PROD_RUNTIME_FRESHNESS_TOKEN`
+Deployment entry point:
+- Coolify/manual operator deployment for the selected production SHA.
+- GitHub Actions is not used for production deployment in the active setup.
+- Required production access remains owned by the operator/Coolify, not by
+  repository GitHub Actions secrets.
 
 ### G1 - Build Gate
 Required:

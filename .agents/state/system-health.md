@@ -5,13 +5,12 @@ Last updated: 2026-05-07
 ## Latest Health Snapshot
 
 - Local `main` and `origin/main` are aligned at
-  `2b0056c0c08af9ed3c05803c05f18df1b30c0103`. Public production web
-  build-info still reports `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`; the
-  official production promote workflow is manual `workflow_dispatch`, so push
-  alone is not deploy completion evidence. The latest dispatch failed before
-  any job steps started because GitHub Actions reports the account is locked
-  due to a billing issue. Production API `/health` and API `/ready` are
-  healthy in the latest public checks.
+  the latest pushed commit. Public production web build-info still reports
+  `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`; push alone is not deploy
+  completion evidence. GitHub Actions is not an accepted production deployment
+  path for this project, so production deployment must be performed through
+  Coolify/manual operator controls. Production API `/health` and API `/ready`
+  are healthy in the latest public checks.
 - Canonical queue check found two open production-evidence items:
   `LIVEIMPORT-03` and `BOTMULTI-09`.
 - The local full-architecture repair and validation chain is closed through
@@ -30,24 +29,12 @@ Last updated: 2026-05-07
 
 ## Latest Validation
 
-- `V1-PROD-PROMOTE-GITHUB-BILLING-BLOCKER-2026-05-07` BLOCKED:
-  `promote-prod.yml` was dispatched for `main` at
-  `92955a1cb09f3c473da856369e5f607fbc1fe5a1`, then retried at
-  `2b0056c0c08af9ed3c05803c05f18df1b30c0103`; latest run `25514674413` and
-  job `74882472170` failed before any steps executed; check-run annotation
-  says `The job was not started because your account is locked due to a
-  billing issue.`
-- `V1-PROD-PROMOTE-HELPER-2026-05-07` PASS: added
-  `pnpm run ops:prod:promote` for secret-safe local GitHub workflow
-  dispatch/status without `gh`. Validation PASS: syntax, help, dry-run, and
-  status-only readback of the current billing-lock workflow failure.
-- `V1-PROD-PROMOTE-DISPATCH-BLOCKER-2026-05-07` PASS as deploy-path
-  classification: local/remote `main` is pushed at
-  `9bdd1c1a101603e872099f205f3e9b21904e2b0a`; production build-info timed out
-  waiting for that SHA and last reported `21bb52f1...`; public API `/health`
-  and `/ready` passed; `.github/workflows/promote-prod.yml` is the official
-  manual `workflow_dispatch` path; this shell lacks `gh`, and the available
-  GitHub connector cannot dispatch a new workflow run.
+- `V1-PROD-GITHUB-ACTIONS-REGRESSION-CLEANUP-2026-05-07` in progress:
+  removing GitHub Actions production promote/rollback entrypoints and the
+  local helper because the operator confirmed GitHub Actions is not an accepted
+  deployment mechanism for this project.
+- Superseded GitHub Actions deploy-path notes are closed as invalid for the
+  active project setup. Production deployment is Coolify/manual operator owned.
 - `V1-FINAL-BLOCKER-PREREQ-RECHECK-2026-05-07` PASS as blocker
   classification: public production build-info matches
   `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`; names-only env scan found

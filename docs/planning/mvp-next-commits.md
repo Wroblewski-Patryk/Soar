@@ -7,35 +7,14 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
-- [x] `V1-PROD-PROMOTE-HELPER-2026-05-07 release: add repeatable production promote helper`
-  - 2026-05-07: Added `pnpm run ops:prod:promote`, a secret-safe local helper
-    for dispatching and inspecting the official `promote-prod.yml` GitHub
-    Actions workflow without requiring `gh`. The helper uses `GITHUB_TOKEN`,
-    `GH_TOKEN`, or Git Credential Manager, never prints token values, supports
-    dry-run, and reports latest run/job/check-run annotations. Validation
-    PASS: syntax, help, dry-run, and status-only readback of the current
-    billing-lock failure. Evidence:
-    `docs/planning/v1-prod-promote-helper-task-2026-05-07.md`.
-- [x] `V1-PROD-PROMOTE-GITHUB-BILLING-BLOCKER-2026-05-07 release: capture GitHub Actions billing blocker`
-  - 2026-05-07: Dispatched `promote-prod.yml` through GitHub API for `main` at
-    `92955a1cb09f3c473da856369e5f607fbc1fe5a1` without printing credentials.
-    GitHub accepted the dispatch, but run `25514453251` failed before any job
-    steps executed. Check-run annotation reports: `The job was not started
-    because your account is locked due to a billing issue.` Retried dispatch
-    for current `main` at `2b0056c0c08af9ed3c05803c05f18df1b30c0103`; run
-    `25514674413` failed with the same annotation and zero executed steps.
-    Production deploy did not start. Evidence:
-    `docs/planning/v1-prod-promote-github-billing-blocker-task-2026-05-07.md`.
-- [x] `V1-PROD-PROMOTE-DISPATCH-BLOCKER-2026-05-07 release: record production promote dispatch blocker`
-  - 2026-05-07: Recorded the post-push production state. Local and remote
-    `main` are aligned at `9bdd1c1a101603e872099f205f3e9b21904e2b0a`, while
-    production build-info still reports `21bb52f1...`. The repository's
-    official production deploy path is `.github/workflows/promote-prod.yml`,
-    which is manual `workflow_dispatch` and uses GitHub secrets for the
-    Coolify webhook, runtime freshness, and rollback guard. This shell cannot
-    dispatch it because `gh` is unavailable and the active GitHub connector
-    cannot start new workflow runs. Evidence:
-    `docs/planning/v1-prod-promote-dispatch-blocker-task-2026-05-07.md`.
+- [x] `V1-PROD-GITHUB-ACTIONS-REGRESSION-CLEANUP-2026-05-07 release: remove GitHub Actions production path`
+  - 2026-05-07: Removed the invalid GitHub Actions production promotion and
+    rollback path after operator correction. Deleted
+    `.github/workflows/promote-prod.yml`, `.github/workflows/prod-rollback.yml`,
+    and the local `ops:prod:promote` helper. Active deployment docs/state now
+    require Coolify/manual operator deployment followed by repository-local
+    build-info and V1 evidence gates. Evidence:
+    `docs/planning/v1-prod-github-actions-regression-cleanup-task-2026-05-07.md`.
 - [x] `V1-FINAL-BLOCKER-PREREQ-RECHECK-2026-05-07 release: recheck final blocker prerequisites`
   - 2026-05-07: Rechecked the final V1 blocker prerequisites after publishing
     the execution pack. Public production build-info is current at
