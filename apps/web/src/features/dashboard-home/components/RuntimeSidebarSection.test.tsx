@@ -183,6 +183,7 @@ const createProps = (overrides?: Partial<RuntimeSidebarSectionProps>): RuntimeSi
       actionStateDescription: null,
       actionStateOrderId: null,
       actionStateExchangeOrderId: null,
+      actionStateTone: "info" as const,
       exchangeOrderIdLabel: "Exchange ID",
       buyLabel: "Buy",
       sellLabel: "Sell",
@@ -445,6 +446,7 @@ describe("RuntimeSidebarSection strategy edge behavior", () => {
         actionStateDescription: "Exchange open order is visible.",
         actionStateOrderId: "local-order-1",
         actionStateExchangeOrderId: "binance-order-1",
+        actionStateTone: "info",
       },
     });
 
@@ -455,6 +457,27 @@ describe("RuntimeSidebarSection strategy edge behavior", () => {
     expect(actionState).toHaveTextContent("local-order-1");
     expect(actionState).toHaveTextContent("Exchange ID");
     expect(actionState).toHaveTextContent("binance-order-1");
+  });
+
+  it("renders manual-order blocked action state with error tone", () => {
+    const props = createProps({
+      manualOrder: {
+        ...createProps().manualOrder,
+        actionStateLabel: "Blocked",
+        actionStateDescription: "LIVE_MANUAL_SCOPE_UNRESOLVED",
+        actionStateOrderId: null,
+        actionStateExchangeOrderId: null,
+        actionStateTone: "error",
+      },
+    });
+
+    render(<RuntimeSidebarSection {...props} />);
+
+    const actionState = screen.getByTestId("manual-order-action-state");
+    expect(actionState).toHaveTextContent("Blocked");
+    expect(actionState).toHaveTextContent("LIVE_MANUAL_SCOPE_UNRESOLVED");
+    expect(actionState).toHaveClass("border-error/35");
+    expect(actionState).toHaveClass("text-error");
   });
 
   it("derives LIVE percent-allocation delta from runtime equity and net pnl", () => {

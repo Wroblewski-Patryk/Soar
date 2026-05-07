@@ -61,9 +61,15 @@ export const useManualOrderController = ({
   const [manualOrderContextLoading, setManualOrderContextLoading] = useState(false);
   const [isSubmittingManualOrder, setIsSubmittingManualOrder] = useState(false);
   const [manualOrderLastResponse, setManualOrderLastResponse] = useState<DashboardManualOrderResponse | null>(null);
+  const [manualOrderLastError, setManualOrderLastError] = useState<string | null>(null);
   const manualOrderContextRequestIdRef = useRef(0);
   const previousSelectedBotIdRef = useRef<string | null>(null);
   const selectedVenueContext = useMemo(() => resolveBotVenueContext(selected?.bot), [selected?.bot]);
+
+  const clearManualOrderActionState = useCallback(() => {
+    setManualOrderLastResponse(null);
+    setManualOrderLastError(null);
+  }, []);
 
   const manualOrderSymbolOptions = useMemo(() => {
     const options = new Set<string>();
@@ -123,8 +129,8 @@ export const useManualOrderController = ({
     setManualOrderLastResolvedSymbol(null);
     setManualOrderContext(null);
     setManualOrderContextLoading(false);
-    setManualOrderLastResponse(null);
-  }, [selected?.bot.id]);
+    clearManualOrderActionState();
+  }, [clearManualOrderActionState, selected?.bot.id]);
 
   useEffect(() => {
     if (manualOrderSymbolOptions.length === 0) {
@@ -343,7 +349,7 @@ export const useManualOrderController = ({
   const handleManualOrderSliderChange = useCallback((nextPercent: number) => {
     const clampedPercent = Math.max(0, Math.min(100, nextPercent));
     setManualOrderSliderPercent(clampedPercent);
-    setManualOrderLastResponse(null);
+    clearManualOrderActionState();
 
     const minQty = manualOrderMinExecutableQty ?? 0;
     const maxQty = manualOrderSliderMaxQuantity ?? minQty;
@@ -354,7 +360,7 @@ export const useManualOrderController = ({
         ? minQty
         : minQty + ((maxQty - minQty) * clampedPercent) / 100;
     setManualOrderQuantity(formatQuantityForInput(targetQuantity));
-  }, [manualOrderMinExecutableQty, manualOrderSliderMaxQuantity]);
+  }, [clearManualOrderActionState, manualOrderMinExecutableQty, manualOrderSliderMaxQuantity]);
 
   const fillManualOrderPriceFromReference = useCallback(() => {
     if (manualOrderLiveReferencePrice == null || !Number.isFinite(manualOrderLiveReferencePrice) || manualOrderLiveReferencePrice <= 0) {
@@ -363,14 +369,14 @@ export const useManualOrderController = ({
     setManualOrderPrice(formatQuantityForInput(manualOrderLiveReferencePrice));
     setManualOrderPriceAutofilledSymbol(normalizeSymbol(manualOrderSymbol));
     setManualOrderPriceManuallyEditedSymbol(null);
-    setManualOrderLastResponse(null);
-  }, [manualOrderLiveReferencePrice, manualOrderSymbol]);
+    clearManualOrderActionState();
+  }, [clearManualOrderActionState, manualOrderLiveReferencePrice, manualOrderSymbol]);
 
   const handleManualOrderPriceChange = useCallback((price: string) => {
     setManualOrderPrice(price);
     setManualOrderPriceManuallyEditedSymbol(normalizeSymbol(manualOrderSymbol));
-    setManualOrderLastResponse(null);
-  }, [manualOrderSymbol]);
+    clearManualOrderActionState();
+  }, [clearManualOrderActionState, manualOrderSymbol]);
 
   const handleManualOrderSymbolChange = useCallback((symbol: string) => {
     const normalizedSymbol = normalizeSymbol(symbol);
@@ -378,18 +384,18 @@ export const useManualOrderController = ({
     setManualOrderPrice("");
     setManualOrderPriceAutofilledSymbol(null);
     setManualOrderPriceManuallyEditedSymbol(null);
-    setManualOrderLastResponse(null);
-  }, []);
+    clearManualOrderActionState();
+  }, [clearManualOrderActionState]);
 
   const handleManualOrderSideChange = useCallback((side: "BUY" | "SELL") => {
     setManualOrderSide(side);
-    setManualOrderLastResponse(null);
-  }, []);
+    clearManualOrderActionState();
+  }, [clearManualOrderActionState]);
 
   const handleManualOrderQuantityChange = useCallback((quantity: string) => {
     setManualOrderQuantity(quantity);
-    setManualOrderLastResponse(null);
-  }, []);
+    clearManualOrderActionState();
+  }, [clearManualOrderActionState]);
 
   const manualOrderQuantityValue = useMemo(() => {
     const parsed = Number(manualOrderQuantity);
@@ -422,7 +428,7 @@ export const useManualOrderController = ({
 
   const handleManualOrderBudgetChange = useCallback((budget: string) => {
     setManualOrderBudget(budget);
-    setManualOrderLastResponse(null);
+    clearManualOrderActionState();
 
     const parsedBudget = parseOptionalPositivePriceInput(budget);
     if (parsedBudget == null) {
@@ -452,7 +458,13 @@ export const useManualOrderController = ({
         : 1;
     const targetQuantity = (clampedBudget * effectiveLeverage) / manualOrderEffectivePriceForSizing;
     setManualOrderQuantity(formatQuantityForInput(targetQuantity));
-  }, [manualOrderBudgetUsesMargin, manualOrderEffectivePriceForSizing, manualOrderLeverageForEstimate, selectedData?.free]);
+  }, [
+    clearManualOrderActionState,
+    manualOrderBudgetUsesMargin,
+    manualOrderEffectivePriceForSizing,
+    manualOrderLeverageForEstimate,
+    selectedData?.free,
+  ]);
 
   const handleSubmitManualOrder = useCallback(async () => {
     if (!selected) return;
@@ -525,7 +537,7 @@ export const useManualOrderController = ({
     }
 
     setIsSubmittingManualOrder(true);
-    setManualOrderLastResponse(null);
+    clearManualOrderActionState();
     try {
       const response = await openDashboardManualOrder({
         botId: selected.bot.id,
@@ -539,13 +551,17 @@ export const useManualOrderController = ({
       toast.success(labels.success);
       setManualOrderQuantity("");
       setManualOrderLastResponse(response);
+      setManualOrderLastError(null);
       await load({ silent: true });
     } catch (error) {
-      toast.error(getAxiosMessage(error) ?? labels.error);
+      const message = getAxiosMessage(error) ?? labels.error;
+      setManualOrderLastError(message);
+      toast.error(message);
     } finally {
       setIsSubmittingManualOrder(false);
     }
   }, [
+    clearManualOrderActionState,
     labels.error,
     labels.exceedsFreeFunds,
     labels.invalidPrice,
@@ -598,6 +614,7 @@ export const useManualOrderController = ({
     handleManualOrderPriceChange,
     handleManualOrderSideChange,
     manualOrderLastResponse,
+    manualOrderLastError,
     setManualOrderQuantity,
     setManualOrderSide,
   };

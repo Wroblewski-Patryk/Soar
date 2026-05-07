@@ -31,6 +31,7 @@ type BuildManualOrderPresenterArgs = {
   manualOrderContextLoading: boolean;
   isSubmittingManualOrder: boolean;
   manualOrderLastResponse: DashboardManualOrderResponse | null;
+  manualOrderLastError: string | null;
   manualOrderSymbolOptions: string[];
   manualOrderSymbol: string;
   manualOrderSide: "BUY" | "SELL";
@@ -47,19 +48,34 @@ type BuildManualOrderPresenterArgs = {
 
 const resolveManualOrderActionState = (
   response: DashboardManualOrderResponse | null,
+  error: string | null,
   isSubmitting: boolean,
   t: Translate
 ): Pick<
   ManualOrderPresenter,
-  "actionStateLabel" | "actionStateDescription" | "actionStateOrderId" | "actionStateExchangeOrderId"
+  | "actionStateLabel"
+  | "actionStateDescription"
+  | "actionStateOrderId"
+  | "actionStateExchangeOrderId"
+  | "actionStateTone"
 > => {
   if (!response) {
+    if (error) {
+      return {
+        actionStateLabel: t("dashboard.home.runtime.manualOrderActionStateBlocked"),
+        actionStateDescription: error,
+        actionStateOrderId: null,
+        actionStateExchangeOrderId: null,
+        actionStateTone: "error",
+      };
+    }
     if (isSubmitting) {
       return {
         actionStateLabel: t("dashboard.home.runtime.manualOrderActionStateSubmitted"),
         actionStateDescription: t("dashboard.home.runtime.manualOrderActionDescriptionSubmitted"),
         actionStateOrderId: null,
         actionStateExchangeOrderId: null,
+        actionStateTone: "info",
       };
     }
     return {
@@ -67,6 +83,7 @@ const resolveManualOrderActionState = (
       actionStateDescription: null,
       actionStateOrderId: null,
       actionStateExchangeOrderId: null,
+      actionStateTone: "info",
     };
   }
 
@@ -77,6 +94,7 @@ const resolveManualOrderActionState = (
       actionStateDescription: t("dashboard.home.runtime.manualOrderActionDescriptionPositionOpened"),
       actionStateOrderId: response.id,
       actionStateExchangeOrderId: response.exchangeOrderId ?? null,
+      actionStateTone: "info",
     };
   }
   if (status === "FILLED") {
@@ -85,6 +103,7 @@ const resolveManualOrderActionState = (
       actionStateDescription: t("dashboard.home.runtime.manualOrderActionDescriptionSubmitted"),
       actionStateOrderId: response.id,
       actionStateExchangeOrderId: response.exchangeOrderId ?? null,
+      actionStateTone: "info",
     };
   }
   if (status === "OPEN" || status === "PARTIALLY_FILLED") {
@@ -102,6 +121,7 @@ const resolveManualOrderActionState = (
           : t("dashboard.home.runtime.manualOrderActionDescriptionWaitingForFill"),
       actionStateOrderId: response.id,
       actionStateExchangeOrderId: response.exchangeOrderId ?? null,
+      actionStateTone: "info",
     };
   }
 
@@ -110,6 +130,7 @@ const resolveManualOrderActionState = (
     actionStateDescription: t("dashboard.home.runtime.manualOrderActionDescriptionSubmitted"),
     actionStateOrderId: response.id,
     actionStateExchangeOrderId: response.exchangeOrderId ?? null,
+    actionStateTone: "info",
   };
 };
 
@@ -133,6 +154,7 @@ export const buildRuntimeSidebarManualOrderPresenter = ({
   manualOrderContextLoading,
   isSubmittingManualOrder,
   manualOrderLastResponse,
+  manualOrderLastError,
   manualOrderSymbolOptions,
   manualOrderSymbol,
   manualOrderSide,
@@ -147,7 +169,12 @@ export const buildRuntimeSidebarManualOrderPresenter = ({
   onSubmit,
 }: BuildManualOrderPresenterArgs): ManualOrderPresenter => {
   const selectedVenueContext = resolveBotVenueContext(selected?.bot);
-  const actionState = resolveManualOrderActionState(manualOrderLastResponse, isSubmittingManualOrder, t);
+  const actionState = resolveManualOrderActionState(
+    manualOrderLastResponse,
+    manualOrderLastError,
+    isSubmittingManualOrder,
+    t
+  );
 
   return ({
   title: t("dashboard.home.runtime.manualOrderTitle"),
@@ -172,6 +199,7 @@ export const buildRuntimeSidebarManualOrderPresenter = ({
   actionStateDescription: actionState.actionStateDescription,
   actionStateOrderId: actionState.actionStateOrderId,
   actionStateExchangeOrderId: actionState.actionStateExchangeOrderId,
+  actionStateTone: actionState.actionStateTone,
   exchangeOrderIdLabel: t("dashboard.home.runtime.exchangeOrderId"),
   buyLabel: t("dashboard.home.runtime.manualOrderBuyLabel"),
   sellLabel: t("dashboard.home.runtime.manualOrderSellLabel"),

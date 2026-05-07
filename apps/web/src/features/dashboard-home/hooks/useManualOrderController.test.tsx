@@ -457,4 +457,103 @@ describe("useManualOrderController", () => {
       expect(result.current.manualOrderLeverageForEstimate).toBe(8);
     });
   });
+
+  it("keeps backend manual-order blocked reason until the draft changes", async () => {
+    getDashboardManualOrderContextMock.mockResolvedValue({
+      botId: "bot-manual-blocked",
+      symbol: "BTCUSDT",
+      mode: "LIVE",
+      orderType: "MARKET",
+      marginMode: "CROSSED",
+      leverage: 10,
+      priceReference: {
+        markPrice: 68000,
+        source: "exchange_mark",
+      },
+      quantityConstraints: {
+        minAmount: 0.001,
+        amountPrecision: 0.001,
+        minNotional: 5,
+        minExecutableQty: 0.001,
+      },
+    });
+    openDashboardManualOrderMock.mockRejectedValue({
+      isAxiosError: true,
+      response: {
+        data: {
+          error: {
+            message: "LIVE_MANUAL_SCOPE_UNRESOLVED",
+          },
+        },
+      },
+    });
+
+    const labels = {
+      invalidSymbol: "invalid-symbol",
+      invalidQuantity: "invalid-quantity",
+      invalidPrice: "invalid-price",
+      requiredPrice: "required-price",
+      marketPriceUnavailable: "market-price-unavailable",
+      minQuantity: "min-quantity {value}",
+      exceedsFreeFunds: "exceeds-free-funds",
+      success: "success",
+      error: "error",
+    };
+
+    const selected = {
+      bot: {
+        id: "bot-manual-blocked",
+        mode: "LIVE",
+        marketType: "FUTURES",
+        exchange: "BINANCE",
+      },
+      runtimeGraph: {
+        marketGroups: [
+          {
+            lifecycleStatus: "ACTIVE",
+            isEnabled: true,
+            symbolGroup: {
+              symbols: ["BTCUSDT"],
+            },
+          },
+        ],
+      },
+    } as unknown as RuntimeSnapshot;
+
+    const selectedData = {
+      free: 1000,
+      symbols: [{ symbol: "BTCUSDT", liveLastPrice: 68000 }],
+      open: [],
+    } as unknown as RuntimeSelectedData;
+
+    const { result } = renderHook(() =>
+      useManualOrderController({
+        selected,
+        selectedData,
+        load: vi.fn().mockResolvedValue(undefined),
+        labels,
+      })
+    );
+
+    await waitFor(() => {
+      expect(result.current.manualOrderSymbol).toBe("BTCUSDT");
+    });
+
+    act(() => {
+      result.current.handleManualOrderQuantityChange("0.01");
+    });
+
+    await act(async () => {
+      await result.current.handleSubmitManualOrder();
+    });
+
+    expect(result.current.manualOrderLastError).toBe("LIVE_MANUAL_SCOPE_UNRESOLVED");
+    expect(toast.error).toHaveBeenCalledWith("LIVE_MANUAL_SCOPE_UNRESOLVED");
+
+    act(() => {
+      result.current.handleManualOrderQuantityChange("0.02");
+    });
+
+    expect(result.current.manualOrderLastError).toBeNull();
+  });
 });

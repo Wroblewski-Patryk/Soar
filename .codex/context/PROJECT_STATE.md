@@ -3,6 +3,19 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 dashboard manual-order blocked-reason state slice `V1UI-28` is
+  closed on `main`. BUILDER-mode review found that `UOLF` required manual
+  order `blocked reason` visibility, but failed
+  `POST /dashboard/orders/open` submissions only surfaced the backend/API
+  reason in a transient toast. Dashboard Home now persists the resolved submit
+  error in the manual-order controller, renders it as the blocked action state
+  in the runtime sidebar, applies error tone to that state, and clears stale
+  blocked truth when the operator edits the next draft. Focused Web tests
+  passed (`25/25`), as did Web typecheck, Web lint, route-reachable i18n audit
+  (`findings=0`), repository guardrails, full workspace build, and
+  authenticated rendered `/dashboard` smoke on desktop and mobile with no
+  console warnings, console errors, or page errors. Evidence:
+  `docs/planning/v1ui-28-manual-order-blocked-reason-state-task-2026-05-07.md`.
 - 2026-05-07 dashboard manual-order exchange-id state slice `V1UI-27` is
   closed on `main`. ARCHITECT-mode review found that
   `POST /dashboard/orders/open` already returns `exchangeOrderId` for LIVE

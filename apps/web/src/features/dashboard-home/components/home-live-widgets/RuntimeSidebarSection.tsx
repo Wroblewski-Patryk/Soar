@@ -50,6 +50,7 @@ export type RuntimeSidebarSectionProps = {
     actionStateDescription: string | null;
     actionStateOrderId: string | null;
     actionStateExchangeOrderId: string | null;
+    actionStateTone: "info" | "error";
     exchangeOrderIdLabel: string;
     buyLabel: string;
     sellLabel: string;
@@ -748,7 +749,11 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
                 </button>
                 {props.manualOrder.actionStateLabel ? (
                   <div
-                    className="rounded-box border border-info/35 bg-info/10 px-2.5 py-2 text-[11px] text-info"
+                    className={`rounded-box border px-2.5 py-2 text-[11px] ${
+                      props.manualOrder.actionStateTone === "error"
+                        ? "border-error/35 bg-error/10 text-error"
+                        : "border-info/35 bg-info/10 text-info"
+                    }`}
                     data-testid="manual-order-action-state"
                     aria-live="polite"
                   >

@@ -9,6 +9,19 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `V1UI-28 fix(web-runtime): show manual-order blocked reason`
+  - 2026-05-07: Closed a BUILDER-mode manual-order diagnostics parity slice.
+    `UOLF` requires manual-order lifecycle states to include a blocked reason,
+    but failed `POST /dashboard/orders/open` submissions were only visible in
+    a transient toast. Dashboard Home now persists the resolved backend/API
+    submit error, renders it in the manual-order action-state panel with
+    blocked/error semantics, and clears stale blocked truth when the operator
+    edits the next draft. Validation PASS: focused manual-order/sidebar tests
+    (`25/25`), Web typecheck, Web lint, route-reachable i18n audit
+    (`findings=0`), repository guardrails, full workspace build, and
+    authenticated rendered `/dashboard` smoke on desktop and mobile with no
+    console warnings, console errors, or page errors. Evidence:
+    `docs/planning/v1ui-28-manual-order-blocked-reason-state-task-2026-05-07.md`.
 - [x] `V1UI-27 fix(web-runtime): show manual-order exchange id`
   - 2026-05-07: Closed an ARCHITECT-mode manual-order response parity slice.
     `POST /dashboard/orders/open` already returns `exchangeOrderId` for LIVE

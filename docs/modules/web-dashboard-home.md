@@ -351,6 +351,10 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
       `exchangeOrderId`, Dashboard Home shows that exchange-side order
       identity in the manual-order lifecycle panel and treats `OPEN` with an
       exchange id as exchange-backed imported-open-order truth.
+    - When `POST /dashboard/orders/open` fails, Dashboard Home keeps the
+      backend/API error message visible as the blocked manual-order action
+      state, so the operator-facing `blocked reason` does not disappear with a
+      transient toast.
     - The state is cleared when the operator edits the next manual-order
       inputs so stale response truth cannot be confused with a new order
       draft.
