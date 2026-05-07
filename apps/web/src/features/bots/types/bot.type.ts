@@ -165,6 +165,7 @@ export type DashboardManualOrderContext = {
 export type DashboardManualOrderResponse = {
   id: string;
   status: string;
+  exchangeOrderId?: string | null;
   positionId?: string | null;
 };
 

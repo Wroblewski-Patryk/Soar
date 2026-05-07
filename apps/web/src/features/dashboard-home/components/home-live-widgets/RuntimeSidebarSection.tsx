@@ -49,6 +49,8 @@ export type RuntimeSidebarSectionProps = {
     actionStateLabel: string | null;
     actionStateDescription: string | null;
     actionStateOrderId: string | null;
+    actionStateExchangeOrderId: string | null;
+    exchangeOrderIdLabel: string;
     buyLabel: string;
     sellLabel: string;
     noSymbolsLabel: string;
@@ -759,6 +761,14 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
                     ) : null}
                     {props.manualOrder.actionStateOrderId ? (
                       <p className="mt-1 truncate font-mono text-[10px] opacity-65">{props.manualOrder.actionStateOrderId}</p>
+                    ) : null}
+                    {props.manualOrder.actionStateExchangeOrderId ? (
+                      <p className="mt-1 grid grid-cols-[auto_minmax(0,1fr)] gap-2 text-[10px] opacity-75">
+                        <span>{props.manualOrder.exchangeOrderIdLabel}</span>
+                        <span className="truncate text-right font-mono">
+                          {props.manualOrder.actionStateExchangeOrderId}
+                        </span>
+                      </p>
                     ) : null}
                   </div>
                 ) : null}

@@ -1870,13 +1870,14 @@ describe("HomeLiveWidgets manual order", () => {
     });
 
     await act(async () => {
-      resolveOrder?.({ id: "submitted-order", status: "OPEN" });
+      resolveOrder?.({ id: "submitted-order", status: "OPEN", exchangeOrderId: "binance-manual-order-1" });
       await Promise.resolve();
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId("manual-order-action-state")).toHaveTextContent(/Oczekuje|Waiting/i);
+      expect(screen.getByTestId("manual-order-action-state")).toHaveTextContent(/Importowany|Imported/i);
       expect(screen.getByTestId("manual-order-action-state")).toHaveTextContent("submitted-order");
+      expect(screen.getByTestId("manual-order-action-state")).toHaveTextContent("binance-manual-order-1");
     });
   });
 });

@@ -347,6 +347,10 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
       manual-order panel and renders the returned lifecycle state:
       `OPEN`/`PARTIALLY_FILLED` as waiting or fill progress, `FILLED` as
       filled, and `FILLED` with `positionId` as position opened.
+    - When the `POST /dashboard/orders/open` response carries
+      `exchangeOrderId`, Dashboard Home shows that exchange-side order
+      identity in the manual-order lifecycle panel and treats `OPEN` with an
+      exchange id as exchange-backed imported-open-order truth.
     - The state is cleared when the operator edits the next manual-order
       inputs so stale response truth cannot be confused with a new order
       draft.

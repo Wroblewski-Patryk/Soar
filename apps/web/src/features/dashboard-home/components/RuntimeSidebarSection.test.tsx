@@ -182,6 +182,8 @@ const createProps = (overrides?: Partial<RuntimeSidebarSectionProps>): RuntimeSi
       actionStateLabel: null,
       actionStateDescription: null,
       actionStateOrderId: null,
+      actionStateExchangeOrderId: null,
+      exchangeOrderIdLabel: "Exchange ID",
       buyLabel: "Buy",
       sellLabel: "Sell",
       noSymbolsLabel: "No symbols",
@@ -433,6 +435,26 @@ describe("RuntimeSidebarSection strategy edge behavior", () => {
     expect(screen.getByText("Authenticated exchange balance")).toBeInTheDocument();
     expect(screen.getByTestId("wallet-kpi-account-balance-row")).toHaveTextContent(/4000[,\.]00 USDT/);
     expect(screen.getByText("Live percent hint")).toBeInTheDocument();
+  });
+
+  it("renders manual-order exchange id when action state carries exchange truth", () => {
+    const props = createProps({
+      manualOrder: {
+        ...createProps().manualOrder,
+        actionStateLabel: "Imported open order",
+        actionStateDescription: "Exchange open order is visible.",
+        actionStateOrderId: "local-order-1",
+        actionStateExchangeOrderId: "binance-order-1",
+      },
+    });
+
+    render(<RuntimeSidebarSection {...props} />);
+
+    const actionState = screen.getByTestId("manual-order-action-state");
+    expect(actionState).toHaveTextContent("Imported open order");
+    expect(actionState).toHaveTextContent("local-order-1");
+    expect(actionState).toHaveTextContent("Exchange ID");
+    expect(actionState).toHaveTextContent("binance-order-1");
   });
 
   it("derives LIVE percent-allocation delta from runtime equity and net pnl", () => {

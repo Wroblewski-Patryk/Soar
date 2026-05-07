@@ -49,19 +49,24 @@ const resolveManualOrderActionState = (
   response: DashboardManualOrderResponse | null,
   isSubmitting: boolean,
   t: Translate
-): Pick<ManualOrderPresenter, "actionStateLabel" | "actionStateDescription" | "actionStateOrderId"> => {
+): Pick<
+  ManualOrderPresenter,
+  "actionStateLabel" | "actionStateDescription" | "actionStateOrderId" | "actionStateExchangeOrderId"
+> => {
   if (!response) {
     if (isSubmitting) {
       return {
         actionStateLabel: t("dashboard.home.runtime.manualOrderActionStateSubmitted"),
         actionStateDescription: t("dashboard.home.runtime.manualOrderActionDescriptionSubmitted"),
         actionStateOrderId: null,
+        actionStateExchangeOrderId: null,
       };
     }
     return {
       actionStateLabel: null,
       actionStateDescription: null,
       actionStateOrderId: null,
+      actionStateExchangeOrderId: null,
     };
   }
 
@@ -71,6 +76,7 @@ const resolveManualOrderActionState = (
       actionStateLabel: t("dashboard.home.runtime.manualOrderActionStatePositionOpened"),
       actionStateDescription: t("dashboard.home.runtime.manualOrderActionDescriptionPositionOpened"),
       actionStateOrderId: response.id,
+      actionStateExchangeOrderId: response.exchangeOrderId ?? null,
     };
   }
   if (status === "FILLED") {
@@ -78,16 +84,24 @@ const resolveManualOrderActionState = (
       actionStateLabel: t("dashboard.home.runtime.openOrderStatusFilled"),
       actionStateDescription: t("dashboard.home.runtime.manualOrderActionDescriptionSubmitted"),
       actionStateOrderId: response.id,
+      actionStateExchangeOrderId: response.exchangeOrderId ?? null,
     };
   }
   if (status === "OPEN" || status === "PARTIALLY_FILLED") {
+    const hasExchangeOrderId = typeof response.exchangeOrderId === "string" && response.exchangeOrderId.trim().length > 0;
     return {
       actionStateLabel:
-        status === "PARTIALLY_FILLED"
+        status === "OPEN" && hasExchangeOrderId
+          ? t("dashboard.home.runtime.manualOrderActionStateImportedOpenOrder")
+          : status === "PARTIALLY_FILLED"
           ? t("dashboard.home.runtime.openOrderStatusPartiallyFilled")
           : t("dashboard.home.runtime.manualOrderActionStateWaitingForFill"),
-      actionStateDescription: t("dashboard.home.runtime.manualOrderActionDescriptionWaitingForFill"),
+      actionStateDescription:
+        status === "OPEN" && hasExchangeOrderId
+          ? t("dashboard.home.runtime.manualOrderActionDescriptionImportedOpenOrder")
+          : t("dashboard.home.runtime.manualOrderActionDescriptionWaitingForFill"),
       actionStateOrderId: response.id,
+      actionStateExchangeOrderId: response.exchangeOrderId ?? null,
     };
   }
 
@@ -95,6 +109,7 @@ const resolveManualOrderActionState = (
     actionStateLabel: t("dashboard.home.runtime.manualOrderActionStateSubmitted"),
     actionStateDescription: t("dashboard.home.runtime.manualOrderActionDescriptionSubmitted"),
     actionStateOrderId: response.id,
+    actionStateExchangeOrderId: response.exchangeOrderId ?? null,
   };
 };
 
@@ -156,6 +171,8 @@ export const buildRuntimeSidebarManualOrderPresenter = ({
   actionStateLabel: actionState.actionStateLabel,
   actionStateDescription: actionState.actionStateDescription,
   actionStateOrderId: actionState.actionStateOrderId,
+  actionStateExchangeOrderId: actionState.actionStateExchangeOrderId,
+  exchangeOrderIdLabel: t("dashboard.home.runtime.exchangeOrderId"),
   buyLabel: t("dashboard.home.runtime.manualOrderBuyLabel"),
   sellLabel: t("dashboard.home.runtime.manualOrderSellLabel"),
   noSymbolsLabel: t("dashboard.home.runtime.noSignalData"),

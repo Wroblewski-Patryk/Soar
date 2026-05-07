@@ -9,6 +9,19 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `V1UI-27 fix(web-runtime): show manual-order exchange id`
+  - 2026-05-07: Closed an ARCHITECT-mode manual-order response parity slice.
+    `POST /dashboard/orders/open` already returns `exchangeOrderId` for LIVE
+    exchange-backed orders, but the Web manual-order response type and
+    lifecycle panel hid it. Dashboard Home now types the field, shows Exchange
+    ID in the action-state block when present, and maps `OPEN + exchange id`
+    to the existing imported-open-order lifecycle copy. Validation PASS:
+    focused manual-order/sidebar tests (`20/20`), Web typecheck, Web lint,
+    route-reachable i18n audit (`findings=0`), repository guardrails, full
+    workspace build, and authenticated rendered `/dashboard` smoke on desktop
+    and mobile with no console warnings, console errors, or page errors.
+    Evidence:
+    `docs/planning/v1ui-27-manual-order-exchange-id-state-task-2026-05-07.md`.
 - [x] `V1UI-26 fix(web-runtime): show open-order exchange id`
   - 2026-05-07: Closed a BUILDER-mode backend-to-Web parity slice. Runtime
     open-order reads already carry backend `exchangeOrderId` for LIVE and

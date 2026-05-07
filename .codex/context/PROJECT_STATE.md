@@ -3,6 +3,18 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 dashboard manual-order exchange-id state slice `V1UI-27` is
+  closed on `main`. ARCHITECT-mode review found that
+  `POST /dashboard/orders/open` already returns `exchangeOrderId` for LIVE
+  exchange-backed orders, but the Web manual-order response type and lifecycle
+  panel hid it. Dashboard Home now types the field, shows Exchange ID in the
+  action-state block when present, and maps `OPEN + exchange id` to the
+  existing imported-open-order lifecycle copy. Focused manual-order/sidebar
+  tests passed (`20/20`), as did Web typecheck, Web lint, route-reachable i18n
+  audit (`findings=0`), repository guardrails, full workspace build, and
+  authenticated rendered `/dashboard` smoke on desktop and mobile with no
+  console warnings, console errors, or page errors. Evidence:
+  `docs/planning/v1ui-27-manual-order-exchange-id-state-task-2026-05-07.md`.
 - 2026-05-07 dashboard open-order exchange-id parity slice `V1UI-26` is
   closed on `main`. BUILDER-mode review found that runtime open-order API
   reads already carry backend `exchangeOrderId` for LIVE and exchange-synced
