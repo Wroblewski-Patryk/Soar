@@ -30,7 +30,9 @@ const t = (key: TranslationKey) =>
     "dashboard.bots.monitoring.table.lastTrade": "Last trade",
     "dashboard.bots.monitoring.neutral": "NEUTRAL",
     "dashboard.bots.monitoring.marketStatePositionOpen": "Position open",
+    "dashboard.bots.monitoring.marketStateUnresolved": "Unresolved state",
     "dashboard.bots.monitoring.contextSourceLatestDecision": "Latest decision",
+    "dashboard.bots.monitoring.contextSourceUnresolved": "Unresolved source",
     "dashboard.home.runtime.conditionValueUnavailable": "Waiting for indicator data",
   })[key] ?? key;
 
@@ -84,5 +86,49 @@ describe("MonitoringFutureSignalsSection", () => {
 
     expect(screen.getByText(/RSI\(14\) \| Waiting for indicator data \(< 20\)/)).toBeInTheDocument();
     expect(screen.queryByText(/n\/a/i)).not.toBeInTheDocument();
+  });
+
+  it("fails closed to unresolved labels for unknown backend runtime signal values", () => {
+    render(
+      <MonitoringFutureSignalsSection
+        t={t}
+        monitorSessionDetail={{ symbolsTracked: 1 }}
+        formatDateTime={(value) => value ?? "-"}
+        formatNumber={(value) => String(value)}
+        formatCurrency={(value) => `${value} USDT`}
+        interpolateTemplate={(template, values) =>
+          template.replace("{count}", String(values.count)).replace("{total}", String(values.total))
+        }
+        monitorSignalRows={[
+          {
+            id: "signal-doge",
+            symbol: "DOGEUSDT",
+            lastSignalDirection: null,
+            lastSignalDecisionAt: "2026-05-02T19:05:00.000Z",
+            lastSignalContextSource: "future_backend_source",
+            runtimeMarketState: "FUTURE_BACKEND_STATE",
+            lastSignalConditionLines: [],
+            totalSignals: 0,
+            longEntries: 0,
+            shortEntries: 0,
+            exits: 0,
+            dcaCount: 0,
+            closedTrades: 0,
+            winningTrades: 0,
+            losingTrades: 0,
+            openPositionQty: 0,
+            realizedPnl: 0,
+            unrealizedPnl: 0,
+            feesPaid: 0,
+            lastTradeAt: null,
+          } as unknown as Parameters<typeof MonitoringFutureSignalsSection>[0]["monitorSignalRows"][number],
+        ]}
+      />
+    );
+
+    expect(screen.getByText("Unresolved state")).toBeInTheDocument();
+    expect(screen.getByText("Unresolved source")).toBeInTheDocument();
+    expect(screen.queryByText("FUTURE_BACKEND_STATE")).not.toBeInTheDocument();
+    expect(screen.queryByText("future_backend_source")).not.toBeInTheDocument();
   });
 });

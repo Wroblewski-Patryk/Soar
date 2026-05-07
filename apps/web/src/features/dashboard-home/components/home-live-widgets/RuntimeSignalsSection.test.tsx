@@ -329,4 +329,53 @@ describe("RuntimeSignalsSection", () => {
     expect(screen.getByText("Market snapshot")).toBeInTheDocument();
     expect(screen.getByText("Unresolved state")).toBeInTheDocument();
   });
+
+  it("fails closed to unresolved labels for unknown backend runtime signal values", () => {
+    render(
+      <RuntimeSignalsSection
+        signalSymbols={[
+          ({
+            id: "state-future",
+            symbol: "DOGEUSDT",
+            runtimeMarketState: "FUTURE_BACKEND_STATE",
+            lastSignalContextSource: "future_backend_source",
+            lastSignalConditionLines: [],
+          } as unknown as RuntimeSymbolWithLive),
+        ]}
+        hasSignalOverflow={false}
+        signalRailRef={createRef<HTMLDivElement>()}
+        onScrollPrevious={vi.fn()}
+        onScrollNext={vi.fn()}
+        previousLabel="Prev"
+        nextLabel="Next"
+        longLabel="LONG"
+        shortLabel="SHORT"
+        noSignalDataLabel="No signal data"
+        conditionValueUnavailableLabel="Waiting for indicator data"
+        marketsLabel="Markets"
+        signalsLabel="Signals"
+        signalScoreLabel="Score"
+        signalScoreLongLabel="LONG"
+        signalScoreShortLabel="SHORT"
+        signalContextSourceLabel="Context source"
+        signalContextSourceLatestSignalLabel="Latest signal"
+        signalContextSourceLatestDecisionLabel="Latest decision"
+        signalContextSourceConfiguredFallbackLabel="Closed-candle snapshot"
+        signalContextSourceUnresolvedLabel="Unresolved source"
+        marketStatePositionOpenLabel="Position open"
+        marketStateSignalActiveLabel="Accepted signal"
+        marketStateEvaluatedNoTradeLabel="Evaluated / no trade"
+        marketStateConfiguredOnlyLabel="Market snapshot"
+        marketStateUnresolvedLabel="Unresolved state"
+        marketsCount={1}
+        actionableSignalsCount={0}
+        formatSignalScore={(value) => String(value)}
+      />
+    );
+
+    expect(screen.getByText("Unresolved state")).toBeInTheDocument();
+    expect(screen.getByText("Unresolved source")).toBeInTheDocument();
+    expect(screen.queryByText("FUTURE_BACKEND_STATE")).not.toBeInTheDocument();
+    expect(screen.queryByText("future_backend_source")).not.toBeInTheDocument();
+  });
 });

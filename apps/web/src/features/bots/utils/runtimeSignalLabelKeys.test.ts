@@ -12,6 +12,7 @@ describe("runtimeSignalLabelKeys", () => {
     expect(resolveRuntimeMarketStateLabelSuffix("EVALUATED_NO_TRADE")).toBe("EvaluatedNoTrade");
     expect(resolveRuntimeMarketStateLabelSuffix("CONFIGURED_ONLY")).toBe("ConfiguredOnly");
     expect(resolveRuntimeMarketStateLabelSuffix("UNRESOLVED")).toBe("Unresolved");
+    expect(resolveRuntimeMarketStateLabelSuffix("FUTURE_BACKEND_STATE")).toBe("Unresolved");
     expect(resolveRuntimeMarketStateLabelSuffix(null)).toBe("Unresolved");
     expect(resolveRuntimeMarketStateLabelSuffix(undefined)).toBe("Unresolved");
   });
@@ -21,6 +22,7 @@ describe("runtimeSignalLabelKeys", () => {
     expect(resolveRuntimeContextSourceLabelSuffix("latest_decision")).toBe("LatestDecision");
     expect(resolveRuntimeContextSourceLabelSuffix("configured_fallback")).toBe("ConfiguredFallback");
     expect(resolveRuntimeContextSourceLabelSuffix("unresolved")).toBe("Unresolved");
+    expect(resolveRuntimeContextSourceLabelSuffix("future_backend_source")).toBe("Unresolved");
     expect(resolveRuntimeContextSourceLabelSuffix(null)).toBe("Unresolved");
     expect(resolveRuntimeContextSourceLabelSuffix(undefined)).toBe("Unresolved");
   });

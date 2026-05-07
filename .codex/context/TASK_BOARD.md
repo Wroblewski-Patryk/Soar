@@ -20,6 +20,24 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `V1UI-40 fix(web-runtime): fail closed unknown runtime signal labels`
+  - Scope: closed a TESTER-mode runtime signal label hardening slice. Shared
+    Dashboard/Bots runtime signal label resolvers now explicitly tolerate
+    unknown backend strings and fail closed to unresolved suffixes. Focused
+    Dashboard Home and Bots Monitoring tests prove unexpected market state and
+    context source values render existing unresolved labels instead of raw
+    backend strings or invented semantics. No backend, database, exchange
+    execution, displayed copy, or styling behavior changed. Validation PASS:
+    focused suffix/Dashboard/Bots tests (`10/10`), Web typecheck, Web lint,
+    repository guardrails, route-reachable i18n audit (`findings=0`),
+    `git diff --check`, full workspace build, and authenticated rendered
+    `/dashboard` smoke after dev-server restart with no visible framework
+    overlay, console warnings/errors, page errors, or 5xx responses. Browser
+    plugin validation was attempted first but local `node_repl` resolved Node
+    `v22.13.0` while requiring `>=22.22.0`, so rendered validation used
+    bundled Codex Node plus Playwright. Evidence:
+    `docs/planning/v1ui-40-runtime-signal-label-unknown-values-task-2026-05-07.md`.
+
 - [x] `V1UI-39 refactor(web-runtime): share runtime signal label suffixes`
   - Scope: closed an ARCHITECT-mode Dashboard/Bots runtime label semantics
     slice. Dashboard Home and Bots Monitoring both render backend runtime

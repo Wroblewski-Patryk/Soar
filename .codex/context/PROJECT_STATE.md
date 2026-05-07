@@ -3,6 +3,25 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 unknown runtime signal label hardening slice `V1UI-40` is closed
+  on `main`. TESTER-mode review found that `V1UI-39` had shared runtime signal
+  label suffix semantics, but unknown future backend strings were not
+  explicitly represented in the resolver input contract or component
+  regressions. Shared Dashboard/Bots runtime signal label resolvers now
+  tolerate unknown backend strings and fail closed to unresolved suffixes.
+  Focused Dashboard Home and Bots Monitoring tests prove unexpected market
+  state and context source values render existing unresolved labels instead of
+  raw backend strings or invented semantics. No backend, database, exchange
+  execution, displayed copy, or styling behavior changed. Validation PASS:
+  focused suffix/Dashboard/Bots tests (`10/10`), Web typecheck, Web lint,
+  repository guardrails, route-reachable i18n audit (`findings=0`),
+  `git diff --check`, full workspace build, and authenticated rendered
+  `/dashboard` smoke after dev-server restart with no visible framework
+  overlay, console warnings/errors, page errors, or 5xx responses. Browser
+  plugin validation was attempted first but local `node_repl` resolved Node
+  `v22.13.0` while requiring `>=22.22.0`, so rendered validation used bundled
+  Codex Node plus Playwright. Evidence:
+  `docs/planning/v1ui-40-runtime-signal-label-unknown-values-task-2026-05-07.md`.
 - 2026-05-07 shared runtime signal label suffix slice `V1UI-39` is closed on
   `main`. ARCHITECT-mode review found that Dashboard Home and Bots Monitoring
   both render backend runtime signal context source and market state values,

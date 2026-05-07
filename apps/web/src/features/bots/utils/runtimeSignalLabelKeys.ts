@@ -4,6 +4,7 @@ export type RuntimeMarketState =
   | "EVALUATED_NO_TRADE"
   | "CONFIGURED_ONLY"
   | "UNRESOLVED"
+  | (string & {})
   | null
   | undefined;
 
@@ -12,6 +13,7 @@ export type RuntimeContextSource =
   | "latest_decision"
   | "configured_fallback"
   | "unresolved"
+  | (string & {})
   | null
   | undefined;
 
