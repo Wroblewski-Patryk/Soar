@@ -32,18 +32,17 @@ import {
   hydrateReconciledImportedPositionHistory,
   resolveImportedClosedHistoryClosedAt,
 } from './livePositionReconciliation.history';
-import {
-  CanonicalBotContinuityContext,
-  LocalManagedLivePosition,
-  ReconcileDeps,
-  ReconcileFn,
-  ReconciliationStatus,
-} from './livePositionReconciliation.types';
+import { CanonicalBotContinuityContext, LocalManagedLivePosition, ReconciliationPositionDiagnostic, ReconciliationResult, ReconcileDeps, ReconcileFn } from './livePositionReconciliation.types';
 import { expandSyncedApiKeyMarketTypes } from './livePositionReconciliationApiKeys';
 import { runtimePositionAutomationService } from '../engine/runtimePositionAutomation.service';
 import { resolveCanonicalBotContinuityContext } from './livePositionReconciliationContext';
+import {
+  buildReconciliationPositionDiagnostic, ReconciliationPositionDiagnosticInput, shouldTriggerOwnedSyncedPositionAutomation,
+  summarizeReconciliationDiagnostics,
+} from './livePositionReconciliation.diagnostics';
+import { LivePositionReconciliationLoop } from './livePositionReconciliationLoop';
 export { resolveCanonicalBotContinuityContext } from './livePositionReconciliationContext';
-
+export { LivePositionReconciliationLoop } from './livePositionReconciliationLoop';
 const STALE_LOCAL_MANAGED_LIVE_POSITION_GRACE_MS = 10 * 60 * 1000;
 const STALE_LOCAL_MANAGED_LIVE_POSITION_FALLBACK_GRACE_MS = 60 * 60 * 1000;
 const EXTERNAL_POSITION_MISSING_CONFIRMATION_THRESHOLD = 2;
@@ -371,27 +370,12 @@ export const livePositionReconciliationDefaultDeps: ReconcileDeps = {
   now: () => new Date(),
 };
 
-const shouldTriggerOwnedSyncedPositionAutomation = (input: {
-  managementMode: 'BOT_MANAGED' | 'MANUAL_MANAGED';
-  continuityState:
-    | 'CONFIRMED'
-    | 'RECOVERING'
-    | 'RECOVERED_UNACTIONABLE'
-    | 'EXTERNAL_CLOSE_CONFIRMED'
-    | 'REPAIR_ONLY_CLEANUP';
-  markPrice: number | null;
-}) =>
-  input.managementMode === 'BOT_MANAGED' &&
-  input.continuityState === 'CONFIRMED' &&
-  typeof input.markPrice === 'number' &&
-  Number.isFinite(input.markPrice) &&
-  input.markPrice > 0;
-
 export const reconcileExternalPositionsFromExchange = async (
   deps: ReconcileDeps = livePositionReconciliationDefaultDeps
-): Promise<{ openPositionsSeen: number }> => {
+): Promise<ReconciliationResult> => {
   const apiKeys = await deps.listSyncedApiKeys();
   let openPositionsSeen = 0;
+  const positionDiagnostics: ReconciliationPositionDiagnostic[] = [];
 
   for (const apiKey of apiKeys) {
     try {
@@ -429,11 +413,7 @@ export const reconcileExternalPositionsFromExchange = async (
       const seenExternalSymbolsByOwner = new Map<string, Set<string>>();
       const localManagedPositionsByOwner = new Map<string, LocalManagedLivePosition[]>();
 
-      const loadLocalManagedPositionsForOwner = async (input: {
-        userId: string;
-        botId: string;
-        walletId: string;
-      }) => {
+      const loadLocalManagedPositionsForOwner = async (input: { userId: string; botId: string; walletId: string }) => {
         if (!deps.listOpenLocalManagedPositionsForOwner) return [] as LocalManagedLivePosition[];
         const ownerKey = buildOwnerIdentity(input.botId, input.walletId);
         const cached = localManagedPositionsByOwner.get(ownerKey);
@@ -443,38 +423,63 @@ export const reconcileExternalPositionsFromExchange = async (
         return positions;
       };
 
-      const evictLocalManagedPositionFromCache = (input: {
-        botId: string;
-        walletId: string;
-        positionId: string;
-      }) => {
+      const evictLocalManagedPositionFromCache = (input: { botId: string; walletId: string; positionId: string }) => {
         const ownerKey = buildOwnerIdentity(input.botId, input.walletId);
         const cached = localManagedPositionsByOwner.get(ownerKey);
         if (!cached) return;
-        localManagedPositionsByOwner.set(
-          ownerKey,
-          cached.filter((position) => position.id !== input.positionId)
-        );
+        localManagedPositionsByOwner.set(ownerKey, cached.filter((position) => position.id !== input.positionId));
       };
 
-      const closePositionLifecycle = async (positionId: string, closedAt: Date, closePosition: (
+      const closePositionLifecycle = async (
         positionId: string,
-        closedAt: Date
-      ) => Promise<void>) => {
+        closedAt: Date,
+        closePosition: (positionId: string, closedAt: Date) => Promise<void>
+      ) => {
         await closePosition(positionId, closedAt);
-        if (deps.deleteRuntimePositionState) {
-          await deps.deleteRuntimePositionState(positionId);
-        }
+        if (deps.deleteRuntimePositionState) await deps.deleteRuntimePositionState(positionId);
       };
 
       for (const position of snapshot.positions) {
+        const marketType = apiKey.marketType ?? 'FUTURES';
+        const addDiagnostic = (input: ReconciliationPositionDiagnosticInput) => {
+          positionDiagnostics.push(buildReconciliationPositionDiagnostic({
+            apiKeyId: apiKey.id,
+            userId: apiKey.userId,
+            marketType,
+            ...input,
+          }));
+        };
         const size = Math.abs(position.contracts ?? 0);
-        if (size <= 0) continue;
+        if (size <= 0) {
+          addDiagnostic({
+            symbol: normalizeSymbol(position.symbol) || null,
+            side: null,
+            outcome: 'SKIPPED_ZERO_SIZE',
+            reason: 'zero_contracts',
+          });
+          continue;
+        }
         const side = toPositionSide(position.side, position.contracts);
-        if (!side) continue;
+        if (!side) {
+          addDiagnostic({
+            symbol: normalizeSymbol(position.symbol) || null,
+            side: null,
+            outcome: 'SKIPPED_UNRESOLVED_SIDE',
+            reason: 'unresolved_position_side',
+          });
+          continue;
+        }
 
         const normalizedSymbol = normalizeSymbol(position.symbol);
-        if (!normalizedSymbol) continue;
+        if (!normalizedSymbol) {
+          addDiagnostic({
+            symbol: null,
+            side,
+            outcome: 'SKIPPED_UNRESOLVED_SYMBOL',
+            reason: 'unresolved_symbol',
+          });
+          continue;
+        }
 
         openPositionsSeen += 1;
         const { externalId, legacyExternalId } = buildImportedExternalPositionIds({
@@ -487,10 +492,22 @@ export const reconcileExternalPositionsFromExchange = async (
         seenExternalIds.add(legacyExternalId);
         seenExternalSymbols.add(normalizedSymbol);
         const canonicalEntryPrice = resolveCanonicalEntryPrice(position);
+        const ownership = getExternalPositionOwnership(ownershipIndex, {
+          apiKeyId: apiKey.id,
+          marketType,
+          symbol: normalizedSymbol,
+        });
         if (canonicalEntryPrice == null) {
           console.warn(
             `[LivePositionReconciliation] apiKey=${apiKey.id} user=${apiKey.userId} symbol=${normalizedSymbol} missing_entry_truth`
           );
+          addDiagnostic({
+            symbol: normalizedSymbol,
+            side,
+            outcome: 'SKIPPED_MISSING_ENTRY_TRUTH',
+            ownershipStatus: ownership.status,
+            reason: 'missing_entry_truth',
+          });
           continue;
         }
 
@@ -499,11 +516,6 @@ export const reconcileExternalPositionsFromExchange = async (
           (legacyExternalId !== externalId
             ? await deps.findOpenSyncedPositionByExternalId({ userId: apiKey.userId, externalId: legacyExternalId })
             : null);
-        const ownership = getExternalPositionOwnership(ownershipIndex, {
-          apiKeyId: apiKey.id,
-          marketType: apiKey.marketType ?? 'FUTURES',
-          symbol: normalizedSymbol,
-        });
         const managedByBot = ownership.status === 'OWNED';
         const managementMode = resolveRecoveredManagementMode({
           ownershipStatus: ownership.status,
@@ -663,6 +675,24 @@ export const reconcileExternalPositionsFromExchange = async (
               eventTime: syncedAt,
             });
           }
+          addDiagnostic({
+            symbol: normalizedSymbol,
+            side,
+            outcome: 'UPDATED',
+            ownershipStatus: ownership.status,
+            managementMode,
+            syncState,
+            continuityState,
+            botId: managementMode === 'BOT_MANAGED' ? restoredBotId : null,
+            walletId: managementMode === 'BOT_MANAGED' ? restoredWalletId : null,
+            strategyId: managementMode === 'BOT_MANAGED' ? restoredStrategyId : null,
+            reason:
+              ownership.status === 'OWNED'
+                ? 'owned_by_canonical_bot_scope'
+                : ownership.status === 'MANUAL_ONLY'
+                  ? 'manual_only_scope'
+                  : 'unresolved_owner',
+          });
         } else {
           const openedAt = position.timestamp ? new Date(position.timestamp) : openedAtFallback;
           await deps.createSyncedPosition({
@@ -724,6 +754,24 @@ export const reconcileExternalPositionsFromExchange = async (
               eventTime: syncedAt,
             });
           }
+          addDiagnostic({
+            symbol: normalizedSymbol,
+            side,
+            outcome: 'CREATED',
+            ownershipStatus: ownership.status,
+            managementMode,
+            syncState,
+            continuityState,
+            botId: managementMode === 'BOT_MANAGED' ? restoredBotId : null,
+            walletId: managementMode === 'BOT_MANAGED' ? restoredWalletId : null,
+            strategyId: managementMode === 'BOT_MANAGED' ? restoredStrategyId : null,
+            reason:
+              ownership.status === 'OWNED'
+                ? 'owned_by_canonical_bot_scope'
+                : ownership.status === 'MANUAL_ONLY'
+                  ? 'manual_only_scope'
+                  : 'unresolved_owner',
+          });
         }
       }
 
@@ -937,63 +985,13 @@ export const reconcileExternalPositionsFromExchange = async (
     }
   }
 
-  return { openPositionsSeen };
+  return {
+    openPositionsSeen,
+    positionDiagnostics,
+    diagnosticSummary: summarizeReconciliationDiagnostics(positionDiagnostics),
+  };
 };
 
 const defaultReconcile: ReconcileFn = async () => reconcileExternalPositionsFromExchange();
 
-export class LivePositionReconciliationLoop {
-  private timer: NodeJS.Timeout | null = null;
-  private status: ReconciliationStatus = {
-    running: false,
-    iterations: 0,
-    lastRunAt: null,
-    lastDurationMs: null,
-    lastError: null,
-    openPositionsSeen: 0,
-  };
-
-  constructor(
-    private readonly reconcileFn: ReconcileFn = defaultReconcile,
-    private readonly intervalMs: number = 15_000
-  ) {}
-
-  start() {
-    if (this.timer) return;
-    this.status.running = true;
-    this.timer = setInterval(() => {
-      void this.runOnce();
-    }, this.intervalMs);
-    void this.runOnce();
-  }
-
-  stop() {
-    if (!this.timer) return;
-    clearInterval(this.timer);
-    this.timer = null;
-    this.status.running = false;
-  }
-
-  getStatus() {
-    return { ...this.status };
-  }
-
-  async runOnce() {
-    const startedAt = Date.now();
-    try {
-      const result = await this.reconcileFn();
-      this.status.iterations += 1;
-      this.status.lastRunAt = new Date().toISOString();
-      this.status.lastDurationMs = Date.now() - startedAt;
-      this.status.lastError = null;
-      this.status.openPositionsSeen = result.openPositionsSeen;
-      process.env.POSITIONS_RECON_LAST_RUN_AT = this.status.lastRunAt;
-    } catch (error) {
-      this.status.lastRunAt = new Date().toISOString();
-      this.status.lastDurationMs = Date.now() - startedAt;
-      this.status.lastError = error instanceof Error ? error.message : 'unknown_error';
-    }
-  }
-}
-
-export const livePositionReconciliationLoop = new LivePositionReconciliationLoop();
+export const livePositionReconciliationLoop = new LivePositionReconciliationLoop(defaultReconcile);

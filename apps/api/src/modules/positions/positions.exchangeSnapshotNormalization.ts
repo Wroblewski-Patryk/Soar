@@ -39,10 +39,30 @@ const isIsolatedMarginMode = (position: ExchangePositionLike, info: Record<strin
   return typeof marginMode === 'string' && marginMode.trim().toLowerCase() === 'isolated';
 };
 
+const readSignedPositionAmount = (position: ExchangePositionLike, info: Record<string, unknown>) =>
+  readNumber(info.positionAmt) ?? readNumber(info.contracts) ?? readNumber(position.contracts);
+
+const deriveExchangePositionContracts = (position: ExchangePositionLike, info: Record<string, unknown>) => {
+  const explicitContracts = readNumber(position.contracts) ?? readNumber(info.contracts);
+  if (explicitContracts != null) return Math.abs(explicitContracts);
+  const signedPositionAmount = readNumber(info.positionAmt);
+  return signedPositionAmount != null ? Math.abs(signedPositionAmount) : 0;
+};
+
+const deriveExchangePositionSide = (position: ExchangePositionLike, info: Record<string, unknown>) => {
+  if (position.side != null) return position.side;
+  const positionSide = readString(info.positionSide);
+  if (positionSide != null && positionSide.toUpperCase() !== 'BOTH') return positionSide;
+  const signedPositionAmount = readSignedPositionAmount(position, info);
+  if (signedPositionAmount != null && signedPositionAmount > 0) return 'LONG';
+  if (signedPositionAmount != null && signedPositionAmount < 0) return 'SHORT';
+  return positionSide;
+};
+
 const deriveExchangePositionLeverage = (position: ExchangePositionLike, info: Record<string, unknown>) => {
   const explicitLeverage = readNumber(position.leverage) ?? readNumber(info.leverage);
   if (explicitLeverage != null && explicitLeverage > 0) return explicitLeverage;
-  const contracts = readNumber(position.contracts) ?? readNumber(info.contracts) ?? readNumber(info.positionAmt);
+  const contracts = readSignedPositionAmount(position, info);
   const contractSize = readNumber(info.contractSize) ?? 1;
   const markPrice = readNumber(position.markPrice) ?? readNumber(info.markPrice);
   const entryPrice = readNumber(position.entryPrice) ?? readNumber(info.entryPrice);
@@ -69,7 +89,7 @@ const deriveExchangePositionMarginUsed = (position: ExchangePositionLike, info: 
       readNumber(info.isolatedWallet);
   if (explicitMargin != null && explicitMargin > 0) return Math.abs(explicitMargin);
   const leverage = deriveExchangePositionLeverage(position, info);
-  const contracts = readNumber(position.contracts) ?? readNumber(info.contracts) ?? readNumber(info.positionAmt);
+  const contracts = readSignedPositionAmount(position, info);
   const contractSize = readNumber(info.contractSize) ?? 1;
   const markPrice = readNumber(position.markPrice) ?? readNumber(info.markPrice);
   const entryPrice = readNumber(position.entryPrice) ?? readNumber(info.entryPrice);
@@ -84,8 +104,8 @@ export const normalizeExchangePosition = (position: ExchangePositionLike): Excha
   const timestampMs = readNumber(position.timestamp) ?? readNumber(info.updateTime) ?? readNumber(info.time);
   return {
     symbol: position.symbol ?? readString(info.symbol) ?? 'UNKNOWN',
-    side: position.side ?? readString(info.positionSide) ?? null,
-    contracts: readNumber(position.contracts) ?? readNumber(info.contracts) ?? readNumber(info.positionAmt) ?? 0,
+    side: deriveExchangePositionSide(position, info),
+    contracts: deriveExchangePositionContracts(position, info),
     entryPrice: readNumber(position.entryPrice) ?? readNumber(info.entryPrice),
     markPrice: readNumber(position.markPrice) ?? readNumber(info.markPrice),
     unrealizedPnl: readNumber(position.unrealizedPnl) ?? readNumber(info.unRealizedProfit),

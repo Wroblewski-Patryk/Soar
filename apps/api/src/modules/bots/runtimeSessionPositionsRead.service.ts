@@ -97,6 +97,17 @@ const resolveRuntimePositionActionable = (input: {
 const resolveRuntimeStrategyAutomationContext = (strategyId: string | null) =>
   typeof strategyId === 'string' && strategyId.length > 0;
 
+const runtimeVisibleOpenPositionSyncWhere: Prisma.PositionWhereInput = {
+  OR: [
+    { syncState: 'IN_SYNC' },
+    {
+      origin: 'EXCHANGE_SYNC',
+      syncState: 'DRIFT',
+      continuityState: 'RECOVERED_UNACTIONABLE',
+    },
+  ],
+};
+
 const resolveSingleBotStrategyContext = (botContext: Awaited<ReturnType<typeof getRuntimePositionBotContext>>) => {
   if (!botContext) return null;
   const enabledCanonicalStrategyIds = [
@@ -460,7 +471,7 @@ export const listBotRuntimeSessionPositions = async (
     ...runtimePositionBaseWhere,
     status: 'OPEN',
     closedAt: null,
-    syncState: 'IN_SYNC',
+    ...runtimeVisibleOpenPositionSyncWhere,
   };
   const closedPositionWindow = buildRuntimeSessionClosedPositionWindow({
     startedAt: session.startedAt,
@@ -478,7 +489,7 @@ export const listBotRuntimeSessionPositions = async (
   const feePositionWhere: Prisma.PositionWhereInput = {
     ...runtimePositionBaseWhere,
     OR: [
-      { status: 'OPEN', closedAt: null, syncState: 'IN_SYNC' },
+      { status: 'OPEN', closedAt: null, ...runtimeVisibleOpenPositionSyncWhere },
       { status: 'CLOSED', closedAt: closedPositionWindow, ...runtimeClosedPositionSyncWhere },
     ],
   };

@@ -9,9 +9,51 @@ export type ReconciliationStatus = {
   lastDurationMs: number | null;
   lastError: string | null;
   openPositionsSeen: number;
+  lastDiagnosticSummary: ReconciliationDiagnosticSummary;
+  lastPositionDiagnostics: ReconciliationPositionDiagnostic[];
 };
 
-export type ReconcileFn = () => Promise<{ openPositionsSeen: number }>;
+export type ReconciliationPositionDiagnosticOutcome =
+  | 'CREATED'
+  | 'UPDATED'
+  | 'SKIPPED_ZERO_SIZE'
+  | 'SKIPPED_UNRESOLVED_SIDE'
+  | 'SKIPPED_UNRESOLVED_SYMBOL'
+  | 'SKIPPED_MISSING_ENTRY_TRUTH';
+
+export type ReconciliationPositionDiagnostic = {
+  apiKeyId: string;
+  userId: string;
+  marketType: TradeMarket;
+  symbol: string | null;
+  side: 'LONG' | 'SHORT' | null;
+  outcome: ReconciliationPositionDiagnosticOutcome;
+  ownershipStatus: 'OWNED' | 'AMBIGUOUS' | 'MANUAL_ONLY' | 'UNOWNED' | null;
+  managementMode: 'BOT_MANAGED' | 'MANUAL_MANAGED' | null;
+  syncState: 'IN_SYNC' | 'DRIFT' | null;
+  continuityState:
+    | 'CONFIRMED'
+    | 'RECOVERING'
+    | 'RECOVERED_UNACTIONABLE'
+    | 'EXTERNAL_CLOSE_CONFIRMED'
+    | 'REPAIR_ONLY_CLEANUP'
+    | null;
+  botId: string | null;
+  walletId: string | null;
+  strategyId: string | null;
+  botVisible: boolean;
+  reason: string | null;
+};
+
+export type ReconciliationDiagnosticSummary = Record<ReconciliationPositionDiagnosticOutcome, number>;
+
+export type ReconciliationResult = {
+  openPositionsSeen: number;
+  positionDiagnostics: ReconciliationPositionDiagnostic[];
+  diagnosticSummary: ReconciliationDiagnosticSummary;
+};
+
+export type ReconcileFn = () => Promise<ReconciliationResult | { openPositionsSeen: number }>;
 
 export type SyncedApiKey = {
   id: string;

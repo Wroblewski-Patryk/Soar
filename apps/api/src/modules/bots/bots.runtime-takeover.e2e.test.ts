@@ -8,6 +8,10 @@ import {
   registerAndLogin,
   resetBotsE2eState,
 } from './bots.e2e.shared';
+import {
+  livePositionReconciliationDefaultDeps,
+  reconcileExternalPositionsFromExchange,
+} from '../positions/livePositionReconciliation.service';
 
 describe('Bots runtime takeover visibility', () => {
   beforeEach(resetBotsE2eState);
@@ -478,5 +482,134 @@ describe('Bots runtime takeover visibility', () => {
     expect(positionsRes.body.openItems[0].symbol).toBe('DOGEUSDT');
     expect(positionsRes.body.openItems[0].continuityState).toBe('RECOVERED_UNACTIONABLE');
     expect(positionsRes.body.openItems[0].actionable).toBe(false);
+  });
+
+  it('imports six exchange positions through real ownership scope and shows all six for the selected LIVE bot', async () => {
+    const ownerEmail = 'bot-runtime-six-position-import@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
+    const symbols = ['BTCUSDT', 'ETHUSDT', 'DOGEUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT'];
+
+    const apiKey = await prisma.apiKey.create({
+      data: {
+        userId: ownerUser.id,
+        label: 'Runtime Six Position Import Key',
+        exchange: 'BINANCE',
+        apiKey: 'runtime_six_position_import_key',
+        apiSecret: 'runtime_six_position_import_secret',
+        syncExternalPositions: true,
+        manageExternalPositions: false,
+      },
+      select: { id: true },
+    });
+    const walletId = await createWalletForContext(ownerEmail, {
+      mode: 'LIVE',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      apiKeyId: apiKey.id,
+    });
+    const strategyId = await createStrategy(owner, 'Runtime Six Position Import Strategy');
+    const marketGroupId = await createMarketGroup(ownerEmail, 'FUTURES');
+    await prisma.symbolGroup.update({
+      where: { id: marketGroupId },
+      data: { symbols },
+    });
+
+    const botRes = await owner.post('/dashboard/bots').send({
+      ...createPayload({
+        strategyId,
+        marketGroupId,
+        walletId,
+      }),
+      name: 'Six Position Import Bot',
+      isActive: true,
+      liveOptIn: true,
+      manageExternalPositions: true,
+      consentTextVersion: 'mvp-v1',
+    });
+    expect(botRes.status).toBe(201);
+    const botId = botRes.body.id as string;
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerUser.id,
+        botId,
+        mode: 'LIVE',
+        status: 'RUNNING',
+        startedAt: new Date('2026-05-07T09:00:00.000Z'),
+        lastHeartbeatAt: new Date('2026-05-07T09:01:00.000Z'),
+      },
+    });
+
+    const result = await reconcileExternalPositionsFromExchange({
+      ...livePositionReconciliationDefaultDeps,
+      fetchPositionsForApiKey: async (syncedApiKey) => {
+        expect(syncedApiKey.id).toBe(apiKey.id);
+        expect(syncedApiKey.marketType).toBe('FUTURES');
+        return {
+          positions: symbols.map((symbol, index) => ({
+            symbol,
+            side: 'long',
+            contracts: index + 1,
+            entryPrice: 100 + index,
+            markPrice: 110 + index,
+            unrealizedPnl: 5 + index,
+            leverage: 3,
+            marginUsed: 50 + index,
+            timestamp: '2026-05-07T09:02:00.000Z',
+          })),
+        };
+      },
+      fetchOpenOrdersForApiKey: async () => [],
+      fetchTradeHistoryForApiKeySymbol: async () => [],
+      processOwnedSyncedPositionAutomation: async () => undefined,
+      now: () => new Date('2026-05-07T09:02:01.000Z'),
+    });
+
+    expect(result.openPositionsSeen).toBe(6);
+
+    const importedPositions = await prisma.position.findMany({
+      where: {
+        userId: ownerUser.id,
+        origin: 'EXCHANGE_SYNC',
+        status: 'OPEN',
+      },
+      orderBy: { symbol: 'asc' },
+      select: {
+        botId: true,
+        walletId: true,
+        strategyId: true,
+        symbol: true,
+        managementMode: true,
+        syncState: true,
+        continuityState: true,
+        externalId: true,
+      },
+    });
+    expect(importedPositions).toHaveLength(6);
+    expect(importedPositions.map((position) => position.symbol).sort()).toEqual([...symbols].sort());
+    for (const position of importedPositions) {
+      expect(position).toMatchObject({
+        botId,
+        walletId,
+        strategyId,
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        continuityState: 'CONFIRMED',
+      });
+      expect(position.externalId).toBe(`${apiKey.id}:FUTURES:${position.symbol}:LONG`);
+    }
+
+    const positionsRes = await owner.get(
+      `/dashboard/bots/${botId}/runtime-sessions/${session.id}/positions?limit=10`
+    );
+    expect(positionsRes.status).toBe(200);
+    expect(positionsRes.body.total).toBe(6);
+    expect(positionsRes.body.openItems).toHaveLength(6);
+    expect(positionsRes.body.openItems.map((item: { symbol: string }) => item.symbol).sort()).toEqual(
+      [...symbols].sort()
+    );
+    expect(positionsRes.body.openItems.every((item: { actionable: boolean }) => item.actionable)).toBe(true);
   });
 });
