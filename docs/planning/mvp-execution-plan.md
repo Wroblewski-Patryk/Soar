@@ -32,6 +32,12 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-07: Closed `V1-PROD-RECOVERY-PROOF-BLOCKED-REFRESH-2026-05-07` with
+  `docs/planning/v1-prod-recovery-proof-blocked-refresh-task-2026-05-07.md`.
+  Backup/restore drill and rollback proof are now fresh failed artifacts
+  instead of stale 2026-05-02 PASS artifacts. V1 remains `not_ready` because
+  production DB/Coolify access, protected OPS auth, and authenticated
+  `LIVEIMPORT-03` readback are still missing.
 - 2026-05-07: Closed `V1-RC-BLOCKED-REFRESH-2026-05-07` with
   `docs/planning/v1-rc-blocked-evidence-refresh-task-2026-05-07.md`. RC
   external gates status, RC sign-off, and RC checklist are now fresh

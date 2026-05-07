@@ -24,6 +24,11 @@ Last updated: 2026-05-07
 
 ## Latest Validation
 
+- `V1-PROD-RECOVERY-PROOF-BLOCKED-REFRESH-2026-05-07` PASS as blocker
+  classification: rollback proof failed closed on protected `401` responses;
+  restore drill is recorded as not executed due to missing production
+  DB/Coolify access; release-gate dry-run classifies both recovery proof
+  families as `FAILED`.
 - `V1-RC-BLOCKED-REFRESH-2026-05-07` PASS: RC status/sign-off/checklist were
   refreshed as blocked/open evidence. Follow-up production release-gate dry-run
   reports RC families fresh and readiness still `not_ready` due to stale

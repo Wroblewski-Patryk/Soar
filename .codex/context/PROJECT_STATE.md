@@ -2,6 +2,19 @@
 
 Last updated: 2026-05-07
 
+## 2026-05-07 V1 Production Recovery Proof Blocked Refresh
+- 2026-05-07 `V1-PROD-RECOVERY-PROOF-BLOCKED-REFRESH-2026-05-07` refreshed
+  production backup/restore and rollback proof blockers as current failed
+  evidence. Rollback proof was executed through the existing script and failed
+  closed because protected runtime freshness and alerts endpoints returned
+  `401`. Restore drill was not executed because this shell lacks production
+  database/Coolify access; the fresh artifact records that blocker. Follow-up
+  release-gate dry-run
+  `docs/operations/v1-release-gate-prod-2026-05-07T18-04-30-000Z.md`
+  now classifies backup/restore drill and rollback proof as `FAILED`, not
+  `stale`. Evidence:
+  `docs/planning/v1-prod-recovery-proof-blocked-refresh-task-2026-05-07.md`.
+
 ## 2026-05-07 V1 RC Blocked Evidence Refresh
 - 2026-05-07 `V1-RC-BLOCKED-REFRESH-2026-05-07` refreshed RC external gates
   status, RC sign-off, and RC checklist as current blocked/open evidence.

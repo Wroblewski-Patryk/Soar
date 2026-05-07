@@ -17,6 +17,9 @@ No open regression was identified in the agent operating system slice.
 - 2026-05-07: Refreshed RC status, sign-off, and checklist as blocked/open
   evidence to prevent stale RC artifacts from being mistaken for current
   approval.
+- 2026-05-07: Refreshed restore/rollback proof blockers as current failed
+  artifacts to prevent old 2026-05-02 PASS artifacts from masking missing
+  production DB/Coolify access and protected OPS auth.
 - 2026-05-07: Monitored production web build-info freshness after the collector
   hardening push. Latest pushed `main` is `21bb52f1...`, while production
   still reported `6bf5de83...` after the first canonical wait. A later

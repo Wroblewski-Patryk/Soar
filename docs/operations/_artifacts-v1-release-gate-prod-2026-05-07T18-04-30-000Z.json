@@ -1,0 +1,79 @@
+{
+  "generatedAt": "2026-05-07T18:03:18.644Z",
+  "environment": "prod",
+  "dryRun": true,
+  "readiness": "not_ready",
+  "baseUrl": "https://api.soar.luckysparrow.ch",
+  "webBaseUrl": "https://soar.luckysparrow.ch",
+  "evidence": [
+    {
+      "key": "activationAudit",
+      "label": "activation evidence audit",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-07",
+      "path": "docs\\operations\\v1-production-activation-evidence-audit-2026-05-07.md",
+      "date": "2026-05-07"
+    },
+    {
+      "key": "activationPlan",
+      "label": "activation execution plan",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-07",
+      "path": "docs\\planning\\v1-production-activation-and-evidence-plan-2026-05-07.md",
+      "date": "2026-05-07"
+    },
+    {
+      "key": "rcExternalGateStatus",
+      "label": "RC external gates status",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-07",
+      "path": "docs\\operations\\v1-rc-external-gates-status.md",
+      "date": "2026-05-07"
+    },
+    {
+      "key": "rcSignoffRecord",
+      "label": "RC sign-off record",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-07",
+      "path": "docs\\operations\\v1-rc-signoff-record.md",
+      "date": "2026-05-07"
+    },
+    {
+      "key": "rcChecklist",
+      "label": "RC checklist verification block",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-07",
+      "path": "docs\\operations\\v1-release-candidate-checklist.md",
+      "date": "2026-05-07"
+    },
+    {
+      "key": "backupRestoreDrill",
+      "label": "backup/restore drill evidence",
+      "state": "failed",
+      "required": true,
+      "reason": "artifact is fresh but does not report PASS",
+      "path": "docs\\operations\\v1-restore-drill-prod-2026-05-07T18-03-30-000Z.md",
+      "date": "2026-05-07"
+    },
+    {
+      "key": "rollbackProof",
+      "label": "rollback proof pack",
+      "state": "failed",
+      "required": true,
+      "reason": "artifact is fresh but does not report PASS",
+      "path": "docs\\operations\\v1-rollback-proof-prod-2026-05-07T18-02-47-935Z.md",
+      "date": "2026-05-07"
+    }
+  ],
+  "blockers": [
+    "evidence:backupRestoreDrill:failed",
+    "evidence:rollbackProof:failed",
+    "mode:prod_dry_run_requires_remote_execution"
+  ],
+  "steps": []
+}

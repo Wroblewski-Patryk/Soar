@@ -89,6 +89,9 @@ Last updated: 2026-05-07
 - RC external gates status, RC sign-off, and RC checklist are now fresh for
   2026-05-07 but intentionally blocked/open. Remaining stale release-gate
   artifacts are backup/restore drill evidence and rollback proof pack.
+- Backup/restore drill and rollback proof are now fresh but failed for
+  2026-05-07. Restore needs production DB/Coolify access; rollback proof needs
+  protected OPS auth.
 
 ## Known Environment Pitfalls
 

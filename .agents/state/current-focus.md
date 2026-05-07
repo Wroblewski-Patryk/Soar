@@ -49,6 +49,11 @@ RC external gates status, RC sign-off, and RC checklist have now also been
 refreshed as current blocked/open evidence. Latest RC snapshot is `G1=PASS`,
 `G2=OPEN`, `G3=PASS`, `G4=OPEN`; sign-off remains `BLOCKED`.
 
+Backup/restore drill and rollback proof are also current for 2026-05-07 but
+`FAILED`: restore drill was not executed without production DB/Coolify access,
+and rollback proof failed closed on protected `401` responses. V1 remains
+NO-GO.
+
 ## Current Priority Order
 
 1. Stability

@@ -7,6 +7,16 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-PROD-RECOVERY-PROOF-BLOCKED-REFRESH-2026-05-07 release: refresh restore and rollback blockers`
+  - 2026-05-07: Replaced stale 2026-05-02 recovery proof blockers with fresh
+    2026-05-07 failed/blocked evidence. Rollback proof was executed through
+    the existing read-only script and failed closed on protected `401` results
+    for runtime freshness and alerts. Restore drill was not executed because
+    this shell lacks production database/Coolify access; a fresh failed
+    artifact records that blocker. Follow-up V1 production release-gate dry-run
+    now classifies backup/restore drill and rollback proof as `FAILED` rather
+    than `stale`. Evidence:
+    `docs/planning/v1-prod-recovery-proof-blocked-refresh-task-2026-05-07.md`.
 - [x] `V1-RC-BLOCKED-REFRESH-2026-05-07 release: refresh RC evidence as blocked`
   - 2026-05-07: Refreshed RC external gates status, RC sign-off, and RC
     checklist using existing scripts without secrets or protected production
