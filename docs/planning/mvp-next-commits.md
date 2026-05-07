@@ -7,6 +7,16 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-PROD-GATE-DRY-RUN-2026-05-07 release: classify current production V1 gate blockers`
+  - 2026-05-07: Ran the existing V1 release-gate script in production
+    dry-run mode with protected execution steps skipped. Generated JSON and
+    Markdown artifacts under `docs/operations` showing `readiness=not_ready`.
+    Required production evidence families are stale: activation audit,
+    activation plan, RC external gates status, RC sign-off, RC checklist,
+    backup/restore drill evidence, and rollback proof pack. Dry-run mode also
+    correctly blocks final approval with
+    `mode:prod_dry_run_requires_remote_execution`. Evidence:
+    `docs/planning/v1-prod-release-gate-dry-run-task-2026-05-07.md`.
 - [x] `PROD-BUILDINFO-LAG-2026-05-07 release: record build-info lag after collector hardening push`
   - 2026-05-07: Rechecked public production freshness after `origin/main`
     advanced to `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`. The canonical

@@ -25,6 +25,11 @@ Last updated: 2026-05-07
 
 ## Latest Validation
 
+- `V1-PROD-GATE-DRY-RUN-2026-05-07` release-gate classifier PASS in dry-run
+  mode: generated production report with `readiness=not_ready`. Blockers:
+  stale activation audit, activation plan, RC external gates status, RC
+  sign-off, RC checklist, backup/restore drill evidence, rollback proof pack,
+  plus dry-run mode requiring remote/non-dry-run execution for approval.
 - `PROD-BUILDINFO-LAG-2026-05-07` production freshness recheck: canonical
   build-info wait for `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3` timed out
   after six HTTP 200 polls with last seen SHA

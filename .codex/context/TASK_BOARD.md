@@ -17,6 +17,16 @@ Last updated: 2026-05-07
 
 ## READY
 
+- [x] `V1-PROD-GATE-DRY-RUN-2026-05-07 release: classify current production V1 gate blockers`
+  - Scope: ran `ops:release:v1:gate` in production dry-run mode with
+    protected execution steps skipped. Generated release-gate artifacts report
+    `readiness=not_ready` because required production evidence is stale:
+    activation audit, activation plan, RC external gates status, RC sign-off,
+    RC checklist, backup/restore drill evidence, and rollback proof pack. The
+    dry-run mode blocker remains explicit and no protected OPS, exchange, or
+    live-money path was called. Evidence:
+    `docs/planning/v1-prod-release-gate-dry-run-task-2026-05-07.md`.
+
 - [x] `PROD-BUILDINFO-LAG-2026-05-07 release: record build-info lag after collector hardening push`
   - Scope: rechecked production build-info after `origin/main` advanced to
     `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`. The canonical wait command

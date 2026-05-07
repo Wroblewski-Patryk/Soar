@@ -2,6 +2,19 @@
 
 Last updated: 2026-05-07
 
+## 2026-05-07 V1 Production Release Gate Dry Run
+- 2026-05-07 `V1-PROD-GATE-DRY-RUN-2026-05-07` ran the existing
+  `ops:release:v1:gate` script in production dry-run mode with protected
+  execution steps skipped. Generated artifacts:
+  `docs/operations/v1-release-gate-prod-2026-05-07T17-51-30-000Z.md` and
+  `docs/operations/_artifacts-v1-release-gate-prod-2026-05-07T17-51-30-000Z.json`.
+  Readiness is `not_ready`: activation audit, activation plan, RC external
+  gates status, RC sign-off, RC checklist, backup/restore drill evidence, and
+  rollback proof pack are stale, and dry-run mode correctly blocks final
+  production approval. No protected OPS, exchange, or live-money path was
+  called. Evidence:
+  `docs/planning/v1-prod-release-gate-dry-run-task-2026-05-07.md`.
+
 ## 2026-05-07 Production Build-Info Lag After Collector Hardening
 - 2026-05-07 `PROD-BUILDINFO-LAG-2026-05-07` rechecked public production
   freshness after `origin/main` advanced to

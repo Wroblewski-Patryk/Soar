@@ -8,6 +8,9 @@ No open regression was identified in the agent operating system slice.
 
 ## Fixed Or Prevented In This Slice
 
+- 2026-05-07: Ran production V1 release-gate classifier in dry-run mode and
+  preserved stale evidence blockers as release state. This prevents treating
+  old 2026-05-02 RC/backup/rollback artifacts as fresh V1 evidence.
 - 2026-05-07: Monitored production web build-info freshness after the collector
   hardening push. Latest pushed `main` is `21bb52f1...`, while production
   still reports `6bf5de83...` after the canonical wait. This is tracked as

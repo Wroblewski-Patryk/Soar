@@ -77,6 +77,10 @@ Last updated: 2026-05-07
 - `BOTMULTI-09` remains open for protected runtime readback and broader V1
   release gate evidence, even though public build-info now contains the
   original BOTMULTI candidate.
+- Production V1 release-gate dry-run on 2026-05-07 reports stale required
+  evidence for activation audit, activation plan, RC external gates status, RC
+  sign-off, RC checklist, backup/restore drill evidence, and rollback proof
+  pack. This is separate from `LIVEIMPORT-03` authenticated runtime readback.
 
 ## Known Environment Pitfalls
 
