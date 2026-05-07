@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   resolveRuntimePositionProvenanceKind,
   runtimeContinuityLabelSuffix,
+  runtimeOrderSourceLabelSuffix,
   runtimePositionProvenanceLabelSuffix,
 } from "./runtimeMonitoringFormatters";
 
@@ -64,5 +65,13 @@ describe("resolveRuntimePositionProvenanceKind", () => {
     );
     expect(runtimeContinuityLabelSuffix(null)).toBe("continuityConfirmed");
     expect(runtimeContinuityLabelSuffix("unexpected")).toBe("continuityConfirmed");
+  });
+
+  it("maps runtime open order origins to shared source label suffixes", () => {
+    expect(runtimeOrderSourceLabelSuffix("USER")).toBe("sourceManual");
+    expect(runtimeOrderSourceLabelSuffix("MANUAL")).toBe("sourceManual");
+    expect(runtimeOrderSourceLabelSuffix("BOT")).toBe("sourceBot");
+    expect(runtimeOrderSourceLabelSuffix("EXCHANGE_SYNC")).toBe("sourceImported");
+    expect(runtimeOrderSourceLabelSuffix(null)).toBe("sourceImported");
   });
 });

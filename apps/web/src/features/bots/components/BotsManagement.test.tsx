@@ -484,12 +484,12 @@ describe("BotsManagement", () => {
       {
         id: "b-monitor",
         name: "Monitor Bot",
-        mode: "PAPER",
+        mode: "LIVE",
         paperStartBalance: 10000,
         marketType: "FUTURES",
         positionMode: "ONE_WAY",
         isActive: true,
-        liveOptIn: false,
+        liveOptIn: true,
         maxOpenPositions: 1,
       },
     ]);
@@ -498,7 +498,7 @@ describe("BotsManagement", () => {
       {
         id: "session-1",
         botId: "b-monitor",
-        mode: "PAPER",
+        mode: "LIVE",
         status: "RUNNING",
         startedAt: "2026-03-31T10:00:00.000Z",
         finishedAt: null,
@@ -522,7 +522,7 @@ describe("BotsManagement", () => {
     getRuntimeSessionMock.mockResolvedValue({
       id: "session-1",
       botId: "b-monitor",
-      mode: "PAPER",
+      mode: "LIVE",
       status: "RUNNING",
       startedAt: "2026-03-31T10:00:00.000Z",
       finishedAt: null,
@@ -669,7 +669,7 @@ describe("BotsManagement", () => {
       total: 2,
       openCount: 2,
       closedCount: 1,
-      openOrdersCount: 0,
+      openOrdersCount: 1,
       showDynamicStopColumns: false,
       window: {
         startedAt: "2026-03-31T10:00:00.000Z",
@@ -680,7 +680,23 @@ describe("BotsManagement", () => {
         unrealizedPnl: 15,
         feesPaid: 0.7,
       },
-      openOrders: [],
+      openOrders: [
+        {
+          id: "order-exchange-sync-1",
+          origin: "EXCHANGE_SYNC",
+          symbol: "ETHUSDT",
+          side: "BUY",
+          type: "LIMIT",
+          status: "OPEN",
+          quantity: 0.03,
+          filledQuantity: 0.01,
+          price: 2510,
+          stopPrice: null,
+          submittedAt: "2026-03-31T10:02:00.000Z",
+          createdAt: "2026-03-31T10:02:00.000Z",
+          updatedAt: "2026-03-31T10:02:00.000Z",
+        },
+      ],
       openItems: [
         {
           id: "p1",
@@ -882,6 +898,7 @@ describe("BotsManagement", () => {
       expect(screen.getByText("PnL z gieldy")).toBeInTheDocument();
       expect(screen.getByText("Odzyskana, bez akcji")).toBeInTheDocument();
       expect(screen.getByText("Zaadoptowana z gieldy")).toBeInTheDocument();
+      expect(screen.getByText("Importowane")).toBeInTheDocument();
       expect(screen.getByText("Akcja zablokowana")).toBeInTheDocument();
       expect(screen.getByText("Kontekst strategii nierozwiazany")).toBeInTheDocument();
       expect(screen.getByText("Prospektywna")).toBeInTheDocument();

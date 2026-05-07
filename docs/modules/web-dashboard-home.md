@@ -317,6 +317,9 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
     - `sourceManual`,
     - `sourceBot`,
     - `sourceImported`.
+- Shared semantics note (2026-05-07):
+  - Dashboard home and bot monitoring derive order-source label suffixes from
+    the shared Web runtime formatter while preserving route-owned namespaces.
 - Active-only visibility remains unchanged:
   - `PENDING`,
   - `OPEN`,

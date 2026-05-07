@@ -8,6 +8,7 @@ import { renderDcaLadderCell } from "@/features/shared/dcaLadderCell";
 import {
   resolveRuntimePositionProvenanceKind,
   runtimeContinuityLabelSuffix,
+  runtimeOrderSourceLabelSuffix,
   runtimePositionProvenanceLabelSuffix,
   type RuntimePositionProvenanceKind,
 } from "@/features/shared/runtimeMonitoringFormatters";
@@ -34,9 +35,7 @@ type Translate = (key: string) => string;
 type ResolveRuntimeIcon = (symbol: string) => { iconUrl?: string | null } | null;
 
 export const resolveOpenOrderSourceLabel = (t: Translate, origin: string | null | undefined) => {
-  if (origin === "USER") return t("dashboard.home.runtime.sourceManual");
-  if (origin === "BOT") return t("dashboard.home.runtime.sourceBot");
-  return t("dashboard.home.runtime.sourceImported");
+  return t(`dashboard.home.runtime.${runtimeOrderSourceLabelSuffix(origin)}`);
 };
 
 export const resolveOpenOrderStatusLabel = (t: Translate, status: string | null | undefined) => {

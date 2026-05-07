@@ -29,6 +29,15 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-07: Closed `V1UI-13` with
+  `docs/planning/v1ui-13-bot-open-orders-source-label-task-2026-05-07.md`.
+  Bot monitoring open-order rows now render backend `origin` truth through
+  route-owned `Origin` source labels, and dashboard home shares the same Web
+  runtime order-source suffix helper. Validation PASS: focused Web runtime
+  formatter/dashboard/bot monitoring tests (`28/28`), Web typecheck, Web lint,
+  route-reachable i18n audit (`findings=0`), repository guardrails, Web build,
+  and authenticated rendered `/dashboard/bots` route smoke with no console
+  errors.
 - 2026-05-07: Closed `V1UI-12` with
   `docs/planning/v1ui-12-runtime-continuity-label-helper-task-2026-05-07.md`.
   Dashboard home and bot monitoring now derive backend `continuityState` label

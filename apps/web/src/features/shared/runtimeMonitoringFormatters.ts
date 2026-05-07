@@ -30,6 +30,7 @@ export type RuntimeContinuityLabelSuffix =
   | "continuityRecoveredUnactionable"
   | "continuityExternalCloseConfirmed"
   | "continuityRepairOnlyCleanup";
+export type RuntimeOrderSourceLabelSuffix = "sourceManual" | "sourceBot" | "sourceImported";
 export type RuntimePositionProvenanceKind =
   | "exchange_adopted"
   | "exchange_unowned"
@@ -149,4 +150,12 @@ export const runtimeContinuityLabelSuffix = (
   if (continuityState === "EXTERNAL_CLOSE_CONFIRMED") return "continuityExternalCloseConfirmed";
   if (continuityState === "REPAIR_ONLY_CLEANUP") return "continuityRepairOnlyCleanup";
   return "continuityConfirmed";
+};
+
+export const runtimeOrderSourceLabelSuffix = (
+  origin?: string | null
+): RuntimeOrderSourceLabelSuffix => {
+  if (origin === "USER" || origin === "MANUAL") return "sourceManual";
+  if (origin === "BOT") return "sourceBot";
+  return "sourceImported";
 };

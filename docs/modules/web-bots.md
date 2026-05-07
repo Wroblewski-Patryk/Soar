@@ -93,6 +93,9 @@ Out of scope:
   provenance label helper so imported, adopted, ambiguous, manual-only,
   drifted, and orphaned exchange-sync rows remain visible as non-ordinary
   runtime states.
+- Monitoring open-order rows expose backend `origin` through route-owned
+  source labels backed by the shared Web runtime order-source helper, keeping
+  manual, bot, and imported order source truth aligned with dashboard home.
 - Monitoring open-position TTP cells label API `strategy_fallback`
   protection as prospective, preserving the distinction between canonical
   runtime TTP state and read-model assistance from strategy configuration.

@@ -3,6 +3,18 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 bot monitoring open-order source label slice `V1UI-13` is closed
+  on `main`. Bot monitoring now renders backend open-order `origin` truth as
+  route-owned `Origin` labels, and dashboard home shares the same runtime
+  order-source label suffix helper so `USER`/`MANUAL`, `BOT`, and
+  imported/unknown origins cannot drift across runtime order surfaces.
+  Validation PASS: focused Web runtime formatter/dashboard/bot monitoring
+  tests (`28/28`), Web typecheck, Web lint, route-reachable i18n audit
+  (`findings=0`), repository guardrails, Web build, and authenticated rendered
+  `/dashboard/bots` route smoke with no console errors. Browser plugin tool
+  discovery returned no callable browser tool in this session, so the smoke
+  used bundled Codex Node plus Playwright. Evidence:
+  `docs/planning/v1ui-13-bot-open-orders-source-label-task-2026-05-07.md`.
 - 2026-05-07 runtime continuity label helper slice `V1UI-12` is closed on
   `main`. Dashboard home and bot monitoring now derive backend
   `continuityState` label semantics from shared

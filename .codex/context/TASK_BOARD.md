@@ -20,6 +20,17 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `V1UI-13 fix(web-runtime): show bot monitoring open-order source labels`
+  - Scope: closed a BUILDER-mode backend-to-Web runtime order parity slice.
+    Bot monitoring open-order rows now render backend `origin` truth as
+    route-owned `Origin` labels, while dashboard home and bot monitoring share
+    one runtime order-source suffix helper for manual, bot, and imported
+    sources. Validation PASS: focused Web runtime formatter/dashboard/bot
+    monitoring tests (`28/28`), Web typecheck, Web lint, route-reachable i18n
+    audit (`findings=0`), repository guardrails, Web build, and authenticated
+    rendered `/dashboard/bots` route smoke with no console errors. Evidence:
+    `docs/planning/v1ui-13-bot-open-orders-source-label-task-2026-05-07.md`.
+
 - [x] `V1UI-12 refactor(web-runtime): centralize continuity label semantics`
   - Scope: closed an ARCHITECT-mode runtime diagnostics drift cleanup.
     Dashboard home and bot monitoring now derive backend `continuityState`

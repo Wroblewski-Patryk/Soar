@@ -9,6 +9,16 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `V1UI-13 fix(web-runtime): show bot monitoring open-order source labels`
+  - 2026-05-07: Closed a BUILDER-mode backend-to-Web runtime order parity
+    slice. Bot monitoring open-order rows now render backend `origin` truth as
+    route-owned `Origin` labels, while dashboard home and bot monitoring share
+    one runtime order-source suffix helper for manual, bot, and imported
+    sources. Validation PASS: focused Web runtime formatter/dashboard/bot
+    monitoring tests (`28/28`), Web typecheck, Web lint, route-reachable i18n
+    audit (`findings=0`), repository guardrails, Web build, and authenticated
+    rendered `/dashboard/bots` route smoke with no console errors. Evidence:
+    `docs/planning/v1ui-13-bot-open-orders-source-label-task-2026-05-07.md`.
 - [x] `V1UI-03 fix(web-public): hide auth CTAs while session state is loading`
   - 2026-05-07: Closed an ARCHITECT-mode public access shell/i18n route slice.
     Public header auth CTAs now render only after auth loading resolves with no

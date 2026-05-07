@@ -14,8 +14,10 @@ import { MonitoringFutureSignalsSection } from "./MonitoringFutureSignalsSection
 import { BotsPortfolioHistorySection } from "./BotsPortfolioHistorySection";
 import { BotsMonitoringProtectionCell } from "./BotsMonitoringProtectionCell";
 import { BotsMonitoringRuntimeStateCell } from "./BotsMonitoringRuntimeStateCell";
+import { runtimeOrderSourceLabelSuffix } from "../../../shared/runtimeMonitoringFormatters";
 import {
   Bot,
+  BotRuntimeOpenOrderItem,
   BotPortfolioHistoryResponse,
   BotRuntimePositionItem,
   BotRuntimeSessionDetail,
@@ -125,6 +127,7 @@ type BotsMonitoringTabProps = {
     openOrdersCount?: number;
     openOrders?: Array<{
       id: string;
+      origin?: BotRuntimeOpenOrderItem["origin"];
       symbol: string;
       side: string;
       type: string;
@@ -311,6 +314,8 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
     toTradeLifecycleLabelKey,
     formatTradeFeeMeta,
   } = props;
+  const resolveOpenOrderSourceLabel = (origin?: string | null) =>
+    t(`dashboard.bots.monitoring.${runtimeOrderSourceLabelSuffix(origin)}` as TranslationKey);
 
   return (
     <div className="space-y-4 rounded-box border border-base-300/60 bg-base-200/60 p-4">
@@ -756,6 +761,7 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                           <thead>
                             <tr>
                               <th>{t("dashboard.bots.monitoring.table.symbol")}</th>
+                              <th>{t("dashboard.bots.monitoring.table.origin")}</th>
                               <th>{t("dashboard.bots.monitoring.table.side")}</th>
                               <th>{t("dashboard.bots.monitoring.table.type")}</th>
                               <th>{t("dashboard.bots.monitoring.table.status")}</th>
@@ -770,6 +776,7 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                             {(monitorPositions?.openOrders ?? []).map((order) => (
                               <tr key={order.id}>
                                 <td className="font-medium">{order.symbol}</td>
+                                <td>{resolveOpenOrderSourceLabel(order.origin)}</td>
                                 <td>{order.side}</td>
                                 <td>{order.type}</td>
                                 <td>{order.status}</td>
@@ -782,7 +789,7 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                             ))}
                             {(monitorPositions?.openOrders?.length ?? 0) === 0 ? (
                               <tr>
-                                <td colSpan={9} className="text-center text-xs opacity-70">
+                                <td colSpan={10} className="text-center text-xs opacity-70">
                                   {t("dashboard.bots.monitoring.emptyOpenOrders")}
                                 </td>
                               </tr>
