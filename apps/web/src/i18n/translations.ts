@@ -206,6 +206,8 @@ type TranslationSchema = {
         timeClosed: string;
         symbol: string;
         side: string;
+        entry: string;
+        exit: string;
         margin: string;
         pnl: string;
         pnlPercent: string;
@@ -219,6 +221,7 @@ type TranslationSchema = {
         cancelOpenOrderUnsupported: string;
         cancelOpenOrderSuccess: string;
         cancelOpenOrderError: string;
+        advancedOptions: string;
         manualOrderActionStateTitle: string;
         manualOrderActionStateSubmitted: string;
         manualOrderActionDescriptionSubmitted: string;

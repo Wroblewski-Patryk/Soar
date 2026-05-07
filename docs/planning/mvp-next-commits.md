@@ -9,6 +9,18 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `V1UI-31 fix(web-dashboard): keep runtime labels route-owned`
+  - 2026-05-07: Closed a BUILDER-mode route ownership cleanup slice.
+    Dashboard Home runtime/history presentation no longer borrows
+    `dashboard.bots.monitoring.*` labels for closed-position entry/exit
+    columns or the advanced-options control. The route now owns those labels
+    through `dashboard.home.runtime.*` across all supported locales while
+    backend runtime data mapping remains unchanged. Validation PASS: focused
+    runtime table presenter tests (`15/15`), route-reachable i18n audit
+    (`findings=0`), Web typecheck, Web lint, repository guardrails,
+    `git diff --check`, full workspace build, and authenticated rendered
+    `/dashboard` smoke with no console errors or page errors. Evidence:
+    `docs/planning/v1ui-31-dashboard-home-route-owned-runtime-labels-task-2026-05-07.md`.
 - [x] `V1UI-30 fix(web-auth): fail closed pre-hydration auth submit`
   - 2026-05-07: Closed a TESTER-mode auth entrypoint safety slice. Rendered
     smoke found that a very early Login/Register submit could fall through to

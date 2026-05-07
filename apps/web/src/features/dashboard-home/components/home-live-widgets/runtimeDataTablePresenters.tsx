@@ -583,14 +583,14 @@ export const createHistoryPositionsColumns = ({
   },
   {
     key: "entryPrice",
-    label: t("dashboard.bots.monitoring.table.entry"),
+    label: t("dashboard.home.runtime.entry"),
     sortable: true,
     accessor: (row) => row.entryPrice,
     render: (row) => formatNumber(row.entryPrice, { minimumFractionDigits: 2, maximumFractionDigits: 6 }),
   },
   {
     key: "exitPrice",
-    label: t("dashboard.bots.monitoring.table.exit"),
+    label: t("dashboard.home.runtime.exit"),
     sortable: true,
     accessor: (row) => row.exitPrice ?? null,
     render: (row) =>

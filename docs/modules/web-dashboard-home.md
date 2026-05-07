@@ -84,6 +84,11 @@ Out of scope:
   - no bots onboarding
   - no active bots onboarding
   - live runtime workspace
+- Route-owned copy contract:
+  - Dashboard Home runtime/history labels must resolve through
+    `dashboard.home.runtime.*`. The module may consume runtime data from Bots
+    APIs, but `/dashboard` presentation copy must not depend on
+    `dashboard.bots.monitoring.*` keys.
 
 ## 6. Security and Risk Guardrails
 - Dashboard page checks session and redirects unauthenticated user to `/auth/login`.

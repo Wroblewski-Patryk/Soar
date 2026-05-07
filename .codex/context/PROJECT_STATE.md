@@ -3,6 +3,21 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 dashboard-home route-owned runtime labels slice `V1UI-31` is
+  closed on `main`. BUILDER-mode review found that Dashboard Home
+  runtime/history presentation still reused `dashboard.bots.monitoring.*`
+  translation keys for closed-position entry/exit columns and the
+  advanced-options label even though `/dashboard` owns its route presentation.
+  Dashboard Home now resolves those labels from `dashboard.home.runtime.*` in
+  all supported locales, keeping backend runtime data mapping unchanged while
+  removing cross-route copy coupling. Validation PASS: focused runtime table
+  presenter tests (`15/15`), route-reachable i18n audit (`findings=0`), Web
+  typecheck, Web lint, repository guardrails, `git diff --check`, full
+  workspace build, and authenticated rendered `/dashboard` smoke with no
+  console errors or page errors. Browser plugin validation was attempted first
+  but local `node_repl` resolved Node `v22.13.0` while requiring `>=22.22.0`,
+  so rendered validation used bundled Codex Node plus Playwright. Evidence:
+  `docs/planning/v1ui-31-dashboard-home-route-owned-runtime-labels-task-2026-05-07.md`.
 - 2026-05-07 auth pre-hydration fail-closed slice `V1UI-30` is closed on
   `main`. TESTER-mode rendered smoke found that a very early auth form submit
   could fall through to native browser behavior before hydration and place

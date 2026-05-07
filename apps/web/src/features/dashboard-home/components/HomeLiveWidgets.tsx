@@ -872,7 +872,7 @@ export default function HomeLiveWidgets() {
                 tradeSortBy={tradeSortBy}
                 tradeSortDir={tradeSortDir}
                 onTradeSortChange={handleTradeSortChange}
-                advancedOptionsLabel={t("dashboard.bots.monitoring.advancedOptions")}
+                advancedOptionsLabel={t("dashboard.home.runtime.advancedOptions")}
                 allLabel={t("dashboard.home.runtime.all")}
                 openActionLabel={t("dashboard.home.runtime.actionOpen")}
                 dcaActionLabel={t("dashboard.home.runtime.actionDca")}
