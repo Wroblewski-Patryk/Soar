@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { normalizeSymbol } from "@/lib/symbols";
 
 type AssetSymbolProps = {
@@ -21,6 +21,11 @@ export default function AssetSymbol(props: AssetSymbolProps) {
   const normalizedSymbol = useMemo(() => normalizeSymbol(props.symbol), [props.symbol]);
   const fallbackLabel = useMemo(() => fallbackLabelFromSymbol(normalizedSymbol), [normalizedSymbol]);
   const [imageFailed, setImageFailed] = useState(false);
+
+  useEffect(() => {
+    setImageFailed(false);
+  }, [props.iconUrl, normalizedSymbol]);
+
   const shouldShowImage = Boolean(props.iconUrl) && !imageFailed;
   const iconClassName = `shrink-0 rounded-full ${props.iconClassName ?? "h-4 w-4"}`;
   const loadingClassName = `inline-flex shrink-0 animate-pulse rounded-full bg-base-300/70 ${props.iconClassName ?? "h-4 w-4"}`;

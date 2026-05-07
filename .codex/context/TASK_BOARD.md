@@ -17,6 +17,16 @@ Last updated: 2026-05-07
 
 ## READY
 
+- [x] `V1-DASHBOARD-CRYPTO-ICONS-REGRESSION-2026-05-07 fix(web): restore dashboard crypto icon recovery`
+  - Scope: fixed the shared `AssetSymbol` renderer so a previous image load
+    failure no longer keeps dashboard asset rows stuck on fallback letters
+    after the symbol or icon URL changes. This preserves the existing
+    `/dashboard/icons/lookup` flow and adds focused regression coverage.
+    Validation PASS: pre-fix regression failed as expected, post-fix component
+    test (`4/4`), dashboard widget pack (`25/25`), Web typecheck, Web lint,
+    repository guardrails, docs parity, and diff check. Evidence:
+    `docs/planning/v1-dashboard-crypto-icons-regression-task-2026-05-07.md`.
+
 - [x] `V1-PROD-GITHUB-ACTIONS-REGRESSION-CLEANUP-2026-05-07 release: remove GitHub Actions production path`
   - Scope: removed the invalid GitHub Actions production promotion/rollback
     path and the local helper that dispatched it. Active deployment state now

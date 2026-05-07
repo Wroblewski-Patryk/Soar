@@ -7,6 +7,16 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-DASHBOARD-CRYPTO-ICONS-REGRESSION-2026-05-07 fix(web): restore dashboard crypto icon recovery`
+  - 2026-05-07: Fixed the shared `AssetSymbol` renderer so dashboard asset
+    rows recover from a previous image-load failure when the rendered symbol or
+    icon URL changes. This keeps the existing architecture-approved icon lookup
+    flow and prevents async icon resolution or table row reuse from leaving
+    rows stuck on fallback letters. Validation PASS: pre-fix regression failed
+    as expected, post-fix component test (`4/4`), dashboard widget pack
+    (`25/25`), Web typecheck, Web lint, repository guardrails, docs parity,
+    and diff check. Evidence:
+    `docs/planning/v1-dashboard-crypto-icons-regression-task-2026-05-07.md`.
 - [x] `V1-PROD-GITHUB-ACTIONS-REGRESSION-CLEANUP-2026-05-07 release: remove GitHub Actions production path`
   - 2026-05-07: Removed the invalid GitHub Actions production promotion and
     rollback path after operator correction. Deleted

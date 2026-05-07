@@ -29,6 +29,13 @@ Last updated: 2026-05-07
 
 ## Latest Validation
 
+- `V1-DASHBOARD-CRYPTO-ICONS-REGRESSION-2026-05-07` PASS: pre-fix Web
+  regression proved `AssetSymbol` stayed stuck on a fallback badge after a
+  prior image error and a later symbol/icon URL change. The shared component
+  now resets image failure state when the normalized symbol or icon URL changes.
+  Post-fix validation passed: component test (`4/4`), focused dashboard widget
+  pack (`25/25`), Web typecheck, Web lint, repository guardrails, docs parity,
+  and diff check.
 - `V1-PROD-GITHUB-ACTIONS-REGRESSION-CLEANUP-2026-05-07` in progress:
   removing GitHub Actions production promote/rollback entrypoints and the
   local helper because the operator confirmed GitHub Actions is not an accepted

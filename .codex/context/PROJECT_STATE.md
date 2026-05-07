@@ -3,6 +3,15 @@
 Last updated: 2026-05-07
 
 ## 2026-05-07 V1 Final Blocker Execution Pack
+- 2026-05-07 `V1-DASHBOARD-CRYPTO-ICONS-REGRESSION-2026-05-07` restored
+  dashboard crypto icon recovery in the shared Web `AssetSymbol` renderer.
+  The component now clears stale image-load failure state when the normalized
+  symbol or icon URL changes, so asynchronous icon lookup and reused table rows
+  can recover from fallback letters to real asset icons. Validation PASS:
+  pre-fix regression failed as expected, post-fix component test `4/4`,
+  focused dashboard widget pack `25/25`, Web typecheck, Web lint, repository
+  guardrails, docs parity, and diff check. Evidence:
+  `docs/planning/v1-dashboard-crypto-icons-regression-task-2026-05-07.md`.
 - 2026-05-07 `V1-PROD-GITHUB-ACTIONS-REGRESSION-CLEANUP-2026-05-07` removed
   the invalid GitHub Actions production promotion/rollback path after operator
   correction. Deleted `.github/workflows/promote-prod.yml`,
