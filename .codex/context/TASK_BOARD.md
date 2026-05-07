@@ -20,6 +20,16 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `OPS-REDIS-20260507 recover production Redis AOF corruption`
+  - Scope: production Redis in Coolify was `Restarting (unhealthy)` with over
+    670 restarts, causing API `/ready` to return `503` while `/health` stayed
+    `200`. Logs identified bad AOF format in
+    `appendonly.aof.5.incr.aof`. Recovery stopped the crash-looping Redis
+    container, created a Redis volume backup, ran `redis-check-aof --fix`,
+    restarted Redis, and verified Coolify Redis `Running (healthy)`, API
+    `/ready` `200`, API `/health` `200`, and web `/auth/login` `200`.
+    Evidence: `docs/operations/redis-aof-recovery-2026-05-07.md`.
+
 - [x] `V1UI-40 fix(web-runtime): fail closed unknown runtime signal labels`
   - Scope: closed a TESTER-mode runtime signal label hardening slice. Shared
     Dashboard/Bots runtime signal label resolvers now explicitly tolerate

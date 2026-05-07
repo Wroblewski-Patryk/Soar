@@ -3,6 +3,15 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 production Redis AOF recovery completed in Coolify. Production
+  API `/health` stayed `200`, but `/ready` returned `503` while Redis was in
+  `Restarting (unhealthy)` with over 670 restarts. Redis logs showed a bad
+  incremental AOF file (`appendonly.aof.5.incr.aof`). Recovery stopped the
+  crash-looping Redis container, created a Redis volume backup, ran
+  `redis-check-aof --fix`, restarted Redis, and confirmed Redis
+  `Running (healthy)`, API `/ready` `200`, API `/health` `200`, and web
+  `/auth/login` `200`. Evidence:
+  `docs/operations/redis-aof-recovery-2026-05-07.md`.
 - 2026-05-07 unknown runtime signal label hardening slice `V1UI-40` is closed
   on `main`. TESTER-mode review found that `V1UI-39` had shared runtime signal
   label suffix semantics, but unknown future backend strings were not
