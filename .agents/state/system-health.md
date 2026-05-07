@@ -5,9 +5,12 @@ Last updated: 2026-05-07
 ## Latest Health Snapshot
 
 - Local and remote `main` are synchronized at
-  `1f816362c93e117e47cfe52a35e0fec93bd0b37d`, and public production web
-  build-info now reports the same SHA after an initial deploy lag. Production
-  API `/health`, API `/ready`, and web `/auth/login` are healthy.
+  `6bf5de83a482eda08543138d8518e0aa23ccb3c6` after the readback collector
+  push, while public production web build-info still reports runtime candidate
+  `1f816362c93e117e47cfe52a35e0fec93bd0b37d`. Production API `/health`, API
+  `/ready`, and web `/auth/login` are healthy. The runtime candidate contains
+  the live-import fixes required for `LIVEIMPORT-03`; the newer pushed commits
+  are docs/ops-tooling only.
 - Canonical queue check found two open production-evidence items:
   `LIVEIMPORT-03` and `BOTMULTI-09`.
 - The local full-architecture repair and validation chain is closed through
@@ -27,6 +30,10 @@ Last updated: 2026-05-07
   and missing-auth fail-closed path all behaved as expected. The fail-closed
   run did not access protected API without credentials and did not print
   secret values.
+- Post-push deploy freshness check for docs/collector SHA `6bf5de83` timed out
+  twice; production remained on runtime candidate `1f816362`. This does not
+  block `LIVEIMPORT-03` because the collector runs locally and the deployed
+  runtime fix is already present in `1f816362`.
 - `PROD-PROMOTE-PREQ-2026-05-07` production promotion prerequisite sweep:
   remote `main` check PASS for `1f816362c93e117e47cfe52a35e0fec93bd0b37d`.
   First public web build-info wait timed out on stale
@@ -76,7 +83,8 @@ runtime contracts are changed.
 
 ## Deployment Impact
 
-None until the collector commit is pushed; the added script is ops tooling and
-does not change runtime/API behavior. Production is fresh for
-`1f816362c93e117e47cfe52a35e0fec93bd0b37d`; the next executable release task
-requires authenticated read-only production evidence.
+The collector/docs commits are pushed, but production build-info has not moved
+past `1f816362c93e117e47cfe52a35e0fec93bd0b37d`. This is acceptable for the
+runtime readback gate because `1f816362` contains the required runtime fixes
+and `ops:liveimport:readback` runs from the local/repo workspace. The next
+executable release task requires authenticated read-only production evidence.

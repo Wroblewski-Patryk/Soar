@@ -83,6 +83,11 @@ creating new API behavior or write paths.
 
 ## Deployment / Ops Evidence
 - Deploy impact: none until this commit is pushed; script is local ops tooling.
+- Post-push note: `origin/main` advanced to
+  `6bf5de83a482eda08543138d8518e0aa23ccb3c6`, but production build-info still
+  reports `1f816362c93e117e47cfe52a35e0fec93bd0b37d` after two wait windows.
+  This does not block `LIVEIMPORT-03`; the deployed `1f816362` already contains
+  the runtime fixes and the collector runs locally.
 - Env or secret changes: none; optional `LIVEIMPORT_READBACK_*` env names are
   read only.
 - Health-check impact: none.

@@ -14,7 +14,11 @@ Last updated: 2026-05-07
   sync/continuity/takeover state, strategy/TTP/DCA context presence, and
   actionable state. Validation PASS: help, dry-run, and missing-auth
   fail-closed paths. Actual `LIVEIMPORT-03` evidence remains blocked until
-  production read-only auth is available. Evidence:
+  production read-only auth is available. The collector/docs commit was pushed
+  to `origin/main` at `6bf5de83a482eda08543138d8518e0aa23ccb3c6`; production
+  build-info still reports `1f816362c93e117e47cfe52a35e0fec93bd0b37d`, which
+  already contains the required runtime fixes, so the remaining blocker is auth
+  rather than runtime deploy freshness. Evidence:
   `docs/planning/liveimport-03-readback-collector-task-2026-05-07.md`.
 
 ## 2026-05-07 Production Promotion Prerequisite Sweep

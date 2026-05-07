@@ -18,7 +18,11 @@ Operational queue for one-task execution runs.
     continuity/sync/takeover state, strategy/TTP/DCA context presence, and
     actionable state. Validation PASS: help path, dry-run path, and
     missing-auth fail-closed path. Actual production readback remains blocked
-    until read-only auth is available. Evidence:
+    until read-only auth is available. The collector/docs commit was pushed to
+    `origin/main` at `6bf5de83a482eda08543138d8518e0aa23ccb3c6`; production
+    build-info still reports runtime candidate `1f816362`, which contains the
+    required runtime fixes, so the remaining blocker is auth rather than
+    runtime deploy freshness. Evidence:
     `docs/planning/liveimport-03-readback-collector-task-2026-05-07.md`.
 - [x] `PROD-PROMOTE-PREQ-2026-05-07 release: recheck production promotion prerequisites after validated push`
   - 2026-05-07: After validated local audit commits were pushed to

@@ -7,6 +7,10 @@ Last updated: 2026-05-07
 - Production deployment freshness initially lagged after the pushed V1 audit
   candidate, but a later build-info wait passed and production now reports
   `1f816362c93e117e47cfe52a35e0fec93bd0b37d`.
+- After the readback collector/docs push, `origin/main` advanced to
+  `6bf5de83a482eda08543138d8518e0aa23ccb3c6` while production remained on
+  `1f816362c93e117e47cfe52a35e0fec93bd0b37d`. Treat this as a docs/tooling
+  deploy-lag note, not a runtime blocker for `LIVEIMPORT-03`.
 - `FULLARCH-FIX-01` fixed the confirmed bot runtime visibility regression for
   recovered imported LIVE positions with
   `continuityState=RECOVERED_UNACTIONABLE` and `syncState=DRIFT`. Remaining
