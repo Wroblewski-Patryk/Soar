@@ -3,6 +3,15 @@
 Last updated: 2026-05-07
 
 ## 2026-05-07 V1 Final Blocker Execution Pack
+- 2026-05-07 `V1-PROD-PROMOTE-GITHUB-BILLING-BLOCKER-2026-05-07` dispatched
+  the official `Promote PROD` workflow through GitHub API for `main` at
+  `92955a1cb09f3c473da856369e5f607fbc1fe5a1`. The dispatch was accepted, but
+  workflow run `25514453251` and job `74881719926` failed before any steps
+  executed. Check-run annotation reports: `The job was not started because
+  your account is locked due to a billing issue.` Production deploy did not
+  start; no Coolify, runtime freshness, rollback guard, DB, exchange, or
+  live-money step executed. Evidence:
+  `docs/planning/v1-prod-promote-github-billing-blocker-task-2026-05-07.md`.
 - 2026-05-07 `V1-PROD-PROMOTE-DISPATCH-BLOCKER-2026-05-07` recorded the
   post-push production deploy state. Local and remote `main` are aligned at
   `9bdd1c1a101603e872099f205f3e9b21904e2b0a`, but production build-info still

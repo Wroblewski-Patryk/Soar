@@ -5,11 +5,13 @@ Last updated: 2026-05-07
 ## Latest Health Snapshot
 
 - Local `main` and `origin/main` are aligned at
-  `9bdd1c1a101603e872099f205f3e9b21904e2b0a`. Public production web
+  `92955a1cb09f3c473da856369e5f607fbc1fe5a1`. Public production web
   build-info still reports `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`; the
   official production promote workflow is manual `workflow_dispatch`, so push
-  alone is not deploy completion evidence. Production API `/health` and API
-  `/ready` are healthy in the latest public checks.
+  alone is not deploy completion evidence. The latest dispatch failed before
+  any job steps started because GitHub Actions reports the account is locked
+  due to a billing issue. Production API `/health` and API `/ready` are
+  healthy in the latest public checks.
 - Canonical queue check found two open production-evidence items:
   `LIVEIMPORT-03` and `BOTMULTI-09`.
 - The local full-architecture repair and validation chain is closed through
@@ -28,6 +30,12 @@ Last updated: 2026-05-07
 
 ## Latest Validation
 
+- `V1-PROD-PROMOTE-GITHUB-BILLING-BLOCKER-2026-05-07` BLOCKED:
+  `promote-prod.yml` was dispatched for `main` at
+  `92955a1cb09f3c473da856369e5f607fbc1fe5a1`; run `25514453251` and job
+  `74881719926` failed before any steps executed; deployment `4612845413`
+  status is `failure`; check-run annotation says `The job was not started
+  because your account is locked due to a billing issue.`
 - `V1-PROD-PROMOTE-DISPATCH-BLOCKER-2026-05-07` PASS as deploy-path
   classification: local/remote `main` is pushed at
   `9bdd1c1a101603e872099f205f3e9b21904e2b0a`; production build-info timed out

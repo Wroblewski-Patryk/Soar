@@ -4,16 +4,21 @@ Last updated: 2026-05-07
 
 ## Next Tiny Task
 
-Dispatch the official production promote workflow if an authenticated GitHub
-operator or `gh` environment is available:
+Resolve the GitHub Actions account billing lock, then rerun the official
+production promote workflow on `main`:
 
 ```powershell
 gh workflow run promote-prod.yml --ref main
 ```
 
-Then wait for production build-info to expose the promoted SHA and let the
-workflow runtime freshness and rollback guard decide whether the deploy
-stands. If promote is already complete, use
+Latest dispatch evidence: `promote-prod.yml` run `25514453251` for
+`92955a1cb09f3c473da856369e5f607fbc1fe5a1` failed before any steps executed
+because GitHub reported: `The job was not started because your account is
+locked due to a billing issue.`
+
+After billing/Actions is restored, wait for production build-info to expose the
+promoted SHA and let the workflow runtime freshness and rollback guard decide
+whether the deploy stands. If promote is already complete, use
 `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md` once
 production auth and DB/Coolify access are available. Start with
 `LIVEIMPORT-03` authenticated read-only production runtime readback on current
@@ -31,10 +36,10 @@ production auth/access. A no-auth collector attempt failed closed before
 runtime readback, which is the expected safe result.
 
 Post-push check: local `main` is pushed to `origin/main` at
-`9bdd1c1a101603e872099f205f3e9b21904e2b0a`; production still reports
-`21bb52f1...` until `Promote PROD` is manually dispatched and completes. This
-shell cannot dispatch it because `gh` is not installed and the current GitHub
-connector only supports fetching/rerunning existing workflow jobs.
+`92955a1cb09f3c473da856369e5f607fbc1fe5a1`; production still reports
+`21bb52f1...` until `Promote PROD` completes successfully. This shell did
+dispatch the workflow through GitHub API, but GitHub Actions could not start
+the job due to account billing lock.
 
 Canonical command once auth is available:
 
@@ -46,9 +51,9 @@ pnpm run ops:liveimport:readback -- --expected-sha 21bb52f1e4b8865aab0dbb83ecffe
 
 0. Follow the final blocker execution pack:
    `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
-0a. If GitHub Actions access is available, run the manual `Promote PROD`
-   workflow on `main` and wait for build-info, runtime freshness, and rollback
-   guard to pass.
+0a. Unblock GitHub Actions billing/account status, then rerun the manual
+   `Promote PROD` workflow on `main` and wait for build-info, runtime
+   freshness, and rollback guard to pass.
 1. If production credentials or ops auth are available, execute
    `ops:liveimport:readback` and record redacted `LIVEIMPORT-03` evidence. The latest
    names-only prerequisite sweep after `FULLARCH-FIX-11` found no production

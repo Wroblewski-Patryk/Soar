@@ -7,6 +7,14 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-PROD-PROMOTE-GITHUB-BILLING-BLOCKER-2026-05-07 release: capture GitHub Actions billing blocker`
+  - 2026-05-07: Dispatched `promote-prod.yml` through GitHub API for `main` at
+    `92955a1cb09f3c473da856369e5f607fbc1fe5a1` without printing credentials.
+    GitHub accepted the dispatch, but run `25514453251` failed before any job
+    steps executed. Check-run annotation reports: `The job was not started
+    because your account is locked due to a billing issue.` Production deploy
+    did not start. Evidence:
+    `docs/planning/v1-prod-promote-github-billing-blocker-task-2026-05-07.md`.
 - [x] `V1-PROD-PROMOTE-DISPATCH-BLOCKER-2026-05-07 release: record production promote dispatch blocker`
   - 2026-05-07: Recorded the post-push production state. Local and remote
     `main` are aligned at `9bdd1c1a101603e872099f205f3e9b21904e2b0a`, while

@@ -66,11 +66,13 @@ release-gate dry-run
 `not_ready`.
 
 Post-push deploy check: `origin/main` is current at
-`9bdd1c1a101603e872099f205f3e9b21904e2b0a`, but production build-info timed
-out waiting for that SHA and last reported `21bb52f1...`. The approved
-production promote path is `.github/workflows/promote-prod.yml`, which is
-manual `workflow_dispatch`; this shell lacks `gh`, and the available GitHub
-connector cannot dispatch a new workflow run.
+`92955a1cb09f3c473da856369e5f607fbc1fe5a1`, but production build-info timed
+out waiting for the previous pushed SHA and last reported `21bb52f1...`. The
+approved production promote path is `.github/workflows/promote-prod.yml`, a
+manual `workflow_dispatch`. The workflow was dispatched through GitHub API for
+`92955a1c`, but run `25514453251` failed before any steps executed because
+GitHub reported: `The job was not started because your account is locked due
+to a billing issue.`
 
 ## Current Priority Order
 
