@@ -2,6 +2,18 @@
 
 Last updated: 2026-05-07
 
+## 2026-05-07 V1 Production Activation Refresh
+- 2026-05-07 `V1-PROD-ACTIVATION-REFRESH-2026-05-07` created fresh production
+  activation plan and activation evidence audit artifacts for 2026-05-07 with
+  explicit `NO-GO` status. Follow-up release-gate dry-run
+  `docs/operations/v1-release-gate-prod-2026-05-07T17-56-30-000Z.md`
+  confirms activation audit and activation plan are now `fresh`; remaining
+  release-gate blockers are stale RC external gates status, RC sign-off, RC
+  checklist, backup/restore drill evidence, rollback proof pack, and dry-run
+  mode. Authenticated `LIVEIMPORT-03` readback remains separately required.
+  Evidence:
+  `docs/planning/v1-production-activation-plan-refresh-task-2026-05-07.md`.
+
 ## 2026-05-07 V1 Production Release Gate Dry Run
 - 2026-05-07 `V1-PROD-GATE-DRY-RUN-2026-05-07` ran the existing
   `ops:release:v1:gate` script in production dry-run mode with protected

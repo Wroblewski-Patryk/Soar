@@ -1,0 +1,82 @@
+{
+  "generatedAt": "2026-05-07T17:57:18.262Z",
+  "environment": "prod",
+  "dryRun": true,
+  "readiness": "not_ready",
+  "baseUrl": "https://api.soar.luckysparrow.ch",
+  "webBaseUrl": "https://soar.luckysparrow.ch",
+  "evidence": [
+    {
+      "key": "activationAudit",
+      "label": "activation evidence audit",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-07",
+      "path": "docs\\operations\\v1-production-activation-evidence-audit-2026-05-07.md",
+      "date": "2026-05-07"
+    },
+    {
+      "key": "activationPlan",
+      "label": "activation execution plan",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-07",
+      "path": "docs\\planning\\v1-production-activation-and-evidence-plan-2026-05-07.md",
+      "date": "2026-05-07"
+    },
+    {
+      "key": "rcExternalGateStatus",
+      "label": "RC external gates status",
+      "state": "stale",
+      "required": true,
+      "reason": "expected 2026-05-07, found 2026-05-02",
+      "path": "docs\\operations\\v1-rc-external-gates-status.md",
+      "date": "2026-05-02"
+    },
+    {
+      "key": "rcSignoffRecord",
+      "label": "RC sign-off record",
+      "state": "stale",
+      "required": true,
+      "reason": "expected 2026-05-07, found 2026-05-02",
+      "path": "docs\\operations\\v1-rc-signoff-record.md",
+      "date": "2026-05-02"
+    },
+    {
+      "key": "rcChecklist",
+      "label": "RC checklist verification block",
+      "state": "stale",
+      "required": true,
+      "reason": "expected 2026-05-07, found 2026-05-02",
+      "path": "docs\\operations\\v1-release-candidate-checklist.md",
+      "date": "2026-05-02"
+    },
+    {
+      "key": "backupRestoreDrill",
+      "label": "backup/restore drill evidence",
+      "state": "stale",
+      "required": true,
+      "reason": "expected 2026-05-07, found 2026-05-02",
+      "path": "docs\\operations\\v1-restore-drill-prod-2026-05-02T17-49-41-000Z.md",
+      "date": "2026-05-02"
+    },
+    {
+      "key": "rollbackProof",
+      "label": "rollback proof pack",
+      "state": "stale",
+      "required": true,
+      "reason": "expected 2026-05-07, found 2026-05-02",
+      "path": "docs\\operations\\v1-rollback-proof-prod-2026-05-02T17-54-13-498Z.md",
+      "date": "2026-05-02"
+    }
+  ],
+  "blockers": [
+    "evidence:rcExternalGateStatus:stale",
+    "evidence:rcSignoffRecord:stale",
+    "evidence:rcChecklist:stale",
+    "evidence:backupRestoreDrill:stale",
+    "evidence:rollbackProof:stale",
+    "mode:prod_dry_run_requires_remote_execution"
+  ],
+  "steps": []
+}

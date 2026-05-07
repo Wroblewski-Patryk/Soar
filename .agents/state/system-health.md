@@ -24,6 +24,11 @@ Last updated: 2026-05-07
 
 ## Latest Validation
 
+- `V1-PROD-ACTIVATION-REFRESH-2026-05-07` PASS: fresh production activation
+  plan and activation audit were created as `NO-GO` artifacts. Follow-up
+  production release-gate dry-run reports activation plan/audit `fresh` and
+  readiness still `not_ready` due to stale RC, backup/restore, rollback, and
+  dry-run blockers.
 - `V1-PROD-GATE-DRY-RUN-2026-05-07` release-gate classifier PASS in dry-run
   mode: generated production report with `readiness=not_ready`. Blockers:
   stale activation audit, activation plan, RC external gates status, RC

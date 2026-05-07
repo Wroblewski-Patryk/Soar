@@ -39,6 +39,12 @@ activation plan, RC external gates status, RC sign-off, RC checklist,
 backup/restore drill evidence, and rollback proof pack are stale, and dry-run
 mode cannot approve production.
 
+The activation audit and activation plan have since been refreshed as
+2026-05-07 `NO-GO` artifacts. The latest dry-run now reports those two
+families as `fresh`; remaining release-gate blockers are RC external gates
+status, RC sign-off, RC checklist, backup/restore drill evidence, rollback
+proof pack, and non-dry-run protected execution.
+
 ## Current Priority Order
 
 1. Stability

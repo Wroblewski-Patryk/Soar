@@ -82,6 +82,10 @@ Last updated: 2026-05-07
   evidence for activation audit, activation plan, RC external gates status, RC
   sign-off, RC checklist, backup/restore drill evidence, and rollback proof
   pack. This is separate from `LIVEIMPORT-03` authenticated runtime readback.
+- Activation audit and activation plan were refreshed as 2026-05-07 `NO-GO`
+  artifacts. The remaining stale release-gate evidence is RC external gates
+  status, RC sign-off, RC checklist, backup/restore drill evidence, and
+  rollback proof pack.
 
 ## Known Environment Pitfalls
 

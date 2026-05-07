@@ -7,6 +7,15 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-PROD-ACTIVATION-REFRESH-2026-05-07 release: refresh production activation plan and audit`
+  - 2026-05-07: Added fresh 2026-05-07 production activation plan and
+    activation evidence audit as explicit `NO-GO` artifacts. A follow-up V1
+    production release-gate dry-run now classifies activation audit and
+    activation plan as `fresh`, while RC external gates status, RC sign-off, RC
+    checklist, backup/restore drill evidence, rollback proof pack, and dry-run
+    mode remain blockers. No protected OPS endpoint, exchange endpoint,
+    live-money path, or secret was used. Evidence:
+    `docs/planning/v1-production-activation-plan-refresh-task-2026-05-07.md`.
 - [x] `V1-PROD-GATE-DRY-RUN-2026-05-07 release: classify current production V1 gate blockers`
   - 2026-05-07: Ran the existing V1 release-gate script in production
     dry-run mode with protected execution steps skipped. Generated JSON and
