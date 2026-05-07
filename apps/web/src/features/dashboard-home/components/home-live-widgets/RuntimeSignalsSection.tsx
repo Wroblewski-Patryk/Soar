@@ -1,5 +1,11 @@
 import { useMemo, type ReactNode, type RefObject } from "react";
 import { LuCoins, LuSignal } from "react-icons/lu";
+import {
+  resolveRuntimeContextSourceLabelSuffix,
+  resolveRuntimeMarketStateLabelSuffix,
+  type RuntimeContextSourceLabelSuffix,
+  type RuntimeMarketStateLabelSuffix,
+} from "../../../../features/bots/utils/runtimeSignalLabelKeys";
 import InlinePager from "../../../../ui/components/InlinePager";
 import type { RuntimeSymbolWithLive, SignalPillValue } from "./types";
 
@@ -75,18 +81,24 @@ const scopeLabelClass = (scope: "LONG" | "SHORT") =>
 export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps) {
   const isUnavailableValue = (value: string | null | undefined) =>
     value?.trim().toLowerCase() === "n/a";
+  const contextSourceLabels = {
+    LatestSignal: props.signalContextSourceLatestSignalLabel,
+    LatestDecision: props.signalContextSourceLatestDecisionLabel,
+    ConfiguredFallback: props.signalContextSourceConfiguredFallbackLabel,
+    Unresolved: props.signalContextSourceUnresolvedLabel,
+  } satisfies Record<RuntimeContextSourceLabelSuffix, string>;
+  const marketStateLabels = {
+    PositionOpen: props.marketStatePositionOpenLabel,
+    SignalActive: props.marketStateSignalActiveLabel,
+    EvaluatedNoTrade: props.marketStateEvaluatedNoTradeLabel,
+    ConfiguredOnly: props.marketStateConfiguredOnlyLabel,
+    Unresolved: props.marketStateUnresolvedLabel,
+  } satisfies Record<RuntimeMarketStateLabelSuffix, string>;
   const resolveContextSourceLabel = (source: RuntimeSymbolWithLive["lastSignalContextSource"]) => {
-    if (source === "latest_signal") return props.signalContextSourceLatestSignalLabel;
-    if (source === "latest_decision") return props.signalContextSourceLatestDecisionLabel;
-    if (source === "configured_fallback") return props.signalContextSourceConfiguredFallbackLabel;
-    return props.signalContextSourceUnresolvedLabel;
+    return contextSourceLabels[resolveRuntimeContextSourceLabelSuffix(source)];
   };
   const resolveMarketStateLabel = (state: RuntimeSymbolWithLive["runtimeMarketState"]) => {
-    if (state === "POSITION_OPEN") return props.marketStatePositionOpenLabel;
-    if (state === "SIGNAL_ACTIVE") return props.marketStateSignalActiveLabel;
-    if (state === "EVALUATED_NO_TRADE") return props.marketStateEvaluatedNoTradeLabel;
-    if (state === "CONFIGURED_ONLY") return props.marketStateConfiguredOnlyLabel;
-    return props.marketStateUnresolvedLabel;
+    return marketStateLabels[resolveRuntimeMarketStateLabelSuffix(state)];
   };
 
   const sortedSignalSymbols = useMemo(() => {
