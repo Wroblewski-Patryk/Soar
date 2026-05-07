@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   resolveRuntimePositionProvenanceKind,
   runtimeContinuityLabelSuffix,
+  runtimeOpenOrderStatusLabelSuffix,
   runtimeOrderSourceLabelSuffix,
   runtimePositionProvenanceLabelSuffix,
 } from "./runtimeMonitoringFormatters";
@@ -73,5 +74,16 @@ describe("resolveRuntimePositionProvenanceKind", () => {
     expect(runtimeOrderSourceLabelSuffix("BOT")).toBe("sourceBot");
     expect(runtimeOrderSourceLabelSuffix("EXCHANGE_SYNC")).toBe("sourceImported");
     expect(runtimeOrderSourceLabelSuffix(null)).toBe("sourceImported");
+  });
+
+  it("maps runtime open order statuses to lifecycle label suffixes", () => {
+    expect(runtimeOpenOrderStatusLabelSuffix("PENDING")).toBe("openOrderStatusWaitingFill");
+    expect(runtimeOpenOrderStatusLabelSuffix("OPEN")).toBe("openOrderStatusWaitingFill");
+    expect(runtimeOpenOrderStatusLabelSuffix("partially_filled")).toBe(
+      "openOrderStatusPartiallyFilled"
+    );
+    expect(runtimeOpenOrderStatusLabelSuffix("FILLED")).toBe("openOrderStatusFilled");
+    expect(runtimeOpenOrderStatusLabelSuffix("CANCELED")).toBeNull();
+    expect(runtimeOpenOrderStatusLabelSuffix(null)).toBeNull();
   });
 });

@@ -899,6 +899,7 @@ describe("BotsManagement", () => {
       expect(screen.getByText("Odzyskana, bez akcji")).toBeInTheDocument();
       expect(screen.getByText("Zaadoptowana z gieldy")).toBeInTheDocument();
       expect(screen.getByText("Importowane")).toBeInTheDocument();
+      expect(screen.getByText("Oczekuje na fill")).toBeInTheDocument();
       expect(screen.getByText("Akcja zablokowana")).toBeInTheDocument();
       expect(screen.getByText("Kontekst strategii nierozwiazany")).toBeInTheDocument();
       expect(screen.getByText("Prospektywna")).toBeInTheDocument();

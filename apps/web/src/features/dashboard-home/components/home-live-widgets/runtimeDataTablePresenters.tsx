@@ -8,6 +8,7 @@ import { renderDcaLadderCell } from "@/features/shared/dcaLadderCell";
 import {
   resolveRuntimePositionProvenanceKind,
   runtimeContinuityLabelSuffix,
+  runtimeOpenOrderStatusLabelSuffix,
   runtimeOrderSourceLabelSuffix,
   runtimePositionProvenanceLabelSuffix,
   type RuntimePositionProvenanceKind,
@@ -39,16 +40,8 @@ export const resolveOpenOrderSourceLabel = (t: Translate, origin: string | null 
 };
 
 export const resolveOpenOrderStatusLabel = (t: Translate, status: string | null | undefined) => {
-  const normalized = status?.trim().toUpperCase();
-  if (normalized === "PENDING" || normalized === "OPEN") {
-    return t("dashboard.home.runtime.openOrderStatusWaitingFill");
-  }
-  if (normalized === "PARTIALLY_FILLED") {
-    return t("dashboard.home.runtime.openOrderStatusPartiallyFilled");
-  }
-  if (normalized === "FILLED") {
-    return t("dashboard.home.runtime.openOrderStatusFilled");
-  }
+  const labelSuffix = runtimeOpenOrderStatusLabelSuffix(status);
+  if (labelSuffix) return t(`dashboard.home.runtime.${labelSuffix}`);
   return status ?? "-";
 };
 

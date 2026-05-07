@@ -29,6 +29,15 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-07: Closed `V1UI-14` with
+  `docs/planning/v1ui-14-runtime-open-order-status-label-task-2026-05-07.md`.
+  Dashboard home and bot monitoring now share open-order status suffix
+  semantics, and bot monitoring renders backend `OPEN`/`PENDING` status as
+  route-owned waiting-for-fill lifecycle text instead of a raw code. Validation
+  PASS: focused Web runtime formatter/dashboard/bot monitoring tests
+  (`29/29`), Web typecheck, Web lint, route-reachable i18n audit
+  (`findings=0`), repository guardrails, Web build, and authenticated rendered
+  `/dashboard/bots` route smoke with no console errors.
 - 2026-05-07: Closed `V1UI-13` with
   `docs/planning/v1ui-13-bot-open-orders-source-label-task-2026-05-07.md`.
   Bot monitoring open-order rows now render backend `origin` truth through

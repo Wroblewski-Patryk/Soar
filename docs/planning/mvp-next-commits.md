@@ -9,6 +9,17 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `V1UI-14 fix(web-runtime): align open-order status labels`
+  - 2026-05-07: Closed a BUILDER-mode runtime order lifecycle label parity
+    slice. Dashboard home and bot monitoring now share open-order status suffix
+    semantics, and bot monitoring renders backend `OPEN`/`PENDING` status as
+    route-owned waiting-for-fill lifecycle text instead of a raw status code.
+    Unknown statuses remain raw and visible. Validation PASS: focused Web
+    runtime formatter/dashboard/bot monitoring tests (`29/29`), Web typecheck,
+    Web lint, route-reachable i18n audit (`findings=0`), repository guardrails,
+    Web build, and authenticated rendered `/dashboard/bots` route smoke with
+    no console errors. Evidence:
+    `docs/planning/v1ui-14-runtime-open-order-status-label-task-2026-05-07.md`.
 - [x] `V1UI-13 fix(web-runtime): show bot monitoring open-order source labels`
   - 2026-05-07: Closed a BUILDER-mode backend-to-Web runtime order parity
     slice. Bot monitoring open-order rows now render backend `origin` truth as

@@ -3,6 +3,18 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 runtime open-order status label slice `V1UI-14` is closed on
+  `main`. Dashboard home and bot monitoring now share
+  `runtimeOpenOrderStatusLabelSuffix`, while bot monitoring renders route-owned
+  lifecycle labels for backend open-order statuses such as `OPEN`/`PENDING`
+  as waiting for fill. Unknown statuses remain raw and visible. Validation
+  PASS: focused Web runtime formatter/dashboard/bot monitoring tests
+  (`29/29`), Web typecheck, Web lint, route-reachable i18n audit
+  (`findings=0`), repository guardrails, Web build, and authenticated rendered
+  `/dashboard/bots` route smoke with no console errors. Browser plugin was not
+  callable in this session, so the smoke used bundled Codex Node plus
+  Playwright. Evidence:
+  `docs/planning/v1ui-14-runtime-open-order-status-label-task-2026-05-07.md`.
 - 2026-05-07 bot monitoring open-order source label slice `V1UI-13` is closed
   on `main`. Bot monitoring now renders backend open-order `origin` truth as
   route-owned `Origin` labels, and dashboard home shares the same runtime

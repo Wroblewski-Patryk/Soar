@@ -96,6 +96,9 @@ Out of scope:
 - Monitoring open-order rows expose backend `origin` through route-owned
   source labels backed by the shared Web runtime order-source helper, keeping
   manual, bot, and imported order source truth aligned with dashboard home.
+- Monitoring open-order rows also render backend order `status` through
+  route-owned lifecycle labels backed by the shared Web open-order status
+  helper, so `OPEN`/`PENDING` reads as waiting for fill instead of a raw code.
 - Monitoring open-position TTP cells label API `strategy_fallback`
   protection as prospective, preserving the distinction between canonical
   runtime TTP state and read-model assistance from strategy configuration.

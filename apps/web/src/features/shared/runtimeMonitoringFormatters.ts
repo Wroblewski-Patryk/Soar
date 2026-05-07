@@ -31,6 +31,10 @@ export type RuntimeContinuityLabelSuffix =
   | "continuityExternalCloseConfirmed"
   | "continuityRepairOnlyCleanup";
 export type RuntimeOrderSourceLabelSuffix = "sourceManual" | "sourceBot" | "sourceImported";
+export type RuntimeOpenOrderStatusLabelSuffix =
+  | "openOrderStatusWaitingFill"
+  | "openOrderStatusPartiallyFilled"
+  | "openOrderStatusFilled";
 export type RuntimePositionProvenanceKind =
   | "exchange_adopted"
   | "exchange_unowned"
@@ -158,4 +162,14 @@ export const runtimeOrderSourceLabelSuffix = (
   if (origin === "USER" || origin === "MANUAL") return "sourceManual";
   if (origin === "BOT") return "sourceBot";
   return "sourceImported";
+};
+
+export const runtimeOpenOrderStatusLabelSuffix = (
+  status?: string | null
+): RuntimeOpenOrderStatusLabelSuffix | null => {
+  const normalized = status?.trim().toUpperCase();
+  if (normalized === "PENDING" || normalized === "OPEN") return "openOrderStatusWaitingFill";
+  if (normalized === "PARTIALLY_FILLED") return "openOrderStatusPartiallyFilled";
+  if (normalized === "FILLED") return "openOrderStatusFilled";
+  return null;
 };

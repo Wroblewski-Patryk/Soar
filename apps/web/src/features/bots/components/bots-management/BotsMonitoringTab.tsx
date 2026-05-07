@@ -14,7 +14,10 @@ import { MonitoringFutureSignalsSection } from "./MonitoringFutureSignalsSection
 import { BotsPortfolioHistorySection } from "./BotsPortfolioHistorySection";
 import { BotsMonitoringProtectionCell } from "./BotsMonitoringProtectionCell";
 import { BotsMonitoringRuntimeStateCell } from "./BotsMonitoringRuntimeStateCell";
-import { runtimeOrderSourceLabelSuffix } from "../../../shared/runtimeMonitoringFormatters";
+import {
+  runtimeOpenOrderStatusLabelSuffix,
+  runtimeOrderSourceLabelSuffix,
+} from "../../../shared/runtimeMonitoringFormatters";
 import {
   Bot,
   BotRuntimeOpenOrderItem,
@@ -316,6 +319,10 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
   } = props;
   const resolveOpenOrderSourceLabel = (origin?: string | null) =>
     t(`dashboard.bots.monitoring.${runtimeOrderSourceLabelSuffix(origin)}` as TranslationKey);
+  const resolveOpenOrderStatusLabel = (status?: string | null) => {
+    const labelSuffix = runtimeOpenOrderStatusLabelSuffix(status);
+    return labelSuffix ? t(`dashboard.bots.monitoring.${labelSuffix}` as TranslationKey) : (status ?? "-");
+  };
 
   return (
     <div className="space-y-4 rounded-box border border-base-300/60 bg-base-200/60 p-4">
@@ -779,7 +786,7 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                                 <td>{resolveOpenOrderSourceLabel(order.origin)}</td>
                                 <td>{order.side}</td>
                                 <td>{order.type}</td>
-                                <td>{order.status}</td>
+                                <td>{resolveOpenOrderStatusLabel(order.status)}</td>
                                 <td>{formatNumber(order.quantity, 6)}</td>
                                 <td>{formatNumber(order.filledQuantity, 6)}</td>
                                 <td>{order.price != null ? formatNumber(order.price, 4) : "-"}</td>

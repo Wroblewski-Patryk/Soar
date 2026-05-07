@@ -320,6 +320,10 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
 - Shared semantics note (2026-05-07):
   - Dashboard home and bot monitoring derive order-source label suffixes from
     the shared Web runtime formatter while preserving route-owned namespaces.
+  - Dashboard home and bot monitoring also derive active open-order lifecycle
+    status suffixes from the shared Web runtime formatter, keeping
+    waiting-for-fill, partially-filled, and filled labels aligned while unknown
+    statuses remain visible as raw backend values.
 - Active-only visibility remains unchanged:
   - `PENDING`,
   - `OPEN`,
