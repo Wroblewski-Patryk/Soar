@@ -7,6 +7,17 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07 fix(api): scope live import diagnostics status`
+  - 2026-05-07: Fixed `/dashboard/positions/live-status` so authenticated
+    users receive only their own live-import reconciliation diagnostics,
+    summary, and counted open-position diagnostics. The endpoint now filters
+    by `req.user.id` and recomputes the diagnostic summary/count from the
+    scoped payload, preserving the existing worker status route without
+    leaking or mixing another user's import symbols/API-key diagnostics.
+    Validation PASS: pre-fix regression failed as expected, post-fix focused
+    e2e (`3/3`), import diagnostics/service pack (`35/35`), API typecheck,
+    repository guardrails, docs parity, and diff check. Evidence:
+    `docs/planning/v1-live-import-status-isolation-task-2026-05-07.md`.
 - [x] `V1-DASHBOARD-CRYPTO-ICONS-REGRESSION-2026-05-07 fix(web): restore dashboard crypto icon recovery`
   - 2026-05-07: Fixed the shared `AssetSymbol` renderer so dashboard asset
     rows recover from a previous image-load failure when the rendered symbol or

@@ -29,6 +29,13 @@ Last updated: 2026-05-07
 
 ## Latest Validation
 
+- `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
+  `/dashboard/positions/live-status` returned global reconciliation diagnostic
+  counts for an authenticated user. The route now filters
+  `lastPositionDiagnostics` by `req.user.id` and recomputes summary/count
+  fields from the user-scoped diagnostics. Post-fix validation passed: focused
+  e2e (`3/3`), import diagnostics/service pack (`35/35`), API typecheck,
+  repository guardrails, docs parity, and diff check.
 - `V1-DASHBOARD-CRYPTO-ICONS-REGRESSION-2026-05-07` PASS: pre-fix Web
   regression proved `AssetSymbol` stayed stuck on a fallback badge after a
   prior image error and a later symbol/icon URL change. The shared component

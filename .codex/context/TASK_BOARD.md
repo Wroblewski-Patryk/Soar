@@ -17,6 +17,17 @@ Last updated: 2026-05-07
 
 ## READY
 
+- [x] `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07 fix(api): scope live import diagnostics status`
+  - Scope: fixed `/dashboard/positions/live-status` so authenticated users see
+    only their own live-import reconciliation diagnostics. The endpoint now
+    filters diagnostics by user id and recomputes summary/count fields from the
+    scoped payload, preserving the existing route and loop status contract while
+    preventing cross-user diagnostic leakage. Validation PASS: pre-fix
+    regression failed as expected, post-fix focused e2e (`3/3`), import
+    diagnostics/service pack (`35/35`), API typecheck, repository guardrails,
+    docs parity, and diff check. Evidence:
+    `docs/planning/v1-live-import-status-isolation-task-2026-05-07.md`.
+
 - [x] `V1-DASHBOARD-CRYPTO-ICONS-REGRESSION-2026-05-07 fix(web): restore dashboard crypto icon recovery`
   - Scope: fixed the shared `AssetSymbol` renderer so a previous image load
     failure no longer keeps dashboard asset rows stuck on fallback letters

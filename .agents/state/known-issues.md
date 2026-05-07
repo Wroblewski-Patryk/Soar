@@ -32,6 +32,8 @@ Last updated: 2026-05-07
   imports six exchange positions into six selected-bot visible runtime
   positions when all six symbols are inside canonical bot ownership scope.
 - `FULLARCH-FIX-03` added structured per-symbol reconciliation diagnostics.
+  `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` then fixed the authenticated
+  live-status route so those diagnostics are user-scoped instead of global.
   Remaining live-import risk is authenticated production readback and, if
   needed, Web/operator presentation of those diagnostics.
 - `FULLARCH-FIX-04` repaired broad Web test harness drift around local

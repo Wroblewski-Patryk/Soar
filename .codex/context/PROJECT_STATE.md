@@ -3,6 +3,16 @@
 Last updated: 2026-05-07
 
 ## 2026-05-07 V1 Final Blocker Execution Pack
+- 2026-05-07 `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` fixed the
+  authenticated `/dashboard/positions/live-status` route so live-import
+  reconciliation diagnostics are scoped to the requesting user. The route now
+  filters `lastPositionDiagnostics` by `req.user.id` and recomputes
+  `lastDiagnosticSummary` and `openPositionsSeen` from that filtered payload,
+  preventing cross-user diagnostic leakage and operator-truth pollution.
+  Validation PASS: pre-fix e2e regression failed as expected; post-fix
+  focused e2e `3/3`, import diagnostics/service pack `35/35`, API typecheck,
+  repository guardrails, docs parity, and diff check. Evidence:
+  `docs/planning/v1-live-import-status-isolation-task-2026-05-07.md`.
 - 2026-05-07 `V1-DASHBOARD-CRYPTO-ICONS-REGRESSION-2026-05-07` restored
   dashboard crypto icon recovery in the shared Web `AssetSymbol` renderer.
   The component now clears stale image-load failure state when the normalized

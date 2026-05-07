@@ -5,6 +5,7 @@ import {
   livePositionReconciliationLoop,
   reconcileExternalPositionsFromExchange,
 } from './livePositionReconciliation.service';
+import { summarizeReconciliationDiagnostics } from './livePositionReconciliation.diagnostics';
 import {
   ListPositionsQuerySchema,
   UpdatePositionManagementModeSchema,
@@ -42,8 +43,14 @@ export const getLiveReconciliationStatus = async (req: Request, res: Response) =
   if (!userId) return sendError(res, 401, 'Unauthorized');
 
   const status = livePositionReconciliationLoop.getStatus();
+  const lastPositionDiagnostics = status.lastPositionDiagnostics.filter(
+    (diagnostic) => diagnostic.userId === userId
+  );
   return res.json({
     ...status,
+    openPositionsSeen: lastPositionDiagnostics.length,
+    lastDiagnosticSummary: summarizeReconciliationDiagnostics(lastPositionDiagnostics),
+    lastPositionDiagnostics,
     workerHeartbeatAt: process.env.WORKER_LAST_HEARTBEAT_AT ?? null,
   });
 };
