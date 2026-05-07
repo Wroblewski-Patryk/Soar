@@ -17,6 +17,15 @@ Last updated: 2026-05-07
 
 ## READY
 
+- [x] `V1-FINAL-BLOCKER-PREREQ-RECHECK-2026-05-07 release: recheck final blocker prerequisites`
+  - Scope: rechecked the current shell against the final blocker execution
+    pack. Production build-info matches
+    `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`, but names-only env scan found
+    no required Soar production auth/access. The live-import collector failed
+    closed before protected readback, and the refreshed release-gate dry-run
+    remains `not_ready`. Evidence:
+    `docs/planning/v1-final-blocker-prerequisite-recheck-task-2026-05-07.md`.
+
 - [x] `V1-FINAL-BLOCKER-PACK-2026-05-07 release: publish final blocker execution pack`
   - Scope: added
     `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`, a current

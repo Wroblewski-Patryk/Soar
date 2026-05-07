@@ -15,6 +15,11 @@ The collector is hardened to fail closed when no RUNNING session produces a
 runtime positions payload, so no-session output must not be accepted as
 release evidence.
 
+Latest prerequisite recheck after the final blocker pack confirmed production
+build-info is current, but the current shell still lacks the required Soar
+production auth/access. A no-auth collector attempt failed closed before
+runtime readback, which is the expected safe result.
+
 Canonical command once auth is available:
 
 ```powershell

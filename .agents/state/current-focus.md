@@ -28,7 +28,7 @@ production credentials or ops auth headers in the current shell, so future
 continuation should resume with authenticated read-only evidence collection.
 
 `LIVEIMPORT-03` now has one canonical read-only evidence command:
-`pnpm run ops:liveimport:readback -- --expected-sha 1f816362c93e117e47cfe52a35e0fec93bd0b37d`.
+`pnpm run ops:liveimport:readback -- --expected-sha 21bb52f1e4b8865aab0dbb83ecffe698061fd7a3 --output docs/operations/liveimport-03-prod-readback-2026-05-07.json`.
 The collector is hardened to fail closed when no RUNNING session produces a
 runtime positions payload, so no-session output cannot be treated as V1
 evidence.
@@ -56,6 +56,14 @@ NO-GO.
 
 The canonical `LIVEIMPORT-03` command now targets production SHA
 `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`, matching public build-info.
+
+Latest continuation recheck: public production build-info still matches
+`21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`, but the current shell exposes no
+required Soar production auth variable. A no-auth `ops:liveimport:readback`
+attempt failed closed before protected runtime readback, and the refreshed
+release-gate dry-run
+`docs/operations/v1-release-gate-prod-2026-05-07T18-20-30-000Z.md` remains
+`not_ready`.
 
 ## Current Priority Order
 

@@ -7,6 +7,15 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-FINAL-BLOCKER-PREREQ-RECHECK-2026-05-07 release: recheck final blocker prerequisites`
+  - 2026-05-07: Rechecked the final V1 blocker prerequisites after publishing
+    the execution pack. Public production build-info is current at
+    `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`, but the current shell still
+    lacks Soar production auth/access. Names-only env scan found
+    `FIGMA_OAUTH_TOKEN` and `IGCCSVC_DB`; a no-auth
+    `ops:liveimport:readback` attempt failed closed before protected runtime
+    readback; a refreshed release-gate dry-run remains `not_ready`. Evidence:
+    `docs/planning/v1-final-blocker-prerequisite-recheck-task-2026-05-07.md`.
 - [x] `V1-FINAL-BLOCKER-PACK-2026-05-07 release: publish final blocker execution pack`
   - 2026-05-07: Published
     `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`, a single

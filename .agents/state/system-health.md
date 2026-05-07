@@ -19,7 +19,7 @@ Last updated: 2026-05-07
   basic auth, or ops header environment variables. Authenticated production
   readback is therefore blocked in this session.
 - Latest V1 release-gate dry-run
-  `docs/operations/v1-release-gate-prod-2026-05-07T18-04-30-000Z.md` reports
+  `docs/operations/v1-release-gate-prod-2026-05-07T18-20-30-000Z.md` reports
   `readiness=not_ready`: activation plan/audit and RC artifacts are fresh;
   backup/restore drill and rollback proof are fresh but failed; protected
   non-dry-run release execution is still missing.
@@ -28,6 +28,13 @@ Last updated: 2026-05-07
 
 ## Latest Validation
 
+- `V1-FINAL-BLOCKER-PREREQ-RECHECK-2026-05-07` PASS as blocker
+  classification: public production build-info matches
+  `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`; names-only env scan found
+  `FIGMA_OAUTH_TOKEN` and `IGCCSVC_DB`, not the Soar production auth variables
+  required by the final blocker pack; `ops:liveimport:readback` failed closed
+  before protected runtime readback with missing auth; refreshed release-gate
+  dry-run remains `not_ready`.
 - `V1-PROD-RECOVERY-PROOF-BLOCKED-REFRESH-2026-05-07` PASS as blocker
   classification: rollback proof failed closed on protected `401` responses;
   restore drill is recorded as not executed due to missing production

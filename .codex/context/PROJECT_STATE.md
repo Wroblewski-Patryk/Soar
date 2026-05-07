@@ -3,6 +3,16 @@
 Last updated: 2026-05-07
 
 ## 2026-05-07 V1 Final Blocker Execution Pack
+- 2026-05-07 `V1-FINAL-BLOCKER-PREREQ-RECHECK-2026-05-07` rechecked the
+  current environment after the final blocker pack. Public production
+  build-info matches `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`, but a
+  names-only env scan found only `FIGMA_OAUTH_TOKEN` and `IGCCSVC_DB`, not the
+  required Soar production auth/access variables. A no-auth
+  `ops:liveimport:readback` attempt failed closed before protected runtime
+  readback, and the refreshed release-gate dry-run
+  `docs/operations/v1-release-gate-prod-2026-05-07T18-20-30-000Z.md`
+  remains `not_ready`. Evidence:
+  `docs/planning/v1-final-blocker-prerequisite-recheck-task-2026-05-07.md`.
 - 2026-05-07 `V1-FINAL-BLOCKER-PACK-2026-05-07` published
   `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`, a single
   operator-oriented command sequence for the remaining V1 blockers. It names

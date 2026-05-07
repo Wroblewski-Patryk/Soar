@@ -70,7 +70,7 @@ Last updated: 2026-05-07
 - `LIVEIMPORT-03` remains open because authenticated read-only production
   runtime positions readback for the reported LIVE ETH/DOGE rows has not been
   captured on current production `main`
-  (`1f816362c93e117e47cfe52a35e0fec93bd0b37d` or later).
+  (`21bb52f1e4b8865aab0dbb83ecffe698061fd7a3` or later).
   `ops:liveimport:readback` is now the canonical read-only collector once
   credentials are available. It is hardened to fail closed when no RUNNING
   session produces runtime positions readback, so a no-session artifact cannot
@@ -92,6 +92,10 @@ Last updated: 2026-05-07
 - Backup/restore drill and rollback proof are now fresh but failed for
   2026-05-07. Restore needs production DB/Coolify access; rollback proof needs
   protected OPS auth.
+- Final blocker prerequisite recheck after the execution pack found only
+  `FIGMA_OAUTH_TOKEN` and `IGCCSVC_DB` by names-only env scan in this shell.
+  Production build-info is current at `21bb52f1...`, but no Soar production
+  readback, rollback, or DB/Coolify access is available locally.
 
 ## Known Environment Pitfalls
 
