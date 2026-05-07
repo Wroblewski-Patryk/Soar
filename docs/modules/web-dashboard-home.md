@@ -70,7 +70,8 @@ Out of scope:
   3. Merge stream prices into open-position pnl calculations.
   4. Carry the selected mark-price source through the shared open-position
      derivation so `/dashboard` and `/dashboard/bots` expose the same source
-     truth beside the mark value.
+     truth beside the mark value. Source-kind suffix semantics are shared, but
+     each route still owns its own translation prefix.
 - Onboarding flow:
   - No bots: ordered steps start from wallet setup (`/dashboard/wallets/list`) before market/strategy/backtest/bot steps.
   - No active bots: same chain + activation step (`/dashboard/bots`).

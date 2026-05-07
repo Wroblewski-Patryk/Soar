@@ -27,17 +27,21 @@ export type RuntimeOpenPositionMarkPriceSource =
   | NonNullable<BotRuntimePositionItem["markPriceSource"]>
   | "runtime_stream";
 
-export const resolveRuntimeOpenPositionMarkPriceSourceLabelKey = (
+export const runtimeOpenPositionMarkPriceSourceLabelSuffix = (
   source: RuntimeOpenPositionMarkPriceSource
 ) => {
-  if (source === "runtime_stream") return "dashboard.bots.monitoring.markPriceSourceStream";
-  if (source === "runtime_symbol_stat") return "dashboard.bots.monitoring.markPriceSourceRuntimeStat";
-  if (source === "runtime_ticker") return "dashboard.bots.monitoring.markPriceSourceRuntimeTicker";
-  if (source === "fallback_ticker") return "dashboard.bots.monitoring.markPriceSourceFallbackTicker";
-  if (source === "exchange_unrealized_pnl") return "dashboard.bots.monitoring.markPriceSourceExchangePnl";
-  if (source === "runtime_candidate") return "dashboard.bots.monitoring.markPriceSourceRuntimeCandidate";
-  return "dashboard.bots.monitoring.markPriceSourceUnavailable";
+  if (source === "runtime_stream") return "markPriceSourceStream";
+  if (source === "runtime_symbol_stat") return "markPriceSourceRuntimeStat";
+  if (source === "runtime_ticker") return "markPriceSourceRuntimeTicker";
+  if (source === "fallback_ticker") return "markPriceSourceFallbackTicker";
+  if (source === "exchange_unrealized_pnl") return "markPriceSourceExchangePnl";
+  if (source === "runtime_candidate") return "markPriceSourceRuntimeCandidate";
+  return "markPriceSourceUnavailable";
 };
+
+export const resolveRuntimeOpenPositionMarkPriceSourceLabelKey = (
+  source: RuntimeOpenPositionMarkPriceSource
+) => `dashboard.bots.monitoring.${runtimeOpenPositionMarkPriceSourceLabelSuffix(source)}`;
 
 type StreamPricesInput = Map<string, number> | Record<string, number>;
 

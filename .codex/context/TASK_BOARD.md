@@ -20,6 +20,22 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `V1UI-33 refactor(web-runtime): share mark-price source label suffix`
+  - Scope: closed an ARCHITECT-mode Dashboard Home/Bots runtime label
+    semantics slice. Mark-price source kind suffix mapping now lives in the
+    shared open-position derivation utility, while each route still owns its
+    translation prefix (`dashboard.bots.monitoring.*` for Bots and
+    `dashboard.home.runtime.*` for Dashboard Home). Validation PASS: focused
+    Dashboard Home presenter tests (`16/16`), focused runtime open-position
+    derivation tests (`4/4`), Web typecheck, Web lint, repository guardrails,
+    `git diff --check`, full workspace build, and authenticated rendered
+    `/dashboard` smoke with reload and CTA interaction with no visible
+    framework overlay, console errors, page errors, or 5xx responses. Browser
+    plugin validation was attempted first but local `node_repl` resolved Node
+    `v22.13.0` while requiring `>=22.22.0`, so rendered validation used
+    bundled Codex Node plus Playwright. Evidence:
+    `docs/planning/v1ui-33-shared-mark-price-source-suffix-task-2026-05-07.md`.
+
 - [x] `V1UI-32 fix(web-dashboard): close route-owned copy leaks`
   - Scope: closed a BUILDER-mode Dashboard Home copy-ownership slice.
     Remaining `/dashboard` runtime presentation labels no longer depend on

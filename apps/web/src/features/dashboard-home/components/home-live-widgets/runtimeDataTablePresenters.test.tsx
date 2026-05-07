@@ -252,6 +252,58 @@ describe("createOpenPositionsColumns", () => {
     expect(screen.getByTestId("position-fee")).toHaveTextContent("0.012");
   });
 
+  it("renders mark price source labels with Dashboard Home route-owned keys", () => {
+    const columns = createOpenPositionsColumns({
+      t: (key) =>
+        ({
+          "dashboard.home.runtime.timeOpened": "Time opened",
+          "dashboard.home.runtime.symbol": "Symbol",
+          "dashboard.home.runtime.side": "Side",
+          "dashboard.home.runtime.status": "Status",
+          "dashboard.home.runtime.qty": "Qty",
+          "dashboard.home.runtime.entry": "Entry",
+          "dashboard.home.runtime.fee": "Fee",
+          "dashboard.home.runtime.margin": "Margin",
+          "dashboard.home.runtime.pnl": "PnL",
+          "dashboard.home.runtime.pnlPercent": "PnL%",
+          "dashboard.home.runtime.markPrice": "Mark",
+          "dashboard.home.runtime.markPriceSourceRuntimeCandidate": "Runtime candidate",
+          "dashboard.home.runtime.dca": "DCA",
+          "dashboard.home.runtime.continuityConfirmed": "Confirmed",
+        })[key] ?? key,
+      formatDateTimeWithSeconds: (value) => value ?? "-",
+      formatNumber: (value) => String(value),
+      formatPercent: (value) => `${value}%`,
+      formatRuntimeAmount: (value) => String(value),
+      formatDcaPercent: (value) => `${value}%`,
+      withRuntimeUnit: (label) => label,
+      resolveRuntimeIcon: () => null,
+      runtimeIconsLoading: false,
+      runtimeIconsError: null,
+      showDynamicStopColumns: false,
+      closePositionActionColumnLabel: "Action",
+      closePositionPendingLabel: "Closing...",
+      closePositionButtonLabel: "Close position",
+      editPositionButtonLabel: "Edit position",
+      positionActionsUnavailableLabel: "Unavailable",
+      isClosingPosition: () => false,
+      onOpenPositionEdit: vi.fn(),
+      onCloseRuntimePosition: vi.fn(),
+    });
+    const markColumn = columns.find((column) => column.key === "markPrice");
+
+    render(
+      <div>
+        {markColumn?.render?.({
+          ...openPositionRow,
+          liveMarkPriceSource: "runtime_candidate",
+        })}
+      </div>
+    );
+
+    expect(screen.getByText("Runtime candidate")).toBeInTheDocument();
+  });
+
   it("renders position action buttons with shared table action tones", () => {
     const columns = createOpenPositionsColumns({
       t: (key) =>
