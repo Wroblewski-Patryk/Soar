@@ -267,6 +267,7 @@ export const dashboardHomeDeCh = {
     "realizedPnl": "Realisierte Gewinn- und Verlustrechnung",
     "origin": "Herkunft",
     "source": "Quelle",
+    "exchangeOrderId": "Exchange-ID",
     "sourceManual": "Handbuch",
     "sourceBot": "Bot",
     "sourceImported": "Importiert",

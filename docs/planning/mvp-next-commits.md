@@ -9,6 +9,18 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `V1UI-36 fix(web-i18n): restore de-CH exchange order id parity`
+  - 2026-05-07: Closed an ARCHITECT-mode i18n structure slice. Runtime order
+    surfaces already render backend `exchangeOrderId` in Dashboard Home and
+    Bots Monitoring, and EN/PL/PT namespaces already had the matching labels,
+    but `de-CH` was missing `dashboard.home.runtime.exchangeOrderId` and
+    `dashboard.bots.monitoring.table.exchangeOrderId`. The German-Swiss
+    namespaces now include both labels as `Exchange-ID`, restoring full
+    supported-locale key parity for the exchange order identifier. Validation
+    PASS: focused i18n parity tests (`9/9`), route-reachable i18n audit
+    (`findings=0`), Web typecheck, Web lint, repository guardrails,
+    `git diff --check`, and full workspace build. Evidence:
+    `docs/planning/v1ui-36-de-ch-exchange-order-id-i18n-parity-task-2026-05-07.md`.
 - [x] `V1UI-35 feat(web-runtime): show dashboard signal runtime detail`
   - 2026-05-07: Closed a TESTER-mode Dashboard Home signal diagnostics
     parity slice. API runtime symbol stats and Web types already expose

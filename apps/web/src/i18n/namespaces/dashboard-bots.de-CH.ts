@@ -364,6 +364,7 @@ export const dashboardBotsDeCh = {
       "slTsl": "TSL",
       "status": "Status",
       "type": "Typ",
+      "exchangeOrderId": "Exchange-ID",
       "filled": "Gefüllt",
       "stop": "Stoppen",
       "submitted": "Eingereicht",

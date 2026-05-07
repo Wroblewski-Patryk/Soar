@@ -3,6 +3,18 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 German-Swiss exchange order ID i18n parity slice `V1UI-36` is
+  closed on `main`. ARCHITECT-mode review found that runtime order surfaces
+  already render backend `exchangeOrderId` in Dashboard Home and Bots
+  Monitoring, and EN/PL/PT namespaces already had the matching labels, but
+  `de-CH` was missing `dashboard.home.runtime.exchangeOrderId` and
+  `dashboard.bots.monitoring.table.exchangeOrderId`. The German-Swiss
+  namespaces now include both labels as `Exchange-ID`, restoring full
+  supported-locale key parity for the exchange order identifier. Validation
+  PASS: focused i18n parity tests (`9/9`), route-reachable i18n audit
+  (`findings=0`), Web typecheck, Web lint, repository guardrails,
+  `git diff --check`, and full workspace build. Evidence:
+  `docs/planning/v1ui-36-de-ch-exchange-order-id-i18n-parity-task-2026-05-07.md`.
 - 2026-05-07 Dashboard Home signal runtime detail slice `V1UI-35` is closed
   on `main`. TESTER-mode review found that API runtime symbol stats and Web
   types already expose `lastSignalMessage` and `lastSignalReason`, and Bots
