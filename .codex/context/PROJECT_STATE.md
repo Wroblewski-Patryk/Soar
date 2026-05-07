@@ -2,6 +2,18 @@
 
 Last updated: 2026-05-07
 
+## 2026-05-07 V1 RC Blocked Evidence Refresh
+- 2026-05-07 `V1-RC-BLOCKED-REFRESH-2026-05-07` refreshed RC external gates
+  status, RC sign-off, and RC checklist as current blocked/open evidence.
+  Current snapshot is `G1=PASS`, `G2=OPEN`, `G3=PASS`, `G4=OPEN`; sign-off
+  final decision is `BLOCKED`. Follow-up release-gate dry-run
+  `docs/operations/v1-release-gate-prod-2026-05-07T18-00-30-000Z.md` now
+  classifies activation plan/audit, RC status, RC sign-off, and RC checklist
+  as `fresh`. V1 remains `not_ready` because backup/restore drill evidence,
+  rollback proof pack, dry-run mode, and authenticated `LIVEIMPORT-03`
+  readback remain unresolved. Evidence:
+  `docs/planning/v1-rc-blocked-evidence-refresh-task-2026-05-07.md`.
+
 ## 2026-05-07 V1 Production Activation Refresh
 - 2026-05-07 `V1-PROD-ACTIVATION-REFRESH-2026-05-07` created fresh production
   activation plan and activation evidence audit artifacts for 2026-05-07 with

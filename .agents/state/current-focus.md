@@ -45,6 +45,10 @@ families as `fresh`; remaining release-gate blockers are RC external gates
 status, RC sign-off, RC checklist, backup/restore drill evidence, rollback
 proof pack, and non-dry-run protected execution.
 
+RC external gates status, RC sign-off, and RC checklist have now also been
+refreshed as current blocked/open evidence. Latest RC snapshot is `G1=PASS`,
+`G2=OPEN`, `G3=PASS`, `G4=OPEN`; sign-off remains `BLOCKED`.
+
 ## Current Priority Order
 
 1. Stability

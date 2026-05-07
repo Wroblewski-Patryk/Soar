@@ -86,6 +86,9 @@ Last updated: 2026-05-07
   artifacts. The remaining stale release-gate evidence is RC external gates
   status, RC sign-off, RC checklist, backup/restore drill evidence, and
   rollback proof pack.
+- RC external gates status, RC sign-off, and RC checklist are now fresh for
+  2026-05-07 but intentionally blocked/open. Remaining stale release-gate
+  artifacts are backup/restore drill evidence and rollback proof pack.
 
 ## Known Environment Pitfalls
 

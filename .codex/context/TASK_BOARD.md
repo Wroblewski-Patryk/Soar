@@ -17,6 +17,14 @@ Last updated: 2026-05-07
 
 ## READY
 
+- [x] `V1-RC-BLOCKED-REFRESH-2026-05-07 release: refresh RC evidence as blocked`
+  - Scope: refreshed RC external gates status, RC sign-off, and RC checklist
+    as current blocked/open evidence. Snapshot is `G1=PASS`, `G2=OPEN`,
+    `G3=PASS`, `G4=OPEN`; sign-off is `BLOCKED`. Release-gate dry-run now
+    treats RC status/sign-off/checklist as fresh while V1 remains `not_ready`.
+    Evidence:
+    `docs/planning/v1-rc-blocked-evidence-refresh-task-2026-05-07.md`.
+
 - [x] `V1-PROD-ACTIVATION-REFRESH-2026-05-07 release: refresh production activation plan and audit`
   - Scope: created fresh 2026-05-07 production activation plan and activation
     evidence audit as honest `NO-GO` artifacts. Follow-up release-gate dry-run

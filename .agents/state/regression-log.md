@@ -14,6 +14,9 @@ No open regression was identified in the agent operating system slice.
 - 2026-05-07: Refreshed activation audit and activation plan as current
   `NO-GO` artifacts, then reran the V1 gate dry-run to confirm those families
   are fresh while protected evidence remains blocked.
+- 2026-05-07: Refreshed RC status, sign-off, and checklist as blocked/open
+  evidence to prevent stale RC artifacts from being mistaken for current
+  approval.
 - 2026-05-07: Monitored production web build-info freshness after the collector
   hardening push. Latest pushed `main` is `21bb52f1...`, while production
   still reported `6bf5de83...` after the first canonical wait. A later

@@ -24,6 +24,10 @@ Last updated: 2026-05-07
 
 ## Latest Validation
 
+- `V1-RC-BLOCKED-REFRESH-2026-05-07` PASS: RC status/sign-off/checklist were
+  refreshed as blocked/open evidence. Follow-up production release-gate dry-run
+  reports RC families fresh and readiness still `not_ready` due to stale
+  backup/restore drill, stale rollback proof, and dry-run mode.
 - `V1-PROD-ACTIVATION-REFRESH-2026-05-07` PASS: fresh production activation
   plan and activation audit were created as `NO-GO` artifacts. Follow-up
   production release-gate dry-run reports activation plan/audit `fresh` and

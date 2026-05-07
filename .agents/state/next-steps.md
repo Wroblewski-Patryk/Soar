@@ -32,9 +32,9 @@ pnpm run ops:liveimport:readback -- --expected-sha 1f816362c93e117e47cfe52a35e0f
 3. After `LIVEIMPORT-03`, continue `BOTMULTI-09` protected runtime readback and
    broader V1 release gate evidence.
 4. Refresh production V1 release evidence with real non-dry-run execution:
-   RC external gates status, RC sign-off, RC checklist, backup/restore drill
-   evidence, and rollback proof pack are stale in the latest dry-run report.
-   Activation audit and activation plan are fresh `NO-GO` artifacts for
+   backup/restore drill evidence and rollback proof pack are stale in the
+   latest dry-run report. Activation audit, activation plan, RC status,
+   RC sign-off, and RC checklist are fresh blocked/NO-GO artifacts for
    2026-05-07.
 5. If the active queue is empty, run a planning-status sweep before saying
    nothing is planned.

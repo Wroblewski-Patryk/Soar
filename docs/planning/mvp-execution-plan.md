@@ -32,6 +32,12 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-07: Closed `V1-RC-BLOCKED-REFRESH-2026-05-07` with
+  `docs/planning/v1-rc-blocked-evidence-refresh-task-2026-05-07.md`. RC
+  external gates status, RC sign-off, and RC checklist are now fresh
+  blocked/open artifacts (`G1=PASS`, `G2=OPEN`, `G3=PASS`, `G4=OPEN`; sign-off
+  `BLOCKED`). Release-gate dry-run still reports `not_ready` due to stale
+  backup/restore drill, stale rollback proof, and dry-run mode.
 - 2026-05-07: Closed `V1-PROD-ACTIVATION-REFRESH-2026-05-07` with
   `docs/planning/v1-production-activation-plan-refresh-task-2026-05-07.md`.
   Fresh 2026-05-07 production activation plan and activation evidence audit

@@ -1,7 +1,7 @@
 # V1 RC Sign-Off Record
 
 Release target: `v1.0.0`  
-Date (UTC): `2026-05-02T17:29:56.095Z`
+Date (UTC): `2026-05-07T17:59:59.307Z`
 
 ## Gate Evidence References
 - RC checklist: `docs/operations/v1-release-candidate-checklist.md`
@@ -10,32 +10,32 @@ Date (UTC): `2026-05-02T17:29:56.095Z`
 
 ## Sign-Offs
 - Engineering sign-off:
-  - Name: Patryk Wroblewski
-  - UTC timestamp: 2026-05-02T17:29:56.095Z
-  - Notes: approved via scripted record build
+  - Name:
+  - UTC timestamp:
+  - Notes:
 - Product sign-off:
-  - Name: Patryk Wroblewski
-  - UTC timestamp: 2026-05-02T17:29:56.095Z
-  - Notes: approved via scripted record build
+  - Name:
+  - UTC timestamp:
+  - Notes:
 - Operations sign-off:
-  - Name: Patryk Wroblewski
-  - UTC timestamp: 2026-05-02T17:29:56.095Z
-  - Notes: approved via scripted record build
+  - Name:
+  - UTC timestamp:
+  - Notes:
 
 ## RC Ownership
 - RC owner with rollback authority:
-  - Name: Patryk Wroblewski
-  - Contact: Owner/operator
-  - UTC assignment timestamp: 2026-05-02T17:29:56.095Z
+  - Name:
+  - Contact:
+  - UTC assignment timestamp:
 
 ## Gate Snapshot at Sign-Off Build
 - Gate statuses found: 4
-- Gate values: PASS, PASS, PASS, OPEN
-- Gates 1-3 pass: yes
+- Gate values: PASS, OPEN, PASS, OPEN
+- Gates 1-3 pass: no
 
 ## Final Decision
-- RC status: `APPROVED`
-- Blocking reasons (if any): none
+- RC status: `BLOCKED`
+- Blocking reasons (if any): missing gate pass and/or required approvers
 - Follow-up actions:
   - If BLOCKED: complete open gates and rerun `pnpm run ops:rc:signoff:build`.
   - If APPROVED: copy this record into release notes and finalize launch trigger.

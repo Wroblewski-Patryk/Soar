@@ -7,6 +7,16 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-RC-BLOCKED-REFRESH-2026-05-07 release: refresh RC evidence as blocked`
+  - 2026-05-07: Refreshed RC external gates status, RC sign-off, and RC
+    checklist using existing scripts without secrets or protected production
+    calls. The refreshed status is intentionally blocked/open:
+    `G1=PASS`, `G2=OPEN`, `G3=PASS`, `G4=OPEN`; sign-off final decision is
+    `BLOCKED`. A follow-up V1 production release-gate dry-run now classifies
+    activation plan/audit, RC status, RC sign-off, and RC checklist as `fresh`.
+    Remaining release-gate blockers are stale backup/restore drill evidence,
+    stale rollback proof pack, and dry-run mode. Evidence:
+    `docs/planning/v1-rc-blocked-evidence-refresh-task-2026-05-07.md`.
 - [x] `V1-PROD-ACTIVATION-REFRESH-2026-05-07 release: refresh production activation plan and audit`
   - 2026-05-07: Added fresh 2026-05-07 production activation plan and
     activation evidence audit as explicit `NO-GO` artifacts. A follow-up V1
