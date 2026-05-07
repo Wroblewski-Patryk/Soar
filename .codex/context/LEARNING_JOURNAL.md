@@ -107,6 +107,31 @@ $env:NODE_PATH='C:\Users\wrobl\.cache\codex-runtimes\codex-primary-runtime\depen
 
 ## Entries
 
+### 2026-05-07 - Environment scans must print names only
+- Context: continuation work for production-readback prerequisites needed to
+  check whether the local shell exposed production auth material.
+- Symptom: an ad-hoc PowerShell environment scan selected both `Name` and
+  `Value`, which can print secret values into command output even when the
+  intent is only to confirm whether matching variables exist.
+- Root cause: the command used the default object projection pattern instead
+  of the repository's safer prerequisite-check pattern.
+- Guardrail: environment prerequisite scans must list variable names only and
+  must never project `Value` unless the user explicitly asks to inspect a
+  non-secret local variable.
+- Preferred pattern:
+```powershell
+Get-ChildItem Env: |
+  Where-Object { $_.Name -match 'PROD|PRODUCTION|AUTH|TOKEN|SESSION|COOKIE|BASIC|BEARER|ADMIN|OPS|SOAR|API' } |
+  Sort-Object Name |
+  Select-Object -ExpandProperty Name
+```
+- Avoid: `Select-Object Name,Value`, `Format-Table Name,Value`, or logging
+  full environment dumps during auth or production access checks.
+- Evidence:
+  - 2026-05-07 continuation recheck confirmed the safe pattern reports only
+    variable names (`FIGMA_OAUTH_TOKEN`, `STITCH_API_KEY`) and no production
+    auth variable names in the current shell.
+
 ### 2026-05-06 - Verify local Postgres before declaring DB-backed suites blocked
 - Context: continued PMPLC exchange/order lifecycle hardening on a local Docker
   development stack.

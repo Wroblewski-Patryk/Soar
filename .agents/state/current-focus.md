@@ -4,9 +4,9 @@ Last updated: 2026-05-07
 
 ## Active Focus
 
-V1 foundation hardening: keep Soar stable, architecture-aligned,
-regression-resistant, and easy for future agents to continue without hidden
-chat context.
+V1 production evidence closure: keep Soar stable, architecture-aligned,
+regression-resistant, and explicit about the remaining authenticated read-only
+production evidence gaps.
 
 ## Current System Objective
 
@@ -17,8 +17,12 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
-Implementation and verification for the agent operating system documentation
-slice.
+Release verification is blocked on authenticated production readback for the
+first open queue item, `LIVEIMPORT-03`. Local audit gates are closed through
+`FULLARCH-FIX-11`. The latest names-only prerequisite scan still found no
+production credentials or ops auth headers in the current shell, so future
+continuation should resume with authenticated read-only evidence collection
+rather than repeating local current-main triage.
 
 ## Current Priority Order
 
@@ -36,5 +40,7 @@ slice.
 - Keep source-of-truth docs in English.
 - Reuse existing `.codex/context`, planning, governance, and architecture
   systems.
-- Add agent operating memory under `.agents/` and documentation memory under
-  `docs/` without replacing canonical architecture truth.
+- Do not run live-money or destructive production actions for `LIVEIMPORT-03`;
+  the remaining work is authenticated read-only dashboard/API evidence.
+- Keep `LIVEIMPORT-03` open until ETH/DOGE production runtime readback evidence
+  is captured and redacted.

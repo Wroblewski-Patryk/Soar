@@ -17,6 +17,202 @@ Last updated: 2026-05-07
 
 ## READY
 
+- [x] `PLAN-SWEEP-2026-05-07 release: sync planning status after local audit gates`
+  - Scope: swept active planning after `LIVEIMPORT-03` remained blocked by
+    missing production read-only auth. Synchronized the top
+    `mvp-execution-plan.md` progress log with the already-closed local audit
+    gates through `FULLARCH-FIX-11` and the prerequisite sweep. No runtime,
+    API, DB, Web, deployment, exchange, or live-money behavior changed.
+    Evidence:
+    `docs/planning/planning-status-sweep-after-local-audit-gates-task-2026-05-07.md`.
+
+- [x] `LIVEIMPORT-03-PREQ-2026-05-07 release: recheck production readback prerequisites`
+  - Scope: after local audit gates closed through `FULLARCH-FIX-11`, rechecked
+    whether this shell can execute `LIVEIMPORT-03`. Names-only environment scan
+    returned only `FIGMA_OAUTH_TOKEN` and `STITCH_API_KEY`; no production admin
+    token, operator login, ops basic auth, bearer/session cookie, or Soar
+    production auth variable name is present. No secret values, production
+    writes, exchange writes, deploys, or live-money actions were used.
+    `LIVEIMPORT-03` remains open. Evidence:
+    `docs/planning/liveimport-03-production-readback-prerequisite-sweep-task-2026-05-07.md`.
+
+- [x] `FULLARCH-FIX-11 test(api-web): validate wallet market bot topology gate`
+  - Scope: ran focused API and Web evidence for wallet/capital handling,
+    market universe scope, bot create/edit/list behavior, single active bot
+    market scope, multi-strategy links, subscription entitlements, and the UI
+    forms/tables that configure those contracts. No code, schema, deployment,
+    exchange, or live-money behavior changed. Validation PASS: API pack
+    (`11/11` files, `80/80` tests) and Web pack (`21/21` files, `49/49`
+    tests). Evidence:
+    `docs/planning/fullarch-fix-11-wallet-market-bot-topology-gate-task-2026-05-07.md`.
+
+- [x] `FULLARCH-FIX-10 test(api-web): validate market stream dashboard monitoring gate`
+  - Scope: ran focused API and Web evidence for market stream ingestion/fanout
+    routes and dashboard/bot monitoring surfaces after the Web navigation mock
+    harness repair. No code, schema, deployment, or live-money behavior
+    changed. Validation PASS: API pack (`9/9` files, `63/63` tests) and Web
+    pack (`19/19` files, `79/79` tests). Evidence:
+    `docs/planning/fullarch-fix-10-market-dashboard-monitoring-gate-task-2026-05-07.md`.
+
+- [x] `FULLARCH-FIX-09 test(api-web): validate strategy backtest reports logs gate`
+  - Scope: ran focused API and Web evidence for strategy/indicator parity,
+    backtest execution/replay, reports, and logs/audit trail after the Web
+    navigation mock harness repair. No code, schema, deployment, or live-money
+    behavior changed. Validation PASS: API pack (`12/12` files, `92/92`
+    tests) and Web pack (`21/21` files, `49/49` tests). Evidence:
+    `docs/planning/fullarch-fix-09-strategy-backtest-reports-logs-gate-task-2026-05-07.md`.
+
+- [x] `FULLARCH-FIX-08 test(api-security): validate local security and isolation release gate`
+  - Scope: ran the focused local API security/isolation release-gate pack
+    covering rate limiting, auth/session, trusted origin, security headers,
+    API-key ownership/encryption, profile security, subscription/admin
+    authorization, upload, bot entitlements, and cross-module user-data
+    isolation. No code, schema, UI, deployment, or live-money behavior changed.
+    Validation PASS: `18/18` files and `87/87` tests with sequential
+    execution and test-only API-key encryption env. Evidence:
+    `docs/planning/fullarch-fix-08-security-isolation-release-gate-task-2026-05-07.md`.
+
+- [x] `FULLARCH-AUDIT-SYNC-2026-05-07 docs(planning): sync full architecture audit repair queue`
+  - Scope: updated the full architecture conformance audit report so its
+    prioritized repair queue reflects the completed local chain
+    `FULLARCH-FIX-01..07` and leaves only authenticated `LIVEIMPORT-03`
+    production readback, then `BOTMULTI-09`, as remaining release evidence.
+    No code, schema, UI, deployment, or live-money behavior changed.
+    Validation PASS: names-only auth env scan, repository guardrails, docs
+    parity, and diff check. Evidence:
+    `docs/planning/fullarch-audit-repair-queue-sync-task-2026-05-07.md`.
+
+- [x] `FULLARCH-FIX-07 test(api-runtime): validate runtime repair closure pack after import fixes`
+  - Scope: ran the focused post-repair runtime validation pack covering signal
+    merge/final-candle/loop, pre-trade and risk, execution orchestration,
+    exchange events, order and position lifecycle, imported-position DCA
+    visibility, takeover readback, and position automation. No code, schema,
+    UI, deployment, or live-money behavior changed. Validation PASS:
+    `16/16` files and `240/240` tests with sequential execution. Evidence:
+    `docs/planning/fullarch-fix-07-runtime-repair-closure-validation-task-2026-05-07.md`.
+
+- [x] `FULLARCH-FIX-06 fix(api-positions): lock Binance futures position snapshot normalization`
+  - Scope: Binance futures snapshots now normalize signed `positionAmt` into
+    positive `contracts`, derive one-way `LONG`/`SHORT` from
+    `positionSide=BOTH` plus amount sign, and preserve explicit adapter
+    `position.side` as highest-priority truth. Added regression coverage for
+    one-way short, hedge-mode short, and multi-position snapshots. Validation
+    PASS: pre-fix normalizer regression failed as expected (`3 failed`),
+    normalizer suite (`5/5`), focused import/reconciliation/takeover pack
+    (`42/42`), and API typecheck. Evidence:
+    `docs/planning/fullarch-fix-06-binance-futures-position-normalization-task-2026-05-07.md`.
+
+- [x] `AOS-STATE-ENV-2026-05-07 docs(agent-os): capture safe environment scan guardrail`
+  - Scope: recorded a verified secret-adjacent execution pitfall in the
+    learning journal: production auth prerequisite scans must print
+    environment variable names only and must not project secret values by
+    default. This docs-only security guardrail does not close `LIVEIMPORT-03`;
+    authenticated read-only production runtime readback remains the next real
+    evidence task. Validation PASS: names-only env scan, repository
+    guardrails, and diff check. Evidence:
+    `docs/planning/aos-state-env-scan-secret-safety-task-2026-05-07.md`.
+
+- [x] `FULLARCH-FIX-05 fix(api-bots): close single active bot scope root-suite failures`
+  - Scope: bot market-group writes now fail closed with a controlled `409`
+    when a request would create or activate a second enabled `ACTIVE` market
+    scope for the same bot. Stale API e2e fixtures were realigned to the
+    approved post-V1 topology: one active bot market scope with multiple
+    ordered strategy links. Manual order fixtures now include wallet ownership
+    proof for exchange-synced LIVE open orders and clean backtest rows before
+    deleting users. Validation PASS: focused API blocker pack (`6/6` files,
+    `59/59` tests), API typecheck, root workspace tests (`api 174/174 files,
+    1163/1163 tests; web 145/145 files, 482/482 tests`), lint, guardrails,
+    docs parity, and diff check. Evidence:
+    `docs/planning/fullarch-fix-05-api-single-active-bot-scope-task-2026-05-07.md`.
+
+- [x] `FULLARCH-FIX-04 fix(web-tests): repair next/navigation mock harness drift`
+  - Scope: local Web tests that mock `next/navigation` now expose the
+    `usePathname` contract required by `I18nProvider`, matching the global
+    Vitest setup and restoring trustworthy Web regression evidence. No
+    production Web, API, DB, exchange, deployment, or live-money behavior
+    changed. Validation PASS: focused route/form harness pack (`13/13` files,
+    `22/22` tests), full Web test suite (`145/145` files, `482/482` tests),
+    Web typecheck, and local mock scan. Root workspace test now proceeds past
+    Web and exposes remaining API e2e failures around bot market-group
+    creation/unique `botId` constraints, manual LIVE exchange-synced
+    open-order visibility, and stale DB cleanup FK residue. Evidence:
+    `docs/planning/fullarch-fix-04-web-navigation-mock-harness-task-2026-05-07.md`.
+
+- [x] `FULLARCH-FIX-03 feat(api-positions): add live import reconciliation diagnostics`
+  - Scope: live position reconciliation now returns structured
+    per-symbol diagnostics and stores the last run diagnostics on loop status.
+    Diagnostics include outcome, ownership status, management mode, sync state,
+    continuity state, projected bot/wallet/strategy ids, bot visibility, and a
+    reason. This is additive only: no import ownership, exchange, schema,
+    Web, or live-money behavior changed. Validation PASS: focused
+    diagnostics/import/ownership/takeover pack (`47/47`), API typecheck.
+    Evidence:
+    `docs/planning/fullarch-fix-03-reconciliation-diagnostics-task-2026-05-07.md`.
+
+- [x] `FULLARCH-FIX-02 test(api-runtime): cover six-position import/readback path`
+  - Scope: added a DB-backed runtime takeover regression that creates one
+    active opted-in LIVE bot with a canonical six-symbol market scope, mocks
+    six exchange positions, runs reconciliation through the real ownership
+    resolver/default DB-backed deps, verifies all six DB rows are
+    `BOT_MANAGED`, `IN_SYNC`, `CONFIRMED`, and verifies selected-bot runtime
+    readback returns all six symbols. No import, ownership, exchange, schema,
+    Web, or live-money behavior changed. Validation PASS: runtime takeover e2e
+    (`5/5`), focused import/ownership/takeover pack (`46/46`), API typecheck,
+    repository guardrails. Evidence:
+    `docs/planning/fullarch-fix-02-six-position-import-readback-regression-task-2026-05-07.md`.
+
+- [x] `FULLARCH-FIX-01 fix(api-runtime): restore recovered imported position visibility`
+  - Scope: runtime bot position readback now includes the narrow recovered
+    imported LIVE position state required by architecture:
+    `origin=EXCHANGE_SYNC`, `continuityState=RECOVERED_UNACTIONABLE`, and
+    `syncState=DRIFT`. Actionability remains fail-closed because runtime
+    serialization still requires `continuityState=CONFIRMED` plus bot and
+    strategy context before automation can act. No ownership proof, exchange,
+    DB schema, Web, or live-money behavior changed. Validation PASS: focused
+    runtime takeover e2e (`4/4`), focused import/ownership/takeover pack
+    (`45/45`), API typecheck, repository guardrails. Evidence:
+    `docs/planning/fullarch-fix-01-recovered-imported-position-visibility-task-2026-05-07.md`.
+
+- [x] `FULLARCH-AUDIT-2026-05-07 research(system): audit V1 functions against architecture`
+  - Scope: mapped product/architecture-declared V1 functions across auth,
+    profile/API keys, wallets/capital, markets/symbol scopes, strategies,
+    bots/topology, runtime signal and pre-trade, order/position lifecycle,
+    live import/takeover, exchange adapters, market stream, backtests,
+    reports/logs, dashboard/bot monitoring, i18n/UI states, admin/subscription
+    scope, assistant runtime, security/isolation, deployment/workers, and
+    mobile scaffold status. Validation: root typecheck PASS, root lint PASS,
+    full test command FAIL with classified issues: one confirmed API runtime
+    takeover visibility regression and broad Web harness failures around
+    `next/navigation.usePathname` mocks plus dashboard timeouts. Evidence:
+    `docs/planning/full-architecture-conformance-audit-task-2026-05-07.md`.
+
+- [x] `LIVEIMPORT-AUDIT-2026-05-07 research(api-runtime): audit exchange import against bot ownership architecture`
+  - Scope: reviewed architecture and implementation from exchange snapshot
+    normalization through live reconciliation, exact external ownership,
+    canonical symbol scope, and bot runtime position readback. Found one
+    confirmed contract regression: recovered imported LIVE positions with
+    `RECOVERED_UNACTIONABLE`/`DRIFT` are hidden from the bot runtime positions
+    endpoint even though architecture and e2e expectations require them to be
+    visible but non-actionable. Ranked likely causes for the reported one-of-six
+    import symptom and defined the next repair slice: visibility fix,
+    six-position DB-backed import/readback regression, per-symbol diagnostics,
+    and Binance futures normalization coverage. Validation: focused API pack
+    produced `44 passed, 1 failed`, with the failing test matching the
+    recovered-position visibility mismatch. Evidence:
+    `docs/planning/live-import-runtime-architecture-audit-task-2026-05-07.md`.
+
+- [x] `AOS-STATE-2026-05-07 docs(agent-os): sync continuation state to production readback queue`
+  - Scope: synchronized `.agents/state/*` after the agent operating system
+    foundation so future short-nudge runs see the actual active blocker:
+    `LIVEIMPORT-03` requires authenticated read-only production ETH/DOGE
+    runtime readback, and `BOTMULTI-09` still requires protected runtime and V1
+    gate evidence. No runtime, API, DB, deployment, or UI behavior changed.
+    Validation PASS: queue scan with PowerShell fallback after known local
+    `rg` access failure, environment-variable name scan confirming no
+    production auth material in this shell, repository guardrails, and
+    `git diff --check`. Evidence:
+    `docs/planning/agent-state-production-readback-sync-task-2026-05-07.md`.
+
 - [x] `AOS-2026-05-07 docs(agent-os): establish autonomous agent operating system`
   - Scope: created `.agents/core/operating-system.md`,
     `.agents/core/execution-loop.md`, `.agents/core/anti-regression.md`, and

@@ -4,8 +4,61 @@ Last updated: 2026-05-07
 
 ## Active Issues
 
-No new product/runtime defect was introduced by the agent operating system
-slice.
+- `FULLARCH-FIX-01` fixed the confirmed bot runtime visibility regression for
+  recovered imported LIVE positions with
+  `continuityState=RECOVERED_UNACTIONABLE` and `syncState=DRIFT`. Remaining
+  live-import risk is now per-symbol diagnostics and authenticated production
+  readback.
+- `FULLARCH-FIX-02` added local DB-backed evidence that the approved happy path
+  imports six exchange positions into six selected-bot visible runtime
+  positions when all six symbols are inside canonical bot ownership scope.
+- `FULLARCH-FIX-03` added structured per-symbol reconciliation diagnostics.
+  Remaining live-import risk is authenticated production readback and, if
+  needed, Web/operator presentation of those diagnostics.
+- `FULLARCH-FIX-04` repaired broad Web test harness drift around local
+  `next/navigation` mocks missing `usePathname`; full Web tests are green
+  again (`145/145` files, `482/482` tests).
+- `FULLARCH-FIX-05` repaired the API e2e root-suite blockers around bot
+  market-group creation, single-active-scope fixtures, manual LIVE
+  exchange-synced open-order wallet proof, and stale DB cleanup. Root workspace
+  tests are green again (`api 174/174 files, 1163/1163 tests`; `web 145/145
+  files, 482/482 tests`).
+- `FULLARCH-FIX-06` closed the remaining local Binance futures snapshot
+  normalization coverage gap. Signed `positionAmt` now normalizes to positive
+  `contracts`, `positionSide=BOTH` derives one-way side from amount sign, and
+  explicit adapter side remains highest-priority truth.
+- `FULLARCH-FIX-07` closed the local post-repair runtime validation follow-up:
+  focused runtime signal, pre-trade/risk, order lifecycle, exchange events,
+  imported-position DCA visibility, takeover readback, and position automation
+  suites passed (`16/16` files, `240/240` tests).
+- `FULLARCH-FIX-08` closed the local security/isolation release-gate follow-up:
+  focused auth/session, trusted origin, rate limit, security headers,
+  API-key/profile/admin/subscription/upload, bot entitlement, and
+  cross-module data-isolation suites passed (`18/18` files, `87/87` tests).
+- `FULLARCH-FIX-09` closed focused local API+Web evidence for strategy,
+  backtests, reports, and logs/audit trail after the Web harness repair: API
+  pack passed (`12/12` files, `92/92` tests) and Web pack passed (`21/21`
+  files, `49/49` tests).
+- `FULLARCH-FIX-10` closed focused local API+Web evidence for market stream
+  and dashboard/bot monitoring after the Web harness repair: API pack passed
+  (`9/9` files, `63/63` tests) and Web pack passed (`19/19` files, `79/79`
+  tests).
+- `FULLARCH-FIX-11` closed focused local API+Web evidence for wallet/capital,
+  market universe, and bot topology configuration paths that support
+  exchange-position import and selected-bot runtime scope: API pack passed
+  (`11/11` files, `80/80` tests) and Web pack passed (`21/21` files, `49/49`
+  tests).
+- Operator-reported one-of-six live position import is most likely an exact
+  ownership/symbol-scope mismatch until production readback proves otherwise:
+  only positions matching `apiKeyId + marketType + symbol` for one active,
+  opted-in, wallet-backed bot with `manageExternalPositions=true` can become
+  bot-managed.
+- `LIVEIMPORT-03` remains open because authenticated read-only production
+  runtime positions readback for the reported LIVE ETH/DOGE rows has not been
+  captured on current production `main` (`6a7c9889` or later).
+- `BOTMULTI-09` remains open for protected runtime readback and broader V1
+  release gate evidence, even though public build-info now contains the
+  original BOTMULTI candidate.
 
 ## Known Environment Pitfalls
 
@@ -26,3 +79,5 @@ slice.
   where shared semantics exist.
 - Operator-visible UI should stay production-grade and avoid debug-looking
   badges or invented fallback truth.
+- Production release evidence tasks that need credentials must not be marked
+  done from public health/build-info checks or local regression packs alone.

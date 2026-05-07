@@ -32,6 +32,84 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-07: Closed `PLAN-SWEEP-2026-05-07` with
+  `docs/planning/planning-status-sweep-after-local-audit-gates-task-2026-05-07.md`.
+  Active planning was swept after `LIVEIMPORT-03` remained blocked by missing
+  production read-only auth. The sweep synchronized this progress log with
+  the already-closed local audit gates and confirmed no further local
+  executable NOW task is available before authenticated production readback.
+- 2026-05-07: Closed `LIVEIMPORT-03-PREQ-2026-05-07` with
+  `docs/planning/liveimport-03-production-readback-prerequisite-sweep-task-2026-05-07.md`.
+  After local audit gates closed through `FULLARCH-FIX-11`, a names-only
+  environment scan still found no production admin token, operator login, ops
+  basic auth, bearer/session cookie, or Soar production auth variable name in
+  this shell. `LIVEIMPORT-03` remains open for authenticated read-only
+  redacted ETH/DOGE runtime positions evidence.
+- 2026-05-07: Closed `FULLARCH-FIX-11` with
+  `docs/planning/fullarch-fix-11-wallet-market-bot-topology-gate-task-2026-05-07.md`.
+  Focused local API+Web evidence passed for wallet/capital handling, market
+  universe scope, bot create/edit/list behavior, single active bot market
+  scope, multi-strategy links, subscription entitlements, and the UI
+  forms/tables that configure those contracts (`11/11` API files, `80/80`
+  tests; `21/21` Web files, `49/49` tests).
+- 2026-05-07: Closed `FULLARCH-FIX-10` with
+  `docs/planning/fullarch-fix-10-market-dashboard-monitoring-gate-task-2026-05-07.md`.
+  Focused local API+Web evidence passed for market stream
+  ingestion/fanout/route contracts and dashboard/bot monitoring surfaces
+  (`9/9` API files, `63/63` tests; `19/19` Web files, `79/79` tests).
+- 2026-05-07: Closed `FULLARCH-FIX-09` with
+  `docs/planning/fullarch-fix-09-strategy-backtest-reports-logs-gate-task-2026-05-07.md`.
+  Focused local API+Web evidence passed for strategy/indicator parity,
+  backtest execution and replay, reports, and logs/audit trail (`12/12` API
+  files, `92/92` tests; `21/21` Web files, `49/49` tests).
+- 2026-05-07: Closed `FULLARCH-FIX-08` with
+  `docs/planning/fullarch-fix-08-security-isolation-release-gate-task-2026-05-07.md`.
+  Focused local API security/isolation release-gate evidence passed across
+  rate limiting, auth/session, trusted origin, security headers, API-key
+  ownership/encryption, profile security, subscription/admin authorization,
+  upload, bot entitlements, and cross-module user-data isolation (`18/18`
+  files, `87/87` tests).
+- 2026-05-07: Closed `FULLARCH-AUDIT-SYNC-2026-05-07` with
+  `docs/planning/fullarch-audit-repair-queue-sync-task-2026-05-07.md`. The
+  full architecture conformance audit report now reflects the actual completed
+  local repair chain (`FULLARCH-FIX-01..07`) and points the remaining release
+  work to authenticated `LIVEIMPORT-03` production readback followed by
+  `BOTMULTI-09`, avoiding stale repair numbering.
+- 2026-05-07: Closed `FULLARCH-FIX-07` with
+  `docs/planning/fullarch-fix-07-runtime-repair-closure-validation-task-2026-05-07.md`.
+  The post-repair focused runtime validation pack passed sequentially across
+  runtime signal merge/final-candle/loop, pre-trade/risk gates, execution
+  orchestration, exchange events, order and position lifecycle,
+  imported-position DCA visibility, takeover readback, and position automation
+  (`16/16` files, `240/240` tests).
+- 2026-05-07: Closed `FULLARCH-FIX-06` with
+  `docs/planning/fullarch-fix-06-binance-futures-position-normalization-task-2026-05-07.md`.
+  Binance futures snapshots now normalize signed `positionAmt` into positive
+  `contracts`, derive one-way side from `positionSide=BOTH` plus amount sign,
+  and preserve explicit adapter side truth; focused import/reconciliation
+  validation remains green.
+- 2026-05-07: Closed `FULLARCH-FIX-05` with
+  `docs/planning/fullarch-fix-05-api-single-active-bot-scope-task-2026-05-07.md`.
+  API bot market-group writes now return a controlled `409` for a second
+  enabled `ACTIVE` market scope, stale e2e fixtures match the post-V1
+  single-active-scope/multi-strategy topology, and root workspace tests are
+  green (`api 174/174 files, 1163/1163 tests; web 145/145 files, 482/482
+  tests`).
+- 2026-05-07: Closed `FULLARCH-FIX-04` with
+  `docs/planning/fullarch-fix-04-web-navigation-mock-harness-task-2026-05-07.md`.
+  Broad Web test harness drift is repaired: local `next/navigation` mocks now
+  expose `usePathname` for `I18nProvider`, and the full Web suite is green
+  again (`145/145` files, `482/482` tests) with Web typecheck passing. Root
+  workspace tests now proceed past Web and expose remaining API e2e blockers
+  around bot market-group creation/unique `botId` constraints, manual LIVE
+  exchange-synced open-order visibility, and stale DB cleanup FK residue.
+- 2026-05-07: Closed `AOS-STATE-2026-05-07` with
+  `docs/planning/agent-state-production-readback-sync-task-2026-05-07.md`.
+  The continuation state now reflects the actual active queue blocker:
+  `LIVEIMPORT-03` needs authenticated read-only ETH/DOGE production runtime
+  readback on current main, while `BOTMULTI-09` remains the next protected
+  runtime/V1 gate evidence item. No runtime, API, DB, deployment, or UI
+  behavior changed.
 - 2026-05-07: Closed `AOS-2026-05-07` with
   `docs/planning/agent-operating-system-task-2026-05-07.md`. The repository
   now has a durable `.agents/core` operating system, 15-step execution loop,

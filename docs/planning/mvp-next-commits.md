@@ -7,6 +7,108 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `PLAN-SWEEP-2026-05-07 release: sync planning status after local audit gates`
+  - 2026-05-07: Swept active planning after `LIVEIMPORT-03` remained blocked
+    by missing production read-only auth. Synchronized the top
+    `mvp-execution-plan.md` progress log with local audit closure through
+    `FULLARCH-FIX-11` and the production-readback prerequisite sweep. No
+    runtime, API, DB, Web, deployment, exchange, or live-money behavior
+    changed. Evidence:
+    `docs/planning/planning-status-sweep-after-local-audit-gates-task-2026-05-07.md`.
+- [x] `LIVEIMPORT-03-PREQ-2026-05-07 release: recheck production readback prerequisites`
+  - 2026-05-07: Rechecked whether this shell can execute the remaining
+    authenticated read-only production runtime readback after local audit gates
+    closed through `FULLARCH-FIX-11`. Names-only environment scan returned only
+    `FIGMA_OAUTH_TOKEN` and `STITCH_API_KEY`; no production admin token,
+    operator login, ops basic auth, bearer/session cookie, or Soar production
+    auth variable name is present. `LIVEIMPORT-03` remains open and must not be
+    downgraded to local tests or public health/build-info evidence. Evidence:
+    `docs/planning/liveimport-03-production-readback-prerequisite-sweep-task-2026-05-07.md`.
+- [x] `FULLARCH-FIX-11 test(api-web): validate wallet market bot topology gate`
+  - 2026-05-07: Closed a BUILDER-mode local API+Web release evidence slice for
+    wallet/capital handling, market universe scope, bot create/edit/list
+    behavior, single active bot market scope, multi-strategy links,
+    subscription entitlements, and UI forms/tables that configure those
+    contracts. Validation PASS: API pack (`11/11` files, `80/80` tests) and
+    Web pack (`21/21` files, `49/49` tests). Evidence:
+    `docs/planning/fullarch-fix-11-wallet-market-bot-topology-gate-task-2026-05-07.md`.
+- [x] `FULLARCH-FIX-10 test(api-web): validate market stream dashboard monitoring gate`
+  - 2026-05-07: Closed an ARCHITECT-mode local API+Web release evidence slice
+    for market stream ingestion/fanout/routes and dashboard/bot monitoring
+    surfaces after the Web navigation mock harness repair. Validation PASS:
+    API pack (`9/9` files, `63/63` tests) and Web pack (`19/19` files,
+    `79/79` tests). Evidence:
+    `docs/planning/fullarch-fix-10-market-dashboard-monitoring-gate-task-2026-05-07.md`.
+- [x] `FULLARCH-FIX-09 test(api-web): validate strategy backtest reports logs gate`
+  - 2026-05-07: Closed a BUILDER-mode local API+Web release evidence slice for
+    strategy/indicator parity, backtest execution/replay, reports, and
+    logs/audit trail after the Web navigation mock harness repair. Validation
+    PASS: API pack (`12/12` files, `92/92` tests) and Web pack (`21/21` files,
+    `49/49` tests). Evidence:
+    `docs/planning/fullarch-fix-09-strategy-backtest-reports-logs-gate-task-2026-05-07.md`.
+- [x] `FULLARCH-FIX-08 test(api-security): validate local security and isolation release gate`
+  - 2026-05-07: Closed a TESTER-mode local security/isolation release-gate
+    evidence slice after the full architecture repair chain. The focused
+    sequential API pack covered rate limiting, auth/session, trusted origin,
+    security headers, API-key ownership/encryption, profile security,
+    subscription/admin authorization, upload, bot entitlements, and
+    cross-module user-data isolation. Validation PASS: `18/18` files and
+    `87/87` tests with test-only API-key encryption env. Evidence:
+    `docs/planning/fullarch-fix-08-security-isolation-release-gate-task-2026-05-07.md`.
+- [x] `FULLARCH-FIX-07 test(api-runtime): validate runtime repair closure pack after import fixes`
+  - 2026-05-07: Closed an ARCHITECT-mode validation-only slice after the
+    import/readback/normalization repairs. The focused sequential API pack
+    covered runtime signal merge/final-candle/loop, pre-trade and risk gates,
+    execution orchestration, exchange events, order and position lifecycle,
+    imported-position DCA visibility, takeover readback, and position
+    automation. Validation PASS: `16/16` files and `240/240` tests. Evidence:
+    `docs/planning/fullarch-fix-07-runtime-repair-closure-validation-task-2026-05-07.md`.
+- [x] `FULLARCH-FIX-06 fix(api-positions): lock Binance futures position snapshot normalization`
+  - 2026-05-07: Closed a BUILDER-mode local live-import hardening slice. The
+    exchange snapshot normalizer now converts signed Binance futures
+    `positionAmt` into positive `contracts`, derives one-way side from
+    `positionSide=BOTH` plus amount sign, and preserves explicit adapter
+    `position.side` as highest-priority truth. Validation PASS: pre-fix
+    normalizer regression failed as expected (`3 failed`), normalizer suite
+    (`5/5`), focused import/reconciliation/takeover pack (`42/42`), and API
+    typecheck. Evidence:
+    `docs/planning/fullarch-fix-06-binance-futures-position-normalization-task-2026-05-07.md`.
+- [x] `FULLARCH-FIX-05 fix(api-bots): close single active bot scope root-suite failures`
+  - 2026-05-07: Closed a BUILDER-mode API root-suite repair slice. Bot
+    market-group writes now fail closed with a controlled `409` when a request
+    would create or activate a second enabled `ACTIVE` market scope for the
+    same bot. Stale API e2e fixtures now match the approved post-V1 topology:
+    one active bot market scope with multiple ordered strategy links. Manual
+    order fixtures now include wallet ownership proof for exchange-synced LIVE
+    open orders and clean backtest rows before user cleanup. Validation PASS:
+    focused API blocker pack (`6/6` files, `59/59` tests), API typecheck, root
+    workspace tests (`api 174/174 files, 1163/1163 tests; web 145/145 files,
+    482/482 tests`), lint, guardrails, docs parity, and diff check. Evidence:
+    `docs/planning/fullarch-fix-05-api-single-active-bot-scope-task-2026-05-07.md`.
+- [x] `FULLARCH-FIX-04 fix(web-tests): repair next/navigation mock harness drift`
+  - 2026-05-07: Closed a BUILDER-mode Web test harness repair slice. Local
+    Web tests that mock `next/navigation` now expose the `usePathname`
+    contract required by `I18nProvider`, matching the global Vitest setup and
+    restoring trustworthy Web regression evidence. No production Web, API, DB,
+    exchange, deployment, or live-money behavior changed. Validation PASS:
+    focused route/form harness pack (`13/13` files, `22/22` tests), full Web
+    test suite (`145/145` files, `482/482` tests), Web typecheck, and local
+    mock scan. Root workspace tests now proceed past Web and expose remaining
+    API e2e blockers around bot market-group creation/unique `botId`
+    constraints, manual LIVE exchange-synced open-order visibility, and stale
+    DB cleanup FK residue. Evidence:
+    `docs/planning/fullarch-fix-04-web-navigation-mock-harness-task-2026-05-07.md`.
+- [x] `AOS-STATE-2026-05-07 docs(agent-os): sync continuation state to production readback queue`
+  - 2026-05-07: Closed a TESTER-mode docs/state synchronization slice after
+    the first open queue task proved blocked by missing authenticated
+    production access in this shell. `.agents/state/*` now points future
+    continuations to `LIVEIMPORT-03` authenticated read-only ETH/DOGE runtime
+    readback on current production `main`, keeps `BOTMULTI-09` as the next
+    protected runtime/readiness evidence item, and explicitly forbids treating
+    public health/build-info checks or local regression packs as completion
+    evidence for those production readbacks. No runtime, API, DB, deployment,
+    or UI behavior changed. Evidence:
+    `docs/planning/agent-state-production-readback-sync-task-2026-05-07.md`.
 - [x] `AOS-2026-05-07 docs(agent-os): establish autonomous agent operating system`
   - 2026-05-07: Closed the requested agent operating system foundation.
     `.agents/core` now defines operating behavior, the 15-step execution loop,

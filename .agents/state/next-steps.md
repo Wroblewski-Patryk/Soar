@@ -4,17 +4,24 @@ Last updated: 2026-05-07
 
 ## Next Tiny Task
 
-After this slice, the next autonomous continuation should return to the active
-V1 runtime/UI queue and execute exactly one READY or IN_PROGRESS task from
-`docs/planning/mvp-next-commits.md` and `.codex/context/TASK_BOARD.md`.
+Run `LIVEIMPORT-03` with authenticated read-only production access and capture
+redacted ETH/DOGE runtime positions evidence on current production `main`
+(`6a7c9889` or later). Evidence must cover ownership, `strategyId` or
+single-strategy provenance recovery, TTP visibility, actionable state, and
+import completeness across assigned bot markets. Do not run live-money or
+destructive production actions.
 
 ## Candidate Backlog
 
-1. Verify and sync any drift between `.agents/state/*`,
-   `.codex/context/TASK_BOARD.md`, and `docs/planning/mvp-next-commits.md`.
-2. Continue the first executable V1UI/LIVE/PAPER runtime follow-up from the
-   active queue.
-3. If the active queue is empty, run a planning-status sweep before saying
+1. If production credentials or ops auth are available, execute
+   `LIVEIMPORT-03` readback and record redacted evidence. The latest
+   names-only prerequisite sweep after `FULLARCH-FIX-11` found no production
+   auth variable names in this shell.
+2. If authenticated readback remains unavailable, keep `LIVEIMPORT-03` open and
+   do not downgrade it to public health/build-info evidence.
+3. After `LIVEIMPORT-03`, continue `BOTMULTI-09` protected runtime readback and
+   broader V1 release gate evidence.
+4. If the active queue is empty, run a planning-status sweep before saying
    nothing is planned.
 
 ## Continuation Command Handling
