@@ -39,6 +39,13 @@ export const createBotMarketGroup = async (
   data: CreateBotMarketGroupDto
 ) => {
   await validateSymbolGroupForBot({ userId, botId, symbolGroupId: data.symbolGroupId });
+  if (data.isEnabled && data.lifecycleStatus === 'ACTIVE') {
+    const activeGroup = await prisma.botMarketGroup.findFirst({
+      where: { userId, botId, isEnabled: true, lifecycleStatus: 'ACTIVE' },
+      select: { id: true },
+    });
+    if (activeGroup) throw botErrors.activeBotMarketGroupDuplicate();
+  }
 
   return prisma.botMarketGroup.create({
     data: {
@@ -64,6 +71,21 @@ export const updateBotMarketGroup = async (
 
   if (data.symbolGroupId) {
     await validateSymbolGroupForBot({ userId, botId, symbolGroupId: data.symbolGroupId });
+  }
+  const nextIsEnabled = data.isEnabled ?? existing.isEnabled;
+  const nextLifecycleStatus = data.lifecycleStatus ?? existing.lifecycleStatus;
+  if (nextIsEnabled && nextLifecycleStatus === 'ACTIVE') {
+    const activeGroup = await prisma.botMarketGroup.findFirst({
+      where: {
+        userId,
+        botId,
+        isEnabled: true,
+        lifecycleStatus: 'ACTIVE',
+        id: { not: existing.id },
+      },
+      select: { id: true },
+    });
+    if (activeGroup) throw botErrors.activeBotMarketGroupDuplicate();
   }
 
   return prisma.botMarketGroup.update({

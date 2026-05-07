@@ -142,6 +142,9 @@ const handleBotMarketGroupError = (res: Response, error: unknown) => {
       mapped.details
     );
   }
+  if (mapped.code === BOT_ERROR_CODES.activeBotMarketGroupDuplicate) {
+    return sendError(res, 409, 'bot already has an active market group', mapped.details);
+  }
 
   return sendError(res, mapped.status, mapped.message, mapped.details);
 };

@@ -13,6 +13,7 @@ export const BOT_ERROR_CODES = {
   botMarketGroupMarketTypeMismatch: 'BOT_MARKET_GROUP_MARKET_TYPE_MISMATCH',
   botMarketGroupExchangeMismatch: 'BOT_MARKET_GROUP_EXCHANGE_MISMATCH',
   botMarketGroupNotFound: 'BOT_MARKET_GROUP_NOT_FOUND',
+  activeBotMarketGroupDuplicate: 'ACTIVE_BOT_MARKET_GROUP_DUPLICATE',
   marketGroupStrategyAlreadyAttached: 'MARKET_GROUP_STRATEGY_ALREADY_ATTACHED',
   marketGroupStrategyLinkNotFound: 'MARKET_GROUP_STRATEGY_LINK_NOT_FOUND',
   subagentSlotOutOfRange: 'SUBAGENT_SLOT_OUT_OF_RANGE',
@@ -54,6 +55,8 @@ export const botErrors = {
   botMarketGroupExchangeMismatch: () =>
     new BotDomainError(BOT_ERROR_CODES.botMarketGroupExchangeMismatch, 400),
   botMarketGroupNotFound: () => new BotDomainError(BOT_ERROR_CODES.botMarketGroupNotFound, 404),
+  activeBotMarketGroupDuplicate: () =>
+    new BotDomainError(BOT_ERROR_CODES.activeBotMarketGroupDuplicate, 409),
   marketGroupStrategyAlreadyAttached: () =>
     new BotDomainError(BOT_ERROR_CODES.marketGroupStrategyAlreadyAttached, 409),
   marketGroupStrategyLinkNotFound: () =>

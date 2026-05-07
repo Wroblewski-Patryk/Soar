@@ -870,10 +870,19 @@ describe('Bots module contract', () => {
       executionOrder: 10,
       isEnabled: true,
     });
-    expect(createGroupRes.status).toBe(201);
-    expect(createGroupRes.body.botId).toBe(botId);
-    expect(createGroupRes.body.symbolGroupId).toBe(symbolGroup.id);
-    const groupId = createGroupRes.body.id as string;
+    expect(createGroupRes.status).toBe(409);
+    expect(createGroupRes.body.error.message).toBe('bot already has an active market group');
+
+    const pausedGroupRes = await owner.post(`/dashboard/bots/${botId}/market-groups`).send({
+      symbolGroupId: symbolGroup.id,
+      lifecycleStatus: 'PAUSED',
+      executionOrder: 10,
+      isEnabled: false,
+    });
+    expect(pausedGroupRes.status).toBe(201);
+    expect(pausedGroupRes.body.botId).toBe(botId);
+    expect(pausedGroupRes.body.symbolGroupId).toBe(symbolGroup.id);
+    const groupId = pausedGroupRes.body.id as string;
 
     const listRes = await owner.get(`/dashboard/bots/${botId}/market-groups`);
     expect(listRes.status).toBe(200);
@@ -957,6 +966,8 @@ describe('Bots module contract', () => {
 
     const createGroupRes = await owner.post(`/dashboard/bots/${botId}/market-groups`).send({
       symbolGroupId: symbolGroup.id,
+      lifecycleStatus: 'PAUSED',
+      isEnabled: false,
     });
     expect(createGroupRes.status).toBe(201);
     const groupId = createGroupRes.body.id as string;
@@ -1015,7 +1026,6 @@ describe('Bots module contract', () => {
     const ownerEmail = 'bot-runtime-graph-owner@example.com';
     const owner = await registerAndLogin(ownerEmail);
     const other = await registerAndLogin('bot-runtime-graph-other@example.com');
-    const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
 
     const strategyRes = await owner.post('/dashboard/strategies').send({
       name: 'Runtime Graph Strategy',
@@ -1033,39 +1043,6 @@ describe('Bots module contract', () => {
     });
     expect(botRes.status).toBe(201);
     const botId = botRes.body.id as string;
-
-    const marketUniverse = await prisma.marketUniverse.create({
-      data: {
-        userId: ownerUser.id,
-        name: 'Runtime Graph Universe',
-        marketType: 'FUTURES',
-        baseCurrency: 'USDT',
-        whitelist: [],
-        blacklist: [],
-      },
-    });
-    const symbolGroup = await prisma.symbolGroup.create({
-      data: {
-        userId: ownerUser.id,
-        marketUniverseId: marketUniverse.id,
-        name: 'Runtime Graph Group',
-        symbols: ['BTCUSDT'],
-      },
-    });
-
-    const createGroupRes = await owner.post(`/dashboard/bots/${botId}/market-groups`).send({
-      symbolGroupId: symbolGroup.id,
-      executionOrder: 1,
-    });
-    expect(createGroupRes.status).toBe(201);
-    const groupId = createGroupRes.body.id as string;
-
-    const attachRes = await owner.post(`/dashboard/bots/${botId}/market-groups/${groupId}/strategies`).send({
-      strategyId: strategyRes.body.id,
-      priority: 15,
-      weight: 1,
-    });
-    expect(attachRes.status).toBe(201);
 
     const graphRes = await owner.get(`/dashboard/bots/${botId}/runtime-graph`);
     expect(graphRes.status).toBe(200);

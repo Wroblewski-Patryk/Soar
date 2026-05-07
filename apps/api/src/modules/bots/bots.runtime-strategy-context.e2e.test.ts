@@ -181,14 +181,6 @@ describe('Bots runtime strategy context contract', () => {
         symbols: ['ETHUSDT'],
       },
     });
-    const basicGroup = await prisma.symbolGroup.create({
-      data: {
-        userId: ownerUser.id,
-        marketUniverseId: universe.id,
-        name: 'Symbol Level Basic Group',
-        symbols: ['BTCUSDT'],
-      },
-    });
     const liveWallet = await prisma.wallet.create({
       data: {
         userId: ownerUser.id,
@@ -226,17 +218,6 @@ describe('Bots runtime strategy context contract', () => {
         isEnabled: true,
       },
     });
-    const basicBotMarketGroup = await prisma.botMarketGroup.create({
-      data: {
-        userId: ownerUser.id,
-        botId: bot.id,
-        symbolGroupId: basicGroup.id,
-        lifecycleStatus: 'ACTIVE',
-        executionOrder: 2,
-        maxOpenPositions: 2,
-        isEnabled: true,
-      },
-    });
     await prisma.marketGroupStrategyLink.createMany({
       data: [
         {
@@ -251,9 +232,9 @@ describe('Bots runtime strategy context contract', () => {
         {
           userId: ownerUser.id,
           botId: bot.id,
-          botMarketGroupId: basicBotMarketGroup.id,
+          botMarketGroupId: advancedBotMarketGroup.id,
           strategyId: basicStrategyId,
-          priority: 1,
+          priority: 2,
           weight: 1,
           isEnabled: true,
         },

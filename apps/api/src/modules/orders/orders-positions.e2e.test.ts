@@ -367,22 +367,6 @@ describe('Orders and positions read contract', () => {
       },
     });
 
-    const strategyFallback = await prisma.strategy.create({
-      data: {
-        userId: ownerId,
-        name: 'Manual Context Fallback Strategy',
-        interval: '5m',
-        leverage: 3,
-        walletRisk: 1,
-        config: {
-          additional: {
-            marginMode: 'CROSSED',
-            orderType: 'LIMIT',
-          },
-        },
-      },
-    });
-
     const contractUniverse = await prisma.marketUniverse.create({
       data: {
         userId: ownerId,
@@ -399,33 +383,12 @@ describe('Orders and positions read contract', () => {
       },
     });
 
-    const fallbackUniverse = await prisma.marketUniverse.create({
-      data: {
-        userId: ownerId,
-        name: 'Manual context fallback universe',
-        exchange: 'BINANCE',
-        marketType: 'FUTURES',
-        baseCurrency: 'USDT',
-        whitelist: ['BTCUSDT'],
-        blacklist: [],
-      },
-    });
-
     const contractSymbolGroup = await prisma.symbolGroup.create({
       data: {
         userId: ownerId,
         marketUniverseId: contractUniverse.id,
         name: 'Manual context contract symbols',
         symbols: [],
-      },
-    });
-
-    const fallbackSymbolGroup = await prisma.symbolGroup.create({
-      data: {
-        userId: ownerId,
-        marketUniverseId: fallbackUniverse.id,
-        name: 'Manual context fallback symbols',
-        symbols: ['BTCUSDT'],
       },
     });
 
@@ -453,49 +416,26 @@ describe('Orders and positions read contract', () => {
       },
     });
 
-    const fallbackBotGroup = await prisma.botMarketGroup.create({
+    await prisma.marketGroupStrategyLink.create({
       data: {
         userId: ownerId,
         botId: bot.id,
-        symbolGroupId: fallbackSymbolGroup.id,
-        lifecycleStatus: 'ACTIVE',
-        executionOrder: 2,
-        maxOpenPositions: 4,
+        botMarketGroupId: contractBotGroup.id,
+        strategyId: strategyFromUniverse.id,
+        priority: 1,
+        weight: 1,
         isEnabled: true,
       },
     });
 
-    await prisma.marketGroupStrategyLink.createMany({
-      data: [
-        {
-          userId: ownerId,
-          botId: bot.id,
-          botMarketGroupId: contractBotGroup.id,
-          strategyId: strategyFromUniverse.id,
-          priority: 1,
-          weight: 1,
-          isEnabled: true,
-        },
-        {
-          userId: ownerId,
-          botId: bot.id,
-          botMarketGroupId: fallbackBotGroup.id,
-          strategyId: strategyFallback.id,
-          priority: 1,
-          weight: 1,
-          isEnabled: true,
-        },
-      ],
-    });
-
     const contextRes = await ownerAgent.get('/dashboard/orders/manual-context').query({
       botId: bot.id,
-      symbol: 'BTCUSDT',
+      symbol: 'XRPUSDT',
       side: 'BUY',
     });
 
     expect(contextRes.status).toBe(200);
-    expect(contextRes.body.symbol).toBe('BTCUSDT');
+    expect(contextRes.body.symbol).toBe('XRPUSDT');
     expect(contextRes.body.leverage).toBe(9);
     expect(contextRes.body.orderType).toBe('MARKET');
     expect(contextRes.body.marginMode).toBe('ISOLATED');
@@ -1072,7 +1012,7 @@ describe('Orders and positions read contract', () => {
       data: {
         userId: ownerId,
         botId: null,
-        walletId: null,
+        walletId: liveWallet.id,
         strategyId: null,
         symbol: 'BTCUSDT',
         side: 'BUY',

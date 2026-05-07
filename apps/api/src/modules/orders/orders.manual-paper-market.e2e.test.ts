@@ -16,6 +16,9 @@ const registerAndLogin = async (email: string) => {
 describe('Orders manual PAPER market truth', () => {
   beforeEach(async () => {
     await prisma.log.deleteMany();
+    await prisma.backtestReport.deleteMany();
+    await prisma.backtestTrade.deleteMany();
+    await prisma.backtestRun.deleteMany();
     await prisma.trade.deleteMany();
     await prisma.order.deleteMany();
     await prisma.position.deleteMany();
