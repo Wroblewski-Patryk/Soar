@@ -92,6 +92,9 @@ Out of scope:
 - Open-position status cells expose continuity, actionability, and unresolved
   strategy-context truth from backend runtime payloads so fail-closed rows are
   text-visible on the primary operator surface.
+- Open-position dynamic TTP cells label config-derived fallback protection as
+  prospective, preserving the distinction between backend runtime stop truth
+  and read-model assistance from trailing configuration.
 
 ## 7. Observability and Operations
 - Stores selected bot and table preferences in local storage for operator continuity.

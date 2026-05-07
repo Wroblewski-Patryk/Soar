@@ -287,6 +287,7 @@ export const dashboardHomeEn = {
     "continuityRepairOnlyCleanup": "Repair cleanup",
     "runtimeStateActionBlocked": "Action blocked",
     "runtimeStateStrategyContextUnresolved": "Strategy context unresolved",
+    "prospectiveProtection": "Prospective",
     "mode": "Mode",
     "marketContextTitle": "Market",
     "strategyContextTitle": "Strategy",

@@ -20,6 +20,17 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `V1UI-08 fix(web-runtime): label prospective dashboard TTP protection`
+  - Scope: closed a BUILDER-mode dashboard protection-truth parity slice.
+    Dashboard home open-position TTP cells now label config-derived fallback
+    protection as prospective while keeping backend dynamic TTP as the primary
+    unlabeled runtime stop truth. Validation PASS: focused dashboard runtime
+    derivation and table presenter tests (`13/13`), Web typecheck,
+    route-reachable i18n audit (`findings=0`), Web lint, guardrails, Web build,
+    diff check, and authenticated rendered `/dashboard` smoke with no console
+    errors. Evidence:
+    `docs/planning/v1ui-08-dashboard-prospective-protection-label-task-2026-05-07.md`.
+
 - [x] `V1UI-07 fix(web-runtime): show actionability details in dashboard open positions`
   - Scope: closed a BUILDER-mode dashboard runtime parity slice. Dashboard home
     open-position status cells now render backend `actionable=false` and

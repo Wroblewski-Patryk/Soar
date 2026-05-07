@@ -287,6 +287,7 @@ export const dashboardHomePl = {
     "continuityRepairOnlyCleanup": "Cleanup naprawczy",
     "runtimeStateActionBlocked": "Akcja zablokowana",
     "runtimeStateStrategyContextUnresolved": "Kontekst strategii nierozwiazany",
+    "prospectiveProtection": "Prospektywna",
     "mode": "Tryb",
     "marketContextTitle": "Rynek",
     "strategyContextTitle": "Strategia",

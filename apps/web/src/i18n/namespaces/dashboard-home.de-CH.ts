@@ -287,6 +287,7 @@ export const dashboardHomeDeCh = {
     "continuityRepairOnlyCleanup": "Bereinigung reparieren",
     "runtimeStateActionBlocked": "Aktion blockiert",
     "runtimeStateStrategyContextUnresolved": "Strategiekontext ungeklaert",
+    "prospectiveProtection": "Prospektiv",
     "mode": "Modus",
     "marketContextTitle": "Markt",
     "strategyContextTitle": "Strategie",

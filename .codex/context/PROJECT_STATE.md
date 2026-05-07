@@ -3,6 +3,18 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 dashboard prospective protection Web parity slice `V1UI-08` is
+  closed locally on branch `codex/v1-app-function-check`. `/dashboard`
+  open-position TTP cells now label config-derived fallback protection as
+  prospective while keeping backend dynamic TTP as the primary unlabeled
+  runtime stop truth. Validation PASS: focused dashboard runtime derivation and
+  table presenter tests (`13/13`), Web typecheck, route-reachable i18n audit
+  (`findings=0`), Web lint, repository guardrails, Web build, diff check, and
+  authenticated rendered `/dashboard` smoke with no console errors. Browser
+  plugin validation was blocked by local `node_repl` resolving Node `v22.13.0`
+  while requiring `>= v22.22.0`, so the smoke used bundled Codex Node plus
+  Playwright. Evidence:
+  `docs/planning/v1ui-08-dashboard-prospective-protection-label-task-2026-05-07.md`.
 - 2026-05-07 dashboard home actionability status Web parity slice `V1UI-07`
   is closed locally on branch `codex/v1-app-function-check`. `/dashboard`
   open-position status cells now render backend `actionable=false` and

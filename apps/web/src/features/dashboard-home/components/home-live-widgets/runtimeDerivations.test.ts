@@ -5,6 +5,7 @@ import {
   buildLiveOpenPositions,
   resolveDynamicTslDisplay,
   resolveDynamicTtpDisplay,
+  resolveDynamicTtpDisplaySource,
 } from "./runtimeDerivations";
 
 const dynamicStopRow = {
@@ -65,13 +66,25 @@ describe("runtimeDerivations", () => {
   });
 
   it("prefers backend TTP over fallback TTP in the display resolver", () => {
-    expect(
-      resolveDynamicTtpDisplay({
+    const row = {
         ...dynamicStopRow,
         ttpProtectedPercent: 5,
         fallbackTtpProtectedPercent: 7,
-      })
-    ).toBe(5);
+      };
+
+    expect(resolveDynamicTtpDisplay(row)).toBe(5);
+    expect(resolveDynamicTtpDisplaySource(row)).toBe("backend");
+  });
+
+  it("marks fallback TTP display as prospective protection truth", () => {
+    const row = {
+      ...dynamicStopRow,
+      fallbackTtpProtectedPercent: 7,
+    };
+
+    expect(resolveDynamicTtpDisplay(row)).toBe(7);
+    expect(resolveDynamicTtpDisplaySource(row)).toBe("prospective");
+    expect(resolveDynamicTtpDisplaySource(dynamicStopRow)).toBeNull();
   });
 
   it("uses persisted marginUsed when deriving live pnl percent", () => {

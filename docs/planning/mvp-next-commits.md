@@ -4722,6 +4722,15 @@ Historical carryover snapshot, superseded by the active `NOW` entries above:
 - [x] `PAR-24 fix(web-build): added `public/favicon.ico` asset to prevent Next.js page-data build failure`
 
 ## 2026-05-07 V1 UI Runtime Parity Slice
+- [x] `V1UI-08 fix(web-runtime): label prospective dashboard TTP protection`
+  - Closed the dashboard-home protection-truth labeling gap. `/dashboard`
+    open-position TTP cells now label config-derived fallback protection as
+    prospective while keeping backend dynamic TTP as the primary unlabeled
+    runtime stop truth. Validation PASS: focused dashboard runtime derivation
+    and table presenter tests (`13/13`), Web typecheck, route-reachable i18n
+    audit (`findings=0`), Web lint, guardrails, Web build, diff check, and
+    authenticated rendered `/dashboard` smoke with no console errors.
+
 - [x] `V1UI-07 fix(web-runtime): show actionability details in dashboard open positions`
   - Closed the dashboard-home actionability detail gap. `/dashboard`
     open-position status cells now render backend `actionable=false` and

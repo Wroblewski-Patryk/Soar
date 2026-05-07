@@ -6,7 +6,11 @@ import { TableIconButtonAction } from "@/ui/components/TableUi";
 import type { BotRuntimeTrade } from "@/features/bots/types/bot.type";
 import { renderDcaLadderCell } from "@/features/shared/dcaLadderCell";
 import { resolveRuntimeOpenPositionMarkPriceSourceLabelKey } from "@/features/bots/utils/runtimeOpenPositionDerivations";
-import { resolveDynamicTslDisplay, resolveDynamicTtpDisplay } from "./runtimeDerivations";
+import {
+  resolveDynamicTslDisplay,
+  resolveDynamicTtpDisplay,
+  resolveDynamicTtpDisplaySource,
+} from "./runtimeDerivations";
 import type { HistoryPositionsTableColumn, OpenOrdersTableColumn, OpenPositionWithLive } from "./types";
 import {
   closeInitiatorLabelKey,
@@ -237,7 +241,18 @@ export const createOpenPositionsColumns = ({
         accessor: (row) => resolveDynamicTtpDisplay(row) ?? null,
         render: (row) => {
           const ttpDisplay = resolveDynamicTtpDisplay(row);
-          return ttpDisplay == null ? "-" : formatPercent(ttpDisplay);
+          if (ttpDisplay == null) return "-";
+          const source = resolveDynamicTtpDisplaySource(row);
+          return (
+            <div className="flex flex-col leading-tight">
+              <span>{formatPercent(ttpDisplay)}</span>
+              {source === "prospective" ? (
+                <span className="text-[10px] uppercase tracking-wide opacity-60">
+                  {t("dashboard.home.runtime.prospectiveProtection")}
+                </span>
+              ) : null}
+            </div>
+          );
         },
       },
       {

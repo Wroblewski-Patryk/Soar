@@ -22,6 +22,14 @@ export const resolveUsedMargin = (positions: BotRuntimePositionsResponse | null)
 export const resolveDynamicTtpDisplay = (position: OpenPositionWithLive) =>
   position.ttpProtectedPercent ?? position.fallbackTtpProtectedPercent ?? null;
 
+export const resolveDynamicTtpDisplaySource = (
+  position: OpenPositionWithLive
+): "backend" | "prospective" | null => {
+  if (position.ttpProtectedPercent != null) return "backend";
+  if (position.fallbackTtpProtectedPercent != null) return "prospective";
+  return null;
+};
+
 export const resolveDynamicTslDisplay = (position: OpenPositionWithLive) => {
   if (resolveDynamicTtpDisplay(position) != null) return null;
   return position.tslProtectedPercent ?? null;

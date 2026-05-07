@@ -29,6 +29,14 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-07: Closed `V1UI-08` with
+  `docs/planning/v1ui-08-dashboard-prospective-protection-label-task-2026-05-07.md`.
+  Dashboard home open-position TTP cells now label config-derived fallback
+  protection as prospective while keeping backend dynamic TTP as primary
+  runtime stop truth. Validation PASS: focused dashboard runtime derivation and
+  table presenter tests (`13/13`), Web typecheck, route-reachable i18n audit
+  (`findings=0`), Web lint, repository guardrails, Web build, diff check, and
+  authenticated rendered `/dashboard` smoke with no console errors.
 - 2026-05-07: Closed `V1UI-07` with
   `docs/planning/v1ui-07-dashboard-home-actionability-status-parity-task-2026-05-07.md`.
   Dashboard home open-position status cells now render backend
