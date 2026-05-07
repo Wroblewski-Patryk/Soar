@@ -1871,5 +1871,10 @@ describe("HomeLiveWidgets manual order", () => {
       resolveOrder?.({ id: "submitted-order", status: "OPEN" });
       await Promise.resolve();
     });
+
+    await waitFor(() => {
+      expect(screen.getByTestId("manual-order-action-state")).toHaveTextContent(/Oczekuje|Waiting/i);
+      expect(screen.getByTestId("manual-order-action-state")).toHaveTextContent("submitted-order");
+    });
   });
 });

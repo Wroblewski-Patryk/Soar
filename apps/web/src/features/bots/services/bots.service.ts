@@ -15,6 +15,7 @@ import {
   BotPortfolioHistoryResponse,
   BotRuntimeTradesResponse,
   DashboardManualOrderContext,
+  DashboardManualOrderResponse,
   DashboardManualOrderType,
   BotSubagentConfig,
   CreateBotInput,
@@ -163,8 +164,8 @@ export const openDashboardManualOrder = async (payload: {
   quantity: number;
   price?: number;
   riskAck?: boolean;
-}): Promise<{ id: string; status: string }> => {
-  const res = await api.post<{ id: string; status: string }>("/dashboard/orders/open", payload);
+}): Promise<DashboardManualOrderResponse> => {
+  const res = await api.post<DashboardManualOrderResponse>("/dashboard/orders/open", payload);
   return res.data;
 };
 

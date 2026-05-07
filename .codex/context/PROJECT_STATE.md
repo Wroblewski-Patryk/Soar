@@ -3,8 +3,23 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
-- 2026-05-07 dashboard signal context source parity slice `V1UI-22` is in
-  progress on `main`. BUILDER-mode review found that `SOPR` requires
+- 2026-05-07 dashboard manual-order lifecycle state slice `V1UI-23` is closed
+  on `main`. BUILDER-mode review found that `UOLF` requires manual-order
+  operator-facing states to reflect lifecycle truth from
+  `POST /dashboard/orders/open`, but the Web controller discarded the returned
+  order after submit and relied on a success toast only. Dashboard Home now
+  types and retains the manual-order response, maps `status` plus optional
+  `positionId` into existing localized lifecycle labels, and renders an
+  `aria-live` action-state block in the manual-order sidebar. Stale response
+  truth clears when the operator edits the next manual-order inputs. Focused
+  manual-order, hook, and sidebar tests passed (`22/22`), as did Web
+  typecheck, Web lint, route-reachable i18n audit (`findings=0`), repository
+  guardrails, full workspace build, and authenticated rendered `/dashboard`
+  smoke on desktop and mobile with no console warnings, console errors, or
+  page errors. Evidence:
+  `docs/planning/v1ui-23-dashboard-manual-order-lifecycle-state-task-2026-05-07.md`.
+- 2026-05-07 dashboard signal context source parity slice `V1UI-22` is
+  closed on `main`. BUILDER-mode review found that `SOPR` requires
   Dashboard Home signal cards to expose deterministic context-source tags, but
   the primary signal-card UI did not show them while bot monitoring did. The
   shared Web runtime market-state helper also recognized legacy

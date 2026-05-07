@@ -14,6 +14,7 @@ import {
   getDashboardManualOrderContext,
   openDashboardManualOrder,
 } from "../../bots/services/bots.service";
+import type { DashboardManualOrderResponse } from "../../bots/types/bot.type";
 import type { RuntimeSelectedData, RuntimeSnapshot } from "../components/home-live-widgets/types";
 
 type UseManualOrderControllerArgs = {
@@ -59,6 +60,7 @@ export const useManualOrderController = ({
   } | null>(null);
   const [manualOrderContextLoading, setManualOrderContextLoading] = useState(false);
   const [isSubmittingManualOrder, setIsSubmittingManualOrder] = useState(false);
+  const [manualOrderLastResponse, setManualOrderLastResponse] = useState<DashboardManualOrderResponse | null>(null);
   const manualOrderContextRequestIdRef = useRef(0);
   const previousSelectedBotIdRef = useRef<string | null>(null);
   const selectedVenueContext = useMemo(() => resolveBotVenueContext(selected?.bot), [selected?.bot]);
@@ -121,6 +123,7 @@ export const useManualOrderController = ({
     setManualOrderLastResolvedSymbol(null);
     setManualOrderContext(null);
     setManualOrderContextLoading(false);
+    setManualOrderLastResponse(null);
   }, [selected?.bot.id]);
 
   useEffect(() => {
@@ -340,6 +343,7 @@ export const useManualOrderController = ({
   const handleManualOrderSliderChange = useCallback((nextPercent: number) => {
     const clampedPercent = Math.max(0, Math.min(100, nextPercent));
     setManualOrderSliderPercent(clampedPercent);
+    setManualOrderLastResponse(null);
 
     const minQty = manualOrderMinExecutableQty ?? 0;
     const maxQty = manualOrderSliderMaxQuantity ?? minQty;
@@ -359,11 +363,13 @@ export const useManualOrderController = ({
     setManualOrderPrice(formatQuantityForInput(manualOrderLiveReferencePrice));
     setManualOrderPriceAutofilledSymbol(normalizeSymbol(manualOrderSymbol));
     setManualOrderPriceManuallyEditedSymbol(null);
+    setManualOrderLastResponse(null);
   }, [manualOrderLiveReferencePrice, manualOrderSymbol]);
 
   const handleManualOrderPriceChange = useCallback((price: string) => {
     setManualOrderPrice(price);
     setManualOrderPriceManuallyEditedSymbol(normalizeSymbol(manualOrderSymbol));
+    setManualOrderLastResponse(null);
   }, [manualOrderSymbol]);
 
   const handleManualOrderSymbolChange = useCallback((symbol: string) => {
@@ -372,6 +378,17 @@ export const useManualOrderController = ({
     setManualOrderPrice("");
     setManualOrderPriceAutofilledSymbol(null);
     setManualOrderPriceManuallyEditedSymbol(null);
+    setManualOrderLastResponse(null);
+  }, []);
+
+  const handleManualOrderSideChange = useCallback((side: "BUY" | "SELL") => {
+    setManualOrderSide(side);
+    setManualOrderLastResponse(null);
+  }, []);
+
+  const handleManualOrderQuantityChange = useCallback((quantity: string) => {
+    setManualOrderQuantity(quantity);
+    setManualOrderLastResponse(null);
   }, []);
 
   const manualOrderQuantityValue = useMemo(() => {
@@ -405,6 +422,7 @@ export const useManualOrderController = ({
 
   const handleManualOrderBudgetChange = useCallback((budget: string) => {
     setManualOrderBudget(budget);
+    setManualOrderLastResponse(null);
 
     const parsedBudget = parseOptionalPositivePriceInput(budget);
     if (parsedBudget == null) {
@@ -507,8 +525,9 @@ export const useManualOrderController = ({
     }
 
     setIsSubmittingManualOrder(true);
+    setManualOrderLastResponse(null);
     try {
-      await openDashboardManualOrder({
+      const response = await openDashboardManualOrder({
         botId: selected.bot.id,
         symbol,
         side: manualOrderSide,
@@ -519,6 +538,7 @@ export const useManualOrderController = ({
       });
       toast.success(labels.success);
       setManualOrderQuantity("");
+      setManualOrderLastResponse(response);
       await load({ silent: true });
     } catch (error) {
       toast.error(getAxiosMessage(error) ?? labels.error);
@@ -571,10 +591,13 @@ export const useManualOrderController = ({
     resolvedManualOrderType,
     fillManualOrderPriceFromReference,
     handleManualOrderBudgetChange,
+    handleManualOrderQuantityChange,
     handleManualOrderSliderChange,
     handleManualOrderSymbolChange,
     handleSubmitManualOrder,
     handleManualOrderPriceChange,
+    handleManualOrderSideChange,
+    manualOrderLastResponse,
     setManualOrderQuantity,
     setManualOrderSide,
   };

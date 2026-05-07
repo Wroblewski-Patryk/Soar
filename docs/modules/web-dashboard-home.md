@@ -336,6 +336,14 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
     - `imported from exchange`,
     - `blocked reason`.
   - unresolved fill price must remain fail-closed in waiting state (`waiting for fill`), not as opened position with synthetic zero-entry metrics.
+  - 2026-05-07 implementation note:
+    - Dashboard Home keeps the `POST /dashboard/orders/open` response in the
+      manual-order panel and renders the returned lifecycle state:
+      `OPEN`/`PARTIALLY_FILLED` as waiting or fill progress, `FILLED` as
+      filled, and `FILLED` with `positionId` as position opened.
+    - The state is cleared when the operator edits the next manual-order
+      inputs so stale response truth cannot be confused with a new order
+      draft.
 
 ## 23. Open Orders Source Column and Active-Only Contract (`OOSC`)
 - Open Orders table includes `Source` column with deterministic mapping:

@@ -20,6 +20,20 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `V1UI-23 fix(web-runtime): show dashboard manual-order lifecycle state`
+  - Scope: closed a BUILDER-mode UOLF backend-to-Web parity slice. Dashboard
+    Home now types and retains the `POST /dashboard/orders/open` response in
+    the manual-order controller, maps returned `status` plus optional
+    `positionId` into existing localized lifecycle labels, and renders an
+    `aria-live` action-state block in the manual-order sidebar. Stale response
+    truth clears when the operator edits the next manual-order inputs.
+    Validation PASS: focused manual-order, hook, and sidebar tests (`22/22`),
+    Web typecheck, Web lint, route-reachable i18n audit (`findings=0`),
+    repository guardrails, full workspace build, and authenticated rendered
+    `/dashboard` smoke on desktop and mobile with no console warnings, console
+    errors, or page errors. Evidence:
+    `docs/planning/v1ui-23-dashboard-manual-order-lifecycle-state-task-2026-05-07.md`.
+
 - [x] `V1UI-22 fix(web-runtime): show dashboard signal context source`
   - Scope: closed a BUILDER-mode Dashboard Home signal-source parity slice.
     Dashboard signal cards now render localized context-source badges for

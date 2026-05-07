@@ -162,6 +162,12 @@ export type DashboardManualOrderContext = {
   };
 };
 
+export type DashboardManualOrderResponse = {
+  id: string;
+  status: string;
+  positionId?: string | null;
+};
+
 export type BotRuntimeSessionStatus = "RUNNING" | "COMPLETED" | "FAILED" | "CANCELED";
 
 export type BotRuntimeSessionListItem = {

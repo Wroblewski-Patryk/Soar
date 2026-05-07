@@ -45,6 +45,10 @@ export type RuntimeSidebarSectionProps = {
     sliderMaxLabel: string;
     openLabel: string;
     openingLabel: string;
+    actionStateTitle: string;
+    actionStateLabel: string | null;
+    actionStateDescription: string | null;
+    actionStateOrderId: string | null;
     buyLabel: string;
     sellLabel: string;
     noSymbolsLabel: string;
@@ -740,6 +744,24 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
                   ) : null}
                   {props.manualOrder.isSubmitting ? props.manualOrder.openingLabel : props.manualOrder.openLabel}
                 </button>
+                {props.manualOrder.actionStateLabel ? (
+                  <div
+                    className="rounded-box border border-info/35 bg-info/10 px-2.5 py-2 text-[11px] text-info"
+                    data-testid="manual-order-action-state"
+                    aria-live="polite"
+                  >
+                    <p className="flex items-center justify-between gap-2">
+                      <span className="opacity-75">{props.manualOrder.actionStateTitle}</span>
+                      <span className="font-semibold">{props.manualOrder.actionStateLabel}</span>
+                    </p>
+                    {props.manualOrder.actionStateDescription ? (
+                      <p className="mt-1 leading-4 opacity-80">{props.manualOrder.actionStateDescription}</p>
+                    ) : null}
+                    {props.manualOrder.actionStateOrderId ? (
+                      <p className="mt-1 truncate font-mono text-[10px] opacity-65">{props.manualOrder.actionStateOrderId}</p>
+                    ) : null}
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>

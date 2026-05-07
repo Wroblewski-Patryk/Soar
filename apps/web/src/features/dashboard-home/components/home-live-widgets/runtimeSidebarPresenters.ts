@@ -1,5 +1,6 @@
 import { interpolateTemplate } from "./formatters";
 import { resolveBotVenueContext } from "@/features/bots/utils/runtimeSurfaceTruth";
+import type { DashboardManualOrderResponse } from "@/features/bots/types/bot.type";
 import type { RuntimeSnapshot } from "./types";
 import type { RuntimeSidebarSectionProps } from "./RuntimeSidebarSection";
 
@@ -29,6 +30,7 @@ type BuildManualOrderPresenterArgs = {
   manualOrderMarginEstimate: number | null;
   manualOrderContextLoading: boolean;
   isSubmittingManualOrder: boolean;
+  manualOrderLastResponse: DashboardManualOrderResponse | null;
   manualOrderSymbolOptions: string[];
   manualOrderSymbol: string;
   manualOrderSide: "BUY" | "SELL";
@@ -41,6 +43,51 @@ type BuildManualOrderPresenterArgs = {
   onBudgetChange: (budget: string) => void;
   onSliderChange: (nextPercent: number) => void;
   onSubmit: () => void;
+};
+
+const resolveManualOrderActionState = (
+  response: DashboardManualOrderResponse | null,
+  t: Translate
+): Pick<ManualOrderPresenter, "actionStateLabel" | "actionStateDescription" | "actionStateOrderId"> => {
+  if (!response) {
+    return {
+      actionStateLabel: null,
+      actionStateDescription: null,
+      actionStateOrderId: null,
+    };
+  }
+
+  const status = response.status.toUpperCase();
+  if (status === "FILLED" && response.positionId) {
+    return {
+      actionStateLabel: t("dashboard.home.runtime.manualOrderActionStatePositionOpened"),
+      actionStateDescription: t("dashboard.home.runtime.manualOrderActionDescriptionPositionOpened"),
+      actionStateOrderId: response.id,
+    };
+  }
+  if (status === "FILLED") {
+    return {
+      actionStateLabel: t("dashboard.home.runtime.openOrderStatusFilled"),
+      actionStateDescription: t("dashboard.home.runtime.manualOrderActionDescriptionSubmitted"),
+      actionStateOrderId: response.id,
+    };
+  }
+  if (status === "OPEN" || status === "PARTIALLY_FILLED") {
+    return {
+      actionStateLabel:
+        status === "PARTIALLY_FILLED"
+          ? t("dashboard.home.runtime.openOrderStatusPartiallyFilled")
+          : t("dashboard.home.runtime.manualOrderActionStateWaitingForFill"),
+      actionStateDescription: t("dashboard.home.runtime.manualOrderActionDescriptionWaitingForFill"),
+      actionStateOrderId: response.id,
+    };
+  }
+
+  return {
+    actionStateLabel: t("dashboard.home.runtime.manualOrderActionStateSubmitted"),
+    actionStateDescription: t("dashboard.home.runtime.manualOrderActionDescriptionSubmitted"),
+    actionStateOrderId: response.id,
+  };
 };
 
 export const buildRuntimeSidebarManualOrderPresenter = ({
@@ -62,6 +109,7 @@ export const buildRuntimeSidebarManualOrderPresenter = ({
   manualOrderMarginEstimate,
   manualOrderContextLoading,
   isSubmittingManualOrder,
+  manualOrderLastResponse,
   manualOrderSymbolOptions,
   manualOrderSymbol,
   manualOrderSide,
@@ -76,6 +124,7 @@ export const buildRuntimeSidebarManualOrderPresenter = ({
   onSubmit,
 }: BuildManualOrderPresenterArgs): ManualOrderPresenter => {
   const selectedVenueContext = resolveBotVenueContext(selected?.bot);
+  const actionState = resolveManualOrderActionState(manualOrderLastResponse, t);
 
   return ({
   title: t("dashboard.home.runtime.manualOrderTitle"),
@@ -95,6 +144,10 @@ export const buildRuntimeSidebarManualOrderPresenter = ({
   sliderMaxLabel: t("dashboard.home.runtime.manualOrderSliderMaxLabel"),
   openLabel: manualOrderOpenLabel,
   openingLabel: manualOrderSubmittingLabel,
+  actionStateTitle: t("dashboard.home.runtime.manualOrderActionStateTitle"),
+  actionStateLabel: actionState.actionStateLabel,
+  actionStateDescription: actionState.actionStateDescription,
+  actionStateOrderId: actionState.actionStateOrderId,
   buyLabel: t("dashboard.home.runtime.manualOrderBuyLabel"),
   sellLabel: t("dashboard.home.runtime.manualOrderSellLabel"),
   noSymbolsLabel: t("dashboard.home.runtime.noSignalData"),
