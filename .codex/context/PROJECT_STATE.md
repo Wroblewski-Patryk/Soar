@@ -3,6 +3,19 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 dashboard submitted manual-order state slice `V1UI-25` is closed
+  on `main`. TESTER-mode review found that `UOLF` listed
+  `order submitted` as an operator-facing lifecycle state, but Dashboard Home
+  showed only the disabled `Opening...` button while
+  `POST /dashboard/orders/open` was in flight. The manual-order panel now
+  renders the localized submitted action state during the unresolved request,
+  without a synthetic order id, and still replaces it with response-derived
+  waiting/fill/position state when the API resolves. Focused
+  manual-order/sidebar tests passed (`19/19`), as did Web typecheck, Web lint,
+  route-reachable i18n audit (`findings=0`), repository guardrails, full
+  workspace build, and authenticated rendered `/dashboard` smoke on desktop and
+  mobile with no console warnings, console errors, or page errors. Evidence:
+  `docs/planning/v1ui-25-dashboard-manual-order-submitted-state-task-2026-05-07.md`.
 - 2026-05-07 dashboard open-position fee parity slice `V1UI-24` is closed on
   `main`. ARCHITECT-mode review found that bot monitoring already
   rendered backend `feesPaid` for open positions while Dashboard Home omitted

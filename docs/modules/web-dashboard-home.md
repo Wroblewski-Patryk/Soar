@@ -340,6 +340,9 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
     - `blocked reason`.
   - unresolved fill price must remain fail-closed in waiting state (`waiting for fill`), not as opened position with synthetic zero-entry metrics.
   - 2026-05-07 implementation note:
+    - Dashboard Home renders `order submitted` in the manual-order panel while
+      the `POST /dashboard/orders/open` request is in flight, without showing
+      a synthetic order id before backend persistence is confirmed.
     - Dashboard Home keeps the `POST /dashboard/orders/open` response in the
       manual-order panel and renders the returned lifecycle state:
       `OPEN`/`PARTIALLY_FILLED` as waiting or fill progress, `FILLED` as

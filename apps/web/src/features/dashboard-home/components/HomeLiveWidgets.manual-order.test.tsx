@@ -1865,6 +1865,8 @@ describe("HomeLiveWidgets manual order", () => {
 
     await waitFor(() => {
       expect(screen.getByRole("button", { name: /Otwieranie|Opening/i })).toBeDisabled();
+      expect(screen.getByTestId("manual-order-action-state")).toHaveTextContent(/Wyslane|Submitted/i);
+      expect(screen.getByTestId("manual-order-action-state")).not.toHaveTextContent("submitted-order");
     });
 
     await act(async () => {

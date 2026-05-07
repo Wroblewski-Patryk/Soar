@@ -47,9 +47,17 @@ type BuildManualOrderPresenterArgs = {
 
 const resolveManualOrderActionState = (
   response: DashboardManualOrderResponse | null,
+  isSubmitting: boolean,
   t: Translate
 ): Pick<ManualOrderPresenter, "actionStateLabel" | "actionStateDescription" | "actionStateOrderId"> => {
   if (!response) {
+    if (isSubmitting) {
+      return {
+        actionStateLabel: t("dashboard.home.runtime.manualOrderActionStateSubmitted"),
+        actionStateDescription: t("dashboard.home.runtime.manualOrderActionDescriptionSubmitted"),
+        actionStateOrderId: null,
+      };
+    }
     return {
       actionStateLabel: null,
       actionStateDescription: null,
@@ -124,7 +132,7 @@ export const buildRuntimeSidebarManualOrderPresenter = ({
   onSubmit,
 }: BuildManualOrderPresenterArgs): ManualOrderPresenter => {
   const selectedVenueContext = resolveBotVenueContext(selected?.bot);
-  const actionState = resolveManualOrderActionState(manualOrderLastResponse, t);
+  const actionState = resolveManualOrderActionState(manualOrderLastResponse, isSubmittingManualOrder, t);
 
   return ({
   title: t("dashboard.home.runtime.manualOrderTitle"),

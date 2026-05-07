@@ -9,6 +9,18 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `V1UI-25 fix(web-runtime): show submitted manual-order state`
+  - 2026-05-07: Closed a TESTER-mode UOLF lifecycle visibility slice.
+    Dashboard Home now renders the localized `order submitted` action state in
+    the manual-order panel while `POST /dashboard/orders/open` is in flight,
+    without showing a synthetic order id before backend persistence. The
+    response-derived waiting/fill/position state still takes over after the
+    API resolves. Validation PASS: focused manual-order/sidebar tests
+    (`19/19`), Web typecheck, Web lint, route-reachable i18n audit
+    (`findings=0`), repository guardrails, full workspace build, and
+    authenticated rendered `/dashboard` smoke on desktop and mobile with no
+    console warnings, console errors, or page errors. Evidence:
+    `docs/planning/v1ui-25-dashboard-manual-order-submitted-state-task-2026-05-07.md`.
 - [x] `V1UI-24 fix(web-runtime): show dashboard open-position fees`
   - 2026-05-07: Closed an ARCHITECT-mode Dashboard Home open-position parity
     slice. Open Positions now renders backend `feesPaid` with the existing
