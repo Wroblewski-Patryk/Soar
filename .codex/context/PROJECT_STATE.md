@@ -8,9 +8,12 @@ Last updated: 2026-05-07
   `92955a1cb09f3c473da856369e5f607fbc1fe5a1`. The dispatch was accepted, but
   workflow run `25514453251` and job `74881719926` failed before any steps
   executed. Check-run annotation reports: `The job was not started because
-  your account is locked due to a billing issue.` Production deploy did not
-  start; no Coolify, runtime freshness, rollback guard, DB, exchange, or
-  live-money step executed. Evidence:
+  your account is locked due to a billing issue.` A retry for current `main`
+  at `2b0056c0c08af9ed3c05803c05f18df1b30c0103` produced run `25514674413`
+  and job `74882472170`, which failed with the same annotation and zero
+  executed steps. Production deploy did not start; no Coolify, runtime
+  freshness, rollback guard, DB, exchange, or live-money step executed.
+  Evidence:
   `docs/planning/v1-prod-promote-github-billing-blocker-task-2026-05-07.md`.
 - 2026-05-07 `V1-PROD-PROMOTE-DISPATCH-BLOCKER-2026-05-07` recorded the
   post-push production deploy state. Local and remote `main` are aligned at

@@ -11,10 +11,10 @@ production promote workflow on `main`:
 gh workflow run promote-prod.yml --ref main
 ```
 
-Latest dispatch evidence: `promote-prod.yml` run `25514453251` for
-`92955a1cb09f3c473da856369e5f607fbc1fe5a1` failed before any steps executed
-because GitHub reported: `The job was not started because your account is
-locked due to a billing issue.`
+Latest dispatch evidence: `promote-prod.yml` run `25514674413` for current
+`main` at `2b0056c0c08af9ed3c05803c05f18df1b30c0103` failed before any steps
+executed because GitHub reported: `The job was not started because your account
+is locked due to a billing issue.`
 
 After billing/Actions is restored, wait for production build-info to expose the
 promoted SHA and let the workflow runtime freshness and rollback guard decide
@@ -36,10 +36,10 @@ production auth/access. A no-auth collector attempt failed closed before
 runtime readback, which is the expected safe result.
 
 Post-push check: local `main` is pushed to `origin/main` at
-`92955a1cb09f3c473da856369e5f607fbc1fe5a1`; production still reports
+`2b0056c0c08af9ed3c05803c05f18df1b30c0103`; production still reports
 `21bb52f1...` until `Promote PROD` completes successfully. This shell did
-dispatch the workflow through GitHub API, but GitHub Actions could not start
-the job due to account billing lock.
+dispatch and retry the workflow through GitHub API, but GitHub Actions could
+not start the job due to account billing lock.
 
 Canonical command once auth is available:
 

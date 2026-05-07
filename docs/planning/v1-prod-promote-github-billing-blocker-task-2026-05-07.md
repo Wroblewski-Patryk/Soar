@@ -21,9 +21,10 @@
 
 ## Context
 The official `Promote PROD` workflow was dispatched for `main` at
-`92955a1cb09f3c473da856369e5f607fbc1fe5a1` using GitHub API and local Git
-Credential Manager credentials. GitHub accepted the dispatch, but the workflow
-run failed before any job steps executed.
+`92955a1cb09f3c473da856369e5f607fbc1fe5a1` and retried for current `main` at
+`2b0056c0c08af9ed3c05803c05f18df1b30c0103` using GitHub API and local Git
+Credential Manager credentials. GitHub accepted both dispatches, but the
+workflow runs failed before any job steps executed.
 
 ## Goal
 Record the exact external blocker preventing the approved production deploy
@@ -78,12 +79,20 @@ workflow from starting.
   - Deployment `4612845413` to `production` has status `failure`.
   - Check-run annotations reported:
     `The job was not started because your account is locked due to a billing issue.`
+  - Retry workflow run `25514674413` for SHA
+    `2b0056c0c08af9ed3c05803c05f18df1b30c0103` completed with conclusion
+    `failure`.
+  - Retry job `74882472170` completed with conclusion `failure`, zero executed
+    steps, and the same billing-lock annotation.
 - Manual checks:
   - No token or secret value was written to the console or repository.
   - Production API `/health` and `/ready` were healthy before the dispatch
     blocker was recorded.
-- Screenshots/logs: GitHub run URL:
-  `https://github.com/Wroblewski-Patryk/Soar/actions/runs/25514453251`
+- Screenshots/logs:
+  - GitHub run URL:
+    `https://github.com/Wroblewski-Patryk/Soar/actions/runs/25514453251`
+  - Latest retry run URL:
+    `https://github.com/Wroblewski-Patryk/Soar/actions/runs/25514674413`
 - High-risk checks: approved workflow did not reach any Coolify deploy,
   runtime freshness, rollback guard, DB, exchange, or live-money step.
 
@@ -170,7 +179,8 @@ workflow from starting.
 - [x] Learning journal was updated if a recurring pitfall was confirmed.
 
 ## Result Report
-The production promote workflow was dispatched successfully, but GitHub Actions
-failed the run before any steps started because the account is locked due to a
-billing issue. V1 production promotion is blocked until GitHub billing/Actions
-account status is restored; after that, rerun `Promote PROD` on `main`.
+The production promote workflow was dispatched successfully and retried against
+the current pushed `main`, but GitHub Actions failed both runs before any steps
+started because the account is locked due to a billing issue. V1 production
+promotion is blocked until GitHub billing/Actions account status is restored;
+after that, rerun `Promote PROD` on `main`.

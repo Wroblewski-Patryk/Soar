@@ -12,8 +12,10 @@ Operational queue for one-task execution runs.
     `92955a1cb09f3c473da856369e5f607fbc1fe5a1` without printing credentials.
     GitHub accepted the dispatch, but run `25514453251` failed before any job
     steps executed. Check-run annotation reports: `The job was not started
-    because your account is locked due to a billing issue.` Production deploy
-    did not start. Evidence:
+    because your account is locked due to a billing issue.` Retried dispatch
+    for current `main` at `2b0056c0c08af9ed3c05803c05f18df1b30c0103`; run
+    `25514674413` failed with the same annotation and zero executed steps.
+    Production deploy did not start. Evidence:
     `docs/planning/v1-prod-promote-github-billing-blocker-task-2026-05-07.md`.
 - [x] `V1-PROD-PROMOTE-DISPATCH-BLOCKER-2026-05-07 release: record production promote dispatch blocker`
   - 2026-05-07: Recorded the post-push production state. Local and remote

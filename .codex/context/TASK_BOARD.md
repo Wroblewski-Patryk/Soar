@@ -19,9 +19,11 @@ Last updated: 2026-05-07
 
 - [x] `V1-PROD-PROMOTE-GITHUB-BILLING-BLOCKER-2026-05-07 release: capture GitHub Actions billing blocker`
   - Scope: dispatched the official `Promote PROD` workflow for
-    `92955a1cb09f3c473da856369e5f607fbc1fe5a1` through GitHub API. The run
-    failed before any steps executed because GitHub Actions reported the
-    account is locked due to a billing issue. Evidence:
+    `92955a1cb09f3c473da856369e5f607fbc1fe5a1` through GitHub API, then
+    retried it for current `main` at
+    `2b0056c0c08af9ed3c05803c05f18df1b30c0103`. Both runs failed before any
+    steps executed because GitHub Actions reported the account is locked due to
+    a billing issue. Evidence:
     `docs/planning/v1-prod-promote-github-billing-blocker-task-2026-05-07.md`.
 
 - [x] `V1-PROD-PROMOTE-DISPATCH-BLOCKER-2026-05-07 release: record production promote dispatch blocker`

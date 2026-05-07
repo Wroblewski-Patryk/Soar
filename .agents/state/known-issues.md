@@ -5,12 +5,13 @@ Last updated: 2026-05-07
 ## Active Issues
 
 - `origin/main` is now ahead of production build-info. Local/remote `main` is
-  `92955a1cb09f3c473da856369e5f607fbc1fe5a1`, while production still reports
+  `2b0056c0c08af9ed3c05803c05f18df1b30c0103`, while production still reports
   `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`. This is not an automatic push
   failure: the approved `.github/workflows/promote-prod.yml` path is manual
   `workflow_dispatch`. The latest dispatch succeeded, but GitHub Actions
   failed before starting any job steps because the account is locked due to a
-  billing issue.
+  billing issue. Retry run `25514674413` confirmed the blocker still applies
+  to current `main`.
 - Production deployment freshness initially lagged after the pushed V1 audit
   candidate, but a later build-info wait passed and production now reports
   `1f816362c93e117e47cfe52a35e0fec93bd0b37d`.
