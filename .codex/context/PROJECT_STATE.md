@@ -3,6 +3,22 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 Dashboard Home signal runtime detail slice `V1UI-35` is closed
+  on `main`. TESTER-mode review found that API runtime symbol stats and Web
+  types already expose `lastSignalMessage` and `lastSignalReason`, and Bots
+  Monitoring already renders those fields as runtime detail, but the primary
+  Dashboard Home signal cards hid them. Dashboard Home now renders backend
+  runtime detail using message-first, reason-second precedence and renders no
+  invented fallback when both fields are absent. Validation PASS: focused
+  RuntimeSignalsSection tests (`4/4`), route-reachable i18n audit
+  (`findings=0`), Web typecheck, Web lint, repository guardrails,
+  `git diff --check`, full workspace build, and authenticated rendered
+  `/dashboard` smoke after dev-server restart with no visible framework
+  overlay, console warnings/errors, page errors, or 5xx responses. Browser
+  plugin validation was attempted first but local `node_repl` resolved Node
+  `v22.13.0` while requiring `>=22.22.0`, so rendered validation used bundled
+  Codex Node plus Playwright. Evidence:
+  `docs/planning/v1ui-35-dashboard-signal-runtime-detail-task-2026-05-07.md`.
 - 2026-05-07 Dashboard Home signal score summary slice `V1UI-34` is closed on
   `main`. BUILDER-mode review found that API runtime symbol stats already
   expose `lastSignalScoreSummary.longScore/shortScore`, and Web types include

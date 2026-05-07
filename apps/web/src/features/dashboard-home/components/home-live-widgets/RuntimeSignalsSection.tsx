@@ -148,6 +148,7 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
               signal.lastSignalContextSource === "configured_fallback";
             const contextSourceLabel = resolveContextSourceLabel(signal.lastSignalContextSource);
             const scoreSummary = signal.lastSignalScoreSummary;
+            const runtimeDetail = signal.lastSignalMessage?.trim() || signal.lastSignalReason?.trim() || null;
 
             return (
               <article
@@ -176,6 +177,11 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
                         {props.signalScoreShortLabel} {props.formatSignalScore(scoreSummary.shortScore)}
                       </span>
                     </div>
+                  ) : null}
+                  {runtimeDetail ? (
+                    <p className="mt-2 line-clamp-2 text-[11px] leading-4 opacity-75" title={runtimeDetail}>
+                      {runtimeDetail}
+                    </p>
                   ) : null}
                   <div className="mt-3 grid grid-cols-2 gap-2.5 text-[11px] leading-4">
                     <div

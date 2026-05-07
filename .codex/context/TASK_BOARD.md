@@ -20,6 +20,23 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `V1UI-35 feat(web-runtime): show dashboard signal runtime detail`
+  - Scope: closed a TESTER-mode Dashboard Home signal diagnostics parity
+    slice. API runtime symbol stats and Web types already expose
+    `lastSignalMessage` and `lastSignalReason`, and Bots Monitoring already
+    renders those fields as runtime detail; Dashboard Home signal cards now
+    render the same backend detail using message-first, reason-second
+    precedence and render no invented fallback when both fields are absent.
+    Validation PASS: focused RuntimeSignalsSection tests (`4/4`),
+    route-reachable i18n audit (`findings=0`), Web typecheck, Web lint,
+    repository guardrails, `git diff --check`, full workspace build, and
+    authenticated rendered `/dashboard` smoke after dev-server restart with no
+    visible framework overlay, console warnings/errors, page errors, or 5xx
+    responses. Browser plugin validation was attempted first but local
+    `node_repl` resolved Node `v22.13.0` while requiring `>=22.22.0`, so
+    rendered validation used bundled Codex Node plus Playwright. Evidence:
+    `docs/planning/v1ui-35-dashboard-signal-runtime-detail-task-2026-05-07.md`.
+
 - [x] `V1UI-34 feat(web-runtime): show signal score summary`
   - Scope: closed a BUILDER-mode Dashboard Home signal diagnostics parity
     slice. API runtime symbol stats already expose
