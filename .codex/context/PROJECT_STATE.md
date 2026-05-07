@@ -3,6 +3,16 @@
 Last updated: 2026-05-07
 
 ## 2026-05-07 V1 Final Blocker Execution Pack
+- 2026-05-07 `V1-PROD-PROMOTE-DISPATCH-BLOCKER-2026-05-07` recorded the
+  post-push production deploy state. Local and remote `main` are aligned at
+  `9bdd1c1a101603e872099f205f3e9b21904e2b0a`, but production build-info still
+  reports `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`. The official production
+  deploy path is `.github/workflows/promote-prod.yml`, a manual
+  `workflow_dispatch` that triggers the Coolify deploy webhook and then runs
+  build-info, runtime freshness, and rollback guard checks from GitHub
+  secrets. This shell cannot dispatch it because `gh` is unavailable and the
+  active GitHub connector cannot start new workflow runs. Evidence:
+  `docs/planning/v1-prod-promote-dispatch-blocker-task-2026-05-07.md`.
 - 2026-05-07 `V1-FINAL-BLOCKER-PREREQ-RECHECK-2026-05-07` rechecked the
   current environment after the final blocker pack. Public production
   build-info matches `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`, but a

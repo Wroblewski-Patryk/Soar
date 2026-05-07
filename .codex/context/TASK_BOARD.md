@@ -17,6 +17,15 @@ Last updated: 2026-05-07
 
 ## READY
 
+- [x] `V1-PROD-PROMOTE-DISPATCH-BLOCKER-2026-05-07 release: record production promote dispatch blocker`
+  - Scope: recorded that local/remote `main` is pushed at
+    `9bdd1c1a101603e872099f205f3e9b21904e2b0a` while production build-info
+    still reports `21bb52f1...`. The official production deploy path is the
+    manual GitHub Actions workflow `Promote PROD`; this shell cannot dispatch
+    it because `gh` is unavailable and the GitHub connector cannot create a
+    new workflow run. Evidence:
+    `docs/planning/v1-prod-promote-dispatch-blocker-task-2026-05-07.md`.
+
 - [x] `V1-FINAL-BLOCKER-PREREQ-RECHECK-2026-05-07 release: recheck final blocker prerequisites`
   - Scope: rechecked the current shell against the final blocker execution
     pack. Production build-info matches

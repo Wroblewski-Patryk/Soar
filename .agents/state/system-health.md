@@ -4,12 +4,12 @@ Last updated: 2026-05-07
 
 ## Latest Health Snapshot
 
-- `origin/main` and public production web build-info are aligned at
-  `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`, the latest pushed code/tooling
-  commit. The local branch is ahead with docs/evidence-only commits that are
-  intentionally not pushed yet, so they are not production deploy targets.
-  Production API `/health` and API `/ready` are healthy in the latest public
-  checks.
+- Local `main` and `origin/main` are aligned at
+  `9bdd1c1a101603e872099f205f3e9b21904e2b0a`. Public production web
+  build-info still reports `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`; the
+  official production promote workflow is manual `workflow_dispatch`, so push
+  alone is not deploy completion evidence. Production API `/health` and API
+  `/ready` are healthy in the latest public checks.
 - Canonical queue check found two open production-evidence items:
   `LIVEIMPORT-03` and `BOTMULTI-09`.
 - The local full-architecture repair and validation chain is closed through
@@ -28,6 +28,13 @@ Last updated: 2026-05-07
 
 ## Latest Validation
 
+- `V1-PROD-PROMOTE-DISPATCH-BLOCKER-2026-05-07` PASS as deploy-path
+  classification: local/remote `main` is pushed at
+  `9bdd1c1a101603e872099f205f3e9b21904e2b0a`; production build-info timed out
+  waiting for that SHA and last reported `21bb52f1...`; public API `/health`
+  and `/ready` passed; `.github/workflows/promote-prod.yml` is the official
+  manual `workflow_dispatch` path; this shell lacks `gh`, and the available
+  GitHub connector cannot dispatch a new workflow run.
 - `V1-FINAL-BLOCKER-PREREQ-RECHECK-2026-05-07` PASS as blocker
   classification: public production build-info matches
   `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`; names-only env scan found

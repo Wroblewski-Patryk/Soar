@@ -19,13 +19,13 @@ contracts synchronized.
 
 Release verification is blocked on authenticated production readback for the
 first open queue item, `LIVEIMPORT-03`. Local audit gates are closed through
-`FULLARCH-FIX-11`, and public production web build-info now reports the pushed
-collector hardening commit `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`. The
-latest local docs-only evidence commits are not pushed, by design, to avoid
-creating another build-info target. The latest names-only prerequisite scan
-still found no
-production credentials or ops auth headers in the current shell, so future
-continuation should resume with authenticated read-only evidence collection.
+`FULLARCH-FIX-11`, and local `main` is pushed to `origin/main` at
+`9bdd1c1a101603e872099f205f3e9b21904e2b0a`. Public production web build-info
+still reports `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3` until the official
+manual `Promote PROD` workflow is dispatched and completed. The latest
+names-only prerequisite scan still found no production credentials or ops auth
+headers in the current shell, so protected evidence collection remains blocked
+without an operator-authenticated environment.
 
 `LIVEIMPORT-03` now has one canonical read-only evidence command:
 `pnpm run ops:liveimport:readback -- --expected-sha 21bb52f1e4b8865aab0dbb83ecffe698061fd7a3 --output docs/operations/liveimport-03-prod-readback-2026-05-07.json`.
@@ -64,6 +64,13 @@ attempt failed closed before protected runtime readback, and the refreshed
 release-gate dry-run
 `docs/operations/v1-release-gate-prod-2026-05-07T18-20-30-000Z.md` remains
 `not_ready`.
+
+Post-push deploy check: `origin/main` is current at
+`9bdd1c1a101603e872099f205f3e9b21904e2b0a`, but production build-info timed
+out waiting for that SHA and last reported `21bb52f1...`. The approved
+production promote path is `.github/workflows/promote-prod.yml`, which is
+manual `workflow_dispatch`; this shell lacks `gh`, and the available GitHub
+connector cannot dispatch a new workflow run.
 
 ## Current Priority Order
 

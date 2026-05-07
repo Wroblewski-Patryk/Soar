@@ -7,6 +7,16 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-PROD-PROMOTE-DISPATCH-BLOCKER-2026-05-07 release: record production promote dispatch blocker`
+  - 2026-05-07: Recorded the post-push production state. Local and remote
+    `main` are aligned at `9bdd1c1a101603e872099f205f3e9b21904e2b0a`, while
+    production build-info still reports `21bb52f1...`. The repository's
+    official production deploy path is `.github/workflows/promote-prod.yml`,
+    which is manual `workflow_dispatch` and uses GitHub secrets for the
+    Coolify webhook, runtime freshness, and rollback guard. This shell cannot
+    dispatch it because `gh` is unavailable and the active GitHub connector
+    cannot start new workflow runs. Evidence:
+    `docs/planning/v1-prod-promote-dispatch-blocker-task-2026-05-07.md`.
 - [x] `V1-FINAL-BLOCKER-PREREQ-RECHECK-2026-05-07 release: recheck final blocker prerequisites`
   - 2026-05-07: Rechecked the final V1 blocker prerequisites after publishing
     the execution pack. Public production build-info is current at

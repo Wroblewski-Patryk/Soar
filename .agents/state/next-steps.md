@@ -4,7 +4,17 @@ Last updated: 2026-05-07
 
 ## Next Tiny Task
 
-Use `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md` once
+Dispatch the official production promote workflow if an authenticated GitHub
+operator or `gh` environment is available:
+
+```powershell
+gh workflow run promote-prod.yml --ref main
+```
+
+Then wait for production build-info to expose the promoted SHA and let the
+workflow runtime freshness and rollback guard decide whether the deploy
+stands. If promote is already complete, use
+`docs/operations/v1-final-blocker-execution-pack-2026-05-07.md` once
 production auth and DB/Coolify access are available. Start with
 `LIVEIMPORT-03` authenticated read-only production runtime readback on current
 production `main` (`21bb52f1e4b8865aab0dbb83ecffe698061fd7a3` or later).
@@ -20,6 +30,12 @@ build-info is current, but the current shell still lacks the required Soar
 production auth/access. A no-auth collector attempt failed closed before
 runtime readback, which is the expected safe result.
 
+Post-push check: local `main` is pushed to `origin/main` at
+`9bdd1c1a101603e872099f205f3e9b21904e2b0a`; production still reports
+`21bb52f1...` until `Promote PROD` is manually dispatched and completes. This
+shell cannot dispatch it because `gh` is not installed and the current GitHub
+connector only supports fetching/rerunning existing workflow jobs.
+
 Canonical command once auth is available:
 
 ```powershell
@@ -30,6 +46,9 @@ pnpm run ops:liveimport:readback -- --expected-sha 21bb52f1e4b8865aab0dbb83ecffe
 
 0. Follow the final blocker execution pack:
    `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
+0a. If GitHub Actions access is available, run the manual `Promote PROD`
+   workflow on `main` and wait for build-info, runtime freshness, and rollback
+   guard to pass.
 1. If production credentials or ops auth are available, execute
    `ops:liveimport:readback` and record redacted `LIVEIMPORT-03` evidence. The latest
    names-only prerequisite sweep after `FULLARCH-FIX-11` found no production
