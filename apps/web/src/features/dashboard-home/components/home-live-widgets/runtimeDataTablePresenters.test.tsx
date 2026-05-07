@@ -26,7 +26,7 @@ const openPositionRow = {
   closedAt: null,
   holdMs: 0,
   dcaCount: 0,
-  feesPaid: 0,
+  feesPaid: 0.012,
   realizedPnl: 0,
   unrealizedPnl: 0,
   markPrice: 0.11,
@@ -145,7 +145,7 @@ describe("createOpenOrdersColumns", () => {
 });
 
 describe("createOpenPositionsColumns", () => {
-  it("renders quantity and entry price from runtime open-position payload", () => {
+  it("renders quantity, entry price, and fees from runtime open-position payload", () => {
     const columns = createOpenPositionsColumns({
       t: (key) =>
         ({
@@ -155,6 +155,7 @@ describe("createOpenPositionsColumns", () => {
           "dashboard.home.runtime.status": "Status",
           "dashboard.home.runtime.qty": "Qty",
           "dashboard.home.runtime.entry": "Entry",
+          "dashboard.home.runtime.fee": "Fee",
           "dashboard.home.runtime.margin": "Margin",
           "dashboard.home.runtime.pnl": "PnL",
           "dashboard.home.runtime.pnlPercent": "PnL%",
@@ -185,19 +186,23 @@ describe("createOpenPositionsColumns", () => {
 
     const quantityColumn = columns.find((column) => column.key === "quantity");
     const entryColumn = columns.find((column) => column.key === "entryPrice");
+    const feeColumn = columns.find((column) => column.key === "feesPaid");
 
     expect(quantityColumn?.label).toBe("Qty");
     expect(entryColumn?.label).toBe("Entry");
+    expect(feeColumn?.label).toBe("Fee");
 
     render(
       <div>
         <span data-testid="position-quantity">{quantityColumn?.render?.(openPositionRow)}</span>
         <span data-testid="position-entry">{entryColumn?.render?.(openPositionRow)}</span>
+        <span data-testid="position-fee">{feeColumn?.render?.(openPositionRow)}</span>
       </div>
     );
 
     expect(screen.getByTestId("position-quantity")).toHaveTextContent("10");
     expect(screen.getByTestId("position-entry")).toHaveTextContent("0.1");
+    expect(screen.getByTestId("position-fee")).toHaveTextContent("0.012");
   });
 
   it("renders position action buttons with shared table action tones", () => {

@@ -9,6 +9,17 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `V1UI-24 fix(web-runtime): show dashboard open-position fees`
+  - 2026-05-07: Closed an ARCHITECT-mode Dashboard Home open-position parity
+    slice. Open Positions now renders backend `feesPaid` with the existing
+    dashboard runtime fee label and amount formatter, matching bot monitoring
+    so open-position fee truth is visible on the primary runtime surface
+    before closure. Validation PASS: focused runtime table presenter test
+    (`14/14`), Web typecheck, Web lint, route-reachable i18n audit
+    (`findings=0`), repository guardrails, full workspace build, and
+    authenticated rendered `/dashboard` smoke on desktop and mobile with no
+    console warnings, console errors, or page errors. Evidence:
+    `docs/planning/v1ui-24-dashboard-open-position-fee-parity-task-2026-05-07.md`.
 - [x] `V1UI-23 fix(web-runtime): show dashboard manual-order lifecycle state`
   - 2026-05-07: Closed a BUILDER-mode UOLF backend-to-Web parity slice.
     Dashboard Home now types and retains the `POST /dashboard/orders/open`

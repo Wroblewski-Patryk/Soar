@@ -263,6 +263,9 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
     `entryPrice` beside margin, PnL, mark price, DCA, and protection state,
     matching the detailed bot monitoring table for primary position sizing and
     entry-truth visibility.
+  - Dashboard home Open Positions rows also render backend `feesPaid`, matching
+    bot monitoring so open-position fee truth is visible on the primary
+    runtime surface before the position is closed.
 - Trade-history fee parity note (2026-05-07):
   - Dashboard home trade-history rows render backend `fee` amount plus
     `feeSource`, `feePending`, and `feeCurrency` metadata through the shared

@@ -191,6 +191,13 @@ export const createOpenPositionsColumns = ({
       render: (row) => formatRuntimeAmount(row.marginNotional),
     },
     {
+      key: "feesPaid",
+      label: withRuntimeUnit(t("dashboard.home.runtime.fee")),
+      sortable: true,
+      accessor: (row) => row.feesPaid,
+      render: (row) => formatRuntimeAmount(row.feesPaid),
+    },
+    {
       key: "pnl",
       label: withRuntimeUnit(t("dashboard.home.runtime.pnl")),
       sortable: true,

@@ -3,6 +3,18 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 dashboard open-position fee parity slice `V1UI-24` is closed on
+  `main`. ARCHITECT-mode review found that bot monitoring already
+  rendered backend `feesPaid` for open positions while Dashboard Home omitted
+  that same money-impacting selected-bot payload field. Dashboard Home Open
+  Positions now renders `feesPaid` with the existing runtime fee label and
+  amount formatter, keeping open-position fee truth visible on the primary
+  dashboard before closure. Focused runtime table presenter test passed
+  (`14/14`), as did Web typecheck, Web lint, route-reachable i18n audit
+  (`findings=0`), repository guardrails, full workspace build, and
+  authenticated rendered `/dashboard` smoke on desktop and mobile with no
+  console warnings, console errors, or page errors. Evidence:
+  `docs/planning/v1ui-24-dashboard-open-position-fee-parity-task-2026-05-07.md`.
 - 2026-05-07 dashboard manual-order lifecycle state slice `V1UI-23` is closed
   on `main`. BUILDER-mode review found that `UOLF` requires manual-order
   operator-facing states to reflect lifecycle truth from
