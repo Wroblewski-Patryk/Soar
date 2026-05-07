@@ -1,6 +1,7 @@
 import type { TranslationKey } from "@/i18n/translations";
 import {
   resolveRuntimePositionProvenanceKind,
+  runtimeContinuityLabelSuffix,
   runtimePositionProvenanceLabelSuffix,
   type RuntimePositionProvenanceKind,
 } from "@/features/shared/runtimeMonitoringFormatters";
@@ -18,10 +19,11 @@ type MonitorOpenPositionRuntimeState = {
 const runtimeStateLabelKey = (
   continuityState: BotRuntimePositionItem["continuityState"] | null | undefined
 ): TranslationKey => {
-  if (continuityState === "RECOVERING") return "dashboard.bots.monitoring.runtimeStateRecovering";
-  if (continuityState === "RECOVERED_UNACTIONABLE") return "dashboard.bots.monitoring.runtimeStateRecoveredUnactionable";
-  if (continuityState === "EXTERNAL_CLOSE_CONFIRMED") return "dashboard.bots.monitoring.runtimeStateExternalCloseConfirmed";
-  if (continuityState === "REPAIR_ONLY_CLEANUP") return "dashboard.bots.monitoring.runtimeStateRepairOnlyCleanup";
+  const suffix = runtimeContinuityLabelSuffix(continuityState);
+  if (suffix === "continuityRecovering") return "dashboard.bots.monitoring.runtimeStateRecovering";
+  if (suffix === "continuityRecoveredUnactionable") return "dashboard.bots.monitoring.runtimeStateRecoveredUnactionable";
+  if (suffix === "continuityExternalCloseConfirmed") return "dashboard.bots.monitoring.runtimeStateExternalCloseConfirmed";
+  if (suffix === "continuityRepairOnlyCleanup") return "dashboard.bots.monitoring.runtimeStateRepairOnlyCleanup";
   return "dashboard.bots.monitoring.runtimeStateConfirmed";
 };
 

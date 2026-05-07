@@ -18,6 +18,18 @@ export type RuntimeCloseReasonValue =
   | "POSITION_LIFETIME"
   | "EXTERNAL_SYNC_MISSING"
   | "SYSTEM_REPAIR";
+export type RuntimeContinuityStateValue =
+  | "CONFIRMED"
+  | "RECOVERING"
+  | "RECOVERED_UNACTIONABLE"
+  | "EXTERNAL_CLOSE_CONFIRMED"
+  | "REPAIR_ONLY_CLEANUP";
+export type RuntimeContinuityLabelSuffix =
+  | "continuityConfirmed"
+  | "continuityRecovering"
+  | "continuityRecoveredUnactionable"
+  | "continuityExternalCloseConfirmed"
+  | "continuityRepairOnlyCleanup";
 export type RuntimePositionProvenanceKind =
   | "exchange_adopted"
   | "exchange_unowned"
@@ -127,4 +139,14 @@ export const runtimePositionProvenanceLabelSuffix = (
   if (kind === "sync_orphan_local") return "provenanceSyncOrphanLocal";
   if (kind === "sync_orphan_exchange") return "provenanceSyncOrphanExchange";
   return "provenanceExchangeSynced";
+};
+
+export const runtimeContinuityLabelSuffix = (
+  continuityState?: string | null
+): RuntimeContinuityLabelSuffix => {
+  if (continuityState === "RECOVERING") return "continuityRecovering";
+  if (continuityState === "RECOVERED_UNACTIONABLE") return "continuityRecoveredUnactionable";
+  if (continuityState === "EXTERNAL_CLOSE_CONFIRMED") return "continuityExternalCloseConfirmed";
+  if (continuityState === "REPAIR_ONLY_CLEANUP") return "continuityRepairOnlyCleanup";
+  return "continuityConfirmed";
 };

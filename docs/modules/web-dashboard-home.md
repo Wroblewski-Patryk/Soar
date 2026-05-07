@@ -91,9 +91,11 @@ Out of scope:
 - Runtime stale data warning is surfaced when refresh age threshold is exceeded.
 - Open-position status cells expose continuity, actionability, and unresolved
   strategy-context truth from backend runtime payloads so fail-closed rows are
-  text-visible on the primary operator surface.
+  text-visible on the primary operator surface. Continuity label semantics are
+  shared with bot monitoring through the Web runtime formatter.
 - Open-position status cells also expose imported/adopted exchange provenance
-  from backend `origin`, `syncState`, and `takeoverStatus` fields, so
+  from backend `origin`, `syncState`, and `takeoverStatus` fields through the
+  shared Web runtime formatter, so
   `EXCHANGE_SYNC` rows and sync drift/orphan states do not look like ordinary
   bot-managed runtime rows.
 - The dashboard position edit modal repeats noteworthy imported/adopted

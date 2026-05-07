@@ -4722,6 +4722,16 @@ Historical carryover snapshot, superseded by the active `NOW` entries above:
 - [x] `PAR-24 fix(web-build): added `public/favicon.ico` asset to prevent Next.js page-data build failure`
 
 ## 2026-05-07 V1 UI Runtime Parity Slice
+- [x] `V1UI-12 refactor(web-runtime): centralize continuity label semantics`
+  - Closed an ARCHITECT-mode runtime diagnostics drift cleanup. Dashboard home
+    and bot monitoring now derive backend `continuityState` label semantics
+    from shared `runtimeContinuityLabelSuffix`, preserving route-owned i18n
+    namespaces while preventing future runtime status drift. Validation PASS:
+    focused Web runtime formatter/dashboard/bot monitoring tests (`27/27`),
+    Web typecheck, Web lint, route-reachable i18n audit (`findings=0`),
+    repository guardrails, Web build, and authenticated rendered
+    `/dashboard/bots` smoke with no console errors.
+
 - [x] `V1UI-11 fix(web-runtime): show provenance in dashboard position modal`
   - Closed the dashboard action-context provenance gap. `/dashboard` position
     edit modal now repeats backend `origin`, `syncState`, and

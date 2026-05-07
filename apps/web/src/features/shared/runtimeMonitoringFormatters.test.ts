@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   resolveRuntimePositionProvenanceKind,
+  runtimeContinuityLabelSuffix,
   runtimePositionProvenanceLabelSuffix,
 } from "./runtimeMonitoringFormatters";
 
@@ -48,5 +49,20 @@ describe("resolveRuntimePositionProvenanceKind", () => {
       "provenanceExchangeAdopted"
     );
     expect(runtimePositionProvenanceLabelSuffix("sync_drift")).toBe("provenanceSyncDrift");
+  });
+
+  it("maps runtime continuity states to shared i18n suffixes", () => {
+    expect(runtimeContinuityLabelSuffix("RECOVERING")).toBe("continuityRecovering");
+    expect(runtimeContinuityLabelSuffix("RECOVERED_UNACTIONABLE")).toBe(
+      "continuityRecoveredUnactionable"
+    );
+    expect(runtimeContinuityLabelSuffix("EXTERNAL_CLOSE_CONFIRMED")).toBe(
+      "continuityExternalCloseConfirmed"
+    );
+    expect(runtimeContinuityLabelSuffix("REPAIR_ONLY_CLEANUP")).toBe(
+      "continuityRepairOnlyCleanup"
+    );
+    expect(runtimeContinuityLabelSuffix(null)).toBe("continuityConfirmed");
+    expect(runtimeContinuityLabelSuffix("unexpected")).toBe("continuityConfirmed");
   });
 });

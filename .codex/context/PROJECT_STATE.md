@@ -3,6 +3,19 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 runtime continuity label helper slice `V1UI-12` is closed on
+  `main`. Dashboard home and bot monitoring now derive backend
+  `continuityState` label semantics from shared
+  `runtimeContinuityLabelSuffix`, preserving route-owned i18n namespaces while
+  preventing diagnostic drift between primary and detailed runtime surfaces.
+  Validation PASS: focused Web runtime formatter/dashboard/bot monitoring
+  tests (`27/27`), Web typecheck, Web lint, route-reachable i18n audit
+  (`findings=0`), repository guardrails, Web build, and authenticated rendered
+  `/dashboard/bots` smoke with no console errors. Browser plugin validation was
+  blocked by local `node_repl` resolving Node `v22.13.0` while requiring
+  `>= v22.22.0`, so the smoke used bundled Codex Node plus Playwright.
+  Evidence:
+  `docs/planning/v1ui-12-runtime-continuity-label-helper-task-2026-05-07.md`.
 - 2026-05-07 dashboard position modal provenance slice `V1UI-11` is closed on
   `main`. The `/dashboard` position edit modal now repeats noteworthy backend
   provenance from `origin`, `syncState`, and `takeoverStatus`, so

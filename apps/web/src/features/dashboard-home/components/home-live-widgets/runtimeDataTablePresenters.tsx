@@ -7,6 +7,7 @@ import type { BotRuntimeTrade } from "@/features/bots/types/bot.type";
 import { renderDcaLadderCell } from "@/features/shared/dcaLadderCell";
 import {
   resolveRuntimePositionProvenanceKind,
+  runtimeContinuityLabelSuffix,
   runtimePositionProvenanceLabelSuffix,
   type RuntimePositionProvenanceKind,
 } from "@/features/shared/runtimeMonitoringFormatters";
@@ -56,19 +57,7 @@ const resolveContinuityStateLabel = (
   t: Translate,
   continuityState: OpenPositionWithLive["continuityState"] | null | undefined
 ) => {
-  switch (continuityState) {
-    case "RECOVERING":
-      return t("dashboard.home.runtime.continuityRecovering");
-    case "RECOVERED_UNACTIONABLE":
-      return t("dashboard.home.runtime.continuityRecoveredUnactionable");
-    case "EXTERNAL_CLOSE_CONFIRMED":
-      return t("dashboard.home.runtime.continuityExternalCloseConfirmed");
-    case "REPAIR_ONLY_CLEANUP":
-      return t("dashboard.home.runtime.continuityRepairOnlyCleanup");
-    case "CONFIRMED":
-    default:
-      return t("dashboard.home.runtime.continuityConfirmed");
-  }
+  return t(`dashboard.home.runtime.${runtimeContinuityLabelSuffix(continuityState)}`);
 };
 
 const runtimePositionProvenanceLabelKey = (

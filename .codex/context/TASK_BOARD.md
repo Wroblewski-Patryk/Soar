@@ -20,6 +20,17 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `V1UI-12 refactor(web-runtime): centralize continuity label semantics`
+  - Scope: closed an ARCHITECT-mode runtime diagnostics drift cleanup.
+    Dashboard home and bot monitoring now derive backend `continuityState`
+    label semantics from shared `runtimeContinuityLabelSuffix`, preserving
+    route-owned i18n namespaces while preventing future runtime status drift.
+    Validation PASS: focused Web runtime formatter/dashboard/bot monitoring
+    tests (`27/27`), Web typecheck, Web lint, route-reachable i18n audit
+    (`findings=0`), repository guardrails, Web build, and authenticated
+    rendered `/dashboard/bots` smoke with no console errors. Evidence:
+    `docs/planning/v1ui-12-runtime-continuity-label-helper-task-2026-05-07.md`.
+
 - [x] `V1UI-11 fix(web-runtime): show provenance in dashboard position modal`
   - Scope: closed a BUILDER-mode dashboard action-context parity slice.
     `/dashboard` position edit modal now repeats backend provenance from

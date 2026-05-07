@@ -85,7 +85,9 @@ Out of scope:
 - Monitoring open-position rows expose backend continuity/actionability truth
   (`continuityState`, `actionable`, and `strategyAutomationContextResolved`)
   so recovered, recovering, externally closed, repair-only, and unresolved
-  strategy-context states do not look like normal actionable rows.
+  strategy-context states do not look like normal actionable rows. Continuity
+  label semantics are shared with dashboard home through the Web runtime
+  formatter.
 - Monitoring open-position rows also expose backend provenance/adoption truth
   (`origin`, `syncState`, and `takeoverStatus`) through the shared Web
   provenance label helper so imported, adopted, ambiguous, manual-only,
