@@ -480,6 +480,113 @@ describe("RuntimeSidebarSection strategy edge behavior", () => {
     expect(actionState).toHaveClass("text-error");
   });
 
+  it("renders backend session error detail in the inactive-session warning", () => {
+    const props = createProps({
+      selectedData: {
+        ...createProps().selectedData!,
+        session: {
+          id: "session-failed",
+          botId: "bot-sidebar",
+          mode: "PAPER",
+          status: "FAILED",
+          startedAt: "2026-04-20T10:00:00.000Z",
+          finishedAt: "2026-04-20T10:05:00.000Z",
+          lastHeartbeatAt: "2026-04-20T10:04:00.000Z",
+          stopReason: "Operator stop requested",
+          errorMessage: "Runtime worker crashed",
+          createdAt: "2026-04-20T10:00:00.000Z",
+          updatedAt: "2026-04-20T10:05:00.000Z",
+          durationMs: 300000,
+          eventsCount: 4,
+          symbolsTracked: 1,
+          summary: {
+            totalSignals: 0,
+            dcaCount: 0,
+            closedTrades: 0,
+            realizedPnl: 0,
+          },
+        },
+      },
+    });
+
+    render(<RuntimeSidebarSection {...props} />);
+
+    expect(screen.getByText("No active session")).toBeInTheDocument();
+    expect(screen.getByText("Runtime worker crashed")).toBeInTheDocument();
+    expect(screen.queryByText("Operator stop requested")).not.toBeInTheDocument();
+  });
+
+  it("falls back to backend session stop reason when error detail is absent", () => {
+    const props = createProps({
+      selectedData: {
+        ...createProps().selectedData!,
+        session: {
+          id: "session-canceled",
+          botId: "bot-sidebar",
+          mode: "PAPER",
+          status: "CANCELED",
+          startedAt: "2026-04-20T10:00:00.000Z",
+          finishedAt: "2026-04-20T10:05:00.000Z",
+          lastHeartbeatAt: "2026-04-20T10:04:00.000Z",
+          stopReason: "Operator stop requested",
+          errorMessage: "   ",
+          createdAt: "2026-04-20T10:00:00.000Z",
+          updatedAt: "2026-04-20T10:05:00.000Z",
+          durationMs: 300000,
+          eventsCount: 4,
+          symbolsTracked: 1,
+          summary: {
+            totalSignals: 0,
+            dcaCount: 0,
+            closedTrades: 0,
+            realizedPnl: 0,
+          },
+        },
+      },
+    });
+
+    render(<RuntimeSidebarSection {...props} />);
+
+    expect(screen.getByText("No active session")).toBeInTheDocument();
+    expect(screen.getByText("Operator stop requested")).toBeInTheDocument();
+  });
+
+  it("keeps the inactive-session warning generic when backend detail is absent", () => {
+    const props = createProps({
+      selectedData: {
+        ...createProps().selectedData!,
+        session: {
+          id: "session-completed",
+          botId: "bot-sidebar",
+          mode: "PAPER",
+          status: "COMPLETED",
+          startedAt: "2026-04-20T10:00:00.000Z",
+          finishedAt: "2026-04-20T10:05:00.000Z",
+          lastHeartbeatAt: "2026-04-20T10:04:00.000Z",
+          stopReason: null,
+          errorMessage: null,
+          createdAt: "2026-04-20T10:00:00.000Z",
+          updatedAt: "2026-04-20T10:05:00.000Z",
+          durationMs: 300000,
+          eventsCount: 4,
+          symbolsTracked: 1,
+          summary: {
+            totalSignals: 0,
+            dcaCount: 0,
+            closedTrades: 0,
+            realizedPnl: 0,
+          },
+        },
+      },
+    });
+
+    render(<RuntimeSidebarSection {...props} />);
+
+    expect(screen.getByText("No active session")).toBeInTheDocument();
+    expect(screen.queryByText("Runtime worker crashed")).not.toBeInTheDocument();
+    expect(screen.queryByText("Operator stop requested")).not.toBeInTheDocument();
+  });
+
   it("derives LIVE percent-allocation delta from runtime equity and net pnl", () => {
     const base = createProps();
     const props = createProps({

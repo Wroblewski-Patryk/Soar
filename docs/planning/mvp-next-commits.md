@@ -9,6 +9,21 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `V1UI-38 feat(web-runtime): show dashboard session failure detail`
+  - 2026-05-07: Closed a BUILDER-mode Dashboard Home session diagnostics
+    parity slice. Runtime session read models already expose `errorMessage`
+    and `stopReason`; Dashboard Home now renders that backend detail inside
+    the existing inactive-session warning using message-first, stop-reason
+    fallback precedence and keeps the warning generic when both fields are
+    absent. Validation PASS: focused RuntimeSidebarSection tests (`13/13`),
+    route-reachable i18n audit (`findings=0`), Web typecheck, Web lint,
+    repository guardrails, `git diff --check`, full workspace build, and
+    authenticated rendered `/dashboard` smoke after dev-server restart with no
+    visible framework overlay, console warnings/errors, page errors, or 5xx
+    responses. Browser plugin validation was attempted first but local
+    `node_repl` resolved Node `v22.13.0` while requiring `>=22.22.0`, so
+    rendered validation used bundled Codex Node plus Playwright. Evidence:
+    `docs/planning/v1ui-38-dashboard-session-failure-detail-task-2026-05-07.md`.
 - [x] `V1UI-37 feat(web-runtime): show dashboard signal market state`
   - 2026-05-07: Closed a BUILDER-mode Dashboard Home runtime-state parity
     slice. The operator surface architecture requires runtime market surfaces

@@ -383,6 +383,10 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
     }
     return "-";
   })();
+  const nonRunningSessionDetail =
+    props.selectedData?.session?.errorMessage?.trim() ||
+    props.selectedData?.session?.stopReason?.trim() ||
+    null;
 
   return (
     <aside className={props.asideClassName}>
@@ -783,9 +787,14 @@ export default function RuntimeSidebarSection(props: RuntimeSidebarSectionProps)
         </section>
 
         {props.selectedData?.session?.status !== "RUNNING" ? (
-          <p className="text-[11px] rounded-box border border-warning/40 bg-warning/10 px-2 py-1 text-warning">
-            {props.text.noActiveSessionWarning}
-          </p>
+          <div className="text-[11px] rounded-box border border-warning/40 bg-warning/10 px-2 py-1 text-warning">
+            <p>{props.text.noActiveSessionWarning}</p>
+            {nonRunningSessionDetail ? (
+              <p className="mt-1 font-mono text-[10px] leading-4 opacity-80">
+                {nonRunningSessionDetail}
+              </p>
+            ) : null}
+          </div>
         ) : null}
 
       </div>
