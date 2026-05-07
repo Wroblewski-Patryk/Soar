@@ -4,6 +4,9 @@ Last updated: 2026-05-07
 
 ## Active Issues
 
+- Production deployment freshness initially lagged after the pushed V1 audit
+  candidate, but a later build-info wait passed and production now reports
+  `1f816362c93e117e47cfe52a35e0fec93bd0b37d`.
 - `FULLARCH-FIX-01` fixed the confirmed bot runtime visibility regression for
   recovered imported LIVE positions with
   `continuityState=RECOVERED_UNACTIONABLE` and `syncState=DRIFT`. Remaining
@@ -55,7 +58,8 @@ Last updated: 2026-05-07
   bot-managed.
 - `LIVEIMPORT-03` remains open because authenticated read-only production
   runtime positions readback for the reported LIVE ETH/DOGE rows has not been
-  captured on current production `main` (`6a7c9889` or later).
+  captured on current production `main`
+  (`1f816362c93e117e47cfe52a35e0fec93bd0b37d` or later).
 - `BOTMULTI-09` remains open for protected runtime readback and broader V1
   release gate evidence, even though public build-info now contains the
   original BOTMULTI candidate.

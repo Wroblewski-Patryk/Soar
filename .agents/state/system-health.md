@@ -4,6 +4,10 @@ Last updated: 2026-05-07
 
 ## Latest Health Snapshot
 
+- Local and remote `main` are synchronized at
+  `1f816362c93e117e47cfe52a35e0fec93bd0b37d`, and public production web
+  build-info now reports the same SHA after an initial deploy lag. Production
+  API `/health`, API `/ready`, and web `/auth/login` are healthy.
 - Canonical queue check found two open production-evidence items:
   `LIVEIMPORT-03` and `BOTMULTI-09`.
 - The local full-architecture repair and validation chain is closed through
@@ -18,6 +22,12 @@ Last updated: 2026-05-07
 
 ## Latest Validation
 
+- `PROD-PROMOTE-PREQ-2026-05-07` production promotion prerequisite sweep:
+  remote `main` check PASS for `1f816362c93e117e47cfe52a35e0fec93bd0b37d`.
+  First public web build-info wait timed out on stale
+  `834f83711ba11288829746338d1097abb6bf1c44`; later rerun PASS on attempt 1
+  with `gitSha=1f816362c93e117e47cfe52a35e0fec93bd0b37d`. Public production
+  API `/health`, API `/ready`, and web `/auth/login` PASS.
 - `PLAN-SWEEP-2026-05-07` planning-status sweep PASS: active planning now
   records local audit closure through `FULLARCH-FIX-11` and the
   `LIVEIMPORT-03` prerequisite sweep; no executable local NOW task remains
@@ -61,5 +71,6 @@ runtime contracts are changed.
 
 ## Deployment Impact
 
-None from this state sync. The next executable release task requires
-authenticated read-only production evidence, not a deployment or code change.
+None from this state sync. Production is fresh for
+`1f816362c93e117e47cfe52a35e0fec93bd0b37d`; the next executable release task
+requires authenticated read-only production evidence.

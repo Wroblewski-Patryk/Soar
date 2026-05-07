@@ -107,6 +107,32 @@ $env:NODE_PATH='C:\Users\wrobl\.cache\codex-runtimes\codex-primary-runtime\depen
 
 ## Entries
 
+### 2026-05-07 - Push is not deploy proof
+- Context: validated local audit closure commits were pushed to `origin/main`
+  so production `LIVEIMPORT-03` readback could test the current candidate.
+- Symptom: after push, public production `/api/build-info` still reported the
+  previous deployed SHA `834f83711ba11288829746338d1097abb6bf1c44` while
+  `origin/main` was already `1f816362c93e117e47cfe52a35e0fec93bd0b37d`.
+- Root cause: direct push-driven Coolify redeploy is convenience only; release
+  proof depends on the canonical `Promote PROD` workflow and build-info
+  freshness. This shell also had no local `gh` executable for a new workflow
+  dispatch.
+- Guardrail: after a push, always verify public web build-info before starting
+  protected production readback. If build-info is stale, keep polling within
+  the release gate window; if it remains stale, use `Promote PROD` or inspect
+  Coolify queue/logs. Do not re-run obsolete workflow runs or use empty
+  retrigger commits before checking the deploy queue/log path.
+- Preferred pattern:
+```powershell
+pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha <sha>
+```
+- Avoid: treating `git push` success, public health, or readiness as proof
+  that production is running the pushed candidate.
+- Evidence:
+  - 2026-05-07 `PROD-PROMOTE-PREQ-2026-05-07` first timed out waiting for
+    production build-info to expose `1f816362`, then a later rerun passed on
+    attempt 1 after the deployment queue caught up.
+
 ### 2026-05-07 - Push after green local gates when production readback depends on deploy
 - Context: the full architecture audit repair chain produced validated local
   commits, then continuation stalled because `LIVEIMPORT-03` needs evidence

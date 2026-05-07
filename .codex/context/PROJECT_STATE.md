@@ -2,6 +2,21 @@
 
 Last updated: 2026-05-07
 
+## 2026-05-07 Production Promotion Prerequisite Sweep
+- 2026-05-07 `PROD-PROMOTE-PREQ-2026-05-07` captured the post-push production
+  blocker. Local `main` and `origin/main` are synchronized at
+  `1f816362c93e117e47cfe52a35e0fec93bd0b37d`. Public production web
+  build-info initially still reported
+  `834f83711ba11288829746338d1097abb6bf1c44`, and the canonical build-info
+  wait command timed out after six HTTP 200 polls with the old SHA. A later
+  rerun passed on attempt 1 with production build-info reporting
+  `1f816362c93e117e47cfe52a35e0fec93bd0b37d`; public API `/health`, API
+  `/ready`, and web `/auth/login` are healthy. No runtime, API, DB, Web,
+  deployment, exchange, or live-money behavior changed. `LIVEIMPORT-03`
+  remains blocked only by authenticated read-only production runtime access.
+  Evidence:
+  `docs/planning/prod-promotion-prerequisite-sweep-task-2026-05-07.md`.
+
 ## 2026-05-07 Planning Status Sweep After Local Audit Gates
 - 2026-05-07 `PLAN-SWEEP-2026-05-07` synchronized active planning after
   `LIVEIMPORT-03` remained blocked by missing production read-only auth. The

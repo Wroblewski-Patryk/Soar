@@ -17,6 +17,18 @@ Last updated: 2026-05-07
 
 ## READY
 
+- [x] `PROD-PROMOTE-PREQ-2026-05-07 release: recheck production promotion prerequisites after validated push`
+  - Scope: after the validated local audit closure commits were pushed to
+    `origin/main` at `1f816362c93e117e47cfe52a35e0fec93bd0b37d`, checked
+    whether production was running that candidate. Production web build-info
+    initially stayed on `834f83711ba11288829746338d1097abb6bf1c44` and the
+    local build-info wait gate timed out, then a later rerun passed with
+    production reporting `1f816362c93e117e47cfe52a35e0fec93bd0b37d`. Public
+    API `/health`, API `/ready`, and web `/auth/login` are healthy. No
+    runtime, API, DB, Web, deployment, exchange, or live-money behavior
+    changed. Evidence:
+    `docs/planning/prod-promotion-prerequisite-sweep-task-2026-05-07.md`.
+
 - [x] `PLAN-SWEEP-2026-05-07 release: sync planning status after local audit gates`
   - Scope: swept active planning after `LIVEIMPORT-03` remained blocked by
     missing production read-only auth. Synchronized the top

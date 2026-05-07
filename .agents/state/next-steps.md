@@ -6,10 +6,10 @@ Last updated: 2026-05-07
 
 Run `LIVEIMPORT-03` with authenticated read-only production access and capture
 redacted ETH/DOGE runtime positions evidence on current production `main`
-(`6a7c9889` or later). Evidence must cover ownership, `strategyId` or
-single-strategy provenance recovery, TTP visibility, actionable state, and
-import completeness across assigned bot markets. Do not run live-money or
-destructive production actions.
+(`1f816362c93e117e47cfe52a35e0fec93bd0b37d` or later). Evidence must cover
+ownership, `strategyId` or single-strategy provenance recovery, TTP visibility,
+actionable state, and import completeness across assigned bot markets. Do not
+run live-money or destructive production actions.
 
 ## Candidate Backlog
 

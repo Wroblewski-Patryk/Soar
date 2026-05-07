@@ -7,6 +7,18 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `PROD-PROMOTE-PREQ-2026-05-07 release: recheck production promotion prerequisites after validated push`
+  - 2026-05-07: After validated local audit commits were pushed to
+    `origin/main` at `1f816362c93e117e47cfe52a35e0fec93bd0b37d`, public
+    production web build-info still reported the previous deployed SHA
+    `834f83711ba11288829746338d1097abb6bf1c44`. The repository
+    `ops:deploy:wait-web-build-info` gate timed out after six HTTP 200 polls
+    that all returned the old SHA. A later rerun passed on attempt 1 with
+    production build-info reporting `1f816362c93e117e47cfe52a35e0fec93bd0b37d`;
+    public API `/health`, API `/ready`, and web `/auth/login` are healthy.
+    `LIVEIMPORT-03` remains blocked only on authenticated read-only production
+    runtime evidence, not deploy freshness. Evidence:
+    `docs/planning/prod-promotion-prerequisite-sweep-task-2026-05-07.md`.
 - [x] `PLAN-SWEEP-2026-05-07 release: sync planning status after local audit gates`
   - 2026-05-07: Swept active planning after `LIVEIMPORT-03` remained blocked
     by missing production read-only auth. Synchronized the top
