@@ -111,6 +111,7 @@ export const dashboardHomePt = {
     "timeClosed": "Time closed",
     "symbol": "Symbol",
     "side": "Side",
+    "entry": "Entrada",
     "margin": "Margin",
     "pnl": "PnL",
     "pnlPercent": "PnL %",

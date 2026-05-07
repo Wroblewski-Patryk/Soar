@@ -111,6 +111,7 @@ export const dashboardHomeDeCh = {
     "timeClosed": "Zeit geschlossen",
     "symbol": "Symbol",
     "side": "Seite",
+    "entry": "Einstieg",
     "margin": "Marge",
     "pnl": "PnL",
     "pnlPercent": "PnL %",

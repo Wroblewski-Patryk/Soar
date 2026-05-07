@@ -166,6 +166,20 @@ export const createOpenPositionsColumns = ({
       },
     },
     {
+      key: "quantity",
+      label: t("dashboard.home.runtime.qty"),
+      sortable: true,
+      accessor: (row) => row.quantity,
+      render: (row) => formatNumber(row.quantity, { maximumFractionDigits: 6 }),
+    },
+    {
+      key: "entryPrice",
+      label: t("dashboard.home.runtime.entry"),
+      sortable: true,
+      accessor: (row) => row.entryPrice,
+      render: (row) => formatNumber(row.entryPrice, { minimumFractionDigits: 2, maximumFractionDigits: 6 }),
+    },
+    {
       key: "margin",
       label: withRuntimeUnit(t("dashboard.home.runtime.margin")),
       sortable: true,

@@ -258,6 +258,11 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
 - Scope lock:
   - strict selected-bot scope only (no cross-bot blending),
   - preview behavior unchanged.
+- Open-position display parity note (2026-05-07):
+  - Dashboard home Open Positions rows render backend `quantity` and
+    `entryPrice` beside margin, PnL, mark price, DCA, and protection state,
+    matching the detailed bot monitoring table for primary position sizing and
+    entry-truth visibility.
 
 ## 20. Sidebar Strategy Source-of-Truth Contract (`SBSC`)
 - Sidebar `Market` and `Strategy` cards use runtime topology (`runtime-graph`) as canonical context source.

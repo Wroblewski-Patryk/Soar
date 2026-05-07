@@ -145,6 +145,61 @@ describe("createOpenOrdersColumns", () => {
 });
 
 describe("createOpenPositionsColumns", () => {
+  it("renders quantity and entry price from runtime open-position payload", () => {
+    const columns = createOpenPositionsColumns({
+      t: (key) =>
+        ({
+          "dashboard.home.runtime.timeOpened": "Time opened",
+          "dashboard.home.runtime.symbol": "Symbol",
+          "dashboard.home.runtime.side": "Side",
+          "dashboard.home.runtime.status": "Status",
+          "dashboard.home.runtime.qty": "Qty",
+          "dashboard.home.runtime.entry": "Entry",
+          "dashboard.home.runtime.margin": "Margin",
+          "dashboard.home.runtime.pnl": "PnL",
+          "dashboard.home.runtime.pnlPercent": "PnL%",
+          "dashboard.home.runtime.markPrice": "Mark",
+          "dashboard.bots.monitoring.markPriceSourceExchangePnl": "Exchange PnL",
+          "dashboard.home.runtime.dca": "DCA",
+          "dashboard.home.runtime.continuityConfirmed": "Confirmed",
+        })[key] ?? key,
+      formatDateTimeWithSeconds: (value) => value ?? "-",
+      formatNumber: (value) => String(value),
+      formatPercent: (value) => `${value}%`,
+      formatRuntimeAmount: (value) => String(value),
+      formatDcaPercent: (value) => `${value}%`,
+      withRuntimeUnit: (label) => label,
+      resolveRuntimeIcon: () => null,
+      runtimeIconsLoading: false,
+      runtimeIconsError: null,
+      showDynamicStopColumns: false,
+      closePositionActionColumnLabel: "Action",
+      closePositionPendingLabel: "Closing...",
+      closePositionButtonLabel: "Close position",
+      editPositionButtonLabel: "Edit position",
+      positionActionsUnavailableLabel: "Unavailable",
+      isClosingPosition: () => false,
+      onOpenPositionEdit: vi.fn(),
+      onCloseRuntimePosition: vi.fn(),
+    });
+
+    const quantityColumn = columns.find((column) => column.key === "quantity");
+    const entryColumn = columns.find((column) => column.key === "entryPrice");
+
+    expect(quantityColumn?.label).toBe("Qty");
+    expect(entryColumn?.label).toBe("Entry");
+
+    render(
+      <div>
+        <span data-testid="position-quantity">{quantityColumn?.render?.(openPositionRow)}</span>
+        <span data-testid="position-entry">{entryColumn?.render?.(openPositionRow)}</span>
+      </div>
+    );
+
+    expect(screen.getByTestId("position-quantity")).toHaveTextContent("10");
+    expect(screen.getByTestId("position-entry")).toHaveTextContent("0.1");
+  });
+
   it("renders position action buttons with shared table action tones", () => {
     const columns = createOpenPositionsColumns({
       t: (key) =>

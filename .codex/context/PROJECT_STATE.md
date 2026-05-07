@@ -3,6 +3,18 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 dashboard open-position entry/quantity slice `V1UI-17` is
+  closed on `main`. Dashboard home Open Positions now renders backend
+  `quantity` and `entryPrice` beside existing margin/PnL/mark/DCA/protection
+  fields, matching bot monitoring and keeping position size plus entry truth
+  visible on the primary runtime surface. Validation PASS: focused Web
+  presenter test (`11/11`), dashboard widget regression pack (`20/20`), Web
+  typecheck, Web lint, route-reachable i18n audit (`findings=0`), repository
+  guardrails, full workspace build, and authenticated rendered `/dashboard`
+  smoke with no post-auth console errors. Browser plugin was not exposed by
+  tool discovery in this session, so the rendered smoke used bundled Codex
+  Node plus Playwright. Evidence:
+  `docs/planning/v1ui-17-dashboard-open-position-entry-quantity-task-2026-05-07.md`.
 - 2026-05-07 dashboard open-order execution terms slice `V1UI-16` is closed
   on `main`. Dashboard home Open Orders now renders backend `type` and
   `stopPrice` beside existing price/fill fields, matching bot monitoring and
@@ -4151,10 +4163,10 @@ Last updated: 2026-05-07
     truth.
 
 ## Autonomous Iteration State
-- Current iteration: 16
+- Current iteration: 17
 - Current operation mode: BUILDER
-- Last completed iteration: 16
-- Last completed task: V1UI-16 dashboard open-order execution terms parity
+- Last completed iteration: 17
+- Last completed task: V1UI-17 dashboard open-position entry/quantity parity
 - Next required mode: ARCHITECT
 ## Recent Progress
 - 2026-04-22: queued `SAFEV1-A` in
