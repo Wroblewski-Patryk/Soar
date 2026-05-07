@@ -4722,6 +4722,16 @@ Historical carryover snapshot, superseded by the active `NOW` entries above:
 - [x] `PAR-24 fix(web-build): added `public/favicon.ico` asset to prevent Next.js page-data build failure`
 
 ## 2026-05-07 V1 UI Runtime Parity Slice
+- [x] `V1UI-09 fix(web-runtime): label API fallback TTP protection source`
+  - Closed the runtime protection-source parity gap. API runtime position
+    reads now expose additive `dynamicTtpStopLossSource` metadata and Web
+    labels `strategy_fallback` protection as prospective in both `/dashboard`
+    and `/dashboard/bots` monitoring. Validation PASS: focused API
+    serialization tests (`8/8`), focused Web runtime/dashboard/bot monitoring
+    tests (`32/32`), API typecheck, Web typecheck, route-reachable i18n audit
+    (`findings=0`), Web lint, repository guardrails, Web build, and
+    authenticated rendered `/dashboard/bots` smoke with no console errors.
+
 - [x] `V1UI-08 fix(web-runtime): label prospective dashboard TTP protection`
   - Closed the dashboard-home protection-truth labeling gap. `/dashboard`
     open-position TTP cells now label config-derived fallback protection as

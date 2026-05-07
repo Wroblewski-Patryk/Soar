@@ -834,6 +834,7 @@ export const listBotRuntimeSessionPositions = async (
         : position.entryPrice;
     const {
       dynamicTtpStopLoss,
+      dynamicTtpStopLossSource,
       dynamicTslStopLoss,
       liveUnrealizedPnl,
     } = resolveRuntimePositionDynamicStops({
@@ -930,6 +931,7 @@ export const listBotRuntimeSessionPositions = async (
       markPrice: typeof marketPrice === 'number' && Number.isFinite(marketPrice) ? marketPrice : null,
       markPriceSource: typeof marketPrice === 'number' && Number.isFinite(marketPrice) ? marketPriceResult.source : 'unavailable',
       dynamicTtpStopLoss,
+      dynamicTtpStopLossSource,
       dynamicTslStopLoss,
       firstTradeAt: entryTrade?.executedAt ?? null,
       lastTradeAt: positionTrades.at(-1)?.executedAt ?? null,

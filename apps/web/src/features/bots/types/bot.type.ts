@@ -454,6 +454,7 @@ export type BotRuntimePositionItem = {
     | "runtime_candidate"
     | "unavailable";
   dynamicTtpStopLoss?: number | null;
+  dynamicTtpStopLossSource?: "runtime_state" | "strategy_fallback" | null;
   dynamicTslStopLoss?: number | null;
   firstTradeAt: string | null;
   lastTradeAt: string | null;

@@ -3,6 +3,19 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 runtime TTP source parity slice `V1UI-09` is closed locally on
+  branch `codex/v1-app-function-check`. API runtime position reads now expose
+  additive `dynamicTtpStopLossSource` metadata (`runtime_state` or
+  `strategy_fallback`), and Web maps strategy fallback to a prospective
+  protection label in both `/dashboard` and `/dashboard/bots` monitoring.
+  Validation PASS: focused API serialization tests (`8/8`), focused Web
+  runtime/dashboard/bot monitoring tests (`32/32`), API typecheck, Web
+  typecheck, route-reachable i18n audit (`findings=0`), Web lint, repository
+  guardrails, Web build, and authenticated rendered `/dashboard/bots` smoke
+  with no console errors. Browser plugin validation was blocked by local
+  `node_repl` resolving Node `v22.13.0` while requiring `>= v22.22.0`, so the
+  smoke used bundled Codex Node plus Playwright. Evidence:
+  `docs/planning/v1ui-09-runtime-ttp-source-parity-task-2026-05-07.md`.
 - 2026-05-07 dashboard prospective protection Web parity slice `V1UI-08` is
   closed locally on branch `codex/v1-app-function-check`. `/dashboard`
   open-position TTP cells now label config-derived fallback protection as

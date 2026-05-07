@@ -18,6 +18,7 @@ describe('runtimePositionSerialization', () => {
     });
 
     expect(result.dynamicTtpStopLoss).toBeNull();
+    expect(result.dynamicTtpStopLossSource).toBeNull();
     expect(result.dynamicTslStopLoss).toBeNull();
   });
 
@@ -44,6 +45,7 @@ describe('runtimePositionSerialization', () => {
     });
 
     expect(result.dynamicTtpStopLoss).toBeCloseTo(0.99, 8);
+    expect(result.dynamicTtpStopLossSource).toBe('runtime_state');
   });
 
   it('derives dynamic TSL stop from canonical runtime trailing anchor instead of display fallback', () => {
@@ -90,6 +92,7 @@ describe('runtimePositionSerialization', () => {
     });
 
     expect(result.dynamicTtpStopLoss).toBeCloseTo(105.5, 8);
+    expect(result.dynamicTtpStopLossSource).toBe('strategy_fallback');
     expect(result.dynamicTslStopLoss).toBeNull();
   });
 
@@ -114,6 +117,7 @@ describe('runtimePositionSerialization', () => {
     });
 
     expect(result.dynamicTtpStopLoss).toBeCloseTo(105.5, 8);
+    expect(result.dynamicTtpStopLossSource).toBe('strategy_fallback');
   });
 
   it('falls back to strategy-level TTP when stale runtime tracking does not yield a valid positive trigger', () => {

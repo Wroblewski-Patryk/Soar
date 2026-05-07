@@ -49,6 +49,7 @@ const basePositions = (overrides?: Partial<BotRuntimePositionsResponse["openItem
       markPrice: 0.99332,
       markPriceSource: "exchange_unrealized_pnl",
       dynamicTtpStopLoss: 0.992,
+      dynamicTtpStopLossSource: "runtime_state",
       dynamicTslStopLoss: 0.99,
       firstTradeAt: null,
       lastTradeAt: null,
@@ -131,6 +132,7 @@ describe("buildRuntimeOpenPositionRows", () => {
     expect(rows[0]?.marginInitPct).toBeCloseTo(10, 8);
     expect(rows[0]?.dcaCount).toBe(1);
     expect(rows[0]?.ttpProtectedPercent).toBeCloseTo(8, 8);
+    expect(rows[0]?.ttpProtectedSource).toBe("backend");
     expect(rows[0]?.tslProtectedPercent).toBeNull();
   });
 
@@ -165,5 +167,19 @@ describe("buildRuntimeOpenPositionRows", () => {
 
     expect(unavailableRows[0]?.markPrice).toBeNull();
     expect(unavailableRows[0]?.liveMarkPriceSource).toBe("unavailable");
+  });
+
+  it("marks strategy-fallback dynamic TTP protection as prospective", () => {
+    const rows = buildRuntimeOpenPositionRows({
+      positions: basePositions({
+        dynamicTtpStopLoss: 0.993,
+        dynamicTtpStopLossSource: "strategy_fallback",
+      }),
+      symbolStats,
+      streamPrices: new Map(),
+    });
+
+    expect(rows[0]?.ttpProtectedPercent).toBeCloseTo(7, 8);
+    expect(rows[0]?.ttpProtectedSource).toBe("prospective");
   });
 });

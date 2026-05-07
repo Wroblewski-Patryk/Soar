@@ -236,6 +236,7 @@ export const dashboardBotsDeCh = {
     "markPriceSourceExchangePnl": "Exchange-PnL",
     "markPriceSourceRuntimeCandidate": "Runtime-Kandidat",
     "markPriceSourceUnavailable": "Nicht verfuegbar",
+    "prospectiveProtection": "Prospektiv",
     "closeReasonTp": "TP",
     "closeReasonTtp": "TTP",
     "closeReasonSl": "SL",

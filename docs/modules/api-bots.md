@@ -5,7 +5,7 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/bots`
 - Owner: backend/trading-domain
-- Last updated: 2026-05-03
+- Last updated: 2026-05-07
 - Related planning task: `RUNTIME-AUDIT-27`
 
 ## Canonical Architecture Linkage
@@ -60,6 +60,9 @@ Out of scope:
   5. For market-universe-backed auto-groups, resolve symbols using shared contract.
 - Runtime read:
   - aggregate session telemetry, symbol stats, position/trade enrichment, fallback market data.
+  - dynamic TTP stop rows include source metadata so clients can distinguish
+    canonical runtime-state protection from strategy-derived prospective
+    display fallback.
   - bot-scoped portfolio history with PAPER reset and LIVE wallet-capital markers.
 - Assistant dry-run:
   - load bot assistant config/subagents and execute deterministic orchestration trace.

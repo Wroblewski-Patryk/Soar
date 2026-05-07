@@ -20,6 +20,18 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `V1UI-09 fix(web-runtime): label API fallback TTP protection source`
+  - Scope: closed an ARCHITECT-mode runtime protection-truth parity slice.
+    API runtime position reads now expose additive `dynamicTtpStopLossSource`
+    metadata and Web labels `strategy_fallback` protection as prospective in
+    both dashboard home and bot monitoring. Validation PASS: focused API
+    serialization tests (`8/8`), focused Web runtime/dashboard/bot monitoring
+    tests (`32/32`), API typecheck, Web typecheck, route-reachable i18n audit
+    (`findings=0`), Web lint, repository guardrails, Web build, and
+    authenticated rendered `/dashboard/bots` smoke with no console errors.
+    Evidence:
+    `docs/planning/v1ui-09-runtime-ttp-source-parity-task-2026-05-07.md`.
+
 - [x] `V1UI-08 fix(web-runtime): label prospective dashboard TTP protection`
   - Scope: closed a BUILDER-mode dashboard protection-truth parity slice.
     Dashboard home open-position TTP cells now label config-derived fallback

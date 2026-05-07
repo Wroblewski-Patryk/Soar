@@ -236,6 +236,7 @@ export const dashboardBotsPl = {
     "markPriceSourceExchangePnl": "PnL z gieldy",
     "markPriceSourceRuntimeCandidate": "Kandydat runtime",
     "markPriceSourceUnavailable": "Niedostepne",
+    "prospectiveProtection": "Prospektywna",
     "closeReasonTp": "TP",
     "closeReasonTtp": "TTP",
     "closeReasonSl": "SL",

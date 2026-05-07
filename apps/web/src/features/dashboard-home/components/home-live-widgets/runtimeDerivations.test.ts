@@ -42,6 +42,7 @@ const dynamicStopRow = {
   pnlMarginPct: 10,
   marginInitPct: null,
   ttpProtectedPercent: null,
+  ttpProtectedSource: null,
   fallbackTtpProtectedPercent: null,
   tslProtectedPercent: null,
 } satisfies OpenPositionWithLive;
@@ -53,6 +54,7 @@ describe("runtimeDerivations", () => {
       resolveDynamicTslDisplay({
         ...dynamicStopRow,
         ttpProtectedPercent: 5,
+        ttpProtectedSource: "backend",
         tslProtectedPercent: 4,
       })
     ).toBeNull();
@@ -67,10 +69,11 @@ describe("runtimeDerivations", () => {
 
   it("prefers backend TTP over fallback TTP in the display resolver", () => {
     const row = {
-        ...dynamicStopRow,
-        ttpProtectedPercent: 5,
-        fallbackTtpProtectedPercent: 7,
-      };
+      ...dynamicStopRow,
+      ttpProtectedPercent: 5,
+      ttpProtectedSource: "backend",
+      fallbackTtpProtectedPercent: 7,
+    } satisfies OpenPositionWithLive;
 
     expect(resolveDynamicTtpDisplay(row)).toBe(5);
     expect(resolveDynamicTtpDisplaySource(row)).toBe("backend");
@@ -85,6 +88,17 @@ describe("runtimeDerivations", () => {
     expect(resolveDynamicTtpDisplay(row)).toBe(7);
     expect(resolveDynamicTtpDisplaySource(row)).toBe("prospective");
     expect(resolveDynamicTtpDisplaySource(dynamicStopRow)).toBeNull();
+  });
+
+  it("marks API strategy-fallback TTP display as prospective protection truth", () => {
+    const row = {
+      ...dynamicStopRow,
+      ttpProtectedPercent: 7,
+      ttpProtectedSource: "prospective",
+    } satisfies OpenPositionWithLive;
+
+    expect(resolveDynamicTtpDisplay(row)).toBe(7);
+    expect(resolveDynamicTtpDisplaySource(row)).toBe("prospective");
   });
 
   it("uses persisted marginUsed when deriving live pnl percent", () => {

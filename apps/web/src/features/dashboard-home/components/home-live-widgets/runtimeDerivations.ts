@@ -25,7 +25,7 @@ export const resolveDynamicTtpDisplay = (position: OpenPositionWithLive) =>
 export const resolveDynamicTtpDisplaySource = (
   position: OpenPositionWithLive
 ): "backend" | "prospective" | null => {
-  if (position.ttpProtectedPercent != null) return "backend";
+  if (position.ttpProtectedPercent != null) return position.ttpProtectedSource;
   if (position.fallbackTtpProtectedPercent != null) return "prospective";
   return null;
 };

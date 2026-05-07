@@ -86,6 +86,9 @@ Out of scope:
   (`continuityState`, `actionable`, and `strategyAutomationContextResolved`)
   so recovered, recovering, externally closed, repair-only, and unresolved
   strategy-context states do not look like normal actionable rows.
+- Monitoring open-position TTP cells label API `strategy_fallback`
+  protection as prospective, preserving the distinction between canonical
+  runtime TTP state and read-model assistance from strategy configuration.
 - Monitoring history tables expose backend close attribution (`closeReason` and
   `closeInitiator`) for closed positions and close trades.
 - Assistant tab exposes per-slot status, latency, and message traces for operator diagnostics.

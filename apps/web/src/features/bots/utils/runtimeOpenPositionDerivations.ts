@@ -19,6 +19,7 @@ export type RuntimeOpenPositionDisplayRow = BotRuntimePositionItem & {
   pnlMarginPct: number;
   marginInitPct: number | null;
   ttpProtectedPercent: number | null;
+  ttpProtectedSource: "backend" | "prospective" | null;
   tslProtectedPercent: number | null;
 };
 
@@ -149,6 +150,12 @@ export const buildRuntimeOpenPositionRows = (params: {
         marginUsed,
         stopPrice: position.dynamicTtpStopLoss,
       }) ?? null;
+    const ttpProtectedSource =
+      ttpProtectedPercent == null
+        ? null
+        : position.dynamicTtpStopLossSource === "strategy_fallback"
+          ? "prospective"
+          : "backend";
     const tslProtectedPercent =
       ttpProtectedPercent != null
         ? null
@@ -175,6 +182,7 @@ export const buildRuntimeOpenPositionRows = (params: {
       pnlMarginPct,
       marginInitPct,
       ttpProtectedPercent,
+      ttpProtectedSource,
       tslProtectedPercent,
     };
   });

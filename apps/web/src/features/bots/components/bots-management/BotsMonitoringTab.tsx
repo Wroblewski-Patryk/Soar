@@ -12,6 +12,7 @@ import {
 } from "./BotsMonitoringSections";
 import { MonitoringFutureSignalsSection } from "./MonitoringFutureSignalsSection";
 import { BotsPortfolioHistorySection } from "./BotsPortfolioHistorySection";
+import { BotsMonitoringProtectionCell } from "./BotsMonitoringProtectionCell";
 import {
   Bot,
   BotPortfolioHistoryResponse,
@@ -57,6 +58,7 @@ type MonitorOpenPositionRow = {
   dcaExecutedLevels?: number[] | null;
   dcaPlannedLevels?: number[] | null;
   ttpProtectedPercent: number | null;
+  ttpProtectedSource: "backend" | "prospective" | null;
   tslProtectedPercent: number | null;
 };
 
@@ -733,9 +735,12 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                               </td>
                               {monitorShowDynamicStopColumns ? (
                                 <td>
-                                  {position.ttpProtectedPercent == null
-                                    ? "-"
-                                    : `${formatNumber(position.ttpProtectedPercent, 2)}%`}
+                                  <BotsMonitoringProtectionCell
+                                    value={position.ttpProtectedPercent}
+                                    source={position.ttpProtectedSource}
+                                    prospectiveLabel={t("dashboard.bots.monitoring.prospectiveProtection")}
+                                    formatNumber={formatNumber}
+                                  />
                                 </td>
                               ) : null}
                               {monitorShowDynamicStopColumns ? (

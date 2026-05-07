@@ -706,6 +706,7 @@ describe("BotsManagement", () => {
           markPrice: 71500,
           markPriceSource: "fallback_ticker",
           dynamicTtpStopLoss: null,
+          dynamicTtpStopLossSource: null,
           dynamicTslStopLoss: null,
           firstTradeAt: "2026-03-31T10:04:30.000Z",
           lastTradeAt: "2026-03-31T10:04:30.000Z",
@@ -738,6 +739,7 @@ describe("BotsManagement", () => {
           markPrice: 2520,
           markPriceSource: "exchange_unrealized_pnl",
           dynamicTtpStopLoss: 2508.4321,
+          dynamicTtpStopLossSource: "strategy_fallback",
           dynamicTslStopLoss: 2496.5555,
           firstTradeAt: "2026-03-31T10:03:00.000Z",
           lastTradeAt: "2026-03-31T10:04:00.000Z",
@@ -770,6 +772,7 @@ describe("BotsManagement", () => {
           closeReason: "MANUAL",
           closeInitiator: "USER_APP",
           dynamicTtpStopLoss: null,
+          dynamicTtpStopLossSource: null,
           dynamicTslStopLoss: null,
           firstTradeAt: "2026-03-31T09:00:00.000Z",
           lastTradeAt: "2026-03-31T10:00:00.000Z",
@@ -877,6 +880,7 @@ describe("BotsManagement", () => {
       expect(screen.getByText("Odzyskana, bez akcji")).toBeInTheDocument();
       expect(screen.getByText("Akcja zablokowana")).toBeInTheDocument();
       expect(screen.getByText("Kontekst strategii nierozwiazany")).toBeInTheDocument();
+      expect(screen.getByText("Prospektywna")).toBeInTheDocument();
       expect(screen.getAllByText("Manualnie").length).toBeGreaterThan(0);
       expect(screen.getAllByText("User w app").length).toBeGreaterThan(0);
       expect(

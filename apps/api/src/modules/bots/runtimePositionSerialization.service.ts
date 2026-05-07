@@ -255,37 +255,48 @@ export const resolveRuntimePositionDynamicStops = (
     typeof liveUnrealizedPnlFromPrice === 'number' && Number.isFinite(liveUnrealizedPnlFromPrice)
       ? liveUnrealizedPnlFromPrice
       : null;
-
-  return {
-    dynamicTtpStopLoss:
-      ttpTriggerPercent != null
+  const runtimeTtpStopLoss =
+    ttpTriggerPercent != null
+      ? computePriceFromPnlFraction({
+          side: positionSide,
+          entryPrice: stateEntryPrice,
+          quantity,
+          leverage: effectiveLeverage,
+          marginUsed,
+          pnlFraction: ttpTriggerPercent,
+        })
+      : null;
+  const fallbackTtpStopLoss =
+    runtimeTtpStopLoss == null && fallbackTtpTriggerPercent != null
+      ? computePriceFromPnlFraction({
+          side: positionSide,
+          entryPrice: stateEntryPrice,
+          quantity,
+          leverage: effectiveLeverage,
+          marginUsed,
+          pnlFraction: fallbackTtpTriggerPercent,
+        })
+      : runtimeTtpStopLoss == null && stickyFallbackTtpTriggerPercent != null
         ? computePriceFromPnlFraction({
             side: positionSide,
             entryPrice: stateEntryPrice,
             quantity,
             leverage: effectiveLeverage,
             marginUsed,
-            pnlFraction: ttpTriggerPercent,
+            pnlFraction: stickyFallbackTtpTriggerPercent,
           })
-        : fallbackTtpTriggerPercent != null
-          ? computePriceFromPnlFraction({
-              side: positionSide,
-              entryPrice: stateEntryPrice,
-              quantity,
-              leverage: effectiveLeverage,
-              marginUsed,
-              pnlFraction: fallbackTtpTriggerPercent,
-              })
-          : stickyFallbackTtpTriggerPercent != null
-            ? computePriceFromPnlFraction({
-                side: positionSide,
-                entryPrice: stateEntryPrice,
-                quantity,
-                leverage: effectiveLeverage,
-                marginUsed,
-                pnlFraction: stickyFallbackTtpTriggerPercent,
-              })
-        : null,
+        : null;
+  const dynamicTtpStopLoss = runtimeTtpStopLoss ?? fallbackTtpStopLoss;
+  const dynamicTtpStopLossSource =
+    runtimeTtpStopLoss != null
+      ? 'runtime_state'
+      : fallbackTtpStopLoss != null
+        ? 'strategy_fallback'
+        : null;
+
+  return {
+    dynamicTtpStopLoss,
+    dynamicTtpStopLossSource,
     dynamicTslStopLoss,
     liveUnrealizedPnl,
   };

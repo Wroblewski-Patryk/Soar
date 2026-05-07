@@ -29,6 +29,15 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-07: Closed `V1UI-09` with
+  `docs/planning/v1ui-09-runtime-ttp-source-parity-task-2026-05-07.md`.
+  API runtime position reads now expose additive `dynamicTtpStopLossSource`
+  metadata and Web labels `strategy_fallback` protection as prospective in
+  both dashboard home and bot monitoring. Validation PASS: focused API
+  serialization tests (`8/8`), focused Web runtime/dashboard/bot monitoring
+  tests (`32/32`), API typecheck, Web typecheck, route-reachable i18n audit
+  (`findings=0`), Web lint, repository guardrails, Web build, and
+  authenticated rendered `/dashboard/bots` smoke with no console errors.
 - 2026-05-07: Closed `V1UI-08` with
   `docs/planning/v1ui-08-dashboard-prospective-protection-label-task-2026-05-07.md`.
   Dashboard home open-position TTP cells now label config-derived fallback
