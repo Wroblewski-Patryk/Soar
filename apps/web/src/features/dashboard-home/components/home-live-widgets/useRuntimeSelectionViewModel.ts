@@ -203,6 +203,7 @@ export const useRuntimeSelectionViewModel = ({
       equity,
       free,
       exposurePct,
+      historyPositions: selected.positions?.historyItems ?? [],
       trades,
       drawdown: maxDrawdown(trades),
     };

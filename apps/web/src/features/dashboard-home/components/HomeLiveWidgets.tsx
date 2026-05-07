@@ -45,6 +45,7 @@ import {
   SIGNAL_CARDS_DESKTOP_MIN_WIDTH,
 } from "./home-live-widgets/formatters";
 import {
+  createHistoryPositionsColumns,
   createOpenOrdersColumns,
   createOpenPositionsColumns,
   createTradesColumns,
@@ -76,6 +77,7 @@ const DASHBOARD_OPEN_POSITIONS_SORT_STORAGE_KEY = "dashboard.home.openPositions.
 const DASHBOARD_OPEN_POSITIONS_COLUMNS_STORAGE_KEY = "dashboard.home.openPositions.columns.v1";
 const DASHBOARD_OPEN_ORDERS_SORT_STORAGE_KEY = "dashboard.home.openOrders.sort.v1";
 const DASHBOARD_OPEN_ORDERS_COLUMNS_STORAGE_KEY = "dashboard.home.openOrders.columns.v1";
+const DASHBOARD_HISTORY_POSITIONS_COLUMNS_STORAGE_KEY = "dashboard.home.historyPositions.columns.v1";
 const DASHBOARD_TRADE_HISTORY_COLUMNS_STORAGE_KEY = "dashboard.home.tradeHistory.columns.v1";
 const TRADE_PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
 const OPEN_POSITIONS_PAGE_SIZE_OPTIONS = [10, 25, 50] as const;
@@ -611,6 +613,33 @@ export default function HomeLiveWidgets() {
     ]
   );
 
+  const historyPositionsColumns = useMemo(
+    () =>
+      createHistoryPositionsColumns({
+        t,
+        formatDateTime,
+        formatNumber,
+        formatRuntimeAmount,
+        formatDcaPercent,
+        formatDuration: formatAgeCompact,
+        withRuntimeUnit,
+        resolveRuntimeIcon,
+        runtimeIconsLoading,
+        runtimeIconsError,
+      }),
+    [
+      formatDateTime,
+      formatDcaPercent,
+      formatNumber,
+      formatRuntimeAmount,
+      resolveRuntimeIcon,
+      runtimeIconsError,
+      runtimeIconsLoading,
+      t,
+      withRuntimeUnit,
+    ]
+  );
+
   const runtimeTabItems = useMemo<RuntimeTabItem[]>(
     () =>
       RUNTIME_DATA_TABS.map((tab) => ({
@@ -818,6 +847,12 @@ export default function HomeLiveWidgets() {
                 noOpenOrdersLabel={t("dashboard.home.runtime.openOrdersPlaceholder")}
                 tradesLoading={selectedTradesLoading}
                 loadingLabel={t("dashboard.home.loadWidgets")}
+                historyPositionsRows={selectedData?.historyPositions ?? []}
+                historyPositionsColumns={historyPositionsColumns}
+                historyPositionsColumnVisibilityKey={DASHBOARD_HISTORY_POSITIONS_COLUMNS_STORAGE_KEY}
+                closedPositionsTitle={t("dashboard.home.runtime.closedPositionsHistoryTitle")}
+                noClosedPositionsLabel={t("dashboard.home.runtime.noClosedPositions")}
+                tradesHistoryTitle={t("dashboard.home.runtime.tradesHistoryTableTitle")}
                 tradesRows={selectedData?.trades ?? []}
                 tradesColumns={tradesColumns}
                 filterPlaceholder={t("dashboard.home.runtime.manualOrderSymbolPlaceholder")}

@@ -133,6 +133,7 @@ const createProps = (overrides?: Partial<RuntimeSidebarSectionProps>): RuntimeSi
       equity: 10000,
       free: 10000,
       exposurePct: 0,
+      historyPositions: [],
       trades: [],
       drawdown: { abs: 0, pct: null },
     },

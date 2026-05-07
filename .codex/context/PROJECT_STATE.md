@@ -3,6 +3,19 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 dashboard closed-position history table slice `V1UI-20` is
+  closed on `main`. TESTER-mode review found that `DAGG` promised two
+  `/dashboard` history tables, but Web rendered only trade history while
+  `positions.historyItems` stayed hidden. Dashboard Home now renders aggregate
+  closed positions above trade history, preserving selected-bot scope and
+  exposing backend duration, DCA, fees paid, close reason, close initiator, and
+  realized PnL. Validation PASS: focused presenter plus aggregate-history
+  tests (`16/16`), broader Dashboard Home plus sidebar regressions (`28/28`),
+  Web typecheck, Web lint, route-reachable i18n audit (`findings=0`),
+  repository guardrails, full workspace build, and authenticated rendered
+  `/dashboard` smoke with no console warnings, console errors, or page errors.
+  Evidence:
+  `docs/planning/v1ui-20-dashboard-closed-history-table-task-2026-05-07.md`.
 - 2026-05-07 dashboard closed-position close-reason slice `V1UI-19` is closed
   on `main`. Dashboard home Closed Positions history now renders
   backend `closeReason` with the same shared close-reason label suffix and

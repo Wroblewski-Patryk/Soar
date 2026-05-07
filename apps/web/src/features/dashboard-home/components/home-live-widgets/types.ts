@@ -77,6 +77,7 @@ export type RuntimeSelectedData = {
   equity: number | null;
   free: number | null;
   exposurePct: number | null;
+  historyPositions: BotRuntimePositionItem[];
   trades: BotRuntimeTrade[];
   drawdown: { abs: number; pct: number | null };
 };

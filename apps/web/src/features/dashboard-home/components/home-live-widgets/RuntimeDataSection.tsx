@@ -4,6 +4,7 @@ import { SkeletonTableRows } from "../../../../ui/components/loading";
 import { TAB_CONTENT_FRAME_CLASS, TAB_CONTENT_INNER_CLASS } from "../../../../ui/components/tabContentFrame";
 import type {
   OpenPositionWithLive,
+  HistoryPositionsTableColumn,
   OpenOrdersTableColumn,
   OpenPositionsTableColumn,
   RuntimeDataTab,
@@ -17,7 +18,7 @@ import type {
   RuntimeTradeMeta,
 } from "./types";
 import type { BotRuntimeTrade } from "../../../../features/bots/types/bot.type";
-import type { BotRuntimeOpenOrderItem } from "../../../../features/bots/types/bot.type";
+import type { BotRuntimeOpenOrderItem, BotRuntimePositionItem } from "../../../../features/bots/types/bot.type";
 
 type RuntimeDataSectionProps = {
   runtimeDataTab: RuntimeDataTab;
@@ -41,6 +42,12 @@ type RuntimeDataSectionProps = {
   noOpenOrdersLabel: string;
   tradesLoading: boolean;
   loadingLabel: string;
+  historyPositionsRows: BotRuntimePositionItem[];
+  historyPositionsColumns: HistoryPositionsTableColumn[];
+  historyPositionsColumnVisibilityKey: string;
+  closedPositionsTitle: string;
+  noClosedPositionsLabel: string;
+  tradesHistoryTitle: string;
   tradesRows: BotRuntimeTrade[];
   tradesColumns: TradesTableColumn[];
   filterPlaceholder: string;
@@ -168,6 +175,28 @@ export default function RuntimeDataSection(props: RuntimeDataSectionProps) {
                   </div>
                 </>
               ) : null}
+              <section className="space-y-2">
+                <h3 className="px-3 text-xs font-semibold uppercase tracking-wide opacity-60">
+                  {props.closedPositionsTitle}
+                </h3>
+                <DataTable
+                  compact
+                  framed={false}
+                  rows={props.historyPositionsRows}
+                  columns={props.historyPositionsColumns}
+                  getRowId={(row) => row.id}
+                  defaultSortKey="closedAt"
+                  defaultSortDirection="desc"
+                  columnVisibilityEnabled
+                  columnVisibilityPreferenceKey={props.historyPositionsColumnVisibilityKey}
+                  showSearch={false}
+                  emptyText={props.noClosedPositionsLabel}
+                />
+              </section>
+              <section className="space-y-2">
+                <h3 className="px-3 text-xs font-semibold uppercase tracking-wide opacity-60">
+                  {props.tradesHistoryTitle}
+                </h3>
               <DataTable
                 compact
                 framed={false}
@@ -271,6 +300,7 @@ export default function RuntimeDataSection(props: RuntimeDataSectionProps) {
                 emptyText={props.noTradeHistoryLabel}
                 paginationClassName="p-3"
               />
+              </section>
             </section>
           </div>
         </section>

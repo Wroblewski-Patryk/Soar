@@ -844,7 +844,7 @@ describe("HomeLiveWidgets", () => {
 
     fireEvent.click(screen.getByRole("tab", { name: /Historia|History/i }));
     await waitFor(() => {
-      expect(screen.getByRole("columnheader", { name: /^Fee/i })).toBeInTheDocument();
+      expect(screen.getAllByRole("columnheader", { name: /^Fee/i }).length).toBeGreaterThanOrEqual(2);
       expect(screen.getByText("PENDING USDT")).toBeInTheDocument();
       expect(screen.queryByRole("columnheader", { name: /^Origin$/i })).not.toBeInTheDocument();
     });

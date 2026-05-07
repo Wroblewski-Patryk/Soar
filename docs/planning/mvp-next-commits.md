@@ -9,6 +9,18 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `V1UI-20 fix(web-runtime): show dashboard closed-position history`
+  - 2026-05-07: Closed a TESTER-mode architecture-to-Web runtime history
+    parity slice. Dashboard Home now renders aggregate `positions.historyItems`
+    as a dedicated closed-position table above trade history, preserving
+    selected-bot scope and exposing backend duration, DCA, fees paid, close
+    reason, close initiator, and realized PnL. Validation PASS: focused
+    presenter plus aggregate-history tests (`16/16`), broader Dashboard Home
+    plus sidebar regressions (`28/28`), Web typecheck, Web lint,
+    route-reachable i18n audit (`findings=0`), repository guardrails, full
+    workspace build, and authenticated rendered `/dashboard` smoke with no
+    console warnings, console errors, or page errors. Evidence:
+    `docs/planning/v1ui-20-dashboard-closed-history-table-task-2026-05-07.md`.
 - [x] `V1UI-19 fix(web-runtime): show dashboard history close reason`
   - 2026-05-07: Closed a BUILDER-mode backend-to-Web runtime history parity
     slice. Dashboard home Closed Positions history now renders backend

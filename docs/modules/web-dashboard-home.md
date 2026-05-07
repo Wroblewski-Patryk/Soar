@@ -274,6 +274,11 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
     beside the existing close initiator. Close-reason label suffix and pill
     semantics are derived from the shared Web runtime formatter while route
     namespaces remain owned by each surface.
+- Closed-position history table parity note (2026-05-07):
+  - Dashboard home history renders aggregate `positions.historyItems` as a
+    dedicated closed-position table above trade history, preserving selected-bot
+    scope and exposing backend duration, DCA, fee, close reason, close
+    initiator, and realized PnL truth on the primary runtime surface.
 
 ## 20. Sidebar Strategy Source-of-Truth Contract (`SBSC`)
 - Sidebar `Market` and `Strategy` cards use runtime topology (`runtime-graph`) as canonical context source.

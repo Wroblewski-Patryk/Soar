@@ -352,9 +352,11 @@ describe("HomeLiveWidgets aggregate history parity", () => {
     const tradeHistoryTab = await screen.findByRole("tab", { name: /Historia|History/i });
     fireEvent.click(tradeHistoryTab);
 
+    expect(await screen.findByText("LEGACYPOSUSDT")).toBeInTheDocument();
+    expect(screen.getByText("Zamkniete pozycje")).toBeInTheDocument();
     expect(await screen.findByText("LEGACYUSDT")).toBeInTheDocument();
-    expect(screen.getByText("Uzytkownik na gieldzie")).toBeInTheDocument();
-    expect(screen.queryByText("LEGACYPOSUSDT")).not.toBeInTheDocument();
+    expect(screen.getAllByText("Uzytkownik na gieldzie")).toHaveLength(2);
+    expect(screen.getByText("20m")).toBeInTheDocument();
   });
 
   it("re-scopes aggregate history positions and trades immediately after selected-bot switch", async () => {
@@ -554,14 +556,17 @@ describe("HomeLiveWidgets aggregate history parity", () => {
     const tradeHistoryTab = await screen.findByRole("tab", { name: /Historia|History/i });
     fireEvent.click(tradeHistoryTab);
 
+    expect(await screen.findByText("ALPHAHISTUSDT")).toBeInTheDocument();
     expect(await screen.findByText("ALPHATRADEUSDT")).toBeInTheDocument();
 
     fireEvent.change(screen.getByLabelText("Wybrany bot"), { target: { value: "bot-b" } });
 
     await waitFor(() => {
+      expect(screen.queryByText("ALPHAHISTUSDT")).not.toBeInTheDocument();
       expect(screen.queryByText("ALPHATRADEUSDT")).not.toBeInTheDocument();
     });
 
+    expect(await screen.findByText("BETAHISTUSDT")).toBeInTheDocument();
     expect(await screen.findByText("BETATRADEUSDT")).toBeInTheDocument();
   });
 });

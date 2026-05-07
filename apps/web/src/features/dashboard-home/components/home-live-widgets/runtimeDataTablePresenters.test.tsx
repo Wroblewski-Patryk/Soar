@@ -531,10 +531,15 @@ describe("createHistoryPositionsColumns", () => {
           "dashboard.bots.monitoring.table.exit": "Exit",
           "dashboard.home.runtime.realizedPnl": "Realized PnL",
           "dashboard.home.runtime.closeReason": "Close reason",
+          "dashboard.home.runtime.duration": "Duration",
+          "dashboard.home.runtime.dca": "DCA",
+          "dashboard.home.runtime.fee": "Fee",
           "dashboard.home.runtime.closeBy": "Closed by",
         })[key] ?? key,
       formatNumber: (value) => String(value),
       formatRuntimeAmount: (value) => String(value),
+      formatDcaPercent: (value) => `${value}%`,
+      formatDuration: (value) => `${value}ms`,
       withRuntimeUnit: (label) => label,
       resolveRuntimeIcon: () => null,
       runtimeIconsLoading: false,
@@ -599,10 +604,15 @@ describe("createHistoryPositionsColumns", () => {
           "dashboard.bots.monitoring.table.exit": "Exit",
           "dashboard.home.runtime.realizedPnl": "Realized PnL",
           "dashboard.home.runtime.closeReason": "Close reason",
+          "dashboard.home.runtime.duration": "Duration",
+          "dashboard.home.runtime.dca": "DCA",
+          "dashboard.home.runtime.fee": "Fee",
           "dashboard.home.runtime.closeBy": "Closed by",
         })[key] ?? key,
       formatNumber: (value) => String(value),
       formatRuntimeAmount: (value) => String(value),
+      formatDcaPercent: (value) => `${value}%`,
+      formatDuration: (value) => `${value}ms`,
       withRuntimeUnit: (label) => label,
       resolveRuntimeIcon: () => null,
       runtimeIconsLoading: false,
@@ -654,10 +664,15 @@ describe("createHistoryPositionsColumns", () => {
           "dashboard.home.runtime.realizedPnl": "Realized PnL",
           "dashboard.home.runtime.closeReason": "Close reason",
           "dashboard.home.runtime.closeReasonTtp": "TTP",
+          "dashboard.home.runtime.duration": "Duration",
+          "dashboard.home.runtime.dca": "DCA",
+          "dashboard.home.runtime.fee": "Fee",
           "dashboard.home.runtime.closeBy": "Closed by",
         })[key] ?? key,
       formatNumber: (value) => String(value),
       formatRuntimeAmount: (value) => String(value),
+      formatDcaPercent: (value) => `${value}%`,
+      formatDuration: (value) => `${value}ms`,
       withRuntimeUnit: (label) => label,
       resolveRuntimeIcon: () => null,
       runtimeIconsLoading: false,
@@ -701,6 +716,83 @@ describe("createHistoryPositionsColumns", () => {
     );
 
     expect(screen.getByText("TTP")).toHaveClass("border-success/40");
+  });
+
+  it("renders duration, DCA and fees from runtime history-position payload", () => {
+    const columns = createHistoryPositionsColumns({
+      t: (key) =>
+        ({
+          "dashboard.home.runtime.timeOpened": "Time opened",
+          "dashboard.home.runtime.timeClosed": "Time closed",
+          "dashboard.home.runtime.symbol": "Symbol",
+          "dashboard.home.runtime.side": "Side",
+          "dashboard.home.runtime.qty": "Qty",
+          "dashboard.bots.monitoring.table.entry": "Entry",
+          "dashboard.bots.monitoring.table.exit": "Exit",
+          "dashboard.home.runtime.realizedPnl": "Realized PnL",
+          "dashboard.home.runtime.closeReason": "Close reason",
+          "dashboard.home.runtime.duration": "Duration",
+          "dashboard.home.runtime.dca": "DCA",
+          "dashboard.home.runtime.fee": "Fee",
+          "dashboard.home.runtime.closeBy": "Closed by",
+        })[key] ?? key,
+      formatNumber: (value) => String(value),
+      formatRuntimeAmount: (value) => `$${value}`,
+      formatDcaPercent: (value) => `${value}%`,
+      formatDuration: (value) => `${value / 60000}m`,
+      withRuntimeUnit: (label) => `${label} (USDT)`,
+      resolveRuntimeIcon: () => null,
+      runtimeIconsLoading: false,
+      runtimeIconsError: null,
+      formatDateTime: (value) => value ?? "-",
+    });
+
+    const durationColumn = columns.find((column) => column.key === "duration");
+    const dcaColumn = columns.find((column) => column.key === "dca");
+    const feeColumn = columns.find((column) => column.key === "feesPaid");
+
+    expect(durationColumn?.label).toBe("Duration");
+    expect(dcaColumn?.label).toBe("DCA");
+    expect(feeColumn?.label).toBe("Fee (USDT)");
+
+    const row = {
+      id: "position-fees",
+      symbol: "ETHUSDT",
+      side: "SHORT" as const,
+      status: "CLOSED" as const,
+      quantity: 2,
+      leverage: 3,
+      entryPrice: 2500,
+      entryNotional: 5000,
+      exitPrice: 2450,
+      stopLoss: null,
+      takeProfit: null,
+      openedAt: "2026-04-29T10:00:00.000Z",
+      closedAt: "2026-04-29T10:15:00.000Z",
+      holdMs: 900000,
+      dcaCount: 2,
+      dcaExecutedLevels: [1],
+      dcaPlannedLevels: [1, 2],
+      feesPaid: 1.23,
+      realizedPnl: 100,
+      unrealizedPnl: 0,
+      markPrice: null,
+      firstTradeAt: null,
+      lastTradeAt: null,
+      tradesCount: 0,
+    };
+
+    render(
+      <div>
+        <span data-testid="duration">{durationColumn?.render?.(row)}</span>
+        <span data-testid="dca">{dcaColumn?.render?.(row)}</span>
+        <span data-testid="fee">{feeColumn?.render?.(row)}</span>
+      </div>
+    );
+
+    expect(screen.getByTestId("duration")).toHaveTextContent("15m");
+    expect(screen.getByTestId("dca")).toHaveTextContent("2");
+    expect(screen.getByTestId("fee")).toHaveTextContent("$1.23");
   });
 });
 

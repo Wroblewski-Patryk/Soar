@@ -493,12 +493,18 @@ export const createHistoryPositionsColumns = ({
   t,
   formatNumber,
   formatRuntimeAmount,
+  formatDcaPercent,
   withRuntimeUnit,
   resolveRuntimeIcon,
   runtimeIconsLoading,
   runtimeIconsError,
   formatDateTime,
-}: SharedColumnsArgs & { formatDateTime: (value?: string | null) => string }): HistoryPositionsTableColumn[] => [
+  formatDuration,
+}: SharedColumnsArgs & {
+  formatDateTime: (value?: string | null) => string;
+  formatDcaPercent: (value: number) => string;
+  formatDuration: (value: number) => string;
+}): HistoryPositionsTableColumn[] => [
   {
     key: "openedAt",
     label: t("dashboard.home.runtime.timeOpened"),
@@ -585,6 +591,35 @@ export const createHistoryPositionsColumns = ({
         </span>
       );
     },
+  },
+  {
+    key: "duration",
+    label: t("dashboard.home.runtime.duration"),
+    sortable: true,
+    accessor: (row) => row.holdMs,
+    render: (row) => formatDuration(row.holdMs),
+  },
+  {
+    key: "dca",
+    label: t("dashboard.home.runtime.dca"),
+    sortable: true,
+    accessor: (row) => row.dcaCount,
+    className: "text-[11px]",
+    render: (row) =>
+      renderDcaLadderCell({
+        id: row.id,
+        dcaCount: row.dcaCount,
+        dcaExecutedLevels: row.dcaExecutedLevels,
+        dcaPlannedLevels: row.dcaPlannedLevels,
+        formatLevel: formatDcaPercent,
+      }),
+  },
+  {
+    key: "feesPaid",
+    label: withRuntimeUnit(t("dashboard.home.runtime.fee")),
+    sortable: true,
+    accessor: (row) => row.feesPaid,
+    render: (row) => formatRuntimeAmount(row.feesPaid),
   },
   {
     key: "closeInitiator",
