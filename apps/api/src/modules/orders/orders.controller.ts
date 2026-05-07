@@ -58,6 +58,14 @@ const handleOrderError = (res: Response, error: unknown) => {
   if (mapped.code === ORDER_ERROR_CODES.liveOrderTypeUnsupported) {
     return sendError(res, 400, 'LIVE supports MARKET and LIMIT order types only', mapped.details);
   }
+  if (mapped.code === ORDER_ERROR_CODES.liveOrderCancelUnsupported) {
+    return sendError(
+      res,
+      501,
+      'Exchange-backed order cancel is not supported by the current LIVE execution boundary',
+      mapped.details
+    );
+  }
   if (mapped.code === ORDER_ERROR_CODES.liveExecutionFailed) {
     return sendError(res, 502, 'LIVE exchange order placement failed', mapped.details);
   }

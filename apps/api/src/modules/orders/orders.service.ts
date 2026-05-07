@@ -572,6 +572,9 @@ const writeOrderAudit = async (params: {
   }
 };
 
+const hasExchangeOrderIdentity = (exchangeOrderId: string | null | undefined) =>
+  typeof exchangeOrderId === 'string' && exchangeOrderId.trim().length > 0;
+
 export const openOrder = async (
   userId: string,
   payload: OpenOrderInput,
@@ -760,6 +763,9 @@ export const cancelOrder = async (userId: string, id: string, payload: CancelOrd
   if (existing.syncState !== 'IN_SYNC') {
     throw orderErrors.orderNotCancelable();
   }
+  if (hasExchangeOrderIdentity(existing.exchangeOrderId)) {
+    throw orderErrors.liveOrderCancelUnsupported();
+  }
 
   if (!payload.riskAck) {
     throw orderErrors.orderCancelRiskAckRequired();
@@ -801,6 +807,9 @@ export const closeOrder = async (userId: string, id: string, payload: CloseOrder
     throw orderErrors.orderNotClosable();
   }
   if (existing.syncState !== 'IN_SYNC') {
+    throw orderErrors.orderNotClosable();
+  }
+  if (hasExchangeOrderIdentity(existing.exchangeOrderId)) {
     throw orderErrors.orderNotClosable();
   }
 

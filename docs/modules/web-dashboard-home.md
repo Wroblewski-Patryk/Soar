@@ -389,6 +389,9 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
   - Dashboard home and bot monitoring Open Orders rows render backend
     `exchangeOrderId` when available, keeping exchange-side order identity
     visible for LIVE reconciliation and imported-order review.
+  - Exchange-backed Open Orders rows render an explicit unsupported-cancel
+    action state instead of a local cancel button while the backend exchange
+    boundary keeps `LIVE_ORDER_CANCEL` unsupported.
 - Active-only visibility remains unchanged:
   - `PENDING`,
   - `OPEN`,

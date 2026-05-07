@@ -367,6 +367,7 @@ export default function HomeLiveWidgets() {
   const manualOrderErrorLabel = t("dashboard.home.runtime.manualOrderError");
   const cancelOpenOrderLabel = t("dashboard.home.runtime.cancelOpenOrderButton");
   const cancelOpenOrderPendingLabel = t("dashboard.home.runtime.cancelOpenOrderPending");
+  const cancelOpenOrderUnsupportedLabel = t("dashboard.home.runtime.cancelOpenOrderUnsupported");
   const cancelOpenOrderSuccessLabel = t("dashboard.home.runtime.cancelOpenOrderSuccess");
   const cancelOpenOrderErrorLabel = t("dashboard.home.runtime.cancelOpenOrderError");
   const manualOrderInvalidSymbolLabel = t("dashboard.home.runtime.manualOrderSymbolRequired");
@@ -574,12 +575,14 @@ export default function HomeLiveWidgets() {
         actionColumnLabel: t("dashboard.home.runtime.filterAction"),
         cancelOpenOrderLabel,
         cancelOpenOrderPendingLabel,
+        cancelOpenOrderUnsupportedLabel,
         isCancelingOpenOrder,
         onCancelOpenOrder: (orderId) => void handleCancelOpenOrder(orderId),
       }),
     [
       cancelOpenOrderLabel,
       cancelOpenOrderPendingLabel,
+      cancelOpenOrderUnsupportedLabel,
       formatDateTimeWithSeconds,
       formatNumber,
       handleCancelOpenOrder,

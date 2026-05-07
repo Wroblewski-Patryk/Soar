@@ -536,7 +536,7 @@ describe('openOrder live execution contract', () => {
       data: {
         userId: user.id,
         botId: bot.id,
-        walletId: wallet.id,
+        walletId: null,
         strategyId: strategy.id,
         symbol: 'DOGEUSDT',
         side: 'LONG',
@@ -2817,6 +2817,35 @@ describe('manual order action active sync-state contract', () => {
     expect(unchangedOrder.canceledAt).toBeNull();
   });
 
+  it('does not locally cancel exchange-backed open orders without exchange cancel support', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-cancel-exchange-backed@example.com', password: 'hashed' },
+    });
+    const order = await prisma.order.create({
+      data: {
+        userId: user.id,
+        origin: 'USER',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        symbol: 'ETHUSDT',
+        side: 'BUY',
+        type: 'LIMIT',
+        status: 'OPEN',
+        quantity: 0.5,
+        price: 2400,
+        exchangeOrderId: 'binance-open-order-1',
+      },
+    });
+
+    await expect(cancelOrder(user.id, order.id, { riskAck: true })).rejects.toMatchObject({
+      code: ORDER_ERROR_CODES.liveOrderCancelUnsupported,
+    });
+
+    const unchangedOrder = await prisma.order.findUniqueOrThrow({ where: { id: order.id } });
+    expect(unchangedOrder.status).toBe('OPEN');
+    expect(unchangedOrder.canceledAt).toBeNull();
+  });
+
   it('does not close stale local open-status orders or linked positions', async () => {
     const user = await prisma.user.create({
       data: { email: 'orders-stale-close@example.com', password: 'hashed' },
@@ -2856,6 +2885,36 @@ describe('manual order action active sync-state contract', () => {
     expect(unchangedOrder.filledAt).toBeNull();
     const unchangedPosition = await prisma.position.findUniqueOrThrow({ where: { id: position.id } });
     expect(unchangedPosition.status).toBe('OPEN');
+  });
+
+  it('does not locally close exchange-backed open orders as filled', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'orders-close-exchange-backed@example.com', password: 'hashed' },
+    });
+    const order = await prisma.order.create({
+      data: {
+        userId: user.id,
+        origin: 'USER',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        symbol: 'ETHUSDT',
+        side: 'BUY',
+        type: 'LIMIT',
+        status: 'OPEN',
+        quantity: 0.5,
+        price: 2400,
+        exchangeOrderId: 'binance-open-order-2',
+      },
+    });
+
+    await expect(closeOrder(user.id, order.id, { riskAck: true })).rejects.toMatchObject({
+      code: ORDER_ERROR_CODES.orderNotClosable,
+    });
+
+    const unchangedOrder = await prisma.order.findUniqueOrThrow({ where: { id: order.id } });
+    expect(unchangedOrder.status).toBe('OPEN');
+    expect(unchangedOrder.filledAt).toBeNull();
+    expect(unchangedOrder.filledQuantity).toBe(0);
   });
 
   it('does not close a stale local linked position from a synced open order', async () => {

@@ -356,6 +356,7 @@ type OpenOrdersColumnsArgs = {
   actionColumnLabel: string;
   cancelOpenOrderLabel: string;
   cancelOpenOrderPendingLabel: string;
+  cancelOpenOrderUnsupportedLabel: string;
   isCancelingOpenOrder: (orderId: string) => boolean;
   onCancelOpenOrder: (orderId: string) => void;
 };
@@ -364,6 +365,9 @@ const isCancelableOpenOrderStatus = (status: string | null | undefined) => {
   const normalized = status?.trim().toUpperCase();
   return normalized === "PENDING" || normalized === "OPEN" || normalized === "PARTIALLY_FILLED";
 };
+
+const isExchangeBackedOpenOrder = (exchangeOrderId: string | null | undefined) =>
+  typeof exchangeOrderId === "string" && exchangeOrderId.trim().length > 0;
 
 export const createOpenOrdersColumns = ({
   t,
@@ -375,6 +379,7 @@ export const createOpenOrdersColumns = ({
   actionColumnLabel,
   cancelOpenOrderLabel,
   cancelOpenOrderPendingLabel,
+  cancelOpenOrderUnsupportedLabel,
   isCancelingOpenOrder,
   onCancelOpenOrder,
 }: OpenOrdersColumnsArgs): OpenOrdersTableColumn[] => [
@@ -473,6 +478,17 @@ export const createOpenOrdersColumns = ({
     label: actionColumnLabel,
     className: "text-right",
     render: (row) => {
+      if (isExchangeBackedOpenOrder(row.exchangeOrderId)) {
+        return (
+          <span
+            className="text-[10px] uppercase tracking-wide text-warning"
+            title={cancelOpenOrderUnsupportedLabel}
+          >
+            {cancelOpenOrderUnsupportedLabel}
+          </span>
+        );
+      }
+
       if (!isCancelableOpenOrderStatus(row.status)) {
         return <span className="opacity-50">-</span>;
       }

@@ -216,6 +216,7 @@ type TranslationSchema = {
         openOrdersPlaceholder: string;
         cancelOpenOrderButton: string;
         cancelOpenOrderPending: string;
+        cancelOpenOrderUnsupported: string;
         cancelOpenOrderSuccess: string;
         cancelOpenOrderError: string;
         manualOrderActionStateTitle: string;

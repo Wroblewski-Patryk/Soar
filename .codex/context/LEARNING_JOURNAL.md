@@ -50,6 +50,31 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
     successfully.
   - API startup then failed only on missing `API_KEY_ENCRYPTION_KEYS`.
 
+### 2026-05-07 - Browser plugin smoke may need bundled Node fallback on Windows
+- Context: V1UI rendered dashboard smoke in Codex desktop on Windows after
+  Browser plugin setup was attempted first.
+- Symptom: Browser `node_repl` bootstrap failed before any browser action with
+  `Node runtime too old for node_repl`, resolving system Node `v22.13.0` while
+  requiring `>=22.22.0`.
+- Root cause: the Browser plugin's Node REPL picked the workstation Node
+  binary instead of the bundled Codex runtime.
+- Guardrail: attempt Browser plugin first for rendered UI checks; if it fails
+  on the known Node version gate, record the reason and run Playwright with
+  bundled Codex Node instead of downgrading the smoke evidence.
+- Preferred pattern:
+```powershell
+$node='C:\Users\wrobl\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\bin\node.exe'
+$env:NODE_PATH='C:\Users\wrobl\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\node_modules;'+(Join-Path (Get-Location) 'node_modules')
+& $node -e "console.log(process.version); console.log(require.resolve('playwright'))"
+```
+- Avoid: declaring rendered UI validation blocked solely because Browser
+  `node_repl` used the old system Node.
+- Evidence:
+  - 2026-05-07 `V1UI-29`: Browser bootstrap failed on Node `v22.13.0`;
+    bundled Node `v24.14.0` plus Playwright completed authenticated
+    `/dashboard` desktop/mobile smoke with no console errors, page errors, or
+    5xx responses.
+
 ### 2026-04-26 - Drifted local Prisma replay can block focused DB validation
 - Context: a production hotfix needed one new partial unique-index contract for open positions, but local validation also had to keep moving on the shared dev Postgres.
 - Symptom: `pnpm --filter api exec prisma migrate deploy` failed locally on an older migration with `column "strategyId" of relation "Bot" already exists`, even though the repository change under test was a later index-only migration.

@@ -126,6 +126,7 @@ export const dashboardHomePt = {
     "openOrderStatusFilled": "Preenchida",
     "cancelOpenOrderButton": "Cancelar ordem",
     "cancelOpenOrderPending": "A cancelar ordem...",
+    "cancelOpenOrderUnsupported": "Cancelamento na exchange nao suportado",
     "cancelOpenOrderSuccess": "Ordem cancelada.",
     "cancelOpenOrderError": "Falha ao cancelar a ordem.",
     "manualOrderActionStateTitle": "Estado da acao",

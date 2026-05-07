@@ -20,6 +20,21 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `V1UI-29 fix(runtime-orders): fail closed exchange-backed local cancel`
+  - Scope: closed a BUILDER-mode API/Web order-action parity slice. The
+    exchange execution boundary keeps `LIVE_ORDER_CANCEL` unsupported, so
+    exchange-backed open orders carrying `exchangeOrderId` must not be locally
+    canceled or locally marked filled from dashboard actions. API cancel now
+    fails closed with an explicit unsupported cancel error, API close refuses
+    exchange-backed local fill closure, and Dashboard Home renders an
+    unsupported-cancel action state instead of a cancel button. Validation
+    PASS: focused API orders tests (`38/38`), focused Web runtime table
+    presenter tests (`15/15`), API typecheck, Web typecheck, Web lint,
+    route-reachable i18n audit (`findings=0`), repository guardrails, full
+    workspace build, and authenticated rendered `/dashboard` smoke on desktop
+    and mobile with no console errors, page errors, or 5xx responses. Evidence:
+    `docs/planning/v1ui-29-exchange-backed-order-cancel-fail-closed-task-2026-05-07.md`.
+
 - [x] `V1UI-28 fix(web-runtime): show manual-order blocked reason`
   - Scope: closed a BUILDER-mode manual-order diagnostics parity slice.
     `UOLF` requires manual-order lifecycle states to include a blocked reason,

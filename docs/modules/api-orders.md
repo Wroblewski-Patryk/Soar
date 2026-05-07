@@ -54,7 +54,9 @@ Out of scope:
   4. Place order via live adapter with retries + fee reconciliation.
   5. Persist normalized order state.
 - Cancel/close:
-  - resolve ownership and apply lifecycle transition with optional LIVE side effect.
+  - resolve ownership and apply lifecycle transition for local/PAPER orders.
+  - fail closed for exchange-backed open orders while `LIVE_ORDER_CANCEL`
+    remains unsupported at the exchange execution capability boundary.
 
 ## 5. API and UI Integration
 - Routes:
@@ -67,6 +69,8 @@ Out of scope:
 ## 6. Security and Risk Guardrails
 - Auth + ownership checks on every route.
 - LIVE execution requires explicit risk acknowledgement.
+- Exchange-backed open orders are not locally canceled or locally closed as
+  filled while the exchange boundary lacks canonical exchange-cancel support.
 - Strict mode toggles can fail closed when leverage/margin convergence fails.
 
 ## 7. Observability and Operations

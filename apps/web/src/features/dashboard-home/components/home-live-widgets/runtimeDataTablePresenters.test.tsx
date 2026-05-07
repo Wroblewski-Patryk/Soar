@@ -116,6 +116,7 @@ describe("createOpenOrdersColumns", () => {
       actionColumnLabel: "Action",
       cancelOpenOrderLabel: "Cancel order",
       cancelOpenOrderPendingLabel: "Canceling order...",
+      cancelOpenOrderUnsupportedLabel: "Exchange cancel unsupported",
       isCancelingOpenOrder: () => false,
       onCancelOpenOrder: vi.fn(),
     });
@@ -147,6 +148,46 @@ describe("createOpenOrdersColumns", () => {
     expect(screen.getByTestId("quantity")).toHaveTextContent("0.03");
     expect(screen.getByTestId("filled")).toHaveTextContent("0.01");
     expect(screen.getByTestId("stop")).toHaveTextContent("67000");
+  });
+
+  it("renders exchange-backed open orders as blocked instead of locally cancelable", () => {
+    const onCancelOpenOrder = vi.fn();
+    const columns = createOpenOrdersColumns({
+      t: (key) =>
+        ({
+          "dashboard.home.runtime.time": "Time",
+          "dashboard.home.runtime.symbol": "Symbol",
+          "dashboard.home.runtime.source": "Source",
+          "dashboard.home.runtime.exchangeOrderId": "Exchange ID",
+          "dashboard.home.runtime.sourceManual": "Manual",
+          "dashboard.home.runtime.side": "Side",
+          "dashboard.home.runtime.status": "Status",
+          "dashboard.home.runtime.openOrderStatusPartiallyFilled": "Partially filled",
+          "dashboard.home.runtime.type": "Type",
+          "dashboard.home.runtime.qty": "Qty",
+          "dashboard.home.runtime.filled": "Filled",
+          "dashboard.home.runtime.price": "Price",
+          "dashboard.home.runtime.stop": "Stop",
+        })[key] ?? key,
+      formatDateTimeWithSeconds: (value) => value ?? "-",
+      formatNumber: (value) => String(value),
+      resolveRuntimeIcon: () => null,
+      runtimeIconsLoading: false,
+      runtimeIconsError: null,
+      actionColumnLabel: "Action",
+      cancelOpenOrderLabel: "Cancel order",
+      cancelOpenOrderPendingLabel: "Canceling order...",
+      cancelOpenOrderUnsupportedLabel: "Exchange cancel unsupported",
+      isCancelingOpenOrder: () => false,
+      onCancelOpenOrder,
+    });
+    const actionColumn = columns.find((column) => column.key === "action");
+
+    render(<div>{actionColumn?.render?.(openOrderRow)}</div>);
+
+    expect(screen.getByText("Exchange cancel unsupported")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Cancel order" })).not.toBeInTheDocument();
+    expect(onCancelOpenOrder).not.toHaveBeenCalled();
   });
 });
 

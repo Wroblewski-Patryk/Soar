@@ -126,6 +126,7 @@ export const dashboardHomePl = {
     "openOrderStatusFilled": "Zrealizowane",
     "cancelOpenOrderButton": "Anuluj zlecenie",
     "cancelOpenOrderPending": "Anulowanie zlecenia...",
+    "cancelOpenOrderUnsupported": "Cancel gieldowy niewspierany",
     "cancelOpenOrderSuccess": "Zlecenie anulowane.",
     "cancelOpenOrderError": "Nie udalo sie anulowac zlecenia.",
     "manualOrderActionStateTitle": "Stan akcji",

@@ -3,6 +3,24 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 exchange-backed order cancel fail-closed slice `V1UI-29` is
+  closed on `main`. BUILDER-mode review found that the exchange
+  capability boundary keeps `LIVE_ORDER_CANCEL` unsupported while Dashboard
+  Home still showed a local cancel action for open orders carrying
+  `exchangeOrderId`, and direct API cancel could mark those rows locally
+  canceled. API order cancel now fails closed with an explicit unsupported
+  cancel error for exchange-backed rows, API order close refuses to mark them
+  filled locally, and Dashboard Home renders an unsupported-cancel action
+  state instead of a cancel button. Focused API orders tests passed (`38/38`)
+  and focused Web runtime table presenter tests passed (`15/15`), as did API
+  typecheck, Web typecheck, Web lint, route-reachable i18n audit
+  (`findings=0`), repository guardrails, full workspace build, and
+  authenticated rendered `/dashboard` smoke on desktop and mobile with no
+  console errors, page errors, or 5xx responses. Browser plugin validation was
+  attempted first but local `node_repl` resolved Node `v22.13.0` while
+  requiring `>=22.22.0`, so the smoke used bundled Codex Node plus Playwright.
+  Evidence:
+  `docs/planning/v1ui-29-exchange-backed-order-cancel-fail-closed-task-2026-05-07.md`.
 - 2026-05-07 dashboard manual-order blocked-reason state slice `V1UI-28` is
   closed on `main`. BUILDER-mode review found that `UOLF` required manual
   order `blocked reason` visibility, but failed

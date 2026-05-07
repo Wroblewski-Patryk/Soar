@@ -126,6 +126,7 @@ export const dashboardHomeDeCh = {
     "openOrderStatusFilled": "Gefüllt",
     "cancelOpenOrderButton": "Bestellung stornieren",
     "cancelOpenOrderPending": "Bestellung stornieren...",
+    "cancelOpenOrderUnsupported": "Boersenstorno nicht unterstuetzt",
     "cancelOpenOrderSuccess": "Bestellung storniert.",
     "cancelOpenOrderError": "Bestellung konnte nicht storniert werden.",
     "manualOrderActionStateTitle": "Aktionsstatus",

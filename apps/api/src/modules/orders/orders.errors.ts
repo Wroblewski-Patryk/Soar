@@ -14,6 +14,7 @@ export const ORDER_ERROR_CODES = {
   liveManualScopeUnresolved: 'LIVE_MANUAL_SCOPE_UNRESOLVED',
   liveApiKeyRequired: 'LIVE_API_KEY_REQUIRED',
   liveOrderTypeUnsupported: 'LIVE_ORDER_TYPE_UNSUPPORTED',
+  liveOrderCancelUnsupported: 'LIVE_ORDER_CANCEL_UNSUPPORTED',
   liveExecutionFailed: 'LIVE_EXECUTION_FAILED',
   livePretradeMarginLeverageConvergenceFailed: 'LIVE_PRETRADE_MARGIN_LEVERAGE_CONVERGENCE_FAILED',
   livePretradeInvalidQuantity: 'LIVE_PRETRADE_INVALID_QUANTITY',
@@ -57,6 +58,8 @@ export const orderErrors = {
     new OrderDomainError(ORDER_ERROR_CODES.liveManualScopeUnresolved, 400),
   liveApiKeyRequired: () => new OrderDomainError(ORDER_ERROR_CODES.liveApiKeyRequired, 400),
   liveOrderTypeUnsupported: () => new OrderDomainError(ORDER_ERROR_CODES.liveOrderTypeUnsupported, 400),
+  liveOrderCancelUnsupported: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.liveOrderCancelUnsupported, 501),
   liveExecutionFailed: () => new OrderDomainError(ORDER_ERROR_CODES.liveExecutionFailed, 502),
   livePretradeMarginLeverageConvergenceFailed: () =>
     new OrderDomainError(ORDER_ERROR_CODES.livePretradeMarginLeverageConvergenceFailed, 400),
