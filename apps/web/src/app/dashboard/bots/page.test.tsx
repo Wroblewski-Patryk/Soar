@@ -11,6 +11,7 @@ vi.mock("next/navigation", () => ({
     refresh: vi.fn(),
     prefetch: vi.fn(),
   }),
+  usePathname: () => (typeof window === "undefined" ? "/" : window.location.pathname || "/"),
 }));
 
 vi.mock("@/i18n/I18nProvider", () => ({

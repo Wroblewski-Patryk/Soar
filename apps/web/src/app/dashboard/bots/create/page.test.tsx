@@ -6,6 +6,7 @@ const botFormPageContentMock = vi.hoisted(() => vi.fn());
 
 vi.mock('next/navigation', () => ({
   redirect: redirectMock,
+  usePathname: () => (typeof window === 'undefined' ? '/' : window.location.pathname || '/'),
 }));
 
 vi.mock('../_components/BotFormPageContent', () => ({

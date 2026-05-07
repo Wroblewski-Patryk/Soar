@@ -7,6 +7,7 @@ vi.mock('next/navigation', () => ({
   useParams: () => ({
     id: 'wallet-789',
   }),
+  usePathname: () => (typeof window === 'undefined' ? '/' : window.location.pathname || '/'),
 }));
 
 vi.mock('@/features/wallets/components/WalletPreviewPanel', () => ({

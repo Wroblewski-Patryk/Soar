@@ -10,6 +10,7 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({
     push: pushMock,
   }),
+  usePathname: () => (typeof window === 'undefined' ? '/' : window.location.pathname || '/'),
 }));
 
 vi.mock('@/features/strategies/components/StrategiesList', () => ({

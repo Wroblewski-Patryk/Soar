@@ -22,6 +22,7 @@ vi.mock("next/navigation", () => ({
     replace: routerReplaceMock,
     push: routerPushMock,
   }),
+  usePathname: () => (typeof window === "undefined" ? "/" : window.location.pathname || "/"),
 }));
 
 vi.mock("@/features/strategies/api/strategies.api", () => ({

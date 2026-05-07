@@ -10,6 +10,7 @@ vi.mock('next/navigation', () => ({
   useParams: () => ({
     id: 'backtest-42',
   }),
+  usePathname: () => (typeof window === 'undefined' ? '/' : window.location.pathname || '/'),
 }));
 
 vi.mock('@/features/backtest/components/BacktestRunDetails', () => ({

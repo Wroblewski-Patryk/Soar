@@ -4,6 +4,7 @@ const redirectMock = vi.hoisted(() => vi.fn());
 
 vi.mock('next/navigation', () => ({
   redirect: redirectMock,
+  usePathname: () => (typeof window === 'undefined' ? '/' : window.location.pathname || '/'),
 }));
 
 describe('Wallets index page', () => {
@@ -15,4 +16,3 @@ describe('Wallets index page', () => {
     expect(redirectMock).toHaveBeenCalledWith('/dashboard/wallets/list');
   });
 });
-
