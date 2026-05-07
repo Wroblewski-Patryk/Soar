@@ -5,6 +5,7 @@ import {
   resolveRuntimeAggregateFreeFunds,
   resolveRuntimeAggregatePortfolio,
   resolveRuntimeDynamicStopColumnVisibility,
+  resolveRuntimeMarketState,
   resolveRuntimeFreeFunds,
   resolveRuntimePortfolio,
 } from "./runtimeSurfaceTruth";
@@ -63,5 +64,27 @@ describe("runtimeSurfaceTruth aggregate wallet capital", () => {
 
     expect(portfolio).toBe(512);
     expect(resolveRuntimeFreeFunds({ summary, portfolio, usedMargin: 10 })).toBe(502);
+  });
+});
+
+describe("runtimeSurfaceTruth market state", () => {
+  it("classifies latest_signal context as evaluated runtime signal context", () => {
+    expect(
+      resolveRuntimeMarketState({
+        lastSignalContextSource: "latest_signal",
+        lastSignalDirection: null,
+        openPositionCount: 0,
+      })
+    ).toBe("EVALUATED_NO_TRADE");
+  });
+
+  it("keeps configured fallback context separate from runtime decisions", () => {
+    expect(
+      resolveRuntimeMarketState({
+        lastSignalContextSource: "configured_fallback",
+        lastSignalDirection: null,
+        openPositionCount: 0,
+      })
+    ).toBe("CONFIGURED_ONLY");
   });
 });

@@ -3,6 +3,20 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 dashboard signal context source parity slice `V1UI-22` is in
+  progress on `main`. BUILDER-mode review found that `SOPR` requires
+  Dashboard Home signal cards to expose deterministic context-source tags, but
+  the primary signal-card UI did not show them while bot monitoring did. The
+  shared Web runtime market-state helper also recognized legacy
+  `latest_decision` but not current `latest_signal` as evaluated context.
+  Dashboard Home signal cards now render localized source badges and
+  `latest_signal` classifies as evaluated runtime context. Focused helper and
+  signal-card tests passed (`8/8`), broader Dashboard Home and preview parity
+  tests passed (`22/22`), as did Web typecheck, Web lint, route-reachable i18n
+  audit (`findings=0`), repository guardrails, full workspace build, and
+  authenticated rendered `/dashboard` smoke on desktop and mobile with no
+  console warnings, console errors, or page errors. Evidence:
+  `docs/planning/v1ui-22-dashboard-signal-source-parity-task-2026-05-07.md`.
 - 2026-05-07 dashboard aggregate wallet strict-capital slice `V1UI-21` is
   closed on `main`. ARCHITECT-mode review found that the shared Web runtime
   capital helper allowed compatibility fields such as `accountBalance` and

@@ -48,6 +48,11 @@ describe("RuntimeSignalsSection", () => {
         conditionValueUnavailableLabel="Waiting for indicator data"
         marketsLabel="Markets"
         signalsLabel="Signals"
+        signalContextSourceLabel="Context source"
+        signalContextSourceLatestSignalLabel="Latest signal"
+        signalContextSourceLatestDecisionLabel="Latest decision"
+        signalContextSourceConfiguredFallbackLabel="Closed-candle snapshot"
+        signalContextSourceUnresolvedLabel="Unresolved"
         marketsCount={1}
         actionableSignalsCount={0}
       />
@@ -56,5 +61,52 @@ describe("RuntimeSignalsSection", () => {
     expect(screen.getByText("Waiting for indicator data")).toBeInTheDocument();
     expect(screen.queryByText("n/a")).not.toBeInTheDocument();
     expect(screen.getByText("44.12")).toBeInTheDocument();
+  });
+
+  it("renders deterministic context source labels on signal cards", () => {
+    render(
+      <RuntimeSignalsSection
+        signalSymbols={[
+          ({
+            id: "signal-btc",
+            symbol: "BTCUSDT",
+            lastSignalDirection: "LONG",
+            runtimeMarketState: "SIGNAL_ACTIVE",
+            lastSignalContextSource: "latest_signal",
+            lastSignalConditionLines: [],
+          } as unknown as RuntimeSymbolWithLive),
+          ({
+            id: "signal-ada",
+            symbol: "ADAUSDT",
+            lastSignalDirection: null,
+            runtimeMarketState: "CONFIGURED_ONLY",
+            lastSignalContextSource: "configured_fallback",
+            lastSignalConditionLines: [],
+          } as unknown as RuntimeSymbolWithLive),
+        ]}
+        hasSignalOverflow={false}
+        signalRailRef={createRef<HTMLDivElement>()}
+        onScrollPrevious={vi.fn()}
+        onScrollNext={vi.fn()}
+        previousLabel="Prev"
+        nextLabel="Next"
+        longLabel="LONG"
+        shortLabel="SHORT"
+        noSignalDataLabel="No signal data"
+        conditionValueUnavailableLabel="Waiting for indicator data"
+        marketsLabel="Markets"
+        signalsLabel="Signals"
+        signalContextSourceLabel="Context source"
+        signalContextSourceLatestSignalLabel="Latest signal"
+        signalContextSourceLatestDecisionLabel="Latest decision"
+        signalContextSourceConfiguredFallbackLabel="Closed-candle snapshot"
+        signalContextSourceUnresolvedLabel="Unresolved"
+        marketsCount={2}
+        actionableSignalsCount={1}
+      />
+    );
+
+    expect(screen.getByText("Latest signal")).toBeInTheDocument();
+    expect(screen.getByText("Closed-candle snapshot")).toBeInTheDocument();
   });
 });

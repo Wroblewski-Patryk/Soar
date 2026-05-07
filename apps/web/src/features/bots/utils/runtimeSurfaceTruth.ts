@@ -142,7 +142,10 @@ export const resolveRuntimeMarketState = (item: {
   if (item.lastSignalDirection === "LONG" || item.lastSignalDirection === "SHORT") {
     return "SIGNAL_ACTIVE" as const;
   }
-  if (item.lastSignalContextSource === "latest_decision") {
+  if (
+    item.lastSignalContextSource === "latest_signal" ||
+    item.lastSignalContextSource === "latest_decision"
+  ) {
     return "EVALUATED_NO_TRADE" as const;
   }
   if (item.lastSignalContextSource === "configured_fallback") {

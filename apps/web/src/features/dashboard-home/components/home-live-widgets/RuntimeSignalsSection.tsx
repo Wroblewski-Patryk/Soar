@@ -17,6 +17,11 @@ type RuntimeSignalsSectionProps = {
   conditionValueUnavailableLabel: string;
   marketsLabel: string;
   signalsLabel: string;
+  signalContextSourceLabel: string;
+  signalContextSourceLatestSignalLabel: string;
+  signalContextSourceLatestDecisionLabel: string;
+  signalContextSourceConfiguredFallbackLabel: string;
+  signalContextSourceUnresolvedLabel: string;
   marketsCount: number;
   actionableSignalsCount: number;
   renderSymbolLabel?: (symbol: string) => ReactNode;
@@ -61,6 +66,12 @@ const scopeLabelClass = (scope: "LONG" | "SHORT") =>
 export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps) {
   const isUnavailableValue = (value: string | null | undefined) =>
     value?.trim().toLowerCase() === "n/a";
+  const resolveContextSourceLabel = (source: RuntimeSymbolWithLive["lastSignalContextSource"]) => {
+    if (source === "latest_signal") return props.signalContextSourceLatestSignalLabel;
+    if (source === "latest_decision") return props.signalContextSourceLatestDecisionLabel;
+    if (source === "configured_fallback") return props.signalContextSourceConfiguredFallbackLabel;
+    return props.signalContextSourceUnresolvedLabel;
+  };
 
   const sortedSignalSymbols = useMemo(() => {
     const stateRank = (state: string | null | undefined) => {
@@ -131,6 +142,7 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
             const isConfiguredSnapshot =
               signal.runtimeMarketState === "CONFIGURED_ONLY" ||
               signal.lastSignalContextSource === "configured_fallback";
+            const contextSourceLabel = resolveContextSourceLabel(signal.lastSignalContextSource);
 
             return (
               <article
@@ -142,6 +154,12 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
                     <p className="min-w-0 font-semibold tracking-wide">
                       {props.renderSymbolLabel ? props.renderSymbolLabel(signal.symbol) : signal.symbol}
                     </p>
+                    <span
+                      className="badge badge-ghost badge-xs shrink-0"
+                      title={`${props.signalContextSourceLabel}: ${contextSourceLabel}`}
+                    >
+                      {contextSourceLabel}
+                    </span>
                   </div>
                   <div className="mt-3 grid grid-cols-2 gap-2.5 text-[11px] leading-4">
                     <div

@@ -316,6 +316,12 @@ pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets
   - signal cards are selected-bot scoped only and must not reuse cross-bot fallback context.
   - condition-line strategy context prefers latest signal strategy when available; configured strategy fallback is allowed only for missing latest-signal strategy context.
   - signal rows/cards must expose deterministic source tagging from API read model (`latest_signal`, `configured_fallback`, `unresolved`) for operator clarity.
+  - Web market-state fallback classification treats both `latest_signal` and
+    legacy `latest_decision` as evaluated runtime signal context when no
+    explicit `runtimeMarketState` is provided.
+  - Dashboard Home signal cards render a compact localized source badge for
+    latest-signal, legacy latest-decision, configured-fallback, and unresolved
+    contexts.
 - Cross-route parity contract:
   - for the same selected bot, `/dashboard` and `/dashboard/bots/:id/preview` must stay parity-aligned for `signals`, `positions`, and `history`.
 - Runtime diagnostics contract:

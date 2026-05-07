@@ -899,6 +899,13 @@ export default function HomeLiveWidgets() {
                 conditionValueUnavailableLabel={t("dashboard.home.runtime.conditionValueUnavailable")}
                 marketsLabel={t("dashboard.home.runtime.markets")}
                 signalsLabel={t("dashboard.home.runtime.signals")}
+                signalContextSourceLabel={t("dashboard.home.runtime.signalContextSource")}
+                signalContextSourceLatestSignalLabel={t("dashboard.home.runtime.signalContextSourceLatestSignal")}
+                signalContextSourceLatestDecisionLabel={t("dashboard.home.runtime.signalContextSourceLatestDecision")}
+                signalContextSourceConfiguredFallbackLabel={t(
+                  "dashboard.home.runtime.signalContextSourceConfiguredFallback"
+                )}
+                signalContextSourceUnresolvedLabel={t("dashboard.home.runtime.signalContextSourceUnresolved")}
                 marketsCount={signalHeaderStats.marketsCount}
                 actionableSignalsCount={signalHeaderStats.actionableSignalsCount}
                 renderSymbolLabel={renderRuntimeSymbol}

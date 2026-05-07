@@ -20,6 +20,21 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `V1UI-22 fix(web-runtime): show dashboard signal context source`
+  - Scope: closed a BUILDER-mode Dashboard Home signal-source parity slice.
+    Dashboard signal cards now render localized context-source badges for
+    latest signal, legacy latest decision, configured fallback, and unresolved
+    contexts. The shared Web runtime market-state helper also treats current
+    `latest_signal` source as evaluated runtime context instead of unresolved
+    when no explicit `runtimeMarketState` is present. Validation PASS:
+    focused helper and signal-card tests (`8/8`), broader Dashboard Home and
+    preview parity tests (`22/22`), Web typecheck, Web lint,
+    route-reachable i18n audit (`findings=0`), repository guardrails, full
+    workspace build, and authenticated rendered `/dashboard` smoke on desktop
+    and mobile with no console warnings, console errors, or page errors.
+    Evidence:
+    `docs/planning/v1ui-22-dashboard-signal-source-parity-task-2026-05-07.md`.
+
 - [x] `V1UI-21 fix(web-runtime): keep aggregate wallet capital strict`
   - Scope: closed an ARCHITECT-mode aggregate wallet source-of-truth slice.
     Dashboard Home now uses strict aggregate capital helpers for selected
