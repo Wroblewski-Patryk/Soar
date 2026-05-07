@@ -23,6 +23,8 @@ Last updated: 2026-05-07
   `readiness=not_ready`: activation plan/audit and RC artifacts are fresh;
   backup/restore drill and rollback proof are fresh but failed; protected
   non-dry-run release execution is still missing.
+- Final blocker execution pack:
+  `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
 
 ## Latest Validation
 

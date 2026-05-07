@@ -17,6 +17,14 @@ Last updated: 2026-05-07
 
 ## READY
 
+- [x] `V1-FINAL-BLOCKER-PACK-2026-05-07 release: publish final blocker execution pack`
+  - Scope: added
+    `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`, a current
+    operator pack for the remaining V1 blockers: `LIVEIMPORT-03`, production
+    restore drill, rollback proof, RC gates/sign-off, and final non-dry-run
+    release gate. Evidence:
+    `docs/planning/v1-final-blocker-execution-pack-task-2026-05-07.md`.
+
 - [x] `V1-CONTINUATION-STATE-SYNC-2026-05-07 release: sync continuation state after recovery blockers`
   - Scope: updated V1 continuation state so future runs target production SHA
     `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3` for `LIVEIMPORT-03`, and state

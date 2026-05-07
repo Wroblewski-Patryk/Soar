@@ -4,12 +4,13 @@ Last updated: 2026-05-07
 
 ## Next Tiny Task
 
-Run `LIVEIMPORT-03` with authenticated read-only production access and capture
-redacted ETH/DOGE runtime positions evidence on current production `main`
-(`21bb52f1e4b8865aab0dbb83ecffe698061fd7a3` or later). Evidence must cover
-ownership, `strategyId` or single-strategy provenance recovery, TTP visibility,
-actionable state, and import completeness across assigned bot markets. Do not
-run live-money or destructive production actions.
+Use `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md` once
+production auth and DB/Coolify access are available. Start with
+`LIVEIMPORT-03` authenticated read-only production runtime readback on current
+production `main` (`21bb52f1e4b8865aab0dbb83ecffe698061fd7a3` or later).
+Evidence must cover ownership, `strategyId` or single-strategy provenance
+recovery, TTP visibility, actionable state, and import completeness across
+assigned bot markets. Do not run live-money or destructive production actions.
 The collector is hardened to fail closed when no RUNNING session produces a
 runtime positions payload, so no-session output must not be accepted as
 release evidence.
@@ -22,6 +23,8 @@ pnpm run ops:liveimport:readback -- --expected-sha 21bb52f1e4b8865aab0dbb83ecffe
 
 ## Candidate Backlog
 
+0. Follow the final blocker execution pack:
+   `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
 1. If production credentials or ops auth are available, execute
    `ops:liveimport:readback` and record redacted `LIVEIMPORT-03` evidence. The latest
    names-only prerequisite sweep after `FULLARCH-FIX-11` found no production

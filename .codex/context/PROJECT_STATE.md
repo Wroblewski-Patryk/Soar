@@ -2,6 +2,16 @@
 
 Last updated: 2026-05-07
 
+## 2026-05-07 V1 Final Blocker Execution Pack
+- 2026-05-07 `V1-FINAL-BLOCKER-PACK-2026-05-07` published
+  `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`, a single
+  operator-oriented command sequence for the remaining V1 blockers. It names
+  required auth/access, current production SHA
+  `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`, `LIVEIMPORT-03` readback,
+  production restore drill, rollback proof, RC gates/sign-off, and final
+  non-dry-run release gate requirements. It does not approve V1. Evidence:
+  `docs/planning/v1-final-blocker-execution-pack-task-2026-05-07.md`.
+
 ## 2026-05-07 V1 Continuation State Sync
 - 2026-05-07 `V1-CONTINUATION-STATE-SYNC-2026-05-07` synchronized the
   continuation state after the recovery-proof blocker refresh. The canonical

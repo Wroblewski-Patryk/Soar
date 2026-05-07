@@ -7,6 +7,15 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-FINAL-BLOCKER-PACK-2026-05-07 release: publish final blocker execution pack`
+  - 2026-05-07: Published
+    `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`, a single
+    current operator execution pack for the remaining V1 blockers. The pack is
+    tied to production SHA `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3` and lists
+    the required auth/access plus exact commands for `LIVEIMPORT-03`,
+    production restore drill, rollback proof, RC gates/sign-off, and final
+    non-dry-run release gate. It does not approve V1. Evidence:
+    `docs/planning/v1-final-blocker-execution-pack-task-2026-05-07.md`.
 - [x] `V1-CONTINUATION-STATE-SYNC-2026-05-07 release: sync continuation state after recovery blockers`
   - 2026-05-07: Synchronized continuation state after the recovery-proof
     blocker refresh. The canonical `LIVEIMPORT-03` command now targets

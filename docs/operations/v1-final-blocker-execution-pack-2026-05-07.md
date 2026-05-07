@@ -1,0 +1,138 @@
+# V1 Final Blocker Execution Pack (2026-05-07)
+
+## Status
+- Current result: **NO-GO**
+- Production code/tooling SHA:
+  `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`
+- Latest release-gate dry-run:
+  `docs/operations/v1-release-gate-prod-2026-05-07T18-04-30-000Z.md`
+
+## Purpose
+This pack lists the exact remaining commands needed to turn the current
+`NO-GO` state into final V1 evidence. It must be executed only by an operator
+with approved production auth and database/Coolify access.
+
+## Required Access
+- Application read-only/operator auth for protected dashboard and OPS routes:
+  - `LIVEIMPORT_READBACK_AUTH_TOKEN` or
+    `LIVEIMPORT_READBACK_AUTH_EMAIL` + `LIVEIMPORT_READBACK_AUTH_PASSWORD`
+  - `ROLLBACK_GUARD_AUTH_TOKEN` or
+    `ROLLBACK_GUARD_AUTH_EMAIL` + `ROLLBACK_GUARD_AUTH_PASSWORD`
+  - optional private OPS layer:
+    `*_OPS_BASIC_USER`, `*_OPS_BASIC_PASSWORD`, or
+    `*_OPS_AUTH_HEADER_NAME`, `*_OPS_AUTH_HEADER_VALUE`
+- Production database/Coolify access for restore drill:
+  - `PROD_DB_CHECK_CONTAINER`
+  - `PROD_DB_CHECK_USER`
+  - `PROD_DB_CHECK_NAME`
+- Approver identity for RC sign-off:
+  - Engineering name
+  - Product name
+  - Operations name
+  - RC owner name and contact
+
+## Execution Order
+
+### 1. Verify Production Build Info
+
+```powershell
+pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha 21bb52f1e4b8865aab0dbb83ecffe698061fd7a3 --timeout-seconds 60 --interval-seconds 10
+```
+
+Expected result: `PASS`.
+
+### 2. Capture LIVEIMPORT-03 Runtime Readback
+
+```powershell
+pnpm run ops:liveimport:readback -- --expected-sha 21bb52f1e4b8865aab0dbb83ecffe698061fd7a3 --output docs/operations/liveimport-03-prod-readback-2026-05-07.json
+```
+
+Required result:
+- actual protected runtime positions payloads are read
+- requested symbols are visible
+- ownership, strategy provenance, TTP/DCA context, and actionable state are
+  present in redacted form
+- no token/password or raw protected secret data is written
+
+Do not accept:
+- public health/build-info as substitute evidence
+- no-session output
+- local tests as production readback proof
+
+### 3. Run Production Restore Drill
+
+```powershell
+pnpm run ops:db:restore-drill:prod
+```
+
+Required result:
+- fresh `docs/operations/v1-restore-drill-prod-<timestamp>.md`
+- status `PASS`
+- temporary restore target is isolated and cleaned up
+
+### 4. Run Production Rollback Proof
+
+```powershell
+pnpm run ops:deploy:rollback-proof -- --profile prod --base-url https://api.soar.luckysparrow.ch
+```
+
+Required result:
+- fresh `docs/operations/v1-rollback-proof-prod-<timestamp>.md`
+- status `PASS`
+- `shouldRollback=false`
+- no critical reasons
+- runtime freshness `PASS`
+- alerts clear
+
+### 5. Refresh RC Gates From Production Evidence
+
+```powershell
+pnpm run ops:rc:gates:prod-pipeline -- --base-url https://api.soar.luckysparrow.ch --duration-minutes 30 --interval-seconds 30
+```
+
+If using explicit auth, pass the token or login options supported by the
+script. Required result:
+- Gate 1 `PASS`
+- Gate 2 `PASS`
+- Gate 3 `PASS`
+- Gate 4 remains open until sign-off is rebuilt with approver names
+
+### 6. Build Final RC Sign-Off
+
+```powershell
+pnpm run ops:rc:signoff:build -- --engineering-name "<name>" --product-name "<name>" --operations-name "<name>" --owner-name "<name>" --owner-contact "<email-or-contact>"
+pnpm run ops:rc:gates:status
+pnpm run ops:rc:checklist:sync
+```
+
+Required result:
+- `docs/operations/v1-rc-signoff-record.md` reports `RC status: APPROVED`
+- `docs/operations/v1-release-candidate-checklist.md` reflects current gate
+  states
+
+### 7. Run Final Production V1 Release Gate
+
+```powershell
+pnpm run ops:release:v1:gate -- --environment prod --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --skip-local-quality
+```
+
+Required result:
+- readiness `ready`
+- no `--dry-run`
+- protected deploy smoke, runtime freshness, and rollback guard gates pass
+- final report path is recorded in release state
+
+## Current Known Blockers
+- `LIVEIMPORT-03` authenticated runtime readback is missing.
+- Production restore drill is current but failed because DB/Coolify access is
+  unavailable in this shell.
+- Production rollback proof is current but failed because protected OPS routes
+  returned `401` without auth.
+- RC Gate 2 is open until fresh production SLO evidence is collected.
+- RC Gate 4 is open until real approver identities are provided.
+- Final V1 release gate has only been run in dry-run mode after the blocker
+  refresh.
+
+## Completion Rule
+V1 can be marked ready only after every required artifact above is fresh and
+the final non-dry-run production release gate reports `ready`.
