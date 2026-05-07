@@ -29,6 +29,22 @@ Last updated: 2026-05-07
     change. Evidence:
     `docs/planning/agent-operating-system-task-2026-05-07.md`.
 
+- [x] `V1UI-41 fix(web-runtime): fail closed dashboard open-order status`
+  - Scope: Dashboard Home open-order status cells now keep the shared known
+    status mapping but fail closed to the existing compact unknown display for
+    unsupported backend status values instead of rendering raw API strings.
+    No new dashboard label, badge, status marker, backend behavior, database
+    path, or exchange execution behavior changed. Validation PASS: focused
+    Dashboard Home table presenter test (`17/17`), Web typecheck, root
+    API+Web typecheck, Web lint, repository guardrails, route-reachable i18n
+    audit (`findings=0`), full workspace build, `git diff --check`, and
+    authenticated rendered `/dashboard` smoke with no framework overlay or
+    post-auth console errors. Browser plugin validation was attempted first
+    but local `node_repl` resolved Node `v22.13.0` while requiring
+    `>=22.22.0`, so rendered validation used bundled Codex Node plus
+    Playwright. Evidence:
+    `docs/planning/v1ui-41-open-order-status-fail-closed-task-2026-05-07.md`.
+
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 

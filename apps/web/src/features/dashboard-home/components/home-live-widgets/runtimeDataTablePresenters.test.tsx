@@ -150,6 +150,48 @@ describe("createOpenOrdersColumns", () => {
     expect(screen.getByTestId("stop")).toHaveTextContent("67000");
   });
 
+  it("fails closed instead of rendering raw unknown open-order statuses", () => {
+    const columns = createOpenOrdersColumns({
+      t: (key) =>
+        ({
+          "dashboard.home.runtime.time": "Time",
+          "dashboard.home.runtime.symbol": "Symbol",
+          "dashboard.home.runtime.source": "Source",
+          "dashboard.home.runtime.exchangeOrderId": "Exchange ID",
+          "dashboard.home.runtime.sourceManual": "Manual",
+          "dashboard.home.runtime.side": "Side",
+          "dashboard.home.runtime.status": "Status",
+          "dashboard.home.runtime.reasonUnknown": "-",
+          "dashboard.home.runtime.type": "Type",
+          "dashboard.home.runtime.qty": "Qty",
+          "dashboard.home.runtime.filled": "Filled",
+          "dashboard.home.runtime.price": "Price",
+          "dashboard.home.runtime.stop": "Stop",
+        })[key] ?? key,
+      formatDateTimeWithSeconds: (value) => value ?? "-",
+      formatNumber: (value) => String(value),
+      resolveRuntimeIcon: () => null,
+      runtimeIconsLoading: false,
+      runtimeIconsError: null,
+      actionColumnLabel: "Action",
+      cancelOpenOrderLabel: "Cancel order",
+      cancelOpenOrderPendingLabel: "Canceling order...",
+      cancelOpenOrderUnsupportedLabel: "Exchange cancel unsupported",
+      isCancelingOpenOrder: () => false,
+      onCancelOpenOrder: vi.fn(),
+    });
+    const statusColumn = columns.find((column) => column.key === "status");
+
+    render(
+      <div data-testid="status-cell">
+        {statusColumn?.render?.({ ...openOrderRow, status: "FUTURE_STATUS" })}
+      </div>
+    );
+
+    expect(screen.getByTestId("status-cell")).toHaveTextContent("-");
+    expect(screen.getByTestId("status-cell")).not.toHaveTextContent("FUTURE_STATUS");
+  });
+
   it("renders exchange-backed open orders as blocked instead of locally cancelable", () => {
     const onCancelOpenOrder = vi.fn();
     const columns = createOpenOrdersColumns({

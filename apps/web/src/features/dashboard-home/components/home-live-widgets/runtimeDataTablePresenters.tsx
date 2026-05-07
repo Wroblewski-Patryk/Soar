@@ -49,7 +49,7 @@ export const resolveOpenOrderSourceLabel = (t: Translate, origin: string | null 
 export const resolveOpenOrderStatusLabel = (t: Translate, status: string | null | undefined) => {
   const labelSuffix = runtimeOpenOrderStatusLabelSuffix(status);
   if (labelSuffix) return t(`dashboard.home.runtime.${labelSuffix}`);
-  return status ?? "-";
+  return t("dashboard.home.runtime.reasonUnknown");
 };
 
 const resolveContinuityStateLabel = (

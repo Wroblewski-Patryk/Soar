@@ -14,6 +14,23 @@ Last updated: 2026-05-07
   `docs/engineering/testing.md` as canonical truth. Evidence:
   `docs/planning/agent-operating-system-task-2026-05-07.md`.
 
+## 2026-05-07 V1 Runtime UI Hardening
+- 2026-05-07 Dashboard Home open-order status hardening slice `V1UI-41` is
+  closed on `main`. BUILDER-mode review found that the Dashboard Home
+  open-order table used the shared known-status suffix mapper, but unsupported
+  future backend status strings fell through as raw table text. Dashboard Home
+  now fails closed to the existing compact unknown display for unsupported
+  open-order status values while preserving known route-owned labels and
+  adding no new dashboard labels, badges, or status markers. Validation PASS:
+  focused Dashboard Home table presenter test (`17/17`), Web typecheck, root
+  API+Web typecheck, Web lint, repository guardrails, route-reachable i18n
+  audit (`findings=0`), full workspace build, `git diff --check`, and
+  authenticated rendered `/dashboard` smoke with no framework overlay or
+  post-auth console errors. Browser plugin validation was attempted first but
+  local `node_repl` resolved Node `v22.13.0` while requiring `>=22.22.0`, so
+  rendered validation used bundled Codex Node plus Playwright. Evidence:
+  `docs/planning/v1ui-41-open-order-status-fail-closed-task-2026-05-07.md`.
+
 ## 2026-05-03 V1 Prod-Only Release Scope Update
 - 2026-05-07 production Redis AOF recovery completed in Coolify. Production
   API `/health` stayed `200`, but `/ready` returned `503` while Redis was in

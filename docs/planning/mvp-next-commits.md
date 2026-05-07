@@ -16,6 +16,21 @@ Operational queue for one-task execution runs.
     `docs/flows`, `docs/contracts`, and `docs/testing` indexes were added
     without moving canonical architecture truth. Evidence:
     `docs/planning/agent-operating-system-task-2026-05-07.md`.
+- [x] `V1UI-41 fix(web-runtime): fail closed dashboard open-order status`
+  - 2026-05-07: Closed a BUILDER-mode Dashboard Home open-order status
+    hardening slice. Known backend status values still use the shared runtime
+    suffix mapper and route-owned labels, while unsupported future status
+    values now render the existing compact unknown display instead of raw API
+    strings. No new dashboard labels, badges, or status markers were added.
+    Validation PASS: focused Dashboard Home table presenter test (`17/17`),
+    Web typecheck, root API+Web typecheck, Web lint, repository guardrails,
+    route-reachable i18n audit (`findings=0`), full workspace build,
+    `git diff --check`, and authenticated rendered `/dashboard` smoke with no
+    framework overlay or post-auth console errors. Browser plugin validation
+    was attempted first but local `node_repl` resolved Node `v22.13.0` while
+    requiring `>=22.22.0`, so rendered validation used bundled Codex Node plus
+    Playwright. Evidence:
+    `docs/planning/v1ui-41-open-order-status-fail-closed-task-2026-05-07.md`.
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 - [x] `V1UI-40 fix(web-runtime): fail closed unknown runtime signal labels`

@@ -38,6 +38,11 @@ Rule: fix/cleanup/update first, then feature delivery.
   anti-regression system, quality gates, `.agents/state` continuation memory,
   and agent-readable flow/contract/testing indexes for future autonomous
   iterations.
+- 2026-05-07: Closed `V1UI-41` with
+  `docs/planning/v1ui-41-open-order-status-fail-closed-task-2026-05-07.md`.
+  Dashboard Home open-order status cells now fail closed for unsupported
+  backend status values by rendering the existing compact unknown display
+  instead of raw API strings, without adding new dashboard labels or markers.
 - 2026-05-07: Closed `V1UI-14` with
   `docs/planning/v1ui-14-runtime-open-order-status-label-task-2026-05-07.md`.
   Dashboard home and bot monitoring now share open-order status suffix
