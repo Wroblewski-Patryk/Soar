@@ -107,6 +107,37 @@ $env:NODE_PATH='C:\Users\wrobl\.cache\codex-runtimes\codex-primary-runtime\depen
 
 ## Entries
 
+### 2026-05-07 - Push after green local gates when production readback depends on deploy
+- Context: the full architecture audit repair chain produced validated local
+  commits, then continuation stalled because `LIVEIMPORT-03` needs evidence
+  from current production.
+- Symptom: the agent kept asking whether to push even after local typecheck,
+  tests, lint, guardrails, docs parity, diff check, and build were green.
+- Root cause: push policy was treated as an always-separate explicit approval,
+  even when the user had already authorized pushes and production validation
+  depended on deploying the reviewed commits.
+- Guardrail: once the user has authorized pushes for the session, push clean,
+  committed, validated work when the next required verification step is a
+  production smoke/readback on the pushed revision. Do not push dirty work or
+  unvalidated changes, and do not run live-money actions without separate
+  approval.
+- Preferred pattern:
+```text
+1) Keep commits small and logical.
+2) Run the relevant local gates for the touched scope; for broad runtime work,
+   include typecheck, full tests, lint, guardrails, docs parity, diff check,
+   and build.
+3) Confirm `git status` is clean and local branch is ahead.
+4) Push so production deployment/readback can test the current revision.
+5) Continue with read-only production evidence only when auth is available.
+```
+- Avoid: repeatedly asking for push permission after the user has explicitly
+  authorized pushes for production testing, or pushing uncommitted/unvalidated
+  work just to move faster.
+- Evidence:
+  - 2026-05-07 user authorized pushes so production testing can proceed.
+  - Local audit commits were clean and validated before push decision.
+
 ### 2026-05-07 - Environment scans must print names only
 - Context: continuation work for production-readback prerequisites needed to
   check whether the local shell exposed production auth material.
