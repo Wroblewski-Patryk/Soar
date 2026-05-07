@@ -9,6 +9,9 @@ Rule: fix/cleanup/update first, then feature delivery.
 - After each merged task: update checkbox + add one line in `Progress Log`.
 - If product docs scope changes, update this file before coding.
 - Any short "start work" nudge (`rob`, `rób`, `dzialaj`, `start`, `go`, `next`) means: execute exactly one task from `NOW`.
+- Short continuation nudges such as `rób dalej`, `kontynuuj`, and `continue`
+  also require the agent to read `.agents/core/operating-system.md` and
+  `.agents/state/next-steps.md` before selecting exactly one task.
 
 ## Global Commit Rules
 - One commit = one logical change (typically 1-3 files).
@@ -29,6 +32,12 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-07: Closed `AOS-2026-05-07` with
+  `docs/planning/agent-operating-system-task-2026-05-07.md`. The repository
+  now has a durable `.agents/core` operating system, 15-step execution loop,
+  anti-regression system, quality gates, `.agents/state` continuation memory,
+  and agent-readable flow/contract/testing indexes for future autonomous
+  iterations.
 - 2026-05-07: Closed `V1UI-14` with
   `docs/planning/v1ui-14-runtime-open-order-status-label-task-2026-05-07.md`.
   Dashboard home and bot monitoring now share open-order status suffix

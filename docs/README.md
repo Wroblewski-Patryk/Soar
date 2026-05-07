@@ -10,7 +10,9 @@ This folder contains canonical project documentation grouped by responsibility.
 ## Structure
 - `architecture/`: canonical description of how Soar works
 - `analysis/`: documentation inventory and drift reports
+- `contracts/`: agent-readable contract index pointing to canonical contracts
 - `engineering/`: local development and testing workflow
+- `flows/`: agent-readable flow index pointing to canonical pipelines
 - `pipelines/`: end-to-end system flow registry
 - `planning/`: active queue, execution plans, and unresolved decisions
 - `product/`: mission, scope, glossary, limits, and product intent
@@ -20,6 +22,7 @@ This folder contains canonical project documentation grouped by responsibility.
 - `ux/view-generation-prompt-pack.md`: ready prompt contract for AI-generated
   screen and dashboard work in this repository
 - `governance/`: repository rules and agent workflow policies
+- `testing/`: agent-readable testing strategy and validation memory
 - `governance/code-quality-guardrails.md`: temporary exception policy for
   maintainability debt that is actively being removed
 - `governance/function-coverage-ledger-standard.md`: reusable function coverage
@@ -54,6 +57,10 @@ This folder contains canonical project documentation grouped by responsibility.
 22. `planning/mvp-execution-plan.md`
 23. `planning/mvp-next-commits.md`
 24. `planning/open-decisions.md`
+25. `../.agents/core/operating-system.md`
+26. `../.agents/core/execution-loop.md`
+27. `../.agents/core/anti-regression.md`
+28. `../.agents/core/quality-gates.md`
 
 ## Source-of-Truth Rule
 - Architecture truth belongs in `docs/architecture/`.

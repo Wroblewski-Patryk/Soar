@@ -17,6 +17,18 @@ Last updated: 2026-05-07
 
 ## READY
 
+- [x] `AOS-2026-05-07 docs(agent-os): establish autonomous agent operating system`
+  - Scope: created `.agents/core/operating-system.md`,
+    `.agents/core/execution-loop.md`, `.agents/core/anti-regression.md`, and
+    `.agents/core/quality-gates.md`; added `.agents/state/current-focus.md`,
+    `known-issues.md`, `regression-log.md`, `system-health.md`, and
+    `next-steps.md`; added agent-readable `docs/flows`, `docs/contracts`, and
+    `docs/testing` indexes; linked continuation behavior from `AGENTS.md`,
+    documentation indexes, project state, and planning. This is a docs-only
+    operating-system slice with no runtime, API, DB, deployment, or UI behavior
+    change. Evidence:
+    `docs/planning/agent-operating-system-task-2026-05-07.md`.
+
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 

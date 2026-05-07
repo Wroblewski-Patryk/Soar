@@ -10,6 +10,15 @@ runtime safety, deployment discipline, UX quality, or documentation parity.
 
 Read these before starting non-trivial work:
 
+- `.agents/core/operating-system.md`
+- `.agents/core/execution-loop.md`
+- `.agents/core/anti-regression.md`
+- `.agents/core/quality-gates.md`
+- `.agents/state/current-focus.md`
+- `.agents/state/known-issues.md`
+- `.agents/state/regression-log.md`
+- `.agents/state/system-health.md`
+- `.agents/state/next-steps.md`
 - `.codex/context/PROJECT_STATE.md`
 - `.codex/context/TASK_BOARD.md`
 - `.codex/context/LEARNING_JOURNAL.md`
@@ -199,6 +208,12 @@ Operation mode rotates by iteration number:
 - `BUILDER`: default mode
 - `ARCHITECT`: every third iteration, unless the iteration is also a tester iteration
 - `TESTER`: every fifth iteration
+
+Also follow `.agents/core/operating-system.md` and
+`.agents/core/execution-loop.md` for continuation behavior, 15-step project
+analysis, anti-regression checks, quality gates, and `.agents/state/*`
+updates.
+
 ## Agent Catalog
 
 - Planner: `.agents/prompts/planner.md` or `.claude/agents/planner.agent.md`
@@ -223,21 +238,25 @@ Operation mode rotates by iteration number:
 
 ## Trigger Intent
 
-If the user sends a short execution nudge such as `rob`, `dzialaj`, `start`,
-`go`, `next`, or `lecimy`:
+If the user sends a short execution nudge such as `rob`, `rób`, `rób dalej`,
+`dzialaj`, `działaj`, `start`, `go`, `next`, `lecimy`, `kontynuuj`, or
+`continue`:
 
-1. Read `docs/planning/mvp-next-commits.md` and `.codex/context/TASK_BOARD.md`.
-2. Take the first `READY` or `IN_PROGRESS` task that matches the active
+1. Read `.agents/core/operating-system.md`, `.agents/state/next-steps.md`,
+   `docs/planning/mvp-next-commits.md`, and `.codex/context/TASK_BOARD.md`.
+2. Refresh `.agents/state/*` if it is stale.
+3. Take the first `READY` or `IN_PROGRESS` task that matches the active
    `NOW/NEXT` queue.
-3. If planning docs and board drift, sync them before implementation.
-4. If no task is executable, derive the next smallest one from:
+4. If planning docs and board drift, sync them before implementation.
+5. If no task is executable, derive the next smallest one from:
+   - `.agents/state/next-steps.md`
    - `docs/planning/mvp-execution-plan.md`
    - `docs/planning/open-decisions.md`
-5. Implement exactly one tiny task.
-6. Run relevant checks.
-7. Update task, project state, and planning files.
-8. Return summary with files changed, tests run, deployment impact, and next
-   tiny task.
+6. Implement exactly one tiny task through `.agents/core/execution-loop.md`.
+7. Run relevant checks from `.agents/core/quality-gates.md`.
+8. Update `.agents/state/*`, task, project state, and planning files.
+9. Return summary with files changed, tests run, deployment impact, residual
+   risk, and next tiny task.
 
 ## UX/UI Contract
 

@@ -7,6 +7,15 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `AOS-2026-05-07 docs(agent-os): establish autonomous agent operating system`
+  - 2026-05-07: Closed the requested agent operating system foundation.
+    `.agents/core` now defines operating behavior, the 15-step execution loop,
+    anti-regression checks, and quality gates. `.agents/state` now provides
+    current focus, known issues, regression log, system health, and next-step
+    memory for future "rób dalej" / "kontynuuj" runs. Agent-readable
+    `docs/flows`, `docs/contracts`, and `docs/testing` indexes were added
+    without moving canonical architecture truth. Evidence:
+    `docs/planning/agent-operating-system-task-2026-05-07.md`.
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 - [x] `V1UI-40 fix(web-runtime): fail closed unknown runtime signal labels`

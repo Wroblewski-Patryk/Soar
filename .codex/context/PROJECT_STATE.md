@@ -2,6 +2,18 @@
 
 Last updated: 2026-05-07
 
+## 2026-05-07 Agent Operating System Foundation
+- 2026-05-07 `AOS-2026-05-07` established the durable agent operating system
+  requested for autonomous continuation. New `.agents/core` files define the
+  operating system, 15-step execution loop, anti-regression system, and
+  quality gates. New `.agents/state` files capture current focus, known
+  issues, regression log, system health, and next steps so future short-nudge
+  runs can continue from repository state instead of hidden chat context.
+  Agent-readable `docs/flows`, `docs/contracts`, and `docs/testing` indexes
+  were added while preserving `docs/architecture/`, `docs/pipelines/`, and
+  `docs/engineering/testing.md` as canonical truth. Evidence:
+  `docs/planning/agent-operating-system-task-2026-05-07.md`.
+
 ## 2026-05-03 V1 Prod-Only Release Scope Update
 - 2026-05-07 production Redis AOF recovery completed in Coolify. Production
   API `/health` stayed `200`, but `/ready` returned `503` while Redis was in
