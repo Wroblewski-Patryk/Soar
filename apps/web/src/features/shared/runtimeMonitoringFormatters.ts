@@ -53,6 +53,11 @@ export type RuntimePositionProvenanceLabelSuffix =
   | "provenanceSyncDrift"
   | "provenanceSyncOrphanLocal"
   | "provenanceSyncOrphanExchange";
+export type RuntimeTradeFeeMetaInput = {
+  feeSource: "ESTIMATED" | "EXCHANGE_FILL";
+  feePending: boolean;
+  feeCurrency: string | null;
+};
 
 export const formatAgeCompact = (ms: number) => {
   if (!Number.isFinite(ms) || ms <= 0) return "0s";
@@ -115,6 +120,13 @@ export const toRuntimeCloseInitiatorPillClass = (value: RuntimeCloseInitiatorVal
   if (value === "USER_EXCHANGE") return "border-info/40 bg-info/10 text-info";
   if (value === "EXCHANGE") return "border-error/40 bg-error/10 text-error";
   return "border-warning/40 bg-warning/10 text-warning";
+};
+
+export const formatRuntimeTradeFeeMeta = (trade: RuntimeTradeFeeMetaInput) => {
+  const currencySuffix = trade.feeCurrency ? ` ${trade.feeCurrency}` : "";
+  if (trade.feePending) return `PENDING${currencySuffix}`;
+  const sourceLabel = trade.feeSource === "EXCHANGE_FILL" ? "EXCHANGE" : "EST.";
+  return `${sourceLabel}${currencySuffix}`;
 };
 
 export const resolveRuntimePositionProvenanceKind = (input: {

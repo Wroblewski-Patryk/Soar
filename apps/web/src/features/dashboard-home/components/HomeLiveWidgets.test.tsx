@@ -780,9 +780,9 @@ describe("HomeLiveWidgets", () => {
           lifecycleAction: "OPEN",
           price: 68000,
           quantity: 0.12,
-          fee: 0,
+          fee: 1.23,
           feeSource: "ESTIMATED",
-          feePending: false,
+          feePending: true,
           feeCurrency: "USDT",
           realizedPnl: 0,
           executedAt: "2026-03-31T10:03:00.000Z",
@@ -844,7 +844,8 @@ describe("HomeLiveWidgets", () => {
 
     fireEvent.click(screen.getByRole("tab", { name: /Historia|History/i }));
     await waitFor(() => {
-      expect(screen.queryByRole("columnheader", { name: /^Fee$/i })).not.toBeInTheDocument();
+      expect(screen.getByRole("columnheader", { name: /^Fee/i })).toBeInTheDocument();
+      expect(screen.getByText("PENDING USDT")).toBeInTheDocument();
       expect(screen.queryByRole("columnheader", { name: /^Origin$/i })).not.toBeInTheDocument();
     });
   });

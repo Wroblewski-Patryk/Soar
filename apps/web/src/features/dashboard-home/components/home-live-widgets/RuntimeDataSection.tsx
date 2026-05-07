@@ -152,7 +152,7 @@ export default function RuntimeDataSection(props: RuntimeDataSectionProps) {
                     <SkeletonTableRows
                       title={false}
                       toolbar={false}
-                      columns={9}
+                      columns={10}
                       rows={4}
                       className="mb-3 border-base-300/40 bg-base-100/60 p-3"
                     />

@@ -2,6 +2,7 @@ import type { TranslationKey } from '@/i18n/translations';
 import type { Bot, BotMode, BotRuntimeSessionStatus } from '../../types/bot.type';
 import {
   formatAgeCompact,
+  formatRuntimeTradeFeeMeta,
   toRuntimeDirectionBadgeClass,
   toRuntimeSessionStatusBadgeClass,
   toRuntimeTradeLifecycleBadgeClass,
@@ -74,13 +75,4 @@ export const toTradeLifecycleLabelKey = (value: 'OPEN' | 'DCA' | 'CLOSE' | 'UNKN
   return 'dashboard.bots.actions.unknown' as TranslationKey;
 };
 
-export const formatTradeFeeMeta = (trade: {
-  feeSource: 'ESTIMATED' | 'EXCHANGE_FILL';
-  feePending: boolean;
-  feeCurrency: string | null;
-}) => {
-  const currencySuffix = trade.feeCurrency ? ` ${trade.feeCurrency}` : '';
-  if (trade.feePending) return `PENDING${currencySuffix}`;
-  const sourceLabel = trade.feeSource === 'EXCHANGE_FILL' ? 'EXCHANGE' : 'EST.';
-  return `${sourceLabel}${currencySuffix}`;
-};
+export const formatTradeFeeMeta = formatRuntimeTradeFeeMeta;

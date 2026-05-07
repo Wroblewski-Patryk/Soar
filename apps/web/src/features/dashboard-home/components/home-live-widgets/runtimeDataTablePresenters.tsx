@@ -6,6 +6,7 @@ import { TableIconButtonAction } from "@/ui/components/TableUi";
 import type { BotRuntimeTrade } from "@/features/bots/types/bot.type";
 import { renderDcaLadderCell } from "@/features/shared/dcaLadderCell";
 import {
+  formatRuntimeTradeFeeMeta,
   resolveRuntimePositionProvenanceKind,
   runtimeContinuityLabelSuffix,
   runtimeOpenOrderStatusLabelSuffix,
@@ -690,6 +691,20 @@ export const createTradesColumns = ({
     sortable: true,
     accessor: (row) => row.margin,
     render: (row) => formatRuntimeAmount(row.margin),
+  },
+  {
+    key: "fee",
+    label: withRuntimeUnit(t("dashboard.home.runtime.fee")),
+    sortable: true,
+    accessor: (row) => row.fee,
+    render: (row) => (
+      <div className="flex flex-col leading-tight">
+        <span>{formatRuntimeAmount(row.fee)}</span>
+        <span className="text-[10px] uppercase tracking-wide opacity-60">
+          {formatRuntimeTradeFeeMeta(row)}
+        </span>
+      </div>
+    ),
   },
   {
     key: "realizedPnl",

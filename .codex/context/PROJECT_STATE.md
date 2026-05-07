@@ -3,6 +3,19 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 dashboard trade-fee parity slice `V1UI-18` is closed on `main`.
+  Dashboard home Trade History now renders backend `fee` amount plus
+  `feeSource`, `feePending`, and `feeCurrency` metadata via a shared Web
+  runtime formatter also used by bot monitoring. This keeps estimated,
+  exchange-final, and pending fee truth visible on the primary runtime
+  surface. Validation PASS: focused shared formatter plus dashboard presenter
+  tests (`20/20`), dashboard widget regression pack (`20/20`), Web typecheck,
+  Web lint, route-reachable i18n audit (`findings=0`), repository guardrails,
+  full workspace build, and authenticated rendered `/dashboard` smoke with no
+  console or page errors. Browser plugin bootstrap was attempted first but
+  local `node_repl` resolved Node `v22.13.0` while requiring `>=22.22.0`, so
+  rendered validation used bundled Codex Node plus Playwright. Evidence:
+  `docs/planning/v1ui-18-dashboard-trade-fee-parity-task-2026-05-07.md`.
 - 2026-05-07 dashboard open-position entry/quantity slice `V1UI-17` is
   closed on `main`. Dashboard home Open Positions now renders backend
   `quantity` and `entryPrice` beside existing margin/PnL/mark/DCA/protection

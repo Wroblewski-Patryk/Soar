@@ -655,6 +655,7 @@ describe("createTradesColumns", () => {
           "dashboard.home.runtime.qty": "Qty",
           "dashboard.home.runtime.price": "Price",
           "dashboard.home.runtime.margin": "Margin",
+          "dashboard.home.runtime.fee": "Fee",
           "dashboard.home.runtime.realizedPnl": "Realized PnL",
         })[key] ?? key,
       formatNumber: (value) => String(value),
@@ -683,5 +684,49 @@ describe("createTradesColumns", () => {
 
     expect(screen.getByText("Position lifecycle open")).toHaveClass("whitespace-nowrap");
     expect(screen.getByText("Bot app")).toHaveClass("whitespace-nowrap");
+  });
+
+  it("renders runtime trade fee amount and reconciliation metadata", () => {
+    const columns = createTradesColumns({
+      t: (key) =>
+        ({
+          "dashboard.home.runtime.filterAction": "Action",
+          "dashboard.home.runtime.reason": "Reason",
+          "dashboard.home.runtime.openedClosedBy": "Opened / closed by",
+          "dashboard.home.runtime.time": "Time",
+          "dashboard.home.runtime.symbol": "Symbol",
+          "dashboard.home.runtime.side": "Side",
+          "dashboard.home.runtime.qty": "Qty",
+          "dashboard.home.runtime.price": "Price",
+          "dashboard.home.runtime.margin": "Margin",
+          "dashboard.home.runtime.fee": "Fee",
+          "dashboard.home.runtime.realizedPnl": "Realized PnL",
+        })[key] ?? key,
+      formatNumber: (value) => String(value),
+      formatRuntimeAmount: (value) => String(value),
+      withRuntimeUnit: (label) => label,
+      resolveRuntimeIcon: () => null,
+      runtimeIconsLoading: false,
+      runtimeIconsError: null,
+      formatDateTime: (value) => value ?? "-",
+    });
+    const feeColumn = columns.find((column) => column.key === "fee");
+
+    expect(feeColumn?.label).toBe("Fee");
+
+    render(
+      <div>
+        {feeColumn?.render?.({
+          ...tradeRow,
+          fee: 1.23,
+          feeSource: "EXCHANGE_FILL",
+          feePending: false,
+          feeCurrency: "USDT",
+        })}
+      </div>
+    );
+
+    expect(screen.getByText("1.23")).toBeInTheDocument();
+    expect(screen.getByText("EXCHANGE USDT")).toHaveClass("uppercase");
   });
 });

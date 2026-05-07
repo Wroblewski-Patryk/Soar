@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  formatRuntimeTradeFeeMeta,
   resolveRuntimePositionProvenanceKind,
   runtimeContinuityLabelSuffix,
   runtimeOpenOrderStatusLabelSuffix,
@@ -85,5 +86,29 @@ describe("resolveRuntimePositionProvenanceKind", () => {
     expect(runtimeOpenOrderStatusLabelSuffix("FILLED")).toBe("openOrderStatusFilled");
     expect(runtimeOpenOrderStatusLabelSuffix("CANCELED")).toBeNull();
     expect(runtimeOpenOrderStatusLabelSuffix(null)).toBeNull();
+  });
+
+  it("formats runtime trade fee reconciliation metadata", () => {
+    expect(
+      formatRuntimeTradeFeeMeta({
+        feeSource: "EXCHANGE_FILL",
+        feePending: false,
+        feeCurrency: "USDT",
+      })
+    ).toBe("EXCHANGE USDT");
+    expect(
+      formatRuntimeTradeFeeMeta({
+        feeSource: "ESTIMATED",
+        feePending: false,
+        feeCurrency: null,
+      })
+    ).toBe("EST.");
+    expect(
+      formatRuntimeTradeFeeMeta({
+        feeSource: "ESTIMATED",
+        feePending: true,
+        feeCurrency: "USDT",
+      })
+    ).toBe("PENDING USDT");
   });
 });
