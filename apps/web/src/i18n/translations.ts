@@ -222,6 +222,8 @@ type TranslationSchema = {
         cancelOpenOrderSuccess: string;
         cancelOpenOrderError: string;
         advancedOptions: string;
+        placeholderBadge: string;
+        placeholderActivationHint: string;
         manualOrderActionStateTitle: string;
         manualOrderActionStateSubmitted: string;
         manualOrderActionDescriptionSubmitted: string;
@@ -303,6 +305,7 @@ type TranslationSchema = {
         marketGroup: string;
         exchange: string;
         market: string;
+        strategyLabel: string;
         interval: string;
         leverage: string;
         walletAllocation: string;
@@ -312,6 +315,13 @@ type TranslationSchema = {
         netPnl: string;
         noSession: string;
         noActiveSessionWarning: string;
+        markPriceSourceStream: string;
+        markPriceSourceRuntimeStat: string;
+        markPriceSourceRuntimeTicker: string;
+        markPriceSourceFallbackTicker: string;
+        markPriceSourceExchangePnl: string;
+        markPriceSourceRuntimeCandidate: string;
+        markPriceSourceUnavailable: string;
         capitalRiskTitle: string;
         portfolio: string;
         deltaFromStart: string;

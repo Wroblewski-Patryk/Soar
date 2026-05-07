@@ -20,6 +20,22 @@ Last updated: 2026-05-07
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
 
+- [x] `V1UI-32 fix(web-dashboard): close route-owned copy leaks`
+  - Scope: closed a BUILDER-mode Dashboard Home copy-ownership slice.
+    Remaining `/dashboard` runtime presentation labels no longer depend on
+    `dashboard.bots.*`: placeholder badge/hint, strategy labels, and
+    mark-price source labels now resolve through `dashboard.home.runtime.*`
+    across all supported locales. Shared Bots mark-price semantics remain
+    unchanged for Bots surfaces. Validation PASS: focused Dashboard Home
+    presenter/sidebar tests (`25/25`), route-reachable i18n audit
+    (`findings=0`), Web typecheck, Web lint, repository guardrails,
+    `git diff --check`, full workspace build, and authenticated rendered
+    `/dashboard` smoke with no console errors or page errors. Browser plugin
+    validation was attempted first but local `node_repl` resolved Node
+    `v22.13.0` while requiring `>=22.22.0`, so rendered validation used
+    bundled Codex Node plus Playwright. Evidence:
+    `docs/planning/v1ui-32-dashboard-home-route-owned-copy-closure-task-2026-05-07.md`.
+
 - [x] `V1UI-31 fix(web-dashboard): keep runtime labels route-owned`
   - Scope: closed a BUILDER-mode route ownership cleanup slice. Dashboard
     Home runtime/history presentation no longer borrows

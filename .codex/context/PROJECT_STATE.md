@@ -3,6 +3,21 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 dashboard-home route-owned copy closure slice `V1UI-32` is
+  closed on `main`. BUILDER-mode review found remaining `/dashboard` runtime
+  presentation copy still resolving from `dashboard.bots.*` for placeholder
+  badge/hint, strategy labels, and mark-price source labels. Dashboard Home
+  now owns those labels under `dashboard.home.runtime.*` in all supported
+  locales, while shared Bots mark-price semantics remain unchanged for Bots
+  surfaces and backend runtime data mapping is unchanged. Validation PASS:
+  focused Dashboard Home presenter/sidebar tests (`25/25`), route-reachable
+  i18n audit (`findings=0`), Web typecheck, Web lint, repository guardrails,
+  `git diff --check`, full workspace build, and authenticated rendered
+  `/dashboard` smoke with no console errors or page errors. Browser plugin
+  validation was attempted first but local `node_repl` resolved Node
+  `v22.13.0` while requiring `>=22.22.0`, so rendered validation used bundled
+  Codex Node plus Playwright. Evidence:
+  `docs/planning/v1ui-32-dashboard-home-route-owned-copy-closure-task-2026-05-07.md`.
 - 2026-05-07 dashboard-home route-owned runtime labels slice `V1UI-31` is
   closed on `main`. BUILDER-mode review found that Dashboard Home
   runtime/history presentation still reused `dashboard.bots.monitoring.*`

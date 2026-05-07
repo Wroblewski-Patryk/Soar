@@ -248,7 +248,7 @@ export default function HomeLiveWidgets() {
 
   const selectedPlaceholderHint = useMemo(() => {
     if (!selected || !selectedVenueContext.exchange) return "";
-    return `${selectedVenueContext.exchange}: ${t("dashboard.bots.create.placeholderActivationHint").replace("{mode}", selected.bot.mode)}`;
+    return `${selectedVenueContext.exchange}: ${t("dashboard.home.runtime.placeholderActivationHint").replace("{mode}", selected.bot.mode)}`;
   }, [selected, selectedVenueContext.exchange, t]);
 
   const signalCardsPerView = resolveSignalCardsPerView(
@@ -828,7 +828,7 @@ export default function HomeLiveWidgets() {
                 <div className="rounded-box border border-warning/40 bg-warning/10 px-3 py-2 text-xs text-warning">
                   <div className="mb-1">
                     <span className="badge badge-xs badge-warning badge-outline">
-                      {t("dashboard.bots.list.placeholderBadge")}
+                      {t("dashboard.home.runtime.placeholderBadge")}
                     </span>
                   </div>
                   <p>{selectedPlaceholderHint}</p>
@@ -945,7 +945,7 @@ export default function HomeLiveWidgets() {
           selected={selected}
           selectedData={selectedData}
           selectedRuntimeCapabilityAvailable={selectedRuntimeCapabilityAvailable}
-          placeholderBadgeLabel={t("dashboard.bots.list.placeholderBadge")}
+          placeholderBadgeLabel={t("dashboard.home.runtime.placeholderBadge")}
           summary={summary}
           lastUpdatedAt={lastUpdatedAt}
           onSelectedBotIdChange={setSelectedBotId}
@@ -996,7 +996,7 @@ export default function HomeLiveWidgets() {
                   <span className="font-semibold">{positionEditDraft.position.dcaCount}</span>
                 </p>
                 <p>
-                  <span className="opacity-70">{t("dashboard.bots.create.strategyLabel")}:</span>{" "}
+                  <span className="opacity-70">{t("dashboard.home.runtime.strategyLabel")}:</span>{" "}
                   <span className="font-semibold">{resolveSelectedStrategyDisplay(selected, t)}</span>
                 </p>
                 <p>

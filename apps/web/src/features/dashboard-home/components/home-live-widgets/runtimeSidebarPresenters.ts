@@ -253,7 +253,7 @@ export const buildRuntimeSidebarTextPresenter = (t: Translate): TextPresenter =>
   marketGroup: t("dashboard.home.runtime.marketGroup"),
   exchange: t("dashboard.home.runtime.exchange"),
   market: t("dashboard.home.runtime.market"),
-  strategy: t("dashboard.bots.create.strategyLabel"),
+  strategy: t("dashboard.home.runtime.strategyLabel"),
   interval: t("dashboard.home.runtime.interval"),
   leverage: t("dashboard.home.runtime.leverage"),
   walletAllocation: t("dashboard.home.runtime.walletAllocation"),

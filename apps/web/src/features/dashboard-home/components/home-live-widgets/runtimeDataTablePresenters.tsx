@@ -14,7 +14,7 @@ import {
   runtimePositionProvenanceLabelSuffix,
   type RuntimePositionProvenanceKind,
 } from "@/features/shared/runtimeMonitoringFormatters";
-import { resolveRuntimeOpenPositionMarkPriceSourceLabelKey } from "@/features/bots/utils/runtimeOpenPositionDerivations";
+import type { RuntimeOpenPositionMarkPriceSource } from "@/features/bots/utils/runtimeOpenPositionDerivations";
 import {
   resolveDynamicTslDisplay,
   resolveDynamicTtpDisplay,
@@ -60,6 +60,18 @@ const runtimePositionProvenanceLabelKey = (
   kind: RuntimePositionProvenanceKind
 ) => {
   return `dashboard.home.runtime.${runtimePositionProvenanceLabelSuffix(kind)}`;
+};
+
+const resolveDashboardHomeMarkPriceSourceLabelKey = (
+  source: RuntimeOpenPositionMarkPriceSource
+) => {
+  if (source === "runtime_stream") return "dashboard.home.runtime.markPriceSourceStream";
+  if (source === "runtime_symbol_stat") return "dashboard.home.runtime.markPriceSourceRuntimeStat";
+  if (source === "runtime_ticker") return "dashboard.home.runtime.markPriceSourceRuntimeTicker";
+  if (source === "fallback_ticker") return "dashboard.home.runtime.markPriceSourceFallbackTicker";
+  if (source === "exchange_unrealized_pnl") return "dashboard.home.runtime.markPriceSourceExchangePnl";
+  if (source === "runtime_candidate") return "dashboard.home.runtime.markPriceSourceRuntimeCandidate";
+  return "dashboard.home.runtime.markPriceSourceUnavailable";
 };
 
 type OpenPositionsColumnsArgs = {
@@ -235,7 +247,7 @@ export const createOpenPositionsColumns = ({
                 })}
           </span>
           <span className="text-[10px] uppercase tracking-wide opacity-60">
-            {t(resolveRuntimeOpenPositionMarkPriceSourceLabelKey(row.liveMarkPriceSource))}
+            {t(resolveDashboardHomeMarkPriceSourceLabelKey(row.liveMarkPriceSource))}
           </span>
         </div>
       ),
