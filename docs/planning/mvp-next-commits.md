@@ -9,6 +9,23 @@ Operational queue for one-task execution runs.
 ## NOW
 - Operator-reported LIVE/PAPER runtime follow-ups are now queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
+- [x] `V1UI-30 fix(web-auth): fail closed pre-hydration auth submit`
+  - 2026-05-07: Closed a TESTER-mode auth entrypoint safety slice. Rendered
+    smoke found that a very early Login/Register submit could fall through to
+    native browser behavior before hydration and place credentials in the URL
+    query string. Auth forms now render as native `POST` forms with disabled
+    fieldsets before hydration, enable controls only after the client is
+    ready, and use document navigation after successful session confirmation
+    so `/dashboard` starts from a stable authenticated document boundary.
+    Success auth toasts were removed from the redirect path while error toasts
+    and inline errors remain intact. Validation PASS: focused Web
+    auth/navigation tests (`19/19`), Web typecheck, Web lint,
+    route-reachable i18n audit (`findings=0`), repository guardrails,
+    `git diff --check`, full workspace build, and rendered auth smoke covering
+    SSR `/auth/register` and `/auth/login` plus desktop register and mobile
+    login flows to `/dashboard` with no credential URL leak and no relevant
+    console/page/5xx errors. Evidence:
+    `docs/planning/v1ui-30-auth-form-prehydration-fail-closed-task-2026-05-07.md`.
 - [x] `V1UI-29 fix(runtime-orders): fail closed exchange-backed local cancel`
   - 2026-05-07: Closed a BUILDER-mode API/Web order-action
     parity slice. The exchange execution boundary keeps `LIVE_ORDER_CANCEL`

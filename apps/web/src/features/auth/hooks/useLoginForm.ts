@@ -35,11 +35,11 @@ export const useLoginForm = () => {
         throw new Error(t('auth.toasts.login.sessionConfirmFailed'));
       }
 
-      toast.success(t('auth.toasts.login.success'));
       navigateWithFallback(router, {
         href: '/dashboard',
         mode: 'replace',
         fallbackPrefix: '/auth/login',
+        documentNavigation: true,
       });
     } catch (err) {
       const fallbackMessage = t('auth.toasts.login.failedFallback');

@@ -35,11 +35,11 @@ export const useRegisterForm = () => {
         throw new Error(t('auth.toasts.register.sessionConfirmFailed'));
       }
 
-      toast.success(t('auth.toasts.register.success'));
       navigateWithFallback(router, {
         href: '/dashboard',
         mode: 'replace',
         fallbackPrefix: '/auth/register',
+        documentNavigation: true,
       });
     } catch (err) {
       const message = handleError(err, { fallback: t('auth.toasts.register.failedFallback') });

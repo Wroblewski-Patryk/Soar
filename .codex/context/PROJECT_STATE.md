@@ -3,6 +3,25 @@
 Last updated: 2026-05-07
 
 ## 2026-05-03 V1 Prod-Only Release Scope Update
+- 2026-05-07 auth pre-hydration fail-closed slice `V1UI-30` is closed on
+  `main`. TESTER-mode rendered smoke found that a very early auth form submit
+  could fall through to native browser behavior before hydration and place
+  credentials in the URL query string. Login/Register now render native
+  `method=post` forms with disabled fieldsets before hydration, enable controls
+  only after the client is ready, and use document navigation after successful
+  session confirmation so `/dashboard` starts from a stable authenticated
+  document boundary. Success auth toasts were removed from the redirect path;
+  error toasts and inline errors remain intact. Validation PASS: focused Web
+  auth/navigation tests (`19/19`), Web typecheck, Web lint, route-reachable
+  i18n audit (`findings=0`), repository guardrails, `git diff --check`, full
+  workspace build, and rendered auth smoke covering SSR `/auth/register` and
+  `/auth/login` plus desktop register and mobile login flows to `/dashboard`
+  with no credential URL leak and no relevant console/page/5xx errors. Browser
+  plugin validation was attempted first but local `node_repl` resolved Node
+  `v22.13.0` while requiring `>=22.22.0`, so smoke used bundled Codex Node plus
+  Playwright. Evidence:
+  `docs/planning/v1ui-30-auth-form-prehydration-fail-closed-task-2026-05-07.md`
+  and `docs/operations/_artifacts-v1ui30-auth-smoke/report.json`.
 - 2026-05-07 exchange-backed order cancel fail-closed slice `V1UI-29` is
   closed on `main`. BUILDER-mode review found that the exchange
   capability boundary keeps `LIVE_ORDER_CANCEL` unsupported while Dashboard

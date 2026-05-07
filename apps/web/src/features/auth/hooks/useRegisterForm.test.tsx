@@ -82,7 +82,7 @@ describe('useRegisterForm', () => {
     expect(mockReplace).not.toHaveBeenCalled();
   });
 
-  it('shows success toast and redirects to dashboard on successful registration', async () => {
+  it('redirects to dashboard without success toast on successful registration', async () => {
     mockRegisterUser.mockResolvedValueOnce({});
     mockRefetchUser.mockResolvedValueOnce(true);
 
@@ -92,7 +92,7 @@ describe('useRegisterForm', () => {
       await result.current.onFormSubmit();
     });
 
-    expect(mockToastSuccess).toHaveBeenCalledWith('Registration completed successfully.');
+    expect(mockToastSuccess).not.toHaveBeenCalled();
     expect(mockToastError).not.toHaveBeenCalled();
     expect(mockReplace).toHaveBeenCalledWith('/dashboard');
   });

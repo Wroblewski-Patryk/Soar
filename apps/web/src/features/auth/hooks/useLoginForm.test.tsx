@@ -13,6 +13,7 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({
     replace: mockReplace,
   }),
+  usePathname: () => (typeof window === 'undefined' ? '/' : window.location.pathname || '/'),
 }));
 
 vi.mock('../../../context/AuthContext', () => ({
@@ -80,7 +81,7 @@ describe('useLoginForm', () => {
     expect(mockReplace).not.toHaveBeenCalled();
   });
 
-  it('shows success toast and redirects to dashboard on successful login', async () => {
+  it('redirects to dashboard without success toast on successful login', async () => {
     mockLoginUser.mockResolvedValueOnce({});
     mockRefetchUser.mockResolvedValueOnce(true);
 
@@ -90,7 +91,7 @@ describe('useLoginForm', () => {
       await result.current.onFormSubmit();
     });
 
-    expect(mockToastSuccess).toHaveBeenCalledWith('Signed in successfully.');
+    expect(mockToastSuccess).not.toHaveBeenCalled();
     expect(mockToastError).not.toHaveBeenCalled();
     expect(mockReplace).toHaveBeenCalledWith('/dashboard');
   });

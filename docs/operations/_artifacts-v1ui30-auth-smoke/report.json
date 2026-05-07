@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-05-07T04:36:06.749Z",
+  "email": "v1ui30-1778128558212@example.com",
+  "ssrRoutes": [
+    "/auth/register",
+    "/auth/login"
+  ],
+  "hydratedFlows": [
+    "register desktop -> dashboard",
+    "login mobile -> dashboard"
+  ],
+  "screenshotDir": "C:\\Personal\\Projekty\\Aplikacje\\Soar\\docs\\operations\\_artifacts-v1ui30-auth-smoke",
+  "errors": []
+}

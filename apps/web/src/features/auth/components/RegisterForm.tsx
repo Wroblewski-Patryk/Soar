@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { useState } from 'react';
+import { useHydrationReady } from '../hooks/useHydrationReady';
 import { useRegisterForm } from '../hooks/useRegisterForm';
 import PasswordVisibilityToggle from './PasswordVisibilityToggle';
 import { useI18n } from '@/i18n/I18nProvider';
@@ -7,14 +8,16 @@ import type { TranslationKey } from '@/i18n/translations';
 
 export default function RegisterForm() {
   const { register, onFormSubmit, errors, isSubmitting, serverError } = useRegisterForm();
+  const isHydrationReady = useHydrationReady();
+  const isFormDisabled = isSubmitting || !isHydrationReady;
   const [showPassword, setShowPassword] = useState(false);
   const { t } = useI18n();
   const resolveFieldError = (value: unknown) =>
     typeof value === 'string' ? t(value as TranslationKey) : null;
 
   return (
-    <form onSubmit={onFormSubmit} className='form' noValidate>
-      <fieldset className='fieldset'>
+    <form method='post' onSubmit={onFormSubmit} className='form' noValidate>
+      <fieldset className='fieldset' disabled={isFormDisabled}>
         <label className='label' htmlFor='email'>
           {t('auth.forms.common.emailLabel')}
         </label>
@@ -23,7 +26,7 @@ export default function RegisterForm() {
           type='email'
           className={`input input-bordered w-full ${errors.email ? 'input-error' : ''}`}
           placeholder={t('auth.forms.common.emailPlaceholder')}
-          disabled={isSubmitting}
+          disabled={isFormDisabled}
           {...register('email')}
         />
         {errors.email && (
@@ -39,12 +42,12 @@ export default function RegisterForm() {
             type={showPassword ? 'text' : 'password'}
             className={`input input-bordered join-item w-full ${errors.password ? 'input-error' : ''}`}
             placeholder={t('auth.forms.common.passwordPlaceholder')}
-            disabled={isSubmitting}
+            disabled={isFormDisabled}
             {...register('password')}
           />
           <PasswordVisibilityToggle
             show={showPassword}
-            disabled={isSubmitting}
+            disabled={isFormDisabled}
             onToggle={() => setShowPassword((prev) => !prev)}
           />
         </div>
@@ -53,7 +56,7 @@ export default function RegisterForm() {
         )}
 
         <label htmlFor='terms' className='label'>
-          <input id='terms' type='checkbox' className='checkbox mt-4 mr-1' disabled={isSubmitting} {...register('terms')} />
+          <input id='terms' type='checkbox' className='checkbox mt-4 mr-1' disabled={isFormDisabled} {...register('terms')} />
           <span className='pt-4'>
             {t('auth.forms.register.agreePrefix')}{' '}
             <Link href='/terms' className='link link-hover'>
@@ -75,7 +78,7 @@ export default function RegisterForm() {
           </div>
         )}
 
-        <button type='submit' className='btn btn-primary mt-4 mb-4' disabled={isSubmitting}>
+        <button type='submit' className='btn btn-primary mt-4 mb-4' disabled={isFormDisabled}>
           {isSubmitting ? t('auth.forms.register.submitPending') : t('auth.forms.register.submitIdle')}
         </button>
 

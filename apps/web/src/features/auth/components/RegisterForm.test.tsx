@@ -1,4 +1,5 @@
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { renderToString } from 'react-dom/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import RegisterForm from './RegisterForm';
 import { I18nProvider } from '@/i18n/I18nProvider';
@@ -44,6 +45,26 @@ describe('RegisterForm', () => {
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/^Password$/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /show password/i })).toBeInTheDocument();
+  });
+
+  it('renders a fail-closed server HTML form before hydration', () => {
+    mockUseRegisterForm.mockReturnValue({
+      register: () => ({ name: 'field', onChange: vi.fn(), onBlur: vi.fn(), ref: vi.fn() }),
+      onFormSubmit: vi.fn(),
+      errors: {},
+      isSubmitting: false,
+      serverError: null,
+    });
+
+    const html = renderToString(
+      <I18nProvider>
+        <RegisterForm />
+      </I18nProvider>
+    );
+
+    expect(html).toContain('method="post"');
+    expect(html).toContain('<fieldset class="fieldset" disabled="">');
+    expect(html).not.toContain('method="get"');
   });
 
   it('toggles password visibility', async () => {
