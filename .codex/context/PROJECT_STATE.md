@@ -55,6 +55,14 @@ Last updated: 2026-05-08
   Post-push production freshness wait for `5517f027` timed out after ten HTTP
   200 polls over 300 seconds; public API/Web smoke still passed, but
   build-info remained on `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d`.
+- 2026-05-08 `EXCHANGE2-07` added a focused mocked Redis fanout regression for
+  the Gate.io market-stream source. The test drives
+  `ExchangePublicPollingMarketStreamWorker` with mocked public ticker/candle
+  data, routes events through `publishMarketStreamEvent`, and verifies
+  `subscribeMarketStreamEvents` receives canonical ticker and final-candle
+  payloads with exact `exchange: GATEIO` and `marketType: FUTURES` context.
+  Gate.io `PAPER_PRICING_FEED`, authenticated reads, LIVE submit, and cancel
+  remain disabled.
 - 2026-05-08 `PROD-UI-AUDIT-PLAN-2026-05-08` prepared the production UI module
   clickthrough audit plan requested by the user. The plan covers all canonical
   public, dashboard, admin, and legacy redirect routes, module-level functions,

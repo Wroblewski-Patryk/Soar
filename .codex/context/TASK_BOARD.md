@@ -73,6 +73,15 @@ Last updated: 2026-05-08
     Evidence:
     `docs/planning/exchange2-06-gateio-runtime-consumption-regression-task-2026-05-08.md`.
 
+- [x] `EXCHANGE2-07 test(market-stream): lock Gate.io polling source to fanout`
+  - Scope: add a mocked Redis regression proving the Gate.io polling worker
+    publishes ticker and final-candle events through the canonical
+    market-stream fanout/subscriber path with exact `GATEIO` and market-type
+    context. Gate.io `PAPER_PRICING_FEED`, authenticated reads, LIVE submit,
+    and cancel remain disabled.
+    Evidence:
+    `docs/planning/exchange2-07-gateio-market-stream-fanout-regression-task-2026-05-08.md`.
+
 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
   - Scope: execute a production-wide UI audit across canonical public,
     dashboard, admin, and legacy redirect routes, clicking safe module

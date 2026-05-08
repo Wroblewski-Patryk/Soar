@@ -23,6 +23,11 @@ clean. Remaining required
 user/operator decisions: whether the next live slice is API-key probe,
 authenticated readback, live order submit, and whether exchange-side cancel is
 in scope.
+Local source-path regression is now also covered: `EXCHANGE2-07` proves the
+Gate.io polling worker publishes through `publishMarketStreamEvent` and
+subscribers receive canonical `GATEIO/FUTURES` ticker/candle events. The next
+Gate.io paper-readiness boundary is deployed or target-environment source
+evidence; do not enable `PAPER_PRICING_FEED` from local mocked evidence alone.
 
 After the planned Gate.io/deploy-auth blockers are cleared, execute the
 production UI module clickthrough audit from

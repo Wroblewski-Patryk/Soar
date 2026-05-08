@@ -14,6 +14,13 @@ Last updated: 2026-05-08
   (`47/47`). Production public smoke still passes, but production build-info
   remains at `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d`; latest Gate.io
   market-stream/runtime commits are pushed but not yet verified as deployed.
+- `EXCHANGE2-07` local source-path evidence is now added: a mocked Redis
+  regression proves the Gate.io polling worker publishes ticker and
+  final-candle events through canonical market-stream fanout and subscribers
+  receive exact `GATEIO/FUTURES` context. This is not production/deployed
+  source evidence and does not enable Gate.io `PAPER_PRICING_FEED`. Validation
+  PASS: focused market-stream Vitest pack (`3` files, `7/7`), API typecheck,
+  repository guardrails, docs parity, and diff check.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307
