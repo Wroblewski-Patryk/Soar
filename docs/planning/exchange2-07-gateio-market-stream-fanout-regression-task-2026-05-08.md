@@ -126,6 +126,9 @@ Focused regression test and source-of-truth updates only.
 - Rollback note: revert the focused test/context commit
 - Observability or alerting impact: none
 - Staged rollout or feature flag: existing `MARKET_STREAM_EXCHANGE=GATEIO`
+- Post-push check: public deploy smoke passed after commit `4ef3ec58`, but
+  build-info did not expose `4ef3ec58` within 120 seconds and remained on
+  `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d`.
 
 ## Autonomous Loop Evidence
 
@@ -236,7 +239,8 @@ Focused regression test and source-of-truth updates only.
 - How tested: focused market-stream Vitest pack (`3` files, `7/7`), API
   typecheck, repository guardrails, docs parity, and diff check.
 - What is incomplete: Gate.io `PAPER_PRICING_FEED`, authenticated reads, live
-  submit, and live cancel remain disabled.
+  submit, and live cancel remain disabled; production build-info has not yet
+  exposed `4ef3ec58`.
 - Next steps: verify Gate.io source behavior in a deployed/target environment,
   then enable `PAPER_PRICING_FEED` only after clean source evidence.
 - Decisions made: no new product decisions.

@@ -20,7 +20,9 @@ Last updated: 2026-05-08
   receive exact `GATEIO/FUTURES` context. This is not production/deployed
   source evidence and does not enable Gate.io `PAPER_PRICING_FEED`. Validation
   PASS: focused market-stream Vitest pack (`3` files, `7/7`), API typecheck,
-  repository guardrails, docs parity, and diff check.
+  repository guardrails, docs parity, and diff check. Post-push public deploy
+  smoke passed, but build-info waited 120 seconds for `4ef3ec58` and remained
+  on `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d`.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307

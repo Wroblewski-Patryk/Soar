@@ -62,7 +62,9 @@ Last updated: 2026-05-08
   `subscribeMarketStreamEvents` receives canonical ticker and final-candle
   payloads with exact `exchange: GATEIO` and `marketType: FUTURES` context.
   Gate.io `PAPER_PRICING_FEED`, authenticated reads, LIVE submit, and cancel
-  remain disabled.
+  remain disabled. The task commit `4ef3ec58` was pushed; post-push public
+  smoke passed, but build-info remained on
+  `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d` after a 120-second wait.
 - 2026-05-08 `PROD-UI-AUDIT-PLAN-2026-05-08` prepared the production UI module
   clickthrough audit plan requested by the user. The plan covers all canonical
   public, dashboard, admin, and legacy redirect routes, module-level functions,

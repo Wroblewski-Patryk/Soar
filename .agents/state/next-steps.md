@@ -28,6 +28,9 @@ Gate.io polling worker publishes through `publishMarketStreamEvent` and
 subscribers receive canonical `GATEIO/FUTURES` ticker/candle events. The next
 Gate.io paper-readiness boundary is deployed or target-environment source
 evidence; do not enable `PAPER_PRICING_FEED` from local mocked evidence alone.
+Post-push build-info for `4ef3ec58` remained stale on
+`d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d` during the 120-second wait, even
+though public smoke passed.
 
 After the planned Gate.io/deploy-auth blockers are cleared, execute the
 production UI module clickthrough audit from
