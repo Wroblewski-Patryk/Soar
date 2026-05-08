@@ -85,7 +85,10 @@ readback. Last verified RC approval gate hardening deploy:
    context, RC approval, live-import readback, restore, and rollback evidence
    are all present. The command prints env variable names only and writes no
    protected evidence artifacts. Its prerequisite classification is covered by
-   focused regression tests in `scripts/runV1FinalPreflight.test.mjs`.
+   focused regression tests in `scripts/runV1FinalPreflight.test.mjs`. For
+   later Web/operator visualization, use `--json-output <path>` to write a
+   no-secret structured status report; this report is not final V1 release
+   evidence.
 0a. Production build-info reached the backend parity runtime fix, blocker
    evidence alignment, deploy-wait coordination, operator preflight hardening
    docs, live-import release-gate evidence enforcement, build-info freshness

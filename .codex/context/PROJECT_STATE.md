@@ -3,6 +3,14 @@
 Last updated: 2026-05-08
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-08 `V1-FINAL-PREFLIGHT-JSON-REPORT-2026-05-08` added optional
+  `--json-output <path>` support to `ops:release:v1:preflight`. The report is
+  a no-secret machine-readable status snapshot for later Web/operator
+  visualization: it contains deploy freshness state, prerequisite readiness,
+  release evidence states, and blockers, but not secret values and not final
+  release evidence. A local no-auth run against a temporary JSON path produced
+  `status=blocked`; the generated file was not committed because it is a
+  point-in-time status snapshot.
 - 2026-05-08 `V1-FINAL-PREFLIGHT-REGRESSION-TESTS-2026-05-08` added focused
   automated coverage for the final V1 preflight command. The tests lock
   fail-closed behavior when production auth/DB envs are absent, accept complete

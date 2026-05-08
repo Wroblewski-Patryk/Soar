@@ -46,11 +46,19 @@ current release evidence without creating protected production artifacts.
 pnpm run ops:release:v1:preflight
 ```
 
+For a machine-readable, no-secret status report that can be consumed by later
+Web/operator visualization, pass an explicit JSON output path:
+
+```powershell
+pnpm run ops:release:v1:preflight -- --json-output docs/operations/_artifacts-v1-final-preflight-2026-05-08.json
+```
+
 Expected current result before protected operator access is available:
 `BLOCKED` with missing `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, production
 DB restore context, RC approval, live-import readback, restore, and rollback
 evidence blockers. Do not treat preflight as final release evidence; it is the
-safe readiness check before the commands below.
+safe readiness check before the commands below. The JSON report is also not
+final release evidence; it is a no-secret status snapshot.
 
 ### 1. Verify Production Build Info
 

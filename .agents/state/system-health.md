@@ -162,6 +162,11 @@ Last updated: 2026-05-08
   required envs, token or email/password alternatives, both production DB env
   families, optional OPS auth layers, and skipped build-info behavior for local
   unit tests.
+- Final V1 preflight JSON report PASS: `ops:release:v1:preflight` now supports
+  `--json-output <path>` for a no-secret machine-readable blocker report. A
+  local no-auth run against a temporary JSON path produced `status=blocked`
+  and no secret/token value exposure; the generated file was not committed as
+  source-of-truth because it contains a point-in-time expected SHA.
 - `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
   `/dashboard/positions/live-status` returned global reconciliation diagnostic
   counts for an authenticated user. The route now filters

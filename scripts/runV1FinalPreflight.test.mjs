@@ -1,7 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { evaluatePrerequisiteGroups, runBuildInfoWait } from './runV1FinalPreflight.mjs';
+import {
+  buildPreflightReport,
+  evaluatePrerequisiteGroups,
+  runBuildInfoWait,
+} from './runV1FinalPreflight.mjs';
 
 const requiredStatus = (env) =>
   Object.fromEntries(evaluatePrerequisiteGroups(env).required.map((group) => [group.key, group.ok]));
@@ -95,4 +99,47 @@ test('runBuildInfoWait can be skipped for local preflight tests', () => {
     ok: true,
     skipped: true,
   });
+});
+
+test('buildPreflightReport exposes readiness without secret values', () => {
+  const prerequisites = evaluatePrerequisiteGroups({
+    LIVEIMPORT_READBACK_AUTH_TOKEN: 'super-secret-token',
+    ROLLBACK_GUARD_AUTH_EMAIL: 'ops@example.com',
+    ROLLBACK_GUARD_AUTH_PASSWORD: 'super-secret-password',
+    PROD_DB_CHECK_CONTAINER: 'postgres',
+    PROD_DB_CHECK_USER: 'postgres',
+    PROD_DB_CHECK_NAME: 'soar',
+  });
+  const report = buildPreflightReport({
+    options: {
+      apiBaseUrl: 'https://api.example.com',
+      webBaseUrl: 'https://web.example.com',
+      expectedSha: 'abc123',
+      today: '2026-05-08',
+      skipBuildInfo: true,
+    },
+    buildInfo: { ok: true, skipped: true },
+    prerequisites,
+    evidence: {
+      evidence: [
+        {
+          key: 'liveImportReadback',
+          label: 'LIVEIMPORT-03 runtime readback',
+          state: 'missing',
+          required: true,
+          reason: 'no matching artifact found',
+          path: null,
+          date: null,
+        },
+      ],
+    },
+    blockers: ['evidence:liveImportReadback:missing'],
+  });
+
+  assert.equal(report.status, 'blocked');
+  assert.equal(report.buildInfo.state, 'skipped');
+  assert.equal(report.prerequisites.required.find((group) => group.key === 'liveimport auth')?.ok, true);
+  const serialized = JSON.stringify(report);
+  assert.equal(serialized.includes('super-secret-token'), false);
+  assert.equal(serialized.includes('super-secret-password'), false);
 });

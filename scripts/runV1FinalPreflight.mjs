@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { spawnSync } from 'node:child_process';
+import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
@@ -33,6 +34,7 @@ const printUsage = () => {
       '  --timeout-seconds <n>      Build-info wait timeout (default: 120)',
       '  --interval-seconds <n>     Build-info wait interval (default: 15)',
       '  --today <yyyy-mm-dd>       Evidence date override',
+      '  --json-output <path>       Optional no-secret JSON report path',
       '  --skip-build-info          Do not call the build-info wait command',
       '  --help                     Show this message',
       '',
@@ -76,6 +78,7 @@ const resolveOptions = () => {
     intervalSeconds:
       readArgValue('--interval-seconds') || process.env.V1_PREFLIGHT_INTERVAL_SECONDS || '15',
     today: readArgValue('--today') || new Date().toISOString().slice(0, 10),
+    jsonOutput: readArgValue('--json-output') || process.env.V1_PREFLIGHT_JSON_OUTPUT || '',
     skipBuildInfo: hasFlag('--skip-build-info'),
   };
 };
@@ -161,6 +164,43 @@ export const evaluatePrerequisiteGroups = (env = process.env) => ({
     accepted: group.accepted,
   })),
 });
+
+export const buildPreflightReport = ({ options, buildInfo, prerequisites, evidence, blockers }) => ({
+  status: blockers.length > 0 ? 'blocked' : 'ready_for_protected_evidence',
+  generatedAt: new Date().toISOString(),
+  context: {
+    apiBaseUrl: options.apiBaseUrl,
+    webBaseUrl: options.webBaseUrl,
+    expectedSha: options.expectedSha,
+    today: options.today,
+    buildInfoSkipped: Boolean(options.skipBuildInfo),
+  },
+  buildInfo: {
+    state: buildInfo.skipped ? 'skipped' : buildInfo.ok ? 'pass' : 'blocked',
+    exitCode: Number.isInteger(buildInfo.status) ? buildInfo.status : null,
+  },
+  prerequisites,
+  evidence: evidence.evidence.map((row) => ({
+    key: row.key,
+    label: row.label,
+    state: row.state,
+    required: row.required,
+    reason: row.reason,
+    path: row.path,
+    date: row.date,
+  })),
+  blockers,
+  note:
+    'Preflight JSON is not final V1 release evidence and contains env names/readiness only, not secret values.',
+});
+
+const writeJsonReport = async (outputPath, report) => {
+  if (!outputPath) return;
+  const absolutePath = path.resolve(process.cwd(), outputPath);
+  await mkdir(path.dirname(absolutePath), { recursive: true });
+  await writeFile(absolutePath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  process.stdout.write(`[ops:release:v1:preflight] JSON report: ${path.relative(process.cwd(), absolutePath)}\n`);
+};
 
 export const runBuildInfoWait = (options) => {
   if (options.skipBuildInfo) {
@@ -253,6 +293,15 @@ const main = async () => {
   if (!evidence.ready) {
     for (const blocker of evidence.blockers) blockers.push(`evidence:${blocker}`);
   }
+
+  const report = buildPreflightReport({
+    options,
+    buildInfo,
+    prerequisites: prerequisiteStatus,
+    evidence,
+    blockers,
+  });
+  await writeJsonReport(options.jsonOutput, report);
 
   if (blockers.length > 0) {
     process.stdout.write('[ops:release:v1:preflight] BLOCKED\n');

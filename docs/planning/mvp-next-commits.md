@@ -7,6 +7,13 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-FINAL-PREFLIGHT-JSON-REPORT-2026-05-08 release: add machine-readable preflight report`
+  - 2026-05-08: Added optional `--json-output <path>` support to
+    `ops:release:v1:preflight`. The generated JSON is a no-secret status
+    snapshot for later Web/operator visualization with deploy freshness,
+    prerequisite readiness, release evidence states, and blockers. It is not
+    final release evidence. Evidence:
+    `docs/planning/v1-final-preflight-json-report-task-2026-05-08.md`.
 - [x] `V1-FINAL-PREFLIGHT-REGRESSION-TESTS-2026-05-08 release: lock final V1 preflight checks`
   - 2026-05-08: Added focused regression tests for
     `ops:release:v1:preflight` prerequisite classification. Missing production

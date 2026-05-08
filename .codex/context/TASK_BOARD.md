@@ -17,6 +17,16 @@ Last updated: 2026-05-08
 
 ## READY
 
+- [x] `V1-FINAL-PREFLIGHT-JSON-REPORT-2026-05-08 release: add machine-readable preflight report`
+  - Scope: added optional `--json-output <path>` support to
+    `ops:release:v1:preflight` so later Web/operator visualization can consume
+    a no-secret status snapshot without scraping terminal output. The report
+    includes deploy freshness, prerequisite readiness, release evidence states,
+    and blockers, but it is not final release evidence and contains no secret
+    values. Validation PASS: syntax, focused tests, local no-auth JSON output,
+    guardrails, docs parity, public smoke, and diff check. Evidence:
+    `docs/planning/v1-final-preflight-json-report-task-2026-05-08.md`.
+
 - [x] `V1-FINAL-PREFLIGHT-REGRESSION-TESTS-2026-05-08 release: lock final V1 preflight checks`
   - Scope: added focused tests for `ops:release:v1:preflight` prerequisite
     classification so missing production auth/DB inputs fail closed, complete
