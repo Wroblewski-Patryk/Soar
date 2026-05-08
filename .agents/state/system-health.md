@@ -4,9 +4,10 @@ Last updated: 2026-05-08
 
 ## Latest Health Snapshot
 
-- Production web build-info is current through
-  `5cf5a4ce983e313060f78270f47ba026f33b676f`, which contains the backend
-  runtime parity fix plus final release-gate build-info freshness hardening.
+- Production web build-info reached
+  `1100b7fb232ce6195b24522a6a11559fe9fb8634`, which contains the backend
+  runtime parity fix plus final release-gate build-info freshness and strict
+  RC approval evidence hardening.
   Production API `/health`, API `/ready`, and WEB `/`
   passed the latest public smoke check. GitHub Actions is not an accepted
   production deployment path for this project, so future production deployment
@@ -264,11 +265,13 @@ runtime contracts are changed.
 
 ## Deployment Impact
 
-Production build-info now exposes `5cf5a4ce983e313060f78270f47ba026f33b676f`,
+Production build-info reached `1100b7fb232ce6195b24522a6a11559fe9fb8634`,
 which contains the V1 backend PAPER/LIVE adapter-pure runtime fix, refreshed
-release-state docs, blocker evidence alignment, deploy-wait coordination, and
-operator preflight hardening notes, plus build-info freshness enforcement in
-the final release gate. The next executable release task requires
-authenticated read-only production evidence, protected production recovery
-proof, and real RC approval inputs; the current shell still lacks those
-credentials and approvals.
+release-state docs, blocker evidence alignment, deploy-wait coordination,
+operator preflight hardening notes, live-import evidence enforcement,
+build-info freshness enforcement, and strict RC approval evidence enforcement
+in the final release gate. The next executable release task must still verify
+the currently checked-out `HEAD` with build-info before protected evidence
+collection. It requires authenticated read-only production evidence, protected
+production recovery proof, and real RC approval inputs; the current shell still
+lacks those credentials and approvals.

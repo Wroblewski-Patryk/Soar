@@ -7,6 +7,15 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-RELEASE-STATE-SHA-HANDOFF-2026-05-08 release: keep deploy SHA verification dynamic`
+  - 2026-05-08: Updated the active final blocker handoff and continuation
+    state so future protected readback and final V1 release-gate work verifies
+    the currently checked-out `HEAD` through the existing web build-info wait
+    command before collecting protected evidence. The previously verified RC
+    approval hardening deploy
+    `1100b7fb232ce6195b24522a6a11559fe9fb8634` remains historical evidence,
+    not a permanent target SHA. Evidence:
+    `docs/planning/v1-release-state-sha-handoff-task-2026-05-08.md`.
 - [x] `V1-RELEASE-GATE-RC-APPROVAL-EVIDENCE-2026-05-08 release: require RC approval in V1 gate`
   - 2026-05-08: Aligned the final production release gate with the real Gate 4
     approval requirement. `ops:release:v1:gate` now fails fresh RC external

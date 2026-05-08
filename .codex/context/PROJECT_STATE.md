@@ -12,7 +12,12 @@ Last updated: 2026-05-08
   reports `not_ready` with RC external gates, RC sign-off, and RC checklist as
   failed while current Gate 4 remains open/blocked. No fake approver names,
   protected production credentials, exchange writes, DB writes, live-money
-  actions, or destructive operations were used.
+  actions, or destructive operations were used. The task commit was deployed
+  and production build-info reached
+  `1100b7fb232ce6195b24522a6a11559fe9fb8634`; public deploy smoke passed.
+  Future protected evidence collection should still verify the currently
+  checked-out `HEAD` with build-info first rather than relying on a hardcoded
+  historical SHA.
 - 2026-05-08 `V1-RELEASE-GATE-BUILD-INFO-FRESHNESS-2026-05-08` added deployed
   SHA freshness enforcement to the final V1 release gate. The gate now accepts
   `--expected-sha` / `RELEASE_GATE_EXPECTED_SHA` and, when provided, runs the
@@ -123,9 +128,9 @@ Last updated: 2026-05-08
   missing auth, and the latest dry-run
   `docs/operations/v1-release-gate-prod-2026-05-08T05-43-51-157Z.md` remains
   `not_ready`.
-  The active final blocker pack now uses deployed
-  `5cf5a4ce983e313060f78270f47ba026f33b676f` for build-info and
-  `LIVEIMPORT-03` readback commands.
+  The active final blocker pack now uses `git rev-parse HEAD` plus the web
+  build-info wait command as the deploy freshness source for `LIVEIMPORT-03`
+  readback commands.
   RC preflight narrowed RC blockers to Gate 4 only: Engineering, Product,
   Operations, and RC owner identities are missing, and final status remains
   `BLOCKED`. Gates 1, 2, and 3 are `PASS`.

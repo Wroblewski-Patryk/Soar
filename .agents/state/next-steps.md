@@ -49,10 +49,11 @@ build-info is current, but the current shell still lacks the required Soar
 production auth/access. A no-auth collector attempt failed closed before
 runtime readback, which is the expected safe result.
 
-Post-backend-parity check: production web build-info advanced through
-`5cf5a4ce983e313060f78270f47ba026f33b676f`, which includes the adapter-pure
+Post-backend-parity check: production web build-info reached
+`1100b7fb232ce6195b24522a6a11559fe9fb8634`, which includes the adapter-pure
 PAPER/LIVE runtime fix, blocker evidence alignment, deploy-wait coordination
-docs, and release-gate build-info freshness hardening. Public deploy smoke
+docs, live-import release-gate evidence enforcement, build-info freshness
+hardening, and strict RC approval evidence enforcement. Public deploy smoke
 without workers passed. Continue with
 authenticated read-only `LIVEIMPORT-03` production runtime readback once
 credentials are available. Do not use GitHub Actions for production
@@ -65,21 +66,22 @@ $expectedSha = git rev-parse HEAD
 pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output docs/operations/liveimport-03-prod-readback-2026-05-08.json
 ```
 
-If production build-info reports a deployed commit older than latest `main`
-while latest `main` only contains docs/state evidence on top, use the deployed
-SHA for readback evidence until a newer Coolify/manual deploy is confirmed.
-Latest observed production SHA is
-`5cf5a4ce983e313060f78270f47ba026f33b676f`.
+If production build-info reports a deployed commit older than latest `main`,
+wait for the accepted Coolify/manual deploy before protected readback. Do not
+start `LIVEIMPORT-03` against a stale deployment unless the user/operator
+explicitly confirms the checked-out docs-only changes are irrelevant to the
+readback. Last verified RC approval gate hardening deploy:
+`1100b7fb232ce6195b24522a6a11559fe9fb8634`.
 
 ## Candidate Backlog
 
 0. Follow the final blocker execution pack:
    `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
-0a. Production build-info already exposes the backend parity runtime fix,
-   blocker evidence alignment, deploy-wait coordination, operator preflight
-   hardening docs, live-import release-gate evidence enforcement, and
-   build-info freshness enforcement at
-   `5cf5a4ce983e313060f78270f47ba026f33b676f`. Do not use GitHub Actions. If a
+0a. Production build-info reached the backend parity runtime fix, blocker
+   evidence alignment, deploy-wait coordination, operator preflight hardening
+   docs, live-import release-gate evidence enforcement, build-info freshness
+   enforcement, and strict RC approval evidence enforcement at
+   `1100b7fb232ce6195b24522a6a11559fe9fb8634`. Do not use GitHub Actions. If a
    future step depends on a pushed commit being deployed, wait for build-info
    before continuing; an operator can speed this up with Coolify dashboard
    force deploy, or with deploy webhook/API token if those secrets are

@@ -2,8 +2,11 @@
 
 ## Status
 - Current result: **NO-GO**
-- Latest observed production code/tooling SHA:
-  `5cf5a4ce983e313060f78270f47ba026f33b676f`
+- Production code/tooling freshness source of truth:
+  run `git rev-parse HEAD`, then verify that SHA with the build-info wait
+  command in step 1 before collecting protected evidence.
+- Last verified RC approval gate hardening deploy:
+  `1100b7fb232ce6195b24522a6a11559fe9fb8634`
 - Latest release-gate dry-run:
   `docs/operations/v1-release-gate-prod-2026-05-08Trc-approval-required-dry-run.md`
 
@@ -185,8 +188,8 @@ Required result:
   final status still `BLOCKED` instead of `APPROVED`.
 - Final V1 release gate has only been run in dry-run mode after the blocker
   refresh. The latest dry-run includes the web build-info freshness gate, so
-  final non-dry-run approval must prove deployed SHA freshness as well as
-  protected runtime and rollback checks.
+  final non-dry-run approval must prove the currently checked-out `HEAD` is
+  deployed before protected runtime and rollback checks run.
 
 ## Completion Rule
 V1 can be marked ready only after every required artifact above is fresh and
