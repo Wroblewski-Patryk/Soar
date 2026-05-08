@@ -3,6 +3,14 @@
 Last updated: 2026-05-08
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-08 `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08` published the
+  current no-secret final V1 preflight JSON/Markdown snapshot for deployed SHA
+  `052df82244ea0f81e8611ff8bb2b677db115bd19`. The snapshot reports build-info
+  PASS, public smoke PASS, production DB restore context SATISFIED, and current
+  blockers limited to live-import auth/readback, rollback guard auth/proof, and
+  RC Gate 4 approval evidence. Artifacts:
+  `docs/operations/_artifacts-v1-final-preflight-current.json` and
+  `docs/operations/v1-final-preflight-current.md`.
 - 2026-05-08 `V1-FINAL-BLOCKER-PACK-RESTORE-STATE-SYNC-2026-05-08`
   synchronized the final blocker pack and active continuation state after
   deployed commit `721fe8482922835a9419f0e529baeef4ff6a74c9` confirmed

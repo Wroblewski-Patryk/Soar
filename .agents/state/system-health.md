@@ -5,10 +5,11 @@ Last updated: 2026-05-08
 ## Latest Health Snapshot
 
 - Production web build-info reached
-  `721fe8482922835a9419f0e529baeef4ff6a74c9`, which contains the backend
+  `052df82244ea0f81e8611ff8bb2b677db115bd19`, which contains the backend
   runtime parity fix, final release-gate build-info freshness, strict RC
   approval evidence hardening, production restore evidence alignment, and
-  final preflight restore-context classification.
+  final preflight restore-context classification plus the current no-secret
+  preflight status snapshot.
   Production API `/health`, API `/ready`, and WEB `/`
   passed the latest public smoke check. GitHub Actions is not an accepted
   production deployment path for this project, so future production deployment
@@ -22,11 +23,16 @@ Last updated: 2026-05-08
 - The current shell exposes no production admin token, operator login, ops
   basic auth, or ops header environment variables. Authenticated production
   readback is therefore blocked in this session.
-- Latest V1 final preflight on deployed `721fe8482922835a9419f0e529baeef4ff6a74c9`
+- Latest V1 final preflight on deployed `052df82244ea0f81e8611ff8bb2b677db115bd19`
   reports build-info PASS, public smoke PASS, production DB restore context
   SATISFIED, activation evidence fresh, restore evidence fresh/PASS, and
   `BLOCKED` only on live-import auth, rollback auth, failed RC Gate 4 approval
   evidence, missing `LIVEIMPORT-03`, and failed rollback proof.
+- Current no-secret final V1 preflight snapshot for deployed
+  `052df82244ea0f81e8611ff8bb2b677db115bd19` is available at
+  `docs/operations/_artifacts-v1-final-preflight-current.json` and
+  `docs/operations/v1-final-preflight-current.md`. It is status-only handoff
+  material, not final release evidence.
 - Final blocker execution pack:
   `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
 - Production restore drill evidence is fresh/PASS and final preflight now

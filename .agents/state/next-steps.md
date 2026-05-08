@@ -78,6 +78,11 @@ live-import auth, rollback guard auth, failed RC Gate 4 approval evidence,
 missing `LIVEIMPORT-03` readback, and failed rollback proof. The latest
 rollback proof rerun failed closed on protected `401` responses and is recorded
 in `docs/operations/v1-rollback-proof-prod-2026-05-08T15-30-28-231Z.md`.
+The current no-secret preflight snapshot for deployed SHA
+`052df82244ea0f81e8611ff8bb2b677db115bd19` is committed at
+`docs/operations/_artifacts-v1-final-preflight-current.json` and
+`docs/operations/v1-final-preflight-current.md` for Web/operator status
+visualization.
 
 The next executable production evidence step requires approved Soar
 application/operator auth for `LIVEIMPORT-03` and rollback proof, or real RC
