@@ -73,13 +73,16 @@ until a newer Coolify/manual deploy is confirmed.
 
 0. Follow the final blocker execution pack:
    `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
-0a. Deploy current `main` through Coolify/manual operator controls, then wait
-   for build-info to expose the deployed SHA. Do not use GitHub Actions.
+0a. Production build-info already exposes the backend parity runtime fix at
+   `da1e52cfec0b70e5a94e59d75fe702a55c348d74`; later docs-only commits may
+   still be ahead of production. Do not use GitHub Actions.
 1. If production credentials or ops auth are available, execute
-   `ops:liveimport:readback` and record redacted `LIVEIMPORT-03` evidence. The latest
-   names-only prerequisite sweep after `FULLARCH-FIX-11` found no production
-   auth variable names in this shell. The evidence run must include actual
-   protected runtime positions payloads for the requested symbols.
+   `ops:liveimport:readback` for deployed
+   `da1e52cfec0b70e5a94e59d75fe702a55c348d74` and record redacted
+   `LIVEIMPORT-03` evidence. The latest names-only prerequisite sweep found
+   only `FIGMA_OAUTH_TOKEN` and `IGCCSVC_DB` in this shell. The evidence run
+   must include actual protected runtime positions payloads for the requested
+   symbols.
 2. If authenticated readback remains unavailable, keep `LIVEIMPORT-03` open and
    do not downgrade it to public health/build-info evidence.
 3. After `LIVEIMPORT-03`, continue `BOTMULTI-09` protected runtime readback and

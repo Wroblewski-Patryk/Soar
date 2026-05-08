@@ -118,6 +118,11 @@ Last updated: 2026-05-08
   `da1e52cfec0b70e5a94e59d75fe702a55c348d74` failed closed with missing
   read-only production auth token or login credentials. Names-only env scan
   found only `FIGMA_OAUTH_TOKEN` and `IGCCSVC_DB`.
+- 2026-05-08 V1 release-gate dry-run is `not_ready`:
+  `docs/operations/v1-release-gate-prod-2026-05-08T05-27-38-139Z.md` marks
+  2026-05-07 activation, RC, backup/restore, and rollback artifacts stale for
+  2026-05-08. No-auth runtime freshness and rollback guard probes remain
+  protected/fail-closed on HTTP `401`.
 
 ## Known Environment Pitfalls
 

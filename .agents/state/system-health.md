@@ -70,6 +70,14 @@ Last updated: 2026-05-08
   read-only `LIVEIMPORT-03` collector attempt against deployed
   `da1e52cf...` failed closed with missing production auth, and a names-only
   env scan found only `FIGMA_OAUTH_TOKEN` and `IGCCSVC_DB`.
+- Latest V1 release-gate dry-run:
+  `docs/operations/v1-release-gate-prod-2026-05-08T05-27-38-139Z.md` reports
+  `readiness=not_ready`. It marks the 2026-05-07 activation, RC,
+  backup/restore, and rollback artifacts as stale for 2026-05-08, and dry-run
+  mode still cannot approve production. Fresh no-auth protected probes remain
+  fail-closed: runtime freshness returned HTTP `401`, and rollback guard
+  returned `shouldRollback=true` due to `runtime_freshness_endpoint_http_401`
+  and `alerts_endpoint_http_401`.
 - `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
   `/dashboard/positions/live-status` returned global reconciliation diagnostic
   counts for an authenticated user. The route now filters
