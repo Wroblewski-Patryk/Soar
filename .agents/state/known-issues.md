@@ -11,12 +11,13 @@ Last updated: 2026-05-08
   the reachable stack. Future runs should check both contexts/ports before
   declaring DB-backed validation blocked.
 - Production build-info now reports
-  `0a2e2353177c15d4a4934c03837835785e01d710`, which contains the V1 backend
-  parity runtime fix, blocker evidence alignment, and deploy-wait coordination
-  docs. Do not use GitHub Actions for production deployment; the operator
-  confirmed that path is not allowed and creates unwanted email noise. If a
-  future task depends on a pushed commit being deployed, wait for build-info
-  before continuing.
+  `5cf5a4ce983e313060f78270f47ba026f33b676f`, which contains the V1 backend
+  parity runtime fix, blocker evidence alignment, deploy-wait coordination
+  docs, live-import release-gate evidence enforcement, and build-info
+  freshness enforcement. Do not use GitHub Actions for production deployment;
+  the operator confirmed that path is not allowed and creates unwanted email
+  noise. If a future task depends on a pushed commit being deployed, wait for
+  build-info before continuing.
 - Production deployment freshness initially lagged after the pushed V1 audit
   candidate, but a later build-info wait passed and production now reports
   `1f816362c93e117e47cfe52a35e0fec93bd0b37d`.
@@ -163,6 +164,14 @@ Last updated: 2026-05-08
   production V1 release gate now accepts `--expected-sha` and runs the existing
   web build-info wait step before deploy smoke. Final `ready` cannot bypass a
   stale production deploy when the final blocker pack command is used.
+- 2026-05-08 release-gate RC approval evidence hardening is closed:
+  production V1 release gate now fails fresh RC external-gate, sign-off, and
+  checklist artifacts unless Gate 4 is `PASS`, `RC status: APPROVED` is
+  present, and the checklist shows `G4=PASS`. Latest dry-run
+  `docs/operations/v1-release-gate-prod-2026-05-08Trc-approval-required-dry-run.md`
+  reports `evidence:rcExternalGateStatus:failed`,
+  `evidence:rcSignoffRecord:failed`, and `evidence:rcChecklist:failed`, so
+  final `ready` cannot bypass real Gate 4 approval.
 
 ## Known Environment Pitfalls
 

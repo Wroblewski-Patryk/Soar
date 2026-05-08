@@ -7,6 +7,16 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-RELEASE-GATE-RC-APPROVAL-EVIDENCE-2026-05-08 release: require RC approval in V1 gate`
+  - 2026-05-08: Aligned the final production release gate with the real Gate 4
+    approval requirement. `ops:release:v1:gate` now fails fresh RC external
+    gates, sign-off, and checklist artifacts unless all RC gates are `PASS`,
+    the sign-off record reports `RC status: APPROVED`, and the checklist shows
+    `G4=PASS`. The refreshed dry-run
+    `docs/operations/v1-release-gate-prod-2026-05-08Trc-approval-required-dry-run.md`
+    remains `not_ready` and reports RC external gates, RC sign-off, and RC
+    checklist as failed while Gate 4 remains open/blocked. Evidence:
+    `docs/planning/v1-release-gate-rc-approval-evidence-task-2026-05-08.md`.
 - [x] `V1-RELEASE-GATE-BUILD-INFO-FRESHNESS-2026-05-08 release: require deployed SHA in V1 gate`
   - 2026-05-08: Added deployed SHA freshness enforcement to the final V1
     release gate. `ops:release:v1:gate` now accepts `--expected-sha` /

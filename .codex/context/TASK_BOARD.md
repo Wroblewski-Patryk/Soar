@@ -17,6 +17,16 @@ Last updated: 2026-05-08
 
 ## READY
 
+- [x] `V1-RELEASE-GATE-RC-APPROVAL-EVIDENCE-2026-05-08 release: require RC approval in V1 gate`
+  - Scope: aligned `ops:release:v1:gate` with the final Gate 4 approval
+    requirement by making RC external gates, sign-off, and checklist content
+    checks fail closed when the artifacts are fresh but not approved. The
+    refreshed dry-run now reports RC external gates, RC sign-off, and RC
+    checklist as `failed` while Gate 4 remains open/blocked. Validation PASS:
+    release-gate tests, syntax checks, dry-run report generation, guardrails,
+    docs parity, public smoke, and diff check. Evidence:
+    `docs/planning/v1-release-gate-rc-approval-evidence-task-2026-05-08.md`.
+
 - [x] `V1-RELEASE-GATE-BUILD-INFO-FRESHNESS-2026-05-08 release: require deployed SHA in V1 gate`
   - Scope: added `--expected-sha` / `RELEASE_GATE_EXPECTED_SHA` to
     `ops:release:v1:gate` and reused the existing

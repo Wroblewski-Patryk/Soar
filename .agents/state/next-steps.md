@@ -49,10 +49,11 @@ build-info is current, but the current shell still lacks the required Soar
 production auth/access. A no-auth collector attempt failed closed before
 runtime readback, which is the expected safe result.
 
-Post-backend-parity check: production web build-info advanced to
-`0a2e2353177c15d4a4934c03837835785e01d710`, which includes the adapter-pure
-PAPER/LIVE runtime fix, blocker evidence alignment, and deploy-wait
-coordination docs. Public deploy smoke without workers passed. Continue with
+Post-backend-parity check: production web build-info advanced through
+`5cf5a4ce983e313060f78270f47ba026f33b676f`, which includes the adapter-pure
+PAPER/LIVE runtime fix, blocker evidence alignment, deploy-wait coordination
+docs, and release-gate build-info freshness hardening. Public deploy smoke
+without workers passed. Continue with
 authenticated read-only `LIVEIMPORT-03` production runtime readback once
 credentials are available. Do not use GitHub Actions for production
 deployment.
@@ -68,16 +69,17 @@ If production build-info reports a deployed commit older than latest `main`
 while latest `main` only contains docs/state evidence on top, use the deployed
 SHA for readback evidence until a newer Coolify/manual deploy is confirmed.
 Latest observed production SHA is
-`3f065ac5c24ff159f97a94a0bc98948a1739eadf`.
+`5cf5a4ce983e313060f78270f47ba026f33b676f`.
 
 ## Candidate Backlog
 
 0. Follow the final blocker execution pack:
    `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
 0a. Production build-info already exposes the backend parity runtime fix,
-   blocker evidence alignment, deploy-wait coordination, and operator
-   preflight hardening docs at
-   `3f065ac5c24ff159f97a94a0bc98948a1739eadf`. Do not use GitHub Actions. If a
+   blocker evidence alignment, deploy-wait coordination, operator preflight
+   hardening docs, live-import release-gate evidence enforcement, and
+   build-info freshness enforcement at
+   `5cf5a4ce983e313060f78270f47ba026f33b676f`. Do not use GitHub Actions. If a
    future step depends on a pushed commit being deployed, wait for build-info
    before continuing; an operator can speed this up with Coolify dashboard
    force deploy, or with deploy webhook/API token if those secrets are
@@ -112,7 +114,9 @@ Latest observed production SHA is
    - Gate 4 sign-off needs real Engineering, Product, Operations, and RC owner
      names. The sign-off builder now prints missing required Gate 4 fields on
      the blocked path; owner contact is recommended for rollback authority
-     handoff.
+     handoff. The final V1 release gate now also fails fresh RC artifacts until
+     the external-gates status shows Gate 4 `PASS`, the sign-off record reports
+     `RC status: APPROVED`, and the checklist shows `G4=PASS`.
    - Final release gate must run without `--dry-run` and with
      `--expected-sha $(git rev-parse HEAD)` plus the deployed web base URL so
      build-info freshness is enforced inside the gate.

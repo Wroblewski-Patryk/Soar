@@ -4,9 +4,10 @@ Last updated: 2026-05-08
 
 ## Latest Health Snapshot
 
-- Local `main`, `origin/main`, and production web build-info are synchronized
-  at `0a2e2353177c15d4a4934c03837835785e01d710` for the latest release-state
-  coordination commit. Production API `/health`, API `/ready`, and WEB `/`
+- Production web build-info is current through
+  `5cf5a4ce983e313060f78270f47ba026f33b676f`, which contains the backend
+  runtime parity fix plus final release-gate build-info freshness hardening.
+  Production API `/health`, API `/ready`, and WEB `/`
   passed the latest public smoke check. GitHub Actions is not an accepted
   production deployment path for this project, so future production deployment
   must still be performed through Coolify/manual operator controls followed by
@@ -20,10 +21,12 @@ Last updated: 2026-05-08
   basic auth, or ops header environment variables. Authenticated production
   readback is therefore blocked in this session.
 - Latest V1 release-gate dry-run
-  `docs/operations/v1-release-gate-prod-2026-05-07T18-20-30-000Z.md` reports
-  `readiness=not_ready`: activation plan/audit and RC artifacts are fresh;
-  backup/restore drill and rollback proof are fresh but failed; protected
-  non-dry-run release execution is still missing.
+  `docs/operations/v1-release-gate-prod-2026-05-08Trc-approval-required-dry-run.md`
+  reports `readiness=not_ready`: activation plan/audit are fresh; RC external
+  gates, sign-off, and checklist are fresh but failed because Gate 4 remains
+  open/blocked; `LIVEIMPORT-03` is missing; backup/restore drill and rollback
+  proof are fresh but failed; protected non-dry-run release execution is still
+  missing.
 - Final blocker execution pack:
   `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
 
@@ -140,6 +143,14 @@ Last updated: 2026-05-08
   `docs/operations/v1-release-gate-prod-2026-05-08Tbuild-info-required-dry-run.md`
   shows the planned `ops:deploy:wait-web-build-info` step and remains
   `not_ready` for the expected protected evidence blockers.
+- Release gate RC approval evidence hardening PASS: `ops:release:v1:gate`
+  now requires RC external gates to show all four gates `PASS`, the RC
+  sign-off record to report `RC status: APPROVED`, and the RC checklist to
+  show `G4=PASS`. Latest dry-run
+  `docs/operations/v1-release-gate-prod-2026-05-08Trc-approval-required-dry-run.md`
+  reports RC external gates, RC sign-off, and RC checklist as `failed` while
+  current Gate 4 remains open/blocked, so final `ready` cannot pass on fresh
+  but unapproved RC artifacts.
 - `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
   `/dashboard/positions/live-status` returned global reconciliation diagnostic
   counts for an authenticated user. The route now filters
@@ -253,9 +264,11 @@ runtime contracts are changed.
 
 ## Deployment Impact
 
-Production build-info now exposes `3f065ac5c24ff159f97a94a0bc98948a1739eadf`,
+Production build-info now exposes `5cf5a4ce983e313060f78270f47ba026f33b676f`,
 which contains the V1 backend PAPER/LIVE adapter-pure runtime fix, refreshed
 release-state docs, blocker evidence alignment, deploy-wait coordination, and
-operator preflight hardening notes. The next executable release task requires
-authenticated read-only production evidence and protected production recovery
-proof; the current shell still lacks those credentials.
+operator preflight hardening notes, plus build-info freshness enforcement in
+the final release gate. The next executable release task requires
+authenticated read-only production evidence, protected production recovery
+proof, and real RC approval inputs; the current shell still lacks those
+credentials and approvals.

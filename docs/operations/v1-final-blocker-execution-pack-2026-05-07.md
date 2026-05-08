@@ -3,9 +3,9 @@
 ## Status
 - Current result: **NO-GO**
 - Latest observed production code/tooling SHA:
-  `3f065ac5c24ff159f97a94a0bc98948a1739eadf`
+  `5cf5a4ce983e313060f78270f47ba026f33b676f`
 - Latest release-gate dry-run:
-  `docs/operations/v1-release-gate-prod-2026-05-08Tbuild-info-required-dry-run.md`
+  `docs/operations/v1-release-gate-prod-2026-05-08Trc-approval-required-dry-run.md`
 
 ## Purpose
 This pack lists the exact remaining commands needed to turn the current
@@ -142,8 +142,10 @@ pnpm run ops:rc:checklist:sync
 
 Required result:
 - `docs/operations/v1-rc-signoff-record.md` reports `RC status: APPROVED`
+- `docs/operations/v1-rc-external-gates-status.md` reports Gate 4 `PASS` and
+  `Gate 4 approved status found: yes`
 - `docs/operations/v1-release-candidate-checklist.md` reflects current gate
-  states
+  states with `G4=PASS`
 
 If sign-off remains blocked, `ops:rc:signoff:build` prints the missing Gate 4
 fields. Required fields are Engineering, Product, Operations, and RC owner

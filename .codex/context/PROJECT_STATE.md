@@ -3,6 +3,16 @@
 Last updated: 2026-05-08
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-08 `V1-RELEASE-GATE-RC-APPROVAL-EVIDENCE-2026-05-08` aligned the
+  final production release gate with the real RC approval requirement.
+  `ops:release:v1:gate` now requires RC external gates to show all four gates
+  `PASS`, the sign-off record to report `RC status: APPROVED`, and the RC
+  checklist to show `G4=PASS`. The dry-run
+  `docs/operations/v1-release-gate-prod-2026-05-08Trc-approval-required-dry-run.md`
+  reports `not_ready` with RC external gates, RC sign-off, and RC checklist as
+  failed while current Gate 4 remains open/blocked. No fake approver names,
+  protected production credentials, exchange writes, DB writes, live-money
+  actions, or destructive operations were used.
 - 2026-05-08 `V1-RELEASE-GATE-BUILD-INFO-FRESHNESS-2026-05-08` added deployed
   SHA freshness enforcement to the final V1 release gate. The gate now accepts
   `--expected-sha` / `RELEASE_GATE_EXPECTED_SHA` and, when provided, runs the
@@ -114,7 +124,7 @@ Last updated: 2026-05-08
   `docs/operations/v1-release-gate-prod-2026-05-08T05-43-51-157Z.md` remains
   `not_ready`.
   The active final blocker pack now uses deployed
-  `0a2e2353177c15d4a4934c03837835785e01d710` for build-info and
+  `5cf5a4ce983e313060f78270f47ba026f33b676f` for build-info and
   `LIVEIMPORT-03` readback commands.
   RC preflight narrowed RC blockers to Gate 4 only: Engineering, Product,
   Operations, and RC owner identities are missing, and final status remains

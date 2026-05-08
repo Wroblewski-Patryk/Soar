@@ -25,18 +25,30 @@ const EVIDENCE_FAMILIES = {
     requiredIn: new Set(['prod']),
     matcher: /^v1-rc-external-gates-status\.md$/,
     datePattern: /Generated at \(UTC\):\s*(\d{4}-\d{2}-\d{2})T/i,
+    passPatterns: [
+      /- Gate 1 \(.+?\):\s+PASS/i,
+      /- Gate 2 \(.+?\):\s+PASS/i,
+      /- Gate 3 \(.+?\):\s+PASS/i,
+      /- Gate 4 \(.+?\):\s+PASS/i,
+      /Gate 4 approved status found:\s+yes/i,
+    ],
+    failedPassPatternsReason: 'artifact is fresh but does not show all RC gates PASS',
   },
   rcSignoffRecord: {
     label: 'RC sign-off record',
     requiredIn: new Set(['prod']),
     matcher: /^v1-rc-signoff-record\.md$/,
     datePattern: /Date \(UTC\):\s*`?(\d{4}-\d{2}-\d{2})T/i,
+    passPattern: /RC status:\s*`?APPROVED`?/i,
+    failedPassReason: 'artifact is fresh but does not report RC status APPROVED',
   },
   rcChecklist: {
     label: 'RC checklist verification block',
     requiredIn: new Set(['prod']),
     matcher: /^v1-release-candidate-checklist\.md$/,
     datePattern: /Latest Verification \((\d{4}-\d{2}-\d{2})\)/i,
+    passPattern: /G1=PASS`,\s*`G2=PASS`,\s*`G3=PASS`,\s*`G4=PASS`/i,
+    failedPassReason: 'artifact is fresh but does not show all RC gates PASS',
   },
   liveImportReadback: {
     label: 'LIVEIMPORT-03 runtime readback',
@@ -47,6 +59,8 @@ const EVIDENCE_FAMILIES = {
       /"missingSymbols":\s*\[\s*\]/i,
       /"tokenCaptured":\s*false/i,
     ],
+    failedPassPatternsReason:
+      'artifact is fresh but does not satisfy required runtime readback checks',
   },
   backupRestoreDrill: {
     label: 'backup/restore drill evidence',
@@ -363,7 +377,7 @@ export const evaluateEvidenceReadiness = async ({ environment, evidenceDir, toda
       const raw = await readFile(match.absolutePath, 'utf8');
       if (!family.passPattern.test(raw)) {
         state = 'failed';
-        reason = 'artifact is fresh but does not report PASS';
+        reason = family.failedPassReason ?? 'artifact is fresh but does not report PASS';
       }
     }
     if (state === 'fresh' && family.passPatterns) {
@@ -371,7 +385,9 @@ export const evaluateEvidenceReadiness = async ({ environment, evidenceDir, toda
       const missingPatterns = family.passPatterns.filter((pattern) => !pattern.test(raw));
       if (missingPatterns.length > 0) {
         state = 'failed';
-        reason = 'artifact is fresh but does not satisfy required runtime readback checks';
+        reason =
+          family.failedPassPatternsReason ??
+          'artifact is fresh but does not satisfy required content checks';
       }
     }
 

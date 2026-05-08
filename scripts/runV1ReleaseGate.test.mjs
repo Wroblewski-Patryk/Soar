@@ -30,6 +30,29 @@ const writeLiveImportReadbackArtifact = (operationsDir, date = '2026-04-22', ove
     )}\n`,
   );
 
+const writeApprovedRcArtifacts = async (operationsDir, date = '2026-04-22') => {
+  await writeFile(
+    path.join(operationsDir, 'v1-rc-external-gates-status.md'),
+    [
+      `Generated at (UTC): ${date}T15:13:58.943Z`,
+      '- Gate 1 (Backup snapshot + restore validation): PASS',
+      '- Gate 2 (Queue-lag baseline review): PASS',
+      '- Gate 3 (Incident contacts + escalation confirmation): PASS',
+      '- Gate 4 (Formal RC sign-offs): PASS',
+      '- Gate 4 approved status found: yes',
+      '',
+    ].join('\n'),
+  );
+  await writeFile(
+    path.join(operationsDir, 'v1-rc-signoff-record.md'),
+    `Date (UTC): \`${date}T15:13:58.943Z\`\n- RC status: \`APPROVED\`\n`,
+  );
+  await writeFile(
+    path.join(operationsDir, 'v1-release-candidate-checklist.md'),
+    `### Latest Verification (${date})\n- current snapshot is \`G1=PASS\`, \`G2=PASS\`, \`G3=PASS\`, \`G4=PASS\`.\n`,
+  );
+};
+
 test('buildSteps passes api and web targets into deploy smoke gate', () => {
   const steps = buildSteps({
     baseUrl: 'https://stage-api.example.com',
@@ -246,18 +269,7 @@ test('evaluateEvidenceReadiness accepts fresh prod rollback and backup proof', a
       path.join(planningDir, 'v1-production-activation-and-evidence-plan-2026-04-22.md'),
       '# plan\n',
     );
-    await writeFile(
-      path.join(operationsDir, 'v1-rc-external-gates-status.md'),
-      'Generated at (UTC): 2026-04-22T15:13:58.943Z\n',
-    );
-    await writeFile(
-      path.join(operationsDir, 'v1-rc-signoff-record.md'),
-      'Date (UTC): `2026-04-22T15:13:58.943Z`\n',
-    );
-    await writeFile(
-      path.join(operationsDir, 'v1-release-candidate-checklist.md'),
-      '### Latest Verification (2026-04-22)\n',
-    );
+    await writeApprovedRcArtifacts(operationsDir);
     await writeLiveImportReadbackArtifact(operationsDir);
     await writeFile(
       path.join(operationsDir, 'v1-restore-drill-prod-2026-04-22T19-00-00-000Z.md'),
@@ -299,18 +311,7 @@ test('evaluateEvidenceReadiness rejects fresh prod restore proof when artifact s
       path.join(planningDir, 'v1-production-activation-and-evidence-plan-2026-04-22.md'),
       '# plan\n',
     );
-    await writeFile(
-      path.join(operationsDir, 'v1-rc-external-gates-status.md'),
-      'Generated at (UTC): 2026-04-22T15:13:58.943Z\n',
-    );
-    await writeFile(
-      path.join(operationsDir, 'v1-rc-signoff-record.md'),
-      'Date (UTC): `2026-04-22T15:13:58.943Z`\n',
-    );
-    await writeFile(
-      path.join(operationsDir, 'v1-release-candidate-checklist.md'),
-      '### Latest Verification (2026-04-22)\n',
-    );
+    await writeApprovedRcArtifacts(operationsDir);
     await writeLiveImportReadbackArtifact(operationsDir);
     await writeFile(
       path.join(operationsDir, 'v1-restore-drill-prod-2026-04-22T19-00-00-000Z.md'),
@@ -350,18 +351,7 @@ test('evaluateEvidenceReadiness prefers the latest same-day prod restore proof a
       path.join(planningDir, 'v1-production-activation-and-evidence-plan-2026-04-22.md'),
       '# plan\n',
     );
-    await writeFile(
-      path.join(operationsDir, 'v1-rc-external-gates-status.md'),
-      'Generated at (UTC): 2026-04-22T15:13:58.943Z\n',
-    );
-    await writeFile(
-      path.join(operationsDir, 'v1-rc-signoff-record.md'),
-      'Date (UTC): `2026-04-22T15:13:58.943Z`\n',
-    );
-    await writeFile(
-      path.join(operationsDir, 'v1-release-candidate-checklist.md'),
-      '### Latest Verification (2026-04-22)\n',
-    );
+    await writeApprovedRcArtifacts(operationsDir);
     await writeLiveImportReadbackArtifact(operationsDir);
     await writeFile(
       path.join(operationsDir, 'v1-restore-drill-prod-2026-04-22T19-00-00-000Z.md'),
@@ -393,8 +383,8 @@ test('evaluateEvidenceReadiness prefers the latest same-day prod restore proof a
   }
 });
 
-test('evaluateEvidenceReadiness rejects fresh prod live-import readback without runtime visibility', async () => {
-  const tempRoot = await mkdtemp(path.join(os.tmpdir(), 'v1-release-gate-liveimport-failed-'));
+test('evaluateEvidenceReadiness rejects fresh prod RC artifacts that are not approved', async () => {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), 'v1-release-gate-rc-blocked-'));
   const operationsDir = path.join(tempRoot, 'operations');
   const planningDir = path.join(tempRoot, 'planning');
   try {
@@ -410,16 +400,70 @@ test('evaluateEvidenceReadiness rejects fresh prod live-import readback without 
     );
     await writeFile(
       path.join(operationsDir, 'v1-rc-external-gates-status.md'),
-      'Generated at (UTC): 2026-04-22T15:13:58.943Z\n',
+      [
+        'Generated at (UTC): 2026-04-22T15:13:58.943Z',
+        '- Gate 1 (Backup snapshot + restore validation): PASS',
+        '- Gate 2 (Queue-lag baseline review): PASS',
+        '- Gate 3 (Incident contacts + escalation confirmation): PASS',
+        '- Gate 4 (Formal RC sign-offs): OPEN',
+        '- Gate 4 approved status found: no',
+        '',
+      ].join('\n'),
     );
     await writeFile(
       path.join(operationsDir, 'v1-rc-signoff-record.md'),
-      'Date (UTC): `2026-04-22T15:13:58.943Z`\n',
+      'Date (UTC): `2026-04-22T15:13:58.943Z`\n- RC status: `BLOCKED`\n',
     );
     await writeFile(
       path.join(operationsDir, 'v1-release-candidate-checklist.md'),
-      '### Latest Verification (2026-04-22)\n',
+      '### Latest Verification (2026-04-22)\n- current snapshot is `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=OPEN`.\n',
     );
+    await writeLiveImportReadbackArtifact(operationsDir);
+    await writeFile(
+      path.join(operationsDir, 'v1-restore-drill-prod-2026-04-22T19-00-00-000Z.md'),
+      '- Generated at (UTC): 2026-04-22T19:00:00.000Z\n- Status: **PASS**\n',
+    );
+    await writeFile(
+      path.join(operationsDir, 'v1-rollback-proof-prod-2026-04-22T19-05-00-000Z.md'),
+      '- Generated at (UTC): 2026-04-22T19:05:00.000Z\n- Status: **PASS**\n',
+    );
+
+    const result = await evaluateEvidenceReadiness({
+      environment: 'prod',
+      evidenceDir: operationsDir,
+      today: '2026-04-22',
+    });
+
+    assert.equal(result.ready, false);
+    assert.equal(result.evidence.find((row) => row.key === 'rcExternalGateStatus')?.state, 'failed');
+    assert.equal(result.evidence.find((row) => row.key === 'rcSignoffRecord')?.state, 'failed');
+    assert.equal(result.evidence.find((row) => row.key === 'rcChecklist')?.state, 'failed');
+    assert.deepEqual(result.blockers, [
+      'rcExternalGateStatus:failed',
+      'rcSignoffRecord:failed',
+      'rcChecklist:failed',
+    ]);
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
+});
+
+test('evaluateEvidenceReadiness rejects fresh prod live-import readback without runtime visibility', async () => {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), 'v1-release-gate-liveimport-failed-'));
+  const operationsDir = path.join(tempRoot, 'operations');
+  const planningDir = path.join(tempRoot, 'planning');
+  try {
+    await mkdir(operationsDir, { recursive: true });
+    await mkdir(planningDir, { recursive: true });
+    await writeFile(
+      path.join(operationsDir, 'v1-production-activation-evidence-audit-2026-04-22.md'),
+      '# audit\n',
+    );
+    await writeFile(
+      path.join(planningDir, 'v1-production-activation-and-evidence-plan-2026-04-22.md'),
+      '# plan\n',
+    );
+    await writeApprovedRcArtifacts(operationsDir);
     await writeLiveImportReadbackArtifact(operationsDir, '2026-04-22', {
       summary: {
         botsWithRuntimeReadback: 0,
