@@ -66,6 +66,12 @@ no-secret status reports are
 and
 `docs/operations/v1-final-preflight-2026-05-08-protected-context.md`.
 
+Production restore drill is now closed as PASS through approved Coolify
+terminal access. Evidence:
+`docs/operations/v1-restore-drill-prod-2026-05-08T15-16-24Z.md`. Remaining V1
+release blockers are protected Soar application/operator auth for
+`LIVEIMPORT-03`, rollback proof auth, and real RC Gate 4 approval.
+
 A production `ops:release:v1:gate` dry-run on 2026-05-07 generated current
 blocker artifacts and reports `readiness=not_ready`: activation audit,
 activation plan, RC external gates status, RC sign-off, RC checklist,

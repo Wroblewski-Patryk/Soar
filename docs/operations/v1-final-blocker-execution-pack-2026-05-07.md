@@ -221,13 +221,12 @@ Required result:
   `docs/operations/v1-final-preflight-2026-05-08-protected-context.md`.
   Build-info for `e6e7d4a044ce80279c542412a91bae4a6a012392` passes and public
   API/Web smoke passes, but protected auth/DB/RC/evidence blockers remain.
-- Production restore drill is current for 2026-05-08 but failed because
-  the existing Docker-based restore script cannot reach the production Docker
-  daemon from this workstation. Coolify shows the production Postgres
-  container as `x11cfnz1dd9x0yzccftqzcoe`, but local Docker does not expose
-  that container. Provide `PROD_DB_CHECK_CONTAINER` or equivalent plus DB
-  user/name in an execution context that can run `docker exec` against the VPS
-  container.
+- Production restore drill is now current and PASS for 2026-05-08:
+  `docs/operations/v1-restore-drill-prod-2026-05-08T15-16-24Z.md`.
+  It was executed through approved Coolify terminal access against production
+  Postgres container `x11cfnz1dd9x0yzccftqzcoe`; cleanup verification returned
+  `0` matching temporary restore databases and no `/tmp/postgres_backup_*.dump`
+  files.
 - Production rollback proof is current for 2026-05-08 but failed because
   protected OPS routes returned `401` without auth.
 - The latest 2026-05-08 dry-run marks activation, RC external gates, RC

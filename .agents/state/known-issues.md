@@ -186,6 +186,10 @@ Last updated: 2026-05-08
   existing restore drill runs through `docker exec`, and the local Docker
   daemon does not contain the production container. A VPS shell or Docker
   context that can reach that container is still required.
+- 2026-05-08 update: production restore drill is now closed as PASS through
+  approved Coolify terminal access for `x11cfnz1dd9x0yzccftqzcoe`. The
+  remaining protected evidence blockers are `LIVEIMPORT-03` auth/readback,
+  rollback proof auth, and RC Gate 4 approval.
 
 ## Known Environment Pitfalls
 

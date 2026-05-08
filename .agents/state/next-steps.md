@@ -62,12 +62,19 @@ no-secret status reports are:
 and
 `docs/operations/v1-final-preflight-2026-05-08-protected-context.md`.
 
-The next executable production evidence step requires either approved Soar
-application/operator auth for `LIVEIMPORT-03` and rollback proof, or a shell /
-Docker context on the VPS that can run the existing restore drill against
-`x11cfnz1dd9x0yzccftqzcoe` with the production DB user/name. Do not reuse the
-Coolify login as Soar application auth unless the user explicitly confirms it
-is valid for that target.
+The production restore drill is now PASS through approved Coolify terminal
+access. Evidence:
+`docs/operations/v1-restore-drill-prod-2026-05-08T15-16-24Z.md` and
+`docs/operations/_artifacts-restore-drill-prod-coolify-2026-05-08T15-16-24Z.json`.
+The corrected run created a compressed backup, restored it into isolated DB
+`postgres_restore_check_20260508151624`, validated key table counts, dropped
+the restore DB, removed the backup dump, and cleanup verification returned `0`
+matching restore DBs.
+
+The next executable production evidence step requires approved Soar
+application/operator auth for `LIVEIMPORT-03` and rollback proof, or real RC
+Gate 4 approver identities. Do not reuse the Coolify login as Soar application
+auth unless the user explicitly confirms it is valid for that target.
 
 Post-backend-parity check: production web build-info reached
 `1100b7fb232ce6195b24522a6a11559fe9fb8634`, which includes the adapter-pure

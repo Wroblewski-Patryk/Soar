@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "profile": "prod",
+  "source": "coolify-terminal",
+  "generatedAt": "2026-05-08T15:16:24Z",
+  "container": "x11cfnz1dd9x0yzccftqzcoe",
+  "dbUser": "postgres",
+  "dbName": "postgres",
+  "restoreDatabase": "postgres_restore_check_20260508151624",
+  "checks": {
+    "coolifyTerminalConnected": true,
+    "backupCreated": true,
+    "restoreDatabaseCreated": true,
+    "backupRestored": true,
+    "keyTableValidationCountsCompleted": true,
+    "restoreDatabaseDropped": true,
+    "backupRemoved": true,
+    "leftoverRestoreDatabaseCount": 0
+  },
+  "validationCounts": [
+    { "table": "User", "count": 4 },
+    { "table": "Bot", "count": 6 },
+    { "table": "Order", "count": 3395 },
+    { "table": "Position", "count": 4516 },
+    { "table": "Log", "count": 42886 }
+  ],
+  "terminalEvidence": {
+    "startMarker": "SOAR_RESTORE_START stamp=20260508151624 db=postgres user=postgres restore=postgres_restore_check_20260508151624",
+    "resultMarker": "RESULT: PASS",
+    "cleanupVerification": "SELECT count(*) FROM pg_database WHERE datname LIKE 'postgres_restore_check_%' returned 0; /tmp/postgres_backup_*.dump returned no files"
+  },
+  "notes": [
+    "Executed through the approved Coolify operator terminal against the production Postgres container because the local Docker daemon cannot reach the VPS container.",
+    "No password, token, connection string, API key, user record, bot record, order payload, position payload, or log payload was written to this artifact.",
+    "A previous terminal-script attempt restored successfully but had invalid SQL quoting for validation counts and was not accepted as evidence; this artifact records the corrected set -eu run."
+  ]
+}

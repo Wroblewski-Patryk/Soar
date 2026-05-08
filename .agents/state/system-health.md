@@ -195,6 +195,11 @@ Last updated: 2026-05-08
   `docs/operations/_artifacts-v1-final-preflight-2026-05-08-protected-context.json`
   and
   `docs/operations/v1-final-preflight-2026-05-08-protected-context.md`.
+- Production restore drill PASS: approved Coolify terminal access executed the
+  isolated backup/restore drill against production Postgres container
+  `x11cfnz1dd9x0yzccftqzcoe`. Evidence:
+  `docs/operations/v1-restore-drill-prod-2026-05-08T15-16-24Z.md`. Follow-up
+  V1 preflight reports `backup/restore drill evidence: fresh for 2026-05-08`.
 - `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
   `/dashboard/positions/live-status` returned global reconciliation diagnostic
   counts for an authenticated user. The route now filters

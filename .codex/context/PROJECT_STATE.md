@@ -3,6 +3,19 @@
 Last updated: 2026-05-08
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-08 `V1-PROD-RESTORE-DRILL-COOLIFY-TERMINAL-2026-05-08` completed
+  the production backup/restore drill through approved Coolify terminal access
+  against Postgres container `x11cfnz1dd9x0yzccftqzcoe`. The corrected
+  `set -eu` run created a compressed backup, created and restored into
+  `postgres_restore_check_20260508151624`, validated key table counts, dropped
+  the restore DB, removed the backup dump, and returned `RESULT: PASS`.
+  Cleanup verification returned `0` matching restore databases and no
+  `/tmp/postgres_backup_*.dump` files. Evidence:
+  `docs/operations/v1-restore-drill-prod-2026-05-08T15-16-24Z.md` and
+  `docs/operations/_artifacts-restore-drill-prod-coolify-2026-05-08T15-16-24Z.json`.
+  Final V1 preflight now reports backup/restore drill evidence as fresh; V1
+  remains blocked on live-import auth/readback, rollback auth/proof, and RC
+  Gate 4 approval.
 - 2026-05-08 `V1-PROTECTED-EVIDENCE-COOLIFY-CONTEXT-2026-05-08` used the
   approved Coolify operator path after latest `main` reached production
   build-info `e6e7d4a044ce80279c542412a91bae4a6a012392`. Public API/Web

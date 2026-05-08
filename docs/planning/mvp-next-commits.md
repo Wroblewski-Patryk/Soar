@@ -7,6 +7,17 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-PROD-RESTORE-DRILL-COOLIFY-TERMINAL-2026-05-08 release: verify production restore drill execution path`
+  - 2026-05-08: Used approved Coolify terminal access for production Postgres
+    container `x11cfnz1dd9x0yzccftqzcoe` to execute the isolated production
+    restore drill. The corrected `set -eu` run created a compressed backup,
+    created and restored into `postgres_restore_check_20260508151624`,
+    validated key table counts, dropped the restore DB, removed the backup
+    dump, and returned `RESULT: PASS`. Cleanup verification returned `0`
+    matching restore databases and no `/tmp/postgres_backup_*.dump` files.
+    Final preflight now reports backup/restore drill evidence as fresh.
+    Evidence:
+    `docs/planning/v1-prod-restore-drill-coolify-terminal-task-2026-05-08.md`.
 - [x] `V1-PROTECTED-EVIDENCE-COOLIFY-CONTEXT-2026-05-08 release: resolve protected V1 evidence context`
   - 2026-05-08: Used the approved Coolify operator path after the latest
     `main` deploy reached production build-info
