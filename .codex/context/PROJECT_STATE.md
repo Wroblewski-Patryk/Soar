@@ -231,6 +231,14 @@ Last updated: 2026-05-09
   evidence, missing `LIVEIMPORT-03`, and rollback proof. Evidence:
   `docs/planning/v1-production-activation-and-evidence-plan-2026-05-09.md`
   and `docs/operations/v1-production-activation-evidence-audit-2026-05-09.md`.
+- 2026-05-09 `V1-RC-BLOCKED-REFRESH-2026-05-09` refreshed RC external gates
+  status, RC sign-off, and RC checklist as current blocked evidence. The RC
+  tooling now supports `--today <yyyy-mm-dd>` so evidence can target the
+  operator's release date across local/UTC boundaries. Follow-up preflight now
+  reports RC evidence as fresh `failed`, not stale; V1 remains blocked on
+  protected auth, DB restore context, `LIVEIMPORT-03`, recovery proof, and RC
+  approval. Evidence:
+  `docs/planning/v1-rc-blocked-evidence-refresh-task-2026-05-09.md`.
 - 2026-05-08 `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08` published the
   current no-secret final V1 preflight JSON/Markdown snapshot for deployed SHA
   `052df82244ea0f81e8611ff8bb2b677db115bd19`. The snapshot reports build-info

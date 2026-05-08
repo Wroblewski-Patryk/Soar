@@ -255,6 +255,14 @@ Operational queue for one-task execution runs.
     `docs/planning/v1-production-activation-and-evidence-plan-2026-05-09.md`,
     and `docs/operations/v1-production-activation-evidence-audit-2026-05-09.md`.
 
+- [x] `V1-RC-BLOCKED-REFRESH-2026-05-09 release: refresh RC evidence as current blocked`
+  - 2026-05-09: Added explicit `--today` support to the RC status, sign-off,
+    and checklist scripts so release evidence can target the operator's
+    evidence date before UTC midnight. Refreshed RC gates, sign-off, and
+    checklist as current `BLOCKED` evidence; follow-up preflight now reports
+    RC evidence as fresh `failed` instead of stale. Evidence:
+    `docs/planning/v1-rc-blocked-evidence-refresh-task-2026-05-09.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - 2026-05-08: Generated and committed the current no-secret final V1
     preflight JSON/Markdown snapshot for deployed SHA

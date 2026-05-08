@@ -35,6 +35,11 @@ preflight confirms those blockers are cleared. V1 remains blocked on protected
 auth, production DB restore context, stale RC/recovery evidence,
 `LIVEIMPORT-03`, and rollback proof.
 
+2026-05-09 RC refresh: RC status, sign-off, and checklist are fresh blocked
+evidence for 2026-05-09. Preflight now classifies them as `failed` rather than
+`stale`, because real Gate 2 production SLO evidence and Gate 4 approver
+approval are still missing.
+
 2026-05-09 continuation update: Gate.io second-exchange planning has been
 reconciled after the deployed fail-closed foundation. The plan is complete as a
 planning artifact; public catalog and public `FUTURES`/swap market-data

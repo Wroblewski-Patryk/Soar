@@ -32,6 +32,11 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-09: Closed `V1-RC-BLOCKED-REFRESH-2026-05-09` with
+  `docs/planning/v1-rc-blocked-evidence-refresh-task-2026-05-09.md`. RC
+  status, sign-off, and checklist are now fresh blocked evidence for
+  2026-05-09, and the RC scripts support explicit evidence-date overrides for
+  local/UTC release-day boundaries.
 - 2026-05-09: Closed `V1-PROD-ACTIVATION-REFRESH-2026-05-09` with
   `docs/planning/v1-production-activation-refresh-2026-05-09-task.md`.
   Activation plan and activation audit are now fresh `NO-GO` artifacts for

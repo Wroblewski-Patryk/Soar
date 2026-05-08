@@ -255,6 +255,13 @@ Last updated: 2026-05-09
     release blockers remain explicit. Evidence:
     `docs/planning/v1-production-activation-refresh-2026-05-09-task.md`.
 
+- [x] `V1-RC-BLOCKED-REFRESH-2026-05-09 release: refresh RC evidence as current blocked`
+  - Scope: added explicit RC evidence date support, regenerated RC external
+    gates status, sign-off, and checklist for 2026-05-09 as blocked/open
+    evidence, and reran the no-secret final preflight. RC blockers are now
+    fresh `failed` instead of stale. Evidence:
+    `docs/planning/v1-rc-blocked-evidence-refresh-task-2026-05-09.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - Scope: generated and committed the current no-secret final V1 preflight
     JSON/Markdown snapshot for deployed SHA

@@ -20,6 +20,31 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Evidence:
 ```
 
+### 2026-05-09 - Release evidence dates need explicit local-date override
+- Context: `V1-RC-BLOCKED-REFRESH-2026-05-09` refreshed RC evidence while the
+  operator's local date was 2026-05-09 in Europe/Berlin, but UTC was still
+  2026-05-08.
+- Symptom: RC status, sign-off, and checklist regenerated successfully but
+  final preflight with `--today 2026-05-09` still classified them as stale.
+- Root cause: RC scripts stamped generated artifacts from `new Date()` in UTC,
+  while the release evidence date is chosen by the operator's local release
+  day.
+- Guardrail: release-evidence generator scripts that participate in date-based
+  preflight checks should accept an explicit `--today <yyyy-mm-dd>` option and
+  use it for artifact dates.
+- Preferred pattern:
+```powershell
+node scripts/buildRcExternalGateStatus.mjs --template-only --today 2026-05-09
+node scripts/buildRcSignoffRecord.mjs --today 2026-05-09
+node scripts/syncRcChecklistFromGateStatus.mjs --today 2026-05-09
+node scripts/runV1FinalPreflight.mjs --today 2026-05-09 --expected-sha <sha>
+```
+- Avoid: hand-editing generated artifact dates or treating UTC/local-date drift
+  as release readiness failure after the underlying evidence was regenerated.
+- Evidence: final preflight for deployed
+  `90cd07d602f0a31f315719b8a5cd5be3fd112313` moved RC evidence from `stale`
+  to fresh `failed` blockers after the RC scripts were rerun with `--today`.
+
 ### 2026-05-08 - Final preflight public checks should call bundled Node scripts
 - Context: `V1-FINAL-PREFLIGHT-NODE-DEPLOY-CHECKS-2026-05-08` reran the final
   V1 preflight on Windows after production build-info already exposed the

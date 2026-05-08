@@ -145,6 +145,11 @@ Last updated: 2026-05-09
   RC/recovery evidence, missing `LIVEIMPORT-03`, and rollback proof. Evidence:
   `docs/planning/v1-production-activation-and-evidence-plan-2026-05-09.md` and
   `docs/operations/v1-production-activation-evidence-audit-2026-05-09.md`.
+- RC evidence refresh for 2026-05-09 is current and blocked: RC external
+  gates status is fresh with Gate 2 and Gate 4 open, RC sign-off is fresh and
+  `BLOCKED`, and RC checklist is synced to the same date. Final preflight now
+  reports RC evidence as fresh `failed`, not stale. Evidence:
+  `docs/planning/v1-rc-blocked-evidence-refresh-task-2026-05-09.md`.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307

@@ -16,6 +16,7 @@ const parseArgs = () => {
     operationsName: '',
     ownerName: '',
     ownerContact: '',
+    today: '',
   };
 
   for (let index = 0; index < args.length; index += 1) {
@@ -32,11 +33,18 @@ const parseArgs = () => {
     if (arg === '--operations-name') options.operationsName = args[index + 1] ?? options.operationsName;
     if (arg === '--owner-name') options.ownerName = args[index + 1] ?? options.ownerName;
     if (arg === '--owner-contact') options.ownerContact = args[index + 1] ?? options.ownerContact;
+    if (arg === '--today') options.today = args[index + 1] ?? options.today;
   }
 
   options.statusPath = path.resolve(process.cwd(), options.statusPath);
   options.output = path.resolve(process.cwd(), options.output);
   return options;
+};
+
+const resolveTimestamp = (today) => {
+  const normalized = String(today ?? '').trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(normalized)) return `${normalized}T00:00:00.000Z`;
+  return new Date().toISOString();
 };
 
 const parseGateLine = (line) => {
@@ -60,20 +68,18 @@ const loadGateStatuses = async (statusPath) => {
   };
 };
 
-const approvalLine = (role, name) => {
-  const now = new Date().toISOString();
+const approvalLine = (role, name, timestamp) => {
   if (!name) {
     return `- ${role} sign-off:\n  - Name:\n  - UTC timestamp:\n  - Notes:`;
   }
-  return `- ${role} sign-off:\n  - Name: ${name}\n  - UTC timestamp: ${now}\n  - Notes: approved via scripted record build`;
+  return `- ${role} sign-off:\n  - Name: ${name}\n  - UTC timestamp: ${timestamp}\n  - Notes: approved via scripted record build`;
 };
 
-const ownerBlock = (name, contact) => {
-  const now = new Date().toISOString();
+const ownerBlock = (name, contact, timestamp) => {
   if (!name) {
     return `- RC owner with rollback authority:\n  - Name:\n  - Contact:\n  - UTC assignment timestamp:`;
   }
-  return `- RC owner with rollback authority:\n  - Name: ${name}\n  - Contact: ${contact || 'TBD'}\n  - UTC assignment timestamp: ${now}`;
+  return `- RC owner with rollback authority:\n  - Name: ${name}\n  - Contact: ${contact || 'TBD'}\n  - UTC assignment timestamp: ${timestamp}`;
 };
 
 const listMissingApproverFields = (options) => {
@@ -107,11 +113,12 @@ const render = (options, gates) => {
   // Gate 4 is the formal sign-off itself, so approval depends on Gates 1-3
   // plus the required approver fields, not on a pre-existing Gate 4 PASS.
   const evaluation = evaluateSignoff(options, gates);
+  const timestamp = resolveTimestamp(options.today);
 
   return `# V1 RC Sign-Off Record
 
 Release target: \`${options.releaseTarget}\`  
-Date (UTC): \`${new Date().toISOString()}\`
+Date (UTC): \`${timestamp}\`
 
 ## Gate Evidence References
 - RC checklist: \`docs/operations/v1-release-candidate-checklist.md\`
@@ -119,12 +126,12 @@ Date (UTC): \`${new Date().toISOString()}\`
 - External gates status source: \`${path.relative(process.cwd(), options.statusPath)}\`
 
 ## Sign-Offs
-${approvalLine('Engineering', options.engineeringName)}
-${approvalLine('Product', options.productName)}
-${approvalLine('Operations', options.operationsName)}
+${approvalLine('Engineering', options.engineeringName, timestamp)}
+${approvalLine('Product', options.productName, timestamp)}
+${approvalLine('Operations', options.operationsName, timestamp)}
 
 ## RC Ownership
-${ownerBlock(options.ownerName, options.ownerContact)}
+${ownerBlock(options.ownerName, options.ownerContact, timestamp)}
 
 ## Gate Snapshot at Sign-Off Build
 - Gate statuses found: ${gates.statuses.length}
@@ -144,7 +151,7 @@ const main = async () => {
   const options = parseArgs();
   if (options.help) {
     console.log(
-      'Usage: node scripts/buildRcSignoffRecord.mjs [--release-target <v>] [--status-path <file>] [--output <file>] [--engineering-name <name>] [--product-name <name>] [--operations-name <name>] [--owner-name <name>] [--owner-contact <contact>]'
+      'Usage: node scripts/buildRcSignoffRecord.mjs [--release-target <v>] [--status-path <file>] [--output <file>] [--engineering-name <name>] [--product-name <name>] [--operations-name <name>] [--owner-name <name>] [--owner-contact <contact>] [--today <yyyy-mm-dd>]'
     );
     process.exit(0);
   }

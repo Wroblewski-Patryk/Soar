@@ -162,6 +162,11 @@ Production activation plan and activation evidence audit are now fresh
 The follow-up preflight confirms those two evidence families are fresh; the
 remaining blockers are protected auth, production DB restore context, stale
 RC/recovery evidence, missing `LIVEIMPORT-03`, and rollback proof.
+RC external gates status, RC sign-off, and RC checklist are now also current
+for 2026-05-09 as blocked/open evidence. The final preflight now reports RC
+evidence as fresh `failed`, not stale. Remaining V1 blockers are protected
+auth, production DB restore context, `LIVEIMPORT-03`, backup/restore freshness,
+rollback proof, and real RC approval.
 
 The local V1 backend paper/live runtime line is closed for this slice: focused
 parity/crash coverage, DB-backed runtime/order/exchange/import/readback packs,

@@ -11,6 +11,7 @@ const parseArgs = () => {
     statusPath: path.join(operationsDir, 'v1-rc-external-gates-status.md'),
     signoffPath: path.join(operationsDir, 'v1-rc-signoff-record.md'),
     checklistPath: path.join(operationsDir, 'v1-release-candidate-checklist.md'),
+    today: '',
   };
 
   for (let index = 0; index < args.length; index += 1) {
@@ -22,12 +23,19 @@ const parseArgs = () => {
     if (arg === '--status-path') options.statusPath = args[index + 1] ?? options.statusPath;
     if (arg === '--signoff-path') options.signoffPath = args[index + 1] ?? options.signoffPath;
     if (arg === '--checklist-path') options.checklistPath = args[index + 1] ?? options.checklistPath;
+    if (arg === '--today') options.today = args[index + 1] ?? options.today;
   }
 
   options.statusPath = path.resolve(process.cwd(), options.statusPath);
   options.signoffPath = path.resolve(process.cwd(), options.signoffPath);
   options.checklistPath = path.resolve(process.cwd(), options.checklistPath);
   return options;
+};
+
+const resolveDate = (today) => {
+  const normalized = String(today ?? '').trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(normalized)) return normalized;
+  return new Date().toISOString().slice(0, 10);
 };
 
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -79,7 +87,7 @@ const main = async () => {
   const options = parseArgs();
   if (options.help) {
     console.log(
-      'Usage: node scripts/syncRcChecklistFromGateStatus.mjs [--status-path <file>] [--signoff-path <file>] [--checklist-path <file>]'
+      'Usage: node scripts/syncRcChecklistFromGateStatus.mjs [--status-path <file>] [--signoff-path <file>] [--checklist-path <file>] [--today <yyyy-mm-dd>]'
     );
     process.exit(0);
   }
@@ -95,7 +103,7 @@ const main = async () => {
   const gate3 = getGateLabel(rawStatus, 3);
   const gate4 = getGateLabel(rawStatus, 4);
   const signoff = parseSignoff(rawSignoff);
-  const isoDate = new Date().toISOString().slice(0, 10);
+  const isoDate = resolveDate(options.today);
 
   let nextChecklist = rawChecklist;
   nextChecklist = refreshLatestVerificationDate(nextChecklist, isoDate);

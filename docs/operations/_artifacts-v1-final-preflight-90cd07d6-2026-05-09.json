@@ -1,6 +1,6 @@
 {
   "status": "blocked",
-  "generatedAt": "2026-05-08T22:15:09.266Z",
+  "generatedAt": "2026-05-08T22:19:43.407Z",
   "context": {
     "apiBaseUrl": "https://api.soar.luckysparrow.ch",
     "webBaseUrl": "https://soar.luckysparrow.ch",
@@ -95,29 +95,29 @@
     {
       "key": "rcExternalGateStatus",
       "label": "RC external gates status",
-      "state": "stale",
+      "state": "failed",
       "required": true,
-      "reason": "expected 2026-05-09, found 2026-05-08",
+      "reason": "artifact is fresh but does not show all RC gates PASS",
       "path": "docs\\operations\\v1-rc-external-gates-status.md",
-      "date": "2026-05-08"
+      "date": "2026-05-09"
     },
     {
       "key": "rcSignoffRecord",
       "label": "RC sign-off record",
-      "state": "stale",
+      "state": "failed",
       "required": true,
-      "reason": "expected 2026-05-09, found 2026-05-08",
+      "reason": "artifact is fresh but does not report RC status APPROVED",
       "path": "docs\\operations\\v1-rc-signoff-record.md",
-      "date": "2026-05-08"
+      "date": "2026-05-09"
     },
     {
       "key": "rcChecklist",
       "label": "RC checklist verification block",
-      "state": "stale",
+      "state": "failed",
       "required": true,
-      "reason": "expected 2026-05-09, found 2026-05-08",
+      "reason": "artifact is fresh but does not show all RC gates PASS",
       "path": "docs\\operations\\v1-release-candidate-checklist.md",
-      "date": "2026-05-08"
+      "date": "2026-05-09"
     },
     {
       "key": "liveImportReadback",
@@ -151,9 +151,9 @@
     "env:liveimport auth",
     "env:rollback guard auth",
     "env:production DB restore context",
-    "evidence:rcExternalGateStatus:stale",
-    "evidence:rcSignoffRecord:stale",
-    "evidence:rcChecklist:stale",
+    "evidence:rcExternalGateStatus:failed",
+    "evidence:rcSignoffRecord:failed",
+    "evidence:rcChecklist:failed",
     "evidence:liveImportReadback:missing",
     "evidence:backupRestoreDrill:stale",
     "evidence:rollbackProof:stale"
@@ -199,43 +199,45 @@
       "remediationAvailable": true
     },
     {
-      "blocker": "evidence:rcExternalGateStatus:stale",
+      "blocker": "evidence:rcExternalGateStatus:failed",
       "category": "release_evidence",
-      "label": "rcExternalGateStatus:stale",
+      "label": "RC external gates approval",
       "severity": "blocking",
       "protectedInputRequired": true,
       "finalEvidenceRequired": true,
       "operatorActionRequired": true,
       "requiredCapabilities": [
-        "release_evidence"
+        "production_gate_refresh",
+        "rc_approval"
       ],
-      "remediationAvailable": false
+      "remediationAvailable": true
     },
     {
-      "blocker": "evidence:rcSignoffRecord:stale",
+      "blocker": "evidence:rcSignoffRecord:failed",
       "category": "release_evidence",
-      "label": "rcSignoffRecord:stale",
+      "label": "RC sign-off approval",
       "severity": "blocking",
-      "protectedInputRequired": true,
+      "protectedInputRequired": false,
       "finalEvidenceRequired": true,
       "operatorActionRequired": true,
       "requiredCapabilities": [
-        "release_evidence"
+        "real_approver_identities",
+        "rc_approval"
       ],
-      "remediationAvailable": false
+      "remediationAvailable": true
     },
     {
-      "blocker": "evidence:rcChecklist:stale",
+      "blocker": "evidence:rcChecklist:failed",
       "category": "release_evidence",
-      "label": "rcChecklist:stale",
+      "label": "RC checklist sync",
       "severity": "blocking",
-      "protectedInputRequired": true,
+      "protectedInputRequired": false,
       "finalEvidenceRequired": true,
       "operatorActionRequired": true,
       "requiredCapabilities": [
-        "release_evidence"
+        "rc_approval"
       ],
-      "remediationAvailable": false
+      "remediationAvailable": true
     },
     {
       "blocker": "evidence:liveImportReadback:missing",
@@ -308,6 +310,31 @@
         "or PRODUCTION_DB_CHECK_CONTAINER + PRODUCTION_DB_CHECK_USER + PRODUCTION_DB_CHECK_NAME"
       ],
       "command": "pnpm run ops:db:restore-drill:prod"
+    },
+    {
+      "blocker": "evidence:rcExternalGateStatus:failed",
+      "title": "Refresh RC gates after real approval",
+      "action": "Run the RC gate refresh/status commands after required protected evidence and sign-off are complete.",
+      "command": "pnpm run ops:rc:gates:prod-pipeline -- --base-url https://api.soar.luckysparrow.ch --duration-minutes 30 --interval-seconds 30"
+    },
+    {
+      "blocker": "evidence:rcSignoffRecord:failed",
+      "title": "Build final RC sign-off with real approvers",
+      "action": "Provide real Engineering, Product, Operations, and RC owner names. Owner contact is recommended for rollback authority handoff.",
+      "requiredInputs": [
+        "--engineering-name \"<name>\"",
+        "--product-name \"<name>\"",
+        "--operations-name \"<name>\"",
+        "--owner-name \"<name>\"",
+        "--owner-contact \"<email-or-contact>\""
+      ],
+      "command": "pnpm run ops:rc:signoff:build -- --engineering-name \"<name>\" --product-name \"<name>\" --operations-name \"<name>\" --owner-name \"<name>\" --owner-contact \"<email-or-contact>\""
+    },
+    {
+      "blocker": "evidence:rcChecklist:failed",
+      "title": "Sync RC checklist after Gate 4 approval",
+      "action": "After the sign-off record is APPROVED and external gates are refreshed, sync the RC checklist.",
+      "command": "pnpm run ops:rc:gates:status; pnpm run ops:rc:checklist:sync"
     },
     {
       "blocker": "evidence:liveImportReadback:missing",

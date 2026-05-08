@@ -13,6 +13,7 @@ const parseArgs = () => {
     runbookPath: path.join(operationsDir, 'v1-rc-external-gates-runbook.md'),
     signoffPath: path.join(operationsDir, 'v1-rc-signoff-record.md'),
     templateOnly: false,
+    today: '',
   };
 
   for (let index = 0; index < args.length; index += 1) {
@@ -26,9 +27,16 @@ const parseArgs = () => {
     if (arg === '--runbook-path') options.runbookPath = args[index + 1] ?? options.runbookPath;
     if (arg === '--signoff-path') options.signoffPath = args[index + 1] ?? options.signoffPath;
     if (arg === '--template-only') options.templateOnly = true;
+    if (arg === '--today') options.today = args[index + 1] ?? options.today;
   }
 
   return options;
+};
+
+const resolveGeneratedAt = (today) => {
+  const normalized = String(today ?? '').trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(normalized)) return `${normalized}T00:00:00.000Z`;
+  return new Date().toISOString();
 };
 
 const asNumber = (value) => (typeof value === 'number' && Number.isFinite(value) ? value : null);
@@ -357,8 +365,8 @@ const renderReport = ({
   gate1Runbook,
   gate3Runbook,
   gate4Signoff,
+  generatedAt,
 }) => {
-  const generatedAt = new Date().toISOString();
   const artifactRel = path.relative(process.cwd(), artifactPath);
   const backupArtifactRel = backupGate.artifactPath
     ? path.relative(process.cwd(), backupGate.artifactPath)
@@ -438,8 +446,7 @@ ${renderManualFollowUps(manualFollowUps)}
   return output;
 };
 
-const renderTemplateOnly = (backupGate, gate1Runbook, gate3Runbook, gate4Signoff) => {
-  const generatedAt = new Date().toISOString();
+const renderTemplateOnly = (backupGate, gate1Runbook, gate3Runbook, gate4Signoff, generatedAt) => {
   const backupArtifactRel = backupGate.artifactPath
     ? path.relative(process.cwd(), backupGate.artifactPath)
     : 'n/a';
@@ -494,9 +501,10 @@ ${renderManualFollowUps(manualFollowUps)}
 const main = async () => {
   const options = parseArgs();
   if (options.help) {
-    console.log('Usage: node scripts/buildRcExternalGateStatus.mjs [--input <artifact.json>] [--output <status.md>] [--template-only]');
+    console.log('Usage: node scripts/buildRcExternalGateStatus.mjs [--input <artifact.json>] [--output <status.md>] [--template-only] [--today <yyyy-mm-dd>]');
     process.exit(0);
   }
+  const generatedAt = resolveGeneratedAt(options.today);
 
   const backupGate = await evaluateBackupRestoreGate();
   const gate1Runbook = await evaluateGate1FromRunbook(options.runbookPath);
@@ -505,7 +513,7 @@ const main = async () => {
 
   if (options.templateOnly) {
     const outputPath = path.resolve(process.cwd(), options.output);
-    await writeFile(outputPath, renderTemplateOnly(backupGate, gate1Runbook, gate3Runbook, gate4Signoff));
+    await writeFile(outputPath, renderTemplateOnly(backupGate, gate1Runbook, gate3Runbook, gate4Signoff, generatedAt));
     console.log(`RC external gates template written to: ${path.relative(process.cwd(), outputPath)}`);
     process.exit(0);
   }
@@ -527,6 +535,7 @@ const main = async () => {
     gate1Runbook,
     gate3Runbook,
     gate4Signoff,
+    generatedAt,
   });
 
   const outputPath = path.resolve(process.cwd(), options.output);
