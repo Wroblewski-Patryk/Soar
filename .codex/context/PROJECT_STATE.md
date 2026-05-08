@@ -3,6 +3,15 @@
 Last updated: 2026-05-08
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-08 `V1-RELEASE-GATE-CURRENT-DRY-RUN-2026-05-08` refreshed the
+  production V1 release-gate dry-run after production build-info advanced to
+  `3f065ac5c24ff159f97a94a0bc98948a1739eadf`. The report
+  `docs/operations/v1-release-gate-prod-2026-05-08Tcurrent-deployed-head-dry-run.md`
+  remains `not_ready`: activation and RC evidence families are fresh, while
+  backup/restore drill and rollback proof are fresh but failed, and dry-run
+  mode still blocks final approval. No protected production credentials,
+  exchange writes, DB writes, live-money actions, or destructive operations
+  were used.
 - 2026-05-08 `V1-RC-SIGNOFF-PREFLIGHT-HARDENING-2026-05-08` clarified Gate 4
   sign-off blocker output in the existing `ops:rc:signoff:build` script.
   Blocked builds now print the exact missing required fields:

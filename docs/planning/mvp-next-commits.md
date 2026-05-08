@@ -7,6 +7,16 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-RELEASE-GATE-CURRENT-DRY-RUN-2026-05-08 release: refresh deployed-head V1 release gate dry-run`
+  - 2026-05-08: Generated a fresh production V1 release-gate dry-run on
+    deployed HEAD `3f065ac5c24ff159f97a94a0bc98948a1739eadf`. The new report
+    `docs/operations/v1-release-gate-prod-2026-05-08Tcurrent-deployed-head-dry-run.md`
+    remains `not_ready`: activation and RC families are fresh, backup/restore
+    drill and rollback proof are fresh but failed, and dry-run mode still
+    blocks final approval. No protected production credentials, exchange
+    writes, DB writes, live-money actions, or destructive operations were
+    used. Evidence:
+    `docs/planning/v1-release-gate-current-dry-run-task-2026-05-08.md`.
 - [x] `V1-RC-SIGNOFF-PREFLIGHT-HARDENING-2026-05-08 release(ops): clarify Gate 4 sign-off blockers`
   - 2026-05-08: Hardened the existing `ops:rc:signoff:build` operator output
     so blocked Gate 4 builds now print the missing required fields:

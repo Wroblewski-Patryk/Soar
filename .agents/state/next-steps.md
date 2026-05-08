@@ -68,15 +68,16 @@ If production build-info reports a deployed commit older than latest `main`
 while latest `main` only contains docs/state evidence on top, use the deployed
 SHA for readback evidence until a newer Coolify/manual deploy is confirmed.
 Latest observed production SHA is
-`0a2e2353177c15d4a4934c03837835785e01d710`.
+`3f065ac5c24ff159f97a94a0bc98948a1739eadf`.
 
 ## Candidate Backlog
 
 0. Follow the final blocker execution pack:
    `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
 0a. Production build-info already exposes the backend parity runtime fix,
-   blocker evidence alignment, and deploy-wait coordination docs at
-   `0a2e2353177c15d4a4934c03837835785e01d710`. Do not use GitHub Actions. If a
+   blocker evidence alignment, deploy-wait coordination, and operator
+   preflight hardening docs at
+   `3f065ac5c24ff159f97a94a0bc98948a1739eadf`. Do not use GitHub Actions. If a
    future step depends on a pushed commit being deployed, wait for build-info
    before continuing; an operator can speed this up with Coolify dashboard
    force deploy, or with deploy webhook/API token if those secrets are

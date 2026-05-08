@@ -124,6 +124,11 @@ Last updated: 2026-05-08
   now print missing required Gate 4 fields, while approved temp-output behavior
   remains available when Gates 1-3 pass and required names are provided.
   Owner contact is reported as recommended handoff metadata.
+- Current deployed-HEAD V1 release-gate dry-run:
+  `docs/operations/v1-release-gate-prod-2026-05-08Tcurrent-deployed-head-dry-run.md`
+  reports `readiness=not_ready`. Activation and RC families are fresh;
+  backup/restore drill and rollback proof are fresh but failed; dry-run mode
+  still blocks final approval.
 - `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
   `/dashboard/positions/live-status` returned global reconciliation diagnostic
   counts for an authenticated user. The route now filters
@@ -237,9 +242,9 @@ runtime contracts are changed.
 
 ## Deployment Impact
 
-Production build-info now exposes `0a2e2353177c15d4a4934c03837835785e01d710`,
+Production build-info now exposes `3f065ac5c24ff159f97a94a0bc98948a1739eadf`,
 which contains the V1 backend PAPER/LIVE adapter-pure runtime fix, refreshed
-release-state docs, blocker evidence alignment, and deploy-wait coordination
-notes. The next executable release task requires
+release-state docs, blocker evidence alignment, deploy-wait coordination, and
+operator preflight hardening notes. The next executable release task requires
 authenticated read-only production evidence and protected production recovery
 proof; the current shell still lacks those credentials.

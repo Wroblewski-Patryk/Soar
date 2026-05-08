@@ -149,6 +149,11 @@ Last updated: 2026-05-08
   now print the exact missing required Gate 4 fields, while owner contact is
   reported as recommended handoff metadata. This improves operator handoff but
   does not approve Gate 4.
+- 2026-05-08 current deployed-HEAD release-gate dry-run is fresh and still
+  `not_ready`: activation and RC evidence families are fresh, backup/restore
+  drill and rollback proof are fresh but failed, and dry-run mode blocks final
+  approval. This confirms the remaining blockers are protected evidence and
+  approval inputs, not deploy freshness.
 
 ## Known Environment Pitfalls
 

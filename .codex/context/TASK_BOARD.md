@@ -17,6 +17,14 @@ Last updated: 2026-05-08
 
 ## READY
 
+- [x] `V1-RELEASE-GATE-CURRENT-DRY-RUN-2026-05-08 release: refresh deployed-head V1 release gate dry-run`
+  - Scope: generated a fresh production V1 release-gate dry-run on deployed
+    HEAD `3f065ac5c24ff159f97a94a0bc98948a1739eadf` and synchronized the final
+    blocker pack/state to the new report. Readiness remains `not_ready`:
+    activation and RC families are fresh; backup/restore drill and rollback
+    proof are fresh but failed; dry-run mode blocks final approval. Evidence:
+    `docs/planning/v1-release-gate-current-dry-run-task-2026-05-08.md`.
+
 - [x] `V1-RC-SIGNOFF-PREFLIGHT-HARDENING-2026-05-08 release(ops): clarify Gate 4 sign-off blockers`
   - Scope: updated the existing RC sign-off builder output so blocked Gate 4
     runs print the exact missing required fields. The approved-status logic is

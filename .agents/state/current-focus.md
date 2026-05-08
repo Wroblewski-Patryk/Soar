@@ -31,9 +31,9 @@ Release verification is blocked on accepted production deployment plus
 authenticated production readback for the first open queue item,
 `LIVEIMPORT-03`. Local audit gates are closed through `FULLARCH-FIX-11`.
 Production web build-info now reports
-`0a2e2353177c15d4a4934c03837835785e01d710`, which contains the V1 backend
-PAPER/LIVE adapter-pure runtime fix, blocker evidence alignment, and deploy
-wait coordination docs. GitHub Actions is not an accepted production deploy
+`3f065ac5c24ff159f97a94a0bc98948a1739eadf`, which contains the V1 backend
+PAPER/LIVE adapter-pure runtime fix, blocker evidence alignment, deploy wait
+coordination docs, and operator preflight hardening. GitHub Actions is not an accepted production deploy
 mechanism for this project. The latest names-only prerequisite scan still found
 no production credentials or ops auth headers in the current shell, so
 protected evidence collection remains blocked without an operator-authenticated
@@ -41,9 +41,9 @@ environment.
 
 `LIVEIMPORT-03` now has one canonical read-only evidence command. Use the
 currently deployed production build-info SHA, currently
-`0a2e2353177c15d4a4934c03837835785e01d710`, unless a newer Coolify/manual
+`3f065ac5c24ff159f97a94a0bc98948a1739eadf`, unless a newer Coolify/manual
 deploy is confirmed:
-`pnpm run ops:liveimport:readback -- --expected-sha 0a2e2353177c15d4a4934c03837835785e01d710 --output docs/operations/liveimport-03-prod-readback-2026-05-08.json`.
+`pnpm run ops:liveimport:readback -- --expected-sha 3f065ac5c24ff159f97a94a0bc98948a1739eadf --output docs/operations/liveimport-03-prod-readback-2026-05-08.json`.
 The collector is hardened to fail closed when no RUNNING session produces a
 runtime positions payload, so no-session output cannot be treated as V1
 evidence.
@@ -70,10 +70,10 @@ and rollback proof failed closed on protected `401` responses. V1 remains
 NO-GO.
 
 The canonical `LIVEIMPORT-03` command now targets the deployed backend parity
-SHA `0a2e2353177c15d4a4934c03837835785e01d710`, matching public build-info.
+SHA `3f065ac5c24ff159f97a94a0bc98948a1739eadf`, matching public build-info.
 
 Latest continuation recheck: public production build-info matches
-`0a2e2353177c15d4a4934c03837835785e01d710`, but the current shell exposes no
+`3f065ac5c24ff159f97a94a0bc98948a1739eadf`, but the current shell exposes no
 required Soar production auth variable. A no-auth `ops:liveimport:readback`
 attempt against that SHA failed closed before protected runtime readback.
 
