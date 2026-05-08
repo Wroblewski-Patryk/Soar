@@ -81,6 +81,10 @@ Stored API-key probing is now locally regression-locked: `EXCHANGE2-14` proves
 a stored Gate.io placeholder key can exist, but the stored probe endpoint fails
 closed with `EXCHANGE_NOT_IMPLEMENTED` for `API_KEY_PROBE` and writes no
 connection-test audit log.
+Stored-key wallet balance preview is now locally regression-locked:
+`EXCHANGE2-15` proves a stored Gate.io placeholder key cannot be used for
+wallet preview while `BALANCE_PREVIEW` authenticated reads are unsupported, and
+the key remains unused after rejection.
 
 After the planned Gate.io/deploy-auth blockers are cleared, execute the
 production UI module clickthrough audit from

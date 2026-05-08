@@ -72,6 +72,12 @@ Last updated: 2026-05-08
   unsupported and writes no connection-test audit log. Validation PASS: local
   Gate.io enum migration deploy, focused API-key e2e (`16/16`), API typecheck,
   repository guardrails, docs parity, and diff check.
+- `EXCHANGE2-15` wallet balance preview fail-closed regression PASS: focused
+  wallet coverage proves a stored Gate.io placeholder API key cannot be used
+  for wallet balance preview while `BALANCE_PREVIEW` authenticated reads are
+  unsupported, and the key is not marked used after rejection. Validation PASS:
+  focused wallet e2e (`22/22`), API typecheck, repository guardrails, docs
+  parity, and diff check.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307

@@ -742,6 +742,42 @@ describe('Wallets balance preview contract', () => {
     });
   });
 
+  it('fails closed for stored Gate.io balance preview while authenticated reads are unsupported', async () => {
+    const email = 'wallet-preview-gateio-stored-key@example.com';
+    const agent = await registerAndLogin(email);
+    const userId = await resolveUserIdByEmail(email);
+
+    const apiKey = await prisma.apiKey.create({
+      data: {
+        userId,
+        label: 'Gate.io preview placeholder',
+        exchange: 'GATEIO',
+        apiKey: 'GATEIO_PREVIEW_KEY',
+        apiSecret: 'GATEIO_PREVIEW_SECRET',
+      },
+    });
+
+    const previewRes = await agent.post('/dashboard/wallets/preview-balance').send({
+      exchange: 'GATEIO',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      apiKeyId: apiKey.id,
+    });
+
+    expect(previewRes.status).toBe(501);
+    expect(previewRes.body.error.details).toEqual({
+      code: 'EXCHANGE_AUTHENTICATED_READ_UNSUPPORTED',
+      exchange: 'GATEIO',
+      operation: 'BALANCE_PREVIEW',
+    });
+    await expect(
+      prisma.apiKey.findUnique({
+        where: { id: apiKey.id },
+        select: { lastUsed: true },
+      })
+    ).resolves.toEqual({ lastUsed: null });
+  });
+
   it('rejects unauthenticated paper reset command', async () => {
     const res = await request(app).post('/dashboard/wallets/wallet-id/reset-paper');
 

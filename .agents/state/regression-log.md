@@ -48,6 +48,12 @@ local Postgres/Redis ports were reachable. Sequential reruns passed.
   log is written on the unsupported path. Validation: local Gate.io enum
   migration deploy, focused API-key e2e (`16/16`), API typecheck, repository
   guardrails, docs parity, and diff check.
+- 2026-05-08: Prevented wallet balance preview drift for stored Gate.io keys.
+  A wallet e2e test now proves stored Gate.io placeholder credentials remain
+  unusable for balance preview while `BALANCE_PREVIEW` authenticated reads are
+  unsupported, and `lastUsed` is not updated after rejection. Validation:
+  focused wallet e2e (`22/22`), API typecheck, repository guardrails, docs
+  parity, and diff check.
 - 2026-05-07: Ran production V1 release-gate classifier in dry-run mode and
   preserved stale evidence blockers as release state. This prevents treating
   old 2026-05-02 RC/backup/rollback artifacts as fresh V1 evidence.

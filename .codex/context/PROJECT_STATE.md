@@ -133,6 +133,12 @@ Last updated: 2026-05-08
   `EXCHANGE_NOT_IMPLEMENTED` for `API_KEY_PROBE` and writes no connection-test
   audit log. Evidence:
   `docs/planning/exchange2-14-gateio-stored-api-key-probe-fail-closed-task-2026-05-08.md`.
+- 2026-05-08 `EXCHANGE2-15` locked the wallet balance preview boundary for
+  stored Gate.io API keys. A wallet e2e regression now proves stored Gate.io
+  placeholder credentials cannot be used for balance preview while
+  `BALANCE_PREVIEW` authenticated reads are unsupported, and the key remains
+  unused after rejection. Evidence:
+  `docs/planning/exchange2-15-gateio-wallet-balance-preview-fail-closed-task-2026-05-08.md`.
 - 2026-05-08 `PROD-UI-AUDIT-PLAN-2026-05-08` prepared the production UI module
   clickthrough audit plan requested by the user. The plan covers all canonical
   public, dashboard, admin, and legacy redirect routes, module-level functions,

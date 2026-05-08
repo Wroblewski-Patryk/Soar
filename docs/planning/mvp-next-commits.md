@@ -138,6 +138,13 @@ Operational queue for one-task execution runs.
     connection-test audit log. Evidence:
     `docs/planning/exchange2-14-gateio-stored-api-key-probe-fail-closed-task-2026-05-08.md`.
 
+- [x] `EXCHANGE2-15 test(api): lock Gate.io wallet balance preview fail closed`
+  - 2026-05-08: Added wallet e2e coverage proving a stored Gate.io placeholder
+    API key cannot be used for wallet balance preview while `BALANCE_PREVIEW`
+    authenticated reads are unsupported, and the key is not marked used after
+    rejection. Evidence:
+    `docs/planning/exchange2-15-gateio-wallet-balance-preview-fail-closed-task-2026-05-08.md`.
+
 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
   - 2026-05-08: Planning artifact is ready for a production-wide UI audit that
     visits all canonical public, dashboard, admin, and legacy redirect routes,

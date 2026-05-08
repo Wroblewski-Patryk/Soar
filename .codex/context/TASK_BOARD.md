@@ -147,6 +147,14 @@ Last updated: 2026-05-08
     Evidence:
     `docs/planning/exchange2-14-gateio-stored-api-key-probe-fail-closed-task-2026-05-08.md`.
 
+- [x] `EXCHANGE2-15 test(api): lock Gate.io wallet balance preview fail closed`
+  - Scope: added wallet coverage proving a stored Gate.io placeholder API key
+    cannot be used for wallet balance preview while `BALANCE_PREVIEW`
+    authenticated reads are unsupported, and the key is not marked used after
+    rejection.
+    Evidence:
+    `docs/planning/exchange2-15-gateio-wallet-balance-preview-fail-closed-task-2026-05-08.md`.
+
 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
   - Scope: execute a production-wide UI audit across canonical public,
     dashboard, admin, and legacy redirect routes, clicking safe module

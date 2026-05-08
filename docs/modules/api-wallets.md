@@ -49,6 +49,9 @@ Out of scope:
     Gate.io wallet create/update remains fail-closed before persistence while
     `PAPER_PRICING_FEED` is unsupported, including direct API update attempts
     that try to move an existing wallet from Binance to Gate.io.
+  - Gate.io stored API keys may exist as placeholders, but wallet balance
+    preview remains fail-closed before authenticated reads and does not mark
+    the key as used while `BALANCE_PREVIEW` is unsupported.
   - wallet cannot be deleted when linked bot exists.
 - WAPR contract lock (implemented):
   - list payload remains source for table inline API key status mapping (`apiKeyId` presence).
