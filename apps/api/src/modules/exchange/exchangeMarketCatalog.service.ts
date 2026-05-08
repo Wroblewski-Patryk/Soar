@@ -81,6 +81,8 @@ const buildTickerEndpoint = (exchange: Exchange, marketType: TradeMarket) => {
     : 'https://api.binance.com/api/v3/ticker/24hr';
 };
 
+const resolveCatalogSource = (exchange: Exchange) => `${exchange}_PUBLIC`;
+
 const defaultDeps: ExchangeMarketCatalogDeps = {
   loadMarketMap: loadExchangePublicMarketMap,
   fetchJson: async (input) => {
@@ -161,9 +163,10 @@ export const listSupportedExchangePublicMarkets = async (
     const entries = [...map.values()].sort((a, b) => a.symbol.localeCompare(b.symbol));
     catalogCache[cacheKey] = { fetchedAt: now, entries };
     return entries;
-  } catch {
+  } catch (error) {
     if (currentCache?.entries.length) return currentCache.entries;
-    return TEST_MARKETS[params.marketType];
+    if (params.exchange === 'BINANCE') return TEST_MARKETS[params.marketType];
+    throw error;
   }
 };
 
@@ -194,7 +197,7 @@ export const getSupportedExchangeMarketCatalog = async (
     .sort((a, b) => a.symbol.localeCompare(b.symbol));
 
   return {
-    source: exchange === 'BINANCE' ? 'BINANCE_PUBLIC' : 'EXCHANGE_PUBLIC',
+    source: resolveCatalogSource(exchange),
     exchange,
     marketType,
     baseCurrency: resolvedBaseCurrency,

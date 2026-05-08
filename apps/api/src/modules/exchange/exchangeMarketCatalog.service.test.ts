@@ -77,6 +77,91 @@ describe('exchangeMarketCatalog.service', () => {
     ).rejects.toThrowError();
   });
 
+  it('builds Gate.io market catalog through the generic exchange adapter path', async () => {
+    resetExchangeMarketCatalogCacheForTests();
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+
+    try {
+      const catalog = await getSupportedExchangeMarketCatalog(
+        'USDT',
+        'SPOT',
+        'GATEIO',
+        {
+          loadMarketMap: async () => ({
+            'BTC/USDT': {
+              id: 'BTC_USDT',
+              symbol: 'BTC/USDT',
+              base: 'BTC',
+              quote: 'USDT',
+              active: true,
+            },
+            'GT/USDT': {
+              id: 'GT_USDT',
+              symbol: 'GT/USDT',
+              base: 'GT',
+              quote: 'USDT',
+              active: true,
+            },
+          }),
+          fetchJson: async () => {
+            throw new Error('Gate.io catalog should not use Binance ticker endpoints');
+          },
+        }
+      );
+
+      expect(catalog.source).toBe('GATEIO_PUBLIC');
+      expect(catalog.exchange).toBe('GATEIO');
+      expect(catalog.marketType).toBe('SPOT');
+      expect(catalog.baseCurrency).toBe('USDT');
+      expect(catalog.markets).toEqual([
+        {
+          symbol: 'BTCUSDT',
+          displaySymbol: 'BTC/USDT',
+          baseAsset: 'BTC',
+          quoteAsset: 'USDT',
+          quoteVolume24h: 0,
+          lastPrice: null,
+        },
+        {
+          symbol: 'GTUSDT',
+          displaySymbol: 'GT/USDT',
+          baseAsset: 'GT',
+          quoteAsset: 'USDT',
+          quoteVolume24h: 0,
+          lastPrice: null,
+        },
+      ]);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  it('does not return fallback sample markets when Gate.io public adapter fails', async () => {
+    resetExchangeMarketCatalogCacheForTests();
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+
+    try {
+      await expect(
+        listSupportedExchangePublicMarkets(
+          {
+            exchange: 'GATEIO',
+            marketType: 'SPOT',
+          },
+          {
+            loadMarketMap: async () => {
+              throw new Error('gateio_public_unavailable');
+            },
+            fetchJson: async () => [],
+          }
+        )
+      ).rejects.toThrowError('gateio_public_unavailable');
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
   it('keeps catalog resolution isolated between SPOT and FUTURES for the same exchange', async () => {
     resetExchangeMarketCatalogCacheForTests();
     const previousNodeEnv = process.env.NODE_ENV;

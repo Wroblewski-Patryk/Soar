@@ -34,6 +34,13 @@ Last updated: 2026-05-08
     boundaries. Evidence:
     `docs/planning/exchange2-01-gateio-fail-closed-placeholder-task-2026-05-08.md`.
 
+- [x] `EXCHANGE2-02 feat(exchange): enable Gate.io public market catalog`
+  - Scope: enable only Gate.io `MARKET_CATALOG` via the existing exchange
+    adapter registry/public read/catalog services, with no authenticated read
+    or live execution capability. Gate.io public adapter failures must fail
+    closed rather than returning sample markets. Evidence:
+    `docs/planning/exchange2-02-gateio-public-market-catalog-task-2026-05-08.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - Scope: generated and committed the current no-secret final V1 preflight
     JSON/Markdown snapshot for deployed SHA

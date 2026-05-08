@@ -3,7 +3,7 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 
-const PLACEHOLDER_EXCHANGES = ['BYBIT', 'OKX', 'KRAKEN', 'COINBASE', 'GATEIO'] as const;
+const PLACEHOLDER_EXCHANGES = ['BYBIT', 'OKX', 'KRAKEN', 'COINBASE'] as const;
 let emailCounter = 0;
 
 const uniqueEmail = (prefix: string) =>
@@ -322,6 +322,24 @@ describe('Markets module contract', () => {
     expect(res.body.markets[0]).toHaveProperty('displaySymbol');
     expect(res.body.markets[0]).toHaveProperty('baseAsset');
     expect(res.body.markets[0]).toHaveProperty('quoteAsset', 'USDT');
+  });
+
+  it('returns Gate.io public market catalog through the exchange adapter contract', async () => {
+    const agent = await registerAndLogin(uniqueEmail('markets-gateio-catalog'));
+
+    const res = await agent.get('/dashboard/markets/catalog').query({
+      exchange: 'GATEIO',
+      baseCurrency: 'USDT',
+      marketType: 'SPOT',
+    });
+
+    expect(res.status).toBe(200);
+    expect(res.body.source).toBe('GATEIO_PUBLIC');
+    expect(res.body.exchange).toBe('GATEIO');
+    expect(res.body.marketType).toBe('SPOT');
+    expect(res.body.baseCurrency).toBe('USDT');
+    expect(Array.isArray(res.body.markets)).toBe(true);
+    expect(res.body.markets.length).toBeGreaterThan(0);
   });
 
   it('allows persisting universes with placeholder exchanges', async () => {

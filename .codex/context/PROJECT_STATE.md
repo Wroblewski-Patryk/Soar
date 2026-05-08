@@ -18,6 +18,13 @@ Last updated: 2026-05-08
   capabilities remain disabled until operation-specific adapters and evidence
   are implemented. Evidence:
   `docs/planning/exchange2-01-gateio-fail-closed-placeholder-task-2026-05-08.md`.
+- 2026-05-08 `EXCHANGE2-02` enabled Gate.io public market catalog support
+  through the existing exchange adapter boundary while keeping Gate.io paper
+  pricing, authenticated reads, LIVE submit, and cancel disabled. The catalog
+  service now labels Gate.io as `GATEIO_PUBLIC` and fails closed instead of
+  returning sample markets when the Gate.io public adapter fails outside test
+  mode. Evidence:
+  `docs/planning/exchange2-02-gateio-public-market-catalog-task-2026-05-08.md`.
 - 2026-05-08 `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08` published the
   current no-secret final V1 preflight JSON/Markdown snapshot for deployed SHA
   `052df82244ea0f81e8611ff8bb2b677db115bd19`. The snapshot reports build-info

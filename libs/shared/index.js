@@ -39,7 +39,7 @@ const EXCHANGE_CAPABILITY_MATRIX = {
     API_KEY_PROBE: false,
   },
   GATEIO: {
-    MARKET_CATALOG: false,
+    MARKET_CATALOG: true,
     PAPER_PRICING_FEED: false,
     LIVE_EXECUTION: false,
     API_KEY_PROBE: false,

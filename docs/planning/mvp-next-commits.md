@@ -25,6 +25,13 @@ Operational queue for one-task execution runs.
     the required fail-closed foundation before implementing any Gate.io
     adapter surface. Evidence:
     `docs/planning/exchange2-01-gateio-fail-closed-placeholder-task-2026-05-08.md`.
+- [x] `EXCHANGE2-02 feat(exchange): enable Gate.io public market catalog`
+  - 2026-05-08: Enable only `MARKET_CATALOG` for `GATEIO` and route catalog
+    reads through the existing exchange adapter boundary. Gate.io adapter
+    failures must fail closed instead of returning sample markets. Paper
+    pricing, authenticated reads, LIVE submit, and cancel remain unsupported.
+    Evidence:
+    `docs/planning/exchange2-02-gateio-public-market-catalog-task-2026-05-08.md`.
 
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - 2026-05-08: Generated and committed the current no-secret final V1

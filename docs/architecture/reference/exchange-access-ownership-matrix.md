@@ -57,6 +57,17 @@ These flags remain allowed only as coarse compatibility truth. They answer:
 - whether a caller may enter the exchange module for that capability family at
   all
 
+Current compatibility-stage support:
+
+| Exchange | `MARKET_CATALOG` | `PAPER_PRICING_FEED` | `LIVE_EXECUTION` | `API_KEY_PROBE` |
+| --- | --- | --- | --- | --- |
+| `BINANCE` | supported | supported | supported | supported |
+| `GATEIO` | supported | unsupported | unsupported | unsupported |
+| `BYBIT` | unsupported | unsupported | unsupported | unsupported |
+| `OKX` | unsupported | unsupported | unsupported | unsupported |
+| `KRAKEN` | unsupported | unsupported | unsupported | unsupported |
+| `COINBASE` | unsupported | unsupported | unsupported | unsupported |
+
 They do **not** answer:
 
 - exact market-type support
@@ -112,7 +123,7 @@ Consumers must never infer:
 | `OKX` | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
 | `KRAKEN` | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
 | `COINBASE` | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
-| `GATEIO` | unsupported | unsupported | unsupported | unsupported | unsupported | selected second-exchange target; fail-closed placeholder until exact operation adapters are implemented and verified |
+| `GATEIO` | unsupported | unsupported | unsupported | unsupported | unsupported | selected second-exchange target; public market catalog is supported through the exchange adapter registry, while authenticated reads and execution remain fail-closed until exact operation adapters are implemented and verified |
 
 Canonical owner:
 
