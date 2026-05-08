@@ -73,8 +73,11 @@ export class ExchangeContextUnsupportedError extends DomainError<{
   }
 }
 
-const resolveConnectorMarketType = (marketType: TradeMarket) =>
-  marketType === 'SPOT' ? 'spot' : 'future';
+const resolveConnectorMarketType = (context: ExchangeContext) => {
+  if (context.marketType === 'SPOT') return 'spot';
+  if (context.exchange === 'GATEIO') return 'swap';
+  return 'future';
+};
 
 const assertExchangeContextSupported = (context: ExchangeContext) => {
   if (!getExchangeMarketTypeOptions(context.exchange).includes(context.marketType)) {
@@ -97,7 +100,7 @@ export const resolveExchangeAdapterRegistryEntry = (
       : () =>
           new CcxtFuturesConnector({
             exchangeId: context.exchange.toLowerCase(),
-            marketType: resolveConnectorMarketType(context.marketType),
+            marketType: resolveConnectorMarketType(context),
           });
 
   const createAuthenticatedConnector =
@@ -114,7 +117,7 @@ export const resolveExchangeAdapterRegistryEntry = (
             exchangeId: context.exchange.toLowerCase(),
             apiKey: decrypt(credentials.apiKey),
             secret: decrypt(credentials.apiSecret),
-            marketType: context.marketType,
+            marketType: resolveConnectorMarketType(context),
           });
 
   const createLiveOrderAdapter =

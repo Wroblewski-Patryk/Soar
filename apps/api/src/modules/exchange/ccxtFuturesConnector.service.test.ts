@@ -8,7 +8,17 @@ import {
 const createMockClient = (): CcxtExchangeLikeClient => ({
   setSandboxMode: vi.fn(),
   loadMarkets: vi.fn().mockResolvedValue(undefined),
-  fetchTicker: vi.fn().mockResolvedValue({ last: 100 }),
+  fetchTicker: vi.fn().mockResolvedValue({
+    symbol: 'BTC/USDT:USDT',
+    timestamp: 1_714_000_000_000,
+    last: 100,
+    mark: 99.5,
+    percentage: 1.25,
+  }),
+  fetchOHLCV: vi.fn().mockResolvedValue([
+    [1_714_000_000_000, '100', '102', '99', '101', '12.5'],
+    [1_714_000_060_000, 101, 103, 100, 102, 14],
+  ]),
   fetchOrder: vi.fn().mockResolvedValue({
     id: 'order-1',
     status: 'closed',
@@ -92,6 +102,64 @@ describe('CcxtFuturesConnector scaffold', () => {
 
     expect(markPrice).toBe(100);
     expect(client.fetchTicker).toHaveBeenCalledWith('BTC/USDT:USDT');
+  });
+
+  it('fetches and normalizes public ticker snapshots', async () => {
+    const client = createMockClient();
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'gateio', marketType: 'swap' },
+      vi.fn().mockResolvedValue(client)
+    );
+
+    const snapshot = await connector.fetchTickerSnapshot('BTCUSDT');
+
+    expect(snapshot).toEqual(
+      expect.objectContaining({
+        symbol: 'BTC/USDT:USDT',
+        eventTime: 1_714_000_000_000,
+        lastPrice: 100,
+        markPrice: 99.5,
+        priceChangePercent24h: 1.25,
+      })
+    );
+  });
+
+  it('fetches and normalizes recent public candles while dropping malformed rows', async () => {
+    const client = createMockClient();
+    client.fetchOHLCV = vi.fn().mockResolvedValue([
+      [1_714_000_000_000, '100', '102', '99', '101', '12.5'],
+      [1_714_000_060_000, 101, 103, 100, 102, 14],
+      [1_714_000_120_000, 0, 103, 100, 102, 14],
+      ['bad', 101, 103, 100, 102, 14],
+    ]);
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'gateio', marketType: 'swap' },
+      vi.fn().mockResolvedValue(client)
+    );
+
+    const candles = await connector.fetchRecentCandles({
+      symbol: 'BTCUSDT',
+      interval: '1m',
+      limit: 10,
+    });
+
+    expect(client.fetchOHLCV).toHaveBeenCalledWith('BTCUSDT', '1m', undefined, 10);
+    expect(candles).toEqual([
+      expect.objectContaining({
+        openTime: 1_714_000_000_000,
+        closeTime: 1_714_000_059_999,
+        open: 100,
+        high: 102,
+        low: 99,
+        close: 101,
+        volume: 12.5,
+      }),
+      expect.objectContaining({
+        openTime: 1_714_000_060_000,
+        closeTime: 1_714_000_119_999,
+        close: 102,
+      }),
+    ]);
   });
 
   it('maps futures order payload to createOrder and returns normalized response', async () => {
@@ -282,6 +350,29 @@ describe('CcxtFuturesConnector scaffold', () => {
       0.1,
       undefined,
       {}
+    );
+  });
+
+  it('configures swap mode for exchanges that model perpetual futures as swaps', async () => {
+    const client = createMockClient();
+    const factory: CcxtClientFactory = vi.fn().mockResolvedValue(client);
+    const connector = new CcxtFuturesConnector(
+      {
+        exchangeId: 'gateio',
+        marketType: 'swap',
+      },
+      factory
+    );
+
+    await connector.connect();
+
+    expect(factory).toHaveBeenCalledWith(
+      'gateio',
+      expect.objectContaining({
+        options: expect.objectContaining({
+          defaultType: 'swap',
+        }),
+      })
     );
   });
 

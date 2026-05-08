@@ -12,6 +12,8 @@ import {
   CcxtFuturesOrderRequest,
   CcxtFuturesOrderRequestSchema,
   CcxtFuturesOrderResult,
+  CcxtPublicCandle,
+  CcxtPublicTickerSnapshot,
   CcxtWalletCashflowHistoryEntry,
 } from './ccxtFuturesConnector.types';
 
@@ -83,7 +85,21 @@ export interface CcxtExchangeLikeClient {
     symbols?: string[],
     params?: Record<string, unknown>
   ) => Promise<CcxtPositionLike[]>;
-  fetchTicker: (symbol: string) => Promise<{ last?: number | null }>;
+  fetchTicker: (symbol: string) => Promise<{
+    symbol?: string;
+    timestamp?: number;
+    last?: number | string | null;
+    mark?: number | string | null;
+    percentage?: number | string | null;
+    info?: Record<string, unknown>;
+  }>;
+  fetchOHLCV?: (
+    symbol: string,
+    timeframe?: string,
+    since?: number,
+    limit?: number,
+    params?: Record<string, unknown>
+  ) => Promise<unknown[][]>;
   fetchOrder?: (
     id: string,
     symbol?: string,
@@ -234,6 +250,46 @@ export class CcxtFuturesConnector {
     }
 
     return markPrice;
+  }
+
+  async fetchTickerSnapshot(symbol: string): Promise<CcxtPublicTickerSnapshot> {
+    const client = await this.getOrCreateClient();
+    const exchangeSymbol = await this.resolveExchangeSymbol(symbol);
+    const ticker = await client.fetchTicker(exchangeSymbol);
+    const lastPrice = this.readNumber(ticker.last);
+    if (lastPrice == null || lastPrice <= 0) {
+      throw new Error(`Unable to resolve ticker last price for ${symbol}`);
+    }
+
+    const eventTime = this.readNumber(ticker.timestamp) ?? Date.now();
+    return {
+      symbol: this.readString(ticker.symbol) ?? exchangeSymbol,
+      eventTime: Math.trunc(eventTime),
+      lastPrice,
+      markPrice: this.readNumber(ticker.mark),
+      priceChangePercent24h: this.readNumber(ticker.percentage) ?? 0,
+      raw: ticker,
+    };
+  }
+
+  async fetchRecentCandles(input: {
+    symbol: string;
+    interval: string;
+    limit?: number;
+    since?: number;
+  }): Promise<CcxtPublicCandle[]> {
+    const client = await this.getOrCreateClient();
+    if (typeof client.fetchOHLCV !== 'function') {
+      throw new Error('fetchOHLCV is not supported by this CCXT connector');
+    }
+
+    const exchangeSymbol = await this.resolveExchangeSymbol(input.symbol);
+    const limit = Math.min(1000, Math.max(1, Math.floor(input.limit ?? 100)));
+    const rows = await client.fetchOHLCV(exchangeSymbol, input.interval, input.since, limit);
+    return rows
+      .map((row) => this.normalizePublicCandle(row, input.interval))
+      .filter((row): row is CcxtPublicCandle => row != null)
+      .sort((left, right) => left.openTime - right.openTime);
   }
 
   async hasOpenPosition(symbol: string): Promise<boolean> {
@@ -783,6 +839,50 @@ export class CcxtFuturesConnector {
       source,
       raw: rawEntry,
     };
+  }
+
+  private normalizePublicCandle(row: unknown, interval: string): CcxtPublicCandle | null {
+    if (!Array.isArray(row) || row.length < 6) return null;
+    const openTime = this.readNumber(row[0]);
+    const open = this.readNumber(row[1]);
+    const high = this.readNumber(row[2]);
+    const low = this.readNumber(row[3]);
+    const close = this.readNumber(row[4]);
+    const volume = this.readNumber(row[5]);
+    const values = [openTime, open, high, low, close, volume] as const;
+    if (values.some((value) => value == null)) return null;
+    const [safeOpenTime, safeOpen, safeHigh, safeLow, safeClose, safeVolume] = values as [
+      number, number, number, number, number, number,
+    ];
+    if (safeOpenTime < 0 || safeOpen <= 0 || safeHigh <= 0 || safeLow <= 0 || safeClose <= 0 || safeVolume < 0) {
+      return null;
+    }
+
+    return {
+      openTime: Math.trunc(safeOpenTime),
+      closeTime: Math.trunc(safeOpenTime + this.resolveIntervalMs(interval) - 1),
+      open: safeOpen,
+      high: safeHigh,
+      low: safeLow,
+      close: safeClose,
+      volume: safeVolume,
+      raw: row,
+    };
+  }
+
+  private resolveIntervalMs(interval: string) {
+    const normalized = interval.trim().toLowerCase();
+    const match = /^(\d+)([mhdw])$/.exec(normalized);
+    if (!match) return 60_000;
+    const amount = Number(match[1]);
+    const unit = match[2];
+    const multipliers: Record<string, number> = {
+      m: 60_000,
+      h: 3_600_000,
+      d: 86_400_000,
+      w: 604_800_000,
+    };
+    return Math.max(1, amount) * multipliers[unit];
   }
 
   private extractWalletCashflowFee(

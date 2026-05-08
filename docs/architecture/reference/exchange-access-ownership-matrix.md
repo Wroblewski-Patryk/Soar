@@ -13,6 +13,7 @@ reintroduce parallel bootstrap, metadata, or snapshot flows.
 | Access family | Canonical owner | Allowed consumers | Forbidden pattern |
 | --- | --- | --- | --- |
 | Public market-map loading | `apps/api/src/modules/exchange/exchangePublicRead.service.ts` | symbol rules and future public metadata readers | direct ad hoc `ccxt` market bootstrap in consumer modules |
+| Public ticker and candle reads | `apps/api/src/modules/exchange/exchangePublicMarketData.service.ts` | approved market-data stream or polling adapters | feature/runtime modules calling exchange public REST/CCXT directly or reusing Binance fallback data for another exchange |
 | Symbol rules resolution | `apps/api/src/modules/exchange/exchangeSymbolRules.service.ts` | orders/manual-order/wallet metadata consumers through metadata contract | duplicate per-module rules loaders |
 | Authenticated exchange client bootstrap | `apps/api/src/modules/exchange/exchangeAuthenticatedRead.service.ts` (via `exchangeConnectorFactory`) | positions snapshots, wallet balance previews, future authenticated reads | creating authenticated clients directly inside feature modules |
 | Live exchange order submit | `apps/api/src/modules/orders/orders.service.ts` through `apps/api/src/modules/exchange/liveOrderAdapter.service.ts` and authenticated connector bootstrap | manual `LIVE` order-open flow and future runtime execution submitters | direct `ccxt` order placement or connector bootstrap inside feature modules |
@@ -132,6 +133,9 @@ Runtime market-event boundary:
 - the Binance websocket normalizer still emits only `BINANCE`
 - Gate.io runtime events are allowed only as normalized input from a future
   approved Gate.io market-data adapter source
+- Gate.io public ticker and candle reads are available inside the exchange
+  module through the public market-data reader, and app `GATEIO/FUTURES`
+  resolves to CCXT `swap` for perpetual futures
 - `GATEIO` `PAPER_PRICING_FEED` remains unsupported until that source publishes
   ticker and candle events with runtime evidence
 

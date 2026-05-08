@@ -73,6 +73,34 @@ describe('exchangeAdapterRegistry.service', () => {
     });
   });
 
+  it('maps Gate.io app futures context to CCXT swap for perpetual market data', () => {
+    const entry = resolveExchangeAdapterRegistryEntry({
+      exchange: 'GATEIO',
+      marketType: 'FUTURES',
+    });
+
+    const publicConnector = entry.marketData.createPublicConnector() as unknown as {
+      config: { exchangeId: string; marketType: string };
+    };
+    const authConnector = entry.account.createAuthenticatedConnector({
+      apiKey: 'enc-key',
+      apiSecret: 'enc-secret',
+    }) as unknown as {
+      config: { exchangeId: string; marketType: string; apiKey: string; secret: string };
+    };
+
+    expect(publicConnector.config).toMatchObject({
+      exchangeId: 'gateio',
+      marketType: 'swap',
+    });
+    expect(authConnector.config).toMatchObject({
+      exchangeId: 'gateio',
+      marketType: 'swap',
+      apiKey: 'dec:enc-key',
+      secret: 'dec:enc-secret',
+    });
+  });
+
   it('fails closed for exchange contexts that are not allowed by market-type options', () => {
     expect(() =>
       resolveExchangeAdapterRegistryEntry({

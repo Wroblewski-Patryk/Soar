@@ -41,6 +41,14 @@ Operational queue for one-task execution runs.
     disabled. Evidence:
     `docs/planning/exchange2-03-runtime-market-event-exchange-boundary-task-2026-05-08.md`.
 
+- [x] `EXCHANGE2-04 feat(exchange): add Gate.io public ticker/candle reader`
+  - 2026-05-08: Add the exchange-module public market-data reader for Gate.io
+    ticker and candle reads through the existing CCXT adapter registry. Map
+    app `GATEIO/FUTURES` to CCXT `swap` for perpetual futures while preserving
+    Binance `future` behavior. Gate.io paper/live/authenticated capabilities
+    remain disabled. Evidence:
+    `docs/planning/exchange2-04-gateio-public-market-data-reader-task-2026-05-08.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - 2026-05-08: Generated and committed the current no-secret final V1
     preflight JSON/Markdown snapshot for deployed SHA

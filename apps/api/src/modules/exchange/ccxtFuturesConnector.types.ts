@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 const CcxtMarketTypeSchema = z
-  .enum(['future', 'spot', 'FUTURES', 'SPOT'])
+  .enum(['future', 'swap', 'spot', 'FUTURES', 'SPOT'])
   .transform((value) => (value === 'FUTURES' ? 'future' : value === 'SPOT' ? 'spot' : value));
 
 export const CcxtFuturesConnectorConfigSchema = z.object({
@@ -107,5 +107,25 @@ export type CcxtWalletCashflowHistoryEntry = {
   occurredAt: Date | null;
   status: string | null;
   source: 'fetchLedger' | 'fetchDeposits' | 'fetchWithdrawals' | 'fetchTransactions';
+  raw: unknown;
+};
+
+export type CcxtPublicTickerSnapshot = {
+  symbol: string;
+  eventTime: number;
+  lastPrice: number;
+  markPrice: number | null;
+  priceChangePercent24h: number;
+  raw: unknown;
+};
+
+export type CcxtPublicCandle = {
+  openTime: number;
+  closeTime: number;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
   raw: unknown;
 };

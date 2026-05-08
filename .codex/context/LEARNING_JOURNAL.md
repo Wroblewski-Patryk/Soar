@@ -20,6 +20,31 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Evidence:
 ```
 
+### 2026-05-08 - Local Vitest can be blocked by missing Vite in pnpm store
+- Context: Gate.io exchange adapter validation attempted focused API Vitest
+  runs through `apps/api/node_modules/.bin/vitest.CMD`.
+- Symptom: Vitest failed before loading tests with `ERR_MODULE_NOT_FOUND` for
+  `node_modules/.pnpm/vitest@.../node_modules/vite/index.js`.
+- Root cause: the local pnpm store/node_modules state is incomplete for the
+  Vitest/Vite dependency edge; Corepack pnpm can also be blocked by signature
+  verification on this workstation.
+- Guardrail: when this exact startup error appears, record focused Vitest as
+  environment-blocked and pair the change with `apps/api` TypeScript,
+  repository guardrails, docs parity, and `git diff --check`; rerun Vitest only
+  after dependency repair.
+- Preferred pattern:
+```powershell
+.\node_modules\.bin\tsc.CMD --noEmit
+node scripts/repoGuardrails.mjs
+node scripts/checkDocsParity.mjs
+git diff --check
+```
+- Avoid: treating the missing `vite/index.js` startup error as a product-code
+  regression or repeatedly retrying the same Vitest command before dependency
+  repair.
+- Evidence: reproduced on 2026-05-08 in EXCHANGE2-02, EXCHANGE2-03, and
+  EXCHANGE2-04 focused API Vitest attempts.
+
 ### 2026-05-07 - Local API smoke requires current encryption key env names
 - Context: `V1UI-04` attempted an authenticated runtime UI smoke after
   verifying local Docker Postgres/Redis and applying the pending local
