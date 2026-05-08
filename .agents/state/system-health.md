@@ -30,6 +30,11 @@ Last updated: 2026-05-08
   missing.
 - Final blocker execution pack:
   `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
+- Production restore drill evidence is fresh/PASS and final preflight now
+  treats it as satisfying the production DB restore context prerequisite.
+  Current preflight still exits `BLOCKED` on live-import auth, rollback auth,
+  failed RC Gate 4 approval evidence, missing `LIVEIMPORT-03`, and failed
+  rollback proof.
 
 ## Latest Validation
 
@@ -200,6 +205,15 @@ Last updated: 2026-05-08
   `x11cfnz1dd9x0yzccftqzcoe`. Evidence:
   `docs/operations/v1-restore-drill-prod-2026-05-08T15-16-24Z.md`. Follow-up
   V1 preflight reports `backup/restore drill evidence: fresh for 2026-05-08`.
+- Protected auth context sweep PASS as blocker classification: approved
+  API runtime env-name sweep recorded no `LIVEIMPORT_READBACK_*` or
+  `ROLLBACK_GUARD_*` auth env names, rollback proof rerun failed closed on
+  protected `401` responses, and `ops:release:v1:preflight` now reports
+  production DB restore context as satisfied by fresh backup/restore drill
+  evidence. Focused tests passed (`node --test scripts/runV1FinalPreflight.test.mjs`,
+  `11/11`). Remaining preflight blockers are live-import auth, rollback auth,
+  failed RC Gate 4 approval evidence, missing `LIVEIMPORT-03`, and failed
+  rollback proof.
 - `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
   `/dashboard/positions/live-status` returned global reconciliation diagnostic
   counts for an authenticated user. The route now filters

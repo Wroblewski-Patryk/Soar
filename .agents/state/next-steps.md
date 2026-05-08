@@ -71,6 +71,14 @@ The corrected run created a compressed backup, restored it into isolated DB
 the restore DB, removed the backup dump, and cleanup verification returned `0`
 matching restore DBs.
 
+Final preflight now treats that fresh restore drill evidence as satisfying the
+production DB restore context prerequisite. The current `ops:release:v1:preflight`
+run still exits `BLOCKED`, but the remaining blockers are now limited to
+live-import auth, rollback guard auth, failed RC Gate 4 approval evidence,
+missing `LIVEIMPORT-03` readback, and failed rollback proof. The latest
+rollback proof rerun failed closed on protected `401` responses and is recorded
+in `docs/operations/v1-rollback-proof-prod-2026-05-08T15-30-28-231Z.md`.
+
 The next executable production evidence step requires approved Soar
 application/operator auth for `LIVEIMPORT-03` and rollback proof, or real RC
 Gate 4 approver identities. Do not reuse the Coolify login as Soar application
@@ -105,23 +113,24 @@ readback. Last verified RC approval gate hardening deploy:
 0. Follow the final blocker execution pack:
    `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
 0-preflight. Run `pnpm run ops:release:v1:preflight` first. It should be
-   `BLOCKED` until live-import auth, rollback auth, production DB restore
-   context, RC approval, live-import readback, restore, and rollback evidence
-   are all present. It now also runs public API/Web smoke with worker checks
-   disabled. The command prints env variable names only and writes no protected
-   evidence artifacts. Its prerequisite classification and public-smoke skip
-   path are covered by focused regression tests in
-   `scripts/runV1FinalPreflight.test.mjs`. For later Web/operator
-   visualization, use `--json-output <path>` to write a no-secret structured
-   status report; this report is not final V1 release evidence. The preflight
-   now also emits no-secret `next actions` for known blockers, pointing back to
-   the approved commands in the final blocker execution pack. Its JSON report
-   also includes `blockerDetails` so later Web/operator status can render
-   blocker category, severity, protected-input requirement, final-evidence
-   requirement, and remediation availability without parsing blocker strings.
-   For a human-readable operator handoff from the same no-secret data, add
-   `--markdown-output <path>`; the Markdown report is status only and not final
-   release evidence.
+   `BLOCKED` until live-import auth, rollback auth, RC approval, live-import
+   readback, and rollback evidence are all present. Fresh production restore
+   drill evidence now satisfies the production DB restore context prerequisite,
+   so missing DB envs are not a blocker once that evidence is fresh/PASS. The
+   command also runs public API/Web smoke with worker checks disabled, prints
+   env variable names only, and writes no protected evidence artifacts. Its
+   prerequisite classification and public-smoke skip path are covered by
+   focused regression tests in `scripts/runV1FinalPreflight.test.mjs`. For
+   later Web/operator visualization, use `--json-output <path>` to write a
+   no-secret structured status report; this report is not final V1 release
+   evidence. The preflight also emits no-secret `next actions` for known
+   blockers, pointing back to the approved commands in the final blocker
+   execution pack. Its JSON report includes `blockerDetails` so later
+   Web/operator status can render blocker category, severity, protected-input
+   requirement, final-evidence requirement, and remediation availability
+   without parsing blocker strings. For a human-readable operator handoff from
+   the same no-secret data, add `--markdown-output <path>`; the Markdown report
+   is status only and not final release evidence.
 0a. Production build-info reached the backend parity runtime fix, blocker
    evidence alignment, deploy-wait coordination, operator preflight hardening
    docs, live-import release-gate evidence enforcement, build-info freshness

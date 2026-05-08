@@ -170,6 +170,36 @@ export const evaluatePrerequisiteGroups = (env = process.env) => ({
   })),
 });
 
+const evidenceByKey = (evidence) =>
+  new Map((evidence?.evidence ?? []).map((row) => [row.key, row]));
+
+export const isPrerequisiteSatisfiedByEvidence = (groupKey, evidence) => {
+  if (groupKey !== 'production DB restore context') return false;
+  return evidenceByKey(evidence).get('backupRestoreDrill')?.state === 'fresh';
+};
+
+export const annotatePrerequisitesForEvidence = (prerequisites, evidence) => ({
+  required: prerequisites.required.map((group) => {
+    const satisfiedByEvidence =
+      !group.ok && isPrerequisiteSatisfiedByEvidence(group.key, evidence);
+    return {
+      ...group,
+      satisfiedByEvidence,
+      blocking: !group.ok && !satisfiedByEvidence,
+    };
+  }),
+  optional: prerequisites.optional.map((group) => ({
+    ...group,
+    satisfiedByEvidence: false,
+    blocking: false,
+  })),
+});
+
+export const buildPrerequisiteBlockers = (prerequisites) =>
+  prerequisites.required
+    .filter((group) => group.blocking ?? !group.ok)
+    .map((group) => `env:${group.key}`);
+
 const remediationCatalog = {
   'build-info': {
     title: 'Wait for the current HEAD to deploy',
@@ -479,7 +509,12 @@ export const renderPreflightMarkdown = (report, jsonPath = '') => {
   const prerequisiteRows = [...report.prerequisites.required, ...report.prerequisites.optional]
     .map((group) => {
       const names = group.required ?? group.accepted ?? [];
-      return `| ${markdownCell(group.key)} | ${group.ok ? 'pass' : 'missing'} | ${markdownCell(names.join('; '))} |`;
+      const state = group.ok
+        ? 'pass'
+        : group.satisfiedByEvidence
+          ? 'satisfied_by_evidence'
+          : 'missing';
+      return `| ${markdownCell(group.key)} | ${state} | ${markdownCell(names.join('; '))} |`;
     })
     .join('\n');
 
@@ -656,16 +691,27 @@ const main = async () => {
     blockers.push('public-smoke');
   }
 
+  const evidence = await evaluateEvidenceReadiness({
+    environment: 'prod',
+    evidenceDir: path.resolve(process.cwd(), 'docs', 'operations'),
+    today: options.today,
+  });
+
   process.stdout.write('[ops:release:v1:preflight] protected prerequisites\n');
-  const prerequisiteStatus = evaluatePrerequisiteGroups(process.env);
+  const prerequisiteStatus = annotatePrerequisitesForEvidence(
+    evaluatePrerequisiteGroups(process.env),
+    evidence
+  );
   for (const group of prerequisiteStatus.required) {
     if (group.ok) {
       process.stdout.write(`- PASS ${group.key}\n`);
+    } else if (group.satisfiedByEvidence) {
+      process.stdout.write(`- SATISFIED ${group.key}: fresh backup/restore drill evidence\n`);
     } else {
       process.stdout.write(`- MISSING ${group.key}: ${group.required.join('; ')}\n`);
-      blockers.push(`env:${group.key}`);
     }
   }
+  blockers.push(...buildPrerequisiteBlockers(prerequisiteStatus));
 
   for (const group of prerequisiteStatus.optional) {
     if (group.ok) {
@@ -674,12 +720,6 @@ const main = async () => {
       process.stdout.write(`- OPTIONAL ${group.key}: ${group.accepted.join('; ')}\n`);
     }
   }
-
-  const evidence = await evaluateEvidenceReadiness({
-    environment: 'prod',
-    evidenceDir: path.resolve(process.cwd(), 'docs', 'operations'),
-    today: options.today,
-  });
 
   process.stdout.write('[ops:release:v1:preflight] release evidence\n');
   for (const row of evidence.evidence) {

@@ -2,8 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
+  annotatePrerequisitesForEvidence,
   buildBlockerDetails,
   buildPreflightReport,
+  buildPrerequisiteBlockers,
   buildRemediationHints,
   evaluatePrerequisiteGroups,
   renderPreflightMarkdown,
@@ -96,6 +98,34 @@ test('evaluatePrerequisiteGroups reports optional OPS auth layers separately', (
     })['rollback private OPS layer'],
     true,
   );
+});
+
+test('annotatePrerequisitesForEvidence accepts fresh restore evidence for the DB restore context', () => {
+  const prerequisites = annotatePrerequisitesForEvidence(evaluatePrerequisiteGroups({}), {
+    evidence: [
+      {
+        key: 'backupRestoreDrill',
+        label: 'backup/restore drill evidence',
+        state: 'fresh',
+        required: true,
+        reason: 'fresh PASS artifact found',
+        path: 'docs/operations/v1-restore-drill-prod-2026-05-08T15-16-24Z.md',
+        date: '2026-05-08',
+      },
+    ],
+  });
+
+  const dbRestoreContext = prerequisites.required.find(
+    (group) => group.key === 'production DB restore context'
+  );
+
+  assert.equal(dbRestoreContext?.ok, false);
+  assert.equal(dbRestoreContext?.satisfiedByEvidence, true);
+  assert.equal(dbRestoreContext?.blocking, false);
+  assert.deepEqual(buildPrerequisiteBlockers(prerequisites), [
+    'env:liveimport auth',
+    'env:rollback guard auth',
+  ]);
 });
 
 test('runBuildInfoWait can be skipped for local preflight tests', () => {

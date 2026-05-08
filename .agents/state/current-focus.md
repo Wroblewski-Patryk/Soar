@@ -72,6 +72,15 @@ terminal access. Evidence:
 release blockers are protected Soar application/operator auth for
 `LIVEIMPORT-03`, rollback proof auth, and real RC Gate 4 approval.
 
+The protected auth context sweep confirmed the current API runtime env-name
+surface does not expose `LIVEIMPORT_READBACK_*` or `ROLLBACK_GUARD_*` auth
+variables. The final preflight now classifies fresh production restore drill
+evidence as satisfying the production DB restore context prerequisite, so the
+remaining preflight blockers are live-import auth, rollback guard auth, failed
+RC Gate 4 approval evidence, missing `LIVEIMPORT-03`, and failed rollback
+proof. Rollback proof remains fail-closed on protected `401` responses until
+approved auth is available.
+
 A production `ops:release:v1:gate` dry-run on 2026-05-07 generated current
 blocker artifacts and reports `readiness=not_ready`: activation audit,
 activation plan, RC external gates status, RC sign-off, RC checklist,

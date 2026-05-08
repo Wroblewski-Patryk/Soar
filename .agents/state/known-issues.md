@@ -18,6 +18,12 @@ Last updated: 2026-05-08
   Actions for production deployment; the operator confirmed that path is not
   allowed and creates unwanted email noise. If a future task depends on a
   pushed commit being deployed, wait for build-info before continuing.
+- Production restore drill is no longer an active blocker after the approved
+  Coolify terminal PASS evidence. `ops:release:v1:preflight` now treats fresh
+  restore evidence as satisfying the production DB restore context
+  prerequisite, while raw env prerequisite evaluation remains fail-closed.
+  Remaining V1 preflight blockers are protected live-import auth/readback,
+  rollback guard auth/proof, and real RC Gate 4 approval evidence.
 - Production deployment freshness initially lagged after the pushed V1 audit
   candidate, but a later build-info wait passed and production now reports
   `1f816362c93e117e47cfe52a35e0fec93bd0b37d`.

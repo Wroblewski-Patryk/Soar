@@ -7,6 +7,16 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-PROTECTED-AUTH-CONTEXT-SWEEP-2026-05-08 release: classify protected auth context after restore drill`
+  - 2026-05-08: Inspected approved Coolify/API runtime context without
+    persisting secret values, confirmed no `LIVEIMPORT_READBACK_*` or
+    `ROLLBACK_GUARD_*` auth env names are present, reran rollback proof and
+    captured the expected fail-closed `401` evidence, and corrected
+    `ops:release:v1:preflight` so fresh production restore drill evidence
+    satisfies the production DB restore prerequisite. Current preflight still
+    blocks on live-import auth, rollback auth, RC Gate 4 approval evidence,
+    missing `LIVEIMPORT-03`, and failed rollback proof. Evidence:
+    `docs/planning/v1-protected-auth-context-sweep-task-2026-05-08.md`.
 - [x] `V1-PROD-RESTORE-DRILL-COOLIFY-TERMINAL-2026-05-08 release: verify production restore drill execution path`
   - 2026-05-08: Used approved Coolify terminal access for production Postgres
     container `x11cfnz1dd9x0yzccftqzcoe` to execute the isolated production

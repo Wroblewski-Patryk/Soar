@@ -3,6 +3,19 @@
 Last updated: 2026-05-08
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-08 `V1-PROTECTED-AUTH-CONTEXT-SWEEP-2026-05-08` classified the
+  remaining protected auth context after the production restore drill. The
+  approved API runtime env-name sweep recorded only variable names and found
+  no `LIVEIMPORT_READBACK_*` or `ROLLBACK_GUARD_*` auth env names. A rollback
+  proof rerun failed closed on protected `401` responses and generated current
+  failed evidence:
+  `docs/operations/v1-rollback-proof-prod-2026-05-08T15-30-28-231Z.md`.
+  `ops:release:v1:preflight` now derives prerequisite blockers after release
+  evidence evaluation, so fresh `backupRestoreDrill` evidence satisfies the
+  production DB restore context prerequisite without treating missing DB envs
+  as a blocker. Raw prerequisite env evaluation remains fail-closed. Current
+  preflight still blocks on live-import auth, rollback auth, failed RC Gate 4
+  approval evidence, missing `LIVEIMPORT-03`, and failed rollback proof.
 - 2026-05-08 `V1-PROD-RESTORE-DRILL-COOLIFY-TERMINAL-2026-05-08` completed
   the production backup/restore drill through approved Coolify terminal access
   against Postgres container `x11cfnz1dd9x0yzccftqzcoe`. The corrected
