@@ -149,6 +149,12 @@ passing, public Web routes returning HTTP 200, and unauthenticated
 dashboard/admin routes returning HTTP 307 to `/auth/login`. This still does
 not satisfy the full production UI module clickthrough, which remains blocked
 on authenticated/admin production app access.
+The current no-secret V1 final preflight for deployed
+`90cd07d602f0a31f315719b8a5cd5be3fd112313` is now refreshed for 2026-05-09 at
+`docs/operations/v1-final-preflight-90cd07d6-2026-05-09.md`. Build-info and
+public smoke pass, but V1 remains `BLOCKED` on missing live-import auth,
+rollback auth, production DB restore context, missing `LIVEIMPORT-03`, and
+stale 2026-05-08 release evidence for the 2026-05-09 evidence date.
 
 The local V1 backend paper/live runtime line is closed for this slice: focused
 parity/crash coverage, DB-backed runtime/order/exchange/import/readback packs,

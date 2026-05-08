@@ -235,6 +235,15 @@ Operational queue for one-task execution runs.
     and
     `docs/operations/prod-ui-public-access-clickthrough-90cd07d6-2026-05-09.md`.
 
+- [x] `V1-FINAL-PREFLIGHT-REFRESH-90CD07D6-2026-05-09 release: refresh current no-secret V1 blocker report`
+  - 2026-05-09: Ran the existing read-only final preflight against deployed
+    `90cd07d602f0a31f315719b8a5cd5be3fd112313`. Build-info and public API/Web
+    smoke passed, but V1 remains `BLOCKED` on missing live-import auth,
+    rollback auth, production DB restore context, missing `LIVEIMPORT-03`, and
+    stale 2026-05-08 release evidence for the 2026-05-09 date. Evidence:
+    `docs/planning/v1-final-preflight-refresh-90cd07d6-task-2026-05-09.md`
+    and `docs/operations/v1-final-preflight-90cd07d6-2026-05-09.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - 2026-05-08: Generated and committed the current no-secret final V1
     preflight JSON/Markdown snapshot for deployed SHA

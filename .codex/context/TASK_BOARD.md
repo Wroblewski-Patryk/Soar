@@ -240,6 +240,14 @@ Last updated: 2026-05-09
     production app access. Evidence:
     `docs/planning/prod-ui-public-access-refresh-90cd07d6-task-2026-05-09.md`.
 
+- [x] `V1-FINAL-PREFLIGHT-REFRESH-90CD07D6-2026-05-09 release: refresh current no-secret V1 blocker report`
+  - Scope: generated current no-secret final preflight reports for deployed
+    `90cd07d602f0a31f315719b8a5cd5be3fd112313`. Build-info and public API/Web
+    smoke passed, while release status remains `BLOCKED` on protected auth,
+    production DB restore context, missing `LIVEIMPORT-03`, and stale
+    2026-05-08 release evidence for the 2026-05-09 date. Evidence:
+    `docs/planning/v1-final-preflight-refresh-90cd07d6-task-2026-05-09.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - Scope: generated and committed the current no-secret final V1 preflight
     JSON/Markdown snapshot for deployed SHA

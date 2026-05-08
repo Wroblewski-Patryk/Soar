@@ -23,6 +23,12 @@ public Web routes return HTTP 200, and unauthenticated dashboard/admin routes
 redirect to `/auth/login`. Full production UI module clickthrough remains
 blocked until authenticated/admin production app access is available.
 
+2026-05-09 no-secret V1 preflight refresh: deployed `90cd07d6` still passes
+build-info and public API/Web smoke, but the current release posture is
+`BLOCKED` on missing live-import auth, rollback auth, production DB restore
+context, missing `LIVEIMPORT-03`, and stale 2026-05-08 release evidence for
+the 2026-05-09 evidence date.
+
 2026-05-09 continuation update: Gate.io second-exchange planning has been
 reconciled after the deployed fail-closed foundation. The plan is complete as a
 planning artifact; public catalog and public `FUTURES`/swap market-data

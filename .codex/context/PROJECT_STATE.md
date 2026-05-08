@@ -216,6 +216,13 @@ Last updated: 2026-05-09
   This remains public-only evidence; authenticated/admin module clickthrough
   still requires valid production app access. Evidence:
   `docs/operations/prod-ui-public-access-clickthrough-90cd07d6-2026-05-09.md`.
+- 2026-05-09 `V1-FINAL-PREFLIGHT-REFRESH-90CD07D6-2026-05-09` refreshed the
+  no-secret final V1 preflight for deployed
+  `90cd07d602f0a31f315719b8a5cd5be3fd112313`. Build-info and public API/Web
+  smoke passed. V1 remains `BLOCKED` because live-import auth, rollback auth,
+  production DB restore context, `LIVEIMPORT-03`, and current 2026-05-09
+  release evidence are missing or stale. Evidence:
+  `docs/operations/v1-final-preflight-90cd07d6-2026-05-09.md`.
 - 2026-05-08 `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08` published the
   current no-secret final V1 preflight JSON/Markdown snapshot for deployed SHA
   `052df82244ea0f81e8611ff8bb2b677db115bd19`. The snapshot reports build-info

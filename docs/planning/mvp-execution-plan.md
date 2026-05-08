@@ -33,6 +33,13 @@ Rule: fix/cleanup/update first, then feature delivery.
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
 - 2026-05-09: Closed
+  `V1-FINAL-PREFLIGHT-REFRESH-90CD07D6-2026-05-09` with
+  `docs/planning/v1-final-preflight-refresh-90cd07d6-task-2026-05-09.md`.
+  Deployed `90cd07d6` still passes build-info and public API/Web smoke, but
+  the current V1 release posture is blocked by missing protected auth/DB
+  context, missing `LIVEIMPORT-03`, and stale 2026-05-08 release evidence for
+  the 2026-05-09 evidence date.
+- 2026-05-09: Closed
   `PROD-UI-PUBLIC-ACCESS-REFRESH-90CD07D6-2026-05-09` with
   `docs/planning/prod-ui-public-access-refresh-90cd07d6-task-2026-05-09.md`.
   Public production evidence now matches deployed `90cd07d6`: build-info,

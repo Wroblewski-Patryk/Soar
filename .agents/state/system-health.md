@@ -132,6 +132,12 @@ Last updated: 2026-05-09
   `docs/operations/prod-ui-public-access-clickthrough-90cd07d6-2026-05-09.md`.
   The full production UI module clickthrough remains blocked on valid
   authenticated/admin app access.
+- V1 final preflight refresh for deployed `90cd07d6` is PASS for public deploy
+  health and correctly BLOCKED for release readiness. Build-info and public
+  API/Web smoke pass, while missing live-import auth, rollback auth,
+  production DB restore context, missing `LIVEIMPORT-03`, and stale 2026-05-08
+  release evidence block the 2026-05-09 release date. Evidence:
+  `docs/operations/v1-final-preflight-90cd07d6-2026-05-09.md`.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307
