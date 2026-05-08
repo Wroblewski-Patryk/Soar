@@ -3,6 +3,16 @@
 Last updated: 2026-05-08
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-08 `EXCHANGE2-LIVE-READINESS-PLAN-2026-05-08` published
+  `docs/planning/second-exchange-live-readiness-plan-2026-05-08.md`, a staged
+  plan for adding one selected second exchange through existing exchange
+  adapter boundaries after current V1 LIVE readiness blockers are closed. The
+  plan records that implementation is blocked until the target exchange,
+  market type, first live scope, and exchange-side cancel requirement are
+  explicitly selected. It preserves the architecture rule that new exchange
+  support must be explicit by operation family and must fail closed when
+  unsupported; no second-exchange capability was enabled in this planning
+  slice.
 - 2026-05-08 `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08` published the
   current no-secret final V1 preflight JSON/Markdown snapshot for deployed SHA
   `052df82244ea0f81e8611ff8bb2b677db115bd19`. The snapshot reports build-info

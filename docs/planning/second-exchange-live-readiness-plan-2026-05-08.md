@@ -1,0 +1,187 @@
+# Second Exchange Live Readiness Plan (2026-05-08)
+
+## Header
+- ID: `EXCHANGE2-LIVE-READINESS-PLAN-2026-05-08`
+- Title: Plan second exchange adapter delivery after V1 live readiness blockers
+- Task Type: planning
+- Current Stage: planning
+- Status: BLOCKED
+- Owner: Planning Agent
+- Depends on:
+  - target exchange decision
+  - protected production auth for `LIVEIMPORT-03`
+  - rollback guard auth
+  - real RC Gate 4 approver identities
+- Priority: P0
+- Iteration: V1 production hardening
+- Operation Mode: BUILDER
+
+## Process Self-Audit
+- [x] All seven autonomous loop steps are planned.
+- [x] No loop step is being skipped.
+- [x] Exactly one priority task is selected.
+- [x] Operation mode matches the active default iteration mode.
+- [x] The task is aligned with repository source-of-truth documents.
+
+## Context
+Soar has a tested local BACKTEST/PAPER/LIVE runtime path and current production
+preflight reports build-info, public smoke, and production restore context as
+passing or satisfied by evidence. The production release state remains blocked
+on protected `LIVEIMPORT-03` runtime readback, rollback proof auth, and RC Gate
+4 approval.
+
+The current exchange capability truth supports `BINANCE` only for
+`PAPER_PRICING_FEED`, `LIVE_EXECUTION`, and `API_KEY_PROBE`. The architecture
+requires new exchange support to be explicit by operation family and to fail
+closed where unsupported.
+
+## Goal
+Prepare and execute a safe delivery path so a second exchange can be connected
+through the approved exchange adapter boundaries without weakening the current
+LIVE safety gates.
+
+## Scope
+- Architecture:
+  - `docs/architecture/reference/exchange-access-ownership-matrix.md`
+  - exact operation support for `(exchange, marketType, operation)`
+- Backend adapter boundaries:
+  - `apps/api/src/modules/exchange/*`
+  - `apps/api/src/modules/orders/orders.service.ts`
+  - `apps/api/src/modules/positions/*`
+  - `apps/api/src/modules/wallets/*`
+  - `apps/api/src/modules/engine/*`
+- Frontend capability surfaces:
+  - `apps/web/src/features/exchanges/*`
+  - `apps/web/src/features/wallets/*`
+  - `apps/web/src/features/bots/*`
+  - `apps/web/src/features/dashboard-home/*`
+- Operations evidence:
+  - `ops:release:v1:preflight`
+  - `ops:liveimport:readback`
+  - `ops:deploy:rollback-proof`
+  - `ops:release:v1:gate`
+
+## Implementation Plan
+
+### Stage 1 - Close Existing V1 LIVE Readiness
+1. Verify current `HEAD` is deployed through build-info.
+2. Run authenticated `LIVEIMPORT-03` production runtime readback.
+3. Run rollback proof with protected rollback guard auth.
+4. Refresh RC gates and build final Gate 4 sign-off with real approver names.
+5. Run the final non-dry-run production V1 release gate.
+
+Acceptance criteria:
+- `LIVEIMPORT-03` artifact exists and contains protected runtime positions
+  payload evidence with ownership, strategy provenance, TTP/DCA visibility, and
+  actionable state.
+- rollback proof reports PASS with `shouldRollback=false`.
+- final release gate reports `ready`.
+
+### Stage 2 - Select Second Exchange And Exact Operation Matrix
+1. User selects one target exchange: `BYBIT`, `OKX`, `KRAKEN`, or `COINBASE`.
+2. Freeze exact V1 operation support:
+   - `MARKET_CATALOG`
+   - `PAPER_PRICING_FEED`
+   - `BALANCE_PREVIEW`
+   - `POSITIONS_SNAPSHOT`
+   - `OPEN_ORDERS_SNAPSHOT`
+   - `LIVE_ORDER_SUBMIT`
+   - `LIVE_ORDER_CANCEL`
+   - `API_KEY_PROBE`
+   - `WALLET_CASHFLOW_HISTORY`
+3. Update architecture docs before code changes.
+
+Acceptance criteria:
+- no broad capability is enabled without exact operation support evidence.
+- unsupported operations fail closed with explicit user-facing errors.
+
+### Stage 3 - Public And Authenticated Read Adapter
+1. Add exchange-specific connector bootstrap through `exchangeConnectorFactory`.
+2. Implement market metadata and symbol-rule normalization through existing
+   exchange module contracts.
+3. Implement API-key probe and balance preview if approved for the target
+   exchange.
+4. Implement positions snapshot and open-orders snapshot only if exact support
+   is approved.
+
+Acceptance criteria:
+- no feature module creates authenticated clients directly.
+- exchange-specific differences stay inside exchange module boundaries.
+- tests cover success, unsupported, invalid credentials, symbol normalization,
+  and permission mismatch.
+
+### Stage 4 - PAPER Runtime Support
+1. Enable paper pricing feed only after public market data and symbol rules are
+   stable.
+2. Add backtest/runtime parser parity coverage for the selected exchange and
+   market type.
+3. Verify dashboard capability gating and wallet/bot create-edit UX.
+
+Acceptance criteria:
+- paper bot can run using the selected exchange market data without exchange
+  writes.
+- backtest and runtime decision semantics remain parity-aligned.
+
+### Stage 5 - LIVE Order Submit Support
+1. Add live submit adapter through `liveOrderAdapter.service.ts` and the
+   existing orders service boundary.
+2. Validate order type support, quantity precision, min notional, leverage,
+   margin mode, and fee reconciliation.
+3. Keep live cancel unsupported unless a real exchange cancel boundary is
+   implemented and tested.
+
+Acceptance criteria:
+- manual LIVE order submit works through the canonical orders API.
+- runtime LIVE submit works through the same adapter boundary.
+- exchange failures fail closed and preserve local order/position consistency.
+
+### Stage 6 - Production Evidence And Rollout
+1. Deploy each adapter stage through Coolify after focused commits.
+2. Wait for build-info after each pushed production-impacting commit.
+3. Run public smoke and protected readback for the selected exchange.
+4. Run rollback proof and final release gate after live submit is enabled.
+
+Acceptance criteria:
+- production readback proves the selected exchange context.
+- final release evidence does not reuse Binance-only evidence for the new
+  exchange.
+
+## Forbidden
+- enabling `LIVE_EXECUTION` for a second exchange before exact submit support
+  is implemented and verified.
+- inferring one operation from another, for example
+  `LIVE_EXECUTION => POSITIONS_SNAPSHOT`.
+- adding direct `ccxt` bootstrap in wallets, bots, orders consumers, or
+  positions consumers outside approved exchange boundaries.
+- silently narrowing unsupported target exchange requests back to Binance.
+- accepting public smoke or no-session output as live runtime proof.
+- running live-money actions without explicit operator approval and protected
+  credentials.
+
+## Required Decisions
+1. Select target exchange: `BYBIT`, `OKX`, `KRAKEN`, or `COINBASE`.
+2. Select first market type: `FUTURES` or `SPOT`.
+3. Confirm whether V1 second-exchange goal includes live order submit, or only
+   paper/backtest plus authenticated readback first.
+4. Confirm whether exchange-side cancel is required for the first live slice.
+
+## Validation Baseline
+- `pnpm run quality:guardrails`
+- `pnpm run lint`
+- `pnpm run typecheck`
+- `pnpm --filter api run test -- --run`
+- `pnpm --filter web run test -- --run`
+- `pnpm run build`
+- selected exchange focused adapter tests
+- authenticated production readback after deploy
+- rollback proof after deploy
+
+## Result Report
+- Task summary: planning artifact created for safe second exchange delivery.
+- Files changed: this planning document plus queue/context synchronization.
+- How tested: repository guardrails and docs parity checks for the planning
+  slice.
+- What is incomplete: implementation is blocked until target exchange and
+  market type are selected and production auth inputs are available.
+- Next steps: close V1 live readiness blockers, then implement the selected
+  exchange adapter in staged vertical slices.

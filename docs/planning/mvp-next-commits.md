@@ -7,6 +7,18 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [ ] `EXCHANGE2-LIVE-READINESS-PLAN-2026-05-08 planning: stage second exchange adapter after V1 live readiness`
+  - 2026-05-08: Published
+    `docs/planning/second-exchange-live-readiness-plan-2026-05-08.md` as the
+    canonical staged plan for adding a second exchange through existing
+    exchange adapter boundaries. Implementation is BLOCKED until the target
+    exchange, market type, first live scope, and cancel requirement are
+    explicitly selected. The plan keeps current V1 blockers first:
+    authenticated `LIVEIMPORT-03`, rollback proof auth, RC Gate 4 approval,
+    and final non-dry-run release gate. Do not enable broad exchange
+    capabilities for a second exchange before exact operation support is
+    implemented and verified.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - 2026-05-08: Generated and committed the current no-secret final V1
     preflight JSON/Markdown snapshot for deployed SHA
