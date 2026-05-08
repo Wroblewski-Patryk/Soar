@@ -17,6 +17,18 @@ Last updated: 2026-05-08
 
 ## READY
 
+- [x] `V1-DEPLOY-FRESHNESS-STATE-SYNC-2026-05-08 docs(release): sync final blocker state to deployed SHA`
+  - Scope: synchronized active V1 release state and the final blocker
+    execution pack to production build-info SHA
+    `0a2e2353177c15d4a4934c03837835785e01d710`, after the build-info wait and
+    public smoke confirmed the pushed deploy coordination commit is live. This
+    is a docs/release-state correction only; no runtime/API/DB/Web/exchange or
+    live-money behavior changed. Remaining blockers stay protected:
+    authenticated `LIVEIMPORT-03`, production restore drill, rollback proof,
+    and Gate 4 sign-off.
+    Evidence:
+    `docs/planning/v1-deploy-freshness-state-sync-task-2026-05-08.md`.
+
 - [x] `V1-PAPER-LIVE-BACKEND-RUNTIME-PARITY-2026-05-08 fix(api-runtime): keep execution orchestration adapter-pure`
   - Scope: fixed the shared PAPER/LIVE `executionOrchestrator` close-settlement
     path so entry-fee aggregation uses the existing runtime trade gateway

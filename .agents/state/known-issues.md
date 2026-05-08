@@ -10,14 +10,13 @@ Last updated: 2026-05-08
   2026-05-08. DB-backed runtime e2e packs passed sequentially after verifying
   the reachable stack. Future runs should check both contexts/ports before
   declaring DB-backed validation blocked.
-- `origin/main` is ahead of production build-info, while production still
-  reports `e6ccbedaa1d0074d5dc335935bb6b51a9bb1e387` after the V1 backend
-  parity candidate push. That deployed SHA contains the runtime fix and
-  refreshed release-state docs. Later docs-only evidence commits may remain
-  ahead of production while public deploy smoke without workers passes. This
-  is expected until a Coolify/manual operator deploy completes. Do not use
-  GitHub Actions for production deployment; the operator confirmed that path
-  is not allowed and creates unwanted email noise.
+- Production build-info now reports
+  `0a2e2353177c15d4a4934c03837835785e01d710`, which contains the V1 backend
+  parity runtime fix, blocker evidence alignment, and deploy-wait coordination
+  docs. Do not use GitHub Actions for production deployment; the operator
+  confirmed that path is not allowed and creates unwanted email noise. If a
+  future task depends on a pushed commit being deployed, wait for build-info
+  before continuing.
 - Production deployment freshness initially lagged after the pushed V1 audit
   candidate, but a later build-info wait passed and production now reports
   `1f816362c93e117e47cfe52a35e0fec93bd0b37d`.
@@ -86,7 +85,7 @@ Last updated: 2026-05-08
 - `LIVEIMPORT-03` remains open because authenticated read-only production
   runtime positions readback for the reported LIVE ETH/DOGE rows has not been
   captured on production after the backend parity deploy
-  (`e6ccbedaa1d0074d5dc335935bb6b51a9bb1e387` or later).
+  (`0a2e2353177c15d4a4934c03837835785e01d710` or later).
   `ops:liveimport:readback` is now the canonical read-only collector once
   credentials are available. It is hardened to fail closed when no RUNNING
   session produces runtime positions readback, so a no-session artifact cannot
@@ -134,6 +133,10 @@ Last updated: 2026-05-08
 - RC strict production evidence check now narrows RC blockers to Gate 4:
   missing Engineering/Product/Operations/RC owner names and final status still
   `BLOCKED`. Gate 1, Gate 2, and Gate 3 are `PASS`.
+- 2026-05-08 deploy coordination follow-up: the docs/state deploy wait commit
+  `0a2e2353177c15d4a4934c03837835785e01d710` reached production build-info
+  and public deploy smoke passed. The remaining blockers are still protected
+  access and sign-off blockers, not public deploy freshness.
 
 ## Known Environment Pitfalls
 

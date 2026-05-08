@@ -4,13 +4,13 @@ Last updated: 2026-05-08
 
 ## Latest Health Snapshot
 
-- Local `main` and `origin/main` contain the V1 backend parity candidate after
-  push. Public production web build-info still reports
-  `4f6832d6d94d0d9e86a2504b4a00fe177a1c6c44`; commit/push alone is not deploy
-  completion evidence. GitHub Actions is not an accepted production deployment
-  path for this project, so production deployment must be performed through
-  Coolify/manual operator controls. Production API `/health` and API `/ready`
-  are healthy in the latest public checks.
+- Local `main`, `origin/main`, and production web build-info are synchronized
+  at `0a2e2353177c15d4a4934c03837835785e01d710` for the latest release-state
+  coordination commit. Production API `/health`, API `/ready`, and WEB `/`
+  passed the latest public smoke check. GitHub Actions is not an accepted
+  production deployment path for this project, so future production deployment
+  must still be performed through Coolify/manual operator controls followed by
+  local build-info verification.
 - Canonical queue check found two open production-evidence items:
   `LIVEIMPORT-03` and `BOTMULTI-09`.
 - The local full-architecture repair and validation chain is closed through
@@ -106,6 +106,10 @@ Last updated: 2026-05-08
   not expose Coolify deploy webhook/API token variables, so force deploy must
   be done by an operator in Coolify or by providing out-of-repository deploy
   webhook credentials.
+- Deploy freshness coordination PASS: `ops:deploy:wait-web-build-info` for
+  `0a2e2353` passed after production advanced from `2c232699...` to
+  `0a2e2353177c15d4a4934c03837835785e01d710`. Public deploy smoke without
+  workers passed immediately afterward.
 - `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
   `/dashboard/positions/live-status` returned global reconciliation diagnostic
   counts for an authenticated user. The route now filters
@@ -219,10 +223,9 @@ runtime contracts are changed.
 
 ## Deployment Impact
 
-Production build-info now exposes `e6ccbedaa1d0074d5dc335935bb6b51a9bb1e387`,
-which contains the V1 backend PAPER/LIVE adapter-pure runtime fix and
-refreshed release-state docs. Later docs-only evidence commits may still be
-ahead of production build-info, but the runtime fix itself is deployed. The
-next executable release task requires
+Production build-info now exposes `0a2e2353177c15d4a4934c03837835785e01d710`,
+which contains the V1 backend PAPER/LIVE adapter-pure runtime fix, refreshed
+release-state docs, blocker evidence alignment, and deploy-wait coordination
+notes. The next executable release task requires
 authenticated read-only production evidence and protected production recovery
 proof; the current shell still lacks those credentials.

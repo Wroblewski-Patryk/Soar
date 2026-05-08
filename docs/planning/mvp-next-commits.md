@@ -7,6 +7,17 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-DEPLOY-FRESHNESS-STATE-SYNC-2026-05-08 docs(release): sync final blocker state to deployed SHA`
+  - 2026-05-08: Synchronized active V1 release state and the final blocker
+    execution pack to production build-info SHA
+    `0a2e2353177c15d4a4934c03837835785e01d710`, after waiting for Coolify
+    deployment and confirming public deploy smoke. This SHA contains the
+    backend PAPER/LIVE parity runtime fix, blocker evidence alignment, and
+    deploy-wait coordination docs. No runtime, API, DB, Web, exchange, or
+    live-money behavior changed. Remaining V1 blockers stay explicit:
+    authenticated `LIVEIMPORT-03`, production restore drill, rollback proof,
+    and Gate 4 sign-off identities/final approval. Evidence:
+    `docs/planning/v1-deploy-freshness-state-sync-task-2026-05-08.md`.
 - [x] `V1-PAPER-LIVE-BACKEND-RUNTIME-PARITY-2026-05-08 fix(api-runtime): keep execution orchestration adapter-pure`
   - 2026-05-08: Fixed the shared PAPER/LIVE runtime execution orchestration
     close path so entry-fee aggregation is owned by `RuntimeTradeGateway`

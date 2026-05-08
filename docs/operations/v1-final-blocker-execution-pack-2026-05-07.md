@@ -2,8 +2,8 @@
 
 ## Status
 - Current result: **NO-GO**
-- Production code/tooling SHA:
-  `2c2326993c306b21de13b3ef76619d8347dd2545`
+- Latest observed production code/tooling SHA before this pack refresh:
+  `0a2e2353177c15d4a4934c03837835785e01d710`
 - Latest release-gate dry-run:
   `docs/operations/v1-release-gate-prod-2026-05-08T05-43-51-157Z.md`
 
@@ -43,7 +43,8 @@ automation requires a Coolify deploy webhook URL and API token; those secrets
 must stay outside repository artifacts.
 
 ```powershell
-pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha 2c2326993c306b21de13b3ef76619d8347dd2545 --timeout-seconds 60 --interval-seconds 10
+$expectedSha = git rev-parse HEAD
+pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --timeout-seconds 900 --interval-seconds 30
 ```
 
 Expected result: `PASS`.
@@ -51,7 +52,8 @@ Expected result: `PASS`.
 ### 2. Capture LIVEIMPORT-03 Runtime Readback
 
 ```powershell
-pnpm run ops:liveimport:readback -- --expected-sha 2c2326993c306b21de13b3ef76619d8347dd2545 --output docs/operations/liveimport-03-prod-readback-2026-05-08.json
+$expectedSha = git rev-parse HEAD
+pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output docs/operations/liveimport-03-prod-readback-2026-05-08.json
 ```
 
 Required result:

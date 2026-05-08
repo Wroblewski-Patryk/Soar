@@ -50,11 +50,10 @@ production auth/access. A no-auth collector attempt failed closed before
 runtime readback, which is the expected safe result.
 
 Post-backend-parity check: production web build-info advanced to
-`2c2326993c306b21de13b3ef76619d8347dd2545`, which includes the adapter-pure
-PAPER/LIVE runtime fix and refreshed release-state docs. Public deploy smoke
-without workers passed. Later docs-only evidence commits may still be ahead of
-production, but this does not remove the runtime fix from production. Continue
-with authenticated read-only `LIVEIMPORT-03` production runtime readback once
+`0a2e2353177c15d4a4934c03837835785e01d710`, which includes the adapter-pure
+PAPER/LIVE runtime fix, blocker evidence alignment, and deploy-wait
+coordination docs. Public deploy smoke without workers passed. Continue with
+authenticated read-only `LIVEIMPORT-03` production runtime readback once
 credentials are available. Do not use GitHub Actions for production
 deployment.
 
@@ -69,23 +68,22 @@ If production build-info reports a deployed commit older than latest `main`
 while latest `main` only contains docs/state evidence on top, use the deployed
 SHA for readback evidence until a newer Coolify/manual deploy is confirmed.
 Latest observed production SHA is
-`2c2326993c306b21de13b3ef76619d8347dd2545`.
+`0a2e2353177c15d4a4934c03837835785e01d710`.
 
 ## Candidate Backlog
 
 0. Follow the final blocker execution pack:
    `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
-0a. Production build-info already exposes the backend parity runtime fix and
-   blocker evidence alignment at
-   `2c2326993c306b21de13b3ef76619d8347dd2545`; later docs-only commits may
-   still be ahead of production. Do not use GitHub Actions. If a future step
-   depends on a pushed commit being deployed, wait for build-info before
-   continuing; an operator can speed this up with Coolify dashboard force
-   deploy, or with deploy webhook/API token if those secrets are available
-   outside the repository.
+0a. Production build-info already exposes the backend parity runtime fix,
+   blocker evidence alignment, and deploy-wait coordination docs at
+   `0a2e2353177c15d4a4934c03837835785e01d710`. Do not use GitHub Actions. If a
+   future step depends on a pushed commit being deployed, wait for build-info
+   before continuing; an operator can speed this up with Coolify dashboard
+   force deploy, or with deploy webhook/API token if those secrets are
+   available outside the repository.
 1. If production credentials or ops auth are available, execute
-   `ops:liveimport:readback` for deployed
-   `2c2326993c306b21de13b3ef76619d8347dd2545` and record redacted
+   `ops:liveimport:readback` for the currently checked-out `HEAD` after
+   build-info confirms that `HEAD` is deployed, and record redacted
    `LIVEIMPORT-03` evidence. The latest names-only prerequisite sweep found
    only `FIGMA_OAUTH_TOKEN` and `IGCCSVC_DB` in this shell. The evidence run
    must include actual protected runtime positions payloads for the requested

@@ -3,6 +3,14 @@
 Last updated: 2026-05-08
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-08 `V1-DEPLOY-FRESHNESS-STATE-SYNC-2026-05-08` synchronized the
+  active final blocker state to production build-info SHA
+  `0a2e2353177c15d4a4934c03837835785e01d710`. This SHA contains the backend
+  PAPER/LIVE parity runtime fix, release blocker evidence alignment, and
+  deploy-wait coordination docs. Public deploy smoke passed after the
+  build-info wait. No runtime, API, DB, Web, exchange, or live-money behavior
+  changed. `LIVEIMPORT-03`, production restore drill, rollback proof, and Gate
+  4 sign-off remain blocked by protected auth/access and approval inputs.
 - 2026-05-08 `V1-PAPER-LIVE-BACKEND-RUNTIME-PARITY-2026-05-08` fixed a
   backend runtime parity boundary leak in `executionOrchestrator.service`.
   Close-settlement entry-fee aggregation now goes through
@@ -51,7 +59,7 @@ Last updated: 2026-05-08
   `docs/operations/v1-release-gate-prod-2026-05-08T05-43-51-157Z.md` remains
   `not_ready`.
   The active final blocker pack now uses deployed
-  `e6ccbedaa1d0074d5dc335935bb6b51a9bb1e387` for build-info and
+  `0a2e2353177c15d4a4934c03837835785e01d710` for build-info and
   `LIVEIMPORT-03` readback commands.
   RC preflight narrowed RC blockers to Gate 4 only: Engineering, Product,
   Operations, and RC owner identities are missing, and final status remains
