@@ -31,6 +31,10 @@ evidence; do not enable `PAPER_PRICING_FEED` from local mocked evidence alone.
 Post-push build-info for `4ef3ec58` remained stale on
 `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d` during the 120-second wait, even
 though public smoke passed.
+Follow-up production build-info now exposes
+`36ac02696ac0ce22a6b8bab545fcfb741125ea4b`, and public smoke passed. Gate.io
+`PAPER_PRICING_FEED` still remains disabled until target-environment source
+evidence proves the live polling source behavior cleanly.
 
 After the planned Gate.io/deploy-auth blockers are cleared, execute the
 production UI module clickthrough audit from

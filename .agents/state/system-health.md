@@ -22,7 +22,9 @@ Last updated: 2026-05-08
   PASS: focused market-stream Vitest pack (`3` files, `7/7`), API typecheck,
   repository guardrails, docs parity, and diff check. Post-push public deploy
   smoke passed, but build-info waited 120 seconds for `4ef3ec58` and remained
-  on `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d`.
+  on `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d`. Follow-up build-info now
+  exposes `36ac02696ac0ce22a6b8bab545fcfb741125ea4b`, and public API/Web smoke
+  passed after the freshness check.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307
