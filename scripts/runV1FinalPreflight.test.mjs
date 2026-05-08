@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
+  buildBlockerDetails,
   buildPreflightReport,
   buildRemediationHints,
   evaluatePrerequisiteGroups,
@@ -152,6 +153,8 @@ test('buildPreflightReport exposes readiness without secret values', () => {
   const serialized = JSON.stringify(report);
   assert.equal(serialized.includes('super-secret-token'), false);
   assert.equal(serialized.includes('super-secret-password'), false);
+  assert.equal(report.blockerDetails[0]?.category, 'release_evidence');
+  assert.equal(report.blockerDetails[0]?.finalEvidenceRequired, true);
   assert.equal(report.remediation[0]?.blocker, 'evidence:liveImportReadback:missing');
   assert.equal(serialized.includes('LIVEIMPORT_READBACK_AUTH_TOKEN'), true);
 });
@@ -180,4 +183,35 @@ test('buildRemediationHints maps known final V1 blockers to existing commands', 
   assert.match(hints[3].command, /ops:deploy:rollback-proof/);
   const serialized = JSON.stringify(hints);
   assert.equal(serialized.includes('super-secret'), false);
+});
+
+test('buildBlockerDetails exposes stable categories for Web/operator status', () => {
+  const details = buildBlockerDetails([
+    'build-info',
+    'public-smoke',
+    'env:liveimport auth',
+    'evidence:rcSignoffRecord:failed',
+    'evidence:liveImportReadback:missing',
+    'custom:blocker',
+  ]);
+
+  assert.deepEqual(
+    details.map((detail) => detail.category),
+    [
+      'deploy_freshness',
+      'public_reachability',
+      'protected_prerequisite',
+      'release_evidence',
+      'release_evidence',
+      'unknown',
+    ],
+  );
+  assert.equal(details[2].protectedInputRequired, true);
+  assert.equal(details[2].finalEvidenceRequired, false);
+  assert.equal(details[3].protectedInputRequired, false);
+  assert.equal(details[3].finalEvidenceRequired, true);
+  assert.equal(details[4].protectedInputRequired, true);
+  assert.equal(details[4].remediationAvailable, true);
+  assert.equal(details[5].remediationAvailable, false);
+  assert.equal(JSON.stringify(details).includes('super-secret'), false);
 });

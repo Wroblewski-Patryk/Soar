@@ -3,6 +3,13 @@
 Last updated: 2026-05-08
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-08 `V1-FINAL-PREFLIGHT-BLOCKER-DETAILS-2026-05-08` added
+  structured no-secret `blockerDetails` metadata to the final V1 preflight
+  JSON report. The report still keeps raw blocker keys and remediation hints,
+  and now also exposes category, severity, protected-input requirement,
+  final-evidence requirement, required capability tags, and remediation
+  availability for later Web/operator status rendering without parsing blocker
+  strings or duplicating release blocker classification.
 - 2026-05-08 `V1-FINAL-PREFLIGHT-REMEDIATION-HINTS-2026-05-08` added
   no-secret remediation hints to final V1 preflight CLI/JSON output. Known
   blockers now point to the approved final blocker commands for build-info,

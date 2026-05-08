@@ -264,6 +264,159 @@ export const buildRemediationHints = (blockers) =>
     })
     .filter(Boolean);
 
+const blockerDetailCatalog = {
+  'build-info': {
+    category: 'deploy_freshness',
+    label: 'Deployed build-info freshness',
+    severity: 'blocking',
+    protectedInputRequired: false,
+    finalEvidenceRequired: false,
+    operatorActionRequired: true,
+    requiredCapabilities: ['coolify_deploy_or_wait'],
+  },
+  'public-smoke': {
+    category: 'public_reachability',
+    label: 'Public API/Web smoke',
+    severity: 'blocking',
+    protectedInputRequired: false,
+    finalEvidenceRequired: false,
+    operatorActionRequired: true,
+    requiredCapabilities: ['public_api_web_reachability'],
+  },
+  'env:liveimport auth': {
+    category: 'protected_prerequisite',
+    label: 'LIVEIMPORT read-only auth',
+    severity: 'blocking',
+    protectedInputRequired: true,
+    finalEvidenceRequired: false,
+    operatorActionRequired: true,
+    requiredCapabilities: ['production_application_auth'],
+  },
+  'env:rollback guard auth': {
+    category: 'protected_prerequisite',
+    label: 'Rollback guard auth',
+    severity: 'blocking',
+    protectedInputRequired: true,
+    finalEvidenceRequired: false,
+    operatorActionRequired: true,
+    requiredCapabilities: ['production_ops_auth'],
+  },
+  'env:production DB restore context': {
+    category: 'protected_prerequisite',
+    label: 'Production DB restore context',
+    severity: 'blocking',
+    protectedInputRequired: true,
+    finalEvidenceRequired: false,
+    operatorActionRequired: true,
+    requiredCapabilities: ['production_db_coolify_access'],
+  },
+  'evidence:rcExternalGateStatus:failed': {
+    category: 'release_evidence',
+    label: 'RC external gates approval',
+    severity: 'blocking',
+    protectedInputRequired: true,
+    finalEvidenceRequired: true,
+    operatorActionRequired: true,
+    requiredCapabilities: ['production_gate_refresh', 'rc_approval'],
+  },
+  'evidence:rcSignoffRecord:failed': {
+    category: 'release_evidence',
+    label: 'RC sign-off approval',
+    severity: 'blocking',
+    protectedInputRequired: false,
+    finalEvidenceRequired: true,
+    operatorActionRequired: true,
+    requiredCapabilities: ['real_approver_identities', 'rc_approval'],
+  },
+  'evidence:rcChecklist:failed': {
+    category: 'release_evidence',
+    label: 'RC checklist sync',
+    severity: 'blocking',
+    protectedInputRequired: false,
+    finalEvidenceRequired: true,
+    operatorActionRequired: true,
+    requiredCapabilities: ['rc_approval'],
+  },
+  'evidence:liveImportReadback:missing': {
+    category: 'release_evidence',
+    label: 'LIVEIMPORT-03 runtime readback',
+    severity: 'blocking',
+    protectedInputRequired: true,
+    finalEvidenceRequired: true,
+    operatorActionRequired: true,
+    requiredCapabilities: ['production_application_auth', 'protected_runtime_readback'],
+  },
+  'evidence:backupRestoreDrill:failed': {
+    category: 'release_evidence',
+    label: 'Production restore drill',
+    severity: 'blocking',
+    protectedInputRequired: true,
+    finalEvidenceRequired: true,
+    operatorActionRequired: true,
+    requiredCapabilities: ['production_db_coolify_access'],
+  },
+  'evidence:rollbackProof:failed': {
+    category: 'release_evidence',
+    label: 'Production rollback proof',
+    severity: 'blocking',
+    protectedInputRequired: true,
+    finalEvidenceRequired: true,
+    operatorActionRequired: true,
+    requiredCapabilities: ['production_ops_auth', 'protected_runtime_freshness'],
+  },
+};
+
+const fallbackBlockerDetail = (blocker) => {
+  if (blocker.startsWith('env:')) {
+    return {
+      category: 'protected_prerequisite',
+      label: blocker.slice('env:'.length),
+      severity: 'blocking',
+      protectedInputRequired: true,
+      finalEvidenceRequired: false,
+      operatorActionRequired: true,
+      requiredCapabilities: ['protected_operator_input'],
+    };
+  }
+
+  if (blocker.startsWith('evidence:')) {
+    return {
+      category: 'release_evidence',
+      label: blocker.slice('evidence:'.length),
+      severity: 'blocking',
+      protectedInputRequired: true,
+      finalEvidenceRequired: true,
+      operatorActionRequired: true,
+      requiredCapabilities: ['release_evidence'],
+    };
+  }
+
+  return {
+    category: 'unknown',
+    label: blocker,
+    severity: 'blocking',
+    protectedInputRequired: false,
+    finalEvidenceRequired: false,
+    operatorActionRequired: true,
+    requiredCapabilities: [],
+  };
+};
+
+export const buildBlockerDetails = (blockers) => {
+  const remediationByBlocker = new Map(
+    buildRemediationHints(blockers).map((hint) => [hint.blocker, hint])
+  );
+
+  return blockers.map((blocker) => {
+    const detail = blockerDetailCatalog[blocker] ?? fallbackBlockerDetail(blocker);
+    return {
+      blocker,
+      ...detail,
+      remediationAvailable: remediationByBlocker.has(blocker),
+    };
+  });
+};
+
 export const buildPreflightReport = ({
   options,
   buildInfo,
@@ -301,6 +454,7 @@ export const buildPreflightReport = ({
     date: row.date,
   })),
   blockers,
+  blockerDetails: buildBlockerDetails(blockers),
   remediation: buildRemediationHints(blockers),
   note:
     'Preflight JSON is not final V1 release evidence and contains env names/readiness only, not secret values.',

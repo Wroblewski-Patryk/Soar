@@ -175,6 +175,11 @@ Last updated: 2026-05-08
   no-secret next actions in CLI/JSON output, pointing to the approved final
   blocker commands for live-import readback, restore drill, rollback proof,
   RC sign-off, and checklist sync.
+- Final V1 preflight blocker details PASS: the optional no-secret JSON report
+  now includes additive `blockerDetails` metadata for known and unknown
+  blockers, including category, severity, protected-input requirement,
+  final-evidence requirement, and remediation availability for later
+  Web/operator status rendering.
 - `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
   `/dashboard/positions/live-status` returned global reconciliation diagnostic
   counts for an authenticated user. The route now filters

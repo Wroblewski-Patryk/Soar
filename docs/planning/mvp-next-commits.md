@@ -7,6 +7,14 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-FINAL-PREFLIGHT-BLOCKER-DETAILS-2026-05-08 release: add structured blocker details`
+  - 2026-05-08: Added additive no-secret `blockerDetails` metadata to final
+    V1 preflight JSON reports. Known and unknown blocker keys now expose
+    category, severity, protected-input requirement, final-evidence
+    requirement, required capability tags, and remediation availability for
+    later Web/operator status rendering without parsing blocker strings.
+    Evidence:
+    `docs/planning/v1-final-preflight-blocker-details-task-2026-05-08.md`.
 - [x] `V1-FINAL-PREFLIGHT-REMEDIATION-HINTS-2026-05-08 release: add preflight next actions`
   - 2026-05-08: Added no-secret remediation hints to final V1 preflight
     CLI/JSON output. Known blocker IDs now point to approved final blocker

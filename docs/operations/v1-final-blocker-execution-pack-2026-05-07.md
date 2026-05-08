@@ -48,7 +48,10 @@ pnpm run ops:release:v1:preflight
 ```
 
 For a machine-readable, no-secret status report that can be consumed by later
-Web/operator visualization, pass an explicit JSON output path:
+Web/operator visualization, pass an explicit JSON output path. The JSON keeps
+the raw blocker keys and also includes structured `blockerDetails` metadata
+for category, severity, protected-input requirements, final-evidence
+requirements, and remediation availability:
 
 ```powershell
 pnpm run ops:release:v1:preflight -- --json-output docs/operations/_artifacts-v1-final-preflight-2026-05-08.json
@@ -62,7 +65,9 @@ treat preflight as final release evidence; it is the safe readiness check
 before the commands below. The JSON report is also not final release evidence;
 it is a no-secret status snapshot. Preflight blocker output includes
 `next actions` that point to the approved commands below; those hints do not
-replace the commands or acceptance criteria in this pack.
+replace the commands or acceptance criteria in this pack. `blockerDetails`
+metadata is only display/status metadata and also does not replace the
+commands or acceptance criteria in this pack.
 
 ### 1. Verify Production Build Info
 

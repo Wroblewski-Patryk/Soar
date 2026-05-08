@@ -17,6 +17,14 @@ Last updated: 2026-05-08
 
 ## READY
 
+- [x] `V1-FINAL-PREFLIGHT-BLOCKER-DETAILS-2026-05-08 release: add structured blocker details`
+  - Scope: added additive no-secret `blockerDetails` metadata to final V1
+    preflight JSON reports. Known and unknown blockers now expose category,
+    severity, protected-input requirement, final-evidence requirement,
+    required capability tags, and remediation availability for later
+    Web/operator status rendering without parsing blocker strings. Evidence:
+    `docs/planning/v1-final-preflight-blocker-details-task-2026-05-08.md`.
+
 - [x] `V1-FINAL-PREFLIGHT-REMEDIATION-HINTS-2026-05-08 release: add preflight next actions`
   - Scope: added no-secret remediation hints to final V1 preflight CLI/JSON
     output. Known blocker IDs now point to the approved final blocker commands

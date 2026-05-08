@@ -91,7 +91,10 @@ readback. Last verified RC approval gate hardening deploy:
    visualization, use `--json-output <path>` to write a no-secret structured
    status report; this report is not final V1 release evidence. The preflight
    now also emits no-secret `next actions` for known blockers, pointing back to
-   the approved commands in the final blocker execution pack.
+   the approved commands in the final blocker execution pack. Its JSON report
+   also includes `blockerDetails` so later Web/operator status can render
+   blocker category, severity, protected-input requirement, final-evidence
+   requirement, and remediation availability without parsing blocker strings.
 0a. Production build-info reached the backend parity runtime fix, blocker
    evidence alignment, deploy-wait coordination, operator preflight hardening
    docs, live-import release-gate evidence enforcement, build-info freshness
