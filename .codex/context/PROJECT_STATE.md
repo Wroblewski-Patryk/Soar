@@ -121,6 +121,11 @@ Last updated: 2026-05-08
   leaves no wallet persisted for the user. Gate.io paper/live/authenticated
   capabilities remain disabled. Evidence:
   `docs/planning/exchange2-12-gateio-api-wallet-fail-closed-task-2026-05-08.md`.
+- 2026-05-08 `EXCHANGE2-13` locked the direct API wallet update boundary for
+  Gate.io. A wallet CRUD regression now proves an existing Binance PAPER wallet
+  cannot be updated to `GATEIO` while `PAPER_PRICING_FEED` is unsupported, and
+  the persisted wallet remains unchanged after rejection. Evidence:
+  `docs/planning/exchange2-13-gateio-api-wallet-update-fail-closed-task-2026-05-08.md`.
 - 2026-05-08 `PROD-UI-AUDIT-PLAN-2026-05-08` prepared the production UI module
   clickthrough audit plan requested by the user. The plan covers all canonical
   public, dashboard, admin, and legacy redirect routes, module-level functions,

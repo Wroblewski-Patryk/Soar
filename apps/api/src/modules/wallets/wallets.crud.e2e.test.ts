@@ -217,6 +217,42 @@ describe('Wallet CRUD and ownership contract', () => {
     });
   });
 
+  it('fails closed before updating PAPER wallet to Gate.io while paper pricing is unsupported', async () => {
+    const agent = await registerAndLogin(uniqueEmail('wallet-crud-gateio-update-blocked'));
+
+    const created = await agent.post('/dashboard/wallets').send({
+      name: 'Paper wallet before Gate.io update',
+      mode: 'PAPER',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      paperInitialBalance: 5000,
+    });
+    expect(created.status).toBe(201);
+
+    const updateRes = await agent.put(`/dashboard/wallets/${created.body.id}`).send({
+      exchange: 'GATEIO',
+    });
+
+    expect(updateRes.status).toBe(501);
+    expect(updateRes.body.error.details).toEqual({
+      code: 'EXCHANGE_NOT_IMPLEMENTED',
+      exchange: 'GATEIO',
+      capability: 'PAPER_PRICING_FEED',
+    });
+
+    const unchanged = await agent.get(`/dashboard/wallets/${created.body.id}`);
+    expect(unchanged.status).toBe(200);
+    expect(unchanged.body).toMatchObject({
+      id: created.body.id,
+      mode: 'PAPER',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      paperInitialBalance: 5000,
+    });
+  });
+
   it('enforces ownership isolation for get/update/delete wallet endpoints', async () => {
     const owner = await registerAndCreateAuthenticatedClient(uniqueEmail('wallet-crud-owner'));
     const outsider = await registerAndCreateAuthenticatedClient(uniqueEmail('wallet-crud-outsider'));

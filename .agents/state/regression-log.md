@@ -37,6 +37,11 @@ local Postgres/Redis ports were reachable. Sequential reruns passed.
   returns unsupported capability details and persists no user wallet while
   `PAPER_PRICING_FEED` is unsupported. Validation: focused wallet e2e
   (`21/21`), API typecheck, repository guardrails, docs parity, and diff check.
+- 2026-05-08: Prevented wallet update bypass drift for Gate.io setup. A wallet
+  CRUD e2e test now proves an existing Binance PAPER wallet cannot be updated
+  to `GATEIO` while `PAPER_PRICING_FEED` is unsupported, and persisted wallet
+  state remains unchanged after rejection. Validation: focused wallet CRUD e2e
+  (`12/12`), API typecheck, repository guardrails, docs parity, and diff check.
 - 2026-05-07: Ran production V1 release-gate classifier in dry-run mode and
   preserved stale evidence blockers as release state. This prevents treating
   old 2026-05-02 RC/backup/rollback artifacts as fresh V1 evidence.

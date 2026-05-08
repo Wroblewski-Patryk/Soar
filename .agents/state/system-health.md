@@ -61,6 +61,11 @@ Last updated: 2026-05-08
   API typecheck from repo root, repository guardrails, docs parity, and diff
   check. Gate.io `PAPER_PRICING_FEED` remains disabled pending target source
   evidence.
+- `EXCHANGE2-13` API wallet update fail-closed regression PASS: focused wallet
+  CRUD coverage proves an existing Binance PAPER wallet cannot be updated to
+  `GATEIO` while `PAPER_PRICING_FEED` is unsupported, and the wallet remains
+  unchanged after rejection. Validation PASS: focused wallet CRUD e2e
+  (`12/12`), API typecheck, repository guardrails, docs parity, and diff check.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307

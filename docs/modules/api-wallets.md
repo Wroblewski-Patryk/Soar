@@ -46,8 +46,9 @@ Out of scope:
   - LIVE wallet requires compatible API key from same exchange.
   - mode/exchange must be supported by capability map.
   - Gate.io public catalog availability does not imply `PAPER` wallet support;
-    Gate.io wallet create/update remains fail-closed while
-    `PAPER_PRICING_FEED` is unsupported.
+    Gate.io wallet create/update remains fail-closed before persistence while
+    `PAPER_PRICING_FEED` is unsupported, including direct API update attempts
+    that try to move an existing wallet from Binance to Gate.io.
   - wallet cannot be deleted when linked bot exists.
 - WAPR contract lock (implemented):
   - list payload remains source for table inline API key status mapping (`apiKeyId` presence).

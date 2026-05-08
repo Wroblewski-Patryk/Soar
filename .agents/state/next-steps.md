@@ -73,6 +73,10 @@ proves a direct Gate.io PAPER wallet create request fails closed with
 `EXCHANGE_NOT_IMPLEMENTED` for `PAPER_PRICING_FEED` and leaves no user wallet
 persisted. This still does not enable Gate.io paper pricing; target
 worker/source evidence remains required before capability enablement.
+Direct API wallet update is now also locally regression-locked: `EXCHANGE2-13`
+proves an existing Binance PAPER wallet cannot be updated to `GATEIO` while
+`PAPER_PRICING_FEED` is unsupported, and the persisted wallet remains
+unchanged after rejection.
 
 After the planned Gate.io/deploy-auth blockers are cleared, execute the
 production UI module clickthrough audit from

@@ -124,6 +124,13 @@ Operational queue for one-task execution runs.
     paper/live/authenticated capabilities remain disabled. Evidence:
     `docs/planning/exchange2-12-gateio-api-wallet-fail-closed-task-2026-05-08.md`.
 
+- [x] `EXCHANGE2-13 test(api): lock Gate.io wallet update fail closed`
+  - 2026-05-08: Added a wallet CRUD regression proving an existing Binance
+    PAPER wallet cannot be updated to `GATEIO` while `PAPER_PRICING_FEED` is
+    unsupported, and the persisted wallet remains unchanged after rejection.
+    Evidence:
+    `docs/planning/exchange2-13-gateio-api-wallet-update-fail-closed-task-2026-05-08.md`.
+
 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
   - 2026-05-08: Planning artifact is ready for a production-wide UI audit that
     visits all canonical public, dashboard, admin, and legacy redirect routes,
