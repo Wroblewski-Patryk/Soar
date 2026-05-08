@@ -54,6 +54,13 @@ Last updated: 2026-05-08
   `PAPER_PRICING_FEED` is unsupported, and Gate.io bot activation keeps the
   Active toggle disabled. Validation PASS: focused Web Vitest pack (`3` files,
   `19/19`) and Web typecheck.
+- `EXCHANGE2-12` API wallet create fail-closed regression PASS: focused
+  DB-backed wallet coverage proves a direct Gate.io PAPER wallet create request
+  returns `EXCHANGE_NOT_IMPLEMENTED` for `PAPER_PRICING_FEED` and leaves no
+  wallet persisted for the user. Validation PASS: focused wallet e2e (`21/21`),
+  API typecheck from repo root, repository guardrails, docs parity, and diff
+  check. Gate.io `PAPER_PRICING_FEED` remains disabled pending target source
+  evidence.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307

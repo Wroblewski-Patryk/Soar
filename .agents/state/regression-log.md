@@ -32,6 +32,11 @@ local Postgres/Redis ports were reachable. Sequential reruns passed.
   and bot create/edit form tests now prove Gate.io remains blocked for PAPER
   wallet save and bot activation while `PAPER_PRICING_FEED` is unsupported.
   Validation: focused Web Vitest pack (`3` files, `19/19`) and Web typecheck.
+- 2026-05-08: Prevented direct API wallet drift for Gate.io setup. A
+  DB-backed wallet e2e test now proves direct Gate.io PAPER wallet creation
+  returns unsupported capability details and persists no user wallet while
+  `PAPER_PRICING_FEED` is unsupported. Validation: focused wallet e2e
+  (`21/21`), API typecheck, repository guardrails, docs parity, and diff check.
 - 2026-05-07: Ran production V1 release-gate classifier in dry-run mode and
   preserved stale evidence blockers as release state. This prevents treating
   old 2026-05-02 RC/backup/rollback artifacts as fresh V1 evidence.

@@ -45,6 +45,9 @@ Out of scope:
 - Key invariants:
   - LIVE wallet requires compatible API key from same exchange.
   - mode/exchange must be supported by capability map.
+  - Gate.io public catalog availability does not imply `PAPER` wallet support;
+    Gate.io wallet create/update remains fail-closed while
+    `PAPER_PRICING_FEED` is unsupported.
   - wallet cannot be deleted when linked bot exists.
 - WAPR contract lock (implemented):
   - list payload remains source for table inline API key status mapping (`apiKeyId` presence).

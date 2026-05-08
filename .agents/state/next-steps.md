@@ -68,6 +68,11 @@ Post-push public API/Web smoke for `21ec8efa` passed, but build-info stayed on
 Product-facing wallet/bot setup gates are also locally regression-locked:
 `EXCHANGE2-11` proves Gate.io PAPER wallet submit and Gate.io bot activation
 remain blocked while `PAPER_PRICING_FEED` is unsupported.
+Direct API wallet setup is now also locally regression-locked: `EXCHANGE2-12`
+proves a direct Gate.io PAPER wallet create request fails closed with
+`EXCHANGE_NOT_IMPLEMENTED` for `PAPER_PRICING_FEED` and leaves no user wallet
+persisted. This still does not enable Gate.io paper pricing; target
+worker/source evidence remains required before capability enablement.
 
 After the planned Gate.io/deploy-auth blockers are cleared, execute the
 production UI module clickthrough audit from

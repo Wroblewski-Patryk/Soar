@@ -117,6 +117,13 @@ Operational queue for one-task execution runs.
     bot activation keeps the Active toggle disabled. Evidence:
     `docs/planning/exchange2-11-gateio-wallet-bot-ui-gating-task-2026-05-08.md`.
 
+- [x] `EXCHANGE2-12 test(api): lock Gate.io wallet create fail closed`
+  - 2026-05-08: Added a DB-backed wallet API regression proving direct
+    Gate.io PAPER wallet creation returns `EXCHANGE_NOT_IMPLEMENTED` for
+    `PAPER_PRICING_FEED` and leaves no wallet persisted for the user. Gate.io
+    paper/live/authenticated capabilities remain disabled. Evidence:
+    `docs/planning/exchange2-12-gateio-api-wallet-fail-closed-task-2026-05-08.md`.
+
 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
   - 2026-05-08: Planning artifact is ready for a production-wide UI audit that
     visits all canonical public, dashboard, admin, and legacy redirect routes,
