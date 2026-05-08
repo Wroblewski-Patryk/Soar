@@ -19,6 +19,7 @@ reintroduce parallel bootstrap, metadata, or snapshot flows.
 | Wallet metadata resolution | `apps/api/src/modules/exchange/exchangeMetadataContract.service.ts` | wallets module + manual-order symbol-rule metadata consumers | independent wallet+exchange fallback logic in each module |
 | Exchange snapshot reads | `apps/api/src/modules/positions/positions.service.ts` through `exchangeAuthenticatedRead.service.ts` | dashboard positions/exchange sync consumers | direct authenticated client lifecycle ownership outside the shared boundary |
 | Wallet ledger exchange-history reads | `apps/api/src/modules/exchange/exchangeAdapterBoundary.service.ts` via `fetchSupportedExchangeWalletCashflowHistoryRaw` and `WALLET_CASHFLOW_HISTORY` capability | wallets ledger ingestion and wallet performance analytics | wallets/bots modules creating authenticated clients or scraping exchange history directly |
+| Runtime market events | canonical `MarketStreamEvent` contract consumed by `runtimeSignalLoop.service.ts` | approved market-data stream or polling adapters that publish normalized ticker/candle events | publishing another exchange as `BINANCE`, or routing exchange-specific runtime data around the canonical event router |
 
 ## Integration Rules
 
@@ -124,6 +125,15 @@ Consumers must never infer:
 | `KRAKEN` | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
 | `COINBASE` | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
 | `GATEIO` | unsupported | unsupported | unsupported | unsupported | unsupported | selected second-exchange target; public market catalog is supported through the exchange adapter registry, while authenticated reads and execution remain fail-closed until exact operation adapters are implemented and verified |
+
+Runtime market-event boundary:
+
+- canonical runtime market events may carry any registered `Exchange`
+- the Binance websocket normalizer still emits only `BINANCE`
+- Gate.io runtime events are allowed only as normalized input from a future
+  approved Gate.io market-data adapter source
+- `GATEIO` `PAPER_PRICING_FEED` remains unsupported until that source publishes
+  ticker and candle events with runtime evidence
 
 Canonical owner:
 

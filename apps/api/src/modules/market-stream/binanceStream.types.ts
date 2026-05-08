@@ -1,5 +1,7 @@
+import { Exchange } from '@prisma/client';
+
 export type TradeMarketType = 'FUTURES' | 'SPOT';
-export type TradeExchange = 'BINANCE';
+export type TradeExchange = Exchange;
 
 export type StreamTickerEvent = {
   type: 'ticker';

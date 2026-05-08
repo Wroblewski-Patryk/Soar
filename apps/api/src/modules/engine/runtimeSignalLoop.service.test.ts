@@ -207,7 +207,7 @@ const emitFinalCandleSeries = async (
   emit: (event: MarketStreamEvent) => Promise<void>,
   options?: {
     symbol?: string;
-    exchange?: 'BINANCE';
+    exchange?: MarketStreamEvent['exchange'];
     marketType?: 'FUTURES' | 'SPOT';
     interval?: string;
     points?: number;
@@ -1654,6 +1654,18 @@ describe('RuntimeSignalLoop', () => {
 
     expect(deps.createSignal).not.toHaveBeenCalled();
     expect(deps.orchestrateFn).not.toHaveBeenCalled();
+  });
+
+  it('routes Gate.io final-candle decisions only to Gate.io runtime topology', async () => {
+    const { deps, emit } = createDeps();
+    withStrategyBot(deps, { exchange: 'GATEIO' });
+    const loop = new RuntimeSignalLoop(deps);
+    await loop.start();
+
+    await emitFinalCandleSeries(emit, { exchange: 'GATEIO' });
+
+    expect(deps.createSignal).toHaveBeenCalled();
+    expect(deps.orchestrateFn).toHaveBeenCalled();
   });
 
   it('keeps empty resolved symbol scope fail-closed instead of widening to wildcard routing', async () => {

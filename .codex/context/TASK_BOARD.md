@@ -26,7 +26,7 @@ Last updated: 2026-05-08
     confirms whether exchange-side cancel is required. Evidence:
     `docs/planning/second-exchange-live-readiness-plan-2026-05-08.md`.
 
-- [ ] `EXCHANGE2-01 chore(exchange): register GATEIO as fail-closed placeholder`
+- [x] `EXCHANGE2-01 chore(exchange): register GATEIO as fail-closed placeholder`
   - Scope: add `GATEIO` to the Prisma/shared exchange catalogs and exact
     operation matrices while leaving all execution/read capabilities disabled.
     This makes Gate.io a recognized but unsupported exchange until each adapter
@@ -40,6 +40,13 @@ Last updated: 2026-05-08
     or live execution capability. Gate.io public adapter failures must fail
     closed rather than returning sample markets. Evidence:
     `docs/planning/exchange2-02-gateio-public-market-catalog-task-2026-05-08.md`.
+
+- [x] `EXCHANGE2-03 runtime: generalize market-event exchange boundary`
+  - Scope: widen canonical runtime market events to carry registered exchanges
+    so a future Gate.io market-data adapter can publish ticker/candle events
+    through the existing runtime router without pretending to be Binance.
+    Gate.io paper/live/authenticated capabilities remain disabled. Evidence:
+    `docs/planning/exchange2-03-runtime-market-event-exchange-boundary-task-2026-05-08.md`.
 
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - Scope: generated and committed the current no-secret final V1 preflight

@@ -25,6 +25,13 @@ Last updated: 2026-05-08
   returning sample markets when the Gate.io public adapter fails outside test
   mode. Evidence:
   `docs/planning/exchange2-02-gateio-public-market-catalog-task-2026-05-08.md`.
+- 2026-05-08 `EXCHANGE2-03` started the Gate.io paper-runtime foundation by
+  widening canonical runtime market events to carry registered exchanges
+  instead of a Binance-only event type. Binance stream normalization remains
+  Binance-only, and Gate.io paper/live/authenticated capabilities remain
+  disabled until a real Gate.io market-data source is implemented and verified.
+  Evidence:
+  `docs/planning/exchange2-03-runtime-market-event-exchange-boundary-task-2026-05-08.md`.
 - 2026-05-08 `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08` published the
   current no-secret final V1 preflight JSON/Markdown snapshot for deployed SHA
   `052df82244ea0f81e8611ff8bb2b677db115bd19`. The snapshot reports build-info

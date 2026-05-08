@@ -45,6 +45,40 @@ describe('runtimeTickerStore', () => {
     expect(spotTicker?.lastPrice).toBe(59_900);
   });
 
+  it('keeps Gate.io and Binance ticker snapshots isolated for the same symbol', () => {
+    upsertRuntimeTicker({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'SPOT',
+      symbol: 'BTCUSDT',
+      eventTime: 1_000,
+      lastPrice: 60_000,
+      priceChangePercent24h: 1.2,
+    });
+    upsertRuntimeTicker({
+      type: 'ticker',
+      exchange: 'GATEIO',
+      marketType: 'SPOT',
+      symbol: 'BTCUSDT',
+      eventTime: 1_100,
+      lastPrice: 60_250,
+      priceChangePercent24h: 1.4,
+    });
+
+    expect(
+      getRuntimeTicker('BTCUSDT', {
+        exchange: 'BINANCE',
+        marketType: 'SPOT',
+      })?.lastPrice
+    ).toBe(60_000);
+    expect(
+      getRuntimeTicker('BTCUSDT', {
+        exchange: 'GATEIO',
+        marketType: 'SPOT',
+      })?.lastPrice
+    ).toBe(60_250);
+  });
+
   it('returns latest symbol snapshot when context is omitted', () => {
     upsertRuntimeTicker({
       type: 'ticker',

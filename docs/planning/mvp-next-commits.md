@@ -19,7 +19,7 @@ Operational queue for one-task execution runs.
     and final non-dry-run release gate. Do not enable broad exchange
     capabilities for a second exchange before exact operation support is
     implemented and verified.
-- [ ] `EXCHANGE2-01 chore(exchange): register GATEIO as fail-closed placeholder`
+- [x] `EXCHANGE2-01 chore(exchange): register GATEIO as fail-closed placeholder`
   - 2026-05-08: Add `GATEIO` to the Prisma/shared exchange catalogs and exact
     operation matrices with every execution/read capability disabled. This is
     the required fail-closed foundation before implementing any Gate.io
@@ -32,6 +32,14 @@ Operational queue for one-task execution runs.
     pricing, authenticated reads, LIVE submit, and cancel remain unsupported.
     Evidence:
     `docs/planning/exchange2-02-gateio-public-market-catalog-task-2026-05-08.md`.
+
+- [x] `EXCHANGE2-03 runtime: generalize market-event exchange boundary`
+  - 2026-05-08: Widen runtime market events to carry any registered exchange
+    so future Gate.io adapters can publish canonical ticker/candle events
+    without pretending to be Binance. Keep Binance stream normalization
+    Binance-only and keep Gate.io paper/live/authenticated capabilities
+    disabled. Evidence:
+    `docs/planning/exchange2-03-runtime-market-event-exchange-boundary-task-2026-05-08.md`.
 
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - 2026-05-08: Generated and committed the current no-secret final V1
