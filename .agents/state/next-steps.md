@@ -140,6 +140,15 @@ After pushing the public-access evidence commit
 `d55a86007b80733d67e793c261a5208c6734ab79`, public smoke still passed but
 build-info remained stale on `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d` during
 the 120-second wait.
+Refreshed public/unauthenticated production access evidence is now current for
+the deployed Gate.io fail-closed batch:
+`docs/operations/prod-ui-public-access-clickthrough-90cd07d6-2026-05-09.md`
+shows Web build-info matching
+`90cd07d602f0a31f315719b8a5cd5be3fd112313`, API `/health` and `/ready`
+passing, public Web routes returning HTTP 200, and unauthenticated
+dashboard/admin routes returning HTTP 307 to `/auth/login`. This still does
+not satisfy the full production UI module clickthrough, which remains blocked
+on authenticated/admin production app access.
 
 The local V1 backend paper/live runtime line is closed for this slice: focused
 parity/crash coverage, DB-backed runtime/order/exchange/import/readback packs,

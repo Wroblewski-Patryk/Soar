@@ -223,6 +223,18 @@ Operational queue for one-task execution runs.
     `docs/planning/prod-ui-public-access-clickthrough-task-2026-05-08.md` and
     `docs/operations/prod-ui-public-access-clickthrough-2026-05-08.md`.
 
+- [x] `PROD-UI-PUBLIC-ACCESS-REFRESH-90CD07D6-2026-05-09 qa: refresh public production UI access evidence`
+  - 2026-05-09: Refreshed the public/unauthenticated production access audit
+    after the Gate.io fail-closed batch reached production. Web build-info now
+    matches `90cd07d602f0a31f315719b8a5cd5be3fd112313`, API `/health` and
+    `/ready` return HTTP 200, public Web routes return HTTP 200, and protected
+    dashboard/admin routes return HTTP 307 to `/auth/login`. This still does
+    not satisfy the full authenticated/admin module clickthrough audit.
+    Evidence:
+    `docs/planning/prod-ui-public-access-refresh-90cd07d6-task-2026-05-09.md`
+    and
+    `docs/operations/prod-ui-public-access-clickthrough-90cd07d6-2026-05-09.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - 2026-05-08: Generated and committed the current no-secret final V1
     preflight JSON/Markdown snapshot for deployed SHA

@@ -231,6 +231,15 @@ Last updated: 2026-05-09
     Evidence:
     `docs/planning/prod-ui-public-access-clickthrough-task-2026-05-08.md`.
 
+- [x] `PROD-UI-PUBLIC-ACCESS-REFRESH-90CD07D6-2026-05-09 qa: refresh public production UI access evidence`
+  - Scope: refreshed the public/unauthenticated production access evidence for
+    deployed `90cd07d602f0a31f315719b8a5cd5be3fd112313`. Build-info matches
+    the expected SHA, API health/readiness and public Web routes return HTTP
+    200, and unauthenticated dashboard/admin routes redirect to `/auth/login`.
+    The full module clickthrough remains blocked on authenticated/admin
+    production app access. Evidence:
+    `docs/planning/prod-ui-public-access-refresh-90cd07d6-task-2026-05-09.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - Scope: generated and committed the current no-secret final V1 preflight
     JSON/Markdown snapshot for deployed SHA

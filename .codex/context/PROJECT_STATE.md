@@ -207,6 +207,15 @@ Last updated: 2026-05-09
   The evidence commit `d55a86007b80733d67e793c261a5208c6734ab79` was pushed;
   post-push public deploy smoke passed, but build-info still remained on
   `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d` after a 120-second wait.
+- 2026-05-09 `PROD-UI-PUBLIC-ACCESS-REFRESH-90CD07D6-2026-05-09` refreshed
+  that public/unauthenticated evidence after the Gate.io fail-closed batch was
+  deployed. Web build-info now matches
+  `90cd07d602f0a31f315719b8a5cd5be3fd112313`, API `/health` and `/ready`
+  returned HTTP 200, public Web routes returned HTTP 200, and
+  unauthenticated dashboard/admin routes returned HTTP 307 to `/auth/login`.
+  This remains public-only evidence; authenticated/admin module clickthrough
+  still requires valid production app access. Evidence:
+  `docs/operations/prod-ui-public-access-clickthrough-90cd07d6-2026-05-09.md`.
 - 2026-05-08 `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08` published the
   current no-secret final V1 preflight JSON/Markdown snapshot for deployed SHA
   `052df82244ea0f81e8611ff8bb2b677db115bd19`. The snapshot reports build-info

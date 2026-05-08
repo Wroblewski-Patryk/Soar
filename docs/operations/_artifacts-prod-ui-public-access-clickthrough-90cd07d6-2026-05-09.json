@@ -1,0 +1,63 @@
+{
+  "generatedAt": "2026-05-08T22:08:14.852Z",
+  "localDate": "2026-05-09",
+  "classification": "public-unauthenticated-production-access-audit",
+  "baseUrl": "https://soar.luckysparrow.ch",
+  "apiBaseUrl": "https://api.soar.luckysparrow.ch",
+  "expectedSha": "90cd07d602f0a31f315719b8a5cd5be3fd112313",
+  "observedBuildInfo": {
+    "buildId": "gLowo_iTFcBZyoTo990xM",
+    "gitSha": "90cd07d602f0a31f315719b8a5cd5be3fd112313",
+    "gitRef": "main",
+    "metadataGeneratedAt": null,
+    "metadataSource": "env-runtime",
+    "checkedAt": "2026-05-08T22:08:33.720Z"
+  },
+  "summary": {
+    "buildFresh": true,
+    "apiPass": true,
+    "publicRoutesPass": true,
+    "protectedRoutesFailClosed": true,
+    "fullAuthenticatedAuditSatisfied": false
+  },
+  "apiChecks": [
+    {
+      "route": "/health",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "classification": "PASS"
+    },
+    {
+      "route": "/ready",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "classification": "PASS"
+    }
+  ],
+  "publicRoutes": [
+    { "route": "/", "status": 200, "classification": "PASS" },
+    { "route": "/auth/login", "status": 200, "classification": "PASS" },
+    { "route": "/auth/register", "status": 200, "classification": "PASS" },
+    { "route": "/offline", "status": 200, "classification": "PASS" },
+    { "route": "/api/build-info", "status": 200, "classification": "PASS" }
+  ],
+  "protectedRoutes": [
+    { "route": "/dashboard", "status": 307, "location": "/auth/login", "classification": "PASS_AUTH_REDIRECT" },
+    { "route": "/dashboard/profile", "status": 307, "location": "/auth/login", "classification": "PASS_AUTH_REDIRECT" },
+    { "route": "/dashboard/wallets/list", "status": 307, "location": "/auth/login", "classification": "PASS_AUTH_REDIRECT" },
+    { "route": "/dashboard/markets/list", "status": 307, "location": "/auth/login", "classification": "PASS_AUTH_REDIRECT" },
+    { "route": "/dashboard/strategies/list", "status": 307, "location": "/auth/login", "classification": "PASS_AUTH_REDIRECT" },
+    { "route": "/dashboard/backtests/list", "status": 307, "location": "/auth/login", "classification": "PASS_AUTH_REDIRECT" },
+    { "route": "/dashboard/bots", "status": 307, "location": "/auth/login", "classification": "PASS_AUTH_REDIRECT" },
+    { "route": "/dashboard/reports", "status": 307, "location": "/auth/login", "classification": "PASS_AUTH_REDIRECT" },
+    { "route": "/dashboard/logs", "status": 307, "location": "/auth/login", "classification": "PASS_AUTH_REDIRECT" },
+    { "route": "/admin", "status": 307, "location": "/auth/login", "classification": "PASS_AUTH_REDIRECT" },
+    { "route": "/admin/users", "status": 307, "location": "/auth/login", "classification": "PASS_AUTH_REDIRECT" },
+    { "route": "/admin/subscriptions", "status": 307, "location": "/auth/login", "classification": "PASS_AUTH_REDIRECT" }
+  ],
+  "limitations": [
+    "This evidence covers public and unauthenticated auth-gate behavior only.",
+    "It does not satisfy the authenticated dashboard/admin clickthrough audit.",
+    "No live-money, write, admin mutation, or exchange operation was executed."
+  ]
+}

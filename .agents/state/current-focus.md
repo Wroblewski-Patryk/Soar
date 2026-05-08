@@ -16,6 +16,13 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-09 production UI public-access refresh: the public/unauthenticated
+audit slice is current for deployed `90cd07d6`. Web build-info matches
+`90cd07d602f0a31f315719b8a5cd5be3fd112313`, API `/health` and `/ready` pass,
+public Web routes return HTTP 200, and unauthenticated dashboard/admin routes
+redirect to `/auth/login`. Full production UI module clickthrough remains
+blocked until authenticated/admin production app access is available.
+
 2026-05-09 continuation update: Gate.io second-exchange planning has been
 reconciled after the deployed fail-closed foundation. The plan is complete as a
 planning artifact; public catalog and public `FUTURES`/swap market-data

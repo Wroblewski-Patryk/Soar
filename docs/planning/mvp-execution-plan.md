@@ -32,6 +32,13 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-09: Closed
+  `PROD-UI-PUBLIC-ACCESS-REFRESH-90CD07D6-2026-05-09` with
+  `docs/planning/prod-ui-public-access-refresh-90cd07d6-task-2026-05-09.md`.
+  Public production evidence now matches deployed `90cd07d6`: build-info,
+  API health/readiness, public routes, and unauthenticated protected-route
+  redirects all pass while full authenticated/admin clickthrough remains
+  blocked on valid app access.
 - 2026-05-09: Closed `EXCHANGE2-20` with
   `docs/planning/exchange2-20-plan-reconciliation-task-2026-05-09.md`.
   Second-exchange planning now reflects the deployed Gate.io foundation and
