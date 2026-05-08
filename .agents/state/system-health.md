@@ -66,6 +66,12 @@ Last updated: 2026-05-08
   `GATEIO` while `PAPER_PRICING_FEED` is unsupported, and the wallet remains
   unchanged after rejection. Validation PASS: focused wallet CRUD e2e
   (`12/12`), API typecheck, repository guardrails, docs parity, and diff check.
+- `EXCHANGE2-14` stored API-key probe fail-closed regression PASS: focused
+  profile API-key coverage proves stored Gate.io placeholder credentials can
+  exist, but the stored probe endpoint fails closed with `API_KEY_PROBE`
+  unsupported and writes no connection-test audit log. Validation PASS: local
+  Gate.io enum migration deploy, focused API-key e2e (`16/16`), API typecheck,
+  repository guardrails, docs parity, and diff check.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307

@@ -429,6 +429,41 @@ describe("API Keys security contract", () => {
     }
   });
 
+  it("returns explicit not-implemented contract for stored Gate.io API key probe", async () => {
+    const email = "apikey-gateio-stored-probe@example.com";
+    const agent = await registerAndLogin(email);
+
+    const createRes = await agent.post("/dashboard/profile/apiKeys").send({
+      label: "gateio-stored",
+      exchange: "GATEIO",
+      apiKey: "GATEIOSTOREDKEY12345678",
+      apiSecret: "GATEIOSTOREDSECRET12345678",
+    });
+    expect(createRes.status).toBe(201);
+    const keyId = createRes.body.id as string;
+
+    const testRes = await agent.post(`/dashboard/profile/apiKeys/${keyId}/test`).send({});
+
+    expect(testRes.status).toBe(501);
+    expect(testRes.body.error.message).toContain(
+      "Exchange GATEIO does not support API_KEY_PROBE"
+    );
+    expect(testRes.body.error.details).toEqual({
+      code: "EXCHANGE_NOT_IMPLEMENTED",
+      exchange: "GATEIO",
+      capability: "API_KEY_PROBE",
+    });
+
+    const user = await prisma.user.findUniqueOrThrow({ where: { email } });
+    const log = await prisma.log.findFirst({
+      where: {
+        userId: user.id,
+        action: "profile.api_key.test_connection",
+      },
+    });
+    expect(log).toBeNull();
+  });
+
   it("enforces ownership on rotate and revoke actions", async () => {
     const owner = await registerAndLogin("apikey-rotate-owner-2@example.com");
     const other = await registerAndLogin("apikey-rotate-other@example.com");

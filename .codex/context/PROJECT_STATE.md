@@ -126,6 +126,13 @@ Last updated: 2026-05-08
   cannot be updated to `GATEIO` while `PAPER_PRICING_FEED` is unsupported, and
   the persisted wallet remains unchanged after rejection. Evidence:
   `docs/planning/exchange2-13-gateio-api-wallet-update-fail-closed-task-2026-05-08.md`.
+- 2026-05-08 `EXCHANGE2-14` locked the stored API-key probe boundary for
+  Gate.io. A profile API-key e2e regression now proves stored Gate.io
+  placeholder credentials can exist, but
+  `POST /dashboard/profile/apiKeys/:id/test` fails closed with
+  `EXCHANGE_NOT_IMPLEMENTED` for `API_KEY_PROBE` and writes no connection-test
+  audit log. Evidence:
+  `docs/planning/exchange2-14-gateio-stored-api-key-probe-fail-closed-task-2026-05-08.md`.
 - 2026-05-08 `PROD-UI-AUDIT-PLAN-2026-05-08` prepared the production UI module
   clickthrough audit plan requested by the user. The plan covers all canonical
   public, dashboard, admin, and legacy redirect routes, module-level functions,

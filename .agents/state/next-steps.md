@@ -77,6 +77,10 @@ Direct API wallet update is now also locally regression-locked: `EXCHANGE2-13`
 proves an existing Binance PAPER wallet cannot be updated to `GATEIO` while
 `PAPER_PRICING_FEED` is unsupported, and the persisted wallet remains
 unchanged after rejection.
+Stored API-key probing is now locally regression-locked: `EXCHANGE2-14` proves
+a stored Gate.io placeholder key can exist, but the stored probe endpoint fails
+closed with `EXCHANGE_NOT_IMPLEMENTED` for `API_KEY_PROBE` and writes no
+connection-test audit log.
 
 After the planned Gate.io/deploy-auth blockers are cleared, execute the
 production UI module clickthrough audit from

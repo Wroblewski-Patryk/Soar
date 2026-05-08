@@ -139,6 +139,14 @@ Last updated: 2026-05-08
     Evidence:
     `docs/planning/exchange2-13-gateio-api-wallet-update-fail-closed-task-2026-05-08.md`.
 
+- [x] `EXCHANGE2-14 test(api): lock Gate.io stored API-key probe fail closed`
+  - Scope: added API-key coverage proving a stored Gate.io placeholder key can
+    exist, but its stored probe endpoint fails closed with
+    `EXCHANGE_NOT_IMPLEMENTED` for `API_KEY_PROBE` and writes no misleading
+    connection-test audit log.
+    Evidence:
+    `docs/planning/exchange2-14-gateio-stored-api-key-probe-fail-closed-task-2026-05-08.md`.
+
 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
   - Scope: execute a production-wide UI audit across canonical public,
     dashboard, admin, and legacy redirect routes, clicking safe module

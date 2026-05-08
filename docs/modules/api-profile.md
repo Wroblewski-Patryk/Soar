@@ -55,6 +55,9 @@ Out of scope:
   1. Encrypt key/secret at write time.
   2. Execute capability-aware connection probe (Binance contract currently active).
   3. Write audit-safe connection test log metadata.
+  4. Gate.io API keys may be stored as placeholder credentials, but provided
+     and stored connection probes remain fail-closed with `API_KEY_PROBE`
+     unsupported until the authenticated Gate.io adapter is implemented.
 - Security operations:
   - password change increments `sessionVersion`.
   - account deletion cascades through related domain entities in transaction.

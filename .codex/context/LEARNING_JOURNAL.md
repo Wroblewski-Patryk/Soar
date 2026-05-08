@@ -74,6 +74,10 @@ git diff --check
   - Migration `20260503013000_enforce_single_active_bot_market_group` applied
     successfully.
   - API startup then failed only on missing `API_KEY_ENCRYPTION_KEYS`.
+  - 2026-05-08 `EXCHANGE2-14`: stored Gate.io API-key probe regression first
+    exposed local enum drift as API-key create HTTP `500`; applying pending
+    migration `20260508170000_add_gateio_exchange_placeholder` with the pinned
+    local Prisma CLI made the focused API-key e2e pass (`16/16`).
 
 ### 2026-05-07 - Browser plugin smoke may need bundled Node fallback on Windows
 - Context: V1UI rendered dashboard smoke in Codex desktop on Windows after
