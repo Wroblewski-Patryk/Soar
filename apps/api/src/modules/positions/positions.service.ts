@@ -249,40 +249,38 @@ const buildOpenOrdersSnapshotForApiKey = async (
   apiKey: ApiKeyRecordForSnapshot,
   marketType: TradeMarket = 'FUTURES'
 ): Promise<ExchangeOpenOrderSnapshot> => {
-  if (process.env.NODE_ENV === 'test') {
-    await prisma.apiKey.update({
-      where: { id: apiKey.id },
-      data: { lastUsed: new Date() },
-    });
-
-    return {
-      source: apiKey.exchange,
-      syncedAt: new Date().toISOString(),
-      orders: [
-        {
-          exchangeOrderId: 'test-open-order-1',
-          symbol: 'BTC/USDT:USDT',
-          side: 'buy',
-          type: 'limit',
-          status: 'open',
-          amount: 0.01,
-          filled: 0,
-          remaining: 0.01,
-          price: 50000,
-          timestamp: new Date().toISOString(),
-        },
-      ],
-    };
-  }
-
   try {
+    assertExchangeAdapterOperationSupport(apiKey.exchange, 'OPEN_ORDERS_SNAPSHOT');
+    if (process.env.NODE_ENV === 'test') {
+      await prisma.apiKey.update({
+        where: { id: apiKey.id },
+        data: { lastUsed: new Date() },
+      });
+      return {
+        source: apiKey.exchange,
+        syncedAt: new Date().toISOString(),
+        orders: [
+          {
+            exchangeOrderId: 'test-open-order-1',
+            symbol: 'BTC/USDT:USDT',
+            side: 'buy',
+            type: 'limit',
+            status: 'open',
+            amount: 0.01,
+            filled: 0,
+            remaining: 0.01,
+            price: 50000,
+            timestamp: new Date().toISOString(),
+          },
+        ],
+      };
+    }
     const rawOrders = await fetchSupportedExchangeOpenOrdersRaw({
       exchange: apiKey.exchange,
       marketType,
       apiKey: apiKey.apiKey,
       apiSecret: apiKey.apiSecret,
     });
-
     await prisma.apiKey.update({
       where: { id: apiKey.id },
       data: { lastUsed: new Date() },
@@ -293,7 +291,8 @@ const buildOpenOrdersSnapshotForApiKey = async (
       syncedAt: new Date().toISOString(),
       orders: rawOrders.map(normalizeExchangeOpenOrder),
     };
-  } catch {
+  } catch (error) {
+    if (error instanceof ExchangeExecutionCapabilityUnsupportedError) throw error;
     throw new ExchangeSnapshotError('EXCHANGE_FETCH_FAILED', 'Unable to fetch exchange open orders snapshot.');
   }
 };
@@ -563,21 +562,22 @@ export const fetchExchangeTradeHistorySnapshotByApiKeyId = async (
     throw new ExchangeSnapshotError('API_KEY_NOT_FOUND', 'No supported exchange API key configured.');
   }
 
-  if (process.env.NODE_ENV === 'test') {
-    await prisma.apiKey.update({
-      where: { id: apiKey.id },
-      data: { lastUsed: new Date() },
-    });
-
-    return {
-      source: apiKey.exchange,
-      syncedAt: new Date().toISOString(),
-      symbol: input.symbol,
-      trades: [],
-    };
-  }
-
   try {
+    assertExchangeAdapterOperationSupport(apiKey.exchange, 'TRADE_HISTORY_SNAPSHOT');
+    if (process.env.NODE_ENV === 'test') {
+      await prisma.apiKey.update({
+        where: { id: apiKey.id },
+        data: { lastUsed: new Date() },
+      });
+
+      return {
+        source: apiKey.exchange,
+        syncedAt: new Date().toISOString(),
+        symbol: input.symbol,
+        trades: [],
+      };
+    }
+
     const rawTrades = await fetchSupportedExchangeTradeHistoryRaw({
       exchange: apiKey.exchange,
       marketType: input.marketType ?? 'FUTURES',
@@ -599,7 +599,8 @@ export const fetchExchangeTradeHistorySnapshotByApiKeyId = async (
       symbol: input.symbol,
       trades: rawTrades.map(normalizeExchangeTradeHistoryItem),
     };
-  } catch {
+  } catch (error) {
+    if (error instanceof ExchangeExecutionCapabilityUnsupportedError) throw error;
     throw new ExchangeSnapshotError('EXCHANGE_FETCH_FAILED', 'Unable to fetch exchange trade history snapshot.');
   }
 };

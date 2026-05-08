@@ -89,6 +89,11 @@ Explicit-key positions snapshot reads are now locally regression-locked:
 `EXCHANGE2-16` proves a stored Gate.io placeholder key cannot be selected via
 `apiKeyId` while `POSITIONS_SNAPSHOT` is unsupported; the route returns HTTP
 501 with unsupported capability details and leaves `lastUsed` unchanged.
+Open-orders and trade-history reconciliation snapshots are now locally
+regression-locked: `EXCHANGE2-17` proves stored Gate.io placeholder keys cannot
+reach `OPEN_ORDERS_SNAPSHOT` or `TRADE_HISTORY_SNAPSHOT` test fallback data
+while those authenticated-read operations are unsupported, and `lastUsed`
+remains unchanged after rejection.
 
 After the planned Gate.io/deploy-auth blockers are cleared, execute the
 production UI module clickthrough audit from

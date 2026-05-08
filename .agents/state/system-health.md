@@ -86,6 +86,13 @@ Last updated: 2026-05-08
   details, and `lastUsed` stays unchanged after rejection. Validation PASS:
   focused positions exchange snapshot e2e, API typecheck, repository
   guardrails, docs parity, and diff check.
+- `EXCHANGE2-17` reconciliation snapshot fail-closed regression PASS: focused
+  DB-backed service coverage proves stored Gate.io placeholder keys cannot
+  reach open-orders or trade-history test fallback data while
+  `OPEN_ORDERS_SNAPSHOT` and `TRADE_HISTORY_SNAPSHOT` are unsupported. Both
+  paths preserve unsupported capability errors and leave `lastUsed` unchanged.
+  Validation PASS: focused authenticated snapshots service test, API
+  typecheck, repository guardrails, docs parity, and diff check.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307

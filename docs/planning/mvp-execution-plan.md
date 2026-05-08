@@ -37,6 +37,11 @@ Rule: fix/cleanup/update first, then feature delivery.
   Explicit Gate.io `apiKeyId` positions snapshot reads now fail closed before
   test fallback data or connector reads while `POSITIONS_SNAPSHOT` is
   unsupported, and the key remains unused after rejection.
+- 2026-05-08: Closed `EXCHANGE2-17` with
+  `docs/planning/exchange2-17-gateio-reconciliation-snapshots-fail-closed-task-2026-05-08.md`.
+  Gate.io open-orders and trade-history snapshot calls now fail closed before
+  test fallback data or connector reads while their authenticated-read
+  capabilities are unsupported, and stored keys remain unused after rejection.
 - 2026-05-07: Closed `V1-FINAL-BLOCKER-PACK-2026-05-07` with
   `docs/planning/v1-final-blocker-execution-pack-task-2026-05-07.md`. A single
   current operator execution pack now lists the remaining V1 blockers and

@@ -154,6 +154,15 @@ Operational queue for one-task execution runs.
     unused after rejection. Evidence:
     `docs/planning/exchange2-16-gateio-positions-snapshot-fail-closed-task-2026-05-08.md`.
 
+- [x] `EXCHANGE2-17 fix(api): lock Gate.io reconciliation snapshots fail closed`
+  - 2026-05-08: Added DB-backed service coverage proving stored Gate.io keys
+    cannot reach open-orders or trade-history test fallback data while
+    `OPEN_ORDERS_SNAPSHOT` and `TRADE_HISTORY_SNAPSHOT` are unsupported. Both
+    paths now enforce the existing adapter capability guard before fallback or
+    connector reads, preserve unsupported capability errors, and leave
+    `lastUsed` unchanged after rejection. Evidence:
+    `docs/planning/exchange2-17-gateio-reconciliation-snapshots-fail-closed-task-2026-05-08.md`.
+
 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
   - 2026-05-08: Planning artifact is ready for a production-wide UI audit that
     visits all canonical public, dashboard, admin, and legacy redirect routes,

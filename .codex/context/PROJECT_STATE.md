@@ -145,6 +145,13 @@ Last updated: 2026-05-08
   route returns HTTP 501 with unsupported capability details, and DB-backed
   e2e coverage proves the Gate.io key remains unused after rejection. Evidence:
   `docs/planning/exchange2-16-gateio-positions-snapshot-fail-closed-task-2026-05-08.md`.
+- 2026-05-08 `EXCHANGE2-17` locked open-orders and trade-history snapshot
+  boundaries for stored Gate.io API keys. Both internal reconciliation
+  snapshot paths now enforce the existing adapter capability guard before test
+  fixture output or connector reads, preserve unsupported capability errors,
+  and DB-backed service coverage proves `lastUsed` remains unchanged after
+  rejection. Evidence:
+  `docs/planning/exchange2-17-gateio-reconciliation-snapshots-fail-closed-task-2026-05-08.md`.
 - 2026-05-08 `PROD-UI-AUDIT-PLAN-2026-05-08` prepared the production UI module
   clickthrough audit plan requested by the user. The plan covers all canonical
   public, dashboard, admin, and legacy redirect routes, module-level functions,

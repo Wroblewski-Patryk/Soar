@@ -50,10 +50,10 @@ Out of scope:
   3. Fetch external positions/open orders.
   4. Normalize payload shape.
   5. Update `lastUsed` metadata for key only after a supported snapshot read.
-- Gate.io stored keys may exist as placeholders, but explicit
-  `apiKeyId` snapshot reads fail closed with
-  `EXCHANGE_EXECUTION_CAPABILITY_UNSUPPORTED` while `POSITIONS_SNAPSHOT` is
-  disabled; `lastUsed` remains unchanged on rejection.
+- Gate.io stored keys may exist as placeholders, but explicit snapshot reads
+  fail closed with `EXCHANGE_EXECUTION_CAPABILITY_UNSUPPORTED` while
+  `POSITIONS_SNAPSHOT`, `OPEN_ORDERS_SNAPSHOT`, or `TRADE_HISTORY_SNAPSHOT`
+  are disabled; `lastUsed` remains unchanged on rejection.
 - Takeover status flow:
   - classify open exchange-synced positions by ownership/management/sync-state.
   - canonical management truth is wallet-owned:
