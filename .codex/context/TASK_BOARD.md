@@ -117,6 +117,13 @@ Last updated: 2026-05-08
     Evidence:
     `docs/planning/exchange2-10-gateio-web-capability-gating-task-2026-05-08.md`.
 
+- [x] `EXCHANGE2-11 test(web): lock Gate.io wallet and bot form gating`
+  - Scope: added product-facing Web form regressions so Gate.io PAPER wallet
+    submit remains blocked while `PAPER_PRICING_FEED` is unsupported, and
+    Gate.io bot activation cannot be toggled active from the create/edit form.
+    Evidence:
+    `docs/planning/exchange2-11-gateio-wallet-bot-ui-gating-task-2026-05-08.md`.
+
 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
   - Scope: execute a production-wide UI audit across canonical public,
     dashboard, admin, and legacy redirect routes, clicking safe module

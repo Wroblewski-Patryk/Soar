@@ -33,6 +33,8 @@ const translations = vi.hoisted<Record<string, string>>(() => ({
   'dashboard.wallets.form.resetPaperLoading': 'Resetowanie...',
   'dashboard.wallets.form.resetPaperLastAt': 'Ostatni reset',
   'dashboard.wallets.form.validationName': 'Podaj nazwe portfela.',
+  'dashboard.wallets.form.paperUnsupported': 'Paper mode is not supported for this exchange yet.',
+  'dashboard.wallets.form.saveValidation': 'Fix wallet form errors before saving.',
 }));
 const tMock = vi.hoisted(() => (key: string) => translations[key] ?? key);
 
@@ -354,6 +356,58 @@ describe('WalletCreateEditForm', () => {
     const baseCurrencySelect = screen.getByLabelText('Waluta bazowa');
     const baseCurrencyOptions = Array.from(baseCurrencySelect.querySelectorAll('option')).map((option) => option.value);
     expect(baseCurrencyOptions).toEqual(expect.arrayContaining(['USD', 'USDC']));
+  });
+
+  it('blocks Gate.io PAPER wallet submit while paper pricing capability is disabled', async () => {
+    fetchApiKeysMock.mockResolvedValue([]);
+    fetchWalletMetadataMock.mockResolvedValue({
+      exchange: 'GATEIO',
+      marketTypes: ['FUTURES', 'SPOT'],
+      marketType: 'FUTURES',
+      baseCurrencies: ['USDT'],
+      baseCurrency: 'USDT',
+      source: 'MARKET_CATALOG',
+      byMarketType: {
+        FUTURES: {
+          marketType: 'FUTURES',
+          baseCurrencies: ['USDT'],
+          baseCurrency: 'USDT',
+          source: 'MARKET_CATALOG',
+        },
+        SPOT: {
+          marketType: 'SPOT',
+          baseCurrencies: ['USDT', 'USDC'],
+          baseCurrency: 'USDT',
+          source: 'MARKET_CATALOG',
+        },
+      },
+    });
+
+    const { container } = render(<WalletCreateEditForm />);
+
+    await waitFor(() => {
+      expect(fetchApiKeysMock).toHaveBeenCalled();
+    });
+    await waitForFormReady();
+
+    fireEvent.change(screen.getByLabelText('Nazwa'), {
+      target: { value: 'Gate.io Paper Wallet' },
+    });
+    fireEvent.change(screen.getByLabelText('Gielda'), {
+      target: { value: 'GATEIO' },
+    });
+
+    expect(
+      await screen.findByText('Paper mode is not supported for this exchange yet.')
+    ).toBeInTheDocument();
+
+    const form = container.querySelector('form');
+    expect(form).not.toBeNull();
+    fireEvent.submit(form as HTMLFormElement);
+
+    await waitFor(() => {
+      expect(createWalletMock).not.toHaveBeenCalled();
+    });
   });
 
   it('shows reset action only for PAPER wallet edit and hides it for LIVE wallet edit', async () => {

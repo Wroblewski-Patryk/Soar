@@ -37,6 +37,8 @@ Out of scope:
   - balance preview (`/dashboard/wallets/preview-balance`)
 - Form contracts:
   - mode-aware PAPER/LIVE field requirements and allocation modes
+  - unsupported exchange/mode capability combinations are blocked before save
+    through shared exchange capability truth
 - WAPR UI contract lock:
   - wallet list is row-only (no expandable `Details` action/rows).
   - list table includes inline `API key` column between `Allocation` and `Actions`.
@@ -79,6 +81,8 @@ Out of scope:
 ## 6. Security and Risk Guardrails
 - LIVE preview requires linked API key context from authenticated backend.
 - Form enforces mode-switch cleanup and prevents stale cross-mode payload leakage.
+- Gate.io remains blocked for PAPER wallet save while `PAPER_PRICING_FEED`
+  is unsupported, even though public market catalog support exists.
 - Delete flow respects backend conflict contract when wallet is linked to active bots.
 - Paper reset action is `PAPER`-only in UI and must respect backend fail-closed guards (`open positions` / `active open orders` block reset).
 

@@ -243,6 +243,39 @@ describe("BotCreateEditForm", () => {
     expect(screen.getByLabelText("Active")).toBeDisabled();
   });
 
+  it("disables active toggle for Gate.io while paper pricing capability is disabled", async () => {
+    listStrategiesMock.mockResolvedValue([
+      { id: "s-gateio", name: "Gate.io Strategy", interval: "1h", leverage: 2, config: {} },
+    ]);
+    listMarketUniversesMock.mockResolvedValue([
+      {
+        id: "g-gateio",
+        name: "Gate.io Futures",
+        exchange: "GATEIO",
+        marketType: "FUTURES",
+        baseCurrency: "USDT",
+        whitelist: ["BTCUSDT"],
+        blacklist: [],
+      },
+    ]);
+    listWalletsMock.mockResolvedValue([
+      {
+        ...baseWallet,
+        id: "w-gateio",
+        exchange: "GATEIO",
+      },
+    ]);
+    fetchApiKeysMock.mockResolvedValue([]);
+
+    await renderWithI18n();
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("Name")).toBeInTheDocument();
+    });
+
+    expect(screen.getByLabelText("Active")).toBeDisabled();
+  });
+
   it("submits wallet-first payload without legacy mode/paper fields", async () => {
     listStrategiesMock.mockResolvedValue([
       { id: "s4", name: "Wallet First", interval: "5m", leverage: 2, config: {} },

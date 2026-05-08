@@ -111,6 +111,12 @@ Operational queue for one-task execution runs.
     Unknown/nullish exchange values fail closed in UI gating. Evidence:
     `docs/planning/exchange2-10-gateio-web-capability-gating-task-2026-05-08.md`.
 
+- [x] `EXCHANGE2-11 test(web): lock Gate.io wallet and bot form gating`
+  - 2026-05-08: Added focused Web form regressions proving Gate.io PAPER wallet
+    submit stays blocked while `PAPER_PRICING_FEED` is unsupported, and Gate.io
+    bot activation keeps the Active toggle disabled. Evidence:
+    `docs/planning/exchange2-11-gateio-wallet-bot-ui-gating-task-2026-05-08.md`.
+
 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
   - 2026-05-08: Planning artifact is ready for a production-wide UI audit that
     visits all canonical public, dashboard, admin, and legacy redirect routes,

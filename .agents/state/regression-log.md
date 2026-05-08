@@ -28,6 +28,10 @@ local Postgres/Redis ports were reachable. Sequential reruns passed.
   paper pricing, live execution, and API-key probe until shared capability
   truth changes. Validation: focused Web Vitest pack (`3` files, `22/22`) and
   Web typecheck.
+- 2026-05-08: Prevented product-form drift for Gate.io setup. Wallet create
+  and bot create/edit form tests now prove Gate.io remains blocked for PAPER
+  wallet save and bot activation while `PAPER_PRICING_FEED` is unsupported.
+  Validation: focused Web Vitest pack (`3` files, `19/19`) and Web typecheck.
 - 2026-05-07: Ran production V1 release-gate classifier in dry-run mode and
   preserved stale evidence blockers as release state. This prevents treating
   old 2026-05-02 RC/backup/rollback artifacts as fresh V1 evidence.

@@ -77,6 +77,8 @@ Out of scope:
 ## 6. Security and Risk Guardrails
 - LIVE mode actions require explicit risk confirmation.
 - Activation is blocked when exchange capability or wallet context invariants fail.
+- Gate.io bot activation remains blocked while `PAPER_PRICING_FEED` is
+  unsupported, even when Gate.io market catalog data is available.
 - Runtime actions use protected API endpoints and user-scoped data.
 
 ## 7. Observability and Operations
