@@ -4,9 +4,8 @@ Last updated: 2026-05-08
 
 ## Latest Health Snapshot
 
-- Local `main` contains the V1 backend parity candidate and should be pushed
-  before the accepted Coolify/manual deployment step. Public production web
-  build-info still reports
+- Local `main` and `origin/main` contain the V1 backend parity candidate after
+  push. Public production web build-info still reports
   `4f6832d6d94d0d9e86a2504b4a00fe177a1c6c44`; commit/push alone is not deploy
   completion evidence. GitHub Actions is not an accepted production deployment
   path for this project, so production deployment must be performed through
@@ -49,6 +48,12 @@ Last updated: 2026-05-08
   API-key encryption env (Vitest exit `0`).
   Build validation also passed: `pnpm --filter api run build` and
   `pnpm run build`.
+- Post-push deployment freshness check for the V1 backend parity candidate:
+  `ops:deploy:wait-web-build-info` timed out after eight HTTP 200 polls over
+  120 seconds; production web build-info remained on
+  `4f6832d6d94d0d9e86a2504b4a00fe177a1c6c44`. Public production API `/health`
+  returned `ok` and `/ready` returned `ready`. This is a Coolify/manual
+  deployment boundary, not a local backend regression.
 - `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
   `/dashboard/positions/live-status` returned global reconciliation diagnostic
   counts for an authenticated user. The route now filters
@@ -168,6 +173,6 @@ docs/evidence commits are ahead of `origin/main` and intentionally unpushed to
 avoid creating new production deploy targets for documentation-only changes.
 The next executable release task requires authenticated read-only production
 evidence and protected production recovery proof.
-The local V1 backend parity commit is a runtime code candidate and should be
-pushed/deployed through the accepted Coolify/manual path before protected
-production readback is treated as evidence for that fix.
+The pushed V1 backend parity candidate must still be deployed through the
+accepted Coolify/manual path before protected production readback is treated
+as evidence for that fix.

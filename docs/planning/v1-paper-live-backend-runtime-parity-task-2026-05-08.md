@@ -134,7 +134,8 @@ settlement even when tests or runtime callers provide adapter gateways.
 - Deploy impact: low
 - Env or secret changes: none
 - Health-check impact: none
-- Smoke steps updated: not applicable
+- Smoke steps updated: next production step is Coolify/manual deploy followed
+  by build-info wait for current `main`.
 - Rollback note: revert the gateway extraction patch.
 - Observability or alerting impact: none
 - Staged rollout or feature flag: not applicable
@@ -225,8 +226,13 @@ settlement even when tests or runtime callers provide adapter gateways.
 - How tested: focused API parity/crash tests, API typecheck, guardrails, and
   broad backend runtime/order/exchange/import/readback packs plus full local
   API suite.
-- What is incomplete: production authenticated readback remains separate; no
-  local backend runtime assertion failure remains in this slice.
+- Push/deploy evidence: task commit was pushed to `origin/main`; public
+  production build-info still reported
+  `4f6832d6d94d0d9e86a2504b4a00fe177a1c6c44` after a 120-second wait. Public
+  API `/health` and `/ready` were healthy.
+- What is incomplete: Coolify/manual deployment and production authenticated
+  readback remain separate; no local backend runtime assertion failure remains
+  in this slice.
 - Next steps: continue the V1 line at production evidence boundaries:
   Coolify/manual deploy freshness if needed, authenticated read-only
   `LIVEIMPORT-03` runtime readback, rollback proof, restore drill, and final

@@ -49,10 +49,11 @@ build-info is current, but the current shell still lacks the required Soar
 production auth/access. A no-auth collector attempt failed closed before
 runtime readback, which is the expected safe result.
 
-Post-backend-parity check: the current local `main` commit contains the
-adapter-pure PAPER/LIVE fix. Production still reported
-`4f6832d6d94d0d9e86a2504b4a00fe177a1c6c44` before this commit is deployed.
-Do not use GitHub Actions for production deployment.
+Post-backend-parity check: pushed `main` contains the adapter-pure PAPER/LIVE
+fix. A 120-second public build-info wait still saw production at
+`4f6832d6d94d0d9e86a2504b4a00fe177a1c6c44`, while public API `/health` and
+`/ready` were healthy. Continue with Coolify/manual deployment, then rerun the
+build-info wait. Do not use GitHub Actions for production deployment.
 
 Canonical command once auth is available:
 
