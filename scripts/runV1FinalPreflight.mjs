@@ -167,6 +167,103 @@ export const evaluatePrerequisiteGroups = (env = process.env) => ({
   })),
 });
 
+const remediationCatalog = {
+  'build-info': {
+    title: 'Wait for the current HEAD to deploy',
+    action: 'Run the existing web build-info wait command before protected evidence collection.',
+    command:
+      '$expectedSha = git rev-parse HEAD; pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --timeout-seconds 900 --interval-seconds 30',
+  },
+  'public-smoke': {
+    title: 'Restore public API/Web reachability',
+    action: 'Run the existing public smoke command and fix public health/readiness/web reachability before protected evidence collection.',
+    command:
+      'pnpm run ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers',
+  },
+  'env:liveimport auth': {
+    title: 'Provide read-only LIVEIMPORT auth',
+    action: 'Provide read-only production application auth for protected runtime readback.',
+    requiredInputs: [
+      'LIVEIMPORT_READBACK_AUTH_TOKEN',
+      'or LIVEIMPORT_READBACK_AUTH_EMAIL + LIVEIMPORT_READBACK_AUTH_PASSWORD',
+    ],
+    command:
+      '$expectedSha = git rev-parse HEAD; pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output docs/operations/liveimport-03-prod-readback-2026-05-08.json',
+  },
+  'env:rollback guard auth': {
+    title: 'Provide rollback guard auth',
+    action: 'Provide production auth for protected runtime freshness and alerts checks.',
+    requiredInputs: [
+      'ROLLBACK_GUARD_AUTH_TOKEN',
+      'or ROLLBACK_GUARD_AUTH_EMAIL + ROLLBACK_GUARD_AUTH_PASSWORD',
+    ],
+    command:
+      'pnpm run ops:deploy:rollback-proof -- --profile prod --base-url https://api.soar.luckysparrow.ch',
+  },
+  'env:production DB restore context': {
+    title: 'Provide production DB restore context',
+    action: 'Provide production DB/Coolify context before running the restore drill.',
+    requiredInputs: [
+      'PROD_DB_CHECK_CONTAINER + PROD_DB_CHECK_USER + PROD_DB_CHECK_NAME',
+      'or PRODUCTION_DB_CHECK_CONTAINER + PRODUCTION_DB_CHECK_USER + PRODUCTION_DB_CHECK_NAME',
+    ],
+    command: 'pnpm run ops:db:restore-drill:prod',
+  },
+  'evidence:rcExternalGateStatus:failed': {
+    title: 'Refresh RC gates after real approval',
+    action: 'Run the RC gate refresh/status commands after required protected evidence and sign-off are complete.',
+    command:
+      'pnpm run ops:rc:gates:prod-pipeline -- --base-url https://api.soar.luckysparrow.ch --duration-minutes 30 --interval-seconds 30',
+  },
+  'evidence:rcSignoffRecord:failed': {
+    title: 'Build final RC sign-off with real approvers',
+    action: 'Provide real Engineering, Product, Operations, and RC owner names. Owner contact is recommended for rollback authority handoff.',
+    requiredInputs: [
+      '--engineering-name "<name>"',
+      '--product-name "<name>"',
+      '--operations-name "<name>"',
+      '--owner-name "<name>"',
+      '--owner-contact "<email-or-contact>"',
+    ],
+    command:
+      'pnpm run ops:rc:signoff:build -- --engineering-name "<name>" --product-name "<name>" --operations-name "<name>" --owner-name "<name>" --owner-contact "<email-or-contact>"',
+  },
+  'evidence:rcChecklist:failed': {
+    title: 'Sync RC checklist after Gate 4 approval',
+    action: 'After the sign-off record is APPROVED and external gates are refreshed, sync the RC checklist.',
+    command: 'pnpm run ops:rc:gates:status; pnpm run ops:rc:checklist:sync',
+  },
+  'evidence:liveImportReadback:missing': {
+    title: 'Collect LIVEIMPORT-03 runtime readback',
+    action: 'Run the read-only collector after build-info confirms current HEAD and read-only auth is available.',
+    command:
+      '$expectedSha = git rev-parse HEAD; pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output docs/operations/liveimport-03-prod-readback-2026-05-08.json',
+  },
+  'evidence:backupRestoreDrill:failed': {
+    title: 'Run production restore drill to PASS',
+    action: 'Run the production restore drill after production DB/Coolify context is available.',
+    command: 'pnpm run ops:db:restore-drill:prod',
+  },
+  'evidence:rollbackProof:failed': {
+    title: 'Run production rollback proof to PASS',
+    action: 'Run rollback proof after protected rollback guard auth is available.',
+    command:
+      'pnpm run ops:deploy:rollback-proof -- --profile prod --base-url https://api.soar.luckysparrow.ch',
+  },
+};
+
+export const buildRemediationHints = (blockers) =>
+  blockers
+    .map((blocker) => {
+      const hint = remediationCatalog[blocker];
+      if (!hint) return null;
+      return {
+        blocker,
+        ...hint,
+      };
+    })
+    .filter(Boolean);
+
 export const buildPreflightReport = ({
   options,
   buildInfo,
@@ -204,6 +301,7 @@ export const buildPreflightReport = ({
     date: row.date,
   })),
   blockers,
+  remediation: buildRemediationHints(blockers),
   note:
     'Preflight JSON is not final V1 release evidence and contains env names/readiness only, not secret values.',
 });
@@ -363,6 +461,13 @@ const main = async () => {
   if (blockers.length > 0) {
     process.stdout.write('[ops:release:v1:preflight] BLOCKED\n');
     for (const blocker of blockers) process.stdout.write(`- ${blocker}\n`);
+    const remediation = buildRemediationHints(blockers);
+    if (remediation.length > 0) {
+      process.stdout.write('[ops:release:v1:preflight] next actions\n');
+      for (const item of remediation) {
+        process.stdout.write(`- ${item.blocker}: ${item.action}\n`);
+      }
+    }
     process.exit(1);
   }
 

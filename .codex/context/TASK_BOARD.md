@@ -17,6 +17,15 @@ Last updated: 2026-05-08
 
 ## READY
 
+- [x] `V1-FINAL-PREFLIGHT-REMEDIATION-HINTS-2026-05-08 release: add preflight next actions`
+  - Scope: added no-secret remediation hints to final V1 preflight CLI/JSON
+    output. Known blocker IDs now point to the approved final blocker commands
+    for build-info, public smoke, live-import readback, production restore
+    drill, rollback proof, RC sign-off, gate refresh, and checklist sync.
+    Validation PASS: syntax, focused tests, preflight, guardrails, docs parity,
+    public smoke, and diff check. Evidence:
+    `docs/planning/v1-final-preflight-remediation-hints-task-2026-05-08.md`.
+
 - [x] `V1-FINAL-PREFLIGHT-PUBLIC-SMOKE-2026-05-08 release: include public smoke in preflight`
   - Scope: extended `ops:release:v1:preflight` with the existing public deploy
     smoke command using `--no-workers`, added public-smoke state to JSON

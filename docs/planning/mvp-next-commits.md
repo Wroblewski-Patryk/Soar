@@ -7,6 +7,13 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-FINAL-PREFLIGHT-REMEDIATION-HINTS-2026-05-08 release: add preflight next actions`
+  - 2026-05-08: Added no-secret remediation hints to final V1 preflight
+    CLI/JSON output. Known blocker IDs now point to approved final blocker
+    commands for build-info, public smoke, live-import readback, production
+    restore drill, rollback proof, RC sign-off, gate refresh, and checklist
+    sync without printing secret values or adding bypass paths. Evidence:
+    `docs/planning/v1-final-preflight-remediation-hints-task-2026-05-08.md`.
 - [x] `V1-FINAL-PREFLIGHT-PUBLIC-SMOKE-2026-05-08 release: include public smoke in preflight`
   - 2026-05-08: Extended `ops:release:v1:preflight` with the existing public
     deploy smoke command using `--no-workers`, added public-smoke state to the

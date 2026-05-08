@@ -89,7 +89,9 @@ readback. Last verified RC approval gate hardening deploy:
    path are covered by focused regression tests in
    `scripts/runV1FinalPreflight.test.mjs`. For later Web/operator
    visualization, use `--json-output <path>` to write a no-secret structured
-   status report; this report is not final V1 release evidence.
+   status report; this report is not final V1 release evidence. The preflight
+   now also emits no-secret `next actions` for known blockers, pointing back to
+   the approved commands in the final blocker execution pack.
 0a. Production build-info reached the backend parity runtime fix, blocker
    evidence alignment, deploy-wait coordination, operator preflight hardening
    docs, live-import release-gate evidence enforcement, build-info freshness

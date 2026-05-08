@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 
 import {
   buildPreflightReport,
+  buildRemediationHints,
   evaluatePrerequisiteGroups,
   runBuildInfoWait,
   runPublicSmoke,
@@ -151,4 +152,32 @@ test('buildPreflightReport exposes readiness without secret values', () => {
   const serialized = JSON.stringify(report);
   assert.equal(serialized.includes('super-secret-token'), false);
   assert.equal(serialized.includes('super-secret-password'), false);
+  assert.equal(report.remediation[0]?.blocker, 'evidence:liveImportReadback:missing');
+  assert.equal(serialized.includes('LIVEIMPORT_READBACK_AUTH_TOKEN'), true);
+});
+
+test('buildRemediationHints maps known final V1 blockers to existing commands', () => {
+  const hints = buildRemediationHints([
+    'env:liveimport auth',
+    'env:production DB restore context',
+    'evidence:rcSignoffRecord:failed',
+    'evidence:rollbackProof:failed',
+    'unknown:blocker',
+  ]);
+
+  assert.deepEqual(
+    hints.map((hint) => hint.blocker),
+    [
+      'env:liveimport auth',
+      'env:production DB restore context',
+      'evidence:rcSignoffRecord:failed',
+      'evidence:rollbackProof:failed',
+    ],
+  );
+  assert.match(hints[0].command, /ops:liveimport:readback/);
+  assert.match(hints[1].command, /ops:db:restore-drill:prod/);
+  assert.match(hints[2].command, /ops:rc:signoff:build/);
+  assert.match(hints[3].command, /ops:deploy:rollback-proof/);
+  const serialized = JSON.stringify(hints);
+  assert.equal(serialized.includes('super-secret'), false);
 });

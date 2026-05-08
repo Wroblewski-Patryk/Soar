@@ -3,6 +3,12 @@
 Last updated: 2026-05-08
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-08 `V1-FINAL-PREFLIGHT-REMEDIATION-HINTS-2026-05-08` added
+  no-secret remediation hints to final V1 preflight CLI/JSON output. Known
+  blockers now point to the approved final blocker commands for build-info,
+  public smoke, live-import readback, production restore drill, rollback proof,
+  RC sign-off, gate refresh, and checklist sync without printing secret values
+  or adding bypass paths.
 - 2026-05-08 `V1-FINAL-PREFLIGHT-PUBLIC-SMOKE-2026-05-08` extended
   `ops:release:v1:preflight` with the existing public deploy smoke command
   (`--no-workers`) so the safe first operator command now verifies both

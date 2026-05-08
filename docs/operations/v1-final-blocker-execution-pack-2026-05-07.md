@@ -60,7 +60,9 @@ DB restore context, RC approval, live-import readback, restore, and rollback
 evidence blockers, but build-info and public API/Web smoke should pass. Do not
 treat preflight as final release evidence; it is the safe readiness check
 before the commands below. The JSON report is also not final release evidence;
-it is a no-secret status snapshot.
+it is a no-secret status snapshot. Preflight blocker output includes
+`next actions` that point to the approved commands below; those hints do not
+replace the commands or acceptance criteria in this pack.
 
 ### 1. Verify Production Build Info
 
