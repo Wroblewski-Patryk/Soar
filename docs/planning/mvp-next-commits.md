@@ -15,18 +15,22 @@ Operational queue for one-task execution runs.
     conflicts or global visual-direction changes. Evidence:
     `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
-- [ ] `EXCHANGE2-LIVE-READINESS-PLAN-2026-05-08 planning: stage second exchange adapter after V1 live readiness`
-  - 2026-05-08: Published
-    `docs/planning/second-exchange-live-readiness-plan-2026-05-08.md` as the
-    canonical staged plan for adding a second exchange through existing
-    exchange adapter boundaries. The user selected `GATEIO` as the target
-    exchange. Implementation remains blocked until market type, first live
-    scope, and cancel requirement are explicitly selected. The plan keeps
-    current V1 blockers first:
-    authenticated `LIVEIMPORT-03`, rollback proof auth, RC Gate 4 approval,
-    and final non-dry-run release gate. Do not enable broad exchange
-    capabilities for a second exchange before exact operation support is
-    implemented and verified.
+- [x] `EXCHANGE2-LIVE-READINESS-PLAN-2026-05-08 planning: stage second exchange adapter after V1 live readiness`
+  - 2026-05-09: Reconciled
+    `docs/planning/second-exchange-live-readiness-plan-2026-05-08.md` after
+    the deployed Gate.io foundation. Planning is complete and now records the
+    exact current truth: `GATEIO` is selected, public catalog and public
+    `FUTURES`/swap market-data foundation are implemented, while paper
+    pricing, authenticated reads, live submit, and exchange-side cancel remain
+    unsupported until exact operation support and evidence exist. Do not enable
+    broad exchange capabilities for a second exchange before exact operation
+    support is implemented and verified.
+
+- [x] `EXCHANGE2-20 planning: reconcile Gate.io second-exchange plan`
+  - 2026-05-09: Updated the second-exchange plan, queue, and state docs so
+    completed Gate.io foundation work is separated from remaining
+    paper/live/auth blockers. Evidence:
+    `docs/planning/exchange2-20-plan-reconciliation-task-2026-05-09.md`.
 - [x] `EXCHANGE2-01 chore(exchange): register GATEIO as fail-closed placeholder`
   - 2026-05-08: Add `GATEIO` to the Prisma/shared exchange catalogs and exact
     operation matrices with every execution/read capability disabled. This is

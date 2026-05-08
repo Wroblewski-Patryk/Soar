@@ -32,6 +32,11 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-09: Closed `EXCHANGE2-20` with
+  `docs/planning/exchange2-20-plan-reconciliation-task-2026-05-09.md`.
+  Second-exchange planning now reflects the deployed Gate.io foundation and
+  keeps all paper/live/authenticated operation support explicitly fail-closed
+  until exact adapter support and evidence exist.
 - 2026-05-08: Closed `EXCHANGE2-16` with
   `docs/planning/exchange2-16-gateio-positions-snapshot-fail-closed-task-2026-05-08.md`.
   Explicit Gate.io `apiKeyId` positions snapshot reads now fail closed before

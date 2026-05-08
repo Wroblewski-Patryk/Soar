@@ -1,6 +1,6 @@
 # Current Focus
 
-Last updated: 2026-05-08
+Last updated: 2026-05-09
 
 ## Active Focus
 
@@ -15,6 +15,14 @@ smallest valuable task, protect runtime safety, and keep backend/frontend/UI
 contracts synchronized.
 
 ## Current Delivery Stage
+
+2026-05-09 continuation update: Gate.io second-exchange planning has been
+reconciled after the deployed fail-closed foundation. The plan is complete as a
+planning artifact; public catalog and public `FUTURES`/swap market-data
+foundation are implemented, while paper pricing, authenticated reads, live
+submit, and exchange-side cancel remain unsupported until exact operation
+support and evidence exist. The next non-local blockers remain protected
+production auth/readback, rollback proof auth, and RC Gate 4 approval.
 
 The latest local backend runtime parity slice fixed
 `executionOrchestrator.service` so close-settlement entry-fee aggregation uses

@@ -1,6 +1,6 @@
 # Next Steps
 
-Last updated: 2026-05-08
+Last updated: 2026-05-09
 
 ## Next Tiny Task
 
@@ -115,6 +115,14 @@ preflight for deployed `90cd07d6` reports build-info PASS and public smoke
 PASS, then blocks only on protected live-import auth/readback, rollback
 auth/proof, and RC Gate 4 evidence. Evidence:
 `docs/operations/v1-final-preflight-90cd07d6-2026-05-08.md`.
+Second-exchange planning is now reconciled with the deployed Gate.io
+foundation. Treat `EXCHANGE2-LIVE-READINESS-PLAN-2026-05-08` as complete
+planning, not an open implementation blocker. The current supported Gate.io
+truth is narrow: public catalog plus public `FUTURES`/swap market-data
+foundation only. Keep `PAPER_PRICING_FEED`, authenticated reads,
+`LIVE_ORDER_SUBMIT`, and `LIVE_ORDER_CANCEL` unsupported until exact operation
+support and evidence exist. Evidence:
+`docs/planning/exchange2-20-plan-reconciliation-task-2026-05-09.md`.
 
 After the planned Gate.io/deploy-auth blockers are cleared, execute the
 production UI module clickthrough audit from

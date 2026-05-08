@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-05-08
+Last updated: 2026-05-09
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -25,14 +25,22 @@ Last updated: 2026-05-08
     Evidence:
     `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
-- [ ] `EXCHANGE2-LIVE-READINESS-PLAN-2026-05-08 planning: stage second exchange adapter after V1 live readiness`
-  - Scope: publish the safe staged delivery plan for closing current V1 LIVE
-    readiness blockers and adding one selected second exchange through the
-    approved exchange adapter boundaries. The target exchange is now `GATEIO`.
-    Status remains BLOCKED until the user selects market type, confirms whether
-    the first slice includes live submit or authenticated readback only, and
-    confirms whether exchange-side cancel is required. Evidence:
+- [x] `EXCHANGE2-LIVE-READINESS-PLAN-2026-05-08 planning: stage second exchange adapter after V1 live readiness`
+  - Scope: published and reconciled the safe staged delivery plan for adding
+    `GATEIO` through approved exchange adapter boundaries. Planning is
+    complete; the deployed foundation covers public catalog, public
+    `FUTURES`/swap market-data source, runtime event context, and fail-closed
+    Web/API gates. Paper pricing, authenticated reads, live submit, and cancel
+    remain unsupported until exact operation support and evidence exist.
+    Evidence:
     `docs/planning/second-exchange-live-readiness-plan-2026-05-08.md`.
+
+- [x] `EXCHANGE2-20 planning: reconcile Gate.io second-exchange plan`
+  - Scope: updated second-exchange planning/status truth after the deployed
+    Gate.io foundation so future iterations do not reopen completed planning
+    or infer unsupported paper/live/auth capabilities from public market-data
+    support. Evidence:
+    `docs/planning/exchange2-20-plan-reconciliation-task-2026-05-09.md`.
 
 - [x] `EXCHANGE2-01 chore(exchange): register GATEIO as fail-closed placeholder`
   - Scope: add `GATEIO` to the Prisma/shared exchange catalogs and exact

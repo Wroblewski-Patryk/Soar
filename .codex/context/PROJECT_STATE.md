@@ -1,6 +1,6 @@
 # PROJECT_STATE
 
-Last updated: 2026-05-08
+Last updated: 2026-05-09
 
 ## 2026-05-08 UX/UI Feedback Memory Autonomy
 - 2026-05-08 `UX-UI-MEMORY-AUTONOMY-2026-05-08` made UX/UI feedback capture
@@ -13,6 +13,14 @@ Last updated: 2026-05-08
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-09 `EXCHANGE2-20` reconciled the second-exchange plan with the
+  deployed Gate.io foundation. The plan is now complete as a planning artifact
+  and records the exact current support boundary: Gate.io public catalog and
+  public `FUTURES`/swap market-data foundation are implemented; Gate.io
+  `PAPER_PRICING_FEED`, authenticated reads, `LIVE_ORDER_SUBMIT`, and
+  `LIVE_ORDER_CANCEL` remain unsupported until exact adapter support and
+  evidence exist. Evidence:
+  `docs/planning/exchange2-20-plan-reconciliation-task-2026-05-09.md`.
 - 2026-05-08 `EXCHANGE2-LIVE-READINESS-PLAN-2026-05-08` published
   `docs/planning/second-exchange-live-readiness-plan-2026-05-08.md`, a staged
   plan for adding one selected second exchange through existing exchange

@@ -1,6 +1,6 @@
 # System Health
 
-Last updated: 2026-05-08
+Last updated: 2026-05-09
 
 ## Latest Health Snapshot
 
@@ -118,6 +118,12 @@ Last updated: 2026-05-08
   plus public smoke PASS while remaining correctly BLOCKED on protected
   auth/readback, rollback proof, and RC Gate 4 approval evidence. Evidence:
   `docs/operations/v1-final-preflight-90cd07d6-2026-05-08.md`.
+- `EXCHANGE2-20` planning reconciliation PASS: second-exchange planning now
+  reflects the deployed Gate.io foundation instead of treating all work as
+  blocked. Current supported Gate.io truth remains public catalog plus public
+  `FUTURES`/swap market-data foundation only; paper pricing, authenticated
+  reads, live submit, and cancel remain unsupported. Evidence:
+  `docs/planning/exchange2-20-plan-reconciliation-task-2026-05-09.md`.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307

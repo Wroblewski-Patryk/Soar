@@ -4,8 +4,8 @@
 - ID: `EXCHANGE2-LIVE-READINESS-PLAN-2026-05-08`
 - Title: Plan second exchange adapter delivery after V1 live readiness blockers
 - Task Type: planning
-- Current Stage: planning
-- Status: IN_PROGRESS
+- Current Stage: post-release
+- Status: DONE
 - Owner: Planning Agent
 - Depends on:
   - target exchange decision: `GATEIO` selected by user on 2026-05-08
@@ -36,8 +36,25 @@ requires new exchange support to be explicit by operation family and to fail
 closed where unsupported.
 
 On 2026-05-08 the user selected `GATEIO` as the second-exchange target. The
-first implementation step registers `GATEIO` as a fail-closed placeholder only;
-adapter support must still be implemented operation by operation.
+first executed adapter line has deliberately stayed narrow: `GATEIO` is now a
+recognized exchange, public market catalog/market-data reads are implemented
+for the `FUTURES`/swap foundation, and all paper pricing, authenticated reads,
+live submit, and exchange-side cancel capabilities remain fail-closed unless an
+exact operation adapter is implemented and verified.
+
+2026-05-09 status reconciliation:
+- Planning artifact: complete.
+- Selected exchange: `GATEIO`.
+- Implemented foundation: public catalog, public ticker/candle reader,
+  opt-in market-stream polling source, runtime event context regressions,
+  Web/API fail-closed gates, and production deploy freshness for the
+  fail-closed batch through `90cd07d6`.
+- Still blocked: enabling `PAPER_PRICING_FEED`, authenticated reads,
+  `LIVE_ORDER_SUBMIT`, or `LIVE_ORDER_CANCEL` for Gate.io until exact support
+  is implemented and production evidence exists.
+- Still requiring user/operator input: first live scope, whether authenticated
+  readback should precede live submit, and whether exchange-side cancel belongs
+  in the first live slice.
 
 ## Goal
 Prepare and execute a safe delivery path so a second exchange can be connected
@@ -82,18 +99,22 @@ Acceptance criteria:
 - final release gate reports `ready`.
 
 ### Stage 2 - Select Second Exchange And Exact Operation Matrix
-1. User selected one target exchange: `GATEIO`.
-2. Freeze exact V1 operation support:
-   - `MARKET_CATALOG`
-   - `PAPER_PRICING_FEED`
-   - `BALANCE_PREVIEW`
-   - `POSITIONS_SNAPSHOT`
-   - `OPEN_ORDERS_SNAPSHOT`
-   - `LIVE_ORDER_SUBMIT`
-   - `LIVE_ORDER_CANCEL`
-   - `API_KEY_PROBE`
-   - `WALLET_CASHFLOW_HISTORY`
-3. Update architecture docs before code changes.
+1. User selected one target exchange: `GATEIO`. Done.
+2. Freeze exact V1 operation support. Done for the current foundation:
+   - `MARKET_CATALOG`: supported for `GATEIO`.
+   - public `FUTURES` ticker/candle source: implemented through existing
+     exchange public market-data contracts and opt-in market-stream polling.
+   - `PAPER_PRICING_FEED`: unsupported.
+   - `BALANCE_PREVIEW`: unsupported.
+   - `POSITIONS_SNAPSHOT`: unsupported.
+   - `OPEN_ORDERS_SNAPSHOT`: unsupported.
+   - `TRADE_HISTORY_SNAPSHOT`: unsupported.
+   - `LIVE_ORDER_SUBMIT`: unsupported.
+   - `LIVE_ORDER_CANCEL`: unsupported.
+   - `API_KEY_PROBE`: unsupported.
+   - `WALLET_CASHFLOW_HISTORY`: unsupported.
+3. Architecture/module docs were updated for the implemented foundation and
+   fail-closed boundaries.
 
 Acceptance criteria:
 - no broad capability is enabled without exact operation support evidence.
@@ -164,7 +185,8 @@ Acceptance criteria:
 
 ## Required Decisions
 1. Target exchange: `GATEIO` selected.
-2. Select first market type: `FUTURES` or `SPOT`.
+2. First implemented public market-data foundation: `FUTURES`/swap. Do not
+   infer paper/live support from this.
 3. Confirm whether V1 second-exchange goal includes live order submit, or only
    paper/backtest plus authenticated readback first.
 4. Confirm whether exchange-side cancel is required for the first live slice.
@@ -181,12 +203,13 @@ Acceptance criteria:
 - rollback proof after deploy
 
 ## Result Report
-- Task summary: planning artifact created for safe second exchange delivery.
+- Task summary: planning artifact created and reconciled after the deployed
+  Gate.io fail-closed/public foundation.
 - Files changed: this planning document plus queue/context synchronization.
 - How tested: repository guardrails and docs parity checks for the planning
   slice.
-- What is incomplete: target exchange is selected; implementation remains
-  blocked until first market type, first live scope, and production auth inputs
-  are available.
-- Next steps: close V1 live readiness blockers, then implement the selected
-  exchange adapter in staged vertical slices.
+- What is incomplete: paper pricing, authenticated reads, live submit, live
+  cancel, production authenticated readback, rollback proof, and RC Gate 4
+  approval remain blocked until exact support/access/approval exists.
+- Next steps: close protected V1 evidence blockers; then choose the next exact
+  Gate.io adapter operation without broad capability enablement.
