@@ -38,6 +38,16 @@ const EVIDENCE_FAMILIES = {
     matcher: /^v1-release-candidate-checklist\.md$/,
     datePattern: /Latest Verification \((\d{4}-\d{2}-\d{2})\)/i,
   },
+  liveImportReadback: {
+    label: 'LIVEIMPORT-03 runtime readback',
+    requiredIn: new Set(['prod']),
+    matcher: /^liveimport-03-prod-readback-(\d{4}-\d{2}-\d{2})\.json$/,
+    passPatterns: [
+      /"botsWithRuntimeReadback":\s*[1-9]\d*/i,
+      /"missingSymbols":\s*\[\s*\]/i,
+      /"tokenCaptured":\s*false/i,
+    ],
+  },
   backupRestoreDrill: {
     label: 'backup/restore drill evidence',
     requiredIn: new Set(['prod']),
@@ -327,6 +337,14 @@ export const evaluateEvidenceReadiness = async ({ environment, evidenceDir, toda
       if (!family.passPattern.test(raw)) {
         state = 'failed';
         reason = 'artifact is fresh but does not report PASS';
+      }
+    }
+    if (state === 'fresh' && family.passPatterns) {
+      const raw = await readFile(match.absolutePath, 'utf8');
+      const missingPatterns = family.passPatterns.filter((pattern) => !pattern.test(raw));
+      if (missingPatterns.length > 0) {
+        state = 'failed';
+        reason = 'artifact is fresh but does not satisfy required runtime readback checks';
       }
     }
 

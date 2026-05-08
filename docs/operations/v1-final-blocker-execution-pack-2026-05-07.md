@@ -5,7 +5,7 @@
 - Latest observed production code/tooling SHA:
   `3f065ac5c24ff159f97a94a0bc98948a1739eadf`
 - Latest release-gate dry-run:
-  `docs/operations/v1-release-gate-prod-2026-05-08Tcurrent-deployed-head-dry-run.md`
+  `docs/operations/v1-release-gate-prod-2026-05-08Tliveimport-required-dry-run.md`
 
 ## Purpose
 This pack lists the exact remaining commands needed to turn the current
@@ -169,9 +169,9 @@ Required result:
   equivalent is missing).
 - Production rollback proof is current for 2026-05-08 but failed because
   protected OPS routes returned `401` without auth.
-- The latest 2026-05-08 deployed-HEAD dry-run marks activation, RC external gates, RC
-  sign-off, and RC checklist as fresh; backup/restore and rollback are fresh
-  but failed.
+- The latest 2026-05-08 dry-run marks activation, RC external gates, RC
+  sign-off, and RC checklist as fresh; `LIVEIMPORT-03` is missing;
+  backup/restore and rollback are fresh but failed.
 - A no-auth 2026-05-08 runtime freshness probe failed closed with HTTP `401`;
   rollback guard returned `shouldRollback=true` only because runtime freshness
   and alerts endpoints were protected by `401`.

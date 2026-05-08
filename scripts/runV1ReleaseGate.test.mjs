@@ -10,6 +10,26 @@ import {
   evaluateEvidenceReadiness,
 } from './runV1ReleaseGate.mjs';
 
+const writeLiveImportReadbackArtifact = (operationsDir, date = '2026-04-22', overrides = {}) =>
+  writeFile(
+    path.join(operationsDir, `liveimport-03-prod-readback-${date}.json`),
+    `${JSON.stringify(
+      {
+        auth: {
+          tokenCaptured: false,
+        },
+        summary: {
+          botsWithRuntimeReadback: 1,
+          missingSymbols: [],
+          ...(overrides.summary ?? {}),
+        },
+        ...overrides,
+      },
+      null,
+      2,
+    )}\n`,
+  );
+
 test('buildSteps passes api and web targets into deploy smoke gate', () => {
   const steps = buildSteps({
     baseUrl: 'https://stage-api.example.com',
@@ -155,12 +175,14 @@ test('evaluateEvidenceReadiness marks stale prod evidence with explicit blockers
     assert.equal(result.evidence.find((row) => row.key === 'rcExternalGateStatus')?.state, 'stale');
     assert.equal(result.evidence.find((row) => row.key === 'rcSignoffRecord')?.state, 'stale');
     assert.equal(result.evidence.find((row) => row.key === 'rcChecklist')?.state, 'stale');
+    assert.equal(result.evidence.find((row) => row.key === 'liveImportReadback')?.state, 'missing');
     assert.equal(result.evidence.find((row) => row.key === 'backupRestoreDrill')?.state, 'stale');
     assert.equal(result.evidence.find((row) => row.key === 'rollbackProof')?.state, 'stale');
     assert.deepEqual(result.blockers, [
       'rcExternalGateStatus:stale',
       'rcSignoffRecord:stale',
       'rcChecklist:stale',
+      'liveImportReadback:missing',
       'backupRestoreDrill:stale',
       'rollbackProof:stale',
     ]);
@@ -196,6 +218,7 @@ test('evaluateEvidenceReadiness accepts fresh prod rollback and backup proof', a
       path.join(operationsDir, 'v1-release-candidate-checklist.md'),
       '### Latest Verification (2026-04-22)\n',
     );
+    await writeLiveImportReadbackArtifact(operationsDir);
     await writeFile(
       path.join(operationsDir, 'v1-restore-drill-prod-2026-04-22T19-00-00-000Z.md'),
       '- Generated at (UTC): 2026-04-22T19:00:00.000Z\n- Status: **PASS**\n',
@@ -213,6 +236,7 @@ test('evaluateEvidenceReadiness accepts fresh prod rollback and backup proof', a
 
     assert.equal(result.ready, true);
     assert.deepEqual(result.blockers, []);
+    assert.equal(result.evidence.find((row) => row.key === 'liveImportReadback')?.state, 'fresh');
     assert.equal(result.evidence.find((row) => row.key === 'backupRestoreDrill')?.state, 'fresh');
     assert.equal(result.evidence.find((row) => row.key === 'rollbackProof')?.state, 'fresh');
   } finally {
@@ -247,6 +271,7 @@ test('evaluateEvidenceReadiness rejects fresh prod restore proof when artifact s
       path.join(operationsDir, 'v1-release-candidate-checklist.md'),
       '### Latest Verification (2026-04-22)\n',
     );
+    await writeLiveImportReadbackArtifact(operationsDir);
     await writeFile(
       path.join(operationsDir, 'v1-restore-drill-prod-2026-04-22T19-00-00-000Z.md'),
       '- Generated at (UTC): 2026-04-22T19:00:00.000Z\n- Status: **FAIL**\n',
@@ -297,6 +322,7 @@ test('evaluateEvidenceReadiness prefers the latest same-day prod restore proof a
       path.join(operationsDir, 'v1-release-candidate-checklist.md'),
       '### Latest Verification (2026-04-22)\n',
     );
+    await writeLiveImportReadbackArtifact(operationsDir);
     await writeFile(
       path.join(operationsDir, 'v1-restore-drill-prod-2026-04-22T19-00-00-000Z.md'),
       '- Generated at (UTC): 2026-04-22T19:00:00.000Z\n- Status: **FAIL**\n',
@@ -322,6 +348,62 @@ test('evaluateEvidenceReadiness prefers the latest same-day prod restore proof a
       /v1-restore-drill-prod-2026-04-22T22-31-28-000Z\.md$/,
     );
     assert.deepEqual(result.blockers, []);
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
+});
+
+test('evaluateEvidenceReadiness rejects fresh prod live-import readback without runtime visibility', async () => {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), 'v1-release-gate-liveimport-failed-'));
+  const operationsDir = path.join(tempRoot, 'operations');
+  const planningDir = path.join(tempRoot, 'planning');
+  try {
+    await mkdir(operationsDir, { recursive: true });
+    await mkdir(planningDir, { recursive: true });
+    await writeFile(
+      path.join(operationsDir, 'v1-production-activation-evidence-audit-2026-04-22.md'),
+      '# audit\n',
+    );
+    await writeFile(
+      path.join(planningDir, 'v1-production-activation-and-evidence-plan-2026-04-22.md'),
+      '# plan\n',
+    );
+    await writeFile(
+      path.join(operationsDir, 'v1-rc-external-gates-status.md'),
+      'Generated at (UTC): 2026-04-22T15:13:58.943Z\n',
+    );
+    await writeFile(
+      path.join(operationsDir, 'v1-rc-signoff-record.md'),
+      'Date (UTC): `2026-04-22T15:13:58.943Z`\n',
+    );
+    await writeFile(
+      path.join(operationsDir, 'v1-release-candidate-checklist.md'),
+      '### Latest Verification (2026-04-22)\n',
+    );
+    await writeLiveImportReadbackArtifact(operationsDir, '2026-04-22', {
+      summary: {
+        botsWithRuntimeReadback: 0,
+        missingSymbols: ['ETHUSDT'],
+      },
+    });
+    await writeFile(
+      path.join(operationsDir, 'v1-restore-drill-prod-2026-04-22T19-00-00-000Z.md'),
+      '- Generated at (UTC): 2026-04-22T19:00:00.000Z\n- Status: **PASS**\n',
+    );
+    await writeFile(
+      path.join(operationsDir, 'v1-rollback-proof-prod-2026-04-22T19-05-00-000Z.md'),
+      '- Generated at (UTC): 2026-04-22T19:05:00.000Z\n- Status: **PASS**\n',
+    );
+
+    const result = await evaluateEvidenceReadiness({
+      environment: 'prod',
+      evidenceDir: operationsDir,
+      today: '2026-04-22',
+    });
+
+    assert.equal(result.ready, false);
+    assert.equal(result.evidence.find((row) => row.key === 'liveImportReadback')?.state, 'failed');
+    assert.deepEqual(result.blockers, ['liveImportReadback:failed']);
   } finally {
     await rm(tempRoot, { recursive: true, force: true });
   }

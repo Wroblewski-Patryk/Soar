@@ -154,6 +154,11 @@ Last updated: 2026-05-08
   drill and rollback proof are fresh but failed, and dry-run mode blocks final
   approval. This confirms the remaining blockers are protected evidence and
   approval inputs, not deploy freshness.
+- 2026-05-08 release-gate live-import evidence enforcement is closed:
+  production V1 release gate now requires the protected `LIVEIMPORT-03`
+  runtime readback artifact. The latest dry-run blocks on
+  `evidence:liveImportReadback:missing`, so final `ready` cannot bypass the
+  active bot live-import blocker.
 
 ## Known Environment Pitfalls
 

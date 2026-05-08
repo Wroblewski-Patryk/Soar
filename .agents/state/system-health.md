@@ -129,6 +129,11 @@ Last updated: 2026-05-08
   reports `readiness=not_ready`. Activation and RC families are fresh;
   backup/restore drill and rollback proof are fresh but failed; dry-run mode
   still blocks final approval.
+- Release gate live-import evidence enforcement PASS: `ops:release:v1:gate`
+  now requires `LIVEIMPORT-03 runtime readback` for production. Latest dry-run
+  `docs/operations/v1-release-gate-prod-2026-05-08Tliveimport-required-dry-run.md`
+  reports `readiness=not_ready` with `evidence:liveImportReadback:missing`,
+  backup/restore failed, rollback proof failed, and dry-run mode blockers.
 - `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
   `/dashboard/positions/live-status` returned global reconciliation diagnostic
   counts for an authenticated user. The route now filters

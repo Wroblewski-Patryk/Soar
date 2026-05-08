@@ -89,7 +89,9 @@ Latest observed production SHA is
    only `FIGMA_OAUTH_TOKEN` in this shell. The collector now names the exact
    accepted auth variable choices on the fail-closed missing-auth path. The
    evidence run must include actual protected runtime positions payloads for
-   the requested symbols.
+   the requested symbols. The final V1 release gate now requires this artifact
+   as `LIVEIMPORT-03 runtime readback` and blocks with
+   `evidence:liveImportReadback:missing` until it exists.
 2. If authenticated readback remains unavailable, keep `LIVEIMPORT-03` open and
    do not downgrade it to public health/build-info evidence.
 3. After `LIVEIMPORT-03`, continue `BOTMULTI-09` protected runtime readback and

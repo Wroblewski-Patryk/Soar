@@ -7,6 +7,16 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-RELEASE-GATE-LIVEIMPORT-EVIDENCE-2026-05-08 release: require live-import readback in V1 gate`
+  - 2026-05-08: Aligned the final production release gate with the active
+    `LIVEIMPORT-03` blocker. `ops:release:v1:gate` now requires
+    `docs/operations/liveimport-03-prod-readback-YYYY-MM-DD.json` for
+    production and validates that it contains runtime readback visibility with
+    no missing expected symbols. The refreshed dry-run
+    `docs/operations/v1-release-gate-prod-2026-05-08Tliveimport-required-dry-run.md`
+    remains `not_ready` and now includes
+    `evidence:liveImportReadback:missing`. Evidence:
+    `docs/planning/v1-release-gate-liveimport-evidence-task-2026-05-08.md`.
 - [x] `V1-RELEASE-GATE-CURRENT-DRY-RUN-2026-05-08 release: refresh deployed-head V1 release gate dry-run`
   - 2026-05-08: Generated a fresh production V1 release-gate dry-run on
     deployed HEAD `3f065ac5c24ff159f97a94a0bc98948a1739eadf`. The new report
