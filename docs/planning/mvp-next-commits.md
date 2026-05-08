@@ -7,6 +7,17 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-LIVEIMPORT-AUTH-PREFLIGHT-HARDENING-2026-05-08 release(ops): clarify live-import auth preflight`
+  - 2026-05-08: Hardened the existing `ops:liveimport:readback` fail-closed
+    missing-auth path so it names the exact accepted production auth variable
+    choices without printing secret values:
+    `LIVEIMPORT_READBACK_AUTH_TOKEN`, or
+    `LIVEIMPORT_READBACK_AUTH_EMAIL` plus
+    `LIVEIMPORT_READBACK_AUTH_PASSWORD`, with optional private OPS basic/header
+    envs when that layer is enabled. The no-auth validation exits non-zero and
+    creates no readback artifact. No runtime, API, DB, Web, exchange, deploy,
+    or live-money behavior changed. Evidence:
+    `docs/planning/v1-liveimport-auth-preflight-hardening-task-2026-05-08.md`.
 - [x] `V1-DEPLOY-FRESHNESS-STATE-SYNC-2026-05-08 docs(release): sync final blocker state to deployed SHA`
   - 2026-05-08: Synchronized active V1 release state and the final blocker
     execution pack to production build-info SHA

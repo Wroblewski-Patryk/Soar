@@ -85,9 +85,10 @@ Latest observed production SHA is
    `ops:liveimport:readback` for the currently checked-out `HEAD` after
    build-info confirms that `HEAD` is deployed, and record redacted
    `LIVEIMPORT-03` evidence. The latest names-only prerequisite sweep found
-   only `FIGMA_OAUTH_TOKEN` and `IGCCSVC_DB` in this shell. The evidence run
-   must include actual protected runtime positions payloads for the requested
-   symbols.
+   only `FIGMA_OAUTH_TOKEN` in this shell. The collector now names the exact
+   accepted auth variable choices on the fail-closed missing-auth path. The
+   evidence run must include actual protected runtime positions payloads for
+   the requested symbols.
 2. If authenticated readback remains unavailable, keep `LIVEIMPORT-03` open and
    do not downgrade it to public health/build-info evidence.
 3. After `LIVEIMPORT-03`, continue `BOTMULTI-09` protected runtime readback and

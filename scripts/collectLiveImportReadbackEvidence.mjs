@@ -10,6 +10,12 @@ import { resolveOpsAuthToken } from './resolveOpsAuthToken.mjs';
 
 const rawArgs = process.argv.slice(2);
 const args = new Set(rawArgs);
+const MISSING_AUTH_MESSAGE = [
+  'Missing read-only production auth token or login credentials.',
+  'Provide either LIVEIMPORT_READBACK_AUTH_TOKEN, or LIVEIMPORT_READBACK_AUTH_EMAIL plus LIVEIMPORT_READBACK_AUTH_PASSWORD.',
+  'If the production OPS route is additionally protected, also provide LIVEIMPORT_READBACK_OPS_BASIC_USER plus LIVEIMPORT_READBACK_OPS_BASIC_PASSWORD, or LIVEIMPORT_READBACK_OPS_AUTH_HEADER_NAME plus LIVEIMPORT_READBACK_OPS_AUTH_HEADER_VALUE.',
+  'Run with --help for the complete option and environment-variable list.',
+].join(' ');
 
 const readArgValue = (flag) => {
   const index = rawArgs.indexOf(flag);
@@ -304,7 +310,7 @@ const main = async () => {
     contextLabel: 'ops:liveimport:readback',
   });
   if (!resolvedAuth.token) {
-    throw new Error('Missing read-only production auth token or login credentials.');
+    throw new Error(MISSING_AUTH_MESSAGE);
   }
 
   const headers = buildOpsRequestHeaders({

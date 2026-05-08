@@ -137,6 +137,10 @@ Last updated: 2026-05-08
   `0a2e2353177c15d4a4934c03837835785e01d710` reached production build-info
   and public deploy smoke passed. The remaining blockers are still protected
   access and sign-off blockers, not public deploy freshness.
+- 2026-05-08 live-import auth preflight hardening is closed: the collector now
+  names the exact accepted auth variable choices when missing auth blocks
+  readback, and no-auth validation still creates no artifact. This improves
+  operator handoff but does not close `LIVEIMPORT-03`.
 
 ## Known Environment Pitfalls
 

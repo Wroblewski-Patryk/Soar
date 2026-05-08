@@ -110,6 +110,11 @@ Last updated: 2026-05-08
   `0a2e2353` passed after production advanced from `2c232699...` to
   `0a2e2353177c15d4a4934c03837835785e01d710`. Public deploy smoke without
   workers passed immediately afterward.
+- `LIVEIMPORT-03` auth preflight hardening PASS: the existing
+  `ops:liveimport:readback` missing-auth fail-closed path now names the
+  accepted auth variable choices without printing secret values. Validation
+  covered script syntax, help, dry-run, no-auth fail-closed output, and no
+  artifact creation.
 - `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
   `/dashboard/positions/live-status` returned global reconciliation diagnostic
   counts for an authenticated user. The route now filters

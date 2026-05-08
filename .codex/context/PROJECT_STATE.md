@@ -3,6 +3,15 @@
 Last updated: 2026-05-08
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-08 `V1-LIVEIMPORT-AUTH-PREFLIGHT-HARDENING-2026-05-08` clarified
+  the existing `ops:liveimport:readback` fail-closed missing-auth path. It now
+  names the accepted auth variable choices without printing secret values:
+  `LIVEIMPORT_READBACK_AUTH_TOKEN`, or `LIVEIMPORT_READBACK_AUTH_EMAIL` plus
+  `LIVEIMPORT_READBACK_AUTH_PASSWORD`, with optional private OPS basic/header
+  envs when applicable. The no-auth validation exits non-zero and creates no
+  readback artifact. No runtime, API, DB, Web, exchange, deploy, or live-money
+  behavior changed. `LIVEIMPORT-03` remains open until protected runtime
+  positions payloads are captured with approved production auth.
 - 2026-05-08 `V1-DEPLOY-FRESHNESS-STATE-SYNC-2026-05-08` synchronized the
   active final blocker state to production build-info SHA
   `0a2e2353177c15d4a4934c03837835785e01d710`. This SHA contains the backend

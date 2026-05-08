@@ -17,6 +17,16 @@ Last updated: 2026-05-08
 
 ## READY
 
+- [x] `V1-LIVEIMPORT-AUTH-PREFLIGHT-HARDENING-2026-05-08 release(ops): clarify live-import auth preflight`
+  - Scope: updated the existing `ops:liveimport:readback` missing-auth
+    fail-closed message so an operator sees the exact accepted production auth
+    variable choices without any secret values. Updated the final blocker pack
+    and next-step state with the clarified handoff. Validation PASS: script
+    syntax check, help path, dry-run path, no-auth fail-closed path with no
+    artifact creation, repository guardrails, docs parity, and diff check.
+    Evidence:
+    `docs/planning/v1-liveimport-auth-preflight-hardening-task-2026-05-08.md`.
+
 - [x] `V1-DEPLOY-FRESHNESS-STATE-SYNC-2026-05-08 docs(release): sync final blocker state to deployed SHA`
   - Scope: synchronized active V1 release state and the final blocker
     execution pack to production build-info SHA

@@ -68,6 +68,17 @@ Do not accept:
 - no-session output
 - local tests as production readback proof
 
+If the command fails before protected readback with missing auth, provide
+either `LIVEIMPORT_READBACK_AUTH_TOKEN`, or
+`LIVEIMPORT_READBACK_AUTH_EMAIL` plus `LIVEIMPORT_READBACK_AUTH_PASSWORD`.
+If the production OPS route is additionally protected, also provide
+`LIVEIMPORT_READBACK_OPS_BASIC_USER` plus
+`LIVEIMPORT_READBACK_OPS_BASIC_PASSWORD`, or
+`LIVEIMPORT_READBACK_OPS_AUTH_HEADER_NAME` plus
+`LIVEIMPORT_READBACK_OPS_AUTH_HEADER_VALUE`. The collector must not create the
+readback artifact until a protected runtime positions payload is actually
+collected.
+
 ### 3. Run Production Restore Drill
 
 ```powershell
