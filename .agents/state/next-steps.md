@@ -36,6 +36,10 @@ dashboard/admin routes redirected to `/auth/login`. It does not satisfy the
 full module clickthrough because build-info is still stale at
 `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d` versus expected `373a0ceb`, and no
 authenticated/admin production app session is available.
+After pushing the public-access evidence commit
+`d55a86007b80733d67e793c261a5208c6734ab79`, public smoke still passed but
+build-info remained stale on `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d` during
+the 120-second wait.
 
 The local V1 backend paper/live runtime line is closed for this slice: focused
 parity/crash coverage, DB-backed runtime/order/exchange/import/readback packs,

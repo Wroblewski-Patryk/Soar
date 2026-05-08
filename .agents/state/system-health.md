@@ -22,6 +22,10 @@ Last updated: 2026-05-08
   `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d` while latest expected prefix was
   `373a0ceb`. Evidence:
   `docs/operations/prod-ui-public-access-clickthrough-2026-05-08.md`.
+  Follow-up after pushing docs commit
+  `d55a86007b80733d67e793c261a5208c6734ab79`: public deploy smoke still
+  passed, but build-info waited 120 seconds and remained on
+  `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d`.
 - Production web build-info reached
   `052df82244ea0f81e8611ff8bb2b677db115bd19`, which contains the backend
   runtime parity fix, final release-gate build-info freshness, strict RC

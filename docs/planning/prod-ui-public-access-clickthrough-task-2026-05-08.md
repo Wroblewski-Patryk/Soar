@@ -149,6 +149,10 @@ routes.
 - Rollback note: docs/evidence-only commit
 - Observability or alerting impact: none
 - Staged rollout or feature flag: not applicable
+- Post-push production check: public deploy smoke passed after commit
+  `d55a86007b80733d67e793c261a5208c6734ab79`, but web build-info did not
+  expose that SHA within 120 seconds and remained on
+  `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d`.
 
 ## Autonomous Loop Evidence
 
@@ -211,5 +215,5 @@ routes.
   `node scripts/checkDocsParity.mjs`; `git diff --check`.
 - What is incomplete: authenticated module clickthrough, admin clickthrough,
   responsive screenshots, and function-level clicking remain blocked.
-- Next steps: deploy latest `main`, obtain app auth/admin access, then execute
-  the full UI module audit plan.
+- Next steps: deploy latest `main` (`d55a8600...` or later), obtain app
+  auth/admin access, then execute the full UI module audit plan.
