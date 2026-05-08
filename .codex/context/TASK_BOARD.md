@@ -17,6 +17,14 @@ Last updated: 2026-05-08
 
 ## READY
 
+- [x] `UX-UI-MEMORY-AUTONOMY-2026-05-08 design: make UX/UI feedback memory autonomous`
+  - Scope: extended the existing user feedback loop, design memory, and screen
+    quality checklist so future UX/UI work classifies user guidance, stores it
+    in the right source of truth, reviews memory before implementation, and
+    asks the user only when feedback conflicts or changes global visual truth.
+    Evidence:
+    `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
+
 - [ ] `EXCHANGE2-LIVE-READINESS-PLAN-2026-05-08 planning: stage second exchange adapter after V1 live readiness`
   - Scope: publish the safe staged delivery plan for closing current V1 LIVE
     readiness blockers and adding one selected second exchange through the

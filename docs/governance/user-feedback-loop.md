@@ -27,6 +27,79 @@ Use this loop when the user:
 For tiny one-off corrections, update the active task. For reusable guidance,
 also update `docs/ux/design-memory.md` or `.codex/context/LEARNING_JOURNAL.md`.
 
+## Autonomous UX/UI Memory Protocol
+
+When feedback touches UX, UI, visual direction, layout, interaction, copy
+tone, density, polish, or screen quality, the agent must treat it as potential
+durable design memory before coding.
+
+Default behavior is autonomous:
+
+1. Capture the feedback in the active task evidence.
+2. Classify it into one of the UX/UI memory classes below.
+3. Check for conflicts with approved architecture, visual targets, and design
+   memory.
+4. Store it in the durable home listed for that class.
+5. Apply the stored memory before future UX/UI implementation.
+6. Report what was accepted, stored, deferred, or rejected.
+
+Ask the user before storing or applying feedback only when:
+
+- it conflicts with an approved architecture, product, security, deployment, or
+  canonical visual source;
+- it would globally change the product's visual direction rather than refine a
+  local screen;
+- it turns a one-off taste note into a reusable rule with meaningful blast
+  radius;
+- it would require a new system, component family, or design language not
+  already approved.
+
+Otherwise, the agent may decide and proceed, while recording the decision.
+
+## UX/UI Memory Classes
+
+| Class | Use when | Durable home |
+| --- | --- | --- |
+| Reusable rule | The feedback should shape future screens or modules. | `docs/ux/design-memory.md` |
+| Visual direction | The feedback changes product feel, brand posture, density, or tone. | `docs/ux/visual-direction-brief.md` |
+| Anti-pattern | The feedback identifies something future work should avoid. | `docs/ux/anti-patterns.md` |
+| Screen-specific feedback | The feedback only applies to the current route, component, or flow. | Active task artifact and, if needed, queue files |
+| Open design decision | The feedback needs a user choice before becoming truth. | `docs/planning/open-decisions.md` |
+| Recurring agent mistake | The same UX/UI process failure repeats. | `.codex/context/LEARNING_JOURNAL.md` |
+
+## UX/UI Memory Preflight
+
+Before implementing any UX/UI task, the agent must review:
+
+- `docs/ux/design-memory.md`
+- `docs/ux/visual-direction-brief.md`
+- `docs/ux/anti-patterns.md`
+- `docs/ux/dashboard-design-system.md`
+- `docs/ux/screen-quality-checklist.md`
+- any canonical screenshot, Figma source, or approved snapshot named by the
+  active task
+
+The active task must record:
+
+- which memory entries were reused;
+- which entries were not applicable and why;
+- whether new memory was created;
+- whether any user decision was required.
+
+## Feedback-To-Acceptance-Criteria Mapping
+
+For UX/UI feedback, convert the note into observable acceptance criteria before
+implementation. Prefer criteria that describe hierarchy, state coverage,
+interaction clarity, responsive behavior, accessibility, and visual parity.
+
+Example:
+
+- Feedback: "make this less generic SaaS."
+- Acceptance criteria: "The screen prioritizes operator decisions, uses
+  risk/status hierarchy before decorative panels, reuses dashboard tokens, and
+  passes desktop/tablet/mobile visual review against the visual direction
+  brief."
+
 ## Feedback Intake
 
 Capture each meaningful feedback item with:

@@ -1,5 +1,47 @@
 # Design Memory
 
+## Purpose
+
+This file is the durable memory for reusable UX/UI decisions in Soar. Future
+agents must review it before UX/UI implementation and update it when accepted
+user feedback should influence more than one local task.
+
+## Autonomous Capture Rules
+
+- Capture reusable UX/UI feedback here when it affects future hierarchy,
+  density, layout, interaction, state treatment, visual polish, or operator
+  feel.
+- Keep one-off screen feedback in the active task unless it should become a
+  repeatable pattern.
+- Ask the user before adding a rule only when it conflicts with existing
+  design memory, changes global visual direction, or overrides an approved
+  canonical visual source.
+- Record rejected or deferred reusable feedback in the relevant task or open
+  decision file so it is not rediscovered as new guidance.
+- Before coding UX/UI, list which design-memory entries apply to the task and
+  which do not.
+
+## Entry Format
+
+Use this shape for new reusable entries:
+
+```markdown
+- Rule:
+  Scope:
+  Apply when:
+  Avoid:
+  Source:
+  Evidence:
+```
+
+## Intake Inbox
+
+Use this section only for newly accepted UX/UI guidance that is not yet folded
+into a stable pattern. Empty the inbox by moving items into an approved section
+or an open decision.
+
+- No pending UX/UI memory items.
+
 ## Approved Reuse Patterns
 
 - Metrics rail:

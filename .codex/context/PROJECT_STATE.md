@@ -2,6 +2,16 @@
 
 Last updated: 2026-05-08
 
+## 2026-05-08 UX/UI Feedback Memory Autonomy
+- 2026-05-08 `UX-UI-MEMORY-AUTONOMY-2026-05-08` made UX/UI feedback capture
+  autonomous for future agents by extending the existing user feedback loop,
+  design memory, and screen quality checklist. Future UX/UI tasks must classify
+  user guidance as reusable rule, visual direction, anti-pattern,
+  screen-specific feedback, open decision, or recurring agent mistake; store it
+  in the matching source of truth; and review design memory before
+  implementation. Evidence:
+  `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
+
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
 - 2026-05-08 `EXCHANGE2-LIVE-READINESS-PLAN-2026-05-08` published
   `docs/planning/second-exchange-live-readiness-plan-2026-05-08.md`, a staged

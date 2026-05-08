@@ -4,6 +4,15 @@ Last updated: 2026-05-08
 
 ## Next Tiny Task
 
+UX/UI process note: future UX/UI work must start with the autonomous memory
+preflight now documented in `docs/governance/user-feedback-loop.md`,
+`docs/ux/design-memory.md`, and `docs/ux/screen-quality-checklist.md`.
+Classify user feedback as reusable rule, visual direction, anti-pattern,
+screen-specific feedback, open design decision, or recurring agent mistake;
+store it in the matching source of truth; and record applied design-memory
+entries in the active task before implementation. Evidence:
+`docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
+
 Second-exchange implementation is now planned with `GATEIO` selected as the
 target exchange. Use
 `docs/planning/second-exchange-live-readiness-plan-2026-05-08.md` as the
