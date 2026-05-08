@@ -49,12 +49,13 @@ build-info is current, but the current shell still lacks the required Soar
 production auth/access. A no-auth collector attempt failed closed before
 runtime readback, which is the expected safe result.
 
-Post-backend-parity check: pushed `main` contains the adapter-pure PAPER/LIVE
-fix. A 900-second public build-info wait still saw production at
-`4f6832d6d94d0d9e86a2504b4a00fe177a1c6c44`; public deploy smoke without
-workers passed for `API /health`, `API /ready`, and `WEB /`. Continue with
-Coolify/manual deployment, then rerun the build-info wait. Do not use GitHub
-Actions for production deployment.
+Post-backend-parity check: production web build-info advanced to
+`da1e52cfec0b70e5a94e59d75fe702a55c348d74`, which contains the adapter-pure
+PAPER/LIVE runtime fix. Public deploy smoke without workers passed. The later
+docs-only state commit had not deployed after a 300-second wait, but this does
+not remove the runtime fix from production. Continue with authenticated
+read-only `LIVEIMPORT-03` production runtime readback once credentials are
+available. Do not use GitHub Actions for production deployment.
 
 Canonical command once auth is available:
 
@@ -62,6 +63,11 @@ Canonical command once auth is available:
 $expectedSha = git rev-parse HEAD
 pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output docs/operations/liveimport-03-prod-readback-2026-05-08.json
 ```
+
+If production build-info still reports the deployed runtime candidate
+`da1e52cfec0b70e5a94e59d75fe702a55c348d74` while latest `main` only contains
+docs/state changes on top, use that deployed SHA for the readback evidence
+until a newer Coolify/manual deploy is confirmed.
 
 ## Candidate Backlog
 

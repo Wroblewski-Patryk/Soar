@@ -61,6 +61,15 @@ Last updated: 2026-05-08
   workers passed (`API /health`, `API /ready`, and `WEB /` all returned 200).
   This confirms the production site is healthy but not yet deployed to the
   pushed candidate.
+- Follow-up production freshness check then showed production web build-info
+  advanced to `da1e52cfec0b70e5a94e59d75fe702a55c348d74`, which contains the
+  V1 backend PAPER/LIVE adapter-pure runtime fix. A later wait for the
+  docs-only state commit `156e19ea42b50b20201ebec9f040a1b3749a4978` timed out
+  after ten HTTP 200 polls over 300 seconds, with production still on
+  `da1e52cf...`. Public deploy smoke without workers passed again. A
+  read-only `LIVEIMPORT-03` collector attempt against deployed
+  `da1e52cf...` failed closed with missing production auth, and a names-only
+  env scan found only `FIGMA_OAUTH_TOKEN` and `IGCCSVC_DB`.
 - `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
   `/dashboard/positions/live-status` returned global reconciliation diagnostic
   counts for an authenticated user. The route now filters
@@ -174,12 +183,9 @@ runtime contracts are changed.
 
 ## Deployment Impact
 
-Production build-info now exposes `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`,
-which contains the live-import collector and fail-closed hardening. Local
-docs/evidence commits are ahead of `origin/main` and intentionally unpushed to
-avoid creating new production deploy targets for documentation-only changes.
-The next executable release task requires authenticated read-only production
-evidence and protected production recovery proof.
-The pushed V1 backend parity candidate must still be deployed through the
-accepted Coolify/manual path before protected production readback is treated
-as evidence for that fix.
+Production build-info now exposes `da1e52cfec0b70e5a94e59d75fe702a55c348d74`,
+which contains the V1 backend PAPER/LIVE adapter-pure runtime fix. The latest
+state/docs commit may still be ahead of production build-info, but the runtime
+fix itself is deployed. The next executable release task requires
+authenticated read-only production evidence and protected production recovery
+proof; the current shell still lacks those credentials.

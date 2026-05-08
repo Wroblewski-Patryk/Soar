@@ -30,17 +30,19 @@ closed the local backend evidence gap.
 Release verification is blocked on accepted production deployment plus
 authenticated production readback for the first open queue item,
 `LIVEIMPORT-03`. Local audit gates are closed through `FULLARCH-FIX-11`.
-The V1 backend parity candidate is the current local `main` commit; public
-production web build-info still reports
-`4f6832d6d94d0d9e86a2504b4a00fe177a1c6c44` until a Coolify/manual operator
-deploy completes. GitHub Actions is not an accepted production deploy
-mechanism for this project. The latest names-only prerequisite scan still
-found no production credentials or ops auth headers in the current shell, so
-protected evidence collection remains blocked without an operator-authenticated
-environment.
+Production web build-info now reports
+`da1e52cfec0b70e5a94e59d75fe702a55c348d74`, which contains the V1 backend
+PAPER/LIVE adapter-pure runtime fix. GitHub Actions is not an accepted
+production deploy mechanism for this project. The latest names-only
+prerequisite scan still found no production credentials or ops auth headers in
+the current shell, so protected evidence collection remains blocked without an
+operator-authenticated environment.
 
-`LIVEIMPORT-03` now has one canonical read-only evidence command:
-`pnpm run ops:liveimport:readback -- --expected-sha 21bb52f1e4b8865aab0dbb83ecffe698061fd7a3 --output docs/operations/liveimport-03-prod-readback-2026-05-07.json`.
+`LIVEIMPORT-03` now has one canonical read-only evidence command. Use the
+currently deployed production build-info SHA, currently
+`da1e52cfec0b70e5a94e59d75fe702a55c348d74`, unless a newer Coolify/manual
+deploy is confirmed:
+`pnpm run ops:liveimport:readback -- --expected-sha da1e52cfec0b70e5a94e59d75fe702a55c348d74 --output docs/operations/liveimport-03-prod-readback-2026-05-08.json`.
 The collector is hardened to fail closed when no RUNNING session produces a
 runtime positions payload, so no-session output cannot be treated as V1
 evidence.
@@ -66,16 +68,13 @@ Backup/restore drill and rollback proof are also current for 2026-05-07 but
 and rollback proof failed closed on protected `401` responses. V1 remains
 NO-GO.
 
-The canonical `LIVEIMPORT-03` command now targets production SHA
-`21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`, matching public build-info.
+The canonical `LIVEIMPORT-03` command now targets the deployed backend parity
+SHA `da1e52cfec0b70e5a94e59d75fe702a55c348d74`, matching public build-info.
 
-Latest continuation recheck: public production build-info still matches
-`21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`, but the current shell exposes no
+Latest continuation recheck: public production build-info matches
+`da1e52cfec0b70e5a94e59d75fe702a55c348d74`, but the current shell exposes no
 required Soar production auth variable. A no-auth `ops:liveimport:readback`
-attempt failed closed before protected runtime readback, and the refreshed
-release-gate dry-run
-`docs/operations/v1-release-gate-prod-2026-05-07T18-20-30-000Z.md` remains
-`not_ready`.
+attempt against that SHA failed closed before protected runtime readback.
 
 Post-regression cleanup: GitHub Actions production promote/rollback entrypoints
 and the local GitHub workflow helper are being removed. Future V1 deployment

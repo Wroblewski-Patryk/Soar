@@ -231,6 +231,15 @@ settlement even when tests or runtime callers provide adapter gateways.
   `4f6832d6d94d0d9e86a2504b4a00fe177a1c6c44` after a 900-second wait. Public
   deploy smoke without workers passed for `API /health`, `API /ready`, and
   `WEB /`.
+- Follow-up deploy evidence: production build-info later advanced to
+  `da1e52cfec0b70e5a94e59d75fe702a55c348d74`, which contains this runtime
+  fix. Public deploy smoke without workers passed again. A 300-second wait for
+  the later docs-only state commit timed out with production still on
+  `da1e52cf...`.
+- Production readback evidence: `ops:liveimport:readback` against deployed
+  `da1e52cf...` failed closed with missing read-only production auth token or
+  login credentials. Names-only env scan found only `FIGMA_OAUTH_TOKEN` and
+  `IGCCSVC_DB`.
 - What is incomplete: Coolify/manual deployment and production authenticated
   readback remain separate; no local backend runtime assertion failure remains
   in this slice.

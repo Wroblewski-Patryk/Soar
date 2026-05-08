@@ -24,6 +24,13 @@ Last updated: 2026-05-08
   public deploy smoke without workers passed for `API /health`, `API /ready`,
   and `WEB /`. Coolify/manual deployment is still required before production
   readback can prove this fix.
+  Follow-up production build-info then advanced to
+  `da1e52cfec0b70e5a94e59d75fe702a55c348d74`, which contains the runtime fix;
+  public deploy smoke without workers passed again. The later docs-only state
+  commit had not deployed after a 300-second wait. A read-only
+  `LIVEIMPORT-03` collector attempt against deployed `da1e52cf...` failed
+  closed with missing production auth, and a names-only env scan found only
+  `FIGMA_OAUTH_TOKEN` and `IGCCSVC_DB`.
   Evidence:
   `docs/planning/v1-paper-live-backend-runtime-parity-task-2026-05-08.md`.
 

@@ -11,12 +11,13 @@ Last updated: 2026-05-08
   the reachable stack. Future runs should check both contexts/ports before
   declaring DB-backed validation blocked.
 - `origin/main` is ahead of production build-info, while production still
-  reports `4f6832d6d94d0d9e86a2504b4a00fe177a1c6c44` after the V1 backend
-  parity candidate push. A 900-second build-info wait still saw the same
-  deployed SHA, while public deploy smoke without workers passed. This is
-  expected until a Coolify/manual operator deploy completes. Do not use GitHub
-  Actions for production deployment; the operator confirmed that path is not
-  allowed and creates unwanted email noise.
+  reports `da1e52cfec0b70e5a94e59d75fe702a55c348d74` after the V1 backend
+  parity candidate push. That deployed SHA contains the runtime fix. The
+  latest docs-only state commit has not deployed yet, while public deploy
+  smoke without workers passes. This is expected until a Coolify/manual
+  operator deploy completes. Do not use GitHub Actions for production
+  deployment; the operator confirmed that path is not allowed and creates
+  unwanted email noise.
 - Production deployment freshness initially lagged after the pushed V1 audit
   candidate, but a later build-info wait passed and production now reports
   `1f816362c93e117e47cfe52a35e0fec93bd0b37d`.
@@ -84,8 +85,8 @@ Last updated: 2026-05-08
   bot-managed.
 - `LIVEIMPORT-03` remains open because authenticated read-only production
   runtime positions readback for the reported LIVE ETH/DOGE rows has not been
-  captured on current production `main`
-  (`21bb52f1e4b8865aab0dbb83ecffe698061fd7a3` or later).
+  captured on production after the backend parity deploy
+  (`da1e52cfec0b70e5a94e59d75fe702a55c348d74` or later).
   `ops:liveimport:readback` is now the canonical read-only collector once
   credentials are available. It is hardened to fail closed when no RUNNING
   session produces runtime positions readback, so a no-session artifact cannot
@@ -109,8 +110,14 @@ Last updated: 2026-05-08
   protected OPS auth.
 - Final blocker prerequisite recheck after the execution pack found only
   `FIGMA_OAUTH_TOKEN` and `IGCCSVC_DB` by names-only env scan in this shell.
-  Production build-info is current at `21bb52f1...`, but no Soar production
-  readback, rollback, or DB/Coolify access is available locally.
+  Production build-info is now current through the backend parity runtime fix
+  at `da1e52cf...`, but no Soar production readback, rollback, or DB/Coolify
+  access is available locally.
+- 2026-05-08 backend parity production readback attempt found the same local
+  auth blocker: `ops:liveimport:readback` against deployed
+  `da1e52cfec0b70e5a94e59d75fe702a55c348d74` failed closed with missing
+  read-only production auth token or login credentials. Names-only env scan
+  found only `FIGMA_OAUTH_TOKEN` and `IGCCSVC_DB`.
 
 ## Known Environment Pitfalls
 
