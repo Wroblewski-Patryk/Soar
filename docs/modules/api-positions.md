@@ -5,7 +5,7 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/positions`
 - Owner: backend/trading-domain
-- Last updated: 2026-05-03
+- Last updated: 2026-05-08
 - Related planning task: `RUNTIME-AUDIT-23`
 
 ## 1. Purpose and Scope
@@ -45,9 +45,15 @@ Out of scope:
 ## 4. Runtime Flows
 - Snapshot flow:
   1. Resolve usable API key.
-  2. Fetch external positions/open orders.
-  3. Normalize payload shape.
-  4. Update `lastUsed` metadata for key.
+  2. Enforce exchange operation capability before any test fallback or
+     connector call.
+  3. Fetch external positions/open orders.
+  4. Normalize payload shape.
+  5. Update `lastUsed` metadata for key only after a supported snapshot read.
+- Gate.io stored keys may exist as placeholders, but explicit
+  `apiKeyId` snapshot reads fail closed with
+  `EXCHANGE_EXECUTION_CAPABILITY_UNSUPPORTED` while `POSITIONS_SNAPSHOT` is
+  disabled; `lastUsed` remains unchanged on rejection.
 - Takeover status flow:
   - classify open exchange-synced positions by ownership/management/sync-state.
   - canonical management truth is wallet-owned:

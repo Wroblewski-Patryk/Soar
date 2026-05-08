@@ -145,6 +145,15 @@ Operational queue for one-task execution runs.
     rejection. Evidence:
     `docs/planning/exchange2-15-gateio-wallet-balance-preview-fail-closed-task-2026-05-08.md`.
 
+- [x] `EXCHANGE2-16 fix(api): lock Gate.io positions snapshot explicit key fail closed`
+  - 2026-05-08: Added positions snapshot e2e coverage proving an explicit
+    Gate.io `apiKeyId` cannot reach test fallback data while
+    `POSITIONS_SNAPSHOT` is unsupported. The service now enforces the existing
+    adapter capability guard before fixture or connector reads, the route maps
+    unsupported capability errors to HTTP 501, and the Gate.io key remains
+    unused after rejection. Evidence:
+    `docs/planning/exchange2-16-gateio-positions-snapshot-fail-closed-task-2026-05-08.md`.
+
 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
   - 2026-05-08: Planning artifact is ready for a production-wide UI audit that
     visits all canonical public, dashboard, admin, and legacy redirect routes,

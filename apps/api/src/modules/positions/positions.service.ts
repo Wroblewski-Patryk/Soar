@@ -5,6 +5,7 @@ import {
   fetchSupportedExchangeOpenOrdersRaw,
   fetchSupportedExchangePositionsRaw,
   fetchSupportedExchangeTradeHistoryRaw,
+  assertExchangeAdapterOperationSupport,
   resolveExchangeAdapterSource,
   supportsExchangeAdapterOperation,
 } from '../exchange/exchangeAdapterBoundary.service';
@@ -192,16 +193,16 @@ const buildSnapshotForApiKey = async (
   marketType: TradeMarket = 'FUTURES'
 ): Promise<ExchangePositionSnapshot> => {
   try {
+    assertExchangeAdapterOperationSupport(apiKey.exchange, 'POSITIONS_SNAPSHOT');
+
     if (process.env.NODE_ENV === 'test') {
       if (process.env.POSITIONS_SNAPSHOT_FORCE_ERROR === '1') {
         throw new Error('exchange_snapshot_forced_error');
       }
-
       await prisma.apiKey.update({
         where: { id: apiKey.id },
         data: { lastUsed: new Date() },
       });
-
       return {
         source: apiKey.exchange,
         syncedAt: new Date().toISOString(),
@@ -221,14 +222,12 @@ const buildSnapshotForApiKey = async (
         ],
       };
     }
-
     const rawPositions = await fetchSupportedExchangePositionsRaw({
       exchange: apiKey.exchange,
       marketType,
       apiKey: apiKey.apiKey,
       apiSecret: apiKey.apiSecret,
     });
-
     await prisma.apiKey.update({
       where: { id: apiKey.id },
       data: { lastUsed: new Date() },

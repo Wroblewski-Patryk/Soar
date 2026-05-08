@@ -139,6 +139,12 @@ Last updated: 2026-05-08
   `BALANCE_PREVIEW` authenticated reads are unsupported, and the key remains
   unused after rejection. Evidence:
   `docs/planning/exchange2-15-gateio-wallet-balance-preview-fail-closed-task-2026-05-08.md`.
+- 2026-05-08 `EXCHANGE2-16` locked the explicit positions snapshot boundary
+  for stored Gate.io API keys. The positions service now enforces the existing
+  adapter capability guard before test fixture output or connector reads, the
+  route returns HTTP 501 with unsupported capability details, and DB-backed
+  e2e coverage proves the Gate.io key remains unused after rejection. Evidence:
+  `docs/planning/exchange2-16-gateio-positions-snapshot-fail-closed-task-2026-05-08.md`.
 - 2026-05-08 `PROD-UI-AUDIT-PLAN-2026-05-08` prepared the production UI module
   clickthrough audit plan requested by the user. The plan covers all canonical
   public, dashboard, admin, and legacy redirect routes, module-level functions,

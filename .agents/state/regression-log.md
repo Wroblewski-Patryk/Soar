@@ -54,6 +54,12 @@ local Postgres/Redis ports were reachable. Sequential reruns passed.
   unsupported, and `lastUsed` is not updated after rejection. Validation:
   focused wallet e2e (`22/22`), API typecheck, repository guardrails, docs
   parity, and diff check.
+- 2026-05-08: Prevented positions snapshot drift for explicit stored Gate.io
+  keys. A positions e2e test now proves `apiKeyId` selection cannot bypass the
+  `POSITIONS_SNAPSHOT` capability guard via test fallback data, and `lastUsed`
+  is not updated after rejection. Validation: focused positions exchange
+  snapshot e2e, API typecheck, repository guardrails, docs parity, and diff
+  check.
 - 2026-05-07: Ran production V1 release-gate classifier in dry-run mode and
   preserved stale evidence blockers as release state. This prevents treating
   old 2026-05-02 RC/backup/rollback artifacts as fresh V1 evidence.

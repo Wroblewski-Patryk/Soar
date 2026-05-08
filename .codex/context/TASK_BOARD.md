@@ -155,6 +155,15 @@ Last updated: 2026-05-08
     Evidence:
     `docs/planning/exchange2-15-gateio-wallet-balance-preview-fail-closed-task-2026-05-08.md`.
 
+- [x] `EXCHANGE2-16 fix(api): lock Gate.io positions snapshot explicit key fail closed`
+  - Scope: enforced the existing positions snapshot capability guard before
+    test-mode fixture output or connector reads, mapped unsupported capability
+    errors to HTTP 501 for the snapshot route, and added DB-backed coverage
+    proving an explicit Gate.io `apiKeyId` is rejected while `lastUsed` stays
+    unchanged.
+    Evidence:
+    `docs/planning/exchange2-16-gateio-positions-snapshot-fail-closed-task-2026-05-08.md`.
+
 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
   - Scope: execute a production-wide UI audit across canonical public,
     dashboard, admin, and legacy redirect routes, clicking safe module

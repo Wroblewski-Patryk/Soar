@@ -148,6 +148,34 @@ describe("Positions exchange snapshot API", () => {
     expect(snapshotRes.body.source).toBe("BINANCE");
   });
 
+  it("fails closed for explicit Gate.io apiKeyId while positions snapshots are unsupported", async () => {
+    const agent = await registerAndLogin("positions-gateio-explicit-key@example.com");
+    const gateioKeyRes = await agent.post("/dashboard/profile/apiKeys").send({
+      label: "gateio-main",
+      exchange: "GATEIO",
+      apiKey: "GATEIOKEY12345",
+      apiSecret: "GATEIOSECRET12345",
+    });
+    expect(gateioKeyRes.status).toBe(201);
+
+    const snapshotRes = await agent
+      .get(`/dashboard/positions/exchange-snapshot?apiKeyId=${gateioKeyRes.body.id as string}`);
+    expect(snapshotRes.status).toBe(501);
+    expect(snapshotRes.body.error.message).toBe(
+      "Exchange GATEIO does not support POSITIONS_SNAPSHOT."
+    );
+    expect(snapshotRes.body.error.details).toMatchObject({
+      code: "EXCHANGE_EXECUTION_CAPABILITY_UNSUPPORTED",
+      exchange: "GATEIO",
+      operation: "POSITIONS_SNAPSHOT",
+    });
+
+    const dbKey = await prisma.apiKey.findUniqueOrThrow({
+      where: { id: gateioKeyRes.body.id as string },
+    });
+    expect(dbKey.lastUsed).toBeNull();
+  });
+
   it("returns 502 when exchange snapshot fetch fails", async () => {
     const agent = await registerAndLogin("positions-key-error@example.com");
     const createRes = await agent.post("/dashboard/profile/apiKeys").send({

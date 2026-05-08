@@ -78,6 +78,14 @@ Last updated: 2026-05-08
   unsupported, and the key is not marked used after rejection. Validation PASS:
   focused wallet e2e (`22/22`), API typecheck, repository guardrails, docs
   parity, and diff check.
+- `EXCHANGE2-16` positions snapshot explicit-key fail-closed regression PASS:
+  focused positions coverage proves a stored Gate.io placeholder API key cannot
+  be selected via `apiKeyId` while `POSITIONS_SNAPSHOT` is unsupported. The
+  service now enforces the adapter capability guard before test fallback data
+  or connector reads, the route returns HTTP 501 with unsupported capability
+  details, and `lastUsed` stays unchanged after rejection. Validation PASS:
+  focused positions exchange snapshot e2e, API typecheck, repository
+  guardrails, docs parity, and diff check.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307
