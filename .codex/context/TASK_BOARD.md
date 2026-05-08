@@ -17,6 +17,16 @@ Last updated: 2026-05-08
 
 ## READY
 
+- [x] `V1-RELEASE-GATE-BUILD-INFO-FRESHNESS-2026-05-08 release: require deployed SHA in V1 gate`
+  - Scope: added `--expected-sha` / `RELEASE_GATE_EXPECTED_SHA` to
+    `ops:release:v1:gate` and reused the existing
+    `ops:deploy:wait-web-build-info` command as a pre-smoke build-info
+    freshness gate. The final blocker pack now passes `git rev-parse HEAD` to
+    the final release gate. Validation PASS: release-gate tests, missing
+    web-base-url failure path, dry-run report generation, guardrails, docs
+    parity, public smoke, and diff check. Evidence:
+    `docs/planning/v1-release-gate-build-info-freshness-task-2026-05-08.md`.
+
 - [x] `V1-RELEASE-GATE-LIVEIMPORT-EVIDENCE-2026-05-08 release: require live-import readback in V1 gate`
   - Scope: aligned `ops:release:v1:gate` with the active `LIVEIMPORT-03`
     blocker by adding production-required live-import runtime readback evidence

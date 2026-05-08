@@ -71,6 +71,7 @@ const parseArgs = () => {
   const options = {
     baseUrl: process.env.RELEASE_GATE_API_BASE_URL ?? 'http://localhost:3001',
     webBaseUrl: process.env.RELEASE_GATE_WEB_BASE_URL ?? '',
+    expectedSha: process.env.RELEASE_GATE_EXPECTED_SHA ?? '',
     authToken: process.env.RELEASE_GATE_AUTH_TOKEN ?? '',
     authEmail: process.env.RELEASE_GATE_AUTH_EMAIL ?? '',
     authPassword: process.env.RELEASE_GATE_AUTH_PASSWORD ?? '',
@@ -99,6 +100,7 @@ const parseArgs = () => {
     }
     if (arg === '--base-url') options.baseUrl = args[index + 1] ?? options.baseUrl;
     if (arg === '--web-base-url') options.webBaseUrl = args[index + 1] ?? options.webBaseUrl;
+    if (arg === '--expected-sha') options.expectedSha = args[index + 1] ?? options.expectedSha;
     if (arg === '--auth-token') options.authToken = args[index + 1] ?? options.authToken;
     if (arg === '--auth-email') options.authEmail = args[index + 1] ?? options.authEmail;
     if (arg === '--auth-password') options.authPassword = args[index + 1] ?? options.authPassword;
@@ -125,6 +127,9 @@ const parseArgs = () => {
   if (!VALID_ENVIRONMENTS.has(options.environment)) {
     throw new Error(`Unsupported --environment "${options.environment}". Expected one of: local, stage, prod.`);
   }
+  if (options.expectedSha.trim() && !options.webBaseUrl.trim()) {
+    throw new Error('Missing --web-base-url when --expected-sha is provided.');
+  }
 
   return options;
 };
@@ -137,6 +142,7 @@ const printUsage = () => {
       'Options:',
       '  --base-url <url>                 Target API base URL for deploy/runtime gates',
       '  --web-base-url <url>             Target web base URL for deploy smoke (optional)',
+      '  --expected-sha <sha>             Expected deployed web build-info SHA prefix',
       '  --environment <local|stage|prod> Evidence/readiness scope (default: local)',
       '  --auth-token <token>            Admin JWT for protected OPS endpoints',
       '  --auth-email <email>            Admin email for automatic token fetch',
@@ -191,6 +197,26 @@ export const buildSteps = (options) => {
     }
   }
 
+  if (options.expectedSha.trim()) {
+    steps.push({
+      label: 'web build-info freshness gate',
+      command: 'pnpm',
+      args: [
+        'run',
+        'ops:deploy:wait-web-build-info',
+        '--',
+        '--web-base-url',
+        options.webBaseUrl.trim(),
+        '--expected-sha',
+        options.expectedSha.trim(),
+        '--timeout-seconds',
+        '900',
+        '--interval-seconds',
+        '30',
+      ],
+    });
+  }
+
   if (!options.skipDeploySmoke) {
     const stepArgs = ['run', 'ops:deploy:smoke', '--', '--base-url', options.baseUrl];
     if (options.webBaseUrl.trim()) {
@@ -229,6 +255,7 @@ export const buildExecutionPlanSummary = (options) => ({
   environment: options.environment,
   baseUrl: options.baseUrl,
   webBaseUrl: options.webBaseUrl || '-',
+  expectedSha: options.expectedSha || '-',
   dryRun: options.dryRun ? 'true' : 'false',
   localQuality: options.skipLocalQuality ? 'skipped' : 'enabled',
   goLiveSmoke: options.skipLocalQuality || options.skipGoLiveSmoke ? 'skipped' : 'enabled',
@@ -432,6 +459,7 @@ const renderMarkdown = (report, jsonPath) => {
 - Readiness: ${report.readiness}
 - Base API URL: ${report.baseUrl}
 - Base Web URL: ${report.webBaseUrl || '-'}
+- Expected SHA: ${report.expectedSha || '-'}
 - Raw JSON: \`${jsonPath}\`
 
 ## Evidence Classification
@@ -479,6 +507,7 @@ const main = async () => {
   console.log(`- environment: ${summary.environment}`);
   console.log(`- baseUrl: ${summary.baseUrl}`);
   console.log(`- webBaseUrl: ${summary.webBaseUrl}`);
+  console.log(`- expectedSha: ${summary.expectedSha}`);
   console.log(`- dryRun: ${summary.dryRun}`);
   console.log(`- localQuality: ${summary.localQuality}`);
   console.log(`- goLiveSmoke: ${summary.goLiveSmoke}`);
@@ -516,6 +545,7 @@ const main = async () => {
     readiness,
     baseUrl: options.baseUrl,
     webBaseUrl: options.webBaseUrl,
+    expectedSha: options.expectedSha,
     evidence: evidence.evidence,
     blockers,
     steps: stepResults,

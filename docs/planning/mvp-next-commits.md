@@ -7,6 +7,16 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-RELEASE-GATE-BUILD-INFO-FRESHNESS-2026-05-08 release: require deployed SHA in V1 gate`
+  - 2026-05-08: Added deployed SHA freshness enforcement to the final V1
+    release gate. `ops:release:v1:gate` now accepts `--expected-sha` /
+    `RELEASE_GATE_EXPECTED_SHA` and runs the existing
+    `ops:deploy:wait-web-build-info` step before deploy smoke. The final
+    blocker pack now passes `git rev-parse HEAD` into the release gate. The
+    dry-run `docs/operations/v1-release-gate-prod-2026-05-08Tbuild-info-required-dry-run.md`
+    shows the planned build-info freshness step and remains `not_ready` for
+    protected evidence blockers. Evidence:
+    `docs/planning/v1-release-gate-build-info-freshness-task-2026-05-08.md`.
 - [x] `V1-RELEASE-GATE-LIVEIMPORT-EVIDENCE-2026-05-08 release: require live-import readback in V1 gate`
   - 2026-05-08: Aligned the final production release gate with the active
     `LIVEIMPORT-03` blocker. `ops:release:v1:gate` now requires

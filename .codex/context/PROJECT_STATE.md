@@ -3,6 +3,15 @@
 Last updated: 2026-05-08
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-08 `V1-RELEASE-GATE-BUILD-INFO-FRESHNESS-2026-05-08` added deployed
+  SHA freshness enforcement to the final V1 release gate. The gate now accepts
+  `--expected-sha` / `RELEASE_GATE_EXPECTED_SHA` and, when provided, runs the
+  existing `ops:deploy:wait-web-build-info` step before deploy smoke. The
+  final blocker pack now passes `git rev-parse HEAD` into the release gate.
+  The dry-run
+  `docs/operations/v1-release-gate-prod-2026-05-08Tbuild-info-required-dry-run.md`
+  shows the planned build-info freshness gate and remains `not_ready` for the
+  existing protected evidence blockers.
 - 2026-05-08 `V1-RELEASE-GATE-LIVEIMPORT-EVIDENCE-2026-05-08` aligned the
   final production release gate with the active `LIVEIMPORT-03` blocker.
   `ops:release:v1:gate` now requires

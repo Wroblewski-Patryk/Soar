@@ -159,6 +159,10 @@ Last updated: 2026-05-08
   runtime readback artifact. The latest dry-run blocks on
   `evidence:liveImportReadback:missing`, so final `ready` cannot bypass the
   active bot live-import blocker.
+- 2026-05-08 release-gate build-info freshness hardening is closed:
+  production V1 release gate now accepts `--expected-sha` and runs the existing
+  web build-info wait step before deploy smoke. Final `ready` cannot bypass a
+  stale production deploy when the final blocker pack command is used.
 
 ## Known Environment Pitfalls
 

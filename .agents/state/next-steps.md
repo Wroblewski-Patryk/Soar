@@ -113,7 +113,9 @@ Latest observed production SHA is
      names. The sign-off builder now prints missing required Gate 4 fields on
      the blocked path; owner contact is recommended for rollback authority
      handoff.
-   - Final release gate must run without `--dry-run`.
+   - Final release gate must run without `--dry-run` and with
+     `--expected-sha $(git rev-parse HEAD)` plus the deployed web base URL so
+     build-info freshness is enforced inside the gate.
 5. If the active queue is empty, run a planning-status sweep before saying
    nothing is planned.
 

@@ -134,6 +134,12 @@ Last updated: 2026-05-08
   `docs/operations/v1-release-gate-prod-2026-05-08Tliveimport-required-dry-run.md`
   reports `readiness=not_ready` with `evidence:liveImportReadback:missing`,
   backup/restore failed, rollback proof failed, and dry-run mode blockers.
+- Release gate build-info freshness hardening PASS: `ops:release:v1:gate`
+  now supports `--expected-sha` / `RELEASE_GATE_EXPECTED_SHA` and adds a web
+  build-info freshness gate before deploy smoke. Latest dry-run
+  `docs/operations/v1-release-gate-prod-2026-05-08Tbuild-info-required-dry-run.md`
+  shows the planned `ops:deploy:wait-web-build-info` step and remains
+  `not_ready` for the expected protected evidence blockers.
 - `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
   `/dashboard/positions/live-status` returned global reconciliation diagnostic
   counts for an authenticated user. The route now filters

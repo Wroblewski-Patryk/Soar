@@ -5,7 +5,7 @@
 - Latest observed production code/tooling SHA:
   `3f065ac5c24ff159f97a94a0bc98948a1739eadf`
 - Latest release-gate dry-run:
-  `docs/operations/v1-release-gate-prod-2026-05-08Tliveimport-required-dry-run.md`
+  `docs/operations/v1-release-gate-prod-2026-05-08Tbuild-info-required-dry-run.md`
 
 ## Purpose
 This pack lists the exact remaining commands needed to turn the current
@@ -153,12 +153,14 @@ handoff, but does not replace the required RC owner name.
 ### 7. Run Final Production V1 Release Gate
 
 ```powershell
-pnpm run ops:release:v1:gate -- --environment prod --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --skip-local-quality
+$expectedSha = git rev-parse HEAD
+pnpm run ops:release:v1:gate -- --environment prod --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --skip-local-quality
 ```
 
 Required result:
 - readiness `ready`
 - no `--dry-run`
+- deployed web build-info matches `$expectedSha`
 - protected deploy smoke, runtime freshness, and rollback guard gates pass
 - final report path is recorded in release state
 
@@ -180,7 +182,9 @@ Required result:
   missing Engineering name, Product name, Operations name, RC owner name, and
   final status still `BLOCKED` instead of `APPROVED`.
 - Final V1 release gate has only been run in dry-run mode after the blocker
-  refresh.
+  refresh. The latest dry-run includes the web build-info freshness gate, so
+  final non-dry-run approval must prove deployed SHA freshness as well as
+  protected runtime and rollback checks.
 
 ## Completion Rule
 V1 can be marked ready only after every required artifact above is fresh and

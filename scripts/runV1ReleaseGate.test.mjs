@@ -34,6 +34,7 @@ test('buildSteps passes api and web targets into deploy smoke gate', () => {
   const steps = buildSteps({
     baseUrl: 'https://stage-api.example.com',
     webBaseUrl: 'https://stage-web.example.com',
+    expectedSha: '',
     authToken: '',
     authEmail: '',
     authPassword: '',
@@ -61,10 +62,48 @@ test('buildSteps passes api and web targets into deploy smoke gate', () => {
   ]);
 });
 
+test('buildSteps adds build-info freshness gate before deploy smoke when expected sha is provided', () => {
+  const steps = buildSteps({
+    baseUrl: 'https://stage-api.example.com',
+    webBaseUrl: 'https://stage-web.example.com',
+    expectedSha: 'abc123',
+    authToken: '',
+    authEmail: '',
+    authPassword: '',
+    opsBasicUser: '',
+    opsBasicPassword: '',
+    opsAuthHeaderName: '',
+    opsAuthHeaderValue: '',
+    skipLocalQuality: true,
+    skipGoLiveSmoke: true,
+    skipDeploySmoke: false,
+    skipRuntimeFreshness: true,
+    skipRollbackGuard: true,
+  });
+
+  assert.equal(steps.length, 2);
+  assert.equal(steps[0].label, 'web build-info freshness gate');
+  assert.deepEqual(steps[0].args, [
+    'run',
+    'ops:deploy:wait-web-build-info',
+    '--',
+    '--web-base-url',
+    'https://stage-web.example.com',
+    '--expected-sha',
+    'abc123',
+    '--timeout-seconds',
+    '900',
+    '--interval-seconds',
+    '30',
+  ]);
+  assert.equal(steps[1].label, 'post-deploy smoke gate');
+});
+
 test('buildSteps passes release auth through step env instead of command args', () => {
   const steps = buildSteps({
     baseUrl: 'https://api.example.com',
     webBaseUrl: 'https://web.example.com',
+    expectedSha: '',
     authToken: 'secret-token',
     authEmail: 'ops@example.com',
     authPassword: 'secret-password',
@@ -96,6 +135,7 @@ test('buildExecutionPlanSummary marks go-live smoke skipped when local quality i
     environment: 'prod',
     baseUrl: 'https://api.example.com',
     webBaseUrl: '',
+    expectedSha: '',
     dryRun: true,
     skipLocalQuality: true,
     skipGoLiveSmoke: false,
