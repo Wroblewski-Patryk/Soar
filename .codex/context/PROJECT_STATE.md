@@ -38,6 +38,11 @@ Last updated: 2026-05-08
   runtime freshness fails closed on protected `401`, and rollback guard reports
   `shouldRollback=true` only because protected freshness/alerts endpoints are
   `401` without auth.
+  The final refreshed 2026-05-08 dry-run
+  `docs/operations/v1-release-gate-prod-2026-05-08T05-36-43-320Z.md` keeps
+  readiness `not_ready`: activation and RC artifacts are fresh, while
+  backup/restore is fresh but failed due to missing production DB/Coolify
+  access, and rollback proof is fresh but failed on protected `401` responses.
   Evidence:
   `docs/planning/v1-paper-live-backend-runtime-parity-task-2026-05-08.md`.
 

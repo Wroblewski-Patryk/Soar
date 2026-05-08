@@ -5,7 +5,7 @@
 - Production code/tooling SHA:
   `da1e52cfec0b70e5a94e59d75fe702a55c348d74`
 - Latest release-gate dry-run:
-  `docs/operations/v1-release-gate-prod-2026-05-08T05-27-38-139Z.md`
+  `docs/operations/v1-release-gate-prod-2026-05-08T05-36-43-320Z.md`
 
 ## Purpose
 This pack lists the exact remaining commands needed to turn the current
@@ -124,12 +124,14 @@ Required result:
 
 ## Current Known Blockers
 - `LIVEIMPORT-03` authenticated runtime readback is missing.
-- Production restore drill is current but failed because DB/Coolify access is
-  unavailable in this shell.
-- Production rollback proof is current but failed because protected OPS routes
-  returned `401` without auth.
-- The latest 2026-05-08 dry-run marks the 2026-05-07 activation, RC,
-  backup/restore, and rollback artifacts as stale for the current day.
+- Production restore drill is current for 2026-05-08 but failed because
+  DB/Coolify access is unavailable in this shell (`PROD_DB_CHECK_CONTAINER` or
+  equivalent is missing).
+- Production rollback proof is current for 2026-05-08 but failed because
+  protected OPS routes returned `401` without auth.
+- The latest 2026-05-08 dry-run marks activation, RC external gates, RC
+  sign-off, and RC checklist as fresh; backup/restore and rollback are fresh
+  but failed.
 - A no-auth 2026-05-08 runtime freshness probe failed closed with HTTP `401`;
   rollback guard returned `shouldRollback=true` only because runtime freshness
   and alerts endpoints were protected by `401`.

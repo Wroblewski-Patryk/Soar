@@ -91,7 +91,7 @@ until a newer Coolify/manual deploy is confirmed.
    backup/restore drill evidence and rollback proof pack are fresh but failed
    in the latest dry-run report. Activation audit, activation plan, RC status,
    RC sign-off, and RC checklist are fresh blocked/NO-GO artifacts for
-   2026-05-07.
+   2026-05-08.
    - Restore drill needs approved production DB/Coolify access.
    - Rollback proof and runtime freshness need protected OPS auth.
    - Final release gate must run without `--dry-run`.

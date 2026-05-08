@@ -78,6 +78,14 @@ Last updated: 2026-05-08
   fail-closed: runtime freshness returned HTTP `401`, and rollback guard
   returned `shouldRollback=true` due to `runtime_freshness_endpoint_http_401`
   and `alerts_endpoint_http_401`.
+- Final refreshed 2026-05-08 V1 release-gate dry-run:
+  `docs/operations/v1-release-gate-prod-2026-05-08T05-36-43-320Z.md` reports
+  `readiness=not_ready`. Activation audit, activation plan, RC external gates
+  status, RC sign-off record, and RC checklist are fresh. Backup/restore drill
+  evidence is fresh but `FAILED` because production DB/Coolify access is not
+  available in this shell. Rollback proof is fresh but `FAILED` because
+  protected runtime freshness and alerts endpoints return HTTP `401` without
+  auth.
 - `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
   `/dashboard/positions/live-status` returned global reconciliation diagnostic
   counts for an authenticated user. The route now filters
