@@ -66,6 +66,7 @@
     "ops:rc:gates:refresh:summary": "pnpm run ops:rc:gates:refresh && pnpm run ops:rc:gates:summary",
     "ops:rc:gates:refresh:summary:strict": "node scripts/runRcRefreshSummaryStrict.mjs",
     "ops:rc:gates:refresh:summary:strict:prod": "node scripts/runRcRefreshSummaryStrict.mjs --require-production-gate2",
+    "ops:release:v1:preflight": "node scripts/runV1FinalPreflight.mjs",
     "ops:release:v1:gate": "node scripts/runV1ReleaseGate.mjs",
     "ops:release:v1:stage-rehearsal": "node scripts/runV1StageRehearsal.mjs",
     "ops:deploy:smoke": "node scripts/deploySmokeCheck.mjs",

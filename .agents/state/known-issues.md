@@ -172,6 +172,11 @@ Last updated: 2026-05-08
   reports `evidence:rcExternalGateStatus:failed`,
   `evidence:rcSignoffRecord:failed`, and `evidence:rcChecklist:failed`, so
   final `ready` cannot bypass real Gate 4 approval.
+- 2026-05-08 final V1 preflight command is available:
+  `pnpm run ops:release:v1:preflight` is the safe first operator command. In
+  this shell it passes build-info for current `HEAD`, then blocks on missing
+  production auth/DB env names and current release evidence blockers without
+  creating protected artifacts.
 
 ## Known Environment Pitfalls
 

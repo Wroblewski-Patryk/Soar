@@ -36,6 +36,22 @@ with approved production auth and database/Coolify access.
 
 ## Execution Order
 
+### 0. Run Final V1 Preflight
+
+Run the read-only preflight first. It checks deployed build-info for current
+`HEAD`, reports missing prerequisite environment variable names, and classifies
+current release evidence without creating protected production artifacts.
+
+```powershell
+pnpm run ops:release:v1:preflight
+```
+
+Expected current result before protected operator access is available:
+`BLOCKED` with missing `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, production
+DB restore context, RC approval, live-import readback, restore, and rollback
+evidence blockers. Do not treat preflight as final release evidence; it is the
+safe readiness check before the commands below.
+
 ### 1. Verify Production Build Info
 
 If the pushed commit has not appeared in build-info yet, wait for the accepted

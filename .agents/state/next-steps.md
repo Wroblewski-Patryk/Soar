@@ -35,6 +35,9 @@ pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckyspar
 After Coolify deploy exposes the promoted SHA, continue with
 `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md` once
 production auth and DB/Coolify access are available. Start with
+`pnpm run ops:release:v1:preflight`; it is read-only and reports deploy
+freshness, missing prerequisite env names, and current release evidence
+blockers without creating protected artifacts. Then continue with
 `LIVEIMPORT-03` authenticated read-only production runtime readback on the
 current pushed `main` V1 backend parity candidate or later.
 Evidence must cover ownership, `strategyId` or single-strategy provenance
@@ -77,6 +80,11 @@ readback. Last verified RC approval gate hardening deploy:
 
 0. Follow the final blocker execution pack:
    `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
+0-preflight. Run `pnpm run ops:release:v1:preflight` first. It should be
+   `BLOCKED` until live-import auth, rollback auth, production DB restore
+   context, RC approval, live-import readback, restore, and rollback evidence
+   are all present. The command prints env variable names only and writes no
+   protected evidence artifacts.
 0a. Production build-info reached the backend parity runtime fix, blocker
    evidence alignment, deploy-wait coordination, operator preflight hardening
    docs, live-import release-gate evidence enforcement, build-info freshness

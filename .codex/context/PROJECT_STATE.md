@@ -3,6 +3,15 @@
 Last updated: 2026-05-08
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-08 `V1-FINAL-PREFLIGHT-COMMAND-2026-05-08` added
+  `pnpm run ops:release:v1:preflight`, a read-only final V1 operator preflight
+  that verifies current `HEAD` through web build-info, reports missing
+  prerequisite env names, and classifies current release evidence blockers
+  through the existing release-gate evidence model. In the current shell the
+  command passes build-info, exits non-zero on missing protected
+  `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, and production DB restore env
+  names plus current RC/live-import/restore/rollback evidence blockers, and
+  creates no protected production evidence artifacts.
 - 2026-05-08 `V1-RELEASE-GATE-RC-APPROVAL-EVIDENCE-2026-05-08` aligned the
   final production release gate with the real RC approval requirement.
   `ops:release:v1:gate` now requires RC external gates to show all four gates

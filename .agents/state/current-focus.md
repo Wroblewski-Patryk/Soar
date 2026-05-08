@@ -49,6 +49,12 @@ The collector is hardened to fail closed when no RUNNING session produces a
 runtime positions payload, so no-session output cannot be treated as V1
 evidence.
 
+Before running protected evidence commands, use the read-only aggregate
+preflight:
+`pnpm run ops:release:v1:preflight`. It verifies current `HEAD` through
+build-info, reports missing prerequisite env names, and classifies current
+release evidence blockers without creating protected artifacts.
+
 A production `ops:release:v1:gate` dry-run on 2026-05-07 generated current
 blocker artifacts and reports `readiness=not_ready`: activation audit,
 activation plan, RC external gates status, RC sign-off, RC checklist,

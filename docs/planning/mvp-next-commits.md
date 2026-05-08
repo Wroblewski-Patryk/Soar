@@ -7,6 +7,14 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-FINAL-PREFLIGHT-COMMAND-2026-05-08 release: add final V1 operator preflight`
+  - 2026-05-08: Added `pnpm run ops:release:v1:preflight`, a read-only
+    operator command that verifies current `HEAD` through web build-info,
+    reports missing protected prerequisite env names, and classifies current
+    release evidence blockers through the existing release-gate evidence model.
+    In this shell it exits non-zero on missing production auth/DB/approval
+    inputs and creates no protected production evidence artifacts. Evidence:
+    `docs/planning/v1-final-preflight-command-task-2026-05-08.md`.
 - [x] `V1-RELEASE-STATE-SHA-HANDOFF-2026-05-08 release: keep deploy SHA verification dynamic`
   - 2026-05-08: Updated the active final blocker handoff and continuation
     state so future protected readback and final V1 release-gate work verifies

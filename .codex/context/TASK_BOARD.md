@@ -17,6 +17,16 @@ Last updated: 2026-05-08
 
 ## READY
 
+- [x] `V1-FINAL-PREFLIGHT-COMMAND-2026-05-08 release: add final V1 operator preflight`
+  - Scope: added `pnpm run ops:release:v1:preflight`, a read-only command that
+    verifies current `HEAD` through web build-info, reports missing protected
+    prerequisite env names, and classifies release evidence blockers through
+    the existing release-gate model. The command exits non-zero and writes no
+    protected production evidence artifacts when auth/DB/approval inputs are
+    missing. Validation PASS: syntax, help, no-auth fail-closed preflight,
+    guardrails, docs parity, public smoke, and diff check. Evidence:
+    `docs/planning/v1-final-preflight-command-task-2026-05-08.md`.
+
 - [x] `V1-RELEASE-STATE-SHA-HANDOFF-2026-05-08 release: keep deploy SHA verification dynamic`
   - Scope: updated the active final blocker handoff and continuation state so
     protected `LIVEIMPORT-03` and final V1 release-gate work starts by

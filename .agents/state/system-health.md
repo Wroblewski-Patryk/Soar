@@ -152,6 +152,12 @@ Last updated: 2026-05-08
   reports RC external gates, RC sign-off, and RC checklist as `failed` while
   current Gate 4 remains open/blocked, so final `ready` cannot pass on fresh
   but unapproved RC artifacts.
+- Final V1 preflight command PASS as fail-closed tooling: `ops:release:v1:preflight`
+  confirms deployed build-info for current `HEAD`, reports missing
+  `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, and production DB restore env
+  names, classifies current release evidence blockers, exits non-zero, and
+  writes no protected production evidence artifacts when operator access is
+  absent.
 - `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
   `/dashboard/positions/live-status` returned global reconciliation diagnostic
   counts for an authenticated user. The route now filters
