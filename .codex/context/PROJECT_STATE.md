@@ -32,12 +32,20 @@ Last updated: 2026-05-08
   disabled until a real Gate.io market-data source is implemented and verified.
   Evidence:
   `docs/planning/exchange2-03-runtime-market-event-exchange-boundary-task-2026-05-08.md`.
-- 2026-05-08 `EXCHANGE2-04` is adding the Gate.io public market-data reader
+- 2026-05-08 `EXCHANGE2-04` added the Gate.io public market-data reader
   foundation through the existing exchange adapter boundary. Gate.io app
   `FUTURES` resolves to CCXT `swap` for perpetual futures, while paper/live and
   authenticated capabilities remain disabled until runtime publication and
   evidence are complete. Evidence:
   `docs/planning/exchange2-04-gateio-public-market-data-reader-task-2026-05-08.md`.
+- 2026-05-08 `EXCHANGE2-05` added an opt-in Gate.io market-stream polling
+  worker. `MARKET_STREAM_EXCHANGE=GATEIO` reads public ticker/candle data
+  through `exchangePublicMarketData.service.ts` and publishes canonical
+  `MarketStreamEvent` payloads with `exchange: GATEIO`; Binance websocket
+  ingestion remains the default. Gate.io paper/live/authenticated capabilities
+  remain disabled until runtime evidence supports enabling `PAPER_PRICING_FEED`.
+  Evidence:
+  `docs/planning/exchange2-05-gateio-market-stream-polling-task-2026-05-08.md`.
 - 2026-05-08 `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08` published the
   current no-secret final V1 preflight JSON/Markdown snapshot for deployed SHA
   `052df82244ea0f81e8611ff8bb2b677db115bd19`. The snapshot reports build-info

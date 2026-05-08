@@ -10,13 +10,17 @@ target exchange. Use
 canonical staged plan. Do not enable broad `LIVE_EXECUTION` or
 `PAPER_PRICING_FEED` for another exchange until exact operation support is
 implemented and verified. Gate.io public market catalog is the first adapter
-slice and remains separate from paper/live/authenticated capabilities. The next
-foundation slices generalize runtime market events and add an exchange-module
-Gate.io public ticker/candle reader so a future Gate.io market-data adapter can
-publish canonical ticker/candle events without being misrepresented as Binance.
-Remaining required user/operator decisions: whether the next live slice is
-API-key probe, authenticated readback, live order submit, and whether
-exchange-side cancel is in scope.
+slice and remains separate from paper/live/authenticated capabilities. The
+foundation slices now generalize runtime market events, add an exchange-module
+Gate.io public ticker/candle reader, and add an opt-in
+`MARKET_STREAM_EXCHANGE=GATEIO` polling adapter that publishes canonical
+ticker/candle events without misrepresenting Gate.io as Binance. Remaining
+required implementation/evidence before Gate.io paper enablement: verify
+runtime consumption from the Gate.io event source in a target environment, then
+enable `PAPER_PRICING_FEED` only if that evidence is clean. Remaining required
+user/operator decisions: whether the next live slice is API-key probe,
+authenticated readback, live order submit, and whether exchange-side cancel is
+in scope.
 
 The local V1 backend paper/live runtime line is closed for this slice: focused
 parity/crash coverage, DB-backed runtime/order/exchange/import/readback packs,

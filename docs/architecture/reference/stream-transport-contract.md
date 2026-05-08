@@ -9,7 +9,9 @@
   - Better operational visibility (plain HTTP semantics, retry-friendly).
 
 ## Scope
-- Source ingest: Binance WebSocket in worker layer.
+- Source ingest: approved exchange market-data worker layer.
+  - Binance uses the websocket worker by default.
+  - Gate.io can use opt-in public polling through the exchange adapter boundary.
 - Fan-out to dashboard clients: SSE from API layer.
 - Upgrade path (post-MVP): optional WebSocket gateway for bidirectional needs.
 
@@ -80,3 +82,5 @@
 - Any breaking event-field rename requires:
   - contract version bump (`X-Stream-Contract-Version`)
   - frontend parser compatibility layer
+- Exchange support is additive behind the same event contract; a new source
+  must not publish another venue as `BINANCE`.

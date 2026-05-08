@@ -1,3 +1,5 @@
+import { Exchange } from '@prisma/client';
+
 import { prisma } from '../prisma/client';
 import { normalizeSymbol, normalizeSymbols } from '../lib/symbols';
 import { resolveEffectiveSymbolGroupSymbolsWithCatalog } from '../modules/bots/runtimeSymbolCatalogResolver.service';
@@ -13,6 +15,7 @@ const normalizeInterval = (value: string | null | undefined) => {
 };
 
 export const resolveMarketStreamDynamicSubscriptions = async (params: {
+  exchange?: Exchange;
   marketType: 'FUTURES' | 'SPOT';
   envSymbols: string[];
   envIntervals: string[];
@@ -54,6 +57,14 @@ export const resolveMarketStreamDynamicSubscriptions = async (params: {
   const catalogSymbolsCache = new Map<string, string[]>();
 
   for (const bot of bots) {
+    const universeExchange = bot.symbolGroup?.marketUniverse?.exchange ?? null;
+    if (params.exchange && universeExchange && universeExchange !== params.exchange) {
+      continue;
+    }
+    if (params.exchange && params.exchange !== 'BINANCE' && universeExchange !== params.exchange) {
+      continue;
+    }
+
     const directSymbols = bot.symbolGroup
       ? await resolveEffectiveSymbolGroupSymbolsWithCatalog(bot.symbolGroup, catalogSymbolsCache)
       : [];

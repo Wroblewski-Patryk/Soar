@@ -55,6 +55,16 @@ Last updated: 2026-05-08
     Evidence:
     `docs/planning/exchange2-04-gateio-public-market-data-reader-task-2026-05-08.md`.
 
+- [x] `EXCHANGE2-05 feat(market-stream): publish Gate.io public data as canonical events`
+  - Scope: add an opt-in `MARKET_STREAM_EXCHANGE=GATEIO` market-stream
+    polling worker that reads public ticker/candle data through the
+    exchange-owned public market-data reader and publishes canonical
+    `MarketStreamEvent` payloads with `exchange: GATEIO`. Binance websocket
+    remains the default path, and Gate.io paper/live/authenticated capabilities
+    remain disabled.
+    Evidence:
+    `docs/planning/exchange2-05-gateio-market-stream-polling-task-2026-05-08.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - Scope: generated and committed the current no-secret final V1 preflight
     JSON/Markdown snapshot for deployed SHA

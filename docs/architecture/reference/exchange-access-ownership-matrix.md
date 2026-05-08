@@ -131,8 +131,8 @@ Runtime market-event boundary:
 
 - canonical runtime market events may carry any registered `Exchange`
 - the Binance websocket normalizer still emits only `BINANCE`
-- Gate.io runtime events are allowed only as normalized input from a future
-  approved Gate.io market-data adapter source
+- Gate.io runtime events are allowed only as normalized input from the approved
+  exchange-owned public market-data reader and market-stream polling adapter
 - Gate.io public ticker and candle reads are available inside the exchange
   module through the public market-data reader, and app `GATEIO/FUTURES`
   resolves to CCXT `swap` for perpetual futures

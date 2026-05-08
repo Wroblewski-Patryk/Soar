@@ -49,6 +49,15 @@ Operational queue for one-task execution runs.
     remain disabled. Evidence:
     `docs/planning/exchange2-04-gateio-public-market-data-reader-task-2026-05-08.md`.
 
+- [x] `EXCHANGE2-05 feat(market-stream): publish Gate.io public data as canonical events`
+  - 2026-05-08: Add an opt-in `MARKET_STREAM_EXCHANGE=GATEIO` market-stream
+    polling worker that reads public ticker/candle data through
+    `exchangePublicMarketData.service.ts` and publishes canonical
+    `MarketStreamEvent` payloads with `exchange: GATEIO`. Binance websocket
+    remains the default path, and Gate.io paper/live/authenticated
+    capabilities remain disabled. Evidence:
+    `docs/planning/exchange2-05-gateio-market-stream-polling-task-2026-05-08.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - 2026-05-08: Generated and committed the current no-secret final V1
     preflight JSON/Markdown snapshot for deployed SHA

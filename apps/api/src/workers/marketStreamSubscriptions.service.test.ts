@@ -89,4 +89,50 @@ describe('marketStreamSubscriptions.service', () => {
     ]);
     expect(result.candleIntervals).toEqual(['1m', '5m']);
   });
+
+  it('filters dynamic subscriptions to the requested non-Binance exchange', async () => {
+    prismaFindManyMock.mockResolvedValue([
+      {
+        symbolGroup: {
+          symbols: ['BTCUSDT'],
+          marketUniverse: {
+            exchange: 'BINANCE',
+            marketType: 'FUTURES',
+            baseCurrency: 'USDT',
+            filterRules: {},
+            whitelist: [],
+            blacklist: [],
+          },
+        },
+        strategy: { interval: '1m' },
+      },
+      {
+        symbolGroup: {
+          symbols: ['ETHUSDT'],
+          marketUniverse: {
+            exchange: 'GATEIO',
+            marketType: 'FUTURES',
+            baseCurrency: 'USDT',
+            filterRules: {},
+            whitelist: [],
+            blacklist: [],
+          },
+        },
+        strategy: { interval: '5m' },
+      },
+    ]);
+    resolveEffectiveSymbolGroupSymbolsWithCatalogMock.mockResolvedValueOnce(['ETHUSDT']);
+
+    const { resolveMarketStreamDynamicSubscriptions } = await import('./marketStreamSubscriptions.service');
+    const result = await resolveMarketStreamDynamicSubscriptions({
+      exchange: 'GATEIO',
+      marketType: 'FUTURES',
+      envSymbols: ['DOGEUSDT'],
+      envIntervals: ['1m'],
+    });
+
+    expect(resolveEffectiveSymbolGroupSymbolsWithCatalogMock).toHaveBeenCalledTimes(1);
+    expect(result.symbols).toEqual(['DOGEUSDT', 'ETHUSDT']);
+    expect(result.candleIntervals).toEqual(['1m', '5m']);
+  });
 });
