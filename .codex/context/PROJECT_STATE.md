@@ -68,6 +68,15 @@ Last updated: 2026-05-08
   Follow-up build-info reached
   `36ac02696ac0ce22a6b8bab545fcfb741125ea4b`, which includes the fanout
   regression and deploy-lag state update; public API/Web smoke passed.
+- 2026-05-08 `EXCHANGE2-08` captured real public Gate.io market-data smoke
+  through the exchange-owned public adapter path. `GATEIO/FUTURES/BTCUSDT`
+  ticker and `1m` candles returned valid public data using
+  `exchangePublicMarketData.service.ts`; no secrets, authenticated reads,
+  exchange writes, live orders, or production mutations were used. Gate.io
+  `PAPER_PRICING_FEED`, authenticated reads, LIVE submit, and cancel remain
+  disabled until target worker/source evidence and exact operation support are
+  complete. Evidence:
+  `docs/operations/gateio-public-market-data-smoke-2026-05-08.md`.
 - 2026-05-08 `PROD-UI-AUDIT-PLAN-2026-05-08` prepared the production UI module
   clickthrough audit plan requested by the user. The plan covers all canonical
   public, dashboard, admin, and legacy redirect routes, module-level functions,

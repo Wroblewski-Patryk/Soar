@@ -1,0 +1,53 @@
+{
+  "generatedAt": "2026-05-08T20:22:35.606Z",
+  "startedAt": "2026-05-08T20:22:18.721Z",
+  "exchange": "GATEIO",
+  "marketType": "FUTURES",
+  "symbol": "BTCUSDT",
+  "interval": "1m",
+  "adapterPath": "apps/api/src/modules/exchange/exchangePublicMarketData.service.ts",
+  "runner": "apps/api/node_modules/.bin/tsx.CMD .tmp/gateio-public-market-data-smoke.ts",
+  "scope": "public read-only adapter smoke from local workstation; no secrets and no exchange writes",
+  "checks": {
+    "ticker": {
+      "status": "PASS",
+      "eventTimePresent": true,
+      "lastPricePresent": true,
+      "markPricePresent": true,
+      "priceChangePresent": true
+    },
+    "candles": {
+      "status": "PASS",
+      "count": 2,
+      "latestOpenTime": 1778271720000,
+      "latestCloseTime": 1778271779999,
+      "latestClosePresent": true,
+      "latestVolumePresent": true
+    }
+  },
+  "sample": {
+    "ticker": {
+      "symbol": "BTC/USDT",
+      "eventTime": 1778271747427,
+      "lastPrice": 80258,
+      "markPrice": null,
+      "priceChangePercent24h": 0.15
+    },
+    "latestCandle": {
+      "openTime": 1778271720000,
+      "closeTime": 1778271779999,
+      "open": 80258,
+      "high": 80258,
+      "low": 80258,
+      "close": 80258,
+      "volume": 0.000119
+    }
+  },
+  "result": "PASS",
+  "limitations": [
+    "This is not authenticated Gate.io readback.",
+    "This is not a production worker smoke.",
+    "This does not enable Gate.io PAPER_PRICING_FEED.",
+    "This does not test LIVE order submit or cancel."
+  ]
+}

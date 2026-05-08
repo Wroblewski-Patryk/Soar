@@ -35,6 +35,12 @@ Follow-up production build-info now exposes
 `36ac02696ac0ce22a6b8bab545fcfb741125ea4b`, and public smoke passed. Gate.io
 `PAPER_PRICING_FEED` still remains disabled until target-environment source
 evidence proves the live polling source behavior cleanly.
+Real public Gate.io adapter smoke is now captured:
+`docs/operations/gateio-public-market-data-smoke-2026-05-08.md` shows
+`GATEIO/FUTURES/BTCUSDT` ticker and `1m` candle reads passing through
+`exchangePublicMarketData.service.ts` without secrets or writes. This still
+does not enable `PAPER_PRICING_FEED`; the remaining Gate.io paper boundary is
+target worker/source evidence and exact capability enablement.
 
 After the planned Gate.io/deploy-auth blockers are cleared, execute the
 production UI module clickthrough audit from

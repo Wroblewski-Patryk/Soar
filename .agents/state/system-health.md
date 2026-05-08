@@ -25,6 +25,11 @@ Last updated: 2026-05-08
   on `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d`. Follow-up build-info now
   exposes `36ac02696ac0ce22a6b8bab545fcfb741125ea4b`, and public API/Web smoke
   passed after the freshness check.
+- `EXCHANGE2-08` public Gate.io adapter smoke PASS: the existing
+  `exchangePublicMarketData.service.ts` path read `GATEIO/FUTURES/BTCUSDT`
+  ticker and `1m` candles successfully from public data without secrets,
+  authenticated reads, exchange writes, or live orders. Gate.io
+  `PAPER_PRICING_FEED` remains disabled pending target worker/source evidence.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307

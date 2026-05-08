@@ -76,6 +76,16 @@ Operational queue for one-task execution runs.
     disabled. Evidence:
     `docs/planning/exchange2-07-gateio-market-stream-fanout-regression-task-2026-05-08.md`.
 
+- [x] `EXCHANGE2-08 qa(exchange): capture Gate.io public market-data smoke`
+  - 2026-05-08: Captured a real public read-only Gate.io adapter smoke through
+    `exchangePublicMarketData.service.ts`. `GATEIO/FUTURES/BTCUSDT` ticker and
+    `1m` candle reads passed without secrets, authenticated reads, exchange
+    writes, or live orders. Gate.io `PAPER_PRICING_FEED`, authenticated reads,
+    LIVE submit, and cancel remain disabled until target worker/source evidence
+    and explicit operation support are complete. Evidence:
+    `docs/planning/exchange2-08-gateio-public-market-data-smoke-task-2026-05-08.md`
+    and `docs/operations/gateio-public-market-data-smoke-2026-05-08.md`.
+
 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
   - 2026-05-08: Planning artifact is ready for a production-wide UI audit that
     visits all canonical public, dashboard, admin, and legacy redirect routes,
