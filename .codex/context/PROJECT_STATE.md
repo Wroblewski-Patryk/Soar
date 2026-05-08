@@ -88,6 +88,9 @@ Last updated: 2026-05-08
   enabling `PAPER_PRICING_FEED`, authenticated reads, LIVE submit, or cancel.
   Evidence:
   `docs/planning/exchange2-09-gateio-market-stream-worker-config-task-2026-05-08.md`.
+  Follow-up production build-info reached
+  `9382d9317a5ae82d404559398922a253bef9e697`, and public API/Web smoke
+  passed.
 - 2026-05-08 `PROD-UI-AUDIT-PLAN-2026-05-08` prepared the production UI module
   clickthrough audit plan requested by the user. The plan covers all canonical
   public, dashboard, admin, and legacy redirect routes, module-level functions,

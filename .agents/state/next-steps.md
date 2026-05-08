@@ -48,7 +48,9 @@ Worker bootstrap source selection is now locally regression-locked:
 `EXCHANGE2-09` proves Binance remains the default market-stream source, Gate.io
 polling is selected only by `MARKET_STREAM_EXCHANGE=GATEIO`, and invalid env
 values fall back to safe defaults. This is still not production target-source
-evidence and does not enable Gate.io `PAPER_PRICING_FEED`.
+evidence and does not enable Gate.io `PAPER_PRICING_FEED`. Follow-up
+production build-info reached
+`9382d9317a5ae82d404559398922a253bef9e697`, and public API/Web smoke passed.
 
 After the planned Gate.io/deploy-auth blockers are cleared, execute the
 production UI module clickthrough audit from

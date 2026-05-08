@@ -128,6 +128,11 @@ updated source-of-truth notes.
 - Observability or alerting impact: none
 - Staged rollout or feature flag: existing `MARKET_STREAM_EXCHANGE=GATEIO`
   opt-in remains the rollout switch
+- Post-push production check:
+  - `node scripts\waitForWebBuildInfo.mjs --web-base-url https://soar.luckysparrow.ch --expected-sha 9382d931 --timeout-seconds 180 --interval-seconds 15` => PASS
+  - `node scripts\deploySmokeCheck.mjs --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers` => PASS
+  - production build-info exposed
+    `9382d9317a5ae82d404559398922a253bef9e697`
 
 ## Autonomous Loop Evidence
 
@@ -232,7 +237,8 @@ updated source-of-truth notes.
 - How tested: focused worker/market-stream Vitest pack, API typecheck,
   repository guardrails, docs parity, and diff check.
 - What is incomplete: Gate.io paper/live/authenticated support remains
-  disabled; target environment worker evidence remains required.
+  disabled; target environment worker evidence for `MARKET_STREAM_EXCHANGE=GATEIO`
+  remains required before `PAPER_PRICING_FEED`.
 - Next steps: wait for deploy/source evidence or add the next exact capability
   gate once operator inputs are available.
 - Decisions made: no new product decisions.

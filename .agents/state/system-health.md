@@ -37,8 +37,10 @@ Last updated: 2026-05-08
   remains the default source, Gate.io polling is explicit opt-in via
   `MARKET_STREAM_EXCHANGE=GATEIO`, and unsupported/invalid env values fall
   back to safe defaults. Validation PASS: focused worker/market-stream Vitest
-  pack (`4` files, `8/8`) and API typecheck. Gate.io `PAPER_PRICING_FEED`
-  remains disabled pending target environment source evidence.
+  pack (`4` files, `8/8`) and API typecheck. Follow-up production build-info
+  reached `9382d9317a5ae82d404559398922a253bef9e697`, and public API/Web
+  smoke passed. Gate.io `PAPER_PRICING_FEED` remains disabled pending target
+  environment source evidence with `MARKET_STREAM_EXCHANGE=GATEIO`.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307
