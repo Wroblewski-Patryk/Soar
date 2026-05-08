@@ -18,6 +18,11 @@ local Postgres/Redis ports were reachable. Sequential reruns passed.
   (`4/4` files, `26/26` tests), DB-backed runtime/order/exchange/import and
   readback packs, full local API suite with test-only API-key encryption env,
   API typecheck, and repository guardrails.
+- 2026-05-08: Prevented market-stream worker source-selection drift for the
+  Gate.io rollout. Worker env parsing now lives in a pure config resolver with
+  tests proving Binance remains the default, Gate.io is explicit opt-in, and
+  invalid env values fall back to safe defaults. Validation: focused
+  worker/market-stream Vitest pack (`4` files, `8/8`) and API typecheck.
 - 2026-05-07: Ran production V1 release-gate classifier in dry-run mode and
   preserved stale evidence blockers as release state. This prevents treating
   old 2026-05-02 RC/backup/rollback artifacts as fresh V1 evidence.

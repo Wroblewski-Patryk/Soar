@@ -91,6 +91,16 @@ Last updated: 2026-05-08
     Evidence:
     `docs/planning/exchange2-08-gateio-public-market-data-smoke-task-2026-05-08.md`.
 
+- [x] `EXCHANGE2-09 refactor(market-stream): lock Gate.io worker source selection`
+  - Scope: extracted market-stream worker env parsing into
+    `marketStreamWorkerConfig.ts` and added focused tests proving Binance is
+    the default source, Gate.io polling is explicit opt-in through
+    `MARKET_STREAM_EXCHANGE=GATEIO`, and unsupported/invalid env values fall
+    back to safe defaults. Gate.io paper/live/authenticated capabilities remain
+    disabled.
+    Evidence:
+    `docs/planning/exchange2-09-gateio-market-stream-worker-config-task-2026-05-08.md`.
+
 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
   - Scope: execute a production-wide UI audit across canonical public,
     dashboard, admin, and legacy redirect routes, clicking safe module

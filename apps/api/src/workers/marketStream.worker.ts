@@ -8,31 +8,12 @@ import {
   resolveMarketStreamDynamicSubscriptions,
   type StreamSubscriptions,
 } from './marketStreamSubscriptions.service';
+import { resolveMarketStreamWorkerConfig } from './marketStreamWorkerConfig';
 
 const logger = createModuleLogger('market-stream.bootstrap');
 
-const parseCsv = (value: string | undefined, fallback: string[]) => {
-  const items = value
-    ?.split(',')
-    .map((item) => item.trim())
-    .filter((item) => item.length > 0);
-  return items && items.length > 0 ? items : fallback;
-};
-
-const parseRefreshMs = (value: string | undefined, fallbackMs: number) => {
-  const parsed = Number.parseInt(value ?? '', 10);
-  if (!Number.isFinite(parsed) || parsed <= 0) return fallbackMs;
-  return parsed;
-};
-
-const marketType = process.env.MARKET_STREAM_MARKET_TYPE === 'SPOT' ? 'SPOT' : 'FUTURES';
-const exchange = process.env.MARKET_STREAM_EXCHANGE === 'GATEIO' ? 'GATEIO' : 'BINANCE';
-const envSymbols = parseCsv(process.env.MARKET_STREAM_SYMBOLS, ['BTCUSDT', 'ETHUSDT', 'BNBUSDT']);
-const envIntervals = parseCsv(process.env.MARKET_STREAM_INTERVALS, ['1m', '5m']).map((interval) =>
-  interval.trim().toLowerCase()
-);
-const refreshMs = parseRefreshMs(process.env.MARKET_STREAM_SUBSCRIPTIONS_REFRESH_MS, 30_000);
-const pollMs = parseRefreshMs(process.env.MARKET_STREAM_POLL_MS, 30_000);
+const { exchange, marketType, envSymbols, envIntervals, refreshMs, pollMs } =
+  resolveMarketStreamWorkerConfig();
 
 const buildSubscriptionFingerprint = (subscriptions: StreamSubscriptions) =>
   `${subscriptions.symbols.join(',')}|${subscriptions.candleIntervals.join(',')}`;

@@ -86,6 +86,16 @@ Operational queue for one-task execution runs.
     `docs/planning/exchange2-08-gateio-public-market-data-smoke-task-2026-05-08.md`
     and `docs/operations/gateio-public-market-data-smoke-2026-05-08.md`.
 
+- [x] `EXCHANGE2-09 refactor(market-stream): lock Gate.io worker source selection`
+  - 2026-05-08: Extracted market-stream worker env parsing into a pure config
+    resolver and added regression coverage proving Binance remains the default
+    source, Gate.io polling is selected only by
+    `MARKET_STREAM_EXCHANGE=GATEIO`, and unsupported/invalid env values fall
+    back to safe defaults. Gate.io `PAPER_PRICING_FEED`, authenticated reads,
+    LIVE submit, and cancel remain disabled until target source evidence and
+    exact operation support are complete. Evidence:
+    `docs/planning/exchange2-09-gateio-market-stream-worker-config-task-2026-05-08.md`.
+
 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
   - 2026-05-08: Planning artifact is ready for a production-wide UI audit that
     visits all canonical public, dashboard, admin, and legacy redirect routes,

@@ -80,6 +80,14 @@ Last updated: 2026-05-08
   The evidence commit `d4bdc7f0dc5358d20edab45c15ec7623e18610f0` was pushed;
   public API/Web smoke passed afterward, but build-info remained on
   `36ac02696ac0ce22a6b8bab545fcfb741125ea4b` after a 120-second wait.
+- 2026-05-08 `EXCHANGE2-09` locked market-stream worker source selection with
+  a pure config resolver and focused regression tests. Binance remains the
+  default worker source, Gate.io polling is selected only by
+  `MARKET_STREAM_EXCHANGE=GATEIO`, and unsupported/invalid env values fall
+  back to safe defaults. This strengthens the Gate.io rollout boundary without
+  enabling `PAPER_PRICING_FEED`, authenticated reads, LIVE submit, or cancel.
+  Evidence:
+  `docs/planning/exchange2-09-gateio-market-stream-worker-config-task-2026-05-08.md`.
 - 2026-05-08 `PROD-UI-AUDIT-PLAN-2026-05-08` prepared the production UI module
   clickthrough audit plan requested by the user. The plan covers all canonical
   public, dashboard, admin, and legacy redirect routes, module-level functions,

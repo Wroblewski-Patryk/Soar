@@ -32,6 +32,13 @@ Last updated: 2026-05-08
   `PAPER_PRICING_FEED` remains disabled pending target worker/source evidence.
   Post-push public API/Web smoke passed for `d4bdc7f0`, but build-info stayed
   on `36ac02696ac0ce22a6b8bab545fcfb741125ea4b` during the 120-second wait.
+- `EXCHANGE2-09` worker source-selection regression PASS: market-stream worker
+  env parsing is now tested through `marketStreamWorkerConfig.ts`. Binance
+  remains the default source, Gate.io polling is explicit opt-in via
+  `MARKET_STREAM_EXCHANGE=GATEIO`, and unsupported/invalid env values fall
+  back to safe defaults. Validation PASS: focused worker/market-stream Vitest
+  pack (`4` files, `8/8`) and API typecheck. Gate.io `PAPER_PRICING_FEED`
+  remains disabled pending target environment source evidence.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307

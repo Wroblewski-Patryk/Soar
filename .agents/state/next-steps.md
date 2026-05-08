@@ -44,6 +44,11 @@ target worker/source evidence and exact capability enablement.
 Post-push public smoke for the evidence commit `d4bdc7f0` passed, but
 build-info stayed on `36ac02696ac0ce22a6b8bab545fcfb741125ea4b` during the
 120-second wait.
+Worker bootstrap source selection is now locally regression-locked:
+`EXCHANGE2-09` proves Binance remains the default market-stream source, Gate.io
+polling is selected only by `MARKET_STREAM_EXCHANGE=GATEIO`, and invalid env
+values fall back to safe defaults. This is still not production target-source
+evidence and does not enable Gate.io `PAPER_PRICING_FEED`.
 
 After the planned Gate.io/deploy-auth blockers are cleared, execute the
 production UI module clickthrough audit from

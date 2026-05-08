@@ -77,6 +77,7 @@ Out of scope:
 ## 8. Test Coverage and Evidence
 - Primary tests:
   - `binanceStream.service.test.ts`
+  - `marketStreamWorkerConfig.test.ts`
   - `exchangePollingStream.service.test.ts`
   - `marketStream.routes.contract.test.ts`
   - `marketStream.routes.e2e.test.ts`
@@ -86,6 +87,9 @@ pnpm --filter api test -- src/modules/market-stream/binanceStream.service.test.t
 ```
 
 ## 9. Open Issues and Follow-Ups
+- Gate.io worker source selection is regression-locked as explicit opt-in via
+  `MARKET_STREAM_EXCHANGE=GATEIO`; default and invalid values keep the Binance
+  worker path.
 - Gate.io paper pricing capability remains disabled until runtime evidence
   proves the opt-in polling worker path in a target environment.
 - Consider persistent fan-out/backpressure strategy if concurrency grows significantly.
