@@ -17,6 +17,15 @@ Last updated: 2026-05-08
 
 ## READY
 
+- [x] `V1-RC-SIGNOFF-PREFLIGHT-HARDENING-2026-05-08 release(ops): clarify Gate 4 sign-off blockers`
+  - Scope: updated the existing RC sign-off builder output so blocked Gate 4
+    runs print the exact missing required fields. The approved-status logic is
+    preserved: Gates 1-3 plus Engineering/Product/Operations/RC owner names
+    are required, while owner contact is reported as recommended handoff
+    metadata. Validation PASS: script syntax, help path, blocked and approved
+    temp-output paths, guardrails, docs parity, and diff check. Evidence:
+    `docs/planning/v1-rc-signoff-preflight-hardening-task-2026-05-08.md`.
+
 - [x] `V1-RECOVERY-PROOF-PREFLIGHT-HARDENING-2026-05-08 release(ops): clarify recovery proof prerequisites`
   - Scope: clarified production restore drill and rollback proof prerequisite
     handoff in existing ops scripts and the final blocker pack. Restore help

@@ -120,6 +120,10 @@ Last updated: 2026-05-08
   choices, and rollback proof help names `ROLLBACK_GUARD_*` base URL/auth/OPS
   choices. Validation covered script syntax, help paths, missing prod DB
   container fail-closed path, guardrails, docs parity, and diff check.
+- RC sign-off preflight hardening PASS: blocked `ops:rc:signoff:build` runs
+  now print missing required Gate 4 fields, while approved temp-output behavior
+  remains available when Gates 1-3 pass and required names are provided.
+  Owner contact is reported as recommended handoff metadata.
 - `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
   `/dashboard/positions/live-status` returned global reconciliation diagnostic
   counts for an authenticated user. The route now filters

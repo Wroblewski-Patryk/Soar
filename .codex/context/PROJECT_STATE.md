@@ -3,6 +3,14 @@
 Last updated: 2026-05-08
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-08 `V1-RC-SIGNOFF-PREFLIGHT-HARDENING-2026-05-08` clarified Gate 4
+  sign-off blocker output in the existing `ops:rc:signoff:build` script.
+  Blocked builds now print the exact missing required fields:
+  Engineering, Product, Operations, and RC owner names. Missing
+  `--owner-contact` is reported as recommended rollback-authority handoff
+  metadata without changing approved-status logic. No runtime, API, DB, Web,
+  exchange, deploy, or live-money behavior changed. Actual Gate 4 approval
+  still requires real approver identities.
 - 2026-05-08 `V1-RECOVERY-PROOF-PREFLIGHT-HARDENING-2026-05-08` clarified
   production restore drill and rollback proof prerequisite handoff in existing
   ops scripts and the final blocker pack. Restore help and missing-container

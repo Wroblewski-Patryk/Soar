@@ -145,6 +145,10 @@ Last updated: 2026-05-08
   rollback proof tooling now names exact production DB/auth env choices on
   help or fail-closed paths. This improves operator handoff but does not close
   restore drill or rollback proof evidence.
+- 2026-05-08 RC sign-off preflight hardening is closed: blocked sign-off builds
+  now print the exact missing required Gate 4 fields, while owner contact is
+  reported as recommended handoff metadata. This improves operator handoff but
+  does not approve Gate 4.
 
 ## Known Environment Pitfalls
 

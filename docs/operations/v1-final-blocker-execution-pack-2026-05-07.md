@@ -145,6 +145,11 @@ Required result:
 - `docs/operations/v1-release-candidate-checklist.md` reflects current gate
   states
 
+If sign-off remains blocked, `ops:rc:signoff:build` prints the missing Gate 4
+fields. Required fields are Engineering, Product, Operations, and RC owner
+names. `--owner-contact` is strongly recommended for rollback authority
+handoff, but does not replace the required RC owner name.
+
 ### 7. Run Final Production V1 Release Gate
 
 ```powershell

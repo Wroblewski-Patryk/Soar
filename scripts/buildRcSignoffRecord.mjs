@@ -76,15 +76,37 @@ const ownerBlock = (name, contact) => {
   return `- RC owner with rollback authority:\n  - Name: ${name}\n  - Contact: ${contact || 'TBD'}\n  - UTC assignment timestamp: ${now}`;
 };
 
-const render = (options, gates) => {
-  const hasAllApprovers = Boolean(
-    options.engineeringName && options.productName && options.operationsName && options.ownerName
-  );
-  // Gate 4 is the formal sign-off itself, so approval depends on Gates 1-3
-  // plus the required approver fields, not on a pre-existing Gate 4 PASS.
+const listMissingApproverFields = (options) => {
+  const missing = [];
+  if (!options.engineeringName) missing.push('Engineering name (--engineering-name)');
+  if (!options.productName) missing.push('Product name (--product-name)');
+  if (!options.operationsName) missing.push('Operations name (--operations-name)');
+  if (!options.ownerName) missing.push('RC owner name (--owner-name)');
+  return missing;
+};
+
+const listRecommendedSignoffFields = (options) => {
+  const missing = [];
+  if (!options.ownerContact) missing.push('RC owner contact (--owner-contact)');
+  return missing;
+};
+
+const evaluateSignoff = (options, gates) => {
+  const missingApproverFields = listMissingApproverFields(options);
   const prerequisiteGatesPass =
     gates.statuses.length >= 3 && gates.statuses.slice(0, 3).every((status) => status === 'PASS');
-  const rcStatus = prerequisiteGatesPass && hasAllApprovers ? 'APPROVED' : 'BLOCKED';
+  return {
+    prerequisiteGatesPass,
+    missingApproverFields,
+    missingRecommendedFields: listRecommendedSignoffFields(options),
+    rcStatus: prerequisiteGatesPass && missingApproverFields.length === 0 ? 'APPROVED' : 'BLOCKED',
+  };
+};
+
+const render = (options, gates) => {
+  // Gate 4 is the formal sign-off itself, so approval depends on Gates 1-3
+  // plus the required approver fields, not on a pre-existing Gate 4 PASS.
+  const evaluation = evaluateSignoff(options, gates);
 
   return `# V1 RC Sign-Off Record
 
@@ -107,11 +129,11 @@ ${ownerBlock(options.ownerName, options.ownerContact)}
 ## Gate Snapshot at Sign-Off Build
 - Gate statuses found: ${gates.statuses.length}
 - Gate values: ${gates.statuses.length > 0 ? gates.statuses.join(', ') : 'n/a'}
-- Gates 1-3 pass: ${prerequisiteGatesPass ? 'yes' : 'no'}
+- Gates 1-3 pass: ${evaluation.prerequisiteGatesPass ? 'yes' : 'no'}
 
 ## Final Decision
-- RC status: \`${rcStatus}\`
-- Blocking reasons (if any): ${rcStatus === 'BLOCKED' ? 'missing gate pass and/or required approvers' : 'none'}
+- RC status: \`${evaluation.rcStatus}\`
+- Blocking reasons (if any): ${evaluation.rcStatus === 'BLOCKED' ? 'missing gate pass and/or required approvers' : 'none'}
 - Follow-up actions:
   - If BLOCKED: complete open gates and rerun \`pnpm run ops:rc:signoff:build\`.
   - If APPROVED: copy this record into release notes and finalize launch trigger.
@@ -130,7 +152,18 @@ const main = async () => {
   const gates = await loadGateStatuses(options.statusPath);
   const content = render(options, gates);
   await writeFile(options.output, content);
+  const evaluation = evaluateSignoff(options, gates);
   console.log(`RC sign-off record written to: ${path.relative(process.cwd(), options.output)}`);
+  console.log(`RC status: ${evaluation.rcStatus}`);
+  if (!evaluation.prerequisiteGatesPass) {
+    console.log('Gate prerequisite blocker: Gates 1-3 are not all PASS.');
+  }
+  if (evaluation.missingApproverFields.length > 0) {
+    console.log(`Missing Gate 4 fields: ${evaluation.missingApproverFields.join(', ')}`);
+  }
+  if (evaluation.missingRecommendedFields.length > 0) {
+    console.log(`Recommended Gate 4 fields: ${evaluation.missingRecommendedFields.join(', ')}`);
+  }
 };
 
 main().catch((error) => {

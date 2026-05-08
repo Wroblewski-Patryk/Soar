@@ -106,6 +106,10 @@ Latest observed production SHA is
      auth env choices are now explicit in the tool/help path:
      `ROLLBACK_GUARD_AUTH_TOKEN`, or `ROLLBACK_GUARD_AUTH_EMAIL` plus
      `ROLLBACK_GUARD_AUTH_PASSWORD`, with optional OPS basic/header envs.
+   - Gate 4 sign-off needs real Engineering, Product, Operations, and RC owner
+     names. The sign-off builder now prints missing required Gate 4 fields on
+     the blocked path; owner contact is recommended for rollback authority
+     handoff.
    - Final release gate must run without `--dry-run`.
 5. If the active queue is empty, run a planning-status sweep before saying
    nothing is planned.

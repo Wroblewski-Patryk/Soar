@@ -7,6 +7,15 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-RC-SIGNOFF-PREFLIGHT-HARDENING-2026-05-08 release(ops): clarify Gate 4 sign-off blockers`
+  - 2026-05-08: Hardened the existing `ops:rc:signoff:build` operator output
+    so blocked Gate 4 builds now print the missing required fields:
+    Engineering, Product, Operations, and RC owner names. Missing
+    `--owner-contact` is reported as a recommended rollback-authority handoff
+    field without changing the approved-status logic. Validation PASS: script
+    syntax, help path, blocked temp-output path, approved temp-output path,
+    guardrails, docs parity, and diff check. Evidence:
+    `docs/planning/v1-rc-signoff-preflight-hardening-task-2026-05-08.md`.
 - [x] `V1-RECOVERY-PROOF-PREFLIGHT-HARDENING-2026-05-08 release(ops): clarify recovery proof prerequisites`
   - 2026-05-08: Clarified production restore drill and rollback proof
     prerequisite handoff without adding new auth/DB paths. Restore help and
