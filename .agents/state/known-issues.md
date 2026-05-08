@@ -180,6 +180,12 @@ Last updated: 2026-05-08
 - 2026-05-08 final V1 preflight prerequisite checks are now regression-locked
   with focused tests. This prevents incomplete production auth/DB env sets from
   being silently accepted by the preflight.
+- 2026-05-08 protected-context Coolify sweep confirms deploy freshness and
+  public smoke, and identifies production Postgres container
+  `x11cfnz1dd9x0yzccftqzcoe`. This does not close restore evidence because the
+  existing restore drill runs through `docker exec`, and the local Docker
+  daemon does not contain the production container. A VPS shell or Docker
+  context that can reach that container is still required.
 
 ## Known Environment Pitfalls
 

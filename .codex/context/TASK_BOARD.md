@@ -17,6 +17,21 @@ Last updated: 2026-05-08
 
 ## READY
 
+- [x] `V1-PROTECTED-EVIDENCE-COOLIFY-CONTEXT-2026-05-08 release: resolve protected V1 evidence context`
+  - Scope: used the approved Coolify operator path after the latest `main`
+    deploy reached production build-info
+    `e6e7d4a044ce80279c542412a91bae4a6a012392`. Public API/Web smoke passed.
+    Coolify confirms production Postgres container
+    `x11cfnz1dd9x0yzccftqzcoe`, but local Docker cannot see that remote
+    container, so the existing Docker-based restore drill cannot honestly run
+    as production evidence from this workstation. Generated no-secret
+    protected-context preflight reports:
+    `docs/operations/_artifacts-v1-final-preflight-2026-05-08-protected-context.json`
+    and
+    `docs/operations/v1-final-preflight-2026-05-08-protected-context.md`.
+    Evidence:
+    `docs/planning/v1-protected-evidence-coolify-context-task-2026-05-08.md`.
+
 - [x] `V1-FINAL-PREFLIGHT-MARKDOWN-REPORT-2026-05-08 release: add no-secret markdown report`
   - Scope: added optional `--markdown-output <path>` support to
     `ops:release:v1:preflight`. The Markdown report is generated from the

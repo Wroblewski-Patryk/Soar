@@ -22,8 +22,8 @@ pnpm --filter api run test -- src/modules/orders/orders.exchangeEvents.service.t
 
 Next production release evidence line:
 
-Deploy the pushed `main` through the accepted Coolify operator path, not
-GitHub Actions. GitHub Actions production promote/rollback entrypoints have
+Latest pushed `main` is deployed through the accepted Coolify operator path,
+not GitHub Actions. GitHub Actions production promote/rollback entrypoints have
 been removed because the project does not use paid GitHub Actions and workflow
 attempts create unwanted email noise.
 
@@ -47,10 +47,27 @@ The collector is hardened to fail closed when no RUNNING session produces a
 runtime positions payload, so no-session output must not be accepted as
 release evidence.
 
-Latest prerequisite recheck after the final blocker pack confirmed production
-build-info is current, but the current shell still lacks the required Soar
-production auth/access. A no-auth collector attempt failed closed before
-runtime readback, which is the expected safe result.
+Latest protected-context recheck after the final blocker pack confirmed
+production build-info is current at
+`e6e7d4a044ce80279c542412a91bae4a6a012392`, and public API/Web smoke passes.
+Coolify project/resource pages are reachable after switching to Root Team, and
+the production Postgres container is visible as
+`x11cfnz1dd9x0yzccftqzcoe`. Local Docker does not expose that remote
+container, so the existing Docker-based restore drill cannot honestly run as
+production PASS evidence from this workstation. The current shell still lacks
+the required Soar production auth/access. A no-auth collector attempt failed
+closed before runtime readback, which is the expected safe result. The latest
+no-secret status reports are:
+`docs/operations/_artifacts-v1-final-preflight-2026-05-08-protected-context.json`
+and
+`docs/operations/v1-final-preflight-2026-05-08-protected-context.md`.
+
+The next executable production evidence step requires either approved Soar
+application/operator auth for `LIVEIMPORT-03` and rollback proof, or a shell /
+Docker context on the VPS that can run the existing restore drill against
+`x11cfnz1dd9x0yzccftqzcoe` with the production DB user/name. Do not reuse the
+Coolify login as Soar application auth unless the user explicitly confirms it
+is valid for that target.
 
 Post-backend-parity check: production web build-info reached
 `1100b7fb232ce6195b24522a6a11559fe9fb8634`, which includes the adapter-pure

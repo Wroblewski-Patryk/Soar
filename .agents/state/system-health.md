@@ -184,6 +184,17 @@ Last updated: 2026-05-08
   accepts `--markdown-output <path>` and writes a human-readable no-secret
   status report from the same preflight report object as JSON. It remains
   status-only handoff material, not final V1 release evidence.
+- Protected-context Coolify sweep PASS as blocker classification:
+  production build-info for `e6e7d4a044ce80279c542412a91bae4a6a012392`
+  passes, public API/Web smoke passes, and Coolify exposes the production
+  Postgres container name `x11cfnz1dd9x0yzccftqzcoe`. The sweep remains
+  release-blocked because local Docker cannot reach that VPS container, Soar
+  application auth is not present for `LIVEIMPORT-03`, rollback proof auth is
+  not present, and RC Gate 4 approver identities are still missing. Generated
+  reports:
+  `docs/operations/_artifacts-v1-final-preflight-2026-05-08-protected-context.json`
+  and
+  `docs/operations/v1-final-preflight-2026-05-08-protected-context.md`.
 - `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
   `/dashboard/positions/live-status` returned global reconciliation diagnostic
   counts for an authenticated user. The route now filters

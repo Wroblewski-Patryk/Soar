@@ -7,6 +7,17 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-PROTECTED-EVIDENCE-COOLIFY-CONTEXT-2026-05-08 release: resolve protected V1 evidence context`
+  - 2026-05-08: Used the approved Coolify operator path after the latest
+    `main` deploy reached production build-info
+    `e6e7d4a044ce80279c542412a91bae4a6a012392`. Public API/Web smoke passed.
+    Coolify confirms the production Postgres container name is
+    `x11cfnz1dd9x0yzccftqzcoe`, but local Docker cannot see that remote
+    container, so the existing Docker-based restore drill cannot produce honest
+    production PASS evidence from this workstation. A no-secret protected
+    context preflight report was generated and remains `blocked` only on
+    protected auth/DB/RC/evidence inputs. Evidence:
+    `docs/planning/v1-protected-evidence-coolify-context-task-2026-05-08.md`.
 - [x] `V1-FINAL-PREFLIGHT-MARKDOWN-REPORT-2026-05-08 release: add no-secret markdown report`
   - 2026-05-08: Added optional `--markdown-output <path>` support to
     `ops:release:v1:preflight`. The Markdown report is generated from the

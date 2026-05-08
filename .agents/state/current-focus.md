@@ -55,6 +55,17 @@ preflight:
 build-info, reports missing prerequisite env names, and classifies current
 release evidence blockers without creating protected artifacts.
 
+Latest protected-context sweep after Coolify operator access: production
+build-info for `e6e7d4a044ce80279c542412a91bae4a6a012392` passes and public
+API/Web smoke passes. Coolify confirms the production Postgres container name
+is `x11cfnz1dd9x0yzccftqzcoe`, but local Docker cannot see that remote
+container; therefore the existing Docker-based restore drill cannot honestly
+produce production PASS evidence from this workstation. The generated
+no-secret status reports are
+`docs/operations/_artifacts-v1-final-preflight-2026-05-08-protected-context.json`
+and
+`docs/operations/v1-final-preflight-2026-05-08-protected-context.md`.
+
 A production `ops:release:v1:gate` dry-run on 2026-05-07 generated current
 blocker artifacts and reports `readiness=not_ready`: activation audit,
 activation plan, RC external gates status, RC sign-off, RC checklist,

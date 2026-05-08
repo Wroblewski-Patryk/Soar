@@ -28,6 +28,11 @@ with approved production auth and database/Coolify access.
   - `PROD_DB_CHECK_CONTAINER`
   - `PROD_DB_CHECK_USER`
   - `PROD_DB_CHECK_NAME`
+  - latest Coolify context check confirms the production Postgres container
+    name is `x11cfnz1dd9x0yzccftqzcoe`; this still must be executed from a
+    shell or Docker context that can reach the VPS Docker daemon, not from a
+    local workstation Docker daemon that does not contain the production
+    container.
 - Approver identity for RC sign-off:
   - Engineering name
   - Product name
@@ -212,9 +217,17 @@ Required result:
 
 ## Current Known Blockers
 - `LIVEIMPORT-03` authenticated runtime readback is missing.
+- Latest no-secret protected-context preflight:
+  `docs/operations/v1-final-preflight-2026-05-08-protected-context.md`.
+  Build-info for `e6e7d4a044ce80279c542412a91bae4a6a012392` passes and public
+  API/Web smoke passes, but protected auth/DB/RC/evidence blockers remain.
 - Production restore drill is current for 2026-05-08 but failed because
-  DB/Coolify access is unavailable in this shell (`PROD_DB_CHECK_CONTAINER` or
-  equivalent is missing).
+  the existing Docker-based restore script cannot reach the production Docker
+  daemon from this workstation. Coolify shows the production Postgres
+  container as `x11cfnz1dd9x0yzccftqzcoe`, but local Docker does not expose
+  that container. Provide `PROD_DB_CHECK_CONTAINER` or equivalent plus DB
+  user/name in an execution context that can run `docker exec` against the VPS
+  container.
 - Production rollback proof is current for 2026-05-08 but failed because
   protected OPS routes returned `401` without auth.
 - The latest 2026-05-08 dry-run marks activation, RC external gates, RC

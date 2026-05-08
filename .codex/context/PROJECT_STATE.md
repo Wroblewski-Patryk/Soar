@@ -3,6 +3,19 @@
 Last updated: 2026-05-08
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-08 `V1-PROTECTED-EVIDENCE-COOLIFY-CONTEXT-2026-05-08` used the
+  approved Coolify operator path after latest `main` reached production
+  build-info `e6e7d4a044ce80279c542412a91bae4a6a012392`. Public API/Web
+  smoke passed. Coolify confirms the production Postgres container name is
+  `x11cfnz1dd9x0yzccftqzcoe`, but local Docker cannot see that remote
+  container, so the existing Docker-based restore drill cannot produce honest
+  production PASS evidence from this workstation. Generated no-secret status
+  reports:
+  `docs/operations/_artifacts-v1-final-preflight-2026-05-08-protected-context.json`
+  and
+  `docs/operations/v1-final-preflight-2026-05-08-protected-context.md`.
+  V1 remains blocked on protected Soar app auth, rollback auth, production DB
+  execution context/env handoff, and real RC Gate 4 approver identities.
 - 2026-05-08 `V1-FINAL-PREFLIGHT-MARKDOWN-REPORT-2026-05-08` added optional
   `--markdown-output <path>` support to `ops:release:v1:preflight`. The
   Markdown report is generated from the same no-secret preflight report object
