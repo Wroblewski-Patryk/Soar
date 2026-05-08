@@ -5,8 +5,8 @@
 - Production code/tooling freshness source of truth:
   run `git rev-parse HEAD`, then verify that SHA with the build-info wait
   command in step 1 before collecting protected evidence.
-- Last verified RC approval gate hardening deploy:
-  `1100b7fb232ce6195b24522a6a11559fe9fb8634`
+- Latest verified Coolify deploy:
+  `721fe8482922835a9419f0e529baeef4ff6a74c9`
 - Latest release-gate dry-run:
   `docs/operations/v1-release-gate-prod-2026-05-08Trc-approval-required-dry-run.md`
 
@@ -70,17 +70,17 @@ pnpm run ops:release:v1:preflight -- --json-output docs/operations/_artifacts-v1
 ```
 
 Expected current result before protected operator access is available:
-`BLOCKED` with missing `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, production
-DB restore context, RC approval, live-import readback, restore, and rollback
-evidence blockers, but build-info and public API/Web smoke should pass. Do not
-treat preflight as final release evidence; it is the safe readiness check
-before the commands below. The JSON report is also not final release evidence;
-it is a no-secret status snapshot. Preflight blocker output includes
-`next actions` that point to the approved commands below; those hints do not
-replace the commands or acceptance criteria in this pack. `blockerDetails`
-metadata is only display/status metadata and also does not replace the
-commands or acceptance criteria in this pack. The Markdown report is likewise
-operator-readable status only, not final release evidence.
+`BLOCKED` with missing `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, RC
+approval, live-import readback, and rollback proof blockers, but build-info,
+public API/Web smoke, and production DB restore context should pass or be
+satisfied by fresh evidence. Do not treat preflight as final release evidence;
+it is the safe readiness check before the commands below. The JSON report is
+also not final release evidence; it is a no-secret status snapshot. Preflight
+blocker output includes `next actions` that point to the approved commands
+below; those hints do not replace the commands or acceptance criteria in this
+pack. `blockerDetails` metadata is only display/status metadata and also does
+not replace the commands or acceptance criteria in this pack. The Markdown
+report is likewise operator-readable status only, not final release evidence.
 
 ### 1. Verify Production Build Info
 
@@ -217,10 +217,11 @@ Required result:
 
 ## Current Known Blockers
 - `LIVEIMPORT-03` authenticated runtime readback is missing.
-- Latest no-secret protected-context preflight:
-  `docs/operations/v1-final-preflight-2026-05-08-protected-context.md`.
-  Build-info for `e6e7d4a044ce80279c542412a91bae4a6a012392` passes and public
-  API/Web smoke passes, but protected auth/DB/RC/evidence blockers remain.
+- Latest verified deploy/preflight:
+  build-info for `721fe8482922835a9419f0e529baeef4ff6a74c9` passes, public
+  API/Web smoke passes, and production DB restore context is satisfied by
+  fresh backup/restore drill evidence. Protected auth, RC approval,
+  live-import readback, and rollback proof blockers remain.
 - Production restore drill is now current and PASS for 2026-05-08:
   `docs/operations/v1-restore-drill-prod-2026-05-08T15-16-24Z.md`.
   It was executed through approved Coolify terminal access against production
@@ -229,9 +230,9 @@ Required result:
   files.
 - Production rollback proof is current for 2026-05-08 but failed because
   protected OPS routes returned `401` without auth.
-- The latest 2026-05-08 dry-run marks activation, RC external gates, RC
-  sign-off, and RC checklist as fresh; `LIVEIMPORT-03` is missing;
-  backup/restore and rollback are fresh but failed.
+- The latest 2026-05-08 preflight marks activation and restore drill evidence
+  as fresh/PASS, RC external gates/sign-off/checklist as fresh but failed,
+  `LIVEIMPORT-03` as missing, and rollback proof as fresh but failed.
 - A no-auth 2026-05-08 runtime freshness probe failed closed with HTTP `401`;
   rollback guard returned `shouldRollback=true` only because runtime freshness
   and alerts endpoints were protected by `401`.

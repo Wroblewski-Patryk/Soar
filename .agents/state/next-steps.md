@@ -84,12 +84,13 @@ application/operator auth for `LIVEIMPORT-03` and rollback proof, or real RC
 Gate 4 approver identities. Do not reuse the Coolify login as Soar application
 auth unless the user explicitly confirms it is valid for that target.
 
-Post-backend-parity check: production web build-info reached
-`1100b7fb232ce6195b24522a6a11559fe9fb8634`, which includes the adapter-pure
-PAPER/LIVE runtime fix, blocker evidence alignment, deploy-wait coordination
-docs, live-import release-gate evidence enforcement, build-info freshness
-hardening, and strict RC approval evidence enforcement. Public deploy smoke
-without workers passed. Continue with
+Post-backend-parity and restore-context check: production web build-info
+reached `721fe8482922835a9419f0e529baeef4ff6a74c9`, which includes the
+adapter-pure PAPER/LIVE runtime fix, blocker evidence alignment, deploy-wait
+coordination docs, live-import release-gate evidence enforcement, build-info
+freshness hardening, strict RC approval evidence enforcement, and final
+preflight restore-context classification. Public deploy smoke without workers
+passed. Continue with
 authenticated read-only `LIVEIMPORT-03` production runtime readback once
 credentials are available. Do not use GitHub Actions for production
 deployment.
@@ -105,8 +106,8 @@ If production build-info reports a deployed commit older than latest `main`,
 wait for the accepted Coolify/manual deploy before protected readback. Do not
 start `LIVEIMPORT-03` against a stale deployment unless the user/operator
 explicitly confirms the checked-out docs-only changes are irrelevant to the
-readback. Last verified RC approval gate hardening deploy:
-`1100b7fb232ce6195b24522a6a11559fe9fb8634`.
+readback. Latest verified Coolify deploy:
+`721fe8482922835a9419f0e529baeef4ff6a74c9`.
 
 ## Candidate Backlog
 
@@ -134,8 +135,9 @@ readback. Last verified RC approval gate hardening deploy:
 0a. Production build-info reached the backend parity runtime fix, blocker
    evidence alignment, deploy-wait coordination, operator preflight hardening
    docs, live-import release-gate evidence enforcement, build-info freshness
-   enforcement, and strict RC approval evidence enforcement at
-   `1100b7fb232ce6195b24522a6a11559fe9fb8634`. Do not use GitHub Actions. If a
+   enforcement, strict RC approval evidence enforcement, and restore-context
+   preflight alignment at
+   `721fe8482922835a9419f0e529baeef4ff6a74c9`. Do not use GitHub Actions. If a
    future step depends on a pushed commit being deployed, wait for build-info
    before continuing; an operator can speed this up with Coolify dashboard
    force deploy, or with deploy webhook/API token if those secrets are
@@ -155,14 +157,10 @@ readback. Last verified RC approval gate hardening deploy:
 3. After `LIVEIMPORT-03`, continue `BOTMULTI-09` protected runtime readback and
    broader V1 release gate evidence.
 4. Refresh production V1 release evidence with real non-dry-run execution:
-   backup/restore drill evidence and rollback proof pack are fresh but failed
-   in the latest dry-run report. Activation audit, activation plan, RC status,
-   RC sign-off, and RC checklist are fresh blocked/NO-GO artifacts for
-   2026-05-08.
-   - Restore drill needs approved production DB/Coolify access. Required env
-     choices are now explicit in the tool/help path:
-     `PROD_DB_CHECK_CONTAINER` or `PRODUCTION_DB_CHECK_CONTAINER`, plus the
-     matching DB user/name envs.
+   backup/restore drill evidence is fresh/PASS; rollback proof is fresh but
+   failed in the latest report. Activation audit and activation plan are fresh,
+   while RC status, RC sign-off, and RC checklist are fresh blocked/NO-GO
+   artifacts for 2026-05-08.
    - Rollback proof and runtime freshness need protected OPS auth. Required
      auth env choices are now explicit in the tool/help path:
      `ROLLBACK_GUARD_AUTH_TOKEN`, or `ROLLBACK_GUARD_AUTH_EMAIL` plus

@@ -17,6 +17,15 @@ Last updated: 2026-05-08
 
 ## READY
 
+- [x] `V1-FINAL-BLOCKER-PACK-RESTORE-STATE-SYNC-2026-05-08 release: sync final blocker pack after restore evidence`
+  - Scope: synchronized the active final blocker pack and continuation state
+    after deployed commit `721fe8482922835a9419f0e529baeef4ff6a74c9` confirmed
+    build-info PASS, public smoke PASS, and production DB restore context
+    SATISFIED by fresh backup/restore drill evidence. Current V1 blockers are
+    limited to live-import auth/readback, rollback guard auth/proof, and RC
+    Gate 4 approval evidence. Evidence:
+    `docs/planning/v1-final-blocker-pack-restore-state-sync-task-2026-05-08.md`.
+
 - [x] `V1-PROTECTED-AUTH-CONTEXT-SWEEP-2026-05-08 release: classify protected auth context after restore drill`
   - Scope: inspected approved Coolify/API runtime context without persisting
     secret values, confirmed no `LIVEIMPORT_READBACK_*` or

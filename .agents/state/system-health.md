@@ -5,9 +5,10 @@ Last updated: 2026-05-08
 ## Latest Health Snapshot
 
 - Production web build-info reached
-  `1100b7fb232ce6195b24522a6a11559fe9fb8634`, which contains the backend
-  runtime parity fix plus final release-gate build-info freshness and strict
-  RC approval evidence hardening.
+  `721fe8482922835a9419f0e529baeef4ff6a74c9`, which contains the backend
+  runtime parity fix, final release-gate build-info freshness, strict RC
+  approval evidence hardening, production restore evidence alignment, and
+  final preflight restore-context classification.
   Production API `/health`, API `/ready`, and WEB `/`
   passed the latest public smoke check. GitHub Actions is not an accepted
   production deployment path for this project, so future production deployment
@@ -21,13 +22,11 @@ Last updated: 2026-05-08
 - The current shell exposes no production admin token, operator login, ops
   basic auth, or ops header environment variables. Authenticated production
   readback is therefore blocked in this session.
-- Latest V1 release-gate dry-run
-  `docs/operations/v1-release-gate-prod-2026-05-08Trc-approval-required-dry-run.md`
-  reports `readiness=not_ready`: activation plan/audit are fresh; RC external
-  gates, sign-off, and checklist are fresh but failed because Gate 4 remains
-  open/blocked; `LIVEIMPORT-03` is missing; backup/restore drill and rollback
-  proof are fresh but failed; protected non-dry-run release execution is still
-  missing.
+- Latest V1 final preflight on deployed `721fe8482922835a9419f0e529baeef4ff6a74c9`
+  reports build-info PASS, public smoke PASS, production DB restore context
+  SATISFIED, activation evidence fresh, restore evidence fresh/PASS, and
+  `BLOCKED` only on live-import auth, rollback auth, failed RC Gate 4 approval
+  evidence, missing `LIVEIMPORT-03`, and failed rollback proof.
 - Final blocker execution pack:
   `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
 - Production restore drill evidence is fresh/PASS and final preflight now
@@ -327,13 +326,13 @@ runtime contracts are changed.
 
 ## Deployment Impact
 
-Production build-info reached `1100b7fb232ce6195b24522a6a11559fe9fb8634`,
+Production build-info reached `721fe8482922835a9419f0e529baeef4ff6a74c9`,
 which contains the V1 backend PAPER/LIVE adapter-pure runtime fix, refreshed
 release-state docs, blocker evidence alignment, deploy-wait coordination,
 operator preflight hardening notes, live-import evidence enforcement,
-build-info freshness enforcement, and strict RC approval evidence enforcement
-in the final release gate. The next executable release task must still verify
-the currently checked-out `HEAD` with build-info before protected evidence
-collection. It requires authenticated read-only production evidence, protected
-production recovery proof, and real RC approval inputs; the current shell still
-lacks those credentials and approvals.
+build-info freshness enforcement, strict RC approval evidence enforcement, and
+restore-context preflight alignment. The next executable release task must
+still verify the currently checked-out `HEAD` with build-info before protected
+evidence collection. It requires authenticated read-only production evidence,
+protected production rollback proof, and real RC approval inputs; the current
+shell still lacks those credentials and approvals.

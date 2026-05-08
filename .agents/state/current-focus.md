@@ -68,8 +68,9 @@ and
 
 Production restore drill is now closed as PASS through approved Coolify
 terminal access. Evidence:
-`docs/operations/v1-restore-drill-prod-2026-05-08T15-16-24Z.md`. Remaining V1
-release blockers are protected Soar application/operator auth for
+`docs/operations/v1-restore-drill-prod-2026-05-08T15-16-24Z.md`. Latest
+verified Coolify deploy is `721fe8482922835a9419f0e529baeef4ff6a74c9`.
+Remaining V1 release blockers are protected Soar application/operator auth for
 `LIVEIMPORT-03`, rollback proof auth, and real RC Gate 4 approval.
 
 The protected auth context sweep confirmed the current API runtime env-name
