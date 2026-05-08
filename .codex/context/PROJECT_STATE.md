@@ -97,6 +97,9 @@ Last updated: 2026-05-08
   `LIVE_EXECUTION`, and `API_KEY_PROBE` remain blocked, and unknown/nullish
   exchanges fail closed. Evidence:
   `docs/planning/exchange2-10-gateio-web-capability-gating-task-2026-05-08.md`.
+  The task commit `21ec8efa01ec14ae7fd2c039ac4f9884a2564f65` was pushed;
+  public API/Web smoke passed afterward, but build-info remained on
+  `9382d9317a5ae82d404559398922a253bef9e697` after a 120-second wait.
 - 2026-05-08 `PROD-UI-AUDIT-PLAN-2026-05-08` prepared the production UI module
   clickthrough audit plan requested by the user. The plan covers all canonical
   public, dashboard, admin, and legacy redirect routes, module-level functions,

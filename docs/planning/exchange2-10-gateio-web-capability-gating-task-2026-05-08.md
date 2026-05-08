@@ -142,6 +142,11 @@ Focused Web capability regression plus module documentation update.
 - Observability or alerting impact: none
 - Staged rollout or feature flag: shared capability matrix remains the gating
   source
+- Post-push production check:
+  - public API/Web smoke passed after commit
+    `21ec8efa01ec14ae7fd2c039ac4f9884a2564f65`
+  - build-info did not expose `21ec8efa` within 120 seconds and remained on
+    `9382d9317a5ae82d404559398922a253bef9e697`
 
 ## Autonomous Loop Evidence
 
@@ -243,7 +248,8 @@ Focused Web capability regression plus module documentation update.
 - Files changed: Web helper test, Web exchanges doc, and context docs.
 - How tested: focused Web Vitest pack and Web typecheck.
 - What is incomplete: full production UI module clickthrough remains blocked
-  on authenticated/admin app access.
+  on authenticated/admin app access; post-push production build-info had not
+  yet reached this commit during the 120-second wait.
 - Next steps: continue protected V1 evidence when auth/approval inputs are
   available, or add the next narrow local fail-closed regression.
 - Decisions made: no new product decisions.

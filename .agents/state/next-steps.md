@@ -54,6 +54,8 @@ production build-info reached
 Web capability gating is now locally regression-locked: `EXCHANGE2-10` proves
 Gate.io appears as a shared exchange option but only supports `MARKET_CATALOG`;
 paper pricing, live execution, and API-key probe remain blocked in UI gating.
+Post-push public API/Web smoke for `21ec8efa` passed, but build-info stayed on
+`9382d9317a5ae82d404559398922a253bef9e697` during the 120-second wait.
 
 After the planned Gate.io/deploy-auth blockers are cleared, execute the
 production UI module clickthrough audit from

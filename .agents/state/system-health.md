@@ -46,7 +46,9 @@ Last updated: 2026-05-08
   `MARKET_CATALOG`, and remains blocked for `PAPER_PRICING_FEED`,
   `LIVE_EXECUTION`, and `API_KEY_PROBE`; unknown/nullish exchanges fail
   closed. Validation PASS: focused Web Vitest pack (`3` files, `22/22`) and
-  Web typecheck.
+  Web typecheck. Post-push public API/Web smoke passed for
+  `21ec8efa01ec14ae7fd2c039ac4f9884a2564f65`, but build-info stayed on
+  `9382d9317a5ae82d404559398922a253bef9e697` during the 120-second wait.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307
