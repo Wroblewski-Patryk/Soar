@@ -1,0 +1,285 @@
+{
+  "summary": {
+    "generatedAt": "2026-05-08T19:24:51.725Z",
+    "baseUrl": "https://soar.luckysparrow.ch",
+    "apiBaseUrl": "https://api.soar.luckysparrow.ch",
+    "expectedSha": "373a0ceb",
+    "observedBuildSha": "d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d",
+    "buildFresh": false,
+    "publicPass": true,
+    "protectedPass": true,
+    "apiPass": true
+  },
+  "apiChecks": [
+    {
+      "route": "/health",
+      "url": "https://api.soar.luckysparrow.ch/health",
+      "result": {
+        "ok": true,
+        "status": 200,
+        "redirected": false,
+        "url": "https://api.soar.luckysparrow.ch/health",
+        "location": null,
+        "contentType": "application/json; charset=utf-8",
+        "bodySnippet": "{\"status\":\"ok\",\"service\":\"api\",\"timestamp\":\"2026-05-08T19:24:56.209Z\"}"
+      },
+      "classification": "PASS"
+    },
+    {
+      "route": "/ready",
+      "url": "https://api.soar.luckysparrow.ch/ready",
+      "result": {
+        "ok": true,
+        "status": 200,
+        "redirected": false,
+        "url": "https://api.soar.luckysparrow.ch/ready",
+        "location": null,
+        "contentType": "application/json; charset=utf-8",
+        "bodySnippet": "{\"status\":\"ready\",\"service\":\"api\"}"
+      },
+      "classification": "PASS"
+    }
+  ],
+  "publicRoutes": [
+    {
+      "route": "/",
+      "url": "https://soar.luckysparrow.ch/",
+      "result": {
+        "ok": true,
+        "status": 200,
+        "redirected": false,
+        "url": "https://soar.luckysparrow.ch/",
+        "location": null,
+        "contentType": "text/html; charset=utf-8",
+        "bodySnippet": "<!DOCTYPE html><!--EzTkRxHE4eFMl7ZNBMT0S--><html lang=\"en\" data-theme=\"light\"><head><meta charSet=\"UTF-8\"/><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"preload\" href=\"/_next/static/media/155cae559bbd1a77-s.p.woff2\" as=\"font\" crossorigin=\"\" type=\"font/woff2\"/><link rel=\"preload\" href=\"/_next/static/media/4de1fea1a954a5b6-s.p.woff2\" as=\"font\" crossorigin=\"\" type=\"font/woff2\"/><link rel=\"preload\" href=\"/_next/static/media/56b5d6ac638045ae-s."
+      },
+      "classification": "PASS"
+    },
+    {
+      "route": "/auth/login",
+      "url": "https://soar.luckysparrow.ch/auth/login",
+      "result": {
+        "ok": true,
+        "status": 200,
+        "redirected": false,
+        "url": "https://soar.luckysparrow.ch/auth/login",
+        "location": null,
+        "contentType": "text/html; charset=utf-8",
+        "bodySnippet": "<!DOCTYPE html><html lang=\"en\" data-theme=\"light\"><head><meta charSet=\"UTF-8\"/><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/css/a0e0b39c035c6efc.css\" data-precedence=\"next\"/><link rel=\"stylesheet\" href=\"/_next/static/css/0d5206fa1a3f9964.css\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/webpack-b09487471d491134.js\"/><script src=\"/_next/static/chunks/"
+      },
+      "classification": "PASS"
+    },
+    {
+      "route": "/auth/register",
+      "url": "https://soar.luckysparrow.ch/auth/register",
+      "result": {
+        "ok": true,
+        "status": 200,
+        "redirected": false,
+        "url": "https://soar.luckysparrow.ch/auth/register",
+        "location": null,
+        "contentType": "text/html; charset=utf-8",
+        "bodySnippet": "<!DOCTYPE html><html lang=\"en\" data-theme=\"light\"><head><meta charSet=\"UTF-8\"/><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/css/a0e0b39c035c6efc.css\" data-precedence=\"next\"/><link rel=\"stylesheet\" href=\"/_next/static/css/0d5206fa1a3f9964.css\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/webpack-b09487471d491134.js\"/><script src=\"/_next/static/chunks/"
+      },
+      "classification": "PASS"
+    },
+    {
+      "route": "/offline",
+      "url": "https://soar.luckysparrow.ch/offline",
+      "result": {
+        "ok": true,
+        "status": 200,
+        "redirected": false,
+        "url": "https://soar.luckysparrow.ch/offline",
+        "location": null,
+        "contentType": "text/html; charset=utf-8",
+        "bodySnippet": "<!DOCTYPE html><!--EzTkRxHE4eFMl7ZNBMT0S--><html lang=\"en\" data-theme=\"light\"><head><meta charSet=\"UTF-8\"/><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"preload\" href=\"/_next/static/media/155cae559bbd1a77-s.p.woff2\" as=\"font\" crossorigin=\"\" type=\"font/woff2\"/><link rel=\"preload\" href=\"/_next/static/media/4de1fea1a954a5b6-s.p.woff2\" as=\"font\" crossorigin=\"\" type=\"font/woff2\"/><link rel=\"preload\" href=\"/_next/static/media/56b5d6ac638045ae-s."
+      },
+      "classification": "PASS"
+    },
+    {
+      "route": "/api/build-info",
+      "url": "https://soar.luckysparrow.ch/api/build-info",
+      "result": {
+        "ok": true,
+        "status": 200,
+        "redirected": false,
+        "url": "https://soar.luckysparrow.ch/api/build-info",
+        "location": null,
+        "contentType": "application/json",
+        "bodySnippet": "{\"buildId\":\"EzTkRxHE4eFMl7ZNBMT0S\",\"gitSha\":\"d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d\",\"gitRef\":\"main\",\"metadataGeneratedAt\":null,\"metadataSource\":\"env-runtime\",\"checkedAt\":\"2026-05-08T19:24:55.836Z\"}"
+      },
+      "classification": "PASS"
+    }
+  ],
+  "protectedRoutes": [
+    {
+      "route": "/dashboard",
+      "url": "https://soar.luckysparrow.ch/dashboard",
+      "result": {
+        "ok": true,
+        "status": 307,
+        "redirected": false,
+        "url": "https://soar.luckysparrow.ch/dashboard",
+        "location": "/auth/login",
+        "contentType": null,
+        "bodySnippet": "/auth/login"
+      },
+      "classification": "PASS_AUTH_REDIRECT"
+    },
+    {
+      "route": "/dashboard/profile",
+      "url": "https://soar.luckysparrow.ch/dashboard/profile",
+      "result": {
+        "ok": true,
+        "status": 307,
+        "redirected": false,
+        "url": "https://soar.luckysparrow.ch/dashboard/profile",
+        "location": "/auth/login",
+        "contentType": null,
+        "bodySnippet": "/auth/login"
+      },
+      "classification": "PASS_AUTH_REDIRECT"
+    },
+    {
+      "route": "/dashboard/wallets/list",
+      "url": "https://soar.luckysparrow.ch/dashboard/wallets/list",
+      "result": {
+        "ok": true,
+        "status": 307,
+        "redirected": false,
+        "url": "https://soar.luckysparrow.ch/dashboard/wallets/list",
+        "location": "/auth/login",
+        "contentType": null,
+        "bodySnippet": "/auth/login"
+      },
+      "classification": "PASS_AUTH_REDIRECT"
+    },
+    {
+      "route": "/dashboard/markets/list",
+      "url": "https://soar.luckysparrow.ch/dashboard/markets/list",
+      "result": {
+        "ok": true,
+        "status": 307,
+        "redirected": false,
+        "url": "https://soar.luckysparrow.ch/dashboard/markets/list",
+        "location": "/auth/login",
+        "contentType": null,
+        "bodySnippet": "/auth/login"
+      },
+      "classification": "PASS_AUTH_REDIRECT"
+    },
+    {
+      "route": "/dashboard/strategies/list",
+      "url": "https://soar.luckysparrow.ch/dashboard/strategies/list",
+      "result": {
+        "ok": true,
+        "status": 307,
+        "redirected": false,
+        "url": "https://soar.luckysparrow.ch/dashboard/strategies/list",
+        "location": "/auth/login",
+        "contentType": null,
+        "bodySnippet": "/auth/login"
+      },
+      "classification": "PASS_AUTH_REDIRECT"
+    },
+    {
+      "route": "/dashboard/backtests/list",
+      "url": "https://soar.luckysparrow.ch/dashboard/backtests/list",
+      "result": {
+        "ok": true,
+        "status": 307,
+        "redirected": false,
+        "url": "https://soar.luckysparrow.ch/dashboard/backtests/list",
+        "location": "/auth/login",
+        "contentType": null,
+        "bodySnippet": "/auth/login"
+      },
+      "classification": "PASS_AUTH_REDIRECT"
+    },
+    {
+      "route": "/dashboard/bots",
+      "url": "https://soar.luckysparrow.ch/dashboard/bots",
+      "result": {
+        "ok": true,
+        "status": 307,
+        "redirected": false,
+        "url": "https://soar.luckysparrow.ch/dashboard/bots",
+        "location": "/auth/login",
+        "contentType": null,
+        "bodySnippet": "/auth/login"
+      },
+      "classification": "PASS_AUTH_REDIRECT"
+    },
+    {
+      "route": "/dashboard/reports",
+      "url": "https://soar.luckysparrow.ch/dashboard/reports",
+      "result": {
+        "ok": true,
+        "status": 307,
+        "redirected": false,
+        "url": "https://soar.luckysparrow.ch/dashboard/reports",
+        "location": "/auth/login",
+        "contentType": null,
+        "bodySnippet": "/auth/login"
+      },
+      "classification": "PASS_AUTH_REDIRECT"
+    },
+    {
+      "route": "/dashboard/logs",
+      "url": "https://soar.luckysparrow.ch/dashboard/logs",
+      "result": {
+        "ok": true,
+        "status": 307,
+        "redirected": false,
+        "url": "https://soar.luckysparrow.ch/dashboard/logs",
+        "location": "/auth/login",
+        "contentType": null,
+        "bodySnippet": "/auth/login"
+      },
+      "classification": "PASS_AUTH_REDIRECT"
+    },
+    {
+      "route": "/admin",
+      "url": "https://soar.luckysparrow.ch/admin",
+      "result": {
+        "ok": true,
+        "status": 307,
+        "redirected": false,
+        "url": "https://soar.luckysparrow.ch/admin",
+        "location": "/auth/login",
+        "contentType": null,
+        "bodySnippet": "/auth/login"
+      },
+      "classification": "PASS_AUTH_REDIRECT"
+    },
+    {
+      "route": "/admin/users",
+      "url": "https://soar.luckysparrow.ch/admin/users",
+      "result": {
+        "ok": true,
+        "status": 307,
+        "redirected": false,
+        "url": "https://soar.luckysparrow.ch/admin/users",
+        "location": "/auth/login",
+        "contentType": null,
+        "bodySnippet": "/auth/login"
+      },
+      "classification": "PASS_AUTH_REDIRECT"
+    },
+    {
+      "route": "/admin/subscriptions",
+      "url": "https://soar.luckysparrow.ch/admin/subscriptions",
+      "result": {
+        "ok": true,
+        "status": 307,
+        "redirected": false,
+        "url": "https://soar.luckysparrow.ch/admin/subscriptions",
+        "location": "/auth/login",
+        "contentType": null,
+        "bodySnippet": "/auth/login"
+      },
+      "classification": "PASS_AUTH_REDIRECT"
+    }
+  ]
+}

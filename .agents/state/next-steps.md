@@ -29,6 +29,13 @@ production UI module clickthrough audit from
 `docs/planning/prod-ui-module-clickthrough-audit-plan-2026-05-08.md`. The audit
 must wait for latest `main` in build-info and authenticated/admin app access;
 public-only checks cannot prove protected dashboard/admin flows.
+The public/unauthenticated access slice has been captured at
+`docs/operations/prod-ui-public-access-clickthrough-2026-05-08.md`: API health
+and readiness passed, public routes returned HTTP 200, and protected
+dashboard/admin routes redirected to `/auth/login`. It does not satisfy the
+full module clickthrough because build-info is still stale at
+`d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d` versus expected `373a0ceb`, and no
+authenticated/admin production app session is available.
 
 The local V1 backend paper/live runtime line is closed for this slice: focused
 parity/crash coverage, DB-backed runtime/order/exchange/import/readback packs,

@@ -63,6 +63,15 @@ Last updated: 2026-05-08
   latest `main` is deployed through build-info and authenticated/admin
   production app access is available. Evidence plan:
   `docs/planning/prod-ui-module-clickthrough-audit-plan-2026-05-08.md`.
+- 2026-05-08 `PROD-UI-PUBLIC-ACCESS-CLICKTHROUGH-2026-05-08` captured the
+  public/unauthenticated production UI audit slice. API `/health` and `/ready`
+  passed, public Web routes `/`, `/auth/login`, `/auth/register`, `/offline`,
+  and `/api/build-info` returned HTTP 200, and protected dashboard/admin routes
+  failed closed with HTTP 307 redirects to `/auth/login`. Build-info remains
+  stale at `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d` versus expected
+  `373a0ceb`, so authenticated module clickthrough and latest-main production
+  validation remain blocked. Evidence:
+  `docs/operations/prod-ui-public-access-clickthrough-2026-05-08.md`.
 - 2026-05-08 `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08` published the
   current no-secret final V1 preflight JSON/Markdown snapshot for deployed SHA
   `052df82244ea0f81e8611ff8bb2b677db115bd19`. The snapshot reports build-info

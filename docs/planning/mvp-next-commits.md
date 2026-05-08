@@ -76,6 +76,18 @@ Operational queue for one-task execution runs.
     access is available. Evidence plan:
     `docs/planning/prod-ui-module-clickthrough-audit-plan-2026-05-08.md`.
 
+- [x] `PROD-UI-PUBLIC-ACCESS-CLICKTHROUGH-2026-05-08 qa: verify production public access and auth gates`
+  - 2026-05-08: Captured a safe public/unauthenticated production route audit.
+    API `/health` and `/ready` passed, public Web routes `/`, `/auth/login`,
+    `/auth/register`, `/offline`, and `/api/build-info` returned HTTP 200, and
+    protected dashboard/admin routes returned HTTP 307 to `/auth/login`.
+    Build-info remains stale at
+    `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d` versus expected `373a0ceb`,
+    so the full UI module clickthrough remains blocked on latest deploy plus
+    authenticated/admin production app access. Evidence:
+    `docs/planning/prod-ui-public-access-clickthrough-task-2026-05-08.md` and
+    `docs/operations/prod-ui-public-access-clickthrough-2026-05-08.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - 2026-05-08: Generated and committed the current no-secret final V1
     preflight JSON/Markdown snapshot for deployed SHA

@@ -14,6 +14,14 @@ Last updated: 2026-05-08
   (`47/47`). Production public smoke still passes, but production build-info
   remains at `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d`; latest Gate.io
   market-stream/runtime commits are pushed but not yet verified as deployed.
+- Production public UI access probe on 2026-05-08 passed for API `/health`,
+  API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
+  `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307
+  to `/auth/login`, confirming fail-closed auth gates. The same evidence keeps
+  deploy freshness blocked because build-info reports
+  `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d` while latest expected prefix was
+  `373a0ceb`. Evidence:
+  `docs/operations/prod-ui-public-access-clickthrough-2026-05-08.md`.
 - Production web build-info reached
   `052df82244ea0f81e8611ff8bb2b677db115bd19`, which contains the backend
   runtime parity fix, final release-gate build-info freshness, strict RC
