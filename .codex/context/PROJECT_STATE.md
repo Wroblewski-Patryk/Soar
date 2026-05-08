@@ -3,6 +3,13 @@
 Last updated: 2026-05-08
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-08 `V1-FINAL-PREFLIGHT-PUBLIC-SMOKE-2026-05-08` extended
+  `ops:release:v1:preflight` with the existing public deploy smoke command
+  (`--no-workers`) so the safe first operator command now verifies both
+  deployed build-info and public API/Web reachability before reporting
+  protected blockers. Current no-auth preflight reports build-info PASS and
+  public smoke PASS, then blocks on missing production auth/DB/approval and
+  evidence inputs.
 - 2026-05-08 `V1-FINAL-PREFLIGHT-JSON-REPORT-2026-05-08` added optional
   `--json-output <path>` support to `ops:release:v1:preflight`. The report is
   a no-secret machine-readable status snapshot for later Web/operator

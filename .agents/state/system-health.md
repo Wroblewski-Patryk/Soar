@@ -167,6 +167,10 @@ Last updated: 2026-05-08
   local no-auth run against a temporary JSON path produced `status=blocked`
   and no secret/token value exposure; the generated file was not committed as
   source-of-truth because it contains a point-in-time expected SHA.
+- Final V1 preflight public smoke PASS: `ops:release:v1:preflight` now runs
+  the existing public deploy smoke with worker checks disabled. Current
+  preflight reports build-info PASS and public API/Web smoke PASS, then blocks
+  only on protected auth/DB/approval and evidence inputs.
 - `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
   `/dashboard/positions/live-status` returned global reconciliation diagnostic
   counts for an authenticated user. The route now filters

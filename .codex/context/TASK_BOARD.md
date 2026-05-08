@@ -17,6 +17,16 @@ Last updated: 2026-05-08
 
 ## READY
 
+- [x] `V1-FINAL-PREFLIGHT-PUBLIC-SMOKE-2026-05-08 release: include public smoke in preflight`
+  - Scope: extended `ops:release:v1:preflight` with the existing public deploy
+    smoke command using `--no-workers`, added public-smoke state to JSON
+    reports, and covered the skip path in focused tests. Current preflight
+    reports build-info PASS and public API/Web smoke PASS before blocking on
+    protected auth/DB/approval and evidence inputs. Validation PASS: syntax,
+    focused tests, preflight, guardrails, docs parity, public smoke, and diff
+    check. Evidence:
+    `docs/planning/v1-final-preflight-public-smoke-task-2026-05-08.md`.
+
 - [x] `V1-FINAL-PREFLIGHT-JSON-REPORT-2026-05-08 release: add machine-readable preflight report`
   - Scope: added optional `--json-output <path>` support to
     `ops:release:v1:preflight` so later Web/operator visualization can consume

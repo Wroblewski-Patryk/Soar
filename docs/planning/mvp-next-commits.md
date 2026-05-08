@@ -7,6 +7,13 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-FINAL-PREFLIGHT-PUBLIC-SMOKE-2026-05-08 release: include public smoke in preflight`
+  - 2026-05-08: Extended `ops:release:v1:preflight` with the existing public
+    deploy smoke command using `--no-workers`, added public-smoke state to the
+    optional JSON report, and covered the skip path in focused tests. Current
+    preflight reports build-info PASS and public API/Web smoke PASS before
+    blocking on protected auth/DB/approval and evidence inputs. Evidence:
+    `docs/planning/v1-final-preflight-public-smoke-task-2026-05-08.md`.
 - [x] `V1-FINAL-PREFLIGHT-JSON-REPORT-2026-05-08 release: add machine-readable preflight report`
   - 2026-05-08: Added optional `--json-output <path>` support to
     `ops:release:v1:preflight`. The generated JSON is a no-secret status

@@ -36,6 +36,7 @@ const printUsage = () => {
       '  --today <yyyy-mm-dd>       Evidence date override',
       '  --json-output <path>       Optional no-secret JSON report path',
       '  --skip-build-info          Do not call the build-info wait command',
+      '  --skip-public-smoke        Do not call public API/Web smoke',
       '  --help                     Show this message',
       '',
       'This command is read-only. It prints env variable names only and does not',
@@ -80,6 +81,7 @@ const resolveOptions = () => {
     today: readArgValue('--today') || new Date().toISOString().slice(0, 10),
     jsonOutput: readArgValue('--json-output') || process.env.V1_PREFLIGHT_JSON_OUTPUT || '',
     skipBuildInfo: hasFlag('--skip-build-info'),
+    skipPublicSmoke: hasFlag('--skip-public-smoke'),
   };
 };
 
@@ -165,7 +167,14 @@ export const evaluatePrerequisiteGroups = (env = process.env) => ({
   })),
 });
 
-export const buildPreflightReport = ({ options, buildInfo, prerequisites, evidence, blockers }) => ({
+export const buildPreflightReport = ({
+  options,
+  buildInfo,
+  publicSmoke,
+  prerequisites,
+  evidence,
+  blockers,
+}) => ({
   status: blockers.length > 0 ? 'blocked' : 'ready_for_protected_evidence',
   generatedAt: new Date().toISOString(),
   context: {
@@ -174,10 +183,15 @@ export const buildPreflightReport = ({ options, buildInfo, prerequisites, eviden
     expectedSha: options.expectedSha,
     today: options.today,
     buildInfoSkipped: Boolean(options.skipBuildInfo),
+    publicSmokeSkipped: Boolean(options.skipPublicSmoke),
   },
   buildInfo: {
     state: buildInfo.skipped ? 'skipped' : buildInfo.ok ? 'pass' : 'blocked',
     exitCode: Number.isInteger(buildInfo.status) ? buildInfo.status : null,
+  },
+  publicSmoke: {
+    state: publicSmoke.skipped ? 'skipped' : publicSmoke.ok ? 'pass' : 'blocked',
+    exitCode: Number.isInteger(publicSmoke.status) ? publicSmoke.status : null,
   },
   prerequisites,
   evidence: evidence.evidence.map((row) => ({
@@ -234,6 +248,35 @@ export const runBuildInfoWait = (options) => {
   };
 };
 
+export const runPublicSmoke = (options) => {
+  if (options.skipPublicSmoke) {
+    return { ok: true, skipped: true };
+  }
+
+  const args = [
+    'run',
+    'ops:deploy:smoke',
+    '--',
+    '--api-base-url',
+    options.apiBaseUrl,
+    '--web-base-url',
+    options.webBaseUrl,
+    '--no-workers',
+  ];
+  const result = spawnSync('pnpm', args, {
+    cwd: process.cwd(),
+    encoding: 'utf8',
+    shell: process.platform === 'win32',
+  });
+  return {
+    ok: result.status === 0,
+    skipped: false,
+    status: result.status,
+    stdout: result.stdout,
+    stderr: result.stderr,
+  };
+};
+
 const main = async () => {
   const options = resolveOptions();
   if (options.help) {
@@ -259,6 +302,19 @@ const main = async () => {
     if (buildInfo.stdout) process.stdout.write(buildInfo.stdout);
     if (buildInfo.stderr) process.stdout.write(buildInfo.stderr);
     blockers.push('build-info');
+  }
+
+  process.stdout.write('[ops:release:v1:preflight] public smoke\n');
+  const publicSmoke = runPublicSmoke(options);
+  if (publicSmoke.skipped) {
+    process.stdout.write('- SKIPPED by --skip-public-smoke\n');
+  } else if (publicSmoke.ok) {
+    process.stdout.write('- PASS public API/Web smoke\n');
+  } else {
+    process.stdout.write('- BLOCKED public API/Web smoke failed\n');
+    if (publicSmoke.stdout) process.stdout.write(publicSmoke.stdout);
+    if (publicSmoke.stderr) process.stdout.write(publicSmoke.stderr);
+    blockers.push('public-smoke');
   }
 
   process.stdout.write('[ops:release:v1:preflight] protected prerequisites\n');
@@ -297,6 +353,7 @@ const main = async () => {
   const report = buildPreflightReport({
     options,
     buildInfo,
+    publicSmoke,
     prerequisites: prerequisiteStatus,
     evidence,
     blockers,

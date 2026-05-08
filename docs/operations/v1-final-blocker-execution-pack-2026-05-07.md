@@ -39,8 +39,9 @@ with approved production auth and database/Coolify access.
 ### 0. Run Final V1 Preflight
 
 Run the read-only preflight first. It checks deployed build-info for current
-`HEAD`, reports missing prerequisite environment variable names, and classifies
-current release evidence without creating protected production artifacts.
+`HEAD`, runs public API/Web smoke without worker checks, reports missing
+prerequisite environment variable names, and classifies current release
+evidence without creating protected production artifacts.
 
 ```powershell
 pnpm run ops:release:v1:preflight
@@ -56,9 +57,10 @@ pnpm run ops:release:v1:preflight -- --json-output docs/operations/_artifacts-v1
 Expected current result before protected operator access is available:
 `BLOCKED` with missing `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, production
 DB restore context, RC approval, live-import readback, restore, and rollback
-evidence blockers. Do not treat preflight as final release evidence; it is the
-safe readiness check before the commands below. The JSON report is also not
-final release evidence; it is a no-secret status snapshot.
+evidence blockers, but build-info and public API/Web smoke should pass. Do not
+treat preflight as final release evidence; it is the safe readiness check
+before the commands below. The JSON report is also not final release evidence;
+it is a no-secret status snapshot.
 
 ### 1. Verify Production Build Info
 

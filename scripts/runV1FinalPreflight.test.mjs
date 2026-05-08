@@ -5,6 +5,7 @@ import {
   buildPreflightReport,
   evaluatePrerequisiteGroups,
   runBuildInfoWait,
+  runPublicSmoke,
 } from './runV1FinalPreflight.mjs';
 
 const requiredStatus = (env) =>
@@ -101,6 +102,13 @@ test('runBuildInfoWait can be skipped for local preflight tests', () => {
   });
 });
 
+test('runPublicSmoke can be skipped for local preflight tests', () => {
+  assert.deepEqual(runPublicSmoke({ skipPublicSmoke: true }), {
+    ok: true,
+    skipped: true,
+  });
+});
+
 test('buildPreflightReport exposes readiness without secret values', () => {
   const prerequisites = evaluatePrerequisiteGroups({
     LIVEIMPORT_READBACK_AUTH_TOKEN: 'super-secret-token',
@@ -119,6 +127,7 @@ test('buildPreflightReport exposes readiness without secret values', () => {
       skipBuildInfo: true,
     },
     buildInfo: { ok: true, skipped: true },
+    publicSmoke: { ok: true, skipped: true },
     prerequisites,
     evidence: {
       evidence: [
