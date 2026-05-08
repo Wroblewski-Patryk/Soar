@@ -52,6 +52,9 @@ Last updated: 2026-05-08
   `PAPER_PRICING_FEED` remains disabled until deployed source evidence is
   available. Evidence:
   `docs/planning/exchange2-06-gateio-runtime-consumption-regression-task-2026-05-08.md`.
+  Post-push production freshness wait for `5517f027` timed out after ten HTTP
+  200 polls over 300 seconds; public API/Web smoke still passed, but
+  build-info remained on `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d`.
 - 2026-05-08 `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08` published the
   current no-secret final V1 preflight JSON/Markdown snapshot for deployed SHA
   `052df82244ea0f81e8611ff8bb2b677db115bd19`. The snapshot reports build-info

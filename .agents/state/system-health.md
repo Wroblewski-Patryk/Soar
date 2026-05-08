@@ -4,6 +4,16 @@ Last updated: 2026-05-08
 
 ## Latest Health Snapshot
 
+- Gate.io second-exchange foundation has advanced through `EXCHANGE2-06`.
+  Latest pushed `main` is `5517f027`, including Gate.io public catalog,
+  runtime event exchange generalization, public ticker/candle reader,
+  opt-in `MARKET_STREAM_EXCHANGE=GATEIO` market-stream polling, and runtime
+  consumption regressions for exact `GATEIO` ticker/final-candle context.
+  Local validation for `EXCHANGE2-06` passed: API typecheck, repository
+  guardrails, docs parity, diff check, and focused runtime loop Vitest
+  (`47/47`). Production public smoke still passes, but production build-info
+  remains at `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d`; latest Gate.io
+  market-stream/runtime commits are pushed but not yet verified as deployed.
 - Production web build-info reached
   `052df82244ea0f81e8611ff8bb2b677db115bd19`, which contains the backend
   runtime parity fix, final release-gate build-info freshness, strict RC
