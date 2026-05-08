@@ -101,6 +101,14 @@ Last updated: 2026-05-08
     Evidence:
     `docs/planning/exchange2-09-gateio-market-stream-worker-config-task-2026-05-08.md`.
 
+- [x] `EXCHANGE2-10 test(web): lock Gate.io capability gating`
+  - Scope: added focused Web coverage for `supportsExchangeCapability` so UI
+    capability gating shows `GATEIO` as public-catalog only while paper
+    pricing, live execution, and API-key probe remain blocked. Unknown/nullish
+    exchange values fail closed.
+    Evidence:
+    `docs/planning/exchange2-10-gateio-web-capability-gating-task-2026-05-08.md`.
+
 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
   - Scope: execute a production-wide UI audit across canonical public,
     dashboard, admin, and legacy redirect routes, clicking safe module

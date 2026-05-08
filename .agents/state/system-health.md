@@ -41,6 +41,12 @@ Last updated: 2026-05-08
   reached `9382d9317a5ae82d404559398922a253bef9e697`, and public API/Web
   smoke passed. Gate.io `PAPER_PRICING_FEED` remains disabled pending target
   environment source evidence with `MARKET_STREAM_EXCHANGE=GATEIO`.
+- `EXCHANGE2-10` Web capability gating regression PASS: focused Web coverage
+  proves `GATEIO` is listed in shared exchange options, supports only
+  `MARKET_CATALOG`, and remains blocked for `PAPER_PRICING_FEED`,
+  `LIVE_EXECUTION`, and `API_KEY_PROBE`; unknown/nullish exchanges fail
+  closed. Validation PASS: focused Web Vitest pack (`3` files, `22/22`) and
+  Web typecheck.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307

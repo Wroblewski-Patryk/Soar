@@ -51,6 +51,9 @@ values fall back to safe defaults. This is still not production target-source
 evidence and does not enable Gate.io `PAPER_PRICING_FEED`. Follow-up
 production build-info reached
 `9382d9317a5ae82d404559398922a253bef9e697`, and public API/Web smoke passed.
+Web capability gating is now locally regression-locked: `EXCHANGE2-10` proves
+Gate.io appears as a shared exchange option but only supports `MARKET_CATALOG`;
+paper pricing, live execution, and API-key probe remain blocked in UI gating.
 
 After the planned Gate.io/deploy-auth blockers are cleared, execute the
 production UI module clickthrough audit from

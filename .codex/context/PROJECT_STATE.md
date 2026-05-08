@@ -91,6 +91,12 @@ Last updated: 2026-05-08
   Follow-up production build-info reached
   `9382d9317a5ae82d404559398922a253bef9e697`, and public API/Web smoke
   passed.
+- 2026-05-08 `EXCHANGE2-10` locked Gate.io Web capability gating against the
+  shared exchange capability matrix. `GATEIO` is visible in Web exchange
+  options and supports only `MARKET_CATALOG`; `PAPER_PRICING_FEED`,
+  `LIVE_EXECUTION`, and `API_KEY_PROBE` remain blocked, and unknown/nullish
+  exchanges fail closed. Evidence:
+  `docs/planning/exchange2-10-gateio-web-capability-gating-task-2026-05-08.md`.
 - 2026-05-08 `PROD-UI-AUDIT-PLAN-2026-05-08` prepared the production UI module
   clickthrough audit plan requested by the user. The plan covers all canonical
   public, dashboard, admin, and legacy redirect routes, module-level functions,

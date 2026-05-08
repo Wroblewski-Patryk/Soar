@@ -25,10 +25,12 @@ Out of scope:
 
 ## 3. Data and Contract Surface
 - Capability contract:
-  - exchanges: `BINANCE`, `BYBIT`, `OKX`, `KRAKEN`, `COINBASE`
+  - exchanges: `BINANCE`, `BYBIT`, `OKX`, `KRAKEN`, `COINBASE`, `GATEIO`
   - capabilities: `MARKET_CATALOG`, `PAPER_PRICING_FEED`, `LIVE_EXECUTION`, `API_KEY_PROBE`
 - Utility:
   - `supportsExchangeCapability(exchange, capability)` for UI gating.
+- Source:
+  - shared `@cryptosparrow/shared` exchange capability matrix
 
 ## 4. Runtime Flows
 - Connection management flow:
@@ -53,13 +55,16 @@ Out of scope:
 
 ## 8. Test Coverage and Evidence
 - Primary tests:
+  - `exchangeCapabilities.test.ts`
   - `app/dashboard/exchanges/page.test.tsx`
   - `ExchangeConnectionsView.test.tsx`
 - Suggested validation command:
 ```powershell
-pnpm --filter web test -- src/app/dashboard/exchanges/page.test.tsx src/features/exchanges/components/ExchangeConnectionsView.test.tsx
+pnpm --filter web test -- src/features/exchanges/exchangeCapabilities.test.ts src/app/dashboard/exchanges/page.test.tsx src/features/exchanges/components/ExchangeConnectionsView.test.tsx
 ```
 
 ## 9. Open Issues and Follow-Ups
-- Expand capability source to shared API/web contract to avoid client-only drift.
+- Gate.io remains UI-visible only for supported public catalog flows; paper
+  pricing, live execution, and API-key probe controls must stay blocked until
+  shared capability truth changes after adapter evidence.
 - Add dedicated exchange page once integrations diverge from profile API-key scope.

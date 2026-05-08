@@ -23,6 +23,11 @@ local Postgres/Redis ports were reachable. Sequential reruns passed.
   tests proving Binance remains the default, Gate.io is explicit opt-in, and
   invalid env values fall back to safe defaults. Validation: focused
   worker/market-stream Vitest pack (`4` files, `8/8`) and API typecheck.
+- 2026-05-08: Prevented Web capability-gating drift for Gate.io. Focused Web
+  coverage now proves Gate.io is public-catalog only and remains blocked for
+  paper pricing, live execution, and API-key probe until shared capability
+  truth changes. Validation: focused Web Vitest pack (`3` files, `22/22`) and
+  Web typecheck.
 - 2026-05-07: Ran production V1 release-gate classifier in dry-run mode and
   preserved stale evidence blockers as release state. This prevents treating
   old 2026-05-02 RC/backup/rollback artifacts as fresh V1 evidence.

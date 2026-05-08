@@ -96,6 +96,13 @@ Operational queue for one-task execution runs.
     exact operation support are complete. Evidence:
     `docs/planning/exchange2-09-gateio-market-stream-worker-config-task-2026-05-08.md`.
 
+- [x] `EXCHANGE2-10 test(web): lock Gate.io capability gating`
+  - 2026-05-08: Added a focused Web regression proving `GATEIO` is present in
+    shared exchange options, supports only `MARKET_CATALOG`, and remains
+    blocked for `PAPER_PRICING_FEED`, `LIVE_EXECUTION`, and `API_KEY_PROBE`.
+    Unknown/nullish exchange values fail closed in UI gating. Evidence:
+    `docs/planning/exchange2-10-gateio-web-capability-gating-task-2026-05-08.md`.
+
 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
   - 2026-05-08: Planning artifact is ready for a production-wide UI audit that
     visits all canonical public, dashboard, admin, and legacy redirect routes,
