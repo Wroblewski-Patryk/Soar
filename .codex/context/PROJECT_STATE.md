@@ -77,6 +77,9 @@ Last updated: 2026-05-08
   disabled until target worker/source evidence and exact operation support are
   complete. Evidence:
   `docs/operations/gateio-public-market-data-smoke-2026-05-08.md`.
+  The evidence commit `d4bdc7f0dc5358d20edab45c15ec7623e18610f0` was pushed;
+  public API/Web smoke passed afterward, but build-info remained on
+  `36ac02696ac0ce22a6b8bab545fcfb741125ea4b` after a 120-second wait.
 - 2026-05-08 `PROD-UI-AUDIT-PLAN-2026-05-08` prepared the production UI module
   clickthrough audit plan requested by the user. The plan covers all canonical
   public, dashboard, admin, and legacy redirect routes, module-level functions,

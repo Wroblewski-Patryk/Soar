@@ -30,6 +30,8 @@ Last updated: 2026-05-08
   ticker and `1m` candles successfully from public data without secrets,
   authenticated reads, exchange writes, or live orders. Gate.io
   `PAPER_PRICING_FEED` remains disabled pending target worker/source evidence.
+  Post-push public API/Web smoke passed for `d4bdc7f0`, but build-info stayed
+  on `36ac02696ac0ce22a6b8bab545fcfb741125ea4b` during the 120-second wait.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307

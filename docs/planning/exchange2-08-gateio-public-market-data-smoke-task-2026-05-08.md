@@ -123,6 +123,10 @@ Read-only public market-data smoke evidence and source-of-truth updates.
 - Rollback note: docs/evidence-only commit
 - Observability or alerting impact: none
 - Staged rollout or feature flag: not applicable
+- Post-push production check: public API/Web smoke passed after commit
+  `d4bdc7f0dc5358d20edab45c15ec7623e18610f0`, but build-info did not expose
+  that SHA within 120 seconds and remained on
+  `36ac02696ac0ce22a6b8bab545fcfb741125ea4b`.
 
 ## Autonomous Loop Evidence
 

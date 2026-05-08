@@ -41,6 +41,9 @@ Real public Gate.io adapter smoke is now captured:
 `exchangePublicMarketData.service.ts` without secrets or writes. This still
 does not enable `PAPER_PRICING_FEED`; the remaining Gate.io paper boundary is
 target worker/source evidence and exact capability enablement.
+Post-push public smoke for the evidence commit `d4bdc7f0` passed, but
+build-info stayed on `36ac02696ac0ce22a6b8bab545fcfb741125ea4b` during the
+120-second wait.
 
 After the planned Gate.io/deploy-auth blockers are cleared, execute the
 production UI module clickthrough audit from
