@@ -50,12 +50,13 @@ production auth/access. A no-auth collector attempt failed closed before
 runtime readback, which is the expected safe result.
 
 Post-backend-parity check: production web build-info advanced to
-`da1e52cfec0b70e5a94e59d75fe702a55c348d74`, which contains the adapter-pure
-PAPER/LIVE runtime fix. Public deploy smoke without workers passed. The later
-docs-only state commit had not deployed after a 300-second wait, but this does
-not remove the runtime fix from production. Continue with authenticated
-read-only `LIVEIMPORT-03` production runtime readback once credentials are
-available. Do not use GitHub Actions for production deployment.
+`e6ccbedaa1d0074d5dc335935bb6b51a9bb1e387`, which includes the adapter-pure
+PAPER/LIVE runtime fix and refreshed release-state docs. Public deploy smoke
+without workers passed. Later docs-only evidence commits may still be ahead of
+production, but this does not remove the runtime fix from production. Continue
+with authenticated read-only `LIVEIMPORT-03` production runtime readback once
+credentials are available. Do not use GitHub Actions for production
+deployment.
 
 Canonical command once auth is available:
 
@@ -79,7 +80,7 @@ Latest observed production SHA is
    still be ahead of production. Do not use GitHub Actions.
 1. If production credentials or ops auth are available, execute
    `ops:liveimport:readback` for deployed
-   `da1e52cfec0b70e5a94e59d75fe702a55c348d74` and record redacted
+   `e6ccbedaa1d0074d5dc335935bb6b51a9bb1e387` and record redacted
    `LIVEIMPORT-03` evidence. The latest names-only prerequisite sweep found
    only `FIGMA_OAUTH_TOKEN` and `IGCCSVC_DB` in this shell. The evidence run
    must include actual protected runtime positions payloads for the requested

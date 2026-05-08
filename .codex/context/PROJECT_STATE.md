@@ -50,6 +50,9 @@ Last updated: 2026-05-08
   missing auth, and the latest dry-run
   `docs/operations/v1-release-gate-prod-2026-05-08T05-43-51-157Z.md` remains
   `not_ready`.
+  The active final blocker pack now uses deployed
+  `e6ccbedaa1d0074d5dc335935bb6b51a9bb1e387` for build-info and
+  `LIVEIMPORT-03` readback commands.
   Evidence:
   `docs/planning/v1-paper-live-backend-runtime-parity-task-2026-05-08.md`.
 

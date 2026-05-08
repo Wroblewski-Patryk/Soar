@@ -3,7 +3,7 @@
 ## Status
 - Current result: **NO-GO**
 - Production code/tooling SHA:
-  `da1e52cfec0b70e5a94e59d75fe702a55c348d74`
+  `e6ccbedaa1d0074d5dc335935bb6b51a9bb1e387`
 - Latest release-gate dry-run:
   `docs/operations/v1-release-gate-prod-2026-05-08T05-43-51-157Z.md`
 
@@ -36,7 +36,7 @@ with approved production auth and database/Coolify access.
 ### 1. Verify Production Build Info
 
 ```powershell
-pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha da1e52cfec0b70e5a94e59d75fe702a55c348d74 --timeout-seconds 60 --interval-seconds 10
+pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha e6ccbedaa1d0074d5dc335935bb6b51a9bb1e387 --timeout-seconds 60 --interval-seconds 10
 ```
 
 Expected result: `PASS`.
@@ -44,7 +44,7 @@ Expected result: `PASS`.
 ### 2. Capture LIVEIMPORT-03 Runtime Readback
 
 ```powershell
-pnpm run ops:liveimport:readback -- --expected-sha da1e52cfec0b70e5a94e59d75fe702a55c348d74 --output docs/operations/liveimport-03-prod-readback-2026-05-08.json
+pnpm run ops:liveimport:readback -- --expected-sha e6ccbedaa1d0074d5dc335935bb6b51a9bb1e387 --output docs/operations/liveimport-03-prod-readback-2026-05-08.json
 ```
 
 Required result:
@@ -135,7 +135,6 @@ Required result:
 - A no-auth 2026-05-08 runtime freshness probe failed closed with HTTP `401`;
   rollback guard returned `shouldRollback=true` only because runtime freshness
   and alerts endpoints were protected by `401`.
-- RC Gate 2 is open until fresh production SLO evidence is collected.
 - RC Gate 4 is open until real approver identities are provided.
 - Final V1 release gate has only been run in dry-run mode after the blocker
   refresh.

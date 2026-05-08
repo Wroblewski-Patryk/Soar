@@ -208,9 +208,10 @@ runtime contracts are changed.
 
 ## Deployment Impact
 
-Production build-info now exposes `da1e52cfec0b70e5a94e59d75fe702a55c348d74`,
-which contains the V1 backend PAPER/LIVE adapter-pure runtime fix. The latest
-state/docs commit may still be ahead of production build-info, but the runtime
-fix itself is deployed. The next executable release task requires
+Production build-info now exposes `e6ccbedaa1d0074d5dc335935bb6b51a9bb1e387`,
+which contains the V1 backend PAPER/LIVE adapter-pure runtime fix and
+refreshed release-state docs. Later docs-only evidence commits may still be
+ahead of production build-info, but the runtime fix itself is deployed. The
+next executable release task requires
 authenticated read-only production evidence and protected production recovery
 proof; the current shell still lacks those credentials.
