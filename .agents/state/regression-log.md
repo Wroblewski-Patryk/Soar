@@ -78,6 +78,12 @@ local Postgres/Redis ports were reachable. Sequential reruns passed.
   and do not write `order.canceled` audit logs. Validation: focused route e2e
   (`1/1`), full orders/positions e2e (`22/22`), API typecheck, repository
   guardrails, docs parity, and diff check.
+- 2026-05-08: Prevented final V1 preflight deploy-check drift on Windows. The
+  preflight no longer reports false build-info/public-smoke blockers when
+  global `pnpm` is missing; it spawns the bundled Node scripts directly and
+  keeps protected evidence blockers fail-closed. Validation: focused
+  `runV1FinalPreflight` tests and production preflight for deployed
+  `90cd07d6`.
 - 2026-05-07: Ran production V1 release-gate classifier in dry-run mode and
   preserved stale evidence blockers as release state. This prevents treating
   old 2026-05-02 RC/backup/rollback artifacts as fresh V1 evidence.

@@ -195,6 +195,14 @@ Last updated: 2026-05-08
     `docs/planning/deploy-freshness-90cd07d6-task-2026-05-08.md` and
     `docs/operations/deploy-freshness-90cd07d6-2026-05-08.md`.
 
+- [x] `V1-FINAL-PREFLIGHT-NODE-DEPLOY-CHECKS-2026-05-08 fix(ops): remove pnpm dependency from preflight deploy checks`
+  - Scope: updated final V1 preflight to call bundled Node scripts directly for
+    build-info and public smoke, added focused tests and node-based remediation
+    hints, and generated a no-secret preflight report for deployed `90cd07d6`
+    showing build-info/public smoke PASS with protected evidence blockers still
+    fail-closed. Evidence:
+    `docs/planning/v1-final-preflight-node-deploy-checks-task-2026-05-08.md`.
+
 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
   - Scope: execute a production-wide UI audit across canonical public,
     dashboard, admin, and legacy redirect routes, clicking safe module

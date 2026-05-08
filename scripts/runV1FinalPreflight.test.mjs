@@ -135,11 +135,66 @@ test('runBuildInfoWait can be skipped for local preflight tests', () => {
   });
 });
 
+test('runBuildInfoWait invokes the bundled node build-info script directly', () => {
+  const calls = [];
+  const result = runBuildInfoWait(
+    {
+      webBaseUrl: 'https://web.example.com',
+      expectedSha: 'abc123',
+      timeoutSeconds: 30,
+      intervalSeconds: 5,
+    },
+    (command, args, options) => {
+      calls.push({ command, args, options });
+      return { status: 0, stdout: 'ok', stderr: '' };
+    },
+  );
+
+  assert.equal(result.ok, true);
+  assert.equal(calls[0]?.command, process.execPath);
+  assert.match(calls[0]?.args[0] ?? '', /waitForWebBuildInfo\.mjs$/);
+  assert.deepEqual(calls[0]?.args.slice(1), [
+    '--web-base-url',
+    'https://web.example.com',
+    '--expected-sha',
+    'abc123',
+    '--timeout-seconds',
+    '30',
+    '--interval-seconds',
+    '5',
+  ]);
+});
+
 test('runPublicSmoke can be skipped for local preflight tests', () => {
   assert.deepEqual(runPublicSmoke({ skipPublicSmoke: true }), {
     ok: true,
     skipped: true,
   });
+});
+
+test('runPublicSmoke invokes the bundled node deploy smoke script directly', () => {
+  const calls = [];
+  const result = runPublicSmoke(
+    {
+      apiBaseUrl: 'https://api.example.com',
+      webBaseUrl: 'https://web.example.com',
+    },
+    (command, args, options) => {
+      calls.push({ command, args, options });
+      return { status: 0, stdout: 'ok', stderr: '' };
+    },
+  );
+
+  assert.equal(result.ok, true);
+  assert.equal(calls[0]?.command, process.execPath);
+  assert.match(calls[0]?.args[0] ?? '', /deploySmokeCheck\.mjs$/);
+  assert.deepEqual(calls[0]?.args.slice(1), [
+    '--api-base-url',
+    'https://api.example.com',
+    '--web-base-url',
+    'https://web.example.com',
+    '--no-workers',
+  ]);
 });
 
 test('buildPreflightReport exposes readiness without secret values', () => {
@@ -214,6 +269,14 @@ test('buildRemediationHints maps known final V1 blockers to existing commands', 
   assert.match(hints[3].command, /ops:deploy:rollback-proof/);
   const serialized = JSON.stringify(hints);
   assert.equal(serialized.includes('super-secret'), false);
+});
+
+test('buildRemediationHints uses node-based public deploy checks', () => {
+  const hints = buildRemediationHints(['build-info', 'public-smoke']);
+
+  assert.match(hints[0]?.command ?? '', /node scripts\/waitForWebBuildInfo\.mjs/);
+  assert.match(hints[1]?.command ?? '', /node scripts\/deploySmokeCheck\.mjs/);
+  assert.equal(JSON.stringify(hints).includes('pnpm run ops:deploy'), false);
 });
 
 test('buildBlockerDetails exposes stable categories for Web/operator status', () => {

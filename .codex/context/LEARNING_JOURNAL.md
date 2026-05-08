@@ -20,6 +20,31 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Evidence:
 ```
 
+### 2026-05-08 - Final preflight public checks should call bundled Node scripts
+- Context: `V1-FINAL-PREFLIGHT-NODE-DEPLOY-CHECKS-2026-05-08` reran the final
+  V1 preflight on Windows after production build-info already exposed the
+  Gate.io fail-closed batch.
+- Symptom: `scripts/runV1FinalPreflight.mjs` reported build-info and public
+  smoke as blocked with `'pnpm' is not recognized`, even though direct
+  `node scripts/waitForWebBuildInfo.mjs` and
+  `node scripts/deploySmokeCheck.mjs` paths work.
+- Root cause: the preflight spawned `pnpm run ops:deploy:*` child processes,
+  so public deploy truth depended on a global package-manager binary in PATH.
+- Guardrail: release scripts that wrap bundled Node entrypoints should spawn
+  `process.execPath` plus the target script path for public checks, and reserve
+  `pnpm` for developer-facing convenience commands.
+- Preferred pattern:
+```powershell
+node scripts/waitForWebBuildInfo.mjs --web-base-url https://soar.luckysparrow.ch --expected-sha <sha>
+node scripts/deploySmokeCheck.mjs --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers
+```
+- Avoid: marking production deploy freshness or public reachability blocked
+  solely because a wrapper command cannot find global `pnpm`.
+- Evidence: focused preflight tests now prove direct Node child process
+  invocation, and the rerun for deployed
+  `90cd07d602f0a31f315719b8a5cd5be3fd112313` reports build-info PASS and
+  public smoke PASS while remaining blocked only on protected evidence.
+
 ### 2026-05-08 - Local Vitest can be blocked by missing Vite in pnpm store
 - Context: Gate.io exchange adapter validation attempted focused API Vitest
   runs through `apps/api/node_modules/.bin/vitest.CMD`.

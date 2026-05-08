@@ -57,6 +57,11 @@ Rule: fix/cleanup/update first, then feature delivery.
   `docs/planning/deploy-freshness-90cd07d6-task-2026-05-08.md`. Production
   Web build-info now exposes the pushed Gate.io fail-closed batch at
   `90cd07d602f0a31f315719b8a5cd5be3fd112313`, and public API/Web smoke passed.
+- 2026-05-08: Closed `V1-FINAL-PREFLIGHT-NODE-DEPLOY-CHECKS-2026-05-08` with
+  `docs/planning/v1-final-preflight-node-deploy-checks-task-2026-05-08.md`.
+  Final V1 preflight now invokes bundled Node scripts directly for build-info
+  and public smoke, avoiding false deploy blockers when global `pnpm` is absent
+  while preserving protected evidence blockers.
 - 2026-05-07: Closed `V1-FINAL-BLOCKER-PACK-2026-05-07` with
   `docs/planning/v1-final-blocker-execution-pack-task-2026-05-07.md`. A single
   current operator execution pack now lists the remaining V1 blockers and

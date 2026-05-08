@@ -9,6 +9,7 @@ import { evaluateEvidenceReadiness } from './runV1ReleaseGate.mjs';
 
 const DEFAULT_API_BASE_URL = 'https://api.soar.luckysparrow.ch';
 const DEFAULT_WEB_BASE_URL = 'https://soar.luckysparrow.ch';
+const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 
 const rawArgs = process.argv.slice(2);
 
@@ -205,13 +206,13 @@ const remediationCatalog = {
     title: 'Wait for the current HEAD to deploy',
     action: 'Run the existing web build-info wait command before protected evidence collection.',
     command:
-      '$expectedSha = git rev-parse HEAD; pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --timeout-seconds 900 --interval-seconds 30',
+      '$expectedSha = git rev-parse HEAD; node scripts/waitForWebBuildInfo.mjs --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --timeout-seconds 900 --interval-seconds 30',
   },
   'public-smoke': {
     title: 'Restore public API/Web reachability',
     action: 'Run the existing public smoke command and fix public health/readiness/web reachability before protected evidence collection.',
     command:
-      'pnpm run ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers',
+      'node scripts/deploySmokeCheck.mjs --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers',
   },
   'env:liveimport auth': {
     title: 'Provide read-only LIVEIMPORT auth',
@@ -590,15 +591,18 @@ const writeMarkdownReport = async (outputPath, report, jsonOutputPath = '') => {
   );
 };
 
-export const runBuildInfoWait = (options) => {
+const runNodeScript = (scriptName, args, runner = spawnSync) =>
+  runner(process.execPath, [path.join(SCRIPT_DIR, scriptName), ...args], {
+    cwd: process.cwd(),
+    encoding: 'utf8',
+  });
+
+export const runBuildInfoWait = (options, runner = spawnSync) => {
   if (options.skipBuildInfo) {
     return { ok: true, skipped: true };
   }
 
   const args = [
-    'run',
-    'ops:deploy:wait-web-build-info',
-    '--',
     '--web-base-url',
     options.webBaseUrl,
     '--expected-sha',
@@ -608,11 +612,7 @@ export const runBuildInfoWait = (options) => {
     '--interval-seconds',
     String(options.intervalSeconds),
   ];
-  const result = spawnSync('pnpm', args, {
-    cwd: process.cwd(),
-    encoding: 'utf8',
-    shell: process.platform === 'win32',
-  });
+  const result = runNodeScript('waitForWebBuildInfo.mjs', args, runner);
   return {
     ok: result.status === 0,
     skipped: false,
@@ -622,26 +622,19 @@ export const runBuildInfoWait = (options) => {
   };
 };
 
-export const runPublicSmoke = (options) => {
+export const runPublicSmoke = (options, runner = spawnSync) => {
   if (options.skipPublicSmoke) {
     return { ok: true, skipped: true };
   }
 
   const args = [
-    'run',
-    'ops:deploy:smoke',
-    '--',
     '--api-base-url',
     options.apiBaseUrl,
     '--web-base-url',
     options.webBaseUrl,
     '--no-workers',
   ];
-  const result = spawnSync('pnpm', args, {
-    cwd: process.cwd(),
-    encoding: 'utf8',
-    shell: process.platform === 'win32',
-  });
+  const result = runNodeScript('deploySmokeCheck.mjs', args, runner);
   return {
     ok: result.status === 0,
     skipped: false,

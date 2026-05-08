@@ -108,6 +108,13 @@ The pushed Gate.io fail-closed batch is now deployed: production build-info
 exposes `90cd07d602f0a31f315719b8a5cd5be3fd112313`, and public API/Web smoke
 passed. Evidence:
 `docs/operations/deploy-freshness-90cd07d6-2026-05-08.md`.
+Final V1 preflight deploy checks are now portable on this Windows workstation:
+`runV1FinalPreflight.mjs` calls bundled Node scripts directly for build-info
+and public smoke instead of depending on global `pnpm`. The refreshed no-secret
+preflight for deployed `90cd07d6` reports build-info PASS and public smoke
+PASS, then blocks only on protected live-import auth/readback, rollback
+auth/proof, and RC Gate 4 evidence. Evidence:
+`docs/operations/v1-final-preflight-90cd07d6-2026-05-08.md`.
 
 After the planned Gate.io/deploy-auth blockers are cleared, execute the
 production UI module clickthrough audit from

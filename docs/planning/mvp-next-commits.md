@@ -186,6 +186,17 @@ Operational queue for one-task execution runs.
     `docs/planning/deploy-freshness-90cd07d6-task-2026-05-08.md` and
     `docs/operations/deploy-freshness-90cd07d6-2026-05-08.md`.
 
+- [x] `V1-FINAL-PREFLIGHT-NODE-DEPLOY-CHECKS-2026-05-08 fix(ops): remove pnpm dependency from preflight deploy checks`
+  - 2026-05-08: Final V1 preflight now runs bundled Node scripts directly for
+    build-info and public smoke instead of spawning global `pnpm`, preventing
+    false deploy blockers on this Windows workstation. Focused tests lock the
+    command shape and remediation hints. Refreshed no-secret preflight for
+    deployed `90cd07d6` reports build-info PASS and public smoke PASS, then
+    blocks only on protected auth/readback, rollback proof, and RC Gate 4
+    evidence. Evidence:
+    `docs/planning/v1-final-preflight-node-deploy-checks-task-2026-05-08.md`
+    and `docs/operations/v1-final-preflight-90cd07d6-2026-05-08.md`.
+
 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
   - 2026-05-08: Planning artifact is ready for a production-wide UI audit that
     visits all canonical public, dashboard, admin, and legacy redirect routes,

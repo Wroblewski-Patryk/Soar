@@ -111,6 +111,13 @@ Last updated: 2026-05-08
   `90cd07d602f0a31f315719b8a5cd5be3fd112313` after a longer wait, and public
   smoke passed for API `/health`, API `/ready`, and Web `/`. Evidence:
   `docs/operations/deploy-freshness-90cd07d6-2026-05-08.md`.
+- Final V1 preflight public deploy checks now avoid global `pnpm` PATH drift by
+  spawning bundled Node scripts directly. Focused tests passed (`13/13` before
+  the remediation-hint assertion was added, then rerun in final validation),
+  and the production preflight for deployed `90cd07d6` reports build-info PASS
+  plus public smoke PASS while remaining correctly BLOCKED on protected
+  auth/readback, rollback proof, and RC Gate 4 approval evidence. Evidence:
+  `docs/operations/v1-final-preflight-90cd07d6-2026-05-08.md`.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307

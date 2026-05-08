@@ -24,6 +24,12 @@ Last updated: 2026-05-08
   passed. This closes the immediate deploy-freshness lag for that batch, but
   protected/authenticated UI audit and release evidence remain blocked on
   credentials/access.
+- Final V1 preflight previously depended on global `pnpm` for its internal
+  public deploy checks and could falsely report build-info/public-smoke
+  blockers on this workstation. The command now invokes bundled Node scripts
+  directly for those checks; remaining preflight blockers after deployed
+  `90cd07d6` are protected auth/readback, rollback auth/proof, and RC Gate 4
+  approval evidence.
 - Production restore drill is no longer an active blocker after the approved
   Coolify terminal PASS evidence. `ops:release:v1:preflight` now treats fresh
   restore evidence as satisfying the production DB restore context

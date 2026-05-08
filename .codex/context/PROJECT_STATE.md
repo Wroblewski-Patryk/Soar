@@ -171,6 +171,14 @@ Last updated: 2026-05-08
   `90cd07d602f0a31f315719b8a5cd5be3fd112313`, and public API/Web smoke passed.
   Evidence:
   `docs/operations/deploy-freshness-90cd07d6-2026-05-08.md`.
+- 2026-05-08 `V1-FINAL-PREFLIGHT-NODE-DEPLOY-CHECKS-2026-05-08` made final V1
+  preflight deploy checks independent of global `pnpm` PATH drift by spawning
+  bundled Node scripts directly for build-info and public smoke. The refreshed
+  no-secret preflight for deployed `90cd07d6` reports build-info PASS and
+  public smoke PASS, then remains correctly BLOCKED on protected live-import
+  auth/readback, rollback auth/proof, and RC Gate 4 approval evidence.
+  Evidence:
+  `docs/operations/v1-final-preflight-90cd07d6-2026-05-08.md`.
 - 2026-05-08 `PROD-UI-AUDIT-PLAN-2026-05-08` prepared the production UI module
   clickthrough audit plan requested by the user. The plan covers all canonical
   public, dashboard, admin, and legacy redirect routes, module-level functions,
