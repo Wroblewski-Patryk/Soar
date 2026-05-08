@@ -459,7 +459,7 @@ export const fetchExchangePositionsSnapshot = async (userId: string): Promise<Ex
     where: {
       userId,
       exchange: {
-        in: (['BINANCE', 'BYBIT', 'OKX', 'KRAKEN', 'COINBASE'] as const).filter((exchange) =>
+        in: (['BINANCE', 'BYBIT', 'OKX', 'KRAKEN', 'COINBASE', 'GATEIO'] as const).filter((exchange) =>
           supportsExchangeAdapterOperation(exchange, 'POSITIONS_SNAPSHOT')
         ),
       },

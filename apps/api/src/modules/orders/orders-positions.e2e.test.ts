@@ -36,7 +36,7 @@ const createMarketScope = async (params: {
   userId: string;
   name: string;
   symbols: string[];
-  exchange?: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE';
+  exchange?: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE' | 'GATEIO';
   marketType?: 'FUTURES' | 'SPOT';
   baseCurrency?: string;
 }) => {

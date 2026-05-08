@@ -48,7 +48,7 @@ const normalizeWalletInput = (payload: CreateWalletDto | UpdateWalletDto) => {
 
 const assertWalletModeExchangeCapability = (input: {
   mode: 'PAPER' | 'LIVE';
-  exchange: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE';
+  exchange: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE' | 'GATEIO';
 }) => {
   if (input.mode === 'LIVE') {
     assertExchangeCapability(input.exchange, 'LIVE_EXECUTION');
@@ -90,7 +90,7 @@ const assertWalletLiveModeConfig = (params: {
 const assertWalletLiveApiKeyCompatibility = async (params: {
   userId: string;
   mode: 'PAPER' | 'LIVE';
-  exchange: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE';
+  exchange: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE' | 'GATEIO';
   apiKeyId?: string | null;
 }) => {
   if (params.mode !== 'LIVE') return;
@@ -480,7 +480,7 @@ const extractBalanceForCurrency = (payload: unknown, currency: string) => {
 };
 
 const fetchAuthenticatedBalancePreview = async (params: {
-  exchange: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE';
+  exchange: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE' | 'GATEIO';
   apiKey: string;
   apiSecret: string;
   marketType: 'FUTURES' | 'SPOT';

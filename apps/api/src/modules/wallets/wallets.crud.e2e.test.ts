@@ -27,7 +27,7 @@ const createApiKey = async (
   agent: Pick<AuthenticatedRequestClient, 'post'>,
   params: {
     label: string;
-    exchange: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE';
+    exchange: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE' | 'GATEIO';
   }
 ) => {
   const response = await agent.post('/dashboard/profile/apiKeys').send({

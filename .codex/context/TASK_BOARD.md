@@ -20,11 +20,19 @@ Last updated: 2026-05-08
 - [ ] `EXCHANGE2-LIVE-READINESS-PLAN-2026-05-08 planning: stage second exchange adapter after V1 live readiness`
   - Scope: publish the safe staged delivery plan for closing current V1 LIVE
     readiness blockers and adding one selected second exchange through the
-    approved exchange adapter boundaries. Status is BLOCKED until the user
-    selects the target exchange and market type, confirms whether the first
-    slice includes live submit or authenticated readback only, and confirms
-    whether exchange-side cancel is required. Evidence:
+    approved exchange adapter boundaries. The target exchange is now `GATEIO`.
+    Status remains BLOCKED until the user selects market type, confirms whether
+    the first slice includes live submit or authenticated readback only, and
+    confirms whether exchange-side cancel is required. Evidence:
     `docs/planning/second-exchange-live-readiness-plan-2026-05-08.md`.
+
+- [ ] `EXCHANGE2-01 chore(exchange): register GATEIO as fail-closed placeholder`
+  - Scope: add `GATEIO` to the Prisma/shared exchange catalogs and exact
+    operation matrices while leaving all execution/read capabilities disabled.
+    This makes Gate.io a recognized but unsupported exchange until each adapter
+    operation is implemented and verified through the approved exchange module
+    boundaries. Evidence:
+    `docs/planning/exchange2-01-gateio-fail-closed-placeholder-task-2026-05-08.md`.
 
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - Scope: generated and committed the current no-secret final V1 preflight

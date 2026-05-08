@@ -5,10 +5,10 @@
 - Title: Plan second exchange adapter delivery after V1 live readiness blockers
 - Task Type: planning
 - Current Stage: planning
-- Status: BLOCKED
+- Status: IN_PROGRESS
 - Owner: Planning Agent
 - Depends on:
-  - target exchange decision
+  - target exchange decision: `GATEIO` selected by user on 2026-05-08
   - protected production auth for `LIVEIMPORT-03`
   - rollback guard auth
   - real RC Gate 4 approver identities
@@ -34,6 +34,10 @@ The current exchange capability truth supports `BINANCE` only for
 `PAPER_PRICING_FEED`, `LIVE_EXECUTION`, and `API_KEY_PROBE`. The architecture
 requires new exchange support to be explicit by operation family and to fail
 closed where unsupported.
+
+On 2026-05-08 the user selected `GATEIO` as the second-exchange target. The
+first implementation step registers `GATEIO` as a fail-closed placeholder only;
+adapter support must still be implemented operation by operation.
 
 ## Goal
 Prepare and execute a safe delivery path so a second exchange can be connected
@@ -78,7 +82,7 @@ Acceptance criteria:
 - final release gate reports `ready`.
 
 ### Stage 2 - Select Second Exchange And Exact Operation Matrix
-1. User selects one target exchange: `BYBIT`, `OKX`, `KRAKEN`, or `COINBASE`.
+1. User selected one target exchange: `GATEIO`.
 2. Freeze exact V1 operation support:
    - `MARKET_CATALOG`
    - `PAPER_PRICING_FEED`
@@ -159,7 +163,7 @@ Acceptance criteria:
   credentials.
 
 ## Required Decisions
-1. Select target exchange: `BYBIT`, `OKX`, `KRAKEN`, or `COINBASE`.
+1. Target exchange: `GATEIO` selected.
 2. Select first market type: `FUTURES` or `SPOT`.
 3. Confirm whether V1 second-exchange goal includes live order submit, or only
    paper/backtest plus authenticated readback first.
@@ -181,7 +185,8 @@ Acceptance criteria:
 - Files changed: this planning document plus queue/context synchronization.
 - How tested: repository guardrails and docs parity checks for the planning
   slice.
-- What is incomplete: implementation is blocked until target exchange and
-  market type are selected and production auth inputs are available.
+- What is incomplete: target exchange is selected; implementation remains
+  blocked until first market type, first live scope, and production auth inputs
+  are available.
 - Next steps: close V1 live readiness blockers, then implement the selected
   exchange adapter in staged vertical slices.

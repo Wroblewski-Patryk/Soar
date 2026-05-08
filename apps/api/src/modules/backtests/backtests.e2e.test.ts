@@ -37,7 +37,7 @@ const createWalletForUser = async (params: {
   name: string;
   mode?: 'PAPER' | 'LIVE';
   marketType?: 'FUTURES' | 'SPOT';
-  exchange?: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE';
+  exchange?: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE' | 'GATEIO';
   baseCurrency?: string;
   apiKeyId?: string | null;
   manageExternalPositions?: boolean;
@@ -63,7 +63,7 @@ const createMarketScopeForUser = async (params: {
   userId: string;
   name: string;
   symbols: string[];
-  exchange?: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE';
+  exchange?: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE' | 'GATEIO';
   marketType?: 'FUTURES' | 'SPOT';
   baseCurrency?: string;
 }) => {

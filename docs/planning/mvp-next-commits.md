@@ -11,13 +11,20 @@ Operational queue for one-task execution runs.
   - 2026-05-08: Published
     `docs/planning/second-exchange-live-readiness-plan-2026-05-08.md` as the
     canonical staged plan for adding a second exchange through existing
-    exchange adapter boundaries. Implementation is BLOCKED until the target
-    exchange, market type, first live scope, and cancel requirement are
-    explicitly selected. The plan keeps current V1 blockers first:
+    exchange adapter boundaries. The user selected `GATEIO` as the target
+    exchange. Implementation remains blocked until market type, first live
+    scope, and cancel requirement are explicitly selected. The plan keeps
+    current V1 blockers first:
     authenticated `LIVEIMPORT-03`, rollback proof auth, RC Gate 4 approval,
     and final non-dry-run release gate. Do not enable broad exchange
     capabilities for a second exchange before exact operation support is
     implemented and verified.
+- [ ] `EXCHANGE2-01 chore(exchange): register GATEIO as fail-closed placeholder`
+  - 2026-05-08: Add `GATEIO` to the Prisma/shared exchange catalogs and exact
+    operation matrices with every execution/read capability disabled. This is
+    the required fail-closed foundation before implementing any Gate.io
+    adapter surface. Evidence:
+    `docs/planning/exchange2-01-gateio-fail-closed-placeholder-task-2026-05-08.md`.
 
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - 2026-05-08: Generated and committed the current no-secret final V1

@@ -3,7 +3,7 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 
-const PLACEHOLDER_EXCHANGES = ['BYBIT', 'OKX', 'KRAKEN', 'COINBASE'] as const;
+const PLACEHOLDER_EXCHANGES = ['BYBIT', 'OKX', 'KRAKEN', 'COINBASE', 'GATEIO'] as const;
 let emailCounter = 0;
 
 const uniqueEmail = (prefix: string) =>

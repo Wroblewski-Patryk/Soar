@@ -112,6 +112,7 @@ Consumers must never infer:
 | `OKX` | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
 | `KRAKEN` | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
 | `COINBASE` | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
+| `GATEIO` | unsupported | unsupported | unsupported | unsupported | unsupported | selected second-exchange target; fail-closed placeholder until exact operation adapters are implemented and verified |
 
 Canonical owner:
 

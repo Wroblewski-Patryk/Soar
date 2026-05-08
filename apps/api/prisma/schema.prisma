@@ -200,6 +200,7 @@ enum Exchange {
   OKX
   KRAKEN
   COINBASE
+  GATEIO
 }
 
 model Strategy {

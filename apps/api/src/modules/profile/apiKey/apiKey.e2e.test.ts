@@ -3,7 +3,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { app } from "../../../index";
 import { prisma } from "../../../prisma/client";
 
-const PLACEHOLDER_EXCHANGES = ["BYBIT", "OKX", "KRAKEN", "COINBASE"] as const;
+const PLACEHOLDER_EXCHANGES = ["BYBIT", "OKX", "KRAKEN", "COINBASE", "GATEIO"] as const;
 const originalApiKeyEncryptionKeys = process.env.API_KEY_ENCRYPTION_KEYS;
 const originalApiKeyEncryptionActiveVersion = process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
 

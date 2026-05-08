@@ -182,7 +182,7 @@ const withStrategyBot = (
     strategies?: any[];
     symbols?: string[];
     marketType?: 'FUTURES' | 'SPOT';
-    exchange?: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE';
+    exchange?: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE' | 'GATEIO';
   }
 ) => {
   deps.listActiveBots = vi.fn(async () => [

@@ -3,12 +3,12 @@ import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 import { setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 
-export const PLACEHOLDER_EXCHANGES = ['BYBIT', 'OKX', 'KRAKEN', 'COINBASE'] as const;
+export const PLACEHOLDER_EXCHANGES = ['BYBIT', 'OKX', 'KRAKEN', 'COINBASE', 'GATEIO'] as const;
 export const walletIdByMarketGroupId = new Map<string, string>();
 
 type WalletContext = {
   mode?: 'PAPER' | 'LIVE';
-  exchange?: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE';
+  exchange?: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE' | 'GATEIO';
   marketType?: 'FUTURES' | 'SPOT';
   baseCurrency?: string;
   apiKeyId?: string | null;
@@ -93,7 +93,7 @@ export const createStrategy = async (
 export const createMarketGroup = async (
   email: string,
   marketType: 'FUTURES' | 'SPOT' = 'FUTURES',
-  exchange: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE' = 'BINANCE',
+  exchange: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE' | 'GATEIO' = 'BINANCE',
   baseCurrency = 'USDT'
 ) => {
   const user = await prisma.user.findUniqueOrThrow({ where: { email } });

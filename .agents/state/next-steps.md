@@ -4,13 +4,13 @@ Last updated: 2026-05-08
 
 ## Next Tiny Task
 
-Second-exchange implementation is now planned but BLOCKED on an explicit target
-exchange decision. Use
+Second-exchange implementation is now planned with `GATEIO` selected as the
+target exchange. Use
 `docs/planning/second-exchange-live-readiness-plan-2026-05-08.md` as the
 canonical staged plan. Do not enable broad `LIVE_EXECUTION` or
 `PAPER_PRICING_FEED` for another exchange until exact operation support is
-implemented and verified. Required user/operator decisions: target exchange,
-first market type, whether the first slice includes live order submit or only
+implemented and verified. Remaining required user/operator decisions: first
+market type, whether the first slice includes live order submit or only
 paper/backtest/authenticated readback, and whether exchange-side cancel is in
 scope.
 

@@ -4,6 +4,7 @@ export declare const EXCHANGE_OPTIONS: readonly [
   'OKX',
   'KRAKEN',
   'COINBASE',
+  'GATEIO',
 ];
 export type ExchangeOption = (typeof EXCHANGE_OPTIONS)[number];
 

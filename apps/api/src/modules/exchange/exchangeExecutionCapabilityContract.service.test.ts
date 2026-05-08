@@ -18,10 +18,13 @@ describe('exchangeExecutionCapabilityContract.service', () => {
     expect(supportsExchangeExecutionCapability('OKX', 'POSITIONS_SNAPSHOT')).toBe(false);
     expect(supportsExchangeExecutionCapability('KRAKEN', 'WALLET_CASHFLOW_HISTORY')).toBe(false);
     expect(supportsExchangeExecutionCapability('COINBASE', 'LIVE_ORDER_SUBMIT')).toBe(false);
+    expect(supportsExchangeExecutionCapability('GATEIO', 'BALANCE_PREVIEW')).toBe(false);
+    expect(supportsExchangeExecutionCapability('GATEIO', 'LIVE_ORDER_SUBMIT')).toBe(false);
   });
 
   it('keeps exchange-side cancel explicitly unsupported', () => {
     expect(supportsExchangeExecutionCapability('BINANCE', 'LIVE_ORDER_CANCEL')).toBe(false);
+    expect(supportsExchangeExecutionCapability('GATEIO', 'LIVE_ORDER_CANCEL')).toBe(false);
     expect(() => assertExchangeExecutionCapabilitySupport('BINANCE', 'LIVE_ORDER_CANCEL')).toThrowError(
       ExchangeExecutionCapabilityUnsupportedError
     );

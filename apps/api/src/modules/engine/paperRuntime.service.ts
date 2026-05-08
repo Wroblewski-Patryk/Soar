@@ -21,7 +21,7 @@ type WorkerRuntimeLogger = {
 };
 
 export type PaperRuntimeTask = {
-  exchange?: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE';
+  exchange?: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE' | 'GATEIO';
   marketType?: 'FUTURES' | 'SPOT';
   symbol: string;
   timeframe: string;

@@ -63,6 +63,15 @@ const EXCHANGE_EXECUTION_CAPABILITY_MATRIX: Record<
     LIVE_ORDER_SUBMIT: false,
     LIVE_ORDER_CANCEL: false,
   },
+  GATEIO: {
+    BALANCE_PREVIEW: false,
+    POSITIONS_SNAPSHOT: false,
+    OPEN_ORDERS_SNAPSHOT: false,
+    TRADE_HISTORY_SNAPSHOT: false,
+    WALLET_CASHFLOW_HISTORY: false,
+    LIVE_ORDER_SUBMIT: false,
+    LIVE_ORDER_CANCEL: false,
+  },
 };
 
 export class ExchangeExecutionCapabilityUnsupportedError extends DomainError<{
