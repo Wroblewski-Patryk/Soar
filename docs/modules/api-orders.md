@@ -5,8 +5,8 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/orders`
 - Owner: backend/trading-domain
-- Last updated: 2026-05-03
-- Related planning task: `RUNTIME-AUDIT-24`
+- Last updated: 2026-05-08
+- Related planning task: `EXCHANGE2-19`
 
 ## Canonical Architecture Linkage
 Canonical order and lifecycle rules live in:
@@ -71,6 +71,9 @@ Out of scope:
 - LIVE execution requires explicit risk acknowledgement.
 - Exchange-backed open orders are not locally canceled or locally closed as
   filled while the exchange boundary lacks canonical exchange-cancel support.
+- `POST /dashboard/orders/:id/cancel` returns HTTP 501 with
+  `LIVE_ORDER_CANCEL_UNSUPPORTED` for persisted exchange-backed orders and
+  leaves order state plus cancellation audit logs unchanged.
 - Strict mode toggles can fail closed when leverage/margin convergence fails.
 
 ## 7. Observability and Operations

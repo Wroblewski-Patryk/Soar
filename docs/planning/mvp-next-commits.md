@@ -170,6 +170,15 @@ Operational queue for one-task execution runs.
     leverage convergence, or live order adapter creation. Evidence:
     `docs/planning/exchange2-18-gateio-live-submit-boundary-task-2026-05-08.md`.
 
+- [x] `EXCHANGE2-19 test(api): lock exchange-backed cancel route fail closed`
+  - 2026-05-08: Added route-level API coverage proving exchange-backed open
+    orders return HTTP 501 with `LIVE_ORDER_CANCEL_UNSUPPORTED` through
+    `POST /dashboard/orders/:id/cancel`, while persisted order state remains
+    `OPEN`, `canceledAt` stays null, and no `order.canceled` audit log is
+    written. Gate.io and all other exchange-side cancel capabilities remain
+    disabled until a canonical adapter operation exists. Evidence:
+    `docs/planning/exchange2-19-exchange-backed-cancel-route-fail-closed-task-2026-05-08.md`.
+
 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
   - 2026-05-08: Planning artifact is ready for a production-wide UI audit that
     visits all canonical public, dashboard, admin, and legacy redirect routes,

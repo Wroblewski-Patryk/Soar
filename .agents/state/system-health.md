@@ -99,6 +99,13 @@ Last updated: 2026-05-08
   convergence, or live order adapter creation. Validation PASS: focused
   exchange adapter boundary test, API typecheck, repository guardrails, docs
   parity, and diff check.
+- `EXCHANGE2-19` exchange-backed cancel route regression PASS: route-level API
+  coverage proves persisted exchange-backed open orders fail closed through
+  `/dashboard/orders/:id/cancel` with HTTP 501 and
+  `LIVE_ORDER_CANCEL_UNSUPPORTED`, while order state and cancellation audit
+  truth remain unchanged. Validation PASS: focused route e2e (`1/1`), full
+  orders/positions e2e (`22/22`), API typecheck, repository guardrails, docs
+  parity, and diff check.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307

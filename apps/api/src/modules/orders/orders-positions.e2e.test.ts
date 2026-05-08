@@ -1201,6 +1201,55 @@ describe('Orders and positions read contract', () => {
     expect(closedPosition.status).toBe('CLOSED');
   });
 
+  it('fails closed instead of locally canceling exchange-backed open orders through API', async () => {
+    const ownerAgent = await registerAndLogin('orders-exchange-cancel-owner@example.com');
+    const ownerId = await getUserId('orders-exchange-cancel-owner@example.com');
+
+    const order = await prisma.order.create({
+      data: {
+        userId: ownerId,
+        origin: 'EXCHANGE_SYNC',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        symbol: 'BTCUSDT',
+        side: 'BUY',
+        type: 'LIMIT',
+        status: 'OPEN',
+        quantity: 0.01,
+        price: 62000,
+        exchangeOrderId: 'gateio-open-order-1',
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    const res = await ownerAgent.post(`/dashboard/orders/${order.id}/cancel`).send({ riskAck: true });
+
+    expect(res.status).toBe(501);
+    expect(res.body.error.message).toBe(
+      'Exchange-backed order cancel is not supported by the current LIVE execution boundary'
+    );
+    expect(res.body.error.details).toMatchObject({
+      code: 'LIVE_ORDER_CANCEL_UNSUPPORTED',
+    });
+
+    const persistedOrder = await prisma.order.findUniqueOrThrow({
+      where: { id: order.id },
+    });
+    expect(persistedOrder.status).toBe('OPEN');
+    expect(persistedOrder.canceledAt).toBeNull();
+
+    const cancellationAudits = await prisma.log.findMany({
+      where: {
+        userId: ownerId,
+        entityId: order.id,
+        action: 'order.canceled',
+      },
+    });
+    expect(cancellationAudits).toHaveLength(0);
+  });
+
   it('updates position management mode for owner and enforces ownership', async () => {
     const ownerAgent = await registerAndLogin('positions-mode-owner@example.com');
     const otherAgent = await registerAndLogin('positions-mode-other@example.com');

@@ -98,6 +98,12 @@ Gate.io LIVE order submit is now locally regression-locked at the exchange
 boundary: `EXCHANGE2-18` proves `LIVE_ORDER_SUBMIT` fails closed before
 credential resolution, connector construction, pretrade guards, leverage
 convergence, or live order adapter creation.
+Exchange-backed cancel is now locally regression-locked at the API route:
+`EXCHANGE2-19` proves `/dashboard/orders/:id/cancel` returns HTTP 501 with
+`LIVE_ORDER_CANCEL_UNSUPPORTED` for persisted exchange-backed open orders,
+leaves the order open, and writes no cancellation audit log. Gate.io and all
+other exchange-side cancel capabilities remain disabled until a canonical
+adapter operation exists.
 
 After the planned Gate.io/deploy-auth blockers are cleared, execute the
 production UI module clickthrough audit from

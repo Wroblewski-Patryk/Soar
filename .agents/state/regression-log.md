@@ -72,6 +72,12 @@ local Postgres/Redis ports were reachable. Sequential reruns passed.
   convergence, or live order adapter creation. Validation: focused exchange
   adapter boundary test, API typecheck, repository guardrails, docs parity, and
   diff check.
+- 2026-05-08: Prevented exchange-backed cancel route drift. A DB-backed route
+  e2e test now proves persisted exchange-backed open orders return HTTP 501
+  with `LIVE_ORDER_CANCEL_UNSUPPORTED`, remain `OPEN` with `canceledAt=null`,
+  and do not write `order.canceled` audit logs. Validation: focused route e2e
+  (`1/1`), full orders/positions e2e (`22/22`), API typecheck, repository
+  guardrails, docs parity, and diff check.
 - 2026-05-07: Ran production V1 release-gate classifier in dry-run mode and
   preserved stale evidence blockers as release state. This prevents treating
   old 2026-05-02 RC/backup/rollback artifacts as fresh V1 evidence.

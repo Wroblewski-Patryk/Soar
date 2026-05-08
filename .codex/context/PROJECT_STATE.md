@@ -158,6 +158,14 @@ Last updated: 2026-05-08
   resolution, connector construction, pretrade guards, leverage convergence, or
   live order adapter creation. Evidence:
   `docs/planning/exchange2-18-gateio-live-submit-boundary-task-2026-05-08.md`.
+- 2026-05-08 `EXCHANGE2-19` locked the exchange-backed cancel route boundary.
+  API route coverage proves `POST /dashboard/orders/:id/cancel` returns HTTP
+  501 with `LIVE_ORDER_CANCEL_UNSUPPORTED` for persisted exchange-backed open
+  orders, leaves the order open with `canceledAt=null`, and writes no
+  misleading cancellation audit log. Gate.io and all other exchange-side cancel
+  capabilities remain disabled until a canonical adapter operation is
+  implemented. Evidence:
+  `docs/planning/exchange2-19-exchange-backed-cancel-route-fail-closed-task-2026-05-08.md`.
 - 2026-05-08 `PROD-UI-AUDIT-PLAN-2026-05-08` prepared the production UI module
   clickthrough audit plan requested by the user. The plan covers all canonical
   public, dashboard, admin, and legacy redirect routes, module-level functions,

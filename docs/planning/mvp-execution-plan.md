@@ -47,6 +47,12 @@ Rule: fix/cleanup/update first, then feature delivery.
   Gate.io `LIVE_ORDER_SUBMIT` now has focused exchange-boundary evidence that
   it fails closed before credentials, connectors, pretrade guards, leverage
   convergence, or live order adapter creation.
+- 2026-05-08: Closed `EXCHANGE2-19` with
+  `docs/planning/exchange2-19-exchange-backed-cancel-route-fail-closed-task-2026-05-08.md`.
+  Exchange-backed cancel now has route-level evidence that
+  `/dashboard/orders/:id/cancel` returns HTTP 501 with
+  `LIVE_ORDER_CANCEL_UNSUPPORTED`, leaves the order open, and writes no
+  cancellation audit log while exchange-side cancel remains unsupported.
 - 2026-05-07: Closed `V1-FINAL-BLOCKER-PACK-2026-05-07` with
   `docs/planning/v1-final-blocker-execution-pack-task-2026-05-07.md`. A single
   current operator execution pack now lists the remaining V1 blockers and
