@@ -223,6 +223,14 @@ Last updated: 2026-05-09
   production DB restore context, `LIVEIMPORT-03`, and current 2026-05-09
   release evidence are missing or stale. Evidence:
   `docs/operations/v1-final-preflight-90cd07d6-2026-05-09.md`.
+- 2026-05-09 `V1-PROD-ACTIVATION-REFRESH-2026-05-09` added current
+  production activation plan and activation evidence audit artifacts as
+  explicit `NO-GO`. Follow-up no-secret preflight now reports activation audit
+  and activation execution plan as `fresh` for 2026-05-09; remaining blockers
+  are protected auth, production DB restore context, stale RC/recovery
+  evidence, missing `LIVEIMPORT-03`, and rollback proof. Evidence:
+  `docs/planning/v1-production-activation-and-evidence-plan-2026-05-09.md`
+  and `docs/operations/v1-production-activation-evidence-audit-2026-05-09.md`.
 - 2026-05-08 `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08` published the
   current no-secret final V1 preflight JSON/Markdown snapshot for deployed SHA
   `052df82244ea0f81e8611ff8bb2b677db115bd19`. The snapshot reports build-info

@@ -248,6 +248,13 @@ Last updated: 2026-05-09
     2026-05-08 release evidence for the 2026-05-09 date. Evidence:
     `docs/planning/v1-final-preflight-refresh-90cd07d6-task-2026-05-09.md`.
 
+- [x] `V1-PROD-ACTIVATION-REFRESH-2026-05-09 release: refresh production activation plan and audit`
+  - Scope: created fresh 2026-05-09 production activation plan and activation
+    evidence audit as `NO-GO` artifacts, then reran the no-secret final
+    preflight to confirm activation plan/audit are fresh while protected
+    release blockers remain explicit. Evidence:
+    `docs/planning/v1-production-activation-refresh-2026-05-09-task.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - Scope: generated and committed the current no-secret final V1 preflight
     JSON/Markdown snapshot for deployed SHA

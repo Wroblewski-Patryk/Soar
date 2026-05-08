@@ -138,6 +138,13 @@ Last updated: 2026-05-09
   production DB restore context, missing `LIVEIMPORT-03`, and stale 2026-05-08
   release evidence block the 2026-05-09 release date. Evidence:
   `docs/operations/v1-final-preflight-90cd07d6-2026-05-09.md`.
+- Production activation refresh for 2026-05-09 is current and `NO-GO`:
+  activation plan and activation evidence audit are fresh, and the follow-up
+  no-secret preflight confirms those two evidence families are no longer stale.
+  V1 remains blocked on protected auth, production DB restore context, stale
+  RC/recovery evidence, missing `LIVEIMPORT-03`, and rollback proof. Evidence:
+  `docs/planning/v1-production-activation-and-evidence-plan-2026-05-09.md` and
+  `docs/operations/v1-production-activation-evidence-audit-2026-05-09.md`.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307

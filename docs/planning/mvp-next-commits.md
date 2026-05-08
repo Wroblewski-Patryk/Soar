@@ -244,6 +244,17 @@ Operational queue for one-task execution runs.
     `docs/planning/v1-final-preflight-refresh-90cd07d6-task-2026-05-09.md`
     and `docs/operations/v1-final-preflight-90cd07d6-2026-05-09.md`.
 
+- [x] `V1-PROD-ACTIVATION-REFRESH-2026-05-09 release: refresh production activation plan and audit`
+  - 2026-05-09: Added fresh 2026-05-09 production activation plan and
+    activation evidence audit as explicit `NO-GO` artifacts. Follow-up
+    no-secret final preflight now reports activation plan and activation audit
+    as `fresh`, while V1 remains `BLOCKED` on protected auth, production DB
+    restore context, stale RC/recovery evidence, missing `LIVEIMPORT-03`, and
+    rollback proof. Evidence:
+    `docs/planning/v1-production-activation-refresh-2026-05-09-task.md`,
+    `docs/planning/v1-production-activation-and-evidence-plan-2026-05-09.md`,
+    and `docs/operations/v1-production-activation-evidence-audit-2026-05-09.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - 2026-05-08: Generated and committed the current no-secret final V1
     preflight JSON/Markdown snapshot for deployed SHA

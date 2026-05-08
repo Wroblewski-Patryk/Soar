@@ -29,6 +29,12 @@ build-info and public API/Web smoke, but the current release posture is
 context, missing `LIVEIMPORT-03`, and stale 2026-05-08 release evidence for
 the 2026-05-09 evidence date.
 
+2026-05-09 activation refresh: production activation plan and activation
+evidence audit are fresh `NO-GO` artifacts for 2026-05-09, and the follow-up
+preflight confirms those blockers are cleared. V1 remains blocked on protected
+auth, production DB restore context, stale RC/recovery evidence,
+`LIVEIMPORT-03`, and rollback proof.
+
 2026-05-09 continuation update: Gate.io second-exchange planning has been
 reconciled after the deployed fail-closed foundation. The plan is complete as a
 planning artifact; public catalog and public `FUTURES`/swap market-data

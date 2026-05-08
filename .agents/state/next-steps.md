@@ -155,6 +155,13 @@ The current no-secret V1 final preflight for deployed
 public smoke pass, but V1 remains `BLOCKED` on missing live-import auth,
 rollback auth, production DB restore context, missing `LIVEIMPORT-03`, and
 stale 2026-05-08 release evidence for the 2026-05-09 evidence date.
+Production activation plan and activation evidence audit are now fresh
+2026-05-09 `NO-GO` artifacts:
+`docs/planning/v1-production-activation-and-evidence-plan-2026-05-09.md` and
+`docs/operations/v1-production-activation-evidence-audit-2026-05-09.md`.
+The follow-up preflight confirms those two evidence families are fresh; the
+remaining blockers are protected auth, production DB restore context, stale
+RC/recovery evidence, missing `LIVEIMPORT-03`, and rollback proof.
 
 The local V1 backend paper/live runtime line is closed for this slice: focused
 parity/crash coverage, DB-backed runtime/order/exchange/import/readback packs,
