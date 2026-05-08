@@ -12,10 +12,11 @@ Last updated: 2026-05-08
   declaring DB-backed validation blocked.
 - `origin/main` is ahead of production build-info, while production still
   reports `4f6832d6d94d0d9e86a2504b4a00fe177a1c6c44` after the V1 backend
-  parity candidate push. This is expected until a Coolify/manual operator
-  deploy completes. Do not use GitHub Actions for production deployment; the
-  operator confirmed that path is not allowed and creates unwanted email
-  noise.
+  parity candidate push. A 900-second build-info wait still saw the same
+  deployed SHA, while public deploy smoke without workers passed. This is
+  expected until a Coolify/manual operator deploy completes. Do not use GitHub
+  Actions for production deployment; the operator confirmed that path is not
+  allowed and creates unwanted email noise.
 - Production deployment freshness initially lagged after the pushed V1 audit
   candidate, but a later build-info wait passed and production now reports
   `1f816362c93e117e47cfe52a35e0fec93bd0b37d`.

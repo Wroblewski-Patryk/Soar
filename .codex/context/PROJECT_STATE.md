@@ -19,10 +19,11 @@ Last updated: 2026-05-08
   local `localhost:5432`/`6379` ports were reachable. Sequential reruns
   passed, so no local backend runtime assertion failure remains in this slice.
   Candidate commit: current task commit.
-  The task commit was pushed to `origin/main`; a 120-second public production
+  The task commit was pushed to `origin/main`; a 900-second public production
   build-info wait still saw `4f6832d6d94d0d9e86a2504b4a00fe177a1c6c44`, while
-  public API `/health` and `/ready` remained healthy. Coolify/manual
-  deployment is still required before production readback can prove this fix.
+  public deploy smoke without workers passed for `API /health`, `API /ready`,
+  and `WEB /`. Coolify/manual deployment is still required before production
+  readback can prove this fix.
   Evidence:
   `docs/planning/v1-paper-live-backend-runtime-parity-task-2026-05-08.md`.
 

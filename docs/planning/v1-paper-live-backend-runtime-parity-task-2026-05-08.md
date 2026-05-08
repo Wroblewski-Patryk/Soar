@@ -228,8 +228,9 @@ settlement even when tests or runtime callers provide adapter gateways.
   API suite.
 - Push/deploy evidence: task commit was pushed to `origin/main`; public
   production build-info still reported
-  `4f6832d6d94d0d9e86a2504b4a00fe177a1c6c44` after a 120-second wait. Public
-  API `/health` and `/ready` were healthy.
+  `4f6832d6d94d0d9e86a2504b4a00fe177a1c6c44` after a 900-second wait. Public
+  deploy smoke without workers passed for `API /health`, `API /ready`, and
+  `WEB /`.
 - What is incomplete: Coolify/manual deployment and production authenticated
   readback remain separate; no local backend runtime assertion failure remains
   in this slice.

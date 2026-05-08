@@ -54,6 +54,13 @@ Last updated: 2026-05-08
   `4f6832d6d94d0d9e86a2504b4a00fe177a1c6c44`. Public production API `/health`
   returned `ok` and `/ready` returned `ready`. This is a Coolify/manual
   deployment boundary, not a local backend regression.
+- Extended post-push deployment freshness check for the pushed V1 backend
+  parity line: `ops:deploy:wait-web-build-info` timed out after thirty HTTP
+  200 polls over 900 seconds; production web build-info still remained on
+  `4f6832d6d94d0d9e86a2504b4a00fe177a1c6c44`. Public deploy smoke without
+  workers passed (`API /health`, `API /ready`, and `WEB /` all returned 200).
+  This confirms the production site is healthy but not yet deployed to the
+  pushed candidate.
 - `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
   `/dashboard/positions/live-status` returned global reconciliation diagnostic
   counts for an authenticated user. The route now filters
