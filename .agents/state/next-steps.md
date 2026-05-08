@@ -24,6 +24,12 @@ user/operator decisions: whether the next live slice is API-key probe,
 authenticated readback, live order submit, and whether exchange-side cancel is
 in scope.
 
+After the planned Gate.io/deploy-auth blockers are cleared, execute the
+production UI module clickthrough audit from
+`docs/planning/prod-ui-module-clickthrough-audit-plan-2026-05-08.md`. The audit
+must wait for latest `main` in build-info and authenticated/admin app access;
+public-only checks cannot prove protected dashboard/admin flows.
+
 The local V1 backend paper/live runtime line is closed for this slice: focused
 parity/crash coverage, DB-backed runtime/order/exchange/import/readback packs,
 and the full local API suite pass. Continue at the remaining production

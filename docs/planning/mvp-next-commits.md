@@ -66,6 +66,16 @@ Operational queue for one-task execution runs.
     Evidence:
     `docs/planning/exchange2-06-gateio-runtime-consumption-regression-task-2026-05-08.md`.
 
+- [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
+  - 2026-05-08: Planning artifact is ready for a production-wide UI audit that
+    visits all canonical public, dashboard, admin, and legacy redirect routes,
+    clicks all module-level functions that are safe to exercise, captures
+    screenshots/console/network evidence, and classifies every flow as PASS,
+    FAIL, BLOCKED, or NOT_APPLICABLE. Execution is blocked until latest `main`
+    is deployed through build-info and authenticated/admin production app
+    access is available. Evidence plan:
+    `docs/planning/prod-ui-module-clickthrough-audit-plan-2026-05-08.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - 2026-05-08: Generated and committed the current no-secret final V1
     preflight JSON/Markdown snapshot for deployed SHA

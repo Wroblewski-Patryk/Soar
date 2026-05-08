@@ -73,6 +73,16 @@ Last updated: 2026-05-08
     Evidence:
     `docs/planning/exchange2-06-gateio-runtime-consumption-regression-task-2026-05-08.md`.
 
+- [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
+  - Scope: execute a production-wide UI audit across canonical public,
+    dashboard, admin, and legacy redirect routes, clicking safe module
+    functions and capturing screenshots, console/network evidence, responsive
+    checks, accessibility notes, and architecture-alignment findings.
+    Execution is blocked until latest `main` is deployed and authenticated/admin
+    production app access is available.
+    Evidence plan:
+    `docs/planning/prod-ui-module-clickthrough-audit-plan-2026-05-08.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - Scope: generated and committed the current no-secret final V1 preflight
     JSON/Markdown snapshot for deployed SHA
