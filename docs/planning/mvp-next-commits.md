@@ -7,6 +7,21 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-PAPER-LIVE-BACKEND-RUNTIME-PARITY-2026-05-08 fix(api-runtime): keep execution orchestration adapter-pure`
+  - 2026-05-08: Fixed the shared PAPER/LIVE runtime execution orchestration
+    close path so entry-fee aggregation is owned by `RuntimeTradeGateway`
+    instead of a direct Prisma call inside `orchestrateRuntimeSignal`. This
+    keeps injected adapter gateways authoritative for parity/crash-retry tests
+    while preserving the default Prisma-backed runtime implementation.
+    Validation PASS: focused engine parity/crash pack (`4/4` files,
+    `26/26` tests), API typecheck, repository guardrails, sequential
+    DB-backed runtime/order/exchange/import/readback packs, and full local API
+    suite with test-only API-key encryption env. API build and workspace build
+    also pass. The initial DB-backed attempt was an environment false blocker
+    from the unhealthy `desktop-linux` Docker context; `default` context plus
+    `localhost:5432`/`6379` were reachable and sequential reruns passed.
+    Evidence:
+    `docs/planning/v1-paper-live-backend-runtime-parity-task-2026-05-08.md`.
 - [x] `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07 fix(api): scope live import diagnostics status`
   - 2026-05-07: Fixed `/dashboard/positions/live-status` so authenticated
     users receive only their own live-import reconciliation diagnostics,

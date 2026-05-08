@@ -107,6 +107,35 @@ $env:NODE_PATH='C:\Users\wrobl\.cache\codex-runtimes\codex-primary-runtime\depen
 
 ## Entries
 
+### 2026-05-08 - Docker Desktop context can fail while default engine still works
+- Context: V1 paper/live backend runtime parity validation initially marked
+  DB-backed e2e suites blocked after `docker compose ps` used the active
+  `desktop-linux` context and returned Docker Desktop pipe `500` errors.
+- Symptom: `localhost:5432` looked unavailable in Vitest output, and
+  `docker compose` failed through `npipe:////./pipe/dockerDesktopLinuxEngine`,
+  while the `default` Docker context still answered with Docker `28.3.2`.
+- Root cause: the active Docker context was unhealthy; the workstation still
+  had reachable Postgres/Redis ports and a working `default` engine endpoint.
+- Guardrail: before declaring local DB-backed runtime validation blocked,
+  check both port reachability and Docker contexts. If `desktop-linux` fails,
+  try `docker --context default ...` and rerun DB-backed suites sequentially.
+- Preferred pattern:
+```powershell
+docker context ls
+docker --context default info --format '{{.ServerVersion}}'
+Test-NetConnection -ComputerName localhost -Port 5432
+Test-NetConnection -ComputerName localhost -Port 6379
+pnpm --filter api run test -- <db-backed-files> --run --sequence.concurrent=false
+```
+- Avoid: treating a broken Docker Desktop context as proof that Postgres is
+  unavailable when the ports or another context are still healthy.
+- Evidence:
+  - 2026-05-08 `desktop-linux` returned Docker pipe `500`, but
+    `docker --context default info` returned `28.3.2`.
+  - `localhost:5432` and `localhost:6379` were reachable.
+  - DB-backed runtime packs then passed sequentially (`23/23`, then
+    `157/157`).
+
 ### 2026-05-07 - Push is not deploy proof
 - Context: validated local audit closure commits were pushed to `origin/main`
   so production `LIVEIMPORT-03` readback could test the current candidate.

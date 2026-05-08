@@ -76,6 +76,7 @@ const createEventGateway = (): RuntimeExecutionEventGateway => ({
 });
 
 const createTradeGateway = (): RuntimeTradeGateway => ({
+  sumEntryFees: vi.fn().mockResolvedValue(0),
   createTrade: vi.fn().mockResolvedValue(undefined),
 });
 

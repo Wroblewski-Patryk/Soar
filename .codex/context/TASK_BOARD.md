@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-05-07
+Last updated: 2026-05-08
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -16,6 +16,22 @@ Last updated: 2026-05-07
     needed
 
 ## READY
+
+- [x] `V1-PAPER-LIVE-BACKEND-RUNTIME-PARITY-2026-05-08 fix(api-runtime): keep execution orchestration adapter-pure`
+  - Scope: fixed the shared PAPER/LIVE `executionOrchestrator` close-settlement
+    path so entry-fee aggregation uses the existing runtime trade gateway
+    boundary instead of reaching directly into Prisma when adapter gateways are
+    injected. This keeps PAPER/LIVE parity tests database-free and preserves
+    the default Prisma-backed gateway for real runtime execution. Validation
+    PASS: focused engine parity/crash pack (`4/4` files, `26/26` tests), API
+    typecheck, repository guardrails, sequential DB-backed runtime/order/
+    exchange/import/readback packs, and full local API suite with test-only
+    API-key encryption env. API build and workspace build also pass. Initial
+    DB-backed runs were blocked only by an unhealthy `desktop-linux` Docker
+    context; the `default` Docker context and local Postgres/Redis ports were
+    reachable, and sequential reruns passed. Evidence:
+    `docs/planning/v1-paper-live-backend-runtime-parity-task-2026-05-08.md`.
+    Candidate commit: current task commit.
 
 - [x] `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07 fix(api): scope live import diagnostics status`
   - Scope: fixed `/dashboard/positions/live-status` so authenticated users see

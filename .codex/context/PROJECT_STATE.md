@@ -1,6 +1,26 @@
 # PROJECT_STATE
 
-Last updated: 2026-05-07
+Last updated: 2026-05-08
+
+## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-08 `V1-PAPER-LIVE-BACKEND-RUNTIME-PARITY-2026-05-08` fixed a
+  backend runtime parity boundary leak in `executionOrchestrator.service`.
+  Close-settlement entry-fee aggregation now goes through
+  `RuntimeTradeGateway.sumEntryFees` instead of calling Prisma directly from
+  the shared orchestration path. The real default gateway remains Prisma-backed,
+  but injected PAPER/LIVE parity and crash-retry gateways are now fully
+  authoritative without requiring a database connection. Validation PASS:
+  focused engine parity/crash pack (`4/4` files, `26/26` tests), API
+  typecheck, repository guardrails, sequential DB-backed runtime/order/
+  exchange/import/readback packs, and the full local API suite with test-only
+  API-key encryption env. API build and workspace build also pass. The first
+  DB-backed attempt exposed an environment false blocker: `desktop-linux`
+  Docker context returned pipe `500`, while the `default` Docker context plus
+  local `localhost:5432`/`6379` ports were reachable. Sequential reruns
+  passed, so no local backend runtime assertion failure remains in this slice.
+  Candidate commit: current task commit.
+  Evidence:
+  `docs/planning/v1-paper-live-backend-runtime-parity-task-2026-05-08.md`.
 
 ## 2026-05-07 V1 Final Blocker Execution Pack
 - 2026-05-07 `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` fixed the

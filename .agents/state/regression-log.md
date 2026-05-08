@@ -1,13 +1,23 @@
 # Regression Log
 
-Last updated: 2026-05-07
+Last updated: 2026-05-08
 
 ## Open Regressions
 
-No open regression was identified in the agent operating system slice.
+No open code regression is identified in the current backend runtime parity
+slice. The earlier local DB-backed runtime e2e blocker was environmental:
+`desktop-linux` Docker context was unhealthy, while the `default` context and
+local Postgres/Redis ports were reachable. Sequential reruns passed.
 
 ## Fixed Or Prevented In This Slice
 
+- 2026-05-08: Fixed a backend PAPER/LIVE runtime parity boundary leak in
+  `executionOrchestrator`: close-settlement entry-fee aggregation now goes
+  through the existing runtime trade gateway instead of a direct Prisma call in
+  the shared orchestration path. Validation: focused engine parity/crash pack
+  (`4/4` files, `26/26` tests), DB-backed runtime/order/exchange/import and
+  readback packs, full local API suite with test-only API-key encryption env,
+  API typecheck, and repository guardrails.
 - 2026-05-07: Ran production V1 release-gate classifier in dry-run mode and
   preserved stale evidence blockers as release state. This prevents treating
   old 2026-05-02 RC/backup/rollback artifacts as fresh V1 evidence.

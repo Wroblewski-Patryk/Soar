@@ -1,9 +1,15 @@
 # Known Issues
 
-Last updated: 2026-05-07
+Last updated: 2026-05-08
 
 ## Active Issues
 
+- Local Docker Desktop `desktop-linux` context is unhealthy on this
+  workstation and can return pipe `500 Internal Server Error`, but the
+  `default` Docker context and local Postgres/Redis ports were reachable on
+  2026-05-08. DB-backed runtime e2e packs passed sequentially after verifying
+  the reachable stack. Future runs should check both contexts/ports before
+  declaring DB-backed validation blocked.
 - `origin/main` is ahead of production build-info, while production still
   reports `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`. This is expected until a
   Coolify/manual operator deploy completes. Do not use GitHub Actions for

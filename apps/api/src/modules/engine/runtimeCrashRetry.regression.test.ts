@@ -125,6 +125,7 @@ const noopEventGateway: RuntimeExecutionEventGateway = {
 };
 
 const noopTradeGateway: RuntimeTradeGateway = {
+  sumEntryFees: vi.fn().mockResolvedValue(0),
   createTrade: vi.fn().mockResolvedValue(undefined),
 };
 

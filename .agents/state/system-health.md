@@ -1,12 +1,13 @@
 # System Health
 
-Last updated: 2026-05-07
+Last updated: 2026-05-08
 
 ## Latest Health Snapshot
 
-- Local `main` and `origin/main` are aligned at
-  the latest pushed commit. Public production web build-info still reports
-  `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3`; push alone is not deploy
+- Local `main` contains the V1 backend parity candidate and should be pushed
+  before the accepted Coolify/manual deployment step. Public production web
+  build-info still reports
+  `4f6832d6d94d0d9e86a2504b4a00fe177a1c6c44`; commit/push alone is not deploy
   completion evidence. GitHub Actions is not an accepted production deployment
   path for this project, so production deployment must be performed through
   Coolify/manual operator controls. Production API `/health` and API `/ready`
@@ -29,6 +30,25 @@ Last updated: 2026-05-07
 
 ## Latest Validation
 
+- `V1-PAPER-LIVE-BACKEND-RUNTIME-PARITY-2026-05-08` PASS: fixed
+  `executionOrchestrator` so close-settlement entry-fee truth is read through
+  `RuntimeTradeGateway.sumEntryFees`, not a direct Prisma call inside the
+  shared PAPER/LIVE orchestration path. Validation passed: focused engine
+  parity/crash pack (`4/4` files, `26/26` tests), API typecheck, and
+  repository guardrails. After verifying the reachable local DB stack through
+  `localhost:5432`/`6379` and avoiding the unhealthy `desktop-linux` Docker
+  context, the broader runtime sweep also passed sequentially (`10/10` files,
+  `157/157` tests), including bot runtime scope and PnL parity e2e. The
+  follow-up backend V1 evidence line also passed sequential exchange
+  fill/live-import/takeover coverage (`8/8` files, `76/76` tests),
+  manual/order/runtime orchestration coverage (`9/9` files, `75/75` tests),
+  runtime service coverage (`19/19` files, `115/115` tests), exchange adapter
+  coverage (`17/17` files, `86/86` tests), bot/position readback coverage
+  (`16/16` files, `72/72` tests), bot contract/backtest parity coverage
+  (`12/12` files, `84/84` tests), and the full local API suite with test-only
+  API-key encryption env (Vitest exit `0`).
+  Build validation also passed: `pnpm --filter api run build` and
+  `pnpm run build`.
 - `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
   `/dashboard/positions/live-status` returned global reconciliation diagnostic
   counts for an authenticated user. The route now filters
@@ -148,3 +168,6 @@ docs/evidence commits are ahead of `origin/main` and intentionally unpushed to
 avoid creating new production deploy targets for documentation-only changes.
 The next executable release task requires authenticated read-only production
 evidence and protected production recovery proof.
+The local V1 backend parity commit is a runtime code candidate and should be
+pushed/deployed through the accepted Coolify/manual path before protected
+production readback is treated as evidence for that fix.

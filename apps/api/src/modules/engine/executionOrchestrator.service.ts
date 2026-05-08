@@ -253,6 +253,11 @@ export interface RuntimeExecutionEventGateway {
 }
 
 export interface RuntimeTradeGateway {
+  sumEntryFees(input: {
+    userId: string;
+    positionId: string;
+    entrySide: 'BUY' | 'SELL';
+  }): Promise<number>;
   createTrade(input: {
     userId: string;
     botId?: string;
@@ -460,6 +465,19 @@ const defaultRuntimeEventGateway: RuntimeExecutionEventGateway = {
 };
 
 const defaultRuntimeTradeGateway: RuntimeTradeGateway = {
+  sumEntryFees: async (input) => {
+    const aggregate = await prisma.trade.aggregate({
+      where: {
+        userId: input.userId,
+        positionId: input.positionId,
+        side: input.entrySide,
+      },
+      _sum: {
+        fee: true,
+      },
+    });
+    return aggregate._sum.fee ?? 0;
+  },
   createTrade: async (input) => {
     await prisma.trade.create({
       data: {
@@ -688,17 +706,11 @@ export const orchestrateRuntimeSignal = async (
     const estimatedExitFee = computeTradeFee(closeExecutionPrice, closeExecutionQuantity, feeRate);
     const exitFee = input.mode === 'LIVE' ? (closeOrder.fee ?? estimatedExitFee) : estimatedExitFee;
     const entryLegSide = openPosition.side === 'LONG' ? 'BUY' : 'SELL';
-    const entryFeeAggregate = await prisma.trade.aggregate({
-      where: {
-        userId: input.userId,
-        positionId: openPosition.id,
-        side: entryLegSide,
-      },
-      _sum: {
-        fee: true,
-      },
+    const entryFees = await runtimeTradeGateway.sumEntryFees({
+      userId: input.userId,
+      positionId: openPosition.id,
+      entrySide: entryLegSide,
     });
-    const entryFees = entryFeeAggregate._sum.fee ?? 0;
     const grossPnl =
       openPosition.side === 'LONG'
         ? (closeExecutionPrice - openPosition.entryPrice) * closeExecutionQuantity

@@ -1,8 +1,26 @@
 # Next Steps
 
-Last updated: 2026-05-07
+Last updated: 2026-05-08
 
 ## Next Tiny Task
+
+The local V1 backend paper/live runtime line is closed for this slice: focused
+parity/crash coverage, DB-backed runtime/order/exchange/import/readback packs,
+and the full local API suite pass. Continue at the remaining production
+evidence boundary, not by reopening local backend packs unless code changes or
+new failures appear.
+
+Local DB-backed runtime evidence is available if the `default` Docker context
+or existing local ports are used; avoid treating the unhealthy `desktop-linux`
+context as the only Docker signal.
+
+```powershell
+docker --context default info --format '{{.ServerVersion}}'
+Test-NetConnection -ComputerName localhost -Port 5432
+pnpm --filter api run test -- src/modules/orders/orders.exchangeEvents.service.test.ts src/modules/orders/orders.exchangeEvents.feeBackfill.test.ts src/modules/positions/livePositionReconciliation.service.test.ts src/modules/bots/bots.runtime-takeover.e2e.test.ts --run --sequence.concurrent=false
+```
+
+Next production release evidence line:
 
 Deploy the pushed `main` through the accepted Coolify operator path, not
 GitHub Actions. GitHub Actions production promote/rollback entrypoints have
@@ -10,14 +28,15 @@ been removed because the project does not use paid GitHub Actions and workflow
 attempts create unwanted email noise.
 
 ```powershell
-pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha 27440d3a9bba762b06d212e4c837a28ac25b7153 --timeout-seconds 900 --interval-seconds 15
+$expectedSha = git rev-parse HEAD
+pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --timeout-seconds 900 --interval-seconds 15
 ```
 
 After Coolify deploy exposes the promoted SHA, continue with
 `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md` once
 production auth and DB/Coolify access are available. Start with
-`LIVEIMPORT-03` authenticated read-only production runtime readback on current
-production `main` (`21bb52f1e4b8865aab0dbb83ecffe698061fd7a3` or later).
+`LIVEIMPORT-03` authenticated read-only production runtime readback on the
+current pushed `main` V1 backend parity candidate or later.
 Evidence must cover ownership, `strategyId` or single-strategy provenance
 recovery, TTP visibility, actionable state, and import completeness across
 assigned bot markets. Do not run live-money or destructive production actions.
@@ -30,14 +49,16 @@ build-info is current, but the current shell still lacks the required Soar
 production auth/access. A no-auth collector attempt failed closed before
 runtime readback, which is the expected safe result.
 
-Post-cleanup check: local `main` is pushed to `origin/main`; production still
-reports `21bb52f1...` until a Coolify operator deploy completes. Do not use
-GitHub Actions for production deployment.
+Post-backend-parity check: the current local `main` commit contains the
+adapter-pure PAPER/LIVE fix. Production still reported
+`4f6832d6d94d0d9e86a2504b4a00fe177a1c6c44` before this commit is deployed.
+Do not use GitHub Actions for production deployment.
 
 Canonical command once auth is available:
 
 ```powershell
-pnpm run ops:liveimport:readback -- --expected-sha 21bb52f1e4b8865aab0dbb83ecffe698061fd7a3 --output docs/operations/liveimport-03-prod-readback-2026-05-07.json
+$expectedSha = git rev-parse HEAD
+pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output docs/operations/liveimport-03-prod-readback-2026-05-08.json
 ```
 
 ## Candidate Backlog

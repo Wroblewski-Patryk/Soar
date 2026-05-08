@@ -1,12 +1,11 @@
 # Current Focus
 
-Last updated: 2026-05-07
+Last updated: 2026-05-08
 
 ## Active Focus
 
-V1 production evidence closure: keep Soar stable, architecture-aligned,
-regression-resistant, and explicit about the remaining authenticated read-only
-production evidence gaps.
+V1 backend paper/live runtime closure before Web visualization, while keeping
+production evidence blockers explicit and separate.
 
 ## Current System Objective
 
@@ -17,12 +16,24 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+The latest local backend runtime parity slice fixed
+`executionOrchestrator.service` so close-settlement entry-fee aggregation uses
+the existing `RuntimeTradeGateway` boundary rather than direct Prisma access
+inside the shared PAPER/LIVE orchestration path. Focused engine parity/crash
+coverage, DB-backed runtime/order/exchange/import/readback packs, API
+typecheck, repository guardrails, and the full local API suite are green.
+The first DB-backed runtime e2e attempt was blocked by an unhealthy
+`desktop-linux` Docker context, but the local Postgres/Redis ports and
+`default` Docker context were reachable; rerunning the packs sequentially
+closed the local backend evidence gap.
+
 Release verification is blocked on accepted production deployment plus
 authenticated production readback for the first open queue item,
-`LIVEIMPORT-03`. Local audit gates are closed through `FULLARCH-FIX-11`, and
-local `main` is pushed to `origin/main`. Public production web build-info still
-reports `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3` until a Coolify/manual
-operator deploy completes. GitHub Actions is not an accepted production deploy
+`LIVEIMPORT-03`. Local audit gates are closed through `FULLARCH-FIX-11`.
+The V1 backend parity candidate is the current local `main` commit; public
+production web build-info still reports
+`4f6832d6d94d0d9e86a2504b4a00fe177a1c6c44` until a Coolify/manual operator
+deploy completes. GitHub Actions is not an accepted production deploy
 mechanism for this project. The latest names-only prerequisite scan still
 found no production credentials or ops auth headers in the current shell, so
 protected evidence collection remains blocked without an operator-authenticated

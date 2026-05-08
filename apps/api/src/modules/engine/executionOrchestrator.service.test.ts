@@ -87,6 +87,7 @@ const createEventGateway = (): RuntimeExecutionEventGateway => ({
 });
 
 const createTradeGateway = (): RuntimeTradeGateway => ({
+  sumEntryFees: vi.fn().mockResolvedValue(0),
   createTrade: vi.fn().mockResolvedValue(undefined),
 });
 
@@ -646,14 +647,7 @@ describe('orchestrateRuntimeSignal', () => {
     const tradeGateway = createTradeGateway();
     const dedupeGateway = createDedupeGateway();
     vi.spyOn(runtimeTelemetryService, 'upsertRuntimeSymbolStat').mockResolvedValue(undefined);
-    vi.mocked(prisma.trade.aggregate).mockClear();
-    vi.mocked(prisma.trade.aggregate).mockResolvedValueOnce({
-      _sum: { fee: 1.5 },
-      _avg: { fee: null },
-      _count: { fee: 1 },
-      _min: { fee: 1.5 },
-      _max: { fee: 1.5 },
-    });
+    vi.mocked(tradeGateway.sumEntryFees as ReturnType<typeof vi.fn>).mockResolvedValueOnce(1.5);
     (positionGateway.getOpenPositionBySymbol as ReturnType<typeof vi.fn>).mockResolvedValue({
       id: 'position-imported-live',
       userId: 'u1',
@@ -728,15 +722,11 @@ describe('orchestrateRuntimeSignal', () => {
       dedupeGateway
     );
 
-    expect(prisma.trade.aggregate).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: {
-          userId: 'u1',
-          positionId: 'position-imported-live',
-          side: 'BUY',
-        },
-      })
-    );
+    expect(tradeGateway.sumEntryFees).toHaveBeenCalledWith({
+      userId: 'u1',
+      positionId: 'position-imported-live',
+      entrySide: 'BUY',
+    });
     expect(orderGateway.openOrder).toHaveBeenCalledWith(
       'u1',
       expect.objectContaining({

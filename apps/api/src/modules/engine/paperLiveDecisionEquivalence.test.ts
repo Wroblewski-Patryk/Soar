@@ -182,6 +182,7 @@ const createInMemoryGateways = (
   };
 
   const tradeGateway: RuntimeTradeGateway = {
+    sumEntryFees: async () => 0,
     createTrade: async () => undefined,
   };
 
