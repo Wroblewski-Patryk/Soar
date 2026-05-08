@@ -340,3 +340,9 @@ For deployable services or important journeys, define SLIs/SLOs, health checks,
 alert routes, and error-budget posture when appropriate. For auth, AI, money,
 secrets, permissions, integrations, or user-data work, use the secure
 development lifecycle and include threat-model or abuse-case evidence.
+
+## Template Sync: App Creation, Feedback, And Handoff
+
+- Use `docs/governance/app-creation-playbook.md` and `.codex/templates/app-blueprint-template.md` before broad implementation of a new app, major module, dashboard, tool, website, game, or product surface.
+- Use `docs/governance/user-feedback-loop.md` and `.codex/templates/user-feedback-item-template.md` when user feedback changes behavior, UX, visual direction, copy, priority, architecture, validation, or future screen decisions.
+- For substantial or multi-session work, finish with a concise handoff packet from `.codex/templates/handoff-packet-template.md`.

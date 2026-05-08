@@ -212,3 +212,9 @@ Useful overrides:
 ## Existing Project Adoption
 
 When applying the shared agent template to this project, preserve current project truth and use `docs/governance/existing-project-adoption-playbook.md`. Before autonomous implementation starts, run `docs/governance/agent-readiness-checklist.md` and track any gaps in `docs/governance/template-adoption-decision-log.md` or the task board.
+
+## Agent App-Building Helpers
+
+- `docs/governance/app-creation-playbook.md` turns loose app ideas into architecture and first slices.
+- `docs/governance/user-feedback-loop.md` keeps user notes and visual corrections durable.
+- `.codex/templates/handoff-packet-template.md` captures closeout context for the next agent.

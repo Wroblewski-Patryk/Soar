@@ -65,3 +65,8 @@ Completion requires a result report with what was done, files changed, how it wa
 - Validate docs/operations/service-reliability-and-observability.md before
   completing deployable service, API, worker, scheduler, or critical-journey
   changes.
+
+## Template Sync: Feedback And Handoff
+
+- Classify mid-build feedback with `docs/governance/user-feedback-loop.md`.
+- For substantial or multi-session work, prepare `.codex/templates/handoff-packet-template.md`.

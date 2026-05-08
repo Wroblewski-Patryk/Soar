@@ -59,3 +59,9 @@ under five minutes:
 5. What checks prove the work?
 6. What docs must change if behavior changes?
 7. What deployment or user-risk constraints apply?
+
+## App-Building Addendum
+
+- [ ] New app or major surface work used `docs/governance/app-creation-playbook.md` and an app blueprint, or explicitly does not need one.
+- [ ] User feedback that changes behavior, UX, visual direction, copy, priority, architecture, or validation has a durable home through `docs/governance/user-feedback-loop.md`.
+- [ ] Substantial or multi-session work has a handoff packet when useful.

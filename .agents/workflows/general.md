@@ -110,3 +110,9 @@ description: Workspace rules for this project
   permissions, secrets, AI, money, integrations, or user-data risk.
 - Report changed files, validations actually run, remaining risks, and the next
   tiny task after implementation.
+
+## Template Sync: App Creation, Feedback, And Handoff
+
+- Start broad app or major-surface work from `docs/governance/app-creation-playbook.md` and `.codex/templates/app-blueprint-template.md`.
+- Classify mid-build user feedback through `docs/governance/user-feedback-loop.md`; update the active task, queue, docs, design memory, learning journal, or open decisions.
+- For substantial or multi-session work, prepare `.codex/templates/handoff-packet-template.md`.

@@ -142,3 +142,9 @@ production-grade foundation: stable runtime behavior, backend/frontend/UI
 contract parity, regression resistance, clear documentation memory, and
 continued scalability. New features are welcome only after stability and
 architecture alignment are protected.
+
+## App Build Continuity
+
+- Use `docs/governance/app-creation-playbook.md` for new apps and major product surfaces.
+- Treat accepted user feedback as durable repo memory through `docs/governance/user-feedback-loop.md`.
+- Use `.codex/templates/handoff-packet-template.md` for substantial or multi-session handoffs.

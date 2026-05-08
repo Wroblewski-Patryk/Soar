@@ -25,3 +25,9 @@ This repository uses local, manual bootstrap artifacts.
 For an established project, use `docs/governance/existing-project-adoption-playbook.md` instead of treating the template as a clean-room bootstrap. Preserve current project truth, install the minimum agent context first, and turn mismatches into tracked tasks.
 
 Run `docs/governance/agent-readiness-checklist.md` before allowing autonomous implementation loops.
+
+## App-Building Addendum
+
+- Start broad app creation from `docs/governance/app-creation-playbook.md`, not ad hoc scaffolding.
+- Use `docs/governance/user-feedback-loop.md` to preserve user notes and priority changes.
+- Use `.codex/templates/handoff-packet-template.md` for substantial or multi-session closeout.

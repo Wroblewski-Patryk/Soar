@@ -87,3 +87,11 @@ Additional cross-project standards synced from `!template`:
 - `governance/existing-project-adoption-playbook.md`
 - `governance/agent-readiness-checklist.md`
 - `governance/template-adoption-decision-log.md` (optional for existing repos)
+
+## Agent App-Building Docs
+
+- `governance/app-creation-playbook.md`
+- `governance/user-feedback-loop.md`
+- `../.codex/templates/app-blueprint-template.md`
+- `../.codex/templates/user-feedback-item-template.md`
+- `../.codex/templates/handoff-packet-template.md`
