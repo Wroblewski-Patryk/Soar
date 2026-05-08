@@ -53,6 +53,10 @@ Rule: fix/cleanup/update first, then feature delivery.
   `/dashboard/orders/:id/cancel` returns HTTP 501 with
   `LIVE_ORDER_CANCEL_UNSUPPORTED`, leaves the order open, and writes no
   cancellation audit log while exchange-side cancel remains unsupported.
+- 2026-05-08: Closed `DEPLOY-FRESHNESS-90CD07D6-2026-05-08` with
+  `docs/planning/deploy-freshness-90cd07d6-task-2026-05-08.md`. Production
+  Web build-info now exposes the pushed Gate.io fail-closed batch at
+  `90cd07d602f0a31f315719b8a5cd5be3fd112313`, and public API/Web smoke passed.
 - 2026-05-07: Closed `V1-FINAL-BLOCKER-PACK-2026-05-07` with
   `docs/planning/v1-final-blocker-execution-pack-task-2026-05-07.md`. A single
   current operator execution pack now lists the remaining V1 blockers and

@@ -106,6 +106,11 @@ Last updated: 2026-05-08
   truth remain unchanged. Validation PASS: focused route e2e (`1/1`), full
   orders/positions e2e (`22/22`), API typecheck, repository guardrails, docs
   parity, and diff check.
+- Production deploy freshness for the Gate.io fail-closed batch PASS:
+  `/api/build-info` exposed
+  `90cd07d602f0a31f315719b8a5cd5be3fd112313` after a longer wait, and public
+  smoke passed for API `/health`, API `/ready`, and Web `/`. Evidence:
+  `docs/operations/deploy-freshness-90cd07d6-2026-05-08.md`.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307

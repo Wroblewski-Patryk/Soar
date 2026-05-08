@@ -188,6 +188,13 @@ Last updated: 2026-05-08
     Evidence:
     `docs/planning/exchange2-19-exchange-backed-cancel-route-fail-closed-task-2026-05-08.md`.
 
+- [x] `DEPLOY-FRESHNESS-90CD07D6-2026-05-08 release: verify Gate.io fail-closed batch deployment`
+  - Scope: verified production Web build-info for pushed `main`
+    `90cd07d602f0a31f315719b8a5cd5be3fd112313` and reran public API/Web smoke
+    successfully. Evidence:
+    `docs/planning/deploy-freshness-90cd07d6-task-2026-05-08.md` and
+    `docs/operations/deploy-freshness-90cd07d6-2026-05-08.md`.
+
 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
   - Scope: execute a production-wide UI audit across canonical public,
     dashboard, admin, and legacy redirect routes, clicking safe module

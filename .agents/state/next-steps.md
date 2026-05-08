@@ -104,6 +104,10 @@ Exchange-backed cancel is now locally regression-locked at the API route:
 leaves the order open, and writes no cancellation audit log. Gate.io and all
 other exchange-side cancel capabilities remain disabled until a canonical
 adapter operation exists.
+The pushed Gate.io fail-closed batch is now deployed: production build-info
+exposes `90cd07d602f0a31f315719b8a5cd5be3fd112313`, and public API/Web smoke
+passed. Evidence:
+`docs/operations/deploy-freshness-90cd07d6-2026-05-08.md`.
 
 After the planned Gate.io/deploy-auth blockers are cleared, execute the
 production UI module clickthrough audit from

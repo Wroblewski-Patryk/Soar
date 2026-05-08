@@ -179,6 +179,13 @@ Operational queue for one-task execution runs.
     disabled until a canonical adapter operation exists. Evidence:
     `docs/planning/exchange2-19-exchange-backed-cancel-route-fail-closed-task-2026-05-08.md`.
 
+- [x] `DEPLOY-FRESHNESS-90CD07D6-2026-05-08 release: verify Gate.io fail-closed batch deployment`
+  - 2026-05-08: Production Web build-info now exposes
+    `90cd07d602f0a31f315719b8a5cd5be3fd112313`, and public API/Web smoke passed
+    for API `/health`, API `/ready`, and Web `/`. Evidence:
+    `docs/planning/deploy-freshness-90cd07d6-task-2026-05-08.md` and
+    `docs/operations/deploy-freshness-90cd07d6-2026-05-08.md`.
+
 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
   - 2026-05-08: Planning artifact is ready for a production-wide UI audit that
     visits all canonical public, dashboard, admin, and legacy redirect routes,

@@ -166,6 +166,11 @@ Last updated: 2026-05-08
   capabilities remain disabled until a canonical adapter operation is
   implemented. Evidence:
   `docs/planning/exchange2-19-exchange-backed-cancel-route-fail-closed-task-2026-05-08.md`.
+- 2026-05-08 `DEPLOY-FRESHNESS-90CD07D6-2026-05-08` verified the pushed Gate.io
+  fail-closed batch on production. Web build-info now exposes
+  `90cd07d602f0a31f315719b8a5cd5be3fd112313`, and public API/Web smoke passed.
+  Evidence:
+  `docs/operations/deploy-freshness-90cd07d6-2026-05-08.md`.
 - 2026-05-08 `PROD-UI-AUDIT-PLAN-2026-05-08` prepared the production UI module
   clickthrough audit plan requested by the user. The plan covers all canonical
   public, dashboard, admin, and legacy redirect routes, module-level functions,

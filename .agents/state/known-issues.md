@@ -18,6 +18,12 @@ Last updated: 2026-05-08
   Actions for production deployment; the operator confirmed that path is not
   allowed and creates unwanted email noise. If a future task depends on a
   pushed commit being deployed, wait for build-info before continuing.
+- Production build-info later reached
+  `90cd07d602f0a31f315719b8a5cd5be3fd112313`, which contains the Gate.io
+  fail-closed regression batch through `EXCHANGE2-19`; public API/Web smoke
+  passed. This closes the immediate deploy-freshness lag for that batch, but
+  protected/authenticated UI audit and release evidence remain blocked on
+  credentials/access.
 - Production restore drill is no longer an active blocker after the approved
   Coolify terminal PASS evidence. `ops:release:v1:preflight` now treats fresh
   restore evidence as satisfying the production DB restore context
