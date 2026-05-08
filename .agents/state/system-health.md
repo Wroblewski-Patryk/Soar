@@ -95,6 +95,12 @@ Last updated: 2026-05-08
   Latest dry-run
   `docs/operations/v1-release-gate-prod-2026-05-08T05-43-51-157Z.md` remains
   `not_ready` with the same fresh activation/RC and failed recovery blockers.
+- RC evidence preflight on 2026-05-08: strict production evidence check
+  reports `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=OPEN`; blockers are limited to
+  Gate 4 sign-off identity/final approval fields (Engineering, Product,
+  Operations, RC owner, and final status not `APPROVED`). RC gates summary
+  also reports Gate2 policy `PASS_ONLY` and notes the underlying evidence
+  artifact is stale relative to the refreshed status.
 - `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
   `/dashboard/positions/live-status` returned global reconciliation diagnostic
   counts for an authenticated user. The route now filters

@@ -53,6 +53,9 @@ Last updated: 2026-05-08
   The active final blocker pack now uses deployed
   `e6ccbedaa1d0074d5dc335935bb6b51a9bb1e387` for build-info and
   `LIVEIMPORT-03` readback commands.
+  RC preflight narrowed RC blockers to Gate 4 only: Engineering, Product,
+  Operations, and RC owner identities are missing, and final status remains
+  `BLOCKED`. Gates 1, 2, and 3 are `PASS`.
   Evidence:
   `docs/planning/v1-paper-live-backend-runtime-parity-task-2026-05-08.md`.
 

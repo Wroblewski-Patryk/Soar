@@ -136,6 +136,9 @@ Required result:
   rollback guard returned `shouldRollback=true` only because runtime freshness
   and alerts endpoints were protected by `401`.
 - RC Gate 4 is open until real approver identities are provided.
+- Strict RC evidence check currently reports only Gate 4 sign-off blockers:
+  missing Engineering name, Product name, Operations name, RC owner name, and
+  final status still `BLOCKED` instead of `APPROVED`.
 - Final V1 release gate has only been run in dry-run mode after the blocker
   refresh.
 

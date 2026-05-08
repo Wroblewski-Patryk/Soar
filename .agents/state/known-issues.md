@@ -131,6 +131,9 @@ Last updated: 2026-05-08
   the runtime fix remains deployed. A `LIVEIMPORT-03` collector attempt
   against deployed `e6ccbeda...` still failed closed with missing read-only
   production auth.
+- RC strict production evidence check now narrows RC blockers to Gate 4:
+  missing Engineering/Product/Operations/RC owner names and final status still
+  `BLOCKED`. Gate 1, Gate 2, and Gate 3 are `PASS`.
 
 ## Known Environment Pitfalls
 
