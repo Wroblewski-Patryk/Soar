@@ -1656,6 +1656,35 @@ describe('RuntimeSignalLoop', () => {
     expect(deps.orchestrateFn).not.toHaveBeenCalled();
   });
 
+  it('passes Gate.io ticker events to position automation with exact exchange context', async () => {
+    const { deps, emit } = createDeps();
+    withStrategyBot(deps, {
+      exchange: 'GATEIO',
+      strategies: [],
+    });
+
+    const loop = new RuntimeSignalLoop(deps);
+    await loop.start();
+
+    const tickerEvent: MarketStreamEvent = {
+      type: 'ticker',
+      exchange: 'GATEIO',
+      marketType: 'FUTURES',
+      symbol: 'BTCUSDT',
+      eventTime: 1_000,
+      lastPrice: 64_000,
+      markPrice: 64_010,
+      priceChangePercent24h: 2.5,
+    };
+    await emit(tickerEvent);
+
+    expect(deps.processPositionAutomation).toHaveBeenCalledWith(tickerEvent);
+    expect(deps.createSignal).not.toHaveBeenCalled();
+    expect(deps.orchestrateFn).not.toHaveBeenCalled();
+
+    await loop.stop();
+  });
+
   it('routes Gate.io final-candle decisions only to Gate.io runtime topology', async () => {
     const { deps, emit } = createDeps();
     withStrategyBot(deps, { exchange: 'GATEIO' });
@@ -1666,6 +1695,45 @@ describe('RuntimeSignalLoop', () => {
 
     expect(deps.createSignal).toHaveBeenCalled();
     expect(deps.orchestrateFn).toHaveBeenCalled();
+  });
+
+  it('uses Gate.io final-candle fallback ticker context when no fresh Gate.io ticker exists', async () => {
+    const { deps, emit } = createDeps();
+    withStrategyBot(deps, {
+      exchange: 'GATEIO',
+      strategies: [],
+    });
+    const loop = new RuntimeSignalLoop(deps);
+    await loop.start();
+
+    await emit({
+      type: 'candle',
+      exchange: 'GATEIO',
+      marketType: 'FUTURES',
+      symbol: 'BTCUSDT',
+      interval: '1m',
+      eventTime: 60_000,
+      openTime: 0,
+      closeTime: 59_000,
+      open: 100,
+      high: 101,
+      low: 99,
+      close: 100.5,
+      volume: 1000,
+      isFinal: true,
+    });
+
+    expect(deps.processPositionAutomation).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'ticker',
+        exchange: 'GATEIO',
+        marketType: 'FUTURES',
+        symbol: 'BTCUSDT',
+        lastPrice: 100.5,
+      })
+    );
+
+    await loop.stop();
   });
 
   it('keeps empty resolved symbol scope fail-closed instead of widening to wildcard routing', async () => {
@@ -1757,6 +1825,13 @@ describe('RuntimeSignalLoop', () => {
       supportsRuntimeSignalLoopExchange({
         exchange: 'OKX',
         mode: 'LIVE',
+      })
+    ).toBe(false);
+
+    expect(
+      supportsRuntimeSignalLoopExchange({
+        exchange: 'GATEIO',
+        mode: 'PAPER',
       })
     ).toBe(false);
   });

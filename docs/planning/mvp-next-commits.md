@@ -58,6 +58,14 @@ Operational queue for one-task execution runs.
     capabilities remain disabled. Evidence:
     `docs/planning/exchange2-05-gateio-market-stream-polling-task-2026-05-08.md`.
 
+- [x] `EXCHANGE2-06 test(runtime): lock Gate.io event consumption context`
+  - 2026-05-08: Add focused runtime regressions proving Gate.io ticker events
+    and final-candle fallback ticker events preserve exact `exchange: GATEIO`
+    and market-type context for runtime automation. Keep Gate.io
+    `PAPER_PRICING_FEED` disabled until deployed source evidence is available.
+    Evidence:
+    `docs/planning/exchange2-06-gateio-runtime-consumption-regression-task-2026-05-08.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - 2026-05-08: Generated and committed the current no-secret final V1
     preflight JSON/Markdown snapshot for deployed SHA

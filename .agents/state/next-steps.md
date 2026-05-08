@@ -14,10 +14,12 @@ slice and remains separate from paper/live/authenticated capabilities. The
 foundation slices now generalize runtime market events, add an exchange-module
 Gate.io public ticker/candle reader, and add an opt-in
 `MARKET_STREAM_EXCHANGE=GATEIO` polling adapter that publishes canonical
-ticker/candle events without misrepresenting Gate.io as Binance. Remaining
-required implementation/evidence before Gate.io paper enablement: verify
-runtime consumption from the Gate.io event source in a target environment, then
-enable `PAPER_PRICING_FEED` only if that evidence is clean. Remaining required
+ticker/candle events without misrepresenting Gate.io as Binance. Runtime
+regression coverage now also locks Gate.io ticker and final-candle fallback
+consumption context. Remaining required implementation/evidence before Gate.io
+paper enablement: verify runtime consumption from the Gate.io event source in a
+target environment, then enable `PAPER_PRICING_FEED` only if that evidence is
+clean. Remaining required
 user/operator decisions: whether the next live slice is API-key probe,
 authenticated readback, live order submit, and whether exchange-side cancel is
 in scope.

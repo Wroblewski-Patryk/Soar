@@ -46,6 +46,12 @@ Last updated: 2026-05-08
   remain disabled until runtime evidence supports enabling `PAPER_PRICING_FEED`.
   Evidence:
   `docs/planning/exchange2-05-gateio-market-stream-polling-task-2026-05-08.md`.
+- 2026-05-08 `EXCHANGE2-06` added runtime regression coverage proving Gate.io
+  ticker events and final-candle fallback ticker events preserve exact
+  `exchange: GATEIO` and market-type context for runtime automation. Gate.io
+  `PAPER_PRICING_FEED` remains disabled until deployed source evidence is
+  available. Evidence:
+  `docs/planning/exchange2-06-gateio-runtime-consumption-regression-task-2026-05-08.md`.
 - 2026-05-08 `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08` published the
   current no-secret final V1 preflight JSON/Markdown snapshot for deployed SHA
   `052df82244ea0f81e8611ff8bb2b677db115bd19`. The snapshot reports build-info
