@@ -35,6 +35,7 @@ const printUsage = () => {
       '  --interval-seconds <n>     Build-info wait interval (default: 15)',
       '  --today <yyyy-mm-dd>       Evidence date override',
       '  --json-output <path>       Optional no-secret JSON report path',
+      '  --markdown-output <path>   Optional no-secret Markdown report path',
       '  --skip-build-info          Do not call the build-info wait command',
       '  --skip-public-smoke        Do not call public API/Web smoke',
       '  --help                     Show this message',
@@ -80,6 +81,8 @@ const resolveOptions = () => {
       readArgValue('--interval-seconds') || process.env.V1_PREFLIGHT_INTERVAL_SECONDS || '15',
     today: readArgValue('--today') || new Date().toISOString().slice(0, 10),
     jsonOutput: readArgValue('--json-output') || process.env.V1_PREFLIGHT_JSON_OUTPUT || '',
+    markdownOutput:
+      readArgValue('--markdown-output') || process.env.V1_PREFLIGHT_MARKDOWN_OUTPUT || '',
     skipBuildInfo: hasFlag('--skip-build-info'),
     skipPublicSmoke: hasFlag('--skip-public-smoke'),
   };
@@ -468,6 +471,90 @@ const writeJsonReport = async (outputPath, report) => {
   process.stdout.write(`[ops:release:v1:preflight] JSON report: ${path.relative(process.cwd(), absolutePath)}\n`);
 };
 
+const markdownCell = (value) => String(value ?? '-').replace(/\|/g, '\\|').replace(/\r?\n/g, ' ');
+
+const renderList = (items) => (items.length > 0 ? items.map((item) => `- ${item}`).join('\n') : '- none');
+
+export const renderPreflightMarkdown = (report, jsonPath = '') => {
+  const prerequisiteRows = [...report.prerequisites.required, ...report.prerequisites.optional]
+    .map((group) => {
+      const names = group.required ?? group.accepted ?? [];
+      return `| ${markdownCell(group.key)} | ${group.ok ? 'pass' : 'missing'} | ${markdownCell(names.join('; '))} |`;
+    })
+    .join('\n');
+
+  const evidenceRows = report.evidence
+    .map(
+      (row) =>
+        `| ${markdownCell(row.label)} | ${markdownCell(row.state)} | ${row.required ? 'yes' : 'no'} | ${markdownCell(row.date)} | ${markdownCell(row.reason)} |`
+    )
+    .join('\n');
+
+  const blockerRows = report.blockerDetails
+    .map(
+      (row) =>
+        `| ${markdownCell(row.blocker)} | ${markdownCell(row.category)} | ${markdownCell(row.severity)} | ${row.protectedInputRequired ? 'yes' : 'no'} | ${row.finalEvidenceRequired ? 'yes' : 'no'} | ${row.remediationAvailable ? 'yes' : 'no'} |`
+    )
+    .join('\n');
+
+  const nextActions = report.remediation.map((item) => {
+    const inputs =
+      Array.isArray(item.requiredInputs) && item.requiredInputs.length > 0
+        ? ` Required inputs: ${item.requiredInputs.join('; ')}.`
+        : '';
+    return `${item.blocker}: ${item.action}${inputs}`;
+  });
+
+  return `# V1 Final Preflight Report
+
+## Context
+- Generated (UTC): ${report.generatedAt}
+- Status: ${report.status}
+- API base URL: ${report.context.apiBaseUrl}
+- Web base URL: ${report.context.webBaseUrl}
+- Expected SHA: ${report.context.expectedSha}
+- Evidence date: ${report.context.today}
+- Build-info: ${report.buildInfo.state}
+- Public smoke: ${report.publicSmoke.state}
+- Raw JSON: ${jsonPath || '-'}
+
+## Protected Prerequisites
+| Requirement | State | Accepted Inputs |
+| --- | --- | --- |
+${prerequisiteRows || '| - | - | - |'}
+
+## Release Evidence
+| Evidence | State | Required | Date | Notes |
+| --- | --- | --- | --- | --- |
+${evidenceRows || '| - | - | - | - | - |'}
+
+## Blockers
+${renderList(report.blockers)}
+
+## Blocker Details
+| Blocker | Category | Severity | Protected Input | Final Evidence | Next Action |
+| --- | --- | --- | --- | --- | --- |
+${blockerRows || '| - | - | - | - | - | - |'}
+
+## Next Actions
+${renderList(nextActions)}
+
+## Note
+${report.note}
+`;
+};
+
+const writeMarkdownReport = async (outputPath, report, jsonOutputPath = '') => {
+  if (!outputPath) return;
+  const absolutePath = path.resolve(process.cwd(), outputPath);
+  const jsonPath = jsonOutputPath ? path.relative(process.cwd(), path.resolve(process.cwd(), jsonOutputPath)) : '';
+  await mkdir(path.dirname(absolutePath), { recursive: true });
+  await writeFile(absolutePath, renderPreflightMarkdown(report, jsonPath), 'utf8');
+  process.stdout.write(
+    `[ops:release:v1:preflight] Markdown report: ${path.relative(process.cwd(), absolutePath)}\n`
+  );
+};
+
 export const runBuildInfoWait = (options) => {
   if (options.skipBuildInfo) {
     return { ok: true, skipped: true };
@@ -611,6 +698,7 @@ const main = async () => {
     blockers,
   });
   await writeJsonReport(options.jsonOutput, report);
+  await writeMarkdownReport(options.markdownOutput, report, options.jsonOutput);
 
   if (blockers.length > 0) {
     process.stdout.write('[ops:release:v1:preflight] BLOCKED\n');

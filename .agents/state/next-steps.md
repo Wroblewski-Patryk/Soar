@@ -95,6 +95,9 @@ readback. Last verified RC approval gate hardening deploy:
    also includes `blockerDetails` so later Web/operator status can render
    blocker category, severity, protected-input requirement, final-evidence
    requirement, and remediation availability without parsing blocker strings.
+   For a human-readable operator handoff from the same no-secret data, add
+   `--markdown-output <path>`; the Markdown report is status only and not final
+   release evidence.
 0a. Production build-info reached the backend parity runtime fix, blocker
    evidence alignment, deploy-wait coordination, operator preflight hardening
    docs, live-import release-gate evidence enforcement, build-info freshness

@@ -17,6 +17,14 @@ Last updated: 2026-05-08
 
 ## READY
 
+- [x] `V1-FINAL-PREFLIGHT-MARKDOWN-REPORT-2026-05-08 release: add no-secret markdown report`
+  - Scope: added optional `--markdown-output <path>` support to
+    `ops:release:v1:preflight`. The Markdown report is generated from the
+    same no-secret preflight report object as JSON and summarizes context,
+    public checks, protected prerequisites, release evidence, blockers,
+    blocker details, and next actions for operator/Web handoff. Evidence:
+    `docs/planning/v1-final-preflight-markdown-report-task-2026-05-08.md`.
+
 - [x] `V1-FINAL-PREFLIGHT-BLOCKER-DETAILS-2026-05-08 release: add structured blocker details`
   - Scope: added additive no-secret `blockerDetails` metadata to final V1
     preflight JSON reports. Known and unknown blockers now expose category,

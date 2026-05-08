@@ -7,6 +7,14 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-FINAL-PREFLIGHT-MARKDOWN-REPORT-2026-05-08 release: add no-secret markdown report`
+  - 2026-05-08: Added optional `--markdown-output <path>` support to
+    `ops:release:v1:preflight`. The Markdown report is generated from the
+    same no-secret preflight report object as JSON and summarizes context,
+    public checks, protected prerequisites, release evidence, blockers,
+    blocker details, and next actions for operator/Web handoff. It is not
+    final V1 release evidence. Evidence:
+    `docs/planning/v1-final-preflight-markdown-report-task-2026-05-08.md`.
 - [x] `V1-FINAL-PREFLIGHT-BLOCKER-DETAILS-2026-05-08 release: add structured blocker details`
   - 2026-05-08: Added additive no-secret `blockerDetails` metadata to final
     V1 preflight JSON reports. Known and unknown blocker keys now expose

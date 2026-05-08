@@ -57,6 +57,13 @@ requirements, and remediation availability:
 pnpm run ops:release:v1:preflight -- --json-output docs/operations/_artifacts-v1-final-preflight-2026-05-08.json
 ```
 
+For a human-readable no-secret operator report from the same preflight data,
+also pass a Markdown output path:
+
+```powershell
+pnpm run ops:release:v1:preflight -- --json-output docs/operations/_artifacts-v1-final-preflight-2026-05-08.json --markdown-output docs/operations/v1-final-preflight-2026-05-08.md
+```
+
 Expected current result before protected operator access is available:
 `BLOCKED` with missing `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, production
 DB restore context, RC approval, live-import readback, restore, and rollback
@@ -67,7 +74,8 @@ it is a no-secret status snapshot. Preflight blocker output includes
 `next actions` that point to the approved commands below; those hints do not
 replace the commands or acceptance criteria in this pack. `blockerDetails`
 metadata is only display/status metadata and also does not replace the
-commands or acceptance criteria in this pack.
+commands or acceptance criteria in this pack. The Markdown report is likewise
+operator-readable status only, not final release evidence.
 
 ### 1. Verify Production Build Info
 

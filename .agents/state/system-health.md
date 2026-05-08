@@ -180,6 +180,10 @@ Last updated: 2026-05-08
   blockers, including category, severity, protected-input requirement,
   final-evidence requirement, and remediation availability for later
   Web/operator status rendering.
+- Final V1 preflight Markdown report PASS: `ops:release:v1:preflight` now
+  accepts `--markdown-output <path>` and writes a human-readable no-secret
+  status report from the same preflight report object as JSON. It remains
+  status-only handoff material, not final V1 release evidence.
 - `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
   `/dashboard/positions/live-status` returned global reconciliation diagnostic
   counts for an authenticated user. The route now filters

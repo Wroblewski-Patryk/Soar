@@ -6,6 +6,7 @@ import {
   buildPreflightReport,
   buildRemediationHints,
   evaluatePrerequisiteGroups,
+  renderPreflightMarkdown,
   runBuildInfoWait,
   runPublicSmoke,
 } from './runV1FinalPreflight.mjs';
@@ -214,4 +215,47 @@ test('buildBlockerDetails exposes stable categories for Web/operator status', ()
   assert.equal(details[4].remediationAvailable, true);
   assert.equal(details[5].remediationAvailable, false);
   assert.equal(JSON.stringify(details).includes('super-secret'), false);
+});
+
+test('renderPreflightMarkdown summarizes blockers without secret values', () => {
+  const prerequisites = evaluatePrerequisiteGroups({
+    LIVEIMPORT_READBACK_AUTH_TOKEN: 'super-secret-token',
+  });
+  const report = buildPreflightReport({
+    options: {
+      apiBaseUrl: 'https://api.example.com',
+      webBaseUrl: 'https://web.example.com',
+      expectedSha: 'abc123',
+      today: '2026-05-08',
+      skipBuildInfo: true,
+      skipPublicSmoke: true,
+    },
+    buildInfo: { ok: true, skipped: true },
+    publicSmoke: { ok: true, skipped: true },
+    prerequisites,
+    evidence: {
+      evidence: [
+        {
+          key: 'rollbackProof',
+          label: 'rollback proof pack',
+          state: 'failed',
+          required: true,
+          reason: 'artifact is fresh but does not report PASS',
+          path: 'docs/operations/v1-rollback-proof-prod-2026-05-08T00-00-00-000Z.md',
+          date: '2026-05-08',
+        },
+      ],
+    },
+    blockers: ['env:rollback guard auth', 'evidence:rollbackProof:failed'],
+  });
+
+  const markdown = renderPreflightMarkdown(report, 'tmp/preflight.json');
+
+  assert.match(markdown, /# V1 Final Preflight Report/);
+  assert.match(markdown, /Status: blocked/);
+  assert.match(markdown, /env:rollback guard auth/);
+  assert.match(markdown, /release_evidence/);
+  assert.match(markdown, /tmp\/preflight\.json/);
+  assert.equal(markdown.includes('- - '), false);
+  assert.equal(markdown.includes('super-secret-token'), false);
 });

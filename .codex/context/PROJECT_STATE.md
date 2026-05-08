@@ -3,6 +3,13 @@
 Last updated: 2026-05-08
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-08 `V1-FINAL-PREFLIGHT-MARKDOWN-REPORT-2026-05-08` added optional
+  `--markdown-output <path>` support to `ops:release:v1:preflight`. The
+  Markdown report is generated from the same no-secret preflight report object
+  as JSON and summarizes context, public checks, protected prerequisites,
+  release evidence, blockers, blocker details, and next actions. It is
+  operator-readable status handoff material only, not final V1 release
+  evidence.
 - 2026-05-08 `V1-FINAL-PREFLIGHT-BLOCKER-DETAILS-2026-05-08` added
   structured no-secret `blockerDetails` metadata to the final V1 preflight
   JSON report. The report still keeps raw blocker keys and remediation hints,
