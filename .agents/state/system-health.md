@@ -93,6 +93,12 @@ Last updated: 2026-05-08
   paths preserve unsupported capability errors and leave `lastUsed` unchanged.
   Validation PASS: focused authenticated snapshots service test, API
   typecheck, repository guardrails, docs parity, and diff check.
+- `EXCHANGE2-18` live submit boundary regression PASS: focused exchange
+  boundary coverage proves Gate.io `LIVE_ORDER_SUBMIT` fails closed before
+  credential resolution, connector construction, pretrade guards, leverage
+  convergence, or live order adapter creation. Validation PASS: focused
+  exchange adapter boundary test, API typecheck, repository guardrails, docs
+  parity, and diff check.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307

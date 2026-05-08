@@ -94,6 +94,10 @@ regression-locked: `EXCHANGE2-17` proves stored Gate.io placeholder keys cannot
 reach `OPEN_ORDERS_SNAPSHOT` or `TRADE_HISTORY_SNAPSHOT` test fallback data
 while those authenticated-read operations are unsupported, and `lastUsed`
 remains unchanged after rejection.
+Gate.io LIVE order submit is now locally regression-locked at the exchange
+boundary: `EXCHANGE2-18` proves `LIVE_ORDER_SUBMIT` fails closed before
+credential resolution, connector construction, pretrade guards, leverage
+convergence, or live order adapter creation.
 
 After the planned Gate.io/deploy-auth blockers are cleared, execute the
 production UI module clickthrough audit from

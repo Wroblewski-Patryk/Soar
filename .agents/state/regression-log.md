@@ -66,6 +66,12 @@ local Postgres/Redis ports were reachable. Sequential reruns passed.
   and `lastUsed` is not updated after rejection. Validation: focused
   authenticated snapshots service test, API typecheck, repository guardrails,
   docs parity, and diff check.
+- 2026-05-08: Prevented live-submit boundary drift for Gate.io. A focused
+  exchange boundary test now proves `LIVE_ORDER_SUBMIT` fails before
+  credential resolution, connector creation, pretrade guards, leverage
+  convergence, or live order adapter creation. Validation: focused exchange
+  adapter boundary test, API typecheck, repository guardrails, docs parity, and
+  diff check.
 - 2026-05-07: Ran production V1 release-gate classifier in dry-run mode and
   preserved stale evidence blockers as release state. This prevents treating
   old 2026-05-02 RC/backup/rollback artifacts as fresh V1 evidence.

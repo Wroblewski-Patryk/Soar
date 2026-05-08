@@ -42,6 +42,11 @@ Rule: fix/cleanup/update first, then feature delivery.
   Gate.io open-orders and trade-history snapshot calls now fail closed before
   test fallback data or connector reads while their authenticated-read
   capabilities are unsupported, and stored keys remain unused after rejection.
+- 2026-05-08: Closed `EXCHANGE2-18` with
+  `docs/planning/exchange2-18-gateio-live-submit-boundary-task-2026-05-08.md`.
+  Gate.io `LIVE_ORDER_SUBMIT` now has focused exchange-boundary evidence that
+  it fails closed before credentials, connectors, pretrade guards, leverage
+  convergence, or live order adapter creation.
 - 2026-05-07: Closed `V1-FINAL-BLOCKER-PACK-2026-05-07` with
   `docs/planning/v1-final-blocker-execution-pack-task-2026-05-07.md`. A single
   current operator execution pack now lists the remaining V1 blockers and

@@ -172,6 +172,13 @@ Last updated: 2026-05-08
     Evidence:
     `docs/planning/exchange2-17-gateio-reconciliation-snapshots-fail-closed-task-2026-05-08.md`.
 
+- [x] `EXCHANGE2-18 test(api): lock Gate.io live submit boundary`
+  - Scope: added a focused exchange boundary regression proving Gate.io
+    `LIVE_ORDER_SUBMIT` fails closed before credentials, connectors, pretrade
+    guards, leverage convergence, or live order adapter creation are reached.
+    Evidence:
+    `docs/planning/exchange2-18-gateio-live-submit-boundary-task-2026-05-08.md`.
+
 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
   - Scope: execute a production-wide UI audit across canonical public,
     dashboard, admin, and legacy redirect routes, clicking safe module

@@ -131,6 +131,57 @@ describe('exchangeAdapterBoundary.service', () => {
     ).rejects.toThrowError(ExchangeExecutionCapabilityUnsupportedError);
   });
 
+  it('fails closed for Gate.io live order submit before resolving credentials or connectors', async () => {
+    const resolveLiveExecutionApiKey = vi.fn();
+    const createAuthenticatedConnector = vi.fn(() => createConnector());
+    const createLiveOrderAdapter = vi.fn();
+    const enforceLivePretradeGuards = vi.fn(async () => undefined);
+    const convergeLiveMarginAndLeverageIfNeeded = vi.fn(async () => undefined);
+
+    await expect(
+      submitLiveOrderThroughBoundary(
+        {
+          userId: 'user-gateio-live-submit',
+          bot: {
+            exchange: 'GATEIO',
+            marketType: 'FUTURES',
+            positionMode: 'ONE_WAY',
+            apiKeyId: 'gateio-key-1',
+            walletId: 'gateio-wallet-1',
+          },
+          order: {
+            symbol: 'BTCUSDT',
+            side: 'BUY',
+            type: 'LIMIT',
+            quantity: 0.01,
+            price: 100_000,
+          },
+          targetLeverage: 2,
+        },
+        {
+          createAuthenticatedConnector,
+          fetchBalanceRaw: vi.fn(),
+          resolveLiveExecutionApiKey,
+          createLiveOrderAdapter,
+          enforceLivePretradeGuards,
+          convergeLiveMarginAndLeverageIfNeeded,
+        }
+      )
+    ).rejects.toMatchObject({
+      code: 'EXCHANGE_EXECUTION_CAPABILITY_UNSUPPORTED',
+      details: {
+        exchange: 'GATEIO',
+        operation: 'LIVE_ORDER_SUBMIT',
+      },
+    });
+
+    expect(resolveLiveExecutionApiKey).not.toHaveBeenCalled();
+    expect(createAuthenticatedConnector).not.toHaveBeenCalled();
+    expect(createLiveOrderAdapter).not.toHaveBeenCalled();
+    expect(enforceLivePretradeGuards).not.toHaveBeenCalled();
+    expect(convergeLiveMarginAndLeverageIfNeeded).not.toHaveBeenCalled();
+  });
+
   it('submits live orders through the boundary and normalizes adapter output', async () => {
     const connector = createConnector();
     const createAuthenticatedConnector = vi.fn(() => connector);
@@ -309,7 +360,7 @@ describe('exchangeAdapterBoundary.service', () => {
     const createAuthenticatedConnector = vi.fn(() => createConnector());
     const resolveLiveExecutionApiKey = vi.fn(async () => ({
       id: 'api-key-1',
-      exchange: 'BINANCE' as const,
+      exchange: 'BYBIT' as const,
       apiKey: 'enc-key',
       apiSecret: 'enc-secret',
     }));
@@ -319,7 +370,7 @@ describe('exchangeAdapterBoundary.service', () => {
         {
           userId: 'user-1',
           bot: {
-            exchange: 'BYBIT',
+            exchange: 'BINANCE',
             marketType: 'FUTURES',
             positionMode: 'ONE_WAY',
             apiKeyId: 'api-key-1',

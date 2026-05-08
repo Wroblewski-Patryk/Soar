@@ -366,6 +366,8 @@ export const submitLiveOrderThroughBoundary = async (
   params: SubmitLiveExchangeOrderInput,
   deps: ExchangeAdapterBoundaryDeps = getDefaultDeps()
 ): Promise<SubmitLiveExchangeOrderResult> => {
+  assertExchangeExecutionCapabilitySupport(params.bot.exchange, 'LIVE_ORDER_SUBMIT');
+
   const apiKey = await deps.resolveLiveExecutionApiKey({
     userId: params.userId,
     bot: params.bot,
