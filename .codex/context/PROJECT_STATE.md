@@ -3,6 +3,13 @@
 Last updated: 2026-05-08
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-08 `V1-FINAL-PREFLIGHT-REGRESSION-TESTS-2026-05-08` added focused
+  automated coverage for the final V1 preflight command. The tests lock
+  fail-closed behavior when production auth/DB envs are absent, accept complete
+  token or email/password alternatives, require complete production DB restore
+  env families, keep optional OPS layers separate, and verify the build-info
+  wait can be skipped in local unit tests. The CLI no-auth preflight still
+  exits `1` and creates no protected `LIVEIMPORT-03` artifact.
 - 2026-05-08 `V1-FINAL-PREFLIGHT-COMMAND-2026-05-08` added
   `pnpm run ops:release:v1:preflight`, a read-only final V1 operator preflight
   that verifies current `HEAD` through web build-info, reports missing

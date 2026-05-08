@@ -7,6 +7,13 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-FINAL-PREFLIGHT-REGRESSION-TESTS-2026-05-08 release: lock final V1 preflight checks`
+  - 2026-05-08: Added focused regression tests for
+    `ops:release:v1:preflight` prerequisite classification. Missing production
+    auth/DB envs fail closed; complete token or email/password alternatives
+    pass; production DB env families must be complete; optional OPS layers stay
+    separate; and build-info wait can be skipped in local unit tests. Evidence:
+    `docs/planning/v1-final-preflight-regression-tests-task-2026-05-08.md`.
 - [x] `V1-FINAL-PREFLIGHT-COMMAND-2026-05-08 release: add final V1 operator preflight`
   - 2026-05-08: Added `pnpm run ops:release:v1:preflight`, a read-only
     operator command that verifies current `HEAD` through web build-info,

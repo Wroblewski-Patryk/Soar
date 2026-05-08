@@ -3,6 +3,7 @@
 import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import process from 'node:process';
+import { fileURLToPath } from 'node:url';
 import { evaluateEvidenceReadiness } from './runV1ReleaseGate.mjs';
 
 const DEFAULT_API_BASE_URL = 'https://api.soar.luckysparrow.ch';
@@ -79,15 +80,15 @@ const resolveOptions = () => {
   };
 };
 
-const hasAnyEnv = (names) => names.some((name) => Boolean(process.env[name]));
-const hasAllEnv = (names) => names.every((name) => Boolean(process.env[name]));
+const hasAnyEnv = (env, names) => names.some((name) => Boolean(env[name]));
+const hasAllEnv = (env, names) => names.every((name) => Boolean(env[name]));
 
-const prerequisiteGroups = [
+export const prerequisiteGroups = [
   {
     key: 'liveimport auth',
-    ok: () =>
-      hasAnyEnv(['LIVEIMPORT_READBACK_AUTH_TOKEN']) ||
-      hasAllEnv(['LIVEIMPORT_READBACK_AUTH_EMAIL', 'LIVEIMPORT_READBACK_AUTH_PASSWORD']),
+    ok: (env) =>
+      hasAnyEnv(env, ['LIVEIMPORT_READBACK_AUTH_TOKEN']) ||
+      hasAllEnv(env, ['LIVEIMPORT_READBACK_AUTH_EMAIL', 'LIVEIMPORT_READBACK_AUTH_PASSWORD']),
     required: [
       'LIVEIMPORT_READBACK_AUTH_TOKEN',
       'or LIVEIMPORT_READBACK_AUTH_EMAIL + LIVEIMPORT_READBACK_AUTH_PASSWORD',
@@ -95,9 +96,9 @@ const prerequisiteGroups = [
   },
   {
     key: 'rollback guard auth',
-    ok: () =>
-      hasAnyEnv(['ROLLBACK_GUARD_AUTH_TOKEN']) ||
-      hasAllEnv(['ROLLBACK_GUARD_AUTH_EMAIL', 'ROLLBACK_GUARD_AUTH_PASSWORD']),
+    ok: (env) =>
+      hasAnyEnv(env, ['ROLLBACK_GUARD_AUTH_TOKEN']) ||
+      hasAllEnv(env, ['ROLLBACK_GUARD_AUTH_EMAIL', 'ROLLBACK_GUARD_AUTH_PASSWORD']),
     required: [
       'ROLLBACK_GUARD_AUTH_TOKEN',
       'or ROLLBACK_GUARD_AUTH_EMAIL + ROLLBACK_GUARD_AUTH_PASSWORD',
@@ -105,9 +106,9 @@ const prerequisiteGroups = [
   },
   {
     key: 'production DB restore context',
-    ok: () =>
-      hasAllEnv(['PROD_DB_CHECK_CONTAINER', 'PROD_DB_CHECK_USER', 'PROD_DB_CHECK_NAME']) ||
-      hasAllEnv([
+    ok: (env) =>
+      hasAllEnv(env, ['PROD_DB_CHECK_CONTAINER', 'PROD_DB_CHECK_USER', 'PROD_DB_CHECK_NAME']) ||
+      hasAllEnv(env, [
         'PRODUCTION_DB_CHECK_CONTAINER',
         'PRODUCTION_DB_CHECK_USER',
         'PRODUCTION_DB_CHECK_NAME',
@@ -119,12 +120,18 @@ const prerequisiteGroups = [
   },
 ];
 
-const optionalGroups = [
+export const optionalGroups = [
   {
     key: 'liveimport private OPS layer',
-    ok: () =>
-      hasAllEnv(['LIVEIMPORT_READBACK_OPS_BASIC_USER', 'LIVEIMPORT_READBACK_OPS_BASIC_PASSWORD']) ||
-      hasAllEnv(['LIVEIMPORT_READBACK_OPS_AUTH_HEADER_NAME', 'LIVEIMPORT_READBACK_OPS_AUTH_HEADER_VALUE']),
+    ok: (env) =>
+      hasAllEnv(env, [
+        'LIVEIMPORT_READBACK_OPS_BASIC_USER',
+        'LIVEIMPORT_READBACK_OPS_BASIC_PASSWORD',
+      ]) ||
+      hasAllEnv(env, [
+        'LIVEIMPORT_READBACK_OPS_AUTH_HEADER_NAME',
+        'LIVEIMPORT_READBACK_OPS_AUTH_HEADER_VALUE',
+      ]),
     accepted: [
       'LIVEIMPORT_READBACK_OPS_BASIC_USER + LIVEIMPORT_READBACK_OPS_BASIC_PASSWORD',
       'or LIVEIMPORT_READBACK_OPS_AUTH_HEADER_NAME + LIVEIMPORT_READBACK_OPS_AUTH_HEADER_VALUE',
@@ -132,9 +139,9 @@ const optionalGroups = [
   },
   {
     key: 'rollback private OPS layer',
-    ok: () =>
-      hasAllEnv(['ROLLBACK_GUARD_OPS_BASIC_USER', 'ROLLBACK_GUARD_OPS_BASIC_PASSWORD']) ||
-      hasAllEnv(['ROLLBACK_GUARD_OPS_AUTH_HEADER_NAME', 'ROLLBACK_GUARD_OPS_AUTH_HEADER_VALUE']),
+    ok: (env) =>
+      hasAllEnv(env, ['ROLLBACK_GUARD_OPS_BASIC_USER', 'ROLLBACK_GUARD_OPS_BASIC_PASSWORD']) ||
+      hasAllEnv(env, ['ROLLBACK_GUARD_OPS_AUTH_HEADER_NAME', 'ROLLBACK_GUARD_OPS_AUTH_HEADER_VALUE']),
     accepted: [
       'ROLLBACK_GUARD_OPS_BASIC_USER + ROLLBACK_GUARD_OPS_BASIC_PASSWORD',
       'or ROLLBACK_GUARD_OPS_AUTH_HEADER_NAME + ROLLBACK_GUARD_OPS_AUTH_HEADER_VALUE',
@@ -142,7 +149,20 @@ const optionalGroups = [
   },
 ];
 
-const runBuildInfoWait = (options) => {
+export const evaluatePrerequisiteGroups = (env = process.env) => ({
+  required: prerequisiteGroups.map((group) => ({
+    key: group.key,
+    ok: group.ok(env),
+    required: group.required,
+  })),
+  optional: optionalGroups.map((group) => ({
+    key: group.key,
+    ok: group.ok(env),
+    accepted: group.accepted,
+  })),
+});
+
+export const runBuildInfoWait = (options) => {
   if (options.skipBuildInfo) {
     return { ok: true, skipped: true };
   }
@@ -202,8 +222,9 @@ const main = async () => {
   }
 
   process.stdout.write('[ops:release:v1:preflight] protected prerequisites\n');
-  for (const group of prerequisiteGroups) {
-    if (group.ok()) {
+  const prerequisiteStatus = evaluatePrerequisiteGroups(process.env);
+  for (const group of prerequisiteStatus.required) {
+    if (group.ok) {
       process.stdout.write(`- PASS ${group.key}\n`);
     } else {
       process.stdout.write(`- MISSING ${group.key}: ${group.required.join('; ')}\n`);
@@ -211,8 +232,8 @@ const main = async () => {
     }
   }
 
-  for (const group of optionalGroups) {
-    if (group.ok()) {
+  for (const group of prerequisiteStatus.optional) {
+    if (group.ok) {
       process.stdout.write(`- PRESENT optional ${group.key}\n`);
     } else {
       process.stdout.write(`- OPTIONAL ${group.key}: ${group.accepted.join('; ')}\n`);
@@ -242,10 +263,18 @@ const main = async () => {
   process.stdout.write('[ops:release:v1:preflight] READY_FOR_PROTECTED_EVIDENCE\n');
 };
 
-main().catch((error) => {
-  console.error(
-    '[ops:release:v1:preflight] failed:',
-    error instanceof Error ? error.message : String(error)
-  );
-  process.exit(1);
-});
+const isEntrypoint = () => {
+  const entry = process.argv[1];
+  if (!entry) return false;
+  return path.resolve(entry) === path.resolve(fileURLToPath(import.meta.url));
+};
+
+if (isEntrypoint()) {
+  main().catch((error) => {
+    console.error(
+      '[ops:release:v1:preflight] failed:',
+      error instanceof Error ? error.message : String(error)
+    );
+    process.exit(1);
+  });
+}

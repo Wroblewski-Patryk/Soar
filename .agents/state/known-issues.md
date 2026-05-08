@@ -177,6 +177,9 @@ Last updated: 2026-05-08
   this shell it passes build-info for current `HEAD`, then blocks on missing
   production auth/DB env names and current release evidence blockers without
   creating protected artifacts.
+- 2026-05-08 final V1 preflight prerequisite checks are now regression-locked
+  with focused tests. This prevents incomplete production auth/DB env sets from
+  being silently accepted by the preflight.
 
 ## Known Environment Pitfalls
 

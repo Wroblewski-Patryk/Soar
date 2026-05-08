@@ -17,6 +17,16 @@ Last updated: 2026-05-08
 
 ## READY
 
+- [x] `V1-FINAL-PREFLIGHT-REGRESSION-TESTS-2026-05-08 release: lock final V1 preflight checks`
+  - Scope: added focused tests for `ops:release:v1:preflight` prerequisite
+    classification so missing production auth/DB inputs fail closed, complete
+    token or email/password alternatives pass, DB env families must be
+    complete, optional OPS layers remain separate, and skipped build-info is
+    testable without network calls. Validation PASS: syntax, focused tests,
+    help, no-auth fail-closed preflight, guardrails, docs parity, public smoke,
+    and diff check. Evidence:
+    `docs/planning/v1-final-preflight-regression-tests-task-2026-05-08.md`.
+
 - [x] `V1-FINAL-PREFLIGHT-COMMAND-2026-05-08 release: add final V1 operator preflight`
   - Scope: added `pnpm run ops:release:v1:preflight`, a read-only command that
     verifies current `HEAD` through web build-info, reports missing protected

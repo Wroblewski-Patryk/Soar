@@ -84,7 +84,8 @@ readback. Last verified RC approval gate hardening deploy:
    `BLOCKED` until live-import auth, rollback auth, production DB restore
    context, RC approval, live-import readback, restore, and rollback evidence
    are all present. The command prints env variable names only and writes no
-   protected evidence artifacts.
+   protected evidence artifacts. Its prerequisite classification is covered by
+   focused regression tests in `scripts/runV1FinalPreflight.test.mjs`.
 0a. Production build-info reached the backend parity runtime fix, blocker
    evidence alignment, deploy-wait coordination, operator preflight hardening
    docs, live-import release-gate evidence enforcement, build-info freshness
