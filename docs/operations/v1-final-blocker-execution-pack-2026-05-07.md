@@ -3,7 +3,7 @@
 ## Status
 - Current result: **NO-GO**
 - Production code/tooling SHA:
-  `e6ccbedaa1d0074d5dc335935bb6b51a9bb1e387`
+  `2c2326993c306b21de13b3ef76619d8347dd2545`
 - Latest release-gate dry-run:
   `docs/operations/v1-release-gate-prod-2026-05-08T05-43-51-157Z.md`
 
@@ -35,8 +35,15 @@ with approved production auth and database/Coolify access.
 
 ### 1. Verify Production Build Info
 
+If the pushed commit has not appeared in build-info yet, wait for the accepted
+Coolify deployment path before running protected readback. To accelerate a
+multi-application deploy, an operator may force deploy the relevant Coolify
+resources from the dashboard. If deploy webhooks are configured, the equivalent
+automation requires a Coolify deploy webhook URL and API token; those secrets
+must stay outside repository artifacts.
+
 ```powershell
-pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha e6ccbedaa1d0074d5dc335935bb6b51a9bb1e387 --timeout-seconds 60 --interval-seconds 10
+pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha 2c2326993c306b21de13b3ef76619d8347dd2545 --timeout-seconds 60 --interval-seconds 10
 ```
 
 Expected result: `PASS`.
@@ -44,7 +51,7 @@ Expected result: `PASS`.
 ### 2. Capture LIVEIMPORT-03 Runtime Readback
 
 ```powershell
-pnpm run ops:liveimport:readback -- --expected-sha e6ccbedaa1d0074d5dc335935bb6b51a9bb1e387 --output docs/operations/liveimport-03-prod-readback-2026-05-08.json
+pnpm run ops:liveimport:readback -- --expected-sha 2c2326993c306b21de13b3ef76619d8347dd2545 --output docs/operations/liveimport-03-prod-readback-2026-05-08.json
 ```
 
 Required result:

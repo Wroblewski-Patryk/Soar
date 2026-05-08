@@ -101,6 +101,11 @@ Last updated: 2026-05-08
   Operations, RC owner, and final status not `APPROVED`). RC gates summary
   also reports Gate2 policy `PASS_ONLY` and notes the underlying evidence
   artifact is stale relative to the refreshed status.
+- Deployment coordination note: when a future step depends on a pushed commit
+  being live, wait for production build-info before continuing. This shell does
+  not expose Coolify deploy webhook/API token variables, so force deploy must
+  be done by an operator in Coolify or by providing out-of-repository deploy
+  webhook credentials.
 - `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
   `/dashboard/positions/live-status` returned global reconciliation diagnostic
   counts for an authenticated user. The route now filters
