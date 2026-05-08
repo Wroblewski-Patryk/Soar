@@ -5,7 +5,7 @@
 - Production code/tooling SHA:
   `da1e52cfec0b70e5a94e59d75fe702a55c348d74`
 - Latest release-gate dry-run:
-  `docs/operations/v1-release-gate-prod-2026-05-08T05-36-43-320Z.md`
+  `docs/operations/v1-release-gate-prod-2026-05-08T05-43-51-157Z.md`
 
 ## Purpose
 This pack lists the exact remaining commands needed to turn the current

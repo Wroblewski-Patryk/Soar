@@ -86,6 +86,15 @@ Last updated: 2026-05-08
   available in this shell. Rollback proof is fresh but `FAILED` because
   protected runtime freshness and alerts endpoints return HTTP `401` without
   auth.
+- Follow-up production freshness check for latest `main`
+  `d1755b45fc5a6fa901b86519366188efe743a05a` timed out after ten HTTP 200
+  polls over 300 seconds; production advanced from `76a7d0fc...` to
+  `e6ccbedaa1d0074d5dc335935bb6b51a9bb1e387`, but not to `d1755b45...`.
+  Public deploy smoke without workers passed. `LIVEIMPORT-03` readback against
+  deployed `e6ccbeda...` still failed closed with missing production auth.
+  Latest dry-run
+  `docs/operations/v1-release-gate-prod-2026-05-08T05-43-51-157Z.md` remains
+  `not_ready` with the same fresh activation/RC and failed recovery blockers.
 - `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
   `/dashboard/positions/live-status` returned global reconciliation diagnostic
   counts for an authenticated user. The route now filters

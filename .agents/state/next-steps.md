@@ -64,10 +64,11 @@ $expectedSha = git rev-parse HEAD
 pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output docs/operations/liveimport-03-prod-readback-2026-05-08.json
 ```
 
-If production build-info still reports the deployed runtime candidate
-`da1e52cfec0b70e5a94e59d75fe702a55c348d74` while latest `main` only contains
-docs/state changes on top, use that deployed SHA for the readback evidence
-until a newer Coolify/manual deploy is confirmed.
+If production build-info reports a deployed commit older than latest `main`
+while latest `main` only contains docs/state evidence on top, use the deployed
+SHA for readback evidence until a newer Coolify/manual deploy is confirmed.
+Latest observed production SHA is
+`e6ccbedaa1d0074d5dc335935bb6b51a9bb1e387`.
 
 ## Candidate Backlog
 

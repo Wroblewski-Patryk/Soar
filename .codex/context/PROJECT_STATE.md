@@ -43,6 +43,13 @@ Last updated: 2026-05-08
   readiness `not_ready`: activation and RC artifacts are fresh, while
   backup/restore is fresh but failed due to missing production DB/Coolify
   access, and rollback proof is fresh but failed on protected `401` responses.
+  Follow-up public build-info saw production at
+  `e6ccbedaa1d0074d5dc335935bb6b51a9bb1e387` while latest `main` was
+  `d1755b45fc5a6fa901b86519366188efe743a05a`; public smoke still passed.
+  `LIVEIMPORT-03` readback against deployed `e6ccbeda...` failed closed with
+  missing auth, and the latest dry-run
+  `docs/operations/v1-release-gate-prod-2026-05-08T05-43-51-157Z.md` remains
+  `not_ready`.
   Evidence:
   `docs/planning/v1-paper-live-backend-runtime-parity-task-2026-05-08.md`.
 

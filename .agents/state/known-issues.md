@@ -125,6 +125,12 @@ Last updated: 2026-05-08
   production DB/Coolify access. Rollback proof is fresh but failed because
   protected runtime freshness and alerts endpoints return HTTP `401` without
   auth.
+- Follow-up production build-info check observed production at
+  `e6ccbedaa1d0074d5dc335935bb6b51a9bb1e387` while latest `main` was
+  `d1755b45fc5a6fa901b86519366188efe743a05a`. This is docs/state deploy lag;
+  the runtime fix remains deployed. A `LIVEIMPORT-03` collector attempt
+  against deployed `e6ccbeda...` still failed closed with missing read-only
+  production auth.
 
 ## Known Environment Pitfalls
 
