@@ -115,6 +115,11 @@ Last updated: 2026-05-08
   accepted auth variable choices without printing secret values. Validation
   covered script syntax, help, dry-run, no-auth fail-closed output, and no
   artifact creation.
+- Recovery proof preflight hardening PASS: restore drill help and missing prod
+  container failure now name `PROD_DB_CHECK_*` / `PRODUCTION_DB_CHECK_*`
+  choices, and rollback proof help names `ROLLBACK_GUARD_*` base URL/auth/OPS
+  choices. Validation covered script syntax, help paths, missing prod DB
+  container fail-closed path, guardrails, docs parity, and diff check.
 - `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07` PASS: pre-fix e2e proved
   `/dashboard/positions/live-status` returned global reconciliation diagnostic
   counts for an authenticated user. The route now filters

@@ -17,6 +17,16 @@ Last updated: 2026-05-08
 
 ## READY
 
+- [x] `V1-RECOVERY-PROOF-PREFLIGHT-HARDENING-2026-05-08 release(ops): clarify recovery proof prerequisites`
+  - Scope: clarified production restore drill and rollback proof prerequisite
+    handoff in existing ops scripts and the final blocker pack. Restore help
+    and missing-container failures now name accepted production DB env choices;
+    rollback proof help names base URL, auth, and optional OPS env choices. No
+    runtime/API/DB/Web/exchange/deploy or live-money behavior changed.
+    Validation PASS: script syntax, help paths, missing prod DB container
+    fail-closed path, guardrails, docs parity, and diff check. Evidence:
+    `docs/planning/v1-recovery-proof-preflight-hardening-task-2026-05-08.md`.
+
 - [x] `V1-LIVEIMPORT-AUTH-PREFLIGHT-HARDENING-2026-05-08 release(ops): clarify live-import auth preflight`
   - Scope: updated the existing `ops:liveimport:readback` missing-auth
     fail-closed message so an operator sees the exact accepted production auth

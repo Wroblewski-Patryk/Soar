@@ -3,6 +3,15 @@
 Last updated: 2026-05-08
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-08 `V1-RECOVERY-PROOF-PREFLIGHT-HARDENING-2026-05-08` clarified
+  production restore drill and rollback proof prerequisite handoff in existing
+  ops scripts and the final blocker pack. Restore help and missing-container
+  failures now name accepted production DB env choices (`PROD_DB_CHECK_*` or
+  `PRODUCTION_DB_CHECK_*`). Rollback proof help names base URL, token or
+  email/password auth choices, and optional OPS basic/header envs. No
+  runtime, API, DB, Web, exchange, deploy, or live-money behavior changed.
+  Restore drill and rollback proof still require approved production access
+  before they can become PASS evidence.
 - 2026-05-08 `V1-LIVEIMPORT-AUTH-PREFLIGHT-HARDENING-2026-05-08` clarified
   the existing `ops:liveimport:readback` fail-closed missing-auth path. It now
   names the accepted auth variable choices without printing secret values:

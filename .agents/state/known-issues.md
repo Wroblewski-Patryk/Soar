@@ -141,6 +141,10 @@ Last updated: 2026-05-08
   names the exact accepted auth variable choices when missing auth blocks
   readback, and no-auth validation still creates no artifact. This improves
   operator handoff but does not close `LIVEIMPORT-03`.
+- 2026-05-08 recovery proof preflight hardening is closed: restore and
+  rollback proof tooling now names exact production DB/auth env choices on
+  help or fail-closed paths. This improves operator handoff but does not close
+  restore drill or rollback proof evidence.
 
 ## Known Environment Pitfalls
 

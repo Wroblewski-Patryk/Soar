@@ -98,8 +98,14 @@ Latest observed production SHA is
    in the latest dry-run report. Activation audit, activation plan, RC status,
    RC sign-off, and RC checklist are fresh blocked/NO-GO artifacts for
    2026-05-08.
-   - Restore drill needs approved production DB/Coolify access.
-   - Rollback proof and runtime freshness need protected OPS auth.
+   - Restore drill needs approved production DB/Coolify access. Required env
+     choices are now explicit in the tool/help path:
+     `PROD_DB_CHECK_CONTAINER` or `PRODUCTION_DB_CHECK_CONTAINER`, plus the
+     matching DB user/name envs.
+   - Rollback proof and runtime freshness need protected OPS auth. Required
+     auth env choices are now explicit in the tool/help path:
+     `ROLLBACK_GUARD_AUTH_TOKEN`, or `ROLLBACK_GUARD_AUTH_EMAIL` plus
+     `ROLLBACK_GUARD_AUTH_PASSWORD`, with optional OPS basic/header envs.
    - Final release gate must run without `--dry-run`.
 5. If the active queue is empty, run a planning-status sweep before saying
    nothing is planned.

@@ -42,7 +42,15 @@ const parseArgs = () => {
 
 const printUsage = () => {
   console.log(
-    'Usage: node scripts/runRollbackProofEvidence.mjs [--profile <stage|prod>] --base-url <url> [--auth-token <token>] [--auth-email <email>] [--auth-password <password>] [--ops-basic-user <user>] [--ops-basic-password <pass>] [--ops-auth-header-name <name>] [--ops-auth-header-value <value>]'
+    [
+      'Usage: node scripts/runRollbackProofEvidence.mjs [--profile <stage|prod>] --base-url <url> [--auth-token <token>] [--auth-email <email>] [--auth-password <password>] [--ops-basic-user <user>] [--ops-basic-password <pass>] [--ops-auth-header-name <name>] [--ops-auth-header-value <value>]',
+      '',
+      'Env:',
+      '  ROLLBACK_GUARD_API_BASE_URL',
+      '  ROLLBACK_GUARD_AUTH_TOKEN, or ROLLBACK_GUARD_AUTH_EMAIL plus ROLLBACK_GUARD_AUTH_PASSWORD',
+      '  ROLLBACK_GUARD_OPS_BASIC_USER plus ROLLBACK_GUARD_OPS_BASIC_PASSWORD',
+      '  ROLLBACK_GUARD_OPS_AUTH_HEADER_NAME plus ROLLBACK_GUARD_OPS_AUTH_HEADER_VALUE',
+    ].join('\n')
   );
 };
 
@@ -90,7 +98,9 @@ const main = async () => {
   }
 
   if (!options.baseUrl.trim()) {
-    throw new Error('Missing required --base-url for rollback proof execution.');
+    throw new Error(
+      'Missing required --base-url for rollback proof execution. Set --base-url or ROLLBACK_GUARD_API_BASE_URL.'
+    );
   }
 
   const commandArgs = ['scripts/evaluateRollbackGuard.mjs', '--base-url', options.baseUrl.trim()];

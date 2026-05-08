@@ -90,6 +90,13 @@ Required result:
 - status `PASS`
 - temporary restore target is isolated and cleaned up
 
+If production restore drill fails before verification because the target
+container is missing, provide `PROD_DB_CHECK_CONTAINER` or
+`PRODUCTION_DB_CHECK_CONTAINER`. Also verify `PROD_DB_CHECK_USER` or
+`PRODUCTION_DB_CHECK_USER`, and `PROD_DB_CHECK_NAME` or
+`PRODUCTION_DB_CHECK_NAME`. Do not mark restore evidence `PASS` until the
+generated restore drill artifact itself reports `Status: **PASS**`.
+
 ### 4. Run Production Rollback Proof
 
 ```powershell
@@ -103,6 +110,14 @@ Required result:
 - no critical reasons
 - runtime freshness `PASS`
 - alerts clear
+
+If rollback proof fails on protected endpoint auth, provide
+`ROLLBACK_GUARD_AUTH_TOKEN`, or `ROLLBACK_GUARD_AUTH_EMAIL` plus
+`ROLLBACK_GUARD_AUTH_PASSWORD`. If a private OPS layer is enabled, also provide
+`ROLLBACK_GUARD_OPS_BASIC_USER` plus `ROLLBACK_GUARD_OPS_BASIC_PASSWORD`, or
+`ROLLBACK_GUARD_OPS_AUTH_HEADER_NAME` plus
+`ROLLBACK_GUARD_OPS_AUTH_HEADER_VALUE`. Do not accept public `401`/`403`
+responses as rollback-proof PASS evidence.
 
 ### 5. Refresh RC Gates From Production Evidence
 

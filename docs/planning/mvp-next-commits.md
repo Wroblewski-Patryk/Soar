@@ -7,6 +7,17 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-RECOVERY-PROOF-PREFLIGHT-HARDENING-2026-05-08 release(ops): clarify recovery proof prerequisites`
+  - 2026-05-08: Clarified production restore drill and rollback proof
+    prerequisite handoff without adding new auth/DB paths. Restore help and
+    missing-container failures now name the accepted production DB env choices
+    (`PROD_DB_CHECK_*` or `PRODUCTION_DB_CHECK_*`). Rollback proof help now
+    names `ROLLBACK_GUARD_API_BASE_URL`, token or email/password auth choices,
+    and optional OPS basic/header envs. Final blocker pack and continuation
+    state now repeat those exact requirements. Validation PASS: script syntax,
+    help paths, missing prod DB container fail-closed path, guardrails, docs
+    parity, and diff check. Evidence:
+    `docs/planning/v1-recovery-proof-preflight-hardening-task-2026-05-08.md`.
 - [x] `V1-LIVEIMPORT-AUTH-PREFLIGHT-HARDENING-2026-05-08 release(ops): clarify live-import auth preflight`
   - 2026-05-08: Hardened the existing `ops:liveimport:readback` fail-closed
     missing-auth path so it names the exact accepted production auth variable

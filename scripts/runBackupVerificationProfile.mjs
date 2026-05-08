@@ -56,7 +56,16 @@ const parseArgs = () => {
 
 const printUsage = () => {
   console.log(
-    'Usage: node scripts/runBackupVerificationProfile.mjs [--profile <local|stage|prod>] [--container <name>] [--db-user <user>] [--db-name <name>]'
+    [
+      'Usage: node scripts/runBackupVerificationProfile.mjs [--profile <local|stage|prod>] [--container <name>] [--db-user <user>] [--db-name <name>]',
+      '',
+      'Env by profile:',
+      '  local: DB_CHECK_CONTAINER, DB_CHECK_USER, DB_CHECK_NAME',
+      '  stage: STAGE_DB_CHECK_CONTAINER, STAGE_DB_CHECK_USER, STAGE_DB_CHECK_NAME',
+      '  prod:  PROD_DB_CHECK_CONTAINER or PRODUCTION_DB_CHECK_CONTAINER,',
+      '         PROD_DB_CHECK_USER or PRODUCTION_DB_CHECK_USER,',
+      '         PROD_DB_CHECK_NAME or PRODUCTION_DB_CHECK_NAME',
+    ].join('\n')
   );
 };
 
@@ -79,7 +88,7 @@ const resolveOptions = (input) => {
 
   if (input.profile !== 'local' && !container) {
     throw new Error(
-      `Missing container for profile "${input.profile}". Set --container or one of: ${profileConfig.envContainers.join(', ')}.`
+      `Missing container for profile "${input.profile}". Set --container or one of: ${profileConfig.envContainers.join(', ')}. For production restore drill, also verify DB user/name with: ${profileConfig.envUsers.join(', ')} and ${profileConfig.envNames.join(', ')}.`
     );
   }
 
