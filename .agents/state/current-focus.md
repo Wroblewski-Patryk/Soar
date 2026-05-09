@@ -20,7 +20,8 @@ contracts synchronized.
 `BALANCE_PREVIEW` through the existing authenticated-read boundary and wallet
 preview route. Gate.io positions/open-orders/trade-history, live submit, and
 exchange-side cancel remain unsupported. Evidence:
-`docs/planning/exchange2-25-gateio-balance-preview-task-2026-05-09.md`.
+`docs/planning/exchange2-25-gateio-balance-preview-task-2026-05-09.md` and
+`docs/operations/deploy-freshness-15dfacb9-2026-05-09.md`.
 
 2026-05-09 implementation update: `EXCHANGE2-24` enabled only Gate.io
 `API_KEY_PROBE` through a shared exchange-aware profile API-key probe service.

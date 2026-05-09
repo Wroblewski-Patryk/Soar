@@ -95,6 +95,12 @@ behavior for all other Gate.io authenticated reads and live operations.
   - PASS: `node scripts/repoGuardrails.mjs`
   - PASS: `node scripts/checkDocsParity.mjs`
   - PASS: `git diff --check` (line-ending warnings only)
+- PASS: production Web build-info reached
+  `15dfacb9882fc4904a2bfcd91d8b58c05d3ac5dd`
+- PASS: production public deploy smoke (`API /health`, `API /ready`, `Web /`)
+- BLOCKED as expected: no-secret final V1 preflight public checks pass, while
+  protected/formal release evidence remains blocked. Evidence:
+  `docs/operations/v1-final-preflight-15dfacb9-2026-05-09.md`
 - Manual checks: focused `rg` found no active source/docs contradiction for
   Gate.io balance preview unsupported state.
 - Screenshots/logs: not applicable; API-only slice.
@@ -190,7 +196,8 @@ This slice deliberately does not make Gate.io live wallets creatable because
 - Files changed: exact capability matrix/tests, wallet e2e, architecture/module
   docs, planning and state files.
 - How tested: focused exchange tests, wallet e2e, API typecheck, guardrails,
-  docs parity, diff check.
+  docs parity, diff check, production build-info, public smoke, and no-secret
+  preflight.
 - What is incomplete: Gate.io positions/open-orders/trade-history, live submit,
   live cancel, and `LIVE_EXECUTION` remain unsupported.
 - Next steps: implement the next exact authenticated read only if it is the

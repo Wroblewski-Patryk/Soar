@@ -18,8 +18,11 @@ Last updated: 2026-05-09
   Scope is limited to `BALANCE_PREVIEW`; Gate.io positions/open-orders,
   trade-history, live submit, and exchange-side cancel remain unsupported.
   Focused exchange tests, wallet e2e, API typecheck, guardrails, docs parity,
-  and diff check passed. Evidence:
-  `docs/planning/exchange2-25-gateio-balance-preview-task-2026-05-09.md`.
+  and diff check passed. Production build-info reached
+  `15dfacb9882fc4904a2bfcd91d8b58c05d3ac5dd`; public deploy smoke passes.
+  Evidence:
+  `docs/planning/exchange2-25-gateio-balance-preview-task-2026-05-09.md` and
+  `docs/operations/deploy-freshness-15dfacb9-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-24-GATEIO-API-KEY-PROBE-2026-05-09` enabled Gate.io
   API-key connection testing through a shared exchange-aware profile probe
   service. Scope is limited to `API_KEY_PROBE`; Gate.io balance preview,

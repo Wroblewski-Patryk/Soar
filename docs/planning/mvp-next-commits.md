@@ -12,8 +12,10 @@ Operational queue for one-task execution runs.
     authenticated-read boundary and wallet preview route, while keeping Gate.io
     positions/open-orders/trade-history/live/cancel unsupported. Focused
     exchange tests, wallet e2e, API typecheck, guardrails, docs parity, and
-    diff check passed. Evidence:
-    `docs/planning/exchange2-25-gateio-balance-preview-task-2026-05-09.md`.
+    diff check passed. Production build-info and public smoke pass for
+    `15dfacb9882fc4904a2bfcd91d8b58c05d3ac5dd`. Evidence:
+    `docs/planning/exchange2-25-gateio-balance-preview-task-2026-05-09.md` and
+    `docs/operations/deploy-freshness-15dfacb9-2026-05-09.md`.
 
 - [x] `EXCHANGE2-24-GATEIO-API-KEY-PROBE-2026-05-09 feature(exchange): enable Gate.io API-key probe`
   - 2026-05-09: Replace the Binance-only profile API-key probe with a shared

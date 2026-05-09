@@ -7,8 +7,11 @@ Last updated: 2026-05-09
 - `EXCHANGE2-25` local validation PASS: Gate.io `BALANCE_PREVIEW` is enabled
   through the existing authenticated-read boundary and wallet preview route.
   Gate.io positions/open-orders/trade-history, live submit, and exchange-side
-  cancel remain unsupported. Evidence:
-  `docs/planning/exchange2-25-gateio-balance-preview-task-2026-05-09.md`.
+  cancel remain unsupported. Production build-info now exposes
+  `15dfacb9882fc4904a2bfcd91d8b58c05d3ac5dd`, and public deploy smoke passes.
+  Evidence:
+  `docs/planning/exchange2-25-gateio-balance-preview-task-2026-05-09.md` and
+  `docs/operations/deploy-freshness-15dfacb9-2026-05-09.md`.
 - `EXCHANGE2-24` local validation PASS: Gate.io `API_KEY_PROBE` is enabled for
   provided and stored profile API-key connection tests through the shared
   exchange-aware probe service. Gate.io balance preview, positions/open-orders,
