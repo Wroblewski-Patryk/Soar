@@ -37,10 +37,12 @@ Last updated: 2026-05-09
   `docs/planning/deploy-freshness-010b4f8b-task-2026-05-09.md`.
 - Current production public smoke passes on the deployed `010b4f8b` surface:
   API `/health` 200, API `/ready` 200, and Web `/` 200.
-- Pushed `1f1d9c12` has no `apps`, `packages`, `prisma`, or `scripts` changes
-  over deployed `c50e1e7c`; it is a docs/evidence batch. Runtime protected
-  readback remains tied to build-info-proven `c50e1e7c` unless an operator
-  explicitly requires the newer docs/evidence batch deployed first.
+- Historical deploy-lag entry `1f1d9c12` had no `apps`, `packages`, `prisma`,
+  or `scripts` changes over then-deployed `c50e1e7c`; it was a docs/evidence
+  batch. Later production build-info advanced beyond that lag to
+  `010b4f8b6abfaf4c24d26550eb4761215d119f21`, so deploy freshness is no longer
+  the active blocker. Runtime protected readback remains blocked on
+  authenticated/operator evidence.
 - Gate.io second-exchange foundation has advanced through `EXCHANGE2-06`.
   Latest pushed `main` is `5517f027`, including Gate.io public catalog,
   runtime event exchange generalization, public ticker/candle reader,

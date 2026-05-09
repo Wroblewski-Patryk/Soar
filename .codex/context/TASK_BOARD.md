@@ -438,15 +438,17 @@ Last updated: 2026-05-09
     production app access. Evidence:
     `docs/planning/prod-ui-public-access-refresh-c50e1e7c-task-2026-05-09.md`.
 
-- [ ] `DEPLOY-LAG-1F1D9C12-2026-05-09 release: wait for pushed evidence batch deployment`
+- [x] `DEPLOY-LAG-1F1D9C12-2026-05-09 release: wait for pushed evidence batch deployment`
   - Scope: pushed the two-commit docs/evidence batch ending at
     `1f1d9c12e0cc99884eced81546802a261b0925e9`, then waited 900 seconds plus
     two additional 300-second follow-up waits and a later 180-second follow-up
     wait for production build-info. Production
     remained on
     `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`, so `1f1d9c12` is not
-    production-current yet. No deploy hook/API token env names or working
-    authenticated SSH/VPS inspection context are available in this shell.
+    production-current in that historical window. Later production build-info
+    advanced to the Gate.io source batch
+    `010b4f8b6abfaf4c24d26550eb4761215d119f21`, so this is no longer an active
+    deploy-freshness blocker.
     Evidence:
     `docs/planning/deploy-lag-1f1d9c12-task-2026-05-09.md` and
     `docs/operations/deploy-lag-1f1d9c12-2026-05-09.md`.

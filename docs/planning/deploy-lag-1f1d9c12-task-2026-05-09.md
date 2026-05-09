@@ -4,8 +4,8 @@
 - ID: DEPLOY-LAG-1F1D9C12-2026-05-09
 - Title: Record production deploy lag after pushed evidence batch
 - Task Type: release
-- Current Stage: verification
-- Status: BLOCKED
+- Current Stage: post-release
+- Status: DONE
 - Owner: Ops/Release
 - Depends on:
   - `DEPLOY-FRESHNESS-C50E1E7C-2026-05-09`
@@ -29,10 +29,16 @@ Production build-info still reported
 wait window, two additional 300-second follow-up waits, and a third
 180-second follow-up wait.
 
+Post-release update: later production build-info advanced through the handoff
+batch and then to the Gate.io source batch
+`010b4f8b6abfaf4c24d26550eb4761215d119f21`. The original deploy lag remains
+valid historical evidence, but it is no longer an active deploy-freshness
+blocker.
+
 ## Goal
-Record the deploy-lag evidence and keep active source-of-truth files anchored
-to the build-info-proven production SHA until the VPS/Coolify deploy catches
-up.
+Record the deploy-lag evidence, keep active source-of-truth files anchored to
+build-info-proven production SHA while the VPS/Coolify deploy catches up, and
+close the queue entry once later build-info proves the lag is historical.
 
 ## Scope
 - `docs/operations/deploy-lag-1f1d9c12-2026-05-09.md`
@@ -50,7 +56,8 @@ up.
 
 ## Implementation Plan
 1. Preserve the failed build-info wait evidence.
-2. Mark `1f1d9c12` as pushed but not production-current.
+2. Preserve the historical note that `1f1d9c12` was pushed but not
+   production-current during the lag window.
 3. Keep protected evidence targets on build-info-proven `c50e1e7c`.
 4. Check whether deploy hook/API token env names are available without
    revealing values.
@@ -71,6 +78,8 @@ up.
 - [x] Diff scope confirms `1f1d9c12` contains no `apps`, `packages`, `prisma`,
   or `scripts` changes over deployed `c50e1e7c`.
 - [x] Next action is an approved Coolify/VPS deploy wait or trigger.
+- [x] Later production build-info evidence proves the deploy lag is historical
+  and no longer the active continuation blocker.
 
 ## Definition of Done
 - [x] `DEFINITION_OF_DONE.md` considered for production evidence discipline.
@@ -83,11 +92,14 @@ up.
   `1f1d9c12` within the 900-second wait, two 300-second follow-up waits, or a
   third 180-second follow-up wait and still reports `c50e1e7c`; added a
   deploy operator handoff with acceptance criteria and audited the pushed diff
-  scope as docs/evidence-only.
+  scope as docs/evidence-only. Later build-info evidence showed production
+  advanced through subsequent batches and now reports
+  `010b4f8b6abfaf4c24d26550eb4761215d119f21`, so this lag is closed as
+  historical.
 - Files changed: listed in Scope.
 - How tested: production build-info wait, docs guardrails/parity, diff checks.
-- What remains: wait for or trigger approved Coolify deployment, then verify
-  `1f1d9c12` before using it as production truth.
+- What remains: protected/formal V1 evidence remains blocked on operator
+  inputs; this deploy-lag queue item itself is closed.
 
 ## Constraints
 - use existing systems and approved mechanisms
@@ -118,6 +130,9 @@ up.
 - High-risk checks:
   - no protected credentials, exchange writes, live orders, or DB restore
     operations were used.
+  - corrected later build-info wait for
+    `010b4f8b6abfaf4c24d26550eb4761215d119f21` passed on attempt 1 and public
+    smoke passed.
 
 ## Architecture Evidence
 - Architecture source reviewed:
@@ -131,12 +146,13 @@ up.
 - Follow-up architecture doc updates: none
 
 ## Deployment / Ops Evidence
-- Deploy impact: pushed docs/evidence batch is not yet production-current.
+- Deploy impact: no runtime deploy change in this task; the prior docs/evidence
+  lag is now historical because later build-info is current at `010b4f8b`.
 - Env or secret changes: none
 - Health-check impact: none observed; build-info endpoint remains healthy.
 - Smoke steps updated: no
-- Rollback note: no runtime change verified in production; current production
-  remains `c50e1e7c`.
+- Rollback note: no runtime change was introduced by this closure; current
+  production is build-info-proven at `010b4f8b`.
 - Observability or alerting impact: none
 - Staged rollout or feature flag: not applicable
 
@@ -145,29 +161,34 @@ up.
 ### 1. Analyze Current State
 - Issues: origin/main advanced to `1f1d9c12`, but production build-info did
   not follow within 900 seconds.
-- Gaps: VPS/Coolify deployment freshness for the pushed batch remains open.
-- Inconsistencies: local/GitHub truth is ahead of production truth.
+- Gaps: protected/formal V1 evidence remains blocked on operator inputs.
+- Inconsistencies: the historical queue still showed this lag as active after
+  later build-info advanced.
 - Architecture constraints: production truth is build-info-proven, not pushed
   Git state.
 
 ### 2. Select One Priority Task
-- Selected task: record deploy lag.
-- Priority rationale: future agents must not accidentally target `1f1d9c12`
-  for protected evidence before production exposes it.
+- Selected task: close historical deploy lag queue entry after later
+  build-info evidence.
+- Priority rationale: future agents must not keep selecting a deploy lag that
+  is no longer active.
 - Why other candidates were deferred: protected V1 evidence requires operator
   inputs not present in this shell.
 
 ### 3. Plan Implementation
 - Files or surfaces to modify: operations evidence and active context docs.
-- Logic: preserve the timeout evidence and keep active targets on `c50e1e7c`.
+- Logic: preserve the timeout evidence and mark the task historical/closed
+  because later build-info reached `010b4f8b`.
 - Edge cases: do not create a workaround deployment path.
 
 ### 4. Execute Implementation
 - Implementation notes: documented the wait timeout and last observed SHA.
 
 ### 5. Verify and Test
-- Validation performed: production build-info wait and docs-only gates.
-- Result: deploy freshness for `1f1d9c12` remains blocked.
+- Validation performed: production build-info wait, public smoke, and
+  docs-only gates.
+- Result: deploy lag is historical; V1 remains blocked by protected/formal
+  evidence, not deploy freshness.
 
 ### 6. Self-Review
 - Simpler option considered: ignore the timeout and wait silently.
@@ -201,4 +222,6 @@ up.
 - [x] Learning journal was updated if a recurring pitfall was confirmed.
 
 ## Notes
-Current production remains `c50e1e7c` until build-info proves otherwise.
+Current production is build-info-proven at
+`010b4f8b6abfaf4c24d26550eb4761215d119f21`; protected/formal V1 evidence
+remains blocked.

@@ -26,15 +26,15 @@ Evidence:
 `docs/operations/v1-final-preflight-010b4f8b-2026-05-09.md`, and
 `docs/operations/deploy-lag-1f1d9c12-2026-05-09.md`.
 
-2026-05-09 deploy lag note: pushed `origin/main`
+2026-05-09 historical deploy lag note: pushed `origin/main`
 `1f1d9c12e0cc99884eced81546802a261b0925e9` did not reach production within
-the accepted 900-second build-info wait or the additional 300-second follow-up
-waits, plus a later 180-second follow-up wait. Production build-info remained on
-`c50e1e7cf1e37d9c799031cacbb30a834f57e81d` for both waits. Do not use
-`1f1d9c12` as protected evidence target until build-info exposes it. Evidence:
+the accepted 900-second build-info wait, the additional 300-second follow-up
+waits, or the later 180-second follow-up wait. Later production build-info
+advanced beyond that lag and now reports
+`010b4f8b6abfaf4c24d26550eb4761215d119f21`, so `DEPLOY-LAG-1F1D9C12` is no
+longer an active deploy-freshness blocker. Evidence:
+`docs/planning/deploy-lag-1f1d9c12-task-2026-05-09.md` and
 `docs/operations/deploy-lag-1f1d9c12-2026-05-09.md`.
-The current shell has no Coolify deploy hook/API token env names and no
-working authenticated SSH/VPS inspection context.
 
 2026-05-09 deploy follow-up: the earlier `d355df93` handoff lag is closed,
 and the later Gate.io source batch `010b4f8b6abfaf4c24d26550eb4761215d119f21`

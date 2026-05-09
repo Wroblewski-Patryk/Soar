@@ -582,7 +582,7 @@ Operational queue for one-task execution runs.
     and
     `docs/operations/prod-ui-public-access-clickthrough-c50e1e7c-2026-05-09.md`.
 
-- [ ] `DEPLOY-LAG-1F1D9C12-2026-05-09 release: wait for pushed evidence batch deployment`
+- [x] `DEPLOY-LAG-1F1D9C12-2026-05-09 release: wait for pushed evidence batch deployment`
   - 2026-05-09: Pushed the two-commit docs/evidence batch ending at
     `1f1d9c12e0cc99884eced81546802a261b0925e9`, then waited 900 seconds plus
     two additional 300-second follow-up waits and a later 180-second follow-up
@@ -595,6 +595,10 @@ Operational queue for one-task execution runs.
     artifact includes the operator handoff, non-accepted evidence list, and
     diff scope proving no `apps`, `packages`, `prisma`, or `scripts` changes
     between `c50e1e7c` and `1f1d9c12`.
+  - 2026-05-09 closure: later production build-info advanced beyond this lag
+    and now reports the Gate.io source batch
+    `010b4f8b6abfaf4c24d26550eb4761215d119f21`. This entry is historical and
+    no longer an active deploy-freshness blocker.
     Evidence:
     `docs/planning/deploy-lag-1f1d9c12-task-2026-05-09.md` and
     `docs/operations/deploy-lag-1f1d9c12-2026-05-09.md`.
