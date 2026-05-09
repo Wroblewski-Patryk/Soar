@@ -272,6 +272,15 @@ Operational queue for one-task execution runs.
     and network access are available. Evidence:
     `docs/planning/v1-rollback-proof-date-override-task-2026-05-09.md`.
 
+- [x] `V1-RESTORE-DRILL-DATE-OVERRIDE-2026-05-09 fix(ops): date restore drill evidence`
+  - 2026-05-09: Added `--today <yyyy-mm-dd>` support to
+    `scripts/runRestoreDrillEvidence.mjs` so the next production DB/Coolify
+    restore drill can generate artifacts for the intended release evidence
+    date. No restore drill artifact was accepted in this tooling-only task;
+    production restore evidence remains open until approved DB/Coolify context
+    is available. Evidence:
+    `docs/planning/v1-restore-drill-date-override-task-2026-05-09.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - 2026-05-08: Generated and committed the current no-secret final V1
     preflight JSON/Markdown snapshot for deployed SHA

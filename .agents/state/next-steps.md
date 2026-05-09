@@ -171,6 +171,10 @@ Rollback proof tooling now supports `--today <yyyy-mm-dd>` for the next
 authenticated operator run. The actual 2026-05-09 rollback proof is still not
 captured because this shell lacks approved protected auth/network execution;
 do not accept sandbox fetch failures as production rollback evidence.
+Restore drill tooling now also supports `--today <yyyy-mm-dd>` for the next
+production DB/Coolify run. The actual 2026-05-09 restore drill is still not
+captured because this shell lacks approved production DB/Coolify execution
+context; do not accept local or empty restore output as production evidence.
 
 The local V1 backend paper/live runtime line is closed for this slice: focused
 parity/crash coverage, DB-backed runtime/order/exchange/import/readback packs,

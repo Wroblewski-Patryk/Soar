@@ -32,6 +32,10 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-09: Closed `V1-RESTORE-DRILL-DATE-OVERRIDE-2026-05-09` with
+  `docs/planning/v1-restore-drill-date-override-task-2026-05-09.md`. Restore
+  drill tooling now supports explicit evidence-date artifact stamps, but the
+  real production restore drill remains blocked on approved DB/Coolify context.
 - 2026-05-09: Closed `V1-ROLLBACK-PROOF-DATE-OVERRIDE-2026-05-09` with
   `docs/planning/v1-rollback-proof-date-override-task-2026-05-09.md`. Rollback
   proof tooling now supports explicit evidence-date artifact stamps, but the

@@ -154,6 +154,9 @@ Last updated: 2026-05-09
   but no 2026-05-09 rollback proof artifact is accepted yet. A no-auth
   sandboxed attempt could not reach production or write an artifact; protected
   rollback auth/network access is still required.
+- Restore drill tooling now supports explicit `--today` evidence-date stamps,
+  but no 2026-05-09 production restore drill artifact is accepted yet.
+  Approved production DB/Coolify context is still required.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307

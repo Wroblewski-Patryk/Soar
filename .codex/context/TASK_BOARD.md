@@ -269,6 +269,13 @@ Last updated: 2026-05-09
     accepted in this task. Evidence:
     `docs/planning/v1-rollback-proof-date-override-task-2026-05-09.md`.
 
+- [x] `V1-RESTORE-DRILL-DATE-OVERRIDE-2026-05-09 fix(ops): date restore drill evidence`
+  - Scope: added explicit evidence-date support to the restore drill evidence
+    wrapper so future production DB/Coolify runs can create artifacts for the
+    intended release date. No production restore drill artifact was accepted in
+    this task. Evidence:
+    `docs/planning/v1-restore-drill-date-override-task-2026-05-09.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - Scope: generated and committed the current no-secret final V1 preflight
     JSON/Markdown snapshot for deployed SHA

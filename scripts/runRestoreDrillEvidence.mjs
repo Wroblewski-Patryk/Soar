@@ -11,6 +11,7 @@ const parseArgs = () => {
   const options = {
     profile: 'local',
     passthrough: [],
+    today: '',
   };
 
   for (let index = 0; index < args.length; index += 1) {
@@ -24,6 +25,11 @@ const parseArgs = () => {
       index += 1;
       continue;
     }
+    if (arg === '--today') {
+      options.today = args[index + 1] ?? options.today;
+      index += 1;
+      continue;
+    }
     options.passthrough.push(arg);
   }
 
@@ -31,6 +37,11 @@ const parseArgs = () => {
 };
 
 const nowStamp = () => new Date().toISOString().replace(/[:.]/g, '-');
+const evidenceStamp = (today) => {
+  const normalized = String(today ?? '').trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(normalized)) return `${normalized}T00-00-00-000Z`;
+  return nowStamp();
+};
 
 const readLatestByPrefix = async (prefix, ext) => {
   const files = (await readdir(operationsDir))
@@ -50,7 +61,7 @@ const run = (command, args) =>
 
 const printUsage = () => {
   console.log(
-    'Usage: node scripts/runRestoreDrillEvidence.mjs [--profile <local|stage|prod>] [-- <extra backup-verify args>]'
+    'Usage: node scripts/runRestoreDrillEvidence.mjs [--profile <local|stage|prod>] [--today <yyyy-mm-dd>] [-- <extra backup-verify args>]'
   );
 };
 
@@ -90,7 +101,7 @@ const main = async () => {
   };
   const status = Object.values(checks).every(Boolean) ? 'PASS' : 'FAIL';
 
-  const stamp = nowStamp();
+  const stamp = evidenceStamp(options.today);
   const jsonOutput = path.join(
     operationsDir,
     `_artifacts-restore-drill-${options.profile}-${stamp}.json`
