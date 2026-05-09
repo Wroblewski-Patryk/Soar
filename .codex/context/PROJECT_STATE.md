@@ -18,8 +18,11 @@ Last updated: 2026-05-09
   Scope is limited to `POSITIONS_SNAPSHOT`; Gate.io open-orders, trade-history,
   live submit, and exchange-side cancel remain unsupported. Focused exchange
   tests, positions e2e, authenticated snapshot service tests, API typecheck,
-  guardrails, docs parity, and diff check passed. Evidence:
-  `docs/planning/exchange2-26-gateio-positions-snapshot-task-2026-05-09.md`.
+  guardrails, docs parity, and diff check passed. Production build-info reached
+  `4c7548acc74295f27676c1f00d79dbf58b873942`; public deploy smoke passes.
+  Evidence:
+  `docs/planning/exchange2-26-gateio-positions-snapshot-task-2026-05-09.md`
+  and `docs/operations/deploy-freshness-4c7548ac-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-25-GATEIO-BALANCE-PREVIEW-2026-05-09` enabled Gate.io
   wallet balance preview through the existing authenticated-read boundary.
   Scope is limited to `BALANCE_PREVIEW`; Gate.io positions/open-orders,

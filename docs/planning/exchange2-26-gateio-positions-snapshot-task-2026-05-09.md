@@ -82,6 +82,12 @@ execution, and exchange-side cancel unsupported.
   - PASS: `node scripts/repoGuardrails.mjs`
   - PASS: `node scripts/checkDocsParity.mjs`
   - PASS: `git diff --check` (line-ending warnings only)
+  - PASS: production Web build-info reached
+    `4c7548acc74295f27676c1f00d79dbf58b873942`
+  - PASS: production public deploy smoke (`API /health`, `API /ready`, `Web /`)
+  - BLOCKED as expected: no-secret final V1 preflight public checks pass,
+    while protected/formal release evidence remains blocked. Evidence:
+    `docs/operations/v1-final-preflight-4c7548ac-2026-05-09.md`
 - Manual checks: first API typecheck invocation from `apps/api` resolved
   `extends` through `C:/Users/CodexSandboxOffline/.codex/.sandbox` and failed
   before project checking; the repeated repo-root project invocation passed.
@@ -151,7 +157,8 @@ execution, and exchange-side cancel unsupported.
 - Files changed: exact capability matrix/tests, positions e2e, architecture
   and module docs, planning and state files.
 - How tested: focused exchange tests, positions e2e, authenticated snapshot
-  service tests, API typecheck, guardrails, docs parity, diff check.
+  service tests, API typecheck, guardrails, docs parity, diff check,
+  production build-info, public smoke, and no-secret preflight.
 - What is incomplete: Gate.io open-orders, trade-history, wallet cashflow
   history, live submit, live execution, and exchange-side cancel remain
   unsupported.

@@ -20,7 +20,8 @@ contracts synchronized.
 `POSITIONS_SNAPSHOT` through the existing authenticated-read boundary and
 positions exchange-snapshot route. Gate.io open-orders/trade-history, live
 submit, and exchange-side cancel remain unsupported. Evidence:
-`docs/planning/exchange2-26-gateio-positions-snapshot-task-2026-05-09.md`.
+`docs/planning/exchange2-26-gateio-positions-snapshot-task-2026-05-09.md` and
+`docs/operations/deploy-freshness-4c7548ac-2026-05-09.md`.
 
 2026-05-09 implementation update: `EXCHANGE2-25` enabled only Gate.io
 `BALANCE_PREVIEW` through the existing authenticated-read boundary and wallet

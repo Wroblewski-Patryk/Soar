@@ -7,8 +7,11 @@ Last updated: 2026-05-09
 - `EXCHANGE2-26` local validation PASS: Gate.io `POSITIONS_SNAPSHOT` is
   enabled through the existing authenticated-read boundary and positions
   exchange-snapshot route. Gate.io open-orders/trade-history, live submit, and
-  exchange-side cancel remain unsupported. Evidence:
-  `docs/planning/exchange2-26-gateio-positions-snapshot-task-2026-05-09.md`.
+  exchange-side cancel remain unsupported. Production build-info now exposes
+  `4c7548acc74295f27676c1f00d79dbf58b873942`, and public deploy smoke passes.
+  Evidence:
+  `docs/planning/exchange2-26-gateio-positions-snapshot-task-2026-05-09.md`
+  and `docs/operations/deploy-freshness-4c7548ac-2026-05-09.md`.
 - `EXCHANGE2-25` local validation PASS: Gate.io `BALANCE_PREVIEW` is enabled
   through the existing authenticated-read boundary and wallet preview route.
   Gate.io positions/open-orders/trade-history, live submit, and exchange-side

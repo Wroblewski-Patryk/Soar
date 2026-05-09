@@ -9,7 +9,11 @@ Latest local implementation slice:
 `POSITIONS_SNAPSHOT` through the existing authenticated-read boundary and
 positions exchange-snapshot route. Gate.io open-orders/trade-history, live
 submit, and exchange-side cancel remain unsupported. The next exact Gate.io
-authenticated-read gap is `OPEN_ORDERS_SNAPSHOT`.
+authenticated-read gap is `OPEN_ORDERS_SNAPSHOT`. Production build-info now
+exposes `4c7548acc74295f27676c1f00d79dbf58b873942`, public deploy smoke
+passes, and the no-secret final V1 preflight remains correctly blocked on
+protected/formal evidence. Evidence:
+`docs/operations/deploy-freshness-4c7548ac-2026-05-09.md`.
 
 Latest local implementation slice:
 `EXCHANGE2-25-GATEIO-BALANCE-PREVIEW-2026-05-09` enabled only Gate.io
