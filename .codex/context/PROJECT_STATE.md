@@ -98,6 +98,13 @@ Last updated: 2026-05-09
   read-only runtime positions readback and redacted evidence for the reported
   LIVE ETH/DOGE rows are still missing. Evidence:
   `docs/planning/liveimport-03-current-production-target-sync-task-2026-05-09.md`.
+- 2026-05-09 `V1-NEXT-STEPS-PROTECTED-SHA-SYNC-2026-05-09` corrected the
+  active `.agents/state/next-steps.md` backlog so protected readback and final
+  release-gate instructions use build-info-proven
+  `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f` instead of local `HEAD`.
+  Future protected evidence may target a newer SHA only after production
+  build-info proves that intended code/tooling candidate is deployed. Evidence:
+  `docs/planning/v1-next-steps-protected-sha-sync-task-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-20` reconciled the second-exchange plan with the
   deployed Gate.io foundation. The plan is now complete as a planning artifact
   and records the exact current support boundary: Gate.io public catalog and

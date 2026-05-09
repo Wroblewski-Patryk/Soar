@@ -87,6 +87,14 @@ Last updated: 2026-05-09
     production app access. Evidence:
     `docs/planning/prod-ui-public-access-refresh-4ee1672e-task-2026-05-09.md`.
 
+- [x] `V1-NEXT-STEPS-PROTECTED-SHA-SYNC-2026-05-09 release: align protected continuation backlog with deployed SHA`
+  - Scope: corrected active continuation backlog instructions so
+    `LIVEIMPORT-03` and the final release gate target build-info-proven
+    `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f` unless a newer intended
+    candidate is deployed and proven by production build-info. Protected
+    evidence remains blocked on auth/operator inputs. Evidence:
+    `docs/planning/v1-next-steps-protected-sha-sync-task-2026-05-09.md`.
+
 - [x] `UX-UI-MEMORY-AUTONOMY-2026-05-08 design: make UX/UI feedback memory autonomous`
   - Scope: extended the existing user feedback loop, design memory, and screen
     quality checklist so future UX/UI work classifies user guidance, stores it

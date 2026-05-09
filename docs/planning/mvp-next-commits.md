@@ -416,6 +416,15 @@ Operational queue for one-task execution runs.
     and
     `docs/operations/prod-ui-public-access-clickthrough-4ee1672e-2026-05-09.md`.
 
+- [x] `V1-NEXT-STEPS-PROTECTED-SHA-SYNC-2026-05-09 release: align protected continuation backlog with deployed SHA`
+  - 2026-05-09: Corrected active `.agents/state/next-steps.md` backlog
+    instructions so `LIVEIMPORT-03` and the final release gate target
+    build-info-proven `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f` unless a
+    newer intended code/tooling candidate is deployed and proven. This is
+    docs-only state synchronization; protected V1 evidence remains blocked on
+    auth/operator inputs. Evidence:
+    `docs/planning/v1-next-steps-protected-sha-sync-task-2026-05-09.md`.
+
 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
   - 2026-05-09: Names-only readiness check found missing live-import auth,
     rollback auth, and production DB/Coolify restore context in the current

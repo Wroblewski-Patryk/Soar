@@ -384,22 +384,25 @@ changes are irrelevant to the protected readback.
 0a. Production build-info reached the backend parity runtime fix, blocker
    evidence alignment, deploy-wait coordination, operator preflight hardening
    docs, live-import release-gate evidence enforcement, build-info freshness
-   enforcement, strict RC approval evidence enforcement, and restore-context
-   preflight alignment at
-   `721fe8482922835a9419f0e529baeef4ff6a74c9`. Do not use GitHub Actions. If a
+   enforcement, strict RC approval evidence enforcement, restore-context
+   preflight alignment, dashboard runtime aggregate evidence, and current
+   protected operator handoff at
+   `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`. Do not use GitHub Actions. If a
    future step depends on a pushed commit being deployed, wait for build-info
    before continuing; an operator can speed this up with Coolify dashboard
    force deploy, or with deploy webhook/API token if those secrets are
    available outside the repository.
 1. If production credentials or ops auth are available, execute
-   `ops:liveimport:readback` for the currently checked-out `HEAD` after
-   build-info confirms that `HEAD` is deployed, and record redacted
-   `LIVEIMPORT-03` evidence. The latest names-only prerequisite sweep found
-   only `FIGMA_OAUTH_TOKEN` in this shell. The collector now names the exact
-   accepted auth variable choices on the fail-closed missing-auth path. The
-   evidence run must include actual protected runtime positions payloads for
-   the requested symbols. The final V1 release gate now requires this artifact
-   as `LIVEIMPORT-03 runtime readback` and blocks with
+   `ops:liveimport:readback` with
+   `--expected-sha 4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`, unless a newer
+   intended code/tooling candidate has first been deployed and proven by
+   production build-info. Record redacted `LIVEIMPORT-03` evidence only after
+   the protected readback succeeds. The latest names-only prerequisite sweep
+   found only `FIGMA_OAUTH_TOKEN` in this shell. The collector now names the
+   exact accepted auth variable choices on the fail-closed missing-auth path.
+   The evidence run must include actual protected runtime positions payloads
+   for the requested symbols. The final V1 release gate now requires this
+   artifact as `LIVEIMPORT-03 runtime readback` and blocks with
    `evidence:liveImportReadback:missing` until it exists.
 2. If authenticated readback remains unavailable, keep `LIVEIMPORT-03` open and
    do not downgrade it to public health/build-info evidence.
@@ -420,9 +423,12 @@ changes are irrelevant to the protected readback.
      handoff. The final V1 release gate now also fails fresh RC artifacts until
      the external-gates status shows Gate 4 `PASS`, the sign-off record reports
      `RC status: APPROVED`, and the checklist shows `G4=PASS`.
-   - Final release gate must run without `--dry-run` and with
-     `--expected-sha $(git rev-parse HEAD)` plus the deployed web base URL so
-     build-info freshness is enforced inside the gate.
+   - Final release gate must run without `--dry-run` and with the
+     build-info-proven expected SHA plus the deployed web base URL so
+     build-info freshness is enforced inside the gate. Use
+     `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f` unless a newer intended
+     code/tooling candidate has first been deployed and proven by production
+     build-info.
 5. If the active queue is empty, run a planning-status sweep before saying
    nothing is planned.
 
