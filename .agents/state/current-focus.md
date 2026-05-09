@@ -36,6 +36,14 @@ waits, plus a later 180-second follow-up wait. Production build-info remained on
 The current shell has no Coolify deploy hook/API token env names and no
 working authenticated SSH/VPS inspection context.
 
+2026-05-09 deploy lag follow-up: the operator handoff/source-of-truth commit
+`d355df93107f4d7ff9d6231107528295cbc873c2` was pushed to `origin/main`, but a
+bounded 120-second production build-info wait also remained on
+`c50e1e7cf1e37d9c799031cacbb30a834f57e81d`. Treat `d355df93` as pushed but not
+production-current until build-info proves it. Evidence:
+`docs/planning/deploy-lag-d355df93-follow-up-task-2026-05-09.md` and
+`docs/operations/deploy-lag-1f1d9c12-2026-05-09.md`.
+
 2026-05-09 no-secret V1 preflight refresh: deployed `c50e1e7c` passes
 build-info and public API/Web smoke, but the current release posture is
 `BLOCKED` on missing live-import auth, rollback auth, production DB restore

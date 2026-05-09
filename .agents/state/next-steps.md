@@ -7,11 +7,13 @@ Last updated: 2026-05-09
 Current deployed production build-info candidate:
 `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`.
 
-Pushed but not yet deployed:
-`1f1d9c12e0cc99884eced81546802a261b0925e9`. The 900-second production
-build-info wait and two additional 300-second follow-up waits timed out with
-production still on `c50e1e7c`; a later 180-second follow-up wait also timed
-out on the same SHA. See
+Latest pushed but not yet deployed:
+`d355df93107f4d7ff9d6231107528295cbc873c2`. The prior evidence batch
+`1f1d9c12e0cc99884eced81546802a261b0925e9` timed out during the 900-second
+production build-info wait, two additional 300-second follow-up waits, and a
+later 180-second follow-up wait with production still on `c50e1e7c`. After the
+`d355df93` operator handoff/source-of-truth commit was pushed, a bounded
+120-second follow-up wait also timed out on the same production SHA. See
 `docs/operations/deploy-lag-1f1d9c12-2026-05-09.md`.
 Current shell has no Coolify deploy hook/API token env names and no working
 authenticated SSH/VPS inspection context, so the next deploy action requires
@@ -23,7 +25,9 @@ Use the operator handoff in
 deployment action; do not create empty retrigger commits without inspecting the
 Coolify queue/log state.
 Diff scope confirms pushed `1f1d9c12` has no `apps`, `packages`, `prisma`, or
-`scripts` changes over deployed `c50e1e7c`; it is a docs/evidence batch.
+`scripts` changes over deployed `c50e1e7c`; it is a docs/evidence batch. The
+latest pushed `d355df93` is an operator handoff/source-of-truth follow-up and
+is also not production-current.
 
 Runtime/dashboard behavior source candidate:
 `3c5da34371e22aecb1a7aff0a185018870d35cec`.

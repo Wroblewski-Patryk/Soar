@@ -13,6 +13,14 @@ Last updated: 2026-05-09
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-09 `DEPLOY-LAG-D355DF93-FOLLOW-UP-2026-05-09` recorded that the
+  pushed operator handoff/source-of-truth commit
+  `d355df93107f4d7ff9d6231107528295cbc873c2` is not production-current. A
+  bounded 120-second production build-info wait remained on
+  `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`. The next deploy action requires
+  operator-side Coolify inspection or an approved trigger; empty retrigger
+  commits are not acceptable evidence. Evidence:
+  `docs/planning/deploy-lag-d355df93-follow-up-task-2026-05-09.md`.
 - 2026-05-09 `DASH-RUNTIME-CURRENT-AGGREGATE-2026-05-09` tightened the
   dashboard runtime aggregate read model. Current-state dashboard fields now
   prefer the freshest `RUNNING` session row when one exists, covering open

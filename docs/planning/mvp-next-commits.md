@@ -7,6 +7,15 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `DEPLOY-LAG-D355DF93-FOLLOW-UP-2026-05-09 release: record deploy lag follow-up after pushed operator handoff`
+  - 2026-05-09: Recorded that pushed operator handoff/source-of-truth commit
+    `d355df93107f4d7ff9d6231107528295cbc873c2` did not reach production
+    build-info during a bounded 120-second follow-up wait. Production remains
+    build-info-proven at `c50e1e7c`; the next deploy action requires
+    operator-side Coolify inspection or an approved trigger, not empty
+    retrigger commits. Evidence:
+    `docs/planning/deploy-lag-d355df93-follow-up-task-2026-05-09.md`.
+
 - [x] `UX-UI-MEMORY-AUTONOMY-2026-05-08 design: make UX/UI feedback memory autonomous`
   - 2026-05-08: Extended the existing user feedback loop, design memory, and
     screen quality checklist so future UX/UI work autonomously classifies user

@@ -17,6 +17,15 @@ Last updated: 2026-05-09
 
 ## READY
 
+- [x] `DEPLOY-LAG-D355DF93-FOLLOW-UP-2026-05-09 release: record deploy lag follow-up after pushed operator handoff`
+  - Scope: recorded that the pushed operator handoff/source-of-truth commit
+    `d355df93107f4d7ff9d6231107528295cbc873c2` did not reach production
+    build-info during a bounded 120-second follow-up wait. Production remains
+    build-info-proven at `c50e1e7c`; the next deploy action requires
+    operator-side Coolify inspection or an approved trigger, not empty
+    retrigger commits. Evidence:
+    `docs/planning/deploy-lag-d355df93-follow-up-task-2026-05-09.md`.
+
 - [x] `DASH-RUNTIME-CURRENT-AGGREGATE-2026-05-09 fix(api): prefer running runtime rows for dashboard current aggregate state`
   - Scope: added explicit current-row selection in the runtime monitoring
     aggregate read model so dashboard current open positions, open orders,

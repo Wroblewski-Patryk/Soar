@@ -32,14 +32,16 @@ Last updated: 2026-05-09
   `docs/planning/liveimport-03-current-production-target-sync-task-2026-05-09.md`,
   and `docs/operations/v1-protected-access-readiness-2026-05-09.md`.
 - Pushed `origin/main` currently ends at
-  `1f1d9c12e0cc99884eced81546802a261b0925e9`, but production build-info did
-  not expose it within the accepted 900-second wait or two additional
-  300-second follow-up waits, then a later 180-second follow-up wait, and
-  remained on
-  `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`. Treat `1f1d9c12` as pushed but
+  `d355df93107f4d7ff9d6231107528295cbc873c2`. Production build-info did not
+  expose the prior evidence batch `1f1d9c12` within the accepted 900-second
+  wait, two additional 300-second follow-up waits, or a later 180-second
+  follow-up wait. After the `d355df93` operator handoff/source-of-truth commit
+  was pushed, a bounded 120-second follow-up wait also remained on
+  `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`. Treat `d355df93` as pushed but
   not production-current until a later build-info wait passes. No Coolify
   deploy hook/API token env names or working authenticated SSH/VPS inspection
-  context are available in the current shell.
+  context are available in the current shell. Evidence:
+  `docs/planning/deploy-lag-d355df93-follow-up-task-2026-05-09.md`.
 - Current production public smoke still passes on the deployed `c50e1e7c`
   surface: API `/health` 200, API `/ready` 200, and Web `/` 200. This keeps
   the issue classified as deploy lag, not current public API/Web outage.
