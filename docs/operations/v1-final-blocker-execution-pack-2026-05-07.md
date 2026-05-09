@@ -3,12 +3,15 @@
 ## Status
 - Current result: **NO-GO**
 - Production code/tooling freshness source of truth:
-  run `git rev-parse HEAD`, then verify that SHA with the build-info wait
-  command in step 1 before collecting protected evidence.
+  verify the intended code/tooling candidate SHA with the build-info wait
+  command in step 1 before collecting protected evidence. If local `HEAD`
+  contains evidence-only documentation commits that are not deployed, do not
+  use local `HEAD` as the protected evidence candidate until that SHA is
+  actually exposed by production build-info.
 - Latest verified Coolify deploy:
-  `721fe8482922835a9419f0e529baeef4ff6a74c9`
-- Latest release-gate dry-run:
-  `docs/operations/v1-release-gate-prod-2026-05-08Trc-approval-required-dry-run.md`
+  `4792fbca9ab3ca44d08c312f219f70d648707886`
+- Latest no-secret final preflight:
+  `docs/operations/v1-final-preflight-4792fbca-2026-05-09.md`
 
 ## Purpose
 This pack lists the exact remaining commands needed to turn the current
@@ -47,17 +50,22 @@ midnight drift from producing stale evidence during a late release session.
 
 ```powershell
 $releaseDate = Get-Date -Format yyyy-MM-dd
+$expectedSha = "4792fbca9ab3ca44d08c312f219f70d648707886"
 ```
+
+Replace `$expectedSha` with `git rev-parse HEAD` only when the currently
+checked-out `HEAD` is the intended code/tooling release candidate and
+production build-info proves that same SHA is deployed.
 
 ### 0. Run Final V1 Preflight
 
-Run the read-only preflight first. It checks deployed build-info for current
-`HEAD`, runs public API/Web smoke without worker checks, reports missing
+Run the read-only preflight first. It checks deployed build-info for
+`$expectedSha`, runs public API/Web smoke without worker checks, reports missing
 prerequisite environment variable names, and classifies current release
 evidence without creating protected production artifacts.
 
 ```powershell
-pnpm run ops:release:v1:preflight -- --today $releaseDate
+pnpm run ops:release:v1:preflight -- --expected-sha $expectedSha --today $releaseDate
 ```
 
 For a machine-readable, no-secret status report that can be consumed by later
@@ -67,14 +75,14 @@ for category, severity, protected-input requirements, final-evidence
 requirements, and remediation availability:
 
 ```powershell
-pnpm run ops:release:v1:preflight -- --today $releaseDate --json-output "docs/operations/_artifacts-v1-final-preflight-$releaseDate.json"
+pnpm run ops:release:v1:preflight -- --expected-sha $expectedSha --today $releaseDate --json-output "docs/operations/_artifacts-v1-final-preflight-$releaseDate.json"
 ```
 
 For a human-readable no-secret operator report from the same preflight data,
 also pass a Markdown output path:
 
 ```powershell
-pnpm run ops:release:v1:preflight -- --today $releaseDate --json-output "docs/operations/_artifacts-v1-final-preflight-$releaseDate.json" --markdown-output "docs/operations/v1-final-preflight-$releaseDate.md"
+pnpm run ops:release:v1:preflight -- --expected-sha $expectedSha --today $releaseDate --json-output "docs/operations/_artifacts-v1-final-preflight-$releaseDate.json" --markdown-output "docs/operations/v1-final-preflight-$releaseDate.md"
 ```
 
 Expected current result before protected operator access is available:
@@ -100,7 +108,6 @@ automation requires a Coolify deploy webhook URL and API token; those secrets
 must stay outside repository artifacts.
 
 ```powershell
-$expectedSha = git rev-parse HEAD
 pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --timeout-seconds 900 --interval-seconds 30
 ```
 
@@ -109,7 +116,6 @@ Expected result: `PASS`.
 ### 2. Capture LIVEIMPORT-03 Runtime Readback
 
 ```powershell
-$expectedSha = git rev-parse HEAD
 pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output "docs/operations/liveimport-03-prod-readback-$releaseDate.json"
 ```
 
@@ -213,7 +219,6 @@ handoff, but does not replace the required RC owner name.
 ### 7. Run Final Production V1 Release Gate
 
 ```powershell
-$expectedSha = git rev-parse HEAD
 pnpm run ops:release:v1:gate -- --environment prod --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --skip-local-quality --today $releaseDate
 ```
 
@@ -226,15 +231,15 @@ Required result:
 
 ## Current Known Blockers
 - `LIVEIMPORT-03` authenticated runtime readback is missing.
+- Current verified deployed candidate is
+  `4792fbca9ab3ca44d08c312f219f70d648707886`; build-info and public API/Web
+  smoke pass for this SHA. The current no-secret final preflight is
+  `docs/operations/v1-final-preflight-4792fbca-2026-05-09.md` and is
+  correctly `BLOCKED` on protected auth/operator evidence.
 - The execution pack now uses a single `$releaseDate` and passes it to
   date-aware preflight, restore drill, rollback proof, RC status/sign-off,
   checklist sync, and final gate commands. Operators should not mix evidence
   dates within one final V1 run.
-- Latest verified deploy/preflight:
-  build-info for `721fe8482922835a9419f0e529baeef4ff6a74c9` passes, public
-  API/Web smoke passes, and production DB restore context is satisfied by
-  fresh backup/restore drill evidence. Protected auth, RC approval,
-  live-import readback, and rollback proof blockers remain.
 - Production restore drill is now current and PASS for 2026-05-08:
   `docs/operations/v1-restore-drill-prod-2026-05-08T15-16-24Z.md`.
   It was executed through approved Coolify terminal access against production
@@ -243,9 +248,10 @@ Required result:
   files.
 - Production rollback proof is current for 2026-05-08 but failed because
   protected OPS routes returned `401` without auth.
-- The latest 2026-05-08 preflight marks activation and restore drill evidence
-  as fresh/PASS, RC external gates/sign-off/checklist as fresh but failed,
-  `LIVEIMPORT-03` as missing, and rollback proof as fresh but failed.
+- The latest 2026-05-09 preflight marks activation evidence as fresh,
+  RC external gates/sign-off/checklist as fresh but failed, `LIVEIMPORT-03`
+  as missing, and 2026-05-08 restore/rollback evidence as stale for the
+  2026-05-09 evidence date.
 - A no-auth 2026-05-08 runtime freshness probe failed closed with HTTP `401`;
   rollback guard returned `shouldRollback=true` only because runtime freshness
   and alerts endpoints were protected by `401`.

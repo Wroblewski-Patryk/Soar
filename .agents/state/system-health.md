@@ -176,6 +176,12 @@ Last updated: 2026-05-09
   missing `LIVEIMPORT-03`, and stale 2026-05-08 restore/rollback evidence for
   the 2026-05-09 evidence date. Evidence:
   `docs/operations/v1-final-preflight-4792fbca-2026-05-09.md`.
+- Final blocker pack candidate SHA sync PASS: protected evidence commands now
+  use the verified deployed candidate
+  `4792fbca9ab3ca44d08c312f219f70d648707886` as `$expectedSha` and warn
+  operators not to substitute local evidence-only `HEAD` until build-info
+  proves deployment. Evidence:
+  `docs/planning/v1-final-blocker-pack-candidate-sha-sync-task-2026-05-09.md`.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307

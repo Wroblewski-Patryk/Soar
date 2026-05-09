@@ -300,6 +300,13 @@ Last updated: 2026-05-09
     `docs/planning/v1-final-preflight-4792fbca-task-2026-05-09.md` and
     `docs/operations/v1-final-preflight-4792fbca-2026-05-09.md`.
 
+- [x] `V1-FINAL-BLOCKER-PACK-CANDIDATE-SHA-SYNC-2026-05-09 release: sync final blocker pack candidate SHA`
+  - Scope: updated the final blocker execution pack to target the verified
+    deployed candidate SHA `4792fbca9ab3ca44d08c312f219f70d648707886` for
+    protected evidence, while warning that local evidence-only `HEAD` must not
+    be used until build-info proves deployment. Evidence:
+    `docs/planning/v1-final-blocker-pack-candidate-sha-sync-task-2026-05-09.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - Scope: generated and committed the current no-secret final V1 preflight
     JSON/Markdown snapshot for deployed SHA

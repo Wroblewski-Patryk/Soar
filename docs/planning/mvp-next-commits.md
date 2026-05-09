@@ -309,6 +309,14 @@ Operational queue for one-task execution runs.
     `docs/planning/v1-final-preflight-4792fbca-task-2026-05-09.md` and
     `docs/operations/v1-final-preflight-4792fbca-2026-05-09.md`.
 
+- [x] `V1-FINAL-BLOCKER-PACK-CANDIDATE-SHA-SYNC-2026-05-09 release: sync final blocker pack candidate SHA`
+  - 2026-05-09: Updated the final blocker execution pack so protected
+    evidence commands use the verified deployed candidate
+    `4792fbca9ab3ca44d08c312f219f70d648707886` as `$expectedSha`, while
+    documenting that local evidence-only `HEAD` must not be used until
+    production build-info proves it is deployed. Evidence:
+    `docs/planning/v1-final-blocker-pack-candidate-sha-sync-task-2026-05-09.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - 2026-05-08: Generated and committed the current no-secret final V1
     preflight JSON/Markdown snapshot for deployed SHA

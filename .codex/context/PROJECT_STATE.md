@@ -275,6 +275,13 @@ Last updated: 2026-05-09
   backup/restore plus rollback proof evidence for the 2026-05-09 evidence
   date. Evidence:
   `docs/operations/v1-final-preflight-4792fbca-2026-05-09.md`.
+- 2026-05-09 `V1-FINAL-BLOCKER-PACK-CANDIDATE-SHA-SYNC-2026-05-09` updated
+  the final blocker execution pack so protected evidence commands target the
+  verified deployed code/tooling candidate
+  `4792fbca9ab3ca44d08c312f219f70d648707886`. The pack now explicitly warns
+  not to use local evidence-only `HEAD` as the protected evidence candidate
+  until production build-info proves that SHA is deployed. Evidence:
+  `docs/planning/v1-final-blocker-pack-candidate-sha-sync-task-2026-05-09.md`.
 - 2026-05-08 `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08` published the
   current no-secret final V1 preflight JSON/Markdown snapshot for deployed SHA
   `052df82244ea0f81e8611ff8bb2b677db115bd19`. The snapshot reports build-info

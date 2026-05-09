@@ -45,6 +45,13 @@ Rule: fix/cleanup/update first, then feature delivery.
   app auth, production DB/Coolify context, failed RC evidence, missing
   `LIVEIMPORT-03`, and stale restore/rollback evidence for 2026-05-09.
 - 2026-05-09: Closed
+  `V1-FINAL-BLOCKER-PACK-CANDIDATE-SHA-SYNC-2026-05-09` with
+  `docs/planning/v1-final-blocker-pack-candidate-sha-sync-task-2026-05-09.md`.
+  The final blocker pack now uses verified deployed candidate
+  `4792fbca9ab3ca44d08c312f219f70d648707886` as `$expectedSha` and warns
+  operators not to use local evidence-only `HEAD` until build-info proves it is
+  deployed.
+- 2026-05-09: Closed
   `V1-FINAL-BLOCKER-PACK-DATE-OVERRIDES-2026-05-09` with
   `docs/planning/v1-final-blocker-pack-date-overrides-task-2026-05-09.md`.
   The final blocker execution pack now declares one `$releaseDate` and passes

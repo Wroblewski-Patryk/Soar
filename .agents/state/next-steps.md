@@ -192,6 +192,12 @@ The no-secret final V1 preflight for deployed `4792fbca` is now fresh:
 public smoke pass. Remaining blockers are live-import auth, rollback auth,
 production DB restore context, failed RC evidence, missing `LIVEIMPORT-03`,
 and stale restore/rollback proof evidence for the 2026-05-09 evidence date.
+The final blocker execution pack now separates the deployed code/tooling
+candidate from local evidence-only commits: use
+`4792fbca9ab3ca44d08c312f219f70d648707886` as `$expectedSha` for protected
+evidence until another intended candidate is deployed and proven by
+build-info. Evidence:
+`docs/planning/v1-final-blocker-pack-candidate-sha-sync-task-2026-05-09.md`.
 
 The local V1 backend paper/live runtime line is closed for this slice: focused
 parity/crash coverage, DB-backed runtime/order/exchange/import/readback packs,

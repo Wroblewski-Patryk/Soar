@@ -65,6 +65,11 @@ operator-context evidence: live-import auth, rollback auth, production DB
 restore context, RC approval/evidence, `LIVEIMPORT-03`, and current
 restore/rollback proof artifacts.
 
+2026-05-09 blocker pack candidate SHA sync: protected evidence commands should
+target the verified deployed candidate
+`4792fbca9ab3ca44d08c312f219f70d648707886`, not local evidence-only `HEAD`,
+until another intended candidate is deployed and proven by build-info.
+
 2026-05-09 continuation update: Gate.io second-exchange planning has been
 reconciled after the deployed fail-closed foundation. The plan is complete as a
 planning artifact; public catalog and public `FUTURES`/swap market-data
