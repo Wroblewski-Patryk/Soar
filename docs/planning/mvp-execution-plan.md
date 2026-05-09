@@ -38,6 +38,14 @@ Rule: fix/cleanup/update first, then feature delivery.
   `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`, public API/Web smoke passed,
   and no-secret final V1 preflight remained correctly `BLOCKED` on protected
   evidence.
+- 2026-05-09: Closed
+  `PROD-UI-PUBLIC-ACCESS-REFRESH-C50E1E7C-2026-05-09` with
+  `docs/planning/prod-ui-public-access-refresh-c50e1e7c-task-2026-05-09.md`.
+  Public/unauthenticated production UI access is current for deployed
+  `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`: public routes pass, API
+  health/readiness pass, and protected dashboard/admin routes redirect to
+  `/auth/login` without a session. Full authenticated/admin module
+  clickthrough remains blocked.
 - 2026-05-09: Closed `DEPLOY-FRESHNESS-6C54BB5D-2026-05-09` with
   `docs/planning/deploy-freshness-6c54bb5d-task-2026-05-09.md`. The six-commit
   protected-backlog/source-of-truth sync batch reached production build-info

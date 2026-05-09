@@ -347,9 +347,8 @@ Last updated: 2026-05-09
     dashboard, admin, and legacy redirect routes, clicking safe module
     functions and capturing screenshots, console/network evidence, responsive
     checks, accessibility notes, and architecture-alignment findings.
-    Current production build-info is fresh for
-    `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`; latest public access evidence
-    is from `6c54bb5d`. Execution is blocked until
+    Current production build-info and public access evidence are fresh for
+    `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`. Execution is blocked until
     authenticated/admin production app access, representative production test
     data, and explicit operator approval for live-money or destructive actions
     are available.
@@ -396,6 +395,15 @@ Last updated: 2026-05-09
     public smoke pass; protected V1 evidence remains blocked. Evidence:
     `docs/planning/deploy-freshness-c50e1e7c-task-2026-05-09.md` and
     `docs/operations/deploy-freshness-c50e1e7c-2026-05-09.md`.
+
+- [x] `PROD-UI-PUBLIC-ACCESS-REFRESH-C50E1E7C-2026-05-09 qa: refresh public production UI access evidence`
+  - Scope: refreshed public/unauthenticated production access evidence for
+    deployed `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`. Build-info matches
+    the expected SHA, API health/readiness and public Web routes return HTTP
+    200, and unauthenticated dashboard/admin routes redirect to `/auth/login`.
+    The full module clickthrough remains blocked on authenticated/admin
+    production app access. Evidence:
+    `docs/planning/prod-ui-public-access-refresh-c50e1e7c-task-2026-05-09.md`.
 
 - [x] `PROD-UI-PUBLIC-ACCESS-CLICKTHROUGH-2026-05-08 qa: verify production public access and auth gates`
   - Scope: captured the public/unauthenticated portion of the production UI

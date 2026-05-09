@@ -35,7 +35,7 @@ Current state after the 2026-05-09 sync:
   `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`
 - public production smoke: PASS for API `/health`, API `/ready`, and web `/`
 - latest public/unauthenticated UI access:
-  `docs/operations/prod-ui-public-access-clickthrough-6c54bb5d-2026-05-09.md`
+  `docs/operations/prod-ui-public-access-clickthrough-c50e1e7c-2026-05-09.md`
 - protected dashboard/admin clickthrough: blocked until valid production auth
   is provided or an approved authenticated browser context is available
 

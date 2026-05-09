@@ -9,7 +9,7 @@
 - Current no-secret final preflight:
   `docs/operations/v1-final-preflight-c50e1e7c-2026-05-09.md`
 - Public/unauthenticated production UI access audit:
-  `docs/operations/prod-ui-public-access-clickthrough-6c54bb5d-2026-05-09.md`
+  `docs/operations/prod-ui-public-access-clickthrough-c50e1e7c-2026-05-09.md`
 
 ## Evidence Reviewed
 - Public build-info for

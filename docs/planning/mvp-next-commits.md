@@ -207,9 +207,8 @@ Operational queue for one-task execution runs.
     clicks all module-level functions that are safe to exercise, captures
     screenshots/console/network evidence, and classifies every flow as PASS,
     FAIL, BLOCKED, or NOT_APPLICABLE.
-  - 2026-05-09: Current production build-info is fresh for
-    `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`; latest public UI access
-    evidence is from `6c54bb5d`. Execution is now blocked
+  - 2026-05-09: Current production build-info and public UI access are fresh
+    for `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`. Execution is now blocked
     on authenticated/admin production app access, required representative
     production test data, and explicit operator approval before live-money or
     destructive actions. Evidence plan:
@@ -536,6 +535,18 @@ Operational queue for one-task execution runs.
     public smoke pass; protected V1 evidence remains blocked. Evidence:
     `docs/planning/deploy-freshness-c50e1e7c-task-2026-05-09.md` and
     `docs/operations/deploy-freshness-c50e1e7c-2026-05-09.md`.
+
+- [x] `PROD-UI-PUBLIC-ACCESS-REFRESH-C50E1E7C-2026-05-09 qa: refresh public production UI access evidence`
+  - 2026-05-09: Refreshed the public/unauthenticated production access audit
+    after the protected operator pack sync batch reached production. Web
+    build-info now matches `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`, API
+    `/health` and `/ready` return HTTP 200, public Web routes return HTTP 200,
+    and protected dashboard/admin routes return HTTP 307 to `/auth/login`.
+    This still does not satisfy the full authenticated/admin module
+    clickthrough audit. Evidence:
+    `docs/planning/prod-ui-public-access-refresh-c50e1e7c-task-2026-05-09.md`
+    and
+    `docs/operations/prod-ui-public-access-clickthrough-c50e1e7c-2026-05-09.md`.
 
 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
   - 2026-05-09: Names-only readiness check found missing live-import auth,

@@ -25,7 +25,7 @@ Completed for that candidate:
 - protected operator pack/source-of-truth sync batch pushed and verified on
   production build-info
 - public/unauthenticated production UI access refreshed for the same deployed
-  predecessor batch
+  batch
 
 Evidence:
 - `docs/planning/dashboard-runtime-current-state-aggregate-task-2026-05-09.md`
@@ -42,7 +42,7 @@ Evidence:
 - `docs/operations/v1-final-preflight-6c54bb5d-2026-05-09.md`
 - `docs/operations/deploy-freshness-c50e1e7c-2026-05-09.md`
 - `docs/operations/v1-final-preflight-c50e1e7c-2026-05-09.md`
-- `docs/operations/prod-ui-public-access-clickthrough-6c54bb5d-2026-05-09.md`
+- `docs/operations/prod-ui-public-access-clickthrough-c50e1e7c-2026-05-09.md`
 
 Next executable V1 steps are protected and remain blocked until the operator
 supplies authenticated/admin production app access, live-import auth, rollback
@@ -183,12 +183,12 @@ production UI module clickthrough audit from
 `docs/planning/prod-ui-module-clickthrough-audit-plan-2026-05-08.md`. The audit
 now has current production build-info at
 `c50e1e7cf1e37d9c799031cacbb30a834f57e81d` and latest public access evidence
-from `6c54bb5d`, but must still wait for
+for the same SHA, but must still wait for
 authenticated/admin app access, representative production test data, and
 explicit operator approval before any live-money or destructive action.
 Public-only checks cannot prove protected dashboard/admin flows.
 The public/unauthenticated access slice has been captured at
-`docs/operations/prod-ui-public-access-clickthrough-6c54bb5d-2026-05-09.md`:
+`docs/operations/prod-ui-public-access-clickthrough-c50e1e7c-2026-05-09.md`:
 API health and readiness passed, public routes returned HTTP 200, and
 protected dashboard/admin routes redirected to `/auth/login`. It does not
 satisfy the full module clickthrough because no authenticated/admin production

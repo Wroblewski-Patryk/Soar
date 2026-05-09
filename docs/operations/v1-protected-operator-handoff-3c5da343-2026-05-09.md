@@ -43,6 +43,7 @@
 - Public/no-secret evidence:
   - `docs/operations/deploy-freshness-c50e1e7c-2026-05-09.md`
   - `docs/operations/v1-final-preflight-c50e1e7c-2026-05-09.md`
+  - `docs/operations/prod-ui-public-access-clickthrough-c50e1e7c-2026-05-09.md`
   - `docs/operations/deploy-freshness-6c54bb5d-2026-05-09.md`
   - `docs/operations/v1-final-preflight-6c54bb5d-2026-05-09.md`
   - `docs/operations/prod-ui-public-access-clickthrough-6c54bb5d-2026-05-09.md`

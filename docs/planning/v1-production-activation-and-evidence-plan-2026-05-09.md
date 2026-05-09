@@ -6,9 +6,8 @@
 - Public production Web build-info exposes
   `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`, the current source-of-truth
   synchronization batch.
-- Public/unauthenticated UI access evidence for the immediately preceding
-  deployed batch is current:
-  `docs/operations/prod-ui-public-access-clickthrough-6c54bb5d-2026-05-09.md`.
+- Public/unauthenticated UI access evidence for the deployed batch is current:
+  `docs/operations/prod-ui-public-access-clickthrough-c50e1e7c-2026-05-09.md`.
 - The no-secret V1 final preflight for 2026-05-09 reports public deploy health
   PASS and release readiness BLOCKED:
   `docs/operations/v1-final-preflight-c50e1e7c-2026-05-09.md`.

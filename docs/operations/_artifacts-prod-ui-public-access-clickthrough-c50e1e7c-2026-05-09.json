@@ -1,0 +1,144 @@
+{
+  "status": "pass",
+  "environment": "production",
+  "evidenceDate": "2026-05-09",
+  "expectedSha": "c50e1e7cf1e37d9c799031cacbb30a834f57e81d",
+  "observedBuildInfo": {
+    "buildId": "rfHNPX0EGw1fOltqusqKM",
+    "gitSha": "c50e1e7cf1e37d9c799031cacbb30a834f57e81d",
+    "gitRef": "main",
+    "metadataGeneratedAt": null,
+    "metadataSource": "env-runtime",
+    "checkedAt": "2026-05-09T16:47:07.656Z"
+  },
+  "checks": [
+    {
+      "surface": "API health",
+      "url": "https://api.soar.luckysparrow.ch/health",
+      "status": 200,
+      "result": "pass"
+    },
+    {
+      "surface": "API readiness",
+      "url": "https://api.soar.luckysparrow.ch/ready",
+      "status": 200,
+      "result": "pass"
+    },
+    {
+      "surface": "Web home",
+      "url": "https://soar.luckysparrow.ch/",
+      "status": 200,
+      "result": "pass"
+    },
+    {
+      "surface": "Login",
+      "url": "https://soar.luckysparrow.ch/auth/login",
+      "status": 200,
+      "result": "pass"
+    },
+    {
+      "surface": "Register",
+      "url": "https://soar.luckysparrow.ch/auth/register",
+      "status": 200,
+      "result": "pass"
+    },
+    {
+      "surface": "Offline",
+      "url": "https://soar.luckysparrow.ch/offline",
+      "status": 200,
+      "result": "pass"
+    },
+    {
+      "surface": "Build info",
+      "url": "https://soar.luckysparrow.ch/api/build-info",
+      "status": 200,
+      "result": "pass",
+      "observedSha": "c50e1e7cf1e37d9c799031cacbb30a834f57e81d"
+    }
+  ],
+  "unauthenticatedProtectedRoutes": [
+    {
+      "route": "/dashboard",
+      "status": 307,
+      "location": "/auth/login",
+      "result": "pass"
+    },
+    {
+      "route": "/dashboard/profile",
+      "status": 307,
+      "location": "/auth/login",
+      "result": "pass"
+    },
+    {
+      "route": "/dashboard/wallets/list",
+      "status": 307,
+      "location": "/auth/login",
+      "result": "pass"
+    },
+    {
+      "route": "/dashboard/markets/list",
+      "status": 307,
+      "location": "/auth/login",
+      "result": "pass"
+    },
+    {
+      "route": "/dashboard/strategies/list",
+      "status": 307,
+      "location": "/auth/login",
+      "result": "pass"
+    },
+    {
+      "route": "/dashboard/backtests/list",
+      "status": 307,
+      "location": "/auth/login",
+      "result": "pass"
+    },
+    {
+      "route": "/dashboard/bots",
+      "status": 307,
+      "location": "/auth/login",
+      "result": "pass"
+    },
+    {
+      "route": "/dashboard/reports",
+      "status": 307,
+      "location": "/auth/login",
+      "result": "pass"
+    },
+    {
+      "route": "/dashboard/logs",
+      "status": 307,
+      "location": "/auth/login",
+      "result": "pass"
+    },
+    {
+      "route": "/admin",
+      "status": 307,
+      "location": "/auth/login",
+      "result": "pass"
+    },
+    {
+      "route": "/admin/users",
+      "status": 307,
+      "location": "/auth/login",
+      "result": "pass"
+    },
+    {
+      "route": "/admin/subscriptions",
+      "status": 307,
+      "location": "/auth/login",
+      "result": "pass"
+    }
+  ],
+  "scope": "public and unauthenticated route/auth-gate evidence only",
+  "doesNotProve": [
+    "authenticated dashboard functionality",
+    "admin module functionality",
+    "module-level clickthrough",
+    "live-import runtime readback",
+    "rollback proof",
+    "restore drill",
+    "RC approval",
+    "final V1 release readiness"
+  ]
+}

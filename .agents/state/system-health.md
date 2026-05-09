@@ -8,8 +8,8 @@ Last updated: 2026-05-09
   `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`: build-info PASS, public
   API/Web smoke PASS, no-secret final preflight public checks PASS, and the
   protected operator pack/source-of-truth synchronization batch is deployed.
-  Public/unauthenticated UI access refresh is current for the immediately
-  preceding deployed candidate `6c54bb5d`.
+  Public/unauthenticated UI access refresh is current for the same deployed
+  candidate.
   `LIVEIMPORT-03` target sync
   remains PASS, and protected readiness check remains PASS as a fail-closed
   blocker classification. V1 remains `BLOCKED` on missing live-import auth,
@@ -18,6 +18,7 @@ Last updated: 2026-05-09
   2026-05-08 restore evidence, and stale 2026-05-08 rollback proof. Evidence:
   `docs/operations/deploy-freshness-c50e1e7c-2026-05-09.md`,
   `docs/operations/v1-final-preflight-c50e1e7c-2026-05-09.md`,
+  `docs/operations/prod-ui-public-access-clickthrough-c50e1e7c-2026-05-09.md`,
   `docs/operations/deploy-freshness-6c54bb5d-2026-05-09.md`,
   `docs/operations/v1-final-preflight-6c54bb5d-2026-05-09.md`,
   `docs/operations/prod-ui-public-access-clickthrough-6c54bb5d-2026-05-09.md`,
