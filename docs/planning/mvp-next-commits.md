@@ -207,8 +207,9 @@ Operational queue for one-task execution runs.
     clicks all module-level functions that are safe to exercise, captures
     screenshots/console/network evidence, and classifies every flow as PASS,
     FAIL, BLOCKED, or NOT_APPLICABLE.
-  - 2026-05-09: Current production build-info and public UI access are fresh
-    for `6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623`. Execution is now blocked
+  - 2026-05-09: Current production build-info is fresh for
+    `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`; latest public UI access
+    evidence is from `6c54bb5d`. Execution is now blocked
     on authenticated/admin production app access, required representative
     production test data, and explicit operator approval before live-money or
     destructive actions. Evidence plan:
@@ -527,12 +528,21 @@ Operational queue for one-task execution runs.
     restore proof, rollback proof, and authenticated/admin UI access. Evidence:
     `docs/planning/operator-protected-pack-6c54bb5d-sync-task-2026-05-09.md`.
 
+- [x] `DEPLOY-FRESHNESS-C50E1E7C-2026-05-09 release: verify protected operator pack deployment`
+  - 2026-05-09: Verified the protected operator pack/source-of-truth sync batch
+    reached production build-info
+    `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`, ran public API/Web smoke with
+    `--no-workers`, and refreshed no-secret final V1 preflight. Build-info and
+    public smoke pass; protected V1 evidence remains blocked. Evidence:
+    `docs/planning/deploy-freshness-c50e1e7c-task-2026-05-09.md` and
+    `docs/operations/deploy-freshness-c50e1e7c-2026-05-09.md`.
+
 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
   - 2026-05-09: Names-only readiness check found missing live-import auth,
     rollback auth, and production DB/Coolify restore context in the current
     shell. 2026-05-09 refresh: the documented protected-readiness candidate is
     current production build-info
-    `6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623`. Final V1 evidence remains
+    `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`. Final V1 evidence remains
     blocked until protected app/operator auth, DB/Coolify context, RC approval
     identities, and authenticated/admin UI access are supplied. Evidence:
     `docs/planning/v1-protected-access-readiness-task-2026-05-09.md` and
@@ -3479,12 +3489,12 @@ Operational queue for one-task execution runs.
 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production`
   - Scope: use authenticated read-only dashboard/API evidence on current
     production build-info
-    `6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623` for the reported LIVE ETH/DOGE rows:
+    `c50e1e7cf1e37d9c799031cacbb30a834f57e81d` for the reported LIVE ETH/DOGE rows:
     ownership, `strategyId` or single-strategy provenance recovery, TTP
     visibility, actionable state, and import completeness across assigned bot
     markets. Do not promote stale candidate `39146d2e`; `LIVEIMPORT-03A`
     confirmed it is not a valid production promotion candidate. 2026-05-09
-    refresh: current production build-info is `6c54bb5d`, public/no-secret
+    refresh: current production build-info is `c50e1e7c`, public/no-secret
     checks pass, and the collector command in the protected operator handoff
     targets that SHA. Validation still required: authenticated runtime
     positions readback and redacted evidence.
@@ -3513,7 +3523,7 @@ Operational queue for one-task execution runs.
     Local pre-release build, guardrails, and docs parity PASS. Candidate
     `f3aaa3dca6cf4d4b199372563886165638391a77` is committed and pushed to
     `origin/main`. 2026-05-09 refresh: current production build-info now
-    reports `6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623`, which contains
+    reports `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`, which contains
     `f3aaa3dca6cf4d4b199372563886165638391a77`; the old public build-info
     blocker remains resolved. Remaining blocker: authenticated/protected
     runtime readback and broader V1 release gate evidence are still required.

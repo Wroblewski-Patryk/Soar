@@ -21,7 +21,7 @@
 
 ## Context
 The final V1 blocker pack is ready, current production build-info is verified
-at `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`, and the no-secret public
+at `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`, and the no-secret public
 checks are fresh. The remaining V1 tasks require protected production auth,
 production DB/Coolify context, RC approval identities, and authenticated/admin
 UI access.

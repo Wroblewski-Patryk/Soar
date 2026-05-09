@@ -193,6 +193,14 @@ Last updated: 2026-05-09
   `LIVEIMPORT-03`, restore proof, rollback proof, and authenticated/admin UI
   access. Evidence:
   `docs/planning/operator-protected-pack-6c54bb5d-sync-task-2026-05-09.md`.
+- 2026-05-09 `DEPLOY-FRESHNESS-C50E1E7C-2026-05-09` verified production
+  freshness for the protected operator pack/source-of-truth sync batch. Web
+  build-info reached `c50e1e7cf1e37d9c799031cacbb30a834f57e81d` on attempt
+  27, public API/Web smoke passed, and no-secret final V1 preflight for this
+  SHA reports build-info/public smoke PASS with V1 still `BLOCKED` on
+  protected auth, production DB restore context, failed RC evidence, missing
+  `LIVEIMPORT-03`, stale restore evidence, and stale rollback proof. Evidence:
+  `docs/operations/deploy-freshness-c50e1e7c-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-20` reconciled the second-exchange plan with the
   deployed Gate.io foundation. The plan is now complete as a planning artifact
   and records the exact current support boundary: Gate.io public catalog and

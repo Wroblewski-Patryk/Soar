@@ -1,4 +1,4 @@
-# V1 Protected Operator Handoff - 55469cdc
+# V1 Protected Operator Handoff - c50e1e7c
 
 ## Header
 
@@ -6,6 +6,7 @@
 - Author role: Ops/Release
 - Related task IDs:
   - `CURRENT-EXECUTABLE-V1-BOUNDARY-3C5DA343-2026-05-09`
+  - `DEPLOY-FRESHNESS-C50E1E7C-2026-05-09`
   - `DEPLOY-FRESHNESS-55469CDC-2026-05-09`
   - `DEPLOY-FRESHNESS-4EE1672E-2026-05-09`
   - `V1-PROTECTED-ACCESS-READINESS-2026-05-09`
@@ -38,8 +39,13 @@
 ## Current Candidate
 
 - Verified deployed SHA:
-  `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`
+  `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`
 - Public/no-secret evidence:
+  - `docs/operations/deploy-freshness-c50e1e7c-2026-05-09.md`
+  - `docs/operations/v1-final-preflight-c50e1e7c-2026-05-09.md`
+  - `docs/operations/deploy-freshness-6c54bb5d-2026-05-09.md`
+  - `docs/operations/v1-final-preflight-6c54bb5d-2026-05-09.md`
+  - `docs/operations/prod-ui-public-access-clickthrough-6c54bb5d-2026-05-09.md`
   - `docs/operations/deploy-freshness-55469cdc-2026-05-09.md`
   - `docs/operations/v1-final-preflight-55469cdc-2026-05-09.md`
   - `docs/operations/prod-ui-public-access-clickthrough-55469cdc-2026-05-09.md`
@@ -113,7 +119,7 @@ Run all commands with one release date:
 
 ```powershell
 $releaseDate = Get-Date -Format yyyy-MM-dd
-$expectedSha = "55469cdc2ad888b822c8cdbd86660c4ed5166e1c"
+$expectedSha = "c50e1e7cf1e37d9c799031cacbb30a834f57e81d"
 ```
 
 1. Confirm no-secret preflight status:
@@ -209,7 +215,7 @@ V1 can be marked ready only when all are true:
 
 - Residual risks: protected production runtime/UI behavior remains unverified
   until the operator executes the protected pack.
-- Assumptions made: `55469cdc2ad888b822c8cdbd86660c4ed5166e1c` remains the
+- Assumptions made: `c50e1e7cf1e37d9c799031cacbb30a834f57e81d` remains the
   intended deployed runtime/dashboard candidate until a later build-info proof
   supersedes it. This batch primarily contains docs/evidence handoff updates;
   runtime/dashboard logic remains the previously verified dashboard aggregate
@@ -224,7 +230,7 @@ V1 can be marked ready only when all are true:
 
 - Recommended next task: provide protected inputs and execute step 1 of this
   handoff from an approved operator context.
-- Why next: all no-secret evidence is already current for `55469cdc`; protected
+- Why next: all no-secret evidence is already current for `c50e1e7c`; protected
   proof is the only path to V1 readiness.
 - Suggested owner: Ops/Release with product owner approval.
 - Files or surfaces likely touched: generated artifacts under
@@ -236,7 +242,7 @@ V1 can be marked ready only when all are true:
 
 - Read first:
   - `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`
-  - `docs/operations/v1-final-preflight-55469cdc-2026-05-09.md`
+  - `docs/operations/v1-final-preflight-c50e1e7c-2026-05-09.md`
   - this handoff
 - Do not touch:
   - live trading or exchange order execution outside approved release gates

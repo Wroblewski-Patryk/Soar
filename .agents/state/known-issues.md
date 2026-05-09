@@ -104,7 +104,7 @@ Last updated: 2026-05-09
 - `LIVEIMPORT-03` remains open because authenticated read-only production
   runtime positions readback for the reported LIVE ETH/DOGE rows has not been
   captured on current production build-info
-  `6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623`.
+  `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`.
   `ops:liveimport:readback` is now the canonical read-only collector once
   credentials are available. It is hardened to fail closed when no RUNNING
   session produces runtime positions readback, so a no-session artifact cannot
