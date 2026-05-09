@@ -5,6 +5,16 @@ Last updated: 2026-05-09
 ## Next Tiny Task
 
 Latest local implementation slice:
+`EXCHANGE2-28-GATEIO-TRADE-HISTORY-SNAPSHOT-2026-05-09` enabled only Gate.io
+`TRADE_HISTORY_SNAPSHOT` through the existing authenticated-read boundary.
+Gate.io wallet cashflow history, live submit, and exchange-side cancel remain
+unsupported. Focused exchange tests, authenticated snapshot service test, API
+typecheck, guardrails, docs parity, and diff check pass. The next exact Gate.io
+gap is either `WALLET_CASHFLOW_HISTORY` if product scope requires ledger
+ingestion parity, or `LIVE_ORDER_SUBMIT` if the user confirms Gate.io
+live-money execution belongs in V1.
+
+Latest local implementation slice:
 `EXCHANGE2-27-GATEIO-OPEN-ORDERS-SNAPSHOT-2026-05-09` enabled only Gate.io
 `OPEN_ORDERS_SNAPSHOT` through the existing authenticated-read boundary.
 Gate.io trade-history, live submit, and exchange-side cancel remain

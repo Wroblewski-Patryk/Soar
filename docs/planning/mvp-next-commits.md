@@ -7,6 +7,14 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `EXCHANGE2-28-GATEIO-TRADE-HISTORY-SNAPSHOT-2026-05-09 feature(exchange): enable Gate.io trade-history snapshot`
+  - 2026-05-09: Enable only `GATEIO` `TRADE_HISTORY_SNAPSHOT` through the
+    existing authenticated-read boundary, while keeping Gate.io wallet cashflow
+    history/live/cancel unsupported. Focused exchange tests, authenticated
+    snapshot service test, API typecheck, guardrails, docs parity, and diff
+    check passed. Evidence:
+    `docs/planning/exchange2-28-gateio-trade-history-snapshot-task-2026-05-09.md`.
+
 - [x] `EXCHANGE2-27-GATEIO-OPEN-ORDERS-SNAPSHOT-2026-05-09 feature(exchange): enable Gate.io open-orders snapshot`
   - 2026-05-09: Enable only `GATEIO` `OPEN_ORDERS_SNAPSHOT` through the
     existing authenticated-read boundary, while keeping Gate.io

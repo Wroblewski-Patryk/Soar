@@ -13,6 +13,14 @@ Last updated: 2026-05-09
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-09 `EXCHANGE2-28-GATEIO-TRADE-HISTORY-SNAPSHOT-2026-05-09` enabled
+  Gate.io trade-history snapshot through the existing authenticated-read
+  boundary. Scope is limited to `TRADE_HISTORY_SNAPSHOT`; Gate.io wallet
+  cashflow history, live submit, and exchange-side cancel remain unsupported.
+  Focused exchange tests, authenticated snapshot service test, API typecheck,
+  guardrails, docs parity, and diff check passed.
+  Evidence:
+  `docs/planning/exchange2-28-gateio-trade-history-snapshot-task-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-27-GATEIO-OPEN-ORDERS-SNAPSHOT-2026-05-09` enabled
   Gate.io open-orders snapshot through the existing authenticated-read
   boundary. Scope is limited to `OPEN_ORDERS_SNAPSHOT`; Gate.io trade-history,

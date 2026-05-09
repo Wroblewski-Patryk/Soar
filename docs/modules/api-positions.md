@@ -50,10 +50,9 @@ Out of scope:
   3. Fetch external positions/open orders.
   4. Normalize payload shape.
   5. Update `lastUsed` metadata for key only after a supported snapshot read.
-- Gate.io positions and open-orders snapshots are supported through the
-  authenticated-read boundary. Gate.io trade-history snapshots remain
-  fail-closed until exact operation support is implemented; `lastUsed` remains
-  unchanged on unsupported read rejection.
+- Gate.io positions, open-orders, and trade-history snapshots are supported
+  through the authenticated-read boundary. Gate.io wallet cashflow history,
+  live submit, and exchange-side cancel remain fail-closed outside this module.
 - Takeover status flow:
   - classify open exchange-synced positions by ownership/management/sync-state.
   - canonical management truth is wallet-owned:

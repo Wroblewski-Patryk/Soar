@@ -73,7 +73,9 @@ adapter is implemented and verified.
   authenticated-read boundary.
 - Current open-orders snapshot support: `GATEIO` `OPEN_ORDERS_SNAPSHOT` is
   enabled through the authenticated-read boundary for reconciliation reads.
-- Still blocked: authenticated trade-history reads, `LIVE_ORDER_SUBMIT`, or
+- Current trade-history snapshot support: `GATEIO` `TRADE_HISTORY_SNAPSHOT`
+  is enabled through the authenticated-read boundary for executed-trade reads.
+- Still blocked: wallet cashflow history, `LIVE_ORDER_SUBMIT`, or
   `LIVE_ORDER_CANCEL` for Gate.io until exact support is implemented and
   production evidence exists.
 - Still requiring user/operator input: first live scope, whether authenticated
@@ -132,7 +134,7 @@ Acceptance criteria:
    - `BALANCE_PREVIEW`: supported.
    - `POSITIONS_SNAPSHOT`: supported.
    - `OPEN_ORDERS_SNAPSHOT`: supported.
-   - `TRADE_HISTORY_SNAPSHOT`: unsupported.
+   - `TRADE_HISTORY_SNAPSHOT`: supported.
    - `LIVE_ORDER_SUBMIT`: unsupported.
    - `LIVE_ORDER_CANCEL`: unsupported.
    - `API_KEY_PROBE`: supported for credential validation only.

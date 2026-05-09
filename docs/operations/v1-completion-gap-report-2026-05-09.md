@@ -73,7 +73,7 @@ work before paper/live bots can be enabled for that exchange.
 | Admin | scaffolding/current route scope exists | some local coverage implied by docs | public route gate only | missing admin clickthrough | Needs admin account and safe representative data. |
 | Gate.io public catalog/data | yes | yes | deployed foundation exists | public-only | Public market-data foundation is available. |
 | Gate.io paper bot support | yes after `EXCHANGE2-23` | focused API/Web tests pass | not yet deployed | n/a | Deploy and click through Gate.io PAPER wallet/bot setup for production evidence. |
-| Gate.io authenticated reads | partial | API-key probe, balance preview, positions snapshot, and open-orders snapshot yes; remaining reads fail closed | n/a | n/a | `API_KEY_PROBE`, `BALANCE_PREVIEW`, `POSITIONS_SNAPSHOT`, and `OPEN_ORDERS_SNAPSHOT` are implemented; implement trade-history snapshots if in scope. |
+| Gate.io authenticated reads | partial | API-key probe, balance preview, positions snapshot, open-orders snapshot, and trade-history snapshot yes; wallet cashflow history remains fail-closed | n/a | n/a | Core readback snapshots are implemented; implement wallet cashflow history only if product scope requires ledger ingestion parity. |
 | Gate.io live order submit | no | fail-closed tests yes | n/a | n/a | Implement exact live submit adapter and protected evidence if in scope. |
 | Exchange-side cancel | no for all exchanges | fail-closed tests yes | n/a | n/a | Implement canonical cancel boundary before claiming support. |
 
@@ -136,7 +136,8 @@ work before paper/live bots can be enabled for that exchange.
    - `BALANCE_PREVIEW` is now implemented for wallet balance preview only
    - `POSITIONS_SNAPSHOT` is now implemented for exchange positions snapshot only
    - `OPEN_ORDERS_SNAPSHOT` is now implemented for exchange open-orders snapshot only
-   - `TRADE_HISTORY_SNAPSHOT`
+   - `TRADE_HISTORY_SNAPSHOT` is now implemented for executed-trade snapshots only
+   - `WALLET_CASHFLOW_HISTORY` remains unsupported
 
 2. **Implement Gate.io live submit only after paper/read readiness**
    - Exact submit support through `liveOrderAdapter.service.ts`.
@@ -171,7 +172,7 @@ work before paper/live bots can be enabled for that exchange.
 | --- | --- |
 | Can be trusted now | Public production health/readiness, public Web reachability, build-info, no-auth redirects, local fail-closed exchange gates. |
 | Implemented but needs production proof | Binance PAPER/LIVE runtime, dashboard runtime data, `LIVEIMPORT-03`, rollback, restore, authenticated UI flows. |
-| Not implemented as usable capability | Gate.io paper, Gate.io authenticated reads, Gate.io live submit, exchange-side cancel, rich manual trade ticket UX. |
+| Not implemented as usable capability | Gate.io wallet cashflow history, Gate.io live submit, exchange-side cancel, rich manual trade ticket UX. |
 | Needs operator/user input | Production app auth, admin auth, rollback auth, DB/Coolify restore context, RC approver identities, explicit live-money approval. |
 
 ## Recommended Completion Plan

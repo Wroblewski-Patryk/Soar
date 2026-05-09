@@ -3,7 +3,6 @@ import { randomUUID } from 'node:crypto';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { prisma } from '../../prisma/client';
-import { ExchangeExecutionCapabilityUnsupportedError } from '../exchange/exchangeExecutionCapabilityContract.service';
 import {
   fetchExchangeOpenOrdersSnapshotByApiKeyId,
   fetchExchangeTradeHistorySnapshotByApiKeyId,
@@ -76,17 +75,19 @@ describe('positions authenticated snapshots service', () => {
     expect(dbKey.lastUsed).not.toBeNull();
   });
 
-  it('fails closed for Gate.io trade-history snapshot before marking the key used', async () => {
+  it('returns Gate.io trade-history snapshot and marks the key used after success', async () => {
     const { userId, apiKeyId } = await createApiKey('GATEIO');
 
-    await expect(
-      fetchExchangeTradeHistorySnapshotByApiKeyId(userId, apiKeyId, {
-        symbol: 'BTCUSDT',
-      })
-    ).rejects.toThrowError(ExchangeExecutionCapabilityUnsupportedError);
+    const snapshot = await fetchExchangeTradeHistorySnapshotByApiKeyId(userId, apiKeyId, {
+      symbol: 'BTCUSDT',
+    });
+
+    expect(snapshot.source).toBe('GATEIO');
+    expect(snapshot.symbol).toBe('BTCUSDT');
+    expect(snapshot.trades).toEqual([]);
 
     const dbKey = await prisma.apiKey.findUniqueOrThrow({ where: { id: apiKeyId } });
-    expect(dbKey.lastUsed).toBeNull();
+    expect(dbKey.lastUsed).not.toBeNull();
   });
 
   it('keeps Binance test-mode open-orders and trade-history snapshots usable', async () => {

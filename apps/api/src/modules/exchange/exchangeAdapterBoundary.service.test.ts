@@ -154,13 +154,13 @@ describe('exchangeAdapterBoundary.service', () => {
     });
 
     await expect(
-      fetchSupportedExchangeTradeHistoryRaw(
+      fetchSupportedExchangeWalletCashflowHistoryRaw(
         {
           exchange: 'GATEIO',
           marketType: 'FUTURES',
           apiKey: 'enc-gateio-key',
           apiSecret: 'enc-gateio-secret',
-          symbol: 'BTCUSDT',
+          currency: 'USDT',
         },
         {
           createAuthenticatedConnector: vi.fn(() => createConnector()),
@@ -170,7 +170,7 @@ describe('exchangeAdapterBoundary.service', () => {
       code: 'EXCHANGE_EXECUTION_CAPABILITY_UNSUPPORTED',
       details: {
         exchange: 'GATEIO',
-        operation: 'TRADE_HISTORY_SNAPSHOT',
+        operation: 'WALLET_CASHFLOW_HISTORY',
       },
     });
   });
@@ -190,12 +190,14 @@ describe('exchangeAdapterBoundary.service', () => {
     );
 
     expect(positions).toEqual([{ symbol: 'BTC/USDT:USDT', contracts: 1 }]);
-    expect(createAuthenticatedConnector).toHaveBeenCalledWith({
-      exchange: 'GATEIO',
-      marketType: 'FUTURES',
-      apiKey: 'enc-gateio-key',
-      apiSecret: 'enc-gateio-secret',
-    });
+    expect(createAuthenticatedConnector).toHaveBeenCalledWith(
+      expect.objectContaining({
+        exchange: 'GATEIO',
+        marketType: 'FUTURES',
+        apiKey: 'enc-gateio-key',
+        apiSecret: 'enc-gateio-secret',
+      })
+    );
     expect(connector.disconnect).toHaveBeenCalledOnce();
   });
 
@@ -214,11 +216,52 @@ describe('exchangeAdapterBoundary.service', () => {
     );
 
     expect(orders).toEqual([{ id: 'ord-1', symbol: 'BTC/USDT:USDT' }]);
-    expect(createAuthenticatedConnector).toHaveBeenCalledWith({
-      exchange: 'GATEIO',
-      marketType: 'FUTURES',
-      apiKey: 'enc-gateio-key',
-      apiSecret: 'enc-gateio-secret',
+    expect(createAuthenticatedConnector).toHaveBeenCalledWith(
+      expect.objectContaining({
+        exchange: 'GATEIO',
+        marketType: 'FUTURES',
+        apiKey: 'enc-gateio-key',
+        apiSecret: 'enc-gateio-secret',
+      })
+    );
+    expect(connector.disconnect).toHaveBeenCalledOnce();
+  });
+
+  it('reads Gate.io trade history through the authenticated read boundary', async () => {
+    const connector = createConnector();
+    const createAuthenticatedConnector = vi.fn(() => connector);
+
+    const trades = await fetchSupportedExchangeTradeHistoryRaw(
+      {
+        exchange: 'GATEIO',
+        marketType: 'FUTURES',
+        apiKey: 'enc-gateio-key',
+        apiSecret: 'enc-gateio-secret',
+        symbol: 'BTCUSDT',
+        since: Date.parse('2026-04-29T00:00:00.000Z'),
+        limit: 50,
+      },
+      { createAuthenticatedConnector }
+    );
+
+    expect(trades).toEqual([
+      expect.objectContaining({
+        exchangeTradeId: 'trade-1',
+        symbol: 'BTC/USDT:USDT',
+      }),
+    ]);
+    expect(createAuthenticatedConnector).toHaveBeenCalledWith(
+      expect.objectContaining({
+        exchange: 'GATEIO',
+        marketType: 'FUTURES',
+        apiKey: 'enc-gateio-key',
+        apiSecret: 'enc-gateio-secret',
+      })
+    );
+    expect(connector.fetchTradesForWindow).toHaveBeenCalledWith({
+      symbol: 'BTCUSDT',
+      since: Date.parse('2026-04-29T00:00:00.000Z'),
+      limit: 50,
     });
     expect(connector.disconnect).toHaveBeenCalledOnce();
   });
