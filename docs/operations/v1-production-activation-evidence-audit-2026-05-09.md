@@ -5,21 +5,21 @@
 - API URL: `https://api.soar.luckysparrow.ch`
 - Web URL: `https://soar.luckysparrow.ch`
 - Public Web build-info SHA:
-  `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`
+  `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`
 - Current no-secret final preflight:
-  `docs/operations/v1-final-preflight-4ee1672e-2026-05-09.md`
-- Public/unauthenticated production UI access audit:
+  `docs/operations/v1-final-preflight-55469cdc-2026-05-09.md`
+- Latest public/unauthenticated production UI access audit:
   `docs/operations/prod-ui-public-access-clickthrough-4ee1672e-2026-05-09.md`
 
 ## Evidence Reviewed
 - Public build-info for
-  `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`: PASS on production.
+  `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`: PASS on production.
 - Public deploy smoke without workers: PASS (`API /health`, API `/ready`,
   and Web `/`) from the final preflight.
 - Public/unauthenticated production UI access: PASS for public routes and
   fail-closed protected-route redirects.
 - V1 final no-secret preflight:
-  `docs/operations/v1-final-preflight-4ee1672e-2026-05-09.md`.
+  `docs/operations/v1-final-preflight-55469cdc-2026-05-09.md`.
 - RC external gates status:
   `docs/operations/v1-rc-external-gates-status.md`.
 - RC sign-off record:
@@ -33,8 +33,8 @@
 
 ## Findings
 - Production public health and readiness are currently healthy.
-- Production Web build-info exposes the current docs/evidence handoff batch:
-  `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`.
+- Production Web build-info exposes the current source-of-truth synchronization
+  batch: `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`.
 - Public/unauthenticated production access is healthy, and protected
   dashboard/admin routes redirect to `/auth/login` without a session.
 - The current no-secret final preflight reports release status `BLOCKED`.

@@ -132,6 +132,13 @@ Last updated: 2026-05-09
   protected auth, production DB restore context, failed RC evidence, missing
   `LIVEIMPORT-03`, stale restore evidence, and stale rollback proof. Evidence:
   `docs/operations/deploy-freshness-55469cdc-2026-05-09.md`.
+- 2026-05-09 `V1-PROTECTED-OPERATOR-DOCS-55469CDC-SYNC-2026-05-09` retargeted
+  the active protected-access readiness, production activation, activation
+  audit, and operator handoff docs to current production build-info
+  `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`. This does not close protected
+  V1 evidence; it keeps the operator commands aligned with deployed
+  build-info. Evidence:
+  `docs/planning/v1-protected-operator-docs-55469cdc-sync-task-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-20` reconciled the second-exchange plan with the
   deployed Gate.io foundation. The plan is now complete as a planning artifact
   and records the exact current support boundary: Gate.io public catalog and

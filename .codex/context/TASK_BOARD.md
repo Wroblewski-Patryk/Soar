@@ -125,6 +125,13 @@ Last updated: 2026-05-09
     `docs/planning/deploy-freshness-55469cdc-task-2026-05-09.md` and
     `docs/operations/deploy-freshness-55469cdc-2026-05-09.md`.
 
+- [x] `V1-PROTECTED-OPERATOR-DOCS-55469CDC-SYNC-2026-05-09 release: retarget protected operator docs`
+  - Scope: retargeted active protected-access readiness, production
+    activation, activation audit, and operator handoff docs to current
+    production build-info `55469cdc2ad888b822c8cdbd86660c4ed5166e1c` without
+    closing protected V1 evidence. Evidence:
+    `docs/planning/v1-protected-operator-docs-55469cdc-sync-task-2026-05-09.md`.
+
 - [x] `UX-UI-MEMORY-AUTONOMY-2026-05-08 design: make UX/UI feedback memory autonomous`
   - Scope: extended the existing user feedback loop, design memory, and screen
     quality checklist so future UX/UI work classifies user guidance, stores it

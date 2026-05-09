@@ -460,12 +460,20 @@ Operational queue for one-task execution runs.
     `docs/planning/deploy-freshness-55469cdc-task-2026-05-09.md` and
     `docs/operations/deploy-freshness-55469cdc-2026-05-09.md`.
 
+- [x] `V1-PROTECTED-OPERATOR-DOCS-55469CDC-SYNC-2026-05-09 release: retarget protected operator docs`
+  - 2026-05-09: Retargeted protected-access readiness, production activation,
+    activation audit, and operator handoff docs to current production
+    build-info `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`. Protected V1
+    remains blocked on auth/operator inputs, `LIVEIMPORT-03`, restore,
+    rollback, RC approval, and authenticated/admin UI access. Evidence:
+    `docs/planning/v1-protected-operator-docs-55469cdc-sync-task-2026-05-09.md`.
+
 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
   - 2026-05-09: Names-only readiness check found missing live-import auth,
     rollback auth, and production DB/Coolify restore context in the current
     shell. 2026-05-09 refresh: the documented protected-readiness candidate is
     current production build-info
-    `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`. Final V1 evidence remains
+    `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`. Final V1 evidence remains
     blocked until protected app/operator auth, DB/Coolify context, RC approval
     identities, and authenticated/admin UI access are supplied. Evidence:
     `docs/planning/v1-protected-access-readiness-task-2026-05-09.md` and

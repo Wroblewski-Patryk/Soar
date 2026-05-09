@@ -21,7 +21,7 @@
 
 ## Context
 The final V1 blocker pack is ready, current production build-info is verified
-at `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`, and the no-secret public
+at `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`, and the no-secret public
 checks are fresh. The remaining V1 tasks require protected production auth,
 production DB/Coolify context, RC approval identities, and authenticated/admin
 UI access.
@@ -157,7 +157,7 @@ the final V1 evidence pack.
 ## Result Report
 - Task summary: confirmed final V1 protected evidence is blocked by missing
   auth/DB/Coolify env names in the current shell; refreshed the documented
-  deployed candidate to `4ee1672e`.
+  deployed candidate to `55469cdc`.
 - Files changed: readiness artifact, task artifact, state docs.
 - How tested: names-only env check and documentation validation.
 - What is incomplete: final V1 evidence cannot proceed until protected inputs
