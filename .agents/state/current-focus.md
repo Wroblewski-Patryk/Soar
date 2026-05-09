@@ -54,21 +54,15 @@ restore drill, rollback proof, RC evidence, and final gate commands. This is a
 runbook/state synchronization only; final production evidence still requires
 protected auth and DB/Coolify context.
 
-2026-05-09 deploy freshness: the current V1 evidence batch is deployed at Web
-build-info SHA `4792fbca9ab3ca44d08c312f219f70d648707886`, with public API
-`/health`, API `/ready`, and Web `/` smoke passing. Continue protected
-evidence work from this deployed SHA only.
-
-2026-05-09 final preflight for deployed `4792fbca`: build-info and public
-smoke pass, and V1 remains `BLOCKED` only on protected/authenticated or
-operator-context evidence: live-import auth, rollback auth, production DB
-restore context, RC approval/evidence, `LIVEIMPORT-03`, and current
-restore/rollback proof artifacts.
-
-2026-05-09 blocker pack candidate SHA sync: protected evidence commands should
-target the verified deployed candidate
-`4792fbca9ab3ca44d08c312f219f70d648707886`, not local evidence-only `HEAD`,
-until another intended candidate is deployed and proven by build-info.
+2026-05-09 dashboard runtime deploy freshness: the dashboard runtime aggregate
+batch is deployed at Web build-info SHA
+`3c5da34371e22aecb1a7aff0a185018870d35cec`, with public API `/health`, API
+`/ready`, and Web `/` smoke passing. The no-secret final preflight for this SHA
+has build-info PASS and public smoke PASS, and V1 remains `BLOCKED` only on
+protected/authenticated or operator-context evidence: live-import auth,
+rollback auth, production DB restore context, RC approval/evidence,
+`LIVEIMPORT-03`, and current restore/rollback proof artifacts. Continue
+protected evidence work from this deployed SHA only.
 
 2026-05-09 protected access readiness: final V1 evidence is blocked because
 the current shell has no `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, or
@@ -112,7 +106,7 @@ operator-authenticated environment.
 `LIVEIMPORT-03` now has one canonical read-only evidence command. First verify
 the chosen deployed candidate through production build-info, then pass that
 same SHA to the collector:
-`$releaseDate = Get-Date -Format yyyy-MM-dd; $expectedSha = "4792fbca9ab3ca44d08c312f219f70d648707886"; pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --timeout-seconds 900 --interval-seconds 30; pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output "docs/operations/liveimport-03-prod-readback-$releaseDate.json"`.
+`$releaseDate = Get-Date -Format yyyy-MM-dd; $expectedSha = "3c5da34371e22aecb1a7aff0a185018870d35cec"; pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --timeout-seconds 900 --interval-seconds 30; pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output "docs/operations/liveimport-03-prod-readback-$releaseDate.json"`.
 The collector is hardened to fail closed when no RUNNING session produces a
 runtime positions payload, so no-session output cannot be treated as V1
 evidence.

@@ -163,25 +163,24 @@ Last updated: 2026-05-09
   This is runbook/state evidence only; no protected production evidence was
   generated or accepted. Evidence:
   `docs/planning/v1-final-blocker-pack-date-overrides-task-2026-05-09.md`.
-- Deploy freshness for the current V1 evidence batch PASS: production Web
-  build-info now exposes
-  `4792fbca9ab3ca44d08c312f219f70d648707886`, and safe public smoke passed
-  for API `/health`, API `/ready`, and Web `/`. Evidence:
-  `docs/operations/deploy-freshness-4792fbca-2026-05-09.md`. Protected
-  release evidence and authenticated UI clickthrough remain blocked on
-  approved credentials/context.
-- Final V1 preflight for deployed `4792fbca` is current and safely BLOCKED:
+- Dashboard runtime aggregate deploy freshness PASS: production Web build-info
+  now exposes `3c5da34371e22aecb1a7aff0a185018870d35cec`, and safe public smoke
+  passed for API `/health`, API `/ready`, and Web `/`. Evidence:
+  `docs/operations/deploy-freshness-3c5da343-2026-05-09.md`. Protected release
+  evidence and authenticated UI clickthrough remain blocked on approved
+  credentials/context.
+- Final V1 preflight for deployed `3c5da343` is current and safely BLOCKED:
   build-info PASS, public smoke PASS, missing protected live-import and
   rollback auth, missing production DB restore context, failed RC evidence,
   missing `LIVEIMPORT-03`, and stale 2026-05-08 restore/rollback evidence for
   the 2026-05-09 evidence date. Evidence:
-  `docs/operations/v1-final-preflight-4792fbca-2026-05-09.md`.
+  `docs/operations/v1-final-preflight-3c5da343-2026-05-09.md`.
 - Final blocker pack candidate SHA sync PASS: protected evidence commands now
   use the verified deployed candidate
-  `4792fbca9ab3ca44d08c312f219f70d648707886` as `$expectedSha` and warn
+  `3c5da34371e22aecb1a7aff0a185018870d35cec` as `$expectedSha` and warn
   operators not to substitute local evidence-only `HEAD` until build-info
   proves deployment. Evidence:
-  `docs/planning/v1-final-blocker-pack-candidate-sha-sync-task-2026-05-09.md`.
+  `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
 - Protected access readiness BLOCKED: current shell lacks required
   live-import auth, rollback auth, and production DB/Coolify restore context
   env names. No protected production evidence, rollback proof, restore drill,

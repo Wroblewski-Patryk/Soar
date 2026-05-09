@@ -208,24 +208,23 @@ set `$releaseDate` once and reuse it for preflight, restore drill, rollback
 proof, RC status/sign-off/checklist, live-import output paths, and the final
 release gate. Evidence:
 `docs/planning/v1-final-blocker-pack-date-overrides-task-2026-05-09.md`.
-The current V1 evidence batch is now deployed: production Web build-info
-exposes `4792fbca9ab3ca44d08c312f219f70d648707886`, and public API/Web smoke
-passed for API `/health`, API `/ready`, and Web `/`. Evidence:
-`docs/operations/deploy-freshness-4792fbca-2026-05-09.md`. Continue from the
-final blocker pack against this deployed SHA; do not treat this public smoke
-as protected runtime, restore, rollback, RC approval, or authenticated UI
-evidence.
-The no-secret final V1 preflight for deployed `4792fbca` is now fresh:
-`docs/operations/v1-final-preflight-4792fbca-2026-05-09.md`. Build-info and
+The dashboard runtime aggregate batch is now deployed: production Web
+build-info exposes `3c5da34371e22aecb1a7aff0a185018870d35cec`, and public
+API/Web smoke passed for API `/health`, API `/ready`, and Web `/`. Evidence:
+`docs/operations/deploy-freshness-3c5da343-2026-05-09.md`. Continue from the
+final blocker pack against this deployed SHA; do not treat this public smoke as
+protected runtime, restore, rollback, RC approval, or authenticated UI evidence.
+The no-secret final V1 preflight for deployed `3c5da343` is now fresh:
+`docs/operations/v1-final-preflight-3c5da343-2026-05-09.md`. Build-info and
 public smoke pass. Remaining blockers are live-import auth, rollback auth,
-production DB restore context, failed RC evidence, missing `LIVEIMPORT-03`,
-and stale restore/rollback proof evidence for the 2026-05-09 evidence date.
+production DB restore context, failed RC evidence, missing `LIVEIMPORT-03`, and
+stale restore/rollback proof evidence for the 2026-05-09 evidence date.
 The final blocker execution pack now separates the deployed code/tooling
 candidate from local evidence-only commits: use
-`4792fbca9ab3ca44d08c312f219f70d648707886` as `$expectedSha` for protected
+`3c5da34371e22aecb1a7aff0a185018870d35cec` as `$expectedSha` for protected
 evidence until another intended candidate is deployed and proven by
 build-info. Evidence:
-`docs/planning/v1-final-blocker-pack-candidate-sha-sync-task-2026-05-09.md`.
+`docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
 Protected access readiness is currently BLOCKED. Names-only checks in this
 shell found no `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, or production
 DB/Coolify restore context env names. Evidence:
@@ -257,7 +256,7 @@ been removed because the project does not use paid GitHub Actions and workflow
 attempts create unwanted email noise.
 
 ```powershell
-$expectedSha = "4792fbca9ab3ca44d08c312f219f70d648707886"
+$expectedSha = "3c5da34371e22aecb1a7aff0a185018870d35cec"
 pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --timeout-seconds 900 --interval-seconds 15
 ```
 
@@ -333,7 +332,7 @@ Canonical command once auth is available:
 
 ```powershell
 $releaseDate = Get-Date -Format yyyy-MM-dd
-$expectedSha = "4792fbca9ab3ca44d08c312f219f70d648707886"
+$expectedSha = "3c5da34371e22aecb1a7aff0a185018870d35cec"
 pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output "docs/operations/liveimport-03-prod-readback-$releaseDate.json"
 ```
 
