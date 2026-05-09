@@ -60,6 +60,15 @@ Last updated: 2026-05-09
     identities. Evidence:
     `docs/planning/current-executable-v1-boundary-3c5da343-task-2026-05-09.md`.
 
+- [x] `V1-PROTECTED-OPERATOR-HANDOFF-3C5DA343-2026-05-09 release: publish protected operator handoff`
+  - Scope: published a concise no-secret operator handoff for remaining V1
+    protected blockers on deployed `3c5da34371e22aecb1a7aff0a185018870d35cec`.
+    The handoff lists required protected input names, command order,
+    acceptance criteria, and evidence that must not be accepted as protected
+    proof. Evidence:
+    `docs/planning/v1-protected-operator-handoff-task-2026-05-09.md` and
+    `docs/operations/v1-protected-operator-handoff-3c5da343-2026-05-09.md`.
+
 - [x] `UX-UI-MEMORY-AUTONOMY-2026-05-08 design: make UX/UI feedback memory autonomous`
   - Scope: extended the existing user feedback loop, design memory, and screen
     quality checklist so future UX/UI work classifies user guidance, stores it

@@ -385,6 +385,15 @@ Operational queue for one-task execution runs.
     approval identities. Evidence:
     `docs/planning/current-executable-v1-boundary-3c5da343-task-2026-05-09.md`.
 
+- [x] `V1-PROTECTED-OPERATOR-HANDOFF-3C5DA343-2026-05-09 release: publish protected operator handoff`
+  - 2026-05-09: Published a concise no-secret handoff for the remaining V1
+    protected blockers on deployed `3c5da34371e22aecb1a7aff0a185018870d35cec`.
+    It lists required protected input names, command order, acceptance
+    criteria, and evidence that must not be accepted as protected proof.
+    Evidence:
+    `docs/planning/v1-protected-operator-handoff-task-2026-05-09.md` and
+    `docs/operations/v1-protected-operator-handoff-3c5da343-2026-05-09.md`.
+
 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
   - 2026-05-09: Names-only readiness check found missing live-import auth,
     rollback auth, and production DB/Coolify restore context in the current

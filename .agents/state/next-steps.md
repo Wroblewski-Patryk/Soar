@@ -27,6 +27,9 @@ auth, production DB/Coolify context for current-date restore evidence, and real
 RC approval identities. Do not treat public health/build-info, public UI
 access, or local regression suites as completion evidence for `LIVEIMPORT-03`,
 rollback proof, restore proof, RC approval, or authenticated module clickthrough.
+Use the concise protected operator handoff at
+`docs/operations/v1-protected-operator-handoff-3c5da343-2026-05-09.md` before
+running the full blocker pack.
 
 UX/UI process note: future UX/UI work must start with the autonomous memory
 preflight now documented in `docs/governance/user-feedback-loop.md`,

@@ -56,6 +56,13 @@ Last updated: 2026-05-09
   regression suites must not be treated as completion evidence for protected
   runtime/readiness tasks. Evidence:
   `docs/planning/current-executable-v1-boundary-3c5da343-task-2026-05-09.md`.
+- 2026-05-09 `V1-PROTECTED-OPERATOR-HANDOFF-3C5DA343-2026-05-09` published a
+  concise no-secret operator handoff for the remaining V1 protected blockers.
+  It lists required input names, command order, acceptance criteria, and
+  evidence that must not be accepted as protected proof. V1 remains `BLOCKED`
+  until those protected commands are executed from an approved operator
+  context. Evidence:
+  `docs/operations/v1-protected-operator-handoff-3c5da343-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-20` reconciled the second-exchange plan with the
   deployed Gate.io foundation. The plan is now complete as a planning artifact
   and records the exact current support boundary: Gate.io public catalog and
