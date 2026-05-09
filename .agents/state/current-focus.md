@@ -17,14 +17,14 @@ contracts synchronized.
 ## Current Delivery Stage
 
 2026-05-09 current production handoff: production Web build-info is current at
-`c50e1e7cf1e37d9c799031cacbb30a834f57e81d`. Public API `/health`, API
-`/ready`, Web `/`, and public/unauthenticated UI access pass after the
-protected-operator-pack/source-of-truth sync batch. Full
-authenticated/admin production UI module clickthrough remains blocked until
-valid production app access is available. Evidence:
-`docs/operations/deploy-freshness-c50e1e7c-2026-05-09.md`,
-`docs/operations/v1-final-preflight-c50e1e7c-2026-05-09.md`, and
-`docs/operations/prod-ui-public-access-clickthrough-c50e1e7c-2026-05-09.md`.
+`010b4f8b6abfaf4c24d26550eb4761215d119f21`. Public API `/health`, API
+`/ready`, Web `/`, and no-secret final V1 preflight public checks pass after
+the Gate.io source batch. Full authenticated/admin production UI module
+clickthrough remains blocked until valid production app access is available.
+Evidence:
+`docs/planning/deploy-freshness-010b4f8b-task-2026-05-09.md`,
+`docs/operations/v1-final-preflight-010b4f8b-2026-05-09.md`, and
+`docs/operations/deploy-lag-1f1d9c12-2026-05-09.md`.
 
 2026-05-09 deploy lag note: pushed `origin/main`
 `1f1d9c12e0cc99884eced81546802a261b0925e9` did not reach production within
@@ -36,15 +36,14 @@ waits, plus a later 180-second follow-up wait. Production build-info remained on
 The current shell has no Coolify deploy hook/API token env names and no
 working authenticated SSH/VPS inspection context.
 
-2026-05-09 deploy lag follow-up: the operator handoff/source-of-truth commit
-`d355df93107f4d7ff9d6231107528295cbc873c2` was pushed to `origin/main`, but a
-bounded 120-second production build-info wait also remained on
-`c50e1e7cf1e37d9c799031cacbb30a834f57e81d`. Treat `d355df93` as pushed but not
-production-current until build-info proves it. Evidence:
-`docs/planning/deploy-lag-d355df93-follow-up-task-2026-05-09.md` and
+2026-05-09 deploy follow-up: the earlier `d355df93` handoff lag is closed,
+and the later Gate.io source batch `010b4f8b6abfaf4c24d26550eb4761215d119f21`
+is production-current. The temporary `010b4f8b` lag classification was caused
+by using an incorrect full SHA in the first wait. Evidence:
+`docs/planning/deploy-freshness-010b4f8b-task-2026-05-09.md` and
 `docs/operations/deploy-lag-1f1d9c12-2026-05-09.md`.
 
-2026-05-09 no-secret V1 preflight refresh: deployed `c50e1e7c` passes
+2026-05-09 no-secret V1 preflight refresh: deployed `010b4f8b` passes
 build-info and public API/Web smoke, but the current release posture is
 `BLOCKED` on missing live-import auth, rollback auth, production DB restore
 context for the active evidence date, failed/open RC evidence, missing

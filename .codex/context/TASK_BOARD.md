@@ -17,6 +17,13 @@ Last updated: 2026-05-09
 
 ## READY
 
+- [x] `DEPLOY-FRESHNESS-010B4F8B-2026-05-09 release: verify Gate.io source batch deployment`
+  - Scope: verified production build-info for the three-commit Gate.io source
+    batch ending at `010b4f8b6abfaf4c24d26550eb4761215d119f21`, ran public
+    API/Web smoke, and refreshed no-secret final V1 preflight. Public checks
+    pass; protected/formal V1 evidence remains blocked. Evidence:
+    `docs/planning/deploy-freshness-010b4f8b-task-2026-05-09.md`.
+
 - [x] `EXCHANGE2-22-GATEIO-PUBLIC-SYMBOL-RULES-2026-05-09 fix(exchange): decouple public symbol rules from live execution`
   - Scope: changed public symbol-rule resolution to use `MARKET_CATALOG`
     support instead of `LIVE_EXECUTION`, added Gate.io regression coverage, and

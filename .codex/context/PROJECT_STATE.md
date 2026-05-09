@@ -13,6 +13,13 @@ Last updated: 2026-05-09
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-09 `DEPLOY-FRESHNESS-010B4F8B-2026-05-09` verified that the
+  three-commit Gate.io source batch ending at
+  `010b4f8b6abfaf4c24d26550eb4761215d119f21` is production-current. Public
+  API/Web smoke passes, and the no-secret final V1 preflight reports
+  build-info/public smoke PASS while remaining correctly `BLOCKED` on
+  protected/formal V1 evidence. Evidence:
+  `docs/planning/deploy-freshness-010b4f8b-task-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-22-GATEIO-PUBLIC-SYMBOL-RULES-2026-05-09` decoupled
   public symbol-rule resolution from live execution support. Gate.io public
   symbol rules now resolve through the existing `MARKET_CATALOG`/market-map
@@ -31,11 +38,10 @@ Last updated: 2026-05-09
   `docs/operations/gateio-market-stream-source-smoke-2026-05-09.md`.
 - 2026-05-09 `DEPLOY-LAG-D355DF93-FOLLOW-UP-2026-05-09` recorded that the
   pushed operator handoff/source-of-truth commit
-  `d355df93107f4d7ff9d6231107528295cbc873c2` is not production-current. A
-  bounded 120-second production build-info wait remained on
-  `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`. The next deploy action requires
-  operator-side Coolify inspection or an approved trigger; empty retrigger
-  commits are not acceptable evidence. Evidence:
+  `d355df93107f4d7ff9d6231107528295cbc873c2` was not production-current during
+  the bounded follow-up wait, which remained on
+  `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`. A later build-info wait showed
+  production advanced beyond this historical lag. Evidence:
   `docs/planning/deploy-lag-d355df93-follow-up-task-2026-05-09.md`.
 - 2026-05-09 `DASH-RUNTIME-CURRENT-AGGREGATE-2026-05-09` tightened the
   dashboard runtime aggregate read model. Current-state dashboard fields now

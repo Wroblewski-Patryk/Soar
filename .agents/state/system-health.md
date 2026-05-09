@@ -4,12 +4,10 @@ Last updated: 2026-05-09
 
 ## Latest Health Snapshot
 
-- Current production handoff is verified at
-  `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`: build-info PASS, public
-  API/Web smoke PASS, no-secret final preflight public checks PASS, and the
-  protected operator pack/source-of-truth synchronization batch is deployed.
-  Public/unauthenticated UI access refresh is current for the same deployed
-  candidate.
+- Current production build-info is verified at
+  `010b4f8b6abfaf4c24d26550eb4761215d119f21`: build-info PASS, public
+  API/Web smoke PASS, and no-secret final V1 preflight public checks PASS.
+  The preflight remains correctly `BLOCKED` on protected/formal V1 evidence.
   `LIVEIMPORT-03` target sync
   remains PASS, and protected readiness check remains PASS as a fail-closed
   blocker classification. V1 remains `BLOCKED` on missing live-import auth,
@@ -31,20 +29,14 @@ Last updated: 2026-05-09
   `docs/operations/prod-ui-public-access-clickthrough-4ee1672e-2026-05-09.md`,
   `docs/planning/liveimport-03-current-production-target-sync-task-2026-05-09.md`,
   and `docs/operations/v1-protected-access-readiness-2026-05-09.md`.
-- Pushed `origin/main` currently ends at
-  `d355df93107f4d7ff9d6231107528295cbc873c2`. Production build-info did not
-  expose the prior evidence batch `1f1d9c12` within the accepted 900-second
-  wait, two additional 300-second follow-up waits, or a later 180-second
-  follow-up wait. After the `d355df93` operator handoff/source-of-truth commit
-  was pushed, a bounded 120-second follow-up wait also remained on
-  `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`. Treat `d355df93` as pushed but
-  not production-current until a later build-info wait passes. No Coolify
-  deploy hook/API token env names or working authenticated SSH/VPS inspection
-  context are available in the current shell. Evidence:
-  `docs/planning/deploy-lag-d355df93-follow-up-task-2026-05-09.md`.
-- Current production public smoke still passes on the deployed `c50e1e7c`
-  surface: API `/health` 200, API `/ready` 200, and Web `/` 200. This keeps
-  the issue classified as deploy lag, not current public API/Web outage.
+- Pushed `origin/main` currently ends at `010b4f8b`. Production build-info
+  also exposes the correct full SHA
+  `010b4f8b6abfaf4c24d26550eb4761215d119f21`. The earlier deploy-lag
+  interpretation came from using an incorrect full SHA for the same short
+  commit; the corrected wait passed on attempt 1. Evidence:
+  `docs/planning/deploy-freshness-010b4f8b-task-2026-05-09.md`.
+- Current production public smoke passes on the deployed `010b4f8b` surface:
+  API `/health` 200, API `/ready` 200, and Web `/` 200.
 - Pushed `1f1d9c12` has no `apps`, `packages`, `prisma`, or `scripts` changes
   over deployed `c50e1e7c`; it is a docs/evidence batch. Runtime protected
   readback remains tied to build-info-proven `c50e1e7c` unless an operator

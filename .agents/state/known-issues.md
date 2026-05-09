@@ -32,12 +32,11 @@ Last updated: 2026-05-09
   runtime or final V1 evidence. Current
   shell also has no Coolify deploy hook/API token env names and no working
   authenticated SSH/VPS inspection context.
-- The follow-up operator handoff/source-of-truth commit
-  `d355df93107f4d7ff9d6231107528295cbc873c2` is also pushed but not
-  production-current. A bounded 120-second production build-info wait stayed
-  on `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`. Continue treating
-  build-info-proven `c50e1e7c` as production truth until the approved
-  Coolify/operator path deploys a newer SHA.
+- 2026-05-09 update: production build-info later advanced to `d355df93`,
+  closing that prior handoff lag, and then to the Gate.io source batch
+  `010b4f8b6abfaf4c24d26550eb4761215d119f21`. The temporary
+  pushed-but-not-deployed classification for `010b4f8b` was caused by using an
+  incorrect full SHA in the first wait, not by an actual production lag.
 - Final V1 preflight previously depended on global `pnpm` for its internal
   public deploy checks and could falsely report build-info/public-smoke
   blockers on this workstation. The command now invokes bundled Node scripts
