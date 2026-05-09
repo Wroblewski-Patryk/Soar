@@ -19,9 +19,13 @@ contracts synchronized.
 2026-05-09 implementation update: `EXCHANGE2-29` enabled only Gate.io
 `WALLET_CASHFLOW_HISTORY` through the existing exchange adapter boundary.
 Focused exchange/wallet cashflow tests, API typecheck, guardrails, docs
-parity, and diff check passed. Gate.io live submit and exchange-side cancel
-remain unsupported. Evidence:
-`docs/planning/exchange2-29-gateio-wallet-cashflow-history-task-2026-05-09.md`.
+parity, and diff check passed. Production build-info now exposes
+`8ea7f33b581ec0f3cf7d653168b160c31cbb23a8`, public API/Web smoke passes, and
+the no-secret final V1 preflight remains correctly blocked on protected/formal
+evidence. Gate.io live submit and exchange-side cancel remain unsupported.
+Evidence:
+`docs/planning/exchange2-29-gateio-wallet-cashflow-history-task-2026-05-09.md`
+and `docs/operations/deploy-freshness-8ea7f33b-2026-05-09.md`.
 
 2026-05-09 implementation update: `EXCHANGE2-28` enabled only Gate.io
 `TRADE_HISTORY_SNAPSHOT` through the existing authenticated-read boundary.

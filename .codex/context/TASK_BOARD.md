@@ -21,9 +21,11 @@ Last updated: 2026-05-09
   - Scope: enable only `GATEIO` `WALLET_CASHFLOW_HISTORY` through the existing
     exchange adapter boundary, while keeping Gate.io live/cancel unsupported.
     Focused exchange/wallet cashflow tests, API typecheck, guardrails, docs
-    parity, and diff check passed.
+    parity, and diff check passed. Production build-info and public smoke pass
+    for `8ea7f33b581ec0f3cf7d653168b160c31cbb23a8`.
     Evidence:
-    `docs/planning/exchange2-29-gateio-wallet-cashflow-history-task-2026-05-09.md`.
+    `docs/planning/exchange2-29-gateio-wallet-cashflow-history-task-2026-05-09.md`
+    and `docs/operations/deploy-freshness-8ea7f33b-2026-05-09.md`.
 
 - [x] `EXCHANGE2-28-GATEIO-TRADE-HISTORY-SNAPSHOT-2026-05-09 feature(exchange): enable Gate.io trade-history snapshot`
   - Scope: enable only `GATEIO` `TRADE_HISTORY_SNAPSHOT` through the existing

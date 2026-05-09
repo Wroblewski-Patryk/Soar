@@ -92,6 +92,14 @@ updates exact-operation tests, and synchronizes source-of-truth docs.
   - PASS: `node scripts/repoGuardrails.mjs`
   - PASS: `node scripts/checkDocsParity.mjs`
   - PASS: `git diff --check` (line-ending warnings only)
+- Deployment:
+  - PASS: production Web build-info exposed
+    `8ea7f33b581ec0f3cf7d653168b160c31cbb23a8` on wait attempt 16.
+  - PASS: public deploy smoke for API `/health`, API `/ready`, and Web `/`.
+  - BLOCKED as expected: no-secret V1 final preflight public checks passed,
+    while protected/formal evidence remains blocked. Evidence:
+    `docs/operations/deploy-freshness-8ea7f33b-2026-05-09.md` and
+    `docs/operations/v1-final-preflight-8ea7f33b-2026-05-09.md`.
 - Manual checks: not applicable.
 - High-risk checks: Gate.io live submit remains fail-closed in boundary
   coverage.
@@ -151,7 +159,8 @@ updates exact-operation tests, and synchronizes source-of-truth docs.
 - Files changed: exact capability matrix/tests, architecture/module/planning
   and state docs.
 - How tested: focused exchange/wallet cashflow tests, API typecheck,
-  guardrails, docs parity, and diff check.
+  guardrails, docs parity, diff check, production build-info, public deploy
+  smoke, and no-secret V1 final preflight.
 - What is incomplete: Gate.io live submit, live execution, and exchange-side
   cancel remain unsupported.
 - Next steps: Gate.io live submit is the next implementation gap, but it is

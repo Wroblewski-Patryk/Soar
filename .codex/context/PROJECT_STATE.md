@@ -18,8 +18,11 @@ Last updated: 2026-05-09
   adapter boundary. Scope is limited to `WALLET_CASHFLOW_HISTORY`; Gate.io live
   submit and exchange-side cancel remain unsupported. Focused exchange/wallet
   cashflow tests, API typecheck, guardrails, docs parity, and diff check passed.
+  Production build-info reached
+  `8ea7f33b581ec0f3cf7d653168b160c31cbb23a8`; public deploy smoke passes.
   Evidence:
-  `docs/planning/exchange2-29-gateio-wallet-cashflow-history-task-2026-05-09.md`.
+  `docs/planning/exchange2-29-gateio-wallet-cashflow-history-task-2026-05-09.md`
+  and `docs/operations/deploy-freshness-8ea7f33b-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-28-GATEIO-TRADE-HISTORY-SNAPSHOT-2026-05-09` enabled
   Gate.io trade-history snapshot through the existing authenticated-read
   boundary. Scope is limited to `TRADE_HISTORY_SNAPSHOT`; Gate.io wallet
