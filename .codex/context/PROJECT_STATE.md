@@ -288,6 +288,12 @@ Last updated: 2026-05-09
   4792fbca...` and date-aware output paths instead of local evidence-only
   `HEAD`. Evidence:
   `docs/planning/v1-continuation-expected-sha-snippets-task-2026-05-09.md`.
+- 2026-05-09 `V1-PROTECTED-ACCESS-READINESS-2026-05-09` confirmed the current
+  shell is still missing required protected inputs. Names-only checks found no
+  live-import auth, rollback auth, or production DB/Coolify restore context
+  env names. Final V1 evidence remains blocked until those inputs, RC approval
+  identities, and authenticated/admin UI access are supplied. Evidence:
+  `docs/operations/v1-protected-access-readiness-2026-05-09.md`.
 - 2026-05-08 `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08` published the
   current no-secret final V1 preflight JSON/Markdown snapshot for deployed SHA
   `052df82244ea0f81e8611ff8bb2b677db115bd19`. The snapshot reports build-info

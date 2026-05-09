@@ -182,6 +182,12 @@ Last updated: 2026-05-09
   operators not to substitute local evidence-only `HEAD` until build-info
   proves deployment. Evidence:
   `docs/planning/v1-final-blocker-pack-candidate-sha-sync-task-2026-05-09.md`.
+- Protected access readiness BLOCKED: current shell lacks required
+  live-import auth, rollback auth, and production DB/Coolify restore context
+  env names. No protected production evidence, rollback proof, restore drill,
+  RC approval, or authenticated/admin UI clickthrough can be completed until
+  operator inputs are supplied. Evidence:
+  `docs/operations/v1-protected-access-readiness-2026-05-09.md`.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307

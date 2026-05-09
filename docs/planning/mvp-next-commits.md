@@ -324,6 +324,15 @@ Operational queue for one-task execution runs.
     date-aware output paths instead of local evidence-only `HEAD`. Evidence:
     `docs/planning/v1-continuation-expected-sha-snippets-task-2026-05-09.md`.
 
+- [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
+  - 2026-05-09: Names-only readiness check found missing live-import auth,
+    rollback auth, and production DB/Coolify restore context in the current
+    shell. Final V1 evidence remains blocked until protected app/operator
+    auth, DB/Coolify context, RC approval identities, and authenticated/admin
+    UI access are supplied. Evidence:
+    `docs/planning/v1-protected-access-readiness-task-2026-05-09.md` and
+    `docs/operations/v1-protected-access-readiness-2026-05-09.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - 2026-05-08: Generated and committed the current no-secret final V1
     preflight JSON/Markdown snapshot for deployed SHA

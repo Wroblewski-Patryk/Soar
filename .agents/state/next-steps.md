@@ -198,6 +198,12 @@ candidate from local evidence-only commits: use
 evidence until another intended candidate is deployed and proven by
 build-info. Evidence:
 `docs/planning/v1-final-blocker-pack-candidate-sha-sync-task-2026-05-09.md`.
+Protected access readiness is currently BLOCKED. Names-only checks in this
+shell found no `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, or production
+DB/Coolify restore context env names. Evidence:
+`docs/operations/v1-protected-access-readiness-2026-05-09.md`. The next
+executable step requires protected app/operator auth, DB/Coolify context, RC
+approval identities, and authenticated/admin UI access.
 
 The local V1 backend paper/live runtime line is closed for this slice: focused
 parity/crash coverage, DB-backed runtime/order/exchange/import/readback packs,

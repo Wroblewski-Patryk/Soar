@@ -57,6 +57,11 @@ Rule: fix/cleanup/update first, then feature delivery.
   Active continuation snippets now use the verified deployed candidate
   `4792fbca9ab3ca44d08c312f219f70d648707886` and date-aware output paths
   instead of local evidence-only `HEAD`.
+- 2026-05-09: `V1-PROTECTED-ACCESS-READINESS-2026-05-09` is blocked with
+  `docs/planning/v1-protected-access-readiness-task-2026-05-09.md`. Names-only
+  env checks found no live-import auth, rollback auth, or production DB/Coolify
+  restore context in the current shell. Final V1 evidence cannot proceed until
+  those protected inputs and RC/UI access are supplied.
 - 2026-05-09: Closed
   `V1-FINAL-BLOCKER-PACK-DATE-OVERRIDES-2026-05-09` with
   `docs/planning/v1-final-blocker-pack-date-overrides-task-2026-05-09.md`.

@@ -314,6 +314,14 @@ Last updated: 2026-05-09
     for protected evidence examples, not local evidence-only `HEAD`. Evidence:
     `docs/planning/v1-continuation-expected-sha-snippets-task-2026-05-09.md`.
 
+- [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
+  - Scope: current shell lacks required protected env names for live-import
+    auth, rollback auth, and production DB/Coolify restore context. Final V1
+    evidence, rollback proof, restore drill, RC approval, and authenticated UI
+    clickthrough remain blocked until operator inputs are supplied. Evidence:
+    `docs/planning/v1-protected-access-readiness-task-2026-05-09.md` and
+    `docs/operations/v1-protected-access-readiness-2026-05-09.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - Scope: generated and committed the current no-secret final V1 preflight
     JSON/Markdown snapshot for deployed SHA
