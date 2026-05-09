@@ -90,6 +90,14 @@ Last updated: 2026-05-09
   remains open because authenticated/protected runtime readback and broader V1
   release gate evidence are still required. Evidence:
   `docs/planning/botmulti-09-current-production-containment-task-2026-05-09.md`.
+- 2026-05-09 `LIVEIMPORT-03-CURRENT-PRODUCTION-TARGET-SYNC-2026-05-09`
+  reconciled the open live-import readback blocker with current production
+  build-info. Active queue/state now targets deployed
+  `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f` and keeps stale candidate
+  `39146d2e` rejected. `LIVEIMPORT-03` remains open because authenticated
+  read-only runtime positions readback and redacted evidence for the reported
+  LIVE ETH/DOGE rows are still missing. Evidence:
+  `docs/planning/liveimport-03-current-production-target-sync-task-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-20` reconciled the second-exchange plan with the
   deployed Gate.io foundation. The plan is now complete as a planning artifact
   and records the exact current support boundary: Gate.io public catalog and

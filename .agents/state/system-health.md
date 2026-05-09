@@ -203,6 +203,11 @@ Last updated: 2026-05-09
   `docs/operations/prod-ui-public-access-clickthrough-4ee1672e-2026-05-09.md`.
   The full production UI module clickthrough remains blocked on valid
   authenticated/admin app access.
+- `LIVEIMPORT-03` current production target is now synced to deployed
+  `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`. Public/no-secret checks pass,
+  but this does not close the blocker; it still requires authenticated
+  read-only runtime positions readback and redacted evidence for the reported
+  LIVE ETH/DOGE rows.
 - Protected access readiness BLOCKED: current shell lacks required
   live-import auth, rollback auth, and production DB/Coolify restore context
   env names. No protected production evidence, rollback proof, restore drill,

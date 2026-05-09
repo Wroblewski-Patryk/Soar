@@ -105,8 +105,9 @@ operator-authenticated environment.
 
 `LIVEIMPORT-03` now has one canonical read-only evidence command. First verify
 the chosen deployed candidate through production build-info, then pass that
-same SHA to the collector:
-`$releaseDate = Get-Date -Format yyyy-MM-dd; $expectedSha = "3c5da34371e22aecb1a7aff0a185018870d35cec"; pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --timeout-seconds 900 --interval-seconds 30; pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output "docs/operations/liveimport-03-prod-readback-$releaseDate.json"`.
+same SHA to the collector. Current protected readback target is deployed
+`4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`:
+`$releaseDate = Get-Date -Format yyyy-MM-dd; $expectedSha = "4ee1672e7a3ac6d9b549b4d461120afd7f89d68f"; pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --timeout-seconds 900 --interval-seconds 30; pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output "docs/operations/liveimport-03-prod-readback-$releaseDate.json"`.
 The collector is hardened to fail closed when no RUNNING session produces a
 runtime positions payload, so no-session output cannot be treated as V1
 evidence.
@@ -128,10 +129,11 @@ no-secret status reports are
 and
 `docs/operations/v1-final-preflight-2026-05-08-protected-context.md`.
 
-Production restore drill is now closed as PASS through approved Coolify
-terminal access. Evidence:
+Production restore drill was previously closed as PASS through approved
+Coolify terminal access for the 2026-05-08 evidence date. Evidence:
 `docs/operations/v1-restore-drill-prod-2026-05-08T15-16-24Z.md`. Latest
-verified Coolify deploy is `721fe8482922835a9419f0e529baeef4ff6a74c9`.
+verified public/no-secret deploy is
+`4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`.
 Remaining V1 release blockers are protected Soar application/operator auth for
 `LIVEIMPORT-03`, rollback proof auth, and real RC Gate 4 approval.
 
@@ -165,8 +167,9 @@ Backup/restore drill and rollback proof are also current for 2026-05-07 but
 and rollback proof failed closed on protected `401` responses. V1 remains
 NO-GO.
 
-The canonical `LIVEIMPORT-03` command now targets the currently checked-out
-`HEAD` after production build-info confirms that `HEAD` is deployed.
+The canonical `LIVEIMPORT-03` command now targets the latest build-info-proven
+production SHA. Do not substitute local evidence-only `HEAD` unless production
+build-info proves that SHA is deployed.
 
 Latest continuation recheck: public production build-info reached the RC
 approval gate hardening commit

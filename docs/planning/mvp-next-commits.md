@@ -3365,14 +3365,16 @@ Operational queue for one-task execution runs.
     `docs/planning/orddrift-01-manual-context-canonical-group-no-direct-fallback-task-2026-05-03.md`.
 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production`
   - Scope: use authenticated read-only dashboard/API evidence on current
-    production `main` (`6a7c9889` or later) for the reported LIVE ETH/DOGE rows:
+    production build-info
+    `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f` for the reported LIVE ETH/DOGE rows:
     ownership, `strategyId` or single-strategy provenance recovery, TTP
     visibility, actionable state, and import completeness across assigned bot
     markets. Do not promote stale candidate `39146d2e`; `LIVEIMPORT-03A`
-    confirmed it is not the current production candidate and focused
-    current-main imported-position/runtime strategy tests pass (`51/51`).
-    Validation still required: authenticated runtime positions readback and
-    redacted evidence.
+    confirmed it is not a valid production promotion candidate. 2026-05-09
+    refresh: current production build-info is `4ee1672e`, public/no-secret
+    checks pass, and the collector command in the protected operator handoff
+    targets that SHA. Validation still required: authenticated runtime
+    positions readback and redacted evidence.
 - [x] `PAPERSIGNAL-01 fix(api-runtime): audit PAPER signal display-to-execution parity`
   - 2026-05-03: Closed the first confirmed drift. Runtime symbol-stats read
     models now prefer active canonical `BotMarketGroup` and enabled
