@@ -317,6 +317,13 @@ Operational queue for one-task execution runs.
     production build-info proves it is deployed. Evidence:
     `docs/planning/v1-final-blocker-pack-candidate-sha-sync-task-2026-05-09.md`.
 
+- [x] `V1-CONTINUATION-EXPECTED-SHA-SNIPPETS-2026-05-09 release: align continuation expected-sha snippets`
+  - 2026-05-09: Updated active `.agents/state` continuation snippets so
+    build-info waits and `LIVEIMPORT-03` readback examples use the verified
+    deployed candidate `4792fbca9ab3ca44d08c312f219f70d648707886` and
+    date-aware output paths instead of local evidence-only `HEAD`. Evidence:
+    `docs/planning/v1-continuation-expected-sha-snippets-task-2026-05-09.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - 2026-05-08: Generated and committed the current no-secret final V1
     preflight JSON/Markdown snapshot for deployed SHA

@@ -223,7 +223,7 @@ been removed because the project does not use paid GitHub Actions and workflow
 attempts create unwanted email noise.
 
 ```powershell
-$expectedSha = git rev-parse HEAD
+$expectedSha = "4792fbca9ab3ca44d08c312f219f70d648707886"
 pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --timeout-seconds 900 --interval-seconds 15
 ```
 
@@ -298,16 +298,16 @@ deployment.
 Canonical command once auth is available:
 
 ```powershell
-$expectedSha = git rev-parse HEAD
-pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output docs/operations/liveimport-03-prod-readback-2026-05-08.json
+$releaseDate = Get-Date -Format yyyy-MM-dd
+$expectedSha = "4792fbca9ab3ca44d08c312f219f70d648707886"
+pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output "docs/operations/liveimport-03-prod-readback-$releaseDate.json"
 ```
 
-If production build-info reports a deployed commit older than latest `main`,
-wait for the accepted Coolify/manual deploy before protected readback. Do not
-start `LIVEIMPORT-03` against a stale deployment unless the user/operator
-explicitly confirms the checked-out docs-only changes are irrelevant to the
-readback. Latest verified Coolify deploy:
-`721fe8482922835a9419f0e529baeef4ff6a74c9`.
+If production build-info reports a deployed commit older than the chosen
+`$expectedSha`, wait for the accepted Coolify/manual deploy before protected
+readback. Do not substitute local evidence-only `HEAD` unless build-info proves
+that SHA is deployed or the user/operator explicitly confirms those docs-only
+changes are irrelevant to the protected readback.
 
 ## Candidate Backlog
 

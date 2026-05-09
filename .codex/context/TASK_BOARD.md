@@ -307,6 +307,13 @@ Last updated: 2026-05-09
     be used until build-info proves deployment. Evidence:
     `docs/planning/v1-final-blocker-pack-candidate-sha-sync-task-2026-05-09.md`.
 
+- [x] `V1-CONTINUATION-EXPECTED-SHA-SNIPPETS-2026-05-09 release: align continuation expected-sha snippets`
+  - Scope: updated active continuation commands in `.agents/state` so future
+    runs use the verified deployed candidate
+    `4792fbca9ab3ca44d08c312f219f70d648707886` and date-aware output paths
+    for protected evidence examples, not local evidence-only `HEAD`. Evidence:
+    `docs/planning/v1-continuation-expected-sha-snippets-task-2026-05-09.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - Scope: generated and committed the current no-secret final V1 preflight
     JSON/Markdown snapshot for deployed SHA

@@ -104,9 +104,9 @@ protected evidence collection remains blocked without an
 operator-authenticated environment.
 
 `LIVEIMPORT-03` now has one canonical read-only evidence command. First verify
-the currently checked-out `HEAD` through production build-info, then pass that
+the chosen deployed candidate through production build-info, then pass that
 same SHA to the collector:
-`$expectedSha = git rev-parse HEAD; pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --timeout-seconds 900 --interval-seconds 30; pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output docs/operations/liveimport-03-prod-readback-2026-05-08.json`.
+`$releaseDate = Get-Date -Format yyyy-MM-dd; $expectedSha = "4792fbca9ab3ca44d08c312f219f70d648707886"; pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --timeout-seconds 900 --interval-seconds 30; pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output "docs/operations/liveimport-03-prod-readback-$releaseDate.json"`.
 The collector is hardened to fail closed when no RUNNING session produces a
 runtime positions payload, so no-session output cannot be treated as V1
 evidence.

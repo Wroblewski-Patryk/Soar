@@ -282,6 +282,12 @@ Last updated: 2026-05-09
   not to use local evidence-only `HEAD` as the protected evidence candidate
   until production build-info proves that SHA is deployed. Evidence:
   `docs/planning/v1-final-blocker-pack-candidate-sha-sync-task-2026-05-09.md`.
+- 2026-05-09 `V1-CONTINUATION-EXPECTED-SHA-SNIPPETS-2026-05-09` aligned
+  active continuation snippets with that same deployed candidate. Build-info
+  wait and `LIVEIMPORT-03` examples now use explicit `$expectedSha =
+  4792fbca...` and date-aware output paths instead of local evidence-only
+  `HEAD`. Evidence:
+  `docs/planning/v1-continuation-expected-sha-snippets-task-2026-05-09.md`.
 - 2026-05-08 `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08` published the
   current no-secret final V1 preflight JSON/Markdown snapshot for deployed SHA
   `052df82244ea0f81e8611ff8bb2b677db115bd19`. The snapshot reports build-info

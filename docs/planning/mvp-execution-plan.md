@@ -52,6 +52,12 @@ Rule: fix/cleanup/update first, then feature delivery.
   operators not to use local evidence-only `HEAD` until build-info proves it is
   deployed.
 - 2026-05-09: Closed
+  `V1-CONTINUATION-EXPECTED-SHA-SNIPPETS-2026-05-09` with
+  `docs/planning/v1-continuation-expected-sha-snippets-task-2026-05-09.md`.
+  Active continuation snippets now use the verified deployed candidate
+  `4792fbca9ab3ca44d08c312f219f70d648707886` and date-aware output paths
+  instead of local evidence-only `HEAD`.
+- 2026-05-09: Closed
   `V1-FINAL-BLOCKER-PACK-DATE-OVERRIDES-2026-05-09` with
   `docs/planning/v1-final-blocker-pack-date-overrides-task-2026-05-09.md`.
   The final blocker execution pack now declares one `$releaseDate` and passes
