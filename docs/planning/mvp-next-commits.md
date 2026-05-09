@@ -206,9 +206,12 @@ Operational queue for one-task execution runs.
     visits all canonical public, dashboard, admin, and legacy redirect routes,
     clicks all module-level functions that are safe to exercise, captures
     screenshots/console/network evidence, and classifies every flow as PASS,
-    FAIL, BLOCKED, or NOT_APPLICABLE. Execution is blocked until latest `main`
-    is deployed through build-info and authenticated/admin production app
-    access is available. Evidence plan:
+    FAIL, BLOCKED, or NOT_APPLICABLE.
+  - 2026-05-09: Current production build-info and public UI access are fresh
+    for `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`. Execution is now blocked
+    on authenticated/admin production app access, required representative
+    production test data, and explicit operator approval before live-money or
+    destructive actions. Evidence plan:
     `docs/planning/prod-ui-module-clickthrough-audit-plan-2026-05-08.md`.
 
 - [x] `PROD-UI-PUBLIC-ACCESS-CLICKTHROUGH-2026-05-08 qa: verify production public access and auth gates`
@@ -485,6 +488,15 @@ Operational queue for one-task execution runs.
     `docs/planning/prod-ui-public-access-refresh-55469cdc-task-2026-05-09.md`
     and
     `docs/operations/prod-ui-public-access-clickthrough-55469cdc-2026-05-09.md`.
+
+- [x] `PROD-UI-AUDIT-CURRENT-BLOCKER-SYNC-55469CDC-2026-05-09 qa: sync production UI audit blocker`
+  - 2026-05-09: Updated the production UI module clickthrough audit plan and
+    active queue/context docs so the stale deploy/build-info blocker is not
+    treated as current after `55469cdc` reached production. The full audit
+    remains open and blocked on authenticated/admin production app access,
+    representative test data, and explicit operator approval for any
+    live-money or destructive action. Evidence:
+    `docs/planning/prod-ui-audit-current-blocker-sync-55469cdc-task-2026-05-09.md`.
 
 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
   - 2026-05-09: Names-only readiness check found missing live-import auth,

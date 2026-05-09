@@ -153,6 +153,14 @@ Last updated: 2026-05-09
   HTTP 307 to `/auth/login`. Full authenticated/admin module clickthrough
   remains blocked on valid production app access. Evidence:
   `docs/operations/prod-ui-public-access-clickthrough-55469cdc-2026-05-09.md`.
+- 2026-05-09 `PROD-UI-AUDIT-CURRENT-BLOCKER-SYNC-55469CDC-2026-05-09`
+  synced the full production UI module clickthrough audit plan with current
+  deployed build-info `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`. The stale
+  deploy/build-info blocker is no longer current; the full audit remains open
+  and blocked on authenticated/admin production app access, representative
+  production test data, and explicit operator approval before any live-money or
+  destructive action. Evidence:
+  `docs/planning/prod-ui-audit-current-blocker-sync-55469cdc-task-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-20` reconciled the second-exchange plan with the
   deployed Gate.io foundation. The plan is now complete as a planning artifact
   and records the exact current support boundary: Gate.io public catalog and

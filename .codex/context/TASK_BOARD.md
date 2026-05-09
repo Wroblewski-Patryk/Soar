@@ -347,10 +347,20 @@ Last updated: 2026-05-09
     dashboard, admin, and legacy redirect routes, clicking safe module
     functions and capturing screenshots, console/network evidence, responsive
     checks, accessibility notes, and architecture-alignment findings.
-    Execution is blocked until latest `main` is deployed and authenticated/admin
-    production app access is available.
+    Current production build-info and public access evidence are fresh for
+    `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`. Execution is blocked until
+    authenticated/admin production app access, representative production test
+    data, and explicit operator approval for live-money or destructive actions
+    are available.
     Evidence plan:
     `docs/planning/prod-ui-module-clickthrough-audit-plan-2026-05-08.md`.
+
+- [x] `PROD-UI-AUDIT-CURRENT-BLOCKER-SYNC-55469CDC-2026-05-09 qa: sync production UI audit blocker`
+  - Scope: synced the production UI clickthrough audit plan and active
+    queue/context docs with deployed build-info `55469cdc`, removing stale
+    deploy-blocker language while keeping the authenticated/admin blocker
+    explicit. Evidence:
+    `docs/planning/prod-ui-audit-current-blocker-sync-55469cdc-task-2026-05-09.md`.
 
 - [x] `PROD-UI-PUBLIC-ACCESS-CLICKTHROUGH-2026-05-08 qa: verify production public access and auth gates`
   - Scope: captured the public/unauthenticated portion of the production UI

@@ -8,7 +8,7 @@
 - Status: READY
 - Owner: QA/Test
 - Depends on:
-  - latest pushed `main` deployed and verified through web build-info
+  - current target build deployed and verified through web build-info
   - authenticated production user access for dashboard flows
   - admin production user access for `/admin/*` flows
   - explicit operator approval before any live-money or destructive action
@@ -28,10 +28,14 @@ The user requested a production clickthrough audit after the planned backend
 and exchange tasks. The goal is to verify every user-visible function from the
 UI against the canonical architecture, route, module, API, and UX contracts.
 
-Latest state when this plan was written:
-- latest pushed `main`: `4e226086`
-- latest observed production build-info: `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d`
+Current state after the 2026-05-09 sync:
+- current production target:
+  `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`
+- latest observed production build-info:
+  `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`
 - public production smoke: PASS for API `/health`, API `/ready`, and web `/`
+- public/unauthenticated UI access:
+  `docs/operations/prod-ui-public-access-clickthrough-55469cdc-2026-05-09.md`
 - protected dashboard/admin clickthrough: blocked until valid production auth
   is provided or an approved authenticated browser context is available
 
@@ -162,7 +166,7 @@ If these accounts are unavailable, record affected flows as `BLOCKED_AUTH` or
 
 ## Execution Plan
 1. Verify production freshness:
-   - wait for `/api/build-info` to expose the latest expected SHA.
+   - confirm `/api/build-info` exposes the current expected SHA.
    - run public deploy smoke with workers disabled.
 2. Start unauthenticated route pass:
    - visit public routes.
@@ -251,9 +255,9 @@ Report format:
   - `node scripts/checkDocsParity.mjs` => PASS
   - `git diff --check` => PASS
 - Manual checks:
-  - public deploy smoke during planning recheck => PASS
-  - build-info latest `main` freshness during planning recheck => BLOCKED,
-    production still on `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d`
+  - public deploy smoke during latest 2026-05-09 recheck for `55469cdc` => PASS
+  - build-info freshness for current target `55469cdc` => PASS
+  - authenticated/admin production app access => BLOCKED
 - Screenshots/logs:
   - not applicable for planning stage
 - High-risk checks:
@@ -301,12 +305,12 @@ Report format:
 ## Autonomous Loop Evidence
 
 ### 1. Analyze Current State
-- Issues: latest Gate.io `main` commits are pushed but production build-info is
-  stale.
+- Issues: current target `55469cdc` is deployed, but authenticated/admin app
+  access is not available in this shell.
 - Gaps: no single production UI clickthrough playbook covers all module
   functions.
 - Inconsistencies: historical route/task evidence exists, but not a fresh
-  production-wide UI audit after current changes.
+  authenticated production-wide UI audit after current changes.
 - Architecture constraints: route/module contracts are canonical source of
   truth.
 
@@ -315,13 +319,13 @@ Report format:
 - Priority rationale: user explicitly requested this future audit after planned
   tasks.
 - Why other candidates were deferred: actual protected clickthrough requires
-  deployed freshness and app auth.
+  authenticated/admin app auth.
 
 ### 3. Plan Implementation
 - Files or surfaces to modify: planning docs and context queue only.
 - Logic: build route/module/action audit matrix from canonical docs.
 - Edge cases: auth blockers, admin role blockers, destructive/live actions,
-  stale production build-info.
+  target build-info drift after future deploys.
 
 ### 4. Execute Implementation
 - Implementation notes: created this audit plan.
@@ -364,9 +368,9 @@ Report format:
   user-visible module functions.
 - Files changed: this planning document plus queue/context state.
 - How tested: repository guardrails, docs parity, and diff check passed.
-- What is incomplete: actual production clickthrough requires latest deploy and
+- What is incomplete: actual production clickthrough requires
   authenticated/admin app access.
-- Next steps: after latest `main` is deployed and auth is available, execute
-  this audit and produce the evidence pack.
+- Next steps: after authenticated/admin app access is available, execute this
+  audit against current production build-info and produce the evidence pack.
 - Decisions made: protected flows cannot pass from public-only checks; live and
   destructive actions require explicit approval.
