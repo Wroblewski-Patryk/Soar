@@ -13,6 +13,13 @@ Last updated: 2026-05-09
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-09 `DEPLOY-FRESHNESS-30B027B7-2026-05-09` verified that the
+  protected-backlog sync batch ending at
+  `30b027b78544f76b5b638851e8e27c98f6d22ab5` is production-current. Public
+  API/Web smoke passes, and the no-secret final V1 preflight reports
+  build-info/public smoke PASS while remaining correctly `BLOCKED` on
+  protected/formal V1 evidence. Evidence:
+  `docs/planning/deploy-freshness-30b027b7-task-2026-05-09.md`.
 - 2026-05-09 `DEPLOY-FRESHNESS-BA3D852D-2026-05-09` verified that the
   docs/status sync batch ending at
   `ba3d852d5126b625a8cf702ab647d5c644d86f9c` is production-current. Public

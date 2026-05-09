@@ -5,6 +5,14 @@ Last updated: 2026-05-09
 ## Latest Health Snapshot
 
 - Current production build-info is verified at
+  `30b027b78544f76b5b638851e8e27c98f6d22ab5`: build-info PASS, public
+  API/Web smoke PASS, and no-secret final V1 preflight public checks PASS.
+  The preflight remains correctly `BLOCKED` on protected/formal V1 evidence.
+  Evidence:
+  `docs/operations/deploy-freshness-30b027b7-2026-05-09.md`,
+  `docs/operations/v1-final-preflight-30b027b7-2026-05-09.md`, and
+  `docs/planning/deploy-freshness-30b027b7-task-2026-05-09.md`.
+- Current production build-info is verified at
   `ba3d852d5126b625a8cf702ab647d5c644d86f9c`: build-info PASS, public
   API/Web smoke PASS, and no-secret final V1 preflight public checks PASS.
   The preflight remains correctly `BLOCKED` on protected/formal V1 evidence.
@@ -13,10 +21,11 @@ Last updated: 2026-05-09
   `docs/operations/v1-final-preflight-ba3d852d-2026-05-09.md`, and
   `docs/planning/deploy-freshness-ba3d852d-task-2026-05-09.md`.
 - Active protected V1 backlog/runbook targets are synced to deployed
-  `ba3d852d5126b625a8cf702ab647d5c644d86f9c`. This is a target sync only:
+  `30b027b78544f76b5b638851e8e27c98f6d22ab5`. This is a target sync only:
   `LIVEIMPORT-03`, rollback proof, restore proof, RC approval, and
   authenticated/admin UI audit remain blocked on operator inputs. Evidence:
-  `docs/planning/open-protected-backlog-ba3d852d-sync-task-2026-05-09.md`.
+  `docs/planning/open-protected-backlog-ba3d852d-sync-task-2026-05-09.md` and
+  `docs/planning/deploy-freshness-30b027b7-task-2026-05-09.md`.
 - Current production build-info is verified at
   `010b4f8b6abfaf4c24d26550eb4761215d119f21`: build-info PASS, public
   API/Web smoke PASS, and no-secret final V1 preflight public checks PASS.

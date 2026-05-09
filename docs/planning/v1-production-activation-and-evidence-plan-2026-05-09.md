@@ -4,14 +4,14 @@
 - V1 remains production-only; no stage requirement is introduced by this plan.
 - Public production API is healthy and ready.
 - Public production Web build-info exposes
-  `ba3d852d5126b625a8cf702ab647d5c644d86f9c`, the current docs/status
+  `30b027b78544f76b5b638851e8e27c98f6d22ab5`, the current protected-backlog
   synchronization batch.
 - Public/unauthenticated UI access evidence is historical and remains the
   latest no-auth clickthrough artifact:
   `docs/operations/prod-ui-public-access-clickthrough-c50e1e7c-2026-05-09.md`.
 - The no-secret V1 final preflight for 2026-05-09 reports public deploy health
   PASS and release readiness BLOCKED:
-  `docs/operations/v1-final-preflight-ba3d852d-2026-05-09.md`.
+  `docs/operations/v1-final-preflight-30b027b7-2026-05-09.md`.
 - `LIVEIMPORT-03` still lacks authenticated read-only production runtime
   evidence.
 
@@ -38,9 +38,9 @@ evidence with public checks.
    approved OPS access layer.
 2. Run the canonical `LIVEIMPORT-03` collector against production after
    build-info confirms the target SHA:
-   `node scripts/waitForWebBuildInfo.mjs --web-base-url https://soar.luckysparrow.ch --expected-sha ba3d852d5126b625a8cf702ab647d5c644d86f9c --timeout-seconds 900 --interval-seconds 30`
+   `node scripts/waitForWebBuildInfo.mjs --web-base-url https://soar.luckysparrow.ch --expected-sha 30b027b78544f76b5b638851e8e27c98f6d22ab5 --timeout-seconds 900 --interval-seconds 30`
    then
-   `pnpm run ops:liveimport:readback -- --expected-sha ba3d852d5126b625a8cf702ab647d5c644d86f9c --output docs/operations/liveimport-03-prod-readback-2026-05-09.json`.
+   `pnpm run ops:liveimport:readback -- --expected-sha 30b027b78544f76b5b638851e8e27c98f6d22ab5 --output docs/operations/liveimport-03-prod-readback-2026-05-09.json`.
 3. Refresh production backup/restore drill evidence and verify the artifact
    reports `PASS`.
 4. Refresh production rollback proof and verify the artifact reports `PASS`.
@@ -59,7 +59,7 @@ evidence with public checks.
 - V1 is not marked ready unless the release gate reports `ready`.
 
 ## Definition Of Done
-- `pnpm run ops:release:v1:gate -- --environment prod --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha ba3d852d5126b625a8cf702ab647d5c644d86f9c --skip-local-quality` returns `ready`.
+- `pnpm run ops:release:v1:gate -- --environment prod --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha 30b027b78544f76b5b638851e8e27c98f6d22ab5 --skip-local-quality` returns `ready`.
 - `node scripts/repoGuardrails.mjs` passes after evidence and state updates.
 - The final release report links all fresh required evidence artifacts.
 

@@ -7,6 +7,16 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `DEPLOY-FRESHNESS-30B027B7-2026-05-09 release: verify protected-backlog sync batch deployment`
+  - 2026-05-09: Pushed the protected-backlog sync batch ending at
+    `30b027b78544f76b5b638851e8e27c98f6d22ab5`, verified production Web
+    build-info reached that SHA on the follow-up wait, ran public API/Web
+    smoke with `--no-workers`, and refreshed no-secret final V1 preflight.
+    Public checks pass; protected/formal V1 evidence remains blocked.
+    Evidence:
+    `docs/planning/deploy-freshness-30b027b7-task-2026-05-09.md` and
+    `docs/operations/deploy-freshness-30b027b7-2026-05-09.md`.
+
 - [x] `OPEN-PROTECTED-BACKLOG-BA3D852D-SYNC-2026-05-09 release: sync protected backlog target`
   - 2026-05-09: Retargeted the active protected V1 backlog and final blocker
     pack to deployed `ba3d852d5126b625a8cf702ab647d5c644d86f9c` without
@@ -259,7 +269,7 @@ Operational queue for one-task execution runs.
     screenshots/console/network evidence, and classifies every flow as PASS,
     FAIL, BLOCKED, or NOT_APPLICABLE.
   - 2026-05-09: Current production build-info and public smoke evidence are
-    fresh for `ba3d852d5126b625a8cf702ab647d5c644d86f9c`. Latest public UI
+    fresh for `30b027b78544f76b5b638851e8e27c98f6d22ab5`. Latest public UI
     access clickthrough remains historical at `c50e1e7c`. Execution is now blocked
     on authenticated/admin production app access, required representative
     production test data, and explicit operator approval before live-money or
@@ -626,7 +636,7 @@ Operational queue for one-task execution runs.
     rollback auth, and production DB/Coolify restore context in the current
     shell. 2026-05-09 refresh: the documented protected-readiness candidate is
     current production build-info
-    `ba3d852d5126b625a8cf702ab647d5c644d86f9c`. Final V1 evidence remains
+    `30b027b78544f76b5b638851e8e27c98f6d22ab5`. Final V1 evidence remains
     blocked until protected app/operator auth, DB/Coolify context, RC approval
     identities, and authenticated/admin UI access are supplied. Evidence:
     `docs/planning/v1-protected-access-readiness-task-2026-05-09.md` and
@@ -3573,12 +3583,12 @@ Operational queue for one-task execution runs.
 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production`
   - Scope: use authenticated read-only dashboard/API evidence on current
     production build-info
-    `ba3d852d5126b625a8cf702ab647d5c644d86f9c` for the reported LIVE ETH/DOGE rows:
+    `30b027b78544f76b5b638851e8e27c98f6d22ab5` for the reported LIVE ETH/DOGE rows:
     ownership, `strategyId` or single-strategy provenance recovery, TTP
     visibility, actionable state, and import completeness across assigned bot
     markets. Do not promote stale candidate `39146d2e`; `LIVEIMPORT-03A`
     confirmed it is not a valid production promotion candidate. 2026-05-09
-    refresh: current production build-info is `ba3d852d`, public/no-secret
+    refresh: current production build-info is `30b027b7`, public/no-secret
     checks pass, and the collector command in the protected operator handoff
     targets that SHA. Validation still required: authenticated runtime
     positions readback and redacted evidence.
@@ -3607,7 +3617,7 @@ Operational queue for one-task execution runs.
     Local pre-release build, guardrails, and docs parity PASS. Candidate
     `f3aaa3dca6cf4d4b199372563886165638391a77` is committed and pushed to
     `origin/main`. 2026-05-09 refresh: current production build-info now
-    reports `ba3d852d5126b625a8cf702ab647d5c644d86f9c`, which contains
+    reports `30b027b78544f76b5b638851e8e27c98f6d22ab5`, which contains
     `f3aaa3dca6cf4d4b199372563886165638391a77`; the old public build-info
     blocker remains resolved. Remaining blocker: authenticated/protected
     runtime readback and broader V1 release gate evidence are still required.

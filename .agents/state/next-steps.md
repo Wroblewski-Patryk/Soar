@@ -5,9 +5,17 @@ Last updated: 2026-05-09
 ## Next Tiny Task
 
 Current deployed production build-info candidate:
-`ba3d852d5126b625a8cf702ab647d5c644d86f9c`.
+`30b027b78544f76b5b638851e8e27c98f6d22ab5`.
 
 Latest pushed batch is deployed:
+`30b027b78544f76b5b638851e8e27c98f6d22ab5`. Production build-info advanced
+from `ba3d852d` to the protected-backlog sync batch on the follow-up wait
+attempt 11. Public API/Web smoke and no-secret final V1 preflight public checks
+pass for this SHA. The batch records the `ba3d852d` deploy evidence and
+retargets the protected V1 backlog/runbook instructions. It does not change
+runtime behavior or enable Gate.io paper/live/authenticated capabilities.
+
+Previous pushed batch:
 `ba3d852d5126b625a8cf702ab647d5c644d86f9c`. Production build-info advanced
 from `010b4f8b` to the docs/status sync batch on the corrected wait attempt 2.
 Public API/Web smoke and no-secret final V1 preflight public checks pass for
@@ -86,7 +94,7 @@ access, or local regression suites as completion evidence for `LIVEIMPORT-03`,
 rollback proof, restore proof, RC approval, or authenticated module clickthrough.
 BOTMULTI-09 is also current against production build-info:
 `f3aaa3dca6cf4d4b199372563886165638391a77` is contained in deployed
-`ba3d852d5126b625a8cf702ab647d5c644d86f9c`, but BOTMULTI remains open until
+`30b027b78544f76b5b638851e8e27c98f6d22ab5`, but BOTMULTI remains open until
 protected runtime/V1 gate evidence is collected.
 Use `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md` and the
 current protected access readiness artifact before running the full blocker
@@ -451,14 +459,14 @@ changes are irrelevant to the protected readback.
    enforcement, strict RC approval evidence enforcement, restore-context
    preflight alignment, dashboard runtime aggregate evidence, and current
    protected operator handoff at
-   `ba3d852d5126b625a8cf702ab647d5c644d86f9c`. Do not use GitHub Actions. If a
+   `30b027b78544f76b5b638851e8e27c98f6d22ab5`. Do not use GitHub Actions. If a
    future step depends on a pushed commit being deployed, wait for build-info
    before continuing; an operator can speed this up with Coolify dashboard
    force deploy, or with deploy webhook/API token if those secrets are
    available outside the repository.
 1. If production credentials or ops auth are available, execute
    `ops:liveimport:readback` with
-   `--expected-sha ba3d852d5126b625a8cf702ab647d5c644d86f9c`, unless a newer
+   `--expected-sha 30b027b78544f76b5b638851e8e27c98f6d22ab5`, unless a newer
    intended code/tooling candidate has first been deployed and proven by
    production build-info. Record redacted `LIVEIMPORT-03` evidence only after
    the protected readback succeeds. The latest names-only prerequisite sweep
@@ -490,7 +498,7 @@ changes are irrelevant to the protected readback.
    - Final release gate must run without `--dry-run` and with the
      build-info-proven expected SHA plus the deployed web base URL so
      build-info freshness is enforced inside the gate. Use
-     `ba3d852d5126b625a8cf702ab647d5c644d86f9c` unless a newer intended
+     `30b027b78544f76b5b638851e8e27c98f6d22ab5` unless a newer intended
      code/tooling candidate has first been deployed and proven by production
      build-info.
 5. If the active queue is empty, run a planning-status sweep before saying
