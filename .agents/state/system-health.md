@@ -123,6 +123,13 @@ Last updated: 2026-05-09
   unsupported, and the key is not marked used after rejection. Validation PASS:
   focused wallet e2e (`22/22`), API typecheck, repository guardrails, docs
   parity, and diff check.
+- `EXCHANGE2-21` Gate.io public market-stream source smoke PASS: the new
+  public-read-only runner captured real `GATEIO/FUTURES/BTCUSDT` ticker and
+  final `1m` candle events through `ExchangePublicPollingMarketStreamWorker`
+  with no credentials, exchange writes, or live orders. Evidence:
+  `docs/operations/gateio-market-stream-source-smoke-2026-05-09.md`. Gate.io
+  `PAPER_PRICING_FEED`, authenticated reads, live submit, and cancel remain
+  disabled pending exact operation support and deployment/protected evidence.
 - `EXCHANGE2-16` positions snapshot explicit-key fail-closed regression PASS:
   focused positions coverage proves a stored Gate.io placeholder API key cannot
   be selected via `apiKeyId` while `POSITIONS_SNAPSHOT` is unsupported. The

@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "exchange": "GATEIO",
+  "marketType": "FUTURES",
+  "symbol": "BTCUSDT",
+  "interval": "1m",
+  "generatedAt": "2026-05-09T17:46:45.739Z",
+  "events": [
+    {
+      "type": "ticker",
+      "exchange": "GATEIO",
+      "marketType": "FUTURES",
+      "symbol": "BTCUSDT",
+      "eventTime": 1778348797456,
+      "lastPrice": 80834.9,
+      "priceChangePercent24h": 0.85
+    },
+    {
+      "type": "candle",
+      "exchange": "GATEIO",
+      "marketType": "FUTURES",
+      "symbol": "BTCUSDT",
+      "interval": "1m",
+      "eventTime": 1778348805739,
+      "openTime": 1778348760000,
+      "closeTime": 1778348819999,
+      "open": 80817.3,
+      "high": 80835,
+      "low": 80817.2,
+      "close": 80835,
+      "volume": 1.844779,
+      "isFinal": true
+    }
+  ],
+  "warnings": [],
+  "safety": {
+    "publicReadOnly": true,
+    "usedCredentials": false,
+    "exchangeWrites": false,
+    "liveOrders": false,
+    "enablesPaperPricingFeed": false
+  }
+}

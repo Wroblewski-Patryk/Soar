@@ -49,6 +49,12 @@ exact operation adapter is implemented and verified.
   opt-in market-stream polling source, runtime event context regressions,
   Web/API fail-closed gates, and production deploy freshness for the
   fail-closed batch through `90cd07d6`.
+- Latest local source evidence: `EXCHANGE2-21` captured a real public
+  `GATEIO/FUTURES/BTCUSDT` market-stream source smoke through
+  `ExchangePublicPollingMarketStreamWorker`, proving ticker and final `1m`
+  candle events are emitted by the existing worker source without credentials
+  or exchange writes. This is not production deployment evidence and does not
+  enable paper/live/authenticated capabilities.
 - Still blocked: enabling `PAPER_PRICING_FEED`, authenticated reads,
   `LIVE_ORDER_SUBMIT`, or `LIVE_ORDER_CANCEL` for Gate.io until exact support
   is implemented and production evidence exists.

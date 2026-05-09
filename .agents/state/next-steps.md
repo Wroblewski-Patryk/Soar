@@ -116,6 +116,13 @@ Gate.io polling worker publishes through `publishMarketStreamEvent` and
 subscribers receive canonical `GATEIO/FUTURES` ticker/candle events. The next
 Gate.io paper-readiness boundary is deployed or target-environment source
 evidence; do not enable `PAPER_PRICING_FEED` from local mocked evidence alone.
+`EXCHANGE2-21` now adds real public source evidence: the new
+`ops:exchange:gateio-market-stream-smoke` runner captured `GATEIO/FUTURES`
+`BTCUSDT` ticker and final `1m` candle events from
+`ExchangePublicPollingMarketStreamWorker` without credentials, writes, or live
+orders. This advances source confidence but still does not enable
+`PAPER_PRICING_FEED`; deployed build-info/source evidence and exact capability
+enablement remain required before paper support.
 Post-push build-info for `4ef3ec58` remained stale on
 `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d` during the 120-second wait, even
 though public smoke passed.

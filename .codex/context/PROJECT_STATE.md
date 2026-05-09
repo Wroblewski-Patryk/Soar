@@ -13,6 +13,15 @@ Last updated: 2026-05-09
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-09 `EXCHANGE2-21-GATEIO-MARKET-STREAM-SOURCE-SMOKE-2026-05-09`
+  added a public-read-only Gate.io market-stream source smoke and captured
+  real `GATEIO/FUTURES/BTCUSDT` ticker plus final `1m` candle events emitted
+  by `ExchangePublicPollingMarketStreamWorker`. Evidence explicitly states no
+  credentials, exchange writes, live orders, or paper pricing enablement.
+  Gate.io `PAPER_PRICING_FEED`, authenticated reads, live submit, and cancel
+  remain unsupported until exact support and deployment/protected evidence
+  exist. Evidence:
+  `docs/operations/gateio-market-stream-source-smoke-2026-05-09.md`.
 - 2026-05-09 `DEPLOY-LAG-D355DF93-FOLLOW-UP-2026-05-09` recorded that the
   pushed operator handoff/source-of-truth commit
   `d355df93107f4d7ff9d6231107528295cbc873c2` is not production-current. A

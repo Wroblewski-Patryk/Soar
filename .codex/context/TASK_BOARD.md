@@ -17,6 +17,15 @@ Last updated: 2026-05-09
 
 ## READY
 
+- [x] `EXCHANGE2-21-GATEIO-MARKET-STREAM-SOURCE-SMOKE-2026-05-09 qa: add Gate.io public market-stream source smoke`
+  - Scope: added a public-read-only smoke runner for the existing Gate.io
+    polling market-stream source and captured real `GATEIO/FUTURES/BTCUSDT`
+    ticker plus final `1m` candle events. The artifact records no credentials,
+    exchange writes, live orders, or paper pricing enablement. Gate.io
+    `PAPER_PRICING_FEED`, authenticated reads, live submit, and cancel remain
+    unsupported. Evidence:
+    `docs/planning/exchange2-21-gateio-market-stream-source-smoke-task-2026-05-09.md`.
+
 - [x] `DEPLOY-LAG-D355DF93-FOLLOW-UP-2026-05-09 release: record deploy lag follow-up after pushed operator handoff`
   - Scope: recorded that the pushed operator handoff/source-of-truth commit
     `d355df93107f4d7ff9d6231107528295cbc873c2` did not reach production

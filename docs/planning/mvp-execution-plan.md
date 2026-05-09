@@ -32,6 +32,14 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-09: Closed
+  `EXCHANGE2-21-GATEIO-MARKET-STREAM-SOURCE-SMOKE-2026-05-09` with
+  `docs/planning/exchange2-21-gateio-market-stream-source-smoke-task-2026-05-09.md`.
+  A public-read-only runner captured real `GATEIO/FUTURES/BTCUSDT` ticker and
+  final `1m` candle events through `ExchangePublicPollingMarketStreamWorker`.
+  Gate.io paper pricing, authenticated reads, live submit, and cancel remain
+  unsupported until exact operation support and deployment/protected evidence
+  exist.
 - 2026-05-09: Recorded `DEPLOY-LAG-D355DF93-FOLLOW-UP-2026-05-09` with
   `docs/planning/deploy-lag-d355df93-follow-up-task-2026-05-09.md`. The
   operator handoff/source-of-truth commit
