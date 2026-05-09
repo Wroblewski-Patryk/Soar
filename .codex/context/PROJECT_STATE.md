@@ -47,6 +47,15 @@ Last updated: 2026-05-09
   This remains public-only evidence; authenticated/admin module clickthrough
   still requires valid production app access. Evidence:
   `docs/operations/prod-ui-public-access-clickthrough-3c5da343-2026-05-09.md`.
+- 2026-05-09 `CURRENT-EXECUTABLE-V1-BOUNDARY-3C5DA343-2026-05-09` clarified
+  active continuation state after the `3c5da343` public/no-secret evidence.
+  Future V1 work should start from the protected blocker boundary: collect
+  authenticated/admin production app access, live-import auth, rollback auth,
+  production DB/Coolify context for current-date restore evidence, and real RC
+  approval identities. Public health/build-info, public UI access, and local
+  regression suites must not be treated as completion evidence for protected
+  runtime/readiness tasks. Evidence:
+  `docs/planning/current-executable-v1-boundary-3c5da343-task-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-20` reconciled the second-exchange plan with the
   deployed Gate.io foundation. The plan is now complete as a planning artifact
   and records the exact current support boundary: Gate.io public catalog and

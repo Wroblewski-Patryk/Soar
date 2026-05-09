@@ -376,6 +376,15 @@ Operational queue for one-task execution runs.
     and
     `docs/operations/prod-ui-public-access-clickthrough-3c5da343-2026-05-09.md`.
 
+- [x] `CURRENT-EXECUTABLE-V1-BOUNDARY-3C5DA343-2026-05-09 release: clarify current executable V1 boundary`
+  - 2026-05-09: Updated active continuation state so the next V1 step starts
+    from the verified deployed `3c5da34371e22aecb1a7aff0a185018870d35cec`
+    boundary. Completed public/no-secret evidence is listed, and protected V1
+    work remains blocked on authenticated/admin production app access,
+    live-import auth, rollback auth, production DB/Coolify context, and RC
+    approval identities. Evidence:
+    `docs/planning/current-executable-v1-boundary-3c5da343-task-2026-05-09.md`.
+
 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
   - 2026-05-09: Names-only readiness check found missing live-import auth,
     rollback auth, and production DB/Coolify restore context in the current

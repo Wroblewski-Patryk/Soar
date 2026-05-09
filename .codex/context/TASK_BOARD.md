@@ -51,6 +51,15 @@ Last updated: 2026-05-09
     production app access. Evidence:
     `docs/planning/prod-ui-public-access-refresh-3c5da343-task-2026-05-09.md`.
 
+- [x] `CURRENT-EXECUTABLE-V1-BOUNDARY-3C5DA343-2026-05-09 release: clarify current executable V1 boundary`
+  - Scope: updated active continuation state so future work starts from the
+    verified deployed `3c5da34371e22aecb1a7aff0a185018870d35cec` boundary.
+    The state now lists completed public/no-secret evidence and explicitly
+    blocks protected V1 work on authenticated/admin app access, live-import
+    auth, rollback auth, production DB/Coolify context, and RC approval
+    identities. Evidence:
+    `docs/planning/current-executable-v1-boundary-3c5da343-task-2026-05-09.md`.
+
 - [x] `UX-UI-MEMORY-AUTONOMY-2026-05-08 design: make UX/UI feedback memory autonomous`
   - Scope: extended the existing user feedback loop, design memory, and screen
     quality checklist so future UX/UI work classifies user guidance, stores it

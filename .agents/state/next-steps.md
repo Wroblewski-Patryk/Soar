@@ -4,39 +4,29 @@ Last updated: 2026-05-09
 
 ## Next Tiny Task
 
-Dashboard runtime current-state aggregate is now locally fixed and
-regression-locked. The aggregate API prefers the freshest `RUNNING` row for
-current open positions, open orders, dynamic-stop visibility, unrealized PnL,
-open counts, and capital summary while keeping historical projection for
-closed history/trades. Evidence:
-`docs/planning/dashboard-runtime-current-state-aggregate-task-2026-05-09.md`.
-Dashboard aggregate current-row rendering is also locally regression-locked:
-`HomeLiveWidgets` now has focused coverage proving a running bot's aggregate
-current open-position row renders while completed-session history stays visible.
+Current deployable runtime/dashboard candidate:
+`3c5da34371e22aecb1a7aff0a185018870d35cec`.
+
+Completed for that candidate:
+- dashboard runtime aggregate current-state API fix
+- `HomeLiveWidgets` aggregate current-row regression coverage
+- production build-info freshness and public smoke with `--no-workers`
+- no-secret final V1 preflight showing public checks PASS
+- public/unauthenticated production UI access and auth-gate refresh
+
 Evidence:
-`docs/planning/dashboard-runtime-widget-aggregate-current-render-task-2026-05-09.md`.
-The broader dashboard-home focused suite also passed locally (41/41). Next
-executable dashboard correctness slice is production clickthrough once
-authenticated/admin app access is available, or pushing this accumulated local
-batch when the user wants the next deploy batch. Production clickthrough still
-requires authenticated/admin app access and remains blocked separately.
-The dashboard runtime aggregate batch is now deployed: production Web
-build-info exposes `3c5da34371e22aecb1a7aff0a185018870d35cec`, and public
-API/Web smoke passed with `--no-workers`. Evidence:
-`docs/operations/deploy-freshness-3c5da343-2026-05-09.md`. Next executable V1
-work is a no-secret final preflight for this deployed SHA, then protected
-runtime/UI evidence only when authenticated/admin app access is available.
-The no-secret final preflight for `3c5da343` now reports build-info PASS and
-public smoke PASS, while V1 remains BLOCKED on protected auth, production DB
-restore context, RC approval, missing `LIVEIMPORT-03`, stale restore evidence,
-and stale rollback proof. Evidence:
-`docs/operations/v1-final-preflight-3c5da343-2026-05-09.md`.
-Public/unauthenticated production UI access evidence is also current for
-`3c5da343`: `docs/operations/prod-ui-public-access-clickthrough-3c5da343-2026-05-09.md`
-shows API health/readiness PASS, public Web routes PASS, and protected
-dashboard/admin routes fail closed to `/auth/login`. This does not satisfy the
-full module clickthrough, which still requires authenticated/admin production
-app access.
+- `docs/planning/dashboard-runtime-current-state-aggregate-task-2026-05-09.md`
+- `docs/planning/dashboard-runtime-widget-aggregate-current-render-task-2026-05-09.md`
+- `docs/operations/deploy-freshness-3c5da343-2026-05-09.md`
+- `docs/operations/v1-final-preflight-3c5da343-2026-05-09.md`
+- `docs/operations/prod-ui-public-access-clickthrough-3c5da343-2026-05-09.md`
+
+Next executable V1 steps are protected and remain blocked until the operator
+supplies authenticated/admin production app access, live-import auth, rollback
+auth, production DB/Coolify context for current-date restore evidence, and real
+RC approval identities. Do not treat public health/build-info, public UI
+access, or local regression suites as completion evidence for `LIVEIMPORT-03`,
+rollback proof, restore proof, RC approval, or authenticated module clickthrough.
 
 UX/UI process note: future UX/UI work must start with the autonomous memory
 preflight now documented in `docs/governance/user-feedback-loop.md`,
