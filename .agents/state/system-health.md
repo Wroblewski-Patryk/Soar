@@ -195,6 +195,14 @@ Last updated: 2026-05-09
   build-info/public smoke PASS while protected V1 remains BLOCKED. Evidence:
   `docs/operations/deploy-freshness-4ee1672e-2026-05-09.md` and
   `docs/operations/v1-final-preflight-4ee1672e-2026-05-09.md`.
+- Production public UI access refresh PASS for deployed `4ee1672e`: Web
+  build-info matches `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`, API
+  `/health` and `/ready` return HTTP 200, public Web routes return HTTP 200,
+  and unauthenticated dashboard/admin routes redirect to `/auth/login` with
+  HTTP 307. Evidence:
+  `docs/operations/prod-ui-public-access-clickthrough-4ee1672e-2026-05-09.md`.
+  The full production UI module clickthrough remains blocked on valid
+  authenticated/admin app access.
 - Protected access readiness BLOCKED: current shell lacks required
   live-import auth, rollback auth, and production DB/Coolify restore context
   env names. No protected production evidence, rollback proof, restore drill,

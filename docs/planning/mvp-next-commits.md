@@ -405,6 +405,17 @@ Operational queue for one-task execution runs.
     `docs/planning/deploy-freshness-4ee1672e-task-2026-05-09.md` and
     `docs/operations/deploy-freshness-4ee1672e-2026-05-09.md`.
 
+- [x] `PROD-UI-PUBLIC-ACCESS-REFRESH-4EE1672E-2026-05-09 qa: refresh public production UI access evidence for docs/evidence handoff batch`
+  - 2026-05-09: Refreshed the public/unauthenticated production access
+    evidence for deployed `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`.
+    Build-info matches the expected SHA, API health/readiness and public Web
+    routes return HTTP 200, and unauthenticated dashboard/admin routes redirect
+    to `/auth/login`. Full authenticated/admin module clickthrough remains
+    blocked on valid production app access. Evidence:
+    `docs/planning/prod-ui-public-access-refresh-4ee1672e-task-2026-05-09.md`
+    and
+    `docs/operations/prod-ui-public-access-clickthrough-4ee1672e-2026-05-09.md`.
+
 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
   - 2026-05-09: Names-only readiness check found missing live-import auth,
     rollback auth, and production DB/Coolify restore context in the current

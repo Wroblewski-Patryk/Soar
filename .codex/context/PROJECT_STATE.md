@@ -73,6 +73,15 @@ Last updated: 2026-05-09
   commands now use `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f` as the
   production build-info expected SHA. Evidence:
   `docs/operations/deploy-freshness-4ee1672e-2026-05-09.md`.
+- 2026-05-09 `PROD-UI-PUBLIC-ACCESS-REFRESH-4EE1672E-2026-05-09` refreshed
+  public/unauthenticated production UI evidence for the currently deployed
+  docs/evidence handoff batch. Web build-info matches
+  `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`, API `/health` and `/ready`
+  returned HTTP 200, public Web routes returned HTTP 200, and
+  unauthenticated dashboard/admin routes returned HTTP 307 to `/auth/login`.
+  This remains public-only evidence; authenticated/admin module clickthrough
+  still requires valid production app access. Evidence:
+  `docs/operations/prod-ui-public-access-clickthrough-4ee1672e-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-20` reconciled the second-exchange plan with the
   deployed Gate.io foundation. The plan is now complete as a planning artifact
   and records the exact current support boundary: Gate.io public catalog and
