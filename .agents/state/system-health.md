@@ -163,6 +163,13 @@ Last updated: 2026-05-09
   This is runbook/state evidence only; no protected production evidence was
   generated or accepted. Evidence:
   `docs/planning/v1-final-blocker-pack-date-overrides-task-2026-05-09.md`.
+- Deploy freshness for the current V1 evidence batch PASS: production Web
+  build-info now exposes
+  `4792fbca9ab3ca44d08c312f219f70d648707886`, and safe public smoke passed
+  for API `/health`, API `/ready`, and Web `/`. Evidence:
+  `docs/operations/deploy-freshness-4792fbca-2026-05-09.md`. Protected
+  release evidence and authenticated UI clickthrough remain blocked on
+  approved credentials/context.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307

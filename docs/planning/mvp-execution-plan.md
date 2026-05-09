@@ -32,6 +32,12 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-09: Closed `DEPLOY-FRESHNESS-4792FBCA-2026-05-09` with
+  `docs/planning/deploy-freshness-4792fbca-task-2026-05-09.md`. Pushed the
+  current V1 release-evidence batch and verified production Web build-info at
+  `4792fbca9ab3ca44d08c312f219f70d648707886`; public API `/health`, API
+  `/ready`, and Web `/` smoke passed. Protected evidence and authenticated UI
+  clickthrough remain blocked on approved credentials/context.
 - 2026-05-09: Closed
   `V1-FINAL-BLOCKER-PACK-DATE-OVERRIDES-2026-05-09` with
   `docs/planning/v1-final-blocker-pack-date-overrides-task-2026-05-09.md`.

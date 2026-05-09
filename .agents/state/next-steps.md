@@ -180,6 +180,13 @@ set `$releaseDate` once and reuse it for preflight, restore drill, rollback
 proof, RC status/sign-off/checklist, live-import output paths, and the final
 release gate. Evidence:
 `docs/planning/v1-final-blocker-pack-date-overrides-task-2026-05-09.md`.
+The current V1 evidence batch is now deployed: production Web build-info
+exposes `4792fbca9ab3ca44d08c312f219f70d648707886`, and public API/Web smoke
+passed for API `/health`, API `/ready`, and Web `/`. Evidence:
+`docs/operations/deploy-freshness-4792fbca-2026-05-09.md`. Continue from the
+final blocker pack against this deployed SHA; do not treat this public smoke
+as protected runtime, restore, rollback, RC approval, or authenticated UI
+evidence.
 
 The local V1 backend paper/live runtime line is closed for this slice: focused
 parity/crash coverage, DB-backed runtime/order/exchange/import/readback packs,

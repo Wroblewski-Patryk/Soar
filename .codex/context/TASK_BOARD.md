@@ -284,6 +284,14 @@ Last updated: 2026-05-09
     accepted in this task. Evidence:
     `docs/planning/v1-final-blocker-pack-date-overrides-task-2026-05-09.md`.
 
+- [x] `DEPLOY-FRESHNESS-4792FBCA-2026-05-09 release: verify current V1 evidence batch deployment`
+  - Scope: pushed the current V1 release-evidence batch, verified production
+    Web build-info for `4792fbca9ab3ca44d08c312f219f70d648707886`, and ran
+    safe public API/Web smoke. Protected runtime/readback, restore, rollback,
+    RC approval, and authenticated UI evidence remain open. Evidence:
+    `docs/planning/deploy-freshness-4792fbca-task-2026-05-09.md` and
+    `docs/operations/deploy-freshness-4792fbca-2026-05-09.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - Scope: generated and committed the current no-secret final V1 preflight
     JSON/Markdown snapshot for deployed SHA

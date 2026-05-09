@@ -259,6 +259,14 @@ Last updated: 2026-05-09
   production evidence; V1 remains blocked until protected auth and DB/Coolify
   context are available. Evidence:
   `docs/planning/v1-final-blocker-pack-date-overrides-task-2026-05-09.md`.
+- 2026-05-09 `DEPLOY-FRESHNESS-4792FBCA-2026-05-09` pushed the current V1
+  release-evidence batch and verified production freshness. Web build-info
+  reached `4792fbca9ab3ca44d08c312f219f70d648707886` on attempt 14, and safe
+  public smoke passed for API `/health`, API `/ready`, and Web `/`. This is
+  deploy freshness evidence only; protected runtime/readback, restore drill,
+  rollback proof, RC approval, and authenticated UI clickthrough remain open.
+  Evidence:
+  `docs/operations/deploy-freshness-4792fbca-2026-05-09.md`.
 - 2026-05-08 `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08` published the
   current no-secret final V1 preflight JSON/Markdown snapshot for deployed SHA
   `052df82244ea0f81e8611ff8bb2b677db115bd19`. The snapshot reports build-info

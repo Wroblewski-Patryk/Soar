@@ -54,6 +54,11 @@ restore drill, rollback proof, RC evidence, and final gate commands. This is a
 runbook/state synchronization only; final production evidence still requires
 protected auth and DB/Coolify context.
 
+2026-05-09 deploy freshness: the current V1 evidence batch is deployed at Web
+build-info SHA `4792fbca9ab3ca44d08c312f219f70d648707886`, with public API
+`/health`, API `/ready`, and Web `/` smoke passing. Continue protected
+evidence work from this deployed SHA only.
+
 2026-05-09 continuation update: Gate.io second-exchange planning has been
 reconciled after the deployed fail-closed foundation. The plan is complete as a
 planning artifact; public catalog and public `FUTURES`/swap market-data

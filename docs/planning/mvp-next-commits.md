@@ -290,6 +290,16 @@ Operational queue for one-task execution runs.
     auth and DB/Coolify context are available. Evidence:
     `docs/planning/v1-final-blocker-pack-date-overrides-task-2026-05-09.md`.
 
+- [x] `DEPLOY-FRESHNESS-4792FBCA-2026-05-09 release: verify current V1 evidence batch deployment`
+  - 2026-05-09: Pushed the batch ending at
+    `4792fbca9ab3ca44d08c312f219f70d648707886`, waited until production Web
+    build-info exposed that SHA, and reran safe public API/Web smoke. API
+    `/health`, API `/ready`, and Web `/` passed. This does not close protected
+    runtime, restore, rollback, RC approval, or authenticated UI evidence.
+    Evidence:
+    `docs/planning/deploy-freshness-4792fbca-task-2026-05-09.md` and
+    `docs/operations/deploy-freshness-4792fbca-2026-05-09.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - 2026-05-08: Generated and committed the current no-secret final V1
     preflight JSON/Markdown snapshot for deployed SHA
