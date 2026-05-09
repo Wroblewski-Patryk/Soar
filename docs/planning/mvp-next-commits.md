@@ -12,8 +12,10 @@ Operational queue for one-task execution runs.
     existing authenticated-read boundary, while keeping Gate.io
     trade-history/live/cancel unsupported. Focused exchange tests,
     authenticated snapshot service test, API typecheck, guardrails, docs
-    parity, and diff check passed. Evidence:
-    `docs/planning/exchange2-27-gateio-open-orders-snapshot-task-2026-05-09.md`.
+    parity, and diff check passed. Production build-info and public smoke pass
+    for `214a9c034d38ab8670fd4b43d0f8ed692d78d90c`. Evidence:
+    `docs/planning/exchange2-27-gateio-open-orders-snapshot-task-2026-05-09.md`
+    and `docs/operations/deploy-freshness-214a9c03-2026-05-09.md`.
 
 - [x] `EXCHANGE2-26-GATEIO-POSITIONS-SNAPSHOT-2026-05-09 feature(exchange): enable Gate.io positions snapshot`
   - 2026-05-09: Enable only `GATEIO` `POSITIONS_SNAPSHOT` through the existing

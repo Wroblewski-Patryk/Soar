@@ -77,7 +77,15 @@ live execution, and exchange-side cancel unsupported.
   - PASS: `node scripts/repoGuardrails.mjs`
   - PASS: `node scripts/checkDocsParity.mjs`
   - PASS: `git diff --check` (line-ending warnings only)
-- Manual checks: not applicable.
+- Deployment:
+  - PASS: production Web build-info exposed
+    `214a9c034d38ab8670fd4b43d0f8ed692d78d90c` on wait attempt 1.
+  - PASS: public deploy smoke for API `/health`, API `/ready`, and Web `/`.
+  - BLOCKED as expected: no-secret V1 final preflight public checks passed,
+    while protected/formal evidence remains blocked. Evidence:
+    `docs/operations/deploy-freshness-214a9c03-2026-05-09.md` and
+    `docs/operations/v1-final-preflight-214a9c03-2026-05-09.md`.
+- Manual checks: production public smoke and build-info freshness verified.
 - High-risk checks: fail-closed adjacent operations remain covered.
 
 ## Architecture Evidence
@@ -134,7 +142,8 @@ live execution, and exchange-side cancel unsupported.
 - Files changed: exact capability matrix/tests, authenticated snapshot service
   test, architecture and module docs, planning and state files.
 - How tested: focused exchange tests, authenticated snapshot service test, API
-  typecheck, guardrails, docs parity, diff check.
+  typecheck, guardrails, docs parity, diff check, production build-info,
+  public deploy smoke, and no-secret V1 final preflight.
 - What is incomplete: Gate.io trade history, wallet cashflow history, live
   submit, live execution, and exchange-side cancel remain unsupported.
 - Next steps: implement `TRADE_HISTORY_SNAPSHOT` only as its own exact

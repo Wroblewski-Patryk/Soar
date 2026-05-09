@@ -18,9 +18,13 @@ contracts synchronized.
 
 2026-05-09 implementation update: `EXCHANGE2-27` enabled only Gate.io
 `OPEN_ORDERS_SNAPSHOT` through the existing authenticated-read boundary.
-Gate.io trade-history, live submit, and exchange-side cancel remain
-unsupported. Evidence:
-`docs/planning/exchange2-27-gateio-open-orders-snapshot-task-2026-05-09.md`.
+Production build-info now exposes
+`214a9c034d38ab8670fd4b43d0f8ed692d78d90c`, public API/Web smoke passes, and
+the no-secret final V1 preflight remains correctly blocked on
+protected/formal evidence. Gate.io trade-history, live submit, and
+exchange-side cancel remain unsupported. Evidence:
+`docs/planning/exchange2-27-gateio-open-orders-snapshot-task-2026-05-09.md`
+and `docs/operations/deploy-freshness-214a9c03-2026-05-09.md`.
 
 2026-05-09 implementation update: `EXCHANGE2-26` enabled only Gate.io
 `POSITIONS_SNAPSHOT` through the existing authenticated-read boundary and
