@@ -17,6 +17,15 @@ Last updated: 2026-05-09
 
 ## READY
 
+- [x] `DASH-RUNTIME-CURRENT-AGGREGATE-2026-05-09 fix(api): prefer running runtime rows for dashboard current aggregate state`
+  - Scope: added explicit current-row selection in the runtime monitoring
+    aggregate read model so dashboard current open positions, open orders,
+    dynamic-stop visibility, unrealized PnL, open counts, and capital summary
+    prefer the freshest `RUNNING` session row when one exists. Historical
+    closed-position/trade projection continues to use the existing aggregate
+    projection rows. Evidence:
+    `docs/planning/dashboard-runtime-current-state-aggregate-task-2026-05-09.md`.
+
 - [x] `UX-UI-MEMORY-AUTONOMY-2026-05-08 design: make UX/UI feedback memory autonomous`
   - Scope: extended the existing user feedback loop, design memory, and screen
     quality checklist so future UX/UI work classifies user guidance, stores it

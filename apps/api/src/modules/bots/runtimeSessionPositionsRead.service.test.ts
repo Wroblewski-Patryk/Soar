@@ -9,6 +9,7 @@ import {
   buildRuntimeAggregateTradesMeta,
   resolveRuntimeAggregateCurrentDynamicStopColumns,
   selectRuntimeAggregateLatestCapitalSummary,
+  selectRuntimeAggregateCurrentRows,
   selectLatestRunningProjectionRows,
   sumRuntimeAggregateProjectedSymbolsTracked,
 } from './runtimeMonitoringAggregateRead.service';
@@ -401,6 +402,57 @@ describe('runtime aggregate projection helpers', () => {
     expect(buildRuntimeAggregateProjectedHistoryItems(projectedRows).map((item) => item.id)).toEqual([
       'latest-history',
       'completed-history',
+    ]);
+  });
+
+  it('prefers running rows for aggregate current state even when completed rows are fresher', () => {
+    const rows = [
+      row({
+        id: 'running-current',
+        status: 'RUNNING',
+        startedAt: '2026-05-04T10:00:00.000Z',
+        lastHeartbeatAt: '2026-05-04T10:10:00.000Z',
+        symbolsTracked: 1,
+      }),
+      row({
+        id: 'completed-fresher',
+        status: 'COMPLETED',
+        startedAt: '2026-05-04T10:30:00.000Z',
+        finishedAt: '2026-05-04T10:40:00.000Z',
+        symbolsTracked: 9,
+      }),
+    ];
+
+    expect(selectRuntimeAggregateCurrentRows(rows).map((item) => item.session.id)).toEqual([
+      'running-current',
+    ]);
+    expect(selectLatestRunningProjectionRows(rows).map((item) => item.session.id)).toEqual([
+      'completed-fresher',
+      'running-current',
+    ]);
+  });
+
+  it('uses all rows for aggregate current state when no session is running', () => {
+    const rows = [
+      row({
+        id: 'completed-old',
+        status: 'COMPLETED',
+        startedAt: '2026-05-04T09:00:00.000Z',
+        finishedAt: '2026-05-04T09:30:00.000Z',
+        symbolsTracked: 1,
+      }),
+      row({
+        id: 'completed-new',
+        status: 'COMPLETED',
+        startedAt: '2026-05-04T10:00:00.000Z',
+        finishedAt: '2026-05-04T10:30:00.000Z',
+        symbolsTracked: 2,
+      }),
+    ];
+
+    expect(selectRuntimeAggregateCurrentRows(rows).map((item) => item.session.id)).toEqual([
+      'completed-old',
+      'completed-new',
     ]);
   });
 

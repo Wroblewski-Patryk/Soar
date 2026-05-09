@@ -76,6 +76,17 @@ export const selectLatestRunningProjectionRows = <
   return latestRunningRow ? [...nonRunningRows, latestRunningRow] : nonRunningRows;
 };
 
+export const selectRuntimeAggregateCurrentRows = <
+  T extends {
+    session: RuntimeSessionListItem;
+  },
+>(
+  rows: T[]
+) => {
+  const runningRows = rows.filter((row) => row.session.status === 'RUNNING');
+  return runningRows.length > 0 ? runningRows : rows;
+};
+
 export const sumRuntimeAggregateProjectedSymbolsTracked = <
   T extends {
     session: Pick<RuntimeSessionListItem, 'symbolsTracked'>;
@@ -631,7 +642,14 @@ export const getBotRuntimeMonitoringAggregate = async (
     openPositionQty: symbolCurrentSummary.openPositionQty,
   };
 
-  const sortedBySessionFreshness = [...completePayloadRows].sort((left, right) =>
+  const sortBySessionFreshness = <
+    T extends {
+      session: RuntimeSessionListItem;
+    },
+  >(
+    rows: T[]
+  ) =>
+    [...rows].sort((left, right) =>
     compareTimestampDescThenIdAsc(
       Math.max(
         toTimestamp(left.session.lastHeartbeatAt),
@@ -647,8 +665,13 @@ export const getBotRuntimeMonitoringAggregate = async (
       right.session.id
     )
   );
-  const latestCapitalSummary = selectRuntimeAggregateLatestCapitalSummary(sortedBySessionFreshness);
-  const latestPositionResponse = sortedBySessionFreshness[0]?.positions ?? null;
+  const sortedCurrentRowsBySessionFreshness = sortBySessionFreshness(
+    selectRuntimeAggregateCurrentRows(completePayloadRows)
+  );
+  const latestCapitalSummary = selectRuntimeAggregateLatestCapitalSummary(
+    sortedCurrentRowsBySessionFreshness
+  );
+  const latestPositionResponse = sortedCurrentRowsBySessionFreshness[0]?.positions ?? null;
   const historicalPositionRows = selectLatestRunningProjectionRows(completePayloadRows);
   const openItems = buildRuntimeAggregateCurrentOpenItems(latestPositionResponse);
   const historyItems = buildRuntimeAggregateProjectedHistoryItems(historicalPositionRows);

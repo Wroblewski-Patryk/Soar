@@ -4,6 +4,18 @@ Last updated: 2026-05-09
 
 ## Next Tiny Task
 
+Dashboard runtime current-state aggregate is now locally fixed and
+regression-locked. The aggregate API prefers the freshest `RUNNING` row for
+current open positions, open orders, dynamic-stop visibility, unrealized PnL,
+open counts, and capital summary while keeping historical projection for
+closed history/trades. Evidence:
+`docs/planning/dashboard-runtime-current-state-aggregate-task-2026-05-09.md`.
+Next executable dashboard correctness slice: add an API/Web integration
+regression proving `HomeLiveWidgets` renders the aggregate current-state rows
+for a running bot and does not visually drift when completed-session history is
+also present. Production clickthrough still requires authenticated/admin app
+access and remains blocked separately.
+
 UX/UI process note: future UX/UI work must start with the autonomous memory
 preflight now documented in `docs/governance/user-feedback-loop.md`,
 `docs/ux/design-memory.md`, and `docs/ux/screen-quality-checklist.md`.

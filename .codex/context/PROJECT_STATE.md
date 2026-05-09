@@ -13,6 +13,14 @@ Last updated: 2026-05-09
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-09 `DASH-RUNTIME-CURRENT-AGGREGATE-2026-05-09` tightened the
+  dashboard runtime aggregate read model. Current-state dashboard fields now
+  prefer the freshest `RUNNING` session row when one exists, covering open
+  positions, open orders, dynamic-stop visibility, unrealized PnL, open counts,
+  and capital summary while preserving historical projection for closed
+  positions and trades. Focused validation passed (`runtimeSessionPositionsRead`
+  helper tests 18/18, API typecheck, repository guardrails). Evidence:
+  `docs/planning/dashboard-runtime-current-state-aggregate-task-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-20` reconciled the second-exchange plan with the
   deployed Gate.io foundation. The plan is now complete as a planning artifact
   and records the exact current support boundary: Gate.io public catalog and
