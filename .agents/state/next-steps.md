@@ -9,9 +9,13 @@ Latest local implementation slice:
 `TRADE_HISTORY_SNAPSHOT` through the existing authenticated-read boundary.
 Gate.io wallet cashflow history, live submit, and exchange-side cancel remain
 unsupported. Focused exchange tests, authenticated snapshot service test, API
-typecheck, guardrails, docs parity, and diff check pass. The next exact Gate.io
-gap is either `WALLET_CASHFLOW_HISTORY` if product scope requires ledger
-ingestion parity, or `LIVE_ORDER_SUBMIT` if the user confirms Gate.io
+typecheck, guardrails, docs parity, and diff check pass. Production build-info
+now exposes `432f768701300c7ba600fa7633532c0cc9ef4b96`, public deploy smoke
+passes, and no-secret final V1 preflight remains correctly blocked on
+protected/formal evidence. Evidence:
+`docs/operations/deploy-freshness-432f7687-2026-05-09.md`. The next exact
+Gate.io gap is either `WALLET_CASHFLOW_HISTORY` if product scope requires
+ledger ingestion parity, or `LIVE_ORDER_SUBMIT` if the user confirms Gate.io
 live-money execution belongs in V1.
 
 Latest local implementation slice:

@@ -19,9 +19,13 @@ contracts synchronized.
 2026-05-09 implementation update: `EXCHANGE2-28` enabled only Gate.io
 `TRADE_HISTORY_SNAPSHOT` through the existing authenticated-read boundary.
 Focused exchange tests, authenticated snapshot service test, API typecheck,
-guardrails, docs parity, and diff check passed. Gate.io wallet cashflow
-history, live submit, and exchange-side cancel remain unsupported. Evidence:
-`docs/planning/exchange2-28-gateio-trade-history-snapshot-task-2026-05-09.md`.
+guardrails, docs parity, and diff check passed. Production build-info now
+exposes `432f768701300c7ba600fa7633532c0cc9ef4b96`, public API/Web smoke
+passes, and the no-secret final V1 preflight remains correctly blocked on
+protected/formal evidence. Gate.io wallet cashflow history, live submit, and
+exchange-side cancel remain unsupported. Evidence:
+`docs/planning/exchange2-28-gateio-trade-history-snapshot-task-2026-05-09.md`
+and `docs/operations/deploy-freshness-432f7687-2026-05-09.md`.
 
 2026-05-09 implementation update: `EXCHANGE2-27` enabled only Gate.io
 `OPEN_ORDERS_SNAPSHOT` through the existing authenticated-read boundary.

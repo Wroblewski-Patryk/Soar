@@ -99,6 +99,14 @@ updates exact-operation tests, and synchronizes source-of-truth docs.
   - PASS: `node scripts/repoGuardrails.mjs`
   - PASS: `node scripts/checkDocsParity.mjs`
   - PASS: `git diff --check` (line-ending warnings only)
+- Deployment:
+  - PASS: production Web build-info exposed
+    `432f768701300c7ba600fa7633532c0cc9ef4b96` on wait attempt 18.
+  - PASS: public deploy smoke for API `/health`, API `/ready`, and Web `/`.
+  - BLOCKED as expected: no-secret V1 final preflight public checks passed,
+    while protected/formal evidence remains blocked. Evidence:
+    `docs/operations/deploy-freshness-432f7687-2026-05-09.md` and
+    `docs/operations/v1-final-preflight-432f7687-2026-05-09.md`.
 - Manual checks: not applicable.
 - Screenshots/logs: not applicable.
 - High-risk checks: Gate.io wallet cashflow history and live submit remain
@@ -232,7 +240,8 @@ updates exact-operation tests, and synchronizes source-of-truth docs.
 - Files changed: exact capability matrix/tests, authenticated snapshot service
   test, architecture/module/planning/state docs.
 - How tested: focused exchange tests, authenticated snapshot service test, API
-  typecheck, guardrails, docs parity, and diff check.
+  typecheck, guardrails, docs parity, diff check, production build-info,
+  public deploy smoke, and no-secret V1 final preflight.
 - What is incomplete: Gate.io wallet cashflow history, live submit, live
   execution, and exchange-side cancel remain unsupported.
 - Next steps: decide whether Gate.io wallet cashflow history or live submit is

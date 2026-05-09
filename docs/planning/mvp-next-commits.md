@@ -12,8 +12,10 @@ Operational queue for one-task execution runs.
     existing authenticated-read boundary, while keeping Gate.io wallet cashflow
     history/live/cancel unsupported. Focused exchange tests, authenticated
     snapshot service test, API typecheck, guardrails, docs parity, and diff
-    check passed. Evidence:
-    `docs/planning/exchange2-28-gateio-trade-history-snapshot-task-2026-05-09.md`.
+    check passed. Production build-info and public smoke pass for
+    `432f768701300c7ba600fa7633532c0cc9ef4b96`. Evidence:
+    `docs/planning/exchange2-28-gateio-trade-history-snapshot-task-2026-05-09.md`
+    and `docs/operations/deploy-freshness-432f7687-2026-05-09.md`.
 
 - [x] `EXCHANGE2-27-GATEIO-OPEN-ORDERS-SNAPSHOT-2026-05-09 feature(exchange): enable Gate.io open-orders snapshot`
   - 2026-05-09: Enable only `GATEIO` `OPEN_ORDERS_SNAPSHOT` through the
