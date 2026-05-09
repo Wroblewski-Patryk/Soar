@@ -17,6 +17,15 @@ Last updated: 2026-05-09
 
 ## READY
 
+- [x] `CURRENT-PROD-BUILDINFO-745B5F5A-SYNC-2026-05-09 release: sync latest public build-info truth`
+  - Scope: synchronized active source-of-truth files after public UI evidence
+    showed latest observed production build-info at
+    `745b5f5a45eab3f86b02e023479c8358f760bbf6`. This SHA is docs/evidence
+    only over protected runtime/preflight baseline
+    `30b027b78544f76b5b638851e8e27c98f6d22ab5`; protected V1 evidence and
+    Gate.io paper/live/authenticated blockers remain open. Evidence:
+    `docs/planning/current-production-build-info-745b5f5a-sync-task-2026-05-09.md`.
+
 - [x] `PROD-UI-PUBLIC-ACCESS-REFRESH-745B5F5A-2026-05-09 qa: refresh public production UI access evidence`
   - Scope: refreshed public/unauthenticated production access evidence for
     deployed `745b5f5a45eab3f86b02e023479c8358f760bbf6`. Build-info matches

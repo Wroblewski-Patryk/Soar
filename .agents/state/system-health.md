@@ -4,7 +4,13 @@ Last updated: 2026-05-09
 
 ## Latest Health Snapshot
 
-- Current production build-info is verified at
+- Latest observed production build-info is
+  `745b5f5a45eab3f86b02e023479c8358f760bbf6`: public routes PASS and
+  dashboard/admin no-auth gates redirect to `/auth/login`. This is
+  docs/evidence only over the protected runtime baseline and does not close
+  protected V1 evidence. Evidence:
+  `docs/operations/prod-ui-public-access-clickthrough-745b5f5a-2026-05-09.md`.
+- Latest protected runtime/preflight baseline is verified at
   `30b027b78544f76b5b638851e8e27c98f6d22ab5`: build-info PASS, public
   API/Web smoke PASS, and no-secret final V1 preflight public checks PASS.
   The preflight remains correctly `BLOCKED` on protected/formal V1 evidence.
@@ -12,12 +18,6 @@ Last updated: 2026-05-09
   `docs/operations/deploy-freshness-30b027b7-2026-05-09.md`,
   `docs/operations/v1-final-preflight-30b027b7-2026-05-09.md`, and
   `docs/planning/deploy-freshness-30b027b7-task-2026-05-09.md`.
-- Public/unauthenticated production UI access is refreshed for deployed
-  `745b5f5a45eab3f86b02e023479c8358f760bbf6`: public routes PASS and
-  dashboard/admin no-auth gates redirect to `/auth/login`. Full
-  authenticated/admin module clickthrough remains blocked on production app
-  access. Evidence:
-  `docs/operations/prod-ui-public-access-clickthrough-745b5f5a-2026-05-09.md`.
 - Current production build-info is verified at
   `ba3d852d5126b625a8cf702ab647d5c644d86f9c`: build-info PASS, public
   API/Web smoke PASS, and no-secret final V1 preflight public checks PASS.

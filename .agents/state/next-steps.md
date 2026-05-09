@@ -5,21 +5,23 @@ Last updated: 2026-05-09
 ## Next Tiny Task
 
 Current deployed production build-info candidate:
-`30b027b78544f76b5b638851e8e27c98f6d22ab5`.
+`745b5f5a45eab3f86b02e023479c8358f760bbf6`.
 
-Latest pushed batch is deployed:
+Latest observed pushed batch is deployed:
+`745b5f5a45eab3f86b02e023479c8358f760bbf6`. Public/unauthenticated UI access
+evidence confirms build-info matches this SHA, public API health/readiness and
+public Web routes return HTTP 200, and dashboard/admin no-auth gates redirect
+to `/auth/login`. This commit is docs/evidence only over
+`30b027b78544f76b5b638851e8e27c98f6d22ab5`; it does not change runtime
+behavior, close protected V1 evidence, or enable Gate.io
+paper/live/authenticated capabilities.
+
+Latest protected runtime/preflight baseline:
 `30b027b78544f76b5b638851e8e27c98f6d22ab5`. Production build-info advanced
 from `ba3d852d` to the protected-backlog sync batch on the follow-up wait
 attempt 11. Public API/Web smoke and no-secret final V1 preflight public checks
 pass for this SHA. The batch records the `ba3d852d` deploy evidence and
-retargets the protected V1 backlog/runbook instructions. It does not change
-runtime behavior or enable Gate.io paper/live/authenticated capabilities.
-
-Public/unauthenticated production UI access is also refreshed for deployed
-`745b5f5a45eab3f86b02e023479c8358f760bbf6`: public routes return HTTP 200,
-build-info matches, and unauthenticated dashboard/admin routes redirect to
-`/auth/login`. This still does not satisfy the full authenticated/admin
-clickthrough audit.
+retargets the protected V1 backlog/runbook instructions.
 
 Previous pushed batch:
 `ba3d852d5126b625a8cf702ab647d5c644d86f9c`. Production build-info advanced

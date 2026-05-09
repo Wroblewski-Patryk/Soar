@@ -13,6 +13,14 @@ Last updated: 2026-05-09
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-09 `CURRENT-PROD-BUILDINFO-745B5F5A-SYNC-2026-05-09` synchronized
+  active source-of-truth files after public UI evidence showed latest observed
+  production build-info at
+  `745b5f5a45eab3f86b02e023479c8358f760bbf6`. This newer SHA is
+  docs/evidence only over the protected runtime/preflight baseline
+  `30b027b78544f76b5b638851e8e27c98f6d22ab5`; protected V1 and Gate.io
+  paper/live/authenticated blockers remain open. Evidence:
+  `docs/planning/current-production-build-info-745b5f5a-sync-task-2026-05-09.md`.
 - 2026-05-09 `DEPLOY-FRESHNESS-30B027B7-2026-05-09` verified that the
   protected-backlog sync batch ending at
   `30b027b78544f76b5b638851e8e27c98f6d22ab5` is production-current. Public
