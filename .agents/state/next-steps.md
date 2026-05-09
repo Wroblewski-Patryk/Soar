@@ -10,11 +10,16 @@ current open positions, open orders, dynamic-stop visibility, unrealized PnL,
 open counts, and capital summary while keeping historical projection for
 closed history/trades. Evidence:
 `docs/planning/dashboard-runtime-current-state-aggregate-task-2026-05-09.md`.
-Next executable dashboard correctness slice: add an API/Web integration
-regression proving `HomeLiveWidgets` renders the aggregate current-state rows
-for a running bot and does not visually drift when completed-session history is
-also present. Production clickthrough still requires authenticated/admin app
-access and remains blocked separately.
+Dashboard aggregate current-row rendering is also locally regression-locked:
+`HomeLiveWidgets` now has focused coverage proving a running bot's aggregate
+current open-position row renders while completed-session history stays visible.
+Evidence:
+`docs/planning/dashboard-runtime-widget-aggregate-current-render-task-2026-05-09.md`.
+The broader dashboard-home focused suite also passed locally (41/41). Next
+executable dashboard correctness slice is production clickthrough once
+authenticated/admin app access is available, or pushing this accumulated local
+batch when the user wants the next deploy batch. Production clickthrough still
+requires authenticated/admin app access and remains blocked separately.
 
 UX/UI process note: future UX/UI work must start with the autonomous memory
 preflight now documented in `docs/governance/user-feedback-loop.md`,

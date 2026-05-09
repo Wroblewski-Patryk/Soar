@@ -21,6 +21,13 @@ Last updated: 2026-05-09
   positions and trades. Focused validation passed (`runtimeSessionPositionsRead`
   helper tests 18/18, API typecheck, repository guardrails). Evidence:
   `docs/planning/dashboard-runtime-current-state-aggregate-task-2026-05-09.md`.
+- 2026-05-09 `DASH-RUNTIME-WIDGET-AGGREGATE-CURRENT-RENDER-2026-05-09`
+  added focused Web coverage proving `HomeLiveWidgets` renders aggregate
+  current open-position rows for a running bot while completed-session history
+  remains visible in the history tab. Focused validation passed
+  (`HomeLiveWidgets.aggregate-history.test.tsx` 3/3, broader dashboard-home
+  focused pack 41/41, Web typecheck, repository guardrails). Evidence:
+  `docs/planning/dashboard-runtime-widget-aggregate-current-render-task-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-20` reconciled the second-exchange plan with the
   deployed Gate.io foundation. The plan is now complete as a planning artifact
   and records the exact current support boundary: Gate.io public catalog and

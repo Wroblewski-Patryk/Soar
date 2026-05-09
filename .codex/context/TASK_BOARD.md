@@ -26,6 +26,12 @@ Last updated: 2026-05-09
     projection rows. Evidence:
     `docs/planning/dashboard-runtime-current-state-aggregate-task-2026-05-09.md`.
 
+- [x] `DASH-RUNTIME-WIDGET-AGGREGATE-CURRENT-RENDER-2026-05-09 test(web): lock dashboard aggregate current-row rendering`
+  - Scope: added focused `HomeLiveWidgets` coverage proving a running bot's
+    aggregate current open-position row renders on the dashboard while
+    completed-session history remains visible in the history tab. Evidence:
+    `docs/planning/dashboard-runtime-widget-aggregate-current-render-task-2026-05-09.md`.
+
 - [x] `UX-UI-MEMORY-AUTONOMY-2026-05-08 design: make UX/UI feedback memory autonomous`
   - Scope: extended the existing user feedback loop, design memory, and screen
     quality checklist so future UX/UI work classifies user guidance, stores it
