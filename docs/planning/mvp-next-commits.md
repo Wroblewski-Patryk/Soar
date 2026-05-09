@@ -394,6 +394,17 @@ Operational queue for one-task execution runs.
     `docs/planning/v1-protected-operator-handoff-task-2026-05-09.md` and
     `docs/operations/v1-protected-operator-handoff-3c5da343-2026-05-09.md`.
 
+- [x] `DEPLOY-FRESHNESS-4EE1672E-2026-05-09 release: verify docs/evidence handoff batch deployment`
+  - 2026-05-09: Pushed the accumulated docs/evidence handoff batch ending at
+    `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`, waited until production Web
+    build-info exposed that SHA, ran public API/Web smoke with `--no-workers`,
+    and refreshed no-secret final V1 preflight for the same SHA. Build-info
+    and public smoke pass; protected V1 evidence remains blocked on auth,
+    production DB restore context, failed RC evidence, `LIVEIMPORT-03`, stale
+    restore evidence, and stale rollback proof. Evidence:
+    `docs/planning/deploy-freshness-4ee1672e-task-2026-05-09.md` and
+    `docs/operations/deploy-freshness-4ee1672e-2026-05-09.md`.
+
 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
   - 2026-05-09: Names-only readiness check found missing live-import auth,
     rollback auth, and production DB/Coolify restore context in the current

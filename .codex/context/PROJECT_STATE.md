@@ -63,6 +63,16 @@ Last updated: 2026-05-09
   until those protected commands are executed from an approved operator
   context. Evidence:
   `docs/operations/v1-protected-operator-handoff-3c5da343-2026-05-09.md`.
+- 2026-05-09 `DEPLOY-FRESHNESS-4EE1672E-2026-05-09` pushed the accumulated
+  docs/evidence handoff batch and verified production freshness. Web build-info
+  reached `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f` on attempt 20, public
+  API/Web smoke passed, and no-secret final V1 preflight for this SHA reports
+  build-info/public smoke PASS with V1 still `BLOCKED` on protected auth,
+  production DB restore context, failed RC evidence, missing `LIVEIMPORT-03`,
+  stale restore evidence, and stale rollback proof. Protected final blocker
+  commands now use `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f` as the
+  production build-info expected SHA. Evidence:
+  `docs/operations/deploy-freshness-4ee1672e-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-20` reconciled the second-exchange plan with the
   deployed Gate.io foundation. The plan is now complete as a planning artifact
   and records the exact current support boundary: Gate.io public catalog and

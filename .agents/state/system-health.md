@@ -184,11 +184,17 @@ Last updated: 2026-05-09
   The full production UI module clickthrough remains blocked on valid
   authenticated/admin app access.
 - Final blocker pack candidate SHA sync PASS: protected evidence commands now
-  use the verified deployed candidate
-  `3c5da34371e22aecb1a7aff0a185018870d35cec` as `$expectedSha` and warn
-  operators not to substitute local evidence-only `HEAD` until build-info
-  proves deployment. Evidence:
+  use the verified deployed docs/evidence handoff candidate
+  `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f` as `$expectedSha`. The runtime
+  code behavior remains the previously verified dashboard aggregate batch, but
+  protected commands must match current production build-info. Evidence:
   `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
+- Docs/evidence handoff deploy freshness PASS: production Web build-info now
+  exposes `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`, public API/Web smoke
+  passed with `--no-workers`, and no-secret final V1 preflight reports
+  build-info/public smoke PASS while protected V1 remains BLOCKED. Evidence:
+  `docs/operations/deploy-freshness-4ee1672e-2026-05-09.md` and
+  `docs/operations/v1-final-preflight-4ee1672e-2026-05-09.md`.
 - Protected access readiness BLOCKED: current shell lacks required
   live-import auth, rollback auth, and production DB/Coolify restore context
   env names. No protected production evidence, rollback proof, restore drill,

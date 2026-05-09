@@ -4,7 +4,10 @@ Last updated: 2026-05-09
 
 ## Next Tiny Task
 
-Current deployable runtime/dashboard candidate:
+Current deployed production build-info candidate:
+`4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`.
+
+Runtime/dashboard behavior source candidate:
 `3c5da34371e22aecb1a7aff0a185018870d35cec`.
 
 Completed for that candidate:
@@ -13,6 +16,8 @@ Completed for that candidate:
 - production build-info freshness and public smoke with `--no-workers`
 - no-secret final V1 preflight showing public checks PASS
 - public/unauthenticated production UI access and auth-gate refresh
+- protected operator handoff docs pushed as one batch and verified on
+  production build-info
 
 Evidence:
 - `docs/planning/dashboard-runtime-current-state-aggregate-task-2026-05-09.md`
@@ -20,6 +25,8 @@ Evidence:
 - `docs/operations/deploy-freshness-3c5da343-2026-05-09.md`
 - `docs/operations/v1-final-preflight-3c5da343-2026-05-09.md`
 - `docs/operations/prod-ui-public-access-clickthrough-3c5da343-2026-05-09.md`
+- `docs/operations/deploy-freshness-4ee1672e-2026-05-09.md`
+- `docs/operations/v1-final-preflight-4ee1672e-2026-05-09.md`
 
 Next executable V1 steps are protected and remain blocked until the operator
 supplies authenticated/admin production app access, live-import auth, rollback
@@ -223,10 +230,11 @@ candidate at
 `docs/operations/prod-ui-public-access-clickthrough-3c5da343-2026-05-09.md`;
 it confirms public route reachability and unauthenticated auth gates only.
 The final blocker execution pack now separates the deployed code/tooling
-candidate from local evidence-only commits: use
-`3c5da34371e22aecb1a7aff0a185018870d35cec` as `$expectedSha` for protected
-evidence until another intended candidate is deployed and proven by
-build-info. Evidence:
+candidate from local evidence-only commits. After the docs/evidence handoff
+batch was pushed and deployed, use
+`4ee1672e7a3ac6d9b549b4d461120afd7f89d68f` as `$expectedSha` for protected
+evidence until another intended candidate is deployed and proven by build-info.
+Evidence:
 `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
 Protected access readiness is currently BLOCKED. Names-only checks in this
 shell found no `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, or production
@@ -259,7 +267,7 @@ been removed because the project does not use paid GitHub Actions and workflow
 attempts create unwanted email noise.
 
 ```powershell
-$expectedSha = "3c5da34371e22aecb1a7aff0a185018870d35cec"
+$expectedSha = "4ee1672e7a3ac6d9b549b4d461120afd7f89d68f"
 pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --timeout-seconds 900 --interval-seconds 15
 ```
 
@@ -335,7 +343,7 @@ Canonical command once auth is available:
 
 ```powershell
 $releaseDate = Get-Date -Format yyyy-MM-dd
-$expectedSha = "3c5da34371e22aecb1a7aff0a185018870d35cec"
+$expectedSha = "4ee1672e7a3ac6d9b549b4d461120afd7f89d68f"
 pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output "docs/operations/liveimport-03-prod-readback-$releaseDate.json"
 ```
 
