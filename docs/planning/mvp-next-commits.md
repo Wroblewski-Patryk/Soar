@@ -442,6 +442,14 @@ Operational queue for one-task execution runs.
     historical entries. Evidence:
     `docs/planning/mvp-execution-plan-4ee1672e-progress-sync-task-2026-05-09.md`.
 
+- [x] `SYSTEM-HEALTH-4EE1672E-TOPLINE-SYNC-2026-05-09 release: sync system health topline`
+  - 2026-05-09: Prepended the current production health snapshot in
+    `.agents/state/system-health.md` so the first operator-facing health entry
+    names deployed `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`, public/no-secret
+    PASS evidence, `LIVEIMPORT-03` target sync, and the protected V1 blockers
+    that still keep release readiness blocked. Evidence:
+    `docs/planning/system-health-4ee1672e-topline-sync-task-2026-05-09.md`.
+
 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
   - 2026-05-09: Names-only readiness check found missing live-import auth,
     rollback auth, and production DB/Coolify restore context in the current

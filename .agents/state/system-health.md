@@ -4,6 +4,19 @@ Last updated: 2026-05-09
 
 ## Latest Health Snapshot
 
+- Current production handoff is verified at
+  `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`: build-info PASS, public
+  API/Web smoke PASS, public unauthenticated UI access PASS, `LIVEIMPORT-03`
+  target sync PASS, and protected readiness check PASS as a fail-closed
+  blocker classification. V1 remains `BLOCKED` on missing live-import auth,
+  rollback auth, production DB/Coolify restore context for current-date
+  evidence, failed/open RC evidence, missing `LIVEIMPORT-03`, stale
+  2026-05-08 restore evidence, and stale 2026-05-08 rollback proof. Evidence:
+  `docs/operations/deploy-freshness-4ee1672e-2026-05-09.md`,
+  `docs/operations/v1-final-preflight-4ee1672e-2026-05-09.md`,
+  `docs/operations/prod-ui-public-access-clickthrough-4ee1672e-2026-05-09.md`,
+  `docs/planning/liveimport-03-current-production-target-sync-task-2026-05-09.md`,
+  and `docs/operations/v1-protected-access-readiness-2026-05-09.md`.
 - Gate.io second-exchange foundation has advanced through `EXCHANGE2-06`.
   Latest pushed `main` is `5517f027`, including Gate.io public catalog,
   runtime event exchange generalization, public ticker/candle reader,

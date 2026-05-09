@@ -117,6 +117,13 @@ Last updated: 2026-05-09
   the SYSFINAL progress log so `docs/planning/mvp-execution-plan.md` no longer
   opens with stale `4792fbca` as the newest release-evidence state. Evidence:
   `docs/planning/mvp-execution-plan-4ee1672e-progress-sync-task-2026-05-09.md`.
+- 2026-05-09 `SYSTEM-HEALTH-4EE1672E-TOPLINE-SYNC-2026-05-09` prepended the
+  current production health snapshot in `.agents/state/system-health.md`.
+  Future continuation runs now see deployed
+  `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`, public/no-secret PASS evidence,
+  `LIVEIMPORT-03` target sync, and the protected V1 blockers before historical
+  rollout notes. Evidence:
+  `docs/planning/system-health-4ee1672e-topline-sync-task-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-20` reconciled the second-exchange plan with the
   deployed Gate.io foundation. The plan is now complete as a planning artifact
   and records the exact current support boundary: Gate.io public catalog and
