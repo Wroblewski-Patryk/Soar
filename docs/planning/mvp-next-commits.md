@@ -468,6 +468,13 @@ Operational queue for one-task execution runs.
     rollback, RC approval, and authenticated/admin UI access. Evidence:
     `docs/planning/v1-protected-operator-docs-55469cdc-sync-task-2026-05-09.md`.
 
+- [x] `MVP-EXECUTION-PLAN-55469CDC-PROGRESS-SYNC-2026-05-09 docs(planning): prepend current production progress`
+  - 2026-05-09: Prepended `55469cdc` deploy freshness and protected
+    operator-doc sync entries to the SYSFINAL progress log so
+    `docs/planning/mvp-execution-plan.md` opens with current production truth
+    while preserving older `4ee1672e` history below. Evidence:
+    `docs/planning/mvp-execution-plan-55469cdc-progress-sync-task-2026-05-09.md`.
+
 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
   - 2026-05-09: Names-only readiness check found missing live-import auth,
     rollback auth, and production DB/Coolify restore context in the current

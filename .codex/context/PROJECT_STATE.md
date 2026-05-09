@@ -139,6 +139,12 @@ Last updated: 2026-05-09
   V1 evidence; it keeps the operator commands aligned with deployed
   build-info. Evidence:
   `docs/planning/v1-protected-operator-docs-55469cdc-sync-task-2026-05-09.md`.
+- 2026-05-09 `MVP-EXECUTION-PLAN-55469CDC-PROGRESS-SYNC-2026-05-09`
+  prepended the latest `55469cdc` deploy/protected-operator-doc syncs to the
+  SYSFINAL progress log so `docs/planning/mvp-execution-plan.md` opens with
+  current production truth while preserving historical `4ee1672e` entries.
+  Evidence:
+  `docs/planning/mvp-execution-plan-55469cdc-progress-sync-task-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-20` reconciled the second-exchange plan with the
   deployed Gate.io foundation. The plan is now complete as a planning artifact
   and records the exact current support boundary: Gate.io public catalog and
