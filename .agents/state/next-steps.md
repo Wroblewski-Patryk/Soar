@@ -4,15 +4,16 @@ Last updated: 2026-05-09
 
 ## Next Tiny Task
 
-Latest implementation slice:
+Latest deployed implementation slice:
 `EXCHANGE2-23-GATEIO-PAPER-PRICING-ENABLE-2026-05-09` enabled only Gate.io
 public `PAPER_PRICING_FEED` through the shared capability matrix and existing
-public market-stream source. Focused local validation passed. Gate.io
-`LIVE_EXECUTION`, `API_KEY_PROBE`, authenticated reads, live submit, and
-exchange-side cancel remain unsupported. Next step for this batch is
-commit/push and production build-info/public smoke; after deploy freshness, the
-next Gate.io gaps are authenticated read operations and live submit, not paper
-capability gating.
+public market-stream source. Focused local validation passed, and production
+Web build-info now exposes
+`1dc55d9623bab11dacb5b9f8ce9634778c139249`; public API/Web smoke passes.
+Gate.io `LIVE_EXECUTION`, `API_KEY_PROBE`, authenticated reads, live submit,
+and exchange-side cancel remain unsupported. The next Gate.io gaps are
+authenticated read operations and live submit, not paper capability gating.
+Evidence: `docs/operations/deploy-freshness-1dc55d96-2026-05-09.md`.
 
 Latest V1 completion gap report:
 `docs/operations/v1-completion-gap-report-2026-05-09.md`.
@@ -23,7 +24,7 @@ product/UX confidence gaps. Use this report before starting more broad
 implementation or deploy-evidence loops.
 
 Current deployed production build-info candidate:
-`e8cd748e80b8693087e01beb21b0085ace747c49`.
+`1dc55d9623bab11dacb5b9f8ce9634778c139249`.
 
 Latest observed pushed batch is deployed:
 `e8cd748e80b8693087e01beb21b0085ace747c49`. Production build-info matches

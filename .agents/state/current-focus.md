@@ -20,8 +20,12 @@ contracts synchronized.
 pricing through the shared capability matrix and existing public market-stream
 source. The scope is intentionally limited to paper pricing: Gate.io LIVE
 execution, API-key probe, authenticated reads, live submit, and exchange-side
-cancel remain unsupported. Evidence:
-`docs/planning/exchange2-23-gateio-paper-pricing-enable-task-2026-05-09.md`.
+cancel remain unsupported. Production build-info now exposes
+`1dc55d9623bab11dacb5b9f8ce9634778c139249`, public API/Web smoke passes, and
+no-secret final V1 preflight remains correctly blocked on protected/formal
+evidence. Evidence:
+`docs/planning/exchange2-23-gateio-paper-pricing-enable-task-2026-05-09.md`
+and `docs/operations/deploy-freshness-1dc55d96-2026-05-09.md`.
 
 2026-05-09 current production handoff: latest observed production Web
 build-info is `e8cd748e80b8693087e01beb21b0085ace747c49`. Public API/Web

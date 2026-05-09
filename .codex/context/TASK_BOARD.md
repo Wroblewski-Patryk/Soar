@@ -17,6 +17,14 @@ Last updated: 2026-05-09
 
 ## READY
 
+- [x] `DEPLOY-FRESHNESS-1DC55D96-2026-05-09 release: verify Gate.io PAPER pricing batch deployment`
+  - Scope: verified production Web build-info for
+    `1dc55d9623bab11dacb5b9f8ce9634778c139249`, ran public API/Web smoke with
+    `--no-workers`, and refreshed no-secret final V1 preflight. Public checks
+    pass; protected/formal V1 evidence remains blocked. Evidence:
+    `docs/planning/deploy-freshness-1dc55d96-task-2026-05-09.md` and
+    `docs/operations/deploy-freshness-1dc55d96-2026-05-09.md`.
+
 - [x] `EXCHANGE2-23-GATEIO-PAPER-PRICING-ENABLE-2026-05-09 feature(exchange): enable Gate.io public PAPER pricing`
   - Scope: enabled only `GATEIO` `PAPER_PRICING_FEED` in the shared
     capability matrix, updated API/Web wallet/bot/runtime regressions from

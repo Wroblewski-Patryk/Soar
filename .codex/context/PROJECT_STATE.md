@@ -13,6 +13,14 @@ Last updated: 2026-05-09
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-09 `DEPLOY-FRESHNESS-1DC55D96-2026-05-09` verified that the Gate.io
+  PAPER pricing enablement batch is production-current at
+  `1dc55d9623bab11dacb5b9f8ce9634778c139249`. Public API/Web smoke passes,
+  and the no-secret final V1 preflight reports build-info/public smoke PASS
+  while remaining correctly `BLOCKED` on protected/formal V1 evidence.
+  Evidence:
+  `docs/planning/deploy-freshness-1dc55d96-task-2026-05-09.md` and
+  `docs/operations/deploy-freshness-1dc55d96-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-23-GATEIO-PAPER-PRICING-ENABLE-2026-05-09` enabled
   Gate.io public PAPER pricing through the existing shared capability
   contract. Gate.io PAPER wallet create/update and PAPER bot activation now
