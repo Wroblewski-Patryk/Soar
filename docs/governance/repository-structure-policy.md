@@ -45,6 +45,19 @@ When a non-repo markdown file appears in root:
 - Keep content in English.
 - Preserve project assumptions, decisions, and historical notes when restructuring.
 
+## Evidence and Artifact Naming
+
+- Prefer `kebab-case` for markdown docs.
+- Suffix historical evidence docs with an ISO date: `-YYYY-MM-DD`.
+- If evidence maps to a specific deploy boundary, include a short commit SHA in
+  the filename: `-<sha7>`.
+- Store generated outputs (JSON, logs, screenshots, exports) under the
+  appropriate domain folder (usually `docs/operations/` or `docs/planning/`).
+- Prefix generated artifacts with `_artifacts-` to keep them visibly
+  non-canonical and easy to filter.
+- Include enough context to disambiguate environment and command intent (for
+  example: `prod`, `staging`, `local`, `vps`).
+
 ## Canonical Planning Paths
 - `docs/planning/mvp-execution-plan.md`
 - `docs/planning/mvp-next-commits.md`

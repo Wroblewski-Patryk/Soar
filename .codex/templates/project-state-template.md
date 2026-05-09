@@ -18,7 +18,11 @@
 
 ## Validation
 - Commands run:
-- Evidence:
+- Evidence (paths, logs, screenshots):
+  - Prefer `docs/operations/` or `docs/planning/` for evidence.
+  - Use `kebab-case` and suffix evidence docs with `-YYYY-MM-DD`.
+  - Prefix generated outputs with `_artifacts-` and include environment when
+    relevant.
 
 ## Follow-up Needed
 - Architecture follow-up:
