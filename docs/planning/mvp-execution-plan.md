@@ -33,6 +33,13 @@ Rule: fix/cleanup/update first, then feature delivery.
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
 - 2026-05-09: Closed
+  `OPEN-PROTECTED-BACKLOG-55469CDC-SYNC-2026-05-09` with
+  `docs/planning/open-protected-backlog-55469cdc-sync-task-2026-05-09.md`.
+  Open protected backlog entries for `V1-PROTECTED-ACCESS-READINESS`,
+  `LIVEIMPORT-03`, and `BOTMULTI-09` now target current production build-info
+  `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`. The blockers remain protected
+  auth/operator inputs, not public deploy freshness.
+- 2026-05-09: Closed
   `PROD-UI-AUDIT-CURRENT-BLOCKER-SYNC-55469CDC-2026-05-09` with
   `docs/planning/prod-ui-audit-current-blocker-sync-55469cdc-task-2026-05-09.md`.
   The production UI module clickthrough audit plan now starts from deployed

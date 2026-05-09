@@ -161,6 +161,13 @@ Last updated: 2026-05-09
   production test data, and explicit operator approval before any live-money or
   destructive action. Evidence:
   `docs/planning/prod-ui-audit-current-blocker-sync-55469cdc-task-2026-05-09.md`.
+- 2026-05-09 `OPEN-PROTECTED-BACKLOG-55469CDC-SYNC-2026-05-09` synced the open
+  protected backlog targets to current production build-info
+  `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`. `V1-PROTECTED-ACCESS-READINESS`,
+  `LIVEIMPORT-03`, and `BOTMULTI-09` remain blocked on authenticated/operator
+  evidence; this only prevents stale `4ee1672e` targeting after production
+  advanced. Evidence:
+  `docs/planning/open-protected-backlog-55469cdc-sync-task-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-20` reconciled the second-exchange plan with the
   deployed Gate.io foundation. The plan is now complete as a planning artifact
   and records the exact current support boundary: Gate.io public catalog and

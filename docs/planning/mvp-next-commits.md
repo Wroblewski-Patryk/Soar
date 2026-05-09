@@ -3450,12 +3450,12 @@ Operational queue for one-task execution runs.
 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production`
   - Scope: use authenticated read-only dashboard/API evidence on current
     production build-info
-    `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f` for the reported LIVE ETH/DOGE rows:
+    `55469cdc2ad888b822c8cdbd86660c4ed5166e1c` for the reported LIVE ETH/DOGE rows:
     ownership, `strategyId` or single-strategy provenance recovery, TTP
     visibility, actionable state, and import completeness across assigned bot
     markets. Do not promote stale candidate `39146d2e`; `LIVEIMPORT-03A`
     confirmed it is not a valid production promotion candidate. 2026-05-09
-    refresh: current production build-info is `4ee1672e`, public/no-secret
+    refresh: current production build-info is `55469cdc`, public/no-secret
     checks pass, and the collector command in the protected operator handoff
     targets that SHA. Validation still required: authenticated runtime
     positions readback and redacted evidence.
@@ -3484,13 +3484,21 @@ Operational queue for one-task execution runs.
     Local pre-release build, guardrails, and docs parity PASS. Candidate
     `f3aaa3dca6cf4d4b199372563886165638391a77` is committed and pushed to
     `origin/main`. 2026-05-09 refresh: current production build-info now
-    reports `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`, which contains
+    reports `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`, which contains
     `f3aaa3dca6cf4d4b199372563886165638391a77`; the old public build-info
     blocker remains resolved. Remaining blocker: authenticated/protected
     runtime readback and broader V1 release gate evidence are still required.
     Evidence:
     `docs/planning/botmulti-09-production-deploy-task-2026-05-03.md` and
     `docs/planning/botmulti-09-current-production-containment-task-2026-05-09.md`.
+
+- [x] `OPEN-PROTECTED-BACKLOG-55469CDC-SYNC-2026-05-09 release: sync open protected backlog target`
+  - 2026-05-09: Synced open protected backlog entries for
+    `V1-PROTECTED-ACCESS-READINESS`, `LIVEIMPORT-03`, and `BOTMULTI-09` to
+    current production build-info `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`.
+    This does not close any protected evidence; it only prevents future runs
+    from targeting stale `4ee1672e` after production advanced. Evidence:
+    `docs/planning/open-protected-backlog-55469cdc-sync-task-2026-05-09.md`.
 - [x] `BOTMULTI-08 qa(closure): run architecture-to-runtime closure pack and publish evidence`
   - 2026-05-03: Closed with
     `docs/planning/botmulti-08-architecture-runtime-closure-task-2026-05-03.md`.
