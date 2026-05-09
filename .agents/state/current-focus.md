@@ -17,16 +17,17 @@ contracts synchronized.
 ## Current Delivery Stage
 
 2026-05-09 current production handoff: production Web build-info is current at
-`55469cdc2ad888b822c8cdbd86660c4ed5166e1c`. Public API `/health`, API
-`/ready`, Web `/`, and public/unauthenticated UI access pass after the
-source-of-truth synchronization batch. Full authenticated/admin production UI
-module clickthrough remains blocked until valid production app access is
-available. Evidence:
-`docs/operations/deploy-freshness-55469cdc-2026-05-09.md`,
-`docs/operations/v1-final-preflight-55469cdc-2026-05-09.md`, and
+`6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623`. Public API `/health`, API
+`/ready`, and Web `/` pass after the protected-backlog/source-of-truth sync
+batch. The latest public/unauthenticated UI access evidence remains current
+from the same evidence date and deployed lineage at `55469cdc`. Full
+authenticated/admin production UI module clickthrough remains blocked until
+valid production app access is available. Evidence:
+`docs/operations/deploy-freshness-6c54bb5d-2026-05-09.md`,
+`docs/operations/v1-final-preflight-6c54bb5d-2026-05-09.md`, and
 `docs/operations/prod-ui-public-access-clickthrough-55469cdc-2026-05-09.md`.
 
-2026-05-09 no-secret V1 preflight refresh: deployed `55469cdc` passes
+2026-05-09 no-secret V1 preflight refresh: deployed `6c54bb5d` passes
 build-info and public API/Web smoke, but the current release posture is
 `BLOCKED` on missing live-import auth, rollback auth, production DB restore
 context for the active evidence date, failed/open RC evidence, missing
@@ -62,8 +63,8 @@ protected auth and DB/Coolify context.
 2026-05-09 dashboard runtime deploy freshness: the dashboard runtime aggregate
 behavior source is `3c5da34371e22aecb1a7aff0a185018870d35cec`, and the current
 production docs/evidence handoff deploy is
-`55469cdc2ad888b822c8cdbd86660c4ed5166e1c`, which includes that runtime
-behavior. Continue protected evidence work from `55469cdc` unless a newer
+`6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623`, which includes that runtime
+behavior. Continue protected evidence work from `6c54bb5d` unless a newer
 intended code/tooling candidate is first deployed and proven by production
 build-info.
 

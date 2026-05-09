@@ -168,6 +168,15 @@ Last updated: 2026-05-09
   evidence; this only prevents stale `4ee1672e` targeting after production
   advanced. Evidence:
   `docs/planning/open-protected-backlog-55469cdc-sync-task-2026-05-09.md`.
+- 2026-05-09 `DEPLOY-FRESHNESS-6C54BB5D-2026-05-09` pushed the six-commit
+  protected-backlog/source-of-truth sync batch and verified production
+  freshness. Web build-info reached
+  `6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623`, public API/Web smoke passed,
+  and no-secret final V1 preflight for this SHA reports build-info/public
+  smoke PASS with V1 still `BLOCKED` on protected auth, production DB restore
+  context, failed RC evidence, missing `LIVEIMPORT-03`, stale restore
+  evidence, and stale rollback proof. Evidence:
+  `docs/operations/deploy-freshness-6c54bb5d-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-20` reconciled the second-exchange plan with the
   deployed Gate.io foundation. The plan is now complete as a planning artifact
   and records the exact current support boundary: Gate.io public catalog and

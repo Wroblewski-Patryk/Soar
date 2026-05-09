@@ -5,7 +5,7 @@ Last updated: 2026-05-09
 ## Next Tiny Task
 
 Current deployed production build-info candidate:
-`55469cdc2ad888b822c8cdbd86660c4ed5166e1c`.
+`6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623`.
 
 Runtime/dashboard behavior source candidate:
 `3c5da34371e22aecb1a7aff0a185018870d35cec`.
@@ -20,6 +20,8 @@ Completed for that candidate:
   production build-info
 - source-of-truth synchronization batch pushed as one group and verified on
   production build-info
+- protected-backlog/source-of-truth sync batch pushed and verified on
+  production build-info
 
 Evidence:
 - `docs/planning/dashboard-runtime-current-state-aggregate-task-2026-05-09.md`
@@ -32,6 +34,8 @@ Evidence:
 - `docs/operations/prod-ui-public-access-clickthrough-4ee1672e-2026-05-09.md`
 - `docs/operations/deploy-freshness-55469cdc-2026-05-09.md`
 - `docs/operations/v1-final-preflight-55469cdc-2026-05-09.md`
+- `docs/operations/deploy-freshness-6c54bb5d-2026-05-09.md`
+- `docs/operations/v1-final-preflight-6c54bb5d-2026-05-09.md`
 - `docs/operations/prod-ui-public-access-clickthrough-55469cdc-2026-05-09.md`
 
 Next executable V1 steps are protected and remain blocked until the operator
@@ -42,7 +46,7 @@ access, or local regression suites as completion evidence for `LIVEIMPORT-03`,
 rollback proof, restore proof, RC approval, or authenticated module clickthrough.
 BOTMULTI-09 is also current against production build-info:
 `f3aaa3dca6cf4d4b199372563886165638391a77` is contained in deployed
-`55469cdc2ad888b822c8cdbd86660c4ed5166e1c`, but BOTMULTI remains open until
+`6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623`, but BOTMULTI remains open until
 protected runtime/V1 gate evidence is collected.
 Use the concise protected operator handoff at
 `docs/operations/v1-protected-operator-handoff-3c5da343-2026-05-09.md` before

@@ -362,6 +362,15 @@ Last updated: 2026-05-09
     explicit. Evidence:
     `docs/planning/prod-ui-audit-current-blocker-sync-55469cdc-task-2026-05-09.md`.
 
+- [x] `DEPLOY-FRESHNESS-6C54BB5D-2026-05-09 release: verify protected-backlog sync batch deployment`
+  - Scope: pushed the six-commit protected-backlog/source-of-truth sync batch
+    ending at `6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623`, verified production
+    Web build-info reached that SHA, ran public API/Web smoke with
+    `--no-workers`, and refreshed no-secret final V1 preflight. Build-info and
+    public smoke pass; protected V1 evidence remains blocked. Evidence:
+    `docs/planning/deploy-freshness-6c54bb5d-task-2026-05-09.md` and
+    `docs/operations/deploy-freshness-6c54bb5d-2026-05-09.md`.
+
 - [x] `PROD-UI-PUBLIC-ACCESS-CLICKTHROUGH-2026-05-08 qa: verify production public access and auth gates`
   - Scope: captured the public/unauthenticated portion of the production UI
     audit without claiming authenticated module coverage. API `/health` and
@@ -460,7 +469,7 @@ Last updated: 2026-05-09
   - Scope: current shell lacks required protected env names for live-import
     auth, rollback auth, and production DB/Coolify restore context. The
     readiness artifact now targets current production build-info
-    `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`. Final V1 evidence, rollback
+    `6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623`. Final V1 evidence, rollback
     proof, restore drill, RC approval, and authenticated UI clickthrough remain
     blocked until operator inputs are supplied. Evidence:
     `docs/planning/v1-protected-access-readiness-task-2026-05-09.md` and
@@ -3938,12 +3947,12 @@ Last updated: 2026-05-09
 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production`
   - Scope: use authenticated read-only dashboard/API evidence on current
     production build-info
-    `55469cdc2ad888b822c8cdbd86660c4ed5166e1c` for the reported LIVE ETH/DOGE rows:
+    `6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623` for the reported LIVE ETH/DOGE rows:
     ownership, `strategyId` or single-strategy provenance recovery, TTP
     visibility, actionable state, and import completeness across assigned bot
     markets. Do not promote stale candidate `39146d2e`; `LIVEIMPORT-03A`
     confirmed it is not a valid production promotion candidate. 2026-05-09
-    refresh: current production build-info is `55469cdc`, public/no-secret
+    refresh: current production build-info is `6c54bb5d`, public/no-secret
     checks pass, and the collector command in the protected operator handoff
     targets that SHA. Validation still required: authenticated runtime
     positions readback and redacted evidence.
@@ -3980,7 +3989,7 @@ Last updated: 2026-05-09
     PASS. Candidate
     `f3aaa3dca6cf4d4b199372563886165638391a77` is committed and pushed to
     `origin/main`. 2026-05-09 refresh: current production build-info now
-    reports `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`, which contains
+    reports `6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623`, which contains
     `f3aaa3dca6cf4d4b199372563886165638391a77`; the old public build-info
     blocker remains resolved. Remaining blocker: authenticated/protected
     runtime readback and broader V1 release gate evidence are still required.
