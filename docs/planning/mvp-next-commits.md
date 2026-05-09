@@ -427,6 +427,14 @@ Operational queue for one-task execution runs.
     auth/operator inputs. Evidence:
     `docs/planning/v1-next-steps-protected-sha-sync-task-2026-05-09.md`.
 
+- [x] `CURRENT-FOCUS-4EE1672E-SYNC-2026-05-09 release: align active focus with current production SHA`
+  - 2026-05-09: Updated the top active delivery-stage summary in
+    `.agents/state/current-focus.md` to point at current production
+    `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`, its public/no-secret
+    evidence, and the protected preflight command for that SHA. Historical
+    notes remain intact. Evidence:
+    `docs/planning/current-focus-4ee1672e-sync-task-2026-05-09.md`.
+
 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
   - 2026-05-09: Names-only readiness check found missing live-import auth,
     rollback auth, and production DB/Coolify restore context in the current

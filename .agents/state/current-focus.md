@@ -16,24 +16,29 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
-2026-05-09 production UI public-access refresh: the public/unauthenticated
-audit slice is current for deployed `90cd07d6`. Web build-info matches
-`90cd07d602f0a31f315719b8a5cd5be3fd112313`, API `/health` and `/ready` pass,
-public Web routes return HTTP 200, and unauthenticated dashboard/admin routes
-redirect to `/auth/login`. Full production UI module clickthrough remains
-blocked until authenticated/admin production app access is available.
+2026-05-09 current production handoff: production Web build-info is current at
+`4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`. Public API `/health`, API
+`/ready`, Web `/`, and public/unauthenticated UI access pass; protected
+dashboard/admin routes redirect to `/auth/login` without a session. Evidence:
+`docs/operations/deploy-freshness-4ee1672e-2026-05-09.md`,
+`docs/operations/v1-final-preflight-4ee1672e-2026-05-09.md`, and
+`docs/operations/prod-ui-public-access-clickthrough-4ee1672e-2026-05-09.md`.
+Full authenticated/admin production UI module clickthrough remains blocked
+until valid production app access is available.
 
-2026-05-09 no-secret V1 preflight refresh: deployed `90cd07d6` still passes
+2026-05-09 no-secret V1 preflight refresh: deployed `4ee1672e` passes
 build-info and public API/Web smoke, but the current release posture is
 `BLOCKED` on missing live-import auth, rollback auth, production DB restore
-context, missing `LIVEIMPORT-03`, and stale 2026-05-08 release evidence for
-the 2026-05-09 evidence date.
+context for the active evidence date, failed/open RC evidence, missing
+`LIVEIMPORT-03`, stale 2026-05-08 restore evidence, and stale 2026-05-08
+rollback proof.
 
 2026-05-09 activation refresh: production activation plan and activation
-evidence audit are fresh `NO-GO` artifacts for 2026-05-09, and the follow-up
-preflight confirms those blockers are cleared. V1 remains blocked on protected
-auth, production DB restore context, stale RC/recovery evidence,
-`LIVEIMPORT-03`, and rollback proof.
+evidence audit are fresh `NO-GO` artifacts for 2026-05-09 and now target
+current production build-info `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`.
+V1 remains blocked on protected auth, production DB restore context for the
+active evidence date, failed/open RC evidence, `LIVEIMPORT-03`, and rollback
+proof.
 
 2026-05-09 RC refresh: RC status, sign-off, and checklist are fresh blocked
 evidence for 2026-05-09. Preflight now classifies them as `failed` rather than
@@ -55,14 +60,12 @@ runbook/state synchronization only; final production evidence still requires
 protected auth and DB/Coolify context.
 
 2026-05-09 dashboard runtime deploy freshness: the dashboard runtime aggregate
-batch is deployed at Web build-info SHA
-`3c5da34371e22aecb1a7aff0a185018870d35cec`, with public API `/health`, API
-`/ready`, and Web `/` smoke passing. The no-secret final preflight for this SHA
-has build-info PASS and public smoke PASS, and V1 remains `BLOCKED` only on
-protected/authenticated or operator-context evidence: live-import auth,
-rollback auth, production DB restore context, RC approval/evidence,
-`LIVEIMPORT-03`, and current restore/rollback proof artifacts. Continue
-protected evidence work from this deployed SHA only.
+behavior source is `3c5da34371e22aecb1a7aff0a185018870d35cec`, and the current
+production docs/evidence handoff deploy is
+`4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`, which includes that runtime
+behavior. Continue protected evidence work from `4ee1672e` unless a newer
+intended code/tooling candidate is first deployed and proven by production
+build-info.
 
 2026-05-09 protected access readiness: final V1 evidence is blocked because
 the current shell has no `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, or
@@ -114,9 +117,10 @@ evidence.
 
 Before running protected evidence commands, use the read-only aggregate
 preflight:
-`pnpm run ops:release:v1:preflight`. It verifies current `HEAD` through
-build-info, reports missing prerequisite env names, and classifies current
-release evidence blockers without creating protected artifacts.
+`pnpm run ops:release:v1:preflight -- --expected-sha 4ee1672e7a3ac6d9b549b4d461120afd7f89d68f --today 2026-05-09`.
+It verifies the build-info-proven production SHA, reports missing prerequisite
+env names, and classifies current release evidence blockers without creating
+protected artifacts.
 
 Latest protected-context sweep after Coolify operator access: production
 build-info for `e6e7d4a044ce80279c542412a91bae4a6a012392` passes and public
