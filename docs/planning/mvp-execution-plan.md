@@ -1740,7 +1740,7 @@ Rule: fix/cleanup/update first, then feature delivery.
 
 ## Phase V1TRUTH-2026-04-29 - Final LIVE Exchange Truth Hardening For V1 (Queued 2026-04-29)
 - [x] `V1TRUTH-00 planning(queue): publish final LIVE exchange-truth packet`
-- [ ] `V1TRUTH-01 audit(api+web+exchange): freeze the exact remaining money-path failure matrix`
+- [x] `V1TRUTH-01 audit(api+web+exchange): freeze the exact remaining money-path failure matrix`
 - [x] `V1TRUTH-02 fix(web+api-contract): align futures manual-order sizing and free-funds validation`
 - [x] `V1TRUTH-03 test(api-red): lock exchange-backed manual close parity`
 - [x] `V1TRUTH-04 fix(api-exchange+runtime): make manual close fail-closed and exchange-truthful`
