@@ -103,3 +103,9 @@ execution capability.
 - PASS: `node scripts/repoGuardrails.mjs`
 - PASS: `node scripts/checkDocsParity.mjs`
 - PASS: `git diff --check` (line-ending warnings only)
+- PASS: production Web build-info reached
+  `e76e08a1a20b12abaeabf4edc44a38ba37619005`
+- PASS: production public deploy smoke (`API /health`, `API /ready`, `Web /`)
+- BLOCKED as expected: no-secret final V1 preflight public checks pass, while
+  protected/formal release evidence remains blocked. Evidence:
+  `docs/operations/v1-final-preflight-e76e08a1-2026-05-09.md`

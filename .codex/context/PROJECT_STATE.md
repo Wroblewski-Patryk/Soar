@@ -19,8 +19,11 @@ Last updated: 2026-05-09
   positions/open-orders, trade-history, live submit, and exchange-side cancel
   remain unsupported until exact operation adapters are implemented and
   verified. Focused API/Web tests, API/Web typechecks, guardrails, docs parity,
-  and diff check passed. Evidence:
-  `docs/planning/exchange2-24-gateio-api-key-probe-task-2026-05-09.md`.
+  and diff check passed. Production build-info reached
+  `e76e08a1a20b12abaeabf4edc44a38ba37619005`; public deploy smoke passes.
+  Evidence:
+  `docs/planning/exchange2-24-gateio-api-key-probe-task-2026-05-09.md` and
+  `docs/operations/deploy-freshness-e76e08a1-2026-05-09.md`.
 - 2026-05-09 `DEPLOY-FRESHNESS-1DC55D96-2026-05-09` verified that the Gate.io
   PAPER pricing enablement batch is production-current at
   `1dc55d9623bab11dacb5b9f8ce9634778c139249`. Public API/Web smoke passes,

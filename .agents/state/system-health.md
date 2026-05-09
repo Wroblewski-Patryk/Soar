@@ -8,8 +8,10 @@ Last updated: 2026-05-09
   provided and stored profile API-key connection tests through the shared
   exchange-aware probe service. Gate.io balance preview, positions/open-orders,
   trade-history, live submit, and exchange-side cancel remain unsupported.
-  Evidence:
-  `docs/planning/exchange2-24-gateio-api-key-probe-task-2026-05-09.md`.
+  Production build-info now exposes
+  `e76e08a1a20b12abaeabf4edc44a38ba37619005`, and public deploy smoke passes.
+  Evidence: `docs/planning/exchange2-24-gateio-api-key-probe-task-2026-05-09.md`
+  and `docs/operations/deploy-freshness-e76e08a1-2026-05-09.md`.
 - Latest observed production build-info is
   `e8cd748e80b8693087e01beb21b0085ace747c49`: build-info PASS, public
   API/Web smoke PASS, and no-secret final V1 preflight public checks PASS.

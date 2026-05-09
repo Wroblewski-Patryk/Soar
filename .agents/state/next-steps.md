@@ -11,7 +11,11 @@ through a shared exchange-aware probe service. This is credential validation
 only; Gate.io balance preview, positions/open-orders, trade-history, live
 submit, and exchange-side cancel remain unsupported. The next Gate.io gap is
 the first exact authenticated read slice, likely `BALANCE_PREVIEW`, unless
-protected production evidence becomes unblocked first.
+protected production evidence becomes unblocked first. Production build-info
+now exposes `e76e08a1a20b12abaeabf4edc44a38ba37619005`, public deploy smoke
+passes, and the no-secret final V1 preflight remains correctly blocked on
+protected/formal evidence. Evidence:
+`docs/operations/deploy-freshness-e76e08a1-2026-05-09.md`.
 
 Latest deployed implementation slice:
 `EXCHANGE2-23-GATEIO-PAPER-PRICING-ENABLE-2026-05-09` enabled only Gate.io

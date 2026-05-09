@@ -13,8 +13,10 @@ Operational queue for one-task execution runs.
     non-Gate.io placeholders fail-closed, and preserve Gate.io
     balance/positions/open-orders/trade-history/live/cancel as unsupported.
     Focused API/Web tests, API/Web typechecks, guardrails, docs parity, and
-    diff check passed. Evidence:
-    `docs/planning/exchange2-24-gateio-api-key-probe-task-2026-05-09.md`.
+    diff check passed. Production build-info and public smoke pass for
+    `e76e08a1a20b12abaeabf4edc44a38ba37619005`. Evidence:
+    `docs/planning/exchange2-24-gateio-api-key-probe-task-2026-05-09.md` and
+    `docs/operations/deploy-freshness-e76e08a1-2026-05-09.md`.
 
 - [x] `DEPLOY-FRESHNESS-1DC55D96-2026-05-09 release: verify Gate.io PAPER pricing batch deployment`
   - 2026-05-09: Verified production Web build-info for
