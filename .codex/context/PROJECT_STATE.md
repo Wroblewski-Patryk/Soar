@@ -28,6 +28,16 @@ Last updated: 2026-05-09
   (`HomeLiveWidgets.aggregate-history.test.tsx` 3/3, broader dashboard-home
   focused pack 41/41, Web typecheck, repository guardrails). Evidence:
   `docs/planning/dashboard-runtime-widget-aggregate-current-render-task-2026-05-09.md`.
+- 2026-05-09 `DEPLOY-FRESHNESS-3C5DA343-2026-05-09` pushed the accumulated
+  dashboard runtime aggregate batch and verified production freshness. Web
+  build-info reached `3c5da34371e22aecb1a7aff0a185018870d35cec` on attempt
+  25, and safe public smoke passed for API `/health`, API `/ready`, and Web
+  `/`. The deploy batch includes the dashboard current aggregate read-model fix
+  and Web rendering regression. No-secret final preflight for this SHA reports
+  build-info and public smoke PASS, with V1 still BLOCKED on protected auth,
+  production DB restore context, RC approval, missing `LIVEIMPORT-03`, stale
+  restore evidence, and stale rollback proof. Evidence:
+  `docs/operations/deploy-freshness-3c5da343-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-20` reconciled the second-exchange plan with the
   deployed Gate.io foundation. The plan is now complete as a planning artifact
   and records the exact current support boundary: Gate.io public catalog and

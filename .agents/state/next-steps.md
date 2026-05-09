@@ -20,6 +20,17 @@ executable dashboard correctness slice is production clickthrough once
 authenticated/admin app access is available, or pushing this accumulated local
 batch when the user wants the next deploy batch. Production clickthrough still
 requires authenticated/admin app access and remains blocked separately.
+The dashboard runtime aggregate batch is now deployed: production Web
+build-info exposes `3c5da34371e22aecb1a7aff0a185018870d35cec`, and public
+API/Web smoke passed with `--no-workers`. Evidence:
+`docs/operations/deploy-freshness-3c5da343-2026-05-09.md`. Next executable V1
+work is a no-secret final preflight for this deployed SHA, then protected
+runtime/UI evidence only when authenticated/admin app access is available.
+The no-secret final preflight for `3c5da343` now reports build-info PASS and
+public smoke PASS, while V1 remains BLOCKED on protected auth, production DB
+restore context, RC approval, missing `LIVEIMPORT-03`, stale restore evidence,
+and stale rollback proof. Evidence:
+`docs/operations/v1-final-preflight-3c5da343-2026-05-09.md`.
 
 UX/UI process note: future UX/UI work must start with the autonomous memory
 preflight now documented in `docs/governance/user-feedback-loop.md`,

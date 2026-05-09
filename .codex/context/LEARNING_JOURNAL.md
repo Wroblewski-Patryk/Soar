@@ -75,6 +75,25 @@ node scripts/deploySmokeCheck.mjs --api-base-url https://api.soar.luckysparrow.c
   `90cd07d602f0a31f315719b8a5cd5be3fd112313` reports build-info PASS and
   public smoke PASS while remaining blocked only on protected evidence.
 
+### 2026-05-09 - Public deploy smoke uses `--no-workers`
+- Context: dashboard runtime aggregate batch deploy verification for
+  `3c5da34371e22aecb1a7aff0a185018870d35cec`.
+- Symptom: running `node scripts/deploySmokeCheck.mjs ... --skip-workers`
+  still checked `API /workers/health` and failed with protected-route HTTP
+  `401`.
+- Root cause: `deploySmokeCheck.mjs` supports `--no-workers`, not
+  `--skip-workers`.
+- Guardrail: use the script help text before inventing skip flags for
+  production smoke commands.
+- Preferred pattern:
+```powershell
+node scripts/deploySmokeCheck.mjs --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers
+```
+- Avoid: treating a `401` from `/workers/health` as public smoke failure when
+  the command accidentally omitted the supported `--no-workers` flag.
+- Evidence: rerunning the same production smoke with `--no-workers` passed API
+  `/health`, API `/ready`, and Web `/` for deployed `3c5da343`.
+
 ### 2026-05-08 - Local Vitest can be blocked by missing Vite in pnpm store
 - Context: Gate.io exchange adapter validation attempted focused API Vitest
   runs through `apps/api/node_modules/.bin/vitest.CMD`.

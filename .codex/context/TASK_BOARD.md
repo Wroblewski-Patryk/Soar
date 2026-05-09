@@ -32,6 +32,16 @@ Last updated: 2026-05-09
     completed-session history remains visible in the history tab. Evidence:
     `docs/planning/dashboard-runtime-widget-aggregate-current-render-task-2026-05-09.md`.
 
+- [x] `DEPLOY-FRESHNESS-3C5DA343-2026-05-09 release: verify dashboard runtime aggregate batch deployment`
+  - Scope: pushed the accumulated dashboard runtime aggregate batch ending at
+    `3c5da34371e22aecb1a7aff0a185018870d35cec`, verified production Web
+    build-info reached that SHA, and ran public API/Web smoke with
+    `--no-workers`. The follow-up no-secret final preflight reports build-info
+    and public smoke PASS while protected/formal V1 blockers remain open.
+    Evidence:
+    `docs/planning/deploy-freshness-3c5da343-task-2026-05-09.md` and
+    `docs/operations/deploy-freshness-3c5da343-2026-05-09.md`.
+
 - [x] `UX-UI-MEMORY-AUTONOMY-2026-05-08 design: make UX/UI feedback memory autonomous`
   - Scope: extended the existing user feedback loop, design memory, and screen
     quality checklist so future UX/UI work classifies user guidance, stores it
