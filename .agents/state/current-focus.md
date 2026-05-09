@@ -17,7 +17,16 @@ contracts synchronized.
 ## Current Delivery Stage
 
 2026-05-09 current production handoff: latest observed production Web
-build-info is
+build-info is `e8cd748e80b8693087e01beb21b0085ace747c49`. Public API/Web
+smoke passes, and no-secret final V1 preflight public checks pass while the
+preflight remains correctly `BLOCKED` on protected/formal evidence. This
+docs/evidence batch does not change runtime behavior, close protected V1
+evidence, or enable Gate.io paper/live/authenticated support. Evidence:
+`docs/planning/deploy-freshness-e8cd748e-task-2026-05-09.md`,
+`docs/operations/deploy-freshness-e8cd748e-2026-05-09.md`, and
+`docs/operations/v1-final-preflight-e8cd748e-2026-05-09.md`.
+
+2026-05-09 public UI access refresh: production Web build-info reached
 `745b5f5a45eab3f86b02e023479c8358f760bbf6`. Public routes return HTTP 200 and
 unauthenticated dashboard/admin routes redirect to `/auth/login`. This does
 not satisfy the full authenticated/admin module clickthrough audit and does

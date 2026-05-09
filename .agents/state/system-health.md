@@ -5,6 +5,13 @@ Last updated: 2026-05-09
 ## Latest Health Snapshot
 
 - Latest observed production build-info is
+  `e8cd748e80b8693087e01beb21b0085ace747c49`: build-info PASS, public
+  API/Web smoke PASS, and no-secret final V1 preflight public checks PASS.
+  The preflight remains correctly `BLOCKED` on protected/formal V1 evidence.
+  This is docs/evidence only over the protected runtime baseline. Evidence:
+  `docs/operations/deploy-freshness-e8cd748e-2026-05-09.md` and
+  `docs/operations/v1-final-preflight-e8cd748e-2026-05-09.md`.
+- Previous public UI build-info was
   `745b5f5a45eab3f86b02e023479c8358f760bbf6`: public routes PASS and
   dashboard/admin no-auth gates redirect to `/auth/login`. This is
   docs/evidence only over the protected runtime baseline and does not close

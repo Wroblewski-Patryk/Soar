@@ -7,6 +7,14 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `DEPLOY-FRESHNESS-E8CD748E-2026-05-09 release: verify docs/evidence batch deployment`
+  - 2026-05-09: Verified production build-info for the docs/evidence batch
+    ending at `e8cd748e80b8693087e01beb21b0085ace747c49`, ran public API/Web
+    smoke with `--no-workers`, and refreshed no-secret final V1 preflight.
+    Public checks pass; protected/formal V1 evidence remains blocked. Evidence:
+    `docs/planning/deploy-freshness-e8cd748e-task-2026-05-09.md` and
+    `docs/operations/deploy-freshness-e8cd748e-2026-05-09.md`.
+
 - [x] `CURRENT-PROD-BUILDINFO-745B5F5A-SYNC-2026-05-09 release: sync latest public build-info truth`
   - 2026-05-09: Synchronized active source-of-truth files after public UI
     evidence showed latest observed production build-info at

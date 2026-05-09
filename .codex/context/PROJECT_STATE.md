@@ -13,6 +13,13 @@ Last updated: 2026-05-09
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-09 `DEPLOY-FRESHNESS-E8CD748E-2026-05-09` verified that the
+  docs/evidence batch ending at
+  `e8cd748e80b8693087e01beb21b0085ace747c49` is production-current. Public
+  API/Web smoke passes, and the no-secret final V1 preflight reports
+  build-info/public smoke PASS while remaining correctly `BLOCKED` on
+  protected/formal V1 evidence. Evidence:
+  `docs/planning/deploy-freshness-e8cd748e-task-2026-05-09.md`.
 - 2026-05-09 `CURRENT-PROD-BUILDINFO-745B5F5A-SYNC-2026-05-09` synchronized
   active source-of-truth files after public UI evidence showed latest observed
   production build-info at
