@@ -112,6 +112,11 @@ Last updated: 2026-05-09
   evidence, and the protected preflight command for that SHA. Historical notes
   remain intact. Evidence:
   `docs/planning/current-focus-4ee1672e-sync-task-2026-05-09.md`.
+- 2026-05-09 `MVP-EXECUTION-PLAN-4EE1672E-PROGRESS-SYNC-2026-05-09`
+  prepended the latest `4ee1672e` continuation/protected-readiness syncs to
+  the SYSFINAL progress log so `docs/planning/mvp-execution-plan.md` no longer
+  opens with stale `4792fbca` as the newest release-evidence state. Evidence:
+  `docs/planning/mvp-execution-plan-4ee1672e-progress-sync-task-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-20` reconciled the second-exchange plan with the
   deployed Gate.io foundation. The plan is now complete as a planning artifact
   and records the exact current support boundary: Gate.io public catalog and

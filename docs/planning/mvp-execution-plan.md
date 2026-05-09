@@ -32,6 +32,25 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-09: Closed `CURRENT-FOCUS-4EE1672E-SYNC-2026-05-09` with
+  `docs/planning/current-focus-4ee1672e-sync-task-2026-05-09.md`. The active
+  continuation focus now starts from current production build-info
+  `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`, links the matching public and
+  no-secret evidence, and keeps V1 blocked on protected auth/context,
+  `LIVEIMPORT-03`, stale restore/rollback evidence for the active date, and
+  failed/open RC evidence.
+- 2026-05-09: Closed
+  `V1-PRODUCTION-ACTIVATION-CURRENT-SHA-SYNC-2026-05-09` with
+  `docs/planning/v1-production-activation-current-sha-sync-task-2026-05-09.md`.
+  The production activation plan and activation evidence audit now target
+  current production build-info `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`
+  while preserving `NO-GO`.
+- 2026-05-09: Closed
+  `V1-PROTECTED-ACCESS-READINESS-CANDIDATE-SYNC-2026-05-09` with
+  `docs/planning/v1-protected-access-readiness-candidate-sync-task-2026-05-09.md`.
+  The protected access readiness artifact now names current production
+  `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f` while remaining correctly
+  `BLOCKED` on missing auth/context.
 - 2026-05-09: Closed `DEPLOY-FRESHNESS-4792FBCA-2026-05-09` with
   `docs/planning/deploy-freshness-4792fbca-task-2026-05-09.md`. Pushed the
   current V1 release-evidence batch and verified production Web build-info at

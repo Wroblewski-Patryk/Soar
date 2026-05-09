@@ -435,6 +435,13 @@ Operational queue for one-task execution runs.
     notes remain intact. Evidence:
     `docs/planning/current-focus-4ee1672e-sync-task-2026-05-09.md`.
 
+- [x] `MVP-EXECUTION-PLAN-4EE1672E-PROGRESS-SYNC-2026-05-09 docs(planning): prepend current production progress`
+  - 2026-05-09: Prepended the latest `4ee1672e` continuation and protected
+    readiness sync entries to `docs/planning/mvp-execution-plan.md` so the
+    SYSFINAL progress log opens with current production truth while preserving
+    historical entries. Evidence:
+    `docs/planning/mvp-execution-plan-4ee1672e-progress-sync-task-2026-05-09.md`.
+
 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
   - 2026-05-09: Names-only readiness check found missing live-import auth,
     rollback auth, and production DB/Coolify restore context in the current
