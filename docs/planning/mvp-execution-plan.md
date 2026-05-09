@@ -39,6 +39,14 @@ Rule: fix/cleanup/update first, then feature delivery.
   and operator handoff docs now target current production build-info
   `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`; V1 remains blocked on
   protected auth/operator inputs and final evidence.
+- 2026-05-09: Closed
+  `PROD-UI-PUBLIC-ACCESS-REFRESH-55469CDC-2026-05-09` with
+  `docs/planning/prod-ui-public-access-refresh-55469cdc-task-2026-05-09.md`.
+  Public/unauthenticated production UI access is current for deployed
+  `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`: public routes pass, API
+  health/readiness pass, and protected dashboard/admin routes redirect to
+  `/auth/login` without a session. Full authenticated/admin module
+  clickthrough remains blocked.
 - 2026-05-09: Closed `DEPLOY-FRESHNESS-55469CDC-2026-05-09` with
   `docs/planning/deploy-freshness-55469cdc-task-2026-05-09.md`. The
   10-commit source-of-truth synchronization batch reached production

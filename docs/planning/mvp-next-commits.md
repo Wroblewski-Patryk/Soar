@@ -475,6 +475,17 @@ Operational queue for one-task execution runs.
     while preserving older `4ee1672e` history below. Evidence:
     `docs/planning/mvp-execution-plan-55469cdc-progress-sync-task-2026-05-09.md`.
 
+- [x] `PROD-UI-PUBLIC-ACCESS-REFRESH-55469CDC-2026-05-09 qa: refresh public production UI access evidence`
+  - 2026-05-09: Refreshed public/unauthenticated production access evidence
+    for deployed `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`. Build-info
+    matches the expected SHA, API health/readiness and public Web routes
+    return HTTP 200, and unauthenticated dashboard/admin routes redirect to
+    `/auth/login`. The full module clickthrough remains blocked on
+    authenticated/admin production app access. Evidence:
+    `docs/planning/prod-ui-public-access-refresh-55469cdc-task-2026-05-09.md`
+    and
+    `docs/operations/prod-ui-public-access-clickthrough-55469cdc-2026-05-09.md`.
+
 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
   - 2026-05-09: Names-only readiness check found missing live-import auth,
     rollback auth, and production DB/Coolify restore context in the current

@@ -145,6 +145,14 @@ Last updated: 2026-05-09
   current production truth while preserving historical `4ee1672e` entries.
   Evidence:
   `docs/planning/mvp-execution-plan-55469cdc-progress-sync-task-2026-05-09.md`.
+- 2026-05-09 `PROD-UI-PUBLIC-ACCESS-REFRESH-55469CDC-2026-05-09` refreshed
+  public/unauthenticated production UI evidence for deployed
+  `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`. Build-info matches the
+  expected SHA, API `/health` and `/ready` returned HTTP 200, public Web
+  routes returned HTTP 200, and unauthenticated dashboard/admin routes returned
+  HTTP 307 to `/auth/login`. Full authenticated/admin module clickthrough
+  remains blocked on valid production app access. Evidence:
+  `docs/operations/prod-ui-public-access-clickthrough-55469cdc-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-20` reconciled the second-exchange plan with the
   deployed Gate.io foundation. The plan is now complete as a planning artifact
   and records the exact current support boundary: Gate.io public catalog and

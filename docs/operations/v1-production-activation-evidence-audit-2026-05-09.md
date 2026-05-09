@@ -8,8 +8,8 @@
   `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`
 - Current no-secret final preflight:
   `docs/operations/v1-final-preflight-55469cdc-2026-05-09.md`
-- Latest public/unauthenticated production UI access audit:
-  `docs/operations/prod-ui-public-access-clickthrough-4ee1672e-2026-05-09.md`
+- Public/unauthenticated production UI access audit:
+  `docs/operations/prod-ui-public-access-clickthrough-55469cdc-2026-05-09.md`
 
 ## Evidence Reviewed
 - Public build-info for

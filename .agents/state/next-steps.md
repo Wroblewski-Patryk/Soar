@@ -32,6 +32,7 @@ Evidence:
 - `docs/operations/prod-ui-public-access-clickthrough-4ee1672e-2026-05-09.md`
 - `docs/operations/deploy-freshness-55469cdc-2026-05-09.md`
 - `docs/operations/v1-final-preflight-55469cdc-2026-05-09.md`
+- `docs/operations/prod-ui-public-access-clickthrough-55469cdc-2026-05-09.md`
 
 Next executable V1 steps are protected and remain blocked until the operator
 supplies authenticated/admin production app access, live-import auth, rollback

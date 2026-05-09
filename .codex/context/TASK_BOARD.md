@@ -139,6 +139,15 @@ Last updated: 2026-05-09
     Evidence:
     `docs/planning/mvp-execution-plan-55469cdc-progress-sync-task-2026-05-09.md`.
 
+- [x] `PROD-UI-PUBLIC-ACCESS-REFRESH-55469CDC-2026-05-09 qa: refresh public production UI access evidence`
+  - Scope: refreshed public/unauthenticated production access evidence for
+    deployed `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`. Build-info matches
+    the expected SHA, API health/readiness and public Web routes return HTTP
+    200, and unauthenticated dashboard/admin routes redirect to `/auth/login`.
+    The full module clickthrough remains blocked on authenticated/admin
+    production app access. Evidence:
+    `docs/planning/prod-ui-public-access-refresh-55469cdc-task-2026-05-09.md`.
+
 - [x] `UX-UI-MEMORY-AUTONOMY-2026-05-08 design: make UX/UI feedback memory autonomous`
   - Scope: extended the existing user feedback loop, design memory, and screen
     quality checklist so future UX/UI work classifies user guidance, stores it
