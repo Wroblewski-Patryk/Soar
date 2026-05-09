@@ -317,10 +317,13 @@ Last updated: 2026-05-09
   `docs/operations/v1-final-preflight-90cd07d6-2026-05-09.md`.
 - 2026-05-09 `V1-PROD-ACTIVATION-REFRESH-2026-05-09` added current
   production activation plan and activation evidence audit artifacts as
-  explicit `NO-GO`. Follow-up no-secret preflight now reports activation audit
-  and activation execution plan as `fresh` for 2026-05-09; remaining blockers
-  are protected auth, production DB restore context, stale RC/recovery
-  evidence, missing `LIVEIMPORT-03`, and rollback proof. Evidence:
+  explicit `NO-GO`. Later 2026-05-09 sync retargeted those operator-facing
+  artifacts to current production build-info
+  `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`. Follow-up no-secret preflight
+  reports activation audit and activation execution plan as `fresh` for
+  2026-05-09; remaining blockers are protected auth, production DB restore
+  context, RC failed/open evidence, missing `LIVEIMPORT-03`, and rollback
+  proof. Evidence:
   `docs/planning/v1-production-activation-and-evidence-plan-2026-05-09.md`
   and `docs/operations/v1-production-activation-evidence-audit-2026-05-09.md`.
 - 2026-05-09 `V1-RC-BLOCKED-REFRESH-2026-05-09` refreshed RC external gates

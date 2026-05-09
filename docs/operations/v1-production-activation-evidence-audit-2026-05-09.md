@@ -5,21 +5,21 @@
 - API URL: `https://api.soar.luckysparrow.ch`
 - Web URL: `https://soar.luckysparrow.ch`
 - Public Web build-info SHA:
-  `90cd07d602f0a31f315719b8a5cd5be3fd112313`
+  `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`
 - Current no-secret final preflight:
-  `docs/operations/v1-final-preflight-90cd07d6-2026-05-09.md`
+  `docs/operations/v1-final-preflight-4ee1672e-2026-05-09.md`
 - Public/unauthenticated production UI access audit:
-  `docs/operations/prod-ui-public-access-clickthrough-90cd07d6-2026-05-09.md`
+  `docs/operations/prod-ui-public-access-clickthrough-4ee1672e-2026-05-09.md`
 
 ## Evidence Reviewed
 - Public build-info for
-  `90cd07d602f0a31f315719b8a5cd5be3fd112313`: PASS on production.
+  `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`: PASS on production.
 - Public deploy smoke without workers: PASS (`API /health`, API `/ready`,
   and Web `/`) from the final preflight.
 - Public/unauthenticated production UI access: PASS for public routes and
   fail-closed protected-route redirects.
 - V1 final no-secret preflight:
-  `docs/operations/v1-final-preflight-90cd07d6-2026-05-09.md`.
+  `docs/operations/v1-final-preflight-4ee1672e-2026-05-09.md`.
 - RC external gates status:
   `docs/operations/v1-rc-external-gates-status.md`.
 - RC sign-off record:
@@ -33,8 +33,8 @@
 
 ## Findings
 - Production public health and readiness are currently healthy.
-- Production Web build-info exposes the deployed Gate.io fail-closed batch:
-  `90cd07d602f0a31f315719b8a5cd5be3fd112313`.
+- Production Web build-info exposes the current docs/evidence handoff batch:
+  `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`.
 - Public/unauthenticated production access is healthy, and protected
   dashboard/admin routes redirect to `/auth/login` without a session.
 - The current no-secret final preflight reports release status `BLOCKED`.
@@ -43,9 +43,9 @@
   - live-import auth is missing
   - rollback guard auth is missing
   - production DB restore context is missing for a fresh restore refresh
-  - RC external gates status is stale for 2026-05-09
-  - RC sign-off record is stale for 2026-05-09 and not approved
-  - RC checklist is stale for 2026-05-09
+  - RC external gates status is fresh for 2026-05-09 but failed/open
+  - RC sign-off record is fresh for 2026-05-09 but not approved
+  - RC checklist is fresh for 2026-05-09 but not all gates pass
   - backup/restore drill evidence is stale for 2026-05-09
   - rollback proof pack is stale for 2026-05-09
 - Public smoke and no-auth route checks are useful readiness signals, but they

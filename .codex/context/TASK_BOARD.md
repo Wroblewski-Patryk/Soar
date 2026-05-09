@@ -328,9 +328,10 @@ Last updated: 2026-05-09
 
 - [x] `V1-PROD-ACTIVATION-REFRESH-2026-05-09 release: refresh production activation plan and audit`
   - Scope: created fresh 2026-05-09 production activation plan and activation
-    evidence audit as `NO-GO` artifacts, then reran the no-secret final
-    preflight to confirm activation plan/audit are fresh while protected
-    release blockers remain explicit. Evidence:
+    evidence audit as `NO-GO` artifacts. Later 2026-05-09 sync retargeted
+    those operator-facing artifacts to current production build-info
+    `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`, while protected release
+    blockers remain explicit. Evidence:
     `docs/planning/v1-production-activation-refresh-2026-05-09-task.md`.
 
 - [x] `V1-RC-BLOCKED-REFRESH-2026-05-09 release: refresh RC evidence as current blocked`

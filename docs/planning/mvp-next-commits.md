@@ -246,10 +246,12 @@ Operational queue for one-task execution runs.
 
 - [x] `V1-PROD-ACTIVATION-REFRESH-2026-05-09 release: refresh production activation plan and audit`
   - 2026-05-09: Added fresh 2026-05-09 production activation plan and
-    activation evidence audit as explicit `NO-GO` artifacts. Follow-up
-    no-secret final preflight now reports activation plan and activation audit
-    as `fresh`, while V1 remains `BLOCKED` on protected auth, production DB
-    restore context, stale RC/recovery evidence, missing `LIVEIMPORT-03`, and
+    activation evidence audit as explicit `NO-GO` artifacts. Later 2026-05-09
+    sync retargeted those operator-facing artifacts to current production
+    build-info `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`. Follow-up
+    no-secret final preflight reports activation plan and activation audit as
+    `fresh`, while V1 remains `BLOCKED` on protected auth, production DB
+    restore context, RC failed/open evidence, missing `LIVEIMPORT-03`, and
     rollback proof. Evidence:
     `docs/planning/v1-production-activation-refresh-2026-05-09-task.md`,
     `docs/planning/v1-production-activation-and-evidence-plan-2026-05-09.md`,

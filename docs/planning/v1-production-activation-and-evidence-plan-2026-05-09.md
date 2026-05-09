@@ -4,13 +4,13 @@
 - V1 remains production-only; no stage requirement is introduced by this plan.
 - Public production API is healthy and ready.
 - Public production Web build-info exposes
-  `90cd07d602f0a31f315719b8a5cd5be3fd112313`, the deployed Gate.io
-  fail-closed batch.
+  `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`, the current docs/evidence
+  handoff batch.
 - Public/unauthenticated UI access evidence for the deployed batch is current:
-  `docs/operations/prod-ui-public-access-clickthrough-90cd07d6-2026-05-09.md`.
+  `docs/operations/prod-ui-public-access-clickthrough-4ee1672e-2026-05-09.md`.
 - The no-secret V1 final preflight for 2026-05-09 reports public deploy health
   PASS and release readiness BLOCKED:
-  `docs/operations/v1-final-preflight-90cd07d6-2026-05-09.md`.
+  `docs/operations/v1-final-preflight-4ee1672e-2026-05-09.md`.
 - `LIVEIMPORT-03` still lacks authenticated read-only production runtime
   evidence.
 
@@ -37,9 +37,9 @@ evidence with public checks.
    approved OPS access layer.
 2. Run the canonical `LIVEIMPORT-03` collector against production after
    build-info confirms the target SHA:
-   `node scripts/waitForWebBuildInfo.mjs --web-base-url https://soar.luckysparrow.ch --expected-sha 90cd07d602f0a31f315719b8a5cd5be3fd112313 --timeout-seconds 900 --interval-seconds 30`
+   `node scripts/waitForWebBuildInfo.mjs --web-base-url https://soar.luckysparrow.ch --expected-sha 4ee1672e7a3ac6d9b549b4d461120afd7f89d68f --timeout-seconds 900 --interval-seconds 30`
    then
-   `pnpm run ops:liveimport:readback -- --expected-sha 90cd07d602f0a31f315719b8a5cd5be3fd112313 --output docs/operations/liveimport-03-prod-readback-2026-05-09.json`.
+   `pnpm run ops:liveimport:readback -- --expected-sha 4ee1672e7a3ac6d9b549b4d461120afd7f89d68f --output docs/operations/liveimport-03-prod-readback-2026-05-09.json`.
 3. Refresh production backup/restore drill evidence and verify the artifact
    reports `PASS`.
 4. Refresh production rollback proof and verify the artifact reports `PASS`.
@@ -58,7 +58,7 @@ evidence with public checks.
 - V1 is not marked ready unless the release gate reports `ready`.
 
 ## Definition Of Done
-- `pnpm run ops:release:v1:gate -- --environment prod --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha 90cd07d602f0a31f315719b8a5cd5be3fd112313 --skip-local-quality` returns `ready`.
+- `pnpm run ops:release:v1:gate -- --environment prod --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha 4ee1672e7a3ac6d9b549b4d461120afd7f89d68f --skip-local-quality` returns `ready`.
 - `node scripts/repoGuardrails.mjs` passes after evidence and state updates.
 - The final release report links all fresh required evidence artifacts.
 
@@ -69,7 +69,8 @@ evidence with public checks.
   - production DB restore context is missing for a 2026-05-09 restore refresh
   - rollback guard auth is missing
   - RC sign-off record is blocked until real approver identities are provided
-  - RC external gates status, sign-off, and checklist are stale for 2026-05-09
+  - RC external gates status, sign-off, and checklist are fresh for 2026-05-09
+    but failed/open
   - backup/restore drill evidence is stale for 2026-05-09
   - rollback proof pack is stale for 2026-05-09
   - the latest final preflight is status-only and reports `BLOCKED`
