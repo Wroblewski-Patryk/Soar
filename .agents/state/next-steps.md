@@ -5,6 +5,14 @@ Last updated: 2026-05-09
 ## Next Tiny Task
 
 Latest local implementation slice:
+`EXCHANGE2-25-GATEIO-BALANCE-PREVIEW-2026-05-09` enabled only Gate.io
+`BALANCE_PREVIEW` through the existing authenticated-read boundary and wallet
+preview route. Gate.io positions/open-orders/trade-history, live submit, and
+exchange-side cancel remain unsupported. The next Gate.io authenticated-read
+gap is `POSITIONS_SNAPSHOT`, but it carries higher live-read semantics and
+should be implemented only through the exact authenticated snapshot contract.
+
+Latest local implementation slice:
 `EXCHANGE2-24-GATEIO-API-KEY-PROBE-2026-05-09` enabled Gate.io
 `API_KEY_PROBE` for provided and stored profile API-key connection tests
 through a shared exchange-aware probe service. This is credential validation

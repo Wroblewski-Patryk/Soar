@@ -5,7 +5,7 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/wallets`
 - Owner: backend/trading-domain
-- Last updated: 2026-05-03
+- Last updated: 2026-05-09
 - Related planning task: `RUNTIME-AUDIT-22`
 
 ## Canonical Architecture Linkage
@@ -29,7 +29,8 @@ Out of scope:
   - Prisma wallet and bot relations.
   - exchange capability guards (`LIVE_EXECUTION`, `PAPER_PRICING_FEED`, market type/base currency support).
   - market catalog integration for metadata enrichment.
-  - encrypted API key decryption and Binance balance fetch for preview.
+  - encrypted API key decryption and authenticated exchange balance fetch for
+    preview.
 
 ## 3. Data and Contract Surface
 - Command contracts:
@@ -48,9 +49,9 @@ Out of scope:
   - Gate.io public `PAPER` wallet create/update is allowed through
     `PAPER_PRICING_FEED`; Gate.io `LIVE` wallet create/update remains
     fail-closed while `LIVE_EXECUTION` is unsupported.
-  - Gate.io stored API keys may exist as placeholders, but wallet balance
-    preview remains fail-closed before authenticated reads and does not mark
-    the key as used while `BALANCE_PREVIEW` is unsupported.
+  - Gate.io stored API keys may be used for wallet balance preview through the
+    authenticated-read boundary. Gate.io `LIVE` wallet create/update remains
+    fail-closed while `LIVE_EXECUTION` is unsupported.
   - wallet cannot be deleted when linked bot exists.
 - WAPR contract lock (implemented):
   - list payload remains source for table inline API key status mapping (`apiKeyId` presence).
@@ -141,5 +142,6 @@ pnpm --filter api test -- src/modules/wallets/wallets.e2e.test.ts
 ```
 
 ## 9. Open Issues and Follow-Ups
-- Expand preview support beyond Binance as exchange adapters mature.
+- Expand positions/open-orders/trade-history support beyond Binance as
+  exchange adapters mature.
 - Add explicit audit log entries for wallet create/update/delete events.

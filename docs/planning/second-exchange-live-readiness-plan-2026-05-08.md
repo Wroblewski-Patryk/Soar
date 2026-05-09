@@ -66,8 +66,10 @@ adapter is implemented and verified.
 - Current API-key probe support: `GATEIO` `API_KEY_PROBE` is enabled for
   provided and stored profile API-key connection tests through the shared
   exchange-aware probe service. This is credential validation only.
-- Still blocked: authenticated balance/position/open-order/trade-history
-  reads, `LIVE_ORDER_SUBMIT`, or
+- Current balance preview support: `GATEIO` `BALANCE_PREVIEW` is enabled for
+  the existing wallet preview route through the authenticated-read boundary.
+- Still blocked: authenticated position/open-order/trade-history reads,
+  `LIVE_ORDER_SUBMIT`, or
   `LIVE_ORDER_CANCEL` for Gate.io until exact support is implemented and
   production evidence exists.
 - Still requiring user/operator input: first live scope, whether authenticated
@@ -123,7 +125,7 @@ Acceptance criteria:
    - public `FUTURES` ticker/candle source: implemented through existing
      exchange public market-data contracts and opt-in market-stream polling.
    - `PAPER_PRICING_FEED`: supported for public paper runtime.
-   - `BALANCE_PREVIEW`: unsupported.
+   - `BALANCE_PREVIEW`: supported.
    - `POSITIONS_SNAPSHOT`: unsupported.
    - `OPEN_ORDERS_SNAPSHOT`: unsupported.
    - `TRADE_HISTORY_SNAPSHOT`: unsupported.
@@ -142,8 +144,7 @@ Acceptance criteria:
 1. Add exchange-specific connector bootstrap through `exchangeConnectorFactory`.
 2. Implement market metadata and symbol-rule normalization through existing
    exchange module contracts.
-3. API-key probe is implemented for the target exchange. Implement balance
-   preview only if approved for the target exchange.
+3. API-key probe and balance preview are implemented for the target exchange.
 4. Implement positions snapshot and open-orders snapshot only if exact support
    is approved.
 

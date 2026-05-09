@@ -13,6 +13,13 @@ Last updated: 2026-05-09
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-09 `EXCHANGE2-25-GATEIO-BALANCE-PREVIEW-2026-05-09` enabled Gate.io
+  wallet balance preview through the existing authenticated-read boundary.
+  Scope is limited to `BALANCE_PREVIEW`; Gate.io positions/open-orders,
+  trade-history, live submit, and exchange-side cancel remain unsupported.
+  Focused exchange tests, wallet e2e, API typecheck, guardrails, docs parity,
+  and diff check passed. Evidence:
+  `docs/planning/exchange2-25-gateio-balance-preview-task-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-24-GATEIO-API-KEY-PROBE-2026-05-09` enabled Gate.io
   API-key connection testing through a shared exchange-aware profile probe
   service. Scope is limited to `API_KEY_PROBE`; Gate.io balance preview,

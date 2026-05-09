@@ -16,8 +16,10 @@ describe('exchangeAuthenticatedReadContract.service', () => {
     expect(supportsAuthenticatedExchangeRead('OKX', 'BALANCE_PREVIEW')).toBe(false);
     expect(supportsAuthenticatedExchangeRead('BYBIT', 'POSITIONS_SNAPSHOT')).toBe(false);
     expect(supportsAuthenticatedExchangeRead('COINBASE', 'WALLET_CASHFLOW_HISTORY')).toBe(false);
-    expect(supportsAuthenticatedExchangeRead('GATEIO', 'BALANCE_PREVIEW')).toBe(false);
+    expect(supportsAuthenticatedExchangeRead('GATEIO', 'BALANCE_PREVIEW')).toBe(true);
     expect(supportsAuthenticatedExchangeRead('GATEIO', 'POSITIONS_SNAPSHOT')).toBe(false);
+    expect(supportsAuthenticatedExchangeRead('GATEIO', 'OPEN_ORDERS_SNAPSHOT')).toBe(false);
+    expect(supportsAuthenticatedExchangeRead('GATEIO', 'TRADE_HISTORY_SNAPSHOT')).toBe(false);
   });
 
   it('fails closed with explicit operation details when authenticated read is unsupported', () => {

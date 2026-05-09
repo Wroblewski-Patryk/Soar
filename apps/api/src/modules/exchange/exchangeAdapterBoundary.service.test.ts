@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import {
+  fetchSupportedExchangeBalanceRaw,
   fetchSupportedExchangeOpenOrdersRaw,
   fetchSupportedExchangePositionsRaw,
   fetchSupportedExchangeTradeHistoryRaw,
@@ -129,6 +130,48 @@ describe('exchangeAdapterBoundary.service', () => {
         }
       )
     ).rejects.toThrowError(ExchangeExecutionCapabilityUnsupportedError);
+  });
+
+  it('reads Gate.io balance preview through the authenticated read boundary only', async () => {
+    const fetchBalanceRaw = vi.fn(async () => ({ total: { USDT: 321 }, free: { USDT: 300 } }));
+
+    const result = await fetchSupportedExchangeBalanceRaw(
+      {
+        exchange: 'GATEIO',
+        marketType: 'FUTURES',
+        apiKey: 'enc-gateio-key',
+        apiSecret: 'enc-gateio-secret',
+      },
+      { fetchBalanceRaw }
+    );
+
+    expect(result).toEqual({ total: { USDT: 321 }, free: { USDT: 300 } });
+    expect(fetchBalanceRaw).toHaveBeenCalledWith({
+      exchange: 'GATEIO',
+      marketType: 'FUTURES',
+      apiKey: 'enc-gateio-key',
+      apiSecret: 'enc-gateio-secret',
+    });
+
+    await expect(
+      fetchSupportedExchangePositionsRaw(
+        {
+          exchange: 'GATEIO',
+          marketType: 'FUTURES',
+          apiKey: 'enc-gateio-key',
+          apiSecret: 'enc-gateio-secret',
+        },
+        {
+          createAuthenticatedConnector: vi.fn(() => createConnector()),
+        }
+      )
+    ).rejects.toMatchObject({
+      code: 'EXCHANGE_EXECUTION_CAPABILITY_UNSUPPORTED',
+      details: {
+        exchange: 'GATEIO',
+        operation: 'POSITIONS_SNAPSHOT',
+      },
+    });
   });
 
   it('fails closed for Gate.io live order submit before resolving credentials or connectors', async () => {

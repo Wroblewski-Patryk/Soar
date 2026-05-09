@@ -746,7 +746,7 @@ describe('Wallets balance preview contract', () => {
     });
   });
 
-  it('fails closed for stored Gate.io balance preview while authenticated reads are unsupported', async () => {
+  it('returns Gate.io balance preview for owned stored API key', async () => {
     const email = 'wallet-preview-gateio-stored-key@example.com';
     const agent = await registerAndLogin(email);
     const userId = await resolveUserIdByEmail(email);
@@ -761,25 +761,39 @@ describe('Wallets balance preview contract', () => {
       },
     });
 
+    process.env.WALLET_PREVIEW_TEST_ACCOUNT_BALANCE = '640';
+    process.env.WALLET_PREVIEW_TEST_FREE_BALANCE = '600';
+
     const previewRes = await agent.post('/dashboard/wallets/preview-balance').send({
       exchange: 'GATEIO',
       marketType: 'FUTURES',
       baseCurrency: 'USDT',
       apiKeyId: apiKey.id,
+      liveAllocationMode: 'PERCENT',
+      liveAllocationValue: 50,
     });
 
-    expect(previewRes.status).toBe(501);
-    expect(previewRes.body.error.details).toEqual({
-      code: 'EXCHANGE_AUTHENTICATED_READ_UNSUPPORTED',
+    expect(previewRes.status).toBe(200);
+    expect(previewRes.body).toMatchObject({
       exchange: 'GATEIO',
-      operation: 'BALANCE_PREVIEW',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      accountBalance: 640,
+      freeBalance: 600,
+      referenceBalance: 320,
+      allocationApplied: {
+        mode: 'PERCENT',
+        value: 50,
+      },
+      source: 'GATEIO',
     });
+    expect(typeof previewRes.body.fetchedAt).toBe('string');
     await expect(
       prisma.apiKey.findUnique({
         where: { id: apiKey.id },
         select: { lastUsed: true },
       })
-    ).resolves.toEqual({ lastUsed: null });
+    ).resolves.toEqual({ lastUsed: expect.any(Date) });
   });
 
   it('rejects unauthenticated paper reset command', async () => {

@@ -17,6 +17,14 @@ Last updated: 2026-05-09
 
 ## READY
 
+- [x] `EXCHANGE2-25-GATEIO-BALANCE-PREVIEW-2026-05-09 feature(exchange): enable Gate.io balance preview`
+  - Scope: enable only `GATEIO` `BALANCE_PREVIEW` through the existing
+    authenticated-read boundary and wallet preview route, while keeping Gate.io
+    positions/open-orders/trade-history/live/cancel unsupported. Focused
+    exchange tests, wallet e2e, API typecheck, guardrails, docs parity, and
+    diff check passed. Evidence:
+    `docs/planning/exchange2-25-gateio-balance-preview-task-2026-05-09.md`.
+
 - [x] `EXCHANGE2-24-GATEIO-API-KEY-PROBE-2026-05-09 feature(exchange): enable Gate.io API-key probe`
   - Scope: replace the Binance-only profile API-key probe with a shared
     exchange-aware probe service, enable only `GATEIO` `API_KEY_PROBE`, keep

@@ -126,7 +126,7 @@ Consumers must never infer:
 | `OKX` | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
 | `KRAKEN` | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
 | `COINBASE` | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
-| `GATEIO` | unsupported | unsupported | unsupported | unsupported | unsupported | selected second-exchange target; public market catalog is supported through the exchange adapter registry, while authenticated reads and execution remain fail-closed until exact operation adapters are implemented and verified |
+| `GATEIO` | supported | unsupported | unsupported | unsupported | unsupported | selected second-exchange target; balance preview is supported through the authenticated-read boundary, while positions/open-orders/trade-history reads and execution remain fail-closed until exact operation adapters are implemented and verified |
 
 Runtime market-event boundary:
 
@@ -150,6 +150,10 @@ Runtime market-event boundary:
   credential reachability/permissions only and does not enable balance preview,
   positions/open-orders/trade-history snapshots, live submit, or exchange-side
   cancel support.
+- `GATEIO` `BALANCE_PREVIEW` is supported through the canonical
+  authenticated-read boundary and wallet preview route. This reads account
+  balance only and does not imply positions/open-orders/trade-history snapshots,
+  live submit, or exchange-side cancel support.
 
 Canonical owner:
 

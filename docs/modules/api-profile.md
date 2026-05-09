@@ -57,9 +57,10 @@ Out of scope:
      exchange-aware probe service.
   3. Write audit-safe connection test log metadata.
   4. Binance and Gate.io provided/stored connection probes are supported.
-     Gate.io probe support is credential validation only; balance preview,
-     positions/open-orders/trade-history snapshots, live submit, and
-     exchange-side cancel remain outside this profile module contract.
+     Gate.io probe support is credential validation only; wallet balance
+     preview is owned by the wallets module, while positions/open-orders/
+     trade-history snapshots, live submit, and exchange-side cancel remain
+     outside this profile module contract.
 - Security operations:
   - password change increments `sessionVersion`.
   - account deletion cascades through related domain entities in transaction.

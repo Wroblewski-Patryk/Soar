@@ -7,6 +7,14 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `EXCHANGE2-25-GATEIO-BALANCE-PREVIEW-2026-05-09 feature(exchange): enable Gate.io balance preview`
+  - 2026-05-09: Enable only `GATEIO` `BALANCE_PREVIEW` through the existing
+    authenticated-read boundary and wallet preview route, while keeping Gate.io
+    positions/open-orders/trade-history/live/cancel unsupported. Focused
+    exchange tests, wallet e2e, API typecheck, guardrails, docs parity, and
+    diff check passed. Evidence:
+    `docs/planning/exchange2-25-gateio-balance-preview-task-2026-05-09.md`.
+
 - [x] `EXCHANGE2-24-GATEIO-API-KEY-PROBE-2026-05-09 feature(exchange): enable Gate.io API-key probe`
   - 2026-05-09: Replace the Binance-only profile API-key probe with a shared
     exchange-aware probe service, enable only `GATEIO` `API_KEY_PROBE`, keep
