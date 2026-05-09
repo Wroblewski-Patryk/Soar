@@ -324,6 +324,58 @@ Operational queue for one-task execution runs.
     date-aware output paths instead of local evidence-only `HEAD`. Evidence:
     `docs/planning/v1-continuation-expected-sha-snippets-task-2026-05-09.md`.
 
+- [x] `DASH-RUNTIME-CURRENT-AGGREGATE-2026-05-09 fix(api): prefer running runtime rows for dashboard current aggregate state`
+  - 2026-05-09: Added explicit current-row selection in the runtime monitoring
+    aggregate read model so dashboard current open positions, open orders,
+    dynamic-stop visibility, unrealized PnL, open counts, and capital summary
+    prefer the freshest `RUNNING` session row when one exists. Historical
+    closed-position/trade projection continues to use the existing aggregate
+    projection rows. Evidence:
+    `docs/planning/dashboard-runtime-current-state-aggregate-task-2026-05-09.md`.
+
+- [x] `DASH-RUNTIME-WIDGET-AGGREGATE-CURRENT-RENDER-2026-05-09 test(web): lock dashboard aggregate current-row rendering`
+  - 2026-05-09: Added focused `HomeLiveWidgets` coverage proving a running
+    bot's aggregate current open-position row renders on the dashboard while
+    completed-session history remains visible in the history tab. Evidence:
+    `docs/planning/dashboard-runtime-widget-aggregate-current-render-task-2026-05-09.md`.
+
+- [x] `DEPLOY-FRESHNESS-3C5DA343-2026-05-09 release: verify dashboard runtime aggregate batch deployment`
+  - 2026-05-09: Pushed the accumulated dashboard runtime aggregate batch
+    ending at `3c5da34371e22aecb1a7aff0a185018870d35cec`, waited until
+    production Web build-info exposed that SHA, and reran safe public API/Web
+    smoke with `--no-workers`. API `/health`, API `/ready`, and Web `/`
+    passed. This does not close protected runtime, restore, rollback, RC
+    approval, or authenticated UI evidence. Evidence:
+    `docs/planning/deploy-freshness-3c5da343-task-2026-05-09.md` and
+    `docs/operations/deploy-freshness-3c5da343-2026-05-09.md`.
+
+- [x] `V1-FINAL-PREFLIGHT-3C5DA343-2026-05-09 release: refresh final preflight for dashboard runtime batch`
+  - 2026-05-09: Generated no-secret final V1 preflight JSON/Markdown for
+    deployed `3c5da343`. Build-info and public API/Web smoke pass; V1 remains
+    correctly `BLOCKED` on missing live-import auth, rollback auth, production
+    DB restore context, failed RC evidence, missing `LIVEIMPORT-03`, and stale
+    restore/rollback evidence for 2026-05-09. Evidence:
+    `docs/operations/v1-final-preflight-3c5da343-2026-05-09.md`.
+
+- [x] `V1-FINAL-BLOCKER-PACK-CANDIDATE-SHA-SYNC-3C5DA343-2026-05-09 release: retarget protected blocker commands to deployed dashboard runtime batch`
+  - 2026-05-09: Updated the final blocker execution pack and active
+    continuation state so protected evidence commands use verified deployed
+    candidate `3c5da34371e22aecb1a7aff0a185018870d35cec` as `$expectedSha`,
+    while documenting that local evidence-only `HEAD` must not be used until
+    production build-info proves it is deployed. Evidence:
+    `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
+
+- [x] `PROD-UI-PUBLIC-ACCESS-REFRESH-3C5DA343-2026-05-09 qa: refresh public production UI access evidence for dashboard runtime batch`
+  - 2026-05-09: Refreshed the public/unauthenticated production access
+    evidence for deployed `3c5da34371e22aecb1a7aff0a185018870d35cec`.
+    Build-info matches the expected SHA, API health/readiness and public Web
+    routes return HTTP 200, and unauthenticated dashboard/admin routes redirect
+    to `/auth/login`. Full authenticated/admin module clickthrough remains
+    blocked on valid production app access. Evidence:
+    `docs/planning/prod-ui-public-access-refresh-3c5da343-task-2026-05-09.md`
+    and
+    `docs/operations/prod-ui-public-access-clickthrough-3c5da343-2026-05-09.md`.
+
 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
   - 2026-05-09: Names-only readiness check found missing live-import auth,
     rollback auth, and production DB/Coolify restore context in the current

@@ -42,6 +42,15 @@ Last updated: 2026-05-09
     `docs/planning/deploy-freshness-3c5da343-task-2026-05-09.md` and
     `docs/operations/deploy-freshness-3c5da343-2026-05-09.md`.
 
+- [x] `PROD-UI-PUBLIC-ACCESS-REFRESH-3C5DA343-2026-05-09 qa: refresh public production UI access evidence for dashboard runtime batch`
+  - Scope: refreshed the public/unauthenticated production access evidence for
+    deployed `3c5da34371e22aecb1a7aff0a185018870d35cec`. Build-info matches
+    the expected SHA, API health/readiness and public Web routes return HTTP
+    200, and unauthenticated dashboard/admin routes redirect to `/auth/login`.
+    The full module clickthrough remains blocked on authenticated/admin
+    production app access. Evidence:
+    `docs/planning/prod-ui-public-access-refresh-3c5da343-task-2026-05-09.md`.
+
 - [x] `UX-UI-MEMORY-AUTONOMY-2026-05-08 design: make UX/UI feedback memory autonomous`
   - Scope: extended the existing user feedback loop, design memory, and screen
     quality checklist so future UX/UI work classifies user guidance, stores it

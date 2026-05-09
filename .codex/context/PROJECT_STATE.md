@@ -38,6 +38,15 @@ Last updated: 2026-05-09
   production DB restore context, RC approval, missing `LIVEIMPORT-03`, stale
   restore evidence, and stale rollback proof. Evidence:
   `docs/operations/deploy-freshness-3c5da343-2026-05-09.md`.
+- 2026-05-09 `PROD-UI-PUBLIC-ACCESS-REFRESH-3C5DA343-2026-05-09` refreshed
+  public/unauthenticated production UI evidence for the currently deployed
+  dashboard runtime aggregate batch. Web build-info matches
+  `3c5da34371e22aecb1a7aff0a185018870d35cec`, API `/health` and `/ready`
+  returned HTTP 200, public Web routes returned HTTP 200, and
+  unauthenticated dashboard/admin routes returned HTTP 307 to `/auth/login`.
+  This remains public-only evidence; authenticated/admin module clickthrough
+  still requires valid production app access. Evidence:
+  `docs/operations/prod-ui-public-access-clickthrough-3c5da343-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-20` reconciled the second-exchange plan with the
   deployed Gate.io foundation. The plan is now complete as a planning artifact
   and records the exact current support boundary: Gate.io public catalog and

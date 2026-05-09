@@ -31,6 +31,12 @@ public smoke PASS, while V1 remains BLOCKED on protected auth, production DB
 restore context, RC approval, missing `LIVEIMPORT-03`, stale restore evidence,
 and stale rollback proof. Evidence:
 `docs/operations/v1-final-preflight-3c5da343-2026-05-09.md`.
+Public/unauthenticated production UI access evidence is also current for
+`3c5da343`: `docs/operations/prod-ui-public-access-clickthrough-3c5da343-2026-05-09.md`
+shows API health/readiness PASS, public Web routes PASS, and protected
+dashboard/admin routes fail closed to `/auth/login`. This does not satisfy the
+full module clickthrough, which still requires authenticated/admin production
+app access.
 
 UX/UI process note: future UX/UI work must start with the autonomous memory
 preflight now documented in `docs/governance/user-feedback-loop.md`,
@@ -219,6 +225,10 @@ The no-secret final V1 preflight for deployed `3c5da343` is now fresh:
 public smoke pass. Remaining blockers are live-import auth, rollback auth,
 production DB restore context, failed RC evidence, missing `LIVEIMPORT-03`, and
 stale restore/rollback proof evidence for the 2026-05-09 evidence date.
+Public production UI access evidence has been refreshed for the same deployed
+candidate at
+`docs/operations/prod-ui-public-access-clickthrough-3c5da343-2026-05-09.md`;
+it confirms public route reachability and unauthenticated auth gates only.
 The final blocker execution pack now separates the deployed code/tooling
 candidate from local evidence-only commits: use
 `3c5da34371e22aecb1a7aff0a185018870d35cec` as `$expectedSha` for protected

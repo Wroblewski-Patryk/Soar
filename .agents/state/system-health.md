@@ -175,6 +175,14 @@ Last updated: 2026-05-09
   missing `LIVEIMPORT-03`, and stale 2026-05-08 restore/rollback evidence for
   the 2026-05-09 evidence date. Evidence:
   `docs/operations/v1-final-preflight-3c5da343-2026-05-09.md`.
+- Production public UI access refresh PASS for deployed `3c5da343`: Web
+  build-info matches `3c5da34371e22aecb1a7aff0a185018870d35cec`, API
+  `/health` and `/ready` return HTTP 200, public Web routes return HTTP 200,
+  and unauthenticated dashboard/admin routes redirect to `/auth/login` with
+  HTTP 307. Evidence:
+  `docs/operations/prod-ui-public-access-clickthrough-3c5da343-2026-05-09.md`.
+  The full production UI module clickthrough remains blocked on valid
+  authenticated/admin app access.
 - Final blocker pack candidate SHA sync PASS: protected evidence commands now
   use the verified deployed candidate
   `3c5da34371e22aecb1a7aff0a185018870d35cec` as `$expectedSha` and warn
