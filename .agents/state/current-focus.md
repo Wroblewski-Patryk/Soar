@@ -18,14 +18,13 @@ contracts synchronized.
 
 2026-05-09 current production handoff: production Web build-info is current at
 `6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623`. Public API `/health`, API
-`/ready`, and Web `/` pass after the protected-backlog/source-of-truth sync
-batch. The latest public/unauthenticated UI access evidence remains current
-from the same evidence date and deployed lineage at `55469cdc`. Full
+`/ready`, Web `/`, and public/unauthenticated UI access pass after the
+protected-backlog/source-of-truth sync batch. Full
 authenticated/admin production UI module clickthrough remains blocked until
 valid production app access is available. Evidence:
 `docs/operations/deploy-freshness-6c54bb5d-2026-05-09.md`,
 `docs/operations/v1-final-preflight-6c54bb5d-2026-05-09.md`, and
-`docs/operations/prod-ui-public-access-clickthrough-55469cdc-2026-05-09.md`.
+`docs/operations/prod-ui-public-access-clickthrough-6c54bb5d-2026-05-09.md`.
 
 2026-05-09 no-secret V1 preflight refresh: deployed `6c54bb5d` passes
 build-info and public API/Web smoke, but the current release posture is

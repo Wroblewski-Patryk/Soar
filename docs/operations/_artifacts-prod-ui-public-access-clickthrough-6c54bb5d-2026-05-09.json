@@ -1,0 +1,109 @@
+{
+  "generatedAt": "2026-05-09T16:18:31.767Z",
+  "expectedSha": "6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623",
+  "buildInfo": {
+    "buildId": "q_avotwvI_rVO9KHwm3Js",
+    "gitSha": "6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623",
+    "gitRef": "main",
+    "metadataGeneratedAt": null,
+    "metadataSource": "env-runtime",
+    "checkedAt": "2026-05-09T16:18:32.718Z"
+  },
+  "checks": [
+    {
+      "url": "https://api.soar.luckysparrow.ch/health",
+      "status": 200,
+      "location": null
+    },
+    {
+      "url": "https://api.soar.luckysparrow.ch/ready",
+      "status": 200,
+      "location": null
+    },
+    {
+      "url": "https://soar.luckysparrow.ch/",
+      "status": 200,
+      "location": null
+    },
+    {
+      "url": "https://soar.luckysparrow.ch/auth/login",
+      "status": 200,
+      "location": null
+    },
+    {
+      "url": "https://soar.luckysparrow.ch/auth/register",
+      "status": 200,
+      "location": null
+    },
+    {
+      "url": "https://soar.luckysparrow.ch/offline",
+      "status": 200,
+      "location": null
+    },
+    {
+      "url": "https://soar.luckysparrow.ch/api/build-info",
+      "status": 200,
+      "location": null
+    },
+    {
+      "url": "https://soar.luckysparrow.ch/dashboard",
+      "status": 307,
+      "location": "/auth/login"
+    },
+    {
+      "url": "https://soar.luckysparrow.ch/dashboard/profile",
+      "status": 307,
+      "location": "/auth/login"
+    },
+    {
+      "url": "https://soar.luckysparrow.ch/dashboard/wallets/list",
+      "status": 307,
+      "location": "/auth/login"
+    },
+    {
+      "url": "https://soar.luckysparrow.ch/dashboard/markets/list",
+      "status": 307,
+      "location": "/auth/login"
+    },
+    {
+      "url": "https://soar.luckysparrow.ch/dashboard/strategies/list",
+      "status": 307,
+      "location": "/auth/login"
+    },
+    {
+      "url": "https://soar.luckysparrow.ch/dashboard/backtests/list",
+      "status": 307,
+      "location": "/auth/login"
+    },
+    {
+      "url": "https://soar.luckysparrow.ch/dashboard/bots",
+      "status": 307,
+      "location": "/auth/login"
+    },
+    {
+      "url": "https://soar.luckysparrow.ch/dashboard/reports",
+      "status": 307,
+      "location": "/auth/login"
+    },
+    {
+      "url": "https://soar.luckysparrow.ch/dashboard/logs",
+      "status": 307,
+      "location": "/auth/login"
+    },
+    {
+      "url": "https://soar.luckysparrow.ch/admin",
+      "status": 307,
+      "location": "/auth/login"
+    },
+    {
+      "url": "https://soar.luckysparrow.ch/admin/users",
+      "status": 307,
+      "location": "/auth/login"
+    },
+    {
+      "url": "https://soar.luckysparrow.ch/admin/subscriptions",
+      "status": 307,
+      "location": "/auth/login"
+    }
+  ]
+}

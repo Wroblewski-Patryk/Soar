@@ -8,8 +8,8 @@ Last updated: 2026-05-09
   `6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623`: build-info PASS, public
   API/Web smoke PASS, no-secret final preflight public checks PASS, and the
   protected-backlog/source-of-truth synchronization batch is deployed.
-  Public/unauthenticated UI access refresh remains current from the same
-  evidence date at `55469cdc`. `LIVEIMPORT-03` target sync
+  Public/unauthenticated UI access refresh is current for `6c54bb5d`.
+  `LIVEIMPORT-03` target sync
   remains PASS, and protected readiness check remains PASS as a fail-closed
   blocker classification. V1 remains `BLOCKED` on missing live-import auth,
   rollback auth, production DB/Coolify restore context for current-date
@@ -17,6 +17,7 @@ Last updated: 2026-05-09
   2026-05-08 restore evidence, and stale 2026-05-08 rollback proof. Evidence:
   `docs/operations/deploy-freshness-6c54bb5d-2026-05-09.md`,
   `docs/operations/v1-final-preflight-6c54bb5d-2026-05-09.md`,
+  `docs/operations/prod-ui-public-access-clickthrough-6c54bb5d-2026-05-09.md`,
   `docs/operations/deploy-freshness-55469cdc-2026-05-09.md`,
   `docs/operations/v1-final-preflight-55469cdc-2026-05-09.md`,
   `docs/operations/prod-ui-public-access-clickthrough-55469cdc-2026-05-09.md`,

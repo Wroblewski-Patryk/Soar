@@ -30,12 +30,12 @@ UI against the canonical architecture, route, module, API, and UX contracts.
 
 Current state after the 2026-05-09 sync:
 - current production target:
-  `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`
+  `6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623`
 - latest observed production build-info:
-  `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`
+  `6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623`
 - public production smoke: PASS for API `/health`, API `/ready`, and web `/`
 - public/unauthenticated UI access:
-  `docs/operations/prod-ui-public-access-clickthrough-55469cdc-2026-05-09.md`
+  `docs/operations/prod-ui-public-access-clickthrough-6c54bb5d-2026-05-09.md`
 - protected dashboard/admin clickthrough: blocked until valid production auth
   is provided or an approved authenticated browser context is available
 
@@ -305,7 +305,7 @@ Report format:
 ## Autonomous Loop Evidence
 
 ### 1. Analyze Current State
-- Issues: current target `55469cdc` is deployed, but authenticated/admin app
+- Issues: current target `6c54bb5d` is deployed, but authenticated/admin app
   access is not available in this shell.
 - Gaps: no single production UI clickthrough playbook covers all module
   functions.

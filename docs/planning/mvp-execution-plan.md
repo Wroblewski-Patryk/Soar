@@ -39,6 +39,14 @@ Rule: fix/cleanup/update first, then feature delivery.
   and no-secret final V1 preflight remained correctly `BLOCKED` on protected
   evidence.
 - 2026-05-09: Closed
+  `PROD-UI-PUBLIC-ACCESS-REFRESH-6C54BB5D-2026-05-09` with
+  `docs/planning/prod-ui-public-access-refresh-6c54bb5d-task-2026-05-09.md`.
+  Public/unauthenticated production UI access is current for deployed
+  `6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623`: public routes pass, API
+  health/readiness pass, and protected dashboard/admin routes redirect to
+  `/auth/login` without a session. Full authenticated/admin module
+  clickthrough remains blocked.
+- 2026-05-09: Closed
   `OPEN-PROTECTED-BACKLOG-55469CDC-SYNC-2026-05-09` with
   `docs/planning/open-protected-backlog-55469cdc-sync-task-2026-05-09.md`.
   Open protected backlog entries for `V1-PROTECTED-ACCESS-READINESS`,
