@@ -20,7 +20,7 @@ describe('exchangeExecutionCapabilityContract.service', () => {
     expect(supportsExchangeExecutionCapability('COINBASE', 'LIVE_ORDER_SUBMIT')).toBe(false);
     expect(supportsExchangeExecutionCapability('GATEIO', 'BALANCE_PREVIEW')).toBe(true);
     expect(supportsExchangeExecutionCapability('GATEIO', 'POSITIONS_SNAPSHOT')).toBe(true);
-    expect(supportsExchangeExecutionCapability('GATEIO', 'OPEN_ORDERS_SNAPSHOT')).toBe(false);
+    expect(supportsExchangeExecutionCapability('GATEIO', 'OPEN_ORDERS_SNAPSHOT')).toBe(true);
     expect(supportsExchangeExecutionCapability('GATEIO', 'TRADE_HISTORY_SNAPSHOT')).toBe(false);
     expect(supportsExchangeExecutionCapability('GATEIO', 'LIVE_ORDER_SUBMIT')).toBe(false);
   });

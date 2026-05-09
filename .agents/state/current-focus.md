@@ -16,6 +16,12 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-09 implementation update: `EXCHANGE2-27` enabled only Gate.io
+`OPEN_ORDERS_SNAPSHOT` through the existing authenticated-read boundary.
+Gate.io trade-history, live submit, and exchange-side cancel remain
+unsupported. Evidence:
+`docs/planning/exchange2-27-gateio-open-orders-snapshot-task-2026-05-09.md`.
+
 2026-05-09 implementation update: `EXCHANGE2-26` enabled only Gate.io
 `POSITIONS_SNAPSHOT` through the existing authenticated-read boundary and
 positions exchange-snapshot route. Gate.io open-orders/trade-history, live

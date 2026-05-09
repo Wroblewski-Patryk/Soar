@@ -18,7 +18,7 @@ describe('exchangeAuthenticatedReadContract.service', () => {
     expect(supportsAuthenticatedExchangeRead('COINBASE', 'WALLET_CASHFLOW_HISTORY')).toBe(false);
     expect(supportsAuthenticatedExchangeRead('GATEIO', 'BALANCE_PREVIEW')).toBe(true);
     expect(supportsAuthenticatedExchangeRead('GATEIO', 'POSITIONS_SNAPSHOT')).toBe(true);
-    expect(supportsAuthenticatedExchangeRead('GATEIO', 'OPEN_ORDERS_SNAPSHOT')).toBe(false);
+    expect(supportsAuthenticatedExchangeRead('GATEIO', 'OPEN_ORDERS_SNAPSHOT')).toBe(true);
     expect(supportsAuthenticatedExchangeRead('GATEIO', 'TRADE_HISTORY_SNAPSHOT')).toBe(false);
   });
 

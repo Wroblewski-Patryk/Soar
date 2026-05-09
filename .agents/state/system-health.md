@@ -4,6 +4,11 @@ Last updated: 2026-05-09
 
 ## Latest Health Snapshot
 
+- `EXCHANGE2-27` local validation PASS: Gate.io `OPEN_ORDERS_SNAPSHOT` is
+  enabled through the existing authenticated-read boundary. Gate.io
+  trade-history, live submit, and exchange-side cancel remain unsupported.
+  Evidence:
+  `docs/planning/exchange2-27-gateio-open-orders-snapshot-task-2026-05-09.md`.
 - `EXCHANGE2-26` local validation PASS: Gate.io `POSITIONS_SNAPSHOT` is
   enabled through the existing authenticated-read boundary and positions
   exchange-snapshot route. Gate.io open-orders/trade-history, live submit, and

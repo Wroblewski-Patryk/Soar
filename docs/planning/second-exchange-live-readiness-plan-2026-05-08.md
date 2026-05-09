@@ -71,8 +71,9 @@ adapter is implemented and verified.
 - Current positions snapshot support: `GATEIO` `POSITIONS_SNAPSHOT` is enabled
   for the existing positions exchange-snapshot route through the
   authenticated-read boundary.
-- Still blocked: authenticated open-order/trade-history reads,
-  `LIVE_ORDER_SUBMIT`, or
+- Current open-orders snapshot support: `GATEIO` `OPEN_ORDERS_SNAPSHOT` is
+  enabled through the authenticated-read boundary for reconciliation reads.
+- Still blocked: authenticated trade-history reads, `LIVE_ORDER_SUBMIT`, or
   `LIVE_ORDER_CANCEL` for Gate.io until exact support is implemented and
   production evidence exists.
 - Still requiring user/operator input: first live scope, whether authenticated
@@ -130,7 +131,7 @@ Acceptance criteria:
    - `PAPER_PRICING_FEED`: supported for public paper runtime.
    - `BALANCE_PREVIEW`: supported.
    - `POSITIONS_SNAPSHOT`: supported.
-   - `OPEN_ORDERS_SNAPSHOT`: unsupported.
+   - `OPEN_ORDERS_SNAPSHOT`: supported.
    - `TRADE_HISTORY_SNAPSHOT`: unsupported.
    - `LIVE_ORDER_SUBMIT`: unsupported.
    - `LIVE_ORDER_CANCEL`: unsupported.
@@ -148,8 +149,8 @@ Acceptance criteria:
 2. Implement market metadata and symbol-rule normalization through existing
    exchange module contracts.
 3. API-key probe and balance preview are implemented for the target exchange.
-4. Positions snapshot is implemented for the target exchange. Implement
-   open-orders snapshot only if exact support is approved.
+4. Positions snapshot and open-orders snapshot are implemented for the target
+   exchange.
 
 Acceptance criteria:
 - no feature module creates authenticated clients directly.

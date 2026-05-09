@@ -59,15 +59,21 @@ const createApiKey = async (exchange: Exchange) => {
 describe('positions authenticated snapshots service', () => {
   beforeEach(cleanup);
 
-  it('fails closed for Gate.io open-orders snapshot before marking the key used', async () => {
+  it('returns Gate.io open-orders snapshot and marks the key used after success', async () => {
     const { userId, apiKeyId } = await createApiKey('GATEIO');
 
-    await expect(
-      fetchExchangeOpenOrdersSnapshotByApiKeyId(userId, apiKeyId)
-    ).rejects.toThrowError(ExchangeExecutionCapabilityUnsupportedError);
+    const snapshot = await fetchExchangeOpenOrdersSnapshotByApiKeyId(userId, apiKeyId);
+
+    expect(snapshot.source).toBe('GATEIO');
+    expect(snapshot.orders).toHaveLength(1);
+    expect(snapshot.orders[0]).toMatchObject({
+      exchangeOrderId: 'test-open-order-1',
+      symbol: 'BTC/USDT:USDT',
+      status: 'open',
+    });
 
     const dbKey = await prisma.apiKey.findUniqueOrThrow({ where: { id: apiKeyId } });
-    expect(dbKey.lastUsed).toBeNull();
+    expect(dbKey.lastUsed).not.toBeNull();
   });
 
   it('fails closed for Gate.io trade-history snapshot before marking the key used', async () => {

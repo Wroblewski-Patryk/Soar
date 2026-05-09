@@ -73,7 +73,7 @@ work before paper/live bots can be enabled for that exchange.
 | Admin | scaffolding/current route scope exists | some local coverage implied by docs | public route gate only | missing admin clickthrough | Needs admin account and safe representative data. |
 | Gate.io public catalog/data | yes | yes | deployed foundation exists | public-only | Public market-data foundation is available. |
 | Gate.io paper bot support | yes after `EXCHANGE2-23` | focused API/Web tests pass | not yet deployed | n/a | Deploy and click through Gate.io PAPER wallet/bot setup for production evidence. |
-| Gate.io authenticated reads | partial | API-key probe, balance preview, and positions snapshot yes; remaining reads fail closed | n/a | n/a | `API_KEY_PROBE`, `BALANCE_PREVIEW`, and `POSITIONS_SNAPSHOT` are implemented; implement open-orders/trade-history snapshots if in scope. |
+| Gate.io authenticated reads | partial | API-key probe, balance preview, positions snapshot, and open-orders snapshot yes; remaining reads fail closed | n/a | n/a | `API_KEY_PROBE`, `BALANCE_PREVIEW`, `POSITIONS_SNAPSHOT`, and `OPEN_ORDERS_SNAPSHOT` are implemented; implement trade-history snapshots if in scope. |
 | Gate.io live order submit | no | fail-closed tests yes | n/a | n/a | Implement exact live submit adapter and protected evidence if in scope. |
 | Exchange-side cancel | no for all exchanges | fail-closed tests yes | n/a | n/a | Implement canonical cancel boundary before claiming support. |
 
@@ -135,7 +135,7 @@ work before paper/live bots can be enabled for that exchange.
    - `API_KEY_PROBE` is now implemented for credential validation only
    - `BALANCE_PREVIEW` is now implemented for wallet balance preview only
    - `POSITIONS_SNAPSHOT` is now implemented for exchange positions snapshot only
-   - `OPEN_ORDERS_SNAPSHOT`
+   - `OPEN_ORDERS_SNAPSHOT` is now implemented for exchange open-orders snapshot only
    - `TRADE_HISTORY_SNAPSHOT`
 
 2. **Implement Gate.io live submit only after paper/read readiness**
