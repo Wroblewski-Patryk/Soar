@@ -26,6 +26,16 @@ valid production app access is available. Evidence:
 `docs/operations/v1-final-preflight-c50e1e7c-2026-05-09.md`, and
 `docs/operations/prod-ui-public-access-clickthrough-c50e1e7c-2026-05-09.md`.
 
+2026-05-09 deploy lag note: pushed `origin/main`
+`1f1d9c12e0cc99884eced81546802a261b0925e9` did not reach production within
+the accepted 900-second build-info wait or the additional 300-second follow-up
+waits, plus a later 180-second follow-up wait. Production build-info remained on
+`c50e1e7cf1e37d9c799031cacbb30a834f57e81d` for both waits. Do not use
+`1f1d9c12` as protected evidence target until build-info exposes it. Evidence:
+`docs/operations/deploy-lag-1f1d9c12-2026-05-09.md`.
+The current shell has no Coolify deploy hook/API token env names and no
+working authenticated SSH/VPS inspection context.
+
 2026-05-09 no-secret V1 preflight refresh: deployed `c50e1e7c` passes
 build-info and public API/Web smoke, but the current release posture is
 `BLOCKED` on missing live-import auth, rollback auth, production DB restore

@@ -252,8 +252,12 @@ pnpm --filter api run test -- <db-backed-files> --run --sequence.concurrent=fals
 - Guardrail: after a push, always verify public web build-info before starting
   protected production readback. If build-info is stale, keep polling within
   the release gate window; if it remains stale, use `Promote PROD` or inspect
-  Coolify queue/logs. Do not re-run obsolete workflow runs or use empty
-  retrigger commits before checking the deploy queue/log path.
+  Coolify queue/logs. If no deploy hook/API token env names or authenticated
+  VPS/Coolify inspection context are available, stop the deploy-freshness loop
+  after bounded waits and record an operator-blocked deploy-lag artifact
+  instead of adding empty retrigger commits. Do not re-run obsolete workflow
+  runs or use empty retrigger commits before checking the deploy queue/log
+  path.
 - Preferred pattern:
 ```powershell
 pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha <sha>
@@ -264,6 +268,11 @@ pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckyspar
   - 2026-05-07 `PROD-PROMOTE-PREQ-2026-05-07` first timed out waiting for
     production build-info to expose `1f816362`, then a later rerun passed on
     attempt 1 after the deployment queue caught up.
+  - 2026-05-09 `DEPLOY-LAG-1F1D9C12-2026-05-09` timed out across one
+    900-second wait, two 300-second follow-up waits, and one 180-second
+    follow-up wait while production stayed on `c50e1e7c`; the shell also had
+    no Coolify deploy hook/API token env names and no working authenticated
+    SSH/VPS inspection context.
 
 ### 2026-05-07 - Push after green local gates when production readback depends on deploy
 - Context: the full architecture audit repair chain produced validated local

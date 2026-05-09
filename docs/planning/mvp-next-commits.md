@@ -548,6 +548,23 @@ Operational queue for one-task execution runs.
     and
     `docs/operations/prod-ui-public-access-clickthrough-c50e1e7c-2026-05-09.md`.
 
+- [ ] `DEPLOY-LAG-1F1D9C12-2026-05-09 release: wait for pushed evidence batch deployment`
+  - 2026-05-09: Pushed the two-commit docs/evidence batch ending at
+    `1f1d9c12e0cc99884eced81546802a261b0925e9`, then waited 900 seconds plus
+    two additional 300-second follow-up waits and a later 180-second follow-up
+    wait for production build-info. Production
+    remained on
+    `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`, so `1f1d9c12` is pushed but
+    not production-current. Current shell has no deploy hook/API token env
+    names or working authenticated SSH/VPS inspection context. Public smoke
+    for the still-deployed `c50e1e7c` surface remains PASS. The deploy-lag
+    artifact includes the operator handoff, non-accepted evidence list, and
+    diff scope proving no `apps`, `packages`, `prisma`, or `scripts` changes
+    between `c50e1e7c` and `1f1d9c12`.
+    Evidence:
+    `docs/planning/deploy-lag-1f1d9c12-task-2026-05-09.md` and
+    `docs/operations/deploy-lag-1f1d9c12-2026-05-09.md`.
+
 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
   - 2026-05-09: Names-only readiness check found missing live-import auth,
     rollback auth, and production DB/Coolify restore context in the current

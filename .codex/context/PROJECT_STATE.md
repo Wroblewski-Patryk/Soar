@@ -209,6 +209,21 @@ Last updated: 2026-05-09
   HTTP 307 to `/auth/login`. Full authenticated/admin module clickthrough
   remains blocked on valid production app access. Evidence:
   `docs/operations/prod-ui-public-access-clickthrough-c50e1e7c-2026-05-09.md`.
+- 2026-05-09 `DEPLOY-LAG-1F1D9C12-2026-05-09` recorded that the pushed
+  two-commit docs/evidence batch ending at
+  `1f1d9c12e0cc99884eced81546802a261b0925e9` did not reach production within
+  the accepted 900-second build-info wait or two additional 300-second
+  follow-up waits, then a later 180-second follow-up wait. Production remained on
+  `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`; `1f1d9c12` must not be treated
+  as production-current until a later build-info wait passes. The current shell
+  has no deploy hook/API token env names or working authenticated SSH/VPS
+  inspection context. Public smoke for the still-deployed `c50e1e7c` surface
+  remains PASS, so this is a deploy-freshness blocker rather than a public
+  outage. The deploy-lag artifact now includes an operator handoff and
+  non-accepted evidence list to avoid empty retrigger commits. Diff scope
+  confirms pushed `1f1d9c12` has no `apps`, `packages`, `prisma`, or `scripts`
+  changes over deployed `c50e1e7c`. Evidence:
+  `docs/operations/deploy-lag-1f1d9c12-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-20` reconciled the second-exchange plan with the
   deployed Gate.io foundation. The plan is now complete as a planning artifact
   and records the exact current support boundary: Gate.io public catalog and

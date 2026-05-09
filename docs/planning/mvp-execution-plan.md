@@ -46,6 +46,14 @@ Rule: fix/cleanup/update first, then feature delivery.
   health/readiness pass, and protected dashboard/admin routes redirect to
   `/auth/login` without a session. Full authenticated/admin module
   clickthrough remains blocked.
+- 2026-05-09: Recorded `DEPLOY-LAG-1F1D9C12-2026-05-09` with
+  `docs/planning/deploy-lag-1f1d9c12-task-2026-05-09.md`. The two-commit
+  docs/evidence batch was pushed to `origin/main`, but production build-info
+  remained on `c50e1e7cf1e37d9c799031cacbb30a834f57e81d` for the full
+  900-second wait, two additional 300-second follow-up waits, and a later
+  180-second follow-up wait. `1f1d9c12` is pushed but not production-current;
+  the current shell lacks deploy hook/API token env names and authenticated
+  SSH/VPS inspection access.
 - 2026-05-09: Closed `DEPLOY-FRESHNESS-6C54BB5D-2026-05-09` with
   `docs/planning/deploy-freshness-6c54bb5d-task-2026-05-09.md`. The six-commit
   protected-backlog/source-of-truth sync batch reached production build-info

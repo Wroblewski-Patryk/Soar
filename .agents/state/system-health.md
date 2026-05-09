@@ -19,6 +19,7 @@ Last updated: 2026-05-09
   `docs/operations/deploy-freshness-c50e1e7c-2026-05-09.md`,
   `docs/operations/v1-final-preflight-c50e1e7c-2026-05-09.md`,
   `docs/operations/prod-ui-public-access-clickthrough-c50e1e7c-2026-05-09.md`,
+  `docs/operations/deploy-lag-1f1d9c12-2026-05-09.md`,
   `docs/operations/deploy-freshness-6c54bb5d-2026-05-09.md`,
   `docs/operations/v1-final-preflight-6c54bb5d-2026-05-09.md`,
   `docs/operations/prod-ui-public-access-clickthrough-6c54bb5d-2026-05-09.md`,
@@ -30,6 +31,22 @@ Last updated: 2026-05-09
   `docs/operations/prod-ui-public-access-clickthrough-4ee1672e-2026-05-09.md`,
   `docs/planning/liveimport-03-current-production-target-sync-task-2026-05-09.md`,
   and `docs/operations/v1-protected-access-readiness-2026-05-09.md`.
+- Pushed `origin/main` currently ends at
+  `1f1d9c12e0cc99884eced81546802a261b0925e9`, but production build-info did
+  not expose it within the accepted 900-second wait or two additional
+  300-second follow-up waits, then a later 180-second follow-up wait, and
+  remained on
+  `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`. Treat `1f1d9c12` as pushed but
+  not production-current until a later build-info wait passes. No Coolify
+  deploy hook/API token env names or working authenticated SSH/VPS inspection
+  context are available in the current shell.
+- Current production public smoke still passes on the deployed `c50e1e7c`
+  surface: API `/health` 200, API `/ready` 200, and Web `/` 200. This keeps
+  the issue classified as deploy lag, not current public API/Web outage.
+- Pushed `1f1d9c12` has no `apps`, `packages`, `prisma`, or `scripts` changes
+  over deployed `c50e1e7c`; it is a docs/evidence batch. Runtime protected
+  readback remains tied to build-info-proven `c50e1e7c` unless an operator
+  explicitly requires the newer docs/evidence batch deployed first.
 - Gate.io second-exchange foundation has advanced through `EXCHANGE2-06`.
   Latest pushed `main` is `5517f027`, including Gate.io public catalog,
   runtime event exchange generalization, public ticker/candle reader,

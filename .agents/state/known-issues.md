@@ -24,6 +24,14 @@ Last updated: 2026-05-09
   passed. This closes the immediate deploy-freshness lag for that batch, but
   protected/authenticated UI audit and release evidence remain blocked on
   credentials/access.
+- After the c50e1e7c evidence/public-access batch was pushed, `origin/main`
+  advanced to `1f1d9c12e0cc99884eced81546802a261b0925e9` while production
+  build-info remained on `c50e1e7cf1e37d9c799031cacbb30a834f57e81d` for a
+  full 900-second wait, two additional 300-second follow-up waits, and a later
+  180-second follow-up wait. Treat this as a deploy lag note, not protected
+  runtime or final V1 evidence. Current
+  shell also has no Coolify deploy hook/API token env names and no working
+  authenticated SSH/VPS inspection context.
 - Final V1 preflight previously depended on global `pnpm` for its internal
   public deploy checks and could falsely report build-info/public-smoke
   blockers on this workstation. The command now invokes bundled Node scripts

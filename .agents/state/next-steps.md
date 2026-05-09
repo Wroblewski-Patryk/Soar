@@ -7,6 +7,24 @@ Last updated: 2026-05-09
 Current deployed production build-info candidate:
 `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`.
 
+Pushed but not yet deployed:
+`1f1d9c12e0cc99884eced81546802a261b0925e9`. The 900-second production
+build-info wait and two additional 300-second follow-up waits timed out with
+production still on `c50e1e7c`; a later 180-second follow-up wait also timed
+out on the same SHA. See
+`docs/operations/deploy-lag-1f1d9c12-2026-05-09.md`.
+Current shell has no Coolify deploy hook/API token env names and no working
+authenticated SSH/VPS inspection context, so the next deploy action requires
+operator-side Coolify access or credentials outside the repository.
+Current production public smoke still passes for the deployed `c50e1e7c`
+surface, so this is a deploy-freshness blocker rather than a public outage.
+Use the operator handoff in
+`docs/operations/deploy-lag-1f1d9c12-2026-05-09.md` before any further
+deployment action; do not create empty retrigger commits without inspecting the
+Coolify queue/log state.
+Diff scope confirms pushed `1f1d9c12` has no `apps`, `packages`, `prisma`, or
+`scripts` changes over deployed `c50e1e7c`; it is a docs/evidence batch.
+
 Runtime/dashboard behavior source candidate:
 `3c5da34371e22aecb1a7aff0a185018870d35cec`.
 
@@ -26,6 +44,8 @@ Completed for that candidate:
   production build-info
 - public/unauthenticated production UI access refreshed for the same deployed
   batch
+- pushed evidence batch ending at `1f1d9c12`, but production deploy freshness
+  for that SHA remains blocked
 
 Evidence:
 - `docs/planning/dashboard-runtime-current-state-aggregate-task-2026-05-09.md`
@@ -43,6 +63,7 @@ Evidence:
 - `docs/operations/deploy-freshness-c50e1e7c-2026-05-09.md`
 - `docs/operations/v1-final-preflight-c50e1e7c-2026-05-09.md`
 - `docs/operations/prod-ui-public-access-clickthrough-c50e1e7c-2026-05-09.md`
+- `docs/operations/deploy-lag-1f1d9c12-2026-05-09.md`
 
 Next executable V1 steps are protected and remain blocked until the operator
 supplies authenticated/admin production app access, live-import auth, rollback
