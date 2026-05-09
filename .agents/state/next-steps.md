@@ -35,6 +35,10 @@ auth, production DB/Coolify context for current-date restore evidence, and real
 RC approval identities. Do not treat public health/build-info, public UI
 access, or local regression suites as completion evidence for `LIVEIMPORT-03`,
 rollback proof, restore proof, RC approval, or authenticated module clickthrough.
+BOTMULTI-09 is also current against production build-info:
+`f3aaa3dca6cf4d4b199372563886165638391a77` is contained in deployed
+`4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`, but BOTMULTI remains open until
+protected runtime/V1 gate evidence is collected.
 Use the concise protected operator handoff at
 `docs/operations/v1-protected-operator-handoff-3c5da343-2026-05-09.md` before
 running the full blocker pack.

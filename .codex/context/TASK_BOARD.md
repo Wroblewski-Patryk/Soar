@@ -3896,12 +3896,14 @@ Last updated: 2026-05-09
     migration cannot run. Local pre-release build, guardrails, and docs parity
     PASS. Candidate
     `f3aaa3dca6cf4d4b199372563886165638391a77` is committed and pushed to
-    `origin/main`. 2026-05-07 refresh: production build-info now reports
-    `6a7c9889d24a55c870b32aa10cb284ede6db1c59`, which contains
+    `origin/main`. 2026-05-09 refresh: current production build-info now
+    reports `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`, which contains
     `f3aaa3dca6cf4d4b199372563886165638391a77`; the old public build-info
-    blocker is resolved. Remaining blocker: authenticated/protected runtime
-    readback and broader V1 release gate evidence are still required. Evidence:
-    `docs/planning/botmulti-09-production-deploy-task-2026-05-03.md`.
+    blocker remains resolved. Remaining blocker: authenticated/protected
+    runtime readback and broader V1 release gate evidence are still required.
+    Evidence:
+    `docs/planning/botmulti-09-production-deploy-task-2026-05-03.md` and
+    `docs/planning/botmulti-09-current-production-containment-task-2026-05-09.md`.
 
 - [x] `BOTMULTI-08 qa(closure): run architecture-to-runtime closure pack and publish evidence`
   - Scope: closed the post-V1 BOTMULTI wave with focused API/runtime/lifecycle

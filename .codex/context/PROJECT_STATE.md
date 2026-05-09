@@ -82,6 +82,14 @@ Last updated: 2026-05-09
   This remains public-only evidence; authenticated/admin module clickthrough
   still requires valid production app access. Evidence:
   `docs/operations/prod-ui-public-access-clickthrough-4ee1672e-2026-05-09.md`.
+- 2026-05-09 `BOTMULTI-09-CURRENT-PRODUCTION-CONTAINMENT-2026-05-09`
+  reconciled the open BOTMULTI release blocker with current production
+  build-info. `git merge-base --is-ancestor` confirms original BOTMULTI
+  candidate `f3aaa3dca6cf4d4b199372563886165638391a77` is contained in current
+  production candidate `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`. BOTMULTI
+  remains open because authenticated/protected runtime readback and broader V1
+  release gate evidence are still required. Evidence:
+  `docs/planning/botmulti-09-current-production-containment-task-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-20` reconciled the second-exchange plan with the
   deployed Gate.io foundation. The plan is now complete as a planning artifact
   and records the exact current support boundary: Gate.io public catalog and

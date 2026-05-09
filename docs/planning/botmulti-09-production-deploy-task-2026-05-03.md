@@ -116,15 +116,12 @@ candidate commit prepared for the approved workflow.
     `API_AUTO_MIGRATE=false` and exits before API boot on migration failure.
   - PASS: candidate commit `f3aaa3dca6cf4d4b199372563886165638391a77`
     was pushed to `origin/main`.
-  - BLOCKED: local environment has no `gh` CLI, no deploy hook environment
-    variable, and the available GitHub connector tools do not expose
-    `workflow_dispatch`.
-  - BLOCKED: production build-info still reports
-    `26962ea1dbb0981d3885779d01e58485d7e9fd6c` after post-push polling, so
-    push alone did not trigger Coolify redeploy.
-  - BLOCKED: GitHub Actions readback shows the latest `Promote PROD` run is
-    still the older manual run for `0f122ed4cc38e443c4dc58a038cd413a4d8447c6`
-    from 2026-04-25.
+  - PASS: 2026-05-09 containment recheck confirms
+    `f3aaa3dca6cf4d4b199372563886165638391a77` is an ancestor of current
+    production build-info candidate
+    `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`.
+  - BLOCKED: protected runtime readback and broader V1 release gate evidence
+    are still required before `BOTMULTI-09` can be marked complete.
 - Screenshots/logs:
   - Not applicable.
 - High-risk checks:
@@ -187,10 +184,11 @@ candidate commit prepared for the approved workflow.
 ### 5. Verify and Test
 - Validation performed: build, guardrails, docs parity, production build-info
   polling, and GitHub Actions workflow readback.
-- Result: local release candidate is green and pushed. Production remains on
-  `26962ea1dbb0981d3885779d01e58485d7e9fd6c` until the approved
-  `Promote PROD` workflow is manually dispatched for `main` /
-  `f3aaa3dca6cf4d4b199372563886165638391a77`.
+- Result: local release candidate is green and pushed. 2026-05-09 containment
+  recheck confirms current production build-info
+  `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f` contains
+  `f3aaa3dca6cf4d4b199372563886165638391a77`; remaining closure is protected
+  runtime readback and broader V1 release gate evidence.
 
 ### 6. Self-Review
 - Simpler option considered: direct production migration command; rejected
@@ -311,11 +309,10 @@ Runtime tasks must be delivered as a vertical slice: UI -> logic -> API -> DB ->
 - How tested: `pnpm run build`, `pnpm run quality:guardrails`,
   `pnpm run docs:parity:check`, production build-info polling, and GitHub
   Actions workflow readback.
-- What is incomplete: production `Promote PROD` workflow dispatch and
-  post-deploy smoke remain blocked from this environment.
-- Next steps: manually run GitHub Actions workflow `Promote PROD` on `main`
-  for candidate `f3aaa3dca6cf4d4b199372563886165638391a77`, then verify
-  build-info, `/health`, `/ready`, and runtime freshness gates.
+- What is incomplete: protected runtime readback and broader V1 release gate
+  evidence remain blocked from this environment.
+- Next steps: use the current final blocker pack for protected runtime/V1
+  release evidence after approved auth/context is available.
 - Decisions made: Use approved startup migration and production workflow; do
   not run direct production migration commands or bypass Coolify/GitHub release
   governance.
