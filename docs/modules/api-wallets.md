@@ -52,6 +52,9 @@ Out of scope:
   - Gate.io stored API keys may be used for wallet balance preview through the
     authenticated-read boundary. Gate.io `LIVE` wallet create/update remains
     fail-closed while `LIVE_EXECUTION` is unsupported.
+  - Gate.io wallet cashflow history is supported through the canonical
+    exchange adapter boundary for ledger/performance analytics reads. This does
+    not enable Gate.io `LIVE` wallet create/update or live order submission.
   - wallet cannot be deleted when linked bot exists.
 - WAPR contract lock (implemented):
   - list payload remains source for table inline API key status mapping (`apiKeyId` presence).
@@ -130,6 +133,8 @@ Out of scope:
 ## 7. Observability and Operations
 - Preview path updates `apiKey.lastUsed` for operational traceability.
 - Metadata responses declare source (`MARKET_CATALOG` vs `EXCHANGE_CAPABILITIES`) for fallback diagnostics.
+- Wallet cashflow history reads stay inside the exchange adapter boundary;
+  ledger classification remains in `walletCashflowClassifier.service.ts`.
 
 ## 8. Test Coverage and Evidence
 - Primary tests:
@@ -142,6 +147,6 @@ pnpm --filter api test -- src/modules/wallets/wallets.e2e.test.ts
 ```
 
 ## 9. Open Issues and Follow-Ups
-- Expand positions/open-orders/trade-history support beyond Binance as
-  exchange adapters mature.
+- Expand live submit support beyond Binance only after exact adapter support
+  and protected evidence exist.
 - Add explicit audit log entries for wallet create/update/delete events.

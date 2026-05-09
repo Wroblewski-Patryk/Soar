@@ -4,6 +4,12 @@ Last updated: 2026-05-09
 
 ## Latest Health Snapshot
 
+- `EXCHANGE2-29` local validation PASS: Gate.io `WALLET_CASHFLOW_HISTORY` is
+  enabled through the existing exchange adapter boundary. Gate.io live submit
+  and exchange-side cancel remain unsupported. Focused exchange/wallet
+  cashflow tests, API typecheck, guardrails, docs parity, and diff check pass.
+  Evidence:
+  `docs/planning/exchange2-29-gateio-wallet-cashflow-history-task-2026-05-09.md`.
 - `EXCHANGE2-28` local validation PASS: Gate.io `TRADE_HISTORY_SNAPSHOT` is
   enabled through the existing authenticated-read boundary. Gate.io wallet
   cashflow history, live submit, and exchange-side cancel remain unsupported.

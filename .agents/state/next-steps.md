@@ -5,6 +5,14 @@ Last updated: 2026-05-09
 ## Next Tiny Task
 
 Latest local implementation slice:
+`EXCHANGE2-29-GATEIO-WALLET-CASHFLOW-HISTORY-2026-05-09` enabled only Gate.io
+`WALLET_CASHFLOW_HISTORY` through the existing exchange adapter boundary.
+Gate.io live submit and exchange-side cancel remain unsupported. Focused
+exchange/wallet cashflow tests, API typecheck, guardrails, docs parity, and
+diff check pass. The next Gate.io implementation gap is `LIVE_ORDER_SUBMIT`,
+which is money-impacting and must remain a separate protected-evidence task.
+
+Latest local implementation slice:
 `EXCHANGE2-28-GATEIO-TRADE-HISTORY-SNAPSHOT-2026-05-09` enabled only Gate.io
 `TRADE_HISTORY_SNAPSHOT` through the existing authenticated-read boundary.
 Gate.io wallet cashflow history, live submit, and exchange-side cancel remain

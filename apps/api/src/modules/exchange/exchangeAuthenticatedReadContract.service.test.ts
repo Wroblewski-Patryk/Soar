@@ -20,7 +20,7 @@ describe('exchangeAuthenticatedReadContract.service', () => {
     expect(supportsAuthenticatedExchangeRead('GATEIO', 'POSITIONS_SNAPSHOT')).toBe(true);
     expect(supportsAuthenticatedExchangeRead('GATEIO', 'OPEN_ORDERS_SNAPSHOT')).toBe(true);
     expect(supportsAuthenticatedExchangeRead('GATEIO', 'TRADE_HISTORY_SNAPSHOT')).toBe(true);
-    expect(supportsAuthenticatedExchangeRead('GATEIO', 'WALLET_CASHFLOW_HISTORY')).toBe(false);
+    expect(supportsAuthenticatedExchangeRead('GATEIO', 'WALLET_CASHFLOW_HISTORY')).toBe(true);
   });
 
   it('fails closed with explicit operation details when authenticated read is unsupported', () => {

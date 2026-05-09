@@ -119,14 +119,14 @@ Consumers must never infer:
 - `supported on SPOT => supported on FUTURES`
 - `supported on BINANCE => supported on another exchange`
 
-| Exchange | `BALANCE_PREVIEW` | `POSITIONS_SNAPSHOT` | `OPEN_ORDERS_SNAPSHOT` | `TRADE_HISTORY_SNAPSHOT` | `LIVE_ORDER_SUBMIT` | `LIVE_ORDER_CANCEL` | Source derivation |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `BINANCE` | supported | supported | supported | supported | supported | unsupported | authenticated-read contract + shared `LIVE_EXECUTION` capability + actual submit path through `orders.service.ts` / `liveOrderAdapter.service.ts`; no canonical exchange-cancel path yet |
-| `BYBIT` | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
-| `OKX` | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
-| `KRAKEN` | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
-| `COINBASE` | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
-| `GATEIO` | supported | supported | supported | supported | unsupported | unsupported | selected second-exchange target; balance preview, positions snapshot, open-orders snapshot, and trade-history snapshot are supported through the authenticated-read boundary, while wallet cashflow reads and execution remain fail-closed until exact operation adapters are implemented and verified |
+| Exchange | `BALANCE_PREVIEW` | `POSITIONS_SNAPSHOT` | `OPEN_ORDERS_SNAPSHOT` | `TRADE_HISTORY_SNAPSHOT` | `WALLET_CASHFLOW_HISTORY` | `LIVE_ORDER_SUBMIT` | `LIVE_ORDER_CANCEL` | Source derivation |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `BINANCE` | supported | supported | supported | supported | supported | supported | unsupported | authenticated-read contract + shared `LIVE_EXECUTION` capability + actual submit path through `orders.service.ts` / `liveOrderAdapter.service.ts`; no canonical exchange-cancel path yet |
+| `BYBIT` | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
+| `OKX` | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
+| `KRAKEN` | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
+| `COINBASE` | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
+| `GATEIO` | supported | supported | supported | supported | supported | unsupported | unsupported | selected second-exchange target; balance preview, positions snapshot, open-orders snapshot, trade-history snapshot, and wallet cashflow history are supported through authenticated-read boundaries, while execution remains fail-closed until exact operation adapters are implemented and verified |
 
 Runtime market-event boundary:
 
@@ -166,6 +166,10 @@ Runtime market-event boundary:
   authenticated-read boundary and trade-history snapshot service. This reads
   executed trades only and does not imply wallet cashflow history, live submit,
   or exchange-side cancel support.
+- `GATEIO` `WALLET_CASHFLOW_HISTORY` is supported through the canonical
+  exchange adapter boundary for ledger/performance analytics reads. This reads
+  deposits, withdrawals, transfers, fees, funding, and income-like account
+  history only and does not imply live submit or exchange-side cancel support.
 
 Canonical owner:
 

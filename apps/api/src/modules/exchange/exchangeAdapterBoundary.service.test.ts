@@ -154,23 +154,39 @@ describe('exchangeAdapterBoundary.service', () => {
     });
 
     await expect(
-      fetchSupportedExchangeWalletCashflowHistoryRaw(
+      submitLiveOrderThroughBoundary(
         {
-          exchange: 'GATEIO',
-          marketType: 'FUTURES',
-          apiKey: 'enc-gateio-key',
-          apiSecret: 'enc-gateio-secret',
-          currency: 'USDT',
+          userId: 'user-gateio-live-submit-from-balance-test',
+          bot: {
+            exchange: 'GATEIO',
+            marketType: 'FUTURES',
+            positionMode: 'ONE_WAY',
+            apiKeyId: 'gateio-key-1',
+            walletId: 'gateio-wallet-1',
+          },
+          order: {
+            symbol: 'BTCUSDT',
+            side: 'BUY',
+            type: 'LIMIT',
+            quantity: 0.01,
+            price: 100_000,
+          },
+          targetLeverage: 2,
         },
         {
           createAuthenticatedConnector: vi.fn(() => createConnector()),
+          fetchBalanceRaw: vi.fn(),
+          resolveLiveExecutionApiKey: vi.fn(),
+          createLiveOrderAdapter: vi.fn(),
+          enforceLivePretradeGuards: vi.fn(async () => undefined),
+          convergeLiveMarginAndLeverageIfNeeded: vi.fn(async () => undefined),
         }
       )
     ).rejects.toMatchObject({
       code: 'EXCHANGE_EXECUTION_CAPABILITY_UNSUPPORTED',
       details: {
         exchange: 'GATEIO',
-        operation: 'WALLET_CASHFLOW_HISTORY',
+        operation: 'LIVE_ORDER_SUBMIT',
       },
     });
   });
@@ -262,6 +278,47 @@ describe('exchangeAdapterBoundary.service', () => {
       symbol: 'BTCUSDT',
       since: Date.parse('2026-04-29T00:00:00.000Z'),
       limit: 50,
+    });
+    expect(connector.disconnect).toHaveBeenCalledOnce();
+  });
+
+  it('reads Gate.io wallet cashflow history through the authenticated read boundary', async () => {
+    const connector = createConnector();
+    const createAuthenticatedConnector = vi.fn(() => connector);
+
+    const cashflows = await fetchSupportedExchangeWalletCashflowHistoryRaw(
+      {
+        exchange: 'GATEIO',
+        marketType: 'FUTURES',
+        apiKey: 'enc-gateio-key',
+        apiSecret: 'enc-gateio-secret',
+        currency: 'USDT',
+        since: Date.parse('2026-04-29T00:00:00.000Z'),
+        limit: 20,
+      },
+      { createAuthenticatedConnector }
+    );
+
+    expect(cashflows).toEqual([
+      expect.objectContaining({
+        exchangeEventId: 'deposit-1',
+        direction: 'IN',
+        amount: 10,
+        currency: 'USDT',
+      }),
+    ]);
+    expect(createAuthenticatedConnector).toHaveBeenCalledWith(
+      expect.objectContaining({
+        exchange: 'GATEIO',
+        marketType: 'FUTURES',
+        apiKey: 'enc-gateio-key',
+        apiSecret: 'enc-gateio-secret',
+      })
+    );
+    expect(connector.fetchWalletCashflowHistory).toHaveBeenCalledWith({
+      currency: 'USDT',
+      since: Date.parse('2026-04-29T00:00:00.000Z'),
+      limit: 20,
     });
     expect(connector.disconnect).toHaveBeenCalledOnce();
   });
