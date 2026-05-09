@@ -30,17 +30,19 @@ passing or satisfied by evidence. The production release state remains blocked
 on protected `LIVEIMPORT-03` runtime readback, rollback proof auth, and RC Gate
 4 approval.
 
-The current exchange capability truth supports `BINANCE` only for
-`PAPER_PRICING_FEED`, `LIVE_EXECUTION`, and `API_KEY_PROBE`. The architecture
+The current exchange capability truth supports `BINANCE` for
+`PAPER_PRICING_FEED`, `LIVE_EXECUTION`, and `API_KEY_PROBE`, and `GATEIO` for
+public `MARKET_CATALOG` plus public `PAPER_PRICING_FEED`. The architecture
 requires new exchange support to be explicit by operation family and to fail
 closed where unsupported.
 
 On 2026-05-08 the user selected `GATEIO` as the second-exchange target. The
 first executed adapter line has deliberately stayed narrow: `GATEIO` is now a
 recognized exchange, public market catalog/market-data reads are implemented
-for the `FUTURES`/swap foundation, and all paper pricing, authenticated reads,
-live submit, and exchange-side cancel capabilities remain fail-closed unless an
-exact operation adapter is implemented and verified.
+for the `FUTURES`/swap foundation, and paper pricing is enabled through the
+existing public polling source. Authenticated reads, live submit, and
+exchange-side cancel capabilities remain fail-closed unless an exact operation
+adapter is implemented and verified.
 
 2026-05-09 status reconciliation:
 - Planning artifact: complete.
@@ -59,9 +61,11 @@ exact operation adapter is implemented and verified.
   from `LIVE_EXECUTION` and now allows Gate.io public symbol rules through the
   existing `MARKET_CATALOG`/public market-map boundary. This does not enable
   paper pricing, authenticated reads, live submit, or cancel.
-- Still blocked: enabling `PAPER_PRICING_FEED`, authenticated reads,
-  `LIVE_ORDER_SUBMIT`, or `LIVE_ORDER_CANCEL` for Gate.io until exact support
-  is implemented and production evidence exists.
+- Current paper support: `GATEIO` `PAPER_PRICING_FEED` is enabled for public
+  paper runtime through the existing market-stream polling source.
+- Still blocked: authenticated reads, `LIVE_ORDER_SUBMIT`, or
+  `LIVE_ORDER_CANCEL` for Gate.io until exact support is implemented and
+  production evidence exists.
 - Still requiring user/operator input: first live scope, whether authenticated
   readback should precede live submit, and whether exchange-side cancel belongs
   in the first live slice.
@@ -114,7 +118,7 @@ Acceptance criteria:
    - `MARKET_CATALOG`: supported for `GATEIO`.
    - public `FUTURES` ticker/candle source: implemented through existing
      exchange public market-data contracts and opt-in market-stream polling.
-   - `PAPER_PRICING_FEED`: unsupported.
+   - `PAPER_PRICING_FEED`: supported for public paper runtime.
    - `BALANCE_PREVIEW`: unsupported.
    - `POSITIONS_SNAPSHOT`: unsupported.
    - `OPEN_ORDERS_SNAPSHOT`: unsupported.
@@ -147,7 +151,7 @@ Acceptance criteria:
 
 ### Stage 4 - PAPER Runtime Support
 1. Enable paper pricing feed only after public market data and symbol rules are
-   stable.
+   stable. Done for `GATEIO` public `FUTURES` paper runtime.
 2. Add backtest/runtime parser parity coverage for the selected exchange and
    market type.
 3. Verify dashboard capability gating and wallet/bot create-edit UX.
@@ -214,12 +218,12 @@ Acceptance criteria:
 
 ## Result Report
 - Task summary: planning artifact created and reconciled after the deployed
-  Gate.io fail-closed/public foundation.
+  Gate.io public foundation and later Gate.io public paper pricing enablement.
 - Files changed: this planning document plus queue/context synchronization.
 - How tested: repository guardrails and docs parity checks for the planning
   slice.
-- What is incomplete: paper pricing, authenticated reads, live submit, live
-  cancel, production authenticated readback, rollback proof, and RC Gate 4
-  approval remain blocked until exact support/access/approval exists.
+- What is incomplete: authenticated reads, live submit, live cancel,
+  production authenticated readback, rollback proof, and RC Gate 4 approval
+  remain blocked until exact support/access/approval exists.
 - Next steps: close protected V1 evidence blockers; then choose the next exact
   Gate.io adapter operation without broad capability enablement.

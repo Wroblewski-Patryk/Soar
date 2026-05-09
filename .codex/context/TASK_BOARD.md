@@ -17,6 +17,15 @@ Last updated: 2026-05-09
 
 ## READY
 
+- [x] `EXCHANGE2-23-GATEIO-PAPER-PRICING-ENABLE-2026-05-09 feature(exchange): enable Gate.io public PAPER pricing`
+  - Scope: enabled only `GATEIO` `PAPER_PRICING_FEED` in the shared
+    capability matrix, updated API/Web wallet/bot/runtime regressions from
+    paper-blocked to paper-supported, and kept Gate.io
+    LIVE/authenticated/cancel capabilities fail-closed. Focused validation
+    passed for Web exchange/wallet/bot UI, API runtime loop, API wallet
+    create/update, and focused API bot Gate.io/placeholder gating. Evidence:
+    `docs/planning/exchange2-23-gateio-paper-pricing-enable-task-2026-05-09.md`.
+
 - [x] `V1-COMPLETION-GAP-AUDIT-2026-05-09 research: explain what blocks 100% V1 readiness`
   - Scope: created a concise evidence-backed completion gap report that
     separates implemented/proven work, implemented-but-not-production-proven

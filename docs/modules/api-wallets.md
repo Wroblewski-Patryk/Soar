@@ -45,10 +45,9 @@ Out of scope:
 - Key invariants:
   - LIVE wallet requires compatible API key from same exchange.
   - mode/exchange must be supported by capability map.
-  - Gate.io public catalog availability does not imply `PAPER` wallet support;
-    Gate.io wallet create/update remains fail-closed before persistence while
-    `PAPER_PRICING_FEED` is unsupported, including direct API update attempts
-    that try to move an existing wallet from Binance to Gate.io.
+  - Gate.io public `PAPER` wallet create/update is allowed through
+    `PAPER_PRICING_FEED`; Gate.io `LIVE` wallet create/update remains
+    fail-closed while `LIVE_EXECUTION` is unsupported.
   - Gate.io stored API keys may exist as placeholders, but wallet balance
     preview remains fail-closed before authenticated reads and does not mark
     the key as used while `BALANCE_PREVIEW` is unsupported.

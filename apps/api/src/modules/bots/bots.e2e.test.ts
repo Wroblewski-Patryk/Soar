@@ -590,6 +590,29 @@ describe('Bots module contract', () => {
     expect(persisted.isActive).toBe(false);
   });
 
+  it('activates Gate.io PAPER bot through supported public pricing capability', async () => {
+    const email = 'bots-gateio-paper-active@example.com';
+    const agent = await registerAndLogin(email);
+    const strategyId = await createStrategy(agent, 'Gate.io Paper Strategy');
+    const marketGroupId = await createMarketGroup(email, 'FUTURES', 'GATEIO', 'USDT');
+
+    const activeCreateRes = await agent.post('/dashboard/bots').send({
+      ...createPayload({ strategyId, marketGroupId }),
+      name: 'Gate.io Paper Bot',
+      isActive: true,
+      mode: 'PAPER',
+    });
+
+    expect(activeCreateRes.status).toBe(201);
+    expect(activeCreateRes.body).toMatchObject({
+      name: 'Gate.io Paper Bot',
+      exchange: 'GATEIO',
+      marketType: 'FUTURES',
+      mode: 'PAPER',
+      isActive: true,
+    });
+  });
+
   it('keeps fail-closed PAPER activation contract across all placeholder exchanges', async () => {
     const email = 'bots-placeholder-exchange-matrix@example.com';
     const agent = await registerAndLogin(email);

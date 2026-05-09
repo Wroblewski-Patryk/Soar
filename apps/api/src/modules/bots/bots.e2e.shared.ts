@@ -3,7 +3,7 @@ import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 import { setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 
-export const PLACEHOLDER_EXCHANGES = ['BYBIT', 'OKX', 'KRAKEN', 'COINBASE', 'GATEIO'] as const;
+export const PLACEHOLDER_EXCHANGES = ['BYBIT', 'OKX', 'KRAKEN', 'COINBASE'] as const;
 export const walletIdByMarketGroupId = new Map<string, string>();
 
 type WalletContext = {

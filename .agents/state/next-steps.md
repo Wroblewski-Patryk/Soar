@@ -4,6 +4,16 @@ Last updated: 2026-05-09
 
 ## Next Tiny Task
 
+Latest implementation slice:
+`EXCHANGE2-23-GATEIO-PAPER-PRICING-ENABLE-2026-05-09` enabled only Gate.io
+public `PAPER_PRICING_FEED` through the shared capability matrix and existing
+public market-stream source. Focused local validation passed. Gate.io
+`LIVE_EXECUTION`, `API_KEY_PROBE`, authenticated reads, live submit, and
+exchange-side cancel remain unsupported. Next step for this batch is
+commit/push and production build-info/public smoke; after deploy freshness, the
+next Gate.io gaps are authenticated read operations and live submit, not paper
+capability gating.
+
 Latest V1 completion gap report:
 `docs/operations/v1-completion-gap-report-2026-05-09.md`.
 Short answer: the app is not broadly missing; remaining 100% readiness is

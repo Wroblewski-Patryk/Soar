@@ -1833,6 +1833,13 @@ describe('RuntimeSignalLoop', () => {
         exchange: 'GATEIO',
         mode: 'PAPER',
       })
+    ).toBe(true);
+
+    expect(
+      supportsRuntimeSignalLoopExchange({
+        exchange: 'GATEIO',
+        mode: 'LIVE',
+      })
     ).toBe(false);
   });
 });

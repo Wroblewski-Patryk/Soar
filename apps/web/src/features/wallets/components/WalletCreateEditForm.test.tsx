@@ -358,8 +358,11 @@ describe('WalletCreateEditForm', () => {
     expect(baseCurrencyOptions).toEqual(expect.arrayContaining(['USD', 'USDC']));
   });
 
-  it('blocks Gate.io PAPER wallet submit while paper pricing capability is disabled', async () => {
+  it('submits Gate.io PAPER wallet when public paper pricing is supported', async () => {
     fetchApiKeysMock.mockResolvedValue([]);
+    createWalletMock.mockResolvedValue({
+      id: 'wallet-gateio-paper',
+    });
     fetchWalletMetadataMock.mockResolvedValue({
       exchange: 'GATEIO',
       marketTypes: ['FUTURES', 'SPOT'],
@@ -397,16 +400,21 @@ describe('WalletCreateEditForm', () => {
       target: { value: 'GATEIO' },
     });
 
-    expect(
-      await screen.findByText('Paper mode is not supported for this exchange yet.')
-    ).toBeInTheDocument();
-
     const form = container.querySelector('form');
     expect(form).not.toBeNull();
     fireEvent.submit(form as HTMLFormElement);
 
     await waitFor(() => {
-      expect(createWalletMock).not.toHaveBeenCalled();
+      expect(createWalletMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Gate.io Paper Wallet',
+          mode: 'PAPER',
+          exchange: 'GATEIO',
+          marketType: 'FUTURES',
+          baseCurrency: 'USDT',
+          apiKeyId: null,
+        })
+      );
     });
   });
 

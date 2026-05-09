@@ -13,6 +13,16 @@ Last updated: 2026-05-09
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-09 `EXCHANGE2-23-GATEIO-PAPER-PRICING-ENABLE-2026-05-09` enabled
+  Gate.io public PAPER pricing through the existing shared capability
+  contract. Gate.io PAPER wallet create/update and PAPER bot activation now
+  use the normal API/UI paths. The slice intentionally does not enable Gate.io
+  `LIVE_EXECUTION`, `API_KEY_PROBE`, authenticated reads, live submit, or
+  exchange-side cancel. Focused validation passed for Web
+  exchange/wallet/bot UI, API runtime loop, API wallet create/update, focused
+  API bot Gate.io/placeholder gating, API/Web typecheck, guardrails, docs
+  parity, and diff check. Evidence:
+  `docs/planning/exchange2-23-gateio-paper-pricing-enable-task-2026-05-09.md`.
 - 2026-05-09 `V1-COMPLETION-GAP-AUDIT-2026-05-09` produced a concise
   completion gap report for the user's "what is still missing before 100%"
   question. The report classifies remaining work as protected production

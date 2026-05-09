@@ -217,8 +217,8 @@ describe('Wallet CRUD and ownership contract', () => {
     });
   });
 
-  it('fails closed before updating PAPER wallet to Gate.io while paper pricing is unsupported', async () => {
-    const agent = await registerAndLogin(uniqueEmail('wallet-crud-gateio-update-blocked'));
+  it('updates PAPER wallet to Gate.io when public paper pricing is supported', async () => {
+    const agent = await registerAndLogin(uniqueEmail('wallet-crud-gateio-update'));
 
     const created = await agent.post('/dashboard/wallets').send({
       name: 'Paper wallet before Gate.io update',
@@ -234,19 +234,22 @@ describe('Wallet CRUD and ownership contract', () => {
       exchange: 'GATEIO',
     });
 
-    expect(updateRes.status).toBe(501);
-    expect(updateRes.body.error.details).toEqual({
-      code: 'EXCHANGE_NOT_IMPLEMENTED',
-      exchange: 'GATEIO',
-      capability: 'PAPER_PRICING_FEED',
-    });
-
-    const unchanged = await agent.get(`/dashboard/wallets/${created.body.id}`);
-    expect(unchanged.status).toBe(200);
-    expect(unchanged.body).toMatchObject({
+    expect(updateRes.status).toBe(200);
+    expect(updateRes.body).toMatchObject({
       id: created.body.id,
       mode: 'PAPER',
-      exchange: 'BINANCE',
+      exchange: 'GATEIO',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      paperInitialBalance: 5000,
+    });
+
+    const changed = await agent.get(`/dashboard/wallets/${created.body.id}`);
+    expect(changed.status).toBe(200);
+    expect(changed.body).toMatchObject({
+      id: created.body.id,
+      mode: 'PAPER',
+      exchange: 'GATEIO',
       marketType: 'FUTURES',
       baseCurrency: 'USDT',
       paperInitialBalance: 5000,

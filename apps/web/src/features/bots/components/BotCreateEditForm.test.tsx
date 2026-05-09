@@ -243,7 +243,7 @@ describe("BotCreateEditForm", () => {
     expect(screen.getByLabelText("Active")).toBeDisabled();
   });
 
-  it("disables active toggle for Gate.io while paper pricing capability is disabled", async () => {
+  it("allows active toggle for Gate.io paper wallets when paper pricing is supported", async () => {
     listStrategiesMock.mockResolvedValue([
       { id: "s-gateio", name: "Gate.io Strategy", interval: "1h", leverage: 2, config: {} },
     ]);
@@ -273,7 +273,7 @@ describe("BotCreateEditForm", () => {
       expect(screen.getByLabelText("Name")).toBeInTheDocument();
     });
 
-    expect(screen.getByLabelText("Active")).toBeDisabled();
+    expect(screen.getByLabelText("Active")).toBeEnabled();
   });
 
   it("submits wallet-first payload without legacy mode/paper fields", async () => {

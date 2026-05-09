@@ -111,8 +111,8 @@ describe('Wallets balance preview contract', () => {
     expect(metadataRes.body.baseCurrencies).toEqual(expect.arrayContaining(['USDT', 'USDC']));
   });
 
-  it('fails closed before persisting Gate.io PAPER wallet while paper pricing is unsupported', async () => {
-    const email = 'wallet-gateio-paper-create-blocked@example.com';
+  it('persists Gate.io PAPER wallet when public paper pricing is supported', async () => {
+    const email = 'wallet-gateio-paper-create@example.com';
     const agent = await registerAndLogin(email);
     const userId = await resolveUserIdByEmail(email);
 
@@ -125,13 +125,17 @@ describe('Wallets balance preview contract', () => {
       paperInitialBalance: 10_000,
     });
 
-    expect(createRes.status).toBe(501);
-    expect(createRes.body.error.details).toEqual({
-      code: 'EXCHANGE_NOT_IMPLEMENTED',
+    expect(createRes.status).toBe(201);
+    expect(createRes.body).toMatchObject({
+      name: 'Gate.io Paper Wallet',
+      mode: 'PAPER',
       exchange: 'GATEIO',
-      capability: 'PAPER_PRICING_FEED',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      paperInitialBalance: 10_000,
+      apiKeyId: null,
     });
-    await expect(prisma.wallet.count({ where: { userId } })).resolves.toBe(0);
+    await expect(prisma.wallet.count({ where: { userId, exchange: 'GATEIO' } })).resolves.toBe(1);
   });
 
   it('returns wallet balance preview for owned API key with allocation applied', async () => {

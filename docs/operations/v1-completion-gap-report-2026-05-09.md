@@ -71,8 +71,8 @@ work before paper/live bots can be enabled for that exchange.
 | Bots UI | yes | yes | public route gate only | missing UI clickthrough | Needs create/edit/activate/runtime/assistant audit. |
 | Reports/logs | yes | yes | public route gate only | missing UI clickthrough | Needs authenticated data and filter/pagination checks. |
 | Admin | scaffolding/current route scope exists | some local coverage implied by docs | public route gate only | missing admin clickthrough | Needs admin account and safe representative data. |
-| Gate.io public catalog/data | yes | yes | deployed foundation exists | public-only | This is foundation only, not paper/live. |
-| Gate.io paper bot support | no | fail-closed tests yes | n/a | n/a | Implement exact `PAPER_PRICING_FEED` support and prove target source. |
+| Gate.io public catalog/data | yes | yes | deployed foundation exists | public-only | Public market-data foundation is available. |
+| Gate.io paper bot support | yes after `EXCHANGE2-23` | focused API/Web tests pass | not yet deployed | n/a | Deploy and click through Gate.io PAPER wallet/bot setup for production evidence. |
 | Gate.io authenticated reads | no | fail-closed tests yes | n/a | n/a | Implement `API_KEY_PROBE`, `BALANCE_PREVIEW`, positions/open-orders/trade-history snapshots if in scope. |
 | Gate.io live order submit | no | fail-closed tests yes | n/a | n/a | Implement exact live submit adapter and protected evidence if in scope. |
 | Exchange-side cancel | no for all exchanges | fail-closed tests yes | n/a | n/a | Implement canonical cancel boundary before claiming support. |
@@ -129,26 +129,21 @@ work before paper/live bots can be enabled for that exchange.
      route/action matrix with PASS/FAIL/BLOCKED, screenshots or notes,
      console/network findings, and architecture-alignment findings.
 
-### P1 - Required For Gate.io To Be Usable Beyond Public Market Data
+### P1 - Required For Gate.io Beyond Public PAPER Runtime
 
-1. **Enable Gate.io paper pricing only after exact source evidence**
-   - Implement exact `GATEIO + FUTURES + PAPER_PRICING_FEED`.
-   - Prove target environment market-stream source behavior.
-   - Then unlock wallet/bot paper gating for Gate.io.
-
-2. **Implement Gate.io authenticated reads if product scope requires it**
+1. **Implement Gate.io authenticated reads if product scope requires it**
    - `API_KEY_PROBE`
    - `BALANCE_PREVIEW`
    - `POSITIONS_SNAPSHOT`
    - `OPEN_ORDERS_SNAPSHOT`
    - `TRADE_HISTORY_SNAPSHOT`
 
-3. **Implement Gate.io live submit only after paper/read readiness**
+2. **Implement Gate.io live submit only after paper/read readiness**
    - Exact submit support through `liveOrderAdapter.service.ts`.
    - Quantity/precision/min-notional/leverage/margin/fee handling.
    - Protected production evidence before live-money enablement.
 
-4. **Decide whether exchange-side cancel is V1 scope**
+3. **Decide whether exchange-side cancel is V1 scope**
    - Current matrix says `LIVE_ORDER_CANCEL` is unsupported for every
      exchange.
    - If live operation requires exchange-side cancel, this is real missing
@@ -209,7 +204,9 @@ implementation for Gate.io paper/live. If the goal is:
   production UI/runtime proof.
 - **Run Binance live bots safely:** not ready until `LIVEIMPORT-03`, rollback,
   restore/current-date, RC approval, and authenticated UI audit are complete.
-- **Run Gate.io paper bots:** not ready; `PAPER_PRICING_FEED` is not enabled.
+- **Run Gate.io paper bots:** implementation is now enabled through
+  `EXCHANGE2-23`; it still needs deployment freshness and authenticated
+  production UI clickthrough before calling it fully production-proven.
 - **Run Gate.io live bots:** not ready; authenticated reads/live submit/cancel
   are not implemented.
 

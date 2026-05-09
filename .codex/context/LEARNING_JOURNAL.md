@@ -98,26 +98,34 @@ node scripts/deploySmokeCheck.mjs --api-base-url https://api.soar.luckysparrow.c
 - Context: Gate.io exchange adapter validation attempted focused API Vitest
   runs through `apps/api/node_modules/.bin/vitest.CMD`.
 - Symptom: Vitest failed before loading tests with `ERR_MODULE_NOT_FOUND` for
-  `node_modules/.pnpm/vitest@.../node_modules/vite/index.js`.
+  `node_modules/.pnpm/vitest@.../node_modules/vite/index.js`. On this
+  workstation, `corepack pnpm` can also fail before command execution with
+  `Cannot find matching keyid` while verifying pnpm signatures.
 - Root cause: the local pnpm store/node_modules state is incomplete for the
   Vitest/Vite dependency edge; Corepack pnpm can also be blocked by signature
   verification on this workstation.
 - Guardrail: when this exact startup error appears, record focused Vitest as
   environment-blocked and pair the change with `apps/api` TypeScript,
   repository guardrails, docs parity, and `git diff --check`; rerun Vitest only
-  after dependency repair.
+  after dependency repair. When Corepack fails on pnpm signature verification
+  but local `node_modules/.bin` exists, run package-local binaries directly
+  from the package directory.
 - Preferred pattern:
 ```powershell
+.\node_modules\.bin\vitest.CMD run <focused-test-files>
 .\node_modules\.bin\tsc.CMD --noEmit
 node scripts/repoGuardrails.mjs
 node scripts/checkDocsParity.mjs
 git diff --check
 ```
-- Avoid: treating the missing `vite/index.js` startup error as a product-code
-  regression or repeatedly retrying the same Vitest command before dependency
-  repair.
+- Avoid: treating the missing `vite/index.js` startup error or Corepack
+  `Cannot find matching keyid` failure as a product-code regression, or
+  repeatedly retrying the same Corepack command before dependency repair.
 - Evidence: reproduced on 2026-05-08 in EXCHANGE2-02, EXCHANGE2-03, and
-  EXCHANGE2-04 focused API Vitest attempts.
+  EXCHANGE2-04 focused API Vitest attempts. On 2026-05-09 in `EXCHANGE2-23`,
+  `corepack pnpm` and `corepack pnpm@10.13.1` both failed with
+  `Cannot find matching keyid`, while package-local `vitest.CMD` and
+  `tsc.CMD` completed focused validation successfully.
 
 ### 2026-05-07 - Local API smoke requires current encryption key env names
 - Context: `V1UI-04` attempted an authenticated runtime UI smoke after

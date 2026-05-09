@@ -81,8 +81,9 @@ Out of scope:
 ## 6. Security and Risk Guardrails
 - LIVE preview requires linked API key context from authenticated backend.
 - Form enforces mode-switch cleanup and prevents stale cross-mode payload leakage.
-- Gate.io remains blocked for PAPER wallet save while `PAPER_PRICING_FEED`
-  is unsupported, even though public market catalog support exists.
+- Gate.io PAPER wallet save is allowed through the shared
+  `PAPER_PRICING_FEED` capability. Gate.io LIVE wallet save remains blocked
+  while `LIVE_EXECUTION` is unsupported.
 - Delete flow respects backend conflict contract when wallet is linked to active bots.
 - Paper reset action is `PAPER`-only in UI and must respect backend fail-closed guards (`open positions` / `active open orders` block reset).
 

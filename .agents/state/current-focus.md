@@ -16,6 +16,13 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-09 implementation update: `EXCHANGE2-23` enabled Gate.io public PAPER
+pricing through the shared capability matrix and existing public market-stream
+source. The scope is intentionally limited to paper pricing: Gate.io LIVE
+execution, API-key probe, authenticated reads, live submit, and exchange-side
+cancel remain unsupported. Evidence:
+`docs/planning/exchange2-23-gateio-paper-pricing-enable-task-2026-05-09.md`.
+
 2026-05-09 current production handoff: latest observed production Web
 build-info is `e8cd748e80b8693087e01beb21b0085ace747c49`. Public API/Web
 smoke passes, and no-secret final V1 preflight public checks pass while the

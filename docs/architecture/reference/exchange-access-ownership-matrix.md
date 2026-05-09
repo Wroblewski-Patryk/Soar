@@ -1,7 +1,7 @@
 # Exchange Access Ownership Matrix
 
 Status: Active  
-Updated: 2026-04-25
+Updated: 2026-05-09
 
 ## Purpose
 
@@ -64,7 +64,7 @@ Current compatibility-stage support:
 | Exchange | `MARKET_CATALOG` | `PAPER_PRICING_FEED` | `LIVE_EXECUTION` | `API_KEY_PROBE` |
 | --- | --- | --- | --- | --- |
 | `BINANCE` | supported | supported | supported | supported |
-| `GATEIO` | supported | unsupported | unsupported | unsupported |
+| `GATEIO` | supported | supported | unsupported | unsupported |
 | `BYBIT` | unsupported | unsupported | unsupported | unsupported |
 | `OKX` | unsupported | unsupported | unsupported | unsupported |
 | `KRAKEN` | unsupported | unsupported | unsupported | unsupported |
@@ -138,10 +138,12 @@ Runtime market-event boundary:
   resolves to CCXT `swap` for perpetual futures
 - Gate.io public symbol rules are available through
   `exchangeSymbolRules.service.ts` when `MARKET_CATALOG` is supported; this
-  is public metadata only and does not imply paper pricing, authenticated
-  reads, or live execution support
-- `GATEIO` `PAPER_PRICING_FEED` remains unsupported until that source publishes
-  ticker and candle events with runtime evidence
+  is public metadata only and does not imply authenticated reads or live
+  execution support
+- `GATEIO` `PAPER_PRICING_FEED` is supported for public `FUTURES` paper
+  runtime after the approved exchange-owned polling source emitted real ticker
+  and final-candle events. This is public pricing only and does not imply
+  authenticated reads, live order submit, or exchange-side cancel support.
 
 Canonical owner:
 

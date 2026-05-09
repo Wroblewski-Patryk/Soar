@@ -90,6 +90,8 @@ pnpm --filter api test -- src/modules/market-stream/binanceStream.service.test.t
 - Gate.io worker source selection is regression-locked as explicit opt-in via
   `MARKET_STREAM_EXCHANGE=GATEIO`; default and invalid values keep the Binance
   worker path.
-- Gate.io paper pricing capability remains disabled until runtime evidence
-  proves the opt-in polling worker path in a target environment.
+- Gate.io paper pricing capability is enabled through the shared
+  `PAPER_PRICING_FEED` contract after source smoke evidence. The opt-in
+  polling worker path remains selected with `MARKET_STREAM_EXCHANGE=GATEIO`;
+  Binance remains the default worker source.
 - Consider persistent fan-out/backpressure strategy if concurrency grows significantly.
