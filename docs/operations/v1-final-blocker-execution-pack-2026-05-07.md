@@ -9,9 +9,9 @@
   use local `HEAD` as the protected evidence candidate until that SHA is
   actually exposed by production build-info.
 - Latest verified Coolify deploy:
-  `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`
+  `ba3d852d5126b625a8cf702ab647d5c644d86f9c`
 - Latest no-secret final preflight:
-  `docs/operations/v1-final-preflight-c50e1e7c-2026-05-09.md`
+  `docs/operations/v1-final-preflight-ba3d852d-2026-05-09.md`
 
 ## Purpose
 This pack lists the exact remaining commands needed to turn the current
@@ -50,7 +50,7 @@ midnight drift from producing stale evidence during a late release session.
 
 ```powershell
 $releaseDate = Get-Date -Format yyyy-MM-dd
-$expectedSha = "c50e1e7cf1e37d9c799031cacbb30a834f57e81d"
+$expectedSha = "ba3d852d5126b625a8cf702ab647d5c644d86f9c"
 ```
 
 Replace `$expectedSha` with `git rev-parse HEAD` only when the currently
@@ -232,9 +232,9 @@ Required result:
 ## Current Known Blockers
 - `LIVEIMPORT-03` authenticated runtime readback is missing.
 - Current verified deployed candidate is
-  `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`; build-info and public API/Web
+  `ba3d852d5126b625a8cf702ab647d5c644d86f9c`; build-info and public API/Web
   smoke pass for this SHA. The current no-secret final preflight is
-  `docs/operations/v1-final-preflight-c50e1e7c-2026-05-09.md` and is
+  `docs/operations/v1-final-preflight-ba3d852d-2026-05-09.md` and is
   correctly `BLOCKED` on protected auth/operator evidence.
 - The execution pack now uses a single `$releaseDate` and passes it to
   date-aware preflight, restore drill, rollback proof, RC status/sign-off,

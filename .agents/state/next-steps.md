@@ -57,8 +57,8 @@ Completed for that candidate:
   production build-info
 - public/unauthenticated production UI access refreshed for the same deployed
   batch
-- pushed evidence batch ending at `1f1d9c12`, but production deploy freshness
-  for that SHA remains blocked
+- historical pushed evidence lag ending at `1f1d9c12` is closed by later
+  build-info progress
 
 Evidence:
 - `docs/planning/dashboard-runtime-current-state-aggregate-task-2026-05-09.md`
@@ -86,11 +86,11 @@ access, or local regression suites as completion evidence for `LIVEIMPORT-03`,
 rollback proof, restore proof, RC approval, or authenticated module clickthrough.
 BOTMULTI-09 is also current against production build-info:
 `f3aaa3dca6cf4d4b199372563886165638391a77` is contained in deployed
-`c50e1e7cf1e37d9c799031cacbb30a834f57e81d`, but BOTMULTI remains open until
+`ba3d852d5126b625a8cf702ab647d5c644d86f9c`, but BOTMULTI remains open until
 protected runtime/V1 gate evidence is collected.
-Use the concise protected operator handoff at
-`docs/operations/v1-protected-operator-handoff-3c5da343-2026-05-09.md` before
-running the full blocker pack.
+Use `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md` and the
+current protected access readiness artifact before running the full blocker
+pack.
 
 UX/UI process note: future UX/UI work must start with the autonomous memory
 preflight now documented in `docs/governance/user-feedback-loop.md`,
@@ -451,14 +451,14 @@ changes are irrelevant to the protected readback.
    enforcement, strict RC approval evidence enforcement, restore-context
    preflight alignment, dashboard runtime aggregate evidence, and current
    protected operator handoff at
-   `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`. Do not use GitHub Actions. If a
+   `ba3d852d5126b625a8cf702ab647d5c644d86f9c`. Do not use GitHub Actions. If a
    future step depends on a pushed commit being deployed, wait for build-info
    before continuing; an operator can speed this up with Coolify dashboard
    force deploy, or with deploy webhook/API token if those secrets are
    available outside the repository.
 1. If production credentials or ops auth are available, execute
    `ops:liveimport:readback` with
-   `--expected-sha c50e1e7cf1e37d9c799031cacbb30a834f57e81d`, unless a newer
+   `--expected-sha ba3d852d5126b625a8cf702ab647d5c644d86f9c`, unless a newer
    intended code/tooling candidate has first been deployed and proven by
    production build-info. Record redacted `LIVEIMPORT-03` evidence only after
    the protected readback succeeds. The latest names-only prerequisite sweep
@@ -490,7 +490,7 @@ changes are irrelevant to the protected readback.
    - Final release gate must run without `--dry-run` and with the
      build-info-proven expected SHA plus the deployed web base URL so
      build-info freshness is enforced inside the gate. Use
-     `c50e1e7cf1e37d9c799031cacbb30a834f57e81d` unless a newer intended
+     `ba3d852d5126b625a8cf702ab647d5c644d86f9c` unless a newer intended
      code/tooling candidate has first been deployed and proven by production
      build-info.
 5. If the active queue is empty, run a planning-status sweep before saying

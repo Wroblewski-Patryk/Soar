@@ -20,6 +20,12 @@ Last updated: 2026-05-09
   build-info/public smoke PASS while remaining correctly `BLOCKED` on
   protected/formal V1 evidence. Evidence:
   `docs/planning/deploy-freshness-ba3d852d-task-2026-05-09.md`.
+- 2026-05-09 `OPEN-PROTECTED-BACKLOG-BA3D852D-SYNC-2026-05-09` retargeted the
+  active protected V1 backlog and final blocker pack to deployed
+  `ba3d852d5126b625a8cf702ab647d5c644d86f9c` without closing protected
+  evidence. `LIVEIMPORT-03`, rollback proof, restore proof, RC approval, and
+  authenticated/admin UI audit remain blocked on operator inputs. Evidence:
+  `docs/planning/open-protected-backlog-ba3d852d-sync-task-2026-05-09.md`.
 - 2026-05-09 `DEPLOY-FRESHNESS-010B4F8B-2026-05-09` verified that the
   three-commit Gate.io source batch ending at
   `010b4f8b6abfaf4c24d26550eb4761215d119f21` is production-current. Public

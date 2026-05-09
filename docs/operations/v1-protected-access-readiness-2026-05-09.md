@@ -5,7 +5,7 @@
 - Environment: local operator shell
 - Evidence date: 2026-05-09
 - Deployed code/tooling candidate:
-  `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`
+  `ba3d852d5126b625a8cf702ab647d5c644d86f9c`
 
 ## Purpose
 This readiness check confirms whether the current shell has the protected
@@ -63,9 +63,9 @@ The current shell cannot honestly execute:
 - authenticated/admin production UI clickthrough
 
 2026-05-09 refresh: production build-info and no-secret public checks are
-current for `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`. This refresh does
-not change the protected access result; the required auth/context names are
-still missing in this shell.
+current for `ba3d852d5126b625a8cf702ab647d5c644d86f9c`. This refresh does not
+change the protected access result; the required auth/context names are still
+missing in this shell.
 
 ## Required Inputs
 
