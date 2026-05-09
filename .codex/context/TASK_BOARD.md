@@ -17,6 +17,14 @@ Last updated: 2026-05-09
 
 ## READY
 
+- [x] `EXCHANGE2-26-GATEIO-POSITIONS-SNAPSHOT-2026-05-09 feature(exchange): enable Gate.io positions snapshot`
+  - Scope: enable only `GATEIO` `POSITIONS_SNAPSHOT` through the existing
+    authenticated-read boundary and positions exchange-snapshot route, while
+    keeping Gate.io open-orders/trade-history/live/cancel unsupported. Focused
+    exchange tests, positions e2e, authenticated snapshot service tests, API
+    typecheck, guardrails, docs parity, and diff check passed. Evidence:
+    `docs/planning/exchange2-26-gateio-positions-snapshot-task-2026-05-09.md`.
+
 - [x] `EXCHANGE2-25-GATEIO-BALANCE-PREVIEW-2026-05-09 feature(exchange): enable Gate.io balance preview`
   - Scope: enable only `GATEIO` `BALANCE_PREVIEW` through the existing
     authenticated-read boundary and wallet preview route, while keeping Gate.io

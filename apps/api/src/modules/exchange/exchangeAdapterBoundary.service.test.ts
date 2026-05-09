@@ -154,7 +154,7 @@ describe('exchangeAdapterBoundary.service', () => {
     });
 
     await expect(
-      fetchSupportedExchangePositionsRaw(
+      fetchSupportedExchangeOpenOrdersRaw(
         {
           exchange: 'GATEIO',
           marketType: 'FUTURES',
@@ -169,9 +169,33 @@ describe('exchangeAdapterBoundary.service', () => {
       code: 'EXCHANGE_EXECUTION_CAPABILITY_UNSUPPORTED',
       details: {
         exchange: 'GATEIO',
-        operation: 'POSITIONS_SNAPSHOT',
+        operation: 'OPEN_ORDERS_SNAPSHOT',
       },
     });
+  });
+
+  it('reads Gate.io positions through the authenticated read boundary', async () => {
+    const connector = createConnector();
+    const createAuthenticatedConnector = vi.fn(() => connector);
+
+    const positions = await fetchSupportedExchangePositionsRaw(
+      {
+        exchange: 'GATEIO',
+        marketType: 'FUTURES',
+        apiKey: 'enc-gateio-key',
+        apiSecret: 'enc-gateio-secret',
+      },
+      { createAuthenticatedConnector }
+    );
+
+    expect(positions).toEqual([{ symbol: 'BTC/USDT:USDT', contracts: 1 }]);
+    expect(createAuthenticatedConnector).toHaveBeenCalledWith({
+      exchange: 'GATEIO',
+      marketType: 'FUTURES',
+      apiKey: 'enc-gateio-key',
+      apiSecret: 'enc-gateio-secret',
+    });
+    expect(connector.disconnect).toHaveBeenCalledOnce();
   });
 
   it('fails closed for Gate.io live order submit before resolving credentials or connectors', async () => {

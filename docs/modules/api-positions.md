@@ -5,7 +5,7 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/positions`
 - Owner: backend/trading-domain
-- Last updated: 2026-05-08
+- Last updated: 2026-05-09
 - Related planning task: `RUNTIME-AUDIT-23`
 
 ## 1. Purpose and Scope
@@ -50,10 +50,10 @@ Out of scope:
   3. Fetch external positions/open orders.
   4. Normalize payload shape.
   5. Update `lastUsed` metadata for key only after a supported snapshot read.
-- Gate.io stored keys may exist as placeholders, but explicit snapshot reads
-  fail closed with `EXCHANGE_EXECUTION_CAPABILITY_UNSUPPORTED` while
-  `POSITIONS_SNAPSHOT`, `OPEN_ORDERS_SNAPSHOT`, or `TRADE_HISTORY_SNAPSHOT`
-  are disabled; `lastUsed` remains unchanged on rejection.
+- Gate.io positions snapshots are supported through the authenticated-read
+  boundary. Gate.io open-orders and trade-history snapshots remain fail-closed
+  until exact operation support is implemented; `lastUsed` remains unchanged
+  on unsupported read rejection.
 - Takeover status flow:
   - classify open exchange-synced positions by ownership/management/sync-state.
   - canonical management truth is wallet-owned:

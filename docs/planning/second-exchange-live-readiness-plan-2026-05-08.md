@@ -68,7 +68,10 @@ adapter is implemented and verified.
   exchange-aware probe service. This is credential validation only.
 - Current balance preview support: `GATEIO` `BALANCE_PREVIEW` is enabled for
   the existing wallet preview route through the authenticated-read boundary.
-- Still blocked: authenticated position/open-order/trade-history reads,
+- Current positions snapshot support: `GATEIO` `POSITIONS_SNAPSHOT` is enabled
+  for the existing positions exchange-snapshot route through the
+  authenticated-read boundary.
+- Still blocked: authenticated open-order/trade-history reads,
   `LIVE_ORDER_SUBMIT`, or
   `LIVE_ORDER_CANCEL` for Gate.io until exact support is implemented and
   production evidence exists.
@@ -126,7 +129,7 @@ Acceptance criteria:
      exchange public market-data contracts and opt-in market-stream polling.
    - `PAPER_PRICING_FEED`: supported for public paper runtime.
    - `BALANCE_PREVIEW`: supported.
-   - `POSITIONS_SNAPSHOT`: unsupported.
+   - `POSITIONS_SNAPSHOT`: supported.
    - `OPEN_ORDERS_SNAPSHOT`: unsupported.
    - `TRADE_HISTORY_SNAPSHOT`: unsupported.
    - `LIVE_ORDER_SUBMIT`: unsupported.
@@ -145,8 +148,8 @@ Acceptance criteria:
 2. Implement market metadata and symbol-rule normalization through existing
    exchange module contracts.
 3. API-key probe and balance preview are implemented for the target exchange.
-4. Implement positions snapshot and open-orders snapshot only if exact support
-   is approved.
+4. Positions snapshot is implemented for the target exchange. Implement
+   open-orders snapshot only if exact support is approved.
 
 Acceptance criteria:
 - no feature module creates authenticated clients directly.

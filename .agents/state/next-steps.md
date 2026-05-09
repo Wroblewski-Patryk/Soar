@@ -5,6 +5,13 @@ Last updated: 2026-05-09
 ## Next Tiny Task
 
 Latest local implementation slice:
+`EXCHANGE2-26-GATEIO-POSITIONS-SNAPSHOT-2026-05-09` enabled only Gate.io
+`POSITIONS_SNAPSHOT` through the existing authenticated-read boundary and
+positions exchange-snapshot route. Gate.io open-orders/trade-history, live
+submit, and exchange-side cancel remain unsupported. The next exact Gate.io
+authenticated-read gap is `OPEN_ORDERS_SNAPSHOT`.
+
+Latest local implementation slice:
 `EXCHANGE2-25-GATEIO-BALANCE-PREVIEW-2026-05-09` enabled only Gate.io
 `BALANCE_PREVIEW` through the existing authenticated-read boundary and wallet
 preview route. Gate.io positions/open-orders/trade-history, live submit, and

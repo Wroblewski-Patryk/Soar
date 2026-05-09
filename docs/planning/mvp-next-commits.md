@@ -7,6 +7,14 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `EXCHANGE2-26-GATEIO-POSITIONS-SNAPSHOT-2026-05-09 feature(exchange): enable Gate.io positions snapshot`
+  - 2026-05-09: Enable only `GATEIO` `POSITIONS_SNAPSHOT` through the existing
+    authenticated-read boundary and positions exchange-snapshot route, while
+    keeping Gate.io open-orders/trade-history/live/cancel unsupported. Focused
+    exchange tests, positions e2e, authenticated snapshot service tests, API
+    typecheck, guardrails, docs parity, and diff check passed. Evidence:
+    `docs/planning/exchange2-26-gateio-positions-snapshot-task-2026-05-09.md`.
+
 - [x] `EXCHANGE2-25-GATEIO-BALANCE-PREVIEW-2026-05-09 feature(exchange): enable Gate.io balance preview`
   - 2026-05-09: Enable only `GATEIO` `BALANCE_PREVIEW` through the existing
     authenticated-read boundary and wallet preview route, while keeping Gate.io

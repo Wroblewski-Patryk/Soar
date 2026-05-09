@@ -13,6 +13,13 @@ Last updated: 2026-05-09
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-09 `EXCHANGE2-26-GATEIO-POSITIONS-SNAPSHOT-2026-05-09` enabled
+  Gate.io positions snapshot through the existing authenticated-read boundary.
+  Scope is limited to `POSITIONS_SNAPSHOT`; Gate.io open-orders, trade-history,
+  live submit, and exchange-side cancel remain unsupported. Focused exchange
+  tests, positions e2e, authenticated snapshot service tests, API typecheck,
+  guardrails, docs parity, and diff check passed. Evidence:
+  `docs/planning/exchange2-26-gateio-positions-snapshot-task-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-25-GATEIO-BALANCE-PREVIEW-2026-05-09` enabled Gate.io
   wallet balance preview through the existing authenticated-read boundary.
   Scope is limited to `BALANCE_PREVIEW`; Gate.io positions/open-orders,
