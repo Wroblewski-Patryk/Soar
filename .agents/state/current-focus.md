@@ -17,16 +17,17 @@ contracts synchronized.
 ## Current Delivery Stage
 
 2026-05-09 current production handoff: production Web build-info is current at
-`4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`. Public API `/health`, API
-`/ready`, Web `/`, and public/unauthenticated UI access pass; protected
-dashboard/admin routes redirect to `/auth/login` without a session. Evidence:
-`docs/operations/deploy-freshness-4ee1672e-2026-05-09.md`,
-`docs/operations/v1-final-preflight-4ee1672e-2026-05-09.md`, and
+`55469cdc2ad888b822c8cdbd86660c4ed5166e1c`. Public API `/health`, API
+`/ready`, and Web `/` pass after the source-of-truth synchronization batch.
+The latest public/unauthenticated UI access refresh remains the
+`4ee1672e` evidence because this batch did not change runtime UI behavior;
+full authenticated/admin production UI module clickthrough remains blocked
+until valid production app access is available. Evidence:
+`docs/operations/deploy-freshness-55469cdc-2026-05-09.md`,
+`docs/operations/v1-final-preflight-55469cdc-2026-05-09.md`, and
 `docs/operations/prod-ui-public-access-clickthrough-4ee1672e-2026-05-09.md`.
-Full authenticated/admin production UI module clickthrough remains blocked
-until valid production app access is available.
 
-2026-05-09 no-secret V1 preflight refresh: deployed `4ee1672e` passes
+2026-05-09 no-secret V1 preflight refresh: deployed `55469cdc` passes
 build-info and public API/Web smoke, but the current release posture is
 `BLOCKED` on missing live-import auth, rollback auth, production DB restore
 context for the active evidence date, failed/open RC evidence, missing
@@ -35,7 +36,7 @@ rollback proof.
 
 2026-05-09 activation refresh: production activation plan and activation
 evidence audit are fresh `NO-GO` artifacts for 2026-05-09 and now target
-current production build-info `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`.
+current production build-info `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`.
 V1 remains blocked on protected auth, production DB restore context for the
 active evidence date, failed/open RC evidence, `LIVEIMPORT-03`, and rollback
 proof.
@@ -62,8 +63,8 @@ protected auth and DB/Coolify context.
 2026-05-09 dashboard runtime deploy freshness: the dashboard runtime aggregate
 behavior source is `3c5da34371e22aecb1a7aff0a185018870d35cec`, and the current
 production docs/evidence handoff deploy is
-`4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`, which includes that runtime
-behavior. Continue protected evidence work from `4ee1672e` unless a newer
+`55469cdc2ad888b822c8cdbd86660c4ed5166e1c`, which includes that runtime
+behavior. Continue protected evidence work from `55469cdc` unless a newer
 intended code/tooling candidate is first deployed and proven by production
 build-info.
 
@@ -109,15 +110,15 @@ operator-authenticated environment.
 `LIVEIMPORT-03` now has one canonical read-only evidence command. First verify
 the chosen deployed candidate through production build-info, then pass that
 same SHA to the collector. Current protected readback target is deployed
-`4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`:
-`$releaseDate = Get-Date -Format yyyy-MM-dd; $expectedSha = "4ee1672e7a3ac6d9b549b4d461120afd7f89d68f"; pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --timeout-seconds 900 --interval-seconds 30; pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output "docs/operations/liveimport-03-prod-readback-$releaseDate.json"`.
+`55469cdc2ad888b822c8cdbd86660c4ed5166e1c`:
+`$releaseDate = Get-Date -Format yyyy-MM-dd; $expectedSha = "55469cdc2ad888b822c8cdbd86660c4ed5166e1c"; pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --timeout-seconds 900 --interval-seconds 30; pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output "docs/operations/liveimport-03-prod-readback-$releaseDate.json"`.
 The collector is hardened to fail closed when no RUNNING session produces a
 runtime positions payload, so no-session output cannot be treated as V1
 evidence.
 
 Before running protected evidence commands, use the read-only aggregate
 preflight:
-`pnpm run ops:release:v1:preflight -- --expected-sha 4ee1672e7a3ac6d9b549b4d461120afd7f89d68f --today 2026-05-09`.
+`pnpm run ops:release:v1:preflight -- --expected-sha 55469cdc2ad888b822c8cdbd86660c4ed5166e1c --today 2026-05-09`.
 It verifies the build-info-proven production SHA, reports missing prerequisite
 env names, and classifies current release evidence blockers without creating
 protected artifacts.
@@ -137,7 +138,7 @@ Production restore drill was previously closed as PASS through approved
 Coolify terminal access for the 2026-05-08 evidence date. Evidence:
 `docs/operations/v1-restore-drill-prod-2026-05-08T15-16-24Z.md`. Latest
 verified public/no-secret deploy is
-`4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`.
+`55469cdc2ad888b822c8cdbd86660c4ed5166e1c`.
 Remaining V1 release blockers are protected Soar application/operator auth for
 `LIVEIMPORT-03`, rollback proof auth, and real RC Gate 4 approval.
 

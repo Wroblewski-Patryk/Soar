@@ -450,6 +450,16 @@ Operational queue for one-task execution runs.
     that still keep release readiness blocked. Evidence:
     `docs/planning/system-health-4ee1672e-topline-sync-task-2026-05-09.md`.
 
+- [x] `DEPLOY-FRESHNESS-55469CDC-2026-05-09 release: verify source-of-truth sync batch deployment`
+  - 2026-05-09: Pushed the 10-commit source-of-truth sync batch ending at
+    `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`, waited until production Web
+    build-info exposed that SHA, ran safe public API/Web smoke with
+    `--no-workers`, and refreshed no-secret final V1 preflight for the same
+    SHA. Build-info and public smoke pass; protected V1 evidence remains
+    blocked. Evidence:
+    `docs/planning/deploy-freshness-55469cdc-task-2026-05-09.md` and
+    `docs/operations/deploy-freshness-55469cdc-2026-05-09.md`.
+
 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
   - 2026-05-09: Names-only readiness check found missing live-import auth,
     rollback auth, and production DB/Coolify restore context in the current

@@ -5,7 +5,7 @@ Last updated: 2026-05-09
 ## Next Tiny Task
 
 Current deployed production build-info candidate:
-`4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`.
+`55469cdc2ad888b822c8cdbd86660c4ed5166e1c`.
 
 Runtime/dashboard behavior source candidate:
 `3c5da34371e22aecb1a7aff0a185018870d35cec`.
@@ -18,6 +18,8 @@ Completed for that candidate:
 - public/unauthenticated production UI access and auth-gate refresh
 - protected operator handoff docs pushed as one batch and verified on
   production build-info
+- source-of-truth synchronization batch pushed as one group and verified on
+  production build-info
 
 Evidence:
 - `docs/planning/dashboard-runtime-current-state-aggregate-task-2026-05-09.md`
@@ -28,6 +30,8 @@ Evidence:
 - `docs/operations/deploy-freshness-4ee1672e-2026-05-09.md`
 - `docs/operations/v1-final-preflight-4ee1672e-2026-05-09.md`
 - `docs/operations/prod-ui-public-access-clickthrough-4ee1672e-2026-05-09.md`
+- `docs/operations/deploy-freshness-55469cdc-2026-05-09.md`
+- `docs/operations/v1-final-preflight-55469cdc-2026-05-09.md`
 
 Next executable V1 steps are protected and remain blocked until the operator
 supplies authenticated/admin production app access, live-import auth, rollback
@@ -37,7 +41,7 @@ access, or local regression suites as completion evidence for `LIVEIMPORT-03`,
 rollback proof, restore proof, RC approval, or authenticated module clickthrough.
 BOTMULTI-09 is also current against production build-info:
 `f3aaa3dca6cf4d4b199372563886165638391a77` is contained in deployed
-`4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`, but BOTMULTI remains open until
+`55469cdc2ad888b822c8cdbd86660c4ed5166e1c`, but BOTMULTI remains open until
 protected runtime/V1 gate evidence is collected.
 Use the concise protected operator handoff at
 `docs/operations/v1-protected-operator-handoff-3c5da343-2026-05-09.md` before
@@ -237,7 +241,7 @@ it confirms public route reachability and unauthenticated auth gates only.
 The final blocker execution pack now separates the deployed code/tooling
 candidate from local evidence-only commits. After the docs/evidence handoff
 batch was pushed and deployed, use
-`4ee1672e7a3ac6d9b549b4d461120afd7f89d68f` as `$expectedSha` for protected
+`55469cdc2ad888b822c8cdbd86660c4ed5166e1c` as `$expectedSha` for protected
 evidence until another intended candidate is deployed and proven by build-info.
 Evidence:
 `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
@@ -272,7 +276,7 @@ been removed because the project does not use paid GitHub Actions and workflow
 attempts create unwanted email noise.
 
 ```powershell
-$expectedSha = "4ee1672e7a3ac6d9b549b4d461120afd7f89d68f"
+$expectedSha = "55469cdc2ad888b822c8cdbd86660c4ed5166e1c"
 pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --timeout-seconds 900 --interval-seconds 15
 ```
 
@@ -348,7 +352,7 @@ Canonical command once auth is available:
 
 ```powershell
 $releaseDate = Get-Date -Format yyyy-MM-dd
-$expectedSha = "4ee1672e7a3ac6d9b549b4d461120afd7f89d68f"
+$expectedSha = "55469cdc2ad888b822c8cdbd86660c4ed5166e1c"
 pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output "docs/operations/liveimport-03-prod-readback-$releaseDate.json"
 ```
 
@@ -387,14 +391,14 @@ changes are irrelevant to the protected readback.
    enforcement, strict RC approval evidence enforcement, restore-context
    preflight alignment, dashboard runtime aggregate evidence, and current
    protected operator handoff at
-   `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`. Do not use GitHub Actions. If a
+   `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`. Do not use GitHub Actions. If a
    future step depends on a pushed commit being deployed, wait for build-info
    before continuing; an operator can speed this up with Coolify dashboard
    force deploy, or with deploy webhook/API token if those secrets are
    available outside the repository.
 1. If production credentials or ops auth are available, execute
    `ops:liveimport:readback` with
-   `--expected-sha 4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`, unless a newer
+   `--expected-sha 55469cdc2ad888b822c8cdbd86660c4ed5166e1c`, unless a newer
    intended code/tooling candidate has first been deployed and proven by
    production build-info. Record redacted `LIVEIMPORT-03` evidence only after
    the protected readback succeeds. The latest names-only prerequisite sweep
@@ -426,7 +430,7 @@ changes are irrelevant to the protected readback.
    - Final release gate must run without `--dry-run` and with the
      build-info-proven expected SHA plus the deployed web base URL so
      build-info freshness is enforced inside the gate. Use
-     `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f` unless a newer intended
+     `55469cdc2ad888b822c8cdbd86660c4ed5166e1c` unless a newer intended
      code/tooling candidate has first been deployed and proven by production
      build-info.
 5. If the active queue is empty, run a planning-status sweep before saying

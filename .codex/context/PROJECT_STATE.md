@@ -124,6 +124,14 @@ Last updated: 2026-05-09
   `LIVEIMPORT-03` target sync, and the protected V1 blockers before historical
   rollout notes. Evidence:
   `docs/planning/system-health-4ee1672e-topline-sync-task-2026-05-09.md`.
+- 2026-05-09 `DEPLOY-FRESHNESS-55469CDC-2026-05-09` pushed the 10-commit
+  source-of-truth synchronization batch and verified production freshness. Web
+  build-info reached `55469cdc2ad888b822c8cdbd86660c4ed5166e1c` on attempt
+  21, public API/Web smoke passed, and no-secret final V1 preflight for this
+  SHA reports build-info/public smoke PASS with V1 still `BLOCKED` on
+  protected auth, production DB restore context, failed RC evidence, missing
+  `LIVEIMPORT-03`, stale restore evidence, and stale rollback proof. Evidence:
+  `docs/operations/deploy-freshness-55469cdc-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-20` reconciled the second-exchange plan with the
   deployed Gate.io foundation. The plan is now complete as a planning artifact
   and records the exact current support boundary: Gate.io public catalog and

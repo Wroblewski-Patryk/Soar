@@ -117,6 +117,14 @@ Last updated: 2026-05-09
     historical rollout notes. Evidence:
     `docs/planning/system-health-4ee1672e-topline-sync-task-2026-05-09.md`.
 
+- [x] `DEPLOY-FRESHNESS-55469CDC-2026-05-09 release: verify source-of-truth sync batch deployment`
+  - Scope: pushed the 10-commit source-of-truth synchronization batch ending
+    at `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`, verified production Web
+    build-info reached that SHA, ran public API/Web smoke with `--no-workers`,
+    and refreshed no-secret final V1 preflight for that SHA. Evidence:
+    `docs/planning/deploy-freshness-55469cdc-task-2026-05-09.md` and
+    `docs/operations/deploy-freshness-55469cdc-2026-05-09.md`.
+
 - [x] `UX-UI-MEMORY-AUTONOMY-2026-05-08 design: make UX/UI feedback memory autonomous`
   - Scope: extended the existing user feedback loop, design memory, and screen
     quality checklist so future UX/UI work classifies user guidance, stores it
