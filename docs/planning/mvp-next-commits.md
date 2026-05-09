@@ -7,6 +7,17 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `PROD-UI-PUBLIC-ACCESS-REFRESH-745B5F5A-2026-05-09 qa: refresh public production UI access evidence`
+  - 2026-05-09: Refreshed public/unauthenticated production access evidence
+    for deployed `745b5f5a45eab3f86b02e023479c8358f760bbf6`. Build-info
+    matches the expected SHA, API health/readiness and public Web routes return
+    HTTP 200, and unauthenticated dashboard/admin routes redirect to
+    `/auth/login`. The full module clickthrough remains blocked on
+    authenticated/admin production app access. Evidence:
+    `docs/planning/prod-ui-public-access-refresh-745b5f5a-task-2026-05-09.md`
+    and
+    `docs/operations/prod-ui-public-access-clickthrough-745b5f5a-2026-05-09.md`.
+
 - [x] `DEPLOY-FRESHNESS-30B027B7-2026-05-09 release: verify protected-backlog sync batch deployment`
   - 2026-05-09: Pushed the protected-backlog sync batch ending at
     `30b027b78544f76b5b638851e8e27c98f6d22ab5`, verified production Web
@@ -268,9 +279,8 @@ Operational queue for one-task execution runs.
     clicks all module-level functions that are safe to exercise, captures
     screenshots/console/network evidence, and classifies every flow as PASS,
     FAIL, BLOCKED, or NOT_APPLICABLE.
-  - 2026-05-09: Current production build-info and public smoke evidence are
-    fresh for `30b027b78544f76b5b638851e8e27c98f6d22ab5`. Latest public UI
-    access clickthrough remains historical at `c50e1e7c`. Execution is now blocked
+  - 2026-05-09: Current production build-info and public UI access evidence are
+    fresh for `745b5f5a45eab3f86b02e023479c8358f760bbf6`. Execution is now blocked
     on authenticated/admin production app access, required representative
     production test data, and explicit operator approval before live-money or
     destructive actions. Evidence plan:

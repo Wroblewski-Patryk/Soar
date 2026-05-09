@@ -15,6 +15,12 @@ pass for this SHA. The batch records the `ba3d852d` deploy evidence and
 retargets the protected V1 backlog/runbook instructions. It does not change
 runtime behavior or enable Gate.io paper/live/authenticated capabilities.
 
+Public/unauthenticated production UI access is also refreshed for deployed
+`745b5f5a45eab3f86b02e023479c8358f760bbf6`: public routes return HTTP 200,
+build-info matches, and unauthenticated dashboard/admin routes redirect to
+`/auth/login`. This still does not satisfy the full authenticated/admin
+clickthrough audit.
+
 Previous pushed batch:
 `ba3d852d5126b625a8cf702ab647d5c644d86f9c`. Production build-info advanced
 from `010b4f8b` to the docs/status sync batch on the corrected wait attempt 2.
@@ -69,6 +75,7 @@ Completed for that candidate:
   build-info progress
 
 Evidence:
+- `docs/operations/prod-ui-public-access-clickthrough-745b5f5a-2026-05-09.md`
 - `docs/planning/dashboard-runtime-current-state-aggregate-task-2026-05-09.md`
 - `docs/planning/dashboard-runtime-widget-aggregate-current-render-task-2026-05-09.md`
 - `docs/operations/deploy-freshness-3c5da343-2026-05-09.md`

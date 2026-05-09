@@ -26,6 +26,14 @@ available. Evidence:
 `docs/operations/deploy-freshness-30b027b7-2026-05-09.md`, and
 `docs/operations/v1-final-preflight-30b027b7-2026-05-09.md`.
 
+2026-05-09 public UI access refresh: public/unauthenticated production UI
+access is current for deployed
+`745b5f5a45eab3f86b02e023479c8358f760bbf6`. Public routes return HTTP 200 and
+unauthenticated dashboard/admin routes redirect to `/auth/login`. This does
+not satisfy the full authenticated/admin module clickthrough audit. Evidence:
+`docs/planning/prod-ui-public-access-refresh-745b5f5a-task-2026-05-09.md` and
+`docs/operations/prod-ui-public-access-clickthrough-745b5f5a-2026-05-09.md`.
+
 2026-05-09 current production handoff: production Web build-info is current at
 `ba3d852d5126b625a8cf702ab647d5c644d86f9c`. Public API `/health`, API
 `/ready`, Web `/`, and no-secret final V1 preflight public checks pass after

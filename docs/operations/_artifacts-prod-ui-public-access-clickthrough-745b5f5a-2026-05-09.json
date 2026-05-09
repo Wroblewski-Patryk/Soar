@@ -1,0 +1,75 @@
+{
+  "classification": "public-unauthenticated-production-access-audit",
+  "environment": "production",
+  "evidenceDate": "2026-05-09",
+  "expectedSha": "745b5f5a45eab3f86b02e023479c8358f760bbf6",
+  "observedBuildInfoSha": "745b5f5a45eab3f86b02e023479c8358f760bbf6",
+  "publicChecks": [
+    {
+      "label": "API health",
+      "url": "https://api.soar.luckysparrow.ch/health",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "label": "API readiness",
+      "url": "https://api.soar.luckysparrow.ch/ready",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "label": "Web home",
+      "url": "https://soar.luckysparrow.ch/",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "label": "Login",
+      "url": "https://soar.luckysparrow.ch/auth/login",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "label": "Register",
+      "url": "https://soar.luckysparrow.ch/auth/register",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "label": "Offline",
+      "url": "https://soar.luckysparrow.ch/offline",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "label": "Build info",
+      "url": "https://soar.luckysparrow.ch/api/build-info",
+      "status": 200,
+      "gitSha": "745b5f5a45eab3f86b02e023479c8358f760bbf6",
+      "pass": true
+    }
+  ],
+  "unauthenticatedProtectedRoutes": [
+    { "route": "/dashboard", "status": 307, "location": "/auth/login", "pass": true },
+    { "route": "/dashboard/profile", "status": 307, "location": "/auth/login", "pass": true },
+    { "route": "/dashboard/wallets/list", "status": 307, "location": "/auth/login", "pass": true },
+    { "route": "/dashboard/markets/list", "status": 307, "location": "/auth/login", "pass": true },
+    { "route": "/dashboard/strategies/list", "status": 307, "location": "/auth/login", "pass": true },
+    { "route": "/dashboard/backtests/list", "status": 307, "location": "/auth/login", "pass": true },
+    { "route": "/dashboard/bots", "status": 307, "location": "/auth/login", "pass": true },
+    { "route": "/dashboard/reports", "status": 307, "location": "/auth/login", "pass": true },
+    { "route": "/dashboard/logs", "status": 307, "location": "/auth/login", "pass": true },
+    { "route": "/admin", "status": 307, "location": "/auth/login", "pass": true },
+    { "route": "/admin/users", "status": 307, "location": "/auth/login", "pass": true },
+    { "route": "/admin/subscriptions", "status": 307, "location": "/auth/login", "pass": true }
+  ],
+  "scope": "public and unauthenticated route/auth-gate evidence only",
+  "notAcceptedAsEvidenceFor": [
+    "authenticated dashboard/admin module clickthrough",
+    "live-import runtime readback",
+    "rollback proof",
+    "restore drill",
+    "RC approval",
+    "final V1 release readiness"
+  ]
+}

@@ -20,6 +20,13 @@ Last updated: 2026-05-09
   build-info/public smoke PASS while remaining correctly `BLOCKED` on
   protected/formal V1 evidence. Evidence:
   `docs/planning/deploy-freshness-30b027b7-task-2026-05-09.md`.
+- 2026-05-09 `PROD-UI-PUBLIC-ACCESS-REFRESH-745B5F5A-2026-05-09` refreshed
+  public/unauthenticated production UI access evidence for deployed
+  `745b5f5a45eab3f86b02e023479c8358f760bbf6`. Public routes return HTTP 200
+  and unauthenticated dashboard/admin routes redirect to `/auth/login`.
+  Full authenticated/admin module clickthrough remains blocked on valid
+  production app access. Evidence:
+  `docs/planning/prod-ui-public-access-refresh-745b5f5a-task-2026-05-09.md`.
 - 2026-05-09 `DEPLOY-FRESHNESS-BA3D852D-2026-05-09` verified that the
   docs/status sync batch ending at
   `ba3d852d5126b625a8cf702ab647d5c644d86f9c` is production-current. Public

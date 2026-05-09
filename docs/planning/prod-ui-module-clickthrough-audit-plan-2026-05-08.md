@@ -30,12 +30,12 @@ UI against the canonical architecture, route, module, API, and UX contracts.
 
 Current state after the 2026-05-09 sync:
 - current production target:
-  `30b027b78544f76b5b638851e8e27c98f6d22ab5`
+  `745b5f5a45eab3f86b02e023479c8358f760bbf6`
 - latest observed production build-info:
-  `30b027b78544f76b5b638851e8e27c98f6d22ab5`
+  `745b5f5a45eab3f86b02e023479c8358f760bbf6`
 - public production smoke: PASS for API `/health`, API `/ready`, and web `/`
 - latest public/unauthenticated UI access:
-  `docs/operations/prod-ui-public-access-clickthrough-c50e1e7c-2026-05-09.md`
+  `docs/operations/prod-ui-public-access-clickthrough-745b5f5a-2026-05-09.md`
 - protected dashboard/admin clickthrough: blocked until valid production auth
   is provided or an approved authenticated browser context is available
 
