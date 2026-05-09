@@ -110,4 +110,41 @@ describe('exchangeSymbolRules.service', () => {
     expect(rules).toBeNull();
     expect(loadMarketMap).not.toHaveBeenCalled();
   });
+
+  it('allows Gate.io public symbol rules without enabling paper or live execution', async () => {
+    const loadMarketMap = vi.fn(async () => ({
+      BTC_USDT: {
+        id: 'BTC_USDT',
+        symbol: 'BTC/USDT:USDT',
+        active: true,
+        limits: {
+          amount: { min: 0.0001 },
+          cost: { min: 1 },
+        },
+        info: {},
+      },
+    }));
+
+    const rules = await getExchangeSymbolRules(
+      {
+        exchange: 'GATEIO',
+        marketType: 'FUTURES',
+        symbol: 'BTCUSDT',
+      },
+      {
+        nowMs: () => 1_000,
+        loadMarketMap,
+      }
+    );
+
+    expect(loadMarketMap).toHaveBeenCalledWith({
+      exchange: 'GATEIO',
+      marketType: 'FUTURES',
+    });
+    expect(rules).toEqual({
+      minQuantity: 0.0001,
+      minNotional: 1,
+      quantityStep: null,
+    });
+  });
 });

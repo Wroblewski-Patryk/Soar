@@ -13,6 +13,13 @@ Last updated: 2026-05-09
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-09 `EXCHANGE2-22-GATEIO-PUBLIC-SYMBOL-RULES-2026-05-09` decoupled
+  public symbol-rule resolution from live execution support. Gate.io public
+  symbol rules now resolve through the existing `MARKET_CATALOG`/market-map
+  boundary, while unsupported exchanges without market catalog still return
+  `null` without market loads. Gate.io paper pricing, authenticated reads,
+  live submit, and cancel remain unsupported. Evidence:
+  `docs/planning/exchange2-22-gateio-public-symbol-rules-task-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-21-GATEIO-MARKET-STREAM-SOURCE-SMOKE-2026-05-09`
   added a public-read-only Gate.io market-stream source smoke and captured
   real `GATEIO/FUTURES/BTCUSDT` ticker plus final `1m` candle events emitted

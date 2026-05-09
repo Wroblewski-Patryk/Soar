@@ -130,6 +130,11 @@ Last updated: 2026-05-09
   `docs/operations/gateio-market-stream-source-smoke-2026-05-09.md`. Gate.io
   `PAPER_PRICING_FEED`, authenticated reads, live submit, and cancel remain
   disabled pending exact operation support and deployment/protected evidence.
+- `EXCHANGE2-22` public symbol-rules regression PASS: Gate.io public symbol
+  rules now resolve through the existing `MARKET_CATALOG`/market-map boundary
+  instead of being coupled to `LIVE_EXECUTION`; unsupported exchanges without
+  market catalog still return `null` without market loads. Gate.io paper/live
+  and authenticated capabilities remain disabled.
 - `EXCHANGE2-16` positions snapshot explicit-key fail-closed regression PASS:
   focused positions coverage proves a stored Gate.io placeholder API key cannot
   be selected via `apiKeyId` while `POSITIONS_SNAPSHOT` is unsupported. The

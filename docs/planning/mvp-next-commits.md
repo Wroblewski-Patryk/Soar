@@ -7,6 +7,14 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `EXCHANGE2-22-GATEIO-PUBLIC-SYMBOL-RULES-2026-05-09 fix(exchange): decouple public symbol rules from live execution`
+  - 2026-05-09: Changed public symbol-rule resolution to use
+    `MARKET_CATALOG` support instead of `LIVE_EXECUTION`, added Gate.io
+    regression coverage, and preserved fail-closed null/no-load behavior for
+    exchanges without market catalog. Gate.io paper/live/authenticated
+    capabilities remain unsupported. Evidence:
+    `docs/planning/exchange2-22-gateio-public-symbol-rules-task-2026-05-09.md`.
+
 - [x] `EXCHANGE2-21-GATEIO-MARKET-STREAM-SOURCE-SMOKE-2026-05-09 qa: add Gate.io public market-stream source smoke`
   - 2026-05-09: Added a public-read-only smoke runner for the existing Gate.io
     polling market-stream source and captured real `GATEIO/FUTURES/BTCUSDT`

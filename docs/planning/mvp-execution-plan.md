@@ -33,6 +33,12 @@ Rule: fix/cleanup/update first, then feature delivery.
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
 - 2026-05-09: Closed
+  `EXCHANGE2-22-GATEIO-PUBLIC-SYMBOL-RULES-2026-05-09` with
+  `docs/planning/exchange2-22-gateio-public-symbol-rules-task-2026-05-09.md`.
+  Public symbol-rule resolution now uses `MARKET_CATALOG` support instead of
+  `LIVE_EXECUTION`, so Gate.io can consume public market-map rules without
+  enabling paper/live/authenticated capabilities.
+- 2026-05-09: Closed
   `EXCHANGE2-21-GATEIO-MARKET-STREAM-SOURCE-SMOKE-2026-05-09` with
   `docs/planning/exchange2-21-gateio-market-stream-source-smoke-task-2026-05-09.md`.
   A public-read-only runner captured real `GATEIO/FUTURES/BTCUSDT` ticker and

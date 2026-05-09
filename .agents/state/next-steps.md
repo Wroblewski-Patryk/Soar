@@ -123,6 +123,11 @@ evidence; do not enable `PAPER_PRICING_FEED` from local mocked evidence alone.
 orders. This advances source confidence but still does not enable
 `PAPER_PRICING_FEED`; deployed build-info/source evidence and exact capability
 enablement remain required before paper support.
+`EXCHANGE2-22` also decouples public symbol rules from `LIVE_EXECUTION`:
+Gate.io can now resolve public symbol rules through the existing
+`MARKET_CATALOG`/market-map boundary, while exchanges without market catalog
+still fail closed and Gate.io paper/live/authenticated capabilities remain
+disabled.
 Post-push build-info for `4ef3ec58` remained stale on
 `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d` during the 120-second wait, even
 though public smoke passed.

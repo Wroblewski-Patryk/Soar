@@ -136,6 +136,10 @@ Runtime market-event boundary:
 - Gate.io public ticker and candle reads are available inside the exchange
   module through the public market-data reader, and app `GATEIO/FUTURES`
   resolves to CCXT `swap` for perpetual futures
+- Gate.io public symbol rules are available through
+  `exchangeSymbolRules.service.ts` when `MARKET_CATALOG` is supported; this
+  is public metadata only and does not imply paper pricing, authenticated
+  reads, or live execution support
 - `GATEIO` `PAPER_PRICING_FEED` remains unsupported until that source publishes
   ticker and candle events with runtime evidence
 

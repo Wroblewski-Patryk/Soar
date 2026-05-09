@@ -55,6 +55,10 @@ exact operation adapter is implemented and verified.
   candle events are emitted by the existing worker source without credentials
   or exchange writes. This is not production deployment evidence and does not
   enable paper/live/authenticated capabilities.
+- Public metadata refinement: `EXCHANGE2-22` decoupled symbol-rule resolution
+  from `LIVE_EXECUTION` and now allows Gate.io public symbol rules through the
+  existing `MARKET_CATALOG`/public market-map boundary. This does not enable
+  paper pricing, authenticated reads, live submit, or cancel.
 - Still blocked: enabling `PAPER_PRICING_FEED`, authenticated reads,
   `LIVE_ORDER_SUBMIT`, or `LIVE_ORDER_CANCEL` for Gate.io until exact support
   is implemented and production evidence exists.

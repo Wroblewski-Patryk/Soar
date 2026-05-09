@@ -205,7 +205,7 @@ export const getExchangeSymbolRules = async (
   },
   deps: ExchangeSymbolRulesDeps = defaultDeps
 ): Promise<ExchangeSymbolRules | null> => {
-  if (!supportsExchangeCapability(input.exchange, 'LIVE_EXECUTION')) {
+  if (!supportsExchangeCapability(input.exchange, 'MARKET_CATALOG')) {
     return null;
   }
 
