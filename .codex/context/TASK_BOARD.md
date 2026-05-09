@@ -17,6 +17,14 @@ Last updated: 2026-05-09
 
 ## READY
 
+- [x] `V1-COMPLETION-GAP-AUDIT-2026-05-09 research: explain what blocks 100% V1 readiness`
+  - Scope: created a concise evidence-backed completion gap report that
+    separates implemented/proven work, implemented-but-not-production-proven
+    work, missing implementation, protected operator inputs, and release
+    blockers. Evidence:
+    `docs/planning/v1-completion-gap-audit-task-2026-05-09.md` and
+    `docs/operations/v1-completion-gap-report-2026-05-09.md`.
+
 - [x] `DEPLOY-FRESHNESS-E8CD748E-2026-05-09 release: verify docs/evidence batch deployment`
   - Scope: verified production build-info for the docs/evidence batch ending
     at `e8cd748e80b8693087e01beb21b0085ace747c49`, ran public API/Web smoke

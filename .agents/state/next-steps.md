@@ -4,6 +4,14 @@ Last updated: 2026-05-09
 
 ## Next Tiny Task
 
+Latest V1 completion gap report:
+`docs/operations/v1-completion-gap-report-2026-05-09.md`.
+Short answer: the app is not broadly missing; remaining 100% readiness is
+blocked by protected production evidence, authenticated/admin UI clickthrough,
+Gate.io paper/live implementation beyond public market data, and a few
+product/UX confidence gaps. Use this report before starting more broad
+implementation or deploy-evidence loops.
+
 Current deployed production build-info candidate:
 `e8cd748e80b8693087e01beb21b0085ace747c49`.
 
