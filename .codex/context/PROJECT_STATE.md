@@ -267,6 +267,14 @@ Last updated: 2026-05-09
   rollback proof, RC approval, and authenticated UI clickthrough remain open.
   Evidence:
   `docs/operations/deploy-freshness-4792fbca-2026-05-09.md`.
+- 2026-05-09 `V1-FINAL-PREFLIGHT-4792FBCA-2026-05-09` generated fresh
+  no-secret final V1 preflight artifacts for deployed `4792fbca`. Build-info
+  and public API/Web smoke pass; V1 remains `BLOCKED` on missing live-import
+  auth, rollback auth, production DB restore context, failed RC external
+  gates/sign-off/checklist evidence, missing `LIVEIMPORT-03`, and stale
+  backup/restore plus rollback proof evidence for the 2026-05-09 evidence
+  date. Evidence:
+  `docs/operations/v1-final-preflight-4792fbca-2026-05-09.md`.
 - 2026-05-08 `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08` published the
   current no-secret final V1 preflight JSON/Markdown snapshot for deployed SHA
   `052df82244ea0f81e8611ff8bb2b677db115bd19`. The snapshot reports build-info

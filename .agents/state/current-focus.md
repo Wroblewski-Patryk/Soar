@@ -59,6 +59,12 @@ build-info SHA `4792fbca9ab3ca44d08c312f219f70d648707886`, with public API
 `/health`, API `/ready`, and Web `/` smoke passing. Continue protected
 evidence work from this deployed SHA only.
 
+2026-05-09 final preflight for deployed `4792fbca`: build-info and public
+smoke pass, and V1 remains `BLOCKED` only on protected/authenticated or
+operator-context evidence: live-import auth, rollback auth, production DB
+restore context, RC approval/evidence, `LIVEIMPORT-03`, and current
+restore/rollback proof artifacts.
+
 2026-05-09 continuation update: Gate.io second-exchange planning has been
 reconciled after the deployed fail-closed foundation. The plan is complete as a
 planning artifact; public catalog and public `FUTURES`/swap market-data

@@ -187,6 +187,11 @@ passed for API `/health`, API `/ready`, and Web `/`. Evidence:
 final blocker pack against this deployed SHA; do not treat this public smoke
 as protected runtime, restore, rollback, RC approval, or authenticated UI
 evidence.
+The no-secret final V1 preflight for deployed `4792fbca` is now fresh:
+`docs/operations/v1-final-preflight-4792fbca-2026-05-09.md`. Build-info and
+public smoke pass. Remaining blockers are live-import auth, rollback auth,
+production DB restore context, failed RC evidence, missing `LIVEIMPORT-03`,
+and stale restore/rollback proof evidence for the 2026-05-09 evidence date.
 
 The local V1 backend paper/live runtime line is closed for this slice: focused
 parity/crash coverage, DB-backed runtime/order/exchange/import/readback packs,

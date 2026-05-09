@@ -300,6 +300,15 @@ Operational queue for one-task execution runs.
     `docs/planning/deploy-freshness-4792fbca-task-2026-05-09.md` and
     `docs/operations/deploy-freshness-4792fbca-2026-05-09.md`.
 
+- [x] `V1-FINAL-PREFLIGHT-4792FBCA-2026-05-09 release: refresh final preflight for deployed batch`
+  - 2026-05-09: Generated no-secret final V1 preflight JSON/Markdown for
+    deployed `4792fbca`. Build-info and public API/Web smoke pass; V1 remains
+    correctly `BLOCKED` on missing live-import auth, rollback auth, production
+    DB restore context, failed RC evidence, missing `LIVEIMPORT-03`, and stale
+    restore/rollback evidence for 2026-05-09. Evidence:
+    `docs/planning/v1-final-preflight-4792fbca-task-2026-05-09.md` and
+    `docs/operations/v1-final-preflight-4792fbca-2026-05-09.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - 2026-05-08: Generated and committed the current no-secret final V1
     preflight JSON/Markdown snapshot for deployed SHA

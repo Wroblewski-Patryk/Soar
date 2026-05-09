@@ -38,6 +38,12 @@ Rule: fix/cleanup/update first, then feature delivery.
   `4792fbca9ab3ca44d08c312f219f70d648707886`; public API `/health`, API
   `/ready`, and Web `/` smoke passed. Protected evidence and authenticated UI
   clickthrough remain blocked on approved credentials/context.
+- 2026-05-09: Closed `V1-FINAL-PREFLIGHT-4792FBCA-2026-05-09` with
+  `docs/planning/v1-final-preflight-4792fbca-task-2026-05-09.md`. The
+  no-secret final V1 preflight for deployed `4792fbca` now reports build-info
+  PASS and public smoke PASS, while remaining correctly `BLOCKED` on protected
+  app auth, production DB/Coolify context, failed RC evidence, missing
+  `LIVEIMPORT-03`, and stale restore/rollback evidence for 2026-05-09.
 - 2026-05-09: Closed
   `V1-FINAL-BLOCKER-PACK-DATE-OVERRIDES-2026-05-09` with
   `docs/planning/v1-final-blocker-pack-date-overrides-task-2026-05-09.md`.

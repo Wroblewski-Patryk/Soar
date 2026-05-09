@@ -170,6 +170,12 @@ Last updated: 2026-05-09
   `docs/operations/deploy-freshness-4792fbca-2026-05-09.md`. Protected
   release evidence and authenticated UI clickthrough remain blocked on
   approved credentials/context.
+- Final V1 preflight for deployed `4792fbca` is current and safely BLOCKED:
+  build-info PASS, public smoke PASS, missing protected live-import and
+  rollback auth, missing production DB restore context, failed RC evidence,
+  missing `LIVEIMPORT-03`, and stale 2026-05-08 restore/rollback evidence for
+  the 2026-05-09 evidence date. Evidence:
+  `docs/operations/v1-final-preflight-4792fbca-2026-05-09.md`.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307
