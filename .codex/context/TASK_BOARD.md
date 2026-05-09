@@ -17,6 +17,14 @@ Last updated: 2026-05-09
 
 ## READY
 
+- [x] `DEPLOY-FRESHNESS-BA3D852D-2026-05-09 release: verify docs/status sync batch deployment`
+  - Scope: pushed the docs/status sync batch ending at
+    `ba3d852d5126b625a8cf702ab647d5c644d86f9c`, verified production Web
+    build-info reached that SHA, ran public API/Web smoke with `--no-workers`,
+    and refreshed no-secret final V1 preflight. Public checks pass;
+    protected/formal V1 evidence remains blocked. Evidence:
+    `docs/planning/deploy-freshness-ba3d852d-task-2026-05-09.md`.
+
 - [x] `DEPLOY-FRESHNESS-010B4F8B-2026-05-09 release: verify Gate.io source batch deployment`
   - Scope: verified production build-info for the three-commit Gate.io source
     batch ending at `010b4f8b6abfaf4c24d26550eb4761215d119f21`, ran public

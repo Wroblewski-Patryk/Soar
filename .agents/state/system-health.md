@@ -5,6 +5,14 @@ Last updated: 2026-05-09
 ## Latest Health Snapshot
 
 - Current production build-info is verified at
+  `ba3d852d5126b625a8cf702ab647d5c644d86f9c`: build-info PASS, public
+  API/Web smoke PASS, and no-secret final V1 preflight public checks PASS.
+  The preflight remains correctly `BLOCKED` on protected/formal V1 evidence.
+  Evidence:
+  `docs/operations/deploy-freshness-ba3d852d-2026-05-09.md`,
+  `docs/operations/v1-final-preflight-ba3d852d-2026-05-09.md`, and
+  `docs/planning/deploy-freshness-ba3d852d-task-2026-05-09.md`.
+- Current production build-info is verified at
   `010b4f8b6abfaf4c24d26550eb4761215d119f21`: build-info PASS, public
   API/Web smoke PASS, and no-secret final V1 preflight public checks PASS.
   The preflight remains correctly `BLOCKED` on protected/formal V1 evidence.

@@ -5,9 +5,18 @@ Last updated: 2026-05-09
 ## Next Tiny Task
 
 Current deployed production build-info candidate:
-`010b4f8b6abfaf4c24d26550eb4761215d119f21`.
+`ba3d852d5126b625a8cf702ab647d5c644d86f9c`.
 
 Latest pushed batch is deployed:
+`ba3d852d5126b625a8cf702ab647d5c644d86f9c`. Production build-info advanced
+from `010b4f8b` to the docs/status sync batch on the corrected wait attempt 2.
+Public API/Web smoke and no-secret final V1 preflight public checks pass for
+this SHA. The batch records the `010b4f8b` deploy freshness, closes the
+historical `1f1d9c12` deploy-lag queue entry, and syncs the stale historical
+`V1TRUTH-01` checkbox. It does not change runtime behavior or enable Gate.io
+paper/live/authenticated capabilities.
+
+Previous pushed batch:
 `010b4f8b6abfaf4c24d26550eb4761215d119f21`. Production build-info advanced
 from `d355df93` to the Gate.io source batch after the earlier wait used an
 incorrect full SHA for short commit `010b4f8b`; the corrected build-info wait

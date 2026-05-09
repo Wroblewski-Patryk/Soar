@@ -17,6 +17,16 @@ contracts synchronized.
 ## Current Delivery Stage
 
 2026-05-09 current production handoff: production Web build-info is current at
+`ba3d852d5126b625a8cf702ab647d5c644d86f9c`. Public API `/health`, API
+`/ready`, Web `/`, and no-secret final V1 preflight public checks pass after
+the docs/status sync batch. Full authenticated/admin production UI module
+clickthrough remains blocked until valid production app access is available.
+Evidence:
+`docs/planning/deploy-freshness-ba3d852d-task-2026-05-09.md`,
+`docs/operations/deploy-freshness-ba3d852d-2026-05-09.md`, and
+`docs/operations/v1-final-preflight-ba3d852d-2026-05-09.md`.
+
+2026-05-09 current production handoff: production Web build-info is current at
 `010b4f8b6abfaf4c24d26550eb4761215d119f21`. Public API `/health`, API
 `/ready`, Web `/`, and no-secret final V1 preflight public checks pass after
 the Gate.io source batch. Full authenticated/admin production UI module

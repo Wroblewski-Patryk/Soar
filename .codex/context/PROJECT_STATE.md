@@ -13,6 +13,13 @@ Last updated: 2026-05-09
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-09 `DEPLOY-FRESHNESS-BA3D852D-2026-05-09` verified that the
+  docs/status sync batch ending at
+  `ba3d852d5126b625a8cf702ab647d5c644d86f9c` is production-current. Public
+  API/Web smoke passes, and the no-secret final V1 preflight reports
+  build-info/public smoke PASS while remaining correctly `BLOCKED` on
+  protected/formal V1 evidence. Evidence:
+  `docs/planning/deploy-freshness-ba3d852d-task-2026-05-09.md`.
 - 2026-05-09 `DEPLOY-FRESHNESS-010B4F8B-2026-05-09` verified that the
   three-commit Gate.io source batch ending at
   `010b4f8b6abfaf4c24d26550eb4761215d119f21` is production-current. Public
