@@ -185,6 +185,14 @@ Last updated: 2026-05-09
   HTTP 307 to `/auth/login`. Full authenticated/admin module clickthrough
   remains blocked on valid production app access. Evidence:
   `docs/operations/prod-ui-public-access-clickthrough-6c54bb5d-2026-05-09.md`.
+- 2026-05-09 `OPERATOR-PROTECTED-PACK-6C54BB5D-SYNC-2026-05-09` retargeted
+  active protected operator commands, activation plan, activation evidence
+  audit, and known-issue state to production build-info
+  `6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623`. This does not close protected
+  evidence; V1 remains blocked on operator auth/context, RC approval,
+  `LIVEIMPORT-03`, restore proof, rollback proof, and authenticated/admin UI
+  access. Evidence:
+  `docs/planning/operator-protected-pack-6c54bb5d-sync-task-2026-05-09.md`.
 - 2026-05-09 `EXCHANGE2-20` reconciled the second-exchange plan with the
   deployed Gate.io foundation. The plan is now complete as a planning artifact
   and records the exact current support boundary: Gate.io public catalog and

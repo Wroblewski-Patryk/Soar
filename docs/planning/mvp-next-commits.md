@@ -519,6 +519,14 @@ Operational queue for one-task execution runs.
     and
     `docs/operations/prod-ui-public-access-clickthrough-6c54bb5d-2026-05-09.md`.
 
+- [x] `OPERATOR-PROTECTED-PACK-6C54BB5D-SYNC-2026-05-09 release: retarget protected operator pack`
+  - 2026-05-09: Retargeted active protected command examples, activation plan,
+    activation evidence audit, and current known-issue state to deployed
+    `6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623`. Protected V1 evidence remains
+    blocked on operator auth, DB/Coolify context, RC approval, `LIVEIMPORT-03`,
+    restore proof, rollback proof, and authenticated/admin UI access. Evidence:
+    `docs/planning/operator-protected-pack-6c54bb5d-sync-task-2026-05-09.md`.
+
 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
   - 2026-05-09: Names-only readiness check found missing live-import auth,
     rollback auth, and production DB/Coolify restore context in the current

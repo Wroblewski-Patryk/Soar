@@ -47,6 +47,13 @@ Rule: fix/cleanup/update first, then feature delivery.
   `/auth/login` without a session. Full authenticated/admin module
   clickthrough remains blocked.
 - 2026-05-09: Closed
+  `OPERATOR-PROTECTED-PACK-6C54BB5D-SYNC-2026-05-09` with
+  `docs/planning/operator-protected-pack-6c54bb5d-sync-task-2026-05-09.md`.
+  Active protected command examples, activation plan, activation evidence
+  audit, and known-issue state now target deployed production build-info
+  `6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623`. Protected evidence remains
+  blocked on operator auth/context and formal approval inputs.
+- 2026-05-09: Closed
   `OPEN-PROTECTED-BACKLOG-55469CDC-SYNC-2026-05-09` with
   `docs/planning/open-protected-backlog-55469cdc-sync-task-2026-05-09.md`.
   Open protected backlog entries for `V1-PROTECTED-ACCESS-READINESS`,

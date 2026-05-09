@@ -380,6 +380,13 @@ Last updated: 2026-05-09
     production app access. Evidence:
     `docs/planning/prod-ui-public-access-refresh-6c54bb5d-task-2026-05-09.md`.
 
+- [x] `OPERATOR-PROTECTED-PACK-6C54BB5D-SYNC-2026-05-09 release: retarget protected operator pack`
+  - Scope: retargeted active protected command examples, activation plan,
+    activation evidence audit, and known-issue state to deployed
+    `6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623` without closing protected
+    evidence. Evidence:
+    `docs/planning/operator-protected-pack-6c54bb5d-sync-task-2026-05-09.md`.
+
 - [x] `PROD-UI-PUBLIC-ACCESS-CLICKTHROUGH-2026-05-08 qa: verify production public access and auth gates`
   - Scope: captured the public/unauthenticated portion of the production UI
     audit without claiming authenticated module coverage. API `/health` and

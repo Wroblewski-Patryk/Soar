@@ -39,7 +39,6 @@ Evidence:
 - `docs/operations/deploy-freshness-6c54bb5d-2026-05-09.md`
 - `docs/operations/v1-final-preflight-6c54bb5d-2026-05-09.md`
 - `docs/operations/prod-ui-public-access-clickthrough-6c54bb5d-2026-05-09.md`
-- `docs/operations/prod-ui-public-access-clickthrough-55469cdc-2026-05-09.md`
 
 Next executable V1 steps are protected and remain blocked until the operator
 supplies authenticated/admin production app access, live-import auth, rollback
@@ -179,7 +178,7 @@ After the planned Gate.io/deploy-auth blockers are cleared, execute the
 production UI module clickthrough audit from
 `docs/planning/prod-ui-module-clickthrough-audit-plan-2026-05-08.md`. The audit
 now has current production build-info and public access evidence for
-`55469cdc2ad888b822c8cdbd86660c4ed5166e1c`, but must still wait for
+`6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623`, but must still wait for
 authenticated/admin app access, representative production test data, and
 explicit operator approval before any live-money or destructive action.
 Public-only checks cannot prove protected dashboard/admin flows.
@@ -251,7 +250,7 @@ it confirms public route reachability and unauthenticated auth gates only.
 The final blocker execution pack now separates the deployed code/tooling
 candidate from local evidence-only commits. After the docs/evidence handoff
 batch was pushed and deployed, use
-`55469cdc2ad888b822c8cdbd86660c4ed5166e1c` as `$expectedSha` for protected
+`6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623` as `$expectedSha` for protected
 evidence until another intended candidate is deployed and proven by build-info.
 Evidence:
 `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
@@ -286,7 +285,7 @@ been removed because the project does not use paid GitHub Actions and workflow
 attempts create unwanted email noise.
 
 ```powershell
-$expectedSha = "55469cdc2ad888b822c8cdbd86660c4ed5166e1c"
+$expectedSha = "6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623"
 pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --timeout-seconds 900 --interval-seconds 15
 ```
 
@@ -362,7 +361,7 @@ Canonical command once auth is available:
 
 ```powershell
 $releaseDate = Get-Date -Format yyyy-MM-dd
-$expectedSha = "55469cdc2ad888b822c8cdbd86660c4ed5166e1c"
+$expectedSha = "6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623"
 pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output "docs/operations/liveimport-03-prod-readback-$releaseDate.json"
 ```
 
@@ -401,14 +400,14 @@ changes are irrelevant to the protected readback.
    enforcement, strict RC approval evidence enforcement, restore-context
    preflight alignment, dashboard runtime aggregate evidence, and current
    protected operator handoff at
-   `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`. Do not use GitHub Actions. If a
+   `6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623`. Do not use GitHub Actions. If a
    future step depends on a pushed commit being deployed, wait for build-info
    before continuing; an operator can speed this up with Coolify dashboard
    force deploy, or with deploy webhook/API token if those secrets are
    available outside the repository.
 1. If production credentials or ops auth are available, execute
    `ops:liveimport:readback` with
-   `--expected-sha 55469cdc2ad888b822c8cdbd86660c4ed5166e1c`, unless a newer
+   `--expected-sha 6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623`, unless a newer
    intended code/tooling candidate has first been deployed and proven by
    production build-info. Record redacted `LIVEIMPORT-03` evidence only after
    the protected readback succeeds. The latest names-only prerequisite sweep
@@ -440,7 +439,7 @@ changes are irrelevant to the protected readback.
    - Final release gate must run without `--dry-run` and with the
      build-info-proven expected SHA plus the deployed web base URL so
      build-info freshness is enforced inside the gate. Use
-     `55469cdc2ad888b822c8cdbd86660c4ed5166e1c` unless a newer intended
+     `6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623` unless a newer intended
      code/tooling candidate has first been deployed and proven by production
      build-info.
 5. If the active queue is empty, run a planning-status sweep before saying
