@@ -4,6 +4,15 @@ Last updated: 2026-05-09
 
 ## Next Tiny Task
 
+Latest local implementation slice:
+`EXCHANGE2-24-GATEIO-API-KEY-PROBE-2026-05-09` enabled Gate.io
+`API_KEY_PROBE` for provided and stored profile API-key connection tests
+through a shared exchange-aware probe service. This is credential validation
+only; Gate.io balance preview, positions/open-orders, trade-history, live
+submit, and exchange-side cancel remain unsupported. The next Gate.io gap is
+the first exact authenticated read slice, likely `BALANCE_PREVIEW`, unless
+protected production evidence becomes unblocked first.
+
 Latest deployed implementation slice:
 `EXCHANGE2-23-GATEIO-PAPER-PRICING-ENABLE-2026-05-09` enabled only Gate.io
 public `PAPER_PRICING_FEED` through the shared capability matrix and existing

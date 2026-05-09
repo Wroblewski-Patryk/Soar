@@ -16,6 +16,14 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-09 implementation update: `EXCHANGE2-24` enabled only Gate.io
+`API_KEY_PROBE` through a shared exchange-aware profile API-key probe service.
+Gate.io provided and stored profile API-key connection tests now pass through
+the normal endpoint and write audit-safe metadata. The slice does not enable
+Gate.io balance preview, positions/open-orders, trade-history, live submit, or
+exchange-side cancel. Evidence:
+`docs/planning/exchange2-24-gateio-api-key-probe-task-2026-05-09.md`.
+
 2026-05-09 implementation update: `EXCHANGE2-23` enabled Gate.io public PAPER
 pricing through the shared capability matrix and existing public market-stream
 source. The scope is intentionally limited to paper pricing: Gate.io LIVE

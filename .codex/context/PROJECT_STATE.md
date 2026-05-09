@@ -13,6 +13,14 @@ Last updated: 2026-05-09
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-09 `EXCHANGE2-24-GATEIO-API-KEY-PROBE-2026-05-09` enabled Gate.io
+  API-key connection testing through a shared exchange-aware profile probe
+  service. Scope is limited to `API_KEY_PROBE`; Gate.io balance preview,
+  positions/open-orders, trade-history, live submit, and exchange-side cancel
+  remain unsupported until exact operation adapters are implemented and
+  verified. Focused API/Web tests, API/Web typechecks, guardrails, docs parity,
+  and diff check passed. Evidence:
+  `docs/planning/exchange2-24-gateio-api-key-probe-task-2026-05-09.md`.
 - 2026-05-09 `DEPLOY-FRESHNESS-1DC55D96-2026-05-09` verified that the Gate.io
   PAPER pricing enablement batch is production-current at
   `1dc55d9623bab11dacb5b9f8ce9634778c139249`. Public API/Web smoke passes,

@@ -73,7 +73,7 @@ work before paper/live bots can be enabled for that exchange.
 | Admin | scaffolding/current route scope exists | some local coverage implied by docs | public route gate only | missing admin clickthrough | Needs admin account and safe representative data. |
 | Gate.io public catalog/data | yes | yes | deployed foundation exists | public-only | Public market-data foundation is available. |
 | Gate.io paper bot support | yes after `EXCHANGE2-23` | focused API/Web tests pass | not yet deployed | n/a | Deploy and click through Gate.io PAPER wallet/bot setup for production evidence. |
-| Gate.io authenticated reads | no | fail-closed tests yes | n/a | n/a | Implement `API_KEY_PROBE`, `BALANCE_PREVIEW`, positions/open-orders/trade-history snapshots if in scope. |
+| Gate.io authenticated reads | partial | API-key probe yes; remaining reads fail closed | n/a | n/a | `API_KEY_PROBE` is implemented for credential validation; implement `BALANCE_PREVIEW`, positions/open-orders/trade-history snapshots if in scope. |
 | Gate.io live order submit | no | fail-closed tests yes | n/a | n/a | Implement exact live submit adapter and protected evidence if in scope. |
 | Exchange-side cancel | no for all exchanges | fail-closed tests yes | n/a | n/a | Implement canonical cancel boundary before claiming support. |
 
@@ -131,8 +131,8 @@ work before paper/live bots can be enabled for that exchange.
 
 ### P1 - Required For Gate.io Beyond Public PAPER Runtime
 
-1. **Implement Gate.io authenticated reads if product scope requires it**
-   - `API_KEY_PROBE`
+1. **Implement remaining Gate.io authenticated reads if product scope requires it**
+   - `API_KEY_PROBE` is now implemented for credential validation only
    - `BALANCE_PREVIEW`
    - `POSITIONS_SNAPSHOT`
    - `OPEN_ORDERS_SNAPSHOT`

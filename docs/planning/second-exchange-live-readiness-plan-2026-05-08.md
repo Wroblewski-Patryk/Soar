@@ -63,7 +63,11 @@ adapter is implemented and verified.
   paper pricing, authenticated reads, live submit, or cancel.
 - Current paper support: `GATEIO` `PAPER_PRICING_FEED` is enabled for public
   paper runtime through the existing market-stream polling source.
-- Still blocked: authenticated reads, `LIVE_ORDER_SUBMIT`, or
+- Current API-key probe support: `GATEIO` `API_KEY_PROBE` is enabled for
+  provided and stored profile API-key connection tests through the shared
+  exchange-aware probe service. This is credential validation only.
+- Still blocked: authenticated balance/position/open-order/trade-history
+  reads, `LIVE_ORDER_SUBMIT`, or
   `LIVE_ORDER_CANCEL` for Gate.io until exact support is implemented and
   production evidence exists.
 - Still requiring user/operator input: first live scope, whether authenticated
@@ -125,7 +129,7 @@ Acceptance criteria:
    - `TRADE_HISTORY_SNAPSHOT`: unsupported.
    - `LIVE_ORDER_SUBMIT`: unsupported.
    - `LIVE_ORDER_CANCEL`: unsupported.
-   - `API_KEY_PROBE`: unsupported.
+   - `API_KEY_PROBE`: supported for credential validation only.
    - `WALLET_CASHFLOW_HISTORY`: unsupported.
 3. Architecture/module docs were updated for the implemented foundation and
    fail-closed boundaries.
@@ -138,8 +142,8 @@ Acceptance criteria:
 1. Add exchange-specific connector bootstrap through `exchangeConnectorFactory`.
 2. Implement market metadata and symbol-rule normalization through existing
    exchange module contracts.
-3. Implement API-key probe and balance preview if approved for the target
-   exchange.
+3. API-key probe is implemented for the target exchange. Implement balance
+   preview only if approved for the target exchange.
 4. Implement positions snapshot and open-orders snapshot only if exact support
    is approved.
 

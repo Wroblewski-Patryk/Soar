@@ -17,6 +17,15 @@ Last updated: 2026-05-09
 
 ## READY
 
+- [x] `EXCHANGE2-24-GATEIO-API-KEY-PROBE-2026-05-09 feature(exchange): enable Gate.io API-key probe`
+  - Scope: replace the Binance-only profile API-key probe with a shared
+    exchange-aware probe service, enable only `GATEIO` `API_KEY_PROBE`, keep
+    non-Gate.io placeholders fail-closed, and preserve Gate.io
+    balance/positions/open-orders/trade-history/live/cancel as unsupported.
+    Focused API/Web tests, API/Web typechecks, guardrails, docs parity, and
+    diff check passed. Evidence:
+    `docs/planning/exchange2-24-gateio-api-key-probe-task-2026-05-09.md`.
+
 - [x] `DEPLOY-FRESHNESS-1DC55D96-2026-05-09 release: verify Gate.io PAPER pricing batch deployment`
   - Scope: verified production Web build-info for
     `1dc55d9623bab11dacb5b9f8ce9634778c139249`, ran public API/Web smoke with

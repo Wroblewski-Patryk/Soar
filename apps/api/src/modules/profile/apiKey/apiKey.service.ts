@@ -2,7 +2,11 @@ import { encrypt, decrypt } from "../../../utils/crypto";
 import { prisma } from "../../../prisma/client";
 import { ApiKey, Exchange, Prisma } from "@prisma/client";
 import { assertExchangeCapability } from "../../exchange/exchangeCapabilities";
-import { probeBinanceApiKeyPermissions, BinanceApiKeyTestCode } from "./binanceApiKeyProbe.service";
+import {
+  formatProbeMessage,
+  probeExchangeApiKeyPermissions,
+  type ApiKeyProbeCode,
+} from "./exchangeApiKeyProbe.service";
 
 export type ApiKeyPayload = {
   label: string;
@@ -17,7 +21,7 @@ export type ApiKeyTestPayload = Pick<ApiKeyPayload, "exchange" | "apiKey" | "api
 
 export type ApiKeyTestResult = {
   ok: boolean;
-  code: BinanceApiKeyTestCode;
+  code: ApiKeyProbeCode;
   message: string;
   permissions: {
     spot: boolean;
@@ -32,7 +36,7 @@ type ApiKeySyncOptions = {
 
 type ApiKeyProbeMode = "provided" | "stored";
 
-const API_KEY_TEST_CODES: BinanceApiKeyTestCode[] = [
+const API_KEY_TEST_CODES: ApiKeyProbeCode[] = [
   "OK",
   "INVALID_KEY",
   "INVALID_SECRET",
@@ -43,71 +47,71 @@ const API_KEY_TEST_CODES: BinanceApiKeyTestCode[] = [
   "UNKNOWN",
 ];
 
-const getForcedApiKeyTestCode = (): BinanceApiKeyTestCode | null => {
+const getForcedApiKeyTestCode = (): ApiKeyProbeCode | null => {
   if (process.env.NODE_ENV !== "test") return null;
   const value = process.env.API_KEY_TEST_FORCE_CODE;
   if (!value) return null;
-  return API_KEY_TEST_CODES.includes(value as BinanceApiKeyTestCode)
-    ? (value as BinanceApiKeyTestCode)
+  return API_KEY_TEST_CODES.includes(value as ApiKeyProbeCode)
+    ? (value as ApiKeyProbeCode)
     : null;
 };
 
-const buildApiKeyTestResultForCode = (code: BinanceApiKeyTestCode): ApiKeyTestResult => {
+const buildApiKeyTestResultForCode = (exchange: Exchange, code: ApiKeyProbeCode): ApiKeyTestResult => {
   switch (code) {
     case "OK":
       return {
         ok: true,
         code,
-        message: "Binance API key permissions validated.",
+        message: formatProbeMessage(exchange, code),
         permissions: { spot: true, futures: true },
       };
     case "MISSING_FUTURES_SCOPE":
       return {
         ok: false,
         code,
-        message: "Binance key has no Futures permission.",
+        message: formatProbeMessage(exchange, code),
         permissions: { spot: true, futures: false },
       };
     case "MISSING_SPOT_SCOPE":
       return {
         ok: false,
         code,
-        message: "Binance key has no Spot permission.",
+        message: formatProbeMessage(exchange, code),
         permissions: { spot: false, futures: true },
       };
     case "INVALID_KEY":
       return {
         ok: false,
         code,
-        message: "Binance rejected API key format or value.",
+        message: formatProbeMessage(exchange, code),
         permissions: { spot: false, futures: false },
       };
     case "INVALID_SECRET":
       return {
         ok: false,
         code,
-        message: "Binance rejected API secret/signature.",
+        message: formatProbeMessage(exchange, code),
         permissions: { spot: false, futures: false },
       };
     case "IP_RESTRICTED":
       return {
         ok: false,
         code,
-        message: "Binance rejected request due to IP restriction.",
+        message: formatProbeMessage(exchange, code),
         permissions: { spot: false, futures: false },
       };
     case "NETWORK_TIMEOUT":
       return {
         ok: false,
         code,
-        message: "Binance connection timed out.",
+        message: formatProbeMessage(exchange, code),
         permissions: { spot: false, futures: false },
       };
     default:
       return {
         ok: false,
         code: "UNKNOWN",
-        message: "Binance validation failed.",
+        message: formatProbeMessage(exchange, "UNKNOWN"),
         permissions: { spot: false, futures: false },
       };
   }
@@ -125,7 +129,7 @@ const resolveApiKeySyncOptions = (input: {
   };
 };
 
-const mapProbeUnexpectedFailure = (error: unknown): BinanceApiKeyTestCode => {
+const mapProbeUnexpectedFailure = (error: unknown): ApiKeyProbeCode => {
   const message = error instanceof Error ? error.message.toLowerCase() : String(error).toLowerCase();
   if (
     message.includes("timed out") ||
@@ -144,7 +148,7 @@ const writeApiKeyTestAudit = async (params: {
   userId: string;
   exchange: Exchange;
   ok: boolean;
-  code: BinanceApiKeyTestCode;
+  code: ApiKeyProbeCode;
   probeMode: ApiKeyProbeMode;
   probeLatencyMs: number;
   apiKeyId?: string | null;
@@ -329,16 +333,17 @@ export const testApiKeyConnection = async (
   let result: ApiKeyTestResult;
   try {
     result = forcedCode
-      ? buildApiKeyTestResultForCode(forcedCode)
+      ? buildApiKeyTestResultForCode(data.exchange, forcedCode)
       : process.env.NODE_ENV === "test"
-        ? buildApiKeyTestResultForCode("OK")
-        : await probeBinanceApiKeyPermissions({
+        ? buildApiKeyTestResultForCode(data.exchange, "OK")
+        : await probeExchangeApiKeyPermissions({
+            exchange: data.exchange,
             apiKey: data.apiKey,
             apiSecret: data.apiSecret,
           });
   } catch (error) {
     const fallbackCode = mapProbeUnexpectedFailure(error);
-    result = buildApiKeyTestResultForCode(fallbackCode);
+    result = buildApiKeyTestResultForCode(data.exchange, fallbackCode);
   }
 
   const probeLatencyMs = Math.max(0, Date.now() - startedAt);

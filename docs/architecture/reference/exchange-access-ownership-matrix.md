@@ -64,7 +64,7 @@ Current compatibility-stage support:
 | Exchange | `MARKET_CATALOG` | `PAPER_PRICING_FEED` | `LIVE_EXECUTION` | `API_KEY_PROBE` |
 | --- | --- | --- | --- | --- |
 | `BINANCE` | supported | supported | supported | supported |
-| `GATEIO` | supported | supported | unsupported | unsupported |
+| `GATEIO` | supported | supported | unsupported | supported |
 | `BYBIT` | unsupported | unsupported | unsupported | unsupported |
 | `OKX` | unsupported | unsupported | unsupported | unsupported |
 | `KRAKEN` | unsupported | unsupported | unsupported | unsupported |
@@ -114,7 +114,8 @@ Consumers must never infer:
 - `LIVE_EXECUTION => wallet cashflow history support`
 - `BALANCE_PREVIEW => wallet cashflow history support`
 - `MARKET_CATALOG(exchange) => MARKET_CATALOG(exchange, all market types)`
-- `API_KEY_PROBE(exchange) => authenticated reads or execution support`
+- `API_KEY_PROBE(exchange) => balance preview, positions, open orders, trade
+  history, or execution support`
 - `supported on SPOT => supported on FUTURES`
 - `supported on BINANCE => supported on another exchange`
 
@@ -144,6 +145,11 @@ Runtime market-event boundary:
   runtime after the approved exchange-owned polling source emitted real ticker
   and final-candle events. This is public pricing only and does not imply
   authenticated reads, live order submit, or exchange-side cancel support.
+- `GATEIO` `API_KEY_PROBE` is supported through the profile API-key connection
+  test surface using the shared exchange-aware probe service. This validates
+  credential reachability/permissions only and does not enable balance preview,
+  positions/open-orders/trade-history snapshots, live submit, or exchange-side
+  cancel support.
 
 Canonical owner:
 

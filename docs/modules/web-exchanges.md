@@ -5,7 +5,7 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/exchanges`
 - Owner: frontend/integrations
-- Last updated: 2026-04-12
+- Last updated: 2026-05-09
 - Related planning task: `DCP-09`
 
 ## 1. Purpose and Scope
@@ -64,7 +64,8 @@ pnpm --filter web test -- src/features/exchanges/exchangeCapabilities.test.ts sr
 ```
 
 ## 9. Open Issues and Follow-Ups
-- Gate.io remains UI-visible only for supported public catalog flows; paper
-  pricing, live execution, and API-key probe controls must stay blocked until
-  shared capability truth changes after adapter evidence.
+- Gate.io is UI-visible for supported `MARKET_CATALOG`, public
+  `PAPER_PRICING_FEED`, and `API_KEY_PROBE` flows. `LIVE_EXECUTION` and exact
+  authenticated read operations remain blocked until shared capability truth
+  and exact operation contracts change after adapter evidence.
 - Add dedicated exchange page once integrations diverge from profile API-key scope.

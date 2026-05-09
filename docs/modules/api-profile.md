@@ -5,7 +5,7 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/profile`
 - Owner: backend/core
-- Last updated: 2026-04-12
+- Last updated: 2026-05-09
 - Related planning task: `DCP-04`
 
 ## 1. Purpose and Scope
@@ -53,11 +53,13 @@ Out of scope:
   3. Merge and persist with selected profile fields.
 - API key create/test:
   1. Encrypt key/secret at write time.
-  2. Execute capability-aware connection probe (Binance contract currently active).
+  2. Execute capability-aware connection probe through the shared
+     exchange-aware probe service.
   3. Write audit-safe connection test log metadata.
-  4. Gate.io API keys may be stored as placeholder credentials, but provided
-     and stored connection probes remain fail-closed with `API_KEY_PROBE`
-     unsupported until the authenticated Gate.io adapter is implemented.
+  4. Binance and Gate.io provided/stored connection probes are supported.
+     Gate.io probe support is credential validation only; balance preview,
+     positions/open-orders/trade-history snapshots, live submit, and
+     exchange-side cancel remain outside this profile module contract.
 - Security operations:
   - password change increments `sessionVersion`.
   - account deletion cascades through related domain entities in transaction.
@@ -81,6 +83,7 @@ Out of scope:
   - `apps/api/src/modules/profile/basic/basic.e2e.test.ts`
   - `apps/api/src/modules/profile/security/security.e2e.test.ts`
   - `apps/api/src/modules/profile/apiKey/apiKey.e2e.test.ts`
+  - `apps/api/src/modules/profile/apiKey/exchangeApiKeyProbe.service.test.ts`
   - `apps/api/src/modules/profile/subscription/subscription.e2e.test.ts`
   - `apps/api/src/modules/profile/stage-abuse-throttling.e2e.test.ts`
 - Suggested validation command:

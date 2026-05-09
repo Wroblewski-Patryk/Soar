@@ -3,7 +3,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { app } from "../../../index";
 import { prisma } from "../../../prisma/client";
 
-const PLACEHOLDER_EXCHANGES = ["BYBIT", "OKX", "KRAKEN", "COINBASE", "GATEIO"] as const;
+const PLACEHOLDER_EXCHANGES = ["BYBIT", "OKX", "KRAKEN", "COINBASE"] as const;
 const originalApiKeyEncryptionKeys = process.env.API_KEY_ENCRYPTION_KEYS;
 const originalApiKeyEncryptionActiveVersion = process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
 
@@ -429,7 +429,56 @@ describe("API Keys security contract", () => {
     }
   });
 
-  it("returns explicit not-implemented contract for stored Gate.io API key probe", async () => {
+  it("tests Gate.io key connection without persisting secrets", async () => {
+    const email = "apikey-gateio-test-connection@example.com";
+    const agent = await registerAndLogin(email);
+    const testPayload = {
+      exchange: "GATEIO",
+      apiKey: "GATEIOTESTCONNECTIONKEY123",
+      apiSecret: "GATEIOTESTCONNECTIONSECRET123",
+    };
+
+    const testRes = await agent.post("/dashboard/profile/apiKeys/test").send(testPayload);
+
+    expect(testRes.status).toBe(200);
+    expect(testRes.body).toEqual({
+      ok: true,
+      code: "OK",
+      message: "Gate.io API key permissions validated.",
+      permissions: {
+        spot: true,
+        futures: true,
+      },
+    });
+
+    const dbKeys = await prisma.apiKey.findMany();
+    expect(dbKeys).toHaveLength(0);
+
+    const user = await prisma.user.findUniqueOrThrow({ where: { email } });
+    const log = await prisma.log.findFirst({
+      where: {
+        userId: user.id,
+        action: "profile.api_key.test_connection",
+      },
+      orderBy: { occurredAt: "desc" },
+    });
+
+    expect(log).toBeTruthy();
+    expect(log?.metadata).toMatchObject({
+      exchange: "GATEIO",
+      ok: true,
+      code: "OK",
+      probeMode: "provided",
+      permissions: {
+        spot: true,
+        futures: true,
+      },
+    });
+    expect(JSON.stringify(log?.metadata)).not.toContain(testPayload.apiKey);
+    expect(JSON.stringify(log?.metadata)).not.toContain(testPayload.apiSecret);
+  });
+
+  it("tests stored Gate.io encrypted credentials by api key id", async () => {
     const email = "apikey-gateio-stored-probe@example.com";
     const agent = await registerAndLogin(email);
 
@@ -444,14 +493,15 @@ describe("API Keys security contract", () => {
 
     const testRes = await agent.post(`/dashboard/profile/apiKeys/${keyId}/test`).send({});
 
-    expect(testRes.status).toBe(501);
-    expect(testRes.body.error.message).toContain(
-      "Exchange GATEIO does not support API_KEY_PROBE"
-    );
-    expect(testRes.body.error.details).toEqual({
-      code: "EXCHANGE_NOT_IMPLEMENTED",
-      exchange: "GATEIO",
-      capability: "API_KEY_PROBE",
+    expect(testRes.status).toBe(200);
+    expect(testRes.body).toEqual({
+      ok: true,
+      code: "OK",
+      message: "Gate.io API key permissions validated.",
+      permissions: {
+        spot: true,
+        futures: true,
+      },
     });
 
     const user = await prisma.user.findUniqueOrThrow({ where: { email } });
@@ -460,8 +510,18 @@ describe("API Keys security contract", () => {
         userId: user.id,
         action: "profile.api_key.test_connection",
       },
+      orderBy: { occurredAt: "desc" },
     });
-    expect(log).toBeNull();
+    expect(log).toBeTruthy();
+    expect(log?.metadata).toMatchObject({
+      exchange: "GATEIO",
+      ok: true,
+      code: "OK",
+      probeMode: "stored",
+      apiKeyId: keyId,
+    });
+    expect(JSON.stringify(log?.metadata)).not.toContain("GATEIOSTOREDKEY12345678");
+    expect(JSON.stringify(log?.metadata)).not.toContain("GATEIOSTOREDSECRET12345678");
   });
 
   it("enforces ownership on rotate and revoke actions", async () => {

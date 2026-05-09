@@ -4,6 +4,12 @@ Last updated: 2026-05-09
 
 ## Latest Health Snapshot
 
+- `EXCHANGE2-24` local validation PASS: Gate.io `API_KEY_PROBE` is enabled for
+  provided and stored profile API-key connection tests through the shared
+  exchange-aware probe service. Gate.io balance preview, positions/open-orders,
+  trade-history, live submit, and exchange-side cancel remain unsupported.
+  Evidence:
+  `docs/planning/exchange2-24-gateio-api-key-probe-task-2026-05-09.md`.
 - Latest observed production build-info is
   `e8cd748e80b8693087e01beb21b0085ace747c49`: build-info PASS, public
   API/Web smoke PASS, and no-secret final V1 preflight public checks PASS.

@@ -42,7 +42,7 @@ const EXCHANGE_CAPABILITY_MATRIX = {
     MARKET_CATALOG: true,
     PAPER_PRICING_FEED: true,
     LIVE_EXECUTION: false,
-    API_KEY_PROBE: false,
+    API_KEY_PROBE: true,
   },
 };
 
