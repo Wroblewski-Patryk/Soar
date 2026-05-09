@@ -394,9 +394,11 @@ Last updated: 2026-05-09
 
 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
   - Scope: current shell lacks required protected env names for live-import
-    auth, rollback auth, and production DB/Coolify restore context. Final V1
-    evidence, rollback proof, restore drill, RC approval, and authenticated UI
-    clickthrough remain blocked until operator inputs are supplied. Evidence:
+    auth, rollback auth, and production DB/Coolify restore context. The
+    readiness artifact now targets current production build-info
+    `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`. Final V1 evidence, rollback
+    proof, restore drill, RC approval, and authenticated UI clickthrough remain
+    blocked until operator inputs are supplied. Evidence:
     `docs/planning/v1-protected-access-readiness-task-2026-05-09.md` and
     `docs/operations/v1-protected-access-readiness-2026-05-09.md`.
 

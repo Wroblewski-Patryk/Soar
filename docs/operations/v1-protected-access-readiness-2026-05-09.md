@@ -5,7 +5,7 @@
 - Environment: local operator shell
 - Evidence date: 2026-05-09
 - Deployed code/tooling candidate:
-  `4792fbca9ab3ca44d08c312f219f70d648707886`
+  `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`
 
 ## Purpose
 This readiness check confirms whether the current shell has the protected
@@ -61,6 +61,11 @@ The current shell cannot honestly execute:
 - production DB restore drill for the active evidence date
 - final non-dry-run V1 release gate
 - authenticated/admin production UI clickthrough
+
+2026-05-09 refresh: production build-info and no-secret public checks are
+current for `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`. This refresh does
+not change the protected access result; the required auth/context names are
+still missing in this shell.
 
 ## Required Inputs
 

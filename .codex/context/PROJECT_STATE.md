@@ -383,8 +383,10 @@ Last updated: 2026-05-09
 - 2026-05-09 `V1-PROTECTED-ACCESS-READINESS-2026-05-09` confirmed the current
   shell is still missing required protected inputs. Names-only checks found no
   live-import auth, rollback auth, or production DB/Coolify restore context
-  env names. Final V1 evidence remains blocked until those inputs, RC approval
-  identities, and authenticated/admin UI access are supplied. Evidence:
+  env names. 2026-05-09 refresh: the readiness artifact now targets current
+  production build-info `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`. Final V1
+  evidence remains blocked until those inputs, RC approval identities, and
+  authenticated/admin UI access are supplied. Evidence:
   `docs/operations/v1-protected-access-readiness-2026-05-09.md`.
 - 2026-05-08 `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08` published the
   current no-secret final V1 preflight JSON/Markdown snapshot for deployed SHA
