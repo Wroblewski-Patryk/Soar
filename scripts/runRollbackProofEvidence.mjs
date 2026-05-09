@@ -18,6 +18,7 @@ const parseArgs = () => {
     opsBasicPassword: process.env.ROLLBACK_GUARD_OPS_BASIC_PASSWORD ?? '',
     opsAuthHeaderName: process.env.ROLLBACK_GUARD_OPS_AUTH_HEADER_NAME ?? '',
     opsAuthHeaderValue: process.env.ROLLBACK_GUARD_OPS_AUTH_HEADER_VALUE ?? '',
+    today: '',
   };
 
   for (let index = 0; index < args.length; index += 1) {
@@ -35,6 +36,7 @@ const parseArgs = () => {
     if (arg === '--ops-basic-password') options.opsBasicPassword = args[index + 1] ?? options.opsBasicPassword;
     if (arg === '--ops-auth-header-name') options.opsAuthHeaderName = args[index + 1] ?? options.opsAuthHeaderName;
     if (arg === '--ops-auth-header-value') options.opsAuthHeaderValue = args[index + 1] ?? options.opsAuthHeaderValue;
+    if (arg === '--today') options.today = args[index + 1] ?? options.today;
   }
 
   return options;
@@ -43,7 +45,7 @@ const parseArgs = () => {
 const printUsage = () => {
   console.log(
     [
-      'Usage: node scripts/runRollbackProofEvidence.mjs [--profile <stage|prod>] --base-url <url> [--auth-token <token>] [--auth-email <email>] [--auth-password <password>] [--ops-basic-user <user>] [--ops-basic-password <pass>] [--ops-auth-header-name <name>] [--ops-auth-header-value <value>]',
+      'Usage: node scripts/runRollbackProofEvidence.mjs [--profile <stage|prod>] --base-url <url> [--auth-token <token>] [--auth-email <email>] [--auth-password <password>] [--ops-basic-user <user>] [--ops-basic-password <pass>] [--ops-auth-header-name <name>] [--ops-auth-header-value <value>] [--today <yyyy-mm-dd>]',
       '',
       'Env:',
       '  ROLLBACK_GUARD_API_BASE_URL',
@@ -55,6 +57,11 @@ const printUsage = () => {
 };
 
 const nowStamp = () => new Date().toISOString().replace(/[:.]/g, '-');
+const evidenceStamp = (today) => {
+  const normalized = String(today ?? '').trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(normalized)) return `${normalized}T00-00-00-000Z`;
+  return nowStamp();
+};
 
 const run = (command, args, envOverrides = {}) =>
   spawnSync(command, args, {
@@ -140,7 +147,7 @@ const main = async () => {
   const status = Object.values(checks).every(Boolean) ? 'PASS' : 'FAIL';
 
   await mkdir(operationsDir, { recursive: true });
-  const stamp = nowStamp();
+  const stamp = evidenceStamp(options.today);
   const jsonFile = path.join(operationsDir, `_artifacts-v1-rollback-proof-${options.profile}-${stamp}.json`);
   const mdFile = path.join(operationsDir, `v1-rollback-proof-${options.profile}-${stamp}.md`);
 

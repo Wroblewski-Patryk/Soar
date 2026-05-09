@@ -37,13 +37,16 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 node scripts/buildRcExternalGateStatus.mjs --template-only --today 2026-05-09
 node scripts/buildRcSignoffRecord.mjs --today 2026-05-09
 node scripts/syncRcChecklistFromGateStatus.mjs --today 2026-05-09
+node scripts/runRollbackProofEvidence.mjs --profile prod --base-url https://api.soar.luckysparrow.ch --today 2026-05-09
 node scripts/runV1FinalPreflight.mjs --today 2026-05-09 --expected-sha <sha>
 ```
 - Avoid: hand-editing generated artifact dates or treating UTC/local-date drift
   as release readiness failure after the underlying evidence was regenerated.
 - Evidence: final preflight for deployed
   `90cd07d602f0a31f315719b8a5cd5be3fd112313` moved RC evidence from `stale`
-  to fresh `failed` blockers after the RC scripts were rerun with `--today`.
+  to fresh `failed` blockers after the RC scripts were rerun with `--today`;
+  rollback proof generation now exposes the same date override for the next
+  authenticated operator run.
 
 ### 2026-05-08 - Final preflight public checks should call bundled Node scripts
 - Context: `V1-FINAL-PREFLIGHT-NODE-DEPLOY-CHECKS-2026-05-08` reran the final

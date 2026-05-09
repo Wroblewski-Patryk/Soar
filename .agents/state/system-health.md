@@ -150,6 +150,10 @@ Last updated: 2026-05-09
   `BLOCKED`, and RC checklist is synced to the same date. Final preflight now
   reports RC evidence as fresh `failed`, not stale. Evidence:
   `docs/planning/v1-rc-blocked-evidence-refresh-task-2026-05-09.md`.
+- Rollback proof tooling now supports explicit `--today` evidence-date stamps,
+  but no 2026-05-09 rollback proof artifact is accepted yet. A no-auth
+  sandboxed attempt could not reach production or write an artifact; protected
+  rollback auth/network access is still required.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307

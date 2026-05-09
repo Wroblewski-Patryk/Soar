@@ -167,6 +167,10 @@ for 2026-05-09 as blocked/open evidence. The final preflight now reports RC
 evidence as fresh `failed`, not stale. Remaining V1 blockers are protected
 auth, production DB restore context, `LIVEIMPORT-03`, backup/restore freshness,
 rollback proof, and real RC approval.
+Rollback proof tooling now supports `--today <yyyy-mm-dd>` for the next
+authenticated operator run. The actual 2026-05-09 rollback proof is still not
+captured because this shell lacks approved protected auth/network execution;
+do not accept sandbox fetch failures as production rollback evidence.
 
 The local V1 backend paper/live runtime line is closed for this slice: focused
 parity/crash coverage, DB-backed runtime/order/exchange/import/readback packs,

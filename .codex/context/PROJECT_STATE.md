@@ -239,6 +239,12 @@ Last updated: 2026-05-09
   protected auth, DB restore context, `LIVEIMPORT-03`, recovery proof, and RC
   approval. Evidence:
   `docs/planning/v1-rc-blocked-evidence-refresh-task-2026-05-09.md`.
+- 2026-05-09 `V1-ROLLBACK-PROOF-DATE-OVERRIDE-2026-05-09` added
+  `--today <yyyy-mm-dd>` to the rollback proof generator so future production
+  rollback proof artifacts can target the active evidence date. The actual
+  rollback proof remains blocked; a sandboxed no-auth attempt could not reach
+  production or write an artifact and was not accepted as evidence. Evidence:
+  `docs/planning/v1-rollback-proof-date-override-task-2026-05-09.md`.
 - 2026-05-08 `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08` published the
   current no-secret final V1 preflight JSON/Markdown snapshot for deployed SHA
   `052df82244ea0f81e8611ff8bb2b677db115bd19`. The snapshot reports build-info

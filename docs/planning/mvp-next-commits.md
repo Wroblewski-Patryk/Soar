@@ -263,6 +263,15 @@ Operational queue for one-task execution runs.
     RC evidence as fresh `failed` instead of stale. Evidence:
     `docs/planning/v1-rc-blocked-evidence-refresh-task-2026-05-09.md`.
 
+- [x] `V1-ROLLBACK-PROOF-DATE-OVERRIDE-2026-05-09 fix(ops): date rollback proof evidence`
+  - 2026-05-09: Added `--today <yyyy-mm-dd>` support to
+    `scripts/runRollbackProofEvidence.mjs` so the next authenticated operator
+    rollback proof can generate an artifact for the intended release evidence
+    date. No rollback proof artifact was accepted from the sandbox-blocked
+    no-auth run; rollback proof remains open until protected production auth
+    and network access are available. Evidence:
+    `docs/planning/v1-rollback-proof-date-override-task-2026-05-09.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - 2026-05-08: Generated and committed the current no-secret final V1
     preflight JSON/Markdown snapshot for deployed SHA

@@ -40,6 +40,10 @@ evidence for 2026-05-09. Preflight now classifies them as `failed` rather than
 `stale`, because real Gate 2 production SLO evidence and Gate 4 approver
 approval are still missing.
 
+2026-05-09 rollback proof tooling: rollback proof generation now accepts
+`--today <yyyy-mm-dd>` for correct release evidence dating, but the actual
+production rollback proof remains blocked on protected auth/network access.
+
 2026-05-09 continuation update: Gate.io second-exchange planning has been
 reconciled after the deployed fail-closed foundation. The plan is complete as a
 planning artifact; public catalog and public `FUTURES`/swap market-data

@@ -262,6 +262,13 @@ Last updated: 2026-05-09
     fresh `failed` instead of stale. Evidence:
     `docs/planning/v1-rc-blocked-evidence-refresh-task-2026-05-09.md`.
 
+- [x] `V1-ROLLBACK-PROOF-DATE-OVERRIDE-2026-05-09 fix(ops): date rollback proof evidence`
+  - Scope: added explicit evidence-date support to the rollback proof
+    generator so future authenticated operator runs can create artifacts for
+    the intended release date. No production rollback proof artifact was
+    accepted in this task. Evidence:
+    `docs/planning/v1-rollback-proof-date-override-task-2026-05-09.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - Scope: generated and committed the current no-secret final V1 preflight
     JSON/Markdown snapshot for deployed SHA

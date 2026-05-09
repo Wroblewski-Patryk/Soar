@@ -32,6 +32,11 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-09: Closed `V1-ROLLBACK-PROOF-DATE-OVERRIDE-2026-05-09` with
+  `docs/planning/v1-rollback-proof-date-override-task-2026-05-09.md`. Rollback
+  proof tooling now supports explicit evidence-date artifact stamps, but the
+  real production rollback proof remains blocked on protected auth/network
+  access.
 - 2026-05-09: Closed `V1-RC-BLOCKED-REFRESH-2026-05-09` with
   `docs/planning/v1-rc-blocked-evidence-refresh-task-2026-05-09.md`. RC
   status, sign-off, and checklist are now fresh blocked evidence for
