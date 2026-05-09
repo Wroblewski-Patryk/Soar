@@ -276,6 +276,14 @@ Last updated: 2026-05-09
     this task. Evidence:
     `docs/planning/v1-restore-drill-date-override-task-2026-05-09.md`.
 
+- [x] `V1-FINAL-BLOCKER-PACK-DATE-OVERRIDES-2026-05-09 release: sync final blocker pack date overrides`
+  - Scope: synchronized the final V1 blocker execution pack with existing
+    evidence-date override tooling. The pack now defines one `$releaseDate`
+    and uses it for supported preflight, restore drill, rollback proof, RC
+    evidence, and final gate commands. No production evidence was generated or
+    accepted in this task. Evidence:
+    `docs/planning/v1-final-blocker-pack-date-overrides-task-2026-05-09.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - Scope: generated and committed the current no-secret final V1 preflight
     JSON/Markdown snapshot for deployed SHA

@@ -251,6 +251,14 @@ Last updated: 2026-05-09
   date. The actual restore drill remains blocked until approved production
   DB/Coolify context is available. Evidence:
   `docs/planning/v1-restore-drill-date-override-task-2026-05-09.md`.
+- 2026-05-09 `V1-FINAL-BLOCKER-PACK-DATE-OVERRIDES-2026-05-09` synchronized
+  the final blocker execution pack with the date-aware release tooling. The
+  operator pack now defines one `$releaseDate` and passes it to supported
+  preflight, restore drill, rollback proof, RC status/sign-off, checklist
+  sync, and final release gate commands. This did not create or accept
+  production evidence; V1 remains blocked until protected auth and DB/Coolify
+  context are available. Evidence:
+  `docs/planning/v1-final-blocker-pack-date-overrides-task-2026-05-09.md`.
 - 2026-05-08 `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08` published the
   current no-secret final V1 preflight JSON/Markdown snapshot for deployed SHA
   `052df82244ea0f81e8611ff8bb2b677db115bd19`. The snapshot reports build-info

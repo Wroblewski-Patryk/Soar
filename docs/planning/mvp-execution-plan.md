@@ -32,6 +32,12 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-09: Closed
+  `V1-FINAL-BLOCKER-PACK-DATE-OVERRIDES-2026-05-09` with
+  `docs/planning/v1-final-blocker-pack-date-overrides-task-2026-05-09.md`.
+  The final blocker execution pack now declares one `$releaseDate` and passes
+  it to supported preflight, restore drill, rollback proof, RC evidence, and
+  final gate commands so one operator run does not mix evidence dates.
 - 2026-05-09: Closed `V1-RESTORE-DRILL-DATE-OVERRIDE-2026-05-09` with
   `docs/planning/v1-restore-drill-date-override-task-2026-05-09.md`. Restore
   drill tooling now supports explicit evidence-date artifact stamps, but the

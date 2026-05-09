@@ -281,6 +281,15 @@ Operational queue for one-task execution runs.
     is available. Evidence:
     `docs/planning/v1-restore-drill-date-override-task-2026-05-09.md`.
 
+- [x] `V1-FINAL-BLOCKER-PACK-DATE-OVERRIDES-2026-05-09 release: sync final blocker pack date overrides`
+  - 2026-05-09: Synced the final blocker execution pack with the new
+    evidence-date support by declaring one `$releaseDate` and passing it to
+    supported preflight, restore drill, rollback proof, RC status/sign-off,
+    checklist sync, and final release gate commands. This is a runbook/state
+    update only; protected production evidence remains blocked until operator
+    auth and DB/Coolify context are available. Evidence:
+    `docs/planning/v1-final-blocker-pack-date-overrides-task-2026-05-09.md`.
+
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - 2026-05-08: Generated and committed the current no-secret final V1
     preflight JSON/Markdown snapshot for deployed SHA

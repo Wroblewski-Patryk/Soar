@@ -41,6 +41,14 @@ with approved production auth and database/Coolify access.
 
 ## Execution Order
 
+Set one release evidence date at the start of the operator run and reuse it
+for all date-stamped artifacts below. This prevents local-time and UTC
+midnight drift from producing stale evidence during a late release session.
+
+```powershell
+$releaseDate = Get-Date -Format yyyy-MM-dd
+```
+
 ### 0. Run Final V1 Preflight
 
 Run the read-only preflight first. It checks deployed build-info for current
@@ -49,7 +57,7 @@ prerequisite environment variable names, and classifies current release
 evidence without creating protected production artifacts.
 
 ```powershell
-pnpm run ops:release:v1:preflight
+pnpm run ops:release:v1:preflight -- --today $releaseDate
 ```
 
 For a machine-readable, no-secret status report that can be consumed by later
@@ -59,14 +67,14 @@ for category, severity, protected-input requirements, final-evidence
 requirements, and remediation availability:
 
 ```powershell
-pnpm run ops:release:v1:preflight -- --json-output docs/operations/_artifacts-v1-final-preflight-2026-05-08.json
+pnpm run ops:release:v1:preflight -- --today $releaseDate --json-output "docs/operations/_artifacts-v1-final-preflight-$releaseDate.json"
 ```
 
 For a human-readable no-secret operator report from the same preflight data,
 also pass a Markdown output path:
 
 ```powershell
-pnpm run ops:release:v1:preflight -- --json-output docs/operations/_artifacts-v1-final-preflight-2026-05-08.json --markdown-output docs/operations/v1-final-preflight-2026-05-08.md
+pnpm run ops:release:v1:preflight -- --today $releaseDate --json-output "docs/operations/_artifacts-v1-final-preflight-$releaseDate.json" --markdown-output "docs/operations/v1-final-preflight-$releaseDate.md"
 ```
 
 Expected current result before protected operator access is available:
@@ -102,7 +110,7 @@ Expected result: `PASS`.
 
 ```powershell
 $expectedSha = git rev-parse HEAD
-pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output docs/operations/liveimport-03-prod-readback-2026-05-08.json
+pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output "docs/operations/liveimport-03-prod-readback-$releaseDate.json"
 ```
 
 Required result:
@@ -131,7 +139,7 @@ collected.
 ### 3. Run Production Restore Drill
 
 ```powershell
-pnpm run ops:db:restore-drill:prod
+pnpm run ops:db:restore-drill:prod -- --today $releaseDate
 ```
 
 Required result:
@@ -149,7 +157,7 @@ generated restore drill artifact itself reports `Status: **PASS**`.
 ### 4. Run Production Rollback Proof
 
 ```powershell
-pnpm run ops:deploy:rollback-proof -- --profile prod --base-url https://api.soar.luckysparrow.ch
+pnpm run ops:deploy:rollback-proof -- --profile prod --base-url https://api.soar.luckysparrow.ch --today $releaseDate
 ```
 
 Required result:
@@ -172,6 +180,7 @@ responses as rollback-proof PASS evidence.
 
 ```powershell
 pnpm run ops:rc:gates:prod-pipeline -- --base-url https://api.soar.luckysparrow.ch --duration-minutes 30 --interval-seconds 30
+pnpm run ops:rc:gates:status -- --today $releaseDate
 ```
 
 If using explicit auth, pass the token or login options supported by the
@@ -184,9 +193,9 @@ script. Required result:
 ### 6. Build Final RC Sign-Off
 
 ```powershell
-pnpm run ops:rc:signoff:build -- --engineering-name "<name>" --product-name "<name>" --operations-name "<name>" --owner-name "<name>" --owner-contact "<email-or-contact>"
-pnpm run ops:rc:gates:status
-pnpm run ops:rc:checklist:sync
+pnpm run ops:rc:signoff:build -- --engineering-name "<name>" --product-name "<name>" --operations-name "<name>" --owner-name "<name>" --owner-contact "<email-or-contact>" --today $releaseDate
+pnpm run ops:rc:gates:status -- --today $releaseDate
+pnpm run ops:rc:checklist:sync -- --today $releaseDate
 ```
 
 Required result:
@@ -205,7 +214,7 @@ handoff, but does not replace the required RC owner name.
 
 ```powershell
 $expectedSha = git rev-parse HEAD
-pnpm run ops:release:v1:gate -- --environment prod --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --skip-local-quality
+pnpm run ops:release:v1:gate -- --environment prod --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --skip-local-quality --today $releaseDate
 ```
 
 Required result:
@@ -217,6 +226,10 @@ Required result:
 
 ## Current Known Blockers
 - `LIVEIMPORT-03` authenticated runtime readback is missing.
+- The execution pack now uses a single `$releaseDate` and passes it to
+  date-aware preflight, restore drill, rollback proof, RC status/sign-off,
+  checklist sync, and final gate commands. Operators should not mix evidence
+  dates within one final V1 run.
 - Latest verified deploy/preflight:
   build-info for `721fe8482922835a9419f0e529baeef4ff6a74c9` passes, public
   API/Web smoke passes, and production DB restore context is satisfied by

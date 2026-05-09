@@ -157,6 +157,12 @@ Last updated: 2026-05-09
 - Restore drill tooling now supports explicit `--today` evidence-date stamps,
   but no 2026-05-09 production restore drill artifact is accepted yet.
   Approved production DB/Coolify context is still required.
+- Final blocker pack date synchronization PASS: the active V1 operator pack now
+  declares one `$releaseDate` and passes it to supported date-aware preflight,
+  restore drill, rollback proof, RC evidence, and final release gate commands.
+  This is runbook/state evidence only; no protected production evidence was
+  generated or accepted. Evidence:
+  `docs/planning/v1-final-blocker-pack-date-overrides-task-2026-05-09.md`.
 - Production public UI access probe on 2026-05-08 passed for API `/health`,
   API `/ready`, Web `/`, `/auth/login`, `/auth/register`, `/offline`, and
   `/api/build-info`; unauthenticated dashboard/admin routes returned HTTP 307

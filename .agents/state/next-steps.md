@@ -175,6 +175,11 @@ Restore drill tooling now also supports `--today <yyyy-mm-dd>` for the next
 production DB/Coolify run. The actual 2026-05-09 restore drill is still not
 captured because this shell lacks approved production DB/Coolify execution
 context; do not accept local or empty restore output as production evidence.
+The final blocker execution pack is now synced to those date-aware commands:
+set `$releaseDate` once and reuse it for preflight, restore drill, rollback
+proof, RC status/sign-off/checklist, live-import output paths, and the final
+release gate. Evidence:
+`docs/planning/v1-final-blocker-pack-date-overrides-task-2026-05-09.md`.
 
 The local V1 backend paper/live runtime line is closed for this slice: focused
 parity/crash coverage, DB-backed runtime/order/exchange/import/readback packs,

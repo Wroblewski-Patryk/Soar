@@ -48,6 +48,12 @@ production rollback proof remains blocked on protected auth/network access.
 `--today <yyyy-mm-dd>` for correct release evidence dating, but the actual
 production restore drill remains blocked on approved DB/Coolify context.
 
+2026-05-09 final blocker pack sync: the operator execution pack now defines
+one `$releaseDate` and reuses it across supported date-aware preflight,
+restore drill, rollback proof, RC evidence, and final gate commands. This is a
+runbook/state synchronization only; final production evidence still requires
+protected auth and DB/Coolify context.
+
 2026-05-09 continuation update: Gate.io second-exchange planning has been
 reconciled after the deployed fail-closed foundation. The plan is complete as a
 planning artifact; public catalog and public `FUTURES`/swap market-data
