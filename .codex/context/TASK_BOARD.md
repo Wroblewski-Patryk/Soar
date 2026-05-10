@@ -17,6 +17,14 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `V1-NEXT-STEPS-DYNAMIC-SHA-CLEANUP-2026-05-10 release: remove stale static SHA targets`
+  - Scope: cleaned the lower V1 continuation backlog so protected evidence
+    runs derive `$expectedSha` from production `/api/build-info` instead of
+    stale historical defaults like `c50e1e7c` or `30b027b7`. The final blocker
+    pack remains authoritative, and build-info freshness is still not treated
+    as liveimport, rollback, RC, or authenticated UI proof. Evidence:
+    `docs/planning/v1-next-steps-dynamic-sha-cleanup-task-2026-05-10.md`.
+
 - [x] `PROD-UI-PUBLIC-CLICKTHROUGH-88313309-2026-05-10 qa: refresh current no-auth production UI audit`
   - Scope: ran the existing production UI module clickthrough runner without
     dashboard/admin credentials against deployed

@@ -13,6 +13,12 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `V1-NEXT-STEPS-DYNAMIC-SHA-CLEANUP-2026-05-10` removed stale
+  static SHA defaults from the lower V1 continuation backlog. Future protected
+  evidence instructions now consistently derive `$expectedSha` from production
+  `/api/build-info`, with optional intended-SHA comparison only when an
+  operator deliberately promotes one exact runtime candidate. Evidence:
+  `docs/planning/v1-next-steps-dynamic-sha-cleanup-task-2026-05-10.md`.
 - 2026-05-10 `PROD-UI-PUBLIC-CLICKTHROUGH-88313309-2026-05-10` refreshed
   no-auth production UI route/module evidence for deployed build-info
   `88313309200d35275ba6c0d3465c5045c4b6d99e`. The audit reports public routes

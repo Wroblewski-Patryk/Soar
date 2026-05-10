@@ -645,10 +645,10 @@ candidate at
 `docs/operations/prod-ui-public-access-clickthrough-3c5da343-2026-05-09.md`;
 it confirms public route reachability and unauthenticated auth gates only.
 The final blocker execution pack now separates the deployed code/tooling
-candidate from local evidence-only commits. After the docs/evidence handoff
-batch was pushed and deployed, use
-`c50e1e7cf1e37d9c799031cacbb30a834f57e81d` as `$expectedSha` for protected
-evidence until another intended candidate is deployed and proven by build-info.
+candidate from local evidence-only commits. For protected evidence, derive
+`$expectedSha` from production `/api/build-info` at the start of the operator
+run unless the operator intentionally compares one exact intended runtime
+candidate first.
 Evidence:
 `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
 Protected access readiness is currently BLOCKED. Names-only checks in this
@@ -682,11 +682,13 @@ been removed because the project does not use paid GitHub Actions and workflow
 attempts create unwanted email noise.
 
 ```powershell
-$expectedSha = "c50e1e7cf1e37d9c799031cacbb30a834f57e81d"
+$buildInfo = Invoke-RestMethod "https://soar.luckysparrow.ch/api/build-info"
+$expectedSha = $buildInfo.gitSha
+$expectedSha
 pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --timeout-seconds 900 --interval-seconds 15
 ```
 
-After Coolify deploy exposes the promoted SHA, continue with
+After production build-info exposes the selected SHA, continue with
 `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md` once
 production auth and DB/Coolify access are available. Start with
 `pnpm run ops:release:v1:preflight`; it is read-only and reports deploy
@@ -758,14 +760,16 @@ Canonical command once auth is available:
 
 ```powershell
 $releaseDate = Get-Date -Format yyyy-MM-dd
-$expectedSha = "c50e1e7cf1e37d9c799031cacbb30a834f57e81d"
+$buildInfo = Invoke-RestMethod "https://soar.luckysparrow.ch/api/build-info"
+$expectedSha = $buildInfo.gitSha
+$expectedSha
 pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output "docs/operations/liveimport-03-prod-readback-$releaseDate.json"
 ```
 
-If production build-info reports a deployed commit older than the chosen
-`$expectedSha`, wait for the accepted Coolify/manual deploy before protected
-readback. Do not substitute local evidence-only `HEAD` unless build-info proves
-that SHA is deployed or the user/operator explicitly confirms those docs-only
+If the operator is promoting one exact intended runtime candidate, compare that
+intended SHA with production build-info before protected readback. Do not
+substitute local evidence-only `HEAD` unless production build-info proves that
+SHA is deployed or the user/operator explicitly confirms those docs-only
 changes are irrelevant to the protected readback.
 
 ## Candidate Backlog
@@ -791,28 +795,25 @@ changes are irrelevant to the protected readback.
    without parsing blocker strings. For a human-readable operator handoff from
    the same no-secret data, add `--markdown-output <path>`; the Markdown report
    is status only and not final release evidence.
-0a. Production build-info reached the backend parity runtime fix, blocker
-   evidence alignment, deploy-wait coordination, operator preflight hardening
-   docs, live-import release-gate evidence enforcement, build-info freshness
-   enforcement, strict RC approval evidence enforcement, restore-context
-   preflight alignment, dashboard runtime aggregate evidence, and current
-   protected operator handoff at
-   `30b027b78544f76b5b638851e8e27c98f6d22ab5`. Do not use GitHub Actions. If a
-   future step depends on a pushed commit being deployed, wait for build-info
-   before continuing; an operator can speed this up with Coolify dashboard
-   force deploy, or with deploy webhook/API token if those secrets are
-   available outside the repository.
+0a. Production build-info is the default protected evidence target source.
+   The final blocker execution pack now reads
+   `https://soar.luckysparrow.ch/api/build-info` at the start of the operator
+   run and assigns `$expectedSha = $buildInfo.gitSha`. Do not use GitHub
+   Actions. If an operator is promoting one exact intended runtime candidate,
+   compare that intended SHA with production build-info first. If a future step
+   depends on a pushed commit being deployed, wait for build-info before
+   continuing; an operator can speed this up with Coolify dashboard force
+   deploy, or with deploy webhook/API token if those secrets are available
+   outside the repository.
 1. If production credentials or ops auth are available, execute
-   `ops:liveimport:readback` with
-   `--expected-sha 30b027b78544f76b5b638851e8e27c98f6d22ab5`, unless a newer
-   intended code/tooling candidate has first been deployed and proven by
-   production build-info. Record redacted `LIVEIMPORT-03` evidence only after
-   the protected readback succeeds. The latest names-only prerequisite sweep
-   found only `FIGMA_OAUTH_TOKEN` in this shell. The collector now names the
-   exact accepted auth variable choices on the fail-closed missing-auth path.
-   The evidence run must include actual protected runtime positions payloads
-   for the requested symbols. The final V1 release gate now requires this
-   artifact as `LIVEIMPORT-03 runtime readback` and blocks with
+   `ops:liveimport:readback` with the build-info-derived `$expectedSha`.
+   Record redacted `LIVEIMPORT-03` evidence only after the protected readback
+   succeeds. The latest names-only prerequisite sweep found no required
+   `LIVEIMPORT_READBACK_*` inputs in this shell. The collector names the exact
+   accepted auth variable choices on the fail-closed missing-auth path. The
+   evidence run must include actual protected runtime positions payloads for
+   the requested symbols. The final V1 release gate requires this artifact as
+   `LIVEIMPORT-03 runtime readback` and blocks with
    `evidence:liveImportReadback:missing` until it exists.
 2. If authenticated readback remains unavailable, keep `LIVEIMPORT-03` open and
    do not downgrade it to public health/build-info evidence.
@@ -834,11 +835,8 @@ changes are irrelevant to the protected readback.
      the external-gates status shows Gate 4 `PASS`, the sign-off record reports
      `RC status: APPROVED`, and the checklist shows `G4=PASS`.
    - Final release gate must run without `--dry-run` and with the
-     build-info-proven expected SHA plus the deployed web base URL so
-     build-info freshness is enforced inside the gate. Use
-     `30b027b78544f76b5b638851e8e27c98f6d22ab5` unless a newer intended
-     code/tooling candidate has first been deployed and proven by production
-     build-info.
+     build-info-derived `$expectedSha` plus the deployed web base URL so
+     build-info freshness is enforced inside the gate.
 5. If the active queue is empty, run a planning-status sweep before saying
    nothing is planned.
 

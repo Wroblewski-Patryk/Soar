@@ -7,6 +7,15 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-NEXT-STEPS-DYNAMIC-SHA-CLEANUP-2026-05-10 release: remove stale static SHA targets`
+  - 2026-05-10: Cleaned the lower V1 continuation backlog so protected
+    evidence runs derive `$expectedSha` from production `/api/build-info`
+    instead of stale historical defaults like `c50e1e7c` or `30b027b7`. The
+    final blocker pack remains authoritative, and build-info freshness is still
+    not treated as liveimport, rollback, RC, or authenticated UI proof.
+    Evidence:
+    `docs/planning/v1-next-steps-dynamic-sha-cleanup-task-2026-05-10.md`.
+
 - [x] `PROD-UI-PUBLIC-CLICKTHROUGH-88313309-2026-05-10 qa: refresh current no-auth production UI audit`
   - 2026-05-10: Ran the existing production UI module clickthrough runner
     without dashboard/admin credentials against deployed
