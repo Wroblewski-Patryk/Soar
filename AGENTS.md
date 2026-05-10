@@ -15,6 +15,7 @@ Read these before starting non-trivial work:
 - `.agents/core/mission-control.md`
 - `.agents/core/product-delivery-system.md`
 - `.agents/core/product-intake-and-decision-handshake.md`
+- `.agents/core/requirements-verification-system.md`
 - `.agents/core/execution-loop.md`
 - `.agents/core/anti-regression.md`
 - `.agents/core/quality-gates.md`
@@ -23,6 +24,9 @@ Read these before starting non-trivial work:
 - `.agents/state/module-confidence-ledger.md`
 - `.agents/state/delivery-map.md`
 - `.agents/state/decision-register.md`
+- `.agents/state/requirements-verification-matrix.md`
+- `.agents/state/quality-attribute-scenarios.md`
+- `.agents/state/risk-register.md`
 - `.agents/state/regression-log.md`
 - `.agents/state/system-health.md`
 - `.agents/state/next-steps.md`
@@ -140,6 +144,25 @@ Read these before starting non-trivial work:
 - Record accepted product and architecture decisions in
   `.agents/state/decision-register.md`. Decisions left only in chat are not
   durable project memory.
+
+### 1E. Requirements, Verification, Quality, And Risk
+
+- Use `.agents/core/requirements-verification-system.md` before implementing
+  or expanding significant product, architecture, UX, data, API, AI, security,
+  mobile, integration, ops, or release behavior.
+- Maintain `.agents/state/requirements-verification-matrix.md` as the
+  requirement-to-proof table. A requirement is not `verified` without evidence.
+- Maintain `.agents/state/quality-attribute-scenarios.md` for non-functional
+  goals such as usability, accessibility, performance, reliability, security,
+  maintainability, observability, deployment, mobile, and AI behavior.
+- Maintain `.agents/state/risk-register.md` for product, architecture, data,
+  delivery, UX, AI, security, operations, and unknown risks.
+- Durable analysis must be structured as tables, ledgers, registers, queues, or
+  checklists with stable IDs, status, evidence, next action, and last updated
+  date.
+- On "continue", "next", "rob dalej", or "jedziemy dalej", prioritize
+  `failed`, `blocked`, `implemented_not_verified`, and release-critical
+  `accepted` requirements before adding unrelated work.
 
 ### 2. Critical Prohibitions
 
