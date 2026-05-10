@@ -4,6 +4,18 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest Dashboard runtime table action audit:
+`V1-DASHBOARD-RUNTIME-TABLE-ACTION-AUDIT-2026-05-10` is locally complete for
+the presenter/action slice. Evidence covers open-order local cancel and
+terminal/exchange-backed blocked paths, open-position negative PnL styling,
+prospective TTP hidden at zero/negative live PnL, backend/runtime TTP
+precedence, TSL-only display, and non-actionable edit/close action buttons.
+Dashboard Home and Bot Runtime are now `PARTIAL_LOCAL`, not `PASS`, because
+the rendered component/browser proof remains open. Next executable task: run a
+rendered Dashboard Home audit for selected-bot switching, wallet KPIs,
+loading/empty/error/success states, responsive behavior, table tabs, and safe
+clickthrough behavior on fixture/local data.
+
 Latest Bots action audit:
 `V1-BOTS-ACTION-AUDIT-2026-05-10` is locally complete. Bots action evidence
 now covers Web delete success/failure and API CRUD/delete/runtime

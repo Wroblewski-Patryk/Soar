@@ -4,6 +4,15 @@ Last updated: 2026-05-10
 
 ## Active Issues
 
+- 2026-05-10 update: Dashboard runtime table presenter/action audit is locally
+  closed for the high-risk table slice. Focused tests cover prospective TTP
+  hiding at zero/negative PnL, backend/runtime TTP precedence, TSL-only display,
+  negative PnL styling, non-actionable position actions, local open-order
+  cancel, terminal order read-only behavior, and exchange-backed cancel blocked
+  rows. Remaining Dashboard Home risk is the broader rendered component/browser
+  audit: selected-bot switching, wallet KPIs, loading/empty/error, responsive
+  behavior, table tabs, and production-safe clickthrough.
+
 - 2026-05-10 update: Bots action audit is locally closed for safe fixtures.
   Remaining risk is not an unverified Bots implementation contract; it is
   production-safe action clickthrough and the rest of the product action matrix

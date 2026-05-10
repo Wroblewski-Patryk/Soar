@@ -8,6 +8,18 @@ V1 action-level product correctness before any further readiness claim. Deploy
 health, route reachability, and local contract tests remain useful evidence,
 but they are not sufficient to call the app complete.
 
+2026-05-10 Dashboard runtime table action audit:
+`V1-DASHBOARD-RUNTIME-TABLE-ACTION-AUDIT-2026-05-10` is locally complete for
+the presenter/action slice. Dashboard runtime table proof now covers open-order
+local cancel vs terminal read-only rows, exchange-backed cancel blocked rows,
+negative PnL/error styling, prospective TTP hidden at zero/negative live PnL,
+backend/runtime TTP precedence over fallback and TSL, TSL-only display, and
+non-actionable open-position edit/close buttons. This upgrades Dashboard Home
+and Bot Runtime rows in the product action matrix only to `PARTIAL_LOCAL`, not
+full V1 readiness. Next executable task: rendered Dashboard Home component/
+browser audit for selected bot, wallet KPIs, loading/empty/error, responsive
+states, table tabs, and safe clickthrough behavior.
+
 ## Current System Objective
 
 Build and maintain an AI-assisted self-improving development system for Soar.

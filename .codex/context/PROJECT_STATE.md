@@ -13,6 +13,17 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `V1-DASHBOARD-RUNTIME-TABLE-ACTION-AUDIT-2026-05-10` closes the
+  local Dashboard runtime table presenter/action slice after the operator
+  challenged earlier overstated readiness. The focused Web presenter suite now
+  covers local open-order cancel, terminal order read-only behavior,
+  exchange-backed cancel blocked display, negative PnL/error styling,
+  prospective TTP hidden at zero/negative live PnL, backend/runtime TTP
+  precedence over fallback and TSL, TSL-only display, and non-actionable
+  open-position edit/close buttons. Dashboard Home and Bot Runtime are only
+  `PARTIAL_LOCAL` in the product action matrix; rendered component/browser
+  audit and production-safe clickthrough remain open before V1 can be called
+  ready.
 - 2026-05-10 `V1-BOTS-ACTION-AUDIT-2026-05-10` closes the first module-level
   action audit slice for Bots on safe local fixtures. The Web Bots list now has
   regression coverage for delete success and delete failure UI behavior. The

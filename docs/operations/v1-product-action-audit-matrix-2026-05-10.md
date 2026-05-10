@@ -17,6 +17,10 @@ evidence is no longer enough for V1 readiness.
 ## Status Vocabulary
 
 - `PASS`: verified with a focused automated or manual action proof.
+- `PASS_LOCAL`: verified with focused local automated proof; production-safe
+  clickthrough may still be separate.
+- `PARTIAL_LOCAL`: part of the row has focused local proof, but remaining
+  action families in that module still need proof.
 - `FAIL`: confirmed broken or semantically wrong.
 - `UNVERIFIED`: route or code exists, but action-level proof is missing.
 - `BLOCKED_AUTH`: needs valid production auth or protected operator auth.
@@ -27,8 +31,8 @@ evidence is no longer enough for V1 readiness.
 
 | ID | Area | Status | Finding | Evidence / Fix Target |
 | --- | --- | --- | --- | --- |
-| PAA-001 | Bots | `FIX_IN_PROGRESS` | PAPER bot deletion can fail when runtime-linked records exist; route reachability did not catch action failure. | `apps/api/src/modules/bots/botsCommand.service.ts`; focused e2e added in this task |
-| PAA-002 | Dashboard runtime positions | `FIX_IN_PROGRESS` | Prospective TTP can be displayed while live PnL is non-positive. | `runtimeOpenPositionDerivations.ts`; `runtimeDerivations.ts`; focused Web tests added in this task |
+| PAA-001 | Bots | `PASS_LOCAL` | PAPER bot deletion cleanup is locally regression-locked, including runtime-linked records and broader Bots CRUD/runtime action contracts. | `BotsListTable.test.tsx` (`4/4`), `bots.e2e.test.ts` (`27/27`), `bots.duplicate-guard.e2e.test.ts` (`6/6`), `runtimeSessionPositionCommand.service.test.ts` (`11/11`) |
+| PAA-002 | Dashboard runtime positions | `PASS_LOCAL` | Prospective TTP is hidden when live PnL is zero or negative; backend/runtime TTP remains visible as runtime truth and suppresses TSL. Negative PnL, TSL-only, non-actionable row actions, and order cancelability are locally regression-locked at presenter level. | `runtimeDerivations.test.ts`, `runtimeDataTablePresenters.test.tsx` (`24/24`) |
 | PAA-003 | V1 evidence model | `FAIL` | Previous summaries overstated readiness by treating deploy/reachability as functional completeness. | This matrix replaces broad readiness claims until action proofs pass |
 | PAA-004 | Bots | `PASS_LOCAL` | Bots list delete success/failure, backend CRUD/runtime close/market-group/strategy-link/ownership contracts, and duplicate active guards now have focused local action evidence. | `BotsListTable.test.tsx` (`4/4`), `bots.e2e.test.ts` (`27/27`), `bots.duplicate-guard.e2e.test.ts` (`6/6`), `runtimeSessionPositionCommand.service.test.ts` (`11/11`) |
 
@@ -44,8 +48,8 @@ evidence is no longer enough for V1 readiness.
 | Markets | universe create/edit/delete, symbols import, capability guards | UI action + API + adapter capability | `UNVERIFIED` | Must verify active bot guard behavior |
 | Strategies | create/edit/delete/clone, RSI 20/80 preserved, config validation | UI action + API + runtime/backtest compatibility | `UNVERIFIED` | Do not delete the preserved RSI 20/80 strategy |
 | Bots | create/edit/delete, activate/deactivate, PAPER/LIVE mode, assistant config, market groups, strategy links | UI action + API + DB/runtime readback | `PASS_LOCAL` | Local safe-fixture action proof covers list delete success/failure, API CRUD/delete/runtime close, ownership, market groups, strategy links, LIVE opt-in guards, duplicate active guards, and runtime monitoring. Production clickthrough remains separate and must be non-destructive. |
-| Bot Runtime | runtime graph, sessions, symbol stats, open positions, open orders, trades | UI table proof + API + worker telemetry | `UNVERIFIED` | Must use representative running/stopped PAPER sessions |
-| Dashboard Home | selected bot, wallet KPIs, positions/orders/trades tables, TTP/TSL/DCA/PnL rendering | UI table assertions + runtime payload fixtures | `FAIL` | Prospective TTP fix in progress; broader table audit remains open |
+| Bot Runtime | runtime graph, sessions, symbol stats, open positions, open orders, trades | UI table proof + API + worker telemetry | `PARTIAL_LOCAL` | Runtime table presenters now cover open-position PnL/TTP/TSL/actionability and open-order cancelability locally. Worker telemetry and representative running/stopped PAPER session proof remain open. |
+| Dashboard Home | selected bot, wallet KPIs, positions/orders/trades tables, TTP/TSL/DCA/PnL rendering | UI table assertions + runtime payload fixtures | `PARTIAL_LOCAL` | Runtime table presenter proof now covers negative/zero/positive protection semantics, DCA/fees/history/trade metadata, blocked position actions, and order cancelability. Broader rendered component/browser proof for selected bot, wallet KPIs, loading/empty/error, responsive, and production-safe clickthrough remains open. |
 | Manual Orders | place PAPER order, validation, preview/context, cancel/close paths | UI action + API + DB readback | `UNVERIFIED` | LIVE order actions are `BLOCKED_RISK` |
 | Positions | list, close, update, takeover, import status, live reconciliation | UI/API action proof + exchange snapshot boundary | `UNVERIFIED` | LIVE exchange mutation requires explicit safe plan |
 | Orders | list, cancel, exchange-backed cancel, order fills, fees | UI/API action proof + adapter boundary | `UNVERIFIED` | Exchange-side cancel support exists, but production action proof is risky |
@@ -60,11 +64,9 @@ evidence is no longer enough for V1 readiness.
 
 ## Execution Plan From Here
 
-1. Close `PAA-001` and `PAA-002` with focused tests and code fixes.
-2. Run the Bots module action audit on safe local/fixture data before touching production user data.
-3. Run the Dashboard runtime table audit with deterministic runtime payloads covering positive, zero, and negative PnL.
-4. Add or extend production-safe clickthrough scripts so they perform real non-destructive actions on throwaway fixtures instead of only checking routes.
-5. Execute the remaining modules in the matrix one at a time and keep this file as the source of truth for V1 action completeness.
+1. Run the Dashboard Home rendered component/browser action audit for selected bot, wallet KPIs, loading/empty/error, responsive, and table tab behavior.
+2. Add or extend production-safe clickthrough scripts so they perform real non-destructive actions on throwaway fixtures instead of only checking routes.
+3. Execute the remaining modules in the matrix one at a time and keep this file as the source of truth for V1 action completeness.
 
 ## V1 Readiness Rule
 

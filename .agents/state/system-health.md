@@ -4,6 +4,16 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `V1-DASHBOARD-RUNTIME-TABLE-ACTION-AUDIT-2026-05-10` LOCAL PASS/PARTIAL
+  PRODUCT AUDIT OPEN: Dashboard runtime table presenters now have focused
+  local proof for local open-order cancel, terminal open-order read-only
+  behavior, exchange-backed cancel blocked display, negative PnL/error styling,
+  prospective TTP hidden at zero/negative live PnL, backend/runtime TTP
+  precedence, TSL-only display, and non-actionable open-position action
+  buttons. Validation passed: focused Web presenter suite (`24/24`), Web
+  typecheck, repository guardrails, and diff check. Dashboard Home and Bot
+  Runtime are `PARTIAL_LOCAL` in the action matrix; full V1 remains `NO-GO`.
+
 - `V1-BOTS-ACTION-AUDIT-2026-05-10` LOCAL PASS/PRODUCT AUDIT OPEN:
   Bots action contracts now have local safe-fixture proof. Validation passed:
   Web Bots list table tests (`4/4`), API Bots e2e suite (`27/27`), duplicate

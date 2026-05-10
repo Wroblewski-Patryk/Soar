@@ -17,6 +17,17 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `V1-DASHBOARD-RUNTIME-TABLE-ACTION-AUDIT-2026-05-10 fix: verify Dashboard runtime table action/display contracts`
+  - Scope: added focused Dashboard runtime table presenter proof for
+    open-order local cancel, terminal order read-only behavior, exchange-backed
+    cancel blocked rows, negative PnL/error styling, prospective TTP hidden at
+    zero/negative live PnL, backend/runtime TTP precedence, TSL-only display,
+    and non-actionable open-position edit/close buttons. Dashboard Home and
+    Bot Runtime rows are `PARTIAL_LOCAL`; rendered browser/component proof
+    remains open. Evidence:
+    `docs/planning/v1-dashboard-runtime-table-action-audit-task-2026-05-10.md`
+    and `docs/operations/v1-product-action-audit-matrix-2026-05-10.md`.
+
 - [x] `V1-BOTS-ACTION-AUDIT-2026-05-10 fix: verify Bots module action contracts`
   - Scope: added focused Bots list delete success/failure coverage and
     refreshed Bots API action evidence across CRUD, delete cleanup, runtime

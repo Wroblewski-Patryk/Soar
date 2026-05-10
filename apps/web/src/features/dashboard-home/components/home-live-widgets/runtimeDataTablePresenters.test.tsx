@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import type { BotRuntimeOpenOrderItem, BotRuntimeTrade } from "@/features/bots/types/bot.type";
@@ -88,6 +88,86 @@ const openOrderRow = {
   createdAt: "2026-03-31T10:01:00.000Z",
   updatedAt: "2026-03-31T10:02:00.000Z",
 } satisfies BotRuntimeOpenOrderItem;
+
+const createOpenOrdersColumnsForTest = (
+  overrides: Partial<Parameters<typeof createOpenOrdersColumns>[0]> = {}
+) =>
+  createOpenOrdersColumns({
+    t: (key) =>
+      ({
+        "dashboard.home.runtime.time": "Time",
+        "dashboard.home.runtime.symbol": "Symbol",
+        "dashboard.home.runtime.source": "Source",
+        "dashboard.home.runtime.exchangeOrderId": "Exchange ID",
+        "dashboard.home.runtime.sourceManual": "Manual",
+        "dashboard.home.runtime.side": "Side",
+        "dashboard.home.runtime.status": "Status",
+        "dashboard.home.runtime.openOrderStatusOpen": "Open",
+        "dashboard.home.runtime.openOrderStatusPartiallyFilled": "Partially filled",
+        "dashboard.home.runtime.openOrderStatusFilled": "Filled",
+        "dashboard.home.runtime.type": "Type",
+        "dashboard.home.runtime.qty": "Qty",
+        "dashboard.home.runtime.filled": "Filled",
+        "dashboard.home.runtime.price": "Price",
+        "dashboard.home.runtime.stop": "Stop",
+      })[key] ?? key,
+    formatDateTimeWithSeconds: (value) => value ?? "-",
+    formatNumber: (value) => String(value),
+    resolveRuntimeIcon: () => null,
+    runtimeIconsLoading: false,
+    runtimeIconsError: null,
+    actionColumnLabel: "Action",
+    cancelOpenOrderLabel: "Cancel order",
+    cancelOpenOrderPendingLabel: "Canceling order...",
+    cancelOpenOrderUnsupportedLabel: "Exchange cancel unsupported",
+    isCancelingOpenOrder: () => false,
+    onCancelOpenOrder: vi.fn(),
+    ...overrides,
+  });
+
+const createOpenPositionsColumnsForTest = (
+  overrides: Partial<Parameters<typeof createOpenPositionsColumns>[0]> = {}
+) =>
+  createOpenPositionsColumns({
+    t: (key) =>
+      ({
+        "dashboard.home.runtime.timeOpened": "Time opened",
+        "dashboard.home.runtime.symbol": "Symbol",
+        "dashboard.home.runtime.side": "Side",
+        "dashboard.home.runtime.status": "Status",
+        "dashboard.home.runtime.margin": "Margin",
+        "dashboard.home.runtime.fee": "Fee",
+        "dashboard.home.runtime.pnl": "PnL",
+        "dashboard.home.runtime.pnlPercent": "PnL%",
+        "dashboard.home.runtime.markPrice": "Mark",
+        "dashboard.home.runtime.markPriceSourceExchangePnl": "Exchange PnL",
+        "dashboard.home.runtime.dca": "DCA",
+        "dashboard.home.runtime.slTtp": "TTP",
+        "dashboard.home.runtime.slTsl": "TSL",
+        "dashboard.home.runtime.continuityConfirmed": "Confirmed",
+        "dashboard.home.runtime.runtimeStateActionBlocked": "Action blocked",
+        "dashboard.home.runtime.prospectiveProtection": "Prospective",
+      })[key] ?? key,
+    formatDateTimeWithSeconds: (value) => value ?? "-",
+    formatNumber: (value) => String(value),
+    formatPercent: (value) => `${value}%`,
+    formatRuntimeAmount: (value) => `$${value}`,
+    formatDcaPercent: (value) => `${value}%`,
+    withRuntimeUnit: (label) => `${label} (USDT)`,
+    resolveRuntimeIcon: () => null,
+    runtimeIconsLoading: false,
+    runtimeIconsError: null,
+    showDynamicStopColumns: true,
+    closePositionActionColumnLabel: "Action",
+    closePositionPendingLabel: "Closing...",
+    closePositionButtonLabel: "Close position",
+    editPositionButtonLabel: "Edit position",
+    positionActionsUnavailableLabel: "Unavailable",
+    isClosingPosition: () => false,
+    onOpenPositionEdit: vi.fn(),
+    onCloseRuntimePosition: vi.fn(),
+    ...overrides,
+  });
 
 describe("createOpenOrdersColumns", () => {
   it("renders filled quantity from the runtime open-order payload", () => {
@@ -228,6 +308,48 @@ describe("createOpenOrdersColumns", () => {
     render(<div>{actionColumn?.render?.(openOrderRow)}</div>);
 
     expect(screen.getByText("Exchange cancel unsupported")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Cancel order" })).not.toBeInTheDocument();
+    expect(onCancelOpenOrder).not.toHaveBeenCalled();
+  });
+
+  it("invokes cancel only for local cancelable open orders", () => {
+    const onCancelOpenOrder = vi.fn();
+    const columns = createOpenOrdersColumnsForTest({ onCancelOpenOrder });
+    const actionColumn = columns.find((column) => column.key === "action");
+
+    render(
+      <div>
+        {actionColumn?.render?.({
+          ...openOrderRow,
+          id: "order-local-open",
+          exchangeOrderId: null,
+          status: "OPEN",
+        })}
+      </div>
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Cancel order" }));
+
+    expect(onCancelOpenOrder).toHaveBeenCalledTimes(1);
+    expect(onCancelOpenOrder).toHaveBeenCalledWith("order-local-open");
+  });
+
+  it("keeps non-cancelable terminal open-order rows read-only", () => {
+    const onCancelOpenOrder = vi.fn();
+    const columns = createOpenOrdersColumnsForTest({ onCancelOpenOrder });
+    const actionColumn = columns.find((column) => column.key === "action");
+
+    render(
+      <div data-testid="action-cell">
+        {actionColumn?.render?.({
+          ...openOrderRow,
+          exchangeOrderId: null,
+          status: "FILLED",
+        })}
+      </div>
+    );
+
+    expect(screen.getByTestId("action-cell")).toHaveTextContent("-");
     expect(screen.queryByRole("button", { name: "Cancel order" })).not.toBeInTheDocument();
     expect(onCancelOpenOrder).not.toHaveBeenCalled();
   });
@@ -551,6 +673,135 @@ describe("createOpenPositionsColumns", () => {
     );
 
     expect(screen.getByText("Exchange adopted")).toHaveClass("uppercase");
+  });
+
+  it("renders negative live PnL and PnL percent with error styling", () => {
+    const columns = createOpenPositionsColumnsForTest({ showDynamicStopColumns: false });
+    const pnlColumn = columns.find((column) => column.key === "pnl");
+    const pnlPercentColumn = columns.find((column) => column.key === "pnlPercent");
+    const row = {
+      ...openPositionRow,
+      liveUnrealizedPnl: -4.25,
+      livePnlPct: -8.5,
+    } satisfies OpenPositionWithLive;
+
+    render(
+      <div>
+        <span data-testid="pnl">{pnlColumn?.render?.(row)}</span>
+        <span data-testid="pnl-percent">{pnlPercentColumn?.render?.(row)}</span>
+      </div>
+    );
+
+    expect(screen.getByTestId("pnl")).toHaveTextContent("$-4.25");
+    expect(screen.getByTestId("pnl").querySelector("span")).toHaveClass("text-error");
+    expect(screen.getByTestId("pnl-percent")).toHaveTextContent("-8.5%");
+    expect(screen.getByTestId("pnl-percent").querySelector("span")).toHaveClass("text-error");
+  });
+
+  it("hides prospective TTP cells when live PnL is zero or negative", () => {
+    const columns = createOpenPositionsColumnsForTest();
+    const ttpColumn = columns.find((column) => column.key === "ttp");
+
+    render(
+      <div>
+        <span data-testid="zero-pnl-fallback">
+          {ttpColumn?.render?.({
+            ...openPositionRow,
+            liveUnrealizedPnl: 0,
+            livePnlPct: 0,
+            fallbackTtpProtectedPercent: 7,
+          })}
+        </span>
+        <span data-testid="negative-pnl-api-fallback">
+          {ttpColumn?.render?.({
+            ...openPositionRow,
+            liveUnrealizedPnl: -1,
+            livePnlPct: -2,
+            ttpProtectedPercent: 7,
+            ttpProtectedSource: "prospective",
+          })}
+        </span>
+      </div>
+    );
+
+    expect(screen.getByTestId("zero-pnl-fallback")).toHaveTextContent("-");
+    expect(screen.getByTestId("negative-pnl-api-fallback")).toHaveTextContent("-");
+    expect(screen.queryByText("7%")).not.toBeInTheDocument();
+    expect(screen.queryByText("Prospective")).not.toBeInTheDocument();
+  });
+
+  it("keeps backend TTP as runtime truth and suppresses TSL even after PnL retraces", () => {
+    const columns = createOpenPositionsColumnsForTest();
+    const ttpColumn = columns.find((column) => column.key === "ttp");
+    const tslColumn = columns.find((column) => column.key === "tsl");
+    const row = {
+      ...openPositionRow,
+      liveUnrealizedPnl: -1,
+      livePnlPct: -2,
+      ttpProtectedPercent: 5,
+      ttpProtectedSource: "backend",
+      fallbackTtpProtectedPercent: 8,
+      tslProtectedPercent: 3,
+    } satisfies OpenPositionWithLive;
+
+    render(
+      <div>
+        <span data-testid="ttp">{ttpColumn?.render?.(row)}</span>
+        <span data-testid="tsl">{tslColumn?.render?.(row)}</span>
+      </div>
+    );
+
+    expect(screen.getByTestId("ttp")).toHaveTextContent("5%");
+    expect(screen.queryByText("Prospective")).not.toBeInTheDocument();
+    expect(screen.getByTestId("tsl")).toHaveTextContent("-");
+  });
+
+  it("renders TSL only when no TTP display is active", () => {
+    const columns = createOpenPositionsColumnsForTest();
+    const tslColumn = columns.find((column) => column.key === "tsl");
+
+    render(
+      <div data-testid="tsl-cell">
+        {tslColumn?.render?.({
+          ...openPositionRow,
+          ttpProtectedPercent: null,
+          fallbackTtpProtectedPercent: null,
+          tslProtectedPercent: 3,
+        })}
+      </div>
+    );
+
+    expect(screen.getByTestId("tsl-cell")).toHaveTextContent("3%");
+  });
+
+  it("disables edit and close actions for non-actionable open positions", () => {
+    const onOpenPositionEdit = vi.fn();
+    const onCloseRuntimePosition = vi.fn();
+    const columns = createOpenPositionsColumnsForTest({
+      onOpenPositionEdit,
+      onCloseRuntimePosition,
+    });
+    const actionColumn = columns.find((column) => column.key === "actionClosePosition");
+
+    render(
+      <div>
+        {actionColumn?.render?.({
+          ...openPositionRow,
+          actionable: false,
+        })}
+      </div>
+    );
+
+    const buttons = screen.getAllByRole("button", { name: "Unavailable" });
+    expect(buttons).toHaveLength(2);
+    expect(buttons[0]).toBeDisabled();
+    expect(buttons[1]).toBeDisabled();
+
+    fireEvent.click(buttons[0] as HTMLElement);
+    fireEvent.click(buttons[1] as HTMLElement);
+
+    expect(onOpenPositionEdit).not.toHaveBeenCalled();
+    expect(onCloseRuntimePosition).not.toHaveBeenCalled();
   });
 
   it("labels fallback TTP protection as prospective in open-position rows", () => {
