@@ -4,6 +4,16 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `V1-ROLLBACK-PROOF-BLOCKED-REFRESH-2026-05-10` PASS/BLOCKED: production
+  rollback-proof evidence was refreshed for the 2026-05-10 evidence date and
+  correctly remains `FAIL` because protected rollback guard auth is absent.
+  The proof failed closed on protected `401` responses for runtime freshness
+  and alerts. Follow-up final preflight for
+  `8df3260b8453be0a39dfa75ce2be281d6571c4de` reports build-info PASS, public
+  smoke PASS, production DB restore context satisfied, backup/restore fresh,
+  and rollback proof fresh but failed. Evidence:
+  `docs/operations/v1-rollback-proof-prod-2026-05-10T00-00-00-000Z.md` and
+  `docs/operations/v1-final-preflight-8df3260b-2026-05-10.md`.
 - `V1-PROD-RESTORE-DRILL-REFRESH-2026-05-10` PASS/BLOCKED: approved Coolify
   terminal access executed the isolated production Postgres backup/restore
   drill for the 2026-05-10 evidence date. The drill returned PASS markers,

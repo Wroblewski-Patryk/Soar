@@ -7,6 +7,20 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-ROLLBACK-PROOF-BLOCKED-REFRESH-2026-05-10 release: refresh rollback-proof blocked evidence`
+  - 2026-05-10: Captured current fail-closed production rollback proof
+    evidence for the active evidence date. The proof is fresh but `FAIL`
+    because protected rollback guard auth is absent and production
+    runtime-freshness/alerts endpoints returned protected `401` responses.
+    Follow-up no-secret final preflight for deployed
+    `8df3260b8453be0a39dfa75ce2be281d6571c4de` reports build-info PASS,
+    public smoke PASS, production DB restore context satisfied, backup/restore
+    fresh, and rollback proof fresh but failed. V1 remains `BLOCKED / NO-GO`.
+    Evidence:
+    `docs/planning/v1-rollback-proof-blocked-refresh-task-2026-05-10.md`,
+    `docs/operations/v1-rollback-proof-prod-2026-05-10T00-00-00-000Z.md`,
+    and `docs/operations/v1-final-preflight-8df3260b-2026-05-10.md`.
+
 - [x] `V1-PROD-RESTORE-DRILL-REFRESH-2026-05-10 release: refresh production restore drill evidence`
   - 2026-05-10: Captured fresh PASS production Postgres restore evidence
     through the approved Coolify terminal for deployed

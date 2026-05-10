@@ -3,13 +3,16 @@
 ## Status
 
 - Current deployed SHA:
-  `969df7c8f268146ecff3efb9de2fe1841ac8bc75`
+  `8df3260b8453be0a39dfa75ce2be281d6571c4de`
 - Latest no-secret preflight:
-  `docs/operations/v1-final-preflight-969df7c8-2026-05-10.md`
+  `docs/operations/v1-final-preflight-8df3260b-2026-05-10.md`
 - Current result: **BLOCKED / NO-GO**
 - Public build-info and public API/Web smoke: **PASS**
 - Production restore drill: **PASS / FRESH** for 2026-05-10 at
   `docs/operations/v1-restore-drill-prod-2026-05-10T03-39-56Z.md`
+- Rollback proof: **FAIL / FRESH** for 2026-05-10 at
+  `docs/operations/v1-rollback-proof-prod-2026-05-10T00-00-00-000Z.md`
+  until approved `ROLLBACK_GUARD_*` auth is provided.
 
 ## Exact Inputs Required
 
@@ -78,7 +81,7 @@ Set the target once:
 
 ```powershell
 $releaseDate = "2026-05-10"
-$expectedSha = "969df7c8f268146ecff3efb9de2fe1841ac8bc75"
+$expectedSha = "8df3260b8453be0a39dfa75ce2be281d6571c4de"
 ```
 
 ### 1. Confirm Deploy Freshness
@@ -113,6 +116,9 @@ Required result: fresh production restore drill artifact reports
 `Status: **PASS**`.
 
 ### 4. Run Production Rollback Proof
+
+Current 2026-05-10 result: **FAIL** because protected rollback guard auth is
+missing. For PASS evidence, rerun with approved `ROLLBACK_GUARD_*` auth:
 
 ```powershell
 pnpm run ops:deploy:rollback-proof -- --profile prod --base-url https://api.soar.luckysparrow.ch --today $releaseDate

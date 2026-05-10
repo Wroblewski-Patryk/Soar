@@ -4,6 +4,11 @@ Last updated: 2026-05-10
 
 ## Active Issues
 
+- 2026-05-10 update: rollback proof is fresh for the current evidence date but
+  still failed, as expected, because no protected `ROLLBACK_GUARD_*` auth is
+  available. The production rollback guard endpoints returned protected `401`
+  responses, so the proof correctly reports `shouldRollback=true` and must not
+  be treated as release PASS evidence.
 - 2026-05-10 update: production restore drill is fresh again for the current
   evidence date. Approved Coolify terminal access produced PASS evidence and
   no-secret preflight now treats production DB restore context as satisfied by

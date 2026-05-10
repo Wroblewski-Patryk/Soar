@@ -1,0 +1,27 @@
+{
+  "status": "FAIL",
+  "profile": "prod",
+  "baseUrl": "https://api.soar.luckysparrow.ch",
+  "startedAt": "2026-05-10T04:19:46.073Z",
+  "endedAt": "2026-05-10T04:19:46.397Z",
+  "command": "node scripts/evaluateRollbackGuard.mjs --base-url https://api.soar.luckysparrow.ch",
+  "checks": {
+    "commandExitCodeZero": false,
+    "shouldRollbackFalse": false,
+    "noCriticalReasons": false,
+    "freshnessStatusPass": false,
+    "alertsClear": true
+  },
+  "decision": {
+    "checkedAt": "2026-05-10T04:19:46.147Z",
+    "shouldRollback": true,
+    "reasons": [
+      "runtime_freshness_endpoint_http_401",
+      "alerts_endpoint_http_401"
+    ],
+    "freshness": null,
+    "alerts": []
+  },
+  "stdoutPreview": "{\n  \"checkedAt\": \"2026-05-10T04:19:46.147Z\",\n  \"shouldRollback\": true,\n  \"reasons\": [\n    \"runtime_freshness_endpoint_http_401\",\n    \"alerts_endpoint_http_401\"\n  ],\n  \"freshness\": null,\n  \"alerts\": []\n}",
+  "stderrPreview": ""
+}

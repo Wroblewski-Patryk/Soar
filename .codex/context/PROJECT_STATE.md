@@ -13,6 +13,19 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `V1-ROLLBACK-PROOF-BLOCKED-REFRESH-2026-05-10` refreshed
+  rollback-proof evidence for the active evidence date. The no-auth production
+  proof failed closed on protected `401` responses for runtime freshness and
+  alerts, so it is current `FAIL` evidence, not release approval. Follow-up
+  final preflight for deployed
+  `8df3260b8453be0a39dfa75ce2be281d6571c4de` reports build-info PASS, public
+  smoke PASS, production DB restore context satisfied, backup/restore fresh,
+  and rollback proof fresh but failed. V1 remains `BLOCKED / NO-GO` on
+  liveimport auth/readback, rollback guard auth/proof PASS, RC approval/gates,
+  and authenticated/admin production UI clickthrough. Evidence:
+  `docs/planning/v1-rollback-proof-blocked-refresh-task-2026-05-10.md`,
+  `docs/operations/v1-rollback-proof-prod-2026-05-10T00-00-00-000Z.md`, and
+  `docs/operations/v1-final-preflight-8df3260b-2026-05-10.md`.
 - 2026-05-10 `V1-PROD-RESTORE-DRILL-REFRESH-2026-05-10` captured fresh PASS
   production restore-drill evidence through the approved Coolify terminal for
   deployed `969df7c8f268146ecff3efb9de2fe1841ac8bc75`. The isolated contract

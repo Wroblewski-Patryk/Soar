@@ -4,6 +4,20 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest rollback-proof refresh:
+`V1-ROLLBACK-PROOF-BLOCKED-REFRESH-2026-05-10` captured current fail-closed
+production rollback proof evidence for 2026-05-10. The proof is fresh but
+`FAIL` because protected rollback guard auth is missing and production
+runtime-freshness/alerts endpoints returned `401`. Final preflight for
+deployed `8df3260b8453be0a39dfa75ce2be281d6571c4de` now reports rollback
+proof `failed` instead of `stale`. Next executable V1 work requires either
+`ROLLBACK_GUARD_*` auth to make rollback proof PASS, `LIVEIMPORT_READBACK_*`
+auth to run `LIVEIMPORT-03`, real RC approver identities/gate evidence, or
+authenticated/admin production UI access. Evidence:
+`docs/planning/v1-rollback-proof-blocked-refresh-task-2026-05-10.md`,
+`docs/operations/v1-rollback-proof-prod-2026-05-10T00-00-00-000Z.md`, and
+`docs/operations/v1-final-preflight-8df3260b-2026-05-10.md`.
+
 Latest production restore-drill refresh:
 `V1-PROD-RESTORE-DRILL-REFRESH-2026-05-10` captured fresh PASS production
 Postgres restore evidence through the approved Coolify terminal. The follow-up

@@ -17,6 +17,21 @@ contracts synchronized.
 ## Current Delivery Stage
 
 2026-05-10 verification update:
+`V1-ROLLBACK-PROOF-BLOCKED-REFRESH-2026-05-10` refreshed production rollback
+proof evidence for the current evidence date. The no-auth production run failed
+closed on protected `401` responses (`runtime_freshness_endpoint_http_401` and
+`alerts_endpoint_http_401`) and is recorded as current `FAIL` evidence, not
+release approval. Follow-up no-secret preflight for deployed
+`8df3260b8453be0a39dfa75ce2be281d6571c4de` reports build-info PASS, public
+smoke PASS, production DB restore context satisfied, backup/restore fresh, and
+rollback proof fresh but failed. V1 remains `BLOCKED / NO-GO` on liveimport
+auth/readback, rollback guard auth/proof PASS, RC approval/gates, and
+authenticated/admin production UI clickthrough. Evidence:
+`docs/planning/v1-rollback-proof-blocked-refresh-task-2026-05-10.md`,
+`docs/operations/v1-rollback-proof-prod-2026-05-10T00-00-00-000Z.md`, and
+`docs/operations/v1-final-preflight-8df3260b-2026-05-10.md`.
+
+2026-05-10 verification update:
 `V1-PROD-RESTORE-DRILL-REFRESH-2026-05-10` captured fresh PASS production
 restore-drill evidence through the approved Coolify terminal for the production
 Postgres resource. The isolated backup/restore contract created a temporary

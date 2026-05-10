@@ -9,9 +9,9 @@
   use local `HEAD` as the protected evidence candidate until that SHA is
   actually exposed by production build-info.
 - Latest verified Coolify deploy:
-  `969df7c8f268146ecff3efb9de2fe1841ac8bc75`
+  `8df3260b8453be0a39dfa75ce2be281d6571c4de`
 - Latest no-secret final preflight:
-  `docs/operations/v1-final-preflight-969df7c8-2026-05-10.md`
+  `docs/operations/v1-final-preflight-8df3260b-2026-05-10.md`
 - Current operator unblock checklist:
   `docs/operations/v1-operator-unblock-checklist-2026-05-10.md`
 
@@ -169,6 +169,11 @@ container is missing, provide `PROD_DB_CHECK_CONTAINER` or
 generated restore drill artifact itself reports `Status: **PASS**`.
 
 ### 4. Run Production Rollback Proof
+
+Current 2026-05-10 result: FAIL/CURRENT at
+`docs/operations/v1-rollback-proof-prod-2026-05-10T00-00-00-000Z.md` because
+protected rollback guard auth is missing. For PASS evidence, rerun with
+approved `ROLLBACK_GUARD_*` auth:
 
 ```powershell
 pnpm run ops:deploy:rollback-proof -- --profile prod --base-url https://api.soar.luckysparrow.ch --today $releaseDate
