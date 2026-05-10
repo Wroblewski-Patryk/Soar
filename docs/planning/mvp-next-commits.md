@@ -17,6 +17,15 @@ Operational queue for one-task execution runs.
     `docs/planning/project-indexing-baseline-task-2026-05-10.md` and
     `docs/operations/project-index-2026-05-10.md`.
 
+- [x] `PROJECT-INDEX-V1-CROSSWALK-2026-05-10 research: map V1 rows to code and proof surfaces`
+  - 2026-05-10: Extended the local project index with a prioritized V1 Audit
+    Work Map for all 21 rows. Each row now lists risk, next proof, API modules,
+    Web features, routes, workers, scripts, and candidate tests. Use this
+    before the next repair slice; Dashboard Home is priority 1 and Bot Runtime
+    is priority 2. Evidence:
+    `docs/planning/project-index-v1-crosswalk-task-2026-05-10.md` and
+    `docs/operations/project-index-2026-05-10.md`.
+
 - [x] `V1-FINAL-PREFLIGHT-1E11F8DE-2026-05-10 release: refresh final preflight for current deploy`
   - 2026-05-10: Read-only final V1 preflight for deployed
     `1e11f8de4a3daaa313894a9ccf989237a3e65e5a` reports build-info PASS,

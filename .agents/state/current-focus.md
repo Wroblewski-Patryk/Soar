@@ -14,6 +14,9 @@ for continuation work. Use `pnpm run ops:project:index` before broad V1 repair
 planning to refresh the module/API/Web/route/worker/test/task map. The current
 index confirms the active product action matrix remains `NO-GO` with
 `UNVERIFIED: 16`, `BLOCKED_AUTH: 2`, `PASS_LOCAL: 1`, and `PARTIAL_LOCAL: 2`.
+`PROJECT-INDEX-V1-CROSSWALK-2026-05-10` extends that index with a prioritized
+V1 audit work map for all 21 rows. Current order starts with Dashboard Home,
+then Bot Runtime, then Auth/Profile API Keys/Bots.
 
 2026-05-10 Dashboard runtime table action audit:
 `V1-DASHBOARD-RUNTIME-TABLE-ACTION-AUDIT-2026-05-10` is locally complete for

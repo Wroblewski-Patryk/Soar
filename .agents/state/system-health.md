@@ -15,6 +15,13 @@ Last updated: 2026-05-10
   workstation; direct Node execution was used because the script has no package
   dependency and performs only local indexing.
 
+- `PROJECT-INDEX-V1-CROSSWALK-2026-05-10` LOCAL PASS/INDEX CROSSWALK:
+  the project index now includes a prioritized V1 audit work map for all 21
+  module action rows, with per-row risk, next proof, API/Web/route/worker/
+  script/test surfaces. Validation passed: `node --check
+  scripts/buildProjectIndex.mjs`, script help, report generation, repository
+  guardrails, and `git diff --check`.
+
 - `V1-DASHBOARD-HOME-RENDERED-RUNTIME-AUDIT-2026-05-10` LOCAL PASS/PARTIAL
   PRODUCT AUDIT OPEN: added a dedicated rendered `HomeLiveWidgets` regression
   proving a negative-PnL open position renders the Dashboard runtime TTP column

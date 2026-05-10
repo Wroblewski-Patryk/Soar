@@ -22,6 +22,13 @@ Last updated: 2026-05-10
   `PARTIAL_LOCAL: 2`. Evidence:
   `docs/planning/project-indexing-baseline-task-2026-05-10.md` and
   `docs/operations/project-index-2026-05-10.md`.
+- 2026-05-10 `PROJECT-INDEX-V1-CROSSWALK-2026-05-10` extends the project
+  index with a prioritized V1 audit work map for all 21 module action rows.
+  Each row now points to likely API modules, Web features, routes, workers,
+  scripts, candidate tests, risk class, and next proof. Dashboard Home is the
+  first priority and Bot Runtime is second. Evidence:
+  `docs/planning/project-index-v1-crosswalk-task-2026-05-10.md` and
+  `docs/operations/project-index-2026-05-10.md`.
 - 2026-05-10 `V1-DASHBOARD-HOME-RENDERED-RUNTIME-AUDIT-2026-05-10` adds the
   first rendered Dashboard Home bridge for the operator-reported TTP issue.
   A dedicated small `HomeLiveWidgets.runtime-table-audit.test.tsx` file renders

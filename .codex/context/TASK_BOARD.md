@@ -28,6 +28,14 @@ Last updated: 2026-05-10
     `docs/planning/project-indexing-baseline-task-2026-05-10.md` and
     `docs/operations/project-index-2026-05-10.md`.
 
+- [x] `PROJECT-INDEX-V1-CROSSWALK-2026-05-10 research: map V1 rows to code and proof surfaces`
+  - Scope: extended the project index with a prioritized V1 audit work map for
+    all 21 module action rows. The crosswalk records risk, next proof, API
+    modules, Web features, routes, workers, scripts, and candidate tests.
+    Dashboard Home is priority 1 and Bot Runtime is priority 2. Evidence:
+    `docs/planning/project-index-v1-crosswalk-task-2026-05-10.md` and
+    `docs/operations/project-index-2026-05-10.md`.
+
 - [x] `V1-DASHBOARD-HOME-RENDERED-RUNTIME-AUDIT-2026-05-10 fix: add rendered Dashboard TTP proof`
   - Scope: added a dedicated rendered `HomeLiveWidgets` regression showing a
     negative-PnL open position keeps the TTP column visible while suppressing

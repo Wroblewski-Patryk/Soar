@@ -1,6 +1,6 @@
 # Project Index
 
-Generated at: 2026-05-10T21:18:00.476Z
+Generated at: 2026-05-10T21:31:02.700Z
 Evidence date: 2026-05-10
 
 ## Purpose
@@ -17,6 +17,333 @@ Source: `docs/operations/v1-product-action-audit-matrix-2026-05-10.md`
 - PARTIAL_LOCAL: 2
 - PASS_LOCAL: 1
 - UNVERIFIED: 16
+
+## V1 Audit Work Map
+
+This table is the working map for finishing V1. It connects each matrix row to
+the likely code and validation surfaces. The priority is audit order, not
+business value.
+
+| Priority | V1 row | Status | Risk | API | Web | Routes | Candidate tests | Next proof |
+| ---: | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| 1 | Dashboard Home | PARTIAL_LOCAL | P0 operator truth surface | 5 | 1 | 1 | 30 | Rendered/browser proof for selected bot, wallet KPIs, tables, loading/empty/error, responsive states, and safe clickthrough. |
+| 2 | Bot Runtime | PARTIAL_LOCAL | P0 runtime truth | 5 | 2 | 2 | 30 | Representative PAPER running/stopped runtime session proof with worker telemetry and runtime readback. |
+| 3 | Auth | UNVERIFIED | P0 auth/session correctness | 1 | 1 | 2 | 16 | Browser login/logout/session-expiry proof plus API auth lifecycle assertions. |
+| 4 | Profile API Keys | UNVERIFIED | P0 secrets/exchange access | 3 | 2 | 2 | 30 | Create/test/delete key proof for Binance and Gate.io through adapter-owned probes and audit logs. |
+| 5 | Bots | PASS_LOCAL | P0 bot lifecycle | 5 | 1 | 10 | 30 | Production-safe non-destructive clickthrough for bot actions; local action proof already exists. |
+| 6 | Profile | UNVERIFIED | P1 user settings and validation | 1 | 1 | 1 | 11 | Profile form success/error submit proof with API readback. |
+| 7 | Wallets | UNVERIFIED | P1 capital source of truth | 3 | 1 | 6 | 30 | Wallet create/edit/delete/reset/preview proof with DB or API readback and active-bot guards. |
+| 8 | Markets | UNVERIFIED | P1 runtime symbol scope | 4 | 1 | 3 | 30 | Market universe CRUD/import/capability proof, including active-bot guard behavior. |
+| 9 | Strategies | UNVERIFIED | P1 trading decision config | 3 | 1 | 4 | 30 | Strategy create/edit/delete/clone/config proof preserving RSI 20/80 and proving runtime/backtest compatibility. |
+| 10 | Manual Orders | UNVERIFIED | P0 money-impacting order flow | 5 | 2 | 1 | 30 | PAPER manual order place/cancel/close proof with validation and DB readback; LIVE remains blocked-risk. |
+| 11 | Positions | UNVERIFIED | P0 position ownership/runtime truth | 4 | 2 | 1 | 30 | List/close/update/takeover/import-status proof with exchange snapshot boundary and fail-closed live mutation plan. |
+| 12 | Orders | UNVERIFIED | P0 order lifecycle | 4 | 2 | 1 | 30 | Order list/cancel/fill/fee proof through API and adapter boundary, separating PAPER from exchange-backed risk. |
+| 13 | Backtests | UNVERIFIED | P1 simulation correctness | 3 | 1 | 3 | 30 | Create/cancel/delete/details/report proof using representative RSI strategy and market data. |
+| 14 | Reports | UNVERIFIED | P2 operator reporting | 4 | 1 | 1 | 30 | Filters/summaries/export proof with API data readback. |
+| 15 | Subscriptions/Admin | BLOCKED_AUTH | P0 role/entitlement access | 3 | 1 | 3 | 5 | Protected admin clickthrough with non-destructive data and entitlement checks. |
+| 16 | Logs/Audit Trail | UNVERIFIED | P1 auditability | 1 | 1 | 1 | 3 | Filters/pagination/action-log visibility proof using events produced by the audit. |
+| 17 | Exchange Adapter | UNVERIFIED | P0 external exchange boundary | 6 | 3 | 3 | 30 | Operation-by-operation Binance/Gate.io support matrix with pass/fail-closed proofs. |
+| 18 | Workers | UNVERIFIED | P0 async runtime reliability | 4 | 2 | 3 | 30 | Runtime loop, stream, backtest worker, and scheduler lifecycle proof beyond public /ready. |
+| 19 | Operations | BLOCKED_AUTH | P0 release safety | 2 | 1 | 3 | 30 | Rollback PASS, liveimport readback, authenticated SLO, release gate, and alerts evidence. |
+| 20 | Security/Privacy | UNVERIFIED | P0 auth/secrets/data isolation | 5 | 3 | 6 | 30 | Ownership isolation, rate-limit, secret redaction, fail-closed, and abuse-case proof. |
+| 21 | UX/A11y/Mobile | UNVERIFIED | P1 product usability | 0 | 7 | 31 | 30 | Per-screen loading/empty/error/success, keyboard/touch, responsive, and accessibility evidence. |
+
+## V1 Audit Work Details
+
+### 1. Dashboard Home (PARTIAL_LOCAL)
+
+- Risk: P0 operator truth surface
+- Action family: selected bot, wallet KPIs, positions/orders/trades tables, TTP/TSL/DCA/PnL rendering
+- Required proof: UI table assertions + runtime payload fixtures
+- Next proof: Rendered/browser proof for selected bot, wallet KPIs, tables, loading/empty/error, responsive states, and safe clickthrough.
+- API modules: bots, orders, positions, wallets, reports
+- Web features: dashboard-home
+- Routes: /dashboard
+- Candidate scripts: `build`, `go-live:infra:down`, `go-live:infra:up`, `ops:deploy:wait-web-build-info`, `ops:rc:signoff:build`, `ops:ui:prod-clickthrough`, `test:go-live:api`, `test:go-live:api:with-infra`, `test:go-live:client`, `test:go-live:server`, `test:go-live:server:with-infra`, `test:go-live:smoke`, `test:go-live:web`, `web:verify:build-typecheck`
+- Candidate workers: `apps/api/src/workers/execution.worker.ts`, `apps/api/src/workers/marketData.worker.ts`, `apps/api/src/workers/marketStream.worker.ts`, `apps/api/src/workers/marketStreamSubscriptions.service.ts`, `apps/api/src/workers/marketStreamWorkerConfig.ts`
+- Candidate tests: `apps/api/src/modules/bots/botCanonicalUpdateScope.service.test.ts`, `apps/api/src/modules/bots/botContextValidation.service.test.ts`, `apps/api/src/modules/bots/botOwnership.service.test.ts`, `apps/api/src/modules/bots/bots.duplicate-guard.e2e.test.ts`, `apps/api/src/modules/bots/bots.dynamic-stop-operator-truth.e2e.test.ts`, `apps/api/src/modules/bots/bots.e2e.test.ts`, `apps/api/src/modules/bots/bots.market-universe-contract.e2e.test.ts`, `apps/api/src/modules/bots/bots.mode-switch-active-position.e2e.test.ts`, `apps/api/src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`, `apps/api/src/modules/bots/bots.multi-strategy-write.e2e.test.ts`, `apps/api/src/modules/bots/bots.orchestration.e2e.test.ts`, `apps/api/src/modules/bots/bots.portfolio-history.e2e.test.ts`
+- Notes: Runtime table presenter proof now covers negative/zero/positive protection semantics, DCA/fees/history/trade metadata, blocked position actions, and order cancelability. A rendered `HomeLiveWidgets` proof covers negative-PnL prospective TTP suppression. Broader rendered/browser proof for selected bot, wallet KPIs, loading/empty/error, responsive, table tabs, and production-safe clickthrough remains open.
+
+### 2. Bot Runtime (PARTIAL_LOCAL)
+
+- Risk: P0 runtime truth
+- Action family: runtime graph, sessions, symbol stats, open positions, open orders, trades
+- Required proof: UI table proof + API + worker telemetry
+- Next proof: Representative PAPER running/stopped runtime session proof with worker telemetry and runtime readback.
+- API modules: bots, engine, orders, positions, market-stream
+- Web features: bots, dashboard-home
+- Routes: /dashboard/bots/[id]/runtime, /dashboard/bots/runtime
+- Candidate scripts: `go-live:infra:down`, `go-live:infra:up`, `ops:live:controlled-proof`, `ops:liveimport:readback`, `test:go-live:api`, `test:go-live:api:with-infra`, `test:go-live:client`, `test:go-live:server`, `test:go-live:server:with-infra`, `test:go-live:smoke`, `test:go-live:web`
+- Candidate workers: `apps/api/src/workers/execution.worker.ts`, `apps/api/src/workers/marketStream.worker.ts`, `apps/api/src/workers/marketStreamSubscriptions.service.ts`, `apps/api/src/workers/marketStreamWorkerConfig.ts`
+- Candidate tests: `apps/api/src/modules/bots/botCanonicalUpdateScope.service.test.ts`, `apps/api/src/modules/bots/botContextValidation.service.test.ts`, `apps/api/src/modules/bots/botOwnership.service.test.ts`, `apps/api/src/modules/bots/bots.duplicate-guard.e2e.test.ts`, `apps/api/src/modules/bots/bots.dynamic-stop-operator-truth.e2e.test.ts`, `apps/api/src/modules/bots/bots.e2e.test.ts`, `apps/api/src/modules/bots/bots.market-universe-contract.e2e.test.ts`, `apps/api/src/modules/bots/bots.mode-switch-active-position.e2e.test.ts`, `apps/api/src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`, `apps/api/src/modules/bots/bots.multi-strategy-write.e2e.test.ts`, `apps/api/src/modules/bots/bots.orchestration.e2e.test.ts`, `apps/api/src/modules/bots/bots.portfolio-history.e2e.test.ts`
+- Notes: Runtime table presenters now cover open-position PnL/TTP/TSL/actionability and open-order cancelability locally. Worker telemetry and representative running/stopped PAPER session proof remain open.
+
+### 3. Auth (UNVERIFIED)
+
+- Risk: P0 auth/session correctness
+- Action family: login, logout, session refresh, expired session redirects
+- Required proof: browser + API auth lifecycle
+- Next proof: Browser login/logout/session-expiry proof plus API auth lifecycle assertions.
+- API modules: auth
+- Web features: auth
+- Routes: /auth/login, /auth/register
+- Candidate scripts: `build`, `go-live:infra:down`, `go-live:infra:up`, `ops:deploy:wait-web-build-info`, `ops:rc:signoff:build`, `ops:ui:prod-clickthrough`, `test:go-live:api`, `test:go-live:api:with-infra`, `test:go-live:client`, `test:go-live:server`, `test:go-live:server:with-infra`, `test:go-live:smoke`, `test:go-live:web`, `web:verify:build-typecheck`
+- Candidate workers: none
+- Candidate tests: `apps/api/src/middleware/requireAuth.test.ts`, `apps/api/src/modules/auth/auth.cookie.test.ts`, `apps/api/src/modules/auth/auth.e2e.test.ts`, `apps/api/src/modules/auth/auth.errors.test.ts`, `apps/api/src/modules/auth/auth.jwt.test.ts`, `apps/api/src/modules/auth/auth.service.test.ts`, `apps/api/src/modules/exchange/exchangeAuthenticatedRead.service.test.ts`, `apps/api/src/modules/exchange/exchangeAuthenticatedReadContract.service.test.ts`, `apps/api/src/modules/positions/positions.authenticatedSnapshots.service.test.ts`, `apps/web/src/app/(public)/auth/authPageCacheContract.test.ts`, `apps/web/src/context/AuthContext.test.tsx`, `apps/web/src/features/auth/components/LoginForm.test.tsx`
+- Notes: Route auth was checked; session edge cases need action proof
+
+### 4. Profile API Keys (UNVERIFIED)
+
+- Risk: P0 secrets/exchange access
+- Action family: create/test/delete keys, futures-only handling, unsupported exchange handling
+- Required proof: UI action + API probe + audit log
+- Next proof: Create/test/delete key proof for Binance and Gate.io through adapter-owned probes and audit logs.
+- API modules: profile, exchange, logs
+- Web features: profile, exchanges
+- Routes: /dashboard/exchanges, /dashboard/profile
+- Candidate scripts: `build`, `ops:deploy:wait-web-build-info`, `ops:exchange:gateio-market-stream-smoke`, `ops:rc:signoff:build`, `ops:ui:prod-clickthrough`, `web:verify:build-typecheck`
+- Candidate workers: none
+- Candidate tests: `apps/api/src/modules/engine/runtimeExchangeOrderGuard.service.test.ts`, `apps/api/src/modules/exchange/binancePublicRest.service.test.ts`, `apps/api/src/modules/exchange/binanceUserDataStream.service.test.ts`, `apps/api/src/modules/exchange/ccxtFuturesConnector.service.test.ts`, `apps/api/src/modules/exchange/exchangeAdapterBoundary.service.test.ts`, `apps/api/src/modules/exchange/exchangeAdapterRegistry.service.test.ts`, `apps/api/src/modules/exchange/exchangeAuthenticatedRead.service.test.ts`, `apps/api/src/modules/exchange/exchangeAuthenticatedReadContract.service.test.ts`, `apps/api/src/modules/exchange/exchangeConnectorFactory.service.test.ts`, `apps/api/src/modules/exchange/exchangeExecutionCapabilityContract.service.test.ts`, `apps/api/src/modules/exchange/exchangeMarketCatalog.service.test.ts`, `apps/api/src/modules/exchange/exchangeMetadataContract.service.test.ts`
+- Notes: Binance/Gate.io probe unit coverage exists; UI action proof still needed
+
+### 5. Bots (PASS_LOCAL)
+
+- Risk: P0 bot lifecycle
+- Action family: create/edit/delete, activate/deactivate, PAPER/LIVE mode, assistant config, market groups, strategy links
+- Required proof: UI action + API + DB/runtime readback
+- Next proof: Production-safe non-destructive clickthrough for bot actions; local action proof already exists.
+- API modules: bots, engine, wallets, markets, strategies
+- Web features: bots
+- Routes: /dashboard/bots/[id]/assistant, /dashboard/bots/[id]/edit, /dashboard/bots/[id], /dashboard/bots/[id]/preview, /dashboard/bots/[id]/runtime, /dashboard/bots/assistant, /dashboard/bots/create, /dashboard/bots/new, /dashboard/bots, /dashboard/bots/runtime
+- Candidate scripts: `build`, `go-live:infra:down`, `go-live:infra:up`, `ops:deploy:wait-web-build-info`, `ops:rc:signoff:build`, `ops:ui:prod-clickthrough`, `test:bot:v2:baseline`, `test:go-live:api`, `test:go-live:api:with-infra`, `test:go-live:client`, `test:go-live:server`, `test:go-live:server:with-infra`, `test:go-live:smoke`, `test:go-live:web`, `web:verify:build-typecheck`
+- Candidate workers: `apps/api/src/workers/execution.worker.ts`
+- Candidate tests: `apps/api/src/modules/bots/botCanonicalUpdateScope.service.test.ts`, `apps/api/src/modules/bots/botContextValidation.service.test.ts`, `apps/api/src/modules/bots/botOwnership.service.test.ts`, `apps/api/src/modules/bots/bots.duplicate-guard.e2e.test.ts`, `apps/api/src/modules/bots/bots.dynamic-stop-operator-truth.e2e.test.ts`, `apps/api/src/modules/bots/bots.e2e.test.ts`, `apps/api/src/modules/bots/bots.market-universe-contract.e2e.test.ts`, `apps/api/src/modules/bots/bots.mode-switch-active-position.e2e.test.ts`, `apps/api/src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`, `apps/api/src/modules/bots/bots.multi-strategy-write.e2e.test.ts`, `apps/api/src/modules/bots/bots.orchestration.e2e.test.ts`, `apps/api/src/modules/bots/bots.portfolio-history.e2e.test.ts`
+- Notes: Local safe-fixture action proof covers list delete success/failure, API CRUD/delete/runtime close, ownership, market groups, strategy links, LIVE opt-in guards, duplicate active guards, and runtime monitoring. Production clickthrough remains separate and must be non-destructive.
+
+### 6. Profile (UNVERIFIED)
+
+- Risk: P1 user settings and validation
+- Action family: basic profile update, password/security update
+- Required proof: UI form submit + API validation
+- Next proof: Profile form success/error submit proof with API readback.
+- API modules: profile
+- Web features: profile
+- Routes: /dashboard/profile
+- Candidate scripts: `build`, `ops:deploy:wait-web-build-info`, `ops:rc:signoff:build`, `ops:ui:prod-clickthrough`, `web:verify:build-typecheck`
+- Candidate workers: none
+- Candidate tests: `apps/api/src/modules/profile/apiKey/apiKey.e2e.test.ts`, `apps/api/src/modules/profile/apiKey/exchangeApiKeyProbe.service.test.ts`, `apps/api/src/modules/profile/basic/basic.e2e.test.ts`, `apps/api/src/modules/profile/security/security.e2e.test.ts`, `apps/api/src/modules/profile/stage-abuse-throttling.e2e.test.ts`, `apps/api/src/modules/profile/subscription/subscription.e2e.test.ts`, `apps/web/src/app/dashboard/profile/page.test.tsx`, `apps/web/src/features/profile/components/ApiKeyForm.test.tsx`, `apps/web/src/features/profile/components/ApiKeysList.test.tsx`, `apps/web/src/features/profile/components/Security.test.tsx`, `apps/web/src/features/profile/components/Subscription.test.tsx`
+- Notes: Must include error and success states
+
+### 7. Wallets (UNVERIFIED)
+
+- Risk: P1 capital source of truth
+- Action family: create/edit/delete, paper/live wallet modes, balance preview, reset/repair flows
+- Required proof: UI action + API + DB/state readback
+- Next proof: Wallet create/edit/delete/reset/preview proof with DB or API readback and active-bot guards.
+- API modules: wallets, exchange, logs
+- Web features: wallets
+- Routes: /dashboard/wallets/[id]/edit, /dashboard/wallets/[id], /dashboard/wallets/[id]/preview, /dashboard/wallets/create, /dashboard/wallets/list, /dashboard/wallets
+- Candidate scripts: `build`, `go-live:infra:down`, `go-live:infra:up`, `ops:deploy:wait-web-build-info`, `ops:rc:signoff:build`, `ops:ui:prod-clickthrough`, `test:go-live:api`, `test:go-live:api:with-infra`, `test:go-live:client`, `test:go-live:server`, `test:go-live:server:with-infra`, `test:go-live:smoke`, `test:go-live:web`, `web:verify:build-typecheck`
+- Candidate workers: none
+- Candidate tests: `apps/api/src/modules/engine/runtimeExchangeOrderGuard.service.test.ts`, `apps/api/src/modules/exchange/binancePublicRest.service.test.ts`, `apps/api/src/modules/exchange/binanceUserDataStream.service.test.ts`, `apps/api/src/modules/exchange/ccxtFuturesConnector.service.test.ts`, `apps/api/src/modules/exchange/exchangeAdapterBoundary.service.test.ts`, `apps/api/src/modules/exchange/exchangeAdapterRegistry.service.test.ts`, `apps/api/src/modules/exchange/exchangeAuthenticatedRead.service.test.ts`, `apps/api/src/modules/exchange/exchangeAuthenticatedReadContract.service.test.ts`, `apps/api/src/modules/exchange/exchangeConnectorFactory.service.test.ts`, `apps/api/src/modules/exchange/exchangeExecutionCapabilityContract.service.test.ts`, `apps/api/src/modules/exchange/exchangeMarketCatalog.service.test.ts`, `apps/api/src/modules/exchange/exchangeMetadataContract.service.test.ts`
+- Notes: User allowed cleanup earlier, but production destructive actions still need safe fixture data
+
+### 8. Markets (UNVERIFIED)
+
+- Risk: P1 runtime symbol scope
+- Action family: universe create/edit/delete, symbols import, capability guards
+- Required proof: UI action + API + adapter capability
+- Next proof: Market universe CRUD/import/capability proof, including active-bot guard behavior.
+- API modules: markets, market-data, market-stream, exchange
+- Web features: markets
+- Routes: /dashboard/markets/[id]/edit, /dashboard/markets/create, /dashboard/markets/list
+- Candidate scripts: `build`, `ops:deploy:wait-web-build-info`, `ops:exchange:gateio-market-stream-smoke`, `ops:rc:signoff:build`, `ops:ui:prod-clickthrough`, `web:verify:build-typecheck`
+- Candidate workers: `apps/api/src/workers/marketData.worker.ts`, `apps/api/src/workers/marketStream.worker.ts`, `apps/api/src/workers/marketStreamSubscriptions.service.ts`, `apps/api/src/workers/marketStreamWorkerConfig.ts`
+- Candidate tests: `apps/api/src/modules/engine/runtimeExchangeOrderGuard.service.test.ts`, `apps/api/src/modules/exchange/binancePublicRest.service.test.ts`, `apps/api/src/modules/exchange/binanceUserDataStream.service.test.ts`, `apps/api/src/modules/exchange/ccxtFuturesConnector.service.test.ts`, `apps/api/src/modules/exchange/exchangeAdapterBoundary.service.test.ts`, `apps/api/src/modules/exchange/exchangeAdapterRegistry.service.test.ts`, `apps/api/src/modules/exchange/exchangeAuthenticatedRead.service.test.ts`, `apps/api/src/modules/exchange/exchangeAuthenticatedReadContract.service.test.ts`, `apps/api/src/modules/exchange/exchangeConnectorFactory.service.test.ts`, `apps/api/src/modules/exchange/exchangeExecutionCapabilityContract.service.test.ts`, `apps/api/src/modules/exchange/exchangeMarketCatalog.service.test.ts`, `apps/api/src/modules/exchange/exchangeMetadataContract.service.test.ts`
+- Notes: Must verify active bot guard behavior
+
+### 9. Strategies (UNVERIFIED)
+
+- Risk: P1 trading decision config
+- Action family: create/edit/delete/clone, RSI 20/80 preserved, config validation
+- Required proof: UI action + API + runtime/backtest compatibility
+- Next proof: Strategy create/edit/delete/clone/config proof preserving RSI 20/80 and proving runtime/backtest compatibility.
+- API modules: strategies, backtests, engine
+- Web features: strategies
+- Routes: /dashboard/strategies/[id]/edit, /dashboard/strategies/[id], /dashboard/strategies/create, /dashboard/strategies/list
+- Candidate scripts: `build`, `go-live:infra:down`, `go-live:infra:up`, `ops:deploy:wait-web-build-info`, `ops:rc:signoff:build`, `ops:ui:prod-clickthrough`, `test:go-live:api`, `test:go-live:api:with-infra`, `test:go-live:client`, `test:go-live:server`, `test:go-live:server:with-infra`, `test:go-live:smoke`, `test:go-live:web`, `web:verify:build-typecheck`
+- Candidate workers: `apps/api/src/workers/backtest.worker.ts`, `apps/api/src/workers/execution.worker.ts`
+- Candidate tests: `apps/api/src/modules/backtests/backtestDataGateway.test.ts`, `apps/api/src/modules/backtests/backtestFillModel.test.ts`, `apps/api/src/modules/backtests/backtestIndicatorTimelineSeries.test.ts`, `apps/api/src/modules/backtests/backtestParity3Symbols.test.ts`, `apps/api/src/modules/backtests/backtestPatternParityFixtures.test.ts`, `apps/api/src/modules/backtests/backtestRange.service.test.ts`, `apps/api/src/modules/backtests/backtestReplayCore.test.ts`, `apps/api/src/modules/backtests/backtestRunJob.test.ts`, `apps/api/src/modules/backtests/backtestRunQueue.test.ts`, `apps/api/src/modules/backtests/backtestRuntimeKernelParity.test.ts`, `apps/api/src/modules/backtests/backtests.contract-remediation.test.ts`, `apps/api/src/modules/backtests/backtests.e2e.test.ts`
+- Notes: Do not delete the preserved RSI 20/80 strategy
+
+### 10. Manual Orders (UNVERIFIED)
+
+- Risk: P0 money-impacting order flow
+- Action family: place PAPER order, validation, preview/context, cancel/close paths
+- Required proof: UI action + API + DB readback
+- Next proof: PAPER manual order place/cancel/close proof with validation and DB readback; LIVE remains blocked-risk.
+- API modules: orders, bots, wallets, exchange, positions
+- Web features: orders, dashboard-home
+- Routes: /dashboard
+- Candidate scripts: `build`, `go-live:infra:down`, `go-live:infra:up`, `ops:deploy:wait-web-build-info`, `ops:rc:signoff:build`, `ops:ui:prod-clickthrough`, `test:go-live:api`, `test:go-live:api:with-infra`, `test:go-live:client`, `test:go-live:server`, `test:go-live:server:with-infra`, `test:go-live:smoke`, `test:go-live:web`, `web:verify:build-typecheck`
+- Candidate workers: `apps/api/src/workers/execution.worker.ts`
+- Candidate tests: `apps/api/src/modules/bots/botCanonicalUpdateScope.service.test.ts`, `apps/api/src/modules/bots/botContextValidation.service.test.ts`, `apps/api/src/modules/bots/botOwnership.service.test.ts`, `apps/api/src/modules/bots/bots.duplicate-guard.e2e.test.ts`, `apps/api/src/modules/bots/bots.dynamic-stop-operator-truth.e2e.test.ts`, `apps/api/src/modules/bots/bots.e2e.test.ts`, `apps/api/src/modules/bots/bots.market-universe-contract.e2e.test.ts`, `apps/api/src/modules/bots/bots.mode-switch-active-position.e2e.test.ts`, `apps/api/src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`, `apps/api/src/modules/bots/bots.multi-strategy-write.e2e.test.ts`, `apps/api/src/modules/bots/bots.orchestration.e2e.test.ts`, `apps/api/src/modules/bots/bots.portfolio-history.e2e.test.ts`
+- Notes: LIVE order actions are `BLOCKED_RISK`
+
+### 11. Positions (UNVERIFIED)
+
+- Risk: P0 position ownership/runtime truth
+- Action family: list, close, update, takeover, import status, live reconciliation
+- Required proof: UI/API action proof + exchange snapshot boundary
+- Next proof: List/close/update/takeover/import-status proof with exchange snapshot boundary and fail-closed live mutation plan.
+- API modules: positions, bots, orders, exchange
+- Web features: positions, dashboard-home
+- Routes: /dashboard
+- Candidate scripts: `build`, `go-live:infra:down`, `go-live:infra:up`, `ops:deploy:wait-web-build-info`, `ops:liveimport:readback`, `ops:rc:signoff:build`, `ops:ui:prod-clickthrough`, `test:go-live:api`, `test:go-live:api:with-infra`, `test:go-live:client`, `test:go-live:server`, `test:go-live:server:with-infra`, `test:go-live:smoke`, `test:go-live:web`, `web:verify:build-typecheck`
+- Candidate workers: `apps/api/src/workers/execution.worker.ts`
+- Candidate tests: `apps/api/src/modules/bots/botCanonicalUpdateScope.service.test.ts`, `apps/api/src/modules/bots/botContextValidation.service.test.ts`, `apps/api/src/modules/bots/botOwnership.service.test.ts`, `apps/api/src/modules/bots/bots.duplicate-guard.e2e.test.ts`, `apps/api/src/modules/bots/bots.dynamic-stop-operator-truth.e2e.test.ts`, `apps/api/src/modules/bots/bots.e2e.test.ts`, `apps/api/src/modules/bots/bots.market-universe-contract.e2e.test.ts`, `apps/api/src/modules/bots/bots.mode-switch-active-position.e2e.test.ts`, `apps/api/src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`, `apps/api/src/modules/bots/bots.multi-strategy-write.e2e.test.ts`, `apps/api/src/modules/bots/bots.orchestration.e2e.test.ts`, `apps/api/src/modules/bots/bots.portfolio-history.e2e.test.ts`
+- Notes: LIVE exchange mutation requires explicit safe plan
+
+### 12. Orders (UNVERIFIED)
+
+- Risk: P0 order lifecycle
+- Action family: list, cancel, exchange-backed cancel, order fills, fees
+- Required proof: UI/API action proof + adapter boundary
+- Next proof: Order list/cancel/fill/fee proof through API and adapter boundary, separating PAPER from exchange-backed risk.
+- API modules: orders, exchange, positions, bots
+- Web features: orders, dashboard-home
+- Routes: /dashboard
+- Candidate scripts: `build`, `go-live:infra:down`, `go-live:infra:up`, `ops:deploy:wait-web-build-info`, `ops:rc:signoff:build`, `ops:ui:prod-clickthrough`, `test:go-live:api`, `test:go-live:api:with-infra`, `test:go-live:client`, `test:go-live:server`, `test:go-live:server:with-infra`, `test:go-live:smoke`, `test:go-live:web`, `web:verify:build-typecheck`
+- Candidate workers: `apps/api/src/workers/execution.worker.ts`
+- Candidate tests: `apps/api/src/modules/bots/botCanonicalUpdateScope.service.test.ts`, `apps/api/src/modules/bots/botContextValidation.service.test.ts`, `apps/api/src/modules/bots/botOwnership.service.test.ts`, `apps/api/src/modules/bots/bots.duplicate-guard.e2e.test.ts`, `apps/api/src/modules/bots/bots.dynamic-stop-operator-truth.e2e.test.ts`, `apps/api/src/modules/bots/bots.e2e.test.ts`, `apps/api/src/modules/bots/bots.market-universe-contract.e2e.test.ts`, `apps/api/src/modules/bots/bots.mode-switch-active-position.e2e.test.ts`, `apps/api/src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`, `apps/api/src/modules/bots/bots.multi-strategy-write.e2e.test.ts`, `apps/api/src/modules/bots/bots.orchestration.e2e.test.ts`, `apps/api/src/modules/bots/bots.portfolio-history.e2e.test.ts`
+- Notes: Exchange-side cancel support exists, but production action proof is risky
+
+### 13. Backtests (UNVERIFIED)
+
+- Risk: P1 simulation correctness
+- Action family: create run, cancel/delete/view details, reports/timeline
+- Required proof: UI action + worker/result readback
+- Next proof: Create/cancel/delete/details/report proof using representative RSI strategy and market data.
+- API modules: backtests, strategies, market-data
+- Web features: backtest
+- Routes: /dashboard/backtests/[id], /dashboard/backtests/create, /dashboard/backtests/list
+- Candidate scripts: `build`, `go-live:infra:down`, `go-live:infra:up`, `ops:deploy:wait-web-build-info`, `ops:rc:signoff:build`, `ops:ui:prod-clickthrough`, `test:go-live:api`, `test:go-live:api:with-infra`, `test:go-live:client`, `test:go-live:server`, `test:go-live:server:with-infra`, `test:go-live:smoke`, `test:go-live:web`, `web:verify:build-typecheck`
+- Candidate workers: `apps/api/src/workers/backtest.worker.ts`
+- Candidate tests: `apps/api/src/modules/backtests/backtestDataGateway.test.ts`, `apps/api/src/modules/backtests/backtestFillModel.test.ts`, `apps/api/src/modules/backtests/backtestIndicatorTimelineSeries.test.ts`, `apps/api/src/modules/backtests/backtestParity3Symbols.test.ts`, `apps/api/src/modules/backtests/backtestPatternParityFixtures.test.ts`, `apps/api/src/modules/backtests/backtestRange.service.test.ts`, `apps/api/src/modules/backtests/backtestReplayCore.test.ts`, `apps/api/src/modules/backtests/backtestRunJob.test.ts`, `apps/api/src/modules/backtests/backtestRunQueue.test.ts`, `apps/api/src/modules/backtests/backtestRuntimeKernelParity.test.ts`, `apps/api/src/modules/backtests/backtests.contract-remediation.test.ts`, `apps/api/src/modules/backtests/backtests.e2e.test.ts`
+- Notes: Needs representative RSI strategy and market data
+
+### 14. Reports (UNVERIFIED)
+
+- Risk: P2 operator reporting
+- Action family: filters, summaries, export/download if present
+- Required proof: UI action + API data proof
+- Next proof: Filters/summaries/export proof with API data readback.
+- API modules: reports, backtests, bots, wallets
+- Web features: reports
+- Routes: /dashboard/reports
+- Candidate scripts: `build`, `ops:deploy:wait-web-build-info`, `ops:rc:signoff:build`, `ops:ui:prod-clickthrough`, `web:verify:build-typecheck`
+- Candidate workers: none
+- Candidate tests: `apps/api/src/modules/backtests/backtestDataGateway.test.ts`, `apps/api/src/modules/backtests/backtestFillModel.test.ts`, `apps/api/src/modules/backtests/backtestIndicatorTimelineSeries.test.ts`, `apps/api/src/modules/backtests/backtestParity3Symbols.test.ts`, `apps/api/src/modules/backtests/backtestPatternParityFixtures.test.ts`, `apps/api/src/modules/backtests/backtestRange.service.test.ts`, `apps/api/src/modules/backtests/backtestReplayCore.test.ts`, `apps/api/src/modules/backtests/backtestRunJob.test.ts`, `apps/api/src/modules/backtests/backtestRunQueue.test.ts`, `apps/api/src/modules/backtests/backtestRuntimeKernelParity.test.ts`, `apps/api/src/modules/backtests/backtests.contract-remediation.test.ts`, `apps/api/src/modules/backtests/backtests.e2e.test.ts`
+- Notes: Route evidence is not enough
+
+### 15. Subscriptions/Admin (BLOCKED_AUTH)
+
+- Risk: P0 role/entitlement access
+- Action family: entitlement gates, admin user view/actions
+- Required proof: protected UI + API ownership checks
+- Next proof: Protected admin clickthrough with non-destructive data and entitlement checks.
+- API modules: admin, subscriptions, users
+- Web features: admin
+- Routes: /admin, /admin/subscriptions, /admin/users
+- Candidate scripts: `build`, `ops:deploy:wait-web-build-info`, `ops:rc:signoff:build`, `ops:ui:prod-clickthrough`, `web:verify:build-typecheck`
+- Candidate workers: none
+- Candidate tests: `apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.e2e.test.ts`, `apps/api/src/modules/admin/users/users.e2e.test.ts`, `apps/api/src/workers/marketStreamSubscriptions.service.test.ts`, `apps/web/src/features/admin/subscriptions/pages/AdminSubscriptionsPage.test.tsx`, `apps/web/src/features/admin/users/pages/AdminUsersPage.test.tsx`
+- Notes: Needs admin auth and non-destructive data set
+
+### 16. Logs/Audit Trail (UNVERIFIED)
+
+- Risk: P1 auditability
+- Action family: filters, pagination, action log visibility
+- Required proof: UI action + API ownership proof
+- Next proof: Filters/pagination/action-log visibility proof using events produced by the audit.
+- API modules: logs
+- Web features: logs
+- Routes: /dashboard/logs
+- Candidate scripts: `build`, `ops:deploy:wait-web-build-info`, `ops:rc:signoff:build`, `ops:ui:prod-clickthrough`, `web:verify:build-typecheck`
+- Candidate workers: none
+- Candidate tests: `apps/api/src/modules/logs/logs.e2e.test.ts`, `apps/web/src/app/dashboard/logs/page.test.tsx`, `apps/web/src/features/logs/components/AuditTrailView.test.tsx`
+- Notes: Must include events produced by this audit
+
+### 17. Exchange Adapter (UNVERIFIED)
+
+- Risk: P0 external exchange boundary
+- Action family: Binance/Gate.io capabilities, public data, authenticated reads, submit/cancel
+- Required proof: adapter contract tests + fail-closed proofs
+- Next proof: Operation-by-operation Binance/Gate.io support matrix with pass/fail-closed proofs.
+- API modules: exchange, profile, orders, positions, wallets, market-stream
+- Web features: exchanges, profile, dashboard-home
+- Routes: /dashboard/exchanges, /dashboard, /dashboard/profile
+- Candidate scripts: `go-live:infra:down`, `go-live:infra:up`, `ops:exchange:gateio-market-stream-smoke`, `ops:live:controlled-proof`, `ops:liveimport:readback`, `test:go-live:api`, `test:go-live:api:with-infra`, `test:go-live:client`, `test:go-live:server`, `test:go-live:server:with-infra`, `test:go-live:smoke`, `test:go-live:web`
+- Candidate workers: `apps/api/src/workers/execution.worker.ts`, `apps/api/src/workers/marketStream.worker.ts`, `apps/api/src/workers/marketStreamSubscriptions.service.ts`, `apps/api/src/workers/marketStreamWorkerConfig.ts`
+- Candidate tests: `apps/api/src/modules/bots/runtimePositionSerialization.service.test.ts`, `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts`, `apps/api/src/modules/engine/runtimeExchangeOrderGuard.service.test.ts`, `apps/api/src/modules/exchange/binancePublicRest.service.test.ts`, `apps/api/src/modules/exchange/binanceUserDataStream.service.test.ts`, `apps/api/src/modules/exchange/ccxtFuturesConnector.service.test.ts`, `apps/api/src/modules/exchange/exchangeAdapterBoundary.service.test.ts`, `apps/api/src/modules/exchange/exchangeAdapterRegistry.service.test.ts`, `apps/api/src/modules/exchange/exchangeAuthenticatedRead.service.test.ts`, `apps/api/src/modules/exchange/exchangeAuthenticatedReadContract.service.test.ts`, `apps/api/src/modules/exchange/exchangeConnectorFactory.service.test.ts`, `apps/api/src/modules/exchange/exchangeExecutionCapabilityContract.service.test.ts`
+- Notes: Many focused tests exist; consolidate by operation
+
+### 18. Workers (UNVERIFIED)
+
+- Risk: P0 async runtime reliability
+- Action family: runtime loops, market stream, backtest worker, scheduler lifecycle
+- Required proof: process health + action result proof
+- Next proof: Runtime loop, stream, backtest worker, and scheduler lifecycle proof beyond public /ready.
+- API modules: engine, market-stream, backtests, bots
+- Web features: dashboard-home, bots
+- Routes: /dashboard/bots/[id]/runtime, /dashboard/bots/runtime, /dashboard
+- Candidate scripts: `go-live:infra:down`, `go-live:infra:up`, `ops:deploy:rollback-guard`, `ops:deploy:rollback-proof`, `ops:deploy:rollback-proof:prod`, `ops:deploy:rollback-proof:stage`, `ops:deploy:runtime-freshness`, `ops:deploy:smoke`, `ops:deploy:wait-web-build-info`, `ops:live:controlled-proof`, `ops:liveimport:readback`, `test:go-live:api`, `test:go-live:api:with-infra`, `test:go-live:client`, `test:go-live:server`, `test:go-live:server:with-infra`, `test:go-live:smoke`, `test:go-live:web`
+- Candidate workers: `apps/api/src/workers/backtest.worker.ts`, `apps/api/src/workers/execution.worker.ts`, `apps/api/src/workers/marketData.worker.ts`, `apps/api/src/workers/marketStream.worker.ts`, `apps/api/src/workers/marketStreamSubscriptions.service.ts`, `apps/api/src/workers/marketStreamWorkerConfig.ts`
+- Candidate tests: `apps/api/src/modules/backtests/backtestDataGateway.test.ts`, `apps/api/src/modules/backtests/backtestFillModel.test.ts`, `apps/api/src/modules/backtests/backtestIndicatorTimelineSeries.test.ts`, `apps/api/src/modules/backtests/backtestParity3Symbols.test.ts`, `apps/api/src/modules/backtests/backtestPatternParityFixtures.test.ts`, `apps/api/src/modules/backtests/backtestRange.service.test.ts`, `apps/api/src/modules/backtests/backtestReplayCore.test.ts`, `apps/api/src/modules/backtests/backtestRunJob.test.ts`, `apps/api/src/modules/backtests/backtestRunQueue.test.ts`, `apps/api/src/modules/backtests/backtestRuntimeKernelParity.test.ts`, `apps/api/src/modules/backtests/backtests.contract-remediation.test.ts`, `apps/api/src/modules/backtests/backtests.e2e.test.ts`
+- Notes: Public `/ready` is insufficient
+
+### 19. Operations (BLOCKED_AUTH)
+
+- Risk: P0 release safety
+- Action family: deploy, rollback, restore, release gate, SLO, alerts
+- Required proof: existing ops proofs + protected evidence
+- Next proof: Rollback PASS, liveimport readback, authenticated SLO, release gate, and alerts evidence.
+- API modules: engine, bots
+- Web features: admin
+- Routes: /admin, /admin/subscriptions, /admin/users
+- Candidate scripts: `ops:db:backup-restore:check-local`, `ops:db:backup-verify`, `ops:db:backup-verify:local`, `ops:db:backup-verify:prod`, `ops:db:backup-verify:stage`, `ops:db:restore-drill`, `ops:db:restore-drill:local`, `ops:db:restore-drill:prod`, `ops:db:restore-drill:stage`, `ops:deploy:rollback-guard`, `ops:deploy:rollback-proof`, `ops:deploy:rollback-proof:prod`, `ops:deploy:rollback-proof:stage`, `ops:deploy:runtime-freshness`, `ops:deploy:smoke`, `ops:deploy:wait-web-build-info`, `ops:liveimport:readback`, `ops:rc:checklist:sync`, `ops:rc:gates:evidence:check`, `ops:rc:gates:evidence:check:strict:prod`, `ops:rc:gates:local-pipeline`, `ops:rc:gates:local-pipeline:strict`, `ops:rc:gates:local-pipeline:strict:prod`, `ops:rc:gates:prod-pipeline`, `ops:rc:gates:refresh`, `ops:rc:gates:refresh:strict`, `ops:rc:gates:refresh:strict:prod`, `ops:rc:gates:refresh:summary`, `ops:rc:gates:refresh:summary:strict`, `ops:rc:gates:refresh:summary:strict:prod`, `ops:rc:gates:status`, `ops:rc:gates:summary`, `ops:rc:signoff:build`, `ops:release:v1:gate`, `ops:release:v1:preflight`, `ops:release:v1:stage-rehearsal`, `ops:slo:collect`, `ops:slo:window-report`
+- Candidate workers: `apps/api/src/workers/backtest.worker.ts`, `apps/api/src/workers/execution.worker.ts`, `apps/api/src/workers/marketData.worker.ts`, `apps/api/src/workers/marketStream.worker.ts`, `apps/api/src/workers/marketStreamSubscriptions.service.ts`, `apps/api/src/workers/marketStreamWorkerConfig.ts`
+- Candidate tests: `apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.e2e.test.ts`, `apps/api/src/modules/admin/users/users.e2e.test.ts`, `apps/api/src/modules/bots/botCanonicalUpdateScope.service.test.ts`, `apps/api/src/modules/bots/botContextValidation.service.test.ts`, `apps/api/src/modules/bots/botOwnership.service.test.ts`, `apps/api/src/modules/bots/bots.duplicate-guard.e2e.test.ts`, `apps/api/src/modules/bots/bots.dynamic-stop-operator-truth.e2e.test.ts`, `apps/api/src/modules/bots/bots.e2e.test.ts`, `apps/api/src/modules/bots/bots.market-universe-contract.e2e.test.ts`, `apps/api/src/modules/bots/bots.mode-switch-active-position.e2e.test.ts`, `apps/api/src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`, `apps/api/src/modules/bots/bots.multi-strategy-write.e2e.test.ts`
+- Notes: Still requires rollback proof PASS, liveimport readback, SLO
+
+### 20. Security/Privacy (UNVERIFIED)
+
+- Risk: P0 auth/secrets/data isolation
+- Action family: ownership isolation, rate limits, secret redaction, fail-closed errors
+- Required proof: focused tests + production-safe probes
+- Next proof: Ownership isolation, rate-limit, secret redaction, fail-closed, and abuse-case proof.
+- API modules: auth, isolation, profile, admin, subscriptions
+- Web features: auth, admin, profile
+- Routes: /auth/login, /auth/register, /admin, /admin/subscriptions, /admin/users, /dashboard/profile
+- Candidate scripts: `build`, `go-live:infra:down`, `go-live:infra:up`, `ops:deploy:wait-web-build-info`, `ops:rc:signoff:build`, `ops:ui:prod-clickthrough`, `test:go-live:api`, `test:go-live:api:with-infra`, `test:go-live:client`, `test:go-live:server`, `test:go-live:server:with-infra`, `test:go-live:smoke`, `test:go-live:web`, `web:verify:build-typecheck`
+- Candidate workers: none
+- Candidate tests: `apps/api/src/middleware/requireAuth.test.ts`, `apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.e2e.test.ts`, `apps/api/src/modules/admin/users/users.e2e.test.ts`, `apps/api/src/modules/auth/auth.cookie.test.ts`, `apps/api/src/modules/auth/auth.e2e.test.ts`, `apps/api/src/modules/auth/auth.errors.test.ts`, `apps/api/src/modules/auth/auth.jwt.test.ts`, `apps/api/src/modules/auth/auth.service.test.ts`, `apps/api/src/modules/exchange/exchangeAuthenticatedRead.service.test.ts`, `apps/api/src/modules/exchange/exchangeAuthenticatedReadContract.service.test.ts`, `apps/api/src/modules/isolation/data-isolation.e2e.test.ts`, `apps/api/src/modules/positions/positions.authenticatedSnapshots.service.test.ts`
+- Notes: Must include action-level abuse cases
+
+### 21. UX/A11y/Mobile (UNVERIFIED)
+
+- Risk: P1 product usability
+- Action family: loading, empty, error, success, keyboard/touch, responsive states
+- Required proof: browser screenshots/clickthrough
+- Next proof: Per-screen loading/empty/error/success, keyboard/touch, responsive, and accessibility evidence.
+- API modules: none
+- Web features: dashboard-home, bots, wallets, markets, strategies, backtest, profile
+- Routes: /dashboard/backtests/[id], /dashboard/backtests/create, /dashboard/backtests/list, /dashboard/bots/[id]/assistant, /dashboard/bots/[id]/edit, /dashboard/bots/[id], /dashboard/bots/[id]/preview, /dashboard/bots/[id]/runtime, /dashboard/bots/assistant, /dashboard/bots/create, /dashboard/bots/new, /dashboard/bots, /dashboard/bots/runtime, /dashboard/exchanges, /dashboard/logs, /dashboard/markets/[id]/edit, /dashboard/markets/create, /dashboard/markets/list, /dashboard, /dashboard/profile, /dashboard/reports, /dashboard/strategies/[id]/edit, /dashboard/strategies/[id], /dashboard/strategies/create, /dashboard/strategies/list, /dashboard/wallets/[id]/edit, /dashboard/wallets/[id], /dashboard/wallets/[id]/preview, /dashboard/wallets/create, /dashboard/wallets/list, /dashboard/wallets
+- Candidate scripts: `build`, `i18n:audit:route-reachable:web`, `ops:deploy:wait-web-build-info`, `ops:rc:signoff:build`, `ops:ui:prod-clickthrough`, `web:verify:build-typecheck`
+- Candidate workers: none
+- Candidate tests: `apps/api/src/modules/backtests/backtestDataGateway.test.ts`, `apps/api/src/modules/backtests/backtestFillModel.test.ts`, `apps/api/src/modules/backtests/backtestIndicatorTimelineSeries.test.ts`, `apps/api/src/modules/backtests/backtestParity3Symbols.test.ts`, `apps/api/src/modules/backtests/backtestPatternParityFixtures.test.ts`, `apps/api/src/modules/backtests/backtestRange.service.test.ts`, `apps/api/src/modules/backtests/backtestReplayCore.test.ts`, `apps/api/src/modules/backtests/backtestRunJob.test.ts`, `apps/api/src/modules/backtests/backtestRunQueue.test.ts`, `apps/api/src/modules/backtests/backtestRuntimeKernelParity.test.ts`, `apps/api/src/modules/backtests/backtests.contract-remediation.test.ts`, `apps/api/src/modules/backtests/backtests.e2e.test.ts`
+- Notes: Needs per-screen evidence, not just route load
+
 
 ## API Modules
 
@@ -210,18 +537,18 @@ Source: `docs/operations/v1-product-action-audit-matrix-2026-05-10.md`
 
 Showing up to 40 unchecked markers from the canonical queue sources.
 
-- .codex/context/TASK_BOARD.md:91 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback`
-- .codex/context/TASK_BOARD.md:946 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
-- .codex/context/TASK_BOARD.md:1118 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
-- .codex/context/TASK_BOARD.md:4601 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production`
-- .codex/context/TASK_BOARD.md:4636 - [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production`
-- .codex/context/TASK_BOARD.md:6115 - [ ] (none)
-- .codex/context/TASK_BOARD.md:6133 - [ ] (none)
-- docs/planning/mvp-next-commits.md:37 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback`
-- docs/planning/mvp-next-commits.md:773 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
-- docs/planning/mvp-next-commits.md:1141 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
-- docs/planning/mvp-next-commits.md:4094 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production`
-- docs/planning/mvp-next-commits.md:4124 - [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production`
+- .codex/context/TASK_BOARD.md:99 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback`
+- .codex/context/TASK_BOARD.md:954 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
+- .codex/context/TASK_BOARD.md:1126 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
+- .codex/context/TASK_BOARD.md:4609 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production`
+- .codex/context/TASK_BOARD.md:4644 - [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production`
+- .codex/context/TASK_BOARD.md:6123 - [ ] (none)
+- .codex/context/TASK_BOARD.md:6141 - [ ] (none)
+- docs/planning/mvp-next-commits.md:46 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback`
+- docs/planning/mvp-next-commits.md:782 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
+- docs/planning/mvp-next-commits.md:1150 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
+- docs/planning/mvp-next-commits.md:4103 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production`
+- docs/planning/mvp-next-commits.md:4133 - [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production`
 
 ## Architecture And Module Sources
 

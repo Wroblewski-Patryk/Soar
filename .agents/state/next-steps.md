@@ -11,6 +11,9 @@ local no-network index generator for V1 continuation. Current generated index:
 use the index to select one non-`PASS` V1 matrix row and map it to the matching
 API module, Web feature, route, worker, and focused tests. This index is not
 V1 approval evidence; it is the baseline for the next action audit.
+`PROJECT-INDEX-V1-CROSSWALK-2026-05-10` adds the per-row crosswalk. The next
+executable product task should start from priority 1 in the generated V1 Audit
+Work Map: Dashboard Home rendered/browser action audit, then Bot Runtime.
 
 Latest Dashboard Home rendered runtime audit:
 `V1-DASHBOARD-HOME-RENDERED-RUNTIME-AUDIT-2026-05-10` is locally complete for

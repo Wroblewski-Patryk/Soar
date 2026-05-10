@@ -17,6 +17,226 @@ const ignoredDirectories = new Set([
   'tmp',
 ]);
 
+const v1SurfaceMap = {
+  Auth: {
+    apiModules: ['auth'],
+    webFeatures: ['auth'],
+    routePrefixes: ['/auth'],
+    workerKeywords: [],
+    scriptKeywords: ['go-live', 'ui'],
+    auditPriority: 3,
+    nextProof: 'Browser login/logout/session-expiry proof plus API auth lifecycle assertions.',
+    risk: 'P0 auth/session correctness',
+  },
+  Profile: {
+    apiModules: ['profile'],
+    webFeatures: ['profile'],
+    routePrefixes: ['/dashboard/profile'],
+    workerKeywords: [],
+    scriptKeywords: ['ui'],
+    auditPriority: 6,
+    nextProof: 'Profile form success/error submit proof with API readback.',
+    risk: 'P1 user settings and validation',
+  },
+  'Profile API Keys': {
+    apiModules: ['profile', 'exchange', 'logs'],
+    webFeatures: ['profile', 'exchanges'],
+    routePrefixes: ['/dashboard/profile', '/dashboard/exchanges'],
+    workerKeywords: [],
+    scriptKeywords: ['exchange', 'ui'],
+    auditPriority: 4,
+    nextProof: 'Create/test/delete key proof for Binance and Gate.io through adapter-owned probes and audit logs.',
+    risk: 'P0 secrets/exchange access',
+  },
+  'Subscriptions/Admin': {
+    apiModules: ['admin', 'subscriptions', 'users'],
+    webFeatures: ['admin'],
+    routePrefixes: ['/admin'],
+    workerKeywords: [],
+    scriptKeywords: ['ui'],
+    auditPriority: 15,
+    nextProof: 'Protected admin clickthrough with non-destructive data and entitlement checks.',
+    risk: 'P0 role/entitlement access',
+  },
+  Wallets: {
+    apiModules: ['wallets', 'exchange', 'logs'],
+    webFeatures: ['wallets'],
+    routePrefixes: ['/dashboard/wallets'],
+    workerKeywords: [],
+    scriptKeywords: ['go-live', 'ui'],
+    auditPriority: 7,
+    nextProof: 'Wallet create/edit/delete/reset/preview proof with DB or API readback and active-bot guards.',
+    risk: 'P1 capital source of truth',
+  },
+  Markets: {
+    apiModules: ['markets', 'market-data', 'market-stream', 'exchange'],
+    webFeatures: ['markets'],
+    routePrefixes: ['/dashboard/markets'],
+    workerKeywords: ['marketData', 'marketStream'],
+    scriptKeywords: ['exchange', 'ui'],
+    auditPriority: 8,
+    nextProof: 'Market universe CRUD/import/capability proof, including active-bot guard behavior.',
+    risk: 'P1 runtime symbol scope',
+  },
+  Strategies: {
+    apiModules: ['strategies', 'backtests', 'engine'],
+    webFeatures: ['strategies'],
+    routePrefixes: ['/dashboard/strategies'],
+    workerKeywords: ['backtest', 'execution'],
+    scriptKeywords: ['go-live', 'ui'],
+    auditPriority: 9,
+    nextProof: 'Strategy create/edit/delete/clone/config proof preserving RSI 20/80 and proving runtime/backtest compatibility.',
+    risk: 'P1 trading decision config',
+  },
+  Bots: {
+    apiModules: ['bots', 'engine', 'wallets', 'markets', 'strategies'],
+    webFeatures: ['bots'],
+    routePrefixes: ['/dashboard/bots'],
+    workerKeywords: ['execution'],
+    scriptKeywords: ['bot', 'go-live', 'ui'],
+    auditPriority: 5,
+    nextProof: 'Production-safe non-destructive clickthrough for bot actions; local action proof already exists.',
+    risk: 'P0 bot lifecycle',
+  },
+  'Bot Runtime': {
+    apiModules: ['bots', 'engine', 'orders', 'positions', 'market-stream'],
+    webFeatures: ['bots', 'dashboard-home'],
+    exactRoutes: ['/dashboard/bots/runtime', '/dashboard/bots/[id]/runtime'],
+    routePrefixes: [],
+    workerKeywords: ['execution', 'marketStream'],
+    scriptKeywords: ['liveimport', 'live', 'go-live'],
+    auditPriority: 2,
+    nextProof: 'Representative PAPER running/stopped runtime session proof with worker telemetry and runtime readback.',
+    risk: 'P0 runtime truth',
+  },
+  'Dashboard Home': {
+    apiModules: ['bots', 'orders', 'positions', 'wallets', 'reports'],
+    webFeatures: ['dashboard-home'],
+    exactRoutes: ['/dashboard'],
+    routePrefixes: [],
+    workerKeywords: ['execution', 'marketData', 'marketStream'],
+    scriptKeywords: ['ui', 'go-live'],
+    auditPriority: 1,
+    nextProof: 'Rendered/browser proof for selected bot, wallet KPIs, tables, loading/empty/error, responsive states, and safe clickthrough.',
+    risk: 'P0 operator truth surface',
+  },
+  'Manual Orders': {
+    apiModules: ['orders', 'bots', 'wallets', 'exchange', 'positions'],
+    webFeatures: ['orders', 'dashboard-home'],
+    exactRoutes: ['/dashboard'],
+    routePrefixes: ['/dashboard/orders'],
+    workerKeywords: ['execution'],
+    scriptKeywords: ['go-live', 'ui'],
+    auditPriority: 10,
+    nextProof: 'PAPER manual order place/cancel/close proof with validation and DB readback; LIVE remains blocked-risk.',
+    risk: 'P0 money-impacting order flow',
+  },
+  Positions: {
+    apiModules: ['positions', 'bots', 'orders', 'exchange'],
+    webFeatures: ['positions', 'dashboard-home'],
+    exactRoutes: ['/dashboard'],
+    routePrefixes: ['/dashboard/positions'],
+    workerKeywords: ['execution'],
+    scriptKeywords: ['liveimport', 'go-live', 'ui'],
+    auditPriority: 11,
+    nextProof: 'List/close/update/takeover/import-status proof with exchange snapshot boundary and fail-closed live mutation plan.',
+    risk: 'P0 position ownership/runtime truth',
+  },
+  Orders: {
+    apiModules: ['orders', 'exchange', 'positions', 'bots'],
+    webFeatures: ['orders', 'dashboard-home'],
+    exactRoutes: ['/dashboard'],
+    routePrefixes: ['/dashboard/orders'],
+    workerKeywords: ['execution'],
+    scriptKeywords: ['go-live', 'ui'],
+    auditPriority: 12,
+    nextProof: 'Order list/cancel/fill/fee proof through API and adapter boundary, separating PAPER from exchange-backed risk.',
+    risk: 'P0 order lifecycle',
+  },
+  Backtests: {
+    apiModules: ['backtests', 'strategies', 'market-data'],
+    webFeatures: ['backtest'],
+    routePrefixes: ['/dashboard/backtests', '/dashboard/backtest'],
+    workerKeywords: ['backtest'],
+    scriptKeywords: ['go-live', 'ui'],
+    auditPriority: 13,
+    nextProof: 'Create/cancel/delete/details/report proof using representative RSI strategy and market data.',
+    risk: 'P1 simulation correctness',
+  },
+  Reports: {
+    apiModules: ['reports', 'backtests', 'bots', 'wallets'],
+    webFeatures: ['reports'],
+    routePrefixes: ['/dashboard/reports'],
+    workerKeywords: [],
+    scriptKeywords: ['ui'],
+    auditPriority: 14,
+    nextProof: 'Filters/summaries/export proof with API data readback.',
+    risk: 'P2 operator reporting',
+  },
+  'Logs/Audit Trail': {
+    apiModules: ['logs'],
+    webFeatures: ['logs'],
+    routePrefixes: ['/dashboard/logs'],
+    workerKeywords: [],
+    scriptKeywords: ['ui'],
+    auditPriority: 16,
+    nextProof: 'Filters/pagination/action-log visibility proof using events produced by the audit.',
+    risk: 'P1 auditability',
+  },
+  'Exchange Adapter': {
+    apiModules: ['exchange', 'profile', 'orders', 'positions', 'wallets', 'market-stream'],
+    webFeatures: ['exchanges', 'profile', 'dashboard-home'],
+    exactRoutes: ['/dashboard'],
+    routePrefixes: ['/dashboard/exchanges', '/dashboard/profile'],
+    workerKeywords: ['marketStream', 'execution'],
+    scriptKeywords: ['exchange', 'liveimport', 'live'],
+    auditPriority: 17,
+    nextProof: 'Operation-by-operation Binance/Gate.io support matrix with pass/fail-closed proofs.',
+    risk: 'P0 external exchange boundary',
+  },
+  Workers: {
+    apiModules: ['engine', 'market-stream', 'backtests', 'bots'],
+    webFeatures: ['dashboard-home', 'bots'],
+    exactRoutes: ['/dashboard', '/dashboard/bots/runtime', '/dashboard/bots/[id]/runtime'],
+    routePrefixes: [],
+    workerKeywords: ['backtest', 'execution', 'marketData', 'marketStream'],
+    scriptKeywords: ['deploy', 'go-live', 'live'],
+    auditPriority: 18,
+    nextProof: 'Runtime loop, stream, backtest worker, and scheduler lifecycle proof beyond public /ready.',
+    risk: 'P0 async runtime reliability',
+  },
+  Operations: {
+    apiModules: ['engine', 'bots'],
+    webFeatures: ['admin'],
+    routePrefixes: ['/admin'],
+    workerKeywords: ['execution', 'marketData', 'marketStream', 'backtest'],
+    scriptKeywords: ['deploy', 'release', 'rollback', 'slo', 'rc', 'db'],
+    auditPriority: 19,
+    nextProof: 'Rollback PASS, liveimport readback, authenticated SLO, release gate, and alerts evidence.',
+    risk: 'P0 release safety',
+  },
+  'Security/Privacy': {
+    apiModules: ['auth', 'isolation', 'profile', 'admin', 'subscriptions'],
+    webFeatures: ['auth', 'admin', 'profile'],
+    routePrefixes: ['/auth', '/admin', '/dashboard/profile'],
+    workerKeywords: [],
+    scriptKeywords: ['go-live', 'ui'],
+    auditPriority: 20,
+    nextProof: 'Ownership isolation, rate-limit, secret redaction, fail-closed, and abuse-case proof.',
+    risk: 'P0 auth/secrets/data isolation',
+  },
+  'UX/A11y/Mobile': {
+    apiModules: [],
+    webFeatures: ['dashboard-home', 'bots', 'wallets', 'markets', 'strategies', 'backtest', 'profile'],
+    routePrefixes: ['/dashboard', '/dashboard/bots', '/dashboard/wallets', '/dashboard/markets', '/dashboard/strategies'],
+    workerKeywords: [],
+    scriptKeywords: ['ui', 'i18n'],
+    auditPriority: 21,
+    nextProof: 'Per-screen loading/empty/error/success, keyboard/touch, responsive, and accessibility evidence.',
+    risk: 'P1 product usability',
+  },
+};
+
 const toPosixPath = (value) => value.split(path.sep).join('/');
 
 const relativePath = (targetPath) => toPosixPath(path.relative(repoRoot, targetPath));
@@ -333,6 +553,107 @@ const collectArchitectureSources = async () => {
   return [...architectureDocs, ...moduleDocs].map(relativePath);
 };
 
+const uniqueSorted = (values) =>
+  [...new Set(values.filter(Boolean))].sort((a, b) => a.localeCompare(b));
+
+const containsAnyToken = (value, tokens) => {
+  const normalized = value.toLowerCase();
+  return tokens.some((token) => normalized.includes(token.toLowerCase()));
+};
+
+const buildV1WorkMap = ({ v1Matrix, apiModules, webFeatures, nextRoutes, workerFiles, tests, packageScripts }) => {
+  const apiModuleByName = new Map(apiModules.map((module) => [module.name, module]));
+  const webFeatureByName = new Map(webFeatures.map((feature) => [feature.name, feature]));
+
+  return v1Matrix.rows
+    .map((row) => {
+      const mapping = v1SurfaceMap[row.module] ?? {
+        apiModules: [],
+        webFeatures: [],
+        routePrefixes: [],
+        workerKeywords: [],
+        scriptKeywords: [],
+        auditPriority: 99,
+        nextProof: 'Define exact proof before implementation.',
+        risk: 'unclassified',
+      };
+
+      const api = mapping.apiModules
+        .map((name) => apiModuleByName.get(name))
+        .filter(Boolean)
+        .map((module) => ({
+          name: module.name,
+          routeFiles: module.routeFiles,
+          controllerFiles: module.controllerFiles,
+          serviceFiles: module.serviceFiles.slice(0, 12),
+          testFiles: module.testFiles,
+          testFileCount: module.testFiles.length,
+        }));
+
+      const web = mapping.webFeatures
+        .map((name) => webFeatureByName.get(name))
+        .filter(Boolean)
+        .map((feature) => ({
+          name: feature.name,
+          componentFiles: feature.componentFiles.slice(0, 16),
+          testFiles: feature.testFiles,
+          testFileCount: feature.testFiles.length,
+        }));
+
+      const routes = nextRoutes.filter((route) =>
+        (mapping.exactRoutes ?? []).includes(route.route) ||
+        mapping.routePrefixes.some(
+          (prefix) => route.route === prefix || route.route.startsWith(`${prefix}/`),
+        ),
+      );
+
+      const testTokens = uniqueSorted([
+        row.module,
+        ...mapping.apiModules,
+        ...mapping.webFeatures,
+        ...mapping.routePrefixes.map((route) => route.split('/').filter(Boolean).at(-1) ?? ''),
+      ]).filter((token) => token.length > 2);
+
+      const candidateTests = tests.files
+        .filter((file) => containsAnyToken(file, testTokens))
+        .slice(0, 30);
+
+      const candidateScripts = packageScripts.filter((script) =>
+        containsAnyToken(script, mapping.scriptKeywords),
+      );
+
+      const candidateWorkers = workerFiles.filter((file) =>
+        containsAnyToken(file, mapping.workerKeywords),
+      );
+
+      return {
+        module: row.module,
+        status: row.status,
+        auditPriority: mapping.auditPriority,
+        risk: mapping.risk,
+        actionFamily: row.actions,
+        requiredProof: row.requiredProof,
+        nextProof: mapping.nextProof,
+        notes: row.notes,
+        api,
+        web,
+        routes,
+        candidateWorkers,
+        candidateScripts,
+        candidateTests,
+        counts: {
+          apiModules: api.length,
+          webFeatures: web.length,
+          routes: routes.length,
+          candidateWorkers: candidateWorkers.length,
+          candidateScripts: candidateScripts.length,
+          candidateTests: candidateTests.length,
+        },
+      };
+    })
+    .sort((left, right) => left.auditPriority - right.auditPriority || left.module.localeCompare(right.module));
+};
+
 const buildIndex = async (options) => {
   const [
     packageScripts,
@@ -356,7 +677,7 @@ const buildIndex = async (options) => {
     collectArchitectureSources(),
   ]);
 
-  return {
+  const baseIndex = {
     generatedAt: new Date().toISOString(),
     evidenceDate: options.today,
     repoRoot: toPosixPath(repoRoot),
@@ -377,6 +698,11 @@ const buildIndex = async (options) => {
     tests,
     v1Matrix,
     uncheckedTasks,
+  };
+
+  return {
+    ...baseIndex,
+    v1WorkMap: buildV1WorkMap(baseIndex),
   };
 };
 
@@ -407,6 +733,39 @@ const renderMarkdown = (index) => {
     )
     .join('\n');
 
+  const workMapTable = index.v1WorkMap
+    .map(
+      (item) =>
+        `| ${item.auditPriority} | ${item.module} | ${item.status} | ${item.risk} | ${item.counts.apiModules} | ${item.counts.webFeatures} | ${item.counts.routes} | ${item.counts.candidateTests} | ${item.nextProof} |`,
+    )
+    .join('\n');
+
+  const workMapDetails = index.v1WorkMap
+    .map((item) => {
+      const apiNames = item.api.map((api) => api.name).join(', ') || 'none';
+      const webNames = item.web.map((web) => web.name).join(', ') || 'none';
+      const routeNames = item.routes.map((route) => route.route).join(', ') || 'none';
+      const testNames = item.candidateTests.slice(0, 12).map((file) => `\`${file}\``).join(', ') || 'none';
+      const scriptNames = item.candidateScripts.map((script) => `\`${script}\``).join(', ') || 'none';
+      const workerNames = item.candidateWorkers.map((file) => `\`${file}\``).join(', ') || 'none';
+
+      return `### ${item.auditPriority}. ${item.module} (${item.status})
+
+- Risk: ${item.risk}
+- Action family: ${item.actionFamily}
+- Required proof: ${item.requiredProof}
+- Next proof: ${item.nextProof}
+- API modules: ${apiNames}
+- Web features: ${webNames}
+- Routes: ${routeNames}
+- Candidate scripts: ${scriptNames}
+- Candidate workers: ${workerNames}
+- Candidate tests: ${testNames}
+- Notes: ${item.notes}
+`;
+    })
+    .join('\n');
+
   const routeList = renderList(index.nextRoutes, (route) => `${route.route} (${route.file})`);
   const taskList = renderList(
     index.uncheckedTasks.slice(0, 40),
@@ -429,6 +788,20 @@ and fixes.
 Source: \`${index.v1Matrix.source}\`
 
 ${matrixCounts || '- none'}
+
+## V1 Audit Work Map
+
+This table is the working map for finishing V1. It connects each matrix row to
+the likely code and validation surfaces. The priority is audit order, not
+business value.
+
+| Priority | V1 row | Status | Risk | API | Web | Routes | Candidate tests | Next proof |
+| ---: | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+${workMapTable}
+
+## V1 Audit Work Details
+
+${workMapDetails}
 
 ## API Modules
 
