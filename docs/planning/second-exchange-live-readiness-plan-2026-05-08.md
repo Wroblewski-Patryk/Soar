@@ -31,10 +31,10 @@ on protected `LIVEIMPORT-03` runtime readback, rollback proof auth, and RC Gate
 4 approval.
 
 The current exchange capability truth supports `BINANCE` for
-`PAPER_PRICING_FEED`, `LIVE_EXECUTION`, and `API_KEY_PROBE`, and `GATEIO` for
-public `MARKET_CATALOG` plus public `PAPER_PRICING_FEED`. The architecture
-requires new exchange support to be explicit by operation family and to fail
-closed where unsupported.
+`PAPER_PRICING_FEED`, `LIVE_EXECUTION`, and `API_KEY_PROBE`, and now supports
+`GATEIO` for public market data, authenticated readback, and live submit. The
+architecture requires new exchange support to be explicit by operation family
+and to fail closed where unsupported.
 
 On 2026-05-08 the user selected `GATEIO` as the second-exchange target. The
 first executed adapter line has deliberately stayed narrow: `GATEIO` is now a
@@ -78,8 +78,10 @@ adapter is implemented and verified.
 - Current wallet cashflow history support: `GATEIO`
   `WALLET_CASHFLOW_HISTORY` is enabled through the exchange adapter boundary
   for ledger/performance analytics reads.
-- Still blocked: `LIVE_ORDER_SUBMIT` or `LIVE_ORDER_CANCEL` for Gate.io until
-  exact support is implemented and production evidence exists.
+- Current live submit support: `GATEIO` `LIVE_ORDER_SUBMIT` is enabled through
+  the canonical orders/exchange boundary.
+- Still blocked: `LIVE_ORDER_CANCEL` for Gate.io until exact cancel support is
+  implemented and production evidence exists.
 - Still requiring user/operator input: first live scope, whether authenticated
   readback should precede live submit, and whether exchange-side cancel belongs
   in the first live slice.
@@ -138,10 +140,9 @@ Acceptance criteria:
    - `OPEN_ORDERS_SNAPSHOT`: supported.
    - `TRADE_HISTORY_SNAPSHOT`: supported.
    - `WALLET_CASHFLOW_HISTORY`: supported.
-   - `LIVE_ORDER_SUBMIT`: unsupported.
+   - `LIVE_ORDER_SUBMIT`: supported.
    - `LIVE_ORDER_CANCEL`: unsupported.
    - `API_KEY_PROBE`: supported for credential validation only.
-   - `WALLET_CASHFLOW_HISTORY`: unsupported.
 3. Architecture/module docs were updated for the implemented foundation and
    fail-closed boundaries.
 
@@ -177,9 +178,10 @@ Acceptance criteria:
 
 ### Stage 5 - LIVE Order Submit Support
 1. Add live submit adapter through `liveOrderAdapter.service.ts` and the
-   existing orders service boundary.
+   existing orders service boundary. Done for Gate.io live submit.
 2. Validate order type support, quantity precision, min notional, leverage,
-   margin mode, and fee reconciliation.
+   margin mode, and fee reconciliation. Done in mocked boundary coverage; real
+   production proof still requires protected credentials.
 3. Keep live cancel unsupported unless a real exchange cancel boundary is
    implemented and tested.
 

@@ -1,6 +1,6 @@
 # PROJECT_STATE
 
-Last updated: 2026-05-09
+Last updated: 2026-05-10
 
 ## 2026-05-08 UX/UI Feedback Memory Autonomy
 - 2026-05-08 `UX-UI-MEMORY-AUTONOMY-2026-05-08` made UX/UI feedback capture
@@ -13,6 +13,13 @@ Last updated: 2026-05-09
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `EXCHANGE2-30-GATEIO-LIVE-ORDER-SUBMIT-2026-05-10` enables
+  Gate.io live order submit through the canonical orders/exchange boundary and
+  enables Gate.io shared `LIVE_EXECUTION` compatibility gating. Scope is
+  limited to live submit; exchange-side cancel remains unsupported and no real
+  live-money action is performed. Focused exchange tests, wallet e2e, Web
+  capability test, API typecheck, and Web typecheck passed. Evidence:
+  `docs/planning/exchange2-30-gateio-live-order-submit-task-2026-05-10.md`.
 - 2026-05-09 `EXCHANGE2-29-GATEIO-WALLET-CASHFLOW-HISTORY-2026-05-09`
   enabled Gate.io wallet cashflow history through the existing exchange
   adapter boundary. Scope is limited to `WALLET_CASHFLOW_HISTORY`; Gate.io live

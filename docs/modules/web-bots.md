@@ -78,8 +78,9 @@ Out of scope:
 - LIVE mode actions require explicit risk confirmation.
 - Activation is blocked when exchange capability or wallet context invariants fail.
 - Gate.io PAPER bot activation is allowed through the shared
-  `PAPER_PRICING_FEED` capability. Gate.io LIVE activation remains blocked
-  while `LIVE_EXECUTION` is unsupported.
+  `PAPER_PRICING_FEED` capability. Gate.io LIVE activation is allowed after
+  `LIVE_EXECUTION` support is enabled; exchange-side cancel remains
+  unsupported.
 - Runtime actions use protected API endpoints and user-scoped data.
 
 ## 7. Observability and Operations

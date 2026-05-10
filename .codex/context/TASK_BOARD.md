@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-05-09
+Last updated: 2026-05-10
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -16,6 +16,14 @@ Last updated: 2026-05-09
     needed
 
 ## READY
+
+- [x] `EXCHANGE2-30-GATEIO-LIVE-ORDER-SUBMIT-2026-05-10 feature(exchange): enable Gate.io live order submit`
+  - Scope: enable Gate.io `LIVE_ORDER_SUBMIT` through the canonical
+    orders/exchange boundary and enable shared `LIVE_EXECUTION` compatibility
+    gating, while keeping exchange-side cancel unsupported. No real live-money
+    action is performed. Focused exchange tests, wallet e2e, Web capability
+    test, API typecheck, and Web typecheck passed. Evidence:
+    `docs/planning/exchange2-30-gateio-live-order-submit-task-2026-05-10.md`.
 
 - [x] `EXCHANGE2-29-GATEIO-WALLET-CASHFLOW-HISTORY-2026-05-09 feature(exchange): enable Gate.io wallet cashflow history`
   - Scope: enable only `GATEIO` `WALLET_CASHFLOW_HISTORY` through the existing

@@ -138,6 +138,44 @@ describe('Wallets balance preview contract', () => {
     await expect(prisma.wallet.count({ where: { userId, exchange: 'GATEIO' } })).resolves.toBe(1);
   });
 
+  it('persists Gate.io LIVE wallet when live execution is supported', async () => {
+    const email = 'wallet-gateio-live-create@example.com';
+    const agent = await registerAndLogin(email);
+    const userId = await resolveUserIdByEmail(email);
+    const apiKey = await prisma.apiKey.create({
+      data: {
+        userId,
+        label: 'Gate.io live key',
+        exchange: 'GATEIO',
+        apiKey: 'GATEIO_LIVE_KEY',
+        apiSecret: 'GATEIO_LIVE_SECRET',
+      },
+    });
+
+    const createRes = await agent.post('/dashboard/wallets').send({
+      name: 'Gate.io Live Wallet',
+      mode: 'LIVE',
+      exchange: 'GATEIO',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      liveAllocationMode: 'PERCENT',
+      liveAllocationValue: 25,
+      apiKeyId: apiKey.id,
+    });
+
+    expect(createRes.status).toBe(201);
+    expect(createRes.body).toMatchObject({
+      name: 'Gate.io Live Wallet',
+      mode: 'LIVE',
+      exchange: 'GATEIO',
+      marketType: 'FUTURES',
+      baseCurrency: 'USDT',
+      liveAllocationMode: 'PERCENT',
+      liveAllocationValue: 25,
+      apiKeyId: apiKey.id,
+    });
+  });
+
   it('returns wallet balance preview for owned API key with allocation applied', async () => {
     const agent = await registerAndLogin('wallet-preview-owner@example.com');
 

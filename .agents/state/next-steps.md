@@ -1,8 +1,18 @@
 # Next Steps
 
-Last updated: 2026-05-09
+Last updated: 2026-05-10
 
 ## Next Tiny Task
+
+Latest local implementation slice:
+`EXCHANGE2-30-GATEIO-LIVE-ORDER-SUBMIT-2026-05-10` enabled Gate.io
+`LIVE_ORDER_SUBMIT` through the canonical orders/exchange boundary and enables
+Gate.io shared `LIVE_EXECUTION` compatibility gating. Gate.io exchange-side
+cancel remains unsupported. No real live-money action is performed in this
+task. Focused exchange tests, wallet e2e, Web capability test, API typecheck,
+and Web typecheck pass. After deploy evidence, the remaining V1 blockers are
+protected production evidence, authenticated/admin UI clickthrough, and an
+explicit decision on whether exchange-side cancel is V1 scope.
 
 Latest local implementation slice:
 `EXCHANGE2-29-GATEIO-WALLET-CASHFLOW-HISTORY-2026-05-09` enabled only Gate.io

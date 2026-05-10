@@ -74,7 +74,7 @@ work before paper/live bots can be enabled for that exchange.
 | Gate.io public catalog/data | yes | yes | deployed foundation exists | public-only | Public market-data foundation is available. |
 | Gate.io paper bot support | yes after `EXCHANGE2-23` | focused API/Web tests pass | not yet deployed | n/a | Deploy and click through Gate.io PAPER wallet/bot setup for production evidence. |
 | Gate.io authenticated reads | yes for current readback scope | API-key probe, balance preview, positions snapshot, open-orders snapshot, trade-history snapshot, and wallet cashflow history yes | n/a | n/a | Production protected readback and authenticated UI evidence are still needed before claiming end-to-end operational readiness. |
-| Gate.io live order submit | no | fail-closed tests yes | n/a | n/a | Implement exact live submit adapter and protected evidence if in scope. |
+| Gate.io live order submit | implemented | mocked boundary tests pass | deploy pending for this slice | protected evidence missing | Needs production protected readback and explicit operator approval before live-money confidence. |
 | Exchange-side cancel | no for all exchanges | fail-closed tests yes | n/a | n/a | Implement canonical cancel boundary before claiming support. |
 
 ## What Is Not Missing
@@ -141,10 +141,12 @@ work before paper/live bots can be enabled for that exchange.
      analytics reads
    - remaining gap: protected production readback and authenticated UI evidence
 
-2. **Implement Gate.io live submit only after paper/read readiness**
-   - Exact submit support through `liveOrderAdapter.service.ts`.
-   - Quantity/precision/min-notional/leverage/margin/fee handling.
-   - Protected production evidence before live-money enablement.
+2. **Production-prove Gate.io live submit**
+   - Exact submit support through `liveOrderAdapter.service.ts` is implemented.
+   - Quantity/precision/min-notional/leverage/margin/fee handling is covered by
+     canonical boundary and pretrade guard tests.
+   - Protected production evidence and explicit operator approval are still
+     required before live-money confidence.
 
 3. **Decide whether exchange-side cancel is V1 scope**
    - Current matrix says `LIVE_ORDER_CANCEL` is unsupported for every
@@ -174,7 +176,7 @@ work before paper/live bots can be enabled for that exchange.
 | --- | --- |
 | Can be trusted now | Public production health/readiness, public Web reachability, build-info, no-auth redirects, local fail-closed exchange gates. |
 | Implemented but needs production proof | Binance PAPER/LIVE runtime, dashboard runtime data, `LIVEIMPORT-03`, rollback, restore, authenticated UI flows. |
-| Not implemented as usable capability | Gate.io live submit, exchange-side cancel, rich manual trade ticket UX. |
+| Not implemented as usable capability | Exchange-side cancel, rich manual trade ticket UX. |
 | Needs operator/user input | Production app auth, admin auth, rollback auth, DB/Coolify restore context, RC approver identities, explicit live-money approval. |
 
 ## Recommended Completion Plan

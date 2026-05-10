@@ -152,43 +152,6 @@ describe('exchangeAdapterBoundary.service', () => {
       apiKey: 'enc-gateio-key',
       apiSecret: 'enc-gateio-secret',
     });
-
-    await expect(
-      submitLiveOrderThroughBoundary(
-        {
-          userId: 'user-gateio-live-submit-from-balance-test',
-          bot: {
-            exchange: 'GATEIO',
-            marketType: 'FUTURES',
-            positionMode: 'ONE_WAY',
-            apiKeyId: 'gateio-key-1',
-            walletId: 'gateio-wallet-1',
-          },
-          order: {
-            symbol: 'BTCUSDT',
-            side: 'BUY',
-            type: 'LIMIT',
-            quantity: 0.01,
-            price: 100_000,
-          },
-          targetLeverage: 2,
-        },
-        {
-          createAuthenticatedConnector: vi.fn(() => createConnector()),
-          fetchBalanceRaw: vi.fn(),
-          resolveLiveExecutionApiKey: vi.fn(),
-          createLiveOrderAdapter: vi.fn(),
-          enforceLivePretradeGuards: vi.fn(async () => undefined),
-          convergeLiveMarginAndLeverageIfNeeded: vi.fn(async () => undefined),
-        }
-      )
-    ).rejects.toMatchObject({
-      code: 'EXCHANGE_EXECUTION_CAPABILITY_UNSUPPORTED',
-      details: {
-        exchange: 'GATEIO',
-        operation: 'LIVE_ORDER_SUBMIT',
-      },
-    });
   });
 
   it('reads Gate.io positions through the authenticated read boundary', async () => {
@@ -323,55 +286,115 @@ describe('exchangeAdapterBoundary.service', () => {
     expect(connector.disconnect).toHaveBeenCalledOnce();
   });
 
-  it('fails closed for Gate.io live order submit before resolving credentials or connectors', async () => {
-    const resolveLiveExecutionApiKey = vi.fn();
-    const createAuthenticatedConnector = vi.fn(() => createConnector());
-    const createLiveOrderAdapter = vi.fn();
+  it('submits Gate.io live orders through the canonical exchange boundary', async () => {
+    const connector = createConnector();
+    const createAuthenticatedConnector = vi.fn(() => connector);
+    const resolveLiveExecutionApiKey = vi.fn(async () => ({
+      id: 'gateio-key-1',
+      exchange: 'GATEIO' as const,
+      apiKey: 'enc-gateio-key',
+      apiSecret: 'enc-gateio-secret',
+    }));
+    const placeLiveOrderWithFees = vi.fn(async () => ({
+      exchangeOrderId: 'gateio-order-1',
+      status: 'open',
+      rawOrderStatus: 'open',
+      fee: 0.75,
+      feeSource: 'EXCHANGE_FILL' as const,
+      feePending: false,
+      feeCurrency: 'USDT',
+      effectiveFeeRate: 0.00075,
+      exchangeTradeId: 'gateio-trade-1',
+      fills: [],
+    }));
+    const createLiveOrderAdapter = vi.fn(() => ({
+      placeLiveOrderWithFees,
+    }));
     const enforceLivePretradeGuards = vi.fn(async () => undefined);
     const convergeLiveMarginAndLeverageIfNeeded = vi.fn(async () => undefined);
 
-    await expect(
-      submitLiveOrderThroughBoundary(
-        {
-          userId: 'user-gateio-live-submit',
-          bot: {
-            exchange: 'GATEIO',
-            marketType: 'FUTURES',
-            positionMode: 'ONE_WAY',
-            apiKeyId: 'gateio-key-1',
-            walletId: 'gateio-wallet-1',
-          },
-          order: {
-            symbol: 'BTCUSDT',
-            side: 'BUY',
-            type: 'LIMIT',
-            quantity: 0.01,
-            price: 100_000,
-          },
-          targetLeverage: 2,
+    const result = await submitLiveOrderThroughBoundary(
+      {
+        userId: 'user-gateio-live-submit',
+        bot: {
+          exchange: 'GATEIO',
+          marketType: 'FUTURES',
+          positionMode: 'ONE_WAY',
+          apiKeyId: 'gateio-key-1',
+          walletId: 'gateio-wallet-1',
         },
-        {
-          createAuthenticatedConnector,
-          fetchBalanceRaw: vi.fn(),
-          resolveLiveExecutionApiKey,
-          createLiveOrderAdapter,
-          enforceLivePretradeGuards,
-          convergeLiveMarginAndLeverageIfNeeded,
-        }
-      )
-    ).rejects.toMatchObject({
-      code: 'EXCHANGE_EXECUTION_CAPABILITY_UNSUPPORTED',
-      details: {
+        order: {
+          symbol: 'BTCUSDT',
+          side: 'BUY',
+          type: 'LIMIT',
+          quantity: 0.01,
+          price: 100_000,
+        },
+        targetLeverage: 2,
+      },
+      {
+        createAuthenticatedConnector,
+        fetchBalanceRaw: vi.fn(),
+        resolveLiveExecutionApiKey,
+        createLiveOrderAdapter,
+        enforceLivePretradeGuards,
+        convergeLiveMarginAndLeverageIfNeeded,
+      }
+    );
+
+    expect(resolveLiveExecutionApiKey).toHaveBeenCalledOnce();
+    expect(createAuthenticatedConnector).toHaveBeenCalledWith({
+      exchange: 'GATEIO',
+      apiKey: 'enc-gateio-key',
+      apiSecret: 'enc-gateio-secret',
+      marketType: 'FUTURES',
+    });
+    expect(createLiveOrderAdapter).toHaveBeenCalledWith({
+      exchange: 'GATEIO',
+      marketType: 'FUTURES',
+      connector,
+    });
+    expect(enforceLivePretradeGuards).toHaveBeenCalledWith(
+      expect.objectContaining({
         exchange: 'GATEIO',
-        operation: 'LIVE_ORDER_SUBMIT',
+        marketType: 'FUTURES',
+        payload: {
+          symbol: 'BTCUSDT',
+          quantity: 0.01,
+          price: 100_000,
+          reduceOnly: undefined,
+        },
+      })
+    );
+    expect(convergeLiveMarginAndLeverageIfNeeded).toHaveBeenCalledWith({
+      connector,
+      apiKeyId: 'gateio-key-1',
+      symbol: 'BTCUSDT',
+      targetLeverage: 2,
+    });
+    expect(placeLiveOrderWithFees).toHaveBeenCalledWith({
+      order: {
+        symbol: 'BTCUSDT',
+        side: 'buy',
+        type: 'limit',
+        amount: 0.01,
+        price: 100_000,
+        reduceOnly: undefined,
+        positionMode: 'ONE_WAY',
       },
     });
-
-    expect(resolveLiveExecutionApiKey).not.toHaveBeenCalled();
-    expect(createAuthenticatedConnector).not.toHaveBeenCalled();
-    expect(createLiveOrderAdapter).not.toHaveBeenCalled();
-    expect(enforceLivePretradeGuards).not.toHaveBeenCalled();
-    expect(convergeLiveMarginAndLeverageIfNeeded).not.toHaveBeenCalled();
+    expect(connector.disconnect).toHaveBeenCalledOnce();
+    expect(result).toEqual({
+      exchangeOrderId: 'gateio-order-1',
+      status: 'OPEN',
+      fee: 0.75,
+      feeSource: 'EXCHANGE_FILL',
+      feePending: false,
+      feeCurrency: 'USDT',
+      effectiveFeeRate: 0.00075,
+      exchangeTradeId: 'gateio-trade-1',
+      fills: [],
+    });
   });
 
   it('submits live orders through the boundary and normalizes adapter output', async () => {

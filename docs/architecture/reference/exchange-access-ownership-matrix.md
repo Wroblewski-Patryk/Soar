@@ -64,7 +64,7 @@ Current compatibility-stage support:
 | Exchange | `MARKET_CATALOG` | `PAPER_PRICING_FEED` | `LIVE_EXECUTION` | `API_KEY_PROBE` |
 | --- | --- | --- | --- | --- |
 | `BINANCE` | supported | supported | supported | supported |
-| `GATEIO` | supported | supported | unsupported | supported |
+| `GATEIO` | supported | supported | supported | supported |
 | `BYBIT` | unsupported | unsupported | unsupported | unsupported |
 | `OKX` | unsupported | unsupported | unsupported | unsupported |
 | `KRAKEN` | unsupported | unsupported | unsupported | unsupported |
@@ -126,7 +126,7 @@ Consumers must never infer:
 | `OKX` | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
 | `KRAKEN` | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
 | `COINBASE` | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
-| `GATEIO` | supported | supported | supported | supported | supported | unsupported | unsupported | selected second-exchange target; balance preview, positions snapshot, open-orders snapshot, trade-history snapshot, and wallet cashflow history are supported through authenticated-read boundaries, while execution remains fail-closed until exact operation adapters are implemented and verified |
+| `GATEIO` | supported | supported | supported | supported | supported | supported | unsupported | selected second-exchange target; balance preview, positions snapshot, open-orders snapshot, trade-history snapshot, wallet cashflow history, and live order submit are supported through canonical exchange boundaries, while exchange-side cancel remains fail-closed until an exact cancel boundary is implemented and verified |
 
 Runtime market-event boundary:
 
@@ -170,6 +170,10 @@ Runtime market-event boundary:
   exchange adapter boundary for ledger/performance analytics reads. This reads
   deposits, withdrawals, transfers, fees, funding, and income-like account
   history only and does not imply live submit or exchange-side cancel support.
+- `GATEIO` `LIVE_ORDER_SUBMIT` is supported through the canonical
+  `orders.service.ts` -> `exchangeAdapterBoundary.service.ts` ->
+  `liveOrderAdapter.service.ts` path. This enables live submit only; it does
+  not imply exchange-side cancel support.
 
 Canonical owner:
 

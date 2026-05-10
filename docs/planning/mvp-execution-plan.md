@@ -248,6 +248,9 @@ Rule: fix/cleanup/update first, then feature delivery.
   Gate.io `LIVE_ORDER_SUBMIT` now has focused exchange-boundary evidence that
   it fails closed before credentials, connectors, pretrade guards, leverage
   convergence, or live order adapter creation.
+- 2026-05-10: `EXCHANGE2-30` supersedes the earlier Gate.io live-submit
+  fail-closed state by enabling Gate.io live submit through the canonical
+  orders/exchange boundary while keeping exchange-side cancel unsupported.
 - 2026-05-08: Closed `EXCHANGE2-19` with
   `docs/planning/exchange2-19-exchange-backed-cancel-route-fail-closed-task-2026-05-08.md`.
   Exchange-backed cancel now has route-level evidence that

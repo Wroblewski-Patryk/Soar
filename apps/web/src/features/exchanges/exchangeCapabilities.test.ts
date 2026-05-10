@@ -8,7 +8,7 @@ describe('exchangeCapabilities', () => {
 
     expect(supportsExchangeCapability('GATEIO', 'MARKET_CATALOG')).toBe(true);
     expect(supportsExchangeCapability('GATEIO', 'PAPER_PRICING_FEED')).toBe(true);
-    expect(supportsExchangeCapability('GATEIO', 'LIVE_EXECUTION')).toBe(false);
+    expect(supportsExchangeCapability('GATEIO', 'LIVE_EXECUTION')).toBe(true);
     expect(supportsExchangeCapability('GATEIO', 'API_KEY_PROBE')).toBe(true);
   });
 

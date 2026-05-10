@@ -23,7 +23,7 @@ describe('exchangeExecutionCapabilityContract.service', () => {
     expect(supportsExchangeExecutionCapability('GATEIO', 'OPEN_ORDERS_SNAPSHOT')).toBe(true);
     expect(supportsExchangeExecutionCapability('GATEIO', 'TRADE_HISTORY_SNAPSHOT')).toBe(true);
     expect(supportsExchangeExecutionCapability('GATEIO', 'WALLET_CASHFLOW_HISTORY')).toBe(true);
-    expect(supportsExchangeExecutionCapability('GATEIO', 'LIVE_ORDER_SUBMIT')).toBe(false);
+    expect(supportsExchangeExecutionCapability('GATEIO', 'LIVE_ORDER_SUBMIT')).toBe(true);
   });
 
   it('keeps exchange-side cancel explicitly unsupported', () => {

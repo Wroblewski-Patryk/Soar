@@ -47,14 +47,13 @@ Out of scope:
   - LIVE wallet requires compatible API key from same exchange.
   - mode/exchange must be supported by capability map.
   - Gate.io public `PAPER` wallet create/update is allowed through
-    `PAPER_PRICING_FEED`; Gate.io `LIVE` wallet create/update remains
-    fail-closed while `LIVE_EXECUTION` is unsupported.
+    `PAPER_PRICING_FEED`; Gate.io `LIVE` wallet create/update is allowed
+    through `LIVE_EXECUTION` after live submit support is enabled.
   - Gate.io stored API keys may be used for wallet balance preview through the
-    authenticated-read boundary. Gate.io `LIVE` wallet create/update remains
-    fail-closed while `LIVE_EXECUTION` is unsupported.
+    authenticated-read boundary.
   - Gate.io wallet cashflow history is supported through the canonical
     exchange adapter boundary for ledger/performance analytics reads. This does
-    not enable Gate.io `LIVE` wallet create/update or live order submission.
+    not imply exchange-side cancel support.
   - wallet cannot be deleted when linked bot exists.
 - WAPR contract lock (implemented):
   - list payload remains source for table inline API key status mapping (`apiKeyId` presence).
