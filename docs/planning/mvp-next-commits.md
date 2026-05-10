@@ -7,6 +7,15 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-COMPLETION-SCORECARD-2026-05-11 research: quantify V1 progress from ledger`
+  - 2026-05-11: Added `pnpm run ops:project:scorecard` and generated the
+    weighted V1 completion scorecard from the master ledger. Current result:
+    V1 remains `NO-GO`; implementation estimate is `48.7%`, evidence coverage
+    is `7.8%`, release readiness is `4.9%`, and all 13 P0 modules are not
+    release-ready. Evidence:
+    `docs/planning/v1-completion-scorecard-task-2026-05-11.md` and
+    `docs/operations/v1-completion-scorecard-2026-05-11.md`.
+
 - [x] `V1-MASTER-STATE-LEDGER-2026-05-10 research: consolidate full V1 state index`
   - 2026-05-10: Added `pnpm run ops:project:ledger` and generated the
     consolidated V1 master state ledger. The ledger combines the project index

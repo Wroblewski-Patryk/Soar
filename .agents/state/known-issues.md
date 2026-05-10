@@ -1,8 +1,15 @@
 # Known Issues
 
-Last updated: 2026-05-10
+Last updated: 2026-05-11
 
 ## Active Issues
+
+- 2026-05-11 update: current V1 percentages are defined by
+  `docs/operations/v1-completion-scorecard-2026-05-11.md`, not by intuition.
+  The scorecard reports implementation estimate `48.7%`, evidence coverage
+  `7.8%`, and release readiness `4.9%`. This explains why a lot of code can
+  exist while V1 still feels unreliable: most module actions still lack
+  accepted proof, and all 13 P0 rows are not release-ready.
 
 - 2026-05-10 update: the current consolidated V1 state entrypoint is
   `docs/operations/v1-master-state-ledger-2026-05-10.md`. Use it before

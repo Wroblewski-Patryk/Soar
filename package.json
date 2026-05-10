@@ -72,6 +72,7 @@
     "ops:project:index": "node scripts/buildProjectIndex.mjs",
     "ops:project:scan": "node scripts/runV1StaticIssueScan.mjs",
     "ops:project:ledger": "node scripts/buildV1MasterStateLedger.mjs",
+    "ops:project:scorecard": "node scripts/buildV1CompletionScorecard.mjs",
     "ops:deploy:smoke": "node scripts/deploySmokeCheck.mjs",
     "ops:deploy:wait-web-build-info": "node scripts/waitForWebBuildInfo.mjs",
     "ops:liveimport:readback": "node scripts/collectLiveImportReadbackEvidence.mjs",

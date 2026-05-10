@@ -1,8 +1,16 @@
 # Next Steps
 
-Last updated: 2026-05-10
+Last updated: 2026-05-11
 
 ## Next Tiny Task
+
+Latest V1 completion scorecard:
+`V1-COMPLETION-SCORECARD-2026-05-11` adds the current weighted progress model:
+implementation estimate `48.7%`, evidence coverage `7.8%`, release readiness
+`4.9%`. Before each broad continuation, refresh
+`ops:project:index -> ops:project:scan -> ops:project:ledger ->
+ops:project:scorecard`. Then choose work from the scorecard's top blockers and
+next work order, starting with Dashboard Home and Bot Runtime.
 
 Latest V1 master state ledger:
 `V1-MASTER-STATE-LEDGER-2026-05-10` adds the consolidated state file for

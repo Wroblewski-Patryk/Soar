@@ -1,8 +1,17 @@
 # System Health
 
-Last updated: 2026-05-10
+Last updated: 2026-05-11
 
 ## Latest Health Snapshot
+
+- `V1-COMPLETION-SCORECARD-2026-05-11` LOCAL PASS/SCORECARD COMPLETE:
+  added `ops:project:scorecard` and generated
+  `docs/operations/v1-completion-scorecard-2026-05-11.md` plus JSON from the
+  master ledger. Validation passed: `node --check
+  scripts/buildV1CompletionScorecard.mjs`, script help, and scorecard
+  generation for `2026-05-11`. Current derived status remains `NO-GO`:
+  implementation estimate `48.7%`, evidence coverage `7.8%`, release
+  readiness `4.9%`, and all 13 P0 modules not release-ready.
 
 - `V1-MASTER-STATE-LEDGER-2026-05-10` LOCAL PASS/LEDGER COMPLETE:
   added `ops:project:ledger` and generated

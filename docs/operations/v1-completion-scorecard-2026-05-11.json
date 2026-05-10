@@ -1,0 +1,796 @@
+{
+  "generatedAt": "2026-05-10T22:10:03.603Z",
+  "evidenceDate": "2026-05-11",
+  "status": "NO-GO",
+  "sourceLedger": "docs/operations/v1-master-state-ledger-2026-05-10.json",
+  "scoringModel": {
+    "warning": "Percentages are a planning signal, not release approval. V1 remains NO-GO while any P0 module lacks accepted proof or any release gate is blocked.",
+    "weights": {
+      "P0": 5,
+      "P1": 3,
+      "P2": 1
+    },
+    "statusScore": {
+      "PASS": {
+        "implementation": 1,
+        "evidence": 1,
+        "release": 1
+      },
+      "PASS_LOCAL": {
+        "implementation": 0.9,
+        "evidence": 0.65,
+        "release": 0.45
+      },
+      "PARTIAL_LOCAL": {
+        "implementation": 0.65,
+        "evidence": 0.35,
+        "release": 0.2
+      },
+      "UNVERIFIED": {
+        "implementation": 0.45,
+        "evidence": 0,
+        "release": 0
+      },
+      "BLOCKED_AUTH": {
+        "implementation": 0.35,
+        "evidence": 0,
+        "release": 0
+      },
+      "FAIL": {
+        "implementation": 0.1,
+        "evidence": 0,
+        "release": 0
+      }
+    }
+  },
+  "summary": {
+    "implementationEstimatePercent": 48.7,
+    "evidenceCoveragePercent": 7.8,
+    "releaseReadinessPercent": 4.9,
+    "moduleCounts": {
+      "PARTIAL_LOCAL": 2,
+      "UNVERIFIED": 16,
+      "PASS_LOCAL": 1,
+      "BLOCKED_AUTH": 2
+    },
+    "p0Total": 13,
+    "p0NotReleaseReady": 13,
+    "blockedModules": [
+      "Subscriptions/Admin",
+      "Operations"
+    ],
+    "concreteNonProofGaps": 9
+  },
+  "phaseReadiness": [
+    {
+      "phase": "Map state",
+      "readinessPercent": 100,
+      "status": "DONE",
+      "note": "Project index, static scan, and master ledger exist."
+    },
+    {
+      "phase": "Prove action behavior",
+      "readinessPercent": 7.8,
+      "status": "IN_PROGRESS",
+      "note": "Module action proofs are still missing or partial for most rows."
+    },
+    {
+      "phase": "Repair confirmed failures",
+      "readinessPercent": 55,
+      "status": "IN_PROGRESS",
+      "note": "Only repair after proof or static gap triage identifies a concrete defect."
+    },
+    {
+      "phase": "Production-safe proof",
+      "readinessPercent": 4.9,
+      "status": "BLOCKED",
+      "note": "Production-safe clickthrough, protected auth, SLO, rollback, and runtime readback are not closed."
+    },
+    {
+      "phase": "Release decision",
+      "readinessPercent": 0,
+      "status": "BLOCKED",
+      "note": "Release remains blocked while P0 proof gaps and formal gates are open."
+    }
+  ],
+  "topBlockers": [
+    {
+      "type": "P0_NOT_RELEASE_READY",
+      "module": "Dashboard Home",
+      "status": "PARTIAL_LOCAL",
+      "nextProof": "Rendered/browser proof for selected bot, wallet KPIs, tables, loading/empty/error, responsive states, and safe clickthrough."
+    },
+    {
+      "type": "P0_NOT_RELEASE_READY",
+      "module": "Bot Runtime",
+      "status": "PARTIAL_LOCAL",
+      "nextProof": "Representative PAPER running/stopped runtime session proof with worker telemetry and runtime readback."
+    },
+    {
+      "type": "P0_NOT_RELEASE_READY",
+      "module": "Auth",
+      "status": "UNVERIFIED",
+      "nextProof": "Browser login/logout/session-expiry proof plus API auth lifecycle assertions."
+    },
+    {
+      "type": "P0_NOT_RELEASE_READY",
+      "module": "Profile API Keys",
+      "status": "UNVERIFIED",
+      "nextProof": "Create/test/delete key proof for Binance and Gate.io through adapter-owned probes and audit logs."
+    },
+    {
+      "type": "P0_NOT_RELEASE_READY",
+      "module": "Bots",
+      "status": "PASS_LOCAL",
+      "nextProof": "Production-safe non-destructive clickthrough for bot actions; local action proof already exists."
+    },
+    {
+      "type": "P0_NOT_RELEASE_READY",
+      "module": "Manual Orders",
+      "status": "UNVERIFIED",
+      "nextProof": "PAPER manual order place/cancel/close proof with validation and DB readback; LIVE remains blocked-risk."
+    },
+    {
+      "type": "P0_NOT_RELEASE_READY",
+      "module": "Positions",
+      "status": "UNVERIFIED",
+      "nextProof": "List/close/update/takeover/import-status proof with exchange snapshot boundary and fail-closed live mutation plan."
+    },
+    {
+      "type": "P0_NOT_RELEASE_READY",
+      "module": "Orders",
+      "status": "UNVERIFIED",
+      "nextProof": "Order list/cancel/fill/fee proof through API and adapter boundary, separating PAPER from exchange-backed risk."
+    },
+    {
+      "type": "P0_NOT_RELEASE_READY",
+      "module": "Subscriptions/Admin",
+      "status": "BLOCKED_AUTH",
+      "nextProof": "Protected admin clickthrough with non-destructive data and entitlement checks."
+    },
+    {
+      "type": "P0_NOT_RELEASE_READY",
+      "module": "Exchange Adapter",
+      "status": "UNVERIFIED",
+      "nextProof": "Operation-by-operation Binance/Gate.io support matrix with pass/fail-closed proofs."
+    },
+    {
+      "type": "P0_NOT_RELEASE_READY",
+      "module": "Workers",
+      "status": "UNVERIFIED",
+      "nextProof": "Runtime loop, stream, backtest worker, and scheduler lifecycle proof beyond public /ready."
+    },
+    {
+      "type": "P0_NOT_RELEASE_READY",
+      "module": "Operations",
+      "status": "BLOCKED_AUTH",
+      "nextProof": "Rollback PASS, liveimport readback, authenticated SLO, release gate, and alerts evidence."
+    },
+    {
+      "type": "BLOCKED_MODULE",
+      "module": "Subscriptions/Admin",
+      "status": "BLOCKED_AUTH",
+      "nextProof": "Protected admin clickthrough with non-destructive data and entitlement checks."
+    },
+    {
+      "type": "BLOCKED_MODULE",
+      "module": "Operations",
+      "status": "BLOCKED_AUTH",
+      "nextProof": "Rollback PASS, liveimport readback, authenticated SLO, release gate, and alerts evidence."
+    }
+  ],
+  "nextWorkOrder": [
+    {
+      "priority": 1,
+      "module": "Dashboard Home",
+      "risk": "P0 operator truth surface",
+      "status": "PARTIAL_LOCAL",
+      "bucket": "toProveAndPossiblyFix",
+      "releasePercent": 20,
+      "nextProof": "Rendered/browser proof for selected bot, wallet KPIs, tables, loading/empty/error, responsive states, and safe clickthrough."
+    },
+    {
+      "priority": 2,
+      "module": "Bot Runtime",
+      "risk": "P0 runtime truth",
+      "status": "PARTIAL_LOCAL",
+      "bucket": "toProveAndPossiblyFix",
+      "releasePercent": 20,
+      "nextProof": "Representative PAPER running/stopped runtime session proof with worker telemetry and runtime readback."
+    },
+    {
+      "priority": 3,
+      "module": "Auth",
+      "risk": "P0 auth/session correctness",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "releasePercent": 0,
+      "nextProof": "Browser login/logout/session-expiry proof plus API auth lifecycle assertions."
+    },
+    {
+      "priority": 4,
+      "module": "Profile API Keys",
+      "risk": "P0 secrets/exchange access",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "releasePercent": 0,
+      "nextProof": "Create/test/delete key proof for Binance and Gate.io through adapter-owned probes and audit logs."
+    },
+    {
+      "priority": 5,
+      "module": "Bots",
+      "risk": "P0 bot lifecycle",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "releasePercent": 45,
+      "nextProof": "Production-safe non-destructive clickthrough for bot actions; local action proof already exists."
+    },
+    {
+      "priority": 6,
+      "module": "Profile",
+      "risk": "P1 user settings and validation",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "releasePercent": 0,
+      "nextProof": "Profile form success/error submit proof with API readback."
+    },
+    {
+      "priority": 7,
+      "module": "Wallets",
+      "risk": "P1 capital source of truth",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "releasePercent": 0,
+      "nextProof": "Wallet create/edit/delete/reset/preview proof with DB or API readback and active-bot guards."
+    },
+    {
+      "priority": 8,
+      "module": "Markets",
+      "risk": "P1 runtime symbol scope",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "releasePercent": 0,
+      "nextProof": "Market universe CRUD/import/capability proof, including active-bot guard behavior."
+    },
+    {
+      "priority": 9,
+      "module": "Strategies",
+      "risk": "P1 trading decision config",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "releasePercent": 0,
+      "nextProof": "Strategy create/edit/delete/clone/config proof preserving RSI 20/80 and proving runtime/backtest compatibility."
+    },
+    {
+      "priority": 10,
+      "module": "Manual Orders",
+      "risk": "P0 money-impacting order flow",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "releasePercent": 0,
+      "nextProof": "PAPER manual order place/cancel/close proof with validation and DB readback; LIVE remains blocked-risk."
+    },
+    {
+      "priority": 11,
+      "module": "Positions",
+      "risk": "P0 position ownership/runtime truth",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "releasePercent": 0,
+      "nextProof": "List/close/update/takeover/import-status proof with exchange snapshot boundary and fail-closed live mutation plan."
+    },
+    {
+      "priority": 12,
+      "module": "Orders",
+      "risk": "P0 order lifecycle",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "releasePercent": 0,
+      "nextProof": "Order list/cancel/fill/fee proof through API and adapter boundary, separating PAPER from exchange-backed risk."
+    },
+    {
+      "priority": 13,
+      "module": "Backtests",
+      "risk": "P1 simulation correctness",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "releasePercent": 0,
+      "nextProof": "Create/cancel/delete/details/report proof using representative RSI strategy and market data."
+    },
+    {
+      "priority": 14,
+      "module": "Reports",
+      "risk": "P2 operator reporting",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "releasePercent": 0,
+      "nextProof": "Filters/summaries/export proof with API data readback."
+    },
+    {
+      "priority": 15,
+      "module": "Subscriptions/Admin",
+      "risk": "P0 role/entitlement access",
+      "status": "BLOCKED_AUTH",
+      "bucket": "blocked",
+      "releasePercent": 0,
+      "nextProof": "Protected admin clickthrough with non-destructive data and entitlement checks."
+    },
+    {
+      "priority": 16,
+      "module": "Logs/Audit Trail",
+      "risk": "P1 auditability",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "releasePercent": 0,
+      "nextProof": "Filters/pagination/action-log visibility proof using events produced by the audit."
+    },
+    {
+      "priority": 17,
+      "module": "Exchange Adapter",
+      "risk": "P0 external exchange boundary",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "releasePercent": 0,
+      "nextProof": "Operation-by-operation Binance/Gate.io support matrix with pass/fail-closed proofs."
+    },
+    {
+      "priority": 18,
+      "module": "Workers",
+      "risk": "P0 async runtime reliability",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "releasePercent": 0,
+      "nextProof": "Runtime loop, stream, backtest worker, and scheduler lifecycle proof beyond public /ready."
+    },
+    {
+      "priority": 19,
+      "module": "Operations",
+      "risk": "P0 release safety",
+      "status": "BLOCKED_AUTH",
+      "bucket": "blocked",
+      "releasePercent": 0,
+      "nextProof": "Rollback PASS, liveimport readback, authenticated SLO, release gate, and alerts evidence."
+    },
+    {
+      "priority": 20,
+      "module": "Security/Privacy",
+      "risk": "P0 auth/secrets/data isolation",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "releasePercent": 0,
+      "nextProof": "Ownership isolation, rate-limit, secret redaction, fail-closed, and abuse-case proof."
+    },
+    {
+      "priority": 21,
+      "module": "UX/A11y/Mobile",
+      "risk": "P1 product usability",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "releasePercent": 0,
+      "nextProof": "Per-screen loading/empty/error/success, keyboard/touch, responsive, and accessibility evidence."
+    }
+  ],
+  "moduleScores": [
+    {
+      "module": "Dashboard Home",
+      "priority": 1,
+      "risk": "P0 operator truth surface",
+      "status": "PARTIAL_LOCAL",
+      "bucket": "toProveAndPossiblyFix",
+      "weight": 5,
+      "implementationPercent": 65,
+      "evidencePercent": 35,
+      "releasePercent": 20,
+      "nextProof": "Rendered/browser proof for selected bot, wallet KPIs, tables, loading/empty/error, responsive states, and safe clickthrough."
+    },
+    {
+      "module": "Bot Runtime",
+      "priority": 2,
+      "risk": "P0 runtime truth",
+      "status": "PARTIAL_LOCAL",
+      "bucket": "toProveAndPossiblyFix",
+      "weight": 5,
+      "implementationPercent": 65,
+      "evidencePercent": 35,
+      "releasePercent": 20,
+      "nextProof": "Representative PAPER running/stopped runtime session proof with worker telemetry and runtime readback."
+    },
+    {
+      "module": "Auth",
+      "priority": 3,
+      "risk": "P0 auth/session correctness",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "weight": 5,
+      "implementationPercent": 45,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Browser login/logout/session-expiry proof plus API auth lifecycle assertions."
+    },
+    {
+      "module": "Profile API Keys",
+      "priority": 4,
+      "risk": "P0 secrets/exchange access",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "weight": 5,
+      "implementationPercent": 45,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Create/test/delete key proof for Binance and Gate.io through adapter-owned probes and audit logs."
+    },
+    {
+      "module": "Bots",
+      "priority": 5,
+      "risk": "P0 bot lifecycle",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "weight": 5,
+      "implementationPercent": 90,
+      "evidencePercent": 65,
+      "releasePercent": 45,
+      "nextProof": "Production-safe non-destructive clickthrough for bot actions; local action proof already exists."
+    },
+    {
+      "module": "Profile",
+      "priority": 6,
+      "risk": "P1 user settings and validation",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "weight": 3,
+      "implementationPercent": 45,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Profile form success/error submit proof with API readback."
+    },
+    {
+      "module": "Wallets",
+      "priority": 7,
+      "risk": "P1 capital source of truth",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "weight": 3,
+      "implementationPercent": 45,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Wallet create/edit/delete/reset/preview proof with DB or API readback and active-bot guards."
+    },
+    {
+      "module": "Markets",
+      "priority": 8,
+      "risk": "P1 runtime symbol scope",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "weight": 3,
+      "implementationPercent": 45,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Market universe CRUD/import/capability proof, including active-bot guard behavior."
+    },
+    {
+      "module": "Strategies",
+      "priority": 9,
+      "risk": "P1 trading decision config",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "weight": 3,
+      "implementationPercent": 45,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Strategy create/edit/delete/clone/config proof preserving RSI 20/80 and proving runtime/backtest compatibility."
+    },
+    {
+      "module": "Manual Orders",
+      "priority": 10,
+      "risk": "P0 money-impacting order flow",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "weight": 5,
+      "implementationPercent": 45,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "PAPER manual order place/cancel/close proof with validation and DB readback; LIVE remains blocked-risk."
+    },
+    {
+      "module": "Positions",
+      "priority": 11,
+      "risk": "P0 position ownership/runtime truth",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "weight": 5,
+      "implementationPercent": 45,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "List/close/update/takeover/import-status proof with exchange snapshot boundary and fail-closed live mutation plan."
+    },
+    {
+      "module": "Orders",
+      "priority": 12,
+      "risk": "P0 order lifecycle",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "weight": 5,
+      "implementationPercent": 45,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Order list/cancel/fill/fee proof through API and adapter boundary, separating PAPER from exchange-backed risk."
+    },
+    {
+      "module": "Backtests",
+      "priority": 13,
+      "risk": "P1 simulation correctness",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "weight": 3,
+      "implementationPercent": 45,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Create/cancel/delete/details/report proof using representative RSI strategy and market data."
+    },
+    {
+      "module": "Reports",
+      "priority": 14,
+      "risk": "P2 operator reporting",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "weight": 1,
+      "implementationPercent": 45,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Filters/summaries/export proof with API data readback."
+    },
+    {
+      "module": "Subscriptions/Admin",
+      "priority": 15,
+      "risk": "P0 role/entitlement access",
+      "status": "BLOCKED_AUTH",
+      "bucket": "blocked",
+      "weight": 5,
+      "implementationPercent": 35,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Protected admin clickthrough with non-destructive data and entitlement checks."
+    },
+    {
+      "module": "Logs/Audit Trail",
+      "priority": 16,
+      "risk": "P1 auditability",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "weight": 3,
+      "implementationPercent": 45,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Filters/pagination/action-log visibility proof using events produced by the audit."
+    },
+    {
+      "module": "Exchange Adapter",
+      "priority": 17,
+      "risk": "P0 external exchange boundary",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "weight": 5,
+      "implementationPercent": 45,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Operation-by-operation Binance/Gate.io support matrix with pass/fail-closed proofs."
+    },
+    {
+      "module": "Workers",
+      "priority": 18,
+      "risk": "P0 async runtime reliability",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "weight": 5,
+      "implementationPercent": 45,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Runtime loop, stream, backtest worker, and scheduler lifecycle proof beyond public /ready."
+    },
+    {
+      "module": "Operations",
+      "priority": 19,
+      "risk": "P0 release safety",
+      "status": "BLOCKED_AUTH",
+      "bucket": "blocked",
+      "weight": 5,
+      "implementationPercent": 35,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Rollback PASS, liveimport readback, authenticated SLO, release gate, and alerts evidence."
+    },
+    {
+      "module": "Security/Privacy",
+      "priority": 20,
+      "risk": "P0 auth/secrets/data isolation",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "weight": 5,
+      "implementationPercent": 45,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Ownership isolation, rate-limit, secret redaction, fail-closed, and abuse-case proof."
+    },
+    {
+      "module": "UX/A11y/Mobile",
+      "priority": 21,
+      "risk": "P1 product usability",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "weight": 3,
+      "implementationPercent": 45,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Per-screen loading/empty/error/success, keyboard/touch, responsive, and accessibility evidence."
+    }
+  ],
+  "p1NotReleaseReady": [
+    {
+      "module": "Profile",
+      "priority": 6,
+      "risk": "P1 user settings and validation",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "weight": 3,
+      "implementationPercent": 45,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Profile form success/error submit proof with API readback."
+    },
+    {
+      "module": "Wallets",
+      "priority": 7,
+      "risk": "P1 capital source of truth",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "weight": 3,
+      "implementationPercent": 45,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Wallet create/edit/delete/reset/preview proof with DB or API readback and active-bot guards."
+    },
+    {
+      "module": "Markets",
+      "priority": 8,
+      "risk": "P1 runtime symbol scope",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "weight": 3,
+      "implementationPercent": 45,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Market universe CRUD/import/capability proof, including active-bot guard behavior."
+    },
+    {
+      "module": "Strategies",
+      "priority": 9,
+      "risk": "P1 trading decision config",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "weight": 3,
+      "implementationPercent": 45,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Strategy create/edit/delete/clone/config proof preserving RSI 20/80 and proving runtime/backtest compatibility."
+    },
+    {
+      "module": "Backtests",
+      "priority": 13,
+      "risk": "P1 simulation correctness",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "weight": 3,
+      "implementationPercent": 45,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Create/cancel/delete/details/report proof using representative RSI strategy and market data."
+    },
+    {
+      "module": "Logs/Audit Trail",
+      "priority": 16,
+      "risk": "P1 auditability",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "weight": 3,
+      "implementationPercent": 45,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Filters/pagination/action-log visibility proof using events produced by the audit."
+    },
+    {
+      "module": "UX/A11y/Mobile",
+      "priority": 21,
+      "risk": "P1 product usability",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "weight": 3,
+      "implementationPercent": 45,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Per-screen loading/empty/error/success, keyboard/touch, responsive, and accessibility evidence."
+    }
+  ],
+  "concreteNonProofGaps": [
+    {
+      "id": "API_MODULE_NO_TESTS_SUBSCRIPTIONS",
+      "severity": "P1",
+      "category": "api-test-gap",
+      "title": "API module 'subscriptions' has no focused tests",
+      "evidence": "module=subscriptions, files=8",
+      "recommendation": "Add focused API tests or document why coverage belongs to another module.",
+      "bucket": "toAddTests"
+    },
+    {
+      "id": "DOC_PLACEHOLDER_DOCS_MODULES_WEB_ORDERS_MD",
+      "severity": "P1",
+      "category": "documented-placeholder",
+      "title": "Module doc still describes placeholder or not-implemented behavior",
+      "evidence": "docs/modules/web-orders.md",
+      "recommendation": "Either implement the documented surface or update the doc to the canonical owner and proof path.",
+      "bucket": "toReviewDocumentationOrImplement"
+    },
+    {
+      "id": "DOC_PLACEHOLDER_DOCS_MODULES_WEB_POSITIONS_MD",
+      "severity": "P1",
+      "category": "documented-placeholder",
+      "title": "Module doc still describes placeholder or not-implemented behavior",
+      "evidence": "docs/modules/web-positions.md",
+      "recommendation": "Either implement the documented surface or update the doc to the canonical owner and proof path.",
+      "bucket": "toReviewDocumentationOrImplement"
+    },
+    {
+      "id": "QUEUE_OPEN_ITEMS_EXIST",
+      "severity": "P1",
+      "category": "queue-open-work",
+      "title": "10 unchecked queue markers remain",
+      "evidence": ".codex/context/TASK_BOARD.md:99 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` | .codex/context/TASK_BOARD.md:954 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit` | .codex/context/TASK_BOARD.md:1126 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs` | .codex/context/TASK_BOARD.md:4609 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production` | .codex/context/TASK_BOARD.md:4644 - [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production` | docs/planning/mvp-next-commits.md:46 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` | docs/planning/mvp-next-commits.md:782 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit` | docs/planning/mvp-next-commits.md:1150 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`",
+      "recommendation": "Classify each as executable, blocked by auth/approval, or historical carryover.",
+      "bucket": "toClassifyQueue"
+    },
+    {
+      "id": "WEB_ROUTE_MISSING__DASHBOARD_ORDERS",
+      "severity": "P1",
+      "category": "web-route-gap",
+      "title": "Expected dashboard route '/dashboard/orders' has no page.tsx",
+      "evidence": "route=/dashboard/orders",
+      "recommendation": "Confirm whether the action surface intentionally lives on Dashboard Home or add the route/page proof.",
+      "bucket": "toReviewArchitectureOrFix"
+    },
+    {
+      "id": "WEB_ROUTE_MISSING__DASHBOARD_POSITIONS",
+      "severity": "P1",
+      "category": "web-route-gap",
+      "title": "Expected dashboard route '/dashboard/positions' has no page.tsx",
+      "evidence": "route=/dashboard/positions",
+      "recommendation": "Confirm whether the action surface intentionally lives on Dashboard Home or add the route/page proof.",
+      "bucket": "toReviewArchitectureOrFix"
+    },
+    {
+      "id": "WEB_FEATURE_EMPTY_ORDERS",
+      "severity": "P1",
+      "category": "web-surface-gap",
+      "title": "Web feature 'orders' has no active TS/TSX files",
+      "evidence": "feature=orders",
+      "recommendation": "Confirm whether this is intentionally rendered through Dashboard Home or implement/retire the feature surface.",
+      "bucket": "toReviewArchitectureOrFix"
+    },
+    {
+      "id": "WEB_FEATURE_NO_TESTS_POSITIONS",
+      "severity": "P1",
+      "category": "web-test-gap",
+      "title": "Web feature 'positions' has no focused tests",
+      "evidence": "feature=positions, files=1",
+      "recommendation": "Add focused UI/action tests or document why the route is owned by another feature.",
+      "bucket": "toAddTests"
+    },
+    {
+      "id": "DOC_PLACEHOLDER_DOCS_MODULES_API_SUBSCRIPTIONS_MD",
+      "severity": "P2",
+      "category": "documented-placeholder",
+      "title": "Module doc still describes placeholder or not-implemented behavior",
+      "evidence": "docs/modules/api-subscriptions.md",
+      "recommendation": "Either implement the documented surface or update the doc to the canonical owner and proof path.",
+      "bucket": "toReviewDocumentationOrImplement"
+    }
+  ]
+}

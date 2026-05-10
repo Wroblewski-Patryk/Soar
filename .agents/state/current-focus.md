@@ -1,12 +1,20 @@
 # Current Focus
 
-Last updated: 2026-05-10
+Last updated: 2026-05-11
 
 ## Active Focus
 
 V1 action-level product correctness before any further readiness claim. Deploy
 health, route reachability, and local contract tests remain useful evidence,
 but they are not sufficient to call the app complete.
+
+2026-05-11 V1 completion scorecard:
+`V1-COMPLETION-SCORECARD-2026-05-11` is the current percentage model for V1.
+Use `docs/operations/v1-completion-scorecard-2026-05-11.md` when answering
+"where are we in percent?" It separates implementation estimate (`48.7%`),
+evidence coverage (`7.8%`), and release readiness (`4.9%`). V1 remains
+`NO-GO`; every P0 module is still not release-ready, so the next work must
+burn down proof gaps and confirmed defects from the scorecard/ledger order.
 
 2026-05-10 V1 master state ledger:
 `V1-MASTER-STATE-LEDGER-2026-05-10` is the new canonical start point for broad

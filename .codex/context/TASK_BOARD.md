@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-05-10
+Last updated: 2026-05-11
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -16,6 +16,16 @@ Last updated: 2026-05-10
     needed
 
 ## READY
+
+- [x] `V1-COMPLETION-SCORECARD-2026-05-11 research: quantify V1 progress from ledger`
+  - Scope: added `ops:project:scorecard`, a local no-network progress model
+    generated from the master ledger. The scorecard separates implementation
+    estimate (`48.7%`), evidence coverage (`7.8%`), and release readiness
+    (`4.9%`) so future work does not confuse code presence with safe V1
+    completion. V1 remains `NO-GO`; all 13 P0 modules are not release-ready.
+    Evidence:
+    `docs/planning/v1-completion-scorecard-task-2026-05-11.md` and
+    `docs/operations/v1-completion-scorecard-2026-05-11.md`.
 
 - [x] `V1-MASTER-STATE-LEDGER-2026-05-10 research: consolidate full V1 state index`
   - Scope: added `ops:project:ledger`, a local no-network master ledger
