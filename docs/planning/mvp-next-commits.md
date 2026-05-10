@@ -7,16 +7,26 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-ARCH-BOUNDARY-CLEANUP-2026-05-10 fix: close exchange-boundary audit drift`
+  - 2026-05-10: Resolved the V1 architecture audit findings by moving API-key
+    probe CCXT client construction behind
+    `apps/api/src/modules/exchange/exchangeApiKeyProbeClient.service.ts`,
+    keeping profile as orchestration owner only, and refreshing Gate.io runtime
+    context plus exchange module docs. Focused probe tests, API typecheck,
+    direct CCXT boundary grep, guardrails, docs parity, and diff check passed.
+    Evidence:
+    `docs/planning/v1-architecture-boundary-cleanup-task-2026-05-10.md` and
+    `docs/operations/v1-architecture-function-audit-2026-05-10.md`.
+
 - [x] `V1-ARCH-FUNCTION-AUDIT-2026-05-10 research: audit V1 functions against architecture`
   - 2026-05-10: Published architecture/function conformity audit across
     architecture contracts, traceability matrix, route/API boundaries, Web
     route ownership, exchange SDK access, runtime/backtest/paper/live parity,
-    security, UI proof, and ops/release evidence. Result: mostly aligned, but
-    not fully clean. One P1 decision-required implementation mismatch remains:
-    profile API-key probe constructs CCXT clients directly outside
-    `modules/exchange`, contrary to the exchange-boundary rule. Two P2 docs
-    drifts were also identified: `04_runtime-contexts.md` omits `GATEIO` in
-    an example enum and `api-exchange.md` still reads Binance-centered.
+    security, UI proof, and ops/release evidence. Result before remediation:
+    mostly aligned, with one P1 exchange-boundary mismatch and two P2 Gate.io
+    docs drifts. Those local findings are now resolved by
+    `V1-ARCH-BOUNDARY-CLEANUP-2026-05-10`; protected production evidence and
+    formal approval remain the V1 blockers.
     Evidence:
     `docs/planning/v1-architecture-function-audit-task-2026-05-10.md` and
     `docs/operations/v1-architecture-function-audit-2026-05-10.md`.

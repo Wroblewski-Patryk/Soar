@@ -5,23 +5,29 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/exchange`
 - Owner: backend/trading-integration
-- Last updated: 2026-04-12
-- Related planning task: `DCP-05`
+- Last updated: 2026-05-10
+- Related planning task: `ARCH-AUDIT-01`
 
 ## 1. Purpose and Scope
-- Encapsulates exchange integration primitives, currently centered on Binance/CCXT futures paths.
+- Encapsulates exchange integration primitives behind canonical exchange
+  boundaries for Binance and the selected V1 second-exchange target, Gate.io.
 - Provides:
   - connector lifecycle and exchange-side order operations
-  - live order retry and fee reconciliation adapter
-  - exchange capability matrix and guard helpers
+  - live order submit/cancel, retry, and fee reconciliation adapters
+  - exchange capability and exact-operation support matrices
   - symbol trading-rule resolution for pre-trade validation
+  - API-key probe client construction for profile connection tests
+  - public/authenticated read boundaries for market data, snapshots, wallet
+    balance previews, and wallet cashflow history
 
 Out of scope:
 - Public route ownership.
 - Trading decision logic (engine module).
 
 ## 2. Boundaries and Dependencies
-- No direct router mount; consumed by orders, engine, profile API-key probe, wallets/markets capability checks.
+- No direct router mount; consumed by orders, engine, profile API-key probe,
+  positions, wallets, market-stream, market-data, and markets capability
+  checks.
 - Depends on:
   - CCXT integration.
   - metrics store for exchange runtime metrics.
@@ -32,12 +38,15 @@ Out of scope:
   - `CcxtFuturesConnectorConfig`, `CcxtFuturesOrderRequest`, `CcxtFuturesOrderResult`.
   - `PlaceLiveOrderInput` and adapter result with fee metadata.
 - Capability contracts:
-  - `EXCHANGE_CAPABILITIES` matrix and `assertExchangeCapability`.
-  - market-type/base-currency fallback mappings.
+  - `EXCHANGE_CAPABILITIES` compatibility matrix and `assertExchangeCapability`.
+  - exact operation support in `exchangeAdapterBoundary.service.ts`.
+  - market-type/base-currency context mappings.
 - Key outputs for callers:
   - order id/status/fill payload.
   - fee source (`ESTIMATED`/`EXCHANGE_FILL`) and pending flags.
   - symbol trading rules (`minAmount`, `minNotional`, precision).
+  - normalized account snapshots, open orders, trade history, balance previews,
+    and wallet cashflow entries where supported.
 
 ## 4. Runtime Flows
 - LIVE order flow:
@@ -48,13 +57,21 @@ Out of scope:
   5. Emit exchange metrics and structured logs.
 - Capability check flow:
   - caller asserts exchange supports required feature before operation.
+- API-key probe flow:
+  1. Profile module requests a probe through the exchange-owned client factory.
+  2. Exchange module creates the CCXT-backed client with exchange-specific
+     `defaultType` semantics.
+  3. Profile module maps the probe result into user-facing permission status.
 
 ## 5. API and UI Integration
 - No direct endpoints.
 - Indirect API consumers:
   - `/dashboard/orders/open` LIVE path.
+  - `/dashboard/orders/:id/cancel` LIVE exchange-backed cancel path.
   - profile API-key connection tests.
-  - wallets/markets capability-driven UX constraints.
+  - positions exchange snapshot routes.
+  - wallets balance preview and cashflow analytics.
+  - markets and market-stream exchange data consumers.
 
 ## 6. Security and Risk Guardrails
 - Exchange capability assertions fail closed for unsupported providers/features.
@@ -68,15 +85,20 @@ Out of scope:
 
 ## 8. Test Coverage and Evidence
 - Representative tests:
+  - `exchangeApiKeyProbe.service.test.ts`
+  - `exchangeAdapterBoundary.service.test.ts`
+  - `exchangeAuthenticatedRead.service.test.ts`
   - `ccxtFuturesConnector.service.test.ts`
   - `liveOrderAdapter.service.test.ts`
   - `exchangeSymbolRules.service.test.ts`
   - `liveFeeReconciliation.service.test.ts`
 - Suggested validation command:
 ```powershell
-pnpm --filter api test -- src/modules/exchange/ccxtFuturesConnector.service.test.ts src/modules/exchange/liveOrderAdapter.service.test.ts src/modules/exchange/exchangeSymbolRules.service.test.ts src/modules/exchange/liveFeeReconciliation.service.test.ts
+pnpm --filter api test -- src/modules/profile/apiKey/exchangeApiKeyProbe.service.test.ts src/modules/exchange/exchangeAdapterBoundary.service.test.ts src/modules/exchange/exchangeAuthenticatedRead.service.test.ts src/modules/exchange/ccxtFuturesConnector.service.test.ts src/modules/exchange/liveOrderAdapter.service.test.ts src/modules/exchange/exchangeSymbolRules.service.test.ts src/modules/exchange/liveFeeReconciliation.service.test.ts
 ```
 
 ## 9. Open Issues and Follow-Ups
-- Expand first-class implementation coverage beyond Binance capability matrix placeholders.
-- Continue contract unification with shared exchange constants between API and Web.
+- Continue migrating legacy broad capability checks toward exact
+  `(exchange, marketType, operation)` support wherever new flows are added.
+- Keep direct CCXT/client construction inside `modules/exchange`; feature
+  modules consume exchange-owned boundaries only.

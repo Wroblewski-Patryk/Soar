@@ -17,15 +17,24 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `V1-ARCH-BOUNDARY-CLEANUP-2026-05-10 fix: close exchange-boundary audit drift`
+  - Scope: resolved the architecture audit findings by moving API-key probe
+    CCXT client construction from `profile/apiKey` into an exchange-owned
+    factory under `modules/exchange`, then refreshed Gate.io runtime context
+    and exchange module docs. Focused probe tests, API typecheck, direct CCXT
+    boundary grep, guardrails, docs parity, and diff check passed. Evidence:
+    `docs/planning/v1-architecture-boundary-cleanup-task-2026-05-10.md` and
+    `docs/operations/v1-architecture-function-audit-2026-05-10.md`.
+
 - [x] `V1-ARCH-FUNCTION-AUDIT-2026-05-10 research: audit V1 functions against architecture`
   - Scope: published architecture/function conformity audit across
     architecture contracts, traceability matrix, route/API boundaries, Web
     route ownership, exchange SDK access, runtime/backtest/paper/live parity,
-    security, UI proof, and ops/release evidence. Result is mostly aligned but
-    not fully clean: profile API-key probe directly constructs CCXT clients
-    outside `modules/exchange` and needs a user decision/remediation, while
-    `04_runtime-contexts.md` and `api-exchange.md` need Gate.io-era docs
-    refresh. Evidence:
+    security, UI proof, and ops/release evidence. Result before remediation
+    was mostly aligned, with one P1 exchange-boundary mismatch and two P2
+    Gate.io docs drifts. Those local findings are now resolved by
+    `V1-ARCH-BOUNDARY-CLEANUP-2026-05-10`; protected production evidence and
+    formal approval remain the V1 blockers. Evidence:
     `docs/planning/v1-architecture-function-audit-task-2026-05-10.md` and
     `docs/operations/v1-architecture-function-audit-2026-05-10.md`.
 

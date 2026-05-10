@@ -4,12 +4,21 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
-- `V1-ARCH-FUNCTION-AUDIT-2026-05-10` PASS/PARTIAL: architecture function
-  audit found broad alignment across route maps, API auth boundaries, Web route
-  ownership, runtime parity contracts, and production fail-closed posture. It
-  also found one P1 boundary mismatch: profile API-key probe constructs CCXT
-  clients directly outside `modules/exchange`. Two P2 docs drifts were found
-  around Gate.io in `04_runtime-contexts.md` and `api-exchange.md`. Evidence:
+- `V1-ARCH-BOUNDARY-CLEANUP-2026-05-10` PASS/BLOCKED: the local architecture
+  findings from the V1 architecture audit are resolved. API-key probe CCXT
+  client construction moved behind `modules/exchange`, profile now consumes
+  the exchange-owned factory, and Gate.io runtime/exchange docs are refreshed.
+  Focused probe tests, API typecheck, direct CCXT boundary grep, guardrails,
+  docs parity, and diff check passed. V1 remains blocked only on the separate
+  protected/formal evidence lanes. Evidence:
+  `docs/planning/v1-architecture-boundary-cleanup-task-2026-05-10.md` and
+  `docs/operations/v1-architecture-function-audit-2026-05-10.md`.
+
+- `V1-ARCH-FUNCTION-AUDIT-2026-05-10` PASS: architecture function audit found
+  broad alignment across route maps, API auth boundaries, Web route ownership,
+  runtime parity contracts, and production fail-closed posture. Its original
+  local P1/P2 findings are now resolved by
+  `V1-ARCH-BOUNDARY-CLEANUP-2026-05-10`. Evidence:
   `docs/operations/v1-architecture-function-audit-2026-05-10.md`.
 - `V1-FUNCTION-COVERAGE-AUDIT-2026-05-10` PASS/BLOCKED: function/module audit
   confirms broad implementation and local coverage across 38 Web route files,

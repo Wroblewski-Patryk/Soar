@@ -13,16 +13,23 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `V1-ARCH-BOUNDARY-CLEANUP-2026-05-10` resolved the local
+  architecture findings from the V1 architecture function audit. API-key probe
+  CCXT client construction now lives behind
+  `apps/api/src/modules/exchange/exchangeApiKeyProbeClient.service.ts`, while
+  `profile/apiKey` consumes the exchange-owned factory and keeps profile
+  orchestration/error mapping. Gate.io docs drift in
+  `docs/architecture/04_runtime-contexts.md` and `docs/modules/api-exchange.md`
+  is refreshed. Evidence:
+  `docs/planning/v1-architecture-boundary-cleanup-task-2026-05-10.md` and
+  `docs/operations/v1-architecture-function-audit-2026-05-10.md`.
 - 2026-05-10 `V1-ARCH-FUNCTION-AUDIT-2026-05-10` audited current V1 function
   areas against architecture from architecture, backend, API, frontend,
-  exchange, runtime parity, security, UI, and ops perspectives. Result: mostly
-  aligned, but not fully clean. One P1 decision-required implementation
-  mismatch remains: `profile/apiKey/exchangeApiKeyProbe.service.ts` constructs
-  CCXT clients directly outside `modules/exchange`, contrary to the
-  exchange-boundary rule. Two P2 docs drifts were identified:
-  `docs/architecture/04_runtime-contexts.md` omits `GATEIO` in an example enum
-  and `docs/modules/api-exchange.md` still describes the module as
-  Binance-centered. Evidence:
+  exchange, runtime parity, security, UI, and ops perspectives. Result before
+  remediation: mostly aligned, with one P1 exchange-boundary mismatch in the
+  profile API-key probe and two P2 Gate.io docs drifts. Those local findings
+  are resolved by `V1-ARCH-BOUNDARY-CLEANUP-2026-05-10`; remaining V1 blockers
+  are protected production proof and formal approvals. Evidence:
   `docs/planning/v1-architecture-function-audit-task-2026-05-10.md` and
   `docs/operations/v1-architecture-function-audit-2026-05-10.md`.
 - 2026-05-10 `V1-FUNCTION-COVERAGE-AUDIT-2026-05-10` published a

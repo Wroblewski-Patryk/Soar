@@ -4,14 +4,26 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest architecture cleanup:
+`V1-ARCH-BOUNDARY-CLEANUP-2026-05-10` resolved the implementation boundary and
+docs drift found by the architecture function audit. API-key probe CCXT client
+construction now lives behind `modules/exchange`, profile consumes that
+exchange-owned factory, and Gate.io runtime/exchange docs are current. The
+next executable V1 work is no longer local architecture cleanup; it is one of
+the protected/formal evidence lanes when inputs are available:
+`LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_UI_AUDIT_*`,
+authenticated Gate 2 SLO, RC approvals, and final non-dry-run release gate.
+Evidence:
+`docs/planning/v1-architecture-boundary-cleanup-task-2026-05-10.md` and
+`docs/operations/v1-architecture-function-audit-2026-05-10.md`.
+
 Latest architecture function audit:
-`V1-ARCH-FUNCTION-AUDIT-2026-05-10` found broad architecture alignment, but
-not a fully clean architecture state. The next architecture-clean task should
-resolve `ARCH-AUDIT-01`: move profile API-key probe CCXT client construction
-behind `modules/exchange`, or explicitly approve/document it as an exception.
-Recommended remediation is the move into the exchange boundary, followed by
-Gate.io docs drift cleanup in `04_runtime-contexts.md` and `api-exchange.md`.
-Evidence: `docs/operations/v1-architecture-function-audit-2026-05-10.md`.
+`V1-ARCH-FUNCTION-AUDIT-2026-05-10` originally found broad architecture
+alignment but one local boundary mismatch and two Gate.io-era docs drifts.
+Those findings are now resolved by
+`V1-ARCH-BOUNDARY-CLEANUP-2026-05-10`; keep the audit as historical evidence,
+not as an open local implementation blocker. Evidence:
+`docs/operations/v1-architecture-function-audit-2026-05-10.md`.
 
 Latest function coverage audit:
 `V1-FUNCTION-COVERAGE-AUDIT-2026-05-10` confirms that broad V1 implementation

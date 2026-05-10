@@ -1,21 +1,32 @@
 # V1 Architecture Function Audit
 
 ## Executive Answer
-- Status: **mostly architecture-aligned, but not clean enough for final V1 GO**
+- Status: **architecture-clean for audited local surfaces after remediation;
+  final V1 GO still blocked by protected production proof**
 - Evidence date: 2026-05-10
 - Audit type: source-of-truth and implementation-boundary review
 
 Most V1 function areas match the approved architecture at the level of routes,
 modules, data ownership, runtime parity, and fail-closed production evidence.
-However, this audit found one real architecture-boundary mismatch and two docs
-drift items that should be fixed before calling the architecture fully clean.
+This audit originally found one real architecture-boundary mismatch and two
+docs drift items. Follow-up task
+`V1-ARCH-BOUNDARY-CLEANUP-2026-05-10` resolved those local architecture
+cleanliness findings by moving API-key probe client construction behind
+`modules/exchange` and refreshing the Gate.io-era docs.
+
+## Resolution Update
+| ID | Status | Resolution |
+| --- | --- | --- |
+| `ARCH-AUDIT-01` | RESOLVED | CCXT client construction for API-key probing now lives in `apps/api/src/modules/exchange/exchangeApiKeyProbeClient.service.ts`; `profile/apiKey` consumes that exchange-owned factory. |
+| `ARCH-AUDIT-02` | RESOLVED | `docs/architecture/04_runtime-contexts.md` now includes `GATEIO` in the `ExchangeContext.exchange` example and calls out Gate.io futures/swap context explicitly. |
+| `ARCH-AUDIT-03` | RESOLVED | `docs/modules/api-exchange.md` now describes current Binance and Gate.io per-operation exchange ownership instead of stale Binance-only framing. |
 
 ## Key Findings
 | ID | Severity | Area | Finding | Decision Needed |
 | --- | --- | --- | --- | --- |
-| `ARCH-AUDIT-01` | P1 | Exchange access ownership | `apps/api/src/modules/profile/apiKey/exchangeApiKeyProbe.service.ts` dynamically imports `ccxt` and constructs exchange clients in the profile module. The architecture says feature modules outside `modules/exchange` must not import exchange SDKs or exchange-specific constructors directly. | Yes |
-| `ARCH-AUDIT-02` | P2 | Architecture docs drift | `docs/architecture/04_runtime-contexts.md` shows `ExchangeContext.exchange` as `BINANCE | BYBIT | OKX | KRAKEN | COINBASE`, omitting `GATEIO`, while the canonical exchange matrix supports `GATEIO`. | No architecture decision if treated as docs drift |
-| `ARCH-AUDIT-03` | P2 | Module docs drift | `docs/modules/api-exchange.md` still says the exchange module is "currently centered on Binance/CCXT futures paths" and lists expanding beyond Binance as an open follow-up, while Gate.io support is now implemented per operation. | No architecture decision if treated as docs drift |
+| `ARCH-AUDIT-01` | P1 | Exchange access ownership | Originally: `profile/apiKey/exchangeApiKeyProbe.service.ts` dynamically imported `ccxt` and constructed exchange clients in the profile module. Resolution: construction moved behind `modules/exchange`. | No |
+| `ARCH-AUDIT-02` | P2 | Architecture docs drift | Originally: `docs/architecture/04_runtime-contexts.md` omitted `GATEIO` in an example enum. Resolution: docs refreshed. | No |
+| `ARCH-AUDIT-03` | P2 | Module docs drift | Originally: `docs/modules/api-exchange.md` was stale and Binance-centered. Resolution: docs refreshed to current per-operation Gate.io truth. | No |
 
 ## Decision Point For `ARCH-AUDIT-01`
 The architecture contract in `docs/architecture/09_integrations-deployment-and-runtime-services.md` says:
@@ -26,12 +37,21 @@ The architecture contract in `docs/architecture/09_integrations-deployment-and-r
 - consumers must depend on exchange adapter families instead of low-level
   exchange clients.
 
-Current implementation:
+Original implementation:
 
 - `apps/api/src/modules/profile/apiKey/exchangeApiKeyProbe.service.ts:67`
   imports `ccxt` dynamically.
 - `apps/api/src/modules/profile/apiKey/exchangeApiKeyProbe.service.ts:71`
   selects an exchange constructor from the CCXT module.
+
+Resolved implementation:
+
+- `apps/api/src/modules/exchange/exchangeApiKeyProbeClient.service.ts`
+  owns CCXT dynamic import, constructor resolution, and market-type default
+  selection.
+- `apps/api/src/modules/profile/apiKey/exchangeApiKeyProbe.service.ts`
+  calls the exchange-owned factory and keeps only profile probe orchestration
+  and error mapping.
 
 Valid options:
 
@@ -117,6 +137,15 @@ production evidence, not broad architecture or module implementation failure.
    - final non-dry-run release gate.
 
 ## Closure Position
-Do not move to "V1 architecture fully clean" until `ARCH-AUDIT-01` is resolved
+The audited local architecture findings are resolved by
+`V1-ARCH-BOUNDARY-CLEANUP-2026-05-10`. Do not move to final "V1 GO" until the
+separate protected production proof lanes are complete:
+
+- `LIVEIMPORT-03` protected runtime readback;
+- rollback proof PASS;
+- authenticated/admin UI clickthrough;
+- authenticated Gate 2 SLO;
+- RC approval/sign-off/checklist;
+- final non-dry-run release gate.
 or explicitly approved as an architecture exception. After that, the remaining
 work should be production proof and release approval.

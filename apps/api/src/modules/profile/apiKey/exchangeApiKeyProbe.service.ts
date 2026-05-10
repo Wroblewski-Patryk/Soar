@@ -1,12 +1,20 @@
 import type { Exchange } from '@prisma/client';
+import {
+  createExchangeApiKeyProbeClient,
+  resolveApiKeyProbeCcxtDefaultType,
+  type ExchangeApiKeyProbeClientFactory,
+  type ExchangeApiKeyProbeClientInput,
+  type ExchangeApiKeyProbeClientLike,
+  type ExchangeApiKeyProbeMarketType,
+} from '../../exchange/exchangeApiKeyProbeClient.service';
 
-export type ApiKeyProbeMarketType = 'spot' | 'future';
+export {
+  createExchangeApiKeyProbeClient,
+  resolveApiKeyProbeCcxtDefaultType,
+} from '../../exchange/exchangeApiKeyProbeClient.service';
 
-export type ApiKeyProbeInput = {
-  exchange: Exchange;
-  apiKey: string;
-  apiSecret: string;
-};
+export type ApiKeyProbeMarketType = ExchangeApiKeyProbeMarketType;
+export type ApiKeyProbeInput = ExchangeApiKeyProbeClientInput;
 
 export type ApiKeyProbeCode =
   | 'OK'
@@ -28,16 +36,8 @@ export type ApiKeyProbeResult = {
   };
 };
 
-export interface ApiKeyProbeClientLike {
-  fetchBalance: (params?: Record<string, unknown>) => Promise<unknown>;
-  close?: () => Promise<void>;
-}
-
-export type ApiKeyProbeClientFactory = (
-  exchange: Exchange,
-  marketType: ApiKeyProbeMarketType,
-  input: ApiKeyProbeInput
-) => Promise<ApiKeyProbeClientLike>;
+export type ApiKeyProbeClientLike = ExchangeApiKeyProbeClientLike;
+export type ApiKeyProbeClientFactory = ExchangeApiKeyProbeClientFactory;
 
 const EXCHANGE_DISPLAY_NAMES: Record<Exchange, string> = {
   BINANCE: 'Binance',
@@ -46,41 +46,6 @@ const EXCHANGE_DISPLAY_NAMES: Record<Exchange, string> = {
   KRAKEN: 'Kraken',
   COINBASE: 'Coinbase',
   GATEIO: 'Gate.io',
-};
-
-const resolveCcxtExchangeId = (exchange: Exchange) => exchange.toLowerCase();
-
-export const resolveApiKeyProbeCcxtDefaultType = (
-  exchange: Exchange,
-  marketType: ApiKeyProbeMarketType
-) => {
-  if (marketType === 'spot') return 'spot';
-  if (exchange === 'GATEIO') return 'swap';
-  return 'future';
-};
-
-export const createExchangeApiKeyProbeClient: ApiKeyProbeClientFactory = async (
-  exchange,
-  marketType,
-  input
-) => {
-  const ccxtModule = (await import('ccxt')) as unknown as {
-    [exchangeId: string]: new (config: Record<string, unknown>) => ApiKeyProbeClientLike;
-  };
-  const exchangeId = resolveCcxtExchangeId(exchange);
-  const ExchangeCtor = ccxtModule[exchangeId];
-  if (!ExchangeCtor) {
-    throw new Error(`Unsupported CCXT exchange: ${exchangeId}`);
-  }
-
-  return new ExchangeCtor({
-    apiKey: input.apiKey,
-    secret: input.apiSecret,
-    enableRateLimit: true,
-    options: {
-      defaultType: resolveApiKeyProbeCcxtDefaultType(exchange, marketType),
-    },
-  });
 };
 
 const toErrorMessage = (error: unknown) => {

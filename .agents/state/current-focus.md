@@ -16,14 +16,24 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 architecture cleanup:
+`V1-ARCH-BOUNDARY-CLEANUP-2026-05-10` resolved the audit's local architecture
+findings. API-key probe CCXT client construction now belongs to
+`modules/exchange`, profile consumes the exchange-owned factory, and the
+Gate.io runtime/exchange docs are current. This makes the audited local
+architecture surfaces clean; final V1 still depends on protected production
+proof and formal release approval. Evidence:
+`docs/planning/v1-architecture-boundary-cleanup-task-2026-05-10.md` and
+`docs/operations/v1-architecture-function-audit-2026-05-10.md`.
+
 2026-05-10 architecture function audit:
 `V1-ARCH-FUNCTION-AUDIT-2026-05-10` audited V1 functions from architecture,
 backend, API, frontend, exchange, runtime parity, security, UI, and ops
-perspectives. Result: mostly aligned, but not fully architecture-clean. The
-P1 decision-required mismatch is direct CCXT client construction in
-`apps/api/src/modules/profile/apiKey/exchangeApiKeyProbe.service.ts` outside
-the exchange module. P2 docs drift also exists in `04_runtime-contexts.md` and
-`api-exchange.md` around Gate.io. Evidence:
+perspectives. Result before remediation: mostly aligned, with one exchange
+boundary mismatch and two Gate.io docs drifts. Those local findings are now
+resolved by `V1-ARCH-BOUNDARY-CLEANUP-2026-05-10`; keep this audit as the
+historical basis for the cleanup, not as an open local architecture blocker.
+Evidence:
 `docs/operations/v1-architecture-function-audit-2026-05-10.md`.
 
 2026-05-10 function coverage audit:

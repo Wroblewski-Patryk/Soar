@@ -16,7 +16,7 @@ Define who owns the runtime context required to make and execute trading decisio
 ### ExchangeContext
 ```json
 {
-  "exchange": "BINANCE | BYBIT | OKX | KRAKEN | COINBASE",
+  "exchange": "BINANCE | GATEIO | BYBIT | OKX | KRAKEN | COINBASE",
   "marketType": "SPOT | FUTURES"
 }
 ```
@@ -71,6 +71,7 @@ The system must not widen, merge, or substitute one side of that pair:
 The inherited venue context is exact:
 - `BINANCE + FUTURES` is a different market context from `BINANCE + SPOT`
 - `BINANCE + SPOT` is a different market context from `BYBIT + SPOT`
+- `GATEIO + FUTURES` is a different market context from `BINANCE + FUTURES`
 
 Every downstream runtime consumer must preserve that exact context instead of
 silently normalizing to a Binance-only or spot-only assumption.
