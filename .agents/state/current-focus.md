@@ -16,6 +16,17 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 UI audit refresh:
+`PROD-UI-PUBLIC-CLICKTHROUGH-88313309-2026-05-10` refreshed the no-auth
+production UI route/module audit for deployed build-info
+`88313309200d35275ba6c0d3465c5045c4b6d99e`. Public routes pass
+(`/`, `/auth/login`, `/auth/register`, `/offline`), while dashboard, admin,
+and legacy protected routes return `BLOCKED_AUTH` with redirects to
+`/auth/login`. This confirms current fail-closed auth behavior only; full V1
+UI clickthrough still requires valid production dashboard/admin auth and
+representative data. Evidence:
+`docs/operations/prod-ui-module-clickthrough-88313309-2026-05-10.md`.
+
 2026-05-10 release-gate status:
 `V1-CURRENT-RELEASE-GATE-DRY-RUN-2026-05-10` captured a current no-secret
 production V1 release-gate dry-run for deployed build-info

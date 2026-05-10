@@ -4,6 +4,14 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `PROD-UI-PUBLIC-CLICKTHROUGH-88313309-2026-05-10` PASS/BLOCKED: current
+  production build-info matches
+  `88313309200d35275ba6c0d3465c5045c4b6d99e`. No-auth production UI audit
+  reports public routes `PASS:4`, dashboard routes `BLOCKED_AUTH:18`, admin
+  routes `BLOCKED_AUTH:3`, and legacy redirects `BLOCKED_AUTH:3`. This proves
+  public reachability and protected-route fail-closed redirects on the current
+  deploy, but not authenticated module functionality. Evidence:
+  `docs/operations/prod-ui-module-clickthrough-88313309-2026-05-10.md`.
 - `V1-CURRENT-RELEASE-GATE-DRY-RUN-2026-05-10` PASS/BLOCKED: production Web
   build-info still exposes
   `8f8630b0ad5abd690409d6173c9b247b95948138`. The V1 release-gate dry-run

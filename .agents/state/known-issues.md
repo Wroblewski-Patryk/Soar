@@ -4,6 +4,13 @@ Last updated: 2026-05-10
 
 ## Active Issues
 
+- 2026-05-10 update: latest no-auth production UI audit for build-info
+  `88313309200d35275ba6c0d3465c5045c4b6d99e` passes public routes and shows
+  dashboard/admin/legacy protected routes as `BLOCKED_AUTH` redirecting to
+  `/auth/login`. This is current fail-closed evidence only; full UI module
+  clickthrough still requires valid production dashboard/admin auth and
+  representative data. Evidence:
+  `docs/operations/prod-ui-module-clickthrough-88313309-2026-05-10.md`.
 - 2026-05-10 update: the current production V1 release-gate dry-run for
   build-info `8f8630b0ad5abd690409d6173c9b247b95948138` is `not_ready`.
   Remaining release-gate blockers are failed RC external gates, failed RC

@@ -4,6 +4,16 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest production UI audit:
+`PROD-UI-PUBLIC-CLICKTHROUGH-88313309-2026-05-10` refreshed no-auth UI
+route/module evidence for deployed build-info
+`88313309200d35275ba6c0d3465c5045c4b6d99e`. Public routes pass; dashboard,
+admin, and legacy protected routes are `BLOCKED_AUTH` and redirect to
+`/auth/login`. Next executable UI work requires valid `PROD_UI_AUDIT_*`
+dashboard/admin auth and representative production data to perform the full
+authenticated/admin module clickthrough. Evidence:
+`docs/operations/prod-ui-module-clickthrough-88313309-2026-05-10.md`.
+
 Latest release-gate truth:
 `V1-CURRENT-RELEASE-GATE-DRY-RUN-2026-05-10` ran the production V1 release gate
 in no-secret `--dry-run` mode against build-info

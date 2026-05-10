@@ -7,6 +7,18 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `PROD-UI-PUBLIC-CLICKTHROUGH-88313309-2026-05-10 qa: refresh current no-auth production UI audit`
+  - 2026-05-10: Ran the existing production UI module clickthrough runner
+    without dashboard/admin credentials against deployed
+    `88313309200d35275ba6c0d3465c5045c4b6d99e`. Build-info matches, public
+    routes PASS, and dashboard/admin/legacy protected routes are
+    `BLOCKED_AUTH` with `/auth/login` redirects. This is current fail-closed
+    evidence only; full authenticated/admin UI clickthrough remains blocked on
+    valid production auth and representative data. Evidence:
+    `docs/planning/prod-ui-public-clickthrough-88313309-task-2026-05-10.md`,
+    `docs/operations/_artifacts-prod-ui-module-clickthrough-88313309-2026-05-10.json`,
+    and `docs/operations/prod-ui-module-clickthrough-88313309-2026-05-10.md`.
+
 - [x] `V1-CURRENT-RELEASE-GATE-DRY-RUN-2026-05-10 release: refresh current production release-gate dry-run`
   - 2026-05-10: Confirmed production Web build-info for
     `8f8630b0ad5abd690409d6173c9b247b95948138`, then generated current

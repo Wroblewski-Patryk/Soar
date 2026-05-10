@@ -13,6 +13,16 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `PROD-UI-PUBLIC-CLICKTHROUGH-88313309-2026-05-10` refreshed
+  no-auth production UI route/module evidence for deployed build-info
+  `88313309200d35275ba6c0d3465c5045c4b6d99e`. The audit reports public routes
+  PASS and all dashboard/admin/legacy protected routes `BLOCKED_AUTH` with
+  `/auth/login` redirects. This keeps the UI evidence current while preserving
+  the blocker: full V1 UI clickthrough still requires valid production
+  dashboard/admin auth and representative data. Evidence:
+  `docs/planning/prod-ui-public-clickthrough-88313309-task-2026-05-10.md`,
+  `docs/operations/_artifacts-prod-ui-module-clickthrough-88313309-2026-05-10.json`,
+  and `docs/operations/prod-ui-module-clickthrough-88313309-2026-05-10.md`.
 - 2026-05-10 `V1-CURRENT-RELEASE-GATE-DRY-RUN-2026-05-10` captured a current
   production V1 release-gate dry-run for deployed build-info
   `8f8630b0ad5abd690409d6173c9b247b95948138`. The gate classifier reports
