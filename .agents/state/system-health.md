@@ -4,6 +4,16 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `V1-RC-BLOCKED-REFRESH-2026-05-10` PASS/BLOCKED: RC external gates status,
+  RC sign-off record, and RC checklist are fresh for 2026-05-10 and correctly
+  remain blocked/failed instead of approved. Final preflight for deployed
+  `1609929ed3b98c2b794d8a0b48ff0f39c16cd75f` reports build-info PASS and
+  public smoke PASS; V1 remains `BLOCKED` on protected/formal evidence:
+  liveimport auth/readback, rollback guard auth, production DB restore
+  context, stale activation audit/plan, stale backup/restore drill, stale
+  rollback proof, Gate 2 SLO evidence, and real RC approvers. Evidence:
+  `docs/planning/v1-rc-blocked-evidence-refresh-task-2026-05-10.md` and
+  `docs/operations/v1-final-preflight-1609929e-2026-05-10.md`.
 - `DEPLOY-FRESHNESS-9C125683` validation PASS/BLOCKED: production Web
   build-info now exposes
   `9c12568379ee77cda9c9e9df39879e141b5615fb`, which includes `b414e523`

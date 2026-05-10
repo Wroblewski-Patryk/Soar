@@ -7,6 +7,15 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-RC-BLOCKED-REFRESH-2026-05-10 release: refresh current blocked RC evidence`
+  - 2026-05-10: Refreshed RC external gates status, RC sign-off record, and RC
+    checklist to 2026-05-10 as current blocked evidence. Final preflight for
+    deployed `1609929ed3b98c2b794d8a0b48ff0f39c16cd75f` reports build-info
+    PASS, public smoke PASS, and RC evidence `failed` instead of `stale`; V1
+    remains `BLOCKED` on protected/formal evidence. Evidence:
+    `docs/planning/v1-rc-blocked-evidence-refresh-task-2026-05-10.md` and
+    `docs/operations/v1-final-preflight-1609929e-2026-05-10.md`.
+
 - [x] `DEPLOY-FRESHNESS-9C125683-2026-05-10 release: verify live cancel boundary deployment freshness`
   - 2026-05-10: Verified production Web build-info for
     `9c12568379ee77cda9c9e9df39879e141b5615fb`, which includes the `b414e523`

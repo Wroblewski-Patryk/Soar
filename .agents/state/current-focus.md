@@ -16,6 +16,18 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 verification update: `V1-RC-BLOCKED-REFRESH-2026-05-10`
+refreshed RC external gates, RC sign-off, and the RC checklist to the active
+evidence date as current blocked evidence. Final preflight for deployed
+`1609929ed3b98c2b794d8a0b48ff0f39c16cd75f` now reports build-info/public
+smoke PASS, RC evidence fresh but `failed`, and V1 still `BLOCKED` on
+protected/formal blockers: liveimport auth/readback, rollback guard auth,
+production DB restore context, stale activation audit/plan, stale
+backup/restore drill, stale rollback proof, Gate 2 SLO evidence, and real RC
+approvers. Evidence:
+`docs/planning/v1-rc-blocked-evidence-refresh-task-2026-05-10.md` and
+`docs/operations/v1-final-preflight-1609929e-2026-05-10.md`.
+
 2026-05-10 post-release update: `DEPLOY-FRESHNESS-9C125683` proves production
 Web build-info now exposes
 `9c12568379ee77cda9c9e9df39879e141b5615fb`, a pushed batch that includes

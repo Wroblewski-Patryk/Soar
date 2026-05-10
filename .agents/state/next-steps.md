@@ -4,6 +4,19 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest release evidence refresh:
+`V1-RC-BLOCKED-REFRESH-2026-05-10` refreshed RC external gates, RC sign-off,
+and RC checklist as current blocked evidence. Final preflight for deployed
+`1609929ed3b98c2b794d8a0b48ff0f39c16cd75f` now reports build-info/public
+smoke PASS and RC evidence `failed` instead of `stale`. Next tiny task is to
+refresh activation audit/plan as current `NO-GO` for the deployed SHA, because
+that can be done without protected secrets. Protected tasks after that remain
+blocked on liveimport auth/readback, rollback guard auth, production DB restore
+context, backup/restore drill, rollback proof, Gate 2 SLO evidence, and real
+RC approver identities. Evidence:
+`docs/planning/v1-rc-blocked-evidence-refresh-task-2026-05-10.md` and
+`docs/operations/v1-final-preflight-1609929e-2026-05-10.md`.
+
 Latest release evidence:
 `DEPLOY-FRESHNESS-9C125683-2026-05-10` proves production Web build-info now
 exposes `9c12568379ee77cda9c9e9df39879e141b5615fb`, which includes the

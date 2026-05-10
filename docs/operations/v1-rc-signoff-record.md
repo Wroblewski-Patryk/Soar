@@ -1,7 +1,7 @@
 # V1 RC Sign-Off Record
 
 Release target: `v1.0.0`  
-Date (UTC): `2026-05-09T00:00:00.000Z`
+Date (UTC): `2026-05-10T00:00:00.000Z`
 
 ## Gate Evidence References
 - RC checklist: `docs/operations/v1-release-candidate-checklist.md`

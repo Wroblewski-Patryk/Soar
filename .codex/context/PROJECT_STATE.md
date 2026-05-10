@@ -13,6 +13,17 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `V1-RC-BLOCKED-REFRESH-2026-05-10` refreshed RC external gates,
+  RC sign-off, and the RC checklist to 2026-05-10 as current blocked evidence.
+  Final preflight for deployed
+  `1609929ed3b98c2b794d8a0b48ff0f39c16cd75f` reports build-info/public smoke
+  PASS, RC evidence fresh but `failed`, and V1 still `BLOCKED` on protected
+  and formal evidence: liveimport auth/readback, rollback guard auth,
+  production DB restore context, stale activation audit/plan, stale
+  backup/restore drill, stale rollback proof, Gate 2 SLO evidence, and real RC
+  approvers. Evidence:
+  `docs/planning/v1-rc-blocked-evidence-refresh-task-2026-05-10.md` and
+  `docs/operations/v1-final-preflight-1609929e-2026-05-10.md`.
 - 2026-05-10 `DEPLOY-FRESHNESS-9C125683-2026-05-10` proves production Web
   build-info now exposes `9c12568379ee77cda9c9e9df39879e141b5615fb`, a pushed
   batch that includes `b414e523` live order cancel boundary support. Public
