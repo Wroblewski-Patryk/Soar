@@ -4,6 +4,15 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest protected-input readiness:
+`V1-PROTECTED-INPUTS-READINESS-2026-05-10` confirms this session does not have
+the required protected env families for `LIVEIMPORT-03`, rollback proof, or
+production DB restore context. Privileged VPS/Docker inspection was rejected by
+the escalation reviewer and must not be bypassed. Next executable work requires
+operator-provided credentials/context or explicit production infrastructure
+authorization. Evidence:
+`docs/operations/v1-protected-inputs-readiness-2026-05-10.md`.
+
 Latest current preflight:
 `V1-FINAL-PREFLIGHT-CURRENT-9D28F682` captured final no-secret preflight for
 deployed `9d28f682f23dc176dbbad790bea8ddf213c8ac01`. Build-info and public

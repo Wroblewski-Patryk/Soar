@@ -17,6 +17,13 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `V1-PROTECTED-INPUTS-READINESS-2026-05-10 release: recheck protected inputs`
+  - Scope: checked required protected env families by presence only and
+    recorded that privileged VPS/Docker inspection was rejected by escalation
+    review. V1 remains `BLOCKED / NO-GO` until operator inputs or explicit
+    production infrastructure authorization are available. Evidence:
+    `docs/operations/v1-protected-inputs-readiness-2026-05-10.md`.
+
 - [x] `V1-FINAL-PREFLIGHT-CURRENT-9D28F682-2026-05-10 release: refresh final preflight for current deploy`
   - Scope: captured final no-secret preflight for currently deployed
     `9d28f682f23dc176dbbad790bea8ddf213c8ac01`. Build-info and public smoke

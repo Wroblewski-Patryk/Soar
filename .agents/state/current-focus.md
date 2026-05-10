@@ -16,6 +16,14 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 verification update: `V1-PROTECTED-INPUTS-READINESS-2026-05-10`
+confirms this session lacks the protected env families required for
+`LIVEIMPORT-03`, rollback proof, and production DB restore context. Privileged
+VPS/Docker inspection was rejected by the escalation reviewer and was not
+retried. V1 remains `BLOCKED / NO-GO` until the operator provides approved
+credentials/context or explicit production infrastructure authorization.
+Evidence: `docs/operations/v1-protected-inputs-readiness-2026-05-10.md`.
+
 2026-05-10 verification update: `V1-FINAL-PREFLIGHT-CURRENT-9D28F682`
 captured the final no-secret preflight for currently deployed
 `9d28f682f23dc176dbbad790bea8ddf213c8ac01`. Build-info and public smoke PASS;

@@ -4,6 +4,13 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `V1-PROTECTED-INPUTS-READINESS-2026-05-10` PASS/BLOCKED: protected input
+  families required for `LIVEIMPORT-03`, rollback proof, and production DB
+  restore context are not present in this shell. Privileged VPS/Docker
+  inspection was rejected by the escalation reviewer. V1 remains
+  `BLOCKED / NO-GO` until approved operator inputs or explicit infrastructure
+  authorization are available. Evidence:
+  `docs/operations/v1-protected-inputs-readiness-2026-05-10.md`.
 - `V1-FINAL-PREFLIGHT-CURRENT-9D28F682` PASS/BLOCKED: final no-secret
   preflight now targets currently deployed
   `9d28f682f23dc176dbbad790bea8ddf213c8ac01`. Build-info PASS, public smoke
