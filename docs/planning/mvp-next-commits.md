@@ -7,6 +7,16 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `PROD-UI-AUTH-CLICKTHROUGH-39A52703-2026-05-10 qa: capture authenticated/admin production UI route evidence`
+  - 2026-05-10: Ran authenticated/admin production UI route/module
+    clickthrough against deployed
+    `39a5270322a7d1c302cd5a711484af35f4d6be08` with approved production
+    credentials. Result PASS: public `4/4`, dashboard `18/18`, admin `3/3`,
+    and legacy redirects `3/3`. The runner and route-map docs were aligned
+    with documented top-level bot helper redirects. Evidence:
+    `docs/planning/prod-ui-auth-clickthrough-39a52703-task-2026-05-10.md` and
+    `docs/operations/prod-ui-module-clickthrough-39a52703-2026-05-10.md`.
+
 - [x] `V1-ARCH-BOUNDARY-CLEANUP-2026-05-10 fix: close exchange-boundary audit drift`
   - 2026-05-10: Resolved the V1 architecture audit findings by moving API-key
     probe CCXT client construction behind

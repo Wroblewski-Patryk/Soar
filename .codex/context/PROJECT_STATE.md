@@ -13,6 +13,14 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `PROD-UI-AUTH-CLICKTHROUGH-39A52703-2026-05-10` captured
+  authenticated/admin production UI route/module reachability evidence for
+  deployed `39a5270322a7d1c302cd5a711484af35f4d6be08`. Public routes passed
+  `4/4`, dashboard routes passed `18/18`, admin routes passed `3/3`, and
+  legacy redirects passed `3/3`. The runner and route map now align with the
+  documented top-level bot helper redirects. Evidence:
+  `docs/planning/prod-ui-auth-clickthrough-39a52703-task-2026-05-10.md` and
+  `docs/operations/prod-ui-module-clickthrough-39a52703-2026-05-10.md`.
 - 2026-05-10 `V1-ARCH-BOUNDARY-CLEANUP-2026-05-10` resolved the local
   architecture findings from the V1 architecture function audit. API-key probe
   CCXT client construction now lives behind

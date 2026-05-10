@@ -4,6 +4,13 @@ Last updated: 2026-05-10
 
 ## Active Issues
 
+- 2026-05-10 update: authenticated/admin production UI route/module
+  reachability is no longer blocked after
+  `PROD-UI-AUTH-CLICKTHROUGH-39A52703-2026-05-10`. The current PASS evidence
+  covers route/module reachability only; deeper production action/form
+  clickthrough, live-money actions, `LIVEIMPORT-03`, rollback proof PASS,
+  Gate 2 SLO, and RC approval remain separate V1 proof lanes. Evidence:
+  `docs/operations/prod-ui-module-clickthrough-39a52703-2026-05-10.md`.
 - 2026-05-10 update: the architecture function audit's local implementation
   and docs findings are closed by
   `V1-ARCH-BOUNDARY-CLEANUP-2026-05-10`. API-key probe CCXT client

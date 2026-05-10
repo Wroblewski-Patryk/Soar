@@ -17,6 +17,16 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `PROD-UI-AUTH-CLICKTHROUGH-39A52703-2026-05-10 qa: capture authenticated/admin production UI route evidence`
+  - Scope: ran the production UI module clickthrough runner with approved
+    dashboard/admin credentials against deployed
+    `39a5270322a7d1c302cd5a711484af35f4d6be08`. Result PASS: public routes
+    `4/4`, dashboard routes `18/18`, admin routes `3/3`, and legacy redirects
+    `3/3`. Also aligned the runner and route docs with the documented
+    top-level bot helper redirects. Evidence:
+    `docs/planning/prod-ui-auth-clickthrough-39a52703-task-2026-05-10.md` and
+    `docs/operations/prod-ui-module-clickthrough-39a52703-2026-05-10.md`.
+
 - [x] `V1-ARCH-BOUNDARY-CLEANUP-2026-05-10 fix: close exchange-boundary audit drift`
   - Scope: resolved the architecture audit findings by moving API-key probe
     CCXT client construction from `profile/apiKey` into an exchange-owned

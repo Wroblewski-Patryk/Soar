@@ -1,0 +1,439 @@
+{
+  "status": "PASS",
+  "today": "2026-05-10",
+  "generatedAt": "2026-05-10T16:12:19.404Z",
+  "environment": "production",
+  "webBaseUrl": "https://soar.luckysparrow.ch",
+  "apiBaseUrl": "https://api.soar.luckysparrow.ch",
+  "expectedSha": "39a5270322a7d1c302cd5a711484af35f4d6be08",
+  "buildInfo": {
+    "status": 200,
+    "ok": true,
+    "gitSha": "39a5270322a7d1c302cd5a711484af35f4d6be08"
+  },
+  "auth": {
+    "dashboard": "login:present",
+    "admin": "login:present"
+  },
+  "summary": {
+    "public": "PASS:4",
+    "dashboard": "PASS:18",
+    "admin": "PASS:3",
+    "legacy": "PASS:3"
+  },
+  "blockers": [],
+  "routes": [
+    {
+      "path": "/",
+      "area": "public",
+      "expected": "200",
+      "url": "https://soar.luckysparrow.ch/",
+      "result": "PASS",
+      "httpStatus": 200,
+      "location": "",
+      "notes": "public route reachable"
+    },
+    {
+      "path": "/auth/login",
+      "area": "public",
+      "expected": "200",
+      "url": "https://soar.luckysparrow.ch/auth/login",
+      "result": "PASS",
+      "httpStatus": 200,
+      "location": "",
+      "notes": "public route reachable"
+    },
+    {
+      "path": "/auth/register",
+      "area": "public",
+      "expected": "200",
+      "url": "https://soar.luckysparrow.ch/auth/register",
+      "result": "PASS",
+      "httpStatus": 200,
+      "location": "",
+      "notes": "public route reachable"
+    },
+    {
+      "path": "/offline",
+      "area": "public",
+      "expected": "200",
+      "url": "https://soar.luckysparrow.ch/offline",
+      "result": "PASS",
+      "httpStatus": 200,
+      "location": "",
+      "notes": "public route reachable"
+    },
+    {
+      "path": "/dashboard",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard",
+      "result": "PASS",
+      "httpStatus": 200,
+      "location": "",
+      "notes": "route rendered HTML"
+    },
+    {
+      "path": "/dashboard/exchanges",
+      "area": "dashboard",
+      "expected": "redirect:/dashboard/profile#api",
+      "url": "https://soar.luckysparrow.ch/dashboard/exchanges",
+      "result": "PASS",
+      "httpStatus": 307,
+      "location": "/dashboard/profile#api",
+      "notes": "redirect matched /dashboard/profile#api"
+    },
+    {
+      "path": "/dashboard/profile",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/profile",
+      "result": "PASS",
+      "httpStatus": 200,
+      "location": "",
+      "notes": "route rendered HTML"
+    },
+    {
+      "path": "/dashboard/wallets",
+      "area": "dashboard",
+      "expected": "redirect:/dashboard/wallets/list",
+      "url": "https://soar.luckysparrow.ch/dashboard/wallets",
+      "result": "PASS",
+      "httpStatus": 307,
+      "location": "/dashboard/wallets/list",
+      "notes": "redirect matched /dashboard/wallets/list"
+    },
+    {
+      "path": "/dashboard/wallets/list",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/wallets/list",
+      "result": "PASS",
+      "httpStatus": 200,
+      "location": "",
+      "notes": "route rendered HTML"
+    },
+    {
+      "path": "/dashboard/wallets/create",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/wallets/create",
+      "result": "PASS",
+      "httpStatus": 200,
+      "location": "",
+      "notes": "route rendered HTML"
+    },
+    {
+      "path": "/dashboard/markets/list",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/markets/list",
+      "result": "PASS",
+      "httpStatus": 200,
+      "location": "",
+      "notes": "route rendered HTML"
+    },
+    {
+      "path": "/dashboard/markets/create",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/markets/create",
+      "result": "PASS",
+      "httpStatus": 200,
+      "location": "",
+      "notes": "route rendered HTML"
+    },
+    {
+      "path": "/dashboard/strategies/list",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/strategies/list",
+      "result": "PASS",
+      "httpStatus": 200,
+      "location": "",
+      "notes": "route rendered HTML"
+    },
+    {
+      "path": "/dashboard/strategies/create",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/strategies/create",
+      "result": "PASS",
+      "httpStatus": 200,
+      "location": "",
+      "notes": "route rendered HTML"
+    },
+    {
+      "path": "/dashboard/backtests/list",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/backtests/list",
+      "result": "PASS",
+      "httpStatus": 200,
+      "location": "",
+      "notes": "route rendered HTML"
+    },
+    {
+      "path": "/dashboard/backtests/create",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/backtests/create",
+      "result": "PASS",
+      "httpStatus": 200,
+      "location": "",
+      "notes": "route rendered HTML"
+    },
+    {
+      "path": "/dashboard/bots",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/bots",
+      "result": "PASS",
+      "httpStatus": 200,
+      "location": "",
+      "notes": "route rendered HTML"
+    },
+    {
+      "path": "/dashboard/bots/create",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/bots/create",
+      "result": "PASS",
+      "httpStatus": 200,
+      "location": "",
+      "notes": "route rendered HTML"
+    },
+    {
+      "path": "/dashboard/bots/assistant",
+      "area": "dashboard",
+      "expected": "redirect:/dashboard/bots",
+      "url": "https://soar.luckysparrow.ch/dashboard/bots/assistant",
+      "result": "PASS",
+      "httpStatus": 307,
+      "location": "/dashboard/bots",
+      "notes": "redirect matched /dashboard/bots"
+    },
+    {
+      "path": "/dashboard/bots/runtime",
+      "area": "dashboard",
+      "expected": "redirect:/dashboard/bots",
+      "url": "https://soar.luckysparrow.ch/dashboard/bots/runtime",
+      "result": "PASS",
+      "httpStatus": 307,
+      "location": "/dashboard/bots",
+      "notes": "redirect matched /dashboard/bots"
+    },
+    {
+      "path": "/dashboard/reports",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/reports",
+      "result": "PASS",
+      "httpStatus": 200,
+      "location": "",
+      "notes": "route rendered HTML"
+    },
+    {
+      "path": "/dashboard/logs",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/logs",
+      "result": "PASS",
+      "httpStatus": 200,
+      "location": "",
+      "notes": "route rendered HTML"
+    },
+    {
+      "path": "/dashboard/orders",
+      "area": "legacy",
+      "expected": "redirect:/dashboard/bots/runtime?legacy=orders",
+      "url": "https://soar.luckysparrow.ch/dashboard/orders",
+      "result": "PASS",
+      "httpStatus": 307,
+      "location": "/dashboard/bots/runtime?legacy=orders",
+      "notes": "redirect matched /dashboard/bots/runtime?legacy=orders"
+    },
+    {
+      "path": "/dashboard/positions",
+      "area": "legacy",
+      "expected": "redirect:/dashboard/bots/runtime?legacy=positions",
+      "url": "https://soar.luckysparrow.ch/dashboard/positions",
+      "result": "PASS",
+      "httpStatus": 307,
+      "location": "/dashboard/bots/runtime?legacy=positions",
+      "notes": "redirect matched /dashboard/bots/runtime?legacy=positions"
+    },
+    {
+      "path": "/dashboard/bots/new",
+      "area": "legacy",
+      "expected": "redirect:/dashboard/bots/create",
+      "url": "https://soar.luckysparrow.ch/dashboard/bots/new",
+      "result": "PASS",
+      "httpStatus": 307,
+      "location": "/dashboard/bots/create",
+      "notes": "redirect matched /dashboard/bots/create"
+    },
+    {
+      "path": "/admin",
+      "area": "admin",
+      "expected": "redirect:/admin/subscriptions",
+      "url": "https://soar.luckysparrow.ch/admin",
+      "result": "PASS",
+      "httpStatus": 307,
+      "location": "/admin/subscriptions",
+      "notes": "redirect matched /admin/subscriptions"
+    },
+    {
+      "path": "/admin/users",
+      "area": "admin",
+      "expected": "admin",
+      "url": "https://soar.luckysparrow.ch/admin/users",
+      "result": "PASS",
+      "httpStatus": 200,
+      "location": "",
+      "notes": "route rendered HTML"
+    },
+    {
+      "path": "/admin/subscriptions",
+      "area": "admin",
+      "expected": "admin",
+      "url": "https://soar.luckysparrow.ch/admin/subscriptions",
+      "result": "PASS",
+      "httpStatus": 200,
+      "location": "",
+      "notes": "route rendered HTML"
+    }
+  ],
+  "modules": [
+    {
+      "module": "auth",
+      "route": "/auth/login",
+      "requiredAuth": "none",
+      "checks": [
+        "login route reachable"
+      ],
+      "result": "PASS",
+      "notes": "public route reachable"
+    },
+    {
+      "module": "dashboard-home",
+      "route": "/dashboard",
+      "requiredAuth": "dashboard",
+      "checks": [
+        "home route reachable"
+      ],
+      "result": "PASS",
+      "notes": "route rendered HTML"
+    },
+    {
+      "module": "profile/exchanges",
+      "route": "/dashboard/profile",
+      "requiredAuth": "dashboard",
+      "checks": [
+        "profile route reachable"
+      ],
+      "result": "PASS",
+      "notes": "route rendered HTML"
+    },
+    {
+      "module": "wallets",
+      "route": "/dashboard/wallets/list",
+      "requiredAuth": "dashboard",
+      "checks": [
+        "wallet list route reachable"
+      ],
+      "result": "PASS",
+      "notes": "route rendered HTML"
+    },
+    {
+      "module": "markets",
+      "route": "/dashboard/markets/list",
+      "requiredAuth": "dashboard",
+      "checks": [
+        "market list route reachable"
+      ],
+      "result": "PASS",
+      "notes": "route rendered HTML"
+    },
+    {
+      "module": "strategies",
+      "route": "/dashboard/strategies/list",
+      "requiredAuth": "dashboard",
+      "checks": [
+        "strategy list route reachable"
+      ],
+      "result": "PASS",
+      "notes": "route rendered HTML"
+    },
+    {
+      "module": "backtests",
+      "route": "/dashboard/backtests/list",
+      "requiredAuth": "dashboard",
+      "checks": [
+        "backtest list route reachable"
+      ],
+      "result": "PASS",
+      "notes": "route rendered HTML"
+    },
+    {
+      "module": "bots",
+      "route": "/dashboard/bots",
+      "requiredAuth": "dashboard",
+      "checks": [
+        "bot list route reachable"
+      ],
+      "result": "PASS",
+      "notes": "route rendered HTML"
+    },
+    {
+      "module": "runtime",
+      "route": "/dashboard/bots/runtime",
+      "requiredAuth": "dashboard",
+      "checks": [
+        "runtime route reachable"
+      ],
+      "result": "PASS",
+      "notes": "redirect matched /dashboard/bots"
+    },
+    {
+      "module": "reports",
+      "route": "/dashboard/reports",
+      "requiredAuth": "dashboard",
+      "checks": [
+        "reports route reachable"
+      ],
+      "result": "PASS",
+      "notes": "route rendered HTML"
+    },
+    {
+      "module": "logs",
+      "route": "/dashboard/logs",
+      "requiredAuth": "dashboard",
+      "checks": [
+        "logs route reachable"
+      ],
+      "result": "PASS",
+      "notes": "route rendered HTML"
+    },
+    {
+      "module": "admin/users",
+      "route": "/admin/users",
+      "requiredAuth": "admin",
+      "checks": [
+        "admin user route reachable"
+      ],
+      "result": "PASS",
+      "notes": "route rendered HTML"
+    },
+    {
+      "module": "admin/subscriptions",
+      "route": "/admin/subscriptions",
+      "requiredAuth": "admin",
+      "checks": [
+        "admin subscriptions route reachable"
+      ],
+      "result": "PASS",
+      "notes": "route rendered HTML"
+    }
+  ]
+}

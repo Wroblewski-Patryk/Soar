@@ -4,6 +4,16 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest authenticated UI evidence:
+`PROD-UI-AUTH-CLICKTHROUGH-39A52703-2026-05-10` passed production UI
+route/module reachability with approved dashboard/admin credentials on deployed
+`39a52703`. Public, dashboard, admin, and legacy route groups all pass. The
+next V1 proof lanes are now narrower: `LIVEIMPORT-03` protected runtime
+readback, rollback proof PASS, authenticated Gate 2 SLO, RC approval/signoff/
+checklist, and optional deeper production action/form clickthrough that avoids
+live-money or destructive writes unless explicitly approved. Evidence:
+`docs/operations/prod-ui-module-clickthrough-39a52703-2026-05-10.md`.
+
 Latest architecture cleanup:
 `V1-ARCH-BOUNDARY-CLEANUP-2026-05-10` resolved the implementation boundary and
 docs drift found by the architecture function audit. API-key probe CCXT client

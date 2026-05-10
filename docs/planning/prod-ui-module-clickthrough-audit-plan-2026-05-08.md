@@ -113,6 +113,10 @@ execution checklist, evidence format, and stop conditions.
 - `/dashboard/orders` -> `/dashboard/bots/runtime?legacy=orders`
 - `/dashboard/positions` -> `/dashboard/bots/runtime?legacy=positions`
 - `/dashboard/bots/new` -> `/dashboard/bots/create`
+- `/dashboard/bots/assistant` -> `/dashboard/bots` without `botId`, or
+  `/dashboard/bots/:id/assistant` with `botId`
+- `/dashboard/bots/runtime` -> `/dashboard/bots` without `botId`, or
+  `/dashboard/bots/:id/preview` with `botId`
 - `/dashboard/bots/:id` -> `/dashboard/bots/:id/preview`
 - `/dashboard/bots/:id/runtime` -> `/dashboard/bots/:id/preview`
 - `/dashboard/strategies/:id` -> `/dashboard/strategies/:id/edit`

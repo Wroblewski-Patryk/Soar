@@ -4,6 +4,14 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `PROD-UI-AUTH-CLICKTHROUGH-39A52703-2026-05-10` PASS/BLOCKED: authenticated
+  dashboard/admin production UI route/module reachability passed for deployed
+  `39a5270322a7d1c302cd5a711484af35f4d6be08`. Public routes PASS `4/4`,
+  dashboard routes PASS `18/18`, admin routes PASS `3/3`, and legacy redirects
+  PASS `3/3`. This is route/module reachability evidence; deeper form/action
+  coverage and live-money flows remain separate. Evidence:
+  `docs/operations/prod-ui-module-clickthrough-39a52703-2026-05-10.md`.
+
 - `V1-ARCH-BOUNDARY-CLEANUP-2026-05-10` PASS/BLOCKED: the local architecture
   findings from the V1 architecture audit are resolved. API-key probe CCXT
   client construction moved behind `modules/exchange`, profile now consumes

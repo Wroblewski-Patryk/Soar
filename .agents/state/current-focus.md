@@ -16,6 +16,14 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 authenticated UI evidence:
+`PROD-UI-AUTH-CLICKTHROUGH-39A52703-2026-05-10` captured production UI
+route/module reachability after login on deployed `39a52703`. Result PASS:
+public `4/4`, dashboard `18/18`, admin `3/3`, and legacy redirects `3/3`.
+This closes the route/module reachability part of the authenticated/admin UI
+blocker; deeper action/form and live-money flows remain separate. Evidence:
+`docs/operations/prod-ui-module-clickthrough-39a52703-2026-05-10.md`.
+
 2026-05-10 architecture cleanup:
 `V1-ARCH-BOUNDARY-CLEANUP-2026-05-10` resolved the audit's local architecture
 findings. API-key probe CCXT client construction now belongs to

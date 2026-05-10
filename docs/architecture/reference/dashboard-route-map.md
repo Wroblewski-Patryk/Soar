@@ -92,6 +92,8 @@ Wallet placement rule:
 | `/dashboard/positions` | `/dashboard/bots/runtime?legacy=positions` | `apps/web/src/middleware.ts` |
 | `/dashboard/exchanges` | `/dashboard/profile#api` | app route redirect |
 | `/dashboard/bots/new` | `/dashboard/bots/create` | app route redirect |
+| `/dashboard/bots/assistant` | `/dashboard/bots` when `botId` query is missing; `/dashboard/bots/:id/assistant` when `botId` is present | app route redirect |
+| `/dashboard/bots/runtime` | `/dashboard/bots` when `botId` query is missing; `/dashboard/bots/:id/preview` when `botId` is present | app route redirect |
 | `/dashboard/bots/:id` | `/dashboard/bots/:id/preview` | app route redirect |
 | `/dashboard/bots/:id/runtime` | `/dashboard/bots/:id/preview` | app route redirect |
 | `/dashboard/strategies/:id` | `/dashboard/strategies/:id/edit` | app route redirect |
