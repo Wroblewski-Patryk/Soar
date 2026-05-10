@@ -16,14 +16,18 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
-2026-05-10 implementation update: `EXCHANGE2-30` enabled Gate.io
+2026-05-10 implementation/deploy update: `EXCHANGE2-30` enabled Gate.io
 `LIVE_ORDER_SUBMIT` through the canonical orders/exchange boundary and enables
 Gate.io `LIVE_EXECUTION` compatibility gating. Gate.io exchange-side cancel
 remains unsupported. No real live-money action is performed in this task.
-Focused exchange tests, wallet e2e, Web capability test, API typecheck, and
-Web typecheck passed.
+Focused exchange tests, wallet e2e, Web capability test, API typecheck, Web
+typecheck, production build-info for
+`04a4204ca9090586d49ae77b0dd8c1be048d7bdf`, and public deploy smoke passed.
+The no-secret final V1 preflight public checks passed and remains correctly
+blocked on protected/formal evidence.
 Evidence:
-`docs/planning/exchange2-30-gateio-live-order-submit-task-2026-05-10.md`.
+`docs/planning/exchange2-30-gateio-live-order-submit-task-2026-05-10.md` and
+`docs/operations/deploy-freshness-04a4204c-2026-05-10.md`.
 
 2026-05-09 implementation update: `EXCHANGE2-29` enabled only Gate.io
 `WALLET_CASHFLOW_HISTORY` through the existing exchange adapter boundary.

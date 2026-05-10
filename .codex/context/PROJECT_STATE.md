@@ -18,8 +18,12 @@ Last updated: 2026-05-10
   enables Gate.io shared `LIVE_EXECUTION` compatibility gating. Scope is
   limited to live submit; exchange-side cancel remains unsupported and no real
   live-money action is performed. Focused exchange tests, wallet e2e, Web
-  capability test, API typecheck, and Web typecheck passed. Evidence:
-  `docs/planning/exchange2-30-gateio-live-order-submit-task-2026-05-10.md`.
+  capability test, API typecheck, Web typecheck, production build-info for
+  `04a4204ca9090586d49ae77b0dd8c1be048d7bdf`, and public deploy smoke passed.
+  The no-secret final V1 preflight public checks passed and remains correctly
+  blocked on protected/formal evidence. Evidence:
+  `docs/planning/exchange2-30-gateio-live-order-submit-task-2026-05-10.md` and
+  `docs/operations/deploy-freshness-04a4204c-2026-05-10.md`.
 - 2026-05-09 `EXCHANGE2-29-GATEIO-WALLET-CASHFLOW-HISTORY-2026-05-09`
   enabled Gate.io wallet cashflow history through the existing exchange
   adapter boundary. Scope is limited to `WALLET_CASHFLOW_HISTORY`; Gate.io live

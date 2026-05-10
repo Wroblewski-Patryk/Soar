@@ -101,6 +101,14 @@ truth. No live exchange call is performed.
 - Manual checks: not applicable.
 - High-risk checks: mocked Gate.io live submit boundary coverage passed;
   Gate.io `LIVE_ORDER_CANCEL` remains unsupported in exact capability coverage.
+- Deployment:
+  - PASS: production Web build-info exposed
+    `04a4204ca9090586d49ae77b0dd8c1be048d7bdf` after a follow-up wait.
+  - PASS: public deploy smoke for API `/health`, API `/ready`, and Web `/`.
+  - BLOCKED as expected: no-secret V1 final preflight public checks passed, but
+    protected/formal evidence remains missing or failed. Evidence:
+    `docs/operations/deploy-freshness-04a4204c-2026-05-10.md` and
+    `docs/operations/v1-final-preflight-04a4204c-2026-05-10.md`.
 
 ## Architecture Evidence
 - Architecture source reviewed:
@@ -177,7 +185,8 @@ truth. No live exchange call is performed.
   exchange boundary tests, wallet e2e, Web capability test, architecture/module
   docs, planning/state docs.
 - How tested: focused exchange tests, wallet e2e, Web capability test, API
-  typecheck, and Web typecheck.
+  typecheck, Web typecheck, production build-info, public deploy smoke, and
+  no-secret final V1 preflight.
 - What is incomplete: Gate.io exchange-side cancel remains unsupported; real
   production live-money proof still requires protected credentials and explicit
   operator approval.

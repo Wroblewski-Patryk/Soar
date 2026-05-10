@@ -10,9 +10,13 @@ Latest local implementation slice:
 Gate.io shared `LIVE_EXECUTION` compatibility gating. Gate.io exchange-side
 cancel remains unsupported. No real live-money action is performed in this
 task. Focused exchange tests, wallet e2e, Web capability test, API typecheck,
-and Web typecheck pass. After deploy evidence, the remaining V1 blockers are
-protected production evidence, authenticated/admin UI clickthrough, and an
-explicit decision on whether exchange-side cancel is V1 scope.
+Web typecheck, production build-info for
+`04a4204ca9090586d49ae77b0dd8c1be048d7bdf`, and public deploy smoke pass. The
+no-secret final V1 preflight public checks pass and remain correctly blocked on
+protected/formal evidence. The remaining V1 blockers are protected production
+evidence, authenticated/admin UI clickthrough, and an explicit decision on
+whether exchange-side cancel is V1 scope. Evidence:
+`docs/operations/deploy-freshness-04a4204c-2026-05-10.md`.
 
 Latest local implementation slice:
 `EXCHANGE2-29-GATEIO-WALLET-CASHFLOW-HISTORY-2026-05-09` enabled only Gate.io

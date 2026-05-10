@@ -4,13 +4,17 @@ Last updated: 2026-05-09
 
 ## Latest Health Snapshot
 
-- `EXCHANGE2-30` local validation PASS: Gate.io `LIVE_ORDER_SUBMIT` and
+- `EXCHANGE2-30` validation and deployment PASS: Gate.io `LIVE_ORDER_SUBMIT` and
   shared `LIVE_EXECUTION` compatibility support are enabled through the
   canonical orders/exchange boundary. Gate.io exchange-side cancel remains
   unsupported. No real live-money action is performed. Focused exchange tests,
-  wallet e2e, Web capability test, API typecheck, and Web typecheck pass.
+  wallet e2e, Web capability test, API typecheck, Web typecheck, production
+  build-info for `04a4204ca9090586d49ae77b0dd8c1be048d7bdf`, and public
+  deploy smoke pass. The no-secret final V1 preflight public checks pass and
+  remain correctly blocked on protected/formal evidence.
   Evidence:
-  `docs/planning/exchange2-30-gateio-live-order-submit-task-2026-05-10.md`.
+  `docs/planning/exchange2-30-gateio-live-order-submit-task-2026-05-10.md`
+  and `docs/operations/deploy-freshness-04a4204c-2026-05-10.md`.
 - `EXCHANGE2-29` local validation PASS: Gate.io `WALLET_CASHFLOW_HISTORY` is
   enabled through the existing exchange adapter boundary. Gate.io live submit
   and exchange-side cancel remain unsupported. Focused exchange/wallet

@@ -12,8 +12,11 @@ Operational queue for one-task execution runs.
     orders/exchange boundary and enable shared `LIVE_EXECUTION` compatibility
     gating, while keeping exchange-side cancel unsupported. No real live-money
     action is performed. Focused exchange tests, wallet e2e, Web capability
-    test, API typecheck, and Web typecheck passed. Evidence:
-    `docs/planning/exchange2-30-gateio-live-order-submit-task-2026-05-10.md`.
+    test, API typecheck, Web typecheck, production build-info for
+    `04a4204ca9090586d49ae77b0dd8c1be048d7bdf`, and public deploy smoke
+    passed. Evidence:
+    `docs/planning/exchange2-30-gateio-live-order-submit-task-2026-05-10.md`
+    and `docs/operations/deploy-freshness-04a4204c-2026-05-10.md`.
 
 - [x] `EXCHANGE2-29-GATEIO-WALLET-CASHFLOW-HISTORY-2026-05-09 feature(exchange): enable Gate.io wallet cashflow history`
   - 2026-05-09: Enable only `GATEIO` `WALLET_CASHFLOW_HISTORY` through the
