@@ -13,6 +13,12 @@ Last updated: 2026-05-10
   audit: selected-bot switching, wallet KPIs, loading/empty/error, responsive
   behavior, table tabs, and production-safe clickthrough.
 
+- 2026-05-10 update: the rendered Dashboard Home component now has focused
+  local proof that a negative-PnL position does not display prospective TTP,
+  while the TTP column remains present. This closes the first rendered
+  component bridge for the operator-reported TTP issue. Remaining Dashboard
+  Home risk is still broader than this single rendered case.
+
 - 2026-05-10 update: Bots action audit is locally closed for safe fixtures.
   Remaining risk is not an unverified Bots implementation contract; it is
   production-safe action clickthrough and the rest of the product action matrix

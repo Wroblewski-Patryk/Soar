@@ -17,6 +17,16 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `V1-DASHBOARD-HOME-RENDERED-RUNTIME-AUDIT-2026-05-10 fix: add rendered Dashboard TTP proof`
+  - Scope: added a dedicated rendered `HomeLiveWidgets` regression showing a
+    negative-PnL open position keeps the TTP column visible while suppressing
+    prospective TTP label/value. This bridges the presenter proof into the real
+    Dashboard component without growing the near-budget main test file.
+    Dashboard Home remains `PARTIAL_LOCAL`; broader rendered/browser audit is
+    still open. Evidence:
+    `docs/planning/v1-dashboard-home-rendered-runtime-audit-task-2026-05-10.md`
+    and `docs/operations/v1-product-action-audit-matrix-2026-05-10.md`.
+
 - [x] `V1-DASHBOARD-RUNTIME-TABLE-ACTION-AUDIT-2026-05-10 fix: verify Dashboard runtime table action/display contracts`
   - Scope: added focused Dashboard runtime table presenter proof for
     open-order local cancel, terminal order read-only behavior, exchange-backed

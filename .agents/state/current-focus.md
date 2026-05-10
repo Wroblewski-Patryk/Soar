@@ -20,6 +20,14 @@ full V1 readiness. Next executable task: rendered Dashboard Home component/
 browser audit for selected bot, wallet KPIs, loading/empty/error, responsive
 states, table tabs, and safe clickthrough behavior.
 
+2026-05-10 Dashboard Home rendered runtime audit:
+`V1-DASHBOARD-HOME-RENDERED-RUNTIME-AUDIT-2026-05-10` adds a real rendered
+`HomeLiveWidgets` proof for the operator-reported TTP class. The component now
+has focused local evidence that a negative-PnL open position can render the
+TTP column while hiding the prospective TTP label/value. This is still
+`PARTIAL_LOCAL`; selected-bot switching, wallet KPIs, loading/empty/error,
+responsive states, table tabs, and safe clickthrough remain next.
+
 ## Current System Objective
 
 Build and maintain an AI-assisted self-improving development system for Soar.

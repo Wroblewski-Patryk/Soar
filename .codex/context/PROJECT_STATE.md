@@ -13,6 +13,13 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `V1-DASHBOARD-HOME-RENDERED-RUNTIME-AUDIT-2026-05-10` adds the
+  first rendered Dashboard Home bridge for the operator-reported TTP issue.
+  A dedicated small `HomeLiveWidgets.runtime-table-audit.test.tsx` file renders
+  the real Dashboard component through existing service boundaries and proves
+  that a negative-PnL open position keeps the TTP column visible while hiding
+  prospective TTP label/value. The broader Dashboard Home row remains
+  `PARTIAL_LOCAL`, not full PASS.
 - 2026-05-10 `V1-DASHBOARD-RUNTIME-TABLE-ACTION-AUDIT-2026-05-10` closes the
   local Dashboard runtime table presenter/action slice after the operator
   challenged earlier overstated readiness. The focused Web presenter suite now

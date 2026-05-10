@@ -4,6 +4,14 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest Dashboard Home rendered runtime audit:
+`V1-DASHBOARD-HOME-RENDERED-RUNTIME-AUDIT-2026-05-10` is locally complete for
+one rendered component bridge: `HomeLiveWidgets` renders a negative-PnL open
+position with the TTP column present while suppressing prospective TTP
+label/value. Next executable Dashboard Home task: continue rendered audit for
+selected-bot switching, wallet KPIs, loading/empty/error, responsive states,
+table tabs, and non-destructive clickthrough.
+
 Latest Dashboard runtime table action audit:
 `V1-DASHBOARD-RUNTIME-TABLE-ACTION-AUDIT-2026-05-10` is locally complete for
 the presenter/action slice. Evidence covers open-order local cancel and

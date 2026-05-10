@@ -4,6 +4,13 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `V1-DASHBOARD-HOME-RENDERED-RUNTIME-AUDIT-2026-05-10` LOCAL PASS/PARTIAL
+  PRODUCT AUDIT OPEN: added a dedicated rendered `HomeLiveWidgets` regression
+  proving a negative-PnL open position renders the Dashboard runtime TTP column
+  without showing the prospective TTP label/value. Validation passed: focused
+  Web rendered+presenter pack (`25/25`), Web typecheck, repository guardrails,
+  and diff check. Dashboard Home remains `PARTIAL_LOCAL`, not full PASS.
+
 - `V1-DASHBOARD-RUNTIME-TABLE-ACTION-AUDIT-2026-05-10` LOCAL PASS/PARTIAL
   PRODUCT AUDIT OPEN: Dashboard runtime table presenters now have focused
   local proof for local open-order cancel, terminal open-order read-only
