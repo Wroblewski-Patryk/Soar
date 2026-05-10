@@ -9,9 +9,9 @@
   use local `HEAD` as the protected evidence candidate until that SHA is
   actually exposed by production build-info.
 - Latest verified Coolify deploy:
-  `822d92fc02067fa122e735ab6cc2783e438dc458`
+  `969df7c8f268146ecff3efb9de2fe1841ac8bc75`
 - Latest no-secret final preflight:
-  `docs/operations/v1-final-preflight-822d92fc-2026-05-10.md`
+  `docs/operations/v1-final-preflight-969df7c8-2026-05-10.md`
 - Current operator unblock checklist:
   `docs/operations/v1-operator-unblock-checklist-2026-05-10.md`
 
@@ -37,7 +37,8 @@ with approved production auth and database/Coolify access.
     name is `x11cfnz1dd9x0yzccftqzcoe`; this still must be executed from a
     shell or Docker context that can reach the VPS Docker daemon, not from a
     local workstation Docker daemon that does not contain the production
-    container.
+    container. Current 2026-05-10 restore evidence is PASS/FRESH at
+    `docs/operations/v1-restore-drill-prod-2026-05-10T03-39-56Z.md`.
 - Approver identity for RC sign-off:
   - Engineering name
   - Product name
@@ -52,7 +53,7 @@ midnight drift from producing stale evidence during a late release session.
 
 ```powershell
 $releaseDate = Get-Date -Format yyyy-MM-dd
-$expectedSha = "822d92fc02067fa122e735ab6cc2783e438dc458"
+$expectedSha = "969df7c8f268146ecff3efb9de2fe1841ac8bc75"
 ```
 
 Replace `$expectedSha` with `git rev-parse HEAD` only when the currently
@@ -145,6 +146,11 @@ readback artifact until a protected runtime positions payload is actually
 collected.
 
 ### 3. Run Production Restore Drill
+
+Current 2026-05-10 result: PASS/FRESH at
+`docs/operations/v1-restore-drill-prod-2026-05-10T03-39-56Z.md`.
+
+For a future evidence date, rerun:
 
 ```powershell
 pnpm run ops:db:restore-drill:prod -- --today $releaseDate

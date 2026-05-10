@@ -4,6 +4,12 @@ Last updated: 2026-05-10
 
 ## Active Issues
 
+- 2026-05-10 update: production restore drill is fresh again for the current
+  evidence date. Approved Coolify terminal access produced PASS evidence and
+  no-secret preflight now treats production DB restore context as satisfied by
+  evidence. This closes only the restore-context lane; remaining V1 blockers
+  are liveimport app auth/readback, rollback guard auth/proof, real RC approval
+  evidence, and authenticated/admin production UI clickthrough.
 - 2026-05-10 update: the `e70f5cf6` deploy lag is superseded. Coolify showed
   stale `soar-api` jobs still queued/in progress after production Web
   build-info had advanced. The stale jobs were cancelled through the

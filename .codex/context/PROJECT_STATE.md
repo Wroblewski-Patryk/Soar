@@ -13,6 +13,19 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `V1-PROD-RESTORE-DRILL-REFRESH-2026-05-10` captured fresh PASS
+  production restore-drill evidence through the approved Coolify terminal for
+  deployed `969df7c8f268146ecff3efb9de2fe1841ac8bc75`. The isolated contract
+  created a backup dump, restored it into a temporary database, validated
+  aggregate counts, dropped the restore database, removed the dump, and
+  verified zero leftovers. Follow-up final preflight now reports production DB
+  restore context satisfied and backup/restore drill evidence fresh for
+  2026-05-10. V1 remains `BLOCKED / NO-GO` on liveimport auth/readback,
+  rollback guard auth/proof, RC approval/gates, and authenticated/admin
+  production UI clickthrough. Evidence:
+  `docs/planning/v1-prod-restore-drill-refresh-task-2026-05-10.md`,
+  `docs/operations/v1-restore-drill-prod-2026-05-10T03-39-56Z.md`, and
+  `docs/operations/v1-final-preflight-969df7c8-2026-05-10.md`.
 - 2026-05-10 `V1-COOLIFY-DEPLOY-QUEUE-RECOVERY-2026-05-10` recovered the
   production Coolify queue after old Soar deployments remained queued. Stale
   `soar-api` jobs targeting older SHAs were cancelled, one fresh `soar-api`

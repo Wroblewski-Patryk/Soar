@@ -7,6 +7,21 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-PROD-RESTORE-DRILL-REFRESH-2026-05-10 release: refresh production restore drill evidence`
+  - 2026-05-10: Captured fresh PASS production Postgres restore evidence
+    through the approved Coolify terminal for deployed
+    `969df7c8f268146ecff3efb9de2fe1841ac8bc75`. The isolated drill created a
+    backup dump, restored it into a temporary database, validated aggregate
+    counts, dropped the restore database, removed the dump, and verified zero
+    leftovers. Follow-up no-secret final preflight now reports production DB
+    restore context satisfied and backup/restore drill evidence fresh for
+    2026-05-10. V1 remains `BLOCKED / NO-GO` on liveimport auth/readback,
+    rollback guard auth/proof, RC approval/gates, and authenticated/admin UI
+    clickthrough. Evidence:
+    `docs/planning/v1-prod-restore-drill-refresh-task-2026-05-10.md`,
+    `docs/operations/v1-restore-drill-prod-2026-05-10T03-39-56Z.md`, and
+    `docs/operations/v1-final-preflight-969df7c8-2026-05-10.md`.
+
 - [x] `V1-COOLIFY-DEPLOY-QUEUE-RECOVERY-2026-05-10 release: recover stale Coolify deploy queue`
   - 2026-05-10: Cleared stale Soar Coolify deployments after production
     build-info advanced to

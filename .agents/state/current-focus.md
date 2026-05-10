@@ -16,6 +16,22 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 verification update:
+`V1-PROD-RESTORE-DRILL-REFRESH-2026-05-10` captured fresh PASS production
+restore-drill evidence through the approved Coolify terminal for the production
+Postgres resource. The isolated backup/restore contract created a temporary
+restore database, restored the dump, validated aggregate counts, dropped the
+temporary database, removed the dump, and verified zero leftovers. Follow-up
+no-secret preflight for deployed
+`969df7c8f268146ecff3efb9de2fe1841ac8bc75` now marks production DB restore
+context as satisfied and backup/restore drill evidence as fresh for
+2026-05-10. V1 remains `BLOCKED / NO-GO` on protected/formal evidence:
+liveimport auth/readback, rollback guard auth/proof, RC approval/gates, and
+authenticated/admin production UI clickthrough. Evidence:
+`docs/planning/v1-prod-restore-drill-refresh-task-2026-05-10.md`,
+`docs/operations/v1-restore-drill-prod-2026-05-10T03-39-56Z.md`, and
+`docs/operations/v1-final-preflight-969df7c8-2026-05-10.md`.
+
 2026-05-10 post-release update: `V1-COOLIFY-DEPLOY-QUEUE-RECOVERY-2026-05-10`
 cleared the stale Coolify deploy queue for Soar. Production Web build-info and
 the fresh `soar-api` redeploy now both point to

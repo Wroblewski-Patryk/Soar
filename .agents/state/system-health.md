@@ -4,6 +4,17 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `V1-PROD-RESTORE-DRILL-REFRESH-2026-05-10` PASS/BLOCKED: approved Coolify
+  terminal access executed the isolated production Postgres backup/restore
+  drill for the 2026-05-10 evidence date. The drill returned PASS markers,
+  aggregate validation counts, and cleanup verification with zero leftover
+  restore databases or backup dumps. Follow-up V1 final preflight for
+  `969df7c8f268146ecff3efb9de2fe1841ac8bc75` reports production DB restore
+  context satisfied and backup/restore drill evidence fresh. V1 remains
+  `BLOCKED / NO-GO` on liveimport auth/readback, rollback guard auth/proof, RC
+  approval/gates, and authenticated/admin production UI clickthrough. Evidence:
+  `docs/operations/v1-restore-drill-prod-2026-05-10T03-39-56Z.md` and
+  `docs/operations/v1-final-preflight-969df7c8-2026-05-10.md`.
 - `V1-COOLIFY-DEPLOY-QUEUE-RECOVERY-2026-05-10` PASS/BLOCKED: Coolify stale
   Soar deploy jobs were cleared, one fresh `soar-api` redeploy finished on
   `33a2ebc468be3dbfab7c784f375672ebead5ae16`, production Web build-info
@@ -784,6 +795,11 @@ Broader lint, typecheck, tests, and build are not required unless code or
 runtime contracts are changed.
 
 ## Deployment Impact
+
+The latest evidence-only restore-drill refresh has no runtime deployment
+impact. It closes the stale production DB restore-context blocker for the
+2026-05-10 evidence date, but it does not change application code, secrets,
+workers, exchange behavior, or live-money behavior.
 
 Production build-info reached `721fe8482922835a9419f0e529baeef4ff6a74c9`,
 which contains the V1 backend PAPER/LIVE adapter-pure runtime fix, refreshed

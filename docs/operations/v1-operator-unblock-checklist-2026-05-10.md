@@ -3,11 +3,13 @@
 ## Status
 
 - Current deployed SHA:
-  `822d92fc02067fa122e735ab6cc2783e438dc458`
+  `969df7c8f268146ecff3efb9de2fe1841ac8bc75`
 - Latest no-secret preflight:
-  `docs/operations/v1-final-preflight-822d92fc-2026-05-10.md`
+  `docs/operations/v1-final-preflight-969df7c8-2026-05-10.md`
 - Current result: **BLOCKED / NO-GO**
 - Public build-info and public API/Web smoke: **PASS**
+- Production restore drill: **PASS / FRESH** for 2026-05-10 at
+  `docs/operations/v1-restore-drill-prod-2026-05-10T03-39-56Z.md`
 
 ## Exact Inputs Required
 
@@ -44,7 +46,8 @@ Optional if the production OPS route has an extra private layer:
 
 ### Production Restore Drill
 
-Required:
+Current 2026-05-10 evidence is complete. Required again only if a future
+release date needs a fresh proof:
 
 - `PROD_DB_CHECK_CONTAINER`
 - `PROD_DB_CHECK_USER`
@@ -75,7 +78,7 @@ Set the target once:
 
 ```powershell
 $releaseDate = "2026-05-10"
-$expectedSha = "822d92fc02067fa122e735ab6cc2783e438dc458"
+$expectedSha = "969df7c8f268146ecff3efb9de2fe1841ac8bc75"
 ```
 
 ### 1. Confirm Deploy Freshness
@@ -96,6 +99,11 @@ Required result: a redacted production readback artifact exists and contains no
 secret values.
 
 ### 3. Run Production Restore Drill
+
+Current 2026-05-10 result: **PASS** at
+`docs/operations/v1-restore-drill-prod-2026-05-10T03-39-56Z.md`.
+
+For a future evidence date, rerun:
 
 ```powershell
 pnpm run ops:db:restore-drill:prod -- --today $releaseDate

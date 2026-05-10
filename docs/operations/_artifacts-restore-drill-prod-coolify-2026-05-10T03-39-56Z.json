@@ -1,0 +1,38 @@
+{
+  "status": "PASS",
+  "profile": "prod",
+  "source": "coolify-terminal",
+  "generatedAt": "2026-05-10T03:39:56Z",
+  "container": "x11cfnz1dd9x0yzccftqzcoe",
+  "dbUser": "postgres",
+  "dbName": "postgres",
+  "restoreDatabase": "postgres_restore_check_20260510033956",
+  "checks": {
+    "coolifyTerminalConnected": true,
+    "backupCreated": true,
+    "restoreDatabaseCreated": true,
+    "backupRestored": true,
+    "keyTableValidationCountsCompleted": true,
+    "restoreDatabaseDropped": true,
+    "backupRemoved": true,
+    "leftoverRestoreDatabaseCount": 0,
+    "leftoverBackupDumpCount": 0
+  },
+  "validationCounts": [
+    { "table": "Bot", "count": 6 },
+    { "table": "Log", "count": 46495 },
+    { "table": "Order", "count": 3555 },
+    { "table": "Position", "count": 4601 },
+    { "table": "User", "count": 4 }
+  ],
+  "terminalEvidence": {
+    "startMarker": "SOAR_RESTORE_START stamp=20260510033956 db=postgres user=postgres restore=postgres_restore_check_20260510033956",
+    "resultMarker": "RESULT: PASS",
+    "cleanupVerification": "LEFTOVER_RESTORE_DATABASES=0; LEFTOVER_BACKUPS=0"
+  },
+  "notes": [
+    "Executed through the approved Coolify operator terminal against the production Postgres container because the local Docker daemon cannot reach the VPS container.",
+    "No password, token, connection string, API key, user record, bot record, order payload, position payload, or log payload was written to this artifact.",
+    "The drill created a compressed dump in /tmp, restored into an isolated postgres_restore_check_* database, validated aggregate table counts, dropped the restore database, and removed the dump."
+  ]
+}

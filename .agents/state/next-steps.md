@@ -4,6 +4,21 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest production restore-drill refresh:
+`V1-PROD-RESTORE-DRILL-REFRESH-2026-05-10` captured fresh PASS production
+Postgres restore evidence through the approved Coolify terminal. The follow-up
+no-secret final preflight for deployed
+`969df7c8f268146ecff3efb9de2fe1841ac8bc75` now reports production DB restore
+context `satisfied_by_evidence` and backup/restore drill evidence `fresh` for
+2026-05-10. Next executable V1 work is one of the remaining protected/formal
+lanes: provide `LIVEIMPORT_READBACK_*` app auth and run `LIVEIMPORT-03`,
+provide `ROLLBACK_GUARD_*` auth and refresh rollback proof, provide real RC
+approver identities/gate evidence, or provide authenticated/admin production
+UI access for the module clickthrough. Evidence:
+`docs/planning/v1-prod-restore-drill-refresh-task-2026-05-10.md`,
+`docs/operations/v1-restore-drill-prod-2026-05-10T03-39-56Z.md`, and
+`docs/operations/v1-final-preflight-969df7c8-2026-05-10.md`.
+
 Latest Coolify deploy-queue recovery:
 `V1-COOLIFY-DEPLOY-QUEUE-RECOVERY-2026-05-10` supersedes the older
 `e70f5cf6` deploy-lag blocker. Production Web build-info exposes
