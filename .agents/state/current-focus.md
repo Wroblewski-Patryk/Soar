@@ -16,6 +16,16 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 architecture function audit:
+`V1-ARCH-FUNCTION-AUDIT-2026-05-10` audited V1 functions from architecture,
+backend, API, frontend, exchange, runtime parity, security, UI, and ops
+perspectives. Result: mostly aligned, but not fully architecture-clean. The
+P1 decision-required mismatch is direct CCXT client construction in
+`apps/api/src/modules/profile/apiKey/exchangeApiKeyProbe.service.ts` outside
+the exchange module. P2 docs drift also exists in `04_runtime-contexts.md` and
+`api-exchange.md` around Gate.io. Evidence:
+`docs/operations/v1-architecture-function-audit-2026-05-10.md`.
+
 2026-05-10 function coverage audit:
 `V1-FUNCTION-COVERAGE-AUDIT-2026-05-10` published a function/module-oriented
 answer to what remains before V1 can be called complete. The audit reviewed

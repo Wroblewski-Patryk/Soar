@@ -7,6 +7,20 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-ARCH-FUNCTION-AUDIT-2026-05-10 research: audit V1 functions against architecture`
+  - 2026-05-10: Published architecture/function conformity audit across
+    architecture contracts, traceability matrix, route/API boundaries, Web
+    route ownership, exchange SDK access, runtime/backtest/paper/live parity,
+    security, UI proof, and ops/release evidence. Result: mostly aligned, but
+    not fully clean. One P1 decision-required implementation mismatch remains:
+    profile API-key probe constructs CCXT clients directly outside
+    `modules/exchange`, contrary to the exchange-boundary rule. Two P2 docs
+    drifts were also identified: `04_runtime-contexts.md` omits `GATEIO` in
+    an example enum and `api-exchange.md` still reads Binance-centered.
+    Evidence:
+    `docs/planning/v1-architecture-function-audit-task-2026-05-10.md` and
+    `docs/operations/v1-architecture-function-audit-2026-05-10.md`.
+
 - [x] `V1-FUNCTION-COVERAGE-AUDIT-2026-05-10 research: publish V1 function coverage audit`
   - 2026-05-10: Published a function/module-oriented V1 audit across
     architecture, route map, API routers, Web routes, module inventory, test

@@ -4,6 +4,13 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `V1-ARCH-FUNCTION-AUDIT-2026-05-10` PASS/PARTIAL: architecture function
+  audit found broad alignment across route maps, API auth boundaries, Web route
+  ownership, runtime parity contracts, and production fail-closed posture. It
+  also found one P1 boundary mismatch: profile API-key probe constructs CCXT
+  clients directly outside `modules/exchange`. Two P2 docs drifts were found
+  around Gate.io in `04_runtime-contexts.md` and `api-exchange.md`. Evidence:
+  `docs/operations/v1-architecture-function-audit-2026-05-10.md`.
 - `V1-FUNCTION-COVERAGE-AUDIT-2026-05-10` PASS/BLOCKED: function/module audit
   confirms broad implementation and local coverage across 38 Web route files,
   22 API modules, 16 Web feature areas, 180 API test files, and 145 Web test

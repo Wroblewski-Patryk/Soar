@@ -4,6 +4,15 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest architecture function audit:
+`V1-ARCH-FUNCTION-AUDIT-2026-05-10` found broad architecture alignment, but
+not a fully clean architecture state. The next architecture-clean task should
+resolve `ARCH-AUDIT-01`: move profile API-key probe CCXT client construction
+behind `modules/exchange`, or explicitly approve/document it as an exception.
+Recommended remediation is the move into the exchange boundary, followed by
+Gate.io docs drift cleanup in `04_runtime-contexts.md` and `api-exchange.md`.
+Evidence: `docs/operations/v1-architecture-function-audit-2026-05-10.md`.
+
 Latest function coverage audit:
 `V1-FUNCTION-COVERAGE-AUDIT-2026-05-10` confirms that broad V1 implementation
 and local coverage exist across the documented module/route/test surfaces. No

@@ -4,6 +4,19 @@ Last updated: 2026-05-10
 
 ## Active Issues
 
+- 2026-05-10 update: architecture function audit found one P1
+  decision-required boundary mismatch. `profile/apiKey/exchangeApiKeyProbe`
+  constructs CCXT clients directly in the profile module, while the current
+  exchange integration architecture requires exchange SDK/client construction
+  to stay behind `modules/exchange`. Recommended next decision is to move the
+  probe client construction behind an exchange-owned boundary, or explicitly
+  approve/document an exception. Evidence:
+  `docs/operations/v1-architecture-function-audit-2026-05-10.md`.
+- 2026-05-10 update: Gate.io-era docs drift remains in architecture/module
+  docs. `docs/architecture/04_runtime-contexts.md` omits `GATEIO` in the
+  `ExchangeContext` example, and `docs/modules/api-exchange.md` still
+  describes the module as Binance-centered. Evidence:
+  `docs/operations/v1-architecture-function-audit-2026-05-10.md`.
 - 2026-05-10 update: function/module coverage audit confirms the remaining V1
   issue is not a broad missing implementation backlog, but protected proof and
   formal release approval. V1 remains blocked on `LIVEIMPORT-03` protected

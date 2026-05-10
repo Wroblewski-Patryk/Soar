@@ -13,6 +13,18 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `V1-ARCH-FUNCTION-AUDIT-2026-05-10` audited current V1 function
+  areas against architecture from architecture, backend, API, frontend,
+  exchange, runtime parity, security, UI, and ops perspectives. Result: mostly
+  aligned, but not fully clean. One P1 decision-required implementation
+  mismatch remains: `profile/apiKey/exchangeApiKeyProbe.service.ts` constructs
+  CCXT clients directly outside `modules/exchange`, contrary to the
+  exchange-boundary rule. Two P2 docs drifts were identified:
+  `docs/architecture/04_runtime-contexts.md` omits `GATEIO` in an example enum
+  and `docs/modules/api-exchange.md` still describes the module as
+  Binance-centered. Evidence:
+  `docs/planning/v1-architecture-function-audit-task-2026-05-10.md` and
+  `docs/operations/v1-architecture-function-audit-2026-05-10.md`.
 - 2026-05-10 `V1-FUNCTION-COVERAGE-AUDIT-2026-05-10` published a
   function/module-oriented V1 audit across architecture, UI routes, API
   routers, module inventory, test inventory, final preflight, and production UI

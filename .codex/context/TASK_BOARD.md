@@ -17,6 +17,18 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `V1-ARCH-FUNCTION-AUDIT-2026-05-10 research: audit V1 functions against architecture`
+  - Scope: published architecture/function conformity audit across
+    architecture contracts, traceability matrix, route/API boundaries, Web
+    route ownership, exchange SDK access, runtime/backtest/paper/live parity,
+    security, UI proof, and ops/release evidence. Result is mostly aligned but
+    not fully clean: profile API-key probe directly constructs CCXT clients
+    outside `modules/exchange` and needs a user decision/remediation, while
+    `04_runtime-contexts.md` and `api-exchange.md` need Gate.io-era docs
+    refresh. Evidence:
+    `docs/planning/v1-architecture-function-audit-task-2026-05-10.md` and
+    `docs/operations/v1-architecture-function-audit-2026-05-10.md`.
+
 - [x] `V1-FUNCTION-COVERAGE-AUDIT-2026-05-10 research: publish V1 function coverage audit`
   - Scope: published a function/module-oriented V1 audit across architecture,
     route map, API routers, Web route inventory, module inventory, test
