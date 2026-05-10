@@ -67,6 +67,25 @@ export type SubmitLiveExchangeOrderResult = {
   fills?: CcxtFuturesOrderFill[];
 };
 
+export type CancelLiveExchangeOrderInput = {
+  userId: string;
+  bot: {
+    exchange: Exchange;
+    marketType: TradeMarket;
+    apiKeyId: string | null;
+    walletId: string | null;
+  };
+  order: {
+    symbol: string;
+    exchangeOrderId: string;
+  };
+};
+
+export type CancelLiveExchangeOrderResult = {
+  exchangeOrderId: string;
+  status: string | null;
+};
+
 type AuthenticatedConnectorLike = {
   fetchPositions: () => Promise<Record<string, unknown>[]>;
   fetchOpenOrders: () => Promise<Record<string, unknown>[]>;
@@ -93,6 +112,10 @@ type AuthenticatedConnectorLike = {
     leverage: number | null;
     marginMode: 'cross' | 'isolated' | null;
   }) => Promise<void>;
+  cancelOrder: (input: { symbol: string; orderId: string }) => Promise<{
+    id: string;
+    status?: string;
+  }>;
 };
 
 type ExchangeAdapterBoundaryDeps = {
@@ -433,6 +456,49 @@ export const submitLiveOrderThroughBoundary = async (
     };
   } catch (error) {
     if (isAppErrorLike(error) && error.code.startsWith('LIVE_PRETRADE_')) {
+      throw error;
+    }
+    throw orderErrors.liveExecutionFailed();
+  } finally {
+    await connector.disconnect().catch(() => undefined);
+  }
+};
+
+export const cancelLiveOrderThroughBoundary = async (
+  params: CancelLiveExchangeOrderInput,
+  deps: Pick<
+    ExchangeAdapterBoundaryDeps,
+    'createAuthenticatedConnector' | 'resolveLiveExecutionApiKey'
+  > = getDefaultDeps()
+): Promise<CancelLiveExchangeOrderResult> => {
+  assertExchangeExecutionCapabilitySupport(params.bot.exchange, 'LIVE_ORDER_CANCEL');
+
+  const apiKey = await deps.resolveLiveExecutionApiKey({
+    userId: params.userId,
+    bot: params.bot,
+  });
+  if (apiKey.exchange !== params.bot.exchange) {
+    throw orderErrors.liveApiKeyRequired();
+  }
+
+  const connector = deps.createAuthenticatedConnector({
+    exchange: apiKey.exchange,
+    apiKey: apiKey.apiKey,
+    apiSecret: apiKey.apiSecret,
+    marketType: params.bot.marketType,
+  });
+
+  try {
+    const result = await connector.cancelOrder({
+      symbol: params.order.symbol.toUpperCase(),
+      orderId: params.order.exchangeOrderId,
+    });
+    return {
+      exchangeOrderId: result.id || params.order.exchangeOrderId,
+      status: result.status ?? null,
+    };
+  } catch (error) {
+    if (isAppErrorLike(error)) {
       throw error;
     }
     throw orderErrors.liveExecutionFailed();

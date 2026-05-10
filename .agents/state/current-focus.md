@@ -16,6 +16,16 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 implementation update: `EXCHANGE2-31` adds canonical
+exchange-side `LIVE_ORDER_CANCEL` for Binance and Gate.io through
+`orders.service.ts` -> `exchangeAdapterBoundary.service.ts` -> authenticated
+connector. Exchange-backed local order state now changes only after the
+boundary call succeeds; contextless exchange-backed rows remain fail-closed.
+No real live-money cancel action is performed in this task. Focused exchange
+tests, focused orders cancel tests, API typecheck, guardrails, docs parity, and
+diff check passed. Evidence:
+`docs/planning/exchange2-31-live-order-cancel-boundary-task-2026-05-10.md`.
+
 2026-05-10 implementation/deploy update: `EXCHANGE2-30` enabled Gate.io
 `LIVE_ORDER_SUBMIT` through the canonical orders/exchange boundary and enables
 Gate.io `LIVE_EXECUTION` compatibility gating. Gate.io exchange-side cancel

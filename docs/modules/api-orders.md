@@ -5,8 +5,8 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/orders`
 - Owner: backend/trading-domain
-- Last updated: 2026-05-08
-- Related planning task: `EXCHANGE2-19`
+- Last updated: 2026-05-10
+- Related planning task: `EXCHANGE2-31`
 
 ## Canonical Architecture Linkage
 Canonical order and lifecycle rules live in:
@@ -55,8 +55,10 @@ Out of scope:
   5. Persist normalized order state.
 - Cancel/close:
   - resolve ownership and apply lifecycle transition for local/PAPER orders.
-  - fail closed for exchange-backed open orders while `LIVE_ORDER_CANCEL`
-    remains unsupported at the exchange execution capability boundary.
+  - for supported exchange-backed LIVE orders, call the canonical
+    exchange-cancel boundary before mutating local order state.
+  - fail closed for exchange-backed open orders that lack a canonical
+    bot/wallet exchange context or unsupported exact cancel capability.
 
 ## 5. API and UI Integration
 - Routes:
@@ -69,11 +71,11 @@ Out of scope:
 ## 6. Security and Risk Guardrails
 - Auth + ownership checks on every route.
 - LIVE execution requires explicit risk acknowledgement.
-- Exchange-backed open orders are not locally canceled or locally closed as
-  filled while the exchange boundary lacks canonical exchange-cancel support.
+- Exchange-backed open orders are not locally canceled before the exchange
+  cancel boundary succeeds.
 - `POST /dashboard/orders/:id/cancel` returns HTTP 501 with
-  `LIVE_ORDER_CANCEL_UNSUPPORTED` for persisted exchange-backed orders and
-  leaves order state plus cancellation audit logs unchanged.
+  `LIVE_ORDER_CANCEL_UNSUPPORTED` for exchange-backed orders whose venue
+  context cannot be resolved.
 - Strict mode toggles can fail closed when leverage/margin convergence fails.
 
 ## 7. Observability and Operations

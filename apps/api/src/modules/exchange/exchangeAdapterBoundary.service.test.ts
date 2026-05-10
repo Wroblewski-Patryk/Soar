@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import {
+  cancelLiveOrderThroughBoundary,
   fetchSupportedExchangeBalanceRaw,
   fetchSupportedExchangeOpenOrdersRaw,
   fetchSupportedExchangePositionsRaw,
@@ -56,6 +57,10 @@ const createConnector = () => ({
   })),
   fetchMarkPrice: vi.fn(async () => 100_000),
   convergeFuturesLeverageAndMargin: vi.fn(async () => undefined),
+  cancelOrder: vi.fn(async () => ({
+    id: 'canceled-order-1',
+    status: 'canceled',
+  })),
 });
 
 describe('exchangeAdapterBoundary.service', () => {
@@ -394,6 +399,62 @@ describe('exchangeAdapterBoundary.service', () => {
       effectiveFeeRate: 0.00075,
       exchangeTradeId: 'gateio-trade-1',
       fills: [],
+    });
+  });
+
+  it('cancels Gate.io live orders through the canonical exchange boundary', async () => {
+    const connector = createConnector();
+    const createAuthenticatedConnector = vi.fn(() => connector);
+    const resolveLiveExecutionApiKey = vi.fn(async () => ({
+      id: 'gateio-key-1',
+      exchange: 'GATEIO' as const,
+      apiKey: 'enc-gateio-key',
+      apiSecret: 'enc-gateio-secret',
+    }));
+
+    const result = await cancelLiveOrderThroughBoundary(
+      {
+        userId: 'user-gateio-live-cancel',
+        bot: {
+          exchange: 'GATEIO',
+          marketType: 'FUTURES',
+          apiKeyId: 'gateio-key-1',
+          walletId: 'gateio-wallet-1',
+        },
+        order: {
+          symbol: 'BTCUSDT',
+          exchangeOrderId: 'gateio-open-order-1',
+        },
+      },
+      {
+        createAuthenticatedConnector,
+        resolveLiveExecutionApiKey,
+      }
+    );
+
+    expect(resolveLiveExecutionApiKey).toHaveBeenCalledWith({
+      userId: 'user-gateio-live-cancel',
+      bot: {
+        exchange: 'GATEIO',
+        marketType: 'FUTURES',
+        apiKeyId: 'gateio-key-1',
+        walletId: 'gateio-wallet-1',
+      },
+    });
+    expect(createAuthenticatedConnector).toHaveBeenCalledWith({
+      exchange: 'GATEIO',
+      apiKey: 'enc-gateio-key',
+      apiSecret: 'enc-gateio-secret',
+      marketType: 'FUTURES',
+    });
+    expect(connector.cancelOrder).toHaveBeenCalledWith({
+      symbol: 'BTCUSDT',
+      orderId: 'gateio-open-order-1',
+    });
+    expect(connector.disconnect).toHaveBeenCalledOnce();
+    expect(result).toEqual({
+      exchangeOrderId: 'canceled-order-1',
+      status: 'canceled',
     });
   });
 

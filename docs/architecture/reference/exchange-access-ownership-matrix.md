@@ -1,7 +1,7 @@
 # Exchange Access Ownership Matrix
 
 Status: Active  
-Updated: 2026-05-09
+Updated: 2026-05-10
 
 ## Purpose
 
@@ -20,6 +20,7 @@ reintroduce parallel bootstrap, metadata, or snapshot flows.
 | Wallet metadata resolution | `apps/api/src/modules/exchange/exchangeMetadataContract.service.ts` | wallets module + manual-order symbol-rule metadata consumers | independent wallet+exchange fallback logic in each module |
 | Exchange snapshot reads | `apps/api/src/modules/positions/positions.service.ts` through `exchangeAuthenticatedRead.service.ts` | dashboard positions/exchange sync consumers | direct authenticated client lifecycle ownership outside the shared boundary |
 | Wallet ledger exchange-history reads | `apps/api/src/modules/exchange/exchangeAdapterBoundary.service.ts` via `fetchSupportedExchangeWalletCashflowHistoryRaw` and `WALLET_CASHFLOW_HISTORY` capability | wallets ledger ingestion and wallet performance analytics | wallets/bots modules creating authenticated clients or scraping exchange history directly |
+| Live exchange order cancel | `apps/api/src/modules/orders/orders.service.ts` through `apps/api/src/modules/exchange/exchangeAdapterBoundary.service.ts` and authenticated connector bootstrap | manual and runtime open-order cancellation for supported LIVE exchange-backed orders | local order-state mutation that pretends to cancel an exchange-backed order before the exchange cancel boundary succeeds |
 | Runtime market events | canonical `MarketStreamEvent` contract consumed by `runtimeSignalLoop.service.ts` | approved market-data stream or polling adapters that publish normalized ticker/candle events | publishing another exchange as `BINANCE`, or routing exchange-specific runtime data around the canonical event router |
 
 ## Integration Rules
@@ -121,12 +122,12 @@ Consumers must never infer:
 
 | Exchange | `BALANCE_PREVIEW` | `POSITIONS_SNAPSHOT` | `OPEN_ORDERS_SNAPSHOT` | `TRADE_HISTORY_SNAPSHOT` | `WALLET_CASHFLOW_HISTORY` | `LIVE_ORDER_SUBMIT` | `LIVE_ORDER_CANCEL` | Source derivation |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `BINANCE` | supported | supported | supported | supported | supported | supported | unsupported | authenticated-read contract + shared `LIVE_EXECUTION` capability + actual submit path through `orders.service.ts` / `liveOrderAdapter.service.ts`; no canonical exchange-cancel path yet |
+| `BINANCE` | supported | supported | supported | supported | supported | supported | supported | authenticated-read contract + shared `LIVE_EXECUTION` capability + actual submit/cancel paths through `orders.service.ts` / exchange boundary / live adapter |
 | `BYBIT` | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
 | `OKX` | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
 | `KRAKEN` | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
 | `COINBASE` | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | reject with explicit unsupported error / capability gate |
-| `GATEIO` | supported | supported | supported | supported | supported | supported | unsupported | selected second-exchange target; balance preview, positions snapshot, open-orders snapshot, trade-history snapshot, wallet cashflow history, and live order submit are supported through canonical exchange boundaries, while exchange-side cancel remains fail-closed until an exact cancel boundary is implemented and verified |
+| `GATEIO` | supported | supported | supported | supported | supported | supported | supported | selected second-exchange target; balance preview, positions snapshot, open-orders snapshot, trade-history snapshot, wallet cashflow history, live order submit, and live order cancel are supported through canonical exchange boundaries |
 
 Runtime market-event boundary:
 
@@ -174,6 +175,10 @@ Runtime market-event boundary:
   `orders.service.ts` -> `exchangeAdapterBoundary.service.ts` ->
   `liveOrderAdapter.service.ts` path. This enables live submit only; it does
   not imply exchange-side cancel support.
+- `GATEIO` `LIVE_ORDER_CANCEL` is supported through the canonical
+  `orders.service.ts` -> `exchangeAdapterBoundary.service.ts` -> authenticated
+  connector path. Local order state is mutated only after the boundary call
+  succeeds.
 
 Canonical owner:
 
@@ -186,10 +191,11 @@ Canonical owner:
 Current V1 truth for `LIVE_ORDER_CANCEL`:
 
 - the repository has a local order-cancel route (`POST /orders/:id/cancel`)
-  that mutates Soar order state
-- it does **not** yet provide a canonical exchange-side cancel boundary
-- therefore `LIVE_ORDER_CANCEL` must remain `unsupported` for every exchange in
-  this matrix until a real exchange-cancel path exists
+  for local/PAPER orders
+- exchange-backed LIVE orders for supported exchanges must call the canonical
+  exchange cancel boundary before local Soar order state is mutated
+- exchange-backed orders without canonical bot/wallet exchange context still
+  fail closed with `LIVE_ORDER_CANCEL_UNSUPPORTED`
 
 Consumers must never:
 

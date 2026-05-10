@@ -4,6 +4,16 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Current implementation slice:
+`EXCHANGE2-31-LIVE-ORDER-CANCEL-BOUNDARY-2026-05-10` adds canonical
+exchange-side `LIVE_ORDER_CANCEL` for Binance and Gate.io through the existing
+orders/exchange/authenticated connector boundary. Focused exchange tests,
+focused orders cancel tests, API typecheck, guardrails, docs parity, and diff
+check pass. Continue by committing, pushing, and verifying production
+build-info/public smoke. Remaining V1 blockers after deploy are protected
+production evidence, authenticated/admin UI clickthrough, RC approval, rollback
+proof, and explicit live-money operator approval.
+
 Latest local implementation slice:
 `EXCHANGE2-30-GATEIO-LIVE-ORDER-SUBMIT-2026-05-10` enabled Gate.io
 `LIVE_ORDER_SUBMIT` through the canonical orders/exchange boundary and enables
@@ -14,8 +24,7 @@ Web typecheck, production build-info for
 `04a4204ca9090586d49ae77b0dd8c1be048d7bdf`, and public deploy smoke pass. The
 no-secret final V1 preflight public checks pass and remain correctly blocked on
 protected/formal evidence. The remaining V1 blockers are protected production
-evidence, authenticated/admin UI clickthrough, and an explicit decision on
-whether exchange-side cancel is V1 scope. Evidence:
+evidence and authenticated/admin UI clickthrough. Evidence:
 `docs/operations/deploy-freshness-04a4204c-2026-05-10.md`.
 
 Latest local implementation slice:

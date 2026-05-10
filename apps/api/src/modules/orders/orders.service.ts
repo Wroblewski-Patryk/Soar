@@ -22,6 +22,7 @@ import {
   resolveInheritedRuntimeExecutionContext,
 } from '../engine/runtimeBotExecutionContext';
 import {
+  cancelLiveOrderThroughBoundary,
   resolveLiveExecutionApiKey,
   submitLiveOrderThroughBoundary,
 } from '../exchange/exchangeAdapterBoundary.service';
@@ -121,6 +122,10 @@ type OpenOrderDeps = {
     bot: LiveBotContext;
     payload: OpenOrderInput;
   }) => Promise<LiveExecutionResult>;
+};
+
+type CancelOrderDeps = {
+  cancelLiveOrder: typeof cancelLiveOrderThroughBoundary;
 };
 
 const resolveSupportedLiveOrderType = (
@@ -420,6 +425,10 @@ const defaultOpenOrderDeps: OpenOrderDeps = {
   executeLiveOrder: executeLiveOrderOnExchange,
 };
 
+const defaultCancelOrderDeps: CancelOrderDeps = {
+  cancelLiveOrder: cancelLiveOrderThroughBoundary,
+};
+
 const isPositiveFiniteNumber = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value) && value > 0;
 
@@ -574,6 +583,39 @@ const writeOrderAudit = async (params: {
 
 const hasExchangeOrderIdentity = (exchangeOrderId: string | null | undefined) =>
   typeof exchangeOrderId === 'string' && exchangeOrderId.trim().length > 0;
+
+const resolveExchangeCancelContext = (order: {
+  walletId: string | null;
+  wallet?: {
+    id: string;
+    exchange: Exchange;
+    marketType: 'FUTURES' | 'SPOT';
+    apiKeyId: string | null;
+  } | null;
+  bot?: {
+    exchange: Exchange;
+    marketType: 'FUTURES' | 'SPOT';
+    apiKeyId: string | null;
+    walletId: string | null;
+    wallet?: {
+      id: string;
+      exchange: Exchange;
+      marketType: 'FUTURES' | 'SPOT';
+      apiKeyId: string | null;
+    } | null;
+  } | null;
+}) => {
+  const wallet = order.wallet ?? order.bot?.wallet ?? null;
+  const exchange = wallet?.exchange ?? order.bot?.exchange ?? null;
+  if (!exchange) return null;
+
+  return {
+    exchange,
+    marketType: wallet?.marketType ?? order.bot?.marketType ?? 'FUTURES',
+    apiKeyId: order.bot?.apiKeyId ?? wallet?.apiKeyId ?? null,
+    walletId: wallet?.id ?? order.walletId ?? order.bot?.walletId ?? null,
+  };
+};
 
 export const openOrder = async (
   userId: string,
@@ -751,11 +793,46 @@ export const openOrder = async (
   return orderAfterLifecycle;
 };
 
-export const cancelOrder = async (userId: string, id: string, payload: CancelOrderDto) => {
+export const cancelOrder = async (
+  userId: string,
+  id: string,
+  payload: CancelOrderDto,
+  deps: CancelOrderDeps = defaultCancelOrderDeps
+) => {
   const existing = await prisma.order.findFirst({
     where: { id, userId },
+    include: {
+      wallet: {
+        select: {
+          id: true,
+          exchange: true,
+          marketType: true,
+          apiKeyId: true,
+        },
+      },
+      bot: {
+        select: {
+          exchange: true,
+          marketType: true,
+          apiKeyId: true,
+          walletId: true,
+          wallet: {
+            select: {
+              id: true,
+              exchange: true,
+              marketType: true,
+              apiKeyId: true,
+            },
+          },
+        },
+      },
+    },
   });
   if (!existing) return null;
+
+  if (!payload.riskAck) {
+    throw orderErrors.orderCancelRiskAckRequired();
+  }
 
   if (existing.status === 'CANCELED' || existing.status === 'FILLED') {
     throw orderErrors.orderNotCancelable();
@@ -764,11 +841,18 @@ export const cancelOrder = async (userId: string, id: string, payload: CancelOrd
     throw orderErrors.orderNotCancelable();
   }
   if (hasExchangeOrderIdentity(existing.exchangeOrderId)) {
-    throw orderErrors.liveOrderCancelUnsupported();
-  }
-
-  if (!payload.riskAck) {
-    throw orderErrors.orderCancelRiskAckRequired();
+    const cancelContext = resolveExchangeCancelContext(existing);
+    if (!cancelContext || !existing.exchangeOrderId) {
+      throw orderErrors.liveOrderCancelUnsupported();
+    }
+    await deps.cancelLiveOrder({
+      userId,
+      bot: cancelContext,
+      order: {
+        symbol: existing.symbol,
+        exchangeOrderId: existing.exchangeOrderId,
+      },
+    });
   }
 
   const updated = await prisma.order.update({
@@ -787,6 +871,8 @@ export const cancelOrder = async (userId: string, id: string, payload: CancelOrd
     metadata: {
       previousStatus: existing.status,
       riskAck: payload.riskAck,
+      exchangeOrderId: existing.exchangeOrderId,
+      exchangeCancel: hasExchangeOrderIdentity(existing.exchangeOrderId),
     },
   });
 

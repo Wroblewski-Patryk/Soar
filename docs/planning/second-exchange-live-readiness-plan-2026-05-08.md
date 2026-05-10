@@ -80,11 +80,11 @@ adapter is implemented and verified.
   for ledger/performance analytics reads.
 - Current live submit support: `GATEIO` `LIVE_ORDER_SUBMIT` is enabled through
   the canonical orders/exchange boundary.
-- Still blocked: `LIVE_ORDER_CANCEL` for Gate.io until exact cancel support is
-  implemented and production evidence exists.
-- Still requiring user/operator input: first live scope, whether authenticated
-  readback should precede live submit, and whether exchange-side cancel belongs
-  in the first live slice.
+- Current live cancel support: `GATEIO` `LIVE_ORDER_CANCEL` is implemented
+  through the canonical orders/exchange boundary. Production protected evidence
+  is still required before live-money confidence.
+- Still requiring user/operator input: first live scope and protected
+  production readback/approval evidence.
 
 ## Goal
 Prepare and execute a safe delivery path so a second exchange can be connected
@@ -141,7 +141,7 @@ Acceptance criteria:
    - `TRADE_HISTORY_SNAPSHOT`: supported.
    - `WALLET_CASHFLOW_HISTORY`: supported.
    - `LIVE_ORDER_SUBMIT`: supported.
-   - `LIVE_ORDER_CANCEL`: unsupported.
+   - `LIVE_ORDER_CANCEL`: supported through the canonical exchange boundary.
    - `API_KEY_PROBE`: supported for credential validation only.
 3. Architecture/module docs were updated for the implemented foundation and
    fail-closed boundaries.

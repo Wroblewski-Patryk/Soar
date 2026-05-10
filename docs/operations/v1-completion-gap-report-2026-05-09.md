@@ -18,13 +18,15 @@ high-impact gaps:
 4. final V1 release preflight is correctly `BLOCKED`
 5. a few product-scope items in `docs/product/product.md` remain broader than
    the current launch-closure evidence, especially rich manual trade ticket UX
-   and full second-exchange paper/live parity
+   and full second-exchange paper/live production proof
 
-In plain language: the system is close as a Binance-first V1 foundation with
+In plain language: the system is close as a Binance-first plus Gate.io-capable
+V1 foundation with
 strong local and public-production evidence, but it is not yet safe to call
 "100% ready to run bots in production" until the protected evidence pack and
-authenticated UI audit are completed. Gate.io still needs real implementation
-work before paper/live bots can be enabled for that exchange.
+authenticated UI audit are completed. Gate.io paper/live implementation has
+advanced, but it still needs protected production proof before it can be called
+operationally ready.
 
 ## Evidence Reviewed
 
@@ -74,8 +76,8 @@ work before paper/live bots can be enabled for that exchange.
 | Gate.io public catalog/data | yes | yes | deployed foundation exists | public-only | Public market-data foundation is available. |
 | Gate.io paper bot support | yes after `EXCHANGE2-23` | focused API/Web tests pass | not yet deployed | n/a | Deploy and click through Gate.io PAPER wallet/bot setup for production evidence. |
 | Gate.io authenticated reads | yes for current readback scope | API-key probe, balance preview, positions snapshot, open-orders snapshot, trade-history snapshot, and wallet cashflow history yes | n/a | n/a | Production protected readback and authenticated UI evidence are still needed before claiming end-to-end operational readiness. |
-| Gate.io live order submit | implemented | mocked boundary tests pass | deploy pending for this slice | protected evidence missing | Needs production protected readback and explicit operator approval before live-money confidence. |
-| Exchange-side cancel | no for all exchanges | fail-closed tests yes | n/a | n/a | Implement canonical cancel boundary before claiming support. |
+| Gate.io live order submit | implemented | mocked boundary tests pass | deployed for `04a4204c` | protected evidence missing | Needs production protected readback and explicit operator approval before live-money confidence. |
+| Exchange-side cancel | implemented for Binance/Gate.io through canonical boundary | focused mocked boundary/orders tests pass | deploy pending for this slice | protected evidence missing | Needs production protected readback and explicit operator approval before live-money confidence. |
 
 ## What Is Not Missing
 
@@ -148,11 +150,11 @@ work before paper/live bots can be enabled for that exchange.
    - Protected production evidence and explicit operator approval are still
      required before live-money confidence.
 
-3. **Decide whether exchange-side cancel is V1 scope**
-   - Current matrix says `LIVE_ORDER_CANCEL` is unsupported for every
-     exchange.
-   - If live operation requires exchange-side cancel, this is real missing
-     implementation, not only evidence.
+3. **Production-prove exchange-side cancel**
+   - `LIVE_ORDER_CANCEL` is now implemented for Binance and Gate.io through
+     the canonical boundary.
+   - The remaining gap is protected production evidence and explicit operator
+     approval before live-money confidence.
 
 ### P2 - Product/UX Confidence Gaps
 
@@ -176,7 +178,7 @@ work before paper/live bots can be enabled for that exchange.
 | --- | --- |
 | Can be trusted now | Public production health/readiness, public Web reachability, build-info, no-auth redirects, local fail-closed exchange gates. |
 | Implemented but needs production proof | Binance PAPER/LIVE runtime, dashboard runtime data, `LIVEIMPORT-03`, rollback, restore, authenticated UI flows. |
-| Not implemented as usable capability | Exchange-side cancel, rich manual trade ticket UX. |
+| Not implemented as usable capability | Rich manual trade ticket UX. |
 | Needs operator/user input | Production app auth, admin auth, rollback auth, DB/Coolify restore context, RC approver identities, explicit live-money approval. |
 
 ## Recommended Completion Plan

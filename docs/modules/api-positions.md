@@ -53,7 +53,8 @@ Out of scope:
 - Gate.io positions, open-orders, and trade-history snapshots are supported
   through the authenticated-read boundary. Wallet cashflow history is owned by
   the exchange/wallet ledger boundary, not the positions module. Gate.io live
-  submit and exchange-side cancel remain fail-closed outside this module.
+  submit and exchange-side cancel are owned by the orders/exchange boundary,
+  not the positions module.
 - Takeover status flow:
   - classify open exchange-synced positions by ownership/management/sync-state.
   - canonical management truth is wallet-owned:

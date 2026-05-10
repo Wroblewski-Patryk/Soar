@@ -13,6 +13,15 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `EXCHANGE2-31-LIVE-ORDER-CANCEL-BOUNDARY-2026-05-10` adds
+  canonical exchange-side live order cancel support for Binance and Gate.io.
+  The order cancel route now calls the existing exchange adapter boundary and
+  authenticated connector before local order state is mutated for
+  exchange-backed rows. Contextless exchange-backed rows remain fail-closed.
+  No real live-money cancel action is performed. Focused exchange tests,
+  focused orders cancel tests, API typecheck, guardrails, docs parity, and diff
+  check passed. Evidence:
+  `docs/planning/exchange2-31-live-order-cancel-boundary-task-2026-05-10.md`.
 - 2026-05-10 `EXCHANGE2-30-GATEIO-LIVE-ORDER-SUBMIT-2026-05-10` enables
   Gate.io live order submit through the canonical orders/exchange boundary and
   enables Gate.io shared `LIVE_EXECUTION` compatibility gating. Scope is

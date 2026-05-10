@@ -1,21 +1,4 @@
-import {
-  CcxtFetchOrderWithFillsInput,
-  CcxtFetchOrderWithFillsInputSchema,
-  CcxtFetchTradesForOrderInput,
-  CcxtFetchTradesForOrderInputSchema,
-  CcxtFetchWalletCashflowHistoryInput,
-  CcxtFetchWalletCashflowHistoryInputSchema,
-  CcxtFuturesConnectorConfig,
-  CcxtFuturesConnectorConfigSchema,
-  CcxtFuturesOpenOrder,
-  CcxtFuturesOrderFill,
-  CcxtFuturesOrderRequest,
-  CcxtFuturesOrderRequestSchema,
-  CcxtFuturesOrderResult,
-  CcxtPublicCandle,
-  CcxtPublicTickerSnapshot,
-  CcxtWalletCashflowHistoryEntry,
-} from './ccxtFuturesConnector.types';
+import { CcxtCancelOrderInput, CcxtCancelOrderInputSchema, CcxtFetchOrderWithFillsInput, CcxtFetchOrderWithFillsInputSchema, CcxtFetchTradesForOrderInput, CcxtFetchTradesForOrderInputSchema, CcxtFetchWalletCashflowHistoryInput, CcxtFetchWalletCashflowHistoryInputSchema, CcxtFuturesConnectorConfig, CcxtFuturesConnectorConfigSchema, CcxtFuturesOpenOrder, CcxtFuturesOrderFill, CcxtFuturesOrderRequest, CcxtFuturesOrderRequestSchema, CcxtFuturesOrderResult, CcxtPublicCandle, CcxtPublicTickerSnapshot, CcxtWalletCashflowHistoryEntry } from './ccxtFuturesConnector.types';
 
 type CcxtOrderLike = {
   id?: string;
@@ -160,6 +143,7 @@ export interface CcxtExchangeLikeClient {
     price?: number,
     params?: Record<string, unknown>
   ) => Promise<CcxtOrderLike>;
+  cancelOrder?: (id: string, symbol?: string, params?: Record<string, unknown>) => Promise<CcxtOrderLike>;
   close?: () => Promise<void>;
 }
 
@@ -431,6 +415,21 @@ export class CcxtFuturesConnector {
       fills,
       raw: order,
     };
+  }
+
+  async cancelOrder(input: CcxtCancelOrderInput): Promise<CcxtFuturesOrderResult> {
+    const request = CcxtCancelOrderInputSchema.parse(input);
+    const client = await this.getOrCreateClient();
+    if (typeof client.cancelOrder !== 'function') {
+      throw new Error('cancelOrder is not supported by this CCXT connector');
+    }
+    const exchangeSymbol = await this.resolveExchangeSymbol(request.symbol);
+    const order = await client.cancelOrder(request.orderId, exchangeSymbol);
+    return { id: this.readString(order.id) ?? request.orderId, status: this.readString(order.status) ?? 'canceled',
+      symbol: this.readString(order.symbol) ?? exchangeSymbol, side: this.readString(order.side) ?? undefined,
+      type: this.readString(order.type) ?? undefined, amount: this.readNumber(order.amount) ?? undefined,
+      filled: this.readNumber(order.filled) ?? undefined, price: this.readNumber(order.price) ?? undefined,
+      average: this.readNumber(order.average) ?? undefined, raw: order };
   }
 
   async fetchOrderWithFills(

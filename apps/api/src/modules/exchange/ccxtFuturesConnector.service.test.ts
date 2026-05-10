@@ -61,6 +61,16 @@ const createMockClient = (): CcxtExchangeLikeClient => ({
         },
       ],
     }),
+  cancelOrder: vi.fn().mockResolvedValue({
+    id: 'order-1',
+    status: 'canceled',
+    symbol: 'BTC/USDT:USDT',
+    side: 'buy',
+    type: 'limit',
+    amount: 1,
+    filled: 0,
+    price: 100,
+  }),
   close: vi.fn().mockResolvedValue(undefined),
 });
 
@@ -202,6 +212,28 @@ describe('CcxtFuturesConnector scaffold', () => {
           source: 'createOrder',
         }),
       ])
+    );
+  });
+
+  it('maps cancel payload to cancelOrder and returns normalized response', async () => {
+    const client = createMockClient();
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'gateio', marketType: 'swap' },
+      vi.fn().mockResolvedValue(client)
+    );
+
+    const order = await connector.cancelOrder({
+      symbol: 'BTCUSDT',
+      orderId: 'order-1',
+    });
+
+    expect(client.cancelOrder).toHaveBeenCalledWith('order-1', 'BTCUSDT');
+    expect(order).toEqual(
+      expect.objectContaining({
+        id: 'order-1',
+        status: 'canceled',
+        symbol: 'BTC/USDT:USDT',
+      })
     );
   });
 

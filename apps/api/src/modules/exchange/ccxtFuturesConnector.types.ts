@@ -31,6 +31,11 @@ export const CcxtFetchOrderWithFillsInputSchema = z.object({
   orderId: z.string().trim().min(1),
 });
 
+export const CcxtCancelOrderInputSchema = z.object({
+  symbol: z.string().trim().min(1),
+  orderId: z.string().trim().min(1),
+});
+
 export const CcxtFetchTradesForOrderInputSchema = z.object({
   symbol: z.string().trim().min(1),
   orderId: z.string().trim().min(1),
@@ -47,6 +52,7 @@ export const CcxtFetchWalletCashflowHistoryInputSchema = z.object({
 export type CcxtFuturesConnectorConfig = z.input<typeof CcxtFuturesConnectorConfigSchema>;
 export type CcxtFuturesOrderRequest = z.input<typeof CcxtFuturesOrderRequestSchema>;
 export type CcxtFetchOrderWithFillsInput = z.input<typeof CcxtFetchOrderWithFillsInputSchema>;
+export type CcxtCancelOrderInput = z.input<typeof CcxtCancelOrderInputSchema>;
 export type CcxtFetchTradesForOrderInput = z.input<typeof CcxtFetchTradesForOrderInputSchema>;
 export type CcxtFetchWalletCashflowHistoryInput = z.input<
   typeof CcxtFetchWalletCashflowHistoryInputSchema
