@@ -4,6 +4,18 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest production UI audit tooling:
+`PROD-UI-MODULE-CLICKTHROUGH-RUNNER-2026-05-10` added
+`ops:ui:prod-clickthrough` and captured current no-auth production evidence for
+deployed `84e7c0e012a571f18396556a97198dbed08aba7c`. Public routes PASS;
+dashboard/admin/legacy protected routes are `BLOCKED_AUTH`, which is correct
+until app/admin credentials are supplied. Next executable UI work is to rerun
+the same command with `PROD_UI_AUDIT_AUTH_*` and `PROD_UI_AUDIT_ADMIN_*`
+inputs, plus representative route IDs through `--extra-routes` when needed.
+Evidence:
+`docs/planning/prod-ui-module-clickthrough-runner-task-2026-05-10.md` and
+`docs/operations/prod-ui-module-clickthrough-84e7c0e0-2026-05-10.md`.
+
 Latest rollback-proof refresh:
 `V1-ROLLBACK-PROOF-BLOCKED-REFRESH-2026-05-10` captured current fail-closed
 production rollback proof evidence for 2026-05-10. The proof is fresh but

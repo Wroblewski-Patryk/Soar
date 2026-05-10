@@ -75,6 +75,22 @@ Required:
 - RC owner name
 - RC owner contact
 
+### Authenticated Production UI Audit
+
+Required one dashboard auth option:
+
+- `PROD_UI_AUDIT_AUTH_TOKEN`
+- `PROD_UI_AUDIT_AUTH_EMAIL` and `PROD_UI_AUDIT_AUTH_PASSWORD`
+
+Required one admin auth option:
+
+- `PROD_UI_AUDIT_ADMIN_TOKEN`
+- `PROD_UI_AUDIT_ADMIN_EMAIL` and `PROD_UI_AUDIT_ADMIN_PASSWORD`
+
+Optional when representative dynamic route records exist:
+
+- `--extra-routes "/dashboard/wallets/<id>/edit,/dashboard/bots/<id>/preview"`
+
 ## Execution Order
 
 Set the target once:
@@ -149,6 +165,15 @@ pnpm run ops:release:v1:preflight -- --expected-sha $expectedSha --today $releas
 ```
 
 Required result: no blocking prerequisites or evidence blockers remain.
+
+### 6a. Run Authenticated Production UI Audit
+
+```powershell
+pnpm run ops:ui:prod-clickthrough -- --expected-sha $expectedSha --today $releaseDate --output-json "docs/operations/_artifacts-prod-ui-module-clickthrough-$releaseDate.json" --output-md "docs/operations/prod-ui-module-clickthrough-$releaseDate.md"
+```
+
+Required result: status `PASS`. `BLOCKED_AUTH` is not accepted as protected UI
+evidence; it only confirms protected routes fail closed without auth.
 
 ### 7. Run Non-Dry-Run Release Gate
 

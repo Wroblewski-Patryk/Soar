@@ -4,6 +4,11 @@ Last updated: 2026-05-10
 
 ## Active Issues
 
+- 2026-05-10 update: authenticated/admin production UI clickthrough remains
+  blocked on app/admin auth. The new `ops:ui:prod-clickthrough` runner proves
+  public route reachability and fail-closed protected redirects, but the
+  accepted V1 UI proof still requires a rerun with production dashboard/admin
+  credentials and representative data.
 - 2026-05-10 update: rollback proof is fresh for the current evidence date but
   still failed, as expected, because no protected `ROLLBACK_GUARD_*` auth is
   available. The production rollback guard endpoints returned protected `401`

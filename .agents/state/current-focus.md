@@ -16,6 +16,19 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 verification/tooling update:
+`PROD-UI-MODULE-CLICKTHROUGH-RUNNER-2026-05-10` added a canonical
+`ops:ui:prod-clickthrough` runner for production UI route/module audit. The
+runner verifies build-info, supports optional dashboard/admin auth, records
+redacted JSON/Markdown evidence, and fails closed as `BLOCKED_AUTH` without
+credentials. The current production no-auth run for
+`84e7c0e012a571f18396556a97198dbed08aba7c` reports public routes PASS and
+dashboard/admin/legacy protected routes `BLOCKED_AUTH`. This does not close
+authenticated/admin UI clickthrough; it makes the remaining proof executable
+once app/admin auth is available. Evidence:
+`docs/planning/prod-ui-module-clickthrough-runner-task-2026-05-10.md` and
+`docs/operations/prod-ui-module-clickthrough-84e7c0e0-2026-05-10.md`.
+
 2026-05-10 verification update:
 `V1-ROLLBACK-PROOF-BLOCKED-REFRESH-2026-05-10` refreshed production rollback
 proof evidence for the current evidence date. The no-auth production run failed

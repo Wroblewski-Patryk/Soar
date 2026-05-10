@@ -13,6 +13,18 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `PROD-UI-MODULE-CLICKTHROUGH-RUNNER-2026-05-10` added the
+  canonical `ops:ui:prod-clickthrough` production UI module audit runner and
+  captured current no-auth evidence for deployed
+  `84e7c0e012a571f18396556a97198dbed08aba7c`. Build-info matches, public
+  routes PASS, and dashboard/admin/legacy protected routes are
+  `BLOCKED_AUTH`. The runner supports dashboard/admin auth via
+  `PROD_UI_AUDIT_*` inputs and records no tokens, cookies, private headers, or
+  protected payloads. Authenticated/admin UI clickthrough remains blocked until
+  valid production app/admin access and representative data are available.
+  Evidence:
+  `docs/planning/prod-ui-module-clickthrough-runner-task-2026-05-10.md` and
+  `docs/operations/prod-ui-module-clickthrough-84e7c0e0-2026-05-10.md`.
 - 2026-05-10 `V1-ROLLBACK-PROOF-BLOCKED-REFRESH-2026-05-10` refreshed
   rollback-proof evidence for the active evidence date. The no-auth production
   proof failed closed on protected `401` responses for runtime freshness and

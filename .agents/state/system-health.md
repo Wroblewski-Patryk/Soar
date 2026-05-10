@@ -4,6 +4,14 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `PROD-UI-MODULE-CLICKTHROUGH-RUNNER-2026-05-10` PASS/BLOCKED: a canonical
+  production UI module audit runner now exists as `ops:ui:prod-clickthrough`.
+  The no-auth production run against
+  `84e7c0e012a571f18396556a97198dbed08aba7c` reports public routes PASS and
+  dashboard/admin/legacy protected routes `BLOCKED_AUTH`. Authenticated/admin
+  UI clickthrough remains blocked until valid production app/admin auth and
+  representative data are available. Evidence:
+  `docs/operations/prod-ui-module-clickthrough-84e7c0e0-2026-05-10.md`.
 - `V1-ROLLBACK-PROOF-BLOCKED-REFRESH-2026-05-10` PASS/BLOCKED: production
   rollback-proof evidence was refreshed for the 2026-05-10 evidence date and
   correctly remains `FAIL` because protected rollback guard auth is absent.

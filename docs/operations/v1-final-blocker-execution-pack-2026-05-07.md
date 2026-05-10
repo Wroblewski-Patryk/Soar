@@ -224,6 +224,25 @@ Required result:
 - `docs/operations/v1-release-candidate-checklist.md` reflects current gate
   states with `G4=PASS`
 
+### 7. Run Authenticated Production UI Audit
+
+Current 2026-05-10 no-auth result: `BLOCKED_AUTH` at
+`docs/operations/prod-ui-module-clickthrough-84e7c0e0-2026-05-10.md`.
+
+For accepted protected UI evidence, provide dashboard/admin production auth via
+`PROD_UI_AUDIT_*` environment variables and rerun:
+
+```powershell
+pnpm run ops:ui:prod-clickthrough -- --expected-sha $expectedSha --today $releaseDate --output-json "docs/operations/_artifacts-prod-ui-module-clickthrough-$releaseDate.json" --output-md "docs/operations/prod-ui-module-clickthrough-$releaseDate.md"
+```
+
+Required result:
+- status `PASS`
+- public/dashboard/admin/legacy route rows are not `FAIL`
+- protected dashboard/admin module rows are not `BLOCKED_AUTH`
+- no token, password, cookie, private header, or protected row payload is
+  written to the artifact
+
 If sign-off remains blocked, `ops:rc:signoff:build` prints the missing Gate 4
 fields. Required fields are Engineering, Product, Operations, and RC owner
 names. `--owner-contact` is strongly recommended for rollback authority
