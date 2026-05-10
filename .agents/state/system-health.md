@@ -4,6 +4,13 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `V1-FINAL-PREFLIGHT-CURRENT-9D28F682` PASS/BLOCKED: final no-secret
+  preflight now targets currently deployed
+  `9d28f682f23dc176dbbad790bea8ddf213c8ac01`. Build-info PASS, public smoke
+  PASS, activation artifacts fresh, RC artifacts fresh but failed, and V1
+  remains `BLOCKED` on protected/formal evidence. Evidence:
+  `docs/planning/v1-final-preflight-current-9d28f682-task-2026-05-10.md` and
+  `docs/operations/v1-final-preflight-9d28f682-2026-05-10.md`.
 - `V1-OPERATOR-UNBLOCK-CHECKLIST-2026-05-10` PASS/BLOCKED: the operator
   unblock checklist and final blocker execution pack now target deployed
   `822d92fc02067fa122e735ab6cc2783e438dc458`. Final preflight for that SHA

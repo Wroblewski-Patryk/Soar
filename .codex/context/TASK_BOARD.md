@@ -17,6 +17,13 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `V1-FINAL-PREFLIGHT-CURRENT-9D28F682-2026-05-10 release: refresh final preflight for current deploy`
+  - Scope: captured final no-secret preflight for currently deployed
+    `9d28f682f23dc176dbbad790bea8ddf213c8ac01`. Build-info and public smoke
+    pass; V1 remains `BLOCKED / NO-GO` on protected/formal evidence. Evidence:
+    `docs/planning/v1-final-preflight-current-9d28f682-task-2026-05-10.md`
+    and `docs/operations/v1-final-preflight-9d28f682-2026-05-10.md`.
+
 - [x] `V1-OPERATOR-UNBLOCK-CHECKLIST-2026-05-10 release: publish final operator unblock checklist`
   - Scope: published the exact no-secret protected inputs and command order
     needed to close remaining V1 blockers, retargeted the final blocker

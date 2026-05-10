@@ -16,6 +16,16 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 verification update: `V1-FINAL-PREFLIGHT-CURRENT-9D28F682`
+captured the final no-secret preflight for currently deployed
+`9d28f682f23dc176dbbad790bea8ddf213c8ac01`. Build-info and public smoke PASS;
+V1 remains `BLOCKED / NO-GO` on the same protected/formal blockers:
+liveimport auth/readback, rollback guard auth, production DB restore context,
+failed RC evidence, stale backup/restore drill, and stale rollback proof.
+Evidence:
+`docs/planning/v1-final-preflight-current-9d28f682-task-2026-05-10.md` and
+`docs/operations/v1-final-preflight-9d28f682-2026-05-10.md`.
+
 2026-05-10 verification update: `V1-OPERATOR-UNBLOCK-CHECKLIST-2026-05-10`
 published a current no-secret operator unblock checklist for deployed
 `822d92fc02067fa122e735ab6cc2783e438dc458` and retargeted the final blocker

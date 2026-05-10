@@ -13,6 +13,13 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `V1-FINAL-PREFLIGHT-CURRENT-9D28F682` captured final no-secret
+  preflight for currently deployed
+  `9d28f682f23dc176dbbad790bea8ddf213c8ac01`. Build-info and public smoke
+  pass, activation artifacts are fresh, RC artifacts are fresh but failed, and
+  V1 remains `BLOCKED / NO-GO` on protected/formal evidence. Evidence:
+  `docs/planning/v1-final-preflight-current-9d28f682-task-2026-05-10.md` and
+  `docs/operations/v1-final-preflight-9d28f682-2026-05-10.md`.
 - 2026-05-10 `V1-OPERATOR-UNBLOCK-CHECKLIST-2026-05-10` published the exact
   no-secret operator inputs and command order required to close remaining V1
   blockers. The checklist and final blocker execution pack now target deployed

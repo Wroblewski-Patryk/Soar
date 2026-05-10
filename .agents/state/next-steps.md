@@ -4,6 +4,17 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest current preflight:
+`V1-FINAL-PREFLIGHT-CURRENT-9D28F682` captured final no-secret preflight for
+deployed `9d28f682f23dc176dbbad790bea8ddf213c8ac01`. Build-info and public
+smoke pass; V1 remains `BLOCKED / NO-GO` only on protected/formal evidence.
+The next executable work requires the operator inputs listed in
+`docs/operations/v1-operator-unblock-checklist-2026-05-10.md`: liveimport auth,
+rollback guard auth, production DB restore context, and real RC approver
+identities. Evidence:
+`docs/planning/v1-final-preflight-current-9d28f682-task-2026-05-10.md` and
+`docs/operations/v1-final-preflight-9d28f682-2026-05-10.md`.
+
 Latest operator unblock packet:
 `V1-OPERATOR-UNBLOCK-CHECKLIST-2026-05-10` published the exact protected
 inputs and command order needed to move V1 from `BLOCKED / NO-GO` to final
