@@ -17,6 +17,18 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `V1-PRODUCT-ACTION-AUDIT-P0-2026-05-10 fix: seed action audit and close first P0 regressions`
+  - Scope: corrected the evidence model after operator-reported UI/action
+    failures. Bot deletion now clears `RuntimeExecutionDedupe.botId` before
+    deleting the bot, with DB-backed coverage proving runtime history cleanup
+    and retained dedupe history. Dashboard/runtime prospective TTP display is
+    hidden when live PnL is not positive, with focused row-builder, display
+    resolver, and presenter tests. Also published the first action-level V1
+    audit matrix so route reachability is no longer treated as functional
+    completeness. Evidence:
+    `docs/planning/v1-product-action-audit-p0-task-2026-05-10.md` and
+    `docs/operations/v1-product-action-audit-matrix-2026-05-10.md`.
+
 - [x] `V1-FINAL-PREFLIGHT-1E11F8DE-2026-05-10 release: refresh final preflight for current deploy`
   - Scope: ran the read-only final V1 preflight for deployed
     `1e11f8de4a3daaa313894a9ccf989237a3e65e5a`. Build-info PASS, public

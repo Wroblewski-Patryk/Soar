@@ -1,16 +1,30 @@
 # Regression Log
 
-Last updated: 2026-05-08
+Last updated: 2026-05-10
 
 ## Open Regressions
 
-No open code regression is identified in the current backend runtime parity
-slice. The earlier local DB-backed runtime e2e blocker was environmental:
-`desktop-linux` Docker context was unhealthy, while the `default` context and
-local Postgres/Redis ports were reachable. Sequential reruns passed.
+The broad V1 action audit remains open as a coverage gap, not a single code
+regression. See `docs/operations/v1-product-action-audit-matrix-2026-05-10.md`.
 
 ## Fixed Or Prevented In This Slice
 
+- 2026-05-10: Fixed bot deletion cleanup for runtime dedupe references.
+  Symptom: operator could not delete a PAPER bot from the Bots UI. Root cause
+  class: bot deletion relied on DB `onDelete: SetNull` for
+  `RuntimeExecutionDedupe` instead of explicitly clearing that runtime-owned
+  reference in the service cleanup transaction. Validation: focused DB-backed
+  bot e2e proves deletion returns `204`, runtime session/event/stat rows are
+  removed, and dedupe history remains with `botId=null`.
+- 2026-05-10: Fixed prospective TTP display for non-positive live PnL.
+  Symptom: Dashboard positions table could display prospective TTP protection
+  while a position was negative. Root cause class: strategy fallback protection
+  was treated as displayable prospective protection without a positive live PnL
+  guard. Validation: focused Web row-builder, dashboard resolver, and presenter
+  tests pass.
+- 2026-05-10: Prevented evidence-model regression where route reachability was
+  treated as functional UI/action completeness. The product action audit matrix
+  is now the V1 readiness source for action-level coverage.
 - 2026-05-08: Fixed a backend PAPER/LIVE runtime parity boundary leak in
   `executionOrchestrator`: close-settlement entry-fee aggregation now goes
   through the existing runtime trade gateway instead of a direct Prisma call in

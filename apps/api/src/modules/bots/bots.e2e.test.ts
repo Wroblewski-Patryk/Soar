@@ -243,19 +243,37 @@ describe('Bots module contract', () => {
         symbol: 'BTCUSDT',
       },
     });
+    const dedupe = await prisma.runtimeExecutionDedupe.create({
+      data: {
+        dedupeKey: 'delete-runtime-cleanup:bot-dedupe',
+        dedupeVersion: 'v1',
+        commandType: 'DCA',
+        userId: user.id,
+        botId,
+        symbol: 'BTCUSDT',
+        commandFingerprint: {
+          botId,
+          symbol: 'BTCUSDT',
+          level: 1,
+        },
+        ttlExpiresAt: new Date(Date.now() + 60_000),
+      },
+    });
 
     const deleteRes = await agent.delete(`/dashboard/bots/${botId}`);
     expect(deleteRes.status).toBe(204);
 
-    const [sessionsCount, eventsCount, statsCount] = await Promise.all([
+    const [sessionsCount, eventsCount, statsCount, retainedDedupe] = await Promise.all([
       prisma.botRuntimeSession.count({ where: { botId } }),
       prisma.botRuntimeEvent.count({ where: { botId } }),
       prisma.botRuntimeSymbolStat.count({ where: { botId } }),
+      prisma.runtimeExecutionDedupe.findUnique({ where: { id: dedupe.id } }),
     ]);
 
     expect(sessionsCount).toBe(0);
     expect(eventsCount).toBe(0);
     expect(statsCount).toBe(0);
+    expect(retainedDedupe?.botId).toBeNull();
   });
 
   it('enforces create ownership contract for strategyId/marketGroupId and derives marketType from market group', async () => {

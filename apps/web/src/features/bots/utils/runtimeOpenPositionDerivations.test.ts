@@ -182,4 +182,22 @@ describe("buildRuntimeOpenPositionRows", () => {
     expect(rows[0]?.ttpProtectedPercent).toBeCloseTo(7, 8);
     expect(rows[0]?.ttpProtectedSource).toBe("prospective");
   });
+
+  it("hides strategy-fallback dynamic TTP protection while live PnL is negative", () => {
+    const rows = buildRuntimeOpenPositionRows({
+      positions: basePositions({
+        dynamicTtpStopLoss: 0.993,
+        dynamicTtpStopLossSource: "strategy_fallback",
+        markPrice: 1.01,
+        unrealizedPnl: -10,
+        unrealizedPnlPercent: -10,
+      }),
+      symbolStats,
+      streamPrices: new Map(),
+    });
+
+    expect(rows[0]?.livePnlPct).toBeLessThan(0);
+    expect(rows[0]?.ttpProtectedPercent).toBeNull();
+    expect(rows[0]?.ttpProtectedSource).toBeNull();
+  });
 });

@@ -101,6 +101,25 @@ describe("runtimeDerivations", () => {
     expect(resolveDynamicTtpDisplaySource(row)).toBe("prospective");
   });
 
+  it("hides prospective TTP display while live PnL is not positive", () => {
+    const fallbackRow = {
+      ...dynamicStopRow,
+      livePnlPct: -2,
+      fallbackTtpProtectedPercent: 7,
+    } satisfies OpenPositionWithLive;
+    const apiFallbackRow = {
+      ...dynamicStopRow,
+      livePnlPct: -2,
+      ttpProtectedPercent: 7,
+      ttpProtectedSource: "prospective",
+    } satisfies OpenPositionWithLive;
+
+    expect(resolveDynamicTtpDisplay(fallbackRow)).toBeNull();
+    expect(resolveDynamicTtpDisplaySource(fallbackRow)).toBeNull();
+    expect(resolveDynamicTtpDisplay(apiFallbackRow)).toBeNull();
+    expect(resolveDynamicTtpDisplaySource(apiFallbackRow)).toBeNull();
+  });
+
   it("uses persisted marginUsed when deriving live pnl percent", () => {
     const result = buildLiveOpenPositions(
       {

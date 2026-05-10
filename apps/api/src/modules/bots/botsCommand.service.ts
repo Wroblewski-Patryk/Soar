@@ -791,6 +791,10 @@ export const deleteBot = async (userId: string, id: string) => {
       where: { botId: existing.id },
       data: { botId: null },
     }),
+    prisma.runtimeExecutionDedupe.updateMany({
+      where: { botId: existing.id },
+      data: { botId: null },
+    }),
     prisma.botRuntimeEvent.deleteMany({
       where: { botId: existing.id },
     }),

@@ -19,12 +19,28 @@ export const resolveUsedMargin = (positions: BotRuntimePositionsResponse | null)
     return sum + (position.marginUsed ?? modeledMargin);
   }, 0);
 
-export const resolveDynamicTtpDisplay = (position: OpenPositionWithLive) =>
-  position.ttpProtectedPercent ?? position.fallbackTtpProtectedPercent ?? null;
+const hasPositiveLivePnl = (position: OpenPositionWithLive) =>
+  typeof position.livePnlPct === 'number' &&
+  Number.isFinite(position.livePnlPct) &&
+  position.livePnlPct > 0;
+
+export const resolveDynamicTtpDisplay = (position: OpenPositionWithLive) => {
+  if (position.ttpProtectedPercent != null) {
+    if (position.ttpProtectedSource === "prospective" && !hasPositiveLivePnl(position)) {
+      return null;
+    }
+    return position.ttpProtectedPercent;
+  }
+  if (position.fallbackTtpProtectedPercent != null) {
+    return hasPositiveLivePnl(position) ? position.fallbackTtpProtectedPercent : null;
+  }
+  return null;
+};
 
 export const resolveDynamicTtpDisplaySource = (
   position: OpenPositionWithLive
 ): "backend" | "prospective" | null => {
+  if (resolveDynamicTtpDisplay(position) == null) return null;
   if (position.ttpProtectedPercent != null) return position.ttpProtectedSource;
   if (position.fallbackTtpProtectedPercent != null) return "prospective";
   return null;

@@ -4,6 +4,20 @@ Last updated: 2026-05-10
 
 ## Active Issues
 
+- 2026-05-10 update: V1 readiness is no longer limited to protected/formal
+  release evidence. Operator-reported UI/action failures showed that previous
+  route/module audits overstated functional readiness. The active product
+  issue is action-level coverage: every module action in
+  `docs/operations/v1-product-action-audit-matrix-2026-05-10.md` must be
+  verified as `PASS` or carried as an explicit `BLOCKED_*` item with a safe
+  operator plan.
+
+- 2026-05-10 update: the first two confirmed P0 product regressions are fixed
+  locally and covered by focused tests: bot deletion now clears runtime dedupe
+  references before deleting a bot, and prospective TTP display is hidden when
+  live PnL is not positive. Production still needs deployment and
+  non-destructive action proof after the commit reaches build-info.
+
 - 2026-05-10 update: controlled LIVE session proof should wait until
   `LIVE-RUNTIME-KILL-SWITCH-CONFIG-2026-05-10` is deployed and the production
   API/execution-worker env has `RUNTIME_LIVE_GLOBAL_KILL_SWITCH=true` and/or

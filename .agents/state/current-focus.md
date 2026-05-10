@@ -4,8 +4,9 @@ Last updated: 2026-05-10
 
 ## Active Focus
 
-V1 backend paper/live runtime closure before Web visualization, while keeping
-production evidence blockers explicit and separate.
+V1 action-level product correctness before any further readiness claim. Deploy
+health, route reachability, and local contract tests remain useful evidence,
+but they are not sufficient to call the app complete.
 
 ## Current System Objective
 
@@ -15,6 +16,15 @@ smallest valuable task, protect runtime safety, and keep backend/frontend/UI
 contracts synchronized.
 
 ## Current Delivery Stage
+
+2026-05-10 product action audit/P0 regression correction:
+`V1-PRODUCT-ACTION-AUDIT-P0-2026-05-10` starts the action-level audit lane
+after operator-reported production UI failures. The current slice fixes bot
+deletion cleanup for runtime dedupe references, suppresses prospective TTP
+display when live PnL is not positive, and publishes the module/action matrix
+that must be executed before V1 can be called complete. Evidence:
+`docs/planning/v1-product-action-audit-p0-task-2026-05-10.md` and
+`docs/operations/v1-product-action-audit-matrix-2026-05-10.md`.
 
 2026-05-10 LIVE runtime safety readiness diagnostics:
 `LIVE-RUNTIME-SAFETY-READINESS-DIAGNOSTICS-2026-05-10` adds protected

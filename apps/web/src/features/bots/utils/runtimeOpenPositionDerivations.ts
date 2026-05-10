@@ -145,7 +145,7 @@ export const buildRuntimeOpenPositionRows = (params: {
       params.initBalance && params.initBalance > 0
         ? (marginUsed / params.initBalance) * 100
         : null;
-    const ttpProtectedPercent =
+    const rawTtpProtectedPercent =
       toProtectedPnlPercentFromStopPrice({
         side: position.side,
         entryPrice: position.entryPrice,
@@ -154,10 +154,16 @@ export const buildRuntimeOpenPositionRows = (params: {
         marginUsed,
         stopPrice: position.dynamicTtpStopLoss,
       }) ?? null;
+    const isStrategyFallbackTtp =
+      position.dynamicTtpStopLossSource === "strategy_fallback";
+    const ttpProtectedPercent =
+      isStrategyFallbackTtp && pnlMarginPct <= 0
+        ? null
+        : rawTtpProtectedPercent;
     const ttpProtectedSource =
       ttpProtectedPercent == null
         ? null
-        : position.dynamicTtpStopLossSource === "strategy_fallback"
+        : isStrategyFallbackTtp
           ? "prospective"
           : "backend";
     const tslProtectedPercent =

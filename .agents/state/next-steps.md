@@ -4,6 +4,17 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest product action audit:
+`V1-PRODUCT-ACTION-AUDIT-P0-2026-05-10` fixes the first two operator-reported
+P0 action regressions locally and publishes the active action-level audit
+matrix. V1 must not be described as ready based only on deploy health, public
+smoke, or route reachability. Next executable task: run the Bots module action
+audit on safe fixture/local data, covering create/edit/delete, activation/
+deactivation, assistant config, market groups, strategy links, and error
+states; then update
+`docs/operations/v1-product-action-audit-matrix-2026-05-10.md` with PASS/FAIL
+evidence.
+
 Latest final V1 preflight:
 `V1-FINAL-PREFLIGHT-1E11F8DE-2026-05-10` confirms the deployed production
 candidate `1e11f8de4a3daaa313894a9ccf989237a3e65e5a` passes build-info and

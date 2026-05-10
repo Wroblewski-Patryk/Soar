@@ -13,6 +13,17 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `V1-PRODUCT-ACTION-AUDIT-P0-2026-05-10` corrects the V1
+  readiness posture after operator-reported production UI/action failures.
+  Previous reports are now classified as deploy/route/local-contract evidence,
+  not proof that every UI action works on representative data. This slice fixes
+  two confirmed P0 regressions: bot deletion now explicitly clears
+  `RuntimeExecutionDedupe.botId` before deleting the bot, and Dashboard/runtime
+  prospective TTP display is suppressed when live PnL is not positive. It also
+  adds `docs/operations/v1-product-action-audit-matrix-2026-05-10.md`, which is
+  the active source of truth for remaining action-level V1 audit work. V1 is
+  `NO-GO` until the matrix is executed or every blocker is explicitly accepted
+  with a safe operator plan.
 - 2026-05-10 `V1-FINAL-PREFLIGHT-1E11F8DE-2026-05-10` refreshed the no-secret
   final V1 preflight for deployed
   `1e11f8de4a3daaa313894a9ccf989237a3e65e5a`. Build-info and public API/Web

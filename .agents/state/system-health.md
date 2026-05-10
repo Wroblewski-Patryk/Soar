@@ -4,6 +4,16 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `V1-PRODUCT-ACTION-AUDIT-P0-2026-05-10` LOCAL PASS/PRODUCT AUDIT OPEN:
+  two confirmed P0 UI/action regressions are fixed locally. API bot deletion
+  cleanup now clears runtime dedupe references; Dashboard/runtime prospective
+  TTP display is hidden when live PnL is not positive. Validation passed:
+  focused API bot deletion e2e (`1/1`), focused Web runtime/dashboard TTP tests
+  (`13/13`), Dashboard presenter tests (`17/17`), API typecheck, Web typecheck,
+  and `git diff --check` with line-ending warnings only. V1 product readiness
+  remains `NO-GO` until the action matrix is executed. Evidence:
+  `docs/operations/v1-product-action-audit-matrix-2026-05-10.md`.
+
 - `V1-FINAL-PREFLIGHT-1E11F8DE-2026-05-10` PASS/BLOCKED:
   refreshed no-secret final V1 preflight for deployed
   `1e11f8de4a3daaa313894a9ccf989237a3e65e5a`. Build-info PASS, public
