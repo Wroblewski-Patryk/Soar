@@ -72,6 +72,7 @@
     "ops:deploy:smoke": "node scripts/deploySmokeCheck.mjs",
     "ops:deploy:wait-web-build-info": "node scripts/waitForWebBuildInfo.mjs",
     "ops:liveimport:readback": "node scripts/collectLiveImportReadbackEvidence.mjs",
+    "ops:live:controlled-proof": "node scripts/runControlledLiveSessionProof.mjs",
     "ops:deploy:runtime-freshness": "node scripts/checkPostDeployRuntimeFreshness.mjs",
     "ops:deploy:rollback-guard": "node scripts/evaluateRollbackGuard.mjs",
     "ops:deploy:rollback-proof": "node scripts/runRollbackProofEvidence.mjs",

@@ -13,6 +13,14 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `CONTROLLED-LIVE-PROOF-RUNNER-2026-05-10` adds the guarded
+  operator command `pnpm run ops:live:controlled-proof` for the remaining
+  controlled LIVE runtime-session proof. The command checks build-info,
+  requires protected no-order guard diagnostics to be fully active, refuses an
+  already-active LIVE bot, runs `LIVEIMPORT-03`, and deactivates in cleanup.
+  It defaults to no activation unless the operator supplies
+  `--i-understand-live-risk`; actual LIVE activation remains blocked on
+  explicit approval.
 - 2026-05-10 `LIVE-RUNTIME-SAFETY-READINESS-DIAGNOSTICS-2026-05-10` adds
   protected `/ready/details` visibility for the LIVE no-order guard. Admin/ops
   diagnostics now expose only non-secret booleans under

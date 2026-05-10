@@ -26,6 +26,11 @@ Production now has a process-level no-order guard for LIVE runtime decisions.
 `LIVEIMPORT-03` remains blocked because the configured LIVE bot has no running
 runtime session.
 
+This planning slice now also has a guarded runner,
+`pnpm run ops:live:controlled-proof`, that checks build-info, requires the
+protected no-order guard to be fully active, refuses already-active LIVE bots,
+and deactivates the target bot after the evidence attempt.
+
 ## Goal
 Run a short, controlled LIVE bot observation window with the no-order guard
 active, collect `LIVEIMPORT-03` readback, deactivate the bot, and preserve
@@ -43,13 +48,16 @@ redacted evidence.
 2. Reconfirm `/ready/details` reports
    `runtimeSafety.liveNoOrderGuard.active=true`.
 3. Reconfirm preactivation `LIVEIMPORT-03` status is `NO_RUNNING_SESSION`.
-4. Activate the existing LIVE bot for a bounded observation window only after
-   explicit operator approval.
-5. Wait for a running runtime session.
-6. Run `LIVEIMPORT-03` with the current expected SHA and output artifact.
-7. Deactivate the bot regardless of readback result.
-8. Verify no running sessions remain or record a fail-closed blocker.
-9. Keep Coolify no-order flags active until the operator explicitly chooses to
+4. Run `pnpm run ops:live:controlled-proof -- --dry-run ...` to inspect the
+   redacted command plan.
+5. Activate the existing LIVE bot for a bounded observation window only after
+   explicit operator approval by rerunning the guarded command with
+   `--i-understand-live-risk`.
+6. Wait for a running runtime session.
+7. Run `LIVEIMPORT-03` with the current expected SHA and output artifact.
+8. Deactivate the bot regardless of readback result.
+9. Verify no running sessions remain or record a fail-closed blocker.
+10. Keep Coolify no-order flags active until the operator explicitly chooses to
    clear them for real trading.
 
 ## Acceptance Criteria
@@ -62,6 +70,8 @@ redacted evidence.
 ## Definition of Done
 - [ ] Explicit operator approval for controlled LIVE activation is present.
 - [ ] Pre-activation guard and no-running-session evidence are fresh.
+- [x] Guarded command path exists and defaults to no activation unless risk
+  acknowledgement is supplied.
 - [ ] Controlled activation/readback/deactivation evidence is captured.
 - [ ] Source-of-truth files are updated.
 - [ ] Residual risk and next step are documented.
@@ -121,12 +131,15 @@ redacted evidence.
   runtime evidence.
 
 ### 3. Plan Implementation
-- Files or surfaces to modify: evidence and state files only after execution.
-- Logic: guarded activation, readback, guaranteed deactivation.
+- Files or surfaces to modify: guarded ops script, runbook, evidence and state
+  files after execution.
+- Logic: guarded activation, readiness checks, readback, guaranteed
+  deactivation.
 - Edge cases: if no session starts, deactivate and record `NO_RUNNING_SESSION`.
 
 ### 4. Execute Implementation
-- Implementation notes: pending explicit operator approval.
+- Implementation notes: guarded command path added; actual LIVE activation is
+  still pending explicit operator approval.
 
 ### 5. Verify and Test
 - Validation performed: preactivation read-only `LIVEIMPORT-03` check.
@@ -163,4 +176,5 @@ redacted evidence.
 ## Result Report
 Planning and preactivation evidence are ready. Production guard is active, and
 the configured LIVE Binance Futures bot still has no running runtime session.
-The next step is explicit operator-approved controlled LIVE activation.
+The guarded operator command is available, but the next step remains explicit
+operator-approved controlled LIVE activation.

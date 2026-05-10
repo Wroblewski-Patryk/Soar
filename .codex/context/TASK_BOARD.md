@@ -18,6 +18,12 @@ Last updated: 2026-05-10
 ## READY
 
 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback`
+  - 2026-05-10: Added guarded command
+    `pnpm run ops:live:controlled-proof` for the remaining controlled LIVE
+    proof. The command validates build-info, requires protected no-order guard
+    readiness, refuses already-active LIVE bots, runs `LIVEIMPORT-03`, and
+    deactivates in cleanup. Actual activation remains blocked on explicit
+    operator approval plus `--i-understand-live-risk`.
   - Scope: execute a short controlled LIVE activation only after explicit
     operator approval, with production no-order guard active, collect
     `LIVEIMPORT-03`, deactivate the bot, and record redacted evidence.

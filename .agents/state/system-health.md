@@ -4,6 +4,15 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `CONTROLLED-LIVE-PROOF-RUNNER-2026-05-10` LOCAL PASS/BLOCKED_APPROVAL:
+  added `pnpm run ops:live:controlled-proof`, a guarded operator runner for
+  the short LIVE runtime-session proof. The runner checks build-info, requires
+  protected `/ready/details` to report `globalKillSwitch=true`,
+  `emergencyStop=true`, and `active=true`, refuses an already-active LIVE
+  bot, runs `LIVEIMPORT-03`, and deactivates in a cleanup path. Syntax,
+  `--help`, and local `--dry-run` checks pass. Actual LIVE activation remains
+  blocked on explicit operator approval.
+
 - `LIVE-RUNTIME-SAFETY-READINESS-DIAGNOSTICS-2026-05-10` LOCAL PASS/PENDING
   DEPLOY/PROD GUARD ACTIVE: protected `/ready/details` now includes
   `runtimeSafety.liveNoOrderGuard` booleans and derived `active`; public

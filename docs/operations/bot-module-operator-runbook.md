@@ -91,6 +91,19 @@ LIVE activation, confirm the protected `/ready/details` response reports
 the bot active only for the observation window, collect `LIVEIMPORT-03`, then
 deactivate the bot and clear the flags before any real LIVE trading run.
 
+Prefer the guarded operator runner for the controlled proof so the same command
+checks build-info, validates `/ready/details`, refuses an already-active target
+bot, activates only after explicit risk acknowledgement, runs `LIVEIMPORT-03`,
+and deactivates the bot in a `finally` cleanup path:
+
+```powershell
+pnpm run ops:live:controlled-proof -- --expected-sha <sha> --output docs/operations/liveimport-03-prod-readback-<sha>-<date>.json --i-understand-live-risk
+```
+
+Use `--dry-run` first to inspect the redacted plan without network calls or
+activation. Do not pass `--i-understand-live-risk` until the operator has
+explicitly approved the controlled LIVE activation window.
+
 Do not use a LIVE session proof as trading approval unless the follow-up
 readback, rollback proof, SLO, and release gate evidence are all current.
 

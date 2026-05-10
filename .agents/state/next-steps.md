@@ -4,6 +4,16 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest controlled LIVE proof runner:
+`CONTROLLED-LIVE-PROOF-RUNNER-2026-05-10` adds
+`pnpm run ops:live:controlled-proof`, a guarded command for the remaining
+short LIVE runtime-session proof. It validates build-info, requires protected
+`/ready/details` to report both no-order flags and derived `active=true`,
+refuses already-active LIVE bots, runs `LIVEIMPORT-03`, and deactivates the
+bot in cleanup. Local syntax/help/dry-run checks pass. The next step is still
+explicit operator-approved controlled LIVE activation; do not pass
+`--i-understand-live-risk` until the operator approves that exact window.
+
 Latest LIVE runtime safety readiness diagnostics:
 `LIVE-RUNTIME-SAFETY-READINESS-DIAGNOSTICS-2026-05-10` adds protected
 `/ready/details` visibility for the LIVE no-order guard:

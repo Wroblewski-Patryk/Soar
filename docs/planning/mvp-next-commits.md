@@ -8,6 +8,12 @@ Operational queue for one-task execution runs.
 
 ## NOW
 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback`
+  - 2026-05-10: Guarded runner `pnpm run ops:live:controlled-proof` is now
+    available for the controlled proof. It validates build-info and protected
+    no-order guard readiness, refuses already-active LIVE bots, runs
+    `LIVEIMPORT-03`, and deactivates in cleanup. Actual activation still
+    requires explicit operator approval and the `--i-understand-live-risk`
+    flag.
   - 2026-05-10: Production no-order guard is active and preactivation
     `LIVEIMPORT-03` against `b1391526` confirms one LIVE Binance Futures bot
     with expected `NO_RUNNING_SESSION`. This task is blocked on explicit
