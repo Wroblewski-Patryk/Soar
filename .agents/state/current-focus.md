@@ -8,6 +8,13 @@ V1 action-level product correctness before any further readiness claim. Deploy
 health, route reachability, and local contract tests remain useful evidence,
 but they are not sufficient to call the app complete.
 
+2026-05-10 project indexing baseline:
+`PROJECT-INDEXING-BASELINE-2026-05-10` adds a local no-network index generator
+for continuation work. Use `pnpm run ops:project:index` before broad V1 repair
+planning to refresh the module/API/Web/route/worker/test/task map. The current
+index confirms the active product action matrix remains `NO-GO` with
+`UNVERIFIED: 16`, `BLOCKED_AUTH: 2`, `PASS_LOCAL: 1`, and `PARTIAL_LOCAL: 2`.
+
 2026-05-10 Dashboard runtime table action audit:
 `V1-DASHBOARD-RUNTIME-TABLE-ACTION-AUDIT-2026-05-10` is locally complete for
 the presenter/action slice. Dashboard runtime table proof now covers open-order

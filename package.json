@@ -69,6 +69,7 @@
     "ops:release:v1:preflight": "node scripts/runV1FinalPreflight.mjs",
     "ops:release:v1:gate": "node scripts/runV1ReleaseGate.mjs",
     "ops:release:v1:stage-rehearsal": "node scripts/runV1StageRehearsal.mjs",
+    "ops:project:index": "node scripts/buildProjectIndex.mjs",
     "ops:deploy:smoke": "node scripts/deploySmokeCheck.mjs",
     "ops:deploy:wait-web-build-info": "node scripts/waitForWebBuildInfo.mjs",
     "ops:liveimport:readback": "node scripts/collectLiveImportReadbackEvidence.mjs",

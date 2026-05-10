@@ -4,6 +4,14 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest project indexing baseline:
+`PROJECT-INDEXING-BASELINE-2026-05-10` adds `pnpm run ops:project:index`, a
+local no-network index generator for V1 continuation. Current generated index:
+`docs/operations/project-index-2026-05-10.md`. Before the next repair slice,
+use the index to select one non-`PASS` V1 matrix row and map it to the matching
+API module, Web feature, route, worker, and focused tests. This index is not
+V1 approval evidence; it is the baseline for the next action audit.
+
 Latest Dashboard Home rendered runtime audit:
 `V1-DASHBOARD-HOME-RENDERED-RUNTIME-AUDIT-2026-05-10` is locally complete for
 one rendered component bridge: `HomeLiveWidgets` renders a negative-PnL open

@@ -17,6 +17,17 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `PROJECT-INDEXING-BASELINE-2026-05-10 research: build local project index for V1 continuation`
+  - Scope: added `ops:project:index` and a no-network local index generator
+    that maps the V1 product action matrix to API modules, Web features,
+    routes, workers, package scripts, test inventory, architecture sources,
+    and open queue markers. Current generated status counts are
+    `UNVERIFIED: 16`, `BLOCKED_AUTH: 2`, `PASS_LOCAL: 1`, and
+    `PARTIAL_LOCAL: 2`. This is a planning/audit baseline, not V1 approval
+    evidence. Evidence:
+    `docs/planning/project-indexing-baseline-task-2026-05-10.md` and
+    `docs/operations/project-index-2026-05-10.md`.
+
 - [x] `V1-DASHBOARD-HOME-RENDERED-RUNTIME-AUDIT-2026-05-10 fix: add rendered Dashboard TTP proof`
   - Scope: added a dedicated rendered `HomeLiveWidgets` regression showing a
     negative-PnL open position keeps the TTP column visible while suppressing

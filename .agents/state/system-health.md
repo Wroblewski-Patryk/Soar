@@ -4,6 +4,17 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `PROJECT-INDEXING-BASELINE-2026-05-10` LOCAL PASS/INDEX BASELINE:
+  added `ops:project:index` and generated
+  `docs/operations/project-index-2026-05-10.md` plus JSON. Validation passed:
+  `node scripts/buildProjectIndex.mjs --help` and
+  `node scripts/buildProjectIndex.mjs --today 2026-05-10`. The generated V1
+  module action status counts are `UNVERIFIED: 16`, `BLOCKED_AUTH: 2`,
+  `PASS_LOCAL: 1`, and `PARTIAL_LOCAL: 2`. The first `corepack pnpm` attempt
+  failed before script execution due to a Corepack signature issue on this
+  workstation; direct Node execution was used because the script has no package
+  dependency and performs only local indexing.
+
 - `V1-DASHBOARD-HOME-RENDERED-RUNTIME-AUDIT-2026-05-10` LOCAL PASS/PARTIAL
   PRODUCT AUDIT OPEN: added a dedicated rendered `HomeLiveWidgets` regression
   proving a negative-PnL open position renders the Dashboard runtime TTP column

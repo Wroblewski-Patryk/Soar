@@ -7,6 +7,16 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `PROJECT-INDEXING-BASELINE-2026-05-10 research: build local project index for V1 continuation`
+  - 2026-05-10: Added `pnpm run ops:project:index` and generated a local
+    no-network project index for continuation work. The current index maps V1
+    status to API modules, Web features, routes, workers, package scripts,
+    tests, architecture sources, and open queue markers. Current module action
+    matrix counts: `UNVERIFIED: 16`, `BLOCKED_AUTH: 2`, `PASS_LOCAL: 1`,
+    `PARTIAL_LOCAL: 2`. Evidence:
+    `docs/planning/project-indexing-baseline-task-2026-05-10.md` and
+    `docs/operations/project-index-2026-05-10.md`.
+
 - [x] `V1-FINAL-PREFLIGHT-1E11F8DE-2026-05-10 release: refresh final preflight for current deploy`
   - 2026-05-10: Read-only final V1 preflight for deployed
     `1e11f8de4a3daaa313894a9ccf989237a3e65e5a` reports build-info PASS,

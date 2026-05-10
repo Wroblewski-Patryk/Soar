@@ -13,6 +13,15 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `PROJECT-INDEXING-BASELINE-2026-05-10` adds a local no-network
+  project index generator for V1 continuation. `pnpm run ops:project:index`
+  maps the V1 module action matrix to API modules, Web features, routes,
+  workers, package scripts, test inventory, architecture sources, and open
+  queue markers. The current generated report confirms the action matrix is
+  still `NO-GO`: `UNVERIFIED: 16`, `BLOCKED_AUTH: 2`, `PASS_LOCAL: 1`,
+  `PARTIAL_LOCAL: 2`. Evidence:
+  `docs/planning/project-indexing-baseline-task-2026-05-10.md` and
+  `docs/operations/project-index-2026-05-10.md`.
 - 2026-05-10 `V1-DASHBOARD-HOME-RENDERED-RUNTIME-AUDIT-2026-05-10` adds the
   first rendered Dashboard Home bridge for the operator-reported TTP issue.
   A dedicated small `HomeLiveWidgets.runtime-table-audit.test.tsx` file renders
