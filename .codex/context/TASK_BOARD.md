@@ -17,6 +17,13 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `DEPLOY-LAG-E70F5CF6-2026-05-10 release: record protected-input readiness deploy lag`
+  - Scope: recorded that pushed commit
+    `e70f5cf6229d6fc4d26ea0342b81baab80851800` did not reach production
+    build-info during two bounded wait windows. Production still reports
+    `40e9b3c35c96d4acced73bbab980039f9e6b6a22`; public smoke passes. Evidence:
+    `docs/operations/deploy-lag-e70f5cf6-2026-05-10.md`.
+
 - [x] `V1-PROTECTED-INPUTS-READINESS-2026-05-10 release: recheck protected inputs`
   - Scope: checked required protected env families by presence only and
     recorded that privileged VPS/Docker inspection was rejected by escalation

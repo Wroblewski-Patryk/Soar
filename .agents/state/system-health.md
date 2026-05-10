@@ -4,6 +4,12 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `DEPLOY-LAG-E70F5CF6-2026-05-10` BLOCKED/PASS: pushed commit
+  `e70f5cf6229d6fc4d26ea0342b81baab80851800` did not reach production
+  build-info during two bounded wait windows. Last observed production
+  build-info remains `40e9b3c35c96d4acced73bbab980039f9e6b6a22`; public
+  API/Web smoke passes. Evidence:
+  `docs/operations/deploy-lag-e70f5cf6-2026-05-10.md`.
 - `V1-PROTECTED-INPUTS-READINESS-2026-05-10` PASS/BLOCKED: protected input
   families required for `LIVEIMPORT-03`, rollback proof, and production DB
   restore context are not present in this shell. Privileged VPS/Docker
