@@ -9,15 +9,15 @@
   use local `HEAD` as the protected evidence candidate until that SHA is
   actually exposed by production build-info.
 - Latest verified Coolify deploy:
-  `5515f2105d52f25a0d875cbd0b55860a00b4da32`
+  production `/api/build-info` is the current deployment source of truth.
 - Latest no-secret final preflight:
   `docs/operations/v1-final-preflight-fd8da90b-2026-05-10.md`
 - Current operator unblock checklist:
   `docs/operations/v1-operator-unblock-checklist-2026-05-10.md`
-- Note: `5515f210...` is a docs/evidence audit deploy over the same runtime
-  line. If a later docs-only sync commit has already reached production
-  build-info, use that current build-info SHA for the preflight/deploy
-  freshness check, but do not treat docs-only deploy freshness as protected
+- Note: docs/evidence commits may deploy after runtime code. Always read
+  production build-info immediately before the protected evidence run. Use that
+  SHA as `$expectedSha` unless an operator is intentionally promoting one exact
+  runtime candidate. Build-info freshness is never a substitute for protected
   runtime proof.
 
 ## Purpose
@@ -58,12 +58,21 @@ midnight drift from producing stale evidence during a late release session.
 
 ```powershell
 $releaseDate = Get-Date -Format yyyy-MM-dd
-$expectedSha = "5515f2105d52f25a0d875cbd0b55860a00b4da32"
+$buildInfo = Invoke-RestMethod "https://soar.luckysparrow.ch/api/build-info"
+$expectedSha = $buildInfo.gitSha
+$expectedSha
 ```
 
-Replace `$expectedSha` with `git rev-parse HEAD` only when the currently
-checked-out `HEAD` is the intended code/tooling release candidate and
-production build-info proves that same SHA is deployed.
+If an operator is promoting one exact intended runtime candidate, set
+`$intendedSha` first and compare it with production build-info before
+continuing:
+
+```powershell
+$intendedSha = "<full-intended-sha>"
+if (-not $expectedSha.StartsWith($intendedSha)) {
+  throw "Production build-info $expectedSha does not match intended $intendedSha"
+}
+```
 
 ### 0. Run Final V1 Preflight
 
@@ -269,12 +278,12 @@ Required result:
 ## Current Known Blockers
 - `LIVEIMPORT-03` authenticated runtime readback is missing.
 - Current verified deployed candidate is
-  `5515f2105d52f25a0d875cbd0b55860a00b4da32`; build-info and public API/Web
-  smoke pass for this SHA. The latest no-secret final preflight artifact is
-  `docs/operations/v1-final-preflight-fd8da90b-2026-05-10.md` and is
-  correctly `BLOCKED` on protected auth/operator evidence. If a later
-  docs-only sync commit is deployed, verify build-info for that SHA before
-  running protected commands.
+  whatever production `/api/build-info` returns at the start of the operator
+  run. The latest committed no-secret final preflight artifact is
+  `docs/operations/v1-final-preflight-fd8da90b-2026-05-10.md` and is correctly
+  `BLOCKED` on protected auth/operator evidence. If a newer docs-only sync
+  commit is deployed, use current build-info for deploy freshness but do not
+  treat it as protected runtime evidence.
 - The execution pack now uses a single `$releaseDate` and passes it to
   date-aware preflight, restore drill, rollback proof, RC status/sign-off,
   checklist sync, and final gate commands. Operators should not mix evidence

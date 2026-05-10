@@ -16,6 +16,16 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 operator target hardening:
+`V1-OPERATOR-RUNBOOK-DYNAMIC-SHA-2026-05-10` changed the final blocker
+execution pack and operator unblock checklist so protected evidence uses
+production `/api/build-info` as the default `$expectedSha` source. This avoids
+repeated stale static SHA churn after docs-only deploys while preserving the
+explicit rule that build-info is not protected runtime proof. Evidence:
+`docs/planning/v1-operator-runbook-dynamic-sha-task-2026-05-10.md`,
+`docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`, and
+`docs/operations/v1-operator-unblock-checklist-2026-05-10.md`.
+
 2026-05-10 Gate 2 probe:
 `V1-SLO-GATE2-NOAUTH-PROBE-2026-05-10` captured a short unauthenticated
 production SLO observation for deployed

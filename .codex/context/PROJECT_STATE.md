@@ -13,6 +13,15 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `V1-OPERATOR-RUNBOOK-DYNAMIC-SHA-2026-05-10` updated final V1
+  operator runbooks to derive `$expectedSha` from production
+  `https://soar.luckysparrow.ch/api/build-info` at the start of the protected
+  evidence run. The runbooks still support an explicit intended runtime
+  candidate comparison, and still warn that build-info deploy freshness is not
+  `LIVEIMPORT-03`, rollback, RC, or authenticated UI proof. Evidence:
+  `docs/planning/v1-operator-runbook-dynamic-sha-task-2026-05-10.md`,
+  `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`, and
+  `docs/operations/v1-operator-unblock-checklist-2026-05-10.md`.
 - 2026-05-10 `V1-SLO-GATE2-NOAUTH-PROBE-2026-05-10` ran a one-minute
   unauthenticated production SLO collector against deployed
   `8c85279d13ca56421b09a5c4cd613535a81ef76d`. The collector generated

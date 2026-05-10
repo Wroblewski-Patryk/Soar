@@ -7,6 +7,17 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-OPERATOR-RUNBOOK-DYNAMIC-SHA-2026-05-10 release: use build-info as operator target`
+  - 2026-05-10: Updated the final blocker execution pack and operator unblock
+    checklist so protected V1 evidence derives `$expectedSha` from production
+    `https://soar.luckysparrow.ch/api/build-info` at the start of the operator
+    run. The runbooks still allow an explicit intended runtime candidate check,
+    and still warn that build-info deploy freshness is not `LIVEIMPORT-03`,
+    rollback, RC, or authenticated UI proof. Evidence:
+    `docs/planning/v1-operator-runbook-dynamic-sha-task-2026-05-10.md`,
+    `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`, and
+    `docs/operations/v1-operator-unblock-checklist-2026-05-10.md`.
+
 - [x] `V1-SLO-GATE2-NOAUTH-PROBE-2026-05-10 release: record no-auth Gate 2 SLO probe`
   - 2026-05-10: Ran a short read-only production SLO collector without auth
     against deployed `8c85279d13ca56421b09a5c4cd613535a81ef76d`. The result

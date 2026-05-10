@@ -4,6 +4,16 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest operator target rule:
+`V1-OPERATOR-RUNBOOK-DYNAMIC-SHA-2026-05-10` removes the need to re-sync static
+SHA targets after docs-only deploys. The final blocker pack now reads
+production `https://soar.luckysparrow.ch/api/build-info` and uses that value
+as `$expectedSha`, unless an operator intentionally promotes one exact runtime
+candidate and compares it first. Next executable V1 work still requires
+operator-provided `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`,
+`PROD_UI_AUDIT_*`, authenticated Gate 2 SLO, and real RC approver inputs.
+Evidence: `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
+
 Latest Gate 2 evidence boundary:
 `V1-SLO-GATE2-NOAUTH-PROBE-2026-05-10` proves Gate 2 cannot be completed from
 this no-auth shell. The one-minute production SLO probe generated blocker

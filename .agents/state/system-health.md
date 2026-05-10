@@ -4,6 +4,12 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `V1-OPERATOR-RUNBOOK-DYNAMIC-SHA-2026-05-10` PASS/BLOCKED: final V1
+  runbooks now derive `$expectedSha` from production build-info by default and
+  preserve explicit intended-candidate comparison when needed. V1 remains
+  blocked on protected liveimport readback, rollback proof PASS, authenticated
+  Gate 2 SLO, RC approval, and authenticated/admin UI clickthrough. Evidence:
+  `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
 - `V1-SLO-GATE2-NOAUTH-PROBE-2026-05-10` BLOCKED: one-minute no-auth
   production SLO collection generated current blocker evidence. `/health`
   availability was 100%, `/ready` availability was 50% during the short

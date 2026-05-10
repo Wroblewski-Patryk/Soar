@@ -17,6 +17,18 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `V1-OPERATOR-RUNBOOK-DYNAMIC-SHA-2026-05-10 release: use build-info as operator target`
+  - Scope: updated the final blocker execution pack and operator unblock
+    checklist so `$expectedSha` is derived from production
+    `https://soar.luckysparrow.ch/api/build-info` immediately before
+    protected evidence collection, with an optional explicit intended-candidate
+    comparison when promoting one exact runtime SHA. This reduces stale
+    docs-only SHA churn while preserving that build-info freshness is not
+    protected runtime proof. Evidence:
+    `docs/planning/v1-operator-runbook-dynamic-sha-task-2026-05-10.md`,
+    `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`, and
+    `docs/operations/v1-operator-unblock-checklist-2026-05-10.md`.
+
 - [x] `V1-SLO-GATE2-NOAUTH-PROBE-2026-05-10 release: record no-auth Gate 2 SLO probe`
   - Scope: ran a short read-only production SLO collector without auth against
     `https://api.soar.luckysparrow.ch` on deployed

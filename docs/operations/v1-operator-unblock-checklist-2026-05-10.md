@@ -3,7 +3,8 @@
 ## Status
 
 - Current deployed SHA:
-  `5515f2105d52f25a0d875cbd0b55860a00b4da32`
+  read from production `/api/build-info` immediately before protected evidence
+  collection
 - Latest no-secret preflight:
   `docs/operations/v1-final-preflight-fd8da90b-2026-05-10.md`
 - Current result: **BLOCKED / NO-GO**
@@ -97,13 +98,23 @@ Set the target once:
 
 ```powershell
 $releaseDate = "2026-05-10"
-$expectedSha = "5515f2105d52f25a0d875cbd0b55860a00b4da32"
+$buildInfo = Invoke-RestMethod "https://soar.luckysparrow.ch/api/build-info"
+$expectedSha = $buildInfo.gitSha
+$expectedSha
 ```
 
-If a later docs-only sync commit has already reached production build-info,
-replace `$expectedSha` with that currently observed build-info SHA before
-running preflight or protected evidence commands. Do not treat docs-only deploy
-freshness as `LIVEIMPORT-03`, rollback, RC, or authenticated UI proof.
+If the operator is promoting one exact intended runtime candidate, compare that
+candidate with production build-info before continuing:
+
+```powershell
+$intendedSha = "<full-intended-sha>"
+if (-not $expectedSha.StartsWith($intendedSha)) {
+  throw "Production build-info $expectedSha does not match intended $intendedSha"
+}
+```
+
+Do not treat docs-only deploy freshness as `LIVEIMPORT-03`, rollback, RC, or
+authenticated UI proof.
 
 ### 1. Confirm Deploy Freshness
 
