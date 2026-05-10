@@ -4,6 +4,14 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `V1-OPERATOR-RUNBOOK-CURRENT-SHA-SYNC-2026-05-10` PASS/BLOCKED: final V1
+  operator runbooks now target latest verified deployed audit SHA
+  `5515f2105d52f25a0d875cbd0b55860a00b4da32` and keep build-info
+  verification authoritative. V1 remains `NO-GO` until protected
+  liveimport readback, rollback proof PASS, RC approval/gates, and
+  authenticated/admin UI clickthrough are captured. Evidence:
+  `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md` and
+  `docs/operations/v1-operator-unblock-checklist-2026-05-10.md`.
 - `V1-COVERAGE-CONFIDENCE-AUDIT-2026-05-10` PASS/BLOCKED: current audited
   production SHA is
   `fd8da90bd77c2ddbed800eabd98479c1bd113ac4`. Build-info and public preflight

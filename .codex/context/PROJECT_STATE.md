@@ -13,6 +13,16 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `V1-OPERATOR-RUNBOOK-CURRENT-SHA-SYNC-2026-05-10` synchronized
+  the final blocker execution pack and operator unblock checklist after the
+  audit batch deployed. The latest verified deployed audit SHA is
+  `5515f2105d52f25a0d875cbd0b55860a00b4da32`; runbooks now tell operators to
+  use that SHA, or a later build-info-proven docs-only SHA if one has already
+  deployed, before running protected evidence. This is a runbook sync only and
+  does not close protected V1 blockers. Evidence:
+  `docs/planning/v1-operator-runbook-current-sha-sync-task-2026-05-10.md`,
+  `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`, and
+  `docs/operations/v1-operator-unblock-checklist-2026-05-10.md`.
 - 2026-05-10 `V1-COVERAGE-CONFIDENCE-AUDIT-2026-05-10` published a current
   evidence-backed answer to the user's "what is missing before 100%" question.
   Current deployed/audited SHA is

@@ -16,6 +16,18 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 runbook sync:
+`V1-OPERATOR-RUNBOOK-CURRENT-SHA-SYNC-2026-05-10` updated the final blocker
+execution pack and operator unblock checklist to latest verified deployed audit
+SHA `5515f2105d52f25a0d875cbd0b55860a00b4da32`. The runbooks still require
+build-info verification before protected evidence collection and explicitly
+state that docs-only deploy freshness cannot substitute for `LIVEIMPORT-03`,
+rollback proof PASS, RC approval, or authenticated/admin UI clickthrough.
+Evidence:
+`docs/planning/v1-operator-runbook-current-sha-sync-task-2026-05-10.md`,
+`docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`, and
+`docs/operations/v1-operator-unblock-checklist-2026-05-10.md`.
+
 2026-05-10 audit update:
 `V1-COVERAGE-CONFIDENCE-AUDIT-2026-05-10` refreshed the current no-secret
 final preflight and no-auth production UI module clickthrough for deployed

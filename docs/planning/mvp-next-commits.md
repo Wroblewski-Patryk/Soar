@@ -7,6 +7,18 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-OPERATOR-RUNBOOK-CURRENT-SHA-SYNC-2026-05-10 release: sync operator runbooks to current deploy`
+  - 2026-05-10: Updated the final blocker execution pack and operator unblock
+    checklist to target latest verified deployed audit SHA
+    `5515f2105d52f25a0d875cbd0b55860a00b4da32`, while keeping build-info
+    verification authoritative before protected evidence collection. The
+    runbooks explicitly state that later docs-only deploy freshness cannot
+    substitute for `LIVEIMPORT-03`, rollback proof PASS, RC approval, or
+    authenticated/admin UI clickthrough. Evidence:
+    `docs/planning/v1-operator-runbook-current-sha-sync-task-2026-05-10.md`,
+    `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`, and
+    `docs/operations/v1-operator-unblock-checklist-2026-05-10.md`.
+
 - [x] `V1-COVERAGE-CONFIDENCE-AUDIT-2026-05-10 research: publish current V1 coverage confidence audit`
   - 2026-05-10: Refreshed current no-secret final preflight and no-auth
     production UI module clickthrough for deployed

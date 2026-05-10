@@ -17,6 +17,18 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `V1-OPERATOR-RUNBOOK-CURRENT-SHA-SYNC-2026-05-10 release: sync operator runbooks to current deploy`
+  - Scope: updated the final blocker execution pack and operator unblock
+    checklist to target latest verified deployed audit SHA
+    `5515f2105d52f25a0d875cbd0b55860a00b4da32`, while keeping build-info
+    verification authoritative before protected evidence collection. The sync
+    explicitly says later docs-only deploys may supersede the listed SHA but
+    cannot substitute for `LIVEIMPORT-03`, rollback proof PASS, RC approval,
+    or authenticated/admin UI proof. Evidence:
+    `docs/planning/v1-operator-runbook-current-sha-sync-task-2026-05-10.md`,
+    `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`, and
+    `docs/operations/v1-operator-unblock-checklist-2026-05-10.md`.
+
 - [x] `V1-COVERAGE-CONFIDENCE-AUDIT-2026-05-10 research: publish current V1 coverage confidence audit`
   - Scope: refreshed current no-secret final preflight and no-auth production
     UI module clickthrough for deployed

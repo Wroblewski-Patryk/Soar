@@ -9,11 +9,16 @@
   use local `HEAD` as the protected evidence candidate until that SHA is
   actually exposed by production build-info.
 - Latest verified Coolify deploy:
-  `8df3260b8453be0a39dfa75ce2be281d6571c4de`
+  `5515f2105d52f25a0d875cbd0b55860a00b4da32`
 - Latest no-secret final preflight:
-  `docs/operations/v1-final-preflight-8df3260b-2026-05-10.md`
+  `docs/operations/v1-final-preflight-fd8da90b-2026-05-10.md`
 - Current operator unblock checklist:
   `docs/operations/v1-operator-unblock-checklist-2026-05-10.md`
+- Note: `5515f210...` is a docs/evidence audit deploy over the same runtime
+  line. If a later docs-only sync commit has already reached production
+  build-info, use that current build-info SHA for the preflight/deploy
+  freshness check, but do not treat docs-only deploy freshness as protected
+  runtime proof.
 
 ## Purpose
 This pack lists the exact remaining commands needed to turn the current
@@ -53,7 +58,7 @@ midnight drift from producing stale evidence during a late release session.
 
 ```powershell
 $releaseDate = Get-Date -Format yyyy-MM-dd
-$expectedSha = "969df7c8f268146ecff3efb9de2fe1841ac8bc75"
+$expectedSha = "5515f2105d52f25a0d875cbd0b55860a00b4da32"
 ```
 
 Replace `$expectedSha` with `git rev-parse HEAD` only when the currently
@@ -264,10 +269,12 @@ Required result:
 ## Current Known Blockers
 - `LIVEIMPORT-03` authenticated runtime readback is missing.
 - Current verified deployed candidate is
-  `822d92fc02067fa122e735ab6cc2783e438dc458`; build-info and public API/Web
-  smoke pass for this SHA. The current no-secret final preflight is
-  `docs/operations/v1-final-preflight-822d92fc-2026-05-10.md` and is
-  correctly `BLOCKED` on protected auth/operator evidence.
+  `5515f2105d52f25a0d875cbd0b55860a00b4da32`; build-info and public API/Web
+  smoke pass for this SHA. The latest no-secret final preflight artifact is
+  `docs/operations/v1-final-preflight-fd8da90b-2026-05-10.md` and is
+  correctly `BLOCKED` on protected auth/operator evidence. If a later
+  docs-only sync commit is deployed, verify build-info for that SHA before
+  running protected commands.
 - The execution pack now uses a single `$releaseDate` and passes it to
   date-aware preflight, restore drill, rollback proof, RC status/sign-off,
   checklist sync, and final gate commands. Operators should not mix evidence

@@ -4,6 +4,18 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest operator runbook target:
+`V1-OPERATOR-RUNBOOK-CURRENT-SHA-SYNC-2026-05-10` updated the final blocker
+execution pack and operator unblock checklist to latest verified deployed audit
+SHA `5515f2105d52f25a0d875cbd0b55860a00b4da32`. The next executable V1 step
+requires operator-provided `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`,
+`PROD_UI_AUDIT_*`, and real RC approver/gate inputs. If a later docs-only sync
+commit has already deployed, first verify the currently observed build-info SHA
+and use that as `$expectedSha`; do not treat docs-only deploy freshness as
+protected runtime proof. Evidence:
+`docs/operations/v1-final-blocker-execution-pack-2026-05-07.md` and
+`docs/operations/v1-operator-unblock-checklist-2026-05-10.md`.
+
 Latest V1 coverage confidence audit:
 `V1-COVERAGE-CONFIDENCE-AUDIT-2026-05-10` confirms the project should not be
 called 100% V1-ready yet. Current audited production SHA is

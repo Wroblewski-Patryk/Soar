@@ -3,9 +3,9 @@
 ## Status
 
 - Current deployed SHA:
-  `8df3260b8453be0a39dfa75ce2be281d6571c4de`
+  `5515f2105d52f25a0d875cbd0b55860a00b4da32`
 - Latest no-secret preflight:
-  `docs/operations/v1-final-preflight-8df3260b-2026-05-10.md`
+  `docs/operations/v1-final-preflight-fd8da90b-2026-05-10.md`
 - Current result: **BLOCKED / NO-GO**
 - Public build-info and public API/Web smoke: **PASS**
 - Production restore drill: **PASS / FRESH** for 2026-05-10 at
@@ -97,8 +97,13 @@ Set the target once:
 
 ```powershell
 $releaseDate = "2026-05-10"
-$expectedSha = "8df3260b8453be0a39dfa75ce2be281d6571c4de"
+$expectedSha = "5515f2105d52f25a0d875cbd0b55860a00b4da32"
 ```
+
+If a later docs-only sync commit has already reached production build-info,
+replace `$expectedSha` with that currently observed build-info SHA before
+running preflight or protected evidence commands. Do not treat docs-only deploy
+freshness as `LIVEIMPORT-03`, rollback, RC, or authenticated UI proof.
 
 ### 1. Confirm Deploy Freshness
 
