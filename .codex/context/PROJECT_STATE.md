@@ -13,6 +13,17 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `DEPLOY-FRESHNESS-9C125683-2026-05-10` proves production Web
+  build-info now exposes `9c12568379ee77cda9c9e9df39879e141b5615fb`, a pushed
+  batch that includes `b414e523` live order cancel boundary support. Public
+  API/Web smoke passes. The no-secret final V1 preflight public checks pass
+  and remains correctly `BLOCKED` on protected/formal evidence: liveimport
+  auth, rollback guard auth, production DB restore context, current
+  activation/RC evidence, `LIVEIMPORT-03` runtime readback, backup/restore
+  drill, rollback proof, and authenticated/admin UI clickthrough. Evidence:
+  `docs/planning/deploy-freshness-9c125683-task-2026-05-10.md`,
+  `docs/operations/deploy-freshness-9c125683-2026-05-10.md`, and
+  `docs/operations/v1-final-preflight-9c125683-2026-05-10.md`.
 - 2026-05-10 `EXCHANGE2-31-LIVE-ORDER-CANCEL-BOUNDARY-2026-05-10` adds
   canonical exchange-side live order cancel support for Binance and Gate.io.
   The order cancel route now calls the existing exchange adapter boundary and
@@ -20,11 +31,11 @@ Last updated: 2026-05-10
   exchange-backed rows. Contextless exchange-backed rows remain fail-closed.
   No real live-money cancel action is performed. Focused exchange tests,
   focused orders cancel tests, API typecheck, guardrails, docs parity, and diff
-  check passed. Commit `b414e523` is pushed, but production build-info remained
-  on `bebe1906b764a74a641fe716e5d6fb3efe6d9f4d` for the 900-second wait;
-  public API/Web smoke still passed. Evidence:
+  check passed. Production freshness is now proven by
+  `DEPLOY-FRESHNESS-9C125683`; the earlier deploy-lag artifact is superseded.
+  Evidence:
   `docs/planning/exchange2-31-live-order-cancel-boundary-task-2026-05-10.md`
-  and `docs/operations/deploy-lag-b414e523-2026-05-10.md`.
+  and `docs/operations/deploy-freshness-9c125683-2026-05-10.md`.
 - 2026-05-10 `EXCHANGE2-30-GATEIO-LIVE-ORDER-SUBMIT-2026-05-10` enables
   Gate.io live order submit through the canonical orders/exchange boundary and
   enables Gate.io shared `LIVE_EXECUTION` compatibility gating. Scope is

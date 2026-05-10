@@ -4,19 +4,29 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest release evidence:
+`DEPLOY-FRESHNESS-9C125683-2026-05-10` proves production Web build-info now
+exposes `9c12568379ee77cda9c9e9df39879e141b5615fb`, which includes the
+`b414e523` live order cancel boundary. Public API/Web smoke passes. The
+no-secret final V1 preflight public checks pass and remain correctly blocked
+on protected/formal evidence: liveimport readback auth, rollback guard auth,
+production DB restore context, current activation/RC evidence,
+`LIVEIMPORT-03` runtime readback, backup/restore drill, rollback proof, and
+authenticated/admin UI clickthrough. Next tiny task is to refresh one
+protected/formal V1 evidence lane when operator credentials and production DB
+restore context are available, or continue a no-secret status cleanup if those
+inputs remain unavailable. Evidence:
+`docs/planning/deploy-freshness-9c125683-task-2026-05-10.md`,
+`docs/operations/deploy-freshness-9c125683-2026-05-10.md`, and
+`docs/operations/v1-final-preflight-9c125683-2026-05-10.md`.
+
 Current implementation slice:
 `EXCHANGE2-31-LIVE-ORDER-CANCEL-BOUNDARY-2026-05-10` adds canonical
 exchange-side `LIVE_ORDER_CANCEL` for Binance and Gate.io through the existing
 orders/exchange/authenticated connector boundary. Focused exchange tests,
 focused orders cancel tests, API typecheck, guardrails, docs parity, and diff
-check pass. Continue by committing, pushing, and verifying production
-build-info/public smoke. Commit `b414e523` is pushed, but production
-build-info remained on `bebe1906b764a74a641fe716e5d6fb3efe6d9f4d` for the
-900-second wait; public API/Web smoke still passed. Next tiny task is to
-recheck deploy freshness for `b414e523` or inspect the Coolify deployment
-queue, then continue protected production evidence, authenticated/admin UI
-clickthrough, RC approval, rollback proof, and explicit live-money operator
-approval.
+check pass. Production freshness is now proven by `DEPLOY-FRESHNESS-9C125683`;
+the earlier deploy-lag artifact is superseded.
 
 Latest local implementation slice:
 `EXCHANGE2-30-GATEIO-LIVE-ORDER-SUBMIT-2026-05-10` enabled Gate.io

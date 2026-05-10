@@ -1,20 +1,31 @@
 # System Health
 
-Last updated: 2026-05-09
+Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `DEPLOY-FRESHNESS-9C125683` validation PASS/BLOCKED: production Web
+  build-info now exposes
+  `9c12568379ee77cda9c9e9df39879e141b5615fb`, which includes `b414e523`
+  canonical exchange-side `LIVE_ORDER_CANCEL` for Binance and Gate.io. Public
+  API/Web smoke passes. The no-secret final V1 preflight public checks pass and
+  remain correctly `BLOCKED` on protected/formal evidence: liveimport auth,
+  rollback guard auth, production DB restore context, current activation/RC
+  evidence, `LIVEIMPORT-03` readback, backup/restore drill, rollback proof,
+  and authenticated/admin UI clickthrough. Evidence:
+  `docs/planning/deploy-freshness-9c125683-task-2026-05-10.md`,
+  `docs/operations/deploy-freshness-9c125683-2026-05-10.md`, and
+  `docs/operations/v1-final-preflight-9c125683-2026-05-10.md`.
 - `EXCHANGE2-31` local validation PASS: canonical exchange-side
   `LIVE_ORDER_CANCEL` is added for Binance and Gate.io through the existing
   orders/exchange/authenticated connector boundary. Exchange-backed local
   order state is mutated only after the boundary call succeeds; contextless
   exchange-backed rows remain fail-closed. Focused exchange tests, focused
   orders cancel tests, API typecheck, guardrails, docs parity, and diff check
-  pass. Commit `b414e523` is pushed, but production build-info remained on
-  `bebe1906b764a74a641fe716e5d6fb3efe6d9f4d` for the 900-second wait; public
-  API/Web smoke still passed. Evidence:
+  pass. Production freshness is now proven by `DEPLOY-FRESHNESS-9C125683`;
+  the earlier deploy lag is superseded. Evidence:
   `docs/planning/exchange2-31-live-order-cancel-boundary-task-2026-05-10.md`
-  and `docs/operations/deploy-lag-b414e523-2026-05-10.md`.
+  and `docs/operations/deploy-freshness-9c125683-2026-05-10.md`.
 - `EXCHANGE2-30` validation and deployment PASS: Gate.io `LIVE_ORDER_SUBMIT` and
   shared `LIVE_EXECUTION` compatibility support are enabled through the
   canonical orders/exchange boundary. Gate.io exchange-side cancel remains

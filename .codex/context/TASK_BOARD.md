@@ -17,18 +17,30 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `DEPLOY-FRESHNESS-9C125683-2026-05-10 release: verify live cancel boundary deployment freshness`
+  - Scope: verified production Web build-info for
+    `9c12568379ee77cda9c9e9df39879e141b5615fb`, which includes the `b414e523`
+    live order cancel boundary. Public API/Web smoke passed. The no-secret
+    final V1 preflight public checks passed and remain correctly blocked on
+    protected/formal evidence: liveimport auth, rollback guard auth,
+    production DB restore context, current activation/RC evidence,
+    `LIVEIMPORT-03` readback, backup/restore drill, rollback proof, and
+    authenticated/admin UI clickthrough. Evidence:
+    `docs/planning/deploy-freshness-9c125683-task-2026-05-10.md`,
+    `docs/operations/deploy-freshness-9c125683-2026-05-10.md`, and
+    `docs/operations/v1-final-preflight-9c125683-2026-05-10.md`.
+
 - [x] `EXCHANGE2-31-LIVE-ORDER-CANCEL-BOUNDARY-2026-05-10 feature(exchange): enable live order cancel boundary`
   - Scope: add canonical exchange-side `LIVE_ORDER_CANCEL` for Binance and
     Gate.io through `orders.service.ts` -> `exchangeAdapterBoundary.service.ts`
     -> authenticated connector, while preserving fail-closed behavior for
     contextless exchange-backed rows. No real live-money cancel action is
     performed. Focused exchange tests, focused orders cancel tests, API
-    typecheck, guardrails, docs parity, and diff check passed. Commit
-    `b414e523` is pushed, but production build-info remained on
-    `bebe1906b764a74a641fe716e5d6fb3efe6d9f4d` for the 900-second wait; public
-    API/Web smoke still passed. Evidence:
+    typecheck, guardrails, docs parity, and diff check passed. Production
+    freshness is now proven by `DEPLOY-FRESHNESS-9C125683`; the earlier
+    deploy-lag artifact is superseded. Evidence:
     `docs/planning/exchange2-31-live-order-cancel-boundary-task-2026-05-10.md`
-    and `docs/operations/deploy-lag-b414e523-2026-05-10.md`.
+    and `docs/operations/deploy-freshness-9c125683-2026-05-10.md`.
 
 - [x] `EXCHANGE2-30-GATEIO-LIVE-ORDER-SUBMIT-2026-05-10 feature(exchange): enable Gate.io live order submit`
   - Scope: enable Gate.io `LIVE_ORDER_SUBMIT` through the canonical
