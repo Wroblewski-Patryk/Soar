@@ -100,6 +100,7 @@ Set the target once:
 $releaseDate = "2026-05-10"
 $buildInfo = Invoke-RestMethod "https://soar.luckysparrow.ch/api/build-info"
 $expectedSha = $buildInfo.gitSha
+$expectedShaShort = $expectedSha.Substring(0, 8)
 $expectedSha
 ```
 
@@ -127,7 +128,7 @@ Required result: `PASS`.
 ### 2. Capture LIVEIMPORT-03
 
 ```powershell
-pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output "docs/operations/liveimport-03-prod-readback-$releaseDate.json"
+pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output "docs/operations/liveimport-03-prod-readback-$expectedShaShort-$releaseDate.json"
 ```
 
 Required result: a redacted production readback artifact exists and contains no
@@ -177,7 +178,7 @@ Required result:
 ### 6. Run Final Preflight
 
 ```powershell
-pnpm run ops:release:v1:preflight -- --expected-sha $expectedSha --today $releaseDate --json-output "docs/operations/_artifacts-v1-final-preflight-$releaseDate.json" --markdown-output "docs/operations/v1-final-preflight-$releaseDate.md"
+pnpm run ops:release:v1:preflight -- --expected-sha $expectedSha --today $releaseDate --json-output "docs/operations/_artifacts-v1-final-preflight-$expectedShaShort-$releaseDate.json" --markdown-output "docs/operations/v1-final-preflight-$expectedShaShort-$releaseDate.md"
 ```
 
 Required result: no blocking prerequisites or evidence blockers remain.
@@ -185,7 +186,7 @@ Required result: no blocking prerequisites or evidence blockers remain.
 ### 6a. Run Authenticated Production UI Audit
 
 ```powershell
-pnpm run ops:ui:prod-clickthrough -- --expected-sha $expectedSha --today $releaseDate --output-json "docs/operations/_artifacts-prod-ui-module-clickthrough-$releaseDate.json" --output-md "docs/operations/prod-ui-module-clickthrough-$releaseDate.md"
+pnpm run ops:ui:prod-clickthrough -- --expected-sha $expectedSha --today $releaseDate --output-json "docs/operations/_artifacts-prod-ui-module-clickthrough-$expectedShaShort-$releaseDate.json" --output-md "docs/operations/prod-ui-module-clickthrough-$expectedShaShort-$releaseDate.md"
 ```
 
 Required result: status `PASS`. `BLOCKED_AUTH` is not accepted as protected UI
@@ -194,7 +195,7 @@ evidence; it only confirms protected routes fail closed without auth.
 ### 7. Run Non-Dry-Run Release Gate
 
 ```powershell
-pnpm run ops:release:v1:gate -- --environment prod --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --skip-local-quality
+pnpm run ops:release:v1:gate -- --environment prod --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --skip-local-quality --today $releaseDate --artifact-stamp "$expectedShaShort-$releaseDate"
 ```
 
 Required result: final production release gate reports `ready`.

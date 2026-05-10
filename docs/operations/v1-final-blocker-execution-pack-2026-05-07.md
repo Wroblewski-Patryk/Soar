@@ -60,6 +60,7 @@ midnight drift from producing stale evidence during a late release session.
 $releaseDate = Get-Date -Format yyyy-MM-dd
 $buildInfo = Invoke-RestMethod "https://soar.luckysparrow.ch/api/build-info"
 $expectedSha = $buildInfo.gitSha
+$expectedShaShort = $expectedSha.Substring(0, 8)
 $expectedSha
 ```
 
@@ -92,14 +93,14 @@ for category, severity, protected-input requirements, final-evidence
 requirements, and remediation availability:
 
 ```powershell
-pnpm run ops:release:v1:preflight -- --expected-sha $expectedSha --today $releaseDate --json-output "docs/operations/_artifacts-v1-final-preflight-$releaseDate.json"
+pnpm run ops:release:v1:preflight -- --expected-sha $expectedSha --today $releaseDate --json-output "docs/operations/_artifacts-v1-final-preflight-$expectedShaShort-$releaseDate.json"
 ```
 
 For a human-readable no-secret operator report from the same preflight data,
 also pass a Markdown output path:
 
 ```powershell
-pnpm run ops:release:v1:preflight -- --expected-sha $expectedSha --today $releaseDate --json-output "docs/operations/_artifacts-v1-final-preflight-$releaseDate.json" --markdown-output "docs/operations/v1-final-preflight-$releaseDate.md"
+pnpm run ops:release:v1:preflight -- --expected-sha $expectedSha --today $releaseDate --json-output "docs/operations/_artifacts-v1-final-preflight-$expectedShaShort-$releaseDate.json" --markdown-output "docs/operations/v1-final-preflight-$expectedShaShort-$releaseDate.md"
 ```
 
 Expected current result before protected operator access is available:
@@ -133,7 +134,7 @@ Expected result: `PASS`.
 ### 2. Capture LIVEIMPORT-03 Runtime Readback
 
 ```powershell
-pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output "docs/operations/liveimport-03-prod-readback-$releaseDate.json"
+pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output "docs/operations/liveimport-03-prod-readback-$expectedShaShort-$releaseDate.json"
 ```
 
 Required result:
@@ -247,7 +248,7 @@ For accepted protected UI evidence, provide dashboard/admin production auth via
 `PROD_UI_AUDIT_*` environment variables and rerun:
 
 ```powershell
-pnpm run ops:ui:prod-clickthrough -- --expected-sha $expectedSha --today $releaseDate --output-json "docs/operations/_artifacts-prod-ui-module-clickthrough-$releaseDate.json" --output-md "docs/operations/prod-ui-module-clickthrough-$releaseDate.md"
+pnpm run ops:ui:prod-clickthrough -- --expected-sha $expectedSha --today $releaseDate --output-json "docs/operations/_artifacts-prod-ui-module-clickthrough-$expectedShaShort-$releaseDate.json" --output-md "docs/operations/prod-ui-module-clickthrough-$expectedShaShort-$releaseDate.md"
 ```
 
 Required result:
@@ -262,10 +263,10 @@ fields. Required fields are Engineering, Product, Operations, and RC owner
 names. `--owner-contact` is strongly recommended for rollback authority
 handoff, but does not replace the required RC owner name.
 
-### 7. Run Final Production V1 Release Gate
+### 8. Run Final Production V1 Release Gate
 
 ```powershell
-pnpm run ops:release:v1:gate -- --environment prod --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --skip-local-quality --today $releaseDate
+pnpm run ops:release:v1:gate -- --environment prod --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --skip-local-quality --today $releaseDate --artifact-stamp "$expectedShaShort-$releaseDate"
 ```
 
 Required result:

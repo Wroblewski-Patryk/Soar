@@ -7,6 +7,14 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-OPERATOR-ARTIFACT-NAMING-2026-05-10 release: add SHA suffixes to V1 operator artifacts`
+  - 2026-05-10: Updated the final blocker execution pack, operator unblock
+    checklist, and continuation state so preflight, `LIVEIMPORT-03`, UI
+    clickthrough, and final release-gate artifact paths include
+    `$expectedShaShort-$releaseDate`. Also fixed duplicate final blocker pack
+    step numbering. Evidence:
+    `docs/planning/v1-operator-artifact-naming-task-2026-05-10.md`.
+
 - [x] `V1-NEXT-STEPS-DYNAMIC-SHA-CLEANUP-2026-05-10 release: remove stale static SHA targets`
   - 2026-05-10: Cleaned the lower V1 continuation backlog so protected
     evidence runs derive `$expectedSha` from production `/api/build-info`

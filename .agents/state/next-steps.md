@@ -762,8 +762,9 @@ Canonical command once auth is available:
 $releaseDate = Get-Date -Format yyyy-MM-dd
 $buildInfo = Invoke-RestMethod "https://soar.luckysparrow.ch/api/build-info"
 $expectedSha = $buildInfo.gitSha
+$expectedShaShort = $expectedSha.Substring(0, 8)
 $expectedSha
-pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output "docs/operations/liveimport-03-prod-readback-$releaseDate.json"
+pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output "docs/operations/liveimport-03-prod-readback-$expectedShaShort-$releaseDate.json"
 ```
 
 If the operator is promoting one exact intended runtime candidate, compare that

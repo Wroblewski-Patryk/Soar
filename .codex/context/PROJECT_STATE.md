@@ -13,6 +13,12 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `V1-OPERATOR-ARTIFACT-NAMING-2026-05-10` updated final V1
+  operator commands so preflight, `LIVEIMPORT-03`, UI clickthrough, and final
+  release-gate artifacts include the deployed build-info short SHA plus
+  evidence date. This is docs-only traceability hardening; protected V1
+  blockers remain unchanged. Evidence:
+  `docs/planning/v1-operator-artifact-naming-task-2026-05-10.md`.
 - 2026-05-10 `V1-NEXT-STEPS-DYNAMIC-SHA-CLEANUP-2026-05-10` removed stale
   static SHA defaults from the lower V1 continuation backlog. Future protected
   evidence instructions now consistently derive `$expectedSha` from production
