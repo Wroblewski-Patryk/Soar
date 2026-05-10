@@ -26,6 +26,8 @@
 - [ ] The task is aligned with repository source-of-truth documents.
 - [ ] `.agents/core/project-memory-index.md` was reviewed.
 - [ ] `.agents/core/mission-control.md` was reviewed for long-running work.
+- [ ] Missing or template-like state tables were bootstrapped from repository
+      sources, or confirmed not needed.
 - [ ] Affected module confidence rows were identified.
 - [ ] Affected requirement, quality scenario, and risk rows were identified or
       marked not applicable.
@@ -140,6 +142,15 @@ Describe exactly what should be produced in the current stage only.
 - Gaps:
 - Inconsistencies:
 - Architecture constraints:
+
+### 1a. Bootstrap Missing Project Knowledge
+- Bootstrap needed: yes | no
+- Missing or template-like files:
+- Sources scanned:
+- Rows created or corrected:
+- Assumptions recorded:
+- Blocking unknowns:
+- Why it was safe to continue:
 
 ### 2. Select One Priority Mission Objective
 - Selected task:
