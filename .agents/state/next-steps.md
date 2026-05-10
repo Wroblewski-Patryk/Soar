@@ -4,6 +4,15 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest deploy-control readiness:
+`V1-DEPLOY-CONTROL-READINESS-2026-05-10` confirms production deploy control is
+manual Coolify/operator owned. The repository has CI checks only, no approved
+no-secret production deploy trigger, and webhook/API credentials are
+operator-held secrets. Next action requires operator-side Coolify
+inspection/retrigger, approved deploy credentials, or explicit production
+infrastructure authorization. Evidence:
+`docs/operations/v1-deploy-control-readiness-2026-05-10.md`.
+
 Latest deploy freshness blocker:
 `DEPLOY-LAG-E70F5CF6-2026-05-10` records that pushed commit
 `e70f5cf6229d6fc4d26ea0342b81baab80851800` did not reach production

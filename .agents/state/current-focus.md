@@ -16,6 +16,12 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 verification update: `V1-DEPLOY-CONTROL-READINESS-2026-05-10`
+confirms production deploy control is manual Coolify/operator owned. The
+repository has CI checks only, no approved no-secret production deploy trigger,
+and webhook/API credentials are intentionally operator-held secrets. Evidence:
+`docs/operations/v1-deploy-control-readiness-2026-05-10.md`.
+
 2026-05-10 verification update: `DEPLOY-LAG-E70F5CF6-2026-05-10` records that
 the pushed protected-input readiness commit
 `e70f5cf6229d6fc4d26ea0342b81baab80851800` did not reach production build-info

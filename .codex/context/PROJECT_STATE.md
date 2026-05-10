@@ -13,6 +13,11 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `V1-DEPLOY-CONTROL-READINESS-2026-05-10` confirmed production
+  deployment is manual Coolify/operator controlled. The repository has CI
+  checks only and no approved no-secret production deploy trigger; webhook/API
+  credentials remain operator-held secrets. Evidence:
+  `docs/operations/v1-deploy-control-readiness-2026-05-10.md`.
 - 2026-05-10 `DEPLOY-LAG-E70F5CF6-2026-05-10` records that pushed commit
   `e70f5cf6229d6fc4d26ea0342b81baab80851800` did not reach production
   build-info during two bounded wait windows. Production still reports

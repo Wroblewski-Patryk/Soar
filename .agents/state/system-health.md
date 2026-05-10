@@ -4,6 +4,10 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `V1-DEPLOY-CONTROL-READINESS-2026-05-10` PASS/BLOCKED: production deployment
+  is manual Coolify/operator controlled; GitHub Actions contains CI checks
+  only and no approved no-secret production deploy trigger. Evidence:
+  `docs/operations/v1-deploy-control-readiness-2026-05-10.md`.
 - `DEPLOY-LAG-E70F5CF6-2026-05-10` BLOCKED/PASS: pushed commit
   `e70f5cf6229d6fc4d26ea0342b81baab80851800` did not reach production
   build-info during two bounded wait windows. Last observed production
