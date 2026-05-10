@@ -17,6 +17,19 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `V1-SLO-GATE2-NOAUTH-PROBE-2026-05-10 release: record no-auth Gate 2 SLO probe`
+  - Scope: ran a short read-only production SLO collector without auth against
+    `https://api.soar.luckysparrow.ch` on deployed
+    `8c85279d13ca56421b09a5c4cd613535a81ef76d`. The probe generated current
+    no-secret blocker evidence: `/health` PASS, `/ready` transient FAIL in the
+    one-minute window, protected workers/metrics/alerts `401`, and queue/HTTP
+    metrics `NO_DATA`. A follow-up public deploy smoke passed. Gate 2 remains
+    blocked until an authenticated 30-minute production SLO run is captured.
+    Evidence:
+    `docs/planning/v1-slo-gate2-noauth-probe-task-2026-05-10.md`,
+    `docs/operations/v1-slo-gate2-noauth-probe-2026-05-10.md`, and
+    `docs/operations/v1-slo-observation-2026-05-10T05-09-56-366Z.md`.
+
 - [x] `V1-OPERATOR-RUNBOOK-CURRENT-SHA-SYNC-2026-05-10 release: sync operator runbooks to current deploy`
   - Scope: updated the final blocker execution pack and operator unblock
     checklist to target latest verified deployed audit SHA

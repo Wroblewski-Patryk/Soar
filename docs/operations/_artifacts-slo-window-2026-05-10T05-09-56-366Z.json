@@ -1,0 +1,476 @@
+{
+  "startedAt": "2026-05-10T05:09:10.343Z",
+  "endedAt": "2026-05-10T05:09:56.364Z",
+  "options": {
+    "baseUrl": "https://api.soar.luckysparrow.ch",
+    "durationMinutes": 1,
+    "intervalSeconds": 15,
+    "authTokenProvided": false,
+    "opsBasicAuthConfigured": false,
+    "opsCustomHeaderConfigured": false,
+    "environment": "production",
+    "allowLocalProductionEvidence": false,
+    "targetProfile": "V1",
+    "thresholds": {
+      "apiAvailabilityPct": 99.9,
+      "workerAvailabilityPct": 99.5,
+      "api5xxRatioPct": 0.5,
+      "apiAvgDurationMs": 250,
+      "queueLagExecutionThreshold": 10,
+      "queueLagExecutionCompliancePct": 99,
+      "liveOrderFailureRatioPct": 1
+    }
+  },
+  "summary": {
+    "probes": {
+      "healthAvailabilityPct": 100,
+      "readyAvailabilityPct": 50,
+      "workersHealthAvailabilityPct": 0,
+      "workersReadyAvailabilityPct": 0
+    },
+    "http": {
+      "requestsDelta": null,
+      "status5xxDelta": null,
+      "errorRatioPct": null,
+      "averageDurationMs": null
+    },
+    "queueLagExecution": {
+      "sampleCount": 0,
+      "p50": null,
+      "p95": null,
+      "max": null,
+      "threshold": 10,
+      "withinThresholdPct": null
+    },
+    "liveOrderPath": {
+      "orderAttemptsDelta": null,
+      "orderFailuresDelta": null,
+      "failureRatioPct": null
+    },
+    "evaluation": {
+      "targetProfile": "V1",
+      "thresholds": {
+        "targetProfile": "V1",
+        "apiAvailabilityPct": 99.9,
+        "workerAvailabilityPct": 99.5,
+        "api5xxRatioPct": 0.5,
+        "apiAvgDurationMs": 250,
+        "queueLagExecutionThreshold": 10,
+        "queueLagExecutionCompliancePct": 99,
+        "liveOrderFailureRatioPct": 1
+      },
+      "objectives": [
+        {
+          "id": "SLO-1A",
+          "label": "/health availability",
+          "comparator": ">=",
+          "threshold": 99.9,
+          "observed": 100,
+          "unit": "%",
+          "status": "PASS",
+          "passed": true
+        },
+        {
+          "id": "SLO-1B",
+          "label": "/ready availability",
+          "comparator": ">=",
+          "threshold": 99.9,
+          "observed": 50,
+          "unit": "%",
+          "status": "FAIL",
+          "passed": false
+        },
+        {
+          "id": "SLO-4A",
+          "label": "/workers/health availability",
+          "comparator": ">=",
+          "threshold": 99.5,
+          "observed": 0,
+          "unit": "%",
+          "status": "FAIL",
+          "passed": false
+        },
+        {
+          "id": "SLO-4B",
+          "label": "/workers/ready availability",
+          "comparator": ">=",
+          "threshold": 99.5,
+          "observed": 0,
+          "unit": "%",
+          "status": "FAIL",
+          "passed": false
+        },
+        {
+          "id": "SLO-2",
+          "label": "API 5xx ratio",
+          "comparator": "<=",
+          "threshold": 0.5,
+          "observed": null,
+          "unit": "%",
+          "status": "NO_DATA",
+          "passed": false
+        },
+        {
+          "id": "SLO-3",
+          "label": "API average duration",
+          "comparator": "<=",
+          "threshold": 250,
+          "observed": null,
+          "unit": "ms",
+          "status": "NO_DATA",
+          "passed": false
+        },
+        {
+          "id": "SLO-5",
+          "label": "Execution queue lag compliance",
+          "comparator": ">=",
+          "threshold": 99,
+          "observed": null,
+          "unit": "%",
+          "status": "NO_DATA",
+          "passed": false
+        },
+        {
+          "id": "SLO-6",
+          "label": "Live order failure ratio",
+          "comparator": "<=",
+          "threshold": 1,
+          "observed": null,
+          "unit": "%",
+          "status": "NO_DATA",
+          "passed": false
+        }
+      ],
+      "overallStatus": "FAIL",
+      "failedObjectiveIds": [
+        "SLO-1B",
+        "SLO-4A",
+        "SLO-4B"
+      ],
+      "noDataObjectiveIds": [
+        "SLO-2",
+        "SLO-3",
+        "SLO-5",
+        "SLO-6"
+      ]
+    }
+  },
+  "samples": [
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 189,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-10T05:09:10.894Z"
+        },
+        "error": null,
+        "at": "2026-05-10T05:09:10.534Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 64,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-10T05:09:10.599Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 401,
+        "ok": false,
+        "durationMs": 26,
+        "payload": {
+          "error": {
+            "message": "Missing token"
+          }
+        },
+        "error": null,
+        "at": "2026-05-10T05:09:10.626Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 401,
+        "ok": false,
+        "durationMs": 18,
+        "payload": {
+          "error": {
+            "message": "Missing token"
+          }
+        },
+        "error": null,
+        "at": "2026-05-10T05:09:10.644Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 401,
+        "ok": false,
+        "durationMs": 17,
+        "payload": {
+          "error": {
+            "message": "Missing token"
+          }
+        },
+        "error": null,
+        "at": "2026-05-10T05:09:10.661Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 401,
+        "ok": false,
+        "durationMs": 17,
+        "payload": {
+          "error": {
+            "message": "Missing token"
+          }
+        },
+        "error": null,
+        "at": "2026-05-10T05:09:10.678Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 79,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-10T05:09:26.131Z"
+        },
+        "error": null,
+        "at": "2026-05-10T05:09:25.765Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 71,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-10T05:09:25.837Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 401,
+        "ok": false,
+        "durationMs": 20,
+        "payload": {
+          "error": {
+            "message": "Missing token"
+          }
+        },
+        "error": null,
+        "at": "2026-05-10T05:09:25.858Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 401,
+        "ok": false,
+        "durationMs": 19,
+        "payload": {
+          "error": {
+            "message": "Missing token"
+          }
+        },
+        "error": null,
+        "at": "2026-05-10T05:09:25.877Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 401,
+        "ok": false,
+        "durationMs": 18,
+        "payload": {
+          "error": {
+            "message": "Missing token"
+          }
+        },
+        "error": null,
+        "at": "2026-05-10T05:09:25.896Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 401,
+        "ok": false,
+        "durationMs": 18,
+        "payload": {
+          "error": {
+            "message": "Missing token"
+          }
+        },
+        "error": null,
+        "at": "2026-05-10T05:09:25.915Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 79,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-10T05:09:41.370Z"
+        },
+        "error": null,
+        "at": "2026-05-10T05:09:41.002Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 503,
+        "ok": false,
+        "durationMs": 71,
+        "payload": {
+          "status": "not_ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-10T05:09:41.073Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 401,
+        "ok": false,
+        "durationMs": 16,
+        "payload": {
+          "error": {
+            "message": "Missing token"
+          }
+        },
+        "error": null,
+        "at": "2026-05-10T05:09:41.089Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 401,
+        "ok": false,
+        "durationMs": 20,
+        "payload": {
+          "error": {
+            "message": "Missing token"
+          }
+        },
+        "error": null,
+        "at": "2026-05-10T05:09:41.109Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 401,
+        "ok": false,
+        "durationMs": 17,
+        "payload": {
+          "error": {
+            "message": "Missing token"
+          }
+        },
+        "error": null,
+        "at": "2026-05-10T05:09:41.126Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 401,
+        "ok": false,
+        "durationMs": 16,
+        "payload": {
+          "error": {
+            "message": "Missing token"
+          }
+        },
+        "error": null,
+        "at": "2026-05-10T05:09:41.142Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 77,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-10T05:09:56.597Z"
+        },
+        "error": null,
+        "at": "2026-05-10T05:09:56.230Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 503,
+        "ok": false,
+        "durationMs": 67,
+        "payload": {
+          "status": "not_ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-10T05:09:56.298Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 401,
+        "ok": false,
+        "durationMs": 16,
+        "payload": {
+          "error": {
+            "message": "Missing token"
+          }
+        },
+        "error": null,
+        "at": "2026-05-10T05:09:56.314Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 401,
+        "ok": false,
+        "durationMs": 17,
+        "payload": {
+          "error": {
+            "message": "Missing token"
+          }
+        },
+        "error": null,
+        "at": "2026-05-10T05:09:56.332Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 401,
+        "ok": false,
+        "durationMs": 14,
+        "payload": {
+          "error": {
+            "message": "Missing token"
+          }
+        },
+        "error": null,
+        "at": "2026-05-10T05:09:56.347Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 401,
+        "ok": false,
+        "durationMs": 17,
+        "payload": {
+          "error": {
+            "message": "Missing token"
+          }
+        },
+        "error": null,
+        "at": "2026-05-10T05:09:56.364Z"
+      }
+    }
+  ]
+}

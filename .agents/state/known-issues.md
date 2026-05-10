@@ -4,6 +4,13 @@ Last updated: 2026-05-10
 
 ## Active Issues
 
+- 2026-05-10 update: RC Gate 2 SLO evidence cannot be completed without
+  protected ops auth. A one-minute no-auth production SLO probe produced
+  blocker evidence only: `/health` PASS, `/ready` transient 50% availability
+  in the short window, protected workers/metrics/alerts `401`, and queue/API/
+  live-order metrics `NO_DATA`. Follow-up public smoke passed, so treat the
+  `/ready` result as a monitoring signal and keep Gate 2 blocked on an
+  authenticated 30-minute SLO run.
 - 2026-05-10 update: authenticated/admin production UI clickthrough remains
   blocked on app/admin auth. The new `ops:ui:prod-clickthrough` runner proves
   public route reachability and fail-closed protected redirects, but the

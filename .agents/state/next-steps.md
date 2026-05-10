@@ -4,6 +4,15 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest Gate 2 evidence boundary:
+`V1-SLO-GATE2-NOAUTH-PROBE-2026-05-10` proves Gate 2 cannot be completed from
+this no-auth shell. The one-minute production SLO probe generated blocker
+evidence only: protected workers/metrics/alerts returned `401`, queue/API/
+live-order metrics were `NO_DATA`, and `/ready` had a short transient that
+passed on follow-up public smoke. Next executable Gate 2 work requires an
+operator-authenticated 30-minute SLO collector run, then RC gate status refresh.
+Evidence: `docs/operations/v1-slo-gate2-noauth-probe-2026-05-10.md`.
+
 Latest operator runbook target:
 `V1-OPERATOR-RUNBOOK-CURRENT-SHA-SYNC-2026-05-10` updated the final blocker
 execution pack and operator unblock checklist to latest verified deployed audit

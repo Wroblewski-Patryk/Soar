@@ -13,6 +13,18 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `V1-SLO-GATE2-NOAUTH-PROBE-2026-05-10` ran a one-minute
+  unauthenticated production SLO collector against deployed
+  `8c85279d13ca56421b09a5c4cd613535a81ef76d`. The collector generated
+  no-secret blocker evidence, not Gate 2 approval: `/health` was 100%,
+  `/ready` was 50% in the short window, protected worker/metrics/alerts
+  endpoints returned `401 Missing token`, and queue/API/live-order metrics were
+  `NO_DATA`. A follow-up public smoke passed for `/health`, `/ready`, and Web
+  `/`. Gate 2 remains blocked until an operator runs the authenticated
+  30-minute production SLO flow. Evidence:
+  `docs/planning/v1-slo-gate2-noauth-probe-task-2026-05-10.md`,
+  `docs/operations/v1-slo-gate2-noauth-probe-2026-05-10.md`, and
+  `docs/operations/v1-slo-observation-2026-05-10T05-09-56-366Z.md`.
 - 2026-05-10 `V1-OPERATOR-RUNBOOK-CURRENT-SHA-SYNC-2026-05-10` synchronized
   the final blocker execution pack and operator unblock checklist after the
   audit batch deployed. The latest verified deployed audit SHA is

@@ -16,6 +16,18 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 Gate 2 probe:
+`V1-SLO-GATE2-NOAUTH-PROBE-2026-05-10` captured a short unauthenticated
+production SLO observation for deployed
+`8c85279d13ca56421b09a5c4cd613535a81ef76d`. It is blocker evidence, not Gate
+2 approval: `/health` was 100%, `/ready` was 50% during the short window,
+protected workers/metrics/alerts returned `401`, and queue/API/live-order
+metrics were `NO_DATA`. Follow-up public smoke passed after the window. Gate 2
+still requires authenticated 30-minute production SLO evidence. Evidence:
+`docs/planning/v1-slo-gate2-noauth-probe-task-2026-05-10.md`,
+`docs/operations/v1-slo-gate2-noauth-probe-2026-05-10.md`, and
+`docs/operations/v1-slo-observation-2026-05-10T05-09-56-366Z.md`.
+
 2026-05-10 runbook sync:
 `V1-OPERATOR-RUNBOOK-CURRENT-SHA-SYNC-2026-05-10` updated the final blocker
 execution pack and operator unblock checklist to latest verified deployed audit

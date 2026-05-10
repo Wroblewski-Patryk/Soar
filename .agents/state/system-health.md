@@ -4,6 +4,13 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `V1-SLO-GATE2-NOAUTH-PROBE-2026-05-10` BLOCKED: one-minute no-auth
+  production SLO collection generated current blocker evidence. `/health`
+  availability was 100%, `/ready` availability was 50% during the short
+  window, protected workers/metrics/alerts returned `401 Missing token`, and
+  queue/API/live-order metrics were `NO_DATA`. Follow-up public deploy smoke
+  passed. Gate 2 still needs authenticated 30-minute production SLO evidence.
+  Evidence: `docs/operations/v1-slo-gate2-noauth-probe-2026-05-10.md`.
 - `V1-OPERATOR-RUNBOOK-CURRENT-SHA-SYNC-2026-05-10` PASS/BLOCKED: final V1
   operator runbooks now target latest verified deployed audit SHA
   `5515f2105d52f25a0d875cbd0b55860a00b4da32` and keep build-info
