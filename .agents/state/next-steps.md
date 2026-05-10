@@ -4,6 +4,18 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest production API/runtime readiness:
+`PROD-API-RUNTIME-READINESS-F3CB9A24-2026-05-10` captured authenticated
+read-only API evidence on deployed `f3cb9a24c4c891479d5466a5abae4100ddda5ca8`.
+Core dashboard/admin API modules are reachable and Gate.io Futures market
+catalog is reachable. LIVE launch remains `NO-GO`: the stored Binance key
+probe fails Futures readiness (`spot: true`, `futures: false`), and
+`LIVEIMPORT-03` is blocked fail-closed because the configured LIVE bot has no
+running runtime session. Next executable action is to remediate the Binance
+Futures API key, then rerun stored key test and `LIVEIMPORT-03` after a
+controlled runtime session exists. Evidence:
+`docs/operations/prod-api-runtime-readiness-f3cb9a24-2026-05-10.md`.
+
 Latest authenticated UI evidence:
 `PROD-UI-AUTH-CLICKTHROUGH-39A52703-2026-05-10` passed production UI
 route/module reachability with approved dashboard/admin credentials on deployed

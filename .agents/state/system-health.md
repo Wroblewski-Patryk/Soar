@@ -4,6 +4,16 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `PROD-API-RUNTIME-READINESS-F3CB9A24-2026-05-10` PASS/BLOCKED:
+  production build-info matches
+  `f3cb9a24c4c891479d5466a5abae4100ddda5ca8`, authenticated read-only API
+  module reachability passed for the checked dashboard/admin endpoints, and
+  Gate.io Futures catalog is reachable. LIVE Binance Futures remains
+  `NO-GO`: the stored Binance key probe returned `ok: false`, `spot: true`,
+  `futures: false`, and `LIVEIMPORT-03` wrote fail-closed
+  `NO_RUNNING_SESSION` evidence for the configured LIVE bot. Evidence:
+  `docs/operations/prod-api-runtime-readiness-f3cb9a24-2026-05-10.md`.
+
 - `PROD-UI-AUTH-CLICKTHROUGH-39A52703-2026-05-10` PASS/BLOCKED: authenticated
   dashboard/admin production UI route/module reachability passed for deployed
   `39a5270322a7d1c302cd5a711484af35f4d6be08`. Public routes PASS `4/4`,

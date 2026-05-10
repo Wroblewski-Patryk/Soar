@@ -7,6 +7,18 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `PROD-API-RUNTIME-READINESS-F3CB9A24-2026-05-10 release: capture authenticated API/runtime readiness`
+  - 2026-05-10: Captured authenticated read-only production API and
+    live-runtime readiness evidence for deployed
+    `f3cb9a24c4c891479d5466a5abae4100ddda5ca8`. Core dashboard/admin API
+    modules are reachable and Gate.io Futures market catalog is reachable.
+    LIVE Binance Futures remains `NO-GO`: the stored Binance key probe reports
+    `spot: true` and `futures: false`, and `LIVEIMPORT-03` wrote fail-closed
+    `NO_RUNNING_SESSION` evidence because the configured LIVE bot has no
+    running runtime session. Evidence:
+    `docs/planning/prod-api-runtime-readiness-audit-f3cb9a24-task-2026-05-10.md`
+    and `docs/operations/prod-api-runtime-readiness-f3cb9a24-2026-05-10.md`.
+
 - [x] `PROD-UI-AUTH-CLICKTHROUGH-39A52703-2026-05-10 qa: capture authenticated/admin production UI route evidence`
   - 2026-05-10: Ran authenticated/admin production UI route/module
     clickthrough against deployed

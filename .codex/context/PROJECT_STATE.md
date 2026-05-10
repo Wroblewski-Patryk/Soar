@@ -13,6 +13,16 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `PROD-API-RUNTIME-READINESS-F3CB9A24-2026-05-10` captured
+  authenticated read-only production API and live-runtime readiness evidence
+  for deployed `f3cb9a24c4c891479d5466a5abae4100ddda5ca8`. Dashboard/admin
+  API modules are reachable, Gate.io Futures catalog is reachable, and the
+  configured LIVE bot exists but is inactive. V1 remains `NO-GO` for LIVE
+  Binance Futures because the stored Binance key probe fails Futures
+  permission/readiness (`spot: true`, `futures: false`) and `LIVEIMPORT-03`
+  wrote fail-closed `NO_RUNNING_SESSION` evidence. Evidence:
+  `docs/planning/prod-api-runtime-readiness-audit-f3cb9a24-task-2026-05-10.md`
+  and `docs/operations/prod-api-runtime-readiness-f3cb9a24-2026-05-10.md`.
 - 2026-05-10 `PROD-UI-AUTH-CLICKTHROUGH-39A52703-2026-05-10` captured
   authenticated/admin production UI route/module reachability evidence for
   deployed `39a5270322a7d1c302cd5a711484af35f4d6be08`. Public routes passed

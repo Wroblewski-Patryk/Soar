@@ -4,6 +4,15 @@ Last updated: 2026-05-10
 
 ## Active Issues
 
+- 2026-05-10 update: LIVE Binance Futures startup is blocked by production
+  account/runtime readiness, not by route reachability. Authenticated API
+  modules are reachable, but the stored Binance key probe reports
+  `spot: true` and `futures: false`; `LIVEIMPORT-03` also cannot pass because
+  the configured LIVE bot has no running runtime session. Do not start the
+  LIVE Futures bot until the Binance Futures key is remediated and readback is
+  rerun successfully. Evidence:
+  `docs/operations/prod-api-runtime-readiness-f3cb9a24-2026-05-10.md`.
+
 - 2026-05-10 update: authenticated/admin production UI route/module
   reachability is no longer blocked after
   `PROD-UI-AUTH-CLICKTHROUGH-39A52703-2026-05-10`. The current PASS evidence

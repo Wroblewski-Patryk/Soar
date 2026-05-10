@@ -16,6 +16,16 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 production API/runtime readiness:
+`PROD-API-RUNTIME-READINESS-F3CB9A24-2026-05-10` captured authenticated
+read-only production API evidence on deployed
+`f3cb9a24c4c891479d5466a5abae4100ddda5ca8`. Core dashboard/admin API modules
+are reachable, Gate.io Futures market catalog is reachable, and the LIVE bot
+configuration exists. V1 remains `NO-GO` for LIVE Binance Futures because the
+stored Binance key probe reports `spot: true` and `futures: false`, and
+`LIVEIMPORT-03` wrote fail-closed evidence with `NO_RUNNING_SESSION`. Evidence:
+`docs/operations/prod-api-runtime-readiness-f3cb9a24-2026-05-10.md`.
+
 2026-05-10 authenticated UI evidence:
 `PROD-UI-AUTH-CLICKTHROUGH-39A52703-2026-05-10` captured production UI
 route/module reachability after login on deployed `39a52703`. Result PASS:
