@@ -7,6 +7,15 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback`
+  - 2026-05-10: Production no-order guard is active and preactivation
+    `LIVEIMPORT-03` against `b1391526` confirms one LIVE Binance Futures bot
+    with expected `NO_RUNNING_SESSION`. This task is blocked on explicit
+    operator approval for short LIVE activation, readback, deactivation, and
+    evidence capture. Evidence:
+    `docs/planning/controlled-live-session-proof-task-2026-05-10.md` and
+    `docs/operations/_artifacts-liveimport-readback-preactivation-b1391526-2026-05-10.json`.
+
 - [x] `LIVE-RUNTIME-SAFETY-READINESS-DIAGNOSTICS-2026-05-10 fix: expose protected LIVE no-order guard diagnostics`
   - 2026-05-10: Extended the existing admin/ops protected `/ready/details`
     endpoint with non-secret `runtimeSafety.liveNoOrderGuard` booleans and

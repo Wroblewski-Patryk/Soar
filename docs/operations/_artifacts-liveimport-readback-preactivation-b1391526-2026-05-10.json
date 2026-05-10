@@ -1,0 +1,48 @@
+{
+  "generatedAt": "2026-05-10T18:31:16.072Z",
+  "target": {
+    "baseUrl": "https://api.soar.luckysparrow.ch",
+    "webBaseUrl": "https://soar.luckysparrow.ch",
+    "expectedSha": "b1391526",
+    "buildInfo": {
+      "gitSha": "b139152672aa9f6b0e26f1cab5ba0203beb54741",
+      "gitRef": "main",
+      "matchesExpected": true
+    },
+    "symbols": [
+      "ETHUSDT",
+      "DOGEUSDT"
+    ]
+  },
+  "auth": {
+    "source": "login",
+    "tokenCaptured": false
+  },
+  "entries": [
+    {
+      "bot": {
+        "idHash": "e0c0bf8f4942",
+        "nameHash": "b64ac05f17e6",
+        "mode": "LIVE",
+        "exchange": "BINANCE",
+        "marketType": "FUTURES",
+        "liveOptIn": true,
+        "manageExternalPositions": true,
+        "walletIdHash": "437d49588714",
+        "apiKeyIdHash": "6d9fa9f534a4",
+        "activeMarketGroups": null
+      },
+      "session": null,
+      "symbols": [],
+      "status": "NO_RUNNING_SESSION"
+    }
+  ],
+  "summary": {
+    "botsChecked": 1,
+    "botsWithRuntimeReadback": 0,
+    "botsWithoutRunningSession": 1,
+    "symbolsExpected": 2,
+    "symbolsVisible": [],
+    "missingSymbols": []
+  }
+}

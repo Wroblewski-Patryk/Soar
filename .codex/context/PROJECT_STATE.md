@@ -22,6 +22,13 @@ Last updated: 2026-05-10
   `b139152672aa9f6b0e26f1cab5ba0203beb54741`, public/protected smoke passed,
   and protected `/ready/details` confirmed `active=true`; evidence:
   `docs/operations/live-runtime-no-order-guard-prod-b1391526-2026-05-10.md`.
+- 2026-05-10 `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10` plans the remaining
+  guarded LIVE proof. Preactivation `LIVEIMPORT-03` against `b1391526`
+  confirmed one LIVE Binance Futures bot and expected `NO_RUNNING_SESSION`.
+  Actual LIVE activation/readback/deactivation is blocked on explicit operator
+  approval for the money-impacting observation window. Evidence:
+  `docs/planning/controlled-live-session-proof-task-2026-05-10.md` and
+  `docs/operations/_artifacts-liveimport-readback-preactivation-b1391526-2026-05-10.json`.
 - 2026-05-10 `LIVE-RUNTIME-KILL-SWITCH-CONFIG-2026-05-10` adds optional
   environment-controlled LIVE runtime no-order guards. When
   `RUNTIME_LIVE_GLOBAL_KILL_SWITCH` or `RUNTIME_LIVE_EMERGENCY_STOP` is true,

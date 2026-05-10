@@ -17,6 +17,13 @@ Last updated: 2026-05-10
   Without those flags, activating a LIVE bot can reach real order orchestration
   if a strategy emits an entry signal.
 
+- 2026-05-10 update: controlled LIVE proof is planned but not executed.
+  Preactivation `LIVEIMPORT-03` on `b1391526` confirms the configured LIVE
+  Binance Futures bot still has `NO_RUNNING_SESSION`. The task is blocked on
+  explicit operator approval for a short LIVE activation window. Evidence:
+  `docs/planning/controlled-live-session-proof-task-2026-05-10.md` and
+  `docs/operations/_artifacts-liveimport-readback-preactivation-b1391526-2026-05-10.json`.
+
 - 2026-05-10 update: the Binance key-readiness blocker is closed after
   deployment of `8cd5c1b3`. Stored key production test now passes with both
   Spot and Futures permissions true. The remaining live-runtime blocker is

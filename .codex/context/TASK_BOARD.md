@@ -17,6 +17,15 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback`
+  - Scope: execute a short controlled LIVE activation only after explicit
+    operator approval, with production no-order guard active, collect
+    `LIVEIMPORT-03`, deactivate the bot, and record redacted evidence.
+    Preactivation read-only check confirms expected `NO_RUNNING_SESSION`.
+    Evidence:
+    `docs/planning/controlled-live-session-proof-task-2026-05-10.md` and
+    `docs/operations/_artifacts-liveimport-readback-preactivation-b1391526-2026-05-10.json`.
+
 - [x] `LIVE-RUNTIME-SAFETY-READINESS-DIAGNOSTICS-2026-05-10 fix: expose protected LIVE no-order guard diagnostics`
   - Scope: extended the existing admin/ops protected `/ready/details` endpoint
     with non-secret `runtimeSafety.liveNoOrderGuard` booleans and derived

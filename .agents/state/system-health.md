@@ -15,6 +15,14 @@ Last updated: 2026-05-10
   `globalKillSwitch=true`, `emergencyStop=true`, and `active=true`. Evidence:
   `docs/operations/live-runtime-no-order-guard-prod-b1391526-2026-05-10.md`.
 
+- `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10` READY/BLOCKED_APPROVAL:
+  preactivation read-only `LIVEIMPORT-03` against deployed `b1391526`
+  confirms one LIVE Binance Futures bot and expected `NO_RUNNING_SESSION`.
+  Controlled LIVE activation/readback/deactivation remains pending explicit
+  operator approval. Evidence:
+  `docs/planning/controlled-live-session-proof-task-2026-05-10.md` and
+  `docs/operations/_artifacts-liveimport-readback-preactivation-b1391526-2026-05-10.json`.
+
 - `LIVE-RUNTIME-KILL-SWITCH-CONFIG-2026-05-10` PASS/DEPLOYED:
   runtime config now exposes `RUNTIME_LIVE_GLOBAL_KILL_SWITCH` and
   `RUNTIME_LIVE_EMERGENCY_STOP`; final-candle LIVE pre-trade receives these

@@ -17,6 +17,13 @@ This precondition is now satisfied on production for
 operator-approved controlled LIVE bot activation, `LIVEIMPORT-03` readback,
 bot deactivation, and flag cleanup.
 
+Latest controlled LIVE proof preactivation:
+`CONTROLLED-LIVE-SESSION-PROOF-2026-05-10` is READY but blocked on explicit
+operator approval for LIVE activation. Preactivation `LIVEIMPORT-03` against
+`b1391526` confirmed one LIVE Binance Futures bot and expected
+`NO_RUNNING_SESSION`; artifact:
+`docs/operations/_artifacts-liveimport-readback-preactivation-b1391526-2026-05-10.json`.
+
 Latest LIVE runtime kill-switch config:
 `LIVE-RUNTIME-KILL-SWITCH-CONFIG-2026-05-10` adds an env-controlled no-order
 guard for controlled LIVE session proof:
