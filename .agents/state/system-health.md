@@ -5,11 +5,15 @@ Last updated: 2026-05-10
 ## Latest Health Snapshot
 
 - `LIVE-RUNTIME-SAFETY-READINESS-DIAGNOSTICS-2026-05-10` LOCAL PASS/PENDING
-  DEPLOY: protected `/ready/details` now includes
+  DEPLOY/PROD GUARD ACTIVE: protected `/ready/details` now includes
   `runtimeSafety.liveNoOrderGuard` booleans and derived `active`; public
   `/ready` remains minimal and does not expose runtime safety diagnostics.
   Focused API readiness tests pass after loading local `DATABASE_URL` from
-  `apps/api/.env`; API typecheck passes.
+  `apps/api/.env`; API typecheck passes. Production build-info reached
+  `b139152672aa9f6b0e26f1cab5ba0203beb54741`; public smoke and protected
+  worker smoke pass; protected `/ready/details` confirms
+  `globalKillSwitch=true`, `emergencyStop=true`, and `active=true`. Evidence:
+  `docs/operations/live-runtime-no-order-guard-prod-b1391526-2026-05-10.md`.
 
 - `LIVE-RUNTIME-KILL-SWITCH-CONFIG-2026-05-10` PASS/DEPLOYED:
   runtime config now exposes `RUNTIME_LIVE_GLOBAL_KILL_SWITCH` and

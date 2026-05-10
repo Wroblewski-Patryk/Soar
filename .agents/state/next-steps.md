@@ -12,6 +12,10 @@ Latest LIVE runtime safety readiness diagnostics:
 `runtimeSafety.liveNoOrderGuard.active`. After this deploys, the controlled
 LIVE proof must first set the Coolify API/execution-worker flags, redeploy, and
 confirm `/ready/details` reports `active=true` before any LIVE bot activation.
+This precondition is now satisfied on production for
+`b139152672aa9f6b0e26f1cab5ba0203beb54741`; the next step is explicit
+operator-approved controlled LIVE bot activation, `LIVEIMPORT-03` readback,
+bot deactivation, and flag cleanup.
 
 Latest LIVE runtime kill-switch config:
 `LIVE-RUNTIME-KILL-SWITCH-CONFIG-2026-05-10` adds an env-controlled no-order

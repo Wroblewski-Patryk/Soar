@@ -21,8 +21,11 @@ Last updated: 2026-05-10
   - Scope: extended the existing admin/ops protected `/ready/details` endpoint
     with non-secret `runtimeSafety.liveNoOrderGuard` booleans and derived
     `active`, while keeping public `/ready` minimal. Focused readiness tests
-    and API typecheck pass. Evidence:
-    `docs/planning/live-runtime-safety-readiness-diagnostics-task-2026-05-10.md`.
+    and API typecheck pass. Production no-order guard is active on
+    `b139152672aa9f6b0e26f1cab5ba0203beb54741`. Evidence:
+    `docs/planning/live-runtime-safety-readiness-diagnostics-task-2026-05-10.md`
+    and
+    `docs/operations/live-runtime-no-order-guard-prod-b1391526-2026-05-10.md`.
 
 - [x] `LIVE-RUNTIME-KILL-SWITCH-CONFIG-2026-05-10 fix: add env-controlled LIVE runtime kill switch`
   - Scope: added `RUNTIME_LIVE_GLOBAL_KILL_SWITCH` and

@@ -18,7 +18,10 @@ Last updated: 2026-05-10
   diagnostics now expose only non-secret booleans under
   `runtimeSafety.liveNoOrderGuard`, including derived `active`, while public
   `/ready` remains minimal. This gives operators a process-level confirmation
-  step before controlled LIVE session proof.
+  step before controlled LIVE session proof. Production build-info reached
+  `b139152672aa9f6b0e26f1cab5ba0203beb54741`, public/protected smoke passed,
+  and protected `/ready/details` confirmed `active=true`; evidence:
+  `docs/operations/live-runtime-no-order-guard-prod-b1391526-2026-05-10.md`.
 - 2026-05-10 `LIVE-RUNTIME-KILL-SWITCH-CONFIG-2026-05-10` adds optional
   environment-controlled LIVE runtime no-order guards. When
   `RUNTIME_LIVE_GLOBAL_KILL_SWITCH` or `RUNTIME_LIVE_EMERGENCY_STOP` is true,

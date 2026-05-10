@@ -11,8 +11,11 @@ Last updated: 2026-05-10
   adds protected `/ready/details` evidence for
   `runtimeSafety.liveNoOrderGuard.active=true`; do not activate a LIVE bot for
   proof until that diagnostic is deployed and confirms the running process sees
-  the guard. Without those flags, activating a LIVE bot can reach real order
-  orchestration if a strategy emits an entry signal.
+  the guard. This precondition is now satisfied on production for
+  `b139152672aa9f6b0e26f1cab5ba0203beb54741`, but LIVE activation remains a
+  money-impacting operator step and still requires a narrow observation window.
+  Without those flags, activating a LIVE bot can reach real order orchestration
+  if a strategy emits an entry signal.
 
 - 2026-05-10 update: the Binance key-readiness blocker is closed after
   deployment of `8cd5c1b3`. Stored key production test now passes with both

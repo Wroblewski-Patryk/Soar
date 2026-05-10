@@ -136,7 +136,9 @@ Expose non-secret LIVE no-order guard state through the existing protected
 ### 5. Verify and Test
 - Validation performed: focused readiness tests and API typecheck.
 - Result: PASS after explicitly loading local `DATABASE_URL` for the DB-backed
-  readiness tests.
+  readiness tests. Production follow-up also passed: build-info reached
+  `b139152672aa9f6b0e26f1cab5ba0203beb54741`, public/protected smoke passed,
+  and protected `/ready/details` confirmed the guard is active.
 
 ### 6. Self-Review
 - Simpler option considered: rely on Coolify UI only. Rejected because process
@@ -180,6 +182,7 @@ protected runtime-safety preflight signal needed before that proof.
 Protected `/ready/details` now reports the LIVE no-order guard state under
 `runtimeSafety.liveNoOrderGuard`, including `globalKillSwitch`,
 `emergencyStop`, and derived `active`. Public `/ready` remains minimal. This
-closes the pre-activation observability gap for controlled LIVE session proof;
-the next task is deployment, then setting Coolify flags and verifying
-`active=true` before any LIVE bot activation.
+closes the pre-activation observability gap for controlled LIVE session proof.
+Production now confirms `active=true`; the next task is explicit
+operator-approved controlled LIVE bot activation, readback, deactivation, and
+flag cleanup.
