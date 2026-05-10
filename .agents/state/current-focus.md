@@ -8,6 +8,16 @@ V1 action-level product correctness before any further readiness claim. Deploy
 health, route reachability, and local contract tests remain useful evidence,
 but they are not sufficient to call the app complete.
 
+2026-05-10 V1 master state ledger:
+`V1-MASTER-STATE-LEDGER-2026-05-10` is the new canonical start point for broad
+V1 continuation work: `docs/operations/v1-master-state-ledger-2026-05-10.md`.
+It consolidates the project index and static scan into one work ledger. Current
+status remains `NO-GO`: modules are bucketed as `toProve: 16`,
+`toProveAndPossiblyFix: 2`, `blocked: 2`, and `doneLocalNeedsProdProof: 1`.
+The ledger carries 61 findings (`P0: 12`, `P1: 16`, `P2: 33`) and separates
+concrete surface/test/doc/queue gaps from generic missing-proof rows. Future
+work should start from the ledger's `Next Work Order`.
+
 2026-05-10 project indexing baseline:
 `PROJECT-INDEXING-BASELINE-2026-05-10` adds a local no-network index generator
 for continuation work. Use `pnpm run ops:project:index` before broad V1 repair

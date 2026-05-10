@@ -17,6 +17,17 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `V1-MASTER-STATE-LEDGER-2026-05-10 research: consolidate full V1 state index`
+  - Scope: added `ops:project:ledger`, a local no-network master ledger
+    generator that combines the project index and static issue scan into one
+    continuation artifact. The current ledger keeps V1 at `NO-GO`, with
+    module buckets `toProve: 16`, `toProveAndPossiblyFix: 2`, `blocked: 2`,
+    and `doneLocalNeedsProdProof: 1`; it carries 61 findings
+    (`P0: 12`, `P1: 16`, `P2: 33`) and separates concrete surface/test/doc
+    gaps from missing-proof rows. Evidence:
+    `docs/planning/v1-master-state-ledger-task-2026-05-10.md` and
+    `docs/operations/v1-master-state-ledger-2026-05-10.md`.
+
 - [x] `PROJECT-INDEXING-BASELINE-2026-05-10 research: build local project index for V1 continuation`
   - Scope: added `ops:project:index` and a no-network local index generator
     that maps the V1 product action matrix to API modules, Web features,

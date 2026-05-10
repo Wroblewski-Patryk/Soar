@@ -7,6 +7,17 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-MASTER-STATE-LEDGER-2026-05-10 research: consolidate full V1 state index`
+  - 2026-05-10: Added `pnpm run ops:project:ledger` and generated the
+    consolidated V1 master state ledger. The ledger combines the project index
+    and static issue scan into one continuation entrypoint:
+    `docs/operations/v1-master-state-ledger-2026-05-10.md`. Current result:
+    V1 remains `NO-GO`; module buckets are `toProve: 16`,
+    `toProveAndPossiblyFix: 2`, `blocked: 2`, and
+    `doneLocalNeedsProdProof: 1`; static findings remain 61
+    (`P0: 12`, `P1: 16`, `P2: 33`). Evidence:
+    `docs/planning/v1-master-state-ledger-task-2026-05-10.md`.
+
 - [x] `PROJECT-INDEXING-BASELINE-2026-05-10 research: build local project index for V1 continuation`
   - 2026-05-10: Added `pnpm run ops:project:index` and generated a local
     no-network project index for continuation work. The current index maps V1

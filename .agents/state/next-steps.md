@@ -4,6 +4,16 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest V1 master state ledger:
+`V1-MASTER-STATE-LEDGER-2026-05-10` adds the consolidated state file for
+continuation: `docs/operations/v1-master-state-ledger-2026-05-10.md`. Before
+the next broad repair or audit slice, refresh the source reports with
+`pnpm run ops:project:index`, `pnpm run ops:project:scan`, then
+`pnpm run ops:project:ledger`. Start from the ledger's `Next Work Order`.
+Current first priorities are Dashboard Home, Bot Runtime, Auth, Profile API
+Keys, and Bots production-safe proof. Concrete non-proof triage candidates are
+still listed separately in the ledger.
+
 Latest project indexing baseline:
 `PROJECT-INDEXING-BASELINE-2026-05-10` adds `pnpm run ops:project:index`, a
 local no-network index generator for V1 continuation. Current generated index:

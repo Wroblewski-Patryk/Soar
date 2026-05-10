@@ -4,6 +4,14 @@ Last updated: 2026-05-10
 
 ## Active Issues
 
+- 2026-05-10 update: the current consolidated V1 state entrypoint is
+  `docs/operations/v1-master-state-ledger-2026-05-10.md`. Use it before
+  future broad audit or repair work. It keeps V1 at `NO-GO` and classifies the
+  state into module buckets: `toProve: 16`, `toProveAndPossiblyFix: 2`,
+  `blocked: 2`, and `doneLocalNeedsProdProof: 1`. It also carries all 61
+  static findings with buckets for missing proof, capability-gate review,
+  concrete Web/API/test/doc gaps, queue cleanup, and planning classification.
+
 - 2026-05-10 update: static V1 inconsistency scan is available at
   `docs/operations/v1-static-issue-scan-2026-05-10.md`. The scan reports 61
   findings (`P0: 12`, `P1: 16`, `P2: 33`). Most P0/P1 items are proof gaps

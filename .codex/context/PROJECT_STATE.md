@@ -13,6 +13,17 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `V1-MASTER-STATE-LEDGER-2026-05-10` adds the consolidated
+  continuation ledger for V1. Future broad audit/repair work must start from
+  `docs/operations/v1-master-state-ledger-2026-05-10.md` instead of memory or
+  older partial reports. The ledger combines the project index and static scan,
+  keeps V1 at `NO-GO`, and classifies work into buckets:
+  `toProve: 16` modules, `toProveAndPossiblyFix: 2`, `blocked: 2`, and
+  `doneLocalNeedsProdProof: 1`. It also carries 61 findings
+  (`P0: 12`, `P1: 16`, `P2: 33`) with concrete non-proof gaps separated from
+  missing-evidence rows. Evidence:
+  `docs/planning/v1-master-state-ledger-task-2026-05-10.md` and
+  `docs/operations/v1-master-state-ledger-2026-05-10.md`.
 - 2026-05-10 `PROJECT-INDEXING-BASELINE-2026-05-10` adds a local no-network
   project index generator for V1 continuation. `pnpm run ops:project:index`
   maps the V1 module action matrix to API modules, Web features, routes,
