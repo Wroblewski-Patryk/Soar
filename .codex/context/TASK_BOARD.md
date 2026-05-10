@@ -17,6 +17,20 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `V1-COVERAGE-CONFIDENCE-AUDIT-2026-05-10 research: publish current V1 coverage confidence audit`
+  - Scope: refreshed current no-secret final preflight and no-auth production
+    UI module clickthrough for deployed
+    `fd8da90bd77c2ddbed800eabd98479c1bd113ac4`, then published a
+    perspective-by-perspective V1 confidence report. The audit finds broad
+    implementation/local coverage and current public production reachability,
+    but V1 remains `NO-GO` because protected liveimport readback, rollback
+    proof PASS, RC approval/gates, and authenticated/admin UI clickthrough are
+    still missing or blocked. Evidence:
+    `docs/planning/v1-coverage-confidence-audit-task-2026-05-10.md`,
+    `docs/operations/v1-coverage-confidence-audit-2026-05-10.md`,
+    `docs/operations/v1-final-preflight-fd8da90b-2026-05-10.md`, and
+    `docs/operations/prod-ui-module-clickthrough-fd8da90b-2026-05-10.md`.
+
 - [x] `PROD-UI-MODULE-CLICKTHROUGH-RUNNER-2026-05-10 qa: add production UI module audit runner`
   - Scope: added `ops:ui:prod-clickthrough`, a no-secret production UI module
     audit runner that verifies build-info, supports optional dashboard/admin

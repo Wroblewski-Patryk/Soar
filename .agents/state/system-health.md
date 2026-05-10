@@ -4,6 +4,18 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `V1-COVERAGE-CONFIDENCE-AUDIT-2026-05-10` PASS/BLOCKED: current audited
+  production SHA is
+  `fd8da90bd77c2ddbed800eabd98479c1bd113ac4`. Build-info and public preflight
+  smoke pass; direct worker health without protected auth returns `401`, and
+  the no-auth UI module clickthrough reports public routes PASS with
+  dashboard/admin/legacy routes `BLOCKED_AUTH`. The confidence audit says V1
+  is broadly implemented locally but still `NO-GO` until protected
+  liveimport readback, rollback proof PASS, RC approval/gates, and
+  authenticated/admin UI clickthrough are captured. Evidence:
+  `docs/operations/v1-coverage-confidence-audit-2026-05-10.md`,
+  `docs/operations/v1-final-preflight-fd8da90b-2026-05-10.md`, and
+  `docs/operations/prod-ui-module-clickthrough-fd8da90b-2026-05-10.md`.
 - `PROD-UI-MODULE-CLICKTHROUGH-RUNNER-2026-05-10` PASS/BLOCKED: a canonical
   production UI module audit runner now exists as `ops:ui:prod-clickthrough`.
   The no-auth production run against

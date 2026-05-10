@@ -16,6 +16,21 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 audit update:
+`V1-COVERAGE-CONFIDENCE-AUDIT-2026-05-10` refreshed the current no-secret
+final preflight and no-auth production UI module clickthrough for deployed
+`fd8da90bd77c2ddbed800eabd98479c1bd113ac4`, then published a
+perspective-by-perspective V1 coverage confidence report. The audit conclusion
+is `NO-GO`: implementation and local coverage are broad, public production
+checks pass, but protected production proof and formal release approval remain
+open. Remaining blockers are liveimport auth/readback, rollback guard
+auth/proof PASS, RC Gate 2/Gate 4 approval/sign-off, and authenticated/admin
+production UI clickthrough. Evidence:
+`docs/planning/v1-coverage-confidence-audit-task-2026-05-10.md`,
+`docs/operations/v1-coverage-confidence-audit-2026-05-10.md`,
+`docs/operations/v1-final-preflight-fd8da90b-2026-05-10.md`, and
+`docs/operations/prod-ui-module-clickthrough-fd8da90b-2026-05-10.md`.
+
 2026-05-10 verification/tooling update:
 `PROD-UI-MODULE-CLICKTHROUGH-RUNNER-2026-05-10` added a canonical
 `ops:ui:prod-clickthrough` runner for production UI route/module audit. The

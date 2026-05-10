@@ -1,0 +1,442 @@
+{
+  "status": "BLOCKED_AUTH",
+  "today": "2026-05-10",
+  "generatedAt": "2026-05-10T04:46:39.639Z",
+  "environment": "production",
+  "webBaseUrl": "https://soar.luckysparrow.ch",
+  "apiBaseUrl": "https://api.soar.luckysparrow.ch",
+  "expectedSha": "fd8da90bd77c2ddbed800eabd98479c1bd113ac4",
+  "buildInfo": {
+    "status": 200,
+    "ok": true,
+    "gitSha": "fd8da90bd77c2ddbed800eabd98479c1bd113ac4"
+  },
+  "auth": {
+    "dashboard": "missing",
+    "admin": "missing"
+  },
+  "summary": {
+    "public": "PASS:4",
+    "dashboard": "BLOCKED_AUTH:18",
+    "admin": "BLOCKED_AUTH:3",
+    "legacy": "BLOCKED_AUTH:3"
+  },
+  "blockers": [
+    "dashboard auth missing",
+    "admin auth missing"
+  ],
+  "routes": [
+    {
+      "path": "/",
+      "area": "public",
+      "expected": "200",
+      "url": "https://soar.luckysparrow.ch/",
+      "result": "PASS",
+      "httpStatus": 200,
+      "location": "",
+      "notes": "public route reachable"
+    },
+    {
+      "path": "/auth/login",
+      "area": "public",
+      "expected": "200",
+      "url": "https://soar.luckysparrow.ch/auth/login",
+      "result": "PASS",
+      "httpStatus": 200,
+      "location": "",
+      "notes": "public route reachable"
+    },
+    {
+      "path": "/auth/register",
+      "area": "public",
+      "expected": "200",
+      "url": "https://soar.luckysparrow.ch/auth/register",
+      "result": "PASS",
+      "httpStatus": 200,
+      "location": "",
+      "notes": "public route reachable"
+    },
+    {
+      "path": "/offline",
+      "area": "public",
+      "expected": "200",
+      "url": "https://soar.luckysparrow.ch/offline",
+      "result": "PASS",
+      "httpStatus": 200,
+      "location": "",
+      "notes": "public route reachable"
+    },
+    {
+      "path": "/dashboard",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard",
+      "result": "BLOCKED_AUTH",
+      "httpStatus": 307,
+      "location": "/auth/login",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "path": "/dashboard/exchanges",
+      "area": "dashboard",
+      "expected": "redirect:/dashboard/profile#api",
+      "url": "https://soar.luckysparrow.ch/dashboard/exchanges",
+      "result": "BLOCKED_AUTH",
+      "httpStatus": 307,
+      "location": "/auth/login",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "path": "/dashboard/profile",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/profile",
+      "result": "BLOCKED_AUTH",
+      "httpStatus": 307,
+      "location": "/auth/login",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "path": "/dashboard/wallets",
+      "area": "dashboard",
+      "expected": "redirect:/dashboard/wallets/list",
+      "url": "https://soar.luckysparrow.ch/dashboard/wallets",
+      "result": "BLOCKED_AUTH",
+      "httpStatus": 307,
+      "location": "/auth/login",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "path": "/dashboard/wallets/list",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/wallets/list",
+      "result": "BLOCKED_AUTH",
+      "httpStatus": 307,
+      "location": "/auth/login",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "path": "/dashboard/wallets/create",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/wallets/create",
+      "result": "BLOCKED_AUTH",
+      "httpStatus": 307,
+      "location": "/auth/login",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "path": "/dashboard/markets/list",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/markets/list",
+      "result": "BLOCKED_AUTH",
+      "httpStatus": 307,
+      "location": "/auth/login",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "path": "/dashboard/markets/create",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/markets/create",
+      "result": "BLOCKED_AUTH",
+      "httpStatus": 307,
+      "location": "/auth/login",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "path": "/dashboard/strategies/list",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/strategies/list",
+      "result": "BLOCKED_AUTH",
+      "httpStatus": 307,
+      "location": "/auth/login",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "path": "/dashboard/strategies/create",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/strategies/create",
+      "result": "BLOCKED_AUTH",
+      "httpStatus": 307,
+      "location": "/auth/login",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "path": "/dashboard/backtests/list",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/backtests/list",
+      "result": "BLOCKED_AUTH",
+      "httpStatus": 307,
+      "location": "/auth/login",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "path": "/dashboard/backtests/create",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/backtests/create",
+      "result": "BLOCKED_AUTH",
+      "httpStatus": 307,
+      "location": "/auth/login",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "path": "/dashboard/bots",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/bots",
+      "result": "BLOCKED_AUTH",
+      "httpStatus": 307,
+      "location": "/auth/login",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "path": "/dashboard/bots/create",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/bots/create",
+      "result": "BLOCKED_AUTH",
+      "httpStatus": 307,
+      "location": "/auth/login",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "path": "/dashboard/bots/assistant",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/bots/assistant",
+      "result": "BLOCKED_AUTH",
+      "httpStatus": 307,
+      "location": "/auth/login",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "path": "/dashboard/bots/runtime",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/bots/runtime",
+      "result": "BLOCKED_AUTH",
+      "httpStatus": 307,
+      "location": "/auth/login",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "path": "/dashboard/reports",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/reports",
+      "result": "BLOCKED_AUTH",
+      "httpStatus": 307,
+      "location": "/auth/login",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "path": "/dashboard/logs",
+      "area": "dashboard",
+      "expected": "authenticated",
+      "url": "https://soar.luckysparrow.ch/dashboard/logs",
+      "result": "BLOCKED_AUTH",
+      "httpStatus": 307,
+      "location": "/auth/login",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "path": "/dashboard/orders",
+      "area": "legacy",
+      "expected": "redirect:/dashboard/bots/runtime?legacy=orders",
+      "url": "https://soar.luckysparrow.ch/dashboard/orders",
+      "result": "BLOCKED_AUTH",
+      "httpStatus": 307,
+      "location": "/auth/login",
+      "notes": "dashboard auth missing; legacy route fails closed before redirect audit"
+    },
+    {
+      "path": "/dashboard/positions",
+      "area": "legacy",
+      "expected": "redirect:/dashboard/bots/runtime?legacy=positions",
+      "url": "https://soar.luckysparrow.ch/dashboard/positions",
+      "result": "BLOCKED_AUTH",
+      "httpStatus": 307,
+      "location": "/auth/login",
+      "notes": "dashboard auth missing; legacy route fails closed before redirect audit"
+    },
+    {
+      "path": "/dashboard/bots/new",
+      "area": "legacy",
+      "expected": "redirect:/dashboard/bots/create",
+      "url": "https://soar.luckysparrow.ch/dashboard/bots/new",
+      "result": "BLOCKED_AUTH",
+      "httpStatus": 307,
+      "location": "/auth/login",
+      "notes": "dashboard auth missing; legacy route fails closed before redirect audit"
+    },
+    {
+      "path": "/admin",
+      "area": "admin",
+      "expected": "redirect:/admin/subscriptions",
+      "url": "https://soar.luckysparrow.ch/admin",
+      "result": "BLOCKED_AUTH",
+      "httpStatus": 307,
+      "location": "/auth/login",
+      "notes": "admin auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "path": "/admin/users",
+      "area": "admin",
+      "expected": "admin",
+      "url": "https://soar.luckysparrow.ch/admin/users",
+      "result": "BLOCKED_AUTH",
+      "httpStatus": 307,
+      "location": "/auth/login",
+      "notes": "admin auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "path": "/admin/subscriptions",
+      "area": "admin",
+      "expected": "admin",
+      "url": "https://soar.luckysparrow.ch/admin/subscriptions",
+      "result": "BLOCKED_AUTH",
+      "httpStatus": 307,
+      "location": "/auth/login",
+      "notes": "admin auth missing; unauthenticated route fails closed to login"
+    }
+  ],
+  "modules": [
+    {
+      "module": "auth",
+      "route": "/auth/login",
+      "requiredAuth": "none",
+      "checks": [
+        "login route reachable"
+      ],
+      "result": "PASS",
+      "notes": "public route reachable"
+    },
+    {
+      "module": "dashboard-home",
+      "route": "/dashboard",
+      "requiredAuth": "dashboard",
+      "checks": [
+        "home route reachable"
+      ],
+      "result": "BLOCKED_AUTH",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "module": "profile/exchanges",
+      "route": "/dashboard/profile",
+      "requiredAuth": "dashboard",
+      "checks": [
+        "profile route reachable"
+      ],
+      "result": "BLOCKED_AUTH",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "module": "wallets",
+      "route": "/dashboard/wallets/list",
+      "requiredAuth": "dashboard",
+      "checks": [
+        "wallet list route reachable"
+      ],
+      "result": "BLOCKED_AUTH",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "module": "markets",
+      "route": "/dashboard/markets/list",
+      "requiredAuth": "dashboard",
+      "checks": [
+        "market list route reachable"
+      ],
+      "result": "BLOCKED_AUTH",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "module": "strategies",
+      "route": "/dashboard/strategies/list",
+      "requiredAuth": "dashboard",
+      "checks": [
+        "strategy list route reachable"
+      ],
+      "result": "BLOCKED_AUTH",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "module": "backtests",
+      "route": "/dashboard/backtests/list",
+      "requiredAuth": "dashboard",
+      "checks": [
+        "backtest list route reachable"
+      ],
+      "result": "BLOCKED_AUTH",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "module": "bots",
+      "route": "/dashboard/bots",
+      "requiredAuth": "dashboard",
+      "checks": [
+        "bot list route reachable"
+      ],
+      "result": "BLOCKED_AUTH",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "module": "runtime",
+      "route": "/dashboard/bots/runtime",
+      "requiredAuth": "dashboard",
+      "checks": [
+        "runtime route reachable"
+      ],
+      "result": "BLOCKED_AUTH",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "module": "reports",
+      "route": "/dashboard/reports",
+      "requiredAuth": "dashboard",
+      "checks": [
+        "reports route reachable"
+      ],
+      "result": "BLOCKED_AUTH",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "module": "logs",
+      "route": "/dashboard/logs",
+      "requiredAuth": "dashboard",
+      "checks": [
+        "logs route reachable"
+      ],
+      "result": "BLOCKED_AUTH",
+      "notes": "dashboard auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "module": "admin/users",
+      "route": "/admin/users",
+      "requiredAuth": "admin",
+      "checks": [
+        "admin user route reachable"
+      ],
+      "result": "BLOCKED_AUTH",
+      "notes": "admin auth missing; unauthenticated route fails closed to login"
+    },
+    {
+      "module": "admin/subscriptions",
+      "route": "/admin/subscriptions",
+      "requiredAuth": "admin",
+      "checks": [
+        "admin subscriptions route reachable"
+      ],
+      "result": "BLOCKED_AUTH",
+      "notes": "admin auth missing; unauthenticated route fails closed to login"
+    }
+  ]
+}

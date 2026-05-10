@@ -4,6 +4,20 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest V1 coverage confidence audit:
+`V1-COVERAGE-CONFIDENCE-AUDIT-2026-05-10` confirms the project should not be
+called 100% V1-ready yet. Current audited production SHA is
+`fd8da90bd77c2ddbed800eabd98479c1bd113ac4`; build-info and public preflight
+smoke pass, but final preflight remains `BLOCKED` on liveimport auth/readback,
+rollback guard auth/proof, failed RC evidence/sign-off/checklist, and missing
+`LIVEIMPORT-03`. The no-auth UI module clickthrough reports public routes PASS
+and dashboard/admin/legacy routes `BLOCKED_AUTH`. Next executable work requires
+operator-provided `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`,
+`PROD_UI_AUDIT_*`, and real RC approver/gate inputs. Evidence:
+`docs/operations/v1-coverage-confidence-audit-2026-05-10.md`,
+`docs/operations/v1-final-preflight-fd8da90b-2026-05-10.md`, and
+`docs/operations/prod-ui-module-clickthrough-fd8da90b-2026-05-10.md`.
+
 Latest production UI audit tooling:
 `PROD-UI-MODULE-CLICKTHROUGH-RUNNER-2026-05-10` added
 `ops:ui:prod-clickthrough` and captured current no-auth production evidence for

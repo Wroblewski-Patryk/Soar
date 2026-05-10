@@ -7,6 +7,20 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-COVERAGE-CONFIDENCE-AUDIT-2026-05-10 research: publish current V1 coverage confidence audit`
+  - 2026-05-10: Refreshed current no-secret final preflight and no-auth
+    production UI module clickthrough for deployed
+    `fd8da90bd77c2ddbed800eabd98479c1bd113ac4`, then published a
+    perspective-by-perspective V1 confidence report. The audit says V1 is not
+    100% release-ready: public production checks pass and implementation/local
+    coverage is broad, but protected liveimport readback, rollback proof PASS,
+    RC approval/gates, and authenticated/admin UI clickthrough remain blocked.
+    Evidence:
+    `docs/planning/v1-coverage-confidence-audit-task-2026-05-10.md`,
+    `docs/operations/v1-coverage-confidence-audit-2026-05-10.md`,
+    `docs/operations/v1-final-preflight-fd8da90b-2026-05-10.md`, and
+    `docs/operations/prod-ui-module-clickthrough-fd8da90b-2026-05-10.md`.
+
 - [x] `PROD-UI-MODULE-CLICKTHROUGH-RUNNER-2026-05-10 qa: add production UI module audit runner`
   - 2026-05-10: Added `ops:ui:prod-clickthrough`, a no-secret production UI
     module audit runner that verifies build-info, supports optional

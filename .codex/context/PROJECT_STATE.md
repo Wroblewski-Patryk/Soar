@@ -13,6 +13,22 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `V1-COVERAGE-CONFIDENCE-AUDIT-2026-05-10` published a current
+  evidence-backed answer to the user's "what is missing before 100%" question.
+  Current deployed/audited SHA is
+  `fd8da90bd77c2ddbed800eabd98479c1bd113ac4`. Final preflight reports
+  build-info PASS and public smoke PASS, but remains `BLOCKED` on liveimport
+  auth, rollback guard auth, failed RC evidence, missing `LIVEIMPORT-03`
+  readback, and failed rollback proof. Production UI module clickthrough
+  reports public routes PASS and dashboard/admin/legacy protected routes
+  `BLOCKED_AUTH`. The audit conclusion is that the remaining V1 work is narrow
+  and evidence-driven, not a broad implementation rewrite: protected runtime
+  readback, rollback proof PASS, authenticated/admin UI clickthrough, and RC
+  approval/gates. Evidence:
+  `docs/planning/v1-coverage-confidence-audit-task-2026-05-10.md`,
+  `docs/operations/v1-coverage-confidence-audit-2026-05-10.md`,
+  `docs/operations/v1-final-preflight-fd8da90b-2026-05-10.md`, and
+  `docs/operations/prod-ui-module-clickthrough-fd8da90b-2026-05-10.md`.
 - 2026-05-10 `PROD-UI-MODULE-CLICKTHROUGH-RUNNER-2026-05-10` added the
   canonical `ops:ui:prod-clickthrough` production UI module audit runner and
   captured current no-auth evidence for deployed
