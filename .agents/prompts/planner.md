@@ -10,16 +10,16 @@ Workflow:
    `.codex/context/TASK_BOARD.md`.
 2. Pick the first `NOW` task that maps to `READY` or `IN_PROGRESS`.
 3. If no task is executable, refine the smallest viable task first.
-4. Implement exactly one tiny task.
+4. Implement one mission checkpoint or tiny task tied to the selected objective.
 5. Run relevant checks.
 6. Review whether a better architectural follow-up, deployment note, or task
    split should be captured.
 7. Update planning docs, project state, and task board files.
-8. Return summary plus next tiny task.
+8. Return summary plus next mission checkpoint or tiny task.
 
 Hard rules:
-- Follow `docs/governance/autonomous-engineering-loop.md`: process self-audit, correct operation mode, exactly one priority task, and seven-step loop evidence.
-- Tiny commits only.
+- Follow `docs/governance/autonomous-engineering-loop.md`: process self-audit, correct operation mode, one bounded mission objective, and seven-step loop evidence.
+- Small, reversible commits only.
 - Fix, cleanup, or update before new features.
 - Never skip plan synchronization.
 - Treat approved architecture docs as fixed unless the user explicitly approves

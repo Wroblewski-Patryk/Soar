@@ -403,7 +403,7 @@ deployed `74752f025ef49bf5026ec92e056f59947e00a18f` now reports activation
 plan/audit fresh, build-info/public smoke PASS, and V1 `BLOCKED` only on
 protected/formal blockers: liveimport auth/readback, rollback guard auth,
 production DB restore context, failed RC evidence, stale backup/restore drill,
-and stale rollback proof. Next tiny task is protected evidence collection when
+and stale rollback proof. Next mission checkpoint is protected evidence collection when
 operator credentials and DB context are available; if they are not available,
 the only useful no-secret task is to publish a concise operator unblock
 checklist for those exact inputs. Evidence:
@@ -414,7 +414,7 @@ Latest release evidence refresh:
 `V1-RC-BLOCKED-REFRESH-2026-05-10` refreshed RC external gates, RC sign-off,
 and RC checklist as current blocked evidence. Final preflight for deployed
 `1609929ed3b98c2b794d8a0b48ff0f39c16cd75f` now reports build-info/public
-smoke PASS and RC evidence `failed` instead of `stale`. Next tiny task is to
+smoke PASS and RC evidence `failed` instead of `stale`. Next mission checkpoint is to
 refresh activation audit/plan as current `NO-GO` for the deployed SHA, because
 that can be done without protected secrets. Protected tasks after that remain
 blocked on liveimport auth/readback, rollback guard auth, production DB restore
@@ -431,7 +431,7 @@ no-secret final V1 preflight public checks pass and remain correctly blocked
 on protected/formal evidence: liveimport readback auth, rollback guard auth,
 production DB restore context, current activation/RC evidence,
 `LIVEIMPORT-03` runtime readback, backup/restore drill, rollback proof, and
-authenticated/admin UI clickthrough. Next tiny task is to refresh one
+authenticated/admin UI clickthrough. Next mission checkpoint is to refresh one
 protected/formal V1 evidence lane when operator credentials and production DB
 restore context are available, or continue a no-secret status cleanup if those
 inputs remain unavailable. Evidence:
@@ -1070,5 +1070,5 @@ On "rob dalej", "rób dalej", "kontynuuj", "continue", or "next":
 1. Read `.agents/core/operating-system.md`.
 2. Read this file.
 3. Cross-check canonical planning.
-4. Pick one task.
+4. Pick one bounded mission objective or task.
 5. Execute through `.agents/core/execution-loop.md`.
