@@ -118,7 +118,9 @@ node scripts/deploySmokeCheck.mjs --api-base-url https://api.soar.luckysparrow.c
 - Root cause: `deploySmokeCheck.mjs` supports `--no-workers`, not
   `--skip-workers`.
 - Guardrail: use the script help text before inventing skip flags for
-  production smoke commands.
+  production smoke commands. As of 2026-05-10, the runner also accepts
+  `--skip-workers` as an alias for `--no-workers` to prevent this repeat
+  false alarm.
 - Preferred pattern:
 ```powershell
 node scripts/deploySmokeCheck.mjs --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers
@@ -126,7 +128,9 @@ node scripts/deploySmokeCheck.mjs --api-base-url https://api.soar.luckysparrow.c
 - Avoid: treating a `401` from `/workers/health` as public smoke failure when
   the command accidentally omitted the supported `--no-workers` flag.
 - Evidence: rerunning the same production smoke with `--no-workers` passed API
-  `/health`, API `/ready`, and Web `/` for deployed `3c5da343`.
+  `/health`, API `/ready`, and Web `/` for deployed `3c5da343`. On
+  2026-05-10, production public smoke with `--skip-workers` also passed API
+  `/health`, API `/ready`, and Web `/`.
 
 ### 2026-05-08 - Local Vitest can be blocked by missing Vite in pnpm store
 - Context: Gate.io exchange adapter validation attempted focused API Vitest

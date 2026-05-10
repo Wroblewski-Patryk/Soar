@@ -13,6 +13,12 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `DEPLOY-SMOKE-SKIP-WORKERS-ALIAS-2026-05-10` improves deployment
+  verification tooling by accepting `--skip-workers` as an alias for
+  `--no-workers` in `scripts/deploySmokeCheck.mjs`. This closes a recurring
+  false-alarm path where public smoke accidentally checked protected
+  `/workers/health` and saw the expected unauthenticated `401`. Default
+  worker checks remain enabled unless skipped explicitly.
 - 2026-05-10 `CONTROLLED-LIVE-PROOF-RUNNER-2026-05-10` adds the guarded
   operator command `pnpm run ops:live:controlled-proof` for the remaining
   controlled LIVE runtime-session proof. The command checks build-info,

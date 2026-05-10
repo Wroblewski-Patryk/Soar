@@ -4,6 +4,14 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `DEPLOY-SMOKE-SKIP-WORKERS-ALIAS-2026-05-10` LOCAL PASS:
+  `scripts/deploySmokeCheck.mjs` now accepts `--skip-workers` as an alias for
+  canonical `--no-workers`. The default protected worker check remains enabled
+  unless skipped explicitly. Syntax/help checks pass, and production public
+  smoke with `--skip-workers` passes API `/health`, API `/ready`, and Web `/`.
+  Evidence:
+  `docs/planning/deploy-smoke-skip-workers-alias-task-2026-05-10.md`.
+
 - `CONTROLLED-LIVE-PROOF-RUNNER-2026-05-10` LOCAL PASS/BLOCKED_APPROVAL:
   added `pnpm run ops:live:controlled-proof`, a guarded operator runner for
   the short LIVE runtime-session proof. The runner checks build-info, requires

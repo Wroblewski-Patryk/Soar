@@ -4,6 +4,14 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest deploy smoke tooling fix:
+`DEPLOY-SMOKE-SKIP-WORKERS-ALIAS-2026-05-10` makes
+`deploySmokeCheck.mjs --skip-workers` behave like canonical `--no-workers`.
+This prevents false deploy-smoke failures on protected `/workers/health` when
+the intended check is public-only API/Web reachability. Default behavior still
+checks workers unless skipped explicitly. Evidence:
+`docs/planning/deploy-smoke-skip-workers-alias-task-2026-05-10.md`.
+
 Latest controlled LIVE proof runner:
 `CONTROLLED-LIVE-PROOF-RUNNER-2026-05-10` adds
 `pnpm run ops:live:controlled-proof`, a guarded command for the remaining

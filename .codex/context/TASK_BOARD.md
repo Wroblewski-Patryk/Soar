@@ -17,6 +17,13 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `DEPLOY-SMOKE-SKIP-WORKERS-ALIAS-2026-05-10 fix: accept skip-workers alias in deploy smoke`
+  - Scope: `scripts/deploySmokeCheck.mjs` now accepts `--skip-workers` as an
+    alias for canonical `--no-workers`, while default worker checks remain
+    enabled. Syntax/help checks and production public smoke with
+    `--skip-workers` pass. Evidence:
+    `docs/planning/deploy-smoke-skip-workers-alias-task-2026-05-10.md`.
+
 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback`
   - 2026-05-10: Added guarded command
     `pnpm run ops:live:controlled-proof` for the remaining controlled LIVE

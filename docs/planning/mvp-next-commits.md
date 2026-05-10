@@ -7,6 +7,13 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `DEPLOY-SMOKE-SKIP-WORKERS-ALIAS-2026-05-10 fix: accept skip-workers alias in deploy smoke`
+  - 2026-05-10: `scripts/deploySmokeCheck.mjs` now accepts
+    `--skip-workers` as an alias for `--no-workers`. Default worker checks
+    remain enabled unless skipped explicitly. Syntax/help checks and
+    production public smoke with `--skip-workers` pass. Evidence:
+    `docs/planning/deploy-smoke-skip-workers-alias-task-2026-05-10.md`.
+
 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback`
   - 2026-05-10: Guarded runner `pnpm run ops:live:controlled-proof` is now
     available for the controlled proof. It validates build-info and protected

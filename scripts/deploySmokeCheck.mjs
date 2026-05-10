@@ -17,7 +17,7 @@ const readArgValue = (flag) => {
 if (args.has('--help') || args.has('-h')) {
   process.stdout.write(
     [
-      'Usage: node scripts/deploySmokeCheck.mjs [--base-url <url>] [--api-base-url <url>] [--web-base-url <url>] [--no-workers] [--auth-token <token>] [--auth-email <email>] [--auth-password <password>] [--ops-basic-user <user>] [--ops-basic-password <password>] [--ops-auth-header-name <name>] [--ops-auth-header-value <value>]',
+      'Usage: node scripts/deploySmokeCheck.mjs [--base-url <url>] [--api-base-url <url>] [--web-base-url <url>] [--no-workers|--skip-workers] [--auth-token <token>] [--auth-email <email>] [--auth-password <password>] [--ops-basic-user <user>] [--ops-basic-password <password>] [--ops-auth-header-name <name>] [--ops-auth-header-value <value>]',
       '',
       'Env:',
       '  SMOKE_API_BASE_URL       (default: http://localhost:3001)',
@@ -63,8 +63,9 @@ const configuredOpsAuthHeaderName = (
 const configuredOpsAuthHeaderValue = (
   readArgValue('--ops-auth-header-value') || process.env.SMOKE_OPS_AUTH_HEADER_VALUE || ''
 ).trim();
+const skipWorkers = args.has('--no-workers') || args.has('--skip-workers');
 const requireWorkers =
-  !args.has('--no-workers') && String(process.env.SMOKE_REQUIRE_WORKERS || 'true').toLowerCase() !== 'false';
+  !skipWorkers && String(process.env.SMOKE_REQUIRE_WORKERS || 'true').toLowerCase() !== 'false';
 const authLayer = resolveOpsAuthLayerOptions({
   opsAuthHeaderName: configuredOpsAuthHeaderName,
   opsAuthHeaderValue: configuredOpsAuthHeaderValue,
