@@ -22,6 +22,14 @@ Last updated: 2026-05-10
   scripts/buildProjectIndex.mjs`, script help, report generation, repository
   guardrails, and `git diff --check`.
 
+- `V1-STATIC-ISSUE-SCAN-2026-05-10` LOCAL PASS/SCAN COMPLETE: added
+  `ops:project:scan` and generated
+  `docs/operations/v1-static-issue-scan-2026-05-10.md`. Current scan reports
+  61 findings (`P0: 12`, `P1: 16`, `P2: 33`) across V1 proof gaps, Web/API
+  surface gaps, placeholder docs, queue hygiene, and capability-gate source
+  markers. Validation passed: `node --check scripts/runV1StaticIssueScan.mjs`,
+  script help, scan generation, repository guardrails, and `git diff --check`.
+
 - `V1-DASHBOARD-HOME-RENDERED-RUNTIME-AUDIT-2026-05-10` LOCAL PASS/PARTIAL
   PRODUCT AUDIT OPEN: added a dedicated rendered `HomeLiveWidgets` regression
   proving a negative-PnL open position renders the Dashboard runtime TTP column

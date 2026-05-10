@@ -29,6 +29,15 @@ Last updated: 2026-05-10
   first priority and Bot Runtime is second. Evidence:
   `docs/planning/project-index-v1-crosswalk-task-2026-05-10.md` and
   `docs/operations/project-index-2026-05-10.md`.
+- 2026-05-10 `V1-STATIC-ISSUE-SCAN-2026-05-10` adds `ops:project:scan` and
+  publishes a static inconsistency scan on top of the project index. Current
+  scan finds 61 items: `P0: 12`, `P1: 16`, `P2: 33`. The strongest concrete
+  non-proof surface gaps are empty Web `orders`, missing `/dashboard/orders`
+  and `/dashboard/positions` route pages, no focused Web `positions` tests,
+  no focused API `subscriptions` tests, placeholder docs for Web orders/
+  positions, and open queue markers that need classification. Evidence:
+  `docs/planning/v1-static-issue-scan-task-2026-05-10.md` and
+  `docs/operations/v1-static-issue-scan-2026-05-10.md`.
 - 2026-05-10 `V1-DASHBOARD-HOME-RENDERED-RUNTIME-AUDIT-2026-05-10` adds the
   first rendered Dashboard Home bridge for the operator-reported TTP issue.
   A dedicated small `HomeLiveWidgets.runtime-table-audit.test.tsx` file renders

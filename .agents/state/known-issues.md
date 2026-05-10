@@ -4,6 +4,16 @@ Last updated: 2026-05-10
 
 ## Active Issues
 
+- 2026-05-10 update: static V1 inconsistency scan is available at
+  `docs/operations/v1-static-issue-scan-2026-05-10.md`. The scan reports 61
+  findings (`P0: 12`, `P1: 16`, `P2: 33`). Most P0/P1 items are proof gaps
+  from the V1 action matrix, not confirmed code bugs. Concrete surface/test/doc
+  gaps that need triage: empty Web `orders`, no `/dashboard/orders` or
+  `/dashboard/positions` page, no focused Web `positions` tests, no focused API
+  `subscriptions` tests, Web orders/positions docs still described as
+  placeholders, and unchecked queue markers that need blocked/executable/
+  historical classification.
+
 - 2026-05-10 update: Dashboard runtime table presenter/action audit is locally
   closed for the high-risk table slice. Focused tests cover prospective TTP
   hiding at zero/negative PnL, backend/runtime TTP precedence, TSL-only display,

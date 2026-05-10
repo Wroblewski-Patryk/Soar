@@ -17,6 +17,10 @@ index confirms the active product action matrix remains `NO-GO` with
 `PROJECT-INDEX-V1-CROSSWALK-2026-05-10` extends that index with a prioritized
 V1 audit work map for all 21 rows. Current order starts with Dashboard Home,
 then Bot Runtime, then Auth/Profile API Keys/Bots.
+`V1-STATIC-ISSUE-SCAN-2026-05-10` adds the current inconsistency scan:
+61 findings (`P0: 12`, `P1: 16`, `P2: 33`). Treat `v1-proof-gap` as missing
+evidence, not automatic code failure. Treat Web Orders/Positions route/feature
+gaps and subscription/position test gaps as concrete triage candidates.
 
 2026-05-10 Dashboard runtime table action audit:
 `V1-DASHBOARD-RUNTIME-TABLE-ACTION-AUDIT-2026-05-10` is locally complete for

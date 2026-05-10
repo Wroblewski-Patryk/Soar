@@ -36,6 +36,18 @@ Last updated: 2026-05-10
     `docs/planning/project-index-v1-crosswalk-task-2026-05-10.md` and
     `docs/operations/project-index-2026-05-10.md`.
 
+- [x] `V1-STATIC-ISSUE-SCAN-2026-05-10 research: scan V1 inconsistencies and unfinished surfaces`
+  - Scope: added `ops:project:scan`, a no-network static scan over the project
+    index and active source files. Current report finds 61 findings:
+    `P0: 12`, `P1: 16`, `P2: 33`, separating V1 proof gaps from concrete
+    surface/test/doc/queue issues. Strongest concrete surface gaps are empty
+    Web `orders`, missing `/dashboard/orders` and `/dashboard/positions`
+    pages, missing focused Web `positions` tests, missing focused API
+    `subscriptions` tests, and placeholder docs for Web orders/positions.
+    Evidence:
+    `docs/planning/v1-static-issue-scan-task-2026-05-10.md` and
+    `docs/operations/v1-static-issue-scan-2026-05-10.md`.
+
 - [x] `V1-DASHBOARD-HOME-RENDERED-RUNTIME-AUDIT-2026-05-10 fix: add rendered Dashboard TTP proof`
   - Scope: added a dedicated rendered `HomeLiveWidgets` regression showing a
     negative-PnL open position keeps the TTP column visible while suppressing

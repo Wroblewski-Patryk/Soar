@@ -26,6 +26,18 @@ Operational queue for one-task execution runs.
     `docs/planning/project-index-v1-crosswalk-task-2026-05-10.md` and
     `docs/operations/project-index-2026-05-10.md`.
 
+- [x] `V1-STATIC-ISSUE-SCAN-2026-05-10 research: scan V1 inconsistencies and unfinished surfaces`
+  - 2026-05-10: Added `ops:project:scan` and generated the current static V1
+    inconsistency report. The scan reports 61 findings (`P0: 12`, `P1: 16`,
+    `P2: 33`) and separates missing proof from concrete surface gaps. Concrete
+    non-proof triage candidates include empty Web `orders`, missing
+    `/dashboard/orders` and `/dashboard/positions` pages, missing focused Web
+    `positions` tests, missing focused API `subscriptions` tests, placeholder
+    Web orders/positions docs, and queue markers needing classification.
+    Evidence:
+    `docs/planning/v1-static-issue-scan-task-2026-05-10.md` and
+    `docs/operations/v1-static-issue-scan-2026-05-10.md`.
+
 - [x] `V1-FINAL-PREFLIGHT-1E11F8DE-2026-05-10 release: refresh final preflight for current deploy`
   - 2026-05-10: Read-only final V1 preflight for deployed
     `1e11f8de4a3daaa313894a9ccf989237a3e65e5a` reports build-info PASS,

@@ -1,0 +1,102 @@
+# V1 Static Issue Scan
+
+Generated at: 2026-05-10T21:42:26.559Z
+Evidence date: 2026-05-10
+Project index: `docs/operations/project-index-2026-05-10.json`
+
+## Purpose
+
+This is a static inconsistency scan. It identifies proof gaps, surface gaps,
+queue drift, and source markers. It does not prove runtime behavior and does
+not replace browser/API/DB/exchange action audits.
+
+## Summary
+
+- Total findings: 61
+- By severity: {"P0":12,"P1":16,"P2":33}
+- By category: {"v1-proof-gap":21,"web-surface-gap":1,"web-test-gap":1,"api-test-gap":1,"web-route-gap":2,"documented-placeholder":3,"queue-hygiene":1,"queue-open-work":1,"source-capability-gate":29,"source-marker":1}
+- Production/source files scanned for markers: 656
+- Source marker matches: 30
+
+## P0/P1 Findings
+
+| Severity | Category | Finding | Evidence | Recommendation |
+| --- | --- | --- | --- | --- |
+| P0 | v1-proof-gap | Dashboard Home remains PARTIAL_LOCAL | Rendered/browser proof for selected bot, wallet KPIs, tables, loading/empty/error, responsive states, and safe clickthrough. | Execute the mapped proof path from project index priority 1. |
+| P0 | v1-proof-gap | Bot Runtime remains PARTIAL_LOCAL | Representative PAPER running/stopped runtime session proof with worker telemetry and runtime readback. | Execute the mapped proof path from project index priority 2. |
+| P0 | v1-proof-gap | Auth remains UNVERIFIED | Browser login/logout/session-expiry proof plus API auth lifecycle assertions. | Execute the mapped proof path from project index priority 3. |
+| P0 | v1-proof-gap | Profile API Keys remains UNVERIFIED | Create/test/delete key proof for Binance and Gate.io through adapter-owned probes and audit logs. | Execute the mapped proof path from project index priority 4. |
+| P1 | v1-proof-gap | Bots is locally proven but still lacks production-safe clickthrough | Production-safe non-destructive clickthrough for bot actions; local action proof already exists. | Run or add non-destructive production clickthrough on throwaway fixtures before final V1 claim. |
+| P1 | v1-proof-gap | Profile remains UNVERIFIED | Profile form success/error submit proof with API readback. | Execute the mapped proof path from project index priority 6. |
+| P1 | v1-proof-gap | Wallets remains UNVERIFIED | Wallet create/edit/delete/reset/preview proof with DB or API readback and active-bot guards. | Execute the mapped proof path from project index priority 7. |
+| P1 | v1-proof-gap | Markets remains UNVERIFIED | Market universe CRUD/import/capability proof, including active-bot guard behavior. | Execute the mapped proof path from project index priority 8. |
+| P1 | v1-proof-gap | Strategies remains UNVERIFIED | Strategy create/edit/delete/clone/config proof preserving RSI 20/80 and proving runtime/backtest compatibility. | Execute the mapped proof path from project index priority 9. |
+| P0 | v1-proof-gap | Manual Orders remains UNVERIFIED | PAPER manual order place/cancel/close proof with validation and DB readback; LIVE remains blocked-risk. | Execute the mapped proof path from project index priority 10. |
+| P0 | v1-proof-gap | Positions remains UNVERIFIED | List/close/update/takeover/import-status proof with exchange snapshot boundary and fail-closed live mutation plan. | Execute the mapped proof path from project index priority 11. |
+| P0 | v1-proof-gap | Orders remains UNVERIFIED | Order list/cancel/fill/fee proof through API and adapter boundary, separating PAPER from exchange-backed risk. | Execute the mapped proof path from project index priority 12. |
+| P1 | v1-proof-gap | Backtests remains UNVERIFIED | Create/cancel/delete/details/report proof using representative RSI strategy and market data. | Execute the mapped proof path from project index priority 13. |
+| P0 | v1-proof-gap | Subscriptions/Admin remains BLOCKED_AUTH | Protected admin clickthrough with non-destructive data and entitlement checks. | Execute the mapped proof path from project index priority 15. |
+| P1 | v1-proof-gap | Logs/Audit Trail remains UNVERIFIED | Filters/pagination/action-log visibility proof using events produced by the audit. | Execute the mapped proof path from project index priority 16. |
+| P0 | v1-proof-gap | Exchange Adapter remains UNVERIFIED | Operation-by-operation Binance/Gate.io support matrix with pass/fail-closed proofs. | Execute the mapped proof path from project index priority 17. |
+| P0 | v1-proof-gap | Workers remains UNVERIFIED | Runtime loop, stream, backtest worker, and scheduler lifecycle proof beyond public /ready. | Execute the mapped proof path from project index priority 18. |
+| P0 | v1-proof-gap | Operations remains BLOCKED_AUTH | Rollback PASS, liveimport readback, authenticated SLO, release gate, and alerts evidence. | Execute the mapped proof path from project index priority 19. |
+| P0 | v1-proof-gap | Security/Privacy remains UNVERIFIED | Ownership isolation, rate-limit, secret redaction, fail-closed, and abuse-case proof. | Execute the mapped proof path from project index priority 20. |
+| P1 | v1-proof-gap | UX/A11y/Mobile remains UNVERIFIED | Per-screen loading/empty/error/success, keyboard/touch, responsive, and accessibility evidence. | Execute the mapped proof path from project index priority 21. |
+| P1 | web-surface-gap | Web feature 'orders' has no active TS/TSX files | feature=orders | Confirm whether this is intentionally rendered through Dashboard Home or implement/retire the feature surface. |
+| P1 | web-test-gap | Web feature 'positions' has no focused tests | feature=positions, files=1 | Add focused UI/action tests or document why the route is owned by another feature. |
+| P1 | api-test-gap | API module 'subscriptions' has no focused tests | module=subscriptions, files=8 | Add focused API tests or document why coverage belongs to another module. |
+| P1 | web-route-gap | Expected dashboard route '/dashboard/orders' has no page.tsx | route=/dashboard/orders | Confirm whether the action surface intentionally lives on Dashboard Home or add the route/page proof. |
+| P1 | web-route-gap | Expected dashboard route '/dashboard/positions' has no page.tsx | route=/dashboard/positions | Confirm whether the action surface intentionally lives on Dashboard Home or add the route/page proof. |
+| P1 | documented-placeholder | Module doc still describes placeholder or not-implemented behavior | docs/modules/web-orders.md | Either implement the documented surface or update the doc to the canonical owner and proof path. |
+| P1 | documented-placeholder | Module doc still describes placeholder or not-implemented behavior | docs/modules/web-positions.md | Either implement the documented surface or update the doc to the canonical owner and proof path. |
+| P1 | queue-open-work | 10 unchecked queue markers remain | .codex/context/TASK_BOARD.md:99 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` \| .codex/context/TASK_BOARD.md:954 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI modul | Classify each as executable, blocked by auth/approval, or historical carryover. |
+
+## P2 Findings
+
+| Severity | Category | Finding | Evidence | Recommendation |
+| --- | --- | --- | --- | --- |
+| P2 | v1-proof-gap | Reports remains UNVERIFIED | Filters/summaries/export proof with API data readback. | Execute the mapped proof path from project index priority 14. |
+| P2 | documented-placeholder | Module doc still describes placeholder or not-implemented behavior | docs/modules/api-subscriptions.md | Either implement the documented surface or update the doc to the canonical owner and proof path. |
+| P2 | queue-hygiene | Queue scan still sees unchecked `(none)` markers | .codex/context/TASK_BOARD.md:6123, .codex/context/TASK_BOARD.md:6141 | Ignore these in execution selection or change queue formatting so scan output is cleaner. |
+| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/backtests/backtests.controller.ts:4 | import { ExchangeNotImplementedError } from '../exchange/exchangeCapabilities'; | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
+| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/backtests/backtests.controller.ts:47 | if (error instanceof ExchangeNotImplementedError) { | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
+| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/bots/bots.controller.ts:5 | import { ExchangeNotImplementedError } from '../exchange/exchangeCapabilities'; | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
+| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/bots/bots.controller.ts:371 | if (error instanceof ExchangeNotImplementedError) { | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
+| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/bots/bots.controller.ts:396 | if (error instanceof ExchangeNotImplementedError) { | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
+| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/exchange/exchangeCapabilities.ts:41 | export class ExchangeNotImplementedError extends DomainError<{ | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
+| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/exchange/exchangeCapabilities.ts:58 | name: 'ExchangeNotImplementedError', | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
+| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/exchange/exchangeCapabilities.ts:61 | this.name = 'ExchangeNotImplementedError'; | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
+| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/exchange/exchangeCapabilities.ts:70 | throw new ExchangeNotImplementedError(exchange, capability); | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
+| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/profile/apiKey/apiKey.controller.ts:7 | import { ExchangeNotImplementedError } from '../../exchange/exchangeCapabilities'; | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
+| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/profile/apiKey/apiKey.controller.ts:137 | if (error instanceof ExchangeNotImplementedError) { | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
+| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/profile/apiKey/apiKey.controller.ts:153 | if (error instanceof ExchangeNotImplementedError) { | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
+| P2 | source-marker | PLACEHOLDER_SOURCE marker in apps/api/src/modules/subscriptions/payments/manualPaymentGateway.provider.ts:16 | note: 'Manual provider is configured as abstraction placeholder.', | Review whether this is test/tooling-only, accepted fail-closed behavior, or unfinished product work. |
+| P2 | source-capability-gate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-bots.en.ts:50 | "liveApiKeyCompatibilityUnavailable": "Selected exchange does not support LIVE execution yet (placeholder adapter).", | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
+| P2 | source-capability-gate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-bots.en.ts:74 | "placeholderActivationBlocked": "Selected exchange is in placeholder mode. Bot activation is unavailable.", | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
+| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/web/src/i18n/namespaces/dashboard-bots.en.ts:75 | "placeholderActivationHint": "Placeholder exchange selected. Runtime activation for {mode} mode is not implemented yet.", | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
+| P2 | source-capability-gate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-bots.en.ts:75 | "placeholderActivationHint": "Placeholder exchange selected. Runtime activation for {mode} mode is not implemented yet.", | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
+| P2 | source-capability-gate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-bots.pt.ts:50 | "liveApiKeyCompatibilityUnavailable": "Selected exchange does not support LIVE execution yet (placeholder adapter).", | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
+| P2 | source-capability-gate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-bots.pt.ts:74 | "placeholderActivationBlocked": "Selected exchange is in placeholder mode. Bot activation is unavailable.", | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
+| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/web/src/i18n/namespaces/dashboard-bots.pt.ts:75 | "placeholderActivationHint": "Placeholder exchange selected. Runtime activation for {mode} mode is not implemented yet.", | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
+| P2 | source-capability-gate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-bots.pt.ts:75 | "placeholderActivationHint": "Placeholder exchange selected. Runtime activation for {mode} mode is not implemented yet.", | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
+| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/web/src/i18n/namespaces/dashboard-home.en.ts:171 | "placeholderActivationHint": "Placeholder exchange selected. Runtime activation for {mode} mode is not implemented yet.", | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
+| P2 | source-capability-gate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-home.en.ts:171 | "placeholderActivationHint": "Placeholder exchange selected. Runtime activation for {mode} mode is not implemented yet.", | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
+| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/web/src/i18n/namespaces/dashboard-home.pt.ts:171 | "placeholderActivationHint": "Placeholder exchange selected. Runtime activation for {mode} mode is not implemented yet.", | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
+| P2 | source-capability-gate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-home.pt.ts:171 | "placeholderActivationHint": "Placeholder exchange selected. Runtime activation for {mode} mode is not implemented yet.", | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
+| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/web/src/i18n/namespaces/dashboard-markets.en.ts:73 | "Placeholder exchange selected. Public catalog for this exchange is not implemented yet. You can still save the universe context.", | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
+| P2 | source-capability-gate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-markets.en.ts:73 | "Placeholder exchange selected. Public catalog for this exchange is not implemented yet. You can still save the universe context.", | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
+| P2 | source-capability-gate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-markets.pl.ts:73 | "Wybrano placeholder exchange. Publiczny katalog dla tej gieldy nie jest jeszcze dostepny. Nadal mozesz zapisac kontekst grupy.", | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
+| P2 | source-capability-gate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-shell.en.ts:155 | "placeholderProbeInfo": "API key test is not available for {exchange} yet (placeholder adapter). Saving is still allowed." | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
+| P2 | source-capability-gate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-shell.pl.ts:155 | "placeholderProbeInfo": "Dla {exchange} test API key nie jest jeszcze dostepny (placeholder adapter). Zapis jest dozwolony." | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
+
+## Interpretation
+
+1. `v1-proof-gap` means the V1 matrix row lacks accepted action proof; it is
+   not automatically a code bug.
+2. `web-surface-gap`, `web-route-gap`, and `documented-placeholder` are
+   stronger candidates for implementation/documentation drift.
+3. `source-marker` findings require human triage because some placeholders
+   are valid fail-closed behavior or deterministic fallback contracts.
+4. Start fixes from P0/P1 findings that overlap the V1 Audit Work Map priority:
+   Dashboard Home, Bot Runtime, Auth, Profile API Keys, then Bots production
+   clickthrough.

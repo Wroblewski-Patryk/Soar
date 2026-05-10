@@ -14,6 +14,12 @@ V1 approval evidence; it is the baseline for the next action audit.
 `PROJECT-INDEX-V1-CROSSWALK-2026-05-10` adds the per-row crosswalk. The next
 executable product task should start from priority 1 in the generated V1 Audit
 Work Map: Dashboard Home rendered/browser action audit, then Bot Runtime.
+`V1-STATIC-ISSUE-SCAN-2026-05-10` adds the current static inconsistency scan.
+Before implementing fixes, use its P0/P1 section to distinguish missing V1
+proof from concrete surface gaps. The concrete non-proof triage candidates are:
+Web orders empty, `/dashboard/orders` missing, `/dashboard/positions` missing,
+Web positions missing focused tests, API subscriptions missing focused tests,
+and Web orders/positions docs still describing placeholders.
 
 Latest Dashboard Home rendered runtime audit:
 `V1-DASHBOARD-HOME-RENDERED-RUNTIME-AUDIT-2026-05-10` is locally complete for
