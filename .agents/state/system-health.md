@@ -4,6 +4,14 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `FUTURES-ONLY-APIKEY-ACCEPTANCE-2026-05-10` LOCAL PASS/PENDING DEPLOY:
+  API-key probe semantics now accept keys that validate at least one actionable
+  scope. Futures-only success returns `ok: true` with
+  `permissions.futures: true`; Binance UI copy no longer implies Spot &
+  Margin is mandatory for Futures bots. Focused API/Web tests, API/Web
+  typechecks, guardrails, docs parity, and diff check pass. Production rerun is
+  required after deploy.
+
 - `BINANCE-FUTURES-APIKEY-PROBE-SCOPE-FIX-2026-05-10` LOCAL PASS/PENDING
   DEPLOY: the prior production stored-key probe result is now treated as
   ambiguous for Binance Futures. Local code now probes Spot and Futures

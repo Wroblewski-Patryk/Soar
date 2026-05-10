@@ -140,7 +140,7 @@ export const dashboardShellPl = {
       "binancePermissionsTitle": "Wymagane uprawnienia API (Binance)",
       "binancePermissionsLead": "Aby bot mogl handlowac, wlacz w Binance:",
       "binancePermissionReading": "Enable Reading",
-      "binancePermissionSpotMargin": "Enable Spot & Margin Trading",
+      "binancePermissionSpotMargin": "Enable Spot & Margin Trading tylko dla botow Spot",
       "binancePermissionFutures": "Enable Futures",
       "binancePermissionsHint": "Nazwy uprawnien sa zgodne z Binance API restrictions: enableReading, enableSpotAndMarginTrading, enableFutures.",
       "manageBotsTitle": "Boty gotowe do przejecia pozycji",

@@ -4,6 +4,13 @@ Last updated: 2026-05-10
 
 ## Active Issues
 
+- 2026-05-10 update: before
+  `FUTURES-ONLY-APIKEY-ACCEPTANCE-2026-05-10`, a Futures-only key could still
+  fail profile validation because the generic probe treated missing Spot as
+  total failure. This is fixed locally and pending deployment. After deploy,
+  production key readiness must be rerun with the corrected endpoint before
+  deciding whether the LIVE Futures bot can be started.
+
 - 2026-05-10 update: the production Binance key probe evidence in
   `PROD-API-RUNTIME-READINESS-F3CB9A24-2026-05-10` is ambiguous, not
   authoritative. The operator confirmed the key is Futures-capable; local code

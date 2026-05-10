@@ -140,7 +140,7 @@
       "binancePermissionsTitle": "Permissoes API obrigatorias (Binance)",
       "binancePermissionsLead": "Para permitir trading pelo bot, ativa na Binance:",
       "binancePermissionReading": "Enable Reading",
-      "binancePermissionSpotMargin": "Enable Spot & Margin Trading",
+      "binancePermissionSpotMargin": "Enable Spot & Margin Trading only for Spot bots",
       "binancePermissionFutures": "Enable Futures",
       "binancePermissionsHint": "Os nomes das permissoes seguem as restricoes da API Binance: enableReading, enableSpotAndMarginTrading, enableFutures.",
       "manageBotsTitle": "Bots prontos para assumir posicoes",

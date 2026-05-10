@@ -17,6 +17,15 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `FUTURES-ONLY-APIKEY-ACCEPTANCE-2026-05-10 fix: accept futures-only API key probe success`
+  - Scope: changed profile API-key probe semantics so a key is accepted when
+    at least one actionable scope validates, preserving `permissions.spot` and
+    `permissions.futures` for target-specific checks. Binance UI copy now
+    states Spot & Margin permission is only for Spot bots. Focused API/Web
+    tests, API/Web typechecks, guardrails, docs parity, and diff check pass.
+    Production rerun is required after deploy. Evidence:
+    `docs/planning/futures-only-api-key-acceptance-task-2026-05-10.md`.
+
 - [x] `BINANCE-FUTURES-APIKEY-PROBE-SCOPE-FIX-2026-05-10 fix: correct API-key probe scope handling`
   - Scope: corrected the local Binance Futures API-key probe path after the
     operator challenged the production probe interpretation. The old stored

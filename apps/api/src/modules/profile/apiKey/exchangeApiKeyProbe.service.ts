@@ -144,6 +144,23 @@ export const formatProbeMessage = (exchange: Exchange, code: ApiKeyProbeCode) =>
   }
 };
 
+const formatProbeSuccessMessage = (
+  exchange: Exchange,
+  permissions: ApiKeyProbeResult['permissions']
+) => {
+  const label = EXCHANGE_DISPLAY_NAMES[exchange] ?? exchange;
+  const scopes = [
+    permissions.spot ? 'Spot' : null,
+    permissions.futures ? 'Futures' : null,
+  ].filter(Boolean);
+
+  if (scopes.length === 0 || scopes.length === 2) {
+    return formatProbeMessage(exchange, 'OK');
+  }
+
+  return `${label} API key permissions validated for ${scopes[0]}.`;
+};
+
 const probeScope = async (
   marketType: ApiKeyProbeMarketType,
   input: ApiKeyProbeInput,
@@ -185,6 +202,15 @@ export const probeExchangeApiKeyPermissions = async (
     failureCodes.push(code);
   }
 
+  if (permissions.spot || permissions.futures) {
+    return {
+      ok: true,
+      code: 'OK',
+      message: formatProbeSuccessMessage(input.exchange, permissions),
+      permissions,
+    };
+  }
+
   if (failureCodes.length > 0) {
     const code = selectProbeFailureCode(failureCodes);
     return {
@@ -198,7 +224,7 @@ export const probeExchangeApiKeyPermissions = async (
   return {
     ok: true,
     code: 'OK',
-    message: formatProbeMessage(input.exchange, 'OK'),
+    message: formatProbeSuccessMessage(input.exchange, permissions),
     permissions,
   };
 };

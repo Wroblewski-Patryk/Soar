@@ -13,6 +13,13 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `FUTURES-ONLY-APIKEY-ACCEPTANCE-2026-05-10` changed API-key probe
+  success semantics so any validated actionable scope is accepted while
+  preserving per-scope permission booleans. This means a Binance Futures-only
+  key can return `ok: true`, `code: OK`, `permissions.futures: true`, and
+  `permissions.spot: false`. The profile UI copy now clarifies Spot & Margin
+  permission is only for Spot bots. Production must rerun the stored-key test
+  after deployment.
 - 2026-05-10 `BINANCE-FUTURES-APIKEY-PROBE-SCOPE-FIX-2026-05-10` corrected
   the Binance Futures API-key probe path after the operator challenged the
   production probe interpretation. The old `spot: true`, `futures: false`

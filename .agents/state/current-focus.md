@@ -16,6 +16,13 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 Futures-only API-key acceptance:
+`FUTURES-ONLY-APIKEY-ACCEPTANCE-2026-05-10` updates profile API-key test
+semantics so a key is accepted when at least one actionable scope validates.
+Futures-only keys now return `ok: true` with `permissions.futures: true` and
+`permissions.spot: false`; Spot-only keys are also accepted for Spot use. UI
+copy now states Binance Spot & Margin permission is only for Spot bots.
+
 2026-05-10 Binance Futures API-key probe correction:
 `BINANCE-FUTURES-APIKEY-PROBE-SCOPE-FIX-2026-05-10` corrects the prior
 production readiness interpretation. The old stored-key probe output is now

@@ -4,6 +4,14 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest Futures-only API-key acceptance:
+`FUTURES-ONLY-APIKEY-ACCEPTANCE-2026-05-10` closes the semantic gap where a
+Futures-capable key could still fail because Spot was unavailable. After this
+deploys, rerun the stored production API-key test; the expected good outcome
+for the user's current key is `ok: true`, `code: OK`,
+`permissions.futures: true`, and `permissions.spot: false` if it is truly
+Futures-only. Then rerun live-runtime/readback readiness.
+
 Latest Binance Futures API-key probe correction:
 `BINANCE-FUTURES-APIKEY-PROBE-SCOPE-FIX-2026-05-10` found the previous stored
 key probe output was ambiguous for Binance Futures. The local fix probes Spot

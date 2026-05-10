@@ -267,7 +267,7 @@ describe("ApiKeyForm", () => {
     expect(screen.getByText("203.0.113.10")).toBeInTheDocument();
     expect(screen.getByText("203.0.113.11")).toBeInTheDocument();
     expect(screen.getByText("Required API permissions (Binance)")).toBeInTheDocument();
-    expect(screen.getByText("Enable Spot & Margin Trading")).toBeInTheDocument();
+    expect(screen.getByText("Enable Spot & Margin Trading only for Spot bots")).toBeInTheDocument();
     expect(screen.getByText("Enable Futures")).toBeInTheDocument();
   });
 

@@ -64,7 +64,7 @@ describe("probeExchangeApiKeyPermissions", () => {
     });
   });
 
-  it("probes futures even when spot fails", async () => {
+  it("returns success for futures-only keys", async () => {
     const calls: string[] = [];
     const result = await withFactory("GATEIO", async (exchange, marketType) => {
       calls.push(`${exchange}:${marketType}`);
@@ -78,9 +78,9 @@ describe("probeExchangeApiKeyPermissions", () => {
     });
 
     expect(calls).toEqual(["GATEIO:spot", "GATEIO:future"]);
-    expect(result.ok).toBe(false);
-    expect(result.code).toBe("MISSING_SPOT_SCOPE");
-    expect(result.message).toBe("Gate.io key has no Spot permission.");
+    expect(result.ok).toBe(true);
+    expect(result.code).toBe("OK");
+    expect(result.message).toBe("Gate.io API key permissions validated for Futures.");
     expect(result.permissions).toEqual({ spot: false, futures: true });
   });
 
@@ -102,7 +102,7 @@ describe("probeExchangeApiKeyPermissions", () => {
     expect(result.permissions).toEqual({ spot: false, futures: false });
   });
 
-  it("maps futures permission mismatch after successful spot probe", async () => {
+  it("returns success for spot-only keys", async () => {
     const result = await withFactory("GATEIO", async (_exchange, marketType) => ({
       fetchBalance: async () => {
         if (marketType === "future") {
@@ -111,9 +111,9 @@ describe("probeExchangeApiKeyPermissions", () => {
       },
     }));
 
-    expect(result.ok).toBe(false);
-    expect(result.code).toBe("MISSING_FUTURES_SCOPE");
-    expect(result.message).toBe("Gate.io key has no Futures permission.");
+    expect(result.ok).toBe(true);
+    expect(result.code).toBe("OK");
+    expect(result.message).toBe("Gate.io API key permissions validated for Spot.");
     expect(result.permissions).toEqual({ spot: true, futures: false });
   });
 
